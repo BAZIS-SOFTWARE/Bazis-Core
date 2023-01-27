@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Geometry;
+using GMSH_Importer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using ModelController;
@@ -71,7 +72,7 @@ namespace TestModel
         {
             //assing
             var model = new ModelData();
-            var loader = new LoadModelFromGMSH_InpFile();
+            var loader = new Import_Mesh();
 
             loader.LoadEvent += Model_LoadEvent;
             //act
@@ -94,7 +95,7 @@ namespace TestModel
         {
             //assing
             var model = new ModelData();
-            var loaderGMSH = new LoadModelFromGMSH_InpFile();
+            var loaderGMSH = new Import_Mesh();
 
 
             loaderGMSH.LoadEvent += Model_LoadEvent;
@@ -107,6 +108,7 @@ namespace TestModel
             saver.Save(model,@"C:\Projs\TestProjTerm\box\task_1.bpf");
 
             var loaderBPF = new LoadModelFromProjectTextFile();
+            loaderBPF.LoadEvent += Model_LoadEvent;
             var modelBPF = loaderBPF.Load(@"C:\Projs\TestProjTerm\box\task_1.bpf");
             model.Load(modelBPF);
 

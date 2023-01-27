@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Linq;
+using GMSH_Importer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using ModelController.IO;
@@ -48,7 +49,7 @@ namespace TestModel
         {
             //assing
             var model = new ModelData();
-            var loader = new LoadModelFromGMSH_InpFile();
+            var loader = new Import_Mesh();
             loader.LoadEvent += NewMesh_LoadEvent;
             var saver = new SaveModelToProjectTextFile();
             saver.SaveEvent += Model_SaveEvent;
@@ -88,7 +89,7 @@ namespace TestModel
             //assing
             var model = new ModelData();
 
-            var loader = new LoadModelFromGMSH_InpFile();       
+            var loader = new Import_Mesh();       
             loader.LoadEvent += NewMesh_LoadEvent;
 
             //act
