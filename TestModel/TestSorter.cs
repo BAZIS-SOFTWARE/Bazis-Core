@@ -14,12 +14,11 @@ namespace TestModel
             //assing
             var model = new ModelData();
             var loader = new LoadModelFromProjectTextFile();
-
-            model.SetLoader(loader);
-            model.LoadEvent += Model_LoadEvent; ;
+            loader.LoadEvent += Model_LoadEvent;
 
             //act
-            model.Load(@"C:\Projs\TestProjTerm\Cub\cub_unsorted.bpf");
+            var modelBPF = loader.Load(@"C:\Projs\TestProjTerm\Cub\cub_unsorted.bpf");
+            model.Load(modelBPF);
 
             //assert
             var number = 0;

@@ -18,16 +18,12 @@ namespace TestModel
             var model = new ModelData();
             var loader = new LoadModelFromASCIITextFile();
 
-            model.SetLoader(loader);
-            model.LoadEvent += NewMesh_LoadEvent;
+            loader.LoadEvent += NewMesh_LoadEvent;
             //var reader = new StreamReader(@"C:\Bazis_newGUI\MESH\big_cubeDATA1.ASC");
 
-            var reader = new StreamReader(@"C:\Bazis_newGUI\MESH\RadicMesh\Plate2DATA.ASC");
-
-
             //act
-            model.Load(@"C:\Bazis_newGUI\MESH\RadicMesh\Plate2DATA.ASC");
-
+            var modelASCII = loader.Load(@"C:\Bazis_newGUI\MESH\RadicMesh\Plate2DATA.ASC");
+            model.Load(modelASCII);
             //assert
             var elems = model.ObjectData.FindMany<Element3D>().ToList();
         }
@@ -38,12 +34,12 @@ namespace TestModel
             //assing
             var model = new ModelData();
             var loader = new LoadModelFromProjectTextFile();
-            model.SetLoader(loader);
 
-            model.LoadEvent += NewMesh_LoadEvent;
+            loader.LoadEvent += NewMesh_LoadEvent;
             //act
             //model.Load(@"C:\Bazis_newGUI\PROJ\Test_3D\cub_1.bpf");
-            model.Load(@"C:\Projs\TestProjTernMech\twoElements\two_tetra_termoMech_calc1.bpf");
+            var modelBPF = loader.Load(@"C:\Projs\TestProjTernMech\twoElements\two_tetra_termoMech_calc1.bpf");
+            model.Load(modelBPF);
             //assert
         }
 
@@ -53,17 +49,14 @@ namespace TestModel
             //assing
             var model = new ModelData();
             var loader = new LoadModelFromGMSH_InpFile();
-            model.SetLoader(loader);
-
-            model.LoadEvent += NewMesh_LoadEvent;
+            loader.LoadEvent += NewMesh_LoadEvent;
             var saver = new SaveModelToProjectTextFile();
-            model.SetSaver(saver);
+            saver.SaveEvent += Model_SaveEvent;
 
-            model.SaveEvent += Model_SaveEvent;
             //act
-            model.Load(@"C:\Projs\TestProjTerm\box\box1.inp");
-
-            model.Save(@"C:\Projs\TestProjTerm\box\task_1.bpf");
+            var modelINP = loader.Load(@"C:\Projs\TestProjTerm\box\box1.inp");
+            model.Load(modelINP);
+            saver.Save(model, @"C:\Projs\TestProjTerm\box\task_1.bpf");
 
             //assert
         }
@@ -85,7 +78,7 @@ namespace TestModel
             //model.LoadEvent += NewMesh_LoadEvent;
 
             //act
-            model.Load(@"C:\BazisXN\Model\STLLoader\ACII.stl");
+            loader.Load(@"C:\BazisXN\Model\STLLoader\ACII.stl");
             //assert
         }
 
@@ -95,15 +88,13 @@ namespace TestModel
             //assing
             var model = new ModelData();
 
-            var loader = new LoadModelFromGMSH_InpFile();
-            model.SetLoader(loader);
-
-            model.LoadEvent += NewMesh_LoadEvent;
+            var loader = new LoadModelFromGMSH_InpFile();       
+            loader.LoadEvent += NewMesh_LoadEvent;
 
             //act
             //var sr = new StreamReader(@"C:\BazisXN\Model\GMSHLoader\test3");
-            model.Load(@"C:\BazisXN\GMSH_Importer(inp)\mesh\test3.inp");
-            
+            var modelINP = loader.Load(@"C:\BazisXN\GMSH_Importer(inp)\mesh\test3.inp");
+            model.Load(modelINP);
 
             //assert
             var elems = model.ObjectData.FindMany<Element3D>().ToList();

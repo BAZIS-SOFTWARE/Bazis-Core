@@ -4,7 +4,6 @@ using Model;
 using Model.Interfaces;
 using ModelController.IO;
 using ModelInterface;
-using System.Drawing;
 
 namespace TestModel
 {
@@ -45,12 +44,10 @@ namespace TestModel
             //assing
             var model = new ModelData();
             var loader = new LoadModelFromProjectTextFile();
-            model.SetLoader(loader);
-
-            model.LoadEvent += Model_LoadEvent;
+            loader.LoadEvent += Model_LoadEvent;
             //act
-            model.Load(@"C:\Projs\TestProjTerm\tjoint\proj_med.bpf");
-
+            var modelLoaded = loader.Load(@"C:\Projs\TestProjTerm\tjoint\proj_med.bpf");
+            model.Load(modelLoaded);
             var obj = model.ObjectData.Find(36292);
             //assert
             Assert.AreEqual(obj.Number, 36292);

@@ -16,9 +16,10 @@ namespace TestModel
             //assing
             var model = new ModelData();
             var loader = new LoadModelFromGMSH_InpFile();
-            model.SetLoader(loader);
-            model.LoadEvent += Model_LoadEvent;
-            model.Load(@"C:\BazisXN\GMSH_Importer(inp)\mesh\test3.inp");
+
+            loader.LoadEvent += Model_LoadEvent;
+            var modelINP = loader.Load(@"C:\BazisXN\GMSH_Importer(inp)\mesh\test3.inp");
+            model.Load(modelINP);
 
             //act
             var elems3D = model.ObjectData.FindMany<Element3D>().ToArray();

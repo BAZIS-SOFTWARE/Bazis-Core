@@ -42,9 +42,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\OutSideDll\MathNet.Numerics.dll</HintPath>
     </Reference>
-    <Reference Include="ModelInterface">
-      <HintPath>ModelInterface\bin\Release\ModelInterface.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />

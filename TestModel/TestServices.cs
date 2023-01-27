@@ -20,10 +20,10 @@ namespace TestModel
             //assing
             var model = new ModelData();
             var loader = new LoadModelFromASCIITextFile();
-            model.SetLoader(loader);
-            model.LoadEvent += Model_LoadEvent;
-            model.Load(@"C:\Bazis_newGUI\MESH\rhombDATA1.ASC");
 
+            loader.LoadEvent += Model_LoadEvent;
+            var modeLoaded = loader.Load(@"C:\Bazis_newGUI\MESH\rhombDATA1.ASC");
+            model.Load(modeLoaded);
             //act
 
             var elements = model.ObjectData.FindMany<Element3D>().ToArray();
@@ -49,10 +49,10 @@ namespace TestModel
             //assing
             var model = new ModelData();
             var loader = new LoadModelFromASCIITextFile();
-            model.SetLoader(loader);
-            model.LoadEvent += Model_LoadEvent;
-            model.Load(@"C:\Bazis_newGUI\MESH\rhombDATA1.ASC");
 
+            loader.LoadEvent += Model_LoadEvent;
+            var modelLoaded = loader.Load(@"C:\Bazis_newGUI\MESH\rhombDATA1.ASC");
+            model.Load(modelLoaded);
             //act
             var elements = model.ObjectData.FindMany<Element3D>().ToArray();
             var nodes = model.ObjectData.FindMany<Node>();
@@ -72,12 +72,11 @@ namespace TestModel
             //assing
             var model = new ModelData();
             var loader = new LoadModelFromGMSH_InpFile();
-            model.SetLoader(loader);
 
-            model.LoadEvent += Model_LoadEvent;
+            loader.LoadEvent += Model_LoadEvent;
             //act
-            model.Load(@"C:\Projs\TestProjTerm\box\box1.inp");
-
+            var modelLoaded = loader.Load(@"C:\Projs\TestProjTerm\box\box1.inp");
+            model.Load(modelLoaded);
             var nodes = model.ObjectData.FindMany<Node>().ToArray();
             var freeNodesFinder = new FreeNodesFinder(nodes);
 
@@ -96,22 +95,20 @@ namespace TestModel
             //assing
             var model = new ModelData();
             var loaderGMSH = new LoadModelFromGMSH_InpFile();
-            model.SetLoader(loaderGMSH);
 
-            model.LoadEvent += Model_LoadEvent;
+
+            loaderGMSH.LoadEvent += Model_LoadEvent;
             //act
-            model.Load(@"C:\Projs\TestProjTerm\box\box1.inp");
+            var modelGMSH = loaderGMSH.Load(@"C:\Projs\TestProjTerm\box\box1.inp");
+            model.Load(modelGMSH);
 
             var saver = new SaveModelToProjectTextFile();
-            model.SetSaver(saver);
-            model.SaveEvent += Model_SaveEvent;
-
-            model.Save(@"C:\Projs\TestProjTerm\box\task_1.bpf");
+            saver.SaveEvent += Model_SaveEvent;
+            saver.Save(model,@"C:\Projs\TestProjTerm\box\task_1.bpf");
 
             var loaderBPF = new LoadModelFromProjectTextFile();
-            model.SetLoader(loaderBPF);
-
-            model.Load(@"C:\Projs\TestProjTerm\box\task_1.bpf");
+            var modelBPF = loaderBPF.Load(@"C:\Projs\TestProjTerm\box\task_1.bpf");
+            model.Load(modelBPF);
 
             var els3D = model.ObjectData.FindMany<Element3D>();
             var els2D = model.ObjectData.FindMany<Element2D>();
@@ -147,12 +144,10 @@ namespace TestModel
             //assing
             var model = new ModelData();
             var loaderGMSH = new LoadModelFromProjectTextFile();
-            model.SetLoader(loaderGMSH);
-
-            model.LoadEvent += Model_LoadEvent;
+            loaderGMSH.LoadEvent += Model_LoadEvent;
             //act
-            model.Load(@"C:\Projs\ENERGOMASH\CALC\proj_new.bpf");
-
+            var modelGMSH = loaderGMSH.Load(@"C:\Projs\ENERGOMASH\CALC\proj_new.bpf");
+            model.Load(modelGMSH);
             model.ObjectData.RemoveRange("Элементы2D");
 
             var els2D = model.ObjectData.FindMany<Element2D>();
@@ -167,10 +162,10 @@ namespace TestModel
             //assing
             var model = new ModelData();
             var loader = new LoadModelFromASCIITextFile();
-            model.SetLoader(loader);
-            model.LoadEvent += Model_LoadEvent;
-            model.Load(@"C:\Bazis_newGUI\MESH\rhombDATA1.ASC");
 
+            loader.LoadEvent += Model_LoadEvent;
+            var modelASCII = loader.Load(@"C:\Bazis_newGUI\MESH\rhombDATA1.ASC");
+            model.Load(modelASCII);
 
             //act
             var elements = model.ObjectData.FindMany<Element3D>().ToArray();

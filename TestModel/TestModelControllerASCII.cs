@@ -19,8 +19,8 @@ namespace TestModel
             var model = new ModelData();
             var loader = new ImportSTL();
             //model.SetLoader(loader);
-            model.LoadEvent += Model_LoadEvent;
-            model.Load(@"C:\BazisXN\Model\STLLoader\ACII.stl");
+            //loader.LoadEvent += Model_LoadEvent;
+            loader.Load(@"C:\BazisXN\Model\STLLoader\ACII.stl");
 
             //act
             var surfs = model.ObjectData.FindMany<Surface>().ToArray();
@@ -45,10 +45,10 @@ namespace TestModel
             //assing
             var model = new ModelData();
             var loader = new LoadModelFromASCIITextFile();
-            model.SetLoader(loader);
-            model.LoadEvent += Model_LoadEvent;
-            model.Load(@"C:\Bazis_newGUI\MESH\rhombDATA1.ASC");
 
+            loader.LoadEvent += Model_LoadEvent;
+            var modelASC = loader.Load(@"C:\Bazis_newGUI\MESH\rhombDATA1.ASC");
+            model.Load(modelASC);
             //act
             var presentator = new ModelScenePresentator(model.ObjectData.ToArray());
 
@@ -71,9 +71,10 @@ namespace TestModel
             //assing
             var model = new ModelData();
             var loader = new LoadModelFromASCIITextFile();
-            model.SetLoader(loader);
-            model.LoadEvent += Model_LoadEvent;
-            model.Load(@"C:\Bazis_newGUI\MESH\rhombDATA1.ASC");
+
+            loader.LoadEvent += Model_LoadEvent;
+            var modelASC = loader.Load(@"C:\Bazis_newGUI\MESH\rhombDATA1.ASC");
+            model.Load(modelASC);
 
             //act
             var nodes = model.ObjectData.FindMany<Node>().ToArray();
@@ -98,9 +99,10 @@ namespace TestModel
             //assing
             var model = new ModelData();
             var loader = new LoadModelFromGMSH_InpFile();
-            model.SetLoader(loader);
-            model.LoadEvent += Model_LoadEvent;
-            model.Load(@"C:\BazisXN\GMSH_Importer(inp)\mesh\test3.inp");
+
+            loader.LoadEvent += Model_LoadEvent;
+            var modelINP = loader.Load(@"C:\BazisXN\GMSH_Importer(inp)\mesh\test3.inp");
+            model.Load(modelINP);
 
             //act
             var presentator = new ModelScenePresentator(model.ObjectData.ToArray());
@@ -124,9 +126,10 @@ namespace TestModel
             //assing
             var model = new ModelData();
             var loader = new LoadModelFromASCIITextFile();
-            model.SetLoader(loader);
-            model.LoadEvent += Model_LoadEvent;
-            model.Load(@"C:\Projs\ENERGOMASH\MESH\SECTOR_DATA1.ASC");
+
+            loader.LoadEvent += Model_LoadEvent;
+            var modelASC = loader.Load(@"C:\Projs\ENERGOMASH\MESH\SECTOR_DATA1.ASC");
+            model.Load(modelASC);
 
             //act
             var elems3D = model.ObjectData.FindMany<Element3D>().ToArray();
@@ -156,9 +159,10 @@ namespace TestModel
             //assing
             var model = new ModelData();
             var loader = new LoadModelFromASCIITextFile();
-            model.SetLoader(loader);
-            model.LoadEvent += Model_LoadEvent;
-            model.Load(@"C:\Bazis_newGUI\MESH\Test_DATA1.ASC");
+
+            loader.LoadEvent += Model_LoadEvent;
+            var modelASC = loader.Load(@"C:\Bazis_newGUI\MESH\Test_DATA1.ASC");
+            model.Load(modelASC);
 
             //act
             var elems2D = model.ObjectData.FindMany<Element2D>().ToArray();
