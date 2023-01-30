@@ -179,6 +179,22 @@ namespace Model
             return modelObjects.Remove(modelObject);
         }
 
+        public void RemoveRange(string objType,IEnumerable<int> selectedObjects)
+        {
+            var tempSelectedObjects = new ModelObject[selectedObjects.Count()];
+            var counter = 0;
+            foreach (var selectedObject in selectedObjects)
+            {
+                var obj = Find(selectedObject);
+                obj.ExistState = false;
+                tempSelectedObjects[counter] = obj;
+                counter++;
+            }
+
+            var existObjects = modelObjects.Except(tempSelectedObjects, new CompareModelObjectsByExistState()).ToList();
+            modelObjects = existObjects;
+        }
+
         public void RemoveRange(string objType)
         {
             var listTypedObjs = new List<List<ModelObject>>();

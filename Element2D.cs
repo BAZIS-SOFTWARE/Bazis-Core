@@ -35,6 +35,11 @@ namespace Model
 
         public override string ObjType { get; }
 
+        public Point3D CalcNormal()
+        {
+            return surface.CalcNormal();
+        }
+
         public float CalcSquare()
         {
             var pAr = GetPoints().ToArray();
