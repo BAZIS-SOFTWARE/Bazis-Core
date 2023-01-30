@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace Model
 {
-    public abstract class ModelObject : IModelObject, IComparable<ModelObject>
+    public abstract class ModelObject : IModelObject, IComparable<ModelObject>, IEqualityComparer<ModelObject>
     {
         public ModelObject(int number)
         {
             Number = number;
-            ViewState = true;
+            ExistState = true;
         }
         public int Number { get; }
 
@@ -29,9 +29,12 @@ namespace Model
             get { return viewState; }
             set
             {
-                if(!value)
-                    SetBackColor();
-                viewState = value;
+                if(existState)
+                {
+                    if (!value)
+                        SetBackColor();
+                    viewState = value;
+                }
             }
         }
 
@@ -41,7 +44,8 @@ namespace Model
             set
             {
                 if (!value)
-                    ViewState = false;
+                    viewState = false;
+                else viewState = true;
                 existState = value;
             }
         }
@@ -92,6 +96,18 @@ namespace Model
                 center = center.Sum(point);
             }
             return center.Div(GetPoints().Count());
+        }
+
+        public bool Equals(ModelObject x, ModelObject y)
+        {
+            if (x.Number == y.Number)
+                return true;
+            else return false;
+        }
+
+        public int GetHashCode(ModelObject obj)
+        {
+            return obj.Number;
         }
     }
 }
