@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Model.GroupsData
 {
-    public class GroupComparer : IEqualityComparer<Group>
+    public class CompareGroupsByName : IEqualityComparer<Group>
     {
         public bool Equals(Group x, Group y)
         {

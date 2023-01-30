@@ -55,10 +55,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CompareModelObjectsByExistState.cs" />
     <Compile Include="Element1D.cs" />
     <Compile Include="ElementSurfaceEqualityComparer.cs" />
     <Compile Include="GroupsData\Group.cs" />
-    <Compile Include="GroupsData\GroupComparer.cs" />
+    <Compile Include="GroupsData\CompareGroupsByName.cs" />
     <Compile Include="GroupsData\GroupData.cs" />
     <Compile Include="Interfaces\IElement.cs" />
     <Compile Include="Interfaces\IBeamElement.cs" />
