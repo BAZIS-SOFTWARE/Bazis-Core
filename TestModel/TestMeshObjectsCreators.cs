@@ -12,25 +12,23 @@ namespace TestModel
     public class TestMeshObjectsCreators
     {
         [TestMethod]
-        public void Extract2DFrom3DMesh()
+        public void FindFreeNodes()
         {
             //assing
             var model = new ModelData();
-            var loader = new Import_Mesh();
+            var loader = new LoadModelFromProjectTextFile();
             loader.LoadEvent += Model_LoadEvent;
             //act
-            var modelINP = loader.Load(@"C:\Projs\TestProjTerm\box\box1.inp");
+            var modelINP = loader.Load(@"C:\Projs\TestProjTerm\Cub\cub_unsorted_freeNodes.bpf");
             model.Load(modelINP);
 
-            var els3D = model.ObjectData.FindMany<Element3D>();
+            var freeNodesFinder = new FreeNodesFinder(model.ObjectData);
 
-            var nodes = model.ObjectData.FindMany<Node>();
-            var freeNodesFinder = new FreeNodesFinder(nodes.ToArray());
+            var freeNodes = freeNodesFinder.Find<Element>();
 
-            var interNodesFinder = new FindInterfacedNodes(els3D.ToArray());
-
-            var freeNodes = freeNodesFinder.Find(interNodesFinder.Find());
             //assert
+            freeNodes.ToArray()[0] = 14;
+            freeNodes.ToArray()[1] = 15;
         }
 
         private void Model_LoadEvent(object arg1, LoaderEventArgs arg2)

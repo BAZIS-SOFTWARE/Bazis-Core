@@ -33,6 +33,9 @@ namespace Model
             ObjectData.AddRange(list);
         }
 
-        
+        public void SetObjectData(ObjectsData objectData)
+        {
+            ObjectData = objectData;
+        }
     }
 }

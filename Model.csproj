@@ -55,9 +55,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CompareModelObjectsByExistState.cs" />
+    <Compile Include="ObjectsComparers\EqualityComparerByCentralPoint.cs" />
+    <Compile Include="ObjectsComparers\EqualityComparerByNumber.cs" />
+    <Compile Include="ObjectsComparers\EqualityComparerByExistState.cs" />
     <Compile Include="Element1D.cs" />
-    <Compile Include="ElementSurfaceEqualityComparer.cs" />
+    <Compile Include="ObjectsComparers\EqualityComparerBySurface.cs" />
     <Compile Include="GroupsData\Group.cs" />
     <Compile Include="GroupsData\CompareGroupsByName.cs" />
     <Compile Include="GroupsData\GroupData.cs" />

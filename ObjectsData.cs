@@ -1,5 +1,7 @@
 ﻿using Functions.Sort;
+using Model.Comparers;
 using Model.Interfaces;
+using Model.ObjectsComparers;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -191,7 +193,7 @@ namespace Model
                 counter++;
             }
 
-            var existObjects = modelObjects.Except(tempSelectedObjects, new CompareModelObjectsByExistState()).ToList();
+            var existObjects = modelObjects.Except(tempSelectedObjects, new EqualityComparerByExistState()).ToList();
             modelObjects = existObjects;
         }
 

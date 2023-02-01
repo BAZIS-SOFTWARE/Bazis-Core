@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Model
+namespace Model.Comparers
 {
     public class ElementSurfaceEqualityComparer : IEqualityComparer<Surface>
     {
