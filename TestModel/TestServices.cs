@@ -197,7 +197,7 @@ namespace TestModel
 
             var merge = new MergeObjects(model.ObjectData);
 
-            merge.Merge<Node>();
+            merge.Merge<Node>(0.001f);
 
             //assert
             //freeNodes.ToArray()[0] = 14;
