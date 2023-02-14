@@ -23,7 +23,8 @@ namespace TestModel
             //var reader = new StreamReader(@"C:\Bazis_newGUI\MESH\big_cubeDATA1.ASC");
 
             //act
-            var modelASCII = loader.Load(@"C:\Bazis_newGUI\MESH\RadicMesh\Plate2DATA.ASC");
+            var modelASCII = loader.Load(@"C:\Projs\ExampleMesh\asc\DATA3.ASC");
+            //loader.Load(@"C:\Bazis_newGUI\MESH\RadicMesh\Plate2DATA.ASC");
             model.Load(modelASCII);
             //assert
             var elems = model.ObjectData.FindMany<Element3D>().ToList();
