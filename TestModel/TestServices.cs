@@ -195,13 +195,33 @@ namespace TestModel
             var modelBPF = loader.Load(@"C:\Projs\ExampleMesh\Tube_3d_only.bpf");
             model.Load(modelBPF);
 
+            var finder = new FindCoincidentObjects(model.ObjectData, 0.01f);
+            var coincidentNodes = finder.Find_1<Node>();
+
             var merge = new MergeObjects(model.ObjectData);
 
-            merge.Merge<Node>(0.001f);
+            merge.Merge<Node>(coincidentNodes);
 
             //assert
             //freeNodes.ToArray()[0] = 14;
             //freeNodes.ToArray()[1] = 15;
+        }
+
+        [TestMethod]
+        public void FindCoincidentNodes()
+        {
+            var model = new ModelData();
+            var loader = new LoadModelFromProjectTextFile();
+            loader.LoadEvent += (ar1, ar2) => { };
+            //act
+            //var modelBPF = loader.Load(@"C:\Projs\TestProjTerm\Cub\cub_unsorted_freeNodesCoincident.bpf");
+            var modelBPF = loader.Load(@"C:\Projs\TestProjTerm\CoincidentMesh\Tube_3d_only.bpf");
+        var finder = new FindCoincidentObjects(modelBPF.ObjectData, 0.01f);
+            var coincidentNodes = finder.Find_1<Node>();
+
+            var numberOfObjs = coincidentNodes.Count();
+
+            Assert.AreEqual(numberOfObjs, 15121);
         }
 
         [TestMethod]

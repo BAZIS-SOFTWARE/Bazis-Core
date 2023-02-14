@@ -39,5 +39,10 @@ namespace Model
         {
             return string.Format("{0} {1} : {2}",Number,ObjType,Position);
         }
+
+        public override Point3D CalcCentralPoint()
+        {
+            return Position;
+        }
     }
 }

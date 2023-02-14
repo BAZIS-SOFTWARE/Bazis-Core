@@ -55,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ObjectsComparers\ComparerBySqCoords.cs" />
     <Compile Include="ObjectsComparers\EqualityComparerByCentralPoint.cs" />
     <Compile Include="ObjectsComparers\EqualityComparerByNumber.cs" />
     <Compile Include="ObjectsComparers\EqualityComparerByExistState.cs" />

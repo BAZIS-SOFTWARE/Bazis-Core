@@ -115,5 +115,16 @@ points.Contains(nodes[2].Position, new Point3DEqualityComparer()))
 
             return nNormal._x * temp._x + nNormal._y * temp._y + nNormal._z * temp._z;
         }
+
+        public override Point3D CalcCentralPoint()
+        {
+            var center = new Point3D();
+
+            foreach (var point in GetPoints())
+            {
+                center = center.Sum(point);
+            }
+            return center.Div(NumberOfPoints);
+        }
     }
 }

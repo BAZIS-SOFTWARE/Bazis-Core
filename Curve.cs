@@ -23,6 +23,17 @@ namespace Model
 
         public override int NumberOfPoints { get; }
 
+        public override Point3D CalcCentralPoint()
+        {
+            var center = new Point3D();
+
+            foreach (var node in nodes)
+            {
+                center = center.Sum(node.Position);
+            }
+            return center.Div(NumberOfPoints);
+        }
+
         public float CalcLength()
         {
             throw new NotImplementedException();
