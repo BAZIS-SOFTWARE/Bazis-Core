@@ -25,7 +25,8 @@ namespace TestModel
 
             //act
             var surfs = model.ObjectData.FindMany<Surface>().ToArray();
-            var presentator = new ModelScenePresentator(model.ObjectData.ToArray());
+
+            var presentator = new ModelScenePresentator(model);
 
             //var surfObjsCreator = presentator.CreateSurfaceObjsCreator("",true);
 
@@ -51,7 +52,7 @@ namespace TestModel
             var modelASC = loader.Load(@"C:\Bazis_newGUI\MESH\rhombDATA1.ASC");
             model.Load(modelASC);
             //act
-            var presentator = new ModelScenePresentator(model.ObjectData.ToArray());
+            var presentator = new ModelScenePresentator(model);
 
             //var surfObjsCreator = presentator.CreateSurfaceObjsCreator("Элементы3D", true);
 
@@ -79,7 +80,9 @@ namespace TestModel
 
             //act
             var nodes = model.ObjectData.FindMany<Node>().ToArray();
-            var presentator = new ModelScenePresentator(model.ObjectData.ToArray());
+            var presentator = new ModelScenePresentator(model);
+
+            presentator.HideInsideObjects("Узлы");
 
             //var pointObjsCreator = presentator.CreatePointObjsCreator();
 
@@ -106,7 +109,7 @@ namespace TestModel
             model.Load(modelINP);
 
             //act
-            var presentator = new ModelScenePresentator(model.ObjectData.ToArray());
+            var presentator = new ModelScenePresentator(model);
 
             //var surfObjsCreator = presentator.CreateSurfaceObjsCreator("Элементы3D", true);
 
@@ -134,7 +137,7 @@ namespace TestModel
 
             //act
             var elems3D = model.ObjectData.FindMany<Element3D>().ToArray();
-            var presentator = new ModelScenePresentator(model.ObjectData.ToArray());
+            var presentator = new ModelScenePresentator(model);
 
             //var surfObjsCreator = presentator.CreateSurfaceObjsCreator("Элементы3D", true);
 
@@ -167,7 +170,7 @@ namespace TestModel
 
             //act
             var elems2D = model.ObjectData.FindMany<Element2D>().ToArray();
-            var presentator = new ModelScenePresentator(model.ObjectData.ToArray());
+            var presentator = new ModelScenePresentator(model);
 
             //var surfObjsCreator = presentator.CreateSurfaceObjsCreator("Элементы2D", true);
 

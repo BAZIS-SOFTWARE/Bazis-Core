@@ -24,7 +24,7 @@ namespace TestModel
 
             //act
             var elems3D = model.ObjectData.FindMany<Element3D>().ToArray();
-            var presentator = new ModelScenePresentator(model.ObjectData.ToArray());
+            var presentator = new ModelScenePresentator(model);
 
             //var surfObjsCreator = presentator.CreateSurfaceObjsCreator("Элементы3D", true);
 

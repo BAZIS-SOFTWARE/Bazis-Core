@@ -32,7 +32,7 @@ namespace TestModel
 
             model.ObjectData.HideModelObjs(elements);
 
-            var presenter = new ModelScenePresentator(model.ObjectData.ToArray());
+            var presenter = new ModelScenePresentator(model);
 
             //var creator = presenter.CreateSurfaceObjsCreator("Элементы3D", true);
 
@@ -111,7 +111,7 @@ namespace TestModel
 
             var interNodes = interNodesFinder.Find();
 
-            var edges = edgeFinder.Find(interNodes);
+            var edges = edgeFinder.Find();
             //assert
         }     
 
@@ -196,6 +196,9 @@ namespace TestModel
             model.Load(modelBPF);
 
             var finder = new FindCoincidentObjects(model.ObjectData, 0.01f);
+
+            finder.ProgressEvent += (ar1, ar2) => { };
+
             var coincidentNodes = finder.Find_1<Node>();
 
             var merge = new MergeObjects(model.ObjectData);
@@ -217,6 +220,8 @@ namespace TestModel
             //var modelBPF = loader.Load(@"C:\Projs\TestProjTerm\Cub\cub_unsorted_freeNodesCoincident.bpf");
             var modelBPF = loader.Load(@"C:\Projs\TestProjTerm\CoincidentMesh\Tube_3d_only.bpf");
         var finder = new FindCoincidentObjects(modelBPF.ObjectData, 0.01f);
+            finder.ProgressEvent += (ar1, ar2) => { };
+
             var coincidentNodes = finder.Find_1<Node>();
 
             var numberOfObjs = coincidentNodes.Count();
@@ -239,16 +244,16 @@ namespace TestModel
             var elements = model.ObjectData.FindMany<Element3D>().ToArray();
 
             var normalCalculator = new NormalsCalculator(elements);
-            var nodeNormals = normalCalculator.CalcNodeNormals();
+            normalCalculator.CalcNodeNormals();
             
             //var edge = Services.GetBoundedEdges(elements);
             //assert
             var openSurfNodes = new List<int>();
-            foreach (var normal in nodeNormals)
-                if (Vector.GetVectorLenght(normal.Value) > 1e-4)
-                    openSurfNodes.Add(normal.Key);
 
-            if (openSurfNodes.Contains(0))
+            var finder = new FindOpenSurfaceNodes();
+            var surfaceNodes = finder.Find(elements);
+            var distinctNumbers = surfaceNodes.Distinct();
+            if (distinctNumbers.Contains(0))
                 throw new Exception("Последовательность содержит неверный узел!");
         }
     }

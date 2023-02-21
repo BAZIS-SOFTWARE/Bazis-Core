@@ -12,6 +12,7 @@ namespace Model
     public class Node : ModelObject
     {
         public Point3D Position { get; }
+        public Point3D Normal { get; set; } = new Point3D();
         public Node(int number, Point3D position) : base(number)
         {
             ObjKind = ObjKind.Node;

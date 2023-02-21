@@ -153,7 +153,7 @@ namespace TestModel
             var model = new ModelData();
             model.ObjectData.AddRange(els);
 
-            var presenter = new ModelScenePresentator(model.ObjectData.ToArray());
+            var presenter = new ModelScenePresentator(model);
             //presenter.GetSurfaceObjsCreator();
             
         }
