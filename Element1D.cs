@@ -2,6 +2,7 @@
 using Model.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,9 @@ namespace Model
         Node[] nodes;
         public Element1D(int number, Node[] nodes, ObjKind objKind) : base(number, nodes, objKind)
         {
+            InitialColor = Color.FromArgb(0, 125, 255);
+            MasterColor = Color.FromArgb(0, 125, 255);
+            SlaveColor = Color.FromArgb(0, 125, 255);
             this.nodes = nodes;
             ObjType = "Элементы1D";
             ObjKind = objKind;
@@ -34,7 +38,7 @@ namespace Model
 
         public float CalcLength()
         {
-            return 0;           
+            return Vector.GetVectorLenght(nodes[1].Position.Sub(nodes[0].Position));        
         }
     }
 }

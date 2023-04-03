@@ -40,6 +40,8 @@ namespace TestModel
             loader.LoadEvent += NewMesh_LoadEvent;
             //act
             //model.Load(@"C:\Bazis_newGUI\PROJ\Test_3D\cub_1.bpf");
+            //C:\Projs\TestProjTerm\Lazer\test2.bpf
+            //var modelBPF = loader.Load(@"C:\Projs\TestProjTernMech\twoElements\two_tetra_termoMech_calc1.bpf");
             var modelBPF = loader.Load(@"C:\Projs\TestProjTernMech\twoElements\two_tetra_termoMech_calc1.bpf");
             model.Load(modelBPF);
             //assert
