@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ModelInterface</RootNamespace>
     <AssemblyName>ModelInterface</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -50,7 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Model.csproj">
-      <Project>{18DC227E-BA77-4C78-AF7A-B2391626C31B}</Project>
+      <Project>{18dc227e-ba77-4c78-af7a-b2391626c31b}</Project>
       <Name>Model</Name>
     </ProjectReference>
   </ItemGroup>

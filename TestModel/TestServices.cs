@@ -199,7 +199,7 @@ namespace TestModel
 
             finder.ProgressEvent += (ar1, ar2) => { };
 
-            var coincidentNodes = finder.Find_1<Node>();
+            var coincidentNodes = finder.Find<Node>();
 
             var merge = new MergeObjects(model.ObjectData);
 
@@ -222,7 +222,7 @@ namespace TestModel
         var finder = new FindCoincidentObjects(modelBPF.ObjectData, 0.01f);
             finder.ProgressEvent += (ar1, ar2) => { };
 
-            var coincidentNodes = finder.Find_1<Node>();
+            var coincidentNodes = finder.Find<Node>();
 
             var numberOfObjs = coincidentNodes.Count();
 
