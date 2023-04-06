@@ -34,7 +34,7 @@ namespace ModelController.IO
                     Thread.Sleep(100);
                     LoadNodes(sr, newModel, nodes);
                 }
-                if (line == "Элементы 3004" | line == "Элементы 2003")
+                if (line == "Элементы3D" | line == "Элементы2D")
                 {
                     LoadEvent(this, new LoaderEventArgs("Загрузка элементов..."));
                     Thread.Sleep(100);
@@ -93,25 +93,35 @@ namespace ModelController.IO
                 int val = 0;
                 var ar = line.Split(' ')
         .Where(m => int.TryParse(m, out val))
-        .Select(m => int.Parse(m))
-                                    .ToList();
-                if (elType == "Элементы 3004")
+        .Select(m => int.Parse(m)).ToList();
+
+                var elNumber = ar[0];
+                ar.RemoveAt(0);
+
+                var nodeList = new List<Node>();
+                foreach (var nodeNumber in ar)
+                    nodeList.Add((Node)newMesh.ObjectData.Find(nodeNumber));
+
+                if (elType == "Элементы3D")
                 {
-                    var n0 = newMesh.ObjectData.Find(nodes, ar[1]);
-                    var n1 = newMesh.ObjectData.Find(nodes, ar[2]);
-                    var n2 = newMesh.ObjectData.Find(nodes, ar[3]);
-                    var n3 = newMesh.ObjectData.Find(nodes, ar[4]);
-                    var tetra = new Element3D(ar[0], new Node[] { n0, n1, n2, n3 }, ObjKind.Tetra);
-                    newMesh.ObjectData.Add(tetra);
+                    ObjKind objKind;
+                    if (ar.Count == 4)
+                        objKind = ObjKind.Tetra;
+                    else objKind = ObjKind.Hexa;
+
+                    var el3DObj = new Element3D(elNumber, nodeList.ToArray(), objKind);
+                    newMesh.ObjectData.Add(el3DObj);
                 }
 
-                if (elType == "Элементы 2003")
+                if (elType == "Элементы2D")
                 {
-                    var n0 = newMesh.ObjectData.Find(nodes, ar[1]);
-                    var n1 = newMesh.ObjectData.Find(nodes, ar[2]);
-                    var n2 = newMesh.ObjectData.Find(nodes, ar[3]);
-                    var triangle = new Element2D(ar[0], new Node[] { n0, n1, n2}, ObjKind.Triangle);
-                    newMesh.ObjectData.Add(triangle);
+                    ObjKind objKind;
+                    if (ar.Count == 3)
+                        objKind = ObjKind.Triangle;
+                    else objKind = ObjKind.Quad;
+
+                    var el2DObj = new Element2D(elNumber, nodeList.ToArray(), objKind);
+                    newMesh.ObjectData.Add(el2DObj);
                 }
                 //number++;
                 line = sr.ReadLine();
