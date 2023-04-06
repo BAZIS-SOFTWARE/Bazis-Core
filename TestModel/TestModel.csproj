@@ -43,9 +43,9 @@
     <Reference Include="Geometry">
       <HintPath>..\..\Geometry\PrGeometry\bin\Release\Geometry.dll</HintPath>
     </Reference>
-    <Reference Include="GMSH_Importer, Version=1.0.1.5, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="GMSH_Importer, Version=1.0.3.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\GMSH_Importer(inp)\bin\Release\GMSH_Importer.dll</HintPath>
+      <HintPath>..\..\..\BazisGUI4.1\Libs\GMSH_Importer.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\MSTest.TestFramework.1.3.2\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.dll</HintPath>

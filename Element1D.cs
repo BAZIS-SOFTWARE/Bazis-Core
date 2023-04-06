@@ -14,9 +14,9 @@ namespace Model
         Node[] nodes;
         public Element1D(int number, Node[] nodes, ObjKind objKind) : base(number, nodes, objKind)
         {
-            InitialColor = Color.FromArgb(0, 125, 255);
-            MasterColor = Color.FromArgb(0, 125, 255);
-            SlaveColor = Color.FromArgb(0, 125, 255);
+            InitialColor = Color.FromArgb(255, 192, 203);
+            MasterColor = Color.FromArgb(255, 192, 203);
+            SlaveColor = Color.FromArgb(255, 192, 203);
             this.nodes = nodes;
             ObjType = "Элементы1D";
             ObjKind = objKind;

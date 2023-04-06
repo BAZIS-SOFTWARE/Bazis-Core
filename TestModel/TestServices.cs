@@ -6,6 +6,7 @@ using Geometry;
 using GMSH_Importer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
+using Model.ObjectsComparers;
 using ModelController;
 using ModelController.IO;
 using ModelController.MeshObjsUtility;
