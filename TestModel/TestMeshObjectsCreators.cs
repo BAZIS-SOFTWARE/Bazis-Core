@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using GMSH_Importer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using ModelController.IO;

@@ -7,6 +7,7 @@ using System.Configuration;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace ModelController.IO
 {
@@ -18,7 +19,9 @@ namespace ModelController.IO
             var sw = new StreamWriter(path, false, System.Text.Encoding.Unicode) { AutoFlush = true };
 
             //сохранение координат узлов
-            var ver = ConfigurationManager.AppSettings.Get("version");
+            var ver = Assembly.GetExecutingAssembly().GetName().Version;
+            var verStr = "Версия " + $"{ver.Major}.{ver.Minor}.{ver.Build}";
+
             sw.WriteLine(ver);
 
             foreach (var objsType in model.ObjectData.GetObjectTypes())

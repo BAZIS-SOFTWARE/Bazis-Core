@@ -31,6 +31,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>ModelControllerKey.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Functions, Version=1.0.0.5, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -73,6 +79,8 @@
     <Compile Include="Interfaces\IPointObjsVertexCreator.cs" />
     <Compile Include="Interfaces\ISelector.cs" />
     <Compile Include="Interfaces\ISurfaceObjsVertexCreator.cs" />
+    <Compile Include="IO\LoadModelFromSTLFile.cs" />
+    <Compile Include="IO\LoadModelFromGMSHTextFile.cs" />
     <Compile Include="IO\LoadModelFromASCIITextFile.cs" />
     <Compile Include="IO\LoadModelFromProjectTextFile.cs" />
     <Compile Include="IO\SaveModelToProjectTextFile.cs" />
@@ -101,6 +109,9 @@
       <Project>{18DC227E-BA77-4C78-AF7A-B2391626C31B}</Project>
       <Name>Model</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ModelControllerKey.pfx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

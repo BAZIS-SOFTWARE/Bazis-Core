@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using GMSH_Importer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using ModelController;
@@ -18,7 +17,7 @@ namespace TestModel
         {
             //assing
             var model = new ModelData();
-            var loader = new ImportSTL();
+            var loader = new LoadModelFromSTLFile();
             //model.SetLoader(loader);
             //loader.LoadEvent += Model_LoadEvent;
             loader.Load(@"C:\BazisXN\Model\STLLoader\ACII.stl");
@@ -102,7 +101,7 @@ namespace TestModel
         {
             //assing
             var model = new ModelData();
-            var loader = new Import_Mesh();
+            var loader = new LoadModelFromGMSHTextFile();
 
             loader.LoadEvent += Model_LoadEvent;
             var modelINP = loader.Load(@"C:\BazisXN\GMSH_Importer(inp)\mesh\test3.inp");

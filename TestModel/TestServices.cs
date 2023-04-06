@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using Geometry;
-using GMSH_Importer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
-using Model.ObjectsComparers;
 using ModelController;
 using ModelController.IO;
 using ModelController.MeshObjsUtility;
@@ -78,7 +75,7 @@ namespace TestModel
         public void FindElementsInPlane()
         {
             //assign
-            var loader = new Import_Mesh();
+            var loader = new LoadModelFromGMSHTextFile();
             loader.LoadEvent += (ar1, ar2) => { };
 
             //act
@@ -121,7 +118,7 @@ namespace TestModel
         {
             //assing
             var model = new ModelData();
-            var loaderGMSH = new Import_Mesh();
+            var loaderGMSH = new LoadModelFromGMSHTextFile();
 
 
             loaderGMSH.LoadEvent += Model_LoadEvent;

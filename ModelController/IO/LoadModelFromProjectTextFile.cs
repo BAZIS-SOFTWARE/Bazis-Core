@@ -18,7 +18,11 @@ namespace ModelController.IO
 
         public ModelData Load(string path)
         {
+
+
             var sr = new StreamReader(path);
+
+
             //taskData.ClearData();
 
             var newModel = new ModelData();
@@ -34,7 +38,9 @@ namespace ModelController.IO
                     Thread.Sleep(100);
                     LoadNodes(sr, newModel, nodes);
                 }
-                if (line == "Элементы3D" | line == "Элементы2D")
+                if (line == "Элементы 3004" | line == "Элементы 2003" |
+                    line == "Элементы3D" | line == "Элементы2D" | 
+                    line == "Элементы1D")
                 {
                     LoadEvent(this, new LoaderEventArgs("Загрузка элементов..."));
                     Thread.Sleep(100);

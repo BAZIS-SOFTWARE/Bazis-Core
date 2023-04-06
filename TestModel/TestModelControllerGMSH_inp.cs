@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using GMSH_Importer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using ModelController;
@@ -16,7 +15,7 @@ namespace TestModel
         {
             //assing
             var model = new ModelData();
-            var loader = new Import_Mesh();
+            var loader = new LoadModelFromGMSHTextFile();
 
             loader.LoadEvent += (ar1, ar2) => { };
             var modelINP = loader.Load(@"C:\BazisXN\GMSH_Importer(inp)\mesh\test3.inp");
@@ -44,7 +43,7 @@ namespace TestModel
         {
             //assing
             var model = new ModelData();
-            var loader = new Import_Mesh();
+            var loader = new LoadModelFromGMSHTextFile();
 
             loader.LoadEvent += (ar1, ar2) => { };
             var modelINP = loader.Load(@"C:\BazisGUI4.1\Mesh\Examples\2D_axi\2Dval.inp");
