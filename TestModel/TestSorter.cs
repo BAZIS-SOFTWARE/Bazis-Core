@@ -1,7 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using ModelController.IO;
-using ModelInterface;
 
 namespace TestModel
 {

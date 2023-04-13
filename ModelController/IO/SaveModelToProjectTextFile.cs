@@ -1,9 +1,7 @@
 ﻿using Model;
 using Model.Interfaces;
-using ModelInterface;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -11,7 +9,7 @@ using System.Reflection;
 
 namespace ModelController.IO
 {
-    public class SaveModelToProjectTextFile : IModelSaver
+    public class SaveModelToProjectTextFile
     {
         public event Action<object, SaverEventArgs> SaveEvent;
         public void Save(ModelData model, string path)

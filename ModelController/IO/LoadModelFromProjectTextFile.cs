@@ -7,23 +7,17 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using ModelInterface;
 using Geometry;
 
 namespace ModelController.IO
 {
-    public class LoadModelFromProjectTextFile : IModelLoader
+    public class LoadModelFromProjectTextFile
     {
         public event Action<object, LoaderEventArgs> LoadEvent;
 
         public ModelData Load(string path)
         {
-
-
             var sr = new StreamReader(path);
-
-
-            //taskData.ClearData();
 
             var newModel = new ModelData();
             var nodes = new List<Node>();
@@ -49,14 +43,14 @@ namespace ModelController.IO
 
                 if (line == "Группы узлов и элементов")
                 {
-                    LoadEvent(this, new ModelInterface.LoaderEventArgs("Загрузка групп..."));
+                    LoadEvent(this, new LoaderEventArgs("Загрузка групп..."));
                     Thread.Sleep(100);
                     LoadGroup(sr, newModel);
                 }
                 line = sr.ReadLine();
             }
 
-            LoadEvent(this, new ModelInterface.LoaderEventArgs("Модель загружена"));
+            LoadEvent(this, new LoaderEventArgs("Модель загружена"));
             Thread.Sleep(100);
             sr.Dispose();
             return newModel;
@@ -108,7 +102,7 @@ namespace ModelController.IO
                 foreach (var nodeNumber in ar)
                     nodeList.Add((Node)newMesh.ObjectData.Find(nodeNumber));
 
-                if (elType == "Элементы3D")
+                if (elType == "Элементы3D" | elType == "Элементы 3004")
                 {
                     ObjKind objKind;
                     if (ar.Count == 4)
@@ -119,7 +113,7 @@ namespace ModelController.IO
                     newMesh.ObjectData.Add(el3DObj);
                 }
 
-                if (elType == "Элементы2D")
+                if (elType == "Элементы2D" | elType == "Элементы 2003")
                 {
                     ObjKind objKind;
                     if (ar.Count == 3)

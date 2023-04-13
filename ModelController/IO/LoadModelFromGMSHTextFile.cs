@@ -6,12 +6,11 @@ using Model.Interfaces;
 using System.Globalization;
 using System.Collections.Generic;
 using Model;
-using ModelInterface;
 using Model.GroupsData;
 
 namespace ModelController.IO
 {
-    public class LoadModelFromGMSHTextFile : IModelLoader
+    public class LoadModelFromGMSHTextFile
     {
         public event Action<object, LoaderEventArgs> LoadEvent;
 

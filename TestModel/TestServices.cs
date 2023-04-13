@@ -7,7 +7,6 @@ using Model;
 using ModelController;
 using ModelController.IO;
 using ModelController.MeshObjsUtility;
-using ModelInterface;
 
 namespace TestModel
 {
@@ -81,11 +80,11 @@ namespace TestModel
             //act
             var model = loader.Load(@"C:\Projs\ExampleMesh\Tube.inp");
 
-            var el2D = model.ObjectData.FindMany<Element2D>();
-
-
             var selector = new SelectionHelper(model.ObjectData);
-            selector.SelectInPlane<Element2D>(10,5840,Color.Green);
+
+            var el2D = model.ObjectData.FindMany<Element2D>();
+            var numb = el2D.Last().Number;
+            selector.SelectInPlane<Element2D>(10, numb, Color.Green);
 
             //assert
         }

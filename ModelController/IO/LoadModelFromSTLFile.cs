@@ -1,14 +1,13 @@
 ﻿using Geometry;
 using Model;
 using Model.Interfaces;
-using ModelInterface;
 using System;
 using System.Globalization;
 using System.IO;
 
 namespace ModelController.IO
 {
-    public class LoadModelFromSTLFile : IModelLoader
+    public class LoadModelFromSTLFile
     {
         public event Action<object, LoaderEventArgs> LoadEvent;
         public int counter = 0;

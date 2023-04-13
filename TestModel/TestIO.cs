@@ -1,10 +1,8 @@
-﻿using System.IO;
+﻿
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using ModelController.IO;
-using ModelInterface;
-using STL_imp_exp;
 
 namespace TestModel
 {
