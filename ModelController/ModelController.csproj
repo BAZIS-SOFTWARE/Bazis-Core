@@ -77,6 +77,7 @@
     <Compile Include="Interfaces\IPointObjsVertexCreator.cs" />
     <Compile Include="Interfaces\ISelector.cs" />
     <Compile Include="Interfaces\ISurfaceObjsVertexCreator.cs" />
+    <Compile Include="IO\LoadModelFromCDBTextFile.cs" />
     <Compile Include="IO\LoadModelFromSTLFile.cs" />
     <Compile Include="IO\LoadModelFromGMSHTextFile.cs" />
     <Compile Include="IO\LoadModelFromASCIITextFile.cs" />
