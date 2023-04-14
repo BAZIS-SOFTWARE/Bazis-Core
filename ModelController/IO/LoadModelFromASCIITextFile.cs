@@ -1,5 +1,6 @@
 ﻿using Geometry;
 using Model;
+using Model.Events;
 using Model.GroupsData;
 using Model.Interfaces;
 using System;
@@ -11,7 +12,7 @@ using System.Threading;
 
 namespace ModelController.IO
 {
-    public class LoadModelFromASCIITextFile
+    public class LoadModelFromASCIITextFile : IModelLoader
     {
         public event Action<object, LoaderEventArgs> LoadEvent;
 

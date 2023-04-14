@@ -7,10 +7,11 @@ using System.Globalization;
 using System.Collections.Generic;
 using Model;
 using Model.GroupsData;
+using Model.Events;
 
 namespace ModelController.IO
 {
-    public class LoadModelFromGMSHTextFile
+    public class LoadModelFromGMSHTextFile : IModelLoader
     {
         public event Action<object, LoaderEventArgs> LoadEvent;
 

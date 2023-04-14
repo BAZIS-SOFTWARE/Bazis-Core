@@ -8,10 +8,11 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using Geometry;
+using Model.Events;
 
 namespace ModelController.IO
 {
-    public class LoadModelFromProjectTextFile
+    public class LoadModelFromProjectTextFile : IModelLoader
     {
         public event Action<object, LoaderEventArgs> LoadEvent;
 

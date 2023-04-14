@@ -1,4 +1,5 @@
 ﻿using Model;
+using Model.Events;
 using Model.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Reflection;
 
 namespace ModelController.IO
 {
-    public class SaveModelToProjectTextFile
+    public class SaveModelToProjectTextFile : IModelSaver
     {
         public event Action<object, SaverEventArgs> SaveEvent;
         public void Save(ModelData model, string path)

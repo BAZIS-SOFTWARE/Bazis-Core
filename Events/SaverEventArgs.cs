@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ModelController.IO
+namespace Model.Events
 {
     public class SaverEventArgs : EventArgs
     {

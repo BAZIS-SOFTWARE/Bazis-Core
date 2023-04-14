@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ModelController.IO
+namespace Model.Events
 {
     public class LoaderEventArgs : EventArgs
     {
