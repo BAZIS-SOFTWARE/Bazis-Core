@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{0040C7B5-AA26-42C4-B3A0-C7FF40EC8709}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ModelController</RootNamespace>
+    <AssemblyName>ModelController</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>ModelControllerKey.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Functions, Version=1.0.0.5, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Functions\bin\Release\Functions.dll</HintPath>
+    </Reference>
+    <Reference Include="Geometry, Version=2.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libs\Geometry.dll</HintPath>
+    </Reference>
+    <Reference Include="ProjectPageInterface, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\ProjectPage\ProjectPageInterface\bin\Release\ProjectPageInterface.dll</HintPath>
+    </Reference>
+    <Reference Include="SceneInterface, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Scene\SceneInterface\bin\Release\SceneInterface.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="GlObjsArraysCreators\LineObjsPresenter.cs" />
+    <Compile Include="GlObjsArraysCreators\ObjsPresenter.cs" />
+    <Compile Include="GlObjsArraysCreators\PointObjsPresenter.cs" />
+    <Compile Include="GlObjsArraysCreators\SurfaceObjsPresenter.cs" />
+    <Compile Include="GlObjsVertexCreators\CoordsLineObjsCreator.cs" />
+    <Compile Include="GlObjsVertexCreators\CoordsPointObjsCreator.cs" />
+    <Compile Include="GlObjsVertexCreators\CoordsSurfaceObjsCreator.cs" />
+    <Compile Include="Interfaces\ILineObjsVertexCreator.cs" />
+    <Compile Include="Interfaces\IPointObjsVertexCreator.cs" />
+    <Compile Include="Interfaces\ISelector.cs" />
+    <Compile Include="Interfaces\ISurfaceObjsVertexCreator.cs" />
+    <Compile Include="IO\LoadModelFromSTLFile.cs" />
+    <Compile Include="IO\LoadModelFromGMSHTextFile.cs" />
+    <Compile Include="IO\LoadModelFromASCIITextFile.cs" />
+    <Compile Include="IO\LoadModelFromProjectTextFile.cs" />
+    <Compile Include="IO\SaveModelToProjectTextFile.cs" />
+    <Compile Include="MeshObjsCreator\Extract2DFrom3D.cs" />
+    <Compile Include="MeshObjsUtility\FindCoincidentObjects.cs" />
+    <Compile Include="MeshObjsUtility\FindInterfacedNodes.cs" />
+    <Compile Include="MeshObjsUtility\FindBoundaryEdges.cs" />
+    <Compile Include="MeshObjsUtility\MergeObjects.cs" />
+    <Compile Include="MeshObjsUtility\NormalsCalculator.cs" />
+    <Compile Include="MeshObjsUtility\FreeNodesFinder.cs" />
+    <Compile Include="MeshObjsUtility\FindOpenSurfaceNodes.cs" />
+    <Compile Include="MeshObjsUtility\SelectionHelper.cs" />
+    <Compile Include="ModelScenePresentator.cs" />
+    <Compile Include="ModelSelectToolStripPresentator.cs" />
+    <Compile Include="ModelTreePresentator.cs" />
+    <Compile Include="GlObjsVertexCreators\NormalsLineObjsCreator.cs" />
+    <Compile Include="GlObjsVertexCreators\NormalsPointObjsCreator.cs" />
+    <Compile Include="GlObjsVertexCreators\NormalsSurfaceObjsCreator.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="GlObjsVertexCreators\ColorLineObjsCreator.cs" />
+    <Compile Include="GlObjsVertexCreators\ColorPointObjsCreator.cs" />
+    <Compile Include="GlObjsVertexCreators\ColorSurfaceObjsCreator.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Model.csproj">
+      <Project>{18DC227E-BA77-4C78-AF7A-B2391626C31B}</Project>
+      <Name>Model</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ModelControllerKey.pfx" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

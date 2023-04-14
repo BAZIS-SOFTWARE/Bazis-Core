@@ -1,12 +1,8 @@
 ﻿using System.Linq;
-using GMSH_Importer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using ModelController;
-using ModelController.GlObjsVertexCreators;
 using ModelController.IO;
-using ModelInterface;
-using STL_imp_exp;
 
 namespace TestModel
 {
@@ -18,14 +14,15 @@ namespace TestModel
         {
             //assing
             var model = new ModelData();
-            var loader = new ImportSTL();
+            var loader = new LoadModelFromSTLFile();
             //model.SetLoader(loader);
             //loader.LoadEvent += Model_LoadEvent;
             loader.Load(@"C:\BazisXN\Model\STLLoader\ACII.stl");
 
             //act
             var surfs = model.ObjectData.FindMany<Surface>().ToArray();
-            var presentator = new ModelScenePresentator(model.ObjectData.ToArray());
+
+            var presentator = new ModelScenePresentator(model);
 
             //var surfObjsCreator = presentator.CreateSurfaceObjsCreator("",true);
 
@@ -51,7 +48,7 @@ namespace TestModel
             var modelASC = loader.Load(@"C:\Bazis_newGUI\MESH\rhombDATA1.ASC");
             model.Load(modelASC);
             //act
-            var presentator = new ModelScenePresentator(model.ObjectData.ToArray());
+            var presentator = new ModelScenePresentator(model);
 
             //var surfObjsCreator = presentator.CreateSurfaceObjsCreator("Элементы3D", true);
 
@@ -79,7 +76,9 @@ namespace TestModel
 
             //act
             var nodes = model.ObjectData.FindMany<Node>().ToArray();
-            var presentator = new ModelScenePresentator(model.ObjectData.ToArray());
+            var presentator = new ModelScenePresentator(model);
+
+            presentator.HideInsideObjects("Узлы");
 
             //var pointObjsCreator = presentator.CreatePointObjsCreator();
 
@@ -99,14 +98,14 @@ namespace TestModel
         {
             //assing
             var model = new ModelData();
-            var loader = new Import_Mesh();
+            var loader = new LoadModelFromGMSHTextFile();
 
             loader.LoadEvent += Model_LoadEvent;
             var modelINP = loader.Load(@"C:\BazisXN\GMSH_Importer(inp)\mesh\test3.inp");
             model.Load(modelINP);
 
             //act
-            var presentator = new ModelScenePresentator(model.ObjectData.ToArray());
+            var presentator = new ModelScenePresentator(model);
 
             //var surfObjsCreator = presentator.CreateSurfaceObjsCreator("Элементы3D", true);
 
@@ -134,7 +133,7 @@ namespace TestModel
 
             //act
             var elems3D = model.ObjectData.FindMany<Element3D>().ToArray();
-            var presentator = new ModelScenePresentator(model.ObjectData.ToArray());
+            var presentator = new ModelScenePresentator(model);
 
             //var surfObjsCreator = presentator.CreateSurfaceObjsCreator("Элементы3D", true);
 
@@ -167,7 +166,7 @@ namespace TestModel
 
             //act
             var elems2D = model.ObjectData.FindMany<Element2D>().ToArray();
-            var presentator = new ModelScenePresentator(model.ObjectData.ToArray());
+            var presentator = new ModelScenePresentator(model);
 
             //var surfObjsCreator = presentator.CreateSurfaceObjsCreator("Элементы2D", true);
 

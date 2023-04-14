@@ -39,7 +39,7 @@ namespace Model.GroupsData
 
         public bool Contains(Group item)
         {
-            return groups.Contains(item, new GroupComparer());
+            return groups.Contains(item, new CompareGroupsByName());
         }
 
         public void CopyTo(Group[] array, int arrayIndex)

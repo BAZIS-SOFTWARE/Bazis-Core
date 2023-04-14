@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
-using Geometry;
-using GMSH_Importer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using ModelController;
 using ModelController.IO;
 using ModelController.MeshObjsUtility;
-using ModelInterface;
 
 namespace TestModel
 {
@@ -31,7 +29,7 @@ namespace TestModel
 
             model.ObjectData.HideModelObjs(elements);
 
-            var presenter = new ModelScenePresentator(model.ObjectData.ToArray());
+            var presenter = new ModelScenePresentator(model);
 
             //var creator = presenter.CreateSurfaceObjsCreator("Элементы3D", true);
 
@@ -41,6 +39,53 @@ namespace TestModel
             //var coords = creator.CreateVertexes(indexes.Item2, new CoordsSurfaceObjsCreator());
             //var colors = creator.CreateVertexes(indexes.Item2, new ColorSurfaceObjsCreator());
             //var normals = creator.CreateVertexes(indexes.Item2, new NormalsSurfaceObjsCreator());
+            //assert
+        }
+
+        [TestMethod]
+        public void FindNodesInDirection()
+        {
+            //assign
+            var loader = new LoadModelFromProjectTextFile();
+            loader.LoadEvent += (ar1, ar2) => { };
+
+            //act
+            var model = loader.Load(@"C:\Projs\TestProjTerm\tjoint\proj_traj.bpf");
+
+            //baseLine | refLine
+            var strGroup = "baseLine";
+            var group = model.GroupData.Find(strGroup);
+
+            var selector = new SelectionHelper(model.ObjectData);
+
+            var firstN = model.ObjectData.Find(group[0]);
+            var secondN = model.ObjectData.Find(group[1]);
+
+            var selNodes = selector.SelectInDirecion<Element3D>(10, firstN.Number, secondN.Number, Color.Green);
+
+            //assert
+            var actNodes = group.ObjsNumbers.ToList();
+            for (int i = 0; i < selNodes.Count; i++)
+                Assert.AreEqual(selNodes[i], actNodes[i]);
+
+        }
+
+        [TestMethod]
+        public void FindElementsInPlane()
+        {
+            //assign
+            var loader = new LoadModelFromGMSHTextFile();
+            loader.LoadEvent += (ar1, ar2) => { };
+
+            //act
+            var model = loader.Load(@"C:\Projs\ExampleMesh\Tube.inp");
+
+            var selector = new SelectionHelper(model.ObjectData);
+
+            var el2D = model.ObjectData.FindMany<Element2D>();
+            var numb = el2D.Last().Number;
+            selector.SelectInPlane<Element2D>(10, numb, Color.Green);
+
             //assert
         }
 
@@ -63,39 +108,16 @@ namespace TestModel
 
             var interNodes = interNodesFinder.Find();
 
-            var edges = edgeFinder.Find(interNodes);
+            var edges = edgeFinder.Find();
             //assert
-        }
-
-        [TestMethod]
-        public void FindFreeNodes()
-        {
-            //assing
-            var model = new ModelData();
-            var loader = new Import_Mesh();
-
-            loader.LoadEvent += Model_LoadEvent;
-            //act
-            var modelLoaded = loader.Load(@"C:\Projs\TestProjTerm\box\box1.inp");
-            model.Load(modelLoaded);
-            var nodes = model.ObjectData.FindMany<Node>().ToArray();
-            var freeNodesFinder = new FreeNodesFinder(nodes);
-
-            var els3D = model.ObjectData.FindMany<Element3D>().ToArray();
-            var interNodesFinder = new FindInterfacedNodes(els3D);
-
-            var freeNodes = freeNodesFinder.Find(interNodesFinder.Find());
-
-            //assert
-            Assert.AreEqual(freeNodes.Count, 0);
-        }
+        }     
 
         [TestMethod]
         public void FindElementNodes()
         {
             //assing
             var model = new ModelData();
-            var loaderGMSH = new Import_Mesh();
+            var loaderGMSH = new LoadModelFromGMSHTextFile();
 
 
             loaderGMSH.LoadEvent += Model_LoadEvent;
@@ -159,6 +181,52 @@ namespace TestModel
         }
 
         [TestMethod]
+        public void MergeNodes()
+        {
+            //assing
+            var model = new ModelData();
+            var loader = new LoadModelFromProjectTextFile();
+            loader.LoadEvent += (ar1, ar2) => { };
+            //act
+            //var modelBPF = loader.Load(@"C:\Projs\ExampleMesh\Tube.inp");
+            var modelBPF = loader.Load(@"C:\Projs\ExampleMesh\Tube_3d_only.bpf");
+            model.Load(modelBPF);
+
+            var finder = new FindCoincidentObjects(model.ObjectData, 0.01f);
+
+            finder.ProgressEvent += (ar1, ar2) => { };
+
+            var coincidentNodes = finder.Find<Node>();
+
+            var merge = new MergeObjects(model.ObjectData);
+
+            merge.Merge<Node>(coincidentNodes);
+
+            //assert
+            //freeNodes.ToArray()[0] = 14;
+            //freeNodes.ToArray()[1] = 15;
+        }
+
+        [TestMethod]
+        public void FindCoincidentNodes()
+        {
+            var model = new ModelData();
+            var loader = new LoadModelFromProjectTextFile();
+            loader.LoadEvent += (ar1, ar2) => { };
+            //act
+            //var modelBPF = loader.Load(@"C:\Projs\TestProjTerm\Cub\cub_unsorted_freeNodesCoincident.bpf");
+            var modelBPF = loader.Load(@"C:\Projs\TestProjTerm\CoincidentMesh\Tube_3d_only.bpf");
+        var finder = new FindCoincidentObjects(modelBPF.ObjectData, 0.01f);
+            finder.ProgressEvent += (ar1, ar2) => { };
+
+            var coincidentNodes = finder.Find<Node>();
+
+            var numberOfObjs = coincidentNodes.Count();
+
+            Assert.AreEqual(numberOfObjs, 15121);
+        }
+
+        [TestMethod]
         public void TestCalcNodeNormals()
         {
             //assing
@@ -173,16 +241,16 @@ namespace TestModel
             var elements = model.ObjectData.FindMany<Element3D>().ToArray();
 
             var normalCalculator = new NormalsCalculator(elements);
-            var nodeNormals = normalCalculator.CalcNodeNormals();
+            normalCalculator.CalcNodeNormals();
             
             //var edge = Services.GetBoundedEdges(elements);
             //assert
             var openSurfNodes = new List<int>();
-            foreach (var normal in nodeNormals)
-                if (Vector.GetVectorLenght(normal.Value) > 1e-4)
-                    openSurfNodes.Add(normal.Key);
 
-            if (openSurfNodes.Contains(0))
+            var finder = new FindOpenSurfaceNodes();
+            var surfaceNodes = finder.Find(elements);
+            var distinctNumbers = surfaceNodes.Distinct();
+            if (distinctNumbers.Contains(0))
                 throw new Exception("Последовательность содержит неверный узел!");
         }
     }

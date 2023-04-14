@@ -12,6 +12,7 @@ namespace Model
     public class Node : ModelObject
     {
         public Point3D Position { get; }
+        public Point3D Normal { get; set; } = new Point3D();
         public Node(int number, Point3D position) : base(number)
         {
             ObjKind = ObjKind.Node;
@@ -38,6 +39,11 @@ namespace Model
         public override string ToString()
         {
             return string.Format("{0} {1} : {2}",Number,ObjType,Position);
+        }
+
+        public override Point3D CalcCentralPoint()
+        {
+            return Position;
         }
     }
 }

@@ -34,6 +34,17 @@ namespace Model
         public override string ObjType { get; }
         public override ObjKind ObjKind { get;}
 
+        public override Point3D CalcCentralPoint()
+        {
+            var center = new Point3D();
+
+            foreach (var node in GetNodes())
+            {
+                center = center.Sum(node.Position);
+            }
+            return center.Div(NumberOfPoints);
+        }
+
         public float CalcVolume()
         {
             var pAr = GetPoints().ToArray();

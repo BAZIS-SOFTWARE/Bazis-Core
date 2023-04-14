@@ -9,14 +9,19 @@ using System.Threading.Tasks;
 
 namespace Model
 {
-    public abstract class ModelObject : IModelObject, IComparable<ModelObject>, IEqualityComparer<ModelObject>
+    public abstract class ModelObject : IModelObject, IComparable<ModelObject>, IEqualityComparer<ModelObject>, IEquatable<ModelObject>
     {
         public ModelObject(int number)
         {
             Number = number;
             ExistState = true;
         }
-        public int Number { get; }
+        public int Number { get; private set; }
+
+        public void SetNumber (int number)
+        {
+            Number = number;
+        }
 
         public Color MasterColor { get ; set; }
         public Color SlaveColor { get; set; }
@@ -88,15 +93,7 @@ namespace Model
             else return 0;
         }
 
-        public Point3D CalcCentralPoint()
-        {
-            var center = new Point3D();
-            foreach (var point in GetPoints())
-            {
-                center = center.Sum(point);
-            }
-            return center.Div(GetPoints().Count());
-        }
+        public abstract Point3D CalcCentralPoint();
 
         public bool Equals(ModelObject x, ModelObject y)
         {
@@ -108,6 +105,13 @@ namespace Model
         public int GetHashCode(ModelObject obj)
         {
             return obj.Number;
+        }
+
+        public bool Equals(ModelObject other)
+        {
+            if (Number == other.Number)
+                return true;
+            else return false;
         }
     }
 }

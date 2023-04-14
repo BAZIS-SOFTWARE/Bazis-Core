@@ -1,11 +1,8 @@
-﻿using System.IO;
+﻿
 using System.Linq;
-using GMSH_Importer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using ModelController.IO;
-using ModelInterface;
-using STL_imp_exp;
 
 namespace TestModel
 {
@@ -23,7 +20,8 @@ namespace TestModel
             //var reader = new StreamReader(@"C:\Bazis_newGUI\MESH\big_cubeDATA1.ASC");
 
             //act
-            var modelASCII = loader.Load(@"C:\Bazis_newGUI\MESH\RadicMesh\Plate2DATA.ASC");
+            var modelASCII = loader.Load(@"C:\Projs\ExampleMesh\asc\DATA3.ASC");
+            //loader.Load(@"C:\Bazis_newGUI\MESH\RadicMesh\Plate2DATA.ASC");
             model.Load(modelASCII);
             //assert
             var elems = model.ObjectData.FindMany<Element3D>().ToList();
@@ -39,7 +37,10 @@ namespace TestModel
             loader.LoadEvent += NewMesh_LoadEvent;
             //act
             //model.Load(@"C:\Bazis_newGUI\PROJ\Test_3D\cub_1.bpf");
-            var modelBPF = loader.Load(@"C:\Projs\TestProjTernMech\twoElements\two_tetra_termoMech_calc1.bpf");
+            //C:\Projs\TestProjTerm\Lazer\test2.bpf
+            //var modelBPF = loader.Load(@"C:\Projs\TestProjTernMech\twoElements\two_tetra_termoMech_calc1.bpf");
+            //var modelBPF = loader.Load(@"C:\Projs\TestProjTernMech\twoElements\two_tetra_termoMech_calc1.bpf");
+            var modelBPF = loader.Load(@"C:\BazisSolver3.0\TestTasksSolution\ExampleProj\Term\2D_axi\two_tetra_term_cycle.bpf");
             model.Load(modelBPF);
             //assert
         }
@@ -49,7 +50,7 @@ namespace TestModel
         {
             //assing
             var model = new ModelData();
-            var loader = new Import_Mesh();
+            var loader = new LoadModelFromGMSHTextFile();
             loader.LoadEvent += NewMesh_LoadEvent;
             var saver = new SaveModelToProjectTextFile();
             saver.SaveEvent += Model_SaveEvent;
@@ -73,7 +74,7 @@ namespace TestModel
             //assing
             var model = new ModelData();
 
-            var loader = new ImportSTL();
+            var loader = new LoadModelFromSTLFile();
             //model.SetLoader(loader);
 
             //model.LoadEvent += NewMesh_LoadEvent;
@@ -89,7 +90,7 @@ namespace TestModel
             //assing
             var model = new ModelData();
 
-            var loader = new Import_Mesh();       
+            var loader = new LoadModelFromGMSHTextFile();       
             loader.LoadEvent += NewMesh_LoadEvent;
 
             //act

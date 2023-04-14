@@ -28,7 +28,10 @@ namespace TestModel
                 Model.Interfaces.ObjKind.ElementSurface,Color.Orange)
             };
 
-            var presentator = new ModelScenePresentator(poligons.ToArray());
+            var model = new ModelData();
+            model.ObjectData.AddRange(poligons);
+
+            var presentator = new ModelScenePresentator(model);
 
             //presentator.CreateSurfaceObjsCreator("Поверхность");
 

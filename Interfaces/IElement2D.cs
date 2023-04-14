@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Geometry;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,5 +10,7 @@ namespace Model.Interfaces
     public interface IElement2D : ISurfaceElement
     {
         float CalcSquare();
+
+        Point3D CalcNormal();
     }
 }
