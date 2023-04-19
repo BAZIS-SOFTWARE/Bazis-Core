@@ -2,7 +2,9 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
+using Model.Events;
 using ModelController.IO;
+using ModelParcer;
 
 namespace TestModel
 {

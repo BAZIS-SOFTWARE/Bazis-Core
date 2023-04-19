@@ -46,10 +46,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libs\Geometry.dll</HintPath>
     </Reference>
-    <Reference Include="ProjectPageInterface, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\ProjectPage\ProjectPageInterface\bin\Release\ProjectPageInterface.dll</HintPath>
-    </Reference>
     <Reference Include="SceneInterface, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Scene\SceneInterface\bin\Release\SceneInterface.dll</HintPath>
@@ -75,12 +71,7 @@
     <Compile Include="GlObjsVertexCreators\CoordsSurfaceObjsCreator.cs" />
     <Compile Include="Interfaces\ILineObjsVertexCreator.cs" />
     <Compile Include="Interfaces\IPointObjsVertexCreator.cs" />
-    <Compile Include="Interfaces\ISelector.cs" />
     <Compile Include="Interfaces\ISurfaceObjsVertexCreator.cs" />
-    <Compile Include="IO\LoadModelFromCDBTextFile.cs" />
-    <Compile Include="IO\LoadModelFromSTLFile.cs" />
-    <Compile Include="IO\LoadModelFromGMSHTextFile.cs" />
-    <Compile Include="IO\LoadModelFromASCIITextFile.cs" />
     <Compile Include="IO\LoadModelFromProjectTextFile.cs" />
     <Compile Include="IO\SaveModelToProjectTextFile.cs" />
     <Compile Include="MeshObjsCreator\Extract2DFrom3D.cs" />
@@ -94,7 +85,6 @@
     <Compile Include="MeshObjsUtility\SelectionHelper.cs" />
     <Compile Include="ModelScenePresentator.cs" />
     <Compile Include="ModelSelectToolStripPresentator.cs" />
-    <Compile Include="ModelTreePresentator.cs" />
     <Compile Include="GlObjsVertexCreators\NormalsLineObjsCreator.cs" />
     <Compile Include="GlObjsVertexCreators\NormalsPointObjsCreator.cs" />
     <Compile Include="GlObjsVertexCreators\NormalsSurfaceObjsCreator.cs" />

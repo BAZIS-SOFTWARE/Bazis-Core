@@ -1,6 +1,7 @@
 ﻿using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
+using Model.Events;
 using Model.Interfaces;
 using ModelController.IO;
 
