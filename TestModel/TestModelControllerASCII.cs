@@ -18,8 +18,8 @@ namespace TestModel
             var model = new ModelData();
             var loader = new LoadModelFromSTLFile();
             //model.SetLoader(loader);
-            //loader.LoadEvent += Model_LoadEvent;
-            loader.Load(@"C:\BazisXN\Model\STLLoader\ACII.stl");
+            loader.LoadEvent += (ar1, ar2) => { };
+            loader.Load(@"C:\BazisComponents\ModelSolution\Examples\STL\ACII.stl");
 
             //act
             var surfs = model.ObjectData.FindMany<Surface>().ToArray();
@@ -93,34 +93,7 @@ namespace TestModel
 
             //assert
 
-        }
-
-        [TestMethod]
-        public void GlVertexesCreation2D3DObjs_Elem2D3D_GMSH()
-        {
-            //assing
-            var model = new ModelData();
-            var loader = new LoadModelFromGMSHTextFile();
-
-            loader.LoadEvent += Model_LoadEvent;
-            var modelINP = loader.Load(@"C:\BazisXN\GMSH_Importer(inp)\mesh\test3.inp");
-            model.Load(modelINP);
-
-            //act
-            var presentator = new ModelScenePresentator(model);
-
-            //var surfObjsCreator = presentator.CreateSurfaceObjsCreator("Элементы3D", true);
-
-            //var indexes = surfObjsCreator.CreateIndexes();
-
-            //var ptrs = surfObjsCreator.CreatePointers(indexes.Item1);
-            //var coords = surfObjsCreator.CreateVertexes(indexes.Item2, new CoordsSurfaceObjsCreator());
-            //var colors = surfObjsCreator.CreateVertexes(indexes.Item2, new ColorSurfaceObjsCreator());
-            //var normals = surfObjsCreator.CreateVertexes(indexes.Item2, new NormalsSurfaceObjsCreator());
-
-            //assert
-
-        }
+        }      
 
         [TestMethod]
         public void GlVertexesCreation2D3DObjs_Elem2D3D()
