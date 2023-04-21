@@ -1,7 +1,8 @@
 ﻿using Model;
+using Model.Events;
 using System;
 
-namespace ModelInterface
+namespace Model.Interfaces
 {
     public interface IModelLoader
     {

@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using ModelController;
-using ModelController.IO;
+using ModelParcer;
 
 namespace TestModel
 {
@@ -10,18 +10,17 @@ namespace TestModel
     public class TestModelControllerGMSH_inp
     {
         [TestMethod]
-        public void GlVertexesCreation_2D3D_Objs()
+        public void GlVertexesCreation_2D3D()
         {
             //assing
             var model = new ModelData();
             var loader = new LoadModelFromGMSHTextFile();
 
             loader.LoadEvent += (ar1, ar2) => { };
-            var modelINP = loader.Load(@"C:\BazisXN\GMSH_Importer(inp)\mesh\test3.inp");
+            var modelINP = loader.Load(@"C:\BazisComponents\ModelSolution\Examples\3D\Korpus.inp");
             model.Load(modelINP);
 
             //act
-            var elems3D = model.ObjectData.FindMany<Element3D>().ToArray();
             var presentator = new ModelScenePresentator(model);
 
             //var surfObjsCreator = presentator.CreateSurfaceObjsCreator("Элементы3D", true);
@@ -38,14 +37,14 @@ namespace TestModel
         }
 
         [TestMethod]
-        public void GlVertexesCreation_1D2D_Objs()
+        public void GlVertexesCreation_1D2D()
         {
             //assing
             var model = new ModelData();
             var loader = new LoadModelFromGMSHTextFile();
 
             loader.LoadEvent += (ar1, ar2) => { };
-            var modelINP = loader.Load(@"C:\BazisGUI4.1\Mesh\Examples\2D_axi\2Dval.inp");
+            var modelINP = loader.Load(@"C:\BazisComponents\ModelSolution\Examples\2D_axi\2Dval.inp");
             model.Load(modelINP);
 
             //act

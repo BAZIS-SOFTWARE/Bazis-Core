@@ -2,30 +2,15 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
+using Model.Events;
 using ModelController.IO;
+using ModelParcer;
 
 namespace TestModel
 {
     [TestClass]
     public class TestIO
     {
-        [TestMethod]
-        public void ImportModelFromVisualMeshASCIITextFormat()
-        {
-            //assing
-            var model = new ModelData();
-            var loader = new LoadModelFromASCIITextFile();
-
-            loader.LoadEvent += NewMesh_LoadEvent;
-            //var reader = new StreamReader(@"C:\Bazis_newGUI\MESH\big_cubeDATA1.ASC");
-
-            //act
-            var modelASCII = loader.Load(@"C:\Projs\ExampleMesh\asc\DATA3.ASC");
-            //loader.Load(@"C:\Bazis_newGUI\MESH\RadicMesh\Plate2DATA.ASC");
-            model.Load(modelASCII);
-            //assert
-            var elems = model.ObjectData.FindMany<Element3D>().ToList();
-        }
 
         [TestMethod]
         public void LoadModelFromBpfTextFormat()
@@ -68,39 +53,7 @@ namespace TestModel
             //throw new System.NotImplementedException();
         }
 
-        [TestMethod]
-        public void ImportModelFromSTLtextFormat()
-        {
-            //assing
-            var model = new ModelData();
 
-            var loader = new LoadModelFromSTLFile();
-            //model.SetLoader(loader);
-
-            //model.LoadEvent += NewMesh_LoadEvent;
-
-            //act
-            loader.Load(@"C:\BazisXN\Model\STLLoader\ACII.stl");
-            //assert
-        }
-
-        [TestMethod]
-        public void ImportModelFromGMSHtextFormat()
-        {
-            //assing
-            var model = new ModelData();
-
-            var loader = new LoadModelFromGMSHTextFile();       
-            loader.LoadEvent += NewMesh_LoadEvent;
-
-            //act
-            //var sr = new StreamReader(@"C:\BazisXN\Model\GMSHLoader\test3");
-            var modelINP = loader.Load(@"C:\BazisXN\GMSH_Importer(inp)\mesh\test3.inp");
-            model.Load(modelINP);
-
-            //assert
-            var elems = model.ObjectData.FindMany<Element3D>().ToList();
-        }
 
         private void NewMesh_LoadEvent(object arg1, LoaderEventArgs arg2)
         {

@@ -38,17 +38,17 @@
     <AssemblyOriginatorKeyFile>ModelSolutionKey.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Functions, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Functions, Version=1.0.0.20, Culture=neutral, PublicKeyToken=65fde98421b2fc88, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Functions\bin\Release\Functions.dll</HintPath>
     </Reference>
-    <Reference Include="Geometry, Version=2.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Geometry, Version=2.0.1.0, Culture=neutral, PublicKeyToken=cadb58b3f6b10f0c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Libs\Geometry.dll</HintPath>
+      <HintPath>..\Geometry\PrGeometry\bin\Release\Geometry.dll</HintPath>
     </Reference>
     <Reference Include="MathNet.Numerics, Version=3.20.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\OutSideDll\MathNet.Numerics.dll</HintPath>
+      <HintPath>Libs\MathNet.Numerics.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />

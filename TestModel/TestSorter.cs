@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
+using Model.Events;
 using ModelController.IO;
 
 namespace TestModel
