@@ -33,7 +33,7 @@ namespace TestModel
 
             var presentator = new ModelScenePresentator(model);
 
-            //presentator.CreateSurfaceObjsCreator("Поверхность");
+            presentator.GetObjectsGlType("Поверхность");
 
             //var indexes = surfaceObjsCreator.CreateIndexes();
 

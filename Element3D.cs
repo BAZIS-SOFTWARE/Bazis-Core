@@ -29,6 +29,8 @@ namespace Model
                     new Surface(3, new Node[]{nodes[1],nodes[3],nodes[2]},ObjKind.ElementSurface)
                 };
             }
+
+            // Для Николая реализовать метод сортировки 
         }
 
         public override string ObjType { get; }
