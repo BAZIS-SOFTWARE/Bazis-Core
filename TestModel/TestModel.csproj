@@ -84,6 +84,29 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Examples\2D_axi\2Dval.inp" />
+    <None Include="Examples\2D_axi\cil.inp" />
+    <None Include="Examples\2D_axi\tube.inp" />
+    <None Include="Examples\3D\box1.inp" />
+    <None Include="Examples\3D\box2.inp" />
+    <None Include="Examples\3D\Korpus.inp" />
+    <None Include="Examples\3D\Lazer.inp" />
+    <None Include="Examples\3D\untitled.inp" />
+    <None Include="Examples\STL\ACII.stl" />
+    <None Include="Examples\VIsual-Mesh\big_cubeDATA1.ASC" />
+    <None Include="Examples\VIsual-Mesh\cilinder3DATA1.ASC" />
+    <None Include="Examples\VIsual-Mesh\freeNodes_DATA3.ASC" />
+    <None Include="Examples\VIsual-Mesh\freeNodes_DATA3.ASC.bak_fp" />
+    <None Include="Examples\VIsual-Mesh\piramide31DATA1.ASC" />
+    <None Include="Examples\VIsual-Mesh\piramide3DATA1.ASC" />
+    <None Include="Examples\VIsual-Mesh\piramide3DATA1.ASC.bak_fp" />
+    <None Include="Examples\VIsual-Mesh\rhombDATA1.ASC" />
+    <None Include="Examples\VIsual-Mesh\Test2D_DATA1.ASC" />
+    <None Include="Examples\VIsual-Mesh\Test_cube_tetra.vdb" />
+    <None Include="Examples\VIsual-Mesh\Test_cube_tetraDATA1.ASC" />
+    <None Include="Examples\VIsual-Mesh\Test_cube_tetraDATA1.ASC.bak_fp" />
+    <None Include="Examples\VIsual-Mesh\Test_DATA1.ASC" />
+    <None Include="Examples\VIsual-Mesh\Test_DATA1.ASC.bak_fp" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -95,6 +118,9 @@
       <Project>{0040C7B5-AA26-42C4-B3A0-C7FF40EC8709}</Project>
       <Name>ModelController</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Examples\CDB\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
