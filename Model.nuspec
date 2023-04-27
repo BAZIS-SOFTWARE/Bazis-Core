@@ -2,9 +2,9 @@
 <package >
   <metadata>
     <id>Bazis.ModelObjectsLib</id>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
     <title>Model object lib</title>
-    <authors>Bilenko Georgy</authors>
+    <authors>Bilenko Georgy, Shibaev Anton, Kapkaev Victor</authors>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <license type="expression">MIT</license>
     <icon>Icon.png</icon>
