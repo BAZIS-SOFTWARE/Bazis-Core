@@ -59,7 +59,7 @@ namespace TestModel
             loader.LoadEvent += (ar1, ar2) => { };
 
             //act
-            loader.Load(@"C:\BazisComponents\ModelSolution\Examples\STL\ACII.stl");
+            loader.Load(@"C:\BazisComponents\ModelSolution\TestModel\Examples\STL\ACII.stl");
             //assert
         }
 
@@ -74,7 +74,7 @@ namespace TestModel
 
             //act
             //var sr = new StreamReader(@"C:\BazisXN\Model\GMSHLoader\test3");
-            var modelINP = loader.Load(@"C:\BazisComponents\ModelSolution\Examples\3D\Korpus.inp");
+            var modelINP = loader.Load(@"C:\BazisComponents\ModelSolution\TestModel\Examples\3D\Korpus.inp");
             model.Load(modelINP);
 
             //assert
@@ -92,7 +92,7 @@ namespace TestModel
             //var reader = new StreamReader(@"C:\Bazis_newGUI\MESH\big_cubeDATA1.ASC");
 
             //act
-            var modelASCII = loader.Load(@"C:\BazisComponents\ModelSolution\Examples\VIsual-Mesh\rhombDATA1.ASC");
+            var modelASCII = loader.Load(@"C:\BazisComponents\ModelSolution\TestModel\Examples\VIsual-Mesh\rhombDATA1.ASC");
             //loader.Load(@"C:\Bazis_newGUI\MESH\RadicMesh\Plate2DATA.ASC");
             model.Load(modelASCII);
             //assert
@@ -102,7 +102,7 @@ namespace TestModel
         [TestMethod]
         public void ImportModelFromCDBTextFormat()
         {
-            string path = @"C:\file1.cdb";
+            string path = @"C:\BazisComponents\ModelSolution\TestModel\Examples\CDB\file1.cdb";
             var import = new LoadModelFromCDBTextFile();
             import.LoadEvent += (ar1, ar2) => { };
             var model = import.Load(path);

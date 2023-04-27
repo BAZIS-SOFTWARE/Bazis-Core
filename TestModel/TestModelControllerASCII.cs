@@ -18,7 +18,7 @@ namespace TestModel
             var loader = new LoadModelFromSTLFile();
             //model.SetLoader(loader);
             loader.LoadEvent += (ar1, ar2) => { };
-            loader.Load(@"C:\BazisComponents\ModelSolution\Examples\STL\ACII.stl");
+            loader.Load(@"C:\BazisComponents\ModelSolution\TestModel\Examples\STL\ACII.stl");
 
             //act
             var surfs = model.ObjectData.FindMany<Surface>().ToArray();
@@ -46,7 +46,7 @@ namespace TestModel
             var loader = new LoadModelFromASCIITextFile();
 
             loader.LoadEvent += Model_LoadEvent;
-            var modelASC = loader.Load(@"C:\BazisComponents\ModelSolution\Examples\VIsual-Mesh\rhombDATA1.ASC");
+            var modelASC = loader.Load(@"C:\BazisComponents\ModelSolution\TestModel\Examples\VIsual-Mesh\rhombDATA1.ASC");
             model.Load(modelASC);
             //act
             var presenter = new ModelScenePresentator(model);
@@ -73,7 +73,7 @@ namespace TestModel
             var loader = new LoadModelFromASCIITextFile();
 
             loader.LoadEvent += Model_LoadEvent;
-            var modelASC = loader.Load(@"C:\BazisComponents\ModelSolution\Examples\VIsual-Mesh\rhombDATA1.ASC");
+            var modelASC = loader.Load(@"C:\BazisComponents\ModelSolution\TestModel\Examples\VIsual-Mesh\rhombDATA1.ASC");
             model.Load(modelASC);
 
             //act
