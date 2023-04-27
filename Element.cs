@@ -20,7 +20,7 @@ namespace Model
         }
 
         public override ObjKind ObjKind { get; }
-
+        
         public override int NumberOfPoints { get { return nodes.Length; } }
 
         public IEnumerable<Node> GetNodes()

@@ -1,6 +1,6 @@
 ﻿using Model.Interfaces;
 
-namespace ModelController.Interfaces
+namespace ModelController.ModelScenePresentator.Interfaces
 {
     public interface ILineObjsVertexCreator
     {

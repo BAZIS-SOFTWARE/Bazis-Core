@@ -1,7 +1,7 @@
 ﻿using Model.Interfaces;
-using ModelController.Interfaces;
+using ModelController.ModelScenePresentator.Interfaces;
 
-namespace ModelController.GlObjsVertexCreators
+namespace ModelController.ModelScenePresentator.GlObjsVertexCreators
 {
     public class NormalsPointObjsCreator : IPointObjsVertexCreator
     {

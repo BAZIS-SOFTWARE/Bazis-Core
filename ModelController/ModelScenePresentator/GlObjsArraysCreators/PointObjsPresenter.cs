@@ -1,17 +1,12 @@
-﻿using Geometry;
-using Model;
+﻿using Model;
 using Model.Interfaces;
-using ModelController.GlObjsVertexCreators;
-using ModelController.Interfaces;
 using ModelController.MeshObjsUtility;
+using ModelController.ModelScenePresentator.GlObjsVertexCreators;
+using ModelController.ModelScenePresentator.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ModelController.GlObjsArraysCreators
+namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
 {
     public class PointObjsPresenter : ObjsPresenter
     {

@@ -1,12 +1,12 @@
 ﻿using Model;
 using Model.Interfaces;
-using ModelController.GlObjsVertexCreators;
-using ModelController.Interfaces;
+using ModelController.ModelScenePresentator.GlObjsVertexCreators;
+using ModelController.ModelScenePresentator.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ModelController.GlObjsArraysCreators
+namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
 {
     public class SurfaceObjsPresenter : ObjsPresenter
     {
@@ -84,8 +84,9 @@ namespace ModelController.GlObjsArraysCreators
                     {
                         if (surface.ViewState)
                         {
-                            vertexes = vertexes + surface.NumberOfPoints * 3;
-                            indexes = indexes + surface.NumberOfPoints;
+                            // (surface.NumberOfPoints - 2)[triangles] * 3 [nodes] * 3 [attribs]
+                            vertexes = vertexes + (surface.NumberOfPoints - 2) * 3 * 3;
+                            indexes = indexes + (surface.NumberOfPoints - 2) * 3;
                         }
                     }
             }
@@ -108,11 +109,12 @@ namespace ModelController.GlObjsArraysCreators
                     {
                         if (surface.ViewState)
                         {
-                            for (int m = 0; m < surface.NumberOfPoints; m++)
+                            var length = (surface.NumberOfPoints - 2) * 3;
+                            for (int m = 0; m < length; m++)
                             {
                                 ptr[stride + m] = stride + m;
                             }
-                            stride = stride + surface.NumberOfPoints;
+                            stride = stride + length;
                         }
                     }
                 }

@@ -19,7 +19,7 @@ namespace TestModel
             var model = new ModelData();
             var loader = new LoadModelFromProjectTextFile();
 
-            loader.LoadEvent += NewMesh_LoadEvent;
+            loader.LoadEvent += (ar1, ar2) => { };
             //act
             //model.Load(@"C:\Bazis_newGUI\PROJ\Test_3D\cub_1.bpf");
             //C:\Projs\TestProjTerm\Lazer\test2.bpf
@@ -36,9 +36,9 @@ namespace TestModel
             //assing
             var model = new ModelData();
             var loader = new LoadModelFromGMSHTextFile();
-            loader.LoadEvent += NewMesh_LoadEvent;
+            loader.LoadEvent += (ar1, ar2) => { };
             var saver = new SaveModelToProjectTextFile();
-            saver.SaveEvent += Model_SaveEvent;
+            saver.SaveEvent += (ar1, ar2) => { };
 
             //act
             var modelINP = loader.Load(@"C:\Projs\TestProjTerm\box\box1.inp");
@@ -48,16 +48,57 @@ namespace TestModel
             //assert
         }
 
-        private void Model_SaveEvent(object arg1, SaverEventArgs arg2)
+        [TestMethod]
+        public void ImportModelFromSTLtextFormat()
         {
-            //throw new System.NotImplementedException();
+            //assing
+            var model = new ModelData();
+
+            var loader = new LoadModelFromSTLFile();
+            //model.SetLoader(loader);
+
+            loader.LoadEvent += (ar1, ar2) => { };
+
+            //act
+            loader.Load(@"C:\BazisComponents\ModelSolution\Examples\STL\ACII.stl");
+            //assert
         }
 
-
-
-        private void NewMesh_LoadEvent(object arg1, LoaderEventArgs arg2)
+        [TestMethod]
+        public void ImportModelFromGMSHtextFormat()
         {
-            //throw new System.NotImplementedException();
+            //assing
+            var model = new ModelData();
+
+            var loader = new LoadModelFromGMSHTextFile();
+            loader.LoadEvent += (ar1, ar2) => { };
+
+            //act
+            //var sr = new StreamReader(@"C:\BazisXN\Model\GMSHLoader\test3");
+            var modelINP = loader.Load(@"C:\BazisComponents\ModelSolution\Examples\3D\Korpus.inp");
+            model.Load(modelINP);
+
+            //assert
+            var elems = model.ObjectData.FindMany<Element3D>().ToList();
         }
+
+        [TestMethod]
+        public void ImportModelFromVisualMeshASCIITextFormat()
+        {
+            //assing
+            var model = new ModelData();
+            var loader = new LoadModelFromASCIITextFile();
+
+            loader.LoadEvent += (ar1, ar2) => { };
+            //var reader = new StreamReader(@"C:\Bazis_newGUI\MESH\big_cubeDATA1.ASC");
+
+            //act
+            var modelASCII = loader.Load(@"C:\BazisComponents\ModelSolution\Examples\VIsual-Mesh\rhombDATA1.ASC");
+            //loader.Load(@"C:\Bazis_newGUI\MESH\RadicMesh\Plate2DATA.ASC");
+            model.Load(modelASCII);
+            //assert
+            var elems = model.ObjectData.FindMany<Element3D>().ToList();
+        }
+
     }
 }

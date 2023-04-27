@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ModelController.GlObjsArraysCreators
+namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
 {
     public abstract class ObjsPresenter
     {

@@ -1,10 +1,10 @@
-﻿using ModelController.Interfaces;
-using Model.Interfaces;
+﻿using Model.Interfaces;
+using ModelController.ModelScenePresentator.GlObjsVertexCreators;
+using ModelController.ModelScenePresentator.Interfaces;
 using System;
 using System.Collections.Generic;
-using ModelController.GlObjsVertexCreators;
 
-namespace ModelController.GlObjsArraysCreators
+namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
 {
     public class LineObjsPresenter : ObjsPresenter
     {

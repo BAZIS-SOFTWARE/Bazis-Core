@@ -1,12 +1,7 @@
 ﻿using Model.Interfaces;
-using ModelController.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ModelController.ModelScenePresentator.Interfaces;
 
-namespace ModelController.GlObjsVertexCreators
+namespace ModelController.ModelScenePresentator.GlObjsVertexCreators
 {
     public class ColorPointObjsCreator : IPointObjsVertexCreator
     {

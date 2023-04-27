@@ -2,8 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using Model.Events;
-using ModelController;
-using ModelController.IO;
+using ModelController.ModelScenePresentator;
 using ModelParcer;
 
 namespace TestModel
@@ -47,22 +46,23 @@ namespace TestModel
             var loader = new LoadModelFromASCIITextFile();
 
             loader.LoadEvent += Model_LoadEvent;
-            var modelASC = loader.Load(@"C:\Bazis_newGUI\MESH\rhombDATA1.ASC");
+            var modelASC = loader.Load(@"C:\BazisComponents\ModelSolution\Examples\VIsual-Mesh\rhombDATA1.ASC");
             model.Load(modelASC);
             //act
-            var presentator = new ModelScenePresentator(model);
+            var presenter = new ModelScenePresentator(model);
 
-            //var surfObjsCreator = presentator.CreateSurfaceObjsCreator("Элементы3D", true);
+            presenter.HideInsideObjects("Элементы3D");
 
-            //var indexes = surfObjsCreator.CreateIndexes();
-
-            //var ptrs = surfObjsCreator.CreatePointers(indexes.Item1);
-            //var coords = surfObjsCreator.CreateVertexes(indexes.Item2, new CoordsSurfaceObjsCreator());
-            //var colors = surfObjsCreator.CreateVertexes(indexes.Item2, new ColorSurfaceObjsCreator());
-            //var normals = surfObjsCreator.CreateVertexes(indexes.Item2, new NormalsSurfaceObjsCreator());
-
+            var inds = presenter.CreateVBOIndexes("Элементы3D");
+            var ptrs = presenter.CreateVBOPointers("Элементы3D", inds.Item1);
+            var coords = presenter.CreateVBOVertexes("Элементы3D", inds.Item2, "координаты");
+            var colors = presenter.CreateVBOVertexes("Элементы3D", inds.Item2, "цвет");
+            var normals = presenter.CreateVBOVertexes("Элементы3D", inds.Item2, "нормаль");
             //assert
-
+            Assert.AreEqual(ptrs.Length, 24);
+            Assert.AreEqual(coords.Length, 72);
+            Assert.AreEqual(colors.Length, 72);
+            Assert.AreEqual(normals.Length, 72);
         }
 
         [TestMethod]
@@ -73,23 +73,25 @@ namespace TestModel
             var loader = new LoadModelFromASCIITextFile();
 
             loader.LoadEvent += Model_LoadEvent;
-            var modelASC = loader.Load(@"C:\Bazis_newGUI\MESH\rhombDATA1.ASC");
+            var modelASC = loader.Load(@"C:\BazisComponents\ModelSolution\Examples\VIsual-Mesh\rhombDATA1.ASC");
             model.Load(modelASC);
 
             //act
             var nodes = model.ObjectData.FindMany<Node>().ToArray();
-            var presentator = new ModelScenePresentator(model);
+            var presenter = new ModelScenePresentator(model);
 
-            presentator.HideInsideObjects("Узлы");
+            presenter.HideInsideObjects("Узлы");
 
-            //var pointObjsCreator = presentator.CreatePointObjsCreator();
-
-            //var indexes = pointObjsCreator.CreateIndexes();
-
-            //var ptrs = pointObjsCreator.CreatePointers(indexes.Item1);
-            //var coords = pointObjsCreator.CreateVertexes(indexes.Item2, new CoordsPointObjsCreator());
-            //var colors = pointObjsCreator.CreateVertexes(indexes.Item2, new ColorPointObjsCreator());
-            //var normals = pointObjsCreator.CreateVertexes(indexes.Item2, new NormalsPointObjsCreator());
+            var inds = presenter.CreateVBOIndexes("Узлы");
+            var ptrs = presenter.CreateVBOPointers("Узлы", inds.Item1);
+            var coords = presenter.CreateVBOVertexes("Узлы", inds.Item2, "координаты");
+            var colors = presenter.CreateVBOVertexes("Узлы", inds.Item2, "цвет");
+            var normals = presenter.CreateVBOVertexes("Узлы", inds.Item2, "нормаль");
+            //assert
+            Assert.AreEqual(ptrs.Length, 7);
+            Assert.AreEqual(coords.Length, 21);
+            Assert.AreEqual(colors.Length, 21);
+            Assert.AreEqual(normals.Length, 21);
 
             //assert
 
@@ -110,7 +112,7 @@ namespace TestModel
             var elems3D = model.ObjectData.FindMany<Element3D>().ToArray();
             var presentator = new ModelScenePresentator(model);
 
-            //var surfObjsCreator = presentator.CreateSurfaceObjsCreator("Элементы3D", true);
+            //var surfObjsCreator = presentator.Cre("Элементы3D", true);
 
             //var indexes = surfObjsCreator.CreateIndexes();
 

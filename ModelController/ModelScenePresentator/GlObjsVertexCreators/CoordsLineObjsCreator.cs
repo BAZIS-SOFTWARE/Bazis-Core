@@ -1,8 +1,8 @@
 ﻿using Model.Interfaces;
-using ModelController.Interfaces;
+using ModelController.ModelScenePresentator.Interfaces;
 using System.Linq;
 
-namespace ModelController.GlObjsVertexCreators
+namespace ModelController.ModelScenePresentator.GlObjsVertexCreators
 {
     public class CoordsLineObjsCreator : ILineObjsVertexCreator
     {

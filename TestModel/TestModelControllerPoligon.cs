@@ -4,7 +4,7 @@ using System.Drawing;
 using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
-using ModelController;
+using ModelController.ModelScenePresentator;
 
 namespace TestModel
 {
