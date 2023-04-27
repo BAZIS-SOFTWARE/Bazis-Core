@@ -29,6 +29,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\ModelParcer.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Functions, Version=1.0.1.30, Culture=neutral, PublicKeyToken=65fde98421b2fc88, processorArchitecture=MSIL">
