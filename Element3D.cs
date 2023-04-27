@@ -32,9 +32,12 @@ namespace Model
 
             // Для Николая реализовать метод сортировки 
         }
+/// <inheritdoc/>
 
         public override string ObjType { get; }
+        /// <inheritdoc/>
         public override ObjKind ObjKind { get;}
+/// <inheritdoc/>
 
         public override Point3D CalcCentralPoint()
         {
@@ -47,6 +50,10 @@ namespace Model
             return center.Div(NumberOfPoints);
         }
 
+        /// <summary>
+        /// Calc volume
+        /// </summary>
+        /// <returns></returns>
         public float CalcVolume()
         {
             var pAr = GetPoints().ToArray();
@@ -65,6 +72,7 @@ namespace Model
             //var str = cMatr.ToString(4, 4);
             return cMatr;
         }
+/// <inheritdoc/>
 
         public override IEnumerable<Surface> GetSurface()
         {

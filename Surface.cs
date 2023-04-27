@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace Model
 {
+    
     public class Surface : ModelObject, ISurface, IEquatable<Surface>
     {
         Node[] nodes;
@@ -16,7 +17,8 @@ namespace Model
         public Surface(int number, Node[] nodes, ObjKind objKind) : base(number)
         {
             ObjKind = objKind;
-            this.nodes = nodes;
+         
+            this.nodes = Anticlockwise(nodes);
             ObjType = "Поверхность";
             NumberOfPoints = nodes.Length;
             InitialColor = Color.FromArgb(224, 0, 177);
@@ -29,11 +31,99 @@ namespace Model
             MasterColor = color;
             SlaveColor = color;
         }
+        /// <summary>
+        /// Sort nodes anticlockwise
+        /// </summary>
+        /// <param name="nodes"></param>
+        /// <returns></returns>
+        public Node[] Anticlockwise(Node [] nodes)
+        {
+            if (nodes.Length < 4) return nodes;
+
+            var ar = new List<Node>();
+            var arInd = new List<int>();
+
+            var fInd = 0;
+            var sInd = 1;
+
+            var firstNode = nodes[fInd];
+            var baseVector = nodes[sInd].Position.Sub(firstNode.Position);
+
+            //baseVector.Round(2);
+            var lenght = nodes.Length;
+
+            ar.Add(nodes[fInd]);
+            arInd.Add(fInd);
+            var iterationCounter = 0;
+            var iterationMax = lenght * lenght;
+            while (arInd.Count != lenght)
+            {
+                if (iterationCounter > iterationMax) break;
+
+                var resu = CheckVectorsOrientation(nodes, firstNode, baseVector);
+
+                if (resu)
+                {
+                    if (!arInd.Contains(sInd))
+                    {
+                        ar.Add(nodes[sInd]);
+                        arInd.Add(sInd);
+                        var tempInd = sInd;
+                        fInd = tempInd;
+                    }
+                    //if (sInd == arInd[0] && )
+                    //    break;
+                }
+
+                sInd++;
+                if (sInd == fInd) sInd++;
+                if (sInd == nodes.Length) sInd = 0;
+
+                firstNode = nodes[fInd];
+                baseVector = nodes[sInd].Position.Sub(firstNode.Position);
+
+                iterationCounter++;
+            }
+
+            return ar.ToArray();
+        }
+
+        private bool CheckVectorsOrientation(Node[] nodes, Node firstNode, Point3D baseVector)
+        {
+            bool isPointInside = false;
+            var temp = new List<Point3D>();
+
+            foreach (var node in nodes)
+            {
+                if (!node.Equals(firstNode))
+                {
+
+                    var actVector = node.Position.Sub(firstNode.Position);
+
+                    var prod = Vector.GetVectorsProd(baseVector, actVector);
+                    if (prod == new Point3D(0, 0, 0))
+                    {
+                        var baseLength = Vector.GetVectorLenght(baseVector);
+                        var actLength = Vector.GetVectorLenght(actVector);
+                        if (baseLength - actLength > 1e-4)
+                        {
+                            isPointInside = true; break;
+                        }
+                    }
+                    temp.Add(prod);
+                }
+
+            }
+            var resu = false;
+            if (!isPointInside) resu = Vector.IsVectorsCoDirectional(temp);
+            return resu;
+        }
 
         public Node this [int ind]
         {
             get { return nodes[ind]; }
         }
+/// <inheritdoc/>
 
         public override string ToString()
         {
@@ -43,12 +133,16 @@ namespace Model
 
             return string.Format("{0} {1} : {2}", Number, ObjType, str);
         }
+/// <inheritdoc/>
 
         public override ObjKind ObjKind { get; }
+/// <inheritdoc/>
 
         public override string ObjType { get; }
+/// <inheritdoc/>
 
         public override int NumberOfPoints { get; }
+/// <inheritdoc/>
 
         public Point3D CalcNormal()
         {
@@ -82,6 +176,7 @@ namespace Model
             var square = Math.Abs(Vector.GetVectorLenght(vProd) / 2);
             return square;
         }
+/// <inheritdoc/>
 
         public override IEnumerable<Point3D> GetPoints()
         {
@@ -101,7 +196,10 @@ points.Contains(nodes[2].Position, new Point3DEqualityComparer()))
             else
                 return false;
         }
-
+        /// <summary>
+        /// Get surface
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<Surface> GetSurface()
         {
             yield return new Surface(Number, nodes.ToArray(), ObjKind);
@@ -115,6 +213,7 @@ points.Contains(nodes[2].Position, new Point3DEqualityComparer()))
 
             return nNormal._x * temp._x + nNormal._y * temp._y + nNormal._z * temp._z;
         }
+/// <inheritdoc/>
 
         public override Point3D CalcCentralPoint()
         {
