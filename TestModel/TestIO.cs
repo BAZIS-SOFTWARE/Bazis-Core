@@ -2,7 +2,6 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
-using Model.Events;
 using ModelController.IO;
 using ModelParcer;
 
@@ -98,6 +97,17 @@ namespace TestModel
             model.Load(modelASCII);
             //assert
             var elems = model.ObjectData.FindMany<Element3D>().ToList();
+        }
+
+        [TestMethod]
+        public void ImportModelFromCDBTextFormat()
+        {
+            string path = @"C:\file1.cdb";
+            var import = new LoadModelFromCDBTextFile();
+            import.LoadEvent += (ar1, ar2) => { };
+            var model = import.Load(path);
+            Assert.AreEqual(8, model.ObjectData.NumberOfNodes);
+            Assert.AreEqual(1, model.ObjectData.NumberOfElements);
         }
 
     }
