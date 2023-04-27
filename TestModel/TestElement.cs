@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using Model.Interfaces;
-using ModelController;
 using ModelController.MeshObjsCreator;
+using ModelController.ModelScenePresentator;
 
 namespace TestModel
 {

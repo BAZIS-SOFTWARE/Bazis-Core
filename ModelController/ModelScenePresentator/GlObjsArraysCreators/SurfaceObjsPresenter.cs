@@ -1,12 +1,12 @@
 ﻿using Model;
 using Model.Interfaces;
-using ModelController.GlObjsVertexCreators;
-using ModelController.Interfaces;
+using ModelController.ModelScenePresentator.GlObjsVertexCreators;
+using ModelController.ModelScenePresentator.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ModelController.GlObjsArraysCreators
+namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
 {
     public class SurfaceObjsPresenter : ObjsPresenter
     {

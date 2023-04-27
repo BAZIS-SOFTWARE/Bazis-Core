@@ -1,8 +1,8 @@
 ﻿using Geometry;
 using Model;
 using Model.Interfaces;
-using ModelController.GlObjsArraysCreators;
 using ModelController.MeshObjsUtility;
+using ModelController.ModelScenePresentator.GlObjsArraysCreators;
 using SceneInterface;
 using System;
 using System.Collections;
@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
-namespace ModelController
+namespace ModelController.ModelScenePresentator
 {
     public class ModelScenePresentator : IEnumerable<KeyValuePair<string, ObjsPresenter>>, IScenePresentor
     {

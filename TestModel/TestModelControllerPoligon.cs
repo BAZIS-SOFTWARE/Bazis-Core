@@ -4,7 +4,7 @@ using System.Drawing;
 using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
-using ModelController;
+using ModelController.ModelScenePresentator;
 
 namespace TestModel
 {
@@ -33,7 +33,7 @@ namespace TestModel
 
             var presentator = new ModelScenePresentator(model);
 
-            presentator.GetObjectsGlType("Поверхность");
+            //presentator.CreateSurfaceObjsCreator("Поверхность");
 
             //var indexes = surfaceObjsCreator.CreateIndexes();
 

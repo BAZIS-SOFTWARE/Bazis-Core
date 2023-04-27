@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package >
+  <metadata>
+    <id>Bazis.ModelController</id>
+    <version>1.0.5</version>
+    <title>Model controller lib</title>
+    <authors>Bilenko Georgy</authors>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <icon>Icon.png</icon>
+    <projectUrl>https://bazisnet.ru</projectUrl>
+    <description>Lib that provide utility operations on model objects</description>
+    <releaseNotes>Add opportunity to draw a complex surface</releaseNotes>
+    <copyright>© Bilenko G.A. 2023</copyright>
+    <tags>VBAOpenGL FindCoincidentNodes MergeNodes AdvanceSelection</tags>
+    <dependencies>
+      <dependency id="Bazis.Functions" version="1.0.1" />
+      <dependency id="Bazis.Geometry" version="2.0.2" />
+      <dependency id="Bazis.ModelObjectsLib" version="1.0.3" />
+      <dependency id="MathNet.Numerics.Signed" version="5.0.0" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="Icon.png" target="" />
+    <file src="ModelController\bin\Release\ModelController.dll" target="lib\net48\ModelController.dll" />
+    <file src="ModelController\bin\Release\ModelController.xml" target="lib\net48\ModelController.xml" />
+  </files>
+</package>

@@ -1,8 +1,7 @@
 ﻿using Model.Interfaces;
-using ModelController.Interfaces;
-using System;
+using ModelController.ModelScenePresentator.Interfaces;
 
-namespace ModelController.GlObjsVertexCreators
+namespace ModelController.ModelScenePresentator.GlObjsVertexCreators
 {
     public class ColorLineObjsCreator : ILineObjsVertexCreator
     {

@@ -1,5 +1,4 @@
 ﻿using Model;
-using ModelController.Interfaces;
 using System.Collections.Generic;
 
 namespace ModelController
