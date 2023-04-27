@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package >
   <metadata>
-    <id>Bazis.ModelObjectsLib</id>
+    <id>Bazis.ModelSolution</id>
     <version>1.0.4</version>
     <title>Model object lib</title>
     <authors>Bilenko Georgy, Shibaev Anton, Kapkaev Victor</authors>
