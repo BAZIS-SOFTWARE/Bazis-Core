@@ -57,17 +57,17 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Model.csproj">
-      <Project>{18dc227e-ba77-4c78-af7a-b2391626c31b}</Project>
-      <Name>Model</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Libs\Tao.OpenGl.dll" />
     <Content Include="Libs\Tao.Platform.Windows.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Model.csproj">
+      <Project>{18dc227e-ba77-4c78-af7a-b2391626c31b}</Project>
+      <Name>Model</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

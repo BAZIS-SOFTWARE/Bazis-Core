@@ -95,15 +95,15 @@
     <Compile Include="ModelScenePresentator\GlObjsVertexCreators\ColorSurfaceObjsCreator.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Model.csproj">
-      <Project>{18DC227E-BA77-4C78-AF7A-B2391626C31B}</Project>
-      <Name>Model</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="app.config" />
     <None Include="ModelControllerKey.pfx" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Model.csproj">
+      <Project>{18dc227e-ba77-4c78-af7a-b2391626c31b}</Project>
+      <Name>Model</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
