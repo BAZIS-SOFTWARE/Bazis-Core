@@ -36,7 +36,7 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>ModelControllerKey.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>ModelSolutionKey.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Functions, Version=1.0.1.30, Culture=neutral, PublicKeyToken=65fde98421b2fc88, processorArchitecture=MSIL">
@@ -103,7 +103,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="ModelControllerKey.pfx" />
+    <None Include="ModelSolutionKey.pfx" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
