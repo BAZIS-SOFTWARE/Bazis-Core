@@ -31,9 +31,7 @@ namespace Model
             }
 
             else if(ObjKind == ObjKind.Hexa)
-            {
-
-            }
+                surfaces = NodeSorter.GetSurfaces(nodes).ToList();
         }
 
         public override string ObjType { get; }

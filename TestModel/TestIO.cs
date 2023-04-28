@@ -101,5 +101,16 @@ namespace TestModel
             Assert.AreEqual(3321, model.ObjectData.NumberOfNodes);
             Assert.AreEqual(9559, model.ObjectData.NumberOfElements);
         }
+
+        [TestMethod]
+        public void TempTest()
+        {
+            string path = @"C:\Users\kvm\source\repos\ModelSolution\TestModel\Examples\CDB\hex.cdb";
+            var import = new LoadModelFromCDBTextFile();
+            import.LoadEvent += (ar1, ar2) => { };
+            var model = import.Load(path);
+            var surfaces = NodeSorter.GetSurfaces(model.ObjectData.FindMany<Node>().ToArray());
+            Assert.AreEqual(6, surfaces.Count());
+        }
     }
 }
