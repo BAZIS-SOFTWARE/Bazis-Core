@@ -30,7 +30,10 @@ namespace Model
                 };
             }
 
-            // Для Николая реализовать метод сортировки 
+            else if(ObjKind == ObjKind.Hexa)
+            {
+
+            }
         }
 
         public override string ObjType { get; }

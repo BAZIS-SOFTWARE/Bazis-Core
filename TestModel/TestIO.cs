@@ -1,5 +1,4 @@
-﻿
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using ModelController.IO;
@@ -12,24 +11,6 @@ namespace TestModel
     {
 
         [TestMethod]
-        public void LoadModelFromBpfTextFormat()
-        {
-            //assing
-            var model = new ModelData();
-            var loader = new LoadModelFromProjectTextFile();
-
-            loader.LoadEvent += (ar1, ar2) => { };
-            //act
-            //model.Load(@"C:\Bazis_newGUI\PROJ\Test_3D\cub_1.bpf");
-            //C:\Projs\TestProjTerm\Lazer\test2.bpf
-            //var modelBPF = loader.Load(@"C:\Projs\TestProjTernMech\twoElements\two_tetra_termoMech_calc1.bpf");
-            //var modelBPF = loader.Load(@"C:\Projs\TestProjTernMech\twoElements\two_tetra_termoMech_calc1.bpf");
-            var modelBPF = loader.Load(@"C:\BazisSolver3.0\TestTasksSolution\ExampleProj\Term\2D_axi\two_tetra_term_cycle.bpf");
-            model.Load(modelBPF);
-            //assert
-        }
-
-        [TestMethod]
         public void SaveModelToBpfTextFormat()
         {
             //assing
@@ -40,9 +21,9 @@ namespace TestModel
             saver.SaveEvent += (ar1, ar2) => { };
 
             //act
-            var modelINP = loader.Load(@"C:\Projs\TestProjTerm\box\box1.inp");
+            var modelINP = loader.Load(@"C:\Users\kvm\source\repos\ModelSolution\TestModel\Examples\3D\box2.inp");
             model.Load(modelINP);
-            saver.Save(model, @"C:\Projs\TestProjTerm\box\task_1.bpf");
+            saver.Save(model, @"C:\Users\kvm\source\repos\ModelSolution\TestModel\Examples\3D\task1.bpf");
 
             //assert
         }
@@ -59,7 +40,7 @@ namespace TestModel
             loader.LoadEvent += (ar1, ar2) => { };
 
             //act
-            loader.Load(@"C:\BazisComponents\ModelSolution\Examples\STL\ACII.stl");
+            loader.Load(@"C:\Users\kvm\source\repos\ModelSolution\TestModel\Examples\STL\ACII.stl");
             //assert
         }
 
@@ -74,7 +55,7 @@ namespace TestModel
 
             //act
             //var sr = new StreamReader(@"C:\BazisXN\Model\GMSHLoader\test3");
-            var modelINP = loader.Load(@"C:\BazisComponents\ModelSolution\Examples\3D\Korpus.inp");
+            var modelINP = loader.Load(@"C:\Users\kvm\source\repos\ModelSolution\TestModel\Examples\3D\Korpus.inp");
             model.Load(modelINP);
 
             //assert
@@ -92,7 +73,7 @@ namespace TestModel
             //var reader = new StreamReader(@"C:\Bazis_newGUI\MESH\big_cubeDATA1.ASC");
 
             //act
-            var modelASCII = loader.Load(@"C:\BazisComponents\ModelSolution\Examples\VIsual-Mesh\rhombDATA1.ASC");
+            var modelASCII = loader.Load(@"C:\Users\kvm\source\repos\ModelSolution\TestModel\Examples\VIsual-Mesh\rhombDATA1.ASC");
             //loader.Load(@"C:\Bazis_newGUI\MESH\RadicMesh\Plate2DATA.ASC");
             model.Load(modelASCII);
             //assert
@@ -102,7 +83,7 @@ namespace TestModel
         [TestMethod]
         public void ImportModelFromCDBTextFormat()
         {
-            string path = @"C:\file1.cdb";
+            string path = @"C:\Users\kvm\source\repos\ModelSolution\TestModel\Examples\CDB\hex.cdb";
             var import = new LoadModelFromCDBTextFile();
             import.LoadEvent += (ar1, ar2) => { };
             var model = import.Load(path);
@@ -110,5 +91,15 @@ namespace TestModel
             Assert.AreEqual(1, model.ObjectData.NumberOfElements);
         }
 
+        [TestMethod, Timeout(1000)]
+        public void ImportModelFromCDBTextFormatLong()
+        {
+            string path = @"C:\Users\kvm\source\repos\ModelSolution\TestModel\Examples\CDB\cube.cdb";
+            var import = new LoadModelFromCDBTextFile();
+            import.LoadEvent += (ar1, ar2) => { };
+            var model = import.Load(path);
+            Assert.AreEqual(3321, model.ObjectData.NumberOfNodes);
+            Assert.AreEqual(9559, model.ObjectData.NumberOfElements);
+        }
     }
 }
