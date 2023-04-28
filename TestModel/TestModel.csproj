@@ -59,12 +59,6 @@
     <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\MSTest.TestFramework.1.3.2\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll</HintPath>
     </Reference>
-    <Reference Include="ModelParcer">
-      <HintPath>..\Libs\ModelParcer.dll</HintPath>
-    </Reference>
-    <Reference Include="STL_Import_Export">
-      <HintPath>..\STLLoader\STL_Import_Export.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -84,17 +78,47 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Examples\2D_axi\2Dval.inp" />
+    <None Include="Examples\2D_axi\cil.inp" />
+    <None Include="Examples\2D_axi\tube.inp" />
+    <None Include="Examples\3D\box1.inp" />
+    <None Include="Examples\3D\box2.inp" />
+    <None Include="Examples\3D\Korpus.inp" />
+    <None Include="Examples\3D\Lazer.inp" />
+    <None Include="Examples\3D\untitled.inp" />
+    <None Include="Examples\STL\ACII.stl" />
+    <None Include="Examples\VIsual-Mesh\big_cubeDATA1.ASC" />
+    <None Include="Examples\VIsual-Mesh\cilinder3DATA1.ASC" />
+    <None Include="Examples\VIsual-Mesh\freeNodes_DATA3.ASC" />
+    <None Include="Examples\VIsual-Mesh\freeNodes_DATA3.ASC.bak_fp" />
+    <None Include="Examples\VIsual-Mesh\piramide31DATA1.ASC" />
+    <None Include="Examples\VIsual-Mesh\piramide3DATA1.ASC" />
+    <None Include="Examples\VIsual-Mesh\piramide3DATA1.ASC.bak_fp" />
+    <None Include="Examples\VIsual-Mesh\rhombDATA1.ASC" />
+    <None Include="Examples\VIsual-Mesh\Test2D_DATA1.ASC" />
+    <None Include="Examples\VIsual-Mesh\Test_cube_tetra.vdb" />
+    <None Include="Examples\VIsual-Mesh\Test_cube_tetraDATA1.ASC" />
+    <None Include="Examples\VIsual-Mesh\Test_cube_tetraDATA1.ASC.bak_fp" />
+    <None Include="Examples\VIsual-Mesh\Test_DATA1.ASC" />
+    <None Include="Examples\VIsual-Mesh\Test_DATA1.ASC.bak_fp" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Model.csproj">
-      <Project>{18DC227E-BA77-4C78-AF7A-B2391626C31B}</Project>
+      <Project>{18dc227e-ba77-4c78-af7a-b2391626c31b}</Project>
       <Name>Model</Name>
     </ProjectReference>
     <ProjectReference Include="..\ModelController\ModelController.csproj">
       <Project>{0040C7B5-AA26-42C4-B3A0-C7FF40EC8709}</Project>
       <Name>ModelController</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ModelParcer\ModelParcer.csproj">
+      <Project>{49c98946-3edb-4b2d-83af-34ccf56111d5}</Project>
+      <Name>ModelParcer</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Examples\CDB\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

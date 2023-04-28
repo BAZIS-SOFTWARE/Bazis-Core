@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package >
   <metadata>
-    <id>Bazis.ModelObjectsLib</id>
-    <version>1.0.3</version>
+    <id>Bazis.ModelSolution</id>
+    <version>1.0.4</version>
     <title>Model object lib</title>
-    <authors>Bilenko Georgy</authors>
+    <authors>Bilenko Georgy, Shibaev Anton, Kapkaev Victor</authors>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <license type="expression">MIT</license>
     <icon>Icon.png</icon>
@@ -16,12 +16,15 @@
     <dependencies>
       <dependency id="Bazis.Functions" version="1.0.1" />
       <dependency id="Bazis.Geometry" version="2.0.2" />
-      <dependency id="MathNet.Numerics.Signed" version="5.0.0" />
     </dependencies>
   </metadata>
   <files>
     <file src="Icon.png" target="" />
     <file src="bin\Release\Model.dll" target="lib\net48\Model.dll" />
     <file src="bin\Release\Model.xml" target="lib\net48\Model.xml" />
+    <file src="ModelController\bin\Release\ModelController.dll" target="lib\net48\ModelController.dll" />
+    <file src="ModelController\bin\Release\ModelController.xml" target="lib\net48\ModelController.xml" />
+    <file src="ModelParcer\bin\Release\ModelParcer.dll" target="lib\net48\ModelParcer.dll" />
+    <file src="ModelParcer\bin\Release\ModelParcer.xml" target="lib\net48\ModelParcer.xml" />
   </files>
 </package>
