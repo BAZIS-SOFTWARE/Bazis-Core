@@ -103,14 +103,14 @@ namespace TestModel
         }
 
         [TestMethod]
-        public void TempTest()
+        public void ImportModelFromCDBTextFormatPenta()
         {
-            string path = @"C:\Users\kvm\source\repos\ModelSolution\TestModel\Examples\CDB\hex.cdb";
+            string path = @"C:\Users\kvm\source\repos\ModelSolution\TestModel\Examples\CDB\penta.cdb";
             var import = new LoadModelFromCDBTextFile();
             import.LoadEvent += (ar1, ar2) => { };
             var model = import.Load(path);
-            var surfaces = NodeSorter.GetSurfaces(model.ObjectData.FindMany<Node>().ToArray());
-            Assert.AreEqual(6, surfaces.Count());
+            Assert.AreEqual(1, model.ObjectData.FindMany<Element3D>().Count());
+            var element = model.ObjectData.FindMany<Element3D>().First();
         }
     }
 }

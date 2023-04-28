@@ -29,8 +29,7 @@ namespace Model
                     new Surface(3, new Node[]{nodes[1],nodes[3],nodes[2]},ObjKind.ElementSurface)
                 };
             }
-
-            else if(ObjKind == ObjKind.Hexa)
+            else
                 surfaces = NodeSorter.GetSurfaces(nodes).ToList();
         }
 

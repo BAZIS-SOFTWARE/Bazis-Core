@@ -122,6 +122,7 @@ namespace ModelParcer
             switch (nodesCount)
             {
                 case 4: return new Element3D(currentNumber, nodes, ObjKind.Tetra);
+                case 6: return new Element3D(currentNumber, nodes, ObjKind.Penta);
                 case 8: return new Element3D(currentNumber, nodes, ObjKind.Hexa);
                 default: throw new Exception($"Unable to recognize element with {nodesCount} nodes");
             }

@@ -91,6 +91,7 @@ namespace Model
                     potentialSurface.AddRange(subset);
                     surfaces.Add(potentialSurface.ToHashSet());
                     yield return new Surface(surfaceCounter, potentialSurface.ToArray(), ObjKind.ElementSurface);
+                    surfaceCounter++;
                 }
             }
         }
