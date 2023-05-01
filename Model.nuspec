@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Bazis.ModelSolution</id>
-    <version>1.0.5</version>
+    <version>1.0.7</version>
     <title>Model object lib</title>
     <authors>Bilenko Georgy, Shibaev Anton, Kapkaev Victor</authors>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
@@ -13,10 +13,6 @@
     <releaseNotes>"Add anticlockwise sorting when create surface"</releaseNotes>
     <copyright>© Bilenko G.A. 2023</copyright>
     <tags>ObjectsForModeling CAEMeshObjects</tags>
-    <dependencies>
-      <dependency id="Bazis.Functions" version="1.0.1" />
-      <dependency id="Bazis.Geometry" version="2.0.2" />
-    </dependencies>
   </metadata>
   <files>
     <file src="Icon.png" target="" />
