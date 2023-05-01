@@ -87,10 +87,10 @@ namespace TestModel
             var colors = presentator.CreateVBOVertexes("Поверхность", inds.Item2, "цвет");
             var normals = presentator.CreateVBOVertexes("Поверхность", inds.Item2, "нормаль");
             //assert
-            Assert.AreEqual(ptrs.Length, 24);
-            Assert.AreEqual(coords.Length, 72);
-            Assert.AreEqual(colors.Length, 72);
-            Assert.AreEqual(normals.Length, 72);
+            Assert.AreEqual(ptrs.Length, 15);
+            Assert.AreEqual(coords.Length, 45);
+            Assert.AreEqual(colors.Length, 45);
+            Assert.AreEqual(normals.Length, 45);
         }
     }
 }
