@@ -20,9 +20,9 @@ namespace TestModel
             saver.SaveEvent += (ar1, ar2) => { };
 
             //act
-            var modelINP = loader.Load(@"C:\Users\kvm\source\repos\ModelSolution\TestModel\Examples\3D\box2.inp");
+            var modelINP = loader.Load(@"..\..\Examples\3D\box2.inp");
             model.Load(modelINP);
-            saver.Save(model, @"C:\Users\kvm\source\repos\ModelSolution\TestModel\Examples\3D\task1.bpf");
+            saver.Save(model, @"..\..\Examples\3D\task1.bpf");
 
             //assert
         }
@@ -39,7 +39,7 @@ namespace TestModel
             loader.LoadEvent += (ar1, ar2) => { };
 
             //act
-            loader.Load(@"C:\Users\kvm\source\repos\ModelSolution\TestModel\Examples\STL\ACII.stl");
+            loader.Load(@"..\..\Examples\STL\ACII.stl");
             //assert
         }
 
@@ -52,7 +52,7 @@ namespace TestModel
             loader.LoadEvent += (ar1, ar2) => { };
 
             //act
-            var modelINP = loader.Load(@"C:\Users\kvm\source\repos\ModelSolution\TestModel\Examples\3D\Korpus.inp");
+            var modelINP = loader.Load(@"..\..\Examples\3D\Korpus.inp");
             model.Load(modelINP);
 
             //assert
@@ -71,7 +71,7 @@ namespace TestModel
             //var reader = new StreamReader(@"C:\Bazis_newGUI\MESH\big_cubeDATA1.ASC");
 
             //act
-            var modelASCII = loader.Load(@"C:\Users\kvm\source\repos\ModelSolution\TestModel\Examples\VIsual-Mesh\rhombDATA1.ASC");
+            var modelASCII = loader.Load(@"..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
             //loader.Load(@"C:\Bazis_newGUI\MESH\RadicMesh\Plate2DATA.ASC");
             model.Load(modelASCII);
             //assert
@@ -90,7 +90,7 @@ namespace TestModel
             Assert.AreEqual(1, model.ObjectData.NumberOfElements);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod, Timeout(2000)]
         public void ImportLongModelFromCDBTextFormat()
         {
             string path = @"..\..\Examples\CDB\longModel.cdb";

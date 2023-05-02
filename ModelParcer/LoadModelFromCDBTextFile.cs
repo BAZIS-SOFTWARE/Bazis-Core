@@ -148,7 +148,9 @@ namespace ModelParcer
                         .ToList();
                     fields.AddRange(nextLineFields);
                 }
-                var elementNodes = fields.Skip(OFFSET_TO_READ_NODES).ToArray();
+                var elementNodes = fields.Skip(OFFSET_TO_READ_NODES).Distinct().ToArray();
+                if (elementNodes.Length != nodesCount)
+                    continue;
                 var element = GetElement(nodesCount, elementNodes, allNodes);
                 yield return element;
             }
