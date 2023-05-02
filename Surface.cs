@@ -202,7 +202,7 @@ points.Contains(nodes[2].Position, new Point3DEqualityComparer()))
         /// <returns></returns>
         public IEnumerable<Surface> GetSurface()
         {
-            yield return new Surface(Number, nodes.ToArray(), ObjKind);
+            yield return new Surface(Number, nodes.ToArray(), ObjKind,MasterColor);
         }
 
         public float GetDistance(Point3D point)
