@@ -69,20 +69,21 @@ namespace Model
         {
             var surfaces = new List<HashSet<Node>>();
             var surfaceCounter = 0;
-            foreach (var subset in Get3ElementSubsets(nodes))
+            var subsets = Get3ElementSubsets(nodes);
+            foreach (var subset in subsets)
             {
                 if (IsSubsetUsed(surfaces, subset.ToHashSet()))
                     continue;
                 var otherNodes = nodes.ToHashSet().Except(subset);
-                var points = subset.Select(x => x.Position).ToList();
+                var points = subset.Select(x => x.Position).ToArray();
                 var equationCoefficients = GetPlaneEquationCoefficients(points[0], points[1], points[2]);
                 var accept = true;
-                var initialSign = GetDistance(equationCoefficients, otherNodes.First().Position) > 0;
+                var initialSign = GetDistance(equationCoefficients, otherNodes.First().Position) >= 0;
                 var potentialSurface = new List<Node>();
                 foreach (var node in otherNodes)
                 {
                     var distance = GetDistance(equationCoefficients, node.Position);
-                    var currentSign = (distance > 0);
+                    var currentSign = (distance >= 0);
                     if (Math.Abs(distance) <= 1e-4)
                         potentialSurface.Add(node);
                     else if (currentSign != initialSign)

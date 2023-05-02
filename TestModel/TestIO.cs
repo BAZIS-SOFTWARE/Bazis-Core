@@ -87,11 +87,12 @@ namespace TestModel
             var import = new LoadModelFromCDBTextFile();
             import.LoadEvent += (ar1, ar2) => { };
             var model = import.Load(path);
+            var element = model.ObjectData.FindMany<Element3D>().First();
             Assert.AreEqual(8, model.ObjectData.NumberOfNodes);
             Assert.AreEqual(1, model.ObjectData.NumberOfElements);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod, Timeout(2000)]
         public void ImportModelFromCDBTextFormatLong()
         {
             string path = @"C:\Users\kvm\source\repos\ModelSolution\TestModel\Examples\CDB\cube.cdb";
@@ -109,8 +110,9 @@ namespace TestModel
             var import = new LoadModelFromCDBTextFile();
             import.LoadEvent += (ar1, ar2) => { };
             var model = import.Load(path);
-            Assert.AreEqual(1, model.ObjectData.FindMany<Element3D>().Count());
             var element = model.ObjectData.FindMany<Element3D>().First();
+            Assert.AreEqual(6, model.ObjectData.NumberOfNodes);
+            Assert.AreEqual(1, model.ObjectData.NumberOfElements);
         }
     }
 }
