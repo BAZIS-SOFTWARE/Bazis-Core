@@ -20,7 +20,7 @@ namespace TestModel
             loader.LoadEvent += (ar1, ar2) => { };
 
             var path = Path.GetFullPath(".\\").Replace("bin\\Debug\\", "");
-            var files = Directory.GetFiles(path, "file1.cdb", SearchOption.AllDirectories);
+            var files = Directory.GetFiles(path, "longModel.cdb", SearchOption.AllDirectories);
             var modelCDB = loader.Load(files[0]);
 
             model.Load(modelCDB);
