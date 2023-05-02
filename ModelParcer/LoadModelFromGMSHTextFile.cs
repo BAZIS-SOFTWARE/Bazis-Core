@@ -16,15 +16,17 @@ namespace ModelParcer
         public event Action<object, LoaderEventArgs> LoadEvent;
 
         private ModelData newMesh;
-        private Dictionary<int, int> dic;
+        private Dictionary<int, int> dict;
         private List<Node> nodes;
         private StreamReader reader;
+        private string[] nextElementFlags;
 
         public LoadModelFromGMSHTextFile()
         {
-            dic = new Dictionary<int, int>();
+            dict = new Dictionary<int, int>();
             newMesh = new ModelData();
             nodes = new List<Node>();
+            nextElementFlags = new string[3] { "*ELEMENT", "*ELSET", "*NSET" };
         }
 
         public ModelData Load(string path)
@@ -63,111 +65,79 @@ namespace ModelParcer
             return newMesh;
         }
 
-        public void CreateElements(string elementType, 
-            string line, 
-            string recBase)
+        private ModelObject BuildElement(string elementType, int[] selectedNodesId, int currentNumber)
+        {
+            var nodeArr = new Node[selectedNodesId.Length];
+            for (int i = 0; i < nodeArr.Length; i++)
+            {
+                nodeArr[i] = newMesh.ObjectData.Find(nodes, selectedNodesId[i]);
+            }
+            switch(elementType)
+            {
+                case "type=T3D2": return new Element1D(currentNumber, nodeArr, ObjKind.Beam);
+                case "type=CPS3": return new Element2D(currentNumber, nodeArr, ObjKind.Triangle);
+                case "type=C3D4": return new Element3D(currentNumber, nodeArr, ObjKind.Tetra);
+                default: throw new Exception($"Unknown element type with {selectedNodesId.Length} nodes");
+            };
+        }
+
+        private void CreateElements(string elementType, string line, string recBase)
         {
             var tokens = line.Replace(" ", "").Split(',');
-            string[] checkArr = new string[3];
-            checkArr[0] = "*ELEMENT";
-            checkArr[1] = "*ELSET";
-            checkArr[2] = "*NSET";
-
-            var stopWord = checkArr.Where(x => x == tokens[0]).ToList();
-            
-            while (line != null && stopWord.Count == 0)
+            var hasStopWord = nextElementFlags.Contains(tokens[0]);
+            while (line != null && !hasStopWord)
             {
                 int currentNumber = newMesh.ObjectData.GetLastObjNumber() + 1;
-                dic.Add(int.Parse(tokens[0]), currentNumber);
-
-                var intAr = tokens.Select(m => int.Parse(m) - 1).ToList();
-
-                if (elementType == "type=T3D2") // 1D
-                {
-                    var nodeArr = new Node[2];
-                    nodeArr[0] = newMesh.ObjectData.Find(nodes, intAr[1]);
-                    nodeArr[1] = newMesh.ObjectData.Find(nodes, intAr[2]);
-
-                    newMesh.ObjectData.Add(new Element1D(currentNumber, nodeArr, ObjKind.Beam));
-                }
-
-                else if (elementType == "type=CPS3") // 2D
-                {
-                    var nodeArr = new Node[3];
-                    nodeArr[0] = newMesh.ObjectData.Find(nodes, intAr[1]);
-                    nodeArr[1] = newMesh.ObjectData.Find(nodes, intAr[2]);
-                    nodeArr[2] = newMesh.ObjectData.Find(nodes, intAr[3]);
-                    newMesh.ObjectData.Add(new Element2D(currentNumber, nodeArr, ObjKind.Triangle));
-                }
-
-                else if (elementType == "type=C3D4") // 3D
-                {
-                    var nodeArr = new Node[4];
-                    nodeArr[0] = newMesh.ObjectData.Find(nodes, intAr[1]);
-                    nodeArr[1] = newMesh.ObjectData.Find(nodes, intAr[2]);
-                    nodeArr[2] = newMesh.ObjectData.Find(nodes, intAr[3]);
-                    nodeArr[3] = newMesh.ObjectData.Find(nodes, intAr[4]);
-                    newMesh.ObjectData.Add(new Element3D(currentNumber, nodeArr, ObjKind.Tetra));
-                }
-
+                dict.Add(int.Parse(tokens[0]), currentNumber);
+                var selectedNodesId = tokens.Skip(1)
+                    .Select(m => int.Parse(m) - 1)
+                    .ToArray();
+                var element = BuildElement(elementType, selectedNodesId, currentNumber);
+                newMesh.ObjectData.Add(element);
                 line = reader.ReadLine();
                 if (line != null)
                 {
                     tokens = line.Replace(" ", "").Split(',');
-                    stopWord = checkArr.Where(x => x == tokens[0]).ToList();
+                    hasStopWord = nextElementFlags.Contains(tokens[0]);
                 }   
             }
-
             if (line != null && tokens[0] != recBase)
             {
                 tokens = line.Replace(" ", "").Split(',');
-                var tempKind = tokens[1];
+                elementType = tokens[1];
                 line = reader.ReadLine();
-                CreateElements(tempKind, line, recBase);
+                CreateElements(elementType, line, recBase);
             }
-
             if (line != null && line.Contains("*ELSET"))
-            {
-                CreateGroups(line, newMesh, reader, dic);
-            }
+                CreateGroups(line, dict);
         }
 
-        public void CreateGroups(string line, ModelData newMesh, StreamReader sr, Dictionary<int, int> dic)
+        private void CreateGroups(string line, Dictionary<int, int> dic)
         {
-            var grName = line.Split('=').Last();
+            var groupName = line.Split('=').Last();
             var strAr = line.Split(',');
-
-            while (!sr.EndOfStream || line.Contains("*NSET"))
+            while (!reader.EndOfStream || line.Contains("*NSET"))
             {
-                line = sr.ReadLine();
+                line = reader.ReadLine();
                 strAr = line.Replace(" ", "").Split(',');
                 if (strAr[0] == "")
                     break;
-
                 var firstNumber = int.Parse(strAr.First());
                 var objNumber = dic[firstNumber];
                 var objsType = newMesh.ObjectData.Find(objNumber).ObjType;
-
-                LoadEvent(this, new LoaderEventArgs($"Загрузка группы объектов {grName}"));
-                var group = new Group(grName, objsType);
-
-                //var oldListInt = strAr.Where(x => !string.IsNullOrEmpty(x));
-                //var newListInt = oldListInt.Where(x => dic.TryGetValue(int.Parse(x) - 1, out int res)).
-                //Select(x => dic[int.Parse(x) - 1]).ToList();
-
+                LoadEvent(this, new LoaderEventArgs($"Загрузка группы объектов {groupName}"));
+                var group = new Group(groupName, objsType);
                 while (line != null && !line.Contains("*NSET") && !line.Contains("*ELSET"))
                 {
                     strAr = line.Replace(" ", "").Split(',');
                     var objsNumbers = strAr.Where(x => !string.IsNullOrEmpty(x)).Select(y =>
                     dic[int.Parse(y)]);
-
                     group.AddRange(objsNumbers);
-
-                    line = sr.ReadLine();
+                    line = reader.ReadLine();
                 }
                 newMesh.GroupData.Add(group);
                 if (line != null)
-                    grName = line.Split('=').Last();
+                    groupName = line.Split('=').Last();
                 if (line.Contains("*NSET"))
                     break;
             }
