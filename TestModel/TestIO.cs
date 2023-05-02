@@ -49,17 +49,16 @@ namespace TestModel
         {
             //assing
             var model = new ModelData();
-
             var loader = new LoadModelFromGMSHTextFile();
             loader.LoadEvent += (ar1, ar2) => { };
 
             //act
-            //var sr = new StreamReader(@"C:\BazisXN\Model\GMSHLoader\test3");
             var modelINP = loader.Load(@"C:\Users\kvm\source\repos\ModelSolution\TestModel\Examples\3D\Korpus.inp");
             model.Load(modelINP);
 
             //assert
-            var elems = model.ObjectData.FindMany<Element3D>().ToList();
+            Assert.AreEqual(8448, model.ObjectData.NumberOfNodes);
+            Assert.AreEqual(17964, model.ObjectData.NumberOfElements);
         }
 
         [TestMethod]
@@ -81,7 +80,7 @@ namespace TestModel
         }
 
         [TestMethod]
-        public void ImportModelFromCDBTextFormat()
+        public void ImportHexFromCDBTextFormat()
         {
             string path = @"C:\Users\kvm\source\repos\ModelSolution\TestModel\Examples\CDB\hex.cdb";
             var import = new LoadModelFromCDBTextFile();
@@ -93,7 +92,7 @@ namespace TestModel
         }
 
         [TestMethod, Timeout(2000)]
-        public void ImportModelFromCDBTextFormatLong()
+        public void ImportLongModelFromCDBTextFormat()
         {
             string path = @"C:\Users\kvm\source\repos\ModelSolution\TestModel\Examples\CDB\cube.cdb";
             var import = new LoadModelFromCDBTextFile();
@@ -104,7 +103,7 @@ namespace TestModel
         }
 
         [TestMethod]
-        public void ImportModelFromCDBTextFormatPenta()
+        public void ImportPentaFromCDBTextFormat()
         {
             string path = @"C:\Users\kvm\source\repos\ModelSolution\TestModel\Examples\CDB\penta.cdb";
             var import = new LoadModelFromCDBTextFile();

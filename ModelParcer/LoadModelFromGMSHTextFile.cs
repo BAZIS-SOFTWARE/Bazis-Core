@@ -15,63 +15,74 @@ namespace ModelParcer
     {
         public event Action<object, LoaderEventArgs> LoadEvent;
 
+        private ModelData newMesh;
+        private Dictionary<int, int> dic;
+        private List<Node> nodes;
+        private StreamReader reader;
+
+        public LoadModelFromGMSHTextFile()
+        {
+            dic = new Dictionary<int, int>();
+            newMesh = new ModelData();
+            nodes = new List<Node>();
+        }
+
         public ModelData Load(string path)
         {
-            var dic = new Dictionary<int, int>();
-            var sr = new StreamReader(path);
-            var newMesh = new ModelData();
-            var line = sr.ReadLine();
-            var nodeList = new List<Node>();
-
+            reader = new StreamReader(path);
             LoadEvent(this, new LoaderEventArgs("Начало загрузки модели"));
-            while (!sr.EndOfStream)
+            while (!reader.EndOfStream)
             {
-                line = sr.ReadLine();
+                var line = reader.ReadLine();
                 if (line.Contains("*NODE"))
                 {
-                    line = sr.ReadLine();
+                    line = reader.ReadLine();
                     LoadEvent(this, new LoaderEventArgs("Начало загрузки узлов"));
                     while (line != "******* E L E M E N T S *************")
                     {
-                        var strAr = line.Replace(" ", "").Split(',').Select(x => float.Parse(x, NumberStyles.Float, CultureInfo.InvariantCulture)).ToArray();
-
-                        nodeList.Add(new Node((int)strAr[0] - 1, new Point3D(strAr[1], strAr[2], strAr[3])));
-                        line = sr.ReadLine();
+                        var tokens = line.Replace(" ", "")
+                            .Split(',');
+                        var nodeNumber = int.Parse(tokens[0]) - 1;
+                        var coordinates = tokens.Skip(1)
+                            .Select(x => float.Parse(x, NumberStyles.Float, CultureInfo.InvariantCulture))
+                            .ToArray();
+                        var node = new Node(nodeNumber, new Point3D(coordinates[0], coordinates[1], coordinates[2]));
+                        nodes.Add(node);
+                        line = reader.ReadLine();
                     }
-                    var orderedNodes = nodeList.OrderBy(x => x.Number);
+                    var orderedNodes = nodes.OrderBy(x => x.Number);
                     newMesh.ObjectData.AddRange(orderedNodes);
                 }
-
                 if (line.Contains("type=T3D2"))
                 {
                     LoadEvent(this, new LoaderEventArgs("Начало загрузки элементов"));
-                    line = sr.ReadLine();
-
-                    CreateElements("type=T3D2", newMesh, sr, line, "*ELSET", dic);
+                    line = reader.ReadLine();
+                    CreateElements("type=T3D2", line, "*ELSET");
                 }
             }
             return newMesh;
         }
 
-        public void CreateElements(string elkind, ModelData newMesh, StreamReader sr, string line, string recBase, Dictionary<int, int> dic)
+        public void CreateElements(string elementType, 
+            string line, 
+            string recBase)
         {
-            var nodes = newMesh.ObjectData.FindMany<Node>().ToList();
-            var strAr = line.Replace(" ", "").Split(',');
+            var tokens = line.Replace(" ", "").Split(',');
             string[] checkArr = new string[3];
             checkArr[0] = "*ELEMENT";
             checkArr[1] = "*ELSET";
             checkArr[2] = "*NSET";
 
-            var stopWord = checkArr.Where(x => x == strAr[0]).ToList();
+            var stopWord = checkArr.Where(x => x == tokens[0]).ToList();
             
             while (line != null && stopWord.Count == 0)
             {
                 int currentNumber = newMesh.ObjectData.GetLastObjNumber() + 1;
-                dic.Add(int.Parse(strAr[0]), currentNumber);
+                dic.Add(int.Parse(tokens[0]), currentNumber);
 
-                var intAr = strAr.Select(m => int.Parse(m) - 1).ToList();
+                var intAr = tokens.Select(m => int.Parse(m) - 1).ToList();
 
-                if (elkind == "type=T3D2") // 1D
+                if (elementType == "type=T3D2") // 1D
                 {
                     var nodeArr = new Node[2];
                     nodeArr[0] = newMesh.ObjectData.Find(nodes, intAr[1]);
@@ -80,7 +91,7 @@ namespace ModelParcer
                     newMesh.ObjectData.Add(new Element1D(currentNumber, nodeArr, ObjKind.Beam));
                 }
 
-                else if (elkind == "type=CPS3") // 2D
+                else if (elementType == "type=CPS3") // 2D
                 {
                     var nodeArr = new Node[3];
                     nodeArr[0] = newMesh.ObjectData.Find(nodes, intAr[1]);
@@ -89,7 +100,7 @@ namespace ModelParcer
                     newMesh.ObjectData.Add(new Element2D(currentNumber, nodeArr, ObjKind.Triangle));
                 }
 
-                else if (elkind == "type=C3D4") // 3D
+                else if (elementType == "type=C3D4") // 3D
                 {
                     var nodeArr = new Node[4];
                     nodeArr[0] = newMesh.ObjectData.Find(nodes, intAr[1]);
@@ -99,25 +110,25 @@ namespace ModelParcer
                     newMesh.ObjectData.Add(new Element3D(currentNumber, nodeArr, ObjKind.Tetra));
                 }
 
-                line = sr.ReadLine();
+                line = reader.ReadLine();
                 if (line != null)
                 {
-                    strAr = line.Replace(" ", "").Split(',');
-                    stopWord = checkArr.Where(x => x == strAr[0]).ToList();
+                    tokens = line.Replace(" ", "").Split(',');
+                    stopWord = checkArr.Where(x => x == tokens[0]).ToList();
                 }   
             }
 
-            if (line != null && strAr[0] != recBase)
+            if (line != null && tokens[0] != recBase)
             {
-                strAr = line.Replace(" ", "").Split(',');
-                var tempKind = strAr[1];
-                line = sr.ReadLine();
-                CreateElements(tempKind, newMesh, sr, line, recBase, dic);
+                tokens = line.Replace(" ", "").Split(',');
+                var tempKind = tokens[1];
+                line = reader.ReadLine();
+                CreateElements(tempKind, line, recBase);
             }
 
             if (line != null && line.Contains("*ELSET"))
             {
-                CreateGroups(line, newMesh, sr, dic);
+                CreateGroups(line, newMesh, reader, dic);
             }
         }
 
