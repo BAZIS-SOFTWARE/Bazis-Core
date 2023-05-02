@@ -1,4 +1,5 @@
 ﻿using Geometry;
+using MathNet.Numerics.LinearAlgebra;
 using Model.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -24,16 +25,20 @@ namespace Model
             }
         }
 
-        private static float GetDet(float a, float b, float c, float d)
+        private static float GetDet(float[,] matrix)
         {
-            return a * d - b * c;
+            var A = Matrix<float>.Build.DenseOfArray(matrix);
+            return A.Determinant();
         }
 
         private static float[] GetPlaneEquationCoefficients(Point3D a, Point3D b, Point3D c)
         {
-            var A = GetDet(b._y - a._y, b._z - a._z, c._y - a._y, c._z - a._z);
-            var B = GetDet(b._x - a._x, b._z - a._z, c._x - a._x, c._z - a._z);
-            var C = GetDet(b._x - a._x, b._y - a._y, c._x - a._x, c._y - a._y);
+            var A = GetDet(new float[,] { { b._y - a._y, b._z - a._z }, 
+                                          { c._y - a._y, c._z - a._z } });
+            var B = GetDet (new float[,] { { b._x - a._x, b._z - a._z },
+                                          { c._x - a._x, c._z - a._z } });
+            var C = GetDet(new float[,] { { b._x - a._x, b._y - a._y },
+                                            { c._x - a._x, c._y - a._y } });
             var D = -a._x * A + a._y * B - a._z * C;
             return new float[4] { A, -B, C, D };
         }
