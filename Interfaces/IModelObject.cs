@@ -15,6 +15,7 @@ namespace Model.Interfaces
     public enum ObjKind
     {
         Node,
+        Penta,
         Tetra,
         Hexa,
         Triangle,
