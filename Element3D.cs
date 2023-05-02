@@ -18,19 +18,7 @@ namespace Model
             SlaveColor = Color.FromArgb(255, 125, 0);
             ObjKind = objKind;
             ObjType = "Элементы3D";
-
-            if (ObjKind == ObjKind.Tetra)
-            {
-                surfaces = new List<Surface>()
-                {
-                    new Surface(0, new Node[]{nodes[0],nodes[1],nodes[2]},ObjKind.ElementSurface),
-                    new Surface(1, new Node[]{nodes[0],nodes[2],nodes[3]},ObjKind.ElementSurface),
-                    new Surface(2, new Node[]{nodes[0],nodes[3],nodes[1]},ObjKind.ElementSurface),
-                    new Surface(3, new Node[]{nodes[1],nodes[3],nodes[2]},ObjKind.ElementSurface)
-                };
-            }
-            else
-                surfaces = NodeSorter.GetSurfaces(nodes).ToList();
+            surfaces = NodeSorter.GetSurfaces(nodes).ToList();
         }
 
         public override string ObjType { get; }

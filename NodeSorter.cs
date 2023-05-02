@@ -84,7 +84,7 @@ namespace Model
                 {
                     var distance = GetDistance(equationCoefficients, node.Position);
                     var currentSign = (distance >= 0);
-                    if (Math.Abs(distance) <= 1e-4)
+                    if (Math.Abs(distance) < 1e-4)
                         potentialSurface.Add(node);
                     else if (currentSign != initialSign)
                     {

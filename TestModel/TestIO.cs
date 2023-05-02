@@ -9,7 +9,6 @@ namespace TestModel
     [TestClass]
     public class TestIO
     {
-
         [TestMethod]
         public void SaveModelToBpfTextFormat()
         {
@@ -82,7 +81,7 @@ namespace TestModel
         [TestMethod]
         public void ImportHexFromCDBTextFormat()
         {
-            string path = @"C:\Users\kvm\source\repos\ModelSolution\TestModel\Examples\CDB\hex.cdb";
+            string path = @"..\..\Examples\CDB\hex.cdb";
             var import = new LoadModelFromCDBTextFile();
             import.LoadEvent += (ar1, ar2) => { };
             var model = import.Load(path);
@@ -91,26 +90,38 @@ namespace TestModel
             Assert.AreEqual(1, model.ObjectData.NumberOfElements);
         }
 
-        [TestMethod, Timeout(2000)]
+        [TestMethod, Timeout(1000)]
         public void ImportLongModelFromCDBTextFormat()
         {
-            string path = @"C:\Users\kvm\source\repos\ModelSolution\TestModel\Examples\CDB\cube.cdb";
+            string path = @"..\..\Examples\CDB\longModel.cdb";
             var import = new LoadModelFromCDBTextFile();
             import.LoadEvent += (ar1, ar2) => { };
             var model = import.Load(path);
             Assert.AreEqual(3321, model.ObjectData.NumberOfNodes);
-            Assert.AreEqual(9559, model.ObjectData.NumberOfElements);
+            Assert.AreEqual(7825, model.ObjectData.NumberOfElements);
         }
 
         [TestMethod]
         public void ImportPentaFromCDBTextFormat()
         {
-            string path = @"C:\Users\kvm\source\repos\ModelSolution\TestModel\Examples\CDB\penta.cdb";
+            string path = @"..\..\Examples\CDB\penta.cdb";
             var import = new LoadModelFromCDBTextFile();
             import.LoadEvent += (ar1, ar2) => { };
             var model = import.Load(path);
             var element = model.ObjectData.FindMany<Element3D>().First();
             Assert.AreEqual(6, model.ObjectData.NumberOfNodes);
+            Assert.AreEqual(1, model.ObjectData.NumberOfElements);
+        }
+
+        [TestMethod]
+        public void ImportTetraFromCDBTextFormat()
+        {
+            string path = @"..\..\Examples\CDB\tetra.cdb";
+            var import = new LoadModelFromCDBTextFile();
+            import.LoadEvent += (ar1, ar2) => { };
+            var model = import.Load(path);
+            var element = model.ObjectData.FindMany<Element3D>().First();
+            Assert.AreEqual(4, model.ObjectData.NumberOfNodes);
             Assert.AreEqual(1, model.ObjectData.NumberOfElements);
         }
     }
