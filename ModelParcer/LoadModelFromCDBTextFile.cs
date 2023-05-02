@@ -74,15 +74,11 @@ namespace ModelParcer
 
         private float GetFloat(string exponentialNotation)
         {
-            try
+            if(exponentialNotation.Last() == 'E')
             {
-                return float.Parse(exponentialNotation, NumberStyles.Any, CultureInfo.InvariantCulture);
+                exponentialNotation += "+000";
             }
-            catch
-            {
-                var clear = exponentialNotation.Replace("E", "");
-                return float.Parse(clear, CultureInfo.InvariantCulture);
-            }
+            return float.Parse(exponentialNotation, NumberStyles.Float, CultureInfo.InvariantCulture);
         }
 
         private IEnumerable<Node> ReadNodes(StreamReader reader, string[] tokens)
