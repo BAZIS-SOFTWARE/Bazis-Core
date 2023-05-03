@@ -36,7 +36,7 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>ModelSolutionKey.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>ModelController\ModelSolutionKey.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>
@@ -54,6 +54,9 @@
     </Reference>
     <Reference Include="MathNet.Numerics, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cd8b63ad3d691a37, processorArchitecture=MSIL">
       <HintPath>packages\MathNet.Numerics.Signed.5.0.0\lib\net48\MathNet.Numerics.dll</HintPath>
+    </Reference>
+    <Reference Include="SceneInterface, Version=1.0.1.10, Culture=neutral, PublicKeyToken=f4632fed43ef5153, processorArchitecture=MSIL">
+      <HintPath>packages\SceneInterface.1.0.1.10\lib\net48\SceneInterface.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -106,7 +109,7 @@
     <Compile Include="SurfaceElement.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ModelSolutionKey.pfx" />
+    <None Include="ModelController\ModelSolutionKey.pfx" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
