@@ -87,6 +87,7 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
                             // (surface.NumberOfPoints - 2)[triangles] * 3 [nodes] * 3 [attribs]
                             vertexes = vertexes + (surface.NumberOfPoints - 2) * 3 * 3;
                             indexes = indexes + (surface.NumberOfPoints - 2) * 3;
+                            //???Добавить
                         }
                     }
             }
@@ -145,6 +146,20 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
             }
 
             return vertexArray;
+        }
+
+        public override bool[] CreateEdgeFlags(int edgesLength)
+        {
+            var edgesArray = new bool[edgesLength];
+            var stride = 0;
+
+            IEdgeObjsVertexCreator vertexCreator = new EdgesSurfaceObjsCreator();
+            foreach (var surfaceElement in surfaceElements)
+            {
+                if (surfaceElement.ViewState)
+                    vertexCreator.Create(ref stride, edgesArray, surfaceElement);        
+            }
+            return edgesArray;
         }
 
         internal void ShowInsideSurfaces()
