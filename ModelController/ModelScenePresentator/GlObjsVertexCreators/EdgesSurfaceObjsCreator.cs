@@ -15,11 +15,11 @@ namespace ModelController.ModelScenePresentator.GlObjsVertexCreators
     {
         public void Create(ref int stride, bool[] vertexAtributes, ISurfaceObject[] surfaceElement)
         {
-            var surfacesCount = 0;
             foreach (var surfaces in surfaceElement)
             {
                 if (surfaces.ViewState)
                 {
+                    var surfacesCount = 0;
                     foreach (var surface in surfaces.GetSurface())
                     {
                         if (surface.ViewState)

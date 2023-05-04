@@ -21,19 +21,18 @@ namespace TestModel
         {;
             var loader = new LoadModelFromGMSHTextFile();
             loader.LoadEvent += (ar1, ar2) => { };
-            var model = loader.Load(@"C:\Users\kns\source\repos\ModelSolution\Н2.inp");
+            var model = loader.Load(@"C:\Users\kns\source\repos\ModelSolution\box1.inp");
             var presentator = new ModelScenePresentator(model);
-            //presentator.GetSortedObjects();
-
-            //var data = presentator.GetSortedObjects(model.ObjectData.FindMany(ObjKind.ElementSurface).ToArray());
-            //var surf = model.ObjectData.FindMany<Element3D>();
-            /*foreach(var s in surf.GetSurface())
-            {
-
-            }*/
-            //var test = new SurfaceObjsPresenter()
-            //var List<Surface>
-  
+        }
+        [TestMethod]
+        public void TestSurfaces()
+        {
+            var loader = new LoadModelFromGMSHTextFile();
+            loader.LoadEvent += (ar1, ar2) => { };
+            var model = loader.Load(@"C:\Users\kns\source\repos\ModelSolution\box1.inp");
+            var presentator = new ModelScenePresentator(model);
+            var values = presentator.CreateVBOIndexes("Элементы3D");
+            var edges = presentator.CreateVBOEdges("Элементы3D",values.Item3);
         }
     }
 }
