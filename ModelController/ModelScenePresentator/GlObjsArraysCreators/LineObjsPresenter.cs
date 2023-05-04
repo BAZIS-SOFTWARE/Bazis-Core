@@ -92,5 +92,10 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
                 yield return lineObject;
             }
         }
+
+        public override bool[] CreateEdgeFlags(int edgesLength)
+        {
+            return null;
+        }
     }
 }

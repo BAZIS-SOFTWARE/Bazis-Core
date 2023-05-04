@@ -1,6 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
+using Model.Interfaces;
 using ModelController.ModelScenePresentator;
+using ModelController.ModelScenePresentator.GlObjsArraysCreators;
 using ModelParcer;
 using System;
 using System.Collections.Generic;
@@ -21,12 +23,17 @@ namespace TestModel
             loader.LoadEvent += (ar1, ar2) => { };
             var model = loader.Load(@"C:\Users\kns\source\repos\ModelSolution\Н2.inp");
             var presentator = new ModelScenePresentator(model);
-            var surf = model.ObjectData.FindMany("Элементы3D");
-            foreach (var s in surf)
-            { 
-                //s
+            //presentator.GetSortedObjects();
 
-            }
+            //var data = presentator.GetSortedObjects(model.ObjectData.FindMany(ObjKind.ElementSurface).ToArray());
+            //var surf = model.ObjectData.FindMany<Element3D>();
+            /*foreach(var s in surf.GetSurface())
+            {
+
+            }*/
+            //var test = new SurfaceObjsPresenter()
+            //var List<Surface>
+  
         }
     }
 }

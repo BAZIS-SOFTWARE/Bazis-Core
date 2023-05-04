@@ -96,5 +96,10 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
             var surfacedNodesFinder = new FindOpenSurfaceNodes();
             return surfacedNodesFinder.Find(elements);
         }
+
+        public override bool[] CreateEdgeFlags(int edgesLength)
+        {
+            return null;
+        }
     }
 }

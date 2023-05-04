@@ -21,7 +21,7 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
 
         public abstract float[] CreateVertexes(int vertexLength, string vertexType);
 
-        //public abstract bool[] CreateEdgeFlags(int edgesLength);
+        public abstract bool[] CreateEdgeFlags(int edgesLength);
 
         public abstract int Count();
 

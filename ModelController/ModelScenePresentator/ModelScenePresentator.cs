@@ -65,6 +65,16 @@ namespace ModelController.ModelScenePresentator
             return objsCreator.CreateVertexes(vertexLength, vertexType);
         }
 
+        public bool[] CreateVBOEdges(string objsType, int vertexLength)
+        {
+            var objsCreator = (SurfaceObjsPresenter)GetObjectsPresenter(objsType);
+
+            if (objsCreator == null)
+                throw new Exception("Объект не найден!");
+
+            return objsCreator.CreateEdgeFlags(vertexLength);
+        }
+
         public int[] CreateVBOPointers(string objsType, int indexLength)
         {
             var objsCreator = GetObjectsPresenter(objsType);

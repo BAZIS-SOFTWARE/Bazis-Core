@@ -148,7 +148,7 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
             return vertexArray;
         }
 
-        public bool[] CreateEdgeFlags(int edgesLength)
+        public override bool[] CreateEdgeFlags(int edgesLength)
         {
             var edgesArray = new bool[edgesLength];
             var stride = 0;
