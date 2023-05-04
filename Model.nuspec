@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Bazis.ModelSolution</id>
-    <version>1.0.4</version>
+    <version>1.0.9</version>
     <title>Model object lib</title>
     <authors>Bilenko Georgy, Shibaev Anton, Kapkaev Victor</authors>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
@@ -10,13 +10,9 @@
     <icon>Icon.png</icon>
     <projectUrl>https://bazisnet.ru</projectUrl>
     <description>Lib to create mesh and geometry objects from numbers of points</description>
-    <releaseNotes>""</releaseNotes>
+    <releaseNotes>"Fix mistake when invoke \"Get surface()\" method"</releaseNotes>
     <copyright>© Bilenko G.A. 2023</copyright>
     <tags>ObjectsForModeling CAEMeshObjects</tags>
-    <dependencies>
-      <dependency id="Bazis.Functions" version="1.0.1" />
-      <dependency id="Bazis.Geometry" version="2.0.2" />
-    </dependencies>
   </metadata>
   <files>
     <file src="Icon.png" target="" />

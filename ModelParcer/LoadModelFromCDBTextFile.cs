@@ -36,8 +36,10 @@ namespace ModelParcer
                     if (line.Contains(NODE_BLOCK))
                     {
                         LoadEvent(this, new LoaderEventArgs("Начало загрузки узлов"));
-                        var nodes = ReadNodes(reader, tokens);
-                        model.ObjectData.AddRange(nodes);
+                        foreach (var node in ReadNodes(reader, tokens))
+                        {
+                            model.ObjectData.Add(node);
+                        }
                     }
                     if (line.Contains(ELEMENTS_BLOCK))
                     {
@@ -69,9 +71,18 @@ namespace ModelParcer
                     yield return field;
             }
         }
+
         private float GetFloat(string exponentialNotation)
         {
-            return float.Parse(exponentialNotation, NumberStyles.Any, CultureInfo.InvariantCulture);
+            try
+            {
+                return float.Parse(exponentialNotation, NumberStyles.Any, CultureInfo.InvariantCulture);
+            }
+            catch
+            {
+                var clear = exponentialNotation.Replace("E", "");
+                return float.Parse(clear, CultureInfo.InvariantCulture);
+            }
         }
 
         private IEnumerable<Node> ReadNodes(StreamReader reader, string[] tokens)
@@ -99,6 +110,7 @@ namespace ModelParcer
                 yield return node;
             }
         }
+
         private ModelObject GetElement(int nodesCount, int[] elementNodes, List<Node> allNodes)
         {
             var nodes = new Node[nodesCount];
@@ -109,11 +121,10 @@ namespace ModelParcer
             }
             switch (nodesCount)
             {
-                case 2: return new Element1D(currentNumber, nodes, ObjKind.Beam);
-                case 3: return new Element2D(currentNumber, nodes, ObjKind.Triangle);
                 case 4: return new Element3D(currentNumber, nodes, ObjKind.Tetra);
+                case 6: return new Element3D(currentNumber, nodes, ObjKind.Penta);
                 case 8: return new Element3D(currentNumber, nodes, ObjKind.Hexa);
-                default: return new Surface(currentNumber, nodes, ObjKind.ElementSurface);
+                default: throw new Exception($"Unable to recognize element with {nodesCount} nodes");
             }
         }
 
@@ -122,7 +133,7 @@ namespace ModelParcer
             var allNodes = model.ObjectData.FindMany<Node>().ToList();
             var format = reader.ReadLine();
             var maxFieldsInLine = int.Parse(tokens[1]);
-            var elementsNumber = int.Parse(tokens[3]);
+            var elementsNumber = int.Parse(tokens[4]);
             for (int i = 0; i < elementsNumber; i++)
             {
                 var line = reader.ReadLine();
@@ -142,6 +153,5 @@ namespace ModelParcer
                 yield return element;
             }
         }
-
     }
 }

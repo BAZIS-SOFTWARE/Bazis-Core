@@ -18,23 +18,14 @@ namespace Model
             SlaveColor = Color.FromArgb(255, 125, 0);
             ObjKind = objKind;
             ObjType = "Элементы3D";
-
-            if (ObjKind == ObjKind.Tetra)
-            {
-                surfaces = new List<Surface>()
-                {
-                    new Surface(0, new Node[]{nodes[0],nodes[1],nodes[2]},ObjKind.ElementSurface),
-                    new Surface(1, new Node[]{nodes[0],nodes[2],nodes[3]},ObjKind.ElementSurface),
-                    new Surface(2, new Node[]{nodes[0],nodes[3],nodes[1]},ObjKind.ElementSurface),
-                    new Surface(3, new Node[]{nodes[1],nodes[3],nodes[2]},ObjKind.ElementSurface)
-                };
-            }
-
-            // Для Николая реализовать метод сортировки 
+            surfaces = NodeSorter.GetSurfaces(nodes).ToList();
         }
+/// <inheritdoc/>
 
         public override string ObjType { get; }
+        /// <inheritdoc/>
         public override ObjKind ObjKind { get;}
+/// <inheritdoc/>
 
         public override Point3D CalcCentralPoint()
         {
@@ -47,6 +38,10 @@ namespace Model
             return center.Div(NumberOfPoints);
         }
 
+        /// <summary>
+        /// Calc volume
+        /// </summary>
+        /// <returns></returns>
         public float CalcVolume()
         {
             var pAr = GetPoints().ToArray();
@@ -65,6 +60,7 @@ namespace Model
             //var str = cMatr.ToString(4, 4);
             return cMatr;
         }
+/// <inheritdoc/>
 
         public override IEnumerable<Surface> GetSurface()
         {

@@ -16,7 +16,7 @@ namespace TestModel
             var loader = new LoadModelFromGMSHTextFile();
 
             loader.LoadEvent += (ar1, ar2) => { };
-            var modelINP = loader.Load(@"C:\BazisComponents\ModelSolution\Examples\3D\Korpus.inp");
+            var modelINP = loader.Load(@"C:\BazisComponents\ModelSolution\TestModel\Examples\3D\Korpus.inp");
             model.Load(modelINP);
 
             //act
@@ -43,7 +43,7 @@ namespace TestModel
             var loader = new LoadModelFromGMSHTextFile();
 
             loader.LoadEvent += (ar1, ar2) => { };
-            var modelINP = loader.Load(@"C:\BazisComponents\ModelSolution\Examples\2D_axi\2Dval.inp");
+            var modelINP = loader.Load(@"C:\BazisComponents\ModelSolution\TestModel\Examples\2D_axi\2Dval.inp");
             model.Load(modelINP);
 
             //act
