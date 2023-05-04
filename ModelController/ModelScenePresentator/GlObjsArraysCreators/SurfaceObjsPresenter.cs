@@ -72,10 +72,11 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
 
         }
 
-        public override Tuple<int, int> CreateIndexes()
+        public override Tuple<int, int, int> CreateIndexes()
         {
             var indexes = 0;
             var vertexes = 0;
+            var edges = 0;
 
             foreach (var surfaceObj in surfaceElements)
             {
@@ -87,15 +88,14 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
                             // (surface.NumberOfPoints - 2)[triangles] * 3 [nodes] * 3 [attribs]
                             vertexes = vertexes + (surface.NumberOfPoints - 2) * 3 * 3;
                             indexes = indexes + (surface.NumberOfPoints - 2) * 3;
-                            //???Добавить
+                            edges = edges + (surface.NumberOfPoints - 2) * 3;
                         }
                     }
             }
 
 
-            return new Tuple<int, int>(indexes, vertexes);
+            return new Tuple<int, int, int>(indexes, vertexes, edges);
         }
-
 
         public override int[] CreatePointers(int indexLength)
         {
@@ -148,17 +148,13 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
             return vertexArray;
         }
 
-        public override bool[] CreateEdgeFlags(int edgesLength)
+        public bool[] CreateEdgeFlags(int edgesLength)
         {
             var edgesArray = new bool[edgesLength];
             var stride = 0;
 
             IEdgeObjsVertexCreator vertexCreator = new EdgesSurfaceObjsCreator();
-            foreach (var surfaceElement in surfaceElements)
-            {
-                if (surfaceElement.ViewState)
-                    vertexCreator.Create(ref stride, edgesArray, surfaceElement);        
-            }
+            vertexCreator.Create(ref stride, edgesArray, surfaceElements);  
             return edgesArray;
         }
 

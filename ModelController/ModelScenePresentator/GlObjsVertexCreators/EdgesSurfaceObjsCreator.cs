@@ -13,35 +13,34 @@ namespace ModelController.ModelScenePresentator.GlObjsVertexCreators
 {
     public class EdgesSurfaceObjsCreator : IEdgeObjsVertexCreator
     {
-        public class SurfaceEntry
+        public void Create(ref int stride, bool[] vertexAtributes, ISurfaceObject[] surfaceElement)
         {
-            public List<Surface> surfaces;
-            
-        }
-
-        private Hashtable surfaces;
-        public EdgesSurfaceObjsCreator()
-        {
-            surfaces = new Hashtable();
-        }
-
-        public void Create(ref int stride, bool[] vertexAtributes, ISurfaceObject surfaceElement)
-        {
-            HashSet<string> surfaces = new HashSet<string>();
-            
-            if (surfaceElement.ViewState)
+            var surfacesCount = 0;
+            foreach (var surfaces in surfaceElement)
             {
-                foreach(var surface in surfaceElement.GetSurface())
+                if (surfaces.ViewState)
                 {
-                    if(surface.ViewState)
+                    foreach (var surface in surfaces.GetSurface())
                     {
-                        
-
-
+                        if (surface.ViewState)
+                        {
+                            if ((surfacesCount & 1) == 0)
+                            {
+                                vertexAtributes[stride + 0] = true;
+                                vertexAtributes[stride + 1] = true;
+                                vertexAtributes[stride + 2] = false;
+                            }
+                            else
+                            {
+                                vertexAtributes[stride + 0] = false;
+                                vertexAtributes[stride + 1] = true;
+                                vertexAtributes[stride + 2] = true;
+                            }
+                            surfacesCount++;
+                            stride += 3;
+                        } 
                     }
-                    ++i;
                 }
-
             }
         }
     }

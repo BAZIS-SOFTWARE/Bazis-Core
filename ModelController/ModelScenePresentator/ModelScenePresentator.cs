@@ -49,7 +49,7 @@ namespace ModelController.ModelScenePresentator
 
         }   
 
-        public Tuple<int, int> CreateVBOIndexes(string objsType)
+        public Tuple<int, int, int> CreateVBOIndexes(string objsType)
         {
             var presenter = GetObjectsPresenter(objsType);
             return presenter.CreateIndexes();

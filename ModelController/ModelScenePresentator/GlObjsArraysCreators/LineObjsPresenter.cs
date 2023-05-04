@@ -20,7 +20,7 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
             this.lineObjects = lineObjects;
         }
 
-        public override Tuple<int, int> CreateIndexes()
+        public override Tuple<int, int, int> CreateIndexes()
         {
             var indexes = 0;
             var vertexes = 0;
@@ -34,7 +34,7 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
                 }
             }
 
-            return new Tuple<int, int>(indexes, vertexes);
+            return new Tuple<int, int, int>(indexes, vertexes, 0);
         }
 
 
