@@ -69,5 +69,55 @@ namespace TestModel
             for (var i = 0; i < expectedFlags.Length; ++i)
                 Assert.AreEqual(true, edges[i]);
         }
+
+        [TestMethod]
+        public void TestOnPolygon()
+        {
+            var model = new ModelData();
+            var first = new Node[]
+            {
+                new Node(0, new Point3D(0.0f,0.0f,0.0f)),
+                new Node(1, new Point3D(1.0f,0.0f,0.0f)),
+                new Node(2, new Point3D(1.0f,1.0f,0.0f))
+            };
+            var second = new Node[]
+            {
+                new Node(3, new Point3D(0.0f,0.0f,0.0f)),
+                new Node(4, new Point3D(1.0f,1.0f,0.0f)),
+                new Node(5, new Point3D(0.0f,1.0f,0.0f))
+            };
+            var third = new Node[]
+            {
+                new Node(6, new Point3D(0.0f,1.0f,0.0f)),
+                new Node(7, new Point3D(1.0f,1.0f,0.0f)),
+                new Node(8, new Point3D(1.0f,2.0f,0.0f))
+            };
+            var four = new Node[]
+            {
+                new Node(9, new Point3D(0.0f,1.0f,0.0f)),
+                new Node(10, new Point3D(1.0f,2.0f,0.0f)),
+                new Node(11, new Point3D(0.0f,2.0f,0.0f))
+            };
+            var five = new Node[]
+            {
+                new Node(12, new Point3D(0.0f,2.0f,0.0f)),
+                new Node(13, new Point3D(1.0f,2.0f,0.0f)),
+                new Node(14, new Point3D(1.0f,3.0f,0.0f))
+            };
+            var el2D = new Element2D(0, first, ObjKind.Triangle); var el2D2 = new Element2D(1, second, ObjKind.Triangle);
+            var el2D3 = new Element2D(2, second, ObjKind.Triangle); var el2D4 = new Element2D(3, second, ObjKind.Triangle);
+            var el2D5 = new Element2D(4, second, ObjKind.Triangle);
+            model.ObjectData.Add(el2D); model.ObjectData.Add(el2D2); model.ObjectData.Add(el2D3); model.ObjectData.Add(el2D4);
+            model.ObjectData.Add(el2D5);
+            var presentator = new ModelScenePresentator(model);
+            var values = presentator.CreateVBOIndexes("Элементы2D");
+            var edges = presentator.CreateVBOEdges("Элементы2D", values.Item3);
+            Assert.AreEqual(15, edges.Length);
+            var expectedFlags = new bool[] { true, true, false, false, true, true, 
+                                             true, true, false, false, true, true,
+                                             true, true, true };
+            for (var i = 0; i < expectedFlags.Length; ++i)
+                Assert.AreEqual(true, edges[i]);
+        }
     }
 }

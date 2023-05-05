@@ -20,23 +20,20 @@ namespace ModelController.ModelScenePresentator.GlObjsVertexCreators
                 if (surfaces.ViewState)
                 {
                     var surfs = surfaces.GetSurface().ToArray();
-                    if(surfs.Length == 1)
-                        vertexAtributes[stride + 0] = vertexAtributes[stride + 1] = vertexAtributes[stride + 2] = true;
-                    else
+                    for (var i = 0; i < surfs.Length; ++i)
                     {
-                        for (var i = 0; i < surfs.Length; ++i)
+                        vertexAtributes[stride + 1] = true;
+                        if (i == surfs.Length - 1)
+                            vertexAtributes[stride + 0] = vertexAtributes[stride + 2] = true;
+                        else if ((i & 1) == 0)
                         {
-                            vertexAtributes[stride + 1] = true;
-                            if ((i & 1) == 0)
-                            {
-                                vertexAtributes[stride + 0] = true;
-                                vertexAtributes[stride + 2] = false;
-                            }
-                            else
-                            {
-                                vertexAtributes[stride + 0] = false;
-                                vertexAtributes[stride + 2] = true;
-                            }
+                            vertexAtributes[stride + 0] = true;
+                            vertexAtributes[stride + 2] = false;
+                        }
+                        else
+                        {
+                            vertexAtributes[stride + 0] = false;
+                            vertexAtributes[stride + 2] = true;
                         }
                     }
                     stride += 3;
