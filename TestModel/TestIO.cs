@@ -90,7 +90,7 @@ namespace TestModel
             Assert.AreEqual(1, model.ObjectData.NumberOfElements);
         }
 
-        [TestMethod, Timeout(2000)]
+        [TestMethod, Timeout(1000)]
         public void ImportLongModelFromCDBTextFormat()
         {
             string path = @"..\..\Examples\CDB\longModel.cdb";
@@ -98,7 +98,17 @@ namespace TestModel
             import.LoadEvent += (ar1, ar2) => { };
             var model = import.Load(path);
             Assert.AreEqual(3321, model.ObjectData.NumberOfNodes);
-            //Assert.AreEqual(7825, model.ObjectData.NumberOfElements);
+        }
+
+        [TestMethod]
+        public void FindCorrectPlaneNumberOfElements()
+        {
+            string path = @"..\..\Examples\CDB\longModel.cdb";
+            var import = new LoadModelFromCDBTextFile();
+            import.LoadEvent += (ar1, ar2) => { };
+            var model = import.Load(path);
+            var elements = model.ObjectData.FindMany<Element3D>();
+            Assert.IsTrue(elements.All(element => element.GetSurface().Count() == 6));
         }
 
         [TestMethod]
