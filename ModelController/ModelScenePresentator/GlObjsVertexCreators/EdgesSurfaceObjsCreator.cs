@@ -22,10 +22,11 @@ namespace ModelController.ModelScenePresentator.GlObjsVertexCreators
                     var surfs = surfaces.GetSurface().ToArray();
                     for (var i = 0; i < surfs.Length; ++i)
                     {
+                        var parity = (i & 1) == 0;
                         vertexAtributes[stride + 1] = true;
-                        if (i == surfs.Length - 1)
+                        if (parity && i == surfs.Length - 1)
                             vertexAtributes[stride + 0] = vertexAtributes[stride + 2] = true;
-                        else if ((i & 1) == 0)
+                        else if (parity)
                         {
                             vertexAtributes[stride + 0] = true;
                             vertexAtributes[stride + 2] = false;
