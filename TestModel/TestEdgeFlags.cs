@@ -34,5 +34,15 @@ namespace TestModel
             var values = presentator.CreateVBOIndexes("Элементы3D");
             var edges = presentator.CreateVBOEdges("Элементы3D",values.Item3);
         }
+
+        [TestMethod]
+        public void TestOnSortedObjects() 
+        {
+            var loader = new LoadModelFromGMSHTextFile();
+            loader.LoadEvent += (ar1, ar2) => { };
+            var model = loader.Load(@"C:\Users\kns\source\repos\ModelSolution\box1.inp");
+            var presentator = new ModelScenePresentator(model);
+            //var dict = presentator.GetSortedObjects(array);
+        }
     }
 }
