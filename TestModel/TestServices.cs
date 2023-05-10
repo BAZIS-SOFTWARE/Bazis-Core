@@ -236,7 +236,7 @@ namespace TestModel
             var loader = new LoadModelFromASCIITextFile();
 
             loader.LoadEvent += Model_LoadEvent;
-            var modelASCII = loader.Load(@"C:\Bazis_newGUI\MESH\rhombDATA1.ASC");
+            var modelASCII = loader.Load(@"..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
             model.Load(modelASCII);
 
             //act
