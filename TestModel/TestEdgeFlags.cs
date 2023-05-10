@@ -55,8 +55,6 @@ namespace TestModel
                 new Node(4, new Point3D(1.0f,1.0f,0.0f)),
                 new Node(5, new Point3D(0.0f,1.0f,0.0f))
             };
-
-
             var el2D = new Element2D(0, first, ObjKind.Triangle);
             var el2D2 = new Element2D(1, second, ObjKind.Triangle);
             model.ObjectData.Add(el2D);
