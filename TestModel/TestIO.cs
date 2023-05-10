@@ -98,6 +98,10 @@ namespace TestModel
             import.LoadEvent += (ar1, ar2) => { };
             var model = import.Load(path);
             Assert.AreEqual(3321, model.ObjectData.NumberOfNodes);
+
+            var elements = model.ObjectData.FindMany<Element3D>();
+            Assert.IsTrue(elements.All(element => element.GetSurface().
+            All(surface => surface.GetPoints().Count() > 2)));
         }
 
         [TestMethod]
