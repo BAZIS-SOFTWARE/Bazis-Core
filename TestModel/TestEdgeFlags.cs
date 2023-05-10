@@ -105,7 +105,10 @@ namespace TestModel
             var el2D = new Element2D(0, first, ObjKind.Triangle); var el2D2 = new Element2D(1, second, ObjKind.Triangle);
             var el2D3 = new Element2D(2, second, ObjKind.Triangle); var el2D4 = new Element2D(3, second, ObjKind.Triangle);
             var el2D5 = new Element2D(4, second, ObjKind.Triangle);
-            model.ObjectData.Add(el2D); model.ObjectData.Add(el2D2); model.ObjectData.Add(el2D3); model.ObjectData.Add(el2D4);
+            model.ObjectData.Add(el2D); 
+            model.ObjectData.Add(el2D2); 
+            model.ObjectData.Add(el2D3); 
+            model.ObjectData.Add(el2D4);
             model.ObjectData.Add(el2D5);
             var presentator = new ModelScenePresentator(model);
             var values = presentator.CreateVBOIndexes("Элементы2D");

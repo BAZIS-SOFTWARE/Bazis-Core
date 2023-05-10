@@ -49,6 +49,7 @@ namespace ModelController.ModelScenePresentator
                         var surfaceObjs = modelData.ObjectData.Where(x => x.ObjType == objsType).
     Select(x => (ISurfaceObject)x);
                         var surfaceObjsCreator = new SurfaceObjsPresenter(surfaceObjs.ToArray());
+                        presentors.Add(objsType, surfaceObjsCreator);
                         break;
                     default:
                         break;
