@@ -117,20 +117,20 @@ namespace ModelParcer
         /// <param name="elementNodes">Array of numbers (node id) from .cdb file</param>
         /// <returns>Model object according to input data</returns>
         /// <exception cref="Exception">Throws if unrecognized or get invalid parameters</exception>
-        private ModelObject GetElement(int nodesCount, int[] elementNodes)
+        private ModelObject GetElement(int[] elementNodes)
         {
-            var nodes = new Node[nodesCount];
+            var nodes = new Node[elementNodes.Length];
             var currentNumber = model.ObjectData.GetLastObjNumber() + 1;
-            for (var i = 0; i < nodesCount; i++)
+            for (var i = 0; i < elementNodes.Length; i++)
             {
                 nodes[i] = model.ObjectData.Find(allNodes, elementNodes[i]);
             }
-            switch (nodesCount)
+            switch (elementNodes.Length)
             {
                 case 4: return new Element3D(currentNumber, nodes, ObjKind.Tetra);
                 case 6: return new Element3D(currentNumber, nodes, ObjKind.Penta);
                 case 8: return new Element3D(currentNumber, nodes, ObjKind.Hexa);
-                default: throw new Exception($"Unable to recognize element with {nodesCount} nodes");
+                default: throw new Exception($"Unable to recognize element with {elementNodes.Length} nodes");
             }
         }
 
@@ -160,9 +160,7 @@ namespace ModelParcer
                     fields.AddRange(nextLineFields);
                 }
                 var elementNodes = fields.Skip(OFFSET_TO_READ_NODES).Distinct().ToArray();
-                if (elementNodes.Length != nodesCount)
-                    continue;
-                var element = GetElement(nodesCount, elementNodes);
+                var element = GetElement(elementNodes);
                 yield return element;
             }
         }
