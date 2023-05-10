@@ -13,23 +13,36 @@ namespace ModelController.ModelScenePresentator.GlObjsVertexCreators
                 {
                     if (surface.ViewState)
                     {
-                        for (int k = 0; k < surface.NumberOfPoints - 2; k++)
+                        var numbOfVerts = (surface.NumberOfPoints - 2) * 3;
+
+                        if (numbOfVerts == 3)
                         {
-                            vertexAtributes[stride + 9 * k + 0] = surface[0].Position._x;
-                            vertexAtributes[stride + 9 * k + 1] = surface[0].Position._y;
-                            vertexAtributes[stride + 9 * k + 2] = surface[0].Position._z;
-
-                            vertexAtributes[stride + 9 * k + 3] = surface[k + 1].Position._x;
-                            vertexAtributes[stride + 9 * k + 4] = surface[k + 1].Position._y;
-                            vertexAtributes[stride + 9 * k + 5] = surface[k + 1].Position._z;
-
-                            vertexAtributes[stride + 9 * k + 6] = surface[k + 2].Position._x;
-                            vertexAtributes[stride + 9 * k + 7] = surface[k + 2].Position._y;
-                            vertexAtributes[stride + 9 * k + 8] = surface[k + 2].Position._z;
+                            for (int i = 0; i < numbOfVerts; i++)
+                            {
+                                vertexAtributes[stride + 3 * i + 0] = surface[i].Position._x;
+                                vertexAtributes[stride + 3 * i + 1] = surface[i].Position._y;
+                                vertexAtributes[stride + 3 * i + 2] = surface[i].Position._z;
+                            }
                         }
+                        else
+                            for (int k = 3; k < numbOfVerts; k++)
+                            {
+                                vertexAtributes[stride + 3 + 0] = surface[0].Position._x;
+                                vertexAtributes[stride + 3 + 1] = surface[0].Position._y;
+                                vertexAtributes[stride + 3 + 2] = surface[0].Position._z;
 
-                        stride += (surface.NumberOfPoints - 2) * 3 * 3; // (кол-во точек - 2 ) * 3 атрибута и * 3 треугольника
+                                vertexAtributes[stride + 3 * k - 1 + 0] = surface[k - 1].Position._x;
+                                vertexAtributes[stride + 3 * k - 1 + 1] = surface[k - 1].Position._y;
+                                vertexAtributes[stride + 3 * k - 1 + 2] = surface[k - 1].Position._z;
+
+                                vertexAtributes[stride + 3 * k + 0] = surface[k].Position._x;
+                                vertexAtributes[stride + 3 * k + 1] = surface[k].Position._y;
+                                vertexAtributes[stride + 3 * k + 2] = surface[k].Position._z;
+
+                            }
+                        stride += numbOfVerts * 3;
                     }
+
                 }
             }
         }

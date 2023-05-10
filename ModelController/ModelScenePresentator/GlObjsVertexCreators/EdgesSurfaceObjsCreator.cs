@@ -15,31 +15,29 @@ namespace ModelController.ModelScenePresentator.GlObjsVertexCreators
     {
         public void Create(ref int stride, bool[] vertexAtributes, ISurfaceObject[] surfaceElement)
         {
-            var surfacesCount = 0;
             foreach (var surfaces in surfaceElement)
             {
                 if (surfaces.ViewState)
                 {
-                    foreach (var surface in surfaces.GetSurface())
+                    var surfs = surfaces.GetSurface().ToArray();
+                    for (var i = 0; i < surfs.Length; ++i)
                     {
-                        if (surface.ViewState)
+                        var parity = (i & 1) == 0;
+                        vertexAtributes[stride + 1] = true;
+                        if (parity && i == surfs.Length - 1)
+                            vertexAtributes[stride + 0] = vertexAtributes[stride + 2] = true;
+                        else if (parity)
                         {
-                            if ((surfacesCount & 1) == 0)
-                            {
-                                vertexAtributes[stride + 0] = true;
-                                vertexAtributes[stride + 1] = true;
-                                vertexAtributes[stride + 2] = false;
-                            }
-                            else
-                            {
-                                vertexAtributes[stride + 0] = false;
-                                vertexAtributes[stride + 1] = true;
-                                vertexAtributes[stride + 2] = true;
-                            }
-                            surfacesCount++;
-                            stride += 3;
-                        } 
+                            vertexAtributes[stride + 0] = true;
+                            vertexAtributes[stride + 2] = false;
+                        }
+                        else
+                        {
+                            vertexAtributes[stride + 0] = false;
+                            vertexAtributes[stride + 2] = true;
+                        }
                     }
+                    stride += 3;
                 }
             }
         }
