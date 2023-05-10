@@ -67,6 +67,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\ModelController\bin\Debug\ModelController.dll</HintPath>
     </Reference>
+    <Reference Include="SceneInterface, Version=1.0.4.10, Culture=neutral, PublicKeyToken=f4632fed43ef5153, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Scene\SceneInterface\bin\Release\SceneInterface.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -96,7 +100,6 @@
     <None Include="Examples\3D\Korpus.inp" />
     <None Include="Examples\3D\Lazer.inp" />
     <None Include="Examples\3D\untitled.inp" />
-    <None Include="Examples\3D\zub.inp" />
     <None Include="Examples\STL\ACII.stl" />
     <None Include="Examples\VIsual-Mesh\big_cubeDATA1.ASC" />
     <None Include="Examples\VIsual-Mesh\cilinder3DATA1.ASC" />

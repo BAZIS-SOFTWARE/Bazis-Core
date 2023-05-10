@@ -21,33 +21,40 @@ namespace ModelController.ModelScenePresentator
         public ModelScenePresentator(ModelData modelData)
         {
             this.modelData = modelData;
-            var sortedObjs = GetSortedObjects(modelData.ObjectData.ToArray());
+
+            var objsTypes = modelData.ObjectData.GetObjectTypes();
+
+            //var sortedObjs = GetSortedObjects(modelData.ObjectData.ToArray());
 
             presentors = new Dictionary<string, ObjsPresenter>();
 
-            foreach (var sortedObj in sortedObjs)
+            foreach (var objsType in objsTypes)
             {
-                if(sortedObj.Key == "Узлы")
+                switch (objsType)
                 {
-                    var pointObjsCreator = new PointObjsPresenter(sortedObjs[sortedObj.Key].ToArray());
-                    presentors.Add("Узлы", pointObjsCreator);
-                }
-                else if(sortedObj.Key == "Элементы3D" | sortedObj.Key == "Элементы2D" | sortedObj.Key == "Поверхность")
-                {
-                    var surfaceObjs = sortedObjs[sortedObj.Key].Select(x => (ISurfaceObject)x);
-                    var surfaceObjsCreator = new SurfaceObjsPresenter(surfaceObjs.ToArray());
-
-                    presentors.Add(sortedObj.Key, surfaceObjsCreator);
-                }
-                else if(sortedObj.Key == "Элементы1D" | sortedObj.Key == "Линия")
-                {
-                    var lineObjs = sortedObjs[sortedObj.Key].Select(x => (ILineObject)x);
-                    var lineObjsCreator = new LineObjsPresenter(lineObjs.ToArray());
-                    presentors.Add(sortedObj.Key, lineObjsCreator);
+                    case "Узлы":
+                        var pointObjsCreator = new PointObjsPresenter(modelData.ObjectData.FindMany(objsType).ToArray());
+                        presentors.Add(objsType, pointObjsCreator);
+                        break;
+                    case "Элементы1D":
+                    case "Линии":
+                        var lineObjs = modelData.ObjectData.Where(x => x.ObjType == objsType).
+    Select(x => (ILineObject)x);
+                        var lineObjsCreator = new LineObjsPresenter(lineObjs.ToArray());
+                        presentors.Add(objsType, lineObjsCreator);
+                        break;
+                    case "Элементы2D":
+                    case "Элементы3D":
+                    case "Поверхность":
+                        var surfaceObjs = modelData.ObjectData.Where(x => x.ObjType == objsType).
+    Select(x => (ISurfaceObject)x);
+                        var surfaceObjsCreator = new SurfaceObjsPresenter(surfaceObjs.ToArray());
+                        break;
+                    default:
+                        break;
                 }
             }
-
-        }   
+        }
 
         public Tuple<int, int, int> CreateVBOIndexes(string objsType)
         {
@@ -138,18 +145,18 @@ namespace ModelController.ModelScenePresentator
             }
         }
 
-        public Dictionary<string, List<ModelObject>> GetSortedObjects(ModelObject[] modelObjects)
-        {
-            var sortedObjs = new Dictionary<string, List<ModelObject>>();
-            foreach (var modelObject in modelObjects)
-            {
-                if (!sortedObjs.ContainsKey(modelObject.ObjType))
-                    sortedObjs.Add(modelObject.ObjType, new List<ModelObject>() { modelObject });
-                else
-                    sortedObjs[modelObject.ObjType].Add(modelObject);
-            }
-            return sortedObjs;
-        }
+        //public Dictionary<string, List<ModelObject>> GetSortedObjects(ModelObject[] modelObjects)
+        //{
+        //    var sortedObjs = new Dictionary<string, List<ModelObject>>();
+        //    foreach (var modelObject in modelObjects)
+        //    {
+        //        if (!sortedObjs.ContainsKey(modelObject.ObjType))
+        //            sortedObjs.Add(modelObject.ObjType, new List<ModelObject>() { modelObject });
+        //        else
+        //            sortedObjs[modelObject.ObjType].Add(modelObject);
+        //    }
+        //    return sortedObjs;
+        //}
 
         public IEnumerable<string> GetObjectsTypes()
         {
@@ -277,19 +284,19 @@ namespace ModelController.ModelScenePresentator
             throw new System.NotImplementedException();
         }
 
-        public GLObjType GetObjectsGlType(string objsType)
-        {
-            if (objsType == "Узлы")
-            {
-                return GLObjType.point;
-            }
-            else if (objsType == "Элементы3D" | objsType == "Элементы2D" | objsType == "Поверхность")
-            {
-                return GLObjType.triangle;
-            }
-            else return GLObjType.line;
+        //public GLObjType GetObjectsGlType(string objsType)
+        //{
+        //    if (objsType == "Узлы")
+        //    {
+        //        return GLObjType.point;
+        //    }
+        //    else if (objsType == "Элементы3D" | objsType == "Элементы2D" | objsType == "Поверхность")
+        //    {
+        //        return GLObjType.triangle;
+        //    }
+        //    else return GLObjType.line;
 
-        }
+        //}
 
         public List<Line> FindBoundaries()
         {
@@ -313,6 +320,24 @@ namespace ModelController.ModelScenePresentator
         public Point3D GetObjCentre(int index, string objsType)
         {
             return presentors[objsType][index].CalcCentralPoint();
+        }
+
+        public GLObjType GetObjectsGlType(string objsType)
+        {
+            switch (objsType)
+            {
+                case "Узлы":
+                    return GLObjType.point;
+                case "Элементы1D":
+                case "Линии":
+                    return GLObjType.line;
+                case "Элементы2D":
+                case "Элементы3D":
+                case "Поверхность":
+                    return GLObjType.triangle;
+                default:
+                    return GLObjType.none;
+            }
         }
 
         //public List<Point3D> GetObjectsCoords(string objsType)

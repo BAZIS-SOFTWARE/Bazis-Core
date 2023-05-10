@@ -16,6 +16,7 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
         {
             this.pointObjects = pointObjects;
         }
+/// <inheritdoc/>
 
 
         public override Tuple<int, int, int> CreateIndexes()
