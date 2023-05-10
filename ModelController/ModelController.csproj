@@ -53,12 +53,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\bin\Debug\Model.dll</HintPath>
     </Reference>
-    <Reference Include="ModelController, Version=1.0.5.10, Culture=neutral, PublicKeyToken=2804256ee81d4535, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bazis.ModelSolution.1.0.5\lib\net48\ModelController.dll</HintPath>
-    </Reference>
-    <Reference Include="ModelParcer, Version=1.0.1.0, Culture=neutral, PublicKeyToken=2804256ee81d4535, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bazis.ModelSolution.1.0.5\lib\net48\ModelParcer.dll</HintPath>
-    </Reference>
     <Reference Include="Scene, Version=2.0.1.0, Culture=neutral, PublicKeyToken=19779f7b74b7d539, processorArchitecture=MSIL">
       <HintPath>..\packages\Bazis.SceneSolution.2.0.2\lib\net48\Scene.dll</HintPath>
     </Reference>
