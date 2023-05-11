@@ -48,8 +48,8 @@
     <Reference Include="MathNet.Numerics, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cd8b63ad3d691a37, processorArchitecture=MSIL">
       <HintPath>..\packages\MathNet.Numerics.Signed.5.0.0\lib\net48\MathNet.Numerics.dll</HintPath>
     </Reference>
-    <Reference Include="SceneInterface, Version=1.0.2.10, Culture=neutral, PublicKeyToken=f4632fed43ef5153, processorArchitecture=MSIL">
-      <HintPath>..\packages\SceneInterface.1.0.2.10\lib\net48\SceneInterface.dll</HintPath>
+    <Reference Include="SceneInterface">
+      <HintPath>..\..\Scene1\bin\Release\SceneInterface.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
