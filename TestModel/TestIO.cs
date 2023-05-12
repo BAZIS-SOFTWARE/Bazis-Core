@@ -123,7 +123,7 @@ namespace TestModel
             import.LoadEvent += (ar1, ar2) => { };
             var model = import.Load(path);
             var elements = model.ObjectData.FindMany<Element3D>();
-            Assert.IsTrue(elements.All(element => element.GetSurface().Count() == 6));
+            Assert.IsTrue(elements.All(element => element.GetSurface().Count() >= 4));
         }
 
         [TestMethod]

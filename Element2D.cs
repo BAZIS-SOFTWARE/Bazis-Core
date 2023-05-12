@@ -53,12 +53,14 @@ namespace Model
 
         public float CalcSquare()
         {
+
+
             var pAr = GetPoints().ToArray();
 
             var v1 = new Point3D(pAr[1]._x - pAr[0]._x, pAr[1]._y - pAr[0]._y, pAr[1]._z - pAr[0]._z);
             var v2 = new Point3D(pAr[2]._x - pAr[0]._x, pAr[2]._y - pAr[0]._y, pAr[2]._z - pAr[0]._z);
 
-            var vProd = Vector.GetVectorsProd(v1, v2);
+            var vProd = Vector.CrossProd(v1, v2);
             var square = Math.Abs(Vector.GetVectorLenght(vProd) / 2);
             return square;
         }

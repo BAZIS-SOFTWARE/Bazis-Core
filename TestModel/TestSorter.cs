@@ -20,7 +20,7 @@ namespace TestModel
             loader.LoadEvent += (ar1, ar2) => { };
 
             //act
-            var modelBPF = loader.Load(@"C:\Projs\TestProjTerm\Cub\cub_unsorted.bpf");
+            var modelBPF = loader.Load(@"..\..\Examples\3D\cub_unsorted.bpf");
             model.Load(modelBPF);
 
             //assert
@@ -33,15 +33,15 @@ namespace TestModel
         }
 
         [TestMethod]
-        public void SortNodeByAnticlockwise_XPositiveYPositive()
+        public void SortNodeByClockwise_XPositiveYPositive()
         {
             //assing
 
             var nodes = new Node[]
             {
                 new Node(0, new Point3D(0,0,0)),
-                new Node(1, new Point3D(5,0,0)),
-                new Node(2, new Point3D(1.5f,1,0)),
+                new Node(1, new Point3D(1.5f,1,0)),
+                new Node(2, new Point3D(5,0,0)),
                 new Node(3, new Point3D(6,1,0))
             };
 
@@ -49,13 +49,13 @@ namespace TestModel
             var surf = new Surface(0, nodes, Model.Interfaces.ObjKind.ElementSurface);
 
             //assert
-            if (!surf[0].Equals(nodes[0]))
+            if (!surf[0].Equals(nodes[2]))
                 throw new Exception();
-            if (!surf[1].Equals(nodes[1]))
+            if (!surf[1].Equals(nodes[3]))
                 throw new Exception();
-            if (!surf[2].Equals(nodes[3]))
+            if (!surf[2].Equals(nodes[1]))
                 throw new Exception();
-            if (!surf[3].Equals(nodes[2]))
+            if (!surf[3].Equals(nodes[0]))
                 throw new Exception();
         }
 

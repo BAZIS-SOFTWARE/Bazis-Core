@@ -47,11 +47,11 @@
     </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Functions, Version=1.0.1.30, Culture=neutral, PublicKeyToken=65fde98421b2fc88, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bazis.Functions.1.0.1\lib\net48\Functions.dll</HintPath>
+    <Reference Include="Functions, Version=1.0.1.40, Culture=neutral, PublicKeyToken=65fde98421b2fc88, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bazis.Functions.1.0.2\lib\net48\Functions.dll</HintPath>
     </Reference>
-    <Reference Include="Geometry, Version=2.0.2.10, Culture=neutral, PublicKeyToken=cadb58b3f6b10f0c, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bazis.Geometry.2.0.2\lib\net48\Geometry.dll</HintPath>
+    <Reference Include="Geometry, Version=2.0.3.20, Culture=neutral, PublicKeyToken=cadb58b3f6b10f0c, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bazis.Geometry.2.0.5\lib\net48\Geometry.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\MSTest.TestFramework.1.3.2\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.dll</HintPath>
@@ -87,7 +87,6 @@
     <None Include="Examples\2D_axi\2Dval.inp" />
     <None Include="Examples\2D_axi\cil.inp" />
     <None Include="Examples\2D_axi\tube.inp" />
-    <None Include="Examples\3D\box1.inp" />
     <None Include="Examples\3D\box2.inp" />
     <None Include="Examples\3D\Korpus.inp" />
     <None Include="Examples\3D\Lazer.inp" />
@@ -113,6 +112,10 @@
     <Folder Include="Examples\CDB\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Model.csproj">
+      <Project>{18dc227e-ba77-4c78-af7a-b2391626c31b}</Project>
+      <Name>Model</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ModelController\ModelController.csproj">
       <Project>{0040c7b5-aa26-42c4-b3a0-c7ff40ec8709}</Project>
       <Name>ModelController</Name>

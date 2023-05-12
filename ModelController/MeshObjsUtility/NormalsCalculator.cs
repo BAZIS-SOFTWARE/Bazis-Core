@@ -18,27 +18,21 @@ namespace ModelController.MeshObjsUtility
 
         public void CalcNodeNormals()
         {
-            //var interfaceNodesFinder = new FindInterfacedNodes(elements);
-            //var interfaceNodes = interfaceNodesFinder.Find();
-            //var dict = new Dictionary<int, Point3D>();
-
-            //foreach (var interfaceNode in interfaceNodes)
-            //    dict.Add(interfaceNode.Key, new Point3D());
-
             foreach (var element in elements)
             {
+                var centre = element.CalcCentralPoint();
                 foreach (var surface in element.GetSurface())
                 {
                     var normal = surface.CalcNormal();
+                    var proj = centre.GetPointProectionOnPlane(surface[0].Position, normal);
+                    var normalV = proj.Sub(centre);
                     foreach (var node in surface.GetNodes())
                     {
                         if (node.ViewState)
-                            node.Normal = node.Normal.Sum(normal);
+                            node.Normal = node.Normal.Sum(normalV);
                     }
                 }
             }
-
-            //return dict;
         }
 
         public List<Geometry.Line> CalcElemsNormals()
