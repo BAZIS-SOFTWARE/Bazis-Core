@@ -64,8 +64,8 @@ namespace TestModel
             var edges = presentator.CreateVBOEdges("Элементы2D", values.Item3);
             Assert.AreEqual(6, edges.Length);
             var expectedFlags = new bool[] { true, true, false, false, true, true };
-            for (var i = 0; i < expectedFlags.Length; ++i)
-                Assert.AreEqual(true, edges[i]);
+            for(var i = 0; i < expectedFlags.Length; ++i)
+                Assert.AreEqual(expectedFlags[i], edges[i]);
         }
 
         [TestMethod]
@@ -103,8 +103,8 @@ namespace TestModel
                 new Node(14, new Point3D(1.0f,3.0f,0.0f))
             };
             var el2D = new Element2D(0, first, ObjKind.Triangle); var el2D2 = new Element2D(1, second, ObjKind.Triangle);
-            var el2D3 = new Element2D(2, second, ObjKind.Triangle); var el2D4 = new Element2D(3, second, ObjKind.Triangle);
-            var el2D5 = new Element2D(4, second, ObjKind.Triangle);
+            var el2D3 = new Element2D(2, third, ObjKind.Triangle); var el2D4 = new Element2D(3, four, ObjKind.Triangle);
+            var el2D5 = new Element2D(4, five, ObjKind.Triangle);
             model.ObjectData.Add(el2D); model.ObjectData.Add(el2D2); model.ObjectData.Add(el2D3); model.ObjectData.Add(el2D4);
             model.ObjectData.Add(el2D5);
             var presentator = new ModelScenePresentator(model);
@@ -114,8 +114,8 @@ namespace TestModel
             var expectedFlags = new bool[] { true, true, false, false, true, true, 
                                              true, true, false, false, true, true,
                                              true, true, true };
-            for (var i = 0; i < expectedFlags.Length; ++i)
-                Assert.AreEqual(true, edges[i]);
+            for(var i = 0; i < expectedFlags.Length; ++i)
+                Assert.AreEqual(expectedFlags[i], edges[i]);
         }
     }
 }

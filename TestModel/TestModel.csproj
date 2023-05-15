@@ -59,14 +59,6 @@
     <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\MSTest.TestFramework.1.3.2\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll</HintPath>
     </Reference>
-    <Reference Include="Model, Version=1.0.3.50, Culture=neutral, PublicKeyToken=2804256ee81d4535, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\bin\Debug\Model.dll</HintPath>
-    </Reference>
-    <Reference Include="ModelController, Version=1.0.5.10, Culture=neutral, PublicKeyToken=2804256ee81d4535, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ModelController\bin\Debug\ModelController.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -117,6 +109,17 @@
     <Folder Include="Examples\CDB\" />
   </ItemGroup>
   <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Model.csproj">
+      <Project>{18dc227e-ba77-4c78-af7a-b2391626c31b}</Project>
+      <Name>Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ModelController\ModelController.csproj">
+      <Project>{0040c7b5-aa26-42c4-b3a0-c7ff40ec8709}</Project>
+      <Name>ModelController</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ModelParcer\ModelParcer.csproj">
       <Project>{49c98946-3edb-4b2d-83af-34ccf56111d5}</Project>
       <Name>ModelParcer</Name>
