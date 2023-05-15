@@ -6,6 +6,7 @@ using ModelController.ModelScenePresentator;
 using ModelController.ModelScenePresentator.GlObjsArraysCreators;
 using ModelController.ModelScenePresentator.GlObjsVertexCreators;
 using ModelParcer;
+using SceneInterface;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -20,6 +21,34 @@ namespace TestModel
     [TestClass]
     public class TestEdgeFlags
     {
+        [TestMethod]
+        public void TestOnComplicatedModel()
+        {
+            var model = new ModelData();
+            var loader = new LoadModelFromCDBTextFile();
+            loader.LoadEvent += (ar1, ar2) => { };
+
+            //var loadModel = loader.Load(@"..\..\Examples\3D\Lazer.inp");
+            var loadModel = loader.Load(@"..\..\Examples\CDB\longModel.cdb");
+
+            model.Load(loadModel);
+
+            var presenter = new ModelScenePresentator(model);
+
+            foreach (string item in presenter?.GetObjectsTypes())
+            {
+                presenter.HideInsideObjects(item);
+
+                Tuple<int, int, int> tuple = presenter.CreateVBOIndexes(item);
+                int[] ptrs = presenter.CreateVBOPointers(item, tuple.Item1);
+                float[] glCoords = presenter.CreateVBOVertexes(item, tuple.Item2, "координаты");
+                float[] glColors = presenter.CreateVBOVertexes(item, tuple.Item2, "цвет");
+                float[] glNormals = presenter.CreateVBOVertexes(item, tuple.Item2, "нормаль");
+                bool[] edges = presenter.CreateVBOEdges(item, tuple.Item3);
+
+                Assert.AreEqual(tuple.Item3, edges.Length);
+            }
+        }
         [TestMethod]
         public void TestOnSimpleTriangle() 
         { 
@@ -43,82 +72,50 @@ namespace TestModel
         public void TestOnSimpleRectangle() 
         {
             var model = new ModelData();
-            var first = new Node[]
+            var nodes = new Node[]
             {
                 new Node(0, new Point3D(0.0f,0.0f,0.0f)),
                 new Node(1, new Point3D(1.0f,0.0f,0.0f)),
-                new Node(2, new Point3D(1.0f,1.0f,0.0f))
+                new Node(2, new Point3D(1.0f,1.0f,0.0f)),
+                new Node(3, new Point3D(0.0f,1.0f,0.0f))
             };
-            var second = new Node[]  
-            {
-                new Node(3, new Point3D(0.0f,0.0f,0.0f)),
-                new Node(4, new Point3D(1.0f,1.0f,0.0f)),
-                new Node(5, new Point3D(0.0f,1.0f,0.0f))
-            };
-            var el2D = new Element2D(0, first, ObjKind.Triangle);
-            var el2D2 = new Element2D(1, second, ObjKind.Triangle);
+            var el2D = new Element2D(0, nodes, ObjKind.Quad);
+
             model.ObjectData.Add(el2D);
-            model.ObjectData.Add(el2D2);
+
             var presentator = new ModelScenePresentator(model);
             var values = presentator.CreateVBOIndexes("Элементы2D");
             var edges = presentator.CreateVBOEdges("Элементы2D", values.Item3);
             Assert.AreEqual(6, edges.Length);
             var expectedFlags = new bool[] { true, true, false, false, true, true };
             for (var i = 0; i < expectedFlags.Length; ++i)
-                Assert.AreEqual(true, edges[i]);
+                Assert.AreEqual(expectedFlags[i], edges[i]);
         }
 
         [TestMethod]
         public void TestOnPolygon()
         {
             var model = new ModelData();
-            var first = new Node[]
+            var nodes = new Node[]
             {
                 new Node(0, new Point3D(0.0f,0.0f,0.0f)),
                 new Node(1, new Point3D(1.0f,0.0f,0.0f)),
-                new Node(2, new Point3D(1.0f,1.0f,0.0f))
+                new Node(2, new Point3D(1.0f,1.0f,0.0f)),
+                new Node(3, new Point3D(0.0f,1.0f,0.0f)),
+                new Node(4, new Point3D(-1.0f,1.0f,0.0f)),
+                new Node(5, new Point3D(-1.0f,0.0f,0.0f))
             };
-            var second = new Node[]
-            {
-                new Node(3, new Point3D(0.0f,0.0f,0.0f)),
-                new Node(4, new Point3D(1.0f,1.0f,0.0f)),
-                new Node(5, new Point3D(0.0f,1.0f,0.0f))
-            };
-            var third = new Node[]
-            {
-                new Node(6, new Point3D(0.0f,1.0f,0.0f)),
-                new Node(7, new Point3D(1.0f,1.0f,0.0f)),
-                new Node(8, new Point3D(1.0f,2.0f,0.0f))
-            };
-            var four = new Node[]
-            {
-                new Node(9, new Point3D(0.0f,1.0f,0.0f)),
-                new Node(10, new Point3D(1.0f,2.0f,0.0f)),
-                new Node(11, new Point3D(0.0f,2.0f,0.0f))
-            };
-            var five = new Node[]
-            {
-                new Node(12, new Point3D(0.0f,2.0f,0.0f)),
-                new Node(13, new Point3D(1.0f,2.0f,0.0f)),
-                new Node(14, new Point3D(1.0f,3.0f,0.0f))
-            };
-            var el2D = new Element2D(0, first, ObjKind.Triangle); var el2D2 = new Element2D(1, second, ObjKind.Triangle);
-            var el2D3 = new Element2D(2, second, ObjKind.Triangle); var el2D4 = new Element2D(3, second, ObjKind.Triangle);
-            var el2D5 = new Element2D(4, second, ObjKind.Triangle);
-            model.ObjectData.Add(el2D); 
-            model.ObjectData.Add(el2D2); 
-            model.ObjectData.Add(el2D3); 
-            model.ObjectData.Add(el2D4);
-            model.ObjectData.Add(el2D5);
+            var poligon = new Surface(0, nodes, ObjKind.ElementSurface); 
+            model.ObjectData.Add(poligon);
             var presentator = new ModelScenePresentator(model);
-            var values = presentator.CreateVBOIndexes("Элементы2D");
-            var edges = presentator.CreateVBOEdges("Элементы2D", values.Item3);
-            Assert.AreEqual(15, edges.Length);
-            var expectedFlags = new bool[] { true, true, false, false, true, true, 
-                                             true, true, false, false, true, true,
-                                             true, true, true };
+            var values = presentator.CreateVBOIndexes("Поверхность");
+            var edges = presentator.CreateVBOEdges("Поверхность", values.Item3);
+            
+            Assert.AreEqual(12, edges.Length);
+            var expectedFlags = new bool[] { true, true, false, false, true, false,
+                                             false, true, false, false, true, true};
             for (var i = 0; i < expectedFlags.Length; ++i)
-                Assert.AreEqual(true, edges[i]);
+                Assert.AreEqual(expectedFlags[i], edges[i]);
         }
     }
 }

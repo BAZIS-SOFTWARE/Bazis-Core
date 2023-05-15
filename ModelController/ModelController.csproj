@@ -40,17 +40,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Functions">
-      <HintPath>..\packages\Bazis.Functions.1.0.1\lib\net48\Functions.dll</HintPath>
+      <HintPath>..\packages\Bazis.Functions.1.0.2\lib\net48\Functions.dll</HintPath>
     </Reference>
-    <Reference Include="Geometry, Version=2.0.3.20, Culture=neutral, PublicKeyToken=cadb58b3f6b10f0c, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bazis.Geometry.2.0.5\lib\net48\Geometry.dll</HintPath>
+    <Reference Include="Geometry, Version=2.0.3.30, Culture=neutral, PublicKeyToken=cadb58b3f6b10f0c, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bazis.Geometry.2.0.6\lib\net48\Geometry.dll</HintPath>
     </Reference>
     <Reference Include="MathNet.Numerics, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cd8b63ad3d691a37, processorArchitecture=MSIL">
       <HintPath>..\packages\MathNet.Numerics.Signed.5.0.0\lib\net48\MathNet.Numerics.dll</HintPath>
     </Reference>
-    <Reference Include="SceneInterface, Version=1.0.1.10, Culture=neutral, PublicKeyToken=f4632fed43ef5153, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Scene\SceneInterface\bin\Release\SceneInterface.dll</HintPath>
+    <Reference Include="SceneInterface, Version=1.0.2.10, Culture=neutral, PublicKeyToken=f4632fed43ef5153, processorArchitecture=MSIL">
+      <HintPath>..\packages\SceneInterface.1.0.2.10\lib\net48\SceneInterface.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />

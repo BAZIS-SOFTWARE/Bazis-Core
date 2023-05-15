@@ -75,7 +75,7 @@ namespace ModelController.ModelScenePresentator
 
         public bool[] CreateVBOEdges(string objsType, int vertexLength)
         {
-            var objsCreator = (SurfaceObjsPresenter)GetObjectsPresenter(objsType);
+            var objsCreator = GetObjectsPresenter(objsType);
 
             if (objsCreator == null)
                 throw new Exception("Объект не найден!");
@@ -337,7 +337,7 @@ namespace ModelController.ModelScenePresentator
                 case "Поверхность":
                     return GLObjType.triangle;
                 default:
-                    return GLObjType.none;
+                    return GLObjType.point;
             }
         }
 

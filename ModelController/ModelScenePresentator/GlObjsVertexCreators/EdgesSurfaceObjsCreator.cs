@@ -11,33 +11,38 @@ using System.Threading.Tasks;
 
 namespace ModelController.ModelScenePresentator.GlObjsVertexCreators
 {
-    public class EdgesSurfaceObjsCreator : IEdgeObjsVertexCreator
+    public class EdgesSurfaceObjsCreator
     {
-        public void Create(ref int stride, bool[] vertexAtributes, ISurfaceObject[] surfaceElement)
+        public void Create(ref int stride, bool[] vertexAtributes, ISurfaceObject[] surfaceElements)
         {
-            foreach (var surfaces in surfaceElement)
+            foreach (var surfaceElement in surfaceElements)
             {
-                if (surfaces.ViewState)
+                if (surfaceElement.ViewState)
                 {
-                    var surfs = surfaces.GetSurface().ToArray();
-                    for (var i = 0; i < surfs.Length; ++i)
+                    foreach (var surface in surfaceElement.GetSurface())
                     {
-                        var parity = (i & 1) == 0;
-                        vertexAtributes[stride + 1] = true;
-                        if (parity && i == surfs.Length - 1)
-                            vertexAtributes[stride + 0] = vertexAtributes[stride + 2] = true;
-                        else if (parity)
+                        if (surface.ViewState)
                         {
-                            vertexAtributes[stride + 0] = true;
-                            vertexAtributes[stride + 2] = false;
-                        }
-                        else
-                        {
-                            vertexAtributes[stride + 0] = false;
-                            vertexAtributes[stride + 2] = true;
+                            for (int i = 0; i < surface.NumberOfPoints - 2; i++)
+                            {
+                                if (i == 0)
+                                {
+                                    vertexAtributes[stride + 3 * i] = true;
+                                    vertexAtributes[stride + 3 * i + 1] = true;
+                                    vertexAtributes[stride + 3 * i + 2] = true;
+                                }
+ 
+                                else
+                                {
+                                    vertexAtributes[stride + 3 * i - 1] = false;
+                                    vertexAtributes[stride + 3 * i] = false;
+                                    vertexAtributes[stride + 3 * i + 1] = true;
+                                    vertexAtributes[stride + 3 * i + 2] = true;
+                                }
+                            }
+                            stride += (surface.NumberOfPoints - 2) * 3;
                         }
                     }
-                    stride += 3;
                 }
             }
         }

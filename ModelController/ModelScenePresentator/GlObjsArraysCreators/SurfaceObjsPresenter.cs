@@ -42,7 +42,7 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
                         var numbers = surface.GetNodes().Select(x => x.Number).ToArray();
 
                         Array.Sort(numbers);
-                        var surfInd = numbers[0].ToString() + numbers[1].ToString() + numbers[2].ToString();
+                        var surfInd = string.Join("", numbers);   //numbers[0].ToString() + numbers[1].ToString() + numbers[2].ToString();
 
                         if (!surfDict.ContainsKey(surfInd))
                         {
@@ -59,17 +59,6 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
                     }
             }
 
-            //foreach (var elemSurf in surfDict)
-            //{
-            //    if (elemSurf.Value.Count == 1)
-            //        elemSurf.Value[0].ViewState = true;
-            //    else
-            //    {
-            //        elemSurf.Value[0].ViewState = false;
-            //        elemSurf.Value[1].ViewState = false;
-            //    }
-            //}
-
         }
 
         public override Tuple<int, int, int> CreateIndexes()
@@ -85,7 +74,6 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
                     {
                         if (surface.ViewState)
                         {
-                            // (surface.NumberOfPoints - 2)[triangles] * 3 [nodes] * 3 [attribs]
                             vertexes = vertexes + (surface.NumberOfPoints - 2) * 3 * 3;
                             indexes = indexes + (surface.NumberOfPoints - 2) * 3;
                             edges = edges + (surface.NumberOfPoints - 2) * 3;
@@ -153,7 +141,7 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
             var edgesArray = new bool[edgesLength];
             var stride = 0;
 
-            IEdgeObjsVertexCreator vertexCreator = new EdgesSurfaceObjsCreator();
+            var vertexCreator = new EdgesSurfaceObjsCreator();
             vertexCreator.Create(ref stride, edgesArray, surfaceElements);  
             return edgesArray;
         }

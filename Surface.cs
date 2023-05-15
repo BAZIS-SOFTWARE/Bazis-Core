@@ -45,7 +45,8 @@ namespace Model
             var sInd = 1;
 
             var firstNode = nodes[fInd];
-            var baseVector = nodes[sInd].Position.Sub(firstNode.Position);
+            var secondNode = nodes[sInd];
+            //var baseVector = secondNode.Position.Sub(firstNode.Position);
 
             //baseVector.Round(2);
             var lenght = nodes.Length;
@@ -58,7 +59,7 @@ namespace Model
             {
                 if (iterationCounter > iterationMax) break;
 
-                var resu = CheckVectorsOrientation(nodes, firstNode, baseVector);
+                var resu = CheckVectorsOrientation(nodes, firstNode, secondNode);
 
                 if (resu)
                 {
@@ -78,42 +79,56 @@ namespace Model
                 if (sInd == nodes.Length) sInd = 0;
 
                 firstNode = nodes[fInd];
-                baseVector = nodes[sInd].Position.Sub(firstNode.Position);
+                //baseVector = nodes[sInd].Position.Sub(firstNode.Position);
+                secondNode = nodes[sInd];
 
                 iterationCounter++;
             }
             return ar.ToArray();
         }
 
-        private bool CheckVectorsOrientation(Node[] nodes, Node firstNode, Point3D baseVector)
+        private bool CheckVectorsOrientation(Node[] nodes, Node firstNode, Node secondNode)
         {
-            bool isPointInside = false;
+            //other sort
+            //146 Узлы : -0.047|-0.05212305|0.1608275
+            //18 Узлы: -0.047 | -0.04709208 | 0.1510405
+
+
+            //bool isPointInside = false;
             var temp = new List<Point3D>();
+            var baseVector = secondNode.Position.Sub(firstNode.Position);
 
             foreach (var node in nodes)
             {
-                if (!node.Equals(firstNode))
+                if (!node.Equals(firstNode) & !node.Equals(secondNode))
                 {
-
                     var actVector = node.Position.Sub(firstNode.Position);
 
                     var prod = Vector.CrossProd(baseVector, actVector);
-                    if (prod == new Point3D(0, 0, 0))
-                    {
-                        var baseLength = Vector.GetVectorLenght(baseVector);
-                        var actLength = Vector.GetVectorLenght(actVector);
-                        if (baseLength - actLength > 1e-4)
-                        {
-                            isPointInside = true; break;
-                        }
-                    }
+
+                    if (Math.Abs(prod._x) < 1e-6)
+                        prod._x = 0;
+                    if (Math.Abs(prod._y) < 1e-6)
+                        prod._y = 0;
+                    if (Math.Abs(prod._z) < 1e-6)
+                        prod._z = 0;
+                    //if (prod == new Point3D(0, 0, 0))
+                    //{
+                    //    var baseLength = Vector.GetVectorLenght(baseVector);
+                    //    var actLength = Vector.GetVectorLenght(actVector);
+                    //    if (baseLength - actLength > 1e-4)
+                    //    {
+                    //        isPointInside = true; break;
+                    //    }
+                    //}
                     temp.Add(prod);
                 }
 
             }
-            var resu = false;
-            if (!isPointInside) resu = Vector.IsVectorsCoDirectional(temp);
-            return resu;
+            //var resu = false;
+            //if (!isPointInside) resu = Vector.IsVectorsCoDirectional(temp);
+            //return resu;
+            return Vector.IsVectorsCoDirectional(temp);
         }
 
         public Node this [int ind]

@@ -111,8 +111,13 @@ namespace TestModel
             Assert.AreEqual(3321, model.ObjectData.NumberOfNodes);
 
             var elements = model.ObjectData.FindMany<Element3D>();
-            Assert.IsTrue(elements.All(element => element.GetSurface().
-            All(surface => surface.GetPoints().Count() > 2)));
+
+            var countTetra = elements.Where(element => element.GetSurface().
+            All(surface => surface.NumberOfPoints == 3)).Count();
+
+            var countHexa = elements.Where(element => element.GetSurface().
+All(surface => surface.NumberOfPoints == 4)).Count();
+
         }
 
         [TestMethod]
