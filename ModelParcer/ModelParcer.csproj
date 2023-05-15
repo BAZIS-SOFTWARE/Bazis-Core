@@ -68,10 +68,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Model.csproj">
-      <Project>{18dc227e-ba77-4c78-af7a-b2391626c31b}</Project>
-      <Name>Model</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ModelController\ModelController.csproj">
       <Project>{0040c7b5-aa26-42c4-b3a0-c7ff40ec8709}</Project>
       <Name>ModelController</Name>

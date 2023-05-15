@@ -102,11 +102,5 @@
     <None Include="ModelSolutionKey.pfx" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Model.csproj">
-      <Project>{18dc227e-ba77-4c78-af7a-b2391626c31b}</Project>
-      <Name>Model</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
