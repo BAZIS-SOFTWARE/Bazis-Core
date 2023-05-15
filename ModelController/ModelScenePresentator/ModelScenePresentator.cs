@@ -75,7 +75,7 @@ namespace ModelController.ModelScenePresentator
 
         public bool[] CreateVBOEdges(string objsType, int vertexLength)
         {
-            var objsCreator = GetObjectsPresenter(objsType);
+            var objsCreator = (SurfaceObjsPresenter)GetObjectsPresenter(objsType);
 
             if (objsCreator == null)
                 throw new Exception("Объект не найден!");
@@ -211,7 +211,7 @@ namespace ModelController.ModelScenePresentator
         }
 
         public void HideObjects(List<int> objsNumbs, string objsType)
-        {
+        {    
             foreach (var objNumb in objsNumbs)
             {
                 modelData.ObjectData.Find(objNumb).ViewState = false;
@@ -232,7 +232,7 @@ namespace ModelController.ModelScenePresentator
             presentors[objsType][index].MasterColor = color;
         }
 
-
+        
 
         public bool ContainsObjecs(string objsType)
         {
@@ -337,7 +337,7 @@ namespace ModelController.ModelScenePresentator
                 case "Поверхность":
                     return GLObjType.triangle;
                 default:
-                    return GLObjType.triangle;
+                    return GLObjType.none;
             }
         }
 

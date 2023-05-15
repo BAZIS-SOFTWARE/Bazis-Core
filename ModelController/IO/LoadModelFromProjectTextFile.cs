@@ -101,7 +101,7 @@ namespace ModelController.IO
 
                 var nodeList = new List<Node>();
                 foreach (var nodeNumber in ar)
-                    nodeList.Add((Node)newMesh.ObjectData.Find(nodeNumber));
+                    nodeList.Add(newMesh.ObjectData.Find(nodes,nodeNumber));
 
                 if (elType == "Элементы3D" | elType == "Элементы 3004")
                 {

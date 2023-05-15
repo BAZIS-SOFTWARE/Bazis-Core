@@ -4,6 +4,7 @@ using Model;
 using Model.Events;
 using ModelController.ModelScenePresentator;
 using ModelParcer;
+using SceneInterface;
 
 namespace TestModel
 {
