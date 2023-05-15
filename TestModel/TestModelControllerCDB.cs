@@ -18,10 +18,7 @@ namespace TestModel
             var loader = new LoadModelFromCDBTextFile();
 
             loader.LoadEvent += (ar1, ar2) => { };
-
-            var path = Path.GetFullPath(".\\").Replace("bin\\Debug\\", "");
-            var files = Directory.GetFiles(path, "longModel.cdb", SearchOption.AllDirectories);
-            var modelCDB = loader.Load(files[0]);
+            var modelCDB = loader.Load(@"..\..\Examples\CDB\longModel.cdb");
 
             model.Load(modelCDB);
 

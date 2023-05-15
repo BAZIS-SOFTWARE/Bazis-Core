@@ -13,6 +13,7 @@ namespace Model
         private List<Surface> surfaces;
         public Element3D(int number, Node[] nodes, ObjKind objKind) : base(number, nodes,objKind)
         {
+
             InitialColor = Color.FromArgb(255, 125, 0);
             MasterColor = Color.FromArgb(255, 125, 0);
             SlaveColor = Color.FromArgb(255, 125, 0);

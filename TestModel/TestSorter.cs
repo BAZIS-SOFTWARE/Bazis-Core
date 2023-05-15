@@ -4,6 +4,7 @@ using Model;
 using Model.Events;
 using ModelController.IO;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace TestModel
@@ -49,13 +50,13 @@ namespace TestModel
             var surf = new Surface(0, nodes, Model.Interfaces.ObjKind.ElementSurface);
 
             //assert
-            if (!surf[0].Equals(nodes[2]))
+            if (!surf[0].Equals(nodes[0]))
                 throw new Exception();
-            if (!surf[1].Equals(nodes[3]))
+            if (!surf[1].Equals(nodes[1]))
                 throw new Exception();
-            if (!surf[2].Equals(nodes[1]))
+            if (!surf[2].Equals(nodes[3]))
                 throw new Exception();
-            if (!surf[3].Equals(nodes[0]))
+            if (!surf[3].Equals(nodes[2]))
                 throw new Exception();
         }
 
@@ -85,6 +86,47 @@ namespace TestModel
                 throw new Exception();
             if (!surf[3].Equals(nodes[3]))
                 throw new Exception();
+        }
+
+        [DataTestMethod]
+        [DataRow(new float[] 
+        { 
+            258,
+            -0.025f,-0.04588125f,0.1662952f,
+            233,
+            -0.036f,-0.03793374f,0.1649841f,
+            229,
+            -0.036f,-0.04588125f,0.1662952f,
+            257,
+            -0.025f,-0.03793373f,0.1649841f,
+        })]
+        [DataRow(new float[]
+        {
+            147,
+            -0.058f,-0.05212305f,0.1608275f,
+            18,
+            -0.047f,-0.04709208f,0.1510405f,
+            146,
+            -0.047f,-0.05212305f,0.1608275f,
+            19,
+            -0.058f,-0.04709209f,0.1510406f
+        })]
+        
+        public void OtherSortNode(float[] ar)
+        {
+            //assing
+            var nodes = new List<Node>();
+            for (int i = 0; i < ar.Length; i+=4)
+            {
+                nodes.Add(new Node((int)ar[i], new Point3D(ar[i + 1], ar[i + 2], ar[i + 3])));
+            }
+
+
+            //act
+            var surf = new Surface(0, nodes.ToArray(), Model.Interfaces.ObjKind.ElementSurface);
+
+            //assert
+            Assert.AreEqual(surf.NumberOfPoints, nodes.Count);
         }
     }
 }
