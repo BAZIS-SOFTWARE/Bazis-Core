@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using ModelController.ModelScenePresentator;
-using SceneInterface;
 
 namespace TestModel
 {
@@ -42,6 +40,39 @@ namespace TestModel
             //if (indexes.Item1 != 4)
                 //throw new Exception();
         }
+
+        //[TestMethod]
+        //public void TestComplexPoligons()
+        //{
+        //    var model = new ModelData();
+        //    var loader = new LoadModelFromProjectTextFile();
+        //    loader.LoadEvent += (ar1,ar2) => { };
+        //    //var project = loader.Load(@"C:\Bazis_newGUI\PROJ\Test_3D\Term\two_tetra_term_cycle_multiStep.bpf");
+        //    var modelLoad = loader.Load(@"C:\Projs\TestProjTerm\tube\test.bpf");
+
+        //    model.Load(modelLoad);
+
+        //    var loaderDB = new LoadResultsFileDB();
+        //    loaderDB.LoadEvent += (ar1, ar2) => { };
+        //    var results = loaderDB.Load(@"C:\Projs\TestProjTerm\tube\термическая_0_0_10.db");
+
+        //    var elements = model.ObjectData.FindMany<Element>().ToArray();
+
+        //    var scale = new RainbowScale(4, 150, 0, 10);
+
+        //    var gradientFieldsCreator = new GradientFieldsCreator(elements, scale.ValueRange().ToArray(), scale.ColorRange().ToArray(), 1);
+
+        //    var reultObjects = gradientFieldsCreator.CreateFieldObjects(results[24], "Узлы", "T");
+
+        //    model.ObjectData.AddRange(reultObjects);
+        //    var presenter = new ModelScenePresentator(model);
+
+        //    var inds = presenter.CreateVBOIndexes("Поверхность");
+        //    var ptrs = presenter.CreateVBOPointers("Поверхность", inds.Item1);
+        //    var coords = presenter.CreateVBOVertexes("Поверхность", inds.Item2, "координаты");
+        //    var colors = presenter.CreateVBOVertexes("Поверхность", inds.Item2, "цвет");
+        //    var normals = presenter.CreateVBOVertexes("Поверхность", inds.Item2, "нормаль");
+        //}
 
         [TestMethod]
         public void TestPoligons()

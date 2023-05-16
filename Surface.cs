@@ -9,22 +9,37 @@ using System.Threading.Tasks;
 
 namespace Model
 {
-    
+    /// <summary>
+    /// Surface class
+    /// </summary>
     public class Surface : ModelObject, ISurface, IEquatable<Surface>
     {
         Node[] nodes;
-
+        /// <summary>
+        /// Surface constructor
+        /// </summary>
+        /// <param name="number"></param>
+        /// <param name="nodes"></param>
+        /// <param name="objKind"></param>
         public Surface(int number, Node[] nodes, ObjKind objKind) : base(number)
         {
             ObjKind = objKind;
-         
+
             this.nodes = Anticlockwise(nodes);
+
             ObjType = "Поверхность";
-            NumberOfPoints = nodes.Length;
+
             InitialColor = Color.FromArgb(224, 0, 177);
             MasterColor = Color.FromArgb(224, 0, 177);
             SlaveColor = Color.FromArgb(224, 0, 177);
         }
+        /// <summary>
+        /// Surface constructor
+        /// </summary>
+        /// <param name="number"></param>
+        /// <param name="nodes"></param>
+        /// <param name="objKind"></param>
+        /// <param name="color"></param>
         public Surface(int number, Node[] nodes, ObjKind objKind, Color color) : this(number,nodes,objKind)
         {
             InitialColor = color;
@@ -84,6 +99,10 @@ namespace Model
 
                 iterationCounter++;
             }
+
+            if (ar.Count < nodes.Length) // check arrays 
+                return nodes;
+
             return ar.ToArray();
         }
 
@@ -106,11 +125,11 @@ namespace Model
 
                     var prod = Vector.CrossProd(baseVector, actVector);
 
-                    if (Math.Abs(prod._x) < 1e-6)
+                    if (Math.Abs(prod._x) < 1e-4)
                         prod._x = 0;
-                    if (Math.Abs(prod._y) < 1e-6)
+                    if (Math.Abs(prod._y) < 1e-4)
                         prod._y = 0;
-                    if (Math.Abs(prod._z) < 1e-6)
+                    if (Math.Abs(prod._z) < 1e-4)
                         prod._z = 0;
                     //if (prod == new Point3D(0, 0, 0))
                     //{
@@ -153,7 +172,7 @@ namespace Model
         public override string ObjType { get; }
 /// <inheritdoc/>
 
-        public override int NumberOfPoints { get; }
+        public override int NumberOfPoints { get { return nodes.Length; } }
 /// <inheritdoc/>
 
         public Point3D CalcNormal()
@@ -213,9 +232,13 @@ points.Contains(nodes[2].Position, new Point3DEqualityComparer()))
         /// <returns></returns>
         public IEnumerable<Surface> GetSurface()
         {
-            yield return new Surface(Number, nodes.ToArray(), ObjKind,MasterColor);
+            yield return this;
         }
-
+        /// <summary>
+        /// GetDistance
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
         public float GetDistance(Point3D point)
         {
             var normal = CalcNormal();
