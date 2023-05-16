@@ -23,15 +23,20 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
         {
             var indexes = 0;
             var vertexes = 0;
+            var colors = 0;
 
             foreach (var pointObject in pointObjects)
             {
-                vertexes += 3;
-                indexes++;
+                if (pointObject.ViewState)
+                {
+                    vertexes += 3;
+                    indexes++;
+                    colors += 4;
+                }
             }
 
 
-            return new Tuple<int, int, int>(indexes, vertexes, 0);
+            return new Tuple<int, int, int>(indexes, vertexes, colors);
         }
 /// <inheritdoc/>
 

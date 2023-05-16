@@ -24,6 +24,7 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
         {
             var indexes = 0;
             var vertexes = 0;
+            var colors = 0;
 
             foreach (var lineObj in lineObjects)
             {
@@ -31,10 +32,11 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
                 {
                     vertexes = vertexes + lineObj.NumberOfPoints * 3;
                     indexes = indexes + lineObj.NumberOfPoints;
+                    colors = colors + lineObj.NumberOfPoints * 4;
                 }
             }
 
-            return new Tuple<int, int, int>(indexes, vertexes, 0);
+            return new Tuple<int, int, int>(indexes, vertexes, colors);
         }
 
 
