@@ -1,17 +1,18 @@
 ﻿using Model;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
+using Geometry;
+using Octree;
+using System.Numerics;
 
 namespace ModelController.MeshObjsUtility
 {
     public class FindCoincidentObjects
     {
         public event Action<object, float> ProgressEvent;
-        ObjectsData objectData;
-        float distance;
-        List<int> tempNumbers = new List<int>();
+        private ObjectsData objectData;
+        private float distance;
         public FindCoincidentObjects(ObjectsData objectData, float distance)
         {
             this.objectData = objectData;
@@ -20,51 +21,39 @@ namespace ModelController.MeshObjsUtility
 
         public List<List<int>> Find<T>() where T : ModelObject
         {
-            var double_distance = distance * distance;
-
-            var objs = objectData.FindMany<T>().ToArray();
-
-            foreach (var obj in objs)
-                obj.ViewState = false;
-
-            var objGrps = new List<List<int>>();
-
-            var progress = 0.0f;
-            var progressStep = objs.Length / 10.0f;
-
-            for (int i = 0; i < objs.Length; i++)
+            var items = objectData.FindMany<T>().ToList();
+            var tree = BuildTree(items);
+            items.ForEach(obj => obj.ViewState = false);
+            var result = new List<List<int>>();
+            for (int i = 0; i < items.Count; i++)
             {
-                if (!objs[i].ViewState)
+                if (!items[i].ViewState)
                 {
-                    var temp = new List<int>() { objs[i].Number };
-                    var point_i = objs[i].CalcCentralPoint();
-
-                    for (int j = i + 1; j < objs.Length; j++)
-                    {
-                        var point_j = objs[j].CalcCentralPoint();
-                        var vector = point_j.Sub(point_i);
-
-                        var square = vector._x * vector._x + vector._y * vector._y + vector._z * vector._z;
-
-                        if (square < double_distance)
-                        {
-                            objs[i].MasterColor = Color.Red;
-                            objs[i].ViewState = true;
-                            objs[j].MasterColor = Color.Red;
-                            objs[j].ViewState = true;
-                            temp.Add(objs[j].Number);
-                        }
-                    }
-                    objGrps.Add(temp);
-                }
-
-                if (i >= progress)
-                {
-                    ProgressEvent(this, progress / objs.Length);
-                    progress += progressStep;
+                    var point = items[i].CalcCentralPoint();
+                    var neighbourElements = RadialSearch(point, distance, tree);
+                    neighbourElements.ForEach(x => x.ViewState = true);
+                    result.Add(neighbourElements.Select(x => x.Number).ToList());
                 }
             }
-            return objGrps;
-        }       
+            return result;
+        }
+
+        private PointOctree<T> BuildTree<T>(List<T> items) where T : ModelObject
+        {
+            var initialSize = 10;
+            var tree = new PointOctree<T>(initialSize, Vector3.Zero, 1e-9f);
+            foreach (var item in items)
+            {
+                var point = item.CalcCentralPoint();
+                tree.Add(item, new Vector3(point._x, point._y, point._z));
+            }
+            return tree;
+        }
+
+        private List<T> RadialSearch<T>(Point3D point, float radius, PointOctree<T> tree) where T : ModelObject
+        {
+            return tree.GetNearby(new Vector3(point._x, point._y, point._z), radius)
+                .ToList();
+        }
     }
 }

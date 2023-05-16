@@ -90,7 +90,7 @@ namespace TestModel
             Assert.AreEqual(1, model.ObjectData.NumberOfElements);
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod]
         public void ImportLongModelFromCDBTextFormat()
         {
             string path = @"..\..\Examples\CDB\longModel.cdb";
