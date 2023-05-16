@@ -228,7 +228,7 @@ namespace TestModel
             var loader = new LoadModelFromCDBTextFile();
             loader.LoadEvent += (ar1, ar2) => { };
             var model = loader.Load(@"..\..\Examples\CDB\10e+5Nodes.cdb");
-            var finder = new FindCoincidentObjects(model.ObjectData, 1.1f);
+            var finder = new FindCoincidentObjects(model.ObjectData, 1.0f);
             var coincidentNodes = finder.Find<Node>().ToList();
         }
 

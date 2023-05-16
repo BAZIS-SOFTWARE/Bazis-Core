@@ -19,6 +19,9 @@ namespace ModelController.MeshObjsUtility
             this.distance = distance;
         }
 
+        /// <summary>
+        /// Find groups of objects of type T, which the distance between is less than the specified distance
+        /// </summary>
         public List<List<int>> Find<T>() where T : ModelObject
         {
             var items = objectData.FindMany<T>().ToList();
@@ -38,7 +41,11 @@ namespace ModelController.MeshObjsUtility
             return result;
         }
 
-        private PointOctree<T> BuildTree<T>(List<T> items) where T : ModelObject
+        /// <summary>
+        /// Create an octree to fast search from list of items.
+        /// </summary>
+        private PointOctree<T> BuildTree<T>(List<T> items) 
+            where T : ModelObject
         {
             var initialSize = 10;
             var tree = new PointOctree<T>(initialSize, Vector3.Zero, 1e-9f);
@@ -50,7 +57,11 @@ namespace ModelController.MeshObjsUtility
             return tree;
         }
 
-        private List<T> RadialSearch<T>(Point3D point, float radius, PointOctree<T> tree) where T : ModelObject
+        /// <summary>
+        /// Get all objects inside a sphere of given radius with center in given point.
+        /// </summary>
+        private List<T> RadialSearch<T>(Point3D point, float radius, PointOctree<T> tree)
+            where T : ModelObject
         {
             return tree.GetNearby(new Vector3(point._x, point._y, point._z), radius)
                 .ToList();
