@@ -69,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="SearchModelObjects.cs" />
+    <Compile Include="TestAlphaColor.cs" />
     <Compile Include="TestEdgeFlags.cs" />
     <Compile Include="TestElement.cs" />
     <Compile Include="TestIO.cs" />

@@ -27,12 +27,13 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
 
             foreach (var pointObject in pointObjects)
             {
-                if (pointObject.ViewState)
-                {
-                    vertexes += 3;
-                    indexes++;
-                    colors += 4;
-                }
+                //Закоментировано т.к вызывает exception
+                /*if (pointObject.ViewState)
+                {*/
+                vertexes += 3;
+                indexes++;
+                colors += 4;
+                /*}*/
             }
 
 

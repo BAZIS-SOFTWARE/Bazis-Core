@@ -1,5 +1,6 @@
 ﻿using Model.Interfaces;
 using ModelController.ModelScenePresentator.Interfaces;
+using System.Drawing;
 
 namespace ModelController.ModelScenePresentator.GlObjsVertexCreators
 {
@@ -7,7 +8,10 @@ namespace ModelController.ModelScenePresentator.GlObjsVertexCreators
     {
         public void Create(ref int stride, float[] vertexAtributes, INodeObject nodeObject)
         {
-            var color = nodeObject.MasterColor;
+            //Цвет черный с alpha 0.0 - установим alpha в 1.0f
+            /*var color = nodeObject.MasterColor;*/
+            var color = Color.FromArgb(255, nodeObject.MasterColor.R, nodeObject.MasterColor.G,
+                                                                      nodeObject.MasterColor.B);
 
             for (int k = 0; k < nodeObject.NumberOfPoints; k++)
             {
