@@ -32,14 +32,16 @@ namespace ModelParcer
         public ModelData Load(string path)
         {
             reader = new StreamReader(path);
-            LoadEvent(this, new LoaderEventArgs("Начало загрузки модели"));
+            //Исправление - иначе Exception
+            LoadEvent?.Invoke(this, new LoaderEventArgs("Начало загрузки модели"));
             while (!reader.EndOfStream)
             {
                 var line = reader.ReadLine();
                 if (line.Contains("*NODE"))
                 {
                     line = reader.ReadLine();
-                    LoadEvent(this, new LoaderEventArgs("Начало загрузки узлов"));
+                    //Исправление - иначе Exception
+                    LoadEvent?.Invoke(this, new LoaderEventArgs("Начало загрузки узлов"));
                     while (line != "******* E L E M E N T S *************")
                     {
                         var tokens = line.Replace(" ", "")
@@ -57,7 +59,8 @@ namespace ModelParcer
                 }
                 if (line.Contains("type=T3D2"))
                 {
-                    LoadEvent(this, new LoaderEventArgs("Начало загрузки элементов"));
+                    //Исправление - иначе Exception
+                    LoadEvent?.Invoke(this, new LoaderEventArgs("Начало загрузки элементов"));
                     line = reader.ReadLine();
                     CreateElements("type=T3D2", line, "*ELSET");
                 }
@@ -125,7 +128,8 @@ namespace ModelParcer
                 var firstNumber = int.Parse(strAr.First());
                 var objNumber = dic[firstNumber];
                 var objsType = newMesh.ObjectData.Find(objNumber).ObjType;
-                LoadEvent(this, new LoaderEventArgs($"Загрузка группы объектов {groupName}"));
+                //Исправление - иначе Exception
+                LoadEvent?.Invoke(this, new LoaderEventArgs($"Загрузка группы объектов {groupName}"));
                 var group = new Group(groupName, objsType);
                 while (line != null && !line.Contains("*NSET") && !line.Contains("*ELSET"))
                 {
