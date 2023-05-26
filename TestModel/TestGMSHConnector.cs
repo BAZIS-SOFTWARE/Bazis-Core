@@ -77,6 +77,36 @@ namespace TestModel
             GMSHConnector.Dispose();
         }
 
+        [TestMethod]
+        public void TestScriptIGSConnector1D()
+        {
+            GMSHConnector.Init();
+            GMSHConnector.GMSHCreateFromScript(@"..\..\Examples\GMSHConnector\model1D.igs", ".inp", "Элементы1D");
+            CompareContentOfFiles(@"..\..\Examples\GMSHConnector\model1D.inp",
+                                  @"..\..\Examples\GMSHConnector\expectedmodel1D.inp");
+            GMSHConnector.Dispose();
+        }
+
+        [TestMethod]
+        public void TestScriptIGSConnector2D()
+        {
+            GMSHConnector.Init();
+            GMSHConnector.GMSHCreateFromScript(@"..\..\Examples\GMSHConnector\model2D.igs", ".inp", "Элементы2D");
+            CompareContentOfFiles(@"..\..\Examples\GMSHConnector\model2D.inp",
+                                  @"..\..\Examples\GMSHConnector\expectedmodel2D.inp");
+            GMSHConnector.Dispose();
+        }
+
+        [TestMethod]
+        public void TestScriptIGSConnector3D()
+        {
+            GMSHConnector.Init();
+            GMSHConnector.GMSHCreateFromScript(@"..\..\Examples\GMSHConnector\model3D.igs", ".inp", "Элементы3D");
+            CompareContentOfFiles(@"..\..\Examples\GMSHConnector\model3D.inp",
+                                  @"..\..\Examples\GMSHConnector\expectedmodel3D.inp");
+            GMSHConnector.Dispose();
+        }
+
         private string CuttedString(string path)
         {
             var lines = File.ReadAllLines(path);

@@ -68,8 +68,8 @@ namespace ModelParcer
                     {
                         default:
                             gmshOptionSetNumber("Mesh.SaveAll", 1, ref error);
-                            gmshOptionSetNumber("Mesh.SaveGroupsOfNodes", 1, ref error);
                             gmshModelMeshGenerate(dim[objTypeCreate], ref error);
+                            gmshOptionSetNumber("Mesh.SaveGroupsOfNodes", 2, ref error);
                             gmshWrite(dstFile, ref error);
                             var data = new LoadModelFromGMSHTextFile();
                             var modelData = data.Load(dstFile);
