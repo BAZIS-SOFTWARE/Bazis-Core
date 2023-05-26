@@ -31,10 +31,11 @@ namespace TestModel
             nodes[2] = new Node(1, new Point3D(array[9], array[10], array[11]));
 
             var plane = new Plane(nodes[0].Position, nodes[1].Position, nodes[2].Position);
-
+            //act
             var calcDist = new CalcDistance().DistanceBetweenPlaneAndNode(plane,  node);
             var dist = Math.Round(calcDist.GetLength(), 5);
-            Assert.AreEqual(dist, array[12]);
+            var res = Math.Round(array[12], 5);
+            Assert.AreEqual(dist, res);
         } 
     }
 }
