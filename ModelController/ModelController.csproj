@@ -82,6 +82,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MeshObjsUtility\CalcDistance.cs" />
+    <Compile Include="MeshObjsUtility\CutSectionPoints.cs" />
     <Compile Include="ModelScenePresentator\GlObjsArraysCreators\LineObjsPresenter.cs" />
     <Compile Include="ModelScenePresentator\GlObjsArraysCreators\ObjsPresenter.cs" />
     <Compile Include="ModelScenePresentator\GlObjsArraysCreators\PointObjsPresenter.cs" />
