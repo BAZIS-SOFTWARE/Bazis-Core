@@ -27,8 +27,17 @@ namespace ModelController.MeshObjsUtility
             yield return Tuple.Create(head, first);
         }
     }
-    public class CutSectionPoints
+    /// <summary>
+    /// CutSection
+    /// </summary>
+    public class CrossSection
     {
+        /// <summary>
+        /// GetCrossNodes
+        /// </summary>
+        /// <param name="elements"></param>
+        /// <param name="plane"></param>
+        /// <returns></returns>
         public Dictionary<int, List<Point3D>> GetCrossNodes(List<Element3D> elements, Plane plane)
         {
             int numProcs = Environment.ProcessorCount;

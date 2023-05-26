@@ -86,12 +86,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="SearchModelObjects.cs" />
+    <Compile Include="TestCalcDistance.cs" />
     <Compile Include="TestEdgeFlags.cs" />
     <Compile Include="TestElement.cs" />
     <Compile Include="TestIO.cs" />
     <Compile Include="TestModelControllerASCII.cs" />
     <Compile Include="TestModelControllerGMSH_inp.cs" />
     <Compile Include="TestModelControllerPoligon.cs" />
+    <Compile Include="TestsCutSection.cs" />
     <Compile Include="TestServices.cs" />
     <Compile Include="TestSurface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
