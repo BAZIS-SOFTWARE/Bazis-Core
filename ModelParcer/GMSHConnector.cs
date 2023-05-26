@@ -34,6 +34,9 @@ namespace ModelParcer
         private static extern void gmshOptionSetNumber([MarshalAs(UnmanagedType.LPStr)] String src,
                                                         double value, ref int ierr);
 
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void gmshModelAdd([MarshalAs(UnmanagedType.LPStr)] String src, ref int ierr);
+
         public static void Init() 
         {
             if (!isInit)
@@ -65,8 +68,8 @@ namespace ModelParcer
                     {
                         default:
                             gmshOptionSetNumber("Mesh.SaveAll", 1, ref error);
+                            gmshOptionSetNumber("Mesh.SaveGroupsOfNodes", 1, ref error);
                             gmshModelMeshGenerate(dim[objTypeCreate], ref error);
-                            gmshOptionSetNumber("Mesh.SaveGroupsOfNodes", 2, ref error);
                             gmshWrite(dstFile, ref error);
                             var data = new LoadModelFromGMSHTextFile();
                             var modelData = data.Load(dstFile);
