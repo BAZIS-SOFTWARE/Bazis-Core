@@ -2,6 +2,7 @@
 using Model;
 using ModelController.ModelScenePresentator;
 using ModelParcer;
+using System;
 
 namespace TestModel
 {
@@ -46,23 +47,21 @@ namespace TestModel
             var modelINP = loader.Load(@"C:\BazisComponents\ModelSolution\TestModel\Examples\2D_axi\2Dval.inp");
             model.Load(modelINP);
 
-            //act
-            //var elems3D = model.ObjectData.FindMany<Element3D>().ToArray();
-            var presentator = new ModelScenePresentator(model);
+            var presenter = new ModelScenePresentator(model);
 
-            var indexes_nodes = presentator.CreateVBOIndexes("Узлы");
-            var ptrs_nodes = presentator.CreateVBOPointers("Узлы", indexes_nodes.Item1);
-            var coords_nodes = presentator.CreateVBOVertexes("Узлы", indexes_nodes.Item2, "координаты");
-            var colors_nodes = presentator.CreateVBOVertexes("Узлы", indexes_nodes.Item2, "цвет");
-            var normals_nodes = presentator.CreateVBOVertexes("Узлы", indexes_nodes.Item2, "нормаль");
-            var indexes = presentator.CreateVBOIndexes("Элементы1D");
+            foreach (string item in presenter?.GetObjectsTypes())
+            {
+                presenter.HideInsideObjects(item);
 
-            var ptrs = presentator.CreateVBOPointers("Элементы1D",indexes.Item1);
-            var coords = presentator.CreateVBOVertexes("Элементы1D", indexes.Item2, "координаты");
-            var colors = presentator.CreateVBOVertexes("Элементы1D", indexes.Item2, "цвет");
-            var normals = presentator.CreateVBOVertexes("Элементы1D", indexes.Item2,"нормаль");
+                Tuple<int, int, int> tuple = presenter.CreateVBOIndexes(item);
+                int[] ptrs = presenter.CreateVBOPointers(item, tuple.Item1);
+                float[] glCoords = presenter.CreateVBOVertexes(item, tuple.Item2, "координаты");
+                float[] glColors = presenter.CreateVBOVertexes(item, tuple.Item2, "цвет");
+                float[] glNormals = presenter.CreateVBOVertexes(item, tuple.Item2, "нормаль");
+                bool[] edges = presenter.CreateVBOEdges(item, tuple.Item3);
 
-            //assert
+                Assert.AreEqual(tuple.Item3, edges.Length);
+            }
 
         }
     }

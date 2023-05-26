@@ -46,7 +46,7 @@ namespace TestModel
         //{
         //    var model = new ModelData();
         //    var loader = new LoadModelFromProjectTextFile();
-        //    loader.LoadEvent += (ar1,ar2) => { };
+        //    loader.LoadEvent += (ar1, ar2) => { };
         //    //var project = loader.Load(@"C:\Bazis_newGUI\PROJ\Test_3D\Term\two_tetra_term_cycle_multiStep.bpf");
         //    var modelLoad = loader.Load(@"C:\Projs\TestProjTerm\tube\test.bpf");
 
@@ -64,8 +64,11 @@ namespace TestModel
 
         //    var reultObjects = gradientFieldsCreator.CreateFieldObjects(results[24], "Узлы", "T");
 
-        //    model.ObjectData.AddRange(reultObjects);
-        //    var presenter = new ModelScenePresentator(model);
+        //    var resModel = new ModelData();
+        //    resModel.ObjectData.AddRange(reultObjects);
+        //    var presenter = new ModelScenePresentator(resModel);
+
+        //    presenter.HideInsideObjects("Поверхность");
 
         //    var inds = presenter.CreateVBOIndexes("Поверхность");
         //    var ptrs = presenter.CreateVBOPointers("Поверхность", inds.Item1);

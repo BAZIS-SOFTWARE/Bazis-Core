@@ -84,10 +84,6 @@ namespace Model
         /// </summary>
         public abstract ObjKind ObjKind { get; }
         /// <summary>
-        /// NumberOfSides
-        /// </summary>
-        public int NumberOfSides { get; }
-        /// <summary>
         /// NumberOfPoints
         /// </summary>
         public abstract int NumberOfPoints { get; }

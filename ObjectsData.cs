@@ -79,6 +79,11 @@ namespace Model
             get { return FindMany<Element3D>().Count(); }
         }
 
+        public int NumberOfLineElements
+        {
+            get { return FindMany<Element1D>().Count(); }
+        }
+
         public int NumberOfSurfaceElements
         {
             get { return FindMany<Element2D>().Count(); }

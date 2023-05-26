@@ -36,7 +36,7 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
 
             foreach (var element in surfaceElements)
             {
-                if (element.ViewState)
+                if (element.ViewState & element.NumberOfSides > 1)
                     foreach (var surface in element.GetSurface())
                     {
                         var numbers = surface.GetNodes().Select(x => x.Number).ToArray();

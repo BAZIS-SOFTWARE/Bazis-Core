@@ -24,7 +24,6 @@ namespace Model
         public Surface(int number, Node[] nodes, ObjKind objKind) : base(number)
         {
             ObjKind = objKind;
-
             this.nodes = Anticlockwise(nodes);
 
             ObjType = "Поверхность";
@@ -108,11 +107,6 @@ namespace Model
 
         private bool CheckVectorsOrientation(Node[] nodes, Node firstNode, Node secondNode)
         {
-            //other sort
-            //146 Узлы : -0.047|-0.05212305|0.1608275
-            //18 Узлы: -0.047 | -0.04709208 | 0.1510405
-
-
             //bool isPointInside = false;
             var temp = new List<Point3D>();
             var baseVector = secondNode.Position.Sub(firstNode.Position);
@@ -125,11 +119,11 @@ namespace Model
 
                     var prod = Vector.CrossProd(baseVector, actVector);
 
-                    if (Math.Abs(prod._x) < 1e-4)
+                    if (Math.Abs(prod._x) < 1e-6)
                         prod._x = 0;
-                    if (Math.Abs(prod._y) < 1e-4)
+                    if (Math.Abs(prod._y) < 1e-6)
                         prod._y = 0;
-                    if (Math.Abs(prod._z) < 1e-4)
+                    if (Math.Abs(prod._z) < 1e-6)
                         prod._z = 0;
                     //if (prod == new Point3D(0, 0, 0))
                     //{
@@ -173,7 +167,12 @@ namespace Model
 /// <inheritdoc/>
 
         public override int NumberOfPoints { get { return nodes.Length; } }
-/// <inheritdoc/>
+
+        public int NumberOfSides { get { return 1; } }
+
+        //public int NumberOfSides { get; internal set; }
+
+        /// <inheritdoc/>
 
         public Point3D CalcNormal()
         {

@@ -26,7 +26,10 @@ namespace Model
         public override string ObjType { get; }
         /// <inheritdoc/>
         public override ObjKind ObjKind { get;}
-/// <inheritdoc/>
+
+        public override int NumberOfSides { get { return surfaces.Count(); } }
+
+        /// <inheritdoc/>
 
         public override Point3D CalcCentralPoint()
         {

@@ -95,7 +95,7 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
 
         public override bool[] CreateEdgeFlags(int edgesLength)
         {
-            return null;
+            return new bool[0];
         }
     }
 }

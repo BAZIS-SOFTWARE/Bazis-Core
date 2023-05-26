@@ -94,10 +94,6 @@ namespace Model.Interfaces
         /// </summary>
         string ObjType { get; }
         /// <summary>
-        /// NumberOfSides
-        /// </summary>
-        int NumberOfSides { get; }
-        /// <summary>
         /// NumberOfPoints
         /// </summary>
         int NumberOfPoints { get; }

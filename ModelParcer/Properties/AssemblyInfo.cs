@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("BAZIS SOFTWARE")]
 [assembly: AssemblyProduct("ModelParcer")]
-[assembly: AssemblyCopyright("© Bilenko Georgy, Anton Shibaev, Victor Kapkaev 2023")]
+[assembly: AssemblyCopyright("© Bilenko Georgy, Shibaev Anton, Victor Kapkaev 2023")]
 [assembly: AssemblyTrademark("BAZIS")]
 [assembly: AssemblyCulture("")]
 

@@ -35,6 +35,8 @@ namespace Model
 
         public override string ObjType { get; }
 
+        public override int NumberOfSides { get { return 1; } }
+
         public override Point3D CalcCentralPoint()
         {
             var center = new Point3D();

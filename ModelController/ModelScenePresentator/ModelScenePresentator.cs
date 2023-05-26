@@ -100,16 +100,20 @@ namespace ModelController.ModelScenePresentator
             if (objsCreator == null)
                 throw new Exception("Объект не найден!");
 
-            if (objsCreator is SurfaceObjsPresenter surfaceObjsCreator)
+            if (objsCreator is SurfaceObjsPresenter surfaceObjsCreator )
                 surfaceObjsCreator.HideInsideSurfaces();
-            else if (objsCreator is PointObjsPresenter pointObjsPresenter)
+        }
+
+        public void HideInsideNodes(Element3D [] els3D)
+        {
+            if (presentors.ContainsKey("Узлы"))
             {
-                // set normal to zero
                 foreach (var node in modelData.ObjectData.FindMany<Node>())
                     node.Normal = new Point3D();
 
-                var els3D = modelData.ObjectData.FindMany<Element3D>().Where(x => x.ViewState == true);
-                var surfacePoints = pointObjsPresenter.FindSurfacePoints(els3D.ToArray());
+                var pointObjsPresenter = (PointObjsPresenter)presentors["Узлы"];
+
+                var surfacePoints = pointObjsPresenter.FindSurfacePoints(els3D);
                 var surfacePointsNoRepeat = surfacePoints.Distinct().ToList();
 
                 foreach (var point in pointObjsPresenter.GetObjs())
@@ -118,6 +122,9 @@ namespace ModelController.ModelScenePresentator
                 foreach (var point in surfacePointsNoRepeat)
                     modelData.ObjectData.Find(point).ViewState = true;
             }
+            // set normal to zero
+
+
         }
 
         public void ShowInsideObjects(string objsType)
