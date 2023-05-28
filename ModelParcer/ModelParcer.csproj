@@ -83,6 +83,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GMSHConnector.cs" />
     <Compile Include="LoadModelFromASCIITextFile.cs" />
     <Compile Include="LoadModelFromCDBTextFile.cs" />
     <Compile Include="LoadModelFromGMSHTextFile.cs" />

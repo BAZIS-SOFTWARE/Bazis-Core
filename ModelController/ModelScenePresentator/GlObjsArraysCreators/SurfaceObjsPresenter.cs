@@ -36,7 +36,7 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
 
             foreach (var element in surfaceElements)
             {
-                if (element.ViewState & element.NumberOfSides > 1)
+                if (element.ViewState)
                     foreach (var surface in element.GetSurface())
                     {
                         var numbers = surface.GetNodes().Select(x => x.Number).ToArray();
@@ -61,11 +61,12 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
 
         }
 
-        public override Tuple<int, int, int> CreateIndexes()
+        public override Tuple<int, int, int,int> CreateIndexes()
         {
             var indexes = 0;
             var vertexes = 0;
             var edges = 0;
+            var colors = 0;
 
             foreach (var surfaceObj in surfaceElements)
             {
@@ -77,12 +78,13 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
                             vertexes = vertexes + (surface.NumberOfPoints - 2) * 3 * 3;
                             indexes = indexes + (surface.NumberOfPoints - 2) * 3;
                             edges = edges + (surface.NumberOfPoints - 2) * 3;
+                            colors = colors + (surface.NumberOfPoints - 2) * 3 * 4;
                         }
                     }
             }
 
 
-            return new Tuple<int, int, int>(indexes, vertexes, edges);
+            return new Tuple<int, int, int,int>(indexes, vertexes, colors, edges);
         }
 
         public override int[] CreatePointers(int indexLength)

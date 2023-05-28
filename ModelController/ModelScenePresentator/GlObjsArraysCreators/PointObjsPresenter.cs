@@ -19,19 +19,25 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
 /// <inheritdoc/>
 
 
-        public override Tuple<int, int, int> CreateIndexes()
+        public override Tuple<int, int, int,int> CreateIndexes()
         {
             var indexes = 0;
-            var vertexes = 0;
+            var coords = 0;
+            var colors = 0;
 
             foreach (var pointObject in pointObjects)
             {
-                vertexes += 3;
+                //Закоментировано т.к вызывает exception
+                /*if (pointObject.ViewState)
+                {*/
+                coords += 3;
                 indexes++;
+                colors += 4;
+                /*}*/
             }
 
 
-            return new Tuple<int, int, int>(indexes, vertexes, 0);
+            return new Tuple<int, int, int,int>(indexes, coords, colors,0);
         }
 /// <inheritdoc/>
 

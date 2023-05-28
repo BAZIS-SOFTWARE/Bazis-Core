@@ -10,8 +10,16 @@ namespace TestModel
     [TestClass]
     public class TestModelControllerCDB
     {
-        [TestMethod]
-        public void GlVertexesCreation_2D3D()
+        [DataTestMethod]
+        [DataRow(new string[]
+{
+            "Элементы3D"
+})]
+        [DataRow(new string[]
+{
+            "Узлы"
+})]
+        public void GlVertexesCreation_2D3D(string[] array)
         {
             //assing
             var model = new ModelData();
@@ -25,18 +33,12 @@ namespace TestModel
             //act
             var presentator = new ModelScenePresentator(model);
 
-            var indexes_nodes = presentator.CreateVBOIndexes("Узлы");
-            var ptrs_nodes = presentator.CreateVBOPointers("Узлы", indexes_nodes.Item1);
-            var coords_nodes = presentator.CreateVBOVertexes("Узлы", indexes_nodes.Item2, "координаты");
-            var colors_nodes = presentator.CreateVBOVertexes("Узлы", indexes_nodes.Item2, "цвет");
-            var normals_nodes = presentator.CreateVBOVertexes("Узлы", indexes_nodes.Item2, "нормаль");
-            
-            var indexes = presentator.CreateVBOIndexes("Элементы3D");
-            var ptrs = presentator.CreateVBOPointers("Элементы3D", indexes.Item1);
-            var coords = presentator.CreateVBOVertexes("Элементы3D", indexes.Item2, "координаты");
-            var colors = presentator.CreateVBOVertexes("Элементы3D", indexes.Item2, "цвет");
-            var normals = presentator.CreateVBOVertexes("Элементы3D", indexes.Item2, "нормаль");
-
+            var indexes_nodes = presentator.CreateVBOIndexes(array[0]);
+            var ptrs_nodes = presentator.CreateVBOPointers(array[0], indexes_nodes.Item1);
+            var coords_nodes = presentator.CreateVBOVertexes(array[0], indexes_nodes.Item2, "координаты");
+            var colors_nodes = presentator.CreateVBOVertexes(array[0], indexes_nodes.Item3, "цвет");
+            var normals_nodes = presentator.CreateVBOVertexes(array[0], indexes_nodes.Item2, "нормаль");
+           
             //assert
 
         }

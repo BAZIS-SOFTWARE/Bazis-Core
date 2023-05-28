@@ -39,14 +39,14 @@ namespace TestModel
             {
                 presenter.HideInsideObjects(item);
 
-                Tuple<int, int, int> tuple = presenter.CreateVBOIndexes(item);
+                Tuple<int, int, int,int> tuple = presenter.CreateVBOIndexes(item);
                 int[] ptrs = presenter.CreateVBOPointers(item, tuple.Item1);
                 float[] glCoords = presenter.CreateVBOVertexes(item, tuple.Item2, "координаты");
-                float[] glColors = presenter.CreateVBOVertexes(item, tuple.Item2, "цвет");
+                float[] glColors = presenter.CreateVBOVertexes(item, tuple.Item3, "цвет");
                 float[] glNormals = presenter.CreateVBOVertexes(item, tuple.Item2, "нормаль");
-                bool[] edges = presenter.CreateVBOEdges(item, tuple.Item3);
+                bool[] edges = presenter.CreateVBOEdges(item, tuple.Item4);
 
-                Assert.AreEqual(tuple.Item3, edges.Length);
+                Assert.AreEqual(tuple.Item4, edges.Length);
             }
         }
         [TestMethod]
@@ -63,7 +63,7 @@ namespace TestModel
             model.ObjectData.Add(el2D);
             var presentator = new ModelScenePresentator(model);
             var values = presentator.CreateVBOIndexes("Элементы2D");
-            var edges = presentator.CreateVBOEdges("Элементы2D", values.Item3);
+            var edges = presentator.CreateVBOEdges("Элементы2D", values.Item4);
             Assert.AreEqual(3, edges.Length);
             for (var i = 0; i < edges.Length; ++i)
                 Assert.AreEqual(true, edges[i]);
@@ -85,7 +85,7 @@ namespace TestModel
 
             var presentator = new ModelScenePresentator(model);
             var values = presentator.CreateVBOIndexes("Элементы2D");
-            var edges = presentator.CreateVBOEdges("Элементы2D", values.Item3);
+            var edges = presentator.CreateVBOEdges("Элементы2D", values.Item4);
             Assert.AreEqual(6, edges.Length);
             var expectedFlags = new bool[] { true, true, false, false, true, true };
             for (var i = 0; i < expectedFlags.Length; ++i)
@@ -109,7 +109,7 @@ namespace TestModel
             model.ObjectData.Add(poligon);
             var presentator = new ModelScenePresentator(model);
             var values = presentator.CreateVBOIndexes("Поверхность");
-            var edges = presentator.CreateVBOEdges("Поверхность", values.Item3);
+            var edges = presentator.CreateVBOEdges("Поверхность", values.Item4);
             
             Assert.AreEqual(12, edges.Length);
             var expectedFlags = new bool[] { true, true, false, false, true, false,
