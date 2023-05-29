@@ -24,6 +24,5 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
         public abstract bool[] CreateEdgeFlags(int edgesLength);
 
         public abstract int Count();
-
     }
 }

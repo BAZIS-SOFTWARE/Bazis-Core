@@ -12,12 +12,18 @@ using System.Linq;
 
 namespace ModelController.ModelScenePresentator
 {
+    /// <summary>
+    /// ModelScenePresentator
+    /// </summary>
     public class ModelScenePresentator : IEnumerable<KeyValuePair<string, ObjsPresenter>>, IScenePresentor
     {
         Dictionary<string, ObjsPresenter> presentors;
 
         ModelData modelData;
-
+        /// <summary>
+        /// ModelScenePresentator
+        /// </summary>
+        /// <param name="modelData"></param>
         public ModelScenePresentator(ModelData modelData)
         {
             this.modelData = modelData;
@@ -56,13 +62,14 @@ namespace ModelController.ModelScenePresentator
                 }
             }
         }
+/// <inheritdoc/>
 
         public Tuple<int, int, int,int> CreateVBOIndexes(string objsType)
         {
             var presenter = GetObjectsPresenter(objsType);
             return presenter.CreateIndexes();
         }
-
+        /// <inheritdoc/>
         public float[] CreateVBOVertexes(string objsType, int vertexLength, string vertexType)
         {
             var objsCreator = GetObjectsPresenter(objsType);
@@ -72,6 +79,7 @@ namespace ModelController.ModelScenePresentator
 
             return objsCreator.CreateVertexes(vertexLength, vertexType);
         }
+/// <inheritdoc/>
 
         public bool[] CreateVBOEdges(string objsType, int vertexLength)
         {
@@ -82,6 +90,7 @@ namespace ModelController.ModelScenePresentator
 
             return objsCreator.CreateEdgeFlags(vertexLength);
         }
+/// <inheritdoc/>
 
         public int[] CreateVBOPointers(string objsType, int indexLength)
         {
@@ -92,6 +101,19 @@ namespace ModelController.ModelScenePresentator
 
             return objsCreator.CreatePointers(indexLength);
         }
+/// <inheritdoc/>
+
+        public void ShowInsideObjects(string objsType)
+        {
+            var objsCreator = GetObjectsPresenter(objsType);
+
+            if (objsCreator == null)
+                throw new Exception("Объект не найден!");
+
+            if (objsCreator is SurfaceObjsPresenter surfaceObjsCreator)
+                surfaceObjsCreator.ShowInsideSurfaces();
+        }
+/// <inheritdoc/>
 
         public void HideInsideObjects(string objsType)
         {
@@ -104,67 +126,10 @@ namespace ModelController.ModelScenePresentator
                 surfaceObjsCreator.HideInsideSurfaces();
         }
 
-        public void HideInsideNodes(Element3D [] els3D)
-        {
-            if (presentors.ContainsKey("Узлы"))
-            {
-                foreach (var node in modelData.ObjectData.FindMany<Node>())
-                    node.Normal = new Point3D();
-
-                var pointObjsPresenter = (PointObjsPresenter)presentors["Узлы"];
-
-                var surfacePoints = pointObjsPresenter.FindSurfacePoints(els3D);
-                var surfacePointsNoRepeat = surfacePoints.Distinct().ToList();
-
-                foreach (var point in pointObjsPresenter.GetObjs())
-                    point.ViewState = false;
-
-                foreach (var point in surfacePointsNoRepeat)
-                    modelData.ObjectData.Find(point).ViewState = true;
-            }
-            // set normal to zero
+    
+/// <inheritdoc/>
 
 
-        }
-
-        public void ShowInsideObjects(string objsType)
-        {
-            var objsCreator = GetObjectsPresenter(objsType);
-
-            if (objsCreator == null)
-                throw new Exception("Объект не найден!");
-
-            if (objsCreator is SurfaceObjsPresenter surfaceObjsCreator)
-            {
-                surfaceObjsCreator.ShowInsideSurfaces();
-            }
-
-            else if (objsCreator is PointObjsPresenter pointObjsPresenter)
-            {
-                // set normal to zero
-                foreach (var node in modelData.ObjectData.FindMany<Node>())
-                    node.Normal = new Point3D();
-
-                var els3D = modelData.ObjectData.FindMany<Element3D>().Where(x => x.ViewState == true);
-
-                foreach (var el3D in els3D)
-                    foreach (var node in el3D.GetNodes())
-                        node.ViewState = true;
-            }
-        }
-
-        //public Dictionary<string, List<ModelObject>> GetSortedObjects(ModelObject[] modelObjects)
-        //{
-        //    var sortedObjs = new Dictionary<string, List<ModelObject>>();
-        //    foreach (var modelObject in modelObjects)
-        //    {
-        //        if (!sortedObjs.ContainsKey(modelObject.ObjType))
-        //            sortedObjs.Add(modelObject.ObjType, new List<ModelObject>() { modelObject });
-        //        else
-        //            sortedObjs[modelObject.ObjType].Add(modelObject);
-        //    }
-        //    return sortedObjs;
-        //}
 
         public IEnumerable<string> GetObjectsTypes()
         {
@@ -185,12 +150,14 @@ namespace ModelController.ModelScenePresentator
                 return null;
             return presentors[objsType];
         }
+        /// <inheritdoc/>
         public void ShowAllObjects()
         {
             foreach (var presentor in presentors)
                 foreach (var obj in presentor.Value.GetObjs())
                     obj.ViewState = true;
         }
+/// <inheritdoc/>
 
 
         public void ShowObjects(string objsType)
@@ -206,6 +173,7 @@ namespace ModelController.ModelScenePresentator
                 obj.ViewState = false;
             }
         }
+/// <inheritdoc/>
 
         public IEnumerable<Point3D> GetObjPoints(int index, string objsType)
         {
@@ -224,6 +192,7 @@ namespace ModelController.ModelScenePresentator
                 modelData.ObjectData.Find(objNumb).ViewState = false;
             }
         }
+/// <inheritdoc/>
 
         public void HideObjects(Color color, string objsType)
         {
@@ -233,11 +202,13 @@ namespace ModelController.ModelScenePresentator
                     obj.ViewState = false;
             }
         }
+/// <inheritdoc/>
 
         public void ColorObject(int index, Color color, string objsType)
         {
             presentors[objsType][index].MasterColor = color;
         }
+/// <inheritdoc/>
 
         
 
@@ -245,6 +216,7 @@ namespace ModelController.ModelScenePresentator
         {
             return presentors.ContainsKey(objsType);
         }
+/// <inheritdoc/>
 
         public int CountObjecs(string objsType)
         {

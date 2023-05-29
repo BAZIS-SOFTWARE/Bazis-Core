@@ -101,6 +101,7 @@
     <Compile Include="TestMeshObjectsCreators.cs" />
     <Compile Include="TestModelControllerCDB.cs" />
     <Compile Include="TestModelScenePresentor.cs" />
+    <Compile Include="TestModelControllerSTL.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

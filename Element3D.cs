@@ -23,9 +23,28 @@ namespace Model
         }
 /// <inheritdoc/>
 
+
+        public override bool ViewState 
+        { 
+            get => base.ViewState;
+            set
+            {
+                base.ViewState = value;
+                foreach (var surface in surfaces)
+                {
+                    surface.ViewState = value;
+                }
+            }
+        }
+
+
+
+        /// <inheritdoc/>
+
         public override string ObjType { get; }
         /// <inheritdoc/>
         public override ObjKind ObjKind { get;}
+/// <inheritdoc/>
 
         public override int NumberOfSides { get { return surfaces.Count(); } }
 

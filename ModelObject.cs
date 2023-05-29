@@ -52,7 +52,7 @@ namespace Model
         /// <summary>
         /// View state flag
         /// </summary>
-        public bool ViewState
+        public virtual bool ViewState
         {
             get { return viewState; }
             set
