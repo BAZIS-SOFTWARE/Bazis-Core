@@ -15,13 +15,14 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
 
         public abstract IModelObject this[int ind] { get; }
 
-        public abstract Tuple<int, int> CreateIndexes();
+        public abstract Tuple<int, int, int,int> CreateIndexes();
 
         public abstract int[] CreatePointers(int indexLength);
 
         public abstract float[] CreateVertexes(int vertexLength, string vertexType);
 
-        public abstract int Count();
+        public abstract bool[] CreateEdgeFlags(int edgesLength);
 
+        public abstract int Count();
     }
 }

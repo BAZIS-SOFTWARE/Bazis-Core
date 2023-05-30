@@ -15,6 +15,7 @@ namespace Model.Interfaces
     public enum ObjKind
     {
         Node,
+        Penta,
         Tetra,
         Hexa,
         Triangle,
@@ -92,10 +93,6 @@ namespace Model.Interfaces
         /// ObjType
         /// </summary>
         string ObjType { get; }
-        /// <summary>
-        /// NumberOfSides
-        /// </summary>
-        int NumberOfSides { get; }
         /// <summary>
         /// NumberOfPoints
         /// </summary>

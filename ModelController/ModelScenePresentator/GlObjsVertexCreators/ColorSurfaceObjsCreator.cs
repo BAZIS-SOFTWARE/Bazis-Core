@@ -5,49 +5,34 @@ namespace ModelController.ModelScenePresentator.GlObjsVertexCreators
 {
     public class ColorSurfaceObjsCreator : ISurfaceObjsVertexCreator
     {
-        public void Create(ref int stride, float[] vertexAtributes, ISurfaceObject element)
+        public void Create(ref int stride, float[] vertexAtributes, ISurfaceObject surfObject)
         {
-            foreach (var surface in element.GetSurface())
+            foreach (var surface in surfObject.GetSurface())
             {
                 if (surface.ViewState)
                 {
-                    //for (int k = 0; k < surface.NumberOfPoints; k++)
-                    //{
-                    //    vertexAtributes[stride + 3 * k + 0] = element.MasterColor.R / 255.0f;
-                    //    vertexAtributes[stride + 3 * k + 1] = element.MasterColor.G / 255.0f;
-                    //    vertexAtributes[stride + 3 * k + 2] = element.MasterColor.B / 255.0f;
-                    //}
-
-                    var numbOfVerts = (surface.NumberOfPoints - 2) * 3;
-
-                    if (numbOfVerts == 3)
+                    for (int k = 0; k < surface.NumberOfPoints - 2; k++)
                     {
-                        for (int i = 0; i < numbOfVerts; i++)
-                        {
-                            vertexAtributes[stride + 3 * i + 0] = element.MasterColor.R / 255.0f;
-                            vertexAtributes[stride + 3 * i + 1] = element.MasterColor.G / 255.0f;
-                            vertexAtributes[stride + 3 * i + 2] = element.MasterColor.B / 255.0f;
-                        }
+                        vertexAtributes[stride + 12 * k + 0] = surfObject.MasterColor.R / 255.0f;
+                        vertexAtributes[stride + 12 * k + 1] = surfObject.MasterColor.G / 255.0f;
+                        vertexAtributes[stride + 12 * k + 2] = surfObject.MasterColor.B / 255.0f;
+                        vertexAtributes[stride + 12 * k + 3] = surfObject.MasterColor.A / 255.0f;
+
+                        vertexAtributes[stride + 12 * k + 4] = surfObject.MasterColor.R / 255.0f;
+                        vertexAtributes[stride + 12 * k + 5] = surfObject.MasterColor.G / 255.0f;
+                        vertexAtributes[stride + 12 * k + 6] = surfObject.MasterColor.B / 255.0f;
+                        vertexAtributes[stride + 12 * k + 7] = surfObject.MasterColor.A / 255.0f;
+
+                        vertexAtributes[stride + 12 * k + 8] = surfObject.MasterColor.R / 255.0f;
+                        vertexAtributes[stride + 12 * k + 9] = surfObject.MasterColor.G / 255.0f;
+                        vertexAtributes[stride + 12 * k + 10] = surfObject.MasterColor.B / 255.0f;
+                        vertexAtributes[stride + 12 * k + 11] = surfObject.MasterColor.A / 255.0f;
                     }
-                    else
-                        for (int k = 3; k < numbOfVerts; k++)
-                        {
-                            vertexAtributes[stride + 3 + 0] = element.MasterColor.R / 255.0f;
-                            vertexAtributes[stride + 3 + 1] = element.MasterColor.G / 255.0f;
-                            vertexAtributes[stride + 3 + 2] = element.MasterColor.B / 255.0f;
 
-                            vertexAtributes[stride + 3 * k - 1 + 0] = element.MasterColor.R / 255.0f;
-                            vertexAtributes[stride + 3 * k - 1 + 1] = element.MasterColor.G / 255.0f;
-                            vertexAtributes[stride + 3 * k - 1 + 2] = element.MasterColor.B / 255.0f;
+                    stride += (surface.NumberOfPoints - 2) * 4 * 3; // (кол-во точек - 2 ) * 4 атрибута и * 3 треугольника
 
-                            vertexAtributes[stride + 3 * k + 0] = element.MasterColor.R / 255.0f;
-                            vertexAtributes[stride + 3 * k + 1] = element.MasterColor.G / 255.0f;
-                            vertexAtributes[stride + 3 * k + 2] = element.MasterColor.B / 255.0f;
-
-                        }
-                    stride += surface.NumberOfPoints * 3;
                 }
-                
+
             }
          }
     }

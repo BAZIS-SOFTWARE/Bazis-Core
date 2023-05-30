@@ -13,28 +13,42 @@ namespace Model
         private List<Surface> surfaces;
         public Element3D(int number, Node[] nodes, ObjKind objKind) : base(number, nodes,objKind)
         {
+
             InitialColor = Color.FromArgb(255, 125, 0);
             MasterColor = Color.FromArgb(255, 125, 0);
             SlaveColor = Color.FromArgb(255, 125, 0);
             ObjKind = objKind;
             ObjType = "Элементы3D";
+            surfaces = NodeSorter.GetSurfaces(nodes).ToList();
+        }
+/// <inheritdoc/>
 
-            if (ObjKind == ObjKind.Tetra)
+
+        public override bool ViewState 
+        { 
+            get => base.ViewState;
+            set
             {
-                surfaces = new List<Surface>()
+                base.ViewState = value;
+                foreach (var surface in surfaces)
                 {
-                    new Surface(0, new Node[]{nodes[0],nodes[1],nodes[2]},ObjKind.ElementSurface),
-                    new Surface(1, new Node[]{nodes[0],nodes[2],nodes[3]},ObjKind.ElementSurface),
-                    new Surface(2, new Node[]{nodes[0],nodes[3],nodes[1]},ObjKind.ElementSurface),
-                    new Surface(3, new Node[]{nodes[1],nodes[3],nodes[2]},ObjKind.ElementSurface)
-                };
+                    surface.ViewState = value;
+                }
             }
-
-            // Для Николая реализовать метод сортировки 
         }
 
+
+
+        /// <inheritdoc/>
+
         public override string ObjType { get; }
+        /// <inheritdoc/>
         public override ObjKind ObjKind { get;}
+/// <inheritdoc/>
+
+        public override int NumberOfSides { get { return surfaces.Count(); } }
+
+        /// <inheritdoc/>
 
         public override Point3D CalcCentralPoint()
         {
@@ -47,6 +61,10 @@ namespace Model
             return center.Div(NumberOfPoints);
         }
 
+        /// <summary>
+        /// Calc volume
+        /// </summary>
+        /// <returns></returns>
         public float CalcVolume()
         {
             var pAr = GetPoints().ToArray();
@@ -65,6 +83,7 @@ namespace Model
             //var str = cMatr.ToString(4, 4);
             return cMatr;
         }
+/// <inheritdoc/>
 
         public override IEnumerable<Surface> GetSurface()
         {

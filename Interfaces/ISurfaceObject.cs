@@ -9,5 +9,10 @@ namespace Model.Interfaces
     public interface ISurfaceObject : INodeObject
     {
         IEnumerable<Surface> GetSurface();
+
+        /// <summary>
+        /// NumberOfSides
+        /// </summary>
+        int NumberOfSides { get; }
     }
 }

@@ -7,8 +7,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace ModelParcer
 {
@@ -18,9 +17,16 @@ namespace ModelParcer
         private const string ELEMENTS_BLOCK = "EBLOCK";
         private const int OFFSET_TO_READ_NODES = 11;
         private ModelData model = new ModelData();
+        private string exponentialFloatPattern = "(-)?\\d+\\.\\d+E(\\+|-)\\d+";
+        private List<Node> allNodes = new List<Node>();
 
         public event Action<object, LoaderEventArgs> LoadEvent;
 
+        /// <summary>
+        /// Method to load from .cdb file
+        /// </summary>
+        /// <param name="path">Path to .cdb file</param>
+        /// <returns>loaded model</returns>
         public ModelData Load(string path)
         {
             using (var reader = new StreamReader(path))
@@ -36,44 +42,53 @@ namespace ModelParcer
                     if (line.Contains(NODE_BLOCK))
                     {
                         LoadEvent(this, new LoaderEventArgs("Начало загрузки узлов"));
-                        var nodes = ReadNodes(reader, tokens);
-                        model.ObjectData.AddRange(nodes);
+                        allNodes = ReadNodes(reader, tokens).ToList();
+                        model.ObjectData.AddRange(allNodes);
                     }
                     if (line.Contains(ELEMENTS_BLOCK))
                     {
                         LoadEvent(this, new LoaderEventArgs("Начало загрузки элементов"));
                         var elements = ReadElements(reader, tokens);
-                        foreach (var element in elements)
-                        {
-                            model.ObjectData.Add(element);
-                        }
+                        model.ObjectData.AddRange(elements);
                     }
                 }
             }
             return model;
         }
 
-        private IEnumerable<string> ParseAnsysFloatNotation(string ansysNotation)
+        /// <summary>
+        /// Method finds coordinates of node, which written in exponential notation, 
+        /// in Ansys line by regular expression.
+        /// </summary>
+        /// <param name="line">Line from Ansys .cdb file.</param>
+        /// <returns>Enumerable of coordinates.</returns>
+        private IEnumerable<float> GetNodeCoordinates(string line)
         {
-            var fields = ansysNotation.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)
-                .ToList();
-            foreach (var field in fields)
+            var matches = Regex.Matches(line, exponentialFloatPattern);
+            foreach (Match match in matches)
             {
-                if (field.Contains("-"))
-                {
-                    var splittedByMinus = field.Split('-');
-                    yield return splittedByMinus[0];
-                    yield return $"-{splittedByMinus[1]}";
-                }
-                else
-                    yield return field;
+                yield return float.Parse(match.Value, NumberStyles.Any, CultureInfo.InvariantCulture);
             }
         }
-        private float GetFloat(string exponentialNotation)
+
+        /// <summary>
+        /// Get node number from line. It is located in 0 position after whitespaces deletion.
+        /// </summary>
+        /// <param name="line">Line from Ansys .cdb file.</param>
+        /// <returns>number of node</returns>
+        private int GetNodeNumber(string line)
         {
-            return float.Parse(exponentialNotation, NumberStyles.Any, CultureInfo.InvariantCulture);
+            var fields = line.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)
+                .ToList();
+            return int.Parse(fields[0]);
         }
 
+        /// <summary>
+        /// reads nodes after the "NBLOCK" sign in the file.
+        /// </summary>
+        /// <param name="reader">file which we read</param>
+        /// <param name="tokens">Information in next of "NBLOCK" line </param>
+        /// <returns></returns>
         private IEnumerable<Node> ReadNodes(StreamReader reader, string[] tokens)
         {
             var format = reader.ReadLine();
@@ -82,16 +97,11 @@ namespace ModelParcer
             for (var i = 0; i < nodeCount; i++)
             {
                 var line = reader.ReadLine();
-                var fields = ParseAnsysFloatNotation(line).ToArray();
-                var nodeNumber = int.Parse(fields[0]);
-                var coordinates = new List<float>();
-                for (var j = 3; j < fields.Length; j++)
+                var nodeNumber = GetNodeNumber(line);
+                var coordinates = GetNodeCoordinates(line).ToList();
+                if (coordinates.Count < maxFieldsCount)
                 {
-                    coordinates.Add(GetFloat(fields[j]));
-                }
-                if (fields.Length < maxFieldsCount)
-                {
-                    var missedCoordinatesCount = maxFieldsCount - fields.Length;
+                    var missedCoordinatesCount = maxFieldsCount - coordinates.Count;
                     coordinates.AddRange(Enumerable.Repeat(0f, missedCoordinatesCount));
                 }
                 var point = new Point3D(coordinates[0], coordinates[1], coordinates[2]);
@@ -99,30 +109,42 @@ namespace ModelParcer
                 yield return node;
             }
         }
-        private ModelObject GetElement(int nodesCount, int[] elementNodes, List<Node> allNodes)
+
+        /// <summary>
+        /// Determines the element type by the number of nodes
+        /// </summary>
+        /// <param name="nodesCount">Number of nodes from .cdb file</param>
+        /// <param name="elementNodes">Array of numbers (node id) from .cdb file</param>
+        /// <returns>Model object according to input data</returns>
+        /// <exception cref="Exception">Throws if unrecognized or get invalid parameters</exception>
+        private ModelObject GetElement(int[] elementNodes)
         {
-            var nodes = new Node[nodesCount];
+            var nodes = new Node[elementNodes.Length];
             var currentNumber = model.ObjectData.GetLastObjNumber() + 1;
-            for (var i = 0; i < nodesCount; i++)
+            for (var i = 0; i < elementNodes.Length; i++)
             {
                 nodes[i] = model.ObjectData.Find(allNodes, elementNodes[i]);
             }
-            switch (nodesCount)
+            switch (elementNodes.Length)
             {
-                case 2: return new Element1D(currentNumber, nodes, ObjKind.Beam);
-                case 3: return new Element2D(currentNumber, nodes, ObjKind.Triangle);
                 case 4: return new Element3D(currentNumber, nodes, ObjKind.Tetra);
+                case 6: return new Element3D(currentNumber, nodes, ObjKind.Penta);
                 case 8: return new Element3D(currentNumber, nodes, ObjKind.Hexa);
-                default: return new Surface(currentNumber, nodes, ObjKind.ElementSurface);
+                default: throw new Exception($"Unable to recognize element with {elementNodes.Length} nodes");
             }
         }
 
+        /// <summary>
+        /// reads elements after the "EBLOCK" sign in the file.
+        /// </summary>
+        /// <param name="reader">file which we read</param>
+        /// <param name="tokens">Information in next of "EBLOCK" line </param>
+        /// <returns></returns>
         private IEnumerable<ModelObject> ReadElements(StreamReader reader, string[] tokens)
         {
-            var allNodes = model.ObjectData.FindMany<Node>().ToList();
             var format = reader.ReadLine();
             var maxFieldsInLine = int.Parse(tokens[1]);
-            var elementsNumber = int.Parse(tokens[3]);
+            var elementsNumber = int.Parse(tokens[4]);
             for (int i = 0; i < elementsNumber; i++)
             {
                 var line = reader.ReadLine();
@@ -137,11 +159,10 @@ namespace ModelParcer
                         .ToList();
                     fields.AddRange(nextLineFields);
                 }
-                var elementNodes = fields.Skip(OFFSET_TO_READ_NODES).ToArray();
-                var element = GetElement(nodesCount, elementNodes, allNodes);
+                var elementNodes = fields.Skip(OFFSET_TO_READ_NODES).Distinct().ToArray();
+                var element = GetElement(elementNodes);
                 yield return element;
             }
         }
-
     }
 }

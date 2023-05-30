@@ -22,12 +22,42 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
             this.surfaceElements = surfaceElements;
         }
 
-        //public override IEnumerable<IModelObject> GetObjs()
+        //public void HideInsideNodes(Element3D[] els3D)
         //{
-        //    foreach (var surfaceElement in surfaceElements)
+        //    if (presentors.ContainsKey("Узлы"))
         //    {
-        //        yield return surfaceElement;
+        //        foreach (var node in modelData.ObjectData.FindMany<Node>())
+        //            node.Normal = new Point3D();
+
+        //        var pointObjsPresenter = (PointObjsPresenter)presentors["Узлы"];
+
+        //        var surfacePoints = pointObjsPresenter.FindSurfacePoints(els3D);
+        //        var surfacePointsNoRepeat = surfacePoints.Distinct().ToList();
+
+        //        foreach (var point in pointObjsPresenter.GetObjs())
+        //            point.ViewState = false;
+
+        //        foreach (var point in surfacePointsNoRepeat)
+        //            modelData.ObjectData.Find(point).ViewState = true;
         //    }
+        //    // set normal to zero
+
+
+        //}
+
+        //public void ShowInsideNodes(Element3D[] els3D)
+        //{
+        //    if (presentors.ContainsKey("Узлы"))
+        //    {
+        //        // set normal to zero
+        //        foreach (var node in modelData.ObjectData.FindMany<Node>())
+        //            node.Normal = new Point3D();
+
+        //        foreach (var el3D in els3D)
+        //            foreach (var node in el3D.GetNodes())
+        //                node.ViewState = true;
+        //    }
+        //    // set normal to zero
         //}
 
         public void HideInsideSurfaces()
@@ -42,7 +72,7 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
                         var numbers = surface.GetNodes().Select(x => x.Number).ToArray();
 
                         Array.Sort(numbers);
-                        var surfInd = numbers[0].ToString() + numbers[1].ToString() + numbers[2].ToString();
+                        var surfInd = string.Join("", numbers);   //numbers[0].ToString() + numbers[1].ToString() + numbers[2].ToString();
 
                         if (!surfDict.ContainsKey(surfInd))
                         {
@@ -59,23 +89,15 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
                     }
             }
 
-            //foreach (var elemSurf in surfDict)
-            //{
-            //    if (elemSurf.Value.Count == 1)
-            //        elemSurf.Value[0].ViewState = true;
-            //    else
-            //    {
-            //        elemSurf.Value[0].ViewState = false;
-            //        elemSurf.Value[1].ViewState = false;
-            //    }
-            //}
-
         }
+/// <inheritdoc/>
 
-        public override Tuple<int, int> CreateIndexes()
+        public override Tuple<int, int, int,int> CreateIndexes()
         {
             var indexes = 0;
             var vertexes = 0;
+            var edges = 0;
+            var colors = 0;
 
             foreach (var surfaceObj in surfaceElements)
             {
@@ -84,17 +106,18 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
                     {
                         if (surface.ViewState)
                         {
-                            // (surface.NumberOfPoints - 2)[triangles] * 3 [nodes] * 3 [attribs]
                             vertexes = vertexes + (surface.NumberOfPoints - 2) * 3 * 3;
                             indexes = indexes + (surface.NumberOfPoints - 2) * 3;
+                            edges = edges + (surface.NumberOfPoints - 2) * 3;
+                            colors = colors + (surface.NumberOfPoints - 2) * 3 * 4;
                         }
                     }
             }
 
 
-            return new Tuple<int, int>(indexes, vertexes);
+            return new Tuple<int, int, int,int>(indexes, vertexes, colors, edges);
         }
-
+/// <inheritdoc/>
 
         public override int[] CreatePointers(int indexLength)
         {
@@ -122,6 +145,7 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
 
             return ptr;
         }
+/// <inheritdoc/>
 
         public override float[] CreateVertexes(int vertexLength,string vertexType)
         {
@@ -146,6 +170,17 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
 
             return vertexArray;
         }
+/// <inheritdoc/>
+
+        public override bool[] CreateEdgeFlags(int edgesLength)
+        {
+            var edgesArray = new bool[edgesLength];
+            var stride = 0;
+
+            var vertexCreator = new EdgesSurfaceObjsCreator();
+            vertexCreator.Create(ref stride, edgesArray, surfaceElements);  
+            return edgesArray;
+        }
 
         internal void ShowInsideSurfaces()
         {
@@ -156,11 +191,13 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
                         surface.ViewState = true;
             }
         }
+/// <inheritdoc/>
 
         public override int Count()
         {
             return surfaceElements.Length;
         }    
+/// <inheritdoc/>
 
         public override IEnumerable<IModelObject> GetObjs()
         {

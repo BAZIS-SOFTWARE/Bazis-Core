@@ -14,6 +14,8 @@ namespace Model
         {
         }
 
+        public abstract int NumberOfSides { get; }
+
         public abstract IEnumerable<Surface> GetSurface();
     }
 }
