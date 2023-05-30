@@ -6,7 +6,6 @@ using ModelController.ModelScenePresentator;
 using ModelController.ModelScenePresentator.GlObjsArraysCreators;
 using ModelController.ModelScenePresentator.GlObjsVertexCreators;
 using ModelParcer;
-using SceneInterface;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

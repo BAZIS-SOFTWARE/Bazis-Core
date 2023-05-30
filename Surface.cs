@@ -194,19 +194,17 @@ namespace Model
             var square = 0.0f;
             for (int i = 0; i < NumberOfPoints - 2; i++)
             {
-                var v1 = this[i+1].Position.Sub(this[0].Position);
-                var v2 = this[i+2].Position.Sub(this[0].Position);
+                var v1 = this[i + 1].Position.Sub(this[0].Position);
+                var v2 = this[i + 2].Position.Sub(this[0].Position);
 
                 var vProd = Vector.CrossProd(v1, v2);
                 square += Math.Abs(Vector.GetVectorLenght(vProd) / 2);
             }
 
 
-            var vProd = Vector.CrossProd(v1, v2);
-            var square = Math.Abs(Vector.GetVectorLenght(vProd) / 2);
             return square;
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public override IEnumerable<Point3D> GetPoints()
         {
