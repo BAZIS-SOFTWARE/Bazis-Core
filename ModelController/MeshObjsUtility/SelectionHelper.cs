@@ -114,7 +114,5 @@ namespace ModelController.MeshObjsUtility
             }
             return visitElements;
         }
-
-        
     }
 }
