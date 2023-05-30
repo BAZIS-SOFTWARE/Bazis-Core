@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
@@ -202,7 +204,6 @@ namespace TestModel
 
             var merge = new MergeObjects(model.ObjectData);
 
-            merge.Merge<Node>(coincidentNodes);
 
             //assert
             //freeNodes.ToArray()[0] = 14;
@@ -212,20 +213,38 @@ namespace TestModel
         [TestMethod]
         public void FindCoincidentNodes()
         {
-            var model = new ModelData();
-            var loader = new LoadModelFromProjectTextFile();
+            var loader = new LoadModelFromCDBTextFile();
             loader.LoadEvent += (ar1, ar2) => { };
-            //act
-            //var modelBPF = loader.Load(@"C:\Projs\TestProjTerm\Cub\cub_unsorted_freeNodesCoincident.bpf");
-            var modelBPF = loader.Load(@"C:\Projs\TestProjTerm\CoincidentMesh\Tube_3d_only.bpf");
-        var finder = new FindCoincidentObjects(modelBPF.ObjectData, 0.01f);
+            var model = loader.Load(@"..\..\Examples\CDB\hex.cdb");
+            var finder = new FindCoincidentObjects(model.ObjectData, 1.1f);
             finder.ProgressEvent += (ar1, ar2) => { };
-
             var coincidentNodes = finder.Find<Node>();
-
             var numberOfObjs = coincidentNodes.Count();
+            Assert.AreEqual(4, numberOfObjs);
+        }
 
-            Assert.AreEqual(numberOfObjs, 15121);
+        [TestMethod, Timeout(2000)]
+        public void FindManyCoincidentObjects1() 
+        {
+            var loader = new LoadModelFromCDBTextFile();
+            loader.LoadEvent += (ar1, ar2) => { };
+            var model = loader.Load(@"..\..\Examples\CDB\10e+5Nodes.cdb");
+            var finder = new FindCoincidentObjects(model.ObjectData, 1.0f);
+            var coincidentNodes = finder.Find<Node>().ToList();
+        }
+
+        [TestMethod]
+        public void FindManyCoincidentObjects2()
+        {
+            var loader = new LoadModelFromGMSHTextFile();
+            var stopWatch = new Stopwatch();
+            loader.LoadEvent += (ar1, ar2) => { };
+            var model = loader.Load(@"..\..\Examples\3D\zub.inp");
+            var finder = new FindCoincidentObjects(model.ObjectData, 10f);
+            stopWatch.Start();
+            var coincidentNodes = finder.Find<Node>().ToList();
+            stopWatch.Stop();
+            Assert.IsTrue(stopWatch.ElapsedMilliseconds <= 2000);
         }
 
         [TestMethod]

@@ -23,10 +23,8 @@ namespace ModelParcer
         public event Action<object, LoaderEventArgs> LoadEvent;
 
         /// <summary>
-        /// Method to load from .cdb file
+        /// Loads from .cdb file from specified file.
         /// </summary>
-        /// <param name="path">Path to .cdb file</param>
-        /// <returns>loaded model</returns>
         public ModelData Load(string path)
         {
             using (var reader = new StreamReader(path))
@@ -57,11 +55,9 @@ namespace ModelParcer
         }
 
         /// <summary>
-        /// Method finds coordinates of node, which written in exponential notation, 
+        /// Finds coordinates of node, which written in exponential notation
         /// in Ansys line by regular expression.
         /// </summary>
-        /// <param name="line">Line from Ansys .cdb file.</param>
-        /// <returns>Enumerable of coordinates.</returns>
         private IEnumerable<float> GetNodeCoordinates(string line)
         {
             var matches = Regex.Matches(line, exponentialFloatPattern);
@@ -72,10 +68,8 @@ namespace ModelParcer
         }
 
         /// <summary>
-        /// Get node number from line. It is located in 0 position after whitespaces deletion.
+        /// Get node number from line. It is the first number in line.
         /// </summary>
-        /// <param name="line">Line from Ansys .cdb file.</param>
-        /// <returns>number of node</returns>
         private int GetNodeNumber(string line)
         {
             var fields = line.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)
@@ -84,11 +78,8 @@ namespace ModelParcer
         }
 
         /// <summary>
-        /// reads nodes after the "NBLOCK" sign in the file.
+        /// Reads nodes after the "NBLOCK" sign in the file.
         /// </summary>
-        /// <param name="reader">file which we read</param>
-        /// <param name="tokens">Information in next of "NBLOCK" line </param>
-        /// <returns></returns>
         private IEnumerable<Node> ReadNodes(StreamReader reader, string[] tokens)
         {
             var format = reader.ReadLine();
@@ -113,10 +104,6 @@ namespace ModelParcer
         /// <summary>
         /// Determines the element type by the number of nodes
         /// </summary>
-        /// <param name="nodesCount">Number of nodes from .cdb file</param>
-        /// <param name="elementNodes">Array of numbers (node id) from .cdb file</param>
-        /// <returns>Model object according to input data</returns>
-        /// <exception cref="Exception">Throws if unrecognized or get invalid parameters</exception>
         private ModelObject GetElement(int[] elementNodes)
         {
             var nodes = new Node[elementNodes.Length];
@@ -135,11 +122,8 @@ namespace ModelParcer
         }
 
         /// <summary>
-        /// reads elements after the "EBLOCK" sign in the file.
+        /// Reads elements after the "EBLOCK" sign in the file.
         /// </summary>
-        /// <param name="reader">file which we read</param>
-        /// <param name="tokens">Information in next of "EBLOCK" line </param>
-        /// <returns></returns>
         private IEnumerable<ModelObject> ReadElements(StreamReader reader, string[] tokens)
         {
             var format = reader.ReadLine();

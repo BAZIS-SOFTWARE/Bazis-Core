@@ -178,7 +178,6 @@ namespace Model
         {
             var fvectors = nodes[1].Position.Sub(nodes[0].Position);
             var svectors = nodes[2].Position.Sub(nodes[0].Position);
-
             return Vector.CrossProd(fvectors,svectors);
         }
 
@@ -203,6 +202,8 @@ namespace Model
             }
 
 
+            var vProd = Vector.CrossProd(v1, v2);
+            var square = Math.Abs(Vector.GetVectorLenght(vProd) / 2);
             return square;
         }
 /// <inheritdoc/>
