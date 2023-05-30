@@ -60,7 +60,7 @@ namespace Model
             var svectors = new Point3D(x3 - x1, y3 - y1, z3 - z1);
 
 
-            return Vector.GetVectorsProd(fvectors,svectors);
+            return Vector.CrossProd(fvectors,svectors);
         }
 
         public IEnumerable<Node> GetNodes()
@@ -78,7 +78,7 @@ namespace Model
             var v1 = new Point3D(pAr[1]._x - pAr[0]._x, pAr[1]._y - pAr[0]._y, pAr[1]._z - pAr[0]._z);
             var v2 = new Point3D(pAr[2]._x - pAr[0]._x, pAr[2]._y - pAr[0]._y, pAr[2]._z - pAr[0]._z);
 
-            var vProd = Vector.GetVectorsProd(v1, v2);
+            var vProd = Vector.CrossProd(v1, v2);
             var square = Math.Abs(Vector.GetVectorLenght(vProd) / 2);
             return square;
         }
