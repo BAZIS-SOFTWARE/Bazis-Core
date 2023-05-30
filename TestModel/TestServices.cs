@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -223,13 +224,27 @@ namespace TestModel
         }
 
         [TestMethod, Timeout(2000)]
-        public void FindManyCoincidentObjects() 
+        public void FindManyCoincidentObjects1() 
         {
             var loader = new LoadModelFromCDBTextFile();
             loader.LoadEvent += (ar1, ar2) => { };
             var model = loader.Load(@"..\..\Examples\CDB\10e+5Nodes.cdb");
             var finder = new FindCoincidentObjects(model.ObjectData, 1.0f);
             var coincidentNodes = finder.Find<Node>().ToList();
+        }
+
+        [TestMethod]
+        public void FindManyCoincidentObjects2()
+        {
+            var loader = new LoadModelFromGMSHTextFile();
+            var stopWatch = new Stopwatch();
+            loader.LoadEvent += (ar1, ar2) => { };
+            var model = loader.Load(@"..\..\Examples\3D\zub.inp");
+            var finder = new FindCoincidentObjects(model.ObjectData, 10f);
+            stopWatch.Start();
+            var coincidentNodes = finder.Find<Node>().ToList();
+            stopWatch.Stop();
+            Assert.IsTrue(stopWatch.ElapsedMilliseconds <= 2000);
         }
 
         [TestMethod]
