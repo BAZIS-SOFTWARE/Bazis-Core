@@ -35,6 +35,8 @@ namespace Model
 
         public override string ObjType { get; }
 
+        public override int NumberOfSides { get { return 1; } }
+
         public override Point3D CalcCentralPoint()
         {
             var center = new Point3D();
@@ -53,6 +55,8 @@ namespace Model
 
         public float CalcSquare()
         {
+
+
             var pAr = GetPoints().ToArray();
 
             var v1 = new Point3D(pAr[1]._x - pAr[0]._x, pAr[1]._y - pAr[0]._y, pAr[1]._z - pAr[0]._z);

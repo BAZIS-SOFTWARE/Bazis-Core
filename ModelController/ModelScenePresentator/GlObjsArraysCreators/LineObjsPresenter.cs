@@ -1,8 +1,10 @@
-﻿using Model.Interfaces;
+﻿using Model;
+using Model.Interfaces;
 using ModelController.ModelScenePresentator.GlObjsVertexCreators;
 using ModelController.ModelScenePresentator.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
 {
@@ -20,21 +22,24 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
             this.lineObjects = lineObjects;
         }
 
-        public override Tuple<int, int> CreateIndexes()
+        public override Tuple<int, int, int,int> CreateIndexes()
         {
             var indexes = 0;
-            var vertexes = 0;
-
+            var coords = 0;
+            var colors = 0;
+            var edges = 0;
             foreach (var lineObj in lineObjects)
             {
                 if (lineObj.ViewState)
                 {
-                    vertexes = vertexes + lineObj.NumberOfPoints * 3;
+                    coords = coords + lineObj.NumberOfPoints * 3;
                     indexes = indexes + lineObj.NumberOfPoints;
+                    colors = colors + lineObj.NumberOfPoints * 4;
+                    edges++;
                 }
             }
 
-            return new Tuple<int, int>(indexes, vertexes);
+            return new Tuple<int, int, int,int>(indexes, coords, colors, edges);
         }
 
 
@@ -91,6 +96,15 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
             {
                 yield return lineObject;
             }
+        }
+
+        public override bool[] CreateEdgeFlags(int edgesLength)
+        {
+            var edgesArray = new bool[edgesLength];
+
+            edgesArray.Where(x => x = true);
+
+            return edgesArray;
         }
     }
 }

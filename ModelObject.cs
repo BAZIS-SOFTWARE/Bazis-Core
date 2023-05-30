@@ -52,7 +52,7 @@ namespace Model
         /// <summary>
         /// View state flag
         /// </summary>
-        public bool ViewState
+        public virtual bool ViewState
         {
             get { return viewState; }
             set
@@ -83,10 +83,6 @@ namespace Model
         /// ObjKind
         /// </summary>
         public abstract ObjKind ObjKind { get; }
-        /// <summary>
-        /// NumberOfSides
-        /// </summary>
-        public int NumberOfSides { get; }
         /// <summary>
         /// NumberOfPoints
         /// </summary>

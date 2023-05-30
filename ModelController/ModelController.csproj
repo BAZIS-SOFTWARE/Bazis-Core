@@ -41,6 +41,25 @@
     <AssemblyOriginatorKeyFile>
     </AssemblyOriginatorKeyFile>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>bin\Release\ModelController.xml</DocumentationFile>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Functions, Version=1.0.1.40, Culture=neutral, PublicKeyToken=65fde98421b2fc88, processorArchitecture=MSIL">
       <HintPath>..\packages\Bazis.Functions.1.0.2\lib\net48\Functions.dll</HintPath>
@@ -77,6 +96,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MeshObjsUtility\CalcDistance.cs" />
+    <Compile Include="MeshObjsUtility\CrossSection.cs" />
     <Compile Include="ModelScenePresentator\GlObjsArraysCreators\LineObjsPresenter.cs" />
     <Compile Include="ModelScenePresentator\GlObjsArraysCreators\ObjsPresenter.cs" />
     <Compile Include="ModelScenePresentator\GlObjsArraysCreators\PointObjsPresenter.cs" />
@@ -84,6 +105,8 @@
     <Compile Include="ModelScenePresentator\GlObjsVertexCreators\CoordsLineObjsCreator.cs" />
     <Compile Include="ModelScenePresentator\GlObjsVertexCreators\CoordsPointObjsCreator.cs" />
     <Compile Include="ModelScenePresentator\GlObjsVertexCreators\CoordsSurfaceObjsCreator.cs" />
+    <Compile Include="ModelScenePresentator\GlObjsVertexCreators\EdgesSurfaceObjsCreator.cs" />
+    <Compile Include="ModelScenePresentator\Interfaces\IEdgeObjsVertexCreator.cs" />
     <Compile Include="ModelScenePresentator\Interfaces\ILineObjsVertexCreator.cs" />
     <Compile Include="ModelScenePresentator\Interfaces\IPointObjsVertexCreator.cs" />
     <Compile Include="ModelScenePresentator\Interfaces\ISurfaceObjsVertexCreator.cs" />

@@ -146,7 +146,7 @@ namespace TestModel
 
             var interfacedNodesEls3D = interNodesEls3DFinder.Find(new List<int>() { 3, 48, 71 });
 
-            var elsForNode = new List<int>() { 1573,2056,2058,2059 };
+            var elsForNode = new List<int>() { 2565,3048,3050,3051 };
             //assert
             for (int i = 0; i < interfacedNodesEls3D[48].Count; i++)
             {
@@ -255,7 +255,7 @@ namespace TestModel
             var loader = new LoadModelFromASCIITextFile();
 
             loader.LoadEvent += Model_LoadEvent;
-            var modelASCII = loader.Load(@"C:\Bazis_newGUI\MESH\rhombDATA1.ASC");
+            var modelASCII = loader.Load(@"..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
             model.Load(modelASCII);
 
             //act

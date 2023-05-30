@@ -13,6 +13,7 @@ namespace Model
         private List<Surface> surfaces;
         public Element3D(int number, Node[] nodes, ObjKind objKind) : base(number, nodes,objKind)
         {
+
             InitialColor = Color.FromArgb(255, 125, 0);
             MasterColor = Color.FromArgb(255, 125, 0);
             SlaveColor = Color.FromArgb(255, 125, 0);
@@ -20,9 +21,34 @@ namespace Model
             ObjType = "Элементы3D";
             surfaces = NodeSorter.GetSurfaces(nodes).ToList();
         }
+/// <inheritdoc/>
+
+
+        public override bool ViewState 
+        { 
+            get => base.ViewState;
+            set
+            {
+                base.ViewState = value;
+                foreach (var surface in surfaces)
+                {
+                    surface.ViewState = value;
+                }
+            }
+        }
+
+
+
+        /// <inheritdoc/>
 
         public override string ObjType { get; }
+        /// <inheritdoc/>
         public override ObjKind ObjKind { get;}
+/// <inheritdoc/>
+
+        public override int NumberOfSides { get { return surfaces.Count(); } }
+
+        /// <inheritdoc/>
 
         public override Point3D CalcCentralPoint()
         {
@@ -35,6 +61,10 @@ namespace Model
             return center.Div(NumberOfPoints);
         }
 
+        /// <summary>
+        /// Calc volume
+        /// </summary>
+        /// <returns></returns>
         public float CalcVolume()
         {
             var pAr = GetPoints().ToArray();
@@ -53,6 +83,7 @@ namespace Model
             //var str = cMatr.ToString(4, 4);
             return cMatr;
         }
+/// <inheritdoc/>
 
         public override IEnumerable<Surface> GetSurface()
         {

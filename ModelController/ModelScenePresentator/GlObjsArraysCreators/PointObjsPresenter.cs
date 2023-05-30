@@ -16,22 +16,30 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
         {
             this.pointObjects = pointObjects;
         }
+/// <inheritdoc/>
 
 
-        public override Tuple<int, int> CreateIndexes()
+        public override Tuple<int, int, int,int> CreateIndexes()
         {
             var indexes = 0;
-            var vertexes = 0;
+            var coords = 0;
+            var colors = 0;
 
             foreach (var pointObject in pointObjects)
             {
-                vertexes += 3;
+                //Закоментировано т.к вызывает exception
+                /*if (pointObject.ViewState)
+                {*/
+                coords += 3;
                 indexes++;
+                colors += 4;
+                /*}*/
             }
 
 
-            return new Tuple<int, int>(indexes, vertexes);
+            return new Tuple<int, int, int,int>(indexes, coords, colors,0);
         }
+/// <inheritdoc/>
 
 
         public override int[] CreatePointers(int indexLength)
@@ -46,6 +54,7 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
             }
             return ptr;
         }
+/// <inheritdoc/>
 
         public override float[] CreateVertexes(int vertexLength, string vertexType)
         {
@@ -67,11 +76,13 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
 
             return vertexArray;
         }
+/// <inheritdoc/>
 
         public override int Count()
         {
             return pointObjects.Length;
         }
+/// <inheritdoc/>
 
         public override IEnumerable<IModelObject> GetObjs()
         {
@@ -95,6 +106,12 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
 
             var surfacedNodesFinder = new FindOpenSurfaceNodes();
             return surfacedNodesFinder.Find(elements);
+        }
+/// <inheritdoc/>
+
+        public override bool[] CreateEdgeFlags(int edgesLength)
+        {
+            return new bool[0];
         }
     }
 }

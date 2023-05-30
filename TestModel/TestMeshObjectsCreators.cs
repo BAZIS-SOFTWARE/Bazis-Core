@@ -16,7 +16,7 @@ namespace TestModel
             //assing
             var model = new ModelData();
             var loader = new LoadModelFromProjectTextFile();
-            loader.LoadEvent += Model_LoadEvent;
+            loader.LoadEvent += (ar1,ar2) => { };
             //act
             var modelINP = loader.Load(@"C:\Projs\TestProjTerm\Cub\cub_unsorted_freeNodes.bpf");
             model.Load(modelINP);
@@ -28,11 +28,6 @@ namespace TestModel
             //assert
             freeNodes.ToArray()[0] = 14;
             freeNodes.ToArray()[1] = 15;
-        }
-
-        private void Model_LoadEvent(object arg1, LoaderEventArgs arg2)
-        {
-            //throw new NotImplementedException();
         }
     }
 }

@@ -1,6 +1,9 @@
-﻿using System.Linq;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
+using Model.Interfaces;
 using ModelController.IO;
 using ModelParcer;
 
@@ -68,14 +71,14 @@ namespace TestModel
             var loader = new LoadModelFromASCIITextFile();
 
             loader.LoadEvent += (ar1, ar2) => { };
-            //var reader = new StreamReader(@"C:\Bazis_newGUI\MESH\big_cubeDATA1.ASC");
 
             //act
             var modelASCII = loader.Load(@"..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
             //loader.Load(@"C:\Bazis_newGUI\MESH\RadicMesh\Plate2DATA.ASC");
             model.Load(modelASCII);
             //assert
-            var elems = model.ObjectData.FindMany<Element3D>().ToList();
+            Assert.AreEqual(7, model.ObjectData.NumberOfNodes);
+            Assert.AreEqual(8, model.ObjectData.NumberOfElements);
         }
 
         [TestMethod]
