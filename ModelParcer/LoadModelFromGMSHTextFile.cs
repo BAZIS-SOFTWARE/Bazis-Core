@@ -65,6 +65,7 @@ namespace ModelParcer
                     CreateElements("type=T3D2", line, "*ELSET");
                 }
             }
+            reader.Close();
             return newMesh;
         }
 

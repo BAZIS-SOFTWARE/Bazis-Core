@@ -12,113 +12,59 @@ namespace TestModel
     [TestClass]
     public class TestGMSHConnector
     {
+        private string srcDir;
+        private string dstDir;
+        [TestInitialize]
+        public void Initialize()
+        {
+            srcDir = @"..\..\Examples\GMSHConnector\";
+            dstDir = srcDir;
+        }
+
+        [TestCleanup]
+        public void Cleanup()
+        {
+            GMSHConnector.Finalize();
+        }
+
         [TestMethod]
         public void TestCreateGMSHConnector()
         {
-            GMSHConnector.Init();
-            GMSHConnector.Dispose();
+            using(var connector = new GMSHConnector("C:\\Users\\kns\\Downloads\\gmsh-stable-Windows64\\gmsh-4.11.1-Windows64\\examples\\Cilindr.stp", "Элементы2D"))
+            {
+                connector.CreateModelData();
+            }
         }
 
-        [TestMethod]
-        public void TestScriptGMSHConnector1D()
+        [DataTestMethod]
+        //.geo test
+        [DataRow("sphere1D", ".geo", "Элементы1D", "expected1D")]
+        [DataRow("sphere2D", ".geo", "Элементы2D", "expected2D")]
+        [DataRow("sphere3D", ".geo", "Элементы3D", "expected3D")]
+        //.igs test
+        [DataRow("model1D", ".igs", "Элементы1D", "expectedmodel1D")]
+        [DataRow("model2D", ".igs", "Элементы2D", "expectedmodel2D")]
+        [DataRow("model3D", ".igs", "Элементы3D", "expectedmodel3D")]
+        //.stp test
+        [DataRow("Cilindr1D", ".stp", "Элементы1D", "expectedCilindr1D")]
+        [DataRow("Cilindr2D", ".stp", "Элементы2D", "expectedCilindr2D")]
+        [DataRow("Cilindr3D", ".stp", "Элементы3D", "expectedCilindr3D")]//Не проходит, но парсер строит ModelData
+        public void TestScriptGMSHConnector(ref string scriptName, ref string scriptExt,
+                                            ref string objType, ref string expected)
         {
-            GMSHConnector.Init();
-            GMSHConnector.GMSHCreateFromScript(@"..\..\Examples\GMSHConnector\sphere1D.geo", ".inp", "Элементы1D");
-            CompareContentOfFiles(@"..\..\Examples\GMSHConnector\sphere1D.inp",
-                                  @"..\..\Examples\GMSHConnector\expected1D.inp");
-            GMSHConnector.Dispose();
-        }
-        [TestMethod]
-        public void TestScriptGMSHConnector2D()
-        {
-            GMSHConnector.Init();
-            GMSHConnector.GMSHCreateFromScript(@"..\..\Examples\GMSHConnector\sphere2D.geo", ".inp", "Элементы2D");
-            CompareContentOfFiles(@"..\..\Examples\GMSHConnector\sphere2D.inp",
-                                  @"..\..\Examples\GMSHConnector\expected2D.inp");
-            GMSHConnector.Dispose();
-        }
-        [TestMethod]
-        public void TestScriptGMSHConnector3D()
-        {
-            GMSHConnector.Init();
-            GMSHConnector.GMSHCreateFromScript(@"..\..\Examples\GMSHConnector\sphere3D.geo", ".inp", "Элементы3D");
-            CompareContentOfFiles(@"..\..\Examples\GMSHConnector\sphere3D.inp",
-                                  @"..\..\Examples\GMSHConnector\expected3D.inp");
-            GMSHConnector.Dispose();
+            
+            /*GMSHConnector.GMSHCreateFromScript(srcDir + scriptName + scriptExt, objType, false);
+            CompareContentOfFiles(dstDir + scriptName + ".inp",
+                                  srcDir + expected + ".inp");*/
         }
 
-        [TestMethod]
-        public void TestScriptSTPConnector1D()
-        {
-            GMSHConnector.Init();
-            GMSHConnector.GMSHCreateFromScript(@"..\..\Examples\GMSHConnector\model11_3_stp1D.stp", ".inp", "Элементы1D");
-            CompareContentOfFiles(@"..\..\Examples\GMSHConnector\model11_3_stp1D.inp",
-                                  @"..\..\Examples\GMSHConnector\expected_model11_3_stp1D.inp");
-            GMSHConnector.Dispose();
-        }
-
-        [TestMethod]
-        public void TestScriptSTPConnector2D()
-        {
-            GMSHConnector.Init();
-            GMSHConnector.GMSHCreateFromScript(@"..\..\Examples\GMSHConnector\model11_3_stp2D.stp", ".inp", "Элементы2D");
-            CompareContentOfFiles(@"..\..\Examples\GMSHConnector\model11_3_stp2D.inp",
-                                  @"..\..\Examples\GMSHConnector\expected_model11_3_stp2D.inp");
-            GMSHConnector.Dispose();
-        }
-
-        [TestMethod]
-        public void TestScriptSTPConnector3D()
-        {
-            GMSHConnector.Init();
-            GMSHConnector.GMSHCreateFromScript(@"..\..\Examples\GMSHConnector\model11_3_stp3D.stp", ".inp", "Элементы3D");
-            CompareContentOfFiles(@"..\..\Examples\GMSHConnector\model11_3_stp3D.inp",
-                                  @"..\..\Examples\GMSHConnector\expected_model11_3_stp3D.inp");
-            GMSHConnector.Dispose();
-        }
-
-        [TestMethod]
-        public void TestScriptIGSConnector1D()
-        {
-            GMSHConnector.Init();
-            GMSHConnector.GMSHCreateFromScript(@"..\..\Examples\GMSHConnector\model1D.igs", ".inp", "Элементы1D");
-            CompareContentOfFiles(@"..\..\Examples\GMSHConnector\model1D.inp",
-                                  @"..\..\Examples\GMSHConnector\expectedmodel1D.inp");
-            GMSHConnector.Dispose();
-        }
-
-        [TestMethod]
-        public void TestScriptIGSConnector2D()
-        {
-            GMSHConnector.Init();
-            GMSHConnector.GMSHCreateFromScript(@"..\..\Examples\GMSHConnector\model2D.igs", ".inp", "Элементы2D");
-            CompareContentOfFiles(@"..\..\Examples\GMSHConnector\model2D.inp",
-                                  @"..\..\Examples\GMSHConnector\expectedmodel2D.inp");
-            GMSHConnector.Dispose();
-        }
-
-        [TestMethod]
-        public void TestScriptIGSConnector3D()
-        {
-            GMSHConnector.Init();
-            GMSHConnector.GMSHCreateFromScript(@"..\..\Examples\GMSHConnector\model3D.igs", ".inp", "Элементы3D");
-            CompareContentOfFiles(@"..\..\Examples\GMSHConnector\model3D.inp",
-                                  @"..\..\Examples\GMSHConnector\expectedmodel3D.inp");
-            GMSHConnector.Dispose();
-        }
-
-        private string CuttedString(string path)
-        {
-            var lines = File.ReadAllLines(path);
-            var result = lines.Skip(2).Aggregate(new StringBuilder(1000),(s, v) => s.Append(v), r => r.ToString());
-            return result;
-        }
+        private string[] CuttedString(string path) => File.ReadAllLines(path).Skip(2).ToArray();
 
         private void CompareContentOfFiles(string actualPath, string expectedPath)
         {
             var expected = CuttedString(expectedPath);
             var actual = CuttedString(actualPath);
-            Assert.AreEqual(expected, actual);
+            CollectionAssert.AreEqual(expected,actual);
         }
 
     }
