@@ -2,6 +2,7 @@
 using Model.Interfaces;
 using PrFunctionLib;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,10 +15,65 @@ using System.Threading.Tasks;
 
 namespace ModelParcer
 {
-    public class GMSHConnector : IDisposable
+    public static class GMSHServer
     {
         private static bool isInit = false;
         private static int globalTags = 1;
+        /// <summary>
+        /// Return current Tag index
+        /// </summary>
+        public static ref int Tag { get { return ref globalTags; } }
+        public static ref bool IsInit { get { return ref isInit; } }
+
+
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void gmshInitialize(int argc, ref String argv, int readConfigFile,
+                                                  int run, ref int ierr);
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void gmshFinalize(ref int error);
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void gmshOpen(String src, ref int ierr);
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void gmshMerge(String src, ref int ierr);
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void gmshWrite(String src, ref int ierr);
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int gmshClear(ref int ierr);
+
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void gmshModelMeshGenerate(int dim, ref int ierr);
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void gmshOptionSetNumber(String src, double value, ref int ierr);
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void gmshOptionGetNumber(String src, ref double value, ref int ierr);
+
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void gmshOptionSetString(String name, String value, ref int ierr);
+
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void gmshModelAdd(String src, ref int ierr);
+
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void gmshModelMeshOptimize(String src, int force, int niter, ref int dimTags,
+                                                         UIntPtr dimTags_n, ref int ierr);
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void gmshModelSetFileName(String fileName, ref int ierr);
+
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void gmshModelGetFileName(byte[][] filename, ref int ierr);
+
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void gmshModelSetCurrent(String src, ref int ierr);
+
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void gmshModelRemove(ref int ierr);
+    }
+
+
+
+    public class GMSHConnector : IDisposable
+    {
+        
         private int tag;
         private static Dictionary<string, int> dim = new Dictionary<string, int>()
                         { { "Узлы", 0 }, { "Элементы1D", 1 }, { "Линия", 1 },
@@ -202,47 +258,5 @@ namespace ModelParcer
                 gmshModelGetFileName(out fileName, ref error);*/
             }
         }
-
-        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern void gmshInitialize(int argc, ref String argv, int readConfigFile,
-                                                   int run, ref int ierr);
-        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern void gmshFinalize(ref int error);
-        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern void gmshOpen(String src, ref int ierr);
-        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern void gmshMerge(String src, ref int ierr);
-        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern void gmshWrite(String src, ref int ierr);
-        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int gmshClear(ref int ierr);
-
-        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern void gmshModelMeshGenerate(int dim, ref int ierr);
-        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern void gmshOptionSetNumber(String src, double value, ref int ierr);
-        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern void gmshOptionGetNumber(String src, ref double value, ref int ierr);
-
-        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern void gmshOptionSetString(String name, String value, ref int ierr);
-
-        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern void gmshModelAdd(String src, ref int ierr);
-
-        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern void gmshModelMeshOptimize(String src, int force, int niter, ref int dimTags,
-                                                         UIntPtr dimTags_n, ref int ierr);
-        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern void gmshModelSetFileName(String fileName, ref int ierr);
-
-        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern void gmshModelGetFileName(byte[][] filename, ref int ierr);
-
-        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern void gmshModelSetCurrent(String src, ref int ierr);
-
-        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern void gmshModelRemove(ref int ierr);
     }
 }
