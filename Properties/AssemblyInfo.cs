@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("BAZIS SOFTWARE")]
 [assembly: AssemblyProduct("Model")]
-[assembly: AssemblyCopyright("© Bilenko G.A. 2023")]
+[assembly: AssemblyCopyright("© Bilenko Georgy, Nicolay Kochuk, Shibaev Anton, Victor Kapkaev 2023")]
 [assembly: AssemblyTrademark("BAZIS")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +32,6 @@ using System.Runtime.InteropServices;
 // Можно задать все значения или принять номер сборки и номер редакции по умолчанию.
 // используя "*", как показано ниже:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.5.10")]
-[assembly: AssemblyFileVersion("1.0.5.10")]
+
+[assembly: AssemblyVersion("1.0.6.60")]
+[assembly: AssemblyFileVersion("1.0.6.60")]

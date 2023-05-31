@@ -23,7 +23,7 @@ namespace TestModel
             var indices = presenter.CreateIndexes();
             var pointers = presenter.CreatePointers(indices.Item1);
             var colors = presenter.CreateVertexes(indices.Item3, "цвет");
-            var expectedIndices = new Tuple<int,int,int>(1,3,4);
+            var expectedIndices = new Tuple<int,int,int,int>(1,3,4,0);
             var expectedPointers = new int[] { 0 };
             var expectedColors = new float[] { 0.0f, 0.0f, 1.0f, 1.0f };
             Assert.AreEqual(expectedIndices, indices);
@@ -41,7 +41,7 @@ namespace TestModel
             var indices = presenter.CreateIndexes();
             var pointers = presenter.CreatePointers(indices.Item1);
             var colors = presenter.CreateVertexes(indices.Item3, "цвет");
-            var expectedIndices = new Tuple<int, int, int>(2, 6, 8);
+            var expectedIndices = new Tuple<int, int, int,int>(2, 6, 8,1);
             var expectedPointers = new int[] { 0, 1 };
             var expectedColors = new float[] { 0.0f, 0.0f, 0.0f, 1.0f,
                                                0.0f, 0.0f, 0.0f, 1.0f };
@@ -62,7 +62,7 @@ namespace TestModel
             var indices = presenter.CreateIndexes();
             var pointers = presenter.CreatePointers(indices.Item1);
             var colors = presenter.CreateVertexes(indices.Item3, "цвет");
-            var expectedIndices = new Tuple<int, int, int>(3, 9, 12);
+            var expectedIndices = new Tuple<int, int, int,int>(3, 9, 12,3);
             var expectedPointers = new int[] { 0, 1, 2 };
             var expectedColors = new float[] { 0.0f, 0.0f, 1.0f, 1.0f,
                                                0.0f, 0.0f, 1.0f, 1.0f,

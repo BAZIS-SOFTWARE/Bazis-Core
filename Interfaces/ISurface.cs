@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Model.Interfaces
 {
-    public interface ISurface : INodeObject, ISurfaceObject
+    public interface ISurface : ISurfaceObject
     {
         Point3D CalcNormal();
 

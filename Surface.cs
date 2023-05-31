@@ -9,22 +9,36 @@ using System.Threading.Tasks;
 
 namespace Model
 {
-    
+    /// <summary>
+    /// Surface class
+    /// </summary>
     public class Surface : ModelObject, ISurface, IEquatable<Surface>
     {
         Node[] nodes;
-
+        /// <summary>
+        /// Surface constructor
+        /// </summary>
+        /// <param name="number"></param>
+        /// <param name="nodes"></param>
+        /// <param name="objKind"></param>
         public Surface(int number, Node[] nodes, ObjKind objKind) : base(number)
         {
             ObjKind = objKind;
-         
             this.nodes = Anticlockwise(nodes);
+
             ObjType = "Поверхность";
-            NumberOfPoints = nodes.Length;
+
             InitialColor = Color.FromArgb(224, 0, 177);
             MasterColor = Color.FromArgb(224, 0, 177);
             SlaveColor = Color.FromArgb(224, 0, 177);
         }
+        /// <summary>
+        /// Surface constructor
+        /// </summary>
+        /// <param name="number"></param>
+        /// <param name="nodes"></param>
+        /// <param name="objKind"></param>
+        /// <param name="color"></param>
         public Surface(int number, Node[] nodes, ObjKind objKind, Color color) : this(number,nodes,objKind)
         {
             InitialColor = color;
@@ -84,16 +98,15 @@ namespace Model
 
                 iterationCounter++;
             }
+
+            if (ar.Count < nodes.Length) // check arrays 
+                return nodes;
+
             return ar.ToArray();
         }
 
         private bool CheckVectorsOrientation(Node[] nodes, Node firstNode, Node secondNode)
         {
-            //other sort
-            //146 Узлы : -0.047|-0.05212305|0.1608275
-            //18 Узлы: -0.047 | -0.04709208 | 0.1510405
-
-
             //bool isPointInside = false;
             var temp = new List<Point3D>();
             var baseVector = secondNode.Position.Sub(firstNode.Position);
@@ -153,8 +166,13 @@ namespace Model
         public override string ObjType { get; }
 /// <inheritdoc/>
 
-        public override int NumberOfPoints { get; }
-/// <inheritdoc/>
+        public override int NumberOfPoints { get { return nodes.Length; } }
+
+        public int NumberOfSides { get { return 1; } }
+
+        //public int NumberOfSides { get; internal set; }
+
+        /// <inheritdoc/>
 
         public Point3D CalcNormal()
         {
@@ -213,9 +231,13 @@ points.Contains(nodes[2].Position, new Point3DEqualityComparer()))
         /// <returns></returns>
         public IEnumerable<Surface> GetSurface()
         {
-            yield return new Surface(Number, nodes.ToArray(), ObjKind,MasterColor);
+            yield return this;
         }
-
+        /// <summary>
+        /// GetDistance
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
         public float GetDistance(Point3D point)
         {
             var normal = CalcNormal();
