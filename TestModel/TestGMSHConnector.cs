@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Model.Interfaces;
+using SceneInterface;
 
 namespace TestModel
 {
@@ -24,15 +26,14 @@ namespace TestModel
         [TestCleanup]
         public void Cleanup()
         {
-            GMSHConnector.Finalize();
+            GMSHServer.Finalize();
         }
 
         [TestMethod]
         public void TestCreateGMSHConnector()
         {
-            using(var connector = new GMSHConnector("C:\\Users\\kns\\Downloads\\gmsh-stable-Windows64\\gmsh-4.11.1-Windows64\\examples\\Cilindr.stp", "Элементы2D"))
+            using(var connector = new GMSHConnector(srcDir + "Cilindr1D.stp"))
             {
-                connector.CreateModelData();
             }
         }
 
@@ -52,10 +53,57 @@ namespace TestModel
         public void TestScriptGMSHConnector(ref string scriptName, ref string scriptExt,
                                             ref string objType, ref string expected)
         {
-            
-            /*GMSHConnector.GMSHCreateFromScript(srcDir + scriptName + scriptExt, objType, false);
-            CompareContentOfFiles(dstDir + scriptName + ".inp",
-                                  srcDir + expected + ".inp");*/
+            using (var connector = new GMSHConnector(srcDir + scriptName + scriptExt))
+            {
+                connector.Generate(objType);
+                var data = connector.GetModelData();
+                CompareContentOfFiles(dstDir + scriptName + ".inp",
+                                     srcDir + expected + ".inp");
+                connector.DeleteDstFile = true;
+            }
+        }
+
+        [DataTestMethod]
+        [DataRow("sphere1D", ".geo", "Элементы1D", "0.2 0.5")]
+        [DataRow("sphere2D", ".geo", "Элементы2D", "0.02 0.025")]
+        [DataRow("sphere3D", ".geo", "Элементы3D", "1 5")]
+        public void TestDensityGMSHConnector(ref string scriptName, ref string scriptExt, 
+                                                 ref string objType, ref string density)
+        {
+            using (var connector = new GMSHConnector(srcDir + scriptName + scriptExt))
+            {
+                connector.Generate(objType);
+                connector.MeshDensity = density;
+                var actual = connector.MeshDensity;
+                Assert.AreEqual(density, actual);
+                connector.DeleteDstFile = true;
+            }
+        }
+
+        [DataTestMethod]
+        [DataRow("sphere2D", ".geo", "Элементы2D")]
+        [DataRow("sphere3D", ".geo", "Элементы3D")]
+        public void TestQuadrangulateGMSHConnector(ref string scriptName, ref string scriptExt, ref string objType)
+        {
+            using (var connector = new GMSHConnector(srcDir + scriptName + scriptExt))
+            {
+                connector.Generate(objType);
+                connector.Quadrangulate();
+                connector.DeleteDstFile = true;
+            }
+        }
+
+        [DataTestMethod]
+        [DataRow("sphere2D", ".geo", "Элементы2D")]
+        [DataRow("sphere3D", ".geo", "Элементы3D")]
+        public void TestTesselateGMSHConnector(ref string scriptName, ref string scriptExt, ref string objType)
+        {
+            using (var connector = new GMSHConnector(srcDir + scriptName + scriptExt))
+            {
+                connector.Generate(objType);
+                connector.Tesselate();
+                connector.DeleteDstFile = true;
+            }
         }
 
         private string[] CuttedString(string path) => File.ReadAllLines(path).Skip(2).ToArray();
