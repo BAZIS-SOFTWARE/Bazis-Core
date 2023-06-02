@@ -32,11 +32,10 @@
     <DocumentationFile>bin\Release\ModelParcer.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>
-    </AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>ModelSolutionKey.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Functions, Version=1.0.1.40, Culture=neutral, PublicKeyToken=65fde98421b2fc88, processorArchitecture=MSIL">
@@ -73,6 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="ModelSolutionKey.pfx" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

@@ -70,15 +70,14 @@
     <Reference Include="MathNet.Numerics, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cd8b63ad3d691a37, processorArchitecture=MSIL">
       <HintPath>..\packages\MathNet.Numerics.Signed.5.0.0\lib\net48\MathNet.Numerics.dll</HintPath>
     </Reference>
+    <Reference Include="Octree, Version=2.1.10.0, Culture=neutral, PublicKeyToken=2f43c75143b659d5, processorArchitecture=MSIL">
+      <HintPath>..\packages\NetOctree.2.1.10\lib\net48\Octree.dll</HintPath>
+    </Reference>
+    <Reference Include="SceneInterface, Version=1.0.3.20, Culture=neutral, PublicKeyToken=f4632fed43ef5153, processorArchitecture=MSIL">
+      <HintPath>..\packages\SceneInterface.1.0.3.20\lib\net48\SceneInterface.dll</HintPath>
     <Reference Include="Model, Version=1.0.3.50, Culture=neutral, PublicKeyToken=2804256ee81d4535, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\bin\Debug\Model.dll</HintPath>
-    </Reference>
-    <Reference Include="Octree, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\NetOctree.2.1.0\lib\net462\Octree.dll</HintPath>
-    </Reference>
-    <Reference Include="SceneInterface, Version=1.0.3.10, Culture=neutral, PublicKeyToken=f4632fed43ef5153, processorArchitecture=MSIL">
-      <HintPath>..\packages\SceneInterface.1.0.3.10\lib\net48\SceneInterface.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />

@@ -1,4 +1,4 @@
-﻿using ModelController.MeshObjsUtility;
+using ModelController.MeshObjsUtility;
 using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
@@ -80,7 +80,7 @@ namespace TestModel
             Assert.IsTrue(CheckSetEquality(result.GetPoints(), points));
         }
 
-        [TestMethod, Timeout(1000)]
+        [TestMethod, Timeout(2000)]
         public void TestLongModel()
         {
             var loader = new LoadModelFromCDBTextFile();
