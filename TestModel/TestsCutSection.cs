@@ -1,4 +1,4 @@
-﻿using ModelController.MeshObjsUtility;
+using ModelController.MeshObjsUtility;
 using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
