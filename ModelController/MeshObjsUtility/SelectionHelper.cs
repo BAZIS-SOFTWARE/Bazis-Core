@@ -5,60 +5,57 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
+
 namespace ModelController.MeshObjsUtility
 {
     public class SelectionHelper
     {
-        ObjectsData objectsData;
+        private readonly ObjectsData objectsData;
+
         public SelectionHelper(ObjectsData objectsData)
         {
             this.objectsData = objectsData;
         }
 
-        public List<int> SelectInDirecion<T>(float angleToSearch, int firstNumb, int secondNumb, Color color)
+        public List<int> SelectInDirecion<T>(float angleInGradus, int firstNumber, int secondNumber, Color color)
             where T : SurfaceElement
         {
             var elements = objectsData.FindMany<T>().ToArray();
             var finder = new FindInterfacedNodes(elements);
             var interfacesNodes = finder.Find();
-
-            var cos = Math.Cos(angleToSearch * (float)Math.PI / 180);
+            var cos = Math.Cos(ConvertGradusToRadian(angleInGradus));
             var isFind = true;
-            var visitNodes = new List<int>() { firstNumb, secondNumb };
-
+            var visitNodes = new List<int>() { firstNumber, secondNumber };
             while (isFind)
             {
                 isFind = false;
-                var firstNode = (Node)objectsData.Find(firstNumb);
-                var secondNode = (Node)objectsData.Find(secondNumb);
+                var firstNode = (Node)objectsData.Find(firstNumber);
+                var secondNode = (Node)objectsData.Find(secondNumber);
                 var dir = secondNode.Position.Sub(firstNode.Position);
-
-                foreach (var elNumber in interfacesNodes[secondNumb])
+                foreach (var elementNumber in interfacesNodes[secondNumber])
                 {
-                    var elem = objectsData.Find(elements, elNumber);
-
-                    foreach (var elNode in elem.GetNodes())
+                    var elem = objectsData.Find(elements, elementNumber);
+                    foreach (var elementNode in elem.GetNodes())
                     {
-                        var tempDir = elNode.Position.Sub(secondNode.Position);
-                        var angle = Math.Abs(Vector.GetAngleVectors(dir, tempDir));
-                        if (angle > cos && !visitNodes.Contains(elNode.Number))
+                        var tempDirection = elementNode.Position.Sub(secondNode.Position);
+                        var angle = Math.Abs(Vector.GetAngleVectors(dir, tempDirection));
+                        if (angle > cos && !visitNodes.Contains(elementNode.Number))
                         {
-                            elNode.MasterColor = color;
-
-                            firstNumb = visitNodes.Last();
-                            secondNumb = elNode.Number;
-
-                            visitNodes.Add(elNode.Number);
+                            elementNode.MasterColor = color;
+                            firstNumber = visitNodes.Last();
+                            secondNumber = elementNode.Number;
+                            visitNodes.Add(elementNode.Number);
                             isFind = true;
                             break;
                         }
-
                     }
-                    if (isFind) break;
+                    if (isFind) 
+                        break;
                 }
             }
             return visitNodes;
         }
+        
         public void SelectInPlane<T>(Plane plane, Color color)
                     where T : Node
         {
@@ -71,48 +68,64 @@ namespace ModelController.MeshObjsUtility
             }
         }
 
-
-        public List<int> SelectInPlane<T>(float angleToSearch, int startNumber, Color color)
-                        where T : Element2D
+        public List<int> SelectInPlane<T>(float angleInGradus, int startNumber, Color color)
+            where T : Element2D
         {
-            var elements = objectsData.FindMany<T>().ToArray();
-
-            var finder = new FindInterfacedNodes(elements);
-            var interfacesNodes = finder.Find();
-
-            var cos = Math.Cos(angleToSearch * (float)Math.PI / 180);
-
-            var visitElements = new List<int>() { startNumber };
-            var isFind = true;
-            while (isFind)
+            var maxAngleRadians = ConvertGradusToRadian(angleInGradus);
+            var elements = objectsData.FindMany<Element2D>().ToArray();
+            var graph = CreateElementsGraph(elements);
+            var queue = new Queue<int>();
+            queue.Enqueue(startNumber);
+            var used = new HashSet<int>();
+            while(queue.Count > 0)
             {
-                isFind = false;
-                var elNumb = visitElements.Last();
-
-                var element = objectsData.Find(elements, elNumb);
-                foreach (var node in element.GetNodes())
+                var currentNumber = queue.Dequeue();
+                var currentElement = objectsData.Find(elements, currentNumber);
+                foreach (var neighbourNumber in graph[currentNumber])
                 {
-                    var normal = element.CalcNormal();
-                    foreach (var neibElNumb in interfacesNodes[node.Number])
+                    if(!used.Contains(neighbourNumber))
                     {
-                        var neibElement = objectsData.Find(elements, neibElNumb);
-                        //neibElement.CalcSideNormals();
-                        var neibNormal = neibElement.CalcNormal();
-
-                        var angle = Vector.GetAngleVectors(normal, neibNormal);
-
-                        if (angle > cos && !visitElements.Contains(neibElement.Number))
+                        var neighbourElement = objectsData.Find(elements, neighbourNumber);
+                        var cos = Vector.GetAngleVectors(currentElement.CalcNormal(), neighbourElement.CalcNormal());
+                        if (cos < 0)
+                            cos *= -1;
+                        var angleRadian = Math.Acos(cos);
+                        if (angleRadian <= maxAngleRadians)
                         {
-                            neibElement.MasterColor = color;
-                            visitElements.Add(neibElNumb);
-                            isFind = true;
-
+                            used.Add(neighbourNumber);
+                            queue.Enqueue(neighbourNumber);                            
+                            neighbourElement.MasterColor = color;
                         }
                     }
-                    if (isFind) break;
                 }
             }
-            return visitElements;
+            return used.ToList();
+        }
+
+        private Dictionary<int, List<int>> CreateElementsGraph(Element2D[] elements)
+        {
+            var graph = new Dictionary<int, List<int>>();
+            var finder = new FindInterfacedNodes(elements);
+            var interfacedNodes = finder.Find();
+            foreach (var element in elements)
+            {
+                var nodes = element.GetNodes();
+                var neighbourElementsNumber = new HashSet<int>();
+                foreach (var node in nodes)
+                {
+                    foreach (var interfacedElementNumber in interfacedNodes[node.Number])
+                    {
+                        neighbourElementsNumber.Add(interfacedElementNumber);
+                    }
+                }
+                graph.Add(element.Number, neighbourElementsNumber.ToList());
+            }
+            return graph;
+        }
+
+        private float ConvertGradusToRadian(float angleInGradus)
+        {
+            return angleInGradus * (float)Math.PI / 180f;
         }
     }
 }

@@ -4,9 +4,11 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using Model.Events;
+using Model.Interfaces;
 using ModelController.IO;
 using ModelController.MeshObjsUtility;
 using ModelController.ModelScenePresentator;
@@ -17,6 +19,32 @@ namespace TestModel
     [TestClass]
     public class TestServices
     {
+        private ObjectsData objectsData;
+
+        [TestInitialize]
+        public void Setup()
+        {
+            var A = new Node(1, new Point3D(0, 0, 0));
+            var B = new Node(2, new Point3D(0, 0, 1));
+            var C = new Node(3, new Point3D(0, 1, 0));
+            var D = new Node(4, new Point3D(0, 1, 1));
+            var E = new Node(5, new Point3D(0, 1.5f, 0));
+            var F = new Node(6, new Point3D(0, 2, 0));
+            var G = new Node(7, new Point3D(0, 2, 1));
+            var H = new Node(8, new Point3D(-0.5f, 3.5f, 0));
+            var elements = new List<Element2D>
+            {
+                new Element2D(1, new Node[] { A, B, C }, ObjKind.Triangle),
+                new Element2D(2, new Node[] { B, C, D }, ObjKind.Triangle),
+                new Element2D(3, new Node[] { D, C, E }, ObjKind.Triangle),
+                new Element2D(4, new Node[] { E, D, G }, ObjKind.Triangle),
+                new Element2D(5, new Node[] { E, F, G }, ObjKind.Triangle),
+                new Element2D(6, new Node[] { F, G, H }, ObjKind.Triangle),
+            };
+            objectsData = new ObjectsData();
+            objectsData.AddRange(elements);
+        }
+
         [TestMethod]
         public void TestHideAllElementArrays()
         {
@@ -75,22 +103,21 @@ namespace TestModel
         }
 
         [TestMethod]
-        public void FindElementsInPlane()
+        public void SelectCorrectElements1()
         {
-            //assign
-            var loader = new LoadModelFromGMSHTextFile();
-            loader.LoadEvent += (ar1, ar2) => { };
+            var selector = new SelectionHelper(objectsData);
+            var selectedElementNumbers = selector.SelectInPlane<Element2D>(19, 1, Color.Green);
+            var expected = new List<int>() { 1, 2, 3, 4, 5, 6 };
+            Assert.IsTrue(selectedElementNumbers.SequenceEqual(expected));
+        }
 
-            //act
-            var model = loader.Load(@"C:\Projs\ExampleMesh\Tube.inp");
-
-            var selector = new SelectionHelper(model.ObjectData);
-
-            var el2D = model.ObjectData.FindMany<Element2D>();
-            var numb = el2D.Last().Number;
-            selector.SelectInPlane<Element2D>(10, numb, Color.Green);
-
-            //assert
+        [TestMethod]
+        public void SelectCorrectElements2()
+        {
+            var selector = new SelectionHelper(objectsData);
+            var selectedElementNumbers = selector.SelectInPlane<Element2D>(18, 1, Color.Green);
+            var expected = new List<int>() { 1, 2, 3, 4, 5 };
+            Assert.IsTrue(selectedElementNumbers.SequenceEqual(expected));
         }
 
         [TestMethod]
