@@ -17,7 +17,7 @@ namespace ModelController.MeshObjsUtility
             this.objectsData = objectsData;
         }
 
-        public List<int> SelectInDirecion<T>(float angleInGradus, int firstNumber, int secondNumber, Color color)
+        public List<int> SelectInDirection<T>(float angleInGradus, int firstNumber, int secondNumber, Color color)
             where T : SurfaceElement
         {
             var elements = objectsData.FindMany<T>().ToArray();
@@ -68,6 +68,12 @@ namespace ModelController.MeshObjsUtility
             }
         }
 
+        /// <summary>
+        /// Выбор всех эллементов, лежащих в одной плоскости с startNumber элементом, и углом между плоскостями, меньшим чем angleInGradus
+        /// </summary>
+        /// <returns>
+        /// Список номеров элементов
+        /// </returns>
         public List<int> SelectInPlane<T>(float angleInGradus, int startNumber, Color color)
             where T : Element2D
         {
@@ -102,6 +108,9 @@ namespace ModelController.MeshObjsUtility
             return used.ToList();
         }
 
+        /// <returns>
+        /// Словарь, где ключ - номер элемента, значение - список номеров элементов, имеющих хотя бы одну общую точку с ключом
+        /// </returns>
         private Dictionary<int, List<int>> CreateElementsGraph(Element2D[] elements)
         {
             var graph = new Dictionary<int, List<int>>();

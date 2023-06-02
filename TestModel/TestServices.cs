@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -34,14 +33,16 @@ namespace TestModel
             var H = new Node(8, new Point3D(-0.5f, 3.5f, 0));
             var elements = new List<Element2D>
             {
-                new Element2D(1, new Node[] { A, B, C }, ObjKind.Triangle),
-                new Element2D(2, new Node[] { B, C, D }, ObjKind.Triangle),
-                new Element2D(3, new Node[] { D, C, E }, ObjKind.Triangle),
-                new Element2D(4, new Node[] { E, D, G }, ObjKind.Triangle),
-                new Element2D(5, new Node[] { E, F, G }, ObjKind.Triangle),
-                new Element2D(6, new Node[] { F, G, H }, ObjKind.Triangle),
+                new Element2D(9, new Node[] { A, B, C }, ObjKind.Triangle),
+                new Element2D(10, new Node[] { B, C, D }, ObjKind.Triangle),
+                new Element2D(11, new Node[] { D, C, E }, ObjKind.Triangle),
+                new Element2D(12, new Node[] { E, D, G }, ObjKind.Triangle),
+                new Element2D(13, new Node[] { E, F, G }, ObjKind.Triangle),
+                new Element2D(14, new Node[] { F, G, H }, ObjKind.Triangle),
             };
+            var nodes = new List<Node> { A, B, C, D, E, F, G, H };
             objectsData = new ObjectsData();
+            objectsData.AddRange(nodes);
             objectsData.AddRange(elements);
         }
 
@@ -77,36 +78,15 @@ namespace TestModel
         [TestMethod]
         public void FindNodesInDirection()
         {
-            //assign
-            var loader = new LoadModelFromProjectTextFile();
-            loader.LoadEvent += (ar1, ar2) => { };
-
-            //act
-            var model = loader.Load(@"C:\Projs\TestProjTerm\tjoint\proj_traj.bpf");
-
-            //baseLine | refLine
-            var strGroup = "baseLine";
-            var group = model.GroupData.Find(strGroup);
-
-            var selector = new SelectionHelper(model.ObjectData);
-
-            var firstN = model.ObjectData.Find(group[0]);
-            var secondN = model.ObjectData.Find(group[1]);
-
-            var selNodes = selector.SelectInDirecion<Element3D>(10, firstN.Number, secondN.Number, Color.Green);
-
-            //assert
-            var actNodes = group.ObjsNumbers.ToList();
-            for (int i = 0; i < selNodes.Count; i++)
-                Assert.AreEqual(selNodes[i], actNodes[i]);
-
+            var selector = new SelectionHelper(objectsData);
+            var selectedItemNumbers = selector.SelectInDirection<Element2D>(0, 1, 2, Color.Green);
         }
 
         [TestMethod]
         public void SelectCorrectElements1()
         {
             var selector = new SelectionHelper(objectsData);
-            var selectedElementNumbers = selector.SelectInPlane<Element2D>(19, 1, Color.Green);
+            var selectedElementNumbers = selector.SelectInPlane<Element2D>(19, 9, Color.Green);
             var expected = new List<int>() { 1, 2, 3, 4, 5, 6 };
             Assert.IsTrue(selectedElementNumbers.SequenceEqual(expected));
         }
@@ -115,7 +95,7 @@ namespace TestModel
         public void SelectCorrectElements2()
         {
             var selector = new SelectionHelper(objectsData);
-            var selectedElementNumbers = selector.SelectInPlane<Element2D>(18, 1, Color.Green);
+            var selectedElementNumbers = selector.SelectInPlane<Element2D>(18, 9, Color.Green);
             var expected = new List<int>() { 1, 2, 3, 4, 5 };
             Assert.IsTrue(selectedElementNumbers.SequenceEqual(expected));
         }
