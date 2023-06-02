@@ -57,11 +57,10 @@ namespace TestModel
                 new Point3D(array[6],array[7],array[8])
             };
             var plane = new Plane(points[0], points[1], points[2]);
-            var getCrossPoints = new CrossSection();
-            var crossNodes = getCrossPoints.GetCrossNodes(new List<Element3D> { tetra }, plane);
+            var crossNodes = CrossSection.GetSectionSurfaces(new List<Element3D> { tetra }, plane);
             var result = crossNodes[1];
-            Assert.AreEqual(3, result.Count);
-            Assert.IsTrue(CheckSetEquality(points, result));
+            Assert.AreEqual(3, result.GetPoints().Count());
+            Assert.IsTrue(CheckSetEquality(points, result.GetPoints()));
         }
 
         [TestMethod]
@@ -75,14 +74,13 @@ namespace TestModel
                 new Point3D(1, 1, 0.5f),
             };
             var plane = new Plane(points[0], points[1], points[2]);
-            var getCrossPoints = new CrossSection();
-            var crossNodes = getCrossPoints.GetCrossNodes(new List<Element3D> { hex }, plane);
+            var crossNodes = CrossSection.GetSectionSurfaces(new List<Element3D> { hex }, plane);
             var result = crossNodes[1];
-            Assert.AreEqual(4, result.Count);
-            Assert.IsTrue(CheckSetEquality(result, points));
+            Assert.AreEqual(4, result.GetPoints().Count());
+            Assert.IsTrue(CheckSetEquality(result.GetPoints(), points));
         }
 
-        [TestMethod, Timeout(10000)]
+        [TestMethod, Timeout(2000)]
         public void TestLongModel()
         {
             var loader = new LoadModelFromCDBTextFile();
@@ -97,8 +95,7 @@ namespace TestModel
             };
             var plane = new Plane(points[0], points[1], points[2]);
             var elements = modelData.ObjectData.FindMany<Element3D>().ToList();
-            var getCrossPoints = new CrossSection();
-            var crossNodes = getCrossPoints.GetCrossNodes(new List<Element3D> { tetra }, plane);
+            var crossNodes = CrossSection.GetSectionSurfaces(new List<Element3D> { tetra }, plane);
         }
     }
 }

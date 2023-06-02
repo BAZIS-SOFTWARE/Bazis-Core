@@ -67,13 +67,17 @@
     <Reference Include="MathNet.Numerics, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cd8b63ad3d691a37, processorArchitecture=MSIL">
       <HintPath>..\packages\MathNet.Numerics.Signed.5.0.0\lib\net48\MathNet.Numerics.dll</HintPath>
     </Reference>
-    <Reference Include="SceneInterface, Version=1.0.3.10, Culture=neutral, PublicKeyToken=f4632fed43ef5153, processorArchitecture=MSIL">
-      <HintPath>..\packages\SceneInterface.1.0.3.10\lib\net48\SceneInterface.dll</HintPath>
+    <Reference Include="Octree, Version=2.1.10.0, Culture=neutral, PublicKeyToken=2f43c75143b659d5, processorArchitecture=MSIL">
+      <HintPath>..\packages\NetOctree.2.1.10\lib\net48\Octree.dll</HintPath>
+    </Reference>
+    <Reference Include="SceneInterface, Version=1.0.3.20, Culture=neutral, PublicKeyToken=f4632fed43ef5153, processorArchitecture=MSIL">
+      <HintPath>..\packages\SceneInterface.1.0.3.20\lib\net48\SceneInterface.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
