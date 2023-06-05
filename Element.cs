@@ -23,6 +23,8 @@ namespace Model
         
         public override int NumberOfPoints { get { return nodes.Length; } }
 
+        public abstract float[] GetFormFunctions(Point3D point3D);
+
         public IEnumerable<Node> GetNodes()
         {
             foreach (var node in nodes)

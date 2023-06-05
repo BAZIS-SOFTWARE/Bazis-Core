@@ -37,7 +37,8 @@ namespace ModelController.MeshObjsUtility
         /// <returns>
         /// a dictionary where the key is the element number and the value is a list of points of section by the given plane.
         /// </returns>
-        public static Dictionary<int, Surface> GetSectionSurfaces(List<Element3D> elements, Plane plane)
+      
+        public Dictionary<int, Surface> GetSectionSurfaces(List<Element3D> elements, Plane plane)
         {
             var result = new Dictionary<int, Surface>();
             var objectNumber = 0;
@@ -74,7 +75,8 @@ namespace ModelController.MeshObjsUtility
         /// <returns>
         /// the coefficients of the cannonical plane equation (Ax + By + Cz + D = 0) by given three points.
         /// </returns>
-        private static float[] GetPlaneEquationCoefficients(Point3D a, Point3D b, Point3D c)
+
+        private float[] GetPlaneEquationCoefficients(Point3D a, Point3D b, Point3D c)
         {
             var A = Matrix<float>.Build.DenseOfArray(new float[,] {
                 { b._y - a._y, b._z - a._z },
@@ -95,7 +97,8 @@ namespace ModelController.MeshObjsUtility
         /// <returns>
         /// the point of intersection of the given plane and the given line
         /// </returns>
-        private static Point3D GetSectionPoint(Line line, Plane plane)
+
+        private Point3D GetSectionPoint(Line line, Plane plane)
         {
             var coefficients = GetPlaneEquationCoefficients(plane.P0, plane.P1, plane.P2);
             var A = coefficients[0];
