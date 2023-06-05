@@ -46,7 +46,7 @@ namespace Model
         public override ObjKind ObjKind { get;}
 /// <inheritdoc/>
 
-        public override int NumberOfSides { get { return surfaces.Count(); } }
+        public override int NumberOfSides { get { return surfaces.Count(); } }       
 
         /// <inheritdoc/>
 
@@ -83,7 +83,13 @@ namespace Model
             //var str = cMatr.ToString(4, 4);
             return cMatr;
         }
-/// <inheritdoc/>
+
+        public override float[] GetFormFunctions(Point3D point3D)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
 
         public override IEnumerable<Surface> GetSurface()
         {
