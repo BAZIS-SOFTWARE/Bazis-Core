@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Model.Interfaces;
 using SceneInterface;
+using Model;
 
 namespace TestModel
 {
@@ -105,6 +106,33 @@ namespace TestModel
                 connector.DeleteDstFile = true;
             }
         }
+
+        [DataTestMethod]
+        [DataRow("sphere2D", ".geo", "Элементы2D")]
+        public void TestGetEntities(ref string scriptName, ref string scriptExt, ref string objType)
+        {
+            using (var connector = new GMSHConnector(srcDir + scriptName + scriptExt))
+            {
+                connector.Generate(objType);
+                connector.GetEntitiesTest();
+            }
+        }
+
+        [DataTestMethod]
+        [DataRow("sphere2D", ".geo", "Элементы2D")]
+        public void TestGetElements(ref string scriptName, ref string scriptExt, ref string objType)
+        {
+            using (var connector = new GMSHConnector(srcDir + scriptName + scriptExt))
+            {
+                connector.Generate(objType);
+                List<Node> nodes;
+                List<Element1D> e1d;
+                List<Element2D> e2d;
+                List<Element3D> e3d;
+                connector.GetElements(out nodes, out e1d, out e2d, out e3d);
+            }
+        }
+
 
         private string[] CuttedString(string path) => File.ReadAllLines(path).Skip(2).ToArray();
 
