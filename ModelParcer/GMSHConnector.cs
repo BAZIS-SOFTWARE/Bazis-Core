@@ -15,6 +15,9 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Configuration;
+using Geometry;
+using System.Reflection;
+using MathNet.Numerics.LinearAlgebra.Factorization;
 
 namespace ModelParcer
 {
@@ -141,8 +144,6 @@ namespace ModelParcer
         }
     }
 
-
-
     public class GMSHConnector : IDisposable
     {
         /// <summary>
@@ -207,6 +208,12 @@ namespace ModelParcer
             return modelData;
         }
 
+        public ModelData GetModelData(string query)
+        {
+
+            return null;
+        }
+
         public void GetEntitiesTest()
         {
             var error = 0;
@@ -219,61 +226,67 @@ namespace ModelParcer
             GMSHServer.gmshFree(buffer);
         }
 
+        private List<Element1D> Create1dElements(List<Node> points, long[] tagElements, 
+                                                long[] tagPoints, int stride, ObjKind kind)
+        {
+            var result = new List<Element1D>();
+            var nodes = new Node[stride];
+            for (var i = 0; i < tagElements.Length; i+=stride)
+            {
+                for (var j = 0; j < stride; ++j)
+                    nodes[i] = points[(int)tagPoints[i + i] - 1];
+                result.Add(new Element1D((int)tagElements[i], nodes, kind));
+            }
+            return result;
+        }
+
+        private void CreateElements(List<Node> nodes, out List<Element1D> e1d, out List<Element2D> e2d,
+                                    out List<Element3D> e3d, long[][] elements, long[][] points, 
+                                    string[] types)
+        {
+            SetDefaultLists(out e1d, out e2d, out e3d);
+            for (var i = 0; i < elements.GetLength(0); ++i)
+            {
+                var typePoints = types[i].Split(' ');
+                switch (typePoints[0])
+                {
+                    case "Line":
+                        e1d = Create1dElements(nodes, elements[i], points[i], 
+                                               Int32.Parse(typePoints[1]), ObjKind.Curve);
+                        break;
+                    case "Triangle":
+                        break;
+                    case "Quadrilateral":
+                        break;
+                    case "Tetrahedron":
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
         public void GetElements(out List<Node> nodes, out List<Element1D> e1d,
                                 out List<Element2D> e2d, out List<Element3D> e3d)
         {
+            nodes = null;
+            SetDefaultLists(out e1d, out e2d, out e3d);
             var error = 0;
-            SetDefaultLists(out nodes, out e1d, out e2d, out e3d);
+            GMSHServer.gmshModelSetCurrent(Tag.ToString(), ref error);
             IntPtr eTypes, eTypes_n, eTags, eTags_n,eTags_nn, nodeTags, nodeTags_n, nodeTags_nn;
             eTypes = eTypes_n = eTags = eTags_n = eTags_nn = nodeTags = nodeTags_n = nodeTags_nn = IntPtr.Zero;
             GMSHServer.gmshModelMeshGetElements(ref eTypes, ref eTypes_n,
                                                 ref eTags, ref eTags_n, ref eTags_nn,
                                                 ref nodeTags, ref nodeTags_n, ref nodeTags_nn, -1, -1, ref error);
-            long[][] elements;
-            long[][] points;
-            int[] eMeta;
-            GetTypesData(out eMeta, eTypes, eTypes_n);
-            GetElementData(out elements, eTags, eTags_n, eTags_nn);
-            GetElementData(out points, nodeTags, nodeTags_n, nodeTags_nn);
-
-            for(var i = 0; i < eMeta.Length; ++i)
+            var types = GetElementsTypes(eTypes, eTypes_n);
+            if (types.Contains("Point"))
             {
-                var elName = IntPtr.Zero;
-                var localeNodeCoord = IntPtr.Zero;
-                var localeNodeCoord_n = IntPtr.Zero;
-                int dim, order, numNodes, primaryNodes;
-                dim = order = numNodes = primaryNodes = 0;
-                GMSHServer.gmshModelMeshGetElementProperties(eMeta[i], ref elName, ref dim, ref order, ref numNodes,
-                                                             ref localeNodeCoord, ref localeNodeCoord_n,
-                                                             ref primaryNodes, ref error);
-                //Marshal.
-
+                GetPoints(out nodes);
+                long[][] elements, points;
+                GetElementData(out elements, eTags, eTags_n, eTags_nn);
+                GetElementData(out points, nodeTags, nodeTags_n, nodeTags_nn);
+                CreateElements(nodes, out e1d, out e2d, out e3d, elements, points, types);
             }
-            
-
-
-
-
-
-
-
-            /*GMSHServer.gmshModelMeshGetNodes(ref nodeTags, ref nodeTags_n, ref eTags, ref eTags_n,
-                                             ref eTypes, ref eTypes_n, -1, -1, 0, 0, ref error);*/
-
-            //Сделаем возврат по GetNodesByElementType;
-
-
-            /*Координаты не верны
-            var nodesTags = nodeTags_n.ToInt32();
-            var pts = new long[nodesTags];
-            Marshal.Copy(nodeTags, pts, 0, nodesTags);
-            GMSHServer.gmshFree(nodeTags);
-
-            var coordsCount = eTags_n.ToInt32();
-            var coords = new double[coordsCount];
-            Marshal.Copy(nodeTags, coords, 0, coordsCount);
-            GMSHServer.gmshFree(eTags);
-            GMSHServer.gmshFree(eTypes);*/
         }
 
         /// <summary>
@@ -335,20 +348,83 @@ namespace ModelParcer
             }
         }
 
-        private void SetDefaultLists(out List<Node> nodes, out List<Element1D> e1D, out List<Element2D> e2D,
-                                     out List<Element3D> e3D)
+        private string[] GetElementsTypes(IntPtr eTypes, IntPtr eTypes_n)
         {
-            nodes = null;
-            e1D = null;
-            e2D = null;
-            e3D = null;
+            int[] eMeta;
+            IntPtr elName, localeNodeCoord, localeNodeCoord_n;
+            elName = localeNodeCoord = localeNodeCoord_n = IntPtr.Zero;
+            int dim, order, numNodes, primaryNodes, error;
+            dim = order = numNodes = primaryNodes = error = 0;
+            GetTypesData(out eMeta, eTypes, eTypes_n);
+            var result = new string[eMeta.Length];
+            for (var i = 0; i < eMeta.Length; ++i)
+            {
+                GMSHServer.gmshModelMeshGetElementProperties(eMeta[i], ref elName, ref dim, ref order, ref numNodes,
+                                                             ref localeNodeCoord, ref localeNodeCoord_n,
+                                                             ref primaryNodes, ref error);
+                var name = Marshal.PtrToStringAnsi(elName);
+                GMSHServer.gmshFree(elName);
+                GMSHServer.gmshFree(localeNodeCoord);
+                result[i] = name;
+            }
+            return result;
         }
 
-        private void GetTypesData(out int[] data, IntPtr eTypes, IntPtr eCount, int sizeFactor = 1)
+        private void GetLines(out List<Element1D> list)
+        {
+
+            list = new List<Element1D>();
+        }
+
+        private void GetPoints(out List<Node> list)
+        {
+            var error = 0;
+            IntPtr nodeTags, nodeTags_n, coord, coord_n, paramCoord, paramCoord_n;
+            nodeTags = nodeTags_n = coord = coord_n = paramCoord = paramCoord_n = IntPtr.Zero;
+            GMSHServer.gmshModelMeshGetNodes(ref nodeTags, ref nodeTags_n, ref coord, ref coord_n,
+                                             ref paramCoord, ref paramCoord_n, -1, -1, 0, 0, ref error);
+            long[] tagPoints;
+            double[] coords;
+            var pointsCount = nodeTags_n.ToInt32();
+            list = new List<Node>(pointsCount);
+            GetTypesData(out tagPoints, nodeTags, nodeTags_n);
+            GetTypesData(out coords, coord, coord_n);
+            for(var i = 0; i < pointsCount; ++i)
+            {
+                var stride = i * 3;
+                list.Add(new Node((int)tagPoints[i], new Point3D((float)coords[stride], (float)coords[stride + 1], 
+                                                                 (float)coords[stride + 2])));
+            }
+        }
+
+        private void SetDefaultLists(out List<Element1D> e1d, out List<Element2D> e2d, out List<Element3D> e3d)
+        {
+            e1d = null;
+            e2d = null;
+            e3d = null;
+        }
+
+        private void GetTypesData(out long[] data, IntPtr eTypes, IntPtr eCount)
         {
             var count = eCount.ToInt32();
-            data = new int[count * sizeFactor];
-            Marshal.Copy(eTypes, data, 0, count * sizeFactor);
+            data = new long[count];
+            Marshal.Copy(eTypes, data, 0, count);
+            GMSHServer.gmshFree(eTypes);
+        }
+
+        private void GetTypesData(out double[] data, IntPtr eTypes, IntPtr eCount)
+        {
+            var count = eCount.ToInt32();
+            data = new double[count];
+            Marshal.Copy(eTypes, data, 0, count);
+            GMSHServer.gmshFree(eTypes);
+        }
+
+        private void GetTypesData(out int[] data, IntPtr eTypes, IntPtr eCount)
+        {
+            var count = eCount.ToInt32();
+            data = new int[count];
+            Marshal.Copy(eTypes, data, 0, count);
             GMSHServer.gmshFree(eTypes);
         }
 

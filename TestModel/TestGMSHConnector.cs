@@ -119,12 +119,13 @@ namespace TestModel
         }
 
         [DataTestMethod]
-        [DataRow("sphere2D", ".geo", "Элементы2D")]
+        [DataRow("sphere2D", ".geo", "Элементы3D")]
         public void TestGetElements(ref string scriptName, ref string scriptExt, ref string objType)
         {
             using (var connector = new GMSHConnector(srcDir + scriptName + scriptExt))
             {
                 connector.Generate(objType);
+                connector.Quadrangulate();
                 List<Node> nodes;
                 List<Element1D> e1d;
                 List<Element2D> e2d;
