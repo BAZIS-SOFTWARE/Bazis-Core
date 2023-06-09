@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\ModelParcer.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -78,7 +79,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GMSHConnector.cs" />
+    <Compile Include="GmshController\GmshConnection.cs" />
+    <Compile Include="GmshController\GmshGeneral.cs" />
+    <Compile Include="GmshController\GmshGeometry.cs" />
+    <Compile Include="GmshController\GmshIO.cs" />
+    <Compile Include="GmshController\GmshMesh.cs" />
+    <Compile Include="GmshUser\GmshUserConnection.cs" />
+    <Compile Include="GmshUser\GmshUserGeometry.cs" />
+    <Compile Include="GmshUser\GmshUserGeometryData.cs" />
+    <Compile Include="GmshUser\GmshUserIO.cs" />
+    <Compile Include="GmshUser\GmshUserMesh.cs" />
+    <Compile Include="GmshUser\GmshUserMeshData.cs" />
+    <Compile Include="GmshUser\GmshUserModel.cs" />
+    <Compile Include="GmshUser\GmshUserModelData.cs" />
     <Compile Include="LoadModelFromASCIITextFile.cs" />
     <Compile Include="LoadModelFromCDBTextFile.cs" />
     <Compile Include="LoadModelFromGMSHTextFile.cs" />
