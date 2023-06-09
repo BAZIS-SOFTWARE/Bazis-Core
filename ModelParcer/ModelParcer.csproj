@@ -88,6 +88,7 @@
     <Compile Include="GmshUser\GmshUserGeometry.cs" />
     <Compile Include="GmshUser\GmshUserGeometryData.cs" />
     <Compile Include="GmshUser\GmshUserIO.cs" />
+    <Compile Include="GmshUser\GmshUserMemory.cs" />
     <Compile Include="GmshUser\GmshUserMesh.cs" />
     <Compile Include="GmshUser\GmshUserMeshData.cs" />
     <Compile Include="GmshUser\GmshUserModel.cs" />

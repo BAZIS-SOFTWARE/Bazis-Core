@@ -20,6 +20,13 @@ namespace ModelParcer.GmshUser
         /// </summary>
         protected override void GetElements()
         {
+            var error = 0;
+            IntPtr dimTags = IntPtr.Zero;
+            IntPtr dimTags_n = IntPtr.Zero;
+            GmshGeometry.gmshModelOccGetEntities(ref dimTags, ref dimTags_n, -1, ref error);
+            int[] data;
+            GmshUserMemory.GetTypesData(dimTags,out data, dimTags_n);
+
         }
     }
 }

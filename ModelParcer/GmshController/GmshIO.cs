@@ -49,5 +49,19 @@ namespace ModelParcer.GMSHController
         /// <param name="ierr">[Out]Флаг ошибки</param>
         [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void gmshModelSetFileName(String fileName, ref int ierr);
+
+        /// <summary>
+        /// Импортирует геометрию в файл в виде вектора пар размерность : идентификатор
+        /// </summary>
+        /// <param name="fileName">[In]Файл скрипта</param>
+        /// <param name="outDimTags">[Out]Вектор пар размерность : идентификатор</param>
+        /// <param name="outDimTags_n">[Out]Длина вектора пар</param>
+        /// <param name="highestDimOnly">[In]Импортировать только верхнюю размерность</param>
+        /// <param name="format">[In]Опциональная строка с расширением {brep,stp,iges}</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelOccImportShapes(String fileName, ref IntPtr outDimTags,
+                                                           ref IntPtr outDimTags_n, int highestDimOnly,
+                                                           String format, ref int ierr);
     }
 }

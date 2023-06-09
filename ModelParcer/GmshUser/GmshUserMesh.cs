@@ -82,7 +82,7 @@ namespace ModelParcer.GmshUser
         }
 
         /// <summary>
-        /// Получает данные о сетке текуще модели
+        /// Получает данные о сетке текущей модели
         /// </summary>
         /// <returns></returns>
         public override GmshUserModelData GetElements() => new GmshUserMeshData(Id);

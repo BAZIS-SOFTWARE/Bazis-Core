@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 using PrFunctionLib;
 using ModelParcer.GmshController;
 using MathNet.Numerics.LinearAlgebra.Factorization;
+using System.Xml.Linq;
+using System.Collections;
+using System.IO;
 
 namespace ModelParcer.GmshUser
 {
@@ -32,7 +35,8 @@ namespace ModelParcer.GmshUser
             elName = localeNodeCoord = localeNodeCoord_n = IntPtr.Zero;
             int dim, order, numNodes, primaryNodes, error;
             dim = order = numNodes = primaryNodes = error = 0;
-            GetTypesData(out eMeta, eTypes, eTypes_n);
+            GmshUserMemory.GetTypesData(eTypes, out eMeta, eTypes_n);
+            //GetTypesData(out eMeta, eTypes, eTypes_n);
             var result = new string[eMeta.Length];
             for (var i = 0; i < eMeta.Length; ++i)
             {
@@ -63,75 +67,12 @@ namespace ModelParcer.GmshUser
             {
                 GetPoints();
                 long[][] elements, points;
-                GetElementData(out elements, eTags, eTags_n, eTags_nn);
-                GetElementData(out points, nodeTags, nodeTags_n, nodeTags_nn);
+                GmshUserMemory.GetElementData(out elements, eTags, eTags_n, eTags_nn);
+                GmshUserMemory.GetElementData(out points, nodeTags, nodeTags_n, nodeTags_nn);
+                /*GetElementData(out elements, eTags, eTags_n, eTags_nn);
+                GetElementData(out points, nodeTags, nodeTags_n, nodeTags_nn);*/
                 CreateElements(elements, points, types);
             }
-        }
-
-        private void GetPoints()
-        {
-            var error = 0;
-            IntPtr nodeTags, nodeTags_n, coord, coord_n, paramCoord, paramCoord_n;
-            nodeTags = nodeTags_n = coord = coord_n = paramCoord = paramCoord_n = IntPtr.Zero;
-            GmshMesh.gmshModelMeshGetNodes(ref nodeTags, ref nodeTags_n, ref coord, ref coord_n,
-                                             ref paramCoord, ref paramCoord_n, -1, -1, 0, 0, ref error);
-            long[] tagPoints;
-            double[] coords;
-            var pointsCount = nodeTags_n.ToInt32();
-            nodes = new List<Node>(pointsCount);
-            GetTypesData(out tagPoints, nodeTags, nodeTags_n);
-            GetTypesData(out coords, coord, coord_n);
-            for (var i = 0; i < pointsCount; ++i)
-            {
-                var stride = i * 3;
-                nodes.Add(new Node((int)tagPoints[i], new Point3D((float)coords[stride], (float)coords[stride + 1],
-                                                                 (float)coords[stride + 2])));
-            }
-        }
-
-        //TODO: Сделать GetTypedData универсальным!!!
-        private void GetTypesData(out long[] data, IntPtr eTypes, IntPtr eCount)
-        {
-            var count = eCount.ToInt32();
-            data = new long[count];
-            Marshal.Copy(eTypes, data, 0, count);
-            GmshGeneral.gmshFree(eTypes);
-        }
-        
-        private void GetTypesData(out double[] data, IntPtr eTypes, IntPtr eCount)
-        {
-            var count = eCount.ToInt32();
-            data = new double[count];
-            Marshal.Copy(eTypes, data, 0, count);
-            GmshGeneral.gmshFree(eTypes);
-        }
-
-        private void GetTypesData(out int[] data, IntPtr eTypes, IntPtr eCount)
-        {
-            var count = eCount.ToInt32();
-            data = new int[count];
-            Marshal.Copy(eTypes, data, 0, count);
-            GmshGeneral.gmshFree(eTypes);
-        }
-
-        private void GetElementData(out long[][] data, IntPtr tagsData, IntPtr lengthPerDim, IntPtr dimCount)
-        {
-            var dCount = dimCount.ToInt32();
-            data = new long[dCount][];
-            var tagsDataPtr = new IntPtr[dCount];
-            var lengthData = new IntPtr[dCount];
-            Marshal.Copy(tagsData, tagsDataPtr, 0, dCount);
-            Marshal.Copy(lengthPerDim, lengthData, 0, dCount);
-            GmshGeneral.gmshFree(lengthPerDim);
-            for (var i = 0; i < dCount; ++i)
-            {
-                var tags = lengthData[i].ToInt32();
-                data[i] = new long[tags];
-                Marshal.Copy(tagsDataPtr[i], data[i], 0, tags);
-                GmshGeneral.gmshFree(tagsDataPtr[i]);
-            }
-            GmshGeneral.gmshFree(tagsData);
         }
 
         private void CreateElements(long[][] elements, long[][] points, string[] types)
