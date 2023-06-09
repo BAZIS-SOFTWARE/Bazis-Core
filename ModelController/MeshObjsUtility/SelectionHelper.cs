@@ -69,10 +69,10 @@ namespace ModelController.MeshObjsUtility
         }
 
         /// <summary>
-        /// Выбор всех эллементов, лежащих в одной плоскости с startNumber элементом, и углом между плоскостями, меньшим чем angleInGradus
+        /// Выбор всех элементов, лежащих в одной плоскости с startNumber элементом, и углом между плоскостями, меньшим чем angleInGradus
         /// </summary>
         /// <returns>
-        /// Список номеров элементов
+        /// Список выбранных номеров элементов
         /// </returns>
         public List<int> SelectInPlane<T>(float angleInGradus, int startNumber, Color color)
             where T : Element2D
