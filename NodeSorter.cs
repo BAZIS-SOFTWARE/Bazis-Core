@@ -11,50 +11,49 @@ namespace Model
 {
     public class NodeSorter
     {
-        /// <summary>
-        /// Determines surfaces from array of nodes, which define a convex element.
-        /// </summary>
+        /// <param name="nodes">Узлы, задающие выпуклую 3D модель</param>
+        /// <returns>Перечисление поверхностей, составляющих грани 3D модели</returns>
         public static IEnumerable<Surface> GetSurfaces(Node[] nodes)
         {
-            var surfaces = new List<HashSet<Node>>();
-            var surfaceCounter = 0;
-            var subsets = Get3ElementSubsets(nodes);
-            foreach (var subset in subsets)
+            var usedSubsets = new List<HashSet<Node>>();
+            var surfaceId = 0;
+            foreach (var subset in GetSubsets(nodes))
             {
-                if (IsSubsetUsed(surfaces, subset.ToHashSet()))
+                if (IsSubsetUsed(usedSubsets, subset.ToHashSet()))
                     continue;
                 var otherNodes = nodes.ToHashSet().Except(subset);
                 var points = subset.Select(x => x.Position).ToArray();
                 var equationCoefficients = GetPlaneEquationCoefficients(points[0], points[1], points[2]);
-                var accept = true;
-                var initialSign = GetDistance(equationCoefficients, otherNodes.First().Position) >= 0;
+                var isAccept = true;
+                var initialSign = Math.Sign(GetDistance(equationCoefficients, otherNodes.First().Position));
                 var potentialSurface = new List<Node>();
                 foreach (var node in otherNodes)
                 {
                     var distance = GetDistance(equationCoefficients, node.Position);
-                    var currentSign = (distance >= 0);
-                    if (Math.Abs(distance) < 1e-4)
+                    var currentSign = Math.Sign(distance);
+                    if (Math.Abs(distance) <= 1e-6)
                         potentialSurface.Add(node);
                     else if (currentSign != initialSign)
                     {
-                        accept = false;
+                        isAccept = false;
                         break;
                     }
                 }
-                if (accept)
+                if (isAccept)
                 {
                     potentialSurface.AddRange(subset);
-                    surfaces.Add(potentialSurface.ToHashSet());
-                    yield return new Surface(surfaceCounter, potentialSurface.ToArray(), ObjKind.ElementSurface);
-                    surfaceCounter++;
+                    usedSubsets.Add(potentialSurface.ToHashSet());
+                    yield return new Surface(surfaceId, potentialSurface.ToArray(), ObjKind.ElementSurface);
+                    surfaceId++;
                 }
             }
         }
 
         /// <summary>
-        /// Enumerates all 3-elements subsets from source set.
+        /// Перечисляет все трёхэлементные подмножества заданного множества.
+        /// Необходимо для перебора из заданного множества узлов троек для построения плоскости
         /// </summary>
-        private static IEnumerable<T[]> Get3ElementSubsets<T>(T[] set)
+        private static IEnumerable<T[]> GetSubsets<T>(T[] set)
         {
             for (int i = 0; i < set.Length - 2; i++)
             {
@@ -69,7 +68,7 @@ namespace Model
         }
 
         /// <summary>
-        /// Computes determinant of given matrix.
+        ///  Вычисляет определитель заданной матрицы
         /// </summary>
         private static float GetDet(float[,] matrix)
         {
@@ -78,8 +77,8 @@ namespace Model
         }
 
         /// <summary>
-        /// Returns a coefficients A, B, C, D of cannonical plane equation (Ax + By + Cz + D = 0) 
-        /// by three given points.
+        /// Вычисляет коэффициенты A, B, C, D уравнения плоскости Ax + By + Cz + D = 0,
+        /// заданной двумя точками
         /// </summary>
         private static float[] GetPlaneEquationCoefficients(Point3D a, Point3D b, Point3D c)
         {
@@ -94,7 +93,8 @@ namespace Model
         }
 
         /// <summary>
-        /// Computes a distance from the given point to the given by coefficients plane.
+        /// Вычисляет расстояние от заданной точки, до плоскости, задаваемой коэффициентами
+        /// уравнения Ax + By + Cz + D = 0
         /// </summary>
         private static double GetDistance(float[] equationCoefficients, Point3D p)
         {
@@ -109,13 +109,13 @@ namespace Model
         }
 
         /// <summary>
-        /// Defines is subset is already used in the list of surfaces as a proper subset
+        /// Определяет, находится ли подмножество в списке используемых подмножеств
         /// </summary>
-        private static bool IsSubsetUsed(List<HashSet<Node>> surfaces, HashSet<Node> subset)
+        private static bool IsSubsetUsed(List<HashSet<Node>> usedSubsets, HashSet<Node> subset)
         {
-            foreach (var surface in surfaces)
+            foreach (var item in usedSubsets)
             {
-                if (!subset.Except(surface).Any())
+                if (subset.SequenceEqual(item))
                     return true;
             }
             return false;

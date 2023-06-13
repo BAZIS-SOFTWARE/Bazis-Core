@@ -87,7 +87,7 @@ namespace TestModel
         {
             var selector = new SelectionHelper(objectsData);
             var selectedElementNumbers = selector.SelectInPlane<Element2D>(19, 9, Color.Green);
-            var expected = new List<int>() { 1, 2, 3, 4, 5, 6 };
+            var expected = new List<int>() { 9, 10, 11, 12, 13, 14 };
             Assert.IsTrue(selectedElementNumbers.SequenceEqual(expected));
         }
 
@@ -96,7 +96,7 @@ namespace TestModel
         {
             var selector = new SelectionHelper(objectsData);
             var selectedElementNumbers = selector.SelectInPlane<Element2D>(18, 9, Color.Green);
-            var expected = new List<int>() { 1, 2, 3, 4, 5 };
+            var expected = new List<int>() { 9, 10, 11, 12, 13 };
             Assert.IsTrue(selectedElementNumbers.SequenceEqual(expected));
         }
 
