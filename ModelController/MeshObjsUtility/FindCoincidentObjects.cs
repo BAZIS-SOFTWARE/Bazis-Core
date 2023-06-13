@@ -71,7 +71,6 @@ namespace ModelController.MeshObjsUtility
                 .ToList();
         }
 
-
         /// <summary>
         /// Вычисляет центральную точку всей модели
         /// </summary>

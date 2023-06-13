@@ -23,7 +23,7 @@ namespace ModelParcer
         public event Action<object, LoaderEventArgs> LoadEvent;
 
         /// <summary>
-        /// Loads from .cdb file from specified file.
+        /// Загрузить модель из файла формата .cdb по указанному пути
         /// </summary>
         public ModelData Load(string path)
         {
@@ -55,8 +55,7 @@ namespace ModelParcer
         }
 
         /// <summary>
-        /// Finds coordinates of node, which written in exponential notation
-        /// in Ansys line by regular expression.
+        /// Читает и возвращает координаты в форме файла .cdb с помощью регулярного выражения
         /// </summary>
         private IEnumerable<float> GetNodeCoordinates(string line)
         {
@@ -68,7 +67,7 @@ namespace ModelParcer
         }
 
         /// <summary>
-        /// Get node number from line. It is the first number in line.
+        /// Возвращает первое число в строке - номер элемента
         /// </summary>
         private int GetNodeNumber(string line)
         {
@@ -78,7 +77,7 @@ namespace ModelParcer
         }
 
         /// <summary>
-        /// Reads nodes after the "NBLOCK" sign in the file.
+        /// Читает список узлов после строки NBLOCK в файле
         /// </summary>
         private IEnumerable<Node> ReadNodes(StreamReader reader, string[] tokens)
         {
@@ -102,7 +101,7 @@ namespace ModelParcer
         }
 
         /// <summary>
-        /// Determines the element type by the number of nodes
+        /// Определяет форму элемента по числу узлов
         /// </summary>
         private ModelObject GetElement(int[] elementNodes)
         {
@@ -122,7 +121,7 @@ namespace ModelParcer
         }
 
         /// <summary>
-        /// Reads elements after the "EBLOCK" sign in the file.
+        /// Читает список элементов после строки EBLOCK в файле
         /// </summary>
         private IEnumerable<ModelObject> ReadElements(StreamReader reader, string[] tokens)
         {
