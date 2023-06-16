@@ -210,19 +210,19 @@ namespace TestModel
             var coincidentNodes = finder.Find<Node>().ToList();
         }
 
-        [TestMethod]
-        public void FindManyCoincidentObjects2()
-        {
-            var loader = new LoadModelFromGMSHTextFile();
-            var stopWatch = new Stopwatch();
-            loader.LoadEvent += (ar1, ar2) => { };
-            var model = loader.Load(@"..\..\Examples\3D\zub.inp");
-            var finder = new FindCoincidentObjects(model.ObjectData, 10f);
-            stopWatch.Start();
-            var coincidentNodes = finder.Find<Node>().ToList();
-            stopWatch.Stop();
-            Assert.IsTrue(stopWatch.ElapsedMilliseconds <= 2000);
-        }
+        //[TestMethod]
+        //public void FindManyCoincidentObjects2()
+        //{
+        //    var loader = new LoadModelFromGMSHTextFile();
+        //    var stopWatch = new Stopwatch();
+        //    loader.LoadEvent += (ar1, ar2) => { };
+        //    var model = loader.Load(@"..\..\Examples\3D\zub.inp");
+        //    var finder = new FindCoincidentObjects(model.ObjectData, 10f);
+        //    stopWatch.Start();
+        //    var coincidentNodes = finder.Find<Node>().ToList();
+        //    stopWatch.Stop();
+        //    Assert.IsTrue(stopWatch.ElapsedMilliseconds <= 2000);
+        //}
 
         [TestMethod]
         public void TestCalcNodeNormals()

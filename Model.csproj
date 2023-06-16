@@ -138,6 +138,8 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="ModelController\ModelSolutionKey.pfx" />
+    <None Include="ModelParcer\app.config" />
+    <None Include="ModelParcer\packages.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -145,6 +147,10 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ModelParcer\Tao.OpenGl.dll" />
+    <Content Include="ModelParcer\Tao.Platform.Windows.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

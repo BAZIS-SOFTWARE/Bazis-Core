@@ -50,7 +50,7 @@ namespace ModelController.MeshObjsUtility
                         Point3D item2 = item5.P1;
                         if (Math.Sign(plane.PointPosition(item)) != Math.Sign(plane.PointPosition(item2)))
                         {
-                            Point3D sectionPoint = GetCrossSectionPoint(new Line(item, item2), plane);
+                            Point3D sectionPoint = GetSectionPoint(new Line(item, item2), plane);
                             if (!hashSet.Contains(sectionPoint))
                             {
                                 Node item3 = new Node(index++, sectionPoint);

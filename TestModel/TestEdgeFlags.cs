@@ -5,7 +5,7 @@ using Model.Interfaces;
 using ModelController.ModelScenePresentator;
 using ModelController.ModelScenePresentator.GlObjsArraysCreators;
 using ModelController.ModelScenePresentator.GlObjsVertexCreators;
-using ModelParcer;
+using Model.ModelParcer;
 using System;
 
 namespace TestModel
