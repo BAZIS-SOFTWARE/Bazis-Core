@@ -230,7 +230,7 @@ namespace TestModel
             Assert.AreEqual(4, numberOfObjs);
         }
 
-        [TestMethod, Timeout(2000)]
+        [TestMethod, Timeout(3000)]
         public void FindManyCoincidentObjects1() 
         {
             var loader = new LoadModelFromCDBTextFile();

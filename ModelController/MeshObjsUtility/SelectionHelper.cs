@@ -69,17 +69,18 @@ namespace ModelController.MeshObjsUtility
         }
 
         /// <summary>
-        /// Выбор всех элементов, лежащих в одной плоскости с startNumber элементом, и углом между плоскостями, меньшим чем angleInGradus
+        /// Выбор всех элементов, лежащих в одной плоскости с заданным элементом, 
+        /// и углом между плоскостями, не большим чем заданный угол
         /// </summary>
         /// <returns>
-        /// Список выбранных номеров элементов
+        /// Список номеров выбранных элементов
         /// </returns>
         public List<int> SelectInPlane<T>(float angleInGradus, int startNumber, Color color)
             where T : Element2D
         {
             var maxAngleRadians = ConvertGradusToRadian(angleInGradus);
             var elements = objectsData.FindMany<Element2D>().ToArray();
-            var graph = CreateElementsGraph(elements);
+            var graph = GetAdjacentElements(elements);
             var queue = new Queue<int>();
             queue.Enqueue(startNumber);
             var used = new HashSet<int>();
@@ -93,9 +94,7 @@ namespace ModelController.MeshObjsUtility
                     {
                         var neighbourElement = objectsData.Find(elements, neighbourNumber);
                         var cos = Vector.GetAngleVectors(currentElement.CalcNormal(), neighbourElement.CalcNormal());
-                        if (cos < 0)
-                            cos *= -1;
-                        var angleRadian = Math.Acos(cos);
+                        var angleRadian = Math.Acos(Math.Abs(cos));
                         if (angleRadian <= maxAngleRadians)
                         {
                             used.Add(neighbourNumber);
@@ -109,9 +108,10 @@ namespace ModelController.MeshObjsUtility
         }
 
         /// <returns>
-        /// Словарь, где ключ - номер элемента, значение - список номеров элементов, имеющих хотя бы одну общую точку с ключом
+        /// Словарь, где ключ - номер элемента, значение - список номеров элементов, 
+        /// имеющих хотя бы одну общую точку с ключом.
         /// </returns>
-        private Dictionary<int, List<int>> CreateElementsGraph(Element2D[] elements)
+        private Dictionary<int, List<int>> GetAdjacentElements(Element2D[] elements)
         {
             var graph = new Dictionary<int, List<int>>();
             var finder = new FindInterfacedNodes(elements);
@@ -132,6 +132,9 @@ namespace ModelController.MeshObjsUtility
             return graph;
         }
 
+        /// <summary>
+        /// Перевести угол из градусов в радианы
+        /// </summary>
         private float ConvertGradusToRadian(float angleInGradus)
         {
             return angleInGradus * (float)Math.PI / 180f;
