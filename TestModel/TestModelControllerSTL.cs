@@ -1,8 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using ModelController.ModelScenePresentator;
-using ModelParcer;
-using System;
+using Model.ModelParcer;
 using System.Linq;
 
 namespace TestModel

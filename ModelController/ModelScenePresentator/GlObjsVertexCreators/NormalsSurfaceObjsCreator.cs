@@ -1,4 +1,6 @@
-﻿using Model.Interfaces;
+﻿using Geometry;
+using Model;
+using Model.Interfaces;
 using ModelController.ModelScenePresentator.Interfaces;
 
 namespace ModelController.ModelScenePresentator.GlObjsVertexCreators
@@ -9,11 +11,15 @@ namespace ModelController.ModelScenePresentator.GlObjsVertexCreators
         {
             if (surfaceElement.ViewState)
             {
+                //var centr = surfaceElement.CalcCentralPoint();
                 foreach (var surface in surfaceElement.GetSurface())
                 {
                     if (surface.ViewState)
                     {
                         var normal = surface.CalcNormal();
+                        //var plane = new Plane(surface[0].Position, normal);
+                        //var proj = centr.GetPointProectionOnPlane(plane);
+                        //normal = proj.Sub(centr);
                         for (int k = 0; k < surface.NumberOfPoints - 2; k++)
                         {
                             vertexAtributes[stride + 9 * k + 0] = normal._x;

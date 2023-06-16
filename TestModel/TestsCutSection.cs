@@ -3,11 +3,9 @@ using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using Model.Interfaces;
-using ModelParcer;
-using System;
+using Model.ModelParcer;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 namespace TestModel
 {

@@ -68,8 +68,8 @@
     <Reference Include="Functions, Version=1.0.1.40, Culture=neutral, PublicKeyToken=65fde98421b2fc88, processorArchitecture=MSIL">
       <HintPath>packages\Bazis.Functions.1.0.2\lib\net48\Functions.dll</HintPath>
     </Reference>
-    <Reference Include="Geometry, Version=2.0.3.30, Culture=neutral, PublicKeyToken=cadb58b3f6b10f0c, processorArchitecture=MSIL">
-      <HintPath>packages\Bazis.Geometry.2.0.6\lib\net48\Geometry.dll</HintPath>
+    <Reference Include="Geometry, Version=2.0.5.30, Culture=neutral, PublicKeyToken=cadb58b3f6b10f0c, processorArchitecture=MSIL">
+      <HintPath>packages\Geometry.2.0.5.30\lib\net48\Geometry.dll</HintPath>
     </Reference>
     <Reference Include="MathNet.Numerics, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cd8b63ad3d691a37, processorArchitecture=MSIL">
       <HintPath>packages\MathNet.Numerics.Signed.5.0.0\lib\net48\MathNet.Numerics.dll</HintPath>
@@ -78,6 +78,9 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -90,6 +93,11 @@
     <Compile Include="Events\SaverEventArgs.cs" />
     <Compile Include="Interfaces\IModelLoader.cs" />
     <Compile Include="Interfaces\IModelSaver.cs" />
+    <Compile Include="ModelParcer\GMSHConnector.cs" />
+    <Compile Include="ModelParcer\LoadModelFromASCIITextFile.cs" />
+    <Compile Include="ModelParcer\LoadModelFromCDBTextFile.cs" />
+    <Compile Include="ModelParcer\LoadModelFromGMSHTextFile.cs" />
+    <Compile Include="ModelParcer\LoadModelFromSTLFile.cs" />
     <Compile Include="NodeSorter.cs" />
     <Compile Include="ObjectsComparers\ComparerBySqCoords.cs" />
     <Compile Include="ObjectsComparers\EqualityComparerByCentralPoint.cs" />
@@ -133,5 +141,6 @@
   <ItemGroup>
     <None Include="Icon.png" Pack="true" Visible="false" PackagePath="" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

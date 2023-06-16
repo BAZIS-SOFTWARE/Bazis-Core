@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using ModelController.ModelScenePresentator;
-using ModelParcer;
+using Model.ModelParcer;
 using System;
 
 namespace TestModel

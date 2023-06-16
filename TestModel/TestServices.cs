@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -11,8 +10,7 @@ using Model.Events;
 using Model.Interfaces;
 using ModelController.IO;
 using ModelController.MeshObjsUtility;
-using ModelController.ModelScenePresentator;
-using ModelParcer;
+using Model.ModelParcer;
 
 namespace TestModel
 {
@@ -43,36 +41,7 @@ namespace TestModel
             };
             objectsData = new ObjectsData();
             objectsData.AddRange(elements);
-        }
-
-        [TestMethod]
-        public void TestHideAllElementArrays()
-        {
-            //assing
-            var model = new ModelData();
-            var loader = new LoadModelFromASCIITextFile();
-
-            loader.LoadEvent += Model_LoadEvent;
-            var modeLoaded = loader.Load(@"C:\Bazis_newGUI\MESH\rhombDATA1.ASC");
-            model.Load(modeLoaded);
-            //act
-
-            var elements = model.ObjectData.FindMany<Element3D>().ToArray();
-
-            model.ObjectData.HideModelObjs(elements);
-
-            var presenter = new ModelScenePresentator(model);
-
-            //var creator = presenter.CreateSurfaceObjsCreator("Элементы3D", true);
-
-            //var indexes = creator.CreateIndexes();
-
-            //var ptrs = creator.CreatePointers(indexes.Item1);
-            //var coords = creator.CreateVertexes(indexes.Item2, new CoordsSurfaceObjsCreator());
-            //var colors = creator.CreateVertexes(indexes.Item2, new ColorSurfaceObjsCreator());
-            //var normals = creator.CreateVertexes(indexes.Item2, new NormalsSurfaceObjsCreator());
-            //assert
-        }
+        }      
 
         [TestMethod]
         public void FindNodesInDirection()
