@@ -91,6 +91,8 @@ namespace TestModel
             var element = model.ObjectData.FindMany<Element3D>().First();
             Assert.AreEqual(8, model.ObjectData.NumberOfNodes);
             Assert.AreEqual(1, model.ObjectData.NumberOfElements);
+            var surfaceNumber = element.NumberOfSides;
+            Assert.AreEqual(6, surfaceNumber);
         }
 
         [TestMethod]

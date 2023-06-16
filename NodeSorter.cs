@@ -15,34 +15,34 @@ namespace Model
         /// <returns>Перечисление поверхностей, составляющих грани 3D модели</returns>
         public static IEnumerable<Surface> GetSurfaces(Node[] nodes)
         {
-            var usedSubsets = new List<HashSet<Node>>();
+            var surfaces = new List<HashSet<Node>>();
             var surfaceId = 0;
             foreach (var subset in GetSubsets(nodes))
             {
-                if (IsSubsetUsed(usedSubsets, subset.ToHashSet()))
+                if (IsSubsetUsed(surfaces, subset.ToHashSet()))
                     continue;
                 var otherNodes = nodes.ToHashSet().Except(subset);
                 var points = subset.Select(x => x.Position).ToArray();
                 var equationCoefficients = GetPlaneEquationCoefficients(points[0], points[1], points[2]);
-                var isAccept = true;
-                var initialSign = Math.Sign(GetDistance(equationCoefficients, otherNodes.First().Position));
+                var accept = true;
+                var initialSign = GetDistance(equationCoefficients, otherNodes.First().Position) >= 0;
                 var potentialSurface = new List<Node>();
                 foreach (var node in otherNodes)
                 {
                     var distance = GetDistance(equationCoefficients, node.Position);
-                    var currentSign = Math.Sign(distance);
-                    if (Math.Abs(distance) <= 1e-6)
+                    var currentSign = (distance >= 0);
+                    if (Math.Abs(distance) < 1e-6)
                         potentialSurface.Add(node);
                     else if (currentSign != initialSign)
                     {
-                        isAccept = false;
+                        accept = false;
                         break;
                     }
                 }
-                if (isAccept)
+                if (accept)
                 {
                     potentialSurface.AddRange(subset);
-                    usedSubsets.Add(potentialSurface.ToHashSet());
+                    surfaces.Add(potentialSurface.ToHashSet());
                     yield return new Surface(surfaceId, potentialSurface.ToArray(), ObjKind.ElementSurface);
                     surfaceId++;
                 }
@@ -115,7 +115,7 @@ namespace Model
         {
             foreach (var item in usedSubsets)
             {
-                if (subset.SequenceEqual(item))
+                if (!subset.Except(item).Any())
                     return true;
             }
             return false;

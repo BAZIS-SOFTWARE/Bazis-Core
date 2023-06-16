@@ -1,13 +1,8 @@
 ﻿using Geometry;
-using MathNet.Numerics.LinearAlgebra;
 using Model;
 using Model.Interfaces;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ModelController.MeshObjsUtility
 {
@@ -42,7 +37,7 @@ namespace ModelController.MeshObjsUtility
         public Dictionary<int, Surface> GetSectionSurfaces(List<Element3D> elements, Plane plane)
         {
             Dictionary<int, Surface> dictionary = new Dictionary<int, Surface>();
-            int num = 0;
+            int index = 0;
             foreach (Element3D element in elements)
             {
                 List<Node> list = new List<Node>();
@@ -58,7 +53,7 @@ namespace ModelController.MeshObjsUtility
                             Point3D sectionPoint = GetCrossSectionPoint(new Line(item, item2), plane);
                             if (!hashSet.Contains(sectionPoint))
                             {
-                                Node item3 = new Node(num++, sectionPoint);
+                                Node item3 = new Node(index++, sectionPoint);
                                 hashSet.Add(sectionPoint);
                                 list.Add(item3);
                             }
@@ -67,7 +62,7 @@ namespace ModelController.MeshObjsUtility
                 }
                 if (list.Count >= 3)
                 {
-                    Surface value = new Surface(num++, list.ToArray(), ObjKind.ElementSurface);
+                    Surface value = new Surface(index++, list.ToArray(), ObjKind.ElementSurface);
                     dictionary.Add(element.Number, value);
                 }
             }
@@ -82,9 +77,9 @@ namespace ModelController.MeshObjsUtility
             var D = plane.Shifting;
             var t = (-A * line.P1._x - B * line.P1._y - C * line.P1._z - D) /
                 (A * (line.P0._x - line.P1._x) + B * (line.P0._y - line.P1._y) + C * (line.P0._z - line.P1._z));
-            var x = line.P1._x * (1 - t) + line.P0._x * t;
-            var y = line.P1._y * (1 - t) + line.P0._y * t;
-            var z = line.P1._z * (1 - t) + line.P0._z * t;
+            var x = (float)Math.Round(line.P1._x * (1 - t) + line.P0._x * t, 6);
+            var y = (float)Math.Round(line.P1._y * (1 - t) + line.P0._y * t, 6);
+            var z = (float)Math.Round(line.P1._z * (1 - t) + line.P0._z * t, 6);
             return new Point3D(x, y, z);
         }
     }
