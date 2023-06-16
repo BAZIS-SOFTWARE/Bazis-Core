@@ -72,36 +72,14 @@ namespace ModelController.MeshObjsUtility
         }
 
         /// <returns>
-        /// the coefficients of the cannonical plane equation (Ax + By + Cz + D = 0) by given three points.
-        /// </returns>
-        private static float[] GetPlaneEquationCoefficients(Point3D a, Point3D b, Point3D c)
-        {
-            var A = Matrix<float>.Build.DenseOfArray(new float[,] {
-                { b._y - a._y, b._z - a._z },
-                { c._y - a._y, c._z - a._z } })
-                .Determinant();
-            var B = Matrix<float>.Build.DenseOfArray(new float[,] {
-                { b._x - a._x, b._z - a._z },
-                { c._x - a._x, c._z - a._z } })
-                .Determinant();
-            var C = Matrix<float>.Build.DenseOfArray(new float[,] {
-                { b._x - a._x, b._y - a._y },
-                { c._x - a._x, c._y - a._y } })
-                .Determinant();
-            var D = -a._x * A + a._y * B - a._z * C;
-            return new float[4] { A, -B, C, D };
-        }
-
-        /// <returns>
         /// the point of intersection of the given plane and the given line
         /// </returns>
         private static Point3D GetSectionPoint(Line line, Plane plane)
         {
-            var coefficients = GetPlaneEquationCoefficients(plane.P0, plane.P1, plane.P2);
-            var A = coefficients[0];
-            var B = coefficients[1];
-            var C = coefficients[2];
-            var D = coefficients[3];
+            var A = plane.Normal._x;
+            var B = plane.Normal._y;
+            var C = plane.Normal._z;
+            var D = plane.Shifting;
             var t = (-A * line.P1._x - B * line.P1._y - C * line.P1._z - D) /
                 (A * (line.P0._x - line.P1._x) + B * (line.P0._y - line.P1._y) + C * (line.P0._z - line.P1._z));
             var x = line.P1._x * (1 - t) + line.P0._x * t;
