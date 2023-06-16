@@ -35,39 +35,6 @@ namespace ModelParcer.GmshController
         public static extern void gmshModelMeshRefine(ref int ierr);
 
         /// <summary>
-        /// Добавляет новую модель на Gmsh сцену и делает ее текущей
-        /// </summary>
-        /// <param name="src">[In]Строка идентификатор для новой модели</param>
-        /// <param name="ierr">[Out]Флаг ошибки</param>
-        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void gmshModelAdd(String src, ref int ierr);
-
-        /// <summary>
-        /// Устанавливает текущую модель в Gmsh сцене
-        /// </summary>
-        /// <param name="src">[In]Строка существующий идентификатор для текущей модели</param>
-        /// <param name="ierr">[Out]Флаг ошибки</param>
-        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void gmshModelSetCurrent(String src, ref int ierr);
-
-        /// <summary>
-        /// Удаляет текущую модель из Gmsh сцены
-        /// </summary>
-        /// <param name="ierr">[Out]Флаг ошибки</param>
-        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void gmshModelRemove(ref int ierr);
-
-        /// <summary>
-        /// Получает список всех идентификаторов для заданной размерности
-        /// </summary>
-        /// <param name="dimTags">[Out]Массив пар размерность - идентификатор</param>
-        /// <param name="dimTags_n">[Out]Длина массива пар размерность - идентификатор</param>
-        /// <param name="dim">[In]Размерность для получения идентификаторов, -1 для всех размерностей</param>
-        /// <param name="ierr">[Out]Флаг ошибки</param>
-        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void gmshModelGetEntities(ref IntPtr dimTags, ref UIntPtr dimTags_n,
-                                                       int dim, ref int ierr);
-        /// <summary>
         /// Получает все элементы в текущей модели, их идентификаторы и идентификаторы точек внутри элемента
         /// </summary>
         /// <param name="elementTypes">[Out]Массив строк типов элементов</param>
@@ -127,13 +94,5 @@ namespace ModelParcer.GmshController
                                     ref IntPtr parametricCoord, ref IntPtr parametricCoord_n,
                                     int dim, int tag, int includeBoundary, int returnParametricCoord,
                                     ref int ierr);
-
-        /// <summary>
-        /// Удаляет все модели из Gmsh сцены
-        /// </summary>
-        /// <param name="ierr">[Out]Флаг ошибки</param>
-        /// <returns></returns>
-        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int gmshClear(ref int ierr);
     }
 }

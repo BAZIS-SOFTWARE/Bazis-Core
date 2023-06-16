@@ -54,24 +54,46 @@ namespace ModelParcer.GmshController
                                                             ref IntPtr surfaceTags_n, ref IntPtr surfaceTags_nn,
                                                             ref int ierr);
         /// <summary>
-        /// Получает данные об идентификаторе модели
+        /// Получает радиусы кривизны для заданных параметрических координат
         /// </summary>
+        /// <param name="dim">[In]Размерность</param>
         /// <param name="tag">[In]Идентификатор</param>
-        /// <param name="step">[In]Шаг >=0, указывает индекс в последовательности</param>
-        /// <param name="dataType">[Out]Вектор строк типов данных вида {NodeData,ElementData,ElementNodeData}</param>
-        /// <param name="tags">[Out]Вектор идентификаторов для соответсвующих типов данных</param>
-        /// <param name="tags_n">[Out]Длина вектора идентификаторов</param>
-        /// <param name="data">[Out]Массив векторов записей (точки, элементы...) соответствующие их идентификаторам</param>
-        /// <param name="data_n">[Out]Вектор длин записей</param>
-        /// <param name="data_nn">[Out]Размерность внуреннего массива</param>
-        /// <param name="time">[Out]Опциональное ассоциированое с данными время Double</param>
-        /// <param name="numComponents">[Out]Длина компонента в записи</param>
+        /// <param name="parametricCoord">[In]Вектор параметрических координат</param>
+        /// <param name="parametricCoord_n">[In]Доина вектора параметрических координат</param>
+        /// <param name="curvatures">[Out]Векторы радиусов кривизны</param>
+        /// <param name="curvatures_n">[Out]Длина вектора кривизны</param>
         /// <param name="ierr">[Out]Флаг ошибки</param>
         [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void gmshViewGetModelData(int tag, int step, ref IntPtr dataType,
-                                                       ref IntPtr tags, ref IntPtr tags_n,
-                                                       ref IntPtr data, ref IntPtr data_n, ref IntPtr data_nn,
-                                                       ref IntPtr time, ref int numComponents,
-                                                       ref int ierr);
+        public static extern void gmshModelGetCurvature(int dim, int tag, double[] parametricCoord, IntPtr parametricCoord_n,
+                                                        ref IntPtr curvatures, ref IntPtr curvatures_n, ref int ierr);
+
+        /// <summary>
+        /// Получает производную по указанной размерности и идентификатору и заданному набору параметров
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="parametricCoord">[In]Вектор параметрических координат</param>
+        /// <param name="parametricCoord_n">[In]Длина вектора параметрических координат</param>
+        /// <param name="derivatives">[Out]Вектор производных</param>
+        /// <param name="derivatives_n">[Out]Длина вектора производных</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelGetDerivative(int dim, int tag, double[] parametricCoord, IntPtr parametricCoord_n,
+                                                         ref IntPtr derivatives, ref IntPtr derivatives_n, ref int ierr);
+
+        /// <summary>
+        /// Получает вторую производную по указанной размерности и идентификатору и заданному набору параметров
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="parametricCoord">[In]Вектор параметрических координат</param>
+        /// <param name="parametricCoord_n">[In]Длина вектора параметрических координат</param>
+        /// <param name="derivatives">[Out]Вектор вторых производных</param>
+        /// <param name="derivatives_n">[Out]Длина вектора вторых производных</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelGetSecondDerivative(int dim, int tag, double[] parametricCoord,
+                                                               IntPtr parametricCoord_n, ref IntPtr derivatives,
+                                                               ref IntPtr derivatives_n, ref int ierr);
     }
 }

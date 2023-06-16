@@ -14,7 +14,29 @@ namespace ModelParcer.GmshUser
     /// </summary>
     public class GmshUserModelData
     {
-        protected List<Node> nodes;
+        /// <summary>
+        /// Класс точка 3D двойной точности
+        /// </summary>
+        protected class DoublePoint3D
+        {
+            private int number;
+            private double x;
+            private double y;
+            private double z;
+
+            public double[] ToArray { get { return new double[] { x, y, z }; } }
+
+            public Node ToNode { get { return new Node(number, new Point3D((float)x, (float)y, (float)z));} }
+
+            public DoublePoint3D(int number, double x, double y, double z)
+            {
+                this.number = number;
+                this.x = x;
+                this.y = y;
+                this.z = z;
+            }
+        }
+        protected List<DoublePoint3D> nodes;
         protected List<Curve> curves;
         protected List<Surface> surfaces;
         /// <summary>
@@ -29,7 +51,7 @@ namespace ModelParcer.GmshUser
         {
             Id = id;
             var error = 0;
-            GmshMesh.gmshModelSetCurrent(Id.ToString(), ref error);
+            GmshModel.gmshModelSetCurrent(Id.ToString(), ref error);
         }
         /// <summary>
         /// Получает данные о модели
@@ -38,6 +60,9 @@ namespace ModelParcer.GmshUser
         {
         }
 
+        /// <summary>
+        /// Получает точки сетки
+        /// </summary>
         protected void GetPoints()
         {
             var error = 0;
@@ -48,16 +73,14 @@ namespace ModelParcer.GmshUser
             long[] tagPoints;
             double[] coords;
             var pointsCount = nodeTags_n.ToInt32();
-            nodes = new List<Node>(pointsCount);
+            nodes = new List<DoublePoint3D>(pointsCount);
             GmshUserMemory.GetTypesData(nodeTags, out tagPoints, nodeTags_n);
             GmshUserMemory.GetTypesData(coord, out coords, coord_n);
-            /*GetTypesData(out tagPoints, nodeTags, nodeTags_n);
-            GetTypesData(out coords, coord, coord_n);*/
             for (var i = 0; i < pointsCount; ++i)
             {
                 var stride = i * 3;
-                nodes.Add(new Node((int)tagPoints[i], new Point3D((float)coords[stride], (float)coords[stride + 1],
-                                                                 (float)coords[stride + 2])));
+                nodes.Add(new DoublePoint3D((int)tagPoints[i],coords [stride], coords[stride + 1],
+                                            coords[stride + 2]));
             }
         }
     }

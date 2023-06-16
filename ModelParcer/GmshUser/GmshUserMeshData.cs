@@ -36,7 +36,6 @@ namespace ModelParcer.GmshUser
             int dim, order, numNodes, primaryNodes, error;
             dim = order = numNodes = primaryNodes = error = 0;
             GmshUserMemory.GetTypesData(eTypes, out eMeta, eTypes_n);
-            //GetTypesData(out eMeta, eTypes, eTypes_n);
             var result = new string[eMeta.Length];
             for (var i = 0; i < eMeta.Length; ++i)
             {
@@ -69,8 +68,6 @@ namespace ModelParcer.GmshUser
                 long[][] elements, points;
                 GmshUserMemory.GetElementData(out elements, eTags, eTags_n, eTags_nn);
                 GmshUserMemory.GetElementData(out points, nodeTags, nodeTags_n, nodeTags_nn);
-                /*GetElementData(out elements, eTags, eTags_n, eTags_nn);
-                GetElementData(out points, nodeTags, nodeTags_n, nodeTags_nn);*/
                 CreateElements(elements, points, types);
             }
         }
@@ -100,12 +97,13 @@ namespace ModelParcer.GmshUser
         private void CreateCurves(long[] tagElements, long[] tagPoints, int stride)
         {
             curves = new List<Curve>(tagElements.Length);
-            var pointsPerStride = new Node[stride];
+            var pointsPerStride = new DoublePoint3D[stride];
             for (var i = 0; i < tagElements.Length; ++i)
             {
                 for (var j = 0; j < stride; ++j)
                     pointsPerStride[j] = nodes[(int)tagPoints[i * stride + j] - 1];
-                curves.Add(new Curve((int)tagElements[i], pointsPerStride));
+                var points = pointsPerStride.Select(v => v.ToNode).ToArray();
+                curves.Add(new Curve((int)tagElements[i], points));
             }
         }
     }

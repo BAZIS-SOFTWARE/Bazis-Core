@@ -132,7 +132,7 @@ namespace TestModel
         {
             using (var connector = new GmshUserGeometry(srcDir + scriptName + scriptExt))
             {
-                var data = connector.GetElements();
+                var data = connector.GetElements() as GmshUserGeometryData;
             }
         }
 

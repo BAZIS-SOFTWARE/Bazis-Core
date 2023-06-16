@@ -27,7 +27,7 @@ namespace ModelParcer.GmshUser
             get
             {
                 var error = 0;
-                GmshMesh.gmshModelSetCurrent(id.ToString(), ref error);
+                GmshModel.gmshModelSetCurrent(id.ToString(), ref error);
                 double min = 0, max = 0;
                 GmshGeneral.gmshOptionGetNumber("Mesh.MeshSizeMin", ref min, ref error);
                 GmshGeneral.gmshOptionGetNumber("Mesh.MeshSizeMax", ref max, ref error);
@@ -37,7 +37,7 @@ namespace ModelParcer.GmshUser
             set
             {
                 var error = 0;
-                GmshMesh.gmshModelSetCurrent(id.ToString(), ref error);
+                GmshModel.gmshModelSetCurrent(id.ToString(), ref error);
                 var values = value.Split(' ');
                 var min = Double.Parse(values[0], CultureInfo.InvariantCulture);
                 var max = Double.Parse(values[1], CultureInfo.InvariantCulture);
@@ -55,7 +55,7 @@ namespace ModelParcer.GmshUser
             GmshUserConnection.Init();
             id = GmshUserConnection.GetId();
             var error = 0;
-            GmshMesh.gmshModelAdd(id.ToString(), ref error);
+            GmshModel.gmshModelAdd(id.ToString(), ref error);
             GmshIO.gmshMerge(path, ref error);
             GmshIO.gmshModelSetFileName(path, ref error);
         }
@@ -72,8 +72,8 @@ namespace ModelParcer.GmshUser
         virtual public void Dispose()
         {
             var error = 0;
-            GmshMesh.gmshModelSetCurrent(id.ToString(), ref error);
-            GmshMesh.gmshModelRemove(ref error);
+            GmshModel.gmshModelSetCurrent(id.ToString(), ref error);
+            GmshModel.gmshModelRemove(ref error);
             GmshUserConnection.RemoveId(id);
         }
     }

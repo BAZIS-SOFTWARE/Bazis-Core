@@ -65,7 +65,7 @@ namespace ModelParcer.GmshUser
             if (IsInit) 
             {
                 var error = 0;
-                GmshMesh.gmshClear(ref error);
+                GmshModel.gmshClear(ref error);
                 IsInit = false;
                 GmshConnection.gmshFinalize(ref error);
             }

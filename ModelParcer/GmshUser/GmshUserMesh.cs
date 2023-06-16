@@ -39,7 +39,7 @@ namespace ModelParcer.GmshUser
             var dim = new Dictionary<string, int>() { { "Узлы", 0 }, { "Линии", 1 }, { "Элементы1D", 1 },
                                                           { "Элементы2D", 2 }, { "Элементы3D", 3 } };
             var error = 0;
-            GmshMesh.gmshModelSetCurrent(Id.ToString(), ref error);
+            GmshModel.gmshModelSetCurrent(Id.ToString(), ref error);
             GmshGeneral.gmshOptionSetNumber("Mesh.SaveAll", 1, ref error);
             GmshGeneral.gmshOptionSetNumber("Mesh.SaveGroupsOfNodes", -1111, ref error);
             GmshMesh.gmshModelMeshGenerate(dim[objType], ref error);
@@ -51,7 +51,7 @@ namespace ModelParcer.GmshUser
         public void QuadrangulateMesh()
         {
             var error = 0;
-            GmshMesh.gmshModelSetCurrent(Id.ToString(), ref error);
+            GmshModel.gmshModelSetCurrent(Id.ToString(), ref error);
             GmshMesh.gmshModelMeshRecombine(ref error);
         }
 
@@ -61,7 +61,7 @@ namespace ModelParcer.GmshUser
         public void RefineMesh()
         {
             var error = 0;
-            GmshMesh.gmshModelSetCurrent(Id.ToString(), ref error);
+            GmshModel.gmshModelSetCurrent(Id.ToString(), ref error);
             GmshMesh.gmshModelMeshRefine(ref error);
         }
 
@@ -72,7 +72,7 @@ namespace ModelParcer.GmshUser
         public ModelData GetModelDataFromParcer()
         {
             var error = 0;
-            GmshMesh.gmshModelSetCurrent(Id.ToString(), ref error);
+            GmshModel.gmshModelSetCurrent(Id.ToString(), ref error);
             var dstFile = GetDstFileName();
             GmshIO.gmshWrite(dstFile, ref error);
             var data = new LoadModelFromGMSHTextFile();
@@ -105,7 +105,7 @@ namespace ModelParcer.GmshUser
         {
             var error = 0;
             var idStr = Id.ToString();
-            GmshMesh.gmshModelSetCurrent(idStr, ref error);
+            GmshModel.gmshModelSetCurrent(idStr, ref error);
             var fileName = GmshUserIO.GetFileName();
             var file = Path.GetFileNameWithoutExtension(fileName);
             var folder = Path.GetDirectoryName(fileName);
