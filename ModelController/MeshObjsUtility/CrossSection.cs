@@ -100,11 +100,11 @@ namespace ModelController.MeshObjsUtility
 
         private Point3D GetSectionPoint(Line line, Plane plane)
         {
-            var coefficients = GetPlaneEquationCoefficients(plane.P0, plane.P1, plane.P2);
-            var A = coefficients[0];
-            var B = coefficients[1];
-            var C = coefficients[2];
-            var D = coefficients[3];
+            var A = plane.Normal._x;
+            var B = plane.Normal._y;
+            var C = plane.Normal._z;
+            var D = plane.Shifting;
+
             var t = (-A * line.P1._x - B * line.P1._y - C * line.P1._z - D) /
                 (A * (line.P0._x - line.P1._x) + B * (line.P0._y - line.P1._y) + C * (line.P0._z - line.P1._z));
             var x = line.P1._x * (1 - t) + line.P0._x * t;

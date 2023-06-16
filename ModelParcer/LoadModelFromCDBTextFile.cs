@@ -1,5 +1,4 @@
 ﻿using Geometry;
-using Model;
 using Model.Events;
 using Model.Interfaces;
 using System;
@@ -9,7 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace ModelParcer
+namespace Model.ModelParcer
 {
     public class LoadModelFromCDBTextFile : IModelLoader
     {

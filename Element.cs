@@ -11,7 +11,7 @@ namespace Model
 {
     public abstract class Element : ModelObject, IElement
     {
-        Node[] nodes;
+        protected Node[] nodes;
         public Element(int number, Node[] nodes, ObjKind objKind) : base(number)
         {
             if (nodes.Length == 0)
