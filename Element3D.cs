@@ -103,6 +103,7 @@ namespace Model
                 return result.ToArray();
             }
             else return new float[0];
+
         }
 
         /// <inheritdoc/>
