@@ -23,6 +23,9 @@ namespace ModelParcer.GmshUser
         /// Получает данные о геометрии модели
         /// </summary>
         /// <returns></returns>
-        public override GmshUserModelData GetElements() => new GmshUserGeometryData(Id);
+        public override GmshUserModelData GetElements()
+        {
+            return new GmshUserGeometryData(Id);
+        }
     }
 }

@@ -56,7 +56,7 @@ namespace ModelParcer.GmshController
         /// <param name="coord_n">[Out]Длина массива координат точек</param>
         /// <param name="ierr">[Out]Флаг ошибки</param>
         [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void gmshModelGetValue(int dim, int tag, IntPtr parametricCoord,
+        public static extern void gmshModelGetValue(int dim, int tag, double[] parametricCoord,
                                                     IntPtr parameticCoord_n, ref IntPtr coord, 
                                                     ref IntPtr coord_n, ref int ierr);
 

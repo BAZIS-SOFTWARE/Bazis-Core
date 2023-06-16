@@ -136,7 +136,6 @@ namespace TestModel
             }
         }
 
-
         private string[] CuttedString(string path) => File.ReadAllLines(path).Skip(2).ToArray();
 
         private bool CompareContentOfFiles(string actualPath, string expectedPath)

@@ -26,7 +26,48 @@ namespace ModelParcer.GmshUser
         /// Экземляр данных о сетке заданной модели
         /// </summary>
         /// <param name="modelId">[In]Идентификатор модели</param>
-        public GmshUserMeshData(long modelId) : base(modelId) => GetElements();
+        public GmshUserMeshData(long modelId) : base(modelId) => GetData();
+        /// <summary>
+        /// Извлекает все элементы сетки из модели
+        /// </summary>
+        public override void GetData()
+        {
+            var error = 0;
+            IntPtr eTypes, eTypes_n, eTags, eTags_n, eTags_nn, nodeTags, nodeTags_n, nodeTags_nn;
+            eTypes = eTypes_n = eTags = eTags_n = eTags_nn = nodeTags = nodeTags_n = nodeTags_nn = IntPtr.Zero;
+            GmshMesh.gmshModelMeshGetElements(ref eTypes, ref eTypes_n,
+                                                ref eTags, ref eTags_n, ref eTags_nn,
+                                                ref nodeTags, ref nodeTags_n, ref nodeTags_nn, -1, -1, ref error);
+            var types = GetElementsTypes(eTypes, eTypes_n);
+            if (types.Contains("Point"))
+            {
+                GetPoints();
+                long[][] elements, points;
+                GmshUserMemory.GetElementData(out elements, eTags, eTags_n, eTags_nn);
+                GmshUserMemory.GetElementData(out points, nodeTags, nodeTags_n, nodeTags_nn);
+                CreateElements(elements, points, types);
+            }
+        }
+        private void GetPoints()
+        {
+            var error = 0;
+            IntPtr nodeTags, nodeTags_n, coord, coord_n, paramCoord, paramCoord_n;
+            nodeTags = nodeTags_n = coord = coord_n = paramCoord = paramCoord_n = IntPtr.Zero;
+            GmshMesh.gmshModelMeshGetNodes(ref nodeTags, ref nodeTags_n, ref coord, ref coord_n,
+                                             ref paramCoord, ref paramCoord_n, -1, -1, 0, 0, ref error);
+            long[] tagPoints;
+            double[] coords;
+            var pointsCount = nodeTags_n.ToInt32();
+            nodes = new List<Node>(pointsCount);
+            GmshUserMemory.GetTypesData(nodeTags, out tagPoints, nodeTags_n);
+            GmshUserMemory.GetTypesData(coord, out coords, coord_n);
+            for (var i = 0; i < pointsCount; ++i)
+            {
+                var stride = i * 3;
+                nodes.Add(new Node((int)tagPoints[i], new Point3D((float)coords[stride],
+                                   (float)coords[stride + 1], (float)coords[stride + 2])));
+            }
+        }
 
         private string[] GetElementsTypes(IntPtr eTypes, IntPtr eTypes_n)
         {
@@ -48,28 +89,6 @@ namespace ModelParcer.GmshUser
                 result[i] = name;
             }
             return result;
-        }
-
-        /// <summary>
-        /// Извлекает все элементы сетки из модели
-        /// </summary>
-        protected override void GetElements()
-        {
-            var error = 0;
-            IntPtr eTypes, eTypes_n, eTags, eTags_n, eTags_nn, nodeTags, nodeTags_n, nodeTags_nn;
-            eTypes = eTypes_n = eTags = eTags_n = eTags_nn = nodeTags = nodeTags_n = nodeTags_nn = IntPtr.Zero;
-            GmshMesh.gmshModelMeshGetElements(ref eTypes, ref eTypes_n,
-                                                ref eTags, ref eTags_n, ref eTags_nn,
-                                                ref nodeTags, ref nodeTags_n, ref nodeTags_nn, -1, -1, ref error);
-            var types = GetElementsTypes(eTypes, eTypes_n);
-            if (types.Contains("Point"))
-            {
-                GetPoints();
-                long[][] elements, points;
-                GmshUserMemory.GetElementData(out elements, eTags, eTags_n, eTags_nn);
-                GmshUserMemory.GetElementData(out points, nodeTags, nodeTags_n, nodeTags_nn);
-                CreateElements(elements, points, types);
-            }
         }
 
         private void CreateElements(long[][] elements, long[][] points, string[] types)
@@ -97,13 +116,12 @@ namespace ModelParcer.GmshUser
         private void CreateCurves(long[] tagElements, long[] tagPoints, int stride)
         {
             curves = new List<Curve>(tagElements.Length);
-            var pointsPerStride = new DoublePoint3D[stride];
+            var pointsPerStride = new Node[stride];
             for (var i = 0; i < tagElements.Length; ++i)
             {
                 for (var j = 0; j < stride; ++j)
                     pointsPerStride[j] = nodes[(int)tagPoints[i * stride + j] - 1];
-                var points = pointsPerStride.Select(v => v.ToNode).ToArray();
-                curves.Add(new Curve((int)tagElements[i], points));
+                curves.Add(new Curve((int)tagElements[i], pointsPerStride));
             }
         }
     }
