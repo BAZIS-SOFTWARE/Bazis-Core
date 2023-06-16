@@ -24,7 +24,8 @@ namespace ModelController.MeshObjsUtility
                 foreach (var surface in element.GetSurface())
                 {
                     var normal = surface.CalcNormal();
-                    var proj = centre.GetPointProectionOnPlane(new Plane(surface[0].Position, normal));
+                    var plane = new Plane(surface[0].Position, normal);
+                    var proj = centre.GetPointProectionOnPlane(plane);
                     var normalV = proj.Sub(centre);
                     foreach (var node in surface.GetNodes())
                     {
@@ -45,12 +46,12 @@ namespace ModelController.MeshObjsUtility
                 foreach (var surface in element.GetSurface())
                 {
                     var normal = surface.CalcNormal();
-                    var nodeOnSide = surface[0];
+                    var plane = new Plane(surface[0].Position, normal);
+                    var proj = centr.GetPointProectionOnPlane(plane);
+                    
+                    var p1 = proj.Sum(normal);
 
-                    var p0 = centr.GetPointProectionOnPlane(new Plane(nodeOnSide.Position, normal));
-                    var p1 = p0.Sum(normal);
-
-                    var line = new Line(p0, p1);
+                    var line = new Geometry.Line(proj, p1);
                     lines.Add(line);
                 }
             }

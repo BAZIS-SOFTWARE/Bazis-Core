@@ -24,6 +24,7 @@ namespace ModelController.MeshObjsUtility
         public Line DistanceBetweenPlaneAndNode(Plane plane, Node node)
         {
             var point = node.Position.GetPointProectionOnPlane(plane);
+			
             return new Line(node.Position, point);
         }
     }

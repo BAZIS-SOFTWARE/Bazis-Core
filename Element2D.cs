@@ -67,6 +67,11 @@ namespace Model
             return square;
         }
 
+        public override float[] GetFormFunctions(Point3D point3D)
+        {
+            throw new NotImplementedException();
+        }
+
         public override IEnumerable<Surface> GetSurface()
         {
             yield return surface;

@@ -69,7 +69,11 @@ namespace ModelController.MeshObjsUtility
             return dictionary;
         }
 
-        private Point3D GetCrossSectionPoint(Line line, Plane plane)
+        /// <returns>
+        /// the point of intersection of the given plane and the given line
+        /// </returns>
+
+        private Point3D GetSectionPoint(Line line, Plane plane)
         {
             var A = plane.Normal._x;
             var B = plane.Normal._y;

@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace ModelController.MeshObjsCreator
 {
+    /// <summary>
+    /// Extract2DFrom3D
+    /// </summary>
     public class Extract2DFrom3D
     {
         Element3D[] elements;
@@ -14,7 +17,11 @@ namespace ModelController.MeshObjsCreator
         {
             this.elements = elements;
         }
-
+        /// <summary>
+        /// Create
+        /// </summary>
+        /// <param name="StartNumber"></param>
+        /// <returns></returns>
         public Element2D[] Create(int StartNumber)
         {
             var surfaces = FindOpenSurfaces();
@@ -29,7 +36,10 @@ namespace ModelController.MeshObjsCreator
             }
             return elements2D;
         }
-
+        /// <summary>
+        /// FindOpenSurfaces
+        /// </summary>
+        /// <returns></returns>
         public List<Surface> FindOpenSurfaces()
         {
             var surfDict = new Dictionary<string, List<Surface>>();
@@ -42,7 +52,7 @@ namespace ModelController.MeshObjsCreator
                     var numbers = surface.GetNodes().Select(x => x.Number).ToArray();
 
                     Array.Sort(numbers);
-                    var surfInd = numbers[0].ToString() + numbers[1].ToString() + numbers[2].ToString();
+                    var surfInd = string.Join("",numbers);
 
                     if (!surfDict.ContainsKey(surfInd))
                         surfDict.Add(surfInd, new List<Surface>() { surface });

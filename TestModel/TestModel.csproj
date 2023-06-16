@@ -162,10 +162,6 @@
       <Project>{0040c7b5-aa26-42c4-b3a0-c7ff40ec8709}</Project>
       <Name>ModelController</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ModelParcer\ModelParcer.csproj">
-      <Project>{49c98946-3edb-4b2d-83af-34ccf56111d5}</Project>
-      <Name>ModelParcer</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

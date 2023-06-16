@@ -1,5 +1,4 @@
 ﻿using Geometry;
-using Model;
 using Model.Events;
 using Model.GroupsData;
 using Model.Interfaces;
@@ -10,7 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 
-namespace ModelParcer
+namespace Model.ModelParcer
 {
     public class LoadModelFromASCIITextFile : IModelLoader
     {

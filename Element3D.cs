@@ -46,7 +46,7 @@ namespace Model
         public override ObjKind ObjKind { get;}
 /// <inheritdoc/>
 
-        public override int NumberOfSides { get { return surfaces.Count(); } }
+        public override int NumberOfSides { get { return surfaces.Count(); } }       
 
         /// <inheritdoc/>
 
@@ -67,10 +67,11 @@ namespace Model
         /// <returns></returns>
         public float CalcVolume()
         {
-            var pAr = GetPoints().ToArray();
+            //nodes[]
+            //var pAr = GetPoints().ToArray();
 
             var mCoord = new float[4, 4];
-            var p = new Point3D[] { pAr[0], pAr[1], pAr[2], pAr[3] };
+            var p = new Point3D[] { nodes[0].Position, nodes[1].Position, nodes[2].Position, nodes[3].Position };
             for (int j = 0; j < p.Length; j++)
             {
                 mCoord[j, 0] = 1;
@@ -83,7 +84,29 @@ namespace Model
             //var str = cMatr.ToString(4, 4);
             return cMatr;
         }
-/// <inheritdoc/>
+
+        public override float[] GetFormFunctions(Point3D point3D)
+        {
+            if (ObjKind == ObjKind.Tetra)
+            {
+                var mCoord = Matrix<float>.Build.DenseOfArray(new float[,]
+{
+                    { 1, nodes[0].Position._x, nodes[0].Position._y,nodes[0].Position._z },
+                    { 1, nodes[1].Position._x, nodes[1].Position._y,nodes[1].Position._z },
+                    { 1, nodes[2].Position._x, nodes[2].Position._y,nodes[2].Position._z },
+                    { 1, nodes[3].Position._x, nodes[3].Position._y,nodes[3].Position._z }
+});
+                var dN = mCoord.Inverse(); // differential matrix {dN/dn}
+
+                var vCoord = Vector<float>.Build.Dense(new float[] { 1, point3D._x, point3D._y, point3D._z });
+                var result = dN.Multiply(vCoord);
+                return result.ToArray();
+            }
+            else return new float[0];
+
+        }
+
+        /// <inheritdoc/>
 
         public override IEnumerable<Surface> GetSurface()
         {

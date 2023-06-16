@@ -111,9 +111,22 @@ namespace TestModel
             19,
             -0.058f,-0.04709209f,0.1510406f
         })]
-        
+        //new from Victor
+        [DataRow(new float[]
+        {
+            0,
+            -1,6,44.65f,
+            1,
+            -1.27f,6.21f,44.35f,
+            2,
+            -2.16f,6,43.39f,
+            3,
+            -3,7.02f,42.48f
+        })]
+
         public void OtherSortNode(float[] ar)
         {
+  
             //assing
             var nodes = new List<Node>();
             for (int i = 0; i < ar.Length; i+=4)
@@ -121,6 +134,16 @@ namespace TestModel
                 nodes.Add(new Node((int)ar[i], new Point3D(ar[i + 1], ar[i + 2], ar[i + 3])));
             }
 
+            //var baseV = nodes[2].Position.Sub(nodes[1].Position);
+
+            //var act1 = nodes[0].Position.Sub(nodes[1].Position);
+            //var act2 = nodes[3].Position.Sub(nodes[1].Position);
+
+            //var cross1 = Vector.CrossProd(baseV, act1);
+            //var cross2 = Vector.CrossProd(baseV, act2);
+
+            //var res1 = cross1.Sub(nodes[1].Position);
+            //var res2 = cross2.Sub(nodes[1].Position);
 
             //act
             var surf = new Surface(0, nodes.ToArray(), Model.Interfaces.ObjKind.ElementSurface);

@@ -1,12 +1,11 @@
 ﻿using Geometry;
-using Model;
 using Model.Events;
 using Model.Interfaces;
 using System;
 using System.Globalization;
 using System.IO;
 
-namespace ModelParcer
+namespace Model.ModelParcer
 {
     public class LoadModelFromSTLFile : IModelLoader
     {
