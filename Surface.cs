@@ -257,5 +257,18 @@ points.Contains(nodes[2].Position, new Point3DEqualityComparer()))
             }
             return center.Div(NumberOfPoints);
         }
+
+        public Line[] GetLinesFromSurface(Surface surface)
+        {
+            var n = surface.GetPoints().Count();
+            var points = surface.GetPoints().ToArray();
+            Line[] lines = new Line[n];
+            for (int i = 0; i < n - 1; i++)
+            {
+                lines[i] = new Line(points[i], points[i + 1]);
+            }
+            lines[n - 1] = new Line(points[n - 1], points[0]);
+            return lines;
+        }
     }
 }

@@ -39,7 +39,7 @@ namespace TestModel
                 set2.ToHashSet().Except(set1).Count() == 0;
         }
 
-        [DataTestMethod]
+            [DataTestMethod]
         [DataRow(new float[]
         {
             0.6f, 0, 0.4f, 0, 0.5f, 0.5f,0, 0, 0.5f
@@ -48,7 +48,7 @@ namespace TestModel
         {
             1, 0, 0, 0, 0, 0,0, 1, 0
         })]
-        public void TestTetra1(float[] array)
+        public void TestTetraCrossSection(float[] array)
         {
             var points = new List<Point3D>()
             {
@@ -57,14 +57,15 @@ namespace TestModel
                 new Point3D(array[6],array[7],array[8])
             };
             var plane = new Plane(points[0], points[1], points[2]);
-            var crossNodes = CrossSection.GetSectionSurfaces(new List<Element3D> { tetra }, plane);
+            var crossSection = new CrossSection();
+            var crossNodes = crossSection.GetSectionSurfaces(new List<Element3D> { tetra }, plane);
             var result = crossNodes[1];
             Assert.AreEqual(3, result.GetPoints().Count());
             Assert.IsTrue(CheckSetEquality(points, result.GetPoints()));
         }
 
         [TestMethod]
-        public void TestHex1()
+        public void TestHexaCrossSection()
         {
             var points = new List<Point3D>()
             {
@@ -74,14 +75,15 @@ namespace TestModel
                 new Point3D(1, 1, 0.5f),
             };
             var plane = new Plane(points[0], points[1], points[2]);
-            var crossNodes = CrossSection.GetSectionSurfaces(new List<Element3D> { hex }, plane);
+            var crossSection = new CrossSection();
+            var crossNodes = crossSection.GetSectionSurfaces(new List<Element3D> { hex }, plane);
             var result = crossNodes[1];
             Assert.AreEqual(4, result.GetPoints().Count());
             Assert.IsTrue(CheckSetEquality(result.GetPoints(), points));
         }
 
         [TestMethod, Timeout(2000)]
-        public void TestLongModel()
+        public void TestLongModelCrossSection()
         {
             var loader = new LoadModelFromCDBTextFile();
             loader.LoadEvent += (arg1, arg2) => { };
@@ -95,7 +97,8 @@ namespace TestModel
             };
             var plane = new Plane(points[0], points[1], points[2]);
             var elements = modelData.ObjectData.FindMany<Element3D>().ToList();
-            var crossNodes = CrossSection.GetSectionSurfaces(new List<Element3D> { tetra }, plane);
+            var crossSection = new CrossSection();
+            var crossNodes = crossSection.GetSectionSurfaces(elements, plane);
         }
     }
 }

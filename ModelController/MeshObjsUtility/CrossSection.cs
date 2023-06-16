@@ -13,68 +13,68 @@ namespace ModelController.MeshObjsUtility
 {
     public static class IEnumerableExtentions
     {
-        /// <returns>
-        /// a pair of adjacent elements in a items list and a pair (last, first).
-        /// </returns>
-        public static IEnumerable<Tuple<T, T>> Bigrams<T>(this IEnumerable<T> items)
-        {
-            var enumerator = items.GetEnumerator();
-            enumerator.MoveNext();
-            var first = enumerator.Current;
-            var head = items.First();
-            while (enumerator.MoveNext())
-            {
-                var second = enumerator.Current;
-                yield return Tuple.Create(first, second);
-                first = second;
-            }
-            yield return Tuple.Create(head, first);
-        }
+        //public static IEnumerable<Tuple<T, T>> Bigrams<T>(this IEnumerable<T> items)
+        //{
+        //    var enumerator = items.GetEnumerator();
+        //    enumerator.MoveNext();
+        //    var first = enumerator.Current;
+        //    var head = items.First();
+        //    while (enumerator.MoveNext())
+        //    {
+        //        var second = enumerator.Current;
+        //        yield return Tuple.Create(first, second);
+        //        first = second;
+        //    }
+        //    yield return Tuple.Create(head, first);
+        //}
     }
-
+    /// <summary>
+    /// CutSection
+    /// </summary>
     public class CrossSection
     {
-        /// <returns>
-        /// a dictionary where the key is the element number and the value is a list of points of section by the given plane.
-        /// </returns>
-        public static Dictionary<int, Surface> GetSectionSurfaces(List<Element3D> elements, Plane plane)
+        /// <summary>
+        /// GetCrossNodes
+        /// </summary>
+        /// <param name="elements"></param>
+        /// <param name="plane"></param>
+        /// <returns></returns>
+        public Dictionary<int, Surface> GetSectionSurfaces(List<Element3D> elements, Plane plane)
         {
-            var result = new Dictionary<int, Surface>();
-            var objectNumber = 0;
-            foreach (var element in elements)
+            Dictionary<int, Surface> dictionary = new Dictionary<int, Surface>();
+            int num = 0;
+            foreach (Element3D element in elements)
             {
-                var nodes = new List<Node>();
-                var usedPoints = new HashSet<Point3D>();
-                foreach (var elementSurface in element.GetSurface())
+                List<Node> list = new List<Node>();
+                HashSet<Point3D> hashSet = new HashSet<Point3D>();
+                foreach (Surface item4 in element.GetSurface()) // get lines
                 {
-                    foreach (var pair in elementSurface.GetPoints().Bigrams())
+                    foreach (Line item5 in item4.GetLinesFromSurface(item4))
                     {
-                        var point1 = pair.Item1;
-                        var point2 = pair.Item2;
-                        if (Math.Sign(plane.PointPosition(point1)) == Math.Sign(plane.PointPosition(point2)))
-                            continue;
-                        var crossSectionPoint = GetSectionPoint(new Line(point1, point2), plane);
-                        if (!usedPoints.Contains(crossSectionPoint))
+                        Point3D item = item5.P0;
+                        Point3D item2 = item5.P1;
+                        if (Math.Sign(plane.PointPosition(item)) != Math.Sign(plane.PointPosition(item2)))
                         {
-                            var node = new Node(objectNumber++, crossSectionPoint);
-                            usedPoints.Add(crossSectionPoint);
-                            nodes.Add(node);
+                            Point3D sectionPoint = GetCrossSectionPoint(new Line(item, item2), plane);
+                            if (!hashSet.Contains(sectionPoint))
+                            {
+                                Node item3 = new Node(num++, sectionPoint);
+                                hashSet.Add(sectionPoint);
+                                list.Add(item3);
+                            }
                         }
                     }
                 }
-                if (nodes.Count >= 3)
+                if (list.Count >= 3)
                 {
-                    var surface = new Surface(objectNumber++, nodes.ToArray(), ObjKind.ElementSurface);
-                    result.Add(element.Number, surface);
+                    Surface value = new Surface(num++, list.ToArray(), ObjKind.ElementSurface);
+                    dictionary.Add(element.Number, value);
                 }
             }
-            return result;
+            return dictionary;
         }
 
-        /// <returns>
-        /// the point of intersection of the given plane and the given line
-        /// </returns>
-        private static Point3D GetSectionPoint(Line line, Plane plane)
+        private Point3D GetCrossSectionPoint(Line line, Plane plane)
         {
             var A = plane.Normal._x;
             var B = plane.Normal._y;
@@ -89,4 +89,3 @@ namespace ModelController.MeshObjsUtility
         }
     }
 }
-
