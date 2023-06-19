@@ -17,7 +17,5 @@
     <file src="Icon.png" target="" />
     <file src="ModelController\bin\Release\ModelController.dll" target="lib\net48\ModelController.dll" />
     <file src="ModelController\bin\Release\ModelController.xml" target="lib\net48\ModelController.xml" />
-    <file src="ModelParcer\bin\Release\ModelParcer.dll" target="lib\net48\ModelParcer.dll" />
-    <file src="ModelParcer\bin\Release\ModelParcer.xml" target="lib\net48\ModelParcer.xml" />
   </files>
 </package>

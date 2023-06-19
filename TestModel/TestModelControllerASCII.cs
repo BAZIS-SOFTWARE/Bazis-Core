@@ -3,8 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using Model.Events;
 using ModelController.ModelScenePresentator;
-using ModelParcer;
-using SceneInterface;
+using Model.ModelParcer;
 
 namespace TestModel
 {

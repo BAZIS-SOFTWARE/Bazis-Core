@@ -5,11 +5,10 @@ using Geometry;
 using Model.Interfaces;
 using System.Globalization;
 using System.Collections.Generic;
-using Model;
 using Model.GroupsData;
 using Model.Events;
 
-namespace ModelParcer
+namespace Model.ModelParcer
 {
     public class LoadModelFromGMSHTextFile : IModelLoader
     {

@@ -42,6 +42,33 @@ namespace TestModel
         }
 
         [TestMethod]
+        public void HideInside2DObjects()
+        {
+            //assign
+            var nodes = new Node[]
+            {
+                new Node(0, new Geometry.Point3D(0,0,0)),
+                new Node(1,new Geometry.Point3D(10,10,0)),
+                new Node(2,new Geometry.Point3D(20,10,0))
+            };
+
+            var surface = new Surface(3, nodes, ObjKind.ElementSurface);
+
+            var model = new ModelData();
+            model.ObjectData.AddRange(nodes);
+            model.ObjectData.Add(surface);
+
+            var presenter = new ModelScenePresentator(model);
+
+            //act
+            presenter.HideInsideObjects("Поверхность");
+
+            //assert
+            var surfObj = (ISurfaceObject)model.ObjectData[3];
+            Assert.AreEqual(surfObj.GetSurface().All(x => x.ViewState == true), true);
+        }
+
+        [TestMethod]
         public void Hide1DObjects()
         {
             //assign

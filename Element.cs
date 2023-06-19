@@ -11,7 +11,7 @@ namespace Model
 {
     public abstract class Element : ModelObject, IElement
     {
-        Node[] nodes;
+        protected Node[] nodes;
         public Element(int number, Node[] nodes, ObjKind objKind) : base(number)
         {
             if (nodes.Length == 0)
@@ -22,6 +22,8 @@ namespace Model
         public override ObjKind ObjKind { get; }
         
         public override int NumberOfPoints { get { return nodes.Length; } }
+
+        public abstract float[] GetFormFunctions(Point3D point3D);
 
         public IEnumerable<Node> GetNodes()
         {

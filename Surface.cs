@@ -54,15 +54,12 @@ namespace Model
         {
             var ar = new List<Node>();
             var arInd = new List<int>();
+            var plane = new Plane(nodes[0].Position, nodes[1].Position, nodes[2].Position);
+            plane.Shifting = 0;
 
             var fInd = 0;
             var sInd = 1;
 
-            var firstNode = nodes[fInd];
-            var secondNode = nodes[sInd];
-            //var baseVector = secondNode.Position.Sub(firstNode.Position);
-
-            //baseVector.Round(2);
             var lenght = nodes.Length;
 
             ar.Add(nodes[fInd]);
@@ -73,7 +70,7 @@ namespace Model
             {
                 if (iterationCounter > iterationMax) break;
 
-                var resu = CheckVectorsOrientation(nodes, firstNode, secondNode);
+                var resu = CheckVectorsOrientation(nodes, fInd, sInd,plane);
 
                 if (resu)
                 {
@@ -92,10 +89,6 @@ namespace Model
                 if (sInd == fInd) sInd++;
                 if (sInd == nodes.Length) sInd = 0;
 
-                firstNode = nodes[fInd];
-                //baseVector = nodes[sInd].Position.Sub(firstNode.Position);
-                secondNode = nodes[sInd];
-
                 iterationCounter++;
             }
 
@@ -105,43 +98,31 @@ namespace Model
             return ar.ToArray();
         }
 
-        private bool CheckVectorsOrientation(Node[] nodes, Node firstNode, Node secondNode)
+        private bool CheckVectorsOrientation(Node[] nodes, int firstInd, int secondInd, Plane plane )
         {
             //bool isPointInside = false;
-            var temp = new List<Point3D>();
-            var baseVector = secondNode.Position.Sub(firstNode.Position);
-
+            var temp = new List<float>();
+            var baseVector = nodes[secondInd].Position.Sub(nodes[firstInd].Position);
+            //var nBaseVector = Vector.GetVectorNorm(baseVector);
             foreach (var node in nodes)
             {
-                if (!node.Equals(firstNode) & !node.Equals(secondNode))
+                if (!node.Equals(nodes[firstInd]) & !node.Equals(nodes[secondInd]))
                 {
-                    var actVector = node.Position.Sub(firstNode.Position);
+                    var actVector = node.Position.Sub(nodes[firstInd].Position);
 
                     var prod = Vector.CrossProd(baseVector, actVector);
 
-                    if (Math.Abs(prod._x) < 1e-6)
-                        prod._x = 0;
-                    if (Math.Abs(prod._y) < 1e-6)
-                        prod._y = 0;
-                    if (Math.Abs(prod._z) < 1e-6)
-                        prod._z = 0;
-                    //if (prod == new Point3D(0, 0, 0))
-                    //{
-                    //    var baseLength = Vector.GetVectorLenght(baseVector);
-                    //    var actLength = Vector.GetVectorLenght(actVector);
-                    //    if (baseLength - actLength > 1e-4)
-                    //    {
-                    //        isPointInside = true; break;
-                    //    }
-                    //}
-                    temp.Add(prod);
+                    var dist = plane.PointPosition(prod);
+                    temp.Add(dist);
                 }
 
             }
-            //var resu = false;
-            //if (!isPointInside) resu = Vector.IsVectorsCoDirectional(temp);
-            //return resu;
-            return Vector.IsVectorsCoDirectional(temp);
+
+            if (temp.All(x => Math.Sign(x) >= 0))
+                return true;
+            else if (temp.All(x => Math.Sign(x) < 0))
+                return true;
+            else return false;
         }
 
         public Node this [int ind]

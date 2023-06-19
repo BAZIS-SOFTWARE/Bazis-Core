@@ -3,18 +3,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using Model.Interfaces;
 using ModelController.ModelScenePresentator;
-using ModelController.ModelScenePresentator.GlObjsArraysCreators;
-using ModelController.ModelScenePresentator.GlObjsVertexCreators;
-using ModelParcer;
-using SceneInterface;
+using Model.ModelParcer;
 using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TestModel
 {

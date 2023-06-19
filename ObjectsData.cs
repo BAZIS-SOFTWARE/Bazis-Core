@@ -92,37 +92,7 @@ namespace Model
         public int NumberOfElements
         {
             get { return FindMany<Element>().Count(); }
-        }
-
-        public void HideModelObjs<T>(List<int> objNumbers) where T : ModelObject
-        {
-            foreach (var objNumber in objNumbers)
-            {
-                var obj = Find(modelObjects, objNumber);
-                obj.ViewState = false;
-            }
-        }
-
-        public void HideModelObjs<T>(T[] objects) where T : ModelObject
-        {
-            foreach (var obj in objects)
-            {
-                obj.ViewState = false;
-            }
-        }
-
-        public void HideModelObj<T>(T objects) where T : ModelObject
-        {
-            objects.ViewState = false;
-        }
-
-        public void ShowModelObjs<T>(T[] objects, List<int> objNumbers) where T : ModelObject
-        {
-            foreach (var objNumber in objNumbers)
-            {
-                Find(modelObjects, objNumber).ViewState = true;
-            }
-        }
+        }       
 
         public IEnumerable<ModelObject> FindMany(ObjKind objKind)
         {
