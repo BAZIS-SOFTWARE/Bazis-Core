@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ModelParcer.GmshController
+namespace Model.GmshController
 {
     /// <summary>
     /// Класс с группой обобщенных методов для установки предварительных значений Gmsh Api

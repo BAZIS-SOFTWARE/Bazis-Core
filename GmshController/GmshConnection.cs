@@ -19,7 +19,7 @@ using Geometry;
 using System.Reflection;
 using MathNet.Numerics.LinearAlgebra.Factorization;
 
-namespace ModelParcer
+namespace Model.GmshController
 {
     /// <summary>
     /// Класс с группой методов для работы с подключением и завершением работы gmsh api

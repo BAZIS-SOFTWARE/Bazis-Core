@@ -1,11 +1,11 @@
-﻿using ModelParcer.GmshController;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Model.GmshController;
 
-namespace ModelParcer.GmshUser
+namespace Model.GmshUser
 {
     public static class GmshUserConnection
     {

@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ModelParcer.GmshController
+namespace Model.GmshController
 {
     /// <summary>
     /// Класс с группой методов для работы с сеткой

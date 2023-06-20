@@ -1,13 +1,13 @@
 ﻿using Geometry;
 using Model;
-using ModelParcer.GmshController;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Model.GmshController;
 
-namespace ModelParcer.GmshUser
+namespace Model.GmshUser
 {
     /// <summary>
     /// Класс представляет данные модели
@@ -21,6 +21,18 @@ namespace ModelParcer.GmshUser
         /// Получает идентификатор с ассоциированной моделью
         /// </summary>
         protected long Id { get; private set; }
+        /// <summary>
+        /// Возвращает точки как объекты ModelObject 
+        /// </summary>
+        public IEnumerable<ModelObject> Nodes { get { return nodes; } }
+        /// <summary>
+        /// Возвращает кривые как объекты ModelObject 
+        /// </summary>
+        public IEnumerable<ModelObject> Curves { get { return curves; } }
+        /// <summary>
+        /// Возвращает поверхности как объекты ModelObject 
+        /// </summary>
+        public IEnumerable<ModelObject> Surfaces { get { return surfaces; } }
         /// <summary>
         /// Экземпляр данных модели
         /// </summary>

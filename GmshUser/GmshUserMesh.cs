@@ -1,7 +1,4 @@
-﻿using Model;
-using ModelParcer.GmshController;
-using ModelParcer.GMSHController;
-using PrFunctionLib;
+﻿using PrFunctionLib;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -9,8 +6,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Model.GmshController;
+using Model.ModelParcer;
 
-namespace ModelParcer.GmshUser
+
+namespace Model.GmshUser
 {
     /// <summary>
     /// Класс для манипуляции с Gmsh сеткой
@@ -21,6 +21,33 @@ namespace ModelParcer.GmshUser
         /// Флаг указывает будет ли удаляться файл связанный с ModelParcer
         /// </summary>
         public bool DeleteDstFile { get; set; }
+
+        /// <summary>
+        /// Задает/Извлекает плотность распределения точек для модели
+        /// </summary>
+        public string Dencity
+        {
+            get
+            {
+                var error = 0;
+                GmshModel.gmshModelSetCurrent(Id.ToString(), ref error);
+                double min = 0, max = 0;
+                GmshGeneral.gmshOptionGetNumber("Mesh.MeshSizeMin", ref min, ref error);
+                GmshGeneral.gmshOptionGetNumber("Mesh.MeshSizeMax", ref max, ref error);
+                return min.ToString(CultureInfo.InvariantCulture) + " "
+                     + max.ToString(CultureInfo.InvariantCulture);
+            }
+            set
+            {
+                var error = 0;
+                GmshModel.gmshModelSetCurrent(Id.ToString(), ref error);
+                var values = value.Split(' ');
+                var min = Double.Parse(values[0], CultureInfo.InvariantCulture);
+                var max = Double.Parse(values[1], CultureInfo.InvariantCulture);
+                GmshGeneral.gmshOptionSetNumber("Mesh.MeshSizeMin", min, ref error);
+                GmshGeneral.gmshOptionSetNumber("Mesh.MeshSizeMax", max, ref error);
+            }
+        }
 
         /// <summary>
         /// Экземпляр для манипуляции с Gmsh сеткой

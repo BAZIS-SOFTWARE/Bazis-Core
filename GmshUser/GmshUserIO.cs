@@ -1,6 +1,4 @@
-﻿using ModelParcer.GmshController;
-using ModelParcer.GMSHController;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -8,8 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using static System.Net.Mime.MediaTypeNames;
+using Model.GmshController;
 
-namespace ModelParcer.GmshUser
+namespace Model.GmshUser
 {
     /// <summary>
     /// Класс запросов пользователя в файловую систему

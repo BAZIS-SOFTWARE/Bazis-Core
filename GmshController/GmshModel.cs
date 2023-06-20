@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ModelParcer.GmshController
+namespace Model.GmshController
 { 
     /// <summary>
     /// Класс с группой методов для работы с моделью
@@ -128,6 +128,25 @@ namespace ModelParcer.GmshController
         public static extern void gmshModelGetParametrizationBounds(int dim, int tag, ref IntPtr min,
                                                                     ref IntPtr min_n, ref IntPtr max,
                                                                     ref IntPtr max_n, ref int ierr);
+
+        /// <summary>
+        /// Получает соседей верхнего\нижнего уровня для текущей пары размерность : идентификатор
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="upward">[Out]Идентификаторы верхнего уровня</param>
+        /// <param name="upward_n">[Out]Длина вектора идентификаторов</param>
+        /// <param name="downward">[Out]Идентификаторы нижнего уровня</param>
+        /// <param name="downward_n">[Out]Длина вектора идентификаторов</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelGetAdjacencies(int dim, int tag, ref IntPtr upward, ref IntPtr upward_n,
+                                                          ref IntPtr downward, ref IntPtr downward_n, ref int ierr);
+        /*GMSH_API void gmshModelGetAdjacencies(const int dim,
+                                      const int tag,
+                                      int** upward, size_t * upward_n,
+                                      int** downward, size_t * downward_n,
+                                      int* ierr);*/
 
         /// <summary>
         /// Полчучает тип сущности по указанной паре размерность : идентификатор

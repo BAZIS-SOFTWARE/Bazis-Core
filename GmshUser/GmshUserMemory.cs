@@ -1,5 +1,4 @@
-﻿using ModelParcer.GmshController;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +6,9 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Model.GmshController;
 
-namespace ModelParcer.GmshUser
+namespace Model.GmshUser
 {
     /// <summary>
     /// Класс переводит неуправляемые данные в управляемые с освобождением неуправляемой памяти

@@ -1,6 +1,4 @@
 ﻿using Geometry;
-using Model.Interfaces;
-using Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,13 +6,13 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using PrFunctionLib;
-using ModelParcer.GmshController;
 using MathNet.Numerics.LinearAlgebra.Factorization;
 using System.Xml.Linq;
 using System.Collections;
 using System.IO;
+using Model.GmshController;
 
-namespace ModelParcer.GmshUser
+namespace Model.GmshUser
 {
     /// <summary>
     /// Извлекает данные о сетке заданной модели

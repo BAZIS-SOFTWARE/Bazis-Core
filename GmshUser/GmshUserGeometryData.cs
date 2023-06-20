@@ -1,6 +1,4 @@
-﻿using Model;
-using ModelParcer.GmshController;
-using PrFunctionLib;
+﻿using PrFunctionLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,8 +9,11 @@ using Model.GroupsData;
 using System.Reflection;
 using System.IO;
 using System.Security.Cryptography;
+using Model.GmshController;
+using System.Diagnostics.Tracing;
+using Model.Interfaces;
 
-namespace ModelParcer.GmshUser
+namespace Model.GmshUser
 {
     /// <summary>
     /// Извлекает данные о геометрии заданной модели
@@ -22,6 +23,7 @@ namespace ModelParcer.GmshUser
         private delegate void Derivative(int dim, int tag, double[] parametricCoord, IntPtr parametricCoord_n,
                                          ref IntPtr derivatives, ref IntPtr derivatives_n, ref int ierr);
         private int geometryMode;
+        private int totalPointsId;
         /// <summary>
         /// Экземляр данных о геометрии заданной модели
         /// </summary>
@@ -29,7 +31,8 @@ namespace ModelParcer.GmshUser
         public GmshUserGeometryData(long modelId) : base(modelId)
         {
             var ext = Path.GetExtension(GmshUserIO.GetFileName());
-            geometryMode = ext.Contains("stp") || ext.Contains("igs") ? 1 : 0;
+            geometryMode = ext.Contains("step") || ext.Contains("igs") || ext.Contains("brep") ? 1 : 0;
+            GetData();
         }
         /// <summary>
         /// Извлекает данные геометрии из модели
@@ -65,19 +68,21 @@ namespace ModelParcer.GmshUser
                                 .GroupBy(v => v.D)
                                 .Select(v => v.ToArray())
                                 .ToArray();
-            foreach (var v in groups[0])
-                AddPoint(v.D, v.T);
-            foreach (var v in groups[1])
-                AddCurve(v.D, v.T);
-            foreach (var v in groups[2])
-                AddSurface(v.D, v.T);
+            var actions = new Action<int, int>[] { AddPoint, AddCurve, AddSurface, AddVolumes };
+            var j = 0;
+            foreach (var dimension in groups)
+            {
+                foreach (var values in dimension)
+                    actions[j](values.D, values.T);
+                ++j;
+            }
         }
 
         private void AddPoint(int dim, int tag)
         {
             if(nodes == null)
                 nodes = new List<Node>();
-            var point = GetPoint(dim, tag);
+            var point = GetPoint(null, dim, tag);
             nodes.Add(new Node(tag, new Point3D((float)point[0], (float)point[1], (float)point[2])));
         }
 
@@ -85,17 +90,26 @@ namespace ModelParcer.GmshUser
         {
             if (curves == null)
                 curves = new List<Curve>();
-            if (IsLine(dim, tag))
-            {
-                var pointsPair = GetBoundary(dim, tag);
-                var tags = ExtractTagsFromPair(pointsPair);
-                curves.Add(new Curve(tag, GetNodes(dim, tags)));
-                return;
-            }
-            //TODO: Исследовать кривую
+            var paramsCoord = GetParametrizationBounds(dim, tag);
+            var lastCurvePoints = curves.Count != 0 ? curves[curves.Count - 1].NumberOfPoints : 0;
+            totalPointsId += lastCurvePoints;
+            var lastPointTag = base.nodes.Count + 1;
+            var steps = 50;
+            if (IsLine(paramsCoord, dim, tag))
+                steps = 2;
+            else
+                paramsCoord = SetCustomStepParametrization(paramsCoord, dim, tag, steps);
+            var tagsPoints = Enumerable.Range(lastPointTag + totalPointsId, steps).ToArray();
+            var nodes = GetNodes(paramsCoord, dim, tag, tagsPoints);
+            curves.Add(new Curve(tag, nodes));
         }
 
         private void AddSurface(int dim, int tag)
+        {
+
+        }
+
+        private void AddVolumes(int dim, int tag)
         {
 
         }
@@ -111,6 +125,15 @@ namespace ModelParcer.GmshUser
             int[] outDTags;
             GmshUserMemory.GetTypesData(outDimTags, out outDTags, outDimTags_n);
             return outDTags.Where( (v, i) => (i & 1) == 1).ToArray();
+        }
+
+        private double[] SetCustomStepParametrization(double[] paramsCoord, int dim, int tag, int steps)
+        {
+            var step = (paramsCoord[1] - paramsCoord[0]) / (steps - 1);
+            Array.Resize(ref paramsCoord, steps);
+            for (var i = 0; i < steps; ++i)
+                paramsCoord[i] = paramsCoord[0] + step * i;
+            return paramsCoord;
         }
 
         private double[] GetParametrizationBounds(int dim, int tag)
@@ -133,8 +156,6 @@ namespace ModelParcer.GmshUser
             var error = 0;
             var derivaties = IntPtr.Zero;
             var derivaties_n = IntPtr.Zero;
-            if (parametrs == null)
-                parametrs = GetParametrizationBounds(dim, tag);
             derFun(dim, tag, parametrs, (IntPtr)parametrs.Length, ref derivaties, ref derivaties_n, ref error);
             double[] derivative;
             GmshUserMemory.GetTypesData(derivaties, out derivative, derivaties_n);
@@ -153,30 +174,47 @@ namespace ModelParcer.GmshUser
             return curvature;
         }
 
-        private double[] GetPoint(int dim, int tag)
+        private double[] GetPoint(double[] parametric,int dim, int tag)
         {
+            var parametricLength = parametric == null ? 0 : parametric.Length;
             var error = 0;
             var coords = IntPtr.Zero;
             var coords_n = IntPtr.Zero;
-            GmshModel.gmshModelGetValue(dim, tag, null, (IntPtr)0,ref coords, ref coords_n, ref error);
+            GmshModel.gmshModelGetValue(dim, tag, parametric, (IntPtr)parametricLength, ref coords, ref coords_n, ref error);
             double[] points;
             GmshUserMemory.GetTypesData(coords, out points, coords_n);
             return points;
         }
 
-        private bool IsLine(int dim, int tag)
+        private void GetAdjacencies(out int[] down, out int[] up, int dim, int tag) 
         {
-            var derivative = GetDerivative(null, "second", dim, tag);
-            return derivative.All(v => v == 0);
+            var error = 0;
+            IntPtr downward, downward_n, upward, upward_n;
+            downward = downward_n = upward = upward_n = IntPtr.Zero;
+            GmshModel.gmshModelGetAdjacencies(dim, tag, ref upward, ref upward_n,
+                                              ref downward, ref downward_n, ref error);
+            GmshUserMemory.GetTypesData(upward, out up, upward_n);
+            GmshUserMemory.GetTypesData(downward, out down, downward_n);
         }
 
-        private int[] ExtractTagsFromPair(int[] pointsPair) => pointsPair.Where((v, i) => (i & 1) == 1).ToArray();
-
-        private Node[] GetNodes(int dim, int[] tags)
+        private bool IsLine(double[] paramsBound,int dim, int tag)
         {
-            return tags.Select(v => new { T = v, A = GetPoint(dim, v) })
-                       .Select(v => new Node(v.T, new Point3D((float)v.A[0], (float)v.A[1], (float)v.A[2])))
-                       .ToArray();
+            var modParams = new double[] { paramsBound[0] + 0.01, paramsBound[1] - 0.01};
+            var derivatives = GetDerivative(paramsBound, "first", dim, tag);
+            var derCount = derivatives.Length / 3;
+            for (var i = 1; i < derCount; ++i)
+                for(var j = 0; j < 3; ++j)
+                    if (Math.Abs(derivatives[i * 3 + j] - derivatives[(i - 1) * 3 + j]) > 1E-8)
+                        return false;
+            return true;
+        }
+
+        private Node[] GetNodes(double[] parametric, int dim, int tag ,int[] pointsTags)
+        {
+            var nodes = pointsTags.Select((v, i) => new { T = v, A = GetPoint(new double[] { parametric[i] }, dim, tag) })
+                                  .Select(v => new Node(v.T, new Point3D((float)v.A[0], (float)v.A[1], (float)v.A[2])))
+                                  .ToArray();
+            return nodes;
         }
     }
 }
