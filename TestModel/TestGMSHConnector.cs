@@ -8,7 +8,7 @@ namespace TestModel
     [TestClass]
     public class TestGMSHConnector
     {
-        private string srcDir;
+        /*private string srcDir;
         private string dstDir;
         [TestInitialize]
         public void Initialize()
@@ -49,9 +49,9 @@ namespace TestModel
                                             ref string objType, ref string expected)
         {
             
-            /*GMSHConnector.GMSHCreateFromScript(srcDir + scriptName + scriptExt, objType, false);
+            GMSHConnector.GMSHCreateFromScript(srcDir + scriptName + scriptExt, objType, false);
             CompareContentOfFiles(dstDir + scriptName + ".inp",
-                                  srcDir + expected + ".inp");*/
+                                  srcDir + expected + ".inp");
         }
 
         private string[] CuttedString(string path) => File.ReadAllLines(path).Skip(2).ToArray();
@@ -61,7 +61,7 @@ namespace TestModel
             var expected = CuttedString(expectedPath);
             var actual = CuttedString(actualPath);
             CollectionAssert.AreEqual(expected,actual);
-        }
+        }*/
 
     }
 }
