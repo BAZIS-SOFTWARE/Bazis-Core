@@ -12,17 +12,20 @@ namespace Model.GmshUser
     /// </summary>
     public class GmshUserGeometry : GmshUserModel
     {
+        private int steps;
+
         /// <summary>
         /// Возвращает данные о геометрии
         /// </summary>
         /// <returns></returns>
-        public override GmshUserModelData ModelData { get { return new GmshUserGeometryData(Id); } }
+        public override GmshUserModelData ModelData { get { return new GmshUserGeometryData(Id, steps); } }
         /// <summary>
         /// Экземпляр для манипуляции Gmsh геометрии 
         /// </summary>
         /// <param name="path"></param>
-        public GmshUserGeometry(string path) : base(path)
+        public GmshUserGeometry(string path, int steps) : base(path)
         {
+            this.steps = steps;
         }
     }
 }

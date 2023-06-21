@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Model;
 using Model.GmshUser;
 using System.IO;
 using System.Linq;
@@ -122,10 +123,26 @@ namespace TestModel
         public void TestGeometryGetElementsGmshController(ref string scriptName, ref string scriptExt)
         {
             GmshUserModelData data = null;
-            using (var connector = new GmshUserGeometry(srcDir + scriptName + scriptExt))
+            using (var connector = new GmshUserGeometry(srcDir + scriptName + scriptExt, 10))
             {
                 data = (GmshUserGeometryData)connector.ModelData;
                 var curves = data.Curves;
+            }
+        }
+
+        [DataTestMethod]
+        [DataRow("test", ".geo")]
+        public void TestSpline(ref string scriptName, ref string scriptExt)
+        {
+            using (var connector = new GmshUserGeometry(srcDir + scriptName + scriptExt, 20))
+            {
+                var data = connector.ModelData;
+                var curves = data.Curves;
+                var curve = curves.First();
+                var nodes = curve.GetPoints()
+                    .Select((point, index) => new Node(index++, point))
+                    .ToArray();
+                var x = new Curve(1, nodes);
             }
         }
 

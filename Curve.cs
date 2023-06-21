@@ -8,6 +8,23 @@ using Model.Interfaces;
 
 namespace Model
 {
+    public static class IEnumerableExtentions
+    {
+        public static IEnumerable<Tuple<T, T>> Bigrams<T>(this IEnumerable<T> items)
+        {
+            var enumerator = items.GetEnumerator();
+            enumerator.MoveNext();
+            var first = enumerator.Current;
+            var head = items.First();
+            while (enumerator.MoveNext())
+            {
+                var second = enumerator.Current;
+                yield return Tuple.Create(first, second);
+                first = second;
+            }
+        }
+    }
+
     public class Curve : ModelObject, ILineObject
     {
         Node[] nodes;
@@ -53,6 +70,13 @@ namespace Model
             {
                 yield return node.Position;
             }
+        }
+
+        public IEnumerable<Element1D> GetPolygonalChain()
+        {
+            return nodes.Bigrams()
+                .Select((pair, index) => 
+                new Element1D(index, new Node[] {pair.Item1, pair.Item2}, ObjKind.Beam));
         }
     }
 }

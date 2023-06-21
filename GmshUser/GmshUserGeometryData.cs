@@ -24,17 +24,14 @@ namespace Model.GmshUser
                                          ref IntPtr derivatives, ref IntPtr derivatives_n, ref int ierr);
         private int geometryMode;
         private int totalPointsId;
-        /// <summary>
-        /// Задает шаг параметризации кривой
-        /// </summary>
-        public int StepCurveParametrization { get; set; }
-
+        private int steps;
         /// <summary>
         /// Экземляр данных о геометрии заданной модели
         /// </summary>
         /// <param name="modelId"></param>
-        public GmshUserGeometryData(long modelId) : base(modelId)
+        public GmshUserGeometryData(long modelId, int steps) : base(modelId)
         {
+            this.steps = steps;
             var ext = Path.GetExtension(GmshUserIO.GetFileName());
             geometryMode = ext.Contains("step") || ext.Contains("igs") || ext.Contains("brep") ? 1 : 0;
             GetData();
@@ -95,12 +92,11 @@ namespace Model.GmshUser
             var lastCurvePoints = curves.Count != 0 ? curves[curves.Count - 1].NumberOfPoints : 0;
             totalPointsId += lastCurvePoints;
             var lastPointTag = base.nodes.Count + 1;
-            StepCurveParametrization = 50;
             if (IsLine(paramsCoord, dim, tag))
-                StepCurveParametrization = 2;
+                steps = 2;
             else
-                paramsCoord = SetCustomStepParametrization(paramsCoord, dim, tag, StepCurveParametrization);
-            var tagsPoints = Enumerable.Range(lastPointTag + totalPointsId, StepCurveParametrization).ToArray();
+                paramsCoord = SetCustomStepParametrization(paramsCoord, dim, tag, steps);
+            var tagsPoints = Enumerable.Range(lastPointTag + totalPointsId, steps).ToArray();
             var nodes = GetNodes(paramsCoord, dim, tag, tagsPoints);
             curves.Add(new Curve(tag, nodes));
         }

@@ -17,6 +17,7 @@ namespace Model.GmshUser
         protected List<Node> nodes;
         protected List<Curve> curves;
         protected List<Surface> surfaces;
+
         /// <summary>
         /// Получает идентификатор с ассоциированной моделью
         /// </summary>
