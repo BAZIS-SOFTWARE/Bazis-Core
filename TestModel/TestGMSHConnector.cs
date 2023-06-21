@@ -112,7 +112,7 @@ namespace TestModel
             using (var connector = new GmshUserMesh(srcDir + scriptName + scriptExt))
             {
                 connector.Generate(objType);
-                var data = connector.GetElements();
+                var data = connector.ModelData;
                 connector.DeleteDstFile = true;
             }
         }
@@ -124,9 +124,10 @@ namespace TestModel
             GmshUserModelData data = null;
             using (var connector = new GmshUserGeometry(srcDir + scriptName + scriptExt))
             {
-                data = connector.GetElements();
+                data = (GmshUserGeometryData)connector.ModelData;
+                data.
+                data.GetData();
             }
-            var dr = data.Curves;
         }
 
         private string[] CuttedString(string path) => File.ReadAllLines(path).Skip(2).ToArray();

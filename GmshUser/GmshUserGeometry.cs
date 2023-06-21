@@ -13,19 +13,16 @@ namespace Model.GmshUser
     public class GmshUserGeometry : GmshUserModel
     {
         /// <summary>
+        /// Возвращает данные о геометрии
+        /// </summary>
+        /// <returns></returns>
+        public override GmshUserModelData ModelData { get { return new GmshUserGeometryData(Id); } }
+        /// <summary>
         /// Экземпляр для манипуляции Gmsh геометрии 
         /// </summary>
         /// <param name="path"></param>
         public GmshUserGeometry(string path) : base(path)
         {
-        }
-        /// <summary>
-        /// Получает данные о геометрии модели
-        /// </summary>
-        /// <returns></returns>
-        public override GmshUserModelData GetElements()
-        {
-            return new GmshUserGeometryData(Id);
         }
     }
 }

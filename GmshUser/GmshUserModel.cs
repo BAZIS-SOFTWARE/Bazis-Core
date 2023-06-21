@@ -19,7 +19,12 @@ namespace Model.GmshUser
         /// <summary>
         /// Извлекает идентифкатор модели
         /// </summary>
-        public long Id { get { return id; } }
+        public long Id { get; protected set; }
+        /// <summary>
+        /// Возвращает данные модели
+        /// </summary>
+        /// <returns></returns>
+        public virtual GmshUserModelData ModelData { get { return new GmshUserModelData(Id); } }
         /// <summary>
         /// Экземпляр ассоциирует файл скрипта с созданной моделью
         /// </summary>
@@ -27,18 +32,12 @@ namespace Model.GmshUser
         public GmshUserModel(string path)
         {
             GmshUserConnection.Init();
-            id = GmshUserConnection.GetId();
+            Id = GmshUserConnection.GetId();
             var error = 0;
-            GmshModel.gmshModelAdd(id.ToString(), ref error);
+            GmshModel.gmshModelAdd(Id.ToString(), ref error);
             GmshIO.gmshMerge(path, ref error);
             GmshIO.gmshModelSetFileName(path, ref error);
         }
-
-        /// <summary>
-        /// Возвращает данные модели
-        /// </summary>
-        /// <returns></returns>
-        public virtual GmshUserModelData GetElements() => new GmshUserModelData(Id);
 
         /// <summary>
         /// Освобождает неуправляемые ресурсы связанные с моделью 

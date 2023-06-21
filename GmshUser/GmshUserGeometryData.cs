@@ -25,6 +25,11 @@ namespace Model.GmshUser
         private int geometryMode;
         private int totalPointsId;
         /// <summary>
+        /// Задает шаг параметризации кривой
+        /// </summary>
+        public int StepCurveParametrization { get; set; }
+
+        /// <summary>
         /// Экземляр данных о геометрии заданной модели
         /// </summary>
         /// <param name="modelId"></param>
@@ -37,11 +42,7 @@ namespace Model.GmshUser
         /// <summary>
         /// Извлекает данные геометрии из модели
         /// </summary>
-        public override void GetData()
-        {
-            var data = GetEntities();
-            ExtractData(data);
-        }
+        public override void GetData() => ExtractData(GetEntities());
 
         private int[] GetEntities()
         {
@@ -94,12 +95,12 @@ namespace Model.GmshUser
             var lastCurvePoints = curves.Count != 0 ? curves[curves.Count - 1].NumberOfPoints : 0;
             totalPointsId += lastCurvePoints;
             var lastPointTag = base.nodes.Count + 1;
-            var steps = 50;
+            StepCurveParametrization = 50;
             if (IsLine(paramsCoord, dim, tag))
-                steps = 2;
+                StepCurveParametrization = 2;
             else
-                paramsCoord = SetCustomStepParametrization(paramsCoord, dim, tag, steps);
-            var tagsPoints = Enumerable.Range(lastPointTag + totalPointsId, steps).ToArray();
+                paramsCoord = SetCustomStepParametrization(paramsCoord, dim, tag, StepCurveParametrization);
+            var tagsPoints = Enumerable.Range(lastPointTag + totalPointsId, StepCurveParametrization).ToArray();
             var nodes = GetNodes(paramsCoord, dim, tag, tagsPoints);
             curves.Add(new Curve(tag, nodes));
         }

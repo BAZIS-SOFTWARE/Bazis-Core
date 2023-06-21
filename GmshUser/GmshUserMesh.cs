@@ -21,7 +21,11 @@ namespace Model.GmshUser
         /// Флаг указывает будет ли удаляться файл связанный с ModelParcer
         /// </summary>
         public bool DeleteDstFile { get; set; }
-
+        /// <summary>
+        /// Возвращает данные о сетке
+        /// </summary>
+        /// <returns></returns>
+        public override GmshUserModelData ModelData { get { return new GmshUserMeshData(Id); } }
         /// <summary>
         /// Задает/Извлекает плотность распределения точек для модели
         /// </summary>
@@ -107,13 +111,6 @@ namespace Model.GmshUser
             var modelData = data.Load(dstFile);
             return modelData;
         }
-
-        /// <summary>
-        /// Получает данные о сетке текущей модели
-        /// </summary>
-        /// <returns></returns>
-        public override GmshUserModelData GetElements() => new GmshUserMeshData(Id);
-
         /// <summary>
         /// Освобождает неуправляемые ресурсы связанные с сеткой
         /// </summary>
