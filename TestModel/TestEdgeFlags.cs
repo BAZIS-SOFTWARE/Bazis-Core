@@ -3,8 +3,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using Model.Interfaces;
 using ModelController.ModelScenePresentator;
-using ModelController.ModelScenePresentator.GlObjsArraysCreators;
-using ModelController.ModelScenePresentator.GlObjsVertexCreators;
 using Model.ModelParcer;
 using System;
 

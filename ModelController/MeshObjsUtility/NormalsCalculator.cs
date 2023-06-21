@@ -46,6 +46,7 @@ namespace ModelController.MeshObjsUtility
                 foreach (var surface in element.GetSurface())
                 {
                     var normal = surface.CalcNormal();
+
                     var plane = new Plane(surface[0].Position, normal);
                     var proj = centr.GetPointProectionOnPlane(plane);
                     

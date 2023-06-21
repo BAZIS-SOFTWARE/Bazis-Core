@@ -93,9 +93,23 @@
   <ItemGroup>
     <Compile Include="Events\LoaderEventArgs.cs" />
     <Compile Include="Events\SaverEventArgs.cs" />
+    <Compile Include="GmshController\GmshConnection.cs" />
+    <Compile Include="GmshController\GmshGeneral.cs" />
+    <Compile Include="GmshController\GmshGeometry.cs" />
+    <Compile Include="GmshController\GmshIO.cs" />
+    <Compile Include="GmshController\GmshMesh.cs" />
+    <Compile Include="GmshController\GmshModel.cs" />
+    <Compile Include="GmshUser\GmshUserConnection.cs" />
+    <Compile Include="GmshUser\GmshUserGeometry.cs" />
+    <Compile Include="GmshUser\GmshUserGeometryData.cs" />
+    <Compile Include="GmshUser\GmshUserIO.cs" />
+    <Compile Include="GmshUser\GmshUserMemory.cs" />
+    <Compile Include="GmshUser\GmshUserMesh.cs" />
+    <Compile Include="GmshUser\GmshUserMeshData.cs" />
+    <Compile Include="GmshUser\GmshUserModel.cs" />
+    <Compile Include="GmshUser\GmshUserModelData.cs" />
     <Compile Include="Interfaces\IModelLoader.cs" />
     <Compile Include="Interfaces\IModelSaver.cs" />
-    <Compile Include="ModelParcer\GMSHConnector.cs" />
     <Compile Include="ModelParcer\LoadModelFromASCIITextFile.cs" />
     <Compile Include="ModelParcer\LoadModelFromCDBTextFile.cs" />
     <Compile Include="ModelParcer\LoadModelFromGMSHTextFile.cs" />
@@ -145,12 +159,6 @@
   <ItemGroup>
     <None Include="Icon.png" Pack="true" Visible="false" PackagePath="" />
   </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Connected Services\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="ModelParcer\Tao.OpenGl.dll" />
-    <Content Include="ModelParcer\Tao.Platform.Windows.dll" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

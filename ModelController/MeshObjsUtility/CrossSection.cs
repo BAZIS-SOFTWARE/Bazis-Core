@@ -79,6 +79,7 @@ namespace ModelController.MeshObjsUtility
             var B = plane.Normal._y;
             var C = plane.Normal._z;
             var D = plane.Shifting;
+
             var t = (-A * line.P1._x - B * line.P1._y - C * line.P1._z - D) /
                 (A * (line.P0._x - line.P1._x) + B * (line.P0._y - line.P1._y) + C * (line.P0._z - line.P1._z));
             var x = (float)Math.Round(line.P1._x * (1 - t) + line.P0._x * t, 6);
