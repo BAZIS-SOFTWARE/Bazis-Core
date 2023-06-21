@@ -40,7 +40,7 @@ namespace TestModel
             loader.LoadEvent += (ar1, ar2) => { };
 
             //act
-            loader.Load(@"C:\BazisComponents\ModelSolution\TestModel\Examples\STL\ACII.stl");
+            loader.Load(@"..\..\Examples\STL\ACII.stl");
             //assert
         }
 
@@ -53,10 +53,7 @@ namespace TestModel
             loader.LoadEvent += (ar1, ar2) => { };
 
             //act
-            var path = Path.GetFullPath(".\\").Replace("bin\\Debug\\", "");
-            var files = Directory.GetFiles(path, "Korpus.inp", SearchOption.AllDirectories);
-            //var sr = new StreamReader(@"C:\BazisXN\Model\GMSHLoader\test3");
-            var modelINP = loader.Load(files[0]);
+            var modelINP = loader.Load(@"..\..\Examples\3D\Korpus.inp");
             model.Load(modelINP);
 
             //assert
@@ -74,10 +71,7 @@ namespace TestModel
             loader.LoadEvent += (ar1, ar2) => { };
 
             //act
-            var path = Path.GetFullPath(".\\").Replace("bin\\Debug\\","");
-            var files = Directory.GetFiles(path, "rhombDATA1.ASC", SearchOption.AllDirectories);
-            var modelASCII = loader.Load(files[0]);
-
+            var modelASCII = loader.Load(@"..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
             //loader.Load(@"C:\Bazis_newGUI\MESH\RadicMesh\Plate2DATA.ASC");
             model.Load(modelASCII);
             //assert
@@ -93,12 +87,6 @@ namespace TestModel
             import.LoadEvent += (ar1, ar2) => { };
             var model = import.Load(path);
             var element = model.ObjectData.FindMany<Element3D>().First();
-            var path = Path.GetFullPath(".\\").Replace("bin\\Debug\\", "");
-            var files = Directory.GetFiles(path, "hex.cdb", SearchOption.AllDirectories);
-
-            var import = new LoadModelFromCDBTextFile();
-            import.LoadEvent += (ar1, ar2) => { };
-            var model = import.Load(files[0]);
             Assert.AreEqual(8, model.ObjectData.NumberOfNodes);
             Assert.AreEqual(1, model.ObjectData.NumberOfElements);
             var surfaceNumber = element.NumberOfSides;
@@ -114,12 +102,8 @@ namespace TestModel
             var model = import.Load(path);
             Assert.AreEqual(3321, model.ObjectData.NumberOfNodes);
             var elements = model.ObjectData.FindMany<Element3D>();
-            var countTetra = elements.Where(element => element.GetSurface().
-            All(surface => surface.NumberOfPoints == 3)).Count();
-
-            var countHexa = elements.Where(element => element.GetSurface().
-All(surface => surface.NumberOfPoints == 4)).Count();
-
+            Assert.IsTrue(elements.All(element => element.GetSurface().
+            All(surface => surface.GetPoints().Count() > 2)));
         }
 
         [TestMethod]
