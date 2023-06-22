@@ -13,6 +13,8 @@
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,7 +35,7 @@
     <DocumentationFile>bin\Release\Model.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>ModelController\ModelSolutionKey.pfx</AssemblyOriginatorKeyFile>
@@ -150,6 +152,8 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="ModelController\ModelSolutionKey.pfx" />
+    <None Include="ModelParcer\app.config" />
+    <None Include="ModelParcer\packages.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
