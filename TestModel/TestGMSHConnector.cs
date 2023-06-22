@@ -124,8 +124,10 @@ namespace TestModel
             GmshUserModelData data = null;
             using (var connector = new GmshUserGeometry(srcDir + scriptName + scriptExt))
             {
-                data = (GmshUserGeometryData)connector.ModelData;
+                data = connector.ModelData;
+                var nodes = data.Nodes;
                 var curves = data.Curves;
+                var surfaces = data.Surfaces;
             }
         }
 

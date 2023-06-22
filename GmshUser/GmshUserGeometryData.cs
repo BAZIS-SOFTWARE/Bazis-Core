@@ -12,6 +12,7 @@ using System.Security.Cryptography;
 using Model.GmshController;
 using System.Diagnostics.Tracing;
 using Model.Interfaces;
+using System.Runtime.CompilerServices;
 
 namespace Model.GmshUser
 {
@@ -23,12 +24,20 @@ namespace Model.GmshUser
         private delegate void Derivative(int dim, int tag, double[] parametricCoord, IntPtr parametricCoord_n,
                                          ref IntPtr derivatives, ref IntPtr derivatives_n, ref int ierr);
         private int geometryMode;
-        private int totalPointsId;
+        private int pointsId;
+        private int surfaceId;
         /// <summary>
         /// Задает шаг параметризации кривой
         /// </summary>
         public int StepCurveParametrization { get; set; }
-
+        /// <summary>
+        /// Задает шаг параметризации поверхности U
+        /// </summary>
+        public int SurfaceParametrizationU { get; set; }
+        /// <summary>
+        /// Задает шаг параметризации поверхности U
+        /// </summary>
+        public int SurfaceParametrizationV { get; set; }
         /// <summary>
         /// Экземляр данных о геометрии заданной модели
         /// </summary>
@@ -83,37 +92,106 @@ namespace Model.GmshUser
         {
             if(nodes == null)
                 nodes = new List<Node>();
-            var point = GetPoint(null, dim, tag);
+            var point = GetPoints(null, dim, tag);
             nodes.Add(new Node(tag, new Point3D((float)point[0], (float)point[1], (float)point[2])));
+        }
+
+        private int[] CreatePointTags(int count)
+        {
+            var tagsPoints = Enumerable.Range(pointsId, count).ToArray();
+            pointsId += count;
+            return tagsPoints;
         }
 
         private void AddCurve(int dim, int tag)
         {
             if (curves == null)
+            {
+                pointsId += base.nodes.Count + 1;
                 curves = new List<Curve>();
-            var paramsCoord = GetParametrizationBounds(dim, tag);
-            var lastCurvePoints = curves.Count != 0 ? curves[curves.Count - 1].NumberOfPoints : 0;
-            totalPointsId += lastCurvePoints;
-            var lastPointTag = base.nodes.Count + 1;
+            }
+            var paramsCoord = GetParametrizationBounds(dim, tag, 1);
             StepCurveParametrization = 50;
-            if (IsLine(paramsCoord, dim, tag))
+            if (IsLine(paramsCoord[0], dim, tag))
                 StepCurveParametrization = 2;
             else
-                paramsCoord = SetCustomStepParametrization(paramsCoord, dim, tag, StepCurveParametrization);
-            var tagsPoints = Enumerable.Range(lastPointTag + totalPointsId, StepCurveParametrization).ToArray();
-            var nodes = GetNodes(paramsCoord, dim, tag, tagsPoints);
+                paramsCoord[0] = SetCustomStepParametrization(paramsCoord[0], dim, tag, StepCurveParametrization);
+            var pointTags = CreatePointTags(StepCurveParametrization);
+            var nodes = GetNodes(paramsCoord[0], dim, tag, pointTags);
             curves.Add(new Curve(tag, nodes));
         }
 
         private void AddSurface(int dim, int tag)
         {
-
+            if (surfaces == null)
+                surfaces = new List<Surface>();
+            var paramsCoord = GetParametrizationBounds(dim, tag, 2);
+            SurfaceParametrizationU = SurfaceParametrizationV = 3;
+            paramsCoord[0] = SetCustomStepParametrization(paramsCoord[0], dim, tag, SurfaceParametrizationU);
+            paramsCoord[1] = SetCustomStepParametrization(paramsCoord[1], dim, tag, SurfaceParametrizationV);
+            double[] surfaceParams;
+            CombineSurfaceParametrization(out surfaceParams, paramsCoord[0], paramsCoord[1]);
+            var pointTags = CreatePointTags(surfaceParams.Length / 2);
+            var nodes = GetNodes(surfaceParams, dim, tag, pointTags);
+            CreateSurfaces(nodes);
         }
 
         private void AddVolumes(int dim, int tag)
         {
 
         }
+
+        private void CreateSurfaces(Node[] nodes)
+        {
+            var triangle = new Node[3];
+            for(var i = 2; i < nodes.Length; i+=3)
+            {
+                triangle[0] = nodes[i - 2];
+                triangle[1] = nodes[i - 1];
+                triangle[2] = nodes[i];
+                surfaces.Add(new Surface(surfaceId++, triangle ,ObjKind.GeometrySurface));
+            }
+        }
+
+        private void CombineSurfaceParametrization(out double[] dst, double[] uParams, double[] vParams)
+        {
+            var triangles = (uParams.Length * 2 - 2) * (vParams.Length - 1);
+            var coords = triangles * 3 * 2;
+            dst = new double[coords];
+            var total = 0;
+            for (var v = 1; v < vParams.Length; ++v)
+            {
+                for (var u = 0; u < uParams.Length - 1; ++u, total+=12)
+                {
+                    dst[total] = uParams[u];
+                    dst[total + 1] = vParams[v - 1];
+                    dst[total + 2] = uParams[u + 1];
+                    dst[total + 3] = vParams[v];
+                    dst[total + 4] = uParams[u];
+                    dst[total + 5] = vParams[v];
+                    dst[total + 6] = uParams[u];
+                    dst[total + 7] = vParams[v - 1];
+                    dst[total + 8] = uParams[u + 1];
+                    dst[total + 9] = vParams[v - 1];
+                    dst[total + 10] = uParams[u + 1];
+                    dst[total + 11] = vParams[v];
+                }
+            }
+        }
+
+        private void DistributeFirstParametrization(double[] dst, int u, int v, ref int total)
+        {
+            
+        }
+
+        /*private void SplitParametrizationArray(double[] paramsArray, out double[] first, 
+                                               out double[] second, int boundIndex)
+        {
+            first = new double[boundIndex];
+            second = new double[paramsArray.Length - boundIndex];
+            Array.Copy(paramsArray, first, boundIndex);
+            Array.Copy(paramsArray, boundIndex, second, 0, paramsArray.Length - boundIndex);
+        }*/
 
         private int[] GetBoundary(int dim, int tag)
         {
@@ -137,7 +215,7 @@ namespace Model.GmshUser
             return paramsCoord;
         }
 
-        private double[] GetParametrizationBounds(int dim, int tag)
+        private double[][] GetParametrizationBounds(int dim, int tag, int paramsCount)
         {
             var error = 0;
             IntPtr min, min_n, max, max_n;
@@ -146,7 +224,14 @@ namespace Model.GmshUser
             double[] minBounds, maxBounds;
             GmshUserMemory.GetTypesData(min, out minBounds, min_n);
             GmshUserMemory.GetTypesData(max, out maxBounds, max_n);
-            return minBounds.Concat(maxBounds).ToArray();
+            var result = new double[paramsCount][];
+            for(var i = 0; i < paramsCount; ++i)
+            {
+                result[i] = new double[2];
+                result[i][0] = minBounds[i];
+                result[i][1] = maxBounds[i];
+            }
+            return result;
         }
 
         private double[] GetDerivative(double[] parametrs, string derNum, int dim, int tag)
@@ -175,7 +260,7 @@ namespace Model.GmshUser
             return curvature;
         }
 
-        private double[] GetPoint(double[] parametric,int dim, int tag)
+        private double[] GetPoints(double[] parametric,int dim, int tag)
         {
             var parametricLength = parametric == null ? 0 : parametric.Length;
             var error = 0;
@@ -212,8 +297,10 @@ namespace Model.GmshUser
 
         private Node[] GetNodes(double[] parametric, int dim, int tag ,int[] pointsTags)
         {
-            var nodes = pointsTags.Select((v, i) => new { T = v, A = GetPoint(new double[] { parametric[i] }, dim, tag) })
-                                  .Select(v => new Node(v.T, new Point3D((float)v.A[0], (float)v.A[1], (float)v.A[2])))
+            var points = GetPoints(parametric, dim, tag);
+            var nodes = pointsTags.Select((v, i) => new { T = v, X = (float)points[i * 3],Y = (float)points[i * 3 + 1], 
+                                          Z = (float)points[i * 3 + 2] })
+                                  .Select(v => new Node(v.T, new Point3D(v.X, v.Y, v.Z)))
                                   .ToArray();
             return nodes;
         }
