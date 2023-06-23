@@ -29,24 +29,27 @@ namespace Model.GmshUser
         /// <summary>
         /// Задает шаг параметризации кривой
         /// </summary>
-        public int StepCurveParametrization { get; set; }
+        public int CurveSteps { get; set; }
         /// <summary>
         /// Задает шаг параметризации поверхности U
         /// </summary>
-        public int SurfaceParametrizationU { get; set; }
+        public int SurfaceStepsU { get; set; }
         /// <summary>
         /// Задает шаг параметризации поверхности U
         /// </summary>
-        public int SurfaceParametrizationV { get; set; }
+        public int SurfaceStepsV { get; set; }
         /// <summary>
         /// Экземляр данных о геометрии заданной модели
         /// </summary>
         /// <param name="modelId"></param>
         public GmshUserGeometryData(long modelId) : base(modelId)
         {
+            CurveSteps = 50;
+            SurfaceStepsU = 10;
+            SurfaceStepsV = 10;
             var ext = Path.GetExtension(GmshUserIO.GetFileName());
             geometryMode = ext.Contains("step") || ext.Contains("igs") || ext.Contains("brep") ? 1 : 0;
-            GetData();
+            //GetData();
         }
         /// <summary>
         /// Извлекает данные геометрии из модели
@@ -111,12 +114,12 @@ namespace Model.GmshUser
                 curves = new List<Curve>();
             }
             var paramsCoord = GetParametrizationBounds(dim, tag, 1);
-            StepCurveParametrization = 50;
+            CurveSteps = 50;
             if (IsLine(paramsCoord[0], dim, tag))
-                StepCurveParametrization = 2;
+                CurveSteps = 2;
             else
-                paramsCoord[0] = SetCustomStepParametrization(paramsCoord[0], dim, tag, StepCurveParametrization);
-            var pointTags = CreatePointTags(StepCurveParametrization);
+                paramsCoord[0] = SetCustomStepParametrization(paramsCoord[0], dim, tag, CurveSteps);
+            var pointTags = CreatePointTags(CurveSteps);
             var nodes = GetNodes(paramsCoord[0], dim, tag, pointTags);
             curves.Add(new Curve(tag, nodes));
         }
@@ -126,9 +129,8 @@ namespace Model.GmshUser
             if (surfaces == null)
                 surfaces = new List<Surface>();
             var paramsCoord = GetParametrizationBounds(dim, tag, 2);
-            SurfaceParametrizationU = SurfaceParametrizationV = 3;
-            paramsCoord[0] = SetCustomStepParametrization(paramsCoord[0], dim, tag, SurfaceParametrizationU);
-            paramsCoord[1] = SetCustomStepParametrization(paramsCoord[1], dim, tag, SurfaceParametrizationV);
+            paramsCoord[0] = SetCustomStepParametrization(paramsCoord[0], dim, tag, SurfaceStepsU);
+            paramsCoord[1] = SetCustomStepParametrization(paramsCoord[1], dim, tag, SurfaceStepsV);
             double[] surfaceParams;
             CombineSurfaceParametrization(out surfaceParams, paramsCoord[0], paramsCoord[1]);
             var pointTags = CreatePointTags(surfaceParams.Length / 2);
@@ -183,16 +185,6 @@ namespace Model.GmshUser
         {
             
         }
-
-        /*private void SplitParametrizationArray(double[] paramsArray, out double[] first, 
-                                               out double[] second, int boundIndex)
-        {
-            first = new double[boundIndex];
-            second = new double[paramsArray.Length - boundIndex];
-            Array.Copy(paramsArray, first, boundIndex);
-            Array.Copy(paramsArray, boundIndex, second, 0, paramsArray.Length - boundIndex);
-        }*/
-
         private int[] GetBoundary(int dim, int tag)
         {
             var error = 0;

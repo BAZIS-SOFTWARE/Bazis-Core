@@ -25,7 +25,7 @@ namespace Model.GmshUser
         /// Возвращает данные о сетке
         /// </summary>
         /// <returns></returns>
-        public override GmshUserModelData ModelData { get { return new GmshUserMeshData(Id); } }
+        public override GmshData ModelData { get { return new GmshUserMeshData(Id); } }
         /// <summary>
         /// Задает/Извлекает плотность распределения точек для модели
         /// </summary>

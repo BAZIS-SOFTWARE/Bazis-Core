@@ -24,7 +24,13 @@ namespace Model.GmshUser
         /// Возвращает данные модели
         /// </summary>
         /// <returns></returns>
-        public virtual GmshUserModelData ModelData { get { return new GmshUserModelData(Id); } }
+        public virtual GmshData ModelData 
+        { 
+            get 
+            { 
+                return new GmshUserModelData(Id);
+            } 
+        }
         /// <summary>
         /// Экземпляр ассоциирует файл скрипта с созданной моделью
         /// </summary>
@@ -38,7 +44,6 @@ namespace Model.GmshUser
             GmshIO.gmshMerge(path, ref error);
             GmshIO.gmshModelSetFileName(path, ref error);
         }
-
         /// <summary>
         /// Освобождает неуправляемые ресурсы связанные с моделью 
         /// </summary>

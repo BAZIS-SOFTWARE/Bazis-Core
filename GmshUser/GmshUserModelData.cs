@@ -9,10 +9,16 @@ using Model.GmshController;
 
 namespace Model.GmshUser
 {
+    public interface GmshData
+    {
+
+    }
+
+
     /// <summary>
     /// Класс представляет данные модели
     /// </summary>
-    public class GmshUserModelData
+    public class GmshUserModelData : GmshData
     {
         protected List<Node> nodes;
         protected List<Curve> curves;
@@ -45,10 +51,11 @@ namespace Model.GmshUser
             GmshModel.gmshModelSetCurrent(Id.ToString(), ref error);
         }
         /// <summary>
-        /// Получает данные о модели
+        /// Извлекает данные из модели
         /// </summary>
         public virtual void GetData()
         {
+
         }
     }
 }

@@ -18,14 +18,19 @@ namespace Model.GmshUser
         /// Возвращает данные о геометрии
         /// </summary>
         /// <returns></returns>
-        public override GmshUserModelData ModelData { get { return new GmshUserGeometryData(Id, steps); } }
+        public override GmshData ModelData 
+        { 
+            get 
+            {
+                return new GmshUserGeometryData(Id); 
+            } 
+        }
         /// <summary>
         /// Экземпляр для манипуляции Gmsh геометрии 
         /// </summary>
         /// <param name="path"></param>
-        public GmshUserGeometry(string path, int steps) : base(path)
+        public GmshUserGeometry(string path) : base(path)
         {
-            this.steps = steps;
         }
     }
 }

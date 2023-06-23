@@ -123,9 +123,10 @@ namespace TestModel
         public void TestGeometryGetElementsGmshController(ref string scriptName, ref string scriptExt)
         {
             GmshUserModelData data = null;
-            using (var connector = new GmshUserGeometry(srcDir + scriptName + scriptExt, 10))
+            using (var connector = new GmshUserGeometry(srcDir + scriptName + scriptExt))
             {
-                data = connector.ModelData;
+                data = ((GmshUserGeometryData)connector.ModelData);
+                data.GetData();
                 var nodes = data.Nodes;
                 var curves = data.Curves;
                 var surfaces = data.Surfaces;
@@ -136,9 +137,10 @@ namespace TestModel
         [DataRow("test", ".geo")]
         public void TestSpline(ref string scriptName, ref string scriptExt)
         {
-            using (var connector = new GmshUserGeometry(srcDir + scriptName + scriptExt, 20))
+            using (var connector = new GmshUserGeometry(srcDir + scriptName + scriptExt))
             {
-                var data = connector.ModelData;
+                var data = connector.ModelData as GmshUserGeometryData;
+                data.GetData();
                 var curves = data.Curves;
                 var curve = curves.First();
                 var nodes = curve.GetPoints()
