@@ -114,6 +114,7 @@ namespace Model.GmshUser
                 curves = new List<Curve>();
             }
             var paramsCoord = GetParametrizationBounds(dim, tag, 1);
+            var temp = CurveSteps;
             if (IsLine(paramsCoord[0], dim, tag))
                 CurveSteps = 2;
             else
@@ -121,6 +122,7 @@ namespace Model.GmshUser
             var pointTags = CreatePointTags(CurveSteps);
             var nodes = GetNodes(paramsCoord[0], dim, tag, pointTags);
             curves.Add(new Curve(tag, nodes));
+            CurveSteps = temp;
         }
 
         private void AddSurface(int dim, int tag)
