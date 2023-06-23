@@ -12,8 +12,6 @@ namespace Model.GmshUser
     /// </summary>
     public class GmshUserGeometry : GmshUserModel
     {
-        private int steps;
-
         /// <summary>
         /// Возвращает данные о геометрии
         /// </summary>

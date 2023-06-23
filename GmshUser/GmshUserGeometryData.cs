@@ -114,7 +114,6 @@ namespace Model.GmshUser
                 curves = new List<Curve>();
             }
             var paramsCoord = GetParametrizationBounds(dim, tag, 1);
-            CurveSteps = 50;
             if (IsLine(paramsCoord[0], dim, tag))
                 CurveSteps = 2;
             else
