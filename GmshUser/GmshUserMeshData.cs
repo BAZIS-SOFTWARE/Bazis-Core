@@ -114,9 +114,9 @@ namespace Model.GmshUser
         private void CreateCurves(long[] tagElements, long[] tagPoints, int stride)
         {
             curves = new List<Curve>(tagElements.Length);
-            var pointsPerStride = new Node[stride];
             for (var i = 0; i < tagElements.Length; ++i)
             {
+                var pointsPerStride = new Node[stride];
                 for (var j = 0; j < stride; ++j)
                     pointsPerStride[j] = nodes[(int)tagPoints[i * stride + j] - 1];
                 curves.Add(new Curve((int)tagElements[i], pointsPerStride));

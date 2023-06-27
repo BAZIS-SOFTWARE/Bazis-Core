@@ -35,7 +35,7 @@ namespace Model.GmshUser
         /// </summary>
         public int SurfaceStepsU { get; set; }
         /// <summary>
-        /// Задает шаг параметризации поверхности U
+        /// Задает шаг параметризации поверхности V
         /// </summary>
         public int SurfaceStepsV { get; set; }
         /// <summary>
@@ -49,7 +49,6 @@ namespace Model.GmshUser
             SurfaceStepsV = 10;
             var ext = Path.GetExtension(GmshUserIO.GetFileName());
             geometryMode = ext.Contains("step") || ext.Contains("igs") || ext.Contains("brep") ? 1 : 0;
-            //GetData();
         }
         /// <summary>
         /// Извлекает данные геометрии из модели
@@ -130,22 +129,13 @@ namespace Model.GmshUser
             if (surfaces == null)
                 surfaces = new List<Surface>();
             var paramsCoord = GetParametrizationBounds(dim, tag, 2);
-            paramsCoord[0] = SetCustomStepParametrization(paramsCoord[0], dim, tag, SurfaceStepsU);//Массив полярных углов
-            paramsCoord[1] = SetCustomStepParametrization(paramsCoord[1], dim, tag, SurfaceStepsV);//Массив радиус-векторов
-            var surfaceParams = ParamsToSurfaces(paramsCoord[0], paramsCoord[1]);
-            //Не работает корректно нужно переделать
-            /*double[] surfaceParams;
-            CombineSurfaceParametrization(out surfaceParams, paramsCoord[0], paramsCoord[1]);*/
+            paramsCoord[0] = SetCustomStepParametrization(paramsCoord[0], dim, tag, SurfaceStepsU);
+            paramsCoord[1] = SetCustomStepParametrization(paramsCoord[1], dim, tag, SurfaceStepsV);
+            double[] surfaceParams;
+            CombineSurfaceParametrization(out surfaceParams, paramsCoord[0], paramsCoord[1]);
             var pointTags = CreatePointTags(surfaceParams.Length / 2);
             var nodes = GetNodes(surfaceParams, dim, tag, pointTags);
             CreateSurfaces(nodes);
-        }
-
-        private double[] ParamsToSurfaces(double[] polars, double[] rVectors)
-        {
-            //Перевести в линейный массив пары polars[i], rVectors[i], пары должны быть упорядочены по полярному углу (поясню на доске)
-            //Перевести упорядочные пары polars[i],rVector[i] в тройку пар для формирования треугольника параметров (поясню на доске)
-            return null;
         }
 
         private void AddVolumes(int dim, int tag)
@@ -155,9 +145,9 @@ namespace Model.GmshUser
 
         private void CreateSurfaces(Node[] nodes)
         {
-            var triangle = new Node[3];
             for(var i = 2; i < nodes.Length; i+=3)
             {
+                var triangle = new Node[3];
                 triangle[0] = nodes[i - 2];
                 triangle[1] = nodes[i - 1];
                 triangle[2] = nodes[i];

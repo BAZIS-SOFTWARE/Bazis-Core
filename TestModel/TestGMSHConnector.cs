@@ -125,9 +125,9 @@ namespace TestModel
             using (var connector = new GmshUserGeometry(srcDir + scriptName + scriptExt))
             {
                 var data = connector.ModelData as GmshUserGeometryData;
-                data.CurveSteps = 15;
-                data.SurfaceStepsU = 15;
-                data.SurfaceStepsV = 15;
+                data.CurveSteps = 20;
+                data.SurfaceStepsU = 20;
+                data.SurfaceStepsV = 20;
                 data.GetData();
                 var nodes = data.Nodes;
                 var curves = data.Curves;
