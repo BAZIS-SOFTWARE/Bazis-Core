@@ -122,10 +122,12 @@ namespace TestModel
         [DataRow("Cilindr", ".step")]
         public void TestGeometryGetElementsGmshController(ref string scriptName, ref string scriptExt)
         {
-            GmshUserModelData data = null;
             using (var connector = new GmshUserGeometry(srcDir + scriptName + scriptExt))
             {
-                data = ((GmshUserGeometryData)connector.ModelData);
+                var data = connector.ModelData as GmshUserGeometryData;
+                data.CurveSteps = 15;
+                data.SurfaceStepsU = 15;
+                data.SurfaceStepsV = 15;
                 data.GetData();
                 var nodes = data.Nodes;
                 var curves = data.Curves;

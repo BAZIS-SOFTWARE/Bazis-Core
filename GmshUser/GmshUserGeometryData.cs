@@ -44,7 +44,7 @@ namespace Model.GmshUser
         /// <param name="modelId"></param>
         public GmshUserGeometryData(long modelId) : base(modelId)
         {
-            CurveSteps = 50;
+            CurveSteps = 10;
             SurfaceStepsU = 10;
             SurfaceStepsV = 10;
             var ext = Path.GetExtension(GmshUserIO.GetFileName());
@@ -130,13 +130,22 @@ namespace Model.GmshUser
             if (surfaces == null)
                 surfaces = new List<Surface>();
             var paramsCoord = GetParametrizationBounds(dim, tag, 2);
-            paramsCoord[0] = SetCustomStepParametrization(paramsCoord[0], dim, tag, SurfaceStepsU);
-            paramsCoord[1] = SetCustomStepParametrization(paramsCoord[1], dim, tag, SurfaceStepsV);
-            double[] surfaceParams;
-            CombineSurfaceParametrization(out surfaceParams, paramsCoord[0], paramsCoord[1]);
+            paramsCoord[0] = SetCustomStepParametrization(paramsCoord[0], dim, tag, SurfaceStepsU);//Массив полярных углов
+            paramsCoord[1] = SetCustomStepParametrization(paramsCoord[1], dim, tag, SurfaceStepsV);//Массив радиус-векторов
+            var surfaceParams = ParamsToSurfaces(paramsCoord[0], paramsCoord[1]);
+            //Не работает корректно нужно переделать
+            /*double[] surfaceParams;
+            CombineSurfaceParametrization(out surfaceParams, paramsCoord[0], paramsCoord[1]);*/
             var pointTags = CreatePointTags(surfaceParams.Length / 2);
             var nodes = GetNodes(surfaceParams, dim, tag, pointTags);
             CreateSurfaces(nodes);
+        }
+
+        private double[] ParamsToSurfaces(double[] polars, double[] rVectors)
+        {
+            //Перевести в линейный массив пары polars[i], rVectors[i], пары должны быть упорядочены по полярному углу (поясню на доске)
+            //Перевести упорядочные пары polars[i],rVector[i] в тройку пар для формирования треугольника параметров (поясню на доске)
+            return null;
         }
 
         private void AddVolumes(int dim, int tag)
@@ -182,10 +191,6 @@ namespace Model.GmshUser
             }
         }
 
-        private void DistributeFirstParametrization(double[] dst, int u, int v, ref int total)
-        {
-            
-        }
         private int[] GetBoundary(int dim, int tag)
         {
             var error = 0;
