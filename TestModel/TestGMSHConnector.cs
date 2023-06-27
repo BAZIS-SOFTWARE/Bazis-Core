@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Geometry;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using Model.GmshUser;
 using ModelController.ModelScenePresentator;
@@ -159,12 +160,12 @@ namespace TestModel
         [DataRow("Cilindr", ".step")]
         public void Test(ref string scriptName, ref string scriptExt)
         {
-            var model = new ModelData();
-            using (var connector = new GmshUserGeometry(srcDir + scriptName + scriptExt))
+            using (var connector = new GmshUserMesh(srcDir + scriptName + scriptExt))
             {
-                var data = connector.ModelData as GmshUserGeometryData;
+                connector.Generate("Элементы2D");
+                var data = connector.ModelData as GmshUserMeshData;
                 data.GetData();
-                var surfaces = data.Surfaces;
+                var curves = data.Surfaces;
             }
         }
 

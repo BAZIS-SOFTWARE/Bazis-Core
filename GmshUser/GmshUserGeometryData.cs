@@ -81,7 +81,7 @@ namespace Model.GmshUser
                                 .GroupBy(v => v.D)
                                 .Select(v => v.ToArray())
                                 .ToArray();
-            var actions = new Action<int, int>[] { AddPoint, AddCurve, AddSurface, AddVolumes };
+            var actions = new Action<int, int>[] { AddPoint, AddCurve, /*AddSurface,*/ AddVolumes };
             var j = 0;
             foreach (var dimension in groups)
             {
@@ -93,7 +93,7 @@ namespace Model.GmshUser
 
         private void AddPoint(int dim, int tag)
         {
-            if(nodes == null)
+            if (nodes == null)
                 nodes = new List<Node>();
             var point = GetPoints(null, dim, tag);
             nodes.Add(new Node(tag, new Point3D((float)point[0], (float)point[1], (float)point[2])));
@@ -132,13 +132,31 @@ namespace Model.GmshUser
             var paramsCoord = GetParametrizationBounds(dim, tag, 2);
             paramsCoord[0] = SetCustomStepParametrization(paramsCoord[0], dim, tag, SurfaceStepsU);
             paramsCoord[1] = SetCustomStepParametrization(paramsCoord[1], dim, tag, SurfaceStepsV);
+
             double[] surfaceParams;
             CombineSurfaceParametrization(out surfaceParams, paramsCoord[0], paramsCoord[1]);
             var pointTags = CreatePointTags(surfaceParams.Length / 2);
             var nodes = GetNodes(surfaceParams, dim, tag, pointTags);
             CreateSurfaces(nodes);
+
+            //var nodes = new List<Node>();
+            //var index = 0;
+            //foreach (var u in paramsCoord[0])
+            //{
+            //    foreach (var v in paramsCoord[1])
+            //    {
+            //        var coordinates = GetPoints(new double[] { u, v }, dim, tag)
+            //            .Select(x => (float)x)
+            //            .ToArray();
+            //        var point = new Point3D(coordinates[0], coordinates[1], coordinates[2]);
+            //        var node = new Node(index++, point);
+            //        nodes.Add(node);
+            //    }
+            //}
+            //surfaces.AddRange(nodes);
         }
 
+        
         private void AddVolumes(int dim, int tag)
         {
 
@@ -265,7 +283,7 @@ namespace Model.GmshUser
             return points;
         }
 
-        private void GetAdjacencies(out int[] down, out int[] up, int dim, int tag) 
+        public void GetAdjacencies(out int[] down, out int[] up, int dim, int tag) 
         {
             var error = 0;
             IntPtr downward, downward_n, upward, upward_n;

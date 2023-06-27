@@ -11,6 +11,7 @@ using System.Xml.Linq;
 using System.Collections;
 using System.IO;
 using Model.GmshController;
+using Model.Interfaces;
 
 namespace Model.GmshUser
 {
@@ -97,9 +98,10 @@ namespace Model.GmshUser
                 switch (typePoints[0])
                 {
                     case "Line":
-                        CreateCurves(elements[i], points[i], Int32.Parse(typePoints[1]));
+                        CreateCurves(elements[i], points[i], int.Parse(typePoints[1]));
                         break;
                     case "Triangle":
+                        CreateTriangles(elements[i], points[i]);
                         break;
                     case "Quadrilateral":
                         break;
@@ -113,13 +115,31 @@ namespace Model.GmshUser
 
         private void CreateCurves(long[] tagElements, long[] tagPoints, int stride)
         {
-            curves = new List<Curve>(tagElements.Length);
-            var pointsPerStride = new Node[stride];
+            if (curves == null)
+                curves = new List<Curve>();
             for (var i = 0; i < tagElements.Length; ++i)
             {
+                var pointsPerStride = new Node[stride];
                 for (var j = 0; j < stride; ++j)
                     pointsPerStride[j] = nodes[(int)tagPoints[i * stride + j] - 1];
                 curves.Add(new Curve((int)tagElements[i], pointsPerStride));
+            }
+        }
+
+        private void CreateTriangles(long[] tagElements, long[] tagPoints)
+        {
+            if (surfaces == null)
+                surfaces = new List<Surface>();
+            var index = 0;
+            for(int i = 0; i < tagElements.Length; i++)
+            {
+                var surfaceNodes = new List<Node>();
+                for(int j = 0; j < 3; j++)
+                {
+                    surfaceNodes.Add(nodes[(int)tagPoints[3 * i + j] - 1]);
+                }
+                var surface = new Surface(index++, surfaceNodes.ToArray(), ObjKind.Triangle);
+                surfaces.Add(surface);
             }
         }
     }
