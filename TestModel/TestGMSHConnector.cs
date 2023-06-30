@@ -113,7 +113,7 @@ namespace TestModel
             using (var connector = new GmshUserMesh(srcDir + scriptName + scriptExt))
             {
                 connector.Generate(objType);
-                var data = connector.ModelData;
+                //var data = connector.GetNodes;//Пока не работает
                 connector.DeleteDstFile = true;
             }
         }
@@ -124,16 +124,12 @@ namespace TestModel
         {
             using (var connector = new GmshUserGeometry(srcDir + scriptName + scriptExt))
             {
-                var data = connector.ModelData as GmshUserGeometryData;
-                data.CurveSteps = 20;
-                data.SurfaceStepsU = 20;
-                data.SurfaceStepsV = 20;
-                data.GetData();
-                var nodes = data.Nodes;
-                var curves = data.Curves;
-                var surfaces = data.Surfaces;
+                var nodes = connector.GetNodes();
+                var curves = connector.GetCurves();
+                var surfaces = connector.GetSurfaces();
             }
         }
+
 
         [DataTestMethod]
         [DataRow("test", ".geo")]
@@ -141,9 +137,7 @@ namespace TestModel
         {
             using (var connector = new GmshUserGeometry(srcDir + scriptName + scriptExt))
             {
-                var data = connector.ModelData as GmshUserGeometryData;
-                data.GetData();
-                var curves = data.Curves;
+                var curves = connector.GetCurves();
                 var curve = curves.First();
                 var nodes = curve.GetPoints()
                     .Select((point, index) => new Node(index++, point))

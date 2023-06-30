@@ -9,7 +9,7 @@ namespace Model.GmshUser
 {
     public static class GmshUserConnection
     {
-        private static long globalIds = 0;
+        private static long globalIds = 1;
         private static List<HashSet<long>> users = new List<HashSet<long>>()
                                         { { new HashSet<long>() }, { new HashSet<long>() }};
         /// <summary>
