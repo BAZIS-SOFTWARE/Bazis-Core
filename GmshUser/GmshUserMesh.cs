@@ -46,8 +46,8 @@ namespace Model.GmshUser
                 var error = 0;
                 GmshModel.gmshModelSetCurrent(Id.ToString(), ref error);
                 var values = value.Split(' ');
-                var min = Double.Parse(values[0], CultureInfo.InvariantCulture);
-                var max = Double.Parse(values[1], CultureInfo.InvariantCulture);
+                var min = double.Parse(values[0], CultureInfo.InvariantCulture);
+                var max = double.Parse(values[1], CultureInfo.InvariantCulture);
                 GmshGeneral.gmshOptionSetNumber("Mesh.MeshSizeMin", min, ref error);
                 GmshGeneral.gmshOptionSetNumber("Mesh.MeshSizeMax", max, ref error);
             }

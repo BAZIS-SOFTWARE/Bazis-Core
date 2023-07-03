@@ -31,15 +31,15 @@ namespace Model.GmshUser
         /// <summary>
         /// Возвращает точки как объекты ModelObject 
         /// </summary>
-        public IEnumerable<ModelObject> Nodes { get { return nodes; } }
+        public IEnumerable<Node> Nodes => nodes;
         /// <summary>
         /// Возвращает кривые как объекты ModelObject 
         /// </summary>
-        public IEnumerable<ModelObject> Curves { get { return curves; } }
+        public IEnumerable<Curve> Curves => curves;
         /// <summary>
         /// Возвращает поверхности как объекты ModelObject 
         /// </summary>
-        public IEnumerable<ModelObject> Surfaces { get { return surfaces; } }
+        public IEnumerable<Surface> Surfaces => surfaces;
         /// <summary>
         /// Экземпляр данных модели
         /// </summary>
@@ -49,6 +49,9 @@ namespace Model.GmshUser
             Id = id;
             var error = 0;
             GmshModel.gmshModelSetCurrent(Id.ToString(), ref error);
+            nodes = new List<Node>();
+            curves = new List<Curve>();
+            surfaces = new List<Surface>();
         }
         /// <summary>
         /// Извлекает данные из модели

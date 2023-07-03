@@ -101,9 +101,10 @@ namespace Model.GmshUser
                         CreateCurves(elements[i], points[i], int.Parse(typePoints[1]));
                         break;
                     case "Triangle":
-                        CreateTriangles(elements[i], points[i]);
+                        CreatePlaneFigure(3, ObjKind.Triangle, elements[i], points[i]);
                         break;
                     case "Quadrilateral":
+                        CreatePlaneFigure(4, ObjKind.Quad, elements[i], points[i]);
                         break;
                     case "Tetrahedron":
                         break;
@@ -126,19 +127,17 @@ namespace Model.GmshUser
             }
         }
 
-        private void CreateTriangles(long[] tagElements, long[] tagPoints)
+        private void CreatePlaneFigure(int nodeNumber, ObjKind objKind, long[] tagElements, long[] tagPoints)
         {
-            if (surfaces == null)
-                surfaces = new List<Surface>();
             var index = 0;
-            for(int i = 0; i < tagElements.Length; i++)
+            for (int i = 0; i < tagElements.Length; i++)
             {
                 var surfaceNodes = new List<Node>();
-                for(int j = 0; j < 3; j++)
+                for (int j = 0; j < nodeNumber; j++)
                 {
-                    surfaceNodes.Add(nodes[(int)tagPoints[3 * i + j] - 1]);
+                    surfaceNodes.Add(nodes[(int)tagPoints[nodeNumber * i + j] - 1]);
                 }
-                var surface = new Surface(index++, surfaceNodes.ToArray(), ObjKind.Triangle);
+                var surface = new Surface(index++, surfaceNodes.ToArray(), objKind);
                 surfaces.Add(surface);
             }
         }
