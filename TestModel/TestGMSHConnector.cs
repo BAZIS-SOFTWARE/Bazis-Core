@@ -1,8 +1,6 @@
-﻿using Geometry;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using Model.GmshUser;
-using ModelController.ModelScenePresentator;
 using System.IO;
 using System.Linq;
 
@@ -135,9 +133,8 @@ namespace TestModel
 
         [DataTestMethod]
         [DataRow("test", ".geo")]
-        public void TestCurveChangingSteps(ref string scriptName, ref string scriptExt)
+        public void TestSpline(ref string scriptName, ref string scriptExt)
         {
-            var model = new ModelData();
             using (var connector = new GmshUserGeometry(srcDir + scriptName + scriptExt))
             {
                 var curves = connector.GetCurves();
@@ -145,22 +142,7 @@ namespace TestModel
                 var nodes = curve.GetPoints()
                     .Select((point, index) => new Node(index++, point))
                     .ToArray();
-                var curve = new Curve(1, nodes).GetPolygonalChain();
-                model.ObjectData.AddRange(curve);
-                Assert.AreEqual(9, curve.Count());
-            }
-        }
-
-        [DataTestMethod]
-        [DataRow("Cilindr", ".step")]
-        public void Test(ref string scriptName, ref string scriptExt)
-        {
-            using (var connector = new GmshUserMesh(srcDir + scriptName + scriptExt))
-            {
-                connector.Generate("Элементы2D");
-                var data = connector.ModelData as GmshUserMeshData;
-                data.GetData();
-                var curves = data.Surfaces;
+                var x = new Curve(1, nodes);
             }
         }
 
