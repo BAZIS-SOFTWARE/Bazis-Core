@@ -11,6 +11,7 @@ using System.Xml.Linq;
 using System.Collections;
 using System.IO;
 using Model.GmshController;
+using Model.Interfaces;
 
 namespace Model.GmshUser
 {
@@ -163,6 +164,46 @@ namespace Model.GmshUser
                 dataInfo[i] = info;
             }
         }
+        /// <summary>
+        /// Возвращает отфильтрованные элементы сетки
+        /// </summary>
+        /// <param name="modelId">[In]Идентификатор модели</param>
+        /// <param name="filter">[In]Фильтр нужных элементов</param>
+        /// <returns></returns>
+        public static IEnumerable<Surface> GetElements(long modelId, params string[] filter)
+        {
+            var error = 0;
+            GmshModel.gmshModelSetCurrent(modelId.ToString(), ref error);
+            GmshMesh.gmshModelMeshGenerate(2, ref error);
+            double[] points;
+            long[] tagPoints;
+            GetPoints(modelId, out points, out tagPoints);
+            var points3D = GmshUserGeometryData.ConvertToPoint3D(points);
+            var surfaces = new List<Surface>();
+            var info = new List<ElementInfo>();
+            var elTags = new List<long[]>();
+            var ptsTags = new List<long[]>();
+            GmshUserMeshData.FilterMeshData(modelId, filter, info, elTags, ptsTags);
+            for (var i = 0; i < info.Count; ++i)
+            {
+                var eltsTags = elTags[i];
+                var pointTags = ptsTags[i];
+                for (var j = 0; j < eltsTags.Length; ++j)
+                {
+                    var numNodes = info[i].numNodes;
+                    var nodes = new Node[numNodes];
+                    for (var k = 0; k < numNodes; ++k)
+                    {
+                        var tag = pointTags[j * numNodes + k];
+                        nodes[k] = new Node((int)tag, points3D[tag - 1]);
+                    }
+                    surfaces.Add(new Surface((int)eltsTags[j], nodes, ObjKind.Triangle));
+                }
+            }
+            return surfaces;
+        }
+
+
         /*
         private static void CreateElements(long[][] elements, long[][] points, ElementInfo[] info)
         {

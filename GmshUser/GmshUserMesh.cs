@@ -136,7 +136,7 @@ namespace Model.GmshUser
             long[] tagPoints;
             double[] points;
             GmshUserMeshData.GetPoints(Id, out points, out tagPoints);
-            var points3D = ConvertToPoint3D(points);
+            var points3D = GmshUserGeometryData.ConvertToPoint3D(points);
             var nodes = new List<Node>();
             for (var i = 0; i < points3D.Length; ++i)
                 nodes.Add(new Node((int)tagPoints[i], points3D[i]));
