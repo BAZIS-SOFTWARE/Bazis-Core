@@ -115,7 +115,7 @@ namespace TestModel
             using (var connector = new GmshUserMesh(srcDir + scriptName + scriptExt))
             {
                 connector.Generate(objType);
-                var data = connector.ModelData;
+                //var data = connector.GetNodes;//Пока не работает
                 connector.DeleteDstFile = true;
             }
         }
@@ -124,16 +124,14 @@ namespace TestModel
         [DataRow("Cilindr", ".step")]
         public void TestGeometryGetElementsGmshController(ref string scriptName, ref string scriptExt)
         {
-            GmshUserModelData data = null;
             using (var connector = new GmshUserGeometry(srcDir + scriptName + scriptExt))
             {
-                data = ((GmshUserGeometryData)connector.ModelData);
-                data.GetData();
-                var nodes = data.Nodes;
-                var curves = data.Curves;
-                var surfaces = data.Surfaces;
+                var nodes = connector.GetNodes();
+                var curves = connector.GetCurves();
+                var surfaces = connector.GetSurfaces();
             }
         }
+
 
         [DataTestMethod]
         [DataRow("test", ".geo")]
@@ -142,12 +140,9 @@ namespace TestModel
             var model = new ModelData();
             using (var connector = new GmshUserGeometry(srcDir + scriptName + scriptExt))
             {
-                var data = connector.ModelData as GmshUserGeometryData;
-                data.CurveSteps = 10;
-                data.GetData();
-                var curves = data.Curves;
-                var modelObject = curves.First();
-                var nodes = modelObject.GetPoints()
+                var curves = connector.GetCurves();
+                var curve = curves.First();
+                var nodes = curve.GetPoints()
                     .Select((point, index) => new Node(index++, point))
                     .ToArray();
                 var curve = new Curve(1, nodes).GetPolygonalChain();

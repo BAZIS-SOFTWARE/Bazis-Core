@@ -95,5 +95,24 @@ namespace Model.GmshController
         public static extern void gmshModelGetSecondDerivative(int dim, int tag, double[] parametricCoord,
                                                                IntPtr parametricCoord_n, ref IntPtr derivatives,
                                                                ref IntPtr derivatives_n, ref int ierr);
+
+        /// <summary>
+        /// Перепараметризирует пару размерность : идентификатор в параметризацию поверхностей
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="parametricCoord">[In]Вектор параметров</param>
+        /// <param name="parametricCoord_n">[In]Длина вектора параметров</param>
+        /// <param name="surfaceTag">[In]Идентификатор поверхности</param>
+        /// <param name="surfaceParametricCoord">[Out]Вектор репараметризированных параметров</param>
+        /// <param name="surfaceParametricCoord_n">[Out]Длина вектора</param>
+        /// <param name="which">[In]Флаг совпадений параметрических поверхностей</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelReparametrizeOnSurface(int dim, int tag, double[] parametricCoord,
+                                                                  IntPtr parametricCoord_n, int surfaceTag,
+                                                                  ref IntPtr surfaceParametricCoord,
+                                                                  ref IntPtr surfaceParametricCoord_n,
+                                                                  int which, ref int ierr);
     }
 }

@@ -22,11 +22,6 @@ namespace Model.GmshUser
         /// </summary>
         public bool DeleteDstFile { get; set; }
         /// <summary>
-        /// Возвращает данные о сетке
-        /// </summary>
-        /// <returns></returns>
-        public override GmshData ModelData { get { return new GmshUserMeshData(Id); } }
-        /// <summary>
         /// Задает/Извлекает плотность распределения точек для модели
         /// </summary>
         public string Dencity
@@ -134,6 +129,23 @@ namespace Model.GmshUser
             var file = Path.GetFileNameWithoutExtension(fileName);
             var folder = Path.GetDirectoryName(fileName);
             return folder + @"\" + file + idStr + ".inp";
+        }
+
+        public override IEnumerable<Node> GetNodes()
+        {
+            long[] tagPoints;
+            double[] points;
+            GmshUserMeshData.GetPoints(Id, out points, out tagPoints);
+            var points3D = ConvertToPoint3D(points);
+            var nodes = new List<Node>();
+            for (var i = 0; i < points3D.Length; ++i)
+                nodes.Add(new Node((int)tagPoints[i], points3D[i]));
+            return nodes;
+        }
+
+        public IEnumerable<Element1D> GetCurves()
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -107,7 +107,6 @@
     <Compile Include="GmshUser\GmshUserMesh.cs" />
     <Compile Include="GmshUser\GmshUserMeshData.cs" />
     <Compile Include="GmshUser\GmshUserModel.cs" />
-    <Compile Include="GmshUser\GmshUserModelData.cs" />
     <Compile Include="Interfaces\IModelLoader.cs" />
     <Compile Include="Interfaces\IModelSaver.cs" />
     <Compile Include="ModelParcer\LoadModelFromASCIITextFile.cs" />
