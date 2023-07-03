@@ -73,7 +73,6 @@ namespace Model.GmshUser
         public override IEnumerable<Node> GetNodes()
         {
             var pairs = GmshUserGeometryData.GetEntities(Id);
-            var nodes = new List<Node>();
             foreach (var dimTag in FilterByDimension(pairs, new int[] { 0 }))
             {
                 var point = GmshUserGeometryData.GetPoints(Id, null, dimTag);
@@ -102,7 +101,8 @@ namespace Model.GmshUser
             GmshModel.gmshModelSetCurrent(Id.ToString(), ref error);
             GmshUserGeometryData.SetMinDencity(Id, MinDencity);
             GmshUserGeometryData.SetMinDencity(Id, MaxDencity);
-            return GmshUserMeshData.GetElements(Id, "Triangle");
+            GetElements("Элементы2D");
+            return triangles;
         }
         /// <summary>
         /// Установить произвольный шаг параметризации

@@ -112,7 +112,8 @@ namespace TestModel
         {
             using (var connector = new GmshUserMesh(srcDir + scriptName + scriptExt))
             {
-                connector.Generate(objType);
+                var nodes = connector.GetNodes();
+                //connector.Generate(objType);
                 //var data = connector.GetNodes;//Пока не работает
                 connector.DeleteDstFile = true;
             }

@@ -8,7 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Model.GmshController;
 using Model.ModelParcer;
-
+using Model.Interfaces;
+using Geometry;
 
 namespace Model.GmshUser
 {
@@ -17,6 +18,12 @@ namespace Model.GmshUser
     /// </summary>
     public class GmshUserMesh : GmshUserModel
     {
+        private List<Surface> quads = new List<Surface>();
+        private List<Surface> tetrahedra = new List<Surface>();
+        private List<Surface> hexahedra = new List<Surface>();
+        private List<Surface> penta = new List<Surface>();
+        private List<Surface> pyramids = new List<Surface>();
+        private List<Surface> trihedra = new List<Surface>();
         /// <summary>
         /// Флаг указывает будет ли удаляться файл связанный с ModelParcer
         /// </summary>
@@ -55,22 +62,6 @@ namespace Model.GmshUser
         public GmshUserMesh(string path) : base(path)
         { 
         }
-
-        /// <summary>
-        /// Генерирует сетку для текущей модели
-        /// </summary>
-        /// <param name="objType">[In]Тип построения {Узлы,Элементы1D,Элементы2D,Элементы1D}</param>
-        public void Generate(string objType)
-        {
-            var dim = new Dictionary<string, int>() { { "Узлы", 0 }, { "Линии", 1 }, { "Элементы1D", 1 },
-                                                          { "Элементы2D", 2 }, { "Элементы3D", 3 } };
-            var error = 0;
-            GmshModel.gmshModelSetCurrent(Id.ToString(), ref error);
-            GmshGeneral.gmshOptionSetNumber("Mesh.SaveAll", 1, ref error);
-            GmshGeneral.gmshOptionSetNumber("Mesh.SaveGroupsOfNodes", -1111, ref error);
-            GmshMesh.gmshModelMeshGenerate(dim[objType], ref error);
-        }
-
         /// <summary>
         /// Заменяет по возможности сетку из треугольников четурехугольниками
         /// </summary>
@@ -130,22 +121,43 @@ namespace Model.GmshUser
             var folder = Path.GetDirectoryName(fileName);
             return folder + @"\" + file + idStr + ".inp";
         }
-
+        /// <summary>
+        /// Возвращает узлы
+        /// </summary>
+        /// <returns></returns>
         public override IEnumerable<Node> GetNodes()
         {
-            long[] tagPoints;
-            double[] points;
-            GmshUserMeshData.GetPoints(Id, out points, out tagPoints);
-            var points3D = GmshUserGeometryData.ConvertToPoint3D(points);
-            var nodes = new List<Node>();
-            for (var i = 0; i < points3D.Length; ++i)
-                nodes.Add(new Node((int)tagPoints[i], points3D[i]));
+            GetElements("Элементы1D");
             return nodes;
         }
-
-        public IEnumerable<Element1D> GetCurves()
+        /// <summary>
+        /// Возвращает элементы 2D
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<Element2D> GetElement2D()
         {
-            throw new NotImplementedException();
+            GetElements("Элементы2D");
+            return (IEnumerable<Element2D>)triangles; ///Переделать
+        }
+        /// <summary>
+        /// Определяет тип элемента для заполнения
+        /// </summary>
+        /// <param name="name">[In]Имя элемента</param>
+        /// <param name="elTag">[In]Идентификатор элемента</param>
+        /// <param name="nodes">[In]Узлы ассоциированные с элементом</param>
+        protected override void ChooseElement(ref string name, long elTag , Node[] nodes)
+        {
+            base.ChooseElement(ref name, elTag, nodes);
+            if (name.Contains("Quadrilateral"))
+                CreateElement(quads, elTag, nodes, ObjKind.Quad);
+            else if (name.Contains("Tetrahedron"))
+                CreateElement(tetrahedra, elTag, nodes, ObjKind.Tetra);
+            else if (name.Contains("Hexahedron"))
+                CreateElement(hexahedra, elTag, nodes, ObjKind.Hexa);
+            else if (name.Contains("Prism"))
+                CreateElement(penta, elTag, nodes, ObjKind.Penta);
+            /*else
+                throw new NotImplementedException();*///Нет пирамиды в ObjKind
         }
     }
 }

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Model.GmshController;
 using Geometry;
+using Model.Interfaces;
 
 namespace Model.GmshUser
 {
@@ -28,6 +29,12 @@ namespace Model.GmshUser
         /// Уникальный идентификатор следущей поверхности
         /// </summary>
         protected int nextSurfaceId = 1;
+        /// <summary>
+        /// Список треугольников
+        /// </summary>
+        protected List<Node> nodes = new List<Node>();
+        protected List<Element1D> lines = new List<Element1D>();
+        protected List<Surface> triangles = new List<Surface>();
         /// <summary>
         /// Извлекает идентифкатор модели
         /// </summary>
@@ -81,6 +88,20 @@ namespace Model.GmshUser
         /// <returns>Набор точек</returns>
         public abstract IEnumerable<Node> GetNodes();
         /// <summary>
+        /// Генерирует сетку для текущей модели
+        /// </summary>
+        /// <param name="objType">[In]Тип построения {Узлы,Элементы1D,Элементы2D,Элементы1D}</param>
+        public void Generate(string objType)
+        {
+            var dim = new Dictionary<string, int>() { { "Узлы", 0 }, { "Линии", 1 }, { "Элементы1D", 1 },
+                                                          { "Элементы2D", 2 }, { "Элементы3D", 3 } };
+            var error = 0;
+            GmshModel.gmshModelSetCurrent(Id.ToString(), ref error);
+            GmshGeneral.gmshOptionSetNumber("Mesh.SaveAll", 1, ref error);
+            GmshGeneral.gmshOptionSetNumber("Mesh.SaveGroupsOfNodes", -1111, ref error);
+            GmshMesh.gmshModelMeshGenerate(dim[objType], ref error);
+        }
+        /// <summary>
         /// Группирует пары размерность : идентификаторы по размерности
         /// </summary>
         /// <param name="dimTagsPair">[In] Массив пар размерность : идентификаторы</param>
@@ -101,7 +122,7 @@ namespace Model.GmshUser
         /// Отфильтровывает пары размерность : идентификатор по размерности
         /// </summary>
         /// <param name="dimTagsPair">[In]Массив пар размерность : идентификатор</param>
-        /// <param name="dim">[In]Фильтрация по конкретной размерности</param>
+        /// <param name="dims">[In]Фильтрация по конкретной размерности</param>
         /// <returns></returns>
         protected Tuple<int, int>[] FilterByDimension(int[] dimTagsPair, int[] dims)
         {
@@ -138,5 +159,85 @@ namespace Model.GmshUser
             nextId += count;
             return tags;
         }
+        /// <summary>
+        /// Извлекает все элементы из модели
+        /// </summary>
+        protected void GetElements(string genObj)
+        {
+            long[] tagPoints;
+            double[] coords;
+            long[][] elTags, ptsTagsPerElems;
+            ElementInfo[] info;
+            Generate(genObj);
+            GmshUserMeshData.GetElements(Id,out elTags, out ptsTagsPerElems, out info);
+            GmshUserMeshData.GetPoints(Id, out coords, out tagPoints);
+            var points3D = GmshUserGeometryData.ConvertToPoint3D(coords);
+            for (var i = 0; i < info.Length; ++i)
+            {
+                var currentElement = elTags[i];
+                var currentPoints = ptsTagsPerElems[i];
+                for (var j = 0; j < currentElement.Length; ++j)
+                {
+                    var numNodes = info[i].numNodes;
+                    var nodes = new Node[numNodes];
+                    for (var k = 0; k < numNodes; ++k)
+                    {
+                        var tag = currentPoints[j * numNodes + k];
+                        nodes[k] = new Node((int)tag, points3D[tag - 1]);
+                    }
+                    ChooseElement(ref info[i].elementName, currentElement[j], nodes);
+                }
+            }
+        }
+        /// <summary>
+        /// Определяет тип элемента для заполнения
+        /// </summary>
+        /// <param name="name">[In]Имя элемента</param>
+        /// <param name="elTag">[In]Идентификатор элемента</param>
+        /// <param name="nodes">[In]Узлы ассоциированные с элементом</param>
+        protected virtual void ChooseElement(ref string name, long elTag, Node[] nodes)
+        {
+            if (name.Contains("Triangle"))
+                CreateElement(triangles, elTag, nodes, ObjKind.Triangle);
+            else if (name.Contains("Line"))
+                CreateLine(lines, elTag, nodes, ObjKind.Beam);
+            else if (name.Contains("Point"))
+                CreateNode(this.nodes, elTag, nodes);
+        }
+        /// <summary>
+        /// Заполняет список элементов типа Surface
+        /// </summary>
+        /// <param name="list">[In]Список для заполнения</param>
+        /// <param name="elTag">[In]Идентификатор элемента</param>
+        /// <param name="nodes">[In]Узлы ассоциированные с элементом</param>
+        /// <param name="kind">[In]Тип элемента</param>
+        protected void CreateElement(List<Surface> list, long elTag, Node[] nodes, ObjKind kind)
+        {
+            list.Add(new Surface((int)elTag, nodes, kind));
+        }
+        /// <summary>
+        /// Заполняет список элементов типа Node
+        /// </summary>
+        /// <param name="list">[In]Список для заполнения</param>
+        /// <param name="elTag">[In]Идентификатор элемента</param>
+        /// <param name="nodes">[In]Узлы ассоциированные с элементом</param>
+        /// <param name="kind">[In]Тип элемента</param>
+        protected void CreateNode(List<Node> list, long elTag, Node[] nodes)
+        {
+            list.Add(new Node((int)elTag, nodes[0].Position));
+        }
+        /// <summary>
+        /// Заполняет список элементов типа Line
+        /// </summary>
+        /// <param name="list">[In]Список для заполнения</param>
+        /// <param name="elTag">[In]Идентификатор элемента</param>
+        /// <param name="nodes">[In]Узлы ассоциированные с элементом</param>
+        /// <param name="kind">[In]Тип элемента</param>
+        protected void CreateLine(List<Element1D> list, long elTag, Node[] nodes, ObjKind kind)
+        {
+            list.Add(new Element1D((int)elTag, nodes, kind));
+        }
+
+
     }
 }

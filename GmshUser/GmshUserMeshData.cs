@@ -78,53 +78,12 @@ namespace Model.GmshUser
             GmshUserMemory.GetElementData(out ptsTags, nodeTags, nodeTags_n, nodeTags_nn);
         }
         /// <summary>
-        /// Возвращает отфильтрованные элементы сетки полученные от GetMeshData
-        /// <param name="modelId">[In]Идентификатор модели</param>
-        /// <param name="elFilter">[In]Набор названий элементов для фильтрации</param>
-        /// <param name="info">[In]Список для заполнения информации о элементе</param>
-        /// <param name="elTags">[In]Идентификаторы элементов</param>
-        /// <param name="ptsTags">[In]Идентификаторы точек</param>
-        public static void FilterMeshData(long modelId, string[] elFilter, List<ElementInfo> info,
-                                          List<long[]> elTags, List<long[]> ptsTags)
-        {
-            long[] tagPoints;
-            double[] coords;
-            GetPoints(modelId, out coords, out tagPoints);
-            ElementInfo[] getInfo;
-            long[][] getElements, getPoints;
-            GetMeshData(modelId, -1, -1, out getInfo, out getElements, out getPoints);
-            for(var i = 0; i < getInfo.Length; ++i)
-            {
-                var status = false;
-                for (var j = 0; j < elFilter.Length; ++j)
-                    if (getInfo[i].elementName.Contains(elFilter[j]))
-                    {
-                        status = true;
-                        break;
-                    }
-                if(status)
-                {
-                    info.Add(getInfo[i]);
-                    elTags.Add(getElements[i]);
-                    ptsTags.Add(getPoints[i]);
-                }
-            }
-            /*var filteredData = getInfo.Select((v, i) => new { V = v, I = i })
-                   .Where(v => elFilter.All(b => !b.Contains(v.V.elementName)));
-            foreach(var v in filteredData)
-            {
-                info.Add(v.V);
-                elTags.Add(getElements[v.I]);
-                ptsTags.Add(getPoints[v.I]);
-            }*/
-        }
-        /// <summary>
         /// Извлекает локальные координаты точек и их уникальные идентификаторы
         /// </summary>
         /// <param name="modelId">[In]Идентификатор модели</param>
-        /// <param name="points">[Out]Массив локальных координат для заполнения</param>
+        /// <param name="coords">[Out]Массив локальных координат для заполнения</param>
         /// <param name="tagPoints">[Out]Массив идентификаторов</param>
-        public static void GetPoints(long modelId, out double[] points, out long[] tagPoints)
+        public static void GetPoints(long modelId, out double[] coords, out long[] tagPoints)
         {
             var error = 0;
             IntPtr nodeTags, nodeTags_n, coord, coord_n, paramCoord, paramCoord_n;
@@ -132,9 +91,8 @@ namespace Model.GmshUser
             GmshModel.gmshModelSetCurrent(modelId.ToString(), ref error);
             GmshMesh.gmshModelMeshGetNodes(ref nodeTags, ref nodeTags_n, ref coord, ref coord_n,
                                            ref paramCoord, ref paramCoord_n, -1, -1, 0, 0, ref error);
-            var nodes = new List<Node>(nodeTags_n.ToInt32());
             GmshUserMemory.GetTypesData(nodeTags, out tagPoints, nodeTags_n);
-            GmshUserMemory.GetTypesData(coord, out points, coord_n);
+            GmshUserMemory.GetTypesData(coord, out coords, coord_n);
         }
         /// <summary>
         /// Извлекает информацию о элементе
@@ -165,81 +123,16 @@ namespace Model.GmshUser
             }
         }
         /// <summary>
-        /// Возвращает отфильтрованные элементы сетки
+        /// /// Возвращает отфильтрованные элементы сетки
         /// </summary>
         /// <param name="modelId">[In]Идентификатор модели</param>
-        /// <param name="filter">[In]Фильтр нужных элементов</param>
-        /// <returns></returns>
-        public static IEnumerable<Surface> GetElements(long modelId, params string[] filter)
+        /// <param name="elTags">[Out]Идентификаторы элементов</param>
+        /// <param name="ptsTagsPerElems">[Out]Идентификаторы точек на элементы</param>
+        /// <param name="info">[Out]Информация о элементе</param>
+        public static void GetElements(long modelId, out long[][] elTags,
+                                       out long[][] ptsTagsPerElems, out ElementInfo[] info)
         {
-            var error = 0;
-            GmshModel.gmshModelSetCurrent(modelId.ToString(), ref error);
-            GmshMesh.gmshModelMeshGenerate(2, ref error);
-            double[] points;
-            long[] tagPoints;
-            GetPoints(modelId, out points, out tagPoints);
-            var points3D = GmshUserGeometryData.ConvertToPoint3D(points);
-            var surfaces = new List<Surface>();
-            var info = new List<ElementInfo>();
-            var elTags = new List<long[]>();
-            var ptsTags = new List<long[]>();
-            GmshUserMeshData.FilterMeshData(modelId, filter, info, elTags, ptsTags);
-            for (var i = 0; i < info.Count; ++i)
-            {
-                var eltsTags = elTags[i];
-                var pointTags = ptsTags[i];
-                for (var j = 0; j < eltsTags.Length; ++j)
-                {
-                    var numNodes = info[i].numNodes;
-                    var nodes = new Node[numNodes];
-                    for (var k = 0; k < numNodes; ++k)
-                    {
-                        var tag = pointTags[j * numNodes + k];
-                        nodes[k] = new Node((int)tag, points3D[tag - 1]);
-                    }
-                    surfaces.Add(new Surface((int)eltsTags[j], nodes, ObjKind.Triangle));
-                }
-            }
-            return surfaces;
+            GetMeshData(modelId, -1, -1, out info, out elTags, out ptsTagsPerElems);
         }
-
-
-        /*
-        private static void CreateElements(long[][] elements, long[][] points, ElementInfo[] info)
-        {
-            for (var i = 0; i < elements.GetLength(0); ++i)
-            {
-                var typePoints = types[i].Split(' ');
-                switch (typePoints[0])
-                {
-                    case "Line":
-                        //CreateCurves(elements[i], points[i], Int32.Parse(typePoints[1]));
-                        break;
-                    case "Triangle":
-                        break;
-                    case "Quadrilateral":
-                        break;
-                    case "Tetrahedron":
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }*/
-        /*
-        private static void CreateCurves(long[] tagElements, long[] tagPoints, int stride)
-        {
-            var curves = new List<Curve>(tagElements.Length);
-
-            for (var i = 0; i < tagElements.Length; ++i)
-            {
-                var pointsPerStride = new Node[stride];
-                for (var j = 0; j < stride; ++j)
-                {
-                    //pointsPerStride[j] = nodes[(int)tagPoints[i * stride + j] - 1];
-                }
-                curves.Add(new Curve((int)tagElements[i], pointsPerStride));
-            }
-        }*/
     }
 }
