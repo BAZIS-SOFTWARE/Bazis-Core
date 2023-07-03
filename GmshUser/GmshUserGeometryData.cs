@@ -198,5 +198,17 @@ namespace Model.GmshUser
             GmshGeneral.gmshOptionGetNumber("Mesh.MeshSizeMax", ref max, ref error);
             return max;
         }
+        /// <summary>
+        /// Преобразовывает массив трехмерных координат в массив точек
+        /// </summary>
+        /// <param name="coordsArray">[In]Массив координат</param>
+        /// <returns>Point3D</returns>
+        public static Point3D[] ConvertToPoint3D(double[] coordsArray)
+        {
+            var points = new List<Point3D>();
+            for (var i = 2; i < coordsArray.Length; i += 3)
+                points.Add(new Point3D((float)coordsArray[i - 2], (float)coordsArray[i - 1], (float)coordsArray[i]));
+            return points.ToArray();
+        }
     }
 }

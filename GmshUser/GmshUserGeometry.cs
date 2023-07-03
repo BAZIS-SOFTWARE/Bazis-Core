@@ -102,35 +102,7 @@ namespace Model.GmshUser
             GmshModel.gmshModelSetCurrent(Id.ToString(), ref error);
             GmshUserGeometryData.SetMinDencity(Id, MinDencity);
             GmshUserGeometryData.SetMinDencity(Id, MaxDencity);
-            GmshMesh.gmshModelMeshGenerate(2, ref error);
-            double[] points;
-            long[] tagPoints;
-            GmshUserMeshData.GetPoints(Id, out points, out tagPoints);
-            var points3D = ConvertToPoint3D(points);
-            var surfaces = new List<Surface>();
-            var info = new List<ElementInfo>();
-            var elTags = new List<long[]>();
-            var ptsTags = new List<long[]>();
-            GmshUserMeshData.FilterMeshData(Id, new string[] { "Triangle" }, info, elTags, ptsTags);
-            for (var  i = 0; i < info.Count; ++i)
-            {
-                var eltsTags = elTags[i];
-                var pointTags = ptsTags[i];
-                /*var typePoints = info[i].elementName.Split(' ');
-                var ptsSize = Int32.Parse(typePoints[i]);*/
-                for (var j = 0; j < eltsTags.Length; ++j)
-                {
-                    var numNodes = info[i].numNodes;
-                    var nodes = new Node[numNodes];
-                    for (var k = 0; k < numNodes; ++k)
-                    {
-                        var tag = pointTags[j * numNodes + k];
-                        nodes[k] = new Node((int)tag, points3D[tag - 1]);
-                    }
-                    surfaces.Add(new Surface((int)eltsTags[j], nodes, ObjKind.Triangle));
-                }
-            }
-            return surfaces;
+            return GmshUserMeshData.GetElements(Id, "Triangle");
         }
         /// <summary>
         /// Установить произвольный шаг параметризации
@@ -185,7 +157,7 @@ namespace Model.GmshUser
                 else
                     paramsCoord[0] = SetCustomStepParametrization(paramsCoord[0], steps);
                 var points = GmshUserGeometryData.GetPoints(Id, paramsCoord[0], dimTag);
-                var points3D = ConvertToPoint3D(points);
+                var points3D = GmshUserGeometryData.ConvertToPoint3D(points);
                 var nodes = new List<Node>();
                 var indices = 0;
                 var pointTags = CreateTags(steps * 2 - 2, ref nextPointId);
