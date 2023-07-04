@@ -18,12 +18,15 @@ namespace Model.GmshUser
     /// </summary>
     public class GmshUserMesh : GmshUserModel
     {
-        private List<Surface> quads = new List<Surface>();
-        private List<Surface> tetrahedra = new List<Surface>();
+        private List<Node> nodes = new List<Node>();
+        private List<Element1D> elements1D = new List<Element1D>();
+        private List<Element2D> elements2D = new List<Element2D>();
+        private List<Element3D> elements3D = new List<Element3D>();
+        /*private List<Surface> tetrahedra = new List<Surface>();
         private List<Surface> hexahedra = new List<Surface>();
         private List<Surface> penta = new List<Surface>();
         private List<Surface> pyramids = new List<Surface>();
-        private List<Surface> trihedra = new List<Surface>();
+        private List<Surface> trihedra = new List<Surface>();*/
         /// <summary>
         /// Флаг указывает будет ли удаляться файл связанный с ModelParcer
         /// </summary>
@@ -127,8 +130,17 @@ namespace Model.GmshUser
         /// <returns></returns>
         public override IEnumerable<Node> GetNodes()
         {
-            GetElements("Элементы1D");
+            GetElements();
             return nodes;
+        }
+        /// <summary>
+        /// Возвращает элементы 1D
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<Element1D> GetElement1D()
+        {
+            GetElements();
+            return elements1D;
         }
         /// <summary>
         /// Возвращает элементы 2D
@@ -136,8 +148,17 @@ namespace Model.GmshUser
         /// <returns></returns>
         public IEnumerable<Element2D> GetElement2D()
         {
-            GetElements("Элементы2D");
-            return (IEnumerable<Element2D>)triangles; ///Переделать
+            GetElements();
+            return elements2D;
+        }
+        /// <summary>
+        /// Возвращает элементы 3D
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<Element3D> GetElement3D()
+        {
+            GetElements();
+            return elements3D;
         }
         /// <summary>
         /// Определяет тип элемента для заполнения
@@ -147,17 +168,62 @@ namespace Model.GmshUser
         /// <param name="nodes">[In]Узлы ассоциированные с элементом</param>
         protected override void ChooseElement(ref string name, long elTag , Node[] nodes)
         {
-            base.ChooseElement(ref name, elTag, nodes);
-            if (name.Contains("Quadrilateral"))
-                CreateElement(quads, elTag, nodes, ObjKind.Quad);
+            if (name.Contains("Line"))
+                CreateElement1D(elTag, nodes, ObjKind.Beam);
+            else if (name.Contains("Triangle"))
+                CreateElement2D(elTag, nodes, ObjKind.Triangle);
+            else if (name.Contains("Quadrilateral"))
+                CreateElement2D(elTag, nodes, ObjKind.Quad);
             else if (name.Contains("Tetrahedron"))
-                CreateElement(tetrahedra, elTag, nodes, ObjKind.Tetra);
+                CreateElement3D(elTag, nodes, ObjKind.Tetra);
             else if (name.Contains("Hexahedron"))
-                CreateElement(hexahedra, elTag, nodes, ObjKind.Hexa);
+                CreateElement3D(elTag, nodes, ObjKind.Hexa);
             else if (name.Contains("Prism"))
-                CreateElement(penta, elTag, nodes, ObjKind.Penta);
-            /*else
-                throw new NotImplementedException();*///Нет пирамиды в ObjKind
+                CreateElement3D(elTag, nodes, ObjKind.Penta);
+            //Нет ObjKind.Pyramid
+        }
+        /// <summary>
+        /// Создает Element1D
+        /// </summary>
+        /// <param name="elTag">[In]Идентификатор элемента</param>
+        /// <param name="nodes">[In]Узлы</param>
+        /// <param name="kind">[In]Тип объекта</param>
+        protected void CreateElement1D(long elTag, Node[] nodes, ObjKind kind)
+        {
+            elements1D.Add(new Element1D((int)elTag, nodes, kind));
+        }
+        /// <summary>
+        /// Создает Element2D
+        /// </summary>
+        /// <param name="elTag">[In]Идентификатор элемента</param>
+        /// <param name="nodes">[In]Узлы</param>
+        /// <param name="kind">[In]Тип объекта</param>
+        protected void CreateElement2D(long elTag, Node[] nodes, ObjKind kind)
+        {
+            elements2D.Add(new Element2D((int)elTag, nodes, kind));
+        }
+        /// <summary>
+        /// Создает Element3D
+        /// </summary>
+        /// <param name="elTag">[In]Идентификатор элемента</param>
+        /// <param name="nodes">[In]Узлы</param>
+        /// <param name="kind">[In]Тип объекта</param>
+        protected void CreateElement3D(long elTag, Node[] nodes, ObjKind kind)
+        {
+            elements3D.Add(new Element3D((int)elTag, nodes, kind));
+        }
+        /// <summary>
+        /// Заполняет узлы сетки
+        /// </summary>
+        /// <param name="coords">[In]Координаты</param>
+        /// <param name="tagPoints">[In]Идентификаторы</param>
+        protected override void CreateNodes(double[] coords, long[] tagPoints)
+        {
+            for (var i = 0; i < tagPoints.Length; ++i)
+            {
+                var point = new Point3D((float)coords[i * 3], (float)coords[i * 3 + 1], (float)coords[i * 3 + 2]);
+                nodes.Add(new Node((int)tagPoints[i], point));
+            }
         }
     }
 }

@@ -22,6 +22,11 @@ namespace Model.GmshUser
         private const int defaultCurveSteps = 10;
         private const double defaultMinDencity = 0;
         private const double defaultMaxDencity = 1e+22;
+
+        private List<Node> nodes = new List<Node>();
+        private List<Curve> curves = new List<Curve>();
+        private List<Surface> surfaces = new List<Surface>();
+        
         /// <summary>
         /// Задает\получает шаг параметризации для кривой
         /// </summary>
@@ -72,20 +77,18 @@ namespace Model.GmshUser
         /// <returns>Точки</returns>
         public override IEnumerable<Node> GetNodes()
         {
-            var pairs = GmshUserGeometryData.GetEntities(Id);
-            foreach (var dimTag in FilterByDimension(pairs, new int[] { 0 }))
-            {
-                var point = GmshUserGeometryData.GetPoints(Id, null, dimTag);
-                nodes.Add(new Node(dimTag.Item2, new Point3D((float)point[0], (float)point[1], (float)point[2])));
-            }
-            nextPointId += nodes.Count;
+            GetElements();
             return nodes;
         }
         /// <summary>
         /// Возвращает Curve
         /// </summary>
         /// <returns>Кривые или линии</returns>
-        public IEnumerable<Curve> GetCurves() => GetLineObject<Curve>(AddCurveObject);
+        public IEnumerable<Curve> GetCurves()
+        {
+            curves = GetLineObject<Curve>(AddCurveObject);
+            return curves;
+        }
         /// <summary>
         /// Возвращает Element1D
         /// </summary>
@@ -100,9 +103,9 @@ namespace Model.GmshUser
             var error = 0;
             GmshModel.gmshModelSetCurrent(Id.ToString(), ref error);
             GmshUserGeometryData.SetMinDencity(Id, MinDencity);
-            GmshUserGeometryData.SetMinDencity(Id, MaxDencity);
-            GetElements("Элементы2D");
-            return triangles;
+            GmshUserGeometryData.SetMaxDencity(Id, MaxDencity);
+            GetElements();
+            return surfaces;
         }
         /// <summary>
         /// Установить произвольный шаг параметризации
@@ -117,6 +120,40 @@ namespace Model.GmshUser
             for (var i = 0; i < steps; ++i)
                 paramsCoord[i] = paramsCoord[0] + step * i;
             return paramsCoord;
+        }
+        /// <summary>
+        /// Определяет тип элемента для заполнения
+        /// </summary>
+        /// <param name="name">[In]Имя элемента</param>
+        /// <param name="elTag">[In]Идентификатор элемента</param>
+        /// <param name="nodes">[In]Узлы ассоциированные с элементом</param>
+        protected override void ChooseElement(ref string name, long elTag, Node[] nodes)
+        {
+            if (name.Contains("Point"))
+                CreateNode(elTag, nodes);
+            if (name.Contains("Triangle"))
+                CreateSurface(elTag, nodes, ObjKind.Triangle);
+            else if (name.Contains("Quadrilateral"))
+                CreateSurface(elTag, nodes, ObjKind.Quad);
+        }
+        /// <summary>
+        /// Создает Node control point
+        /// </summary>
+        /// <param name="elTag">[In]Идентификатор элемента</param>
+        /// <param name="nodes">[In]Узлы</param>
+        protected void CreateNode(long elTag, Node[] nodes)
+        {
+            this.nodes.Add(new Node((int)elTag, nodes[0].Position));
+        }
+        /// <summary>
+        /// Создает Surface
+        /// </summary>
+        /// <param name="elTag">[In]Идентификатор элемента</param>
+        /// <param name="nodes">[In]Узлы</param>
+        /// <param name="kind">[In]Тип объекта</param>
+        protected void CreateSurface(long elTag, Node[] nodes, ObjKind kind)
+        {
+            surfaces.Add(new Surface((int)elTag, nodes, kind));
         }
         /// <summary>
         /// Добавляет в список Curve

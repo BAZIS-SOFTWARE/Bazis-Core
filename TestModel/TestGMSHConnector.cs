@@ -112,9 +112,11 @@ namespace TestModel
         {
             using (var connector = new GmshUserMesh(srcDir + scriptName + scriptExt))
             {
+                connector.Generate("Элементы1D");
                 var nodes = connector.GetNodes();
-                //connector.Generate(objType);
-                //var data = connector.GetNodes;//Пока не работает
+                var elements1D = connector.GetElement1D();
+                var elements2D = connector.GetElement2D();
+                var elements3D = connector.GetElement3D();
                 connector.DeleteDstFile = true;
             }
         }
@@ -125,8 +127,10 @@ namespace TestModel
         {
             using (var connector = new GmshUserGeometry(srcDir + scriptName + scriptExt))
             {
+                connector.Generate("Элементы2D");
                 var nodes = connector.GetNodes();
                 var curves = connector.GetCurves();
+                var elements1D = connector.GetElement1D();
                 var surfaces = connector.GetSurfaces();
             }
         }

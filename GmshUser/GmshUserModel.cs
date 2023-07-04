@@ -30,12 +30,6 @@ namespace Model.GmshUser
         /// </summary>
         protected int nextSurfaceId = 1;
         /// <summary>
-        /// Список треугольников
-        /// </summary>
-        protected List<Node> nodes = new List<Node>();
-        protected List<Element1D> lines = new List<Element1D>();
-        protected List<Surface> triangles = new List<Surface>();
-        /// <summary>
         /// Извлекает идентифкатор модели
         /// </summary>
         public long Id { get; protected set; }
@@ -93,7 +87,7 @@ namespace Model.GmshUser
         /// <param name="objType">[In]Тип построения {Узлы,Элементы1D,Элементы2D,Элементы1D}</param>
         public void Generate(string objType)
         {
-            var dim = new Dictionary<string, int>() { { "Узлы", 0 }, { "Линии", 1 }, { "Элементы1D", 1 },
+            var dim = new Dictionary<string, int>() { { "Узлы", 1 }, { "Линии", 1 }, { "Элементы1D", 1 },
                                                           { "Элементы2D", 2 }, { "Элементы3D", 3 } };
             var error = 0;
             GmshModel.gmshModelSetCurrent(Id.ToString(), ref error);
@@ -162,15 +156,15 @@ namespace Model.GmshUser
         /// <summary>
         /// Извлекает все элементы из модели
         /// </summary>
-        protected void GetElements(string genObj)
+        protected void GetElements()
         {
             long[] tagPoints;
             double[] coords;
             long[][] elTags, ptsTagsPerElems;
             ElementInfo[] info;
-            Generate(genObj);
             GmshUserMeshData.GetElements(Id,out elTags, out ptsTagsPerElems, out info);
             GmshUserMeshData.GetPoints(Id, out coords, out tagPoints);
+            CreateNodes(coords, tagPoints);
             var points3D = GmshUserGeometryData.ConvertToPoint3D(coords);
             for (var i = 0; i < info.Length; ++i)
             {
@@ -197,47 +191,14 @@ namespace Model.GmshUser
         /// <param name="nodes">[In]Узлы ассоциированные с элементом</param>
         protected virtual void ChooseElement(ref string name, long elTag, Node[] nodes)
         {
-            if (name.Contains("Triangle"))
-                CreateElement(triangles, elTag, nodes, ObjKind.Triangle);
-            else if (name.Contains("Line"))
-                CreateLine(lines, elTag, nodes, ObjKind.Beam);
-            else if (name.Contains("Point"))
-                CreateNode(this.nodes, elTag, nodes);
         }
         /// <summary>
-        /// Заполняет список элементов типа Surface
+        /// Заполняет узлы сетки
         /// </summary>
-        /// <param name="list">[In]Список для заполнения</param>
-        /// <param name="elTag">[In]Идентификатор элемента</param>
-        /// <param name="nodes">[In]Узлы ассоциированные с элементом</param>
-        /// <param name="kind">[In]Тип элемента</param>
-        protected void CreateElement(List<Surface> list, long elTag, Node[] nodes, ObjKind kind)
+        /// <param name="coords">[In]Координаты</param>
+        /// <param name="tagPoints">[In]Идентификаторы</param>
+        protected virtual void CreateNodes(double[] coords, long[] tagPoints)
         {
-            list.Add(new Surface((int)elTag, nodes, kind));
         }
-        /// <summary>
-        /// Заполняет список элементов типа Node
-        /// </summary>
-        /// <param name="list">[In]Список для заполнения</param>
-        /// <param name="elTag">[In]Идентификатор элемента</param>
-        /// <param name="nodes">[In]Узлы ассоциированные с элементом</param>
-        /// <param name="kind">[In]Тип элемента</param>
-        protected void CreateNode(List<Node> list, long elTag, Node[] nodes)
-        {
-            list.Add(new Node((int)elTag, nodes[0].Position));
-        }
-        /// <summary>
-        /// Заполняет список элементов типа Line
-        /// </summary>
-        /// <param name="list">[In]Список для заполнения</param>
-        /// <param name="elTag">[In]Идентификатор элемента</param>
-        /// <param name="nodes">[In]Узлы ассоциированные с элементом</param>
-        /// <param name="kind">[In]Тип элемента</param>
-        protected void CreateLine(List<Element1D> list, long elTag, Node[] nodes, ObjKind kind)
-        {
-            list.Add(new Element1D((int)elTag, nodes, kind));
-        }
-
-
     }
 }
