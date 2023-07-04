@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Model.GmshController;
 using Geometry;
+using Model.Interfaces;
 
 namespace Model.GmshUser
 {
@@ -81,6 +82,20 @@ namespace Model.GmshUser
         /// <returns>Набор точек</returns>
         public abstract IEnumerable<Node> GetNodes();
         /// <summary>
+        /// Генерирует сетку для текущей модели
+        /// </summary>
+        /// <param name="objType">[In]Тип построения {Узлы,Элементы1D,Элементы2D,Элементы1D}</param>
+        public void Generate(string objType)
+        {
+            var dim = new Dictionary<string, int>() { { "Узлы", 1 }, { "Линии", 1 }, { "Элементы1D", 1 },
+                                                          { "Элементы2D", 2 }, { "Элементы3D", 3 } };
+            var error = 0;
+            GmshModel.gmshModelSetCurrent(Id.ToString(), ref error);
+            GmshGeneral.gmshOptionSetNumber("Mesh.SaveAll", 1, ref error);
+            GmshGeneral.gmshOptionSetNumber("Mesh.SaveGroupsOfNodes", -1111, ref error);
+            GmshMesh.gmshModelMeshGenerate(dim[objType], ref error);
+        }
+        /// <summary>
         /// Группирует пары размерность : идентификаторы по размерности
         /// </summary>
         /// <param name="dimTagsPair">[In] Массив пар размерность : идентификаторы</param>
@@ -101,7 +116,7 @@ namespace Model.GmshUser
         /// Отфильтровывает пары размерность : идентификатор по размерности
         /// </summary>
         /// <param name="dimTagsPair">[In]Массив пар размерность : идентификатор</param>
-        /// <param name="dim">[In]Фильтрация по конкретной размерности</param>
+        /// <param name="dims">[In]Фильтрация по конкретной размерности</param>
         /// <returns></returns>
         protected Tuple<int, int>[] FilterByDimension(int[] dimTagsPair, int[] dims)
         {
@@ -137,6 +152,53 @@ namespace Model.GmshUser
             var tags = Enumerable.Range(nextId, count).ToArray();
             nextId += count;
             return tags;
+        }
+        /// <summary>
+        /// Извлекает все элементы из модели
+        /// </summary>
+        protected void GetElements()
+        {
+            long[] tagPoints;
+            double[] coords;
+            long[][] elTags, ptsTagsPerElems;
+            ElementInfo[] info;
+            GmshUserMeshData.GetElements(Id,out elTags, out ptsTagsPerElems, out info);
+            GmshUserMeshData.GetPoints(Id, out coords, out tagPoints);
+            CreateNodes(coords, tagPoints);
+            var points3D = GmshUserGeometryData.ConvertToPoint3D(coords);
+            for (var i = 0; i < info.Length; ++i)
+            {
+                var currentElement = elTags[i];
+                var currentPoints = ptsTagsPerElems[i];
+                for (var j = 0; j < currentElement.Length; ++j)
+                {
+                    var numNodes = info[i].numNodes;
+                    var nodes = new Node[numNodes];
+                    for (var k = 0; k < numNodes; ++k)
+                    {
+                        var tag = currentPoints[j * numNodes + k];
+                        nodes[k] = new Node((int)tag, points3D[tag - 1]);
+                    }
+                    ChooseElement(ref info[i].elementName, currentElement[j], nodes);
+                }
+            }
+        }
+        /// <summary>
+        /// Определяет тип элемента для заполнения
+        /// </summary>
+        /// <param name="name">[In]Имя элемента</param>
+        /// <param name="elTag">[In]Идентификатор элемента</param>
+        /// <param name="nodes">[In]Узлы ассоциированные с элементом</param>
+        protected virtual void ChooseElement(ref string name, long elTag, Node[] nodes)
+        {
+        }
+        /// <summary>
+        /// Заполняет узлы сетки
+        /// </summary>
+        /// <param name="coords">[In]Координаты</param>
+        /// <param name="tagPoints">[In]Идентификаторы</param>
+        protected virtual void CreateNodes(double[] coords, long[] tagPoints)
+        {
         }
     }
 }
