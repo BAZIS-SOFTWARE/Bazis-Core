@@ -10,6 +10,7 @@ using Model.GmshController;
 using Model.ModelParcer;
 using Model.Interfaces;
 using Geometry;
+using System.Collections;
 
 namespace Model.GmshUser
 {
@@ -18,15 +19,6 @@ namespace Model.GmshUser
     /// </summary>
     public class GmshUserMesh : GmshUserModel
     {
-        private List<Node> nodes = new List<Node>();
-        private List<Element1D> elements1D = new List<Element1D>();
-        private List<Element2D> elements2D = new List<Element2D>();
-        private List<Element3D> elements3D = new List<Element3D>();
-        /*private List<Surface> tetrahedra = new List<Surface>();
-        private List<Surface> hexahedra = new List<Surface>();
-        private List<Surface> penta = new List<Surface>();
-        private List<Surface> pyramids = new List<Surface>();
-        private List<Surface> trihedra = new List<Surface>();*/
         /// <summary>
         /// Флаг указывает будет ли удаляться файл связанный с ModelParcer
         /// </summary>
@@ -128,96 +120,85 @@ namespace Model.GmshUser
         /// Возвращает узлы
         /// </summary>
         /// <returns></returns>
-        public override IEnumerable<Node> GetNodes()
-        {
-            GetElements();
-            return nodes;
-        }
+        public override IEnumerable<Node> GetNodes() => GetElements()[ObjKind.Node] as List<Node>;
         /// <summary>
         /// Возвращает элементы 1D
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Element1D> GetElement1D()
-        {
-            GetElements();
-            return elements1D;
-        }
+        public IEnumerable<Element1D> GetElement1D() => GetElements()[ObjKind.Beam] as List<Element1D>;
         /// <summary>
         /// Возвращает элементы 2D
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Element2D> GetElement2D()
-        {
-            GetElements();
-            return elements2D;
-        }
+        public IEnumerable<Element2D> GetElement2D() => GetElements()[ObjKind.ElementSurface] as List<Element2D>;
         /// <summary>
         /// Возвращает элементы 3D
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Element3D> GetElement3D()
-        {
-            GetElements();
-            return elements3D;
-        }
+        public IEnumerable<Element3D> GetElement3D() => GetElements()[ObjKind.Tetra] as List<Element3D>;
         /// <summary>
         /// Определяет тип элемента для заполнения
         /// </summary>
+        /// <param name="ht">[In]Хеш таблица для выбора списка элементов</param>
         /// <param name="name">[In]Имя элемента</param>
         /// <param name="elTag">[In]Идентификатор элемента</param>
         /// <param name="nodes">[In]Узлы ассоциированные с элементом</param>
-        protected override void ChooseElement(ref string name, long elTag , Node[] nodes)
+        protected override void ChooseElement(Hashtable ht, ref string name, long elTag , Node[] nodes)
         {
             if (name.Contains("Line"))
-                CreateElement1D(elTag, nodes, ObjKind.Beam);
+                CreateElement1D(ht[ObjKind.Beam] as List<Element1D>, elTag, nodes, ObjKind.Beam);
             else if (name.Contains("Triangle"))
-                CreateElement2D(elTag, nodes, ObjKind.Triangle);
+                CreateElement2D(ht[ObjKind.Triangle] as List<Element2D>, elTag, nodes, ObjKind.Triangle);
             else if (name.Contains("Quadrilateral"))
-                CreateElement2D(elTag, nodes, ObjKind.Quad);
+                CreateElement2D(ht[ObjKind.Quad] as List<Element2D>, elTag, nodes, ObjKind.Quad);
             else if (name.Contains("Tetrahedron"))
-                CreateElement3D(elTag, nodes, ObjKind.Tetra);
+                CreateElement3D(ht[ObjKind.Tetra] as List<Element3D>, elTag, nodes, ObjKind.Tetra);
             else if (name.Contains("Hexahedron"))
-                CreateElement3D(elTag, nodes, ObjKind.Hexa);
+                CreateElement3D(ht[ObjKind.Hexa] as List<Element3D>, elTag, nodes, ObjKind.Hexa);
             else if (name.Contains("Prism"))
-                CreateElement3D(elTag, nodes, ObjKind.Penta);
+                CreateElement3D(ht[ObjKind.Penta] as List<Element3D>, elTag, nodes, ObjKind.Penta);
             //Нет ObjKind.Pyramid
         }
         /// <summary>
         /// Создает Element1D
         /// </summary>
+        /// <param name="list">[In]Список Element1D для заполнения</param>
         /// <param name="elTag">[In]Идентификатор элемента</param>
         /// <param name="nodes">[In]Узлы</param>
         /// <param name="kind">[In]Тип объекта</param>
-        protected void CreateElement1D(long elTag, Node[] nodes, ObjKind kind)
+        protected void CreateElement1D(List<Element1D> list,long elTag, Node[] nodes, ObjKind kind)
         {
-            elements1D.Add(new Element1D((int)elTag, nodes, kind));
+            list.Add(new Element1D((int)elTag, nodes, kind));
         }
         /// <summary>
         /// Создает Element2D
         /// </summary>
+        /// <param name="list">[In]Список Element2D для заполнения</param>
         /// <param name="elTag">[In]Идентификатор элемента</param>
         /// <param name="nodes">[In]Узлы</param>
         /// <param name="kind">[In]Тип объекта</param>
-        protected void CreateElement2D(long elTag, Node[] nodes, ObjKind kind)
+        protected void CreateElement2D(List<Element2D> list, long elTag, Node[] nodes, ObjKind kind)
         {
-            elements2D.Add(new Element2D((int)elTag, nodes, kind));
+            list.Add(new Element2D((int)elTag, nodes, kind));
         }
         /// <summary>
         /// Создает Element3D
         /// </summary>
+        /// <param name="list">[In]Список Element3D для заполнения</param>
         /// <param name="elTag">[In]Идентификатор элемента</param>
         /// <param name="nodes">[In]Узлы</param>
         /// <param name="kind">[In]Тип объекта</param>
-        protected void CreateElement3D(long elTag, Node[] nodes, ObjKind kind)
+        protected void CreateElement3D(List<Element3D> list, long elTag, Node[] nodes, ObjKind kind)
         {
-            elements3D.Add(new Element3D((int)elTag, nodes, kind));
+            list.Add(new Element3D((int)elTag, nodes, kind));
         }
         /// <summary>
         /// Заполняет узлы сетки
         /// </summary>
+        /// <param name="nodes">[In]Узлы для заполнения</param>
         /// <param name="coords">[In]Координаты</param>
         /// <param name="tagPoints">[In]Идентификаторы</param>
-        protected override void CreateNodes(double[] coords, long[] tagPoints)
+        protected override void CreateNodes(List<Node> nodes, double[] coords, long[] tagPoints)
         {
             for (var i = 0; i < tagPoints.Length; ++i)
             {

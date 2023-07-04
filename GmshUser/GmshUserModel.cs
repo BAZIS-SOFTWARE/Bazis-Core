@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Model.GmshController;
 using Geometry;
 using Model.Interfaces;
+using System.Collections;
 
 namespace Model.GmshUser
 {
@@ -61,7 +62,6 @@ namespace Model.GmshUser
             GmshIO.gmshMerge(path, ref error);
             GmshIO.gmshModelSetFileName(path, ref error);
         }
-
         /// <summary>
         /// Освобождает неуправляемые ресурсы связанные с моделью 
         /// </summary>
@@ -154,17 +154,19 @@ namespace Model.GmshUser
             return tags;
         }
         /// <summary>
-        /// Извлекает все элементы из модели
+        /// Извлекает все элементы модели
         /// </summary>
-        protected void GetElements()
+        /// <returns>Хештаблица по ключам типа ObjKind</returns>
+        protected Hashtable GetElements()
         {
             long[] tagPoints;
             double[] coords;
             long[][] elTags, ptsTagsPerElems;
             ElementInfo[] info;
+            var ht = CreateHashTable();
             GmshUserMeshData.GetElements(Id,out elTags, out ptsTagsPerElems, out info);
             GmshUserMeshData.GetPoints(Id, out coords, out tagPoints);
-            CreateNodes(coords, tagPoints);
+            CreateNodes(ht[ObjKind.Node] as List<Node>,coords, tagPoints);
             var points3D = GmshUserGeometryData.ConvertToPoint3D(coords);
             for (var i = 0; i < info.Length; ++i)
             {
@@ -179,26 +181,48 @@ namespace Model.GmshUser
                         var tag = currentPoints[j * numNodes + k];
                         nodes[k] = new Node((int)tag, points3D[tag - 1]);
                     }
-                    ChooseElement(ref info[i].elementName, currentElement[j], nodes);
+                    ChooseElement(ht, ref info[i].elementName, currentElement[j], nodes);
                 }
             }
+            return ht;
         }
         /// <summary>
         /// Определяет тип элемента для заполнения
         /// </summary>
+        /// <param name="ht">[In]Хеш таблица для выбора списка элементов</param>
         /// <param name="name">[In]Имя элемента</param>
         /// <param name="elTag">[In]Идентификатор элемента</param>
         /// <param name="nodes">[In]Узлы ассоциированные с элементом</param>
-        protected virtual void ChooseElement(ref string name, long elTag, Node[] nodes)
+        protected virtual void ChooseElement(Hashtable ht,ref string name, long elTag, Node[] nodes)
         {
         }
         /// <summary>
         /// Заполняет узлы сетки
         /// </summary>
+        /// <param name="nodes">[In]Узлы для заполнения</param>
         /// <param name="coords">[In]Координаты</param>
         /// <param name="tagPoints">[In]Идентификаторы</param>
-        protected virtual void CreateNodes(double[] coords, long[] tagPoints)
+        protected virtual void CreateNodes(List<Node> nodes, double[] coords, long[] tagPoints)
         {
+        }
+
+        private Hashtable CreateHashTable()
+        {
+            var elements2d =  new List<Element2D>();
+            var elements3d = new List<Element3D>(); 
+            Hashtable ht = new Hashtable(11);
+            ht[ObjKind.Point] = new List<Node>();
+            ht[ObjKind.Node] = new List<Node>();
+            ht[ObjKind.Beam] = new List<Element1D>();
+            ht[ObjKind.Curve] = new List<Curve>();
+            ht[ObjKind.Triangle] = elements2d;
+            ht[ObjKind.Quad] = elements2d;
+            ht[ObjKind.ElementSurface] = elements2d;
+            ht[ObjKind.GeometrySurface] = new List<Surface>();
+            ht[ObjKind.Tetra] = elements3d;
+            ht[ObjKind.Hexa] = elements3d;
+            ht[ObjKind.Penta] = elements3d;
+            return ht;
         }
     }
 }
