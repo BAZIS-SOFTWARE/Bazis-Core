@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using Model.GmshUser;
+using ModelController.ModelScenePresentator;
 using System.IO;
 using System.Linq;
 
@@ -143,6 +144,18 @@ namespace TestModel
                     .Select((point, index) => new Node(index++, point))
                     .ToArray();
                 var x = new Curve(1, nodes);
+            }
+        }
+
+        [DataTestMethod]
+        [DataRow("Cilindr", ".step")]
+        public void TestCilinder(ref string scriptName, ref string scriptExt)
+        {
+            using (var connector = new GmshUserGeometry(srcDir + scriptName + scriptExt))
+            {
+                var surfaces = connector.GetSurfaces();
+                var minDensity = connector.MinDencity;
+                var maxDensity = connector.MaxDencity;
             }
         }
 

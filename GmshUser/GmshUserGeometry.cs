@@ -101,7 +101,7 @@ namespace Model.GmshUser
             var error = 0;
             GmshModel.gmshModelSetCurrent(Id.ToString(), ref error);
             GmshUserGeometryData.SetMinDencity(Id, MinDencity);
-            GmshUserGeometryData.SetMinDencity(Id, MaxDencity);
+            GmshUserGeometryData.SetMaxDencity(Id, MaxDencity);
             return GmshUserMeshData.GetElements(Id, "Triangle");
         }
         /// <summary>
