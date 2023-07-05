@@ -10,6 +10,7 @@ using Model.GmshController;
 using Model.ModelParcer;
 using Model.Interfaces;
 using Geometry;
+using System.Xml.Linq;
 
 namespace Model.GmshUser
 {
@@ -223,6 +224,36 @@ namespace Model.GmshUser
             {
                 var point = new Point3D((float)coords[i * 3], (float)coords[i * 3 + 1], (float)coords[i * 3 + 2]);
                 nodes.Add(new Node((int)tagPoints[i], point));
+            }
+        }
+
+        /// <summary>
+        /// Построение сечения сетки с сохранением цельных элементов, лежащих над заданной плоскостью
+        /// </summary>
+        /// <param name="plane">Плоскость сечения</param>
+        /// <returns>Перечисление элементов</returns>
+        public IEnumerable<Element3D> CutMesh(Plane plane)
+        {
+            var stop = false;
+            foreach (var element in elements3D)
+            {
+                foreach (var surface in element.GetSurface())
+                {
+                    foreach (var line in surface.GetLinesFromSurface(surface))
+                    {
+                        if (plane.PointPosition(line.P0) <= 0 || plane.PointPosition(line.P1) <= 0)
+                        {
+                            stop = true;
+                            break;
+                        }
+                    }
+                    if(stop)
+                        break;
+                }
+                if (!stop)
+                    yield return element;
+                else
+                    stop = false;
             }
         }
     }
