@@ -11,22 +11,18 @@ using System.Xml.Linq;
 using System.Reflection;
 using Model.Interfaces;
 using System.Runtime.Remoting.Messaging;
+using System.Collections;
 
 namespace Model.GmshUser
 {
     /// <summary>
     /// Класс для манипуляции Gmsh геометрии 
     /// </summary>
-    public class GmshUserGeometry : GmshUserModel
+    public class GmshGeometryObject : GmshModelObject
     {
         private const int defaultCurveSteps = 10;
         private const double defaultMinDencity = 0;
         private const double defaultMaxDencity = 1e+22;
-
-        private List<Node> nodes = new List<Node>();
-        private List<Curve> curves = new List<Curve>();
-        private List<Surface> surfaces = new List<Surface>();
-        
         /// <summary>
         /// Задает\получает шаг параметризации для кривой
         /// </summary>
@@ -36,22 +32,22 @@ namespace Model.GmshUser
         /// </summary>
         public double MinDencity 
         { 
-            get{ return GmshUserGeometryData.GetMinDencity(Id); }
-            set{ GmshUserGeometryData.SetMinDencity(Id,value); }
+            get{ return GmshGeometryObjectData.GetMinDencity(Id); }
+            set{ GmshGeometryObjectData.SetMinDencity(Id,value); }
         }
         /// <summary>
         /// Задает\получает плотность распределения точек
         /// </summary>
         public double MaxDencity
         {
-            get { return GmshUserGeometryData.GetMaxDencity(Id); }
-            set { GmshUserGeometryData.SetMaxDencity(Id, value); }
+            get { return GmshGeometryObjectData.GetMaxDencity(Id); }
+            set { GmshGeometryObjectData.SetMaxDencity(Id, value); }
         }
         /// <summary>
         /// Экземпляр для манипуляции Gmsh геометрии 
         /// </summary>
         /// <param name="path">[In]Путь до файла</param>
-        public GmshUserGeometry(string path) : base(path)
+        public GmshGeometryObject(string path) : base(path)
         {
             CurveSteps = defaultCurveSteps;
             MinDencity = defaultMinDencity;
@@ -64,49 +60,44 @@ namespace Model.GmshUser
         /// <param name="curveSteps">[In]Шаг параметризации для кривой</param>
         /// <param name="minDencity">[In]Минимальная плотность распределения точек</param>
         /// <param name="maxDencity">[In]Максимальная плотность распределения точек</param>
-        public GmshUserGeometry(string path, int curveSteps = defaultCurveSteps, double minDencity = defaultMinDencity,
+        public GmshGeometryObject(string path, int curveSteps = defaultCurveSteps, double minDencity = defaultMinDencity,
                                 double maxDencity = defaultMaxDencity) : base(path)
         {
             CurveSteps = curveSteps;
             MinDencity = minDencity;
             MaxDencity = maxDencity;
+            GmshGeometryObjectData.SetMinDencity(Id, MinDencity);
+            GmshGeometryObjectData.SetMaxDencity(Id, MaxDencity);
+        }
+
+        public override IEnumerator<Node> GetEnumerator()
+        {
+            var list = GetElements()[ObjKind.Point];
+            foreach (Node node in list) 
+            { 
+                yield return node;
+            }
         }
         /// <summary>
         /// Возвращает узлы привязанные к геометрии (контрольные точки)
         /// </summary>
         /// <returns>Точки</returns>
-        public override IEnumerable<Node> GetNodes()
-        {
-            GetElements();
-            return nodes;
-        }
+        public IEnumerable<ModelObject> GetNodes() => GetElements()[ObjKind.Point];
         /// <summary>
         /// Возвращает Curve
         /// </summary>
         /// <returns>Кривые или линии</returns>
-        public IEnumerable<Curve> GetCurves()
-        {
-            curves = GetLineObject<Curve>(AddCurveObject);
-            return curves;
-        }
+        public IEnumerable<Curve> GetCurves() => GetLineObject<Curve>(CreateCurve);
         /// <summary>
         /// Возвращает Element1D
         /// </summary>
         /// <returns>Кривые или линии</returns>
-        public IEnumerable<Element1D> GetElement1D() => GetLineObject<Element1D>(AddElement1DObject);
+        public IEnumerable<Element1D> GetElement1D() => GetLineObject<Element1D>(CreateElement1D);
         /// <summary>
         /// Возвращает поверхности привязанные к геометрии
         /// </summary>
         /// <returns>Поверхности</returns>
-        public IEnumerable<Surface> GetSurfaces()
-        {
-            var error = 0;
-            GmshModel.gmshModelSetCurrent(Id.ToString(), ref error);
-            GmshUserGeometryData.SetMinDencity(Id, MinDencity);
-            GmshUserGeometryData.SetMaxDencity(Id, MaxDencity);
-            GetElements();
-            return surfaces;
-        }
+        public IEnumerable<ModelObject> GetSurfaces() => GetElements()[ObjKind.GeometrySurface];
         /// <summary>
         /// Установить произвольный шаг параметризации
         /// </summary>
@@ -124,36 +115,40 @@ namespace Model.GmshUser
         /// <summary>
         /// Определяет тип элемента для заполнения
         /// </summary>
+        /// <param name="dict">[In]Словарь для выбора списка элементов</param>
         /// <param name="name">[In]Имя элемента</param>
         /// <param name="elTag">[In]Идентификатор элемента</param>
         /// <param name="nodes">[In]Узлы ассоциированные с элементом</param>
-        protected override void ChooseElement(ref string name, long elTag, Node[] nodes)
+        protected override void ChooseElement(Dictionary<ObjKind, List<ModelObject>> dict,
+                                            ref string name, long elTag, Node[] nodes)
         {
             if (name.Contains("Point"))
-                CreateNode(elTag, nodes);
+                CreateNode(dict[ObjKind.Point], elTag, nodes);
             if (name.Contains("Triangle"))
-                CreateSurface(elTag, nodes, ObjKind.Triangle);
+                CreateSurface(dict[ObjKind.GeometrySurface], elTag, nodes, ObjKind.Triangle);
             else if (name.Contains("Quadrilateral"))
-                CreateSurface(elTag, nodes, ObjKind.Quad);
+                CreateSurface(dict[ObjKind.GeometrySurface], elTag, nodes, ObjKind.Quad);
         }
         /// <summary>
         /// Создает Node control point
         /// </summary>
+        /// <param name="list">[In]Список Node для заполнения</param>
         /// <param name="elTag">[In]Идентификатор элемента</param>
         /// <param name="nodes">[In]Узлы</param>
-        protected void CreateNode(long elTag, Node[] nodes)
+        protected void CreateNode(List<ModelObject> list, long elTag, Node[] nodes)
         {
-            this.nodes.Add(new Node((int)elTag, nodes[0].Position));
+            list.Add(new Node((int)elTag, nodes[0].Position));
         }
         /// <summary>
         /// Создает Surface
         /// </summary>
+        /// <param name="list">[In]Список Surface для заполнения</param>
         /// <param name="elTag">[In]Идентификатор элемента</param>
         /// <param name="nodes">[In]Узлы</param>
         /// <param name="kind">[In]Тип объекта</param>
-        protected void CreateSurface(long elTag, Node[] nodes, ObjKind kind)
+        protected void CreateSurface(List<ModelObject> list, long elTag, Node[] nodes, ObjKind kind)
         {
-            surfaces.Add(new Surface((int)elTag, nodes, kind));
+            list.Add(new Surface((int)elTag, nodes, kind));
         }
         /// <summary>
         /// Добавляет в список Curve
@@ -161,7 +156,7 @@ namespace Model.GmshUser
         /// <param name="dimTag">[In]Пара размерность : идентификатор</param>
         /// <param name="nodes">[In]Список узлов</param>
         /// <param name="curves">[In]Список кривых для заполнения</param>
-        private void AddCurveObject(Tuple<int,int> dimTag, List<Node> nodes, List<Curve> curves)
+        private void CreateCurve(Tuple<int,int> dimTag, List<Node> nodes, List<Curve> curves)
         {
             curves.Add(new Curve(dimTag.Item2, nodes.ToArray()));
         }
@@ -171,7 +166,7 @@ namespace Model.GmshUser
         /// <param name="dimTag">[In]Пара размерность : идентификатор</param>
         /// <param name="nodes">[In]Список узлов</param>
         /// <param name="list1D">[In]Список Element1D для заполнения</param>
-        private void AddElement1DObject(Tuple<int, int> dimTag, List<Node> nodes, List<Element1D> list1D)
+        private void CreateElement1D(Tuple<int, int> dimTag, List<Node> nodes, List<Element1D> list1D)
         {
             list1D.Add(new Element1D(dimTag.Item2, nodes.ToArray(), ObjKind.Beam));
         }
@@ -183,18 +178,18 @@ namespace Model.GmshUser
         /// <returns>Список линейных объектов</returns>
         private List<T> GetLineObject<T>(Action<Tuple<int,int>, List<Node>, List<T>> addLineObject) where T : ModelObject
         {
-            var pairs = GmshUserGeometryData.GetEntities(Id);
+            var pairs = GmshGeometryObjectData.GetEntities(Id);
             var lines = new List<T>();
             var steps = CurveSteps;
             foreach (var dimTag in FilterByDimension(pairs, new int[] { 1 }))
             {
-                var paramsCoord = GmshUserGeometryData.GetParametrizationBounds(Id, 1, dimTag);
-                if (GmshUserGeometryData.IsLine(Id, paramsCoord[0], dimTag))
+                var paramsCoord = GmshGeometryObjectData.GetParametrizationBounds(Id, 1, dimTag);
+                if (GmshGeometryObjectData.IsLine(Id, paramsCoord[0], dimTag))
                     steps = 2;
                 else
                     paramsCoord[0] = SetCustomStepParametrization(paramsCoord[0], steps);
-                var points = GmshUserGeometryData.GetPoints(Id, paramsCoord[0], dimTag);
-                var points3D = GmshUserGeometryData.ConvertToPoint3D(points);
+                var points = GmshGeometryObjectData.GetPoints(Id, paramsCoord[0], dimTag);
+                var points3D = GmshGeometryObjectData.ConvertToPoint3D(points);
                 var nodes = new List<Node>();
                 var indices = 0;
                 var pointTags = CreateTags(steps * 2 - 2, ref nextPointId);
