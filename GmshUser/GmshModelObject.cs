@@ -16,7 +16,7 @@ namespace Model.GmshUser
     /// <summary>
     /// Класс модель представляет сущность в gmsh api
     /// </summary>
-    public abstract class GmshUserModel : IDisposable
+    public abstract class GmshModelObject : IDisposable, IEnumerable<Node>
     {
         /// <summary>
         /// Уникальный идентификатор следущей точки
@@ -38,14 +38,14 @@ namespace Model.GmshUser
         /// <summary>
         /// Создает модель заданную пользователем
         /// </summary>
-        public GmshUserModel()
+        public GmshModelObject()
         {
             GmshUserConnection.Init();
         }
         /// <summary>
         /// Создает модель заданную пользователем из скрипт-файла
         /// </summary>
-        public GmshUserModel(string path)
+        public GmshModelObject(string path)
         {
             GmshUserConnection.Init();
             Load(path);
@@ -80,7 +80,7 @@ namespace Model.GmshUser
         /// Возращает набор точек связанный с данной моделью
         /// </summary>
         /// <returns>Набор точек</returns>
-        public abstract IEnumerable<Node> GetNodes();
+        //public abstract IEnumerable<Node> GetNodes();
         /// <summary>
         /// Генерирует сетку для текущей модели
         /// </summary>
@@ -131,7 +131,7 @@ namespace Model.GmshUser
         /// <param name="down">[Out]Набор пар нижних границ  размерность : идентифкатор</param>
         /// <param name="up">[Out]Набор пар верхних границ  размерность : идентифкатор</param>
         /// <param name="dimTag">[In]Запрашиваемая пара размерность : идентифкатор</param>
-        protected void GetEntityBounds(out int[] down, out int[] up, Tuple<int,int> dimTag)
+        protected void GetEntityBounds(out int[] down, out int[] up, Tuple<int, int> dimTag)
         {
             var error = 0;
             IntPtr downward, downward_n, upward, upward_n;
@@ -156,18 +156,18 @@ namespace Model.GmshUser
         /// <summary>
         /// Извлекает все элементы модели
         /// </summary>
-        /// <returns>Хештаблица по ключам типа ObjKind</returns>
-        protected Hashtable GetElements()
+        /// <returns>Словарь по ключам типа ObjKind</returns>
+        protected Dictionary<ObjKind,List<ModelObject>> GetElements()
         {
             long[] tagPoints;
             double[] coords;
             long[][] elTags, ptsTagsPerElems;
             ElementInfo[] info;
-            var ht = CreateHashTable();
-            GmshUserMeshData.GetElements(Id,out elTags, out ptsTagsPerElems, out info);
-            GmshUserMeshData.GetPoints(Id, out coords, out tagPoints);
-            CreateNodes(ht[ObjKind.Node] as List<Node>,coords, tagPoints);
-            var points3D = GmshUserGeometryData.ConvertToPoint3D(coords);
+            var dict = CreateDictionary();
+            GmshMeshObjectData.GetElements(Id, out elTags, out ptsTagsPerElems, out info);
+            GmshMeshObjectData.GetPoints(Id, out coords, out tagPoints);
+            CreateNodes(dict[ObjKind.Node], coords, tagPoints);
+            var points3D = GmshGeometryObjectData.ConvertToPoint3D(coords);
             for (var i = 0; i < info.Length; ++i)
             {
                 var currentElement = elTags[i];
@@ -181,48 +181,99 @@ namespace Model.GmshUser
                         var tag = currentPoints[j * numNodes + k];
                         nodes[k] = new Node((int)tag, points3D[tag - 1]);
                     }
-                    ChooseElement(ht, ref info[i].elementName, currentElement[j], nodes);
+                    ChooseElement(dict, ref info[i].elementName, currentElement[j], nodes);
                 }
             }
-            return ht;
+            return dict;
         }
         /// <summary>
         /// Определяет тип элемента для заполнения
         /// </summary>
-        /// <param name="ht">[In]Хеш таблица для выбора списка элементов</param>
+        /// <param name="dict">[In]Словарь списков элементов</param>
         /// <param name="name">[In]Имя элемента</param>
         /// <param name="elTag">[In]Идентификатор элемента</param>
         /// <param name="nodes">[In]Узлы ассоциированные с элементом</param>
-        protected virtual void ChooseElement(Hashtable ht,ref string name, long elTag, Node[] nodes)
-        {
-        }
+        protected abstract void ChooseElement(Dictionary<ObjKind, List<ModelObject>> dict,
+                                                        ref string name, long elTag, Node[] nodes);
         /// <summary>
         /// Заполняет узлы сетки
         /// </summary>
         /// <param name="nodes">[In]Узлы для заполнения</param>
         /// <param name="coords">[In]Координаты</param>
         /// <param name="tagPoints">[In]Идентификаторы</param>
-        protected virtual void CreateNodes(List<Node> nodes, double[] coords, long[] tagPoints)
+        protected virtual void CreateNodes(List<ModelObject> nodes, double[] coords, long[] tagPoints)
         {
         }
-
-        private Hashtable CreateHashTable()
+        /// <summary>
+        /// Получает физическое имя для данной размерности : идентификатора
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <returns>Физическое имя</returns>
+        protected string GetPhysicalName(int dim, int tag)
         {
-            var elements2d =  new List<Element2D>();
-            var elements3d = new List<Element3D>(); 
-            Hashtable ht = new Hashtable(11);
-            ht[ObjKind.Point] = new List<Node>();
-            ht[ObjKind.Node] = new List<Node>();
-            ht[ObjKind.Beam] = new List<Element1D>();
-            ht[ObjKind.Curve] = new List<Curve>();
-            ht[ObjKind.Triangle] = elements2d;
-            ht[ObjKind.Quad] = elements2d;
-            ht[ObjKind.ElementSurface] = elements2d;
-            ht[ObjKind.GeometrySurface] = new List<Surface>();
-            ht[ObjKind.Tetra] = elements3d;
-            ht[ObjKind.Hexa] = elements3d;
-            ht[ObjKind.Penta] = elements3d;
-            return ht;
+            var error = 0;
+            IntPtr name = IntPtr.Zero;
+            GmshModel.gmshModelSetCurrent(Id.ToString(), ref error);
+            GmshModel.gmshModelGetPhysicalName(dim, tag, ref name ,ref error);
+            return GmshUserMemory.GetName(name);
+        }
+        /// <summary>
+        /// Возвращает имя сущности для заданной размерности : идентификатора
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <returns>Имя сущности</returns>
+        protected string GetEntityName(int dim, int tag)
+        {
+            var error = 0;
+            IntPtr name = IntPtr.Zero;
+            GmshModel.gmshModelSetCurrent(Id.ToString(), ref error);
+            GmshModel.gmshModelGetEntityName(dim, tag, ref name, ref error);
+            return GmshUserMemory.GetName(name);
+        }
+        /// <summary>
+        /// Возвращает тип сущности для заданной размерности : идентификатора
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <returns>Тип сущности</returns>
+        protected string GetEntityType(int dim, int tag)
+        {
+            var error = 0;
+            IntPtr name = IntPtr.Zero;
+            GmshModel.gmshModelGetType(dim, tag, ref name, ref error);
+            GmshModel.gmshModelGetEntityName(dim, tag, ref name, ref error);
+            return GmshUserMemory.GetName(name);
+        }
+
+        private Dictionary<ObjKind, List<ModelObject>> CreateDictionary()
+        {
+            var elements2d = new List<ModelObject>();
+            var elements3d = new List<ModelObject>(); 
+            var dict = new Dictionary<ObjKind, List<ModelObject>>(11);
+            dict.Add(ObjKind.Point, new List<ModelObject>());
+            dict.Add(ObjKind.Node, new List<ModelObject>());
+            dict.Add(ObjKind.Beam, new List<ModelObject>());
+            dict.Add(ObjKind.Curve, new List<ModelObject>());
+            dict.Add(ObjKind.Triangle, elements2d);
+            dict.Add(ObjKind.Quad, elements2d);
+            dict.Add(ObjKind.ElementSurface, elements2d);
+            dict.Add(ObjKind.GeometrySurface, new List<ModelObject>());
+            dict.Add(ObjKind.Tetra, elements3d);
+            dict.Add(ObjKind.Hexa, elements3d);
+            dict.Add(ObjKind.Penta, elements3d);
+            return dict;
+        }
+
+        public virtual IEnumerator<Node> GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
         }
     }
 }

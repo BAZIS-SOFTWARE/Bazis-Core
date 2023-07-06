@@ -75,7 +75,6 @@ namespace Model.GmshController
         public static extern void gmshModelGetBoundary(int[] dimTags, IntPtr dimTags_n, ref IntPtr outDimTags,
                                                        ref IntPtr outDimTags_n, int combined, int oriented,
                                                        int recursive, ref int ierr);
-
         /// <summary>
         /// Получает физическое имя для заданной размерности : идентификатора
         /// </summary>
@@ -95,9 +94,6 @@ namespace Model.GmshController
         /// <param name="ierr">[Out]Флаг ошибки</param>
         [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void gmshModelGetEntityName(int dim, int tag, ref IntPtr name, ref int ierr);
-
-
-
         /// <summary>
         /// Получает параметризацию сущности заданной парой размерность : идентификатор
         /// </summary>
@@ -112,8 +108,6 @@ namespace Model.GmshController
         public static extern void gmshModelGetParametrization(int dim, int tag, double[] coord, IntPtr coord_n,
                                                               ref IntPtr parametricCoord, ref IntPtr parametricCoord_n,
                                                               ref int ierr);
-
-
         /// <summary>
         /// Получает минимальные максимальные границы параметризации
         /// </summary>
@@ -128,7 +122,6 @@ namespace Model.GmshController
         public static extern void gmshModelGetParametrizationBounds(int dim, int tag, ref IntPtr min,
                                                                     ref IntPtr min_n, ref IntPtr max,
                                                                     ref IntPtr max_n, ref int ierr);
-
         /// <summary>
         /// Получает соседей верхнего\нижнего уровня для текущей пары размерность : идентификатор
         /// </summary>
@@ -142,12 +135,6 @@ namespace Model.GmshController
         [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void gmshModelGetAdjacencies(int dim, int tag, ref IntPtr upward, ref IntPtr upward_n,
                                                           ref IntPtr downward, ref IntPtr downward_n, ref int ierr);
-        /*GMSH_API void gmshModelGetAdjacencies(const int dim,
-                                      const int tag,
-                                      int** upward, size_t * upward_n,
-                                      int** downward, size_t * downward_n,
-                                      int* ierr);*/
-
         /// <summary>
         /// Полчучает тип сущности по указанной паре размерность : идентификатор
         /// </summary>

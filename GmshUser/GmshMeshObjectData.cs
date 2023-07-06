@@ -52,7 +52,7 @@ namespace Model.GmshUser
     /// <summary>
     /// Извлекает данные о сетке заданной модели
     /// </summary>
-    public static class GmshUserMeshData
+    public static class GmshMeshObjectData
     {
         /// <summary>
         /// Извлекает элементы сетки из модели по интересующим нам размерности : идентификатору

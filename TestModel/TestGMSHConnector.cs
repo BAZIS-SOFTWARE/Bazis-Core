@@ -27,7 +27,7 @@ namespace TestModel
         [TestMethod]
         public void TestCreateGmshController()
         {
-            using (var connector = new GmshUserMesh(srcDir + "Cilindr1D.stp"))
+            using (var connector = new GmshMeshObject(srcDir + "Cilindr1D.stp"))
             {
             }
         }
@@ -49,7 +49,7 @@ namespace TestModel
                                             ref string objType, ref string expected)
         {
             var actual = false;
-            using (var connector = new GmshUserMesh(srcDir + scriptName + scriptExt))
+            using (var connector = new GmshMeshObject(srcDir + scriptName + scriptExt))
             {
                 connector.Generate(objType);
                 var data = connector.GetModelDataFromParcer();
@@ -69,7 +69,7 @@ namespace TestModel
                                                  ref string objType, ref string dencity)
         {
             string actual = string.Empty;
-            using (var connector = new GmshUserMesh(srcDir + scriptName + scriptExt))
+            using (var connector = new GmshMeshObject(srcDir + scriptName + scriptExt))
             {
                 connector.Generate(objType);
                 connector.Dencity = dencity;
@@ -85,7 +85,7 @@ namespace TestModel
         [DataRow("sphere3D", ".geo", "Элементы3D")]
         public void TestQuadrangulateGmshController(ref string scriptName, ref string scriptExt, ref string objType)
         {
-            using (var connector = new GmshUserMesh(srcDir + scriptName + scriptExt))
+            using (var connector = new GmshMeshObject(srcDir + scriptName + scriptExt))
             {
                 connector.Generate(objType);
                 connector.QuadrangulateMesh();
@@ -98,7 +98,7 @@ namespace TestModel
         [DataRow("sphere3D", ".geo", "Элементы3D")]
         public void TestRefineGmshController(ref string scriptName, ref string scriptExt, ref string objType)
         {
-            using (var connector = new GmshUserMesh(srcDir + scriptName + scriptExt))
+            using (var connector = new GmshMeshObject(srcDir + scriptName + scriptExt))
             {
                 connector.Generate(objType);
                 connector.RefineMesh();
@@ -110,9 +110,9 @@ namespace TestModel
         [DataRow("sphere", ".geo", "Элементы3D")]
         public void TestMeshGetElementsGmshController(ref string scriptName, ref string scriptExt, ref string objType)
         {
-            using (var connector = new GmshUserMesh(srcDir + scriptName + scriptExt))
+            using (var connector = new GmshMeshObject(srcDir + scriptName + scriptExt))
             {
-                connector.Generate("Элементы1D");
+                connector.Generate("Элементы2D");
                 var nodes = connector.GetNodes();
                 var elements1D = connector.GetElement1D();
                 var elements2D = connector.GetElement2D();
@@ -125,7 +125,7 @@ namespace TestModel
         [DataRow("Cilindr", ".step")]
         public void TestGeometryGetElementsGmshController(ref string scriptName, ref string scriptExt)
         {
-            using (var connector = new GmshUserGeometry(srcDir + scriptName + scriptExt))
+            using (var connector = new GmshGeometryObject(srcDir + scriptName + scriptExt))
             {
                 connector.Generate("Элементы2D");
                 var nodes = connector.GetNodes();
@@ -140,7 +140,7 @@ namespace TestModel
         [DataRow("test", ".geo")]
         public void TestSpline(ref string scriptName, ref string scriptExt)
         {
-            using (var connector = new GmshUserGeometry(srcDir + scriptName + scriptExt))
+            using (var connector = new GmshGeometryObject(srcDir + scriptName + scriptExt))
             {
                 var curves = connector.GetCurves();
                 var curve = curves.First();

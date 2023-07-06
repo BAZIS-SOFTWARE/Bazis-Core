@@ -20,7 +20,7 @@ namespace Model.GmshUser
     /// <summary>
     /// Извлекает данные о геометрии заданной модели
     /// </summary>
-    public static class GmshUserGeometryData
+    public static class GmshGeometryObjectData
     {
         private delegate void Derivative(int dim, int tag, double[] parametricCoord, IntPtr parametricCoord_n,
                                          ref IntPtr derivatives, ref IntPtr derivatives_n, ref int ierr);
