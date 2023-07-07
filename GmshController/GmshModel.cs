@@ -152,5 +152,31 @@ namespace Model.GmshController
         /// <returns></returns>
         [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern int gmshClear(ref int ierr);
+        /// <summary>
+        /// Возвращает весь список моделей в gmsh
+        /// </summary>
+        /// <param name="names">[Out]Массив имен моделей</param>
+        /// <param name="names_n">[Out]Длина массива</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelList(ref IntPtr names, ref IntPtr names_n, ref int ierr);
+        /// <summary>
+        /// Возвращает ограничивающий параллелепипед
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="xmin">[Out]Минимальное значение X</param>
+        /// <param name="ymin">[Out]Минимальное значение Y</param>
+        /// <param name="zmin">[Out]Минимальное значение Z</param>
+        /// <param name="xmax">[Out]Максимальное значение X</param>
+        /// <param name="ymax">[Out]Максимальное значение Y</param>
+        /// <param name="zmax">[Out]Максимальное значение Z</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelGetBoundingBox(int dim, int tag, ref double xmin, 
+                                                          ref double ymin, ref double zmin, 
+                                                          ref double xmax, ref double ymax, 
+                                                          ref double zmax, ref int ierr);
+
     }
 }

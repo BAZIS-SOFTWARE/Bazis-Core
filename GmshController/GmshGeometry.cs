@@ -10,7 +10,7 @@ namespace Model.GmshController
     /// <summary>
     /// Класс с группой методов для работы с геометрией
     /// </summary>
-    public static class GmshGeometry
+    public static class GmshGeometry 
     {
         /// <summary>
         /// Получает геометрию модели в виде вектора пар размерность : идентификатор

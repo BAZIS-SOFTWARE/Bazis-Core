@@ -57,7 +57,7 @@ namespace Model.GmshUser
         public void Load(string path)
         {
             var error = 0;
-            Id = GmshUserConnection.GetId();
+            Id = GmshUserConnection.GetId();   
             GmshModel.gmshModelAdd(Id.ToString(), ref error);
             GmshIO.gmshMerge(path, ref error);
             GmshIO.gmshModelSetFileName(path, ref error);

@@ -99,6 +99,7 @@
     <Compile Include="GmshController\GmshIO.cs" />
     <Compile Include="GmshController\GmshMesh.cs" />
     <Compile Include="GmshController\GmshModel.cs" />
+    <Compile Include="GmshUser\GmshModelObjectData.cs" />
     <Compile Include="GmshUser\GmshUserConnection.cs" />
     <Compile Include="GmshUser\GmshGeometryObject.cs" />
     <Compile Include="GmshUser\GmshGeometryObjectData.cs" />
