@@ -13,6 +13,7 @@ using Model.Interfaces;
 using System.Runtime.Remoting.Messaging;
 using System.Collections;
 using System.Drawing.Imaging;
+using MathNet.Numerics.Integration;
 
 namespace Model.GmshUser
 {
@@ -219,73 +220,10 @@ namespace Model.GmshUser
         /// <returns>Возвращает id выбранной прямой</returns>
         public int SelectCurveOnMouseClick(Point2D clickPoint)
         {
+
+
+
             throw new NotImplementedException();
-        }
-        /// <summary>
-        /// Задает расположение узлов на кривой 
-        /// <param name="number">[In]Количество точек</param>
-        /// <param name="ta">[In]Тип расположения точек (Progressive и т.д), числовой параметр</param>
-        /// <param name="parameter">[In]Выбранная кривая (может состоять из нескольких последовательно соединённых кривых)</param>
-        /// <param name="curve">[In]Кривая или набор кривых</param>
-        public void SetMeshPointsOnCurve(int number, TransfiniteAlgorithm ta, double parameter, Curve[] curve)
-        {
-            var error = 0;
-            GmshModel.gmshModelSetCurrent(Id.ToString(), ref error);
-            for(var  i = 0; i < curve.Length; ++i)
-            {
-                var points3D = new Point3D[0];
-                switch (ta)
-                {
-                    case TransfiniteAlgorithm.Progressive:
-                        points3D = GenerateCurveProgressivePoints(curve[i].Number, number, parameter);
-                        break;
-                    case TransfiniteAlgorithm.Bump:
-                        points3D = GenerateCurveBumpPoints(curve[i].Number, number, parameter);
-                        break;
-                }
-                //points3D
-            }
-        }
-
-        private Point3D[] GenerateCurveProgressivePoints(int tag, int number, double parameter)
-        {
-            var pair = Tuple.Create(1, tag);
-            var bound = GmshGeometryObjectData.GetParametrizationBounds(Id, 1, pair);
-            var length = bound[0][1] - bound[0][0];
-            //TODO: исключить деление на ноль
-            var layer = new double[number - 1];
-            var a = length * (parameter - 1) / (Math.Pow(parameter, number - 1));
-            layer[0] = a;
-            for (var j = 1; j < number - 1; ++j)
-                layer[j] = parameter * layer[j - 1];
-            var coords = GmshGeometryObjectData.GetPoints(Id, layer, pair);
-            return GmshGeometryObjectData.ConvertToPoint3D(coords);
-        }
-
-        private Point3D[] GenerateCurveBumpPoints(int tag, int number, double parameter)
-        {
-            /*
-            case 2: // Bump
-            {
-                double a;
-                if (coef > 1.0)
-                {
-                    a = -4. * sqrt(coef - 1.) * atan2(1., sqrt(coef - 1.)) /
-                      ((double)nbpt * length);
-                }
-                else
-                {
-                    a = 2. * sqrt(1. - coef) * log(fabs((1. + 1. / sqrt(1. - coef)) /
-                                                        (1. - 1. / sqrt(1. - coef))))
-                      / ((double)nbpt * length);
-                }
-                double b = -a * length * length / (4. * (coef - 1.));
-                val = d / (-a * SQU(t * length - (length) * 0.5) + b);
-            }*/
-
-            /*t is the curvilinear abscissa, and d is the norm of the derivative of 
-                the parametrization (Взять производную в точке). val - результат вычисления видимо как layer[i]*/
-            return null;
         }
     }
 }

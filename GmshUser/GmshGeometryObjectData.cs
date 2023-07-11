@@ -14,6 +14,8 @@ using System.Diagnostics.Tracing;
 using Model.Interfaces;
 using System.Runtime.CompilerServices;
 using System.Globalization;
+using MathNet.Numerics.Integration;
+using MathNet.Numerics.LinearAlgebra;
 
 namespace Model.GmshUser
 {
@@ -209,6 +211,32 @@ namespace Model.GmshUser
             for (var i = 2; i < coordsArray.Length; i += 3)
                 points.Add(new Point3D((float)coordsArray[i - 2], (float)coordsArray[i - 1], (float)coordsArray[i]));
             return points.ToArray();
+        }
+
+        /// <summary>
+        /// Высчитывается кривизна по правилу Гаусса-Лежендра
+        /// </summary>
+        /// <param name="numberPoints">[In]Число точек</param>
+        /// <returns></returns>
+        public static double CurveLength(long modelId, int tag, int numberPoints)
+        {
+            var pair = Tuple.Create(1, tag);
+            var bounds = GetParametrizationBounds(modelId, 1, pair);
+            var minBound = bounds[0][0];
+            var maxBound = bounds[0][1];
+            var rule = new GaussLegendreRule(-1.0, 1.0, numberPoints);
+            var t = rule.Abscissas;
+            var w = rule.Weights;
+            double L = 0.0;
+            double rapJ = (maxBound - minBound) * 0.5;
+            for (int i = 0; i < numberPoints; i++)
+            {
+                double ui = minBound * 0.5 * (1.0 - t[i]) + maxBound * 0.5 * (1.0 + t[i]);
+                var vector = GetDerivative(modelId, new double[] { ui }, "first", pair);
+                var d = Vector.GetVectorLenght(new Point3D((float)vector[0], (float)vector[1], (float)vector[2]));
+                L += d * w[i] * rapJ;
+            }
+            return L;
         }
     }
 }

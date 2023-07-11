@@ -94,5 +94,45 @@ namespace Model.GmshController
                                     ref IntPtr parametricCoord, ref IntPtr parametricCoord_n,
                                     int dim, int tag, int includeBoundary, int returnParametricCoord,
                                     ref int ierr);
+        /// <summary>
+        /// Задает количество точек на кривой
+        /// </summary>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="numNodes">[In]Число точек</param>
+        /// <param name="meshType">[In]Алгоритм распределения точек</param>
+        /// <param name="coef">[In]Коэффициент прогрессии</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelMeshSetTransfiniteCurve(int tag, int numNodes, String meshType,
+                                                                   double coef, ref int ierr);
+        /// <summary>
+        /// Находит элементы сетки по переданной координате x,y,z
+        /// </summary>
+        /// <param name="x">[In]Координата x</param>
+        /// <param name="y">[In]Координата y</param>
+        /// <param name="z">[In]Координата z</param>
+        /// <param name="elementTags">[Out]Массив найденных элементов</param>
+        /// <param name="elementTags_n">[Out]Длина массива</param>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="strict">[In]Строгий поиск?</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelMeshGetElementsByCoordinates(double x, double y, double z, ref IntPtr elementTags,
+                                                                        ref IntPtr elementTags_n, int dim, 
+                                                                        int strict, ref int ierr);
+
+        /// <summary>
+        /// Получает локальные координаты элемента с заданным идентификатором
+        /// </summary>
+        /// <param name="elementTag">[In]Идентификатор элемента</param>
+        /// <param name="x">[In]Координата x</param>
+        /// <param name="y">[In]Координата y</param>
+        /// <param name="z">[In]Координата z</param>
+        /// <param name="u">[Out]Параметрические координаты u</param>
+        /// <param name="v">[Out]Параметрические координаты v</param>
+        /// <param name="w">[Out]Параметрические координаты w</param>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelMeshGetLocalCoordinatesInElement(UIntPtr elementTag, double x, double y, double z,
+                                                                            ref double u, ref double v, ref double w);
     }
 }

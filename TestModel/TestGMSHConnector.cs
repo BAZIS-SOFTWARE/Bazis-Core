@@ -134,6 +134,18 @@ namespace TestModel
                 var surfaces = connector.GetSurfaces();
             }
         }
+        [DataTestMethod]
+        [DataRow("Korpus_Nasosa", ".step")]
+        public void TestGmshCurveTransfinite(ref string name, ref string ext)
+        {
+            using (var connector = new GmshMeshObject(srcDir + name + ext))
+            {
+                connector.Generate("Элементы2D");
+                var curves = connector.GetCurves().ToArray();
+                connector.SetMeshPointsOnCurve( 10, TransfiniteAlgorithm.Progressive, 3, curves);
+                connector.Generate("Элементы2D");
+            }
+        }
 
         [DataTestMethod]
         [DataRow("Cilindr", ".step", "model", ".igs")]

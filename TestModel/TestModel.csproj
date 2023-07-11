@@ -91,6 +91,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GmshTests\GmshWrapperConnectionTests.cs" />
+    <Compile Include="GmshTests\GmshWrapperMeshTests.cs" />
+    <Compile Include="GmshTests\GmshWrapperModelTests.cs" />
     <Compile Include="SearchModelObjects.cs" />
     <Compile Include="TestAlphaColor.cs" />
     <Compile Include="TestCalcDistance.cs" />

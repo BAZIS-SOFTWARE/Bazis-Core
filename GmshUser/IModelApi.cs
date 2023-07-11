@@ -12,7 +12,7 @@ namespace Model.GmshUser
         /// <summary>
         /// Удалить сущность по щелчку мыши на неё
         /// </summary>
-        /// <param name="clickPoint">[In]Точка в видовых координатах</param>
-        void DeleteEntityOnMouseClick(Point3D clickPoint);
+        /// <param name="clickPoint">[In]Точка экранных координатах</param>
+        void DeleteEntityOnMouseClick(Point2D clickPoint);
     }
 }
