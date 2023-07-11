@@ -17,45 +17,53 @@ namespace ModelController.MeshObjsUtility
             this.objectsData = objectsData;
         }
 
-        public List<int> SelectInDirection<T>(float angleInGradus, int firstNumber, int secondNumber, Color color)
+        /// <summary>
+        /// Выбор последовательности узлов по заданному напрвлению. Направление задаётся номерами двух смежных узлов.
+        /// </summary>
+        /// <param name="angleInGradus">Максимальный угол в градусах, под которым будет выделение</param>
+        /// <param name="indexFirst">Номер первого узла</param>
+        /// <param name="indexSecond">Номер второго узла</param>
+        /// <param name="color">Цвет выделения</param>
+        /// <returns>
+        /// Номера выделенных узлов
+        /// </returns>
+        public List<int> SelectInDirection<T>(float angleInGradus, int indexFirst, int indexSecond, Color color)
             where T : SurfaceElement
         {
             var elements = objectsData.FindMany<T>().ToArray();
-            var finder = new FindInterfacedNodes(elements);
-            var interfacesNodes = finder.Find();
-            var cos = Math.Cos(ConvertGradusToRadian(angleInGradus));
-            var isFind = true;
-            var visitNodes = new List<int>() { firstNumber, secondNumber };
-            while (isFind)
+            var interfacedElements = new FindInterfacedNodes(elements).Find();
+            var firstNode = (Node)objectsData.Find(indexFirst);
+            var secondNode = (Node)objectsData.Find(indexSecond);
+            var initialDirection = secondNode.Position.Sub(firstNode.Position);
+            var result = new List<int> { indexFirst, indexSecond };
+            var currentNode = secondNode;
+            var isMoveNext = true;
+            while (isMoveNext)
             {
-                isFind = false;
-                var firstNode = (Node)objectsData.Find(firstNumber);
-                var secondNode = (Node)objectsData.Find(secondNumber);
-                var dir = secondNode.Position.Sub(firstNode.Position);
-                foreach (var elementNumber in interfacesNodes[secondNumber])
+                isMoveNext = false;
+                foreach(var elementNumber in interfacedElements[currentNode.Number])
                 {
-                    var elem = objectsData.Find(elements, elementNumber);
-                    foreach (var elementNode in elem.GetNodes())
+                    var element = (T)objectsData.Find(elementNumber);
+                    foreach(var node in element.GetNodes())
                     {
-                        var tempDirection = elementNode.Position.Sub(secondNode.Position);
-                        var angle = Math.Abs(Vector.GetAngleVectors(dir, tempDirection));
-                        if (angle > cos && !visitNodes.Contains(elementNode.Number))
+                        var currentDirection = node.Position.Sub(currentNode.Position);
+                        var angle = Math.Acos(Vector.GetAngleVectors(currentDirection, initialDirection));
+                        if(angle <= ConvertGradusToRadian(angleInGradus))
                         {
-                            elementNode.MasterColor = color;
-                            firstNumber = visitNodes.Last();
-                            secondNumber = elementNode.Number;
-                            visitNodes.Add(elementNode.Number);
-                            isFind = true;
+                            currentNode = node;
+                            node.MasterColor = color;
+                            result.Add(node.Number);
+                            isMoveNext = true;
                             break;
                         }
                     }
-                    if (isFind) 
+                    if (isMoveNext)
                         break;
                 }
             }
-            return visitNodes;
+            return result;
         }
-        
+
         public void SelectInPlane<T>(Plane plane, Color color)
                     where T : Node
         {
@@ -108,10 +116,10 @@ namespace ModelController.MeshObjsUtility
         }
 
         /// <returns>
-        /// Словарь, где ключ - номер элемента, значение - список номеров элементов, 
+        /// Словарь, где ключ - номер элемента (2D, 3D), значение - список номеров элементов, 
         /// имеющих хотя бы одну общую точку с ключом.
         /// </returns>
-        private Dictionary<int, List<int>> GetAdjacentElements(Element2D[] elements)
+        private Dictionary<int, List<int>> GetAdjacentElements(SurfaceElement[] elements)
         {
             var graph = new Dictionary<int, List<int>>();
             var finder = new FindInterfacedNodes(elements);

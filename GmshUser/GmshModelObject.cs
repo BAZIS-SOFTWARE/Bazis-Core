@@ -157,7 +157,7 @@ namespace Model.GmshUser
         /// Извлекает все элементы модели
         /// </summary>
         /// <returns>Словарь по ключам типа ObjKind</returns>
-        protected Dictionary<ObjKind,List<ModelObject>> GetElements()
+        protected Dictionary<ObjKind, List<ModelObject>> GetElements()
         {
             long[] tagPoints;
             double[] coords;
@@ -215,7 +215,7 @@ namespace Model.GmshUser
             var error = 0;
             IntPtr name = IntPtr.Zero;
             GmshModel.gmshModelSetCurrent(Id.ToString(), ref error);
-            GmshModel.gmshModelGetPhysicalName(dim, tag, ref name ,ref error);
+            GmshModel.gmshModelGetPhysicalName(dim, tag, ref name, ref error);
             return GmshUserMemory.GetName(name);
         }
         /// <summary>
@@ -250,7 +250,7 @@ namespace Model.GmshUser
         private Dictionary<ObjKind, List<ModelObject>> CreateDictionary()
         {
             var elements2d = new List<ModelObject>();
-            var elements3d = new List<ModelObject>(); 
+            var elements3d = new List<ModelObject>();
             var dict = new Dictionary<ObjKind, List<ModelObject>>(11);
             dict.Add(ObjKind.Point, new List<ModelObject>());
             dict.Add(ObjKind.Node, new List<ModelObject>());

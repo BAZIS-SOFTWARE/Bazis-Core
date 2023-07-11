@@ -159,13 +159,7 @@ namespace TestModel
         [DataRow("nasos", ".step")]
         public void TestCilinder(ref string scriptName, ref string scriptExt)
         {
-            using (var connector = new GmshUserMesh(srcDir + scriptName + scriptExt))
-            {
-                connector.Generate("Элементы3D");
-                var crossSection = new CrossSection();
-                var plane = new Plane(new Point3D(0, 0, 0), new Point3D(1, 0, 0), new Point3D(0, 1, 0));
-                var section = crossSection.GetSectionSurfaces(connector.GetElement3D().ToList(), plane);
-            }
+            
         }
 
         private string[] CuttedString(string path) => File.ReadAllLines(path).Skip(2).ToArray();

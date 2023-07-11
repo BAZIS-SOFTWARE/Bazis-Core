@@ -63,7 +63,7 @@ namespace Model.GmshUser
         /// <param name="info">[In]Массив ElementsInfo для заполнения </param>
         /// <param name="elTags">[In]Матрица тегов элементов по типам элемента</param>
         /// <param name="ptsTags">[In]Матрица тегов точек по типам элемента</param>
-        public static void GetMeshData(long modelId, int dim, int tag, out ElementInfo[] info, 
+        public static void GetMeshData(long modelId, int dim, int tag, out ElementInfo[] info,
                                       out long[][] elTags, out long[][] ptsTags)
         {
             var error = 0;

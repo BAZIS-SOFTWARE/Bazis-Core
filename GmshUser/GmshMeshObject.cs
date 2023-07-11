@@ -55,7 +55,7 @@ namespace Model.GmshUser
         /// </summary>
         /// <param name="path">[In]Путь до файла скрипта</param>
         public GmshMeshObject(string path) : base(path)
-        { 
+        {
         }
         /// <summary>
         /// Заменяет по возможности сетку из треугольников четурехугольниками
@@ -143,8 +143,8 @@ namespace Model.GmshUser
         /// <param name="name">[In]Имя элемента</param>
         /// <param name="elTag">[In]Идентификатор элемента</param>
         /// <param name="nodes">[In]Узлы ассоциированные с элементом</param>
-        protected override void ChooseElement(Dictionary<ObjKind, List<ModelObject>> dict, 
-                                              ref string name, long elTag , Node[] nodes)
+        protected override void ChooseElement(Dictionary<ObjKind, List<ModelObject>> dict,
+                                              ref string name, long elTag, Node[] nodes)
         {
             if (name.Contains("Line"))
                 CreateElement1D(dict[ObjKind.Beam], elTag, nodes, ObjKind.Beam);
@@ -167,7 +167,7 @@ namespace Model.GmshUser
         /// <param name="elTag">[In]Идентификатор элемента</param>
         /// <param name="nodes">[In]Узлы</param>
         /// <param name="kind">[In]Тип объекта</param>
-        protected void CreateElement1D(List<ModelObject> list,long elTag, Node[] nodes, ObjKind kind)
+        protected void CreateElement1D(List<ModelObject> list, long elTag, Node[] nodes, ObjKind kind)
         {
             list.Add(new Element1D((int)elTag, nodes, kind));
         }

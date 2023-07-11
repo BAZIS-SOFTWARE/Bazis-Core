@@ -76,7 +76,7 @@ namespace Model.GmshUser
             IntPtr min, min_n, max, max_n;
             min = min_n = max = max_n = IntPtr.Zero;
             GmshModel.gmshModelSetCurrent(modelId.ToString(), ref error);
-            GmshModel.gmshModelGetParametrizationBounds(dimTag.Item1, dimTag.Item2, ref min, ref min_n, 
+            GmshModel.gmshModelGetParametrizationBounds(dimTag.Item1, dimTag.Item2, ref min, ref min_n,
                                                         ref max, ref max_n, ref error);
             double[] minBounds, maxBounds;
             GmshUserMemory.GetTypesData(min, out minBounds, min_n);
@@ -98,16 +98,16 @@ namespace Model.GmshUser
         /// <param name="derNum">[In]Номер производной ["first","second"]</param>
         /// <param name="dimTag">[In]Пара размерность : идентификатор</param>
         /// <returns></returns>
-        public static double[] GetDerivative(long modelId, double[] parametrs, string derNum, Tuple<int,int> dimTag)
+        public static double[] GetDerivative(long modelId, double[] parametrs, string derNum, Tuple<int, int> dimTag)
         {
-            Derivative derFun = GmshGeometry.gmshModelGetDerivative; 
-            if (derNum == "second") 
+            Derivative derFun = GmshGeometry.gmshModelGetDerivative;
+            if (derNum == "second")
                 derFun = GmshGeometry.gmshModelGetSecondDerivative;
             var error = 0;
             var derivaties = IntPtr.Zero;
             var derivaties_n = IntPtr.Zero;
             GmshModel.gmshModelSetCurrent(modelId.ToString(), ref error);
-            derFun(dimTag.Item1, dimTag.Item2, parametrs, (IntPtr)parametrs.Length, 
+            derFun(dimTag.Item1, dimTag.Item2, parametrs, (IntPtr)parametrs.Length,
                    ref derivaties, ref derivaties_n, ref error);
             double[] derivative;
             GmshUserMemory.GetTypesData(derivaties, out derivative, derivaties_n);

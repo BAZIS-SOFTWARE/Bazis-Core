@@ -30,10 +30,10 @@ namespace Model.GmshUser
         /// <summary>
         /// Задает\получает плотность распределения точек
         /// </summary>
-        public double MinDencity 
-        { 
-            get{ return GmshGeometryObjectData.GetMinDencity(Id); }
-            set{ GmshGeometryObjectData.SetMinDencity(Id,value); }
+        public double MinDencity
+        {
+            get { return GmshGeometryObjectData.GetMinDencity(Id); }
+            set { GmshGeometryObjectData.SetMinDencity(Id, value); }
         }
         /// <summary>
         /// Задает\получает плотность распределения точек
@@ -73,8 +73,8 @@ namespace Model.GmshUser
         public override IEnumerator<Node> GetEnumerator()
         {
             var list = GetElements()[ObjKind.Point];
-            foreach (Node node in list) 
-            { 
+            foreach (Node node in list)
+            {
                 yield return node;
             }
         }
@@ -156,7 +156,7 @@ namespace Model.GmshUser
         /// <param name="dimTag">[In]Пара размерность : идентификатор</param>
         /// <param name="nodes">[In]Список узлов</param>
         /// <param name="curves">[In]Список кривых для заполнения</param>
-        private void CreateCurve(Tuple<int,int> dimTag, List<Node> nodes, List<Curve> curves)
+        private void CreateCurve(Tuple<int, int> dimTag, List<Node> nodes, List<Curve> curves)
         {
             curves.Add(new Curve(dimTag.Item2, nodes.ToArray()));
         }
@@ -176,7 +176,7 @@ namespace Model.GmshUser
         /// <typeparam name="T">[In]ModelObject</typeparam>
         /// <param name="addLineObject">[In]Метод для заполнения списка</param>
         /// <returns>Список линейных объектов</returns>
-        private List<T> GetLineObject<T>(Action<Tuple<int,int>, List<Node>, List<T>> addLineObject) where T : ModelObject
+        private List<T> GetLineObject<T>(Action<Tuple<int, int>, List<Node>, List<T>> addLineObject) where T : ModelObject
         {
             var pairs = GmshGeometryObjectData.GetEntities(Id);
             var lines = new List<T>();
