@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using Model.GmshController;
 
 namespace Model.GmshWrapper
@@ -8,7 +9,37 @@ namespace Model.GmshWrapper
     /// </summary>
     public static class GmshWrapperGeneral
     {
-
-
+        /// <summary>
+        /// Задает значение поля категории опций
+        /// </summary>
+        /// <param name="name">[In]Строка в формате доступа к полю категории опций</param>
+        /// <param name="value">[In]Значение поля категории</param>
+        public static void OptionSetNumber(String name, double value)
+        {
+            var ierr = 0;
+            GmshGeneral.gmshOptionSetNumber(name, value, ref ierr);
+        }
+        /// <summary>
+        /// Возвращает значение из поля категории опций
+        /// </summary>
+        /// <param name="name">[In]Строка в формате доступа к полю категории опций</param>
+        /// <returns>Значение поля категории опций</returns>
+        public static double OptionGetNumber(String name)
+        {
+            var ierr = 0;
+            var result =  0.0;
+            GmshGeneral.gmshOptionGetNumber(name, ref result, ref ierr);
+            return result;
+        }
+        /// <summary>
+        /// Задает набор значений для категории опций
+        /// </summary>
+        /// <param name="name">[In]Строка в формате доступа к полю категории опций</param>
+        /// <param name="values">[In]Значения строки</param>
+        public static void OptionSetString(String name, String values)
+        {
+            var ierr = 0;
+            GmshGeneral.gmshOptionSetString(name, values, ref ierr);
+        }
     }
 }

@@ -41,7 +41,7 @@ namespace Model.GmshUser
             if (ext.Contains("step") || ext.Contains("igs") || ext.Contains("brep"))
                 GmshGeometry.gmshModelOccGetEntities(ref dimTags, ref dimTags_n, -1, ref error);
             else
-                GmshModel.gmshModelGetEntities(ref dimTags, ref dimTags_n, -1, ref error);
+                GmshGeometry.gmshModelGetEntities(ref dimTags, ref dimTags_n, -1, ref error);
             int[] data;
             GmshUserMemory.GetTypesData(dimTags, out data, dimTags_n);
             return data;
@@ -60,7 +60,7 @@ namespace Model.GmshUser
             var coords = IntPtr.Zero;
             var coords_n = IntPtr.Zero;
             GmshModel.gmshModelSetCurrent(modelId.ToString(), ref error);
-            GmshModel.gmshModelGetValue(dimTag.Item1, dimTag.Item2, parametric, length, ref coords, ref coords_n, ref error);
+            GmshGeometry.gmshModelGetValue(dimTag.Item1, dimTag.Item2, parametric, length, ref coords, ref coords_n, ref error);
             double[] points;
             GmshUserMemory.GetTypesData(coords, out points, coords_n);
             return points;
@@ -78,7 +78,7 @@ namespace Model.GmshUser
             IntPtr min, min_n, max, max_n;
             min = min_n = max = max_n = IntPtr.Zero;
             GmshModel.gmshModelSetCurrent(modelId.ToString(), ref error);
-            GmshModel.gmshModelGetParametrizationBounds(dimTag.Item1, dimTag.Item2, ref min, ref min_n, 
+            GmshGeometry.gmshModelGetParametrizationBounds(dimTag.Item1, dimTag.Item2, ref min, ref min_n, 
                                                         ref max, ref max_n, ref error);
             double[] minBounds, maxBounds;
             GmshUserMemory.GetTypesData(min, out minBounds, min_n);

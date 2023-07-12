@@ -20,7 +20,6 @@ namespace Model.GmshController
         /// <param name="ierr">[Out]Флаг ошибки</param>
         [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void gmshOptionSetNumber(String src, double value, ref int ierr);
-
         /// <summary>
         /// Получает значение из поля категории опций
         /// </summary>

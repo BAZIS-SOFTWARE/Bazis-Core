@@ -1,14 +1,12 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model.GmshWrapper;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.Drawing;
 
 namespace TestModel.GmshTests
 {
     [TestClass]
     public class GmshWrapperModelTests
     {
+        private static string modelFolder = @"..\..\Examples\GMSHConnector\";
         [TestInitialize]
         public void Init()
         {
@@ -109,12 +107,12 @@ namespace TestModel.GmshTests
             Assert.AreEqual(status, GmshWrapperModel.ModelFind(query));
         }
         [DataTestMethod]
-        [DataRow("", "", "", "", true, new string[]{"", "", ""})]
+        [DataRow("", "", "", "", true, new string[] { "", "", "" })]
         [DataRow("0", "1", "7", "", true, new string[] { "0", "1", "7" })]
-        [DataRow("1", "2", "3", "4", false, new string[] { "", "1", "2", "3"})]
-        [DataRow("0", "7", "9", "5", false, new string[] { "","0", "7", "9" })]
-        [DataRow("1", "2", "6", "1", true, new string[] { "","2", "6" })]
-        public void ModelRemoveOneByNameTest(string add1, string add2, string add3, 
+        [DataRow("1", "2", "3", "4", false, new string[] { "", "1", "2", "3" })]
+        [DataRow("0", "7", "9", "5", false, new string[] { "", "0", "7", "9" })]
+        [DataRow("1", "2", "6", "1", true, new string[] { "", "2", "6" })]
+        public void ModelRemoveOneByNameTest(string add1, string add2, string add3,
                                              string rem, bool status, string[] expected)
         {
             GmshWrapperModel.ModelAdd(add1);
@@ -124,8 +122,8 @@ namespace TestModel.GmshTests
             CollectionAssert.AreEqual(expected, GmshWrapperModel.ModelList());
         }
         [DataTestMethod]
-        [DataRow(new string[] { "1", "2", "3"},"")]
-        [DataRow(new string[] { "" },"")]
+        [DataRow(new string[] { "1", "2", "3" }, "")]
+        [DataRow(new string[] { "" }, "")]
         public void ModelClearTest(string[] add, string expected)
         {
             for (var i = 0; i < add.Length; ++i)
@@ -133,6 +131,33 @@ namespace TestModel.GmshTests
             GmshWrapperModel.ModelClear();
             CollectionAssert.AreEqual(new string[] { expected }, GmshWrapperModel.ModelList());
         }
-
+        [DataTestMethod]
+        [DataRow(new string[] { "1.geo", "2.geo", "3.geo" }, new string[] { "1", "2", "3" })]
+        public void ModelSetFileNameGetFileNameTest(string[] expected, string[] add)
+        {
+            for (var i = 0; i < add.Length; ++i)
+            {
+                GmshWrapperModel.ModelAdd(add[i]);
+                GmshWrapperIO.ModelSetFileName(add[i]);
+                Assert.AreEqual(add[i], GmshWrapperIO.ModelGetFileName());
+            }
+        }
+        [DataTestMethod]
+        [DataRow("Cilindr.step", "1")]
+        [DataRow("Korpus_Nasosa.step", "2")]
+        [DataRow("model.igs", "3")]
+        [DataRow("sphere.geo", "4")]
+        public void ModelTestLoad(string fileName, string modelName)
+        {
+            ModelLoad(fileName, modelName);
+        }
+        public static void ModelLoad(string fileName, string modelName)
+        {
+            GmshWrapperModel.ModelAdd(modelName);
+            CollectionAssert.AreEqual(new string[] { "", modelName }, GmshWrapperModel.ModelList());
+            GmshWrapperIO.Merge(modelFolder + fileName);
+            GmshWrapperIO.ModelSetFileName(fileName);
+            Assert.AreEqual(fileName, GmshWrapperIO.ModelGetFileName());
+        }
     }
 }

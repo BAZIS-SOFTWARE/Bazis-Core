@@ -73,7 +73,6 @@ namespace Model.GmshController
                                                                     ref IntPtr localeNodeCoord,
                                                                     ref IntPtr localeNodeCoord_n, ref int numPrimaryNodes,
                                                                     ref int ierr);
-
         /// <summary>
         /// Извлекает все точки, связанные с текущей моделью, параметром dim,tag
         /// </summary>

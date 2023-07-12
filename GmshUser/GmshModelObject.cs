@@ -136,7 +136,7 @@ namespace Model.GmshUser
             var error = 0;
             IntPtr downward, downward_n, upward, upward_n;
             downward = downward_n = upward = upward_n = IntPtr.Zero;
-            GmshModel.gmshModelGetAdjacencies(dimTag.Item1, dimTag.Item2, ref upward, ref upward_n,
+            GmshGeometry.gmshModelGetAdjacencies(dimTag.Item1, dimTag.Item2, ref upward, ref upward_n,
                                               ref downward, ref downward_n, ref error);
             GmshUserMemory.GetTypesData(upward, out up, upward_n);
             GmshUserMemory.GetTypesData(downward, out down, downward_n);
@@ -205,34 +205,6 @@ namespace Model.GmshUser
         {
         }
         /// <summary>
-        /// Получает физическое имя для данной размерности : идентификатора
-        /// </summary>
-        /// <param name="dim">[In]Размерность</param>
-        /// <param name="tag">[In]Идентификатор</param>
-        /// <returns>Физическое имя</returns>
-        protected string GetPhysicalName(int dim, int tag)
-        {
-            var error = 0;
-            IntPtr name = IntPtr.Zero;
-            GmshModel.gmshModelSetCurrent(Id.ToString(), ref error);
-            GmshModel.gmshModelGetPhysicalName(dim, tag, ref name ,ref error);
-            return GmshUserMemory.GetName(name);
-        }
-        /// <summary>
-        /// Возвращает имя сущности для заданной размерности : идентификатора
-        /// </summary>
-        /// <param name="dim">[In]Размерность</param>
-        /// <param name="tag">[In]Идентификатор</param>
-        /// <returns>Имя сущности</returns>
-        protected string GetEntityName(int dim, int tag)
-        {
-            var error = 0;
-            IntPtr name = IntPtr.Zero;
-            GmshModel.gmshModelSetCurrent(Id.ToString(), ref error);
-            GmshModel.gmshModelGetEntityName(dim, tag, ref name, ref error);
-            return GmshUserMemory.GetName(name);
-        }
-        /// <summary>
         /// Возвращает тип сущности для заданной размерности : идентификатора
         /// </summary>
         /// <param name="dim">[In]Размерность</param>
@@ -242,8 +214,7 @@ namespace Model.GmshUser
         {
             var error = 0;
             IntPtr name = IntPtr.Zero;
-            GmshModel.gmshModelGetType(dim, tag, ref name, ref error);
-            GmshModel.gmshModelGetEntityName(dim, tag, ref name, ref error);
+            GmshGeometry.gmshModelGetType(dim, tag, ref name, ref error);
             return GmshUserMemory.GetName(name);
         }
 

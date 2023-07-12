@@ -83,10 +83,9 @@ namespace Model.GmshWrapper
         public static bool ModelRemoveByName(String name)
         {
             var status = false;
-            if (ModelFind(name))
+            if (ModelSetCurrent(name))
             {
                 status = true;
-                ModelSetCurrent(name);
                 ModelRemove();
             }
             return status;

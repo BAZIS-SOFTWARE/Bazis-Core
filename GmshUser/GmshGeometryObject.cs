@@ -77,7 +77,6 @@ namespace Model.GmshUser
             GmshGeometryObjectData.SetMinDencity(Id, MinDencity);
             GmshGeometryObjectData.SetMaxDencity(Id, MaxDencity);
         }
-
         public override IEnumerator<Node> GetEnumerator()
         {
             var list = GetElements()[ObjKind.Point];

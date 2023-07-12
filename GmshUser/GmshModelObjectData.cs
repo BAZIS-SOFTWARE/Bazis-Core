@@ -26,7 +26,7 @@ namespace Model.GmshUser
             GmshModel.gmshModelSetCurrent(modelId.ToString(), ref error);
             var minBounds = new double[3];
             var maxBounds = new double[3];
-            GmshModel.gmshModelGetBoundingBox(dim, tag, ref minBounds[0], ref minBounds[1], ref minBounds[2],
+            GmshGeometry.gmshModelGetBoundingBox(dim, tag, ref minBounds[0], ref minBounds[1], ref minBounds[2],
                                               ref maxBounds[0], ref maxBounds[1], ref maxBounds[2], ref error);
             return Tuple.Create(new Point3D((float)minBounds[0], (float)minBounds[1], (float)minBounds[2]),
                                 new Point3D((float)maxBounds[0], (float)maxBounds[1], (float)maxBounds[2]));
@@ -55,7 +55,7 @@ namespace Model.GmshUser
             var error = 0;
             IntPtr upward, upward_n, downward, downward_n;
             upward = upward_n = downward = downward_n = IntPtr.Zero;
-            GmshModel.gmshModelGetAdjacencies(dim, tag, ref upward, ref upward_n, 
+            GmshGeometry.gmshModelGetAdjacencies(dim, tag, ref upward, ref upward_n, 
                                               ref downward, ref downward_n, ref error);
             int[] outDownward, outUpward;
             GmshUserMemory.GetTypesData(downward, out outDownward, downward_n);
