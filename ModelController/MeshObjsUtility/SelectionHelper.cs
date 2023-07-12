@@ -35,7 +35,7 @@ namespace ModelController.MeshObjsUtility
             var firstNode = (Node)objectsData.Find(indexFirst);
             var secondNode = (Node)objectsData.Find(indexSecond);
             var initialDirection = secondNode.Position.Sub(firstNode.Position);
-            var result = new List<int> { indexFirst, indexSecond };
+            var result = new HashSet<int> { indexFirst, indexSecond };
             var currentNode = secondNode;
             var isMoveNext = true;
             while (isMoveNext)
@@ -48,7 +48,7 @@ namespace ModelController.MeshObjsUtility
                     {
                         var currentDirection = node.Position.Sub(currentNode.Position);
                         var angle = Math.Acos(Vector.GetAngleVectors(currentDirection, initialDirection));
-                        if(angle <= ConvertGradusToRadian(angleInGradus))
+                        if(angle <= ConvertGradusToRadian(angleInGradus) && !result.Contains(node.Number))
                         {
                             currentNode = node;
                             node.MasterColor = color;
@@ -61,7 +61,7 @@ namespace ModelController.MeshObjsUtility
                         break;
                 }
             }
-            return result;
+            return result.ToList();
         }
 
         public void SelectInPlane<T>(Plane plane, Color color)
