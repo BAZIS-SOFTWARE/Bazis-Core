@@ -25,7 +25,9 @@ namespace Model.GmshWrapper
                 GmshGeometry.gmshModelGetEntities(ref dimTags, ref dimTags_n, dim, ref ierr);
             else
                 GmshGeometry.gmshModelOccGetEntities(ref dimTags, ref dimTags_n, dim, ref ierr);
-            return GmshWrapperMemory.GetTypesData<int>(dimTags, dimTags_n);
+            int[] tags;
+            GmshWrapperMemory.GetTypesData<int>(dimTags,out tags, dimTags_n);
+            return tags;
         }
 
         /// <summary>

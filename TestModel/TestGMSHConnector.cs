@@ -107,7 +107,7 @@ namespace TestModel
         }
 
         [DataTestMethod]
-        [DataRow("sphere", ".geo", "Элементы3D")]
+        [DataRow("Cilindr", ".step", "Элементы2D")]
         public void TestMeshGetElementsGmshController(ref string scriptName, ref string scriptExt, ref string objType)
         {
             using (var connector = new GmshMeshObject(srcDir + scriptName + scriptExt))

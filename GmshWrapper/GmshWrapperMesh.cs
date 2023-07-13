@@ -1,9 +1,11 @@
 ﻿using System;
-using System.IO;
-using System.Runtime.InteropServices;
-using System.Xml.Linq;
+using System.Collections.Generic;
 using Model.GmshController;
 using Model.GmshUser;
+using Geometry;
+using Model.Interfaces;
+using System.Xml.Linq;
+using System.Collections;
 
 namespace Model.GmshWrapper
 {
@@ -105,8 +107,9 @@ namespace Model.GmshWrapper
         /// <param name="elemInfo">[Out]Массив ElementInfo для заполнения</param>
         /// <param name="elemsTags">[Out]Массив elementTags для заполнения</param>
         /// <param name="nodesTags">[Out]Массив elementTags для заполнения</param>
-        public static void GetElements(int dim, int tag, out ElementInfo[] elemInfo, 
-                                       out int[][] elemsTags, out int[][] nodesTags)
+        /// <returns>true если элементы были найдены</returns>
+        public static bool GetElements(int dim, int tag, out ElementInfo[] elemInfo, 
+                                       out long[][] elemsTags, out long[][] nodesTags)
         {
             var ierr = 0;
             IntPtr eTypes, eTypes_n, eTags, eTags_n, eTags_nn, nodeTags, nodeTags_n, nodeTags_nn;
@@ -114,10 +117,52 @@ namespace Model.GmshWrapper
             GmshMesh.gmshModelMeshGetElements(ref eTypes, ref eTypes_n,
                                               ref eTags, ref eTags_n, ref eTags_nn,
                                               ref nodeTags, ref nodeTags_n, ref nodeTags_nn, dim, tag, ref ierr);
-            var elemTypes = GmshWrapperMemory.GetTypesData<int>(eTypes, eTypes_n);
-            elemInfo = GetElementProperties(elemTypes);
-            elemsTags = GmshWrapperMemory.GetElementData<int>(eTags, eTags_n, eTags_nn);
-            nodesTags = GmshWrapperMemory.GetElementData<int>(nodeTags, nodeTags_n, nodeTags_nn);
+            elemInfo =  null;
+            elemsTags = nodesTags = null;
+            if (ierr == 0)
+            {
+                int[] elemTypes;
+                GmshWrapperMemory.GetTypesData<int>(eTypes, out elemTypes, eTypes_n);
+                elemInfo = GetElementProperties(elemTypes);
+                GmshWrapperMemory.GetElementData<long>(out elemsTags, eTags, eTags_n, eTags_nn);
+                GmshWrapperMemory.GetElementData<long>(out nodesTags, nodeTags, nodeTags_n, nodeTags_nn);
+            }
+            return ierr == 0;
+        }
+        /// <summary>
+        /// Извлекает все точки, связанные с текущей моделью, параметром dim,tag
+        /// </summary>
+        /// <param name="dim">[In]Размерность для получения точек, или -1 для получения всех размерностей</param>
+        /// <param name="tag">[In]Индекс элемента в пределах dim, -1 для получения всех элементов</param>
+        /// <param name="nodeTags">[Out]Идентификаторы узлов</param>
+        /// <param name="local">[Out]Координаты узлов</param>
+        /// <param name="parametric">[Out]Параметрические координаты узлов</param>
+        /// <param name="returnParametric">[In]Возвращать параметрические координаты?</param>
+        /// <param name="includeBoundary">[In]Включать граничные узлы</param>
+        /// <returns>true если узлы были найдены</returns>
+        public static bool GetNodes(int dim, int tag, out long[] nodeTags, out double[] local, 
+                                    out double[] parametric, bool returnParametric = false, 
+                                    bool includeBoundary = false)
+        {
+            var ierr = 0;
+            var retParam = Convert.ToInt32(returnParametric);
+            var includeBound = Convert.ToInt32(includeBoundary);
+            IntPtr nodeTagsInt, nodeTagsInt_n, coord, coord_n, parametricCoord, parametricCoord_n;
+            nodeTagsInt = nodeTagsInt_n = coord = coord_n = parametricCoord = parametricCoord_n = IntPtr.Zero;
+            GmshMesh.gmshModelMeshGetNodes(ref nodeTagsInt, ref nodeTagsInt_n, ref coord, ref coord_n,
+                                          ref parametricCoord, ref parametricCoord_n, dim, tag, 
+                                          includeBound, retParam, ref ierr);
+            nodeTags = null;
+            local = null;
+            parametric = null;
+            if (ierr == 0)
+            {
+                GmshWrapperMemory.GetTypesData<long>(nodeTagsInt, out nodeTags, nodeTagsInt_n);
+                GmshWrapperMemory.GetTypesData<double>(coord, out local, coord_n);
+                if (returnParametric)
+                    GmshWrapperMemory.GetTypesData<double>(parametricCoord, out parametric, parametricCoord_n);
+            }
+            return ierr == 0;
         }
         /// <summary>
         /// Находит элементы сетки по переданной координате x,y,z
@@ -135,7 +180,9 @@ namespace Model.GmshWrapper
             elementTags = elementTags_n = IntPtr.Zero;
             GmshMesh.gmshModelMeshGetElementsByCoordinates(x, y, z, ref elementTags, ref elementTags_n,
                                                            dim, strictInt, ref ierr);
-            return GmshWrapperMemory.GetTypesData<int>(elementTags, elementTags_n);
+            int[] tags;
+            GmshWrapperMemory.GetTypesData<int>(elementTags, out tags, elementTags_n);
+            return tags;
         }
         /// <summary>
         /// Возвращает локальные координаты элемента с заданным идентификатором
@@ -153,6 +200,104 @@ namespace Model.GmshWrapper
             GmshMesh.gmshModelMeshGetLocalCoordinatesInElement(elTag, x, y, z, ref result[0], ref result[1],
                                                                ref result[2]);
             return result;
+        }
+
+
+        public static IEnumerable<ModelObject> GetElements<T>(int dim, int tag)
+        {
+            ElementInfo[] info;
+            long[][] elemTags, nodeTags;
+            long[] nodesT;
+            double[] local, parametric;
+            var list = new List<ModelObject>();
+            if (GetElements(dim, tag, out info, out elemTags, out nodeTags))
+            {
+                GetNodes(-1, -1, out nodesT, out local, out parametric);
+                var nodes = LocalCoordinatesToNodes(nodesT, local);
+                for (int i = 0; i < info.Length; ++i)
+                {
+                    var elements = elemTags[i];
+                    for (var j = 0; j < elements.Length; ++j)
+                    {
+                        var nodesCount = info[i].numNodes;
+                        var nodesPerElem = new Node[nodesCount];
+                        for (int k = 0; k < info[i].numNodes; ++k)
+                            nodesPerElem[k] = nodes[nodeTags[i][j * nodesCount + k] - 1];
+                        CreateModelObject(list, ref info[i].elementName, elements[j], nodesPerElem);
+                    }
+                }
+            }
+            return list;
+        }
+
+        private static Node[] LocalCoordinatesToNodes(long[] tagsDim, double[] coords)
+        {
+            var nodes = new Node[tagsDim.Length];
+            for (int i = 0; i < tagsDim.Length; ++i)
+                nodes[i] = new Node((int)tagsDim[i], new Point3D((float)coords[i * 3], (float)coords[i * 3 + 1], 
+                                    (float)coords[i * 3 + 2]));
+            return nodes;
+        }
+
+        private static void CreateControlPoint(List<ModelObject> list, long elementId, Node[] nodes)
+        {
+            list.Add( new Node((int)elementId, nodes[0].Position));
+        }
+
+        private static void CreateLine(List<ModelObject> list, long elementId, Node[] nodes)
+        {
+            list.Add( new Element1D((int)elementId, nodes, ObjKind.Beam));
+        }
+
+        private static void CreateTriangle(List<ModelObject> list, long elementId, Node[] nodes)
+        { 
+            list.Add(new Element2D((int)elementId, nodes, ObjKind.Triangle));
+        }
+
+        private static void CreateQuad(List<ModelObject> list, long elementId, Node[] nodes)
+        {
+            list.Add(new Element2D((int)elementId, nodes, ObjKind.Quad));
+        }
+
+        private static void CreateTetrahedron(List<ModelObject> list, long elementId, Node[] nodes)
+        {
+            list.Add(new Element3D((int)elementId, nodes, ObjKind.Tetra));
+        }
+
+        private static void CreateHexahedron(List<ModelObject> list, long elementId, Node[] nodes)
+        {
+            list.Add( new Element3D((int)elementId, nodes, ObjKind.Hexa));
+        }
+
+        private static void CreatePrism(List<ModelObject> list, long elementId, Node[] nodes)
+        {
+            list.Add( new Element3D((int)elementId, nodes, ObjKind.Penta));
+        }
+
+        private static void CreatePyramid(List<ModelObject> list, long elementId, Node[] nodes)
+        {
+            list.Add( new Element3D((int)elementId, nodes, ObjKind.Penta));///Нет Obj.Kind Pyramid
+        }
+
+        private static void CreateModelObject(List<ModelObject> list ,ref string elementName, 
+                                                  long elementId, Node[] nodes)
+        {
+            if(elementName.Contains("Point"))
+                CreateControlPoint(list, elementId, nodes);
+            else if (elementName.Contains("Line"))
+                CreateLine(list, elementId, nodes);
+            else if (elementName.Contains("Triangle"))
+                CreateTriangle(list, elementId, nodes);
+            else if(elementName.Contains("Quadrilateral"))
+                CreateQuad(list, elementId, nodes);
+            else if(elementName.Contains("Tetrahedron"))
+                CreateTetrahedron(list, elementId, nodes);
+            else if (elementName.Contains("Hexahedron"))
+                CreateHexahedron(list, elementId, nodes);
+            else if (elementName.Contains("Prism"))
+                CreatePrism(list, elementId, nodes);
+            else
+                CreatePyramid(list, elementId, nodes);
         }
     }
 }
