@@ -32,6 +32,15 @@ namespace Model.GmshController
         [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void gmshModelOccGetEntities(ref IntPtr dimTags, ref IntPtr dimTags_n, int dim, ref int ierr);
         /// <summary>
+        /// Задает имя сущности для текщих dim:tag
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="name">[In]Имя сущности</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelSetEntityName(int dim, int tag, String name, ref int ierr);
+        /// <summary>
         /// Получает имя сущности с указанной размерностью и идентификатором
         /// </summary>
         /// <param name="dim">[In]Размерность</param>
@@ -40,6 +49,13 @@ namespace Model.GmshController
         /// <param name="ierr">[Out]Флаг ошибки</param>
         [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void gmshModelGetEntityName(int dim, int tag, ref IntPtr name, ref int ierr);
+        /// <summary>
+        /// Удаляет текущую сущность
+        /// </summary>
+        /// <param name="name">[In]Имя сущности</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelRemoveEntityName(String name, ref int ierr);
         /// <summary>
         /// Возвращает ограничивающий параллелепипед
         /// </summary>
@@ -57,7 +73,6 @@ namespace Model.GmshController
                                                           ref double ymin, ref double zmin,
                                                           ref double xmax, ref double ymax,
                                                           ref double zmax, ref int ierr);
-
         /// <summary>
         /// Получает петлю кривых для заданного идентификатора поверхности
         /// </summary>
@@ -73,7 +88,6 @@ namespace Model.GmshController
                                                             ref IntPtr curveLoopTags_n, ref IntPtr curveTags,
                                                             ref IntPtr curveTags_n, ref IntPtr curveTags_nn,
                                                             ref int ierr);
-
         /// <summary>
         /// Получает петлю поверхностей для заданного идентификатора объема
         /// </summary>

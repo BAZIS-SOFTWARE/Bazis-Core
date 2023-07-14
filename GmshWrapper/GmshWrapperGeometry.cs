@@ -22,26 +22,45 @@ namespace Model.GmshWrapper
             var extension = GmshWrapperIO.ModelGetFileNameExtension();
             if (extension.Contains("stp") || extension.Contains("step") ||
                extension.Contains("brep") || extension.Contains("igs"))
-                GmshGeometry.gmshModelGetEntities(ref dimTags, ref dimTags_n, dim, ref ierr);
-            else
                 GmshGeometry.gmshModelOccGetEntities(ref dimTags, ref dimTags_n, dim, ref ierr);
+            else
+                GmshGeometry.gmshModelGetEntities(ref dimTags, ref dimTags_n, dim, ref ierr);
             int[] tags;
             GmshWrapperMemory.GetTypesData<int>(dimTags,out tags, dimTags_n);
             return tags;
         }
-
+        /// <summary>
+        /// Задает имя сущности для текщих dim:tag
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="name">[In]Имя сущности</param>
+        public static void SetEntityName(int dim, int tag, string name)
+        {
+            var ierr = 0;
+            GmshGeometry.gmshModelSetEntityName(dim, tag, name, ref ierr);
+        }
         /// <summary>
         /// Возвращает имя сущности для заданной размерности : идентификатора
         /// </summary>
         /// <param name="dim">[In]Размерность</param>
         /// <param name="tag">[In]Идентификатор</param>
-        /// <returns>Имя сущности</returns>
+        /// <returns>Имя сущности или пустая строка если не найдена</returns>
         public static string GetEntityName(int dim, int tag)
         {
             var error = 0;
             IntPtr name = IntPtr.Zero;
             GmshGeometry.gmshModelGetEntityName(dim, tag, ref name, ref error);
             return GmshUserMemory.GetName(name);
+        }
+        /// <summary>
+        /// Удаляет сущность по имени
+        /// </summary>
+        /// <param name="name">[In]Имя сущности</param>
+        public static void RemoveEntityName(String name)
+        {
+            var ierr = 0;
+            GmshGeometry.gmshModelRemoveEntityName(name, ref ierr);
         }
         /// <summary>
         /// Получает физическое имя для данной размерности : идентификатора
@@ -57,7 +76,7 @@ namespace Model.GmshWrapper
             return GmshUserMemory.GetName(name);
         }
         /// <summary>
-        /// Возвращает размерность текущего геометрического объекта
+        /// Возвращает максимальную размерность текущего геометрического объекта
         /// </summary>
         /// <returns>Размерность</returns>
         public static int GetDimension()

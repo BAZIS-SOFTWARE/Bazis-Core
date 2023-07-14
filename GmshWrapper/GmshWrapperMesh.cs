@@ -10,37 +10,37 @@ using System.Collections;
 namespace Model.GmshWrapper
 {
     /// <summary>
-    /// Класс содержит результат извлечения типов элементов
+    /// Класс содержит информацию о типе извлечнного узла
+    /// </summary>
+    public class NodeInfo
+    {
+        /// <summary>Координаты</summary>
+        public double[] coords;
+        ///<summary>Параметрические координаты</summary>
+        public double[] parametric;
+        ///<summary>Размерность элемента</summary>
+        public int dim;
+        ///<summary>Идентификатор элемента</summary>
+        public int tag;
+    }
+    /// <summary>
+    /// Класс содержит информацию о типе извлечнного элемента
     /// </summary>
     public class ElementInfo
     {
-        /// <summary>
-        /// Имя элемента
-        /// </summary>
+        /// <summary>Имя элемента</summary>
         public string elementName;
-        /// <summary>
-        /// Размерность
-        /// </summary>
+        /// <summary>Размерность</summary>
         public int dim;
-        /// <summary>
-        /// Порядок
-        /// </summary>
+        /// <summary>Порядок</summary>
         public int order;
-        /// <summary>
-        /// Количество узлов
-        /// </summary>
+        /// <summary>Количество узлов</summary>
         public int numNodes;
-        /// <summary>
-        /// Массив координат
-        /// </summary>
+        /// <summary>Массив координат</summary>
         public double[] coords;
-        /// <summary>
-        /// Количество координат
-        /// </summary>
+        /// <summary>Количество координат</summary>
         public int coords_n;
-        /// <summary>
-        /// Главные узлы
-        /// </summary>
+        /// <summary>Главные узлы</summary>
         public int primNodes;
     }
     /// <summary>
@@ -142,7 +142,7 @@ namespace Model.GmshWrapper
         /// <returns>true если узлы были найдены</returns>
         public static bool GetNodes(int dim, int tag, out long[] nodeTags, out double[] local, 
                                     out double[] parametric, bool returnParametric = false, 
-                                    bool includeBoundary = false)
+                                    bool includeBoundary = true)
         {
             var ierr = 0;
             var retParam = Convert.ToInt32(returnParametric);
@@ -196,14 +196,19 @@ namespace Model.GmshWrapper
         {
             var ierr = 0;
             var elTag = new UIntPtr(elementTag);
-            var result = new double[3];
+            var result = new double[3] {0,0,0};
             GmshMesh.gmshModelMeshGetLocalCoordinatesInElement(elTag, x, y, z, ref result[0], ref result[1],
-                                                               ref result[2]);
+                                                               ref result[2], ref ierr);
             return result;
         }
 
-
-        public static IEnumerable<ModelObject> GetElements<T>(int dim, int tag)
+        /// <summary>
+        /// Возвращает набор элементов по указанным dim:tag
+        /// </summary>
+        /// <param name="dim">[In]Размерность для получения элементов, или -1 для получения всех элементов</param>
+        /// <param name="tag">[In]Идентифкатор элемента или -1 для получения всех элементов в пределах dim</param>
+        /// <returns>Список элементов или пустой список если элементы не найдены</returns>
+        public static IEnumerable<ModelObject> GetElements(int dim, int tag)
         {
             ElementInfo[] info;
             long[][] elemTags, nodeTags;
@@ -212,7 +217,7 @@ namespace Model.GmshWrapper
             var list = new List<ModelObject>();
             if (GetElements(dim, tag, out info, out elemTags, out nodeTags))
             {
-                GetNodes(-1, -1, out nodesT, out local, out parametric);
+                GetNodes(dim, tag, out nodesT, out local, out parametric);
                 var nodes = LocalCoordinatesToNodes(nodesT, local);
                 for (int i = 0; i < info.Length; ++i)
                 {
@@ -222,7 +227,7 @@ namespace Model.GmshWrapper
                         var nodesCount = info[i].numNodes;
                         var nodesPerElem = new Node[nodesCount];
                         for (int k = 0; k < info[i].numNodes; ++k)
-                            nodesPerElem[k] = nodes[nodeTags[i][j * nodesCount + k] - 1];
+                            nodesPerElem[k] = nodes[nodeTags[i][j * nodesCount + k]];
                         CreateModelObject(list, ref info[i].elementName, elements[j], nodesPerElem);
                     }
                 }
@@ -230,13 +235,16 @@ namespace Model.GmshWrapper
             return list;
         }
 
-        private static Node[] LocalCoordinatesToNodes(long[] tagsDim, double[] coords)
+        private static Dictionary<long, Node> LocalCoordinatesToNodes(long[] nodesTags, double[] coords)
         {
-            var nodes = new Node[tagsDim.Length];
-            for (int i = 0; i < tagsDim.Length; ++i)
-                nodes[i] = new Node((int)tagsDim[i], new Point3D((float)coords[i * 3], (float)coords[i * 3 + 1], 
-                                    (float)coords[i * 3 + 2]));
-            return nodes;
+            var dict = new Dictionary<long, Node>();
+            for (int i = 0; i < nodesTags.Length; ++i)
+            {
+                if (!dict.ContainsKey(nodesTags[i]))
+                    dict.Add(nodesTags[i], new Node((int)nodesTags[i], new Point3D((float)coords[i * 3],
+                                                (float)coords[i * 3 + 1], (float)coords[i * 3 + 2])));
+            }
+            return dict;
         }
 
         private static void CreateControlPoint(List<ModelObject> list, long elementId, Node[] nodes)
