@@ -1,6 +1,8 @@
 ﻿using System;
 using Model.GmshController;
 using Model.GmshUser;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace Model.GmshWrapper
 {
@@ -26,7 +28,7 @@ namespace Model.GmshWrapper
             else
                 GmshGeometry.gmshModelGetEntities(ref dimTags, ref dimTags_n, dim, ref ierr);
             int[] tags;
-            GmshWrapperMemory.GetTypesData<int>(dimTags,out tags, dimTags_n);
+            GmshWrapperMemory.GetTypesData<int>(dimTags, out tags, dimTags_n);
             return tags;
         }
         /// <summary>
@@ -72,7 +74,7 @@ namespace Model.GmshWrapper
         {
             var error = 0;
             IntPtr name = IntPtr.Zero;
-            GmshGeometry.gmshModelGetPhysicalName(dim, tag, ref name ,ref error);
+            GmshGeometry.gmshModelGetPhysicalName(dim, tag, ref name, ref error);
             return GmshUserMemory.GetName(name);
         }
         /// <summary>
@@ -98,6 +100,142 @@ namespace Model.GmshWrapper
             max = new double[3];
             GmshGeometry.gmshModelGetBoundingBox(dim, tag, ref min[0], ref min[1], ref min[2],
                                                  ref max[0], ref max[1], ref max[2], ref ierr);
+        }
+
+        /// <summary>
+        /// Возвращает матрицу смежности для текущей пары dim : tag
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <returns>[i][]Нижние элементы,[i + 1][]Верхние элементы</returns>
+        public static int[][] GetAdjacencies(int dim, int tag)
+        {
+            var ierr = 0;
+            IntPtr upward, upward_n, downward, downward_n;
+            upward = upward_n = downward = downward_n = IntPtr.Zero;
+            GmshGeometry.gmshModelGetAdjacencies(dim, tag, ref upward, ref upward_n,
+                                              ref downward, ref downward_n, ref ierr);
+            var result = new int[2][];
+            if (ierr == 0)
+            {
+                int[] outDownward, outUpward;
+                GmshUserMemory.GetTypesData(downward, out outDownward, downward_n);
+                GmshUserMemory.GetTypesData(upward, out outUpward, upward_n);
+                result[0] = outDownward;
+                result[1] = outUpward;
+            }
+            return result;
+        }
+        /// <summary>
+        /// Получает координаты точек заданные параметром для указанного идентификатора и размерности
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="parametric">[In]Параметрические координаты могут быть пустые</param>
+        /// <returns>Локальные координаты</returns>
+        public static double[] GetLocalCoordByParametric(int dim, int tag, double[] parametric)
+        {
+            var ierr = 0;
+            var local = new double[0];
+            IntPtr coord, coord_n;
+            coord = coord_n = IntPtr.Zero;
+            GmshGeometry.gmshModelGetValue(dim, tag, parametric, (IntPtr)parametric.Length, ref coord, ref coord_n, ref ierr);
+            if (ierr == 0)
+                GmshWrapperMemory.GetTypesData(coord, out local, coord_n);
+            return local;
+        }
+        /// <summary>
+        /// Получает координаты точек заданные параметром для указанного идентификатора и размерности
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="local">[In]Локальные координаты</param>
+        /// <returns>Параметрические координаты</returns>
+        public static double[] GetParametricCoordByLocal(int dim, int tag, double[] local)
+        {
+            var ierr = 0;
+            var parametric = new double[0];
+            IntPtr parametricCoord, parametricCoord_n;
+            parametricCoord = parametricCoord_n = IntPtr.Zero;
+            GmshGeometry.gmshModelGetValue(dim, tag, local, (IntPtr)local.Length,
+                                           ref parametricCoord, ref parametricCoord_n, ref ierr);
+            if (ierr == 0)
+                GmshWrapperMemory.GetTypesData(parametricCoord, out parametric, parametricCoord_n);
+            return parametric;
+        }
+        /// <summary>
+        /// Возвращает границы параметризации array[0] минимальные границы array[1] максимальные, длина внутренного массива
+        /// зависит от dim (для 1 - 1 параметр, для 2 - 2 параметра)
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <returns>Возвращает границы параметризации</returns>
+        public static double[][] GetParametrizationBounds(int dim, int tag)
+        {
+            var ierr = 0;
+            IntPtr min, min_n, max, max_n;
+            min = min_n = max = max_n = IntPtr.Zero;
+            var paramsOutLength = dim == 1 ? 1 : 2;
+            var result = new double[2][];
+            for(var i = 0; i < 2; ++i)
+                result[i] = new double[0];
+            GmshGeometry.gmshModelGetParametrizationBounds(dim, tag, ref min, ref min_n,
+                                                           ref max, ref max_n, ref ierr);
+            if (ierr == 0)
+            {
+                GmshUserMemory.GetTypesData(min, out result[0], min_n);
+                GmshUserMemory.GetTypesData(max, out result[1], max_n);
+            }
+            return result;
+        }
+        /// <summary>
+        /// Возвращает число координат заданных массивом и dim:tag, оказавшихся внутри модели
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="coords">[In]Массив координат</param>
+        /// <param name="isParametric">[In]Флаг является ли координаты параметрические</param>
+        /// <returns>Число координат</returns>
+        public static int IsInside(int dim, int tag, double[] coords, bool isParametric = true)
+        {
+            var ierr = 0;
+            var paramFlag = Convert.ToInt32(isParametric);
+            var count = 0;
+            count = GmshGeometry.gmshModelIsInside(dim, tag, coords, (IntPtr)coords.Length, paramFlag, ref ierr);
+            return count;
+        }
+        /// <summary>
+        /// Лежит ли параметрическая координата внутри массива
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="coords">[In]Массив координат</param>
+        /// <returns>Число координат</returns>
+        public static bool IsParametricInside(int dim, int tag, double coords)
+        {
+            var ierr = 0;
+            var count = GmshGeometry.gmshModelIsInside(dim, tag, new double[] { coords }, (IntPtr)1, 1, ref ierr);
+            return count != 0;
+        }
+
+        public static double[] SortAndFilterParametric(int dim, int tag, double[] coords)
+        {
+            if (dim == 1)
+                return coords.OrderBy(x => x)
+                             .Where(x => GmshWrapperGeometry.IsParametricInside(2, tag, x))
+                             .ToArray();
+            else if (dim == 2)
+            {
+                var length = coords.Length / 2;
+                var pairs = new double[length][];
+                for (int i = 1, j = 0; i < coords.Length; i += 2, ++j)
+                    pairs[j] = new double[] { coords[i - 1], coords[i] };
+                return pairs.OrderBy(v => v[0])
+                            .Where(v => IsInside(dim, tag, v) == 2)
+                            .SelectMany(v => v)
+                            .ToArray();
+            }
+            return new double[0];
         }
     }
 }

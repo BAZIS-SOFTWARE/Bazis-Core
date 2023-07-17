@@ -108,7 +108,7 @@ namespace Model.GmshWrapper
         /// <param name="elemsTags">[Out]Массив elementTags для заполнения</param>
         /// <param name="nodesTags">[Out]Массив elementTags для заполнения</param>
         /// <returns>true если элементы были найдены</returns>
-        public static bool GetElements(int dim, int tag, out ElementInfo[] elemInfo, 
+        public static bool GetElements(int dim, int tag, out ElementInfo[] elemInfo,
                                        out long[][] elemsTags, out long[][] nodesTags)
         {
             var ierr = 0;
@@ -117,7 +117,7 @@ namespace Model.GmshWrapper
             GmshMesh.gmshModelMeshGetElements(ref eTypes, ref eTypes_n,
                                               ref eTags, ref eTags_n, ref eTags_nn,
                                               ref nodeTags, ref nodeTags_n, ref nodeTags_nn, dim, tag, ref ierr);
-            elemInfo =  null;
+            elemInfo = null;
             elemsTags = nodesTags = null;
             if (ierr == 0)
             {
@@ -140,8 +140,8 @@ namespace Model.GmshWrapper
         /// <param name="returnParametric">[In]Возвращать параметрические координаты?</param>
         /// <param name="includeBoundary">[In]Включать граничные узлы</param>
         /// <returns>true если узлы были найдены</returns>
-        public static bool GetNodes(int dim, int tag, out long[] nodeTags, out double[] local, 
-                                    out double[] parametric, bool returnParametric = false, 
+        public static bool GetNodes(int dim, int tag, out long[] nodeTags, out double[] local,
+                                    out double[] parametric, bool returnParametric = false,
                                     bool includeBoundary = true)
         {
             var ierr = 0;
@@ -150,7 +150,7 @@ namespace Model.GmshWrapper
             IntPtr nodeTagsInt, nodeTagsInt_n, coord, coord_n, parametricCoord, parametricCoord_n;
             nodeTagsInt = nodeTagsInt_n = coord = coord_n = parametricCoord = parametricCoord_n = IntPtr.Zero;
             GmshMesh.gmshModelMeshGetNodes(ref nodeTagsInt, ref nodeTagsInt_n, ref coord, ref coord_n,
-                                          ref parametricCoord, ref parametricCoord_n, dim, tag, 
+                                          ref parametricCoord, ref parametricCoord_n, dim, tag,
                                           includeBound, retParam, ref ierr);
             nodeTags = null;
             local = null;
@@ -196,7 +196,7 @@ namespace Model.GmshWrapper
         {
             var ierr = 0;
             var elTag = new UIntPtr(elementTag);
-            var result = new double[3] {0,0,0};
+            var result = new double[3] { 0, 0, 0 };
             GmshMesh.gmshModelMeshGetLocalCoordinatesInElement(elTag, x, y, z, ref result[0], ref result[1],
                                                                ref result[2], ref ierr);
             return result;
@@ -233,6 +233,12 @@ namespace Model.GmshWrapper
                 }
             }
             return list;
+        }
+
+        public static void SetTransfiniteCurve(int tag, int numNodes, String meshType, double coef)
+        {
+            var ierr = 0;
+            GmshMesh.gmshModelMeshSetTransfiniteCurve(tag, numNodes, meshType, coef, ref ierr);
         }
 
         private static Dictionary<long, Node> LocalCoordinatesToNodes(long[] nodesTags, double[] coords)

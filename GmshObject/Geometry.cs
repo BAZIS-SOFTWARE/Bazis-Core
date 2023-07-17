@@ -1,0 +1,17 @@
+﻿using Geometry;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Model.GmshObject
+{
+    public class Geometry : IGeometryApi
+    {
+        public int SelectCurveOnMouseClick(Point2D clickPoint)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}

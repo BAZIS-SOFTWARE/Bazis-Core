@@ -259,5 +259,18 @@ namespace Model.GmshController
         /// <returns>Размерность</returns>
         [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern int gmshModelGetDimension(ref int ierr);
+        /// <summary>
+        /// Определяет находится ли точка параметрическая или локальная внутри массива
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="coord">[In]Масив координат</param>
+        /// <param name="coord_n">[In]Количество координат</param>
+        /// <param name="parametric">[In]Флаг являяется ли координата параметрической</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        /// <returns>Число координат лежащих внутри модели</returns>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int gmshModelIsInside(int dim, int tag, double[] coord, IntPtr coord_n, 
+                                                   int parametric, ref int ierr);
     }
 }
