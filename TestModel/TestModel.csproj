@@ -91,6 +91,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GmshTests\GmshGeometryTests.cs" />
+    <Compile Include="GmshTests\GmshMeshTests.cs" />
     <Compile Include="GmshTests\GmshWrapperConnectionTests.cs" />
     <Compile Include="GmshTests\GmshWrapperGeometryTests.cs" />
     <Compile Include="GmshTests\GmshWrapperMeshTests.cs" />

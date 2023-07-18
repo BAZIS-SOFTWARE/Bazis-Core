@@ -3,6 +3,7 @@ using Model.GmshController;
 using Model.GmshUser;
 using System.Linq;
 using System.Collections.Generic;
+using Model.Interfaces;
 
 namespace Model.GmshWrapper
 {
@@ -127,6 +128,29 @@ namespace Model.GmshWrapper
             return result;
         }
         /// <summary>
+        /// Возвращает частную производную по параметрическим координатам
+        /// </summary>
+        /// <param name="modelId">[In]Идентифкатор модели</param>
+        /// <param name="parametrs">[In]Параметрические координаты</param>
+        /// <param name="derNum">[In]Номер производной ["first","second"]</param>
+        /// <param name="dimTag">[In]Пара размерность : идентификатор</param>
+        /// <returns></returns>
+        public static double[] GetDerivative(int dim, int tag, double[] parametrs, int number = 1)
+        {
+            var ierr= 0;
+            var derivaties = IntPtr.Zero;
+            var derivaties_n = IntPtr.Zero;
+            if(number == 1)
+                GmshGeometry.gmshModelGetDerivative(dim, tag, parametrs, (IntPtr)parametrs.Length,
+                                                          ref derivaties, ref derivaties_n, ref ierr);
+            else
+                GmshGeometry.gmshModelGetSecondDerivative(dim, tag, parametrs, (IntPtr)parametrs.Length,
+                                                          ref derivaties, ref derivaties_n, ref ierr);
+            double[] derivative;
+            GmshUserMemory.GetTypesData(derivaties, out derivative, derivaties_n);
+            return derivative;
+        }
+        /// <summary>
         /// Получает координаты точек заданные параметром для указанного идентификатора и размерности
         /// </summary>
         /// <param name="dim">[In]Размерность</param>
@@ -218,24 +242,87 @@ namespace Model.GmshWrapper
             return count != 0;
         }
 
-        public static double[] SortAndFilterParametric(int dim, int tag, double[] coords)
+        public static double[] SetCustomStepParametrization(double[] paramsCoord, int steps)
         {
-            if (dim == 1)
-                return coords.OrderBy(x => x)
-                             .Where(x => GmshWrapperGeometry.IsParametricInside(2, tag, x))
-                             .ToArray();
-            else if (dim == 2)
-            {
-                var length = coords.Length / 2;
-                var pairs = new double[length][];
-                for (int i = 1, j = 0; i < coords.Length; i += 2, ++j)
-                    pairs[j] = new double[] { coords[i - 1], coords[i] };
-                return pairs.OrderBy(v => v[0])
-                            .Where(v => IsInside(dim, tag, v) == 2)
-                            .SelectMany(v => v)
-                            .ToArray();
-            }
-            return new double[0];
+            var step = (paramsCoord[1] - paramsCoord[0]) / (steps - 1);
+            Array.Resize(ref paramsCoord, steps);
+            for (var i = 0; i < steps; ++i)
+                paramsCoord[i] = paramsCoord[0] + step * i;
+            return paramsCoord;
         }
+
+        /// <summary>
+        /// Является ли кривая линией
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="paramsBound">[In]Параметрические координаты</param>
+        /// <returns>Является ли кривая линией</returns>
+        public static bool IsLine(int dim, int tag, double[] paramsBound)
+        {
+            var modParams = new double[] { paramsBound[0] + 0.01, paramsBound[1] - 0.01 };
+            var derivatives = GetDerivative(dim, tag, paramsBound);
+            var derCount = derivatives.Length / 3;
+            for (var i = 1; i < derCount; ++i)
+                for (var j = 0; j < 3; ++j)
+                    if (Math.Abs(derivatives[i * 3 + j] - derivatives[(i - 1) * 3 + j]) > 1E-8)
+                        return false;
+            return true;
+        }
+
+        public static IEnumerable<T> GetEntities<T>(int dim, Action<List<T>, int, Node[]> fillFun) where T : ModelObject
+        {
+            var tags = GetEntities(dim).Where((v, i) => (i & 1) == 1).ToArray();
+            var entities = new List<T>();
+            if (dim == 0)
+                CreateControlPoints(dim, tags, entities, fillFun);
+            if (dim == 1)
+                CreateLines(dim, tags, entities, fillFun);
+            return entities;
+        }
+
+        private static void CreateLines<T>(int dim, int[] tags, List<T> lines, 
+                                                  Action<List<T>, int, Node[]> fillFun) where T : ModelObject
+        {
+            for (var i = 0; i < tags.Length; ++i)
+            {
+                var paramsBounds = GetParametrizationBounds(1, tags[i]);
+                var newPB = paramsBounds[0].Concat(paramsBounds[1]).ToArray();
+                if (!IsLine(1, tags[i], newPB))
+                {
+                    var curvePoints = Convert.ToInt32(GmshWrapperGeneral.OptionGetNumber("Geometry.NumSubEdges"));
+                    newPB = SetCustomStepParametrization(newPB, curvePoints);
+                }
+                var locals = GetLocalCoordByParametric(1, tags[i], newPB);
+                var points = GmshWrapperModel.ConvertLocalCoordsToPoints3D(locals);
+                var nodes = new List<Node>();
+                var num = 0;
+                foreach (var pair in points.Bigrams())
+                {
+                    var line = new Node[] { new Node(num++, pair.Item1), new Node(num++, pair.Item2) };
+                    nodes.AddRange(line);
+                }
+                fillFun(lines, tags[i], nodes.ToArray());
+            }
+        }
+
+        private static void CreateControlPoints<T>(int dim, int[] tags, List<T> list,
+                                                  Action<List<T>, int, Node[]> fillFun) where T : ModelObject
+        {
+            for (var i = 0; i < tags.Length; ++i)
+            {
+                var coords = GetLocalCoordByParametric(dim, tags[i], new double[] { });
+                var points = GmshWrapperModel.ConvertLocalCoordsToPoints3D(coords);
+                for(var j = 0; j < points.Length; ++j)
+                {
+                    var nodes = new Node[] { new Node(tags[i], points[j]) };
+                    fillFun(list, 0, nodes);
+                }
+            }
+        }
+
+        public static void CreateControlPoint(List<Node> list, int id, Node[] nodes) => list.AddRange(nodes);
+        public static void CreateCurve(List<Curve> list, int id, Node[] nodes) => list.Add(new Curve(id, nodes));
+        public static void CreateElement1D(List<Element1D> list, int id, Node[] nodes) => list.Add(new Element1D(id, nodes, ObjKind.Beam));
     }
 }

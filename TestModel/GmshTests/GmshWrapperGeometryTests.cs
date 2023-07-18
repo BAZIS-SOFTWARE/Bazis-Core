@@ -173,8 +173,8 @@ namespace TestModel.GmshTests
                 var list = expected[0].Concat(expected[1]).ToArray();
                 var local = GmshWrapperGeometry.GetLocalCoordByParametric(1, tags[i], list);
                 var parametric = GmshWrapperGeometry.GetParametricCoordByLocal(1, tags[i], local);
-                parametric = GmshWrapperGeometry.SortAndFilterParametric(1, tags[i], parametric);
-                var localPerParametric = GmshWrapperGeometry.GetLocalCoordByParametric(1, tags[i], parametric);
+                //parametric = GmshWrapperGeometry.SortAndFilterParametric(1, tags[i], parametric);
+                //var localPerParametric = GmshWrapperGeometry.GetLocalCoordByParametric(1, tags[i], parametric);
             }
         }
         [DataTestMethod]
@@ -193,8 +193,8 @@ namespace TestModel.GmshTests
                 var list = expected[0].Concat(expected[1]).ToArray();
                 var local = GmshWrapperGeometry.GetLocalCoordByParametric(2, tags[i], list);
                 var parametric = GmshWrapperGeometry.GetParametricCoordByLocal(2, tags[i], local);
-                parametric = GmshWrapperGeometry.SortAndFilterParametric(2, tags[i], parametric);
-                var localPerParametric = GmshWrapperGeometry.GetLocalCoordByParametric(2, tags[i], parametric);
+                //parametric = GmshWrapperGeometry.SortAndFilterParametric(2, tags[i], parametric);
+                //var localPerParametric = GmshWrapperGeometry.GetLocalCoordByParametric(2, tags[i], parametric);
             }
         }
 

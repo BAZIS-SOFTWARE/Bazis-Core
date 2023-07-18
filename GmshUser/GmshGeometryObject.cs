@@ -219,9 +219,6 @@ namespace Model.GmshUser
         /// <returns>Возвращает id выбранной прямой</returns>
         public int SelectCurveOnMouseClick(Point2D clickPoint)
         {
-
-
-
             throw new NotImplementedException();
         }
     }

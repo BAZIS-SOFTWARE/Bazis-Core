@@ -1,9 +1,4 @@
-﻿using Model.GmshUser;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Model.GmshObject
 {
@@ -57,6 +52,47 @@ namespace Model.GmshObject
     }
     public interface IMeshApi
     {
+        double Density { get; set; }
+        /// <summary>
+        /// // сгенерировать сетку Элементы2D, и т. д.
+        /// </summary>
+        /// <param name="dim"></param>
+        void Generate(int dim);
+
+        /// <summary>
+        /// сделать больше квадратов на сетке
+        /// </summary>
+        void QuadrangulateMesh();
+        /// <summary>
+        /// уплотнить сетку
+        /// </summary>
+        void RefineMesh();
+        /// <summary>
+        /// получить узлы
+        /// </summary>
+        /// <returns>узлы</returns>
+        IEnumerable<Node> GetNodes();
+        /// <summary>
+        /// получить линии
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<Model.ModelObject> GetElement1D();
+
+        /// <summary>
+        /// получить плоские элементы
+        /// </summary>
+        /// <returns>плоские элементы</returns>
+        IEnumerable<Model.ModelObject> GetElement2D();
+        /// <summary>
+        /// получить поверхности
+        /// </summary>
+        /// <returns>поверхности</returns>
+        IEnumerable<Model.ModelObject> GetSurfaces();
+        /// <summary>
+        /// получить объёмные элементы
+        /// </summary>
+        /// <returns>объёмные элементы</returns>
+        IEnumerable<Model.ModelObject> GetElement3D();
         /// <summary>
         /// установить новый алгоритм триангуляции по его enum
         /// (Delaunay, Frontal Delaunay) и т.д для 2D

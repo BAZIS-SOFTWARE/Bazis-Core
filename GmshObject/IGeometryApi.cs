@@ -9,11 +9,13 @@ namespace Model.GmshObject
 {
     public interface IGeometryApi
     {
+        int CurveSteps { get; set; }
         /// <summary>
-        /// Выбрать кривую по щелчку мыши на неё
+        /// получить узлы
         /// </summary>
-        /// <param name="clickPoint">[In]Точка в видовых координатах</param>
-        /// <returns>Возвращает id выбранной прямой</returns>
-        int SelectCurveOnMouseClick(Point2D clickPoint);
+        /// <returns>узлы</returns>
+        IEnumerable<Node> GetControlPoints();
+
+        IEnumerable<Curve> GetСurves();
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Geometry;
 using Model.GmshController;
 
 namespace Model.GmshWrapper
@@ -89,6 +90,21 @@ namespace Model.GmshWrapper
                 ModelRemove();
             }
             return status;
+        }
+        /// <summary>
+        /// Преобразовывает массив трехмерных координат в массив Node
+        /// </summary>
+        /// <param name="coordsArray">[In]Массив координат</param>
+        /// <returns>Point3D[]</returns>
+        public static Point3D[] ConvertLocalCoordsToPoints3D(double[] coordsArray)
+        {
+            var points = new Point3D[coordsArray.Length / 3];
+            for (int i = 2, j = 0; i < coordsArray.Length; i += 3, ++j)
+            {
+                var point = new Point3D((float)coordsArray[i - 2], (float)coordsArray[i - 1], (float)coordsArray[i]);
+                points[j] = point;
+            }
+            return points;
         }
     }
 }

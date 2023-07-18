@@ -10,9 +10,14 @@ namespace Model.GmshObject
     public interface IModelApi
     {
         /// <summary>
-        /// Удалить сущность по щелчку мыши на неё
+        /// Удалить сущность по Id
         /// </summary>
-        /// <param name="clickPoint">[In]Точка экранных координатах</param>
-        void DeleteEntityOnMouseClick(Point2D clickPoint);
+        /// <param name="entityId">[In]Id</param>
+        void DeleteEntity(int entityId);
+        /// <summary>
+        /// // загрузить геометрию
+        /// </summary>
+        /// <param name="filePath">[In]Путь до файла</param>
+        void Load(string filePath);
     }
 }

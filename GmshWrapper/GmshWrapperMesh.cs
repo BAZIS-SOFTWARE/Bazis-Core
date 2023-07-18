@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Model.GmshController;
-using Model.GmshUser;
 using Geometry;
 using Model.Interfaces;
-using System.Xml.Linq;
-using System.Collections;
 
 namespace Model.GmshWrapper
 {
@@ -93,7 +90,7 @@ namespace Model.GmshWrapper
                                                            ref info.numNodes, ref localeNodeCoord, ref localeNodeCoord_n,
                                                            ref info.primNodes, ref ierr);
                 info.elementName = GmshWrapperMemory.GetName(elementName);
-                GmshUserMemory.GetTypesData(localeNodeCoord, out info.coords, localeNodeCoord_n);
+                GmshWrapperMemory.GetTypesData(localeNodeCoord, out info.coords, localeNodeCoord_n);
                 info.coords_n = info.coords.Length;
                 dataInfo[i] = info;
             }
@@ -164,6 +161,19 @@ namespace Model.GmshWrapper
             }
             return ierr == 0;
         }
+        public static IEnumerable<Node> GetNodes(int dim = -1, int tag = -1)
+        {
+            long[] nodeTags;
+            double[] local, parametric;
+            if(!GetNodes(dim, tag, out nodeTags, out local, out parametric))
+                return new Node[0];
+            var list = new List<Node>();
+            var points = GmshWrapperModel.ConvertLocalCoordsToPoints3D(local);
+            for (var i = 0L; i < nodeTags.Length; ++i)
+                list.Add(new Node((int)nodeTags[i], points[i]));
+            return list;
+        }
+
         /// <summary>
         /// Находит элементы сетки по переданной координате x,y,z
         /// </summary>
