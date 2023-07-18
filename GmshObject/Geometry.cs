@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Model.GmshObject
-{
+{  
     public class Geometry : IGeometryApi
     {
         public int SelectCurveOnMouseClick(Point2D clickPoint)

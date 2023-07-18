@@ -1,67 +1,26 @@
 ﻿using System;
+using Model.GmshController;
 using Model.GmshWrapper;
+using PrFunctionLib;
 
 namespace Model.GmshObject
-{
-    /// <summary>
-    /// Алгоритмы триангуляции при построении сетки    
-    /// </summary>
-    public enum Triangulation2DAlgorithm
-    {
-        /// <summary>MeshAdapt</summary>
-        MeshAdapt = 1,
-        /// <summary>Automatic</summary>
-        Automatic = 2,
-        /// <summary>InitialMeshOnly</summary>
-        InitialMeshOnly = 3,
-        /// <summary>Delaunay</summary>
-        Delaunay = 5,
-        /// <summary>FrontalDelaunay</summary>
-        FrontalDelaunay = 6,
-        /// <summary>BAMG</summary>
-        BAMG = 7,
-        /// <summary>FrontalDelaunayQuad</summary>
-        FrontalDelaunayQuad = 8,
-        /// <summary>PackingParallelograms</summary>
-        PackingParallelograms = 9,
-        /// <summary>QuasiStructuredQuad</summary>
-        QuasiStructuredQuad = 11
-    }
-    /// <summary>
-    /// Алгоритмы триангуляции при построении объемов
-    /// </summary>
-    public enum Triangulation3DAlgorithm
-    {
-        /// <summary>Delaunay</summary>
-        Delaunay = 1,
-        /// <summary>InitialMeshOnly</summary>
-        InitialMeshOnly = 3,
-        /// <summary>Frontal</summary>
-        Frontal = 4,
-        /// <summary>MMG3D</summary>
-        MMG3D = 7,
-        /// <summary>RTree</summary>
-        RTree = 9,
-        /// <summary>HXT</summary>
-        HXT = 10
-    }
+{ 
     public class Mesh : Model, IMeshApi
     {
         public void ChangeTriangulationAlgorithm(Triangulation2DAlgorithm algorithm = Triangulation2DAlgorithm.FrontalDelaunay)
         {
-            throw new NotImplementedException();
+            GmshWrapperModel.ModelSetCurrent(Id.ToString());
+            var algo = Convert.ToDouble(algorithm);
+            GmshWrapperGeneral.OptionSetNumber("Mesh.Algorithm3D", algo);
         }
 
         public void ChangeTriangulationAlgorithm(Triangulation3DAlgorithm algorithm = Triangulation3DAlgorithm.Delaunay)
         {
-            throw new NotImplementedException();
+            GmshWrapperModel.ModelSetCurrent(Id.ToString());
+            var algo = Convert.ToDouble(algorithm);
+            GmshWrapperGeneral.OptionSetNumber("Mesh.Algorithm", algo);
         }
-
-        public void SetMeshPointsOnCurve(int number, GmshUser.TransfiniteAlgorithm ta, double parameter, Curve[] curve)
-        {
-            throw new NotImplementedException();
-        }
-
+        //Последний параметр лучше сделать ID
         public void SetMeshPointsOnCurve(int number, TransfiniteAlgorithm ta, double parameter, Curve[] curve)
         {
             GmshWrapperModel.ModelSetCurrent(Id.ToString());

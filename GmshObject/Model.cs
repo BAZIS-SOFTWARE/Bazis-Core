@@ -9,6 +9,7 @@ namespace Model.GmshObject
 {
     public class Model : IModelApi
     {
+        protected int Id;
         /// <summary>
         /// Удалить сущность по щелчку мыши на неё
         /// </summary>
