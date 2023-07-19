@@ -76,5 +76,36 @@ namespace TestModel.GmshTests
                 var lines = geometry.GetElements1D();
             }
         }
+
+        [DataTestMethod]
+        [DataRow("test.geo")]
+        public void TestCurveSteps(string fileName)
+        {
+            using (var geometry = new GeometryObject(modelFolder + fileName))
+            {
+                var curveUntil = geometry.GetСurves().First();
+                geometry.CurveSteps = 15; // but default is 20
+                var curveAfter = geometry.GetСurves().First();
+                Assert.IsTrue(curveAfter.GetNodes().Count() < curveUntil.GetNodes().Count());
+            }
+        }
+
+        [DataTestMethod]
+        [Timeout(60000)]
+        [DataRow(10000)]
+        public void ModelTest(int count)
+        {
+            var models = new GeometryObject[count];
+            for(var i = 0; i < count; ++i)
+            {
+                models[i] = new GeometryObject();
+                Assert.AreEqual(true, GmshWrapperModel.ModelFind(models[i].Id.ToString()));
+            }
+            Assert.AreEqual(models.Length + 1, GmshWrapperModel.ModelList().Length);
+            for (var i = 0; i < count; ++i)
+                models[i].Dispose();
+            var list = GmshWrapperModel.ModelList();
+            Assert.AreEqual(true, list.Length == 1 && list[0] == string.Empty);
+        }
     }
 }

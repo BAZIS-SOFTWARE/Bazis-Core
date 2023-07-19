@@ -24,7 +24,33 @@ namespace TestModel.GmshTests
 
         [DataTestMethod]
         [DataRow("Cilindr.step")]
-        public void GetElements1D(string fileName)
+        public void GetNodes(string fileName)
+        {
+            using (var mesh = new MeshObject(modelFolder + fileName))
+            {
+                mesh.Generate(2);
+                var nodes = mesh.GetNodes();
+                Assert.AreEqual(187, nodes.Count());
+            }
+        }
+
+        [DataTestMethod]
+        [DataRow("Cilindr.step")]
+        public void TestRefineMesh(string fileName)
+        {
+            using (var mesh = new MeshObject(modelFolder + fileName))
+            {
+                mesh.Generate(2);
+                var nodesUntil = mesh.GetNodes();
+                mesh.RefineMesh();
+                var nodesAfter = mesh.GetNodes();
+                Assert.IsTrue(nodesAfter.Count() > nodesUntil.Count());
+            }
+        }
+
+        [DataTestMethod]
+        [DataRow("Cilindr.step")]
+        public void GetElements1DTest(string fileName)
         {
             using (var mesh = new MeshObject(modelFolder + fileName))
             {
@@ -96,6 +122,93 @@ namespace TestModel.GmshTests
                 mesh.Generate(2);
                 var afterElements = mesh.GetElement2D();
                 Assert.IsTrue(untilElements.Count() < afterElements.Count());
+            }
+        }
+
+        [DataTestMethod]
+        [DataRow("Cilindr.step")]
+        public void TestDensity(string fileName)
+        {
+            using (var mesh = new MeshObject(modelFolder + fileName))
+            {
+                mesh.Generate(2);
+                var untilElements = mesh.GetElement2D();
+                mesh.Density = 0.5;
+                mesh.Generate(2);
+                var afterElements = mesh.GetElement2D();
+                Assert.IsTrue(untilElements.Count() < afterElements.Count());
+            }
+        }
+
+        [DataTestMethod]
+        [DataRow("Cilindr.step")]
+        public void GetDensityForNodesTest(string fileName)
+        {
+            using (var mesh = new MeshObject(modelFolder + fileName))
+            {
+                mesh.Generate(1);
+                var length1 = mesh.GetNodes().ToArray().Length;
+                mesh.Density = 0.5;
+                mesh.Generate(1);
+                var length2 = mesh.GetNodes().ToArray().Length;
+                Assert.AreEqual(true, length2 > length1);
+                mesh.Density = 1;
+                mesh.Generate(1);
+                var length3 = mesh.GetNodes().ToArray().Length;
+                Assert.AreEqual(true, length3 < length2);
+            }
+        }
+
+        [DataTestMethod]
+        [DataRow("Cilindr.step")]
+        public void GetDensityFor2DElementsTest(string fileName)
+        {
+            using (var mesh = new MeshObject(modelFolder + fileName))
+            {
+                mesh.Generate(2);
+                var length1 = mesh.GetElement2D().ToArray().Length;
+                mesh.Density = 0.5;
+                mesh.Generate(2);
+                var length2 = mesh.GetElement2D().ToArray().Length;
+                Assert.AreEqual(true, length2 > length1);
+                mesh.Density = 1;
+                mesh.Generate(2);
+                var length3 = mesh.GetElement2D().ToArray().Length;
+                Assert.AreEqual(true, length3 < length2);
+            }
+        }
+
+        [DataTestMethod]
+        [DataRow("Cilindr.step")]
+        public void GetDensityFor3DElementsTest(string fileName)
+        {
+            using (var mesh = new MeshObject(modelFolder + fileName))
+            {
+                mesh.Generate(3);
+                var length1 = mesh.GetElement3D().ToArray().Length;
+                mesh.Density = 0.5;
+                mesh.Generate(3);
+                var length2 = mesh.GetElement3D().ToArray().Length;
+                Assert.AreEqual(true, length2 > length1);
+                mesh.Density = 1;
+                mesh.Generate(3);
+                var length3 = mesh.GetElement3D().ToArray().Length;
+                Assert.AreEqual(true, length3 < length2);
+            }
+        }
+
+        [DataTestMethod]
+        [DataRow("Cilindr.step", new int[] { 1, 2, 3 }, new int[] { 112, 112, 74 })]
+        public void GetSurfaceByIdTest(string fileName, int[] tags, int[] expLength )
+        {
+            using (var mesh = new MeshObject(modelFolder + fileName))
+            {
+                mesh.Generate(2);
+                for (var i = 0; i < tags.Length; ++i)
+                {
+                    var actual = mesh.GetSurfaceById(tags[i]).ToArray();
+                    Assert.AreEqual(expLength[i], actual.Length);
+                }
             }
         }
     }
