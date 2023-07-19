@@ -12,13 +12,21 @@ using System.Reflection;
 using Model.Interfaces;
 using System.Runtime.Remoting.Messaging;
 using System.Collections;
+using System.Drawing.Imaging;
+using MathNet.Numerics.Integration;
 
 namespace Model.GmshUser
 {
+    public enum TransfiniteAlgorithm
+    {
+        Progressive,
+        Bump,
+        Beta
+    }
     /// <summary>
     /// Класс для манипуляции Gmsh геометрии 
     /// </summary>
-    public class GmshGeometryObject : GmshModelObject
+    public class GmshGeometryObject : GmshModelObject, IGeometryApi
     {
         private const int defaultCurveSteps = 10;
         private const double defaultMinDencity = 0;
@@ -69,7 +77,6 @@ namespace Model.GmshUser
             GmshGeometryObjectData.SetMinDencity(Id, MinDencity);
             GmshGeometryObjectData.SetMaxDencity(Id, MaxDencity);
         }
-
         public override IEnumerator<Node> GetEnumerator()
         {
             var list = GetElements()[ObjKind.Point];
@@ -204,6 +211,15 @@ namespace Model.GmshUser
             }
             nextCurveId += lines.Count;
             return lines;
+        }
+        /// <summary>
+        /// Выбрать кривую по щелчку мыши на неё
+        /// </summary>
+        /// <param name="clickPoint">[In]Точка в видовых координатах</param>
+        /// <returns>Возвращает id выбранной прямой</returns>
+        public int SelectCurveOnMouseClick(Point2D clickPoint)
+        {
+            throw new NotImplementedException();
         }
     }
 }

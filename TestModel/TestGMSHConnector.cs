@@ -111,7 +111,7 @@ namespace TestModel
         }
 
         [DataTestMethod]
-        [DataRow("sphere", ".geo", "Элементы3D")]
+        [DataRow("Cilindr", ".step", "Элементы2D")]
         public void TestMeshGetElementsGmshController(ref string scriptName, ref string scriptExt, ref string objType)
         {
             using (var connector = new GmshMeshObject(srcDir + scriptName + scriptExt))
@@ -138,7 +138,35 @@ namespace TestModel
                 var surfaces = connector.GetSurfaces();
             }
         }
+        [DataTestMethod]
+        [DataRow("Korpus_Nasosa", ".step")]
+        public void TestGmshCurveTransfinite(ref string name, ref string ext)
+        {
+            using (var connector = new GmshMeshObject(srcDir + name + ext))
+            {
+                connector.Generate("Элементы2D");
+                var curves = connector.GetCurves().ToArray();
+                connector.SetMeshPointsOnCurve( 10, TransfiniteAlgorithm.Progressive, 3, curves);
+                connector.Generate("Элементы2D");
+            }
+        }
 
+        [DataTestMethod]
+        [DataRow("Cilindr", ".step", "model", ".igs")]
+        public void TestGmshListModel(ref string firstName, ref string firstExt,
+                                      ref string secondName, ref string secondExt)
+        {
+            var firstModel = new GmshGeometryObject(srcDir + firstName + firstExt);//Name is "1"
+            var actual = GmshModelObjectData.ModelList();
+            CollectionAssert.AreEqual(new string[] { "", "1" }, actual);
+            var secondModel = new GmshMeshObject(srcDir + secondName + secondExt);//Name is "2"
+            var actual2 = GmshModelObjectData.ModelList();
+            CollectionAssert.AreEqual(new string[] { "", "1", "2" }, actual2);
+            firstModel.Dispose();
+            secondModel.Dispose();
+            var actual3 = GmshModelObjectData.ModelList();
+            CollectionAssert.AreEqual(new string[] {""}, actual3);
+        }
 
         [DataTestMethod]
         [DataRow("test", ".geo")]

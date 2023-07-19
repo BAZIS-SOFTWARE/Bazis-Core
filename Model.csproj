@@ -99,6 +99,13 @@
     <Compile Include="GmshController\GmshIO.cs" />
     <Compile Include="GmshController\GmshMesh.cs" />
     <Compile Include="GmshController\GmshModel.cs" />
+    <Compile Include="GmshObject\GeometryObject.cs" />
+    <Compile Include="GmshObject\IGeometryApi.cs" />
+    <Compile Include="GmshObject\IMeshApi.cs" />
+    <Compile Include="GmshObject\IModelApi.cs" />
+    <Compile Include="GmshObject\MeshObject.cs" />
+    <Compile Include="GmshObject\ModelObject.cs" />
+    <Compile Include="GmshUser\GmshModelObjectData.cs" />
     <Compile Include="GmshUser\GmshUserConnection.cs" />
     <Compile Include="GmshUser\GmshGeometryObject.cs" />
     <Compile Include="GmshUser\GmshGeometryObjectData.cs" />
@@ -110,6 +117,13 @@
     <Compile Include="GmshUser\IGeometryApi.cs" />
     <Compile Include="GmshUser\IMeshApi.cs" />
     <Compile Include="GmshUser\IModelApi.cs" />
+    <Compile Include="GmshWrapper\GmshWrapperConnection.cs" />
+    <Compile Include="GmshWrapper\GmshWrapperGeneral.cs" />
+    <Compile Include="GmshWrapper\GmshWrapperGeometry.cs" />
+    <Compile Include="GmshWrapper\GmshWrapperIO.cs" />
+    <Compile Include="GmshWrapper\GmshWrapperMemory.cs" />
+    <Compile Include="GmshWrapper\GmshWrapperMesh.cs" />
+    <Compile Include="GmshWrapper\GmshWrapperModel.cs" />
     <Compile Include="Interfaces\IModelLoader.cs" />
     <Compile Include="Interfaces\IModelSaver.cs" />
     <Compile Include="ModelParcer\LoadModelFromASCIITextFile.cs" />

@@ -27,6 +27,13 @@ namespace Model.GmshController
     public static class GmshConnection
     {
         /// <summary>
+        /// Возвращает флаг инициализировано ли API
+        /// </summary>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        /// <returns>Инициализировано ли API</returns>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int gmshIsInitialized(ref int ierr);
+        /// <summary>
         /// Инициализирует Gmsh Api
         /// </summary>
         /// <param name="argc">[In]Количество строковых аргументов командной строки</param>
@@ -42,6 +49,6 @@ namespace Model.GmshController
         /// </summary>
         /// <param name="error">[Out]Флаг ошибки</param>
         [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void gmshFinalize(ref int error);
+        public static extern void gmshFinalize(ref int ierr);
     }
 }

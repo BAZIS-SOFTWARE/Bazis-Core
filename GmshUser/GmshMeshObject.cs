@@ -11,13 +11,14 @@ using Model.ModelParcer;
 using Model.Interfaces;
 using Geometry;
 using System.Collections;
+using MathNet.Numerics.Integration;
 
 namespace Model.GmshUser
 {
     /// <summary>
     /// Класс для манипуляции с Gmsh сеткой
     /// </summary>
-    public class GmshMeshObject : GmshModelObject, IMeshApi
+    public class GmshMeshObject : GmshGeometryObject, IMeshApi
     {
         /// <summary>
         /// Флаг указывает будет ли удаляться файл связанный с ModelParcer
@@ -207,17 +208,51 @@ namespace Model.GmshUser
                 nodes.Add(new Node((int)tagPoints[i], point));
             }
         }
-
+        /// <summary>
+        /// установить новый алгоритм триангуляции по его enum
+        /// (Delaunay, Frontal Delaunay) и т.д для 2D
+        /// </summary>
+        /// <param name="algorithm">[In]Enum алгоритма</param>
         public void ChangeTriangulationAlgorithm(Triangulation2DAlgorithm algorithm = Triangulation2DAlgorithm.FrontalDelaunay)
         {
             var error = 0;
             GmshGeneral.gmshOptionSetNumber("Mesh.Algorithm", (double)algorithm, ref error);
         }
-
+        /// <summary>
+        /// установить новый алгоритм триангуляции по его enum
+        /// (Delaunay, Frontal Delaunay) и т.д для 3D
+        /// </summary>
+        /// <param name="algorithm">[In]Enum алгоритма</param>
         public void ChangeTriangulationAlgorithm(Triangulation3DAlgorithm algorithm = Triangulation3DAlgorithm.Delaunay)
         {
             var error = 0;
             GmshGeneral.gmshOptionSetNumber("Mesh.Algorithm3D", (double)algorithm, ref error);
+        }
+        /// <summary>
+        /// Задает расположение узлов на кривой 
+        /// <param name="number">[In]Количество точек</param>
+        /// <param name="ta">[In]Тип расположения точек (Progressive и т.д), числовой параметр</param>
+        /// <param name="parameter">[In]Выбранная кривая (может состоять из нескольких последовательно соединённых кривых)</param>
+        /// <param name="curve">[In]Кривая или набор кривых</param>
+        public void SetMeshPointsOnCurve(int number, TransfiniteAlgorithm ta, double parameter, Curve[] curve)
+        {
+            var error = 0;
+            GmshModel.gmshModelSetCurrent(Id.ToString(), ref error);
+            for (var i = 0; i < curve.Length; ++i)
+            {
+                switch (ta)
+                {
+                    case TransfiniteAlgorithm.Progressive:
+                        GmshMesh.gmshModelMeshSetTransfiniteCurve(curve[i].Number, number, "Progression", parameter, ref error);
+                        break;
+                    case TransfiniteAlgorithm.Bump:
+                        GmshMesh.gmshModelMeshSetTransfiniteCurve(curve[i].Number, number, "Bump", parameter, ref error);
+                        break;
+                    case TransfiniteAlgorithm.Beta:
+                        GmshMesh.gmshModelMeshSetTransfiniteCurve(curve[i].Number, number, "Beta", parameter, ref error);
+                        break;
+                }
+            }
         }
     }
 }

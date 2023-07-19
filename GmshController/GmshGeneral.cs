@@ -20,7 +20,6 @@ namespace Model.GmshController
         /// <param name="ierr">[Out]Флаг ошибки</param>
         [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void gmshOptionSetNumber(String src, double value, ref int ierr);
-
         /// <summary>
         /// Получает значение из поля категории опций
         /// </summary>
@@ -38,7 +37,13 @@ namespace Model.GmshController
         /// <param name="ierr">[Out]Флаг ошибки</param>
         [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void gmshOptionSetString(String name, String value, ref int ierr);
-
+        /// <summary>
+        /// Выделяет неуправляемую память
+        /// </summary>
+        /// <param name="n">[In]Количество байт</param>
+        /// <returns>Указатель на неуправляемую память</returns>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr gmshMalloc(IntPtr n);
         /// <summary>
         /// Очищает неуправляемую память
         /// </summary>

@@ -10,8 +10,18 @@ namespace Model.GmshController
     /// <summary>
     /// Класс с группой методов для работы с геометрией
     /// </summary>
-    public static class GmshGeometry
+    public static class GmshGeometry 
     {
+        /// <summary>
+        /// Получает список всех идентификаторов для заданной размерности
+        /// </summary>
+        /// <param name="dimTags">[Out]Массив пар размерность - идентификатор</param>
+        /// <param name="dimTags_n">[Out]Длина массива пар размерность - идентификатор</param>
+        /// <param name="dim">[In]Размерность для получения идентификаторов, -1 для всех размерностей</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelGetEntities(ref IntPtr dimTags, ref IntPtr dimTags_n,
+                                                       int dim, ref int ierr);
         /// <summary>
         /// Получает геометрию модели в виде вектора пар размерность : идентификатор
         /// </summary>
@@ -21,7 +31,48 @@ namespace Model.GmshController
         /// <param name="ierr">[Out]Флаг ошибки</param>
         [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void gmshModelOccGetEntities(ref IntPtr dimTags, ref IntPtr dimTags_n, int dim, ref int ierr);
-
+        /// <summary>
+        /// Задает имя сущности для текщих dim:tag
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="name">[In]Имя сущности</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelSetEntityName(int dim, int tag, String name, ref int ierr);
+        /// <summary>
+        /// Получает имя сущности с указанной размерностью и идентификатором
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="name">[In]Имя =</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelGetEntityName(int dim, int tag, ref IntPtr name, ref int ierr);
+        /// <summary>
+        /// Удаляет текущую сущность
+        /// </summary>
+        /// <param name="name">[In]Имя сущности</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelRemoveEntityName(String name, ref int ierr);
+        /// <summary>
+        /// Возвращает ограничивающий параллелепипед
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="xmin">[Out]Минимальное значение X</param>
+        /// <param name="ymin">[Out]Минимальное значение Y</param>
+        /// <param name="zmin">[Out]Минимальное значение Z</param>
+        /// <param name="xmax">[Out]Максимальное значение X</param>
+        /// <param name="ymax">[Out]Максимальное значение Y</param>
+        /// <param name="zmax">[Out]Максимальное значение Z</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelGetBoundingBox(int dim, int tag, ref double xmin,
+                                                          ref double ymin, ref double zmin,
+                                                          ref double xmax, ref double ymax,
+                                                          ref double zmax, ref int ierr);
         /// <summary>
         /// Получает петлю кривых для заданного идентификатора поверхности
         /// </summary>
@@ -37,7 +88,6 @@ namespace Model.GmshController
                                                             ref IntPtr curveLoopTags_n, ref IntPtr curveTags,
                                                             ref IntPtr curveTags_n, ref IntPtr curveTags_nn,
                                                             ref int ierr);
-
         /// <summary>
         /// Получает петлю поверхностей для заданного идентификатора объема
         /// </summary>
@@ -95,6 +145,20 @@ namespace Model.GmshController
         public static extern void gmshModelGetSecondDerivative(int dim, int tag, double[] parametricCoord,
                                                                IntPtr parametricCoord_n, ref IntPtr derivatives,
                                                                ref IntPtr derivatives_n, ref int ierr);
+        /// <summary>
+        /// Получает координаты точек заданные параметром для указанного идентификатора и размерности
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="parametricCoord">[In]Массив параметрических координат double</param>
+        /// <param name="parameticCoord_n">[In]Длина массива</param>
+        /// <param name="coord">[Out]Массив координаты точек</param>
+        /// <param name="coord_n">[Out]Длина массива координат точек</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelGetValue(int dim, int tag, double[] parametricCoord,
+                                                    IntPtr parameticCoord_n, ref IntPtr coord,
+                                                    ref IntPtr coord_n, ref int ierr);
 
         /// <summary>
         /// Перепараметризирует пару размерность : идентификатор в параметризацию поверхностей
@@ -114,5 +178,99 @@ namespace Model.GmshController
                                                                   ref IntPtr surfaceParametricCoord,
                                                                   ref IntPtr surfaceParametricCoord_n,
                                                                   int which, ref int ierr);
+        /// <summary>
+        /// Получает параметризацию сущности заданной парой размерность : идентификатор
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="coord">[In]Вектор координат</param>
+        /// <param name="coord_n">[In]Размерность вектора координат</param>
+        /// <param name="parametricCoord">[Out]Вектор параметрических координат</param>
+        /// <param name="parametricCoord_n">[Out]Длина вектора параметрические координат</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelGetParametrization(int dim, int tag, double[] coord, IntPtr coord_n,
+                                                              ref IntPtr parametricCoord, ref IntPtr parametricCoord_n,
+                                                              ref int ierr);
+        /// <summary>
+        /// Получает минимальные максимальные границы параметризации
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="min">[Out]Вектор минимальных границ</param>
+        /// <param name="min_n">[Out]Длина вектора минимальных границ</param>
+        /// <param name="max">[Out]Вектор максимальных границ</param>
+        /// <param name="max_n">[Out]Длина вектора максимальных границ</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelGetParametrizationBounds(int dim, int tag, ref IntPtr min,
+                                                                    ref IntPtr min_n, ref IntPtr max,
+                                                                    ref IntPtr max_n, ref int ierr);
+        /// <summary>
+        /// Получает соседей верхнего\нижнего уровня для текущей пары размерность : идентификатор
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="upward">[Out]Идентификаторы верхнего уровня</param>
+        /// <param name="upward_n">[Out]Длина вектора идентификаторов</param>
+        /// <param name="downward">[Out]Идентификаторы нижнего уровня</param>
+        /// <param name="downward_n">[Out]Длина вектора идентификаторов</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelGetAdjacencies(int dim, int tag, ref IntPtr upward, ref IntPtr upward_n,
+                                                          ref IntPtr downward, ref IntPtr downward_n, ref int ierr);
+        /// <summary>
+        /// Получает граничные элементы для заданной пары размерность : идентификатор
+        /// </summary>
+        /// <param name="dimTags">[In]Пара размерность : идентификатор</param>
+        /// <param name="dimTags_n">[In]Количество пар</param>
+        /// <param name="outDimTags">[Out]Граничные элементы внутри пар</param>
+        /// <param name="outDimTags_n">[Out]Количество элементов</param>
+        /// <param name="combined">[In]Флаг объединения резултатов для пар</param>
+        /// <param name="oriented">[In]Флаг наличия знака, который умножается на идентификатор</param>
+        /// <param name="recursive">[In]Флаг рекурсии - получить все до точек</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelGetBoundary(int[] dimTags, IntPtr dimTags_n, ref IntPtr outDimTags,
+                                                       ref IntPtr outDimTags_n, int combined, int oriented,
+                                                       int recursive, ref int ierr);
+        /// <summary>
+        /// Получает физическое имя для заданной размерности : идентификатора
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="name">[Out]Строка имя</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelGetPhysicalName(int dim, int tag, ref IntPtr name, ref int ierr);
+        /// <summary>
+        /// Полчучает тип сущности по указанной паре размерность : идентификатор
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="entityType">[Out]Строка типа</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelGetType(int dim, int tag, ref IntPtr entityType, ref int ierr);
+        /// <summary>
+        /// Возвращает размерность текущего геометрического объекта
+        /// </summary>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        /// <returns>Размерность</returns>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int gmshModelGetDimension(ref int ierr);
+        /// <summary>
+        /// Определяет находится ли точка параметрическая или локальная внутри массива
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="coord">[In]Масив координат</param>
+        /// <param name="coord_n">[In]Количество координат</param>
+        /// <param name="parametric">[In]Флаг являяется ли координата параметрической</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        /// <returns>Число координат лежащих внутри модели</returns>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int gmshModelIsInside(int dim, int tag, double[] coord, IntPtr coord_n, 
+                                                   int parametric, ref int ierr);
     }
 }

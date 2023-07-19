@@ -33,7 +33,6 @@ namespace Model.GmshController
         /// <param name="ierr">[Out]Флаг ошибки</param>
         [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void gmshWrite(String fileName, ref int ierr);
-
         /// <summary>
         /// Получает путь до файла ассоциированный с данной моделью
         /// </summary>
