@@ -150,5 +150,21 @@ namespace TestModel.GmshTests
                 Assert.AreEqual(true, length3 < length2);
             }
         }
+
+        [DataTestMethod]
+        [DataRow("Cilindr.step", new int[] { 1, 2, 3 }, new int[] { 112, 112, 74 })]
+        public void GetSurfaceByIdTest(string fileName, int[] tags, int[] expLength )
+        {
+            using (var mesh = new MeshObject(modelFolder + fileName))
+            {
+                mesh.Generate(2);
+                for (var i = 0; i < tags.Length; ++i)
+                {
+                    var actual = mesh.GetSurfaceById(tags[i]).ToArray();
+                    Assert.AreEqual(expLength[i], actual.Length);
+                }
+            }
+        }
+
     }
 }

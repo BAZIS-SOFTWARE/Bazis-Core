@@ -75,7 +75,7 @@ namespace Model.GmshObject
         /// получить поверхности
         /// </summary>
         /// <returns>поверхности</returns>
-        public IEnumerable<ModelObject> GetSurfaceById(int surfaceId) => GetSurfaces().Where(v => v.Number == surfaceId);
+        public IEnumerable<ModelObject> GetSurfaceById(int surfaceId) => GmshWrapperMesh.GetElements(2, surfaceId);
         /// <summary>
         /// получить объёмные элементы
         /// </summary>
