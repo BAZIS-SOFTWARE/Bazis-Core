@@ -100,5 +100,27 @@ namespace TestModel
             var crossSection = new CrossSection();
             var crossNodes = crossSection.GetSectionSurfaces(elements, plane);
         }
+
+        [TestMethod]
+        public void TestCutOnObjectSurface()
+        {
+            var plane = new Plane(
+                new Point3D(0, 0, 0),
+                new Point3D(1, 0, 0),
+                new Point3D(0, 1, 0));
+            var nodes = new Node[] {
+                new Node(1, new Point3D(-23, 195, 0)),
+                new Node(2, new Point3D(-23, 203, 0)),
+                new Node(3, new Point3D(-20, 203, -11)),
+                new Node(4, new Point3D(-41, 198, 0)),
+            };
+            var model = new Element3D(1, nodes, ObjKind.Tetra);
+            var crossSection = new CrossSection();
+            var section = crossSection.GetSectionSurfaces(new List<Element3D> { model }, plane);
+            var triangleNodes = section.Values.First().GetPoints();
+            Assert.IsTrue(triangleNodes.Contains(new Point3D(-23, 195, 0)));
+            Assert.IsTrue(triangleNodes.Contains(new Point3D(-23, 203, 0)));
+            Assert.IsTrue(triangleNodes.Contains(new Point3D(-41, 198, 0)));
+        }
     }
 }

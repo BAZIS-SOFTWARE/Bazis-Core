@@ -2,9 +2,6 @@
 using Model.GmshObject;
 using Model.GmshWrapper;
 using System.Linq;
-using Model.GmshController;
-using System;
-using System.Collections;
 
 namespace TestModel.GmshTests
 {
@@ -28,8 +25,23 @@ namespace TestModel.GmshTests
         {
             using (var mesh = new MeshObject(modelFolder + fileName))
             {
-                mesh.Generate(1);
-                var e1d = mesh.GetNodes();
+                mesh.Generate(2);
+                var nodes = mesh.GetNodes();
+                Assert.AreEqual(187, nodes.Count());
+            }
+        }
+
+        [DataTestMethod]
+        [DataRow("Cilindr.step")]
+        public void TestRefineMesh(string fileName)
+        {
+            using (var mesh = new MeshObject(modelFolder + fileName))
+            {
+                mesh.Generate(2);
+                var nodesUntil = mesh.GetNodes();
+                mesh.RefineMesh();
+                var nodesAfter = mesh.GetNodes();
+                Assert.IsTrue(nodesAfter.Count() > nodesUntil.Count());
             }
         }
 
@@ -40,7 +52,8 @@ namespace TestModel.GmshTests
             using (var mesh = new MeshObject(modelFolder + fileName))
             {
                 mesh.Generate(1);
-                var e1d = mesh.GetElement1D();
+                var elements = mesh.GetElement1D();
+                Assert.AreEqual(46, elements.Count());
             }
         }
         [DataTestMethod]
@@ -50,7 +63,8 @@ namespace TestModel.GmshTests
             using (var mesh = new MeshObject(modelFolder + fileName))
             {
                 mesh.Generate(2);
-                var e2d = mesh.GetElement2D();
+                var elements = mesh.GetElement2D();
+                Assert.AreEqual(370, elements.Count());
             }
         }
         [DataTestMethod]
@@ -60,9 +74,26 @@ namespace TestModel.GmshTests
             using (var mesh = new MeshObject(modelFolder + fileName))
             {
                 mesh.Generate(3);
-                var e3d = mesh.GetElement3D();
+                var elements = mesh.GetElement3D();
+                Assert.AreEqual(707, elements.Count());
             }
         }
+
+        [DataTestMethod]
+        [DataRow("Cilindr.step")]
+        public void TestDensity(string fileName)
+        {
+            using (var mesh = new MeshObject(modelFolder + fileName))
+            {
+                mesh.Generate(2);
+                var untilElements = mesh.GetElement2D();
+                mesh.Density = 0.5;
+                mesh.Generate(2);
+                var afterElements = mesh.GetElement2D();
+                Assert.IsTrue(untilElements.Count() < afterElements.Count());
+            }
+        }
+
         [DataTestMethod]
         [DataRow("Cilindr.step")]
         public void GetDensityForNodesTest(string fileName)

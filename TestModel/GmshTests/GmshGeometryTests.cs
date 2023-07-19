@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model.GmshWrapper;
 using Model.GmshObject;
+using System.Linq;
 
 namespace TestModel.GmshTests
 {
@@ -25,6 +26,7 @@ namespace TestModel.GmshTests
             using (var geometry = new GeometryObject(modelFolder + fileName))
             {
                 var curves = geometry.GetСurves();
+                Assert.AreEqual(6, curves.Count());
             }
         }
         [DataTestMethod]
@@ -33,7 +35,8 @@ namespace TestModel.GmshTests
         {
             using (var geometry = new GeometryObject(modelFolder + fileName))
             { 
-                var lines = geometry.GetElements1D(); 
+                var lines = geometry.GetElements1D();
+                Assert.AreEqual(6, lines.Count());
             }
         }
 
@@ -44,6 +47,20 @@ namespace TestModel.GmshTests
             using (var geometry = new GeometryObject(modelFolder + fileName))
             {
                 var points = geometry.GetControlPoints();
+                Assert.AreEqual(4, points.Count());
+            }
+        }
+
+        [DataTestMethod]
+        [DataRow("test.geo")]
+        public void TestCurveSteps(string fileName)
+        {
+            using (var geometry = new GeometryObject(modelFolder + fileName))
+            {
+                var curveUntil = geometry.GetСurves().First();
+                geometry.CurveSteps = 15; // but default is 20
+                var curveAfter = geometry.GetСurves().First();
+                Assert.IsTrue(curveAfter.GetNodes().Count() < curveUntil.GetNodes().Count());
             }
         }
 
