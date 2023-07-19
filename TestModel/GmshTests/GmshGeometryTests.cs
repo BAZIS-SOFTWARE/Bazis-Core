@@ -64,5 +64,17 @@ namespace TestModel.GmshTests
                 Assert.IsTrue(curveAfter.GetNodes().Count() < curveUntil.GetNodes().Count());
             }
         }
+
+        [DataTestMethod]
+        [DataRow("Cilindr.step")]
+        public void TestDeleteEntity(string fileName)
+        {
+            using (var geometry = new GeometryObject(modelFolder + fileName))
+            {
+                var line = geometry.GetElements1D().First();
+                geometry.DeleteEntities(new int[] { line.Number });
+                var lines = geometry.GetElements1D();
+            }
+        }
     }
 }

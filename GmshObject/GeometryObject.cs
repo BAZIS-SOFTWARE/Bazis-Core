@@ -33,5 +33,11 @@ namespace Model.GmshObject
             SetCurrent();
             return GmshWrapperGeometry.GetEntities<Element1D>(1, GmshWrapperGeometry.CreateElement1D);
         }
+
+        public void DeleteEntities(int[] id, bool recursive = false)
+        {
+            var dimTags = id.Select(x => new ValueTuple<int, int>(1, x)).ToArray();
+            GmshWrapperModel.RemoveEntities(dimTags, recursive);
+        }
     }
 }

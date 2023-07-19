@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Geometry;
@@ -6,9 +7,27 @@ using Model.GmshController;
 
 namespace Model.GmshWrapper
 {
+    public static class IEnumerableExtentions
+    {
+        public static int[] ToIntArray(this IEnumerable<ValueTuple<int, int>> pairs)
+        {
+            var count = pairs.Count();
+            int[] list = new int[count * 2];
+            int index = 0;
+            foreach (var pair in pairs)
+            {
+                list[index] = pair.Item1;
+                list[index + 1] = pair.Item2;
+                index += 2;
+            }
+            return list;
+        }
+    }
+
     /// <summary>
     /// Оборачивает основные методы модели полученные из GmshController
     /// </summary>
+    /// 
     public static class GmshWrapperModel
     {
         /// <summary>
@@ -105,6 +124,13 @@ namespace Model.GmshWrapper
                 points[j] = point;
             }
             return points;
+        }
+
+        public static void RemoveEntities(ValueTuple<int, int>[] dimTags, bool recursive)
+        {
+            int error = 0;
+            var dimTags_array = dimTags.ToIntArray();
+            GmshModel.GmshModelRemoveEntities(dimTags_array, dimTags_array.LongLength, Convert.ToInt32(recursive), ref error);
         }
     }
 }
