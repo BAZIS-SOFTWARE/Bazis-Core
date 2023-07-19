@@ -134,5 +134,8 @@ namespace Model.GmshController
         public static extern void gmshModelMeshGetLocalCoordinatesInElement(UIntPtr elementTag, double x, double y, double z,
                                                                             ref double u, ref double v, ref double w, 
                                                                             ref int ierr);
+
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelMeshRebuildNodeCache(int onlyIfNecessary, ref int ierr);
     }
 }

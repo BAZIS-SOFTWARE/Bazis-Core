@@ -52,8 +52,7 @@ namespace Model.GmshWrapper
         public static void Generate(int dim)
         {
             var ierr = 0;
-            if (GmshWrapperGeometry.GetDimension() == dim)
-                GmshMesh.gmshModelMeshGenerate(-1, ref ierr);
+            GmshMesh.gmshModelMeshGenerate(1, ref ierr);
             GmshMesh.gmshModelMeshGenerate(dim, ref ierr);
         }
         /// <summary>
@@ -161,11 +160,11 @@ namespace Model.GmshWrapper
             }
             return ierr == 0;
         }
-        public static IEnumerable<Node> GetNodes(int dim = -1, int tag = -1)
+        public static IEnumerable<Node> GetNodes(int dim = -1, int tag = -1, bool includeBoundary = false)
         {
             long[] nodeTags;
             double[] local, parametric;
-            if(!GetNodes(dim, tag, out nodeTags, out local, out parametric))
+            if(!GetNodes(dim, tag, out nodeTags, out local, out parametric, false, includeBoundary))
                 return new Node[0];
             var list = new List<Node>();
             var points = GmshWrapperModel.ConvertLocalCoordsToPoints3D(local);

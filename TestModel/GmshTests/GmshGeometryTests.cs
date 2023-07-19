@@ -46,5 +46,23 @@ namespace TestModel.GmshTests
                 var points = geometry.GetControlPoints();
             }
         }
+
+        [DataTestMethod]
+        [Timeout(60000)]
+        [DataRow(10000)]
+        public void ModelTest(int count)
+        {
+            var models = new GeometryObject[count];
+            for(var i = 0; i < count; ++i)
+            {
+                models[i] = new GeometryObject();
+                Assert.AreEqual(true, GmshWrapperModel.ModelFind(models[i].Id.ToString()));
+            }
+            Assert.AreEqual(models.Length + 1, GmshWrapperModel.ModelList().Length);
+            for (var i = 0; i < count; ++i)
+                models[i].Dispose();
+            var list = GmshWrapperModel.ModelList();
+            Assert.AreEqual(true, list.Length == 1 && list[0] == string.Empty);
+        }
     }
 }

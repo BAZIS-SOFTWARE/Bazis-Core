@@ -41,5 +41,16 @@ namespace Model.GmshWrapper
             var ierr = 0;
             GmshGeneral.gmshOptionSetString(name, values, ref ierr);
         }
+        /// <summary>
+        /// Генерирует случайное число для типа Ulong
+        /// </summary>
+        /// <returns></returns>
+        public static ulong GenerateRandom()
+        {
+            var dif = ulong.MaxValue - 1UL;
+            var rand = new Random();
+            var value = rand.NextDouble();
+            return Convert.ToUInt64(value * dif);
+        }
     }
 }

@@ -5,7 +5,7 @@ using Model.GmshWrapper;
 
 namespace Model.GmshObject
 { 
-    public class MeshObject : ModelObject, IMeshApi
+    public class MeshObject : GeometryObject, IMeshApi
     {
         public double Density 
         { 
@@ -47,7 +47,7 @@ namespace Model.GmshObject
             return GmshWrapperMesh.GetNodes();
         }
 
-        public IEnumerable<Model.ModelObject> GetElement1D()
+        public IEnumerable<ModelObject> GetElement1D()
         {
             SetCurrent();
             return GmshWrapperMesh.GetElements(1, -1);
@@ -57,7 +57,7 @@ namespace Model.GmshObject
         /// получить плоские элементы
         /// </summary>
         /// <returns>плоские элементы</returns>
-        public IEnumerable<Model.ModelObject> GetElement2D()
+        public IEnumerable<ModelObject> GetElement2D()
         {
             SetCurrent();
             return GmshWrapperMesh.GetElements(2, -1);
@@ -66,50 +66,52 @@ namespace Model.GmshObject
         /// получить поверхности
         /// </summary>
         /// <returns>поверхности</returns>
-        public IEnumerable<Model.ModelObject> GetSurfaces()
+        public IEnumerable<ModelObject> GetSurfaces()
         {
             SetCurrent();
             return GmshWrapperMesh.GetElements(2, -1);
         }
         /// <summary>
+        /// получить поверхности
+        /// </summary>
+        /// <returns>поверхности</returns>
+        public IEnumerable<ModelObject> GetSurfaceById(int surfaceId) => GetSurfaces().Where(v => v.Number == surfaceId);
+        /// <summary>
         /// получить объёмные элементы
         /// </summary>
         /// <returns>объёмные элементы</returns>
-        public IEnumerable<Model.ModelObject> GetElement3D()
+        public IEnumerable<ModelObject> GetElement3D()
         {
             SetCurrent();
             return GmshWrapperMesh.GetElements(3, -1);
         }
         
-        public void ChangeTriangulationAlgorithm(Triangulation2DAlgorithm algorithm = Triangulation2DAlgorithm.FrontalDelaunay)
+        public void ChangeTriangulationAlgorithm2D(Triangulation2DAlgorithm algorithm = Triangulation2DAlgorithm.FrontalDelaunay)
         {
             SetCurrent();
             GmshWrapperGeneral.OptionSetNumber("Mesh.Algorithm3D", Convert.ToDouble(algorithm));
         }
 
-        public void ChangeTriangulationAlgorithm(Triangulation3DAlgorithm algorithm = Triangulation3DAlgorithm.Delaunay)
+        public void ChangeTriangulationAlgorithm3D(Triangulation3DAlgorithm algorithm = Triangulation3DAlgorithm.Delaunay)
         {
             SetCurrent();
             GmshWrapperGeneral.OptionSetNumber("Mesh.Algorithm", Convert.ToDouble(algorithm));
         }
 
-        public void SetMeshPointsOnCurve(int number, TransfiniteAlgorithm ta, double parameter, Curve[] curve)
+        public void SetMeshPointsOnCurve(int number, TransfiniteAlgorithm ta, double parameter, int curve)
         {
             SetCurrent();
-            for (var i = 0; i < curve.Length; ++i)
+            switch (ta)
             {
-                switch (ta)
-                {
-                    case TransfiniteAlgorithm.Progressive:
-                        GmshWrapperMesh.SetTransfiniteCurve(curve[i].Number, number, "Progression", parameter);
-                        break;
-                    case TransfiniteAlgorithm.Bump:
-                        GmshWrapperMesh.SetTransfiniteCurve(curve[i].Number, number, "Bump", parameter);
-                        break;
-                    case TransfiniteAlgorithm.Beta:
-                        GmshWrapperMesh.SetTransfiniteCurve(curve[i].Number, number, "Beta", parameter);
-                        break;
-                }
+                case TransfiniteAlgorithm.Progressive:
+                    GmshWrapperMesh.SetTransfiniteCurve(curve, number, "Progression", parameter);
+                    break;
+                case TransfiniteAlgorithm.Bump:
+                    GmshWrapperMesh.SetTransfiniteCurve(curve, number, "Bump", parameter);
+                    break;
+                case TransfiniteAlgorithm.Beta:
+                    GmshWrapperMesh.SetTransfiniteCurve(curve, number, "Beta", parameter);
+                    break;
             }
         }
     }
