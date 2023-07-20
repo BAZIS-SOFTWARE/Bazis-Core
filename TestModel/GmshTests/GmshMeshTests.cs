@@ -173,7 +173,7 @@ namespace TestModel.GmshTests
 
         [DataTestMethod]
         [DataRow("Cilindr.step")]
-        public void TestChangeTriangulationAlgorithm(string fileName)
+        public void TestChangeTriangulationAlgorithm2D(string fileName)
         {
             using (var mesh = new MeshObject(modelFolder + fileName))
             {
@@ -181,6 +181,21 @@ namespace TestModel.GmshTests
                 var nodesCountUntil = mesh.GetNodes().Count();
                 mesh.ChangeTriangulationAlgorithm2D(Triangulation2DAlgorithm.Automatic);
                 mesh.Generate(2);
+                var nodesCountAfter = mesh.GetNodes().Count();
+                Assert.IsTrue(nodesCountAfter != nodesCountUntil);
+            }
+        }
+
+        [DataTestMethod]
+        [DataRow("Cilindr.step")]
+        public void TestChangeTriangulationAlgorithm3D(string fileName)
+        {
+            using (var mesh = new MeshObject(modelFolder + fileName))
+            {
+                mesh.Generate(3);
+                var nodesCountUntil = mesh.GetNodes().Count();
+                mesh.ChangeTriangulationAlgorithm3D(Triangulation3DAlgorithm.MMG3D);
+                mesh.Generate(3);
                 var nodesCountAfter = mesh.GetNodes().Count();
                 Assert.IsTrue(nodesCountAfter != nodesCountUntil);
             }
