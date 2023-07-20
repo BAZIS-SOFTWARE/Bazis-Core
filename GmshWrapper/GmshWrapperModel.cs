@@ -136,7 +136,7 @@ namespace Model.GmshWrapper
         public static void Synchronize()
         {
             int error = 0;
-            GmshModel.gmshModelGeoSynchronize(ref error);
+            GmshModel.gmshModelOccSynchronize(ref error);
         }
     }
 }

@@ -111,6 +111,6 @@ namespace Model.GmshObject
         /// <param name="ta">[In]Тип расположения точек (Progressive и т.д), числовой параметр</param>
         /// <param name="parameter">[In]Выбранная кривая (может состоять из нескольких последовательно соединённых кривых)</param>
         /// <param name="curve">[In]Идентификатор кривой</param>
-        void SetMeshPointsOnCurve(int number, TransfiniteAlgorithm ta, double parameter, int curve);
+        void SetMeshPointsOnCurve(int number, TransfiniteAlgorithm algorithm, double parameter, int curve);
     }
 }

@@ -49,11 +49,6 @@ namespace Model.GmshObject
             GmshWrapperIO.ModelSetFileName(filePath);
         }
 
-        public void DeleteEntity(int entityId)
-        {
-
-        }
-
         public IEnumerable<Node> GetControlPoints()
         {
             SetCurrent();

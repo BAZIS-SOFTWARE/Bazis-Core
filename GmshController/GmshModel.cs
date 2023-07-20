@@ -60,6 +60,6 @@ namespace Model.GmshController
         public static extern void gmshModelRemoveEntities(int[] dimTags, IntPtr dimTags_n, int recursive, ref int ierr);
 
         [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void gmshModelGeoSynchronize(ref int ierr);
+        public static extern void gmshModelOccSynchronize(ref int ierr);
     }
 }
