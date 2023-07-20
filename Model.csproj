@@ -103,6 +103,9 @@
     <Compile Include="GmshObject\IGeometryApi.cs" />
     <Compile Include="GmshObject\IMeshApi.cs" />
     <Compile Include="GmshObject\MeshObject.cs" />
+    <Compile Include="GmshObject\TransfiniteAlgorithm.cs" />
+    <Compile Include="GmshObject\Triangulation2DAlgorithm.cs" />
+    <Compile Include="GmshObject\Triangulation3DAlgorithm.cs" />
     <Compile Include="GmshUser\GmshModelObjectData.cs" />
     <Compile Include="GmshUser\GmshUserConnection.cs" />
     <Compile Include="GmshUser\GmshGeometryObject.cs" />
