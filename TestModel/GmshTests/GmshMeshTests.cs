@@ -178,5 +178,18 @@ namespace TestModel.GmshTests
                 Assert.AreEqual(true,lengthBefore > lengthAfter);
             }
         }
+        [DataTestMethod]
+        [DataRow("Cilindr.step", new int[] {206,261,251,265,210, 213})]
+        public void DeleteMeshElementsTest(string fileName, int[] elTags)
+        {
+            using (var mesh = new MeshObject(modelFolder + fileName))
+            {
+                mesh.Generate(2);
+                var lengthBefore = mesh.GetElement2D().ToArray().Length;
+                GmshWrapperMesh.DeleteMeshElements(elTags);
+                var lengthAfter = mesh.GetElement2D().ToArray().Length;
+                Assert.IsTrue(lengthBefore > lengthAfter);
+            }
+        }
     }
 }

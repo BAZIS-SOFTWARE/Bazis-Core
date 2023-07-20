@@ -4,6 +4,7 @@ using Model.GmshController;
 using Geometry;
 using Model.Interfaces;
 using Model.GmshUser;
+using System.Runtime.InteropServices;
 
 namespace Model.GmshWrapper
 {
@@ -266,6 +267,26 @@ namespace Model.GmshWrapper
         {
             var ierr = 0;
             GmshMesh.gmshModelMeshClear(dimTags, (IntPtr)dimTags.Length ,ref ierr);
+            return ierr == 0;
+        }
+
+        /// <summary>
+        /// Удаляет элементы сетки по указанным идентификаторам
+        /// </summary>
+        /// <param name="elementsTags">[In]Идентификаторы элементов</param>
+        /// <returns></returns>
+        public static bool DeleteMeshElements(int[] elementsTags)
+        {
+            var ierr = 0;
+            var elements = new IntPtr[elementsTags.Length];
+            for (var i = 0; i < elementsTags.Length; ++i)
+                elements[i] = new IntPtr(elementsTags[i]);
+            GmshMesh.gmshModelMeshSetVisibility(elements, (IntPtr)elements.Length, 0, ref ierr);
+            if (ierr == 0)
+            {
+                GmshPlugin.gmshPluginSetNumber("Invisible", "DeleteElements", 1, ref ierr);
+                GmshPlugin.gmshPluginRun("Invisible", ref ierr);
+            }
             return ierr == 0;
         }
 

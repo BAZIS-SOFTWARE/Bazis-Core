@@ -149,5 +149,16 @@ namespace Model.GmshController
         /// <param name="ierr">[Out]Флаг ошибок</param>
         [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void gmshModelMeshClear(int[] dimTags, IntPtr dimTags_n, ref int ierr);
+        /// <summary>
+        /// Задать видимость элементов
+        /// </summary>
+        /// <param name="elementTags">[In]Массив элементов</param>
+        /// <param name="elementTags_n">[In]Размер массива</param>
+        /// <param name="value">[In]Значение</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelMeshSetVisibility(IntPtr[] elementTags, IntPtr elementTags_n, 
+                                                             int value, ref int ierr);
     }
 }

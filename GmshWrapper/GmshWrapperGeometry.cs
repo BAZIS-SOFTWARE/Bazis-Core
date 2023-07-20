@@ -288,11 +288,14 @@ namespace Model.GmshWrapper
             if (extension.Contains("stp") || extension.Contains("step") ||
                 extension.Contains("brep") || extension.Contains("igs"))
             {
-                GmshGeometry.gmshModelOccRemove(dimTags, (IntPtr)dimTags.Length, recFlag, ref ierr);
+                GmshGeometry.gmshModelOccRemove(dimTags, (IntPtr)1, recFlag, ref ierr);
                 GmshGeometry.gmshModelOccSynchronize(ref ierr);
             }
             else
+            {
                 GmshGeometry.gmshModelRemoveEntities(dimTags, (IntPtr)dimTags.Length, recFlag, ref ierr);
+                GmshGeometry.gmshModelGeoSynchronize(ref ierr);
+            }
             return ierr == 0;
         }
 

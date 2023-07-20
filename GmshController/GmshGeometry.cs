@@ -297,5 +297,11 @@ namespace Model.GmshController
         /// <param name="ierr">[Out]Флаг ошибки</param>
         [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void gmshModelOccSynchronize(ref int ierr);
+        /// <summary>
+        /// Синхронизировать - вызывается для правильного отображения сущностей
+        /// </summary>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelGeoSynchronize(ref int ierr);
     }
 }

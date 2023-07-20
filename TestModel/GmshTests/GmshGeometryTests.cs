@@ -90,11 +90,11 @@ namespace TestModel.GmshTests
                 for (var i = 0; i < dimArray.Length; ++i)
                 {
                     var entities = GmshWrapperGeometry.GetEntities(dimArray[i]);
-                    var lengthBefore = entities.Length; 
+                    var lengthBefore = entities.Length;
                     geometry.DeleteEntity(dimArray[i], entities[1]);//Delete first id
-                    entities = GmshWrapperGeometry.GetEntities(dimArray[i]);
-                    var lengthAfter = entities.Length;
-                    Assert.IsTrue(lengthBefore > lengthAfter); 
+                    var newEntities = GmshWrapperGeometry.GetEntities(dimArray[i]);
+                    var lengthAfter = newEntities.Length;
+                    Assert.IsTrue(lengthBefore > lengthAfter);
                 }
             }
         }
