@@ -21,7 +21,7 @@ namespace Model.GmshObject
         /// Удалить сущность по Id
         /// </summary>
         /// <param name="entityId">[In]Id</param>
-        void DeleteEntities(int[] entityId, bool recursive = false);
+        void DeleteEntities(List<ModelObject> entities, bool recursive = false);
         /// <summary>
         /// загрузить геометрию
         /// </summary>

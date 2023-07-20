@@ -3,6 +3,7 @@ using Model.GmshWrapper;
 using Model.GmshObject;
 using System.Linq;
 using Model;
+using System.Collections.Generic;
 
 namespace TestModel.GmshTests
 {
@@ -10,16 +11,19 @@ namespace TestModel.GmshTests
     public class GmshGeometryTests
     {
         private static string modelFolder = @"..\..\Examples\GMSHConnector\";
+
         [TestInitialize]
         public void Init()
         {
             GmshWrapperConnection.Initialize();
         }
+
         [TestCleanup]
         public void Cleanup()
         {
             GmshWrapperConnection.Finalize();
         }
+
         [DataTestMethod]
         [DataRow("Cilindr.step")]
         public void GetCurvesTest(string fileName)
@@ -30,6 +34,7 @@ namespace TestModel.GmshTests
                 Assert.AreEqual(6, curves.Count());
             }
         }
+
         [DataTestMethod]
         [DataRow("Cilindr.step")]
         public void GetElements1DTest(string fileName)
@@ -71,12 +76,13 @@ namespace TestModel.GmshTests
         {
             using (var mesh = new MeshObject(modelFolder + fileName))
             {
-                mesh.Generate(1);
-                var nodes = mesh.GetElement1D();
-                mesh.DeleteEntities(new int[] { 11 }, true);
-                mesh.Synchronize();
-                mesh.Generate(1);
-                var nodesAfter = mesh.GetElement1D();
+                mesh.Generate(2);
+                var surfacesUntil = mesh.GetElement2D();
+                var surfacesCountUntil = surfacesUntil.Count();
+                mesh.DeleteEntities(new List<ModelObject> { surfacesUntil.First() });
+                var surfacesAfter = mesh.GetElement2D();
+                var surfacesCountAfter = surfacesAfter.Count();
+                Assert.IsTrue(surfacesCountUntil != surfacesCountAfter);
             }
         }
 

@@ -130,7 +130,7 @@ namespace Model.GmshWrapper
         {
             int error = 0;
             var dimTags_array = dimTags.ToIntArray();
-            GmshModel.gmshModelRemoveEntities(dimTags_array, (IntPtr)dimTags.LongLength, Convert.ToInt32(recursive), ref error);
+            GmshModel.gmshModelRemoveEntities(dimTags_array, (IntPtr)dimTags_array.Length, Convert.ToInt32(recursive), ref error);
         }
 
         public static void Synchronize()
