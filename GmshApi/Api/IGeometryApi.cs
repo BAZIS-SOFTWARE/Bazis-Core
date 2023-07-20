@@ -22,7 +22,7 @@ namespace GmshApi.Api
         /// // сгенерировать сетку Элементы2D, и т. д.
         /// </summary>
         /// <param name="dim"></param>
-        void Generate(int dim);
+        MeshObject Generate(int dim);
         /// <summary>
         /// получить контрольные точки
         /// </summary>

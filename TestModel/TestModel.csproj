@@ -155,7 +155,7 @@
     <Folder Include="Examples\CDB\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\GmshApi\GmshApi.csproj">
+    <ProjectReference Include="..\GmshApi\GmshApi.csproj">
       <Project>{1fe044a5-fe40-4f59-b05e-5cdb5bb25282}</Project>
       <Name>GmshApi</Name>
     </ProjectReference>

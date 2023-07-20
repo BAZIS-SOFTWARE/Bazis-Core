@@ -76,7 +76,7 @@
     <Compile Include="Wrapper\GmshWrapperModel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ModelSolution\Model.csproj">
+    <ProjectReference Include="..\Model.csproj">
       <Project>{18dc227e-ba77-4c78-af7a-b2391626c31b}</Project>
       <Name>Model</Name>
     </ProjectReference>

@@ -14,6 +14,7 @@ namespace GmshApi.Api
     {
         private static List<ulong> idList = new List<ulong>();
         private ulong id;
+        private string path;
         /// <summary>
         /// Возращает\задает уникальный идентификатор
         /// </summary>
@@ -62,6 +63,7 @@ namespace GmshApi.Api
             Id = GmshWrapperGeneral.GenerateRandom();
             GmshWrapperModel.ModelAdd(Id.ToString());
             Load(path);
+            this.path = path;
         }
         /// <summary>
         /// Загрузить геометрию из файла
@@ -77,10 +79,11 @@ namespace GmshApi.Api
         /// Перегененировать сетку
         /// </summary>
         /// <param name="dim">[In]Размерность</param>
-        public void Generate(int dim)
+        public MeshObject Generate(int dim)
         {
             SetCurrent();
             GmshWrapperMesh.Generate(dim);
+            return new MeshObject(Id);
         }
         /// <summary>
         /// Возвращает контрольные точки

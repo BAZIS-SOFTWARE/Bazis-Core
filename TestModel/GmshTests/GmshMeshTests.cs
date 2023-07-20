@@ -26,9 +26,9 @@ namespace TestModel.GmshTests
         [DataRow("Cilindr.step")]
         public void GetNodes(string fileName)
         {
-            using (var mesh = new MeshObject(modelFolder + fileName))
+            using (var geometry = new GeometryObject(modelFolder + fileName))
             {
-                mesh.Generate(2);
+                var mesh = geometry.Generate(2);
                 var nodes = mesh.GetNodes();
                 Assert.AreEqual(187, nodes.Count());
             }
@@ -38,9 +38,9 @@ namespace TestModel.GmshTests
         [DataRow("Cilindr.step")]
         public void TestRefineMesh(string fileName)
         {
-            using (var mesh = new MeshObject(modelFolder + fileName))
+            using (var geometry = new GeometryObject(modelFolder + fileName))
             {
-                mesh.Generate(2);
+                var mesh = geometry.Generate(2);
                 var nodesUntil = mesh.GetNodes();
                 mesh.RefineMesh();
                 var nodesAfter = mesh.GetNodes();
@@ -52,9 +52,9 @@ namespace TestModel.GmshTests
         [DataRow("Cilindr.step")]
         public void GetElements1DTest(string fileName)
         {
-            using (var mesh = new MeshObject(modelFolder + fileName))
+            using (var geometry = new GeometryObject(modelFolder + fileName))
             {
-                mesh.Generate(1);
+                var mesh = geometry.Generate(1);
                 var elements = mesh.GetElement1D();
                 Assert.AreEqual(46, elements.Count());
             }
@@ -64,9 +64,9 @@ namespace TestModel.GmshTests
         [DataRow("Cilindr.step")]
         public void GetElements2D(string fileName)
         {
-            using (var mesh = new MeshObject(modelFolder + fileName))
+            using (var geometry = new GeometryObject(modelFolder + fileName))
             {
-                mesh.Generate(2);
+                var mesh = geometry.Generate(2);
                 var elements = mesh.GetElement2D();
                 Assert.AreEqual(370, elements.Count());
             }
@@ -76,9 +76,9 @@ namespace TestModel.GmshTests
         [DataRow("Cilindr.step")]
         public void GetElements3D(string fileName)
         {
-            using (var mesh = new MeshObject(modelFolder + fileName))
+            using (var geometry = new GeometryObject(modelFolder + fileName))
             {
-                mesh.Generate(3);
+                var mesh = geometry.Generate(3);
                 var elements = mesh.GetElement3D();
                 Assert.AreEqual(707, elements.Count());
             }
@@ -88,12 +88,12 @@ namespace TestModel.GmshTests
         [DataRow("Cilindr.step")]
         public void TestDensity(string fileName)
         {
-            using (var mesh = new MeshObject(modelFolder + fileName))
+            using (var geometry = new GeometryObject(modelFolder + fileName))
             {
-                mesh.Generate(2);
+                var mesh = geometry.Generate(2);
                 var untilElements = mesh.GetElement2D();
                 mesh.Density = 0.5;
-                mesh.Generate(2);
+                geometry.Generate(2);
                 var afterElements = mesh.GetElement2D();
                 Assert.IsTrue(untilElements.Count() < afterElements.Count());
             }
@@ -103,9 +103,9 @@ namespace TestModel.GmshTests
         [DataRow("Cilindr.step")]
         public void GetDensityForNodesTest(string fileName)
         {
-            using (var mesh = new MeshObject(modelFolder + fileName))
+            using (var geometry = new GeometryObject(modelFolder + fileName))
             {
-                mesh.Generate(1);
+                var mesh = geometry.Generate(1);
                 var length1 = mesh.GetNodes().ToArray().Length;
                 mesh.Density = 0.5;
                 mesh.Generate(1);
@@ -122,9 +122,9 @@ namespace TestModel.GmshTests
         [DataRow("Cilindr.step")]
         public void GetDensityFor2DElementsTest(string fileName)
         {
-            using (var mesh = new MeshObject(modelFolder + fileName))
+            using (var geometry = new GeometryObject(modelFolder + fileName))
             {
-                mesh.Generate(2);
+                var mesh = geometry.Generate(2);
                 var length1 = mesh.GetElement2D().ToArray().Length;
                 mesh.Density = 0.5;
                 mesh.Generate(2);
@@ -141,9 +141,9 @@ namespace TestModel.GmshTests
         [DataRow("Cilindr.step")]
         public void GetDensityFor3DElementsTest(string fileName)
         {
-            using (var mesh = new MeshObject(modelFolder + fileName))
+            using (var geometry = new GeometryObject(modelFolder + fileName))
             {
-                mesh.Generate(3);
+                var mesh = geometry.Generate(3);
                 var length1 = mesh.GetElement3D().ToArray().Length;
                 mesh.Density = 0.5;
                 mesh.Generate(3);
@@ -160,9 +160,9 @@ namespace TestModel.GmshTests
         [DataRow("Cilindr.step", new int[] { 1, 2, 3 }, new int[] { 112, 112, 74 })]
         public void GetSurfaceByIdTest(string fileName, int[] tags, int[] expLength )
         {
-            using (var mesh = new MeshObject(modelFolder + fileName))
+            using (var geometry = new GeometryObject(modelFolder + fileName))
             {
-                mesh.Generate(2);
+                var mesh = geometry.Generate(2);
                 for (var i = 0; i < tags.Length; ++i)
                 {
                     var actual = mesh.GetSurfaceById(tags[i]).ToArray();
@@ -175,9 +175,9 @@ namespace TestModel.GmshTests
         [DataRow("Cilindr.step")]
         public void TestChangeTriangulationAlgorithm2D(string fileName)
         {
-            using (var mesh = new MeshObject(modelFolder + fileName))
+            using (var geometry = new GeometryObject(modelFolder + fileName))
             {
-                mesh.Generate(2);
+                var mesh = geometry.Generate(2);
                 var nodesCountUntil = mesh.GetNodes().Count();
                 mesh.ChangeTriangulationAlgorithm2D(Triangulation2DAlgorithm.Automatic);
                 mesh.Generate(2);
@@ -190,9 +190,9 @@ namespace TestModel.GmshTests
         [DataRow("Cilindr.step")]
         public void TestChangeTriangulationAlgorithm3D(string fileName)
         {
-            using (var mesh = new MeshObject(modelFolder + fileName))
+            using (var geometry = new GeometryObject(modelFolder + fileName))
             {
-                mesh.Generate(3);
+                var mesh = geometry.Generate(3);
                 var nodesCountUntil = mesh.GetNodes().Count();
                 mesh.ChangeTriangulationAlgorithm3D(Triangulation3DAlgorithm.MMG3D);
                 mesh.Generate(3);
@@ -205,9 +205,9 @@ namespace TestModel.GmshTests
         [DataRow("Cilindr.step")]
         public void TestSetPointsOnCurve(string fileName)
         {
-            using (var mesh = new MeshObject(modelFolder + fileName))
+            using (var geometry = new GeometryObject(modelFolder + fileName))
             {
-                mesh.Generate(2);
+                var mesh = geometry.Generate(2);
                 var nodesCountUntil = mesh.GetNodes().Count();
                 mesh.SetMeshPointsOnCurve(10, TransfiniteAlgorithm.Progressive, 1.5, 4);
                 mesh.Generate(2);

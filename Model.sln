@@ -15,7 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ModelSolution", "ModelSolut
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelController", "ModelController\ModelController.csproj", "{0040C7B5-AA26-42C4-B3A0-C7FF40EC8709}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GmshApi", "..\GmshApi\GmshApi.csproj", "{1FE044A5-FE40-4F59-B05E-5CDB5BB25282}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GmshApi", "GmshApi\GmshApi.csproj", "{1FE044A5-FE40-4F59-B05E-5CDB5BB25282}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
