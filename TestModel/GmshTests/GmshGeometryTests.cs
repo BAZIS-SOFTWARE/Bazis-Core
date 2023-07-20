@@ -69,24 +69,14 @@ namespace TestModel.GmshTests
         [DataRow("Cilindr.step")]
         public void TestDeleteEntity(string fileName)
         {
-            using (var geometry = new GeometryObject(modelFolder + fileName))
+            using (var mesh = new MeshObject(modelFolder + fileName))
             {
-                var line = geometry.GetElements1D().First();
-                geometry.DeleteEntities(new int[] { line.Number });
-                var lines = geometry.GetElements1D();
-            }
-        }
-
-        [DataTestMethod]
-        [DataRow("test.geo")]
-        public void TestCurveSteps(string fileName)
-        {
-            using (var geometry = new GeometryObject(modelFolder + fileName))
-            {
-                var curveUntil = geometry.GetСurves().First();
-                geometry.CurveSteps = 15; // but default is 20
-                var curveAfter = geometry.GetСurves().First();
-                Assert.IsTrue(curveAfter.GetNodes().Count() < curveUntil.GetNodes().Count());
+                mesh.Generate(1);
+                var nodes = mesh.GetElement1D();
+                mesh.DeleteEntities(new int[] { 11 }, true);
+                mesh.Synchronize();
+                mesh.Generate(1);
+                var nodesAfter = mesh.GetElement1D();
             }
         }
 

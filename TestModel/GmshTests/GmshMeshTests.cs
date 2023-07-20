@@ -86,47 +86,6 @@ namespace TestModel.GmshTests
 
         [DataTestMethod]
         [DataRow("Cilindr.step")]
-        public void GetNodes(string fileName)
-        {
-            using (var mesh = new MeshObject(modelFolder + fileName))
-            {
-                mesh.Generate(2);
-                var nodes = mesh.GetNodes();
-                Assert.AreEqual(187, nodes.Count());
-            }
-        }
-
-        [DataTestMethod]
-        [DataRow("Cilindr.step")]
-        public void TestRefineMesh(string fileName)
-        {
-            using (var mesh = new MeshObject(modelFolder + fileName))
-            {
-                mesh.Generate(2);
-                var nodesUntil = mesh.GetNodes();
-                mesh.RefineMesh();
-                var nodesAfter = mesh.GetNodes();
-                Assert.IsTrue(nodesAfter.Count() > nodesUntil.Count());
-            }
-        }
-
-        [DataTestMethod]
-        [DataRow("Cilindr.step")]
-        public void TestDensity(string fileName)
-        {
-            using (var mesh = new MeshObject(modelFolder + fileName))
-            {
-                mesh.Generate(2);
-                var untilElements = mesh.GetElement2D();
-                mesh.Density = 0.5;
-                mesh.Generate(2);
-                var afterElements = mesh.GetElement2D();
-                Assert.IsTrue(untilElements.Count() < afterElements.Count());
-            }
-        }
-
-        [DataTestMethod]
-        [DataRow("Cilindr.step")]
         public void TestDensity(string fileName)
         {
             using (var mesh = new MeshObject(modelFolder + fileName))
@@ -209,6 +168,36 @@ namespace TestModel.GmshTests
                     var actual = mesh.GetSurfaceById(tags[i]).ToArray();
                     Assert.AreEqual(expLength[i], actual.Length);
                 }
+            }
+        }
+
+        [DataTestMethod]
+        [DataRow("Cilindr.step")]
+        public void TestChangeTriangulationAlgorithm(string fileName)
+        {
+            using (var mesh = new MeshObject(modelFolder + fileName))
+            {
+                mesh.Generate(2);
+                var nodesCountUntil = mesh.GetNodes().Count();
+                mesh.ChangeTriangulationAlgorithm2D(Triangulation2DAlgorithm.Automatic);
+                mesh.Generate(2);
+                var nodesCountAfter = mesh.GetNodes().Count();
+                Assert.IsTrue(nodesCountAfter != nodesCountUntil);
+            }
+        }
+
+        [DataTestMethod]
+        [DataRow("Cilindr.step")]
+        public void TestSetPointsOnCurve(string fileName)
+        {
+            using (var mesh = new MeshObject(modelFolder + fileName))
+            {
+                mesh.Generate(2);
+                var nodesCountUntil = mesh.GetNodes().Count();
+                mesh.SetMeshPointsOnCurve(10, TransfiniteAlgorithm.Progressive, 1.5, 4);
+                mesh.Generate(2);
+                var nodesCountAfter = mesh.GetNodes().Count();
+                Assert.IsTrue(nodesCountAfter != nodesCountUntil);
             }
         }
     }

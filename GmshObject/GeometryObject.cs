@@ -72,8 +72,13 @@ namespace Model.GmshObject
 
         public void DeleteEntities(int[] id, bool recursive = false)
         {
-            var dimTags = id.Select(x => new ValueTuple<int, int>(1, x)).ToArray();
+            var dimTags = id.Select(x => Tuple.Create(1, x)).ToArray();
             GmshWrapperModel.RemoveEntities(dimTags, recursive);
+        }
+
+        public void Synchronize()
+        {
+            GmshWrapperModel.Synchronize();
         }
 
         virtual public void Dispose()

@@ -9,7 +9,7 @@ namespace Model.GmshWrapper
 {
     public static class IEnumerableExtentions
     {
-        public static int[] ToIntArray(this IEnumerable<ValueTuple<int, int>> pairs)
+        public static int[] ToIntArray(this IEnumerable<Tuple<int, int>> pairs)
         {
             var count = pairs.Count();
             int[] list = new int[count * 2];
@@ -126,11 +126,17 @@ namespace Model.GmshWrapper
             return points;
         }
 
-        public static void RemoveEntities(ValueTuple<int, int>[] dimTags, bool recursive)
+        public static void RemoveEntities(Tuple<int, int>[] dimTags, bool recursive)
         {
             int error = 0;
             var dimTags_array = dimTags.ToIntArray();
-            GmshModel.GmshModelRemoveEntities(dimTags_array, dimTags_array.LongLength, Convert.ToInt32(recursive), ref error);
+            GmshModel.gmshModelRemoveEntities(dimTags_array, (IntPtr)dimTags.LongLength, Convert.ToInt32(recursive), ref error);
+        }
+
+        public static void Synchronize()
+        {
+            int error = 0;
+            GmshModel.gmshModelGeoSynchronize(ref error);
         }
     }
 }
