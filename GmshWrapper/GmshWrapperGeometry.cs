@@ -130,10 +130,10 @@ namespace Model.GmshWrapper
         /// <summary>
         /// Возвращает частную производную по параметрическим координатам
         /// </summary>
-        /// <param name="modelId">[In]Идентифкатор модели</param>
+        /// <param name ="dim" >[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
         /// <param name="parametrs">[In]Параметрические координаты</param>
-        /// <param name="derNum">[In]Номер производной ["first","second"]</param>
-        /// <param name="dimTag">[In]Пара размерность : идентификатор</param>
+        /// <param name="number">[In]Номер производной</param>
         /// <returns></returns>
         public static double[] GetDerivative(int dim, int tag, double[] parametrs, int number = 1)
         {
@@ -241,7 +241,12 @@ namespace Model.GmshWrapper
             var count = GmshGeometry.gmshModelIsInside(dim, tag, new double[] { coords }, (IntPtr)1, 1, ref ierr);
             return count != 0;
         }
-
+        /// <summary>
+        /// Задать произвольный шаг параметризации для кривой
+        /// </summary>
+        /// <param name="paramsCoord">[In]Параметрические координаты</param>
+        /// <param name="steps">[In]Число точек</param>
+        /// <returns></returns>
         public static double[] SetCustomStepParametrization(double[] paramsCoord, int steps)
         {
             var step = (paramsCoord[1] - paramsCoord[0]) / (steps - 1);
@@ -269,7 +274,36 @@ namespace Model.GmshWrapper
                         return false;
             return true;
         }
+        /// <summary>
+        /// Удаляет сущности указанные параметром dim:tag
+        /// </summary>
+        /// <param name="dimTags">[In]Пары dim:tag</param>
+        /// <param name="recursive">[In]Флаг рекурсивного удаления</param>
+        /// <returns>Флаг успеха</returns>
+        public static bool RemoveEntities(int[] dimTags, bool recursive = true)
+        {
+            var ierr = 0;
+            var recFlag = Convert.ToInt32(recursive);
+            var extension = GmshWrapperIO.ModelGetFileNameExtension();
+            if (extension.Contains("stp") || extension.Contains("step") ||
+                extension.Contains("brep") || extension.Contains("igs"))
+            {
+                GmshGeometry.gmshModelOccRemove(dimTags, (IntPtr)dimTags.Length, recFlag, ref ierr);
+                GmshGeometry.gmshModelOccSynchronize(ref ierr);
+            }
+            else
+                GmshGeometry.gmshModelRemoveEntities(dimTags, (IntPtr)dimTags.Length, recFlag, ref ierr);
+            return ierr == 0;
+        }
 
+
+        /// <summary>
+        /// Получает сущности конкретного ModelObject
+        /// </summary>
+        /// <typeparam name="T">[In]Тип ModelObject</typeparam>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="fillFun">[In]Метод для заполнения списка</param>
+        /// <returns></returns>
         public static IEnumerable<T> GetEntities<T>(int dim, Action<List<T>, int, Node[]> fillFun) where T : ModelObject
         {
             var tags = GetEntities(dim).Where((v, i) => (i & 1) == 1).ToArray();
@@ -280,6 +314,27 @@ namespace Model.GmshWrapper
                 CreateLines(dim, tags, entities, fillFun);
             return entities;
         }
+        /// <summary>
+        /// Создает контрольную точку заполняя список
+        /// </summary>
+        /// <param name="list">[In]Список</param>
+        /// <param name="id">[In]Идентификатор сущности</param>
+        /// <param name="nodes">[In]Узлы для сущности</param>
+        public static void CreateControlPoint(List<Node> list, int id, Node[] nodes) => list.AddRange(nodes);
+        /// <summary>
+        /// Создает кривую заполняя список
+        /// </summary>
+        /// <param name="list">[In]Список</param>
+        /// <param name="id">[In]Идентификатор сущности</param>
+        /// <param name="nodes">[In]Узлы для сущности</param>
+        public static void CreateCurve(List<Curve> list, int id, Node[] nodes) => list.Add(new Curve(id, nodes));
+        /// <summary>
+        /// Создает Element1D заполняя список
+        /// </summary>
+        /// <param name="list">[In]Список</param>
+        /// <param name="id">[In]Идентификатор сущности</param>
+        /// <param name="nodes">[In]Узлы для сущности</param>
+        public static void CreateElement1D(List<Element1D> list, int id, Node[] nodes) => list.Add(new Element1D(id, nodes, ObjKind.Beam));
 
         private static void CreateLines<T>(int dim, int[] tags, List<T> lines, 
                                                   Action<List<T>, int, Node[]> fillFun) where T : ModelObject
@@ -320,9 +375,5 @@ namespace Model.GmshWrapper
                 }
             }
         }
-
-        public static void CreateControlPoint(List<Node> list, int id, Node[] nodes) => list.AddRange(nodes);
-        public static void CreateCurve(List<Curve> list, int id, Node[] nodes) => list.Add(new Curve(id, nodes));
-        public static void CreateElement1D(List<Element1D> list, int id, Node[] nodes) => list.Add(new Element1D(id, nodes, ObjKind.Beam));
     }
 }

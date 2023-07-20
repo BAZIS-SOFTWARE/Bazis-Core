@@ -134,8 +134,20 @@ namespace Model.GmshController
         public static extern void gmshModelMeshGetLocalCoordinatesInElement(UIntPtr elementTag, double x, double y, double z,
                                                                             ref double u, ref double v, ref double w, 
                                                                             ref int ierr);
-
+        /// <summary>
+        /// Перестроить кеш точек
+        /// </summary>
+        /// <param name="onlyIfNecessary">[In]Флаг удаления</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
         [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void gmshModelMeshRebuildNodeCache(int onlyIfNecessary, ref int ierr);
+        /// <summary>
+        /// Удаляет сетку свзанную с dim:tag всю вплоть до точек
+        /// </summary>
+        /// <param name="dimTags">[In]Пары dim:tag</param>
+        /// <param name="dimTags_n">[In]Длина массива dim:tag</param>
+        /// <param name="ierr">[Out]Флаг ошибок</param>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelMeshClear(int[] dimTags, IntPtr dimTags_n, ref int ierr);
     }
 }

@@ -5,8 +5,14 @@ using Model.GmshWrapper;
 
 namespace Model.GmshObject
 { 
+    /// <summary>
+    /// Класс для построения сеточных элементов
+    /// </summary>
     public class MeshObject : GeometryObject, IMeshApi
     {
+        /// <summary>
+        /// Задать\получить размер элементов перед генерацией
+        /// </summary>
         public double Density 
         { 
             get
@@ -20,33 +26,44 @@ namespace Model.GmshObject
                 GmshWrapperGeneral.OptionSetNumber("Mesh.MeshSizeFactor",value);
             }
         }
+        /// <summary>
+        /// Коснтруктор по умолчанию
+        /// </summary>
         public MeshObject() : base(){}
-
+        /// <summary>
+        /// Конструктор с загрузкой файла-геометрии
+        /// </summary>
+        /// <param name="path">[In]Путь до файла</param>
         public MeshObject(string path) : base(path) { }
-        public void Generate(int dim)
-        {
-            SetCurrent();
-            GmshWrapperMesh.Generate(dim);
-        }
-
+        /// <summary>
+        /// сделать больше квадратов на сетке
+        /// </summary>
         public void QuadrangulateMesh()
         {
             SetCurrent();
             GmshWrapperMesh.Recombine();
         }
-
+        /// <summary>
+        /// Уплотнить сетку
+        /// </summary>
         public void RefineMesh()
         {
             SetCurrent();
             GmshWrapperMesh.Refine();
         }
-
+        /// <summary>
+        /// Получить узлы
+        /// </summary>
+        /// <returns>узлы</returns>
         public IEnumerable<Node> GetNodes()
         {
             SetCurrent();
             return GmshWrapperMesh.GetNodes();
         }
-
+        /// <summary>
+        /// Получить линии 
+        /// </summary>
+        /// <returns>линии</returns>
         public IEnumerable<ModelObject> GetElement1D()
         {
             SetCurrent();
@@ -75,7 +92,20 @@ namespace Model.GmshObject
         /// получить поверхности
         /// </summary>
         /// <returns>поверхности</returns>
-        public IEnumerable<ModelObject> GetSurfaceById(int surfaceId) => GmshWrapperMesh.GetElements(2, surfaceId);
+        public IEnumerable<ModelObject> GetSurfaceById(int surfaceId)
+        {
+            SetCurrent();
+            return GmshWrapperMesh.GetElements(2, surfaceId);
+        }
+        /// <summary>
+        /// Удалить поверхность по идентификатору
+        /// </summary>
+        /// <param name="surfaceId">[In]Идентификатор поверхности</param>
+        public void RemoveSurfaceById(int surfaceId)
+        {
+            SetCurrent();
+            GmshWrapperMesh.DeleteElements(new int[] { 2 , surfaceId });
+        }
         /// <summary>
         /// получить объёмные элементы
         /// </summary>
@@ -85,19 +115,31 @@ namespace Model.GmshObject
             SetCurrent();
             return GmshWrapperMesh.GetElements(3, -1);
         }
-        
+        /// <summary>
+        /// Задать алгоритм триангуляции перед генерацией сетки
+        /// </summary>
+        /// <param name="algorithm">[In]Тип алгоритма</param>
         public void ChangeTriangulationAlgorithm2D(Triangulation2DAlgorithm algorithm = Triangulation2DAlgorithm.FrontalDelaunay)
         {
             SetCurrent();
             GmshWrapperGeneral.OptionSetNumber("Mesh.Algorithm", Convert.ToDouble(algorithm));
         }
-
+        /// <summary>
+        /// Задать алгоритм триангуляции объемов перед генерацией
+        /// </summary>
+        /// <param name="algorithm"></param>
         public void ChangeTriangulationAlgorithm3D(Triangulation3DAlgorithm algorithm = Triangulation3DAlgorithm.Delaunay)
         {
             SetCurrent();
             GmshWrapperGeneral.OptionSetNumber("Mesh.Algorithm3D", Convert.ToDouble(algorithm));
         }
-
+        /// <summary>
+        /// Задать число точек рапределения по кривой
+        /// </summary>
+        /// <param name="number">[In]Число точек</param>
+        /// <param name="ta">[In]Алгоритм распределения</param>
+        /// <param name="parameter">[In]Коэффициент</param>
+        /// <param name="curve">[In]Идентификатор кривой</param>
         public void SetMeshPointsOnCurve(int number, TransfiniteAlgorithm ta, double parameter, int curve)
         {
             SetCurrent();

@@ -165,6 +165,18 @@ namespace TestModel.GmshTests
                 }
             }
         }
-
+        [DataTestMethod]
+        [DataRow("Cilindr.step", 2)]
+        public void DeleteSurfaceTest(string fileName, int surfaceId)
+        {
+            using (var mesh = new MeshObject(modelFolder + fileName))
+            {
+                mesh.Generate(2);
+                var lengthBefore = mesh.GetElement2D().ToArray().Length;    
+                mesh.RemoveSurfaceById(2);
+                var lengthAfter = mesh.GetElement2D().ToArray().Length;
+                Assert.AreEqual(true,lengthBefore > lengthAfter);
+            }
+        }
     }
 }

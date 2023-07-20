@@ -21,12 +21,17 @@ namespace Model.GmshObject
         /// Удалить сущность по Id
         /// </summary>
         /// <param name="entityId">[In]Id</param>
-        void DeleteEntity(int entityId);
+        void DeleteEntity(int dim, int entityId);
         /// <summary>
         /// загрузить геометрию
         /// </summary>
         /// <param name="filePath">[In]Путь до файла</param>
         void Load(string filePath);
+        /// <summary>
+        /// // сгенерировать сетку Элементы2D, и т. д.
+        /// </summary>
+        /// <param name="dim"></param>
+        void Generate(int dim);
         /// <summary>
         /// получить контрольные точки
         /// </summary>
