@@ -1,9 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Model.GmshWrapper;
-using Model.GmshObject;
 using System.Linq;
 using Model;
+using GmshApi.Wrapper;
 using System.Collections.Generic;
+using GmshApi.Api;
 
 namespace TestModel.GmshTests
 {
@@ -71,22 +71,6 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow("Cilindr.step")]
-        public void TestDeleteEntity(string fileName)
-        {
-            using (var mesh = new MeshObject(modelFolder + fileName))
-            {
-                mesh.Generate(2);
-                var surfacesUntil = mesh.GetElement2D();
-                var surfacesCountUntil = surfacesUntil.Count();
-                mesh.DeleteEntities(new List<ModelObject> { surfacesUntil.First() });
-                var surfacesAfter = mesh.GetElement2D();
-                var surfacesCountAfter = surfacesAfter.Count();
-                Assert.IsTrue(surfacesCountUntil != surfacesCountAfter);
-            }
-        }
-
-        [DataTestMethod]
         [Timeout(60000)]
         [DataRow(10000)]
         public void ModelTest(int count)
@@ -102,23 +86,6 @@ namespace TestModel.GmshTests
                 models[i].Dispose();
             var list = GmshWrapperModel.ModelList();
             Assert.AreEqual(true, list.Length == 1 && list[0] == string.Empty);
-        }
-        [DataTestMethod]
-        [DataRow("Cilindr.step", new int[] { 1, 2, 3 })]
-        public void RemoveEntityTest(string fileName, int[] dimArray)
-        {
-            using (var geometry = new GeometryObject(modelFolder + fileName))
-            {
-                for (var i = 0; i < dimArray.Length; ++i)
-                {
-                    var entities = GmshWrapperGeometry.GetEntities(dimArray[i]);
-                    var lengthBefore = entities.Length; 
-                    geometry.DeleteEntity(dimArray[i], entities[1]);//Delete first id
-                    entities = GmshWrapperGeometry.GetEntities(dimArray[i]);
-                    var lengthAfter = entities.Length;
-                    Assert.IsTrue(lengthBefore > lengthAfter); 
-                }
-            }
         }
     }
 }

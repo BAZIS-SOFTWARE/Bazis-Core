@@ -15,6 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ModelSolution", "ModelSolut
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelController", "ModelController\ModelController.csproj", "{0040C7B5-AA26-42C4-B3A0-C7FF40EC8709}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GmshApi", "..\GmshApi\GmshApi.csproj", "{1FE044A5-FE40-4F59-B05E-5CDB5BB25282}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,14 @@ Global
 		{0040C7B5-AA26-42C4-B3A0-C7FF40EC8709}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0040C7B5-AA26-42C4-B3A0-C7FF40EC8709}.Release|x64.ActiveCfg = Release|x64
 		{0040C7B5-AA26-42C4-B3A0-C7FF40EC8709}.Release|x64.Build.0 = Release|x64
+		{1FE044A5-FE40-4F59-B05E-5CDB5BB25282}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FE044A5-FE40-4F59-B05E-5CDB5BB25282}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FE044A5-FE40-4F59-B05E-5CDB5BB25282}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1FE044A5-FE40-4F59-B05E-5CDB5BB25282}.Debug|x64.Build.0 = Debug|Any CPU
+		{1FE044A5-FE40-4F59-B05E-5CDB5BB25282}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FE044A5-FE40-4F59-B05E-5CDB5BB25282}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1FE044A5-FE40-4F59-B05E-5CDB5BB25282}.Release|x64.ActiveCfg = Release|Any CPU
+		{1FE044A5-FE40-4F59-B05E-5CDB5BB25282}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -55,6 +65,7 @@ Global
 		{18DC227E-BA77-4C78-AF7A-B2391626C31B} = {AD66A11A-F4BD-43E6-99A5-90C0EEF9F599}
 		{1D2684FE-D316-4C1F-80DE-5C5DF400EEEF} = {AD66A11A-F4BD-43E6-99A5-90C0EEF9F599}
 		{0040C7B5-AA26-42C4-B3A0-C7FF40EC8709} = {AD66A11A-F4BD-43E6-99A5-90C0EEF9F599}
+		{1FE044A5-FE40-4F59-B05E-5CDB5BB25282} = {AD66A11A-F4BD-43E6-99A5-90C0EEF9F599}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B337A2C0-01F8-410A-87E6-02F21C75500E}

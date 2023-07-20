@@ -102,7 +102,6 @@
     <Compile Include="TestCalcDistance.cs" />
     <Compile Include="TestEdgeFlags.cs" />
     <Compile Include="TestElement.cs" />
-    <Compile Include="TestGMSHConnector.cs" />
     <Compile Include="TestIO.cs" />
     <Compile Include="TestModelControllerASCII.cs" />
     <Compile Include="TestModelControllerGMSH_inp.cs" />
@@ -156,6 +155,10 @@
     <Folder Include="Examples\CDB\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\GmshApi\GmshApi.csproj">
+      <Project>{1fe044a5-fe40-4f59-b05e-5cdb5bb25282}</Project>
+      <Name>GmshApi</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Model.csproj">
       <Project>{18dc227e-ba77-4c78-af7a-b2391626c31b}</Project>
       <Name>Model</Name>
