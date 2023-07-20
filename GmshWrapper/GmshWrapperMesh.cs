@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Model.GmshController;
 using Geometry;
 using Model.Interfaces;
+using Model.GmshUser;
 
 namespace Model.GmshWrapper
 {
@@ -227,6 +228,7 @@ namespace Model.GmshWrapper
             if (GetElements(dim, tag, out info, out elemTags, out nodeTags))
             {
                 GetNodes(dim, tag, out nodesT, out local, out parametric);
+                var points3D = GmshWrapperModel.ConvertLocalCoordsToPoints3D(local);
                 var nodes = LocalCoordinatesToNodes(nodesT, local);
                 for (int i = 0; i < info.Length; ++i)
                 {
