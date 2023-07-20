@@ -4,13 +4,10 @@ namespace Model.GmshObject
 {
     public interface IMeshApi
     {
-        double Density { get; set; }
         /// <summary>
-        /// // сгенерировать сетку Элементы2D, и т. д.
+        /// Задать\получить размер элементов перед генерацией
         /// </summary>
-        /// <param name="dim"></param>
-        void Generate(int dim);
-
+        double Density { get; set; }
         /// <summary>
         /// сделать больше квадратов на сетке
         /// </summary>

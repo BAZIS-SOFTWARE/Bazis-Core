@@ -28,6 +28,11 @@ namespace Model.GmshObject
         /// <param name="filePath">[In]Путь до файла</param>
         void Load(string filePath);
         /// <summary>
+        /// // сгенерировать сетку Элементы2D, и т. д.
+        /// </summary>
+        /// <param name="dim"></param>
+        void Generate(int dim);
+        /// <summary>
         /// получить контрольные точки
         /// </summary>
         /// <returns>узлы</returns>

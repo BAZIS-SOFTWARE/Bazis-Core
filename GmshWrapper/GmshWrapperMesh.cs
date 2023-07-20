@@ -245,11 +245,28 @@ namespace Model.GmshWrapper
             }
             return list;
         }
-
+        /// <summary>
+        /// Указыввает алгоритм распределения точек на кривой
+        /// </summary>
+        /// <param name="tag">[In]Идентификатор кривой</param>
+        /// <param name="numNodes">[In]Число точек</param>
+        /// <param name="meshType">[In]Тип алгоритма</param>
+        /// <param name="coef">[In]Коэффициент прогрессии</param>
         public static void SetTransfiniteCurve(int tag, int numNodes, String meshType, double coef)
         {
             var ierr = 0;
             GmshMesh.gmshModelMeshSetTransfiniteCurve(tag, numNodes, meshType, coef, ref ierr);
+        }
+        /// <summary>
+        /// Удаляет выбранные элементы по парам dim:tag
+        /// </summary>
+        /// <param name="dimTags"></param>
+        /// <returns>Флаг успешности операции</returns>
+        public static bool DeleteElements(int[] dimTags)
+        {
+            var ierr = 0;
+            GmshMesh.gmshModelMeshClear(dimTags, (IntPtr)dimTags.Length ,ref ierr);
+            return ierr == 0;
         }
 
         private static Dictionary<long, Node> LocalCoordinatesToNodes(long[] nodesTags, double[] coords)

@@ -272,5 +272,30 @@ namespace Model.GmshController
         [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern int gmshModelIsInside(int dim, int tag, double[] coord, IntPtr coord_n, 
                                                    int parametric, ref int ierr);
+        /// <summary>
+        /// Удаляет OCC сущности(.step,.brep,.igs)
+        /// </summary>
+        /// <param name="dimTags">[In]Массив пар dim:tag</param>
+        /// <param name="dimTags_n">[In]Длина массива</param>
+        /// <param name="recursive">[In]Рекурсивно улалять граничные элементы</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelOccRemove(int[] dimTags, IntPtr dimTags_n, int recursive, ref int ierr);
+        /// <summary>
+        /// Удаляет Built-in сущности 
+        /// </summary>
+        /// <param name="dimTags">[In]Массив пар dim:tag</param>
+        /// <param name="dimTags_n">[In]Длина массива</param>
+        /// <param name="recursive">[In]Рекурсивно улалять граничные элементы</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelRemoveEntities(int[] dimTags, IntPtr dimTags_n, int recursive, ref int ierr);
+
+        /// <summary>
+        /// Синхронизировать - вызывается для правильного отображения сущностей OCC
+        /// </summary>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelOccSynchronize(ref int ierr);
     }
 }

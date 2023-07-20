@@ -213,6 +213,10 @@ namespace TestModel.GmshTests
                 mesh.Generate(2);
                 var nodesCountAfter = mesh.GetNodes().Count();
                 Assert.IsTrue(nodesCountAfter != nodesCountUntil);
+                var lengthBefore = mesh.GetElement2D().ToArray().Length;    
+                mesh.RemoveSurfaceById(2);
+                var lengthAfter = mesh.GetElement2D().ToArray().Length;
+                Assert.AreEqual(true,lengthBefore > lengthAfter);
             }
         }
     }

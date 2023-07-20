@@ -103,5 +103,22 @@ namespace TestModel.GmshTests
             var list = GmshWrapperModel.ModelList();
             Assert.AreEqual(true, list.Length == 1 && list[0] == string.Empty);
         }
+        [DataTestMethod]
+        [DataRow("Cilindr.step", new int[] { 1, 2, 3 })]
+        public void RemoveEntityTest(string fileName, int[] dimArray)
+        {
+            using (var geometry = new GeometryObject(modelFolder + fileName))
+            {
+                for (var i = 0; i < dimArray.Length; ++i)
+                {
+                    var entities = GmshWrapperGeometry.GetEntities(dimArray[i]);
+                    var lengthBefore = entities.Length; 
+                    geometry.DeleteEntity(dimArray[i], entities[1]);//Delete first id
+                    entities = GmshWrapperGeometry.GetEntities(dimArray[i]);
+                    var lengthAfter = entities.Length;
+                    Assert.IsTrue(lengthBefore > lengthAfter); 
+                }
+            }
+        }
     }
 }
