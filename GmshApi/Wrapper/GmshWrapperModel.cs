@@ -134,8 +134,6 @@ namespace GmshApi
         public static void Synchronize()
         {
             int error = 0;
-            
-
             var extension = GmshWrapperIO.ModelGetFileNameExtension();
             if (extension.Contains("stp") || extension.Contains("step") ||
                 extension.Contains("brep") || extension.Contains("igs"))

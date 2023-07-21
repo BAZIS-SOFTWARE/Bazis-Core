@@ -113,11 +113,13 @@ namespace GmshApi
         /// <param name="dimTags">[In]Массив пар dim:tag</param>
         public void DeleteEntities(int[] dimTags)
         {
+            SetCurrent();
             GmshWrapperGeometry.RemoveEntitiesEx(dimTags, false);
         }
 
         public void Synchronize()
         {
+            SetCurrent();
             GmshWrapperModel.Synchronize();
         }
 

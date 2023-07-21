@@ -289,7 +289,7 @@ namespace GmshApi
                 GmshGeometry.gmshModelOccRemove(dimTags, (IntPtr)dimTags.Length, recFlag, ref ierr);
             else
                 GmshGeometry.gmshModelRemoveEntities(dimTags, (IntPtr)dimTags.Length, recFlag, ref ierr);
-            GmshWrapperModel.Synchronize();
+            //GmshWrapperModel.Synchronize();
         }
         /// <summary>
         /// Удаление верхних сущностей рекурсивно
