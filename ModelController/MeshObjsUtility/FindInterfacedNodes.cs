@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace ModelController.MeshObjsUtility
 {
+    /// <summary>
+    /// По номеру узла возвращает список элементов, сопряжённых через данный узел
+    /// </summary>
     public class FindInterfacedNodes
     {
         private Element[] elements;

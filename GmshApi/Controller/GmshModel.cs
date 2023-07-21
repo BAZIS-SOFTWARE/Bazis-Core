@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Model.GmshController
+namespace GmshApi.Controller
 { 
     /// <summary>
     /// Класс с группой методов для работы с моделью
@@ -54,5 +50,11 @@ namespace Model.GmshController
         /// <param name="ierr">[Out]Флаг ошибки</param>
         [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void gmshModelList(ref IntPtr names, ref IntPtr names_n, ref int ierr);
+
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelRemoveEntities(int[] dimTags, IntPtr dimTags_n, int recursive, ref int ierr);
+
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelOccSynchronize(ref int ierr);
     }
 }

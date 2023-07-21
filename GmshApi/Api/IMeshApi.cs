@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Model;
+using System.Collections.Generic;
 
-namespace Model.GmshObject
+namespace GmshApi.Api
 {
     public interface IMeshApi
     {
@@ -16,6 +17,7 @@ namespace Model.GmshObject
         /// уплотнить сетку
         /// </summary>
         void RefineMesh();
+        void Generate(int dim);
         /// <summary>
         /// получить узлы
         /// </summary>
@@ -25,23 +27,23 @@ namespace Model.GmshObject
         /// получить линии
         /// </summary>
         /// <returns></returns>
-        IEnumerable<Model.ModelObject> GetElement1D();
+        IEnumerable<ModelObject> GetElement1D();
 
         /// <summary>
         /// получить плоские элементы
         /// </summary>
         /// <returns>плоские элементы</returns>
-        IEnumerable<Model.ModelObject> GetElement2D();
+        IEnumerable<ModelObject> GetElement2D();
         /// <summary>
         /// получить поверхности
         /// </summary>
         /// <returns>поверхности</returns>
-        IEnumerable<Model.ModelObject> GetSurfaces();
+        IEnumerable<ModelObject> GetSurfaces();
         /// <summary>
         /// получить объёмные элементы
         /// </summary>
         /// <returns>объёмные элементы</returns>
-        IEnumerable<Model.ModelObject> GetElement3D();
+        IEnumerable<ModelObject> GetElement3D();
         /// <summary>
         /// установить новый алгоритм триангуляции по его enum
         /// (Delaunay, Frontal Delaunay) и т.д для 2D
@@ -60,6 +62,6 @@ namespace Model.GmshObject
         /// <param name="ta">[In]Тип расположения точек (Progressive и т.д), числовой параметр</param>
         /// <param name="parameter">[In]Выбранная кривая (может состоять из нескольких последовательно соединённых кривых)</param>
         /// <param name="curve">[In]Идентификатор кривой</param>
-        void SetMeshPointsOnCurve(int number, TransfiniteAlgorithm ta, double parameter, int curve);
+        void SetMeshPointsOnCurve(int number, TransfiniteAlgorithm algorithm, double parameter, int curve);
     }
 }

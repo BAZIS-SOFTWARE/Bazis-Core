@@ -43,13 +43,18 @@ namespace TestModel
             objectsData = new ObjectsData();
             objectsData.AddRange(nodes);
             objectsData.AddRange(elements);
-        }      
+        }
 
         [TestMethod]
-        public void FindNodesInDirection()
+        [DataRow(19, 8, 6, new int[] { 8, 6, 5, 3, 1})]
+        [DataRow(18, 8, 6, new int[] { 8, 6 })]
+        [DataRow(18, 1, 3, new int[] { 1, 3, 5, 6 })]
+        [DataRow(19, 1, 3, new int[] { 1, 3, 5, 6, 8 })]
+        public void FindNodesInDirection(float angle, int first, int second, int[] expected)
         {
             var selector = new SelectionHelper(objectsData);
-            var selectedItemNumbers = selector.SelectInDirection<Element2D>(0, 1, 2, Color.Green);
+            var actual = selector.SelectInDirection<Element2D>(angle, first, second, Color.Green);
+            Assert.IsTrue(actual.SequenceEqual(expected)); 
         }
 
         [TestMethod]

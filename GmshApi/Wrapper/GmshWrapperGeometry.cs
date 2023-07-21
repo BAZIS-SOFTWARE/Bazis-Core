@@ -1,10 +1,11 @@
-﻿using System;
-using Model.GmshController;
-using System.Linq;
-using System.Collections.Generic;
+﻿using GmshApi.Controller;
+using Model;
 using Model.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace Model.GmshWrapper
+namespace GmshApi.Wrapper
 {
     /// <summary>
     /// Оборачивает основные методы геометрии полученные из GmshController
@@ -291,10 +292,7 @@ namespace Model.GmshWrapper
                 GmshGeometry.gmshModelOccSynchronize(ref ierr);
             }
             else
-            {
                 GmshGeometry.gmshModelRemoveEntities(dimTags, (IntPtr)dimTags.Length, recFlag, ref ierr);
-                GmshGeometry.gmshModelGeoSynchronize(ref ierr);
-            }
             return ierr == 0;
         }
 

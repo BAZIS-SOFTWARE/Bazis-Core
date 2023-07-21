@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Model.GmshController
+namespace GmshApi.Controller
 {
     /// <summary>
     /// Класс с группой обобщенных методов для установки предварительных значений Gmsh Api
@@ -19,7 +15,7 @@ namespace Model.GmshController
         /// <param name="value">[In]Значение поля категории</param>
         /// <param name="ierr">[Out]Флаг ошибки</param>
         [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void gmshOptionSetNumber(String src, double value, ref int ierr);
+        public static extern void gmshOptionSetNumber(string src, double value, ref int ierr);
         /// <summary>
         /// Получает значение из поля категории опций
         /// </summary>
@@ -27,7 +23,7 @@ namespace Model.GmshController
         /// <param name="value">[Out]Значение поля категории</param>
         /// <param name="ierr">[Out]Флаг ошибки</param>
         [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void gmshOptionGetNumber(String src, ref double value, ref int ierr);
+        public static extern void gmshOptionGetNumber(string src, ref double value, ref int ierr);
 
         /// <summary>
         /// Устанавливает строку параметров для категории опций
@@ -36,7 +32,7 @@ namespace Model.GmshController
         /// <param name="value">[In]Значение поля категории</param>
         /// <param name="ierr">[Out]Флаг ошибки</param>
         [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void gmshOptionSetString(String name, String value, ref int ierr);
+        public static extern void gmshOptionSetString(string name, String value, ref int ierr);
         /// <summary>
         /// Выделяет неуправляемую память
         /// </summary>

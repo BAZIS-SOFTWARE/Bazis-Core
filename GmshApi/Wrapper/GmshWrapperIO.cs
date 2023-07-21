@@ -1,8 +1,8 @@
-﻿using System;
+﻿using GmshApi.Controller;
+using System;
 using System.IO;
-using Model.GmshController;
 
-namespace Model.GmshWrapper
+namespace GmshApi.Wrapper
 {
     /// <summary>
     /// Оборачивает основные методы IO полученные из GmshController

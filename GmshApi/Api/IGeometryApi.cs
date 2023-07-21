@@ -1,11 +1,7 @@
-﻿using Geometry;
-using System;
+﻿using Model;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Model.GmshObject
+namespace GmshApi.Api
 {
     public interface IGeometryApi
     {
@@ -18,11 +14,6 @@ namespace Model.GmshObject
         /// </summary>
         ulong Id { get; set; }
         /// <summary>
-        /// Удалить сущность по Id
-        /// </summary>
-        /// <param name="entityId">[In]Id</param>
-        void DeleteEntity(int dim, int entityId);
-        /// <summary>
         /// загрузить геометрию
         /// </summary>
         /// <param name="filePath">[In]Путь до файла</param>
@@ -31,7 +22,7 @@ namespace Model.GmshObject
         /// // сгенерировать сетку Элементы2D, и т. д.
         /// </summary>
         /// <param name="dim"></param>
-        void Generate(int dim);
+        MeshObject Generate(int dim);
         /// <summary>
         /// получить контрольные точки
         /// </summary>

@@ -1,12 +1,11 @@
-﻿using Geometry;
-using Model.GmshWrapper;
-using System;
+﻿using Model.Interfaces;
+using GmshApi.Wrapper;
+using Model;
 using System.Collections.Generic;
-using Model.Interfaces;
+using System;
 using System.Linq;
-using System.IO;
 
-namespace Model.GmshObject
+namespace GmshApi.Api
 {  
     /// <summary>
     /// Класс для построения геометрических сущностей
@@ -15,6 +14,7 @@ namespace Model.GmshObject
     {
         private static List<ulong> idList = new List<ulong>();
         private ulong id;
+        private string path;
         /// <summary>
         /// Возращает\задает уникальный идентификатор
         /// </summary>
@@ -63,6 +63,7 @@ namespace Model.GmshObject
             Id = GmshWrapperGeneral.GenerateRandom();
             GmshWrapperModel.ModelAdd(Id.ToString());
             Load(path);
+            this.path = path;
         }
         /// <summary>
         /// Загрузить геометрию из файла
@@ -78,20 +79,11 @@ namespace Model.GmshObject
         /// Перегененировать сетку
         /// </summary>
         /// <param name="dim">[In]Размерность</param>
-        public void Generate(int dim)
+        public MeshObject Generate(int dim)
         {
             SetCurrent();
             GmshWrapperMesh.Generate(dim);
-        }
-        /// <summary>
-        /// Удалить геометрическую сущность
-        /// </summary>
-        /// <param name="dim">[In]Размерность</param>
-        /// <param name="entityId">[Out]Идентификатор</param>
-        public void DeleteEntity(int dim, int entityId)
-        {
-            SetCurrent();
-            GmshWrapperGeometry.RemoveEntities(new int[] { dim, entityId }, false);
+            return new MeshObject(Id);
         }
         /// <summary>
         /// Возвращает контрольные точки
@@ -120,6 +112,11 @@ namespace Model.GmshObject
             SetCurrent();
             return GmshWrapperGeometry.GetEntities<Element1D>(1, GmshWrapperGeometry.CreateElement1D);
         }
+        public void Synchronize()
+        {
+            GmshWrapperModel.Synchronize();
+        }
+
         /// <summary>
         /// Удаляет модель
         /// </summary>

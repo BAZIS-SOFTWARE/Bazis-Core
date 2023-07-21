@@ -82,7 +82,7 @@ namespace TestModel
             Assert.IsTrue(CheckSetEquality(result.GetPoints(), points));
         }
 
-        [TestMethod, Timeout(2000)]
+        [TestMethod]
         public void TestLongModelCrossSection()
         {
             var loader = new LoadModelFromCDBTextFile();

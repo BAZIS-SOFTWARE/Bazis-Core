@@ -1,25 +1,7 @@
-﻿using Model;
-using Model.Interfaces;
-using PrFunctionLib;
-using System;
-using System.CodeDom;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
+﻿using System;
 using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.ComTypes;
-using System.Runtime.Remoting.Messaging;
-using System.Security;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using System.Configuration;
-using Geometry;
-using System.Reflection;
-using MathNet.Numerics.LinearAlgebra.Factorization;
 
-namespace Model.GmshController
+namespace GmshApi.Controller
 {
     /// <summary>
     /// Класс с группой методов для работы с подключением и завершением работы gmsh api
@@ -42,7 +24,7 @@ namespace Model.GmshController
         /// <param name="run">[In]Флаг запуска приложения в командной строке</param>
         /// <param name="ierr">[Out]Флаг ошибки</param>
         [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void gmshInitialize(int argc, ref String argv, int readConfigFile,
+        public static extern void gmshInitialize(int argc, ref string argv, int readConfigFile,
                                                   int run, ref int ierr);
         /// <summary>
         /// Завершает работу Gmsh Api

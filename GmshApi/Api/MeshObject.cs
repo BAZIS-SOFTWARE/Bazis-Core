@@ -1,15 +1,18 @@
-﻿using System;
+﻿using GmshApi.Wrapper;
+using Model;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using Model.GmshWrapper;
+using System.IO;
 
-namespace Model.GmshObject
+namespace GmshApi.Api
 { 
     /// <summary>
     /// Класс для построения сеточных элементов
     /// </summary>
-    public class MeshObject : GeometryObject, IMeshApi
+    public class MeshObject : IMeshApi
     {
+        private ulong id;
+
         /// <summary>
         /// Задать\получить размер элементов перед генерацией
         /// </summary>
@@ -23,18 +26,22 @@ namespace Model.GmshObject
             set
             {
                 SetCurrent();
-                GmshWrapperGeneral.OptionSetNumber("Mesh.MeshSizeFactor",value);
+                GmshWrapperGeneral.OptionSetNumber("Mesh.MeshSizeFactor", value);
             }
         }
         /// <summary>
         /// Коснтруктор по умолчанию
         /// </summary>
-        public MeshObject() : base(){}
+        internal MeshObject() : base(){}
         /// <summary>
         /// Конструктор с загрузкой файла-геометрии
         /// </summary>
         /// <param name="path">[In]Путь до файла</param>
-        public MeshObject(string path) : base(path) { }
+        internal MeshObject(ulong Id)  
+        {
+            id = Id;
+        }
+
         /// <summary>
         /// сделать больше квадратов на сетке
         /// </summary>
@@ -68,6 +75,12 @@ namespace Model.GmshObject
         {
             SetCurrent();
             return GmshWrapperMesh.GetElements(1, -1);
+        }
+
+        public void Generate(int dim)
+        {
+            SetCurrent();
+            GmshWrapperMesh.Generate(dim);
         }
 
         /// <summary>
@@ -156,5 +169,7 @@ namespace Model.GmshObject
                     break;
             }
         }
+
+        private void SetCurrent() => GmshWrapperModel.ModelSetCurrent(id.ToString());
     }
 }

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Model.GmshObject
+﻿namespace GmshApi.Api
 {
     /// <summary>
     /// Алгоритмы распределения точек на кривых\поверхностях

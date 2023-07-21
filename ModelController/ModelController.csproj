@@ -74,7 +74,8 @@
       <HintPath>..\packages\NetOctree.2.1.10\lib\net48\Octree.dll</HintPath>
     </Reference>
     <Reference Include="SceneInterface, Version=1.0.3.50, Culture=neutral, PublicKeyToken=f4632fed43ef5153, processorArchitecture=MSIL">
-      <HintPath>..\packages\SceneInterface.1.0.3.50\lib\net48\SceneInterface.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Scene\bin\Debug\SceneInterface.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -118,6 +119,7 @@
     <Compile Include="MeshObjsUtility\FindOpenSurfaceNodes.cs" />
     <Compile Include="MeshObjsUtility\SelectionHelper.cs" />
     <Compile Include="ModelScenePresentator\ModelScenePresentator.cs" />
+    <Compile Include="ModelSceneSelector.cs" />
     <Compile Include="ModelSelectToolStripPresentator.cs" />
     <Compile Include="ModelScenePresentator\GlObjsVertexCreators\NormalsLineObjsCreator.cs" />
     <Compile Include="ModelScenePresentator\GlObjsVertexCreators\NormalsPointObjsCreator.cs" />

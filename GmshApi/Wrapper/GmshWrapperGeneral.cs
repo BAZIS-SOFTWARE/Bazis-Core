@@ -1,8 +1,7 @@
-﻿using System;
-using System.Runtime.InteropServices;
-using Model.GmshController;
+﻿using GmshApi.Controller;
+using System;
 
-namespace Model.GmshWrapper
+namespace GmshApi.Wrapper
 {
     /// <summary>
     /// Предоставляет методы для перевода неуправляемой памяти в управляемую

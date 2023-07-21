@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Model.GmshController
+namespace GmshApi.Controller
 {
     /// <summary>
     /// Класс с группой методов для работы с файловой системой
@@ -18,21 +14,21 @@ namespace Model.GmshController
         /// <param name="fileName">[In]Путь до файла скрипта</param>
         /// <param name="ierr">[Out]Флаг ошибки</param>
         [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void gmshOpen(String fileName, ref int ierr);
+        public static extern void gmshOpen(string fileName, ref int ierr);
         /// <summary>
         /// Открывает скрипт файл .geo, .stp, .igs ассоциирует данные с текущей моделью
         /// </summary>
         /// <param name="fileName">[In]Путь до файла скрипта</param>
         /// <param name="ierr">[Out]Флаг ошибки</param>
         [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void gmshMerge(String fileName, ref int ierr);
+        public static extern void gmshMerge(string fileName, ref int ierr);
         /// <summary>
         /// Экспортирует данные модели в файл, расширение задает выходной формат файла
         /// </summary>
         /// <param name="fileName">[In]Путь к файлу назначения</param>
         /// <param name="ierr">[Out]Флаг ошибки</param>
         [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void gmshWrite(String fileName, ref int ierr);
+        public static extern void gmshWrite(string fileName, ref int ierr);
         /// <summary>
         /// Получает путь до файла ассоциированный с данной моделью
         /// </summary>
@@ -47,7 +43,7 @@ namespace Model.GmshController
         /// <param name="fileName">[In]Путь до файла</param>
         /// <param name="ierr">[Out]Флаг ошибки</param>
         [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void gmshModelSetFileName(String fileName, ref int ierr);
+        public static extern void gmshModelSetFileName(string fileName, ref int ierr);
 
         /// <summary>
         /// Импортирует геометрию в файл в виде вектора пар размерность : идентификатор
@@ -59,8 +55,8 @@ namespace Model.GmshController
         /// <param name="format">[In]Опциональная строка с расширением {brep,stp,iges}</param>
         /// <param name="ierr">[Out]Флаг ошибки</param>
         [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void gmshModelOccImportShapes(String fileName, ref IntPtr outDimTags,
+        public static extern void gmshModelOccImportShapes(string fileName, ref IntPtr outDimTags,
                                                            ref IntPtr outDimTags_n, int highestDimOnly,
-                                                           String format, ref int ierr);
+                                                           string format, ref int ierr);
     }
 }

@@ -27,12 +27,17 @@ namespace Model
 
     public class Curve : ModelObject, ILineObject
     {
-        Node[] nodes;
-        public Curve(int number, Node [] nodes) : base(number)
+        private Node[] nodes;
+        public Node StartNode { get; }
+        public Node EndNode { get; }
+
+        public Curve(int number, Node[] nodes) : base(number)
         {
             ObjType = "Линия";
             NumberOfPoints = nodes.Length;
             this.nodes = nodes;
+            StartNode = nodes[0];
+            EndNode = nodes[nodes.Length - 1];
         }
 
         public override ObjKind ObjKind { get;  }
@@ -70,13 +75,6 @@ namespace Model
             {
                 yield return node.Position;
             }
-        }
-
-        public IEnumerable<Element1D> GetPolygonalChain()
-        {
-            return nodes.Bigrams()
-                .Select((pair, index) => 
-                new Element1D(index, new Node[] {pair.Item1, pair.Item2}, ObjKind.Beam));
         }
     }
 }
