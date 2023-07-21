@@ -1,9 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 using Model;
-using GmshApi.Wrapper;
 using System.Collections.Generic;
-using GmshApi.Api;
+using GmshApi;
 
 namespace TestModel.GmshTests
 {

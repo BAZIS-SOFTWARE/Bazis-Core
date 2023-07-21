@@ -1,10 +1,9 @@
 ﻿using Geometry;
-using GmshApi.Controller;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GmshApi.Wrapper
+namespace GmshApi
 {
     public static class IEnumerableExtentions
     {

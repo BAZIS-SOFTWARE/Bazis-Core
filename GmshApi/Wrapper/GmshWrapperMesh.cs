@@ -1,11 +1,10 @@
-﻿using GmshApi.Controller;
-using Geometry;
+﻿using Geometry;
 using Model.Interfaces;
 using Model;
 using System;
 using System.Collections.Generic;
 
-namespace GmshApi.Wrapper
+namespace GmshApi
 {
     /// <summary>
     /// Класс содержит информацию о типе извлечнного узла

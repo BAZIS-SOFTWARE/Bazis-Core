@@ -1,6 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using GmshApi.Api;
-using GmshApi.Wrapper;
+using GmshApi;
 using System.Linq;
 
 namespace TestModel.GmshTests

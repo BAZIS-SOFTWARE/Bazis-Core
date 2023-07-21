@@ -1,11 +1,10 @@
 ﻿using Model.Interfaces;
-using GmshApi.Wrapper;
 using Model;
 using System.Collections.Generic;
 using System;
 using System.Linq;
 
-namespace GmshApi.Api
+namespace GmshApi
 {  
     /// <summary>
     /// Класс для построения геометрических сущностей

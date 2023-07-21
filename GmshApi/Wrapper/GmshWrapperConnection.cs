@@ -1,9 +1,8 @@
-﻿using GmshApi.Controller;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GmshApi.Wrapper
+namespace GmshApi
 {
     /// <summary>
     /// Оборачивает основные методы геометрии полученные из GmshController
