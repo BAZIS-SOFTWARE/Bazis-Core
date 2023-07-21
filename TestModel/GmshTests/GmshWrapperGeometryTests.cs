@@ -3,6 +3,7 @@ using GmshApi.Wrapper;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using GmshApi.GmshWrapper;
 
 namespace TestModel.GmshTests
 {

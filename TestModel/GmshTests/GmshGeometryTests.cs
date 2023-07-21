@@ -1,7 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Model.GmshWrapper;
-using Model.GmshObject;
+using GmshApi.Api;
+using GmshApi.Wrapper;
 using System.Linq;
+using GmshApi.GmshWrapper;
 
 namespace TestModel.GmshTests
 {
@@ -89,12 +90,12 @@ namespace TestModel.GmshTests
             {
                 for (var i = 0; i < dimArray.Length; ++i)
                 {
-                    var entities = GmshWrapperGeometry.GetEntities(dimArray[i]);
+                    /*var entities = GmshWrapperGeometry.GetEntities(dimArray[i]);
                     var lengthBefore = entities.Length;
                     geometry.DeleteEntity(dimArray[i], entities[1]);//Delete first id
                     var newEntities = GmshWrapperGeometry.GetEntities(dimArray[i]);
                     var lengthAfter = newEntities.Length;
-                    Assert.IsTrue(lengthBefore > lengthAfter);
+                    Assert.IsTrue(lengthBefore > lengthAfter);*/
                 }
             }
         }

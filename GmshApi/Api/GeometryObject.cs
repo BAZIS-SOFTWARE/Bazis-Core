@@ -4,6 +4,7 @@ using Model;
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using GmshApi.GmshWrapper;
 
 namespace GmshApi.Api
 {  

@@ -3,6 +3,7 @@ using Model;
 using GmshApi.Wrapper;
 using System.Linq;
 using System.Management.Instrumentation;
+using GmshApi.GmshWrapper;
 
 namespace TestModel.GmshTests
 {

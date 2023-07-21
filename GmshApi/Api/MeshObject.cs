@@ -36,7 +36,7 @@ namespace GmshApi.Api
         /// <summary>
         /// Конструктор с загрузкой файла-геометрии
         /// </summary>
-        /// <param name="path">[In]Путь до файла</param>
+        /// <param name="Id">[In]Путь до файла</param>
         internal MeshObject(ulong Id)  
         {
             id = Id;
