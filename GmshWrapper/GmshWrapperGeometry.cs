@@ -1,6 +1,5 @@
 ﻿using System;
 using Model.GmshController;
-using Model.GmshUser;
 using System.Linq;
 using System.Collections.Generic;
 using Model.Interfaces;
@@ -54,7 +53,7 @@ namespace Model.GmshWrapper
             var error = 0;
             IntPtr name = IntPtr.Zero;
             GmshGeometry.gmshModelGetEntityName(dim, tag, ref name, ref error);
-            return GmshUserMemory.GetName(name);
+            return GmshWrapperMemory.GetName(name);
         }
         /// <summary>
         /// Удаляет сущность по имени
@@ -76,7 +75,7 @@ namespace Model.GmshWrapper
             var error = 0;
             IntPtr name = IntPtr.Zero;
             GmshGeometry.gmshModelGetPhysicalName(dim, tag, ref name, ref error);
-            return GmshUserMemory.GetName(name);
+            return GmshWrapperMemory.GetName(name);
         }
         /// <summary>
         /// Возвращает максимальную размерность текущего геометрического объекта
@@ -120,8 +119,8 @@ namespace Model.GmshWrapper
             if (ierr == 0)
             {
                 int[] outDownward, outUpward;
-                GmshUserMemory.GetTypesData(downward, out outDownward, downward_n);
-                GmshUserMemory.GetTypesData(upward, out outUpward, upward_n);
+                GmshWrapperMemory.GetTypesData(downward, out outDownward, downward_n);
+                GmshWrapperMemory.GetTypesData(upward, out outUpward, upward_n);
                 result[0] = outDownward;
                 result[1] = outUpward;
             }
@@ -147,7 +146,7 @@ namespace Model.GmshWrapper
                 GmshGeometry.gmshModelGetSecondDerivative(dim, tag, parametrs, (IntPtr)parametrs.Length,
                                                           ref derivaties, ref derivaties_n, ref ierr);
             double[] derivative;
-            GmshUserMemory.GetTypesData(derivaties, out derivative, derivaties_n);
+            GmshWrapperMemory.GetTypesData(derivaties, out derivative, derivaties_n);
             return derivative;
         }
         /// <summary>
@@ -207,8 +206,8 @@ namespace Model.GmshWrapper
                                                            ref max, ref max_n, ref ierr);
             if (ierr == 0)
             {
-                GmshUserMemory.GetTypesData(min, out result[0], min_n);
-                GmshUserMemory.GetTypesData(max, out result[1], max_n);
+                GmshWrapperMemory.GetTypesData(min, out result[0], min_n);
+                GmshWrapperMemory.GetTypesData(max, out result[1], max_n);
             }
             return result;
         }

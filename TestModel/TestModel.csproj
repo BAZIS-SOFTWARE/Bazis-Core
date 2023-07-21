@@ -102,7 +102,6 @@
     <Compile Include="TestCalcDistance.cs" />
     <Compile Include="TestEdgeFlags.cs" />
     <Compile Include="TestElement.cs" />
-    <Compile Include="TestGMSHConnector.cs" />
     <Compile Include="TestIO.cs" />
     <Compile Include="TestModelControllerASCII.cs" />
     <Compile Include="TestModelControllerGMSH_inp.cs" />

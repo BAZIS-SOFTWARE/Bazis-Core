@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using Model.GmshController;
 using Geometry;
 using Model.Interfaces;
-using Model.GmshUser;
-using System.Runtime.InteropServices;
 
 namespace Model.GmshWrapper
 {
