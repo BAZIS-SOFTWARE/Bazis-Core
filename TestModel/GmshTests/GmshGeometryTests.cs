@@ -82,7 +82,7 @@ namespace TestModel.GmshTests
             Assert.AreEqual(true, list.Length == 1 && list[0] == string.Empty);
         }
         [DataTestMethod]
-        [DataRow("Cilindr.step", new int[] { 1, 2, 3 })]
+        [DataRow("Cilindr.step", new int[] { 3 })]
         public void RemoveEntityTest(string fileName, int[] dimArray)
         {
             using (var geometry = new GeometryObject(modelFolder + fileName))

@@ -179,7 +179,7 @@ namespace TestModel.GmshTests
             }
         }
         [DataTestMethod]
-        [DataRow("Cilindr.step", new int[] {206,261,251,265,210, 213})]
+        [DataRow("Cilindr.step", new int[] {206, 261, 251, 265, 210, 213})]
         public void DeleteMeshElementsTest(string fileName, int[] elTags)
         {
             using (var mesh = new MeshObject(modelFolder + fileName))

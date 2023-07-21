@@ -303,5 +303,16 @@ namespace Model.GmshController
         /// <param name="ierr">[Out]Флаг ошибки</param>
         [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void gmshModelGeoSynchronize(ref int ierr);
+        /// <summary>
+        /// Устанавливает видимость для указанных пар dim:tags геометрических сущностей
+        /// </summary>
+        /// <param name="dimTags">[In]Массив пар dim:tag</param>
+        /// <param name="dimTags_n">[In]Длина массива</param>
+        /// <param name="value">[In]Значение видимости</param>
+        /// <param name="recursive">[In]Распространить видимость рекурсивно на граничные элементы</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelSetVisibility(int[] dimTags, IntPtr dimTags_n, int value,
+                                                         int recursive, ref int ierr);
     }
 }

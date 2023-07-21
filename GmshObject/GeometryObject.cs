@@ -91,7 +91,7 @@ namespace Model.GmshObject
         public void DeleteEntity(int dim, int entityId)
         {
             SetCurrent();
-            GmshWrapperGeometry.RemoveEntities(new int[] { dim, entityId });
+            GmshWrapperGeometry.RemoveEntities(new int[] { dim, entityId }, false);
         }
         /// <summary>
         /// Возвращает контрольные точки
