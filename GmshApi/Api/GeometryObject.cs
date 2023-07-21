@@ -128,6 +128,7 @@ namespace GmshApi
         /// </summary>
         virtual public void Dispose()
         {
+            SetCurrent();
             idList.Remove(Id);
             GmshWrapperModel.ModelRemoveByName(Id.ToString());
         }
