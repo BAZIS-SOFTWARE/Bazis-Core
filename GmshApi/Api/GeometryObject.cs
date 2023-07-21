@@ -13,7 +13,6 @@ namespace GmshApi
     {
         private static List<ulong> idList = new List<ulong>();
         private ulong id;
-        private string path;
         /// <summary>
         /// Возращает\задает уникальный идентификатор
         /// </summary>
@@ -62,23 +61,12 @@ namespace GmshApi
             Id = GmshWrapperGeneral.GenerateRandom();
             GmshWrapperModel.ModelAdd(Id.ToString());
             Load(path);
-            this.path = path;
-        }
-        /// <summary>
-        /// Загрузить геометрию из файла
-        /// </summary>
-        /// <param name="filePath">[In]Путь до файла</param>
-        private void Load(string filePath)
-        {
-            SetCurrent();
-            GmshWrapperIO.Merge(filePath);
-            GmshWrapperIO.ModelSetFileName(filePath);
         }
         /// <summary>
         /// Перегененировать сетку
         /// </summary>
         /// <param name="dim">[In]Размерность</param>
-        public MeshObject Generate(int dim)
+        public IMeshApi Generate(int dim)
         {
             SetCurrent();
             GmshWrapperMesh.Generate(dim);
@@ -111,10 +99,6 @@ namespace GmshApi
             SetCurrent();
             return GmshWrapperGeometry.GetEntities<Element1D>(1, GmshWrapperGeometry.CreateElement1D);
         }
-        public void Synchronize()
-        {
-            GmshWrapperModel.Synchronize();
-        }
 
         /// <summary>
         /// Удаляет модель
@@ -127,6 +111,17 @@ namespace GmshApi
         /// <summary>
         /// Устанавливает модель текущей
         /// </summary>
-        protected void SetCurrent() => GmshWrapperModel.ModelSetCurrent(Id.ToString());
+        private void SetCurrent() => GmshWrapperModel.ModelSetCurrent(Id.ToString());
+
+        /// <summary>
+        /// Загрузить геометрию из файла
+        /// </summary>
+        /// <param name="filePath">[In]Путь до файла</param>
+        private void Load(string filePath)
+        {
+            SetCurrent();
+            GmshWrapperIO.Merge(filePath);
+            GmshWrapperIO.ModelSetFileName(filePath);
+        }
     }
 }

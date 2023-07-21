@@ -29,6 +29,10 @@ namespace GmshApi
         /// <returns></returns>
         IEnumerable<ModelObject> GetElement1D();
 
+        IEnumerable<ModelObject> GetSurfaceById(int surfaceId);
+
+        void RemoveSurfaceById(int surfaceId);
+
         /// <summary>
         /// получить плоские элементы
         /// </summary>
