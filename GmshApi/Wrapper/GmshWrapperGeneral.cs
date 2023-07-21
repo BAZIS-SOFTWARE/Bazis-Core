@@ -1,7 +1,6 @@
-﻿using GmshApi.Controller;
-using System;
+﻿using System;
 
-namespace GmshApi.Wrapper
+namespace GmshApi
 {
     /// <summary>
     /// Предоставляет методы для перевода неуправляемой памяти в управляемую

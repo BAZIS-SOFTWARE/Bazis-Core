@@ -29,6 +29,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\GmshApi.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Geometry">
@@ -60,6 +61,7 @@
     <Compile Include="Controller\GmshIO.cs" />
     <Compile Include="Controller\GmshMesh.cs" />
     <Compile Include="Controller\GmshModel.cs" />
+    <Compile Include="Controller\GmshPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Wrapper\GmshWrapperConnection.cs" />
     <Compile Include="Wrapper\GmshWrapperGeneral.cs" />

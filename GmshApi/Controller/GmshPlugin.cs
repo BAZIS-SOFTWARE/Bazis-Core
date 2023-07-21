@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace Model.GmshController
+namespace GmshApi
 {
     public static class GmshPlugin
     {

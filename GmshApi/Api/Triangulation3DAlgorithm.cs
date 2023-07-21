@@ -1,4 +1,4 @@
-﻿namespace GmshApi.Api
+﻿namespace GmshApi
 {
     /// <summary>
     /// Алгоритмы триангуляции при построении объемов

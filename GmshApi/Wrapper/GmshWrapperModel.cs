@@ -1,10 +1,9 @@
 ﻿using Geometry;
-using GmshApi.Controller;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GmshApi.Wrapper
+namespace GmshApi
 {
     public static class IEnumerableExtentions
     {
@@ -135,7 +134,14 @@ namespace GmshApi.Wrapper
         public static void Synchronize()
         {
             int error = 0;
-            GmshModel.gmshModelOccSynchronize(ref error);
+            
+
+            var extension = GmshWrapperIO.ModelGetFileNameExtension();
+            if (extension.Contains("stp") || extension.Contains("step") ||
+                extension.Contains("brep") || extension.Contains("igs"))
+                GmshGeometry.gmshModelOccSynchronize(ref error);
+            else
+                GmshGeometry.gmshModelGeoSynchronize(ref error);
         }
     }
 }

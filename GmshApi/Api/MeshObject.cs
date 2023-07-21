@@ -1,10 +1,8 @@
-﻿using GmshApi.Wrapper;
-using Model;
+﻿using Model;
 using System;
 using System.Collections.Generic;
-using System.IO;
 
-namespace GmshApi.Api
+namespace GmshApi
 { 
     /// <summary>
     /// Класс для построения сеточных элементов
@@ -119,6 +117,12 @@ namespace GmshApi.Api
             SetCurrent();
             GmshWrapperMesh.DeleteElements(new int[] { 2 , surfaceId });
         }
+        /// <summary>
+        /// Удаляет указанные элементы сетки
+        /// </summary>
+        /// <param name="elementsTags">[In]Идентификаторы элементов сетки</param>
+        public void RemoveElements2D(int[] elementsTags) => GmshWrapperMesh.DeleteMeshElements(elementsTags);
+
         /// <summary>
         /// получить объёмные элементы
         /// </summary>

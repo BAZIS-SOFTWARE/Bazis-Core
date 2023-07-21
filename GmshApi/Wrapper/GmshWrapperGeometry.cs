@@ -1,11 +1,10 @@
-﻿using GmshApi.Controller;
-using Model;
+﻿using Model;
 using Model.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GmshApi.Wrapper
+namespace GmshApi
 {
     /// <summary>
     /// Оборачивает основные методы геометрии полученные из GmshController
@@ -280,23 +279,43 @@ namespace GmshApi.Wrapper
         /// <param name="dimTags">[In]Пары dim:tag</param>
         /// <param name="recursive">[In]Флаг рекурсивного удаления</param>
         /// <returns>Флаг успеха</returns>
-        public static bool RemoveEntities(int[] dimTags, bool recursive = true)
+        public static void RemoveEntities(int[] dimTags, bool recursive = true)
         {
             var ierr = 0;
             var recFlag = Convert.ToInt32(recursive);
             var extension = GmshWrapperIO.ModelGetFileNameExtension();
             if (extension.Contains("stp") || extension.Contains("step") ||
                 extension.Contains("brep") || extension.Contains("igs"))
-            {
                 GmshGeometry.gmshModelOccRemove(dimTags, (IntPtr)dimTags.Length, recFlag, ref ierr);
-                GmshGeometry.gmshModelOccSynchronize(ref ierr);
-            }
             else
                 GmshGeometry.gmshModelRemoveEntities(dimTags, (IntPtr)dimTags.Length, recFlag, ref ierr);
-            return ierr == 0;
+            GmshWrapperModel.Synchronize();
         }
-
-
+        /// <summary>
+        /// Удаление верхних сущностей рекурсивно
+        /// </summary>
+        /// <param name="dimTags">[In]Пары dim:tag</param>
+        /// <param name="recursive">[In]Флаг рекурсии</param>
+        public static void RemoveEntitiesEx(int[] dimTags, bool recursive = true)
+        {
+            for (var i = 1; i < dimTags.Length; i += 2)
+            {
+                GetUpAdjacenciesRecursive( dimTags[i - 1], dimTags[i]);
+                RemoveEntities(new int[] { dimTags[i - 1], dimTags[i] }, recursive);
+            }
+        }
+        /// <summary>
+        /// Удаляет верхние граничные зависимости от текущей пары dim:tag
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        public static void GetUpAdjacenciesRecursive(int dim, int tag)
+        {
+            var tags = GetAdjacencies(dim, tag)[1];
+            for (var i = 0; i < tags.Length; ++i)
+                GetUpAdjacenciesRecursive(dim + 1, tags[i]);
+            RemoveEntities(new int[] { dim, tag }, false);
+        }
         /// <summary>
         /// Получает сущности конкретного ModelObject
         /// </summary>

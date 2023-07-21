@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace GmshApi.Controller
+namespace GmshApi
 {
     /// <summary>
     /// Класс с группой методов для работы с файловой системой

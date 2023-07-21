@@ -1,4 +1,4 @@
-﻿namespace GmshApi.Api
+﻿namespace GmshApi
 {
     /// <summary>
     /// Алгоритмы распределения точек на кривых\поверхностях

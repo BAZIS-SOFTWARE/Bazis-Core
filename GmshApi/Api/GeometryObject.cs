@@ -1,12 +1,8 @@
-﻿using Model.Interfaces;
-using GmshApi.Wrapper;
-using Model;
+﻿using Model;
 using System.Collections.Generic;
 using System;
-using System.Linq;
-using GmshApi.GmshWrapper;
 
-namespace GmshApi.Api
+namespace GmshApi
 {  
     /// <summary>
     /// Класс для построения геометрических сущностей
@@ -15,7 +11,6 @@ namespace GmshApi.Api
     {
         private static List<ulong> idList = new List<ulong>();
         private ulong id;
-        private string path;
         /// <summary>
         /// Возращает\задает уникальный идентификатор
         /// </summary>
@@ -64,7 +59,6 @@ namespace GmshApi.Api
             Id = GmshWrapperGeneral.GenerateRandom();
             GmshWrapperModel.ModelAdd(Id.ToString());
             Load(path);
-            this.path = path;
         }
         /// <summary>
         /// Загрузить геометрию из файла
@@ -113,6 +107,15 @@ namespace GmshApi.Api
             SetCurrent();
             return GmshWrapperGeometry.GetEntities<Element1D>(1, GmshWrapperGeometry.CreateElement1D);
         }
+        /// <summary>
+        /// Удаляет сущности
+        /// </summary>
+        /// <param name="dimTags">[In]Массив пар dim:tag</param>
+        public void DeleteEntities(int[] dimTags)
+        {
+            GmshWrapperGeometry.RemoveEntitiesEx(dimTags, false);
+        }
+
         public void Synchronize()
         {
             GmshWrapperModel.Synchronize();

@@ -1,8 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using GmshApi.Api;
-using GmshApi.Wrapper;
+using GmshApi;
 using System.Linq;
-using GmshApi.GmshWrapper;
 
 namespace TestModel.GmshTests
 {
@@ -221,16 +219,29 @@ namespace TestModel.GmshTests
             }
         }
         [DataTestMethod]
-        [DataRow("Cilindr.step", new int[] {206, 261, 251, 265, 210, 213})]
+        [DataRow("Cilindr.step", 2)]
+        public void DeleteSurfaceTest(string fileName, int surfaceId)
+        {
+            using (var geometry = new GeometryObject(modelFolder + fileName))
+            {
+                var mesh = geometry.Generate(2);
+                var lengthBefore = mesh.GetElement2D().ToArray().Length;
+                mesh.RemoveSurfaceById(2);
+                var lengthAfter = mesh.GetElement2D().ToArray().Length;
+                Assert.AreEqual(true, lengthBefore > lengthAfter);
+            }
+        }
+        [DataTestMethod]
+        [DataRow("Cilindr.step", new int[] { 206, 261, 251, 265, 210, 213 })]
         public void DeleteMeshElementsTest(string fileName, int[] elTags)
         {
             using (var geometry = new GeometryObject(modelFolder + fileName))
             {
                 var mesh = geometry.Generate(2);
-                /*var lengthBefore = mesh.GetElement2D().ToArray().Length;
-                GmshWrapperMesh.DeleteMeshElements(elTags);
+                var lengthBefore = mesh.GetElement2D().ToArray().Length;
+                mesh.RemoveElements2D(elTags);
                 var lengthAfter = mesh.GetElement2D().ToArray().Length;
-                Assert.IsTrue(lengthBefore > lengthAfter);*/
+                Assert.IsTrue(lengthBefore > lengthAfter);
             }
         }
     }

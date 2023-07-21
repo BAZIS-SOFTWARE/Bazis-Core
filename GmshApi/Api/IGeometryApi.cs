@@ -1,7 +1,7 @@
 ﻿using Model;
 using System.Collections.Generic;
 
-namespace GmshApi.Api
+namespace GmshApi
 {
     public interface IGeometryApi
     {

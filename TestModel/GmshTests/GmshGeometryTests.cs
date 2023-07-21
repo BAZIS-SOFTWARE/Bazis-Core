@@ -1,8 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using GmshApi.Api;
-using GmshApi.Wrapper;
+using GmshApi;
 using System.Linq;
-using GmshApi.GmshWrapper;
 
 namespace TestModel.GmshTests
 {
@@ -83,19 +81,19 @@ namespace TestModel.GmshTests
             Assert.AreEqual(true, list.Length == 1 && list[0] == string.Empty);
         }
         [DataTestMethod]
-        [DataRow("Cilindr.step", new int[] { 3 })]
+        [DataRow("Cilindr.step", new int[] { 1 })]
         public void RemoveEntityTest(string fileName, int[] dimArray)
         {
             using (var geometry = new GeometryObject(modelFolder + fileName))
             {
                 for (var i = 0; i < dimArray.Length; ++i)
                 {
-                    /*var entities = GmshWrapperGeometry.GetEntities(dimArray[i]);
+                    var entities = GmshWrapperGeometry.GetEntities(-1);
                     var lengthBefore = entities.Length;
-                    geometry.DeleteEntity(dimArray[i], entities[1]);//Delete first id
-                    var newEntities = GmshWrapperGeometry.GetEntities(dimArray[i]);
+                    geometry.DeleteEntities(new int[] { dimArray[i], entities[1] });//Delete first id
+                    var newEntities = GmshWrapperGeometry.GetEntities(-1);
                     var lengthAfter = newEntities.Length;
-                    Assert.IsTrue(lengthBefore > lengthAfter);*/
+                    Assert.IsTrue(lengthBefore > lengthAfter);
                 }
             }
         }
