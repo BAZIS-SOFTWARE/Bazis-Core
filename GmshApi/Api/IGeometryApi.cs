@@ -14,11 +14,6 @@ namespace GmshApi
         /// </summary>
         ulong Id { get; set; }
         /// <summary>
-        /// загрузить геометрию
-        /// </summary>
-        /// <param name="filePath">[In]Путь до файла</param>
-        void Load(string filePath);
-        /// <summary>
         /// // сгенерировать сетку Элементы2D, и т. д.
         /// </summary>
         /// <param name="dim"></param>

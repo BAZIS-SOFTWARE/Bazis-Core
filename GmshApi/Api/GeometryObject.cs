@@ -68,7 +68,7 @@ namespace GmshApi
         /// Загрузить геометрию из файла
         /// </summary>
         /// <param name="filePath">[In]Путь до файла</param>
-        public void Load(string filePath)
+        private void Load(string filePath)
         {
             SetCurrent();
             GmshWrapperIO.Merge(filePath);
