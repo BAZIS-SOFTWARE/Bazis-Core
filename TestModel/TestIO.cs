@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using ModelController.IO;
 using Model.ModelParcer;
+using Model.Interfaces;
 
 namespace TestModel
 {
@@ -139,6 +140,19 @@ namespace TestModel
             var element = model.ObjectData.FindMany<Element3D>().First();
             Assert.AreEqual(4, model.ObjectData.NumberOfNodes);
             Assert.AreEqual(1, model.ObjectData.NumberOfElements);
+        }
+
+        [TestMethod]
+        public void LoadÑubeFromSalomeFileCorrectly()
+        {
+            var path = @"..\..\Examples\Salome\cube.med";
+            var import = new LoadModelFromSalomeFile();
+            import.LoadEvent += (ar1, ar2) => { };
+            var model = import.Load(path);
+            Assert.AreEqual(8, model.ObjectData.FindMany<Node>().Distinct().Count());
+            Assert.AreEqual(12, model.ObjectData.FindMany<Element1D>().Distinct().Count());
+            Assert.AreEqual(12, model.ObjectData.FindMany<Element2D>().Distinct().Count());
+            Assert.AreEqual(5, model.ObjectData.FindMany<Element3D>().Distinct().Count());
         }
     }
 }

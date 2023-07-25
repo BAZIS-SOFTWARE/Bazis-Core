@@ -102,6 +102,7 @@
     <Compile Include="ModelParcer\LoadModelFromASCIITextFile.cs" />
     <Compile Include="ModelParcer\LoadModelFromCDBTextFile.cs" />
     <Compile Include="ModelParcer\LoadModelFromGMSHTextFile.cs" />
+    <Compile Include="ModelParcer\LoadModelFromSalomeFile.cs" />
     <Compile Include="ModelParcer\LoadModelFromSTLFile.cs" />
     <Compile Include="NodeSorter.cs" />
     <Compile Include="ObjectsComparers\ComparerBySqCoords.cs" />
@@ -141,8 +142,6 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="ModelController\ModelSolutionKey.pfx" />
-    <None Include="ModelParcer\app.config" />
-    <None Include="ModelParcer\packages.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
