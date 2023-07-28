@@ -184,7 +184,7 @@ namespace TestModel.GmshTests
                 Assert.IsTrue(nodesCountAfter != nodesCountUntil);
             }
         }
-
+        /*
         [DataTestMethod]
         [DataRow("Cilindr.step")]
         public void TestChangeTriangulationAlgorithm3D(string fileName)
@@ -198,7 +198,7 @@ namespace TestModel.GmshTests
                 var nodesCountAfter = mesh.GetNodes().Count();
                 Assert.IsTrue(nodesCountAfter != nodesCountUntil);
             }
-        }
+        }*/
 
         [DataTestMethod]
         [DataRow("Cilindr.step")]

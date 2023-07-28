@@ -12,10 +12,11 @@ namespace GmshApi
         /// </summary>
         /// <param name="name">[In]Строка в формате доступа к полю категории опций</param>
         /// <param name="value">[In]Значение поля категории</param>
-        public static void OptionSetNumber(String name, double value)
+        public static bool OptionSetNumber(String name, double value)
         {
             var ierr = 0;
             GmshGeneral.gmshOptionSetNumber(name, value, ref ierr);
+            return ierr == 0;
         }
         /// <summary>
         /// Возвращает значение из поля категории опций

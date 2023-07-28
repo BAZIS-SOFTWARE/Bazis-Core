@@ -38,9 +38,9 @@ namespace TestModel.GmshTests
             GmshWrapperMesh.Generate(2);
             ElementInfo[] info;
             long[][] elemsTags, nodeTags;
-            GmshWrapperMesh.GetElements(-1, -1, out info, out elemsTags, out nodeTags);
-            GmshWrapperMesh.GetElements(1, -1, out info, out elemsTags, out nodeTags);
-            GmshWrapperMesh.GetElements(2, -1, out info, out elemsTags, out nodeTags);
+            GmshWrapperMesh.GetElementTags(-1, -1, out info, out elemsTags, out nodeTags);
+            GmshWrapperMesh.GetElementTags(1, -1, out info, out elemsTags, out nodeTags);
+            GmshWrapperMesh.GetElementTags(2, -1, out info, out elemsTags, out nodeTags);
         }
         [DataTestMethod]
         [DataRow("Cilindr.step", "1")]

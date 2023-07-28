@@ -104,7 +104,7 @@ namespace GmshApi
         /// <param name="elemsTags">[Out]Массив elementTags для заполнения</param>
         /// <param name="nodesTags">[Out]Массив elementTags для заполнения</param>
         /// <returns>true если элементы были найдены</returns>
-        public static bool GetElements(int dim, int tag, out ElementInfo[] elemInfo,
+        public static bool GetElementTags(int dim, int tag, out ElementInfo[] elemInfo,
                                        out long[][] elemsTags, out long[][] nodesTags)
         {
             var ierr = 0;
@@ -160,6 +160,13 @@ namespace GmshApi
             }
             return ierr == 0;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dim"></param>
+        /// <param name="tag"></param>
+        /// <param name="includeBoundary"></param>
+        /// <returns></returns>
         public static IEnumerable<Node> GetNodes(int dim = -1, int tag = -1, bool includeBoundary = false)
         {
             long[] nodeTags;
@@ -171,6 +178,23 @@ namespace GmshApi
             for (var i = 0L; i < nodeTags.Length; ++i)
                 list.Add(new Node((int)nodeTags[i], points[i]));
             return list;
+        }
+        /// <summary>
+        /// Перестроить кэш точек
+        /// </summary>
+        public static void RebuildNodeCache()
+        {
+            var ierr = 0;
+            GmshMesh.gmshModelMeshRebuildNodeCache(1, ref ierr);
+        }
+
+        /// <summary>
+        /// Перестроить кэш элементов
+        /// </summary>
+        public static void RebuildElementCache()
+        {
+            var ierr = 0;
+            GmshMesh.gmshModelMeshRebuildElementCache(1, ref ierr);
         }
 
         /// <summary>
@@ -224,10 +248,9 @@ namespace GmshApi
             long[] nodesT;
             double[] local, parametric;
             var list = new List<ModelObject>();
-            if (GetElements(dim, tag, out info, out elemTags, out nodeTags))
+            if (GetElementTags(dim, tag, out info, out elemTags, out nodeTags))
             {
                 GetNodes(dim, tag, out nodesT, out local, out parametric);
-                var points3D = GmshWrapperModel.ConvertLocalCoordsToPoints3D(local);
                 var nodes = LocalCoordinatesToNodes(nodesT, local);
                 for (int i = 0; i < info.Length; ++i)
                 {
@@ -285,6 +308,18 @@ namespace GmshApi
                 GmshPlugin.gmshPluginSetNumber("Invisible", "DeleteElements", 1, ref ierr);
                 GmshPlugin.gmshPluginRun("Invisible", ref ierr);
             }
+            return ierr == 0;
+        }
+        /// <summary>
+        /// Устанавливает алгоритм триангуляции сетки
+        /// </summary>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="value">[In]Численное значение поля алгоритма</param>
+        /// <returns>Флаг ошибки</returns>
+        public static bool MeshSetAlgorithm(int tag, int value)
+        {
+            var ierr = 0;
+            GmshMesh.gmshModelMeshSetAlgorithm(2, tag, value, ref ierr);
             return ierr == 0;
         }
 

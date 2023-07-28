@@ -77,7 +77,8 @@ namespace GmshApi
         public MeshObject Generate(int dim)
         {
             SetCurrent();
-            GmshWrapperMesh.Generate(dim);
+            if(dim != 0)
+                GmshWrapperMesh.Generate(dim);
             return new MeshObject(Id);
         }
         /// <summary>
@@ -115,6 +116,26 @@ namespace GmshApi
         {
             SetCurrent();
             GmshWrapperGeometry.RemoveEntitiesEx(dimTags, false);
+        }
+        /// <summary>
+        /// Возвращает максимальную размерность
+        /// </summary>
+        /// <returns></returns>
+        public int GetMaxDimension()
+        {
+            SetCurrent();
+            return GmshWrapperGeometry.GetDimension();
+        }
+
+        /// <summary>
+        /// Возвращает сущности текущей размерности
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <returns></returns>
+        public int[] GetEntities(int dim)
+        {
+            SetCurrent();
+            return GmshWrapperGeometry.GetEntities(dim);
         }
 
         public void Synchronize()

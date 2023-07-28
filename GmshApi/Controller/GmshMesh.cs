@@ -138,6 +138,14 @@ namespace GmshApi
         [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void gmshModelMeshRebuildNodeCache(int onlyIfNecessary, ref int ierr);
         /// <summary>
+        /// Перестроить кеш элементов
+        /// </summary>
+        /// <param name="onlyIfNecessary">[In]Флаг удаления</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelMeshRebuildElementCache(int onlyIfNecessary, ref int ierr);
+
+        /// <summary>
         /// Удаляет сетку свзанную с dim:tag всю вплоть до точек
         /// </summary>
         /// <param name="dimTags">[In]Пары dim:tag</param>
@@ -156,5 +164,16 @@ namespace GmshApi
         [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void gmshModelMeshSetVisibility(IntPtr[] elementTags, IntPtr elementTags_n, 
                                                              int value, ref int ierr);
+
+        /// <summary>
+        /// Устанавливает алгоритм триангуляции для сетки
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="val">[In]Численное значение поля алгоритма</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        /// 
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelMeshSetAlgorithm(int dim, int tag, int val, ref int ierr);
     }
 }

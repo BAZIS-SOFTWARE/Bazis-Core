@@ -31,15 +31,18 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\GmshApi.xml</DocumentationFile>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>GmshApiKey.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Geometry">
-      <HintPath>..\packages\Geometry.2.0.5.30\lib\net48\Geometry.dll</HintPath>
+    <Reference Include="Geometry, Version=2.0.5.40, Culture=neutral, PublicKeyToken=cadb58b3f6b10f0c, processorArchitecture=MSIL">
+      <HintPath>..\packages\Geometry.2.0.5.40\lib\net48\Geometry.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\ModelSolution\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -72,6 +75,7 @@
     <Compile Include="Wrapper\GmshWrapperModel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="GmshApiKey.pfx" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

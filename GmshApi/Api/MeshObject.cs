@@ -10,12 +10,11 @@ namespace GmshApi
     public class MeshObject : IMeshApi
     {
         private ulong id;
-
         /// <summary>
         /// Задать\получить размер элементов перед генерацией
         /// </summary>
-        public double Density 
-        { 
+        public double Density
+        {
             get
             {
                 SetCurrent();
@@ -142,14 +141,21 @@ namespace GmshApi
             GmshWrapperGeneral.OptionSetNumber("Mesh.Algorithm", Convert.ToDouble(algorithm));
         }
         /// <summary>
-        /// Задать алгоритм триангуляции объемов перед генерацией
+        /// Возвращает информацию о элементах по паре dim:tag
         /// </summary>
-        /// <param name="algorithm"></param>
-        public void ChangeTriangulationAlgorithm3D(Triangulation3DAlgorithm algorithm = Triangulation3DAlgorithm.Delaunay)
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="elemInfo">[Out]ElementInfo для заполнения</param>
+        /// <param name="elemsTags">[Out]Теги элементов</param>
+        /// <param name="nodesTags">[Out]Теги узлов внутри dim:tag</param>
+        public void GetElementsInfo(int dim, int tag, out ElementInfo[] elemInfo,
+                                            out long[][] elemsTags, out long[][] nodesTags)
         {
             SetCurrent();
-            GmshWrapperGeneral.OptionSetNumber("Mesh.Algorithm3D", Convert.ToDouble(algorithm));
+            GmshWrapperMesh.GetElementTags(dim, tag, out elemInfo, out elemsTags, out nodesTags);
         }
+
+
         /// <summary>
         /// Задать число точек рапределения по кривой
         /// </summary>

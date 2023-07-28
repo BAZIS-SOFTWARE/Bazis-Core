@@ -51,12 +51,6 @@ namespace GmshApi
         /// <param name="algorithm">[In]Enum алгоритма</param>
         void ChangeTriangulationAlgorithm2D(Triangulation2DAlgorithm algorithm = Triangulation2DAlgorithm.FrontalDelaunay);
         /// <summary>
-        /// установить новый алгоритм триангуляции по его enum
-        /// (Delaunay, Frontal Delaunay) и т.д для 3D
-        /// </summary>
-        /// <param name="algorithm">[In]Enum алгоритма</param>
-        void ChangeTriangulationAlgorithm3D(Triangulation3DAlgorithm algorithm = Triangulation3DAlgorithm.Delaunay);
-        /// <summary>
         /// Задает расположение узлов на кривой
         /// <param name="number">[In]Количество точек</param>
         /// <param name="ta">[In]Тип расположения точек (Progressive и т.д), числовой параметр</param>

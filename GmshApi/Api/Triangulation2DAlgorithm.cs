@@ -9,17 +9,15 @@
         MeshAdapt = 1,
         /// <summary>Automatic</summary>
         Automatic = 2,
-        //InitialMeshOnly = 3, Не работает в Gmsh
+        //InitialMeshOnly = 3, Не корректно работает в Gmsh
         /// <summary>Delaunay</summary>
         Delaunay = 5,
         /// <summary>FrontalDelaunay</summary>
         FrontalDelaunay = 6,
-        //BAMG = 7, Не работает в Gmsh
+        //BAMG = 7, //Эксперементальный - не корректно работает в Gmsh
         /// <summary>FrontalDelaunayQuad</summary>
         FrontalDelaunayQuad = 8,
-        /// <summary>PackingParallelograms</summary>
-        PackingParallelograms = 9,
-        /// <summary>QuasiStructuredQuad</summary>
-        QuasiStructuredQuad = 11
+        //PackingParallelograms = 9,//Эксперементальный - не корректно работает в Gmsh
+        //QuasiStructuredQuad = 11 //Эксперементальный - не корректно работает в Gmsh
     }
 }
