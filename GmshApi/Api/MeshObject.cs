@@ -169,6 +169,11 @@ namespace GmshApi
             }
         }
 
+        public void SaveMesh(string filename = "test.inp")
+        {
+            GmshWrapperGeneral.WriteToFile(filename);
+        }
+
         private void SetCurrent() => GmshWrapperModel.ModelSetCurrent(id.ToString());
     }
 }

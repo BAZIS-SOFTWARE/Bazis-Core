@@ -46,5 +46,8 @@ namespace GmshApi
         /// <param name="ptr">[In]Указатель на блок памяти</param>
         [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void gmshFree(IntPtr ptr);
+
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshWrite(string fileName);
     }
 }

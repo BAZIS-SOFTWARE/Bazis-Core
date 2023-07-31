@@ -50,5 +50,10 @@ namespace GmshApi
             var value = rand.NextDouble();
             return Convert.ToUInt64(value * dif);
         }
+
+        public static void WriteToFile(string fileName)
+        {
+            GmshGeneral.gmshWrite(fileName);
+        }
     }
 }
