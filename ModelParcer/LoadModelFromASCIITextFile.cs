@@ -7,139 +7,133 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Threading;
+using System.Security.Policy;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Model.ModelParcer
 {
     public class LoadModelFromASCIITextFile : IModelLoader
     {
         public event Action<object, LoaderEventArgs> LoadEvent;
+        private Dictionary<int, Node> allNodes = new Dictionary<int, Node>();
+        private Dictionary<int, ObjKind> elementIndexToObjectType = new Dictionary<int, ObjKind>();
 
         public ModelData Load(string path)
         {
-            var newMesh = new ModelData();
-
-            var elChangeNumbers = new Dictionary<int, int>();
-
-            var line = string.Empty;
-            var sr = new StreamReader(path);
-
-            while (!sr.EndOfStream)
+            var model = new ModelData();
+            using(var reader = new StreamReader(path))
             {
-                var lineCollect = sr.ReadLine().Split(new char[] { });
-
-                if (lineCollect[0] == "BEGIN_NODES")
+                while(!reader.EndOfStream)
                 {
-                    LoadEvent(this, new LoaderEventArgs("Загрузка узлов..."));
-                    Thread.Sleep(100);
-                    var nodes = new List<Node>();
-                    while (line.Split(' ')[0] != "END_NODES")
+                    var line = reader.ReadLine();
+                    var tokens = line.Split().ToArray();
+                    if(line.Contains("BEGIN_NODES"))
                     {
-                        line = sr.ReadLine();
-                        var val = 0.0f;
-                        var ar = line.Split(' ').Where(m => float.TryParse(m, NumberStyles.Float, CultureInfo.InvariantCulture, out val)).
-                            Select(m => float.Parse(m, NumberStyles.Float, CultureInfo.InvariantCulture)).ToList();
-
-                        if (ar.Count != 0)
-                        {
-                            //nodeInd.Add((int)ar[0] - 1);
-                            ar.RemoveRange(1, 5);
-                            nodes.Add(new Node((int)ar[0] - 1,new Point3D(ar[1], ar[2], ar[3])));
-                        }
+                        var nodes = ReadNodes(reader, int.Parse(tokens[1]));
+                        model.ObjectData.AddRange(nodes);
                     }
-                    var sortedNodes = nodes.OrderBy(x => x.Number);
- 
-                    newMesh.ObjectData.AddRange(sortedNodes);
-                }
-                if (lineCollect[0] == "BEGIN_ELEMENTS")
-                {
-                    LoadEvent(this, new LoaderEventArgs("Загрузка элементов..."));
-                    Thread.Sleep(100);
-
-                    var nodes = newMesh.ObjectData.FindMany<Node>().ToArray();
-
-                    while (line.Split(' ')[0] != "END_ELEMENTS")
+                    if(line.Contains("BEGIN_ELEMENTS"))
                     {
-                        line = sr.ReadLine();
-
-                        int val = 0;
-                        var list = line.Split(' ').Where(m => int.TryParse(m, out val)).
-                            Select(m => int.Parse(m)).ToList();
-                        if (list.Count > 1)
-                        {
-                            //var elInd = list[0] - 1;
-                            list.RemoveRange(1, 4);
-                            var ar = list.Select(m => m - 1).ToArray();
-                            var lastNumber = newMesh.ObjectData.GetLastObjNumber();
-
-                            elChangeNumbers.Add(ar[0], lastNumber + 1);
-
-                            if (line.Split(' ')[1] == "3004")
-                            {
-                                var n0 = newMesh.ObjectData.Find(nodes, ar[1]);
-                                var n1 = newMesh.ObjectData.Find(nodes, ar[2]);
-                                var n2 = newMesh.ObjectData.Find(nodes, ar[3]);
-                                var n3 = newMesh.ObjectData.Find(nodes, ar[4]);
-
-                                var tetra = new Element3D(lastNumber + 1, new Node[] { n0, n1, n2, n3 }, ObjKind.Tetra);
-                                newMesh.ObjectData.Add(tetra);
-                            }
-                            else if (line.Split(' ')[1] == "2003")
-                            {
-                                var n0 = newMesh.ObjectData.Find(nodes, ar[1]);
-                                var n1 = newMesh.ObjectData.Find(nodes, ar[2]);
-                                var n2 = newMesh.ObjectData.Find(nodes, ar[3]);
-                                var triangle = new Element2D(lastNumber + 1, new Node[] { n0, n1, n2}, ObjKind.Triangle);
-                                newMesh.ObjectData.Add(triangle);
-                            }
-                            //else if (line.Split(' ')[1] == "1002") { beamNodes.Add(ar); }
-                            else
-                            {
-                                var msg = "\n > Неизвестный тип элемента.Модель будет загружена не полностью!";
-                                LoadEvent(this, new LoaderEventArgs(msg));
-                            }
-                        }
+                        var elements = ReadElements(reader, int.Parse(tokens[1]));
+                        model.ObjectData.AddRange(elements);
                     }
-                }
-                if (lineCollect[0] == "BEGIN_GROUPS")
-                {
-                    line = sr.ReadLine();
-                    while (line.Split(' ')[0] != "END_GROUPS")
+                    if(line.Contains("BEGIN_GROUPS"))
                     {
-                        CreateGroup(newMesh, line, elChangeNumbers);
-                        line = sr.ReadLine();
+                        foreach (var group in ReadGroups(reader, int.Parse(tokens[1])))
+                        {
+                            model.GroupData.Add(group);
+                        }
                     }
                 }
             }
-            return newMesh;
+            return model;
         }
 
-        private void CreateGroup(ModelData newMesh, string line, Dictionary<int,int> elChangeNumbers)
+        private IEnumerable<Node> ReadNodes(StreamReader reader, int count)
         {
-            var listAr = line.Split(' ');
-
-            LoadEvent(this, new LoaderEventArgs("Загрузка группы объектов " + line.Split(' ')[1]));
-
-            var newlistStr = new string[listAr.Length - 13];
-
-            Array.Copy(listAr, 13, newlistStr, 0, listAr.Length - 13);
-            var newListInt = newlistStr.Where(x => elChangeNumbers.TryGetValue(int.Parse(x) - 1,out int res)).
-            Select(x => elChangeNumbers[int.Parse(x) - 1]).ToList();
-
-            var objType = string.Empty;
-            if (newListInt.Count != 0)
+            LoadEvent(this, new LoaderEventArgs("Загрузка узлов..."));
+            for (var i = 0; i < count; i++)
             {
-                var obj = newMesh.ObjectData.Find(newListInt[0]);
-
-                if(obj != null)
-                {
-                    var group = new Group(listAr[1], obj.ObjType);
-                    group.AddRange(newListInt);
-                    newMesh.GroupData.Add(group);
-                }
+                var line = reader.ReadLine();
+                var tokens = line.Split().ToArray();
+                var index = int.Parse(tokens[0]);
+                var coordinates = tokens.Skip(6)
+                    .Select(x => float.Parse(x, CultureInfo.InvariantCulture))
+                    .ToArray();
+                var node = new Node(index, new Point3D(coordinates[0], coordinates[1], coordinates[2]));
+                allNodes.Add(index, node);
+                yield return node;
             }
-            else
-                LoadEvent(this, new LoaderEventArgs("\n > Пустая группа объектов " + listAr[1]));
+        }
+
+        private IEnumerable<ModelObject> ReadElements(StreamReader reader, int count)
+        {
+            LoadEvent(this, new LoaderEventArgs("Загрузка элементов..."));
+            for (var i = 0; i < count; i++)
+            {
+                var line = reader.ReadLine();
+                var tokens = line.Split().ToArray();
+                var index = int.Parse(tokens[0]);
+                var type = int.Parse(tokens[1]);
+                var nodes = tokens.Skip(5)
+                    .Select(int.Parse)
+                    .Select(j => allNodes[j])
+                    .ToArray();
+                var element = GetElementByType(nodes, type, index);
+                elementIndexToObjectType.Add(element.Number, element.ObjKind);
+                yield return element;
+            }
+        }
+
+        private ModelObject GetElementByType(Node[] nodes, int type, int index)
+        {
+            switch(type) 
+            {
+                case 3004: return new Element3D(index, nodes, ObjKind.Tetra);
+                case 2003: return new Element2D(index, nodes, ObjKind.Triangle);
+                case 1002: return new Element1D(index, nodes, ObjKind.Beam);
+                default: throw new ArgumentException($"Unable to recognize element of type {type}");
+            }
+        }
+
+        private IEnumerable<GroupsData.Group> ReadGroups(StreamReader reader, int count)
+        {
+            LoadEvent(this, new LoaderEventArgs("Загрузка группы объектов "));
+            for(var i = 0; i < count; i++)
+            {
+                var line = reader.ReadLine();
+                var tokens = ReplaceQuotes(line)
+                    .Split(new char[] {' '}, StringSplitOptions.RemoveEmptyEntries)
+                    .ToArray();
+                var groupName = tokens[1];
+                var elementIndeces = tokens.Skip(7).Select(int.Parse);
+                var group = new GroupsData.Group(groupName, GetGroupTypeByFirstIndex(elementIndeces.First()));
+                group.AddRange(elementIndeces);
+                yield return group;
+            }
+        }
+
+        private string ReplaceQuotes(string source)
+        {
+            var result = string.Empty;
+            var regex = new Regex("\".*?\"");
+            var matches = regex.Matches(source);
+            foreach (var match in matches)
+            {
+                result = source.Replace(match.ToString(), "Quotes");
+                source = result;
+            }
+            return result;
+        }
+
+        private ObjKind GetGroupTypeByFirstIndex(int firstIndex)
+        {
+            if (elementIndexToObjectType.ContainsKey(firstIndex))
+                return elementIndexToObjectType[firstIndex];
+            else if (allNodes.ContainsKey(firstIndex))
+                return allNodes[firstIndex].ObjKind;
+            throw new ArgumentException($"Index {firstIndex} is not found in nodes and in element indeces");
         }
     }
 }

@@ -81,6 +81,15 @@ namespace TestModel
         }
 
         [TestMethod]
+        public void LoadASCII_ShouldImport1DElements()
+        {
+            var loader = new LoadModelFromASCIITextFile();
+            loader.LoadEvent += (ar1, ar2) => { };
+            var model = loader.Load(@"..\..\Examples\VIsual-Mesh\DATA3.ASC");
+            Assert.AreEqual(3, model.ObjectData.FindMany<Element1D>().Count());
+        }
+
+        [TestMethod]
         public void ImportHexFromCDBTextFormat()
         {
             string path = @"..\..\Examples\CDB\hex.cdb";

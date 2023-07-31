@@ -83,7 +83,7 @@ namespace TestModel
             var loader = new LoadModelFromASCIITextFile();
 
             loader.LoadEvent += Model_LoadEvent;
-            var modelLoaded = loader.Load(@"C:\Bazis_newGUI\MESH\rhombDATA1.ASC");
+            var modelLoaded = loader.Load(@"..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
             model.Load(modelLoaded);
             //act
             var elements = model.ObjectData.FindMany<Element3D>().ToArray();
