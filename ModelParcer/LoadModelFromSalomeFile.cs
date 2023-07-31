@@ -97,6 +97,7 @@ namespace Model.ModelParcer
                 case "triangle": return new Element2D(counter, nodes.ToArray(), ObjKind.Triangle);
                 case "quad": return new Element2D(counter, nodes.ToArray(), ObjKind.Quad);
                 case "tetra": return new Element3D(counter, nodes.ToArray(), ObjKind.Tetra);
+                case "hexahedron": return new Element3D(counter, nodes.ToArray(), ObjKind.Hexa);
                 default: throw new ArgumentException($"Unable to recognize element {elementType}");
             }
         }
