@@ -104,6 +104,7 @@
     <Compile Include="ModelParcer\LoadModelFromGMSHTextFile.cs" />
     <Compile Include="ModelParcer\LoadModelFromSalomeFile.cs" />
     <Compile Include="ModelParcer\LoadModelFromSTLFile.cs" />
+    <Compile Include="ModelParcer\SaveModelToASCIITextFile.cs" />
     <Compile Include="NodeSorter.cs" />
     <Compile Include="ObjectsComparers\ComparerBySqCoords.cs" />
     <Compile Include="ObjectsComparers\EqualityComparerByCentralPoint.cs" />
