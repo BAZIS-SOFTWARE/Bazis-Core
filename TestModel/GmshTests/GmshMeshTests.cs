@@ -92,7 +92,7 @@ namespace TestModel.GmshTests
                 var mesh = geometry.Generate(2);
                 var untilElements = mesh.GetElement2D();
                 mesh.Density = 0.5;
-                geometry.Generate(2);
+                geometry.Remesh(2);
                 var afterElements = mesh.GetElement2D();
                 Assert.IsTrue(untilElements.Count() < afterElements.Count());
             }
@@ -126,11 +126,11 @@ namespace TestModel.GmshTests
                 var mesh = geometry.Generate(2);
                 var length1 = mesh.GetElement2D().ToArray().Length;
                 mesh.Density = 0.5;
-                mesh.Generate(2);
+                mesh.Remesh(2);
                 var length2 = mesh.GetElement2D().ToArray().Length;
                 Assert.AreEqual(true, length2 > length1);
                 mesh.Density = 1;
-                mesh.Generate(2);
+                mesh.Remesh(2);
                 var length3 = mesh.GetElement2D().ToArray().Length;
                 Assert.AreEqual(true, length3 < length2);
             }
@@ -145,11 +145,11 @@ namespace TestModel.GmshTests
                 var mesh = geometry.Generate(3);
                 var length1 = mesh.GetElement3D().ToArray().Length;
                 mesh.Density = 0.5;
-                mesh.Generate(3);
+                mesh.Remesh(3);
                 var length2 = mesh.GetElement3D().ToArray().Length;
                 Assert.AreEqual(true, length2 > length1);
                 mesh.Density = 1;
-                mesh.Generate(3);
+                mesh.Remesh(3);
                 var length3 = mesh.GetElement3D().ToArray().Length;
                 Assert.AreEqual(true, length3 < length2);
             }
@@ -209,7 +209,7 @@ namespace TestModel.GmshTests
                 var mesh = geometry.Generate(2);
                 var nodesCountUntil = mesh.GetNodes().Count();
                 mesh.SetMeshPointsOnCurve(10, TransfiniteAlgorithm.Progressive, 1.5, 4);
-                mesh.Generate(2);
+                mesh.Remesh(2);
                 var nodesCountAfter = mesh.GetNodes().Count();
                 Assert.IsTrue(nodesCountAfter != nodesCountUntil);
                 var lengthBefore = mesh.GetElement2D().ToArray().Length;    

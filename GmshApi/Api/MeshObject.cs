@@ -80,6 +80,12 @@ namespace GmshApi
             GmshWrapperMesh.Generate(dim);
         }
 
+        public void Remesh(int dim)
+        {
+            SetCurrent();
+            GmshWrapperMesh.Remesh(dim);
+        }
+
         /// <summary>
         /// получить плоские элементы
         /// </summary>

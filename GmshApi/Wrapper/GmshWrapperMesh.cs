@@ -52,9 +52,19 @@ namespace GmshApi
         public static void Generate(int dim)
         {
             var ierr = 0;
+            GmshMesh.gmshModelMeshGenerate(dim, ref ierr);
+        }
+        /// <summary>
+        /// Перегенирировать сетку
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        public static void Remesh(int dim)
+        {
+            var ierr = 0;
             GmshMesh.gmshModelMeshGenerate(1, ref ierr);
             GmshMesh.gmshModelMeshGenerate(dim, ref ierr);
         }
+
         /// <summary>
         /// Переводит большую часть сетки в четырехугольники
         /// </summary>
@@ -367,7 +377,7 @@ namespace GmshApi
 
         private static void CreatePrism(List<ModelObject> list, long elementId, Node[] nodes)
         {
-            list.Add( new Element3D((int)elementId, nodes, ObjKind.Penta));
+            list.Add( new Element3D((int)elementId, nodes, ObjKind.Prism));
         }
 
         private static void CreatePyramid(List<ModelObject> list, long elementId, Node[] nodes)
