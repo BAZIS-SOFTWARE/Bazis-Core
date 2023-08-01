@@ -16,15 +16,15 @@ namespace Model.ModelParcer
         private const string NODE_BLOCK = "NBLOCK";
         private const string ELEMENTS_BLOCK = "EBLOCK";
         private const int OFFSET_TO_READ_NODES = 11;
-        private ModelData model = new ModelData();
-        private string exponentialFloatPattern = "(-)?\\d+\\.\\d+E(\\+|-)\\d+";
-        private List<Node> allNodes = new List<Node>();
+        private const string exponentialFloatPattern = "(-)?\\d+\\.\\d+E(\\+|-)\\d+";
+        private Dictionary<int, Node> allNodes = new Dictionary<int, Node>();
 
         /// <summary>
         /// Загрузить модель из файла формата .cdb по указанному пути
         /// </summary>
         public ModelData Load(string path)
         {
+            var model = new ModelData();
             using (var reader = new StreamReader(path))
             {
                 LoadEvent(this, new LoaderEventArgs("Начало загрузки модели"));
@@ -38,8 +38,8 @@ namespace Model.ModelParcer
                     if (line.Contains(NODE_BLOCK))
                     {
                         LoadEvent(this, new LoaderEventArgs("Начало загрузки узлов"));
-                        allNodes = ReadNodes(reader, tokens).ToList();
-                        model.ObjectData.AddRange(allNodes);
+                        var nodes = ReadNodes(reader, tokens).ToList();
+                        model.ObjectData.AddRange(nodes);
                     }
                     if (line.Contains(ELEMENTS_BLOCK))
                     {
@@ -49,6 +49,7 @@ namespace Model.ModelParcer
                     }
                 }
             }
+            allNodes.Clear();
             return model;
         }
 
@@ -94,6 +95,7 @@ namespace Model.ModelParcer
                 }
                 var point = new Point3D(coordinates[0], coordinates[1], coordinates[2]);
                 var node = new Node(nodeNumber, point);
+                allNodes.Add(nodeNumber, node);
                 yield return node;
             }
         }
@@ -101,19 +103,14 @@ namespace Model.ModelParcer
         /// <summary>
         /// Определяет форму элемента по числу узлов
         /// </summary>
-        private ModelObject GetElement(int[] elementNodes)
+        private ModelObject GetElement(int[] elementNodes, int elementNumber)
         {
-            var nodes = new Node[elementNodes.Length];
-            var currentNumber = model.ObjectData.GetLastObjNumber() + 1;
-            for (var i = 0; i < elementNodes.Length; i++)
-            {
-                nodes[i] = model.ObjectData.Find(allNodes, elementNodes[i]);
-            }
+            var nodes = elementNodes.Select(i => allNodes[i]).ToArray();
             switch (elementNodes.Length)
             {
-                case 4: return new Element3D(currentNumber, nodes, ObjKind.Tetra);
-                case 6: return new Element3D(currentNumber, nodes, ObjKind.Penta);
-                case 8: return new Element3D(currentNumber, nodes, ObjKind.Hexa);
+                case 4: return new Element3D(elementNumber, nodes, ObjKind.Tetra);
+                case 6: return new Element3D(elementNumber, nodes, ObjKind.Penta);
+                case 8: return new Element3D(elementNumber, nodes, ObjKind.Hexa);
                 default: throw new Exception($"Unable to recognize element with {elementNodes.Length} nodes");
             }
         }
@@ -133,6 +130,7 @@ namespace Model.ModelParcer
                     .Select(int.Parse)
                     .ToList();
                 var nodesCount = fields[8];
+                var elementNumber = fields[10];
                 if (OFFSET_TO_READ_NODES + nodesCount > maxFieldsInLine)
                 {
                     var nextLineFields = reader.ReadLine().Split()
@@ -141,7 +139,7 @@ namespace Model.ModelParcer
                     fields.AddRange(nextLineFields);
                 }
                 var elementNodes = fields.Skip(OFFSET_TO_READ_NODES).Distinct().ToArray();
-                var element = GetElement(elementNodes);
+                var element = GetElement(elementNodes, elementNumber);
                 yield return element;
             }
         }

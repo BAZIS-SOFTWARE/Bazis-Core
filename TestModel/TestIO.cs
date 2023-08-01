@@ -90,6 +90,18 @@ namespace TestModel
         }
 
         [TestMethod]
+        public void SaveToASCII_ShouldBeEquivalentSourceFile()
+        {
+            var loader = new LoadModelFromASCIITextFile();
+            loader.LoadEvent += (ar1, ar2) => { };
+            var modelBeforeSaving = loader.Load(@"..\..\Examples\VIsual-Mesh\DATA3.ASC");
+            var saver = new SaveModelToASCIITextFile();
+            saver.Save(modelBeforeSaving, @"..\..\Examples\VIsual-Mesh\result.ASC");
+            var modelAfterSaving = loader.Load(@"..\..\Examples\VIsual-Mesh\result.ASC");
+            Assert.IsTrue(modelBeforeSaving.ObjectData.Count == modelAfterSaving.ObjectData.Count);
+        }
+
+        [TestMethod]
         public void ImportHexFromCDBTextFormat()
         {
             string path = @"..\..\Examples\CDB\hex.cdb";

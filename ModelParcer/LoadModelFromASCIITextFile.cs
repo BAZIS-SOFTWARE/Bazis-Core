@@ -47,6 +47,8 @@ namespace Model.ModelParcer
                     }
                 }
             }
+            allNodes.Clear();
+            elementIndexToObjectType.Clear();
             return model;
         }
 
