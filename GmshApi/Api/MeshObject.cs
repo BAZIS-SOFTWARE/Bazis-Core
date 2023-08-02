@@ -1,4 +1,5 @@
-﻿using Model;
+﻿using GmshApi.Api;
+using Model;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -175,5 +176,10 @@ namespace GmshApi
         }
 
         private void SetCurrent() => GmshWrapperModel.ModelSetCurrent(id.ToString());
+
+        public IMeshQuality QualityAnalyse()
+        {
+            return new MeshQuality();
+        }
     }
 }

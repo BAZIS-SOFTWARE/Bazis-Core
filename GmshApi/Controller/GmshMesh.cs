@@ -145,5 +145,13 @@ namespace GmshApi
         /// <param name="ierr">[Out]Флаг ошибок</param>
         [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void gmshModelMeshClear(int[] dimTags, IntPtr dimTags_n, ref int ierr);
+
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelMeshGetElementQualities(IntPtr[] elementTags, IntPtr elementTags_n,
+            ref IntPtr elementsQuality, ref IntPtr elementQuality_n,
+            string qualityName,
+            int task,
+            int numTasks,
+            ref int ierr);
     }
 }

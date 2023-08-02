@@ -97,6 +97,7 @@
     <Compile Include="GmshTests\GmshWrapperGeometryTests.cs" />
     <Compile Include="GmshTests\GmshWrapperMeshTests.cs" />
     <Compile Include="GmshTests\GmshWrapperModelTests.cs" />
+    <Compile Include="GmshTests\MeshQualityTests.cs" />
     <Compile Include="SearchModelObjects.cs" />
     <Compile Include="TestAlphaColor.cs" />
     <Compile Include="TestCalcDistance.cs" />

@@ -1,4 +1,5 @@
-﻿using Model;
+﻿using GmshApi.Api;
+using Model;
 using System.Collections.Generic;
 
 namespace GmshApi
@@ -69,5 +70,7 @@ namespace GmshApi
         void SetMeshPointsOnCurve(int number, TransfiniteAlgorithm algorithm, double parameter, int curve);
 
         void SaveMesh(string fileName);
+
+        IMeshQuality QualityAnalyse();
     }
 }

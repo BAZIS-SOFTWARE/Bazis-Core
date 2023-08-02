@@ -3,6 +3,8 @@ using Model.Interfaces;
 using Model;
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using System.Linq;
 
 namespace GmshApi
 {
@@ -266,6 +268,35 @@ namespace GmshApi
             var ierr = 0;
             GmshMesh.gmshModelMeshClear(dimTags, (IntPtr)dimTags.Length ,ref ierr);
             return ierr == 0;
+        }
+
+        public static double[] GetElementQualities(string qualityName)
+        {
+            int error = 0;
+            GetElements(-1, -1, out ElementInfo[] elementInfo, out long[][] elementTags, out long[][] nodeTags);
+            IntPtr elementsQuality_n = IntPtr.Zero, elementsQuality = IntPtr.Zero;
+            var pointers = GetPointerToElementTags(elementTags);
+            GmshMesh.gmshModelMeshGetElementQualities(
+                pointers, 
+                (IntPtr)pointers.Length,
+                ref elementsQuality, 
+                ref elementsQuality_n,
+                qualityName, 0, 1, ref error);
+            GmshWrapperMemory.GetTypesData(elementsQuality, out double[] result, elementsQuality_n);
+            return result;
+        }
+
+        private static IntPtr[] GetPointerToElementTags(long[][] elementTags)
+        {
+            var result = new List<IntPtr>();
+            for(int i = 0; i < elementTags.GetLength(0) - 1; i++)
+            {
+                foreach(var tag in elementTags[i])
+                {
+                    result.Add((IntPtr)tag);
+                }
+            }
+            return result.ToArray();
         }
 
         private static Dictionary<long, Node> LocalCoordinatesToNodes(long[] nodesTags, double[] coords)

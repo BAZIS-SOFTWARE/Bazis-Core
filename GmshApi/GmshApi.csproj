@@ -56,7 +56,9 @@
     <Compile Include="Api\GeometryObject.cs" />
     <Compile Include="Api\IGeometryApi.cs" />
     <Compile Include="Api\IMeshApi.cs" />
+    <Compile Include="Api\IMeshQuality.cs" />
     <Compile Include="Api\MeshObject.cs" />
+    <Compile Include="Api\MeshQuality.cs" />
     <Compile Include="Api\TransfiniteAlgorithm.cs" />
     <Compile Include="Api\Triangulation2DAlgorithm.cs" />
     <Compile Include="Api\Triangulation3DAlgorithm.cs" />
