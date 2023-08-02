@@ -150,8 +150,8 @@ namespace GmshApi
         public static extern void gmshModelMeshGetElementQualities(IntPtr[] elementTags, IntPtr elementTags_n,
             ref IntPtr elementsQuality, ref IntPtr elementQuality_n,
             string qualityName,
-            int task,
-            int numTasks,
+            IntPtr task,
+            IntPtr numTasks,
             ref int ierr);
     }
 }

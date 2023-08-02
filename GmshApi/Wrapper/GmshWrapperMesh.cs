@@ -281,7 +281,9 @@ namespace GmshApi
                 (IntPtr)pointers.Length,
                 ref elementsQuality, 
                 ref elementsQuality_n,
-                qualityName, 0, 1, ref error);
+                qualityName, (IntPtr)0, (IntPtr)1, ref error);
+            if (error == 1)
+                throw new InvalidOperationException();
             GmshWrapperMemory.GetTypesData(elementsQuality, out double[] result, elementsQuality_n);
             return result;
         }
@@ -289,9 +291,9 @@ namespace GmshApi
         private static IntPtr[] GetPointerToElementTags(long[][] elementTags)
         {
             var result = new List<IntPtr>();
-            for(int i = 0; i < elementTags.GetLength(0) - 1; i++)
+            foreach(var tags in elementTags.Skip(2).Take(1))
             {
-                foreach(var tag in elementTags[i])
+                foreach(var tag in tags)
                 {
                     result.Add((IntPtr)tag);
                 }

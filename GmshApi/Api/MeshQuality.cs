@@ -10,17 +10,17 @@ namespace GmshApi.Api
     {
         public double[] GetInvertedConditionNumber()
         {
-            throw new NotImplementedException();
+            return GmshWrapperMesh.GetElementQualities("minSICN");
         }
 
         public double[] GetInvertedGradientError()
         {
-            throw new NotImplementedException();
+            return GmshWrapperMesh.GetElementQualities("minSIGE");
         }
 
-        public double[] GetMinJacobianValues()
-        {
-            return GmshWrapperMesh.GetElementQualities("minDetJac");
-        }
+        //public double[] GetMinJacobianValues()
+        //{
+        //    return GmshWrapperMesh.GetElementQualities("maxDetJac");
+        //}
     }
 }
