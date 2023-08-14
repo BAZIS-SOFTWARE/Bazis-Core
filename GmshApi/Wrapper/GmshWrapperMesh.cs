@@ -333,6 +333,35 @@ namespace GmshApi
             return ierr == 0;
         }
 
+        private static IntPtr[] GetPointerToElementTags(long[][] elementTags)
+        {
+            var result = new List<IntPtr>();
+            for (int i = 0; i < elementTags.GetLength(0) - 1; i++)
+            {
+                foreach (var tag in elementTags[i])
+                {
+                    result.Add((IntPtr)tag);
+                }
+            }
+            return result.ToArray();
+        }
+
+        public static double[] GetElementQualities(string qualityName)
+        {
+            int error = 0;
+            GetElementTags(-1, -1, out ElementInfo[] elementInfo, out long[][] elementTags, out long[][] nodeTags);
+            IntPtr elementsQuality_n = IntPtr.Zero, elementsQuality = IntPtr.Zero;
+            var pointers = GetPointerToElementTags(elementTags);
+            GmshMesh.gmshModelMeshGetElementQualities(
+                pointers,
+                (IntPtr)1,
+                ref elementsQuality,
+                ref elementsQuality_n,
+                qualityName, (IntPtr)2, (IntPtr)1, ref error);
+            GmshWrapperMemory.GetTypesData(elementsQuality, out double[] result, elementsQuality_n);
+            return result;
+        }
+
         private static Dictionary<long, Node> LocalCoordinatesToNodes(long[] nodesTags, double[] coords)
         {
             var dict = new Dictionary<long, Node>();

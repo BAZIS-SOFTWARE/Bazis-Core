@@ -46,6 +46,18 @@ namespace TestModel.GmshTests
                 Assert.IsTrue(nodesAfter.Count() > nodesUntil.Count());
             }
         }
+        [DataTestMethod]
+        [DataRow("Cilindr.step")]
+        public void GetQualityTest(string fileName)
+        {
+            using (var geometry = new GeometryObject(modelFolder + fileName))
+            {
+                var mesh = geometry.Generate(3);
+                //GmshWrapperMesh.GetElementQualities("minDetJac");
+            }
+        }
+
+
 
         [DataTestMethod]
         [DataRow("Cilindr.step")]
@@ -231,6 +243,22 @@ namespace TestModel.GmshTests
                 Assert.AreEqual(true, lengthBefore > lengthAfter);
             }
         }
+        [DataTestMethod]
+        [DataRow("Cilindr.step")]
+        public void DeleteAllSurfaces(string fileName)
+        {
+            using (var geometry = new GeometryObject(modelFolder + fileName))
+            {
+                var mesh = geometry.Generate(2);
+                mesh.RemoveSurfaceById(1);
+                mesh.RemoveSurfaceById(2);
+                mesh.RemoveSurfaceById(3);
+                mesh.RemoveSurfaceById(4);
+                Assert.IsTrue(mesh.GetElement2D().ToArray().Length == 0);
+            }
+        }
+
+
         [DataTestMethod]
         [DataRow("Cilindr.step", new int[] { 206, 261, 251, 265, 210, 213 })]
         public void DeleteMeshElementsTest(string fileName, int[] elTags)

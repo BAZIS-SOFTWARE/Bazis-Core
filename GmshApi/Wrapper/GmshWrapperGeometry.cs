@@ -317,6 +317,49 @@ namespace GmshApi
             RemoveEntities(new int[] { dim, tag }, false);
         }
         /// <summary>
+        /// Установить аттрибуту значения
+        /// </summary>
+        /// <param name="name">[In]Имя аттрибута</param>
+        /// <param name="values">[In]Значения</param>
+        /// <param name="values_n">[In]Количество</param>
+        public static void SetAttribute(string name, string[] values, int values_n)
+        {
+            var ierr = 0;
+            GmshGeometry.gmshModelSetAttribute(name, values, (IntPtr)values_n,ref ierr);
+        }
+        /// <summary>
+        /// Получает аттрибуты по имени
+        /// </summary>
+        /// <param name="name">[In]Имя аттрибута</param>
+        /// <returns>Значения аттрибутов</returns>
+        public static string[] GetAttribute(string name)
+        {
+            var ierr = 0;
+            IntPtr values = IntPtr.Zero, values_n = IntPtr.Zero;    
+            GmshGeometry.gmshModelGetAttribute(name, ref values, ref values_n ,ref ierr);
+            return GmshWrapperMemory.GetArrayOfNames(values, values_n);
+        }
+        /// <summary>
+        /// Возвращает список всех аттрибутов
+        /// </summary>
+        /// <returns>Список аттрибутов</returns>
+        public static string[] GetAttributeNames()
+        {
+            var ierr = 0;
+            IntPtr names = IntPtr.Zero, names_n = IntPtr.Zero;
+            GmshGeometry.gmshModelGetAttributeNames(ref names, ref names_n, ref ierr);
+            return GmshWrapperMemory.GetArrayOfNames(names, names_n);
+        }
+        /// <summary>
+        /// Удалить аттрибут с именем name
+        /// </summary>
+        /// <param name="name">[In]Имя аттрибута</param>
+        public static void RemoveAttribute(string name)
+        {
+            var ierr = 0;
+            GmshGeometry.gmshModelRemoveAttribute(name, ref ierr);
+        }
+        /// <summary>
         /// Получает сущности конкретного ModelObject
         /// </summary>
         /// <typeparam name="T">[In]Тип ModelObject</typeparam>

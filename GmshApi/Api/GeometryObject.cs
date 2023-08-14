@@ -1,6 +1,7 @@
 ﻿using Model;
 using System.Collections.Generic;
 using System;
+using GmshApi.Api;
 
 namespace GmshApi
 {  
@@ -10,6 +11,7 @@ namespace GmshApi
     public class GeometryObject : IGeometryApi, IDisposable
     {
         private static List<ulong> idList = new List<ulong>();
+        private List<MeshField> fieldList = new List<MeshField>();
         private ulong id;
         /// <summary>
         /// Возращает\задает уникальный идентификатор
@@ -148,11 +150,44 @@ namespace GmshApi
             SetCurrent();
             return GmshWrapperGeometry.GetEntities(dim);
         }
-
+        /// <summary>
+        /// Синхронизирует модель с GmshApi
+        /// </summary>
         public void Synchronize()
         {
             SetCurrent();
             GmshWrapperModel.Synchronize();
+        }
+        /// <summary>
+        /// Добавляет поле в список
+        /// </summary>
+        /// <param name="field"></param>
+        public void AddField(MeshField field)
+        {
+            SetCurrent();
+            if(fieldList.Contains(field))
+                fieldList.Add(field);
+        }
+        /// <summary>
+        /// Удаляет поле из списка
+        /// </summary>
+        /// <param name="id"></param>
+        public void RemoveField(int id)
+        {
+            SetCurrent();
+            var field = fieldList.Find(v => v.Tag == id);
+            field?.Dispose();
+            fieldList.Remove(field);
+        }
+        /// <summary>
+        /// Удаляет поле из списка
+        /// </summary>
+        /// <param name="field"></param>
+        public void RemoveField(MeshField field)
+        {
+            SetCurrent();
+            field?.Dispose();
+            fieldList.Remove(field);
         }
 
         /// <summary>
@@ -161,6 +196,7 @@ namespace GmshApi
         virtual public void Dispose()
         {
             SetCurrent();
+            fieldList.ForEach(v => v.Dispose());
             idList.Remove(Id);
             GmshWrapperModel.ModelRemoveByName(Id.ToString());
         }

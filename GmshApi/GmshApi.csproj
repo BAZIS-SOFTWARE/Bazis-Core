@@ -54,6 +54,10 @@
     <Compile Include="Api\GeometryObject.cs" />
     <Compile Include="Api\IGeometryApi.cs" />
     <Compile Include="Api\IMeshApi.cs" />
+    <Compile Include="Api\IMeshField.cs" />
+    <Compile Include="Api\MeshField.cs" />
+    <Compile Include="Api\MeshFieldOption.cs" />
+    <Compile Include="Api\MeshFieldType.cs" />
     <Compile Include="Api\MeshObject.cs" />
     <Compile Include="Api\TransfiniteAlgorithm.cs" />
     <Compile Include="Api\Triangulation2DAlgorithm.cs" />
@@ -72,6 +76,7 @@
     <Compile Include="Wrapper\GmshWrapperIO.cs" />
     <Compile Include="Wrapper\GmshWrapperMemory.cs" />
     <Compile Include="Wrapper\GmshWrapperMesh.cs" />
+    <Compile Include="Wrapper\GmshWrapperMeshField.cs" />
     <Compile Include="Wrapper\GmshWrapperModel.cs" />
   </ItemGroup>
   <ItemGroup>

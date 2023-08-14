@@ -310,5 +310,38 @@ namespace GmshApi
         [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void gmshModelSetVisibility(int[] dimTags, IntPtr dimTags_n, int value,
                                                          int recursive, ref int ierr);
+        /// <summary>
+        /// Добавляет аттрибут name и значениями values
+        /// </summary>
+        /// <param name="name">[In]Имя аттрибута</param>
+        /// <param name="values">[In]Значения аттрибута</param>
+        /// <param name="values_n">[In]Количество значений</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelSetAttribute(String name, String[] values, IntPtr values_n, ref int ierr);
+        /// <summary>
+        /// Получить значения аттрибутов с именем name
+        /// </summary>
+        /// <param name="name">[In]Имя аттрибута</param>
+        /// <param name="values">[Out]Значения аттрибута</param>
+        /// <param name="values_n">[Out]Количество значений</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelGetAttribute(String name, ref IntPtr values, ref IntPtr values_n, ref int ierr);
+        /// <summary>
+        /// Получить список всех имен аттрибутов
+        /// </summary>
+        /// <param name="names">[In]Имена аттрибутов</param>
+        /// <param name="names_n">[In]Количество аттрибутов</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelGetAttributeNames(ref IntPtr names, ref IntPtr names_n, ref int ierr);
+        /// <summary>
+        /// Удалить аттрибут с именем name
+        /// </summary>
+        /// <param name="name">[In]Имя аттрибута</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelRemoveAttribute(String name,ref int ierr);
     }
 }
