@@ -12,11 +12,10 @@ namespace GmshApi
         /// </summary>
         /// <param name="name">[In]Строка в формате доступа к полю категории опций</param>
         /// <param name="value">[In]Значение поля категории</param>
-        public static bool OptionSetNumber(String name, double value)
+        public static void OptionSetNumber(String name, double value)
         {
             var ierr = 0;
             GmshGeneral.gmshOptionSetNumber(name, value, ref ierr);
-            return ierr == 0;
         }
         /// <summary>
         /// Возвращает значение из поля категории опций
@@ -50,6 +49,11 @@ namespace GmshApi
             var rand = new Random();
             var value = rand.NextDouble();
             return Convert.ToUInt64(value * dif);
+        }
+
+        public static void WriteToFile(string fileName)
+        {
+            GmshGeneral.gmshWrite(fileName);
         }
     }
 }
