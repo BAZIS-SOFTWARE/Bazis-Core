@@ -3,11 +3,22 @@ using Model.Interfaces;
 using Model;
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Linq;
 
 namespace GmshApi
 {
+    public enum Dimension
+    { 
+        All = -1,
+        ControlPoints = 0,
+        Node = 0,
+        Curves = 1,
+        Elements1D = 1,
+        Surfaces = 2,
+        Elements2D = 2,
+        Volumes = 3
+    }
+
+
     /// <summary>
     /// Класс содержит информацию о типе извлечнного узла
     /// </summary>
@@ -54,9 +65,19 @@ namespace GmshApi
         public static void Generate(int dim)
         {
             var ierr = 0;
+            GmshMesh.gmshModelMeshGenerate(dim, ref ierr);
+        }
+        /// <summary>
+        /// Перегенирировать сетку
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        public static void Remesh(int dim)
+        {
+            var ierr = 0;
             GmshMesh.gmshModelMeshGenerate(1, ref ierr);
             GmshMesh.gmshModelMeshGenerate(dim, ref ierr);
         }
+
         /// <summary>
         /// Переводит большую часть сетки в четырехугольники
         /// </summary>
@@ -106,7 +127,7 @@ namespace GmshApi
         /// <param name="elemsTags">[Out]Массив elementTags для заполнения</param>
         /// <param name="nodesTags">[Out]Массив elementTags для заполнения</param>
         /// <returns>true если элементы были найдены</returns>
-        public static bool GetElements(int dim, int tag, out ElementInfo[] elemInfo,
+        public static bool GetElementTags(int dim, int tag, out ElementInfo[] elemInfo,
                                        out long[][] elemsTags, out long[][] nodesTags)
         {
             var ierr = 0;
@@ -162,6 +183,13 @@ namespace GmshApi
             }
             return ierr == 0;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dim"></param>
+        /// <param name="tag"></param>
+        /// <param name="includeBoundary"></param>
+        /// <returns></returns>
         public static IEnumerable<Node> GetNodes(int dim = -1, int tag = -1, bool includeBoundary = false)
         {
             long[] nodeTags;
@@ -174,23 +202,40 @@ namespace GmshApi
                 list.Add(new Node((int)nodeTags[i], points[i]));
             return list;
         }
+        /// <summary>
+        /// Перестроить кэш точек
+        /// </summary>
+        public static void RebuildNodeCache()
+        {
+            var ierr = 0;
+            GmshMesh.gmshModelMeshRebuildNodeCache(1, ref ierr);
+        }
+
+        /// <summary>
+        /// Перестроить кэш элементов
+        /// </summary>
+        public static void RebuildElementCache()
+        {
+            var ierr = 0;
+            GmshMesh.gmshModelMeshRebuildElementCache(1, ref ierr);
+        }
 
         /// <summary>
         /// Находит элементы сетки по переданной координате x,y,z
         /// </summary>
-        /// <param name="dim">[In]Размерность</param>
+        /// <param name="id">[In]Размерность</param>
         /// <param name="x">[In]Координата x</param>
         /// <param name="y">[In]Координата y</param>
         /// <param name="z">[In]Координата z</param>
         /// <param name="strict">[In]Выполнять строгий поиск?</param>
-        public static int[] GetElementsByCoordinates(int dim, double x, double y, double z, bool strict = false)
+        public static int[] GetElementsByCoordinates(int dimension, double x, double y, double z, bool strict = false)
         {
             var ierr = 0;
             var strictInt = Convert.ToInt32(strict);
             IntPtr elementTags, elementTags_n;
             elementTags = elementTags_n = IntPtr.Zero;
             GmshMesh.gmshModelMeshGetElementsByCoordinates(x, y, z, ref elementTags, ref elementTags_n,
-                                                           dim, strictInt, ref ierr);
+                                                           dimension, strictInt, ref ierr);
             int[] tags;
             GmshWrapperMemory.GetTypesData<int>(elementTags, out tags, elementTags_n);
             return tags;
@@ -216,20 +261,19 @@ namespace GmshApi
         /// <summary>
         /// Возвращает набор элементов по указанным dim:tag
         /// </summary>
-        /// <param name="dim">[In]Размерность для получения элементов, или -1 для получения всех элементов</param>
+        /// <param name="dimension">[In]Размерность для получения элементов, или -1 для получения всех элементов</param>
         /// <param name="tag">[In]Идентифкатор элемента или -1 для получения всех элементов в пределах dim</param>
         /// <returns>Список элементов или пустой список если элементы не найдены</returns>
-        public static IEnumerable<ModelObject> GetElements(int dim, int tag)
+        public static List<ModelObject> GetElements(int dimension, int tag)
         {
             ElementInfo[] info;
             long[][] elemTags, nodeTags;
             long[] nodesT;
             double[] local, parametric;
             var list = new List<ModelObject>();
-            if (GetElements(dim, tag, out info, out elemTags, out nodeTags))
+            if (GetElementTags(dimension, tag, out info, out elemTags, out nodeTags))
             {
-                GetNodes(dim, tag, out nodesT, out local, out parametric);
-                var points3D = GmshWrapperModel.ConvertLocalCoordsToPoints3D(local);
+                GetNodes(dimension, tag, out nodesT, out local, out parametric);
                 var nodes = LocalCoordinatesToNodes(nodesT, local);
                 for (int i = 0; i < info.Length; ++i)
                 {
@@ -240,7 +284,7 @@ namespace GmshApi
                         var nodesPerElem = new Node[nodesCount];
                         for (int k = 0; k < info[i].numNodes; ++k)
                             nodesPerElem[k] = nodes[nodeTags[i][j * nodesCount + k]];
-                        CreateModelObject(list, ref info[i].elementName, elements[j], nodesPerElem);
+                        list.Add(CreateModelObject(ref info[i].elementName, elements[j], nodesPerElem));
                     }
                 }
             }
@@ -270,35 +314,65 @@ namespace GmshApi
             return ierr == 0;
         }
 
-        public static double[] GetElementQualities(string qualityName)
+        /// <summary>
+        /// Удаляет элементы сетки по указанным идентификаторам
+        /// </summary>
+        /// <param name="elementsTags">[In]Идентификаторы элементов</param>
+        /// <returns></returns>
+        public static bool DeleteMeshElements(int[] elementsTags)
         {
-            int error = 0;
-            GetElements(-1, -1, out ElementInfo[] elementInfo, out long[][] elementTags, out long[][] nodeTags);
-            IntPtr elementsQuality_n = IntPtr.Zero, elementsQuality = IntPtr.Zero;
-            var pointers = GetPointerToElementTags(elementTags);
-            GmshMesh.gmshModelMeshGetElementQualities(
-                pointers, 
-                (IntPtr)pointers.Length,
-                ref elementsQuality, 
-                ref elementsQuality_n,
-                qualityName, (IntPtr)0, (IntPtr)1, ref error);
-            if (error == 1)
-                throw new InvalidOperationException();
-            GmshWrapperMemory.GetTypesData(elementsQuality, out double[] result, elementsQuality_n);
-            return result;
+            var ierr = 0;
+            var elements = new IntPtr[elementsTags.Length];
+            for (var i = 0; i < elementsTags.Length; ++i)
+                elements[i] = new IntPtr(elementsTags[i]);
+            GmshMesh.gmshModelMeshSetVisibility(elements, (IntPtr)elements.Length, 0, ref ierr);
+            if (ierr == 0)
+            {
+                GmshPlugin.gmshPluginSetNumber("Invisible", "DeleteElements", 1, ref ierr);
+                GmshPlugin.gmshPluginRun("Invisible", ref ierr);
+            }
+            return ierr == 0;
+        }
+        /// <summary>
+        /// Устанавливает алгоритм триангуляции сетки
+        /// </summary>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="value">[In]Численное значение поля алгоритма</param>
+        /// <returns>Флаг ошибки</returns>
+        public static bool MeshSetAlgorithm(int tag, int value)
+        {
+            var ierr = 0;
+            GmshMesh.gmshModelMeshSetAlgorithm(2, tag, value, ref ierr);
+            return ierr == 0;
         }
 
         private static IntPtr[] GetPointerToElementTags(long[][] elementTags)
         {
             var result = new List<IntPtr>();
-            foreach(var tags in elementTags.Skip(2).Take(1))
+            for (int i = 0; i < elementTags.GetLength(0) - 1; i++)
             {
-                foreach(var tag in tags)
+                foreach (var tag in elementTags[i])
                 {
                     result.Add((IntPtr)tag);
                 }
             }
             return result.ToArray();
+        }
+
+        public static double[] GetElementQualities(string qualityName)
+        {
+            int error = 0;
+            GetElementTags(-1, -1, out ElementInfo[] elementInfo, out long[][] elementTags, out long[][] nodeTags);
+            IntPtr elementsQuality_n = IntPtr.Zero, elementsQuality = IntPtr.Zero;
+            var pointers = GetPointerToElementTags(elementTags);
+            GmshMesh.gmshModelMeshGetElementQualities(
+                pointers,
+                (IntPtr)1,
+                ref elementsQuality,
+                ref elementsQuality_n,
+                qualityName, (IntPtr)2, (IntPtr)1, ref error);
+            GmshWrapperMemory.GetTypesData(elementsQuality, out double[] result, elementsQuality_n);
+            return result;
         }
 
         private static Dictionary<long, Node> LocalCoordinatesToNodes(long[] nodesTags, double[] coords)
@@ -313,65 +387,23 @@ namespace GmshApi
             return dict;
         }
 
-        private static void CreateControlPoint(List<ModelObject> list, long elementId, Node[] nodes)
-        {
-            list.Add( new Node((int)elementId, nodes[0].Position));
-        }
-
-        private static void CreateLine(List<ModelObject> list, long elementId, Node[] nodes)
-        {
-            list.Add( new Element1D((int)elementId, nodes, ObjKind.Beam));
-        }
-
-        private static void CreateTriangle(List<ModelObject> list, long elementId, Node[] nodes)
-        { 
-            list.Add(new Element2D((int)elementId, nodes, ObjKind.Triangle));
-        }
-
-        private static void CreateQuad(List<ModelObject> list, long elementId, Node[] nodes)
-        {
-            list.Add(new Element2D((int)elementId, nodes, ObjKind.Quad));
-        }
-
-        private static void CreateTetrahedron(List<ModelObject> list, long elementId, Node[] nodes)
-        {
-            list.Add(new Element3D((int)elementId, nodes, ObjKind.Tetra));
-        }
-
-        private static void CreateHexahedron(List<ModelObject> list, long elementId, Node[] nodes)
-        {
-            list.Add( new Element3D((int)elementId, nodes, ObjKind.Hexa));
-        }
-
-        private static void CreatePrism(List<ModelObject> list, long elementId, Node[] nodes)
-        {
-            list.Add( new Element3D((int)elementId, nodes, ObjKind.Penta));
-        }
-
-        private static void CreatePyramid(List<ModelObject> list, long elementId, Node[] nodes)
-        {
-            list.Add( new Element3D((int)elementId, nodes, ObjKind.Penta));///Нет Obj.Kind Pyramid
-        }
-
-        private static void CreateModelObject(List<ModelObject> list ,ref string elementName, 
+        private static ModelObject CreateModelObject(ref string elementName, 
                                                   long elementId, Node[] nodes)
         {
-            if(elementName.Contains("Point"))
-                CreateControlPoint(list, elementId, nodes);
+            if (elementName.Contains("Point"))
+                return new Node((int)elementId, nodes[0].Position);
             else if (elementName.Contains("Line"))
-                CreateLine(list, elementId, nodes);
+                return new Element1D((int)elementId, nodes, ObjKind.Beam);
             else if (elementName.Contains("Triangle"))
-                CreateTriangle(list, elementId, nodes);
-            else if(elementName.Contains("Quadrilateral"))
-                CreateQuad(list, elementId, nodes);
-            else if(elementName.Contains("Tetrahedron"))
-                CreateTetrahedron(list, elementId, nodes);
+                return new Element2D((int)elementId, nodes, ObjKind.Triangle);
+            else if (elementName.Contains("Quadrilateral"))
+                return new Element2D((int)elementId, nodes, ObjKind.Quad);
+            else if (elementName.Contains("Tetrahedron"))
+                return new Element3D((int)elementId, nodes, ObjKind.Tetra);
             else if (elementName.Contains("Hexahedron"))
-                CreateHexahedron(list, elementId, nodes);
-            else if (elementName.Contains("Prism"))
-                CreatePrism(list, elementId, nodes);
+                return new Element3D((int)elementId, nodes, ObjKind.Hexa);
             else
-                CreatePyramid(list, elementId, nodes);
+                return new Element3D((int)elementId, nodes, ObjKind.Penta);
         }
     }
 }

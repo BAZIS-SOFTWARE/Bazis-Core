@@ -17,7 +17,7 @@ namespace GmshApi
         /// </summary>
         /// <param name="dim">[In]Размерность</param>
         /// <returns>массив сущностей</returns>
-        public static int[] GetEntities(int dim)
+        public static int[] GetEntitiesTags(int dim)
         {
             var ierr = 0;
             IntPtr dimTags, dimTags_n;
@@ -280,41 +280,114 @@ namespace GmshApi
         /// <param name="dimTags">[In]Пары dim:tag</param>
         /// <param name="recursive">[In]Флаг рекурсивного удаления</param>
         /// <returns>Флаг успеха</returns>
-        public static bool RemoveEntities(int[] dimTags, bool recursive = true)
+        public static void RemoveEntities(int[] dimTags, bool recursive = true)
         {
             var ierr = 0;
             var recFlag = Convert.ToInt32(recursive);
             var extension = GmshWrapperIO.ModelGetFileNameExtension();
             if (extension.Contains("stp") || extension.Contains("step") ||
                 extension.Contains("brep") || extension.Contains("igs"))
-            {
                 GmshGeometry.gmshModelOccRemove(dimTags, (IntPtr)dimTags.Length, recFlag, ref ierr);
-                GmshGeometry.gmshModelOccSynchronize(ref ierr);
-            }
             else
                 GmshGeometry.gmshModelRemoveEntities(dimTags, (IntPtr)dimTags.Length, recFlag, ref ierr);
-            return ierr == 0;
+            //GmshWrapperModel.Synchronize();
         }
-
-
+        /// <summary>
+        /// Удаление верхних сущностей рекурсивно
+        /// </summary>
+        /// <param name="dimTags">[In]Пары dim:tag</param>
+        /// <param name="recursive">[In]Флаг рекурсии</param>
+        public static void RemoveEntitiesEx(int[] dimTags, bool recursive = true)
+        {
+            for (var i = 1; i < dimTags.Length; i += 2)
+            {
+                GetUpAdjacenciesRecursive( dimTags[i - 1], dimTags[i]);
+                RemoveEntities(new int[] { dimTags[i - 1], dimTags[i] }, recursive);
+            }
+        }
+        /// <summary>
+        /// Удаляет верхние граничные зависимости от текущей пары dim:tag
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        public static void GetUpAdjacenciesRecursive(int dim, int tag)
+        {
+            var tags = GetAdjacencies(dim, tag)[1];
+            for (var i = 0; i < tags.Length; ++i)
+                GetUpAdjacenciesRecursive(dim + 1, tags[i]);
+            RemoveEntities(new int[] { dim, tag }, false);
+        }
+        /// <summary>
+        /// Установить аттрибуту значения
+        /// </summary>
+        /// <param name="name">[In]Имя аттрибута</param>
+        /// <param name="values">[In]Значения</param>
+        /// <param name="values_n">[In]Количество</param>
+        public static void SetAttribute(string name, string[] values, int values_n)
+        {
+            var ierr = 0;
+            GmshGeometry.gmshModelSetAttribute(name, values, (IntPtr)values_n,ref ierr);
+        }
+        /// <summary>
+        /// Получает аттрибуты по имени
+        /// </summary>
+        /// <param name="name">[In]Имя аттрибута</param>
+        /// <returns>Значения аттрибутов</returns>
+        public static string[] GetAttribute(string name)
+        {
+            var ierr = 0;
+            IntPtr values = IntPtr.Zero, values_n = IntPtr.Zero;    
+            GmshGeometry.gmshModelGetAttribute(name, ref values, ref values_n ,ref ierr);
+            return GmshWrapperMemory.GetArrayOfNames(values, values_n);
+        }
+        /// <summary>
+        /// Возвращает список всех аттрибутов
+        /// </summary>
+        /// <returns>Список аттрибутов</returns>
+        public static string[] GetAttributeNames()
+        {
+            var ierr = 0;
+            IntPtr names = IntPtr.Zero, names_n = IntPtr.Zero;
+            GmshGeometry.gmshModelGetAttributeNames(ref names, ref names_n, ref ierr);
+            return GmshWrapperMemory.GetArrayOfNames(names, names_n);
+        }
+        /// <summary>
+        /// Удалить аттрибут с именем name
+        /// </summary>
+        /// <param name="name">[In]Имя аттрибута</param>
+        public static void RemoveAttribute(string name)
+        {
+            var ierr = 0;
+            GmshGeometry.gmshModelRemoveAttribute(name, ref ierr);
+        }
         /// <summary>
         /// Получает сущности конкретного ModelObject
         /// </summary>
-        /// <typeparam name="T">[In]Тип ModelObject</typeparam>
         /// <param name="dimension">[In]Размерность</param>
-        /// <param name="fillFun">[In]Метод для заполнения списка</param>
+        /// <param name="kind">[In]Тип объекта</param>
         /// <returns></returns>
-        public static IEnumerable<T> GetEntities<T>(int dimension, Action<List<T>, int, Node[]> fillFun) where T : ModelObject
+        public static List<ModelObject> GetEntities(ObjKind kind)
         {
-            var tags = GetEntities(dimension).Where((v, i) => (i & 1) == 1).ToArray();
-            var entities = new List<T>();
-            if (dimension == 0)
-                CreateControlPoints(dimension, tags, entities, fillFun); // непонятно зачем нам контрольные точки?
-            if (dimension == 1)
-                CreateLines(dimension, tags, entities, fillFun);
+            int[] tags;
+            var entities = new List<ModelObject>();
+
+            switch(kind)
+            {
+                case ObjKind.Point:
+                    tags = GetEntitiesTags(0).Where((v, i) => (i & 1) == 1).ToArray();
+                    entities = CreateControlPoints(tags);
+                    break;
+                case ObjKind.Curve:
+                case ObjKind.Beam:
+                    tags = GetEntitiesTags(1).Where((v, i) => (i & 1) == 1).ToArray();
+                    entities = CreateLines(tags, kind);
+                    break;
+
+            }
+ 
             return entities;
         }
-        /// <summary>
+        /*/// <summary>
         /// Создает контрольную точку заполняя список
         /// </summary>
         /// <param name="list">[In]Список</param>
@@ -335,10 +408,10 @@ namespace GmshApi
         /// <param name="id">[In]Идентификатор сущности</param>
         /// <param name="nodes">[In]Узлы для сущности</param>
         public static void CreateElement1D(List<Element1D> list, int id, Node[] nodes) => list.Add(new Element1D(id, nodes, ObjKind.Beam));
-
-        private static void CreateLines<T>(int dim, int[] tags, List<T> lines, 
-                                                  Action<List<T>, int, Node[]> fillFun) where T : ModelObject
+        */
+        private static List<ModelObject> CreateLines(int[] tags, ObjKind kind)
         {
+            var lines = new List<ModelObject>();
             for (var i = 0; i < tags.Length; ++i)
             {
                 var paramsBounds = GetParametrizationBounds(1, tags[i]);
@@ -351,30 +424,31 @@ namespace GmshApi
                 var locals = GetLocalCoordByParametric(1, tags[i], newPB);
                 var points = GmshWrapperModel.ConvertLocalCoordsToPoints3D(locals);
                 var nodes = new List<Node>();
-                
                 var num = 0;
-                foreach (var pair in points.Bigrams(false))
+                foreach (var pair in points.Bigrams(true))
                 {
                     var line = new Node[] { new Node(num++, pair.Item1), new Node(num++, pair.Item2) };
                     nodes.AddRange(line);
                 }
-                fillFun(lines, tags[i], nodes.ToArray());
+                if(kind == ObjKind.Curve)
+                    lines.Add(new Curve(tags[i], nodes.ToArray()));
+                else
+                    lines.Add(new Element1D(tags[i], nodes.ToArray(), kind));
             }
+            return lines;
         }
 
-        private static void CreateControlPoints<T>(int dim, int[] tags, List<T> list,
-                                                  Action<List<T>, int, Node[]> fillFun) where T : ModelObject
+        private static List<ModelObject> CreateControlPoints(int[] tags)
         {
+            var nodes = new List<ModelObject>();
             for (var i = 0; i < tags.Length; ++i)
             {
-                var coords = GetLocalCoordByParametric(dim, tags[i], new double[] { });
+                var coords = GetLocalCoordByParametric(0, tags[i], new double[] { });
                 var points = GmshWrapperModel.ConvertLocalCoordsToPoints3D(coords);
                 for(var j = 0; j < points.Length; ++j)
-                {
-                    var nodes = new Node[] { new Node(tags[i], points[j]) };
-                    fillFun(list, 0, nodes);
-                }
+                    nodes.Add(new Node(tags[i], points[j]));
             }
+            return nodes;
         }
     }
 }

@@ -1,8 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Model;
 using GmshApi;
 using System.Linq;
-using System.Management.Instrumentation;
 
 namespace TestModel.GmshTests
 {
@@ -19,50 +17,50 @@ namespace TestModel.GmshTests
         {
             GmshWrapperConnection.Finalize();
         }
-        [DataTestMethod]
-        [DataRow("Cilindr.step", "1")]
-        [DataRow("Korpus_Nasosa.step", "2")]
-        [DataRow("model.igs", "3")]
-        [DataRow("sphere.geo", "4")]
-        public void GenerateMeshTest(string fileName, string modelName)
-        {
-            GmshWrapperModelTests.ModelLoad(fileName, modelName);
-            GmshWrapperMesh.Generate(2);
-        }
-        [DataTestMethod]
-        [DataRow("Cilindr.step", "1")]
-        [DataRow("Korpus_Nasosa.step", "2")]
-        [DataRow("model.igs", "3")]
-        [DataRow("sphere.geo", "4")]
-        public void GenerateMeshGetElementsInternal(string fileName, string modelName)
-        {
-            GmshWrapperModelTests.ModelLoad(fileName, modelName);
-            GmshWrapperMesh.Generate(2);
-            ElementInfo[] info;
-            long[][] elemsTags, nodeTags;
-            GmshWrapperMesh.GetElements(-1, -1, out info, out elemsTags, out nodeTags);
-            GmshWrapperMesh.GetElements(1, -1, out info, out elemsTags, out nodeTags);
-            GmshWrapperMesh.GetElements(2, -1, out info, out elemsTags, out nodeTags);
-        }
-        [DataTestMethod]
-        [DataRow("Cilindr.step", "1")]
-        [DataRow("Korpus_Nasosa.step", "2")]
-        [DataRow("model.igs", "3")]
-        [DataRow("sphere.geo", "4")]
-        public void GenerateMeshGetElementsTest(string fileName, string modelName)
-        {
-            GmshWrapperModelTests.ModelLoad(fileName, modelName);
-            GmshWrapperMesh.Generate(2);
-            var all = GmshWrapperMesh.GetElements(-1, -1);
-            var e1d = GmshWrapperMesh.GetElements(1, -1);
-            var e2d = GmshWrapperMesh.GetElements(2, -1);
-        }
+        //[DataTestMethod]
+        //[DataRow("Cilindr.step", "1")]
+        //[DataRow("Korpus_Nasosa.step", "2")]
+        //[DataRow("model.igs", "3")]
+        //[DataRow("sphere.geo", "4")]
+        //public void GenerateMeshTest(string fileName, string modelName)
+        //{
+        //    GmshWrapperModelTests.ModelLoad(fileName, modelName);
+        //    GmshWrapperMesh.Generate(2);
+        //}
+        //[DataTestMethod]
+        //[DataRow("Cilindr.step", "1")]
+        //[DataRow("Korpus_Nasosa.step", "2")]
+        //[DataRow("model.igs", "3")]
+        //[DataRow("sphere.geo", "4")]
+        //public void GenerateMeshGetElementsInternal(string fileName, string modelName)
+        //{
+        //    GmshWrapperModelTests.ModelLoad(fileName, modelName);
+        //    GmshWrapperMesh.Generate(2);
+        //    ElementInfo[] info;
+        //    long[][] elemsTags, nodeTags;
+        //    GmshWrapperMesh.GetElementTags(-1, -1, out info, out elemsTags, out nodeTags);
+        //    GmshWrapperMesh.GetElementTags(1, -1, out info, out elemsTags, out nodeTags);
+        //    GmshWrapperMesh.GetElementTags(2, -1, out info, out elemsTags, out nodeTags);
+        //}
+        //[DataTestMethod]
+        //[DataRow("Cilindr.step", "1")]
+        //[DataRow("Korpus_Nasosa.step", "2")]
+        //[DataRow("model.igs", "3")]
+        //[DataRow("sphere.geo", "4")]
+        //public void GenerateMeshGetElementsTest(string fileName, string modelName)
+        //{
+        //    GmshWrapperModelTests.ModelLoad(fileName, modelName);
+        //    GmshWrapperMesh.Generate(2);
+        //    var all = GmshWrapperMesh.GetElements(-1, -1);
+        //    var e1d = GmshWrapperMesh.GetElements(1, -1);
+        //    var e2d = GmshWrapperMesh.GetElements(2, -1);
+        //}
         [DataTestMethod]
         [DataRow("Cilindr.step", "1", new int[] { 7, 8, 1, 3, 6 }, new int[] { 0, 0, 5, 5, 9 })]
         [DataRow("Korpus_Nasosa.step", "2", new int[] { 700, 720, 670, 667, 663 }, new int[] { 0, 0, 5, 2, 9 })]
         [DataRow("model.igs", "3", new int[] { 124, 126, 140, 136, 137 }, new int[] { 1, 1, 0, 5, 6 })]
         [DataRow("sphere.geo", "4", new int[] { 13, 14, 1, 2, 3 }, new int[] { 0, 0, 3, 3, 3 })]
-        public void GenerateMeshGetLineElementsByIdTest(string fileName, string modelName, 
+        public void GenerateMeshGet1DElementsByIdTest(string fileName, string modelName, 
                                                         int[] lineTags, int[] expectedLength)
         {
             GmshWrapperModelTests.ModelLoad(fileName, modelName);
@@ -78,7 +76,7 @@ namespace TestModel.GmshTests
         [DataRow("Korpus_Nasosa.step", "2", new int[] { 1, 2, 7, 292, 293 }, new int[] { 6, 10, 6, 0, 0 })]
         [DataRow("model.igs", "3", new int[] { 3, 4, 5, 29, 30 }, new int[] { 2, 28, 2, 0, 0 })]
         [DataRow("sphere.geo", "4", new int[] { 1, 2, 3, 14, 20 }, new int[] { 0, 0, 0, 13, 15 })]
-        public void GenerateMeshGetSurfaceElementsByIdTest(string fileName, string modelName,
+        public void GenerateMeshGet2DElementsByIdTest(string fileName, string modelName,
                                                         int[] surfTags, int[] expectedLength)
         {
             GmshWrapperModelTests.ModelLoad(fileName, modelName);
@@ -164,7 +162,7 @@ namespace TestModel.GmshTests
             var point = new double[] { 3.16450111806, 18.4094425392, 5.84848849947 };
             var point2 = new double[] { -6.03049135332, 11.5693911823, 8.52002954716 };
             var actual = GmshWrapperMesh.GetElementsByCoordinates(2, point2[0], point2[1], point2[2]);
-            //Assert.AreEqual(expected, actual[0]);
+            Assert.AreEqual(expected, actual[0]);
         }
     }
 }

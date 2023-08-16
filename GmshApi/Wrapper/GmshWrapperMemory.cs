@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Xml.Linq;
 
 namespace GmshApi
 {
@@ -71,7 +72,11 @@ namespace GmshApi
             var result = new string[arrayLength];
             Marshal.Copy(array, stringArray, 0, arrayLength);
             for (var i = 0; i < arrayLength; ++i)
+            {
                 result[i] = Marshal.PtrToStringAnsi(stringArray[i]);
+                GmshGeneral.gmshFree(stringArray[i]);
+            }
+            GmshGeneral.gmshFree(array);
             return result;
         }
     }

@@ -1,5 +1,4 @@
-﻿using GmshApi.Api;
-using Model;
+﻿using Model;
 using System.Collections.Generic;
 
 namespace GmshApi
@@ -30,10 +29,6 @@ namespace GmshApi
         /// <returns></returns>
         IEnumerable<ModelObject> GetElement1D();
 
-        IEnumerable<ModelObject> GetSurfaceById(int surfaceId);
-
-        void RemoveSurfaceById(int surfaceId);
-
         /// <summary>
         /// получить плоские элементы
         /// </summary>
@@ -56,21 +51,11 @@ namespace GmshApi
         /// <param name="algorithm">[In]Enum алгоритма</param>
         void ChangeTriangulationAlgorithm2D(Triangulation2DAlgorithm algorithm = Triangulation2DAlgorithm.FrontalDelaunay);
         /// <summary>
-        /// установить новый алгоритм триангуляции по его enum
-        /// (Delaunay, Frontal Delaunay) и т.д для 3D
-        /// </summary>
-        /// <param name="algorithm">[In]Enum алгоритма</param>
-        void ChangeTriangulationAlgorithm3D(Triangulation3DAlgorithm algorithm = Triangulation3DAlgorithm.Delaunay);
-        /// <summary>
         /// Задает расположение узлов на кривой
         /// <param name="number">[In]Количество точек</param>
         /// <param name="ta">[In]Тип расположения точек (Progressive и т.д), числовой параметр</param>
         /// <param name="parameter">[In]Выбранная кривая (может состоять из нескольких последовательно соединённых кривых)</param>
         /// <param name="curve">[In]Идентификатор кривой</param>
         void SetMeshPointsOnCurve(int number, TransfiniteAlgorithm algorithm, double parameter, int curve);
-
-        void SaveMesh(string fileName);
-
-        IMeshQuality QualityAnalyse();
     }
 }

@@ -1,8 +1,7 @@
-﻿using GmshApi.Api;
-using Model;
+﻿using Model;
+using Model.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace GmshApi
 { 
@@ -12,12 +11,11 @@ namespace GmshApi
     public class MeshObject : IMeshApi
     {
         private ulong id;
-
         /// <summary>
         /// Задать\получить размер элементов перед генерацией
         /// </summary>
-        public double Density 
-        { 
+        public double Density
+        {
             get
             {
                 SetCurrent();
@@ -36,7 +34,7 @@ namespace GmshApi
         /// <summary>
         /// Конструктор с загрузкой файла-геометрии
         /// </summary>
-        /// <param name="path">[In]Путь до файла</param>
+        /// <param name="Id">[In]Путь до файла</param>
         internal MeshObject(ulong Id)  
         {
             id = Id;
@@ -83,6 +81,12 @@ namespace GmshApi
             GmshWrapperMesh.Generate(dim);
         }
 
+        public void Remesh(int dim)
+        {
+            SetCurrent();
+            GmshWrapperMesh.Remesh(dim);
+        }
+
         /// <summary>
         /// получить плоские элементы
         /// </summary>
@@ -120,6 +124,12 @@ namespace GmshApi
             GmshWrapperMesh.DeleteElements(new int[] { 2 , surfaceId });
         }
         /// <summary>
+        /// Удаляет указанные элементы сетки
+        /// </summary>
+        /// <param name="elementsTags">[In]Идентификаторы элементов сетки</param>
+        public void RemoveElements2D(int[] elementsTags) => GmshWrapperMesh.DeleteMeshElements(elementsTags);
+
+        /// <summary>
         /// получить объёмные элементы
         /// </summary>
         /// <returns>объёмные элементы</returns>
@@ -138,14 +148,21 @@ namespace GmshApi
             GmshWrapperGeneral.OptionSetNumber("Mesh.Algorithm", Convert.ToDouble(algorithm));
         }
         /// <summary>
-        /// Задать алгоритм триангуляции объемов перед генерацией
+        /// Возвращает информацию о элементах по паре dim:tag
         /// </summary>
-        /// <param name="algorithm"></param>
-        public void ChangeTriangulationAlgorithm3D(Triangulation3DAlgorithm algorithm = Triangulation3DAlgorithm.Delaunay)
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="elemInfo">[Out]ElementInfo для заполнения</param>
+        /// <param name="elemsTags">[Out]Теги элементов</param>
+        /// <param name="nodesTags">[Out]Теги узлов внутри dim:tag</param>
+        public void GetElementsInfo(int dim, int tag, out ElementInfo[] elemInfo,
+                                            out long[][] elemsTags, out long[][] nodesTags)
         {
             SetCurrent();
-            GmshWrapperGeneral.OptionSetNumber("Mesh.Algorithm3D", Convert.ToDouble(algorithm));
+            GmshWrapperMesh.GetElementTags(dim, tag, out elemInfo, out elemsTags, out nodesTags);
         }
+
+
         /// <summary>
         /// Задать число точек рапределения по кривой
         /// </summary>
@@ -170,16 +187,6 @@ namespace GmshApi
             }
         }
 
-        public void SaveMesh(string filename = "test.inp")
-        {
-            GmshWrapperGeneral.WriteToFile(filename);
-        }
-
         private void SetCurrent() => GmshWrapperModel.ModelSetCurrent(id.ToString());
-
-        public IMeshQuality QualityAnalyse()
-        {
-            return new MeshQuality();
-        }
     }
 }

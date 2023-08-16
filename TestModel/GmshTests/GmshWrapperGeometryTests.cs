@@ -1,8 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using GmshApi;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.ComTypes;
 
 namespace TestModel.GmshTests
 {
@@ -32,20 +30,20 @@ namespace TestModel.GmshTests
             for (var i = 0; i < tagDims.GetLength(0); ++i)
                 tagDims[i] = Enumerable.Range(1, expTags[i]).ToArray();
             var expectedTags = tagDims.SelectMany(v => v).ToArray();
-            var actualTags = GmshWrapperGeometry.GetEntities(-1).Where((v, i) => (i & 1) == 1).ToArray();
+            var actualTags = GmshWrapperGeometry.GetEntitiesTags(-1).Where((v, i) => (i & 1) == 1).ToArray();
             CollectionAssert.AreEqual(expectedTags, actualTags);
         }
         [DataTestMethod]
-        [DataRow("Cilindr.step", "1", new int[] { 4, 6, 4, 1 }, 
-                  new string[] { "Point", "Curve", "Surface", "Volume"})]
-        [DataRow("Korpus_Nasosa.step", "2", new int[] { 376, 684, 291, 1 }, 
+        [DataRow("Cilindr.step", "1", new int[] { 4, 6, 4, 1 },
                   new string[] { "Point", "Curve", "Surface", "Volume" })]
-        [DataRow("model.igs", "3", new int[] { 136, 138, 28 }, new string[] { "Point", "Curve", "Surface"})]
+        [DataRow("Korpus_Nasosa.step", "2", new int[] { 376, 684, 291, 1 },
+                  new string[] { "Point", "Curve", "Surface", "Volume" })]
+        [DataRow("model.igs", "3", new int[] { 136, 138, 28 }, new string[] { "Point", "Curve", "Surface" })]
         public void SetGetRemoveEntityNameTest(string fileName, string modelName, int[] entCount, string[] entName)
         {
             GmshWrapperModelTests.ModelLoad(fileName, modelName);
-            var ent = GmshWrapperGeometry.GetEntities(-1);
-            for(var i = 1; i < ent.Length; i+=2)
+            var ent = GmshWrapperGeometry.GetEntitiesTags(-1);
+            for (var i = 1; i < ent.Length; i += 2)
             {
                 var dim = ent[i - 1];
                 var tag = ent[i];
@@ -71,25 +69,25 @@ namespace TestModel.GmshTests
             GmshWrapperModelTests.ModelLoad(fileName, modelName);
             double[] min, max;
             GmshWrapperGeometry.GetBoundingBox(-1, -1, out min, out max);
-            for(var i = 0; i < 3; ++i)
+            for (var i = 0; i < 3; ++i)
                 Assert.AreEqual(minExp[i], min[i], 1e-02);
             for (var i = 0; i < 3; ++i)
                 Assert.AreEqual(maxExp[i], max[i], 1e-02);
         }
 
         [DataTestMethod]
-        [DataRow("Cilindr.step", "1", 1, new int[] { }, new int[] { 1, 2, 6 } )]
+        [DataRow("Cilindr.step", "1", 1, new int[] { }, new int[] { 1, 2, 6 })]
         [DataRow("Cilindr.step", "1", 2, new int[] { }, new int[] { 1, 4, 5 })]
         [DataRow("Cilindr.step", "1", 3, new int[] { }, new int[] { 2, 3, 6 })]
         [DataRow("Cilindr.step", "1", 4, new int[] { }, new int[] { 3, 4, 5 })]
-        [DataRow("sphere.geo", "2",1, new int[] { }, new int[] { })]
+        [DataRow("sphere.geo", "2", 1, new int[] { }, new int[] { })]
         [DataRow("sphere.geo", "2", 2, new int[] { }, new int[] { 1, 4, 9, 12 })]
         [DataRow("sphere.geo", "2", 3, new int[] { }, new int[] { 1, 2, 5, 8 })]
         [DataRow("sphere.geo", "2", 4, new int[] { }, new int[] { 2, 3, 10, 11 })]
         [DataRow("sphere.geo", "2", 5, new int[] { }, new int[] { 3, 4, 6, 7 })]
         [DataRow("sphere.geo", "2", 6, new int[] { }, new int[] { 5, 6, 11, 12 })]
-        [DataRow("sphere.geo", "2", 7, new int[] { }, new int[] {7, 8, 9, 10 })]
-        public void GetAdjacenciesControlPointTest(string fileName, string modelName, int tag ,int[] downExp, int[] upExp)
+        [DataRow("sphere.geo", "2", 7, new int[] { }, new int[] { 7, 8, 9, 10 })]
+        public void GetAdjacenciesControlPointTest(string fileName, string modelName, int tag, int[] downExp, int[] upExp)
         {
             GmshWrapperModelTests.ModelLoad(fileName, modelName);
             var adj = GmshWrapperGeometry.GetAdjacencies(0, tag);
@@ -132,7 +130,7 @@ namespace TestModel.GmshTests
 
         [DataTestMethod]
         [DataRow("Cilindr.step", "1", 1, new int[] { 1, 2, 3, 4 }, new int[] { })]
-        [DataRow("sphere.geo", "2", 30, new int[] { 28, 26, 16, 14, 20, 24, 22, 18 }, new int[] {})]
+        [DataRow("sphere.geo", "2", 30, new int[] { 28, 26, 16, 14, 20, 24, 22, 18 }, new int[] { })]
         [DataRow("sphere.geo", "2", 1, null, null)]//Not Found Test
         public void GetAdjacenciesVolumeTest(string fileName, string modelName, int tag, int[] downExp, int[] upExp)
         {
@@ -154,7 +152,7 @@ namespace TestModel.GmshTests
         {
             GmshWrapperModelTests.ModelLoad(fileName, modelName);
             var local = GmshWrapperGeometry.GetLocalCoordByParametric(0, tag, parametric);
-            for(var i = 0; i < expected.Length; ++i)
+            for (var i = 0; i < expected.Length; ++i)
                 Assert.AreEqual(expected[i], local[i], 1e-08);
         }
         [DataTestMethod]
@@ -198,14 +196,26 @@ namespace TestModel.GmshTests
             }
         }
 
-
-
-        /*[DataTestMethod]
+        [DataTestMethod]
         [DataRow("Cilindr.step", "1")]
-        public void GetParametricCoordsByLocalTest()
-        {
 
-        }*/
+        public void AttributeTest(string fileName, string modelName)
+        {
+            GmshWrapperModelTests.ModelLoad(fileName, modelName);
+            GmshWrapperMesh.SetTransfiniteCurve(4, 20, "Progression", 1.0);
+            GmshWrapperMesh.SetTransfiniteCurve(5, 20, "Progression", 1.0);
+            var expected = new string[] { "4", "5" };
+            GmshWrapperGeometry.SetAttribute("Progression", expected, 2);
+            var actual = GmshWrapperGeometry.GetAttribute("Progression");
+            CollectionAssert.AreEqual(expected, actual);
+            var transValues = new string[] { "1", "2" };
+            GmshWrapperGeometry.SetAttribute("Transfinite", transValues, 2);
+            var list = GmshWrapperGeometry.GetAttributeNames();
+            CollectionAssert.AreEqual(new string[] { "Progression", "Transfinite" }, list);
+            GmshWrapperGeometry.RemoveAttribute("Progression");
+            list = GmshWrapperGeometry.GetAttributeNames();
+            CollectionAssert.AreEqual(new string[] { "Transfinite" }, list);
+        }
 
         private void RemoveNameTest(ref string entName, int dim, int delId, int maxId)
         {
