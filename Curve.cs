@@ -8,14 +8,36 @@ using Model.Interfaces;
 
 namespace Model
 {
+    public static class IEnumerableExtentions
+    {
+        public static IEnumerable<Tuple<T, T>> Bigrams<T>(this IEnumerable<T> items)
+        {
+            var enumerator = items.GetEnumerator();
+            enumerator.MoveNext();
+            var first = enumerator.Current;
+            var head = items.First();
+            while (enumerator.MoveNext())
+            {
+                var second = enumerator.Current;
+                yield return Tuple.Create(first, second);
+                first = second;
+            }
+        }
+    }
+
     public class Curve : ModelObject, ILineObject
     {
-        Node[] nodes;
-        public Curve(int number, Node [] nodes) : base(number)
+        private Node[] nodes;
+        public Node StartNode { get; }
+        public Node EndNode { get; }
+
+        public Curve(int number, Node[] nodes) : base(number)
         {
             ObjType = "Линия";
             NumberOfPoints = nodes.Length;
             this.nodes = nodes;
+            StartNode = nodes[0];
+            EndNode = nodes[nodes.Length - 1];
         }
 
         public override ObjKind ObjKind { get;  }

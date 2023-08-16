@@ -1,9 +1,10 @@
-ï»¿using System.IO;
+using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using ModelController.IO;
 using Model.ModelParcer;
+using Model.Interfaces;
 
 namespace TestModel
 {
@@ -40,7 +41,7 @@ namespace TestModel
             loader.LoadEvent += (ar1, ar2) => { };
 
             //act
-            loader.Load(@"C:\BazisComponents\ModelSolution\TestModel\Examples\STL\ACII.stl");
+            loader.Load(@"..\..\Examples\STL\ACII.stl");
             //assert
         }
 
@@ -53,10 +54,7 @@ namespace TestModel
             loader.LoadEvent += (ar1, ar2) => { };
 
             //act
-            var path = Path.GetFullPath(".\\").Replace("bin\\Debug\\", "");
-            var files = Directory.GetFiles(path, "Korpus.inp", SearchOption.AllDirectories);
-            //var sr = new StreamReader(@"C:\BazisXN\Model\GMSHLoader\test3");
-            var modelINP = loader.Load(files[0]);
+            var modelINP = loader.Load(@"..\..\Examples\3D\Korpus.inp");
             model.Load(modelINP);
 
             //assert
@@ -74,10 +72,7 @@ namespace TestModel
             loader.LoadEvent += (ar1, ar2) => { };
 
             //act
-            var path = Path.GetFullPath(".\\").Replace("bin\\Debug\\","");
-            var files = Directory.GetFiles(path, "rhombDATA1.ASC", SearchOption.AllDirectories);
-            var modelASCII = loader.Load(files[0]);
-
+            var modelASCII = loader.Load(@"..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
             //loader.Load(@"C:\Bazis_newGUI\MESH\RadicMesh\Plate2DATA.ASC");
             model.Load(modelASCII);
             //assert
@@ -86,16 +81,38 @@ namespace TestModel
         }
 
         [TestMethod]
+        public void LoadASCII_ShouldImport1DElements()
+        {
+            var loader = new LoadModelFromASCIITextFile();
+            loader.LoadEvent += (ar1, ar2) => { };
+            var model = loader.Load(@"..\..\Examples\VIsual-Mesh\DATA3.ASC");
+            Assert.AreEqual(3, model.ObjectData.FindMany<Element1D>().Count());
+        }
+
+        [TestMethod]
+        public void SaveToASCII_ShouldBeEquivalentSourceFile()
+        {
+            var loader = new LoadModelFromASCIITextFile();
+            loader.LoadEvent += (ar1, ar2) => { };
+            var modelBeforeSaving = loader.Load(@"..\..\Examples\VIsual-Mesh\DATA3.ASC");
+            var saver = new SaveModelToASCIITextFile();
+            saver.Save(modelBeforeSaving, @"..\..\Examples\VIsual-Mesh\result.ASC");
+            var modelAfterSaving = loader.Load(@"..\..\Examples\VIsual-Mesh\result.ASC");
+            Assert.IsTrue(modelBeforeSaving.ObjectData.Count == modelAfterSaving.ObjectData.Count);
+        }
+
+        [TestMethod]
         public void ImportHexFromCDBTextFormat()
         {
-            var path = Path.GetFullPath(".\\").Replace("bin\\Debug\\", "");
-            var files = Directory.GetFiles(path, "hex.cdb", SearchOption.AllDirectories);
-
+            string path = @"..\..\Examples\CDB\hex.cdb";
             var import = new LoadModelFromCDBTextFile();
             import.LoadEvent += (ar1, ar2) => { };
-            var model = import.Load(files[0]);
+            var model = import.Load(path);
+            var element = model.ObjectData.FindMany<Element3D>().First();
             Assert.AreEqual(8, model.ObjectData.NumberOfNodes);
             Assert.AreEqual(1, model.ObjectData.NumberOfElements);
+            var surfaceNumber = element.NumberOfSides;
+            Assert.AreEqual(6, surfaceNumber);
         }
 
         [TestMethod]
@@ -106,15 +123,9 @@ namespace TestModel
             import.LoadEvent += (ar1, ar2) => { };
             var model = import.Load(path);
             Assert.AreEqual(3321, model.ObjectData.NumberOfNodes);
-
             var elements = model.ObjectData.FindMany<Element3D>();
-
-            var countTetra = elements.Where(element => element.GetSurface().
-            All(surface => surface.NumberOfPoints == 3)).Count();
-
-            var countHexa = elements.Where(element => element.GetSurface().
-All(surface => surface.NumberOfPoints == 4)).Count();
-
+            Assert.IsTrue(elements.All(element => element.GetSurface().
+            All(surface => surface.GetPoints().Count() > 2)));
         }
 
         [TestMethod]
@@ -150,6 +161,19 @@ All(surface => surface.NumberOfPoints == 4)).Count();
             var element = model.ObjectData.FindMany<Element3D>().First();
             Assert.AreEqual(4, model.ObjectData.NumberOfNodes);
             Assert.AreEqual(1, model.ObjectData.NumberOfElements);
+        }
+
+        [TestMethod]
+        public void LoadÑubeFromSalomeFileCorrectly()
+        {
+            var path = @"..\..\Examples\Salome\cube.med";
+            var import = new LoadModelFromSalomeFile();
+            import.LoadEvent += (ar1, ar2) => { };
+            var model = import.Load(path);
+            Assert.AreEqual(8, model.ObjectData.FindMany<Node>().Distinct().Count());
+            Assert.AreEqual(12, model.ObjectData.FindMany<Element1D>().Distinct().Count());
+            Assert.AreEqual(12, model.ObjectData.FindMany<Element2D>().Distinct().Count());
+            Assert.AreEqual(5, model.ObjectData.FindMany<Element3D>().Distinct().Count());
         }
     }
 }

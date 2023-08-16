@@ -7,17 +7,21 @@ using System.Threading.Tasks;
 
 namespace ModelController.MeshObjsUtility
 {
+    /// <summary>
+    /// По номеру узла возвращает список элементов, сопряжённых через данный узел
+    /// </summary>
     public class FindInterfacedNodes
     {
-        Element[] elements;
+        private Element[] elements;
+
         public FindInterfacedNodes(Element[] elements)
         {
             this.elements = elements;
         }
+
         public Dictionary<int, List<int>> Find(List<int> nodes)
         {
             var interfaceNodes = new Dictionary<int, List<int>>();
-
             foreach (var element in elements)
             {
                 if (element.ViewState)
@@ -27,10 +31,7 @@ namespace ModelController.MeshObjsUtility
                         if (nodes.Contains(node.Number))
                         {
                             if (!interfaceNodes.ContainsKey(node.Number))
-                            {
                                 interfaceNodes.Add(node.Number, new List<int>() { element.Number });
-                                //break;
-                            }
                             else
                             {
                                 if (!interfaceNodes[node.Number].Contains(element.Number))
@@ -40,7 +41,6 @@ namespace ModelController.MeshObjsUtility
                     }
                 }
             }
-
             return interfaceNodes;
         }
 
@@ -55,12 +55,8 @@ namespace ModelController.MeshObjsUtility
                     foreach (var node in element.GetNodes())
                     {
                         var nodeNumber = node.Number;
-
                         if (!interfaceNodes.ContainsKey(nodeNumber))
-                        {
                             interfaceNodes.Add(nodeNumber, new List<int>() { element.Number });
-                            //break;
-                        }
                         else
                         {
                             if (!interfaceNodes[nodeNumber].Contains(element.Number))

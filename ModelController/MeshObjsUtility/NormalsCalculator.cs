@@ -36,10 +36,9 @@ namespace ModelController.MeshObjsUtility
             }
         }
 
-        public List<Geometry.Line> CalcElemsNormals()
+        public List<Line> CalcElemsNormals()
         {
-
-            var lines = new List<Geometry.Line>();
+            var lines = new List<Line>();
 
             foreach (var element in elements)
             {

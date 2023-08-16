@@ -1,7 +1,6 @@
 ﻿using Geometry;
 using Model;
 using Model.Interfaces;
-using ModelController.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

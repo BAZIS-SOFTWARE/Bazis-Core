@@ -30,35 +30,37 @@ namespace Model.ModelParcer
 
         public ModelData Load(string path)
         {
-            reader = new StreamReader(path);
-            LoadEvent(this, new LoaderEventArgs("Начало загрузки модели"));
-            while (!reader.EndOfStream)
+            using (reader = new StreamReader(path))
             {
-                var line = reader.ReadLine();
-                if (line.Contains("*NODE"))
+                LoadEvent(this, new LoaderEventArgs("Начало загрузки модели"));
+                while (!reader.EndOfStream)
                 {
-                    line = reader.ReadLine();
-                    LoadEvent(this, new LoaderEventArgs("Начало загрузки узлов"));
-                    while (line != "******* E L E M E N T S *************")
+                    var line = reader.ReadLine();
+                    if (line.Contains("*NODE"))
                     {
-                        var tokens = line.Replace(" ", "")
-                            .Split(',');
-                        var nodeNumber = int.Parse(tokens[0]) - 1;
-                        var coordinates = tokens.Skip(1)
-                            .Select(x => float.Parse(x, NumberStyles.Float, CultureInfo.InvariantCulture))
-                            .ToArray();
-                        var node = new Node(nodeNumber, new Point3D(coordinates[0], coordinates[1], coordinates[2]));
-                        nodes.Add(node);
                         line = reader.ReadLine();
+                        LoadEvent(this, new LoaderEventArgs("Начало загрузки узлов"));
+                        while (line != "******* E L E M E N T S *************")
+                        {
+                            var tokens = line.Replace(" ", "")
+                                .Split(',');
+                            var nodeNumber = int.Parse(tokens[0]) - 1;
+                            var coordinates = tokens.Skip(1)
+                                .Select(x => float.Parse(x, NumberStyles.Float, CultureInfo.InvariantCulture))
+                                .ToArray();
+                            var node = new Node(nodeNumber, new Point3D(coordinates[0], coordinates[1], coordinates[2]));
+                            nodes.Add(node);
+                            line = reader.ReadLine();
+                        }
+                        var orderedNodes = nodes.OrderBy(x => x.Number);
+                        newMesh.ObjectData.AddRange(orderedNodes);
                     }
-                    var orderedNodes = nodes.OrderBy(x => x.Number);
-                    newMesh.ObjectData.AddRange(orderedNodes);
-                }
-                if (line.Contains("type=T3D2"))
-                {
-                    LoadEvent(this, new LoaderEventArgs("Начало загрузки элементов"));
-                    line = reader.ReadLine();
-                    CreateElements("type=T3D2", line, "*ELSET");
+                    if (line.Contains("type=T3D2"))
+                    {
+                        LoadEvent(this, new LoaderEventArgs("Начало загрузки элементов"));
+                        line = reader.ReadLine();
+                        CreateElements("type=T3D2", line, "*ELSET");
+                    }
                 }
             }
             return newMesh;
@@ -75,6 +77,7 @@ namespace Model.ModelParcer
             {
                 case "type=T3D2": return new Element1D(currentNumber, nodeArr, ObjKind.Beam);
                 case "type=CPS3": return new Element2D(currentNumber, nodeArr, ObjKind.Triangle);
+                case "type=CPS4": return new Element2D(currentNumber, nodeArr, ObjKind.Quad);
                 case "type=C3D4": return new Element3D(currentNumber, nodeArr, ObjKind.Tetra);
                 default: throw new Exception($"Unknown element type with {selectedNodesId.Length} nodes");
             };

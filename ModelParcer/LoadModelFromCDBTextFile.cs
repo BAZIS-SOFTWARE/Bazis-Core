@@ -12,22 +12,19 @@ namespace Model.ModelParcer
 {
     public class LoadModelFromCDBTextFile : IModelLoader
     {
+        public event Action<object, LoaderEventArgs> LoadEvent;
         private const string NODE_BLOCK = "NBLOCK";
         private const string ELEMENTS_BLOCK = "EBLOCK";
         private const int OFFSET_TO_READ_NODES = 11;
-        private ModelData model = new ModelData();
-        private string exponentialFloatPattern = "(-)?\\d+\\.\\d+E(\\+|-)\\d+";
-        private List<Node> allNodes = new List<Node>();
-
-        public event Action<object, LoaderEventArgs> LoadEvent;
+        private const string exponentialFloatPattern = "(-)?\\d+\\.\\d+E(\\+|-)\\d+";
+        private Dictionary<int, Node> allNodes = new Dictionary<int, Node>();
 
         /// <summary>
-        /// Method to load from .cdb file
+        /// Загрузить модель из файла формата .cdb по указанному пути
         /// </summary>
-        /// <param name="path">Path to .cdb file</param>
-        /// <returns>loaded model</returns>
         public ModelData Load(string path)
         {
+            var model = new ModelData();
             using (var reader = new StreamReader(path))
             {
                 LoadEvent(this, new LoaderEventArgs("Начало загрузки модели"));
@@ -41,8 +38,8 @@ namespace Model.ModelParcer
                     if (line.Contains(NODE_BLOCK))
                     {
                         LoadEvent(this, new LoaderEventArgs("Начало загрузки узлов"));
-                        allNodes = ReadNodes(reader, tokens).ToList();
-                        model.ObjectData.AddRange(allNodes);
+                        var nodes = ReadNodes(reader, tokens).ToList();
+                        model.ObjectData.AddRange(nodes);
                     }
                     if (line.Contains(ELEMENTS_BLOCK))
                     {
@@ -52,15 +49,13 @@ namespace Model.ModelParcer
                     }
                 }
             }
+            allNodes.Clear();
             return model;
         }
 
         /// <summary>
-        /// Method finds coordinates of node, which written in exponential notation, 
-        /// in Ansys line by regular expression.
+        /// Читает и возвращает координаты в форме файла .cdb с помощью регулярного выражения
         /// </summary>
-        /// <param name="line">Line from Ansys .cdb file.</param>
-        /// <returns>Enumerable of coordinates.</returns>
         private IEnumerable<float> GetNodeCoordinates(string line)
         {
             var matches = Regex.Matches(line, exponentialFloatPattern);
@@ -71,10 +66,8 @@ namespace Model.ModelParcer
         }
 
         /// <summary>
-        /// Get node number from line. It is located in 0 position after whitespaces deletion.
+        /// Возвращает первое число в строке - номер элемента
         /// </summary>
-        /// <param name="line">Line from Ansys .cdb file.</param>
-        /// <returns>number of node</returns>
         private int GetNodeNumber(string line)
         {
             var fields = line.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)
@@ -83,11 +76,8 @@ namespace Model.ModelParcer
         }
 
         /// <summary>
-        /// reads nodes after the "NBLOCK" sign in the file.
+        /// Читает список узлов после строки NBLOCK в файле
         /// </summary>
-        /// <param name="reader">file which we read</param>
-        /// <param name="tokens">Information in next of "NBLOCK" line </param>
-        /// <returns></returns>
         private IEnumerable<Node> ReadNodes(StreamReader reader, string[] tokens)
         {
             var format = reader.ReadLine();
@@ -105,40 +95,29 @@ namespace Model.ModelParcer
                 }
                 var point = new Point3D(coordinates[0], coordinates[1], coordinates[2]);
                 var node = new Node(nodeNumber, point);
+                allNodes.Add(nodeNumber, node);
                 yield return node;
             }
         }
 
         /// <summary>
-        /// Determines the element type by the number of nodes
+        /// Определяет форму элемента по числу узлов
         /// </summary>
-        /// <param name="nodesCount">Number of nodes from .cdb file</param>
-        /// <param name="elementNodes">Array of numbers (node id) from .cdb file</param>
-        /// <returns>Model object according to input data</returns>
-        /// <exception cref="Exception">Throws if unrecognized or get invalid parameters</exception>
-        private ModelObject GetElement(int[] elementNodes)
+        private ModelObject GetElement(int[] elementNodes, int elementNumber)
         {
-            var nodes = new Node[elementNodes.Length];
-            var currentNumber = model.ObjectData.GetLastObjNumber() + 1;
-            for (var i = 0; i < elementNodes.Length; i++)
-            {
-                nodes[i] = model.ObjectData.Find(allNodes, elementNodes[i]);
-            }
+            var nodes = elementNodes.Select(i => allNodes[i]).ToArray();
             switch (elementNodes.Length)
             {
-                case 4: return new Element3D(currentNumber, nodes, ObjKind.Tetra);
-                case 6: return new Element3D(currentNumber, nodes, ObjKind.Penta);
-                case 8: return new Element3D(currentNumber, nodes, ObjKind.Hexa);
+                case 4: return new Element3D(elementNumber, nodes, ObjKind.Tetra);
+                case 6: return new Element3D(elementNumber, nodes, ObjKind.Penta);
+                case 8: return new Element3D(elementNumber, nodes, ObjKind.Hexa);
                 default: throw new Exception($"Unable to recognize element with {elementNodes.Length} nodes");
             }
         }
 
         /// <summary>
-        /// reads elements after the "EBLOCK" sign in the file.
+        /// Читает список элементов после строки EBLOCK в файле
         /// </summary>
-        /// <param name="reader">file which we read</param>
-        /// <param name="tokens">Information in next of "EBLOCK" line </param>
-        /// <returns></returns>
         private IEnumerable<ModelObject> ReadElements(StreamReader reader, string[] tokens)
         {
             var format = reader.ReadLine();
@@ -151,6 +130,7 @@ namespace Model.ModelParcer
                     .Select(int.Parse)
                     .ToList();
                 var nodesCount = fields[8];
+                var elementNumber = fields[10];
                 if (OFFSET_TO_READ_NODES + nodesCount > maxFieldsInLine)
                 {
                     var nextLineFields = reader.ReadLine().Split()
@@ -159,7 +139,7 @@ namespace Model.ModelParcer
                     fields.AddRange(nextLineFields);
                 }
                 var elementNodes = fields.Skip(OFFSET_TO_READ_NODES).Distinct().ToArray();
-                var element = GetElement(elementNodes);
+                var element = GetElement(elementNodes, elementNumber);
                 yield return element;
             }
         }
