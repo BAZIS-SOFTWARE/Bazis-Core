@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System;
 using GmshApi.Api;
+using Model.Interfaces;
 
 namespace GmshApi
 {  
@@ -98,28 +99,28 @@ namespace GmshApi
         /// Возвращает контрольные точки
         /// </summary>
         /// <returns>узлы</returns>
-        public IEnumerable<Node> GetControlPoints()
+        public List<ModelObject> GetControlPoints()
         {
             SetCurrent();
-            return GmshWrapperGeometry.GetEntities<Node>(0, GmshWrapperGeometry.CreateControlPoint);
+            return GmshWrapperGeometry.GetEntities(ObjKind.Point);
         }
         /// <summary>
         /// Возвращает кривые
         /// </summary>
         /// <returns>кривые</returns>
-        public IEnumerable<Curve> GetСurves()
+        public List<ModelObject> GetСurves()
         {
             SetCurrent();
-            return GmshWrapperGeometry.GetEntities<Curve>(1, GmshWrapperGeometry.CreateCurve);
+            return GmshWrapperGeometry.GetEntities(ObjKind.Curve);
         }
         /// <summary>
         /// Возвращает линии
         /// </summary>
         /// <returns>линии</returns>
-        public IEnumerable<Element1D> GetElements1D()
+        public List<ModelObject> GetElements1D()
         {
             SetCurrent();
-            return GmshWrapperGeometry.GetEntities<Element1D>(1, GmshWrapperGeometry.CreateElement1D);
+            return GmshWrapperGeometry.GetEntities(ObjKind.Beam);
         }
         /// <summary>
         /// Удаляет сущности
@@ -148,7 +149,7 @@ namespace GmshApi
         public int[] GetEntities(int dim)
         {
             SetCurrent();
-            return GmshWrapperGeometry.GetEntities(dim);
+            return GmshWrapperGeometry.GetEntitiesTags(dim);
         }
         /// <summary>
         /// Синхронизирует модель с GmshApi

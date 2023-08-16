@@ -6,6 +6,19 @@ using System.Collections.Generic;
 
 namespace GmshApi
 {
+    public enum Dimension
+    { 
+        All = -1,
+        ControlPoints = 0,
+        Node = 0,
+        Curves = 1,
+        Elements1D = 1,
+        Surfaces = 2,
+        Elements2D = 2,
+        Volumes = 3
+    }
+
+
     /// <summary>
     /// Класс содержит информацию о типе извлечнного узла
     /// </summary>
@@ -248,19 +261,19 @@ namespace GmshApi
         /// <summary>
         /// Возвращает набор элементов по указанным dim:tag
         /// </summary>
-        /// <param name="dim">[In]Размерность для получения элементов, или -1 для получения всех элементов</param>
+        /// <param name="dimension">[In]Размерность для получения элементов, или -1 для получения всех элементов</param>
         /// <param name="tag">[In]Идентифкатор элемента или -1 для получения всех элементов в пределах dim</param>
         /// <returns>Список элементов или пустой список если элементы не найдены</returns>
-        public static IEnumerable<ModelObject> GetElements(int dim, int tag)
+        public static List<ModelObject> GetElements(int dimension, int tag)
         {
             ElementInfo[] info;
             long[][] elemTags, nodeTags;
             long[] nodesT;
             double[] local, parametric;
             var list = new List<ModelObject>();
-            if (GetElementTags(dim, tag, out info, out elemTags, out nodeTags))
+            if (GetElementTags(dimension, tag, out info, out elemTags, out nodeTags))
             {
-                GetNodes(dim, tag, out nodesT, out local, out parametric);
+                GetNodes(dimension, tag, out nodesT, out local, out parametric);
                 var nodes = LocalCoordinatesToNodes(nodesT, local);
                 for (int i = 0; i < info.Length; ++i)
                 {
@@ -271,7 +284,7 @@ namespace GmshApi
                         var nodesPerElem = new Node[nodesCount];
                         for (int k = 0; k < info[i].numNodes; ++k)
                             nodesPerElem[k] = nodes[nodeTags[i][j * nodesCount + k]];
-                        CreateModelObject(list, ref info[i].elementName, elements[j], nodesPerElem);
+                        list.Add(CreateModelObject(ref info[i].elementName, elements[j], nodesPerElem));
                     }
                 }
             }
@@ -374,65 +387,25 @@ namespace GmshApi
             return dict;
         }
 
-        private static void CreateControlPoint(List<ModelObject> list, long elementId, Node[] nodes)
-        {
-            list.Add( new Node((int)elementId, nodes[0].Position));
-        }
-
-        private static void CreateLine(List<ModelObject> list, long elementId, Node[] nodes)
-        {
-            list.Add( new Element1D((int)elementId, nodes, ObjKind.Beam));
-        }
-
-        private static void CreateTriangle(List<ModelObject> list, long elementId, Node[] nodes)
-        { 
-            list.Add(new Element2D((int)elementId, nodes, ObjKind.Triangle));
-        }
-
-        private static void CreateQuad(List<ModelObject> list, long elementId, Node[] nodes)
-        {
-            list.Add(new Element2D((int)elementId, nodes, ObjKind.Quad));
-        }
-
-        private static void CreateTetrahedron(List<ModelObject> list, long elementId, Node[] nodes)
-        {
-            list.Add(new Element3D((int)elementId, nodes, ObjKind.Tetra));
-        }
-
-        private static void CreateHexahedron(List<ModelObject> list, long elementId, Node[] nodes)
-        {
-            list.Add( new Element3D((int)elementId, nodes, ObjKind.Hexa));
-        }
-
-        private static void CreatePrism(List<ModelObject> list, long elementId, Node[] nodes)
-        {
-            list.Add( new Element3D((int)elementId, nodes, ObjKind.Prism));
-        }
-
-        private static void CreatePyramid(List<ModelObject> list, long elementId, Node[] nodes)
-        {
-            list.Add( new Element3D((int)elementId, nodes, ObjKind.Penta));///Нет Obj.Kind Pyramid
-        }
-
-        private static void CreateModelObject(List<ModelObject> list ,ref string elementName, 
+        private static ModelObject CreateModelObject(ref string elementName, 
                                                   long elementId, Node[] nodes)
         {
-            if(elementName.Contains("Point"))
-                CreateControlPoint(list, elementId, nodes);
+            if (elementName.Contains("Point"))
+                return new Node((int)elementId, nodes[0].Position);
             else if (elementName.Contains("Line"))
-                CreateLine(list, elementId, nodes);
+                return new Element1D((int)elementId, nodes, ObjKind.Beam);
             else if (elementName.Contains("Triangle"))
-                CreateTriangle(list, elementId, nodes);
-            else if(elementName.Contains("Quadrilateral"))
-                CreateQuad(list, elementId, nodes);
-            else if(elementName.Contains("Tetrahedron"))
-                CreateTetrahedron(list, elementId, nodes);
+                return new Element2D((int)elementId, nodes, ObjKind.Triangle);
+            else if (elementName.Contains("Quadrilateral"))
+                return new Element2D((int)elementId, nodes, ObjKind.Quad);
+            else if (elementName.Contains("Tetrahedron"))
+                return new Element3D((int)elementId, nodes, ObjKind.Tetra);
             else if (elementName.Contains("Hexahedron"))
-                CreateHexahedron(list, elementId, nodes);
+                return new Element3D((int)elementId, nodes, ObjKind.Hexa);
             else if (elementName.Contains("Prism"))
-                CreatePrism(list, elementId, nodes);
+                return new Element3D((int)elementId, nodes, ObjKind.Prism);
             else
-                CreatePyramid(list, elementId, nodes);
+                return new Element3D((int)elementId, nodes, ObjKind.Penta);
         }
     }
 }

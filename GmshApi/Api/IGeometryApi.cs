@@ -27,11 +27,11 @@ namespace GmshApi
         /// получить контрольные точки
         /// </summary>
         /// <returns>узлы</returns>
-        IEnumerable<Node> GetControlPoints();
+        List<ModelObject> GetControlPoints();
         /// <summary>
         /// получить кривые
         /// </summary>
         /// <returns>узлы</returns>
-        IEnumerable<Curve> GetСurves();
+        List<ModelObject> GetСurves();
     }
 }

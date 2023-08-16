@@ -16,7 +16,7 @@ namespace GmshApi
         /// </summary>
         /// <param name="dim">[In]Размерность</param>
         /// <returns>массив сущностей</returns>
-        public static int[] GetEntities(int dim)
+        public static int[] GetEntitiesTags(int dim)
         {
             var ierr = 0;
             IntPtr dimTags, dimTags_n;
@@ -362,21 +362,31 @@ namespace GmshApi
         /// <summary>
         /// Получает сущности конкретного ModelObject
         /// </summary>
-        /// <typeparam name="T">[In]Тип ModelObject</typeparam>
-        /// <param name="dim">[In]Размерность</param>
-        /// <param name="fillFun">[In]Метод для заполнения списка</param>
+        /// <param name="dimension">[In]Размерность</param>
+        /// <param name="kind">[In]Тип объекта</param>
         /// <returns></returns>
-        public static IEnumerable<T> GetEntities<T>(int dim, Action<List<T>, int, Node[]> fillFun) where T : ModelObject
+        public static List<ModelObject> GetEntities(ObjKind kind)
         {
-            var tags = GetEntities(dim).Where((v, i) => (i & 1) == 1).ToArray();
-            var entities = new List<T>();
-            if (dim == 0)
-                CreateControlPoints(dim, tags, entities, fillFun);
-            if (dim == 1)
-                CreateLines(dim, tags, entities, fillFun);
+            int[] tags;
+            var entities = new List<ModelObject>();
+
+            switch(kind)
+            {
+                case ObjKind.Point:
+                    tags = GetEntitiesTags(0).Where((v, i) => (i & 1) == 1).ToArray();
+                    entities = CreateControlPoints(tags);
+                    break;
+                case ObjKind.Curve:
+                case ObjKind.Beam:
+                    tags = GetEntitiesTags(1).Where((v, i) => (i & 1) == 1).ToArray();
+                    entities = CreateLines(tags, kind);
+                    break;
+
+            }
+ 
             return entities;
         }
-        /// <summary>
+        /*/// <summary>
         /// Создает контрольную точку заполняя список
         /// </summary>
         /// <param name="list">[In]Список</param>
@@ -397,10 +407,10 @@ namespace GmshApi
         /// <param name="id">[In]Идентификатор сущности</param>
         /// <param name="nodes">[In]Узлы для сущности</param>
         public static void CreateElement1D(List<Element1D> list, int id, Node[] nodes) => list.Add(new Element1D(id, nodes, ObjKind.Beam));
-
-        private static void CreateLines<T>(int dim, int[] tags, List<T> lines, 
-                                                  Action<List<T>, int, Node[]> fillFun) where T : ModelObject
+        */
+        private static List<ModelObject> CreateLines(int[] tags, ObjKind kind)
         {
+            var lines = new List<ModelObject>();
             for (var i = 0; i < tags.Length; ++i)
             {
                 var paramsBounds = GetParametrizationBounds(1, tags[i]);
@@ -419,23 +429,25 @@ namespace GmshApi
                     var line = new Node[] { new Node(num++, pair.Item1), new Node(num++, pair.Item2) };
                     nodes.AddRange(line);
                 }
-                fillFun(lines, tags[i], nodes.ToArray());
+                if(kind == ObjKind.Curve)
+                    lines.Add(new Curve(tags[i], nodes.ToArray()));
+                else
+                    lines.Add(new Element1D(tags[i], nodes.ToArray(), kind));
             }
+            return lines;
         }
 
-        private static void CreateControlPoints<T>(int dim, int[] tags, List<T> list,
-                                                  Action<List<T>, int, Node[]> fillFun) where T : ModelObject
+        private static List<ModelObject> CreateControlPoints(int[] tags)
         {
+            var nodes = new List<ModelObject>();
             for (var i = 0; i < tags.Length; ++i)
             {
-                var coords = GetLocalCoordByParametric(dim, tags[i], new double[] { });
+                var coords = GetLocalCoordByParametric(0, tags[i], new double[] { });
                 var points = GmshWrapperModel.ConvertLocalCoordsToPoints3D(coords);
                 for(var j = 0; j < points.Length; ++j)
-                {
-                    var nodes = new Node[] { new Node(tags[i], points[j]) };
-                    fillFun(list, 0, nodes);
-                }
+                    nodes.Add(new Node(tags[i], points[j]));
             }
+            return nodes;
         }
     }
 }

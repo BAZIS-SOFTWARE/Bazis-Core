@@ -30,7 +30,7 @@ namespace TestModel.GmshTests
             for (var i = 0; i < tagDims.GetLength(0); ++i)
                 tagDims[i] = Enumerable.Range(1, expTags[i]).ToArray();
             var expectedTags = tagDims.SelectMany(v => v).ToArray();
-            var actualTags = GmshWrapperGeometry.GetEntities(-1).Where((v, i) => (i & 1) == 1).ToArray();
+            var actualTags = GmshWrapperGeometry.GetEntitiesTags(-1).Where((v, i) => (i & 1) == 1).ToArray();
             CollectionAssert.AreEqual(expectedTags, actualTags);
         }
         [DataTestMethod]
@@ -42,7 +42,7 @@ namespace TestModel.GmshTests
         public void SetGetRemoveEntityNameTest(string fileName, string modelName, int[] entCount, string[] entName)
         {
             GmshWrapperModelTests.ModelLoad(fileName, modelName);
-            var ent = GmshWrapperGeometry.GetEntities(-1);
+            var ent = GmshWrapperGeometry.GetEntitiesTags(-1);
             for (var i = 1; i < ent.Length; i += 2)
             {
                 var dim = ent[i - 1];

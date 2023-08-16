@@ -59,7 +59,7 @@ namespace TestModel.GmshTests
                 var curveUntil = geometry.GetСurves().First();
                 geometry.CurveSteps = 15; // but default is 20
                 var curveAfter = geometry.GetСurves().First();
-                Assert.IsTrue(curveAfter.GetNodes().Count() < curveUntil.GetNodes().Count());
+                Assert.IsTrue(curveAfter.NumberOfPoints < curveUntil.NumberOfPoints);
             }
         }
 
@@ -88,10 +88,10 @@ namespace TestModel.GmshTests
             {
                 for (var i = 0; i < dimArray.Length; ++i)
                 {
-                    var entities = GmshWrapperGeometry.GetEntities(-1);
+                    var entities = GmshWrapperGeometry.GetEntitiesTags(-1);
                     var lengthBefore = entities.Length;
                     geometry.DeleteEntities(new int[] { dimArray[i], entities[1] });//Delete first id
-                    var newEntities = GmshWrapperGeometry.GetEntities(-1);
+                    var newEntities = GmshWrapperGeometry.GetEntitiesTags(-1);
                     var lengthAfter = newEntities.Length;
                     Assert.IsTrue(lengthBefore > lengthAfter);
                 }
