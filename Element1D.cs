@@ -18,8 +18,6 @@ namespace Model
             MasterColor = Color.FromArgb(255, 192, 203);
             SlaveColor = Color.FromArgb(255, 192, 203);
 
-
-
             this.nodes = nodes;
             ObjType = "Элементы1D";
             ObjKind = objKind;

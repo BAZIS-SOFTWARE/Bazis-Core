@@ -1,4 +1,5 @@
-﻿using Model;
+﻿using Functions.Select;
+using Model;
 using Model.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -300,17 +301,17 @@ namespace GmshApi
         /// Получает сущности конкретного ModelObject
         /// </summary>
         /// <typeparam name="T">[In]Тип ModelObject</typeparam>
-        /// <param name="dim">[In]Размерность</param>
+        /// <param name="dimension">[In]Размерность</param>
         /// <param name="fillFun">[In]Метод для заполнения списка</param>
         /// <returns></returns>
-        public static IEnumerable<T> GetEntities<T>(int dim, Action<List<T>, int, Node[]> fillFun) where T : ModelObject
+        public static IEnumerable<T> GetEntities<T>(int dimension, Action<List<T>, int, Node[]> fillFun) where T : ModelObject
         {
-            var tags = GetEntities(dim).Where((v, i) => (i & 1) == 1).ToArray();
+            var tags = GetEntities(dimension).Where((v, i) => (i & 1) == 1).ToArray();
             var entities = new List<T>();
-            if (dim == 0)
-                CreateControlPoints(dim, tags, entities, fillFun);
-            if (dim == 1)
-                CreateLines(dim, tags, entities, fillFun);
+            if (dimension == 0)
+                CreateControlPoints(dimension, tags, entities, fillFun); // непонятно зачем нам контрольные точки?
+            if (dimension == 1)
+                CreateLines(dimension, tags, entities, fillFun);
             return entities;
         }
         /// <summary>
@@ -350,8 +351,9 @@ namespace GmshApi
                 var locals = GetLocalCoordByParametric(1, tags[i], newPB);
                 var points = GmshWrapperModel.ConvertLocalCoordsToPoints3D(locals);
                 var nodes = new List<Node>();
+                
                 var num = 0;
-                foreach (var pair in points.Bigrams())
+                foreach (var pair in points.Bigrams(false))
                 {
                     var line = new Node[] { new Node(num++, pair.Item1), new Node(num++, pair.Item2) };
                     nodes.AddRange(line);
