@@ -18,9 +18,9 @@ namespace GmshApi.Api
             return GmshWrapperMesh.GetElementQualities("minSIGE");
         }
 
-        //public double[] GetMinJacobianValues()
-        //{
-        //    return GmshWrapperMesh.GetElementQualities("maxDetJac");
-        //}
+        public double[] GetMinJacobianValues()
+        {
+            return GmshWrapperMesh.GetElementQualities("minDetJac");
+        }
     }
 }

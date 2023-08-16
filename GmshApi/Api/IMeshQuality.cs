@@ -2,7 +2,7 @@
 {
     public interface IMeshQuality
     {
-        //double[] GetMinJacobianValues();
+        double[] GetMinJacobianValues();
 
         double[] GetInvertedGradientError();
 
