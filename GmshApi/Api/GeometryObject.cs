@@ -85,17 +85,6 @@ namespace GmshApi
             return new MeshObject(Id);
         }
         /// <summary>
-        /// Сгененировать сетку
-        /// </summary>
-        /// <param name="dim">[In]Размерность</param>
-        public MeshObject Remesh(int dim)
-        {
-            SetCurrent();
-            if (dim != 0)
-                GmshWrapperMesh.Remesh(dim);
-            return new MeshObject(Id);
-        }
-        /// <summary>
         /// Возвращает контрольные точки
         /// </summary>
         /// <returns>узлы</returns>
