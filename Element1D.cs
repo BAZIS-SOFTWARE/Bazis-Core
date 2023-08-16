@@ -44,7 +44,10 @@ namespace Model
 
         public override float[] GetFormFunctions(Point3D point3D)
         {
-            throw new NotImplementedException();
+            var answer = new float[2];
+            answer[0] = (nodes[1].Position._x - point3D._x) / CalcLength();
+            answer[1] = (point3D._x - nodes[0].Position._x) / CalcLength();
+            return answer;
         }
     }
 }
