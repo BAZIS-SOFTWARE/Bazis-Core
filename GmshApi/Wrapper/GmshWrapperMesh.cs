@@ -68,17 +68,6 @@ namespace GmshApi
             GmshMesh.gmshModelMeshGenerate(dim, ref ierr);
         }
         /// <summary>
-        /// Перегенирировать сетку
-        /// </summary>
-        /// <param name="dim">[In]Размерность</param>
-        public static void Remesh(int dim)
-        {
-            var ierr = 0;
-            GmshMesh.gmshModelMeshGenerate(1, ref ierr);
-            GmshMesh.gmshModelMeshGenerate(dim, ref ierr);
-        }
-
-        /// <summary>
         /// Переводит большую часть сетки в четырехугольники
         /// </summary>
         public static void Recombine()
@@ -223,19 +212,19 @@ namespace GmshApi
         /// <summary>
         /// Находит элементы сетки по переданной координате x,y,z
         /// </summary>
-        /// <param name="dim">[In]Размерность</param>
+        /// <param name="id">[In]Размерность</param>
         /// <param name="x">[In]Координата x</param>
         /// <param name="y">[In]Координата y</param>
         /// <param name="z">[In]Координата z</param>
         /// <param name="strict">[In]Выполнять строгий поиск?</param>
-        public static int[] GetElementsByCoordinates(int dim, double x, double y, double z, bool strict = false)
+        public static int[] GetElementsByCoordinates(int dimension, double x, double y, double z, bool strict = false)
         {
             var ierr = 0;
             var strictInt = Convert.ToInt32(strict);
             IntPtr elementTags, elementTags_n;
             elementTags = elementTags_n = IntPtr.Zero;
             GmshMesh.gmshModelMeshGetElementsByCoordinates(x, y, z, ref elementTags, ref elementTags_n,
-                                                           dim, strictInt, ref ierr);
+                                                           dimension, strictInt, ref ierr);
             int[] tags;
             GmshWrapperMemory.GetTypesData<int>(elementTags, out tags, elementTags_n);
             return tags;
@@ -363,14 +352,15 @@ namespace GmshApi
         {
             int error = 0;
             GetElementTags(-1, -1, out ElementInfo[] elementInfo, out long[][] elementTags, out long[][] nodeTags);
-            IntPtr elementsQuality_n = IntPtr.Zero, elementsQuality = IntPtr.Zero;
+            var elementsQuality_n = IntPtr.Zero; 
+            var elementsQuality = IntPtr.Zero;
             var pointers = GetPointerToElementTags(elementTags);
             GmshMesh.gmshModelMeshGetElementQualities(
                 pointers,
-                (IntPtr)1,
+                (IntPtr)pointers.Length,
                 ref elementsQuality,
                 ref elementsQuality_n,
-                qualityName, (IntPtr)2, (IntPtr)1, ref error);
+                qualityName, (IntPtr)0, (IntPtr)1, ref error);
             GmshWrapperMemory.GetTypesData(elementsQuality, out double[] result, elementsQuality_n);
             return result;
         }
@@ -402,8 +392,6 @@ namespace GmshApi
                 return new Element3D((int)elementId, nodes, ObjKind.Tetra);
             else if (elementName.Contains("Hexahedron"))
                 return new Element3D((int)elementId, nodes, ObjKind.Hexa);
-            else if (elementName.Contains("Prism"))
-                return new Element3D((int)elementId, nodes, ObjKind.Prism);
             else
                 return new Element3D((int)elementId, nodes, ObjKind.Penta);
         }

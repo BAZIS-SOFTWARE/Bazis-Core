@@ -21,7 +21,7 @@ namespace GmshApi
         /// Открывает файл с данными ассоциирует себя с текущей моделью
         /// </summary>
         /// <param name="fileName">[In]Путь до файла</param>
-        public static void Merge(String fileName)
+        public static void Load(String fileName)
         {
             var ierr = 0;
             GmshIO.gmshMerge(fileName, ref ierr);
@@ -39,7 +39,7 @@ namespace GmshApi
         /// Возвращает имя файла ассоциированное с данной моделью
         /// </summary>
         /// <returns>Имя файла</returns>
-        public static string ModelGetFileName()
+        public static string GetCurrentModelFileName()
         {
             var ierr = 0;
             IntPtr fileName = IntPtr.Zero;
@@ -50,7 +50,7 @@ namespace GmshApi
         /// Задает имя файла для текущей модели
         /// </summary>
         /// <param name="fileName">[In]Имя файла</param>
-        public static void ModelSetFileName(String fileName)
+        public static void SetCurrentModelFileName(string fileName)
         {
             var ierr = 0;
             GmshIO.gmshModelSetFileName(fileName, ref ierr);
@@ -61,7 +61,7 @@ namespace GmshApi
         /// <returns>Расширение файла</returns>
         public static string ModelGetFileNameExtension()
         {
-            var fileName = GmshWrapperIO.ModelGetFileName();
+            var fileName = GmshWrapperIO.GetCurrentModelFileName();
             return Path.GetExtension(fileName);
         }
     }

@@ -7,10 +7,12 @@ namespace TestModel.GmshTests
     [TestClass]
     public class GmshWrapperGeometryTests
     {
+        private static string modelFolder = @"..\..\..\Examples\GMSHConnector\";
         [TestInitialize]
         public void Init()
         {
             GmshWrapperConnection.Initialize();
+
         }
         [TestCleanup]
         public void Cleanup()
@@ -21,9 +23,9 @@ namespace TestModel.GmshTests
         [DataRow("Cilindr.step", "1", new int[] { 4, 6, 4, 1 })]
         [DataRow("Korpus_Nasosa.step", "2", new int[] { 376, 684, 291, 1 })]
         [DataRow("model.igs", "3", new int[] { 136, 138, 28 })]
-        public void GetEntitiesGetAllDimensionTest(string fileName, string modelName, int[] expTags)
+        public void GetEntitiesGetAllDimensionTest(string fileName, string modelID, int[] expTags)
         {
-            GmshWrapperModelTests.ModelLoad(fileName, modelName);
+            ModelLoad(fileName, modelID);
             var dim = GmshWrapperGeometry.GetDimension();
             Assert.AreNotEqual(0, dim);
             var tagDims = new int[expTags.Length][];
@@ -39,9 +41,9 @@ namespace TestModel.GmshTests
         [DataRow("Korpus_Nasosa.step", "2", new int[] { 376, 684, 291, 1 },
                   new string[] { "Point", "Curve", "Surface", "Volume" })]
         [DataRow("model.igs", "3", new int[] { 136, 138, 28 }, new string[] { "Point", "Curve", "Surface" })]
-        public void SetGetRemoveEntityNameTest(string fileName, string modelName, int[] entCount, string[] entName)
+        public void SetGetRemoveEntityNameTest(string fileName, string modelID, int[] entCount, string[] entName)
         {
-            GmshWrapperModelTests.ModelLoad(fileName, modelName);
+            ModelLoad(fileName, modelID);
             var ent = GmshWrapperGeometry.GetEntitiesTags(-1);
             for (var i = 1; i < ent.Length; i += 2)
             {
@@ -64,9 +66,9 @@ namespace TestModel.GmshTests
                                    new double[] { 2591.2, 2540, 508 })]
         [DataRow("sphere.geo", "4", new double[] { -1, -1, -1 },
                                     new double[] { 1, 1, 1 })]
-        public void ModelBoundingBoxTest(string fileName, string modelName, double[] minExp, double[] maxExp)
+        public void ModelBoundingBoxTest(string fileName, string modelID, double[] minExp, double[] maxExp)
         {
-            GmshWrapperModelTests.ModelLoad(fileName, modelName);
+            ModelLoad(fileName, modelID);
             double[] min, max;
             GmshWrapperGeometry.GetBoundingBox(-1, -1, out min, out max);
             for (var i = 0; i < 3; ++i)
@@ -76,66 +78,41 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow("Cilindr.step", "1", 1, new int[] { }, new int[] { 1, 2, 6 })]
-        [DataRow("Cilindr.step", "1", 2, new int[] { }, new int[] { 1, 4, 5 })]
-        [DataRow("Cilindr.step", "1", 3, new int[] { }, new int[] { 2, 3, 6 })]
-        [DataRow("Cilindr.step", "1", 4, new int[] { }, new int[] { 3, 4, 5 })]
-        [DataRow("sphere.geo", "2", 1, new int[] { }, new int[] { })]
-        [DataRow("sphere.geo", "2", 2, new int[] { }, new int[] { 1, 4, 9, 12 })]
-        [DataRow("sphere.geo", "2", 3, new int[] { }, new int[] { 1, 2, 5, 8 })]
-        [DataRow("sphere.geo", "2", 4, new int[] { }, new int[] { 2, 3, 10, 11 })]
-        [DataRow("sphere.geo", "2", 5, new int[] { }, new int[] { 3, 4, 6, 7 })]
-        [DataRow("sphere.geo", "2", 6, new int[] { }, new int[] { 5, 6, 11, 12 })]
-        [DataRow("sphere.geo", "2", 7, new int[] { }, new int[] { 7, 8, 9, 10 })]
-        public void GetAdjacenciesControlPointTest(string fileName, string modelName, int tag, int[] downExp, int[] upExp)
+        [DataRow("Cilindr.step", "1", 1, new int[] { }, new int[] { 1, 2, 6 }, 0)]
+        [DataRow("Cilindr.step", "1", 2, new int[] { }, new int[] { 1, 4, 5 }, 0)]
+        [DataRow("Cilindr.step", "1", 3, new int[] { }, new int[] { 2, 3, 6 }, 0)]
+        [DataRow("Cilindr.step", "1", 4, new int[] { }, new int[] { 3, 4, 5 }, 0)]
+        [DataRow("sphere.geo", "2", 1, new int[] { }, new int[] { }, 0)]
+        [DataRow("sphere.geo", "2", 2, new int[] { }, new int[] { 1, 4, 9, 12 }, 0)]
+        [DataRow("sphere.geo", "2", 3, new int[] { }, new int[] { 1, 2, 5, 8 }, 0)]
+        [DataRow("sphere.geo", "2", 4, new int[] { }, new int[] { 2, 3, 10, 11 }, 0)]
+        [DataRow("sphere.geo", "2", 5, new int[] { }, new int[] { 3, 4, 6, 7 }, 0)]
+        [DataRow("sphere.geo", "2", 6, new int[] { }, new int[] { 5, 6, 11, 12 }, 0)]
+        [DataRow("sphere.geo", "2", 7, new int[] { }, new int[] { 7, 8, 9, 10 }, 0)]
+        [DataRow("sphere.geo", "1", 1, new int[] { 2, 3 }, new int[] { 18, 22 }, 1)]
+        [DataRow("sphere.geo", "1", 2, new int[] { 3, 4 }, new int[] { 14, 20 }, 1)]
+        [DataRow("sphere.geo", "1", 3, new int[] { 4, 5 }, new int[] { 16, 24 }, 1)]
+        [DataRow("sphere.geo", "1", 4, new int[] { 5, 2 }, new int[] { 26, 28 }, 1)]
+        [DataRow("sphere.geo", "1", 5, new int[] { 3, 6 }, new int[] { 20, 22 }, 1)]
+        [DataRow("sphere.geo", "1", 6, new int[] { 6, 5 }, new int[] { 24, 28 }, 1)]
+        [DataRow("sphere.geo", "1", 7, new int[] { 5, 7 }, new int[] { 16, 26 }, 1)]
+        [DataRow("sphere.geo", "1", 8, new int[] { 7, 3 }, new int[] { 14, 18 }, 1)]
+        [DataRow("sphere.geo", "1", 9, new int[] { 2, 7 }, new int[] { 18, 26 }, 1)]
+        [DataRow("sphere.geo", "1", 10, new int[] { 7, 4 }, new int[] { 14, 16 }, 1)]
+        [DataRow("sphere.geo", "1", 11, new int[] { 4, 6 }, new int[] { 20, 24 }, 1)]
+        [DataRow("sphere.geo", "1", 12, new int[] { 6, 2 }, new int[] { 22, 28 }, 1)]
+        [DataRow("Cilindr.step", "1", 1, new int[] { 1, 2, 3, 4 }, new int[] { 1 }, 2)]
+        [DataRow("Cilindr.step", "1", 2, new int[] { 1, 5, 3, 6 }, new int[] { 1 }, 2)]
+        [DataRow("Cilindr.step", "1", 3, new int[] { 4, 5 }, new int[] { 1 }, 2)]
+        [DataRow("Cilindr.step", "1", 4, new int[] { 6, 2 }, new int[] { 1 }, 2)]
+        [DataRow("Cilindr.step", "1", 1, new int[] { 1, 2, 3, 4 }, new int[] { }, 3)]
+        [DataRow("sphere.geo", "2", 30, new int[] { 28, 26, 16, 14, 20, 24, 22, 18 }, new int[] { }, 3)]
+        [DataRow("sphere.geo", "2", 1, null, null, 3)]//Not Found Test
+        public void GetAdjacenciesTest(string fileName, string modelId, int tag, int[] downExp, int[] upExp, int dim)
         {
-            GmshWrapperModelTests.ModelLoad(fileName, modelName);
-            var adj = GmshWrapperGeometry.GetAdjacencies(0, tag);
-            CollectionAssert.AreEqual(downExp, adj[0]);
-            CollectionAssert.AreEqual(upExp, adj[1]);
-        }
-        [DataTestMethod]
-        [DataRow("sphere.geo", "1", 1, new int[] { 2, 3 }, new int[] { 18, 22 })]
-        [DataRow("sphere.geo", "1", 2, new int[] { 3, 4 }, new int[] { 14, 20 })]
-        [DataRow("sphere.geo", "1", 3, new int[] { 4, 5 }, new int[] { 16, 24 })]
-        [DataRow("sphere.geo", "1", 4, new int[] { 5, 2 }, new int[] { 26, 28 })]
-        [DataRow("sphere.geo", "1", 5, new int[] { 3, 6 }, new int[] { 20, 22 })]
-        [DataRow("sphere.geo", "1", 6, new int[] { 6, 5 }, new int[] { 24, 28 })]
-        [DataRow("sphere.geo", "1", 7, new int[] { 5, 7 }, new int[] { 16, 26 })]
-        [DataRow("sphere.geo", "1", 8, new int[] { 7, 3 }, new int[] { 14, 18 })]
-        [DataRow("sphere.geo", "1", 9, new int[] { 2, 7 }, new int[] { 18, 26 })]
-        [DataRow("sphere.geo", "1", 10, new int[] { 7, 4 }, new int[] { 14, 16 })]
-        [DataRow("sphere.geo", "1", 11, new int[] { 4, 6 }, new int[] { 20, 24 })]
-        [DataRow("sphere.geo", "1", 12, new int[] { 6, 2 }, new int[] { 22, 28 })]
-        public void GetAdjacenciesCurvesTest(string fileName, string modelName, int tag, int[] downExp, int[] upExp)
-        {
-            GmshWrapperModelTests.ModelLoad(fileName, modelName);
-            var adj = GmshWrapperGeometry.GetAdjacencies(1, tag);
-            CollectionAssert.AreEqual(downExp, adj[0]);
-            CollectionAssert.AreEqual(upExp, adj[1]);
-        }
+            ModelLoad(fileName, modelId);
 
-        [DataTestMethod]
-        [DataRow("Cilindr.step", "1", 1, new int[] { 1, 2, 3, 4 }, new int[] { 1 })]
-        [DataRow("Cilindr.step", "1", 2, new int[] { 1, 5, 3, 6 }, new int[] { 1 })]
-        [DataRow("Cilindr.step", "1", 3, new int[] { 4, 5 }, new int[] { 1 })]
-        [DataRow("Cilindr.step", "1", 4, new int[] { 6, 2 }, new int[] { 1 })]
-        public void GetAdjacenciesSurfacesTest(string fileName, string modelName, int tag, int[] downExp, int[] upExp)
-        {
-            GmshWrapperModelTests.ModelLoad(fileName, modelName);
-            var adj = GmshWrapperGeometry.GetAdjacencies(2, tag);
-            CollectionAssert.AreEqual(downExp, adj[0]);
-            CollectionAssert.AreEqual(upExp, adj[1]);
-        }
-
-        [DataTestMethod]
-        [DataRow("Cilindr.step", "1", 1, new int[] { 1, 2, 3, 4 }, new int[] { })]
-        [DataRow("sphere.geo", "2", 30, new int[] { 28, 26, 16, 14, 20, 24, 22, 18 }, new int[] { })]
-        [DataRow("sphere.geo", "2", 1, null, null)]//Not Found Test
-        public void GetAdjacenciesVolumeTest(string fileName, string modelName, int tag, int[] downExp, int[] upExp)
-        {
-            GmshWrapperModelTests.ModelLoad(fileName, modelName);
-            var adj = GmshWrapperGeometry.GetAdjacencies(3, tag);
+            var adj = GmshWrapperGeometry.GetAdjacencies(dim, tag);
             CollectionAssert.AreEqual(downExp, adj[0]);
             CollectionAssert.AreEqual(upExp, adj[1]);
         }
@@ -147,10 +124,10 @@ namespace TestModel.GmshTests
         [DataRow("Cilindr.step", "1", 4, new double[] { }, new double[] { -10.6317844476, -2.25496193279, 2.33468147911e-16 })]
         [DataRow("Cilindr.step", "1", 5, new double[] { }, new double[] { })]//Not found test
 
-        public void GetLocalCoordsByParametricTest(string fileName, string modelName, int tag,
+        public void GetLocalCoordsByParametricTest(string fileName, string modelID, int tag,
                                                    double[] parametric, double[] expected)
         {
-            GmshWrapperModelTests.ModelLoad(fileName, modelName);
+            ModelLoad(fileName, modelID);
             var local = GmshWrapperGeometry.GetLocalCoordByParametric(0, tag, parametric);
             for (var i = 0; i < expected.Length; ++i)
                 Assert.AreEqual(expected[i], local[i], 1e-08);
@@ -158,9 +135,9 @@ namespace TestModel.GmshTests
         [DataTestMethod]
         [DataRow("Cilindr.step", "1", new int[] { 1, 2, 3, 4, 5, 6 })]
         [DataRow("sphere.geo", "2", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 })]
-        public void ParametrizationCurvesTest(string fileName, string modelName, int[] tags)
+        public void ParametrizationCurvesTest(string fileName, string modelID, int[] tags)
         {
-            GmshWrapperModelTests.ModelLoad(fileName, modelName);
+            ModelLoad(fileName, modelID);
             for (var i = 0; i < tags.Length; ++i)
             {
                 var expected = GmshWrapperGeometry.GetParametrizationBounds(1, tags[i]);
@@ -180,7 +157,7 @@ namespace TestModel.GmshTests
         //[DataRow("sphere.geo", "2", new int[] { 14, 16, 18, 20, 22, 24, 26, 28})]
         public void ParametrizationSurfacesTest(string fileName, string modelName, int[] tags)
         {
-            GmshWrapperModelTests.ModelLoad(fileName, modelName);
+            ModelLoad(fileName, modelName);
             for (var i = 0; i < tags.Length; ++i)
             {
                 var expected = GmshWrapperGeometry.GetParametrizationBounds(2, tags[i]);
@@ -201,7 +178,8 @@ namespace TestModel.GmshTests
 
         public void AttributeTest(string fileName, string modelName)
         {
-            GmshWrapperModelTests.ModelLoad(fileName, modelName);
+            ModelLoad(fileName, modelName);
+
             GmshWrapperMesh.SetTransfiniteCurve(4, 20, "Progression", 1.0);
             GmshWrapperMesh.SetTransfiniteCurve(5, 20, "Progression", 1.0);
             var expected = new string[] { "4", "5" };
@@ -224,6 +202,13 @@ namespace TestModel.GmshTests
             GmshWrapperGeometry.RemoveEntityName(delName);
             if (status)
                 Assert.AreEqual("",GmshWrapperGeometry.GetEntityName(dim, delId));
+        }
+
+        private void ModelLoad(string fileName, string modelID)
+        {
+            GmshWrapperModel.ModelAdd(modelID);
+            GmshWrapperIO.Load(modelFolder + fileName);
+            GmshWrapperIO.SetCurrentModelFileName(fileName);
         }
     }
 }

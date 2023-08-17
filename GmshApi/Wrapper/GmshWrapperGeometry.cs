@@ -1,4 +1,5 @@
-﻿using Model;
+﻿using Functions.Select;
+using Model;
 using Model.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -424,7 +425,7 @@ namespace GmshApi
                 var points = GmshWrapperModel.ConvertLocalCoordsToPoints3D(locals);
                 var nodes = new List<Node>();
                 var num = 0;
-                foreach (var pair in points.Bigrams())
+                foreach (var pair in points.Bigrams(true))
                 {
                     var line = new Node[] { new Node(num++, pair.Item1), new Node(num++, pair.Item2) };
                     nodes.AddRange(line);

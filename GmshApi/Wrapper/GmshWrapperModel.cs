@@ -43,11 +43,11 @@ namespace GmshApi
         /// <summary>
         /// Добавляет модель в список, делая ее текущей
         /// </summary>
-        /// <param name="model">[In]Строка имя модели</param>
-        public static void ModelAdd(string model)
+        /// <param name="modelId">[In]Строка имя модели</param>
+        public static void ModelAdd(string modelId)
         {
             var ierr = 0;
-            GmshModel.gmshModelAdd(model, ref ierr);
+            GmshModel.gmshModelAdd(modelId, ref ierr);
         }
         /// <summary>
         /// Удаляет текущую модель из списка

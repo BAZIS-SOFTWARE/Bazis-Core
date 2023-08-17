@@ -3,6 +3,7 @@ using Model;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 
 
@@ -34,7 +35,7 @@ namespace ModelController.MeshObjsUtility
             var interfacedElements = new FindInterfacedNodes(elements).Find();
             var firstNode = (Node)objectsData.Find(indexFirst);
             var secondNode = (Node)objectsData.Find(indexSecond);
-            var initialDirection = secondNode.Position.Sub(firstNode.Position);
+            var previousDirection = secondNode.Position.Sub(firstNode.Position);
             var result = new HashSet<int> { indexFirst, indexSecond };
             var currentNode = secondNode;
             var isMoveNext = true;
@@ -47,10 +48,11 @@ namespace ModelController.MeshObjsUtility
                     foreach(var node in element.GetNodes())
                     {
                         var currentDirection = node.Position.Sub(currentNode.Position);
-                        var angle = Math.Acos(Vector.GetAngleVectors(currentDirection, initialDirection));
+                        var angle = Math.Acos(Vector.GetAngleVectors(currentDirection, previousDirection));
                         if(angle <= ConvertGradusToRadian(angleInGradus) && !result.Contains(node.Number))
                         {
                             currentNode = node;
+                            previousDirection = currentDirection;
                             node.MasterColor = color;
                             result.Add(node.Number);
                             isMoveNext = true;

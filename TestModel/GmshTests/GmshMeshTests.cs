@@ -7,7 +7,7 @@ namespace TestModel.GmshTests
     [TestClass]
     public class GmshMeshTests
     {
-        private static string modelFolder = @"..\..\Examples\GMSHConnector\";
+        private static string modelFolder = @"..\..\..\Examples\GMSHConnector\";
 
         [TestInitialize]
         public void Init()
@@ -27,6 +27,7 @@ namespace TestModel.GmshTests
         {
             using (var geometry = new GeometryObject(modelFolder + fileName))
             {
+                GmshWrapperModel.ModelSetCurrent(geometry.Id.ToString());
                 var mesh = geometry.Generate(2);
                 var nodes = mesh.GetNodes();
                 Assert.AreEqual(187, nodes.Count());
@@ -39,6 +40,7 @@ namespace TestModel.GmshTests
         {
             using (var geometry = new GeometryObject(modelFolder + fileName))
             {
+                GmshWrapperModel.ModelSetCurrent(geometry.Id.ToString());
                 var mesh = geometry.Generate(2);
                 var nodesUntil = mesh.GetNodes();
                 mesh.RefineMesh();
@@ -52,6 +54,7 @@ namespace TestModel.GmshTests
         {
             using (var geometry = new GeometryObject(modelFolder + fileName))
             {
+                GmshWrapperModel.ModelSetCurrent(geometry.Id.ToString());
                 var mesh = geometry.Generate(3);
                 //GmshWrapperMesh.GetElementQualities("minDetJac");
             }
@@ -60,12 +63,14 @@ namespace TestModel.GmshTests
 
 
         [DataTestMethod]
-        [DataRow("Cilindr.step")]
-        public void GetElements1DTest(string fileName)
+        [DataRow("Cilindr.step", "1", "46")]
+        public void GetElements1DTest(string fileName, string dim, string resNumbs)
         {
+            var intDim = int.Parse(dim);
             using (var geometry = new GeometryObject(modelFolder + fileName))
             {
-                var mesh = geometry.Generate(1);
+                GmshWrapperModel.ModelSetCurrent(geometry.Id.ToString());
+                var mesh = geometry.Generate(intDim);
                 var elements = mesh.GetElement1D();
                 Assert.AreEqual(46, elements.Count());
             }
@@ -77,6 +82,7 @@ namespace TestModel.GmshTests
         {
             using (var geometry = new GeometryObject(modelFolder + fileName))
             {
+                GmshWrapperModel.ModelSetCurrent(geometry.Id.ToString());
                 var mesh = geometry.Generate(2);
                 var elements = mesh.GetElement2D();
                 Assert.AreEqual(370, elements.Count());
@@ -89,6 +95,7 @@ namespace TestModel.GmshTests
         {
             using (var geometry = new GeometryObject(modelFolder + fileName))
             {
+                GmshWrapperModel.ModelSetCurrent(geometry.Id.ToString());
                 var mesh = geometry.Generate(3);
                 var elements = mesh.GetElement3D();
                 Assert.AreEqual(707, elements.Count());
@@ -101,10 +108,12 @@ namespace TestModel.GmshTests
         {
             using (var geometry = new GeometryObject(modelFolder + fileName))
             {
+                GmshWrapperModel.ModelSetCurrent(geometry.Id.ToString());
                 var mesh = geometry.Generate(2);
                 var untilElements = mesh.GetElement2D();
                 mesh.Density = 0.5;
-                geometry.Remesh(2);
+                mesh.Generate(1);
+                mesh.Generate(2);
                 var afterElements = mesh.GetElement2D();
                 Assert.IsTrue(untilElements.Count() < afterElements.Count());
             }
@@ -116,6 +125,7 @@ namespace TestModel.GmshTests
         {
             using (var geometry = new GeometryObject(modelFolder + fileName))
             {
+                GmshWrapperModel.ModelSetCurrent(geometry.Id.ToString());
                 var mesh = geometry.Generate(1);
                 var length1 = mesh.GetNodes().ToArray().Length;
                 mesh.Density = 0.5;
@@ -135,14 +145,17 @@ namespace TestModel.GmshTests
         {
             using (var geometry = new GeometryObject(modelFolder + fileName))
             {
+                GmshWrapperModel.ModelSetCurrent(geometry.Id.ToString());
                 var mesh = geometry.Generate(2);
                 var length1 = mesh.GetElement2D().ToArray().Length;
                 mesh.Density = 0.5;
-                mesh.Remesh(2);
+                mesh.Generate(1);
+                mesh.Generate(2);
                 var length2 = mesh.GetElement2D().ToArray().Length;
                 Assert.AreEqual(true, length2 > length1);
                 mesh.Density = 1;
-                mesh.Remesh(2);
+                mesh.Generate(1);
+                mesh.Generate(2);
                 var length3 = mesh.GetElement2D().ToArray().Length;
                 Assert.AreEqual(true, length3 < length2);
             }
@@ -154,14 +167,17 @@ namespace TestModel.GmshTests
         {
             using (var geometry = new GeometryObject(modelFolder + fileName))
             {
+                GmshWrapperModel.ModelSetCurrent(geometry.Id.ToString());
                 var mesh = geometry.Generate(3);
                 var length1 = mesh.GetElement3D().ToArray().Length;
                 mesh.Density = 0.5;
-                mesh.Remesh(3);
+                mesh.Generate(1);
+                mesh.Generate(3);
                 var length2 = mesh.GetElement3D().ToArray().Length;
                 Assert.AreEqual(true, length2 > length1);
                 mesh.Density = 1;
-                mesh.Remesh(3);
+                mesh.Generate(1);
+                mesh.Generate(3);
                 var length3 = mesh.GetElement3D().ToArray().Length;
                 Assert.AreEqual(true, length3 < length2);
             }
@@ -173,6 +189,7 @@ namespace TestModel.GmshTests
         {
             using (var geometry = new GeometryObject(modelFolder + fileName))
             {
+                GmshWrapperModel.ModelSetCurrent(geometry.Id.ToString());
                 var mesh = geometry.Generate(2);
                 for (var i = 0; i < tags.Length; ++i)
                 {
@@ -188,6 +205,7 @@ namespace TestModel.GmshTests
         {
             using (var geometry = new GeometryObject(modelFolder + fileName))
             {
+                GmshWrapperModel.ModelSetCurrent(geometry.Id.ToString());
                 var mesh = geometry.Generate(2);
                 var nodesCountUntil = mesh.GetNodes().Count();
                 mesh.ChangeTriangulationAlgorithm2D(Triangulation2DAlgorithm.Automatic);
@@ -218,10 +236,12 @@ namespace TestModel.GmshTests
         {
             using (var geometry = new GeometryObject(modelFolder + fileName))
             {
+                GmshWrapperModel.ModelSetCurrent(geometry.Id.ToString());
                 var mesh = geometry.Generate(2);
                 var nodesCountUntil = mesh.GetNodes().Count();
                 mesh.SetMeshPointsOnCurve(10, TransfiniteAlgorithm.Progressive, 1.5, 4);
-                mesh.Remesh(2);
+                mesh.Generate(1);
+                mesh.Generate(2);
                 var nodesCountAfter = mesh.GetNodes().Count();
                 Assert.IsTrue(nodesCountAfter != nodesCountUntil);
                 var lengthBefore = mesh.GetElement2D().ToArray().Length;    
@@ -236,6 +256,7 @@ namespace TestModel.GmshTests
         {
             using (var geometry = new GeometryObject(modelFolder + fileName))
             {
+                GmshWrapperModel.ModelSetCurrent(geometry.Id.ToString());
                 var mesh = geometry.Generate(2);
                 var lengthBefore = mesh.GetElement2D().ToArray().Length;
                 mesh.RemoveSurfaceById(2);
@@ -249,6 +270,7 @@ namespace TestModel.GmshTests
         {
             using (var geometry = new GeometryObject(modelFolder + fileName))
             {
+                GmshWrapperModel.ModelSetCurrent(geometry.Id.ToString());
                 var mesh = geometry.Generate(2);
                 mesh.RemoveSurfaceById(1);
                 mesh.RemoveSurfaceById(2);
@@ -265,6 +287,7 @@ namespace TestModel.GmshTests
         {
             using (var geometry = new GeometryObject(modelFolder + fileName))
             {
+                GmshWrapperModel.ModelSetCurrent(geometry.Id.ToString());
                 var mesh = geometry.Generate(2);
                 var lengthBefore = mesh.GetElement2D().ToArray().Length;
                 mesh.RemoveElements2D(elTags);

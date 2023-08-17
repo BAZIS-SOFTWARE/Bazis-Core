@@ -7,7 +7,7 @@ namespace TestModel.GmshTests
     [TestClass]
     public class GmshGeometryTests
     {
-        private static string modelFolder = @"..\..\Examples\GMSHConnector\";
+        private static string modelFolder = @"..\..\..\Examples\GMSHConnector\";
         [TestInitialize]
         public void Init()
         {
@@ -24,6 +24,7 @@ namespace TestModel.GmshTests
         {
             using (var geometry = new GeometryObject(modelFolder + fileName))
             {
+                GmshWrapperModel.ModelSetCurrent(geometry.Id.ToString());
                 var curves = geometry.GetСurves();
                 Assert.AreEqual(6, curves.Count());
             }
@@ -33,7 +34,8 @@ namespace TestModel.GmshTests
         public void GetElements1DTest(string fileName)
         {
             using (var geometry = new GeometryObject(modelFolder + fileName))
-            { 
+            {
+                GmshWrapperModel.ModelSetCurrent(geometry.Id.ToString());
                 var lines = geometry.GetElements1D();
                 Assert.AreEqual(6, lines.Count());
             }
@@ -45,6 +47,7 @@ namespace TestModel.GmshTests
         {
             using (var geometry = new GeometryObject(modelFolder + fileName))
             {
+                GmshWrapperModel.ModelSetCurrent(geometry.Id.ToString());
                 var points = geometry.GetControlPoints();
                 Assert.AreEqual(4, points.Count());
             }
@@ -56,6 +59,7 @@ namespace TestModel.GmshTests
         {
             using (var geometry = new GeometryObject(modelFolder + fileName))
             {
+                GmshWrapperModel.ModelSetCurrent(geometry.Id.ToString());
                 var curveUntil = geometry.GetСurves().First();
                 geometry.CurveSteps = 15; // but default is 20
                 var curveAfter = geometry.GetСurves().First();
@@ -68,15 +72,21 @@ namespace TestModel.GmshTests
         [DataRow(10000)]
         public void ModelTest(int count)
         {
-            var models = new GeometryObject[count];
+            var geObjects = new GeometryObject[count];
             for(var i = 0; i < count; ++i)
             {
-                models[i] = new GeometryObject();
-                Assert.AreEqual(true, GmshWrapperModel.ModelFind(models[i].Id.ToString()));
+                geObjects[i] = new GeometryObject();
+                Assert.AreEqual(true, GmshWrapperModel.ModelFind(geObjects[i].Id.ToString()));
             }
-            Assert.AreEqual(models.Length + 1, GmshWrapperModel.ModelList().Length);
+            Assert.AreEqual(geObjects.Length + 1, GmshWrapperModel.ModelList().Length);
+
+
             for (var i = 0; i < count; ++i)
-                models[i].Dispose();
+            {
+                GmshWrapperModel.ModelSetCurrent(geObjects[i].Id.ToString());
+                geObjects[i].Dispose();
+            }
+
             var list = GmshWrapperModel.ModelList();
             Assert.AreEqual(true, list.Length == 1 && list[0] == string.Empty);
         }
@@ -90,6 +100,7 @@ namespace TestModel.GmshTests
                 {
                     var entities = GmshWrapperGeometry.GetEntitiesTags(-1);
                     var lengthBefore = entities.Length;
+                    GmshWrapperModel.ModelSetCurrent(geometry.Id.ToString());
                     geometry.DeleteEntities(new int[] { dimArray[i], entities[1] });//Delete first id
                     var newEntities = GmshWrapperGeometry.GetEntitiesTags(-1);
                     var lengthAfter = newEntities.Length;

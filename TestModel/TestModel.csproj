@@ -65,13 +65,11 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Functions, Version=1.0.1.40, Culture=neutral, PublicKeyToken=65fde98421b2fc88, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Functions.1.0.2.10\lib\net48\Functions.dll</HintPath>
+    <Reference Include="Functions, Version=1.0.2.19, Culture=neutral, PublicKeyToken=65fde98421b2fc88, processorArchitecture=MSIL">
+      <HintPath>..\packages\Functions.1.0.2.19\lib\net48\Functions.dll</HintPath>
     </Reference>
-    <Reference Include="Geometry, Version=2.0.5.30, Culture=neutral, PublicKeyToken=cadb58b3f6b10f0c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Geometry.2.0.5.40\lib\net48\Geometry.dll</HintPath>
+    <Reference Include="Geometry, Version=2.0.5.45, Culture=neutral, PublicKeyToken=cadb58b3f6b10f0c, processorArchitecture=MSIL">
+      <HintPath>..\packages\Geometry.2.0.5.45\lib\net48\Geometry.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\MSTest.TestFramework.3.0.4\lib\net462\Microsoft.VisualStudio.TestPlatform.TestFramework.dll</HintPath>
@@ -94,17 +92,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GmshTests\GmshGeometryTests.cs" />
-    <Compile Include="GmshTests\GmshMeshFieldTests.cs" />
     <Compile Include="GmshTests\GmshMeshTests.cs" />
     <Compile Include="GmshTests\GmshWrapperConnectionTests.cs" />
     <Compile Include="GmshTests\GmshWrapperGeometryTests.cs" />
     <Compile Include="GmshTests\GmshWrapperMeshTests.cs" />
     <Compile Include="GmshTests\GmshWrapperModelTests.cs" />
+    <Compile Include="GmshTests\MeshQualityTests.cs" />
     <Compile Include="SearchModelObjects.cs" />
     <Compile Include="TestAlphaColor.cs" />
     <Compile Include="TestCalcDistance.cs" />
     <Compile Include="TestEdgeFlags.cs" />
     <Compile Include="TestElement.cs" />
+    <Compile Include="TestFormFunctions.cs" />
     <Compile Include="TestIO.cs" />
     <Compile Include="TestModelControllerASCII.cs" />
     <Compile Include="TestModelControllerGMSH_inp.cs" />
@@ -128,15 +127,6 @@
     <None Include="Examples\3D\Korpus.inp" />
     <None Include="Examples\3D\Lazer.inp" />
     <None Include="Examples\3D\untitled.inp" />
-    <None Include="Examples\GMSHConnector\Cilindr1D.stp" />
-    <None Include="Examples\GMSHConnector\Cilindr2D.stp" />
-    <None Include="Examples\GMSHConnector\Cilindr3D.stp" />
-    <None Include="Examples\GMSHConnector\model1D.igs" />
-    <None Include="Examples\GMSHConnector\model2D.igs" />
-    <None Include="Examples\GMSHConnector\model3D.igs" />
-    <None Include="Examples\GMSHConnector\sphere1D.geo" />
-    <None Include="Examples\GMSHConnector\sphere2D.geo" />
-    <None Include="Examples\GMSHConnector\sphere3D.geo" />
     <None Include="Examples\STL\ACII.stl" />
     <None Include="Examples\VIsual-Mesh\big_cubeDATA1.ASC" />
     <None Include="Examples\VIsual-Mesh\cilinder3DATA1.ASC" />
@@ -156,6 +146,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Examples\CDB\" />
+    <Folder Include="Examples\GMSHConnector\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GmshApi\GmshApi.csproj">

@@ -18,8 +18,6 @@ namespace Model
             MasterColor = Color.FromArgb(255, 192, 203);
             SlaveColor = Color.FromArgb(255, 192, 203);
 
-
-
             this.nodes = nodes;
             ObjType = "Элементы1D";
             ObjKind = objKind;
@@ -46,7 +44,10 @@ namespace Model
 
         public override float[] GetFormFunctions(Point3D point3D)
         {
-            throw new NotImplementedException();
+            var answer = new float[2];
+            answer[0] = (nodes[1].Position._x - point3D._x) / CalcLength();
+            answer[1] = (point3D._x - nodes[0].Position._x) / CalcLength();
+            return answer;
         }
     }
 }
