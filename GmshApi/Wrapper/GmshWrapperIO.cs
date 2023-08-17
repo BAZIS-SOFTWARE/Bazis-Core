@@ -50,7 +50,7 @@ namespace GmshApi
         /// Задает имя файла для текущей модели
         /// </summary>
         /// <param name="fileName">[In]Имя файла</param>
-        public static void SetCurrentModelFileName(String fileName)
+        public static void SetCurrentModelFileName(string fileName)
         {
             var ierr = 0;
             GmshIO.gmshModelSetFileName(fileName, ref ierr);

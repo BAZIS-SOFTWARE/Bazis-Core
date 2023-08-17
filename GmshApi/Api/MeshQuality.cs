@@ -20,7 +20,7 @@ namespace GmshApi.Api
 
         //public double[] GetMinJacobianValues()
         //{
-        //    return GmshWrapperMesh.GetElementQualities("maxDetJac");
+        //    return GmshWrapperMesh.GetElementQualities("minDetJac");
         //}
     }
 }

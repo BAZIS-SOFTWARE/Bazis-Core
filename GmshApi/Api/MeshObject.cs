@@ -12,6 +12,7 @@ namespace GmshApi
     public class MeshObject : IMeshApi
     {
         private ulong id;
+        private IMeshQuality meshQuality;
         /// <summary>
         /// Задать\получить размер элементов перед генерацией
         /// </summary>
@@ -39,6 +40,7 @@ namespace GmshApi
         internal MeshObject(ulong Id)  
         {
             id = Id;
+            meshQuality = new MeshQuality();
         }
 
         /// <summary>
@@ -186,7 +188,7 @@ namespace GmshApi
 
         public IMeshQuality QualityAnalyse()
         {
-            return new MeshQuality();
+            return meshQuality;
         }
     }
 }
