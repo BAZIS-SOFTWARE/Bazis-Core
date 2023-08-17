@@ -23,7 +23,7 @@ namespace GmshApi
             set
             {
                 while(idList.FindIndex(v => v == value) != -1)
-                    value = GmshWrapperGeneral.GenerateRandom();
+                    value = GenerateRandom();
                 id = value;
             }
         }
@@ -47,7 +47,7 @@ namespace GmshApi
         public GeometryObject() 
         {
             GmshWrapperConnection.Initialize();
-            Id = GmshWrapperGeneral.GenerateRandom();
+            Id = GenerateRandom();
             GmshWrapperModel.ModelAdd(Id.ToString());
         }
         /// <summary>
@@ -57,7 +57,7 @@ namespace GmshApi
         public GeometryObject(string path)
         {
             GmshWrapperConnection.Initialize();
-            Id = GmshWrapperGeneral.GenerateRandom();
+            Id = GenerateRandom();
             GmshWrapperModel.ModelAdd(Id.ToString());
             Load(path);
         }
@@ -174,6 +174,14 @@ namespace GmshApi
             fieldList.ForEach(v => v.Dispose());
             idList.Remove(Id);
             GmshWrapperModel.ModelRemoveByName(Id.ToString());
+        }
+
+        private ulong GenerateRandom()
+        {
+            var dif = ulong.MaxValue - 1UL;
+            var rand = new Random();
+            var value = rand.NextDouble();
+            return Convert.ToUInt64(value * dif);
         }
     }
 }
