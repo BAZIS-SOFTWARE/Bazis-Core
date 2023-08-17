@@ -6,19 +6,6 @@ using System.Collections.Generic;
 
 namespace GmshApi
 {
-    public enum Dimension
-    { 
-        All = -1,
-        ControlPoints = 0,
-        Node = 0,
-        Curves = 1,
-        Elements1D = 1,
-        Surfaces = 2,
-        Elements2D = 2,
-        Volumes = 3
-    }
-
-
     /// <summary>
     /// Класс содержит информацию о типе извлечнного узла
     /// </summary>
