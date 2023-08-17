@@ -68,17 +68,6 @@ namespace GmshApi
             GmshMesh.gmshModelMeshGenerate(dim, ref ierr);
         }
         /// <summary>
-        /// Перегенирировать сетку
-        /// </summary>
-        /// <param name="dim">[In]Размерность</param>
-        public static void Remesh(int dim)
-        {
-            var ierr = 0;
-            GmshMesh.gmshModelMeshGenerate(1, ref ierr);
-            GmshMesh.gmshModelMeshGenerate(dim, ref ierr);
-        }
-
-        /// <summary>
         /// Переводит большую часть сетки в четырехугольники
         /// </summary>
         public static void Recombine()

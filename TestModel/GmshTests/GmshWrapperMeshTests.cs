@@ -7,6 +7,7 @@ namespace TestModel.GmshTests
     [TestClass]
     public class GmshWrapperMeshTests
     {
+        private static string modelFolder = @"..\..\Examples\GMSHConnector\";
         [TestInitialize]
         public void Init()
         {
@@ -60,10 +61,19 @@ namespace TestModel.GmshTests
         [DataRow("Korpus_Nasosa.step", "2", new int[] { 700, 720, 670, 667, 663 }, new int[] { 0, 0, 5, 2, 9 })]
         [DataRow("model.igs", "3", new int[] { 124, 126, 140, 136, 137 }, new int[] { 1, 1, 0, 5, 6 })]
         [DataRow("sphere.geo", "4", new int[] { 13, 14, 1, 2, 3 }, new int[] { 0, 0, 3, 3, 3 })]
-        public void GenerateMeshGet1DElementsByIdTest(string fileName, string modelName, 
+
+        public void GenerateMeshGet1DElementsByIdTest(string fileName, string modelId, 
                                                         int[] lineTags, int[] expectedLength)
         {
-            GmshWrapperModelTests.ModelLoad(fileName, modelName);
+            GmshWrapperModel.ModelAdd(modelId);
+            
+            CollectionAssert.AreEqual(new string[] { "", modelId }, GmshWrapperModel.ModelList());
+            GmshWrapperIO.Load(modelFolder + fileName);
+
+            GmshWrapperIO.SetCurrentModelFileName(fileName);
+            Assert.AreEqual(fileName, GmshWrapperIO.GetCurrentModelFileName());
+
+            GmshWrapperMesh.Generate(1);
             GmshWrapperMesh.Generate(2);
             for (var i = 0; i < lineTags.Length; ++i)
             {

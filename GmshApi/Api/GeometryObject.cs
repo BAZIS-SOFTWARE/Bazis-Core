@@ -70,8 +70,8 @@ namespace GmshApi
         public void Load(string filePath)
         {
             SetCurrent();
-            GmshWrapperIO.Merge(filePath);
-            GmshWrapperIO.ModelSetFileName(filePath);
+            GmshWrapperIO.Load(filePath);
+            GmshWrapperIO.SetCurrentModelFileName(filePath);
         }
         /// <summary>
         /// Перегененировать сетку

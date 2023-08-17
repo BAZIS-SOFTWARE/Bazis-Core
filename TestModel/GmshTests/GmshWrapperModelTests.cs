@@ -138,8 +138,8 @@ namespace TestModel.GmshTests
             for (var i = 0; i < add.Length; ++i)
             {
                 GmshWrapperModel.ModelAdd(add[i]);
-                GmshWrapperIO.ModelSetFileName(add[i]);
-                Assert.AreEqual(add[i], GmshWrapperIO.ModelGetFileName());
+                GmshWrapperIO.SetCurrentModelFileName(add[i]);
+                Assert.AreEqual(add[i], GmshWrapperIO.GetCurrentModelFileName());
             }
         }
         [DataTestMethod]
@@ -155,9 +155,9 @@ namespace TestModel.GmshTests
         {
             GmshWrapperModel.ModelAdd(modelName);
             CollectionAssert.AreEqual(new string[] { "", modelName }, GmshWrapperModel.ModelList());
-            GmshWrapperIO.Merge(modelFolder + fileName);
-            GmshWrapperIO.ModelSetFileName(fileName);
-            Assert.AreEqual(fileName, GmshWrapperIO.ModelGetFileName());
+            GmshWrapperIO.Load(modelFolder + fileName);
+            GmshWrapperIO.SetCurrentModelFileName(fileName);
+            Assert.AreEqual(fileName, GmshWrapperIO.GetCurrentModelFileName());
         }
     }
 }
