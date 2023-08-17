@@ -2,7 +2,6 @@
 using Model;
 using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace GmshApi
 { 
@@ -12,6 +11,7 @@ namespace GmshApi
     public class MeshObject : IMeshApi
     {
         private ulong id;
+        private IMeshQuality meshQuality;
 
         /// <summary>
         /// Задать\получить размер элементов перед генерацией
@@ -32,14 +32,18 @@ namespace GmshApi
         /// <summary>
         /// Коснтруктор по умолчанию
         /// </summary>
-        internal MeshObject() : base(){}
+        internal MeshObject()
+        {
+
+        }
         /// <summary>
         /// Конструктор с загрузкой файла-геометрии
         /// </summary>
         /// <param name="path">[In]Путь до файла</param>
-        internal MeshObject(ulong Id)  
+        internal MeshObject(ulong Id)
         {
             id = Id;
+            meshQuality = new MeshQuality();
         }
 
         /// <summary>
@@ -179,7 +183,7 @@ namespace GmshApi
 
         public IMeshQuality QualityAnalyse()
         {
-            return new MeshQuality();
+            return meshQuality;
         }
     }
 }

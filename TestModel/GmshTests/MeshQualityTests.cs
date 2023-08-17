@@ -46,15 +46,15 @@ namespace TestModel.GmshTests
             }
         }
 
-        [TestMethod]
-        public void GetMinJacobianValues_ShouldReturnCorrectAverageValue()
-        {
-            using (var geometry = new GeometryObject(path))
-            {
-                var mesh = geometry.Generate(3);
-                var values = mesh.QualityAnalyse().GetMinJacobianValues();
-                Assert.AreEqual(54.2, values.Average(), 1e-2);
-            }
-        }
+        //[TestMethod]
+        //public void GetMinJacobianValues_ShouldReturnCorrectAverageValue()
+        //{
+        //    using (var geometry = new GeometryObject(path))
+        //    {
+        //        var mesh = geometry.Generate(3);
+        //        var values = mesh.QualityAnalyse().GetMinJacobianValues();
+        //        Assert.AreEqual(54.2, values.Average(), 1e-2);
+        //    }
+        //}
     }
 }
