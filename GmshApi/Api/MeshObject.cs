@@ -13,6 +13,7 @@ namespace GmshApi
     {
         private ulong id;
         private IMeshQuality meshQuality;
+
         /// <summary>
         /// Задать\получить размер элементов перед генерацией
         /// </summary>
@@ -30,12 +31,16 @@ namespace GmshApi
         /// <summary>
         /// Коснтруктор по умолчанию
         /// </summary>
-        internal MeshObject() : base(){}
+        internal MeshObject()
+        {
+
+        }
         /// <summary>
         /// Конструктор с загрузкой файла-геометрии
         /// </summary>
         /// <param name="Id">[In]Путь до файла</param>
         internal MeshObject(ulong Id)  
+
         {
             id = Id;
             meshQuality = new MeshQuality();
