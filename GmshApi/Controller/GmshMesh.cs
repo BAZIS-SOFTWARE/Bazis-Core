@@ -190,7 +190,7 @@ namespace GmshApi
         [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void gmshModelMeshGetElementQualities(IntPtr[] elementTags, IntPtr elementTags_n,
             ref IntPtr elementsQuality, ref IntPtr elementQuality_n,
-            String qualityName,
+            string qualityName,
             IntPtr task,
             IntPtr numTasks,
             ref int ierr);

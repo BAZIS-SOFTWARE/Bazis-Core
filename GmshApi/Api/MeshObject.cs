@@ -20,12 +20,10 @@ namespace GmshApi
         {
             get
             {
-                SetCurrent();
                 return GmshWrapperGeneral.OptionGetNumber("Mesh.MeshSizeFactor");
             }
             set
             {
-                SetCurrent();
                 GmshWrapperGeneral.OptionSetNumber("Mesh.MeshSizeFactor", value);
             }
         }
@@ -48,7 +46,6 @@ namespace GmshApi
         /// </summary>
         public void QuadrangulateMesh()
         {
-            SetCurrent();
             GmshWrapperMesh.Recombine();
         }
         /// <summary>
@@ -56,7 +53,6 @@ namespace GmshApi
         /// </summary>
         public void RefineMesh()
         {
-            SetCurrent();
             GmshWrapperMesh.Refine();
         }
         /// <summary>
@@ -65,7 +61,6 @@ namespace GmshApi
         /// <returns>узлы</returns>
         public IEnumerable<Node> GetNodes()
         {
-            SetCurrent();
             return GmshWrapperMesh.GetNodes();
         }
         /// <summary>
@@ -74,13 +69,11 @@ namespace GmshApi
         /// <returns>линии</returns>
         public IEnumerable<ModelObject> GetElement1D()
         {
-            SetCurrent();
             return GmshWrapperMesh.GetElements(1, -1);
         }
 
         public void Generate(int dim)
         {
-            SetCurrent();
             GmshWrapperMesh.Generate(dim);
         }
 
@@ -90,7 +83,6 @@ namespace GmshApi
         /// <returns>плоские элементы</returns>
         public IEnumerable<ModelObject> GetElement2D()
         {
-            SetCurrent();
             return GmshWrapperMesh.GetElements(2, -1);
         }
         /// <summary>
@@ -99,7 +91,6 @@ namespace GmshApi
         /// <returns>поверхности</returns>
         public IEnumerable<ModelObject> GetSurfaces()
         {
-            SetCurrent();
             return GmshWrapperMesh.GetElements(2, -1);
         }
         /// <summary>
@@ -108,7 +99,6 @@ namespace GmshApi
         /// <returns>поверхности</returns>
         public IEnumerable<ModelObject> GetSurfaceById(int surfaceId)
         {
-            SetCurrent();
             return GmshWrapperMesh.GetElements(2, surfaceId);
         }
         /// <summary>
@@ -117,7 +107,6 @@ namespace GmshApi
         /// <param name="surfaceId">[In]Идентификатор поверхности</param>
         public void RemoveSurfaceById(int surfaceId)
         {
-            SetCurrent();
             GmshWrapperMesh.DeleteElements(new int[] { 2 , surfaceId });
         }
         /// <summary>
@@ -132,7 +121,6 @@ namespace GmshApi
         /// <returns>объёмные элементы</returns>
         public IEnumerable<ModelObject> GetElement3D()
         {
-            SetCurrent();
             return GmshWrapperMesh.GetElements(3, -1);
         }
         /// <summary>
@@ -141,7 +129,6 @@ namespace GmshApi
         /// <param name="algorithm">[In]Тип алгоритма</param>
         public void ChangeTriangulationAlgorithm2D(Triangulation2DAlgorithm algorithm = Triangulation2DAlgorithm.FrontalDelaunay)
         {
-            SetCurrent();
             GmshWrapperGeneral.OptionSetNumber("Mesh.Algorithm", Convert.ToDouble(algorithm));
         }
         /// <summary>
@@ -155,7 +142,6 @@ namespace GmshApi
         public void GetElementsInfo(int dim, int tag, out ElementInfo[] elemInfo,
                                             out long[][] elemsTags, out long[][] nodesTags)
         {
-            SetCurrent();
             GmshWrapperMesh.GetElementTags(dim, tag, out elemInfo, out elemsTags, out nodesTags);
         }
 
@@ -169,7 +155,6 @@ namespace GmshApi
         /// <param name="curve">[In]Идентификатор кривой</param>
         public void SetMeshPointsOnCurve(int number, TransfiniteAlgorithm ta, double parameter, int curve)
         {
-            SetCurrent();
             switch (ta)
             {
                 case TransfiniteAlgorithm.Progressive:
@@ -183,8 +168,6 @@ namespace GmshApi
                     break;
             }
         }
-
-        private void SetCurrent() => GmshWrapperModel.ModelSetCurrent(id.ToString());
 
         public IMeshQuality QualityAnalyse()
         {

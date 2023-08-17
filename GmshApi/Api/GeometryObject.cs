@@ -34,12 +34,10 @@ namespace GmshApi
         { 
             get 
             {
-                SetCurrent();
                 return Convert.ToInt32(GmshWrapperGeneral.OptionGetNumber("Geometry.NumSubEdges")); 
             }
             set
             {
-                SetCurrent();
                 GmshWrapperGeneral.OptionSetNumber("Geometry.NumSubEdges", Convert.ToDouble(value));
             }
         }
@@ -69,9 +67,7 @@ namespace GmshApi
         /// <param name="filePath">[In]Путь до файла</param>
         public void Load(string filePath)
         {
-            SetCurrent();
             GmshWrapperIO.Load(filePath);
-            GmshWrapperIO.SetCurrentModelFileName(filePath);
         }
         /// <summary>
         /// Перегененировать сетку
@@ -79,8 +75,7 @@ namespace GmshApi
         /// <param name="dim">[In]Размерность</param>
         public MeshObject Generate(int dim)
         {
-            SetCurrent();
-            if(dim != 0)
+            if (dim != 0)
                 GmshWrapperMesh.Generate(dim);
             return new MeshObject(Id);
         }
@@ -90,7 +85,6 @@ namespace GmshApi
         /// <returns>узлы</returns>
         public List<ModelObject> GetControlPoints()
         {
-            SetCurrent();
             return GmshWrapperGeometry.GetEntities(ObjKind.Point);
         }
         /// <summary>
@@ -99,7 +93,6 @@ namespace GmshApi
         /// <returns>кривые</returns>
         public List<ModelObject> GetСurves()
         {
-            SetCurrent();
             return GmshWrapperGeometry.GetEntities(ObjKind.Curve);
         }
         /// <summary>
@@ -108,7 +101,7 @@ namespace GmshApi
         /// <returns>линии</returns>
         public List<ModelObject> GetElements1D()
         {
-            SetCurrent();
+
             return GmshWrapperGeometry.GetEntities(ObjKind.Beam);
         }
         /// <summary>
@@ -117,7 +110,6 @@ namespace GmshApi
         /// <param name="dimTags">[In]Массив пар dim:tag</param>
         public void DeleteEntities(int[] dimTags)
         {
-            SetCurrent();
             GmshWrapperGeometry.RemoveEntitiesEx(dimTags, false);
         }
         /// <summary>
@@ -126,7 +118,6 @@ namespace GmshApi
         /// <returns></returns>
         public int GetMaxDimension()
         {
-            SetCurrent();
             return GmshWrapperGeometry.GetDimension();
         }
 
@@ -137,7 +128,6 @@ namespace GmshApi
         /// <returns></returns>
         public int[] GetEntities(int dim)
         {
-            SetCurrent();
             return GmshWrapperGeometry.GetEntitiesTags(dim);
         }
         /// <summary>
@@ -145,7 +135,6 @@ namespace GmshApi
         /// </summary>
         public void Synchronize()
         {
-            SetCurrent();
             GmshWrapperModel.Synchronize();
         }
         /// <summary>
@@ -154,7 +143,6 @@ namespace GmshApi
         /// <param name="field"></param>
         public void AddField(MeshField field)
         {
-            SetCurrent();
             if(fieldList.Contains(field))
                 fieldList.Add(field);
         }
@@ -164,7 +152,6 @@ namespace GmshApi
         /// <param name="id"></param>
         public void RemoveField(int id)
         {
-            SetCurrent();
             var field = fieldList.Find(v => v.Tag == id);
             field?.Dispose();
             fieldList.Remove(field);
@@ -175,7 +162,6 @@ namespace GmshApi
         /// <param name="field"></param>
         public void RemoveField(MeshField field)
         {
-            SetCurrent();
             field?.Dispose();
             fieldList.Remove(field);
         }
@@ -185,14 +171,9 @@ namespace GmshApi
         /// </summary>
         virtual public void Dispose()
         {
-            SetCurrent();
             fieldList.ForEach(v => v.Dispose());
             idList.Remove(Id);
             GmshWrapperModel.ModelRemoveByName(Id.ToString());
         }
-        /// <summary>
-        /// Устанавливает модель текущей
-        /// </summary>
-        protected void SetCurrent() => GmshWrapperModel.ModelSetCurrent(Id.ToString());
     }
 }

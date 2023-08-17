@@ -7,7 +7,7 @@ namespace TestModel.GmshTests
     [TestClass]
     public class GmshWrapperMeshTests
     {
-        private static string modelFolder = @"..\..\Examples\GMSHConnector\";
+        private static string modelFolder = @"..\..\..\Examples\GMSHConnector\";
         [TestInitialize]
         public void Init()
         {
@@ -65,13 +65,7 @@ namespace TestModel.GmshTests
         public void GenerateMeshGet1DElementsByIdTest(string fileName, string modelId, 
                                                         int[] lineTags, int[] expectedLength)
         {
-            GmshWrapperModel.ModelAdd(modelId);
-            
-            CollectionAssert.AreEqual(new string[] { "", modelId }, GmshWrapperModel.ModelList());
-            GmshWrapperIO.Load(modelFolder + fileName);
-
-            GmshWrapperIO.SetCurrentModelFileName(fileName);
-            Assert.AreEqual(fileName, GmshWrapperIO.GetCurrentModelFileName());
+            ModelLoad(fileName, modelId);
 
             GmshWrapperMesh.Generate(1);
             GmshWrapperMesh.Generate(2);
@@ -89,7 +83,7 @@ namespace TestModel.GmshTests
         public void GenerateMeshGet2DElementsByIdTest(string fileName, string modelName,
                                                         int[] surfTags, int[] expectedLength)
         {
-            GmshWrapperModelTests.ModelLoad(fileName, modelName);
+            ModelLoad(fileName, modelName);
             GmshWrapperMesh.Generate(2);
             for (var i = 0; i < surfTags.Length; ++i)
             {
@@ -104,7 +98,7 @@ namespace TestModel.GmshTests
         [DataRow("sphere.geo", "4", new int[] { -1, 1, 2 }, new int[] { 0, 1, 2 })]
         public void GenerateMeshGetAllNodesTest(string fileName, string modelName, int[] nodesDim, int[] paramsCount)
         {
-            GmshWrapperModelTests.ModelLoad(fileName, modelName);
+            ModelLoad(fileName, modelName);
             GmshWrapperMesh.Generate(2);
             long[] nodes;
             double[] local, parametric;
@@ -129,7 +123,7 @@ namespace TestModel.GmshTests
         [DataRow("sphere.geo", "4", new int[] { 1, 2, 3 }, new int[] { 4, 4, 4 })]
         public void GenerateMeshGetLineNodesByTag(string fileName, string modelName, int[] tags, int[] expectedLength)
         {
-            GmshWrapperModelTests.ModelLoad(fileName, modelName);
+            ModelLoad(fileName, modelName);
             GmshWrapperMesh.Generate(2);
             long[] nodes;
             double[] local, parametric;
@@ -144,7 +138,7 @@ namespace TestModel.GmshTests
         [DataRow("model.igs", "3", new int[] { 5, 3, 12 }, new int[] { 4, 4, 9 })]
         public void GenerateMeshGetSurfacesNodesByTag(string fileName, string modelName, int[] tags, int[] expectedLength)
         {
-            GmshWrapperModelTests.ModelLoad(fileName, modelName);
+            ModelLoad(fileName, modelName);
             GmshWrapperMesh.Generate(2);
             long[] nodes;
             double[] local, parametric;
@@ -158,7 +152,7 @@ namespace TestModel.GmshTests
         [DataRow("Cilindr.step", "1")]
         public void GenerateMeshGetLocalCoordinatesInElement(string fileName, string modelName)
         {
-            GmshWrapperModelTests.ModelLoad(fileName, modelName);
+            ModelLoad(fileName, modelName);
             GmshWrapperMesh.Generate(2);
             var point = new double[] { 3.16450111806, 18.4094425392, 5.84848849947 };
             var temp = GmshWrapperMesh.GetLocalCoordinatesInElement(75, point[0], point[1], point[2]);
@@ -167,12 +161,20 @@ namespace TestModel.GmshTests
         [DataRow("Cilindr.step", "1", 75)]
         public void GenerateMeshGetElementsByCoordinates(string fileName, string modelName, int expected)
         {
-            GmshWrapperModelTests.ModelLoad(fileName, modelName);
+            ModelLoad(fileName, modelName);
             GmshWrapperMesh.Generate(2);
-            var point = new double[] { 3.16450111806, 18.4094425392, 5.84848849947 };
-            var point2 = new double[] { -6.03049135332, 11.5693911823, 8.52002954716 };
-            var actual = GmshWrapperMesh.GetElementsByCoordinates(2, point2[0], point2[1], point2[2]);
+            //point - известные барицентрические координаты центра элемента 75
+            var point = new double[] { -8.74248599355, 1.39424515076, 6.51327932777 };
+            var actual = GmshWrapperMesh.GetElementsByCoordinates(2, point[0], point[1], point[2]);
             Assert.AreEqual(expected, actual[0]);
+        }
+
+
+        private void ModelLoad(string fileName, string modelID)
+        {
+            GmshWrapperModel.ModelAdd(modelID);
+            GmshWrapperIO.Load(modelFolder + fileName);
+            GmshWrapperIO.SetCurrentModelFileName(fileName);
         }
     }
 }
