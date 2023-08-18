@@ -96,7 +96,7 @@ namespace TestModel
             loader.LoadEvent += (ar1, ar2) => { };
             var modelBeforeSaving = loader.Load(@"..\..\..\Examples\VIsual-Mesh\DATA3.ASC");
             var saver = new SaveModelToASCIITextFile();
-            saver.Save(modelBeforeSaving, @"..\..\Examples\VIsual-Mesh\result.ASC");
+            saver.Save(modelBeforeSaving, @"..\..\..\Examples\VIsual-Mesh\result.ASC");
             var modelAfterSaving = loader.Load(@"..\..\..\Examples\VIsual-Mesh\result.ASC");
             Assert.IsTrue(modelBeforeSaving.ObjectData.Count == modelAfterSaving.ObjectData.Count);
         }
@@ -163,17 +163,18 @@ namespace TestModel
             Assert.AreEqual(1, model.ObjectData.NumberOfElements);
         }
 
-        [TestMethod]
-        public void LoadÑubeFromSalomeFileCorrectly()
+        [DataTestMethod]
+        [DataRow(@"..\..\..\Examples\Salome\Çóá÷àòîå_êîëåñî_V1.dat",3000,976, 4832,9600)]
+        [DataRow(@"..\..\..\Examples\Salome\Çóá÷àòîå_êîëåñî_V2.dat",3161, 992, 3641, 5255)]
+        public void LoadÑubeFromSalomeFileCorrectly(string filePath, int nodes, int lineElms, int surfElms, int volElems)
         {
-            var path = @"..\..\..\Examples\Salome\cube.med";
             var import = new LoadModelFromSalomeFile();
             import.LoadEvent += (ar1, ar2) => { };
-            var model = import.Load(path);
-            Assert.AreEqual(8, model.ObjectData.FindMany<Node>().Distinct().Count());
-            Assert.AreEqual(12, model.ObjectData.FindMany<Element1D>().Distinct().Count());
-            Assert.AreEqual(12, model.ObjectData.FindMany<Element2D>().Distinct().Count());
-            Assert.AreEqual(5, model.ObjectData.FindMany<Element3D>().Distinct().Count());
+            var model = import.Load(filePath);
+            Assert.AreEqual(nodes, model.ObjectData.FindMany<Node>().Distinct().Count());
+            Assert.AreEqual(lineElms, model.ObjectData.FindMany<Element1D>().Distinct().Count());
+            Assert.AreEqual(surfElms, model.ObjectData.FindMany<Element2D>().Distinct().Count());
+            Assert.AreEqual(volElems, model.ObjectData.FindMany<Element3D>().Distinct().Count());
         }
     }
 }
