@@ -7,7 +7,7 @@ namespace TestModel.GmshTests
     [TestClass]
     public class GmshMeshTests
     {
-        private static string modelFolder = @"..\..\..\Examples\GMSHConnector\";
+        private static string modelFolder = @"..\..\Examples\GMSHConnector\";
 
         [TestInitialize]
         public void Init()

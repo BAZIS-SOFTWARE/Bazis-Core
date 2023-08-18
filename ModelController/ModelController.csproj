@@ -73,7 +73,7 @@
     <Reference Include="Octree, Version=2.1.10.0, Culture=neutral, PublicKeyToken=2f43c75143b659d5, processorArchitecture=MSIL">
       <HintPath>..\packages\NetOctree.2.1.10\lib\net48\Octree.dll</HintPath>
     </Reference>
-    <Reference Include="SceneInterface, Version=1.0.3.60, Culture=neutral, PublicKeyToken=f4632fed43ef5153, processorArchitecture=MSIL">
+    <Reference Include="SceneInterface">
       <HintPath>..\packages\SceneInterface.1.0.3.60\lib\net48\SceneInterface.dll</HintPath>
     </Reference>
     <Reference Include="System" />
