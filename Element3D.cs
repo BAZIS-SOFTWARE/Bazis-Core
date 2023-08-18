@@ -117,12 +117,11 @@ namespace Model
                 for (var j = -1; j <= 1; j += 2)
                     for (var k = -1; k <= 1; k += 2)
                     {
-                        answer[num, 0] = (i * (1 + j * pointEta) * (1 + k * pointPsi) / 8);
-                        answer[num, 1] = (j * (1 + i * pointKsi) * (1 + k * pointPsi) / 8);
-                        answer[num, 2] = (k * (1 + j * pointEta) * (1 + i * pointKsi) / 8);
+                        answer[0, num] = (i * (1 + j * pointEta) * (1 + k * pointPsi) / 8);
+                        answer[1, num] = (j * (1 + i * pointKsi) * (1 + k * pointPsi) / 8);
+                        answer[2, num] = (k * (1 + j * pointEta) * (1 + i * pointKsi) / 8);
                         num++;
                     }
-
             return answer;
         }
 
