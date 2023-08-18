@@ -19,7 +19,7 @@ namespace TestModel
             loader.LoadEvent += (ar1, ar2) => { };
 
             //var loadModel = loader.Load(@"..\..\Examples\3D\Lazer.inp");
-            var loadModel = loader.Load(@"..\..\Examples\CDB\longModel.cdb");
+            var loadModel = loader.Load(@"..\..\..\Examples\CDB\longModel.cdb");
 
             model.Load(loadModel);
 

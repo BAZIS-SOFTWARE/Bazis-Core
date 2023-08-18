@@ -83,7 +83,7 @@ namespace TestModel
             var loader = new LoadModelFromASCIITextFile();
 
             loader.LoadEvent += Model_LoadEvent;
-            var modelLoaded = loader.Load(@"..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
+            var modelLoaded = loader.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
             model.Load(modelLoaded);
             //act
             var elements = model.ObjectData.FindMany<Element3D>().ToArray();
@@ -197,7 +197,7 @@ namespace TestModel
         {
             var loader = new LoadModelFromCDBTextFile();
             loader.LoadEvent += (ar1, ar2) => { };
-            var model = loader.Load(@"..\..\Examples\CDB\hex.cdb");
+            var model = loader.Load(@"..\..\..\Examples\CDB\hex.cdb");
             var finder = new FindCoincidentObjects(model.ObjectData, 1.1f);
             finder.ProgressEvent += (ar1, ar2) => { };
             var coincidentNodes = finder.Find<Node>();
@@ -210,7 +210,7 @@ namespace TestModel
         {
             var loader = new LoadModelFromCDBTextFile();
             loader.LoadEvent += (ar1, ar2) => { };
-            var model = loader.Load(@"..\..\Examples\CDB\10e+5Nodes.cdb");
+            var model = loader.Load(@"..\..\..\Examples\CDB\10e+5Nodes.cdb");
             var finder = new FindCoincidentObjects(model.ObjectData, 1.0f);
             var coincidentNodes = finder.Find<Node>().ToList();
         }
@@ -237,7 +237,7 @@ namespace TestModel
             var loader = new LoadModelFromASCIITextFile();
 
             loader.LoadEvent += Model_LoadEvent;
-            var modelASCII = loader.Load(@"..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
+            var modelASCII = loader.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
             model.Load(modelASCII);
 
             //act

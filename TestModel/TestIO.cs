@@ -22,9 +22,9 @@ namespace TestModel
             saver.SaveEvent += (ar1, ar2) => { };
 
             //act
-            var modelINP = loader.Load(@"..\..\Examples\3D\box2.inp");
+            var modelINP = loader.Load(@"..\..\..\Examples\3D\box2.inp");
             model.Load(modelINP);
-            saver.Save(model, @"..\..\Examples\3D\task1.bpf");
+            saver.Save(model, @"..\..\..\Examples\3D\task1.bpf");
 
             //assert
         }
@@ -41,7 +41,7 @@ namespace TestModel
             loader.LoadEvent += (ar1, ar2) => { };
 
             //act
-            loader.Load(@"..\..\Examples\STL\ACII.stl");
+            loader.Load(@"..\..\..\Examples\STL\ACII.stl");
             //assert
         }
 
@@ -54,7 +54,7 @@ namespace TestModel
             loader.LoadEvent += (ar1, ar2) => { };
 
             //act
-            var modelINP = loader.Load(@"..\..\Examples\3D\Korpus.inp");
+            var modelINP = loader.Load(@"..\..\..\Examples\3D\Korpus.inp");
             model.Load(modelINP);
 
             //assert
@@ -72,7 +72,7 @@ namespace TestModel
             loader.LoadEvent += (ar1, ar2) => { };
 
             //act
-            var modelASCII = loader.Load(@"..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
+            var modelASCII = loader.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
             //loader.Load(@"C:\Bazis_newGUI\MESH\RadicMesh\Plate2DATA.ASC");
             model.Load(modelASCII);
             //assert
@@ -85,7 +85,7 @@ namespace TestModel
         {
             var loader = new LoadModelFromASCIITextFile();
             loader.LoadEvent += (ar1, ar2) => { };
-            var model = loader.Load(@"..\..\Examples\VIsual-Mesh\DATA3.ASC");
+            var model = loader.Load(@"..\..\..\Examples\VIsual-Mesh\DATA3.ASC");
             Assert.AreEqual(3, model.ObjectData.FindMany<Element1D>().Count());
         }
 
@@ -94,17 +94,17 @@ namespace TestModel
         {
             var loader = new LoadModelFromASCIITextFile();
             loader.LoadEvent += (ar1, ar2) => { };
-            var modelBeforeSaving = loader.Load(@"..\..\Examples\VIsual-Mesh\DATA3.ASC");
+            var modelBeforeSaving = loader.Load(@"..\..\..\Examples\VIsual-Mesh\DATA3.ASC");
             var saver = new SaveModelToASCIITextFile();
             saver.Save(modelBeforeSaving, @"..\..\Examples\VIsual-Mesh\result.ASC");
-            var modelAfterSaving = loader.Load(@"..\..\Examples\VIsual-Mesh\result.ASC");
+            var modelAfterSaving = loader.Load(@"..\..\..\Examples\VIsual-Mesh\result.ASC");
             Assert.IsTrue(modelBeforeSaving.ObjectData.Count == modelAfterSaving.ObjectData.Count);
         }
 
         [TestMethod]
         public void ImportHexFromCDBTextFormat()
         {
-            string path = @"..\..\Examples\CDB\hex.cdb";
+            string path = @"..\..\..\Examples\CDB\hex.cdb";
             var import = new LoadModelFromCDBTextFile();
             import.LoadEvent += (ar1, ar2) => { };
             var model = import.Load(path);
@@ -118,7 +118,7 @@ namespace TestModel
         [TestMethod]
         public void ImportLongModelFromCDBTextFormat()
         {
-            string path = @"..\..\Examples\CDB\longModel.cdb";
+            string path = @"..\..\..\Examples\CDB\longModel.cdb";
             var import = new LoadModelFromCDBTextFile();
             import.LoadEvent += (ar1, ar2) => { };
             var model = import.Load(path);
@@ -131,7 +131,7 @@ namespace TestModel
         [TestMethod]
         public void FindCorrectPlaneNumberOfElements()
         {
-            string path = @"..\..\Examples\CDB\longModel.cdb";
+            string path = @"..\..\..\Examples\CDB\longModel.cdb";
             var import = new LoadModelFromCDBTextFile();
             import.LoadEvent += (ar1, ar2) => { };
             var model = import.Load(path);
@@ -142,7 +142,7 @@ namespace TestModel
         [TestMethod]
         public void ImportPentaFromCDBTextFormat()
         {
-            string path = @"..\..\Examples\CDB\penta.cdb";
+            string path = @"..\..\..\Examples\CDB\penta.cdb";
             var import = new LoadModelFromCDBTextFile();
             import.LoadEvent += (ar1, ar2) => { };
             var model = import.Load(path);
@@ -154,7 +154,7 @@ namespace TestModel
         [TestMethod]
         public void ImportTetraFromCDBTextFormat()
         {
-            string path = @"..\..\Examples\CDB\tetra.cdb";
+            string path = @"..\..\..\Examples\CDB\tetra.cdb";
             var import = new LoadModelFromCDBTextFile();
             import.LoadEvent += (ar1, ar2) => { };
             var model = import.Load(path);
@@ -166,7 +166,7 @@ namespace TestModel
         [TestMethod]
         public void LoadÑubeFromSalomeFileCorrectly()
         {
-            var path = @"..\..\Examples\Salome\cube.med";
+            var path = @"..\..\..\Examples\Salome\cube.med";
             var import = new LoadModelFromSalomeFile();
             import.LoadEvent += (ar1, ar2) => { };
             var model = import.Load(path);

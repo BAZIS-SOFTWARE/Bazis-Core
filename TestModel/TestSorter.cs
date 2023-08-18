@@ -21,7 +21,7 @@ namespace TestModel
             loader.LoadEvent += (ar1, ar2) => { };
 
             //act
-            var modelBPF = loader.Load(@"..\..\Examples\3D\cub_unsorted.bpf");
+            var modelBPF = loader.Load(@"..\..\..\Examples\3D\cub_unsorted.bpf");
             model.Load(modelBPF);
 
             //assert

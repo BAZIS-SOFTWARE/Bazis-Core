@@ -27,7 +27,7 @@ namespace TestModel
             var loader = new LoadModelFromASCIITextFile();
 
             loader.LoadEvent += Model_LoadEvent;
-            var modelASC = loader.Load(@"..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
+            var modelASC = loader.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
             model.Load(modelASC);
             //act
             var presenter = new ModelScenePresentator(model);

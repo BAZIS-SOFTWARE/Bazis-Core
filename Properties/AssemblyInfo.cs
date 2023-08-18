@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("BAZIS SOFTWARE")]
 [assembly: AssemblyProduct("Model")]
-[assembly: AssemblyCopyright("© Bilenko Georgy, Nicolay Kochuk, Shibaev Anton, Victor Kapkaev 2023")]
+[assembly: AssemblyCopyright("© Bilenko Georgy, Nicolay Kochuk, Shibaev Anton, Victor Kapkaev, Kishun Kirill 2023")]
 [assembly: AssemblyTrademark("BAZIS")]
 [assembly: AssemblyCulture("")]
 
@@ -34,6 +34,6 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 
 
-[assembly: AssemblyVersion("1.0.7.60")]
-[assembly: AssemblyFileVersion("1.0.7.60")]
+[assembly: AssemblyVersion("1.0.8.10")]
+[assembly: AssemblyFileVersion("1.0.8.10")]
 

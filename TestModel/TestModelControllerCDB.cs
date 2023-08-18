@@ -24,7 +24,7 @@ namespace TestModel
             var loader = new LoadModelFromCDBTextFile();
 
             loader.LoadEvent += (ar1, ar2) => { };
-            var modelCDB = loader.Load(@"..\..\Examples\CDB\longModel.cdb");
+            var modelCDB = loader.Load(@"..\..\..\Examples\CDB\longModel.cdb");
 
             model.Load(modelCDB);
 
