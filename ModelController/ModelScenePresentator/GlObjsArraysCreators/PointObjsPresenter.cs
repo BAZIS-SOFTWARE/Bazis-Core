@@ -19,41 +19,41 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
 /// <inheritdoc/>
 
 
-        public override Tuple<int, int, int,int> CreateIndexes()
+        public override Tuple<int, int, int,int, List<int>> CreateIndexes()
         {
             var indexes = 0;
             var coords = 0;
             var colors = 0;
-
+            var ptrs = new List<int>();
             foreach (var pointObject in pointObjects)
             {
                 //Закоментировано т.к вызывает exception
-                /*if (pointObject.ViewState)
-                {*/
-                coords += 3;
-                indexes++;
-                colors += 4;
-                /*}*/
-            }
-
-
-            return new Tuple<int, int, int,int>(indexes, coords, colors,0);
-        }
-/// <inheritdoc/>
-
-
-        public override int[] CreatePointers(int indexLength)
-        {
-            var ptr = new int[indexLength];
-            for (int i = 0; i < pointObjects.Length; i++)
-            {
-                if (pointObjects[i].ViewState)
+                if (pointObject.ViewState)
                 {
-                    ptr[i] = i;
+                    coords += 3;
+                    indexes++;
+                    colors += 4;
+                    ptrs.Add(indexes);
                 }
             }
-            return ptr;
+
+
+            return new Tuple<int, int, int,int, List<int>>(indexes, coords, colors,0, ptrs);
         }
+
+
+        //public override int[] CreatePointers(int indexLength)
+        //{
+        //    var ptr = new int[indexLength];
+        //    for (int i = 0; i < pointObjects.Length; i++)
+        //    {
+        //        if (pointObjects[i].ViewState)
+        //        {
+        //            ptr[i] = i;
+        //        }
+        //    }
+        //    return ptr;
+        //}
 /// <inheritdoc/>
 
         public override float[] CreateVertexes(int vertexLength, string vertexType)

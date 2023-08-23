@@ -11,7 +11,7 @@ using System.Security.Policy;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Model.ModelParcer
+namespace Model.IO
 {
     public class LoadModelFromASCIITextFile : IModelLoader
     {

@@ -1,7 +1,6 @@
 ﻿using Model;
 using System.Collections.Generic;
 using System;
-using GmshApi.Api;
 using Model.Interfaces;
 
 namespace GmshApi

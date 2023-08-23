@@ -92,59 +92,68 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
         }
 /// <inheritdoc/>
 
-        public override Tuple<int, int, int,int> CreateIndexes()
+        public override Tuple<int, int, int,int, List<int>> CreateIndexes()
         {
-            var indexes = 0;
-            var vertexes = 0;
-            var edges = 0;
-            var colors = 0;
+            var ptrsLength = 0;
+            var coordsLength = 0;
+            var edgesLength = 0;
+            var colorsLength = 0;
+            var ptrs = new List<int>();
 
             foreach (var surfaceObj in surfaceElements)
             {
                 if(surfaceObj.ViewState)
-                    foreach (var surface in surfaceObj.GetSurface())
-                    {
-                        if (surface.ViewState)
-                        {
-                            vertexes = vertexes + (surface.NumberOfPoints - 2) * 3 * 3;
-                            indexes = indexes + (surface.NumberOfPoints - 2) * 3;
-                            edges = edges + (surface.NumberOfPoints - 2) * 3;
-                            colors = colors + (surface.NumberOfPoints - 2) * 3 * 4;
-                        }
-                    }
-            }
-
-
-            return new Tuple<int, int, int,int>(indexes, vertexes, colors, edges);
-        }
-/// <inheritdoc/>
-
-        public override int[] CreatePointers(int indexLength)
-        {
-            var ptr = new int[indexLength];
-            var stride = 0;
-
-            foreach (var surfaceObj in surfaceElements)
-            {
-                if (surfaceObj.ViewState)
                 {
                     foreach (var surface in surfaceObj.GetSurface())
                     {
                         if (surface.ViewState)
                         {
-                            var length = (surface.NumberOfPoints - 2) * 3;
-                            for (int m = 0; m < length; m++)
-                            {
-                                ptr[stride + m] = stride + m;
-                            }
-                            stride = stride + length;
+                            ptrsLength = ptrsLength + (surface.NumberOfPoints - 2) * 3;
+                            coordsLength = coordsLength + (surface.NumberOfPoints - 2) * 3 * 3;
+
+                            edgesLength = edgesLength + (surface.NumberOfPoints - 2) * 3;
+                            colorsLength = colorsLength + (surface.NumberOfPoints - 2) * 3 * 4;
                         }
                     }
+                    ptrs.Add(ptrsLength);
                 }
+
             }
 
-            return ptr;
+
+            return new Tuple<int, int, int,int, List<int>>(ptrsLength, coordsLength, colorsLength, edgesLength, ptrs);
         }
+
+        //public override int[] CreatePointers(int indexLength)
+        //{
+        //    var ptr = new int[indexLength];
+
+        //    return Enumerable.Range(0, indexLength).ToArray();
+
+
+            //var stride = 0;
+
+            //foreach (var surfaceObj in surfaceElements)
+            //{
+            //    if (surfaceObj.ViewState)
+            //    {
+            //        foreach (var surface in surfaceObj.GetSurface())
+            //        {
+            //            if (surface.ViewState)
+            //            {
+            //                var length = (surface.NumberOfPoints - 2) * 3;
+            //                for (int m = 0; m < length; m++)
+            //                {
+            //                    ptr[stride + m] = stride + m;
+            //                }
+            //                stride = stride + length;
+            //            }
+            //        }
+            //    }
+            //}
+
+            //return ptr;
+        //}
 /// <inheritdoc/>
 
         public override float[] CreateVertexes(int vertexLength,string vertexType)

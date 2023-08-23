@@ -8,7 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-namespace ModelController.IO
+namespace Model.IO
 {
     public class SaveModelToProjectTextFile : IModelSaver
     {

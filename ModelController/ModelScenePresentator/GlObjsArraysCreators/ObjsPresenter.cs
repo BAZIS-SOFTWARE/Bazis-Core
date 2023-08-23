@@ -15,9 +15,12 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
 
         public abstract IModelObject this[int ind] { get; }
 
-        public abstract Tuple<int, int, int,int> CreateIndexes();
+        public abstract Tuple<int, int, int, int, List<int>> CreateIndexes();
 
-        public abstract int[] CreatePointers(int indexLength);
+        public int[] CreatePointers(int ptrLength)
+        {
+            return Enumerable.Range(0, ptrLength).ToArray();
+        }
 
         public abstract float[] CreateVertexes(int vertexLength, string vertexType);
 

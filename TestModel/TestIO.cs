@@ -1,10 +1,7 @@
-using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
-using ModelController.IO;
-using Model.ModelParcer;
-using Model.Interfaces;
+using Model.IO;
 
 namespace TestModel
 {

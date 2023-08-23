@@ -10,7 +10,7 @@ using System.Threading;
 using Geometry;
 using Model.Events;
 
-namespace ModelController.IO
+namespace Model.IO
 {
     public class LoadModelFromProjectTextFile : IModelLoader
     {

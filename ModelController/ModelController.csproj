@@ -35,11 +35,10 @@
     <DocumentationFile>bin\Release\ModelController.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>
-    </AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>ModelControllerKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -73,9 +72,6 @@
     <Reference Include="Octree, Version=2.1.10.0, Culture=neutral, PublicKeyToken=2f43c75143b659d5, processorArchitecture=MSIL">
       <HintPath>..\packages\NetOctree.2.1.10\lib\net48\Octree.dll</HintPath>
     </Reference>
-    <Reference Include="SceneInterface, Version=1.0.3.60, Culture=neutral, PublicKeyToken=f4632fed43ef5153, processorArchitecture=MSIL">
-      <HintPath>..\packages\SceneInterface.1.0.3.60\lib\net48\SceneInterface.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -106,8 +102,6 @@
     <Compile Include="ModelScenePresentator\Interfaces\ILineObjsVertexCreator.cs" />
     <Compile Include="ModelScenePresentator\Interfaces\IPointObjsVertexCreator.cs" />
     <Compile Include="ModelScenePresentator\Interfaces\ISurfaceObjsVertexCreator.cs" />
-    <Compile Include="IO\LoadModelFromProjectTextFile.cs" />
-    <Compile Include="IO\SaveModelToProjectTextFile.cs" />
     <Compile Include="MeshObjsCreator\Extract2DFrom3D.cs" />
     <Compile Include="MeshObjsUtility\FindCoincidentObjects.cs" />
     <Compile Include="MeshObjsUtility\FindInterfacedNodes.cs" />
@@ -130,10 +124,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="ModelControllerKey.snk" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Model.csproj">
+    <ProjectReference Include="..\Model\Model.csproj">
       <Project>{18dc227e-ba77-4c78-af7a-b2391626c31b}</Project>
       <Name>Model</Name>
     </ProjectReference>

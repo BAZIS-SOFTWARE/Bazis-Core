@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using Model.Interfaces;
 using ModelController.ModelScenePresentator;
-using Model.ModelParcer;
+using Model.IO;
 using System;
 
 namespace TestModel
@@ -29,7 +29,7 @@ namespace TestModel
             {
                 presenter.HideInsideObjects(item);
 
-                Tuple<int, int, int,int> tuple = presenter.CreateVBOIndexes(item);
+                var tuple = presenter.CreateVBOIndexes(item);
                 int[] ptrs = presenter.CreateVBOPointers(item, tuple.Item1);
                 float[] glCoords = presenter.CreateVBOVertexes(item, tuple.Item2, "координаты");
                 float[] glColors = presenter.CreateVBOVertexes(item, tuple.Item3, "цвет");

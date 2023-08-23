@@ -8,7 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace Model.ModelParcer
+namespace Model.IO
 {
     public class LoadModelFromCDBTextFile : IModelLoader
     {

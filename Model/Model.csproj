@@ -37,10 +37,10 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>ModelController\ModelSolutionKey.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>ModelKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>
@@ -72,10 +72,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Functions, Version=1.0.2.24, Culture=neutral, PublicKeyToken=65fde98421b2fc88, processorArchitecture=MSIL">
-      <HintPath>packages\Functions.1.0.2.24\lib\net48\Functions.dll</HintPath>
+      <HintPath>..\packages\Functions.1.0.2.24\lib\net48\Functions.dll</HintPath>
     </Reference>
     <Reference Include="Geometry, Version=2.0.5.50, Culture=neutral, PublicKeyToken=cadb58b3f6b10f0c, processorArchitecture=MSIL">
-      <HintPath>packages\Geometry.2.0.5.50\lib\net48\Geometry.dll</HintPath>
+      <HintPath>..\packages\Geometry.2.0.5.50\lib\net48\Geometry.dll</HintPath>
     </Reference>
     <Reference Include="MathNet.Numerics, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cd8b63ad3d691a37, processorArchitecture=MSIL">
       <HintPath>packages\MathNet.Numerics.Signed.5.0.0\lib\net48\MathNet.Numerics.dll</HintPath>
@@ -100,12 +100,14 @@
     <Compile Include="Events\SaverEventArgs.cs" />
     <Compile Include="Interfaces\IModelLoader.cs" />
     <Compile Include="Interfaces\IModelSaver.cs" />
-    <Compile Include="ModelParcer\LoadModelFromASCIITextFile.cs" />
-    <Compile Include="ModelParcer\LoadModelFromCDBTextFile.cs" />
-    <Compile Include="ModelParcer\LoadModelFromGMSHTextFile.cs" />
-    <Compile Include="ModelParcer\LoadModelFromSalomeFile.cs" />
-    <Compile Include="ModelParcer\LoadModelFromSTLFile.cs" />
-    <Compile Include="ModelParcer\SaveModelToASCIITextFile.cs" />
+    <Compile Include="IO\LoadModelFromProjectTextFile.cs" />
+    <Compile Include="IO\SaveModelToProjectTextFile.cs" />
+    <Compile Include="IO\LoadModelFromASCIITextFile.cs" />
+    <Compile Include="IO\LoadModelFromCDBTextFile.cs" />
+    <Compile Include="IO\LoadModelFromGMSHTextFile.cs" />
+    <Compile Include="IO\LoadModelFromSalomeFile.cs" />
+    <Compile Include="IO\LoadModelFromSTLFile.cs" />
+    <Compile Include="IO\SaveModelToASCIITextFile.cs" />
     <Compile Include="NodeSorter.cs" />
     <Compile Include="ObjectsComparers\ComparerBySqCoords.cs" />
     <Compile Include="ObjectsComparers\EqualityComparerByCentralPoint.cs" />
@@ -142,8 +144,8 @@
     <Compile Include="SurfaceElement.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="ModelController\ModelSolutionKey.pfx" />
+    <None Include="ModelKey.snk" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

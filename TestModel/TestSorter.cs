@@ -1,11 +1,9 @@
 ﻿using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
-using Model.Events;
-using ModelController.IO;
+using Model.IO;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 
 namespace TestModel
 {

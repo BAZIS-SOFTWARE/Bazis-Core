@@ -22,46 +22,48 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
             this.lineObjects = lineObjects;
         }
 
-        public override Tuple<int, int, int,int> CreateIndexes()
+        public override Tuple<int, int, int,int, List<int>> CreateIndexes()
         {
-            var indexes = 0;
-            var coords = 0;
-            var colors = 0;
-            var edges = 0;
+            var ptrsLength = 0;
+            var coordsLength = 0;
+            var colorsLength = 0;
+            var edgesLength = 0;
+            var ptrs = new List<int>();
             foreach (var lineObj in lineObjects)
             {
                 if (lineObj.ViewState)
                 {
-                    coords = coords + lineObj.NumberOfPoints * 3;
-                    indexes = indexes + lineObj.NumberOfPoints;
-                    colors = colors + lineObj.NumberOfPoints * 4;
-                    edges++;
+                    coordsLength = coordsLength + lineObj.NumberOfPoints * 3;
+                    ptrsLength = ptrsLength + lineObj.NumberOfPoints;
+                    colorsLength = colorsLength + lineObj.NumberOfPoints * 4;
+                    edgesLength++;
+                    ptrs.Add(ptrsLength);
                 }
             }
 
-            return new Tuple<int, int, int,int>(indexes, coords, colors, edges);
+            return new Tuple<int, int, int,int, List<int>>(ptrsLength, coordsLength, colorsLength, edgesLength, ptrs);
         }
 
 
 
-        public override int[] CreatePointers(int indexLength)
-        {
-            var stride = 0;
-            var ptr = new int[indexLength];
+        //public override int[] CreatePointers(int indexLength)
+        //{
+        //    var stride = 0;
+        //    var ptr = new int[indexLength];
 
-            foreach (var lineObject in lineObjects)
-            {
-                if (lineObject.ViewState)
-                {
-                    for (int m = 0; m < lineObject.NumberOfPoints; m++)
-                    {
-                        ptr[stride + m] = stride + m;
-                    }
-                    stride = stride + lineObject.NumberOfPoints;
-                }
-            }
-            return ptr;
-        }
+        //    foreach (var lineObject in lineObjects)
+        //    {
+        //        if (lineObject.ViewState)
+        //        {
+        //            for (int m = 0; m < lineObject.NumberOfPoints; m++)
+        //            {
+        //                ptr[stride + m] = stride + m;
+        //            }
+        //            stride = stride + lineObject.NumberOfPoints;
+        //        }
+        //    }
+        //    return ptr;
+        //}
 
         public override float[] CreateVertexes(int vertexLength, string vertexType)
         {

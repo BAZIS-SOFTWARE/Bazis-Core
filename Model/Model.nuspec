@@ -15,7 +15,5 @@
   </metadata>
   <files>
     <file src="Icon.png" target="" />
-    <file src="ModelController\bin\Release\ModelController.dll" target="lib\net48\ModelController.dll" />
-    <file src="ModelController\bin\Release\ModelController.xml" target="lib\net48\ModelController.xml" />
   </files>
 </package>

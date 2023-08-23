@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using Model.GroupsData;
 using Model.Events;
 
-namespace Model.ModelParcer
+namespace Model.IO
 {
     public class LoadModelFromGMSHTextFile : IModelLoader
     {
