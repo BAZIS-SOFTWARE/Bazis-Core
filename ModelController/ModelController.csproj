@@ -90,10 +90,10 @@
   <ItemGroup>
     <Compile Include="MeshObjsUtility\CalcDistance.cs" />
     <Compile Include="MeshObjsUtility\CrossSection.cs" />
-    <Compile Include="ModelScenePresentator\GlObjsArraysCreators\LineObjsPresenter.cs" />
-    <Compile Include="ModelScenePresentator\GlObjsArraysCreators\ObjsPresenter.cs" />
-    <Compile Include="ModelScenePresentator\GlObjsArraysCreators\PointObjsPresenter.cs" />
-    <Compile Include="ModelScenePresentator\GlObjsArraysCreators\SurfaceObjsPresenter.cs" />
+    <Compile Include="ModelScenePresentator\GlObjsPresenters\LineObjsPresenter.cs" />
+    <Compile Include="ModelScenePresentator\GlObjsPresenters\ObjsPresenter.cs" />
+    <Compile Include="ModelScenePresentator\GlObjsPresenters\PointObjsPresenter.cs" />
+    <Compile Include="ModelScenePresentator\GlObjsPresenters\SurfaceObjsPresenter.cs" />
     <Compile Include="ModelScenePresentator\GlObjsVertexCreators\CoordsLineObjsCreator.cs" />
     <Compile Include="ModelScenePresentator\GlObjsVertexCreators\CoordsPointObjsCreator.cs" />
     <Compile Include="ModelScenePresentator\GlObjsVertexCreators\CoordsSurfaceObjsCreator.cs" />

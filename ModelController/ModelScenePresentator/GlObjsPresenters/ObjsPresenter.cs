@@ -7,20 +7,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
+namespace ModelController.ModelScenePresentator.GlObjsPresenters
 {
     public abstract class ObjsPresenter
     {
+        public GLObjType {get; internal set;}
         public abstract IEnumerable<IModelObject> GetObjs();
 
         public abstract IModelObject this[int ind] { get; }
 
-        public abstract Tuple<int, int, int, int, List<int>> CreateIndexes();
+        public abstract Tuple<int, int, int,int> CreateIndexes();
 
-        public int[] CreatePointers(int ptrLength)
-        {
-            return Enumerable.Range(0, ptrLength).ToArray();
-        }
+        public abstract int[] CreatePointers(int indexLength);
 
         public abstract float[] CreateVertexes(int vertexLength, string vertexType);
 

@@ -2,7 +2,8 @@
 using Model;
 using Model.Interfaces;
 using ModelController.MeshObjsUtility;
-using ModelController.ModelScenePresentator.GlObjsArraysCreators;
+using ModelController.ModelScenePresentator.GlObjsPresenters;
+using SceneInterface;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -63,7 +64,7 @@ namespace ModelController.ModelScenePresentator
         }
 /// <inheritdoc/>
 
-        public Tuple<int, int, int,int, List<int>> CreateVBOIndexes(string objsType)
+        public Tuple<int, int, int,int> CreateVBOIndexes(string objsType)
         {
             var presenter = GetObjectsPresenter(objsType);
             return presenter.CreateIndexes();
@@ -143,7 +144,7 @@ namespace ModelController.ModelScenePresentator
             return presentors.Count();
         }
 
-        private ObjsPresenter GetObjectsPresenter(string objsType)
+        public ObjsPresenter GetObjectsPresenter(string objsType)
         {
             if (!presentors.ContainsKey(objsType))
                 return null;
@@ -172,7 +173,12 @@ namespace ModelController.ModelScenePresentator
                 obj.ViewState = false;
             }
         }
+/// <inheritdoc/>
 
+        public IEnumerable<Point3D> GetObjPoints(int index, string objsType)
+        {
+            return presentors[objsType][index].GetPoints();
+        }
 
         public bool GetObjStatus(int index, string objsType)
         {
@@ -272,36 +278,51 @@ namespace ModelController.ModelScenePresentator
 
         //}
 
-        //public List<Line> FindBoundaries()
+        public List<Line> FindBoundaries()
+        {
+            var creator = new FindBoundaryEdges(modelData);
+            var boundary = creator.Find();
+
+            var lines = new List<Line>();
+            foreach (var line in boundary)
+            {
+                var n0 = int.Parse(line.Split(' ')[0]);
+                var n1 = int.Parse(line.Split(' ')[1]);
+
+                var node0 = (Node)modelData.ObjectData.Find(n0);
+                var node1 = (Node)modelData.ObjectData.Find(n1);
+
+                lines.Add(new Line(node0.Position, node1.Position));
+            }
+            return lines;
+        }
+
+        public Point3D GetObjCentre(int index, string objsType)
+        {
+            return presentors[objsType][index].CalcCentralPoint();
+        }
+
+        //public GLObjType GetObjectsGlType(string objsType)
         //{
-        //    var creator = new FindBoundaryEdges(modelData);
-        //    var boundary = creator.Find();
-
-        //    var lines = new List<Line>();
-        //    foreach (var line in boundary)
+        //    switch (objsType)
         //    {
-        //        var n0 = int.Parse(line.Split(' ')[0]);
-        //        var n1 = int.Parse(line.Split(' ')[1]);
-
-        //        var node0 = (Node)modelData.ObjectData.Find(n0);
-        //        var node1 = (Node)modelData.ObjectData.Find(n1);
-
-        //        lines.Add(new Line(node0.Position, node1.Position));
+        //        case "Узлы":
+        //            return GLObjType.point;
+        //        case "Элементы1D":
+        //        case "Линии":
+        //            return GLObjType.line;
+        //        case "Элементы2D":
+        //        case "Элементы3D":
+        //        case "Поверхность":
+        //            return GLObjType.triangle;
+        //        default:
+        //            return GLObjType.point;
         //    }
-        //    return lines;
         //}
 
-        //public List<Point3D> GetObjectsCoords(string objsType)
-        //{
-        //    var objs = creators[objsType];
-
-        //    var coords = new List<Point3D>();
-
-        //    foreach (var obj in objs.GetObjs())
-        //    {
-        //        coords.AddRange(obj.GetPoints());
-        //    }
-        //    return coords;
-        //}    
+        public IEnumerable<Point3D> GetObjCoords(int index, string objsType)
+        {
+            return presentors[objsType][index].GetPoints();
+        }
     }
 }
