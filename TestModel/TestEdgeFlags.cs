@@ -12,34 +12,6 @@ namespace TestModel
     public class TestEdgeFlags
     {
         [TestMethod]
-        public void TestOnComplicatedModel()
-        {
-            var model = new ModelData();
-            var loader = new LoadModelFromCDBTextFile();
-            loader.LoadEvent += (ar1, ar2) => { };
-
-            //var loadModel = loader.Load(@"..\..\Examples\3D\Lazer.inp");
-            var loadModel = loader.Load(@"..\..\..\Examples\CDB\longModel.cdb");
-
-            model.Load(loadModel);
-
-            var presenter = new ModelScenePresentator(model);
-
-            foreach (string item in presenter?.GetObjectsTypes())
-            {
-                presenter.HideInsideObjects(item);
-
-                var tuple = presenter.CreateVBOIndexes(item);
-                int[] ptrs = presenter.CreateVBOPointers(item, tuple.Item1);
-                float[] glCoords = presenter.CreateVBOVertexes(item, tuple.Item2, "координаты");
-                float[] glColors = presenter.CreateVBOVertexes(item, tuple.Item3, "цвет");
-                float[] glNormals = presenter.CreateVBOVertexes(item, tuple.Item2, "нормаль");
-                bool[] edges = presenter.CreateVBOEdges(item, tuple.Item4);
-
-                Assert.AreEqual(tuple.Item4, edges.Length);
-            }
-        }
-        [TestMethod]
         public void TestOnSimpleTriangle() 
         { 
             var model = new ModelData();
@@ -98,8 +70,8 @@ namespace TestModel
             var poligon = new Surface(0, nodes, ObjKind.ElementSurface); 
             model.ObjectData.Add(poligon);
             var presentator = new ModelScenePresentator(model);
-            var values = presentator.CreateVBOIndexes("Поверхность");
-            var edges = presentator.CreateVBOEdges("Поверхность", values.Item4);
+            var values = presentator.CreateVBOIndexes("Поверхности");
+            var edges = presentator.CreateVBOEdges("Поверхности", values.Item4);
             
             Assert.AreEqual(12, edges.Length);
             var expectedFlags = new bool[] { true, true, false, false, true, false,

@@ -11,7 +11,6 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
 {
     public abstract class ObjsPresenter
     {
-        public GLObjType {get; internal set;}
         public abstract IEnumerable<IModelObject> GetObjs();
 
         public abstract IModelObject this[int ind] { get; }

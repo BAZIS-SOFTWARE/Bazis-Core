@@ -26,7 +26,7 @@ namespace Model
             ObjKind = objKind;
             this.nodes = Anticlockwise(nodes);
 
-            ObjType = "Поверхность";
+            ObjType = "Поверхности";
 
             InitialColor = Color.FromArgb(224, 0, 177);
             MasterColor = Color.FromArgb(224, 0, 177);

@@ -6,7 +6,7 @@ using ModelController.ModelScenePresentator.Interfaces;
 using System;
 using System.Collections.Generic;
 
-namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
+namespace ModelController.ModelScenePresentator.GlObjsPresenters
 {
     public class PointObjsPresenter : ObjsPresenter
     {
@@ -28,12 +28,12 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
             foreach (var pointObject in pointObjects)
             {
                 //Закоментировано т.к вызывает exception
-                //if (pointObject.ViewState)
-                //{
+                if (pointObject.ViewState)
+                {
                     coords += 3;
                     indexes++;
                     colors += 4;
-                //}
+                }
             }
 
 
@@ -44,11 +44,13 @@ namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
         public override int[] CreatePointers(int indexLength)
         {
             var ptr = new int[indexLength];
+            var stride = 0;
             for (int i = 0; i < pointObjects.Length; i++)
             {
                 if (pointObjects[i].ViewState)
                 {
-                    ptr[i] = i;
+                    ptr[stride] = stride;
+                    stride++;
                 }
             }
             return ptr;

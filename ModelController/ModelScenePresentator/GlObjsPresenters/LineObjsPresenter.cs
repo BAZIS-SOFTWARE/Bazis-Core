@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ModelController.ModelScenePresentator.GlObjsArraysCreators
+namespace ModelController.ModelScenePresentator.GlObjsPresenters
 {
     public class LineObjsPresenter : ObjsPresenter
     {

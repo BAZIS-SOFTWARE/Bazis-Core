@@ -3,7 +3,6 @@ using Model;
 using Model.Interfaces;
 using ModelController.MeshObjsUtility;
 using ModelController.ModelScenePresentator.GlObjsPresenters;
-using SceneInterface;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -19,15 +18,13 @@ namespace ModelController.ModelScenePresentator
     {
         Dictionary<string, ObjsPresenter> presentors;
 
-        ModelData modelData;
+
         /// <summary>
         /// ModelScenePresentator
         /// </summary>
         /// <param name="modelData"></param>
         public ModelScenePresentator(ModelData modelData)
         {
-            this.modelData = modelData;
-
             var objsTypes = modelData.ObjectData.GetObjectTypes();
 
             //var sortedObjs = GetSortedObjects(modelData.ObjectData.ToArray());
@@ -51,7 +48,7 @@ namespace ModelController.ModelScenePresentator
                         break;
                     case "Элементы2D":
                     case "Элементы3D":
-                    case "Поверхность":
+                    case "Поверхности":
                         var surfaceObjs = modelData.ObjectData.Where(x => x.ObjType == objsType).
     Select(x => (ISurfaceObject)x);
                         var surfaceObjsCreator = new SurfaceObjsPresenter(surfaceObjs.ToArray());
@@ -101,18 +98,7 @@ namespace ModelController.ModelScenePresentator
 
             return objsCreator.CreatePointers(indexLength);
         }
-/// <inheritdoc/>
 
-        public void ShowInsideObjects(string objsType)
-        {
-            var objsCreator = GetObjectsPresenter(objsType);
-
-            if (objsCreator == null)
-                throw new Exception("Объект не найден!");
-
-            if (objsCreator is SurfaceObjsPresenter surfaceObjsCreator)
-                surfaceObjsCreator.ShowInsideSurfaces();
-        }
 /// <inheritdoc/>
 
         public void HideInsideObjects(string objsType)
@@ -139,117 +125,19 @@ namespace ModelController.ModelScenePresentator
             }
         }
 
-        public int Count()
-        {
-            return presentors.Count();
-        }
-
         public ObjsPresenter GetObjectsPresenter(string objsType)
         {
             if (!presentors.ContainsKey(objsType))
                 return null;
             return presentors[objsType];
         }
-        /// <inheritdoc/>
-        public void ShowAllObjects()
-        {
-            foreach (var presentor in presentors)
-                foreach (var obj in presentor.Value.GetObjs())
-                    obj.ViewState = true;
-        }
-/// <inheritdoc/>
-
-
-        public void ShowObjects(string objsType)
-        {
-            foreach (var obj in presentors[objsType].GetObjs())
-                obj.ViewState = true;
-        }
-
-        public void HideObjects(string objsType)
-        {
-            foreach (var obj in presentors[objsType].GetObjs())
-            {
-                obj.ViewState = false;
-            }
-        }
-/// <inheritdoc/>
-
-        public IEnumerable<Point3D> GetObjPoints(int index, string objsType)
-        {
-            return presentors[objsType][index].GetPoints();
-        }
-
-        public bool GetObjStatus(int index, string objsType)
-        {
-            return presentors[objsType][index].ViewState;
-        }
-
-        public void HideObjects(List<int> objsNumbs, string objsType)
-        {    
-            foreach (var objNumb in objsNumbs)
-            {
-                modelData.ObjectData.Find(objNumb).ViewState = false;
-            }
-        }
-/// <inheritdoc/>
-
-        public void HideObjects(Color color, string objsType)
-        {
-            foreach (var obj in presentors[objsType].GetObjs())
-            {
-                if (obj.MasterColor == color)
-                    obj.ViewState = false;
-            }
-        }
-/// <inheritdoc/>
-
-        public void ColorObject(int index, Color color, string objsType)
-        {
-            presentors[objsType][index].MasterColor = color;
-        }
-/// <inheritdoc/>
-
         
 
+/// <inheritdoc/>     
         public bool ContainsObjecs(string objsType)
         {
             return presentors.ContainsKey(objsType);
         }
-/// <inheritdoc/>
-
-        public int CountObjecs(string objsType)
-        {
-            if (ContainsObjecs(objsType))
-                return presentors[objsType].Count();
-            else return 0;
-        }
-
-        public IEnumerable<int> FindObjectsNumbers(Color color, string objsType)
-        {
-            foreach (var obj in presentors[objsType].GetObjs())
-            {
-                if (obj.MasterColor == color)
-                    yield return obj.Number;
-            }
-        }
-
-        public void SetBackColorObject(int index, string objsType)
-        {
-            presentors[objsType][index].SetBackColor();
-        }
-
-        public void SetBackColorAllObjects()
-        {
-            foreach (var presentor in presentors)
-            {
-                foreach (var obj in presentor.Value.GetObjs())
-                {
-                    obj.SetBackColor();
-                }
-            }
-        }
-
 
         public IEnumerator<KeyValuePair<string, ObjsPresenter>> GetEnumerator()
         {
@@ -262,67 +150,6 @@ namespace ModelController.ModelScenePresentator
         IEnumerator IEnumerable.GetEnumerator()
         {
             throw new System.NotImplementedException();
-        }
-
-        //public GLObjType GetObjectsGlType(string objsType)
-        //{
-        //    if (objsType == "Узлы")
-        //    {
-        //        return GLObjType.point;
-        //    }
-        //    else if (objsType == "Элементы3D" | objsType == "Элементы2D" | objsType == "Поверхность")
-        //    {
-        //        return GLObjType.triangle;
-        //    }
-        //    else return GLObjType.line;
-
-        //}
-
-        public List<Line> FindBoundaries()
-        {
-            var creator = new FindBoundaryEdges(modelData);
-            var boundary = creator.Find();
-
-            var lines = new List<Line>();
-            foreach (var line in boundary)
-            {
-                var n0 = int.Parse(line.Split(' ')[0]);
-                var n1 = int.Parse(line.Split(' ')[1]);
-
-                var node0 = (Node)modelData.ObjectData.Find(n0);
-                var node1 = (Node)modelData.ObjectData.Find(n1);
-
-                lines.Add(new Line(node0.Position, node1.Position));
-            }
-            return lines;
-        }
-
-        public Point3D GetObjCentre(int index, string objsType)
-        {
-            return presentors[objsType][index].CalcCentralPoint();
-        }
-
-        //public GLObjType GetObjectsGlType(string objsType)
-        //{
-        //    switch (objsType)
-        //    {
-        //        case "Узлы":
-        //            return GLObjType.point;
-        //        case "Элементы1D":
-        //        case "Линии":
-        //            return GLObjType.line;
-        //        case "Элементы2D":
-        //        case "Элементы3D":
-        //        case "Поверхность":
-        //            return GLObjType.triangle;
-        //        default:
-        //            return GLObjType.point;
-        //    }
-        //}
-
-        public IEnumerable<Point3D> GetObjCoords(int index, string objsType)
-        {
-            return presentors[objsType][index].GetPoints();
         }
     }
 }

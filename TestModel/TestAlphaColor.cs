@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using Model.Interfaces;
 using System;
-using ModelController.ModelScenePresentator.GlObjsArraysCreators;
+using ModelController.ModelScenePresentator.GlObjsPresenters;
 
 namespace TestModel
 {

@@ -136,28 +136,17 @@ namespace TestModel
             Assert.IsTrue(elements.All(element => element.GetSurface().Count() >= 4));
         }
 
-        [TestMethod]
-        public void ImportPentaFromCDBTextFormat()
+        [DataTestMethod]
+        [DataRow(@"..\..\..\Examples\CDB\penta.cdb", 6, 1)]
+        [DataRow(@"..\..\..\Examples\CDB\tetra.cdb", 4, 1)]
+        public void ImportPentaFromCDBTextFormat(string path, int nbrNodes, int nbrEl)
         {
-            string path = @"..\..\..\Examples\CDB\penta.cdb";
             var import = new LoadModelFromCDBTextFile();
             import.LoadEvent += (ar1, ar2) => { };
             var model = import.Load(path);
             var element = model.ObjectData.FindMany<Element3D>().First();
-            Assert.AreEqual(6, model.ObjectData.NumberOfNodes);
-            Assert.AreEqual(1, model.ObjectData.NumberOfElements);
-        }
-
-        [TestMethod]
-        public void ImportTetraFromCDBTextFormat()
-        {
-            string path = @"..\..\..\Examples\CDB\tetra.cdb";
-            var import = new LoadModelFromCDBTextFile();
-            import.LoadEvent += (ar1, ar2) => { };
-            var model = import.Load(path);
-            var element = model.ObjectData.FindMany<Element3D>().First();
-            Assert.AreEqual(4, model.ObjectData.NumberOfNodes);
-            Assert.AreEqual(1, model.ObjectData.NumberOfElements);
+            Assert.AreEqual(nbrNodes, model.ObjectData.NumberOfNodes);
+            Assert.AreEqual(nbrEl, model.ObjectData.NumberOfElements);
         }
 
         [DataTestMethod]

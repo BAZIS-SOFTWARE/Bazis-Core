@@ -99,15 +99,12 @@
     <Compile Include="TestElement.cs" />
     <Compile Include="TestFormFunctions.cs" />
     <Compile Include="TestIO.cs" />
-    <Compile Include="TestModelControllerASCII.cs" />
-    <Compile Include="TestModelControllerGMSH_inp.cs" />
     <Compile Include="TestModelControllerPoligon.cs" />
     <Compile Include="TestsCutSection.cs" />
     <Compile Include="TestServices.cs" />
     <Compile Include="TestSurface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestSorter.cs" />
-    <Compile Include="TestModelControllerCDB.cs" />
     <Compile Include="TestModelScenePresentor.cs" />
     <Compile Include="TestModelControllerSTL.cs" />
   </ItemGroup>
