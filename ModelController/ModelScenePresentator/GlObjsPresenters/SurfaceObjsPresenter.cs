@@ -1,5 +1,6 @@
 ﻿using Model;
 using Model.Interfaces;
+using Model.Utilities;
 using ModelController.ModelScenePresentator.GlObjsVertexCreators;
 using ModelController.ModelScenePresentator.Interfaces;
 using System;
@@ -21,44 +22,6 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
         {
             this.surfaceElements = surfaceElements;
         }
-
-        //public void HideInsideNodes(Element3D[] els3D)
-        //{
-        //    if (presentors.ContainsKey("Узлы"))
-        //    {
-        //        foreach (var node in modelData.ObjectData.FindMany<Node>())
-        //            node.Normal = new Point3D();
-
-        //        var pointObjsPresenter = (PointObjsPresenter)presentors["Узлы"];
-
-        //        var surfacePoints = pointObjsPresenter.FindSurfacePoints(els3D);
-        //        var surfacePointsNoRepeat = surfacePoints.Distinct().ToList();
-
-        //        foreach (var point in pointObjsPresenter.GetObjs())
-        //            point.ViewState = false;
-
-        //        foreach (var point in surfacePointsNoRepeat)
-        //            modelData.ObjectData.Find(point).ViewState = true;
-        //    }
-        //    // set normal to zero
-
-
-        //}
-
-        //public void ShowInsideNodes(Element3D[] els3D)
-        //{
-        //    if (presentors.ContainsKey("Узлы"))
-        //    {
-        //        // set normal to zero
-        //        foreach (var node in modelData.ObjectData.FindMany<Node>())
-        //            node.Normal = new Point3D();
-
-        //        foreach (var el3D in els3D)
-        //            foreach (var node in el3D.GetNodes())
-        //                node.ViewState = true;
-        //    }
-        //    // set normal to zero
-        //}
 
         public void HideInsideSurfaces()
         {
@@ -205,6 +168,11 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
             {
                 yield return surfaceElement;
             }
+        }
+
+        public override IModelObject FindObj(int objNumbr)
+        {
+            return ObjectsFinder.Find(surfaceElements, objNumbr);
         }
     }
 }

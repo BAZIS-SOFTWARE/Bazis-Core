@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Collections.Generic;
 using Model.GroupsData;
 using Model.Events;
+using Model.Utilities;
 
 namespace Model.IO
 {
@@ -71,7 +72,7 @@ namespace Model.IO
             var nodeArr = new Node[selectedNodesId.Length];
             for (int i = 0; i < nodeArr.Length; i++)
             {
-                nodeArr[i] = newMesh.ObjectData.Find(nodes, selectedNodesId[i]);
+                nodeArr[i] = ObjectsFinder.Find(nodes, selectedNodesId[i]);
             }
             switch(elementType)
             {
@@ -111,10 +112,10 @@ namespace Model.IO
                 CreateElements(elementType, line, recBase);
             }
             if (line != null && line.Contains("*ELSET"))
-                CreateGroups(line, dict);
+                CreateGroups(elementType,line, dict);
         }
 
-        private void CreateGroups(string line, Dictionary<int, int> dic)
+        private void CreateGroups(string elementType,string line, Dictionary<int, int> dic)
         {
             var groupName = line.Split('=').Last();
             var strAr = line.Split(',');
@@ -126,9 +127,10 @@ namespace Model.IO
                     break;
                 var firstNumber = int.Parse(strAr.First());
                 var objNumber = dic[firstNumber];
-                var objsType = newMesh.ObjectData.Find(objNumber).ObjType;
+                //var objsType = newMesh.ObjectData.FindMany(elementType).ToArray();
+                //var objsType = ObjectsFinder.Find(objsType,objNumber).ObjType;
                 LoadEvent(this, new LoaderEventArgs($"Загрузка группы объектов {groupName}"));
-                var group = new Group(groupName, objsType);
+                var group = new Group(groupName, elementType);
                 while (line != null && !line.Contains("*NSET") && !line.Contains("*ELSET"))
                 {
                     strAr = line.Replace(" ", "").Split(',');

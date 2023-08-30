@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Model
 {
-    public class Element1D : Element, IBeamElement
+    public class Element1D : Element, ILineObject
     {
         Node[] nodes;
         public Element1D(int number, Node[] nodes, ObjKind objKind) : base(number, nodes, objKind)

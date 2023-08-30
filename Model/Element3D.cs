@@ -2,6 +2,7 @@
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using Model.Interfaces;
+using Model.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

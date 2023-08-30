@@ -1,4 +1,5 @@
 ﻿using Geometry;
+using Model;
 using Model.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -24,5 +25,7 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
         public abstract bool[] CreateEdgeFlags(int edgesLength);
 
         public abstract int Count();
+        
+        public abstract IModelObject FindObj(int objNumbr);
     }
 }

@@ -108,7 +108,7 @@
     <Compile Include="IO\LoadModelFromSalomeFile.cs" />
     <Compile Include="IO\LoadModelFromSTLFile.cs" />
     <Compile Include="IO\SaveModelToASCIITextFile.cs" />
-    <Compile Include="NodeSorter.cs" />
+    <Compile Include="Utilities\NodeSorter.cs" />
     <Compile Include="ObjectsComparers\ComparerBySqCoords.cs" />
     <Compile Include="ObjectsComparers\EqualityComparerByCentralPoint.cs" />
     <Compile Include="ObjectsComparers\EqualityComparerByNumber.cs" />
@@ -119,7 +119,6 @@
     <Compile Include="GroupsData\CompareGroupsByName.cs" />
     <Compile Include="GroupsData\GroupData.cs" />
     <Compile Include="Interfaces\IElement.cs" />
-    <Compile Include="Interfaces\IBeamElement.cs" />
     <Compile Include="Interfaces\IElement2D.cs" />
     <Compile Include="Interfaces\IElement3D.cs" />
     <Compile Include="Interfaces\IFinder.cs" />
@@ -142,9 +141,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Surface.cs" />
     <Compile Include="SurfaceElement.cs" />
+    <Compile Include="Utilities\ObjectsFinder.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ModelController\ModelSolutionKey.pfx" />
     <None Include="ModelKey.snk" />
     <None Include="packages.config" />
   </ItemGroup>

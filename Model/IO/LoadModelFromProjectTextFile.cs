@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading;
 using Geometry;
 using Model.Events;
+using Model.Utilities;
 
 namespace Model.IO
 {
@@ -101,7 +102,7 @@ namespace Model.IO
 
                 var nodeList = new List<Node>();
                 foreach (var nodeNumber in ar)
-                    nodeList.Add(newMesh.ObjectData.Find(nodes,nodeNumber));
+                    nodeList.Add(ObjectsFinder.Find(nodes,nodeNumber));
 
                 if (elType == "Элементы3D" | elType == "Элементы 3004")
                 {

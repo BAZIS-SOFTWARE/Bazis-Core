@@ -2,6 +2,7 @@
 using Model.Comparers;
 using Model.Interfaces;
 using Model.ObjectsComparers;
+using Model.Utilities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -117,39 +118,7 @@ namespace Model
             }
         }
 
-        public T Find<T>(List<T> objs, int objNumbr) where T : ModelObject
-        {
-            if (objs.Count - 1 == -1) { return null; }
-            var left = 0;
-            var right = objs.Count - 1;
-            while (left < right)
-            {
-                var middle = (right + left) / 2;
-                if (objNumbr <= objs[middle].Number)
-                    right = middle;
-                else left = middle + 1;
-            }
-            if (objs[right].Number == objNumbr)
-                return objs[right];
-            return null;
-        }
-
-        public ModelObject Find(int objNumbr)
-        {
-            if (modelObjects.Count - 1 == -1) { return null; }
-            var left = 0;
-            var right = modelObjects.Count - 1;
-            while (left < right)
-            {
-                var middle = (right + left) / 2;
-                if (objNumbr <= modelObjects[middle].Number)
-                    right = middle;
-                else left = middle + 1;
-            }
-            if (modelObjects[right].Number == objNumbr)
-                return modelObjects[right];
-            return null;
-        }
+        
 
         public bool Remove(ModelObject modelObject)
         {
@@ -159,10 +128,13 @@ namespace Model
         public void RemoveRange(string objType,IEnumerable<int> selectedObjects)
         {
             var tempSelectedObjects = new ModelObject[selectedObjects.Count()];
+
+            var objs = FindMany(objType).ToArray();
+
             var counter = 0;
             foreach (var selectedObject in selectedObjects)
             {
-                var obj = Find(selectedObject);
+                var obj = ObjectsFinder.Find(objs,selectedObject);
                 obj.ExistState = false;
                 tempSelectedObjects[counter] = obj;
                 counter++;
@@ -198,21 +170,9 @@ namespace Model
             modelObjects.RemoveAt(modelObjectInd);
         }
 
-        public T Find<T>(T[] objs, int objNumbr) where T : ModelObject
+        public ModelObject Find(int objNumbr)
         {
-            if (objs.Length - 1 == -1) { return null; }
-            var left = 0;
-            var right = objs.Length - 1;
-            while (left < right)
-            {
-                var middle = (right + left) / 2;
-                if (objNumbr <= objs[middle].Number)
-                    right = middle;
-                else left = middle + 1;
-            }
-            if (objs[right].Number == objNumbr)
-                return objs[right];
-            return null;
+            return ObjectsFinder.Find(modelObjects, objNumbr);
         }
 
         public List<string> GetObjectTypes()

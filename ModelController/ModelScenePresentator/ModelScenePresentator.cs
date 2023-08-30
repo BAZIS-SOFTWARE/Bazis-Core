@@ -59,7 +59,8 @@ namespace ModelController.ModelScenePresentator
                 }
             }
         }
-/// <inheritdoc/>
+
+        /// <inheritdoc/>
 
         public Tuple<int, int, int,int> CreateVBOIndexes(string objsType)
         {

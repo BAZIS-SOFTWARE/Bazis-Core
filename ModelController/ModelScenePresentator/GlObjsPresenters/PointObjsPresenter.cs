@@ -1,5 +1,6 @@
 ﻿using Model;
 using Model.Interfaces;
+using Model.Utilities;
 using ModelController.MeshObjsUtility;
 using ModelController.ModelScenePresentator.GlObjsVertexCreators;
 using ModelController.ModelScenePresentator.Interfaces;
@@ -113,6 +114,11 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
         public override bool[] CreateEdgeFlags(int edgesLength)
         {
             return new bool[0];
+        }
+
+        public override IModelObject FindObj(int objNumbr)
+        {
+            return ObjectsFinder.Find(pointObjects, objNumbr);
         }
     }
 }

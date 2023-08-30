@@ -1,5 +1,6 @@
 ﻿using Model;
 using Model.Interfaces;
+using Model.Utilities;
 using ModelController.ModelScenePresentator.GlObjsVertexCreators;
 using ModelController.ModelScenePresentator.Interfaces;
 using System;
@@ -105,6 +106,11 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
             edgesArray.Where(x => x = true);
 
             return edgesArray;
+        }
+
+        public override IModelObject FindObj(int objNumbr)
+        {
+            return ObjectsFinder.Find(lineObjects, objNumbr);
         }
     }
 }
