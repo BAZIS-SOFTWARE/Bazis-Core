@@ -12,7 +12,17 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
 {
     public abstract class ObjsPresenter
     {
+        /// <summary>
+        /// GetObjs
+        /// </summary>
+        /// <returns></returns>
         public abstract IEnumerable<IModelObject> GetObjs();
+        /// <summary>
+        /// GetObjs
+        /// </summary>
+        /// <param name="color"></param>
+        /// <returns></returns>
+        public abstract IEnumerable<IModelObject> GetObjs(Color color);
 
         public abstract IModelObject this[int ind] { get; }
 

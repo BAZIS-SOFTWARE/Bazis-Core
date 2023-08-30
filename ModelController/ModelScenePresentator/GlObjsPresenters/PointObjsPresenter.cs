@@ -6,6 +6,7 @@ using ModelController.ModelScenePresentator.GlObjsVertexCreators;
 using ModelController.ModelScenePresentator.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace ModelController.ModelScenePresentator.GlObjsPresenters
 {
@@ -119,6 +120,15 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
         public override IModelObject FindObj(int objNumbr)
         {
             return ObjectsFinder.Find(pointObjects, objNumbr);
+        }
+
+        public override IEnumerable<IModelObject> GetObjs(Color color)
+        {
+            foreach (var pointObject in pointObjects)
+            {
+                if (pointObject.MasterColor == color)
+                    yield return pointObject;
+            }
         }
     }
 }
