@@ -151,18 +151,18 @@ namespace TestModel
             var modelINP = loader.Load($@"..\..\..\Examples\{array[0]}");
             model.Load(modelINP);
 
-            var presenter = new ModelScenePresentator(model);
+            var modelPresenter = new ModelScenePresentator(model);
 
-            foreach (string item in presenter?.GetObjectsTypes())
+            foreach (string objsType in modelPresenter.Keys)
             {
-                presenter.HideInsideObjects(item);
+                modelPresenter.HideInsideObjects(objsType);
 
-                var tuple = presenter.CreateVBOIndexes(item);
-                int[] ptrs = presenter.CreateVBOPointers(item, tuple.Item1);
-                float[] glCoords = presenter.CreateVBOVertexes(item, tuple.Item2, "координаты");
-                float[] glColors = presenter.CreateVBOVertexes(item, tuple.Item3, "цвет");
-                float[] glNormals = presenter.CreateVBOVertexes(item, tuple.Item2, "нормаль");
-                bool[] edges = presenter.CreateVBOEdges(item, tuple.Item4);
+                var tuple = modelPresenter.CreateVBOIndexes(objsType);
+                int[] ptrs = modelPresenter.CreateVBOPointers(objsType, tuple.Item1);
+                float[] glCoords = modelPresenter.CreateVBOVertexes(objsType, tuple.Item2, "координаты");
+                float[] glColors = modelPresenter.CreateVBOVertexes(objsType, tuple.Item3, "цвет");
+                float[] glNormals = modelPresenter.CreateVBOVertexes(objsType, tuple.Item2, "нормаль");
+                bool[] edges = modelPresenter.CreateVBOEdges(objsType, tuple.Item4);
 
                 Assert.AreEqual(tuple.Item4, edges.Length);
                 Assert.AreEqual(tuple.Item1, ptrs.Length);

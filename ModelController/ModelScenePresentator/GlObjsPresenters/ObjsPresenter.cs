@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace ModelController.ModelScenePresentator.GlObjsPresenters
 {
+    /// <summary>
+    /// ObjsPresenter
+    /// </summary>
     public abstract class ObjsPresenter
     {
         /// <summary>

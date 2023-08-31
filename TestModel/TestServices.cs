@@ -178,6 +178,7 @@ namespace TestModel
             var modelGMSH = loaderGMSH.Load(@"C:\Projs\ENERGOMASH\CALC\proj_new.bpf");
             model.Load(modelGMSH);
             model.ObjectData.RemoveRange("Элементы2D");
+            model.ObjectData.ClearRemoved();
 
             var els2D = model.ObjectData.FindMany<Element2D>();
 

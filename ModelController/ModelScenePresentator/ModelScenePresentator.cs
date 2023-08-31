@@ -14,9 +14,27 @@ namespace ModelController.ModelScenePresentator
     /// <summary>
     /// ModelScenePresentator
     /// </summary>
-    public class ModelScenePresentator : IEnumerable<KeyValuePair<string, ObjsPresenter>>
+    public class ModelScenePresentator : IDictionary<string, ObjsPresenter>
     {
         Dictionary<string, ObjsPresenter> presentors;
+/// <inheritdoc/>
+
+        public ICollection<string> Keys { get{ return presentors.Keys; } } 
+/// <inheritdoc/>
+
+        public ICollection<ObjsPresenter> Values { get { return presentors.Values; } }
+/// <inheritdoc/>
+
+        public int Count { get { return presentors.Count; } }
+/// <inheritdoc/>
+
+        public bool IsReadOnly => throw new NotImplementedException();
+
+        public ObjsPresenter this[string key] 
+        { 
+            get { return presentors[key]; } 
+            set { presentors[key] = value; }
+        }
 
 
         /// <summary>
@@ -64,81 +82,66 @@ namespace ModelController.ModelScenePresentator
 
         public Tuple<int, int, int,int> CreateVBOIndexes(string objsType)
         {
-            var presenter = GetObjectsPresenter(objsType);
-            return presenter.CreateIndexes();
+            if (ContainsKey(objsType))
+            {
+                var presenter = presentors[objsType];
+                return presenter.CreateIndexes();
+            }
+            else throw new Exception("Объект не найден!");
         }
         /// <inheritdoc/>
         public float[] CreateVBOVertexes(string objsType, int vertexLength, string vertexType)
         {
-            var objsCreator = GetObjectsPresenter(objsType);
-
-            if (objsCreator == null)
-                throw new Exception("Объект не найден!");
-
-            return objsCreator.CreateVertexes(vertexLength, vertexType);
+            if (ContainsKey(objsType))
+            {
+                var presenter = presentors[objsType];
+                return presenter.CreateVertexes(vertexLength, vertexType);
+            }
+            else throw new Exception("Объект не найден!");
         }
 /// <inheritdoc/>
 
         public bool[] CreateVBOEdges(string objsType, int vertexLength)
         {
-            var objsCreator = GetObjectsPresenter(objsType);
-
-            if (objsCreator == null)
-                throw new Exception("Объект не найден!");
-
-            return objsCreator.CreateEdgeFlags(vertexLength);
+            if (ContainsKey(objsType))
+            {
+                var presenter = presentors[objsType];
+                return presenter.CreateEdgeFlags(vertexLength);
+            }
+            else throw new Exception("Объект не найден!");
         }
 /// <inheritdoc/>
 
         public int[] CreateVBOPointers(string objsType, int indexLength)
         {
-            var objsCreator = GetObjectsPresenter(objsType);
-
-            if (objsCreator == null)
-                throw new Exception("Объект не найден!");
-
-            return objsCreator.CreatePointers(indexLength);
+            if (ContainsKey(objsType))
+            {
+                var presenter = presentors[objsType];
+                return presenter.CreatePointers(indexLength);
+            }
+            else throw new Exception("Объект не найден!");
         }
 
 /// <inheritdoc/>
 
         public void HideInsideObjects(string objsType)
         {
-            var objsCreator = GetObjectsPresenter(objsType);
-
-            if (objsCreator == null)
-                throw new Exception("Объект не найден!");
-
-            if (objsCreator is SurfaceObjsPresenter surfaceObjsCreator )
-                surfaceObjsCreator.HideInsideSurfaces();
-        }
-
-    
-/// <inheritdoc/>
-
-
-
-        public IEnumerable<string> GetObjectsTypes()
-        {
-            foreach (var creator in presentors)
+            if(ContainsKey(objsType))
             {
-                yield return creator.Key;
-            }
-        }
+                var presenter = presentors[objsType];
 
-        public ObjsPresenter GetObjectsPresenter(string objsType)
-        {
-            if (!presentors.ContainsKey(objsType))
-                return null;
-            return presentors[objsType];
-        }
-        
+                if (presenter is SurfaceObjsPresenter surfaceObjsCreator)
+                    surfaceObjsCreator.HideInsideSurfaces();
+            }
+            else throw new Exception("Объект не найден!");
+        }       
 
 /// <inheritdoc/>     
         public bool ContainsObjecs(string objsType)
         {
             return presentors.ContainsKey(objsType);
         }
+/// <inheritdoc/>
 
         public IEnumerator<KeyValuePair<string, ObjsPresenter>> GetEnumerator()
         {
@@ -151,6 +154,53 @@ namespace ModelController.ModelScenePresentator
         IEnumerator IEnumerable.GetEnumerator()
         {
             throw new System.NotImplementedException();
+        }
+/// <inheritdoc/>
+
+        public bool ContainsKey(string objsType)
+        {
+            return presentors.ContainsKey(objsType);
+        }
+
+        public void Add(string objsType, ObjsPresenter presenter)
+        {
+            if(!presentors.ContainsKey(objsType))
+                presentors.Add(objsType, presenter);
+        }
+
+        public bool Remove(string objsType)
+        {
+            return presentors.Remove(objsType);
+        }
+
+        public bool TryGetValue(string objsType, out ObjsPresenter presenter)
+        {
+            return presentors.TryGetValue(objsType, out presenter);
+        }
+
+        public void Add(KeyValuePair<string, ObjsPresenter> item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Clear()
+        {
+            presentors.Clear();
+        }
+
+        public bool Contains(KeyValuePair<string, ObjsPresenter> item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CopyTo(KeyValuePair<string, ObjsPresenter>[] array, int arrayIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Remove(KeyValuePair<string, ObjsPresenter> item)
+        {
+            throw new NotImplementedException();
         }
     }
 }

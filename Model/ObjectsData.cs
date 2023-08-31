@@ -116,31 +116,18 @@ namespace Model
             {
                 return modelObjects.Where(x => x.ObjType == objType);
             }
-        }
-
-        
+        }       
+/// <inheritdoc/>
 
         public bool Remove(ModelObject modelObject)
         {
             return modelObjects.Remove(modelObject);
         }
 
-        public void RemoveRange(string objType,IEnumerable<int> selectedObjects)
+        public void ClearRemoved()
         {
-            var tempSelectedObjects = new ModelObject[selectedObjects.Count()];
-
-            var objs = FindMany(objType).ToArray();
-
-            var counter = 0;
-            foreach (var selectedObject in selectedObjects)
-            {
-                var obj = ObjectsFinder.Find(objs,selectedObject);
-                obj.ExistState = false;
-                tempSelectedObjects[counter] = obj;
-                counter++;
-            }
-
-            var existObjects = modelObjects.Except(tempSelectedObjects, new EqualityComparerByExistState()).ToList();
+            var removedObjs = modelObjects.Where(x => x.ExistState == false);
+            var existObjects = modelObjects.Except(removedObjs, new EqualityComparerByExistState()).ToList();
             modelObjects = existObjects;
         }
 
@@ -164,6 +151,7 @@ namespace Model
 
             modelObjects = mergeObjsList;
         }
+/// <inheritdoc/>
 
         public void RemoveAt(int modelObjectInd)
         {
