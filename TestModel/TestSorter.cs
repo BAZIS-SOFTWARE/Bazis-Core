@@ -1,11 +1,9 @@
 ﻿using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
-using Model.Events;
-using ModelController.IO;
+using Model.IO;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 
 namespace TestModel
 {
@@ -21,7 +19,7 @@ namespace TestModel
             loader.LoadEvent += (ar1, ar2) => { };
 
             //act
-            var modelBPF = loader.Load(@"..\..\Examples\3D\cub_unsorted.bpf");
+            var modelBPF = loader.Load(@"..\..\..\Examples\3D\cub_unsorted.bpf");
             model.Load(modelBPF);
 
             //assert

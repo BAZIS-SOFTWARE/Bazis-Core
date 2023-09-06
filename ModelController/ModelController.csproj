@@ -35,11 +35,10 @@
     <DocumentationFile>bin\Release\ModelController.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>
-    </AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>ModelControllerKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -61,20 +60,17 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Functions, Version=1.0.2.19, Culture=neutral, PublicKeyToken=65fde98421b2fc88, processorArchitecture=MSIL">
-      <HintPath>..\packages\Functions.1.0.2.19\lib\net48\Functions.dll</HintPath>
+    <Reference Include="Functions, Version=1.0.2.24, Culture=neutral, PublicKeyToken=65fde98421b2fc88, processorArchitecture=MSIL">
+      <HintPath>..\packages\Functions.1.0.2.24\lib\net48\Functions.dll</HintPath>
     </Reference>
-    <Reference Include="Geometry, Version=2.0.5.45, Culture=neutral, PublicKeyToken=cadb58b3f6b10f0c, processorArchitecture=MSIL">
-      <HintPath>..\packages\Geometry.2.0.5.45\lib\net48\Geometry.dll</HintPath>
+    <Reference Include="Geometry, Version=2.0.5.50, Culture=neutral, PublicKeyToken=cadb58b3f6b10f0c, processorArchitecture=MSIL">
+      <HintPath>..\packages\Geometry.2.0.5.50\lib\net48\Geometry.dll</HintPath>
     </Reference>
     <Reference Include="MathNet.Numerics, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cd8b63ad3d691a37, processorArchitecture=MSIL">
       <HintPath>..\packages\MathNet.Numerics.Signed.5.0.0\lib\net48\MathNet.Numerics.dll</HintPath>
     </Reference>
     <Reference Include="Octree, Version=2.1.10.0, Culture=neutral, PublicKeyToken=2f43c75143b659d5, processorArchitecture=MSIL">
       <HintPath>..\packages\NetOctree.2.1.10\lib\net48\Octree.dll</HintPath>
-    </Reference>
-    <Reference Include="SceneInterface, Version=1.0.3.60, Culture=neutral, PublicKeyToken=f4632fed43ef5153, processorArchitecture=MSIL">
-      <HintPath>..\packages\SceneInterface.1.0.3.60\lib\net48\SceneInterface.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -94,10 +90,10 @@
   <ItemGroup>
     <Compile Include="MeshObjsUtility\CalcDistance.cs" />
     <Compile Include="MeshObjsUtility\CrossSection.cs" />
-    <Compile Include="ModelScenePresentator\GlObjsArraysCreators\LineObjsPresenter.cs" />
-    <Compile Include="ModelScenePresentator\GlObjsArraysCreators\ObjsPresenter.cs" />
-    <Compile Include="ModelScenePresentator\GlObjsArraysCreators\PointObjsPresenter.cs" />
-    <Compile Include="ModelScenePresentator\GlObjsArraysCreators\SurfaceObjsPresenter.cs" />
+    <Compile Include="ModelScenePresentator\GlObjsPresenters\LineObjsPresenter.cs" />
+    <Compile Include="ModelScenePresentator\GlObjsPresenters\ObjsPresenter.cs" />
+    <Compile Include="ModelScenePresentator\GlObjsPresenters\PointObjsPresenter.cs" />
+    <Compile Include="ModelScenePresentator\GlObjsPresenters\SurfaceObjsPresenter.cs" />
     <Compile Include="ModelScenePresentator\GlObjsVertexCreators\CoordsLineObjsCreator.cs" />
     <Compile Include="ModelScenePresentator\GlObjsVertexCreators\CoordsPointObjsCreator.cs" />
     <Compile Include="ModelScenePresentator\GlObjsVertexCreators\CoordsSurfaceObjsCreator.cs" />
@@ -106,8 +102,6 @@
     <Compile Include="ModelScenePresentator\Interfaces\ILineObjsVertexCreator.cs" />
     <Compile Include="ModelScenePresentator\Interfaces\IPointObjsVertexCreator.cs" />
     <Compile Include="ModelScenePresentator\Interfaces\ISurfaceObjsVertexCreator.cs" />
-    <Compile Include="IO\LoadModelFromProjectTextFile.cs" />
-    <Compile Include="IO\SaveModelToProjectTextFile.cs" />
     <Compile Include="MeshObjsCreator\Extract2DFrom3D.cs" />
     <Compile Include="MeshObjsUtility\FindCoincidentObjects.cs" />
     <Compile Include="MeshObjsUtility\FindInterfacedNodes.cs" />
@@ -130,10 +124,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="ModelControllerKey.snk" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Model.csproj">
+    <ProjectReference Include="..\Model\Model.csproj">
       <Project>{18dc227e-ba77-4c78-af7a-b2391626c31b}</Project>
       <Name>Model</Name>
     </ProjectReference>

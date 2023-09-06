@@ -8,9 +8,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using Model.Events;
 using Model.Interfaces;
-using ModelController.IO;
 using ModelController.MeshObjsUtility;
-using Model.ModelParcer;
+using Model.IO;
 
 namespace TestModel
 {
@@ -43,6 +42,26 @@ namespace TestModel
             objectsData = new ObjectsData();
             objectsData.AddRange(nodes);
             objectsData.AddRange(elements);
+        }
+
+        [TestMethod]
+        public void FindFreeNodes()
+        {
+            //assing
+            var model = new ModelData();
+            var loader = new LoadModelFromProjectTextFile();
+            loader.LoadEvent += (ar1, ar2) => { };
+            //act
+            var modelINP = loader.Load(@"C:\Projs\TestProjTerm\Cub\cub_unsorted_freeNodes.bpf");
+            model.Load(modelINP);
+
+            var freeNodesFinder = new FreeNodesFinder(model.ObjectData);
+
+            var freeNodes = freeNodesFinder.Find<Element>();
+
+            //assert
+            freeNodes.ToArray()[0] = 14;
+            freeNodes.ToArray()[1] = 15;
         }
 
         [TestMethod]
@@ -83,7 +102,7 @@ namespace TestModel
             var loader = new LoadModelFromASCIITextFile();
 
             loader.LoadEvent += Model_LoadEvent;
-            var modelLoaded = loader.Load(@"..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
+            var modelLoaded = loader.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
             model.Load(modelLoaded);
             //act
             var elements = model.ObjectData.FindMany<Element3D>().ToArray();
@@ -159,6 +178,7 @@ namespace TestModel
             var modelGMSH = loaderGMSH.Load(@"C:\Projs\ENERGOMASH\CALC\proj_new.bpf");
             model.Load(modelGMSH);
             model.ObjectData.RemoveRange("Элементы2D");
+            model.ObjectData.ClearRemoved();
 
             var els2D = model.ObjectData.FindMany<Element2D>();
 
@@ -197,7 +217,7 @@ namespace TestModel
         {
             var loader = new LoadModelFromCDBTextFile();
             loader.LoadEvent += (ar1, ar2) => { };
-            var model = loader.Load(@"..\..\Examples\CDB\hex.cdb");
+            var model = loader.Load(@"..\..\..\Examples\CDB\hex.cdb");
             var finder = new FindCoincidentObjects(model.ObjectData, 1.1f);
             finder.ProgressEvent += (ar1, ar2) => { };
             var coincidentNodes = finder.Find<Node>();
@@ -210,7 +230,7 @@ namespace TestModel
         {
             var loader = new LoadModelFromCDBTextFile();
             loader.LoadEvent += (ar1, ar2) => { };
-            var model = loader.Load(@"..\..\Examples\CDB\10e+5Nodes.cdb");
+            var model = loader.Load(@"..\..\..\Examples\CDB\10e+5Nodes.cdb");
             var finder = new FindCoincidentObjects(model.ObjectData, 1.0f);
             var coincidentNodes = finder.Find<Node>().ToList();
         }
@@ -237,7 +257,7 @@ namespace TestModel
             var loader = new LoadModelFromASCIITextFile();
 
             loader.LoadEvent += Model_LoadEvent;
-            var modelASCII = loader.Load(@"..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
+            var modelASCII = loader.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
             model.Load(modelASCII);
 
             //act

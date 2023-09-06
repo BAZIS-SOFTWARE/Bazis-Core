@@ -1,5 +1,6 @@
 ﻿using Geometry;
 using Model;
+using Model.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,9 +20,9 @@ namespace ModelController.MeshObjsUtility
         {
             var boundedEdges = new List<string>();
 
-            var els = modelData.ObjectData.FindMany<SurfaceElement>();
+            var els = modelData.ObjectData.FindMany<SurfaceElement>().ToArray();
 
-            var finder = new FindInterfacedNodes(els.ToArray());
+            var finder = new FindInterfacedNodes(els);
             var interfacedNodes = finder.Find();
 
             //List<int> openSurfNodes = FindOpenSurfacedNodes(objects);
@@ -34,7 +35,7 @@ namespace ModelController.MeshObjsUtility
                 var sharedEdges = new Dictionary<string, Dictionary<Element, List<Surface>>>();
                 foreach (var sharedElement in interfacedNode.Value)
                 {
-                    var element = (SurfaceElement)modelData.ObjectData.Find(sharedElement);
+                    var element = ObjectsFinder.Find(els,sharedElement);
 
                     foreach (var surface in element.GetSurface())
                     {

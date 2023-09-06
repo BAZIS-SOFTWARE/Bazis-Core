@@ -3,7 +3,7 @@ using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using Model.Interfaces;
-using Model.ModelParcer;
+using Model.IO;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -20,13 +20,13 @@ namespace TestModel
         {
             var tetraLoader = new LoadModelFromCDBTextFile();
             tetraLoader.LoadEvent += (arg1, arg2) => { };
-            var modelTetraData = tetraLoader.Load(@"..\..\Examples\CDB\tetra.cdb");
+            var modelTetraData = tetraLoader.Load(@"..\..\..\Examples\CDB\tetra.cdb");
             var modelTetraNodes = modelTetraData.ObjectData.FindMany<Node>().ToArray();
             tetra = new Element3D(1, modelTetraNodes, ObjKind.Tetra);
 
             var hexLoader = new LoadModelFromCDBTextFile();
             hexLoader.LoadEvent += (arg1, arg2) => { };
-            var modelHexData = hexLoader.Load(@"..\..\Examples\CDB\hex.cdb");
+            var modelHexData = hexLoader.Load(@"..\..\..\Examples\CDB\hex.cdb");
             var modelHexNodes = modelHexData.ObjectData.FindMany<Node>().ToArray();
             hex = new Element3D(1, modelHexNodes, ObjKind.Hexa);
         }
@@ -87,7 +87,7 @@ namespace TestModel
         {
             var loader = new LoadModelFromCDBTextFile();
             loader.LoadEvent += (arg1, arg2) => { };
-            var modelData = loader.Load(@"..\..\Examples\CDB\longModel.cdb");
+            var modelData = loader.Load(@"..\..\..\Examples\CDB\longModel.cdb");
 
             var points = new List<Point3D>()
             {

@@ -1,0 +1,46 @@
+﻿using Model.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Model.Utilities
+{
+    public static class ObjectsFinder
+    {
+        public static T Find<T>(List<T> objs, int objNumbr) where T : IModelObject
+        {
+            if (objs.Count - 1 == -1) { return default(T); }
+            var left = 0;
+            var right = objs.Count - 1;
+            while (left < right)
+            {
+                var middle = (right + left) / 2;
+                if (objNumbr <= objs[middle].Number)
+                    right = middle;
+                else left = middle + 1;
+            }
+            if (objs[right].Number == objNumbr)
+                return objs[right];
+            return default(T);
+        }
+
+        public static T Find<T>(T[] objs, int objNumbr) where T : IModelObject
+        {
+            if (objs.Length - 1 == -1) { return default(T); }
+            var left = 0;
+            var right = objs.Length - 1;
+            while (left < right)
+            {
+                var middle = (right + left) / 2;
+                if (objNumbr <= objs[middle].Number)
+                    right = middle;
+                else left = middle + 1;
+            }
+            if (objs[right].Number == objNumbr)
+                return objs[right];
+            return default(T);
+        }
+    }
+}

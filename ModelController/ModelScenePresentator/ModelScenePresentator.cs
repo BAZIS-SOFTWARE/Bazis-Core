@@ -2,8 +2,7 @@
 using Model;
 using Model.Interfaces;
 using ModelController.MeshObjsUtility;
-using ModelController.ModelScenePresentator.GlObjsArraysCreators;
-using SceneInterface;
+using ModelController.ModelScenePresentator.GlObjsPresenters;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,19 +14,35 @@ namespace ModelController.ModelScenePresentator
     /// <summary>
     /// ModelScenePresentator
     /// </summary>
-    public class ModelScenePresentator : IEnumerable<KeyValuePair<string, ObjsPresenter>>, IScenePresentor
+    public class ModelScenePresentator : IDictionary<string, ObjsPresenter>
     {
         Dictionary<string, ObjsPresenter> presentors;
+/// <inheritdoc/>
 
-        ModelData modelData;
+        public ICollection<string> Keys { get{ return presentors.Keys; } } 
+/// <inheritdoc/>
+
+        public ICollection<ObjsPresenter> Values { get { return presentors.Values; } }
+/// <inheritdoc/>
+
+        public int Count { get { return presentors.Count; } }
+/// <inheritdoc/>
+
+        public bool IsReadOnly => throw new NotImplementedException();
+
+        public ObjsPresenter this[string key] 
+        { 
+            get { return presentors[key]; } 
+            set { presentors[key] = value; }
+        }
+
+
         /// <summary>
         /// ModelScenePresentator
         /// </summary>
         /// <param name="modelData"></param>
         public ModelScenePresentator(ModelData modelData)
         {
-            this.modelData = modelData;
-
             var objsTypes = modelData.ObjectData.GetObjectTypes();
 
             //var sortedObjs = GetSortedObjects(modelData.ObjectData.ToArray());
@@ -51,7 +66,7 @@ namespace ModelController.ModelScenePresentator
                         break;
                     case "Элементы2D":
                     case "Элементы3D":
-                    case "Поверхность":
+                    case "Поверхности":
                         var surfaceObjs = modelData.ObjectData.Where(x => x.ObjType == objsType).
     Select(x => (ISurfaceObject)x);
                         var surfaceObjsCreator = new SurfaceObjsPresenter(surfaceObjs.ToArray());
@@ -62,194 +77,71 @@ namespace ModelController.ModelScenePresentator
                 }
             }
         }
-/// <inheritdoc/>
+
+        /// <inheritdoc/>
 
         public Tuple<int, int, int,int> CreateVBOIndexes(string objsType)
         {
-            var presenter = GetObjectsPresenter(objsType);
-            return presenter.CreateIndexes();
+            if (ContainsKey(objsType))
+            {
+                var presenter = presentors[objsType];
+                return presenter.CreateIndexes();
+            }
+            else throw new Exception("Объект не найден!");
         }
         /// <inheritdoc/>
         public float[] CreateVBOVertexes(string objsType, int vertexLength, string vertexType)
         {
-            var objsCreator = GetObjectsPresenter(objsType);
-
-            if (objsCreator == null)
-                throw new Exception("Объект не найден!");
-
-            return objsCreator.CreateVertexes(vertexLength, vertexType);
+            if (ContainsKey(objsType))
+            {
+                var presenter = presentors[objsType];
+                return presenter.CreateVertexes(vertexLength, vertexType);
+            }
+            else throw new Exception("Объект не найден!");
         }
 /// <inheritdoc/>
 
         public bool[] CreateVBOEdges(string objsType, int vertexLength)
         {
-            var objsCreator = GetObjectsPresenter(objsType);
-
-            if (objsCreator == null)
-                throw new Exception("Объект не найден!");
-
-            return objsCreator.CreateEdgeFlags(vertexLength);
+            if (ContainsKey(objsType))
+            {
+                var presenter = presentors[objsType];
+                return presenter.CreateEdgeFlags(vertexLength);
+            }
+            else throw new Exception("Объект не найден!");
         }
 /// <inheritdoc/>
 
         public int[] CreateVBOPointers(string objsType, int indexLength)
         {
-            var objsCreator = GetObjectsPresenter(objsType);
-
-            if (objsCreator == null)
-                throw new Exception("Объект не найден!");
-
-            return objsCreator.CreatePointers(indexLength);
+            if (ContainsKey(objsType))
+            {
+                var presenter = presentors[objsType];
+                return presenter.CreatePointers(indexLength);
+            }
+            else throw new Exception("Объект не найден!");
         }
-/// <inheritdoc/>
 
-        public void ShowInsideObjects(string objsType)
-        {
-            var objsCreator = GetObjectsPresenter(objsType);
-
-            if (objsCreator == null)
-                throw new Exception("Объект не найден!");
-
-            if (objsCreator is SurfaceObjsPresenter surfaceObjsCreator)
-                surfaceObjsCreator.ShowInsideSurfaces();
-        }
 /// <inheritdoc/>
 
         public void HideInsideObjects(string objsType)
         {
-            var objsCreator = GetObjectsPresenter(objsType);
-
-            if (objsCreator == null)
-                throw new Exception("Объект не найден!");
-
-            if (objsCreator is SurfaceObjsPresenter surfaceObjsCreator )
-                surfaceObjsCreator.HideInsideSurfaces();
-        }
-
-    
-/// <inheritdoc/>
-
-
-
-        public IEnumerable<string> GetObjectsTypes()
-        {
-            foreach (var creator in presentors)
+            if(ContainsKey(objsType))
             {
-                yield return creator.Key;
+                var presenter = presentors[objsType];
+
+                if (presenter is SurfaceObjsPresenter surfaceObjsCreator)
+                    surfaceObjsCreator.HideInsideSurfaces();
             }
-        }
+            else throw new Exception("Объект не найден!");
+        }       
 
-        public int Count()
-        {
-            return presentors.Count();
-        }
-
-        private ObjsPresenter GetObjectsPresenter(string objsType)
-        {
-            if (!presentors.ContainsKey(objsType))
-                return null;
-            return presentors[objsType];
-        }
-        /// <inheritdoc/>
-        public void ShowAllObjects()
-        {
-            foreach (var presentor in presentors)
-                foreach (var obj in presentor.Value.GetObjs())
-                    obj.ViewState = true;
-        }
-/// <inheritdoc/>
-
-
-        public void ShowObjects(string objsType)
-        {
-            foreach (var obj in presentors[objsType].GetObjs())
-                obj.ViewState = true;
-        }
-
-        public void HideObjects(string objsType)
-        {
-            foreach (var obj in presentors[objsType].GetObjs())
-            {
-                obj.ViewState = false;
-            }
-        }
-/// <inheritdoc/>
-
-        public IEnumerable<Point3D> GetObjPoints(int index, string objsType)
-        {
-            return presentors[objsType][index].GetPoints();
-        }
-
-        public bool GetObjStatus(int index, string objsType)
-        {
-            return presentors[objsType][index].ViewState;
-        }
-
-        public void HideObjects(List<int> objsNumbs, string objsType)
-        {    
-            foreach (var objNumb in objsNumbs)
-            {
-                modelData.ObjectData.Find(objNumb).ViewState = false;
-            }
-        }
-/// <inheritdoc/>
-
-        public void HideObjects(Color color, string objsType)
-        {
-            foreach (var obj in presentors[objsType].GetObjs())
-            {
-                if (obj.MasterColor == color)
-                    obj.ViewState = false;
-            }
-        }
-/// <inheritdoc/>
-
-        public void ColorObject(int index, Color color, string objsType)
-        {
-            presentors[objsType][index].MasterColor = color;
-        }
-/// <inheritdoc/>
-
-        
-
+/// <inheritdoc/>     
         public bool ContainsObjecs(string objsType)
         {
             return presentors.ContainsKey(objsType);
         }
 /// <inheritdoc/>
-
-        public int CountObjecs(string objsType)
-        {
-            if (ContainsObjecs(objsType))
-                return presentors[objsType].Count();
-            else return 0;
-        }
-
-        public IEnumerable<int> FindObjectsNumbers(Color color, string objsType)
-        {
-            foreach (var obj in presentors[objsType].GetObjs())
-            {
-                if (obj.MasterColor == color)
-                    yield return obj.Number;
-            }
-        }
-
-        public void SetBackColorObject(int index, string objsType)
-        {
-            presentors[objsType][index].SetBackColor();
-        }
-
-        public void SetBackColorAllObjects()
-        {
-            foreach (var presentor in presentors)
-            {
-                foreach (var obj in presentor.Value.GetObjs())
-                {
-                    obj.SetBackColor();
-                }
-            }
-        }
-
 
         public IEnumerator<KeyValuePair<string, ObjsPresenter>> GetEnumerator()
         {
@@ -263,74 +155,52 @@ namespace ModelController.ModelScenePresentator
         {
             throw new System.NotImplementedException();
         }
+/// <inheritdoc/>
 
-        //public GLObjType GetObjectsGlType(string objsType)
-        //{
-        //    if (objsType == "Узлы")
-        //    {
-        //        return GLObjType.point;
-        //    }
-        //    else if (objsType == "Элементы3D" | objsType == "Элементы2D" | objsType == "Поверхность")
-        //    {
-        //        return GLObjType.triangle;
-        //    }
-        //    else return GLObjType.line;
-
-        //}
-
-        public List<Line> FindBoundaries()
+        public bool ContainsKey(string objsType)
         {
-            var creator = new FindBoundaryEdges(modelData);
-            var boundary = creator.Find();
-
-            var lines = new List<Line>();
-            foreach (var line in boundary)
-            {
-                var n0 = int.Parse(line.Split(' ')[0]);
-                var n1 = int.Parse(line.Split(' ')[1]);
-
-                var node0 = (Node)modelData.ObjectData.Find(n0);
-                var node1 = (Node)modelData.ObjectData.Find(n1);
-
-                lines.Add(new Line(node0.Position, node1.Position));
-            }
-            return lines;
+            return presentors.ContainsKey(objsType);
         }
 
-        public Point3D GetObjCentre(int index, string objsType)
+        public void Add(string objsType, ObjsPresenter presenter)
         {
-            return presentors[objsType][index].CalcCentralPoint();
+            if(!presentors.ContainsKey(objsType))
+                presentors.Add(objsType, presenter);
         }
 
-        public GLObjType GetObjectsGlType(string objsType)
+        public bool Remove(string objsType)
         {
-            switch (objsType)
-            {
-                case "Узлы":
-                    return GLObjType.point;
-                case "Элементы1D":
-                case "Линии":
-                    return GLObjType.line;
-                case "Элементы2D":
-                case "Элементы3D":
-                case "Поверхность":
-                    return GLObjType.triangle;
-                default:
-                    return GLObjType.point;
-            }
+            return presentors.Remove(objsType);
         }
 
-        //public List<Point3D> GetObjectsCoords(string objsType)
-        //{
-        //    var objs = creators[objsType];
+        public bool TryGetValue(string objsType, out ObjsPresenter presenter)
+        {
+            return presentors.TryGetValue(objsType, out presenter);
+        }
 
-        //    var coords = new List<Point3D>();
+        public void Add(KeyValuePair<string, ObjsPresenter> item)
+        {
+            throw new NotImplementedException();
+        }
 
-        //    foreach (var obj in objs.GetObjs())
-        //    {
-        //        coords.AddRange(obj.GetPoints());
-        //    }
-        //    return coords;
-        //}    
+        public void Clear()
+        {
+            presentors.Clear();
+        }
+
+        public bool Contains(KeyValuePair<string, ObjsPresenter> item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CopyTo(KeyValuePair<string, ObjsPresenter>[] array, int arrayIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Remove(KeyValuePair<string, ObjsPresenter> item)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

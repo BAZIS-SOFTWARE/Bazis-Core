@@ -3,22 +3,10 @@ using Model.Interfaces;
 using Model;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GmshApi
 {
-    public enum Dimension
-    { 
-        All = -1,
-        ControlPoints = 0,
-        Node = 0,
-        Curves = 1,
-        Elements1D = 1,
-        Surfaces = 2,
-        Elements2D = 2,
-        Volumes = 3
-    }
-
-
     /// <summary>
     /// Класс содержит информацию о типе извлечнного узла
     /// </summary>
@@ -338,9 +326,9 @@ namespace GmshApi
         private static IntPtr[] GetPointerToElementTags(long[][] elementTags)
         {
             var result = new List<IntPtr>();
-            for (int i = 0; i < elementTags.GetLength(0) - 1; i++)
+            foreach (var tags in elementTags.Skip(2).Take(1))
             {
-                foreach (var tag in elementTags[i])
+                foreach (var tag in tags)
                 {
                     result.Add((IntPtr)tag);
                 }
