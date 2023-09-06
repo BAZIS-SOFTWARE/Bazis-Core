@@ -3,7 +3,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using Model.Events;
 using Model.Interfaces;
-using ModelController.IO;
+using Model.IO;
+using Model.Utilities;
 
 namespace TestModel
 {
@@ -33,7 +34,7 @@ namespace TestModel
             var model = new ModelData();
             model.ObjectData.AddRange(objs);
             //act
-            var element = model.ObjectData.Find(objs, 8);
+            var element = ObjectsFinder.Find(objs, 8);
             //assert
             Assert.AreEqual(8, element.Number);
         }

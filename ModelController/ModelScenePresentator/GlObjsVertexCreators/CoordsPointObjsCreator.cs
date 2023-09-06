@@ -7,13 +7,17 @@ namespace ModelController.ModelScenePresentator.GlObjsVertexCreators
     {
         public void Create(ref int stride, float[] vertexAtributes, IModelObject pointObject)
         {
-            foreach (var point in pointObject.GetPoints())
+            if(pointObject.ViewState)
             {
-                vertexAtributes[stride + 0] = point._x;
-                vertexAtributes[stride + 1] = point._y;
-                vertexAtributes[stride + 2] = point._z;
+                foreach (var point in pointObject.GetPoints())
+                {
+                    vertexAtributes[stride + 0] = point._x;
+                    vertexAtributes[stride + 1] = point._y;
+                    vertexAtributes[stride + 2] = point._z;
+                }
+                stride += 3;
             }
-            stride += 3;
+ 
         }
     }
 }

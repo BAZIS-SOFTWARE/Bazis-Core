@@ -32,11 +32,11 @@ namespace TestModel
 
             //act
             var presentator = new ModelScenePresentator(model);
-            var inds = presentator.CreateVBOIndexes("Поверхность");
-            var ptrs = presentator.CreateVBOPointers("Поверхность", inds.Item1);
-            var coords = presentator.CreateVBOVertexes("Поверхность", inds.Item2, "координаты");
-            var colors = presentator.CreateVBOVertexes("Поверхность", inds.Item3, "цвет");
-            var normals = presentator.CreateVBOVertexes("Поверхность", inds.Item2, "нормаль");
+            var inds = presentator.CreateVBOIndexes("Поверхности");
+            var ptrs = presentator.CreateVBOPointers("Поверхности", inds.Item1);
+            var coords = presentator.CreateVBOVertexes("Поверхности", inds.Item2, "координаты");
+            var colors = presentator.CreateVBOVertexes("Поверхности", inds.Item3, "цвет");
+            var normals = presentator.CreateVBOVertexes("Поверхности", inds.Item2, "нормаль");
             //assert
             Assert.AreEqual(ptrs.Length, 6);
             Assert.AreEqual(coords.Length, 18);
@@ -119,11 +119,11 @@ namespace TestModel
 
             //act
             var presentator = new ModelScenePresentator(model);
-            var inds = presentator.CreateVBOIndexes("Поверхность");
-            var ptrs = presentator.CreateVBOPointers("Поверхность", inds.Item1);
-            var coords = presentator.CreateVBOVertexes("Поверхность", inds.Item2, "координаты");
-            var colors = presentator.CreateVBOVertexes("Поверхность", inds.Item3, "цвет");
-            var normals = presentator.CreateVBOVertexes("Поверхность", inds.Item2, "нормаль");
+            var inds = presentator.CreateVBOIndexes("Поверхности");
+            var ptrs = presentator.CreateVBOPointers("Поверхности", inds.Item1);
+            var coords = presentator.CreateVBOVertexes("Поверхности", inds.Item2, "координаты");
+            var colors = presentator.CreateVBOVertexes("Поверхности", inds.Item3, "цвет");
+            var normals = presentator.CreateVBOVertexes("Поверхности", inds.Item2, "нормаль");
             //assert
             Assert.AreEqual(ptrs.Length, 15);
             Assert.AreEqual(coords.Length, 45);

@@ -1,8 +1,10 @@
 ﻿using Model.Interfaces;
 using ModelController.ModelScenePresentator.Interfaces;
+using System.Collections.Generic;
 
 namespace ModelController.ModelScenePresentator.GlObjsVertexCreators
 {
+
     public class ColorSurfaceObjsCreator : ISurfaceObjsVertexCreator
     {
         public void Create(ref int stride, float[] vertexAtributes, ISurfaceObject surfObject)
