@@ -57,6 +57,7 @@ namespace GmshApi
         {
             GmshWrapperConnection.Initialize();
             Id = GenerateRandom();
+            idList.Add(id);
             GmshWrapperModel.ModelAdd(Id.ToString());
             Load(path);
         }
@@ -74,9 +75,10 @@ namespace GmshApi
         /// <param name="dim">[In]Размерность</param>
         public MeshObject Generate(int dim)
         {
+            var status = true;
             if (dim != 0)
-                GmshWrapperMesh.Generate(dim);
-            return new MeshObject(Id);
+                status = GmshWrapperMesh.Generate(dim);
+            return status ? new MeshObject(Id) : null;
         }
         /// <summary>
         /// Возвращает контрольные точки

@@ -76,9 +76,9 @@ namespace GmshApi
             return GmshWrapperMesh.GetElements(1, -1);
         }
 
-        public void Generate(int dim)
+        public bool Generate(int dim)
         {
-            GmshWrapperMesh.Generate(dim);
+            return GmshWrapperMesh.Generate(dim);
         }
 
         /// <summary>

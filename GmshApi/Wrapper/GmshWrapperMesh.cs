@@ -50,10 +50,11 @@ namespace GmshApi
         /// [In]Размерность в которой нужно сгенерировать модель
         /// </summary>
         /// <param name="dim"></param>
-        public static void Generate(int dim)
+        public static bool Generate(int dim)
         {
             var ierr = 0;
             GmshMesh.gmshModelMeshGenerate(dim, ref ierr);
+            return ierr == 0;
         }
         /// <summary>
         /// Переводит большую часть сетки в четырехугольники
