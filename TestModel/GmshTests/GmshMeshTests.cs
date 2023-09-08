@@ -295,5 +295,20 @@ namespace TestModel.GmshTests
                 Assert.IsTrue(lengthBefore > lengthAfter);
             }
         }
+
+        [DataTestMethod]
+        [DataRow("baffles.geo"/*"as1-tu-203.stp"*/)]
+        public void GetLogMessageWhenExistsError(ref string fileName)
+        {
+            using (var geometry = new GeometryObject(modelFolder + fileName))
+            {
+                var mesh = geometry.Generate(2);
+                //mesh.QuadrangulateMesh();
+                mesh = geometry.Generate(3);
+                var elements = mesh.GetElement3D().ToArray();
+                //var message = GmshWrapperGeneral.LoggerGetLastError();
+                //Assert.IsTrue(!string.IsNullOrEmpty(message));
+            }
+        }
     }
 }

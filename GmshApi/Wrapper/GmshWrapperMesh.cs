@@ -4,6 +4,7 @@ using Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
 
 namespace GmshApi
 {
@@ -126,6 +127,24 @@ namespace GmshApi
             }
             return ierr == 0;
         }
+
+        /// <summary>
+        /// Возвращает типы элементов для заданных dim:tag
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <returns>Типы элементов</returns>
+        public static int[] GetElementTypes(int dim, int tag)
+        {
+            IntPtr elementTypes = IntPtr.Zero;
+            IntPtr elementTypes_n = IntPtr.Zero;
+            var ierr = 0;
+            GmshMesh.gmshModelMeshGetElementTypes(ref elementTypes, ref elementTypes_n, dim, tag, ref ierr);
+            int[] eTypes;
+            GmshWrapperMemory.GetTypesData(elementTypes, out eTypes, elementTypes_n);
+            return eTypes;
+        }
+
         /// <summary>
         /// Извлекает все точки, связанные с текущей моделью, параметром dim,tag
         /// </summary>
@@ -161,6 +180,31 @@ namespace GmshApi
             }
             return ierr == 0;
         }
+
+        public static bool GetNodesByElementTypes(int elementType, int tag, out long[] nodeTags, out double[] local,
+                                                  out double[] parametric, bool returnParametric = false)
+        {
+            var ierr = 0;
+            var retParam = Convert.ToInt32(returnParametric);
+            IntPtr nTags, nTags_n, coord, coord_n, parametricCoord, parametricCoord_n;
+            nTags = nTags_n = coord = coord_n = parametricCoord = parametricCoord_n = IntPtr.Zero;
+            nodeTags = null;
+            local = null;
+            parametric = null;
+            GmshMesh.gmshModelMeshGetNodesByElementType(elementType, ref nTags, ref nTags_n, ref coord,
+                                                        ref coord_n, ref parametricCoord, ref parametricCoord_n,
+                                                        tag, retParam, ref ierr);
+            var message = GmshWrapperGeneral.LoggerGetLastError();
+            if (ierr == 0)
+            {
+                GmshWrapperMemory.GetTypesData<long>(nTags, out nodeTags, nTags_n);
+                GmshWrapperMemory.GetTypesData<double>(coord, out local, coord_n);
+                if (returnParametric)
+                    GmshWrapperMemory.GetTypesData<double>(parametricCoord, out parametric, parametricCoord_n);
+            }
+            return ierr == 0;
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -246,22 +290,29 @@ namespace GmshApi
         {
             ElementInfo[] info;
             long[][] elemTags, nodeTags;
-            long[] nodesT;
             double[] local, parametric;
             var list = new List<ModelObject>();
             if (GetElementTags(dimension, tag, out info, out elemTags, out nodeTags))
             {
-                GetNodes(dimension, tag, out nodesT, out local, out parametric);
-                var nodes = LocalCoordinatesToNodes(nodesT, local);
                 for (int i = 0; i < info.Length; ++i)
                 {
                     var elements = elemTags[i];
+                    var type = GetElementTypes(dimension, tag);
+                    GetNodesByElementTypes(type[i], -1, out nodeTags[i], out local, out parametric);
                     for (var j = 0; j < elements.Length; ++j)
                     {
                         var nodesCount = info[i].numNodes;
                         var nodesPerElem = new Node[nodesCount];
-                        for (int k = 0; k < info[i].numNodes; ++k)
-                            nodesPerElem[k] = nodes[nodeTags[i][j * nodesCount + k]];
+                        for (int k = 0; k < nodesCount; ++k)
+                        {
+                            var coordStride = j * nodesCount * 3 + k * 3;
+                            var tagStride = j * nodesCount + k;
+                            var x = (float)local[coordStride + 0];
+                            var y = (float)local[coordStride + 1];
+                            var z = (float)local[coordStride + 2];
+                            var point = new Point3D(x, y, z);
+                            nodesPerElem[k] = new Node((int)nodeTags[i][tagStride], point);
+                        }
                         list.Add(CreateModelObject(ref info[i].elementName, elements[j], nodesPerElem));
                     }
                 }

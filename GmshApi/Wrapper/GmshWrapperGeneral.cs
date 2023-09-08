@@ -40,5 +40,16 @@ namespace GmshApi
             var ierr = 0;
             GmshGeneral.gmshOptionSetString(name, values, ref ierr);
         }
+        /// <summary>
+        /// Возвращает последнее сообщение об ошибке
+        /// </summary>
+        /// <returns>Строка с ошибкой</returns>
+        public static string LoggerGetLastError()
+        {
+            IntPtr error = IntPtr.Zero;
+            var ierr = 0;
+            GmshGeneral.gmshLoggerGetLastError(ref error, ref ierr);
+            return GmshWrapperMemory.GetName(error);
+        }
     }
 }

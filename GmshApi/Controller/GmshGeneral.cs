@@ -49,5 +49,12 @@ namespace GmshApi
 
         [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void gmshWrite(string fileName);
+        /// <summary>
+        /// Возращает сообщение об последней ошибки
+        /// </summary>
+        /// <param name="error">[Out]Строка с ошибкой</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshLoggerGetLastError(ref IntPtr error, ref int ierr);
     }
 }

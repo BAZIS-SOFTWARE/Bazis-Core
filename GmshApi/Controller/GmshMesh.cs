@@ -50,7 +50,19 @@ namespace GmshApi
                                                            ref IntPtr elementTags_nn, ref IntPtr nodeTags,
                                                            ref IntPtr nodeTags_n, ref IntPtr nodeTags_nn,
                                                            int dim, int tag, ref int ierr);
-        
+
+        /// <summary>
+        /// Возвращает типы элементов для текущих dim:tag
+        /// </summary>
+        /// <param name="elementTypes">[Out] Массив типов элементов</param>
+        /// <param name="elementTypes_n">[Out] Размер массива</param>
+        /// <param name="dim">[In] Размерность</param>
+        /// <param name="tag">[In] Значение</param>
+        /// <param name="ierr">[Out] Флаг ошибки</param>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelMeshGetElementTypes(ref IntPtr elementTypes, ref IntPtr elementTypes_n,
+                                                              int dim, int tag, ref int ierr);
+
         /// <summary>
         /// Получает свойство элемента
         /// </summary>
@@ -89,6 +101,25 @@ namespace GmshApi
                                     ref IntPtr parametricCoord, ref IntPtr parametricCoord_n,
                                     int dim, int tag, int includeBoundary, int returnParametricCoord,
                                     ref int ierr);
+        /// <summary>
+        /// Возвращает узлы для типа элемента и его идентификатору
+        /// </summary>
+        /// <param name="elementType">[In]Тип элемента</param>
+        /// <param name="nodeTags">[Out]Идентификаторы узлов</param>
+        /// <param name="nodeTags_n">[Out]Количество идентификаторов узлов</param>
+        /// <param name="coord">[Out]Локальные координаты</param>
+        /// <param name="coord_n">[Out]Количество локальных координат</param>
+        /// <param name="parametricCoord">[Out]Параметричесие координаты</param>
+        /// <param name="parametricCoord_n">[Out]Количество параметрических координат</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="returnParametricCoord">[In]Возвращать параметрические координаты</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void gmshModelMeshGetNodesByElementType(int elementType, ref IntPtr nodeTags,
+                                                                     ref IntPtr nodeTags_n, ref IntPtr coord,
+                                                                     ref IntPtr coord_n, ref IntPtr parametricCoord,
+                                                                     ref IntPtr parametricCoord_n, int tag,
+                                                                     int returnParametricCoord, ref int ierr);
         /// <summary>
         /// Задает количество точек на кривой
         /// </summary>
