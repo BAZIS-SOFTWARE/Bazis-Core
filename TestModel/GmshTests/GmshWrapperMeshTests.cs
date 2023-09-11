@@ -1,6 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using GmshApi;
 using System.Linq;
+using System;
+using Geometry;
 
 namespace TestModel.GmshTests
 {
@@ -167,6 +169,22 @@ namespace TestModel.GmshTests
             var point = new double[] { -8.74248599355, 1.39424515076, 6.51327932777 };
             var actual = GmshWrapperMesh.GetElementsByCoordinates(2, point[0], point[1], point[2]);
             Assert.AreEqual(expected, actual[0]);
+        }
+
+        [DataTestMethod]
+        [DataRow("transform.geo")]
+        public void RecombineAndBuildPyramids(ref string fileName)
+        {
+            GmshWrapperConnection.Initialize();
+            GmshWrapperIO.Open(modelFolder + fileName);
+            GmshWrapperMesh.Generate(2);
+            GmshWrapperMesh.Recombine();
+            //If i uncomment the line below, the test will run correctly.
+            //GmshWrapperGeneral.OptionSetNumber("Mesh.Algorithm3D", 3);
+            GmshWrapperMesh.Generate(3);//Trying to build pyramids, but error flag is raised!
+            var message = GmshWrapperGeneral.LoggerGetLastError();
+            GmshWrapperModel.ModelRemove();//After this call, the application crashes
+            GmshWrapperConnection.Finalize();//Will never be called
         }
 
 
