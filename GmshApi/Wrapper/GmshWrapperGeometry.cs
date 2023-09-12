@@ -425,7 +425,7 @@ namespace GmshApi
                 var points = GmshWrapperModel.ConvertLocalCoordsToPoints3D(locals);
                 var nodes = new List<Node>();
                 var num = 0;
-                foreach (var pair in points.Bigrams(true))
+                foreach (var pair in points.Bigrams(false))
                 {
                     var line = new Node[] { new Node(num++, pair.Item1), new Node(num++, pair.Item2) };
                     nodes.AddRange(line);
