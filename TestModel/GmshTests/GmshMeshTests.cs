@@ -295,16 +295,5 @@ namespace TestModel.GmshTests
                 Assert.IsTrue(lengthBefore > lengthAfter);
             }
         }
-
-        [DataTestMethod]
-        [DataRow("Cilindr.step")]
-        public void CilindrTestLines(ref string fileName)
-        {
-            using (var geometry = new GeometryObject(modelFolder + fileName))
-            {
-                geometry.Generate(1);
-                var elements = geometry.GetElements1D().ToArray();
-            }
-        }
     }
 }

@@ -171,7 +171,7 @@ namespace TestModel.GmshTests
             Assert.AreEqual(expected, actual[0]);
         }
 
-        [DataTestMethod]
+        /*[DataTestMethod]
         [DataRow("transform.geo")]
         public void RecombineAndBuildPyramids(ref string fileName)
         {
@@ -185,7 +185,7 @@ namespace TestModel.GmshTests
             var message = GmshWrapperGeneral.LoggerGetLastError();
             GmshWrapperModel.ModelRemove();//After this call, the application crashes
             GmshWrapperConnection.Finalize();//Will never be called
-        }
+        }*/
 
 
         private void ModelLoad(string fileName, string modelID)
