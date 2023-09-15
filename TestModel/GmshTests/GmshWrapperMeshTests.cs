@@ -3,6 +3,8 @@ using GmshApi;
 using System.Linq;
 using System;
 using Geometry;
+using GmshApi.Api;
+using Model;
 
 namespace TestModel.GmshTests
 {
@@ -193,6 +195,25 @@ namespace TestModel.GmshTests
             GmshWrapperModel.ModelAdd(modelID);
             GmshWrapperIO.Load(modelFolder + fileName);
             GmshWrapperIO.SetCurrentModelFileName(fileName);
+        }
+
+        [DataTestMethod]
+        [DataRow("Cilindr.step")]
+        public void TestCilindr(ref string fileName)
+        {
+            ModelObject[] data;
+            using (var geometry = new GeometryObject(modelFolder + fileName))
+            {
+                var field = new MeshField(MeshFieldType.BoundaryLayer);
+                field.SetOptionValues(BoundaryLayerOption.CurvesList.ToString(), new double[] { 4.0, 5.0 });
+                field.SetOptionValues(BoundaryLayerOption.ExcludedSurfacesList.ToString(), new double[] { 1.0, 2.0 });
+                field.SetOptionValue(BoundaryLayerOption.Thickness.ToString(), 2.0);
+                field.SetOptionValue(BoundaryLayerOption.Quads.ToString(), 1.0);
+                field.SetDisplayFieldType(DisplayFieldType.BoundaryLayer);
+                geometry.AddField(field);
+                var mesh = geometry.Generate(3);
+                data = mesh.GetElement3D().ToArray();
+            }
         }
     }
 }
