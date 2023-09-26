@@ -89,21 +89,21 @@
     <Compile Include="GmshObjects\TransfiniteAlgorithm.cs" />
     <Compile Include="GmshObjects\Triangulation2DAlgorithm.cs" />
     <Compile Include="GmshObjects\Triangulation3DAlgorithm.cs" />
-    <Compile Include="Kernel\KernelGeneral.cs" />
-    <Compile Include="Kernel\KernelGeometry.cs" />
-    <Compile Include="Kernel\KernelModel.cs" />
-    <Compile Include="Kernel\KernelPlugin.cs" />
-    <Compile Include="Kernel\KernelIO.cs" />
-    <Compile Include="Kernel\KernelMesh.cs" />
+    <Compile Include="GmshKernel\KernelGeneral.cs" />
+    <Compile Include="GmshKernel\KernelGeometry.cs" />
+    <Compile Include="GmshKernel\KernelModel.cs" />
+    <Compile Include="GmshKernel\KernelPlugin.cs" />
+    <Compile Include="GmshKernel\KernelIO.cs" />
+    <Compile Include="GmshKernel\KernelMesh.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Controller\ControllerConnection.cs" />
-    <Compile Include="Controller\ControllerGeneral.cs" />
-    <Compile Include="Controller\ControllerGeometry.cs" />
-    <Compile Include="Controller\ControllerIO.cs" />
-    <Compile Include="Controller\ControllerMemory.cs" />
-    <Compile Include="Controller\ControllerMesh.cs" />
-    <Compile Include="Controller\ControllerMeshField.cs" />
-    <Compile Include="Controller\ControllerModel.cs" />
+    <Compile Include="GmshController\ControllerConnection.cs" />
+    <Compile Include="GmshController\ControllerGeneral.cs" />
+    <Compile Include="GmshController\ControllerGeometry.cs" />
+    <Compile Include="GmshController\ControllerIO.cs" />
+    <Compile Include="GmshController\ControllerMemory.cs" />
+    <Compile Include="GmshController\ControllerMesh.cs" />
+    <Compile Include="GmshController\ControllerMeshField.cs" />
+    <Compile Include="GmshController\ControllerModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="GmshApiKey.snk" />
