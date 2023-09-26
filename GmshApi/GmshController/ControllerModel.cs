@@ -1,9 +1,10 @@
 ﻿using Geometry;
+using GmshApi.GmshKernel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GmshApi
+namespace GmshApi.GmshController
 {
     public static class IEnumerableExtentions
     {
@@ -26,7 +27,7 @@ namespace GmshApi
     /// Оборачивает основные методы модели полученные из GmshController
     /// </summary>
     /// 
-    public static class GmshWrapperModel
+    public static class ControllerModel
     {
         /// <summary>
         /// Возвращает весь список моделей в gmsh API
@@ -37,8 +38,8 @@ namespace GmshApi
             var ierr = 0;
             IntPtr names, names_n;
             names = names_n = IntPtr.Zero;
-            GmshModel.gmshModelList(ref names, ref names_n, ref ierr);
-            return GmshWrapperMemory.GetArrayOfNames(names, names_n);
+            KernelModel.gmshModelList(ref names, ref names_n, ref ierr);
+            return ControllerMemory.GetArrayOfNames(names, names_n);
         }
         /// <summary>
         /// Добавляет модель в список, делая ее текущей
@@ -47,7 +48,7 @@ namespace GmshApi
         public static void ModelAdd(string modelId)
         {
             var ierr = 0;
-            GmshModel.gmshModelAdd(modelId, ref ierr);
+            KernelModel.gmshModelAdd(modelId, ref ierr);
         }
         /// <summary>
         /// Удаляет текущую модель из списка
@@ -55,7 +56,7 @@ namespace GmshApi
         public static void ModelRemove()
         {
             var ierr = 0;
-            GmshModel.gmshModelRemove(ref ierr);
+            KernelModel.gmshModelRemove(ref ierr);
         }
         /// <summary>
         /// Возвращает имя текущей модели
@@ -65,8 +66,8 @@ namespace GmshApi
         {
             var ierr = 0;
             IntPtr name = IntPtr.Zero;
-            GmshModel.gmshModelGetCurrent(ref name, ref ierr);
-            return GmshWrapperMemory.GetName(name);
+            KernelModel.gmshModelGetCurrent(ref name, ref ierr);
+            return ControllerMemory.GetName(name);
         }
         /// <summary>
         /// Переключается на модель с текущим именем
@@ -76,7 +77,7 @@ namespace GmshApi
         public static bool ModelSetCurrent(String name)
         {
             var ierr = 0;
-            GmshModel.gmshModelSetCurrent(name, ref ierr);
+            KernelModel.gmshModelSetCurrent(name, ref ierr);
             return ierr == 0;
         }
         /// <summary>
@@ -85,7 +86,7 @@ namespace GmshApi
         public static void ModelClear()
         {
             var ierr = 0;
-            GmshModel.gmshClear(ref ierr);
+            KernelModel.gmshClear(ref ierr);
         }
         /// <summary>
         /// Находит модель в Gmsh Api
@@ -128,18 +129,18 @@ namespace GmshApi
         {
             int error = 0;
             var dimTags_array = dimTags.ToIntArray();
-            GmshModel.gmshModelRemoveEntities(dimTags_array, (IntPtr)dimTags_array.Length, Convert.ToInt32(recursive), ref error);
+            KernelModel.gmshModelRemoveEntities(dimTags_array, (IntPtr)dimTags_array.Length, Convert.ToInt32(recursive), ref error);
         }
 
         public static void Synchronize()
         {
             int error = 0;
-            var extension = GmshWrapperIO.ModelGetFileNameExtension();
+            var extension = ControllerIO.ModelGetFileNameExtension();
             if (extension.Contains("stp") || extension.Contains("step") ||
                 extension.Contains("brep") || extension.Contains("igs"))
-                GmshGeometry.gmshModelOccSynchronize(ref error);
+                KernelGeometry.gmshModelOccSynchronize(ref error);
             else
-                GmshGeometry.gmshModelGeoSynchronize(ref error);
+                KernelGeometry.gmshModelGeoSynchronize(ref error);
         }
     }
 }

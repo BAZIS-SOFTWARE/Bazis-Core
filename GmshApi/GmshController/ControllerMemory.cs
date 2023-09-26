@@ -1,35 +1,36 @@
-﻿using System;
+﻿using GmshApi.GmshKernel;
+using System;
 using System.Runtime.InteropServices;
 using System.Xml.Linq;
 
-namespace GmshApi
+namespace GmshApi.GmshController
 {
     /// <summary>
     /// Предоставляет основные методы для перевода неуправляемой памяти в управляемую
     /// </summary>
-    public static class GmshWrapperMemory
+    public static class ControllerMemory
     {
-        /// <summary>
-        /// Извлекает данные из матрицы, находящейся в неуправляемой памяти
-        /// </summary>
-        /// <typeparam name="T">[In]T = valueType</typeparam>
-        /// <param name="data">[Out]Матрица для заполнения</param>
-        /// <param name="tagsData">[In]Вектор векторов идентификаторов</param>
-        /// <param name="lengthPerDim">[In]Длина вектора идентификаторов</param>
-        /// <param name="dimCount">[In]Размерность внешнего вектора</param>
-        public static void GetElementData<T>(out T[][] data, IntPtr tagsData, IntPtr lengthPerDim, IntPtr dimCount)
-        {
-            var dCount = dimCount.ToInt32();
-            data = new T[dCount][];
-            var tagsDataPtr = new IntPtr[dCount];
-            var lengthData = new IntPtr[dCount];
-            Marshal.Copy(tagsData, tagsDataPtr, 0, dCount);
-            Marshal.Copy(lengthPerDim, lengthData, 0, dCount);
-            GmshGeneral.gmshFree(lengthPerDim);
-            for (var i = 0; i < dCount; ++i)
-                GetTypesData(tagsDataPtr[i], out data[i], lengthData[i]);
-            GmshGeneral.gmshFree(tagsData);
-        }
+        ///// <summary>
+        ///// Извлекает данные из матрицы, находящейся в неуправляемой памяти
+        ///// </summary>
+        ///// <typeparam name="T">[In]T = valueType</typeparam>
+        ///// <param name="data">[Out]Матрица для заполнения</param>
+        ///// <param name="tags">[In]Вектор векторов идентификаторов</param>
+        ///// <param name="lengthPerDim">[In]Длина вектора идентификаторов</param>
+        ///// <param name="dimCount">[In]Размерность внешнего вектора</param>
+        //public static void GetElementData<T>(out T[][] data, IntPtr tags, IntPtr lengthPerDim, IntPtr dimCount)
+        //{
+        //    var objsTypesCount = dimCount.ToInt32();
+        //    data = new T[objsTypesCount][];
+        //    var tagsData = new IntPtr[objsTypesCount];
+        //    var lengthData = new IntPtr[objsTypesCount];
+        //    Marshal.Copy(tags, tagsData, 0, objsTypesCount);
+        //    Marshal.Copy(lengthPerDim, lengthData, 0, objsTypesCount);
+        //    KernelGeneral.gmshFree(lengthPerDim);
+        //    for (var i = 0; i < objsTypesCount; ++i)
+        //        GetObjectsData(tagsData[i], out data[i], lengthData[i]);
+        //    KernelGeneral.gmshFree(tags);
+        //}
         /// <summary>
         /// Извлекает данные из вектора, находящейся в неуправляемой памяти
         /// </summary>
@@ -37,7 +38,7 @@ namespace GmshApi
         /// <param name="src">[In]Вектор с данными</param>
         /// <param name="dst">[Out]Вектор для заполнения</param>
         /// <param name="eCount">[In]Длина вектора</param>
-        public static void GetTypesData<T>(IntPtr src, out T[] dst, IntPtr eCount)
+        public static void GetObjectsData<T>(IntPtr src, out T[] dst, IntPtr eCount)
         {
             var count = eCount.ToInt32();
             T value = default;
@@ -46,7 +47,7 @@ namespace GmshApi
             dst = new T[count];
             Marshal.Copy(src, buffer, 0, size);
             Buffer.BlockCopy(buffer, 0, dst, 0, size);
-            GmshGeneral.gmshFree(src);
+            KernelGeneral.gmshFree(src);
         }
         /// <summary>
         /// Извлекает строку из неуправляемой памяти
@@ -56,7 +57,7 @@ namespace GmshApi
         public static string GetName(IntPtr name)
         {
             var result = Marshal.PtrToStringAnsi(name);
-            GmshGeneral.gmshFree(name);
+            KernelGeneral.gmshFree(name);
             return result;
         }
         /// <summary>
@@ -74,9 +75,9 @@ namespace GmshApi
             for (var i = 0; i < arrayLength; ++i)
             {
                 result[i] = Marshal.PtrToStringAnsi(stringArray[i]);
-                GmshGeneral.gmshFree(stringArray[i]);
+                KernelGeneral.gmshFree(stringArray[i]);
             }
-            GmshGeneral.gmshFree(array);
+            KernelGeneral.gmshFree(array);
             return result;
         }
     }

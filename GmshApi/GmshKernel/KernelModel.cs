@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace GmshApi
+namespace GmshApi.GmshKernel
 { 
     /// <summary>
     /// Класс с группой методов для работы с моделью
     /// </summary>
-    public static class GmshModel
+    public static class KernelModel
     {
         /// <summary>
         /// Добавляет новую модель на Gmsh сцену и делает ее текущей

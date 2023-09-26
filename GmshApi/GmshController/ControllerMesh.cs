@@ -4,8 +4,10 @@ using Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using GmshApi.GmshKernel;
+using System.Runtime.InteropServices;
 
-namespace GmshApi
+namespace GmshApi.GmshController
 {
     /// <summary>
     /// Класс содержит информацию о типе извлечнного узла
@@ -44,7 +46,7 @@ namespace GmshApi
     /// <summary>
     /// Оборачивает основные методы сетки полученные из GmshController
     /// </summary>
-    public static class GmshWrapperMesh
+    public static class ControllerMesh
     {
         /// <summary>
         /// [In]Размерность в которой нужно сгенерировать модель
@@ -53,7 +55,7 @@ namespace GmshApi
         public static void Generate(int dim)
         {
             var ierr = 0;
-            GmshMesh.gmshModelMeshGenerate(dim, ref ierr);
+            KernelMesh.gmshModelMeshGenerate(dim, ref ierr);
         }
         /// <summary>
         /// Переводит большую часть сетки в четырехугольники
@@ -61,7 +63,7 @@ namespace GmshApi
         public static void Recombine()
         {
             var ierr = 0;
-            GmshMesh.gmshModelMeshRecombine(ref ierr);
+            KernelMesh.gmshModelMeshRecombine(ref ierr);
         }
         /// <summary>
         /// Равномерно уплотняет сетку у текущей модели
@@ -69,7 +71,7 @@ namespace GmshApi
         public static void Refine()
         {
             var ierr = 0;
-            GmshMesh.gmshModelMeshRefine(ref ierr);
+            KernelMesh.gmshModelMeshRefine(ref ierr);
         }
         /// <summary>
         /// Получает свойство элемента
@@ -85,11 +87,11 @@ namespace GmshApi
             for (var i = 0; i < elementTypes.Length; ++i)
             {
                 var info = new ElementInfo();
-                GmshMesh.gmshModelMeshGetElementProperties(elementTypes[i], ref elementName, ref info.dim, ref info.order,
+                KernelMesh.gmshModelMeshGetElementProperties(elementTypes[i], ref elementName, ref info.dim, ref info.order,
                                                            ref info.numNodes, ref localeNodeCoord, ref localeNodeCoord_n,
                                                            ref info.primNodes, ref ierr);
-                info.elementName = GmshWrapperMemory.GetName(elementName);
-                GmshWrapperMemory.GetTypesData(localeNodeCoord, out info.coords, localeNodeCoord_n);
+                info.elementName = ControllerMemory.GetName(elementName);
+                ControllerMemory.GetObjectsData(localeNodeCoord, out info.coords, localeNodeCoord_n);
                 info.coords_n = info.coords.Length;
                 dataInfo[i] = info;
             }
@@ -110,7 +112,7 @@ namespace GmshApi
             var ierr = 0;
             IntPtr eTypes, eTypes_n, eTags, eTags_n, eTags_nn, nodeTags, nodeTags_n, nodeTags_nn;
             eTypes = eTypes_n = eTags = eTags_n = eTags_nn = nodeTags = nodeTags_n = nodeTags_nn = IntPtr.Zero;
-            GmshMesh.gmshModelMeshGetElements(ref eTypes, ref eTypes_n,
+            KernelMesh.gmshModelMeshGetElements(ref eTypes, ref eTypes_n,
                                               ref eTags, ref eTags_n, ref eTags_nn,
                                               ref nodeTags, ref nodeTags_n, ref nodeTags_nn, dim, tag, ref ierr);
             elemInfo = null;
@@ -118,13 +120,43 @@ namespace GmshApi
             if (ierr == 0)
             {
                 int[] elemTypes;
-                GmshWrapperMemory.GetTypesData<int>(eTypes, out elemTypes, eTypes_n);
+                ControllerMemory.GetObjectsData<int>(eTypes, out elemTypes, eTypes_n);
                 elemInfo = GetElementProperties(elemTypes);
-                GmshWrapperMemory.GetElementData<long>(out elemsTags, eTags, eTags_n, eTags_nn);
-                GmshWrapperMemory.GetElementData<long>(out nodesTags, nodeTags, nodeTags_n, nodeTags_nn);
+
+                int objsTypesCount;
+                IntPtr[] tagsData, lengthData;
+                long[][] eData;
+                NewMethod(eTags, eTags_n, eTags_nn, out objsTypesCount, out tagsData, out lengthData, out eData);
+                for (var i = 0; i < objsTypesCount; ++i)
+                    ControllerMemory.GetObjectsData(tagsData[i], out eData[i], lengthData[i]);
+                
+                KernelGeneral.gmshFree(eTags);
+
+                NewMethod(nodeTags, nodeTags_n, nodeTags_nn, out objsTypesCount, out tagsData, out lengthData, out eData);
+
+                for (var i = 0; i < objsTypesCount; ++i)
+                    ControllerMemory.GetObjectsData(tagsData[i], out eData[i], lengthData[i]);
+                KernelGeneral.gmshFree(nodeTags);
+
+
+                //ControllerMemory.GetElementData<long>(out elemsTags, eTags, eTags_n, eTags_nn);
+                //ControllerMemory.GetElementData<long>(out nodesTags, nodeTags, nodeTags_n, nodeTags_nn);
             }
             return ierr == 0;
         }
+
+        private static void NewMethod(IntPtr eTags, IntPtr eTags_n, IntPtr eTags_nn, out int objsTypesCount, out IntPtr[] tagsData, out IntPtr[] lengthData, out long[][] eData)
+        {
+            objsTypesCount = eTags_nn.ToInt32();
+            eData = new long[objsTypesCount][];
+            tagsData = new IntPtr[objsTypesCount];
+            lengthData = new IntPtr[objsTypesCount];
+
+            Marshal.Copy(eTags, tagsData, 0, objsTypesCount);
+            Marshal.Copy(eTags_n, lengthData, 0, objsTypesCount);
+            KernelGeneral.gmshFree(eTags_n);
+        }
+
         /// <summary>
         /// Извлекает все точки, связанные с текущей моделью, параметром dim,tag
         /// </summary>
@@ -145,7 +177,7 @@ namespace GmshApi
             var includeBound = Convert.ToInt32(includeBoundary);
             IntPtr nodeTagsInt, nodeTagsInt_n, coord, coord_n, parametricCoord, parametricCoord_n;
             nodeTagsInt = nodeTagsInt_n = coord = coord_n = parametricCoord = parametricCoord_n = IntPtr.Zero;
-            GmshMesh.gmshModelMeshGetNodes(ref nodeTagsInt, ref nodeTagsInt_n, ref coord, ref coord_n,
+            KernelMesh.gmshModelMeshGetNodes(ref nodeTagsInt, ref nodeTagsInt_n, ref coord, ref coord_n,
                                           ref parametricCoord, ref parametricCoord_n, dim, tag,
                                           includeBound, retParam, ref ierr);
             nodeTags = null;
@@ -153,10 +185,10 @@ namespace GmshApi
             parametric = null;
             if (ierr == 0)
             {
-                GmshWrapperMemory.GetTypesData<long>(nodeTagsInt, out nodeTags, nodeTagsInt_n);
-                GmshWrapperMemory.GetTypesData<double>(coord, out local, coord_n);
+                ControllerMemory.GetObjectsData<long>(nodeTagsInt, out nodeTags, nodeTagsInt_n);
+                ControllerMemory.GetObjectsData<double>(coord, out local, coord_n);
                 if (returnParametric)
-                    GmshWrapperMemory.GetTypesData<double>(parametricCoord, out parametric, parametricCoord_n);
+                    ControllerMemory.GetObjectsData<double>(parametricCoord, out parametric, parametricCoord_n);
             }
             return ierr == 0;
         }
@@ -174,7 +206,7 @@ namespace GmshApi
             if(!GetNodes(dim, tag, out nodeTags, out local, out parametric, false, includeBoundary))
                 return new Node[0];
             var list = new List<Node>();
-            var points = GmshWrapperModel.ConvertLocalCoordsToPoints3D(local);
+            var points = ControllerModel.ConvertLocalCoordsToPoints3D(local);
             for (var i = 0L; i < nodeTags.Length; ++i)
                 list.Add(new Node((int)nodeTags[i], points[i]));
             return list;
@@ -185,7 +217,7 @@ namespace GmshApi
         public static void RebuildNodeCache()
         {
             var ierr = 0;
-            GmshMesh.gmshModelMeshRebuildNodeCache(1, ref ierr);
+            KernelMesh.gmshModelMeshRebuildNodeCache(1, ref ierr);
         }
 
         /// <summary>
@@ -194,7 +226,7 @@ namespace GmshApi
         public static void RebuildElementCache()
         {
             var ierr = 0;
-            GmshMesh.gmshModelMeshRebuildElementCache(1, ref ierr);
+            KernelMesh.gmshModelMeshRebuildElementCache(1, ref ierr);
         }
 
         /// <summary>
@@ -211,10 +243,10 @@ namespace GmshApi
             var strictInt = Convert.ToInt32(strict);
             IntPtr elementTags, elementTags_n;
             elementTags = elementTags_n = IntPtr.Zero;
-            GmshMesh.gmshModelMeshGetElementsByCoordinates(x, y, z, ref elementTags, ref elementTags_n,
+            KernelMesh.gmshModelMeshGetElementsByCoordinates(x, y, z, ref elementTags, ref elementTags_n,
                                                            dimension, strictInt, ref ierr);
             int[] tags;
-            GmshWrapperMemory.GetTypesData<int>(elementTags, out tags, elementTags_n);
+            ControllerMemory.GetObjectsData<int>(elementTags, out tags, elementTags_n);
             return tags;
         }
         /// <summary>
@@ -230,7 +262,7 @@ namespace GmshApi
             var ierr = 0;
             var elTag = new UIntPtr(elementTag);
             var result = new double[3] { 0, 0, 0 };
-            GmshMesh.gmshModelMeshGetLocalCoordinatesInElement(elTag, x, y, z, ref result[0], ref result[1],
+            KernelMesh.gmshModelMeshGetLocalCoordinatesInElement(elTag, x, y, z, ref result[0], ref result[1],
                                                                ref result[2], ref ierr);
             return result;
         }
@@ -277,7 +309,7 @@ namespace GmshApi
         public static void SetTransfiniteCurve(int tag, int numNodes, String meshType, double coef)
         {
             var ierr = 0;
-            GmshMesh.gmshModelMeshSetTransfiniteCurve(tag, numNodes, meshType, coef, ref ierr);
+            KernelMesh.gmshModelMeshSetTransfiniteCurve(tag, numNodes, meshType, coef, ref ierr);
         }
         /// <summary>
         /// Удаляет выбранные элементы по парам dim:tag
@@ -287,7 +319,7 @@ namespace GmshApi
         public static bool DeleteElements(int[] dimTags)
         {
             var ierr = 0;
-            GmshMesh.gmshModelMeshClear(dimTags, (IntPtr)dimTags.Length ,ref ierr);
+            KernelMesh.gmshModelMeshClear(dimTags, (IntPtr)dimTags.Length ,ref ierr);
             return ierr == 0;
         }
 
@@ -302,11 +334,11 @@ namespace GmshApi
             var elements = new IntPtr[elementsTags.Length];
             for (var i = 0; i < elementsTags.Length; ++i)
                 elements[i] = new IntPtr(elementsTags[i]);
-            GmshMesh.gmshModelMeshSetVisibility(elements, (IntPtr)elements.Length, 0, ref ierr);
+            KernelMesh.gmshModelMeshSetVisibility(elements, (IntPtr)elements.Length, 0, ref ierr);
             if (ierr == 0)
             {
-                GmshPlugin.gmshPluginSetNumber("Invisible", "DeleteElements", 1, ref ierr);
-                GmshPlugin.gmshPluginRun("Invisible", ref ierr);
+                KernelPlugin.gmshPluginSetNumber("Invisible", "DeleteElements", 1, ref ierr);
+                KernelPlugin.gmshPluginRun("Invisible", ref ierr);
             }
             return ierr == 0;
         }
@@ -319,7 +351,7 @@ namespace GmshApi
         public static bool MeshSetAlgorithm(int tag, int value)
         {
             var ierr = 0;
-            GmshMesh.gmshModelMeshSetAlgorithm(2, tag, value, ref ierr);
+            KernelMesh.gmshModelMeshSetAlgorithm(2, tag, value, ref ierr);
             return ierr == 0;
         }
 
@@ -343,13 +375,13 @@ namespace GmshApi
             var elementsQuality_n = IntPtr.Zero; 
             var elementsQuality = IntPtr.Zero;
             var pointers = GetPointerToElementTags(elementTags);
-            GmshMesh.gmshModelMeshGetElementQualities(
+            KernelMesh.gmshModelMeshGetElementQualities(
                 pointers,
                 (IntPtr)pointers.Length,
                 ref elementsQuality,
                 ref elementsQuality_n,
                 qualityName, (IntPtr)0, (IntPtr)1, ref error);
-            GmshWrapperMemory.GetTypesData(elementsQuality, out double[] result, elementsQuality_n);
+            ControllerMemory.GetObjectsData(elementsQuality, out double[] result, elementsQuality_n);
             return result;
         }
 

@@ -1,16 +1,17 @@
 ﻿using Functions.Extensions;
+using GmshApi.GmshKernel;
 using Model;
 using Model.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GmshApi
+namespace GmshApi.GmshController
 {
     /// <summary>
     /// Оборачивает основные методы геометрии полученные из GmshController
     /// </summary>
-    public static class GmshWrapperGeometry
+    public static class ControllerGeometry
     {
         /// <summary>
         /// Возвращает набор геометрических сущностей Gmsh
@@ -22,14 +23,14 @@ namespace GmshApi
             var ierr = 0;
             IntPtr dimTags, dimTags_n;
             dimTags = dimTags_n = IntPtr.Zero;
-            var extension = GmshWrapperIO.ModelGetFileNameExtension();
+            var extension = ControllerIO.ModelGetFileNameExtension();
             if (extension.Contains("stp") || extension.Contains("step") ||
                extension.Contains("brep") || extension.Contains("igs"))
-                GmshGeometry.gmshModelOccGetEntities(ref dimTags, ref dimTags_n, dim, ref ierr);
+                KernelGeometry.gmshModelOccGetEntities(ref dimTags, ref dimTags_n, dim, ref ierr);
             else
-                GmshGeometry.gmshModelGetEntities(ref dimTags, ref dimTags_n, dim, ref ierr);
+                KernelGeometry.gmshModelGetEntities(ref dimTags, ref dimTags_n, dim, ref ierr);
             int[] tags;
-            GmshWrapperMemory.GetTypesData<int>(dimTags, out tags, dimTags_n);
+            ControllerMemory.GetObjectsData<int>(dimTags, out tags, dimTags_n);
             return tags;
         }
         /// <summary>
@@ -41,7 +42,7 @@ namespace GmshApi
         public static void SetEntityName(int dim, int tag, string name)
         {
             var ierr = 0;
-            GmshGeometry.gmshModelSetEntityName(dim, tag, name, ref ierr);
+            KernelGeometry.gmshModelSetEntityName(dim, tag, name, ref ierr);
         }
         /// <summary>
         /// Возвращает имя сущности для заданной размерности : идентификатора
@@ -53,17 +54,17 @@ namespace GmshApi
         {
             var error = 0;
             IntPtr name = IntPtr.Zero;
-            GmshGeometry.gmshModelGetEntityName(dim, tag, ref name, ref error);
-            return GmshWrapperMemory.GetName(name);
+            KernelGeometry.gmshModelGetEntityName(dim, tag, ref name, ref error);
+            return ControllerMemory.GetName(name);
         }
         /// <summary>
         /// Удаляет сущность по имени
         /// </summary>
         /// <param name="name">[In]Имя сущности</param>
-        public static void RemoveEntityName(String name)
+        public static void RemoveEntityName(string name)
         {
             var ierr = 0;
-            GmshGeometry.gmshModelRemoveEntityName(name, ref ierr);
+            KernelGeometry.gmshModelRemoveEntityName(name, ref ierr);
         }
         /// <summary>
         /// Получает физическое имя для данной размерности : идентификатора
@@ -75,8 +76,8 @@ namespace GmshApi
         {
             var error = 0;
             IntPtr name = IntPtr.Zero;
-            GmshGeometry.gmshModelGetPhysicalName(dim, tag, ref name, ref error);
-            return GmshWrapperMemory.GetName(name);
+            KernelGeometry.gmshModelGetPhysicalName(dim, tag, ref name, ref error);
+            return ControllerMemory.GetName(name);
         }
         /// <summary>
         /// Возвращает максимальную размерность текущего геометрического объекта
@@ -85,7 +86,7 @@ namespace GmshApi
         public static int GetDimension()
         {
             var ierr = 0;
-            return GmshGeometry.gmshModelGetDimension(ref ierr);
+            return KernelGeometry.gmshModelGetDimension(ref ierr);
         }
         /// <summary>
         /// Возвращает ограничивающий параллелепипед для указанного dim:tag
@@ -99,7 +100,7 @@ namespace GmshApi
             var ierr = 0;
             min = new double[3];
             max = new double[3];
-            GmshGeometry.gmshModelGetBoundingBox(dim, tag, ref min[0], ref min[1], ref min[2],
+            KernelGeometry.gmshModelGetBoundingBox(dim, tag, ref min[0], ref min[1], ref min[2],
                                                  ref max[0], ref max[1], ref max[2], ref ierr);
         }
 
@@ -114,14 +115,14 @@ namespace GmshApi
             var ierr = 0;
             IntPtr upward, upward_n, downward, downward_n;
             upward = upward_n = downward = downward_n = IntPtr.Zero;
-            GmshGeometry.gmshModelGetAdjacencies(dim, tag, ref upward, ref upward_n,
+            KernelGeometry.gmshModelGetAdjacencies(dim, tag, ref upward, ref upward_n,
                                               ref downward, ref downward_n, ref ierr);
             var result = new int[2][];
             if (ierr == 0)
             {
                 int[] outDownward, outUpward;
-                GmshWrapperMemory.GetTypesData(downward, out outDownward, downward_n);
-                GmshWrapperMemory.GetTypesData(upward, out outUpward, upward_n);
+                ControllerMemory.GetObjectsData(downward, out outDownward, downward_n);
+                ControllerMemory.GetObjectsData(upward, out outUpward, upward_n);
                 result[0] = outDownward;
                 result[1] = outUpward;
             }
@@ -141,13 +142,13 @@ namespace GmshApi
             var derivaties = IntPtr.Zero;
             var derivaties_n = IntPtr.Zero;
             if(number == 1)
-                GmshGeometry.gmshModelGetDerivative(dim, tag, parametrs, (IntPtr)parametrs.Length,
+                KernelGeometry.gmshModelGetDerivative(dim, tag, parametrs, (IntPtr)parametrs.Length,
                                                           ref derivaties, ref derivaties_n, ref ierr);
             else
-                GmshGeometry.gmshModelGetSecondDerivative(dim, tag, parametrs, (IntPtr)parametrs.Length,
+                KernelGeometry.gmshModelGetSecondDerivative(dim, tag, parametrs, (IntPtr)parametrs.Length,
                                                           ref derivaties, ref derivaties_n, ref ierr);
             double[] derivative;
-            GmshWrapperMemory.GetTypesData(derivaties, out derivative, derivaties_n);
+            ControllerMemory.GetObjectsData(derivaties, out derivative, derivaties_n);
             return derivative;
         }
         /// <summary>
@@ -163,9 +164,9 @@ namespace GmshApi
             var local = new double[0];
             IntPtr coord, coord_n;
             coord = coord_n = IntPtr.Zero;
-            GmshGeometry.gmshModelGetValue(dim, tag, parametric, (IntPtr)parametric.Length, ref coord, ref coord_n, ref ierr);
+            KernelGeometry.gmshModelGetValue(dim, tag, parametric, (IntPtr)parametric.Length, ref coord, ref coord_n, ref ierr);
             if (ierr == 0)
-                GmshWrapperMemory.GetTypesData(coord, out local, coord_n);
+                ControllerMemory.GetObjectsData(coord, out local, coord_n);
             return local;
         }
         /// <summary>
@@ -181,10 +182,10 @@ namespace GmshApi
             var parametric = new double[0];
             IntPtr parametricCoord, parametricCoord_n;
             parametricCoord = parametricCoord_n = IntPtr.Zero;
-            GmshGeometry.gmshModelGetValue(dim, tag, local, (IntPtr)local.Length,
+            KernelGeometry.gmshModelGetValue(dim, tag, local, (IntPtr)local.Length,
                                            ref parametricCoord, ref parametricCoord_n, ref ierr);
             if (ierr == 0)
-                GmshWrapperMemory.GetTypesData(parametricCoord, out parametric, parametricCoord_n);
+                ControllerMemory.GetObjectsData(parametricCoord, out parametric, parametricCoord_n);
             return parametric;
         }
         /// <summary>
@@ -203,12 +204,12 @@ namespace GmshApi
             var result = new double[2][];
             for(var i = 0; i < 2; ++i)
                 result[i] = new double[0];
-            GmshGeometry.gmshModelGetParametrizationBounds(dim, tag, ref min, ref min_n,
+            KernelGeometry.gmshModelGetParametrizationBounds(dim, tag, ref min, ref min_n,
                                                            ref max, ref max_n, ref ierr);
             if (ierr == 0)
             {
-                GmshWrapperMemory.GetTypesData(min, out result[0], min_n);
-                GmshWrapperMemory.GetTypesData(max, out result[1], max_n);
+                ControllerMemory.GetObjectsData(min, out result[0], min_n);
+                ControllerMemory.GetObjectsData(max, out result[1], max_n);
             }
             return result;
         }
@@ -225,7 +226,7 @@ namespace GmshApi
             var ierr = 0;
             var paramFlag = Convert.ToInt32(isParametric);
             var count = 0;
-            count = GmshGeometry.gmshModelIsInside(dim, tag, coords, (IntPtr)coords.Length, paramFlag, ref ierr);
+            count = KernelGeometry.gmshModelIsInside(dim, tag, coords, (IntPtr)coords.Length, paramFlag, ref ierr);
             return count;
         }
         /// <summary>
@@ -238,7 +239,7 @@ namespace GmshApi
         public static bool IsParametricInside(int dim, int tag, double coords)
         {
             var ierr = 0;
-            var count = GmshGeometry.gmshModelIsInside(dim, tag, new double[] { coords }, (IntPtr)1, 1, ref ierr);
+            var count = KernelGeometry.gmshModelIsInside(dim, tag, new double[] { coords }, (IntPtr)1, 1, ref ierr);
             return count != 0;
         }
         /// <summary>
@@ -284,12 +285,12 @@ namespace GmshApi
         {
             var ierr = 0;
             var recFlag = Convert.ToInt32(recursive);
-            var extension = GmshWrapperIO.ModelGetFileNameExtension();
+            var extension = ControllerIO.ModelGetFileNameExtension();
             if (extension.Contains("stp") || extension.Contains("step") ||
                 extension.Contains("brep") || extension.Contains("igs"))
-                GmshGeometry.gmshModelOccRemove(dimTags, (IntPtr)dimTags.Length, recFlag, ref ierr);
+                KernelGeometry.gmshModelOccRemove(dimTags, (IntPtr)dimTags.Length, recFlag, ref ierr);
             else
-                GmshGeometry.gmshModelRemoveEntities(dimTags, (IntPtr)dimTags.Length, recFlag, ref ierr);
+                KernelGeometry.gmshModelRemoveEntities(dimTags, (IntPtr)dimTags.Length, recFlag, ref ierr);
             //GmshWrapperModel.Synchronize();
         }
         /// <summary>
@@ -326,7 +327,7 @@ namespace GmshApi
         public static void SetAttribute(string name, string[] values, int values_n)
         {
             var ierr = 0;
-            GmshGeometry.gmshModelSetAttribute(name, values, (IntPtr)values_n,ref ierr);
+            KernelGeometry.gmshModelSetAttribute(name, values, (IntPtr)values_n,ref ierr);
         }
         /// <summary>
         /// Получает аттрибуты по имени
@@ -337,8 +338,8 @@ namespace GmshApi
         {
             var ierr = 0;
             IntPtr values = IntPtr.Zero, values_n = IntPtr.Zero;    
-            GmshGeometry.gmshModelGetAttribute(name, ref values, ref values_n ,ref ierr);
-            return GmshWrapperMemory.GetArrayOfNames(values, values_n);
+            KernelGeometry.gmshModelGetAttribute(name, ref values, ref values_n ,ref ierr);
+            return ControllerMemory.GetArrayOfNames(values, values_n);
         }
         /// <summary>
         /// Возвращает список всех аттрибутов
@@ -348,8 +349,8 @@ namespace GmshApi
         {
             var ierr = 0;
             IntPtr names = IntPtr.Zero, names_n = IntPtr.Zero;
-            GmshGeometry.gmshModelGetAttributeNames(ref names, ref names_n, ref ierr);
-            return GmshWrapperMemory.GetArrayOfNames(names, names_n);
+            KernelGeometry.gmshModelGetAttributeNames(ref names, ref names_n, ref ierr);
+            return ControllerMemory.GetArrayOfNames(names, names_n);
         }
         /// <summary>
         /// Удалить аттрибут с именем name
@@ -358,7 +359,7 @@ namespace GmshApi
         public static void RemoveAttribute(string name)
         {
             var ierr = 0;
-            GmshGeometry.gmshModelRemoveAttribute(name, ref ierr);
+            KernelGeometry.gmshModelRemoveAttribute(name, ref ierr);
         }
         /// <summary>
         /// Получает сущности конкретного ModelObject
@@ -418,11 +419,11 @@ namespace GmshApi
                 var newPB = paramsBounds[0].Concat(paramsBounds[1]).ToArray();
                 if (!IsLine(1, tags[i], newPB))
                 {
-                    var curvePoints = Convert.ToInt32(GmshWrapperGeneral.OptionGetNumber("Geometry.NumSubEdges"));
+                    var curvePoints = Convert.ToInt32(ControllerGeneral.OptionGetNumber("Geometry.NumSubEdges"));
                     newPB = SetCustomStepParametrization(newPB, curvePoints);
                 }
                 var locals = GetLocalCoordByParametric(1, tags[i], newPB);
-                var points = GmshWrapperModel.ConvertLocalCoordsToPoints3D(locals);
+                var points = ControllerModel.ConvertLocalCoordsToPoints3D(locals);
                 var nodes = new List<Node>();
                 var num = 0;
                 foreach (var pair in points.Bigrams(true))
@@ -444,7 +445,7 @@ namespace GmshApi
             for (var i = 0; i < tags.Length; ++i)
             {
                 var coords = GetLocalCoordByParametric(0, tags[i], new double[] { });
-                var points = GmshWrapperModel.ConvertLocalCoordsToPoints3D(coords);
+                var points = ControllerModel.ConvertLocalCoordsToPoints3D(coords);
                 for(var j = 0; j < points.Length; ++j)
                     nodes.Add(new Node(tags[i], points[j]));
             }

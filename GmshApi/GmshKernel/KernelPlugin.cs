@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace GmshApi
+namespace GmshApi.GmshKernel
 {
-    public static class GmshPlugin
+    public static class KernelPlugin
     {
         /// <summary>
         /// Установить значение через плагин

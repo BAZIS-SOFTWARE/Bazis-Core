@@ -1,4 +1,5 @@
 ﻿using GmshApi;
+using GmshApi.GmshController;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
 using System.Linq;
@@ -13,13 +14,13 @@ namespace TestModel.GmshTests
         [TestInitialize]
         public void Init()
         {
-            GmshWrapperConnection.Initialize();
+            ControllerConnection.Initialize();
         }
 
         [TestCleanup]
         public void Cleanup()
         {
-            GmshWrapperConnection.Finalize();
+            ControllerConnection.Finalize();
         }
 
         [TestMethod]
@@ -27,7 +28,7 @@ namespace TestModel.GmshTests
         {
             using (var geometry = new GeometryObject(path + "Cilindr.step"))
             {
-                GmshWrapperIO.SetCurrentModelFileName("Cilindr.step");
+                ControllerIO.SetCurrentModelFileName("Cilindr.step");
                 var mesh = geometry.Generate(3);
                 var values = mesh.QualityAnalyse().GetInvertedGradientError();
                 Assert.AreEqual(0.83, values.Average(), 0.1);
@@ -39,7 +40,7 @@ namespace TestModel.GmshTests
         {
             using (var geometry = new GeometryObject(path + "Cilindr.step"))
             {
-                GmshWrapperIO.SetCurrentModelFileName("Cilindr.step");
+                ControllerIO.SetCurrentModelFileName("Cilindr.step");
                 var mesh = geometry.Generate(3);
                 var values = mesh.QualityAnalyse().GetInvertedConditionNumber();
                 Assert.AreEqual(0.803, values.Average(), 0.1);

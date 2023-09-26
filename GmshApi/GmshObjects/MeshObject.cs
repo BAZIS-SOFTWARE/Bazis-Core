@@ -1,4 +1,5 @@
 ﻿using GmshApi.Api;
+using GmshApi.GmshController;
 using Model;
 using System;
 using System.Collections.Generic;
@@ -20,11 +21,11 @@ namespace GmshApi
         {
             get
             {
-                return GmshWrapperGeneral.OptionGetNumber("Mesh.MeshSizeFactor");
+                return ControllerGeneral.OptionGetNumber("Mesh.MeshSizeFactor");
             }
             set
             {
-                GmshWrapperGeneral.OptionSetNumber("Mesh.MeshSizeFactor", value);
+                ControllerGeneral.OptionSetNumber("Mesh.MeshSizeFactor", value);
             }
         }
         /// <summary>
@@ -50,14 +51,14 @@ namespace GmshApi
         /// </summary>
         public void QuadrangulateMesh()
         {
-            GmshWrapperMesh.Recombine();
+            ControllerMesh.Recombine();
         }
         /// <summary>
         /// Уплотнить сетку
         /// </summary>
         public void RefineMesh()
         {
-            GmshWrapperMesh.Refine();
+            ControllerMesh.Refine();
         }
         /// <summary>
         /// Получить узлы
@@ -65,7 +66,7 @@ namespace GmshApi
         /// <returns>узлы</returns>
         public IEnumerable<Node> GetNodes()
         {
-            return GmshWrapperMesh.GetNodes();
+            return ControllerMesh.GetNodes();
         }
         /// <summary>
         /// Получить линии 
@@ -73,12 +74,12 @@ namespace GmshApi
         /// <returns>линии</returns>
         public IEnumerable<ModelObject> GetElement1D()
         {
-            return GmshWrapperMesh.GetElements(1, -1);
+            return ControllerMesh.GetElements(1, -1);
         }
 
         public void Generate(int dim)
         {
-            GmshWrapperMesh.Generate(dim);
+            ControllerMesh.Generate(dim);
         }
 
         /// <summary>
@@ -87,7 +88,7 @@ namespace GmshApi
         /// <returns>плоские элементы</returns>
         public IEnumerable<ModelObject> GetElement2D()
         {
-            return GmshWrapperMesh.GetElements(2, -1);
+            return ControllerMesh.GetElements(2, -1);
         }
         /// <summary>
         /// получить поверхности
@@ -95,7 +96,7 @@ namespace GmshApi
         /// <returns>поверхности</returns>
         public IEnumerable<ModelObject> GetSurfaces()
         {
-            return GmshWrapperMesh.GetElements(2, -1);
+            return ControllerMesh.GetElements(2, -1);
         }
         /// <summary>
         /// получить поверхности
@@ -103,7 +104,7 @@ namespace GmshApi
         /// <returns>поверхности</returns>
         public IEnumerable<ModelObject> GetSurfaceById(int surfaceId)
         {
-            return GmshWrapperMesh.GetElements(2, surfaceId);
+            return ControllerMesh.GetElements(2, surfaceId);
         }
         /// <summary>
         /// Удалить поверхность по идентификатору
@@ -111,13 +112,13 @@ namespace GmshApi
         /// <param name="surfaceId">[In]Идентификатор поверхности</param>
         public void RemoveSurfaceById(int surfaceId)
         {
-            GmshWrapperMesh.DeleteElements(new int[] { 2 , surfaceId });
+            ControllerMesh.DeleteElements(new int[] { 2 , surfaceId });
         }
         /// <summary>
         /// Удаляет указанные элементы сетки
         /// </summary>
         /// <param name="elementsTags">[In]Идентификаторы элементов сетки</param>
-        public void RemoveElements2D(int[] elementsTags) => GmshWrapperMesh.DeleteMeshElements(elementsTags);
+        public void RemoveElements2D(int[] elementsTags) => ControllerMesh.DeleteMeshElements(elementsTags);
 
         /// <summary>
         /// получить объёмные элементы
@@ -125,7 +126,7 @@ namespace GmshApi
         /// <returns>объёмные элементы</returns>
         public IEnumerable<ModelObject> GetElement3D()
         {
-            return GmshWrapperMesh.GetElements(3, -1);
+            return ControllerMesh.GetElements(3, -1);
         }
         /// <summary>
         /// Задать алгоритм триангуляции перед генерацией сетки
@@ -133,7 +134,7 @@ namespace GmshApi
         /// <param name="algorithm">[In]Тип алгоритма</param>
         public void ChangeTriangulationAlgorithm2D(Triangulation2DAlgorithm algorithm = Triangulation2DAlgorithm.FrontalDelaunay)
         {
-            GmshWrapperGeneral.OptionSetNumber("Mesh.Algorithm", Convert.ToDouble(algorithm));
+            ControllerGeneral.OptionSetNumber("Mesh.Algorithm", Convert.ToDouble(algorithm));
         }
         /// <summary>
         /// Возвращает информацию о элементах по паре dim:tag
@@ -146,7 +147,7 @@ namespace GmshApi
         public void GetElementsInfo(int dim, int tag, out ElementInfo[] elemInfo,
                                             out long[][] elemsTags, out long[][] nodesTags)
         {
-            GmshWrapperMesh.GetElementTags(dim, tag, out elemInfo, out elemsTags, out nodesTags);
+            ControllerMesh.GetElementTags(dim, tag, out elemInfo, out elemsTags, out nodesTags);
         }
 
 
@@ -162,13 +163,13 @@ namespace GmshApi
             switch (ta)
             {
                 case TransfiniteAlgorithm.Progressive:
-                    GmshWrapperMesh.SetTransfiniteCurve(curve, number, "Progression", parameter);
+                    ControllerMesh.SetTransfiniteCurve(curve, number, "Progression", parameter);
                     break;
                 case TransfiniteAlgorithm.Bump:
-                    GmshWrapperMesh.SetTransfiniteCurve(curve, number, "Bump", parameter);
+                    ControllerMesh.SetTransfiniteCurve(curve, number, "Bump", parameter);
                     break;
                 case TransfiniteAlgorithm.Beta:
-                    GmshWrapperMesh.SetTransfiniteCurve(curve, number, "Beta", parameter);
+                    ControllerMesh.SetTransfiniteCurve(curve, number, "Beta", parameter);
                     break;
             }
         }
