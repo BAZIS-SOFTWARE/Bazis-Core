@@ -8,7 +8,7 @@ namespace TestModel.GmshTests
     [TestClass]
     public class ControllerGeometryTests
     {
-        private static string modelFolder = @"..\..\..\Examples\GMSHConnector\";
+        private static string modelFolder = @"..\..\Examples\GMSHConnector\";
         [TestInitialize]
         public void Init()
         {

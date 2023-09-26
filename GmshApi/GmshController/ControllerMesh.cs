@@ -125,17 +125,17 @@ namespace GmshApi.GmshController
 
                 int objsTypesCount;
                 IntPtr[] tagsData, lengthData;
-                long[][] eData;
-                NewMethod(eTags, eTags_n, eTags_nn, out objsTypesCount, out tagsData, out lengthData, out eData);
+                //long[][] eData;
+                NewMethod(eTags, eTags_n, eTags_nn, out objsTypesCount, out tagsData, out lengthData, out elemsTags);
                 for (var i = 0; i < objsTypesCount; ++i)
-                    ControllerMemory.GetObjectsData(tagsData[i], out eData[i], lengthData[i]);
+                    ControllerMemory.GetObjectsData(tagsData[i], out elemsTags[i], lengthData[i]);
                 
                 KernelGeneral.gmshFree(eTags);
 
-                NewMethod(nodeTags, nodeTags_n, nodeTags_nn, out objsTypesCount, out tagsData, out lengthData, out eData);
+                NewMethod(nodeTags, nodeTags_n, nodeTags_nn, out objsTypesCount, out tagsData, out lengthData, out nodesTags);
 
                 for (var i = 0; i < objsTypesCount; ++i)
-                    ControllerMemory.GetObjectsData(tagsData[i], out eData[i], lengthData[i]);
+                    ControllerMemory.GetObjectsData(tagsData[i], out nodesTags[i], lengthData[i]);
                 KernelGeneral.gmshFree(nodeTags);
 
 
@@ -268,6 +268,47 @@ namespace GmshApi.GmshController
         }
 
         /// <summary>
+        /// Возвращает типы элементов для заданных dim:tag
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <returns>Типы элементов</returns>
+        public static int[] GetElementTypes(int dim, int tag)
+        {
+            IntPtr elementTypes = IntPtr.Zero;
+            IntPtr elementTypes_n = IntPtr.Zero;
+            var ierr = 0;
+            KernelMesh.gmshModelMeshGetElementTypes(ref elementTypes, ref elementTypes_n, dim, tag, ref ierr);
+            int[] eTypes;
+            ControllerMemory.GetObjectsData(elementTypes, out eTypes, elementTypes_n);
+            return eTypes;
+        }
+
+        public static bool GetNodesByElementTypes(int elementType, int tag, out long[] nodeTags, out double[] local,
+                                          out double[] parametric, bool returnParametric = false)
+        {
+            var ierr = 0;
+            var retParam = Convert.ToInt32(returnParametric);
+            IntPtr nTags, nTags_n, coord, coord_n, parametricCoord, parametricCoord_n;
+            nTags = nTags_n = coord = coord_n = parametricCoord = parametricCoord_n = IntPtr.Zero;
+            nodeTags = null;
+            local = null;
+            parametric = null;
+            KernelMesh.gmshModelMeshGetNodesByElementType(elementType, ref nTags, ref nTags_n, ref coord,
+                                                        ref coord_n, ref parametricCoord, ref parametricCoord_n,
+                                                        tag, retParam, ref ierr);
+            if (ierr == 0)
+            {
+                ControllerMemory.GetObjectsData<long>(nTags, out nodeTags, nTags_n);
+                ControllerMemory.GetObjectsData<double>(coord, out local, coord_n);
+                if (returnParametric)
+                    ControllerMemory.GetObjectsData<double>(parametricCoord, out parametric, parametricCoord_n);
+            }
+            return ierr == 0;
+        }
+
+
+        /// <summary>
         /// Возвращает набор элементов по указанным dim:tag
         /// </summary>
         /// <param name="dimension">[In]Размерность для получения элементов, или -1 для получения всех элементов</param>
@@ -282,17 +323,25 @@ namespace GmshApi.GmshController
             var list = new List<ModelObject>();
             if (GetElementTags(dimension, tag, out info, out elemTags, out nodeTags))
             {
-                GetNodes(dimension, tag, out nodesT, out local, out parametric);
-                var nodes = LocalCoordinatesToNodes(nodesT, local);
                 for (int i = 0; i < info.Length; ++i)
                 {
                     var elements = elemTags[i];
+                    var type = GetElementTypes(dimension, tag);
+                    GetNodesByElementTypes(type[i], -1, out nodeTags[i], out local, out parametric);
                     for (var j = 0; j < elements.Length; ++j)
                     {
                         var nodesCount = info[i].numNodes;
                         var nodesPerElem = new Node[nodesCount];
-                        for (int k = 0; k < info[i].numNodes; ++k)
-                            nodesPerElem[k] = nodes[nodeTags[i][j * nodesCount + k]];
+                        for (int k = 0; k < nodesCount; ++k)
+                        {
+                            var coordStride = j * nodesCount * 3 + k * 3;
+                            var tagStride = j * nodesCount + k;
+                            var x = (float)local[coordStride + 0];
+                            var y = (float)local[coordStride + 1];
+                            var z = (float)local[coordStride + 2];
+                            var point = new Point3D(x, y, z);
+                            nodesPerElem[k] = new Node((int)nodeTags[i][tagStride], point);
+                        }
                         list.Add(CreateModelObject(ref info[i].elementName, elements[j], nodesPerElem));
                     }
                 }
