@@ -38,25 +38,5 @@ namespace TestModel
             //assert
             Assert.AreEqual(8, element.Number);
         }
-
-        [TestMethod]
-        public void ByNumberFromBPFFile()
-        {
-            //assing
-            var model = new ModelData();
-            var loader = new LoadModelFromProjectTextFile();
-            loader.LoadEvent += Model_LoadEvent;
-            //act
-            var modelLoaded = loader.Load(@"C:\Projs\TestProjTerm\tjoint\proj_med.bpf");
-            model.Load(modelLoaded);
-            var obj = model.ObjectData.Find(36292);
-            //assert
-            Assert.AreEqual(obj.Number, 36292);
-        }
-
-        private void Model_LoadEvent(object arg1, LoaderEventArgs arg2)
-        {
-            //throw new System.NotImplementedException();
-        }
     }
 }

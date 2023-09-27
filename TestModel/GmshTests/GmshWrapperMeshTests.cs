@@ -1,26 +1,23 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using GmshApi;
 using System.Linq;
-using System;
-using Geometry;
-using GmshApi.Api;
-using Model;
+using GmshApi.GmshController;
 
 namespace TestModel.GmshTests
 {
     [TestClass]
-    public class GmshWrapperMeshTests
+    public class ControllerMeshTests
     {
         private static string modelFolder = @"..\..\Examples\GMSHConnector\";
         [TestInitialize]
         public void Init()
         {
-            GmshWrapperConnection.Initialize();
+            ControllerConnection.Initialize();
         }
         [TestCleanup]
         public void Cleanup()
         {
-            GmshWrapperConnection.Finalize();
+            ControllerConnection.Finalize();
         }
         //[DataTestMethod]
         //[DataRow("Cilindr.step", "1")]
@@ -30,7 +27,7 @@ namespace TestModel.GmshTests
         //public void GenerateMeshTest(string fileName, string modelName)
         //{
         //    GmshWrapperModelTests.ModelLoad(fileName, modelName);
-        //    GmshWrapperMesh.Generate(2);
+        //    ControllerMesh.Generate(2);
         //}
         //[DataTestMethod]
         //[DataRow("Cilindr.step", "1")]
@@ -40,12 +37,12 @@ namespace TestModel.GmshTests
         //public void GenerateMeshGetElementsInternal(string fileName, string modelName)
         //{
         //    GmshWrapperModelTests.ModelLoad(fileName, modelName);
-        //    GmshWrapperMesh.Generate(2);
+        //    ControllerMesh.Generate(2);
         //    ElementInfo[] info;
         //    long[][] elemsTags, nodeTags;
-        //    GmshWrapperMesh.GetElementTags(-1, -1, out info, out elemsTags, out nodeTags);
-        //    GmshWrapperMesh.GetElementTags(1, -1, out info, out elemsTags, out nodeTags);
-        //    GmshWrapperMesh.GetElementTags(2, -1, out info, out elemsTags, out nodeTags);
+        //    ControllerMesh.GetElementTags(-1, -1, out info, out elemsTags, out nodeTags);
+        //    ControllerMesh.GetElementTags(1, -1, out info, out elemsTags, out nodeTags);
+        //    ControllerMesh.GetElementTags(2, -1, out info, out elemsTags, out nodeTags);
         //}
         //[DataTestMethod]
         //[DataRow("Cilindr.step", "1")]
@@ -55,10 +52,10 @@ namespace TestModel.GmshTests
         //public void GenerateMeshGetElementsTest(string fileName, string modelName)
         //{
         //    GmshWrapperModelTests.ModelLoad(fileName, modelName);
-        //    GmshWrapperMesh.Generate(2);
-        //    var all = GmshWrapperMesh.GetElements(-1, -1);
-        //    var e1d = GmshWrapperMesh.GetElements(1, -1);
-        //    var e2d = GmshWrapperMesh.GetElements(2, -1);
+        //    ControllerMesh.Generate(2);
+        //    var all = ControllerMesh.GetElements(-1, -1);
+        //    var e1d = ControllerMesh.GetElements(1, -1);
+        //    var e2d = ControllerMesh.GetElements(2, -1);
         //}
         [DataTestMethod]
         [DataRow("Cilindr.step", "1", new int[] { 7, 8, 1, 3, 6 }, new int[] { 0, 0, 5, 5, 9 })]
@@ -71,11 +68,11 @@ namespace TestModel.GmshTests
         {
             ModelLoad(fileName, modelId);
 
-            GmshWrapperMesh.Generate(1);
-            GmshWrapperMesh.Generate(2);
+            ControllerMesh.Generate(1);
+            ControllerMesh.Generate(2);
             for (var i = 0; i < lineTags.Length; ++i)
             {
-                var lines = GmshWrapperMesh.GetElements(1, lineTags[i]).ToArray();
+                var lines = ControllerMesh.GetElements(1, lineTags[i]).ToArray();
                 Assert.AreEqual(expectedLength[i], lines.Length);
             }
         }
@@ -88,10 +85,10 @@ namespace TestModel.GmshTests
                                                         int[] surfTags, int[] expectedLength)
         {
             ModelLoad(fileName, modelName);
-            GmshWrapperMesh.Generate(2);
+            ControllerMesh.Generate(2);
             for (var i = 0; i < surfTags.Length; ++i)
             {
-                var surfs = GmshWrapperMesh.GetElements(2, surfTags[i]).ToArray();
+                var surfs = ControllerMesh.GetElements(2, surfTags[i]).ToArray();
                 Assert.AreEqual(expectedLength[i], surfs.Length);
             }
         }
@@ -103,12 +100,12 @@ namespace TestModel.GmshTests
         public void GenerateMeshGetAllNodesTest(string fileName, string modelName, int[] nodesDim, int[] paramsCount)
         {
             ModelLoad(fileName, modelName);
-            GmshWrapperMesh.Generate(2);
+            ControllerMesh.Generate(2);
             long[] nodes;
             double[] local, parametric;
             for (var i = 0; i < nodesDim.Length; ++i)
             {
-                GmshWrapperMesh.GetNodes(nodesDim[i], -1, out nodes, out local, out parametric, true);
+                ControllerMesh.GetNodes(nodesDim[i], -1, out nodes, out local, out parametric, true);
                 if(nodesDim[i] == -1)
                     Assert.AreEqual(0, parametric.Length);
                 else
@@ -128,12 +125,12 @@ namespace TestModel.GmshTests
         public void GenerateMeshGetLineNodesByTag(string fileName, string modelName, int[] tags, int[] expectedLength)
         {
             ModelLoad(fileName, modelName);
-            GmshWrapperMesh.Generate(2);
+            ControllerMesh.Generate(2);
             long[] nodes;
             double[] local, parametric;
             for (var i = 0; i < tags.Length; ++i)
             {
-                GmshWrapperMesh.GetNodes(1, tags[i], out nodes, out local, out parametric);
+                ControllerMesh.GetNodes(1, tags[i], out nodes, out local, out parametric);
                 Assert.AreEqual(expectedLength[i], nodes.Length);
             }
         }
@@ -143,12 +140,12 @@ namespace TestModel.GmshTests
         public void GenerateMeshGetSurfacesNodesByTag(string fileName, string modelName, int[] tags, int[] expectedLength)
         {
             ModelLoad(fileName, modelName);
-            GmshWrapperMesh.Generate(2);
+            ControllerMesh.Generate(2);
             long[] nodes;
             double[] local, parametric;
             for (var i = 0; i < tags.Length; ++i)
             {
-                GmshWrapperMesh.GetNodes(2, tags[i], out nodes, out local, out parametric);
+                ControllerMesh.GetNodes(2, tags[i], out nodes, out local, out parametric);
                 Assert.AreEqual(expectedLength[i], nodes.Length);
             }
         }
@@ -157,63 +154,28 @@ namespace TestModel.GmshTests
         public void GenerateMeshGetLocalCoordinatesInElement(string fileName, string modelName)
         {
             ModelLoad(fileName, modelName);
-            GmshWrapperMesh.Generate(2);
+            ControllerMesh.Generate(2);
             var point = new double[] { 3.16450111806, 18.4094425392, 5.84848849947 };
-            var temp = GmshWrapperMesh.GetLocalCoordinatesInElement(75, point[0], point[1], point[2]);
+            var temp = ControllerMesh.GetLocalCoordinatesInElement(75, point[0], point[1], point[2]);
         }
         [DataTestMethod]
         [DataRow("Cilindr.step", "1", 75)]
         public void GenerateMeshGetElementsByCoordinates(string fileName, string modelName, int expected)
         {
             ModelLoad(fileName, modelName);
-            GmshWrapperMesh.Generate(2);
+            ControllerMesh.Generate(2);
             //point - известные барицентрические координаты центра элемента 75
             var point = new double[] { -8.74248599355, 1.39424515076, 6.51327932777 };
-            var actual = GmshWrapperMesh.GetElementsByCoordinates(2, point[0], point[1], point[2]);
+            var actual = ControllerMesh.GetElementsByCoordinates(2, point[0], point[1], point[2]);
             Assert.AreEqual(expected, actual[0]);
         }
-
-        /*[DataTestMethod]
-        [DataRow("transform.geo")]
-        public void RecombineAndBuildPyramids(ref string fileName)
-        {
-            GmshWrapperConnection.Initialize();
-            GmshWrapperIO.Open(modelFolder + fileName);
-            GmshWrapperMesh.Generate(2);
-            GmshWrapperMesh.Recombine();
-            //If i uncomment the line below, the test will run correctly.
-            //GmshWrapperGeneral.OptionSetNumber("Mesh.Algorithm3D", 3);
-            GmshWrapperMesh.Generate(3);//Trying to build pyramids, but error flag is raised!
-            var message = GmshWrapperGeneral.LoggerGetLastError();
-            GmshWrapperModel.ModelRemove();//After this call, the application crashes
-            GmshWrapperConnection.Finalize();//Will never be called
-        }*/
 
 
         private void ModelLoad(string fileName, string modelID)
         {
-            GmshWrapperModel.ModelAdd(modelID);
-            GmshWrapperIO.Load(modelFolder + fileName);
-            GmshWrapperIO.SetCurrentModelFileName(fileName);
-        }
-
-        [DataTestMethod]
-        [DataRow("Cilindr.step")]
-        public void TestCilindr(ref string fileName)
-        {
-            ModelObject[] data;
-            using (var geometry = new GeometryObject(modelFolder + fileName))
-            {
-                var field = new MeshField(MeshFieldType.BoundaryLayer);
-                field.SetOptionValues(BoundaryLayerOption.CurvesList.ToString(), new double[] { 4.0, 5.0 });
-                field.SetOptionValues(BoundaryLayerOption.ExcludedSurfacesList.ToString(), new double[] { 1.0, 2.0 });
-                field.SetOptionValue(BoundaryLayerOption.Thickness.ToString(), 2.0);
-                field.SetOptionValue(BoundaryLayerOption.Quads.ToString(), 1.0);
-                field.SetDisplayFieldType(DisplayFieldType.BoundaryLayer);
-                geometry.AddField(field);
-                var mesh = geometry.Generate(3);
-                data = mesh.GetElement3D().ToArray();
-            }
+            ControllerModel.ModelAdd(modelID);
+            ControllerIO.Load(modelFolder + fileName);
+            ControllerIO.SetCurrentModelFileName(fileName);
         }
     }
 }

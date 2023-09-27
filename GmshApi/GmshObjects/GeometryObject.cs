@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System;
 using Model.Interfaces;
+using GmshApi.GmshController;
 
 namespace GmshApi
 {  
@@ -33,11 +34,11 @@ namespace GmshApi
         { 
             get 
             {
-                return Convert.ToInt32(GmshWrapperGeneral.OptionGetNumber("Geometry.NumSubEdges")); 
+                return Convert.ToInt32(ControllerGeneral.OptionGetNumber("Geometry.NumSubEdges")); 
             }
             set
             {
-                GmshWrapperGeneral.OptionSetNumber("Geometry.NumSubEdges", Convert.ToDouble(value));
+                ControllerGeneral.OptionSetNumber("Geometry.NumSubEdges", Convert.ToDouble(value));
             }
         }
         /// <summary>
@@ -45,9 +46,9 @@ namespace GmshApi
         /// </summary>
         public GeometryObject() 
         {
-            GmshWrapperConnection.Initialize();
+            ControllerConnection.Initialize();
             Id = GenerateRandom();
-            GmshWrapperModel.ModelAdd(Id.ToString());
+            ControllerModel.ModelAdd(Id.ToString());
         }
         /// <summary>
         /// Конструктор с загрузкой файла геометрии
@@ -55,10 +56,9 @@ namespace GmshApi
         /// <param name="path">[In]Путь до файла</param>
         public GeometryObject(string path)
         {
-            GmshWrapperConnection.Initialize();
+            ControllerConnection.Initialize();
             Id = GenerateRandom();
-            idList.Add(id);
-            GmshWrapperModel.ModelAdd(Id.ToString());
+            ControllerModel.ModelAdd(Id.ToString());
             Load(path);
         }
         /// <summary>
@@ -67,7 +67,7 @@ namespace GmshApi
         /// <param name="filePath">[In]Путь до файла</param>
         public void Load(string filePath)
         {
-            GmshWrapperIO.Load(filePath);
+            ControllerIO.Load(filePath);
         }
         /// <summary>
         /// Перегененировать сетку
@@ -75,10 +75,9 @@ namespace GmshApi
         /// <param name="dim">[In]Размерность</param>
         public MeshObject Generate(int dim)
         {
-            var status = true;
             if (dim != 0)
-                status = GmshWrapperMesh.Generate(dim);
-            return status ? new MeshObject(Id) : null;
+                ControllerMesh.Generate(dim);
+            return new MeshObject(Id);
         }
         /// <summary>
         /// Возвращает контрольные точки
@@ -86,7 +85,7 @@ namespace GmshApi
         /// <returns>узлы</returns>
         public List<ModelObject> GetControlPoints()
         {
-            return GmshWrapperGeometry.GetEntities(ObjKind.Point);
+            return ControllerGeometry.GetEntities(ObjKind.Point);
         }
         /// <summary>
         /// Возвращает кривые
@@ -94,7 +93,7 @@ namespace GmshApi
         /// <returns>кривые</returns>
         public List<ModelObject> GetСurves()
         {
-            return GmshWrapperGeometry.GetEntities(ObjKind.Curve);
+            return ControllerGeometry.GetEntities(ObjKind.Curve);
         }
         /// <summary>
         /// Возвращает линии
@@ -103,7 +102,7 @@ namespace GmshApi
         public List<ModelObject> GetElements1D()
         {
 
-            return GmshWrapperGeometry.GetEntities(ObjKind.Beam);
+            return ControllerGeometry.GetEntities(ObjKind.Beam);
         }
         /// <summary>
         /// Удаляет сущности
@@ -111,7 +110,7 @@ namespace GmshApi
         /// <param name="dimTags">[In]Массив пар dim:tag</param>
         public void DeleteEntities(int[] dimTags)
         {
-            GmshWrapperGeometry.RemoveEntitiesEx(dimTags, false);
+            ControllerGeometry.RemoveEntitiesEx(dimTags, false);
         }
         /// <summary>
         /// Возвращает максимальную размерность
@@ -119,7 +118,7 @@ namespace GmshApi
         /// <returns></returns>
         public int GetMaxDimension()
         {
-            return GmshWrapperGeometry.GetDimension();
+            return ControllerGeometry.GetDimension();
         }
 
         /// <summary>
@@ -129,14 +128,14 @@ namespace GmshApi
         /// <returns></returns>
         public int[] GetEntities(int dim)
         {
-            return GmshWrapperGeometry.GetEntitiesTags(dim);
+            return ControllerGeometry.GetEntitiesTags(dim);
         }
         /// <summary>
         /// Синхронизирует модель с GmshApi
         /// </summary>
         public void Synchronize()
         {
-            GmshWrapperModel.Synchronize();
+            ControllerModel.Synchronize();
         }
         /// <summary>
         /// Добавляет поле в список
@@ -174,7 +173,7 @@ namespace GmshApi
         {
             fieldList.ForEach(v => v.Dispose());
             idList.Remove(Id);
-            GmshWrapperModel.ModelRemoveByName(Id.ToString());
+            ControllerModel.ModelRemoveByName(Id.ToString());
         }
 
         private ulong GenerateRandom()

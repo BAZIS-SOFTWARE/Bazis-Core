@@ -7,19 +7,44 @@ using System.Linq;
 
 namespace ModelController.MeshObjsUtility
 {
+    //public class Point3DComparer : IEqualityComparer<Point3D>
+    //{
+    //    private const double epsilon = 1e-3;
+
+    //    public bool Equals(Point3D a, Point3D b)
+    //    {
+    //        return Math.Abs(a._x - b._x) < epsilon
+    //               && Math.Abs(a._y - b._y) < epsilon
+    //               && Math.Abs(a._z - b._z) < epsilon;
+    //    }
+
+    //    public int GetHashCode(Point3D obj)
+    //    {
+    //        unchecked
+    //        {
+    //            var hashCode = obj._x.GetHashCode();
+    //            hashCode = (hashCode * 397) ^ obj._y.GetHashCode();
+    //            hashCode = (hashCode * 397) ^ obj._z.GetHashCode();
+    //            return hashCode;
+    //        }
+    //    }
+    //}
+
     public class CrossSection
     {
+ 
         /// <returns>
         /// Сечение элемента плоскостью
         /// Возвращает словарь (номер элемента, плоскость его сечения)
         /// </returns>
         public Dictionary<int, Surface> GetSectionSurfaces(List<Element3D> elements, Plane plane)
         {
+            var comparer = new Point3DEqualityComparer();
             var result = new Dictionary<int, Surface>();
-            int index = 0;
+            var index = 0;
             foreach (var element in elements)
             {
-                var points = new HashSet<Point3D>();
+                var points = new List<Point3D>();
                 foreach (var surface in element.GetSurface())
                 {
                     foreach (var line in surface.GetLinesFromSurface(surface))
@@ -29,14 +54,17 @@ namespace ModelController.MeshObjsUtility
                         if (IsIntersect(point1, point2, plane))
                         {
                             var sectionPoint = GetSectionPoint(new Line(point1, point2), plane);
-                            if (!points.Contains(sectionPoint))
-                                points.Add(sectionPoint);
+                            points.Add(sectionPoint);
                         }
                     }
                 }
-                if (points.Count >= 3)
+                var nodes = points
+                    .Distinct(comparer)
+                    .Select((p, i) => new Node(i, p))
+                    .ToArray();
+                if (nodes.Length >= 3
+                    && !IsAllPointsOnLine(nodes.Select(x => x.Position).ToList()))
                 {
-                    var nodes = points.Select((p, i) => new Node(i, p)).ToArray();
                     var surface = new Surface(index++, nodes, ObjKind.ElementSurface);
                     result.Add(element.Number, surface);
                 }
@@ -52,9 +80,11 @@ namespace ModelController.MeshObjsUtility
         {
             var d1 = plane.PointPosition(a);
             var d2 = plane.PointPosition(b);
-            if (Math.Abs(d1) < 1e-6 && Math.Abs(d2) < 1e-6)
+            if (float.IsNaN(d1) || float.IsNaN(d2))
+                throw new Exception();
+            if (Math.Abs(d1) < 10e-6 && Math.Abs(d2) < 10e-6)
                 return false;
-            return Math.Sign(d1) != Math.Sign(d2);
+            return Math.Sign(d1) * Math.Sign(d2) <= 0;
         }
 
         /// <summary>
@@ -72,6 +102,20 @@ namespace ModelController.MeshObjsUtility
             var y = (float)Math.Round(line.P1._y * (1 - t) + line.P0._y * t, 6);
             var z = (float)Math.Round(line.P1._z * (1 - t) + line.P0._z * t, 6);
             return new Point3D(x, y, z);
+        }
+
+        private bool IsAllPointsOnLine(List<Point3D> points)
+        {
+            var initialVector = new Point3D(points.Last()._x - points[0]._x,
+                points.Last()._y - points[0]._y, points.Last()._z - points[0]._z);
+            for (var i = 0; i < points.Count - 1; i++)
+            {
+                var currentVector = new Point3D(points[i + 1]._x - points[i]._x,
+                    points[i + 1]._y - points[i]._y, points[i + 1]._z - points[i]._z);
+                if (Math.Abs(currentVector._x / initialVector._x - currentVector._y / initialVector._y) >= 1e-4)
+                    return false;
+            }
+            return true;
         }
     }
 }

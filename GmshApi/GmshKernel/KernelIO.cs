@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace GmshApi
+namespace GmshApi.GmshKernel
 {
     /// <summary>
     /// Класс с группой методов для работы с файловой системой
     /// </summary>
-    public static class GmshIO
+    public static class KernelIO
     {
         /// <summary>
         /// Открывает скрипт файл .geo, .stp, .igs создает модель и делает ее текущей

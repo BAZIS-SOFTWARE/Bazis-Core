@@ -60,7 +60,7 @@ namespace Model.Interfaces
     /// <summary>
     /// Model object interface
     /// </summary>
-    public interface IModelObject
+    public interface IModelObject : IComparable<IModelObject>, IEqualityComparer<IModelObject>, IEquatable<IModelObject>
     {
         /// <summary>
         /// Number

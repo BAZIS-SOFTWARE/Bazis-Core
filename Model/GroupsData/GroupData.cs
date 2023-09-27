@@ -57,7 +57,7 @@ namespace Model.GroupsData
 
         public int IndexOf(Group item)
         {
-            throw new System.NotImplementedException();
+            return groups.IndexOf(item);
         }
 
         public void Insert(int index, Group item)

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using GmshApi.GmshController;
 
 namespace GmshApi.Api
 {
@@ -10,12 +6,12 @@ namespace GmshApi.Api
     {
         public double[] GetInvertedConditionNumber()
         {
-            return GmshWrapperMesh.GetElementQualities("minSICN");
+            return ControllerMesh.GetElementQualities("minSICN");
         }
 
         public double[] GetInvertedGradientError()
         {
-            return GmshWrapperMesh.GetElementQualities("minSIGE");
+            return ControllerMesh.GetElementQualities("minSIGE");
         }
 
         //public double[] GetMinJacobianValues()

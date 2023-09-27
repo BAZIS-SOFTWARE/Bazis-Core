@@ -1,23 +1,24 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using GmshApi;
 using System.Linq;
+using GmshApi.GmshController;
 
 namespace TestModel.GmshTests
 {
     [TestClass]
-    public class GmshWrapperGeometryTests
+    public class ControllerGeometryTests
     {
         private static string modelFolder = @"..\..\Examples\GMSHConnector\";
         [TestInitialize]
         public void Init()
         {
-            GmshWrapperConnection.Initialize();
+            ControllerConnection.Initialize();
 
         }
         [TestCleanup]
         public void Cleanup()
         {
-            GmshWrapperConnection.Finalize();
+            ControllerConnection.Finalize();
         }
         [DataTestMethod]
         [DataRow("Cilindr.step", "1", new int[] { 4, 6, 4, 1 })]
@@ -26,13 +27,13 @@ namespace TestModel.GmshTests
         public void GetEntitiesGetAllDimensionTest(string fileName, string modelID, int[] expTags)
         {
             ModelLoad(fileName, modelID);
-            var dim = GmshWrapperGeometry.GetDimension();
+            var dim = ControllerGeometry.GetDimension();
             Assert.AreNotEqual(0, dim);
             var tagDims = new int[expTags.Length][];
             for (var i = 0; i < tagDims.GetLength(0); ++i)
                 tagDims[i] = Enumerable.Range(1, expTags[i]).ToArray();
             var expectedTags = tagDims.SelectMany(v => v).ToArray();
-            var actualTags = GmshWrapperGeometry.GetEntitiesTags(-1).Where((v, i) => (i & 1) == 1).ToArray();
+            var actualTags = ControllerGeometry.GetEntitiesTags(-1).Where((v, i) => (i & 1) == 1).ToArray();
             CollectionAssert.AreEqual(expectedTags, actualTags);
         }
         [DataTestMethod]
@@ -44,14 +45,14 @@ namespace TestModel.GmshTests
         public void SetGetRemoveEntityNameTest(string fileName, string modelID, int[] entCount, string[] entName)
         {
             ModelLoad(fileName, modelID);
-            var ent = GmshWrapperGeometry.GetEntitiesTags(-1);
+            var ent = ControllerGeometry.GetEntitiesTags(-1);
             for (var i = 1; i < ent.Length; i += 2)
             {
                 var dim = ent[i - 1];
                 var tag = ent[i];
                 var expectedName = entName[dim] + tag.ToString();
-                GmshWrapperGeometry.SetEntityName(dim, tag, expectedName);
-                Assert.AreEqual(expectedName, GmshWrapperGeometry.GetEntityName(dim, tag));
+                ControllerGeometry.SetEntityName(dim, tag, expectedName);
+                Assert.AreEqual(expectedName, ControllerGeometry.GetEntityName(dim, tag));
             }
             //Remove Test: 1) Remove exists name 2) Remove not exists name
             RemoveNameTest(ref entName[0], 0, entCount[0] - 2, entCount[0]);
@@ -70,7 +71,7 @@ namespace TestModel.GmshTests
         {
             ModelLoad(fileName, modelID);
             double[] min, max;
-            GmshWrapperGeometry.GetBoundingBox(-1, -1, out min, out max);
+            ControllerGeometry.GetBoundingBox(-1, -1, out min, out max);
             for (var i = 0; i < 3; ++i)
                 Assert.AreEqual(minExp[i], min[i], 1e-02);
             for (var i = 0; i < 3; ++i)
@@ -112,7 +113,7 @@ namespace TestModel.GmshTests
         {
             ModelLoad(fileName, modelId);
 
-            var adj = GmshWrapperGeometry.GetAdjacencies(dim, tag);
+            var adj = ControllerGeometry.GetAdjacencies(dim, tag);
             CollectionAssert.AreEqual(downExp, adj[0]);
             CollectionAssert.AreEqual(upExp, adj[1]);
         }
@@ -128,7 +129,7 @@ namespace TestModel.GmshTests
                                                    double[] parametric, double[] expected)
         {
             ModelLoad(fileName, modelID);
-            var local = GmshWrapperGeometry.GetLocalCoordByParametric(0, tag, parametric);
+            var local = ControllerGeometry.GetLocalCoordByParametric(0, tag, parametric);
             for (var i = 0; i < expected.Length; ++i)
                 Assert.AreEqual(expected[i], local[i], 1e-08);
         }
@@ -140,16 +141,16 @@ namespace TestModel.GmshTests
             ModelLoad(fileName, modelID);
             for (var i = 0; i < tags.Length; ++i)
             {
-                var expected = GmshWrapperGeometry.GetParametrizationBounds(1, tags[i]);
-                var numInsideCount = GmshWrapperGeometry.IsInside(1, tags[i], expected[0]);
+                var expected = ControllerGeometry.GetParametrizationBounds(1, tags[i]);
+                var numInsideCount = ControllerGeometry.IsInside(1, tags[i], expected[0]);
                 Assert.AreNotEqual(0, numInsideCount);
-                numInsideCount = GmshWrapperGeometry.IsInside(1, tags[i], expected[1]);
+                numInsideCount = ControllerGeometry.IsInside(1, tags[i], expected[1]);
                 Assert.AreNotEqual(0, numInsideCount);
                 var list = expected[0].Concat(expected[1]).ToArray();
-                var local = GmshWrapperGeometry.GetLocalCoordByParametric(1, tags[i], list);
-                var parametric = GmshWrapperGeometry.GetParametricCoordByLocal(1, tags[i], local);
-                //parametric = GmshWrapperGeometry.SortAndFilterParametric(1, tags[i], parametric);
-                //var localPerParametric = GmshWrapperGeometry.GetLocalCoordByParametric(1, tags[i], parametric);
+                var local = ControllerGeometry.GetLocalCoordByParametric(1, tags[i], list);
+                var parametric = ControllerGeometry.GetParametricCoordByLocal(1, tags[i], local);
+                //parametric = ControllerGeometry.SortAndFilterParametric(1, tags[i], parametric);
+                //var localPerParametric = ControllerGeometry.GetLocalCoordByParametric(1, tags[i], parametric);
             }
         }
         [DataTestMethod]
@@ -160,16 +161,16 @@ namespace TestModel.GmshTests
             ModelLoad(fileName, modelName);
             for (var i = 0; i < tags.Length; ++i)
             {
-                var expected = GmshWrapperGeometry.GetParametrizationBounds(2, tags[i]);
-                var numInsideCount = GmshWrapperGeometry.IsInside(2, tags[i], expected[0]);
+                var expected = ControllerGeometry.GetParametrizationBounds(2, tags[i]);
+                var numInsideCount = ControllerGeometry.IsInside(2, tags[i], expected[0]);
                 Assert.AreNotEqual(0, numInsideCount);
-                numInsideCount = GmshWrapperGeometry.IsInside(2, tags[i], expected[1]);
+                numInsideCount = ControllerGeometry.IsInside(2, tags[i], expected[1]);
                 Assert.AreNotEqual(0, numInsideCount);
                 var list = expected[0].Concat(expected[1]).ToArray();
-                var local = GmshWrapperGeometry.GetLocalCoordByParametric(2, tags[i], list);
-                var parametric = GmshWrapperGeometry.GetParametricCoordByLocal(2, tags[i], local);
-                //parametric = GmshWrapperGeometry.SortAndFilterParametric(2, tags[i], parametric);
-                //var localPerParametric = GmshWrapperGeometry.GetLocalCoordByParametric(2, tags[i], parametric);
+                var local = ControllerGeometry.GetLocalCoordByParametric(2, tags[i], list);
+                var parametric = ControllerGeometry.GetParametricCoordByLocal(2, tags[i], local);
+                //parametric = ControllerGeometry.SortAndFilterParametric(2, tags[i], parametric);
+                //var localPerParametric = ControllerGeometry.GetLocalCoordByParametric(2, tags[i], parametric);
             }
         }
 
@@ -180,18 +181,18 @@ namespace TestModel.GmshTests
         {
             ModelLoad(fileName, modelName);
 
-            GmshWrapperMesh.SetTransfiniteCurve(4, 20, "Progression", 1.0);
-            GmshWrapperMesh.SetTransfiniteCurve(5, 20, "Progression", 1.0);
+            ControllerMesh.SetTransfiniteCurve(4, 20, "Progression", 1.0);
+            ControllerMesh.SetTransfiniteCurve(5, 20, "Progression", 1.0);
             var expected = new string[] { "4", "5" };
-            GmshWrapperGeometry.SetAttribute("Progression", expected, 2);
-            var actual = GmshWrapperGeometry.GetAttribute("Progression");
+            ControllerGeometry.SetAttribute("Progression", expected, 2);
+            var actual = ControllerGeometry.GetAttribute("Progression");
             CollectionAssert.AreEqual(expected, actual);
             var transValues = new string[] { "1", "2" };
-            GmshWrapperGeometry.SetAttribute("Transfinite", transValues, 2);
-            var list = GmshWrapperGeometry.GetAttributeNames();
+            ControllerGeometry.SetAttribute("Transfinite", transValues, 2);
+            var list = ControllerGeometry.GetAttributeNames();
             CollectionAssert.AreEqual(new string[] { "Progression", "Transfinite" }, list);
-            GmshWrapperGeometry.RemoveAttribute("Progression");
-            list = GmshWrapperGeometry.GetAttributeNames();
+            ControllerGeometry.RemoveAttribute("Progression");
+            list = ControllerGeometry.GetAttributeNames();
             CollectionAssert.AreEqual(new string[] { "Transfinite" }, list);
         }
 
@@ -199,16 +200,16 @@ namespace TestModel.GmshTests
         {
             var status = maxId >= delId;
             var delName = entName + delId.ToString();
-            GmshWrapperGeometry.RemoveEntityName(delName);
+            ControllerGeometry.RemoveEntityName(delName);
             if (status)
-                Assert.AreEqual("",GmshWrapperGeometry.GetEntityName(dim, delId));
+                Assert.AreEqual("",ControllerGeometry.GetEntityName(dim, delId));
         }
 
         private void ModelLoad(string fileName, string modelID)
         {
-            GmshWrapperModel.ModelAdd(modelID);
-            GmshWrapperIO.Load(modelFolder + fileName);
-            GmshWrapperIO.SetCurrentModelFileName(fileName);
+            ControllerModel.ModelAdd(modelID);
+            ControllerIO.Load(modelFolder + fileName);
+            ControllerIO.SetCurrentModelFileName(fileName);
         }
     }
 }

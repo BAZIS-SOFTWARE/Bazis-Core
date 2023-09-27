@@ -12,7 +12,7 @@ namespace Model
     /// <summary>
     ///Model object class
     /// </summary>
-    public abstract class ModelObject : IModelObject, IComparable<ModelObject>, IEqualityComparer<ModelObject>, IEquatable<ModelObject>
+    public abstract class ModelObject : IModelObject
     {
         /// <summary>
         /// ModelObject constructor
@@ -123,7 +123,7 @@ namespace Model
         /// <summary>
         /// Compare to
         /// </summary>
-        public int CompareTo(ModelObject other)
+        public int CompareTo(IModelObject other)
         {
             if (this.Number > other.Number)
                 return 1;
@@ -138,7 +138,7 @@ namespace Model
         /// <summary>
         /// Equal two objects
         /// </summary>
-        public bool Equals(ModelObject x, ModelObject y)
+        public bool Equals(IModelObject x, IModelObject y)
         {
             if (x.Number == y.Number)
                 return true;
@@ -147,14 +147,14 @@ namespace Model
         /// <summary>
         ///Get hash code
         /// </summary>
-        public int GetHashCode(ModelObject obj)
+        public int GetHashCode(IModelObject obj)
         {
             return obj.Number;
         }
         /// <summary>
         /// Equal with object
         /// </summary>
-        public bool Equals(ModelObject other)
+        public bool Equals(IModelObject other)
         {
             if (Number == other.Number)
                 return true;

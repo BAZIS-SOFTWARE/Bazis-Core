@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace GmshApi
+namespace GmshApi.GmshKernel
 {
     /// <summary>
     /// Класс с группой методов для работы с сеткой
     /// </summary>
-    public static class GmshMesh
+    public static class KernelMesh
     {
         /// <summary>
         /// Генерирует сетку в текущей размерности
