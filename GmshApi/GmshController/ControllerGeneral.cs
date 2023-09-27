@@ -66,8 +66,6 @@ namespace GmshApi.GmshController
         public ModelSetCurrentDelegate gmshModelSetCurrent;
         public delegate void ModelGetCurrentDelegate(ref IntPtr name, ref int ierr);
         public ModelGetCurrentDelegate gmshModelGetCurrent;
-        public delegate void ModelRemoveEntitiesDelegate(int[] dimTags, IntPtr dimTags_n, int recursive, ref int ierr);
-        public ModelRemoveEntitiesDelegate gmshModelRemoveEntities;
         public delegate void ModelOccSynchronizeDelegate(ref int ierr);
         public ModelOccSynchronizeDelegate gmshModelOccSynchronize;
         public delegate void ModelGeoSynchronizeDelegate(ref int ierr);
@@ -81,30 +79,88 @@ namespace GmshApi.GmshController
         public ModelGetEntitiesDelegate gmshModelGetEntities;
         public delegate void ModelOccGetEntitiesDelegate(ref IntPtr dimTags, ref IntPtr dimTags_n, int dim, ref int ierr);
         public ModelOccGetEntitiesDelegate gmshModelOccGetEntities;
-
-        /*/// <summary>
-        /// Получает список всех идентификаторов для заданной размерности
-        /// </summary>
-        /// <param name="dimTags">[Out]Массив пар размерность - идентификатор</param>
-        /// <param name="dimTags_n">[Out]Длина массива пар размерность - идентификатор</param>
-        /// <param name="dim">[In]Размерность для получения идентификаторов, -1 для всех размерностей</param>
-        /// <param name="ierr">[Out]Флаг ошибки</param>
-        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void gmshModelGetEntities(ref IntPtr dimTags, ref IntPtr dimTags_n,
-                                                       int dim, ref int ierr);
-        /// <summary>
-        /// Получает геометрию модели в виде вектора пар размерность : идентификатор
-        /// </summary>
-        /// <param name="dimTags">[Out]Вектор пар размерность : идентификатор</param>
-        /// <param name="dimTags_n">[Out]Размерность вектора пар</param>
-        /// <param name="dim">[In]Размерность для получения, -1 все размерности</param>
-        /// <param name="ierr">[Out]Флаг ошибки</param>
-        [DllImport(".\\gmsh-4.11.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void gmshModelOccGetEntities(ref IntPtr dimTags, ref IntPtr dimTags_n, int dim, ref int ierr);*/
-
-
-
-
+        public delegate void ModelRemoveEntitiesDelegate(int[] dimTags, IntPtr dimTags_n, int recursive, ref int ierr);
+        public ModelRemoveEntitiesDelegate gmshModelRemoveEntities;
+        public delegate void ModelOccRemoveDelegate(int[] dimTags, IntPtr dimTags_n, int recursive, ref int ierr);
+        public ModelOccRemoveDelegate gmshModelOccRemove;
+        public delegate void ModelSetEntityNameDelegate(int dim, int tag, string name, ref int ierr);
+        public ModelSetEntityNameDelegate gmshModelSetEntityName;
+        public delegate void ModelGetEntityNameDelegate(int dim, int tag, ref IntPtr name, ref int ierr);
+        public ModelGetEntityNameDelegate gmshModelGetEntityName;
+        public delegate void ModelRemoveEntityNameDelegate(string name, ref int ierr);
+        public ModelRemoveEntityNameDelegate gmshModelRemoveEntityName;
+        public delegate void ModelGetBoundingBoxDelegate(int dim, int tag, ref double xmin,
+                                                          ref double ymin, ref double zmin,
+                                                          ref double xmax, ref double ymax,
+                                                          ref double zmax, ref int ierr);
+        public ModelGetBoundingBoxDelegate gmshModelGetBoundingBox;
+        public delegate void ModelGetAdjacenciesDelegate(int dim, int tag, ref IntPtr upward, ref IntPtr upward_n,
+                                                         ref IntPtr downward, ref IntPtr downward_n, ref int ierr);
+        public ModelGetAdjacenciesDelegate gmshModelGetAdjacencies;
+        public delegate void ModelGetBoundaryDelegate(int[] dimTags, IntPtr dimTags_n, ref IntPtr outDimTags,
+                                                       ref IntPtr outDimTags_n, int combined, int oriented,
+                                                       int recursive, ref int ierr);
+        public ModelGetBoundaryDelegate gmshModelGetBoundary;
+        public delegate void ModelGetTypeDelegate(int dim, int tag, ref IntPtr entityType, ref int ierr);
+        public ModelGetTypeDelegate gmshModelGetType;
+        public delegate void ModelGetDimensionDelegate(ref int ierr);
+        public ModelGetDimensionDelegate gmshModelGetDimension;
+        public delegate void ModelIsInsideDelegate(int dim, int tag, double[] coord, IntPtr coord_n,
+                                                   int parametric, ref int ierr);
+        public ModelIsInsideDelegate gmshModelIsInside;
+        public delegate void ModelSetVisibilityDelegate(int[] dimTags, IntPtr dimTags_n, int value,
+                                                         int recursive, ref int ierr);
+        public ModelSetVisibilityDelegate gmshModelSetVisibility;
+        public delegate void ModelSetAttributeDelegate(string name, string[] values, IntPtr values_n, ref int ierr);
+        public ModelSetAttributeDelegate gmshModelSetAttribute;
+        public delegate void ModelGetAttributeDelegate(string name, ref IntPtr values, ref IntPtr values_n, ref int ierr);
+        public ModelGetAttributeDelegate gmshModelGetAttribute;
+        public delegate void ModelGetAttributeNamesDelegate(ref IntPtr names, ref IntPtr names_n, ref int ierr);
+        public ModelGetAttributeNamesDelegate gmshModelGetAttributeNames;
+        public delegate void ModelRemoveAttributeDelegate(string name, ref int ierr);
+        public ModelRemoveAttributeDelegate gmshModelRemoveAttribute;
+        public delegate void ModelGetPhysicalNameDelegate(int dim, int tag, ref IntPtr name, ref int ierr);
+        public ModelGetPhysicalNameDelegate gmshModelGetPhysicalName;
+        public delegate void ModelGetDerivativeDelegate(int dim, int tag, double[] parametricCoord, 
+                                                        IntPtr parametricCoord_n, ref IntPtr derivatives, 
+                                                        ref IntPtr derivatives_n, ref int ierr);
+        public ModelGetDerivativeDelegate gmshModelGetDerivative;
+        public delegate void ModelGetSecondDerivativeDelegate(int dim, int tag, double[] parametricCoord, 
+                                                              IntPtr parametricCoord_n, ref IntPtr derivatives, 
+                                                              ref IntPtr derivatives_n, ref int ierr);
+        public ModelGetSecondDerivativeDelegate gmshModelGetSecondDerivative;
+        public delegate void ModelGetCurvatureDelegate(int dim, int tag, double[] parametricCoord, 
+                                                       IntPtr parametricCoord_n, ref IntPtr curvatures, 
+                                                       ref IntPtr curvatures_n, ref int ierr);
+        public ModelGetCurvatureDelegate gmshModelGetCurvature;
+        public delegate void ModelGetValueDelegate(int dim, int tag, double[] parametricCoord,
+                                                   IntPtr parameticCoord_n, ref IntPtr coord,
+                                                   ref IntPtr coord_n, ref int ierr);
+        public ModelGetValueDelegate gmshModelGetValue;
+        public delegate void ModelGetParametrizationDelegate(int dim, int tag, double[] coord, IntPtr coord_n,
+                                                                 ref IntPtr parametricCoord, ref IntPtr parametricCoord_n,
+                                                                 ref int ierr);
+        public ModelGetParametrizationDelegate gmshModelGetParametrization;
+        public delegate void ModelGetParametrizationBoundsDelegate(int dim, int tag, ref IntPtr min,
+                                                                   ref IntPtr min_n, ref IntPtr max,
+                                                                   ref IntPtr max_n, ref int ierr);
+        public ModelGetParametrizationBoundsDelegate gmshModelGetParametrizationBounds;
+        public delegate void ModelReparametrizeOnSurfaceDelegate(int dim, int tag, double[] parametricCoord,
+                                                                 IntPtr parametricCoord_n, int surfaceTag,
+                                                                 ref IntPtr surfaceParametricCoord,
+                                                                 ref IntPtr surfaceParametricCoord_n,
+                                                                 int which, ref int ierr);
+        public ModelReparametrizeOnSurfaceDelegate gmshModelReparametrizeOnSurface;
+        public delegate void ModelOccGetCurveLoopsDelegate(int surfaceTag, ref IntPtr curveLoopTags,
+                                                            ref IntPtr curveLoopTags_n, ref IntPtr curveTags,
+                                                            ref IntPtr curveTags_n, ref IntPtr curveTags_nn,
+                                                            ref int ierr);
+        public ModelOccGetCurveLoopsDelegate gmshModelOccGetCurveLoops;
+        public delegate void ModelOccGetSurfaceLoopsDelegate(int volumeTag, ref IntPtr surfaceLoopTags,
+                                                            ref IntPtr surfaceLoopTags_n, ref IntPtr surfaceTags,
+                                                            ref IntPtr surfaceTags_n, ref IntPtr surfaceTags_nn,
+                                                            ref int ierr);
+        public ModelOccGetSurfaceLoopsDelegate gmshModelOccGetSurfaceLoops;
 
         public ControllerGeneral(string dllToLoad)
         {
@@ -138,12 +194,38 @@ namespace GmshApi.GmshController
                 gmshClear = GetFunction<ClearDelegate>("gmshClear");
                 gmshModelSetCurrent = GetFunction<ModelSetCurrentDelegate>("gmshModelSetCurrent");
                 gmshModelGetCurrent = GetFunction<ModelGetCurrentDelegate>("gmshModelGetCurrent");
-                gmshModelRemoveEntities = GetFunction<ModelRemoveEntitiesDelegate>("gmshModelRemoveEntities");
                 gmshModelOccSynchronize = GetFunction<ModelOccSynchronizeDelegate>("gmshModelOccSynchronize");
                 gmshModelGeoSynchronize = GetFunction<ModelGeoSynchronizeDelegate>("gmshModelGeoSynchronize");
                 gmshModelOccImportShapes = GetFunction<ModelOccImportShapesDelegate>("gmshModelOccImportShapes");
-                
-                
+            /*Geometry functions*/
+                gmshModelGetEntities = GetFunction<ModelGetEntitiesDelegate>("gmshModelGetEntities");
+                gmshModelOccGetEntities = GetFunction<ModelOccGetEntitiesDelegate>("gmshModelOccGetEntities");
+                gmshModelRemoveEntities = GetFunction<ModelRemoveEntitiesDelegate>("gmshModelRemoveEntities");
+                gmshModelOccRemove = GetFunction<ModelOccRemoveDelegate>("gmshModelOccRemove");
+                gmshModelSetEntityName = GetFunction<ModelSetEntityNameDelegate>("gmshModelSetEntityName");
+                gmshModelGetEntityName = GetFunction<ModelGetEntityNameDelegate>("gmshModelGetEntityName");
+                gmshModelRemoveEntityName = GetFunction<ModelRemoveEntityNameDelegate>("gmshModelRemoveEntityName");
+                gmshModelGetBoundingBox = GetFunction<ModelGetBoundingBoxDelegate>("gmshModelGetBoundingBox");
+                gmshModelGetAdjacencies = GetFunction<ModelGetAdjacenciesDelegate>("gmshModelGetAdjacencies");
+                gmshModelGetBoundary = GetFunction<ModelGetBoundaryDelegate>("gmshModelGetBoundary");
+                gmshModelGetType = GetFunction<ModelGetTypeDelegate>("gmshModelGetType");
+                gmshModelGetDimension = GetFunction<ModelGetDimensionDelegate>("gmshModelGetDimension");
+                gmshModelIsInside = GetFunction<ModelIsInsideDelegate>("gmshModelIsInside");
+                gmshModelSetVisibility = GetFunction<ModelSetVisibilityDelegate>("gmshModelSetVisibility");
+                gmshModelSetAttribute = GetFunction<ModelSetAttributeDelegate>("gmshModelSetAttribute");
+                gmshModelGetAttribute = GetFunction<ModelGetAttributeDelegate>("gmshModelGetAttribute");
+                gmshModelGetAttributeNames = GetFunction<ModelGetAttributeNamesDelegate>("gmshModelGetAttributeNames");
+                gmshModelRemoveAttribute = GetFunction<ModelRemoveAttributeDelegate>("gmshModelRemoveAttribute");
+                gmshModelGetPhysicalName = GetFunction<ModelGetPhysicalNameDelegate>("gmshModelGetPhysicalName");
+                gmshModelGetDerivative = GetFunction<ModelGetDerivativeDelegate>("gmshModelGetDerivative");
+                gmshModelGetSecondDerivative = GetFunction<ModelGetSecondDerivativeDelegate>("gmshModelGetSecondDerivative");
+                gmshModelGetCurvature = GetFunction<ModelGetCurvatureDelegate>("gmshModelGetCurvature");
+                gmshModelGetValue = GetFunction<ModelGetValueDelegate>("gmshModelGetValue");
+                gmshModelGetParametrization = GetFunction<ModelGetParametrizationDelegate>("gmshModelGetParametrization");
+                gmshModelGetParametrizationBounds = GetFunction<ModelGetParametrizationBoundsDelegate>("gmshModelGetParametrizationBounds");
+                gmshModelReparametrizeOnSurface = GetFunction<ModelReparametrizeOnSurfaceDelegate>("gmshModelReparametrizeOnSurface");
+                gmshModelOccGetCurveLoops = GetFunction<ModelOccGetCurveLoopsDelegate>("gmshModelOccGetCurveLoops");
+                gmshModelOccGetSurfaceLoops = GetFunction<ModelOccGetSurfaceLoopsDelegate>("gmshModelOccGetSurfaceLoops");
         }
         ~ControllerGeneral()
         {
@@ -155,16 +237,5 @@ namespace GmshApi.GmshController
             var funPtr = NativeMethods.GetProcAddress(DLL, functionName);
             return Marshal.GetDelegateForFunctionPointer<T>(funPtr);
         }
-
-        /*
-        private ModelGetFileNameDelegate GetFileNameDelegate()
-        {
-            IntPtr fileName = IntPtr.Zero;
-            int ierr = 0;
-            var funPtr = GetFunction<NativeModelGetFileNameDelegate>("gmshModelGetFileName");
-            funPtr(ref fileName, ref ierr);
-            
-            return null;
-        }*/
     }
 }
