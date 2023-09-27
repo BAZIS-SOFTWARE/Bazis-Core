@@ -21,11 +21,11 @@ namespace GmshApi
         {
             get
             {
-                return ControllerGeneral.OptionGetNumber("Mesh.MeshSizeFactor");
+                return ControllerGeneral2.OptionGetNumber("Mesh.MeshSizeFactor");
             }
             set
             {
-                ControllerGeneral.OptionSetNumber("Mesh.MeshSizeFactor", value);
+                ControllerGeneral2.OptionSetNumber("Mesh.MeshSizeFactor", value);
             }
         }
         /// <summary>
@@ -134,7 +134,7 @@ namespace GmshApi
         /// <param name="algorithm">[In]Тип алгоритма</param>
         public void ChangeTriangulationAlgorithm2D(Triangulation2DAlgorithm algorithm = Triangulation2DAlgorithm.FrontalDelaunay)
         {
-            ControllerGeneral.OptionSetNumber("Mesh.Algorithm", Convert.ToDouble(algorithm));
+            ControllerGeneral2.OptionSetNumber("Mesh.Algorithm", Convert.ToDouble(algorithm));
         }
         /// <summary>
         /// Возвращает информацию о элементах по паре dim:tag

@@ -17,7 +17,7 @@ namespace GmshApi
         /// уплотнить сетку
         /// </summary>
         void RefineMesh();
-        bool Generate(int dim);
+        void Generate(int dim);
         /// <summary>
         /// получить узлы
         /// </summary>

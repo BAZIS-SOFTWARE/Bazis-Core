@@ -34,11 +34,11 @@ namespace GmshApi
         { 
             get 
             {
-                return Convert.ToInt32(ControllerGeneral.OptionGetNumber("Geometry.NumSubEdges")); 
+                return Convert.ToInt32(ControllerGeneral2.OptionGetNumber("Geometry.NumSubEdges")); 
             }
             set
             {
-                ControllerGeneral.OptionSetNumber("Geometry.NumSubEdges", Convert.ToDouble(value));
+                ControllerGeneral2.OptionSetNumber("Geometry.NumSubEdges", Convert.ToDouble(value));
             }
         }
         /// <summary>

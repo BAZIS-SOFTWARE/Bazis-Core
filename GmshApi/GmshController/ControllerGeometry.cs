@@ -419,7 +419,7 @@ namespace GmshApi.GmshController
                 var newPB = paramsBounds[0].Concat(paramsBounds[1]).ToArray();
                 if (!IsLine(1, tags[i], newPB))
                 {
-                    var curvePoints = Convert.ToInt32(ControllerGeneral.OptionGetNumber("Geometry.NumSubEdges"));
+                    var curvePoints = Convert.ToInt32(ControllerGeneral2.OptionGetNumber("Geometry.NumSubEdges"));
                     newPB = SetCustomStepParametrization(newPB, curvePoints);
                 }
                 var locals = GetLocalCoordByParametric(1, tags[i], newPB);

@@ -85,6 +85,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GmshTests\ControllerTests.cs" />
     <Compile Include="GmshTests\GmshGeometryTests.cs" />
     <Compile Include="GmshTests\GmshMeshTests.cs" />
     <Compile Include="GmshTests\GmshWrapperConnectionTests.cs" />
