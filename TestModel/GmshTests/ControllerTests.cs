@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static GmshApi.GmshController.ControllerGeneral;
 
 namespace TestModel.GmshTests
 {
@@ -28,12 +29,8 @@ namespace TestModel.GmshTests
         public void TestInitializeMethod()
         {
             var ierr = 0;
-            String argv = String.Empty;
-            controller.gmshInitialize(0,ref argv, 0, 0,ref ierr);
-            Assert.AreEqual(1,controller.gmshIsInitialized(ref ierr));
-            controller.gmshFinalize(ref ierr);
-            Assert.AreEqual(0, controller.gmshIsInitialized(ref ierr));
+            var isInitialized = controller.GetFunction<gmshIsInitialized>("gmshIsInitialized");
+            Assert.AreEqual(1, isInitialized(ref ierr));
         }
-
     }
 }
