@@ -1,35 +1,32 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using GmshApi;
+using System.Linq;
 using GmshApi.GmshController;
+using System;
 
 namespace TestModel.GmshTests
 {
     [TestClass]
     public class ControllerModelTests
     {
+        private ControllerGeneral controller = new ControllerGeneral("C:\\Windows\\System32\\gmsh.dll");
         private static string modelFolder = @"..\..\Examples\GMSHConnector\";
-        [TestInitialize]
-        public void Init()
-        {
-            ControllerConnection.Initialize();
-        }
-        [TestCleanup]
-        public void Cleanup()
-        {
-            ControllerConnection.Finalize();
-        }
         [DataTestMethod]
         [DataRow(new string[] { "" })]
         public void TestEmptyModelList(string[] expected)
         {
-            CollectionAssert.AreEqual(expected, ControllerModel.ModelList());
+            string[] list;
+            controller.ModelList(out list);
+            CollectionAssert.AreEqual(expected, list);
         }
         [DataTestMethod]
         [DataRow(new string[] { "", "1" }, "1")]
         public void AddSingleModelInListAndCheck(string[] expected, string added)
         {
-            ControllerModel.ModelAdd(added);
-            CollectionAssert.AreEqual(expected, ControllerModel.ModelList());
+            var ierr = 0;
+            string[] list;
+            controller.gmshModelAdd(added, ref ierr);
+            controller.ModelList(out list);
+            CollectionAssert.AreEqual(expected, list);
         }
         [DataTestMethod]
         [DataRow(new string[] { "", "1", "2", "1" }, "1", "2", "1")]//Возможны не уникальные значения
@@ -37,16 +34,23 @@ namespace TestModel.GmshTests
         [DataRow(new string[] { "", "", "", "" }, "", "", "")]
         public void AddSeveralModelsInListAndCheck(string[] expected, string add1, string add2, string add3)
         {
-            ControllerModel.ModelAdd(add1);
-            ControllerModel.ModelAdd(add2);
-            ControllerModel.ModelAdd(add3);
-            CollectionAssert.AreEqual(expected, ControllerModel.ModelList());
+            var ierr = 0;
+            string[] list;
+            controller.gmshModelAdd(add1, ref ierr);
+            controller.gmshModelAdd(add2, ref ierr);
+            controller.gmshModelAdd(add3, ref ierr);
+            controller.ModelList(out list);
+            CollectionAssert.AreEqual(expected, list);
+            controller.gmshClear(ref ierr);
         }
         [TestMethod]
         public void RemoveInEmptyList()
         {
-            ControllerModel.ModelRemove();
-            CollectionAssert.AreEqual(new[] { "" }, ControllerModel.ModelList());
+            var ierr = 0;
+            string[] list;
+            controller.gmshModelRemove(ref ierr);
+            controller.ModelList(out list);
+            CollectionAssert.AreEqual(new[] { "" }, list);
         }
         [DataTestMethod]
         [DataRow("1")]
@@ -54,21 +58,27 @@ namespace TestModel.GmshTests
         [DataRow("3")]
         public void AddRemoveTest(string add)
         {
-            ControllerModel.ModelAdd(add);
-            ControllerModel.ModelRemove();
-            CollectionAssert.AreEqual(new[] { "" }, ControllerModel.ModelList());
+            var ierr = 0;
+            string[] list;
+            controller.gmshModelAdd(add, ref ierr);
+            controller.gmshModelRemove(ref ierr);
+            controller.ModelList(out list);
+            CollectionAssert.AreEqual(new[] { "" }, list);
         }
         [DataTestMethod]
         [DataRow(new string[] { "", "2", "8" }, "2", "8", "15", "16")]
         public void AddRemoveTwoTest(string[] expected, string add1, string add2, string add3, string add4)
         {
-            ControllerModel.ModelAdd(add1);
-            ControllerModel.ModelAdd(add2);
-            ControllerModel.ModelAdd(add3);
-            ControllerModel.ModelAdd(add4);
-            ControllerModel.ModelRemove();
-            ControllerModel.ModelRemove();
-            CollectionAssert.AreEqual(expected, ControllerModel.ModelList());
+            var ierr = 0;
+            string[] list;
+            controller.gmshModelAdd(add1, ref ierr);
+            controller.gmshModelAdd(add2, ref ierr);
+            controller.gmshModelAdd(add3, ref ierr);
+            controller.gmshModelAdd(add4, ref ierr);
+            controller.gmshModelRemove(ref ierr);
+            controller.gmshModelRemove(ref ierr);
+            controller.ModelList(out list);
+            CollectionAssert.AreEqual(expected, list);
         }
         [DataTestMethod]
         [DataRow(new string[] { "1", "7", "15" }, "0", "15")]
@@ -77,10 +87,15 @@ namespace TestModel.GmshTests
         [DataRow(new string[] { "2", "", "" }, "1", "2")]
         public void ModelSetCurrentFalseTrueTest(string[] add, string unsuccess, string success)
         {
+            var ierr = 0;
+            string[] list;
             for (var i = 0; i < add.Length; ++i)
-                ControllerModel.ModelAdd(add[i]);
-            Assert.AreEqual(false, ControllerModel.ModelSetCurrent(unsuccess));
-            Assert.AreEqual(true, ControllerModel.ModelSetCurrent(success));
+                controller.gmshModelAdd(add[i], ref ierr);
+            controller.gmshModelSetCurrent(unsuccess, ref ierr);
+            Assert.AreEqual(1, ierr);
+            controller.gmshModelSetCurrent(success, ref ierr);
+            Assert.AreEqual(0, ierr);
+            controller.gmshClear(ref ierr);
         }
         [DataTestMethod]
         [DataRow(new string[] { "1", "7", "15" }, "0", "15")]
@@ -90,10 +105,14 @@ namespace TestModel.GmshTests
         [DataRow(new string[] { "10", "20", "30" }, "21", "30")]
         public void ModelSetCurrentGetCurrentTest(string[] add, string set, string get)
         {
+            var ierr = 0;
+            string current;
             for (var i = 0; i < add.Length; ++i)
-                ControllerModel.ModelAdd(add[i]);
-            ControllerModel.ModelSetCurrent(set);
-            Assert.AreEqual(get, ControllerModel.ModelGetCurrent());
+                controller.gmshModelAdd(add[i], ref ierr);
+            controller.gmshModelSetCurrent(set, ref ierr);
+            controller.ModelGetCurrent(out current);
+            Assert.AreEqual(get, current);
+            controller.gmshClear(ref ierr);
         }
         [DataTestMethod]
         [DataRow(new string[] { "", "", "" }, "", true)]
@@ -103,9 +122,13 @@ namespace TestModel.GmshTests
         [DataRow(new string[] { "a-2-3", "1", "8", "3" }, "a-2-3", true)]
         public void ModelFindTest(string[] add, string query, bool status)
         {
+            var ierr = 0;
+            string[] list;
             for (var i = 0; i < add.Length; ++i)
-                ControllerModel.ModelAdd(add[i]);
-            Assert.AreEqual(status, ControllerModel.ModelFind(query));
+                controller.gmshModelAdd(add[i], ref ierr);
+            controller.ModelList(out list);
+            Assert.AreEqual(status, list.Where(v => v == query).Any());
+            controller.gmshClear(ref ierr);
         }
         [DataTestMethod]
         [DataRow("", "", "", "", true, new string[] { "", "", "" })]
@@ -116,31 +139,45 @@ namespace TestModel.GmshTests
         public void ModelRemoveOneByNameTest(string add1, string add2, string add3,
                                              string rem, bool status, string[] expected)
         {
-            ControllerModel.ModelAdd(add1);
-            ControllerModel.ModelAdd(add2);
-            ControllerModel.ModelAdd(add3);
-            Assert.AreEqual(status, ControllerModel.ModelRemoveByName(rem));
-            CollectionAssert.AreEqual(expected, ControllerModel.ModelList());
+            var ierr = 0;
+            string[] list;
+            controller.gmshModelAdd(add1, ref ierr);
+            controller.gmshModelAdd(add2, ref ierr);
+            controller.gmshModelAdd(add3, ref ierr);
+            controller.gmshModelSetCurrent(rem, ref ierr);
+            var actual = !Convert.ToBoolean(ierr);
+            Assert.AreEqual(status, actual);
+            if(ierr == 0)
+                controller.gmshModelRemove(ref ierr);
+            controller.ModelList(out list);
+            CollectionAssert.AreEqual(expected, list);
+            controller.gmshClear(ref ierr);
         }
         [DataTestMethod]
         [DataRow(new string[] { "1", "2", "3" }, "")]
         [DataRow(new string[] { "" }, "")]
         public void ModelClearTest(string[] add, string expected)
         {
+            var ierr = 0;
+            string[] list;
             for (var i = 0; i < add.Length; ++i)
-                ControllerModel.ModelAdd(add[i]);
-            ControllerModel.ModelClear();
-            CollectionAssert.AreEqual(new string[] { expected }, ControllerModel.ModelList());
+                controller.gmshModelAdd(add[i], ref ierr);
+            controller.gmshClear(ref ierr);
+            controller.ModelList(out list);
+            CollectionAssert.AreEqual(new string[] { expected }, list);
         }
         [DataTestMethod]
         [DataRow(new string[] { "1.geo", "2.geo", "3.geo" }, new string[] { "1", "2", "3" })]
         public void ModelSetFileNameGetFileNameTest(string[] expected, string[] add)
         {
+            var ierr = 0;
+            string name = string.Empty;
             for (var i = 0; i < add.Length; ++i)
             {
-                ControllerModel.ModelAdd(add[i]);
-                ControllerIO.SetCurrentModelFileName(add[i]);
-                Assert.AreEqual(add[i], ControllerIO.GetCurrentModelFileName());
+                controller.gmshModelAdd(add[i], ref ierr);
+                controller.gmshModelSetFileName(add[i], ref ierr);
+                controller.ModelGetFileName(out name);
+                Assert.AreEqual(add[i], name);
             }
         }
         [DataTestMethod]
@@ -150,15 +187,22 @@ namespace TestModel.GmshTests
         [DataRow("sphere.geo", "4")]
         public void ModelTestLoad(string fileName, string modelName)
         {
-            ModelLoad(fileName, modelName);
+            var ierr = 0;
+            ModelLoad(fileName, modelName, controller);
+            controller.gmshClear(ref ierr);
         }
-        public static void ModelLoad(string fileName, string modelName)
+        public static void ModelLoad(string fileName, string modelName, ControllerGeneral controller)
         {
-            ControllerModel.ModelAdd(modelName);
-            CollectionAssert.AreEqual(new string[] { "", modelName }, ControllerModel.ModelList());
-            ControllerIO.Load(modelFolder + fileName);
-            ControllerIO.SetCurrentModelFileName(fileName);
-            Assert.AreEqual(fileName, ControllerIO.GetCurrentModelFileName());
+            var ierr = 0;
+            string[] list;
+            string fName;
+            controller.gmshModelAdd(modelName, ref ierr);
+            controller.ModelList(out list);
+            CollectionAssert.AreEqual(new string[] { "", modelName }, list);
+            controller.gmshMerge(modelFolder + fileName, ref ierr);
+            controller.gmshModelSetFileName(fileName, ref ierr);
+            controller.ModelGetFileName(out fName);
+            Assert.AreEqual(fileName, fName);
         }
     }
 }

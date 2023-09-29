@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using GmshApi;
 using GmshApi.GmshController;
+using System.ComponentModel;
 
 namespace TestModel.GmshTests
 {
@@ -8,18 +9,13 @@ namespace TestModel.GmshTests
     public class ControllerConnectionTests
     {
         [TestMethod]
-        public void GmshIsNotInitialized()
+        public void GmshInitializeFinalize()
         {
-            Assert.AreEqual(false, ControllerConnection.IsInitialized());
-        }
-        [TestMethod]
-        public void GmshIsInitialized()
-        {
-            Assert.AreEqual(false, ControllerConnection.IsInitialized());
-            ControllerConnection.Initialize();
-            Assert.AreEqual(true, ControllerConnection.IsInitialized());
-            ControllerConnection.Finalize();
-            Assert.AreEqual(false, ControllerConnection.IsInitialized());
+            var controller = new ControllerGeneral("C:\\Windows\\System32\\gmsh.dll");
+            var ierr = 0;
+            Assert.AreEqual(1, controller.gmshIsInitialized(ref ierr));
+            controller.gmshFinalize(ref ierr);
+            Assert.AreEqual(0, controller.gmshIsInitialized(ref ierr));
         }
     }
 }

@@ -3,6 +3,7 @@ using GmshApi.GmshKernel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,8 +30,7 @@ namespace TestModel.GmshTests
         public void TestInitializeMethod()
         {
             var ierr = 0;
-            var isInitialized = controller.GetFunction<gmshIsInitialized>("gmshIsInitialized");
-            Assert.AreEqual(1, isInitialized(ref ierr));
+            Assert.AreEqual(1, controller.gmshIsInitialized(ref ierr));
         }
     }
 }
