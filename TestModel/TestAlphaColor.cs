@@ -31,7 +31,7 @@ namespace TestModel
             var nodes = new Node[] { new Node(0, new Point3D(0.5f, 1.0f, 1.0f)),
                                      new Node(1, new Point3D(1.0f, 1.0f, -1.0f))
                                    };
-            var line = new Curve[] { new Curve(0, nodes) };
+            var line = new Model.Line[] { new Model.Line(0, nodes) };
             var presenter = new LineObjsPresenter(line);
             var indices = presenter.CreateIndexes();
             var pointers = presenter.CreatePointers(indices.Item1);

@@ -4,8 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Model
 {
@@ -161,6 +159,7 @@ namespace Model
             var svectors = nodes[2].Position.Sub(nodes[0].Position);
             return Vector.CrossProd(fvectors,svectors);
         }
+/// <inheritdoc/>
 
         public IEnumerable<Node> GetNodes()
         {
@@ -239,16 +238,16 @@ points.Contains(nodes[2].Position, new Point3DEqualityComparer()))
             return center.Div(NumberOfPoints);
         }
 
-        public Line[] GetLinesFromSurface(Surface surface)
+        public Segment3D[] GetLinesFromSurface(Surface surface)
         {
             var n = surface.GetPoints().Count();
             var points = surface.GetPoints().ToArray();
-            Line[] lines = new Line[n];
+            var lines = new Segment3D[n];
             for (int i = 0; i < n - 1; i++)
             {
-                lines[i] = new Line(points[i], points[i + 1]);
+                lines[i] = new Segment3D(points[i], points[i + 1]);
             }
-            lines[n - 1] = new Line(points[n - 1], points[0]);
+            lines[n - 1] = new Segment3D(points[n - 1], points[0]);
             return lines;
         }
     }

@@ -36,9 +36,9 @@ namespace ModelController.MeshObjsUtility
             }
         }
 
-        public List<Line> CalcElemsNormals()
+        public List<Segment3D> CalcElemsNormals()
         {
-            var lines = new List<Line>();
+            var lines = new List<Segment3D>();
 
             foreach (var element in elements)
             {
@@ -52,7 +52,7 @@ namespace ModelController.MeshObjsUtility
                     
                     var p1 = proj.Sum(normal);
 
-                    var line = new Geometry.Line(proj, p1);
+                    var line = new Segment3D(proj, p1);
                     lines.Add(line);
                 }
             }

@@ -8,11 +8,11 @@ using Model.Interfaces;
 
 namespace Model
 {
-    public class Curve : ModelObject, ILineObject
+    public class Line : ModelObject, ILineObject
     {
         private Node[] nodes;
 
-        public Curve(int number, Node[] nodes) : base(number)
+        public Line(int number, Node[] nodes) : base(number)
         {
             ObjType = "Линия";
             NumberOfPoints = nodes.Length;

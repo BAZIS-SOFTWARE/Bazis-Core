@@ -5,6 +5,7 @@ using Model.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace GmshApi.GmshController
 {
@@ -432,7 +433,7 @@ namespace GmshApi.GmshController
                     nodes.AddRange(line);
                 }
                 if(kind == ObjKind.Curve)
-                    lines.Add(new Curve(tags[i], nodes.ToArray()));
+                    lines.Add(new Line(tags[i], nodes.ToArray()));
                 else
                     lines.Add(new Element1D(tags[i], nodes.ToArray(), kind));
             }
