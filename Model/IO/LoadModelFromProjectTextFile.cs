@@ -141,10 +141,16 @@ namespace Model.IO
                     var name = splitLine[1].Split(' ')[1];
                     var nodeGroup = new Group(name, "Узлы");
                     var indexLine = splitLine[1].Remove(0, name.Length + 2);
-                    var index = indexLine.Split(' ').Select(x => int.Parse(x)).ToList();
+                    var indexes = indexLine.Split(' ').Select(x => int.Parse(x)).ToList();
 
-                    nodeGroup.AddRange(index);
-                    newMesh.GroupData.Add(nodeGroup);
+                    foreach (var index in indexes)
+                    {
+                        var obj = newMesh.ObjectData.Find(index);
+                        nodeGroup.Add(obj);
+                        newMesh.GroupData.Add(nodeGroup);
+                    }
+
+
                 }
                 if (splitLine[0] == "Группа элементов 3D ")
                 {
@@ -169,7 +175,13 @@ namespace Model.IO
                 //var startInd = GetElStartInd(newMesh, objType, version);
                 var indexes = indexLine.Split(' ').Select(x => int.Parse(x)).ToList();
                 indexes.Sort();
-                newGroup.AddRange(indexes);
+
+                foreach (var index in indexes)
+                {
+                    var obj = newMesh.ObjectData.Find(index);
+                    newGroup.Add(obj);
+                }
+
                 newMesh.GroupData.Add(newGroup);
             }
         }

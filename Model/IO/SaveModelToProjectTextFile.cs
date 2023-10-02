@@ -62,7 +62,7 @@ namespace Model.IO
             foreach (var group in model.GroupData)
             {
                 var name = group.GroupName;
-                var objInd = string.Join(" ", group.ObjsNumbers);
+                var objInd = string.Join(" ", group.Select(x => x.Number));
                 var resu = name + " " + objInd;
 
                 if (group.ObjType == "Узлы") sw.WriteLine("Группа узлов : {0}", resu);

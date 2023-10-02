@@ -136,7 +136,12 @@ namespace Model.IO
                     strAr = line.Replace(" ", "").Split(',');
                     var objsNumbers = strAr.Where(x => !string.IsNullOrEmpty(x)).Select(y =>
                     dic[int.Parse(y)]);
-                    group.AddRange(objsNumbers);
+                    foreach (var number in objsNumbers)
+                    {
+                        var obj = newMesh.ObjectData.Find(number);
+                        group.Add(obj);
+                    }
+
                     line = reader.ReadLine();
                 }
                 newMesh.GroupData.Add(group);
