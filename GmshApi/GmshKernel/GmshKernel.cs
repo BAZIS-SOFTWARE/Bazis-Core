@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GmshApi.GmshKernel
 {
-    public static class NativeMethods
+    public static class GmshKernel
     {
         [DllImport("kernel32.dll")]
         public static extern IntPtr LoadLibrary(string dllToLoad);

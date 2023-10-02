@@ -77,9 +77,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GmshController\ControllerGeneral.cs" />
+    <Compile Include="GmshController\GmshController.cs" />
     <Compile Include="GmshController\ControllerUtilities.cs" />
-    <Compile Include="GmshKernel\NativeMethods.cs" />
+    <Compile Include="GmshKernel\GmshKernel.cs" />
     <Compile Include="GmshObjects\GeometryObject.cs" />
     <Compile Include="GmshObjects\IGeometryApi.cs" />
     <Compile Include="GmshObjects\IMeshApi.cs" />

@@ -8,6 +8,8 @@ using Model;
 using Model.Interfaces;
 using Functions.Extensions;
 using System.ComponentModel;
+using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace GmshApi.GmshController
 {
@@ -32,259 +34,157 @@ namespace GmshApi.GmshController
         public int numPrimaryNodes;
     }
 
-    public class ControllerGeneral
+    public class GmshController
     {
         public IntPtr DLL { get; private set; }
         #region "Initialization Delegates"
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void gmshInitializeFun(int argc, ref string argv, int readConfigFile, int run, ref int ierr);
             public gmshInitializeFun gmshInitialize;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate int gmshIsInitializedFun(ref int ierr);
             public gmshIsInitializedFun gmshIsInitialized;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void gmshFinalizeFun(ref int ierr);
             public gmshFinalizeFun gmshFinalize;
         #endregion
         #region "Memory Delegates"
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             private delegate IntPtr gmshMallocFun(IntPtr n);
             private gmshMallocFun gmshMalloc;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             private delegate void gmshFreeFun(IntPtr p);
             private gmshFreeFun gmshFree;
         #endregion
         #region "General Delegates"
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void gmshOptionSetNumberFun(string name, double value, ref int ierr);
             public gmshOptionSetNumberFun gmshOptionSetNumber;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void gmshOptionGetNumberFun(string name, ref double value, ref int ierr);
             public gmshOptionGetNumberFun gmshOptionGetNumber;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void gmshOptionSetStringFun(string name, string value, ref int ierr);
             public gmshOptionSetStringFun gmshOptionSetString;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             private delegate void gmshOptionGetStringFun(string name, ref IntPtr value, ref int ierr);
             private gmshOptionGetStringFun gmshOptionGetString;
         #endregion
         #region "Plugin Delegates"
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void gmshPluginSetNumberFun(string name, string option, double value, ref int ierr);
             public gmshPluginSetNumberFun gmshPluginSetNumber;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void gmshPluginSetStringFun(string name, string option, string value, ref int ierr);
             public gmshPluginSetStringFun gmshPluginSetString;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate int gmshPluginRunFun(string name, ref int ierr);
             public gmshPluginRunFun gmshPluginRun;
         #endregion
         #region "IO Delegates"
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void gmshOpenFun(string fileName, ref int ierr);
             public gmshOpenFun gmshOpen;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void gmshMergeFun(string fileName, ref int ierr);
             public gmshMergeFun gmshMerge;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void gmshWriteFun(string fileName, ref int ierr);
             public gmshWriteFun gmshWrite;
         #endregion
         #region "Model Delegates"
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void gmshModelSetFileNameFun(string fileName, ref int ierr);
             public gmshModelSetFileNameFun gmshModelSetFileName;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void gmshModelAddFun(string name, ref int ierr);
             public gmshModelAddFun gmshModelAdd;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void gmshModelRemoveFun(ref int ierr);
             public gmshModelRemoveFun gmshModelRemove;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void gmshClearFun(ref int ierr);
             public gmshClearFun gmshClear;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void gmshModelSetCurrentFun(string name, ref int ierr);
             public gmshModelSetCurrentFun gmshModelSetCurrent;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void gmshModelOccSynchronizeFun(ref int ierr);
             public gmshModelOccSynchronizeFun gmshModelOccSynchronize;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void gmshModelGeoSynchronizeFun(ref int ierr);
             public gmshModelGeoSynchronizeFun gmshModelGeoSynchronize;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             private delegate void gmshModelGetFileNameFun(ref IntPtr fileName, ref int ierr);
             private gmshModelGetFileNameFun gmshModelGetFileName;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             private delegate void gmshModelListFun(ref IntPtr names, ref IntPtr names_n, ref int ierr);
             private gmshModelListFun gmshModelList;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             private delegate void gmshModelGetCurrentFun(ref IntPtr name, ref int ierr);
             private gmshModelGetCurrentFun gmshModelGetCurrent;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             private delegate void gmshModelOccImportShapesFun(string fileName, ref IntPtr outDimTags,
                                                           ref IntPtr outDimTags_n, int highestDimOnly,
                                                           string format, ref int ierr);
             private gmshModelOccImportShapesFun gmshModelOccImportShapes;
         #endregion
         #region "Geometry Delegates"
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             private delegate void gmshModelGetEntitiesFun(ref IntPtr dimTags, ref IntPtr dimTags_n, int dim, ref int ierr);
             private gmshModelGetEntitiesFun gmshModelGetEntities;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             private delegate void gmshModelOccGetEntitiesFun(ref IntPtr dimTags, ref IntPtr dimTags_n, int dim, ref int ierr);
             private gmshModelOccGetEntitiesFun gmshModelOccGetEntities;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void gmshModelRemoveEntitiesFun(int[] dimTags, IntPtr dimTags_n, int recursive, ref int ierr);
             public gmshModelRemoveEntitiesFun gmshModelRemoveEntities;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void gmshModelOccRemoveFun(int[] dimTags, IntPtr dimTags_n, int recursive, ref int ierr);
             public gmshModelOccRemoveFun gmshModelOccRemove;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void gmshModelSetEntityNameFun(int dim, int tag, string name, ref int ierr);
             public gmshModelSetEntityNameFun gmshModelSetEntityName;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             private delegate void gmshModelGetEntityNameFun(int dim, int tag, ref IntPtr name, ref int ierr);
             private gmshModelGetEntityNameFun gmshModelGetEntityName;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void gmshModelRemoveEntityNameFun(string name, ref int ierr);
             public gmshModelRemoveEntityNameFun gmshModelRemoveEntityName;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void gmshModelGetBoundingBoxFun(int dim, int tag, ref double xmin,
                                                           ref double ymin, ref double zmin,
                                                           ref double xmax, ref double ymax,
                                                           ref double zmax, ref int ierr);
             public gmshModelGetBoundingBoxFun gmshModelGetBoundingBox;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             private delegate void gmshModelGetAdjacenciesFun(int dim, int tag, ref IntPtr upward, ref IntPtr upward_n,
                                                              ref IntPtr downward, ref IntPtr downward_n, ref int ierr);
             private gmshModelGetAdjacenciesFun gmshModelGetAdjacencies;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             private delegate void gmshModelGetBoundaryFun(int[] dimTags, IntPtr dimTags_n, ref IntPtr outDimTags,
                                                        ref IntPtr outDimTags_n, int combined, int oriented,
                                                        int recursive, ref int ierr);
             private gmshModelGetBoundaryFun gmshModelGetBoundary;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             private delegate void gmshModelGetTypeFun(int dim, int tag, ref IntPtr entityType, ref int ierr);
             private gmshModelGetTypeFun gmshModelGetType;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-            public delegate void gmshModelGetDimensionFun(ref int ierr);
+            public delegate int gmshModelGetDimensionFun(ref int ierr);
             public gmshModelGetDimensionFun gmshModelGetDimension;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-            public delegate void gmshModelIsInsideFun(int dim, int tag, double[] coord, IntPtr coord_n,
+            public delegate int gmshModelIsInsideFun(int dim, int tag, double[] coord, IntPtr coord_n,
                                                    int parametric, ref int ierr);
             public gmshModelIsInsideFun gmshModelIsInside;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void gmshModelSetVisibilityFun(int[] dimTags, IntPtr dimTags_n, int value,
                                                         int recursive, ref int ierr);
             public gmshModelSetVisibilityFun gmshModelSetVisibility;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void gmshModelSetAttributeFun(string name, string[] values, IntPtr values_n, ref int ierr);
             public gmshModelSetAttributeFun gmshModelSetAttribute;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void gmshModelGetAttributeFun(string name, ref IntPtr values, ref IntPtr values_n, ref int ierr);
             public gmshModelGetAttributeFun gmshModelGetAttribute;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             private delegate void gmshModelGetAttributeNamesFun(ref IntPtr names, ref IntPtr names_n, ref int ierr);
             private gmshModelGetAttributeNamesFun gmshModelGetAttributeNames;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void gmshModelRemoveAttributeFun(string name, ref int ierr);
             public gmshModelRemoveAttributeFun gmshModelRemoveAttribute;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             private delegate void gmshModelGetPhysicalNameFun(int dim, int tag, ref IntPtr name, ref int ierr);
             private gmshModelGetPhysicalNameFun gmshModelGetPhysicalName;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             private delegate void gmshModelGetDerivativeFun(int dim, int tag, double[] parametricCoord,
                                                         IntPtr parametricCoord_n, ref IntPtr derivatives,
                                                         ref IntPtr derivatives_n, ref int ierr);
             private gmshModelGetDerivativeFun gmshModelGetDerivative;
-
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             private delegate void gmshModelGetSecondDerivativeFun(int dim, int tag, double[] parametricCoord,
                                                               IntPtr parametricCoord_n, ref IntPtr derivatives,
                                                               ref IntPtr derivatives_n, ref int ierr);
             private gmshModelGetSecondDerivativeFun gmshModelGetSecondDerivative;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             private delegate void gmshModelGetCurvatureFun(int dim, int tag, double[] parametricCoord,
                                                        IntPtr parametricCoord_n, ref IntPtr curvatures,
                                                        ref IntPtr curvatures_n, ref int ierr);
             private gmshModelGetCurvatureFun gmshModelGetCurvature;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             private delegate void gmshModelGetValueFun(int dim, int tag, double[] parametricCoord,
                                                    IntPtr parameticCoord_n, ref IntPtr coord,
                                                    ref IntPtr coord_n, ref int ierr);
             private gmshModelGetValueFun gmshModelGetValue;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             private delegate void gmshModelGetParametrizationFun(int dim, int tag, double[] coord, IntPtr coord_n,
                                                               ref IntPtr parametricCoord, ref IntPtr parametricCoord_n,
                                                               ref int ierr);
             private gmshModelGetParametrizationFun gmshModelGetParametrization;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             private delegate void gmshModelGetParametrizationBoundsFun(int dim, int tag, ref IntPtr min,
                                                                    ref IntPtr min_n, ref IntPtr max,
                                                                    ref IntPtr max_n, ref int ierr);
             private gmshModelGetParametrizationBoundsFun gmshModelGetParametrizationBounds;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             private delegate void gmshModelReparametrizeOnSurfaceFun(int dim, int tag, double[] parametricCoord,
                                                                  IntPtr parametricCoord_n, int surfaceTag,
                                                                  ref IntPtr surfaceParametricCoord,
                                                                  ref IntPtr surfaceParametricCoord_n,
                                                                  int which, ref int ierr);
             private gmshModelReparametrizeOnSurfaceFun gmshModelReparametrizeOnSurface;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             private delegate void gmshModelOccGetCurveLoopsFun(int surfaceTag, ref IntPtr curveLoopTags,
                                                             ref IntPtr curveLoopTags_n, ref IntPtr curveTags,
                                                             ref IntPtr curveTags_n, ref IntPtr curveTags_nn,
                                                             ref int ierr);
             private gmshModelOccGetCurveLoopsFun gmshModelOccGetCurveLoops;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             private delegate void gmshModelOccGetSurfaceLoopsFun(int volumeTag, ref IntPtr surfaceLoopTags,
                                                             ref IntPtr surfaceLoopTags_n, ref IntPtr surfaceTags,
                                                             ref IntPtr surfaceTags_n, ref IntPtr surfaceTags_nn,
@@ -292,93 +192,60 @@ namespace GmshApi.GmshController
             private gmshModelOccGetSurfaceLoopsFun gmshModelOccGetSurfaceLoops;
         #endregion
         #region "Mesh Delegates"
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void gmshModelMeshGenerateFun(int dim, ref int ierr);
             public gmshModelMeshGenerateFun gmshModelMeshGenerate;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void gmshModelMeshRecombineFun(ref int ierr);
             public gmshModelMeshRecombineFun gmshModelMeshRecombine;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void gmshModelMeshRefineFun(ref int ierr);
             public gmshModelMeshRefineFun gmshModelMeshRefine;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             private delegate void gmshModelMeshGetElementsFun(ref IntPtr elementTypes, ref IntPtr elementTypes_n,
                                                       ref IntPtr elementTags, ref IntPtr elementTags_n,
                                                       ref IntPtr elementTags_nn, ref IntPtr nodeTags,
                                                       ref IntPtr nodeTags_n, ref IntPtr nodeTags_nn,
                                                       int dim, int tag, ref int ierr);
             private gmshModelMeshGetElementsFun gmshModelMeshGetElements;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             private delegate void gmshModelMeshGetElementTypesFun(ref IntPtr elementTypes, ref IntPtr elementTypes_n,
                                                               int dim, int tag, ref int ierr);
             private gmshModelMeshGetElementTypesFun gmshModelMeshGetElementTypes;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             private delegate void gmshModelMeshGetElementPropertiesFun(int elementType, ref IntPtr elementName, ref int dim,
                                                                ref int order, ref int numNodes, ref IntPtr localeNodeCoord,
                                                                ref IntPtr localeNodeCoord_n, ref int numPrimaryNodes,
                                                                ref int ierr);
             private gmshModelMeshGetElementPropertiesFun gmshModelMeshGetElementProperties;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             private delegate void gmshModelMeshGetNodesFun(ref IntPtr nodeTags, ref IntPtr nodeTags_n,
                                                            ref IntPtr coord, ref IntPtr coord_n,
                                                            ref IntPtr parametricCoord, ref IntPtr parametricCoord_n,
                                                            int dim, int tag, int includeBoundary,
                                                            int returnParametricCoord, ref int ierr);
             private gmshModelMeshGetNodesFun gmshModelMeshGetNodes;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             private delegate void gmshModelMeshGetNodesByElementTypeFun(int elementType, ref IntPtr nodeTags,
                                                                         ref IntPtr nodeTags_n, ref IntPtr coord,
                                                                         ref IntPtr coord_n, ref IntPtr parametricCoord,
                                                                         ref IntPtr parametricCoord_n, int tag,
                                                                         int returnParametricCoord, ref int ierr);
             private gmshModelMeshGetNodesByElementTypeFun gmshModelMeshGetNodesByElementType;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void gmshModelMeshSetTransfiniteCurveFun(int tag, int numNodes, string meshType,
                                                                       double coef, ref int ierr);
             public gmshModelMeshSetTransfiniteCurveFun gmshModelMeshSetTransfiniteCurve;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             private delegate void gmshModelMeshGetElementsByCoordinatesFun(double x, double y, double z,
                                                                            ref IntPtr elementTags, ref IntPtr elementTags_n,
                                                                            int dim, int strict, ref int ierr);
             private gmshModelMeshGetElementsByCoordinatesFun gmshModelMeshGetElementsByCoordinates;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-            public delegate void gmshModelMeshGetLocalCoordinatesInElementFun(UIntPtr elementTag, double x, double y, double z,
+            public delegate void gmshModelMeshGetLocalCoordinatesInElementFun(long elementTag, double x, double y, double z,
                                                                                ref double u, ref double v, ref double w,
                                                                                ref int ierr);
             public gmshModelMeshGetLocalCoordinatesInElementFun gmshModelMeshGetLocalCoordinatesInElement;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void gmshModelMeshRebuildNodeCacheFun(int onlyIfNecessary, ref int ierr);
             public gmshModelMeshRebuildNodeCacheFun gmshModelMeshRebuildNodeCache;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void gmshModelMeshRebuildElementCacheFun(int onlyIfNecessary, ref int ierr);
             public gmshModelMeshRebuildElementCacheFun gmshModelMeshRebuildElementCache;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void gmshModelMeshClearFun(int[] dimTags, IntPtr dimTags_n, ref int ierr);
             public gmshModelMeshClearFun gmshModelMeshClear;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-            public delegate void gmshModelMeshSetVisibilityFun(IntPtr[] elementTags, IntPtr elementTags_n,
+            public delegate void gmshModelMeshSetVisibilityFun(long[] elementTags, IntPtr elementTags_n,
                                                                 int value, ref int ierr);
             public gmshModelMeshSetVisibilityFun gmshModelMeshSetVisibility;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void gmshModelMeshSetAlgorithmFun(int dim, int tag, int val, ref int ierr);
             public gmshModelMeshSetAlgorithmFun gmshModelMeshSetAlgorithm;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             private delegate void gmshModelMeshGetElementQualitiesFun(IntPtr[] elementTags, IntPtr elementTags_n,
                                                                       ref IntPtr elementsQuality, ref IntPtr elementQuality_n,
                                                                       string qualityName, IntPtr task,
@@ -386,59 +253,36 @@ namespace GmshApi.GmshController
             private gmshModelMeshGetElementQualitiesFun gmshModelMeshGetElementQualities;
         #endregion
         #region "Mesh Field Delegates"
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate int gmshModelMeshFieldAddFun(string fieldType, int tag, ref int ierr);
             public gmshModelMeshFieldAddFun gmshModelMeshFieldAdd;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void gmshModelMeshFieldRemoveFun(int tag, ref int ierr);
             public gmshModelMeshFieldRemoveFun gmshModelMeshFieldRemove;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             private delegate void gmshModelMeshFieldListFun(ref IntPtr tags, ref IntPtr tags_n, ref int ierr);
             private gmshModelMeshFieldListFun gmshModelMeshFieldList;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             private delegate void gmshModelMeshFieldGetTypeFun(int tag, ref IntPtr fieldType, ref int ierr);
             private gmshModelMeshFieldGetTypeFun gmshModelMeshFieldGetType;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void gmshModelMeshFieldSetNumberFun(int tag, string option, double value, ref int ierr);
             public gmshModelMeshFieldSetNumberFun gmshModelMeshFieldSetNumber;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void gmshModelMeshFieldGetNumberFun(int tag, string option, ref double value, ref int ierr);
             public gmshModelMeshFieldGetNumberFun gmshModelMeshFieldGetNumber;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void gmshModelMeshFieldSetStringFun(int tag, string option, string value, ref int ierr);
             public gmshModelMeshFieldSetStringFun gmshModelMeshFieldSetString;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             private delegate void gmshModelMeshFieldGetStringFun(int tag, string option, ref IntPtr value, ref int ierr);
             private gmshModelMeshFieldGetStringFun gmshModelMeshFieldGetString;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void gmshModelMeshFieldSetNumbersFun(int tag, string option, double[] values,
                                                                   IntPtr values_n, ref int ierr);
             public gmshModelMeshFieldSetNumbersFun gmshModelMeshFieldSetNumbers;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             private delegate void gmshModelMeshFieldGetNumbersFun(int tag, string option, ref IntPtr values,
                                                                   ref IntPtr values_n, ref int ierr);
             private gmshModelMeshFieldGetNumbersFun gmshModelMeshFieldGetNumbers;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void gmshModelMeshFieldSetAsBackgroundMeshFun(int tag, ref int ierr);
             public gmshModelMeshFieldSetAsBackgroundMeshFun gmshModelMeshFieldSetAsBackgroundMesh;
-
-            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void gmshModelMeshFieldSetAsBoundaryLayerFun(int tag, ref int ierr);
             public gmshModelMeshFieldSetAsBoundaryLayerFun gmshModelMeshFieldSetAsBoundaryLayer;
         #endregion
-        public ControllerGeneral(string dllToLoad)
+        public GmshController(string dllToLoad)
         {
-            DLL = NativeMethods.LoadLibrary(dllToLoad);
+            DLL = GmshKernel.GmshKernel.LoadLibrary(dllToLoad);
             #region "Get Initialization delegates"
                 gmshInitialize = GetFunction<gmshInitializeFun>("gmshInitialize");
                 gmshIsInitialized = GetFunction<gmshIsInitializedFun>("gmshIsInitialized");
@@ -510,7 +354,7 @@ namespace GmshApi.GmshController
                 gmshModelOccGetSurfaceLoops = GetFunction<gmshModelOccGetSurfaceLoopsFun>("gmshModelOccGetSurfaceLoops");
             #endregion
             #region "Get Mesh delegates"
-                gmshModelMeshGenerate = GetFunction<gmshModelMeshGenerateFun>("gmshModelOccGetSurfaceLoops");
+                gmshModelMeshGenerate = GetFunction<gmshModelMeshGenerateFun>("gmshModelMeshGenerate");
                 gmshModelMeshRecombine = GetFunction<gmshModelMeshRecombineFun>("gmshModelMeshRecombine");
                 gmshModelMeshRefine = GetFunction<gmshModelMeshRefineFun>("gmshModelMeshRefine");
                 gmshModelMeshGetElements = GetFunction<gmshModelMeshGetElementsFun>("gmshModelMeshGetElements");
@@ -547,17 +391,17 @@ namespace GmshApi.GmshController
             gmshInitialize(0, ref argv, 0, 0, ref ierr);
         }
 
-        ~ControllerGeneral()
+        ~GmshController()
         {
             var ierr = 0;
             if(gmshIsInitialized(ref ierr) == 1)
                 gmshFinalize(ref ierr);
-            NativeMethods.FreeLibrary(DLL);
+            GmshKernel.GmshKernel.FreeLibrary(DLL);
         }
 
         public T GetFunction<T>(string functionName)
         {
-            var funPtr = NativeMethods.GetProcAddress(DLL, functionName);
+            var funPtr = GmshKernel.GmshKernel.GetProcAddress(DLL, functionName);
             return Marshal.GetDelegateForFunctionPointer<T>(funPtr);
         }
         #region "General managed methods"
@@ -805,7 +649,7 @@ namespace GmshApi.GmshController
             {
                 elemProperties[i] = new ElementProperties();
                 gmshModelMeshGetElementProperties(elementTypes[i], ref elementName, ref elemProperties[i].dim, 
-                                                  ref elemProperties[i].order, ref elemProperties[i].order, 
+                                                  ref elemProperties[i].order, ref elemProperties[i].numNodes, 
                                                   ref localeNodeCoord, ref localeNodeCoord_n, 
                                                   ref elemProperties[i].numPrimaryNodes, ref ierr);
                 status = ierr == 0;
@@ -949,6 +793,49 @@ namespace GmshApi.GmshController
         }
         #endregion
         #region "Utility methods"
+
+
+        public bool RemoveEntities(int[] dimTags, bool recursive = false)
+        {
+            for (var i = 1; i < dimTags.Length; i += 2)
+            {
+                if (!GetUpAdjacenciesRecursive(dimTags[i - 1], dimTags[i]))
+                    return false;
+                if (!RemoveEntitiesEx(new int[] { dimTags[i - 1], dimTags[i] }, recursive))
+                    return false;
+            }
+            return true;
+        }
+
+        private bool RemoveEntitiesEx(int[] dimTags, bool recursive)
+        {
+            var ierr = 0;
+            var recFlag = Convert.ToInt32(recursive);
+            var extension = ControllerIO.ModelGetFileNameExtension();
+            if (extension.Contains("stp") || extension.Contains("step") ||
+                extension.Contains("brep") || extension.Contains("igs"))
+                gmshModelOccRemove(dimTags, (IntPtr)dimTags.Length, recFlag, ref ierr);
+            else
+                gmshModelRemoveEntities(dimTags, (IntPtr)dimTags.Length, recFlag, ref ierr);
+            return ierr == 0;
+        }
+
+        private bool GetUpAdjacenciesRecursive(int dim, int tag)
+        {
+            int[] upward, downward;
+            if (!ModelGetAdjacencies(dim, tag, out upward, out downward))
+                return false;
+            for (var i = 0; i < upward.Length; ++i)
+            {
+                if (!GetUpAdjacenciesRecursive(dim + 1, upward[i]))
+                    return false;
+            }
+            if (!RemoveEntitiesEx(new int[] { dim, tag }, false))
+                return false;
+            return true;
+        }
+
+
         public List<ModelObject> GetGeometryEntities(ObjKind kind, ref bool status)
         {
             int[] tags;
@@ -1106,6 +993,42 @@ namespace GmshApi.GmshController
                 }
             }
             return list;
+        }
+
+        public List<ModelObject> GetNodes(ref bool status)
+        {
+            long[] nodeTags;
+            double[] local, parametric;
+            var nodes = new List<ModelObject>();
+            if (ModelMeshGetNodes(-1, -1, false, false, out nodeTags, out local, out parametric))
+            {
+                for (var i = 0; i < nodeTags.Length; ++i)
+                {
+                    var point = new Point3D((float)local[i * 3], (float)local[i * 3 + 1], (float)local[i * 3 + 2]);
+                    nodes.Add(new Node((int)nodeTags[i], point));
+                }
+                status = true;
+            }
+            return nodes;
+        }
+
+        public bool DeleteMeshElements(long[] elementTags)
+        {
+            var ierr = 0;
+            var status = false;
+            gmshModelMeshSetVisibility(elementTags, (IntPtr)elementTags.Length, 0, ref ierr);
+            status = ierr == 0;
+            if (status)
+            {
+                gmshPluginSetNumber("Invisible", "DeleteElements", 1, ref ierr);
+                status = ierr == 0;
+                if (status)
+                {
+                    gmshPluginRun("Invisible", ref ierr);
+                    status = ierr == 0;
+                }
+            }
+            return status;
         }
 
         private ModelObject CreateModelObject(ref string elementName,
