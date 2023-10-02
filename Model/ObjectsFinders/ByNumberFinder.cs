@@ -1,13 +1,9 @@
 ﻿using Model.Interfaces;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Model.Utilities
+namespace Model.ObjectsFinders
 {
-    public static class ObjectsFinder
+    public static class ByNumberFinder
     {
         public static T Find<T>(List<T> objs, int objNumbr) where T : IModelObject
         {

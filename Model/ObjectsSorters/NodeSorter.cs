@@ -1,13 +1,11 @@
 ﻿using Geometry;
 using MathNet.Numerics.LinearAlgebra;
-using Model.Interfaces;
+using ModelInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Model.Utilities
+namespace Model.ObjectsSorters
 {
     public class NodeSorter
     {
@@ -23,13 +21,15 @@ namespace Model.Utilities
                     continue;
                 var otherNodes = nodes.ToHashSet().Except(subset);
                 var points = subset.Select(x => x.Position).ToArray();
-                var equationCoefficients = GetPlaneEquationCoefficients(points[0], points[1], points[2]);
+                var plane = new Plane(points[0], points[1], points[2]);
+                //var equationCoefficients = GetPlaneEquationCoefficients(points[0], points[1], points[2]);
                 var accept = true;
-                var initialSign = GetDistance(equationCoefficients, otherNodes.First().Position) >= 0;
+                var initialSign = plane.PointPosition(otherNodes.First().Position) >= 0;
+                //var initialSign = GetDistance(equationCoefficients, otherNodes.First().Position) >= 0;
                 var potentialSurface = new List<Node>();
                 foreach (var node in otherNodes)
                 {
-                    var distance = GetDistance(equationCoefficients, node.Position);
+                    var distance = plane.PointPosition(node.Position);
                     var currentSign = (distance >= 0);
                     if (Math.Abs(distance) < 1e-6)
                         potentialSurface.Add(node);
@@ -76,37 +76,37 @@ namespace Model.Utilities
             return A.Determinant();
         }
 
-        /// <summary>
-        /// Вычисляет коэффициенты A, B, C, D уравнения плоскости Ax + By + Cz + D = 0,
-        /// заданной двумя точками
-        /// </summary>
-        private static float[] GetPlaneEquationCoefficients(Point3D a, Point3D b, Point3D c)
-        {
-            var A = GetDet(new float[,] { { b._y - a._y, b._z - a._z }, 
-                                          { c._y - a._y, c._z - a._z } });
-            var B = GetDet(new float[,] { { b._x - a._x, b._z - a._z },
-                                          { c._x - a._x, c._z - a._z } });
-            var C = GetDet(new float[,] { { b._x - a._x, b._y - a._y },
-                                            { c._x - a._x, c._y - a._y } });
-            var D = -a._x * A + a._y * B - a._z * C;
-            return new float[4] { A, -B, C, D };
-        }
+        ///// <summary>
+        ///// Вычисляет коэффициенты A, B, C, D уравнения плоскости Ax + By + Cz + D = 0,
+        ///// заданной двумя точками
+        ///// </summary>
+        //private static float[] GetPlaneEquationCoefficients(Point3D a, Point3D b, Point3D c)
+        //{
+        //    var A = GetDet(new float[,] { { b._y - a._y, b._z - a._z }, 
+        //                                  { c._y - a._y, c._z - a._z } });
+        //    var B = GetDet(new float[,] { { b._x - a._x, b._z - a._z },
+        //                                  { c._x - a._x, c._z - a._z } });
+        //    var C = GetDet(new float[,] { { b._x - a._x, b._y - a._y },
+        //                                    { c._x - a._x, c._y - a._y } });
+        //    var D = -a._x * A + a._y * B - a._z * C;
+        //    return new float[4] { A, -B, C, D };
+        //}
 
-        /// <summary>
-        /// Вычисляет расстояние от заданной точки, до плоскости, задаваемой коэффициентами
-        /// уравнения Ax + By + Cz + D = 0
-        /// </summary>
-        private static double GetDistance(float[] equationCoefficients, Point3D p)
-        {
-            var x = p._x;
-            var y = p._y;
-            var z = p._z;
-            var A = equationCoefficients[0];
-            var B = equationCoefficients[1];
-            var C = equationCoefficients[2];
-            var D = equationCoefficients[3];
-            return (A * x + B * y + C * z + D) / Math.Sqrt(A * A + B * B + C * C);
-        }
+        ///// <summary>
+        ///// Вычисляет расстояние от заданной точки, до плоскости, задаваемой коэффициентами
+        ///// уравнения Ax + By + Cz + D = 0
+        ///// </summary>
+        //private static double GetDistance(float[] equationCoefficients, Point3D p)
+        //{
+        //    var x = p._x;
+        //    var y = p._y;
+        //    var z = p._z;
+        //    var A = equationCoefficients[0];
+        //    var B = equationCoefficients[1];
+        //    var C = equationCoefficients[2];
+        //    var D = equationCoefficients[3];
+        //    return (A * x + B * y + C * z + D) / Math.Sqrt(A * A + B * B + C * C);
+        //}
 
         /// <summary>
         /// Определяет, находится ли подмножество в списке используемых подмножеств
