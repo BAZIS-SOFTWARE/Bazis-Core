@@ -1,6 +1,6 @@
 ﻿using Model;
 using Model.Interfaces;
-using Model.Utilities;
+using Model.ObjectsFinders;
 using ModelController.MeshObjsUtility;
 using ModelController.ModelScenePresentator.GlObjsVertexCreators;
 using ModelController.ModelScenePresentator.Interfaces;
@@ -119,7 +119,7 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
 
         public override IModelObject FindObj(int objNumbr)
         {
-            return ObjectsFinder.Find(pointObjects, objNumbr);
+            return ByNumberFinder.Find(pointObjects, objNumbr);
         }
 
         public override IEnumerable<IModelObject> GetObjs(Color color)

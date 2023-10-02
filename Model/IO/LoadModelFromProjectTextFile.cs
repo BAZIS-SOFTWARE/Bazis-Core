@@ -9,7 +9,7 @@ using System.Linq;
 using System.Threading;
 using Geometry;
 using Model.Events;
-using Model.Utilities;
+using Model.ObjectsFinders;
 
 namespace Model.IO
 {
@@ -102,7 +102,7 @@ namespace Model.IO
 
                 var nodeList = new List<Node>();
                 foreach (var nodeNumber in ar)
-                    nodeList.Add(ObjectsFinder.Find(nodes,nodeNumber));
+                    nodeList.Add(ByNumberFinder.Find(nodes,nodeNumber));
 
                 if (elType == "Элементы3D" | elType == "Элементы 3004")
                 {

@@ -1,6 +1,6 @@
 ﻿using Geometry;
 using MathNet.Numerics.LinearAlgebra;
-using ModelInterfaces;
+using Model.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;

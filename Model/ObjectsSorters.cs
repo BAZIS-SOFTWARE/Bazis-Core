@@ -7,7 +7,7 @@ using System.Linq;
 
 using System.Threading.Tasks;
 
-namespace Model
+namespace Model.ObjectsSorters
 {
     public static class ObjectsSorters
     {

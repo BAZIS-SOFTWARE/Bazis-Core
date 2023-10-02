@@ -7,7 +7,7 @@ using System.Globalization;
 using System.Collections.Generic;
 using Model.GroupsData;
 using Model.Events;
-using Model.Utilities;
+using Model.ObjectsFinders;
 
 namespace Model.IO
 {
@@ -72,7 +72,7 @@ namespace Model.IO
             var nodeArr = new Node[selectedNodesId.Length];
             for (int i = 0; i < nodeArr.Length; i++)
             {
-                nodeArr[i] = ObjectsFinder.Find(nodes, selectedNodesId[i]);
+                nodeArr[i] = ByNumberFinder.Find(nodes, selectedNodesId[i]);
             }
             switch(elementType)
             {
