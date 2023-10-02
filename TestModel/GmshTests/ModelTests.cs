@@ -10,17 +10,20 @@ namespace TestModel.GmshTests
     {
         private GmshController controller = new GmshController("C:\\Windows\\System32\\gmsh.dll");
         private static string modelFolder = @"..\..\..\Examples\GMSHConnector\";
+
+        [TestInitialize]
         public void Init()
         {
-            var argv = string.Empty;
+            /*var argv = string.Empty;
             var ierr = 0;
-            controller.gmshInitialize(0, ref argv, 0, 0, ref ierr);
+            controller.gmshInitialize(0, ref argv, 0, 0, ref ierr);*/
         }
         [TestCleanup]
         public void Cleanup()
         {
             var ierr = 0;
-            controller.gmshFinalize(ref ierr);
+            //controller.gmshFinalize(ref ierr);
+            controller.gmshClear(ref ierr);
         }
         [DataTestMethod]
         [DataRow(new string[] { "" })]
@@ -193,6 +196,7 @@ namespace TestModel.GmshTests
         public void ModelTest(int count)
         {
             var ierr = 0;
+            controller.gmshClear(ref ierr);
             for (var i = 0; i < count; ++i)
                 controller.gmshModelAdd(i.ToString(), ref ierr);
             string[] list;

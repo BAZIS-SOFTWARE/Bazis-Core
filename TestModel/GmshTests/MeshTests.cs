@@ -14,16 +14,17 @@ namespace TestModel.GmshTests
         [TestInitialize]
         public void Init()
         {
-            var argv = string.Empty;
+            /*var argv = string.Empty;
             var ierr = 0;
-            controller.gmshInitialize(0, ref argv, 0, 0, ref ierr);
+            controller.gmshInitialize(0, ref argv, 0, 0, ref ierr);*/
         }
 
         [TestCleanup]
         public void Cleanup()
         {
             var ierr = 0;
-            controller.gmshFinalize(ref ierr);
+            //controller.gmshFinalize(ref ierr);
+            controller.gmshClear(ref ierr);
         }
 
         [DataTestMethod]
@@ -59,7 +60,7 @@ namespace TestModel.GmshTests
             var ierr = 0;
             var status = false;
             controller.gmshOpen(modelFolder + fileName, ref ierr);
-            controller.gmshModelMeshGenerate(2, ref ierr);
+            controller.gmshModelMeshGenerate(1, ref ierr);
             var e1d = controller.GetElements(1, -1, ref status);
             Assert.AreEqual(expected, e1d.Count);
         }
