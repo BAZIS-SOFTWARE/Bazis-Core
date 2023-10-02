@@ -10,7 +10,7 @@ namespace TestModel.GmshTests
     public class MeshQualityTests
     {
         private GmshController controller = new GmshController("C:\\Windows\\System32\\gmsh.dll");
-        private static string modelFolder = @"..\..\Examples\GMSHConnector\";
+        private static string modelFolder = @"..\..\..\Examples\GMSHConnector\";
 
         [TestInitialize]
         public void Init()

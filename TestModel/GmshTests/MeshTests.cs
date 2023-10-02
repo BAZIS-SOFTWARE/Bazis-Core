@@ -1,11 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using GmshApi;
 using System.Linq;
 using GmshApi.GmshController;
 using System;
-using Model;
-using GmshApi.Api;
-using System.Collections.Generic;
 
 namespace TestModel.GmshTests
 {
@@ -13,7 +9,7 @@ namespace TestModel.GmshTests
     public class ControllerMeshTests
     {
         private GmshController controller = new GmshController("C:\\Windows\\System32\\gmsh.dll");
-        private static string modelFolder = @"..\..\Examples\GMSHConnector\";
+        private static string modelFolder = @"..\..\..\Examples\GMSHConnector\";
 
         [TestInitialize]
         public void Init()

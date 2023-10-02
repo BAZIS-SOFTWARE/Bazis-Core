@@ -1,5 +1,4 @@
-﻿using GmshApi.GmshKernel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -7,9 +6,8 @@ using Geometry;
 using Model;
 using Model.Interfaces;
 using Functions.Extensions;
-using System.ComponentModel;
 using System.IO;
-using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace GmshApi.GmshController
 {
@@ -462,7 +460,9 @@ namespace GmshApi.GmshController
             IntPtr dTags, dimTags_n;
             dTags = dimTags_n = IntPtr.Zero;
             dimTags = null;
-            var extension = ControllerIO.ModelGetFileNameExtension();
+            string fileName;
+            ModelGetFileName(out fileName);
+            var extension = Path.GetExtension(fileName);
             if (extension.Contains("stp") || extension.Contains("step") ||
                 extension.Contains("brep") || extension.Contains("igs"))
                 gmshModelOccGetEntities(ref dTags, ref dimTags_n, dim, ref ierr);
@@ -811,7 +811,9 @@ namespace GmshApi.GmshController
         {
             var ierr = 0;
             var recFlag = Convert.ToInt32(recursive);
-            var extension = ControllerIO.ModelGetFileNameExtension();
+            string fileName;
+            ModelGetFileName(out fileName);
+            var extension = Path.GetExtension(fileName);
             if (extension.Contains("stp") || extension.Contains("step") ||
                 extension.Contains("brep") || extension.Contains("igs"))
                 gmshModelOccRemove(dimTags, (IntPtr)dimTags.Length, recFlag, ref ierr);
@@ -1057,8 +1059,8 @@ namespace GmshApi.GmshController
             IntPtr[] tagsData, lengthData;
             NewTwoDimArray(eTags, eTags_n, eTags_nn, out tagsData, out lengthData, out eData);
             for (var i = 0; i < objsTypesCount; ++i)
-                ControllerMemory.GetObjectsData(tagsData[i], out eData[i], lengthData[i]);
-            KernelGeneral.gmshFree(eTags);
+                GetObjectsData(tagsData[i], out eData[i], lengthData[i]);
+            gmshFree(eTags);
         }
 
         private void NewTwoDimArray(IntPtr eTags, IntPtr eTags_n, IntPtr eTags_nn, 
@@ -1071,7 +1073,7 @@ namespace GmshApi.GmshController
 
             Marshal.Copy(eTags, tagsData, 0, objectsCount);
             Marshal.Copy(eTags_n, lengthData, 0, objectsCount);
-            KernelGeneral.gmshFree(eTags_n);
+            gmshFree(eTags_n);
         }
 
         private void GetObjectsData<T>(IntPtr src, out T[] dst, IntPtr eCount)

@@ -9,7 +9,7 @@ namespace TestModel.GmshTests
     public class ControllerConnectionTests
     {
         private GmshController controller = new GmshController("C:\\Windows\\System32\\gmsh.dll");
-        private static string modelFolder = @"..\..\Examples\GMSHConnector\";
+        private static string modelFolder = @"..\..\..\Examples\GMSHConnector\";
         public void Init()
         {
             var argv = string.Empty;

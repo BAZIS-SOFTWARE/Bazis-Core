@@ -57,6 +57,24 @@
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>GmshApiKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Functions">
       <HintPath>..\packages\Functions.1.0.2.24\lib\net48\Functions.dll</HintPath>
@@ -77,37 +95,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GmshController\GmshController.cs" />
-    <Compile Include="GmshController\ControllerUtilities.cs" />
-    <Compile Include="GmshKernel\GmshKernel.cs" />
-    <Compile Include="GmshObjects\GeometryObject.cs" />
-    <Compile Include="GmshObjects\IGeometryApi.cs" />
-    <Compile Include="GmshObjects\IMeshApi.cs" />
-    <Compile Include="GmshObjects\IMeshField.cs" />
-    <Compile Include="GmshObjects\IMeshQuality.cs" />
-    <Compile Include="GmshObjects\MeshField.cs" />
-    <Compile Include="GmshObjects\MeshFieldOption.cs" />
-    <Compile Include="GmshObjects\MeshFieldType.cs" />
-    <Compile Include="GmshObjects\MeshObject.cs" />
-    <Compile Include="GmshObjects\MeshQuality.cs" />
-    <Compile Include="GmshObjects\TransfiniteAlgorithm.cs" />
-    <Compile Include="GmshObjects\Triangulation2DAlgorithm.cs" />
-    <Compile Include="GmshObjects\Triangulation3DAlgorithm.cs" />
-    <Compile Include="GmshKernel\KernelGeneral.cs" />
-    <Compile Include="GmshKernel\KernelGeometry.cs" />
-    <Compile Include="GmshKernel\KernelModel.cs" />
-    <Compile Include="GmshKernel\KernelPlugin.cs" />
-    <Compile Include="GmshKernel\KernelIO.cs" />
-    <Compile Include="GmshKernel\KernelMesh.cs" />
+    <Compile Include="GmshController.cs" />
+    <Compile Include="GmshKernel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="GmshController\ControllerConnection.cs" />
-    <Compile Include="GmshController\ControllerGeneral2.cs" />
-    <Compile Include="GmshController\ControllerGeometry.cs" />
-    <Compile Include="GmshController\ControllerIO.cs" />
-    <Compile Include="GmshController\ControllerMemory.cs" />
-    <Compile Include="GmshController\ControllerMesh.cs" />
-    <Compile Include="GmshController\ControllerMeshField.cs" />
-    <Compile Include="GmshController\ControllerModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="GmshApiKey.snk" />
