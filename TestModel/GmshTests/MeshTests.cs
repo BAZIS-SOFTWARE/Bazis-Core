@@ -14,16 +14,12 @@ namespace TestModel.GmshTests
         [TestInitialize]
         public void Init()
         {
-            /*var argv = string.Empty;
-            var ierr = 0;
-            controller.gmshInitialize(0, ref argv, 0, 0, ref ierr);*/
         }
 
         [TestCleanup]
         public void Cleanup()
         {
             var ierr = 0;
-            //controller.gmshFinalize(ref ierr);
             controller.gmshClear(ref ierr);
         }
 
