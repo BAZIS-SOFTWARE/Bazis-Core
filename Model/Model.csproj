@@ -106,6 +106,7 @@
     <Compile Include="IO\LoadModelFromSalomeFile.cs" />
     <Compile Include="IO\LoadModelFromSTLFile.cs" />
     <Compile Include="IO\SaveModelToASCIITextFile.cs" />
+    <Compile Include="Line.cs" />
     <Compile Include="Utilities\NodeSorter.cs" />
     <Compile Include="ObjectsComparers\ComparerBySqCoords.cs" />
     <Compile Include="ObjectsComparers\EqualityComparerByCentralPoint.cs" />

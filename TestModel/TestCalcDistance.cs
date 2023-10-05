@@ -10,8 +10,8 @@ namespace TestModel
     public class TestCalcDistance
     {
         [DataTestMethod]
-        [DataRow(new float[] 
-        { 
+        [DataRow(new float[]
+        {
             -50, 6, 0, 3, 56, 0,50, 6, 100,3, 56, 100,72.86277f
         })]
         [DataRow(new float[]
@@ -32,10 +32,10 @@ namespace TestModel
 
             var plane = new Plane(nodes[0].Position, nodes[1].Position, nodes[2].Position);
             //act
-            var calcDist = new CalcDistance().DistanceBetweenPlaneAndNode(plane,  node);
-            var dist = Math.Round(calcDist.GetLength(), 5);
+            var calcDist = Math.Abs(plane.PointPosition(node.Position));
+            var dist = Math.Round(calcDist, 5);
             var res = Math.Round(array[12], 5);
             Assert.AreEqual(dist, res);
-        } 
+        }
     }
 }

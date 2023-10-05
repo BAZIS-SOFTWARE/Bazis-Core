@@ -32,7 +32,7 @@ namespace ModelController.MeshObjsUtility
 
     public class CrossSection
     {
- 
+
         /// <returns>
         /// Сечение элемента плоскостью
         /// Возвращает словарь (номер элемента, плоскость его сечения)
@@ -53,7 +53,7 @@ namespace ModelController.MeshObjsUtility
                         var point2 = line.P1;
                         if (IsIntersect(point1, point2, plane))
                         {
-                            var sectionPoint = GetSectionPoint(new Line(point1, point2), plane);
+                            var sectionPoint = GetSectionPoint(new Segment3D(point1, point2), plane);
                             points.Add(sectionPoint);
                         }
                     }
@@ -90,7 +90,7 @@ namespace ModelController.MeshObjsUtility
         /// <summary>
         /// Вычисляет точку пересечения прямой и плоскости
         /// </summary>
-        private Point3D GetSectionPoint(Line line, Plane plane)
+        private Point3D GetSectionPoint(Segment3D line, Plane plane)
         {
             var A = plane.Normal._x;
             var B = plane.Normal._y;

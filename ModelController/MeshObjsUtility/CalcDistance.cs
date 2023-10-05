@@ -21,11 +21,11 @@ namespace ModelController.MeshObjsUtility
         /// <param name="node"></param>
         /// Узел проецирования
         /// <returns></returns>
-        public Line DistanceBetweenPlaneAndNode(Plane plane, Node node)
+        /*public Line DistanceBetweenPlaneAndNode(Plane plane, Node node)
         {
             var point = node.Position.GetPointProectionOnPlane(plane);
 
             return new Line(node.Position, point);
-        }
+        }*/
     }
 }
