@@ -39,6 +39,6 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
 
         public abstract int Count();
         
-        public abstract IModelObject FindObj(int objNumbr);
+        public abstract Model.Interfaces.IModelObject FindObj(int objNumbr);
     }
 }

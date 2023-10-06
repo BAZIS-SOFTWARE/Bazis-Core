@@ -87,7 +87,7 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
         }
 /// <inheritdoc/>
 
-        public override IEnumerable<IModelObject> GetObjs()
+        public override IEnumerable<Model.Interfaces.IModelObject> GetObjs()
         {
             foreach (var pointObject in pointObjects)
             {
@@ -95,7 +95,7 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
             }
         }
 
-        public override IModelObject this[int index]
+        public override Model.Interfaces.IModelObject this[int index]
         {
             get{return pointObjects[index];}
         }
@@ -117,12 +117,12 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
             return new bool[0];
         }
 
-        public override IModelObject FindObj(int objNumbr)
+        public override Model.Interfaces.IModelObject FindObj(int objNumbr)
         {
             return ByNumberFinder.Find(pointObjects, objNumbr);
         }
 
-        public override IEnumerable<IModelObject> GetObjs(Color color)
+        public override IEnumerable<Model.Interfaces.IModelObject> GetObjs(Color color)
         {
             foreach (var pointObject in pointObjects)
             {

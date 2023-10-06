@@ -20,7 +20,7 @@ namespace TestModel
                 new Node(2,new Point3D(0,10,0)),
                 new Node(3,new Point3D(0,0,10)),
             };
-            var objs = new ModelObject[]
+            var objs = new Model.ModelObject[]
             {
                 new Element3D( 4,nodes, ObjKind.Tetra),
                 new Element3D(5,nodes,  ObjKind.Tetra),

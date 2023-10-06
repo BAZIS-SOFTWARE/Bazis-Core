@@ -1,11 +1,7 @@
 ﻿using Geometry;
 using Model.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Model
 {
@@ -123,7 +119,7 @@ namespace Model
         /// <summary>
         /// Compare to
         /// </summary>
-        public int CompareTo(IModelObject other)
+        public int CompareTo(Interfaces.IModelObject other)
         {
             if (this.Number > other.Number)
                 return 1;
@@ -138,7 +134,7 @@ namespace Model
         /// <summary>
         /// Equal two objects
         /// </summary>
-        public bool Equals(IModelObject x, IModelObject y)
+        public bool Equals(Interfaces.IModelObject x, Interfaces.IModelObject y)
         {
             if (x.Number == y.Number)
                 return true;
@@ -147,14 +143,14 @@ namespace Model
         /// <summary>
         ///Get hash code
         /// </summary>
-        public int GetHashCode(IModelObject obj)
+        public int GetHashCode(Interfaces.IModelObject obj)
         {
             return obj.Number;
         }
         /// <summary>
         /// Equal with object
         /// </summary>
-        public bool Equals(IModelObject other)
+        public bool Equals(Interfaces.IModelObject other)
         {
             if (Number == other.Number)
                 return true;

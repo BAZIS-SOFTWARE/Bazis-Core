@@ -1,4 +1,6 @@
-﻿using Model.Interfaces;
+﻿using Functions.Sort;
+using Model.Interfaces;
+using Model.ObjectsSorters;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace Model.GroupsData
 {
-    public class Group : IList<ModelObject>
+    public class Group : IList<IModelObject>
     {
-        List<ModelObject> objects = new List<ModelObject>();
+        List<IModelObject> objects = new List<IModelObject>();
         /// <summary>
         /// ViewState
         /// </summary>
@@ -18,7 +20,7 @@ namespace Model.GroupsData
         /// <summary>
         /// GroupName
         /// </summary>
-        public string GroupName { get; }
+        public string GroupName { get; set; }
         /// <summary>
         /// ObjType
         /// </summary>
@@ -35,7 +37,7 @@ namespace Model.GroupsData
         public bool IsReadOnly => false;
 
 
-        public ModelObject this[int key]
+        public IModelObject this[int key]
         {
             get { return objects[key]; }
             set { objects[key] = value; }
@@ -54,7 +56,7 @@ namespace Model.GroupsData
             objects.Clear();
         }
 
-        public IEnumerator<ModelObject> GetEnumerator()
+        public IEnumerator<IModelObject> GetEnumerator()
         {
             foreach (var item in objects)
             {
@@ -67,12 +69,12 @@ namespace Model.GroupsData
             throw new NotImplementedException();
         }
 
-        public int IndexOf(ModelObject item)
+        public int IndexOf(IModelObject item)
         {
             return objects.IndexOf(item);
         }
 
-        public void Insert(int index, ModelObject item)
+        public void Insert(int index, IModelObject item)
         {
             throw new NotImplementedException();
         }
@@ -82,22 +84,27 @@ namespace Model.GroupsData
             objects.RemoveAt(index);
         }
 
-        public void Add(ModelObject item)
+        public void Add(IModelObject item)
         {
             objects.Add(item);
         }
 
-        public bool Contains(ModelObject item)
+        public void AddRange(IEnumerable<IModelObject> items)
+        {
+            objects.AddRange(items);
+        }
+
+        public bool Contains(IModelObject item)
         {
             return objects.Contains(item);
         }
 
-        public void CopyTo(ModelObject[] array, int arrayIndex)
+        public void CopyTo(IModelObject[] array, int arrayIndex)
         {
             throw new NotImplementedException();
         }
 
-        public bool Remove(ModelObject item)
+        public bool Remove(IModelObject item)
         {
             return objects.Remove(item);
         }
@@ -123,6 +130,16 @@ namespace Model.GroupsData
             GroupName = groupName;
             ObjType = objType;
             ViewState = true;
-        }     
+        }
+
+        public bool Swap(int fInd, int sInd)
+        {
+            return objects.SwapList(fInd, sInd);
+        }
+
+        public void SortByDistance()
+        {
+            objects.SortByDistance();
+        }
     }
 }

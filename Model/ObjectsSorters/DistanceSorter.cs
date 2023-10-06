@@ -9,9 +9,17 @@ using System.Threading.Tasks;
 
 namespace Model.ObjectsSorters
 {
+    /// <summary>
+    /// DistanceSorter
+    /// </summary>
     public static class DistanceSorter
     {
-        public static void SortByDistance <T>(this List<T> objs) where T : IModelObject
+        /// <summary>
+        /// SortByDistance
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="objs"></param>
+        public static void SortByDistance <T>(this List<T> objs) where T : Interfaces.IModelObject
         {
             var fistNode = 0;
 

@@ -5,7 +5,7 @@ namespace Model.ObjectsFinders
 {
     public static class ByNumberFinder
     {
-        public static T Find<T>(List<T> objs, int objNumbr) where T : IModelObject
+        public static T Find<T>(List<T> objs, int objNumbr) where T : Interfaces.IModelObject
         {
             if (objs.Count - 1 == -1) { return default(T); }
             var left = 0;
@@ -22,7 +22,7 @@ namespace Model.ObjectsFinders
             return default(T);
         }
 
-        public static T Find<T>(T[] objs, int objNumbr) where T : IModelObject
+        public static T Find<T>(T[] objs, int objNumbr) where T : Interfaces.IModelObject
         {
             if (objs.Length - 1 == -1) { return default(T); }
             var left = 0;

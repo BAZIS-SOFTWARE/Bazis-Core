@@ -147,10 +147,8 @@ namespace Model.IO
                     {
                         var obj = newMesh.ObjectData.Find(index);
                         nodeGroup.Add(obj);
-                        newMesh.GroupData.Add(nodeGroup);
                     }
-
-
+                    newMesh.GroupData.Add(nodeGroup);
                 }
                 if (splitLine[0] == "Группа элементов 3D ")
                 {
