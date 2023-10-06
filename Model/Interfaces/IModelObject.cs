@@ -24,7 +24,8 @@ namespace Model.Interfaces
         Quad,
         Point,
         Beam,
-        Curve
+        Curve,
+        Prism
     }
     /// <summary>
     /// ObjType

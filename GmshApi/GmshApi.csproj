@@ -24,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\GmshApi.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -59,12 +60,36 @@
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>GmshApiKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Functions, Version=1.0.2.31, Culture=neutral, PublicKeyToken=65fde98421b2fc88, processorArchitecture=MSIL">
       <HintPath>..\packages\Functions.1.0.2.31\lib\net48\Functions.dll</HintPath>
     </Reference>
     <Reference Include="Geometry, Version=2.0.6.4, Culture=neutral, PublicKeyToken=d064922373770c4c, processorArchitecture=MSIL">
       <HintPath>..\packages\Geometry.2.0.6.4\lib\net48\Geometry.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\MSTest.TestFramework.3.1.1\lib\net462\Microsoft.VisualStudio.TestPlatform.TestFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\MSTest.TestFramework.3.1.1\lib\net462\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\MSTest.TestFramework.3.1.1\lib\net462\Microsoft.VisualStudio.TestPlatform.TestFramework.dll</HintPath>
@@ -85,36 +110,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GmshObjects\GeometryObject.cs" />
-    <Compile Include="GmshObjects\IGeometryApi.cs" />
-    <Compile Include="GmshObjects\IMeshApi.cs" />
-    <Compile Include="GmshObjects\IMeshField.cs" />
-    <Compile Include="GmshObjects\IMeshQuality.cs" />
-    <Compile Include="GmshObjects\MeshField.cs" />
-    <Compile Include="GmshObjects\MeshFieldOption.cs" />
-    <Compile Include="GmshObjects\MeshFieldType.cs" />
-    <Compile Include="GmshObjects\MeshObject.cs" />
-    <Compile Include="GmshObjects\MeshQuality.cs" />
-    <Compile Include="GmshObjects\TransfiniteAlgorithm.cs" />
-    <Compile Include="GmshObjects\Triangulation2DAlgorithm.cs" />
-    <Compile Include="GmshObjects\Triangulation3DAlgorithm.cs" />
-    <Compile Include="GmshKernel\KernelGeneral.cs" />
-    <Compile Include="GmshKernel\KernelGeometry.cs" />
-    <Compile Include="GmshKernel\KernelModel.cs" />
-    <Compile Include="GmshKernel\KernelPlugin.cs" />
-    <Compile Include="GmshKernel\KernelIO.cs" />
-    <Compile Include="GmshKernel\KernelMesh.cs" />
+    <Compile Include="GmshController.cs" />
+    <Compile Include="GmshKernel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="GmshController\ControllerConnection.cs" />
-    <Compile Include="GmshController\ControllerGeneral.cs" />
-    <Compile Include="GmshController\ControllerGeometry.cs" />
-    <Compile Include="GmshController\ControllerIO.cs" />
-    <Compile Include="GmshController\ControllerMemory.cs" />
-    <Compile Include="GmshController\ControllerMesh.cs" />
-    <Compile Include="GmshController\ControllerMeshField.cs" />
-    <Compile Include="GmshController\ControllerModel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="GmshApiKey.snk" />
     <None Include="packages.config" />
   </ItemGroup>

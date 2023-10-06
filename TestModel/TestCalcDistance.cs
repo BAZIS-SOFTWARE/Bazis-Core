@@ -10,8 +10,8 @@ namespace TestModel
     public class TestCalcDistance
     {
         [DataTestMethod]
-        [DataRow(new float[] 
-        { 
+        [DataRow(new float[]
+        {
             -50, 6, 0, 3, 56, 0,50, 6, 100,3, 56, 100,72.86277f
         })]
         [DataRow(new float[]
@@ -36,6 +36,6 @@ namespace TestModel
             var dist = Math.Round(calcDist, 5);
             var res = Math.Round(array[12], 5);
             Assert.AreEqual(dist, res);
-        } 
+        }
     }
 }

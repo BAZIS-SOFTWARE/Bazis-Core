@@ -37,7 +37,7 @@ namespace Model
         /// <param name="nodes"></param>
         /// <param name="objKind"></param>
         /// <param name="color"></param>
-        public Surface(int number, Node[] nodes, ObjKind objKind, Color color) : this(number,nodes,objKind)
+        public Surface(int number, Node[] nodes, ObjKind objKind, Color color) : this(number, nodes, objKind)
         {
             InitialColor = color;
             MasterColor = color;
@@ -48,7 +48,7 @@ namespace Model
         /// </summary>
         /// <param name="nodes"></param>
         /// <returns></returns>
-        public Node[] Anticlockwise(Node [] nodes)
+        public Node[] Anticlockwise(Node[] nodes)
         {
             var ar = new List<Node>();
             var arInd = new List<int>();
@@ -68,7 +68,7 @@ namespace Model
             {
                 if (iterationCounter > iterationMax) break;
 
-                var resu = CheckVectorsOrientation(nodes, fInd, sInd,plane);
+                var resu = CheckVectorsOrientation(nodes, fInd, sInd, plane);
 
                 if (resu)
                 {
@@ -96,7 +96,7 @@ namespace Model
             return ar.ToArray();
         }
 
-        private bool CheckVectorsOrientation(Node[] nodes, int firstInd, int secondInd, Plane plane )
+        private bool CheckVectorsOrientation(Node[] nodes, int firstInd, int secondInd, Plane plane)
         {
             //bool isPointInside = false;
             var temp = new List<float>();
@@ -123,11 +123,11 @@ namespace Model
             else return false;
         }
 
-        public Node this [int ind]
+        public Node this[int ind]
         {
             get { return nodes[ind]; }
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public override string ToString()
         {
@@ -137,13 +137,13 @@ namespace Model
 
             return string.Format("{0} {1} : {2}", Number, ObjType, str);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public override ObjKind ObjKind { get; }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public override string ObjType { get; }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public override int NumberOfPoints { get { return nodes.Length; } }
 
@@ -157,7 +157,7 @@ namespace Model
         {
             var fvectors = nodes[1].Position.Sub(nodes[0].Position);
             var svectors = nodes[2].Position.Sub(nodes[0].Position);
-            return Vector.CrossProd(fvectors,svectors);
+            return Vector.CrossProd(fvectors, svectors);
         }
 /// <inheritdoc/>
 
@@ -225,7 +225,7 @@ points.Contains(nodes[2].Position, new Point3DEqualityComparer()))
 
             return nNormal._x * temp._x + nNormal._y * temp._y + nNormal._z * temp._z;
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public override Point3D CalcCentralPoint()
         {

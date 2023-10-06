@@ -32,7 +32,7 @@ namespace ModelController.MeshObjsUtility
 
     public class CrossSection
     {
- 
+
         /// <returns>
         /// Сечение элемента плоскостью
         /// Возвращает словарь (номер элемента, плоскость его сечения)

@@ -49,7 +49,7 @@ namespace ModelController.MeshObjsUtility
 
                     var plane = new Plane(surface[0].Position, normal);
                     var proj = centr.GetPointProectionOnPlane(plane);
-                    
+
                     var p1 = proj.Sum(normal);
 
                     var line = new Segment3D(proj, p1);
