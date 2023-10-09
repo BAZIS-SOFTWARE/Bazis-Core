@@ -16,6 +16,7 @@ namespace Model
         {
             ObjType = "Линия";
             NumberOfPoints = nodes.Length;
+            ObjKind = ObjKind.Curve;
             this.nodes = nodes;
         }
 

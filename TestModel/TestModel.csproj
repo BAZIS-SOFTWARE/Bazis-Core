@@ -137,7 +137,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Examples\CDB\" />
-    <Folder Include="Examples\GMSHConnector\" />
+    <Folder Include="Examples\GMSHAPI\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GmshApi\GmshApi.csproj">

@@ -12,8 +12,8 @@ namespace TestModel.GmshTests
     [TestClass]
     public class ControllerGeometryTests
     {
-        private GmshController controller = new GmshController("C:\\Windows\\System32\\gmsh.dll");
-        private static string modelFolder = @"..\..\..\Examples\GMSHConnector\";
+        private GmshController controller = new GmshController(@"..\..\..\..\GmshApi\gmsh.dll");
+        private static string modelFolder = @"..\..\..\Examples\GMSHAPI\";
         [TestInitialize]
         public void Init()
         {
@@ -28,43 +28,27 @@ namespace TestModel.GmshTests
             //controller.gmshFinalize(ref ierr);
             controller.gmshClear(ref ierr);
         }
-        [DataTestMethod]
-        [DataRow("Cilindr.step")]
-        public void GetCurvesTest(string fileName)
-        {
-            var ierr = 0;
-            controller.gmshOpen(modelFolder + fileName, ref ierr);
-            var status = false;
-            var curves = controller.GetGeometryEntities(ObjKind.Curve, ref status);
-            Assert.IsTrue(status);
-            Assert.AreEqual(6, curves.Count());
-        }
-        [DataTestMethod]
-        [DataRow("Cilindr.step")]
-        public void GetElements1DTest(string fileName)
-        {
-            var ierr = 0;
-            controller.gmshOpen(modelFolder + fileName, ref ierr);
-            var status = false;
-            var curves = controller.GetGeometryEntities(ObjKind.Beam, ref status);
-            Assert.IsTrue(status);
-            Assert.AreEqual(6, curves.Count());
-            for (var i = 0; i < curves.Count; ++i)
-                Assert.AreEqual(ObjKind.Beam, curves[i].ObjKind);
-        }
 
         [DataTestMethod]
-        [DataRow("Cilindr.step")]
-        public void GetControlPointsTest(string fileName)
+        [DataRow("Cilindr.step", 6, ObjKind.Curve)]
+        [DataRow("Cilindr.step", 4, ObjKind.Point)]
+        public void GetGeometryObjectsTest(string fileName, int numbOfObjs, ObjKind objKind)
         {
             var ierr = 0;
             controller.gmshOpen(modelFolder + fileName, ref ierr);
+
+            int[] dimTags;
             var status = false;
-            var controlPoints = controller.GetGeometryEntities(ObjKind.Point, ref status);
+            if (objKind == ObjKind.Curve)
+                status  = controller.ModelGetGeometryEntities(out dimTags, 1);
+            else
+                status = controller.ModelGetGeometryEntities(out dimTags, 0);
+
+            var objects = controller.CreateGeometryEntities(objKind, dimTags);
             Assert.IsTrue(status);
-            Assert.AreEqual(4, controlPoints.Count());
-            for (var i = 0; i < controlPoints.Count; ++i)
-                Assert.AreEqual(ObjKind.Node, controlPoints[i].ObjKind);
+            Assert.AreEqual(numbOfObjs, objects.Count());
+            for (var i = 0; i < objects.Count; ++i)
+                Assert.AreEqual(objKind, objects[i].ObjKind);
         }
 
         [DataTestMethod]
@@ -74,9 +58,13 @@ namespace TestModel.GmshTests
             var ierr = 0;
             controller.gmshOpen(modelFolder + fileName, ref ierr);
             var status = false;
-            var curveUntil = controller.GetGeometryEntities(ObjKind.Beam, ref status).First();
+
+            int[] dimTags;
+            controller.ModelGetGeometryEntities(out dimTags, 1);
+
+            var curveUntil = controller.CreateGeometryEntities(ObjKind.Curve, dimTags).First();
             controller.gmshOptionSetNumber("Geometry.NumSubEdges", 15, ref ierr);
-            var curveAfter = controller.GetGeometryEntities(ObjKind.Beam, ref status).First();
+            var curveAfter = controller.CreateGeometryEntities(ObjKind.Curve, dimTags).First();
             Assert.IsTrue(curveAfter.NumberOfPoints < curveUntil.NumberOfPoints);
         }
 
@@ -89,10 +77,10 @@ namespace TestModel.GmshTests
             for (var i = 0; i < dimArray.Length; ++i)
             {
                 int[] dimTags;
-                controller.ModelGetEntities(out dimTags, -1);
+                controller.ModelGetGeometryEntities(out dimTags, -1);
                 var lengthBefore = dimTags.Length;
                 controller.RemoveEntities(new int[] { dimArray[i], dimTags[1] });
-                controller.ModelGetEntities(out dimTags, -1);
+                controller.ModelGetGeometryEntities(out dimTags, -1);
                 var lengthAfter = dimTags.Length;
                 Assert.IsTrue(lengthBefore > lengthAfter);
             }
@@ -113,7 +101,7 @@ namespace TestModel.GmshTests
                 tagDims[i] = Enumerable.Range(1, expTags[i]).ToArray();
             var expectedTags = tagDims.SelectMany(v => v).ToArray();
             int[] dimTags;
-            controller.ModelGetEntities(out dimTags, -1);
+            controller.ModelGetGeometryEntities(out dimTags, -1);
             var actualTags = dimTags.Where((v, i) => (i & 1) == 1).ToArray();
             CollectionAssert.AreEqual(expectedTags, actualTags);
         }
@@ -129,7 +117,7 @@ namespace TestModel.GmshTests
             var ierr = 0;
             controller.gmshOpen(modelFolder + fileName, ref ierr);
             int[] dimTags;
-            controller.ModelGetEntities(out dimTags,-1);
+            controller.ModelGetGeometryEntities(out dimTags,-1);
             for (var i = 1; i < dimTags.Length; i += 2)
             {
                 var dim = dimTags[i - 1];
@@ -137,7 +125,7 @@ namespace TestModel.GmshTests
                 var expectedName = entName[dim] + tag.ToString();
                 controller.gmshModelSetEntityName(dim, tag, expectedName, ref ierr);
                 string actual;
-                controller.ModelGetEntityName(dim, tag, out actual);
+                controller.ModelGetGeometryEntityName(dim, tag, out actual);
                 Assert.AreEqual(expectedName, actual);
             }
             //Remove Test: 1) Remove exists name 2) Remove not exists name
