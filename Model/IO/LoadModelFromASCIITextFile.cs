@@ -1,4 +1,5 @@
-﻿using Geometry;
+﻿using Functions.Parser;
+using Geometry;
 using Model.Events;
 using Model.GroupsData;
 using Model.Interfaces;
@@ -17,7 +18,7 @@ namespace Model.IO
     {
         public event Action<object, LoaderEventArgs> LoadEvent;
         private Dictionary<int, Node> allNodes = new Dictionary<int, Node>();
-        private Dictionary<int, ObjKind> elementIndexToObjectType = new Dictionary<int, ObjKind>();
+        private Dictionary<int, Element> allElements = new Dictionary<int, Element>();
 
         public ModelData Load(string path)
         {
@@ -35,20 +36,17 @@ namespace Model.IO
                     }
                     if(line.Contains("BEGIN_ELEMENTS"))
                     {
-                        var elements = ReadElements(reader, int.Parse(tokens[1]));
+                        var elements = ReadElements(reader, int.Parse(tokens[1]),model.ObjectData.Last().Number + 1);
                         model.ObjectData.AddRange(elements);
                     }
                     if(line.Contains("BEGIN_GROUPS"))
                     {
-                        foreach (var group in ReadGroups(reader, int.Parse(tokens[1])))
-                        {
-                            model.GroupData.Add(group);
-                        }
+                        ReadGroup(reader, int.Parse(tokens[1]), model);
                     }
                 }
             }
             allNodes.Clear();
-            elementIndexToObjectType.Clear();
+            allElements.Clear();
             return model;
         }
 
@@ -63,13 +61,13 @@ namespace Model.IO
                 var coordinates = tokens.Skip(6)
                     .Select(x => float.Parse(x, CultureInfo.InvariantCulture))
                     .ToArray();
-                var node = new Node(index, new Point3D(coordinates[0], coordinates[1], coordinates[2]));
-                allNodes.Add(index, node);
+                var node = new Node(i, new Point3D(coordinates[0], coordinates[1], coordinates[2]));
+                allNodes.Add(index, node); // all nodes must have unic numbers started from zero
                 yield return node;
             }
         }
 
-        private IEnumerable<ModelObject> ReadElements(StreamReader reader, int count)
+        private IEnumerable<ModelObject> ReadElements(StreamReader reader, int count, int startNumber)
         {
             LoadEvent(this, new LoaderEventArgs("Загрузка элементов..."));
             for (var i = 0; i < count; i++)
@@ -81,14 +79,15 @@ namespace Model.IO
                 var nodes = tokens.Skip(5)
                     .Select(int.Parse)
                     .Select(j => allNodes[j])
-                    .ToArray();
-                var element = GetElementByType(nodes, type, index);
-                elementIndexToObjectType.Add(element.Number, element.ObjKind);
+                    .ToArray();      
+
+                var element = GetElementByType(nodes, type, startNumber + i);
+                allElements.Add(index, element);
                 yield return element;
             }
         }
 
-        private ModelObject GetElementByType(Node[] nodes, int type, int index)
+        private Element GetElementByType(Node[] nodes, int type, int index)
         {
             switch(type) 
             {
@@ -99,21 +98,33 @@ namespace Model.IO
             }
         }
 
-        private IEnumerable<GroupsData.Group> ReadGroups(StreamReader reader, int count)
+        private void ReadGroup(StreamReader reader, int count, ModelData model)
         {
             LoadEvent(this, new LoaderEventArgs("Загрузка группы объектов "));
-            for(var i = 0; i < count; i++)
+            string[] tokens;
+            for (var i = 0; i < count; i++)
             {
                 var line = reader.ReadLine();
-                var tokens = ReplaceQuotes(line)
+                tokens = ReplaceQuotes(line)
                     .Split(new char[] {' '}, StringSplitOptions.RemoveEmptyEntries)
                     .ToArray();
                 var groupName = tokens[1];
-                var elementIndeces = tokens.Skip(7).Select(int.Parse);
-                var group = new GroupsData.Group(groupName, GetGroupTypeByFirstIndex(elementIndeces.First()));
-                group.AddRange(elementIndeces);
-                yield return group;
+                var numbers = tokens.Skip(7).Select(int.Parse);
+
+                var objsType = "";
+                if (tokens[2] == "2")
+                    objsType = allElements[numbers.First()].ObjType;
+                else objsType = "Узлы";
+
+                var group = new GroupsData.Group(groupName, objsType);
+                foreach (var number in numbers)
+                {
+                    var obj = allElements[number];
+                    group.Add(obj);
+                }
+                model.GroupData.Add(group);
             }
+
         }
 
         private string ReplaceQuotes(string source)
@@ -127,15 +138,6 @@ namespace Model.IO
                 source = result;
             }
             return result;
-        }
-
-        private ObjKind GetGroupTypeByFirstIndex(int firstIndex)
-        {
-            if (elementIndexToObjectType.ContainsKey(firstIndex))
-                return elementIndexToObjectType[firstIndex];
-            else if (allNodes.ContainsKey(firstIndex))
-                return allNodes[firstIndex].ObjKind;
-            throw new ArgumentException($"Index {firstIndex} is not found in nodes and in element indeces");
         }
     }
 }

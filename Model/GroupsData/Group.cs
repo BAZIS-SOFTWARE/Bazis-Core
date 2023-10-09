@@ -1,4 +1,6 @@
-﻿using Model.Interfaces;
+﻿using Functions.Sort;
+using Model.Interfaces;
+using Model.ObjectsSorters;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,22 +10,103 @@ using System.Threading.Tasks;
 
 namespace Model.GroupsData
 {
-    public class Group : IList<int>
+    public class Group : IList<IModelObject>
     {
-        List<int> objNumbers = new List<int>();
-
+        List<IModelObject> objects = new List<IModelObject>();
+        /// <summary>
+        /// ViewState
+        /// </summary>
         public bool ViewState { get; set; } = true;
+        /// <summary>
+        /// GroupName
+        /// </summary>
+        public string GroupName { get; set; }
+        /// <summary>
+        /// ObjType
+        /// </summary>
+        public string ObjType { get; }
 
-        public int this[int ind]
+        
+/// <inheritdoc/>
+
+        public int Count
         {
-            get { return objNumbers[ind]; }
-            set { objNumbers[ind] = value; }
+            get { return objects.Count; }
         }
+
+        public bool IsReadOnly => false;
+
+
+        public IModelObject this[int key]
+        {
+            get { return objects[key]; }
+            set { objects[key] = value; }
+        }
+/// <inheritdoc/>
 
         public override string ToString()
         {
-            var indStr = string.Join(" ", objNumbers.Select(x => x.ToString()));
-            return string.Format("{0} {1} {2} | {3}", GroupName, ObjType, objNumbers.Count, indStr);
+            var indStr = string.Join(" ", objects.Select(x => x.Number));
+            return string.Format("{0} {1} {2} | {3}", GroupName, ObjType, objects.Count, indStr);
+        }
+
+
+        public void Clear()
+        {
+            objects.Clear();
+        }
+
+        public IEnumerator<IModelObject> GetEnumerator()
+        {
+            foreach (var item in objects)
+            {
+                yield return item;
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        public int IndexOf(IModelObject item)
+        {
+            return objects.IndexOf(item);
+        }
+
+        public void Insert(int index, IModelObject item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveAt(int index)
+        {
+            objects.RemoveAt(index);
+        }
+
+        public void Add(IModelObject item)
+        {
+            objects.Add(item);
+        }
+
+        public void AddRange(IEnumerable<IModelObject> items)
+        {
+            objects.AddRange(items);
+        }
+
+        public bool Contains(IModelObject item)
+        {
+            return objects.Contains(item);
+        }
+
+        public void CopyTo(IModelObject[] array, int arrayIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Remove(IModelObject item)
+        {
+            return objects.Remove(item);
         }
 
         public Group(string groupName, ObjKind objKind)
@@ -49,92 +132,14 @@ namespace Model.GroupsData
             ViewState = true;
         }
 
-        public IEnumerable<int> ObjsNumbers
+        public bool Swap(int fInd, int sInd)
         {
-            get
-            {
-                foreach (var number in objNumbers)
-                {
-                    yield return number;
-                }
-            }
+            return objects.SwapList(fInd, sInd);
         }
 
-        public void AddRange(IEnumerable<int> list)
+        public void SortByDistance()
         {
-
-            objNumbers.AddRange(list);
-        }
-
-        public void Add(int ind)
-        {
-            objNumbers.Add(ind);
-        }
-
-        public int Count
-        {
-            get
-            {
-                return objNumbers.Count;
-            }
-        }
-
-        public void ReverseIndex()
-        {
-            objNumbers.Reverse();
-        }
-
-        public string GroupName { get; set; }
-        public string ObjType { get; internal set; }
-
-        public bool IsReadOnly => throw new NotImplementedException();
-
-        public bool Remove(int index)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int IndexOf(int item)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Insert(int index, int item)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void RemoveAt(int index)
-        {
-            objNumbers.RemoveAt(index);
-        }
-
-        public void Clear()
-        {
-            objNumbers.Clear();
-        }
-
-        public bool Contains(int item)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CopyTo(int[] array, int arrayIndex)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerator<int> GetEnumerator()
-        {
-            foreach (var number in objNumbers)
-            {
-                yield return number;
-            }
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            throw new NotImplementedException();
+            objects.SortByDistance();
         }
     }
 }

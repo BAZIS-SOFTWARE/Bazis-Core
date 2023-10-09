@@ -35,6 +35,16 @@ namespace GmshApi.GmshController
     public class GmshController
     {
         public IntPtr DLL { get; private set; }
+
+        private string GetStringPtr(IntPtr name)
+        {
+            return Marshal.PtrToStringAnsi(name);
+        }
+
+        string[] geomExtensions = new string[]
+        {
+            "step","stp","brep","iges","igs"
+        }; 
         #region "Initialization Delegates"
             public delegate void gmshInitializeFun(int argc, ref string argv, int readConfigFile, int run, ref int ierr);
             public gmshInitializeFun gmshInitialize;
@@ -411,7 +421,11 @@ namespace GmshApi.GmshController
             gmshOptionGetString(name, ref unmanagedString, ref ierr);
             var status = ierr == 0;
             if (status)
-                value = GetString(unmanagedString);
+            {
+                value = GetStringPtr(unmanagedString);
+                gmshFree(unmanagedString);
+            }
+
             return status;
         }
         #endregion
@@ -424,7 +438,11 @@ namespace GmshApi.GmshController
             gmshModelGetFileName(ref unmanagedString, ref ierr);
             var status = ierr == 0;
             if (status)
-                fileName = GetString(unmanagedString);
+            {
+                fileName = GetStringPtr(unmanagedString);
+                gmshFree(unmanagedString);
+            }
+
             return status;
         }
 
@@ -449,12 +467,16 @@ namespace GmshApi.GmshController
             gmshModelGetCurrent(ref unmanagedString, ref ierr);
             var status = ierr == 0;
             if (status)
-                current = GetString(unmanagedString);
+            {
+                current = GetStringPtr(unmanagedString);
+                gmshFree(unmanagedString);
+            }
+
             return status;
         }
         #endregion
         #region "Geometry managed methods"
-        public bool ModelGetEntities(out int[] dimTags, int dim)
+        public bool ModelGetGeometryEntities(out int[] dimTags, int dim)
         {
             var ierr = 0;
             IntPtr dTags, dimTags_n;
@@ -462,9 +484,8 @@ namespace GmshApi.GmshController
             dimTags = null;
             string fileName;
             ModelGetFileName(out fileName);
-            var extension = Path.GetExtension(fileName);
-            if (extension.Contains("stp") || extension.Contains("step") ||
-                extension.Contains("brep") || extension.Contains("igs"))
+            var ext = Path.GetExtension(fileName);
+            if (geomExtensions.Contains(ext))
                 gmshModelOccGetEntities(ref dTags, ref dimTags_n, dim, ref ierr);
             else
                 gmshModelGetEntities(ref dTags, ref dimTags_n, dim, ref ierr);
@@ -474,7 +495,7 @@ namespace GmshApi.GmshController
             return status;
         }
 
-        public bool ModelGetEntityName(int dim, int tag, out string name)
+        public bool ModelGetGeometryEntityName(int dim, int tag, out string name)
         {
             IntPtr unmanagedString = IntPtr.Zero;
             var ierr = 0;
@@ -482,7 +503,11 @@ namespace GmshApi.GmshController
             gmshModelGetEntityName(dim, tag, ref unmanagedString, ref ierr);
             var status = ierr == 0;
             if (status)
-                name = GetString(unmanagedString);
+            {
+                name = GetStringPtr(unmanagedString);
+                gmshFree(unmanagedString);
+            }
+ 
             return status;
         }
 
@@ -658,7 +683,8 @@ namespace GmshApi.GmshController
                     elemProperties = null;
                     break;
                 }
-                elemProperties[i].elementName = GetString(elementName);
+                elemProperties[i].elementName = GetStringPtr(elementName);
+                gmshFree(elementName);
                 GetObjectsData(localeNodeCoord, out elemProperties[i].coords, localeNodeCoord_n);
                 elemProperties[i].coords_n = elemProperties[i].coords.Length;
             }
@@ -763,7 +789,11 @@ namespace GmshApi.GmshController
             gmshModelMeshFieldGetType(tag, ref fType, ref ierr);
             var status = ierr == 0;
             if (status)
-                fieldType = GetString(fType);
+            {
+                fieldType = GetStringPtr(fType);
+                gmshFree(fType);
+            }
+
             return status;
         }
 
@@ -775,7 +805,7 @@ namespace GmshApi.GmshController
             gmshModelMeshFieldGetString(tag, option, ref valueInt, ref ierr);
             var status = ierr == 0;
             if (status)
-                value = GetString(valueInt);
+                value = GetStringPtr(valueInt);
             return status;
         }
 
@@ -799,75 +829,62 @@ namespace GmshApi.GmshController
         {
             for (var i = 1; i < dimTags.Length; i += 2)
             {
-                if (!GetUpAdjacenciesRecursive(dimTags[i - 1], dimTags[i]))
+                if (!RemoveAdjointEntities(dimTags[i - 1], dimTags[i]))
                     return false;
-                if (!RemoveEntitiesEx(new int[] { dimTags[i - 1], dimTags[i] }, recursive))
+                if (!RemoveEntity(new int[] { dimTags[i - 1], dimTags[i] }, recursive))
                     return false;
             }
             return true;
         }
 
-        private bool RemoveEntitiesEx(int[] dimTags, bool recursive)
+        private bool RemoveEntity(int[] dimTags, bool recursive)
         {
             var ierr = 0;
             var recFlag = Convert.ToInt32(recursive);
             string fileName;
             ModelGetFileName(out fileName);
-            var extension = Path.GetExtension(fileName);
-            if (extension.Contains("stp") || extension.Contains("step") ||
-                extension.Contains("brep") || extension.Contains("igs"))
+            var ext = Path.GetExtension(fileName);
+            if (geomExtensions.Contains(ext))
                 gmshModelOccRemove(dimTags, (IntPtr)dimTags.Length, recFlag, ref ierr);
             else
                 gmshModelRemoveEntities(dimTags, (IntPtr)dimTags.Length, recFlag, ref ierr);
             return ierr == 0;
         }
 
-        private bool GetUpAdjacenciesRecursive(int dim, int tag)
+        private bool RemoveAdjointEntities(int dim, int tag)
         {
             int[] upward, downward;
             if (!ModelGetAdjacencies(dim, tag, out upward, out downward))
                 return false;
             for (var i = 0; i < upward.Length; ++i)
             {
-                if (!GetUpAdjacenciesRecursive(dim + 1, upward[i]))
+                if (!RemoveAdjointEntities(dim + 1, upward[i]))
                     return false;
             }
-            if (!RemoveEntitiesEx(new int[] { dim, tag }, false))
+            if (!RemoveEntity(new int[] { dim, tag }, false))
                 return false;
             return true;
         }
 
 
-        public List<ModelObject> GetGeometryEntities(ObjKind kind, ref bool status)
+        public List<ModelObject> CreateGeometryEntities(ObjKind kind, int[] dimTags)
         {
             int[] tags;
-            int[] dimTags;
+            tags = dimTags.Where((v, i) => (i & 1) == 1).ToArray();
             var entities = new List<ModelObject>();
-            status = false;
-            switch (kind)
+
+            if (kind == ObjKind.Point)
             {
-                case ObjKind.Point:
-                    if(ModelGetEntities(out dimTags,0))
-                    {
-                        tags = dimTags.Where((v, i) => (i & 1) == 1).ToArray();
-                        entities = CreateControlPoints(tags);
-                        status = true;
-                    }
-                    break;
-                case ObjKind.Curve:
-                case ObjKind.Beam:
-                    if (ModelGetEntities(out dimTags, 1))
-                    {
-                        tags = dimTags.Where((v, i) => (i & 1) == 1).ToArray();
-                        entities = CreateLines(tags, kind, ref status);
-                        status = true;
-                    }
-                    break;
+                return CreateControlPoints(tags);
             }
-            return entities;
+            else
+            {
+                var status = true;
+                return CreateLines(tags, ref status);
+            }
         }
 
-        private List<ModelObject> CreateLines(int[] tags, ObjKind kind, ref bool status)
+        private List<ModelObject> CreateLines(int[] tags, ref bool status)
         {
             var lines = new List<ModelObject>();
             double[] minBounds;
@@ -875,7 +892,7 @@ namespace GmshApi.GmshController
             status = true;
             for (var i = 0; i < tags.Length; ++i)
             {
-                if(!ModelGetParametrizationBounds(1, tags[i], out minBounds, out maxBounds))
+                if (!ModelGetParametrizationBounds(1, tags[i], out minBounds, out maxBounds))
                 {
                     status = false;
                     lines.Clear();
@@ -899,10 +916,8 @@ namespace GmshApi.GmshController
                     var line = new Node[] { new Node(num++, pair.Item1), new Node(num++, pair.Item2) };
                     nodes.AddRange(line);
                 }
-                if (kind == ObjKind.Curve)
-                    lines.Add(new Curve(tags[i], nodes.ToArray()));
-                else
-                    lines.Add(new Element1D(tags[i], nodes.ToArray(), kind));
+
+                lines.Add(new Line(tags[i], nodes.ToArray()));
             }
             return lines;
         }
@@ -941,7 +956,7 @@ namespace GmshApi.GmshController
                 }
                 var points = ConvertLocalCoordsToPoints3D(coords);
                 for (var j = 0; j < points.Length; ++j)
-                    nodes.Add(new Node(tags[i], points[j]));
+                    nodes.Add(new Node(tags[i], points[j],ObjKind.Point));
             }
             return nodes;
         }
@@ -957,7 +972,7 @@ namespace GmshApi.GmshController
             return points;
         }
 
-        public List<ModelObject> GetElements(int dim, int tag, ref bool status)
+        public List<ModelObject> GetMeshEntities(int dim, int tag, ref bool status)
         {
             ElementProperties[] properties;
             int[] elementTypes;
@@ -1036,11 +1051,7 @@ namespace GmshApi.GmshController
         private ModelObject CreateModelObject(ref string elementName,
                                                   long elementId, Node[] nodes)
         {
-            if (elementName.Contains("Point"))
-                return new Node((int)elementId, nodes[0].Position);
-            else if (elementName.Contains("Line"))
-                return new Element1D((int)elementId, nodes, ObjKind.Beam);
-            else if (elementName.Contains("Triangle"))
+            if (elementName.Contains("Triangle"))
                 return new Element2D((int)elementId, nodes, ObjKind.Triangle);
             else if (elementName.Contains("Quadrilateral"))
                 return new Element2D((int)elementId, nodes, ObjKind.Quad);
@@ -1086,13 +1097,6 @@ namespace GmshApi.GmshController
             Marshal.Copy(src, buffer, 0, size);
             Buffer.BlockCopy(buffer, 0, dst, 0, size);
             gmshFree(src);
-        }
-
-        private string GetString(IntPtr name)
-        {
-            var result = Marshal.PtrToStringAnsi(name);
-            gmshFree(name);
-            return result;
         }
 
         private string[] GetArrayOfString(IntPtr array, IntPtr length)

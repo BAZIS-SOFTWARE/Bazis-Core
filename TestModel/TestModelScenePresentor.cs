@@ -49,7 +49,7 @@ namespace TestModel
                 nodes.Add(new Node(i, new Geometry.Point3D(x, y, z)));
             }
 
-            ModelObject modelObject;
+            Model.ModelObject modelObject;
             switch (objType)
             {
                 case ObjType.Поверхности:

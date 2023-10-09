@@ -78,7 +78,7 @@ namespace Model.IO
             var index = 1;
             foreach (var group in groupData)
             {
-                var elements = string.Join(" ", group);
+                var elements = string.Join(" ", group.Select(x => x.Number));
                 writer.WriteLine($"{index++} {group.GroupName} 2 0 " +
                     $"\"PART_ID {index}\"  \"\"  \"PART built in Visual-Environment\" {elements}");
             }

@@ -1,15 +1,11 @@
 ﻿using Model.Interfaces;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Model.Utilities
+namespace Model.ObjectsFinders
 {
-    public static class ObjectsFinder
+    public static class ByNumberFinder
     {
-        public static T Find<T>(List<T> objs, int objNumbr) where T : IModelObject
+        public static T Find<T>(List<T> objs, int objNumbr) where T : Interfaces.IModelObject
         {
             if (objs.Count - 1 == -1) { return default(T); }
             var left = 0;
@@ -26,7 +22,7 @@ namespace Model.Utilities
             return default(T);
         }
 
-        public static T Find<T>(T[] objs, int objNumbr) where T : IModelObject
+        public static T Find<T>(T[] objs, int objNumbr) where T : Interfaces.IModelObject
         {
             if (objs.Length - 1 == -1) { return default(T); }
             var left = 0;

@@ -1,10 +1,8 @@
 ﻿using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
-using Model.Events;
 using Model.Interfaces;
-using Model.IO;
-using Model.Utilities;
+using Model.ObjectsFinders;
 
 namespace TestModel
 {
@@ -22,7 +20,7 @@ namespace TestModel
                 new Node(2,new Point3D(0,10,0)),
                 new Node(3,new Point3D(0,0,10)),
             };
-            var objs = new ModelObject[]
+            var objs = new Model.ModelObject[]
             {
                 new Element3D( 4,nodes, ObjKind.Tetra),
                 new Element3D(5,nodes,  ObjKind.Tetra),
@@ -34,7 +32,7 @@ namespace TestModel
             var model = new ModelData();
             model.ObjectData.AddRange(objs);
             //act
-            var element = ObjectsFinder.Find(objs, 8);
+            var element = ByNumberFinder.Find(objs, 8);
             //assert
             Assert.AreEqual(8, element.Number);
         }

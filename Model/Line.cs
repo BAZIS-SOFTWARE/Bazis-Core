@@ -16,10 +16,11 @@ namespace Model
         {
             ObjType = "Линия";
             NumberOfPoints = nodes.Length;
+            ObjKind = ObjKind.Curve;
             this.nodes = nodes;
         }
 
-        public override ObjKind ObjKind { get; }
+        public override ObjKind ObjKind { get;  }
         public override string ObjType { get; }
 
         public override int NumberOfPoints { get; }

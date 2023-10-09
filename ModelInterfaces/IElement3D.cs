@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Model.Interfaces
+namespace ModelInterfaces
 {
-    public interface IFinder
+    public interface IElement3D : ISurfaceElement
     {
+        float CalcVolume();
     }
 }

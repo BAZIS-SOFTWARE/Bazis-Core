@@ -25,6 +25,11 @@ namespace Model
             SlaveColor = Color.FromArgb(0, 0, 255);
         }
 
+        public Node(int number, Point3D position, ObjKind objKind) : this(number, position)
+        {
+            ObjKind = objKind;
+        }
+
         public override ObjKind ObjKind { get;}
 
         public override string ObjType { get; }

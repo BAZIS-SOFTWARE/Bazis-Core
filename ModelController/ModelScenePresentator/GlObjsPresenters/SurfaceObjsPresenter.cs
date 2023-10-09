@@ -1,6 +1,6 @@
 ﻿using Model;
 using Model.Interfaces;
-using Model.Utilities;
+using Model.ObjectsFinders;
 using ModelController.ModelScenePresentator.GlObjsVertexCreators;
 using ModelController.ModelScenePresentator.Interfaces;
 using System;
@@ -163,7 +163,7 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
         }    
 /// <inheritdoc/>
 
-        public override IEnumerable<IModelObject> GetObjs()
+        public override IEnumerable<Model.Interfaces.IModelObject> GetObjs()
         {
             foreach (var surfaceElement in surfaceElements)
             {
@@ -171,12 +171,12 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
             }
         }
 
-        public override IModelObject FindObj(int objNumbr)
+        public override Model.Interfaces.IModelObject FindObj(int objNumbr)
         {
-            return ObjectsFinder.Find(surfaceElements, objNumbr);
+            return ByNumberFinder.Find(surfaceElements, objNumbr);
         }
 
-        public override IEnumerable<IModelObject> GetObjs(Color color)
+        public override IEnumerable<Model.Interfaces.IModelObject> GetObjs(Color color)
         {
             foreach (var surfaceElement in surfaceElements)
             {

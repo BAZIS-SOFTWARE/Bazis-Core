@@ -7,7 +7,7 @@ using System.Globalization;
 using System.Collections.Generic;
 using Model.GroupsData;
 using Model.Events;
-using Model.Utilities;
+using Model.ObjectsFinders;
 
 namespace Model.IO
 {
@@ -72,7 +72,7 @@ namespace Model.IO
             var nodeArr = new Node[selectedNodesId.Length];
             for (int i = 0; i < nodeArr.Length; i++)
             {
-                nodeArr[i] = ObjectsFinder.Find(nodes, selectedNodesId[i]);
+                nodeArr[i] = ByNumberFinder.Find(nodes, selectedNodesId[i]);
             }
             switch(elementType)
             {
@@ -136,7 +136,12 @@ namespace Model.IO
                     strAr = line.Replace(" ", "").Split(',');
                     var objsNumbers = strAr.Where(x => !string.IsNullOrEmpty(x)).Select(y =>
                     dic[int.Parse(y)]);
-                    group.AddRange(objsNumbers);
+                    foreach (var number in objsNumbers)
+                    {
+                        var obj = newMesh.ObjectData.Find(number);
+                        group.Add(obj);
+                    }
+
                     line = reader.ReadLine();
                 }
                 newMesh.GroupData.Add(group);

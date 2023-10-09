@@ -12,13 +12,13 @@ namespace ModelController
 {
     public class ModelSceneSelector
     {
-        IModelObject[] modelObjects;
+        Model.Interfaces.IModelObject[] modelObjects;
 
         public string ObjsType {get;}
 
         public int NumberOfObjects { get { return modelObjects.Length; } }
 
-        public ModelSceneSelector(IModelObject[] modelObjects, string objsType)
+        public ModelSceneSelector(Model.Interfaces.IModelObject[] modelObjects, string objsType)
         {
             this.modelObjects = modelObjects;
             ObjsType = objsType;

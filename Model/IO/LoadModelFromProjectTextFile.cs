@@ -9,7 +9,7 @@ using System.Linq;
 using System.Threading;
 using Geometry;
 using Model.Events;
-using Model.Utilities;
+using Model.ObjectsFinders;
 
 namespace Model.IO
 {
@@ -102,7 +102,7 @@ namespace Model.IO
 
                 var nodeList = new List<Node>();
                 foreach (var nodeNumber in ar)
-                    nodeList.Add(ObjectsFinder.Find(nodes,nodeNumber));
+                    nodeList.Add(ByNumberFinder.Find(nodes,nodeNumber));
 
                 if (elType == "Элементы3D" | elType == "Элементы 3004")
                 {
@@ -141,9 +141,13 @@ namespace Model.IO
                     var name = splitLine[1].Split(' ')[1];
                     var nodeGroup = new Group(name, "Узлы");
                     var indexLine = splitLine[1].Remove(0, name.Length + 2);
-                    var index = indexLine.Split(' ').Select(x => int.Parse(x)).ToList();
+                    var indexes = indexLine.Split(' ').Select(x => int.Parse(x)).ToList();
 
-                    nodeGroup.AddRange(index);
+                    foreach (var index in indexes)
+                    {
+                        var obj = newMesh.ObjectData.Find(index);
+                        nodeGroup.Add(obj);
+                    }
                     newMesh.GroupData.Add(nodeGroup);
                 }
                 if (splitLine[0] == "Группа элементов 3D ")
@@ -169,7 +173,13 @@ namespace Model.IO
                 //var startInd = GetElStartInd(newMesh, objType, version);
                 var indexes = indexLine.Split(' ').Select(x => int.Parse(x)).ToList();
                 indexes.Sort();
-                newGroup.AddRange(indexes);
+
+                foreach (var index in indexes)
+                {
+                    var obj = newMesh.ObjectData.Find(index);
+                    newGroup.Add(obj);
+                }
+
                 newMesh.GroupData.Add(newGroup);
             }
         }

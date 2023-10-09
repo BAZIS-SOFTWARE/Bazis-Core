@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Model.Interfaces
+namespace ModelInterfaces
 {
-    public interface IGetModelGroupInfo
+    public interface ILineObject : INodeObject
     {
-        List<string> GetModelGroupInfo(string objName);
+        float CalcLength();
     }
 }

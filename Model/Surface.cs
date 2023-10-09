@@ -159,7 +159,7 @@ namespace Model
             var svectors = nodes[2].Position.Sub(nodes[0].Position);
             return Vector.CrossProd(fvectors, svectors);
         }
-        /// <inheritdoc/>
+/// <inheritdoc/>
 
         public IEnumerable<Node> GetNodes()
         {

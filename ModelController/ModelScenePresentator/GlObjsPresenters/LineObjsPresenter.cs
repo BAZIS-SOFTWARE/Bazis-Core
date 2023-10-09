@@ -1,6 +1,5 @@
-﻿using Model;
-using Model.Interfaces;
-using Model.Utilities;
+﻿using Model.Interfaces;
+using Model.ObjectsFinders;
 using ModelController.ModelScenePresentator.GlObjsVertexCreators;
 using ModelController.ModelScenePresentator.Interfaces;
 using System;
@@ -111,7 +110,7 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
 
         public override IModelObject FindObj(int objNumbr)
         {
-            return ObjectsFinder.Find(lineObjects, objNumbr);
+            return ByNumberFinder.Find(lineObjects, objNumbr);
         }
 /// <inheritdoc/>
 

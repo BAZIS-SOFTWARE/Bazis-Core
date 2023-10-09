@@ -1,10 +1,9 @@
 ﻿using Geometry;
 using Model;
-using Model.Utilities;
+using Model.ObjectsFinders;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 
 
@@ -37,8 +36,8 @@ namespace ModelController.MeshObjsUtility
             
             var nodes = objectsData.FindMany<Node>().ToArray();
             
-            var firstNode = ObjectsFinder.Find(nodes, indexFirst);
-            var secondNode = ObjectsFinder.Find(nodes, indexSecond);
+            var firstNode = ByNumberFinder.Find(nodes, indexFirst);
+            var secondNode = ByNumberFinder.Find(nodes, indexSecond);
 
             var previousDirection = secondNode.Position.Sub(firstNode.Position);
             var result = new HashSet<int> { indexFirst, indexSecond };
@@ -49,7 +48,7 @@ namespace ModelController.MeshObjsUtility
                 isMoveNext = false;
                 foreach(var elementNumber in interfacedElements[currentNode.Number])
                 {           
-                    var element = ObjectsFinder.Find(elements, elementNumber);
+                    var element = ByNumberFinder.Find(elements, elementNumber);
                     foreach(var node in element.GetNodes())
                     {
                         var currentDirection = node.Position.Sub(currentNode.Position);
@@ -102,12 +101,12 @@ namespace ModelController.MeshObjsUtility
             while(queue.Count > 0)
             {
                 var currentNumber = queue.Dequeue();
-                var currentElement = ObjectsFinder.Find(elements, currentNumber);
+                var currentElement = ByNumberFinder.Find(elements, currentNumber);
                 foreach (var neighbourNumber in graph[currentNumber])
                 {
                     if(!used.Contains(neighbourNumber))
                     {
-                        var neighbourElement = ObjectsFinder.Find(elements, neighbourNumber);
+                        var neighbourElement = ByNumberFinder.Find(elements, neighbourNumber);
                         var cos = Vector.GetAngleVectors(currentElement.CalcNormal(), neighbourElement.CalcNormal());
                         var angleRadian = Math.Acos(Math.Abs(cos));
                         if (angleRadian <= maxAngleRadians)

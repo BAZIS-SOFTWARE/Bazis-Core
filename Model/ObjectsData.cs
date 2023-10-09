@@ -1,8 +1,7 @@
 ﻿using Functions.Sort;
-using Model.Comparers;
 using Model.Interfaces;
 using Model.ObjectsComparers;
-using Model.Utilities;
+using Model.ObjectsFinders;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -160,7 +159,7 @@ namespace Model
 
         public ModelObject Find(int objNumbr)
         {
-            return ObjectsFinder.Find(modelObjects, objNumbr);
+            return ByNumberFinder.Find(modelObjects, objNumbr);
         }
 
         public List<string> GetObjectTypes()
