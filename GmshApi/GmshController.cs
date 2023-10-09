@@ -35,6 +35,11 @@ namespace GmshApi.GmshController
     public class GmshController
     {
         public IntPtr DLL { get; private set; }
+
+        string[] geomExtensions = new string[]
+        {
+            "step","stp","brep","iges","igs"
+        }; 
         #region "Initialization Delegates"
             public delegate void gmshInitializeFun(int argc, ref string argv, int readConfigFile, int run, ref int ierr);
             public gmshInitializeFun gmshInitialize;
@@ -799,40 +804,39 @@ namespace GmshApi.GmshController
         {
             for (var i = 1; i < dimTags.Length; i += 2)
             {
-                if (!GetUpAdjacenciesRecursive(dimTags[i - 1], dimTags[i]))
+                if (!RemoveAdjointEntities(dimTags[i - 1], dimTags[i]))
                     return false;
-                if (!RemoveEntitiesEx(new int[] { dimTags[i - 1], dimTags[i] }, recursive))
+                if (!RemoveEntity(new int[] { dimTags[i - 1], dimTags[i] }, recursive))
                     return false;
             }
             return true;
         }
 
-        private bool RemoveEntitiesEx(int[] dimTags, bool recursive)
+        private bool RemoveEntity(int[] dimTags, bool recursive)
         {
             var ierr = 0;
             var recFlag = Convert.ToInt32(recursive);
             string fileName;
             ModelGetFileName(out fileName);
-            var extension = Path.GetExtension(fileName);
-            if (extension.Contains("stp") || extension.Contains("step") ||
-                extension.Contains("brep") || extension.Contains("igs"))
+            var ext = Path.GetExtension(fileName);
+            if (geomExtensions.Contains(ext))
                 gmshModelOccRemove(dimTags, (IntPtr)dimTags.Length, recFlag, ref ierr);
             else
                 gmshModelRemoveEntities(dimTags, (IntPtr)dimTags.Length, recFlag, ref ierr);
             return ierr == 0;
         }
 
-        private bool GetUpAdjacenciesRecursive(int dim, int tag)
+        private bool RemoveAdjointEntities(int dim, int tag)
         {
             int[] upward, downward;
             if (!ModelGetAdjacencies(dim, tag, out upward, out downward))
                 return false;
             for (var i = 0; i < upward.Length; ++i)
             {
-                if (!GetUpAdjacenciesRecursive(dim + 1, upward[i]))
+                if (!RemoveAdjointEntities(dim + 1, upward[i]))
                     return false;
             }
-            if (!RemoveEntitiesEx(new int[] { dim, tag }, false))
+            if (!RemoveEntity(new int[] { dim, tag }, false))
                 return false;
             return true;
         }
@@ -855,11 +859,10 @@ namespace GmshApi.GmshController
                     }
                     break;
                 case ObjKind.Curve:
-                case ObjKind.Beam:
                     if (ModelGetEntities(out dimTags, 1))
                     {
                         tags = dimTags.Where((v, i) => (i & 1) == 1).ToArray();
-                        entities = CreateLines(tags, kind, ref status);
+                        entities = CreateLines(tags, ref status);
                         status = true;
                     }
                     break;
@@ -867,7 +870,7 @@ namespace GmshApi.GmshController
             return entities;
         }
 
-        private List<ModelObject> CreateLines(int[] tags, ObjKind kind, ref bool status)
+        private List<ModelObject> CreateLines(int[] tags, ref bool status)
         {
             var lines = new List<ModelObject>();
             double[] minBounds;
@@ -875,7 +878,7 @@ namespace GmshApi.GmshController
             status = true;
             for (var i = 0; i < tags.Length; ++i)
             {
-                if(!ModelGetParametrizationBounds(1, tags[i], out minBounds, out maxBounds))
+                if (!ModelGetParametrizationBounds(1, tags[i], out minBounds, out maxBounds))
                 {
                     status = false;
                     lines.Clear();
@@ -899,10 +902,8 @@ namespace GmshApi.GmshController
                     var line = new Node[] { new Node(num++, pair.Item1), new Node(num++, pair.Item2) };
                     nodes.AddRange(line);
                 }
-                if (kind == ObjKind.Curve)
-                    lines.Add(new Curve(tags[i], nodes.ToArray()));
-                else
-                    lines.Add(new Element1D(tags[i], nodes.ToArray(), kind));
+
+                lines.Add(new Line(tags[i], nodes.ToArray()));
             }
             return lines;
         }
@@ -957,7 +958,7 @@ namespace GmshApi.GmshController
             return points;
         }
 
-        public List<ModelObject> GetElements(int dim, int tag, ref bool status)
+        public List<ModelObject> GetMeshEntities(int dim, int tag, ref bool status)
         {
             ElementProperties[] properties;
             int[] elementTypes;
@@ -1036,11 +1037,7 @@ namespace GmshApi.GmshController
         private ModelObject CreateModelObject(ref string elementName,
                                                   long elementId, Node[] nodes)
         {
-            if (elementName.Contains("Point"))
-                return new Node((int)elementId, nodes[0].Position);
-            else if (elementName.Contains("Line"))
-                return new Element1D((int)elementId, nodes, ObjKind.Beam);
-            else if (elementName.Contains("Triangle"))
+            if (elementName.Contains("Triangle"))
                 return new Element2D((int)elementId, nodes, ObjKind.Triangle);
             else if (elementName.Contains("Quadrilateral"))
                 return new Element2D((int)elementId, nodes, ObjKind.Quad);
