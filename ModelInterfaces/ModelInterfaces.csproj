@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net48</TargetFrameworks>
@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Geometry" Version="2.0.5.82" />
+    <PackageReference Include="Geometry" Version="2.0.7.5" />
   </ItemGroup>
 
 </Project>

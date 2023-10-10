@@ -3,6 +3,7 @@ using Model.Interfaces;
 using Model.ObjectsFinders;
 using ModelController.ModelScenePresentator.GlObjsVertexCreators;
 using ModelController.ModelScenePresentator.Interfaces;
+using ModelControllerInterface;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -10,11 +11,11 @@ using System.Linq;
 
 namespace ModelController.ModelScenePresentator.GlObjsPresenters
 {
-    public class SurfaceObjsPresenter : ObjsPresenter
+    public class SurfaceObjsPresenter : IObjsPresenter
     {
         ISurfaceObject [] surfaceElements;
 
-        public override IModelObject this[int index]
+        public IModelObject this[int index]
         {
             get { return surfaceElements[index]; }
         }
@@ -56,7 +57,7 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
         }
 /// <inheritdoc/>
 
-        public override Tuple<int, int, int,int> CreateIndexes()
+        public Tuple<int, int, int,int> CreateIndexes()
         {
             var pointers = 0;
             var vertexes = 0;
@@ -83,7 +84,7 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
         }
 /// <inheritdoc/>
 
-        public override int[] CreatePointers(int indexLength)
+        public int[] CreatePointers(int indexLength)
         {
             var ptr = new int[indexLength];
             var stride = 0;
@@ -111,7 +112,7 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
         }
 /// <inheritdoc/>
 
-        public override float[] CreateVertexes(int vertexLength,string vertexType)
+        public float[] CreateVertexes(int vertexLength,string vertexType)
         {
             var vertexArray = new float[vertexLength];
             var stride = 0;
@@ -136,7 +137,7 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
         }
 /// <inheritdoc/>
 
-        public override bool[] CreateEdgeFlags(int edgesLength)
+        public bool[] CreateEdgeFlags(int edgesLength)
         {
             var edgesArray = new bool[edgesLength];
             var stride = 0;
@@ -157,13 +158,13 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
         }
 /// <inheritdoc/>
 
-        public override int Count()
+        public int Count()
         {
             return surfaceElements.Length;
         }    
 /// <inheritdoc/>
 
-        public override IEnumerable<Model.Interfaces.IModelObject> GetObjs()
+        public IEnumerable<Model.Interfaces.IModelObject> GetObjs()
         {
             foreach (var surfaceElement in surfaceElements)
             {
@@ -171,12 +172,12 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
             }
         }
 
-        public override Model.Interfaces.IModelObject FindObj(int objNumbr)
+        public Model.Interfaces.IModelObject FindObj(int objNumbr)
         {
             return ByNumberFinder.Find(surfaceElements, objNumbr);
         }
 
-        public override IEnumerable<Model.Interfaces.IModelObject> GetObjs(Color color)
+        public IEnumerable<Model.Interfaces.IModelObject> GetObjs(Color color)
         {
             foreach (var surfaceElement in surfaceElements)
             {
