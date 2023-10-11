@@ -29,7 +29,6 @@
   <ItemGroup>
     <Compile Include="GmshController.cs" />
     <Compile Include="GmshKernel.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icon.png" />
@@ -38,7 +37,7 @@
     <None Include="GmshApiKey.snk" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Geometry" Version="2.0.7.5" />
+    <PackageReference Include="Geometry" Version="2.0.7.8" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Model\Model.csproj" />

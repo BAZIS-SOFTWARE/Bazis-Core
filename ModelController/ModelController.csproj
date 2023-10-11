@@ -49,7 +49,6 @@
     <Compile Include="ModelScenePresentator\GlObjsVertexCreators\NormalsLineObjsCreator.cs" />
     <Compile Include="ModelScenePresentator\GlObjsVertexCreators\NormalsPointObjsCreator.cs" />
     <Compile Include="ModelScenePresentator\GlObjsVertexCreators\NormalsSurfaceObjsCreator.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ModelScenePresentator\GlObjsVertexCreators\ColorLineObjsCreator.cs" />
     <Compile Include="ModelScenePresentator\GlObjsVertexCreators\ColorPointObjsCreator.cs" />
     <Compile Include="ModelScenePresentator\GlObjsVertexCreators\ColorSurfaceObjsCreator.cs" />
