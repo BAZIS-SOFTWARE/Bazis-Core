@@ -1,9 +1,8 @@
 ﻿using Geometry;
 using Model;
 using Model.Interfaces;
-using ModelController.MeshObjsUtility;
 using ModelController.ModelScenePresentator.GlObjsPresenters;
-using ModelControllerInterface;
+using ModelScenePresentatorInterface;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -194,10 +193,32 @@ namespace ModelController.ModelScenePresentator
         {
             throw new NotImplementedException();
         }
+/// <inheritdoc/>
 
         public bool Remove(KeyValuePair<string, IObjsPresenter> item)
         {
             throw new NotImplementedException();
+        }
+/// <inheritdoc/>
+
+        public IObjsPresenter CreatePresenter(ModelObject[] modelObjects)
+        {
+            var objsType = modelObjects.First().ObjType;
+
+            if(objsType == "Узлы")
+            {
+                return new PointObjsPresenter(modelObjects);
+            }
+            else if(objsType == "Элементы1D" | objsType == "Линии")
+            {
+                var lineObjs = modelObjects.Select(x => (ILineObject)x);
+                return new LineObjsPresenter(lineObjs.ToArray());
+            }
+            else
+            {
+                var surfaceObjs = modelObjects.Select(x => (ISurfaceObject)x);
+                return new SurfaceObjsPresenter(surfaceObjs.ToArray());
+            }            
         }
     }
 }

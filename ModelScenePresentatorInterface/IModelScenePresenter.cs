@@ -1,16 +1,20 @@
-﻿using System;
+﻿using Model;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ModelControllerInterface
+namespace ModelScenePresentatorInterface
 {
     /// <summary>
     /// IModelPresenter
     /// </summary>
     public interface IModelScenePresenter : IDictionary<string, IObjsPresenter>
     {
+        /// <summary>
+        /// CreatePresenter
+        /// </summary>
+        /// <param name="modelObjects"></param>
+        /// <returns></returns>
+        IObjsPresenter CreatePresenter(ModelObject[] modelObjects);
         /// <summary>
         /// CreateVBOIndexes
         /// </summary>

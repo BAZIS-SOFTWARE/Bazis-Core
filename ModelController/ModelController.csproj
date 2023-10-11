@@ -4,7 +4,7 @@
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>ModelController</Title>
-    <Version>1.0.10.73</Version>
+    <Version>1.0.10.75</Version>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>ModelControllerKey.snk</AssemblyOriginatorKeyFile>
@@ -63,7 +63,7 @@
     <PackageReference Include="NetOctree" Version="2.1.10" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ModelControllerInterface\ModelControllerInterface.csproj" />
+    <ProjectReference Include="..\ModelScenePresentatorInterface\ModelScenePresentatorInterface.csproj" />
     <ProjectReference Include="..\Model\Model.csproj" />
   </ItemGroup>
 </Project>
