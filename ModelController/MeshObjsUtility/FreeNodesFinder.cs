@@ -18,7 +18,7 @@ namespace ModelController.MeshObjsUtility
         public IEnumerable<int> Find<T>() where T : Element
         {
             var elements = objsData.FindMany<T>().ToArray();
-            var finder = new FindInterfacedNodes(elements);
+            var finder = new InterfacedNodesFinder(elements);
             var interfaceNodes = finder.Find();
 
             var nodesNumbersAll = objsData.FindMany<Node>().Select(x => x.Number);

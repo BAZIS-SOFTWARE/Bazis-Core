@@ -2,7 +2,7 @@
 using Model;
 using Model.Interfaces;
 using ModelController.ModelScenePresentator.GlObjsPresenters;
-using ModelScenePresentatorInterface;
+using ModelControllerInterfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;

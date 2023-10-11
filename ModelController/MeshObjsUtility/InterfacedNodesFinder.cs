@@ -10,11 +10,11 @@ namespace ModelController.MeshObjsUtility
     /// <summary>
     /// По номеру узла возвращает список элементов, сопряжённых через данный узел
     /// </summary>
-    public class FindInterfacedNodes
+    public class InterfacedNodesFinder
     {
         private Element[] elements;
 
-        public FindInterfacedNodes(Element[] elements)
+        public InterfacedNodesFinder(Element[] elements)
         {
             this.elements = elements;
         }

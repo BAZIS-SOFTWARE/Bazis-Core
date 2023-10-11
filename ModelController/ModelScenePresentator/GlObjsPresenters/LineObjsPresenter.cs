@@ -2,7 +2,7 @@
 using Model.ObjectsFinders;
 using ModelController.ModelScenePresentator.GlObjsVertexCreators;
 using ModelController.ModelScenePresentator.Interfaces;
-using ModelScenePresentatorInterface;
+using ModelControllerInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

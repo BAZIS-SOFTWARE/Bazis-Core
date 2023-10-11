@@ -8,7 +8,7 @@
     <SignAssembly>True</SignAssembly>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>ModelScenePresentatorInterface</Title>
-    <Version>1.0.0.4</Version>
+    <Version>1.0.0.6</Version>
     <Authors>Bilenko Georgy</Authors>
     <Company>BAZIS SOFTWARE</Company>
     <Product>BAZIS</Product>
