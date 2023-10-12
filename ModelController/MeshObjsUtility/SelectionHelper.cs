@@ -32,7 +32,7 @@ namespace ModelController.MeshObjsUtility
             where T : SurfaceElement
         {
             var elements = objectsData.FindMany<T>().ToArray();
-            var interfacedElements = new InterfacedNodesFinder(elements).Find();
+            var interfacedElements = new InterfacedNodesFinder().Find(elements);
             
             var nodes = objectsData.FindMany<Node>().ToArray();
             
@@ -128,8 +128,8 @@ namespace ModelController.MeshObjsUtility
         private Dictionary<int, List<int>> GetAdjacentElements(SurfaceElement[] elements)
         {
             var graph = new Dictionary<int, List<int>>();
-            var finder = new InterfacedNodesFinder(elements);
-            var interfacedNodes = finder.Find();
+            var finder = new InterfacedNodesFinder();
+            var interfacedNodes = finder.Find(elements);
             foreach (var element in elements)
             {
                 var nodes = element.GetNodes();

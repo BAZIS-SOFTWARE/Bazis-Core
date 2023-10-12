@@ -22,8 +22,8 @@ namespace ModelController.MeshObjsUtility
 
             var els = modelData.ObjectData.FindMany<SurfaceElement>().ToArray();
 
-            var finder = new InterfacedNodesFinder(els);
-            var interfacedNodes = finder.Find();
+            var finder = new InterfacedNodesFinder();
+            var interfacedNodes = finder.Find(els);
 
             //List<int> openSurfNodes = FindOpenSurfacedNodes(objects);
 

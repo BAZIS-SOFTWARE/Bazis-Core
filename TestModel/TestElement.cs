@@ -78,10 +78,10 @@ namespace TestModel
             model.ObjectData.Add(el1);
 
 
-            var creators = new Extract2DFrom3D(model.ObjectData.FindMany<Element3D>().ToArray());
+            var creators = new Extract2DFrom3D();
 
             var startNumber = model.ObjectData.GetLastObjNumber() + 1;
-            var element2D = creators.Create(startNumber);
+            var element2D = creators.Create(startNumber, model.ObjectData.FindMany<Element3D>().ToArray());
 
             model.ObjectData.AddRange(element2D);    
 

@@ -1,4 +1,5 @@
 ﻿using Model;
+using ModelControllerInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,21 +11,17 @@ namespace ModelController.MeshObjsCreator
     /// <summary>
     /// Extract2DFrom3D
     /// </summary>
-    public class Extract2DFrom3D
+    public class Extract2DFrom3D : IExtractor2DFrom3D
     {
-        Element3D[] elements;
-        public Extract2DFrom3D(Element3D[] elements)
-        {
-            this.elements = elements;
-        }
         /// <summary>
         /// Create
         /// </summary>
         /// <param name="StartNumber"></param>
+        /// <param name="elements"></param>
         /// <returns></returns>
-        public Element2D[] Create(int StartNumber)
+        public Element2D[] Create(int StartNumber, Element3D[] elements)
         {
-            var surfaces = FindOpenSurfaces();
+            var surfaces = FindOpenSurfaces(elements);
             var elements2D = new Element2D[surfaces.Count];
 
             for (int i = 0; i < surfaces.Count; i++)
@@ -40,7 +37,7 @@ namespace ModelController.MeshObjsCreator
         /// FindOpenSurfaces
         /// </summary>
         /// <returns></returns>
-        public List<Surface> FindOpenSurfaces()
+        public List<Surface> FindOpenSurfaces(Element3D[] elements)
         {
             var surfDict = new Dictionary<string, List<Surface>>();
 

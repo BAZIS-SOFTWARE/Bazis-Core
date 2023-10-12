@@ -12,34 +12,20 @@ namespace ModelController
     public class ModelController : IModelController
     {
         /// <inheritdoc/>
-        public IModelScenePresenter ModelPresentor { get; internal set; } 
+        public IModelScenePresenter ModelPresentor { get; internal set; }
 /// <inheritdoc/>
+
+        public IInterfacedNodesFinder InterfacedNodesFinder { get; } = new InterfacedNodesFinder();
+/// <inheritdoc/>
+
+        public IExtractor2DFrom3D Extractor2DFrom3D { get; } = new Extract2DFrom3D();
+
+        /// <inheritdoc/>
 
         public void CreateModelPresenter(ModelData modelData)
         {
             ModelPresentor = new ModelScenePresentator.ModelScenePresentator(modelData);
         }
-/// <inheritdoc/>
 
-        public Element2D[] Extract2DFrom3D(int startInd, Element3D[] elements)
-        {
-            var extractor = new Extract2DFrom3D(elements);
-            return extractor.Create(startInd);
-        }
-
-        /// <inheritdoc/>
-
-        public Dictionary<int, List<int>> FindInterfacedNodes(List<int> nodes, Element[] elements)
-        {
-            var finder = new InterfacedNodesFinder(elements);
-            return finder.Find(nodes);
-        }
-/// <inheritdoc/>
-
-        public Dictionary<int, List<int>> FindInterfacedNodes(Element[] elements)
-        {
-            var finder = new InterfacedNodesFinder(elements);
-            return finder.Find();
-        }
     }
 }
