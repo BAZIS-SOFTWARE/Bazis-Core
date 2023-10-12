@@ -400,5 +400,22 @@ namespace TestModel.GmshTests
             Assert.AreNotEqual(el2dCount, newEl2dCount);
             controller.gmshModelMeshFieldRemove(0, ref ierr);
         }
+
+        [DataTestMethod]
+        [DataRow("Cilindr.step")]
+        public void TransfiniteSurfaceTest(string fileName)
+        {
+            var ierr = 0;
+            controller.gmshOpen(modelFolder + fileName, ref ierr);
+            controller.gmshModelMeshGenerate(2, ref ierr);
+            var status = false;
+            var beforeCount = controller.GetMeshEntities(2, -1, ref status).Count;
+            controller.gmshModelMeshGenerate(1, ref ierr);
+            controller.gmshModelMeshSetTransfiniteSurface(1, "Left", new int[] { 4 }, (IntPtr)1, ref ierr);
+            Assert.IsTrue(ierr == 0);
+            controller.gmshModelMeshGenerate(2, ref ierr);
+            var afterCount = controller.GetMeshEntities(2, -1, ref status).Count;
+            Assert.IsTrue(afterCount != beforeCount);
+        }
     }
 }
