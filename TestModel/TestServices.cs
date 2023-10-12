@@ -108,7 +108,7 @@ namespace TestModel
             var elements = model.ObjectData.FindMany<Element3D>().ToArray();
             var nodes = model.ObjectData.FindMany<Node>();
 
-            var interNodesFinder = new FindInterfacedNodes(elements);
+            var interNodesFinder = new InterfacedNodesFinder(elements);
             var edgeFinder = new FindBoundaryEdges(model);
 
             var interNodes = interNodesFinder.Find();
@@ -142,8 +142,8 @@ namespace TestModel
             var els3D = model.ObjectData.FindMany<Element3D>();
             var els2D = model.ObjectData.FindMany<Element2D>();
 
-            var interNodesEls3DFinder = new FindInterfacedNodes(els3D.ToArray());
-            var interNodesEls2DFinder = new FindInterfacedNodes(els2D.ToArray());
+            var interNodesEls3DFinder = new InterfacedNodesFinder(els3D.ToArray());
+            var interNodesEls2DFinder = new InterfacedNodesFinder(els2D.ToArray());
 
             var interfacedNodesEls3D = interNodesEls3DFinder.Find(new List<int>() { 3, 48, 71 });
 

@@ -4,7 +4,7 @@
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>ModelController</Title>
-    <Version>1.0.10.72</Version>
+    <Version>1.0.10.77</Version>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>ModelControllerKey.snk</AssemblyOriginatorKeyFile>
@@ -22,8 +22,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MeshObjsUtility\CrossSection.cs" />
+    <Compile Include="ModelController.cs" />
     <Compile Include="ModelScenePresentator\GlObjsPresenters\LineObjsPresenter.cs" />
-    <Compile Include="ModelScenePresentator\GlObjsPresenters\ObjsPresenter.cs" />
     <Compile Include="ModelScenePresentator\GlObjsPresenters\PointObjsPresenter.cs" />
     <Compile Include="ModelScenePresentator\GlObjsPresenters\SurfaceObjsPresenter.cs" />
     <Compile Include="ModelScenePresentator\GlObjsVertexCreators\CoordsLineObjsCreator.cs" />
@@ -36,7 +36,7 @@
     <Compile Include="ModelScenePresentator\Interfaces\ISurfaceObjsVertexCreator.cs" />
     <Compile Include="MeshObjsCreator\Extract2DFrom3D.cs" />
     <Compile Include="MeshObjsUtility\FindCoincidentObjects.cs" />
-    <Compile Include="MeshObjsUtility\FindInterfacedNodes.cs" />
+    <Compile Include="MeshObjsUtility\InterfacedNodesFinder.cs" />
     <Compile Include="MeshObjsUtility\FindBoundaryEdges.cs" />
     <Compile Include="MeshObjsUtility\MergeObjects.cs" />
     <Compile Include="MeshObjsUtility\NormalsCalculator.cs" />
@@ -63,7 +63,7 @@
     <PackageReference Include="NetOctree" Version="2.1.10" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ModelControllerInterface\ModelControllerInterface.csproj" />
+    <ProjectReference Include="..\ModelControllerInterfaces\ModelControllerInterfaces.csproj" />
     <ProjectReference Include="..\Model\Model.csproj" />
   </ItemGroup>
 </Project>
