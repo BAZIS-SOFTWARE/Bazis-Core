@@ -4,13 +4,14 @@ using Model.ObjectsFinders;
 using ModelController.MeshObjsUtility;
 using ModelController.ModelScenePresentator.GlObjsVertexCreators;
 using ModelController.ModelScenePresentator.Interfaces;
+using ModelControllerInterface;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 
 namespace ModelController.ModelScenePresentator.GlObjsPresenters
 {
-    public class PointObjsPresenter : ObjsPresenter
+    public class PointObjsPresenter : IObjsPresenter
     {
 
         IModelObject[] pointObjects;
@@ -21,7 +22,7 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
 /// <inheritdoc/>
 
 
-        public override Tuple<int, int, int,int> CreateIndexes()
+        public Tuple<int, int, int,int> CreateIndexes()
         {
             var indexes = 0;
             var coords = 0;
@@ -43,7 +44,7 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
         }
 
 
-        public override int[] CreatePointers(int indexLength)
+        public int[] CreatePointers(int indexLength)
         {
             var ptr = new int[indexLength];
             var stride = 0;
@@ -59,7 +60,7 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
         }
         /// <inheritdoc/>
 
-        public override float[] CreateVertexes(int vertexLength, string vertexType)
+        public float[] CreateVertexes(int vertexLength, string vertexType)
         {
             var vertexArray = new float[vertexLength];
             var stride = 0;
@@ -81,13 +82,13 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
         }
 /// <inheritdoc/>
 
-        public override int Count()
+        public int Count()
         {
             return pointObjects.Length;
         }
 /// <inheritdoc/>
 
-        public override IEnumerable<Model.Interfaces.IModelObject> GetObjs()
+        public IEnumerable<Model.Interfaces.IModelObject> GetObjs()
         {
             foreach (var pointObject in pointObjects)
             {
@@ -95,7 +96,7 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
             }
         }
 
-        public override Model.Interfaces.IModelObject this[int index]
+        public Model.Interfaces.IModelObject this[int index]
         {
             get{return pointObjects[index];}
         }
@@ -112,17 +113,17 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
         }
 /// <inheritdoc/>
 
-        public override bool[] CreateEdgeFlags(int edgesLength)
+        public bool[] CreateEdgeFlags(int edgesLength)
         {
             return new bool[0];
         }
 
-        public override Model.Interfaces.IModelObject FindObj(int objNumbr)
+        public IModelObject FindObj(int objNumbr)
         {
             return ByNumberFinder.Find(pointObjects, objNumbr);
         }
 
-        public override IEnumerable<Model.Interfaces.IModelObject> GetObjs(Color color)
+        public IEnumerable<IModelObject> GetObjs(Color color)
         {
             foreach (var pointObject in pointObjects)
             {

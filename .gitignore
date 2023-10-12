@@ -263,3 +263,4 @@ __pycache__/
 # Geometry input data
 *.inp
 /GmshApi/gmsh.dll
+/GmshApi/gmsh.dll

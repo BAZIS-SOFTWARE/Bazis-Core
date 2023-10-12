@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net48</TargetFrameworks>    
+    <AssemblyName>ModelControllerInterface</AssemblyName>
+    <RootNamespace>ModelControllerInterface</RootNamespace>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <SignAssembly>True</SignAssembly>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>ModelControllerInterface</Title>
+    <Version>1.0.0.1</Version>
+    <Authors>Bilenko Georgy</Authors>
+    <Company>BAZIS SOFTWARE</Company>
+    <Product>BAZIS</Product>
+    <Copyright>Bilenko Georgy</Copyright>
+    <PackageIcon>Icon.png</PackageIcon>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <AutoGenerateBindingRedirects>True</AutoGenerateBindingRedirects>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Description>Model controller interfaces</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Icon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Icon.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Model\Model.csproj" />
+  </ItemGroup>
+
+</Project>

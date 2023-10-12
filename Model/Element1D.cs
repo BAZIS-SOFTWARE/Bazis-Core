@@ -11,7 +11,6 @@ namespace Model
 {
     public class Element1D : Element, ILineObject
     {
-        Node[] nodes;
         public Element1D(int number, Node[] nodes, ObjKind objKind) : base(number, nodes, objKind)
         {
             InitialColor = Color.FromArgb(255, 192, 203);

@@ -3,6 +3,7 @@ using Model;
 using Model.Interfaces;
 using ModelController.MeshObjsUtility;
 using ModelController.ModelScenePresentator.GlObjsPresenters;
+using ModelControllerInterface;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,15 +15,15 @@ namespace ModelController.ModelScenePresentator
     /// <summary>
     /// ModelScenePresentator
     /// </summary>
-    public class ModelScenePresentator : IDictionary<string, ObjsPresenter>
+    public class ModelScenePresentator : IModelScenePresenter
     {
-        Dictionary<string, ObjsPresenter> presentors;
+        Dictionary<string, IObjsPresenter> presentors;
 /// <inheritdoc/>
 
         public ICollection<string> Keys { get{ return presentors.Keys; } } 
 /// <inheritdoc/>
 
-        public ICollection<ObjsPresenter> Values { get { return presentors.Values; } }
+        public ICollection<IObjsPresenter> Values { get { return presentors.Values; } }
 /// <inheritdoc/>
 
         public int Count { get { return presentors.Count; } }
@@ -30,7 +31,7 @@ namespace ModelController.ModelScenePresentator
 
         public bool IsReadOnly => throw new NotImplementedException();
 
-        public ObjsPresenter this[string key] 
+        public IObjsPresenter this[string key] 
         { 
             get { return presentors[key]; } 
             set { presentors[key] = value; }
@@ -47,7 +48,7 @@ namespace ModelController.ModelScenePresentator
 
             //var sortedObjs = GetSortedObjects(modelData.ObjectData.ToArray());
 
-            presentors = new Dictionary<string, ObjsPresenter>();
+            presentors = new Dictionary<string, IObjsPresenter>();
 
             foreach (var objsType in objsTypes)
             {
@@ -136,18 +137,14 @@ namespace ModelController.ModelScenePresentator
             else throw new Exception("Объект не найден!");
         }       
 
-/// <inheritdoc/>     
-        public bool ContainsObjecs(string objsType)
-        {
-            return presentors.ContainsKey(objsType);
-        }
+
 /// <inheritdoc/>
 
-        public IEnumerator<KeyValuePair<string, ObjsPresenter>> GetEnumerator()
+        public IEnumerator<KeyValuePair<string, IObjsPresenter>> GetEnumerator()
         {
             foreach (var presentor in presentors)
             {
-                yield return new KeyValuePair<string, ObjsPresenter>(presentor.Key, presentor.Value);
+                yield return new KeyValuePair<string, IObjsPresenter>(presentor.Key, presentor.Value);
             }
         }
 
@@ -162,7 +159,7 @@ namespace ModelController.ModelScenePresentator
             return presentors.ContainsKey(objsType);
         }
 
-        public void Add(string objsType, ObjsPresenter presenter)
+        public void Add(string objsType, IObjsPresenter presenter)
         {
             if(!presentors.ContainsKey(objsType))
                 presentors.Add(objsType, presenter);
@@ -173,12 +170,12 @@ namespace ModelController.ModelScenePresentator
             return presentors.Remove(objsType);
         }
 
-        public bool TryGetValue(string objsType, out ObjsPresenter presenter)
+        public bool TryGetValue(string objsType, out IObjsPresenter presenter)
         {
             return presentors.TryGetValue(objsType, out presenter);
         }
 
-        public void Add(KeyValuePair<string, ObjsPresenter> item)
+        public void Add(KeyValuePair<string, IObjsPresenter> item)
         {
             throw new NotImplementedException();
         }
@@ -188,17 +185,17 @@ namespace ModelController.ModelScenePresentator
             presentors.Clear();
         }
 
-        public bool Contains(KeyValuePair<string, ObjsPresenter> item)
+        public bool Contains(KeyValuePair<string, IObjsPresenter> item)
         {
             throw new NotImplementedException();
         }
 
-        public void CopyTo(KeyValuePair<string, ObjsPresenter>[] array, int arrayIndex)
+        public void CopyTo(KeyValuePair<string, IObjsPresenter>[] array, int arrayIndex)
         {
             throw new NotImplementedException();
         }
 
-        public bool Remove(KeyValuePair<string, ObjsPresenter> item)
+        public bool Remove(KeyValuePair<string, IObjsPresenter> item)
         {
             throw new NotImplementedException();
         }
