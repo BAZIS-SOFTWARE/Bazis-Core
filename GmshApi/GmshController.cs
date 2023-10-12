@@ -8,6 +8,7 @@ using Model.Interfaces;
 using Functions.Extensions;
 using System.IO;
 using System.Runtime.InteropServices.ComTypes;
+using System.Drawing;
 
 namespace GmshApi.GmshController
 {
@@ -288,6 +289,16 @@ namespace GmshApi.GmshController
             public delegate void gmshModelMeshFieldSetAsBoundaryLayerFun(int tag, ref int ierr);
             public gmshModelMeshFieldSetAsBoundaryLayerFun gmshModelMeshFieldSetAsBoundaryLayer;
         #endregion
+        #region "Logger Delegates"
+            public delegate void gmshLoggerStartFun(ref int ierr);
+            public gmshLoggerStartFun gmshLoggerStart;
+            public delegate void gmshLoggerStopFun(ref int ierr);
+            public gmshLoggerStopFun gmshLoggerStop;
+            private delegate void gmshLoggerGetFun(ref IntPtr log, ref IntPtr log_n, ref int ierr);
+            private gmshLoggerGetFun gmshLoggerGet;
+            private delegate void gmshLoggerGetLastErrorFun(ref IntPtr error, ref int ierr);
+            private gmshLoggerGetLastErrorFun gmshLoggerGetLastError;
+        #endregion
         public GmshController(string dllToLoad)
         {
             DLL = GmshKernel.GmshKernel.LoadLibrary(dllToLoad);
@@ -394,7 +405,20 @@ namespace GmshApi.GmshController
                 gmshModelMeshFieldSetAsBackgroundMesh = GetFunction<gmshModelMeshFieldSetAsBackgroundMeshFun>("gmshModelMeshFieldSetAsBackgroundMesh");
                 gmshModelMeshFieldSetAsBoundaryLayer = GetFunction<gmshModelMeshFieldSetAsBoundaryLayerFun>("gmshModelMeshFieldSetAsBoundaryLayer");
             #endregion
-            var argv = string.Empty;
+            #region "Get Logger delegates"
+                //gmshLoggerStart = 
+                /*
+                public delegate void gmshLoggerStartFun(ref int ierr);
+                public gmshLoggerStartFun gmshLoggerStart;
+                public delegate void gmshLoggerStopFun(ref int ierr);   
+                public gmshLoggerStopFun gmshLoggerStop;
+                private delegate void gmshLoggerGetFun(ref IntPtr log, ref IntPtr log_n, ref int ierr);
+                private gmshLoggerGetFun gmshLoggerGet;
+                private delegate void gmshLoggerGetLastErrorFun(ref IntPtr error, ref int ierr);
+                private gmshLoggerGetLastErrorFun gmshLoggerGetLastError;
+                */
+            #endregion
+    var argv = string.Empty;
             var ierr = 0;
             gmshInitialize(0, ref argv, 0, 0, ref ierr);
         }
