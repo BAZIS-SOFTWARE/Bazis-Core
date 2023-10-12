@@ -1,4 +1,5 @@
 ﻿using Model;
+using ModelControllerInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,16 +11,9 @@ namespace ModelController.MeshObjsUtility
     /// <summary>
     /// По номеру узла возвращает список элементов, сопряжённых через данный узел
     /// </summary>
-    public class InterfacedNodesFinder
+    public class InterfacedNodesFinder : IInterfacedNodesFinder
     {
-        private Element[] elements;
-
-        public InterfacedNodesFinder(Element[] elements)
-        {
-            this.elements = elements;
-        }
-
-        public Dictionary<int, List<int>> Find(List<int> nodes)
+        public Dictionary<int, List<int>> Find(List<int> nodes, Element[] elements)
         {
             var interfaceNodes = new Dictionary<int, List<int>>();
             foreach (var element in elements)
@@ -44,7 +38,7 @@ namespace ModelController.MeshObjsUtility
             return interfaceNodes;
         }
 
-        public Dictionary<int, List<int>> Find()
+        public Dictionary<int, List<int>> Find(Element[] elements)
         {
             var interfaceNodes = new Dictionary<int, List<int>>();
 
