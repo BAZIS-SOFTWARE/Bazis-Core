@@ -145,6 +145,10 @@
     <Folder Include="Examples\GMSHAPI\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GmshApi\GmshApi.csproj">
+      <Project>{1fe044a5-fe40-4f59-b05e-5cdb5bb25282}</Project>
+      <Name>GmshApi</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ModelController\ModelController.csproj">
       <Project>{0040c7b5-aa26-42c4-b3a0-c7ff40ec8709}</Project>
       <Name>ModelController</Name>
