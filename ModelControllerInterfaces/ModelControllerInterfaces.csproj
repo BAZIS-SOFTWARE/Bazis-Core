@@ -2,13 +2,13 @@
 
   <PropertyGroup>
     <TargetFrameworks>net48</TargetFrameworks>    
-    <AssemblyName>ModelControllerInterface</AssemblyName>
-    <RootNamespace>ModelControllerInterface</RootNamespace>
+    <AssemblyName>ModelControllerInterfaces</AssemblyName>
+    <RootNamespace>ModelControllerInterfaces</RootNamespace>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <SignAssembly>True</SignAssembly>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Title>ModelControllerInterface</Title>
-    <Version>1.0.0.1</Version>
+    <Title>ModelControllerInterfaces</Title>
+    <Version>1.0.0.8</Version>
     <Authors>Bilenko Georgy</Authors>
     <Company>BAZIS SOFTWARE</Company>
     <Product>BAZIS</Product>
@@ -18,7 +18,8 @@
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <AutoGenerateBindingRedirects>True</AutoGenerateBindingRedirects>
     <ImplicitUsings>disable</ImplicitUsings>
-    <Description>Model controller interfaces</Description>
+    <Description>Model scene presentator interfaces</Description>
+    <AssemblyOriginatorKeyFile>ModelControllerInterfaceKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <ItemGroup>
