@@ -1,4 +1,5 @@
 ﻿using Model;
+using ModelController.MeshObjsCreator;
 using ModelController.MeshObjsUtility;
 using ModelControllerInterfaces;
 using System.Collections.Generic;
@@ -19,6 +20,14 @@ namespace ModelController
             ModelPresentor = new ModelScenePresentator.ModelScenePresentator(modelData);
         }
 /// <inheritdoc/>
+
+        public Element2D[] Extract2DFrom3D(int startInd, Element3D[] elements)
+        {
+            var extractor = new Extract2DFrom3D(elements);
+            return extractor.Create(startInd);
+        }
+
+        /// <inheritdoc/>
 
         public Dictionary<int, List<int>> FindInterfacedNodes(List<int> nodes, Element[] elements)
         {

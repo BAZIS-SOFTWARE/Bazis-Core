@@ -2,13 +2,13 @@
 
   <PropertyGroup>
     <TargetFrameworks>net48</TargetFrameworks>    
-    <AssemblyName>ModelScenePresentatorInterface</AssemblyName>
-    <RootNamespace>ModelScenePresentatorInterface</RootNamespace>
+    <AssemblyName>ModelControllerInterfaces</AssemblyName>
+    <RootNamespace>ModelControllerInterfaces</RootNamespace>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <SignAssembly>True</SignAssembly>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Title>ModelScenePresentatorInterface</Title>
-    <Version>1.0.0.6</Version>
+    <Title>ModelControllerInterfaces</Title>
+    <Version>1.0.0.8</Version>
     <Authors>Bilenko Georgy</Authors>
     <Company>BAZIS SOFTWARE</Company>
     <Product>BAZIS</Product>
