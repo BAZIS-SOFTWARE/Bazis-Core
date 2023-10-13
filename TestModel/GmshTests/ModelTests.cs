@@ -220,6 +220,19 @@ namespace TestModel.GmshTests
             var ierr = 0;
             ModelLoad(fileName, modelName, controller);
         }
+
+        [DataTestMethod]
+        [DataRow("test")]
+        public void LoadModelAndCheckLog(string name)
+        {
+            var ierr = 0;
+            controller.gmshModelSetCurrent(name, ref ierr);
+            string log = string.Empty;
+            controller.LoggerGetLastError(out log);
+            Assert.AreEqual(false, log.Length == 0);
+        }
+
+
         public static void ModelLoad(string fileName, string modelName, GmshController controller)
         {
             var ierr = 0;

@@ -8,6 +8,7 @@ using Model.Interfaces;
 using Functions.Extensions;
 using System.IO;
 using System.Runtime.InteropServices.ComTypes;
+using System.Drawing;
 
 namespace GmshApi.GmshController
 {
@@ -235,6 +236,13 @@ namespace GmshApi.GmshController
             public delegate void gmshModelMeshSetTransfiniteCurveFun(int tag, int numNodes, string meshType,
                                                                       double coef, ref int ierr);
             public gmshModelMeshSetTransfiniteCurveFun gmshModelMeshSetTransfiniteCurve;
+            public delegate void gmshModelMeshSetTransfiniteSurfaceFun(int tag, string arrangement, int[] cornerTags,
+                                                                       IntPtr cornerTags_n, ref int ierr);
+            public gmshModelMeshSetTransfiniteSurfaceFun gmshModelMeshSetTransfiniteSurface;
+            public delegate void gmshModelMeshSetTransfiniteVolumeFun(int tag, int[] cornerTags, IntPtr cornerTags_n,
+                                                                      ref int ierr);
+            public gmshModelMeshSetTransfiniteVolumeFun gmshModelMeshSetTransfiniteVolume;
+
             private delegate void gmshModelMeshGetElementsByCoordinatesFun(double x, double y, double z,
                                                                            ref IntPtr elementTags, ref IntPtr elementTags_n,
                                                                            int dim, int strict, ref int ierr);
@@ -287,6 +295,16 @@ namespace GmshApi.GmshController
             public gmshModelMeshFieldSetAsBackgroundMeshFun gmshModelMeshFieldSetAsBackgroundMesh;
             public delegate void gmshModelMeshFieldSetAsBoundaryLayerFun(int tag, ref int ierr);
             public gmshModelMeshFieldSetAsBoundaryLayerFun gmshModelMeshFieldSetAsBoundaryLayer;
+        #endregion
+        #region "Logger Delegates"
+            public delegate void gmshLoggerStartFun(ref int ierr);
+            public gmshLoggerStartFun gmshLoggerStart;
+            public delegate void gmshLoggerStopFun(ref int ierr);
+            public gmshLoggerStopFun gmshLoggerStop;
+            private delegate void gmshLoggerGetFun(ref IntPtr log, ref IntPtr log_n, ref int ierr);
+            private gmshLoggerGetFun gmshLoggerGet;
+            private delegate void gmshLoggerGetLastErrorFun(ref IntPtr error, ref int ierr);
+            private gmshLoggerGetLastErrorFun gmshLoggerGetLastError;
         #endregion
         public GmshController(string dllToLoad)
         {
@@ -371,6 +389,8 @@ namespace GmshApi.GmshController
                 gmshModelMeshGetNodes = GetFunction<gmshModelMeshGetNodesFun>("gmshModelMeshGetNodes");
                 gmshModelMeshGetNodesByElementType = GetFunction<gmshModelMeshGetNodesByElementTypeFun>("gmshModelMeshGetNodesByElementType");
                 gmshModelMeshSetTransfiniteCurve = GetFunction<gmshModelMeshSetTransfiniteCurveFun>("gmshModelMeshSetTransfiniteCurve");
+                gmshModelMeshSetTransfiniteSurface = GetFunction<gmshModelMeshSetTransfiniteSurfaceFun>("gmshModelMeshSetTransfiniteSurface");
+                gmshModelMeshSetTransfiniteVolume = GetFunction<gmshModelMeshSetTransfiniteVolumeFun>("gmshModelMeshSetTransfiniteVolume");
                 gmshModelMeshGetElementsByCoordinates = GetFunction<gmshModelMeshGetElementsByCoordinatesFun>("gmshModelMeshGetElementsByCoordinates");
                 gmshModelMeshGetLocalCoordinatesInElement = GetFunction<gmshModelMeshGetLocalCoordinatesInElementFun>("gmshModelMeshGetLocalCoordinatesInElement");
                 gmshModelMeshRebuildNodeCache = GetFunction<gmshModelMeshRebuildNodeCacheFun>("gmshModelMeshRebuildNodeCache");
@@ -393,6 +413,12 @@ namespace GmshApi.GmshController
                 gmshModelMeshFieldGetNumbers = GetFunction<gmshModelMeshFieldGetNumbersFun>("gmshModelMeshFieldGetNumbers");
                 gmshModelMeshFieldSetAsBackgroundMesh = GetFunction<gmshModelMeshFieldSetAsBackgroundMeshFun>("gmshModelMeshFieldSetAsBackgroundMesh");
                 gmshModelMeshFieldSetAsBoundaryLayer = GetFunction<gmshModelMeshFieldSetAsBoundaryLayerFun>("gmshModelMeshFieldSetAsBoundaryLayer");
+            #endregion
+            #region "Get Logger delegates"
+                gmshLoggerStart = GetFunction<gmshLoggerStartFun>("gmshLoggerStart");
+                gmshLoggerStop = GetFunction<gmshLoggerStopFun>("gmshLoggerStop");
+                gmshLoggerGet = GetFunction<gmshLoggerGetFun>("gmshLoggerGet");
+                gmshLoggerGetLastError = GetFunction<gmshLoggerGetLastErrorFun>("gmshLoggerGetLastError");
             #endregion
             var argv = string.Empty;
             var ierr = 0;
@@ -1046,6 +1072,25 @@ namespace GmshApi.GmshController
                 }
             }
             return status;
+        }
+
+        public bool LoggerGet(out string[] logs)
+        {
+            var ierr = 0;
+            IntPtr log = IntPtr.Zero;
+            IntPtr log_n = IntPtr.Zero;
+            gmshLoggerGet(ref log, ref log_n, ref ierr);
+            logs = GetArrayOfString(log, log_n);
+            return ierr == 0;
+        }
+
+        public bool LoggerGetLastError(out string log)
+        {
+            var ierr = 0;
+            IntPtr error = IntPtr.Zero;
+            gmshLoggerGetLastError(ref error, ref ierr);
+            log = GetStringPtr(error);
+            return ierr == 0;
         }
 
         private ModelObject CreateModelObject(ref string elementName,
