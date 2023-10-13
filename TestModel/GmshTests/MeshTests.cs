@@ -50,40 +50,18 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow("Cilindr.step", 46)]
-        public void TestGetElements1D(string fileName, int expected)
+        [DataRow("Cilindr.step", 46,1)]
+        [DataRow("Cilindr.step", 370,2)]
+        [DataRow("Cilindr.step", 707,3)]
+        public void TestGetElements(string fileName, int expected,int dim)
         {
             var ierr = 0;
             var status = false;
             controller.gmshOpen(modelFolder + fileName, ref ierr);
-            controller.gmshModelMeshGenerate(1, ref ierr);
-            var e1d = controller.GetMeshEntities(1, -1, ref status);
+            controller.gmshModelMeshGenerate(dim, ref ierr);
+            var e1d = controller.GetMeshEntities(dim, -1, ref status);
             Assert.AreEqual(expected, e1d.Count);
-        }
-
-        [DataTestMethod]
-        [DataRow("Cilindr.step", 370)]
-        public void TestGetElements2D(string fileName, int expected)
-        {
-            var ierr = 0;
-            var status = false;
-            controller.gmshOpen(modelFolder + fileName, ref ierr);
-            controller.gmshModelMeshGenerate(2, ref ierr);
-            var e2d = controller.GetMeshEntities(2, -1, ref status);
-            Assert.AreEqual(expected, e2d.Count);
-        }
-
-        [DataTestMethod]
-        [DataRow("Cilindr.step", 707)]
-        public void TestGetElements3D(string fileName, int expected)
-        {
-            var ierr = 0;
-            var status = false;
-            controller.gmshOpen(modelFolder + fileName, ref ierr);
-            controller.gmshModelMeshGenerate(3, ref ierr);
-            var e3d = controller.GetMeshEntities(3, -1, ref status);
-            Assert.AreEqual(expected, e3d.Count);
-        }
+        }       
 
         [DataTestMethod]
         [DataRow("Cilindr.step")]
@@ -102,62 +80,24 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow("Cilindr.step")]
-        public void GetDensityForNodesTest(string fileName)
+        [DataRow("Cilindr.step",1)]
+        [DataRow("Cilindr.step", 2)]
+        [DataRow("Cilindr.step", 3)]
+        public void GetDensityForElementNodes(string fileName, int dim)
         {
             var ierr = 0;
             var status = false;
             controller.gmshOpen(modelFolder + fileName, ref ierr);
-            controller.gmshModelMeshGenerate(1, ref ierr);
+            controller.gmshModelMeshGenerate(dim, ref ierr);
             var lengthUntil = controller.GetNodes(ref status).Count;
             controller.gmshOptionSetNumber("Mesh.MeshSizeFactor", 0.5, ref ierr);
             controller.gmshModelMeshGenerate(1, ref ierr);
+            controller.gmshModelMeshGenerate(dim, ref ierr);
             var lengthAfter = controller.GetNodes(ref status).Count;
             Assert.AreEqual(true, lengthAfter > lengthUntil);
             controller.gmshOptionSetNumber("Mesh.MeshSizeFactor", 1.0, ref ierr);
             controller.gmshModelMeshGenerate(1, ref ierr);
-            var lengthLast = controller.GetNodes(ref status).Count;
-            Assert.AreEqual(true, lengthLast < lengthAfter);
-        }
-
-        [DataTestMethod]
-        [DataRow("Cilindr.step")]
-        public void GetDensityFor2DElementsTest(string fileName)
-        {
-            var ierr = 0;
-            var status = false;
-            controller.gmshOpen(modelFolder + fileName, ref ierr);
-            controller.gmshModelMeshGenerate(2, ref ierr);
-            var lengthUntil = controller.GetMeshEntities(2,-1, ref status).Count;
-            controller.gmshOptionSetNumber("Mesh.MeshSizeFactor", 0.5, ref ierr);
-            controller.gmshModelMeshGenerate(1, ref ierr);
-            controller.gmshModelMeshGenerate(2, ref ierr);
-            var lengthAfter = controller.GetMeshEntities(2, -1, ref status).Count;
-            Assert.AreEqual(true, lengthAfter > lengthUntil);
-            controller.gmshOptionSetNumber("Mesh.MeshSizeFactor", 1.0, ref ierr);
-            controller.gmshModelMeshGenerate(1, ref ierr);
-            controller.gmshModelMeshGenerate(2, ref ierr);
-            var lengthLast = controller.GetNodes(ref status).Count;
-            Assert.AreEqual(true, lengthLast < lengthAfter);
-        }
-
-        [DataTestMethod]
-        [DataRow("Cilindr.step")]
-        public void GetDensityFor3DElementsTest(string fileName)
-        {
-            var ierr = 0;
-            var status = false;
-            controller.gmshOpen(modelFolder + fileName, ref ierr);
-            controller.gmshModelMeshGenerate(3, ref ierr);
-            var lengthUntil = controller.GetMeshEntities(3, -1, ref status).Count;
-            controller.gmshOptionSetNumber("Mesh.MeshSizeFactor", 0.5, ref ierr);
-            controller.gmshModelMeshGenerate(1, ref ierr);
-            controller.gmshModelMeshGenerate(3, ref ierr);
-            var lengthAfter = controller.GetMeshEntities(3, -1, ref status).Count;
-            Assert.AreEqual(true, lengthAfter > lengthUntil);
-            controller.gmshOptionSetNumber("Mesh.MeshSizeFactor", 1.0, ref ierr);
-            controller.gmshModelMeshGenerate(1, ref ierr);
-            controller.gmshModelMeshGenerate(3, ref ierr);
+            controller.gmshModelMeshGenerate(dim, ref ierr);
             var lengthLast = controller.GetNodes(ref status).Count;
             Assert.AreEqual(true, lengthLast < lengthAfter);
         }
