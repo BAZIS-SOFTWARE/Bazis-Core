@@ -13,7 +13,7 @@ namespace ModelController.ModelScenePresentator.GlObjsVertexCreators
 {
     public class EdgesSurfaceObjsCreator
     {
-        public void Create(ref int stride, bool[] vertexAtributes, ISurfaceObject[] surfaceElements)
+        public void Create(ref int stride, bool[] vertexAtributes, IEnumerable<ISurfaceObject> surfaceElements)
         {
             foreach (var surfaceElement in surfaceElements)
             {

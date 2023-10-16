@@ -9,6 +9,9 @@ using System.Linq;
 
 namespace Model
 {
+    /// <summary>
+    /// ObjectsData
+    /// </summary>
     public class ObjectsData : IList<ModelObject>
     {
         List<ModelObject> modelObjects;
@@ -18,13 +21,15 @@ namespace Model
             get { return modelObjects[index]; }
             set { modelObjects[index] = value; }
         }
-
+        /// <summary>
+        /// ObjectsData
+        /// </summary>
         public ObjectsData()
         {
             modelObjects = new List<ModelObject>();
         }
 
-        public bool IsReadOnly => throw new System.NotImplementedException();
+        public bool IsReadOnly { get { return false; } }
 
         public void Clear()
         {
@@ -96,7 +101,11 @@ namespace Model
 
         public IEnumerable<ModelObject> FindMany(ObjKind objKind)
         {
-            return modelObjects.Where(x => x.ObjKind == objKind);
+            foreach (var modelObject in modelObjects)
+            {
+                if (modelObject.ObjKind == objKind)
+                    yield return modelObject;
+            }
         }
 
         public IEnumerable<ModelObject> FindMany(string objType)
@@ -105,15 +114,22 @@ namespace Model
 
             if (objType == "Элементы")
             {
-                return modelObjects.Where(x =>
-                x.ObjType == "Элементы2D" |
-                x.ObjType == "Элементы3D" |
-                x.ObjType == "Элементы1D");
+                foreach (var modelObject in modelObjects)
+                {
+                    if (modelObject.ObjType == "Элементы2D" |
+                        modelObject.ObjType == "Элементы3D" |
+                        modelObject.ObjType == "Элементы1D")
+                        yield return modelObject;
+                }
             }
 
             else
             {
-                return modelObjects.Where(x => x.ObjType == objType);
+                foreach (var modelObject in modelObjects)
+                {
+                    if (modelObject.ObjType == objType)
+                        yield return modelObject;
+                }
             }
         }       
 /// <inheritdoc/>

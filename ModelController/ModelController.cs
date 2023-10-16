@@ -19,13 +19,5 @@ namespace ModelController
 /// <inheritdoc/>
 
         public IExtractor2DFrom3D Extractor2DFrom3D { get; } = new Extract2DFrom3D();
-
-        /// <inheritdoc/>
-
-        public void CreateModelPresenter(ModelData modelData)
-        {
-            ModelPresentor = new ModelScenePresentator.ModelScenePresentator(modelData);
-        }
-
     }
 }

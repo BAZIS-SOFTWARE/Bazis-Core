@@ -31,54 +31,18 @@ namespace TestModel
             model.ObjectData.AddRange(poligons);
 
             //act
-            var presentator = new ModelScenePresentator(model);
-            var inds = presentator.CreateVBOIndexes("Поверхности");
-            var ptrs = presentator.CreateVBOPointers("Поверхности", inds.Item1);
-            var coords = presentator.CreateVBOVertexes("Поверхности", inds.Item2, "координаты");
-            var colors = presentator.CreateVBOVertexes("Поверхности", inds.Item3, "цвет");
-            var normals = presentator.CreateVBOVertexes("Поверхности", inds.Item2, "нормаль");
+            var presentator = new ModelScenePresentator(model.ObjectData);
+            var inds = presentator["Поверхности"].CreateIndexes();
+            var ptrs = presentator["Поверхности"].CreatePointers(inds.Item1);
+            var coords = presentator["Поверхности"].CreateVertexes(inds.Item2, "координаты");
+            var colors = presentator["Поверхности"].CreateVertexes(inds.Item3, "цвет");
+            var normals = presentator["Поверхности"].CreateVertexes(inds.Item2, "нормаль");
             //assert
             Assert.AreEqual(ptrs.Length, 6);
             Assert.AreEqual(coords.Length, 18);
             Assert.AreEqual(colors.Length, 24);
             Assert.AreEqual(normals.Length, 18);
-        }
-
-        //[TestMethod]
-        //public void TestComplexPoligons()
-        //{
-        //    var model = new ModelData();
-        //    var loader = new LoadModelFromProjectTextFile();
-        //    loader.LoadEvent += (ar1, ar2) => { };
-        //    //var project = loader.Load(@"C:\Bazis_newGUI\PROJ\Test_3D\Term\two_tetra_term_cycle_multiStep.bpf");
-        //    var modelLoad = loader.Load(@"C:\Projs\TestProjTerm\tube\test.bpf");
-
-        //    model.Load(modelLoad);
-
-        //    var loaderDB = new LoadResultsFileDB();
-        //    loaderDB.LoadEvent += (ar1, ar2) => { };
-        //    var results = loaderDB.Load(@"C:\Projs\TestProjTerm\tube\термическая_0_0_10.db");
-
-        //    var elements = model.ObjectData.FindMany<Element>().ToArray();
-
-        //    var scale = new RainbowScale(4, 150, 0, 10);
-
-        //    var gradientFieldsCreator = new GradientFieldsCreator(elements, scale.ValueRange().ToArray(), scale.ColorRange().ToArray(), 1);
-
-        //    var reultObjects = gradientFieldsCreator.CreateFieldObjects(results[24], "Узлы", "T");
-
-        //    var resModel = new ModelData();
-        //    resModel.ObjectData.AddRange(reultObjects);
-        //    var presenter = new ModelScenePresentator(resModel);
-
-        //    presenter.HideInsideObjects("Поверхность");
-
-        //    var inds = presenter.CreateVBOIndexes("Поверхность");
-        //    var ptrs = presenter.CreateVBOPointers("Поверхность", inds.Item1);
-        //    var coords = presenter.CreateVBOVertexes("Поверхность", inds.Item2, "координаты");
-        //    var colors = presenter.CreateVBOVertexes("Поверхность", inds.Item2, "цвет");
-        //    var normals = presenter.CreateVBOVertexes("Поверхность", inds.Item2, "нормаль");
-        //}
+        }       
 
         [TestMethod]
         public void TestPoligonsManySurfaces()
@@ -118,12 +82,12 @@ namespace TestModel
             model.ObjectData.AddRange(poligons);
 
             //act
-            var presentator = new ModelScenePresentator(model);
-            var inds = presentator.CreateVBOIndexes("Поверхности");
-            var ptrs = presentator.CreateVBOPointers("Поверхности", inds.Item1);
-            var coords = presentator.CreateVBOVertexes("Поверхности", inds.Item2, "координаты");
-            var colors = presentator.CreateVBOVertexes("Поверхности", inds.Item3, "цвет");
-            var normals = presentator.CreateVBOVertexes("Поверхности", inds.Item2, "нормаль");
+            var presentator = new ModelScenePresentator(model.ObjectData);
+            var inds = presentator["Поверхности"].CreateIndexes();
+            var ptrs = presentator["Поверхности"].CreatePointers(inds.Item1);
+            var coords = presentator["Поверхности"].CreateVertexes(inds.Item2, "координаты");
+            var colors = presentator["Поверхности"].CreateVertexes(inds.Item3, "цвет");
+            var normals = presentator["Поверхности"].CreateVertexes(inds.Item2, "нормаль");
             //assert
             Assert.AreEqual(ptrs.Length, 15);
             Assert.AreEqual(coords.Length, 45);

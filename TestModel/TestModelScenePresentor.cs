@@ -71,17 +71,18 @@ namespace TestModel
             model.ObjectData.AddRange(nodes);
             model.ObjectData.Add(modelObject);
 
-            var presenter = new ModelScenePresentator(model);
+            var presenter = new ModelScenePresentator(model.ObjectData);
 
             //act
+            if(objType == ObjType.Элементы3D)
+                presenter.HideInsideSurfaces(model.ObjectData.FindMany<Element3D>());
 
-            presenter.HideInsideObjects(objType.ToString());
-            var inds = presenter.CreateVBOIndexes(objType.ToString());
-            var ptrs = presenter.CreateVBOPointers(objType.ToString(), inds.Item1);
-            var crds = presenter.CreateVBOVertexes(objType.ToString(), inds.Item2, "координаты");
-            var colors = presenter.CreateVBOVertexes(objType.ToString(), inds.Item3, "цвет");
-            var normals = presenter.CreateVBOVertexes(objType.ToString(), inds.Item2, "нормаль");
-            var edges = presenter.CreateVBOEdges(objType.ToString(), inds.Item4);
+            var inds = presenter[objType.ToString()].CreateIndexes();
+            var ptrs = presenter[objType.ToString()].CreatePointers(inds.Item1);
+            var crds = presenter[objType.ToString()].CreateVertexes(inds.Item2, "координаты");
+            var colors = presenter[objType.ToString()].CreateVertexes(inds.Item3, "цвет");
+            var normals = presenter[objType.ToString()].CreateVertexes(inds.Item2, "нормаль");
+            var edges = presenter[objType.ToString()].CreateEdgeFlags(inds.Item4);
             //assert
 
             Assert.AreEqual(ptrs.Length, indsR[0]);
@@ -115,15 +116,17 @@ namespace TestModel
             //var nodes = model.ObjectData.FindMany(ObjKind.Node).ToArray();
             //nodes[0].ViewState = false;
 
-            var presenter = new ModelScenePresentator(model);
+            var presenter = new ModelScenePresentator(model.ObjectData);
 
-            presenter.HideInsideObjects(array[0]);
 
-            var inds = presenter.CreateVBOIndexes(array[0]);
-            var ptrs = presenter.CreateVBOPointers(array[0], inds.Item1);
-            var coords = presenter.CreateVBOVertexes(array[0], inds.Item2, "координаты");
-            var colors = presenter.CreateVBOVertexes(array[0], inds.Item3, "цвет");
-            var normals = presenter.CreateVBOVertexes(array[0], inds.Item2, "нормаль");
+            if(array[0] == "Элементы3D")
+                presenter.HideInsideSurfaces(model.ObjectData.FindMany<Element3D>());
+
+            var inds = presenter[array[0]].CreateIndexes();
+            var ptrs = presenter[array[0]].CreatePointers(inds.Item1);
+            var coords = presenter[array[0]].CreateVertexes(inds.Item2, "координаты");
+            var colors = presenter[array[0]].CreateVertexes(inds.Item3, "цвет");
+            var normals = presenter[array[0]].CreateVertexes(inds.Item2, "нормаль");
             //assert
             Assert.AreEqual(ptrs.Length, int.Parse(array[1]));
             Assert.AreEqual(coords.Length, int.Parse(array[2]));
@@ -151,18 +154,19 @@ namespace TestModel
             var modelINP = loader.Load($@"..\..\..\Examples\{array[0]}");
             model.Load(modelINP);
 
-            var modelPresenter = new ModelScenePresentator(model);
+            var modelPresenter = new ModelScenePresentator(model.ObjectData);
 
             foreach (string objsType in modelPresenter.Keys)
             {
-                modelPresenter.HideInsideObjects(objsType);
+                if(objsType == "Элементы3D")
+                    modelPresenter.HideInsideSurfaces(modelPresenter.Values.Select(x => (ISurfaceObject)x));
 
-                var tuple = modelPresenter.CreateVBOIndexes(objsType);
-                int[] ptrs = modelPresenter.CreateVBOPointers(objsType, tuple.Item1);
-                float[] glCoords = modelPresenter.CreateVBOVertexes(objsType, tuple.Item2, "координаты");
-                float[] glColors = modelPresenter.CreateVBOVertexes(objsType, tuple.Item3, "цвет");
-                float[] glNormals = modelPresenter.CreateVBOVertexes(objsType, tuple.Item2, "нормаль");
-                bool[] edges = modelPresenter.CreateVBOEdges(objsType, tuple.Item4);
+                var tuple = modelPresenter[objsType].CreateIndexes();
+                int[] ptrs = modelPresenter[objsType].CreatePointers(tuple.Item1);
+                float[] glCoords = modelPresenter[objsType].CreateVertexes(tuple.Item2, "координаты");
+                float[] glColors = modelPresenter[objsType].CreateVertexes(tuple.Item3, "цвет");
+                float[] glNormals = modelPresenter[objsType].CreateVertexes(tuple.Item2, "нормаль");
+                bool[] edges = modelPresenter[objsType].CreateEdgeFlags(tuple.Item4);
 
                 Assert.AreEqual(tuple.Item4, edges.Length);
                 Assert.AreEqual(tuple.Item1, ptrs.Length);
@@ -174,15 +178,9 @@ namespace TestModel
         }
 
         [DataTestMethod]
-        [DataRow(new string[]
-{
-            "Элементы3D"
-})]
-        [DataRow(new string[]
-{
-            "Узлы"
-})]
-        public void TestObjectsCreationFromCDB(string[] array)
+        [DataRow("Элементы3D")]
+        [DataRow("Узлы")]
+        public void TestObjectsCreationFromCDB(string objsType)
         {
             //assing
             var model = new ModelData();
@@ -194,17 +192,21 @@ namespace TestModel
             model.Load(modelCDB);
 
             //act
-            var presentator = new ModelScenePresentator(model);
+            var presentator = new ModelScenePresentator(model.ObjectData);
 
-            var indexes_nodes = presentator.CreateVBOIndexes(array[0]);
-            var ptrs_nodes = presentator.CreateVBOPointers(array[0], indexes_nodes.Item1);
-            var coords_nodes = presentator.CreateVBOVertexes(array[0], indexes_nodes.Item2, "координаты");
-            var colors_nodes = presentator.CreateVBOVertexes(array[0], indexes_nodes.Item3, "цвет");
-            var normals_nodes = presentator.CreateVBOVertexes(array[0], indexes_nodes.Item2, "нормаль");
-            bool[] edges = presentator.CreateVBOEdges(array[0], indexes_nodes.Item4);
+            var tuple = presentator[objsType].CreateIndexes();
+            int[] ptrs = presentator[objsType].CreatePointers(tuple.Item1);
+            float[] glCoords = presentator[objsType].CreateVertexes(tuple.Item2, "координаты");
+            float[] glColors = presentator[objsType].CreateVertexes(tuple.Item3, "цвет");
+            float[] glNormals = presentator[objsType].CreateVertexes(tuple.Item2, "нормаль");
+            bool[] edges = presentator[objsType].CreateEdgeFlags(tuple.Item4);
 
             //assert
-
+            Assert.AreEqual(tuple.Item4, edges.Length);
+            Assert.AreEqual(tuple.Item1, ptrs.Length);
+            Assert.AreEqual(tuple.Item2, glCoords.Length);
+            Assert.AreEqual(tuple.Item3, glColors.Length);
+            Assert.AreEqual(tuple.Item2, glNormals.Length);
         }
     }
 }

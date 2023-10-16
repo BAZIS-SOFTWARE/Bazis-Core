@@ -5,56 +5,33 @@ using ModelController.ModelScenePresentator.GlObjsVertexCreators;
 using ModelController.ModelScenePresentator.Interfaces;
 using ModelControllerInterfaces;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
 namespace ModelController.ModelScenePresentator.GlObjsPresenters
 {
+    /// <summary>
+    /// SurfaceObjsPresenter
+    /// </summary>
     public class SurfaceObjsPresenter : IObjsPresenter
     {
-        ISurfaceObject [] surfaceElements;
+        IEnumerable<ISurfaceObject> surfaceElements;
+/// <inheritdoc/>
 
-        public IModelObject this[int index]
-        {
-            get { return surfaceElements[index]; }
-        }
+        public PresenterType PresenterType { get; } = PresenterType.Surface;
 
-        public SurfaceObjsPresenter(ISurfaceObject[] surfaceElements)
+        /// <summary>
+        /// SurfaceObjsPresenter
+        /// </summary>
+        /// <param name="surfaceElements"></param>
+        public SurfaceObjsPresenter(IEnumerable<ISurfaceObject> surfaceElements)
         {
             this.surfaceElements = surfaceElements;
         }
 
-        public void HideInsideSurfaces()
-        {
-            var surfDict = new Dictionary<string, List<Surface>>();
-
-            foreach (var element in surfaceElements)
-            {
-                if (element.ViewState & element.NumberOfSides > 1)
-                    foreach (var surface in element.GetSurface())
-                    {
-                        var numbers = surface.GetNodes().Select(x => x.Number).ToArray();
-
-                        Array.Sort(numbers);
-                        var surfInd = string.Join("", numbers);   //numbers[0].ToString() + numbers[1].ToString() + numbers[2].ToString();
-
-                        if (!surfDict.ContainsKey(surfInd))
-                        {
-                            surface.ViewState = true;
-                            surfDict.Add(surfInd, new List<Surface>() { surface });
-                        }
-
-                        else
-                        {
-                            surface.ViewState = false;
-                            surfDict[surfInd][0].ViewState = false;
-                            surfDict[surfInd].Add(surface);
-                        }
-                    }
-            }
-
-        }
+        
 /// <inheritdoc/>
 
         public Tuple<int, int, int,int> CreateIndexes()
@@ -147,24 +124,15 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
             return edgesArray;
         }
 
-        internal void ShowInsideSurfaces()
-        {
-            foreach (var element in surfaceElements)
-            {
-                if (element.ViewState)
-                    foreach (var surface in element.GetSurface())
-                        surface.ViewState = true;
-            }
-        }
 /// <inheritdoc/>
 
         public int Count()
         {
-            return surfaceElements.Length;
+            return surfaceElements.Count();
         }    
 /// <inheritdoc/>
 
-        public IEnumerable<Model.Interfaces.IModelObject> GetObjs()
+        public IEnumerator<IModelObject> GetEnumerator()
         {
             foreach (var surfaceElement in surfaceElements)
             {
@@ -172,18 +140,9 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
             }
         }
 
-        public Model.Interfaces.IModelObject FindObj(int objNumbr)
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            return ByNumberFinder.Find(surfaceElements, objNumbr);
-        }
-
-        public IEnumerable<Model.Interfaces.IModelObject> GetObjs(Color color)
-        {
-            foreach (var surfaceElement in surfaceElements)
-            {
-                if (surfaceElement.MasterColor == color)
-                    yield return surfaceElement;
-            }
+            throw new NotImplementedException();
         }
     }
 }

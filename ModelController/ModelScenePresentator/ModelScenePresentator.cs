@@ -1,12 +1,10 @@
-﻿using Geometry;
-using Model;
+﻿using Model;
 using Model.Interfaces;
 using ModelController.ModelScenePresentator.GlObjsPresenters;
 using ModelControllerInterfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 
 namespace ModelController.ModelScenePresentator
@@ -28,51 +26,58 @@ namespace ModelController.ModelScenePresentator
         public int Count { get { return presentors.Count; } }
 /// <inheritdoc/>
 
-        public bool IsReadOnly => throw new NotImplementedException();
+        public bool IsReadOnly { get { return false; } }
 
+        /// <summary>
+        /// Indexator
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public IObjsPresenter this[string key] 
         { 
             get { return presentors[key]; } 
             set { presentors[key] = value; }
         }
 
-
+        public ModelScenePresentator()
+        {
+            presentors = new Dictionary<string, IObjsPresenter>();
+        }
         /// <summary>
         /// ModelScenePresentator
         /// </summary>
-        /// <param name="modelData"></param>
-        public ModelScenePresentator(ModelData modelData)
+        /// <param name="objectsData"></param>
+        public ModelScenePresentator(ObjectsData objectsData) : this()
         {
-            var objsTypes = modelData.ObjectData.GetObjectTypes();
-
-            //var sortedObjs = GetSortedObjects(modelData.ObjectData.ToArray());
-
-            presentors = new Dictionary<string, IObjsPresenter>();
+            var objsTypes = objectsData.GetObjectTypes();
 
             foreach (var objsType in objsTypes)
             {
                 switch (objsType)
                 {
                     case "Узлы":
-                        var pointObjsCreator = new PointObjsPresenter(modelData.ObjectData.FindMany(objsType).ToArray());
-                        presentors.Add(objsType, pointObjsCreator);
+                        var pointsPresentor = CreatePointObjectsPresenter(objectsData.FindMany(objsType));
+                        presentors.Add(objsType, pointsPresentor);
                         break;
                     case "Элементы1D":
+                        var els1dPresentor = CreateLineObjectsPresenter(objectsData.FindMany<Element1D>());
+                        presentors.Add(objsType, els1dPresentor);
+                        break;
                     case "Линии":
-                        var lineObjs = modelData.ObjectData.Where(x => x.ObjType == objsType).
-    Select(x => (ILineObject)x);
-                        var lineObjsCreator = new LineObjsPresenter(lineObjs.ToArray());
-                        presentors.Add(objsType, lineObjsCreator);
+                        var linesPresentor = CreateLineObjectsPresenter(objectsData.FindMany<Line>());
+                        presentors.Add(objsType, linesPresentor);
                         break;
                     case "Элементы2D":
-                    case "Элементы3D":
-                    case "Поверхности":
-                        var surfaceObjs = modelData.ObjectData.Where(x => x.ObjType == objsType).
-    Select(x => (ISurfaceObject)x);
-                        var surfaceObjsCreator = new SurfaceObjsPresenter(surfaceObjs.ToArray());
-                        presentors.Add(objsType, surfaceObjsCreator);
+                        var els2dPresentor = CreateSurfaceObjectsPresenter(objectsData.FindMany<Element2D>());
+                        presentors.Add(objsType, els2dPresentor);
                         break;
-                    default:
+                    case "Элементы3D":
+                        var els3dPresentor = CreateSurfaceObjectsPresenter(objectsData.FindMany<Element3D>());
+                        presentors.Add(objsType, els3dPresentor);
+                        break;
+                    case "Поверхности":
+                        var surfsPresentor = CreateSurfaceObjectsPresenter(objectsData.FindMany<Surface>());
+                        presentors.Add(objsType, surfsPresentor);
                         break;
                 }
             }
@@ -80,64 +85,50 @@ namespace ModelController.ModelScenePresentator
 
         /// <inheritdoc/>
 
-        public Tuple<int, int, int,int> CreateVBOIndexes(string objsType)
+        public void HideInsideSurfaces(IEnumerable<ISurfaceObject> surfaceElements)
         {
-            if (ContainsKey(objsType))
+            var surfDict = new Dictionary<string, List<Surface>>();
+
+            foreach (var element in surfaceElements)
             {
-                var presenter = presentors[objsType];
-                return presenter.CreateIndexes();
+                if (element.ViewState & element.NumberOfSides > 1)
+                    foreach (var surface in element.GetSurface())
+                    {
+                        var numbers = surface.GetNodes().Select(x => x.Number).ToArray();
+
+                        Array.Sort(numbers);
+                        var surfInd = string.Join("", numbers);   //numbers[0].ToString() + numbers[1].ToString() + numbers[2].ToString();
+
+                        if (!surfDict.ContainsKey(surfInd))
+                        {
+                            surface.ViewState = true;
+                            surfDict.Add(surfInd, new List<Surface>() { surface });
+                        }
+
+                        else
+                        {
+                            surface.ViewState = false;
+                            surfDict[surfInd][0].ViewState = false;
+                            surfDict[surfInd].Add(surface);
+                        }
+                    }
             }
-            else throw new Exception("Объект не найден!");
+
         }
+/// <inheritdoc/>
+
+        public void ShowInsideSurfaces(IEnumerable<ISurfaceObject> surfaceElements)
+        {
+            foreach (var element in surfaceElements)
+            {
+                if (element.ViewState)
+                    foreach (var surface in element.GetSurface())
+                        surface.ViewState = true;
+            }
+        }
+
+
         /// <inheritdoc/>
-        public float[] CreateVBOVertexes(string objsType, int vertexLength, string vertexType)
-        {
-            if (ContainsKey(objsType))
-            {
-                var presenter = presentors[objsType];
-                return presenter.CreateVertexes(vertexLength, vertexType);
-            }
-            else throw new Exception("Объект не найден!");
-        }
-/// <inheritdoc/>
-
-        public bool[] CreateVBOEdges(string objsType, int vertexLength)
-        {
-            if (ContainsKey(objsType))
-            {
-                var presenter = presentors[objsType];
-                return presenter.CreateEdgeFlags(vertexLength);
-            }
-            else throw new Exception("Объект не найден!");
-        }
-/// <inheritdoc/>
-
-        public int[] CreateVBOPointers(string objsType, int indexLength)
-        {
-            if (ContainsKey(objsType))
-            {
-                var presenter = presentors[objsType];
-                return presenter.CreatePointers(indexLength);
-            }
-            else throw new Exception("Объект не найден!");
-        }
-
-/// <inheritdoc/>
-
-        public void HideInsideObjects(string objsType)
-        {
-            if(ContainsKey(objsType))
-            {
-                var presenter = presentors[objsType];
-
-                if (presenter is SurfaceObjsPresenter surfaceObjsCreator)
-                    surfaceObjsCreator.HideInsideSurfaces();
-            }
-            else throw new Exception("Объект не найден!");
-        }       
-
-
-/// <inheritdoc/>
 
         public IEnumerator<KeyValuePair<string, IObjsPresenter>> GetEnumerator()
         {
@@ -153,41 +144,48 @@ namespace ModelController.ModelScenePresentator
         }
 /// <inheritdoc/>
 
-        public bool ContainsKey(string objsType)
+        public bool ContainsKey(string presentorName)
         {
-            return presentors.ContainsKey(objsType);
+            return presentors.ContainsKey(presentorName);
         }
+/// <inheritdoc/>
 
-        public void Add(string objsType, IObjsPresenter presenter)
+        public void Add(string presentorName, IObjsPresenter presenter)
         {
-            if(!presentors.ContainsKey(objsType))
-                presentors.Add(objsType, presenter);
+            if(!presentors.ContainsKey(presentorName))
+                presentors.Add(presentorName, presenter);
         }
+/// <inheritdoc/>
 
-        public bool Remove(string objsType)
+        public bool Remove(string presentorName)
         {
-            return presentors.Remove(objsType);
+            return presentors.Remove(presentorName);
         }
+/// <inheritdoc/>
 
-        public bool TryGetValue(string objsType, out IObjsPresenter presenter)
+        public bool TryGetValue(string presentorName, out IObjsPresenter presenter)
         {
-            return presentors.TryGetValue(objsType, out presenter);
+            return presentors.TryGetValue(presentorName, out presenter);
         }
+/// <inheritdoc/>
 
         public void Add(KeyValuePair<string, IObjsPresenter> item)
         {
             throw new NotImplementedException();
         }
+/// <inheritdoc/>
 
         public void Clear()
         {
             presentors.Clear();
         }
+/// <inheritdoc/>
 
         public bool Contains(KeyValuePair<string, IObjsPresenter> item)
         {
             throw new NotImplementedException();
         }
+/// <inheritdoc/>
 
         public void CopyTo(KeyValuePair<string, IObjsPresenter>[] array, int arrayIndex)
         {
@@ -201,24 +199,22 @@ namespace ModelController.ModelScenePresentator
         }
 /// <inheritdoc/>
 
-        public IObjsPresenter CreatePresenter(ModelObject[] modelObjects)
-        {
-            var objsType = modelObjects.First().ObjType;
 
-            if(objsType == "Узлы")
-            {
-                return new PointObjsPresenter(modelObjects);
-            }
-            else if(objsType == "Элементы1D" | objsType == "Линии")
-            {
-                var lineObjs = modelObjects.Select(x => (ILineObject)x);
-                return new LineObjsPresenter(lineObjs.ToArray());
-            }
-            else
-            {
-                var surfaceObjs = modelObjects.Select(x => (ISurfaceObject)x);
-                return new SurfaceObjsPresenter(surfaceObjs.ToArray());
-            }            
+        public IObjsPresenter CreatePointObjectsPresenter(IEnumerable<IModelObject> modelObjects)
+        {
+            return new PointObjsPresenter(modelObjects);
+        }
+/// <inheritdoc/>
+
+        public IObjsPresenter CreateLineObjectsPresenter(IEnumerable<ILineObject> lineObjs)
+        {
+            return new LineObjsPresenter(lineObjs);
+        }
+/// <inheritdoc/>
+
+        public IObjsPresenter CreateSurfaceObjectsPresenter(IEnumerable<ISurfaceObject> surfaceObjs)
+        {
+            return new SurfaceObjsPresenter(surfaceObjs);
         }
     }
 }

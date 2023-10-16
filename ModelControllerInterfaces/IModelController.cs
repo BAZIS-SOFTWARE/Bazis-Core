@@ -13,15 +13,6 @@ namespace ModelControllerInterfaces
     public interface IModelController
     {
         /// <summary>
-        /// CreateModelPresenter
-        /// </summary>
-        /// <param name="modelData"></param>
-        void CreateModelPresenter(ModelData modelData);
-        /// <summary>
-        /// ModelPresentor
-        /// </summary>
-        IModelScenePresenter ModelPresentor { get;}
-        /// <summary>
         /// InterfacedNodesFinder
         /// </summary>
         IInterfacedNodesFinder InterfacedNodesFinder { get; }

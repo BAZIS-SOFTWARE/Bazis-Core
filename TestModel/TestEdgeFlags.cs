@@ -23,9 +23,9 @@ namespace TestModel
             };
             var el2D = new Element2D(0, nodes, ObjKind.Triangle);
             model.ObjectData.Add(el2D);
-            var presentator = new ModelScenePresentator(model);
-            var values = presentator.CreateVBOIndexes("Элементы2D");
-            var edges = presentator.CreateVBOEdges("Элементы2D", values.Item4);
+            var presentator = new ModelScenePresentator(model.ObjectData);
+            var values = presentator["Элементы2D"].CreateIndexes();
+            var edges = presentator["Элементы2D"].CreateEdgeFlags(values.Item4);
             Assert.AreEqual(3, edges.Length);
             for (var i = 0; i < edges.Length; ++i)
                 Assert.AreEqual(true, edges[i]);
@@ -45,9 +45,9 @@ namespace TestModel
 
             model.ObjectData.Add(el2D);
 
-            var presentator = new ModelScenePresentator(model);
-            var values = presentator.CreateVBOIndexes("Элементы2D");
-            var edges = presentator.CreateVBOEdges("Элементы2D", values.Item4);
+            var presentator = new ModelScenePresentator(model.ObjectData);
+            var values = presentator["Элементы2D"].CreateIndexes();
+            var edges = presentator["Элементы2D"].CreateEdgeFlags(values.Item4);
             Assert.AreEqual(6, edges.Length);
             var expectedFlags = new bool[] { true, true, false, false, true, true };
             for (var i = 0; i < expectedFlags.Length; ++i)
@@ -69,9 +69,9 @@ namespace TestModel
             };
             var poligon = new Surface(0, nodes, ObjKind.ElementSurface); 
             model.ObjectData.Add(poligon);
-            var presentator = new ModelScenePresentator(model);
-            var values = presentator.CreateVBOIndexes("Поверхности");
-            var edges = presentator.CreateVBOEdges("Поверхности", values.Item4);
+            var presentator = new ModelScenePresentator(model.ObjectData);
+            var values = presentator["Поверхности"].CreateIndexes();
+            var edges = presentator["Поверхности"].CreateEdgeFlags(values.Item4);
             
             Assert.AreEqual(12, edges.Length);
             var expectedFlags = new bool[] { true, true, false, false, true, false,
