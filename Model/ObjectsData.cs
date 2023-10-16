@@ -142,6 +142,8 @@ namespace Model
         public void ClearRemoved()
         {
             var removedObjs = modelObjects.Where(x => x.ExistState == false);
+
+
             var existObjects = modelObjects.Except(removedObjs, new EqualityComparerByExistState()).ToList();
             modelObjects = existObjects;
         }

@@ -14,12 +14,12 @@ namespace ModelControllerInterfaces
         /// <param name="nodes"></param>
         /// <param name="elements"></param>
         /// <returns></returns>
-        Dictionary<int, List<int>> Find(List<int> nodes, Element[] elements);
+        Dictionary<int, List<int>> Find(List<int> nodes, IEnumerable<Element> elements);
         /// <summary>
         /// Find
         /// </summary>
         /// <param name="elements"></param>
         /// <returns></returns>
-        Dictionary<int, List<int>> Find(Element[] elements);
+        Dictionary<int, List<int>> Find(IEnumerable<Element> elements);
     }
 }
