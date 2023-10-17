@@ -1,4 +1,5 @@
 ﻿using Model;
+using Model.Interfaces;
 using System;
 using System.Collections.Generic;
 
@@ -10,50 +11,32 @@ namespace ModelControllerInterfaces
     public interface IModelScenePresenter : IDictionary<string, IObjsPresenter>
     {
         /// <summary>
-        /// CreatePresenter
+        /// HideInsideSurfaces
+        /// </summary>
+        /// <param name="surfaceObjects"></param>
+        void HideInsideSurfaces(IEnumerable<ISurfaceObject> surfaceObjects);
+        /// <summary>
+        /// ShowInsideSurfaces
+        /// </summary>
+        /// <param name="surfaceElements"></param>
+        void ShowInsideSurfaces(IEnumerable<ISurfaceObject> surfaceElements);
+        /// <summary>
+        /// CreatePointObjectsPresenter
         /// </summary>
         /// <param name="modelObjects"></param>
         /// <returns></returns>
-        IObjsPresenter CreatePresenter(ModelObject[] modelObjects);
+        IObjsPresenter CreatePointObjectsPresenter(IEnumerable<IModelObject> modelObjects);
         /// <summary>
-        /// CreateVBOIndexes
+        /// CreateLineObjectsPresenter
         /// </summary>
-        /// <param name="objsType"></param>
+        /// <param name="lineObjs"></param>
         /// <returns></returns>
-        Tuple<int, int, int, int> CreateVBOIndexes(string objsType);
-
-
+        IObjsPresenter CreateLineObjectsPresenter(IEnumerable<ILineObject> lineObjs);
         /// <summary>
-        /// CreateVBOVertexes
+        /// CreateSurfaceObjectsPresenter
         /// </summary>
-        /// <param name="objsType"></param>
-        /// <param name="vertexLength"></param>
-        /// <param name="vertexType"></param>
+        /// <param name="surfaceObjs"></param>
         /// <returns></returns>
-        float[] CreateVBOVertexes(string objsType, int vertexLength, string vertexType);
-
-
-        /// <summary>
-        /// CreateVBOEdges
-        /// </summary>
-        /// <param name="objsType"></param>
-        /// <param name="vertexLength"></param>
-        /// <returns></returns>
-        bool[] CreateVBOEdges(string objsType, int vertexLength);
-
-        /// <summary>
-        /// CreateVBOPointers
-        /// </summary>
-        /// <param name="objsType"></param>
-        /// <param name="indexLength"></param>
-        /// <returns></returns>
-
-        int[] CreateVBOPointers(string objsType, int indexLength);
-
-        /// <summary>
-        /// HideInsideObjects
-        /// </summary>
-        /// <param name="objsType"></param>
-        void HideInsideObjects(string objsType);
+        IObjsPresenter CreateSurfaceObjectsPresenter(IEnumerable<ISurfaceObject> surfaceObjs);
     }
 }

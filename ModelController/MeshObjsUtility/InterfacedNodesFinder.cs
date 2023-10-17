@@ -13,7 +13,7 @@ namespace ModelController.MeshObjsUtility
     /// </summary>
     public class InterfacedNodesFinder : IInterfacedNodesFinder
     {
-        public Dictionary<int, List<int>> Find(List<int> nodes, Element[] elements)
+        public Dictionary<int, List<int>> Find(List<int> nodes, IEnumerable<Element> elements)
         {
             var interfaceNodes = new Dictionary<int, List<int>>();
             foreach (var element in elements)
@@ -38,7 +38,7 @@ namespace ModelController.MeshObjsUtility
             return interfaceNodes;
         }
 
-        public Dictionary<int, List<int>> Find(Element[] elements)
+        public Dictionary<int, List<int>> Find(IEnumerable<Element> elements)
         {
             var interfaceNodes = new Dictionary<int, List<int>>();
 

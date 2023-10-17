@@ -145,7 +145,7 @@ namespace TestModel
             var interNodesEls3DFinder = new InterfacedNodesFinder();
             var interNodesEls2DFinder = new InterfacedNodesFinder();
 
-            var interfacedNodesEls3D = interNodesEls3DFinder.Find(new List<int>() { 3, 48, 71 }, els3D.ToArray());
+            var interfacedNodesEls3D = interNodesEls3DFinder.Find(new List<int>() { 3, 48, 71 }, els3D);
 
             var elsForNode = new List<int>() { 2565,3048,3050,3051 };
             //assert

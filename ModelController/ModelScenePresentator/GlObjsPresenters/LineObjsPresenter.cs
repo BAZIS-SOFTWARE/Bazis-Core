@@ -4,25 +4,32 @@ using ModelController.ModelScenePresentator.GlObjsVertexCreators;
 using ModelController.ModelScenePresentator.Interfaces;
 using ModelControllerInterfaces;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
 namespace ModelController.ModelScenePresentator.GlObjsPresenters
 {
+    /// <summary>
+    /// LineObjsPresenter
+    /// </summary>
     public class LineObjsPresenter : IObjsPresenter
     {
-        ILineObject [] lineObjects;
+        IEnumerable<ILineObject> lineObjects;
+/// <inheritdoc/>
 
-        public IModelObject this[int index]
-        {
-            get { return lineObjects[index]; }
-        }
+        public PresenterType PresenterType { get; } = PresenterType.Line;
 
-        public LineObjsPresenter(ILineObject[] lineObjects)
+        /// <summary>
+        /// LineObjsPresenter
+        /// </summary>
+        /// <param name="lineObjects"></param>
+        public LineObjsPresenter(IEnumerable<ILineObject> lineObjects)
         {
             this.lineObjects = lineObjects;
         }
+/// <inheritdoc/>
 
         public Tuple<int, int, int,int> CreateIndexes()
         {
@@ -43,6 +50,7 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
 
             return new Tuple<int, int, int,int>(indexes, coords, colors, edges);
         }
+/// <inheritdoc/>
 
 
 
@@ -64,6 +72,7 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
             }
             return ptr;
         }
+/// <inheritdoc/>
 
         public float[] CreateVertexes(int vertexLength, string vertexType)
         {
@@ -86,19 +95,14 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
 
             return vertexArray;
         }
+/// <inheritdoc/>
 
         public int Count()
         {
-            return lineObjects.Length;
+            return lineObjects.Count();
         } 
 
-        public IEnumerable<IModelObject> GetObjs()
-        {
-            foreach (var lineObject in lineObjects)
-            {
-                yield return lineObject;
-            }
-        }
+/// <inheritdoc/>
 
         public bool[] CreateEdgeFlags(int edgesLength)
         {
@@ -108,20 +112,19 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
 
             return edgesArray;
         }
-
-        public IModelObject FindObj(int objNumbr)
-        {
-            return ByNumberFinder.Find(lineObjects, objNumbr);
-        }
 /// <inheritdoc/>
 
-        public IEnumerable<IModelObject> GetObjs(Color color)
+        public IEnumerator<IModelObject> GetEnumerator()
         {
             foreach (var lineObject in lineObjects)
             {
-                if (lineObject.MasterColor == color)
-                    yield return lineObject;
+                yield return lineObject;
             }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException();
         }
     }
 }

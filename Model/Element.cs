@@ -17,6 +17,9 @@ namespace Model
             if (nodes.Length == 0)
                 throw new Exception("Массив узлов не может быть пустой!");
             this.nodes = nodes;
+
+            foreach (var node in nodes)
+                node.AddElement(this);
         }
 
         public override ObjKind ObjKind { get; }

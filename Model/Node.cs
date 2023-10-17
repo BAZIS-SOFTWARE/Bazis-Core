@@ -9,13 +9,38 @@ using System.Threading.Tasks;
 
 namespace Model
 {
+    /// <summary>
+    /// Node
+    /// </summary>
     public class Node : ModelObject
     {
+        List<IElement> elements = new List<IElement>();
+        /// <summary>
+        /// Position
+        /// </summary>
         public Point3D Position { get; }
+        /// <summary>
+        /// Normal
+        /// </summary>
         public Point3D Normal { get; set; } = new Point3D();
+
+        /// <summary>
+        /// Node
+        /// </summary>
+        /// <param name="number"></param>
+        /// <param name="position"></param>
+        /// <param name="objKind"></param>
+        public Node(int number, Point3D position, ObjKind objKind) : this(number, position)
+        {
+            ObjKind = objKind;
+        }
+        /// <summary>
+        /// Node
+        /// </summary>
+        /// <param name="number"></param>
+        /// <param name="position"></param>
         public Node(int number, Point3D position) : base(number)
         {
-            ObjKind = ObjKind.Node;
             Position = position;
             ObjType = "Узлы";
             NumberOfPoints = 1;
@@ -25,16 +50,43 @@ namespace Model
             SlaveColor = Color.FromArgb(0, 0, 255);
         }
 
-        public Node(int number, Point3D position, ObjKind objKind) : this(number, position)
-        {
-            ObjKind = objKind;
-        }
+        /// <inheritdoc/>
 
-        public override ObjKind ObjKind { get;}
+        public void AddElement(IElement element)
+        {
+            elements.Add(element);
+        }
+        /// <inheritdoc/>
+
+        public IEnumerable<IElement> GetElements()
+        {
+            foreach (var element in elements)
+            {
+                yield return element;
+            }
+        }
+        /// <inheritdoc/>
+
+        public void RemoveElement(IElement element)
+        {
+            elements.Remove(element);
+        }
+        /// <inheritdoc/>
+
+        public void RemoveElementAt(int index)
+        {
+            elements.RemoveAt(index);
+        }
+        /// <inheritdoc/>
+
+        public override ObjKind ObjKind { get; } = ObjKind.Node;
+/// <inheritdoc/>
 
         public override string ObjType { get; }
+/// <inheritdoc/>
 
         public override int NumberOfPoints { get; }
+/// <inheritdoc/>
 
         public override IEnumerable<Point3D> GetPoints()
         {

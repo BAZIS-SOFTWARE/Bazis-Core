@@ -6,27 +6,32 @@ using System.Drawing;
 namespace ModelControllerInterfaces
 {
     /// <summary>
-    /// IObjsPresenter
+    /// PresenterType
     /// </summary>
-    public interface IObjsPresenter
+    public enum PresenterType
     {
         /// <summary>
-        /// GetObjs
+        /// Point
         /// </summary>
-        /// <returns></returns>
-        IEnumerable<IModelObject> GetObjs();
+        Point,
         /// <summary>
-        /// GetObjs
+        /// Surface
         /// </summary>
-        /// <param name="color"></param>
-        /// <returns></returns>
-        IEnumerable<IModelObject> GetObjs(Color color);
+        Surface,
         /// <summary>
-        /// this
+        /// Line
         /// </summary>
-        /// <param name="ind"></param>
-        /// <returns></returns>
-        IModelObject this[int ind] { get; }
+        Line
+    }
+    /// <summary>
+    /// IObjsPresenter
+    /// </summary>
+    public interface IObjsPresenter : IEnumerable<IModelObject>
+    {
+        /// <summary>
+        /// PresenterType
+        /// </summary>
+        PresenterType PresenterType { get; }
         /// <summary>
         /// CreateIndexes
         /// </summary>

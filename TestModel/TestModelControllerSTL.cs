@@ -22,7 +22,7 @@ namespace TestModel
             //act
             var surfs = model.ObjectData.FindMany<Surface>().ToArray();
 
-            var presentator = new ModelScenePresentator(model);
+            var presentator = new ModelScenePresentator(model.ObjectData);
 
             //var surfObjsCreator = presentator.CreateSurfaceObjsCreator("",true);
 

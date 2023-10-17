@@ -6,16 +6,29 @@ using ModelController.ModelScenePresentator.GlObjsVertexCreators;
 using ModelController.ModelScenePresentator.Interfaces;
 using ModelControllerInterfaces;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace ModelController.ModelScenePresentator.GlObjsPresenters
 {
+    /// <summary>
+    /// PointObjsPresenter
+    /// </summary>
     public class PointObjsPresenter : IObjsPresenter
     {
 
-        IModelObject[] pointObjects;
-        public PointObjsPresenter(IModelObject[] pointObjects)
+        IEnumerable<IModelObject> pointObjects;
+/// <inheritdoc/>
+
+        public PresenterType PresenterType { get; } = PresenterType.Point;
+
+        /// <summary>
+        /// PointObjsPresenter
+        /// </summary>
+        /// <param name="pointObjects"></param>
+        public PointObjsPresenter(IEnumerable<IModelObject> pointObjects)
         {
             this.pointObjects = pointObjects;
         }
@@ -42,20 +55,23 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
 
             return new Tuple<int, int, int,int>(indexes, coords, colors,0);
         }
+/// <inheritdoc/>
 
 
         public int[] CreatePointers(int indexLength)
         {
             var ptr = new int[indexLength];
             var stride = 0;
-            for (int i = 0; i < pointObjects.Length; i++)
+
+            foreach (var pointObject in pointObjects)
             {
-                if (pointObjects[i].ViewState)
+                if (pointObject.ViewState)
                 {
                     ptr[stride] = stride;
                     stride++;
                 }
             }
+
             return ptr;
         }
         /// <inheritdoc/>
@@ -73,9 +89,10 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
                 vertexCreator = new CoordsPointObjsCreator();
             else vertexCreator = new NormalsPointObjsCreator();
 
-            for (int i = 0; i < pointObjects.Length; i++)
+
+            foreach (var pointObject in pointObjects)
             {
-                vertexCreator.Create(ref stride, vertexArray, pointObjects[i]);
+                vertexCreator.Create(ref stride, vertexArray, pointObject);
             }
 
             return vertexArray;
@@ -84,33 +101,9 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
 
         public int Count()
         {
-            return pointObjects.Length;
-        }
-/// <inheritdoc/>
-
-        public IEnumerable<Model.Interfaces.IModelObject> GetObjs()
-        {
-            foreach (var pointObject in pointObjects)
-            {
-                yield return pointObject;
-            }
+            return pointObjects.Count();
         }
 
-        public Model.Interfaces.IModelObject this[int index]
-        {
-            get{return pointObjects[index];}
-        }
-
-        public IEnumerable<int> FindSurfacePoints(Element3D [] elements)
-        {
-
-            var normalCalculator = new NormalsCalculator(elements);
-            normalCalculator.CalcNodeNormals();
-
-
-            var surfacedNodesFinder = new FindOpenSurfaceNodes();
-            return surfacedNodesFinder.Find(elements);
-        }
 /// <inheritdoc/>
 
         public bool[] CreateEdgeFlags(int edgesLength)
@@ -118,18 +111,19 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
             return new bool[0];
         }
 
-        public IModelObject FindObj(int objNumbr)
-        {
-            return ByNumberFinder.Find(pointObjects, objNumbr);
-        }
+/// <inheritdoc/>
 
-        public IEnumerable<IModelObject> GetObjs(Color color)
+        public IEnumerator<IModelObject> GetEnumerator()
         {
             foreach (var pointObject in pointObjects)
             {
-                if (pointObject.MasterColor == color)
-                    yield return pointObject;
+                yield return pointObject;
             }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException();
         }
     }
 }

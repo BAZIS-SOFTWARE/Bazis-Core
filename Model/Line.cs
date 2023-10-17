@@ -20,7 +20,7 @@ namespace Model
             this.nodes = nodes;
         }
 
-        public override ObjKind ObjKind { get;  }
+        public override ObjKind ObjKind { get; }
         public override string ObjType { get; }
 
         public override int NumberOfPoints { get; }

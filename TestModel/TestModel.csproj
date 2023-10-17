@@ -149,6 +149,10 @@
       <Project>{1fe044a5-fe40-4f59-b05e-5cdb5bb25282}</Project>
       <Name>GmshApi</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ModelControllerInterfaces\ModelControllerInterfaces.csproj">
+      <Project>{a7ff5f36-3905-4526-b825-b8ae9cdbb635}</Project>
+      <Name>ModelControllerInterfaces</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ModelController\ModelController.csproj">
       <Project>{0040c7b5-aa26-42c4-b3a0-c7ff40ec8709}</Project>
       <Name>ModelController</Name>
