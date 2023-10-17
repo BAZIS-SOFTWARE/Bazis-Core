@@ -24,7 +24,7 @@ namespace ModelController
 
         public void CreateModelPresenter(ModelData modelData)
         {
-            ModelPresentor = new ModelScenePresentator.ModelScenePresentator(modelData);
+            ModelPresentor = new ModelScenePresentator.ModelScenePresentator(modelData.ObjectData);
         }
 
     }
