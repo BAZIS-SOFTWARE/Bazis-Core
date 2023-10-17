@@ -1,10 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using GmshApi;
 using System.Linq;
 using GmshApi.GmshController;
 using Model.Interfaces;
 using System;
-using System.Drawing;
 using System.Collections.Generic;
 
 namespace TestModel.GmshTests
@@ -44,11 +42,17 @@ namespace TestModel.GmshTests
             else
                 status = controller.ModelGetGeometryEntities(out dimTags, 0);
 
-            var objects = controller.CreateGeometryEntities(objKind, dimTags);
             Assert.IsTrue(status);
+
+            IEnumerable<IModelObject> objects;
+            if (objKind == ObjKind.Curve)
+                objects = controller.CreateLines(dimTags, ref status);
+            else
+                objects = controller.CreateControlPoints(dimTags);
+
             Assert.AreEqual(numbOfObjs, objects.Count());
-            for (var i = 0; i < objects.Count; ++i)
-                Assert.AreEqual(objKind, objects[i].ObjKind);
+            foreach (var obj in objects)
+                Assert.AreEqual(objKind, obj.ObjKind);
         }
 
         [DataTestMethod]
@@ -62,9 +66,9 @@ namespace TestModel.GmshTests
             int[] dimTags;
             controller.ModelGetGeometryEntities(out dimTags, 1);
 
-            var curveUntil = controller.CreateGeometryEntities(ObjKind.Curve, dimTags).First();
+            var curveUntil = controller.CreateLines(dimTags,ref status).First();
             controller.gmshOptionSetNumber("Geometry.NumSubEdges", 15, ref ierr);
-            var curveAfter = controller.CreateGeometryEntities(ObjKind.Curve, dimTags).First();
+            var curveAfter = controller.CreateLines(dimTags, ref status).First();
             Assert.IsTrue(curveAfter.NumberOfPoints < curveUntil.NumberOfPoints);
         }
 

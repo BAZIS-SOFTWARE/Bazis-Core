@@ -63,7 +63,7 @@ namespace ModelController.ModelScenePresentator
                         var els1dPresentor = CreateLineObjectsPresenter(objectsData.FindMany<Element1D>());
                         presentors.Add(objsType, els1dPresentor);
                         break;
-                    case "Линии":
+                    case "Линия":
                         var linesPresentor = CreateLineObjectsPresenter(objectsData.FindMany<Line>());
                         presentors.Add(objsType, linesPresentor);
                         break;

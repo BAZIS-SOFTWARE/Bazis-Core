@@ -425,14 +425,6 @@ namespace GmshApi.GmshController
             gmshInitialize(0, ref argv, 0, 0, ref ierr);
         }
 
-        ~GmshController()
-        {
-            var ierr = 0;
-            if(gmshIsInitialized(ref ierr) == 1)
-                gmshFinalize(ref ierr);
-            GmshKernel.GmshKernel.FreeLibrary(DLL);
-        }
-
         public T GetFunction<T>(string functionName)
         {
             var funPtr = GmshKernel.GmshKernel.GetProcAddress(DLL, functionName);
@@ -892,31 +884,13 @@ namespace GmshApi.GmshController
             return true;
         }
 
-
-        public List<ModelObject> CreateGeometryEntities(ObjKind kind, int[] dimTags)
+        public List<ILineObject> CreateLines(int[] tags, ref bool status)
         {
-            int[] tags;
-            tags = dimTags.Where((v, i) => (i & 1) == 1).ToArray();
-            var entities = new List<ModelObject>();
-
-            if (kind == ObjKind.Point)
-            {
-                return CreateControlPoints(tags);
-            }
-            else
-            {
-                var status = true;
-                return CreateLines(tags, ref status);
-            }
-        }
-
-        private List<ModelObject> CreateLines(int[] tags, ref bool status)
-        {
-            var lines = new List<ModelObject>();
+            var lines = new List<ILineObject>();
             double[] minBounds;
             double[] maxBounds;
             status = true;
-            for (var i = 0; i < tags.Length; ++i)
+            for (var i = 1; i < tags.Length; i+=2)
             {
                 if (!ModelGetParametrizationBounds(1, tags[i], out minBounds, out maxBounds))
                 {
@@ -969,11 +943,11 @@ namespace GmshApi.GmshController
             return true;
         }
 
-        private List<ModelObject> CreateControlPoints(int[] tags)
+        public List<IModelObject> CreateControlPoints(int[] tags)
         {
-            var nodes = new List<ModelObject>();
+            var nodes = new List<IModelObject>();
             double[] coords;
-            for (var i = 0; i < tags.Length; ++i)
+            for (var i = 1; i < tags.Length; i+=2)
             {
                 if (!ModelGetValue(0, tags[i], new double[] { }, out coords))
                 {
