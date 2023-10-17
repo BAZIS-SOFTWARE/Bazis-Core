@@ -209,7 +209,7 @@ namespace ModelController.ModelScenePresentator
             {
                 return new PointObjsPresenter(modelObjects);
             }
-            else if(objsType == "Элементы1D" | objsType == "Линии")
+            else if(objsType == "Элементы1D" | objsType == "Линия")
             {
                 var lineObjs = modelObjects.Select(x => (ILineObject)x);
                 return new LineObjsPresenter(lineObjs.ToArray());

@@ -425,13 +425,13 @@ namespace GmshApi.GmshController
             gmshInitialize(0, ref argv, 0, 0, ref ierr);
         }
 
-        ~GmshController()
+        /*~GmshController()
         {
             var ierr = 0;
             if(gmshIsInitialized(ref ierr) == 1)
                 gmshFinalize(ref ierr);
             GmshKernel.GmshKernel.FreeLibrary(DLL);
-        }
+        }*/
 
         public T GetFunction<T>(string functionName)
         {
