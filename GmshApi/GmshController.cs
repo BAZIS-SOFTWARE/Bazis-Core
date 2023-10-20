@@ -884,9 +884,9 @@ namespace GmshApi.GmshController
             return true;
         }
 
-        public List<ILineObject> CreateLines(int[] tags, ref bool status)
+        public List<Line> CreateLines(int[] tags, ref bool status)
         {
-            var lines = new List<ILineObject>();
+            var lines = new List<Line>();
             double[] minBounds;
             double[] maxBounds;
             status = true;
@@ -943,9 +943,9 @@ namespace GmshApi.GmshController
             return true;
         }
 
-        public List<IModelObject> CreateControlPoints(int[] tags)
+        public List<Node> CreateControlPoints(int[] tags)
         {
-            var nodes = new List<IModelObject>();
+            var nodes = new List<Node>();
             double[] coords;
             for (var i = 1; i < tags.Length; i+=2)
             {
@@ -1011,7 +1011,7 @@ namespace GmshApi.GmshController
             }
             return list;
         }
-
+        
         public List<ModelObject> GetNodes(ref bool status)
         {
             long[] nodeTags;
