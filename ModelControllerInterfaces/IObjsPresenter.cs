@@ -61,11 +61,5 @@ namespace ModelControllerInterfaces
         /// </summary>
         /// <returns></returns>
         int Count();
-        /// <summary>
-        /// FindObj
-        /// </summary>
-        /// <param name="objNumbr"></param>
-        /// <returns></returns>
-        IModelObject FindObj(int objNumbr);
     }
 }
