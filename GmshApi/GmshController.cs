@@ -884,9 +884,9 @@ namespace GmshApi.GmshController
             return true;
         }
 
-        public List<ILineObject> CreateLines(int[] tags, ref bool status)
+        public List<Line> CreateLines(int[] tags, ref bool status)
         {
-            var lines = new List<ILineObject>();
+            var lines = new List<Line>();
             double[] minBounds;
             double[] maxBounds;
             status = true;
@@ -943,9 +943,9 @@ namespace GmshApi.GmshController
             return true;
         }
 
-        public List<IModelObject> CreateControlPoints(int[] tags)
+        public List<Node> CreateControlPoints(int[] tags)
         {
-            var nodes = new List<IModelObject>();
+            var nodes = new List<Node>();
             double[] coords;
             for (var i = 1; i < tags.Length; i+=2)
             {
@@ -972,14 +972,14 @@ namespace GmshApi.GmshController
             return points;
         }
 
-        public List<ISurfaceObject> GetMeshEntities(int dim, int tag, ref bool status)
+        public List<SurfaceElement> GetMeshEntities(int dim, int tag, ref bool status)
         {
             ElementProperties[] properties;
             int[] elementTypes;
             long[][] elemTags, nodeTags;
             long[] nodesT;
             double[] coords, parametric;
-            var list = new List<ISurfaceObject>();
+            var list = new List<SurfaceElement>();
             status = false;
             if (ModelMeshGetElements(dim, tag, out elementTypes, out elemTags, out nodeTags))
             {
@@ -1011,12 +1011,12 @@ namespace GmshApi.GmshController
             }
             return list;
         }
-
-        public List<ModelObject> GetNodes(ref bool status)
+        
+        public List<Node> GetNodes(ref bool status)
         {
             long[] nodeTags;
             double[] local, parametric;
-            var nodes = new List<ModelObject>();
+            var nodes = new List<Node>();
             if (ModelMeshGetNodes(-1, -1, false, false, out nodeTags, out local, out parametric))
             {
                 for (var i = 0; i < nodeTags.Length; ++i)
@@ -1067,7 +1067,7 @@ namespace GmshApi.GmshController
             return ierr == 0;
         }
 
-        private ISurfaceObject CreateModelObject(ref string elementName,
+        private SurfaceElement CreateModelObject(ref string elementName,
                                                   long elementId, Node[] nodes)
         {
             if (elementName.Contains("Triangle"))
