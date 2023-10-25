@@ -78,7 +78,7 @@ namespace Model
             throw new NotImplementedException("Не найден вид объектов!");
         }
 
-        public float[] GetDerivativeFromFunction(Point3D point3D)
+        public override float[] GetDerivativesFormFunctions(Point3D point3D)
         {
             switch (ObjKind)
             {
