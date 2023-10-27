@@ -102,7 +102,7 @@ namespace TestModel
             var loader = new LoadModelFromASCIITextFile();
 
             loader.LoadEvent += Model_LoadEvent;
-            var modelLoaded = loader.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
+            var modelLoaded = loader.Load(@"..\..\..\TestModel\Examples\VIsual-Mesh\rhombDATA1.ASC");
             model.Load(modelLoaded);
             //act
             var elements = model.ObjectData.FindMany<Element3D>().ToArray();
@@ -257,7 +257,7 @@ namespace TestModel
             var loader = new LoadModelFromASCIITextFile();
 
             loader.LoadEvent += Model_LoadEvent;
-            var modelASCII = loader.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
+            var modelASCII = loader.Load(@"..\..\..\TestModel\Examples\VIsual-Mesh\rhombDATA1.ASC");
             model.Load(modelASCII);
 
             //act

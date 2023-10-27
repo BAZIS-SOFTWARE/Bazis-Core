@@ -1,10 +1,13 @@
 ﻿using Geometry;
 using Model;
+using Model.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MathNet.Numerics.LinearAlgebra;
+using ModelController.ModelScenePresentator.GlObjsVertexCreators;
 
 namespace ModelController.MeshObjsUtility
 {
@@ -34,6 +37,38 @@ namespace ModelController.MeshObjsUtility
                     }
                 }
             }
+        }
+        /// <summary>
+        /// Строит карту соседей для всех точек, определяет центр модели.
+        /// </summary>
+        /// <param name="obj">Список элементов</param>
+        /// <param name="modelCenter">Центр модели</param>
+        /// <return>Карта соседей</return>
+        public static Dictionary<Node, List<Surface>> BuildNeighborsMap(IEnumerable<ISurfaceObject> obj, out Point3D modelCenter)
+        {
+            var neighbors = new Dictionary<Node, List<Surface>>();
+            modelCenter = new Point3D();
+            foreach (var element in obj)
+            {
+                if (element.ViewState)
+                {
+                    foreach (var surface in element.GetSurface())
+                    {
+                        if (surface.ViewState)
+                        {
+                            foreach (var node in surface.GetNodes())
+                            {
+                                if (!neighbors.ContainsKey(node))
+                                    neighbors.Add(node, new List<Surface>());
+                                neighbors[node].Add(surface);
+                                modelCenter = modelCenter.Sum(node.Position);
+                            }
+                        }
+                    }
+                }
+            }
+            modelCenter = modelCenter.Div(neighbors.Count);
+            return neighbors;
         }
 
         public List<Segment3D> CalcElemsNormals()

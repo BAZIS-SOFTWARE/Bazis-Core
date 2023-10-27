@@ -106,6 +106,7 @@
     <Compile Include="TestFormFunctions.cs" />
     <Compile Include="TestIO.cs" />
     <Compile Include="TestModelControllerPoligon.cs" />
+    <Compile Include="TestNormalsCalculator.cs" />
     <Compile Include="TestsCutSection.cs" />
     <Compile Include="TestServices.cs" />
     <Compile Include="TestSurface.cs" />
