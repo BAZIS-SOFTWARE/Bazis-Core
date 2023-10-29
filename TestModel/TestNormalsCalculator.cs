@@ -16,10 +16,10 @@ namespace TestModel
     public class TestNormalsCalculator
     {
         [DataTestMethod]
-        [DataRow(90, new int[] { 1, 1, 1, 1 })]
-        [DataRow(110, new int[] { 3, 3, 3, 3 })]
-        [DataRow(180, new int[] { 3, 3, 3, 3 })]
-        public void TestTetraSmoothNormals(float minAngle, int[] expGroups)
+        [DataRow(90, 4, new int[] { 1, 1, 1, 1 })]
+        [DataRow(110, 4, new int[] { 3, 3, 3, 3 })]
+        [DataRow(180, 4,  new int[] { 3, 3, 3, 3 })]
+        public void TestTetraSmoothNormals(float minAngle, int totalGroups, int[] expGroups)
         {
             //Правильный тетраэдр
             var nodes = new Node[] { new Node(1, new Point3D(-1.5f,0,0)), new Node(2, new Point3D(1.5f, 0, 0)),
@@ -31,6 +31,8 @@ namespace TestModel
             var presenter = new ModelScenePresentator(modelData.ObjectData);
             var tuple = presenter["Элементы3D"].CreateIndexes();
             var glNormals = presenter["Элементы3D"].CreateVertexes(tuple.Item2, "сглаженная нормаль " + minAngle.ToString());
+            var set = TotalNormals(glNormals);
+            Assert.AreEqual(totalGroups, set.Count);
             foreach (var group in GroupNormals(glNormals).Select((v, i) => (v, i)))
                 Assert.AreEqual(expGroups[group.i], group.v.Value.Count);
         }
@@ -53,6 +55,28 @@ namespace TestModel
             var glNormals = presenter["Элементы2D"].CreateVertexes(tuple.Item2, "сглаженная нормаль " + minAngle.ToString());
             foreach (var group in GroupNormals(glNormals).Select((v, i) => (v, i)))
                 Assert.AreEqual(expGroups[group.i], group.v.Value.Count);
+        }
+
+        private HashSet<string> TotalNormals(float[] glNormals)
+        {
+            var result = new HashSet<string>();
+            var sb = new StringBuilder(100);
+            for (int i = 0, j = 0; i < glNormals.Length; i += 9, ++j)
+            {
+                for (var k = 0; k < 3; ++k)
+                {
+                    var normal = new Point3D(glNormals[i + k * 3], glNormals[i + k * 3 + 1], glNormals[i + k * 3 + 2]);
+                    normal = Vector.GetVectorNorm(normal);
+                    sb.Append(normal._x.ToString("0.0000"));
+                    sb.Append(normal._y.ToString("0.0000"));
+                    sb.Append(normal._z.ToString("0.0000"));
+                    var hash = sb.ToString();
+                    if(!result.Contains(hash))
+                        result.Add(hash);
+                    sb.Clear();
+                }
+            }
+            return result;
         }
 
         private Dictionary<int, HashSet<string>> GroupNormals(float[] glNormals)
