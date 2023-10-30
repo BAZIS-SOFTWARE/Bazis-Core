@@ -36,8 +36,8 @@ namespace ModelController.MeshObjsUtility
             
             var nodes = objectsData.FindMany<Node>().ToArray();
             
-            var firstNode = ByNumberFinder.Find(nodes, indexFirst);
-            var secondNode = ByNumberFinder.Find(nodes, indexSecond);
+            var firstNode = nodes.Find(indexFirst);
+            var secondNode = nodes.Find(indexSecond);
 
             var previousDirection = secondNode.Position.Sub(firstNode.Position);
             var result = new HashSet<int> { indexFirst, indexSecond };
@@ -48,7 +48,7 @@ namespace ModelController.MeshObjsUtility
                 isMoveNext = false;
                 foreach(var elementNumber in interfacedElements[currentNode.Number])
                 {           
-                    var element = ByNumberFinder.Find(elements, elementNumber);
+                    var element = elements.Find(elementNumber);
                     foreach(var node in element.GetNodes())
                     {
                         var currentDirection = node.Position.Sub(currentNode.Position);
@@ -101,12 +101,12 @@ namespace ModelController.MeshObjsUtility
             while(queue.Count > 0)
             {
                 var currentNumber = queue.Dequeue();
-                var currentElement = ByNumberFinder.Find(elements, currentNumber);
+                var currentElement = elements.Find(currentNumber);
                 foreach (var neighbourNumber in graph[currentNumber])
                 {
                     if(!used.Contains(neighbourNumber))
                     {
-                        var neighbourElement = ByNumberFinder.Find(elements, neighbourNumber);
+                        var neighbourElement = elements.Find(neighbourNumber);
                         var cos = Vector.GetAngleVectors(currentElement.CalcNormal(), neighbourElement.CalcNormal());
                         var angleRadian = Math.Acos(Math.Abs(cos));
                         if (angleRadian <= maxAngleRadians)

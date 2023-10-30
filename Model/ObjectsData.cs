@@ -177,7 +177,7 @@ namespace Model
 
         public ModelObject Find(int objNumbr)
         {
-            return ByNumberFinder.Find(modelObjects, objNumbr);
+            return modelObjects.Find(objNumbr);
         }
 
         public List<string> GetObjectTypes()

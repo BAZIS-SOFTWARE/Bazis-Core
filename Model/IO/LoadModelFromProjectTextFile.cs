@@ -102,7 +102,7 @@ namespace Model.IO
 
                 var nodeList = new List<Node>();
                 foreach (var nodeNumber in ar)
-                    nodeList.Add(ByNumberFinder.Find(nodes,nodeNumber));
+                    nodeList.Add(nodes.Find(nodeNumber));
 
                 if (elType == "Элементы3D" | elType == "Элементы 3004")
                 {
@@ -170,13 +170,13 @@ namespace Model.IO
             var indexLine = splitLine[1].Remove(0, name.Length + 2);
             if (indexLine != "")
             {
-                //var startInd = GetElStartInd(newMesh, objType, version);
+                var elements = newMesh.ObjectData.FindMany<Element>().ToList();
                 var indexes = indexLine.Split(' ').Select(x => int.Parse(x)).ToList();
                 indexes.Sort();
 
                 foreach (var index in indexes)
                 {
-                    var obj = newMesh.ObjectData.Find(index);
+                    var obj = elements.Find(index);
                     newGroup.Add(obj);
                 }
 

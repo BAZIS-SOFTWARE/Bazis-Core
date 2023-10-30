@@ -32,7 +32,7 @@ namespace TestModel
             var model = new ModelData();
             model.ObjectData.AddRange(objs);
             //act
-            var element = ByNumberFinder.Find(objs, 8);
+            var element = objs.Find(8);
             //assert
             Assert.AreEqual(8, element.Number);
         }
