@@ -972,14 +972,14 @@ namespace GmshApi.GmshController
             return points;
         }
 
-        public List<SurfaceElement> GetMeshEntities(int dim, int tag, ref bool status)
+        public List<ISurfaceElement> GetMeshEntities(int dim, int tag, ref bool status)
         {
             ElementProperties[] properties;
             int[] elementTypes;
             long[][] elemTags, nodeTags;
             long[] nodesT;
             double[] coords, parametric;
-            var list = new List<SurfaceElement>();
+            var list = new List<ISurfaceElement>();
             status = false;
             if (ModelMeshGetElements(dim, tag, out elementTypes, out elemTags, out nodeTags))
             {
@@ -1067,7 +1067,7 @@ namespace GmshApi.GmshController
             return ierr == 0;
         }
 
-        private SurfaceElement CreateModelObject(ref string elementName,
+        private ISurfaceElement CreateModelObject(ref string elementName,
                                                   long elementId, Node[] nodes)
         {
             if (elementName.Contains("Triangle"))
