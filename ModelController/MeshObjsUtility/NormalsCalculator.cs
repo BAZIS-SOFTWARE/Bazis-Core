@@ -1,5 +1,6 @@
 ﻿using Geometry;
 using Model;
+using Model.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,14 +11,9 @@ namespace ModelController.MeshObjsUtility
 {
     public class NormalsCalculator
     {
-        SurfaceElement[] elements;
-        public NormalsCalculator(SurfaceElement[] elements)
+        public Dictionary<int, Point3D> CalcNodeNormals(IEnumerable<Element3D> elements)
         {
-            this.elements = elements;
-        }
-
-        public void CalcNodeNormals()
-        {
+            var normals = new Dictionary<int, Point3D>();
             foreach (var element in elements)
             {
                 var centre = element.CalcCentralPoint();
@@ -30,13 +26,17 @@ namespace ModelController.MeshObjsUtility
                     foreach (var node in surface.GetNodes())
                     {
                         if (node.ViewState)
-                            node.Normal = node.Normal.Sum(normalV);
+                            if (normals.ContainsKey(node.Number))
+                                normals[node.Number] = normals[node.Number].Sum(normalV);
+                            else normals.Add(node.Number, normalV);
                     }
                 }
             }
+
+            return normals;
         }
 
-        public List<Segment3D> CalcElemsNormals()
+        public List<Segment3D> CalcElemsNormals(IEnumerable<Element3D> elements)
         {
             var lines = new List<Segment3D>();
 

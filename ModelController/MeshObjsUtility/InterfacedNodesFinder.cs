@@ -8,9 +8,8 @@ using System.Threading.Tasks;
 
 namespace ModelController.MeshObjsUtility
 {
-    /// <summary>
-    /// По номеру узла возвращает список элементов, сопряжённых через данный узел
-    /// </summary>
+
+    [Warning("Старайтесь использовать метод GetElements() в классе Node если нужно перебрать смежные элементы у узлов!")]
     public class InterfacedNodesFinder : IInterfacedNodesFinder
     {
         public Dictionary<int, List<int>> Find(List<int> nodes, IEnumerable<Element> elements)
@@ -37,7 +36,12 @@ namespace ModelController.MeshObjsUtility
             }
             return interfaceNodes;
         }
-
+        /// <summary>
+        /// Find
+        /// </summary>
+        /// <param name="elements"></param>
+        /// Список элементов
+        /// <returns></returns>
         public Dictionary<int, List<int>> Find(IEnumerable<Element> elements)
         {
             var interfaceNodes = new Dictionary<int, List<int>>();
