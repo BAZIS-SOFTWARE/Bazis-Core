@@ -12,11 +12,11 @@ namespace Model
     /// <summary>
     /// ObjectsData
     /// </summary>
-    public class ObjectsData : IList<ModelObject>
+    public class ObjectsData : IList<IModelObject>
     {
-        List<ModelObject> modelObjects;
+        List<IModelObject> modelObjects;
 
-        public ModelObject this[int index]
+        public IModelObject this[int index]
         {
             get { return modelObjects[index]; }
             set { modelObjects[index] = value; }
@@ -26,7 +26,7 @@ namespace Model
         /// </summary>
         public ObjectsData()
         {
-            modelObjects = new List<ModelObject>();
+            modelObjects = new List<IModelObject>();
         }
 
         public bool IsReadOnly { get { return false; } }
@@ -36,23 +36,23 @@ namespace Model
             modelObjects.Clear();
         }
 
-        public bool Contains(ModelObject item)
+        public bool Contains(IModelObject item)
         {
             throw new System.NotImplementedException();
         }
 
-        public void CopyTo(ModelObject[] array, int arrayIndex)
+        public void CopyTo(IModelObject[] array, int arrayIndex)
         {
             modelObjects.CopyTo(array, arrayIndex);
         }
 
-        public void Insert(int index, ModelObject item)
+        public void Insert(int index, IModelObject item)
         {
             throw new System.NotImplementedException();
         }
 
 
-        public IEnumerable<T> FindMany<T>() where T : ModelObject
+        public IEnumerable<T> FindMany<T>() where T : IModelObject
         {
             //var list = new List<T>();
             foreach (var obj in modelObjects)
@@ -99,7 +99,7 @@ namespace Model
             get { return FindMany<Element>().Count(); }
         }       
 
-        public IEnumerable<ModelObject> FindMany(ObjKind objKind)
+        public IEnumerable<IModelObject> FindMany(ObjKind objKind)
         {
             foreach (var modelObject in modelObjects)
             {
@@ -108,7 +108,7 @@ namespace Model
             }
         }
 
-        public IEnumerable<ModelObject> FindMany(string objType)
+        public IEnumerable<IModelObject> FindMany(string objType)
         {
             //var list = new List<ModelObject>();
 
@@ -134,7 +134,7 @@ namespace Model
         }       
 /// <inheritdoc/>
 
-        public bool Remove(ModelObject modelObject)
+        public bool Remove(IModelObject modelObject)
         {
             return modelObjects.Remove(modelObject);
         }
@@ -150,7 +150,7 @@ namespace Model
 
         public void RemoveRange(string objType)
         {
-            var listTypedObjs = new List<List<ModelObject>>();
+            var listTypedObjs = new List<List<IModelObject>>();
             var objTypes = GetObjectTypes();
 
             foreach (var type in objTypes)
@@ -159,12 +159,12 @@ namespace Model
                     listTypedObjs.Add(FindMany(type).ToList());
             }
 
-            var mergeObjsList = new List<ModelObject>();
+            var mergeObjsList = new List<IModelObject>();
 
             foreach (var typedObjs in listTypedObjs)
                 mergeObjsList.AddRange(typedObjs);
 
-            MergeSort<ModelObject>.MergeSortFunction(mergeObjsList);
+            MergeSort<IModelObject>.MergeSortFunction(mergeObjsList);
 
             modelObjects = mergeObjsList;
         }
@@ -175,7 +175,7 @@ namespace Model
             modelObjects.RemoveAt(modelObjectInd);
         }
 
-        public ModelObject Find(int objNumbr)
+        public IModelObject Find(int objNumbr)
         {
             return modelObjects.Find(objNumbr);
         }
@@ -192,22 +192,22 @@ namespace Model
             return objNames;
         }
 
-        public void AddRange(IEnumerable<ModelObject> addObjects)
+        public void AddRange(IEnumerable<IModelObject> addObjects)
         {
             modelObjects.AddRange(addObjects);
         }
 
-        public void Add(ModelObject addObj)
+        public void Add(IModelObject addObj)
         {
             modelObjects.Add(addObj);
         }
 
-        public int IndexOf(ModelObject item)
+        public int IndexOf(IModelObject item)
         {
             return modelObjects.IndexOf(item);
         }
 
-        public IEnumerator<ModelObject> GetEnumerator()
+        public IEnumerator<IModelObject> GetEnumerator()
         {
             foreach (var modelObject in modelObjects)
             {
