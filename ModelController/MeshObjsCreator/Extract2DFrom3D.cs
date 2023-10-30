@@ -19,25 +19,23 @@ namespace ModelController.MeshObjsCreator
         /// <param name="StartNumber"></param>
         /// <param name="elements"></param>
         /// <returns></returns>
-        public Element2D[] Create(int StartNumber, Element3D[] elements)
+        public IEnumerable<Element2D> Create(int StartNumber, Element3D[] elements)
         {
             var surfaces = FindOpenSurfaces(elements);
-            var elements2D = new Element2D[surfaces.Count];
 
-            for (int i = 0; i < surfaces.Count; i++)
+            foreach (var surface in surfaces)
             {
-                var nodes = surfaces[i].GetNodes().ToArray();
+                var nodes = surface.GetNodes().ToArray();
                 if (nodes.Length == 3)
-                    elements2D[i] = new Element2D(StartNumber,nodes, Model.Interfaces.ObjKind.Triangle);
+                    yield return new Element2D(StartNumber,nodes, Model.Interfaces.ObjKind.Triangle);
                 StartNumber++;
             }
-            return elements2D;
         }
         /// <summary>
         /// FindOpenSurfaces
         /// </summary>
         /// <returns></returns>
-        public List<Surface> FindOpenSurfaces(Element3D[] elements)
+        public IEnumerable<Surface> FindOpenSurfaces(Element3D[] elements)
         {
             var surfDict = new Dictionary<string, List<Surface>>();
 
@@ -57,15 +55,11 @@ namespace ModelController.MeshObjsCreator
                 }
             }
 
-            var openSurf = new List<Surface>();
-
             foreach (var elemSurf in surfDict)
             {
                 if (elemSurf.Value.Count == 1)
-                    openSurf.Add(elemSurf.Value[0]);
+                    yield return elemSurf.Value[0];
             }
-
-            return openSurf;
 
         }
     }

@@ -35,7 +35,7 @@ namespace ModelController.MeshObjsUtility
                 var sharedEdges = new Dictionary<string, Dictionary<Element, List<Surface>>>();
                 foreach (var sharedElement in interfacedNode.Value)
                 {
-                    var element = ByNumberFinder.Find(els,sharedElement);
+                    var element = els.Find(sharedElement);
 
                     foreach (var surface in element.GetSurface())
                     {

@@ -41,6 +41,11 @@ namespace Model
             return Vector.GetVectorLenght(nodes[1].Position.Sub(nodes[0].Position));        
         }
 
+        public override float[] GetDerivativesFormFunctions(Point3D point3D)
+        {
+            throw new NotImplementedException();
+        }
+
         public override float[] GetFormFunctions(Point3D point3D)
         {
             var answer = new float[2];

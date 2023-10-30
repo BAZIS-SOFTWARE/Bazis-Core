@@ -87,16 +87,16 @@ namespace Model
             return cMatr;
         }
 
-        public float[][] GetDerivativeFromFunction(Point3D point3D)
+        public override float[] GetDerivativesFormFunctions(Point3D point3D)
         {
             switch (ObjKind)
             {
                 case ObjKind.Tetra:
                     throw new NotImplementedException();
                 case ObjKind.Penta:
-                    return DerivativeFormFunctionPenta(point3D).ToRowArrays();
+                    throw new NotImplementedException();
                 case ObjKind.Hexa:
-                    return DerivativeFormFunctionHex(point3D).ToRowArrays();
+                    throw new NotImplementedException();
             }
 
             throw new NotImplementedException();

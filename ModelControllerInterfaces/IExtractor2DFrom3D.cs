@@ -12,12 +12,12 @@ namespace ModelControllerInterfaces
         /// FindOpenSurfaces
         /// </summary>
         /// <returns></returns>
-        List<Surface> FindOpenSurfaces(Element3D[] elements);
+        IEnumerable<Surface> FindOpenSurfaces(Element3D[] elements);
         /// <summary>
         /// Create
         /// </summary>
         /// <param name="StartNumber"></param>
         /// <returns></returns>
-        Element2D[] Create(int StartNumber, Element3D[] elements);
+        IEnumerable<Element2D> Create(int StartNumber, Element3D[] elements);
     }
 }

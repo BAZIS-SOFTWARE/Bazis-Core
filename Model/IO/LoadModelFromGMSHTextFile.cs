@@ -72,7 +72,7 @@ namespace Model.IO
             var nodeArr = new Node[selectedNodesId.Length];
             for (int i = 0; i < nodeArr.Length; i++)
             {
-                nodeArr[i] = ByNumberFinder.Find(nodes, selectedNodesId[i]);
+                nodeArr[i] = nodes.Find(selectedNodesId[i]);
             }
             switch(elementType)
             {
