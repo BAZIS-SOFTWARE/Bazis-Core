@@ -1,5 +1,6 @@
 ﻿using Functions.Sort;
 using Model.GroupsData;
+using Model.Interfaces;
 using System.Linq;
 
 namespace Model
@@ -27,7 +28,7 @@ namespace Model
             GroupData = modelData.GroupData;
 
             var list = ObjectData.ToList();
-            MergeSort<ModelObject>.MergeSortFunction(list);
+            MergeSort<IModelObject>.MergeSortFunction(list);
 
             ObjectData.Clear();
             ObjectData.AddRange(list);

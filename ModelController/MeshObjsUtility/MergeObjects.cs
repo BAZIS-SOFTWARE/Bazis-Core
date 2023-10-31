@@ -8,10 +8,16 @@ using System.Threading.Tasks;
 
 namespace ModelController.MeshObjsUtility
 {
+    /// <summary>
+    /// MergeObjects
+    /// </summary>
     public class MergeObjects
     {
         ObjectsData objectData;
-
+        /// <summary>
+        /// MergeObjects
+        /// </summary>
+        /// <param name="objectData"></param>
         public MergeObjects(ObjectsData objectData)
         {
             this.objectData = objectData;

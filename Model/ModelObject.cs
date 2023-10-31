@@ -6,6 +6,27 @@ using System.Drawing;
 namespace Model
 {
     /// <summary>
+    /// WarningAttribute
+    /// </summary>
+    [System.AttributeUsage(System.AttributeTargets.Class |
+                       System.AttributeTargets.Struct,
+                       AllowMultiple = true)]
+    public class WarningAttribute : System.Attribute
+    {
+        /// <summary>
+        /// Message
+        /// </summary>
+        public string Message { get; }
+        /// <summary>
+        /// WarningAttribute
+        /// </summary>
+        /// <param name="message"></param>
+        public WarningAttribute(string message)
+        {
+            Message = message;
+        }
+    }
+    /// <summary>
     ///Model object class
     /// </summary>
     public abstract class ModelObject : IModelObject

@@ -22,6 +22,7 @@ namespace Model
         /// <summary>
         /// Normal
         /// </summary>
+        [Obsolete(@"Prop ""Normal"" is deprecated, please don't use.")]
         public Point3D Normal { get; set; } = new Point3D();
 
         /// <summary>

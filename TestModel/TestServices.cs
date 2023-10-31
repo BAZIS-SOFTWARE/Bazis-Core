@@ -250,7 +250,7 @@ namespace TestModel
         //}
 
         [TestMethod]
-        public void TestCalcNodeNormals()
+        public void TestCalcFindOpenSurfaceNodes()
         {
             //assing
             var model = new ModelData();
@@ -261,12 +261,8 @@ namespace TestModel
             model.Load(modelASCII);
 
             //act
-            var elements = model.ObjectData.FindMany<Element3D>().ToArray();
+            var elements = model.ObjectData.FindMany<Element3D>();
 
-            var normalCalculator = new NormalsCalculator(elements);
-            normalCalculator.CalcNodeNormals();
-            
-            //var edge = Services.GetBoundedEdges(elements);
             //assert
             var openSurfNodes = new List<int>();
 

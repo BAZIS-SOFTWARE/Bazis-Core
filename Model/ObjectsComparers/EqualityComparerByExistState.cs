@@ -3,16 +3,16 @@ using System.Collections.Generic;
 
 namespace Model.ObjectsComparers
 {
-    public class EqualityComparerByExistState : IEqualityComparer<ModelObject>
+    public class EqualityComparerByExistState : IEqualityComparer<IModelObject>
     {
-        public bool Equals(ModelObject x, ModelObject y)
+        public bool Equals(IModelObject x, IModelObject y)
         {
             if (x.ExistState == y.ExistState)
                 return true;
             else return false;
         }
 
-        public int GetHashCode(ModelObject obj)
+        public int GetHashCode(IModelObject obj)
         {
             return obj.Number;
         }

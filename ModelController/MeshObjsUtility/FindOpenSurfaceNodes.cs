@@ -10,18 +10,15 @@ namespace ModelController.MeshObjsUtility
 {
     public class FindOpenSurfaceNodes
     {
-        public IEnumerable<int> Find(Element3D[] elements)
+        public IEnumerable<int> Find(IEnumerable<Element3D> elements)
         {
-            foreach (var element in elements)
+            var normalCalculator = new NormalsCalculator();
+            var normals = normalCalculator.CalcNodeNormals(elements);
+
+            foreach (var normal in normals)
             {
-                foreach (var surface in element.GetSurface())
-                {
-                    foreach (var node in surface.GetNodes())
-                    {
-                        if (node.ViewState && Vector.GetVectorLenght(node.Normal) > 1e-4)
-                            yield return node.Number;
-                    }
-                }
+                if (Vector.GetVectorLenght(normal.Value) > 1e-4)
+                    yield return normal.Key;
             }
         }
     }
