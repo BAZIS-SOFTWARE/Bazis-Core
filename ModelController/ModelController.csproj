@@ -30,7 +30,6 @@
     <Compile Include="ModelScenePresentator\GlObjsVertexCreators\CoordsPointObjsCreator.cs" />
     <Compile Include="ModelScenePresentator\GlObjsVertexCreators\CoordsSurfaceObjsCreator.cs" />
     <Compile Include="ModelScenePresentator\GlObjsVertexCreators\EdgesSurfaceObjsCreator.cs" />
-    <Compile Include="ModelScenePresentator\GlObjsVertexCreators\SmoothNormalsElementObjsCreator.cs" />
     <Compile Include="ModelScenePresentator\Interfaces\IEdgeObjsVertexCreator.cs" />
     <Compile Include="ModelScenePresentator\Interfaces\ILineObjsVertexCreator.cs" />
     <Compile Include="ModelScenePresentator\Interfaces\IPointObjsVertexCreator.cs" />

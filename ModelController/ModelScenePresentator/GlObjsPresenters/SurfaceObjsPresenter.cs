@@ -101,14 +101,18 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
                 vertexCreator = new ColorSurfaceObjsCreator();
             else if (vertexType == "координаты")
                 vertexCreator = new CoordsSurfaceObjsCreator();
-            /*else if (vertexType.Contains("сглаженная нормаль"))
+            else
             {
-                if (surfaceElements.First().ObjType == "Элементы3D")
-                    vertexCreator = new SmoothNormalsElement3DObjsCreator(surfaceElements, vertexType);
+                
+                if (surfaceElements.First().ObjType == "Элементы2D")
+                {
+                    var creator = new NormalsSurface2DObjsCreator();
+                    creator.SetCenter(surfaceElements);
+                    vertexCreator = creator;
+                }
                 else
-                    vertexCreator = new SmoothNormalsElementObjsCreator(surfaceElements, vertexType);
-            }*/
-            else vertexCreator = new NormalsSurfaceObjsCreator();
+                    vertexCreator = new NormalsSurfaceObjsCreator();
+            }
 
             foreach (var surfaceElement in surfaceElements)
             {
