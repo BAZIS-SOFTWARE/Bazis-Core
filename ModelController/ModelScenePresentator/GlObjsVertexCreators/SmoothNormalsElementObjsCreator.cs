@@ -16,7 +16,7 @@ namespace ModelController.ModelScenePresentator.GlObjsVertexCreators
         float minCos;
         public SmoothNormalsElementObjsCreator(IEnumerable<ISurfaceObject> objects, string vertexType)
         {
-            map = NormalsCalculator.BuildNeighborsMap(objects, out modelCentre);
+            //map = NormalsCalculator.BuildNeighborsMap(objects, out modelCentre);
             var tokens = vertexType.Split(' ');
             var outAngle = 0.0f;
             var angle = tokens.Length > 2 && float.TryParse(tokens[2], out outAngle) ? outAngle : 60;

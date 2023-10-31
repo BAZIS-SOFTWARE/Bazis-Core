@@ -37,7 +37,7 @@ namespace ModelController.MeshObjsUtility
 
             return normals;
         }
-        /// <summary>
+        /*/// <summary>
         /// Строит карту соседей для всех точек, определяет центр модели.
         /// </summary>
         /// <param name="obj">Список элементов</param>
@@ -68,7 +68,7 @@ namespace ModelController.MeshObjsUtility
             }
             modelCenter = modelCenter.Div(neighbors.Count);
             return neighbors;
-        }
+        }*/
 
         public List<Segment3D> CalcElemsNormals(IEnumerable<Element3D> elements)
         {
