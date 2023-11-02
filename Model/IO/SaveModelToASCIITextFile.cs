@@ -1,5 +1,5 @@
 ﻿using Model.GroupsData;
-using Model.Interfaces;
+using ModelInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -10,13 +10,13 @@ namespace Model.IO
 {
     public class SaveModelToASCIITextFile
     {
-        public void Save(ModelData modelData, string fileName)
+        public void Save(IModelData modelData, string fileName)
         {
             var nodes = modelData.ObjectData.FindMany<Node>().ToList();
             var elements = modelData.ObjectData.FindMany<Element>().ToList();
             var groups = modelData.GroupData;
             using(var writer = new StreamWriter(fileName))
-            {
+            {          
                 WriteHeaders(writer, nodes.Count, elements.Count);
                 WriteNodes(writer, nodes);
                 WriteElements(writer, elements);
@@ -72,7 +72,7 @@ namespace Model.IO
             }
         }
 
-        private void WriteGroups(StreamWriter writer, GroupData groupData)
+        private void WriteGroups(StreamWriter writer, IGroupData groupData)
         {
             writer.WriteLine($"BEGIN_GROUPS {groupData.Count}");
             var index = 1;

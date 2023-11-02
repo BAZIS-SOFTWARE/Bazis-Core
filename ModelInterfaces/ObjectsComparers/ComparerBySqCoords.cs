@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Model.ObjectsComparers
+namespace ModelInterfaces.ObjectsComparers
 {
-    public class ComparerBySqCoords : IComparer<ModelObject>
+    public class ComparerBySqCoords : IComparer<IModelObject>
     {
-        public int Compare(ModelObject x, ModelObject y)
+        public int Compare(IModelObject x, IModelObject y)
         {
             var x_centrP = x.CalcCentralPoint();
             var y_centrP = y.CalcCentralPoint();

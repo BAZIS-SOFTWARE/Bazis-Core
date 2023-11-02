@@ -1,10 +1,7 @@
-﻿using Model;
-using ModelControllerInterfaces;
-using System;
+﻿using ModelControllerInterfaces;
+using ModelInterfaces;
+using ModelInterfaces.Attributes;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ModelController.MeshObjsUtility
 {
@@ -12,7 +9,7 @@ namespace ModelController.MeshObjsUtility
     [Warning("Старайтесь использовать метод GetElements() в классе Node если нужно перебрать смежные элементы у узлов!")]
     public class InterfacedNodesFinder : IInterfacedNodesFinder
     {
-        public Dictionary<int, List<int>> Find(List<int> nodes, IEnumerable<Element> elements)
+        public Dictionary<int, List<int>> Find(List<int> nodes, IEnumerable<IElement> elements)
         {
             var interfaceNodes = new Dictionary<int, List<int>>();
             foreach (var element in elements)
@@ -42,7 +39,7 @@ namespace ModelController.MeshObjsUtility
         /// <param name="elements"></param>
         /// Список элементов
         /// <returns></returns>
-        public Dictionary<int, List<int>> Find(IEnumerable<Element> elements)
+        public Dictionary<int, List<int>> Find(IEnumerable<IElement> elements)
         {
             var interfaceNodes = new Dictionary<int, List<int>>();
 

@@ -68,8 +68,8 @@
     <Reference Include="Functions, Version=1.0.2.43, Culture=neutral, PublicKeyToken=65fde98421b2fc88, processorArchitecture=MSIL">
       <HintPath>..\packages\Functions.1.0.2.43\lib\net48\Functions.dll</HintPath>
     </Reference>
-    <Reference Include="Geometry, Version=2.0.7.11, Culture=neutral, PublicKeyToken=d064922373770c4c, processorArchitecture=MSIL">
-      <HintPath>..\packages\Geometry.2.0.7.11\lib\net48\Geometry.dll</HintPath>
+    <Reference Include="Geometry, Version=2.0.7.20, Culture=neutral, PublicKeyToken=d064922373770c4c, processorArchitecture=MSIL">
+      <HintPath>..\packages\Geometry.2.0.7.20\lib\net48\Geometry.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -156,6 +156,10 @@
     <ProjectReference Include="..\ModelController\ModelController.csproj">
       <Project>{0040c7b5-aa26-42c4-b3a0-c7ff40ec8709}</Project>
       <Name>ModelController</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ModelInterfaces\ModelInterfaces.csproj">
+      <Project>{4cd55397-85a3-4982-9339-cd7cefb014a2}</Project>
+      <Name>ModelInterfaces</Name>
     </ProjectReference>
     <ProjectReference Include="..\Model\Model.csproj">
       <Project>{a6b0cebb-8f7c-467e-90bb-924103dae30b}</Project>

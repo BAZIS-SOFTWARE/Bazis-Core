@@ -1,17 +1,16 @@
 ﻿using Functions.Sort;
 using Geometry;
-using Model.Interfaces;
+using ModelInterfaces.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using System.Threading.Tasks;
-
-namespace Model.ObjectsSorters
+namespace ModelInterfaces.ObjectsSorters
 {
     /// <summary>
     /// DistanceSorter
     /// </summary>
+    [Obsolete("Не используйте. Вместо этого применяйте SortByDistance<T> из библиотеки Geometry")]
     public static class DistanceSorter
     {
         /// <summary>
@@ -19,7 +18,7 @@ namespace Model.ObjectsSorters
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="objs"></param>
-        public static void SortByDistance <T>(this List<T> objs) where T : Interfaces.IModelObject
+        public static void SortByDistance <T>(this List<T> objs) where T : IModelObject
         {
             var fistNode = 0;
 

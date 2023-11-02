@@ -7,7 +7,7 @@ using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using Model.Events;
-using Model.Interfaces;
+using ModelInterfaces;
 using ModelController.MeshObjsUtility;
 using Model.IO;
 
@@ -101,11 +101,11 @@ namespace TestModel
             var model = new ModelData();
             var loader = new LoadModelFromASCIITextFile();
 
-            loader.LoadEvent += Model_LoadEvent;
+            loader.LoadEvent += (ar1,ar2) => { };
             var modelLoaded = loader.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
             model.Load(modelLoaded);
             //act
-            var elements = model.ObjectData.FindMany<Element3D>().ToArray();
+            var elements = model.ObjectData.FindMany<IElement3D>();
             var nodes = model.ObjectData.FindMany<Node>();
 
             var interNodesFinder = new InterfacedNodesFinder();
@@ -125,21 +125,21 @@ namespace TestModel
             var loaderGMSH = new LoadModelFromGMSHTextFile();
 
 
-            loaderGMSH.LoadEvent += Model_LoadEvent;
+            loaderGMSH.LoadEvent += (ar1, ar2) => { };
             //act
             var modelGMSH = loaderGMSH.Load(@"C:\Projs\TestProjTerm\box\box1.inp");
             model.Load(modelGMSH);
 
             var saver = new SaveModelToProjectTextFile();
-            saver.SaveEvent += Model_SaveEvent;
+            saver.SaveEvent += (ar1, ar2) => { };
             saver.Save(model,@"C:\Projs\TestProjTerm\box\task_1.bpf");
 
             var loaderBPF = new LoadModelFromProjectTextFile();
-            loaderBPF.LoadEvent += Model_LoadEvent;
+            loaderBPF.LoadEvent += (ar1, ar2) => { };
             var modelBPF = loaderBPF.Load(@"C:\Projs\TestProjTerm\box\task_1.bpf");
             model.Load(modelBPF);
 
-            var els3D = model.ObjectData.FindMany<Element3D>();
+            var els3D = model.ObjectData.FindMany<IElement3D>();
             var els2D = model.ObjectData.FindMany<Element2D>();
 
             var interNodesEls3DFinder = new InterfacedNodesFinder();
@@ -161,19 +161,13 @@ namespace TestModel
             //throw new NotImplementedException();
         }
 
-
-        private void Model_LoadEvent(object arg1, LoaderEventArgs arg2)
-        {
-            //throw new NotImplementedException();
-        }
-
         [TestMethod]
         public void TestRemoveBigData()
         {
             //assing
             var model = new ModelData();
             var loaderGMSH = new LoadModelFromProjectTextFile();
-            loaderGMSH.LoadEvent += Model_LoadEvent;
+            loaderGMSH.LoadEvent += (ar1, ar2) => { };
             //act
             var modelGMSH = loaderGMSH.Load(@"C:\Projs\ENERGOMASH\CALC\proj_new.bpf");
             model.Load(modelGMSH);
@@ -256,12 +250,12 @@ namespace TestModel
             var model = new ModelData();
             var loader = new LoadModelFromASCIITextFile();
 
-            loader.LoadEvent += Model_LoadEvent;
+            loader.LoadEvent += (ar1, ar2) => { };
             var modelASCII = loader.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
             model.Load(modelASCII);
 
             //act
-            var elements = model.ObjectData.FindMany<Element3D>();
+            var elements = model.ObjectData.FindMany<IElement3D>();
 
             //assert
             var openSurfNodes = new List<int>();

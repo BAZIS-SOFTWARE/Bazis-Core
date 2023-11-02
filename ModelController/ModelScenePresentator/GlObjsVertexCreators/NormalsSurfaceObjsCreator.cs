@@ -1,6 +1,4 @@
-﻿using Geometry;
-using Model;
-using Model.Interfaces;
+﻿using ModelInterfaces;
 using ModelController.ModelScenePresentator.Interfaces;
 
 namespace ModelController.ModelScenePresentator.GlObjsVertexCreators

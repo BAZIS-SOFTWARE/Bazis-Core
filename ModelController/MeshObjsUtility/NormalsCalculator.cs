@@ -1,17 +1,12 @@
 ﻿using Geometry;
-using Model;
-using Model.Interfaces;
-using System;
+using ModelInterfaces;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ModelController.MeshObjsUtility
 {
     public class NormalsCalculator
     {
-        public Dictionary<int, Point3D> CalcNodeNormals(IEnumerable<Element3D> elements)
+        public Dictionary<int, Point3D> CalcNodeNormals(IEnumerable<IElement3D> elements)
         {
             var normals = new Dictionary<int, Point3D>();
             foreach (var element in elements)
@@ -36,7 +31,7 @@ namespace ModelController.MeshObjsUtility
             return normals;
         }
 
-        public List<Segment3D> CalcElemsNormals(IEnumerable<Element3D> elements)
+        public List<Segment3D> CalcElemsNormals(IEnumerable<IElement3D> elements)
         {
             var lines = new List<Segment3D>();
 

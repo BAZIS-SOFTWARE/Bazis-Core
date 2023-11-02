@@ -1,26 +1,28 @@
 ﻿using Geometry;
-using Model.Interfaces;
+using ModelInterfaces;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Model
 {
     public class Element1D : Element, ILineObject
     {
-        public Element1D(int number, Node[] nodes, ObjKind objKind) : base(number, nodes, objKind)
+        public Element1D(int number, Node[] nodes, ObjKind objKind) : base(number)
         {
             InitialColor = Color.FromArgb(255, 192, 203);
             MasterColor = Color.FromArgb(255, 192, 203);
             SlaveColor = Color.FromArgb(255, 192, 203);
 
-            this.nodes = nodes;
+            foreach (var node in nodes)
+            {
+                this.nodes.Add(node);
+                node.AddElement(this);
+            }
+
             ObjType = "Элементы1D";
             ObjKind = objKind;
         }
+        /// <inheritdoc/>
         public override ObjKind ObjKind { get; }
 
         public override string ObjType { get; }

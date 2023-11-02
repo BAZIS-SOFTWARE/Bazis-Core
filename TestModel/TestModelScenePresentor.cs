@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
-using Model.Interfaces;
+using ModelInterfaces;
 using Model.IO;
 using ModelController.ModelScenePresentator;
 using System;

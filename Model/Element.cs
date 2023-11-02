@@ -1,35 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Geometry;
-using Model.Interfaces;
+using ModelInterfaces;
 
 namespace Model
 {
     public abstract class Element : ModelObject, IElement
     {
-        protected Node[] nodes;
-        public Element(int number, Node[] nodes, ObjKind objKind) : base(number)
+        protected List<INode> nodes;
+        public Element(int number) : base(number)
         {
-            if (nodes.Length == 0)
-                throw new Exception("Массив узлов не может быть пустой!");
-            this.nodes = nodes;
-
-            foreach (var node in nodes)
-                node.AddElement(this);
+            nodes = new List<INode>();
         }
+        //{
+        //    if (nodes.Length == 0)
+        //        throw new Exception("Массив узлов не может быть пустой!");
+        //    this.nodes = nodes;
+
+        //    foreach (var node in nodes)
+        //        node.AddElement(this);
+        //}
 
         public override ObjKind ObjKind { get; }
         
-        public override int NumberOfPoints { get { return nodes.Length; } }
+        public override int NumberOfPoints { get { return nodes.Count(); } }
 
         public abstract float[] GetDerivativesFormFunctions(Point3D point3D);
         public abstract float[] GetFormFunctions(Point3D point3D);
 
-        public IEnumerable<Node> GetNodes()
+        public IEnumerable<INode> GetNodes()
         {
             foreach (var node in nodes)
             {

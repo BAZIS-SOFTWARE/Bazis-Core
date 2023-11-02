@@ -1,4 +1,4 @@
-﻿using Model;
+﻿using ModelInterfaces;
 using System.Collections.Generic;
 
 namespace ModelControllerInterfaces
@@ -14,12 +14,12 @@ namespace ModelControllerInterfaces
         /// <param name="nodes"></param>
         /// <param name="elements"></param>
         /// <returns></returns>
-        Dictionary<int, List<int>> Find(List<int> nodes, IEnumerable<Element> elements);
+        Dictionary<int, List<int>> Find(List<int> nodes, IEnumerable<IElement> elements);
         /// <summary>
         /// Find
         /// </summary>
         /// <param name="elements"></param>
         /// <returns></returns>
-        Dictionary<int, List<int>> Find(IEnumerable<Element> elements);
+        Dictionary<int, List<int>> Find(IEnumerable<IElement> elements);
     }
 }

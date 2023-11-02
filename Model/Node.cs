@@ -1,18 +1,15 @@
 ﻿using Geometry;
-using Model.Interfaces;
+using ModelInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Model
 {
     /// <summary>
     /// Node
     /// </summary>
-    public class Node : ModelObject
+    public class Node : ModelObject,INode
     {
         List<IElement> elements = new List<IElement>();
         /// <summary>
@@ -34,6 +31,7 @@ namespace Model
         public Node(int number, Point3D position, ObjKind objKind) : this(number, position)
         {
             ObjKind = objKind;
+
         }
         /// <summary>
         /// Node
@@ -87,17 +85,20 @@ namespace Model
 /// <inheritdoc/>
 
         public override int NumberOfPoints { get; }
-/// <inheritdoc/>
+
+        /// <inheritdoc/>
 
         public override IEnumerable<Point3D> GetPoints()
         {
             yield return Position;
         }
+/// <inheritdoc/>
 
         public override string ToString()
         {
             return string.Format("{0} {1} : {2}",Number,ObjType,Position);
         }
+/// <inheritdoc/>
 
         public override Point3D CalcCentralPoint()
         {

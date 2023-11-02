@@ -1,31 +1,10 @@
 ﻿using Geometry;
-using Model.Interfaces;
+using ModelInterfaces;
 using System.Collections.Generic;
 using System.Drawing;
 
 namespace Model
 {
-    /// <summary>
-    /// WarningAttribute
-    /// </summary>
-    [System.AttributeUsage(System.AttributeTargets.Class |
-                       System.AttributeTargets.Struct,
-                       AllowMultiple = true)]
-    public class WarningAttribute : System.Attribute
-    {
-        /// <summary>
-        /// Message
-        /// </summary>
-        public string Message { get; }
-        /// <summary>
-        /// WarningAttribute
-        /// </summary>
-        /// <param name="message"></param>
-        public WarningAttribute(string message)
-        {
-            Message = message;
-        }
-    }
     /// <summary>
     ///Model object class
     /// </summary>
@@ -108,6 +87,44 @@ namespace Model
         /// ObjType
         /// </summary>
         public abstract string ObjType { get; }
+
+        public float _x
+        {
+            get
+            {
+                var sum_x = 0.0f;
+                foreach (var point in GetPoints())
+                {
+                    sum_x += point._x;
+                }
+                return sum_x / NumberOfPoints;
+            }
+        }
+        public float _y
+        {
+            get
+            {
+                var sum_y = 0.0f;
+                foreach (var point in GetPoints())
+                {
+                    sum_y += point._y;
+                }
+                return sum_y / NumberOfPoints;
+            }
+        }
+        public float _z
+        {
+            get
+            {
+                var sum_z = 0.0f;
+                foreach (var point in GetPoints())
+                {
+                    sum_z += point._z;
+                }
+                return sum_z / NumberOfPoints;
+            }
+        }
+
         /// <summary>
         /// Set initial color
         /// </summary>
@@ -140,7 +157,7 @@ namespace Model
         /// <summary>
         /// Compare to
         /// </summary>
-        public int CompareTo(Interfaces.IModelObject other)
+        public int CompareTo(IModelObject other)
         {
             if (this.Number > other.Number)
                 return 1;
@@ -155,7 +172,7 @@ namespace Model
         /// <summary>
         /// Equal two objects
         /// </summary>
-        public bool Equals(Interfaces.IModelObject x, Interfaces.IModelObject y)
+        public bool Equals(IModelObject x, IModelObject y)
         {
             if (x.Number == y.Number)
                 return true;
@@ -164,14 +181,14 @@ namespace Model
         /// <summary>
         ///Get hash code
         /// </summary>
-        public int GetHashCode(Interfaces.IModelObject obj)
+        public int GetHashCode(IModelObject obj)
         {
             return obj.Number;
         }
         /// <summary>
         /// Equal with object
         /// </summary>
-        public bool Equals(Interfaces.IModelObject other)
+        public bool Equals(IModelObject other)
         {
             if (Number == other.Number)
                 return true;

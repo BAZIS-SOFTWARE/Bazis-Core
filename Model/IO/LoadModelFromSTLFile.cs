@@ -1,6 +1,6 @@
 ﻿using Geometry;
 using Model.Events;
-using Model.Interfaces;
+using ModelInterfaces;
 using System;
 using System.Globalization;
 using System.IO;
@@ -9,10 +9,10 @@ namespace Model.IO
 {
     public class LoadModelFromSTLFile : IModelLoader
     {
-        public event Action<object, LoaderEventArgs> LoadEvent;
+        public event Action<object, ILoaderEventArgs> LoadEvent;
         public int counter = 0;
 
-        public ModelData Load(string path)
+        public IModelData Load(string path)
         {
             var modelData = new ModelData();
             var reader = new StreamReader(path);

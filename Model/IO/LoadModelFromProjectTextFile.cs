@@ -1,6 +1,4 @@
-﻿using Model;
-using Model.GroupsData;
-using Model.Interfaces;
+﻿using Model.GroupsData;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -9,53 +7,56 @@ using System.Linq;
 using System.Threading;
 using Geometry;
 using Model.Events;
-using Model.ObjectsFinders;
+using ModelInterfaces;
+using ModelInterfaces.ObjectsFinders;
 
 namespace Model.IO
 {
     public class LoadModelFromProjectTextFile : IModelLoader
     {
-        public event Action<object, LoaderEventArgs> LoadEvent;
+        public event Action<object, ILoaderEventArgs> LoadEvent;
 
-        public ModelData Load(string path)
+        public IModelData Load(string path)
         {
-            var sr = new StreamReader(path);
+            using (var sr = new StreamReader(path))
+            {
+                var newModel = new ModelData();
+                var nodes = new List<Node>();
+                var line = string.Empty;
 
-            var newModel = new ModelData();
-            var nodes = new List<Node>();
-            var line = string.Empty;
-
-            while (!sr.EndOfStream)
-            {               
-
-                if (line == "Узлы")
+                while (!sr.EndOfStream)
                 {
-                    LoadEvent(this, new LoaderEventArgs("Загрузка узлов..."));
-                    Thread.Sleep(100);
-                    LoadNodes(sr, newModel, nodes);
-                }
-                if (line == "Элементы 3004" | line == "Элементы 2003" |
-                    line == "Элементы3D" | line == "Элементы2D" | 
-                    line == "Элементы1D")
-                {
-                    LoadEvent(this, new LoaderEventArgs("Загрузка элементов..."));
-                    Thread.Sleep(100);
-                    LoadElement(sr, line, newModel);
+
+                    if (line == "Узлы")
+                    {
+                        LoadEvent(this, new LoaderEventArgs("Загрузка узлов..."));
+                        Thread.Sleep(100);
+                        LoadNodes(sr, newModel, nodes);
+                    }
+                    if (line == "Элементы 3004" | line == "Элементы 2003" |
+                        line == "Элементы3D" | line == "Элементы2D" |
+                        line == "Элементы1D")
+                    {
+                        LoadEvent(this, new LoaderEventArgs("Загрузка элементов..."));
+                        Thread.Sleep(100);
+                        LoadElement(sr, line, newModel);
+                    }
+
+                    if (line == "Группы узлов и элементов")
+                    {
+                        LoadEvent(this, new LoaderEventArgs("Загрузка групп..."));
+                        Thread.Sleep(100);
+                        LoadGroup(sr, newModel);
+                    }
+                    line = sr.ReadLine();
                 }
 
-                if (line == "Группы узлов и элементов")
-                {
-                    LoadEvent(this, new LoaderEventArgs("Загрузка групп..."));
-                    Thread.Sleep(100);
-                    LoadGroup(sr, newModel);
-                }
-                line = sr.ReadLine();
+                LoadEvent(this, new LoaderEventArgs("Модель загружена"));
+                Thread.Sleep(100);
+                return newModel;
             }
+             
 
-            LoadEvent(this, new LoaderEventArgs("Модель загружена"));
-            Thread.Sleep(100);
-            sr.Dispose();
-            return newModel;
         }
 
         private static void LoadNodes(StreamReader sr, ModelData newMesh, List<Node> nodes)

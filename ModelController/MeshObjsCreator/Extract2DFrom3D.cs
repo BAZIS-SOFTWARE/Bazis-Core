@@ -1,5 +1,6 @@
 ﻿using Model;
 using ModelControllerInterfaces;
+using ModelInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,15 +20,13 @@ namespace ModelController.MeshObjsCreator
         /// <param name="StartNumber"></param>
         /// <param name="elements"></param>
         /// <returns></returns>
-        public IEnumerable<Element2D> Create(int StartNumber, Element3D[] elements)
+        public IEnumerable<IElement2D> Create(int StartNumber, IElement3D[] elements)
         {
             var surfaces = FindOpenSurfaces(elements);
 
             foreach (var surface in surfaces)
             {
-                var nodes = surface.GetNodes().ToArray();
-                if (nodes.Length == 3)
-                    yield return new Element2D(StartNumber,nodes, Model.Interfaces.ObjKind.Triangle);
+                yield return new Element2D(StartNumber, surface, ObjKind.Triangle);
                 StartNumber++;
             }
         }
@@ -35,9 +34,9 @@ namespace ModelController.MeshObjsCreator
         /// FindOpenSurfaces
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Surface> FindOpenSurfaces(Element3D[] elements)
+        public IEnumerable<ISurface> FindOpenSurfaces(IElement3D[] elements)
         {
-            var surfDict = new Dictionary<string, List<Surface>>();
+            var surfDict = new Dictionary<string, List<ISurface>>();
 
             foreach (var element in elements)
             {
@@ -50,7 +49,7 @@ namespace ModelController.MeshObjsCreator
                     var surfInd = string.Join("",numbers);
 
                     if (!surfDict.ContainsKey(surfInd))
-                        surfDict.Add(surfInd, new List<Surface>() { surface });
+                        surfDict.Add(surfInd, new List<ISurface>() { surface });
                     else surfDict[surfInd].Add(surface);
                 }
             }

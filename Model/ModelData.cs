@@ -1,20 +1,19 @@
 ﻿using Functions.Sort;
 using Model.GroupsData;
-using Model.Interfaces;
+using Model.IO;
+using ModelInterfaces;
 using System.Linq;
 
 namespace Model
 {
-    public class ModelData 
+    public class ModelData  : IModelData
     {
-        public ObjectsData ObjectData { get; internal set; }
-        public GroupData GroupData{ get; internal set; }
-
-        public ModelData()
-        {
-            ObjectData = new ObjectsData();
-            GroupData = new GroupData();
-        }
+        public IObjectsData ObjectData { get; set; } = new ObjectsData();
+        public IGroupData GroupData { get; set; } = new GroupData();
+        /// <inheritdoc/>
+        public IModelSaver Saver { get; set; } = new SaveModelToProjectTextFile();
+        /// <inheritdoc/>
+        public IModelLoader Loader { get; set; } = new LoadModelFromProjectTextFile();
 
         public void Clear()
         {
@@ -22,7 +21,7 @@ namespace Model
             GroupData.Clear();
         }      
 
-        public void Load(ModelData modelData)
+        public void Load(IModelData modelData)
         {
             ObjectData = modelData.ObjectData;
             GroupData = modelData.GroupData;
@@ -34,7 +33,7 @@ namespace Model
             ObjectData.AddRange(list);
         }
 
-        public void SetObjectData(ObjectsData objectData)
+        public void SetObjectData(IObjectsData objectData)
         {
             ObjectData = objectData;
         }

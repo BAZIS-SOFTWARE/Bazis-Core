@@ -4,7 +4,7 @@ using System.Runtime.Remoting.Messaging;
 using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
-using Model.Interfaces;
+using ModelInterfaces;
 
 namespace TestModel
 {

@@ -1,17 +1,17 @@
 ﻿using Geometry;
 using MathNet.Numerics.LinearAlgebra;
-using Model.Interfaces;
+using ModelInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Model.ObjectsSorters
 {
-    public class NodeSorter
+    public class SurfaceFinder
     {
         /// <param name="nodes">Узлы, задающие выпуклую 3D модель</param>
         /// <returns>Перечисление поверхностей, составляющих грани 3D модели</returns>
-        public static IEnumerable<Surface> GetSurfaces(Node[] nodes)
+        public static IEnumerable<ISurface> FindSurfaces(Node[] nodes)
         {
             var surfaces = new List<HashSet<Node>>();
             var surfaceId = 0;
@@ -69,7 +69,7 @@ namespace Model.ObjectsSorters
 
         /// <summary>
         ///  Вычисляет определитель заданной матрицы
-        /// </summary>
+        /// </summary>    
         private static float GetDet(float[,] matrix)
         {
             var A = Matrix<float>.Build.DenseOfArray(matrix);

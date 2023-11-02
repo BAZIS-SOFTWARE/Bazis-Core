@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using Model.IO;
+using ModelInterfaces;
 using System;
 using System.Collections.Generic;
 
@@ -45,16 +46,16 @@ namespace TestModel
             };
 
             //act
-            var surf = new Surface(0, nodes, Model.Interfaces.ObjKind.ElementSurface);
+            var surf = new Surface(0, nodes, ObjKind.ElementSurface);
 
             //assert
-            if (!surf[0].Equals(nodes[0]))
+            if (!surf[0].Number.Equals(0))
                 throw new Exception();
-            if (!surf[1].Equals(nodes[1]))
+            if (!surf[1].Number.Equals(1))
                 throw new Exception();
-            if (!surf[2].Equals(nodes[3]))
+            if (!surf[2].Number.Equals(3))
                 throw new Exception();
-            if (!surf[3].Equals(nodes[2]))
+            if (!surf[3].Number.Equals(2))
                 throw new Exception();
         }
 
@@ -72,17 +73,17 @@ namespace TestModel
             };
 
             //act
-            var surf = new Surface(0, nodes, Model.Interfaces.ObjKind.ElementSurface);
+            var surf = new Surface(0, nodes, ObjKind.ElementSurface);
 
             //assert
             //assert
-            if (!surf[0].Equals(nodes[0]))
+            if (!surf[0].Number.Equals(0))
                 throw new Exception();
-            if (!surf[1].Equals(nodes[2]))
+            if (!surf[1].Number.Equals(2))
                 throw new Exception();
-            if (!surf[2].Equals(nodes[1]))
+            if (!surf[2].Number.Equals(1))
                 throw new Exception();
-            if (!surf[3].Equals(nodes[3]))
+            if (!surf[3].Number.Equals(3))
                 throw new Exception();
         }
 
@@ -132,19 +133,8 @@ namespace TestModel
                 nodes.Add(new Node((int)ar[i], new Point3D(ar[i + 1], ar[i + 2], ar[i + 3])));
             }
 
-            //var baseV = nodes[2].Position.Sub(nodes[1].Position);
-
-            //var act1 = nodes[0].Position.Sub(nodes[1].Position);
-            //var act2 = nodes[3].Position.Sub(nodes[1].Position);
-
-            //var cross1 = Vector.CrossProd(baseV, act1);
-            //var cross2 = Vector.CrossProd(baseV, act2);
-
-            //var res1 = cross1.Sub(nodes[1].Position);
-            //var res2 = cross2.Sub(nodes[1].Position);
-
             //act
-            var surf = new Surface(0, nodes.ToArray(), Model.Interfaces.ObjKind.ElementSurface);
+            var surf = new Surface(0, nodes.ToArray(), ObjKind.ElementSurface);
 
             //assert
             Assert.AreEqual(surf.NumberOfPoints, nodes.Count);

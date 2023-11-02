@@ -1,6 +1,5 @@
-﻿using Model.Interfaces;
+﻿using ModelInterfaces;
 using ModelController.ModelScenePresentator.Interfaces;
-using System.Collections.Generic;
 
 namespace ModelController.ModelScenePresentator.GlObjsVertexCreators
 {

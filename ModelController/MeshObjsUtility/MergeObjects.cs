@@ -1,10 +1,7 @@
-﻿using Model;
-using Model.ObjectsComparers;
-using System;
+﻿using ModelInterfaces.ObjectsComparers;
+using ModelInterfaces;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ModelController.MeshObjsUtility
 {
@@ -13,17 +10,17 @@ namespace ModelController.MeshObjsUtility
     /// </summary>
     public class MergeObjects
     {
-        ObjectsData objectData;
+        IObjectsData objectData;
         /// <summary>
         /// MergeObjects
         /// </summary>
         /// <param name="objectData"></param>
-        public MergeObjects(ObjectsData objectData)
+        public MergeObjects(IObjectsData objectData)
         {
             this.objectData = objectData;
         }
 
-        public void Merge<T>(List<List<int>> numbers) where T : ModelObject
+        public void Merge<T>(List<List<int>> numbers) where T : IModelObject
         {
             var objs = objectData.FindMany<T>().ToArray();
             var numberObjs = objectData.FindMany<T>().Select(x => x.Number).ToList();

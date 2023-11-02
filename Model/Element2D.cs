@@ -1,6 +1,6 @@
 ﻿using Geometry;
 using MathNet.Numerics.LinearAlgebra;
-using Model.Interfaces;
+using ModelInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -9,11 +9,11 @@ using MathNet.Numerics.LinearAlgebra.Single;
 
 namespace Model
 {
-    public class Element2D : SurfaceElement, IElement2D
+    public class Element2D : Element, IElement2D
     {
-        Surface surface;
+        ISurface surface;
         private float[][] trianglePoints;
-        public Element2D(int number, Node[] nodes, ObjKind objKind) : base(number, nodes, objKind)
+        public Element2D(int number, Node[] nodes, ObjKind objKind) : base(number)
         {
             InitialColor = Color.FromArgb(0, 0, 255);
             MasterColor = Color.FromArgb(0, 0, 255);
@@ -29,13 +29,40 @@ namespace Model
             {
                 surface = new Surface(0, new Node[] { nodes[0], nodes[1], nodes[2], nodes[3] }, ObjKind.ElementSurface);
             }
+
+            foreach (var node in nodes)
+            {
+                node.AddElement(this);
+                this.nodes.Add(node);
+            }
+
         }
+
+        public Element2D(int number, ISurface surface, ObjKind objKind) : base(number)
+        {
+            InitialColor = Color.FromArgb(0, 0, 255);
+            MasterColor = Color.FromArgb(0, 0, 255);
+            SlaveColor = Color.FromArgb(0, 0, 255);
+            ObjType = "Элементы2D";
+            ObjKind = objKind;
+            this.surface = surface;
+
+            foreach (var node in surface.GetNodes())
+            {
+                node.AddElement(this);
+                nodes.Add(node);
+            }
+        }
+
+
+        /// <inheritdoc/>
 
         public override ObjKind ObjKind { get; }
 
         public override string ObjType { get; }
+/// <inheritdoc/>
 
-        public override int NumberOfSides { get { return 1; } }
+        public int NumberOfSides { get { return 1; } }        
 
         public override Point3D CalcCentralPoint()
         {
@@ -240,7 +267,7 @@ namespace Model
             var matrix = CountBQuad(ksi, eta);
             var matrixPoints = new DenseMatrix(4, 2);
 
-            for (var i = 0; i < nodes.Length; i++)
+            for (var i = 0; i < nodes.Count; i++)
             {
                 matrixPoints[i, 0] = nodes[i].Position._x;
                 matrixPoints[i, 1] = nodes[i].Position._y;
@@ -343,8 +370,9 @@ namespace Model
             };
             return n.Multiply(sideLength);
         }
+/// <inheritdoc/>
 
-        public override IEnumerable<Surface> GetSurface()
+        public IEnumerable<ISurface> GetSurface()
         {
             yield return surface;
         }

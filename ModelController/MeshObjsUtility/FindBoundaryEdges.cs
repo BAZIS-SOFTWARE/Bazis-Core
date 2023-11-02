@@ -1,6 +1,7 @@
 ﻿using Geometry;
 using Model;
-using Model.ObjectsFinders;
+using ModelInterfaces.ObjectsFinders;
+using ModelInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +10,9 @@ namespace ModelController.MeshObjsUtility
 {
     public class FindBoundaryEdges
     {
-        ModelData modelData;
+        IModelData modelData;
 
-        public FindBoundaryEdges(ModelData modelData)
+        public FindBoundaryEdges(IModelData modelData)
         {
             this.modelData = modelData;
         }
@@ -20,7 +21,7 @@ namespace ModelController.MeshObjsUtility
         {
             var boundedEdges = new List<string>();
 
-            var els = modelData.ObjectData.FindMany<SurfaceElement>().ToArray();
+            var els = modelData.ObjectData.FindMany<ISurfaceElement>().ToArray();
 
             var finder = new InterfacedNodesFinder();
             var interfacedNodes = finder.Find(els);
@@ -32,7 +33,7 @@ namespace ModelController.MeshObjsUtility
             foreach (var interfacedNode in interfacedNodes)
             {
                 //edge, <el,surf>
-                var sharedEdges = new Dictionary<string, Dictionary<Element, List<Surface>>>();
+                var sharedEdges = new Dictionary<string, Dictionary<IElement, List<ISurface>>>();
                 foreach (var sharedElement in interfacedNode.Value)
                 {
                     var element = els.Find(sharedElement);
@@ -62,12 +63,12 @@ namespace ModelController.MeshObjsUtility
 
 
                                 if (!sharedEdges.Keys.Contains(edge))
-                                    sharedEdges.Add(edge, new Dictionary<Element, List<Surface>>()
-                                    { { element, new List<Surface>() { surface } } });
+                                    sharedEdges.Add(edge, new Dictionary<IElement, List<ISurface>>()
+                                    { { element, new List<ISurface>() { surface } } });
                                 else
                                 {
                                     if (!sharedEdges[edge].ContainsKey(element))
-                                        sharedEdges[edge].Add(element, new List<Surface>() { surface });
+                                        sharedEdges[edge].Add(element, new List<ISurface>() { surface });
                                     else sharedEdges[edge][element].Add(surface);
 
                                     if (CheckAdjacentAngle(sharedEdges[edge]))
@@ -87,7 +88,7 @@ namespace ModelController.MeshObjsUtility
 
 
 
-        private bool CheckAdjacentAngle(Dictionary<Element, List<Surface>> adjElems)
+        private bool CheckAdjacentAngle(Dictionary<IElement, List<ISurface>> adjElems)
         {
             var vec = new List<Point3D>();
 

@@ -1,26 +1,22 @@
-﻿using Functions.Parser;
-using Geometry;
+﻿using Geometry;
 using Model.Events;
-using Model.GroupsData;
-using Model.Interfaces;
+using ModelInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Security.Policy;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Model.IO
 {
     public class LoadModelFromASCIITextFile : IModelLoader
     {
-        public event Action<object, LoaderEventArgs> LoadEvent;
+        public event Action<object, ILoaderEventArgs> LoadEvent;
         private Dictionary<int, Node> allNodes = new Dictionary<int, Node>();
         private Dictionary<int, Element> allElements = new Dictionary<int, Element>();
 
-        public ModelData Load(string path)
+        public IModelData Load(string path)
         {
             var model = new ModelData();
             using(var reader = new StreamReader(path))

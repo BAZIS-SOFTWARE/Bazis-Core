@@ -1,6 +1,7 @@
 ﻿using Geometry;
 using Model;
-using Model.ObjectsFinders;
+using ModelInterfaces.ObjectsFinders;
+using ModelInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -11,9 +12,9 @@ namespace ModelController.MeshObjsUtility
 {
     public class SelectionHelper
     {
-        private readonly ObjectsData objectsData;
+        private readonly IObjectsData objectsData;
 
-        public SelectionHelper(ObjectsData objectsData)
+        public SelectionHelper(IObjectsData objectsData)
         {
             this.objectsData = objectsData;
         }
@@ -29,12 +30,12 @@ namespace ModelController.MeshObjsUtility
         /// Номера выделенных узлов
         /// </returns>
         public List<int> SelectInDirection<T>(float angleInGradus, int indexFirst, int indexSecond, Color color)
-            where T : SurfaceElement
+            where T : Element
         {
-            var elements = objectsData.FindMany<T>().ToArray();
+            var elements = objectsData.FindMany<T>().ToList();
             var interfacedElements = new InterfacedNodesFinder().Find(elements);
             
-            var nodes = objectsData.FindMany<Node>().ToArray();
+            var nodes = objectsData.FindMany<INode>().ToArray();
             
             var firstNode = nodes.Find(indexFirst);
             var secondNode = nodes.Find(indexSecond);
@@ -90,7 +91,7 @@ namespace ModelController.MeshObjsUtility
         /// Список номеров выбранных элементов
         /// </returns>
         public List<int> SelectInPlane<T>(float angleInGradus, int startNumber, Color color)
-            where T : Element2D
+            where T : IElement2D
         {
             var maxAngleRadians = ConvertGradusToRadian(angleInGradus);
             var elements = objectsData.FindMany<Element2D>().ToArray();
@@ -125,20 +126,18 @@ namespace ModelController.MeshObjsUtility
         /// Словарь, где ключ - номер элемента (2D, 3D), значение - список номеров элементов, 
         /// имеющих хотя бы одну общую точку с ключом.
         /// </returns>
-        private Dictionary<int, List<int>> GetAdjacentElements(SurfaceElement[] elements)
+        private Dictionary<int, List<int>> GetAdjacentElements(IEnumerable<IElement> elements)
         {
             var graph = new Dictionary<int, List<int>>();
-            var finder = new InterfacedNodesFinder();
-            var interfacedNodes = finder.Find(elements);
+
             foreach (var element in elements)
             {
-                var nodes = element.GetNodes();
                 var neighbourElementsNumber = new HashSet<int>();
-                foreach (var node in nodes)
+                foreach (var node in element.GetNodes())
                 {
-                    foreach (var interfacedElementNumber in interfacedNodes[node.Number])
+                    foreach (var elementAdjacent in node.GetElements())
                     {
-                        neighbourElementsNumber.Add(interfacedElementNumber);
+                        neighbourElementsNumber.Add(elementAdjacent.Number);
                     }
                 }
                 graph.Add(element.Number, neighbourElementsNumber.ToList());

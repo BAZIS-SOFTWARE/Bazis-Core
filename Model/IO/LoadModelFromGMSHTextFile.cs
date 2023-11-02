@@ -2,18 +2,18 @@
 using System.IO;
 using System.Linq;
 using Geometry;
-using Model.Interfaces;
+using ModelInterfaces;
 using System.Globalization;
 using System.Collections.Generic;
 using Model.GroupsData;
 using Model.Events;
-using Model.ObjectsFinders;
+using ModelInterfaces.ObjectsFinders;
 
 namespace Model.IO
 {
     public class LoadModelFromGMSHTextFile : IModelLoader
     {
-        public event Action<object, LoaderEventArgs> LoadEvent;
+        public event Action<object, ILoaderEventArgs> LoadEvent;
 
         private ModelData newMesh;
         private Dictionary<int, int> dict;
@@ -29,7 +29,7 @@ namespace Model.IO
             nextElementFlags = new string[3] { "*ELEMENT", "*ELSET", "*NSET" };
         }
 
-        public ModelData Load(string path)
+        public IModelData Load(string path)
         {
             using (reader = new StreamReader(path))
             {

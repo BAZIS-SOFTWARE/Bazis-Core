@@ -1,6 +1,6 @@
 ﻿using Geometry;
 using Model.Events;
-using Model.Interfaces;
+using ModelInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -12,7 +12,7 @@ namespace Model.IO
 {
     public class LoadModelFromCDBTextFile : IModelLoader
     {
-        public event Action<object, LoaderEventArgs> LoadEvent;
+        public event Action<object, ILoaderEventArgs> LoadEvent;
         private const string NODE_BLOCK = "NBLOCK";
         private const string ELEMENTS_BLOCK = "EBLOCK";
         private const int OFFSET_TO_READ_NODES = 11;
@@ -22,7 +22,7 @@ namespace Model.IO
         /// <summary>
         /// Загрузить модель из файла формата .cdb по указанному пути
         /// </summary>
-        public ModelData Load(string path)
+        public IModelData Load(string path)
         {
             var model = new ModelData();
             using (var reader = new StreamReader(path))

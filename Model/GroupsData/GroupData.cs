@@ -1,19 +1,20 @@
-﻿using System.Collections;
+﻿using ModelInterfaces;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Model.GroupsData
 {
-    public class GroupData : IList<Group>
+    public class GroupData : IGroupData
     {
-        List<Group> groups;
+        List<IGroup> groups;
 
         public GroupData()
         {
-            groups = new List<Group>();
+            groups = new List<IGroup>();
         }
 
-        public Group this[int index]
+        public IGroup this[int index]
         {
             get { return groups[index]; }
             set { groups[index] = value; }
@@ -27,7 +28,7 @@ namespace Model.GroupsData
 
         public bool IsReadOnly => throw new System.NotImplementedException();
 
-        public void Add(Group item)
+        public void Add(IGroup item)
         {
             groups.Add(item);
         }
@@ -37,17 +38,17 @@ namespace Model.GroupsData
             groups.Clear();
         }
 
-        public bool Contains(Group item)
+        public bool Contains(IGroup item)
         {
             return groups.Contains(item, new CompareGroupsByName());
         }
 
-        public void CopyTo(Group[] array, int arrayIndex)
+        public void CopyTo(IGroup[] array, int arrayIndex)
         {
             throw new System.NotImplementedException();
         }
 
-        public IEnumerator<Group> GetEnumerator()
+        public IEnumerator<IGroup> GetEnumerator()
         {
             foreach (var group in groups)
             {
@@ -55,17 +56,17 @@ namespace Model.GroupsData
             }
         }
 
-        public int IndexOf(Group item)
+        public int IndexOf(IGroup item)
         {
             return groups.IndexOf(item);
         }
 
-        public void Insert(int index, Group item)
+        public void Insert(int index, IGroup item)
         {
             throw new System.NotImplementedException();
         }
 
-        public bool Remove(Group item)
+        public bool Remove(IGroup item)
         {
             return groups.Remove(item);
         }
@@ -80,17 +81,17 @@ namespace Model.GroupsData
             throw new System.NotImplementedException();
         }
 
-        public Group Find(int index)
+        public IGroup Find(int index)
         {
             return groups[index];
         }
 
-        public Group Find(string grName)
+        public IGroup Find(string grName)
         {
             return groups.Find(x => x.GroupName == grName);
         }
 
-        public IEnumerable<Group> FindMany(string objType)
+        public IEnumerable<IGroup> FindMany(string objType)
         {
             return groups.Where(x => x.ObjType == objType);
         }

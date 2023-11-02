@@ -1,9 +1,8 @@
 ﻿using Geometry;
 using Model.Events;
-using Model.Interfaces;
+using ModelInterfaces;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -12,9 +11,9 @@ namespace Model.IO
 {
     public class LoadModelFromSalomeFile : IModelLoader
     {
-        public event Action<object, LoaderEventArgs> LoadEvent;
+        public event Action<object, ILoaderEventArgs> LoadEvent;
 
-        public ModelData Load(string path)
+        public IModelData Load(string path)
         {
             var modelData = new ModelData();
             using (var reader = new StreamReader(path))

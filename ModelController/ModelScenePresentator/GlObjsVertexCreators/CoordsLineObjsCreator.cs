@@ -1,4 +1,4 @@
-﻿using Model.Interfaces;
+﻿using ModelInterfaces;
 using ModelController.ModelScenePresentator.Interfaces;
 using System.Linq;
 

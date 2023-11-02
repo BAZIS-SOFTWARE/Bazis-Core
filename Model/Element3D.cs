@@ -1,7 +1,7 @@
 ﻿using Geometry;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Complex;
-using Model.Interfaces;
+using ModelInterfaces;
 using Model.ObjectsSorters;
 using System;
 using System.Collections.Generic;
@@ -11,10 +11,10 @@ using System.Linq;
 namespace Model
 {
     
-    public class Element3D : SurfaceElement, IElement3D
+    public class Element3D : Element, IElement3D
     {
-        private List<Surface> surfaces;
-        public Element3D(int number, Node[] nodes, ObjKind objKind) : base(number, nodes,objKind)
+        private List<ISurface> surfaces;
+        public Element3D(int number, Node[] nodes, ObjKind objKind) : base(number)
         {
 
             InitialColor = Color.FromArgb(255, 125, 0);
@@ -22,7 +22,13 @@ namespace Model
             SlaveColor = Color.FromArgb(255, 125, 0);
             ObjKind = objKind;
             ObjType = "Элементы3D";
-            surfaces = NodeSorter.GetSurfaces(nodes).ToList();
+            surfaces = SurfaceFinder.FindSurfaces(nodes).ToList();
+
+            foreach (var node in nodes)
+            {
+                node.AddElement(this);
+                this.nodes.Add(node);
+            }
         }
 /// <inheritdoc/>
 
@@ -49,7 +55,7 @@ namespace Model
         public override ObjKind ObjKind { get;}
 /// <inheritdoc/>
 
-        public override int NumberOfSides { get { return surfaces.Count(); } }       
+        public int NumberOfSides { get { return surfaces.Count(); } }
 
         /// <inheritdoc/>
 
@@ -136,7 +142,7 @@ namespace Model
             var top = nodes.Where(z => Math.Abs(z.Position._z - topHeight) < 1e-3);
             var crawlOrder = bottom.Concat(top).ToArray();
             SortCrawlOrder(crawlOrder);
-            var dForm = new Dictionary<Node, float[]>();
+            var dForm = new Dictionary<INode, float[]>();
             var h = (crawlOrder[3].Position._z - crawlOrder[0].Position._z) / 2;
             var dzeta = (point3D._z - crawlOrder[0].Position._z - h) / h;
             var delta = PentaFormDelta(crawlOrder[0].Position, crawlOrder[1].Position, crawlOrder[2].Position);
@@ -154,7 +160,7 @@ namespace Model
             }
 
             var answer = Matrix<float>.Build.Dense(3, 6);
-            for (var i = 0; i < nodes.Length; i++)
+            for (var i = 0; i < nodes.Count; i++)
                 for (var j = 0; j < 3; j++)
                     answer[j, i] = dForm[nodes[i]][j];
 
@@ -225,7 +231,7 @@ namespace Model
             SortCrawlOrder(crawlOrder);
             var form = MakeFormArray(point3D, crawlOrder);
             var answer = new float[6];
-            for (var i = 0; i < nodes.Length; i++)
+            for (var i = 0; i < nodes.Count; i++)
             {
                 var node = nodes[i];
                 var index = Array.IndexOf(crawlOrder, node);
@@ -235,7 +241,7 @@ namespace Model
             return answer;
         }
 
-        private float[] MakeFormArray(Point3D point3D, Node[] crawlOrder)
+        private float[] MakeFormArray(Point3D point3D, INode[] crawlOrder)
         {
             var form = new float[6];
             var h = (crawlOrder[3].Position._z - crawlOrder[0].Position._z) / 2;
@@ -254,7 +260,7 @@ namespace Model
             return form;
         }
 
-        private void SortCrawlOrder(IList<Node> crawlOrder)
+        private void SortCrawlOrder(IList<INode> crawlOrder)
         {
             for (var i = 0; i < 3; i++)
             {
@@ -298,7 +304,7 @@ namespace Model
 
         /// <inheritdoc/>
 
-        public override IEnumerable<Surface> GetSurface()
+        public IEnumerable<ISurface> GetSurface()
         {
             foreach (var surface in surfaces)
             {

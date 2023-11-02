@@ -1,11 +1,7 @@
-﻿using Model.Interfaces;
-using System;
+﻿using ModelInterfaces;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Model.ObjectsComparers
+namespace ModelInterfaces.ObjectsComparers
 {
     public class EqualityComparerByNumber : IEqualityComparer<IModelObject>
     {

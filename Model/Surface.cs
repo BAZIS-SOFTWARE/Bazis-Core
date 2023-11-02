@@ -1,5 +1,6 @@
 ﻿using Geometry;
-using Model.Interfaces;
+using ModelInterfaces;
+using ModelInterfaces.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -10,7 +11,7 @@ namespace Model
     /// <summary>
     /// Surface class
     /// </summary>
-    public class Surface : ModelObject, ISurface, IEquatable<Surface>
+    public class Surface : ModelObject, ISurface
     {
         Node[] nodes;
         /// <summary>
@@ -21,8 +22,13 @@ namespace Model
         /// <param name="objKind"></param>
         public Surface(int number, Node[] nodes, ObjKind objKind) : base(number)
         {
+            if (nodes.Length < 3)
+                throw new Exception("Для создания поверхности требуется не меньше 3-х узлов!");
+
             ObjKind = objKind;
-            this.nodes = Anticlockwise(nodes);
+            
+            nodes.RoundSort(); //Anticlockwise(nodes);
+            this.nodes = nodes;
 
             ObjType = "Поверхности";
 
@@ -48,6 +54,7 @@ namespace Model
         /// </summary>
         /// <param name="nodes"></param>
         /// <returns></returns>
+        [Warning("Предлагаю ипользовать метод RoundSort() из Geometry")]
         public Node[] Anticlockwise(Node[] nodes)
         {
             var ar = new List<Node>();
@@ -95,7 +102,7 @@ namespace Model
 
             return ar.ToArray();
         }
-
+        [Warning("Предлагаю ипользовать метод RoundSort() из Geometry")]
         private bool CheckVectorsOrientation(Node[] nodes, int firstInd, int secondInd, Plane plane)
         {
             //bool isPointInside = false;
@@ -123,7 +130,7 @@ namespace Model
             else return false;
         }
 
-        public Node this[int ind]
+        public INode this[int ind]
         {
             get { return nodes[ind]; }
         }
@@ -147,9 +154,7 @@ namespace Model
 
         public override int NumberOfPoints { get { return nodes.Length; } }
 
-        public int NumberOfSides { get { return 1; } }
-
-        //public int NumberOfSides { get; internal set; }
+        public int NumberOfSides { get { return 1; } }        
 
         /// <inheritdoc/>
 
@@ -161,7 +166,7 @@ namespace Model
         }
 /// <inheritdoc/>
 
-        public IEnumerable<Node> GetNodes()
+        public IEnumerable<INode> GetNodes()
         {
             foreach (var node in nodes)
             {
@@ -193,8 +198,9 @@ namespace Model
                 yield return node.Position;
             }
         }
+/// <inheritdoc/>
 
-        public bool Equals(Surface other)
+        public bool Equals(ISurface other)
         {
             var points = other.GetPoints().ToArray();
             if (points.Contains(nodes[0].Position, new Point3DEqualityComparer()) &&
@@ -208,7 +214,7 @@ points.Contains(nodes[2].Position, new Point3DEqualityComparer()))
         /// Get surface
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Surface> GetSurface()
+        public IEnumerable<ISurface> GetSurface()
         {
             yield return this;
         }
@@ -238,7 +244,7 @@ points.Contains(nodes[2].Position, new Point3DEqualityComparer()))
             return center.Div(NumberOfPoints);
         }
 
-        public Segment3D[] GetLinesFromSurface(Surface surface)
+        public Segment3D[] GetLinesFromSurface(ISurface surface)
         {
             var n = surface.GetPoints().Count();
             var points = surface.GetPoints().ToArray();

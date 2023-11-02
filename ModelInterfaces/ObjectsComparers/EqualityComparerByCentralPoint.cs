@@ -1,13 +1,12 @@
-﻿using Model.Interfaces;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace Model.ObjectsComparers
+namespace ModelInterfaces.ObjectsComparers
 {
-    public class EqualityComparerByExistState : IEqualityComparer<IModelObject>
+    public class EqualityComparerByCentralPoint : IEqualityComparer<IModelObject>
     {
         public bool Equals(IModelObject x, IModelObject y)
         {
-            if (x.ExistState == y.ExistState)
+            if (x.CalcCentralPoint() == y.CalcCentralPoint())
                 return true;
             else return false;
         }

@@ -1,16 +1,15 @@
 ﻿using Functions.Sort;
-using Model.Interfaces;
-using Model.ObjectsSorters;
+using ModelInterfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ModelInterfaces.ObjectsSorters;
+using ModelInterfaces.Attributes;
 
 namespace Model.GroupsData
 {
-    public class Group : IList<IModelObject>
+    public class Group : IGroup
     {
         List<IModelObject> objects = new List<IModelObject>();
         /// <summary>
@@ -136,7 +135,8 @@ namespace Model.GroupsData
         {
             return objects.SwapList(fInd, sInd);
         }
-
+        /// <inheritdoc/>
+        [Warning("Предлагаю ипользовать метод SortByDistance() из Geometry")]
         public void SortByDistance()
         {
             objects.SortByDistance();

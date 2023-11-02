@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 
-namespace Model.Comparers
+namespace ModelInterfaces.Comparers
 {
-    public class ElementSurfaceEqualityComparer : IEqualityComparer<Surface>
+    public class ElementSurfaceEqualityComparer : IEqualityComparer<ISurface>
     {
-        public bool Equals(Surface s1, Surface s2)
+        public bool Equals(ISurface s1, ISurface s2)
         {
             if (s1.Equals(s2))
                 return true;
@@ -12,7 +12,7 @@ namespace Model.Comparers
                 return false;
         }
 
-        public int GetHashCode(Surface s)
+        public int GetHashCode(ISurface s)
         {
             return s.GetHashCode();
         }

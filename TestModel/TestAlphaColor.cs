@@ -1,7 +1,7 @@
 ﻿using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
-using Model.Interfaces;
+using ModelInterfaces;
 using System;
 using ModelController.ModelScenePresentator.GlObjsPresenters;
 

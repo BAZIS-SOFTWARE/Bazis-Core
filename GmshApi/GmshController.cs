@@ -4,11 +4,9 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using Geometry;
 using Model;
-using Model.Interfaces;
+using ModelInterfaces;
 using Functions.Extensions;
 using System.IO;
-using System.Runtime.InteropServices.ComTypes;
-using System.Drawing;
 
 namespace GmshApi.GmshController
 {

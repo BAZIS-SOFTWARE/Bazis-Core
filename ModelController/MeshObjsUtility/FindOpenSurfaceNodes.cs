@@ -1,16 +1,12 @@
 ﻿using Geometry;
-using Model;
-using System;
+using ModelInterfaces;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ModelController.MeshObjsUtility
 {
     public class FindOpenSurfaceNodes
     {
-        public IEnumerable<int> Find(IEnumerable<Element3D> elements)
+        public IEnumerable<int> Find(IEnumerable<IElement3D> elements)
         {
             var normalCalculator = new NormalsCalculator();
             var normals = normalCalculator.CalcNodeNormals(elements);

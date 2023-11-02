@@ -1,7 +1,7 @@
-﻿using Model.Interfaces;
+﻿
 using System.Collections.Generic;
 
-namespace Model.ObjectsFinders
+namespace ModelInterfaces.ObjectsFinders
 {
     public static class ByNumberFinder
     {

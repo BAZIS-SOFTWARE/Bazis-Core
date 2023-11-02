@@ -11,8 +11,6 @@ namespace ModelController
     /// </summary>
     public class ModelController : IModelController
     {
-        /// <inheritdoc/>
-        public IModelScenePresenter ModelPresentor { get; internal set; }
 /// <inheritdoc/>
 
         public IInterfacedNodesFinder InterfacedNodesFinder { get; } = new InterfacedNodesFinder();
