@@ -64,7 +64,7 @@ namespace Model
         /// <summary>
         /// Exist state flag
         /// </summary>
-        public bool ExistState
+        public virtual bool ExistState
         {
             get { return existState; }
             set

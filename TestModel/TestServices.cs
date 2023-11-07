@@ -18,8 +18,7 @@ namespace TestModel
     {
         private ObjectsData objectsData;
 
-        [TestInitialize]
-        public void Setup()
+        private void LoadModel()
         {
             var A = new Node(1, new Point3D(0, 0, 0));
             var B = new Node(2, new Point3D(0, 0, 1));
@@ -71,6 +70,7 @@ namespace TestModel
         [DataRow(19, 1, 3, new int[] { 1, 3, 5, 6, 8 })]
         public void FindNodesInDirection(float angle, int first, int second, int[] expected)
         {
+            LoadModel();
             var selector = new SelectionHelper(objectsData);
             var actual = selector.SelectInDirection<Element2D>(angle, first, second, Color.Green);
             Assert.IsTrue(actual.SequenceEqual(expected)); 
@@ -79,6 +79,7 @@ namespace TestModel
         [TestMethod]
         public void SelectCorrectElements1()
         {
+            LoadModel();
             var selector = new SelectionHelper(objectsData);
             var selectedElementNumbers = selector.SelectInPlane<Element2D>(19, 9, Color.Green);
             var expected = new List<int>() { 9, 10, 11, 12, 13, 14 };
@@ -88,6 +89,7 @@ namespace TestModel
         [TestMethod]
         public void SelectCorrectElements2()
         {
+            LoadModel();
             var selector = new SelectionHelper(objectsData);
             var selectedElementNumbers = selector.SelectInPlane<Element2D>(18, 9, Color.Green);
             var expected = new List<int>() { 9, 10, 11, 12, 13 };
@@ -159,6 +161,30 @@ namespace TestModel
         private void Model_SaveEvent(object arg1, SaverEventArgs arg2)
         {
             //throw new NotImplementedException();
+        }
+
+        [DataTestMethod]
+        [DataRow(1)]
+        [DataRow(0)]
+        [DataRow(2)]
+        public void TestRemoveSomeNodes(int objNumber)
+        {
+            //assing
+            var model = new ModelData();
+            var loader = new LoadModelFromASCIITextFile();
+
+            loader.LoadEvent += (ar1, ar2) => { };
+            var modelASCII = loader.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
+            model.Load(modelASCII);
+
+            //act
+            model.ObjectData[objNumber].ExistState = false;
+            model.ObjectData.ClearRemoved();
+
+            //assert
+            var res = model.ObjectData.Find(objNumber);
+            if (res != null)
+                throw new Exception();
         }
 
         [TestMethod]

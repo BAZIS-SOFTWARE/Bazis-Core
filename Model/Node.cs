@@ -48,6 +48,21 @@ namespace Model
             MasterColor = Color.FromArgb(0, 0, 255);
             SlaveColor = Color.FromArgb(0, 0, 255);
         }
+/// <inheritdoc/>
+
+        public override bool ExistState 
+        { 
+            get => base.ExistState;
+            set
+            {
+                base.ExistState = value;
+                if(!value)
+                {
+                    foreach (var element in elements)
+                        element.ExistState = false;
+                }
+            }
+        }
 
         /// <inheritdoc/>
 
