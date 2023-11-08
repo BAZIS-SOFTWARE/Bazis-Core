@@ -28,6 +28,7 @@
   <ItemGroup>
     <Compile Include="Events\LoaderEventArgs.cs" />
     <Compile Include="Events\SaverEventArgs.cs" />
+    <Compile Include="HexElement.cs" />
     <Compile Include="IO\LoadModelFromProjectTextFile.cs" />
     <Compile Include="IO\SaveModelToProjectTextFile.cs" />
     <Compile Include="IO\LoadModelFromASCIITextFile.cs" />
@@ -47,9 +48,13 @@
     <Compile Include="Element2D.cs" />
     <Compile Include="Element3D.cs" />
     <Compile Include="Node.cs" />
+    <Compile Include="PentaElement.cs" />
+    <Compile Include="QuadElement.cs" />
     <Compile Include="SurfaceFinder.cs" />
     <Compile Include="ObjectsData.cs" />
     <Compile Include="Surface.cs" />
+    <Compile Include="TetraElement.cs" />
+    <Compile Include="TriangleElement.cs" />
   </ItemGroup> 
   <ItemGroup>
     <PackageReference Include="Functions" Version="1.0.2.43" />
