@@ -48,14 +48,11 @@ namespace TestModel
         {
             //assing
             var model = new ModelData();
-            var loader = new LoadModelFromProjectTextFile();
-            loader.LoadEvent += (ar1, ar2) => { };
+
             //act
-            var modelINP = loader.Load(@"C:\Projs\TestProjTerm\Cub\cub_unsorted_freeNodes.bpf");
-            model.Load(modelINP);
+            model.Load(@"C:\Projs\TestProjTerm\Cub\cub_unsorted_freeNodes.bpf");
 
             var freeNodesFinder = new FreeNodesFinder(model.ObjectData);
-
             var freeNodes = freeNodesFinder.Find<Element>();
 
             //assert
@@ -101,11 +98,10 @@ namespace TestModel
         {
             //assing
             var model = new ModelData();
-            var loader = new LoadModelFromASCIITextFile();
+            model.Loader = new LoadModelFromASCIITextFile();
 
-            loader.LoadEvent += (ar1,ar2) => { };
-            var modelLoaded = loader.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
-            model.Load(modelLoaded);
+            model.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
+
             //act
             var elements = model.ObjectData.FindMany<IElement3D>();
             var nodes = model.ObjectData.FindMany<Node>();
@@ -124,22 +120,14 @@ namespace TestModel
         {
             //assing
             var model = new ModelData();
-            var loaderGMSH = new LoadModelFromGMSHTextFile();
+            model.Loader = new LoadModelFromGMSHTextFile();
 
-
-            loaderGMSH.LoadEvent += (ar1, ar2) => { };
             //act
-            var modelGMSH = loaderGMSH.Load(@"C:\Projs\TestProjTerm\box\box1.inp");
-            model.Load(modelGMSH);
+            model.Load(@"C:\Projs\TestProjTerm\box\box1.inp");
+            model.Save(@"C:\Projs\TestProjTerm\box\task_1.bpf");
 
-            var saver = new SaveModelToProjectTextFile();
-            saver.SaveEvent += (ar1, ar2) => { };
-            saver.Save(model,@"C:\Projs\TestProjTerm\box\task_1.bpf");
-
-            var loaderBPF = new LoadModelFromProjectTextFile();
-            loaderBPF.LoadEvent += (ar1, ar2) => { };
-            var modelBPF = loaderBPF.Load(@"C:\Projs\TestProjTerm\box\task_1.bpf");
-            model.Load(modelBPF);
+            model.Loader = new LoadModelFromProjectTextFile();
+            model.Load(@"C:\Projs\TestProjTerm\box\task_1.bpf");
 
             var els3D = model.ObjectData.FindMany<IElement3D>();
             var els2D = model.ObjectData.FindMany<Element2D>();
@@ -171,11 +159,9 @@ namespace TestModel
         {
             //assing
             var model = new ModelData();
-            var loader = new LoadModelFromASCIITextFile();
+            model.Loader = new LoadModelFromASCIITextFile();
 
-            loader.LoadEvent += (ar1, ar2) => { };
-            var modelASCII = loader.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
-            model.Load(modelASCII);
+            model.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
 
             //act
             model.ObjectData[objNumber].ExistState = false;
@@ -192,11 +178,10 @@ namespace TestModel
         {
             //assing
             var model = new ModelData();
-            var loaderGMSH = new LoadModelFromProjectTextFile();
-            loaderGMSH.LoadEvent += (ar1, ar2) => { };
+
             //act
-            var modelGMSH = loaderGMSH.Load(@"C:\Projs\ENERGOMASH\CALC\proj_new.bpf");
-            model.Load(modelGMSH);
+            model.Load(@"C:\Projs\ENERGOMASH\CALC\proj_new.bpf");
+
             model.ObjectData.RemoveRange("Элементы2D");
             model.ObjectData.ClearRemoved();
 
@@ -211,12 +196,10 @@ namespace TestModel
         {
             //assing
             var model = new ModelData();
-            var loader = new LoadModelFromProjectTextFile();
-            loader.LoadEvent += (ar1, ar2) => { };
+
             //act
             //var modelBPF = loader.Load(@"C:\Projs\ExampleMesh\Tube.inp");
-            var modelBPF = loader.Load(@"C:\Projs\ExampleMesh\Tube_3d_only.bpf");
-            model.Load(modelBPF);
+            model.Load(@"C:\Projs\ExampleMesh\Tube_3d_only.bpf");
 
             var finder = new FindCoincidentObjects(model.ObjectData, 0.01f);
 
@@ -274,11 +257,9 @@ namespace TestModel
         {
             //assing
             var model = new ModelData();
-            var loader = new LoadModelFromASCIITextFile();
+            model.Loader = new LoadModelFromASCIITextFile();
 
-            loader.LoadEvent += (ar1, ar2) => { };
-            var modelASCII = loader.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
-            model.Load(modelASCII);
+            model.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
 
             //act
             var elements = model.ObjectData.FindMany<IElement3D>();

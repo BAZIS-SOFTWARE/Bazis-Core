@@ -11,8 +11,16 @@ namespace ModelInterfaces
         IObjectsData ObjectData { get; set; }
         IGroupData GroupData { get; set; }
         void Clear();
-
-        void Load(IModelData modelData);
+        /// <summary>
+        /// Save
+        /// </summary>
+        /// <param name="path"></param>
+        void Save(string path);
+        /// <summary>
+        /// Load
+        /// </summary>
+        /// <param name="path"></param>
+        void Load(string path);
 
         void SetObjectData(IObjectsData objectData);
 

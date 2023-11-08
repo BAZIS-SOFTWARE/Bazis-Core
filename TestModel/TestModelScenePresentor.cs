@@ -106,18 +106,12 @@ namespace TestModel
         {
             //assing
             var model = new ModelData();
-            var loader = new LoadModelFromASCIITextFile();
+            model.Loader = new LoadModelFromASCIITextFile();
 
-            loader.LoadEvent += (ar1, ar2) => { };
-            var modelASC = loader.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
-            model.Load(modelASC);
             //act
 
-            //var nodes = model.ObjectData.FindMany(ObjKind.Node).ToArray();
-            //nodes[0].ViewState = false;
-
+            model.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
             var presenter = new ModelScenePresentator(model.ObjectData);
-
 
             if(array[0] == "Элементы3D")
                 presenter.HideInsideSurfaces(model.ObjectData.FindMany<Element3D>());
@@ -148,11 +142,9 @@ namespace TestModel
         {
             //assing
             var model = new ModelData();
-            var loader = new LoadModelFromGMSHTextFile();
+            model.Loader = new LoadModelFromGMSHTextFile();
 
-            loader.LoadEvent += (ar1, ar2) => { };
-            var modelINP = loader.Load($@"..\..\..\Examples\{array[0]}");
-            model.Load(modelINP);
+            model.Load($@"..\..\..\Examples\{array[0]}");
 
             var modelPresenter = new ModelScenePresentator(model.ObjectData);
 
@@ -184,14 +176,10 @@ namespace TestModel
         {
             //assing
             var model = new ModelData();
-            var loader = new LoadModelFromCDBTextFile();
-
-            loader.LoadEvent += (ar1, ar2) => { };
-            var modelCDB = loader.Load(@"..\..\..\Examples\CDB\longModel.cdb");
-
-            model.Load(modelCDB);
+            model.Loader = new LoadModelFromCDBTextFile();
 
             //act
+            model.Load(@"..\..\..\Examples\CDB\longModel.cdb");
             var presentator = new ModelScenePresentator(model.ObjectData);
 
             var tuple = presentator[objsType].CreateIndexes();

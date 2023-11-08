@@ -48,7 +48,7 @@ namespace Model.IO
 
         private IEnumerable<Node> ReadNodes(StreamReader reader, int count)
         {
-            LoadEvent(this, new LoaderEventArgs("Загрузка узлов..."));
+            LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка узлов..."));
             for (var i = 0; i < count; i++)
             {
                 var line = reader.ReadLine();
@@ -65,7 +65,7 @@ namespace Model.IO
 
         private IEnumerable<ModelObject> ReadElements(StreamReader reader, int count, int startNumber)
         {
-            LoadEvent(this, new LoaderEventArgs("Загрузка элементов..."));
+            LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка элементов..."));
             for (var i = 0; i < count; i++)
             {
                 var line = reader.ReadLine();
@@ -96,7 +96,7 @@ namespace Model.IO
 
         private void ReadGroup(StreamReader reader, int count, ModelData model)
         {
-            LoadEvent(this, new LoaderEventArgs("Загрузка группы объектов "));
+            LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка группы объектов "));
             string[] tokens;
             for (var i = 0; i < count; i++)
             {

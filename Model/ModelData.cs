@@ -20,9 +20,12 @@ namespace Model
             ObjectData.Clear();
             GroupData.Clear();
         }      
+/// <inheritdoc/>
 
-        public void Load(IModelData modelData)
+        public void Load(string path)
         {
+            var modelData = Loader.Load(path);
+
             ObjectData = modelData.ObjectData;
             GroupData = modelData.GroupData;
 
@@ -32,6 +35,13 @@ namespace Model
             ObjectData.Clear();
             ObjectData.AddRange(list);
         }
+/// <inheritdoc/>
+
+        public void Save(string path)
+        {
+            Saver.Save(this, path);
+        }
+/// <inheritdoc/>
 
         public void SetObjectData(IObjectsData objectData)
         {

@@ -12,6 +12,9 @@ using ModelInterfaces.ObjectsFinders;
 
 namespace Model.IO
 {
+    /// <summary>
+    /// LoadModelFromProjectTextFile
+    /// </summary>
     public class LoadModelFromProjectTextFile : IModelLoader
     {
         public event Action<object, ILoaderEventArgs> LoadEvent;
@@ -29,7 +32,7 @@ namespace Model.IO
 
                     if (line == "Узлы")
                     {
-                        LoadEvent(this, new LoaderEventArgs("Загрузка узлов..."));
+                        LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка узлов..."));
                         Thread.Sleep(100);
                         LoadNodes(sr, newModel, nodes);
                     }
@@ -37,21 +40,21 @@ namespace Model.IO
                         line == "Элементы3D" | line == "Элементы2D" |
                         line == "Элементы1D")
                     {
-                        LoadEvent(this, new LoaderEventArgs("Загрузка элементов..."));
+                        LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка элементов..."));
                         Thread.Sleep(100);
                         LoadElement(sr, line, newModel);
                     }
 
                     if (line == "Группы узлов и элементов")
                     {
-                        LoadEvent(this, new LoaderEventArgs("Загрузка групп..."));
+                        LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка групп..."));
                         Thread.Sleep(100);
                         LoadGroup(sr, newModel);
                     }
                     line = sr.ReadLine();
                 }
 
-                LoadEvent(this, new LoaderEventArgs("Модель загружена"));
+                LoadEvent?.Invoke(this, new LoaderEventArgs("Модель загружена"));
                 Thread.Sleep(100);
                 return newModel;
             }

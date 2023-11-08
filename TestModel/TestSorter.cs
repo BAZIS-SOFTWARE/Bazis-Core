@@ -16,12 +16,9 @@ namespace TestModel
         {
             //assing
             var model = new ModelData();
-            var loader = new LoadModelFromProjectTextFile();
-            loader.LoadEvent += (ar1, ar2) => { };
 
             //act
-            var modelBPF = loader.Load(@"..\..\..\Examples\3D\cub_unsorted.bpf");
-            model.Load(modelBPF);
+            model.Load(@"..\..\..\Examples\3D\cub_unsorted.bpf");
 
             //assert
             var number = 0;

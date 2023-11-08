@@ -2,6 +2,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using Model.IO;
+using ModelInterfaces;
 
 namespace TestModel
 {
@@ -13,15 +14,15 @@ namespace TestModel
         {
             //assing
             var model = new ModelData();
-            var loader = new LoadModelFromGMSHTextFile();
-            loader.LoadEvent += (ar1, ar2) => { };
-            var saver = new SaveModelToProjectTextFile();
-            saver.SaveEvent += (ar1, ar2) => { };
+
+            model.Loader = new LoadModelFromGMSHTextFile();
+
+            model.Loader.LoadEvent += (ar1, ar2) => { };
+            model.Saver.SaveEvent += (ar1, ar2) => { };
 
             //act
-            var modelINP = loader.Load(@"..\..\..\Examples\3D\box2.inp");
-            model.Load(modelINP);
-            saver.Save(model, @"..\..\..\Examples\3D\task1.bpf");
+            model.Load(@"..\..\..\Examples\3D\box2.inp");
+            model.Save(@"..\..\..\Examples\3D\task1.bpf");
 
             //assert
         }
@@ -32,13 +33,11 @@ namespace TestModel
             //assing
             var model = new ModelData();
 
-            var loader = new LoadModelFromSTLFile();
-            //model.SetLoader(loader);
-
-            loader.LoadEvent += (ar1, ar2) => { };
+            model.Loader = new LoadModelFromSTLFile();
 
             //act
-            loader.Load(@"..\..\..\Examples\STL\ACII.stl");
+            model.Load(@"..\..\..\Examples\STL\ACII.stl");
+
             //assert
         }
 
@@ -47,12 +46,10 @@ namespace TestModel
         {
             //assing
             var model = new ModelData();
-            var loader = new LoadModelFromGMSHTextFile();
-            loader.LoadEvent += (ar1, ar2) => { };
+            model.Loader = new LoadModelFromGMSHTextFile();
 
             //act
-            var modelINP = loader.Load(@"..\..\..\Examples\3D\Korpus.inp");
-            model.Load(modelINP);
+            model.Load(@"..\..\..\Examples\3D\Korpus.inp");
 
             //assert
             Assert.AreEqual(8448, model.ObjectData.NumberOfNodes);
@@ -64,14 +61,13 @@ namespace TestModel
         {
             //assing
             var model = new ModelData();
-            var loader = new LoadModelFromASCIITextFile();
+            model.Loader = new LoadModelFromASCIITextFile();
 
-            loader.LoadEvent += (ar1, ar2) => { };
+            model.Loader.LoadEvent += (ar1, ar2) => { };
 
             //act
-            var modelASCII = loader.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
+            model.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
             //loader.Load(@"C:\Bazis_newGUI\MESH\RadicMesh\Plate2DATA.ASC");
-            model.Load(modelASCII);
             //assert
             Assert.AreEqual(7, model.ObjectData.NumberOfNodes);
             Assert.AreEqual(8, model.ObjectData.NumberOfElements);

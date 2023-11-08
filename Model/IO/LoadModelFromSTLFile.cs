@@ -18,7 +18,7 @@ namespace Model.IO
             var reader = new StreamReader(path);
             var str = String.Empty;
 
-            LoadEvent(this, new LoaderEventArgs("Начало импорта STL модели"));
+            LoadEvent?.Invoke(this, new LoaderEventArgs("Начало импорта STL модели"));
 
             while (str != "endsolid")
             {
@@ -33,7 +33,7 @@ namespace Model.IO
                 }
                 str = reader.ReadLine();
             }
-            LoadEvent(this, new LoaderEventArgs("Модель загружена"));
+            LoadEvent?.Invoke(this, new LoaderEventArgs("Модель загружена"));
             return modelData;
         }
         public Node[] GetNodes(StreamReader stl, string str)

@@ -33,14 +33,14 @@ namespace Model.IO
         {
             using (reader = new StreamReader(path))
             {
-                LoadEvent(this, new LoaderEventArgs("Начало загрузки модели"));
+                LoadEvent?.Invoke(this, new LoaderEventArgs("Начало загрузки модели"));
                 while (!reader.EndOfStream)
                 {
                     var line = reader.ReadLine();
                     if (line.Contains("*NODE"))
                     {
                         line = reader.ReadLine();
-                        LoadEvent(this, new LoaderEventArgs("Начало загрузки узлов"));
+                        LoadEvent?.Invoke(this, new LoaderEventArgs("Начало загрузки узлов"));
                         while (line != "******* E L E M E N T S *************")
                         {
                             var tokens = line.Replace(" ", "")
@@ -58,7 +58,7 @@ namespace Model.IO
                     }
                     if (line.Contains("type=T3D2"))
                     {
-                        LoadEvent(this, new LoaderEventArgs("Начало загрузки элементов"));
+                        LoadEvent?.Invoke(this, new LoaderEventArgs("Начало загрузки элементов"));
                         line = reader.ReadLine();
                         CreateElements("type=T3D2", line, "*ELSET");
                     }
