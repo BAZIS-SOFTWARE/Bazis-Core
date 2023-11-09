@@ -9,9 +9,9 @@ using MathNet.Numerics.LinearAlgebra.Single;
 
 namespace Model
 {
-    public class Element2D : Element, IElement2D
+    public abstract class Element2D : Element, IElement2D
     {
-        ISurface surface;
+        protected ISurface surface;
         private float[][] trianglePoints;
         public Element2D(int number, Node[] nodes, ObjKind objKind) : base(number)
         {
@@ -80,43 +80,8 @@ namespace Model
             return surface.CalcNormal();
         }
 
-        public float CalcSquare()
-        {
-            var pAr = GetPoints().ToArray();
-
-            var v1 = new Point3D(pAr[1]._x - pAr[0]._x, pAr[1]._y - pAr[0]._y, pAr[1]._z - pAr[0]._z);
-            var v2 = new Point3D(pAr[2]._x - pAr[0]._x, pAr[2]._y - pAr[0]._y, pAr[2]._z - pAr[0]._z);
-
-            var vProd = Geometry.Vector.CrossProd(v1, v2);
-            var square = Math.Abs(Geometry.Vector.GetVectorLenght(vProd) / 2);
-            return square;
-        }
-
-        public override float[] GetFormFunctions(Point3D point3D)
-        {
-            switch (ObjKind)
-            {
-                case ObjKind.Triangle:
-                    return FormFunctionTriangle(point3D);
-                case ObjKind.Quad:
-                    return FormFunctionSquare(point3D);
-            }
-
-            throw new NotImplementedException("Не найден вид объектов!");
-        }
-
-        public override float[] GetDerivativesFormFunctions(Point3D point3D)
-        {
-            switch (ObjKind)
-            {
-                case ObjKind.Triangle:
-                    throw new NotImplementedException();
-                case ObjKind.Quad:
-                    return DerivativeFormFunctionSquare(point3D);
-            }
-
-            throw new NotImplementedException("Не найден вид объектов!");
-        }
+        public abstract float CalcSquare();
+        
         public float[][] CoefficientKQuad(float k, float t, float h, int firstPoint, int secondPoint)
         {
             return IntegralInVolumeBdbQuad(k, t).Add(IntegralSquareNnQuad(firstPoint, secondPoint, h)).ToRowArrays();
