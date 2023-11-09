@@ -3,7 +3,7 @@ using System.Linq;
 using Geometry;
 using ModelInterfaces;
 
-namespace Model
+namespace Model.Elements
 {
     public abstract class Element : ModelObject, IElement
     {
@@ -22,8 +22,10 @@ namespace Model
         //}
 
         public override ObjKind ObjKind { get; }
-        
+
         public override int NumberOfPoints { get { return nodes.Count(); } }
+
+        public abstract float DetJ(Point3D point3D);
 
         public abstract float[] GetDerivativesFormFunctions(Point3D point3D);
         public abstract float[] GetFormFunctions(Point3D point3D);

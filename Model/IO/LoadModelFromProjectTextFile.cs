@@ -9,6 +9,7 @@ using Geometry;
 using Model.Events;
 using ModelInterfaces;
 using ModelInterfaces.ObjectsFinders;
+using Model.Elements;
 
 namespace Model.IO
 {
@@ -115,7 +116,7 @@ namespace Model.IO
                         objKind = ObjKind.Tetra;
                     else objKind = ObjKind.Hexa;
 
-                    var el3DObj = new Element3D(elNumber, nodeList.ToArray(), objKind);
+                    var el3DObj = new Tetra(elNumber, nodeList.ToArray());
                     newMesh.ObjectData.Add(el3DObj);
                 }
 
@@ -126,7 +127,7 @@ namespace Model.IO
                         objKind = ObjKind.Triangle;
                     else objKind = ObjKind.Quad;
 
-                    var el2DObj = new Element2D(elNumber, nodeList.ToArray(), objKind);
+                    var el2DObj = new Triangle(elNumber, nodeList.ToArray());
                     newMesh.ObjectData.Add(el2DObj);
                 }
                 //number++;

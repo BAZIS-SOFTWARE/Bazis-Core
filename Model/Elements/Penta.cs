@@ -4,12 +4,15 @@ using System.Linq;
 using ModelInterfaces;
 using System.Text;
 using System.Threading.Tasks;
+using Geometry;
+using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.LinearAlgebra.Single;
 
-namespace Model
+namespace Model.Elements
 {
-    public class PentaElement : Element3D
+    public class Penta : Element3D
     {
-        public PentaElement(int number, Node[] nodes) : base(number, nodes, ObjKind.Penta)
+        public Penta(int number, Node[] nodes) : base(number, nodes, ObjKind.Penta)
         {
         }
 
@@ -28,20 +31,20 @@ namespace Model
             return detJPenta();
         }
 
-        public float[][] CoefficientKPenta(float k, float h, Node[] points)
-        {
-            return VolumeIntegralBdbPenta(k).Add(SquareIntegralNnPenta(points)).Multiply(h).ToRowArrays();
-        }
+        //public float[][] CoefficientKPenta(float k, float h, Node[] points)
+        //{
+        //    return VolumeIntegralBdbPenta(k).Add(SquareIntegralNnPenta(points)).Multiply(h).ToRowArrays();
+        //}
 
-        public float[] CoefficientFPenta(float h, float tInf, Node[] points)
-        {
-            return SquareIntegralNPenta(points).Multiply(h * tInf).ToArray();
-        }
+        //public float[] CoefficientFPenta(float h, float tInf, Node[] points)
+        //{
+        //    return SquareIntegralNPenta(points).Multiply(h * tInf).ToArray();
+        //}
 
-        public float[][] CoefficientCPenta()
-        {
-            return VolumeIntegralNnPenta().ToRowArrays();
-        }
+        //public float[][] CoefficientCPenta()
+        //{
+        //    return VolumeIntegralNnPenta().ToRowArrays();
+        //}
 
         public override float CalcVolume()
         {
@@ -56,7 +59,7 @@ namespace Model
                         for (int l = k + 1; l < nodes.Count; l++)
                         {
                             var x = new Node[] { (Node)nodes[i], (Node)nodes[j], (Node)nodes[k], (Node)nodes[l] };
-                            var tetra = new TetraElement(0, x);
+                            var tetra = new Tetra(0, x);
                             sum += tetra.CalcVolume();
                         }
                     }
@@ -86,7 +89,7 @@ namespace Model
             return answer;
         }
 
-        private void SortCrawlOrder(IList<Node> crawlOrder)
+        private void SortCrawlOrder(IList<INode> crawlOrder)
         {
             for (var i = 0; i < 3; i++)
             {
@@ -104,7 +107,7 @@ namespace Model
             }
         }
 
-        private float[] MakeFormArray(Point3D point3D, Node[] crawlOrder)
+        private float[] MakeFormArray(Point3D point3D, INode[] crawlOrder)
         {
             var form = new float[6];
             var h = (crawlOrder[3].Position._z - crawlOrder[0].Position._z) / 2;
@@ -156,7 +159,7 @@ namespace Model
             var top = nodes.Where(z => Math.Abs(z.Position._z - topHeight) < 1e-3);
             var crawlOrder = bottom.Concat(top).ToArray();
             SortCrawlOrder(crawlOrder);
-            var dForm = new Dictionary<Node, float[]>();
+            var dForm = new Dictionary<INode, float[]>();
             var h = (crawlOrder[3].Position._z - crawlOrder[0].Position._z) / 2;
             var dzeta = (point3D._z - crawlOrder[0].Position._z - h) / h;
             var delta = PentaFormDelta(crawlOrder[0].Position, crawlOrder[1].Position, crawlOrder[2].Position);

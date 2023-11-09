@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Model.Elements;
 
 namespace ModelController.ModelScenePresentator
 {
@@ -60,7 +61,7 @@ namespace ModelController.ModelScenePresentator
                         presentors.Add(objsType, pointsPresentor);
                         break;
                     case "Элементы1D":
-                        var els1dPresentor = CreateLineObjectsPresenter(objectsData.FindMany<Element1D>());
+                        var els1dPresentor = CreateLineObjectsPresenter(objectsData.FindMany<Beam>());
                         presentors.Add(objsType, els1dPresentor);
                         break;
                     case "Линия":

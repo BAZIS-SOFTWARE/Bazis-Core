@@ -4,6 +4,7 @@ using Model;
 using ModelInterfaces;
 using System;
 using ModelController.ModelScenePresentator.GlObjsPresenters;
+using Model.Elements;
 
 namespace TestModel
 {
@@ -52,7 +53,7 @@ namespace TestModel
                                      new Node(1, new Point3D(0.5f, 0.0f, 0.0f)),
                                      new Node(2, new Point3D(0.0f, 0.5f, 0.0f))
                                    };
-            var triangle = new Element2D[] { new Element2D(0, nodes, ObjKind.Triangle) };
+            var triangle = new Element2D[] { new Triangle(0, nodes) };
             var presenter = new SurfaceObjsPresenter(triangle);
             var indices = presenter.CreateIndexes();
             var pointers = presenter.CreatePointers(indices.Item1);

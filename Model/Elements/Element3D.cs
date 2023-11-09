@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
-namespace Model
+namespace Model.Elements
 {
 
     public abstract class Element3D : Element, IElement3D

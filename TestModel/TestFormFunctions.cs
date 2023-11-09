@@ -4,6 +4,7 @@ using System.Runtime.Remoting.Messaging;
 using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
+using Model.Elements;
 using ModelInterfaces;
 
 namespace TestModel
@@ -16,7 +17,7 @@ namespace TestModel
         {
             var node1 = new Node(1, new Point3D(1.5f, 0, 0));
             var node2 = new Node(1, new Point3D(6, 0, 0));
-            var elem = new Element1D(2, new[] { node1, node2 }, ObjKind.Beam);
+            var elem = new Beam(2, new[] { node1, node2 });
             var ans = elem.GetFormFunctions(new Point3D(4, 0, 0));
             var expect = new[] { 2f / 4.5f, 2.5f / 4.5f };
             var diff = ans.Select((x, i) => x - expect[i]);
@@ -31,7 +32,7 @@ namespace TestModel
         {
             var node1 = new Node(1, new Point3D(1.5f, 0, 0));
             var node2 = new Node(1, new Point3D(6, 0, 0));
-            var elem = new Element1D(2, new[] { node1, node2 }, ObjKind.Beam);
+            var elem = new Beam(2, new[] { node1, node2 });
             var ans1 = elem.GetFormFunctions(new Point3D(1.5f, 0, 0));
             var expect = new[] { 1f, 0f };
             foreach (var e in ans1.Select((x, i) => x - expect[i]))
@@ -55,7 +56,7 @@ namespace TestModel
                 num++;
             }
 
-            var elem = new Element3D(0, nodes, ObjKind.Hexa);
+            var elem = new Hexa(0, nodes);
             var rnd = new Random();
             for (var i = 0; i < 10000; i++)
             {
@@ -82,7 +83,7 @@ namespace TestModel
                 num++;
             }
 
-            var penta = new Element3D(0, nodes, ObjKind.Penta);
+            var penta = new Penta(0, nodes);
 
             for (int i = 0; i < 6; i++)
             {
@@ -106,7 +107,7 @@ namespace TestModel
                 num++;
             }
 
-            var penta = new Element3D(0, nodes, ObjKind.Penta);
+            var penta = new Penta(0, nodes);
             var rnd = new Random();
             for (var i = 0; i < 100000; i++)
             {
@@ -197,7 +198,7 @@ namespace TestModel
                 num++;
             }
 
-            var triangle = new Element2D(0, nodes, ObjKind.Triangle);
+            var triangle = new Triangle(0, nodes);
             var rnd = new Random();
             for (var i = 0; i < 100000; i++)
             {
@@ -228,7 +229,7 @@ namespace TestModel
                 num++;
             }
 
-            var triangle = new Element2D(0, nodes, ObjKind.Triangle);
+            var triangle = new Triangle(0, nodes);
             for (var i = 0; i < 3; i++)
             {
                 var answer = triangle.GetFormFunctions(nodes[i].Position);
@@ -249,7 +250,7 @@ namespace TestModel
                 num++;
             }
 
-            var elem = new Element3D(0, nodes, ObjKind.Hexa);
+            var elem = new Hexa(0, nodes);
             var rnd = new Random();
 
             var x = rnd.NextDouble();

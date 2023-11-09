@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using Model.GroupsData;
 using Model.Events;
 using ModelInterfaces.ObjectsFinders;
+using Model.Elements;
 
 namespace Model.IO
 {
@@ -76,10 +77,10 @@ namespace Model.IO
             }
             switch(elementType)
             {
-                case "type=T3D2": return new Element1D(currentNumber, nodeArr, ObjKind.Beam);
-                case "type=CPS3": return new Element2D(currentNumber, nodeArr, ObjKind.Triangle);
-                case "type=CPS4": return new Element2D(currentNumber, nodeArr, ObjKind.Quad);
-                case "type=C3D4": return new Element3D(currentNumber, nodeArr, ObjKind.Tetra);
+                case "type=T3D2": return new Beam(currentNumber, nodeArr);
+                case "type=CPS3": return new Triangle(currentNumber, nodeArr);
+                case "type=CPS4": return new Quad(currentNumber, nodeArr);
+                case "type=C3D4": return new Tetra(currentNumber, nodeArr);
                 default: throw new Exception($"Unknown element type with {selectedNodesId.Length} nodes");
             };
         }

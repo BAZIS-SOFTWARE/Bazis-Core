@@ -1,6 +1,7 @@
 ﻿using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
+using Model.Elements;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +26,7 @@ namespace TestModel
                         num++;
                     }
 
-            var elem = new HexElement(0, nodes);
+            var elem = new Hexa(0, nodes);
             var x = elem.CalcVolume();
             Assert.IsTrue(x - 27 < 1e-4);
         }
@@ -45,7 +46,7 @@ namespace TestModel
                         num++;
                     }
 
-            var penta = new PentaElement(0, nodes);
+            var penta = new Penta(0, nodes);
             var x = penta.CalcVolume();
             Assert.IsTrue(x - 0.5f < 1e-4);
         }
@@ -62,7 +63,7 @@ namespace TestModel
                     num++;
                 }
 
-            var elem = new QuadElement(0, nodes);
+            var elem = new Quad(0, nodes);
             Assert.IsTrue(elem.CalcSquare() - 1f < 1e-4);
         }
     }

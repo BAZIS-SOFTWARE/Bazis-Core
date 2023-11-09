@@ -1,4 +1,5 @@
 ﻿using Geometry;
+using Model.Elements;
 using Model.Events;
 using ModelInterfaces;
 using System;
@@ -87,9 +88,9 @@ namespace Model.IO
         {
             switch(type) 
             {
-                case 3004: return new Element3D(index, nodes, ObjKind.Tetra);
-                case 2003: return new Element2D(index, nodes, ObjKind.Triangle);
-                case 1002: return new Element1D(index, nodes, ObjKind.Beam);
+                case 3004: return new Tetra(index, nodes);
+                case 2003: return new Triangle(index, nodes);
+                case 1002: return new Beam(index, nodes);
                 default: throw new ArgumentException($"Unable to recognize element of type {type}");
             }
         }

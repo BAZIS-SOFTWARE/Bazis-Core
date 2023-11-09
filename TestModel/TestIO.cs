@@ -1,6 +1,7 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
+using Model.Elements;
 using Model.IO;
 using ModelInterfaces;
 
@@ -79,7 +80,7 @@ namespace TestModel
             var loader = new LoadModelFromASCIITextFile();
             loader.LoadEvent += (ar1, ar2) => { };
             var model = loader.Load(@"..\..\..\Examples\VIsual-Mesh\DATA3.ASC");
-            Assert.AreEqual(3, model.ObjectData.FindMany<Element1D>().Count());
+            Assert.AreEqual(3, model.ObjectData.FindMany<Beam>().Count());
         }
 
         [TestMethod]
@@ -154,7 +155,7 @@ namespace TestModel
             import.LoadEvent += (ar1, ar2) => { };
             var model = import.Load(filePath);
             Assert.AreEqual(nodes, model.ObjectData.FindMany<Node>().Distinct().Count());
-            Assert.AreEqual(lineElms, model.ObjectData.FindMany<Element1D>().Distinct().Count());
+            Assert.AreEqual(lineElms, model.ObjectData.FindMany<Beam>().Distinct().Count());
             Assert.AreEqual(surfElms, model.ObjectData.FindMany<Element2D>().Distinct().Count());
             Assert.AreEqual(volElems, model.ObjectData.FindMany<Element3D>().Distinct().Count());
         }

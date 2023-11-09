@@ -5,6 +5,7 @@ using ModelInterfaces;
 using ModelController.ModelScenePresentator;
 using Model.IO;
 using System;
+using Model.Elements;
 
 namespace TestModel
 {
@@ -21,7 +22,7 @@ namespace TestModel
                 new Node(1, new Point3D(1.0f,0.0f,0.0f)),
                 new Node(2, new Point3D(0.5f,1.0f,0.0f)),
             };
-            var el2D = new Element2D(0, nodes, ObjKind.Triangle);
+            var el2D = new Triangle(0, nodes);
             model.ObjectData.Add(el2D);
             var presentator = new ModelScenePresentator(model.ObjectData);
             var values = presentator["Элементы2D"].CreateIndexes();
@@ -41,7 +42,7 @@ namespace TestModel
                 new Node(2, new Point3D(1.0f,1.0f,0.0f)),
                 new Node(3, new Point3D(0.0f,1.0f,0.0f))
             };
-            var el2D = new Element2D(0, nodes, ObjKind.Quad);
+            var el2D = new Quad(0, nodes);
 
             model.ObjectData.Add(el2D);
 

@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using Model.Elements;
 
 namespace TestModel
 {
@@ -50,19 +51,17 @@ namespace TestModel
             }
 
             Model.ModelObject modelObject;
-            switch (objType)
+
+            switch (objKind)
             {
-                case ObjType.Поверхности:
+                case ObjKind.Tetra:
+                    modelObject = new Tetra(0, nodes.ToArray());
+                    break;
+                case ObjKind.ElementSurface:
                     modelObject = new Surface(0, nodes.ToArray(), objKind);
                     break;
-                case ObjType.Элементы2D:
-                    modelObject = new Element2D(0, nodes.ToArray(), objKind);
-                    break;
-                case ObjType.Элементы1D:
-                    modelObject = new Element1D(0, nodes.ToArray(), objKind);
-                    break;
                 default:
-                    modelObject = new Element3D(0, nodes.ToArray(), objKind);
+                    modelObject = new Beam(0, nodes.ToArray());
                     break;
             }
 

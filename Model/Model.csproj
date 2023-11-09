@@ -28,7 +28,7 @@
   <ItemGroup>
     <Compile Include="Events\LoaderEventArgs.cs" />
     <Compile Include="Events\SaverEventArgs.cs" />
-    <Compile Include="HexElement.cs" />
+    <Compile Include="Elements\Hexa.cs" />
     <Compile Include="IO\LoadModelFromProjectTextFile.cs" />
     <Compile Include="IO\SaveModelToProjectTextFile.cs" />
     <Compile Include="IO\LoadModelFromASCIITextFile.cs" />
@@ -37,24 +37,24 @@
     <Compile Include="IO\LoadModelFromSalomeFile.cs" />
     <Compile Include="IO\LoadModelFromSTLFile.cs" />
     <Compile Include="IO\SaveModelToASCIITextFile.cs" />
-    <Compile Include="Element1D.cs" />
+    <Compile Include="Elements\Beam.cs" />
     <Compile Include="GroupsData\Group.cs" />
     <Compile Include="GroupsData\CompareGroupsByName.cs" />
     <Compile Include="GroupsData\GroupData.cs" />
     <Compile Include="ModelData.cs" />
     <Compile Include="ModelObject.cs" />
     <Compile Include="Line.cs" />
-    <Compile Include="Element.cs" />
-    <Compile Include="Element2D.cs" />
-    <Compile Include="Element3D.cs" />
+    <Compile Include="Elements\Element.cs" />
+    <Compile Include="Elements\Element2D.cs" />
+    <Compile Include="Elements\Element3D.cs" />
     <Compile Include="Node.cs" />
-    <Compile Include="PentaElement.cs" />
-    <Compile Include="QuadElement.cs" />
+    <Compile Include="Elements\Penta.cs" />
+    <Compile Include="Elements\Quad.cs" />
     <Compile Include="SurfaceFinder.cs" />
     <Compile Include="ObjectsData.cs" />
     <Compile Include="Surface.cs" />
-    <Compile Include="TetraElement.cs" />
-    <Compile Include="TriangleElement.cs" />
+    <Compile Include="Elements\Tetra.cs" />
+    <Compile Include="Elements\Triangle.cs" />
   </ItemGroup> 
   <ItemGroup>
     <PackageReference Include="Functions" Version="1.0.2.43" />

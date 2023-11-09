@@ -1,4 +1,5 @@
 ﻿using Model;
+using Model.Elements;
 using ModelControllerInterfaces;
 using ModelInterfaces;
 using System;
@@ -26,7 +27,7 @@ namespace ModelController.MeshObjsCreator
 
             foreach (var surface in surfaces)
             {
-                yield return new Element2D(StartNumber, surface, ObjKind.Triangle);
+                yield return new Triangle(StartNumber, surface);
                 StartNumber++;
             }
         }

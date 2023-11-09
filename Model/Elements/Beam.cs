@@ -3,11 +3,11 @@ using ModelInterfaces;
 using System;
 using System.Drawing;
 
-namespace Model
+namespace Model.Elements
 {
-    public class Element1D : Element, ILineObject
+    public class Beam : Element, ILineObject
     {
-        public Element1D(int number, Node[] nodes, ObjKind objKind) : base(number)
+        public Beam(int number, Node[] nodes) : base(number)
         {
             InitialColor = Color.FromArgb(255, 192, 203);
             MasterColor = Color.FromArgb(255, 192, 203);
@@ -20,12 +20,11 @@ namespace Model
             }
 
             ObjType = "Элементы1D";
-            ObjKind = objKind;
         }
         /// <inheritdoc/>
-        public override ObjKind ObjKind { get; }
+        public override ObjKind ObjKind { get; } = ObjKind.Beam;
 
-        public override string ObjType { get; }
+        public override string ObjType { get; } 
 
         public override Point3D CalcCentralPoint()
         {
@@ -40,7 +39,12 @@ namespace Model
 
         public float CalcLength()
         {
-            return Vector.GetVectorLenght(nodes[1].Position.Sub(nodes[0].Position));        
+            return Vector.GetVectorLenght(nodes[1].Position.Sub(nodes[0].Position));
+        }
+
+        public override float DetJ(Point3D point3D)
+        {
+            throw new NotImplementedException();
         }
 
         public override float[] GetDerivativesFormFunctions(Point3D point3D)

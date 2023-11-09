@@ -7,11 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Model
+namespace Model.Elements
 {
-    public class TetraElement: Element3D
+    public class Tetra : Element3D
     {
-        public TetraElement(int number, Node[] nodes) : base(number, nodes, ObjKind.Tetra)
+        public Tetra(int number, Node[] nodes) : base(number, nodes, ObjKind.Tetra)
         {
         }
 
@@ -31,6 +31,7 @@ namespace Model
             //var str = cMatr.ToString(4, 4);
             return cMatr;
         }
+        /// <inheritdoc/>
 
         public override float DetJ(Point3D point3D)
         {

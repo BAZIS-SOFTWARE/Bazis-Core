@@ -7,6 +7,7 @@ using Model;
 using ModelInterfaces;
 using Functions.Extensions;
 using System.IO;
+using Model.Elements;
 
 namespace GmshApi.GmshController
 {
@@ -1069,15 +1070,15 @@ namespace GmshApi.GmshController
                                                   long elementId, Node[] nodes)
         {
             if (elementName.Contains("Triangle"))
-                return new Element2D((int)elementId, nodes, ObjKind.Triangle);
+                return new Triangle((int)elementId, nodes);
             else if (elementName.Contains("Quadrilateral"))
-                return new Element2D((int)elementId, nodes, ObjKind.Quad);
+                return new Quad((int)elementId, nodes);
             else if (elementName.Contains("Tetrahedron"))
-                return new Element3D((int)elementId, nodes, ObjKind.Tetra);
+                return new Tetra((int)elementId, nodes);
             else if (elementName.Contains("Hexahedron"))
-                return new Element3D((int)elementId, nodes, ObjKind.Hexa);
+                return new Hexa((int)elementId, nodes);
             else
-                return new Element3D((int)elementId, nodes, ObjKind.Penta);
+                return new Penta((int)elementId, nodes);
         }
         #endregion
         #region "Memory managed methods"

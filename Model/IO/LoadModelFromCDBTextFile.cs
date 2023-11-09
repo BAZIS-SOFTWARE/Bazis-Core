@@ -1,4 +1,5 @@
 ﻿using Geometry;
+using Model.Elements;
 using Model.Events;
 using ModelInterfaces;
 using System;
@@ -108,9 +109,9 @@ namespace Model.IO
             var nodes = elementNodes.Select(i => allNodes[i]).ToArray();
             switch (elementNodes.Length)
             {
-                case 4: return new Element3D(elementNumber, nodes, ObjKind.Tetra);
-                case 6: return new Element3D(elementNumber, nodes, ObjKind.Penta);
-                case 8: return new Element3D(elementNumber, nodes, ObjKind.Hexa);
+                case 4: return new Tetra(elementNumber, nodes);
+                case 6: return new Penta(elementNumber, nodes);
+                case 8: return new Hexa(elementNumber, nodes);
                 default: throw new Exception($"Unable to recognize element with {elementNodes.Length} nodes");
             }
         }

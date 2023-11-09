@@ -10,6 +10,7 @@ using Model.Events;
 using ModelInterfaces;
 using ModelController.MeshObjsUtility;
 using Model.IO;
+using Model.Elements;
 
 namespace TestModel
 {
@@ -30,12 +31,12 @@ namespace TestModel
             var H = new Node(8, new Point3D(-0.5f, 3.5f, 0));
             var elements = new List<Element2D>
             {
-                new Element2D(9, new Node[] { A, B, C }, ObjKind.Triangle),
-                new Element2D(10, new Node[] { B, C, D }, ObjKind.Triangle),
-                new Element2D(11, new Node[] { D, C, E }, ObjKind.Triangle),
-                new Element2D(12, new Node[] { E, D, G }, ObjKind.Triangle),
-                new Element2D(13, new Node[] { E, F, G }, ObjKind.Triangle),
-                new Element2D(14, new Node[] { F, G, H }, ObjKind.Triangle),
+                new Triangle(9, new Node[] { A, B, C }),
+                new Triangle(10, new Node[] { B, C, D }),
+                new Triangle(11, new Node[] { D, C, E }),
+                new Triangle(12, new Node[] { E, D, G }),
+                new Triangle(13, new Node[] { E, F, G }),
+                new Triangle(14, new Node[] { F, G, H }),
             };
             var nodes = new List<Node> { A, B, C, D, E, F, G, H };
             objectsData = new ObjectsData();

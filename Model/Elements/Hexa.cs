@@ -7,14 +7,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-namespace Model
+namespace Model.Elements
 {
-    public class HexElement : Element3D
+    public class Hexa : Element3D
     {
         float[] supPoint = { -(float)Math.Sqrt(0.6), 0, (float)Math.Sqrt(0.6) };
         float[] kef = { 5 / 9f, 8 / 9f, 5 / 9f };
 
-        public HexElement(int number, Node[] nodes) : base(number, nodes, ObjKind.Hexa)
+        public Hexa(int number, Node[] nodes) : base(number, nodes, ObjKind.Hexa)
         {
         }
 
@@ -26,17 +26,17 @@ namespace Model
             {
                 for (int j = i; j < nodes.Count - 2; j++)
                 {
-                    for(int k = j; k < nodes.Count -1; k++)
+                    for (int k = j; k < nodes.Count - 1; k++)
                     {
-                        for (int l =k;  l < nodes.Count; l++)
+                        for (int l = k; l < nodes.Count; l++)
                         {
-                            var tetra = new TetraElement(0, new Node[] { (Node)nodes[i], (Node)nodes[j], (Node)nodes[k], (Node)nodes[l] });
+                            var tetra = new Tetra(0, new Node[] { (Node)nodes[i], (Node)nodes[j], (Node)nodes[k], (Node)nodes[l] });
                             sum += tetra.CalcVolume();
                         }
                     }
                 }
             }
-            return sum/10;
+            return sum / 10;
         }
 
         public override float DetJ(Point3D point3D)
@@ -104,9 +104,9 @@ namespace Model
                 for (var j = -1; j <= 1; j += 2)
                     for (var k = -1; k <= 1; k += 2)
                     {
-                        answer[0, num] = (i * (1 + j * pointEta) * (1 + k * pointPsi) / 8);
-                        answer[1, num] = (j * (1 + i * pointKsi) * (1 + k * pointPsi) / 8);
-                        answer[2, num] = (k * (1 + j * pointEta) * (1 + i * pointKsi) / 8);
+                        answer[0, num] = i * (1 + j * pointEta) * (1 + k * pointPsi) / 8;
+                        answer[1, num] = j * (1 + i * pointKsi) * (1 + k * pointPsi) / 8;
+                        answer[2, num] = k * (1 + j * pointEta) * (1 + i * pointKsi) / 8;
                         num++;
                     }
             return answer;
@@ -135,9 +135,9 @@ namespace Model
                 for (var j = -1; j <= 1; j += 2)
                     for (var k = -1; k <= 1; k += 2)
                     {
-                        matrix[0, n] = (i * (1 + j * eta) * (1 + k * psi) / 8);
-                        matrix[1, n] = (j * (1 + i * ksi) * (1 + k * psi) / 8);
-                        matrix[2, n] = (k * (1 + j * eta) * (1 + i * ksi) / 8);
+                        matrix[0, n] = i * (1 + j * eta) * (1 + k * psi) / 8;
+                        matrix[1, n] = j * (1 + i * ksi) * (1 + k * psi) / 8;
+                        matrix[2, n] = k * (1 + j * eta) * (1 + i * ksi) / 8;
                         n++;
                     }
 
