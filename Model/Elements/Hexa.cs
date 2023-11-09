@@ -24,11 +24,11 @@ namespace Model.Elements
 
             for (int i = 0; i < nodes.Count - 3; i++)
             {
-                for (int j = i; j < nodes.Count - 2; j++)
+                for (int j = i + 1; j < nodes.Count - 2; j++)
                 {
-                    for (int k = j; k < nodes.Count - 1; k++)
+                    for (int k = j + 1; k < nodes.Count - 1; k++)
                     {
-                        for (int l = k; l < nodes.Count; l++)
+                        for (int l = k + 1; l < nodes.Count; l++)
                         {
                             var tetra = new Tetra(0, new Node[] { (Node)nodes[i], (Node)nodes[j], (Node)nodes[k], (Node)nodes[l] });
                             sum += tetra.CalcVolume();
