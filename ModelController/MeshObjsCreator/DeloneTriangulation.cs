@@ -12,12 +12,14 @@ namespace ModelController.MeshObjsCreator
     {
         private readonly Dictionary<int, Node2D> nodes;
         private readonly Dictionary<DeloneTriangle, List<DeloneTriangle>> adjacency;
+        private readonly Dictionary<int, Node> sourceNodes;
         private DeloneTriangle lastRecentlyAdd;
         private readonly Rectangle boundaryRectangle;
         private readonly ConverterToLocalBazis converter;
 
         public DeloneTriangulation(List<Node> source)
         {
+            sourceNodes = source.ToDictionary(n => n.Number, n => n);
             converter = new ConverterToLocalBazis(source[0].Position, source[1].Position, source[2].Position);
             var localNodes = ConvertToLocalPlaneCoordinates(source).ToList();
             boundaryRectangle = GetBoundaries(localNodes);
@@ -28,12 +30,12 @@ namespace ModelController.MeshObjsCreator
 
         public IEnumerable<Triangle> GetTriangles()
         {
-            var sourceNodes = new Node2D[nodes.Count];
-            nodes.Values.CopyTo(sourceNodes, 0);
+            var sourceNodesInPlane = new Node2D[nodes.Count];
+            nodes.Values.CopyTo(sourceNodesInPlane, 0);
             var superTriangle = CreateSuperTriangle();
             adjacency.Add(superTriangle, new List<DeloneTriangle>());
             lastRecentlyAdd = superTriangle;
-            foreach(var node in sourceNodes)
+            foreach(var node in sourceNodesInPlane)
             {
                 var locatedTriangles = FindContainTriangle(node).ToList();
                 if (locatedTriangles.Count == 1)
@@ -111,10 +113,7 @@ namespace ModelController.MeshObjsCreator
             var index = 0;
             foreach (var triangle in triangles)
             {
-                var localNodes = triangle.GetPoints().Select(i => nodes[i]).ToList();
-                var unmapped = UnMapPoints(localNodes, boundaryRectangle);
-                var reconverted = ReconvertToSourceCoordinates(unmapped);
-                yield return new Triangle(index++, reconverted.ToArray());
+                yield return new Triangle(index++, triangle.GetPoints().Select(i => sourceNodes[i]).ToArray());
             }
         }
 
