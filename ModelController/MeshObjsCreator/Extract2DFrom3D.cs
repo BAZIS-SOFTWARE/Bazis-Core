@@ -27,7 +27,12 @@ namespace ModelController.MeshObjsCreator
 
             foreach (var surface in surfaces)
             {
-                yield return new Triangle(StartNumber, surface);
+                var nodes = new List<Node>();
+
+                foreach (var node in surface.GetNodes())
+                    nodes.Add(new Node(node.Number,node.Position));
+
+                yield return new Triangle(StartNumber, nodes);
                 StartNumber++;
             }
         }

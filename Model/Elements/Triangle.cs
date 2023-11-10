@@ -24,9 +24,10 @@ namespace Model.Elements
             };
         }
 
-        public Triangle(int number, ISurface surface) : base(number, surface, ObjKind.Triangle)
+        public Triangle(int number, List<Node> nodes) : base(number, nodes,ObjKind.Triangle)
         {
-            this.surface = surface;
+            surface = new Surface(0, new Node[] { nodes[0], nodes[1], nodes[2] }, ObjKind.ElementSurface);
+
             trianglePoints = new[]
             {
                 new[]{1/2f,0f,1/2f},

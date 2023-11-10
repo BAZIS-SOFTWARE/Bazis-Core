@@ -18,7 +18,7 @@ namespace Model.Elements
             InitialColor = Color.FromArgb(0, 0, 255);
             MasterColor = Color.FromArgb(0, 0, 255);
             SlaveColor = Color.FromArgb(0, 0, 255);
-            ObjType = "Элементы2D";
+
             ObjKind = objKind;
 
             foreach (var node in nodes)
@@ -28,28 +28,27 @@ namespace Model.Elements
             }
         }
 
-        public Element2D(int number, ISurface surface, ObjKind objKind) : base(number)
+        public Element2D(int number, List<Node> nodes, ObjKind objKind) : base(number)
         {
             InitialColor = Color.FromArgb(0, 0, 255);
             MasterColor = Color.FromArgb(0, 0, 255);
             SlaveColor = Color.FromArgb(0, 0, 255);
             ObjType = "Элементы2D";
             ObjKind = objKind;
-            this.surface = surface;
 
-            foreach (var node in surface.GetNodes())
-            {
+            this.nodes.AddRange(nodes);
+
+            foreach (var node in nodes)
                 node.AddElement(this);
-                nodes.Add(node);
-            }
         }
 
 
         /// <inheritdoc/>
 
         public override ObjKind ObjKind { get; }
+/// <inheritdoc/>
 
-        public override string ObjType { get; }
+        public override string ObjType { get; } = "Элементы2D";
         /// <inheritdoc/>
 
         public int NumberOfSides { get { return 1; } }
