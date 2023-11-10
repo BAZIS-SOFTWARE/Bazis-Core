@@ -8,11 +8,11 @@ namespace ModelController.MeshObjsCreator
 {
     internal class Edge
     {
-        public int A { get; }
+        public Node2D A { get; }
 
-        public int B { get; }
+        public Node2D B { get; }
 
-        public Edge(int a, int b)
+        public Edge(Node2D a, Node2D b)
         {
             A = a;
             B = b;
@@ -29,13 +29,13 @@ namespace ModelController.MeshObjsCreator
         {
             unchecked
             {
-                return ((A + B) * 397) ^ (A * B);
+                return ((A.Number + B.Number) * 397) ^ (A.Number * B.Number);
             }
         }
 
         public override string ToString()
         {
-            return $"{A}-{B}";
+            return $"{A.Number}-{B.Number}";
         }
     }
 }
