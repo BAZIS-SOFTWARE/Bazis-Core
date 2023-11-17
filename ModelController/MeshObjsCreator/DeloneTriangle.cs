@@ -2,10 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Functions.Extensions;
 
 namespace ModelController.MeshObjsCreator
 {
-    internal class DeloneTriangle
+    public class DeloneTriangle
     {
         public Node2D A { get; }
 
@@ -15,18 +16,38 @@ namespace ModelController.MeshObjsCreator
 
         public DeloneTriangle(Node2D a, Node2D b, Node2D c)
         {
-            A = a;
-            B = b;
-            C = c;
+            var p = b.Position.Sub(a.Position);
+            var m = c.Position.Sub(b.Position);
+            var crossProduct = p._x * m._y - p._y * m._x;
+            if (Math.Abs(crossProduct) < 1e-4)
+                throw new ArgumentException("All point of the triangle on a line");
+            if (crossProduct > 0)
+            {
+                A = a;
+                B = b;
+                C = c;
+            }
+            else
+            {
+                A = a;
+                B = c;
+                C = b;
+            }
         }
 
         public bool IsNodeInsideTriangle(Node2D node)
         {
-            var sourceArea = GetTriangleArea(A.Position, B.Position, C.Position);
-            var areaSumResult = GetTriangleArea(node.Position, A.Position, B.Position) +
-                                GetTriangleArea(node.Position, B.Position, C.Position) +
-                                GetTriangleArea(node.Position, A.Position, C.Position);
-            return Math.Abs(sourceArea - areaSumResult) < 1e-3;
+            foreach (var edge in GetNodes().Bigrams(true))
+            {
+                var a = edge.Item2.Position.Sub(edge.Item1.Position);
+                var b = node.Position.Sub(edge.Item2.Position);
+                var crossProduct = a._x * b._y - a._y * b._x;
+                if(Math.Abs(crossProduct) < 1e-4)
+                    continue;
+                if (crossProduct < 0)
+                    return false;
+            }
+            return true;
         }
 
         public IEnumerable<int> GetIntersectionWith(DeloneTriangle other)
@@ -36,13 +57,15 @@ namespace ModelController.MeshObjsCreator
             return vertexesOne.Intersect(vertexesTwo);
         }
 
-        public IEnumerable<int> GetPoints() => new[] { A.Number, B.Number, C.Number };
+        public IEnumerable<int> GetNodeIndexes() => new[] { A.Number, B.Number, C.Number };
+
+        public IEnumerable<Node2D> GetNodes() => new [] { A, B, C };
 
         public override bool Equals(object obj)
         {
             if (!(obj is DeloneTriangle triangle))
                 return false;
-            return GetPoints().ToHashSet().SetEquals(triangle.GetPoints());
+            return GetNodeIndexes().ToHashSet().SetEquals(triangle.GetNodeIndexes());
         }
 
         public override int GetHashCode()
@@ -57,13 +80,6 @@ namespace ModelController.MeshObjsCreator
         public override string ToString()
         {
             return $"{A.Number}-{B.Number}-{C.Number}";
-        }
-
-        private float GetTriangleArea(Point2D a, Point2D b, Point2D c)
-        {
-            var ab = b.Sub(a);
-            var ac = c.Sub(a);
-            return 0.5f * Math.Abs(ab._x * ac._y - ac._x * ab._y);
         }
     }
 }

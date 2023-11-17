@@ -3,6 +3,7 @@ using MathNet.Numerics.LinearAlgebra;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Functions.Extensions;
 using Model;
 using Model.Elements;
 
@@ -14,16 +15,13 @@ namespace ModelController.MeshObjsCreator
         private readonly Dictionary<DeloneTriangle, List<DeloneTriangle>> adjacency;
         private readonly Dictionary<int, Node> sourceNodes;
         private DeloneTriangle lastRecentlyAdd;
-        private readonly Rectangle boundaryRectangle;
-        private readonly ConverterToLocalBazis converter;
 
         public DeloneTriangulation(List<Node> source)
         {
             sourceNodes = source.ToDictionary(n => n.Number, n => n);
-            converter = new ConverterToLocalBazis(source[0].Position, source[1].Position, source[2].Position);
             var localNodes = ConvertToLocalPlaneCoordinates(source).ToList();
-            boundaryRectangle = GetBoundaries(localNodes);
-            var convertedPoints = MapPoints(localNodes, boundaryRectangle).ToList();
+            var boundaryRectangle = GetBoundaries(localNodes);
+            var convertedPoints = MapPoints(localNodes, boundaryRectangle).ToList(); 
             nodes = SortPoints(convertedPoints).ToDictionary(x => x.Number, x => x);
             adjacency = new Dictionary<DeloneTriangle, List<DeloneTriangle>>();
         }
@@ -35,7 +33,7 @@ namespace ModelController.MeshObjsCreator
             var superTriangle = CreateSuperTriangle();
             adjacency.Add(superTriangle, new List<DeloneTriangle>());
             lastRecentlyAdd = superTriangle;
-            foreach(var node in sourceNodesInPlane)
+            foreach (var node in sourceNodesInPlane)
             {
                 var locatedTriangles = FindContainTriangle(node).ToList();
                 if (locatedTriangles.Count == 1)
@@ -57,8 +55,8 @@ namespace ModelController.MeshObjsCreator
                     var intersection = triangleOne.GetIntersectionWith(triangleTwo).ToList();
                     var pi = intersection[0];
                     var pj = intersection[1];
-                    var pl = triangleOne.GetPoints().Except(intersection).First();
-                    var pk = triangleTwo.GetPoints().Except(intersection).First();
+                    var pl = triangleOne.GetNodeIndexes().Except(intersection).First();
+                    var pk = triangleTwo.GetNodeIndexes().Except(intersection).First();
                     var newTriangleOneUp = new DeloneTriangle(node, nodes[pi], nodes[pl]);
                     var newTriangleOneDown = new DeloneTriangle(node, nodes[pl], nodes[pj]);
                     var newTriangleTwoUp = new DeloneTriangle(node, nodes[pk], nodes[pi]);
@@ -68,6 +66,7 @@ namespace ModelController.MeshObjsCreator
                     var adjacentByEdgePjPk = FindAdjacentTriangleByEdge(triangleTwo, new Edge(nodes[pj], nodes[pk]));
                     var adjacentByEdgePkPi = FindAdjacentTriangleByEdge(triangleTwo, new Edge(nodes[pk], nodes[pi]));
                     adjacency.Add(newTriangleOneUp, new List<DeloneTriangle> { newTriangleOneDown, newTriangleTwoUp });
+                    lastRecentlyAdd = newTriangleOneUp;
                     if (adjacentByEdgePiPl != null)
                     {
                         adjacency[newTriangleOneUp].Add(adjacentByEdgePiPl);
@@ -76,6 +75,7 @@ namespace ModelController.MeshObjsCreator
                     }
                     adjacency.Add(newTriangleOneDown,
                         new List<DeloneTriangle> { newTriangleOneUp, newTriangleTwoDown });
+                    lastRecentlyAdd = newTriangleOneDown;
                     if (adjacentByEdgePlPj != null)
                     {
                         adjacency[newTriangleOneDown].Add(adjacentByEdgePlPj);
@@ -84,6 +84,7 @@ namespace ModelController.MeshObjsCreator
                     }
                     adjacency.Add(newTriangleTwoDown,
                         new List<DeloneTriangle> { newTriangleOneDown, newTriangleTwoUp });
+                    lastRecentlyAdd = newTriangleTwoDown;
                     if (adjacentByEdgePjPk != null)
                     {
                         adjacency[newTriangleTwoDown].Add(adjacentByEdgePjPk);
@@ -105,24 +106,25 @@ namespace ModelController.MeshObjsCreator
                     LegalizeEdge(newTriangleTwoDown, new Edge(nodes[pj], nodes[pk]));
                     LegalizeEdge(newTriangleTwoUp, new Edge(nodes[pk], nodes[pi]));
                 }
-                else
+                else if(locatedTriangles.Count == 0)
                     throw new Exception("Unable to locate point in triangulation");
+                else
+                    throw new Exception("Point is located on 3 or more triangles");
             }
-
             var triangles = DeleteSuperTriangleNodes(superTriangle);
             var index = 0;
             foreach (var triangle in triangles)
             {
-                yield return new Triangle(index++, triangle.GetPoints().Select(i => sourceNodes[i]).ToArray());
+                yield return new Triangle(index++, triangle.GetNodeIndexes().Select(i => sourceNodes[i]).ToArray());
             }
         }
 
         private DeloneTriangle CreateSuperTriangle()
         {
             var nodeIndex = nodes.Values.Select(n => n.Number).Max();
-            nodes.Add(nodeIndex + 1, new Node2D(nodeIndex + 1, new Point2D(-100, -100)));
-            nodes.Add(nodeIndex + 2, new Node2D(nodeIndex + 2, new Point2D(100, -100)));
-            nodes.Add(nodeIndex + 3, new Node2D(nodeIndex + 3, new Point2D(0, 100)));
+            nodes.Add(nodeIndex + 1, new Node2D(nodeIndex + 1, new Point2D(-1000, -1000)));
+            nodes.Add(nodeIndex + 2, new Node2D(nodeIndex + 2, new Point2D(1000, -1000)));
+            nodes.Add(nodeIndex + 3, new Node2D(nodeIndex + 3, new Point2D(0, 1000)));
             return new DeloneTriangle(nodes[nodeIndex + 1], nodes[nodeIndex + 2], nodes[nodeIndex + 3]);
         }
 
@@ -130,7 +132,7 @@ namespace ModelController.MeshObjsCreator
         {
             foreach (var triangle in adjacency.Keys)
             {
-                if (!triangle.GetPoints().Intersect(superTriangle.GetPoints()).Any())
+                if (!triangle.GetNodeIndexes().Intersect(superTriangle.GetNodeIndexes()).Any())
                     yield return triangle;
             }
         }
@@ -141,9 +143,6 @@ namespace ModelController.MeshObjsCreator
             var b = v3.Sub(v1);
             if (a._x * b._y - a._y * b._x > 0)
                 (v2, v3) = (v3, v2);
-
-            if (Math.Abs(a._x * b._y - a._y * b._x) <= 1e-4)
-                throw new ArgumentException("Degenerate triangle given");
 
             var matrix = Matrix<float>.Build.DenseOfArray(new[,]
             {
@@ -161,8 +160,8 @@ namespace ModelController.MeshObjsCreator
             var adjacentTriangle = FindAdjacentTriangleByEdge(triangle, edge);
             if (adjacentTriangle == null)
                 return;
-            var pk = adjacentTriangle.GetPoints().Except(triangle.GetPoints()).First();
-            var pr = triangle.GetPoints().Except(adjacentTriangle.GetPoints()).First();
+            var pk = adjacentTriangle.GetNodeIndexes().Except(triangle.GetNodeIndexes()).First();
+            var pr = triangle.GetNodeIndexes().Except(adjacentTriangle.GetNodeIndexes()).First();
             if (IsSatisfyDeloneCondition(nodes[pk].Position, edge.A.Position, edge.B.Position, nodes[pr].Position))
                 return;
             var newTriangleOne = new DeloneTriangle(edge.A, nodes[pk], nodes[pr]);
@@ -212,7 +211,6 @@ namespace ModelController.MeshObjsCreator
                 if (intersectionEdge.Equals(edge))
                     return adjacentTriangle;
             }
-
             return null;
         }
 
@@ -226,7 +224,6 @@ namespace ModelController.MeshObjsCreator
                     adjacency.Add(newTriangle, new List<DeloneTriangle>());
                     lastRecentlyAdd = newTriangle;
                 }
-
                 foreach (var adjacentTriangle in adjacentTriangles)
                 {
                     var intersection = newTriangle.GetIntersectionWith(adjacentTriangle);
@@ -237,7 +234,6 @@ namespace ModelController.MeshObjsCreator
                     adjacency[adjacentTriangle].Add(newTriangle);
                 }
             }
-
             adjacency[newTriangles[0]].Add(newTriangles[1]);
             adjacency[newTriangles[0]].Add(newTriangles[2]);
             adjacency[newTriangles[1]].Add(newTriangles[0]);
@@ -249,11 +245,36 @@ namespace ModelController.MeshObjsCreator
 
         private IEnumerable<DeloneTriangle> FindContainTriangle(Node2D node)
         {
-            foreach (var triangle in adjacency.Keys)
+            var currentTriangle = lastRecentlyAdd;
+            while (true)
+            {
+                var found = true;
+                foreach (var edge in currentTriangle.GetNodes().Bigrams(true))
+                {
+                    var a = edge.Item2.Position.Sub(edge.Item1.Position);
+                    var b = node.Position.Sub(edge.Item2.Position);
+                    var crossProduct = a._x * b._y - a._y * b._x;
+                    if (Math.Abs(crossProduct) < 1e-4)
+                        continue;
+                    if (crossProduct < 0)
+                    {
+                        currentTriangle = FindAdjacentTriangleByEdge(currentTriangle, new Edge(edge.Item1, edge.Item2));
+                        found = false;
+                        break;
+                    }
+                }
+                if (found)
+                    break;
+            }
+            var result = new List<DeloneTriangle> { currentTriangle };
+            foreach (var triangle in adjacency[currentTriangle])
             {
                 if (triangle.IsNodeInsideTriangle(node))
-                    yield return triangle;
+                {
+                    result.Add(triangle);
+                }
             }
+            return result;
         }
 
         private IEnumerable<Node2D> SortPoints(List<Node2D> source)
@@ -284,36 +305,15 @@ namespace ModelController.MeshObjsCreator
         private IEnumerable<Node2D> MapPoints(List<Node2D> source, Rectangle rectangle)
         {
             var largestDimension = Math.Max(rectangle.Height, rectangle.Width);
-            var scale = 1f;
+            var scale = 100f;
             return source.Select(p => new Node2D(p.Number, new Point2D(
                 scale * (p.Position._x - rectangle.Left) / largestDimension,
                 scale * (p.Position._y - rectangle.Bottom) / largestDimension)));
         }
 
-        private IEnumerable<Node2D> UnMapPoints(List<Node2D> source, Rectangle rectangle)
-        {
-            var largestDimension = Math.Max(rectangle.Height, rectangle.Width);
-            return source.Select(p => new Node2D(p.Number, new Point2D(
-                (p.Position._x * largestDimension + rectangle.Left),
-                (p.Position._y * largestDimension + rectangle.Bottom))));
-        }
-
         private IEnumerable<Node2D> ConvertToLocalPlaneCoordinates(IEnumerable<Node> source)
         {
-            foreach (var node in source)
-            {
-                var point2D = converter.MapToLocalPlaneCoordinates(node.Position);
-                yield return new Node2D(node.Number, new Point2D(point2D._x, point2D._y));
-            }
-        }
-
-        private IEnumerable<Node> ReconvertToSourceCoordinates(IEnumerable<Node2D> source)
-        {
-            foreach (var node in source)
-            {
-                var point3D = converter.UnmapToSourceCoordinates(node.Position);
-                yield return new Node(node.Number, point3D);
-            }
+            return source.Select(node => new Node2D(node.Number, new Point2D(node.Position._x, node.Position._y)));
         }
     }
 }

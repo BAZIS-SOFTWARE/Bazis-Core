@@ -7,7 +7,7 @@ using Geometry;
 
 namespace ModelController.MeshObjsCreator
 {
-    internal class Node2D
+    public class Node2D
     {
         public int Number { get; }
 
@@ -17,6 +17,11 @@ namespace ModelController.MeshObjsCreator
         {
             Number = number;
             Position = position;
+        }
+
+        public override string ToString()
+        {
+            return $"{Number} {Position}";
         }
     }
 }
