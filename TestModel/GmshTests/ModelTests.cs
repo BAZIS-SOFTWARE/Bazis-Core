@@ -2,6 +2,8 @@
 using System.Linq;
 using GmshApi.GmshController;
 using System;
+using Model.IO;
+using Model;
 
 namespace TestModel.GmshTests
 {
@@ -230,6 +232,26 @@ namespace TestModel.GmshTests
             string log = string.Empty;
             controller.LoggerGetLastError(out log);
             Assert.AreEqual(false, log.Length == 0);
+        }
+
+        [DataTestMethod]
+        [DataRow(@"..\..\..\Examples\STL\ACII.stl")]
+        public void RemoveRangeTest(string stlPath)
+        {
+            var ierr = 0;
+            var status = true;
+            var modelData = new ModelData();
+            controller.gmshMerge(stlPath, ref ierr);
+            var nodes = controller.GetNodes(ref status);
+            Assert.AreEqual(true, status);
+            Assert.AreEqual(4, nodes.Count);
+            var surfaces = controller.GetMeshEntities(2, -1, ref status);
+            Assert.AreEqual(true, status);
+            Assert.AreEqual(2, surfaces.Count);
+            modelData.ObjectData.AddRange(nodes);
+            modelData.ObjectData.AddRange(surfaces);
+            modelData.ObjectData.RemoveRange("Элементы2D");
+            modelData.ObjectData.RemoveRange("Узлы");//Здесь падает, эмулирую такое же поведение как в Базисе
         }
 
 
