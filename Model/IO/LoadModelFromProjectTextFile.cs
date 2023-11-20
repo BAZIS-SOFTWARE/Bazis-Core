@@ -157,17 +157,17 @@ namespace Model.IO
                 }
                 if (splitLine[0] == "Группа элементов 3D ")
                 {
-                    LoadElemGroup(newMesh, ObjKind.Tetra, line);
+                    LoadElemGroup(newMesh, "Элементы3D", line);
                 }
                 if (splitLine[0] == "Группа элементов 2D ")
                 {
-                    LoadElemGroup(newMesh, ObjKind.Triangle, line);
+                    LoadElemGroup(newMesh, "Элементы2D", line);
                 }
                 line = sr.ReadLine();
             }
         }
 
-        private static void LoadElemGroup(ModelData newMesh, ObjKind objType, string line)
+        private static void LoadElemGroup(ModelData newMesh, string objType, string line)
         {
             var splitLine = line.Split(':');
             var name = splitLine[1].Split(' ')[1];

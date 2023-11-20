@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ModelInterfaces.ObjectsSorters;
 using ModelInterfaces.Attributes;
+using ModelInterfaces.ObjectsComparers;
 
 namespace Model.GroupsData
 {
@@ -108,22 +109,6 @@ namespace Model.GroupsData
             return objects.Remove(item);
         }
 
-        public Group(string groupName, ObjKind objKind)
-        {
-            GroupName = groupName;
-
-            if (objKind == ObjKind.Node)
-                ObjType = "Узлы";
-            else if (objKind == ObjKind.Tetra)
-                ObjType = "Элементы3D";
-            else if (objKind == ObjKind.Triangle)
-                ObjType = "Элементы2D";
-            else
-                ObjType = "Поверхности";
-
-            ViewState = true;
-        }
-
         public Group(string groupName, string objType)
         {
             GroupName = groupName;
@@ -140,6 +125,15 @@ namespace Model.GroupsData
         public void SortByDistance()
         {
             objects.SortByDistance();
+        }
+/// <inheritdoc/>
+
+        public void ClearRemoved()
+        {
+            var removedObjs = objects.Where(x => x.ExistState == false);
+
+            var existObjects = objects.Except(removedObjs, new EqualityComparerByExistState()).ToList();
+            objects = existObjects;
         }
     }
 }

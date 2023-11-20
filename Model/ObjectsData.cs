@@ -98,6 +98,7 @@ namespace Model
         {
             get { return FindMany<IElement>().Count(); }
         }       
+/// <inheritdoc/>
 
         public IEnumerable<IModelObject> FindMany(ObjKind objKind)
         {
@@ -138,11 +139,11 @@ namespace Model
         {
             return modelObjects.Remove(modelObject);
         }
+/// <inheritdoc/>
 
         public void ClearRemoved()
         {
             var removedObjs = modelObjects.Where(x => x.ExistState == false);
-
 
             var existObjects = modelObjects.Except(removedObjs, new EqualityComparerByExistState()).ToList();
             modelObjects = existObjects;

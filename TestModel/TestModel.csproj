@@ -112,7 +112,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestSorter.cs" />
     <Compile Include="TestModelScenePresentor.cs" />
-    <Compile Include="TestModelControllerSTL.cs" />
     <Compile Include="TestVolume.cs" />
   </ItemGroup>
   <ItemGroup>

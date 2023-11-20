@@ -14,6 +14,7 @@ namespace TestModel
     [TestClass]
     public class TestModelScenePresentor
     {
+
         [DataTestMethod]
         [DataRow(new float[]
         { 
@@ -89,6 +90,38 @@ namespace TestModel
             Assert.AreEqual(colors.Length, indsR[2]);
             Assert.AreEqual(normals.Length, indsR[3]);
             Assert.AreEqual(edges.Length, indsR[4]);
+        }
+
+        [DataTestMethod]
+        [DataRow(new string[]
+{
+            "Поверхности", "6", "18", "24", "18"
+})]
+        public void TestObjectsCreationfromSTLText(string[] array)
+        {
+            //assing
+            var model = new ModelData();
+            model.Loader = new LoadModelFromSTLFile();
+
+            model.Loader.LoadEvent += (ar1, ar2) => { };
+            model.Load(@"C:\BazisComponents\ModelSolution\TestModel\Examples\STL\ACII.stl");
+
+            //act
+            var surfs = model.ObjectData.FindMany<Surface>().ToArray();
+
+            var presenter = new ModelScenePresentator(model.ObjectData);
+
+            var inds = presenter[array[0]].CreateIndexes();
+            var ptrs = presenter[array[0]].CreatePointers(inds.Item1);
+            var coords = presenter[array[0]].CreateVertexes(inds.Item2, "координаты");
+            var colors = presenter[array[0]].CreateVertexes(inds.Item3, "цвет");
+            var normals = presenter[array[0]].CreateVertexes(inds.Item2, "нормаль");
+            //assert
+            Assert.AreEqual(ptrs.Length, int.Parse(array[1]));
+            Assert.AreEqual(coords.Length, int.Parse(array[2]));
+            Assert.AreEqual(colors.Length, int.Parse(array[3]));
+            Assert.AreEqual(normals.Length, int.Parse(array[4]));
+
         }
 
 

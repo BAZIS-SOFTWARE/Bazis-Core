@@ -19,11 +19,21 @@ namespace ModelInterfaces
         int NumberOfSurfaceElements { get; }
 
         int NumberOfElements { get; }
-
+        /// <summary>
+        /// FindMany
+        /// </summary>
+        /// <param name="objKind"></param>
+        /// <returns></returns>
         IEnumerable<IModelObject> FindMany(ObjKind objKind);
-
+        /// <summary>
+        /// FindMany
+        /// </summary>
+        /// <param name="objType"></param>
+        /// <returns></returns>
         IEnumerable<IModelObject> FindMany(string objType);
-
+        /// <summary>
+        /// ClearRemoved
+        /// </summary>
         void ClearRemoved();
 
         void RemoveRange(string objType);

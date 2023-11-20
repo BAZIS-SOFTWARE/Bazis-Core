@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace ModelController.MeshObjsCreator
 {
@@ -27,12 +28,25 @@ namespace ModelController.MeshObjsCreator
 
             foreach (var surface in surfaces)
             {
-                var nodes = new List<Node>();
+                if(surface.GetNodes().Count() == 3)
+                {
+                    var n0 = new Node(surface[0].Number, surface[0].Position);
+                    var n1 = new Node(surface[1].Number, surface[1].Position);
+                    var n2 = new Node(surface[2].Number, surface[2].Position);
 
-                foreach (var node in surface.GetNodes())
-                    nodes.Add(new Node(node.Number,node.Position));
+                    yield return new Triangle(StartNumber, new Node[] { n0,n1,n2 });
+                }
+                else
+                {
+                    var n0 = new Node(surface[0].Number, surface[0].Position);
+                    var n1 = new Node(surface[1].Number, surface[1].Position);
+                    var n2 = new Node(surface[2].Number, surface[2].Position);
+                    var n3 = new Node(surface[3].Number, surface[3].Position);
 
-                yield return new Triangle(StartNumber, nodes);
+                    yield return new Quad(StartNumber, new Node[] { n0, n1, n2,n3 });
+                }
+
+ 
                 StartNumber++;
             }
         }

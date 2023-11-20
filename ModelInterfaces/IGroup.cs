@@ -35,5 +35,9 @@ namespace ModelInterfaces
         /// <param name="sInd"></param>
         /// <returns></returns>
         bool Swap(int fInd, int sInd);
+        /// <summary>
+        /// ClearRemoved
+        /// </summary>
+        void ClearRemoved();
     }
 }

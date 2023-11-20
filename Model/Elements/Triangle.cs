@@ -23,18 +23,6 @@ namespace Model.Elements
                 new[]{0,1/2f,1/2f}
             };
         }
-
-        public Triangle(int number, List<Node> nodes) : base(number, nodes,ObjKind.Triangle)
-        {
-            surface = new Surface(0, new Node[] { nodes[0], nodes[1], nodes[2] }, ObjKind.ElementSurface);
-
-            trianglePoints = new[]
-            {
-                new[]{1/2f,0f,1/2f},
-                new[]{1/2f,1/2f,0f},
-                new[]{0,1/2f,1/2f}
-            };
-        }
         /// <inheritdoc/>
 
         public override float[] GetDerivativesFormFunctions(Point3D point3D)

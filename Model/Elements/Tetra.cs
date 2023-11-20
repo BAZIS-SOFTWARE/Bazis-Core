@@ -14,6 +14,7 @@ namespace Model.Elements
         public Tetra(int number, Node[] nodes) : base(number, nodes, ObjKind.Tetra)
         {
         }
+/// <inheritdoc/>
 
         public override float CalcVolume()
         {
