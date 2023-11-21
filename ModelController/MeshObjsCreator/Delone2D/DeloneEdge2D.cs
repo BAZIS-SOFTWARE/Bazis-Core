@@ -4,15 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ModelController.MeshObjsCreator
+namespace ModelController.MeshObjsCreator.Delone2D
 {
-    internal class Edge
+    internal class DeloneEdge2D
     {
         public DeloneNode2D A { get; }
 
         public DeloneNode2D B { get; }
 
-        public Edge(DeloneNode2D a, DeloneNode2D b)
+        public DeloneEdge2D(DeloneNode2D a, DeloneNode2D b)
         {
             A = a;
             B = b;
@@ -20,16 +20,16 @@ namespace ModelController.MeshObjsCreator
 
         public override bool Equals(object obj)
         {
-            if (!(obj is Edge edge))
+            if (!(obj is DeloneEdge2D edge))
                 return false;
-            return (A == edge.A && B == edge.B) || (A == edge.B && B == edge.A);
+            return A == edge.A && B == edge.B || A == edge.B && B == edge.A;
         }
 
         public override int GetHashCode()
         {
             unchecked
             {
-                return ((A.Number + B.Number) * 397) ^ (A.Number * B.Number);
+                return (A.Number + B.Number) * 397 ^ A.Number * B.Number;
             }
         }
 

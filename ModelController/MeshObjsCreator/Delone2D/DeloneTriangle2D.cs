@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Functions.Extensions;
 
-namespace ModelController.MeshObjsCreator
+namespace ModelController.MeshObjsCreator.Delone2D
 {
     public class DeloneTriangle
     {
@@ -42,7 +42,7 @@ namespace ModelController.MeshObjsCreator
                 var a = edge.Item2.Position.Sub(edge.Item1.Position);
                 var b = node.Position.Sub(edge.Item2.Position);
                 var crossProduct = a._x * b._y - a._y * b._x;
-                if(Math.Abs(crossProduct) < 1e-4)
+                if (Math.Abs(crossProduct) < 1e-4)
                     continue;
                 if (crossProduct < 0)
                     return false;
@@ -59,7 +59,7 @@ namespace ModelController.MeshObjsCreator
 
         public IEnumerable<int> GetNodeIndexes() => new[] { A.Number, B.Number, C.Number };
 
-        public IEnumerable<DeloneNode2D> GetNodes() => new [] { A, B, C };
+        public IEnumerable<DeloneNode2D> GetNodes() => new[] { A, B, C };
 
         public override bool Equals(object obj)
         {
@@ -72,7 +72,7 @@ namespace ModelController.MeshObjsCreator
         {
             unchecked
             {
-                var hashCode = ((A.Number + B.Number + C.Number) * 397) ^ (A.Number * B.Number * C.Number);
+                var hashCode = (A.Number + B.Number + C.Number) * 397 ^ A.Number * B.Number * C.Number;
                 return hashCode;
             }
         }

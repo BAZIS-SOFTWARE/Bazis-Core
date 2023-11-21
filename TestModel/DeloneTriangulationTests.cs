@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Model;
 using Model.Elements;
 using ModelController.MeshObjsCreator;
+using ModelController.MeshObjsCreator.Delone2D;
 
 namespace TestModel
 {
@@ -29,7 +30,7 @@ namespace TestModel
                 new Node(7, new Point3D(-6, -4, 0)),
                 new Node(8, new Point3D(5, -4, 0))
             };
-            var instance = new DeloneTriangulation(nodes);
+            var instance = new DeloneTriangulation2D(nodes);
             var triangulation = instance.GetTriangles().ToList();
 
             Assert.AreEqual(11, triangulation.Count);
@@ -51,7 +52,7 @@ namespace TestModel
                 new Node(8, new Point3D(2, -4, 0)),
                 new Node(9, new Point3D(-1, -2, 0))
             };
-            var instance = new DeloneTriangulation(nodes);
+            var instance = new DeloneTriangulation2D(nodes);
             var triangulation = instance.GetTriangles().ToList();
 
             Assert.AreEqual(11, triangulation.Count);
@@ -70,7 +71,7 @@ namespace TestModel
                 new Node(5, new Point3D(-2, -3, 0)),
                 new Node(6, new Point3D(4, -2, 0))
             };
-            var instance = new DeloneTriangulation(nodes);
+            var instance = new DeloneTriangulation2D(nodes);
             var triangulation = instance.GetTriangles().ToList();
             Assert.AreEqual(7, triangulation.Count);
         }
@@ -85,7 +86,7 @@ namespace TestModel
                 new Node(2, new Point3D(1, -1, 0)),
                 new Node(3, new Point3D(-1, -1, 0))
             };
-            var instance = new DeloneTriangulation(nodes);
+            var instance = new DeloneTriangulation2D(nodes);
             var triangulation = instance.GetTriangles();
             Assert.AreEqual(2, triangulation.Count());
         }
@@ -117,7 +118,7 @@ namespace TestModel
                 new Node(19, new Point3D(3, 0, 0)),
                 new Node(20, new Point3D(0, 5, 0)),
             };
-            var instance = new DeloneTriangulation(nodes);
+            var instance = new DeloneTriangulation2D(nodes);
             var triangulation = instance.GetTriangles().ToList();
             Assert.AreEqual(30, triangulation.Count);
         }

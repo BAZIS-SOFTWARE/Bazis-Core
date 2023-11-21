@@ -7,7 +7,7 @@ using Functions.Extensions;
 using Model;
 using Model.Elements;
 
-namespace ModelController.MeshObjsCreator
+namespace ModelController.MeshObjsCreator.Delone2D
 {
     public class DeloneTriangulation
     {
@@ -21,7 +21,7 @@ namespace ModelController.MeshObjsCreator
             sourceNodes = source.ToDictionary(n => n.Number, n => n);
             var localNodes = ConvertToLocalPlaneCoordinates(source).ToList();
             var boundaryRectangle = GetBoundaries(localNodes);
-            var convertedPoints = MapPoints(localNodes, boundaryRectangle).ToList(); 
+            var convertedPoints = MapPoints(localNodes, boundaryRectangle).ToList();
             nodes = SortPoints(convertedPoints).ToDictionary(x => x.Number, x => x);
             adjacency = new Dictionary<DeloneTriangle, List<DeloneTriangle>>();
         }
@@ -106,7 +106,7 @@ namespace ModelController.MeshObjsCreator
                     LegalizeEdge(newTriangleTwoDown, new Edge(nodes[pj], nodes[pk]));
                     LegalizeEdge(newTriangleTwoUp, new Edge(nodes[pk], nodes[pi]));
                 }
-                else if(locatedTriangles.Count == 0)
+                else if (locatedTriangles.Count == 0)
                     throw new Exception("Unable to locate point in triangulation");
                 else
                     throw new Exception("Point is located on 3 or more triangles");
@@ -285,7 +285,7 @@ namespace ModelController.MeshObjsCreator
             {
                 var p = (int)(node.Position._y * rows * 0.999); // row
                 var q = (int)(node.Position._x * rows * 0.999); // column
-                var binIndex = (p % 2 == 1)
+                var binIndex = p % 2 == 1
                     ? (p + 1) * rows - q
                     : p * rows + q + 1;
                 bins.Add(node, binIndex);

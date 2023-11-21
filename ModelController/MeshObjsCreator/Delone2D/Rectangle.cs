@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ModelController.MeshObjsCreator
+namespace ModelController.MeshObjsCreator.Delone2D
 {
     internal class Rectangle
     {
