@@ -21,6 +21,12 @@
     <None Remove="Icon.png" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MeshObjsCreator\DeloneTriangulation.cs" />
+    <Compile Include="MeshObjsCreator\Edge.cs" />
+    <Compile Include="MeshObjsCreator\ConverterToLocalBazis.cs" />
+    <Compile Include="MeshObjsCreator\Node2D.cs" />
+    <Compile Include="MeshObjsCreator\Rectangle.cs" />
+    <Compile Include="MeshObjsCreator\DeloneTriangle.cs" />
     <Compile Include="MeshObjsUtility\CrossSection.cs" />
     <Compile Include="ModelController.cs" />
     <Compile Include="ModelScenePresentator\GlObjsPresenters\LineObjsPresenter.cs" />

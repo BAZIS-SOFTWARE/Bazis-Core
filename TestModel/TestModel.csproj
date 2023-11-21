@@ -93,6 +93,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DeloneTriangulationTests.cs" />
     <Compile Include="GmshTests\GeometryTests.cs" />
     <Compile Include="GmshTests\MeshTests.cs" />
     <Compile Include="GmshTests\ConnectionTests.cs" />
