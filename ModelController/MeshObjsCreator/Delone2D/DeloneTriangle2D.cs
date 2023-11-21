@@ -6,7 +6,7 @@ using Functions.Extensions;
 
 namespace ModelController.MeshObjsCreator.Delone2D
 {
-    public class DeloneTriangle
+    public class DeloneTriangle2D
     {
         public DeloneNode2D A { get; }
 
@@ -14,7 +14,7 @@ namespace ModelController.MeshObjsCreator.Delone2D
 
         public DeloneNode2D C { get; }
 
-        public DeloneTriangle(DeloneNode2D a, DeloneNode2D b, DeloneNode2D c)
+        public DeloneTriangle2D(DeloneNode2D a, DeloneNode2D b, DeloneNode2D c)
         {
             var p = b.Position.Sub(a.Position);
             var m = c.Position.Sub(b.Position);
@@ -50,7 +50,7 @@ namespace ModelController.MeshObjsCreator.Delone2D
             return true;
         }
 
-        public IEnumerable<int> GetIntersectionWith(DeloneTriangle other)
+        public IEnumerable<int> GetIntersectionWith(DeloneTriangle2D other)
         {
             var vertexesOne = new HashSet<int> { A.Number, B.Number, C.Number };
             var vertexesTwo = new HashSet<int> { other.A.Number, other.B.Number, other.C.Number };
@@ -63,7 +63,7 @@ namespace ModelController.MeshObjsCreator.Delone2D
 
         public override bool Equals(object obj)
         {
-            if (!(obj is DeloneTriangle triangle))
+            if (!(obj is DeloneTriangle2D triangle))
                 return false;
             return GetNodeIndexes().ToHashSet().SetEquals(triangle.GetNodeIndexes());
         }
