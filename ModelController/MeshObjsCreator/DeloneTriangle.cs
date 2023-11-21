@@ -8,13 +8,13 @@ namespace ModelController.MeshObjsCreator
 {
     public class DeloneTriangle
     {
-        public Node2D A { get; }
+        public DeloneNode2D A { get; }
 
-        public Node2D B { get; }
+        public DeloneNode2D B { get; }
 
-        public Node2D C { get; }
+        public DeloneNode2D C { get; }
 
-        public DeloneTriangle(Node2D a, Node2D b, Node2D c)
+        public DeloneTriangle(DeloneNode2D a, DeloneNode2D b, DeloneNode2D c)
         {
             var p = b.Position.Sub(a.Position);
             var m = c.Position.Sub(b.Position);
@@ -35,7 +35,7 @@ namespace ModelController.MeshObjsCreator
             }
         }
 
-        public bool IsNodeInsideTriangle(Node2D node)
+        public bool IsNodeInsideTriangle(DeloneNode2D node)
         {
             foreach (var edge in GetNodes().Bigrams(true))
             {
@@ -59,7 +59,7 @@ namespace ModelController.MeshObjsCreator
 
         public IEnumerable<int> GetNodeIndexes() => new[] { A.Number, B.Number, C.Number };
 
-        public IEnumerable<Node2D> GetNodes() => new [] { A, B, C };
+        public IEnumerable<DeloneNode2D> GetNodes() => new [] { A, B, C };
 
         public override bool Equals(object obj)
         {

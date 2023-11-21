@@ -11,7 +11,7 @@ namespace ModelController.MeshObjsCreator
 {
     public class DeloneTriangulation
     {
-        private readonly Dictionary<int, Node2D> nodes;
+        private readonly Dictionary<int, DeloneNode2D> nodes;
         private readonly Dictionary<DeloneTriangle, List<DeloneTriangle>> adjacency;
         private readonly Dictionary<int, Node> sourceNodes;
         private DeloneTriangle lastRecentlyAdd;
@@ -28,7 +28,7 @@ namespace ModelController.MeshObjsCreator
 
         public IEnumerable<Triangle> GetTriangles()
         {
-            var sourceNodesInPlane = new Node2D[nodes.Count];
+            var sourceNodesInPlane = new DeloneNode2D[nodes.Count];
             nodes.Values.CopyTo(sourceNodesInPlane, 0);
             var superTriangle = CreateSuperTriangle();
             adjacency.Add(superTriangle, new List<DeloneTriangle>());
@@ -122,9 +122,9 @@ namespace ModelController.MeshObjsCreator
         private DeloneTriangle CreateSuperTriangle()
         {
             var nodeIndex = nodes.Values.Select(n => n.Number).Max();
-            nodes.Add(nodeIndex + 1, new Node2D(nodeIndex + 1, new Point2D(-1000, -1000)));
-            nodes.Add(nodeIndex + 2, new Node2D(nodeIndex + 2, new Point2D(1000, -1000)));
-            nodes.Add(nodeIndex + 3, new Node2D(nodeIndex + 3, new Point2D(0, 1000)));
+            nodes.Add(nodeIndex + 1, new DeloneNode2D(nodeIndex + 1, new Point2D(-1000, -1000)));
+            nodes.Add(nodeIndex + 2, new DeloneNode2D(nodeIndex + 2, new Point2D(1000, -1000)));
+            nodes.Add(nodeIndex + 3, new DeloneNode2D(nodeIndex + 3, new Point2D(0, 1000)));
             return new DeloneTriangle(nodes[nodeIndex + 1], nodes[nodeIndex + 2], nodes[nodeIndex + 3]);
         }
 
@@ -243,7 +243,7 @@ namespace ModelController.MeshObjsCreator
             adjacency.Remove(old);
         }
 
-        private IEnumerable<DeloneTriangle> FindContainTriangle(Node2D node)
+        private IEnumerable<DeloneTriangle> FindContainTriangle(DeloneNode2D node)
         {
             var currentTriangle = lastRecentlyAdd;
             while (true)
@@ -277,10 +277,10 @@ namespace ModelController.MeshObjsCreator
             return result;
         }
 
-        private IEnumerable<Node2D> SortPoints(List<Node2D> source)
+        private IEnumerable<DeloneNode2D> SortPoints(List<DeloneNode2D> source)
         {
             var rows = (int)Math.Ceiling(Math.Pow(source.Count, 0.25));
-            var bins = new Dictionary<Node2D, int>();
+            var bins = new Dictionary<DeloneNode2D, int>();
             foreach (var node in source)
             {
                 var p = (int)(node.Position._y * rows * 0.999); // row
@@ -293,7 +293,7 @@ namespace ModelController.MeshObjsCreator
             return bins.OrderBy(p => p.Value).Select(p => p.Key);
         }
 
-        private Rectangle GetBoundaries(List<Node2D> source)
+        private Rectangle GetBoundaries(List<DeloneNode2D> source)
         {
             var xMax = source.Select(p => p.Position._x).Max();
             var xMin = source.Select(p => p.Position._x).Min();
@@ -302,18 +302,18 @@ namespace ModelController.MeshObjsCreator
             return new Rectangle(xMin, xMax, yMin, yMax);
         }
 
-        private IEnumerable<Node2D> MapPoints(List<Node2D> source, Rectangle rectangle)
+        private IEnumerable<DeloneNode2D> MapPoints(List<DeloneNode2D> source, Rectangle rectangle)
         {
             var largestDimension = Math.Max(rectangle.Height, rectangle.Width);
             var scale = 100f;
-            return source.Select(p => new Node2D(p.Number, new Point2D(
+            return source.Select(p => new DeloneNode2D(p.Number, new Point2D(
                 scale * (p.Position._x - rectangle.Left) / largestDimension,
                 scale * (p.Position._y - rectangle.Bottom) / largestDimension)));
         }
 
-        private IEnumerable<Node2D> ConvertToLocalPlaneCoordinates(IEnumerable<Node> source)
+        private IEnumerable<DeloneNode2D> ConvertToLocalPlaneCoordinates(IEnumerable<Node> source)
         {
-            return source.Select(node => new Node2D(node.Number, new Point2D(node.Position._x, node.Position._y)));
+            return source.Select(node => new DeloneNode2D(node.Number, new Point2D(node.Position._x, node.Position._y)));
         }
     }
 }

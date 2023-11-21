@@ -8,11 +8,11 @@ namespace ModelController.MeshObjsCreator
 {
     internal class Edge
     {
-        public Node2D A { get; }
+        public DeloneNode2D A { get; }
 
-        public Node2D B { get; }
+        public DeloneNode2D B { get; }
 
-        public Edge(Node2D a, Node2D b)
+        public Edge(DeloneNode2D a, DeloneNode2D b)
         {
             A = a;
             B = b;
