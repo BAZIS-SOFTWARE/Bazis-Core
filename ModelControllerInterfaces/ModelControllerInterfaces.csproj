@@ -35,6 +35,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ModelInterfaces\ModelInterfaces.csproj" />
+    <ProjectReference Include="..\Model\Model.csproj" />
   </ItemGroup>
 
 </Project>

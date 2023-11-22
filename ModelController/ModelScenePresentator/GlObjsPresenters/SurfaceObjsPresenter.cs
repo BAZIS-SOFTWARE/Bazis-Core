@@ -6,7 +6,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using ModelController.MeshObjsUtility;
 
 namespace ModelController.ModelScenePresentator.GlObjsPresenters
 {
@@ -16,7 +15,7 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
     public class SurfaceObjsPresenter : IObjsPresenter
     {
         IEnumerable<ISurfaceObject> surfaceElements;
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public PresenterType PresenterType { get; } = PresenterType.Surface;
 
@@ -29,10 +28,10 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
             this.surfaceElements = surfaceElements;
         }
 
-        
-/// <inheritdoc/>
 
-        public Tuple<int, int, int,int> CreateIndexes()
+        /// <inheritdoc/>
+
+        public Tuple<int, int, int, int> CreateIndexes()
         {
             var pointers = 0;
             var vertexes = 0;
@@ -41,7 +40,7 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
 
             foreach (var surfaceObj in surfaceElements)
             {
-                if(surfaceObj.ViewState)
+                if (surfaceObj.ViewState)
                     foreach (var surface in surfaceObj.GetSurface())
                     {
                         if (surface.ViewState)
@@ -55,9 +54,9 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
             }
 
 
-            return new Tuple<int, int, int,int>(pointers, vertexes, colors, edges);
+            return new Tuple<int, int, int, int>(pointers, vertexes, colors, edges);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public int[] CreatePointers(int indexLength)
         {
@@ -85,9 +84,9 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
 
             return ptr;
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
-        public float[] CreateVertexes(int vertexLength,string vertexType)
+        public float[] CreateVertexes(int vertexLength, string vertexType)
         {
             var vertexArray = new float[vertexLength];
             var stride = 0;
@@ -98,18 +97,7 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
                 vertexCreator = new ColorSurfaceObjsCreator();
             else if (vertexType == "координаты")
                 vertexCreator = new CoordsSurfaceObjsCreator();
-            else
-            {
-                
-                if (surfaceElements.First().ObjType == "Элементы2D")
-                {
-                    var creator = new NormalsSurface2DObjsCreator();
-                    creator.SetCenter(surfaceElements);
-                    vertexCreator = creator;
-                }
-                else
-                    vertexCreator = new NormalsSurfaceObjsCreator();
-            }
+            else vertexCreator = new NormalsSurfaceObjsCreator();
 
             foreach (var surfaceElement in surfaceElements)
             {
@@ -121,7 +109,7 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
 
             return vertexArray;
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public bool[] CreateEdgeFlags(int edgesLength)
         {
@@ -129,17 +117,17 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
             var stride = 0;
 
             var vertexCreator = new EdgesSurfaceObjsCreator();
-            vertexCreator.Create(ref stride, edgesArray, surfaceElements);  
+            vertexCreator.Create(ref stride, edgesArray, surfaceElements);
             return edgesArray;
         }
 
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public int Count()
         {
             return surfaceElements.Count();
-        }    
-/// <inheritdoc/>
+        }
+        /// <inheritdoc/>
 
         public IEnumerator<IModelObject> GetEnumerator()
         {
