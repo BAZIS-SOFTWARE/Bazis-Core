@@ -1,6 +1,7 @@
 ﻿using Geometry;
 using Model;
-using Model.Interfaces;
+using Model.Elements;
+using ModelInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;

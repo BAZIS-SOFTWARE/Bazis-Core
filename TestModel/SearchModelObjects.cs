@@ -1,8 +1,9 @@
 ﻿using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
-using Model.Interfaces;
-using Model.ObjectsFinders;
+using Model.Elements;
+using ModelInterfaces;
+using ModelInterfaces.ObjectsFinders;
 
 namespace TestModel
 {
@@ -22,11 +23,11 @@ namespace TestModel
             };
             var objs = new Model.ModelObject[]
             {
-                new Element3D( 4,nodes, ObjKind.Tetra),
-                new Element3D(5,nodes,  ObjKind.Tetra),
-                new Element3D( 6,nodes, ObjKind.Tetra),
-                new Element3D(7,nodes,  ObjKind.Tetra),
-                new Element3D(8,nodes,  ObjKind.Tetra)
+                new Tetra( 4,nodes),
+                new Tetra(5,nodes),
+                new Tetra( 6,nodes),
+                new Tetra(7,nodes),
+                new Tetra(8,nodes)
             };
 
             var model = new ModelData();

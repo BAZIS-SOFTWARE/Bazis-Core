@@ -4,6 +4,7 @@ using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using ModelController.ModelScenePresentator;
+using ModelInterfaces;
 
 namespace TestModel
 {
@@ -24,7 +25,7 @@ namespace TestModel
                     new Node(2,new Point3D(0.3650039f , 0 , 0.6349962f)),
                     new Node(1,new Point3D(0.3650039f, 0.6349962f , 0))
                 },
-                Model.Interfaces.ObjKind.ElementSurface,Color.Orange)
+                ObjKind.ElementSurface,Color.Orange)
             };
 
             var model = new ModelData();
@@ -58,7 +59,7 @@ namespace TestModel
                     new Node(2,new Point3D(0.3650039f , 0 , 0.6349962f)),
                     new Node(3,new Point3D(0 , 0 , 1))
                 },
-                Model.Interfaces.ObjKind.ElementSurface,Color.Orange),
+                ObjKind.ElementSurface,Color.Orange),
                 new Surface(1,
                 new Node[]
                 {
@@ -67,7 +68,7 @@ namespace TestModel
                     new Node(2,new Point3D(0.6829777f , 0 , 0.3170223f)),
                     new Node(3,new Point3D(0.3650039f , 0 , 0.6349962f)),
                 },
-                Model.Interfaces.ObjKind.ElementSurface,Color.Red),
+                ObjKind.ElementSurface,Color.Red),
                 new Surface(2,
                 new Node[]
                 {
@@ -75,7 +76,7 @@ namespace TestModel
                     new Node(1,new Point3D(1 , 0 , 0)),
                     new Node(2,new Point3D(0.6829777f , 0 , 0.3170223f)),
                 },
-                Model.Interfaces.ObjKind.ElementSurface,Color.Orange)
+                ObjKind.ElementSurface,Color.Orange)
 
             };
             var model = new ModelData();

@@ -1,10 +1,13 @@
 ﻿using Model;
+using Model.Elements;
 using ModelControllerInterfaces;
+using ModelInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace ModelController.MeshObjsCreator
 {
@@ -19,15 +22,31 @@ namespace ModelController.MeshObjsCreator
         /// <param name="StartNumber"></param>
         /// <param name="elements"></param>
         /// <returns></returns>
-        public IEnumerable<Element2D> Create(int StartNumber, Element3D[] elements)
+        public IEnumerable<IElement2D> Create(int StartNumber, IElement3D[] elements)
         {
             var surfaces = FindOpenSurfaces(elements);
 
             foreach (var surface in surfaces)
             {
-                var nodes = surface.GetNodes().ToArray();
-                if (nodes.Length == 3)
-                    yield return new Element2D(StartNumber,nodes, Model.Interfaces.ObjKind.Triangle);
+                if(surface.GetNodes().Count() == 3)
+                {
+                    var n0 = new Node(surface[0].Number, surface[0].Position);
+                    var n1 = new Node(surface[1].Number, surface[1].Position);
+                    var n2 = new Node(surface[2].Number, surface[2].Position);
+
+                    yield return new Triangle(StartNumber, new Node[] { n0,n1,n2 });
+                }
+                else
+                {
+                    var n0 = new Node(surface[0].Number, surface[0].Position);
+                    var n1 = new Node(surface[1].Number, surface[1].Position);
+                    var n2 = new Node(surface[2].Number, surface[2].Position);
+                    var n3 = new Node(surface[3].Number, surface[3].Position);
+
+                    yield return new Quad(StartNumber, new Node[] { n0, n1, n2,n3 });
+                }
+
+ 
                 StartNumber++;
             }
         }
@@ -35,9 +54,9 @@ namespace ModelController.MeshObjsCreator
         /// FindOpenSurfaces
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Surface> FindOpenSurfaces(Element3D[] elements)
+        public IEnumerable<ISurface> FindOpenSurfaces(IElement3D[] elements)
         {
-            var surfDict = new Dictionary<string, List<Surface>>();
+            var surfDict = new Dictionary<string, List<ISurface>>();
 
             foreach (var element in elements)
             {
@@ -50,7 +69,7 @@ namespace ModelController.MeshObjsCreator
                     var surfInd = string.Join("",numbers);
 
                     if (!surfDict.ContainsKey(surfInd))
-                        surfDict.Add(surfInd, new List<Surface>() { surface });
+                        surfDict.Add(surfInd, new List<ISurface>() { surface });
                     else surfDict[surfInd].Add(surface);
                 }
             }

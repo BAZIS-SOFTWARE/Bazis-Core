@@ -7,9 +7,10 @@ using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using Model.Events;
-using Model.Interfaces;
+using ModelInterfaces;
 using ModelController.MeshObjsUtility;
 using Model.IO;
+using Model.Elements;
 
 namespace TestModel
 {
@@ -18,8 +19,7 @@ namespace TestModel
     {
         private ObjectsData objectsData;
 
-        [TestInitialize]
-        public void Setup()
+        private void LoadModel()
         {
             var A = new Node(1, new Point3D(0, 0, 0));
             var B = new Node(2, new Point3D(0, 0, 1));
@@ -31,12 +31,12 @@ namespace TestModel
             var H = new Node(8, new Point3D(-0.5f, 3.5f, 0));
             var elements = new List<Element2D>
             {
-                new Element2D(9, new Node[] { A, B, C }, ObjKind.Triangle),
-                new Element2D(10, new Node[] { B, C, D }, ObjKind.Triangle),
-                new Element2D(11, new Node[] { D, C, E }, ObjKind.Triangle),
-                new Element2D(12, new Node[] { E, D, G }, ObjKind.Triangle),
-                new Element2D(13, new Node[] { E, F, G }, ObjKind.Triangle),
-                new Element2D(14, new Node[] { F, G, H }, ObjKind.Triangle),
+                new Triangle(9, new Node[] { A, B, C }),
+                new Triangle(10, new Node[] { B, C, D }),
+                new Triangle(11, new Node[] { D, C, E }),
+                new Triangle(12, new Node[] { E, D, G }),
+                new Triangle(13, new Node[] { E, F, G }),
+                new Triangle(14, new Node[] { F, G, H }),
             };
             var nodes = new List<Node> { A, B, C, D, E, F, G, H };
             objectsData = new ObjectsData();
@@ -49,14 +49,11 @@ namespace TestModel
         {
             //assing
             var model = new ModelData();
-            var loader = new LoadModelFromProjectTextFile();
-            loader.LoadEvent += (ar1, ar2) => { };
+
             //act
-            var modelINP = loader.Load(@"C:\Projs\TestProjTerm\Cub\cub_unsorted_freeNodes.bpf");
-            model.Load(modelINP);
+            model.Load(@"C:\Projs\TestProjTerm\Cub\cub_unsorted_freeNodes.bpf");
 
             var freeNodesFinder = new FreeNodesFinder(model.ObjectData);
-
             var freeNodes = freeNodesFinder.Find<Element>();
 
             //assert
@@ -71,6 +68,7 @@ namespace TestModel
         [DataRow(19, 1, 3, new int[] { 1, 3, 5, 6, 8 })]
         public void FindNodesInDirection(float angle, int first, int second, int[] expected)
         {
+            LoadModel();
             var selector = new SelectionHelper(objectsData);
             var actual = selector.SelectInDirection<Element2D>(angle, first, second, Color.Green);
             Assert.IsTrue(actual.SequenceEqual(expected)); 
@@ -79,6 +77,7 @@ namespace TestModel
         [TestMethod]
         public void SelectCorrectElements1()
         {
+            LoadModel();
             var selector = new SelectionHelper(objectsData);
             var selectedElementNumbers = selector.SelectInPlane<Element2D>(19, 9, Color.Green);
             var expected = new List<int>() { 9, 10, 11, 12, 13, 14 };
@@ -88,6 +87,7 @@ namespace TestModel
         [TestMethod]
         public void SelectCorrectElements2()
         {
+            LoadModel();
             var selector = new SelectionHelper(objectsData);
             var selectedElementNumbers = selector.SelectInPlane<Element2D>(18, 9, Color.Green);
             var expected = new List<int>() { 9, 10, 11, 12, 13 };
@@ -99,13 +99,12 @@ namespace TestModel
         {
             //assing
             var model = new ModelData();
-            var loader = new LoadModelFromASCIITextFile();
+            model.Loader = new LoadModelFromASCIITextFile();
 
-            loader.LoadEvent += Model_LoadEvent;
-            var modelLoaded = loader.Load(@"..\..\..\TestModel\Examples\VIsual-Mesh\rhombDATA1.ASC");
-            model.Load(modelLoaded);
+            model.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
+
             //act
-            var elements = model.ObjectData.FindMany<Element3D>().ToArray();
+            var elements = model.ObjectData.FindMany<IElement3D>();
             var nodes = model.ObjectData.FindMany<Node>();
 
             var interNodesFinder = new InterfacedNodesFinder();
@@ -122,24 +121,16 @@ namespace TestModel
         {
             //assing
             var model = new ModelData();
-            var loaderGMSH = new LoadModelFromGMSHTextFile();
+            model.Loader = new LoadModelFromGMSHTextFile();
 
-
-            loaderGMSH.LoadEvent += Model_LoadEvent;
             //act
-            var modelGMSH = loaderGMSH.Load(@"C:\Projs\TestProjTerm\box\box1.inp");
-            model.Load(modelGMSH);
+            model.Load(@"C:\Projs\TestProjTerm\box\box1.inp");
+            model.Save(@"C:\Projs\TestProjTerm\box\task_1.bpf");
 
-            var saver = new SaveModelToProjectTextFile();
-            saver.SaveEvent += Model_SaveEvent;
-            saver.Save(model,@"C:\Projs\TestProjTerm\box\task_1.bpf");
+            model.Loader = new LoadModelFromProjectTextFile();
+            model.Load(@"C:\Projs\TestProjTerm\box\task_1.bpf");
 
-            var loaderBPF = new LoadModelFromProjectTextFile();
-            loaderBPF.LoadEvent += Model_LoadEvent;
-            var modelBPF = loaderBPF.Load(@"C:\Projs\TestProjTerm\box\task_1.bpf");
-            model.Load(modelBPF);
-
-            var els3D = model.ObjectData.FindMany<Element3D>();
+            var els3D = model.ObjectData.FindMany<IElement3D>();
             var els2D = model.ObjectData.FindMany<Element2D>();
 
             var interNodesEls3DFinder = new InterfacedNodesFinder();
@@ -161,10 +152,26 @@ namespace TestModel
             //throw new NotImplementedException();
         }
 
-
-        private void Model_LoadEvent(object arg1, LoaderEventArgs arg2)
+        [DataTestMethod]
+        [DataRow(1)]
+        [DataRow(0)]
+        [DataRow(2)]
+        public void TestRemoveSomeNodes(int objNumber)
         {
-            //throw new NotImplementedException();
+            //assing
+            var model = new ModelData();
+            model.Loader = new LoadModelFromASCIITextFile();
+
+            model.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
+
+            //act
+            model.ObjectData[objNumber].ExistState = false;
+            model.ObjectData.ClearRemoved();
+
+            //assert
+            var res = model.ObjectData.Find(objNumber);
+            if (res != null)
+                throw new Exception();
         }
 
         [TestMethod]
@@ -172,11 +179,10 @@ namespace TestModel
         {
             //assing
             var model = new ModelData();
-            var loaderGMSH = new LoadModelFromProjectTextFile();
-            loaderGMSH.LoadEvent += Model_LoadEvent;
+
             //act
-            var modelGMSH = loaderGMSH.Load(@"C:\Projs\ENERGOMASH\CALC\proj_new.bpf");
-            model.Load(modelGMSH);
+            model.Load(@"C:\Projs\ENERGOMASH\CALC\proj_new.bpf");
+
             model.ObjectData.RemoveRange("Элементы2D");
             model.ObjectData.ClearRemoved();
 
@@ -191,12 +197,10 @@ namespace TestModel
         {
             //assing
             var model = new ModelData();
-            var loader = new LoadModelFromProjectTextFile();
-            loader.LoadEvent += (ar1, ar2) => { };
+
             //act
             //var modelBPF = loader.Load(@"C:\Projs\ExampleMesh\Tube.inp");
-            var modelBPF = loader.Load(@"C:\Projs\ExampleMesh\Tube_3d_only.bpf");
-            model.Load(modelBPF);
+            model.Load(@"C:\Projs\ExampleMesh\Tube_3d_only.bpf");
 
             var finder = new FindCoincidentObjects(model.ObjectData, 0.01f);
 
@@ -254,14 +258,12 @@ namespace TestModel
         {
             //assing
             var model = new ModelData();
-            var loader = new LoadModelFromASCIITextFile();
+            model.Loader = new LoadModelFromASCIITextFile();
 
-            loader.LoadEvent += Model_LoadEvent;
-            var modelASCII = loader.Load(@"..\..\..\TestModel\Examples\VIsual-Mesh\rhombDATA1.ASC");
-            model.Load(modelASCII);
+            model.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
 
             //act
-            var elements = model.ObjectData.FindMany<Element3D>();
+            var elements = model.ObjectData.FindMany<IElement3D>();
 
             //assert
             var openSurfNodes = new List<int>();

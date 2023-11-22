@@ -2,18 +2,19 @@
 using System.IO;
 using System.Linq;
 using Geometry;
-using Model.Interfaces;
+using ModelInterfaces;
 using System.Globalization;
 using System.Collections.Generic;
 using Model.GroupsData;
 using Model.Events;
-using Model.ObjectsFinders;
+using ModelInterfaces.ObjectsFinders;
+using Model.Elements;
 
 namespace Model.IO
 {
     public class LoadModelFromGMSHTextFile : IModelLoader
     {
-        public event Action<object, LoaderEventArgs> LoadEvent;
+        public event Action<object, ILoaderEventArgs> LoadEvent;
 
         private ModelData newMesh;
         private Dictionary<int, int> dict;
@@ -29,18 +30,18 @@ namespace Model.IO
             nextElementFlags = new string[3] { "*ELEMENT", "*ELSET", "*NSET" };
         }
 
-        public ModelData Load(string path)
+        public IModelData Load(string path)
         {
             using (reader = new StreamReader(path))
             {
-                LoadEvent(this, new LoaderEventArgs("Начало загрузки модели"));
+                LoadEvent?.Invoke(this, new LoaderEventArgs("Начало загрузки модели"));
                 while (!reader.EndOfStream)
                 {
                     var line = reader.ReadLine();
                     if (line.Contains("*NODE"))
                     {
                         line = reader.ReadLine();
-                        LoadEvent(this, new LoaderEventArgs("Начало загрузки узлов"));
+                        LoadEvent?.Invoke(this, new LoaderEventArgs("Начало загрузки узлов"));
                         while (line != "******* E L E M E N T S *************")
                         {
                             var tokens = line.Replace(" ", "")
@@ -58,7 +59,7 @@ namespace Model.IO
                     }
                     if (line.Contains("type=T3D2"))
                     {
-                        LoadEvent(this, new LoaderEventArgs("Начало загрузки элементов"));
+                        LoadEvent?.Invoke(this, new LoaderEventArgs("Начало загрузки элементов"));
                         line = reader.ReadLine();
                         CreateElements("type=T3D2", line, "*ELSET");
                     }
@@ -76,10 +77,10 @@ namespace Model.IO
             }
             switch(elementType)
             {
-                case "type=T3D2": return new Element1D(currentNumber, nodeArr, ObjKind.Beam);
-                case "type=CPS3": return new Element2D(currentNumber, nodeArr, ObjKind.Triangle);
-                case "type=CPS4": return new Element2D(currentNumber, nodeArr, ObjKind.Quad);
-                case "type=C3D4": return new Element3D(currentNumber, nodeArr, ObjKind.Tetra);
+                case "type=T3D2": return new Beam(currentNumber, nodeArr);
+                case "type=CPS3": return new Triangle(currentNumber, nodeArr);
+                case "type=CPS4": return new Quad(currentNumber, nodeArr);
+                case "type=C3D4": return new Tetra(currentNumber, nodeArr);
                 default: throw new Exception($"Unknown element type with {selectedNodesId.Length} nodes");
             };
         }

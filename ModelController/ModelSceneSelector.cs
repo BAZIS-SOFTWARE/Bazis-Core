@@ -1,24 +1,19 @@
 ﻿using Geometry;
-using Model;
-using Model.Interfaces;
-using System;
+using ModelInterfaces;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ModelController
 {
     public class ModelSceneSelector
     {
-        Model.Interfaces.IModelObject[] modelObjects;
+        IModelObject[] modelObjects;
 
         public string ObjsType {get;}
 
         public int NumberOfObjects { get { return modelObjects.Length; } }
 
-        public ModelSceneSelector(Model.Interfaces.IModelObject[] modelObjects, string objsType)
+        public ModelSceneSelector(IModelObject[] modelObjects, string objsType)
         {
             this.modelObjects = modelObjects;
             ObjsType = objsType;

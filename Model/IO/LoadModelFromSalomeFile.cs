@@ -1,9 +1,9 @@
 ﻿using Geometry;
+using Model.Elements;
 using Model.Events;
-using Model.Interfaces;
+using ModelInterfaces;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -12,9 +12,9 @@ namespace Model.IO
 {
     public class LoadModelFromSalomeFile : IModelLoader
     {
-        public event Action<object, LoaderEventArgs> LoadEvent;
+        public event Action<object, ILoaderEventArgs> LoadEvent;
 
-        public ModelData Load(string path)
+        public IModelData Load(string path)
         {
             var modelData = new ModelData();
             using (var reader = new StreamReader(path))
@@ -71,11 +71,11 @@ namespace Model.IO
         {
             switch (elementType)
             {
-                case "102": return new Element1D(elementIndex, nodes.ToArray(), ObjKind.Beam);
-                case "203": return new Element2D(elementIndex, nodes.ToArray(), ObjKind.Triangle);
-                case "204": return new Element2D(elementIndex, nodes.ToArray(), ObjKind.Quad);
-                case "304": return new Element3D(elementIndex, nodes.ToArray(), ObjKind.Tetra);
-                case "308": return new Element3D(elementIndex, nodes.ToArray(), ObjKind.Hexa);
+                case "102": return new Beam(elementIndex, nodes.ToArray());
+                case "203": return new Triangle(elementIndex, nodes.ToArray());
+                case "204": return new Quad(elementIndex, nodes.ToArray());
+                case "304": return new Tetra(elementIndex, nodes.ToArray());
+                case "308": return new Hexa(elementIndex, nodes.ToArray());
                 default: throw new ArgumentException($"Unable to recognize element {elementType}");
             }
         }

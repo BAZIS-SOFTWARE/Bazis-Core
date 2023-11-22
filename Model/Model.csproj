@@ -11,7 +11,7 @@
     <AssemblyOriginatorKeyFile>ModelKey.snk</AssemblyOriginatorKeyFile>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>Model</Title>
-    <Version>1.0.9.31</Version>
+    <Version>1.0.9.54</Version>
     <Company>BAZIS SOFTWARE</Company>
     <Product>BAZIS</Product>
     <Description>Contains basic mesh oblects and geometry classes</Description>
@@ -22,10 +22,13 @@
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
   </PropertyGroup> 
   <ItemGroup>
+    <EmbeddedResource Remove="Interfaces\**" />
+    <None Remove="Interfaces\**" />
+  </ItemGroup> 
+  <ItemGroup>
     <Compile Include="Events\LoaderEventArgs.cs" />
     <Compile Include="Events\SaverEventArgs.cs" />
-    <Compile Include="Interfaces\IModelLoader.cs" />
-    <Compile Include="Interfaces\IModelSaver.cs" />
+    <Compile Include="Elements\Hexa.cs" />
     <Compile Include="IO\LoadModelFromProjectTextFile.cs" />
     <Compile Include="IO\SaveModelToProjectTextFile.cs" />
     <Compile Include="IO\LoadModelFromASCIITextFile.cs" />
@@ -34,43 +37,32 @@
     <Compile Include="IO\LoadModelFromSalomeFile.cs" />
     <Compile Include="IO\LoadModelFromSTLFile.cs" />
     <Compile Include="IO\SaveModelToASCIITextFile.cs" />
-    <Compile Include="ObjectsFinders\ByNumberFinder.cs" />
-    <Compile Include="ObjectsSorters\DistanceSorter.cs" />
-    <Compile Include="ObjectsSorters\NodeSorter.cs" />
-    <Compile Include="ObjectsComparers\ComparerBySqCoords.cs" />
-    <Compile Include="ObjectsComparers\EqualityComparerByCentralPoint.cs" />
-    <Compile Include="ObjectsComparers\EqualityComparerByNumber.cs" />
-    <Compile Include="ObjectsComparers\EqualityComparerByExistState.cs" />
-    <Compile Include="Element1D.cs" />
-    <Compile Include="ObjectsComparers\EqualityComparerBySurface.cs" />
+    <Compile Include="Elements\Beam.cs" />
     <Compile Include="GroupsData\Group.cs" />
     <Compile Include="GroupsData\CompareGroupsByName.cs" />
     <Compile Include="GroupsData\GroupData.cs" />
-    <Compile Include="Interfaces\IElement.cs" />
-    <Compile Include="Interfaces\IElement2D.cs" />
-    <Compile Include="Interfaces\IElement3D.cs" />
-    <Compile Include="Interfaces\ILineObject.cs" />
-    <Compile Include="Interfaces\IModelObject.cs" />
-    <Compile Include="Interfaces\INodeObject.cs" />
-    <Compile Include="Interfaces\ISurface.cs" />
-    <Compile Include="Interfaces\ISurfaceElement.cs" />
-    <Compile Include="Interfaces\ISurfaceObject.cs" />
     <Compile Include="ModelData.cs" />
     <Compile Include="ModelObject.cs" />
     <Compile Include="Line.cs" />
-    <Compile Include="Element.cs" />
-    <Compile Include="Element2D.cs" />
-    <Compile Include="Element3D.cs" />
+    <Compile Include="Elements\Element.cs" />
+    <Compile Include="Elements\Element2D.cs" />
+    <Compile Include="Elements\Element3D.cs" />
     <Compile Include="Node.cs" />
+    <Compile Include="Elements\Penta.cs" />
+    <Compile Include="Elements\Quad.cs" />
+    <Compile Include="SurfaceFinder.cs" />
     <Compile Include="ObjectsData.cs" />
-    <Compile Include="ObjectsSorters.cs" />
     <Compile Include="Surface.cs" />
-    <Compile Include="SurfaceElement.cs" />
+    <Compile Include="Elements\Tetra.cs" />
+    <Compile Include="Elements\Triangle.cs" />
   </ItemGroup> 
   <ItemGroup>
     <PackageReference Include="Functions" Version="1.0.2.43" />
-    <PackageReference Include="Geometry" Version="2.0.7.8" />
+    <PackageReference Include="Geometry" Version="2.0.7.20" />
     <PackageReference Include="MathNet.Numerics.Signed" Version="5.0.0" />
+  </ItemGroup> 
+  <ItemGroup>
+    <ProjectReference Include="..\ModelInterfaces\ModelInterfaces.csproj" />
   </ItemGroup> 
   <ItemGroup>
     <None Update="Icon.png">

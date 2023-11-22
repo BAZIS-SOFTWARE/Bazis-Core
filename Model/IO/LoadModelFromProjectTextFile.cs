@@ -1,6 +1,4 @@
-﻿using Model;
-using Model.GroupsData;
-using Model.Interfaces;
+﻿using Model.GroupsData;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -9,53 +7,60 @@ using System.Linq;
 using System.Threading;
 using Geometry;
 using Model.Events;
-using Model.ObjectsFinders;
+using ModelInterfaces;
+using ModelInterfaces.ObjectsFinders;
+using Model.Elements;
 
 namespace Model.IO
 {
+    /// <summary>
+    /// LoadModelFromProjectTextFile
+    /// </summary>
     public class LoadModelFromProjectTextFile : IModelLoader
     {
-        public event Action<object, LoaderEventArgs> LoadEvent;
+        public event Action<object, ILoaderEventArgs> LoadEvent;
 
-        public ModelData Load(string path)
+        public IModelData Load(string path)
         {
-            var sr = new StreamReader(path);
+            using (var sr = new StreamReader(path))
+            {
+                var newModel = new ModelData();
+                var nodes = new List<Node>();
+                var line = string.Empty;
 
-            var newModel = new ModelData();
-            var nodes = new List<Node>();
-            var line = string.Empty;
-
-            while (!sr.EndOfStream)
-            {               
-
-                if (line == "Узлы")
+                while (!sr.EndOfStream)
                 {
-                    LoadEvent(this, new LoaderEventArgs("Загрузка узлов..."));
-                    Thread.Sleep(100);
-                    LoadNodes(sr, newModel, nodes);
-                }
-                if (line == "Элементы 3004" | line == "Элементы 2003" |
-                    line == "Элементы3D" | line == "Элементы2D" | 
-                    line == "Элементы1D")
-                {
-                    LoadEvent(this, new LoaderEventArgs("Загрузка элементов..."));
-                    Thread.Sleep(100);
-                    LoadElement(sr, line, newModel);
+
+                    if (line == "Узлы")
+                    {
+                        LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка узлов..."));
+                        Thread.Sleep(100);
+                        LoadNodes(sr, newModel, nodes);
+                    }
+                    if (line == "Элементы 3004" | line == "Элементы 2003" |
+                        line == "Элементы3D" | line == "Элементы2D" |
+                        line == "Элементы1D")
+                    {
+                        LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка элементов..."));
+                        Thread.Sleep(100);
+                        LoadElement(sr, line, newModel);
+                    }
+
+                    if (line == "Группы узлов и элементов")
+                    {
+                        LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка групп..."));
+                        Thread.Sleep(100);
+                        LoadGroup(sr, newModel);
+                    }
+                    line = sr.ReadLine();
                 }
 
-                if (line == "Группы узлов и элементов")
-                {
-                    LoadEvent(this, new LoaderEventArgs("Загрузка групп..."));
-                    Thread.Sleep(100);
-                    LoadGroup(sr, newModel);
-                }
-                line = sr.ReadLine();
+                LoadEvent?.Invoke(this, new LoaderEventArgs("Модель загружена"));
+                Thread.Sleep(100);
+                return newModel;
             }
+             
 
-            LoadEvent(this, new LoaderEventArgs("Модель загружена"));
-            Thread.Sleep(100);
-            sr.Dispose();
-            return newModel;
         }
 
         private static void LoadNodes(StreamReader sr, ModelData newMesh, List<Node> nodes)
@@ -111,7 +116,7 @@ namespace Model.IO
                         objKind = ObjKind.Tetra;
                     else objKind = ObjKind.Hexa;
 
-                    var el3DObj = new Element3D(elNumber, nodeList.ToArray(), objKind);
+                    var el3DObj = new Tetra(elNumber, nodeList.ToArray());
                     newMesh.ObjectData.Add(el3DObj);
                 }
 
@@ -122,7 +127,7 @@ namespace Model.IO
                         objKind = ObjKind.Triangle;
                     else objKind = ObjKind.Quad;
 
-                    var el2DObj = new Element2D(elNumber, nodeList.ToArray(), objKind);
+                    var el2DObj = new Triangle(elNumber, nodeList.ToArray());
                     newMesh.ObjectData.Add(el2DObj);
                 }
                 //number++;
@@ -152,17 +157,17 @@ namespace Model.IO
                 }
                 if (splitLine[0] == "Группа элементов 3D ")
                 {
-                    LoadElemGroup(newMesh, ObjKind.Tetra, line);
+                    LoadElemGroup(newMesh, "Элементы3D", line);
                 }
                 if (splitLine[0] == "Группа элементов 2D ")
                 {
-                    LoadElemGroup(newMesh, ObjKind.Triangle, line);
+                    LoadElemGroup(newMesh, "Элементы2D", line);
                 }
                 line = sr.ReadLine();
             }
         }
 
-        private static void LoadElemGroup(ModelData newMesh, ObjKind objType, string line)
+        private static void LoadElemGroup(ModelData newMesh, string objType, string line)
         {
             var splitLine = line.Split(':');
             var name = splitLine[1].Split(' ')[1];

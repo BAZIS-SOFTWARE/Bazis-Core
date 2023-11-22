@@ -2,10 +2,11 @@ using ModelController.MeshObjsUtility;
 using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
-using Model.Interfaces;
+using ModelInterfaces;
 using Model.IO;
 using System.Collections.Generic;
 using System.Linq;
+using Model.Elements;
 
 namespace TestModel
 {
@@ -22,13 +23,13 @@ namespace TestModel
             tetraLoader.LoadEvent += (arg1, arg2) => { };
             var modelTetraData = tetraLoader.Load(@"..\..\..\Examples\CDB\tetra.cdb");
             var modelTetraNodes = modelTetraData.ObjectData.FindMany<Node>().ToArray();
-            tetra = new Element3D(1, modelTetraNodes, ObjKind.Tetra);
+            tetra = new Tetra(1, modelTetraNodes);
 
             var hexLoader = new LoadModelFromCDBTextFile();
             hexLoader.LoadEvent += (arg1, arg2) => { };
             var modelHexData = hexLoader.Load(@"..\..\..\Examples\CDB\hex.cdb");
             var modelHexNodes = modelHexData.ObjectData.FindMany<Node>().ToArray();
-            hex = new Element3D(1, modelHexNodes, ObjKind.Hexa);
+            hex = new Tetra(1, modelHexNodes);
         }
 
         public bool CheckSetEquality<T>(IEnumerable<T> set1, IEnumerable<T> set2)
@@ -114,7 +115,7 @@ namespace TestModel
                 new Node(3, new Point3D(-20, 203, -11)),
                 new Node(4, new Point3D(-41, 198, 0)),
             };
-            var model = new Element3D(1, nodes, ObjKind.Tetra);
+            var model = new Tetra(1, nodes);
             var crossSection = new CrossSection();
             var section = crossSection.GetSectionSurfaces(new List<Element3D> { model }, plane);
             var triangleNodes = section.Values.First().GetPoints();

@@ -1,6 +1,7 @@
 ﻿using Geometry;
+using Model.Elements;
 using Model.Events;
-using Model.Interfaces;
+using ModelInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -12,7 +13,7 @@ namespace Model.IO
 {
     public class LoadModelFromCDBTextFile : IModelLoader
     {
-        public event Action<object, LoaderEventArgs> LoadEvent;
+        public event Action<object, ILoaderEventArgs> LoadEvent;
         private const string NODE_BLOCK = "NBLOCK";
         private const string ELEMENTS_BLOCK = "EBLOCK";
         private const int OFFSET_TO_READ_NODES = 11;
@@ -22,12 +23,12 @@ namespace Model.IO
         /// <summary>
         /// Загрузить модель из файла формата .cdb по указанному пути
         /// </summary>
-        public ModelData Load(string path)
+        public IModelData Load(string path)
         {
             var model = new ModelData();
             using (var reader = new StreamReader(path))
             {
-                LoadEvent(this, new LoaderEventArgs("Начало загрузки модели"));
+                LoadEvent?.Invoke(this, new LoaderEventArgs("Начало загрузки модели"));
                 while (!reader.EndOfStream)
                 {
                     var line = reader.ReadLine();
@@ -37,13 +38,13 @@ namespace Model.IO
                             .ToArray();
                     if (line.Contains(NODE_BLOCK))
                     {
-                        LoadEvent(this, new LoaderEventArgs("Начало загрузки узлов"));
+                        LoadEvent?.Invoke(this, new LoaderEventArgs("Начало загрузки узлов"));
                         var nodes = ReadNodes(reader, tokens).ToList();
                         model.ObjectData.AddRange(nodes);
                     }
                     if (line.Contains(ELEMENTS_BLOCK))
                     {
-                        LoadEvent(this, new LoaderEventArgs("Начало загрузки элементов"));
+                        LoadEvent?.Invoke(this, new LoaderEventArgs("Начало загрузки элементов"));
                         var elements = ReadElements(reader, tokens);
                         model.ObjectData.AddRange(elements);
                     }
@@ -108,9 +109,9 @@ namespace Model.IO
             var nodes = elementNodes.Select(i => allNodes[i]).ToArray();
             switch (elementNodes.Length)
             {
-                case 4: return new Element3D(elementNumber, nodes, ObjKind.Tetra);
-                case 6: return new Element3D(elementNumber, nodes, ObjKind.Penta);
-                case 8: return new Element3D(elementNumber, nodes, ObjKind.Hexa);
+                case 4: return new Tetra(elementNumber, nodes);
+                case 6: return new Penta(elementNumber, nodes);
+                case 8: return new Hexa(elementNumber, nodes);
                 default: throw new Exception($"Unable to recognize element with {elementNodes.Length} nodes");
             }
         }

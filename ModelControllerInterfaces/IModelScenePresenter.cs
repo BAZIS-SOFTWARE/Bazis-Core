@@ -1,6 +1,4 @@
-﻿using Model;
-using Model.Interfaces;
-using System;
+﻿using ModelInterfaces;
 using System.Collections.Generic;
 
 namespace ModelControllerInterfaces

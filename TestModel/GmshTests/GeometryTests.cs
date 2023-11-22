@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 using GmshApi.GmshController;
-using Model.Interfaces;
+using ModelInterfaces;
 using System;
 using System.Collections.Generic;
 

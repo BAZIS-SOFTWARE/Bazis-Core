@@ -1,11 +1,12 @@
 ﻿using Model;
-using Model.Interfaces;
+using ModelInterfaces;
 using ModelController.ModelScenePresentator.GlObjsPresenters;
 using ModelControllerInterfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Model.Elements;
 
 namespace ModelController.ModelScenePresentator
 {
@@ -47,7 +48,7 @@ namespace ModelController.ModelScenePresentator
         /// ModelScenePresentator
         /// </summary>
         /// <param name="objectsData"></param>
-        public ModelScenePresentator(ObjectsData objectsData) : this()
+        public ModelScenePresentator(IObjectsData objectsData) : this()
         {
             var objsTypes = objectsData.GetObjectTypes();
 
@@ -60,7 +61,7 @@ namespace ModelController.ModelScenePresentator
                         presentors.Add(objsType, pointsPresentor);
                         break;
                     case "Элементы1D":
-                        var els1dPresentor = CreateLineObjectsPresenter(objectsData.FindMany<Element1D>());
+                        var els1dPresentor = CreateLineObjectsPresenter(objectsData.FindMany<Beam>());
                         presentors.Add(objsType, els1dPresentor);
                         break;
                     case "Линия":
@@ -87,7 +88,7 @@ namespace ModelController.ModelScenePresentator
 
         public void HideInsideSurfaces(IEnumerable<ISurfaceObject> surfaceElements)
         {
-            var surfDict = new Dictionary<string, List<Surface>>();
+            var surfDict = new Dictionary<string, List<ISurface>>();
 
             foreach (var element in surfaceElements)
             {
@@ -102,7 +103,7 @@ namespace ModelController.ModelScenePresentator
                         if (!surfDict.ContainsKey(surfInd))
                         {
                             surface.ViewState = true;
-                            surfDict.Add(surfInd, new List<Surface>() { surface });
+                            surfDict.Add(surfInd, new List<ISurface>() { surface });
                         }
 
                         else

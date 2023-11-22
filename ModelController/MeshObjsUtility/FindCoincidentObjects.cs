@@ -1,21 +1,20 @@
-﻿using Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Geometry;
 using Octree;
 using System.Numerics;
-using System.Drawing;
+using ModelInterfaces;
 
 namespace ModelController.MeshObjsUtility
 {
     public class FindCoincidentObjects
     {
         public event Action<object, float> ProgressEvent;
-        private ObjectsData objectData;
+        private IObjectsData objectData;
         private float distance;
 
-        public FindCoincidentObjects(ObjectsData objectData, float distance)
+        public FindCoincidentObjects(IObjectsData objectData, float distance)
         {
             this.objectData = objectData;
             this.distance = distance;
@@ -24,7 +23,7 @@ namespace ModelController.MeshObjsUtility
         /// <returns>
         /// Список групп элементов, находящихся на расстоянии друг от друга меньше заданного.
         /// </returns>
-        public List<List<int>> Find<T>() where T : ModelObject
+        public List<List<int>> Find<T>() where T : IModelObject
         {
             var items = objectData.FindMany<T>().ToList();
             var tree = BuildTree(items);
@@ -47,7 +46,7 @@ namespace ModelController.MeshObjsUtility
         /// Построение октодерева из списка элементов
         /// </summary>
         private PointOctree<T> BuildTree<T>(List<T> items) 
-            where T : ModelObject
+            where T : IModelObject
         {
             var initialSize = GetModelSize(items);
             var initialPosition = GetCentralPoint(items);
@@ -65,7 +64,7 @@ namespace ModelController.MeshObjsUtility
         /// с центром в заданной точке
         /// </summary>
         private List<T> RadialSearch<T>(Point3D point, float radius, PointOctree<T> tree)
-            where T : ModelObject
+            where T : IModelObject
         {
             return tree.GetNearby(new Vector3(point._x, point._y, point._z), radius)
                 .ToList();
@@ -75,7 +74,7 @@ namespace ModelController.MeshObjsUtility
         /// Вычисляет центральную точку всей модели
         /// </summary>
         private Vector3 GetCentralPoint<T>(List<T> items)
-            where T : ModelObject
+            where T : IModelObject
         {
             var points = items.Select(i => i.CalcCentralPoint());
             var x = points.Select(p => p._x).Sum() / points.Count();
@@ -88,7 +87,7 @@ namespace ModelController.MeshObjsUtility
         /// Вычисляет размер модели - диаметр сферы, которая описывает её
         /// </summary>
         private float GetModelSize<T>(List<T> items)
-            where T : ModelObject
+            where T : IModelObject
         {
             var points = items.Select(i => i.CalcCentralPoint());
             var dx = Math.Abs(points.Select(p => p._x).Max() - points.Select(p => p._x).Min());

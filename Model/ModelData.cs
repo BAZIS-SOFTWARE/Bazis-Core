@@ -1,29 +1,31 @@
 ﻿using Functions.Sort;
 using Model.GroupsData;
-using Model.Interfaces;
+using Model.IO;
+using ModelInterfaces;
 using System.Linq;
 
 namespace Model
 {
-    public class ModelData 
+    public class ModelData  : IModelData
     {
-        public ObjectsData ObjectData { get; internal set; }
-        public GroupData GroupData{ get; internal set; }
-
-        public ModelData()
-        {
-            ObjectData = new ObjectsData();
-            GroupData = new GroupData();
-        }
+        public IObjectsData ObjectData { get; set; } = new ObjectsData();
+        public IGroupData GroupData { get; set; } = new GroupData();
+        /// <inheritdoc/>
+        public IModelSaver Saver { get; set; } = new SaveModelToProjectTextFile();
+        /// <inheritdoc/>
+        public IModelLoader Loader { get; set; } = new LoadModelFromProjectTextFile();
 
         public void Clear()
         {
             ObjectData.Clear();
             GroupData.Clear();
         }      
+/// <inheritdoc/>
 
-        public void Load(ModelData modelData)
+        public void Load(string path)
         {
+            var modelData = Loader.Load(path);
+
             ObjectData = modelData.ObjectData;
             GroupData = modelData.GroupData;
 
@@ -33,8 +35,15 @@ namespace Model
             ObjectData.Clear();
             ObjectData.AddRange(list);
         }
+/// <inheritdoc/>
 
-        public void SetObjectData(ObjectsData objectData)
+        public void Save(string path)
+        {
+            Saver.Save(this, path);
+        }
+/// <inheritdoc/>
+
+        public void SetObjectData(IObjectsData objectData)
         {
             ObjectData = objectData;
         }

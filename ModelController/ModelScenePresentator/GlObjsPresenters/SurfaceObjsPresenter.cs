@@ -1,13 +1,10 @@
-﻿using Model;
-using Model.Interfaces;
-using Model.ObjectsFinders;
+﻿using ModelInterfaces;
 using ModelController.ModelScenePresentator.GlObjsVertexCreators;
 using ModelController.ModelScenePresentator.Interfaces;
 using ModelControllerInterfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using ModelController.MeshObjsUtility;
 

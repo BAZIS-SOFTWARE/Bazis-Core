@@ -1,4 +1,4 @@
-﻿using Model;
+﻿using ModelInterfaces;
 using System.Collections.Generic;
 
 namespace ModelControllerInterfaces
@@ -12,12 +12,12 @@ namespace ModelControllerInterfaces
         /// FindOpenSurfaces
         /// </summary>
         /// <returns></returns>
-        IEnumerable<Surface> FindOpenSurfaces(Element3D[] elements);
+        IEnumerable<ISurface> FindOpenSurfaces(IElement3D[] elements);
         /// <summary>
         /// Create
         /// </summary>
         /// <param name="StartNumber"></param>
         /// <returns></returns>
-        IEnumerable<Element2D> Create(int StartNumber, Element3D[] elements);
+        IEnumerable<IElement2D> Create(int StartNumber, IElement3D[] elements);
     }
 }

@@ -1,18 +1,18 @@
 ﻿using Functions.Sort;
-using Model.Interfaces;
-using Model.ObjectsComparers;
-using Model.ObjectsFinders;
+using ModelInterfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using ModelInterfaces.ObjectsComparers;
+using ModelInterfaces.ObjectsFinders;
 
 namespace Model
 {
     /// <summary>
     /// ObjectsData
     /// </summary>
-    public class ObjectsData : IList<IModelObject>
+    public class ObjectsData : IObjectsData
     {
         List<IModelObject> modelObjects;
 
@@ -76,28 +76,29 @@ namespace Model
 
         public int NumberOfNodes
         {
-            get { return FindMany<Node>().Count(); }
+            get { return FindMany<INode>().Count(); }
         }
 
         public int NumberOfVolumeElements
         {
-            get { return FindMany<Element3D>().Count(); }
+            get { return FindMany<IElement3D>().Count(); }
         }
 
         public int NumberOfLineElements
         {
-            get { return FindMany<Element1D>().Count(); }
+            get { return FindMany<IElement1D>().Count(); }
         }
 
         public int NumberOfSurfaceElements
         {
-            get { return FindMany<Element2D>().Count(); }
+            get { return FindMany<IElement2D>().Count(); }
         }
 
         public int NumberOfElements
         {
-            get { return FindMany<Element>().Count(); }
+            get { return FindMany<IElement>().Count(); }
         }       
+/// <inheritdoc/>
 
         public IEnumerable<IModelObject> FindMany(ObjKind objKind)
         {
@@ -138,11 +139,11 @@ namespace Model
         {
             return modelObjects.Remove(modelObject);
         }
+/// <inheritdoc/>
 
         public void ClearRemoved()
         {
             var removedObjs = modelObjects.Where(x => x.ExistState == false);
-
 
             var existObjects = modelObjects.Except(removedObjs, new EqualityComparerByExistState()).ToList();
             modelObjects = existObjects;

@@ -1,18 +1,20 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
-using Model.Interfaces;
+using ModelInterfaces;
 using Model.IO;
 using ModelController.ModelScenePresentator;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using Model.Elements;
 
 namespace TestModel
 {
     [TestClass]
     public class TestModelScenePresentor
     {
+
         [DataTestMethod]
         [DataRow(new float[]
         { 
@@ -50,19 +52,17 @@ namespace TestModel
             }
 
             Model.ModelObject modelObject;
-            switch (objType)
+
+            switch (objKind)
             {
-                case ObjType.Поверхности:
+                case ObjKind.Tetra:
+                    modelObject = new Tetra(0, nodes.ToArray());
+                    break;
+                case ObjKind.ElementSurface:
                     modelObject = new Surface(0, nodes.ToArray(), objKind);
                     break;
-                case ObjType.Элементы2D:
-                    modelObject = new Element2D(0, nodes.ToArray(), objKind);
-                    break;
-                case ObjType.Элементы1D:
-                    modelObject = new Element1D(0, nodes.ToArray(), objKind);
-                    break;
                 default:
-                    modelObject = new Element3D(0, nodes.ToArray(), objKind);
+                    modelObject = new Beam(0, nodes.ToArray());
                     break;
             }
 
@@ -92,6 +92,38 @@ namespace TestModel
             Assert.AreEqual(edges.Length, indsR[4]);
         }
 
+        [DataTestMethod]
+        [DataRow(new string[]
+{
+            "Поверхности", "6", "18", "24", "18"
+})]
+        public void TestObjectsCreationfromSTLText(string[] array)
+        {
+            //assing
+            var model = new ModelData();
+            model.Loader = new LoadModelFromSTLFile();
+
+            model.Loader.LoadEvent += (ar1, ar2) => { };
+            model.Load(@"C:\BazisComponents\ModelSolution\TestModel\Examples\STL\ACII.stl");
+
+            //act
+            var surfs = model.ObjectData.FindMany<Surface>().ToArray();
+
+            var presenter = new ModelScenePresentator(model.ObjectData);
+
+            var inds = presenter[array[0]].CreateIndexes();
+            var ptrs = presenter[array[0]].CreatePointers(inds.Item1);
+            var coords = presenter[array[0]].CreateVertexes(inds.Item2, "координаты");
+            var colors = presenter[array[0]].CreateVertexes(inds.Item3, "цвет");
+            var normals = presenter[array[0]].CreateVertexes(inds.Item2, "нормаль");
+            //assert
+            Assert.AreEqual(ptrs.Length, int.Parse(array[1]));
+            Assert.AreEqual(coords.Length, int.Parse(array[2]));
+            Assert.AreEqual(colors.Length, int.Parse(array[3]));
+            Assert.AreEqual(normals.Length, int.Parse(array[4]));
+
+        }
+
 
         [DataTestMethod]
         [DataRow(new string[]
@@ -106,18 +138,12 @@ namespace TestModel
         {
             //assing
             var model = new ModelData();
-            var loader = new LoadModelFromASCIITextFile();
+            model.Loader = new LoadModelFromASCIITextFile();
 
-            loader.LoadEvent += (ar1, ar2) => { };
-            var modelASC = loader.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
-            model.Load(modelASC);
             //act
 
-            //var nodes = model.ObjectData.FindMany(ObjKind.Node).ToArray();
-            //nodes[0].ViewState = false;
-
+            model.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
             var presenter = new ModelScenePresentator(model.ObjectData);
-
 
             if(array[0] == "Элементы3D")
                 presenter.HideInsideSurfaces(model.ObjectData.FindMany<Element3D>());
@@ -148,11 +174,9 @@ namespace TestModel
         {
             //assing
             var model = new ModelData();
-            var loader = new LoadModelFromGMSHTextFile();
+            model.Loader = new LoadModelFromGMSHTextFile();
 
-            loader.LoadEvent += (ar1, ar2) => { };
-            var modelINP = loader.Load($@"..\..\..\Examples\{array[0]}");
-            model.Load(modelINP);
+            model.Load($@"..\..\..\Examples\{array[0]}");
 
             var modelPresenter = new ModelScenePresentator(model.ObjectData);
 
@@ -184,14 +208,10 @@ namespace TestModel
         {
             //assing
             var model = new ModelData();
-            var loader = new LoadModelFromCDBTextFile();
-
-            loader.LoadEvent += (ar1, ar2) => { };
-            var modelCDB = loader.Load(@"..\..\..\TestModel\Examples\CDB\longModel.cdb");
-
-            model.Load(modelCDB);
+            model.Loader = new LoadModelFromCDBTextFile();
 
             //act
+            model.Load(@"..\..\..\Examples\CDB\longModel.cdb");
             var presentator = new ModelScenePresentator(model.ObjectData);
 
             var tuple = presentator[objsType].CreateIndexes();

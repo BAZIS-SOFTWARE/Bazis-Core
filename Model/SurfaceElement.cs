@@ -1,10 +1,5 @@
-﻿using Geometry;
-using Model.Interfaces;
-using System;
+﻿using ModelInterfaces;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Model
 {
@@ -16,6 +11,6 @@ namespace Model
 
         public abstract int NumberOfSides { get; }
 
-        public abstract IEnumerable<Surface> GetSurface();
+        public abstract IEnumerable<ISurface> GetSurface();
     }
 }

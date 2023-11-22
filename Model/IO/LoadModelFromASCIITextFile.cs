@@ -1,26 +1,23 @@
-﻿using Functions.Parser;
-using Geometry;
+﻿using Geometry;
+using Model.Elements;
 using Model.Events;
-using Model.GroupsData;
-using Model.Interfaces;
+using ModelInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Security.Policy;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Model.IO
 {
     public class LoadModelFromASCIITextFile : IModelLoader
     {
-        public event Action<object, LoaderEventArgs> LoadEvent;
+        public event Action<object, ILoaderEventArgs> LoadEvent;
         private Dictionary<int, Node> allNodes = new Dictionary<int, Node>();
         private Dictionary<int, Element> allElements = new Dictionary<int, Element>();
 
-        public ModelData Load(string path)
+        public IModelData Load(string path)
         {
             var model = new ModelData();
             using(var reader = new StreamReader(path))
@@ -52,7 +49,7 @@ namespace Model.IO
 
         private IEnumerable<Node> ReadNodes(StreamReader reader, int count)
         {
-            LoadEvent(this, new LoaderEventArgs("Загрузка узлов..."));
+            LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка узлов..."));
             for (var i = 0; i < count; i++)
             {
                 var line = reader.ReadLine();
@@ -69,7 +66,7 @@ namespace Model.IO
 
         private IEnumerable<ModelObject> ReadElements(StreamReader reader, int count, int startNumber)
         {
-            LoadEvent(this, new LoaderEventArgs("Загрузка элементов..."));
+            LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка элементов..."));
             for (var i = 0; i < count; i++)
             {
                 var line = reader.ReadLine();
@@ -91,16 +88,16 @@ namespace Model.IO
         {
             switch(type) 
             {
-                case 3004: return new Element3D(index, nodes, ObjKind.Tetra);
-                case 2003: return new Element2D(index, nodes, ObjKind.Triangle);
-                case 1002: return new Element1D(index, nodes, ObjKind.Beam);
+                case 3004: return new Tetra(index, nodes);
+                case 2003: return new Triangle(index, nodes);
+                case 1002: return new Beam(index, nodes);
                 default: throw new ArgumentException($"Unable to recognize element of type {type}");
             }
         }
 
         private void ReadGroup(StreamReader reader, int count, ModelData model)
         {
-            LoadEvent(this, new LoaderEventArgs("Загрузка группы объектов "));
+            LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка группы объектов "));
             string[] tokens;
             for (var i = 0; i < count; i++)
             {

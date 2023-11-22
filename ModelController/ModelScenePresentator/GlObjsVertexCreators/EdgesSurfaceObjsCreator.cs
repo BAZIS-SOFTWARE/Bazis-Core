@@ -1,13 +1,5 @@
-﻿using Geometry;
-using Model;
-using Model.Interfaces;
-using ModelController.ModelScenePresentator.Interfaces;
-using System;
-using System.Collections;
+﻿using ModelInterfaces;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ModelController.ModelScenePresentator.GlObjsVertexCreators
 {

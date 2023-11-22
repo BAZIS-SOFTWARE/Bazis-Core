@@ -4,9 +4,10 @@ using System.Linq;
 using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
-using Model.Interfaces;
+using ModelInterfaces;
 using ModelController.MeshObjsCreator;
 using ModelController.ModelScenePresentator;
+using Model.Elements;
 
 namespace TestModel
 {
@@ -25,7 +26,7 @@ namespace TestModel
                 new Node(3,new Point3D(0,0,10)),
 };
 
-            var elem = new Element3D(0, nodes, ObjKind.Tetra);
+            var elem = new Tetra(0, nodes);
 
             //act
             var normals = elem.GetSurface().Select(x => x.CalcNormal()).ToList();
@@ -45,7 +46,7 @@ namespace TestModel
                 new Node(3,new Point3D(0,0,10)),
 };
 
-            var elem = new Element3D(0, nodes, ObjKind.Tetra);
+            var elem = new Tetra(0, nodes);
 
             //act
             var points = elem.GetPoints().ToList();
@@ -69,9 +70,9 @@ namespace TestModel
             };
 
             //act
-            var el0 = new Element3D(55, new Node[] { nodes[0], nodes[1], nodes[2], nodes[3] }, ObjKind.Tetra);
+            var el0 = new Tetra(55, new Node[] { nodes[0], nodes[1], nodes[2], nodes[3] });
 
-            var el1 = new Element3D(56, new Node[] { nodes[1], nodes[2], nodes[3], nodes[4] }, ObjKind.Tetra);
+            var el1 = new Tetra(56, new Node[] { nodes[1], nodes[2], nodes[3], nodes[4] });
 
 
             var model = new ModelData();
