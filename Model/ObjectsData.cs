@@ -161,15 +161,15 @@ namespace Model
             }
 
             var mergeObjsList = new List<IModelObject>();
-            if (listTypedObjs.Count != 0)
-            { 
-                foreach (var typedObjs in listTypedObjs)
-                    mergeObjsList.AddRange(typedObjs);
 
+            foreach (var typedObjs in listTypedObjs)
+                mergeObjsList.AddRange(typedObjs);
+
+            if(mergeObjsList.Count > 0)
+            {
                 MergeSort<IModelObject>.MergeSortFunction(mergeObjsList);
+                modelObjects = mergeObjsList;
             }
-
-            modelObjects = mergeObjsList;
         }
 /// <inheritdoc/>
 
