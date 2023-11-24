@@ -277,6 +277,29 @@ namespace TestModel.GmshTests
             controller.ModelGetAttributeNames(out names);
             CollectionAssert.AreEqual(new string[] { "Transfinite" }, names);
         }
+        ///Тест, гарантирующий загрузку 3д элементов для STL
+        [DataTestMethod]
+        [DataRow("sphere.stl")]
+        public void AddElements3DForStlTest(string fileName)
+        {
+            var ierr = 0;
+            var status = false;
+            controller.gmshOpen(@"..\..\..\Examples\STL\" + fileName, ref ierr);
+            controller.gmshModelMeshGenerate(3, ref ierr);
+            var elements = controller.GetMeshEntities(3, -1, ref status);
+            Assert.AreEqual(0, elements.Count);
+            int[] dimTags;
+            controller.ModelGetGeometryEntities(out dimTags, 2);
+            dimTags = dimTags.Where((v,i) => (i & 1) == 1).ToArray();
+            var shell = controller.gmshModelGeoAddSurfaceLoop(dimTags, (IntPtr)dimTags.Length, -1, ref ierr);
+            var shellTags = new int[] { shell };
+            var volume = controller.gmshModelGeoAddVolume(shellTags, (IntPtr)shellTags.Length, -1, ref ierr);
+            controller.gmshModelGeoSynchronize(ref ierr);//Обязательный вызов Synchronize, после добавления объемов
+            controller.gmshModelMeshGenerate(3, ref ierr);
+            Assert.AreNotEqual(1, ierr);
+            elements = controller.GetMeshEntities(3, -1, ref status);
+            Assert.AreNotEqual(0, elements.Count);
+        }
 
         private void RemoveNameTest(ref string entName, int dim, int delId, int maxId)
         {

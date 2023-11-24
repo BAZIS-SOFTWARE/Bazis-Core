@@ -31,9 +31,14 @@ namespace GmshApi.GmshController
         /// <summary>Главные узлы</summary>
         public int numPrimaryNodes;
     }
-
+    /// <summary>
+    /// Контроллер GmshApi
+    /// </summary>
     public class GmshController
     {
+        /// <summary>
+        /// Указатель на DLL
+        /// </summary>
         public IntPtr DLL { get; private set; }
 
         private string GetStringPtr(IntPtr name)
@@ -44,392 +49,1062 @@ namespace GmshApi.GmshController
         string[] geomExtensions = new string[]
         {
             "step","stp","brep","iges","igs"
-        }; 
+        };
         #region "Initialization Delegates"
-            public delegate void gmshInitializeFun(int argc, ref string argv, int readConfigFile, int run, ref int ierr);
-            public gmshInitializeFun gmshInitialize;
-            public delegate int gmshIsInitializedFun(ref int ierr);
-            public gmshIsInitializedFun gmshIsInitialized;
-            public delegate void gmshFinalizeFun(ref int ierr);
-            public gmshFinalizeFun gmshFinalize;
+        /// <summary>
+        /// Инициализирует Gmsh Api
+        /// </summary>
+        /// <param name="argc">[In]Количество строковых аргументов командной строки</param>
+        /// <param name="argv">[In]Массив строк аргуметов командной строки</param>
+        /// <param name="readConfigFile">[In]Флаг - читать конфигурационный файл gmsh</param>
+        /// <param name="run">[In]Флаг запуска приложения в командной строке</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshInitializeFun(int argc, ref string argv, int readConfigFile, int run, ref int ierr);///
+        public gmshInitializeFun gmshInitialize;
+        /// <summary>
+        /// Возвращает флаг инициализировано ли API
+        /// </summary>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        /// <returns>Инициализировано ли API</returns>
+        public delegate int gmshIsInitializedFun(ref int ierr);///
+        public gmshIsInitializedFun gmshIsInitialized;
+        /// <summary>
+        /// Завершает работу Gmsh Api
+        /// </summary>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshFinalizeFun(ref int ierr);///
+        public gmshFinalizeFun gmshFinalize;
         #endregion
         #region "Memory Delegates"
-            private delegate IntPtr gmshMallocFun(IntPtr n);
-            private gmshMallocFun gmshMalloc;
-            private delegate void gmshFreeFun(IntPtr p);
-            private gmshFreeFun gmshFree;
+        /// <summary>
+        /// Выделяет неуправляемую память
+        /// </summary>
+        /// <param name="n">[In]Количество байт</param>
+        /// <returns>Указатель на неуправляемую память</returns>
+        private delegate IntPtr gmshMallocFun(IntPtr n);
+        private gmshMallocFun gmshMalloc;
+        /// <summary>
+        /// Очищает неуправляемую память
+        /// </summary>
+        /// <param name="p">[In]Указатель на блок памяти</param>
+        private delegate void gmshFreeFun(IntPtr p);
+        private gmshFreeFun gmshFree;
         #endregion
         #region "General Delegates"
-            public delegate void gmshOptionSetNumberFun(string name, double value, ref int ierr);
-            public gmshOptionSetNumberFun gmshOptionSetNumber;
-            public delegate void gmshOptionGetNumberFun(string name, ref double value, ref int ierr);
-            public gmshOptionGetNumberFun gmshOptionGetNumber;
-            public delegate void gmshOptionSetStringFun(string name, string value, ref int ierr);
-            public gmshOptionSetStringFun gmshOptionSetString;
-            private delegate void gmshOptionGetStringFun(string name, ref IntPtr value, ref int ierr);
-            private gmshOptionGetStringFun gmshOptionGetString;
+        /// <summary>
+        /// Задает значение поля категории опций
+        /// </summary>
+        /// <param name="name">[In]Строка в формате доступа к полю категории опций</param>
+        /// <param name="value">[In]Значение поля категории</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshOptionSetNumberFun(string name, double value, ref int ierr);///
+        public gmshOptionSetNumberFun gmshOptionSetNumber;
+        /// <summary>
+        /// Возвращает значение из поля категории опций
+        /// </summary>
+        /// <param name="name">[In]Строка в формате доступа к полю категории опций</param>
+        /// <param name="value">[Out]Значение поля категории</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshOptionGetNumberFun(string name, ref double value, ref int ierr);///
+        public gmshOptionGetNumberFun gmshOptionGetNumber;
+        /// <summary>
+        /// Устанавливает строку параметров для категории опций
+        /// </summary>
+        /// <param name="name">[In]Строка в формате доступа к полю категории опций</param>
+        /// <param name="value">[In]Значение поля категории</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshOptionSetStringFun(string name, string value, ref int ierr);///
+        public gmshOptionSetStringFun gmshOptionSetString;
+        /// <summary>
+        /// Возвращает строку параметров для категории опций
+        /// </summary>
+        /// <param name="name">[In]Строка в формате доступа к полю категории опций</param>
+        /// <param name="value">[Out]Значения в формате строки для заданной категории опций</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshOptionGetStringFun(string name, ref IntPtr value, ref int ierr);
+        private gmshOptionGetStringFun gmshOptionGetString;
         #endregion
         #region "Plugin Delegates"
-            public delegate void gmshPluginSetNumberFun(string name, string option, double value, ref int ierr);
-            public gmshPluginSetNumberFun gmshPluginSetNumber;
-            public delegate void gmshPluginSetStringFun(string name, string option, string value, ref int ierr);
-            public gmshPluginSetStringFun gmshPluginSetString;
-            public delegate int gmshPluginRunFun(string name, ref int ierr);
-            public gmshPluginRunFun gmshPluginRun;
+        /// <summary>
+        /// Установить значение через плагин
+        /// </summary>
+        /// <param name="name">[In]Имя плагина</param>
+        /// <param name="option">[In]Имя опции</param>
+        /// <param name="value">[In]Значение в опции</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshPluginSetNumberFun(string name, string option, double value, ref int ierr);///
+        public gmshPluginSetNumberFun gmshPluginSetNumber;
+        /// <summary>
+        /// Установить набор значений через плагин
+        /// </summary>
+        /// <param name="name">[In]Имя плагина</param>
+        /// <param name="option">[In]Имя опции</param>
+        /// <param name="value">[In]Значения в опции</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshPluginSetStringFun(string name, string option, string value, ref int ierr);///
+        public gmshPluginSetStringFun gmshPluginSetString;
+        /// <summary>
+        /// Запускает плагин с имененм name и возвращает View если имеется
+        /// </summary>
+        /// <param name="name">[In]Имя плагина</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        /// <returns>Возращает объект View(по необходимости)</returns>
+        public delegate int gmshPluginRunFun(string name, ref int ierr);///
+        public gmshPluginRunFun gmshPluginRun;
         #endregion
         #region "IO Delegates"
-            public delegate void gmshOpenFun(string fileName, ref int ierr);
-            public gmshOpenFun gmshOpen;
-            public delegate void gmshMergeFun(string fileName, ref int ierr);
-            public gmshMergeFun gmshMerge;
-            public delegate void gmshWriteFun(string fileName, ref int ierr);
-            public gmshWriteFun gmshWrite;
+        /// <summary>
+        /// Открывает скрипт файл .geo, .stp, .igs создает модель и делает ее текущей
+        /// </summary>
+        /// <param name="fileName">[In]Путь до файла скрипта</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshOpenFun(string fileName, ref int ierr);///
+        public gmshOpenFun gmshOpen;
+        /// <summary>
+        /// Открывает скрипт и ассоциирует данные с текущей моделью
+        /// </summary>
+        /// <param name="fileName">[In]Путь до файла скрипта</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshMergeFun(string fileName, ref int ierr);///
+        public gmshMergeFun gmshMerge;
+        /// <summary>
+        /// Экспортирует данные модели в файл, расширение задает выходной формат файла
+        /// </summary>
+        /// <param name="fileName">[In]Путь к файлу назначения</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshWriteFun(string fileName, ref int ierr);///
+        public gmshWriteFun gmshWrite;
         #endregion
         #region "Model Delegates"
-            public delegate void gmshModelSetFileNameFun(string fileName, ref int ierr);
-            public gmshModelSetFileNameFun gmshModelSetFileName;
-            public delegate void gmshModelAddFun(string name, ref int ierr);
-            public gmshModelAddFun gmshModelAdd;
-            public delegate void gmshModelRemoveFun(ref int ierr);
-            public gmshModelRemoveFun gmshModelRemove;
-            public delegate void gmshClearFun(ref int ierr);
-            public gmshClearFun gmshClear;
-            public delegate void gmshModelSetCurrentFun(string name, ref int ierr);
-            public gmshModelSetCurrentFun gmshModelSetCurrent;
-            public delegate void gmshModelOccSynchronizeFun(ref int ierr);
-            public gmshModelOccSynchronizeFun gmshModelOccSynchronize;
-            public delegate void gmshModelGeoSynchronizeFun(ref int ierr);
-            public gmshModelGeoSynchronizeFun gmshModelGeoSynchronize;
-            private delegate void gmshModelGetFileNameFun(ref IntPtr fileName, ref int ierr);
-            private gmshModelGetFileNameFun gmshModelGetFileName;
-            private delegate void gmshModelListFun(ref IntPtr names, ref IntPtr names_n, ref int ierr);
-            private gmshModelListFun gmshModelList;
-            private delegate void gmshModelGetCurrentFun(ref IntPtr name, ref int ierr);
-            private gmshModelGetCurrentFun gmshModelGetCurrent;
-            private delegate void gmshModelOccImportShapesFun(string fileName, ref IntPtr outDimTags,
-                                                          ref IntPtr outDimTags_n, int highestDimOnly,
-                                                          string format, ref int ierr);
-            private gmshModelOccImportShapesFun gmshModelOccImportShapes;
+        /// <summary>
+        /// Ассоциирует имя файла с текущей моделью
+        /// </summary>
+        /// <param name="fileName">[In]Путь до файла</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelSetFileNameFun(string fileName, ref int ierr);///
+        public gmshModelSetFileNameFun gmshModelSetFileName;
+        /// <summary>
+        /// Добавляет новую модель с заданным именем в список моделей и делает ее текущей
+        /// </summary>
+        /// <param name="name">[In]Имя новой модели</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelAddFun(string name, ref int ierr);///
+        public gmshModelAddFun gmshModelAdd;
+        /// <summary>
+        /// Удаляет текущую модель из списка моделей
+        /// </summary>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelRemoveFun(ref int ierr);///
+        public gmshModelRemoveFun gmshModelRemove;
+        /// <summary>
+        /// Очищает список моделей
+        /// </summary>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshClearFun(ref int ierr);///
+        public gmshClearFun gmshClear;
+        /// <summary>
+        /// Устанавливает имя для текущей модели
+        /// </summary>
+        /// <param name="name">[In]Имя для текущей модели</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelSetCurrentFun(string name, ref int ierr);///
+        public gmshModelSetCurrentFun gmshModelSetCurrent;
+        /// <summary>
+        /// Проводит синхронизацию с ядром OpenCascade (например после добавления геометрических сущностей)
+        /// </summary>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelOccSynchronizeFun(ref int ierr);///
+        public gmshModelOccSynchronizeFun gmshModelOccSynchronize;
+        /// <summary>
+        /// Проводит синхронизацию с ядром gmsh (например после добавления геометрических сущностей)
+        /// </summary>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelGeoSynchronizeFun(ref int ierr);///
+        public gmshModelGeoSynchronizeFun gmshModelGeoSynchronize;
+        /// <summary>
+        /// Возвращает путь до файла ассоциированный с данной моделью
+        /// </summary>
+        /// <param name="fileName">[Out]Путь до файла</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshModelGetFileNameFun(ref IntPtr fileName, ref int ierr);
+        private gmshModelGetFileNameFun gmshModelGetFileName;
+        /// <summary>
+        /// Возвращает список моделей в gmsh API
+        /// </summary>
+        /// <param name="names">[Out]Массив имен моделей</param>
+        /// <param name="names_n">[Out]Длина массива</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshModelListFun(ref IntPtr names, ref IntPtr names_n, ref int ierr);
+        private gmshModelListFun gmshModelList;
+        /// <summary>
+        /// Возвращает имя текущей модели
+        /// </summary>
+        /// <param name="name">[Out]Имя текущей модели</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshModelGetCurrentFun(ref IntPtr name, ref int ierr);
+        private gmshModelGetCurrentFun gmshModelGetCurrent;
+        /// <summary>
+        /// Импортирует геометрию в файл в виде вектора пар размерность : идентификатор
+        /// </summary>
+        /// <param name="fileName">[In]Файл скрипта</param>
+        /// <param name="outDimTags">[Out]Вектор пар размерность : идентификатор</param>
+        /// <param name="outDimTags_n">[Out]Длина вектора пар</param>
+        /// <param name="highestDimOnly">[In]Импортировать только верхнюю размерность</param>
+        /// <param name="format">[In]Опциональная строка с расширением {brep,stp,iges}</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshModelOccImportShapesFun(string fileName, ref IntPtr outDimTags,
+                                                      ref IntPtr outDimTags_n, int highestDimOnly,
+                                                      string format, ref int ierr);
+        private gmshModelOccImportShapesFun gmshModelOccImportShapes;
         #endregion
         #region "Geometry Delegates"
-            private delegate void gmshModelGetEntitiesFun(ref IntPtr dimTags, ref IntPtr dimTags_n, int dim, ref int ierr);
-            private gmshModelGetEntitiesFun gmshModelGetEntities;
-            private delegate void gmshModelOccGetEntitiesFun(ref IntPtr dimTags, ref IntPtr dimTags_n, int dim, ref int ierr);
-            private gmshModelOccGetEntitiesFun gmshModelOccGetEntities;
-            public delegate void gmshModelRemoveEntitiesFun(int[] dimTags, IntPtr dimTags_n, int recursive, ref int ierr);
-            public gmshModelRemoveEntitiesFun gmshModelRemoveEntities;
-            public delegate void gmshModelOccRemoveFun(int[] dimTags, IntPtr dimTags_n, int recursive, ref int ierr);
-            public gmshModelOccRemoveFun gmshModelOccRemove;
-            public delegate void gmshModelSetEntityNameFun(int dim, int tag, string name, ref int ierr);
-            public gmshModelSetEntityNameFun gmshModelSetEntityName;
-            private delegate void gmshModelGetEntityNameFun(int dim, int tag, ref IntPtr name, ref int ierr);
-            private gmshModelGetEntityNameFun gmshModelGetEntityName;
-            public delegate void gmshModelRemoveEntityNameFun(string name, ref int ierr);
-            public gmshModelRemoveEntityNameFun gmshModelRemoveEntityName;
-            public delegate void gmshModelGetBoundingBoxFun(int dim, int tag, ref double xmin,
-                                                          ref double ymin, ref double zmin,
-                                                          ref double xmax, ref double ymax,
-                                                          ref double zmax, ref int ierr);
-            public gmshModelGetBoundingBoxFun gmshModelGetBoundingBox;
-            private delegate void gmshModelGetAdjacenciesFun(int dim, int tag, ref IntPtr upward, ref IntPtr upward_n,
-                                                             ref IntPtr downward, ref IntPtr downward_n, ref int ierr);
-            private gmshModelGetAdjacenciesFun gmshModelGetAdjacencies;
-            private delegate void gmshModelGetBoundaryFun(int[] dimTags, IntPtr dimTags_n, ref IntPtr outDimTags,
-                                                       ref IntPtr outDimTags_n, int combined, int oriented,
-                                                       int recursive, ref int ierr);
-            private gmshModelGetBoundaryFun gmshModelGetBoundary;
-            private delegate void gmshModelGetTypeFun(int dim, int tag, ref IntPtr entityType, ref int ierr);
-            private gmshModelGetTypeFun gmshModelGetType;
-            public delegate int gmshModelGetDimensionFun(ref int ierr);
-            public gmshModelGetDimensionFun gmshModelGetDimension;
-            public delegate int gmshModelIsInsideFun(int dim, int tag, double[] coord, IntPtr coord_n,
-                                                   int parametric, ref int ierr);
-            public gmshModelIsInsideFun gmshModelIsInside;
-            public delegate void gmshModelSetVisibilityFun(int[] dimTags, IntPtr dimTags_n, int value,
-                                                        int recursive, ref int ierr);
-            public gmshModelSetVisibilityFun gmshModelSetVisibility;
-            public delegate void gmshModelSetAttributeFun(string name, string[] values, IntPtr values_n, ref int ierr);
-            public gmshModelSetAttributeFun gmshModelSetAttribute;
-            public delegate void gmshModelGetAttributeFun(string name, ref IntPtr values, ref IntPtr values_n, ref int ierr);
-            public gmshModelGetAttributeFun gmshModelGetAttribute;
-            private delegate void gmshModelGetAttributeNamesFun(ref IntPtr names, ref IntPtr names_n, ref int ierr);
-            private gmshModelGetAttributeNamesFun gmshModelGetAttributeNames;
-            public delegate void gmshModelRemoveAttributeFun(string name, ref int ierr);
-            public gmshModelRemoveAttributeFun gmshModelRemoveAttribute;
-            private delegate void gmshModelGetPhysicalNameFun(int dim, int tag, ref IntPtr name, ref int ierr);
-            private gmshModelGetPhysicalNameFun gmshModelGetPhysicalName;
-            private delegate void gmshModelGetDerivativeFun(int dim, int tag, double[] parametricCoord,
-                                                        IntPtr parametricCoord_n, ref IntPtr derivatives,
-                                                        ref IntPtr derivatives_n, ref int ierr);
-            private gmshModelGetDerivativeFun gmshModelGetDerivative;
-            private delegate void gmshModelGetSecondDerivativeFun(int dim, int tag, double[] parametricCoord,
-                                                              IntPtr parametricCoord_n, ref IntPtr derivatives,
-                                                              ref IntPtr derivatives_n, ref int ierr);
-            private gmshModelGetSecondDerivativeFun gmshModelGetSecondDerivative;
-            private delegate void gmshModelGetCurvatureFun(int dim, int tag, double[] parametricCoord,
-                                                       IntPtr parametricCoord_n, ref IntPtr curvatures,
-                                                       ref IntPtr curvatures_n, ref int ierr);
-            private gmshModelGetCurvatureFun gmshModelGetCurvature;
-            private delegate void gmshModelGetValueFun(int dim, int tag, double[] parametricCoord,
-                                                   IntPtr parameticCoord_n, ref IntPtr coord,
-                                                   ref IntPtr coord_n, ref int ierr);
-            private gmshModelGetValueFun gmshModelGetValue;
-            private delegate void gmshModelGetParametrizationFun(int dim, int tag, double[] coord, IntPtr coord_n,
-                                                              ref IntPtr parametricCoord, ref IntPtr parametricCoord_n,
-                                                              ref int ierr);
-            private gmshModelGetParametrizationFun gmshModelGetParametrization;
-            private delegate void gmshModelGetParametrizationBoundsFun(int dim, int tag, ref IntPtr min,
-                                                                   ref IntPtr min_n, ref IntPtr max,
-                                                                   ref IntPtr max_n, ref int ierr);
-            private gmshModelGetParametrizationBoundsFun gmshModelGetParametrizationBounds;
-            private delegate void gmshModelReparametrizeOnSurfaceFun(int dim, int tag, double[] parametricCoord,
-                                                                 IntPtr parametricCoord_n, int surfaceTag,
-                                                                 ref IntPtr surfaceParametricCoord,
-                                                                 ref IntPtr surfaceParametricCoord_n,
-                                                                 int which, ref int ierr);
-            private gmshModelReparametrizeOnSurfaceFun gmshModelReparametrizeOnSurface;
-            private delegate void gmshModelOccGetCurveLoopsFun(int surfaceTag, ref IntPtr curveLoopTags,
-                                                            ref IntPtr curveLoopTags_n, ref IntPtr curveTags,
-                                                            ref IntPtr curveTags_n, ref IntPtr curveTags_nn,
-                                                            ref int ierr);
-            private gmshModelOccGetCurveLoopsFun gmshModelOccGetCurveLoops;
-            private delegate void gmshModelOccGetSurfaceLoopsFun(int volumeTag, ref IntPtr surfaceLoopTags,
+        /// <summary>
+        /// Возвращает список всех идентификаторов для заданной размерности (gmsh)
+        /// </summary>
+        /// <param name="dimTags">[Out]Массив пар размерность - идентификатор</param>
+        /// <param name="dimTags_n">[Out]Длина массива пар размерность - идентификатор</param>
+        /// <param name="dim">[In]Размерность для получения идентификаторов, -1 для всех размерностей</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshModelGetEntitiesFun(ref IntPtr dimTags, ref IntPtr dimTags_n, int dim, ref int ierr);
+        private gmshModelGetEntitiesFun gmshModelGetEntities;
+        /// <summary>
+        /// Возвращает список всех идентификаторов для заданной размерности (OpenCascade)
+        /// </summary>
+        /// <param name="dimTags">[Out]Массив пар размерность - идентификатор</param>
+        /// <param name="dimTags_n">[Out]Длина массива пар размерность - идентификатор</param>
+        /// <param name="dim">[In]Размерность для получения идентификаторов, -1 для всех размерностей</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshModelOccGetEntitiesFun(ref IntPtr dimTags, ref IntPtr dimTags_n, int dim, ref int ierr);
+        private gmshModelOccGetEntitiesFun gmshModelOccGetEntities;
+        /// <summary>
+        /// Удаляет gmsh геометрически сущности заданные парой dimTags
+        /// </summary>
+        /// <param name="dimTags">[In]Массив пар dim:tag</param>
+        /// <param name="dimTags_n">[In]Длина массива</param>
+        /// <param name="recursive">[In]Рекурсивно улалять граничные элементы</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelRemoveEntitiesFun(int[] dimTags, IntPtr dimTags_n, int recursive, ref int ierr);///
+        public gmshModelRemoveEntitiesFun gmshModelRemoveEntities;
+        /// <summary>
+        /// Удаляет OpenCascade геометрически сущности заданные парой dimTags
+        /// </summary>
+        /// <param name="dimTags">[In]Массив пар dim:tag</param>
+        /// <param name="dimTags_n">[In]Длина массива</param>
+        /// <param name="recursive">[In]Рекурсивно улалять граничные элементы</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelOccRemoveFun(int[] dimTags, IntPtr dimTags_n, int recursive, ref int ierr);///
+        public gmshModelOccRemoveFun gmshModelOccRemove;
+        /// <summary>
+        /// Задает имя сущности для текущих dim:tag
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="name">[In]Имя сущности</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelSetEntityNameFun(int dim, int tag, string name, ref int ierr);///
+        public gmshModelSetEntityNameFun gmshModelSetEntityName;
+        /// <summary>
+        /// Возвращает имя сущности для указанной dim:tag
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="name">[In]Имя сущности</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshModelGetEntityNameFun(int dim, int tag, ref IntPtr name, ref int ierr);
+        private gmshModelGetEntityNameFun gmshModelGetEntityName;
+        /// <summary>
+        /// Удаляет сущность заданную именем
+        /// </summary>
+        /// <param name="name">[In]Имя сущности</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelRemoveEntityNameFun(string name, ref int ierr);///
+        public gmshModelRemoveEntityNameFun gmshModelRemoveEntityName;
+        /// <summary>
+        /// Возвращает ограничивающий параллелепипед для заданных dim:tag
+        /// </summary>
+        /// <param name="dim">[In]Размерность, или -1 использовать все размерности</param>
+        /// <param name="tag">[In]Идентификатор, или -1 использовать все идентификаторы</param>
+        /// <param name="xmin">[Out]Минимальное значение X</param>
+        /// <param name="ymin">[Out]Минимальное значение Y</param>
+        /// <param name="zmin">[Out]Минимальное значение Z</param>
+        /// <param name="xmax">[Out]Максимальное значение X</param>
+        /// <param name="ymax">[Out]Максимальное значение Y</param>
+        /// <param name="zmax">[Out]Максимальное значение Z</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelGetBoundingBoxFun(int dim, int tag, ref double xmin,
+                                                      ref double ymin, ref double zmin,
+                                                      ref double xmax, ref double ymax,
+                                                      ref double zmax, ref int ierr);///
+        public gmshModelGetBoundingBoxFun gmshModelGetBoundingBox;
+        /// <summary>
+        /// Возвращает соседей верхнего\нижнего уровня для текущей пары dim : tag
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="upward">[Out]Идентификаторы верхнего уровня</param>
+        /// <param name="upward_n">[Out]Длина вектора идентификаторов</param>
+        /// <param name="downward">[Out]Идентификаторы нижнего уровня</param>
+        /// <param name="downward_n">[Out]Длина вектора идентификаторов</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshModelGetAdjacenciesFun(int dim, int tag, ref IntPtr upward, ref IntPtr upward_n,
+                                                         ref IntPtr downward, ref IntPtr downward_n, ref int ierr);
+        private gmshModelGetAdjacenciesFun gmshModelGetAdjacencies;
+        /// <summary>
+        /// Возвращает граничные элементы для заданной пары размерность : идентификатор
+        /// </summary>
+        /// <param name="dimTags">[In]Массив пара размерность : идентификатор</param>
+        /// <param name="dimTags_n">[In]Размер массива пар</param>
+        /// <param name="outDimTags">[Out]Граничные элементы внутри пар</param>
+        /// <param name="outDimTags_n">[Out]Количество элементов</param>
+        /// <param name="combined">[In]Флаг объединения резултатов для пар</param>
+        /// <param name="oriented">[In]Флаг наличия знака, который умножается на идентификатор</param>
+        /// <param name="recursive">[In]Флаг рекурсии - получить все до точек</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshModelGetBoundaryFun(int[] dimTags, IntPtr dimTags_n, ref IntPtr outDimTags,
+                                                   ref IntPtr outDimTags_n, int combined, int oriented,
+                                                   int recursive, ref int ierr);
+        private gmshModelGetBoundaryFun gmshModelGetBoundary;
+        /// <summary>
+        /// Возвращает тип сущности по указанной паре размерность : идентификатор
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="entityType">[Out]Строка типа</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshModelGetTypeFun(int dim, int tag, ref IntPtr entityType, ref int ierr);
+        private gmshModelGetTypeFun gmshModelGetType;
+        /// <summary>
+        /// Возвращает максимальную размерность текущего геометрического объекта
+        /// </summary>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        /// <returns>Максимальная размерность</returns>
+        public delegate int gmshModelGetDimensionFun(ref int ierr);///
+        public gmshModelGetDimensionFun gmshModelGetDimension;
+        /// <summary>
+        /// Определяет находится ли точка параметрическая или локальная внутри массива
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="coord">[In]Масив координат</param>
+        /// <param name="coord_n">[In]Количество координат</param>
+        /// <param name="parametric">[In]Флаг являяется ли координата параметрической</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        /// <returns>Число координат лежащих внутри модели</returns>
+        public delegate int gmshModelIsInsideFun(int dim, int tag, double[] coord, IntPtr coord_n,
+                                                 int parametric, ref int ierr);///
+        public gmshModelIsInsideFun gmshModelIsInside;
+        /// <summary>
+        /// Устанавливает видимость для указанных пар dim:tags геометрических сущностей
+        /// </summary>
+        /// <param name="dimTags">[In]Массив пар dim:tag</param>
+        /// <param name="dimTags_n">[In]Длина массива</param>
+        /// <param name="value">[In]Значение видимости</param>
+        /// <param name="recursive">[In]Распространить видимость рекурсивно на граничные элементы</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelSetVisibilityFun(int[] dimTags, IntPtr dimTags_n, int value,
+                                                    int recursive, ref int ierr);///
+        public gmshModelSetVisibilityFun gmshModelSetVisibility;
+        /// <summary>
+        /// Связать имя аттрибута со значениями
+        /// </summary>
+        /// <param name="name">[In]Имя аттрибута</param>
+        /// <param name="values">[In]Массив значений</param>
+        /// <param name="values_n">[In]Размер массива значений</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelSetAttributeFun(string name, string[] values, IntPtr values_n, ref int ierr);///
+        public gmshModelSetAttributeFun gmshModelSetAttribute;
+        /// <summary>
+        /// Возвратит значения для заданного аттрибута
+        /// </summary>
+        /// <param name="name">[In]Имя аттрибута</param>
+        /// <param name="values">[Out]Массив значений аттрибута</param>
+        /// <param name="values_n">[Out]Размер массива значений аттрибута</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelGetAttributeFun(string name, ref IntPtr values, ref IntPtr values_n, ref int ierr);///
+        public gmshModelGetAttributeFun gmshModelGetAttribute;
+        /// <summary>
+        /// Добавляет идентификаторы поверхностей, формирующих замкнутую оболочку, возвращает идентификатор оболочки
+        /// </summary>
+        /// <param name="surfaceTags">[In]Массив идентификаторов поверхностей</param>
+        /// <param name="surfaceTags_n">[In]Длина массива идентификаторов</param>
+        /// <param name="tag">[In]Идентификатор оболочки или -1 для автоматического назначения</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        /// <returns>Идентификатор оболочки</returns>
+        public delegate int gmshModelGeoAddSurfaceLoopFun(int[] surfaceTags, IntPtr surfaceTags_n, int tag, ref int ierr);///
+        public gmshModelGeoAddSurfaceLoopFun gmshModelGeoAddSurfaceLoop;
+        /// <summary>
+        /// Формирует объем из заданных оболочек, первый элемент массива замкнутая оболочка, следующие элементы
+        /// указывают отверстия в геометрии
+        /// </summary>
+        /// <param name="shellTags">[In]Массив идентификаторов оболочек</param>
+        /// <param name="shellTags_n">[In]Длина массива идентификаторов</param>
+        /// <param name="tag">[In]Идентификатор объема или -1 для автоматического назначения</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        /// <returns>Идентификатор объема</returns>
+        public delegate int gmshModelGeoAddVolumeFun(int[] shellTags, IntPtr shellTags_n, int tag, ref int ierr);///
+        public gmshModelGeoAddVolumeFun gmshModelGeoAddVolume;
+        /// <summary>
+        /// Возвращает список имен аттрибутов
+        /// </summary>
+        /// <param name="names">[Out]Массив имен аттрибутов</param>
+        /// <param name="names_n">[Out]Размер массива имен аттрибутов</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshModelGetAttributeNamesFun(ref IntPtr names, ref IntPtr names_n, ref int ierr);
+        private gmshModelGetAttributeNamesFun gmshModelGetAttributeNames;
+        /// <summary>
+        /// Удалить имя аттрибута
+        /// </summary>
+        /// <param name="name">[In]Имя аттрибута</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelRemoveAttributeFun(string name, ref int ierr);///
+        public gmshModelRemoveAttributeFun gmshModelRemoveAttribute;
+        /// <summary>
+        /// Возвращает физическое имя для заданной размерности : идентификатора
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="name">[Out]Физическое имя</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshModelGetPhysicalNameFun(int dim, int tag, ref IntPtr name, ref int ierr);
+        private gmshModelGetPhysicalNameFun gmshModelGetPhysicalName;
+        /// <summary>
+        /// Возвращает производную по указанной размерности и идентификатору и заданному набору параметров
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="parametricCoord">[In]Массив параметрических координат</param>
+        /// <param name="parametricCoord_n">[In]Размер массива параметрических координат</param>
+        /// <param name="derivatives">[Out]Массив производных</param>
+        /// <param name="derivatives_n">[Out]Размер массива производных</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshModelGetDerivativeFun(int dim, int tag, double[] parametricCoord,
+                                                    IntPtr parametricCoord_n, ref IntPtr derivatives,
+                                                    ref IntPtr derivatives_n, ref int ierr);
+        private gmshModelGetDerivativeFun gmshModelGetDerivative;
+        /// <summary>
+        /// Возвращает вторую производную по указанной размерности и идентификатору и заданному набору параметров
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="parametricCoord">[In]Массив параметрических координат</param>
+        /// <param name="parametricCoord_n">[In]Размер массива параметрических координат</param>
+        /// <param name="derivatives">[Out]Массив производных</param>
+        /// <param name="derivatives_n">[Out]Размер массива производных</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshModelGetSecondDerivativeFun(int dim, int tag, double[] parametricCoord,
+                                                          IntPtr parametricCoord_n, ref IntPtr derivatives,
+                                                          ref IntPtr derivatives_n, ref int ierr);
+        private gmshModelGetSecondDerivativeFun gmshModelGetSecondDerivative;
+        /// <summary>
+        /// Возвращает радиусы кривизны для заданных параметрических координат
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="parametricCoord">[In]Массив параметрических координат</param>
+        /// <param name="parametricCoord_n">[In]Размер массива параметрических координат</param>
+        /// <param name="curvatures">[Out]Массив радиусов кривизны</param>
+        /// <param name="curvatures_n">[Out]Размер массива радиусов кривизны</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshModelGetCurvatureFun(int dim, int tag, double[] parametricCoord,
+                                                   IntPtr parametricCoord_n, ref IntPtr curvatures,
+                                                   ref IntPtr curvatures_n, ref int ierr);
+        private gmshModelGetCurvatureFun gmshModelGetCurvature;
+        /// <summary>
+        /// Возвращает координаты точек заданные параметром для указанного идентификатора и размерности
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="parametricCoord">[In]Массив параметрических координат double</param>
+        /// <param name="parameticCoord_n">[In]Размер массива параметрических координат</param>
+        /// <param name="coord">[Out]Массив координат точек</param>
+        /// <param name="coord_n">[Out]Размер массива координат точек</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshModelGetValueFun(int dim, int tag, double[] parametricCoord,
+                                               IntPtr parameticCoord_n, ref IntPtr coord,
+                                               ref IntPtr coord_n, ref int ierr);
+        private gmshModelGetValueFun gmshModelGetValue;
+        /// <summary>
+        /// Возвращает параметризацию сущности заданной парой размерность : идентификатор
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="coord">[In]Массив координат</param>
+        /// <param name="coord_n">[In]Размер массива координат</param>
+        /// <param name="parametricCoord">[Out]Массив параметрических координат</param>
+        /// <param name="parametricCoord_n">[Out]Размер массива параметрических координат</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshModelGetParametrizationFun(int dim, int tag, double[] coord, IntPtr coord_n,
+                                                          ref IntPtr parametricCoord, ref IntPtr parametricCoord_n,
+                                                          ref int ierr);
+        private gmshModelGetParametrizationFun gmshModelGetParametrization;
+        /// <summary>
+        /// Возвращает минимальные максимальные границы параметризации
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="min">[Out]Массив минимальных границ</param>
+        /// <param name="min_n">[Out]Размер массива минимальных границ</param>
+        /// <param name="max">[Out]Массив максимальных границ</param>
+        /// <param name="max_n">[Out]Размер массива максимальных границ</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshModelGetParametrizationBoundsFun(int dim, int tag, ref IntPtr min,
+                                                               ref IntPtr min_n, ref IntPtr max,
+                                                               ref IntPtr max_n, ref int ierr);
+        private gmshModelGetParametrizationBoundsFun gmshModelGetParametrizationBounds;
+        /// <summary>
+        /// Перепараметризирует пару размерность : идентификатор в параметризацию поверхностей
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="parametricCoord">[In]Массив параметрических координат</param>
+        /// <param name="parametricCoord_n">[In]Размер массива параметрических координат</param>
+        /// <param name="surfaceTag">[In]Идентификатор поверхности</param>
+        /// <param name="surfaceParametricCoord">[Out]Массив репараметризированных координат</param>
+        /// <param name="surfaceParametricCoord_n">[Out]Размер массива репараметризированных координат</param>
+        /// <param name="which">[In]Флаг совпадений параметрических поверхностей</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshModelReparametrizeOnSurfaceFun(int dim, int tag, double[] parametricCoord,
+                                                             IntPtr parametricCoord_n, int surfaceTag,
+                                                             ref IntPtr surfaceParametricCoord,
+                                                             ref IntPtr surfaceParametricCoord_n,
+                                                             int which, ref int ierr);
+        private gmshModelReparametrizeOnSurfaceFun gmshModelReparametrizeOnSurface;
+        /// <summary>
+        /// Возвращает петлю кривых для заданного идентификатора поверхности
+        /// </summary>
+        /// <param name="surfaceTag">[In]Идентификатор поверхности</param>
+        /// <param name="curveLoopTags">[Out]Массив идентификаторов петель кривых</param>
+        /// <param name="curveLoopTags_n">[Out]Размер массива идентификаторов петель кривых</param>
+        /// <param name="curveTags">[Out]Матрица идентификаторов кривых</param>
+        /// <param name="curveTags_n">[Out]Размер внутреннего массива идентификаторов кривых</param>
+        /// <param name="curveTags_nn">[Out]Размер внешнего массива идентификаторов кривых</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshModelOccGetCurveLoopsFun(int surfaceTag, ref IntPtr curveLoopTags,
+                                                        ref IntPtr curveLoopTags_n, ref IntPtr curveTags,
+                                                        ref IntPtr curveTags_n, ref IntPtr curveTags_nn,
+                                                        ref int ierr);
+        private gmshModelOccGetCurveLoopsFun gmshModelOccGetCurveLoops;
+        /// <summary>
+        /// Возвращает петлю поверхностей для заданного идентификатора объема
+        /// </summary>
+        /// <param name="volumeTag">[In]Идентификатор объема</param>
+        /// <param name="surfaceLoopTags">[Out]Массив идентификаторов петель поверхностей</param>
+        /// <param name="surfaceLoopTags_n">[Out]Размер массива идентификаторов петель поверхностей</param>
+        /// <param name="surfaceTags">[Out]Матрица идентификаторов поверхностей</param>
+        /// <param name="surfaceTags_n">[Out]Размер внутреннего массива идентификаторов поверхностей</param>
+        /// <param name="surfaceTags_nn">[Out]Размер внешнего массива идентификаторов поверхностей</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshModelOccGetSurfaceLoopsFun(int volumeTag, ref IntPtr surfaceLoopTags,
                                                             ref IntPtr surfaceLoopTags_n, ref IntPtr surfaceTags,
                                                             ref IntPtr surfaceTags_n, ref IntPtr surfaceTags_nn,
                                                             ref int ierr);
-            private gmshModelOccGetSurfaceLoopsFun gmshModelOccGetSurfaceLoops;
+        private gmshModelOccGetSurfaceLoopsFun gmshModelOccGetSurfaceLoops;
         #endregion
         #region "Mesh Delegates"
-            public delegate void gmshModelMeshGenerateFun(int dim, ref int ierr);
-            public gmshModelMeshGenerateFun gmshModelMeshGenerate;
-            public delegate void gmshModelMeshRecombineFun(ref int ierr);
-            public gmshModelMeshRecombineFun gmshModelMeshRecombine;
-            public delegate void gmshModelMeshRefineFun(ref int ierr);
-            public gmshModelMeshRefineFun gmshModelMeshRefine;
-            private delegate void gmshModelMeshGetElementsFun(ref IntPtr elementTypes, ref IntPtr elementTypes_n,
-                                                      ref IntPtr elementTags, ref IntPtr elementTags_n,
-                                                      ref IntPtr elementTags_nn, ref IntPtr nodeTags,
-                                                      ref IntPtr nodeTags_n, ref IntPtr nodeTags_nn,
-                                                      int dim, int tag, ref int ierr);
-            private gmshModelMeshGetElementsFun gmshModelMeshGetElements;
-            private delegate void gmshModelMeshGetElementTypesFun(ref IntPtr elementTypes, ref IntPtr elementTypes_n,
-                                                              int dim, int tag, ref int ierr);
-            private gmshModelMeshGetElementTypesFun gmshModelMeshGetElementTypes;
-            private delegate void gmshModelMeshGetElementPropertiesFun(int elementType, ref IntPtr elementName, ref int dim,
-                                                               ref int order, ref int numNodes, ref IntPtr localeNodeCoord,
-                                                               ref IntPtr localeNodeCoord_n, ref int numPrimaryNodes,
-                                                               ref int ierr);
-            private gmshModelMeshGetElementPropertiesFun gmshModelMeshGetElementProperties;
-            private delegate void gmshModelMeshGetNodesFun(ref IntPtr nodeTags, ref IntPtr nodeTags_n,
-                                                           ref IntPtr coord, ref IntPtr coord_n,
-                                                           ref IntPtr parametricCoord, ref IntPtr parametricCoord_n,
-                                                           int dim, int tag, int includeBoundary,
-                                                           int returnParametricCoord, ref int ierr);
-            private gmshModelMeshGetNodesFun gmshModelMeshGetNodes;
-            private delegate void gmshModelMeshGetNodesByElementTypeFun(int elementType, ref IntPtr nodeTags,
-                                                                        ref IntPtr nodeTags_n, ref IntPtr coord,
-                                                                        ref IntPtr coord_n, ref IntPtr parametricCoord,
-                                                                        ref IntPtr parametricCoord_n, int tag,
-                                                                        int returnParametricCoord, ref int ierr);
-            private gmshModelMeshGetNodesByElementTypeFun gmshModelMeshGetNodesByElementType;
-            public delegate void gmshModelMeshSetTransfiniteCurveFun(int tag, int numNodes, string meshType,
-                                                                      double coef, ref int ierr);
-            public gmshModelMeshSetTransfiniteCurveFun gmshModelMeshSetTransfiniteCurve;
-            public delegate void gmshModelMeshSetTransfiniteSurfaceFun(int tag, string arrangement, int[] cornerTags,
-                                                                       IntPtr cornerTags_n, ref int ierr);
-            public gmshModelMeshSetTransfiniteSurfaceFun gmshModelMeshSetTransfiniteSurface;
-            public delegate void gmshModelMeshSetTransfiniteVolumeFun(int tag, int[] cornerTags, IntPtr cornerTags_n,
-                                                                      ref int ierr);
-            public gmshModelMeshSetTransfiniteVolumeFun gmshModelMeshSetTransfiniteVolume;
-
-            private delegate void gmshModelMeshGetElementsByCoordinatesFun(double x, double y, double z,
-                                                                           ref IntPtr elementTags, ref IntPtr elementTags_n,
-                                                                           int dim, int strict, ref int ierr);
-            private gmshModelMeshGetElementsByCoordinatesFun gmshModelMeshGetElementsByCoordinates;
-            public delegate void gmshModelMeshGetLocalCoordinatesInElementFun(long elementTag, double x, double y, double z,
-                                                                               ref double u, ref double v, ref double w,
-                                                                               ref int ierr);
-            public gmshModelMeshGetLocalCoordinatesInElementFun gmshModelMeshGetLocalCoordinatesInElement;
-            public delegate void gmshModelMeshRebuildNodeCacheFun(int onlyIfNecessary, ref int ierr);
-            public gmshModelMeshRebuildNodeCacheFun gmshModelMeshRebuildNodeCache;
-            public delegate void gmshModelMeshRebuildElementCacheFun(int onlyIfNecessary, ref int ierr);
-            public gmshModelMeshRebuildElementCacheFun gmshModelMeshRebuildElementCache;
-            public delegate void gmshModelMeshClearFun(int[] dimTags, IntPtr dimTags_n, ref int ierr);
-            public gmshModelMeshClearFun gmshModelMeshClear;
-            public delegate void gmshModelMeshSetVisibilityFun(long[] elementTags, IntPtr elementTags_n,
-                                                                int value, ref int ierr);
-            public gmshModelMeshSetVisibilityFun gmshModelMeshSetVisibility;
-            public delegate void gmshModelMeshSetAlgorithmFun(int dim, int tag, int val, ref int ierr);
-            public gmshModelMeshSetAlgorithmFun gmshModelMeshSetAlgorithm;
-            private delegate void gmshModelMeshGetElementQualitiesFun(IntPtr[] elementTags, IntPtr elementTags_n,
+        /// <summary>
+        /// Генерирует сетку в текущей размерности
+        /// </summary>
+        /// <param name="dim">[In]Размерность в которой нужно сгенерировать модель</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelMeshGenerateFun(int dim, ref int ierr);///
+        public gmshModelMeshGenerateFun gmshModelMeshGenerate;
+        /// <summary>
+        /// Перегенерирует сетку преимущественно в четырехугольники
+        /// </summary>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelMeshRecombineFun(ref int ierr);///
+        public gmshModelMeshRecombineFun gmshModelMeshRecombine;
+        /// <summary>
+        /// Равномерно уплотняет сетку у текущей модели
+        /// </summary>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelMeshRefineFun(ref int ierr);///
+        public gmshModelMeshRefineFun gmshModelMeshRefine;
+        /// <summary>
+        /// Возвращает все элементы в текущей модели, их идентификаторы и идентификаторы точек внутри элемента
+        /// </summary>
+        /// <param name="elementTypes">[Out]Массив строк типов элементов</param>
+        /// <param name="elementTypes_n">[Out]Длина массива строк типов элементов</param>
+        /// <param name="elementTags">[Out]Матрица - массив идентификаторов для каждого типа элемента</param>
+        /// <param name="elementTags_n">[Out]Массив - длина массива идентификаторов для типов элементов</param>
+        /// <param name="elementTags_nn">[Out]Длина массива типов объектов, дублирует elementTypes_n</param>
+        /// <param name="nodeTags">[Out]Матрица - массив идентификаторов точек для типов элементов</param>
+        /// <param name="nodeTags_n">[Out]Массив - длина массива идентификаторов точек для типов объекта</param>
+        /// <param name="nodeTags_nn">[Out]Длина массива типов объектов, дублирует elementTypes_n</param>
+        /// <param name="dim">[In]Размерность для получения элементов, или -1 для получения элементов всех размерностей</param>
+        /// <param name="tag">[In]Идентификатор элемента в пределах dim, -1 для получения всех элементов</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshModelMeshGetElementsFun(ref IntPtr elementTypes, ref IntPtr elementTypes_n,
+                                                  ref IntPtr elementTags, ref IntPtr elementTags_n,
+                                                  ref IntPtr elementTags_nn, ref IntPtr nodeTags,
+                                                  ref IntPtr nodeTags_n, ref IntPtr nodeTags_nn,
+                                                  int dim, int tag, ref int ierr);
+        private gmshModelMeshGetElementsFun gmshModelMeshGetElements;
+        /// <summary>
+        /// Возращает типы элементов, для указанных dim:tag 
+        /// </summary>
+        /// <param name="elementTypes">[Out]Массив типов элементов</param>
+        /// <param name="elementTypes_n">[Out]Размерность массива типа</param>
+        /// <param name="dim">[In]Размерность для получения элементов, или -1 для получения элементов всех размерностей</param>
+        /// <param name="tag">[In]Идентификатор элемента в пределах dim, -1 для получения всех элементов</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshModelMeshGetElementTypesFun(ref IntPtr elementTypes, ref IntPtr elementTypes_n,
+                                                          int dim, int tag, ref int ierr);
+        private gmshModelMeshGetElementTypesFun gmshModelMeshGetElementTypes;
+        /// <summary>
+        /// Возвращает свойства элемента по заданному типу элемента
+        /// </summary>
+        /// <param name="elementType">[In]Тип элемента</param>
+        /// <param name="elementName">[Out]Имя элемента</param>
+        /// <param name="dim">[Out]Размерность элемента</param>
+        /// <param name="order">[Out]Порядок в сетке</param>
+        /// <param name="numNodes">[Out]Число точек в элементе</param>
+        /// <param name="localeNodeCoord">[Out]Массив локальных координат элемента</param>
+        /// <param name="localeNodeCoord_n">[Out]Размерность массива локальных координат</param>
+        /// <param name="numPrimaryNodes">[Out]Количество первичных точек</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshModelMeshGetElementPropertiesFun(int elementType, ref IntPtr elementName, ref int dim,
+                                                           ref int order, ref int numNodes, ref IntPtr localeNodeCoord,
+                                                           ref IntPtr localeNodeCoord_n, ref int numPrimaryNodes,
+                                                           ref int ierr);
+        private gmshModelMeshGetElementPropertiesFun gmshModelMeshGetElementProperties;
+        /// <summary>
+        /// Извлекает координаты точек и их идентификаторы, по заданный параметрам dim:tag элемента
+        /// </summary>
+        /// <param name="nodeTags">[Out]Массив идентификаторов точек</param>
+        /// <param name="nodeTags_n">[Out]Размер массива идентификаторов точек</param>
+        /// <param name="coord">[Out]Массив координат точек x,y,z</param>
+        /// <param name="coord_n">[Out]Размер массива координат точек</param>
+        /// <param name="parametricCoord">[Out]Массив параметрических координат u,u1,u2...</param>
+        /// <param name="parametricCoord_n">[Out]Размер массива параметрических координат</param>
+        /// <param name="dim">[In]Размерность для получения точек, или -1 для получения всех размерностей</param>
+        /// <param name="tag">[In]Идентификатор элемента в пределах dim, -1 для получения всех элементов</param>
+        /// <param name="includeBoundary">[In]Флаг получения ограничивающего параллелепипеда</param>
+        /// <param name="returnParametricCoord">[In]Флаг получения координат</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshModelMeshGetNodesFun(ref IntPtr nodeTags, ref IntPtr nodeTags_n,
+                                                       ref IntPtr coord, ref IntPtr coord_n,
+                                                       ref IntPtr parametricCoord, ref IntPtr parametricCoord_n,
+                                                       int dim, int tag, int includeBoundary,
+                                                       int returnParametricCoord, ref int ierr);
+        private gmshModelMeshGetNodesFun gmshModelMeshGetNodes;
+        /// <summary>
+        /// Извлекает координаты точек и их идентификаторы, для заданного типа элемента и идентификатора элемента
+        /// </summary>
+        /// <param name="elementType">[In]Тип элемента</param>
+        /// <param name="nodeTags">[Out]Массив идентификаторов точек</param>
+        /// <param name="nodeTags_n">[Out]Размер массива идентификаторов точек</param>
+        /// <param name="coord">[Out]Массив координат точек x,y,z</param>
+        /// <param name="coord_n">[Out]Размер массива координат точек</param>
+        /// <param name="parametricCoord">[Out]Массив параметрических координат u,u1,u2...</param>
+        /// <param name="parametricCoord_n">[Out]Размер массива параметрических координат</param>
+        /// <param name="tag">[In]Идентификатор элемента</param>
+        /// <param name="returnParametricCoord">[In]Возвращать параметрические координаты?</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshModelMeshGetNodesByElementTypeFun(int elementType, ref IntPtr nodeTags,
+                                                                    ref IntPtr nodeTags_n, ref IntPtr coord,
+                                                                    ref IntPtr coord_n, ref IntPtr parametricCoord,
+                                                                    ref IntPtr parametricCoord_n, int tag,
+                                                                    int returnParametricCoord, ref int ierr);
+        private gmshModelMeshGetNodesByElementTypeFun gmshModelMeshGetNodesByElementType;
+        /// <summary>
+        /// Задает количество опорных точек на кривой, по которой будет строиться сетка
+        /// </summary>
+        /// <param name="tag">[In]Идентификатор кривой</param>
+        /// <param name="numNodes">[In]Число точек на кривой</param>
+        /// <param name="meshType">[In]Алгоритм распределения точек</param>
+        /// <param name="coef">[In]Коэффициент прогрессии</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelMeshSetTransfiniteCurveFun(int tag, int numNodes, string meshType,
+                                                                  double coef, ref int ierr);///
+        public gmshModelMeshSetTransfiniteCurveFun gmshModelMeshSetTransfiniteCurve;
+        /// <summary>
+        /// Задает количество опорных точек для поверхности
+        /// </summary>
+        /// <param name="tag">[In]Идентифкатор поверхности</param>
+        /// <param name="arrangement">[In]Расположение "Left", "Right", "AlternateLeft", "AlternateRight"</param>
+        /// <param name="cornerTags">[In]Массив идентификаторов углов 3,4 и более по которым будет вестись инетрполяция</param>
+        /// <param name="cornerTags_n">[In]Размер массива идентификаторов</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelMeshSetTransfiniteSurfaceFun(int tag, string arrangement, int[] cornerTags,
+                                                                       IntPtr cornerTags_n, ref int ierr);///
+        public gmshModelMeshSetTransfiniteSurfaceFun gmshModelMeshSetTransfiniteSurface;
+        /// <summary>
+        /// Задает количество опорных точек для объема
+        /// </summary>
+        /// <param name="tag">[In]Идентификатор объема</param>
+        /// <param name="cornerTags">[In]Массив идентификаторов углов 6,8 по которым будет вестись инетрполяция</param>
+        /// <param name="cornerTags_n">[In]Размер массива идентификаторов</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelMeshSetTransfiniteVolumeFun(int tag, int[] cornerTags, IntPtr cornerTags_n,
+                                                                  ref int ierr);///
+        public gmshModelMeshSetTransfiniteVolumeFun gmshModelMeshSetTransfiniteVolume;
+        /// <summary>
+        /// Находит элементы сетки по переданной координате x,y,z
+        /// </summary>
+        /// <param name="x">[In]Координата x</param>
+        /// <param name="y">[In]Координата y</param>
+        /// <param name="z">[In]Координата z</param>
+        /// <param name="elementTags">[Out]Массив найденных элементов</param>
+        /// <param name="elementTags_n">[Out]Размер массива</param>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="strict">[In]Строгий поиск?</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshModelMeshGetElementsByCoordinatesFun(double x, double y, double z,
+                                                                       ref IntPtr elementTags, ref IntPtr elementTags_n,
+                                                                       int dim, int strict, ref int ierr);
+        private gmshModelMeshGetElementsByCoordinatesFun gmshModelMeshGetElementsByCoordinates;
+        /// <summary>
+        /// Получает локальные координаты элемента с заданным идентификатором
+        /// </summary>
+        /// <param name="elementTag">[In]Идентификатор элемента</param>
+        /// <param name="x">[In]Координата x</param>
+        /// <param name="y">[In]Координата y</param>
+        /// <param name="z">[In]Координата z</param>
+        /// <param name="u">[Out]Параметрические координаты u</param>
+        /// <param name="v">[Out]Параметрические координаты v</param>
+        /// <param name="w">[Out]Параметрические координаты w</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelMeshGetLocalCoordinatesInElementFun(long elementTag, double x, double y, double z,
+                                                                                   ref double u, ref double v, ref double w,
+                                                                                   ref int ierr);///
+        public gmshModelMeshGetLocalCoordinatesInElementFun gmshModelMeshGetLocalCoordinatesInElement;
+        /// <summary>
+        /// Перестроить кеш точек
+        /// </summary>
+        /// <param name="onlyIfNecessary">[In]Флаг удаления</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelMeshRebuildNodeCacheFun(int onlyIfNecessary, ref int ierr);///
+        public gmshModelMeshRebuildNodeCacheFun gmshModelMeshRebuildNodeCache;
+        /// <summary>
+        /// Перестроить кеш элементов
+        /// </summary>
+        /// <param name="onlyIfNecessary">[In]Флаг удаления</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelMeshRebuildElementCacheFun(int onlyIfNecessary, ref int ierr);///
+        public gmshModelMeshRebuildElementCacheFun gmshModelMeshRebuildElementCache;
+        /// <summary>
+        /// Удаляет сетку свзанную с массивом пар dim:tag, включая точки
+        /// </summary>
+        /// <param name="dimTags">[In]Пары dim:tag</param>
+        /// <param name="dimTags_n">[In]Длина массива dim:tag</param>
+        /// <param name="ierr">[Out]Флаг ошибок</param>
+        public delegate void gmshModelMeshClearFun(int[] dimTags, IntPtr dimTags_n, ref int ierr);///
+        public gmshModelMeshClearFun gmshModelMeshClear;
+        /// <summary>
+        /// Задать видимость элементов
+        /// </summary>
+        /// <param name="elementTags">[In]Массив элементов</param>
+        /// <param name="elementTags_n">[In]Размер массива элементов</param>
+        /// <param name="value">[In]Значение видимости</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelMeshSetVisibilityFun(long[] elementTags, IntPtr elementTags_n,
+                                                            int value, ref int ierr);///
+        public gmshModelMeshSetVisibilityFun gmshModelMeshSetVisibility;
+        /// <summary>
+        /// Устанавливает алгоритм триангуляции для сетки
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="val">[In]Численное значение поля алгоритма</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelMeshSetAlgorithmFun(int dim, int tag, int val, ref int ierr);///
+        public gmshModelMeshSetAlgorithmFun gmshModelMeshSetAlgorithm;
+        /// <summary>
+        /// Получить качество элемента
+        /// </summary>
+        /// <param name="elementTags">[In]Массив идентификаторов элементов</param>
+        /// <param name="elementTags_n">[In]Размер массива идентификаторов</param>
+        /// <param name="elementsQuality">[Out]Массив качеств элементов</param>
+        /// <param name="elementQuality_n">[Out]Размер массив качеств элементов</param>
+        /// <param name="qualityName">[In]Строка-запроса (minDetJac,maxDetJac,minSJ, minSICN, minSIGE, gamma,
+        /// innerRadius, outerRadius, minIsotropy, angleShape, minEdge, maxEdge, volume) </param>
+        /// <param name="task">[In]Task</param>
+        /// <param name="numTasks">[In]NumTask</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshModelMeshGetElementQualitiesFun(IntPtr[] elementTags, IntPtr elementTags_n,
                                                                       ref IntPtr elementsQuality, ref IntPtr elementQuality_n,
                                                                       string qualityName, IntPtr task,
                                                                       IntPtr numTasks, ref int ierr);
-            private gmshModelMeshGetElementQualitiesFun gmshModelMeshGetElementQualities;
+        private gmshModelMeshGetElementQualitiesFun gmshModelMeshGetElementQualities;
         #endregion
         #region "Mesh Field Delegates"
-            public delegate int gmshModelMeshFieldAddFun(string fieldType, int tag, ref int ierr);
-            public gmshModelMeshFieldAddFun gmshModelMeshFieldAdd;
-            public delegate void gmshModelMeshFieldRemoveFun(int tag, ref int ierr);
-            public gmshModelMeshFieldRemoveFun gmshModelMeshFieldRemove;
-            private delegate void gmshModelMeshFieldListFun(ref IntPtr tags, ref IntPtr tags_n, ref int ierr);
-            private gmshModelMeshFieldListFun gmshModelMeshFieldList;
-            private delegate void gmshModelMeshFieldGetTypeFun(int tag, ref IntPtr fieldType, ref int ierr);
-            private gmshModelMeshFieldGetTypeFun gmshModelMeshFieldGetType;
-            public delegate void gmshModelMeshFieldSetNumberFun(int tag, string option, double value, ref int ierr);
-            public gmshModelMeshFieldSetNumberFun gmshModelMeshFieldSetNumber;
-            public delegate void gmshModelMeshFieldGetNumberFun(int tag, string option, ref double value, ref int ierr);
-            public gmshModelMeshFieldGetNumberFun gmshModelMeshFieldGetNumber;
-            public delegate void gmshModelMeshFieldSetStringFun(int tag, string option, string value, ref int ierr);
-            public gmshModelMeshFieldSetStringFun gmshModelMeshFieldSetString;
-            private delegate void gmshModelMeshFieldGetStringFun(int tag, string option, ref IntPtr value, ref int ierr);
-            private gmshModelMeshFieldGetStringFun gmshModelMeshFieldGetString;
-            public delegate void gmshModelMeshFieldSetNumbersFun(int tag, string option, double[] values,
-                                                                  IntPtr values_n, ref int ierr);
-            public gmshModelMeshFieldSetNumbersFun gmshModelMeshFieldSetNumbers;
-            private delegate void gmshModelMeshFieldGetNumbersFun(int tag, string option, ref IntPtr values,
-                                                                  ref IntPtr values_n, ref int ierr);
-            private gmshModelMeshFieldGetNumbersFun gmshModelMeshFieldGetNumbers;
-            public delegate void gmshModelMeshFieldSetAsBackgroundMeshFun(int tag, ref int ierr);
-            public gmshModelMeshFieldSetAsBackgroundMeshFun gmshModelMeshFieldSetAsBackgroundMesh;
-            public delegate void gmshModelMeshFieldSetAsBoundaryLayerFun(int tag, ref int ierr);
-            public gmshModelMeshFieldSetAsBoundaryLayerFun gmshModelMeshFieldSetAsBoundaryLayer;
+        /// <summary>
+        /// Добавить объект MeshField
+        /// </summary>
+        /// <param name="fieldType">[In]Тип поля</param>
+        /// <param name="tag">[In]Идентификатор (может быть -1, выделится автоматически)</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        /// <returns>Идентификатор объекта Field</returns>
+        public delegate int gmshModelMeshFieldAddFun(string fieldType, int tag, ref int ierr);///
+        public gmshModelMeshFieldAddFun gmshModelMeshFieldAdd;
+        /// <summary>
+        /// Удалить объект MeshField
+        /// </summary>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelMeshFieldRemoveFun(int tag, ref int ierr);///
+        public gmshModelMeshFieldRemoveFun gmshModelMeshFieldRemove;
+        /// <summary>
+        /// Возвращает список объектов MeshField
+        /// </summary>
+        /// <param name="tags">[Out]Идентификаторы</param>
+        /// <param name="tags_n">[Out]Количество идентификаторов</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshModelMeshFieldListFun(ref IntPtr tags, ref IntPtr tags_n, ref int ierr);
+        private gmshModelMeshFieldListFun gmshModelMeshFieldList;
+        /// <summary>
+        /// Возвращает тип поля по заданному идентификатору
+        /// </summary>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="fieldType">[Out]Тип поля</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshModelMeshFieldGetTypeFun(int tag, ref IntPtr fieldType, ref int ierr);
+        private gmshModelMeshFieldGetTypeFun gmshModelMeshFieldGetType;
+        /// <summary>
+        /// Задает значение опции поля
+        /// </summary>
+        /// <param name="tag">[In]Идентификатор поля</param>
+        /// <param name="option">[In]Опция</param>
+        /// <param name="value">[In]Значение</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelMeshFieldSetNumberFun(int tag, string option, double value, ref int ierr);///
+        public gmshModelMeshFieldSetNumberFun gmshModelMeshFieldSetNumber;
+        /// <summary>
+        /// Возвращает значение опции поля
+        /// </summary>
+        /// <param name="tag">[In]Идентификатор поля</param>
+        /// <param name="option">[In]Опция</param>
+        /// <param name="value">[In]Значение</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelMeshFieldGetNumberFun(int tag, string option, ref double value, ref int ierr);///
+        public gmshModelMeshFieldGetNumberFun gmshModelMeshFieldGetNumber;
+        /// <summary>
+        /// Задает строку значений для опции
+        /// </summary>
+        /// <param name="tag">[In]Идентификатор поля</param>
+        /// <param name="option">[In]Опция</param>
+        /// <param name="value">[In]Значения опции</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelMeshFieldSetStringFun(int tag, string option, string value, ref int ierr);///
+        public gmshModelMeshFieldSetStringFun gmshModelMeshFieldSetString;
+        /// <summary>
+        /// Возвращает строку значений для опции
+        /// </summary>
+        /// <param name="tag">[In]Идентификатор поля</param>
+        /// <param name="option">[In]Имя опции</param>
+        /// <param name="value">[Out]Набор значений</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshModelMeshFieldGetStringFun(int tag, string option, ref IntPtr value, ref int ierr);
+        private gmshModelMeshFieldGetStringFun gmshModelMeshFieldGetString;
+        /// <summary>
+        /// Задает список значений для опции 
+        /// </summary>
+        /// <param name="tag">[In]Идентификатор поля</param>
+        /// <param name="option">[In]Имя опции</param>
+        /// <param name="values">[In]Массив значений</param>
+        /// <param name="values_n">[In]количество значений</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelMeshFieldSetNumbersFun(int tag, string option, double[] values,
+                                                              IntPtr values_n, ref int ierr);///
+        public gmshModelMeshFieldSetNumbersFun gmshModelMeshFieldSetNumbers;
+        /// <summary>
+        /// Возвращает список значений для опции 
+        /// </summary>
+        /// <param name="tag">[In]Идентификатор поля</param>
+        /// <param name="option">[In]Имя опции</param>
+        /// <param name="values">[Out]Массив значений типа double</param>
+        /// <param name="values_n">[Out]Количество значений типа double</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshModelMeshFieldGetNumbersFun(int tag, string option, ref IntPtr values,
+                                                              ref IntPtr values_n, ref int ierr);
+        private gmshModelMeshFieldGetNumbersFun gmshModelMeshFieldGetNumbers;
+        /// <summary>
+        /// Установить поле как BackgroundMesh
+        /// </summary>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelMeshFieldSetAsBackgroundMeshFun(int tag, ref int ierr);///
+        public gmshModelMeshFieldSetAsBackgroundMeshFun gmshModelMeshFieldSetAsBackgroundMesh;
+        /// <summary>
+        /// Установить поле как BoundaryLayer
+        /// </summary>
+        /// <param name="tag">[In]Идентифкатор поля</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelMeshFieldSetAsBoundaryLayerFun(int tag, ref int ierr);///
+        public gmshModelMeshFieldSetAsBoundaryLayerFun gmshModelMeshFieldSetAsBoundaryLayer;
         #endregion
         #region "Logger Delegates"
-            public delegate void gmshLoggerStartFun(ref int ierr);
-            public gmshLoggerStartFun gmshLoggerStart;
-            public delegate void gmshLoggerStopFun(ref int ierr);
-            public gmshLoggerStopFun gmshLoggerStop;
-            private delegate void gmshLoggerGetFun(ref IntPtr log, ref IntPtr log_n, ref int ierr);
-            private gmshLoggerGetFun gmshLoggerGet;
-            private delegate void gmshLoggerGetLastErrorFun(ref IntPtr error, ref int ierr);
-            private gmshLoggerGetLastErrorFun gmshLoggerGetLastError;
+        /// <summary>
+        /// Начать запись журнала
+        /// </summary>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshLoggerStartFun(ref int ierr);///
+        public gmshLoggerStartFun gmshLoggerStart;
+        /// <summary>
+        /// Остановить запись журнала
+        /// </summary>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshLoggerStopFun(ref int ierr);///
+        public gmshLoggerStopFun gmshLoggerStop;
+        /// <summary>
+        /// Вернуть записи в журнале
+        /// </summary>
+        /// <param name="log">[Out]Массив записей</param>
+        /// <param name="log_n">[Out]Размер массива записей</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshLoggerGetFun(ref IntPtr log, ref IntPtr log_n, ref int ierr);
+        private gmshLoggerGetFun gmshLoggerGet;
+        /// <summary>
+        /// Вернуть последнюю запись об ошибке в журнале
+        /// </summary>
+        /// <param name="error">[Out]Запись ошибки</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshLoggerGetLastErrorFun(ref IntPtr error, ref int ierr);
+        private gmshLoggerGetLastErrorFun gmshLoggerGetLastError;
         #endregion
+        /// <summary>
+        /// Конструктор
+        /// </summary>
+        /// <param name="dllToLoad">Путь до DLL</param>
         public GmshController(string dllToLoad)
         {
             DLL = GmshKernel.GmshKernel.LoadLibrary(dllToLoad);
             #region "Get Initialization delegates"
-                gmshInitialize = GetFunction<gmshInitializeFun>("gmshInitialize");
-                gmshIsInitialized = GetFunction<gmshIsInitializedFun>("gmshIsInitialized");
-                gmshFinalize = GetFunction<gmshFinalizeFun>("gmshFinalize");
+            gmshInitialize = GetFunction<gmshInitializeFun>("gmshInitialize");
+            gmshIsInitialized = GetFunction<gmshIsInitializedFun>("gmshIsInitialized");
+            gmshFinalize = GetFunction<gmshFinalizeFun>("gmshFinalize");
             #endregion
             #region "Get Memory delegates"
-                gmshMalloc = GetFunction<gmshMallocFun>("gmshMalloc");
-                gmshFree = GetFunction<gmshFreeFun>("gmshFree");
+            gmshMalloc = GetFunction<gmshMallocFun>("gmshMalloc");
+            gmshFree = GetFunction<gmshFreeFun>("gmshFree");
             #endregion
             #region "Get General delegates"
-                gmshOptionSetNumber = GetFunction<gmshOptionSetNumberFun>("gmshOptionSetNumber");
-                gmshOptionGetNumber = GetFunction<gmshOptionGetNumberFun>("gmshOptionGetNumber");
-                gmshOptionSetString = GetFunction<gmshOptionSetStringFun>("gmshOptionSetString");
-                //Private members
-                gmshOptionGetString = GetFunction<gmshOptionGetStringFun>("gmshOptionGetString");
+            gmshOptionSetNumber = GetFunction<gmshOptionSetNumberFun>("gmshOptionSetNumber");
+            gmshOptionGetNumber = GetFunction<gmshOptionGetNumberFun>("gmshOptionGetNumber");
+            gmshOptionSetString = GetFunction<gmshOptionSetStringFun>("gmshOptionSetString");
+            //Private members
+            gmshOptionGetString = GetFunction<gmshOptionGetStringFun>("gmshOptionGetString");
             #endregion
             #region "Get Plugin delegates"
-                gmshPluginSetNumber = GetFunction<gmshPluginSetNumberFun>("gmshPluginSetNumber");
-                gmshPluginSetString = GetFunction<gmshPluginSetStringFun>("gmshPluginSetString");
-                gmshPluginRun = GetFunction<gmshPluginRunFun>("gmshPluginRun");
+            gmshPluginSetNumber = GetFunction<gmshPluginSetNumberFun>("gmshPluginSetNumber");
+            gmshPluginSetString = GetFunction<gmshPluginSetStringFun>("gmshPluginSetString");
+            gmshPluginRun = GetFunction<gmshPluginRunFun>("gmshPluginRun");
             #endregion
             #region "Get IO delegates"
-                gmshOpen = GetFunction<gmshOpenFun>("gmshOpen");
-                gmshMerge = GetFunction<gmshMergeFun>("gmshMerge");
-                gmshWrite = GetFunction<gmshWriteFun>("gmshWrite");
+            gmshOpen = GetFunction<gmshOpenFun>("gmshOpen");
+            gmshMerge = GetFunction<gmshMergeFun>("gmshMerge");
+            gmshWrite = GetFunction<gmshWriteFun>("gmshWrite");
             #endregion
             #region "Get Model delegates"
-                gmshModelSetFileName = GetFunction<gmshModelSetFileNameFun>("gmshModelSetFileName");
-                gmshModelAdd = GetFunction<gmshModelAddFun>("gmshModelAdd");
-                gmshModelRemove = GetFunction<gmshModelRemoveFun>("gmshModelRemove");
-                gmshClear = GetFunction<gmshClearFun>("gmshClear");
-                gmshModelSetCurrent = GetFunction<gmshModelSetCurrentFun>("gmshModelSetCurrent");
-                gmshModelOccSynchronize = GetFunction<gmshModelOccSynchronizeFun>("gmshModelOccSynchronize");
-                gmshModelGeoSynchronize = GetFunction<gmshModelGeoSynchronizeFun>("gmshModelGeoSynchronize");
-                //Private members
-                gmshModelGetFileName = GetFunction<gmshModelGetFileNameFun>("gmshModelGetFileName");
-                gmshModelList = GetFunction<gmshModelListFun>("gmshModelList");
-                gmshModelGetCurrent = GetFunction<gmshModelGetCurrentFun>("gmshModelGetCurrent");
-                gmshModelOccImportShapes = GetFunction<gmshModelOccImportShapesFun>("gmshModelOccImportShapes");
+            gmshModelSetFileName = GetFunction<gmshModelSetFileNameFun>("gmshModelSetFileName");
+            gmshModelAdd = GetFunction<gmshModelAddFun>("gmshModelAdd");
+            gmshModelRemove = GetFunction<gmshModelRemoveFun>("gmshModelRemove");
+            gmshClear = GetFunction<gmshClearFun>("gmshClear");
+            gmshModelSetCurrent = GetFunction<gmshModelSetCurrentFun>("gmshModelSetCurrent");
+            gmshModelOccSynchronize = GetFunction<gmshModelOccSynchronizeFun>("gmshModelOccSynchronize");
+            gmshModelGeoSynchronize = GetFunction<gmshModelGeoSynchronizeFun>("gmshModelGeoSynchronize");
+            //Private members
+            gmshModelGetFileName = GetFunction<gmshModelGetFileNameFun>("gmshModelGetFileName");
+            gmshModelList = GetFunction<gmshModelListFun>("gmshModelList");
+            gmshModelGetCurrent = GetFunction<gmshModelGetCurrentFun>("gmshModelGetCurrent");
+            gmshModelOccImportShapes = GetFunction<gmshModelOccImportShapesFun>("gmshModelOccImportShapes");
             #endregion
             #region "Get Geometry delegates"
-                gmshModelGetEntities = GetFunction<gmshModelGetEntitiesFun>("gmshModelGetEntities");
-                gmshModelOccGetEntities = GetFunction<gmshModelOccGetEntitiesFun>("gmshModelOccGetEntities");
-                gmshModelRemoveEntities = GetFunction<gmshModelRemoveEntitiesFun>("gmshModelRemoveEntities");
-                gmshModelOccRemove = GetFunction<gmshModelOccRemoveFun>("gmshModelOccRemove");
-                gmshModelSetEntityName = GetFunction<gmshModelSetEntityNameFun>("gmshModelSetEntityName");
-                gmshModelGetEntityName = GetFunction<gmshModelGetEntityNameFun>("gmshModelGetEntityName");
-                gmshModelRemoveEntityName = GetFunction<gmshModelRemoveEntityNameFun>("gmshModelRemoveEntityName");
-                gmshModelGetBoundingBox = GetFunction<gmshModelGetBoundingBoxFun>("gmshModelGetBoundingBox");
-                gmshModelGetAdjacencies = GetFunction<gmshModelGetAdjacenciesFun>("gmshModelGetAdjacencies");
-                gmshModelGetBoundary = GetFunction<gmshModelGetBoundaryFun>("gmshModelGetBoundary");
-                gmshModelGetType = GetFunction<gmshModelGetTypeFun>("gmshModelGetType");
-                gmshModelGetDimension = GetFunction<gmshModelGetDimensionFun>("gmshModelGetDimension");
-                gmshModelIsInside = GetFunction<gmshModelIsInsideFun>("gmshModelIsInside");
-                gmshModelSetVisibility = GetFunction<gmshModelSetVisibilityFun>("gmshModelSetVisibility");
-                gmshModelSetAttribute = GetFunction<gmshModelSetAttributeFun>("gmshModelSetAttribute");
-                gmshModelGetAttribute = GetFunction<gmshModelGetAttributeFun>("gmshModelGetAttribute");
-                gmshModelGetAttributeNames = GetFunction<gmshModelGetAttributeNamesFun>("gmshModelGetAttributeNames");
-                gmshModelRemoveAttribute = GetFunction<gmshModelRemoveAttributeFun>("gmshModelRemoveAttribute");
-                gmshModelGetPhysicalName = GetFunction<gmshModelGetPhysicalNameFun>("gmshModelGetPhysicalName");
-                gmshModelGetDerivative = GetFunction<gmshModelGetDerivativeFun>("gmshModelGetDerivative");
-                gmshModelGetSecondDerivative = GetFunction<gmshModelGetSecondDerivativeFun>("gmshModelGetSecondDerivative");
-                gmshModelGetCurvature = GetFunction<gmshModelGetCurvatureFun>("gmshModelGetCurvature");
-                gmshModelGetValue = GetFunction<gmshModelGetValueFun>("gmshModelGetValue");
-                gmshModelGetParametrization = GetFunction<gmshModelGetParametrizationFun>("gmshModelGetParametrization");
-                gmshModelGetParametrizationBounds = GetFunction<gmshModelGetParametrizationBoundsFun>("gmshModelGetParametrizationBounds");
-                gmshModelReparametrizeOnSurface = GetFunction<gmshModelReparametrizeOnSurfaceFun>("gmshModelReparametrizeOnSurface");
-                gmshModelOccGetCurveLoops = GetFunction<gmshModelOccGetCurveLoopsFun>("gmshModelOccGetCurveLoops");
-                gmshModelOccGetSurfaceLoops = GetFunction<gmshModelOccGetSurfaceLoopsFun>("gmshModelOccGetSurfaceLoops");
+            gmshModelGetEntities = GetFunction<gmshModelGetEntitiesFun>("gmshModelGetEntities");
+            gmshModelOccGetEntities = GetFunction<gmshModelOccGetEntitiesFun>("gmshModelOccGetEntities");
+            gmshModelRemoveEntities = GetFunction<gmshModelRemoveEntitiesFun>("gmshModelRemoveEntities");
+            gmshModelOccRemove = GetFunction<gmshModelOccRemoveFun>("gmshModelOccRemove");
+            gmshModelSetEntityName = GetFunction<gmshModelSetEntityNameFun>("gmshModelSetEntityName");
+            gmshModelGetEntityName = GetFunction<gmshModelGetEntityNameFun>("gmshModelGetEntityName");
+            gmshModelRemoveEntityName = GetFunction<gmshModelRemoveEntityNameFun>("gmshModelRemoveEntityName");
+            gmshModelGetBoundingBox = GetFunction<gmshModelGetBoundingBoxFun>("gmshModelGetBoundingBox");
+            gmshModelGetAdjacencies = GetFunction<gmshModelGetAdjacenciesFun>("gmshModelGetAdjacencies");
+            gmshModelGetBoundary = GetFunction<gmshModelGetBoundaryFun>("gmshModelGetBoundary");
+            gmshModelGetType = GetFunction<gmshModelGetTypeFun>("gmshModelGetType");
+            gmshModelGetDimension = GetFunction<gmshModelGetDimensionFun>("gmshModelGetDimension");
+            gmshModelIsInside = GetFunction<gmshModelIsInsideFun>("gmshModelIsInside");
+            gmshModelSetVisibility = GetFunction<gmshModelSetVisibilityFun>("gmshModelSetVisibility");
+            gmshModelSetAttribute = GetFunction<gmshModelSetAttributeFun>("gmshModelSetAttribute");
+            gmshModelGetAttribute = GetFunction<gmshModelGetAttributeFun>("gmshModelGetAttribute");
+            gmshModelGeoAddSurfaceLoop = GetFunction<gmshModelGeoAddSurfaceLoopFun>("gmshModelGeoAddSurfaceLoop");
+            gmshModelGeoAddVolume = GetFunction<gmshModelGeoAddVolumeFun>("gmshModelGeoAddVolume");
+            gmshModelGetAttributeNames = GetFunction<gmshModelGetAttributeNamesFun>("gmshModelGetAttributeNames");
+            gmshModelRemoveAttribute = GetFunction<gmshModelRemoveAttributeFun>("gmshModelRemoveAttribute");
+            gmshModelGetPhysicalName = GetFunction<gmshModelGetPhysicalNameFun>("gmshModelGetPhysicalName");
+            gmshModelGetDerivative = GetFunction<gmshModelGetDerivativeFun>("gmshModelGetDerivative");
+            gmshModelGetSecondDerivative = GetFunction<gmshModelGetSecondDerivativeFun>("gmshModelGetSecondDerivative");
+            gmshModelGetCurvature = GetFunction<gmshModelGetCurvatureFun>("gmshModelGetCurvature");
+            gmshModelGetValue = GetFunction<gmshModelGetValueFun>("gmshModelGetValue");
+            gmshModelGetParametrization = GetFunction<gmshModelGetParametrizationFun>("gmshModelGetParametrization");
+            gmshModelGetParametrizationBounds = GetFunction<gmshModelGetParametrizationBoundsFun>("gmshModelGetParametrizationBounds");
+            gmshModelReparametrizeOnSurface = GetFunction<gmshModelReparametrizeOnSurfaceFun>("gmshModelReparametrizeOnSurface");
+            gmshModelOccGetCurveLoops = GetFunction<gmshModelOccGetCurveLoopsFun>("gmshModelOccGetCurveLoops");
+            gmshModelOccGetSurfaceLoops = GetFunction<gmshModelOccGetSurfaceLoopsFun>("gmshModelOccGetSurfaceLoops");
             #endregion
             #region "Get Mesh delegates"
-                gmshModelMeshGenerate = GetFunction<gmshModelMeshGenerateFun>("gmshModelMeshGenerate");
-                gmshModelMeshRecombine = GetFunction<gmshModelMeshRecombineFun>("gmshModelMeshRecombine");
-                gmshModelMeshRefine = GetFunction<gmshModelMeshRefineFun>("gmshModelMeshRefine");
-                gmshModelMeshGetElements = GetFunction<gmshModelMeshGetElementsFun>("gmshModelMeshGetElements");
-                gmshModelMeshGetElementTypes = GetFunction<gmshModelMeshGetElementTypesFun>("gmshModelMeshGetElementTypes");
-                gmshModelMeshGetElementProperties = GetFunction<gmshModelMeshGetElementPropertiesFun>("gmshModelMeshGetElementProperties");
-                gmshModelMeshGetNodes = GetFunction<gmshModelMeshGetNodesFun>("gmshModelMeshGetNodes");
-                gmshModelMeshGetNodesByElementType = GetFunction<gmshModelMeshGetNodesByElementTypeFun>("gmshModelMeshGetNodesByElementType");
-                gmshModelMeshSetTransfiniteCurve = GetFunction<gmshModelMeshSetTransfiniteCurveFun>("gmshModelMeshSetTransfiniteCurve");
-                gmshModelMeshSetTransfiniteSurface = GetFunction<gmshModelMeshSetTransfiniteSurfaceFun>("gmshModelMeshSetTransfiniteSurface");
-                gmshModelMeshSetTransfiniteVolume = GetFunction<gmshModelMeshSetTransfiniteVolumeFun>("gmshModelMeshSetTransfiniteVolume");
-                gmshModelMeshGetElementsByCoordinates = GetFunction<gmshModelMeshGetElementsByCoordinatesFun>("gmshModelMeshGetElementsByCoordinates");
-                gmshModelMeshGetLocalCoordinatesInElement = GetFunction<gmshModelMeshGetLocalCoordinatesInElementFun>("gmshModelMeshGetLocalCoordinatesInElement");
-                gmshModelMeshRebuildNodeCache = GetFunction<gmshModelMeshRebuildNodeCacheFun>("gmshModelMeshRebuildNodeCache");
-                gmshModelMeshRebuildElementCache = GetFunction<gmshModelMeshRebuildElementCacheFun>("gmshModelMeshRebuildElementCache");
-                gmshModelMeshClear = GetFunction<gmshModelMeshClearFun>("gmshModelMeshClear");
-                gmshModelMeshSetVisibility = GetFunction<gmshModelMeshSetVisibilityFun>("gmshModelMeshSetVisibility");
-                gmshModelMeshSetAlgorithm = GetFunction<gmshModelMeshSetAlgorithmFun>("gmshModelMeshSetAlgorithm");
-                gmshModelMeshGetElementQualities = GetFunction<gmshModelMeshGetElementQualitiesFun>("gmshModelMeshGetElementQualities");
+            gmshModelMeshGenerate = GetFunction<gmshModelMeshGenerateFun>("gmshModelMeshGenerate");
+            gmshModelMeshRecombine = GetFunction<gmshModelMeshRecombineFun>("gmshModelMeshRecombine");
+            gmshModelMeshRefine = GetFunction<gmshModelMeshRefineFun>("gmshModelMeshRefine");
+            gmshModelMeshGetElements = GetFunction<gmshModelMeshGetElementsFun>("gmshModelMeshGetElements");
+            gmshModelMeshGetElementTypes = GetFunction<gmshModelMeshGetElementTypesFun>("gmshModelMeshGetElementTypes");
+            gmshModelMeshGetElementProperties = GetFunction<gmshModelMeshGetElementPropertiesFun>("gmshModelMeshGetElementProperties");
+            gmshModelMeshGetNodes = GetFunction<gmshModelMeshGetNodesFun>("gmshModelMeshGetNodes");
+            gmshModelMeshGetNodesByElementType = GetFunction<gmshModelMeshGetNodesByElementTypeFun>("gmshModelMeshGetNodesByElementType");
+            gmshModelMeshSetTransfiniteCurve = GetFunction<gmshModelMeshSetTransfiniteCurveFun>("gmshModelMeshSetTransfiniteCurve");
+            gmshModelMeshSetTransfiniteSurface = GetFunction<gmshModelMeshSetTransfiniteSurfaceFun>("gmshModelMeshSetTransfiniteSurface");
+            gmshModelMeshSetTransfiniteVolume = GetFunction<gmshModelMeshSetTransfiniteVolumeFun>("gmshModelMeshSetTransfiniteVolume");
+            gmshModelMeshGetElementsByCoordinates = GetFunction<gmshModelMeshGetElementsByCoordinatesFun>("gmshModelMeshGetElementsByCoordinates");
+            gmshModelMeshGetLocalCoordinatesInElement = GetFunction<gmshModelMeshGetLocalCoordinatesInElementFun>("gmshModelMeshGetLocalCoordinatesInElement");
+            gmshModelMeshRebuildNodeCache = GetFunction<gmshModelMeshRebuildNodeCacheFun>("gmshModelMeshRebuildNodeCache");
+            gmshModelMeshRebuildElementCache = GetFunction<gmshModelMeshRebuildElementCacheFun>("gmshModelMeshRebuildElementCache");
+            gmshModelMeshClear = GetFunction<gmshModelMeshClearFun>("gmshModelMeshClear");
+            gmshModelMeshSetVisibility = GetFunction<gmshModelMeshSetVisibilityFun>("gmshModelMeshSetVisibility");
+            gmshModelMeshSetAlgorithm = GetFunction<gmshModelMeshSetAlgorithmFun>("gmshModelMeshSetAlgorithm");
+            gmshModelMeshGetElementQualities = GetFunction<gmshModelMeshGetElementQualitiesFun>("gmshModelMeshGetElementQualities");
             #endregion
             #region "Get Mesh Field delegates"
-                gmshModelMeshFieldAdd = GetFunction<gmshModelMeshFieldAddFun>("gmshModelMeshFieldAdd");
-                gmshModelMeshFieldRemove = GetFunction<gmshModelMeshFieldRemoveFun>("gmshModelMeshFieldRemove");
-                gmshModelMeshFieldList = GetFunction<gmshModelMeshFieldListFun>("gmshModelMeshFieldList");
-                gmshModelMeshFieldGetType = GetFunction<gmshModelMeshFieldGetTypeFun>("gmshModelMeshFieldGetType");
-                gmshModelMeshFieldSetNumber = GetFunction<gmshModelMeshFieldSetNumberFun>("gmshModelMeshFieldSetNumber");
-                gmshModelMeshFieldGetNumber = GetFunction<gmshModelMeshFieldGetNumberFun>("gmshModelMeshFieldGetNumber");
-                gmshModelMeshFieldGetString = GetFunction<gmshModelMeshFieldGetStringFun>("gmshModelMeshFieldGetString");
-                gmshModelMeshFieldSetString = GetFunction<gmshModelMeshFieldSetStringFun>("gmshModelMeshFieldSetString");
-                gmshModelMeshFieldSetNumbers = GetFunction<gmshModelMeshFieldSetNumbersFun>("gmshModelMeshFieldSetNumbers");
-                gmshModelMeshFieldGetNumbers = GetFunction<gmshModelMeshFieldGetNumbersFun>("gmshModelMeshFieldGetNumbers");
-                gmshModelMeshFieldSetAsBackgroundMesh = GetFunction<gmshModelMeshFieldSetAsBackgroundMeshFun>("gmshModelMeshFieldSetAsBackgroundMesh");
-                gmshModelMeshFieldSetAsBoundaryLayer = GetFunction<gmshModelMeshFieldSetAsBoundaryLayerFun>("gmshModelMeshFieldSetAsBoundaryLayer");
+            gmshModelMeshFieldAdd = GetFunction<gmshModelMeshFieldAddFun>("gmshModelMeshFieldAdd");
+            gmshModelMeshFieldRemove = GetFunction<gmshModelMeshFieldRemoveFun>("gmshModelMeshFieldRemove");
+            gmshModelMeshFieldList = GetFunction<gmshModelMeshFieldListFun>("gmshModelMeshFieldList");
+            gmshModelMeshFieldGetType = GetFunction<gmshModelMeshFieldGetTypeFun>("gmshModelMeshFieldGetType");
+            gmshModelMeshFieldSetNumber = GetFunction<gmshModelMeshFieldSetNumberFun>("gmshModelMeshFieldSetNumber");
+            gmshModelMeshFieldGetNumber = GetFunction<gmshModelMeshFieldGetNumberFun>("gmshModelMeshFieldGetNumber");
+            gmshModelMeshFieldGetString = GetFunction<gmshModelMeshFieldGetStringFun>("gmshModelMeshFieldGetString");
+            gmshModelMeshFieldSetString = GetFunction<gmshModelMeshFieldSetStringFun>("gmshModelMeshFieldSetString");
+            gmshModelMeshFieldSetNumbers = GetFunction<gmshModelMeshFieldSetNumbersFun>("gmshModelMeshFieldSetNumbers");
+            gmshModelMeshFieldGetNumbers = GetFunction<gmshModelMeshFieldGetNumbersFun>("gmshModelMeshFieldGetNumbers");
+            gmshModelMeshFieldSetAsBackgroundMesh = GetFunction<gmshModelMeshFieldSetAsBackgroundMeshFun>("gmshModelMeshFieldSetAsBackgroundMesh");
+            gmshModelMeshFieldSetAsBoundaryLayer = GetFunction<gmshModelMeshFieldSetAsBoundaryLayerFun>("gmshModelMeshFieldSetAsBoundaryLayer");
             #endregion
             #region "Get Logger delegates"
-                gmshLoggerStart = GetFunction<gmshLoggerStartFun>("gmshLoggerStart");
-                gmshLoggerStop = GetFunction<gmshLoggerStopFun>("gmshLoggerStop");
-                gmshLoggerGet = GetFunction<gmshLoggerGetFun>("gmshLoggerGet");
-                gmshLoggerGetLastError = GetFunction<gmshLoggerGetLastErrorFun>("gmshLoggerGetLastError");
+            gmshLoggerStart = GetFunction<gmshLoggerStartFun>("gmshLoggerStart");
+            gmshLoggerStop = GetFunction<gmshLoggerStopFun>("gmshLoggerStop");
+            gmshLoggerGet = GetFunction<gmshLoggerGetFun>("gmshLoggerGet");
+            gmshLoggerGetLastError = GetFunction<gmshLoggerGetLastErrorFun>("gmshLoggerGetLastError");
             #endregion
             var argv = string.Empty;
             var ierr = 0;
             gmshInitialize(0, ref argv, 0, 0, ref ierr);
         }
-
+        /// <summary>
+        /// Возвращает делегат для имени функции 
+        /// </summary>
+        /// <typeparam name="T">Тип делегата</typeparam>
+        /// <param name="functionName">Имя функции</param>
+        /// <returns>Делегат</returns>
         public T GetFunction<T>(string functionName)
         {
             var funPtr = GmshKernel.GmshKernel.GetProcAddress(DLL, functionName);
             return Marshal.GetDelegateForFunctionPointer<T>(funPtr);
         }
         #region "General managed methods"
+        /// <summary>
+        /// Возвращает строку параметров для категории опций
+        /// </summary>
+        /// <param name="name">Имя категории опций</param>
+        /// <param name="value">Значение опции</param>
+        /// <returns>Успешность вызова метода</returns>
         public bool OptionGetString(string name, out string value)
         {
             IntPtr unmanagedString = IntPtr.Zero;
@@ -447,6 +1122,11 @@ namespace GmshApi.GmshController
         }
         #endregion
         #region "Model managed methods"
+        /// <summary>
+        /// Возвращает путь до файла ассоциированный с данной моделью
+        /// </summary>
+        /// <param name="fileName">Путь до файла ассоциированный с данной моделью</param>
+        /// <returns>Успешность вызова метода</returns>
         public bool ModelGetFileName(out string fileName)
         {
             IntPtr unmanagedString = IntPtr.Zero;
@@ -462,7 +1142,11 @@ namespace GmshApi.GmshController
 
             return status;
         }
-
+        /// <summary>
+        /// Возвращает список моделей в gmsh API
+        /// </summary>
+        /// <param name="modelList">Массив строк имен моделей</param>
+        /// <returns>Успешность вызова метода</returns>
         public bool ModelList(out string[] modelList)
         {
             IntPtr names = IntPtr.Zero;
@@ -475,7 +1159,11 @@ namespace GmshApi.GmshController
                 modelList = GetArrayOfString(names, names_n);
             return status;
         }
-
+        /// <summary>
+        /// Возвращает имя текущей модели
+        /// </summary>
+        /// <param name="current">Имя текущей модели</param>
+        /// <returns>Успешность вызова метода</returns>
         public bool ModelGetCurrent(out string current)
         {
             IntPtr unmanagedString = IntPtr.Zero;
@@ -493,6 +1181,12 @@ namespace GmshApi.GmshController
         }
         #endregion
         #region "Geometry managed methods"
+        /// <summary>
+        /// Возвращает список всех пар размерность:идентификатор для заданной размерности
+        /// </summary>
+        /// <param name="dimTags">Пары dim:tag</param>
+        /// <param name="dim">Заданная размерность</param>
+        /// <returns>Успешность вызова метода</returns>
         public bool ModelGetGeometryEntities(out int[] dimTags, int dim)
         {
             var ierr = 0;
@@ -511,7 +1205,13 @@ namespace GmshApi.GmshController
                 GetObjectsData(dTags, out dimTags, dimTags_n);
             return status;
         }
-
+        /// <summary>
+        /// Возвращает имя сущности для указанной dim:tag
+        /// </summary>
+        /// <param name="dim">Размерность</param>
+        /// <param name="tag">Идентификатор</param>
+        /// <param name="name">Имя</param>
+        /// <returns>Успешность вызова метода</returns>
         public bool ModelGetGeometryEntityName(int dim, int tag, out string name)
         {
             IntPtr unmanagedString = IntPtr.Zero;
@@ -524,16 +1224,23 @@ namespace GmshApi.GmshController
                 name = GetStringPtr(unmanagedString);
                 gmshFree(unmanagedString);
             }
- 
+
             return status;
         }
-
+        /// <summary>
+        /// Возвращает соседей верхнего\нижнего уровня для текущей пары dim : tag
+        /// </summary>
+        /// <param name="dim">Размерность</param>
+        /// <param name="tag">Идентификатор</param>
+        /// <param name="upward">Соседи верхнего уровня</param>
+        /// <param name="downward">Соседи нижнего уровня</param>
+        /// <returns>Успешность вызова метода</returns>
         public bool ModelGetAdjacencies(int dim, int tag, out int[] upward, out int[] downward)
         {
             var ierr = 0;
             IntPtr upw, upw_n, downw, downw_n;
             upw = upw_n = downw = downw_n = IntPtr.Zero;
-            upward = null; 
+            upward = null;
             downward = null;
             gmshModelGetAdjacencies(dim, tag, ref upw, ref upw_n, ref downw, ref downw_n, ref ierr);
             var status = ierr == 0;
@@ -544,7 +1251,12 @@ namespace GmshApi.GmshController
             }
             return status;
         }
-
+        /// <summary>
+        /// Возвратит значения для заданного аттрибута
+        /// </summary>
+        /// <param name="name">Имя аттрибута</param>
+        /// <param name="attributes">Значения аттрибута</param>
+        /// <returns>Успешность вызова метода</returns>
         public bool ModelGetAttribute(string name, out string[] attributes)
         {
             var ierr = 0;
@@ -556,7 +1268,11 @@ namespace GmshApi.GmshController
                 attributes = GetArrayOfString(values, values_n);
             return status;
         }
-
+        /// <summary>
+        /// Возвращает список имен аттрибутов
+        /// </summary>
+        /// <param name="names">Список имен аттрибутов</param>
+        /// <returns>Успешность вызова метода</returns>
         public bool ModelGetAttributeNames(out string[] names)
         {
             var ierr = 0;
@@ -568,7 +1284,14 @@ namespace GmshApi.GmshController
                 names = GetArrayOfString(nms, nms_n);
             return status;
         }
-
+        /// <summary>
+        /// Возвращает производную по указанной размерности и идентификатору и заданному набору параметров
+        /// </summary>
+        /// <param name="dim">Размерность</param>
+        /// <param name="tag">Идентификатор</param>
+        /// <param name="parametricCoord">Параметрические координаты</param>
+        /// <param name="derivative">Производные</param>
+        /// <returns>Успешность вызова метода</returns>
         public bool ModelGetDerivative(int dim, int tag, double[] parametricCoord, out double[] derivative)
         {
             var ierr = 0;
@@ -577,12 +1300,19 @@ namespace GmshApi.GmshController
             derivative = null;
             gmshModelGetDerivative(dim, tag, parametricCoord, (IntPtr)parametricCoord.Length,
                                    ref der, ref der_n, ref ierr);
-            var status = ierr == 0; 
-            if(status)
+            var status = ierr == 0;
+            if (status)
                 GetObjectsData(der, out derivative, der_n);
             return status;
         }
-
+        /// <summary>
+        /// Возвращает вторую производную по указанной размерности и идентификатору и заданному набору параметров
+        /// </summary>
+        /// <param name="dim">Размерность</param>
+        /// <param name="tag">Идентификатор</param>
+        /// <param name="parametricCoord">Параметрические координаты</param>
+        /// <param name="derivative">Производные</param>
+        /// <returns>Успешность вызова метода</returns>
         public bool ModelGetSecondDerivative(int dim, int tag, double[] parametricCoord, out double[] derivative)
         {
             var ierr = 0;
@@ -596,7 +1326,14 @@ namespace GmshApi.GmshController
                 GetObjectsData(der, out derivative, der_n);
             return status;
         }
-
+        /// <summary>
+        /// Возвращает координаты точек заданные параметром для указанного идентификатора и размерности
+        /// </summary>
+        /// <param name="dim">Размерность</param>
+        /// <param name="tag">Идентификатор</param>
+        /// <param name="parametricCoord">Параметрические координаты</param>
+        /// <param name="coord">Локальные координаты</param>
+        /// <returns>Успешность вызова метода</returns>
         public bool ModelGetValue(int dim, int tag, double[] parametricCoord, out double[] coord)
         {
             var ierr = 0;
@@ -610,7 +1347,14 @@ namespace GmshApi.GmshController
                 GetObjectsData(locCoord, out coord, locCoord_n);
             return status;
         }
-
+        /// <summary>
+        /// Возвращает параметризацию сущности заданной парой размерность : идентификатор
+        /// </summary>
+        /// <param name="dim">Размерность</param>
+        /// <param name="tag">Идентификатор</param>
+        /// <param name="coord">Локальные координаты</param>
+        /// <param name="parametricCoord">Параметрические координаты</param>
+        /// <returns>Успешность вызова метода</returns>
         public bool ModelGetParametrization(int dim, int tag, double[] coord, out double[] parametricCoord)
         {
             var ierr = 0;
@@ -623,7 +1367,14 @@ namespace GmshApi.GmshController
                 GetObjectsData(pCoord, out parametricCoord, pCoord_n);
             return status;
         }
-
+        /// <summary>
+        /// Возвращает минимальные максимальные границы параметризации
+        /// </summary>
+        /// <param name="dim">Размерность</param>
+        /// <param name="tag">Идентификатор</param>
+        /// <param name="min">Минимальные границы</param>
+        /// <param name="max">Максимальные границы</param>
+        /// <returns>Успешность вызова метода</returns>
         public bool ModelGetParametrizationBounds(int dim, int tag, out double[] min, out double[] max)
         {
             var ierr = 0;
@@ -632,7 +1383,7 @@ namespace GmshApi.GmshController
             minBounds = minBounds_n = maxBounds = maxBounds_n = IntPtr.Zero;
             min = null;
             max = null;
-            gmshModelGetParametrizationBounds(dim, tag, ref minBounds, ref minBounds_n, 
+            gmshModelGetParametrizationBounds(dim, tag, ref minBounds, ref minBounds_n,
                                               ref maxBounds, ref maxBounds_n, ref ierr);
             var status = ierr == 0;
             if (status)
@@ -644,7 +1395,16 @@ namespace GmshApi.GmshController
         }
         #endregion
         #region "Mesh managed methods"
-        public bool ModelMeshGetElements(int dim, int tag, out int[] elementTypes, 
+        /// <summary>
+        /// Возвращает все элементы в текущей модели, их идентификаторы и идентификаторы точек внутри элемента
+        /// </summary>
+        /// <param name="dim">Размерность</param>
+        /// <param name="tag">Идентификатор</param>
+        /// <param name="elementTypes">Типы элементов</param>
+        /// <param name="elementTags">Идентификаторы элементов</param>
+        /// <param name="nodeTags">Идентификаторы узлов элементов</param>
+        /// <returns>Успешность вызова метода</returns>
+        public bool ModelMeshGetElements(int dim, int tag, out int[] elementTypes,
                                          out long[][] elementTags, out long[][] nodeTags)
         {
             IntPtr elemTypes, elemTypes_n, elemTags, elemTags_n, elemTags_nn;
@@ -658,7 +1418,7 @@ namespace GmshApi.GmshController
                                      ref elemTags_n, ref elemTags_nn, ref nodTags,
                                      ref nodTags_n, ref nodTags_nn, dim, tag, ref ierr);
             var status = ierr == 0;
-            if(status)
+            if (status)
             {
                 GetObjectsData(elemTypes, out elementTypes, elemTypes_n);
                 FillTwoDimArray(elemTags, elemTags_n, elemTags_nn, out elementTags);
@@ -666,7 +1426,13 @@ namespace GmshApi.GmshController
             }
             return status;
         }
-
+        /// <summary>
+        /// Возращает типы элементов, для указанных dim:tag 
+        /// </summary>
+        /// <param name="dim">Размерность</param>
+        /// <param name="tag">Идентификатор</param>
+        /// <param name="elementTypes">Типы элементов</param>
+        /// <returns>Успешность вызова метода</returns>
         public bool ModelMeshGetElementTypes(int dim, int tag, out int[] elementTypes)
         {
             IntPtr elemTypes = IntPtr.Zero;
@@ -679,7 +1445,12 @@ namespace GmshApi.GmshController
                 GetObjectsData(elemTypes, out elementTypes, elemTypes_n);
             return status;
         }
-
+        /// <summary>
+        /// Возвращает свойства элемента по заданному типу элемента
+        /// </summary>
+        /// <param name="elementTypes">Типы элементов</param>
+        /// <param name="elemProperties">Свойства элементов</param>
+        /// <returns>Успешность вызова метода</returns>
         public bool ModelMeshGetElementProperties(int[] elementTypes, out ElementProperties[] elemProperties)
         {
             IntPtr localeNodeCoord, localeNodeCoord_n, elementName;
@@ -690,9 +1461,9 @@ namespace GmshApi.GmshController
             for (var i = 0; i < elementTypes.Length; ++i)
             {
                 elemProperties[i] = new ElementProperties();
-                gmshModelMeshGetElementProperties(elementTypes[i], ref elementName, ref elemProperties[i].dim, 
-                                                  ref elemProperties[i].order, ref elemProperties[i].numNodes, 
-                                                  ref localeNodeCoord, ref localeNodeCoord_n, 
+                gmshModelMeshGetElementProperties(elementTypes[i], ref elementName, ref elemProperties[i].dim,
+                                                  ref elemProperties[i].order, ref elemProperties[i].numNodes,
+                                                  ref localeNodeCoord, ref localeNodeCoord_n,
                                                   ref elemProperties[i].numPrimaryNodes, ref ierr);
                 status = ierr == 0;
                 if (!status)
@@ -707,7 +1478,17 @@ namespace GmshApi.GmshController
             }
             return status;
         }
-
+        /// <summary>
+        /// Извлекает координаты точек и их идентификаторы, по заданный параметрам dim:tag элемента
+        /// </summary>
+        /// <param name="dim">Размерность</param>
+        /// <param name="tag">Идентификатор</param>
+        /// <param name="includeBoundary">Включать граничные точки</param>
+        /// <param name="returnParametric">Возвращать параметрические координаты</param>
+        /// <param name="nodeTags">Идентификаторы узлов</param>
+        /// <param name="coords">Локальные координаты</param>
+        /// <param name="parametricCoord">Параметрические координаты</param>
+        /// <returns>Успешность вызова метода</returns>
         public bool ModelMeshGetNodes(int dim, int tag, bool includeBoundary, bool returnParametric,
                                       out long[] nodeTags, out double[] coords, out double[] parametricCoord)
         {
@@ -718,7 +1499,7 @@ namespace GmshApi.GmshController
             nodeTags = null;
             var includeBound = Convert.ToInt32(includeBoundary);
             var retParam = Convert.ToInt32(returnParametric);
-            gmshModelMeshGetNodes(ref nodeTagsInt, ref nodeTagsInt_n, ref coord, ref coord_n, 
+            gmshModelMeshGetNodes(ref nodeTagsInt, ref nodeTagsInt_n, ref coord, ref coord_n,
                                   ref paramCoord, ref paramCoord_n, dim, tag, includeBound, retParam, ref ierr);
             var status = ierr == 0;
             if (status)
@@ -730,7 +1511,16 @@ namespace GmshApi.GmshController
             }
             return status;
         }
-
+        /// <summary>
+        /// Извлекает координаты точек и их идентификаторы, для заданного типа элемента и идентификатора элемента
+        /// </summary>
+        /// <param name="elementType">Тип элемента</param>
+        /// <param name="tag">Идентификатор</param>
+        /// <param name="returnParametric">Возвращать параметрические координаты</param>
+        /// <param name="nodeTags">Идентификаторы узлов</param>
+        /// <param name="coords">Локальные координаты</param>
+        /// <param name="parametricCoord">Параметрические координаты</param>
+        /// <returns>Успешность вызова метода</returns>
         public bool ModelMeshGetNodesByElementType(int elementType, int tag, bool returnParametric,
                                                    out long[] nodeTags, out double[] coords, out double[] parametricCoord)
         {
@@ -740,7 +1530,7 @@ namespace GmshApi.GmshController
             coords = parametricCoord = null;
             nodeTags = null;
             var retParam = Convert.ToInt32(returnParametric);
-            gmshModelMeshGetNodesByElementType(elementType, ref nodeTagsInt, ref nodeTagsInt_n, ref coord, ref coord_n, 
+            gmshModelMeshGetNodesByElementType(elementType, ref nodeTagsInt, ref nodeTagsInt_n, ref coord, ref coord_n,
                                                ref paramCoord, ref paramCoord_n, tag, retParam, ref ierr);
             var status = ierr == 0;
             if (status)
@@ -752,8 +1542,17 @@ namespace GmshApi.GmshController
             }
             return ierr == 0;
         }
-
-        public bool ModelMeshGetElementsByCoordinates(double x, double y, double z, int dim, 
+        /// <summary>
+        /// Находит элементы сетки по переданной координате x,y,z
+        /// </summary>
+        /// <param name="x">Локальный x</param>
+        /// <param name="y">Локальный y</param>
+        /// <param name="z">Локальный z</param>
+        /// <param name="dim">Размерность</param>
+        /// <param name="strict">Строгое соответствие</param>
+        /// <param name="elementTags">Идентификаторы элементов</param>
+        /// <returns>Успешность вызова метода</returns>
+        public bool ModelMeshGetElementsByCoordinates(double x, double y, double z, int dim,
                                                       bool strict, out long[] elementTags)
         {
             IntPtr elemTags, elemTags_n;
@@ -763,12 +1562,20 @@ namespace GmshApi.GmshController
             var strictInt = Convert.ToInt32(strict);
             gmshModelMeshGetElementsByCoordinates(x, y, z, ref elemTags, ref elemTags_n, dim, strictInt, ref ierr);
             var status = ierr == 0;
-            if(status)
+            if (status)
                 GetObjectsData(elemTags, out elementTags, elemTags_n);
             return status;
         }
-
-        public bool ModelMeshGetElementQualities(long[] elementTags, string qualityName, 
+        /// <summary>
+        /// Получить качество элемента
+        /// </summary>
+        /// <param name="elementTags">Идентификаторы элементов</param>
+        /// <param name="qualityName">Тип квалификатора</param>
+        /// <param name="task">Задача</param>
+        /// <param name="numTasks">Число задач</param>
+        /// <param name="elementsQuality">Массив значений качества</param>
+        /// <returns>Успешность вызова метода</returns>
+        public bool ModelMeshGetElementQualities(long[] elementTags, string qualityName,
                                                  long task, long numTasks, out double[] elementsQuality)
         {
             var eTags = elementTags.Select(x => (IntPtr)x).ToArray();
@@ -776,15 +1583,20 @@ namespace GmshApi.GmshController
             var elemQuality_n = IntPtr.Zero;
             var ierr = 0;
             elementsQuality = null;
-            gmshModelMeshGetElementQualities(eTags, (IntPtr)elementTags.Length, ref elemQuality, ref elemQuality_n, 
+            gmshModelMeshGetElementQualities(eTags, (IntPtr)elementTags.Length, ref elemQuality, ref elemQuality_n,
                                              qualityName, (IntPtr)task, (IntPtr)numTasks, ref ierr);
             var status = ierr == 0;
-            if(status)
+            if (status)
                 GetObjectsData(elemQuality, out elementsQuality, elemQuality_n);
             return status;
         }
         #endregion
         #region "Mesh Field managed methods"
+        /// <summary>
+        /// Возвращает список объектов MeshField
+        /// </summary>
+        /// <param name="tags">Идентифкаторы объектов</param>
+        /// <returns>Успешность вызова метода</returns>
         public bool ModelMeshFieldList(out int[] tags)
         {
             IntPtr tagsInt = IntPtr.Zero;
@@ -797,7 +1609,12 @@ namespace GmshApi.GmshController
                 GetObjectsData(tagsInt, out tags, tagsInt_n);
             return status;
         }
-
+        /// <summary>
+        /// Возвращает тип поля по заданному идентификатору
+        /// </summary>
+        /// <param name="tag">Идентификатор поля</param>
+        /// <param name="fieldType">Тип поля</param>
+        /// <returns>Успешность вызова метода</returns>
         public bool ModelMeshFieldGetType(int tag, out string fieldType)
         {
             IntPtr fType = IntPtr.Zero;
@@ -813,7 +1630,13 @@ namespace GmshApi.GmshController
 
             return status;
         }
-
+        /// <summary>
+        /// Возвращает строку значений для опции
+        /// </summary>
+        /// <param name="tag">Идентификатор поля</param>
+        /// <param name="option">Имя опции</param>
+        /// <param name="value">Строка значений</param>
+        /// <returns>Успешность вызова метода</returns>
         public bool ModelMeshFieldGetString(int tag, string option, out string value)
         {
             IntPtr valueInt = IntPtr.Zero;
@@ -825,7 +1648,13 @@ namespace GmshApi.GmshController
                 value = GetStringPtr(valueInt);
             return status;
         }
-
+        /// <summary>
+        /// Возвращает список значений для опции
+        /// </summary>
+        /// <param name="tag">Идентификатор поля</param>
+        /// <param name="option">Имя опции</param>
+        /// <param name="values">Значения опции</param>
+        /// <returns>Успешность вызова метода</returns>
         public bool MeshFieldGetNumbers(int tag, string option, out double[] values)
         {
             IntPtr valuesInt = IntPtr.Zero;
@@ -840,8 +1669,12 @@ namespace GmshApi.GmshController
         }
         #endregion
         #region "Utility methods"
-
-
+        /// <summary>
+        /// Удалить геометрические сущности указанные парой dim:tags
+        /// </summary>
+        /// <param name="dimTags">Массив пар dim:tags</param>
+        /// <param name="recursive">Рекурсивно удалять детей</param>
+        /// <returns>Успешность вызова метода</returns>
         public bool RemoveEntities(int[] dimTags, bool recursive = false)
         {
             for (var i = 1; i < dimTags.Length; i += 2)
@@ -882,14 +1715,19 @@ namespace GmshApi.GmshController
                 return false;
             return true;
         }
-
+        /// <summary>
+        /// Возвращает список кривых
+        /// </summary>
+        /// <param name="tags">Идентификаторы кривых</param>
+        /// <param name="status">Успешность вызова метода</param>
+        /// <returns>Список кривых</returns>
         public List<ILineObject> CreateLines(int[] tags, ref bool status)
         {
             var lines = new List<ILineObject>();
             double[] minBounds;
             double[] maxBounds;
             status = true;
-            for (var i = 1; i < tags.Length; i+=2)
+            for (var i = 1; i < tags.Length; i += 2)
             {
                 if (!ModelGetParametrizationBounds(1, tags[i], out minBounds, out maxBounds))
                 {
@@ -941,12 +1779,16 @@ namespace GmshApi.GmshController
                         return false;
             return true;
         }
-
+        /// <summary>
+        /// Возвращает список контрольных точек
+        /// </summary>
+        /// <param name="tags">Идентификаторы</param>
+        /// <returns>Список контрольных точек</returns>
         public List<IModelObject> CreateControlPoints(int[] tags)
         {
             var nodes = new List<IModelObject>();
             double[] coords;
-            for (var i = 1; i < tags.Length; i+=2)
+            for (var i = 1; i < tags.Length; i += 2)
             {
                 if (!ModelGetValue(0, tags[i], new double[] { }, out coords))
                 {
@@ -955,7 +1797,7 @@ namespace GmshApi.GmshController
                 }
                 var points = ConvertLocalCoordsToPoints3D(coords);
                 for (var j = 0; j < points.Length; ++j)
-                    nodes.Add(new Node(tags[i], points[j],ObjKind.Point));
+                    nodes.Add(new Node(tags[i], points[j], ObjKind.Point));
             }
             return nodes;
         }
@@ -970,7 +1812,13 @@ namespace GmshApi.GmshController
             }
             return points;
         }
-
+        /// <summary>
+        /// Возвращает список элементов сетки
+        /// </summary>
+        /// <param name="dim">Размерность</param>
+        /// <param name="tag">Идентификатор</param>
+        /// <param name="status">Успешность вызова метода</param>
+        /// <returns>Список элементов сетки</returns>
         public List<ISurfaceElement> GetMeshEntities(int dim, int tag, ref bool status)
         {
             ElementProperties[] properties;
@@ -1010,7 +1858,11 @@ namespace GmshApi.GmshController
             }
             return list;
         }
-
+        /// <summary>
+        /// Возвращает список узлов сетки
+        /// </summary>
+        /// <param name="status">Успешность вызова метода</param>
+        /// <returns>Список узлов сетки</returns>
         public List<ModelObject> GetNodes(ref bool status)
         {
             long[] nodeTags;
@@ -1027,7 +1879,11 @@ namespace GmshApi.GmshController
             }
             return nodes;
         }
-
+        /// <summary>
+        /// Удалить элементы сетки
+        /// </summary>
+        /// <param name="elementTags">Идентификаторы элементов</param>
+        /// <returns>Успешность вызова метода</returns>
         public bool DeleteMeshElements(long[] elementTags)
         {
             var ierr = 0;
@@ -1046,7 +1902,11 @@ namespace GmshApi.GmshController
             }
             return status;
         }
-
+        /// <summary>
+        /// Вернуть записи в журнале
+        /// </summary>
+        /// <param name="logs">Массив записей</param>
+        /// <returns>Успешность вызова метода</returns>
         public bool LoggerGet(out string[] logs)
         {
             var ierr = 0;
@@ -1056,7 +1916,11 @@ namespace GmshApi.GmshController
             logs = GetArrayOfString(log, log_n);
             return ierr == 0;
         }
-
+        /// <summary>
+        /// Вернуть последнюю запись об ошибке в журнале
+        /// </summary>
+        /// <param name="log">Запись об ошибке</param>
+        /// <returns>Успешность вызова метода</returns>
         public bool LoggerGetLastError(out string log)
         {
             var ierr = 0;
@@ -1092,7 +1956,7 @@ namespace GmshApi.GmshController
             gmshFree(eTags);
         }
 
-        private void NewTwoDimArray(IntPtr eTags, IntPtr eTags_n, IntPtr eTags_nn, 
+        private void NewTwoDimArray(IntPtr eTags, IntPtr eTags_n, IntPtr eTags_nn,
                                     out IntPtr[] tagsData, out IntPtr[] lengthData, out long[][] eData)
         {
             var objectsCount = eTags_nn.ToInt32();
