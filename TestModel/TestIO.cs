@@ -28,8 +28,9 @@ namespace TestModel
             //assert
         }
 
-        [TestMethod]
-        public void ImportModelFromSTLtextFormat()
+        [DataTestMethod]
+        [DataRow(@"..\..\..\Examples\STL\ACII.stl")]
+        public void ImportModelFromSTLtextFormat(string path)
         {
             //assing
             var model = new ModelData();
@@ -37,7 +38,7 @@ namespace TestModel
             model.Loader = new LoadModelFromSTLFile();
 
             //act
-            model.Load(@"..\..\..\Examples\STL\ACII.stl");
+            model.Load(path);
 
             //assert
         }

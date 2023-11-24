@@ -165,9 +165,11 @@ namespace Model
             foreach (var typedObjs in listTypedObjs)
                 mergeObjsList.AddRange(typedObjs);
 
-            MergeSort<IModelObject>.MergeSortFunction(mergeObjsList);
-
-            modelObjects = mergeObjsList;
+            if(mergeObjsList.Count > 0)
+            {
+                MergeSort<IModelObject>.MergeSortFunction(mergeObjsList);
+                modelObjects = mergeObjsList;
+            }
         }
 /// <inheritdoc/>
 

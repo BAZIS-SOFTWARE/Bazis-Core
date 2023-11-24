@@ -11,6 +11,7 @@ using ModelInterfaces;
 using ModelController.MeshObjsUtility;
 using Model.IO;
 using Model.Elements;
+using GmshApi.GmshController;
 
 namespace TestModel
 {
@@ -147,9 +148,30 @@ namespace TestModel
             }
         }
 
-        private void Model_SaveEvent(object arg1, SaverEventArgs arg2)
+        [DataTestMethod]
+        [DataRow(@"..\..\..\Examples\STL\ACII.stl")]
+        public void TestRemoveAllData(string stlPath)
         {
-            //throw new NotImplementedException();
+            var ierr = 0;
+            var status = true;
+            var modelData = new ModelData();
+
+            var controller = new GmshController(@"..\..\..\..\GmshApi\gmsh.dll");
+            controller.gmshMerge(stlPath, ref ierr);
+            var nodes = controller.GetNodes(ref status);
+            Assert.AreEqual(true, status);
+            Assert.AreEqual(4, nodes.Count);
+            var surfaces = controller.GetMeshEntities(2, -1, ref status);
+            Assert.AreEqual(true, status);
+            Assert.AreEqual(2, surfaces.Count);
+            modelData.ObjectData.AddRange(nodes);
+            modelData.ObjectData.AddRange(surfaces);
+            modelData.ObjectData.Sort();
+            modelData.ObjectData.RemoveRange("Элементы2D");
+            modelData.ObjectData.RemoveRange("Узлы");//Здесь падает, эмулирую такое же поведение как в Базисе
+
+            //assert
+            Assert.AreEqual(modelData.ObjectData.Count, 0);
         }
 
         [DataTestMethod]
