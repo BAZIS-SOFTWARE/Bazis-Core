@@ -50,37 +50,41 @@ namespace ModelController.ModelScenePresentator
         /// <param name="objectsData"></param>
         public ModelScenePresentator(IObjectsData objectsData) : this()
         {
-            var objsTypes = objectsData.GetObjectTypes();
-
-            foreach (var objsType in objsTypes)
+            foreach (var objsType in objectsData.GetObjectTypes())
             {
-                switch (objsType)
-                {
-                    case "Узлы":
-                        var pointsPresentor = CreatePointObjectsPresenter(objectsData.FindMany(objsType));
-                        presentors.Add(objsType, pointsPresentor);
-                        break;
-                    case "Элементы1D":
-                        var els1dPresentor = CreateLineObjectsPresenter(objectsData.FindMany<Beam>());
-                        presentors.Add(objsType, els1dPresentor);
-                        break;
-                    case "Линия":
-                        var linesPresentor = CreateLineObjectsPresenter(objectsData.FindMany<Line>());
-                        presentors.Add(objsType, linesPresentor);
-                        break;
-                    case "Элементы2D":
-                        var els2dPresentor = CreateSurfaceObjectsPresenter(objectsData.FindMany<Element2D>());
-                        presentors.Add(objsType, els2dPresentor);
-                        break;
-                    case "Элементы3D":
-                        var els3dPresentor = CreateSurfaceObjectsPresenter(objectsData.FindMany<Element3D>());
-                        presentors.Add(objsType, els3dPresentor);
-                        break;
-                    case "Поверхности":
-                        var surfsPresentor = CreateSurfaceObjectsPresenter(objectsData.FindMany<Surface>());
-                        presentors.Add(objsType, surfsPresentor);
-                        break;
-                }
+                CreatePresenter(objectsData, objsType);
+            }
+        }
+/// <inheritdoc/>
+
+        public void CreatePresenter(IObjectsData objectsData, string objsType)
+        {
+            switch (objsType)
+            {
+                case "Узлы":
+                    var pointsPresentor = CreatePointObjectsPresenter(objectsData.FindMany(objsType));
+                    presentors.Add(objsType, pointsPresentor);
+                    break;
+                case "Элементы1D":
+                    var els1dPresentor = CreateLineObjectsPresenter(objectsData.FindMany<Beam>());
+                    presentors.Add(objsType, els1dPresentor);
+                    break;
+                case "Линия":
+                    var linesPresentor = CreateLineObjectsPresenter(objectsData.FindMany<Line>());
+                    presentors.Add(objsType, linesPresentor);
+                    break;
+                case "Элементы2D":
+                    var els2dPresentor = CreateSurfaceObjectsPresenter(objectsData.FindMany<Element2D>());
+                    presentors.Add(objsType, els2dPresentor);
+                    break;
+                case "Элементы3D":
+                    var els3dPresentor = CreateSurfaceObjectsPresenter(objectsData.FindMany<Element3D>());
+                    presentors.Add(objsType, els3dPresentor);
+                    break;
+                case "Поверхности":
+                    var surfsPresentor = CreateSurfaceObjectsPresenter(objectsData.FindMany<Surface>());
+                    presentors.Add(objsType, surfsPresentor);
+                    break;
             }
         }
 

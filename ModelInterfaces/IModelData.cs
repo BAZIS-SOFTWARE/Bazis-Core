@@ -8,8 +8,8 @@ namespace ModelInterfaces
 {
     public interface IModelData
     {
-        IObjectsData ObjectData { get; set; }
-        IGroupData GroupData { get; set; }
+        IObjectsData ObjectData { get; }
+        IGroupData GroupData { get; }
         void Clear();
         /// <summary>
         /// Save
@@ -21,10 +21,17 @@ namespace ModelInterfaces
         /// </summary>
         /// <param name="path"></param>
         void Load(string path);
-
+        /// <summary>
+        /// SetObjectData
+        /// </summary>
+        /// <param name="objectData"></param>
         void SetObjectData(IObjectsData objectData);
+        /// <summary>
+        /// SetGroupData
+        /// </summary>
+        /// <param name="objectData"></param>
+        void SetGroupData(IGroupData objectData);
 
-        
         /// <summary>
         /// Saver for model
         /// </summary>

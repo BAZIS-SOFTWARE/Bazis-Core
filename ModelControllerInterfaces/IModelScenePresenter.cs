@@ -36,5 +36,11 @@ namespace ModelControllerInterfaces
         /// <param name="surfaceObjs"></param>
         /// <returns></returns>
         IObjsPresenter CreateSurfaceObjectsPresenter(IEnumerable<ISurfaceObject> surfaceObjs);
+        /// <summary>
+        /// CreatePresenter
+        /// </summary>
+        /// <param name="objectsData"></param>
+        /// <param name="objsType"></param>
+        void CreatePresenter(IObjectsData objectsData, string objsType);
     }
 }

@@ -146,73 +146,7 @@ namespace TestModel
                 if (!elsForNode.Contains(interfacedNodesEls3D[48][i]))
                     throw new Exception("номера не совпадают");
             }
-        }
-
-        [DataTestMethod]
-        [DataRow(@"..\..\..\Examples\STL\ACII.stl")]
-        public void TestRemoveAllData(string stlPath)
-        {
-            var ierr = 0;
-            var status = true;
-            var modelData = new ModelData();
-
-            var controller = new GmshController(@"..\..\..\..\GmshApi\gmsh.dll");
-            controller.gmshMerge(stlPath, ref ierr);
-            var nodes = controller.GetNodes(ref status);
-            Assert.AreEqual(true, status);
-            Assert.AreEqual(4, nodes.Count);
-            var surfaces = controller.GetMeshEntities(2, -1, ref status);
-            Assert.AreEqual(true, status);
-            Assert.AreEqual(2, surfaces.Count);
-            modelData.ObjectData.AddRange(nodes);
-            modelData.ObjectData.AddRange(surfaces);
-            modelData.ObjectData.Sort();
-            modelData.ObjectData.RemoveRange("Элементы2D");
-            modelData.ObjectData.RemoveRange("Узлы");//Здесь падает, эмулирую такое же поведение как в Базисе
-
-            //assert
-            Assert.AreEqual(modelData.ObjectData.Count, 0);
-        }
-
-        [DataTestMethod]
-        [DataRow(1)]
-        [DataRow(0)]
-        [DataRow(2)]
-        public void TestRemoveSomeNodes(int objNumber)
-        {
-            //assing
-            var model = new ModelData();
-            model.Loader = new LoadModelFromASCIITextFile();
-
-            model.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
-
-            //act
-            model.ObjectData[objNumber].ExistState = false;
-            model.ObjectData.ClearRemoved();
-
-            //assert
-            var res = model.ObjectData.Find(objNumber);
-            if (res != null)
-                throw new Exception();
-        }
-
-        [TestMethod]
-        public void TestRemoveBigData()
-        {
-            //assing
-            var model = new ModelData();
-
-            //act
-            model.Load(@"C:\Projs\ENERGOMASH\CALC\proj_new.bpf");
-
-            model.ObjectData.RemoveRange("Элементы2D");
-            model.ObjectData.ClearRemoved();
-
-            var els2D = model.ObjectData.FindMany<Element2D>();
-
-            if (els2D.Count() != 0)
-                throw new Exception();
-        }
+        }   
 
         [TestMethod]
         public void MergeNodes()

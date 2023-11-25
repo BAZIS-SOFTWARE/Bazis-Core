@@ -48,7 +48,7 @@ namespace GmshApi.GmshController
 
         string[] geomExtensions = new string[]
         {
-            "step","stp","brep","iges","igs"
+            "step","stp","brep","iges","igs","stl"
         };
         #region "Initialization Delegates"
         /// <summary>
