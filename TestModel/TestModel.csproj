@@ -114,6 +114,7 @@
     <Compile Include="TestSorter.cs" />
     <Compile Include="TestModelScenePresentor.cs" />
     <Compile Include="TestVolume.cs" />
+    <Compile Include="TestObjectData.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

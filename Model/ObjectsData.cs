@@ -26,7 +26,7 @@ namespace Model
         /// </summary>
         public ObjectsData()
         {
-            modelObjects = new List<IModelObject>();
+            modelObjects = new List<IModelObject>();           
         }
 
         public bool IsReadOnly { get { return false; } }
@@ -73,26 +73,31 @@ namespace Model
         {
             get { return modelObjects.Count; }
         }
+/// <inheritdoc/>
 
         public int NumberOfNodes
         {
             get { return FindMany<INode>().Count(); }
         }
+/// <inheritdoc/>
 
         public int NumberOfVolumeElements
         {
             get { return FindMany<IElement3D>().Count(); }
         }
+/// <inheritdoc/>
 
         public int NumberOfLineElements
         {
             get { return FindMany<IElement1D>().Count(); }
         }
+/// <inheritdoc/>
 
         public int NumberOfSurfaceElements
         {
             get { return FindMany<IElement2D>().Count(); }
         }
+/// <inheritdoc/>
 
         public int NumberOfElements
         {
@@ -108,6 +113,7 @@ namespace Model
                     yield return modelObject;
             }
         }
+/// <inheritdoc/>
 
         public IEnumerable<IModelObject> FindMany(string objType)
         {
@@ -148,26 +154,23 @@ namespace Model
             var existObjects = modelObjects.Except(removedObjs, new EqualityComparerByExistState()).ToList();
             modelObjects = existObjects;
         }
+/// <inheritdoc/>
 
         public void RemoveRange(string objType)
         {
-            var listTypedObjs = new List<List<IModelObject>>();
+            if (modelObjects.Count == 0)
+                return;
+
+            var existedObjs = new List<IModelObject>();
             var objTypes = GetObjectTypes();
 
             foreach (var type in objTypes)
             {
                 if (!type.Equals(objType))
-                    listTypedObjs.Add(FindMany(type).ToList());
+                    existedObjs.AddRange(FindMany(type));
             }
 
-            var mergeObjsList = new List<IModelObject>();
-
-            foreach (var typedObjs in listTypedObjs)
-                mergeObjsList.AddRange(typedObjs);
-
-            MergeSort<IModelObject>.MergeSortFunction(mergeObjsList);
-
-            modelObjects = mergeObjsList;
+            modelObjects = existedObjs;
         }
 /// <inheritdoc/>
 
@@ -175,22 +178,27 @@ namespace Model
         {
             modelObjects.RemoveAt(modelObjectInd);
         }
+/// <inheritdoc/>
 
         public IModelObject Find(int objNumbr)
         {
             return modelObjects.Find(objNumbr);
         }
+/// <inheritdoc/>
 
-        public List<string> GetObjectTypes()
+        public IEnumerable<string> GetObjectTypes()
         {
-            var objNames = new List<string>();
+            HashSet<string> objsNames = new HashSet<string>();
 
             foreach (var modelObject in modelObjects)
             {
-                if (!objNames.Contains(modelObject.ObjType))
-                    objNames.Add(modelObject.ObjType);
+                if (!objsNames.Contains(modelObject.ObjType))
+                {
+                    objsNames.Add(modelObject.ObjType);
+                    yield return modelObject.ObjType;
+                }
+
             }
-            return objNames;
         }
 
         public void AddRange(IEnumerable<IModelObject> addObjects)
@@ -219,6 +227,12 @@ namespace Model
         IEnumerator IEnumerable.GetEnumerator()
         {
             throw new NotImplementedException();
+        }
+/// <inheritdoc/>
+
+        public void Sort()
+        {
+            MergeSort<IModelObject>.MergeSortFunction(modelObjects);
         }
     }
 }

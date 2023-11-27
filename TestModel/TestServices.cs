@@ -11,6 +11,7 @@ using ModelInterfaces;
 using ModelController.MeshObjsUtility;
 using Model.IO;
 using Model.Elements;
+using GmshApi.GmshController;
 
 namespace TestModel
 {
@@ -145,52 +146,7 @@ namespace TestModel
                 if (!elsForNode.Contains(interfacedNodesEls3D[48][i]))
                     throw new Exception("номера не совпадают");
             }
-        }
-
-        private void Model_SaveEvent(object arg1, SaverEventArgs arg2)
-        {
-            //throw new NotImplementedException();
-        }
-
-        [DataTestMethod]
-        [DataRow(1)]
-        [DataRow(0)]
-        [DataRow(2)]
-        public void TestRemoveSomeNodes(int objNumber)
-        {
-            //assing
-            var model = new ModelData();
-            model.Loader = new LoadModelFromASCIITextFile();
-
-            model.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
-
-            //act
-            model.ObjectData[objNumber].ExistState = false;
-            model.ObjectData.ClearRemoved();
-
-            //assert
-            var res = model.ObjectData.Find(objNumber);
-            if (res != null)
-                throw new Exception();
-        }
-
-        [TestMethod]
-        public void TestRemoveBigData()
-        {
-            //assing
-            var model = new ModelData();
-
-            //act
-            model.Load(@"C:\Projs\ENERGOMASH\CALC\proj_new.bpf");
-
-            model.ObjectData.RemoveRange("Элементы2D");
-            model.ObjectData.ClearRemoved();
-
-            var els2D = model.ObjectData.FindMany<Element2D>();
-
-            if (els2D.Count() != 0)
-                throw new Exception();
-        }
+        }   
 
         [TestMethod]
         public void MergeNodes()

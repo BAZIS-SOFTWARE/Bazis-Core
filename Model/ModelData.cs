@@ -8,8 +8,8 @@ namespace Model
 {
     public class ModelData  : IModelData
     {
-        public IObjectsData ObjectData { get; set; } = new ObjectsData();
-        public IGroupData GroupData { get; set; } = new GroupData();
+        public IObjectsData ObjectData { get; private set; } = new ObjectsData();
+        public IGroupData GroupData { get; private set; } = new GroupData();
         /// <inheritdoc/>
         public IModelSaver Saver { get; set; } = new SaveModelToProjectTextFile();
         /// <inheritdoc/>
@@ -42,6 +42,13 @@ namespace Model
             Saver.Save(this, path);
         }
 /// <inheritdoc/>
+
+        public void SetGroupData(IGroupData groupData)
+        {
+            GroupData = groupData;
+        }
+
+        /// <inheritdoc/>
 
         public void SetObjectData(IObjectsData objectData)
         {

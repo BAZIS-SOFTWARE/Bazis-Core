@@ -28,10 +28,11 @@ namespace TestModel
             //assert
         }
 
+
         [TestMethod]
         [DataRow(@"..\..\..\Examples\STL\ACII.stl")]
-        [DataRow(@"..\..\..\..\Òåñòîâûå çàãîòîâêè äåòàëåé\Áëîê êàíàëîâ\block.stl")]
-        [DataRow(@"..\..\..\..\Òåñòîâûå çàãîòîâêè äåòàëåé\Áëîê êàíàëîâ\block_solid_sup.stl")]
+        [DataRow(@"..\..\..\..\Ã’Ã¥Ã±Ã²Ã®Ã¢Ã»Ã¥ Ã§Ã Ã£Ã®Ã²Ã®Ã¢ÃªÃ¨ Ã¤Ã¥Ã²Ã Ã«Ã¥Ã©\ÃÃ«Ã®Ãª ÃªÃ Ã­Ã Ã«Ã®Ã¢\block.stl")]
+        [DataRow(@"..\..\..\..\Ã’Ã¥Ã±Ã²Ã®Ã¢Ã»Ã¥ Ã§Ã Ã£Ã®Ã²Ã®Ã¢ÃªÃ¨ Ã¤Ã¥Ã²Ã Ã«Ã¥Ã©\ÃÃ«Ã®Ãª ÃªÃ Ã­Ã Ã«Ã®Ã¢\block_solid_sup.stl")]
         public void ImportModelFromSTLtextFormat(string filePath)
         {
             //assing
@@ -150,9 +151,9 @@ namespace TestModel
         }
 
         [DataTestMethod]
-        [DataRow(@"..\..\..\Examples\Salome\Çóá÷àòîå_êîëåñî_V1.dat",3000,976, 4832,9600)]
-        [DataRow(@"..\..\..\Examples\Salome\Çóá÷àòîå_êîëåñî_V2.dat",3161, 992, 3641, 5255)]
-        public void LoadÑubeFromSalomeFileCorrectly(string filePath, int nodes, int lineElms, int surfElms, int volElems)
+        [DataRow(@"..\..\..\Examples\Salome\Ã‡Ã³Ã¡Ã·Ã Ã²Ã®Ã¥_ÃªÃ®Ã«Ã¥Ã±Ã®_V1.dat",3000,976, 4832,9600)]
+        [DataRow(@"..\..\..\Examples\Salome\Ã‡Ã³Ã¡Ã·Ã Ã²Ã®Ã¥_ÃªÃ®Ã«Ã¥Ã±Ã®_V2.dat",3161, 992, 3641, 5255)]
+        public void LoadÃ‘ubeFromSalomeFileCorrectly(string filePath, int nodes, int lineElms, int surfElms, int volElems)
         {
             var import = new LoadModelFromSalomeFile();
             import.LoadEvent += (ar1, ar2) => { };
