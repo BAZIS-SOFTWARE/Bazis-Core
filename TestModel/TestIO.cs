@@ -28,9 +28,12 @@ namespace TestModel
             //assert
         }
 
-        [DataTestMethod]
+
+        [TestMethod]
         [DataRow(@"..\..\..\Examples\STL\ACII.stl")]
-        public void ImportModelFromSTLtextFormat(string path)
+        [DataRow(@"..\..\..\..\Òåñòîâûå çàãîòîâêè äåòàëåé\Áëîê êàíàëîâ\block.stl")]
+        [DataRow(@"..\..\..\..\Òåñòîâûå çàãîòîâêè äåòàëåé\Áëîê êàíàëîâ\block_solid_sup.stl")]
+        public void ImportModelFromSTLtextFormat(string filePath)
         {
             //assing
             var model = new ModelData();
@@ -38,7 +41,7 @@ namespace TestModel
             model.Loader = new LoadModelFromSTLFile();
 
             //act
-            model.Load(path);
+            model.Load(filePath);
 
             //assert
         }
@@ -148,9 +151,9 @@ namespace TestModel
         }
 
         [DataTestMethod]
-        [DataRow(@"..\..\..\Examples\Salome\��������_������_V1.dat",3000,976, 4832,9600)]
-        [DataRow(@"..\..\..\Examples\Salome\��������_������_V2.dat",3161, 992, 3641, 5255)]
-        public void Load�ubeFromSalomeFileCorrectly(string filePath, int nodes, int lineElms, int surfElms, int volElems)
+        [DataRow(@"..\..\..\Examples\Salome\Çóá÷àòîå_êîëåñî_V1.dat",3000,976, 4832,9600)]
+        [DataRow(@"..\..\..\Examples\Salome\Çóá÷àòîå_êîëåñî_V2.dat",3161, 992, 3641, 5255)]
+        public void LoadÑubeFromSalomeFileCorrectly(string filePath, int nodes, int lineElms, int surfElms, int volElems)
         {
             var import = new LoadModelFromSalomeFile();
             import.LoadEvent += (ar1, ar2) => { };
