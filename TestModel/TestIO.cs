@@ -29,7 +29,10 @@ namespace TestModel
         }
 
         [TestMethod]
-        public void ImportModelFromSTLtextFormat()
+        [DataRow(@"..\..\..\Examples\STL\ACII.stl")]
+        [DataRow(@"..\..\..\..\Тестовые заготовки деталей\Блок каналов\block.stl")]
+        [DataRow(@"..\..\..\..\Тестовые заготовки деталей\Блок каналов\block_solid_sup.stl")]
+        public void ImportModelFromSTLtextFormat(string filePath)
         {
             //assing
             var model = new ModelData();
@@ -37,7 +40,7 @@ namespace TestModel
             model.Loader = new LoadModelFromSTLFile();
 
             //act
-            model.Load(@"..\..\..\Examples\STL\ACII.stl");
+            model.Load(filePath);
 
             //assert
         }
