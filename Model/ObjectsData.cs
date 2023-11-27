@@ -14,106 +14,46 @@ namespace Model
     /// </summary>
     public class ObjectsData : IObjectsData
     {
-        List<IModelObject> modelObjects;
-
-        public IModelObject this[int index]
+        Dictionary<string,List<IModelObject>> modelObjects;
+        /// <summary>
+        /// this
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public IModelObject this[string objType, int index]
         {
-            get { return modelObjects[index]; }
-            set { modelObjects[index] = value; }
+            get { return modelObjects[type][index]; }
+            set { modelObjects[type][index] = value; }
         }
         /// <summary>
         /// ObjectsData
         /// </summary>
         public ObjectsData()
         {
-            modelObjects = new List<IModelObject>();           
+            modelObjects = new Dictionary<string, List<IModelObject>>();
         }
+/// <inheritdoc/>
 
         public bool IsReadOnly { get { return false; } }
+/// <inheritdoc/>
 
         public void Clear()
         {
             modelObjects.Clear();
         }
 
-        public bool Contains(IModelObject item)
-        {
-            throw new System.NotImplementedException();
-        }
+        /// <inheritdoc/>
 
-        public void CopyTo(IModelObject[] array, int arrayIndex)
+        public IEnumerable<IModelObject> FindMany(string objType, ObjKind objKind)
         {
-            modelObjects.CopyTo(array, arrayIndex);
-        }
-
-        public void Insert(int index, IModelObject item)
-        {
-            throw new System.NotImplementedException();
-        }
-
-
-        public IEnumerable<T> FindMany<T>() where T : IModelObject
-        {
-            //var list = new List<T>();
-            foreach (var obj in modelObjects)
-            {
-                if (obj is T)
-                    yield return (T)obj;
-                //list.Add((T)obj);
-            }
-            //return list.ToArray();
-        }
-
-        public int GetLastObjNumber()
-        {
-            return modelObjects.Last().Number;
-        }
-
-        public int Count
-        {
-            get { return modelObjects.Count; }
-        }
-/// <inheritdoc/>
-
-        public int NumberOfNodes
-        {
-            get { return FindMany<INode>().Count(); }
-        }
-/// <inheritdoc/>
-
-        public int NumberOfVolumeElements
-        {
-            get { return FindMany<IElement3D>().Count(); }
-        }
-/// <inheritdoc/>
-
-        public int NumberOfLineElements
-        {
-            get { return FindMany<IElement1D>().Count(); }
-        }
-/// <inheritdoc/>
-
-        public int NumberOfSurfaceElements
-        {
-            get { return FindMany<IElement2D>().Count(); }
-        }
-/// <inheritdoc/>
-
-        public int NumberOfElements
-        {
-            get { return FindMany<IElement>().Count(); }
-        }       
-/// <inheritdoc/>
-
-        public IEnumerable<IModelObject> FindMany(ObjKind objKind)
-        {
-            foreach (var modelObject in modelObjects)
+            foreach (var modelObject in modelObjects[objType])
             {
                 if (modelObject.ObjKind == objKind)
                     yield return modelObject;
             }
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public IEnumerable<IModelObject> FindMany(string objType)
         {
@@ -123,116 +63,207 @@ namespace Model
             {
                 foreach (var modelObject in modelObjects)
                 {
-                    if (modelObject.ObjType == "Элементы2D" |
-                        modelObject.ObjType == "Элементы3D" |
-                        modelObject.ObjType == "Элементы1D")
-                        yield return modelObject;
+                    if (modelObject.Key == "Элементы2D" |
+                        modelObject.Key == "Элементы3D" |
+                        modelObject.Key == "Элементы1D")
+                        foreach (var obj in modelObject.Value)
+                            yield return obj;
                 }
             }
 
             else
             {
-                foreach (var modelObject in modelObjects)
-                {
-                    if (modelObject.ObjType == objType)
-                        yield return modelObject;
-                }
+                foreach (var obj in modelObjects[objType])
+                    yield return obj;
             }
-        }       
-/// <inheritdoc/>
+        }
+
+
+        public IEnumerable<T> FindMany<T>() where T : IModelObject
+        {
+            foreach (var modelObject in modelObjects)
+                foreach (var obj in modelObject.Value)
+                    if (obj is T)
+                        yield return (T)obj;
+        }
+
+        public int GetLastObjNumber(string objType)
+        {
+            return modelObjects[objType].Last().Number;
+        }
+
+        public int Count
+        {
+            get { return modelObjects.Count; }
+        }
+        /// <inheritdoc/>
+
+        public int NumberOfNodes
+        {
+            get { return FindMany<INode>().Count(); }
+        }
+        /// <inheritdoc/>
+
+        public int NumberOfVolumeElements
+        {
+            get { return FindMany<IElement3D>().Count(); }
+        }
+        /// <inheritdoc/>
+
+        public int NumberOfLineElements
+        {
+            get { return FindMany<IElement1D>().Count(); }
+        }
+        /// <inheritdoc/>
+
+        public int NumberOfSurfaceElements
+        {
+            get { return FindMany<IElement2D>().Count(); }
+        }
+        /// <inheritdoc/>
+
+        public int NumberOfElements
+        {
+            get { return FindMany<IElement>().Count(); }
+        }
+  
+        /// <inheritdoc/>
 
         public bool Remove(IModelObject modelObject)
         {
-            return modelObjects.Remove(modelObject);
+            foreach (var item in modelObjects)
+            {
+                if (item.Value.Remove(modelObject))
+                    return true;
+            }
+            return false;
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void ClearRemoved()
         {
-            var removedObjs = modelObjects.Where(x => x.ExistState == false);
+            foreach (var item in modelObjects)
+            {
+                var removedObjs = item.Value.Where(x => x.ExistState == false);
 
-            var existObjects = modelObjects.Except(removedObjs, new EqualityComparerByExistState()).ToList();
-            modelObjects = existObjects;
+                var existObjects = item.Value.Except(removedObjs, new EqualityComparerByExistState()).ToList();
+
+                item.Value.Clear();
+                item.Value.AddRange(existObjects);
+            }
+
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
-        public void RemoveRange(string objType)
+        public void Remove(string objType)
         {
             if (modelObjects.Count == 0)
                 return;
 
-            var existedObjs = new List<IModelObject>();
-            var objTypes = GetObjectTypes();
-
-            foreach (var type in objTypes)
-            {
-                if (!type.Equals(objType))
-                    existedObjs.AddRange(FindMany(type));
-            }
-
-            modelObjects = existedObjs;
+            modelObjects.Remove(objType);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
-        public void RemoveAt(int modelObjectInd)
+        public void RemoveAt(string objType,int objInd)
         {
-            modelObjects.RemoveAt(modelObjectInd);
+            modelObjects[objType].RemoveAt(objInd);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public IModelObject Find(int objNumbr)
         {
-            return modelObjects.Find(objNumbr);
-        }
-/// <inheritdoc/>
-
-        public IEnumerable<string> GetObjectTypes()
-        {
-            HashSet<string> objsNames = new HashSet<string>();
-
-            foreach (var modelObject in modelObjects)
+            foreach (var item in modelObjects)
             {
-                if (!objsNames.Contains(modelObject.ObjType))
-                {
-                    objsNames.Add(modelObject.ObjType);
-                    yield return modelObject.ObjType;
-                }
-
+                return item.Value.Find(objNumbr);
             }
+            return null;
+        }
+        /// <inheritdoc/>
+
+        public void Sort(string objType)
+        {
+            MergeSort<IModelObject>.MergeSortFunction(modelObjects[objType]);
+        }
+        public List<IModelObject> this[string key] { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public ICollection<string> Keys { get { return modelObjects.Keys; } }
+
+        public ICollection<List<IModelObject>> Values => throw new NotImplementedException();
+
+        public void Add(string key, List<IModelObject> value)
+        {
+            if (modelObjects.ContainsKey(key))
+                modelObjects[key].AddRange(value);
+            else modelObjects.Add(key, value);
+        }
+
+        public void Add(KeyValuePair<string, List<IModelObject>> item)
+        {
+            if (modelObjects.ContainsKey(item.Key))
+                modelObjects[item.Key].AddRange(item.Value);
+            else modelObjects.Append(item);
         }
 
         public void AddRange(IEnumerable<IModelObject> addObjects)
         {
-            modelObjects.AddRange(addObjects);
+            if(modelObjects.ContainsKey(addObjects.First().ObjType))
+                modelObjects[addObjects.First().ObjType].AddRange(addObjects);
         }
 
         public void Add(IModelObject addObj)
         {
-            modelObjects.Add(addObj);
+            modelObjects[addObj.ObjType].Add(addObj);
         }
 
-        public int IndexOf(IModelObject item)
+        public bool Contains(KeyValuePair<string, List<IModelObject>> item)
         {
-            return modelObjects.IndexOf(item);
+            throw new NotImplementedException();
         }
 
-        public IEnumerator<IModelObject> GetEnumerator()
+        public bool ContainsKey(string key)
         {
-            foreach (var modelObject in modelObjects)
-            {
-                yield return modelObject;
-            }
+            throw new NotImplementedException();
+        }
+
+        public void CopyTo(KeyValuePair<string, List<IModelObject>>[] array, int arrayIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerator<KeyValuePair<string, List<IModelObject>>> GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public bool Remove(string key)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Remove(KeyValuePair<string, List<IModelObject>> item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool TryGetValue(string key, out List<IModelObject> value)
+        {
+            throw new NotImplementedException();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
             throw new NotImplementedException();
         }
-/// <inheritdoc/>
 
-        public void Sort()
+        public IEnumerable<IModelObject> FindMany(ObjKind objKind)
         {
-            MergeSort<IModelObject>.MergeSortFunction(modelObjects);
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<string> GetObjectTypes()
+        {
+            throw new NotImplementedException();
         }
     }
 }

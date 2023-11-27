@@ -91,7 +91,7 @@ namespace Model.IO
             var hasStopWord = nextElementFlags.Contains(tokens[0]);
             while (line != null && !hasStopWord)
             {
-                int currentNumber = newMesh.ObjectData.GetLastObjNumber() + 1;
+                int currentNumber = newMesh.ObjectData.GetLastObjNumber("");
                 dict.Add(int.Parse(tokens[0]), currentNumber);
                 var selectedNodesId = tokens.Skip(1)
                     .Select(m => int.Parse(m) - 1)

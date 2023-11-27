@@ -33,7 +33,7 @@ namespace Model.IO
                     }
                     if(line.Contains("BEGIN_ELEMENTS"))
                     {
-                        var elements = ReadElements(reader, int.Parse(tokens[1]),model.ObjectData.Last().Number + 1);
+                        var elements = ReadElements(reader, int.Parse(tokens[1]));
                         model.ObjectData.AddRange(elements);
                     }
                     if(line.Contains("BEGIN_GROUPS"))
@@ -64,7 +64,7 @@ namespace Model.IO
             }
         }
 
-        private IEnumerable<ModelObject> ReadElements(StreamReader reader, int count, int startNumber)
+        private IEnumerable<ModelObject> ReadElements(StreamReader reader, int count)
         {
             LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка элементов..."));
             for (var i = 0; i < count; i++)
@@ -78,7 +78,7 @@ namespace Model.IO
                     .Select(j => allNodes[j])
                     .ToArray();      
 
-                var element = GetElementByType(nodes, type, startNumber + i);
+                var element = GetElementByType(nodes, type, index);
                 allElements.Add(index, element);
                 yield return element;
             }

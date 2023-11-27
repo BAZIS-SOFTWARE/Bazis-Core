@@ -24,7 +24,7 @@ namespace Model.IO
 
                 sw.WriteLine(ver);
 
-                foreach (var objsType in model.ObjectData.GetObjectTypes())
+                foreach (var objsType in model.ObjectData.Keys)
                 {
                     sw.WriteLine("");
                     if (objsType == "Узлы")

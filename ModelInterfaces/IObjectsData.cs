@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace ModelInterfaces
 {
-    public interface IObjectsData : IList<IModelObject>
+    public interface IObjectsData : IDictionary<string, List<IModelObject>>
     {
         /// <summary>
         /// FindMany
@@ -14,14 +14,11 @@ namespace ModelInterfaces
         /// <returns></returns>
         IEnumerable<T> FindMany<T>() where T : IModelObject;
         /// <summary>
-        /// Sort objects by number use merge sort
+        /// objType
         /// </summary>
-        void Sort();
-        /// <summary>
-        /// GetLastObjNumber
-        /// </summary>
+        /// <param name="objType"></param>
         /// <returns></returns>
-        int GetLastObjNumber();
+        int GetLastObjNumber(string objType);
         /// <summary>
         /// NumberOfNodes
         /// </summary>
@@ -59,24 +56,26 @@ namespace ModelInterfaces
         /// </summary>
         void ClearRemoved();
         /// <summary>
-        /// Remove a range of objects. It is advisable to do a sort after removing.
-        /// </summary>
-        /// <param name="objType"></param>
-        void RemoveRange(string objType);
-        /// <summary>
         /// RemoveAt
         /// </summary>
-        /// <param name="modelObjectInd"></param>
-
-        void RemoveAt(int modelObjectInd);
-
+        /// <param name="objType"></param>
+        /// <param name="objInd"></param>
+        void RemoveAt(string objType,int objInd);
+        /// <summary>
+        /// Find
+        /// </summary>
+        /// <param name="objNumbr"></param>
+        /// <returns></returns>
         IModelObject Find(int objNumbr);
         /// <summary>
-        /// Get objects types
+        /// AddRange
         /// </summary>
-        /// <returns></returns>
-        IEnumerable<string> GetObjectTypes();
-
+        /// <param name="addObjects"></param>
         void AddRange(IEnumerable<IModelObject> addObjects);
+        /// <summary>
+        /// Add
+        /// </summary>
+        /// <param name="addObj"></param>
+        void Add(IModelObject addObj);
     }
 }

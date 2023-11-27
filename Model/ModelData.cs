@@ -2,6 +2,7 @@
 using Model.GroupsData;
 using Model.IO;
 using ModelInterfaces;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Model
@@ -29,11 +30,8 @@ namespace Model
             ObjectData = modelData.ObjectData;
             GroupData = modelData.GroupData;
 
-            var list = ObjectData.ToList();
-            MergeSort<IModelObject>.MergeSortFunction(list);
-
-            ObjectData.Clear();
-            ObjectData.AddRange(list);
+            foreach (var item in ObjectData)
+                MergeSort<IModelObject>.MergeSortFunction(item.Value);
         }
 /// <inheritdoc/>
 
