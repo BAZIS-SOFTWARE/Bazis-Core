@@ -39,8 +39,8 @@ namespace ModelControllerInterfaces
         /// <summary>
         /// CreatePresenter
         /// </summary>
-        /// <param name="objectsData"></param>
+        /// <param name="modelObjects"></param>
         /// <param name="objsType"></param>
-        void CreatePresenter(IObjectsData objectsData, string objsType);
+        void CreatePresenter(List<IModelObject> modelObjects, string objsType);
     }
 }

@@ -41,8 +41,6 @@ namespace Model
         public Node(int number, Point3D position) : base(number)
         {
             Position = position;
-            ObjType = "Узлы";
-            NumberOfPoints = 1;
 
             InitialColor = Color.FromArgb(0, 0, 255);
             MasterColor = Color.FromArgb(0, 0, 255);
@@ -93,13 +91,13 @@ namespace Model
         }
         /// <inheritdoc/>
 
-        public override ObjKind ObjKind { get; } = ObjKind.Node;
-/// <inheritdoc/>
+        public override ObjKind ObjKind { get; } = ObjKind.Узел;
+        /// <inheritdoc/>
 
-        public override string ObjType { get; }
-/// <inheritdoc/>
+        public override ObjType ObjType { get; } = ObjType.Точка;
+        /// <inheritdoc/>
 
-        public override int NumberOfPoints { get; }
+        public override int NumberOfPoints { get; } = 1;
 
         /// <inheritdoc/>
 

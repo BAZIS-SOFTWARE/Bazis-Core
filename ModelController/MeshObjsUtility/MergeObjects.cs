@@ -20,10 +20,10 @@ namespace ModelController.MeshObjsUtility
             this.objectData = objectData;
         }
 
-        public void Merge<T>(List<List<int>> numbers) where T : IModelObject
+        public void Merge<T>(List<List<int>> numbers, string objsType)
         {
-            var objs = objectData.FindMany<T>().ToArray();
-            var numberObjs = objectData.FindMany<T>().Select(x => x.Number).ToList();
+            var objs = objectData[objsType];
+            var numberObjs = objs.Select(x => x.Number).ToList();
 
             for (int i = 0; i < numbers.Count; i++)
             {
@@ -38,10 +38,10 @@ namespace ModelController.MeshObjsUtility
                 }
             }
 
-            var noDublicate = objectData.Distinct(new EqualityComparerByNumber()).ToArray();
+            var noDublicate = objs.Distinct(new EqualityComparerByNumber()).ToArray();
 
-            objectData.Clear();
-            objectData.AddRange(noDublicate);
+            objectData[objsType].Clear();
+            objectData[objsType].AddRange(noDublicate);
         }
     }
 }

@@ -19,8 +19,6 @@ namespace Model.Elements
             MasterColor = Color.FromArgb(0, 0, 255);
             SlaveColor = Color.FromArgb(0, 0, 255);
 
-            ObjKind = objKind;
-
             foreach (var node in nodes)
             {
                 node.AddElement(this);
@@ -33,22 +31,15 @@ namespace Model.Elements
             InitialColor = Color.FromArgb(0, 0, 255);
             MasterColor = Color.FromArgb(0, 0, 255);
             SlaveColor = Color.FromArgb(0, 0, 255);
-            ObjType = "Элементы2D";
-            ObjKind = objKind;
 
             this.nodes.AddRange(nodes);
 
             foreach (var node in nodes)
                 node.AddElement(this);
         }
-
-
         /// <inheritdoc/>
 
-        public override ObjKind ObjKind { get; }
-/// <inheritdoc/>
-
-        public override string ObjType { get; } = "Элементы2D";
+        public override ObjType ObjType { get; } = ObjType.Элемент2D;
         /// <inheritdoc/>
 
         public int NumberOfSides { get { return 1; } }

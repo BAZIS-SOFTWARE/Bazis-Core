@@ -82,7 +82,7 @@ namespace TestModel
 
             var creators = new Extract2DFrom3D();
 
-            var startNumber = model.ObjectData.GetLastObjNumber() + 1;
+            var startNumber = model.ObjectData.GetLastObjNumber("Элементы2D") + 1;
 
             var element2D = creators.Create(startNumber, model.ObjectData.FindMany<Element3D>().ToArray());
 

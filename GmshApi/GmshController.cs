@@ -1797,7 +1797,7 @@ namespace GmshApi.GmshController
                 }
                 var points = ConvertLocalCoordsToPoints3D(coords);
                 for (var j = 0; j < points.Length; ++j)
-                    nodes.Add(new Node(tags[i], points[j], ObjKind.Point));
+                    nodes.Add(new Node(tags[i], points[j], ObjKind.Вершина));
             }
             return nodes;
         }

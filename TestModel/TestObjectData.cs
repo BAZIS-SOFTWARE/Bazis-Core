@@ -61,7 +61,7 @@ namespace TestModel
             model.ObjectData.Add(line);
             model.ObjectData.Add(node2);
 
-            model.ObjectData.RemoveRange("Линия");
+            model.ObjectData.Remove("Линия");
             //assert
             Assert.AreEqual(model.ObjectData.NumberOfNodes, 3);
             Assert.AreEqual(model.ObjectData.Find(0).Number, 0);
@@ -87,8 +87,8 @@ namespace TestModel
             modelData.ObjectData.AddRange(nodes);
             modelData.ObjectData.AddRange(surfaces);
             //modelData.ObjectData.Sort();
-            modelData.ObjectData.RemoveRange("Элементы2D");
-            modelData.ObjectData.RemoveRange("Узлы");//Здесь падает, эмулирую такое же поведение как в Базисе
+            modelData.ObjectData.Remove("Элементы2D");
+            modelData.ObjectData.Remove("Узлы");//Здесь падает, эмулирую такое же поведение как в Базисе
 
             //assert
             Assert.AreEqual(modelData.ObjectData.Count, 0);
@@ -107,8 +107,8 @@ namespace TestModel
             model.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
 
             //act
-            model.ObjectData[objNumber].ExistState = false;
-            model.ObjectData.ClearRemoved();
+            model.ObjectData.Find(objNumber).ExistState = false;
+            model.ObjectData.ClearNotExisted();
 
             //assert
             var res = model.ObjectData.Find(objNumber);

@@ -139,7 +139,7 @@ namespace Model.IO
                     dic[int.Parse(y)]);
                     foreach (var number in objsNumbers)
                     {
-                        var obj = newMesh.ObjectData.Find(number);
+                        var obj = newMesh.ObjectData[elementType].Find(number);
                         group.Add(obj);
                     }
 

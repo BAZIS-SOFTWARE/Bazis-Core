@@ -8,12 +8,6 @@ namespace ModelInterfaces
     public interface IObjectsData : IDictionary<string, List<IModelObject>>
     {
         /// <summary>
-        /// FindMany
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        IEnumerable<T> FindMany<T>() where T : IModelObject;
-        /// <summary>
         /// objType
         /// </summary>
         /// <param name="objType"></param>
@@ -46,15 +40,9 @@ namespace ModelInterfaces
         /// <returns></returns>
         IEnumerable<IModelObject> FindMany(ObjKind objKind);
         /// <summary>
-        /// FindMany
+        /// ClearNotExisted
         /// </summary>
-        /// <param name="objType"></param>
-        /// <returns></returns>
-        IEnumerable<IModelObject> FindMany(string objType);
-        /// <summary>
-        /// ClearRemoved
-        /// </summary>
-        void ClearRemoved();
+        void ClearNotExisted();
         /// <summary>
         /// RemoveAt
         /// </summary>
@@ -66,16 +54,25 @@ namespace ModelInterfaces
         /// </summary>
         /// <param name="objNumbr"></param>
         /// <returns></returns>
-        IModelObject Find(int objNumbr);
+        IEnumerable<IModelObject> Find(int objNumbr);
         /// <summary>
-        /// AddRange
+        /// Find
         /// </summary>
-        /// <param name="addObjects"></param>
-        void AddRange(IEnumerable<IModelObject> addObjects);
+        /// <param name="objType"></param>
+        /// <param name="objNumbr"></param>
+        /// <returns></returns>
+        IModelObject Find(string objType, int objNumbr);
+        /// <summary>
+        /// FindMany
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        IEnumerable<T> FindMany<T>() where T : IModelObject;
         /// <summary>
         /// Add
         /// </summary>
         /// <param name="addObj"></param>
+        [Obsolete("Старайтесь не использовать этот метод. Вместо него стандартный Add для словаря")]
         void Add(IModelObject addObj);
     }
 }

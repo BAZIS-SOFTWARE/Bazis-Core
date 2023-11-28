@@ -20,15 +20,16 @@ namespace Model.Elements
         //    foreach (var node in nodes)
         //        node.AddElement(this);
         //}
-
-        public override ObjKind ObjKind { get; }
+/// <inheritdoc/>
 
         public override int NumberOfPoints { get { return nodes.Count(); } }
+/// <inheritdoc/>
+
+        public abstract ElementKind ElementKind { get; }
+/// <inheritdoc/>
 
         public abstract float DetJ(Point3D point3D);
-
-        public abstract float[] GetDerivativesFormFunctions(Point3D point3D);
-        public abstract float[] GetFormFunctions(Point3D point3D);
+/// <inheritdoc/>
 
         public IEnumerable<INode> GetNodes()
         {
@@ -37,6 +38,7 @@ namespace Model.Elements
                 yield return node;
             }
         }
+/// <inheritdoc/>
 
         public override IEnumerable<Point3D> GetPoints()
         {
@@ -45,6 +47,7 @@ namespace Model.Elements
                 yield return node.Position;
             }
         }
+/// <inheritdoc/>
 
         public override string ToString()
         {

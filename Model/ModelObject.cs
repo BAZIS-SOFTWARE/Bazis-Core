@@ -76,17 +76,15 @@ namespace Model
             }
         }
         /// <summary>
-        /// ObjKind
-        /// </summary>
-        public abstract ObjKind ObjKind { get; }
-        /// <summary>
         /// NumberOfPoints
         /// </summary>
         public abstract int NumberOfPoints { get; }
-        /// <summary>
-        /// ObjType
-        /// </summary>
-        public abstract string ObjType { get; }
+/// <inheritdoc/>
+
+        public abstract ObjType ObjType { get; }
+
+
+        public abstract ObjKind ObjKind { get; }
 
         public float _x
         {
@@ -124,6 +122,9 @@ namespace Model
                 return sum_z / NumberOfPoints;
             }
         }
+
+
+
 
         /// <summary>
         /// Set initial color

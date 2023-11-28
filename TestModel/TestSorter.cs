@@ -4,6 +4,7 @@ using Model;
 using Model.IO;
 using ModelInterfaces;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 
 namespace TestModel
@@ -21,11 +22,16 @@ namespace TestModel
             model.Load(@"..\..\..\Examples\3D\cub_unsorted.bpf");
 
             //assert
-            var number = 0;
-            foreach (var modelObject in model.ObjectData)
+
+            foreach (var objItem in model.ObjectData)
             {
-                Assert.AreEqual(number, modelObject.Number);
-                number++;
+                var number = objItem.Value[0].Number;
+                foreach (var modelObj in objItem.Value)
+                {
+                    if (modelObj.Number <= number)
+                        throw new Exception("Номер должен быть строго больше предыдущего!");
+                    number = modelObj.Number;
+                }
             }
         }
 

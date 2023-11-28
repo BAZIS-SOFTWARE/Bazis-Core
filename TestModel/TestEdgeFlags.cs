@@ -6,6 +6,7 @@ using ModelController.ModelScenePresentator;
 using Model.IO;
 using System;
 using Model.Elements;
+using System.Collections.Generic;
 
 namespace TestModel
 {
@@ -69,7 +70,8 @@ namespace TestModel
                 new Node(5, new Point3D(-1.0f,0.0f,0.0f))
             };
             var poligon = new Surface(0, nodes, ObjKind.ElementSurface); 
-            model.ObjectData.Add(poligon);
+
+            model.ObjectData.Add("Поверхности", new List<IModelObject>() { poligon });
             var presentator = new ModelScenePresentator(model.ObjectData);
             var values = presentator["Поверхности"].CreateIndexes();
             var edges = presentator["Поверхности"].CreateEdgeFlags(values.Item4);

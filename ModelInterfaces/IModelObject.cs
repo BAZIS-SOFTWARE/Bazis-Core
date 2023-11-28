@@ -1,32 +1,30 @@
 ﻿using Geometry;
 using Geometry.Interfaces;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ModelInterfaces
 {
-  
+
     /// <summary>
     /// ObjKind
     /// </summary>
     public enum ObjKind
     {
-        Node,
-        Penta,
-        Tetra,
-        Hexa,
-        Triangle,
-        ElementSurface,
-        GeometrySurface,
-        Quad,
-        Point,
-        Beam,
-        Curve
+        /// <summary>
+        /// Вершина
+        /// </summary>
+        Вершина,
+        Пента,
+        Тетра,
+        Гекса,
+        Треугольник,
+        Поверхность,
+        Квадрат,
+        Узел,
+        Стержень,
+        Линия
     }
     /// <summary>
     /// ObjType
@@ -34,29 +32,29 @@ namespace ModelInterfaces
     public enum ObjType
     {
         /// <summary>
-        /// Узлы
+        /// Точка
         /// </summary>
-        Узлы,
+        Точка,
         /// <summary>
         /// Поверхности
         /// </summary>
-        Поверхности,
+        Линия,
         /// <summary>
-        /// Элементы
+        /// Поверхности
         /// </summary>
-        Элементы,
+        Поверхность,
         /// <summary>
         /// Элементы2D
         /// </summary>
-        Элементы2D,
+        Элемент2D,
         /// <summary>
         /// Элементы3D
         /// </summary>
-        Элементы3D,
+        Элемент3D,
         /// <summary>
         /// Элементы1D
         /// </summary>
-        Элементы1D
+        Элемент1D
     }
     /// <summary>
     /// Model object interface
@@ -89,14 +87,13 @@ namespace ModelInterfaces
         /// </summary>
         bool ExistState { get; set; }
         /// <summary>
-        /// ObjKind
-        /// </summary>
-        [Obsolete(@"Prop ""ObjKind"" is deprecated, please don't use.")]
-        ObjKind ObjKind { get; }
-        /// <summary>
         /// ObjType
         /// </summary>
-        string ObjType { get; }
+        ObjType ObjType { get; }
+        /// <summary>
+        /// ObjKind
+        /// </summary>
+        ObjKind ObjKind { get; }
         /// <summary>
         /// NumberOfPoints
         /// </summary>

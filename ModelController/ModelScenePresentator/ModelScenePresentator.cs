@@ -50,39 +50,39 @@ namespace ModelController.ModelScenePresentator
         /// <param name="objectsData"></param>
         public ModelScenePresentator(IObjectsData objectsData) : this()
         {
-            foreach (var objsType in objectsData.GetObjectTypes())
+            foreach (var objsItem in objectsData)
             {
-                CreatePresenter(objectsData, objsType);
+                CreatePresenter(objsItem.Value, objsItem.Key);
             }
         }
 /// <inheritdoc/>
 
-        public void CreatePresenter(IObjectsData objectsData, string objsType)
+        public void CreatePresenter(List<IModelObject> modelObjects, string objsType)
         {
             switch (objsType)
             {
                 case "Узлы":
-                    var pointsPresentor = CreatePointObjectsPresenter(objectsData.FindMany(objsType));
+                    var pointsPresentor = CreatePointObjectsPresenter(modelObjects);
                     presentors.Add(objsType, pointsPresentor);
                     break;
                 case "Элементы1D":
-                    var els1dPresentor = CreateLineObjectsPresenter(objectsData.FindMany<Beam>());
+                    var els1dPresentor = CreateLineObjectsPresenter(modelObjects.Select(x => (Beam)x));
                     presentors.Add(objsType, els1dPresentor);
                     break;
                 case "Линия":
-                    var linesPresentor = CreateLineObjectsPresenter(objectsData.FindMany<Line>());
+                    var linesPresentor = CreateLineObjectsPresenter(modelObjects.Select(x => (Line)x));
                     presentors.Add(objsType, linesPresentor);
                     break;
                 case "Элементы2D":
-                    var els2dPresentor = CreateSurfaceObjectsPresenter(objectsData.FindMany<Element2D>());
+                    var els2dPresentor = CreateSurfaceObjectsPresenter(modelObjects.Select(x => (Element2D)x));
                     presentors.Add(objsType, els2dPresentor);
                     break;
                 case "Элементы3D":
-                    var els3dPresentor = CreateSurfaceObjectsPresenter(objectsData.FindMany<Element3D>());
+                    var els3dPresentor = CreateSurfaceObjectsPresenter(modelObjects.Select(x => (Element3D)x));
                     presentors.Add(objsType, els3dPresentor);
                     break;
                 case "Поверхности":
-                    var surfsPresentor = CreateSurfaceObjectsPresenter(objectsData.FindMany<Surface>());
+                    var surfsPresentor = CreateSurfaceObjectsPresenter(modelObjects.Select(x => (Surface)x));
                     presentors.Add(objsType, surfsPresentor);
                     break;
             }

@@ -18,13 +18,12 @@ namespace Model.Elements
                 this.nodes.Add(node);
                 node.AddElement(this);
             }
-
-            ObjType = "Элементы1D";
         }
         /// <inheritdoc/>
-        public override ObjKind ObjKind { get; } = ObjKind.Beam;
+        public override ObjKind ObjKind { get; } = ObjKind.Стержень;
+        /// <inheritdoc/>
 
-        public override string ObjType { get; } 
+        public override ObjType ObjType { get; } = ObjType.Элемент1D;
 
         public override Point3D CalcCentralPoint()
         {
@@ -36,6 +35,7 @@ namespace Model.Elements
             }
             return center.Div(NumberOfPoints);
         }
+/// <inheritdoc/>
 
         public float CalcLength()
         {
