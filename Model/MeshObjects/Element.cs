@@ -1,26 +1,27 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Geometry;
 using ModelInterfaces;
 
-namespace Model.Elements
+namespace Model.MeshObjects
 {
     public abstract class Element : ModelObject, IElement
     {
-        protected List<INode> nodes;
-        public Element(int number) : base(number)
+        protected List<INode> nodes = new List<INode>();
+        public Element(int number, Node[] nodes) : base(number)
         {
-            nodes = new List<INode>();
-        }
-        //{
-        //    if (nodes.Length == 0)
-        //        throw new Exception("Массив узлов не может быть пустой!");
-        //    this.nodes = nodes;
+            if (nodes.Length == 0)
+                throw new Exception("Массив узлов не может быть пустой!");
 
-        //    foreach (var node in nodes)
-        //        node.AddElement(this);
-        //}
-/// <inheritdoc/>
+            foreach (var node in nodes)
+            {
+                node.AddElement(this);
+                this.nodes.Add(node);
+            }
+        }
+
+        /// <inheritdoc/>
 
         public override int NumberOfPoints { get { return nodes.Count(); } }
 /// <inheritdoc/>

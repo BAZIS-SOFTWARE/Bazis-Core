@@ -1,4 +1,5 @@
 ﻿using Geometry;
+using Model.MeshObjects;
 using ModelInterfaces;
 using ModelInterfaces.Attributes;
 using System;
@@ -20,34 +21,17 @@ namespace Model
         /// <param name="number"></param>
         /// <param name="nodes"></param>
         /// <param name="objKind"></param>
-        public Surface(int number, Node[] nodes, ObjKind objKind) : base(number)
+        public Surface(int number, Node[] nodes) : base(number)
         {
             if (nodes.Length < 3)
                 throw new Exception("Для создания поверхности требуется не меньше 3-х узлов!");
-
-            ObjKind = objKind;
             
             nodes.RoundSort(); //Anticlockwise(nodes);
             this.nodes = nodes;
 
-            ObjType = "Поверхности";
-
             InitialColor = Color.FromArgb(224, 0, 177);
             MasterColor = Color.FromArgb(224, 0, 177);
             SlaveColor = Color.FromArgb(224, 0, 177);
-        }
-        /// <summary>
-        /// Surface constructor
-        /// </summary>
-        /// <param name="number"></param>
-        /// <param name="nodes"></param>
-        /// <param name="objKind"></param>
-        /// <param name="color"></param>
-        public Surface(int number, Node[] nodes, ObjKind objKind, Color color) : this(number, nodes, objKind)
-        {
-            InitialColor = color;
-            MasterColor = color;
-            SlaveColor = color;
         }
         /// <summary>
         /// Sort nodes anticlockwise
@@ -144,12 +128,10 @@ namespace Model
 
             return string.Format("{0} {1} : {2}", Number, ObjType, str);
         }
+
         /// <inheritdoc/>
 
-        public override ObjKind ObjKind { get; }
-        /// <inheritdoc/>
-
-        public override string ObjType { get; }
+        public override ObjType ObjType { get; } = ObjType.Поверхность;
         /// <inheritdoc/>
 
         public override int NumberOfPoints { get { return nodes.Length; } }

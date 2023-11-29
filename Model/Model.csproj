@@ -28,7 +28,8 @@
   <ItemGroup>
     <Compile Include="Events\LoaderEventArgs.cs" />
     <Compile Include="Events\SaverEventArgs.cs" />
-    <Compile Include="Elements\Hexa.cs" />
+    <Compile Include="MeshObjects\Hexa.cs" />
+    <Compile Include="GeometryObjects\Point.cs" />
     <Compile Include="IO\LoadModelFromProjectTextFile.cs" />
     <Compile Include="IO\SaveModelToProjectTextFile.cs" />
     <Compile Include="IO\LoadModelFromASCIITextFile.cs" />
@@ -37,24 +38,24 @@
     <Compile Include="IO\LoadModelFromSalomeFile.cs" />
     <Compile Include="IO\LoadModelFromSTLFile.cs" />
     <Compile Include="IO\SaveModelToASCIITextFile.cs" />
-    <Compile Include="Elements\Beam.cs" />
+    <Compile Include="MeshObjects\Beam.cs" />
     <Compile Include="GroupsData\Group.cs" />
     <Compile Include="GroupsData\CompareGroupsByName.cs" />
     <Compile Include="GroupsData\GroupData.cs" />
     <Compile Include="ModelData.cs" />
     <Compile Include="ModelObject.cs" />
-    <Compile Include="Line.cs" />
-    <Compile Include="Elements\Element.cs" />
-    <Compile Include="Elements\Element2D.cs" />
-    <Compile Include="Elements\Element3D.cs" />
-    <Compile Include="Node.cs" />
-    <Compile Include="Elements\Penta.cs" />
-    <Compile Include="Elements\Quad.cs" />
+    <Compile Include="GeometryObjects\Line.cs" />
+    <Compile Include="MeshObjects\Element.cs" />
+    <Compile Include="MeshObjects\Element2D.cs" />
+    <Compile Include="MeshObjects\Element3D.cs" />
+    <Compile Include="MeshObjects\Node.cs" />
+    <Compile Include="MeshObjects\Penta.cs" />
+    <Compile Include="MeshObjects\Quad.cs" />
     <Compile Include="SurfaceFinder.cs" />
     <Compile Include="ObjectsData.cs" />
     <Compile Include="Surface.cs" />
-    <Compile Include="Elements\Tetra.cs" />
-    <Compile Include="Elements\Triangle.cs" />
+    <Compile Include="MeshObjects\Tetra.cs" />
+    <Compile Include="MeshObjects\Triangle.cs" />
   </ItemGroup> 
   <ItemGroup>
     <PackageReference Include="Functions" Version="1.0.2.43" />

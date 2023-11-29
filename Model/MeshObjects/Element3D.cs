@@ -8,27 +8,20 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
-namespace Model.Elements
+namespace Model.MeshObjects
 {
 
     public abstract class Element3D : Element, IElement3D
     {
         private List<ISurface> surfaces;
-        public Element3D(int number, Node[] nodes, ObjKind objKind) : base(number)
+        public Element3D(int number, Node[] nodes) : base(number, nodes)
         {
 
             InitialColor = Color.FromArgb(255, 125, 0);
             MasterColor = Color.FromArgb(255, 125, 0);
             SlaveColor = Color.FromArgb(255, 125, 0);
-            ObjKind = objKind;
-            ObjType = "Элементы3D";
-            surfaces = SurfaceFinder.FindSurfaces(nodes).ToList();
 
-            foreach (var node in nodes)
-            {
-                node.AddElement(this);
-                this.nodes.Add(node);
-            }
+            surfaces = SurfaceFinder.FindSurfaces(nodes).ToList();
         }
         /// <inheritdoc/>
 
@@ -47,12 +40,8 @@ namespace Model.Elements
         }
 
 
-
         /// <inheritdoc/>
-
-        public override string ObjType { get; }
-        /// <inheritdoc/>
-        public override ObjKind ObjKind { get; }
+        public override ObjType ObjType { get; } = ObjType.Элемент3D;
         /// <inheritdoc/>
 
         public int NumberOfSides { get { return surfaces.Count(); } }

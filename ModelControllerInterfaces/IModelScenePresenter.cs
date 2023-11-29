@@ -6,7 +6,7 @@ namespace ModelControllerInterfaces
     /// <summary>
     /// IModelPresenter
     /// </summary>
-    public interface IModelScenePresenter : IDictionary<string, IObjsPresenter>
+    public interface IModelScenePresenter : IDictionary<ObjType, IObjsPresenter>
     {
         /// <summary>
         /// HideInsideSurfaces
@@ -41,6 +41,6 @@ namespace ModelControllerInterfaces
         /// </summary>
         /// <param name="modelObjects"></param>
         /// <param name="objsType"></param>
-        void CreatePresenter(List<IModelObject> modelObjects, string objsType);
+        void CreatePresenter(List<IModelObject> modelObjects, ObjType objsType);
     }
 }

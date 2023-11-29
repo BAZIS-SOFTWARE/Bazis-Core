@@ -5,14 +5,14 @@ using System.Linq;
 
 namespace ModelInterfaces
 {
-    public interface IObjectsData : IDictionary<string, List<IModelObject>>
+    public interface IObjectsData : IDictionary<ObjType, List<IModelObject>>
     {
         /// <summary>
         /// objType
         /// </summary>
         /// <param name="objType"></param>
         /// <returns></returns>
-        int GetLastObjNumber(string objType);
+        IModelObject GetLastObj(ObjType objType);
         /// <summary>
         /// NumberOfNodes
         /// </summary>
@@ -34,12 +34,6 @@ namespace ModelInterfaces
         /// </summary>
         int NumberOfElements { get; }
         /// <summary>
-        /// FindMany
-        /// </summary>
-        /// <param name="objKind"></param>
-        /// <returns></returns>
-        IEnumerable<IModelObject> FindMany(ObjKind objKind);
-        /// <summary>
         /// ClearNotExisted
         /// </summary>
         void ClearNotExisted();
@@ -48,20 +42,20 @@ namespace ModelInterfaces
         /// </summary>
         /// <param name="objType"></param>
         /// <param name="objInd"></param>
-        void RemoveAt(string objType,int objInd);
+        void RemoveAt(ObjType objType,int objInd);
         /// <summary>
         /// Find
         /// </summary>
         /// <param name="objNumbr"></param>
         /// <returns></returns>
-        IEnumerable<IModelObject> Find(int objNumbr);
+        IEnumerable<IModelObject> FindMany(int objNumbr);
         /// <summary>
         /// Find
         /// </summary>
         /// <param name="objType"></param>
         /// <param name="objNumbr"></param>
         /// <returns></returns>
-        IModelObject Find(string objType, int objNumbr);
+        IModelObject Find(ObjType objType, int objNumbr);
         /// <summary>
         /// FindMany
         /// </summary>
@@ -72,7 +66,11 @@ namespace ModelInterfaces
         /// Add
         /// </summary>
         /// <param name="addObj"></param>
-        [Obsolete("Старайтесь не использовать этот метод. Вместо него стандартный Add для словаря")]
         void Add(IModelObject addObj);
+        /// <summary>
+        /// AddRange
+        /// </summary>
+        /// <param name="addObjs"></param>
+        void AddRange(IEnumerable<IModelObject> addObjs);
     }
 }

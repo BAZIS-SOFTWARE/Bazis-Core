@@ -1,10 +1,8 @@
 ﻿using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
-using Model.IO;
-using ModelInterfaces;
+using Model.MeshObjects;
 using System;
-using System.CodeDom;
 using System.Collections.Generic;
 
 namespace TestModel
@@ -28,7 +26,7 @@ namespace TestModel
                 var number = objItem.Value[0].Number;
                 foreach (var modelObj in objItem.Value)
                 {
-                    if (modelObj.Number <= number)
+                    if (modelObj.Number < number)
                         throw new Exception("Номер должен быть строго больше предыдущего!");
                     number = modelObj.Number;
                 }
@@ -49,7 +47,7 @@ namespace TestModel
             };
 
             //act
-            var surf = new Surface(0, nodes, ObjKind.ElementSurface);
+            var surf = new Surface(0, nodes);
 
             //assert
             if (!surf[0].Number.Equals(0))
@@ -76,7 +74,7 @@ namespace TestModel
             };
 
             //act
-            var surf = new Surface(0, nodes, ObjKind.ElementSurface);
+            var surf = new Surface(0, nodes);
 
             //assert
             //assert
@@ -137,7 +135,7 @@ namespace TestModel
             }
 
             //act
-            var surf = new Surface(0, nodes.ToArray(), ObjKind.ElementSurface);
+            var surf = new Surface(0, nodes.ToArray());
 
             //assert
             Assert.AreEqual(surf.NumberOfPoints, nodes.Count);

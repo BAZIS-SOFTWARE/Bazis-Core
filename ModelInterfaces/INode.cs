@@ -5,6 +5,9 @@ using System.Collections.Generic;
 
 namespace ModelInterfaces
 {
+    /// <summary>
+    /// INode
+    /// </summary>
     public interface INode : IModelObject
     {
         /// <summary>

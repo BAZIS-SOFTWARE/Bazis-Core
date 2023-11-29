@@ -28,16 +28,16 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow("Cilindr.step", 6, ObjKind.Curve)]
-        [DataRow("Cilindr.step", 4, ObjKind.Point)]
-        public void GetGeometryObjectsTest(string fileName, int numbOfObjs, ObjKind objKind)
+        [DataRow("Cilindr.step", 6, ObjType.Линия)]
+        [DataRow("Cilindr.step", 4, ObjType.Точка)]
+        public void GetGeometryObjectsTest(string fileName, int numbOfObjs, ObjType objType)
         {
             var ierr = 0;
             controller.gmshOpen(modelFolder + fileName, ref ierr);
 
             int[] dimTags;
             var status = false;
-            if (objKind == ObjKind.Curve)
+            if (objType == ObjType.Линия)
                 status  = controller.ModelGetGeometryEntities(out dimTags, 1);
             else
                 status = controller.ModelGetGeometryEntities(out dimTags, 0);
@@ -45,14 +45,14 @@ namespace TestModel.GmshTests
             Assert.IsTrue(status);
 
             IEnumerable<IModelObject> objects;
-            if (objKind == ObjKind.Curve)
+            if (objType == ObjType.Линия)
                 objects = controller.CreateLines(dimTags, ref status);
             else
                 objects = controller.CreateControlPoints(dimTags);
 
             Assert.AreEqual(numbOfObjs, objects.Count());
             foreach (var obj in objects)
-                Assert.AreEqual(objKind, obj.ObjKind);
+                Assert.AreEqual(objType, obj.ObjType);
         }
 
         [DataTestMethod]

@@ -1,12 +1,11 @@
 using ModelController.MeshObjsUtility;
 using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Model;
 using ModelInterfaces;
 using Model.IO;
 using System.Collections.Generic;
 using System.Linq;
-using Model.Elements;
+using Model.MeshObjects;
 
 namespace TestModel
 {

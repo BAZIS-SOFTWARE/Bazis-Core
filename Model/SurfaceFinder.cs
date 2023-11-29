@@ -1,5 +1,6 @@
 ﻿using Geometry;
 using MathNet.Numerics.LinearAlgebra;
+using Model.MeshObjects;
 using ModelInterfaces;
 using System;
 using System.Collections.Generic;
@@ -43,7 +44,7 @@ namespace Model.ObjectsSorters
                 {
                     potentialSurface.AddRange(subset);
                     surfaces.Add(potentialSurface.ToHashSet());
-                    yield return new Surface(surfaceId, potentialSurface.ToArray(), ObjKind.ElementSurface);
+                    yield return new Surface(surfaceId, potentialSurface.ToArray());
                     surfaceId++;
                 }
             }

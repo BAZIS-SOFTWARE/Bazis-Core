@@ -1,10 +1,10 @@
 ﻿using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Model;
 using ModelInterfaces;
 using System;
 using ModelController.ModelScenePresentator.GlObjsPresenters;
-using Model.Elements;
+using Model.MeshObjects;
+using Model.GeometryObjects;
 
 namespace TestModel
 {
@@ -32,7 +32,7 @@ namespace TestModel
             var nodes = new Node[] { new Node(0, new Point3D(0.5f, 1.0f, 1.0f)),
                                      new Node(1, new Point3D(1.0f, 1.0f, -1.0f))
                                    };
-            var line = new Model.Line[] { new Model.Line(0, nodes) };
+            var line = new Line[] { new Line(0, nodes) };
             var presenter = new LineObjsPresenter(line);
             var indices = presenter.CreateIndexes();
             var pointers = presenter.CreatePointers(indices.Item1);

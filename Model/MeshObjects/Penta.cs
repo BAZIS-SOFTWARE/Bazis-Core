@@ -8,23 +8,26 @@ using Geometry;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Single;
 
-namespace Model.Elements
+namespace Model.MeshObjects
 {
     public class Penta : Element3D
     {
-        public Penta(int number, Node[] nodes) : base(number, nodes, ObjKind.Penta)
+        /// <inheritdoc/>
+        public override ElementKind ElementKind { get; } = ElementKind.Пента;
+
+        public Penta(int number, Node[] nodes) : base(number, nodes)
         {
         }
 
-        public override float[] GetFormFunctions(Point3D point3D)
-        {
-            return FormFunctionPenta(point3D);
-        }
+        //public override float[] GetFormFunctions(Point3D point3D)
+        //{
+        //    return FormFunctionPenta(point3D);
+        //}
 
-        public override float[] GetDerivativesFormFunctions(Point3D point3D)
-        {
-            return DerivativeFormFunctionPenta(point3D).ToColumnMajorArray();
-        }
+        //public override float[] GetDerivativesFormFunctions(Point3D point3D)
+        //{
+        //    return DerivativeFormFunctionPenta(point3D).ToColumnMajorArray();
+        //}
 
         public override float DetJ(Point3D point3D)
         {

@@ -1,8 +1,7 @@
 ﻿using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
-using Model.Elements;
-using ModelInterfaces;
+using Model.MeshObjects;
 using ModelInterfaces.ObjectsFinders;
 
 namespace TestModel

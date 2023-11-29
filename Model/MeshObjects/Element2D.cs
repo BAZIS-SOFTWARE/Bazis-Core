@@ -7,42 +7,26 @@ using System.Drawing;
 using System.Linq;
 using MathNet.Numerics.LinearAlgebra.Single;
 
-namespace Model.Elements
+namespace Model.MeshObjects
 {
     public abstract class Element2D : Element, IElement2D
     {
         protected ISurface surface;
 
-        public Element2D(int number, Node[] nodes, ObjKind objKind) : base(number)
+        public Element2D(int number, Node[] nodes) : base(number, nodes)
         {
             InitialColor = Color.FromArgb(0, 0, 255);
             MasterColor = Color.FromArgb(0, 0, 255);
             SlaveColor = Color.FromArgb(0, 0, 255);
-
-            foreach (var node in nodes)
-            {
-                node.AddElement(this);
-                this.nodes.Add(node);
-            }
         }
 
-        public Element2D(int number, List<Node> nodes, ObjKind objKind) : base(number)
-        {
-            InitialColor = Color.FromArgb(0, 0, 255);
-            MasterColor = Color.FromArgb(0, 0, 255);
-            SlaveColor = Color.FromArgb(0, 0, 255);
-
-            this.nodes.AddRange(nodes);
-
-            foreach (var node in nodes)
-                node.AddElement(this);
-        }
         /// <inheritdoc/>
 
         public override ObjType ObjType { get; } = ObjType.Элемент2D;
         /// <inheritdoc/>
 
         public int NumberOfSides { get { return 1; } }
+/// <inheritdoc/>
 
         public override Point3D CalcCentralPoint()
         {
@@ -54,11 +38,13 @@ namespace Model.Elements
             }
             return center.Div(NumberOfPoints);
         }
+/// <inheritdoc/>
 
         public Point3D CalcNormal()
         {
             return surface.CalcNormal();
         }
+/// <inheritdoc/>
 
         public abstract float CalcSquare();
      
@@ -67,13 +53,6 @@ namespace Model.Elements
         public IEnumerable<ISurface> GetSurface()
         {
             yield return surface;
-        }
-    }
-    public static class FloatOverride
-    {
-        public static float Square(this float value)
-        {
-            return value * value;
         }
     }
 }

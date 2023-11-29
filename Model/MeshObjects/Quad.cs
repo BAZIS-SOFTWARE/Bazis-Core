@@ -6,23 +6,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Model.Elements
+namespace Model.MeshObjects
 {
     public class Quad : Element2D
     {
-        public Quad(int number, Node[] nodes) : base(number, nodes, ObjKind.Quad)
-        {
-            surface = new Surface(0, new Node[] { nodes[0], nodes[1], nodes[2], nodes[3] }, ObjKind.ElementSurface);
-        }
-        public override float[] GetFormFunctions(Point3D point3D)
-        {
-            return FormFunctionSquare(point3D);
-        }
+        public override ElementKind ElementKind { get; } = ElementKind.Квадрат;
 
-        public override float[] GetDerivativesFormFunctions(Point3D point3D)
+        public Quad(int number, Node[] nodes) : base(number, nodes)
         {
-            return DerivativeFormFunctionSquare(point3D);
+            surface = new Surface(0, new Node[] { nodes[0], nodes[1], nodes[2], nodes[3] });
         }
+        //public override float[] GetFormFunctions(Point3D point3D)
+        //{
+        //    return FormFunctionSquare(point3D);
+        //}
+
+        //public override float[] GetDerivativesFormFunctions(Point3D point3D)
+        //{
+        //    return DerivativeFormFunctionSquare(point3D);
+        //}
 
 
         //public float[][] CoefficientKQuad(float k, float t, float h, int firstPoint, int secondPoint)

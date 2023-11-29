@@ -1,11 +1,12 @@
 ﻿using GmshApi.GmshController;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
-using Model.Elements;
+using Model.MeshObjects;
 using Model.IO;
+using ModelInterfaces;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using Model.GeometryObjects;
 
 namespace TestModel
 {
@@ -61,11 +62,11 @@ namespace TestModel
             model.ObjectData.Add(line);
             model.ObjectData.Add(node2);
 
-            model.ObjectData.Remove("Линия");
+            model.ObjectData.Remove(ObjType.Линия);
             //assert
             Assert.AreEqual(model.ObjectData.NumberOfNodes, 3);
-            Assert.AreEqual(model.ObjectData.Find(0).Number, 0);
-            Assert.AreEqual(model.ObjectData.Find(3).Number, 3);
+            Assert.AreEqual(model.ObjectData.Find(ObjType.Линия,0), null);
+            Assert.AreEqual(model.ObjectData.Find(ObjType.Линия,3), null);
         }
 
         [DataTestMethod]
@@ -87,8 +88,8 @@ namespace TestModel
             modelData.ObjectData.AddRange(nodes);
             modelData.ObjectData.AddRange(surfaces);
             //modelData.ObjectData.Sort();
-            modelData.ObjectData.Remove("Элементы2D");
-            modelData.ObjectData.Remove("Узлы");//Здесь падает, эмулирую такое же поведение как в Базисе
+            modelData.ObjectData.Remove(ObjType.Элемент2D);
+            modelData.ObjectData.Remove(ObjType.Узел);//Здесь падает, эмулирую такое же поведение как в Базисе
 
             //assert
             Assert.AreEqual(modelData.ObjectData.Count, 0);
@@ -107,11 +108,11 @@ namespace TestModel
             model.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
 
             //act
-            model.ObjectData.Find(objNumber).ExistState = false;
+            model.ObjectData.Find(ObjType.Узел,objNumber).ExistState = false;
             model.ObjectData.ClearNotExisted();
 
             //assert
-            var res = model.ObjectData.Find(objNumber);
+            var res = model.ObjectData.Find(ObjType.Узел, objNumber);
             if (res != null)
                 throw new Exception();
         }

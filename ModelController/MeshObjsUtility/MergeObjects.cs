@@ -20,7 +20,7 @@ namespace ModelController.MeshObjsUtility
             this.objectData = objectData;
         }
 
-        public void Merge<T>(List<List<int>> numbers, string objsType)
+        public void Merge<T>(List<List<int>> numbers, ObjType objsType)
         {
             var objs = objectData[objsType];
             var numberObjs = objs.Select(x => x.Number).ToList();

@@ -10,7 +10,7 @@ using Model.Events;
 using ModelInterfaces;
 using ModelController.MeshObjsUtility;
 using Model.IO;
-using Model.Elements;
+using Model.MeshObjects;
 using GmshApi.GmshController;
 
 namespace TestModel
@@ -139,7 +139,7 @@ namespace TestModel
 
             var interfacedNodesEls3D = interNodesEls3DFinder.Find(new List<int>() { 3, 48, 71 }, els3D);
 
-            var elsForNode = new List<int>() { 2565,3048,3050,3051 };
+            var elsForNode = new List<int>() { 485,968,970,971 };
             //assert
             for (int i = 0; i < interfacedNodesEls3D[48].Count; i++)
             {

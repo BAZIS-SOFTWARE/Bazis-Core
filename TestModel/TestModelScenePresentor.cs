@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using Model.Elements;
+using Model.MeshObjects;
 
 namespace TestModel
 {
@@ -22,13 +22,13 @@ namespace TestModel
             10,10,0,
             20,10,0
         }, 
-            ObjType.Поверхности, ObjKind.ElementSurface, new int[] { 3, 9, 12, 9,3 })]
+            ObjType.Поверхность, new int[] { 3, 9, 12, 9,3 })]
         [DataRow(new float[]
         {
             0, 0, 0,
             10,10,0,
         },
-            ObjType.Элементы1D, ObjKind.Beam, new int[] { 2, 6, 8, 6,1 })]
+            ObjType.Элемент1D, new int[] { 2, 6, 8, 6,1 })]
         [DataRow(new float[]
         {
             0, 0, 0,
@@ -36,8 +36,8 @@ namespace TestModel
             0, 10, 0,
             0, 0, 10
         },
-            ObjType.Элементы3D, ObjKind.Tetra, new int[] { 12, 36, 48, 36,12 })]
-        public void TestObjectsCreationManual(float[]coords, ObjType objType, ObjKind objKind, int [] indsR)
+            ObjType.Элемент3D, new int[] { 12, 36, 48, 36,12 })]
+        public void TestObjectsCreationManual(float[]coords, ObjType objType, int [] indsR)
         {
 
             //assign
@@ -53,13 +53,13 @@ namespace TestModel
 
             Model.ModelObject modelObject;
 
-            switch (objKind)
+            switch (objType)
             {
-                case ObjKind.Tetra:
+                case ObjType.Элемент3D:
                     modelObject = new Tetra(0, nodes.ToArray());
                     break;
-                case ObjKind.ElementSurface:
-                    modelObject = new Surface(0, nodes.ToArray(), objKind);
+                case ObjType.Поверхность:
+                    modelObject = new Surface(0, nodes.ToArray());
                     break;
                 default:
                     modelObject = new Beam(0, nodes.ToArray());
@@ -74,15 +74,15 @@ namespace TestModel
             var presenter = new ModelScenePresentator(model.ObjectData);
 
             //act
-            if(objType == ObjType.Элементы3D)
+            if(objType == ObjType.Элемент3D)
                 presenter.HideInsideSurfaces(model.ObjectData.FindMany<Element3D>());
 
-            var inds = presenter[objType.ToString()].CreateIndexes();
-            var ptrs = presenter[objType.ToString()].CreatePointers(inds.Item1);
-            var crds = presenter[objType.ToString()].CreateVertexes(inds.Item2, "координаты");
-            var colors = presenter[objType.ToString()].CreateVertexes(inds.Item3, "цвет");
-            var normals = presenter[objType.ToString()].CreateVertexes(inds.Item2, "нормаль");
-            var edges = presenter[objType.ToString()].CreateEdgeFlags(inds.Item4);
+            var inds = presenter[objType].CreateIndexes();
+            var ptrs = presenter[objType].CreatePointers(inds.Item1);
+            var crds = presenter[objType].CreateVertexes(inds.Item2, "координаты");
+            var colors = presenter[objType].CreateVertexes(inds.Item3, "цвет");
+            var normals = presenter[objType].CreateVertexes(inds.Item2, "нормаль");
+            var edges = presenter[objType].CreateEdgeFlags(inds.Item4);
             //assert
 
             Assert.AreEqual(ptrs.Length, indsR[0]);
@@ -93,11 +93,11 @@ namespace TestModel
         }
 
         [DataTestMethod]
-        [DataRow(new string[]
+        [DataRow(ObjType.Поверхность,new string[]
 {
-            "Поверхности", "6", "18", "24", "18"
+    "6", "18", "24", "18"
 })]
-        public void TestObjectsCreationfromSTLText(string[] array)
+        public void TestObjectsCreationfromSTLText(ObjType objType,string[] array)
         {
             //assing
             var model = new ModelData();
@@ -111,30 +111,30 @@ namespace TestModel
 
             var presenter = new ModelScenePresentator(model.ObjectData);
 
-            var inds = presenter[array[0]].CreateIndexes();
-            var ptrs = presenter[array[0]].CreatePointers(inds.Item1);
-            var coords = presenter[array[0]].CreateVertexes(inds.Item2, "координаты");
-            var colors = presenter[array[0]].CreateVertexes(inds.Item3, "цвет");
-            var normals = presenter[array[0]].CreateVertexes(inds.Item2, "нормаль");
+            var inds = presenter[objType].CreateIndexes();
+            var ptrs = presenter[objType].CreatePointers(inds.Item1);
+            var coords = presenter[objType].CreateVertexes(inds.Item2, "координаты");
+            var colors = presenter[objType].CreateVertexes(inds.Item3, "цвет");
+            var normals = presenter[objType].CreateVertexes(inds.Item2, "нормаль");
             //assert
-            Assert.AreEqual(ptrs.Length, int.Parse(array[1]));
-            Assert.AreEqual(coords.Length, int.Parse(array[2]));
-            Assert.AreEqual(colors.Length, int.Parse(array[3]));
-            Assert.AreEqual(normals.Length, int.Parse(array[4]));
+            Assert.AreEqual(ptrs.Length, int.Parse(array[0]));
+            Assert.AreEqual(coords.Length, int.Parse(array[1]));
+            Assert.AreEqual(colors.Length, int.Parse(array[2]));
+            Assert.AreEqual(normals.Length, int.Parse(array[3]));
 
         }
 
 
         [DataTestMethod]
-        [DataRow(new string[]
+        [DataRow(ObjType.Элемент3D, new string[]
 {
-            "Элементы3D", "24", "72", "96", "72"
+            "24", "72", "96", "72"
 })]
-        [DataRow(new string[]
+        [DataRow(ObjType.Узел, new string[]
 {
-            "Узлы", "7", "21", "28", "21"
+            "7", "21", "28", "21"
 })]
-        public void TestObjectsCreationFromASC(string[] array)
+        public void TestObjectsCreationFromASC(ObjType objType, string[] array)
         {
             //assing
             var model = new ModelData();
@@ -145,19 +145,19 @@ namespace TestModel
             model.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
             var presenter = new ModelScenePresentator(model.ObjectData);
 
-            if(array[0] == "Элементы3D")
+            if(objType == ObjType.Элемент3D)
                 presenter.HideInsideSurfaces(model.ObjectData.FindMany<Element3D>());
 
-            var inds = presenter[array[0]].CreateIndexes();
-            var ptrs = presenter[array[0]].CreatePointers(inds.Item1);
-            var coords = presenter[array[0]].CreateVertexes(inds.Item2, "координаты");
-            var colors = presenter[array[0]].CreateVertexes(inds.Item3, "цвет");
-            var normals = presenter[array[0]].CreateVertexes(inds.Item2, "нормаль");
+            var inds = presenter[objType].CreateIndexes();
+            var ptrs = presenter[objType].CreatePointers(inds.Item1);
+            var coords = presenter[objType].CreateVertexes(inds.Item2, "координаты");
+            var colors = presenter[objType].CreateVertexes(inds.Item3, "цвет");
+            var normals = presenter[objType].CreateVertexes(inds.Item2, "нормаль");
             //assert
-            Assert.AreEqual(ptrs.Length, int.Parse(array[1]));
-            Assert.AreEqual(coords.Length, int.Parse(array[2]));
-            Assert.AreEqual(colors.Length, int.Parse(array[3]));
-            Assert.AreEqual(normals.Length, int.Parse(array[4]));
+            Assert.AreEqual(ptrs.Length, int.Parse(array[0]));
+            Assert.AreEqual(coords.Length, int.Parse(array[1]));
+            Assert.AreEqual(colors.Length, int.Parse(array[2]));
+            Assert.AreEqual(normals.Length, int.Parse(array[3]));
         }
 
 
@@ -180,9 +180,9 @@ namespace TestModel
 
             var modelPresenter = new ModelScenePresentator(model.ObjectData);
 
-            foreach (string objsType in modelPresenter.Keys)
+            foreach (var objsType in modelPresenter.Keys)
             {
-                if(objsType == "Элементы3D")
+                if(objsType == ObjType.Элемент3D)
                     modelPresenter.HideInsideSurfaces(modelPresenter.Values.Select(x => (ISurfaceObject)x));
 
                 var tuple = modelPresenter[objsType].CreateIndexes();
@@ -202,9 +202,9 @@ namespace TestModel
         }
 
         [DataTestMethod]
-        [DataRow("Элементы3D")]
-        [DataRow("Узлы")]
-        public void TestObjectsCreationFromCDB(string objsType)
+        [DataRow(ObjType.Элемент3D)]
+        [DataRow(ObjType.Узел)]
+        public void TestObjectsCreationFromCDB(ObjType objsType)
         {
             //assing
             var model = new ModelData();

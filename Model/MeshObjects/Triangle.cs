@@ -8,14 +8,18 @@ using Geometry;
 using MathNet.Numerics.LinearAlgebra.Single;
 using MathNet.Numerics.LinearAlgebra;
 
-namespace Model.Elements
+namespace Model.MeshObjects
 {
     public class Triangle : Element2D
     {
         private float[][] trianglePoints;
-        public Triangle(int number, Node[] nodes) : base(number, nodes, ObjKind.Triangle)
+/// <inheritdoc/>
+
+        public override ElementKind ElementKind { get; } = ElementKind.Треугольник;
+
+        public Triangle(int number, Node[] nodes) : base(number, nodes)
         {
-            surface = new Surface(0, new Node[] { nodes[0], nodes[1], nodes[2] }, ObjKind.ElementSurface);
+            surface = new Surface(0, new Node[] { nodes[0], nodes[1], nodes[2] });
             trianglePoints = new[]
             {
                 new[]{1/2f,0f,1/2f},
@@ -23,18 +27,18 @@ namespace Model.Elements
                 new[]{0,1/2f,1/2f}
             };
         }
-        /// <inheritdoc/>
+//        /// <inheritdoc/>
 
-        public override float[] GetDerivativesFormFunctions(Point3D point3D)
-        {
-            return DerivativeFormFunctionTriangle().ToColumnMajorArray();
-        }
-/// <inheritdoc/>
+//        public override float[] GetDerivativesFormFunctions(Point3D point3D)
+//        {
+//            return DerivativeFormFunctionTriangle().ToColumnMajorArray();
+//        }
+///// <inheritdoc/>
 
-        public override float[] GetFormFunctions(Point3D point3D)
-        {
-            return FormFunctionTriangle(point3D);
-        }
+//        public override float[] GetFormFunctions(Point3D point3D)
+//        {
+//            return FormFunctionTriangle(point3D);
+//        }
 /// <inheritdoc/>
 
         //public float[][] CoefficientKTriangle(float t, float k, float h, int firstPoint, int secondPoint) =>

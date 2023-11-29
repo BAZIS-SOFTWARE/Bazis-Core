@@ -1,4 +1,4 @@
-﻿using Model.Elements;
+﻿using Model.MeshObjects;
 using Model.Events;
 using ModelInterfaces;
 using System;
@@ -27,7 +27,7 @@ namespace Model.IO
                 foreach (var objsType in model.ObjectData.Keys)
                 {
                     sw.WriteLine("");
-                    if (objsType == "Узлы")
+                    if (objsType == ObjType.Узел)
                     {
                         sw.WriteLine("Узлы");
                         foreach (var nodeItem in model.ObjectData.FindMany<Node>())
@@ -41,10 +41,10 @@ namespace Model.IO
                         sw.WriteLine("#Узлы");
                     }
 
-                    else if (objsType == "Элементы3D" | objsType == "Элементы2D" | objsType == "Элементы1D")
+                    else if (objsType == ObjType.Элемент3D | objsType == ObjType.Элемент2D | objsType == ObjType.Элемент1D)
                     {
                         sw.WriteLine(objsType);
-                        foreach (var obj in model.ObjectData.FindMany(objsType))
+                        foreach (var obj in model.ObjectData[objsType])
                         {
                             var elem = (Element)obj;
                             var strAr = new List<string>();
@@ -66,9 +66,9 @@ namespace Model.IO
                     var objInd = string.Join(" ", group.Select(x => x.Number));
                     var resu = name + " " + objInd;
 
-                    if (group.ObjType == "Узлы") sw.WriteLine("Группа узлов : {0}", resu);
-                    if (group.ObjType == "Элементы3D") sw.WriteLine("Группа элементов 3D : {0}", resu);
-                    if (group.ObjType == "Элементы2D") sw.WriteLine("Группа элементов 2D : {0}", resu);
+                    if (group.ObjType == ObjType.Узел) sw.WriteLine("Группа узлов : {0}", resu);
+                    if (group.ObjType == ObjType.Элемент3D) sw.WriteLine("Группа элементов 3D : {0}", resu);
+                    if (group.ObjType == ObjType.Элемент2D) sw.WriteLine("Группа элементов 2D : {0}", resu);
                 }
                 sw.WriteLine("#Группы узлов и элементов");
                 sw.Dispose();

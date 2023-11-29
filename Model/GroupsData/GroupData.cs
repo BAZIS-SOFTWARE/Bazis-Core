@@ -80,18 +80,21 @@ namespace Model.GroupsData
         {
             throw new System.NotImplementedException();
         }
+/// <inheritdoc/>
 
         public IGroup Find(int index)
         {
             return groups[index];
         }
+/// <inheritdoc/>
 
         public IGroup Find(string grName)
         {
             return groups.Find(x => x.GroupName == grName);
         }
+/// <inheritdoc/>
 
-        public IEnumerable<IGroup> FindMany(string objType)
+        public IEnumerable<IGroup> FindMany(ObjType objType)
         {
             return groups.Where(x => x.ObjType == objType);
         }

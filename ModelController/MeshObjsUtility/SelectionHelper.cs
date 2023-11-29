@@ -1,12 +1,11 @@
 ﻿using Geometry;
-using Model;
 using ModelInterfaces.ObjectsFinders;
 using ModelInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using Model.Elements;
+using Model.MeshObjects;
 
 namespace ModelController.MeshObjsUtility
 {

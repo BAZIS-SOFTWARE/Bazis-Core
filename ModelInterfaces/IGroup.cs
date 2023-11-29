@@ -18,7 +18,7 @@ namespace ModelInterfaces
         /// <summary>
         /// ObjType
         /// </summary>
-        string ObjType { get; }
+        ObjType ObjType { get; }
         /// <summary>
         /// AddRange
         /// </summary>

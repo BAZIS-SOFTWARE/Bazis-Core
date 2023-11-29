@@ -1,4 +1,5 @@
 ﻿using Geometry;
+using Model.MeshObjects;
 using Model.Events;
 using ModelInterfaces;
 using System;
@@ -27,7 +28,7 @@ namespace Model.IO
                     str = reader.ReadLine().Trim();
                     var nodes = GetNodes(reader, str);
                     modelData.ObjectData.AddRange(nodes);
-                    var surface = new Surface(counter, nodes, ObjKind.GeometrySurface);
+                    var surface = new Surface(counter, nodes);
                     modelData.ObjectData.Add(surface);
                     counter++; 
                 }

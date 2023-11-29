@@ -1,5 +1,5 @@
 ﻿using Geometry;
-using Model.Elements;
+using Model.MeshObjects;
 using Model.Events;
 using ModelInterfaces;
 using System;
@@ -47,7 +47,7 @@ namespace Model.IO
             return model;
         }
 
-        private IEnumerable<Node> ReadNodes(StreamReader reader, int count)
+        private IEnumerable<INode> ReadNodes(StreamReader reader, int count)
         {
             LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка узлов..."));
             for (var i = 0; i < count; i++)
@@ -108,10 +108,10 @@ namespace Model.IO
                 var groupName = tokens[1];
                 var numbers = tokens.Skip(7).Select(int.Parse);
 
-                var objsType = "";
+                ObjType objsType;
                 if (tokens[2] == "2")
                     objsType = allElements[numbers.First()].ObjType;
-                else objsType = "Узлы";
+                else objsType = ObjType.Точка;
 
                 var group = new GroupsData.Group(groupName, objsType);
                 foreach (var number in numbers)

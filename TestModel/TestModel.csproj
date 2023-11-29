@@ -104,7 +104,6 @@
     <Compile Include="TestCalcDistance.cs" />
     <Compile Include="TestEdgeFlags.cs" />
     <Compile Include="TestElement.cs" />
-    <Compile Include="TestFormFunctions.cs" />
     <Compile Include="TestIO.cs" />
     <Compile Include="TestModelControllerPoligon.cs" />
     <Compile Include="TestsCutSection.cs" />

@@ -6,7 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Model.Elements;
+using Model.MeshObjects;
 
 namespace ModelController.ModelScenePresentator
 {
@@ -15,10 +15,10 @@ namespace ModelController.ModelScenePresentator
     /// </summary>
     public class ModelScenePresentator : IModelScenePresenter
     {
-        Dictionary<string, IObjsPresenter> presentors;
+        Dictionary<ObjType, IObjsPresenter> presentors;
 /// <inheritdoc/>
 
-        public ICollection<string> Keys { get{ return presentors.Keys; } } 
+        public ICollection<ObjType> Keys { get{ return presentors.Keys; } } 
 /// <inheritdoc/>
 
         public ICollection<IObjsPresenter> Values { get { return presentors.Values; } }
@@ -34,7 +34,7 @@ namespace ModelController.ModelScenePresentator
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public IObjsPresenter this[string key] 
+        public IObjsPresenter this[ObjType key] 
         { 
             get { return presentors[key]; } 
             set { presentors[key] = value; }
@@ -42,7 +42,7 @@ namespace ModelController.ModelScenePresentator
 
         public ModelScenePresentator()
         {
-            presentors = new Dictionary<string, IObjsPresenter>();
+            presentors = new Dictionary<ObjType, IObjsPresenter>();
         }
         /// <summary>
         /// ModelScenePresentator
@@ -57,34 +57,26 @@ namespace ModelController.ModelScenePresentator
         }
 /// <inheritdoc/>
 
-        public void CreatePresenter(List<IModelObject> modelObjects, string objsType)
+        public void CreatePresenter(List<IModelObject> modelObjects, ObjType objsType)
         {
             switch (objsType)
             {
-                case "Узлы":
+                case ObjType.Узел:
+                case ObjType.Точка:
                     var pointsPresentor = CreatePointObjectsPresenter(modelObjects);
                     presentors.Add(objsType, pointsPresentor);
                     break;
-                case "Элементы1D":
-                    var els1dPresentor = CreateLineObjectsPresenter(modelObjects.Select(x => (Beam)x));
+                case ObjType.Линия:
+                case ObjType.Элемент1D:
+                    var els1dPresentor = CreateLineObjectsPresenter(modelObjects.Select(x => (ILineObject)x));
                     presentors.Add(objsType, els1dPresentor);
                     break;
-                case "Линия":
-                    var linesPresentor = CreateLineObjectsPresenter(modelObjects.Select(x => (Line)x));
-                    presentors.Add(objsType, linesPresentor);
-                    break;
-                case "Элементы2D":
-                    var els2dPresentor = CreateSurfaceObjectsPresenter(modelObjects.Select(x => (Element2D)x));
+                case ObjType.Элемент2D:
+                case ObjType.Элемент3D:
+                case ObjType.Поверхность:
+                    var els2dPresentor = CreateSurfaceObjectsPresenter(modelObjects.Select(x => (ISurfaceObject)x));
                     presentors.Add(objsType, els2dPresentor);
-                    break;
-                case "Элементы3D":
-                    var els3dPresentor = CreateSurfaceObjectsPresenter(modelObjects.Select(x => (Element3D)x));
-                    presentors.Add(objsType, els3dPresentor);
-                    break;
-                case "Поверхности":
-                    var surfsPresentor = CreateSurfaceObjectsPresenter(modelObjects.Select(x => (Surface)x));
-                    presentors.Add(objsType, surfsPresentor);
-                    break;
+                    break;             
             }
         }
 
@@ -135,11 +127,11 @@ namespace ModelController.ModelScenePresentator
 
         /// <inheritdoc/>
 
-        public IEnumerator<KeyValuePair<string, IObjsPresenter>> GetEnumerator()
+        public IEnumerator<KeyValuePair<ObjType, IObjsPresenter>> GetEnumerator()
         {
             foreach (var presentor in presentors)
             {
-                yield return new KeyValuePair<string, IObjsPresenter>(presentor.Key, presentor.Value);
+                yield return new KeyValuePair<ObjType, IObjsPresenter>(presentor.Key, presentor.Value);
             }
         }
 
@@ -149,32 +141,32 @@ namespace ModelController.ModelScenePresentator
         }
 /// <inheritdoc/>
 
-        public bool ContainsKey(string presentorName)
+        public bool ContainsKey(ObjType presentorName)
         {
             return presentors.ContainsKey(presentorName);
         }
 /// <inheritdoc/>
 
-        public void Add(string presentorName, IObjsPresenter presenter)
+        public void Add(ObjType presentorName, IObjsPresenter presenter)
         {
             if(!presentors.ContainsKey(presentorName))
                 presentors.Add(presentorName, presenter);
         }
 /// <inheritdoc/>
 
-        public bool Remove(string presentorName)
+        public bool Remove(ObjType presentorName)
         {
             return presentors.Remove(presentorName);
         }
 /// <inheritdoc/>
 
-        public bool TryGetValue(string presentorName, out IObjsPresenter presenter)
+        public bool TryGetValue(ObjType presentorName, out IObjsPresenter presenter)
         {
             return presentors.TryGetValue(presentorName, out presenter);
         }
 /// <inheritdoc/>
 
-        public void Add(KeyValuePair<string, IObjsPresenter> item)
+        public void Add(KeyValuePair<ObjType, IObjsPresenter> item)
         {
             throw new NotImplementedException();
         }
@@ -186,19 +178,19 @@ namespace ModelController.ModelScenePresentator
         }
 /// <inheritdoc/>
 
-        public bool Contains(KeyValuePair<string, IObjsPresenter> item)
+        public bool Contains(KeyValuePair<ObjType, IObjsPresenter> item)
         {
             throw new NotImplementedException();
         }
 /// <inheritdoc/>
 
-        public void CopyTo(KeyValuePair<string, IObjsPresenter>[] array, int arrayIndex)
+        public void CopyTo(KeyValuePair<ObjType, IObjsPresenter>[] array, int arrayIndex)
         {
             throw new NotImplementedException();
         }
 /// <inheritdoc/>
 
-        public bool Remove(KeyValuePair<string, IObjsPresenter> item)
+        public bool Remove(KeyValuePair<ObjType, IObjsPresenter> item)
         {
             throw new NotImplementedException();
         }

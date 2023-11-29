@@ -83,9 +83,6 @@ namespace Model
 
         public abstract ObjType ObjType { get; }
 
-
-        public abstract ObjKind ObjKind { get; }
-
         public float _x
         {
             get

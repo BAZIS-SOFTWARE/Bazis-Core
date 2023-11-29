@@ -7,14 +7,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Model.Elements
+namespace Model.MeshObjects
 {
     public class Tetra : Element3D
     {
-        public Tetra(int number, Node[] nodes) : base(number, nodes, ObjKind.Tetra)
+        public Tetra(int number, Node[] nodes) : base(number, nodes)
         {
         }
 /// <inheritdoc/>
+
+        public override ElementKind ElementKind { get; } = ElementKind.Тетра;
+
+        /// <inheritdoc/>
 
         public override float CalcVolume()
         {
@@ -39,15 +43,15 @@ namespace Model.Elements
             throw new NotImplementedException();
         }
 
-        public override float[] GetDerivativesFormFunctions(Point3D point3D)
-        {
-            throw new NotImplementedException();
-        }
+        //public override float[] GetDerivativesFormFunctions(Point3D point3D)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public override float[] GetFormFunctions(Point3D point3D)
-        {
-            return FormFunctionTetra(point3D);
-        }
+        //public override float[] GetFormFunctions(Point3D point3D)
+        //{
+        //    return FormFunctionTetra(point3D);
+        //}
 
         private float[] FormFunctionTetra(Point3D point3D)
         {

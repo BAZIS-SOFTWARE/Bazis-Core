@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using Geometry;
+using Model.MeshObjects;
 using ModelInterfaces;
 
-namespace Model
+namespace Model.GeometryObjects
 {
     public class Line : ModelObject, ILineObject
     {
@@ -11,20 +12,16 @@ namespace Model
 
         public Line(int number, Node[] nodes) : base(number)
         {
-            ObjType = "Линия";
             NumberOfPoints = nodes.Length;
-            ObjKind = ObjKind.Curve;
             this.nodes = nodes;
         }
-/// <inheritdoc/>
 
-        public override ObjKind ObjKind { get; }
         /// <inheritdoc/>
-        public override string ObjType { get; }
-/// <inheritdoc/>
+        public override ObjType ObjType { get; } = ObjType.Линия;
+        /// <inheritdoc/>
 
-        public override int NumberOfPoints { get; }      
-/// <inheritdoc/>
+        public override int NumberOfPoints { get; }
+        /// <inheritdoc/>
 
         public override Point3D CalcCentralPoint()
         {
@@ -36,13 +33,13 @@ namespace Model
             }
             return center.Div(NumberOfPoints);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public float CalcLength()
         {
             throw new NotImplementedException();
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public IEnumerable<INode> GetNodes()
         {
@@ -51,7 +48,7 @@ namespace Model
                 yield return node;
             }
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public override IEnumerable<Point3D> GetPoints()
         {

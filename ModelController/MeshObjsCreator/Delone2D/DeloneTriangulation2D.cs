@@ -4,8 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Functions.Extensions;
-using Model;
-using Model.Elements;
+using Model.MeshObjects;
 
 namespace ModelController.MeshObjsCreator.Delone2D
 {

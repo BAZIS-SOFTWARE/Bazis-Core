@@ -6,31 +6,15 @@ using System.Drawing;
 
 namespace ModelInterfaces
 {
-
-    /// <summary>
-    /// ObjKind
-    /// </summary>
-    public enum ObjKind
-    {
-        /// <summary>
-        /// Вершина
-        /// </summary>
-        Вершина,
-        Пента,
-        Тетра,
-        Гекса,
-        Треугольник,
-        Поверхность,
-        Квадрат,
-        Узел,
-        Стержень,
-        Линия
-    }
     /// <summary>
     /// ObjType
     /// </summary>
     public enum ObjType
     {
+        /// <summary>
+        /// Точка
+        /// </summary>
+        Узел,
         /// <summary>
         /// Точка
         /// </summary>
@@ -90,10 +74,6 @@ namespace ModelInterfaces
         /// ObjType
         /// </summary>
         ObjType ObjType { get; }
-        /// <summary>
-        /// ObjKind
-        /// </summary>
-        ObjKind ObjKind { get; }
         /// <summary>
         /// NumberOfPoints
         /// </summary>

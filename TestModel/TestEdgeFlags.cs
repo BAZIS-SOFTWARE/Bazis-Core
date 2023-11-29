@@ -3,10 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using ModelInterfaces;
 using ModelController.ModelScenePresentator;
-using Model.IO;
-using System;
-using Model.Elements;
-using System.Collections.Generic;
+using Model.MeshObjects;
 
 namespace TestModel
 {
@@ -26,8 +23,8 @@ namespace TestModel
             var el2D = new Triangle(0, nodes);
             model.ObjectData.Add(el2D);
             var presentator = new ModelScenePresentator(model.ObjectData);
-            var values = presentator["Элементы2D"].CreateIndexes();
-            var edges = presentator["Элементы2D"].CreateEdgeFlags(values.Item4);
+            var values = presentator[ObjType.Элемент2D].CreateIndexes();
+            var edges = presentator[ObjType.Элемент2D].CreateEdgeFlags(values.Item4);
             Assert.AreEqual(3, edges.Length);
             for (var i = 0; i < edges.Length; ++i)
                 Assert.AreEqual(true, edges[i]);
@@ -48,8 +45,8 @@ namespace TestModel
             model.ObjectData.Add(el2D);
 
             var presentator = new ModelScenePresentator(model.ObjectData);
-            var values = presentator["Элементы2D"].CreateIndexes();
-            var edges = presentator["Элементы2D"].CreateEdgeFlags(values.Item4);
+            var values = presentator[ObjType.Элемент2D].CreateIndexes();
+            var edges = presentator[ObjType.Элемент2D].CreateEdgeFlags(values.Item4);
             Assert.AreEqual(6, edges.Length);
             var expectedFlags = new bool[] { true, true, false, false, true, true };
             for (var i = 0; i < expectedFlags.Length; ++i)
@@ -69,12 +66,12 @@ namespace TestModel
                 new Node(4, new Point3D(-1.0f,1.0f,0.0f)),
                 new Node(5, new Point3D(-1.0f,0.0f,0.0f))
             };
-            var poligon = new Surface(0, nodes, ObjKind.ElementSurface); 
+            var poligon = new Surface(0, nodes); 
 
-            model.ObjectData.Add("Поверхности", new List<IModelObject>() { poligon });
+            model.ObjectData.Add(poligon);
             var presentator = new ModelScenePresentator(model.ObjectData);
-            var values = presentator["Поверхности"].CreateIndexes();
-            var edges = presentator["Поверхности"].CreateEdgeFlags(values.Item4);
+            var values = presentator[ObjType.Поверхность].CreateIndexes();
+            var edges = presentator[ObjType.Поверхность].CreateEdgeFlags(values.Item4);
             
             Assert.AreEqual(12, edges.Length);
             var expectedFlags = new bool[] { true, true, false, false, true, false,

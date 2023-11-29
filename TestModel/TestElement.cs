@@ -7,7 +7,7 @@ using Model;
 using ModelInterfaces;
 using ModelController.MeshObjsCreator;
 using ModelController.ModelScenePresentator;
-using Model.Elements;
+using Model.MeshObjects;
 
 namespace TestModel
 {
@@ -82,11 +82,13 @@ namespace TestModel
 
             var creators = new Extract2DFrom3D();
 
-            var startNumber = model.ObjectData.GetLastObjNumber("Элементы2D") + 1;
+            var lastObj = model.ObjectData.GetLastObj(ObjType.Элемент2D);
 
-            var element2D = creators.Create(startNumber, model.ObjectData.FindMany<Element3D>().ToArray());
+            var currentNumber = lastObj == null ? 0 : lastObj.Number + 1;
 
-            var inside = new Surface(0, new Node[] { nodes[3], nodes[2], nodes[1] },ObjKind.ElementSurface);
+            var element2D = creators.Create(currentNumber, model.ObjectData.FindMany<Element3D>().ToArray());
+
+            var inside = new Surface(0, new Node[] { nodes[3], nodes[2], nodes[1] });
             foreach (var item in element2D)
             {
                 foreach (var surface in item.GetSurface())

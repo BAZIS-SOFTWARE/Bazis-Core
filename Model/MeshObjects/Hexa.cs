@@ -7,14 +7,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-namespace Model.Elements
+namespace Model.MeshObjects
 {
     public class Hexa : Element3D
     {
         float[] supPoint = { -(float)Math.Sqrt(0.6), 0, (float)Math.Sqrt(0.6) };
         float[] kef = { 5 / 9f, 8 / 9f, 5 / 9f };
 
-        public Hexa(int number, Node[] nodes) : base(number, nodes, ObjKind.Hexa)
+        public override ElementKind ElementKind { get; } = ElementKind.Гекса;
+
+        public Hexa(int number, Node[] nodes) : base(number, nodes)
         {
         }
 
@@ -44,15 +46,15 @@ namespace Model.Elements
             return DetJHex(point3D._x, point3D._y, point3D._z);
         }
 
-        public override float[] GetDerivativesFormFunctions(Point3D point3D)
-        {
-            return DerivativeFormFunctionHex(point3D).ToColumnMajorArray();
-        }
+        //public override float[] GetDerivativesFormFunctions(Point3D point3D)
+        //{
+        //    return DerivativeFormFunctionHex(point3D).ToColumnMajorArray();
+        //}
 
-        public override float[] GetFormFunctions(Point3D point3D)
-        {
-            return FormFunctionHex(point3D);
-        }
+        //public override float[] GetFormFunctions(Point3D point3D)
+        //{
+        //    return FormFunctionHex(point3D);
+        //}
 
         public float[][] CoefficientKHex(float k, float h, ConstantDirection direction, float constValue)
         {

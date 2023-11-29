@@ -1,7 +1,6 @@
 ﻿using Geometry;
 using Model;
-using Model.Elements;
-using ModelInterfaces;
+using Model.MeshObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -66,7 +65,7 @@ namespace ModelController.MeshObjsUtility
                 if (nodes.Length >= 3
                     && !IsAllPointsOnLine(nodes.Select(x => x.Position).ToList()))
                 {
-                    var surface = new Surface(index++, nodes, ObjKind.ElementSurface);
+                    var surface = new Surface(index++, nodes);
                     result.Add(element.Number, surface);
                 }
             }

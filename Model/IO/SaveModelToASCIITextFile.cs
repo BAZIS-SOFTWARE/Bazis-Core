@@ -1,5 +1,4 @@
-﻿using Model.Elements;
-using Model.GroupsData;
+﻿using Model.MeshObjects;
 using ModelInterfaces;
 using System;
 using System.Collections.Generic;
@@ -56,19 +55,19 @@ namespace Model.IO
             foreach (var element in elements)
             {
                 var nodes = string.Join(" ", element.GetNodes().Select(x => x.Number));
-                var type = ConvertObjectTypeToFormatCode(element.ObjKind);
+                var type = ConvertObjectTypeToFormatCode(element.ElementKind);
                 writer.WriteLine($"{element.Number} {type} 0 0 0 {nodes}");
             }
             writer.WriteLine($"END_ELEMENTS");
         }
 
-        private string ConvertObjectTypeToFormatCode(ObjKind type)
+        private string ConvertObjectTypeToFormatCode(ElementKind type)
         {
             switch(type)
             {
-                case ObjKind.Beam: return "1002";
-                case ObjKind.Triangle: return "2003";
-                case ObjKind.Tetra: return "3004";
+                case ElementKind.Стержень: return "1002";
+                case ElementKind.Треугольник: return "2003";
+                case ElementKind.Тетра: return "3004";
                 default: throw new ArgumentException($"Unable to recognize type {type}");
             }
         }

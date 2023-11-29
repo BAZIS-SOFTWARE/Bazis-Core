@@ -7,7 +7,8 @@ using Model;
 using ModelInterfaces;
 using Functions.Extensions;
 using System.IO;
-using Model.Elements;
+using Model.MeshObjects;
+using Model.GeometryObjects;
 
 namespace GmshApi.GmshController
 {
@@ -1797,7 +1798,7 @@ namespace GmshApi.GmshController
                 }
                 var points = ConvertLocalCoordsToPoints3D(coords);
                 for (var j = 0; j < points.Length; ++j)
-                    nodes.Add(new Node(tags[i], points[j], ObjKind.Вершина));
+                    nodes.Add(new Point(tags[i], points[j]));
             }
             return nodes;
         }
