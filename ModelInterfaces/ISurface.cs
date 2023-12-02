@@ -12,7 +12,7 @@ namespace ModelInterfaces
     /// ISurface
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface ISurface<T> : IModelObject,INormal,ISquare, IEquatable<ISurface<T>> 
+    public interface ISurface<T> : IModelObject,INormal,ISquare
         where T : IPoint
     {
         /// <summary>

@@ -50,6 +50,7 @@ namespace Model.GeometryObjects
         /// Points
         /// </summary>
         Point[] points { get; }
+/// <inheritdoc/>
 
         public override IEnumerable<Point3D> GetCoordinates()
         {
@@ -58,6 +59,7 @@ namespace Model.GeometryObjects
                 yield return point.Position;
             }
         }
+/// <inheritdoc/>
 
         public IEnumerable<IGeometrySurface> GetSurfaces()
         {

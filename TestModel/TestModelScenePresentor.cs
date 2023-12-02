@@ -23,7 +23,7 @@ namespace TestModel
             10,10,0,
             20,10,0
         }, 
-            ObjType.Фигура2D, new int[] { 3, 9, 12, 9,3 })]
+            ObjType.Элемент2D, new int[] { 3, 9, 12, 9,3 })]
         [DataRow(new float[]
         {
             0, 0, 0,
@@ -59,8 +59,8 @@ namespace TestModel
                 case ObjType.Элемент3D:
                     modelObject = new Tetra(0, nodes.ToArray());
                     break;
-                case ObjType.Фигура2D:
-                    modelObject = new ElementSurface(0, nodes.ToArray());
+                case ObjType.Элемент2D:
+                    modelObject = new Triangle(0, nodes.ToArray());
                     break;
                 default:
                     modelObject = new Beam(0, nodes.ToArray());

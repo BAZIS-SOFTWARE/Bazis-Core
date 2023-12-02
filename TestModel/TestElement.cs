@@ -93,7 +93,10 @@ namespace TestModel
             {
                 foreach (var surface in item.GetSurfaces())
                 {
-                    if (surface.Equals(inside))
+                    if(surface[0].Number == inside[0].Number &&
+                        surface[1].Number == inside[1].Number &&
+                        surface[2].Number == inside[2].Number)
+
                         throw new Exception("Создана внутренняя поверхность!");
                 }
             }

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Drawing;
 using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
+using Model.GeometryObjects;
 using Model.MeshObjects;
 using ModelController.ModelScenePresentator;
 using ModelInterfaces;
@@ -16,20 +16,18 @@ namespace TestModel
         public void TestPoligonOneSurface()
         {
             //assing
-            var poligons = new List<ElementSurface>()
-            {
-                               new ElementSurface(0,
-                new Node[]
+            var points =
+                new Point[]
                 {
-                    new Node(0,new Point3D(0 ,1, 0)),
-                    new Node(3,new Point3D(0 , 0 , 1)),
-                    new Node(2,new Point3D(0.3650039f , 0 , 0.6349962f)),
-                    new Node(1,new Point3D(0.3650039f, 0.6349962f , 0))
-                })
-            };
+                    new Point(0,new Point3D(0 ,1, 0)),
+                    new Point(3,new Point3D(0 , 0 , 1)),
+                    new Point(2,new Point3D(0.3650039f , 0 , 0.6349962f)),
+                    new Point(1,new Point3D(0.3650039f, 0.6349962f , 0))
+                };
 
+            var fig2D = new Figure2D(0, points);
             var model = new ModelData();
-            model.ObjectData.AddRange(poligons);
+            model.ObjectData.Add(fig2D);
 
             //act
             var presentator = new ModelScenePresentator(model.ObjectData);
@@ -49,35 +47,35 @@ namespace TestModel
         public void TestPoligonsManySurfaces()
         {
             //assing
-            var poligons = new List<ElementSurface>()
+            var figs2D = new List<Figure2D>()
             {
-                               new ElementSurface(0,
-                new Node[]
+                               new Figure2D(0,
+                new Point[]
                 {
-                    new Node(0,new Point3D(0 ,1, 0)),
-                    new Node(1,new Point3D(0.3650039f, 0.6349962f , 0)),
-                    new Node(2,new Point3D(0.3650039f , 0 , 0.6349962f)),
-                    new Node(3,new Point3D(0 , 0 , 1))
+                    new Point(0,new Point3D(0 ,1, 0)),
+                    new Point(1,new Point3D(0.3650039f, 0.6349962f , 0)),
+                    new Point(2,new Point3D(0.3650039f , 0 , 0.6349962f)),
+                    new Point(3,new Point3D(0 , 0 , 1))
                 }),
-                new ElementSurface(1,
-                new Node[]
+                new Figure2D(1,
+                new Point[]
                 {
-                    new Node(0,new Point3D(0.3650039f , 0.6349962f , 0)),
-                    new Node(1,new Point3D(0.6829777f , 0.3170223f , 0)),
-                    new Node(2,new Point3D(0.6829777f , 0 , 0.3170223f)),
-                    new Node(3,new Point3D(0.3650039f , 0 , 0.6349962f)),
+                    new Point(0,new Point3D(0.3650039f , 0.6349962f , 0)),
+                    new Point(1,new Point3D(0.6829777f , 0.3170223f , 0)),
+                    new Point(2,new Point3D(0.6829777f , 0 , 0.3170223f)),
+                    new Point(3,new Point3D(0.3650039f , 0 , 0.6349962f)),
                 }),
-                new ElementSurface(2,
-                new Node[]
+                new Figure2D(2,
+                new Point[]
                 {
-                    new Node(0,new Point3D(0.6829777f , 0.3170223f , 0)),
-                    new Node(1,new Point3D(1 , 0 , 0)),
-                    new Node(2,new Point3D(0.6829777f , 0 , 0.3170223f)),
+                    new Point(0,new Point3D(0.6829777f , 0.3170223f , 0)),
+                    new Point(1,new Point3D(1 , 0 , 0)),
+                    new Point(2,new Point3D(0.6829777f , 0 , 0.3170223f)),
                 })
 
             };
             var model = new ModelData();
-            model.ObjectData.AddRange(poligons);
+            model.ObjectData.AddRange(figs2D);
 
             //act
             var presentator = new ModelScenePresentator(model.ObjectData);

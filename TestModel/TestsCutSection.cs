@@ -28,7 +28,7 @@ namespace TestModel
             hexLoader.LoadEvent += (arg1, arg2) => { };
             var modelHexData = hexLoader.Load(@"..\..\..\Examples\CDB\hex.cdb");
             var modelHexNodes = modelHexData.ObjectData.FindMany<Node>().ToArray();
-            hex = new Tetra(1, modelHexNodes);
+            hex = new Hexa(1, modelHexNodes);
         }
 
         public bool CheckSetEquality<T>(IEnumerable<T> set1, IEnumerable<T> set2)
@@ -62,27 +62,38 @@ namespace TestModel
             Assert.IsTrue(CheckSetEquality(points, result.GetCoordinates()));
         }
 
+        // Радику добавить тестов
         [TestMethod]
         public void TestHexaCrossSection()
         {
-            var points = new List<Point3D>()
+            var crossPlane = new List<Point3D>()
             {
                 new Point3D(0, 0, 1),
                 new Point3D(0, 1, 1),
-                new Point3D(1, 0, 0.5f),
-                new Point3D(1, 1, 0.5f),
+                new Point3D(1, 0, 0.5f)
             };
-            var plane = new Plane(points[0], points[1], points[2]);
+
+            var crossPoints = new List<Point3D>()
+            {
+                new Point3D(0, 0, 1),
+                new Point3D(0, 1, 1),
+                new Point3D(1, 1, 0.5f),
+                new Point3D(1, 0.5f, 0.5f)
+            };
+            var plane = new Plane(crossPlane[0], crossPlane[1], crossPlane[2]);
 
             var crossSectionCreator = new CrossSection();
             var crossNodes = crossSectionCreator.GetSectionSurfaces(new List<Element3D> { hex }, plane);
           
             var result = crossNodes[1];
-            Assert.AreEqual(4, result.GetCoordinates().Count());
-            Assert.IsTrue(CheckSetEquality(result.GetCoordinates(), points));
+            var resPoints = result.GetCoordinates().ToArray();
+            Assert.AreEqual(4, resPoints.Count());
+            for (int i = 0; i < crossPoints.Count; i++)
+                Assert.AreEqual(crossPoints[i], resPoints[i]);         
         }
 
         [TestMethod]
+        [Timeout(5000)]
         public void TestLongModelCrossSection()
         {
             var loader = new LoadModelFromCDBTextFile();

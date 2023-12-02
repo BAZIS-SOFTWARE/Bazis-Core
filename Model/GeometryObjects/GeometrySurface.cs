@@ -158,10 +158,5 @@ points.Contains(this.points[2].Position, new Point3DEqualityComparer()))
                 yield return node;
             }
         }
-
-        public bool Equals(ISurface<IPoint> other)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
