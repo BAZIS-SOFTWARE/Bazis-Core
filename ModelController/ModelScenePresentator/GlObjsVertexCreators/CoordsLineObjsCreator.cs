@@ -10,7 +10,7 @@ namespace ModelController.ModelScenePresentator.GlObjsVertexCreators
         {
             if (nodeObject.ViewState)
             {
-                var points = nodeObject.GetPoints().ToArray();
+                var points = nodeObject.GetCoordinates().ToArray();
                 for (int k = 0; k < points.Length; k++)
                 {
                     vertexAtributes[stride + 3 * k + 0] = points[k]._x;

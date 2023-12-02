@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Geometry;
@@ -8,7 +9,7 @@ namespace Model.MeshObjects
 {
     public abstract class Element : ModelObject, IElement
     {
-        protected List<INode> nodes = new List<INode>();
+        protected List<Node> nodes = new List<Node>();
         public Element(int number, Node[] nodes) : base(number)
         {
             if (nodes.Length == 0)
@@ -20,6 +21,12 @@ namespace Model.MeshObjects
                 this.nodes.Add(node);
             }
         }
+        /// <summary>
+        /// this
+        /// </summary>
+        /// <param name="nodeInd"></param>
+        /// <returns></returns>
+        public INode this[int nodeInd] => nodes[nodeInd];
 
         /// <inheritdoc/>
 
@@ -30,6 +37,14 @@ namespace Model.MeshObjects
 /// <inheritdoc/>
 
         public abstract float DetJ(Point3D point3D);
+        /// <inheritdoc/>
+        public IEnumerator<INode> GetEnumerator()
+        {
+            foreach (var node in nodes)
+            {
+                yield return node;
+            }
+        }
 /// <inheritdoc/>
 
         public IEnumerable<INode> GetNodes()
@@ -39,9 +54,10 @@ namespace Model.MeshObjects
                 yield return node;
             }
         }
-/// <inheritdoc/>
 
-        public override IEnumerable<Point3D> GetPoints()
+        /// <inheritdoc/>
+
+        public override IEnumerable<Point3D> GetCoordinates()
         {
             foreach (var node in nodes)
             {
@@ -52,7 +68,7 @@ namespace Model.MeshObjects
 
         public override string ToString()
         {
-            var strArr = GetNodes().Select(x => x.Number.ToString()).ToArray();
+            var strArr = nodes.Select(x => x.Number.ToString()).ToArray();
 
             var str = string.Join(" ", strArr);
 

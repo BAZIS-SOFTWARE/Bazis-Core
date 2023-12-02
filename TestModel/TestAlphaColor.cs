@@ -54,7 +54,7 @@ namespace TestModel
                                      new Node(2, new Point3D(0.0f, 0.5f, 0.0f))
                                    };
             var triangle = new Element2D[] { new Triangle(0, nodes) };
-            var presenter = new SurfaceObjsPresenter(triangle);
+            var presenter = new SurfaceObjsPresenter<IElementSurface,INode>(triangle);
             var indices = presenter.CreateIndexes();
             var pointers = presenter.CreatePointers(indices.Item1);
             var colors = presenter.CreateVertexes(indices.Item3, "цвет");

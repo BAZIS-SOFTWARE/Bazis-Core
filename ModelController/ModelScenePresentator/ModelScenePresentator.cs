@@ -67,14 +67,17 @@ namespace ModelController.ModelScenePresentator
                     presentors.Add(objsType, pointsPresentor);
                     break;
                 case ObjType.Линия:
+                case ObjType.Фигура2D:
+                    var fig2dPresentor = CreateSurfaceGeometryPresenter(modelObjects.Select(x => (ISurfaceObject<IGeometrySurface, IPoint>)x));
+                    presentors.Add(objsType, fig2dPresentor);
+                    break;
                 case ObjType.Элемент1D:
                     var els1dPresentor = CreateLineObjectsPresenter(modelObjects.Select(x => (ILineObject)x));
                     presentors.Add(objsType, els1dPresentor);
                     break;
                 case ObjType.Элемент2D:
                 case ObjType.Элемент3D:
-                case ObjType.Поверхность:
-                    var els2dPresentor = CreateSurfaceObjectsPresenter(modelObjects.Select(x => (ISurfaceObject)x));
+                    var els2dPresentor = CreateSurfaceElementsPresenter(modelObjects.Select(x => (ISurfaceObject<IElementSurface,INode>)x));
                     presentors.Add(objsType, els2dPresentor);
                     break;             
             }
@@ -82,16 +85,16 @@ namespace ModelController.ModelScenePresentator
 
         /// <inheritdoc/>
 
-        public void HideInsideSurfaces(IEnumerable<ISurfaceObject> surfaceElements)
+        public void HideInsideSurfaces(IEnumerable<ISurfaceObject<IElementSurface, INode>> surfaceElements)
         {
-            var surfDict = new Dictionary<string, List<ISurface>>();
+            var surfDict = new Dictionary<string, List<IElementSurface>>();
 
             foreach (var element in surfaceElements)
             {
                 if (element.ViewState & element.NumberOfSides > 1)
-                    foreach (var surface in element.GetSurface())
+                    foreach (var surface in element.GetSurfaces())
                     {
-                        var numbers = surface.GetNodes().Select(x => x.Number).ToArray();
+                        var numbers = surface.GetVertexes().Select(x => x.Number).ToArray();
 
                         Array.Sort(numbers);
                         var surfInd = string.Join("", numbers);   //numbers[0].ToString() + numbers[1].ToString() + numbers[2].ToString();
@@ -99,7 +102,7 @@ namespace ModelController.ModelScenePresentator
                         if (!surfDict.ContainsKey(surfInd))
                         {
                             surface.ViewState = true;
-                            surfDict.Add(surfInd, new List<ISurface>() { surface });
+                            surfDict.Add(surfInd, new List<IElementSurface>() { surface });
                         }
 
                         else
@@ -114,12 +117,12 @@ namespace ModelController.ModelScenePresentator
         }
 /// <inheritdoc/>
 
-        public void ShowInsideSurfaces(IEnumerable<ISurfaceObject> surfaceElements)
+        public void ShowInsideSurfaces(IEnumerable<ISurfaceObject<IElementSurface, INode>> surfaceElements)
         {
             foreach (var element in surfaceElements)
             {
                 if (element.ViewState)
-                    foreach (var surface in element.GetSurface())
+                    foreach (var surface in element.GetSurfaces())
                         surface.ViewState = true;
             }
         }
@@ -209,9 +212,15 @@ namespace ModelController.ModelScenePresentator
         }
 /// <inheritdoc/>
 
-        public IObjsPresenter CreateSurfaceObjectsPresenter(IEnumerable<ISurfaceObject> surfaceObjs)
+        public IObjsPresenter CreateSurfaceElementsPresenter(IEnumerable<ISurfaceObject<IElementSurface, INode>> surfaceObjs)
         {
-            return new SurfaceObjsPresenter(surfaceObjs);
+            return new SurfaceObjsPresenter<IElementSurface, INode>(surfaceObjs);
+        }
+/// <inheritdoc/>
+
+        public IObjsPresenter CreateSurfaceGeometryPresenter(IEnumerable<ISurfaceObject<IGeometrySurface, IPoint>> surfaceObjs)
+        {
+            return new SurfaceObjsPresenter<IGeometrySurface, IPoint>(surfaceObjs);
         }
     }
 }

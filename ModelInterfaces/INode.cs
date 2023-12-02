@@ -8,17 +8,8 @@ namespace ModelInterfaces
     /// <summary>
     /// INode
     /// </summary>
-    public interface INode : IModelObject
+    public interface INode : IPoint
     {
-        /// <summary>
-        /// Position
-        /// </summary>
-        Point3D Position { get; }
-        /// <summary>
-        /// Normal
-        /// </summary>
-        [Obsolete(@"Prop ""Normal"" is deprecated, please don't use.")]     
-        Point3D Normal { get; set; }
         /// <summary>
         /// AddElement
         /// </summary>

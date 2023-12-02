@@ -1,18 +1,18 @@
 ﻿using Geometry;
-using Model.MeshObjects;
 using ModelInterfaces;
 using ModelInterfaces.Attributes;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
-namespace Model
+namespace Model.MeshObjects
 {
     /// <summary>
     /// Surface class
     /// </summary>
-    public class Surface : ModelObject, ISurface
+    public class ElementSurface : ModelObject, IElementSurface
     {
         Node[] nodes;
         /// <summary>
@@ -20,12 +20,11 @@ namespace Model
         /// </summary>
         /// <param name="number"></param>
         /// <param name="nodes"></param>
-        /// <param name="objKind"></param>
-        public Surface(int number, Node[] nodes) : base(number)
+        public ElementSurface(int number, Node[] nodes) : base(number)
         {
             if (nodes.Length < 3)
                 throw new Exception("Для создания поверхности требуется не меньше 3-х узлов!");
-            
+
             nodes.RoundSort(); //Anticlockwise(nodes);
             this.nodes = nodes;
 
@@ -33,87 +32,12 @@ namespace Model
             MasterColor = Color.FromArgb(224, 0, 177);
             SlaveColor = Color.FromArgb(224, 0, 177);
         }
+        
         /// <summary>
-        /// Sort nodes anticlockwise
+        /// this
         /// </summary>
-        /// <param name="nodes"></param>
+        /// <param name="ind"></param>
         /// <returns></returns>
-        [Warning("Предлагаю ипользовать метод RoundSort() из Geometry")]
-        public Node[] Anticlockwise(Node[] nodes)
-        {
-            var ar = new List<Node>();
-            var arInd = new List<int>();
-            var plane = new Plane(nodes[0].Position, nodes[1].Position, nodes[2].Position);
-            plane.Shifting = 0;
-
-            var fInd = 0;
-            var sInd = 1;
-
-            var lenght = nodes.Length;
-
-            ar.Add(nodes[fInd]);
-            arInd.Add(fInd);
-            var iterationCounter = 0;
-            var iterationMax = lenght * lenght;
-            while (arInd.Count != lenght)
-            {
-                if (iterationCounter > iterationMax) break;
-
-                var resu = CheckVectorsOrientation(nodes, fInd, sInd, plane);
-
-                if (resu)
-                {
-                    if (!arInd.Contains(sInd))
-                    {
-                        ar.Add(nodes[sInd]);
-                        arInd.Add(sInd);
-                        var tempInd = sInd;
-                        fInd = tempInd;
-                    }
-                    //if (sInd == arInd[0] && )
-                    //    break;
-                }
-
-                sInd++;
-                if (sInd == fInd) sInd++;
-                if (sInd == nodes.Length) sInd = 0;
-
-                iterationCounter++;
-            }
-
-            if (ar.Count < nodes.Length) // check arrays 
-                return nodes;
-
-            return ar.ToArray();
-        }
-        [Warning("Предлагаю ипользовать метод RoundSort() из Geometry")]
-        private bool CheckVectorsOrientation(Node[] nodes, int firstInd, int secondInd, Plane plane)
-        {
-            //bool isPointInside = false;
-            var temp = new List<float>();
-            var baseVector = nodes[secondInd].Position.Sub(nodes[firstInd].Position);
-            //var nBaseVector = Vector.GetVectorNorm(baseVector);
-            foreach (var node in nodes)
-            {
-                if (!node.Equals(nodes[firstInd]) & !node.Equals(nodes[secondInd]))
-                {
-                    var actVector = node.Position.Sub(nodes[firstInd].Position);
-
-                    var prod = Vector.CrossProd(baseVector, actVector);
-
-                    var dist = plane.PointPosition(prod);
-                    temp.Add(dist);
-                }
-
-            }
-
-            if (temp.All(x => Math.Sign(x) >= 0))
-                return true;
-            else if (temp.All(x => Math.Sign(x) < 0))
-                return true;
-            else return false;
-        }
-
         public INode this[int ind]
         {
             get { return nodes[ind]; }
@@ -122,7 +46,7 @@ namespace Model
 
         public override string ToString()
         {
-            var strArr = GetNodes().Select(x => x.Number.ToString()).ToArray();
+            var strArr = nodes.Select(x => x.Number.ToString()).ToArray();
 
             var str = string.Join(" ", strArr);
 
@@ -136,8 +60,6 @@ namespace Model
 
         public override int NumberOfPoints { get { return nodes.Length; } }
 
-        public int NumberOfSides { get { return 1; } }        
-
         /// <inheritdoc/>
 
         public Point3D CalcNormal()
@@ -145,15 +67,6 @@ namespace Model
             var fvectors = nodes[1].Position.Sub(nodes[0].Position);
             var svectors = nodes[2].Position.Sub(nodes[0].Position);
             return Vector.CrossProd(fvectors, svectors);
-        }
-/// <inheritdoc/>
-
-        public IEnumerable<INode> GetNodes()
-        {
-            foreach (var node in nodes)
-            {
-                yield return node;
-            }
         }
 
         public float CalcSquare()
@@ -173,18 +86,18 @@ namespace Model
         }
         /// <inheritdoc/>
 
-        public override IEnumerable<Point3D> GetPoints()
+        public override IEnumerable<Point3D> GetCoordinates()
         {
             foreach (var node in nodes)
             {
                 yield return node.Position;
             }
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
-        public bool Equals(ISurface other)
+        public bool Equals(INode other)
         {
-            var points = other.GetPoints().ToArray();
+            var points = other.GetCoordinates().ToArray();
             if (points.Contains(nodes[0].Position, new Point3DEqualityComparer()) &&
 points.Contains(nodes[1].Position, new Point3DEqualityComparer()) &&
 points.Contains(nodes[2].Position, new Point3DEqualityComparer()))
@@ -196,7 +109,7 @@ points.Contains(nodes[2].Position, new Point3DEqualityComparer()))
         /// Get surface
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<ISurface> GetSurface()
+        public IEnumerable<ISurface<INode>> GetSurface()
         {
             yield return this;
         }
@@ -215,21 +128,21 @@ points.Contains(nodes[2].Position, new Point3DEqualityComparer()))
         }
         /// <inheritdoc/>
 
-        public override Point3D CalcCentralPoint()
+        public override Point3D CalcCentr()
         {
             var center = new Point3D();
 
-            foreach (var point in GetPoints())
+            foreach (var point in GetCoordinates())
             {
                 center = center.Sum(point);
             }
             return center.Div(NumberOfPoints);
         }
 
-        public Segment3D[] GetLinesFromSurface(ISurface surface)
+        public Segment3D[] GetLinesFromSurface(ISurface<INode> surface)
         {
-            var n = surface.GetPoints().Count();
-            var points = surface.GetPoints().ToArray();
+            var n = surface.GetCoordinates().Count();
+            var points = surface.GetCoordinates().ToArray();
             var lines = new Segment3D[n];
             for (int i = 0; i < n - 1; i++)
             {
@@ -237,6 +150,20 @@ points.Contains(nodes[2].Position, new Point3DEqualityComparer()))
             }
             lines[n - 1] = new Segment3D(points[n - 1], points[0]);
             return lines;
+        }
+/// <inheritdoc/>
+
+        public IEnumerable<INode> GetVertexes()
+        {
+            foreach (var node in nodes)
+            {
+                yield return node;
+            }
+        }
+
+        public bool Equals(ISurface<INode> other)
+        {
+            throw new NotImplementedException();
         }
     }
 }

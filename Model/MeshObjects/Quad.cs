@@ -14,7 +14,7 @@ namespace Model.MeshObjects
 
         public Quad(int number, Node[] nodes) : base(number, nodes)
         {
-            surface = new Surface(0, new Node[] { nodes[0], nodes[1], nodes[2], nodes[3] });
+            surface = new ElementSurface(0, new Node[] { nodes[0], nodes[1], nodes[2], nodes[3] });
         }
         //public override float[] GetFormFunctions(Point3D point3D)
         //{
@@ -81,7 +81,7 @@ namespace Model.MeshObjects
 
         private float[] FormFunctionSquare(Point3D point3D)
         {
-            var center = CalcCentralPoint();
+            var center = CalcCentr();
             var supportVector = center.Sub(nodes[0].Position);
             var a = Math.Abs(supportVector._x);
             var b = Math.Abs(supportVector._y);
@@ -101,7 +101,7 @@ namespace Model.MeshObjects
 
         private float[] DerivativeFormFunctionSquare(Point3D point3D)
         {
-            var center = CalcCentralPoint();
+            var center = CalcCentr();
             var supportVector = center.Sub(nodes[0].Position);
             var a = Math.Abs(supportVector._x);
             var b = Math.Abs(supportVector._y);

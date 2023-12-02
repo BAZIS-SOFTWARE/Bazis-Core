@@ -6,7 +6,7 @@ namespace ModelInterfaces.ObjectsComparers
     {
         public bool Equals(IModelObject x, IModelObject y)
         {
-            if (x.CalcCentralPoint() == y.CalcCentralPoint())
+            if (x.CalcCentr() == y.CalcCentr())
                 return true;
             else return false;
         }

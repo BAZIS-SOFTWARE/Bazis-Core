@@ -22,7 +22,7 @@ namespace Model.MeshObjects
         public override ObjType ObjType { get; } = ObjType.Элемент1D;
 /// <inheritdoc/>
 
-        public override Point3D CalcCentralPoint()
+        public override Point3D CalcCentr()
         {
             var center = new Point3D();
 

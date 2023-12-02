@@ -4,7 +4,7 @@
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>ModelController</Title>
-    <Version>1.0.11.14</Version>
+    <Version>2.0.11.14</Version>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>ModelControllerKey.snk</AssemblyOriginatorKeyFile>
@@ -35,7 +35,6 @@
     <Compile Include="ModelScenePresentator\GlObjsVertexCreators\CoordsPointObjsCreator.cs" />
     <Compile Include="ModelScenePresentator\GlObjsVertexCreators\CoordsSurfaceObjsCreator.cs" />
     <Compile Include="ModelScenePresentator\GlObjsVertexCreators\EdgesSurfaceObjsCreator.cs" />
-    <Compile Include="ModelScenePresentator\Interfaces\IEdgeObjsVertexCreator.cs" />
     <Compile Include="ModelScenePresentator\Interfaces\ILineObjsVertexCreator.cs" />
     <Compile Include="ModelScenePresentator\Interfaces\IPointObjsVertexCreator.cs" />
     <Compile Include="ModelScenePresentator\Interfaces\ISurfaceObjsVertexCreator.cs" />

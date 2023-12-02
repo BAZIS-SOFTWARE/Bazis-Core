@@ -11,7 +11,7 @@
     <AssemblyOriginatorKeyFile>ModelKey.snk</AssemblyOriginatorKeyFile>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>Model</Title>
-    <Version>1.0.9.54</Version>
+    <Version>2.0.9.54</Version>
     <Company>BAZIS SOFTWARE</Company>
     <Product>BAZIS</Product>
     <Description>Contains basic mesh oblects and geometry classes</Description>
@@ -28,6 +28,8 @@
   <ItemGroup>
     <Compile Include="Events\LoaderEventArgs.cs" />
     <Compile Include="Events\SaverEventArgs.cs" />
+    <Compile Include="GeometryObjects\Figure2D.cs" />
+    <Compile Include="GeometryObjects\GeometrySurface.cs" />
     <Compile Include="MeshObjects\Hexa.cs" />
     <Compile Include="GeometryObjects\Point.cs" />
     <Compile Include="IO\LoadModelFromProjectTextFile.cs" />
@@ -51,9 +53,9 @@
     <Compile Include="MeshObjects\Node.cs" />
     <Compile Include="MeshObjects\Penta.cs" />
     <Compile Include="MeshObjects\Quad.cs" />
-    <Compile Include="SurfaceFinder.cs" />
+    <Compile Include="MeshObjects\SurfaceFinder.cs" />
     <Compile Include="ObjectsData.cs" />
-    <Compile Include="Surface.cs" />
+    <Compile Include="MeshObjects\ElementSurface.cs" />
     <Compile Include="MeshObjects\Tetra.cs" />
     <Compile Include="MeshObjects\Triangle.cs" />
   </ItemGroup> 

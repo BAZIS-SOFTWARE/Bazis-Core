@@ -47,5 +47,12 @@ namespace ModelInterfaces
         /// ElementKind
         /// </summary>
         ElementKind ElementKind { get; }
+
+        /// <summary>
+        /// this
+        /// </summary>
+        /// <param name="nodeInd"></param>
+        /// <returns></returns>
+        INode this[int nodeInd] { get; }
     }
 }

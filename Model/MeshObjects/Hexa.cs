@@ -73,7 +73,7 @@ namespace Model.MeshObjects
 
         private float[] FormFunctionHex(Point3D point3D)
         {
-            var center = CalcCentralPoint();
+            var center = CalcCentr();
             var supportVector = center.Sub(nodes[0].Position);
             var a = Math.Abs(supportVector._x);
             var b = Math.Abs(supportVector._y);

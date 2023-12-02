@@ -4,6 +4,7 @@ using Model;
 using ModelInterfaces;
 using ModelController.ModelScenePresentator;
 using Model.MeshObjects;
+using Model.GeometryObjects;
 
 namespace TestModel
 {
@@ -57,21 +58,21 @@ namespace TestModel
         public void TestOnPolygon()
         {
             var model = new ModelData();
-            var nodes = new Node[]
+            var points = new Point[]
             {
-                new Node(0, new Point3D(0.0f,0.0f,0.0f)),
-                new Node(1, new Point3D(1.0f,0.0f,0.0f)),
-                new Node(2, new Point3D(1.0f,1.0f,0.0f)),
-                new Node(3, new Point3D(0.0f,1.0f,0.0f)),
-                new Node(4, new Point3D(-1.0f,1.0f,0.0f)),
-                new Node(5, new Point3D(-1.0f,0.0f,0.0f))
+                new Point(0, new Point3D(0.0f,0.0f,0.0f)),
+                new Point(1, new Point3D(1.0f,0.0f,0.0f)),
+                new Point(2, new Point3D(1.0f,1.0f,0.0f)),
+                new Point(3, new Point3D(0.0f,1.0f,0.0f)),
+                new Point(4, new Point3D(-1.0f,1.0f,0.0f)),
+                new Point(5, new Point3D(-1.0f,0.0f,0.0f))
             };
-            var poligon = new Surface(0, nodes); 
+            var poligon = new Figure2D(0, points); 
 
             model.ObjectData.Add(poligon);
             var presentator = new ModelScenePresentator(model.ObjectData);
-            var values = presentator[ObjType.Поверхность].CreateIndexes();
-            var edges = presentator[ObjType.Поверхность].CreateEdgeFlags(values.Item4);
+            var values = presentator[ObjType.Фигура2D].CreateIndexes();
+            var edges = presentator[ObjType.Фигура2D].CreateEdgeFlags(values.Item4);
             
             Assert.AreEqual(12, edges.Length);
             var expectedFlags = new bool[] { true, true, false, false, true, false,

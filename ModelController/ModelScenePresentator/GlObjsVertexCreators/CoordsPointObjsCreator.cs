@@ -9,7 +9,7 @@ namespace ModelController.ModelScenePresentator.GlObjsVertexCreators
         {
             if(pointObject.ViewState)
             {
-                foreach (var point in pointObject.GetPoints())
+                foreach (var point in pointObject.GetCoordinates())
                 {
                     vertexAtributes[stride + 0] = point._x;
                     vertexAtributes[stride + 1] = point._y;

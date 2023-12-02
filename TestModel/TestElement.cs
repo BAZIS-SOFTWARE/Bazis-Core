@@ -29,7 +29,7 @@ namespace TestModel
             var elem = new Tetra(0, nodes);
 
             //act
-            var normals = elem.GetSurface().Select(x => x.CalcNormal()).ToList();
+            var normals = elem.GetSurfaces().Select(x => x.CalcNormal()).ToList();
 
             //assert
         }
@@ -49,7 +49,7 @@ namespace TestModel
             var elem = new Tetra(0, nodes);
 
             //act
-            var points = elem.GetPoints().ToList();
+            var points = elem.GetCoordinates().ToList();
 
             //assert
 
@@ -88,10 +88,10 @@ namespace TestModel
 
             var element2D = creators.Create(currentNumber, model.ObjectData.FindMany<Element3D>().ToArray());
 
-            var inside = new Surface(0, new Node[] { nodes[3], nodes[2], nodes[1] });
+            var inside = new ElementSurface(0, new Node[] { nodes[3], nodes[2], nodes[1] });
             foreach (var item in element2D)
             {
-                foreach (var surface in item.GetSurface())
+                foreach (var surface in item.GetSurfaces())
                 {
                     if (surface.Equals(inside))
                         throw new Exception("Создана внутренняя поверхность!");

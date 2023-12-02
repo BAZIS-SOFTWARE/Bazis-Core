@@ -8,6 +8,10 @@ namespace ModelInterfaces
 {
     public interface IElement3D : ISurfaceElement
     {
+        /// <summary>
+        /// CalcVolume
+        /// </summary>
+        /// <returns></returns>
         float CalcVolume();
     }
 }

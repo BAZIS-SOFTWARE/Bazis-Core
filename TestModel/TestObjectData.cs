@@ -7,15 +7,89 @@ using ModelInterfaces;
 using System;
 using System.Collections.Generic;
 using Model.GeometryObjects;
+using ModelInterfaces.ObjectsFinders;
+using Geometry;
+using System.Linq;
 
 namespace TestModel
 {
     [TestClass]
     public class TestObjectData
     {
+        [DataTestMethod]
+        [DataRow(0,2)]
+        [DataRow(8,1)]
+        [DataRow(3,1)]
+        public void FindManyObjsByNumber(int objsNumbr,int objsCount)
+        {
+            //assing
+            var nodes = new Node[4]
+            {
+                new Node(0,new Point3D(0,0,0)),
+                new Node(1,new Point3D(10,0,0)),
+                new Node(2,new Point3D(0,10,0)),
+                new Node(3,new Point3D(0,0,10)),
+            };
+            var objs = new Model.ModelObject[]
+            {
+                new Tetra( 0,nodes),
+                new Tetra( 4,nodes),
+                new Tetra(5,nodes),
+                new Tetra( 6,nodes),
+                new Tetra(7,nodes),
+                new Tetra(8,nodes)
+            };
+
+            var model = new ModelData();
+            model.ObjectData.AddRange(nodes);
+            model.ObjectData.AddRange(objs);
+            //act
+            var elements = model.ObjectData.FindMany(objsNumbr);
+            //assert
+            Assert.AreEqual(objsCount, elements.Count());
+        }
+
+        [DataTestMethod]
+        [DataRow("Все объекты", 10)]
+        [DataRow("Тетраэдры", 6)]
+        [DataRow("Узлы", 4)]
+        public void FindManyObjsByType(string reqType, int objsCount)
+        {
+            //assing
+            var nodes = new Node[4]
+            {
+                new Node(0,new Point3D(0,0,0)),
+                new Node(1,new Point3D(10,0,0)),
+                new Node(2,new Point3D(0,10,0)),
+                new Node(3,new Point3D(0,0,10)),
+            };
+            var objs = new Model.ModelObject[]
+            {
+                new Tetra( 0,nodes),
+                new Tetra( 4,nodes),
+                new Tetra(5,nodes),
+                new Tetra( 6,nodes),
+                new Tetra(7,nodes),
+                new Tetra(8,nodes)
+            };
+
+            //act
+
+            var model = new ModelData();
+            model.ObjectData.AddRange(nodes);
+            model.ObjectData.AddRange(objs);
+
+            //assert            
+            if (reqType == "Тетраэдры")
+                Assert.AreEqual(objsCount, model.ObjectData.FindMany<Tetra>().Count());
+            else if (reqType == "Узлы")
+                Assert.AreEqual(objsCount, model.ObjectData.FindMany<Node>().Count());
+            else
+                Assert.AreEqual(objsCount, model.ObjectData.FindMany<IModelObject>().Count());
+        }
         [TestMethod]
         [ExpectedException(typeof(Exception))]
-        public void TestObjectDataAddObjectWithSameNumbers()
+        public void AddObjectWithSameNumbers()
         {
             //assign
             var model = new ModelData();
@@ -30,7 +104,7 @@ namespace TestModel
 
         [TestMethod]
         [ExpectedException(typeof(Exception))]
-        public void TestObjectDataAddObjectsWithSameNumbers()
+        public void AddSomeObjectsWithSameNumbers()
         {
             //assign
             var model = new ModelData();
@@ -45,7 +119,7 @@ namespace TestModel
         }
 
         [TestMethod]
-        public void TestObjectDataRemoveObjectsWithSameTypes()
+        public void RemoveObjectsWithSameTypes()
         {
             //assign
             var model = new ModelData();
@@ -99,7 +173,7 @@ namespace TestModel
         [DataRow(1)]
         [DataRow(0)]
         [DataRow(2)]
-        public void TestRemoveSomeObjects(int objNumber)
+        public void RemoveSomeObjectsByExistState(int objNumber)
         {
             //assing
             var model = new ModelData();

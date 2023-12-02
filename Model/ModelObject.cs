@@ -88,7 +88,7 @@ namespace Model
             get
             {
                 var sum_x = 0.0f;
-                foreach (var point in GetPoints())
+                foreach (var point in GetCoordinates())
                 {
                     sum_x += point._x;
                 }
@@ -100,7 +100,7 @@ namespace Model
             get
             {
                 var sum_y = 0.0f;
-                foreach (var point in GetPoints())
+                foreach (var point in GetCoordinates())
                 {
                     sum_y += point._y;
                 }
@@ -112,7 +112,7 @@ namespace Model
             get
             {
                 var sum_z = 0.0f;
-                foreach (var point in GetPoints())
+                foreach (var point in GetCoordinates())
                 {
                     sum_z += point._z;
                 }
@@ -151,7 +151,7 @@ namespace Model
         /// <summary>
         /// Get points
         /// </summary>
-        public abstract IEnumerable<Point3D> GetPoints();
+        public abstract IEnumerable<Point3D> GetCoordinates();
         /// <summary>
         /// Compare to
         /// </summary>
@@ -166,7 +166,18 @@ namespace Model
         /// <summary>
         /// Calc central point
         /// </summary>
-        public abstract Point3D CalcCentralPoint();
+        public virtual Point3D CalcCentr()
+        {
+
+            var center = new Point3D();
+
+            foreach (var node in GetCoordinates())
+            {
+                center = center.Sum(node);
+            }
+            return center.Div(NumberOfPoints);
+
+        }
         /// <summary>
         /// Equal two objects
         /// </summary>

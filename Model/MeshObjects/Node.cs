@@ -12,14 +12,15 @@ namespace Model.MeshObjects
     public class Node : ModelObject, INode
     {
         List<IElement> elements = new List<IElement>();
-        /// <summary>
-        /// Position
-        /// </summary>
+  /// <inheritdoc/>
+  
         public Point3D Position { get; }
-        /// <summary>
-        /// Normal
-        /// </summary>
-        [Obsolete(@"Prop ""Normal"" is deprecated, please don't use.")]
+/// <inheritdoc/>
+
+
+        public IElement this[int elemInd] => elements[elemInd];
+/// <inheritdoc/>
+
         public Point3D Normal { get; set; } = new Point3D();
         /// <summary>
         /// Node
@@ -75,7 +76,7 @@ namespace Model.MeshObjects
 
         /// <inheritdoc/>
 
-        public override IEnumerable<Point3D> GetPoints()
+        public override IEnumerable<Point3D> GetCoordinates()
         {
             yield return Position;
         }
@@ -87,7 +88,7 @@ namespace Model.MeshObjects
         }
         /// <inheritdoc/>
 
-        public override Point3D CalcCentralPoint()
+        public override Point3D CalcCentr()
         {
             return Position;
         }

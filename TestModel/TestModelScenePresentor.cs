@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using Model.MeshObjects;
+using ModelController.ModelScenePresentator.GlObjsPresenters;
 
 namespace TestModel
 {
@@ -22,7 +23,7 @@ namespace TestModel
             10,10,0,
             20,10,0
         }, 
-            ObjType.Поверхность, new int[] { 3, 9, 12, 9,3 })]
+            ObjType.Фигура2D, new int[] { 3, 9, 12, 9,3 })]
         [DataRow(new float[]
         {
             0, 0, 0,
@@ -58,8 +59,8 @@ namespace TestModel
                 case ObjType.Элемент3D:
                     modelObject = new Tetra(0, nodes.ToArray());
                     break;
-                case ObjType.Поверхность:
-                    modelObject = new Surface(0, nodes.ToArray());
+                case ObjType.Фигура2D:
+                    modelObject = new ElementSurface(0, nodes.ToArray());
                     break;
                 default:
                     modelObject = new Beam(0, nodes.ToArray());
@@ -93,7 +94,7 @@ namespace TestModel
         }
 
         [DataTestMethod]
-        [DataRow(ObjType.Поверхность,new string[]
+        [DataRow(ObjType.Фигура2D, new string[]
 {
     "6", "18", "24", "18"
 })]
@@ -107,7 +108,7 @@ namespace TestModel
             model.Load(@"C:\BazisComponents\ModelSolution\TestModel\Examples\STL\ACII.stl");
 
             //act
-            var surfs = model.ObjectData.FindMany<Surface>().ToArray();
+            var surfs = model.ObjectData.FindMany<ElementSurface>().ToArray();
 
             var presenter = new ModelScenePresentator(model.ObjectData);
 
@@ -183,7 +184,7 @@ namespace TestModel
             foreach (var objsType in modelPresenter.Keys)
             {
                 if(objsType == ObjType.Элемент3D)
-                    modelPresenter.HideInsideSurfaces(modelPresenter.Values.Select(x => (ISurfaceObject)x));
+                    modelPresenter.HideInsideSurfaces((SurfaceObjsPresenter<IElementSurface,INode>)modelPresenter[objsType]);
 
                 var tuple = modelPresenter[objsType].CreateIndexes();
                 int[] ptrs = modelPresenter[objsType].CreatePointers(tuple.Item1);

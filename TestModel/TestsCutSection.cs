@@ -58,8 +58,8 @@ namespace TestModel
             var crossSectionCreator = new CrossSection();
             var crossNodes = crossSectionCreator.GetSectionSurfaces(new List<Element3D> { tetra }, plane);
             var result = crossNodes[1];
-            Assert.AreEqual(3, result.GetPoints().Count());
-            Assert.IsTrue(CheckSetEquality(points, result.GetPoints()));
+            Assert.AreEqual(3, result.GetCoordinates().Count());
+            Assert.IsTrue(CheckSetEquality(points, result.GetCoordinates()));
         }
 
         [TestMethod]
@@ -78,8 +78,8 @@ namespace TestModel
             var crossNodes = crossSectionCreator.GetSectionSurfaces(new List<Element3D> { hex }, plane);
           
             var result = crossNodes[1];
-            Assert.AreEqual(4, result.GetPoints().Count());
-            Assert.IsTrue(CheckSetEquality(result.GetPoints(), points));
+            Assert.AreEqual(4, result.GetCoordinates().Count());
+            Assert.IsTrue(CheckSetEquality(result.GetCoordinates(), points));
         }
 
         [TestMethod]
@@ -117,7 +117,7 @@ namespace TestModel
             var model = new Tetra(1, nodes);
             var crossSection = new CrossSection();
             var section = crossSection.GetSectionSurfaces(new List<Element3D> { model }, plane);
-            var triangleNodes = section.Values.First().GetPoints();
+            var triangleNodes = section.Values.First().GetCoordinates();
             Assert.IsTrue(triangleNodes.Contains(new Point3D(-23, 195, 0)));
             Assert.IsTrue(triangleNodes.Contains(new Point3D(-23, 203, 0)));
             Assert.IsTrue(triangleNodes.Contains(new Point3D(-41, 198, 0)));

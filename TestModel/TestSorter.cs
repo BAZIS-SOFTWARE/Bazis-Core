@@ -47,7 +47,7 @@ namespace TestModel
             };
 
             //act
-            var surf = new Surface(0, nodes);
+            var surf = new ElementSurface(0, nodes);
 
             //assert
             if (!surf[0].Number.Equals(0))
@@ -74,7 +74,7 @@ namespace TestModel
             };
 
             //act
-            var surf = new Surface(0, nodes);
+            var surf = new ElementSurface(0, nodes);
 
             //assert
             //assert
@@ -135,7 +135,7 @@ namespace TestModel
             }
 
             //act
-            var surf = new Surface(0, nodes.ToArray());
+            var surf = new ElementSurface(0, nodes.ToArray());
 
             //assert
             Assert.AreEqual(surf.NumberOfPoints, nodes.Count);

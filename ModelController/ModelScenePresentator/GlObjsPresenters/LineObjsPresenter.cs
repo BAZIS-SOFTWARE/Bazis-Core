@@ -12,7 +12,7 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
     /// <summary>
     /// LineObjsPresenter
     /// </summary>
-    public class LineObjsPresenter : IObjsPresenter
+    public class LineObjsPresenter : IObjsPresenter, IEnumerable<ILineObject>
     {
         IEnumerable<ILineObject> lineObjects;
 /// <inheritdoc/>
@@ -110,9 +110,8 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
 
             return edgesArray;
         }
-/// <inheritdoc/>
 
-        public IEnumerator<IModelObject> GetEnumerator()
+        public IEnumerator<ILineObject> GetEnumerator()
         {
             foreach (var lineObject in lineObjects)
             {

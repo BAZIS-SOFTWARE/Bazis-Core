@@ -219,6 +219,7 @@ namespace Model
         {
             throw new NotImplementedException();
         }
+/// <inheritdoc/>
 
         public IEnumerator<KeyValuePair<ObjType, List<IModelObject>>> GetEnumerator()
         {

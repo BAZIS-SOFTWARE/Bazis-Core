@@ -28,7 +28,7 @@ namespace Model.IO
                     str = reader.ReadLine().Trim();
                     var nodes = GetNodes(reader, str);
                     modelData.ObjectData.AddRange(nodes);
-                    var surface = new Surface(counter, nodes);
+                    var surface = new ElementSurface(counter, nodes);
                     modelData.ObjectData.Add(surface);
                     counter++; 
                 }

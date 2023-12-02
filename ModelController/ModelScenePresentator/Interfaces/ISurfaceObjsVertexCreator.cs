@@ -2,8 +2,8 @@
 
 namespace ModelController.ModelScenePresentator.Interfaces
 {
-    public interface ISurfaceObjsVertexCreator
+    public interface ISurfaceObjsVertexCreator<T,U> where T : ISurface<U> where U : IPoint
     {
-        void Create(ref int stride, float[] vertexAtributes, ISurfaceObject surfaceElement);
+        void Create(ref int stride, float[] vertexAtributes, ISurfaceObject<T,U> surfaceElement);
     }
 }

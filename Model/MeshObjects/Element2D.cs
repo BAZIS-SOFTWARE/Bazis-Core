@@ -11,7 +11,7 @@ namespace Model.MeshObjects
 {
     public abstract class Element2D : Element, IElement2D
     {
-        protected ISurface surface;
+        protected IElementSurface surface;
 
         public Element2D(int number, Node[] nodes) : base(number, nodes)
         {
@@ -28,7 +28,7 @@ namespace Model.MeshObjects
         public int NumberOfSides { get { return 1; } }
 /// <inheritdoc/>
 
-        public override Point3D CalcCentralPoint()
+        public override Point3D CalcCentr()
         {
             var center = new Point3D();
 
@@ -47,10 +47,11 @@ namespace Model.MeshObjects
 /// <inheritdoc/>
 
         public abstract float CalcSquare();
-     
+/// <inheritdoc/>
+
         /// <inheritdoc/>
 
-        public IEnumerable<ISurface> GetSurface()
+        public IEnumerable<IElementSurface> GetSurfaces()
         {
             yield return surface;
         }

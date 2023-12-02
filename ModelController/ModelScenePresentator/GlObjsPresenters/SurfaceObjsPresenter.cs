@@ -12,9 +12,10 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
     /// <summary>
     /// SurfaceObjsPresenter
     /// </summary>
-    public class SurfaceObjsPresenter : IObjsPresenter
+    public class SurfaceObjsPresenter<T,U> : IObjsPresenter, IEnumerable<ISurfaceObject<T,U>>
+        where T : ISurface<U> where U : IPoint
     {
-        IEnumerable<ISurfaceObject> surfaceElements;
+        IEnumerable<ISurfaceObject<T,U>> surfaceObjects;
 /// <inheritdoc/>
 
         public PresenterType PresenterType { get; } = PresenterType.Surface;
@@ -22,10 +23,10 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
         /// <summary>
         /// SurfaceObjsPresenter
         /// </summary>
-        /// <param name="surfaceElements"></param>
-        public SurfaceObjsPresenter(IEnumerable<ISurfaceObject> surfaceElements)
+        /// <param name="surfaceObjects"></param>
+        public SurfaceObjsPresenter(IEnumerable<ISurfaceObject<T,U>> surfaceObjects)
         {
-            this.surfaceElements = surfaceElements;
+            this.surfaceObjects = surfaceObjects;
         }
 
         
@@ -38,10 +39,10 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
             var edges = 0;
             var colors = 0;
 
-            foreach (var surfaceObj in surfaceElements)
+            foreach (var surfaceObj in surfaceObjects)
             {
                 if(surfaceObj.ViewState)
-                    foreach (var surface in surfaceObj.GetSurface())
+                    foreach (var surface in surfaceObj.GetSurfaces())
                     {
                         if (surface.ViewState)
                         {
@@ -63,11 +64,11 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
             var ptr = new int[indexLength];
             var stride = 0;
 
-            foreach (var surfaceObj in surfaceElements)
+            foreach (var surfaceObj in surfaceObjects)
             {
                 if (surfaceObj.ViewState)
                 {
-                    foreach (var surface in surfaceObj.GetSurface())
+                    foreach (var surface in surfaceObj.GetSurfaces())
                     {
                         if (surface.ViewState)
                         {
@@ -91,15 +92,15 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
             var vertexArray = new float[vertexLength];
             var stride = 0;
 
-            ISurfaceObjsVertexCreator vertexCreator;
+            ISurfaceObjsVertexCreator<T,U> vertexCreator;
 
             if (vertexType == "цвет")
-                vertexCreator = new ColorSurfaceObjsCreator();
+                vertexCreator = new ColorSurfaceObjsCreator<T,U>();
             else if (vertexType == "координаты")
-                vertexCreator = new CoordsSurfaceObjsCreator();
-            else vertexCreator = new NormalsSurfaceObjsCreator();
+                vertexCreator = new CoordsSurfaceObjsCreator<T, U>();
+            else vertexCreator = new NormalsSurfaceObjsCreator<T, U>();
 
-            foreach (var surfaceElement in surfaceElements)
+            foreach (var surfaceElement in surfaceObjects)
             {
                 if (surfaceElement.ViewState)
                 {
@@ -116,8 +117,8 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
             var edgesArray = new bool[edgesLength];
             var stride = 0;
 
-            var vertexCreator = new EdgesSurfaceObjsCreator();
-            vertexCreator.Create(ref stride, edgesArray, surfaceElements);  
+            var vertexCreator = new EdgesSurfaceObjsCreator<T, U>();
+            vertexCreator.Create(ref stride, edgesArray, surfaceObjects);  
             return edgesArray;
         }
 
@@ -125,13 +126,13 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
 
         public int Count()
         {
-            return surfaceElements.Count();
+            return surfaceObjects.Count();
         }    
 /// <inheritdoc/>
 
-        public IEnumerator<IModelObject> GetEnumerator()
+        public IEnumerator<ISurfaceObject<T, U>> GetEnumerator()
         {
-            foreach (var surfaceElement in surfaceElements)
+            foreach (var surfaceElement in surfaceObjects)
             {
                 yield return surfaceElement;
             }

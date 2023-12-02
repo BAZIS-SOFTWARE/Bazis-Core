@@ -12,7 +12,7 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
     /// <summary>
     /// PointObjsPresenter
     /// </summary>
-    public class PointObjsPresenter : IObjsPresenter
+    public class PointObjsPresenter : IObjsPresenter, IEnumerable<IModelObject>
     {
 
         IEnumerable<IModelObject> pointObjects;

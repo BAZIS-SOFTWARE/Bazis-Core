@@ -19,7 +19,7 @@ namespace Model.MeshObjects
 
         public Triangle(int number, Node[] nodes) : base(number, nodes)
         {
-            surface = new Surface(0, new Node[] { nodes[0], nodes[1], nodes[2] });
+            surface = new ElementSurface(0, new Node[] { nodes[0], nodes[1], nodes[2] });
             trianglePoints = new[]
             {
                 new[]{1/2f,0f,1/2f},
@@ -56,7 +56,7 @@ namespace Model.MeshObjects
 
         public override float CalcSquare()
         {
-            var pAr = GetPoints().ToArray();
+            var pAr = GetCoordinates().ToArray();
 
             var v1 = new Point3D(pAr[1]._x - pAr[0]._x, pAr[1]._y - pAr[0]._y, pAr[1]._z - pAr[0]._z);
             var v2 = new Point3D(pAr[2]._x - pAr[0]._x, pAr[2]._y - pAr[0]._y, pAr[2]._z - pAr[0]._z);

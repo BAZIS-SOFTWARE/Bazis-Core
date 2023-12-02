@@ -24,9 +24,17 @@ namespace ModelInterfaces
         /// </summary>
         Линия,
         /// <summary>
-        /// Поверхности
+        /// Поверхность
         /// </summary>
         Поверхность,
+        /// <summary>
+        /// Фигура2D
+        /// </summary>
+        Фигура2D,
+        /// <summary>
+        /// Фигура3D
+        /// </summary>
+        Фигура3D,
         /// <summary>
         /// Элементы2D
         /// </summary>
@@ -79,13 +87,13 @@ namespace ModelInterfaces
         /// </summary>
         int NumberOfPoints { get; }
         /// <summary>
-        /// GetPoints
+        /// GetCoordinates
         /// </summary>
-        IEnumerable<Point3D> GetPoints();
+        IEnumerable<Point3D> GetCoordinates();
         /// <summary>
         /// CalcCentralPoint
         /// </summary>
-        Point3D CalcCentralPoint();
+        Point3D CalcCentr();
         /// <summary>
         /// SetBackColor
         /// </summary>

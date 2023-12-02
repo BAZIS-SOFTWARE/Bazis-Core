@@ -1,21 +1,19 @@
 ﻿using Geometry;
 using MathNet.Numerics.LinearAlgebra;
-using Model.MeshObjects;
 using ModelInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Model.ObjectsSorters
+namespace Model.MeshObjects
 {
     public class SurfaceFinder
     {
         /// <param name="nodes">Узлы, задающие выпуклую 3D модель</param>
         /// <returns>Перечисление поверхностей, составляющих грани 3D модели</returns>
-        public static IEnumerable<ISurface> FindSurfaces(Node[] nodes)
+        public static IEnumerable<T[]> FindSurfaceNodes<T>(T[] nodes) where T : IPoint
         {
-            var surfaces = new List<HashSet<Node>>();
-            var surfaceId = 0;
+            var surfaces = new List<HashSet<T>>();
             foreach (var subset in GetSubsets(nodes))
             {
                 if (IsSubsetUsed(surfaces, subset.ToHashSet()))
@@ -27,11 +25,11 @@ namespace Model.ObjectsSorters
                 var accept = true;
                 var initialSign = plane.PointPosition(otherNodes.First().Position) >= 0;
                 //var initialSign = GetDistance(equationCoefficients, otherNodes.First().Position) >= 0;
-                var potentialSurface = new List<Node>();
+                var potentialSurface = new List<T>();
                 foreach (var node in otherNodes)
                 {
                     var distance = plane.PointPosition(node.Position);
-                    var currentSign = (distance >= 0);
+                    var currentSign = distance >= 0;
                     if (Math.Abs(distance) < 1e-6)
                         potentialSurface.Add(node);
                     else if (currentSign != initialSign)
@@ -44,8 +42,7 @@ namespace Model.ObjectsSorters
                 {
                     potentialSurface.AddRange(subset);
                     surfaces.Add(potentialSurface.ToHashSet());
-                    yield return new Surface(surfaceId, potentialSurface.ToArray());
-                    surfaceId++;
+                    yield return subset;
                 }
             }
         }
@@ -112,7 +109,7 @@ namespace Model.ObjectsSorters
         /// <summary>
         /// Определяет, находится ли подмножество в списке используемых подмножеств
         /// </summary>
-        private static bool IsSubsetUsed(List<HashSet<Node>> usedSubsets, HashSet<Node> subset)
+        private static bool IsSubsetUsed<T>(List<HashSet<T>> usedSubsets, HashSet<T> subset)
         {
             foreach (var item in usedSubsets)
             {

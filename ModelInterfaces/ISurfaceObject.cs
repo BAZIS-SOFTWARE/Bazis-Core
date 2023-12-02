@@ -7,13 +7,16 @@ using System.Threading.Tasks;
 
 namespace ModelInterfaces
 {
-    public interface ISurfaceObject : INodeObject
+    public interface ISurfaceObject<T,U> : IModelObject where T : ISurface<U> where U : IPoint
     {
-        IEnumerable<ISurface> GetSurface();
-
         /// <summary>
         /// NumberOfSides
         /// </summary>
         int NumberOfSides { get; }
+        /// <summary>
+        /// GetSurface
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<T> GetSurfaces();
     }
 }

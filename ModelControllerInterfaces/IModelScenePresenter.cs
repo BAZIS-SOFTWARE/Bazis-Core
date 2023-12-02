@@ -12,12 +12,12 @@ namespace ModelControllerInterfaces
         /// HideInsideSurfaces
         /// </summary>
         /// <param name="surfaceObjects"></param>
-        void HideInsideSurfaces(IEnumerable<ISurfaceObject> surfaceObjects);
+        void HideInsideSurfaces(IEnumerable<ISurfaceObject<IElementSurface,INode>> surfaceObjects);
         /// <summary>
         /// ShowInsideSurfaces
         /// </summary>
         /// <param name="surfaceElements"></param>
-        void ShowInsideSurfaces(IEnumerable<ISurfaceObject> surfaceElements);
+        void ShowInsideSurfaces(IEnumerable<ISurfaceObject<IElementSurface, INode>> surfaceElements);
         /// <summary>
         /// CreatePointObjectsPresenter
         /// </summary>
@@ -31,11 +31,17 @@ namespace ModelControllerInterfaces
         /// <returns></returns>
         IObjsPresenter CreateLineObjectsPresenter(IEnumerable<ILineObject> lineObjs);
         /// <summary>
-        /// CreateSurfaceObjectsPresenter
+        /// CreateSurfaceElementPresenter
         /// </summary>
         /// <param name="surfaceObjs"></param>
         /// <returns></returns>
-        IObjsPresenter CreateSurfaceObjectsPresenter(IEnumerable<ISurfaceObject> surfaceObjs);
+        IObjsPresenter CreateSurfaceElementsPresenter(IEnumerable<ISurfaceObject<IElementSurface,INode>> surfaceElems);
+        /// <summary>
+        /// CreateSurfaceElementPresenter
+        /// </summary>
+        /// <param name="surfaceObjs"></param>
+        /// <returns></returns>
+        IObjsPresenter CreateSurfaceGeometryPresenter(IEnumerable<ISurfaceObject<IGeometrySurface, IPoint>> surfaceGeom);
         /// <summary>
         /// CreatePresenter
         /// </summary>

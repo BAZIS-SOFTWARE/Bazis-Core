@@ -41,7 +41,7 @@ namespace Model.GeometryObjects
         }
 /// <inheritdoc/>
 
-        public override Point3D CalcCentralPoint()
+        public override Point3D CalcCentr()
         {
             return Position;
         }
@@ -56,9 +56,9 @@ namespace Model.GeometryObjects
         }
 /// <inheritdoc/>
 
-        public override IEnumerable<Point3D> GetPoints()
+        public override IEnumerable<Point3D> GetCoordinates()
         {
-            throw new NotImplementedException();
+            yield return Position;
         }
 /// <inheritdoc/>
 

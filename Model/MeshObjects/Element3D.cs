@@ -2,8 +2,8 @@
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using ModelInterfaces;
-using Model.ObjectsSorters;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -13,7 +13,7 @@ namespace Model.MeshObjects
 
     public abstract class Element3D : Element, IElement3D
     {
-        private List<ISurface> surfaces;
+        private List<ElementSurface> surfaces = new List<ElementSurface>();
         public Element3D(int number, Node[] nodes) : base(number, nodes)
         {
 
@@ -21,7 +21,12 @@ namespace Model.MeshObjects
             MasterColor = Color.FromArgb(255, 125, 0);
             SlaveColor = Color.FromArgb(255, 125, 0);
 
-            surfaces = SurfaceFinder.FindSurfaces(nodes).ToList();
+            var surfNumber = 0;
+            foreach (var surfNodes in SurfaceFinder.FindSurfaceNodes(nodes))
+            {
+                surfaces.Add(new ElementSurface(surfNumber, surfNodes));
+            }
+
         }
         /// <inheritdoc/>
 
@@ -48,11 +53,11 @@ namespace Model.MeshObjects
 
         /// <inheritdoc/>
 
-        public override Point3D CalcCentralPoint()
+        public override Point3D CalcCentr()
         {
             var center = new Point3D();
 
-            foreach (var node in GetNodes())
+            foreach (var node in nodes)
             {
                 center = center.Sum(node.Position);
             }
@@ -64,9 +69,12 @@ namespace Model.MeshObjects
         /// </summary>
         /// <returns></returns>
         public abstract float CalcVolume();
-        /// <inheritdoc/>
+/// <inheritdoc/>
 
-        public IEnumerable<ISurface> GetSurface()
+
+/// <inheritdoc/>
+
+        public IEnumerable<IElementSurface> GetSurfaces()
         {
             foreach (var surface in surfaces)
             {

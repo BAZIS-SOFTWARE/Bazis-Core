@@ -10,8 +10,8 @@ namespace ModelInterfaces.ObjectsComparers
     {
         public int Compare(IModelObject x, IModelObject y)
         {
-            var x_centrP = x.CalcCentralPoint();
-            var y_centrP = y.CalcCentralPoint();
+            var x_centrP = x.CalcCentr();
+            var y_centrP = y.CalcCentr();
 
             var x_sqSum = x_centrP.GetSquareSumCoords();
             var y_sqSum = y_centrP.GetSquareSumCoords();

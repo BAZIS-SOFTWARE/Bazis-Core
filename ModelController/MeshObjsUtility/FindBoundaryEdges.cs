@@ -33,12 +33,12 @@ namespace ModelController.MeshObjsUtility
             foreach (var interfacedNode in interfacedNodes)
             {
                 //edge, <el,surf>
-                var sharedEdges = new Dictionary<string, Dictionary<IElement, List<ISurface>>>();
+                var sharedEdges = new Dictionary<string, Dictionary<IElement, List<IElementSurface>>>();
                 foreach (var sharedElement in interfacedNode.Value)
                 {
                     var element = els.Find(sharedElement);
 
-                    foreach (var surface in element.GetSurface())
+                    foreach (var surface in element.GetSurfaces())
                     {
                         if (surface.ViewState)
                         {
@@ -63,12 +63,12 @@ namespace ModelController.MeshObjsUtility
 
 
                                 if (!sharedEdges.Keys.Contains(edge))
-                                    sharedEdges.Add(edge, new Dictionary<IElement, List<ISurface>>()
-                                    { { element, new List<ISurface>() { surface } } });
+                                    sharedEdges.Add(edge, new Dictionary<IElement, List<IElementSurface>>()
+                                    { { element, new List<IElementSurface>() { surface } } });
                                 else
                                 {
                                     if (!sharedEdges[edge].ContainsKey(element))
-                                        sharedEdges[edge].Add(element, new List<ISurface>() { surface });
+                                        sharedEdges[edge].Add(element, new List<IElementSurface>() { surface });
                                     else sharedEdges[edge][element].Add(surface);
 
                                     if (CheckAdjacentAngle(sharedEdges[edge]))
@@ -88,7 +88,7 @@ namespace ModelController.MeshObjsUtility
 
 
 
-        private bool CheckAdjacentAngle(Dictionary<IElement, List<ISurface>> adjElems)
+        private bool CheckAdjacentAngle(Dictionary<IElement, List<IElementSurface>> adjElems)
         {
             var vec = new List<Point3D>();
 

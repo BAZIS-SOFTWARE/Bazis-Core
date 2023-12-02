@@ -23,7 +23,7 @@ namespace Model.GeometryObjects
         public override int NumberOfPoints { get; }
         /// <inheritdoc/>
 
-        public override Point3D CalcCentralPoint()
+        public override Point3D CalcCentr()
         {
             var center = new Point3D();
 
@@ -50,7 +50,7 @@ namespace Model.GeometryObjects
         }
         /// <inheritdoc/>
 
-        public override IEnumerable<Point3D> GetPoints()
+        public override IEnumerable<Point3D> GetCoordinates()
         {
             foreach (var node in nodes)
             {

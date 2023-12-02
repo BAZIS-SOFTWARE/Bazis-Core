@@ -99,7 +99,6 @@
     <Compile Include="GmshTests\ConnectionTests.cs" />
     <Compile Include="GmshTests\ModelTests.cs" />
     <Compile Include="GmshTests\MeshQualityTests.cs" />
-    <Compile Include="SearchModelObjects.cs" />
     <Compile Include="TestAlphaColor.cs" />
     <Compile Include="TestCalcDistance.cs" />
     <Compile Include="TestEdgeFlags.cs" />
