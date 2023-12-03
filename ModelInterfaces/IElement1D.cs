@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ModelInterfaces
 {
-    public interface IElement1D : IElement, ILineObject
+    public interface IElement1D : IElement, ILineObject<INode>
     {
     }
 }

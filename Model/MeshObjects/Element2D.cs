@@ -32,7 +32,7 @@ namespace Model.MeshObjects
         {
             var center = new Point3D();
 
-            foreach (var node in GetNodes())
+            foreach (var node in GetVertexes())
             {
                 center = center.Sum(node.Position);
             }

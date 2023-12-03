@@ -10,7 +10,7 @@ namespace Model.GeometryObjects
     /// </summary>
     public class Point : ModelObject, IPoint
     {
-        List<ILineObject> lines = new List<ILineObject>();
+        List<ILineObject<IPoint>> lines = new List<ILineObject<IPoint>>();
         /// <summary>
         /// Point
         /// </summary>
@@ -35,7 +35,7 @@ namespace Model.GeometryObjects
         public Point3D Normal { get; set; }
 /// <inheritdoc/>
 
-        public void AddLine(ILineObject line)
+        public void AddLine(ILineObject<IPoint> line)
         {
             lines.Add(line);
         }
@@ -47,7 +47,7 @@ namespace Model.GeometryObjects
         }
 /// <inheritdoc/>
 
-        public IEnumerable<ILineObject> GetLines()
+        public IEnumerable<ILineObject<IPoint>> GetLines()
         {
             foreach (var line in lines)
             {

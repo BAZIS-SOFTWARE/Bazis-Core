@@ -29,11 +29,11 @@ namespace TestModel
         [TestMethod]
         public void TestLineObjsPresenter()
         {
-            var nodes = new Node[] { new Node(0, new Point3D(0.5f, 1.0f, 1.0f)),
-                                     new Node(1, new Point3D(1.0f, 1.0f, -1.0f))
+            var nodes = new Point[] { new Point(0, new Point3D(0.5f, 1.0f, 1.0f)),
+                                     new Point(1, new Point3D(1.0f, 1.0f, -1.0f))
                                    };
-            var line = new Line[] { new Line(0, nodes) };
-            var presenter = new LineObjsPresenter(line);
+            var lines = new Line[] { new Line(0, nodes) };
+            var presenter = new LineObjsPresenter<Point>(lines);
             var indices = presenter.CreateIndexes();
             var pointers = presenter.CreatePointers(indices.Item1);
             var colors = presenter.CreateVertexes(indices.Item3, "цвет");

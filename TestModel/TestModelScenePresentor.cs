@@ -9,6 +9,7 @@ using System.Drawing;
 using System.Linq;
 using Model.MeshObjects;
 using ModelController.ModelScenePresentator.GlObjsPresenters;
+using Model.GeometryObjects;
 
 namespace TestModel
 {
@@ -105,10 +106,9 @@ namespace TestModel
             model.Loader = new LoadModelFromSTLFile();
 
             model.Loader.LoadEvent += (ar1, ar2) => { };
-            model.Load(@"C:\BazisComponents\ModelSolution\TestModel\Examples\STL\ACII.stl");
+            model.Load(@"..\..\..\Examples\STL\ACII.stl");
 
             //act
-            var surfs = model.ObjectData.FindMany<ElementSurface>().ToArray();
 
             var presenter = new ModelScenePresentator(model.ObjectData);
 

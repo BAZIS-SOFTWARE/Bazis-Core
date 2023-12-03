@@ -12,7 +12,7 @@ namespace ModelInterfaces
     /// ISurface
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface ISurface<T> : IModelObject,INormal,ISquare
+    public interface ISurface<T> : IModelObject,INormal,ISquare, IVertexObject<T>
         where T : IPoint
     {
         /// <summary>
@@ -27,12 +27,6 @@ namespace ModelInterfaces
         /// <param name="surface"></param>
         /// <returns></returns>
         Segment3D[] GetLinesFromSurface(ISurface<T> surface);
-
-        /// <summary>
-        /// GetPoints
-        /// </summary>
-        /// <returns></returns>
-        IEnumerable<T> GetVertexes();
         /// <summary>
         /// this
         /// </summary>

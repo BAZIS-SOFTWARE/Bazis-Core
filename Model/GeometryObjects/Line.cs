@@ -6,14 +6,14 @@ using ModelInterfaces;
 
 namespace Model.GeometryObjects
 {
-    public class Line : ModelObject, ILineObject
+    public class Line : ModelObject, ILineObject<Point>
     {
-        private Node[] nodes;
+        private Point[] points;
 
-        public Line(int number, Node[] nodes) : base(number)
+        public Line(int number, Point[] points) : base(number)
         {
-            NumberOfPoints = nodes.Length;
-            this.nodes = nodes;
+            NumberOfPoints = points.Length;
+            this.points = points;
         }
 
         /// <inheritdoc/>
@@ -27,9 +27,9 @@ namespace Model.GeometryObjects
         {
             var center = new Point3D();
 
-            foreach (var node in nodes)
+            foreach (var point in points)
             {
-                center = center.Sum(node.Position);
+                center = center.Sum(point.Position);
             }
             return center.Div(NumberOfPoints);
         }
@@ -39,22 +39,23 @@ namespace Model.GeometryObjects
         {
             throw new NotImplementedException();
         }
-        /// <inheritdoc/>
 
-        public IEnumerable<INode> GetNodes()
-        {
-            foreach (var node in nodes)
-            {
-                yield return node;
-            }
-        }
+
         /// <inheritdoc/>
 
         public override IEnumerable<Point3D> GetCoordinates()
         {
-            foreach (var node in nodes)
+            foreach (var point in points)
             {
-                yield return node.Position;
+                yield return point.Position;
+            }
+        }
+
+        public IEnumerable<Point> GetVertexes()
+        {
+            foreach (var point in points)
+            {
+                yield return point;
             }
         }
     }

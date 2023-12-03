@@ -49,7 +49,7 @@ namespace ModelController.MeshObjsUtility
                 foreach(var elementNumber in interfacedElements[currentNode.Number])
                 {           
                     var element = elements.Find(elementNumber);
-                    foreach(var node in element.GetNodes())
+                    foreach(var node in element.GetVertexes())
                     {
                         var currentDirection = node.Position.Sub(currentNode.Position);
                         var angle = Math.Acos(Vector.GetAngleVectors(currentDirection, previousDirection));
@@ -132,7 +132,7 @@ namespace ModelController.MeshObjsUtility
             foreach (var element in elements)
             {
                 var neighbourElementsNumber = new HashSet<int>();
-                foreach (var node in element.GetNodes())
+                foreach (var node in element.GetVertexes())
                 {
                     foreach (var elementAdjacent in node.GetElements())
                     {

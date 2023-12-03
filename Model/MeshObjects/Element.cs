@@ -45,15 +45,6 @@ namespace Model.MeshObjects
                 yield return node;
             }
         }
-/// <inheritdoc/>
-
-        public IEnumerable<INode> GetNodes()
-        {
-            foreach (var node in nodes)
-            {
-                yield return node;
-            }
-        }
 
         /// <inheritdoc/>
 
@@ -73,6 +64,15 @@ namespace Model.MeshObjects
             var str = string.Join(" ", strArr);
 
             return string.Format("{0} {1} : {2}", Number, ObjType, str);
+        }
+/// <inheritdoc/>
+
+        public IEnumerable<INode> GetVertexes()
+        {
+            foreach (var node in nodes)
+            {
+                yield return node;
+            }
         }
     }
 }

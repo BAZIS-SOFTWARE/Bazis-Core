@@ -67,12 +67,15 @@ namespace ModelController.ModelScenePresentator
                     presentors.Add(objsType, pointsPresentor);
                     break;
                 case ObjType.Линия:
+                    var linesPresentor = CreateGeometryLinePresenter(modelObjects.Select(x => (ILineObject<IPoint>)x));
+                    presentors.Add(objsType, linesPresentor);
+                    break;
                 case ObjType.Фигура2D:
                     var fig2dPresentor = CreateSurfaceGeometryPresenter(modelObjects.Select(x => (ISurfaceObject<IGeometrySurface, IPoint>)x));
                     presentors.Add(objsType, fig2dPresentor);
                     break;
                 case ObjType.Элемент1D:
-                    var els1dPresentor = CreateLineObjectsPresenter(modelObjects.Select(x => (ILineObject)x));
+                    var els1dPresentor = CreateBeamPresenter(modelObjects.Select(x => (ILineObject<INode>)x));
                     presentors.Add(objsType, els1dPresentor);
                     break;
                 case ObjType.Элемент2D:
@@ -204,12 +207,7 @@ namespace ModelController.ModelScenePresentator
         {
             return new PointObjsPresenter(modelObjects);
         }
-/// <inheritdoc/>
 
-        public IObjsPresenter CreateLineObjectsPresenter(IEnumerable<ILineObject> lineObjs)
-        {
-            return new LineObjsPresenter(lineObjs);
-        }
 /// <inheritdoc/>
 
         public IObjsPresenter CreateSurfaceElementsPresenter(IEnumerable<ISurfaceObject<IElementSurface, INode>> surfaceObjs)
@@ -221,6 +219,16 @@ namespace ModelController.ModelScenePresentator
         public IObjsPresenter CreateSurfaceGeometryPresenter(IEnumerable<ISurfaceObject<IGeometrySurface, IPoint>> surfaceObjs)
         {
             return new SurfaceObjsPresenter<IGeometrySurface, IPoint>(surfaceObjs);
+        }
+
+        public IObjsPresenter CreateBeamPresenter(IEnumerable<ILineObject<INode>> lineObjs)
+        {
+            return new LineObjsPresenter<INode>(lineObjs);
+        }
+
+        public IObjsPresenter CreateGeometryLinePresenter(IEnumerable<ILineObject<IPoint>> lineObjs)
+        {
+            return new LineObjsPresenter<IPoint>(lineObjs);
         }
     }
 }

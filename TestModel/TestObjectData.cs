@@ -118,29 +118,29 @@ namespace TestModel
             model.ObjectData.AddRange(new List<Node>() { node0 ,node1});
         }
 
-        [TestMethod]
-        public void RemoveObjectsWithSameTypes()
+        [DataTestMethod]
+        [DataRow(ObjType.Линия)]
+        [DataRow(ObjType.Точка)]
+        public void RemoveObjectsWithSameTypes(ObjType objType)
         {
             //assign
             var model = new ModelData();
 
             //act
-            var node0 = new Node(0, new Geometry.Point3D());
-            var node1 = new Node(1, new Geometry.Point3D());
-            var node2 = new Node(3, new Geometry.Point3D());
+            var node0 = new Point(0, new Geometry.Point3D());
+            var node1 = new Point(1, new Geometry.Point3D());
+            var node2 = new Point(3, new Geometry.Point3D());
 
-            var line = new Line(2, new Node[] { node0, node1 });
+            var line = new Line(2, new Point[] { node0, node1 });
 
             model.ObjectData.Add(node0);
             model.ObjectData.Add(node1);
             model.ObjectData.Add(line);
             model.ObjectData.Add(node2);
 
-            model.ObjectData.Remove(ObjType.Линия);
+            model.ObjectData.Remove(objType);
             //assert
-            Assert.AreEqual(model.ObjectData.NumberOfNodes, 3);
-            Assert.AreEqual(model.ObjectData.Find(ObjType.Линия,0), null);
-            Assert.AreEqual(model.ObjectData.Find(ObjType.Линия,3), null);
+            Assert.AreEqual(model.ObjectData.ContainsKey(objType), false);
         }
 
         [DataTestMethod]

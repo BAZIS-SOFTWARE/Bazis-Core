@@ -12,9 +12,10 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
     /// <summary>
     /// LineObjsPresenter
     /// </summary>
-    public class LineObjsPresenter : IObjsPresenter, IEnumerable<ILineObject>
+    public class LineObjsPresenter<T> : IObjsPresenter, IEnumerable<ILineObject<T>>
+        where T : IPoint
     {
-        IEnumerable<ILineObject> lineObjects;
+        IEnumerable<ILineObject<T>> lineObjects;
 /// <inheritdoc/>
 
         public PresenterType PresenterType { get; } = PresenterType.Line;
@@ -23,7 +24,7 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
         /// LineObjsPresenter
         /// </summary>
         /// <param name="lineObjects"></param>
-        public LineObjsPresenter(IEnumerable<ILineObject> lineObjects)
+        public LineObjsPresenter(IEnumerable<ILineObject<T>> lineObjects)
         {
             this.lineObjects = lineObjects;
         }
@@ -77,13 +78,13 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
             var vertexArray = new float[vertexLength];
             var stride = 0;
 
-            ILineObjsVertexCreator vertexCreator;
+            ILineObjsVertexCreator<T> vertexCreator;
 
             if (vertexType == "цвет")
-                vertexCreator = new ColorLineObjsCreator();
+                vertexCreator = new ColorLineObjsCreator<T>();
             else if (vertexType == "координаты")
-                vertexCreator = new CoordsLineObjsCreator();
-            else vertexCreator = new NormalsLineObjsCreator();
+                vertexCreator = new CoordsLineObjsCreator<T>();
+            else vertexCreator = new NormalsLineObjsCreator<T>();
 
             foreach (var lineObject in lineObjects)
             {
@@ -111,7 +112,7 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
             return edgesArray;
         }
 
-        public IEnumerator<ILineObject> GetEnumerator()
+        public IEnumerator<ILineObject<T>> GetEnumerator()
         {
             foreach (var lineObject in lineObjects)
             {

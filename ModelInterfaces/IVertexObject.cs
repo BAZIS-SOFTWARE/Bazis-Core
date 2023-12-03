@@ -5,12 +5,12 @@ namespace ModelInterfaces
     /// <summary>
     /// INodeObject
     /// </summary>
-    public interface INodeObject : IModelObject
+    public interface IVertexObject<T> : IModelObject where T : IPoint
     {
         /// <summary>
         /// GetNodes
         /// </summary>
         /// <returns></returns>
-        IEnumerable<INode> GetNodes();
+        IEnumerable<T> GetVertexes();
     }
 }

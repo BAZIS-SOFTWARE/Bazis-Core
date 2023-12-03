@@ -35,7 +35,7 @@ namespace ModelInterfaces
     /// <summary>
     /// IElement
     /// </summary>
-    public interface IElement : INodeObject
+    public interface IElement : IVertexObject<INode>
     {
         /// <summary>
         /// DetJ

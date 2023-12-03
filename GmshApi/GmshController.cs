@@ -1722,9 +1722,9 @@ namespace GmshApi.GmshController
         /// <param name="tags">Идентификаторы кривых</param>
         /// <param name="status">Успешность вызова метода</param>
         /// <returns>Список кривых</returns>
-        public List<ILineObject> CreateLines(int[] tags, ref bool status)
+        public List<Line> CreateLines(int[] tags, ref bool status)
         {
-            var lines = new List<ILineObject>();
+            var lines = new List<Line>();
             double[] minBounds;
             double[] maxBounds;
             status = true;
@@ -1746,16 +1746,16 @@ namespace GmshApi.GmshController
                 }
                 double[] coords;
                 ModelGetValue(1, tags[i], newPB, out coords);
-                var points = ConvertLocalCoordsToPoints3D(coords);
-                var nodes = new List<Node>();
+                var localPoints = ConvertLocalCoordsToPoints3D(coords);
+                var points = new List<Point>();
                 var num = 0;
-                foreach (var pair in points.Bigrams(false))
+                foreach (var pair in localPoints.Bigrams(false))
                 {
-                    var line = new Node[] { new Node(num++, pair.Item1), new Node(num++, pair.Item2) };
-                    nodes.AddRange(line);
+                    var linePoints = new Point[] { new Point(num++, pair.Item1), new Point(num++, pair.Item2) };
+                    points.AddRange(linePoints);
                 }
-
-                lines.Add(new Line(tags[i], nodes.ToArray()));
+                var line = new Line(tags[i], points.ToArray());
+                lines.Add(line);
             }
             return lines;
         }

@@ -16,7 +16,7 @@ namespace ModelController.MeshObjsUtility
             {
                 if (element.ViewState)
                 {
-                    foreach (var node in element.GetNodes())
+                    foreach (var node in element.GetVertexes())
                     {
                         if (nodes.Contains(node.Number))
                         {
@@ -47,7 +47,7 @@ namespace ModelController.MeshObjsUtility
             {
                 if (element.ViewState)
                 {
-                    foreach (var node in element.GetNodes())
+                    foreach (var node in element.GetVertexes())
                     {
                         var nodeNumber = node.Number;
                         if (!interfaceNodes.ContainsKey(nodeNumber))

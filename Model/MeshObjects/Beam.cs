@@ -5,7 +5,7 @@ using System.Drawing;
 
 namespace Model.MeshObjects
 {
-    public class Beam : Element, ILineObject
+    public class Beam : Element, ILineObject<INode>
     {
         public Beam(int number, Node[] nodes) : base(number, nodes)
         {

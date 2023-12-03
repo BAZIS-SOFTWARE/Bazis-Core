@@ -48,7 +48,7 @@ namespace Model.IO
                         {
                             var elem = (Element)obj;
                             var strAr = new List<string>();
-                            foreach (var node in elem.GetNodes())
+                            foreach (var node in elem.GetVertexes())
                                 strAr.Add(node.Number.ToString());
 
                             var strNodes = string.Join(" ", strAr);

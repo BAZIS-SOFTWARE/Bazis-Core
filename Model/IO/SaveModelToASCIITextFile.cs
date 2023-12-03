@@ -54,7 +54,7 @@ namespace Model.IO
             writer.WriteLine($"BEGIN_ELEMENTS {elements.Count}");
             foreach (var element in elements)
             {
-                var nodes = string.Join(" ", element.GetNodes().Select(x => x.Number));
+                var nodes = string.Join(" ", element.GetVertexes().Select(x => x.Number));
                 var type = ConvertObjectTypeToFormatCode(element.ElementKind);
                 writer.WriteLine($"{element.Number} {type} 0 0 0 {nodes}");
             }
