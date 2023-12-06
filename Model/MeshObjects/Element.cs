@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Geometry;
+using MathNet.Numerics.LinearAlgebra;
 using ModelInterfaces;
 
 namespace Model.MeshObjects
@@ -10,6 +11,8 @@ namespace Model.MeshObjects
     public abstract class Element : ModelObject, IElement
     {
         protected List<Node> nodes = new List<Node>();
+
+        protected List<IntegralPoint> points = new List<IntegralPoint>();
         public Element(int number, Node[] nodes) : base(number)
         {
             if (nodes.Length == 0)
@@ -34,9 +37,8 @@ namespace Model.MeshObjects
 /// <inheritdoc/>
 
         public abstract ElementKind ElementKind { get; }
-/// <inheritdoc/>
 
-        public abstract float DetJ(Point3D point3D);
+
         /// <inheritdoc/>
         public IEnumerator<INode> GetEnumerator()
         {
@@ -63,7 +65,7 @@ namespace Model.MeshObjects
 
             var str = string.Join(" ", strArr);
 
-            return string.Format("{0} {1} : {2}", Number, ObjType, str);
+            return $"{Number} {(int)ObjType} {(int)ElementKind} {points.Count} : {str}";
         }
 /// <inheritdoc/>
 
@@ -72,6 +74,18 @@ namespace Model.MeshObjects
             foreach (var node in nodes)
             {
                 yield return node;
+            }
+        }
+        /// <inheritdoc/>
+
+        public abstract float DetJ(Point3D integralPoint);
+/// <inheritdoc/>
+
+        public IEnumerable<IIntegralPoint> GetIntegralPoints()
+        {
+            foreach (var point in points)
+            {
+                yield return point;
             }
         }
     }

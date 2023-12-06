@@ -8,17 +8,9 @@ namespace ModelInterfaces
     public enum ElementKind
     {
         /// <summary>
-        /// Пента
+        /// Стержень
         /// </summary>
-        Пента,
-        /// <summary>
-        /// Тетра
-        /// </summary>
-        Тетра,
-        /// <summary>
-        /// Гекса
-        /// </summary>
-        Гекса,
+        Стержень,
         /// <summary>
         /// Треугольник
         /// </summary>
@@ -28,21 +20,31 @@ namespace ModelInterfaces
         /// </summary>
         Квадрат,
         /// <summary>
-        /// Стержень
+        /// Тетра
         /// </summary>
-        Стержень
+        Тетра,
+        /// <summary>
+        /// Гекса
+        /// </summary>
+        Гекса,
+        /// <summary>
+        /// Пента
+        /// </summary>
+        Пента
     }
     /// <summary>
     /// IElement
     /// </summary>
-    public interface IElement : IVertexObject<INode>
+    public interface IElement : IVertexObject<INode>, IIntegralObject
     {
         /// <summary>
         /// DetJ
         /// </summary>
-        /// <param name="point3D"></param>
+        /// <param name="integralPoint"></param>
+        /// Внутренняя точка в локальных координатах
+        /// кси,эта,дзета если стержень,прямоугольник, гекса, пента
         /// <returns></returns>
-        float DetJ(Point3D point3D);
+        float DetJ(Point3D integralPoint);
         /// <summary>
         /// ElementKind
         /// </summary>

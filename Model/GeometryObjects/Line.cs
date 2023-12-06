@@ -50,6 +50,7 @@ namespace Model.GeometryObjects
                 yield return point.Position;
             }
         }
+/// <inheritdoc/>
 
         public IEnumerable<Point> GetVertexes()
         {

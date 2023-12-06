@@ -69,7 +69,7 @@ namespace Model.MeshObjects
                     for (int k = j + 1; k < nodes.Count - 1; k++)
                     {
 
-                        var x = new Node[] { (Node)nodes[i], (Node)nodes[j], (Node)nodes[k] };
+                        var x = new Node[] { nodes[i], nodes[j], nodes[k] };
                         var tetra = new Triangle(0, x);
                         sum += tetra.CalcSquare();
 

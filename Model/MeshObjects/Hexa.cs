@@ -18,6 +18,7 @@ namespace Model.MeshObjects
 
         public Hexa(int number, Node[] nodes) : base(number, nodes)
         {
+
         }
 
         public override float CalcVolume()

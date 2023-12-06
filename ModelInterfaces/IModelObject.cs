@@ -36,17 +36,17 @@ namespace ModelInterfaces
         /// </summary>
         Фигура3D,
         /// <summary>
+        /// Элементы1D
+        /// </summary>
+        Элемент1D,
+        /// <summary>
         /// Элементы2D
         /// </summary>
         Элемент2D,
         /// <summary>
         /// Элементы3D
         /// </summary>
-        Элемент3D,
-        /// <summary>
-        /// Элементы1D
-        /// </summary>
-        Элемент1D
+        Элемент3D
     }
     /// <summary>
     /// Model object interface
