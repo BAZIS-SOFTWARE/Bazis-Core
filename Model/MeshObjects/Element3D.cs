@@ -28,6 +28,12 @@ namespace Model.MeshObjects
             }
 
         }
+
+        public Element3D(int number, Node[] nodes,int point) : this(number, nodes)
+        {
+
+
+        }
         /// <inheritdoc/>
 
 

@@ -5,6 +5,7 @@ using System.Linq;
 using Geometry;
 using MathNet.Numerics.LinearAlgebra;
 using ModelInterfaces;
+using ModelInterfaces.IntegralObject;
 
 namespace Model.MeshObjects
 {
@@ -12,7 +13,13 @@ namespace Model.MeshObjects
     {
         protected List<Node> nodes = new List<Node>();
 
-        protected List<IntegralPoint> points = new List<IntegralPoint>();
+        protected List<IIntegralPoint> intPoints = new List<IIntegralPoint>();
+        /// <summary>
+        /// Element
+        /// </summary>
+        /// <param name="number"></param>
+        /// <param name="nodes"></param>
+        /// <exception cref="Exception"></exception>
         public Element(int number, Node[] nodes) : base(number)
         {
             if (nodes.Length == 0)
@@ -24,6 +31,19 @@ namespace Model.MeshObjects
                 this.nodes.Add(node);
             }
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="number"></param>
+        /// <param name="nodes"></param>
+        /// <param name="intPoints"></param>
+        /// Кол-во точек интегрирования
+        /// <exception cref="Exception"></exception>
+        public Element(int number, Node[] nodes, int intPoints) : this(number, nodes)
+        {
+
+        }
+
         /// <summary>
         /// this
         /// </summary>
@@ -65,7 +85,7 @@ namespace Model.MeshObjects
 
             var str = string.Join(" ", strArr);
 
-            return $"{Number} {(int)ObjType} {(int)ElementKind} {points.Count} : {str}";
+            return $"{Number} {(int)ObjType} {(int)ElementKind} {intPoints.Count} : {str}";
         }
 /// <inheritdoc/>
 
@@ -78,15 +98,27 @@ namespace Model.MeshObjects
         }
         /// <inheritdoc/>
 
-        public abstract float DetJ(Point3D integralPoint);
+        public abstract float DetJ(IIntegralPoint integralPoint);
 /// <inheritdoc/>
 
         public IEnumerable<IIntegralPoint> GetIntegralPoints()
         {
-            foreach (var point in points)
+            foreach (var point in intPoints)
             {
                 yield return point;
             }
         }
+/// <inheritdoc/>
+
+        public void AddIntegralPoint(IIntegralPoint integralPoint)
+        {
+            intPoints.Add(integralPoint);
+        }
+/// <inheritdoc/>
+
+        public abstract float[] GetDerivativesFormFunctions(IIntegralPoint intPoint);
+/// <inheritdoc/>
+
+        public abstract float[] GetFormFunctions(IIntegralPoint intPoint);
     }
 }

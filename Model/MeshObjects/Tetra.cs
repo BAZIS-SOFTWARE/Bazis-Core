@@ -1,6 +1,8 @@
 ﻿using Geometry;
+using MathNet.Numerics.Distributions;
 using MathNet.Numerics.LinearAlgebra;
 using ModelInterfaces;
+using ModelInterfaces.IntegralObject;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +15,13 @@ namespace Model.MeshObjects
     {
         public Tetra(int number, Node[] nodes) : base(number, nodes)
         {
+            var intPoint = new IntegralPoint();
+            intPoint.AddDirection("l1", 1 / 4);
+            intPoint.AddDirection("l2", 1 / 4);
+            intPoint.AddDirection("l3", 1 / 4);
+            intPoint.AddDirection("l4", 1 / 4);
+            intPoint.Weigt = CalcVolume();
+            AddIntegralPoint(intPoint);
         }
 /// <inheritdoc/>
 
@@ -38,35 +47,21 @@ namespace Model.MeshObjects
         }
         /// <inheritdoc/>
 
-        public override float DetJ(Point3D point3D)
+        public override float DetJ(IIntegralPoint point3D)
         {
             throw new NotImplementedException();
         }
+/// <inheritdoc/>
 
-        //public override float[] GetDerivativesFormFunctions(Point3D point3D)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public override float[] GetFormFunctions(Point3D point3D)
-        //{
-        //    return FormFunctionTetra(point3D);
-        //}
-
-        private float[] FormFunctionTetra(Point3D point3D)
+        public override float[] GetDerivativesFormFunctions(IIntegralPoint intPoint)
         {
-            var mCoord = Matrix<float>.Build.DenseOfArray(new float[,]
-{
-                    { 1, nodes[0].Position._x, nodes[0].Position._y,nodes[0].Position._z },
-                    { 1, nodes[1].Position._x, nodes[1].Position._y,nodes[1].Position._z },
-                    { 1, nodes[2].Position._x, nodes[2].Position._y,nodes[2].Position._z },
-                    { 1, nodes[3].Position._x, nodes[3].Position._y,nodes[3].Position._z }
-});
-            var dN = mCoord.Inverse(); // differential matrix {dN/dn}
+            throw new NotImplementedException();
+        }
+/// <inheritdoc/>
 
-            var vCoord = Vector<float>.Build.Dense(new float[] { 1, point3D._x, point3D._y, point3D._z });
-            var result = dN.Multiply(vCoord);
-            return result.ToArray();
+        public override float[] GetFormFunctions(IIntegralPoint intPoint)
+        {
+            return new float[] { intPoint["l1"], intPoint["l2"], intPoint["l3"], intPoint["l4"] };
         }
     }
 }

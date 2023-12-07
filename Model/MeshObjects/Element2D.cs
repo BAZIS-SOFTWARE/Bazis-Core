@@ -20,13 +20,11 @@ namespace Model.MeshObjects
             SlaveColor = Color.FromArgb(0, 0, 255);
         }
 
-        public Element2D(int number, Node[] nodes,) : this(number, nodes)
-        {
-            InitialColor = Color.FromArgb(0, 0, 255);
-            MasterColor = Color.FromArgb(0, 0, 255);
-            SlaveColor = Color.FromArgb(0, 0, 255);
-        }
 
+        public Element2D(int number, Node[] nodes, int points) : this(number, nodes)
+        {
+
+        }
         /// <inheritdoc/>
 
         public override ObjType ObjType { get; } = ObjType.Элемент2D;

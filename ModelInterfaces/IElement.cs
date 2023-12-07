@@ -1,4 +1,5 @@
 ﻿using Geometry;
+using ModelInterfaces.IntegralObject;
 
 namespace ModelInterfaces
 {
@@ -38,13 +39,13 @@ namespace ModelInterfaces
     public interface IElement : IVertexObject<INode>, IIntegralObject
     {
         /// <summary>
-        /// DetJ
+        /// Detetrminant of Jacobian matrix
         /// </summary>
         /// <param name="integralPoint"></param>
         /// Внутренняя точка в локальных координатах
         /// кси,эта,дзета если стержень,прямоугольник, гекса, пента
         /// <returns></returns>
-        float DetJ(Point3D integralPoint);
+        float DetJ(IIntegralPoint integralPoint);
         /// <summary>
         /// ElementKind
         /// </summary>
@@ -56,5 +57,17 @@ namespace ModelInterfaces
         /// <param name="nodeInd"></param>
         /// <returns></returns>
         INode this[int nodeInd] { get; }
+        /// <summary>
+        /// GetDerivativesFormFunctions
+        /// </summary>
+        /// <param name="intPoint"></param>
+        /// <returns></returns>
+        float[] GetDerivativesFormFunctions(IIntegralPoint intPoint);
+        /// <summary>
+        /// GetFormFunctions
+        /// </summary>
+        /// <param name="intPoint"></param>
+        /// <returns></returns>
+        float[] GetFormFunctions(IIntegralPoint intPoint);
     }
 }

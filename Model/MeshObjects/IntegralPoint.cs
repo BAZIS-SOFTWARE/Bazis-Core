@@ -1,5 +1,5 @@
 ﻿using Geometry;
-using ModelInterfaces;
+using ModelInterfaces.IntegralObject;
 using System.Collections.Generic;
 using System.Drawing;
 
@@ -10,16 +10,33 @@ namespace Model.MeshObjects
     /// </summary>
     public class IntegralPoint : IIntegralPoint
     {
+        private Dictionary<string, float> directions = new Dictionary<string, float>();
+
         /// <inheritdoc/>
-        public float Weigt { get; set; }
+        public float Weigt { get; set; } = 1;
+        /// <summary>
+        /// this
+        /// </summary>
+        /// <param name="dirName"></param>
+        /// <returns></returns>
+        public float this[string dirName] 
+        { 
+            get { return directions[dirName]; } 
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<KeyValuePair<string, float>> GetDirection()
+        {
+            foreach (var direction in directions)
+            {
+                yield return direction;
+            }
+        }
 /// <inheritdoc/>
 
-        public float _x { get; set; }
-/// <inheritdoc/>
-
-        public float _y { get; set; }
-/// <inheritdoc/>
-
-        public float _z { get; set; }
+        public void AddDirection(string name,float value)
+        {
+            this.directions.Add(name,value);
+        }
     }
 }

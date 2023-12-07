@@ -1,5 +1,6 @@
 ﻿using Geometry;
 using ModelInterfaces;
+using ModelInterfaces.IntegralObject;
 using System;
 using System.Drawing;
 
@@ -12,6 +13,11 @@ namespace Model.MeshObjects
             InitialColor = Color.FromArgb(255, 192, 203);
             MasterColor = Color.FromArgb(255, 192, 203);
             SlaveColor = Color.FromArgb(255, 192, 203);
+
+            var intPoint = new IntegralPoint();
+            intPoint.AddDirection("ksi", 0.0f);
+            intPoint.Weigt = CalcLength();
+            AddIntegralPoint(intPoint);
         }
 /// <inheritdoc/>
 
@@ -38,23 +44,26 @@ namespace Model.MeshObjects
         {
             return Vector.GetVectorLenght(nodes[1].Position.Sub(nodes[0].Position));
         }
+/// <inheritdoc/>
 
-        public override float DetJ(Point3D point3D)
+        public override float DetJ(IIntegralPoint point3D)
         {
             throw new NotImplementedException();
         }
+/// <inheritdoc/>
 
-        //public override float[] GetDerivativesFormFunctions(Point3D point3D)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        public override float[] GetDerivativesFormFunctions(IIntegralPoint intPoint)
+        {
+            throw new NotImplementedException();
+        }
+/// <inheritdoc/>
 
-        //public override float[] GetFormFunctions(Point3D point3D)
-        //{
-        //    var answer = new float[2];
-        //    answer[0] = (nodes[1].Position._x - point3D._x) / CalcLength();
-        //    answer[1] = (point3D._x - nodes[0].Position._x) / CalcLength();
-        //    return answer;
-        //}
+        public override float[] GetFormFunctions(IIntegralPoint intPoint)
+        {
+            var answer = new float[2];
+            answer[0] = (nodes[1].Position._x - intPoint["ksi"]) / CalcLength();
+            answer[1] = (intPoint["ksi"] - nodes[0].Position._x) / CalcLength();
+            return answer;
+        }
     }
 }
