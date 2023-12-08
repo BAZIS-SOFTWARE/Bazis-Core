@@ -19,7 +19,7 @@ namespace Model.MeshObjects
             intPoint.AddDirection("ksi", 0.0f);
             intPoint.AddDirection("eta", 0.0f);
             intPoint.Weigt = CalcSquare();
-            AddIntegralPoint(intPoint);
+            intPoints.Add(intPoint);
         }
 
         public Quad(int number, Node[] nodes, int intPoints) : base(number, nodes)

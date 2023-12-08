@@ -10,9 +10,14 @@ using System.Reflection;
 
 namespace Model.IO
 {
+    /// <summary>
+    /// SaveModelToProjectTextFile
+    /// </summary>
     public class SaveModelToProjectTextFile : IModelSaver
     {
+        /// <inheritdoc/>
         public event Action<object, ISaverEventArgs> SaveEvent;
+        /// <inheritdoc/>
         public void Save(IModelData model, string path)
         {
             using (var sw = new StreamWriter(path, false, System.Text.Encoding.Unicode))

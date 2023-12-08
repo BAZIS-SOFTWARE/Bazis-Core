@@ -19,7 +19,12 @@ namespace Model.MeshObjects
         public Penta(int number, Node[] nodes) : base(number, nodes)
         {
         }
-/// <inheritdoc/>
+
+        public Penta(int number, Node[] nodes, int point) : base(number, nodes, point)
+        {
+        }
+
+        /// <inheritdoc/>
 
         public override float DetJ(IIntegralPoint point3D)
         {
