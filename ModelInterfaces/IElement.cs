@@ -1,5 +1,6 @@
 ﻿using Geometry;
 using ModelInterfaces.IntegralObject;
+using System.Collections.Generic;
 
 namespace ModelInterfaces
 {
@@ -39,13 +40,19 @@ namespace ModelInterfaces
     public interface IElement : IVertexObject<INode>, IIntegralObject
     {
         /// <summary>
-        /// Detetrminant of Jacobian matrix
+        /// Calc jacobian for some intPoint
         /// </summary>
         /// <param name="integralPoint"></param>
         /// Внутренняя точка в локальных координатах
-        /// кси,эта,дзета если стержень,прямоугольник, гекса, пента
+        /// кси,эта,дзета если гекса или пента. кси,эта если прямоугольник. кси если стержень.
+        /// l координаты если треугольник или тетраэдр
         /// <returns></returns>
         float DetJ(IIntegralPoint integralPoint);
+        /// <summary>
+        /// Get Jacobians of all intPoints
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<float> GetDetsJ();
         /// <summary>
         /// ElementKind
         /// </summary>

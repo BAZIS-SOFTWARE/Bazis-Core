@@ -15,8 +15,8 @@ namespace Model.MeshObjects
 
         protected List<IIntegralPoint> intPoints = new List<IIntegralPoint>();
 
-
         protected List<float> jacobians = new List<float>();
+
 
         /// <summary>
         /// Element
@@ -89,7 +89,7 @@ namespace Model.MeshObjects
 
             var str = string.Join(" ", strArr);
 
-            return $"{Number} {(int)ObjType} {(int)ElementKind} {intPoints.Count} : {str}";
+            return $"{Number} {ObjType} {ElementKind} {intPoints.Count} : {str}";
         }
 /// <inheritdoc/>
 
@@ -112,12 +112,7 @@ namespace Model.MeshObjects
                 yield return point;
             }
         }
-/// <inheritdoc/>
 
-        public void AddIntegralPoint(IIntegralPoint integralPoint)
-        {
-            intPoints.Add(integralPoint);
-        }
 /// <inheritdoc/>
 
         public abstract float[] GetDerivativesFormFunctions(IIntegralPoint intPoint);

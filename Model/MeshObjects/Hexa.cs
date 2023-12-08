@@ -19,9 +19,10 @@ namespace Model.MeshObjects
             intPoint.AddDirection("eta", 0.0f);
             intPoint.AddDirection("psi", 0.0f);
             intPoint.Weigt = CalcVolume();
-            AddIntegralPoint(intPoint);
+            intPoints.Add(intPoint);
             jacobians.Add(DetJ(intPoint));
         }
+
 
         public Hexa(int number, Node[] nodes, int intPoints) : base(number, nodes)
         {
@@ -57,6 +58,7 @@ namespace Model.MeshObjects
                     throw new ArgumentException();
             }
         }
+
         /// <inheritdoc/>
 
         public override float CalcVolume()

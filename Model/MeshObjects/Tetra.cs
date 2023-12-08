@@ -21,10 +21,11 @@ namespace Model.MeshObjects
             intPoint.AddDirection("l2", 1 / 4);
             intPoint.AddDirection("l3", 1 / 4);
             intPoint.AddDirection("l4", 1 / 4);
-            intPoint.Weigt = CalcVolume();
-            AddIntegralPoint(intPoint);
+            intPoint.Weigt = CalcVolume();;
             //jacobians.Add(DetJ(intPoint));
+            intPoints.Add(intPoint);
         }
+
 
         public Tetra(int number, Node[] nodes, int intPoints) : base(number, nodes)
         {
