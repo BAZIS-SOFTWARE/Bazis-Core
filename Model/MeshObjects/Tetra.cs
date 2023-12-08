@@ -24,10 +24,41 @@ namespace Model.MeshObjects
             intPoints.Add(intPoint);
         }
 
-        public Tetra(int number, Node[] nodes, int point) : base(number, nodes, point)
-        {
-        }
 
+        public Tetra(int number, Node[] nodes, int intPoints) : base(number, nodes)
+        {
+            IntegralPoint intPoint;
+            switch (intPoints)
+            {
+                case 1:
+                    intPoint = new IntegralPoint();
+                    intPoint.AddDirection("l1", 1 / 4);
+                    intPoint.AddDirection("l2", 1 / 4);
+                    intPoint.AddDirection("l3", 1 / 4);
+                    intPoint.AddDirection("l4", 1 / 4);
+                    intPoint.Weigt = CalcVolume();
+                    AddIntegralPoint(intPoint);
+                    break;
+                case 4:
+                    float alpha = 0.58541020f;
+                    float beta = 0.13819660f;
+                    for (int i = 0; i < 4; i++)
+                    {
+                        intPoint = new IntegralPoint();
+                        for (int j = 0; j < i; j++)
+                            intPoint.AddDirection($"l{j + 1}", beta);
+                        intPoint.AddDirection($"l{i + 1}", alpha);
+                        for (int j = i + 1; j < 4; j++)
+                            intPoint.AddDirection($"l{j + 1}", beta);
+
+                        intPoint.Weigt = 1 / 4f;
+                        AddIntegralPoint(intPoint);
+                    }
+                    break;
+                default:
+                    throw new ArgumentException();
+            }
+        }
         /// <inheritdoc/>
 
         public override ElementKind ElementKind { get; } = ElementKind.Тетра;
@@ -56,13 +87,13 @@ namespace Model.MeshObjects
         {
             throw new NotImplementedException();
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public override float[] GetDerivativesFormFunctions(IIntegralPoint intPoint)
         {
-            throw new NotImplementedException();
+            return new DiagonalMatrix(4, 4, 1f).AsColumnMajorArray();
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public override float[] GetFormFunctions(IIntegralPoint intPoint)
         {
