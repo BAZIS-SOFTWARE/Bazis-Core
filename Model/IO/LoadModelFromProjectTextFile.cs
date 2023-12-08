@@ -147,13 +147,13 @@ namespace Model.IO
                 if (splitLine[0] == "Группа узлов ")
                 {
                     var name = splitLine[1].Split(' ')[1];
-                    var nodeGroup = new Group(name,ObjType.Точка);
+                    var nodeGroup = new Group(name,ObjType.Узел);
                     var indexLine = splitLine[1].Remove(0, name.Length + 2);
                     var indexes = indexLine.Split(' ').Select(x => int.Parse(x)).ToList();
 
                     foreach (var index in indexes)
                     {
-                        var obj = newMesh.ObjectData.Find(ObjType.Точка,index);
+                        var obj = newMesh.ObjectData.Find(ObjType.Узел,index);
                         nodeGroup.Add(obj);
                     }
                     newMesh.GroupData.Add(nodeGroup);

@@ -34,14 +34,12 @@ namespace TestModel
             //assing
             var model = new ModelData();
 
-            model.Loader = new LoadModelFromGMSHTextFile();
-
             model.Loader.LoadEvent += (ar1, ar2) => { };
             model.Saver.SaveEvent += (ar1, ar2) => { };
 
             //act
-            model.Load(@"..\..\..\Examples\3D\box2.inp");
-            model.Save(@"..\..\..\Examples\3D\task1.bpf");
+            model.Load(@"..\..\..\Examples\3D\model_with_groups.bpf");
+            model.Save(@"..\..\..\Examples\3D\model_with_groups_save.bpf");
 
             //assert
         }
