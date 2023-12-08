@@ -14,6 +14,7 @@ namespace Model.MeshObjects
         protected List<Node> nodes = new List<Node>();
 
         protected List<IIntegralPoint> intPoints = new List<IIntegralPoint>();
+       
         /// <summary>
         /// Element
         /// </summary>

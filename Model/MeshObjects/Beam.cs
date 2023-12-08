@@ -19,14 +19,41 @@ namespace Model.MeshObjects
             intPoint.Weigt = CalcLength();
             AddIntegralPoint(intPoint);
         }
-/// <inheritdoc/>
+
+        public Beam(int number, Node[] nodes, int intNumber) : base(number, nodes)
+        {
+            IntegralPoint intPoint;
+            switch (intNumber)
+            {
+                case 1:
+                    intPoint = new IntegralPoint();
+                    intPoint.AddDirection("ksi", 0.0f);
+                    intPoint.Weigt = CalcLength();
+                    AddIntegralPoint(intPoint);
+                    break;
+                case 2:
+                    intPoint = new IntegralPoint();
+                    intPoint.AddDirection("ksi", -(float)Math.Sqrt(3) / 3);
+                    intPoint.Weigt = 1;
+                    AddIntegralPoint(intPoint);
+
+                    intPoint = new IntegralPoint();
+                    intPoint.AddDirection("ksi", (float)Math.Sqrt(3) / 3);
+                    intPoint.Weigt = 1;
+                    AddIntegralPoint(intPoint);
+                    break;
+                default:
+                    throw new ArgumentException();
+            }
+        }
+        /// <inheritdoc/>
 
         public override ElementKind ElementKind { get; } = ElementKind.Стержень;
 
         /// <inheritdoc/>
 
         public override ObjType ObjType { get; } = ObjType.Элемент1D;
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public override Point3D CalcCentr()
         {
@@ -38,25 +65,28 @@ namespace Model.MeshObjects
             }
             return center.Div(NumberOfPoints);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public float CalcLength()
         {
             return Vector.GetVectorLenght(nodes[1].Position.Sub(nodes[0].Position));
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public override float DetJ(IIntegralPoint point3D)
         {
             throw new NotImplementedException();
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public override float[] GetDerivativesFormFunctions(IIntegralPoint intPoint)
         {
-            throw new NotImplementedException();
+            var answer = new float[2];
+            answer[0] = -1 / CalcLength();
+            answer[1] = 1 / CalcLength();
+            return answer;
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public override float[] GetFormFunctions(IIntegralPoint intPoint)
         {

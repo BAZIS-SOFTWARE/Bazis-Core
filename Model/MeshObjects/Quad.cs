@@ -1,11 +1,8 @@
-﻿using Geometry;
+﻿using MathNet.Numerics.LinearAlgebra.Single;
 using ModelInterfaces;
 using ModelInterfaces.IntegralObject;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Model.MeshObjects
 {
@@ -25,20 +22,37 @@ namespace Model.MeshObjects
             AddIntegralPoint(intPoint);
         }
 
-        public Quad(int number, Node[] nodes,int points) : base(number, nodes,points)
+        public Quad(int number, Node[] nodes, int intPoints) : base(number, nodes)
         {
             surface = new ElementSurface(0, new Node[] { nodes[0], nodes[1], nodes[2], nodes[3] });
-
-            if(points == 4)
+            IntegralPoint intPoint;
+            switch (intPoints)
             {
-                for (int i = 0; i < points; i++)
-                {
-                    //TO DO
-                }
+                case 1:
+                    intPoint = new IntegralPoint();
+                    intPoint.AddDirection("ksi", 0.0f);
+                    intPoint.AddDirection("eta", 0.0f);
+                    intPoint.Weigt = CalcSquare();
+                    AddIntegralPoint(intPoint);
+                    break;
+                case 8:
+                    var coordinate = (float)Math.Sqrt(3) / 3;
+                    for (var i = -1; i <= 1; i += 2)
+                        for (var j = -1; j <= 1; j += 2)
+                        {
+                            intPoint = new IntegralPoint();
+                            intPoint.AddDirection("ksi", i * coordinate);
+                            intPoint.AddDirection("eta", j * coordinate);
+                            intPoint.Weigt = 1;
+                            AddIntegralPoint(intPoint);
+                        }
+                    break;
+                default:
+                    throw new ArgumentException();
             }
 
-        }     
-/// <inheritdoc/>
+        }
+        /// <inheritdoc/>
 
         public override float CalcSquare()
         {
@@ -61,24 +75,59 @@ namespace Model.MeshObjects
             return sum / 2;
         }
 
-        
-/// <inheritdoc/>
+
+        /// <inheritdoc/>
 
         public override float DetJ(IIntegralPoint intPoint)
         {
-            throw new NotImplementedException();
+            var matrix = countDerivativeFormFunction(intPoint);
+            var matrixPoints = new DenseMatrix(8, 3);
+            for (var i = 0; i < nodes.Count; i++)
+            {
+                matrixPoints[i, 0] = nodes[i].Position._x;
+                matrixPoints[i, 1] = nodes[i].Position._y;
+                matrixPoints[i, 2] = nodes[i].Position._z;
+            }
+
+            var result = matrix.Multiply(matrixPoints);
+            return result.Determinant();
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public override float[] GetDerivativesFormFunctions(IIntegralPoint intPoint)
         {
-            throw new NotImplementedException();
+            return countDerivativeFormFunction(intPoint).ToColumnMajorArray();
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public override float[] GetFormFunctions(IIntegralPoint intPoint)
         {
-            throw new NotImplementedException();
+
+            var ksi = intPoint["ksi"];
+            var eta = intPoint["eta"];
+
+            var answer = new List<float>();
+            for (var i = -1; i <= 1; i += 2)
+                for (var j = -1; j <= 1; j += 2)
+                    answer.Add((1 + i * ksi) * (1 + j * eta) / 4);
+            return answer.ToArray();
+        }
+
+        private DenseMatrix countDerivativeFormFunction(IIntegralPoint intPoint)
+        {
+            var ksi = intPoint["ksi"];
+            var eta = intPoint["eta"];
+            var answer = new DenseMatrix(3, 8);
+            var num = 0;
+            for (var i = -1; i <= 1; i += 2)
+                for (var j = -1; j <= 1; j += 2)
+                    for (var k = -1; k <= 1; k += 2)
+                    {
+                        answer[0, num] = i * (1 + j * eta) / 4;
+                        answer[1, num] = j * (1 + i * ksi) / 4;
+                        num++;
+                    }
+            return answer;
         }
     }
 }

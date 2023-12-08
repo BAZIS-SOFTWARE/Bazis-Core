@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using ModelInterfaces;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Geometry;
 using MathNet.Numerics.LinearAlgebra.Single;
-using MathNet.Numerics.LinearAlgebra;
 using ModelInterfaces.IntegralObject;
 
 namespace Model.MeshObjects
@@ -14,7 +10,7 @@ namespace Model.MeshObjects
     public class Triangle : Element2D
     {
 
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public override ElementKind ElementKind { get; } = ElementKind.Треугольник;
 
@@ -28,6 +24,35 @@ namespace Model.MeshObjects
             intPoint.AddDirection("l3", 1 / 3);
             intPoint.Weigt = CalcSquare();
             AddIntegralPoint(intPoint);
+        }
+
+        public Triangle(int number, Node[] nodes, int intPoints) : base(number, nodes)
+        {
+            IntegralPoint intPoint;
+            switch (intPoints)
+            {
+                case 1:
+                    intPoint = new IntegralPoint();
+                    intPoint.AddDirection("l1", 1 / 3);
+                    intPoint.AddDirection("l2", 1 / 3);
+                    intPoint.AddDirection("l3", 1 / 3);
+                    intPoint.Weigt = CalcSquare();
+                    AddIntegralPoint(intPoint);
+                    break;
+                case 3:
+                    for (int i = 0; i < 3; i++)
+                    {
+                        intPoint = new IntegralPoint();
+                        intPoint.AddDirection("l1", i == 2 ? 0 : 1 / 2);
+                        intPoint.AddDirection("l2", i == 0 ? 0 : 1 / 2);
+                        intPoint.AddDirection("l3", i == 1 ? 0 : 1 / 2);
+                        intPoint.Weigt = 1/6f;
+                        AddIntegralPoint(intPoint);
+                    }
+                    break;
+                default:
+                    throw new ArgumentException();
+            }
         }
 
         public override float CalcSquare()
@@ -55,17 +80,17 @@ namespace Model.MeshObjects
             };
             return m.Determinant();
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public override float[] GetDerivativesFormFunctions(IIntegralPoint intPoint)
         {
-            throw new NotImplementedException();
+            return new DiagonalMatrix(3, 3, 1f).AsColumnMajorArray();
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public override float[] GetFormFunctions(IIntegralPoint intPoint)
         {
-            throw new NotImplementedException();
+            return new float[] { intPoint["l1"], intPoint["l2"], intPoint["l3"] };
         }
     }
 }

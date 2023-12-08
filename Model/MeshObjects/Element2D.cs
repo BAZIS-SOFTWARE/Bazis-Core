@@ -21,7 +21,7 @@ namespace Model.MeshObjects
         }
 
 
-        public Element2D(int number, Node[] nodes, int points) : this(number, nodes)
+        public Element2D(int number, Node[] nodes, int intPoints) : this(number, nodes)
         {
 
         }
