@@ -33,11 +33,11 @@ namespace Model.IO
                     if (objsType == ObjType.Узел)
                     {
                         sw.WriteLine("Узлы");
-                        foreach (var nodeItem in model.ObjectData.FindMany<Node>())
+                        foreach (var nodeItem in model.ObjectData[ObjType.Узел])
                         {
-                            var x = nodeItem.Position._x;
-                            var y = nodeItem.Position._y;
-                            var z = nodeItem.Position._z;
+                            var x = nodeItem._x;
+                            var y = nodeItem._y;
+                            var z = nodeItem._z;
                             var numbr = nodeItem.Number;
                             sw.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0} {1} {2} {3}", numbr, x, y, z));
                         }
