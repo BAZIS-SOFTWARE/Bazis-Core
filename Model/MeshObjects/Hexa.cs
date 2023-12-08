@@ -27,7 +27,12 @@ namespace Model.MeshObjects
 
             intPoints.Add(intPoint);
         }
-/// <inheritdoc/>
+
+        public Hexa(int number, Node[] nodes, int point) : base(number, nodes, point)
+        {
+        }
+
+        /// <inheritdoc/>
 
         public override float CalcVolume()
         {

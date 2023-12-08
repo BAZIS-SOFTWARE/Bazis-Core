@@ -23,7 +23,12 @@ namespace Model.MeshObjects
             intPoint.Weigt = CalcVolume();
             intPoints.Add(intPoint);
         }
-/// <inheritdoc/>
+
+        public Tetra(int number, Node[] nodes, int point) : base(number, nodes, point)
+        {
+        }
+
+        /// <inheritdoc/>
 
         public override ElementKind ElementKind { get; } = ElementKind.Тетра;
 

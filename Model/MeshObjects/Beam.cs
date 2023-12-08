@@ -19,7 +19,13 @@ namespace Model.MeshObjects
             intPoint.Weigt = CalcLength();
             intPoints.Add(intPoint);
         }
-/// <inheritdoc/>
+
+        public Beam(int number, Node[] nodes, int intPoints) : base(number, nodes, intPoints)
+        {
+
+        }
+
+        /// <inheritdoc/>
 
         public override ElementKind ElementKind { get; } = ElementKind.Стержень;
 

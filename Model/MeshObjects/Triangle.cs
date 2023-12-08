@@ -29,7 +29,12 @@ namespace Model.MeshObjects
             intPoint.Weigt = CalcSquare();
             intPoints.Add(intPoint);
         }
-/// <inheritdoc/>
+
+        public Triangle(int number, Node[] nodes, int points) : base(number, nodes, points)
+        {
+        }
+
+        /// <inheritdoc/>
 
         public override float CalcSquare()
         {
