@@ -14,7 +14,10 @@ namespace Model.MeshObjects
         protected List<Node> nodes = new List<Node>();
 
         protected List<IIntegralPoint> intPoints = new List<IIntegralPoint>();
-       
+
+
+        protected List<float> jacobians = new List<float>();
+
         /// <summary>
         /// Element
         /// </summary>
@@ -121,5 +124,21 @@ namespace Model.MeshObjects
 /// <inheritdoc/>
 
         public abstract float[] GetFormFunctions(IIntegralPoint intPoint);
+
+        /// <inheritdoc/>
+
+        public void AddDetJ(float j)
+        {
+            jacobians.Add(j);
+        }
+        /// <inheritdoc/>
+
+        public IEnumerable<float> GetDetsJ()
+        {
+            foreach (var jacobian in jacobians)
+            {
+                yield return jacobian;
+            }
+        }
     }
 }

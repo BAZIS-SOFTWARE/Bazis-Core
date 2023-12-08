@@ -24,6 +24,7 @@ namespace Model.MeshObjects
             intPoint.AddDirection("l3", 1 / 3);
             intPoint.Weigt = CalcSquare();
             AddIntegralPoint(intPoint);
+            jacobians.Add(DetJ(intPoint));
         }
 
         public Triangle(int number, Node[] nodes, int intPoints) : base(number, nodes)
@@ -38,6 +39,7 @@ namespace Model.MeshObjects
                     intPoint.AddDirection("l3", 1 / 3);
                     intPoint.Weigt = CalcSquare();
                     AddIntegralPoint(intPoint);
+                    jacobians.Add(DetJ(intPoint));
                     break;
                 case 3:
                     for (int i = 0; i < 3; i++)
@@ -48,6 +50,7 @@ namespace Model.MeshObjects
                         intPoint.AddDirection("l3", i == 1 ? 0 : 1 / 2);
                         intPoint.Weigt = 1/6f;
                         AddIntegralPoint(intPoint);
+                        jacobians.Add(DetJ(intPoint));
                     }
                     break;
                 default:

@@ -1,6 +1,7 @@
 ﻿using Geometry;
 using MathNet.Numerics.Distributions;
 using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.LinearAlgebra.Single;
 using ModelInterfaces;
 using ModelInterfaces.IntegralObject;
 using System;
@@ -22,6 +23,7 @@ namespace Model.MeshObjects
             intPoint.AddDirection("l4", 1 / 4);
             intPoint.Weigt = CalcVolume();
             AddIntegralPoint(intPoint);
+            //jacobians.Add(DetJ(intPoint));
         }
 
         public Tetra(int number, Node[] nodes, int intPoints) : base(number, nodes)
@@ -37,6 +39,7 @@ namespace Model.MeshObjects
                     intPoint.AddDirection("l4", 1 / 4);
                     intPoint.Weigt = CalcVolume();
                     AddIntegralPoint(intPoint);
+                    //jacobians.Add(DetJ(intPoint));
                     break;
                 case 4:
                     float alpha = 0.58541020f;
@@ -52,6 +55,7 @@ namespace Model.MeshObjects
 
                         intPoint.Weigt = 1 / 4f;
                         AddIntegralPoint(intPoint);
+                        //jacobians.Add(DetJ(intPoint));
                     }
                     break;
                 default:
