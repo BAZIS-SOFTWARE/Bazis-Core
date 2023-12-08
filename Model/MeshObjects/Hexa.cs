@@ -1,19 +1,14 @@
-﻿using Geometry;
-using MathNet.Numerics.Distributions;
-using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.LinearAlgebra.Single;
+﻿using MathNet.Numerics.LinearAlgebra.Single;
 using ModelInterfaces;
 using ModelInterfaces.IntegralObject;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 namespace Model.MeshObjects
 {
     public class Hexa : Element3D
     {
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public override ElementKind ElementKind { get; } = ElementKind.Гекса;
 
@@ -28,8 +23,38 @@ namespace Model.MeshObjects
             intPoints.Add(intPoint);
         }
 
-        public Hexa(int number, Node[] nodes, int point) : base(number, nodes, point)
+
+        public Hexa(int number, Node[] nodes, int intPoints) : base(number, nodes)
         {
+            IntegralPoint intPoint;
+            switch (intPoints)
+            {
+                case 1:
+
+                    intPoint = new IntegralPoint();
+                    intPoint.AddDirection("ksi", 0.0f);
+                    intPoint.AddDirection("eta", 0.0f);
+                    intPoint.AddDirection("psi", 0.0f);
+                    intPoint.Weigt = CalcVolume();
+                    AddIntegralPoint(intPoint);
+                    break;
+                case 8:
+                    var coordinate = (float)Math.Sqrt(3) / 3;
+                    for (var i = -1; i <= 1; i += 2)
+                        for (var j = -1; j <= 1; j += 2)
+                            for (var k = -1; k <= 1; k += 2)
+                            {
+                                intPoint = new IntegralPoint();
+                                intPoint.AddDirection("ksi", i * coordinate);
+                                intPoint.AddDirection("eta", j * coordinate);
+                                intPoint.AddDirection("psi", k * coordinate);
+                                intPoint.Weigt = 1;
+                                AddIntegralPoint(intPoint);
+                            }
+                    break;
+                default:
+                    throw new ArgumentException();
+            }
         }
 
         /// <inheritdoc/>
@@ -54,19 +79,51 @@ namespace Model.MeshObjects
             }
             return sum / 10;
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
-        public override float DetJ(IIntegralPoint point)
+        public override float DetJ(IIntegralPoint intPoint)
         {
-            throw new NotImplementedException();
+            var matrix = countDerivativeFormFunction(intPoint);
+            var matrixPoints = new DenseMatrix(8, 3);
+            for (var i = 0; i < nodes.Count; i++)
+            {
+                matrixPoints[i, 0] = nodes[i].Position._x;
+                matrixPoints[i, 1] = nodes[i].Position._y;
+                matrixPoints[i, 2] = nodes[i].Position._z;
+            }
+
+            var result = matrix.Multiply(matrixPoints);
+            return result.Determinant();
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
-        public override float[] GetDerivativesFormFunctions(IIntegralPoint point)
+        public override float[] GetDerivativesFormFunctions(IIntegralPoint intPoint)
         {
-            var ksi = point["ksi"];
-            var eta = point["eta"];
-            var psi = point["psi"];
+            return countDerivativeFormFunction(intPoint).ToColumnMajorArray();
+        }
+        /// <inheritdoc/>
+
+        public override float[] GetFormFunctions(IIntegralPoint intPoint)
+        {
+            var ksi = intPoint["ksi"];
+            var eta = intPoint["eta"];
+            var psi = intPoint["psi"];
+
+            var answer = new List<float>();
+            for (var i = -1; i <= 1; i += 2)
+                for (var j = -1; j <= 1; j += 2)
+                    for (var k = -1; k <= 1; k += 2)
+                        answer.Add((1 + i * ksi) * (1 + j * eta) * (1 + k * psi) / 8);
+            return answer.ToArray();
+        }
+
+
+        private DenseMatrix countDerivativeFormFunction(IIntegralPoint intPoint)
+        {
+            var ksi = intPoint["ksi"];
+            var eta = intPoint["eta"];
+            var psi = intPoint["psi"];
+
             var answer = new DenseMatrix(3, 8);
             var num = 0;
             for (var i = -1; i <= 1; i += 2)
@@ -78,25 +135,8 @@ namespace Model.MeshObjects
                         answer[2, num] = k * (1 + j * eta) * (1 + i * ksi) / 8;
                         num++;
                     }
-            return answer.ToColumnMajorArray();
+            return answer;
         }
-/// <inheritdoc/>
-
-        public override float[] GetFormFunctions(IIntegralPoint point)
-        {
-            var ksi = point["ksi"];
-            var eta = point["eta"];
-            var psi = point["psi"];
-
-            var answer = new List<float>();
-            for (var i = -1; i <= 1; i += 2)
-                for (var j = -1; j <= 1; j += 2)
-                    for (var k = -1; k <= 1; k += 2)
-                        answer.Add((1 + i * ksi) * (1 + j * eta) * (1 + k * psi) / 8);
-            return answer.ToArray();
-        }
-
-        
     }
 }
 
