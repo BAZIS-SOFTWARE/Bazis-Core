@@ -106,14 +106,6 @@ points.Contains(nodes[2].Position, new Point3DEqualityComparer()))
                 return false;
         }
         /// <summary>
-        /// Get surface
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerable<ISurface<INode>> GetSurface()
-        {
-            yield return this;
-        }
-        /// <summary>
         /// GetDistance
         /// </summary>
         /// <param name="point"></param>
