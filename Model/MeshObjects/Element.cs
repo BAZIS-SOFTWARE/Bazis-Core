@@ -111,12 +111,7 @@ namespace Model.MeshObjects
                 yield return point;
             }
         }
-/// <inheritdoc/>
 
-        public void AddIntegralPoint(IIntegralPoint integralPoint)
-        {
-            intPoints.Add(integralPoint);
-        }
 /// <inheritdoc/>
 
         public abstract float[] GetDerivativesFormFunctions(IIntegralPoint intPoint);
@@ -124,12 +119,7 @@ namespace Model.MeshObjects
 
         public abstract float[] GetFormFunctions(IIntegralPoint intPoint);
 
-/// <inheritdoc/>
 
-        public void AddDetJ(float j)
-        {
-            jacobians.Add(j);
-        }
 /// <inheritdoc/>
 
         public IEnumerable<float> GetDetsJ()
