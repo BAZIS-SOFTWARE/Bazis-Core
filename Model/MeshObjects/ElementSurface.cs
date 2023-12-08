@@ -50,7 +50,7 @@ namespace Model.MeshObjects
 
             var str = string.Join(" ", strArr);
 
-            return string.Format("{0} {1} : {2}", Number, ObjType, str);
+            return $"{base.ToString()} : {str}";
         }
 
         /// <inheritdoc/>
