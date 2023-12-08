@@ -18,6 +18,7 @@ namespace Model.MeshObjects
             InitialColor = Color.FromArgb(0, 0, 255);
             MasterColor = Color.FromArgb(0, 0, 255);
             SlaveColor = Color.FromArgb(0, 0, 255);
+
         }
 
 

@@ -17,7 +17,7 @@ namespace Model.MeshObjects
             var intPoint = new IntegralPoint();
             intPoint.AddDirection("ksi", 0.0f);
             intPoint.Weigt = CalcLength();
-            AddIntegralPoint(intPoint);
+            intPoints.Add(intPoint);
         }
 /// <inheritdoc/>
 

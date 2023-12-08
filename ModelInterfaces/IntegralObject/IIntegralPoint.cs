@@ -20,7 +20,7 @@ namespace ModelInterfaces.IntegralObject
         /// GetLocalCoordinates
         /// </summary>
         /// <returns></returns>
-        IEnumerable<KeyValuePair<string, float>> GetDirection();
+        IEnumerable<KeyValuePair<string, float>> GetDirections();
         /// <summary>
         /// AddDirection
         /// </summary>

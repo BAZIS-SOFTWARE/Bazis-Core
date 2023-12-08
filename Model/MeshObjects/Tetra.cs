@@ -21,7 +21,7 @@ namespace Model.MeshObjects
             intPoint.AddDirection("l3", 1 / 4);
             intPoint.AddDirection("l4", 1 / 4);
             intPoint.Weigt = CalcVolume();
-            AddIntegralPoint(intPoint);
+            intPoints.Add(intPoint);
         }
 /// <inheritdoc/>
 

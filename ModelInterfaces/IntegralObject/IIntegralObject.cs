@@ -16,10 +16,5 @@ namespace ModelInterfaces.IntegralObject
         /// </summary>
         /// <returns></returns>
         IEnumerable<IIntegralPoint> GetIntegralPoints();
-        /// <summary>
-        /// AddIntegralPoint
-        /// </summary>
-        /// <param name="integralPoint"></param>
-        void AddIntegralPoint(IIntegralPoint integralPoint);
     }
 }

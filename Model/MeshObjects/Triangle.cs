@@ -27,8 +27,9 @@ namespace Model.MeshObjects
             intPoint.AddDirection("l2", 1 / 3);
             intPoint.AddDirection("l3", 1 / 3);
             intPoint.Weigt = CalcSquare();
-            AddIntegralPoint(intPoint);
+            intPoints.Add(intPoint);
         }
+/// <inheritdoc/>
 
         public override float CalcSquare()
         {

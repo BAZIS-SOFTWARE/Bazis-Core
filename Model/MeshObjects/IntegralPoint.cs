@@ -25,7 +25,7 @@ namespace Model.MeshObjects
         }
 
         /// <inheritdoc/>
-        public IEnumerable<KeyValuePair<string, float>> GetDirection()
+        public IEnumerable<KeyValuePair<string, float>> GetDirections()
         {
             foreach (var direction in directions)
             {
