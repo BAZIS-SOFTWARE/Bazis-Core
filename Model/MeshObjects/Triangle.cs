@@ -27,10 +27,10 @@ namespace Model.MeshObjects
         }
 
 
-        public Triangle(int number, Node[] nodes, int intPoints) : base(number, nodes)
+        public Triangle(int number, Node[] nodes, int intpNumber) : base(number, nodes)
         {
             IntegralPoint intPoint;
-            switch (intPoints)
+            switch (intpNumber)
             {
                 case 1:
                     intPoint = new IntegralPoint();
@@ -38,7 +38,7 @@ namespace Model.MeshObjects
                     intPoint.AddDirection("l2", 1 / 3);
                     intPoint.AddDirection("l3", 1 / 3);
                     intPoint.Weigt = CalcSquare();
-                    AddIntegralPoint(intPoint);
+                    intPoints.Add(intPoint);
                     break;
                 case 3:
                     for (int i = 0; i < 3; i++)
@@ -48,7 +48,7 @@ namespace Model.MeshObjects
                         intPoint.AddDirection("l2", i == 0 ? 0 : 1 / 2);
                         intPoint.AddDirection("l3", i == 1 ? 0 : 1 / 2);
                         intPoint.Weigt = 1/6f;
-                        AddIntegralPoint(intPoint);
+                        intPoints.Add(intPoint);
                     }
                     break;
                 default:

@@ -21,27 +21,27 @@ namespace Model.MeshObjects
         }
 
 
-        public Beam(int number, Node[] nodes, int intNumber) : base(number, nodes)
+        public Beam(int number, Node[] nodes, int intpNumber) : base(number, nodes)
         {
             IntegralPoint intPoint;
-            switch (intNumber)
+            switch (intpNumber)
             {
                 case 1:
                     intPoint = new IntegralPoint();
                     intPoint.AddDirection("ksi", 0.0f);
                     intPoint.Weigt = CalcLength();
-                    AddIntegralPoint(intPoint);
+                    intPoints.Add(intPoint);
                     break;
                 case 2:
                     intPoint = new IntegralPoint();
                     intPoint.AddDirection("ksi", -(float)Math.Sqrt(3) / 3);
                     intPoint.Weigt = 1;
-                    AddIntegralPoint(intPoint);
+                    intPoints.Add(intPoint);
 
                     intPoint = new IntegralPoint();
                     intPoint.AddDirection("ksi", (float)Math.Sqrt(3) / 3);
                     intPoint.Weigt = 1;
-                    AddIntegralPoint(intPoint);
+                    intPoints.Add(intPoint);
                     break;
                 default:
                     throw new ArgumentException();

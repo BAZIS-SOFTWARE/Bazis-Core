@@ -1,6 +1,7 @@
 ﻿using Geometry;
 using MathNet.Numerics.Distributions;
 using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.LinearAlgebra.Single;
 using ModelInterfaces;
 using ModelInterfaces.IntegralObject;
 using System;
@@ -25,10 +26,10 @@ namespace Model.MeshObjects
         }
 
 
-        public Tetra(int number, Node[] nodes, int intPoints) : base(number, nodes)
+        public Tetra(int number, Node[] nodes, int intpNumber) : base(number, nodes)
         {
             IntegralPoint intPoint;
-            switch (intPoints)
+            switch (intpNumber)
             {
                 case 1:
                     intPoint = new IntegralPoint();
@@ -37,7 +38,7 @@ namespace Model.MeshObjects
                     intPoint.AddDirection("l3", 1 / 4);
                     intPoint.AddDirection("l4", 1 / 4);
                     intPoint.Weigt = CalcVolume();
-                    AddIntegralPoint(intPoint);
+                    intPoints.Add(intPoint);
                     break;
                 case 4:
                     float alpha = 0.58541020f;
@@ -52,7 +53,7 @@ namespace Model.MeshObjects
                             intPoint.AddDirection($"l{j + 1}", beta);
 
                         intPoint.Weigt = 1 / 4f;
-                        AddIntegralPoint(intPoint);
+                        intPoints.Add(intPoint);
                     }
                     break;
                 default:

@@ -24,10 +24,10 @@ namespace Model.MeshObjects
         }
 
 
-        public Hexa(int number, Node[] nodes, int intPoints) : base(number, nodes)
+        public Hexa(int number, Node[] nodes, int intpNumber) : base(number, nodes)
         {
             IntegralPoint intPoint;
-            switch (intPoints)
+            switch (intpNumber)
             {
                 case 1:
 
@@ -36,7 +36,7 @@ namespace Model.MeshObjects
                     intPoint.AddDirection("eta", 0.0f);
                     intPoint.AddDirection("psi", 0.0f);
                     intPoint.Weigt = CalcVolume();
-                    AddIntegralPoint(intPoint);
+                    intPoints.Add(intPoint);
                     break;
                 case 8:
                     var coordinate = (float)Math.Sqrt(3) / 3;
@@ -49,7 +49,7 @@ namespace Model.MeshObjects
                                 intPoint.AddDirection("eta", j * coordinate);
                                 intPoint.AddDirection("psi", k * coordinate);
                                 intPoint.Weigt = 1;
-                                AddIntegralPoint(intPoint);
+                                intPoints.Add(intPoint);
                             }
                     break;
                 default:
