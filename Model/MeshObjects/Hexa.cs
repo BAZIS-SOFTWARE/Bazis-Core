@@ -19,9 +19,10 @@ namespace Model.MeshObjects
             intPoint.AddDirection("eta", 0.0f);
             intPoint.AddDirection("psi", 0.0f);
             intPoint.Weigt = CalcVolume();
-
             intPoints.Add(intPoint);
+            jacobians.Add(DetJ(intPoint));
         }
+
 
 
         public Hexa(int number, Node[] nodes, int intpNumber) : base(number, nodes)
@@ -37,6 +38,8 @@ namespace Model.MeshObjects
                     intPoint.AddDirection("psi", 0.0f);
                     intPoint.Weigt = CalcVolume();
                     intPoints.Add(intPoint);
+
+                    jacobians.Add(DetJ(intPoint));
                     break;
                 case 8:
                     var coordinate = (float)Math.Sqrt(3) / 3;
@@ -50,6 +53,8 @@ namespace Model.MeshObjects
                                 intPoint.AddDirection("psi", k * coordinate);
                                 intPoint.Weigt = 1;
                                 intPoints.Add(intPoint);
+                                
+                                jacobians.Add(DetJ(intPoint));
                             }
                     break;
                 default:
