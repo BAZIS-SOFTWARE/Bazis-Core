@@ -14,13 +14,17 @@ namespace ModelControllerInterfaces
         /// </summary>
         Point,
         /// <summary>
+        /// Line
+        /// </summary>
+        Line,
+        /// <summary>
         /// Surface
         /// </summary>
         Surface,
         /// <summary>
-        /// Line
+        /// Volume
         /// </summary>
-        Line
+        Volume
     }
     /// <summary>
     /// IObjsPresenter
