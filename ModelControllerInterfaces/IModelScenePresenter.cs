@@ -9,16 +9,6 @@ namespace ModelControllerInterfaces
     public interface IModelScenePresenter : IDictionary<ObjType, IObjsPresenter>
     {
         /// <summary>
-        /// HideInsideSurfaces
-        /// </summary>
-        /// <param name="surfaceObjects"></param>
-        void HideInsideSurfaces(IEnumerable<ISurfaceObject<IElementSurface,INode>> surfaceObjects);
-        /// <summary>
-        /// ShowInsideSurfaces
-        /// </summary>
-        /// <param name="surfaceElements"></param>
-        void ShowInsideSurfaces(IEnumerable<ISurfaceObject<IElementSurface, INode>> surfaceElements);
-        /// <summary>
         /// CreatePointObjectsPresenter
         /// </summary>
         /// <param name="modelObjects"></param>

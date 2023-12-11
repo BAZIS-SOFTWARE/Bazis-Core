@@ -87,51 +87,7 @@ namespace ModelController.ModelScenePresentator
                     presentors.Add(objsType, els3dPresentor);
                     break;             
             }
-        }
-
-        /// <inheritdoc/>
-
-        public void HideInsideSurfaces(IEnumerable<ISurfaceObject<IElementSurface, INode>> surfaceElements)
-        {
-            var surfDict = new Dictionary<string, List<IElementSurface>>();
-
-            foreach (var element in surfaceElements)
-            {
-                if (element.ViewState & element.NumberOfSides > 1)
-                    foreach (var surface in element.GetSurfaces())
-                    {
-                        var numbers = surface.GetVertexes().Select(x => x.Number).ToArray();
-
-                        Array.Sort(numbers);
-                        var surfInd = string.Join("", numbers);   //numbers[0].ToString() + numbers[1].ToString() + numbers[2].ToString();
-
-                        if (!surfDict.ContainsKey(surfInd))
-                        {
-                            surface.ViewState = true;
-                            surfDict.Add(surfInd, new List<IElementSurface>() { surface });
-                        }
-
-                        else
-                        {
-                            surface.ViewState = false;
-                            surfDict[surfInd][0].ViewState = false;
-                            surfDict[surfInd].Add(surface);
-                        }
-                    }
-            }
-
-        }
-/// <inheritdoc/>
-
-        public void ShowInsideSurfaces(IEnumerable<ISurfaceObject<IElementSurface, INode>> surfaceElements)
-        {
-            foreach (var element in surfaceElements)
-            {
-                if (element.ViewState)
-                    foreach (var surface in element.GetSurfaces())
-                        surface.ViewState = true;
-            }
-        }
+        }    
 
 
         /// <inheritdoc/>
