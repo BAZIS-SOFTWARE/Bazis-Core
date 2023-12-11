@@ -1747,11 +1747,11 @@ namespace GmshApi.GmshController
                 double[] coords;
                 ModelGetValue(1, tags[i], newPB, out coords);
                 var localPoints = ConvertLocalCoordsToPoints3D(coords);
-                var points = new List<Point>();
+                var points = new List<GeometryPoint>();
                 var num = 0;
                 foreach (var pair in localPoints.Bigrams(false))
                 {
-                    var linePoints = new Point[] { new Point(num++, pair.Item1), new Point(num++, pair.Item2) };
+                    var linePoints = new GeometryPoint[] { new GeometryPoint(num++, pair.Item1), new GeometryPoint(num++, pair.Item2) };
                     points.AddRange(linePoints);
                 }
                 var line = new Line(tags[i], points.ToArray());
@@ -1798,7 +1798,7 @@ namespace GmshApi.GmshController
                 }
                 var points = ConvertLocalCoordsToPoints3D(coords);
                 for (var j = 0; j < points.Length; ++j)
-                    nodes.Add(new Point(tags[i], points[j]));
+                    nodes.Add(new GeometryPoint(tags[i], points[j]));
             }
             return nodes;
         }

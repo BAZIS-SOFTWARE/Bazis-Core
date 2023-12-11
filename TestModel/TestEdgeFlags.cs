@@ -58,14 +58,14 @@ namespace TestModel
         public void TestOnPolygon()
         {
             var model = new ModelData();
-            var points = new Point[]
+            var points = new GeometryPoint[]
             {
-                new Point(0, new Point3D(0.0f,0.0f,0.0f)),
-                new Point(1, new Point3D(1.0f,0.0f,0.0f)),
-                new Point(2, new Point3D(1.0f,1.0f,0.0f)),
-                new Point(3, new Point3D(0.0f,1.0f,0.0f)),
-                new Point(4, new Point3D(-1.0f,1.0f,0.0f)),
-                new Point(5, new Point3D(-1.0f,0.0f,0.0f))
+                new GeometryPoint(0, new Point3D(0.0f,0.0f,0.0f)),
+                new GeometryPoint(1, new Point3D(1.0f,0.0f,0.0f)),
+                new GeometryPoint(2, new Point3D(1.0f,1.0f,0.0f)),
+                new GeometryPoint(3, new Point3D(0.0f,1.0f,0.0f)),
+                new GeometryPoint(4, new Point3D(-1.0f,1.0f,0.0f)),
+                new GeometryPoint(5, new Point3D(-1.0f,0.0f,0.0f))
             };
             var poligon = new Figure2D(0, points); 
 

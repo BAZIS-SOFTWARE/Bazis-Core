@@ -25,7 +25,7 @@ namespace ModelControllerInterfaces
         /// </summary>
         /// <param name="lineObjs"></param>
         /// <returns></returns>
-        IObjsPresenter CreateGeometryLinePresenter(IEnumerable<ILineObject<IPoint>> lineObjs);
+        IObjsPresenter CreateGeometryLinePresenter(IEnumerable<ILineObject<IGeometryPoint>> lineObjs);
         /// <summary>
         /// CreateSurfaceElementsPresenter
         /// </summary>
@@ -39,7 +39,7 @@ namespace ModelControllerInterfaces
         /// <param name="surfaceGeom"></param>
         /// <param name="isVolumeObjs"></param>
         /// <returns></returns>
-        IObjsPresenter CreateSurfaceGeometryPresenter(IEnumerable<ISurfaceObject<IGeometrySurface, IPoint>> surfaceGeom, bool isVolumeObjs);
+        IObjsPresenter CreateSurfaceGeometryPresenter(IEnumerable<ISurfaceObject<IGeometrySurface, IGeometryPoint>> surfaceGeom, bool isVolumeObjs);
         /// <summary>
         /// CreatePresenter
         /// </summary>

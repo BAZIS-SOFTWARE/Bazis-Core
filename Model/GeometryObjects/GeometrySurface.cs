@@ -13,13 +13,13 @@ namespace Model.GeometryObjects
 {
     public class GeometrySurface : ModelObject, IGeometrySurface
     {
-        Point[] points;
+        GeometryPoint[] points;
         /// <summary>
         /// Surface constructor
         /// </summary>
         /// <param name="number"></param>
         /// <param name="points"></param>
-        public GeometrySurface(int number, Point[] points) : base(number)
+        public GeometrySurface(int number, GeometryPoint[] points) : base(number)
         {
             if (points.Length < 3)
                 throw new Exception("Для создания поверхности требуется не меньше 3-х узлов!");
@@ -36,7 +36,7 @@ namespace Model.GeometryObjects
         /// </summary>
         /// <param name="ind"></param>
         /// <returns></returns>
-        public IPoint this[int ind]
+        public IGeometryPoint this[int ind]
         {
             get { return points[ind]; }
         }
@@ -129,7 +129,7 @@ points.Contains(this.points[2].Position, new Point3DEqualityComparer()))
             return center.Div(NumberOfPoints);
         }
 
-        public Segment3D[] GetLinesFromSurface(ISurface<IPoint> surface)
+        public Segment3D[] GetLinesFromSurface(ISurface<IGeometryPoint> surface)
         {
             var n = surface.GetCoordinates().Count();
             var points = surface.GetCoordinates().ToArray();
@@ -143,7 +143,7 @@ points.Contains(this.points[2].Position, new Point3DEqualityComparer()))
         }
         /// <inheritdoc/>
 
-        public IEnumerable<IPoint> GetVertexes()
+        public IEnumerable<IGeometryPoint> GetVertexes()
         {
             foreach (var node in points)
             {

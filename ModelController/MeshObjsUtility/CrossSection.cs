@@ -1,4 +1,5 @@
 ﻿using Geometry;
+using Model.GeometryObjects;
 using Model.MeshObjects;
 using System;
 using System.Collections.Generic;
@@ -36,10 +37,10 @@ namespace ModelController.MeshObjsUtility
         /// Сечение элемента плоскостью
         /// Возвращает словарь (номер элемента, плоскость его сечения)
         /// </returns>
-        public Dictionary<int, ElementSurface> GetSectionSurfaces(List<Element3D> elements, Plane plane)
+        public Dictionary<int, Figure2D> GetSectionSurfaces(List<Element3D> elements, Plane plane)
         {
             var comparer = new Point3DEqualityComparer();
-            var result = new Dictionary<int, ElementSurface>();
+            var result = new Dictionary<int, Figure2D>();
             var index = 0;
             foreach (var element in elements)
             {
@@ -57,15 +58,12 @@ namespace ModelController.MeshObjsUtility
                         }
                     }
                 }
-                var nodes = points
-                    .Distinct(comparer)
-                    .Select((p, i) => new Node(i, p))
-                    .ToArray();
-                if (nodes.Length >= 3
-                    && !IsAllPointsOnLine(nodes.Select(x => x.Position).ToList()))
+                points = points.Distinct(comparer).ToList();
+                if (points.Count >= 3
+                    && !IsAllPointsOnLine(points))
                 {
-                    var surface = new ElementSurface(index++, nodes);
-                    result.Add(element.Number, surface);
+                    var figure = new Figure2D(index++, points.Select(x => new Point(0,x)).ToArray());
+                    result.Add(element.Number, figure);
                 }
             }
             return result;

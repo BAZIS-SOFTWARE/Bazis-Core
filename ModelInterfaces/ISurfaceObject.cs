@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ModelInterfaces
 {
-    public interface ISurfaceObject<T,U> : IModelObject where T : ISurface<U> where U : IPoint
+    public interface ISurfaceObject<T,U> : IModelObject where T : ISurface<U> where U : IGeometryPoint
     {
         /// <summary>
         /// NumberOfSides

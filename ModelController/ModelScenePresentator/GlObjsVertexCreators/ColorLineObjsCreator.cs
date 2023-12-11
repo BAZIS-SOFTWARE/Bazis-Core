@@ -5,7 +5,7 @@ using System.Drawing;
 namespace ModelController.ModelScenePresentator.GlObjsVertexCreators
 {
     public class ColorLineObjsCreator<T> : ILineObjsVertexCreator<T>
-        where T : IPoint
+        where T : IGeometryPoint
     {
         public void Create(ref int stride, float[] vertexAtributes, IVertexObject<T> nodeObject)
         {

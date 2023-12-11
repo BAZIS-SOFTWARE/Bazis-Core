@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace ModelController.ModelScenePresentator.GlObjsVertexCreators
 {
     public class EdgesSurfaceObjsCreator<T,U>
-        where T : ISurface<U> where U : IPoint
+        where T : ISurface<U> where U : IGeometryPoint
     {
         public void Create(ref int stride, bool[] vertexAtributes, IEnumerable<ISurfaceObject<T,U>> surfaceElements)
         {

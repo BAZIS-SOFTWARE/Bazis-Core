@@ -7,7 +7,7 @@ namespace ModelInterfaces.Comparers
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class ElementSurfaceEqualityComparer<T> : IEqualityComparer<ISurface<T>>
-        where T : IPoint
+        where T : IGeometryPoint
     {
         /// <inheritdoc/>
         public bool Equals(ISurface<T> s1, ISurface<T> s2)

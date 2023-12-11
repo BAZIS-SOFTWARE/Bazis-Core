@@ -4,7 +4,7 @@ using ModelController.ModelScenePresentator.Interfaces;
 namespace ModelController.ModelScenePresentator.GlObjsVertexCreators
 {
     public class CoordsSurfaceObjsCreator<T, U> : ISurfaceObjsVertexCreator<T, U>
-        where T : ISurface<U> where U : IPoint
+        where T : ISurface<U> where U : IGeometryPoint
     {
         public void Create(ref int stride, float[] vertexAtributes, ISurfaceObject<T,U> surfaceElement)
         {

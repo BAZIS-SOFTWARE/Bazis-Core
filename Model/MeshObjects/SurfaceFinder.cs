@@ -11,7 +11,7 @@ namespace Model.MeshObjects
     {
         /// <param name="nodes">Узлы, задающие выпуклую 3D модель</param>
         /// <returns>Перечисление поверхностей, составляющих грани 3D модели</returns>
-        public static IEnumerable<T[]> FindSurfaceNodes<T>(T[] nodes) where T : IPoint
+        public static IEnumerable<T[]> FindSurfaceNodes<T>(T[] nodes) where T : IGeometryPoint
         {
             var surfaces = new List<HashSet<T>>();
             foreach (var subset in GetSubsets(nodes))

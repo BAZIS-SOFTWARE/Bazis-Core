@@ -33,7 +33,7 @@
     <Compile Include="IO\LoadModelFromBPF2TextFile.cs" />
     <Compile Include="IO\SaveModelToBPF2TextFile.cs" />
     <Compile Include="MeshObjects\Hexa.cs" />
-    <Compile Include="GeometryObjects\Point.cs" />
+    <Compile Include="GeometryObjects\GeometryPoint.cs" />
     <Compile Include="IO\LoadModelFromProjectTextFile.cs" />
     <Compile Include="IO\SaveModelToProjectTextFile.cs" />
     <Compile Include="IO\LoadModelFromASCIITextFile.cs" />

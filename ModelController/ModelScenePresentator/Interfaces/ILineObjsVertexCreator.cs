@@ -2,7 +2,7 @@
 
 namespace ModelController.ModelScenePresentator.Interfaces
 {
-    public interface ILineObjsVertexCreator<T> where T : IPoint
+    public interface ILineObjsVertexCreator<T> where T : IGeometryPoint
     {
         void Create(ref int stride, float[] vertexAtributes, IVertexObject<T> nodeObject);
     }

@@ -13,7 +13,7 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
     /// LineObjsPresenter
     /// </summary>
     public class LineObjsPresenter<T> : IObjsPresenter, IEnumerable<ILineObject<T>>
-        where T : IPoint
+        where T : IGeometryPoint
     {
         IEnumerable<ILineObject<T>> lineObjects;
 /// <inheritdoc/>

@@ -8,7 +8,7 @@ namespace ModelInterfaces
     /// <summary>
     /// INode
     /// </summary>
-    public interface INode : IPoint
+    public interface INode : IGeometryPoint
     {
         /// <summary>
         /// AddElement

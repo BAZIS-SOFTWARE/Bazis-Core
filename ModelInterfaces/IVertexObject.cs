@@ -5,7 +5,7 @@ namespace ModelInterfaces
     /// <summary>
     /// INodeObject
     /// </summary>
-    public interface IVertexObject<T> : IModelObject where T : IPoint
+    public interface IVertexObject<T> : IModelObject where T : IGeometryPoint
     {
         /// <summary>
         /// GetNodes

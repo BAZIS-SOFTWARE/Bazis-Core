@@ -67,11 +67,11 @@ namespace ModelController.ModelScenePresentator
                     presentors.Add(objsType, pointsPresentor);
                     break;
                 case ObjType.Линия:
-                    var linesPresentor = CreateGeometryLinePresenter(modelObjects.Select(x => (ILineObject<IPoint>)x));
+                    var linesPresentor = CreateGeometryLinePresenter(modelObjects.Select(x => (ILineObject<IGeometryPoint>)x));
                     presentors.Add(objsType, linesPresentor);
                     break;
                 case ObjType.Фигура2D:
-                    var fig2dPresentor = CreateSurfaceGeometryPresenter(modelObjects.Select(x => (ISurfaceObject<IGeometrySurface, IPoint>)x), false);
+                    var fig2dPresentor = CreateSurfaceGeometryPresenter(modelObjects.Select(x => (ISurfaceObject<IGeometrySurface, IGeometryPoint>)x), false);
                     presentors.Add(objsType, fig2dPresentor);
                     break;
                 case ObjType.Элемент1D:
@@ -175,9 +175,9 @@ namespace ModelController.ModelScenePresentator
         }
 /// <inheritdoc/>
 
-        public IObjsPresenter CreateSurfaceGeometryPresenter(IEnumerable<ISurfaceObject<IGeometrySurface, IPoint>> surfaceObjs, bool isVolumeObjs)
+        public IObjsPresenter CreateSurfaceGeometryPresenter(IEnumerable<ISurfaceObject<IGeometrySurface, IGeometryPoint>> surfaceObjs, bool isVolumeObjs)
         {
-            return new SurfaceObjsPresenter<IGeometrySurface, IPoint>(surfaceObjs, isVolumeObjs);
+            return new SurfaceObjsPresenter<IGeometrySurface, IGeometryPoint>(surfaceObjs, isVolumeObjs);
         }
 /// <inheritdoc/>
 
@@ -187,9 +187,9 @@ namespace ModelController.ModelScenePresentator
         }
 /// <inheritdoc/>
 
-        public IObjsPresenter CreateGeometryLinePresenter(IEnumerable<ILineObject<IPoint>> lineObjs)
+        public IObjsPresenter CreateGeometryLinePresenter(IEnumerable<ILineObject<IGeometryPoint>> lineObjs)
         {
-            return new LineObjsPresenter<IPoint>(lineObjs);
+            return new LineObjsPresenter<IGeometryPoint>(lineObjs);
         }
     }
 }

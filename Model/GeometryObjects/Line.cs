@@ -6,11 +6,11 @@ using ModelInterfaces;
 
 namespace Model.GeometryObjects
 {
-    public class Line : ModelObject, ILineObject<Point>
+    public class Line : ModelObject, ILineObject<GeometryPoint>
     {
-        private Point[] points;
+        private GeometryPoint[] points;
 
-        public Line(int number, Point[] points) : base(number)
+        public Line(int number, GeometryPoint[] points) : base(number)
         {
             NumberOfPoints = points.Length;
             this.points = points;
@@ -52,7 +52,7 @@ namespace Model.GeometryObjects
         }
 /// <inheritdoc/>
 
-        public IEnumerable<Point> GetVertexes()
+        public IEnumerable<GeometryPoint> GetVertexes()
         {
             foreach (var point in points)
             {
