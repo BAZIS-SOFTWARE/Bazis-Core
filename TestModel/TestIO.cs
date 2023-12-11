@@ -10,20 +10,55 @@ namespace TestModel
     [TestClass]
     public class TestIO
     {
+
+        [TestMethod]
+        public void OpenModelToBpf2TextFormat()
+        {
+            //assing
+            var model = new ModelData();
+
+            model.Loader = new LoadModelFromBPF2TextFile();
+
+            model.Loader.LoadEvent += (ar1, ar2) => { };
+
+            //act
+            model.Load(@"..\..\..\Examples\3D\task1.bpf2");
+
+            //assert
+            Assert.AreNotEqual(model.ObjectData.Count, 0);
+        }
+
         [TestMethod]
         public void SaveModelToBpfTextFormat()
         {
             //assing
             var model = new ModelData();
 
+            model.Loader.LoadEvent += (ar1, ar2) => { };
+            model.Saver.SaveEvent += (ar1, ar2) => { };
+
+            //act
+            model.Load(@"..\..\..\Examples\3D\model_with_groups.bpf");
+            model.Save(@"..\..\..\Examples\3D\model_with_groups_save.bpf");
+
+            //assert
+        }
+
+        [TestMethod]
+        public void SaveModelToBpf2TextFormat()
+        {
+            //assing
+            var model = new ModelData();
+
             model.Loader = new LoadModelFromGMSHTextFile();
+            model.Saver = new SaveModelToBPF2TextFile();
 
             model.Loader.LoadEvent += (ar1, ar2) => { };
             model.Saver.SaveEvent += (ar1, ar2) => { };
 
             //act
             model.Load(@"..\..\..\Examples\3D\box2.inp");
-            model.Save(@"..\..\..\Examples\3D\task1.bpf");
+            model.Save(@"..\..\..\Examples\3D\task1.bpf2");
 
             //assert
         }

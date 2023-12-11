@@ -23,11 +23,12 @@ namespace Model.MeshObjects
             jacobians.Add(DetJ(intPoint));
         }
 
-        public Quad(int number, Node[] nodes, int intPointsCount) : base(number, nodes)
+
+        public Quad(int number, Node[] nodes, int intpNumber) : base(number, nodes)
         {
             surface = new ElementSurface(0, new Node[] { nodes[0], nodes[1], nodes[2], nodes[3] });
             IntegralPoint intPoint;
-            switch (intPointsCount)
+            switch (intpNumber)
             {
                 case 1:
                     intPoint = new IntegralPoint();
@@ -35,6 +36,7 @@ namespace Model.MeshObjects
                     intPoint.AddDirection("eta", 0.0f);
                     intPoint.Weigt = CalcSquare();
                     intPoints.Add(intPoint);
+
                     jacobians.Add(DetJ(intPoint));
                     break;
                 case 8:
@@ -46,7 +48,7 @@ namespace Model.MeshObjects
                             intPoint.AddDirection("ksi", i * coordinate);
                             intPoint.AddDirection("eta", j * coordinate);
                             intPoint.Weigt = 1;
-                            intPoints.Add(intPoint);
+
                             jacobians.Add(DetJ(intPoint));
                         }
                     break;

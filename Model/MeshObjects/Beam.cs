@@ -22,10 +22,11 @@ namespace Model.MeshObjects
         }
 
 
-        public Beam(int number, Node[] nodes, int intPointsCount) : base(number, nodes)
+
+        public Beam(int number, Node[] nodes, int intpNumber) : base(number, nodes)
         {
             IntegralPoint intPoint;
-            switch (intPointsCount)
+            switch (intpNumber)
             {
                 case 1:
                     intPoint = new IntegralPoint();

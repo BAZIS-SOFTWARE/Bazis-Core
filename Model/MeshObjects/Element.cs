@@ -89,7 +89,7 @@ namespace Model.MeshObjects
 
             var str = string.Join(" ", strArr);
 
-            return $"{Number} {ObjType} {ElementKind} {intPoints.Count} : {str}";
+            return $"{base.ToString()} {ElementKind} {intPoints.Count} : {str}";
         }
 /// <inheritdoc/>
 

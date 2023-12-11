@@ -203,5 +203,11 @@ namespace Model
                 return true;
             else return false;
         }
+/// <inheritdoc/>
+
+        public override string ToString()
+        {
+            return $"{Number} {ObjType}";
+        }
     }
 }

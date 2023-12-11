@@ -27,10 +27,12 @@ namespace Model.MeshObjects
         }
 
 
-        public Tetra(int number, Node[] nodes, int intPointsCount) : base(number, nodes)
+
+        public Tetra(int number, Node[] nodes, int intpNumber) : base(number, nodes)
         {
             IntegralPoint intPoint;
-            switch (intPointsCount)
+            switch (intpNumber)
+
             {
                 case 1:
                     intPoint = new IntegralPoint();
@@ -40,6 +42,7 @@ namespace Model.MeshObjects
                     intPoint.AddDirection("l4", 1 / 4);
                     intPoint.Weigt = CalcVolume();
                     intPoints.Add(intPoint);
+
                     //jacobians.Add(DetJ(intPoint));
                     break;
                 case 4:
@@ -56,6 +59,7 @@ namespace Model.MeshObjects
 
                         intPoint.Weigt = 1 / 4f;
                         intPoints.Add(intPoint);
+
                         //jacobians.Add(DetJ(intPoint));
                     }
                     break;

@@ -50,7 +50,7 @@ namespace Model.MeshObjects
 
             var str = string.Join(" ", strArr);
 
-            return string.Format("{0} {1} : {2}", Number, ObjType, str);
+            return $"{base.ToString()} : {str}";
         }
 
         /// <inheritdoc/>
@@ -104,14 +104,6 @@ points.Contains(nodes[2].Position, new Point3DEqualityComparer()))
                 return true;
             else
                 return false;
-        }
-        /// <summary>
-        /// Get surface
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerable<ISurface<INode>> GetSurface()
-        {
-            yield return this;
         }
         /// <summary>
         /// GetDistance

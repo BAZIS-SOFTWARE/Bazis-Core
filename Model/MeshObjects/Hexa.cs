@@ -24,10 +24,11 @@ namespace Model.MeshObjects
         }
 
 
-        public Hexa(int number, Node[] nodes, int intPointsCount) : base(number, nodes)
+
+        public Hexa(int number, Node[] nodes, int intpNumber) : base(number, nodes)
         {
             IntegralPoint intPoint;
-            switch (intPointsCount)
+            switch (intpNumber)
             {
                 case 1:
 
@@ -37,6 +38,7 @@ namespace Model.MeshObjects
                     intPoint.AddDirection("psi", 0.0f);
                     intPoint.Weigt = CalcVolume();
                     intPoints.Add(intPoint);
+
                     jacobians.Add(DetJ(intPoint));
                     break;
                 case 8:
@@ -51,6 +53,7 @@ namespace Model.MeshObjects
                                 intPoint.AddDirection("psi", k * coordinate);
                                 intPoint.Weigt = 1;
                                 intPoints.Add(intPoint);
+                                
                                 jacobians.Add(DetJ(intPoint));
                             }
                     break;
