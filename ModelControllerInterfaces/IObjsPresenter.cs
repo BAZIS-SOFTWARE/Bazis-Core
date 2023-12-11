@@ -20,17 +20,17 @@ namespace ModelControllerInterfaces
         /// <summary>
         /// Surface
         /// </summary>
-        Surface,
-        /// <summary>
-        /// Volume
-        /// </summary>
-        Volume
+        Surface
     }
     /// <summary>
     /// IObjsPresenter
     /// </summary>
     public interface IObjsPresenter
     {
+        /// <summary>
+        /// IsVolumeObjs
+        /// </summary>
+        bool IsVolumeObjs { get; }
         /// <summary>
         /// PresenterType
         /// </summary>

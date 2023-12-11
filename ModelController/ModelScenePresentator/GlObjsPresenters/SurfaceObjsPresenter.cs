@@ -19,14 +19,19 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
 /// <inheritdoc/>
 
         public PresenterType PresenterType { get; } = PresenterType.Surface;
+/// <inheritdoc/>
+
+        public bool IsVolumeObjs { get; } = false;
 
         /// <summary>
         /// SurfaceObjsPresenter
         /// </summary>
         /// <param name="surfaceObjects"></param>
-        public SurfaceObjsPresenter(IEnumerable<ISurfaceObject<T,U>> surfaceObjects)
+        /// <param name="presenterType"></param>
+        public SurfaceObjsPresenter(IEnumerable<ISurfaceObject<T,U>> surfaceObjects, bool isVolumeObjs)
         {
             this.surfaceObjects = surfaceObjects;
+            IsVolumeObjs = isVolumeObjs;
         }
 
         

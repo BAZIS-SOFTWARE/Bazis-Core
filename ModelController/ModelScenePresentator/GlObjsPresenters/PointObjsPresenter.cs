@@ -17,6 +17,8 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
 
         IEnumerable<IModelObject> pointObjects;
 /// <inheritdoc/>
+        public bool IsVolumeObjs { get; } = false;
+        /// <inheritdoc/>
 
         public PresenterType PresenterType { get; } = PresenterType.Point;
 

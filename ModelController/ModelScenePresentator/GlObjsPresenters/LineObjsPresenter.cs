@@ -19,6 +19,9 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
 /// <inheritdoc/>
 
         public PresenterType PresenterType { get; } = PresenterType.Line;
+/// <inheritdoc/>
+
+        public bool IsVolumeObjs { get; } = false;
 
         /// <summary>
         /// LineObjsPresenter

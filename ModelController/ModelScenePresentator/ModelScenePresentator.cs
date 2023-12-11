@@ -71,7 +71,7 @@ namespace ModelController.ModelScenePresentator
                     presentors.Add(objsType, linesPresentor);
                     break;
                 case ObjType.Фигура2D:
-                    var fig2dPresentor = CreateSurfaceGeometryPresenter(modelObjects.Select(x => (ISurfaceObject<IGeometrySurface, IPoint>)x));
+                    var fig2dPresentor = CreateSurfaceGeometryPresenter(modelObjects.Select(x => (ISurfaceObject<IGeometrySurface, IPoint>)x), false);
                     presentors.Add(objsType, fig2dPresentor);
                     break;
                 case ObjType.Элемент1D:
@@ -79,9 +79,12 @@ namespace ModelController.ModelScenePresentator
                     presentors.Add(objsType, els1dPresentor);
                     break;
                 case ObjType.Элемент2D:
-                case ObjType.Элемент3D:
-                    var els2dPresentor = CreateSurfaceElementsPresenter(modelObjects.Select(x => (ISurfaceObject<IElementSurface,INode>)x));
+                    var els2dPresentor = CreateSurfaceElementsPresenter(modelObjects.Select(x => (ISurfaceObject<IElementSurface, INode>)x), false);
                     presentors.Add(objsType, els2dPresentor);
+                    break;
+                case ObjType.Элемент3D:
+                    var els3dPresentor = CreateSurfaceElementsPresenter(modelObjects.Select(x => (ISurfaceObject<IElementSurface,INode>)x), true);
+                    presentors.Add(objsType, els3dPresentor);
                     break;             
             }
         }
@@ -210,21 +213,23 @@ namespace ModelController.ModelScenePresentator
 
 /// <inheritdoc/>
 
-        public IObjsPresenter CreateSurfaceElementsPresenter(IEnumerable<ISurfaceObject<IElementSurface, INode>> surfaceObjs)
+        public IObjsPresenter CreateSurfaceElementsPresenter(IEnumerable<ISurfaceObject<IElementSurface, INode>> surfaceObjs, bool isVolumeObjs)
         {
-            return new SurfaceObjsPresenter<IElementSurface, INode>(surfaceObjs);
+            return new SurfaceObjsPresenter<IElementSurface, INode>(surfaceObjs, isVolumeObjs);
         }
 /// <inheritdoc/>
 
-        public IObjsPresenter CreateSurfaceGeometryPresenter(IEnumerable<ISurfaceObject<IGeometrySurface, IPoint>> surfaceObjs)
+        public IObjsPresenter CreateSurfaceGeometryPresenter(IEnumerable<ISurfaceObject<IGeometrySurface, IPoint>> surfaceObjs, bool isVolumeObjs)
         {
-            return new SurfaceObjsPresenter<IGeometrySurface, IPoint>(surfaceObjs);
+            return new SurfaceObjsPresenter<IGeometrySurface, IPoint>(surfaceObjs, isVolumeObjs);
         }
+/// <inheritdoc/>
 
         public IObjsPresenter CreateBeamPresenter(IEnumerable<ILineObject<INode>> lineObjs)
         {
             return new LineObjsPresenter<INode>(lineObjs);
         }
+/// <inheritdoc/>
 
         public IObjsPresenter CreateGeometryLinePresenter(IEnumerable<ILineObject<IPoint>> lineObjs)
         {
