@@ -21,15 +21,18 @@ namespace Model.MeshObjects
             intPoint.AddDirection("l2", 1 / 4);
             intPoint.AddDirection("l3", 1 / 4);
             intPoint.AddDirection("l4", 1 / 4);
-            intPoint.Weigt = CalcVolume();
+            intPoint.Weigt = CalcVolume();;
+            //jacobians.Add(DetJ(intPoint));
             intPoints.Add(intPoint);
         }
+
 
 
         public Tetra(int number, Node[] nodes, int intpNumber) : base(number, nodes)
         {
             IntegralPoint intPoint;
             switch (intpNumber)
+
             {
                 case 1:
                     intPoint = new IntegralPoint();
@@ -39,6 +42,8 @@ namespace Model.MeshObjects
                     intPoint.AddDirection("l4", 1 / 4);
                     intPoint.Weigt = CalcVolume();
                     intPoints.Add(intPoint);
+
+                    //jacobians.Add(DetJ(intPoint));
                     break;
                 case 4:
                     float alpha = 0.58541020f;
@@ -54,6 +59,8 @@ namespace Model.MeshObjects
 
                         intPoint.Weigt = 1 / 4f;
                         intPoints.Add(intPoint);
+
+                        //jacobians.Add(DetJ(intPoint));
                     }
                     break;
                 default:
