@@ -31,11 +31,11 @@ namespace TestModel
 
             //act
             var presentator = new ModelScenePresentator(model.ObjectData);
-            var inds = presentator[ObjType.Фигура2D].CreateIndexes();
-            var ptrs = presentator[ObjType.Фигура2D].CreatePointers(inds.Item1);
-            var coords = presentator[ObjType.Фигура2D].CreateVertexes(inds.Item2, "координаты");
-            var colors = presentator[ObjType.Фигура2D].CreateVertexes(inds.Item3, "цвет");
-            var normals = presentator[ObjType.Фигура2D].CreateVertexes(inds.Item2, "нормаль");
+            var inds = presentator[ObjType.Фигура2D.ToString()].CreateIndexes();
+            var ptrs = presentator[ObjType.Фигура2D.ToString()].CreatePointers(inds.Item1);
+            var coords = presentator[ObjType.Фигура2D.ToString()].CreateVertexes(inds.Item2, "координаты");
+            var colors = presentator[ObjType.Фигура2D.ToString()].CreateVertexes(inds.Item3, "цвет");
+            var normals = presentator[ObjType.Фигура2D.ToString()].CreateVertexes(inds.Item2, "нормаль");
             //assert
             Assert.AreEqual(ptrs.Length, 6);
             Assert.AreEqual(coords.Length, 18);
@@ -79,11 +79,11 @@ namespace TestModel
 
             //act
             var presentator = new ModelScenePresentator(model.ObjectData);
-            var inds = presentator[ObjType.Фигура2D].CreateIndexes();
-            var ptrs = presentator[ObjType.Фигура2D].CreatePointers(inds.Item1);
-            var coords = presentator[ObjType.Фигура2D].CreateVertexes(inds.Item2, "координаты");
-            var colors = presentator[ObjType.Фигура2D].CreateVertexes(inds.Item3, "цвет");
-            var normals = presentator[ObjType.Фигура2D].CreateVertexes(inds.Item2, "нормаль");
+            var inds = presentator[ObjType.Фигура2D.ToString()].CreateIndexes();
+            var ptrs = presentator[ObjType.Фигура2D.ToString()].CreatePointers(inds.Item1);
+            var coords = presentator[ObjType.Фигура2D.ToString()].CreateVertexes(inds.Item2, "координаты");
+            var colors = presentator[ObjType.Фигура2D.ToString()].CreateVertexes(inds.Item3, "цвет");
+            var normals = presentator[ObjType.Фигура2D.ToString()].CreateVertexes(inds.Item2, "нормаль");
             //assert
             Assert.AreEqual(ptrs.Length, 15);
             Assert.AreEqual(coords.Length, 45);

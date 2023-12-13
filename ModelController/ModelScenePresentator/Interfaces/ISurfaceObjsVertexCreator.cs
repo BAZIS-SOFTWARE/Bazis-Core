@@ -7,7 +7,7 @@ namespace ModelController.ModelScenePresentator.Interfaces
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <typeparam name="U"></typeparam>
-    public interface ISurfaceObjsVertexCreator<T,U> where T : ISurface<U> where U : IGeometryPoint
+    public interface ISurfaceObjsVertexCreator<T,U> where T : ISurface<U> where U : IPoint
     {
         /// <summary>
         /// Create

@@ -5,7 +5,7 @@ namespace ModelController.ModelScenePresentator.GlObjsVertexCreators
 {
 
     public class ColorSurfaceObjsCreator<T,U> : ISurfaceObjsVertexCreator<T,U> 
-        where T : ISurface<U> where U : IGeometryPoint
+        where T : ISurface<U> where U : IPoint
     {
         public void Create(ref int stride, float[] vertexAtributes, ISurfaceObject<T,U> surfObject)
         {

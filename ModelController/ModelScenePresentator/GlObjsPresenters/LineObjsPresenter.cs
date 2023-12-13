@@ -12,8 +12,8 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
     /// <summary>
     /// LineObjsPresenter
     /// </summary>
-    public class LineObjsPresenter<T> : IObjsPresenter, IEnumerable<ILineObject<T>>
-        where T : IGeometryPoint
+    public class LineObjsPresenter<T> : IObjsPresenter
+        where T : IPoint
     {
         IEnumerable<ILineObject<T>> lineObjects;
 /// <inheritdoc/>
@@ -115,7 +115,7 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
             return edgesArray;
         }
 
-        public IEnumerator<ILineObject<T>> GetEnumerator()
+        public IEnumerator<IModelObject> GetEnumerator()
         {
             foreach (var lineObject in lineObjects)
             {

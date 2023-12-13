@@ -13,7 +13,7 @@ namespace ModelInterfaces
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public interface ISurface<T> : IModelObject,INormal,ISquare, IVertexObject<T>
-        where T : IGeometryPoint
+        where T : IPoint
     {
         /// <summary>
         /// GetDistance

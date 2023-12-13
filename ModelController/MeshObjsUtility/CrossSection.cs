@@ -62,7 +62,7 @@ namespace ModelController.MeshObjsUtility
                 if (points.Count >= 3
                     && !IsAllPointsOnLine(points))
                 {
-                    var figure = new Figure2D(index++, points.Select(x => new Point(0,x)).ToArray());
+                    var figure = new Figure2D(index++, points.Select(x => new GeometryPoint(0,x)).ToArray());
                     result.Add(element.Number, figure);
                 }
             }

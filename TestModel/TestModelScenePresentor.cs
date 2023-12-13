@@ -78,7 +78,7 @@ namespace TestModel
 
             //act
 
-            var presenter = presentator[objType];
+            var presenter = presentator[objType.ToString()];
             if (presenter.IsVolumeObjs)
             {
                 var volPresenter = (IVolumeObjsPresenter)presenter;
@@ -118,11 +118,11 @@ namespace TestModel
 
             var presenter = new ModelScenePresentator(model.ObjectData);
 
-            var inds = presenter[objType].CreateIndexes();
-            var ptrs = presenter[objType].CreatePointers(inds.Item1);
-            var coords = presenter[objType].CreateVertexes(inds.Item2, "координаты");
-            var colors = presenter[objType].CreateVertexes(inds.Item3, "цвет");
-            var normals = presenter[objType].CreateVertexes(inds.Item2, "нормаль");
+            var inds = presenter[objType.ToString()].CreateIndexes();
+            var ptrs = presenter[objType.ToString()].CreatePointers(inds.Item1);
+            var coords = presenter[objType.ToString()].CreateVertexes(inds.Item2, "координаты");
+            var colors = presenter[objType.ToString()].CreateVertexes(inds.Item3, "цвет");
+            var normals = presenter[objType.ToString()].CreateVertexes(inds.Item2, "нормаль");
             //assert
             Assert.AreEqual(ptrs.Length, int.Parse(array[0]));
             Assert.AreEqual(coords.Length, int.Parse(array[1]));
@@ -152,7 +152,7 @@ namespace TestModel
             model.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
             var presentator = new ModelScenePresentator(model.ObjectData);
 
-            var presenter = presentator[objType];
+            var presenter = presentator[objType.ToString()];
             if (presenter.IsVolumeObjs)
             {
                 var volPresenter = (IVolumeObjsPresenter)presenter;
@@ -220,7 +220,7 @@ namespace TestModel
         [DataTestMethod]
         [DataRow(ObjType.Элемент3D)]
         [DataRow(ObjType.Узел)]
-        public void TestObjectsCreationFromCDB(ObjType objsType)
+        public void TestObjectsCreationFromCDB(ObjType objType)
         {
             //assing
             var model = new ModelData();
@@ -230,12 +230,12 @@ namespace TestModel
             model.Load(@"..\..\..\Examples\CDB\longModel.cdb");
             var presentator = new ModelScenePresentator(model.ObjectData);
 
-            var tuple = presentator[objsType].CreateIndexes();
-            int[] ptrs = presentator[objsType].CreatePointers(tuple.Item1);
-            float[] glCoords = presentator[objsType].CreateVertexes(tuple.Item2, "координаты");
-            float[] glColors = presentator[objsType].CreateVertexes(tuple.Item3, "цвет");
-            float[] glNormals = presentator[objsType].CreateVertexes(tuple.Item2, "нормаль");
-            bool[] edges = presentator[objsType].CreateEdgeFlags(tuple.Item4);
+            var tuple = presentator[objType.ToString()].CreateIndexes();
+            int[] ptrs = presentator[objType.ToString()].CreatePointers(tuple.Item1);
+            float[] glCoords = presentator[objType.ToString()].CreateVertexes(tuple.Item2, "координаты");
+            float[] glColors = presentator[objType.ToString()].CreateVertexes(tuple.Item3, "цвет");
+            float[] glNormals = presentator[objType.ToString()].CreateVertexes(tuple.Item2, "нормаль");
+            bool[] edges = presentator[objType.ToString()].CreateEdgeFlags(tuple.Item4);
 
             //assert
             Assert.AreEqual(tuple.Item4, edges.Length);

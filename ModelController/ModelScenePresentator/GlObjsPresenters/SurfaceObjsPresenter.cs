@@ -12,8 +12,8 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
     /// <summary>
     /// SurfaceObjsPresenter
     /// </summary>
-    public class SurfaceObjsPresenter<T,U> : IVolumeObjsPresenter, IEnumerable<ISurfaceObject<T,U>>
-        where T : ISurface<U> where U : IGeometryPoint
+    public class SurfaceObjsPresenter<T,U> : IVolumeObjsPresenter
+        where T : ISurface<U> where U : IPoint
     {
         IEnumerable<ISurfaceObject<T,U>> surfaceObjects;
 /// <inheritdoc/>
@@ -178,7 +178,7 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
         }    
 /// <inheritdoc/>
 
-        public IEnumerator<ISurfaceObject<T, U>> GetEnumerator()
+        public IEnumerator<IModelObject> GetEnumerator()
         {
             foreach (var surfaceElement in surfaceObjects)
             {

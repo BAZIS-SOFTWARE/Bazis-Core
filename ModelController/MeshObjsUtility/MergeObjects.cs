@@ -1,7 +1,10 @@
 ﻿using ModelInterfaces.ObjectsComparers;
+using ModelInterfaces.ObjectsFinders;
 using ModelInterfaces;
 using System.Collections.Generic;
 using System.Linq;
+using Functions.Sort;
+using Model;
 
 namespace ModelController.MeshObjsUtility
 {
@@ -19,29 +22,30 @@ namespace ModelController.MeshObjsUtility
         {
             this.objectData = objectData;
         }
-
-        public void Merge<T>(List<List<int>> numbers, ObjType objsType)
+        /// <summary>
+        /// Merge
+        /// </summary>
+        /// <param name="numbers"></param>
+        public List<T> Merge<T>(List<List<int>> numbers) where T : ModelObject
         {
-            var objs = objectData[objsType];
-            var numberObjs = objs.Select(x => x.Number).ToList();
-
+            var masterObjs = objectData.FindMany<T>().ToList();
+            var masterNumbers = masterObjs.Select(x => x.Number).ToList();
             for (int i = 0; i < numbers.Count; i++)
             {
                 var masterNumber = numbers[i][0];
-                var masterInd = numberObjs.BinarySearch(masterNumber);
                 for (int j = 1; j < numbers[i].Count; j++)
                 {
                     var slaveNumber = numbers[i][j];
 
-                    var slaveInd = numberObjs.BinarySearch(slaveNumber);
-                    objs[slaveInd].SetNumber(objs[masterInd].Number);
+                    var slaveInd = masterNumbers.BinarySearch(slaveNumber);
+                    masterObjs[slaveInd].SetNumber(masterNumber);
                 }
             }
 
-            var noDublicate = objs.Distinct(new EqualityComparerByNumber()).ToArray();
+            var noDublicate = masterObjs.Distinct(new EqualityComparerByNumber<T>()).ToList();
+            MergeSort<T>.MergeSortFunction(noDublicate);
 
-            objectData[objsType].Clear();
-            objectData[objsType].AddRange(noDublicate);
+            return noDublicate;
         }
     }
 }

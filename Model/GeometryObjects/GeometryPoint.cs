@@ -8,7 +8,7 @@ namespace Model.GeometryObjects
     /// <summary>
     /// Point
     /// </summary>
-    public class Point : ModelObject, IPoint
+    public class GeometryPoint : ModelObject, IPoint
     {
         List<ILineObject<IPoint>> lines = new List<ILineObject<IPoint>>();
         /// <summary>
@@ -16,7 +16,7 @@ namespace Model.GeometryObjects
         /// </summary>
         /// <param name="number"></param>
         /// <param name="position"></param>
-        public Point(int number, Point3D position) : base(number)
+        public GeometryPoint(int number, Point3D position) : base(number)
         {
  
             Position = position;

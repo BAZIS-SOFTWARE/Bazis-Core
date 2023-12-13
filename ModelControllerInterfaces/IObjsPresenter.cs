@@ -25,7 +25,7 @@ namespace ModelControllerInterfaces
     /// <summary>
     /// IObjsPresenter
     /// </summary>
-    public interface IObjsPresenter
+    public interface IObjsPresenter : IEnumerable<IModelObject>
     {
         /// <summary>
         /// IsVolumeObjs

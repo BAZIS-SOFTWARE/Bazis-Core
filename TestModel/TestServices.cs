@@ -164,10 +164,23 @@ namespace TestModel
 
             var coincidentNodes = finder.Find<Node>();
 
-            var merge = new MergeObjects(model.ObjectData);
+            var merger = new MergeObjects(model.ObjectData);
 
+            var noDouble = merger.Merge<Node>(coincidentNodes);
+
+            model.ObjectData[ObjType.Узел].Clear();
+            model.ObjectData[ObjType.Узел].AddRange(noDouble);
 
             //assert
+            var numb = model.ObjectData[ObjType.Узел].First().Number;
+
+            foreach (var item in model.ObjectData[ObjType.Узел].Skip(1))
+            {
+                if (item.Number <= numb)
+                    throw new Exception($"{item.Number}");
+                numb = item.Number;
+            }
+            
             //freeNodes.ToArray()[0] = 14;
             //freeNodes.ToArray()[1] = 15;
         }

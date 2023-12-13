@@ -4,7 +4,7 @@ using ModelController.ModelScenePresentator.Interfaces;
 namespace ModelController.ModelScenePresentator.GlObjsVertexCreators
 {
     public class NormalsLineObjsCreator<T> : ILineObjsVertexCreator<T>
-        where T : IGeometryPoint
+        where T : IPoint
     {
         public void Create(ref int stride, float[] vertexAtributes, IVertexObject<T> nodeObject)
         {
