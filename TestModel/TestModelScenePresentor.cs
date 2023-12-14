@@ -11,6 +11,7 @@ using Model.MeshObjects;
 using ModelController.ModelScenePresentator.GlObjsPresenters;
 using Model.GeometryObjects;
 using ModelControllerInterfaces;
+using ModelInterfaces.GeometryObjects;
 
 namespace TestModel
 {
@@ -32,6 +33,7 @@ namespace TestModel
             10,10,0,
         },
             ObjType.Элемент1D, new int[] { 2, 6, 8, 6,1 })]
+
         [DataRow(new float[]
         {
             0, 0, 0,
@@ -40,7 +42,7 @@ namespace TestModel
             0, 0, 10
         },
             ObjType.Элемент3D, new int[] { 12, 36, 48, 36,12 })]
-        public void TestObjectsCreationManual(float[]coords, ObjType objType, int [] indsR)
+        public void TestMeshObjectsCreationManual(float[]coords, ObjType objType, int [] indsR)
         {
 
             //assign
@@ -72,6 +74,70 @@ namespace TestModel
 
             var model = new ModelData();
             model.ObjectData.AddRange(nodes);
+            model.ObjectData.Add(modelObject);
+
+            var presentator = new ModelScenePresentator(model.ObjectData);
+
+            //act
+
+            var presenter = presentator[objType.ToString()];
+            if (presenter.IsVolumeObjs)
+            {
+                var volPresenter = (IVolumeObjsPresenter)presenter;
+                volPresenter.HideInsideSurfaces();
+            }
+
+            var inds = presenter.CreateIndexes();
+            var ptrs = presenter.CreatePointers(inds.Item1);
+            var crds = presenter.CreateVertexes(inds.Item2, "координаты");
+            var colors = presenter.CreateVertexes(inds.Item3, "цвет");
+            var normals = presenter.CreateVertexes(inds.Item2, "нормаль");
+            var edges = presenter.CreateEdgeFlags(inds.Item4);
+            //assert
+
+            Assert.AreEqual(ptrs.Length, indsR[0]);
+            Assert.AreEqual(crds.Length, indsR[1]);
+            Assert.AreEqual(colors.Length, indsR[2]);
+            Assert.AreEqual(normals.Length, indsR[3]);
+            Assert.AreEqual(edges.Length, indsR[4]);
+        }
+
+        [DataTestMethod]
+        [DataRow(new float[]
+        {
+            0, 0, 0,
+            10,10,0,
+        },
+            ObjType.Линия, new int[] { 2, 6, 8, 6, 1 })]
+        public void TestGeomObjectsCreationManual(float[] coords, ObjType objType, int[] indsR)
+        {
+
+            //assign
+            var points = new List<GeometryPoint>();
+            var len = coords.Length / 3;
+            for (int i = 0; i < len; i++)
+            {
+                var x = coords[3 * i + 0];
+                var y = coords[3 * i + 1];
+                var z = coords[3 * i + 2];
+                points.Add(new GeometryPoint(i, new Geometry.Point3D(x, y, z)));
+            }
+
+            Model.ModelObject modelObject;
+
+            switch (objType)
+            {
+                case ObjType.Линия:
+                    modelObject = new Line(0, points.ToArray());
+                    break;
+                default:
+                    modelObject = new Figure2D(0, points.ToArray());
+                    break;
+            }
+
+
+            var model = new ModelData();
+            model.ObjectData.AddRange(points);
             model.ObjectData.Add(modelObject);
 
             var presentator = new ModelScenePresentator(model.ObjectData);

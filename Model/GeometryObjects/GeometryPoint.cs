@@ -1,6 +1,6 @@
 ﻿using Geometry;
 using ModelInterfaces;
-using System;
+using ModelInterfaces.GeometryObjects;
 using System.Collections.Generic;
 
 namespace Model.GeometryObjects
@@ -8,7 +8,7 @@ namespace Model.GeometryObjects
     /// <summary>
     /// Point
     /// </summary>
-    public class GeometryPoint : ModelObject, IPoint
+    public class GeometryPoint : ModelObject, IGeometryPoint
     {
         List<ILineObject<IPoint>> lines = new List<ILineObject<IPoint>>();
         /// <summary>

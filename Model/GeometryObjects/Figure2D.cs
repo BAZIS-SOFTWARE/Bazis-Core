@@ -1,12 +1,8 @@
 ﻿using Geometry;
-using Model.MeshObjects;
 using ModelInterfaces;
-using System;
+using ModelInterfaces.GeometryObjects;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Model.GeometryObjects
 {

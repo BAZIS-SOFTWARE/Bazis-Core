@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using Geometry;
-using Model.MeshObjects;
 using ModelInterfaces;
+using ModelInterfaces.GeometryObjects;
 
 namespace Model.GeometryObjects
 {
-    public class Line : ModelObject, ILineObject<GeometryPoint>
+    public class Line : ModelObject, ILineObject<IGeometryPoint>
     {
         private GeometryPoint[] points;
 
@@ -52,7 +52,7 @@ namespace Model.GeometryObjects
         }
 /// <inheritdoc/>
 
-        public IEnumerable<GeometryPoint> GetVertexes()
+        public IEnumerable<IGeometryPoint> GetVertexes()
         {
             foreach (var point in points)
             {

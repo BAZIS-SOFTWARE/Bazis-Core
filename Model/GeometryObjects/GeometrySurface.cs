@@ -2,6 +2,7 @@
 using Model.MeshObjects;
 using ModelInterfaces;
 using ModelInterfaces.Attributes;
+using ModelInterfaces.GeometryObjects;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

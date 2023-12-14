@@ -5,6 +5,7 @@ using System;
 using ModelController.ModelScenePresentator.GlObjsPresenters;
 using Model.MeshObjects;
 using Model.GeometryObjects;
+using ModelInterfaces.GeometryObjects;
 
 namespace TestModel
 {
@@ -33,7 +34,7 @@ namespace TestModel
                                      new GeometryPoint(1, new Point3D(1.0f, 1.0f, -1.0f))
                                    };
             var lines = new Line[] { new Line(0, nodes) };
-            var presenter = new LineObjsPresenter<GeometryPoint>(lines);
+            var presenter = new LineObjsPresenter<IGeometryPoint>(lines);
             var indices = presenter.CreateIndexes();
             var pointers = presenter.CreatePointers(indices.Item1);
             var colors = presenter.CreateVertexes(indices.Item3, "цвет");

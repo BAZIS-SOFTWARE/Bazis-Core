@@ -1,4 +1,5 @@
 ﻿using ModelInterfaces;
+using ModelInterfaces.GeometryObjects;
 using System.Collections.Generic;
 
 namespace ModelControllerInterfaces
@@ -25,7 +26,7 @@ namespace ModelControllerInterfaces
         /// </summary>
         /// <param name="lineObjs"></param>
         /// <returns></returns>
-        IObjsPresenter CreateGeometryLinePresenter(IEnumerable<ILineObject<IPoint>> lineObjs);
+        IObjsPresenter CreateGeometryLinePresenter(IEnumerable<ILineObject<IGeometryPoint>> lineObjs);
         /// <summary>
         /// CreateSurfaceElementsPresenter
         /// </summary>

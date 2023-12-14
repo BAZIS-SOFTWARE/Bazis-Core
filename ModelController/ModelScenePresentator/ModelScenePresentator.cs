@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Model.MeshObjects;
+using ModelInterfaces.GeometryObjects;
 
 namespace ModelController.ModelScenePresentator
 {
@@ -67,7 +68,7 @@ namespace ModelController.ModelScenePresentator
                     presentors.Add(objsType.ToString(), pointsPresentor);
                     break;
                 case ObjType.Линия:
-                    var linesPresentor = CreateGeometryLinePresenter(modelObjects.Select(x => (ILineObject<IPoint>)x));
+                    var linesPresentor = CreateGeometryLinePresenter(modelObjects.Select(x => (ILineObject<IGeometryPoint>)x));
                     presentors.Add(objsType.ToString(), linesPresentor);
                     break;
                 case ObjType.Фигура2D:
@@ -187,9 +188,9 @@ namespace ModelController.ModelScenePresentator
         }
 /// <inheritdoc/>
 
-        public IObjsPresenter CreateGeometryLinePresenter(IEnumerable<ILineObject<IPoint>> lineObjs)
+        public IObjsPresenter CreateGeometryLinePresenter(IEnumerable<ILineObject<IGeometryPoint>> lineObjs)
         {
-            return new LineObjsPresenter<IPoint>(lineObjs);
+            return new LineObjsPresenter<IGeometryPoint>(lineObjs);
         }
     }
 }
