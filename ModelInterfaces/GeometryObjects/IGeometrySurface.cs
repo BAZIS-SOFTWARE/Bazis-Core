@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ModelInterfaces
+namespace ModelInterfaces.GeometryObjects
 {
     public interface IGeometrySurface : ISurface<IPoint>
     {

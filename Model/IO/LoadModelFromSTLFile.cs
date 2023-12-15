@@ -60,9 +60,9 @@ namespace Model.IO
 
             return modelData;
         }
-        private Point[] GetNodes(StreamReader stl, string str)
+        private GeometryPoint[] GetNodes(StreamReader stl, string str)
         {
-            var nodes = new Point[3];
+            var nodes = new GeometryPoint[3];
             for (int i = 0; i < 3; i++)
             {
                 if (str != null && str != "endloop" && str.Contains("vertex"))
@@ -72,7 +72,7 @@ namespace Model.IO
                     var x = float.Parse(lineData[0], NumberStyles.Float, CultureInfo.InvariantCulture);
                     var y = float.Parse(lineData[1], NumberStyles.Float, CultureInfo.InvariantCulture);
                     var z = float.Parse(lineData[2], NumberStyles.Float, CultureInfo.InvariantCulture);
-                    var node = new Point(counter, new Point3D(x, y, z));
+                    var node = new GeometryPoint(counter, new Point3D(x, y, z));
                     counter++;
                     nodes[i] = node;
                     str = stl.ReadLine()?.Trim();
@@ -94,7 +94,7 @@ namespace Model.IO
                 reader.BaseStream.Position += 12;
                 for (int i = 0; i < count; i++)
                 {
-                    var points = new Point[3];
+                    var points = new GeometryPoint[3];
                     points[0] = ReadNode(reader);
                     points[1] = ReadNode(reader);
                     points[2] = ReadNode(reader);
@@ -117,12 +117,12 @@ namespace Model.IO
             }
         }
 
-        Point ReadNode(BinaryReader reader)
+        GeometryPoint ReadNode(BinaryReader reader)
         {
             var x = reader.ReadSingle();
             var y = reader.ReadSingle();
             var z = reader.ReadSingle();
-            var node = new Point(counter++, new Point3D(x, y, z));
+            var node = new GeometryPoint(counter++, new Point3D(x, y, z));
             return node;
         }
     }

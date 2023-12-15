@@ -14,19 +14,23 @@ namespace ModelControllerInterfaces
         /// </summary>
         Point,
         /// <summary>
-        /// Surface
-        /// </summary>
-        Surface,
-        /// <summary>
         /// Line
         /// </summary>
-        Line
+        Line,
+        /// <summary>
+        /// Surface
+        /// </summary>
+        Surface
     }
     /// <summary>
     /// IObjsPresenter
     /// </summary>
-    public interface IObjsPresenter
+    public interface IObjsPresenter : IEnumerable<IModelObject>
     {
+        /// <summary>
+        /// IsVolumeObjs
+        /// </summary>
+        bool IsVolumeObjs { get; }
         /// <summary>
         /// PresenterType
         /// </summary>

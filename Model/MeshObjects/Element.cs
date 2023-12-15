@@ -120,8 +120,13 @@ namespace Model.MeshObjects
 
         public abstract float[] GetFormFunctions(IIntegralPoint intPoint);
 
+        /// <inheritdoc/>
 
-/// <inheritdoc/>
+        public void AddDetJ(float j)
+        {
+            jacobians.Add(j);
+        }
+        /// <inheritdoc/>
 
         public IEnumerable<float> GetDetsJ()
         {

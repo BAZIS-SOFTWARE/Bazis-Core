@@ -18,7 +18,9 @@ namespace Model.MeshObjects
             intPoint.AddDirection("ksi", 0.0f);
             intPoint.Weigt = CalcLength();
             intPoints.Add(intPoint);
+            //jacobians.Add(DetJ(intPoint));
         }
+
 
 
         public Beam(int number, Node[] nodes, int intpNumber) : base(number, nodes)

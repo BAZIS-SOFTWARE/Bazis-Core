@@ -4,7 +4,7 @@
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>ModelController</Title>
-    <Version>2.0.11.20</Version>
+    <Version>2.0.11.30</Version>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>ModelControllerKey.snk</AssemblyOriginatorKeyFile>
@@ -21,11 +21,9 @@
     <None Remove="Icon.png" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MeshObjsCreator\MeshCreator.cs" />
     <Compile Include="MeshObjsCreator\Delone2D\DeloneTriangulation2D.cs" />
-    <Compile Include="MeshObjsCreator\Delone2D\DeloneEdge2D.cs" />
     <Compile Include="MeshObjsCreator\Delone2D\DeloneNode2D.cs" />
-    <Compile Include="MeshObjsCreator\Delone2D\Rectangle.cs" />
-    <Compile Include="MeshObjsCreator\Delone2D\DeloneTriangle2D.cs" />
     <Compile Include="MeshObjsUtility\CrossSection.cs" />
     <Compile Include="ModelController.cs" />
     <Compile Include="ModelScenePresentator\GlObjsPresenters\LineObjsPresenter.cs" />

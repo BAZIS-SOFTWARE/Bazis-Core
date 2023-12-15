@@ -20,7 +20,9 @@ namespace Model.MeshObjects
             intPoint.AddDirection("eta", 0.0f);
             intPoint.Weigt = CalcSquare();
             intPoints.Add(intPoint);
+            jacobians.Add(DetJ(intPoint));
         }
+
 
         public Quad(int number, Node[] nodes, int intpNumber) : base(number, nodes)
         {
@@ -34,6 +36,8 @@ namespace Model.MeshObjects
                     intPoint.AddDirection("eta", 0.0f);
                     intPoint.Weigt = CalcSquare();
                     intPoints.Add(intPoint);
+
+                    jacobians.Add(DetJ(intPoint));
                     break;
                 case 8:
                     var coordinate = (float)Math.Sqrt(3) / 3;
@@ -44,7 +48,8 @@ namespace Model.MeshObjects
                             intPoint.AddDirection("ksi", i * coordinate);
                             intPoint.AddDirection("eta", j * coordinate);
                             intPoint.Weigt = 1;
-                            intPoints.Add(intPoint);
+
+                            jacobians.Add(DetJ(intPoint));
                         }
                     break;
                 default:

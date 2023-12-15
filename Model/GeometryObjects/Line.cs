@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using Geometry;
-using Model.MeshObjects;
 using ModelInterfaces;
+using ModelInterfaces.GeometryObjects;
 
 namespace Model.GeometryObjects
 {
-    public class Line : ModelObject, ILineObject<Point>
+    public class Line : ModelObject, ILineObject<IGeometryPoint>
     {
-        private Point[] points;
+        private GeometryPoint[] points;
 
-        public Line(int number, Point[] points) : base(number)
+        public Line(int number, GeometryPoint[] points) : base(number)
         {
             NumberOfPoints = points.Length;
             this.points = points;
@@ -52,7 +52,7 @@ namespace Model.GeometryObjects
         }
 /// <inheritdoc/>
 
-        public IEnumerable<Point> GetVertexes()
+        public IEnumerable<IGeometryPoint> GetVertexes()
         {
             foreach (var point in points)
             {
