@@ -2,43 +2,21 @@
 using Model.MeshObjects;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Threading;
 
 namespace ModelController.MeshObjsUtility
 {
-    //public class Point3DComparer : IEqualityComparer<Point3D>
-    //{
-    //    private const double epsilon = 1e-3;
-
-    //    public bool Equals(Point3D a, Point3D b)
-    //    {
-    //        return Math.Abs(a._x - b._x) < epsilon
-    //               && Math.Abs(a._y - b._y) < epsilon
-    //               && Math.Abs(a._z - b._z) < epsilon;
-    //    }
-
-    //    public int GetHashCode(Point3D obj)
-    //    {
-    //        unchecked
-    //        {
-    //            var hashCode = obj._x.GetHashCode();
-    //            hashCode = (hashCode * 397) ^ obj._y.GetHashCode();
-    //            hashCode = (hashCode * 397) ^ obj._z.GetHashCode();
-    //            return hashCode;
-    //        }
-    //    }
-    //}
-
     public class CrossSection
     {
-
         /// <returns>
         /// Сечение элемента плоскостью
         /// Возвращает словарь (номер элемента, плоскость его сечения)
         /// </returns>
-        public Dictionary<int, ElementSurface> GetSectionSurfaces(List<Element3D> elements, Plane plane)
+        public Dictionary<int, ElementSurface> GetSectionSurfaces(IEnumerable<Element3D> elements, Plane plane)
         {
-            var comparer = new Point3DEqualityComparer();
             var result = new Dictionary<int, ElementSurface>();
             var index = 0;
             foreach (var element in elements)
@@ -50,24 +28,28 @@ namespace ModelController.MeshObjsUtility
                     {
                         var point1 = line.P0;
                         var point2 = line.P1;
-                        if (IsIntersect(point1, point2, plane))
-                        {
-                            var sectionPoint = GetSectionPoint(new Segment3D(point1, point2), plane);
-                            points.Add(sectionPoint);
-                        }
+                        if (!IsIntersect(point1, point2, plane))
+                            continue;
+                        var sectionPoint = GetSectionPoint(point1, point2, plane);
+                        points.Add(sectionPoint);
                     }
                 }
+
                 var nodes = points
-                    .Distinct(comparer)
+                    .Distinct()
                     .Select((p, i) => new Node(i, p))
                     .ToArray();
-                if (nodes.Length >= 3
-                    && !IsAllPointsOnLine(nodes.Select(x => x.Position).ToList()))
+                if (nodes.Length >= 3 && nodes.Length <= 6)
                 {
-                    var surface = new ElementSurface(index++, nodes);
-                    result.Add(element.Number, surface);
+                        var surface = new ElementSurface(index++, nodes);
+                        result.Add(element.Number, surface);
+                }
+                else if (nodes.Length > 6)
+                {
+                    throw new Exception("Ошибка при построении сечения. Узлов плоскости более 6");
                 }
             }
+
             return result;
         }
 
@@ -80,8 +62,8 @@ namespace ModelController.MeshObjsUtility
             var d1 = plane.PointPosition(a);
             var d2 = plane.PointPosition(b);
             if (float.IsNaN(d1) || float.IsNaN(d2))
-                throw new Exception();
-            if (Math.Abs(d1) < 10e-6 && Math.Abs(d2) < 10e-6)
+                throw new ArgumentException("Degenerate plane");
+            if (Math.Abs(d1) < 10e-4 && Math.Abs(d2) < 10e-4)
                 return false;
             return Math.Sign(d1) * Math.Sign(d2) <= 0;
         }
@@ -89,32 +71,33 @@ namespace ModelController.MeshObjsUtility
         /// <summary>
         /// Вычисляет точку пересечения прямой и плоскости
         /// </summary>
-        private Point3D GetSectionPoint(Segment3D line, Plane plane)
+        private Point3D GetSectionPoint(Point3D P0, Point3D P1, Plane plane)
         {
             var A = plane.Normal._x;
             var B = plane.Normal._y;
             var C = plane.Normal._z;
             var D = plane.Shifting;
-            var t = (-A * line.P1._x - B * line.P1._y - C * line.P1._z - D) /
-                (A * (line.P0._x - line.P1._x) + B * (line.P0._y - line.P1._y) + C * (line.P0._z - line.P1._z));
-            var x = (float)Math.Round(line.P1._x * (1 - t) + line.P0._x * t, 6);
-            var y = (float)Math.Round(line.P1._y * (1 - t) + line.P0._y * t, 6);
-            var z = (float)Math.Round(line.P1._z * (1 - t) + line.P0._z * t, 6);
+            var dx = P1._x - P0._x;
+            var dy = P1._y - P0._y;
+            var dz = P1._z - P0._z;
+            var t = (-A * P0._x - B * P0._y - C * P0._z - D)
+                    / (A * dx + B * dy + C * dz);
+            var x = (float)Math.Round(dx * t + P0._x, 2);
+            var y = (float)Math.Round(dy * t + P0._y, 2);
+            var z = (float)Math.Round(dz * t + P0._z, 2);
             return new Point3D(x, y, z);
         }
 
-        private bool IsAllPointsOnLine(List<Point3D> points)
+        private void Debug(IEnumerable<Point3D> points)
         {
-            var initialVector = new Point3D(points.Last()._x - points[0]._x,
-                points.Last()._y - points[0]._y, points.Last()._z - points[0]._z);
-            for (var i = 0; i < points.Count - 1; i++)
+            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
+            using (var writer = new StreamWriter("./log.txt"))
             {
-                var currentVector = new Point3D(points[i + 1]._x - points[i]._x,
-                    points[i + 1]._y - points[i]._y, points[i + 1]._z - points[i]._z);
-                if (Math.Abs(currentVector._x / initialVector._x - currentVector._y / initialVector._y) >= 1e-4)
-                    return false;
+                foreach (var point in points)
+                {
+                    writer.WriteLine($"({point._x}, {point._y}, {point._z})");
+                }
             }
-            return true;
         }
     }
 }

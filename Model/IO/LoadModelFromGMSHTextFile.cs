@@ -30,7 +30,7 @@ namespace Model.IO
             nextElementFlags = new string[3] { "*ELEMENT", "*ELSET", "*NSET" };
         }
 
-        public IModelData Load(string path)
+        public IModelData Load(string path, float factor = 1)
         {
             using (reader = new StreamReader(path))
             {
