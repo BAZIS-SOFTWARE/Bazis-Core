@@ -45,6 +45,6 @@ namespace ModelInterfaces
         /// Remove objects with groups
         /// </summary>
         /// <param name="objType"></param>
-        void Remove(ObjType objType);
+        bool Remove(ObjType objType);
     }
 }
