@@ -175,11 +175,20 @@ namespace Model
 /// <inheritdoc/>
 
         public ICollection<List<IModelObject>> Values { get { return modelObjects.Values; } }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void Add(ObjType key, List<IModelObject> value)
         {
-            modelObjects[key].AddRange(value);
+            if (modelObjects.ContainsKey(key))
+            {
+                MergeSort<IModelObject>.MergeSortFunction(value);
+                if (value.First().Number <= modelObjects[key].Last().Number)
+                    throw new Exception($"Последний элемент в коллекции {key} больше добавляемого!");
+                else
+                    modelObjects[key].AddRange(value);
+            }
+            else
+                modelObjects[key].AddRange(value);
         }
 /// <inheritdoc/>
 
@@ -196,7 +205,7 @@ namespace Model
 
             if (modelObjects.ContainsKey(objType))
                 if (addObj.Number <= modelObjects[objType].Last().Number)
-                    throw new Exception($"Первый элемент в добавляемой коллекции {objType} больше существующего последнего!");
+                    throw new Exception($"Последний элемент в коллекции {objType} больше добавляемого!");
                 else
                     modelObjects[objType].Add(addObj);
             else

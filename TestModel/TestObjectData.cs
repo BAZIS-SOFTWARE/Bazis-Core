@@ -118,6 +118,24 @@ namespace TestModel
             model.ObjectData.AddRange(new List<Node>() { node0 ,node1});
         }
 
+        [TestMethod]
+        [ExpectedException(typeof(Exception))]
+        public void AddCertainObjectsWithSameNumbers()
+        {
+            //assign
+            var model = new ModelData();
+
+            //act
+            var node0 = new Node(0, new Geometry.Point3D());
+            var node1 = new Node(1, new Geometry.Point3D());
+
+            var modelObjects = new List<IModelObject>() { node0, node1 };
+
+            model.ObjectData.Add(node0);
+            //assert
+            model.ObjectData.Add(ObjType.Узел, modelObjects);
+        }
+
         [DataTestMethod]
         [DataRow(ObjType.Линия)]
         [DataRow(ObjType.Точка)]

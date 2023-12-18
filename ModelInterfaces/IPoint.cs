@@ -15,7 +15,7 @@ namespace ModelInterfaces
         /// <summary>
         /// Position
         /// </summary>
-        Point3D Position { get; }
+        Point3D Position { get; set; }
         /// <summary>
         /// Normal
         /// </summary>

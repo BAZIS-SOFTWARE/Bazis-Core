@@ -70,7 +70,7 @@ namespace TestModel
         [Timeout(10000)]
         public void GetTriangles_ShouldBeFast_WhenManyNodesGiven()
         {
-            using (var reader = new StreamReader("../../Examples/2D_axi/10e5_nodes.txt"))
+            using (var reader = new StreamReader("../../../Examples/2D_axi/10e5_nodes.txt"))
             {
                 var nodes = new List<Node>();
                 var index = 0;
