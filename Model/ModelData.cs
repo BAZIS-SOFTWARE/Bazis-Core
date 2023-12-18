@@ -33,7 +33,20 @@ namespace Model
             foreach (var item in ObjectData)
                 MergeSort<IModelObject>.MergeSortFunction(item.Value);
         }
-/// <inheritdoc/>
+
+        public void Remove(ObjType objType)
+        {
+            ObjectData.Remove(objType);
+
+            var existGroups = GroupData.Where(x => x.ObjType != objType).ToList();
+
+            GroupData.Clear();
+
+            foreach (var existGroup in existGroups)
+                GroupData.Add(existGroup);
+        }
+
+        /// <inheritdoc/>
 
         public void Save(string path)
         {

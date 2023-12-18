@@ -27,8 +27,6 @@ namespace Model.MeshObjects
             jacobians.Add(DetJ(intPoint));
         }
 
-
-
         public Triangle(int number, Node[] nodes, int intpNumber) : base(number, nodes)
         {
             IntegralPoint intPoint;

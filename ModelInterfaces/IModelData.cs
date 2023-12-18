@@ -41,5 +41,10 @@ namespace ModelInterfaces
         /// Loader for model
         /// </summary>
         IModelLoader Loader { get; set; }
+        /// <summary>
+        /// Remove objects with groups
+        /// </summary>
+        /// <param name="objType"></param>
+        void Remove(ObjType objType);
     }
 }
