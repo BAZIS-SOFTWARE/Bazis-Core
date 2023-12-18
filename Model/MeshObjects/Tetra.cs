@@ -21,7 +21,7 @@ namespace Model.MeshObjects
             intPoint.AddDirection("l2", 1 / 4);
             intPoint.AddDirection("l3", 1 / 4);
             intPoint.AddDirection("l4", 1 / 4);
-            intPoint.Weigt = CalcVolume();;
+            intPoint.Weigt = CalcVolume();
             //jacobians.Add(DetJ(intPoint));
             intPoints.Add(intPoint);
         }
@@ -99,7 +99,9 @@ namespace Model.MeshObjects
 
         public override float[] GetDerivativesFormFunctions(IIntegralPoint intPoint)
         {
-            return new DiagonalMatrix(4, 4, 1f).AsColumnMajorArray();
+            // Расчитано для линейного элемента с одной т.интегрирования в центре
+            // по формулам 14.11а и б
+            return new float[] { 1,0,0, 0,1,0, 0,0,1, -1,-1,-1 };
         }
         /// <inheritdoc/>
 

@@ -29,7 +29,7 @@ namespace Model.GeometryObjects
         public override ObjType ObjType { get; } = ObjType.Точка;
 /// <inheritdoc/>
 
-        public Point3D Position { get; }
+        public Point3D Position { get; set; }
 /// <inheritdoc/>
 
         public Point3D Normal { get; set; }

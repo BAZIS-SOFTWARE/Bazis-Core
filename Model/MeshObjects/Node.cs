@@ -14,7 +14,7 @@ namespace Model.MeshObjects
         List<IElement> elements = new List<IElement>();
   /// <inheritdoc/>
   
-        public Point3D Position { get; }
+        public Point3D Position { get; set; }
 /// <inheritdoc/>
 
 
