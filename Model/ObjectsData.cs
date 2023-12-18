@@ -124,16 +124,17 @@ namespace Model
 
         public void ClearNotExisted()
         {
+            var temp = new Dictionary<ObjType, List<IModelObject>>();
             foreach (var item in modelObjects)
             {
                 var removedObjs = item.Value.Where(x => x.ExistState == false);
 
                 var existObjects = item.Value.Except(removedObjs, new EqualityComparerByExistState()).ToList();
 
-                item.Value.Clear();
-                item.Value.AddRange(existObjects);
+                if (existObjects.Count > 0)
+                    temp.Add(item.Key, existObjects);
             }
-
+            modelObjects = temp;
         }
         /// <inheritdoc/>
 

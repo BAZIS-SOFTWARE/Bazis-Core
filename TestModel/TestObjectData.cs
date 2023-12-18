@@ -7,9 +7,9 @@ using ModelInterfaces;
 using System;
 using System.Collections.Generic;
 using Model.GeometryObjects;
-using ModelInterfaces.ObjectsFinders;
 using Geometry;
 using System.Linq;
+using Model.GroupsData;
 
 namespace TestModel
 {
@@ -159,6 +159,48 @@ namespace TestModel
             model.ObjectData.Remove(objType);
             //assert
             Assert.AreEqual(model.ObjectData.ContainsKey(objType), false);
+        }
+
+        [DataTestMethod]
+        [DataRow(ObjType.Узел, 0, 0)]
+        [DataRow(ObjType.Элемент3D, 4, 0)]
+        public void RemoveObjectsSyncWithGroups(ObjType objType, int nNumbs,int grps)
+        {
+            //assing
+            var nodes = new Node[4]
+            {
+                new Node(0,new Point3D(0,0,0)),
+                new Node(1,new Point3D(10,0,0)),
+                new Node(2,new Point3D(0,10,0)),
+                new Node(3,new Point3D(0,0,10)),
+            };
+            var objects = new Model.ModelObject[]
+            {
+                new Tetra( 0,nodes),
+                new Tetra( 4,nodes),
+                new Tetra(5,nodes),
+                new Tetra( 6,nodes),
+                new Tetra(7,nodes),
+                new Tetra(8,nodes)
+            };
+
+            var group = new Group("test", objType);
+            group.Add(nodes[0]);
+            //act
+
+            var model = new ModelData();
+
+            model.ObjectData.AddRange(nodes);
+            model.ObjectData.AddRange(objects);
+
+            model.GroupData.Add(group);
+
+            model.Remove(objType);
+            //assert            
+            Assert.AreEqual(model.ObjectData.NumberOfNodes,nNumbs, 0);
+            Assert.AreEqual(model.ObjectData.ContainsKey(objType), false);
+            Assert.AreEqual(model.GroupData.FindMany(objType).Count(), grps,0);
+
         }
 
         [DataTestMethod]

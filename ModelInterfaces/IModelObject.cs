@@ -14,10 +14,6 @@ namespace ModelInterfaces
         /// <summary>
         /// Точка
         /// </summary>
-        Узел,
-        /// <summary>
-        /// Точка
-        /// </summary>
         Точка,
         /// <summary>
         /// Поверхности
@@ -35,6 +31,10 @@ namespace ModelInterfaces
         /// Фигура3D
         /// </summary>
         Фигура3D,
+        /// <summary>
+        /// Узел
+        /// </summary>
+        Узел,
         /// <summary>
         /// Элементы1D
         /// </summary>

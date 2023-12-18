@@ -39,8 +39,13 @@ namespace Model
 
         public bool Remove(ObjType objType)
         {
-            if (ObjectData.Remove(objType))
+            if (ObjectData.ContainsKey(objType))
             {
+                foreach (var obj in ObjectData[objType])
+                    obj.ExistState = false;
+
+                ObjectData.ClearNotExisted();
+
                 var existGroups = GroupData.Where(x => x.ObjType != objType).ToList();
 
                 GroupData.Clear();
