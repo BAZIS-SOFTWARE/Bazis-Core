@@ -41,8 +41,8 @@ namespace TestModel
             };
             var nodes = new List<Node> { A, B, C, D, E, F, G, H };
             objectsData = new ObjectsData();
-            objectsData.AddRange(nodes);
-            objectsData.AddRange(elements);
+            objectsData.Add(ObjType.Узел, nodes);
+            objectsData.Add(ObjType.Элемент,elements);
         }
 
         [TestMethod]

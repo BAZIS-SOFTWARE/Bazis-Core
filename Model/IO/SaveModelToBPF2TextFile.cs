@@ -27,10 +27,10 @@ namespace Model.IO
 
                 sw.WriteLine(ver);
 
-                foreach (var objsType in model.ObjectData.Keys)
+                foreach (var item in model.ObjectData)
                 {
                     sw.WriteLine("");
-                    if (objsType == ObjType.Узел)
+                    if (item.Key == ObjType.Узел)
                     {
                         sw.WriteLine("Узлы");
                         foreach (var nodeItem in model.ObjectData[ObjType.Узел])
@@ -44,15 +44,15 @@ namespace Model.IO
                         sw.WriteLine("#Узлы");
                     }
 
-                    else if (objsType == ObjType.Элемент3D | objsType == ObjType.Элемент2D | objsType == ObjType.Элемент1D)
+                    else if (item.Key == ObjType.Элемент)
                     {
-                        sw.WriteLine(objsType);
-                        foreach (var obj in model.ObjectData[objsType])
+                        sw.WriteLine("Элементы");
+                        foreach (var obj in model.ObjectData[ObjType.Элемент])
                         {
                             var elem = (Element)obj;
                             sw.WriteLine(elem.ToString());
                         }
-                        sw.WriteLine($"#{objsType}");
+                        sw.WriteLine($"#Элементы");
                     }
                 }
                 sw.WriteLine("");

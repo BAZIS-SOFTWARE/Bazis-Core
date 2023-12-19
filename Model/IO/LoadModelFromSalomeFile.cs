@@ -28,10 +28,10 @@ namespace Model.IO
                     var nodesNumber = int.Parse(tokens[0]);
                     var elementsNumber = int.Parse(tokens[1]);
                     var nodes = GetNodes(reader, nodesNumber).ToList();
-                    modelData.ObjectData.AddRange(nodes);
+                    modelData.ObjectData.Add(ObjType.Узел, nodes);
                     var elements = GetElements(reader, elementsNumber,
                         nodes.ToDictionary(x => x.Number, x => x)).ToList();
-                    modelData.ObjectData.AddRange(elements);
+                    modelData.ObjectData.Add(ObjType.Элемент, elements);
                 }
             }
             return modelData;

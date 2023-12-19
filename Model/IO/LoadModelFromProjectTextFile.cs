@@ -85,7 +85,7 @@ namespace Model.IO
                     nodes.Add(node);
                 }
             }
-            newMesh.ObjectData.AddRange(nodes);
+            newMesh.ObjectData.Add(ObjType.Узел, nodes);
 
         }
 
@@ -120,7 +120,7 @@ namespace Model.IO
                     else elemKind = ElementKind.Гекса;
 
                     var el3DObj = new Tetra(elNumber, nodeList.ToArray());
-                    newMesh.ObjectData.Add(el3DObj);
+                    newMesh.ObjectData.Add(ObjType.Элемент, el3DObj);
                 }
 
                 if (elType == "Элементы2D" | elType == "Элемент2D" | elType == "Элементы 2003")
@@ -131,7 +131,7 @@ namespace Model.IO
                     else elemKind = ElementKind.Квадрат;
 
                     var el2DObj = new Triangle(elNumber, nodeList.ToArray());
-                    newMesh.ObjectData.Add(el2DObj);
+                    newMesh.ObjectData.Add(ObjType.Элемент, el2DObj);
                 }
                 //number++;
                 line = sr.ReadLine();

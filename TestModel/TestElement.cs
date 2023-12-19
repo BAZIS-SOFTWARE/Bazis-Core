@@ -76,8 +76,8 @@ namespace TestModel
 
 
             var model = new ModelData();
-            model.ObjectData.Add(el0);
-            model.ObjectData.Add(el1);
+            model.ObjectData.Add(ObjType.Элемент, el0);
+            model.ObjectData.Add(ObjType.Элемент, el1);
 
 
             var creators = new Extract2DFrom3D();

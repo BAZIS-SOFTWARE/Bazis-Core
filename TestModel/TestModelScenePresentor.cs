@@ -73,8 +73,8 @@ namespace TestModel
 
 
             var model = new ModelData();
-            model.ObjectData.AddRange(nodes);
-            model.ObjectData.Add(modelObject);
+            model.ObjectData.Add(ObjType.Узел, nodes);
+            model.ObjectData.Add(ObjType.Элемент, modelObject);
 
             var presentator = new ModelScenePresentator(model.ObjectData);
 
@@ -137,8 +137,8 @@ namespace TestModel
 
 
             var model = new ModelData();
-            model.ObjectData.AddRange(points);
-            model.ObjectData.Add(modelObject);
+            model.ObjectData.Add(ObjType.Точка, points);
+            model.ObjectData.Add(ObjType.Фигура, modelObject);
 
             var presentator = new ModelScenePresentator(model.ObjectData);
 

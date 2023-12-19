@@ -24,6 +24,10 @@ namespace ModelInterfaces
         /// </summary>
         Поверхность,
         /// <summary>
+        /// Фигура
+        /// </summary>
+        Фигура,
+        /// <summary>
         /// Фигура2D
         /// </summary>
         Фигура2D,
@@ -36,15 +40,19 @@ namespace ModelInterfaces
         /// </summary>
         Узел,
         /// <summary>
-        /// Элементы1D
+        /// Элемент
+        /// </summary>
+        Элемент,
+        /// <summary>
+        /// Элемент1D
         /// </summary>
         Элемент1D,
         /// <summary>
-        /// Элементы2D
+        /// Элемент2D
         /// </summary>
         Элемент2D,
         /// <summary>
-        /// Элементы3D
+        /// Элемент3D
         /// </summary>
         Элемент3D
     }

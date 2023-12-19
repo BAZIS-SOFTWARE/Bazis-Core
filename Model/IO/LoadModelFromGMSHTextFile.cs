@@ -55,7 +55,7 @@ namespace Model.IO
                             line = reader.ReadLine();
                         }
                         var orderedNodes = nodes.OrderBy(x => x.Number);
-                        newMesh.ObjectData.AddRange(orderedNodes);
+                        newMesh.ObjectData.Add(ObjType.Узел, orderedNodes);
                     }
                     if (line.Contains("type=T3D2"))
                     {
@@ -113,7 +113,7 @@ namespace Model.IO
                     .Select(m => int.Parse(m) - 1)
                     .ToArray();
                 var element = BuildElement(elementKind, selectedNodesId, currentNumber);
-                newMesh.ObjectData.Add(element);
+                newMesh.ObjectData.Add(ObjType.Элемент, element);
                 line = reader.ReadLine();
                 if (line != null)
                 {

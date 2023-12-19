@@ -29,10 +29,10 @@ namespace Model.IO
 
                 sw.WriteLine(ver);
 
-                foreach (var objsType in model.ObjectData.Keys)
+                foreach (var objsType in model.ObjectData)
                 {
                     sw.WriteLine("");
-                    if (objsType == ObjType.Узел)
+                    if (objsType.Key == ObjType.Узел)
                     {
                         sw.WriteLine("Узлы");
                         foreach (var nodeItem in model.ObjectData.FindMany<Node>())
@@ -46,21 +46,12 @@ namespace Model.IO
                         sw.WriteLine("#Узлы");
                     }
 
-                    else if (objsType == ObjType.Элемент3D | objsType == ObjType.Элемент2D | objsType == ObjType.Элемент1D)
+
+                    else if (objsType.Key == ObjType.Элемент)
                     {
-                        sw.WriteLine(objsType);
-                        foreach (var obj in model.ObjectData[objsType])
-                        {
-                            var elem = (Element)obj;
-                            var strAr = new List<string>();
-                            foreach (var node in elem.GetVertexes())
-                                strAr.Add(node.Number.ToString());
-
-                            var strNodes = string.Join(" ", strAr);
-
-                            sw.WriteLine("{0} {1}", elem.Number, strNodes);
-                        }
-                        sw.WriteLine($"#{objsType}");
+                        SaveElements(model, sw, ObjType.Элемент1D);
+                        SaveElements(model, sw, ObjType.Элемент2D);
+                        SaveElements(model, sw, ObjType.Элемент3D);
                     }
                 }
                 sw.WriteLine("");
@@ -78,6 +69,23 @@ namespace Model.IO
                 sw.WriteLine("#Группы узлов и элементов");
                 sw.Dispose();
             }
+        }
+
+        private static void SaveElements(IModelData model, StreamWriter sw, ObjType objsType)
+        {
+            sw.WriteLine(objsType);
+            foreach (var obj in model.ObjectData[objsType])
+            {
+                var elem = (Element)obj;
+                var strAr = new List<string>();
+                foreach (var node in elem.GetVertexes())
+                    strAr.Add(node.Number.ToString());
+
+                var strNodes = string.Join(" ", strAr);
+
+                sw.WriteLine("{0} {1}", elem.Number, strNodes);
+            }
+            sw.WriteLine($"#{objsType}");
         }
     }
 }

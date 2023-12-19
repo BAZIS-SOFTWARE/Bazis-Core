@@ -84,7 +84,7 @@ namespace Model.IO
                     nodes.Add(node);
                 }
             }
-            newMesh.ObjectData.AddRange(nodes);
+            newMesh.ObjectData.Add(ObjType.Узел,nodes);
 
         }
 
@@ -148,7 +148,7 @@ namespace Model.IO
                         break;
                 }
 
-                newMesh.ObjectData.Add(elem);
+                newMesh.ObjectData.Add(ObjType.Элемент, elem);
                 line = sr.ReadLine();
             }
         }

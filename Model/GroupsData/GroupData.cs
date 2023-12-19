@@ -1,4 +1,5 @@
 ﻿using ModelInterfaces;
+using ModelInterfaces.ObjectsComparers;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -97,6 +98,27 @@ namespace Model.GroupsData
         public IEnumerable<IGroup> FindMany(ObjType objType)
         {
             return groups.Where(x => x.ObjType == objType);
+        }
+/// <inheritdoc/>
+
+        public void ClearNotExisted()
+        {
+            var temp = new List<IGroup>();
+            foreach (var item in groups)
+            {
+                var removedObjs = item.Where(x => x.ExistState == false);
+
+                var existObjects = item.Except(removedObjs, new EqualityComparerByExistState()).ToList();
+
+                if (existObjects.Count > 0)
+                {
+                    var gr = new Group(item.GroupName, item.ObjType);
+                    gr.AddRange(existObjects);
+                    temp.Add(gr);
+                }
+  
+            }
+            groups = temp;
         }
     }
 }

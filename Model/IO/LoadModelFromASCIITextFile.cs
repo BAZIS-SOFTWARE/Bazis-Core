@@ -29,12 +29,12 @@ namespace Model.IO
                     if(line.Contains("BEGIN_NODES"))
                     {
                         var nodes = ReadNodes(reader, int.Parse(tokens[1]));
-                        model.ObjectData.AddRange(nodes);
+                        model.ObjectData.Add(ObjType.Узел, nodes);
                     }
                     if(line.Contains("BEGIN_ELEMENTS"))
                     {
                         var elements = ReadElements(reader, int.Parse(tokens[1]));
-                        model.ObjectData.AddRange(elements);
+                        model.ObjectData.Add(ObjType.Элемент,elements);
                     }
                     if(line.Contains("BEGIN_GROUPS"))
                     {

@@ -9,6 +9,10 @@ namespace ModelInterfaces
     public interface IGroupData: IList<IGroup>
     {
         /// <summary>
+        /// ClearNotExisted
+        /// </summary>
+        void ClearNotExisted();
+        /// <summary>
         /// Find
         /// </summary>
         /// <param name="index"></param>

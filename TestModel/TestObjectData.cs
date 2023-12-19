@@ -41,8 +41,8 @@ namespace TestModel
             };
 
             var model = new ModelData();
-            model.ObjectData.AddRange(nodes);
-            model.ObjectData.AddRange(objs);
+            model.ObjectData.Add(ObjType.Узел,nodes);
+            model.ObjectData.Add(ObjType.Элемент, objs);
             //act
             var elements = model.ObjectData.FindMany(objsNumbr);
             //assert
@@ -76,8 +76,8 @@ namespace TestModel
             //act
 
             var model = new ModelData();
-            model.ObjectData.AddRange(nodes);
-            model.ObjectData.AddRange(objs);
+            model.ObjectData.Add(ObjType.Узел, nodes);
+            model.ObjectData.Add(ObjType.Элемент, objs);
 
             //assert            
             if (reqType == "Тетраэдры")
@@ -97,9 +97,9 @@ namespace TestModel
             //act
             var node0 = new Node(0, new Geometry.Point3D());
 
-            model.ObjectData.Add(node0);
+            model.ObjectData.Add(ObjType.Узел, node0);
             //assert
-            model.ObjectData.Add(node0);
+            model.ObjectData.Add(ObjType.Узел, node0);
         }
 
         [TestMethod]
@@ -113,9 +113,9 @@ namespace TestModel
             var node0 = new Node(0, new Geometry.Point3D());
             var node1 = new Node(1, new Geometry.Point3D());
 
-            model.ObjectData.Add(node0);
+            model.ObjectData.Add(ObjType.Узел, node0);
             //assert
-            model.ObjectData.AddRange(new List<Node>() { node0 ,node1});
+            model.ObjectData.Add(ObjType.Узел, new List<Node>() { node0 ,node1});
         }
 
         [TestMethod]
@@ -131,7 +131,7 @@ namespace TestModel
 
             var modelObjects = new List<IModelObject>() { node0, node1 };
 
-            model.ObjectData.Add(node0);
+            model.ObjectData.Add(ObjType.Узел, node0);
             //assert
             model.ObjectData.Add(ObjType.Узел, modelObjects);
         }
@@ -145,16 +145,16 @@ namespace TestModel
             var model = new ModelData();
 
             //act
-            var node0 = new GeometryPoint(0, new Geometry.Point3D());
-            var node1 = new GeometryPoint(1, new Geometry.Point3D());
-            var node2 = new GeometryPoint(3, new Geometry.Point3D());
+            var point0 = new GeometryPoint(0, new Geometry.Point3D());
+            var point1 = new GeometryPoint(1, new Geometry.Point3D());
+            var point2 = new GeometryPoint(3, new Geometry.Point3D());
 
-            var line = new Line(2, new GeometryPoint[] { node0, node1 });
+            var line = new Line(2, new GeometryPoint[] { point0, point1 });
 
-            model.ObjectData.Add(node0);
-            model.ObjectData.Add(node1);
-            model.ObjectData.Add(line);
-            model.ObjectData.Add(node2);
+            model.ObjectData.Add(ObjType.Точка, point0);
+            model.ObjectData.Add(ObjType.Точка, point1);
+            model.ObjectData.Add(ObjType.Линия, line);
+            model.ObjectData.Add(ObjType.Точка, point2);
 
             model.ObjectData.Remove(objType);
             //assert
@@ -185,13 +185,13 @@ namespace TestModel
             };
 
             var group = new Group("test", objType);
-            group.Add(nodes[0]);
+            group.AddRange(objects);
             //act
 
             var model = new ModelData();
 
-            model.ObjectData.AddRange(nodes);
-            model.ObjectData.AddRange(objects);
+            model.ObjectData.Add(ObjType.Узел, nodes);
+            model.ObjectData.Add(ObjType.Элемент, objects);
 
             model.GroupData.Add(group);
 
@@ -216,11 +216,11 @@ namespace TestModel
             var nodes = controller.GetNodes(ref status);
             Assert.AreEqual(true, status);
             Assert.AreEqual(4, nodes.Count);
-            var surfaces = controller.GetMeshEntities(2, -1, ref status);
+            var elements = controller.GetMeshEntities(2, -1, ref status);
             Assert.AreEqual(true, status);
-            Assert.AreEqual(2, surfaces.Count);
-            modelData.ObjectData.AddRange(nodes);
-            modelData.ObjectData.AddRange(surfaces);
+            Assert.AreEqual(2, elements.Count);
+            modelData.ObjectData.Add(ObjType.Узел, nodes);
+            modelData.ObjectData.Add(ObjType.Элемент, elements);
             //modelData.ObjectData.Sort();
             modelData.ObjectData.Remove(ObjType.Элемент2D);
             modelData.ObjectData.Remove(ObjType.Узел);//Здесь падает, эмулирую такое же поведение как в Базисе

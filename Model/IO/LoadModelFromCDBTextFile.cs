@@ -40,13 +40,13 @@ namespace Model.IO
                     {
                         LoadEvent?.Invoke(this, new LoaderEventArgs("Начало загрузки узлов"));
                         var nodes = ReadNodes(reader, tokens).ToList();
-                        model.ObjectData.AddRange(nodes);
+                        model.ObjectData.Add(ObjType.Узел, nodes);
                     }
                     if (line.Contains(ELEMENTS_BLOCK))
                     {
                         LoadEvent?.Invoke(this, new LoaderEventArgs("Начало загрузки элементов"));
                         var elements = ReadElements(reader, tokens);
-                        model.ObjectData.AddRange(elements);
+                        model.ObjectData.Add(ObjType.Элемент, elements);
                     }
                 }
             }

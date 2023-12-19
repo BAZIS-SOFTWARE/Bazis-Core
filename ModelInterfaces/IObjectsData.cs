@@ -1,11 +1,12 @@
 ﻿using Functions.Sort;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace ModelInterfaces
 {
-    public interface IObjectsData : IDictionary<ObjType, List<IModelObject>>
+    public interface IObjectsData : IEnumerable<KeyValuePair<ObjType, List<IModelObject>>>
     {
         /// <summary>
         /// objType
@@ -13,6 +14,35 @@ namespace ModelInterfaces
         /// <param name="objType"></param>
         /// <returns></returns>
         IModelObject GetLastObj(ObjType objType);
+        /// <summary>
+        /// Count
+        /// </summary>
+        int Count { get; }
+
+        /// <summary>
+        /// this
+        /// </summary>
+        /// <param name="objType"></param>
+        /// <param name="objIndex"></param>
+        /// <returns></returns>
+        IModelObject this[ObjType objType, int objIndex] { get;set; }
+
+        /// <summary>
+        /// this
+        /// </summary>
+        /// <param name="objType"></param>
+        /// <returns></returns>
+        List<IModelObject> this[ObjType objType] { get;}
+        /// <summary>
+        /// Clear
+        /// </summary>
+        void Clear();
+        /// <summary>
+        /// ContainsKey
+        /// </summary>
+        /// <param name="objType"></param>
+        /// <returns></returns>
+        bool ContainsKey(ObjType objType);
         /// <summary>
         /// NumberOfNodes
         /// </summary>
@@ -65,12 +95,20 @@ namespace ModelInterfaces
         /// <summary>
         /// Add
         /// </summary>
+        /// <param name="objType"></param>
         /// <param name="addObj"></param>
-        void Add(IModelObject addObj);
+        void Add(ObjType objType,IModelObject addObj);
+
         /// <summary>
-        /// AddRange
+        /// Add
         /// </summary>
+        /// <param name="objType"></param>
         /// <param name="addObjs"></param>
-        void AddRange(IEnumerable<IModelObject> addObjs);
+        void Add(ObjType objType, IEnumerable<IModelObject> addObjs);
+        /// <summary>
+        /// Remove
+        /// </summary>
+        /// <param name="objType"></param>
+        void Remove(ObjType objType);
     }
 }

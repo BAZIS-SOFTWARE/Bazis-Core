@@ -46,12 +46,7 @@ namespace Model
 
                 ObjectData.ClearNotExisted();
 
-                var existGroups = GroupData.Where(x => x.ObjType != objType).ToList();
-
-                GroupData.Clear();
-
-                foreach (var existGroup in existGroups)
-                    GroupData.Add(existGroup);
+                GroupData.ClearNotExisted();
                 return true;
             }
             else return false;

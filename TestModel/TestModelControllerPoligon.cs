@@ -27,7 +27,7 @@ namespace TestModel
 
             var fig2D = new Figure2D(0, points);
             var model = new ModelData();
-            model.ObjectData.Add(fig2D);
+            model.ObjectData.Add(ObjType.Фигура2D, fig2D);
 
             //act
             var presentator = new ModelScenePresentator(model.ObjectData);
@@ -75,7 +75,7 @@ namespace TestModel
 
             };
             var model = new ModelData();
-            model.ObjectData.AddRange(figs2D);
+            model.ObjectData.Add(ObjType.Фигура2D, figs2D);
 
             //act
             var presentator = new ModelScenePresentator(model.ObjectData);

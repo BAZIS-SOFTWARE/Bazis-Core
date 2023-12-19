@@ -15,33 +15,38 @@ namespace Model
     public class ObjectsData : IObjectsData
     {
         Dictionary<ObjType,List<IModelObject>> modelObjects;
-        /// <summary>
-        /// this
-        /// </summary>
-        /// <param name="objType"></param>
-        /// <param name="objIndex"></param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public IModelObject this[ObjType objType, int objIndex]
         {
             get { return modelObjects[objType][objIndex]; }
             set { modelObjects[objType][objIndex] = value; }
         }
-        /// <summary>
-        /// this
-        /// </summary>
-        /// <param name="objType"></param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public List<IModelObject> this[ObjType objType]
         {
-            get { return modelObjects[objType]; }
-            set { modelObjects[objType] = value; }
+            get 
+            {
+                if(objType == ObjType.Элемент1D |
+                    objType == ObjType.Элемент2D |
+                    objType == ObjType.Элемент3D)
+                return modelObjects[ObjType.Элемент].Where(x => x.ObjType == objType).ToList();
+                else
+                    return modelObjects[objType];
+            }
         }
         /// <summary>
         /// ObjectsData
         /// </summary>
         public ObjectsData()
         {
-            modelObjects = new Dictionary<ObjType, List<IModelObject>>();
+            modelObjects = new Dictionary<ObjType, List<IModelObject>>()
+            {
+                {ObjType.Точка,new List<IModelObject>() },
+                {ObjType.Линия,new List<IModelObject>() },
+                {ObjType.Фигура,new List<IModelObject>() },
+                {ObjType.Узел,new List<IModelObject>() },
+                {ObjType.Элемент,new List<IModelObject>() }
+            };
         }
 /// <inheritdoc/>
 
@@ -79,15 +84,30 @@ namespace Model
 
         public IModelObject GetLastObj(ObjType objType)
         {
-            if (modelObjects.ContainsKey(objType))
-                return modelObjects[objType].Last();           
-            else return null;
+            if (objType == ObjType.Элемент1D |
+       objType == ObjType.Элемент2D |
+       objType == ObjType.Элемент3D)
+                return modelObjects[ObjType.Элемент].FindLast(x => x.ObjType == objType);
+            else if (objType == ObjType.Фигура2D |
+                objType == ObjType.Фигура3D)
+                return modelObjects[ObjType.Фигура].FindLast(x => x.ObjType == objType);
+            else
+                return modelObjects[objType].FindLast(x => x.ObjType == objType);
         }
 /// <inheritdoc/>
 
         public int Count
         {
-            get { return modelObjects.Count; }
+            get 
+            {
+                var count = 0;
+
+                foreach (var item in modelObjects)
+                {
+                    count += item.Value.Count;
+                }
+                return count; 
+            }
         }
         /// <inheritdoc/>
 
@@ -138,18 +158,18 @@ namespace Model
         }
         /// <inheritdoc/>
 
-        public bool Remove(ObjType objType)
+        public void Remove(ObjType objType)
         {
-            return modelObjects.Remove(objType);
+            foreach (var item in modelObjects[objType])
+                item.ExistState = false;
+            ClearNotExisted();
         }
         /// <inheritdoc/>
 
         public void RemoveAt(ObjType objType,int objInd)
         {
-            modelObjects[objType].RemoveAt(objInd);
-
-            if (modelObjects[objType].Count == 0)
-                modelObjects.Remove(objType);
+                modelObjects[objType][objInd].ExistState = false;
+            ClearNotExisted();
         }
 
 /// <inheritdoc/>
@@ -176,42 +196,8 @@ namespace Model
 /// <inheritdoc/>
 
         public ICollection<List<IModelObject>> Values { get { return modelObjects.Values; } }
-        /// <inheritdoc/>
 
-        public void Add(ObjType key, List<IModelObject> value)
-        {
-            if (modelObjects.ContainsKey(key))
-            {
-                MergeSort<IModelObject>.MergeSortFunction(value);
-                if (value.First().Number <= modelObjects[key].Last().Number)
-                    throw new Exception($"Последний элемент в коллекции {key} больше добавляемого!");
-                else
-                    modelObjects[key].AddRange(value);
-            }
-            else
-                modelObjects[key].AddRange(value);
-        }
-/// <inheritdoc/>
 
-        public void Add(KeyValuePair<ObjType, List<IModelObject>> item)
-        {
-            modelObjects[item.Key].AddRange(item.Value);
-        }
-
-        /// <inheritdoc/>
-
-        public void Add(IModelObject addObj)
-        {
-            var objType = addObj.ObjType;
-
-            if (modelObjects.ContainsKey(objType))
-                if (addObj.Number <= modelObjects[objType].Last().Number)
-                    throw new Exception($"Последний элемент в коллекции {objType} больше добавляемого!");
-                else
-                    modelObjects[objType].Add(addObj);
-            else
-                modelObjects.Add(objType, new List<IModelObject>() { addObj });         
-        }
 /// <inheritdoc/>
 
         public bool Contains(KeyValuePair<ObjType, List<IModelObject>> item)
@@ -222,13 +208,19 @@ namespace Model
 
         public bool ContainsKey(ObjType objType)
         {
-            return modelObjects.ContainsKey(objType);
+            if (objType == ObjType.Элемент1D |
+                objType == ObjType.Элемент2D |
+                objType == ObjType.Элемент3D)
+                return modelObjects[ObjType.Элемент].Find(x => x.ObjType == objType)
+    != null ? true : false;
+            else if (objType == ObjType.Фигура2D |
+                objType == ObjType.Фигура3D)
+                return modelObjects[ObjType.Фигура].Find(x => x.ObjType == objType)
+!= null ? true : false;
+            else
+                return modelObjects.ContainsKey(objType);
         }
 
-        public void CopyTo(KeyValuePair<ObjType, List<IModelObject>>[] array, int arrayIndex)
-        {
-            throw new NotImplementedException();
-        }
 /// <inheritdoc/>
 
         public IEnumerator<KeyValuePair<ObjType, List<IModelObject>>> GetEnumerator()
@@ -238,12 +230,7 @@ namespace Model
                 yield return objItem;
             }
         }
-/// <inheritdoc/>
 
-        public bool Remove(KeyValuePair<ObjType, List<IModelObject>> item)
-        {
-            throw new NotImplementedException();
-        }
 /// <inheritdoc/>
 
         public bool TryGetValue(ObjType key, out List<IModelObject> value)
@@ -255,24 +242,33 @@ namespace Model
         {
             throw new NotImplementedException();
         }
-/// <inheritdoc/>
 
-        public void AddRange(IEnumerable<IModelObject> addObjs)
+        /// <inheritdoc/>
+
+        public void Add(ObjType objType, IModelObject addObj)
         {
+            if (modelObjects[objType].Count > 0)
+                if (addObj.Number <= modelObjects[objType].Last().Number)
+                    throw new Exception($"Последний элемент в коллекции {objType} больше добавляемого!");
+                else
+                    modelObjects[objType].Add(addObj);
+            else
+                modelObjects[objType].Add(addObj);
+        }
+        /// <inheritdoc/>
 
+        public void Add(ObjType objType,IEnumerable<IModelObject> addObjs)
+        {
             var objsList = addObjs.ToList();
             MergeSort<IModelObject>.MergeSortFunction(objsList);
 
-            var objType = objsList.First().ObjType;
-
-            if (modelObjects.ContainsKey(objType))
+            if (modelObjects[objType].Count > 0)
                 if (objsList.First().Number <= modelObjects[objType].Last().Number)
                     throw new Exception($"Первый элемент в добавляемой коллекции {objType} больше существующего последнего!");
                 else
                     modelObjects[objType].AddRange(objsList);
             else
-                modelObjects.Add(objType, objsList);
-
+                modelObjects[objType].AddRange(objsList);
 
         }
     }
