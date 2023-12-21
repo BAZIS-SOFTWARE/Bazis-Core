@@ -127,11 +127,11 @@ namespace TestModel
             var model = new ModelData();
 
             //act
-            var node0 = new Point(0, new Geometry.Point3D());
-            var node1 = new Point(1, new Geometry.Point3D());
-            var node2 = new Point(3, new Geometry.Point3D());
+            var node0 = new GeometryPoint(0, new Geometry.Point3D());
+            var node1 = new GeometryPoint(1, new Geometry.Point3D());
+            var node2 = new GeometryPoint(3, new Geometry.Point3D());
 
-            var line = new Line(2, new Point[] { node0, node1 });
+            var line = new Line(2, new GeometryPoint[] { node0, node1 });
 
             model.ObjectData.Add(node0);
             model.ObjectData.Add(node1);

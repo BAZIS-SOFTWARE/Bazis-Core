@@ -24,8 +24,8 @@ namespace TestModel
             var el2D = new Triangle(0, nodes);
             model.ObjectData.Add(el2D);
             var presentator = new ModelScenePresentator(model.ObjectData);
-            var values = presentator[ObjType.Элемент2D].CreateIndexes();
-            var edges = presentator[ObjType.Элемент2D].CreateEdgeFlags(values.Item4);
+            var values = presentator[ObjType.Элемент2D.ToString()].CreateIndexes();
+            var edges = presentator[ObjType.Элемент2D.ToString()].CreateEdgeFlags(values.Item4);
             Assert.AreEqual(3, edges.Length);
             for (var i = 0; i < edges.Length; ++i)
                 Assert.AreEqual(true, edges[i]);
@@ -46,8 +46,8 @@ namespace TestModel
             model.ObjectData.Add(el2D);
 
             var presentator = new ModelScenePresentator(model.ObjectData);
-            var values = presentator[ObjType.Элемент2D].CreateIndexes();
-            var edges = presentator[ObjType.Элемент2D].CreateEdgeFlags(values.Item4);
+            var values = presentator[ObjType.Элемент2D.ToString()].CreateIndexes();
+            var edges = presentator[ObjType.Элемент2D.ToString()].CreateEdgeFlags(values.Item4);
             Assert.AreEqual(6, edges.Length);
             var expectedFlags = new bool[] { true, true, false, false, true, true };
             for (var i = 0; i < expectedFlags.Length; ++i)
@@ -58,21 +58,21 @@ namespace TestModel
         public void TestOnPolygon()
         {
             var model = new ModelData();
-            var points = new Point[]
+            var points = new GeometryPoint[]
             {
-                new Point(0, new Point3D(0.0f,0.0f,0.0f)),
-                new Point(1, new Point3D(1.0f,0.0f,0.0f)),
-                new Point(2, new Point3D(1.0f,1.0f,0.0f)),
-                new Point(3, new Point3D(0.0f,1.0f,0.0f)),
-                new Point(4, new Point3D(-1.0f,1.0f,0.0f)),
-                new Point(5, new Point3D(-1.0f,0.0f,0.0f))
+                new GeometryPoint(0, new Point3D(0.0f,0.0f,0.0f)),
+                new GeometryPoint(1, new Point3D(1.0f,0.0f,0.0f)),
+                new GeometryPoint(2, new Point3D(1.0f,1.0f,0.0f)),
+                new GeometryPoint(3, new Point3D(0.0f,1.0f,0.0f)),
+                new GeometryPoint(4, new Point3D(-1.0f,1.0f,0.0f)),
+                new GeometryPoint(5, new Point3D(-1.0f,0.0f,0.0f))
             };
             var poligon = new Figure2D(0, points); 
 
             model.ObjectData.Add(poligon);
             var presentator = new ModelScenePresentator(model.ObjectData);
-            var values = presentator[ObjType.Фигура2D].CreateIndexes();
-            var edges = presentator[ObjType.Фигура2D].CreateEdgeFlags(values.Item4);
+            var values = presentator[ObjType.Фигура2D.ToString()].CreateIndexes();
+            var edges = presentator[ObjType.Фигура2D.ToString()].CreateEdgeFlags(values.Item4);
             
             Assert.AreEqual(12, edges.Length);
             var expectedFlags = new bool[] { true, true, false, false, true, false,

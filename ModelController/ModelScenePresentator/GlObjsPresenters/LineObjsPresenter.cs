@@ -6,19 +6,23 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using ModelInterfaces.GeometryObjects;
 
 namespace ModelController.ModelScenePresentator.GlObjsPresenters
 {
     /// <summary>
     /// LineObjsPresenter
     /// </summary>
-    public class LineObjsPresenter<T> : IObjsPresenter, IEnumerable<ILineObject<T>>
+    public class LineObjsPresenter<T> : IObjsPresenter
         where T : IPoint
     {
         IEnumerable<ILineObject<T>> lineObjects;
 /// <inheritdoc/>
 
         public PresenterType PresenterType { get; } = PresenterType.Line;
+/// <inheritdoc/>
+
+        public bool IsVolumeObjs { get; } = false;
 
         /// <summary>
         /// LineObjsPresenter
@@ -112,7 +116,7 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
             return edgesArray;
         }
 
-        public IEnumerator<ILineObject<T>> GetEnumerator()
+        public IEnumerator<IModelObject> GetEnumerator()
         {
             foreach (var lineObject in lineObjects)
             {

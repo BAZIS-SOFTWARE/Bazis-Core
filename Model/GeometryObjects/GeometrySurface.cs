@@ -2,6 +2,7 @@
 using Model.MeshObjects;
 using ModelInterfaces;
 using ModelInterfaces.Attributes;
+using ModelInterfaces.GeometryObjects;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -13,13 +14,13 @@ namespace Model.GeometryObjects
 {
     public class GeometrySurface : ModelObject, IGeometrySurface
     {
-        Point[] points;
+        GeometryPoint[] points;
         /// <summary>
         /// Surface constructor
         /// </summary>
         /// <param name="number"></param>
         /// <param name="points"></param>
-        public GeometrySurface(int number, Point[] points) : base(number)
+        public GeometrySurface(int number, GeometryPoint[] points) : base(number)
         {
             if (points.Length < 3)
                 throw new Exception("Для создания поверхности требуется не меньше 3-х узлов!");

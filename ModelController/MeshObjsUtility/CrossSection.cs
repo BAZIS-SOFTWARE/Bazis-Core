@@ -1,4 +1,5 @@
 ﻿using Geometry;
+using Model.GeometryObjects;
 using Model.MeshObjects;
 using System;
 using System.Collections.Generic;
@@ -15,9 +16,11 @@ namespace ModelController.MeshObjsUtility
         /// Сечение элемента плоскостью
         /// Возвращает словарь (номер элемента, плоскость его сечения)
         /// </returns>
+
         public Dictionary<int, ElementSurface> GetSectionSurfaces(IEnumerable<Element3D> elements, Plane plane)
         {
             var result = new Dictionary<int, ElementSurface>();
+
             var index = 0;
             foreach (var element in elements)
             {
@@ -53,6 +56,7 @@ namespace ModelController.MeshObjsUtility
                 else if (nodes.Length > 6)
                 {
                     throw new Exception("Ошибка при построении сечения. Узлов плоскости более 6");
+
                 }
             }
 

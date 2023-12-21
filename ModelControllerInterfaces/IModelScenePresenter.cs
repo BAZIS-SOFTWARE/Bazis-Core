@@ -1,4 +1,5 @@
 ﻿using ModelInterfaces;
+using ModelInterfaces.GeometryObjects;
 using System.Collections.Generic;
 
 namespace ModelControllerInterfaces
@@ -6,18 +7,8 @@ namespace ModelControllerInterfaces
     /// <summary>
     /// IModelPresenter
     /// </summary>
-    public interface IModelScenePresenter : IDictionary<ObjType, IObjsPresenter>
+    public interface IModelScenePresenter : IDictionary<string, IObjsPresenter>
     {
-        /// <summary>
-        /// HideInsideSurfaces
-        /// </summary>
-        /// <param name="surfaceObjects"></param>
-        void HideInsideSurfaces(IEnumerable<ISurfaceObject<IElementSurface,INode>> surfaceObjects);
-        /// <summary>
-        /// ShowInsideSurfaces
-        /// </summary>
-        /// <param name="surfaceElements"></param>
-        void ShowInsideSurfaces(IEnumerable<ISurfaceObject<IElementSurface, INode>> surfaceElements);
         /// <summary>
         /// CreatePointObjectsPresenter
         /// </summary>
@@ -35,19 +26,21 @@ namespace ModelControllerInterfaces
         /// </summary>
         /// <param name="lineObjs"></param>
         /// <returns></returns>
-        IObjsPresenter CreateGeometryLinePresenter(IEnumerable<ILineObject<IPoint>> lineObjs);
+        IObjsPresenter CreateGeometryLinePresenter(IEnumerable<ILineObject<IGeometryPoint>> lineObjs);
         /// <summary>
-        /// CreateSurfaceElementPresenter
+        /// CreateSurfaceElementsPresenter
         /// </summary>
         /// <param name="surfaceElems"></param>
+        /// <param name="isVolumeObjs"></param>
         /// <returns></returns>
-        IObjsPresenter CreateSurfaceElementsPresenter(IEnumerable<ISurfaceObject<IElementSurface,INode>> surfaceElems);
+        IObjsPresenter CreateSurfaceElementsPresenter(IEnumerable<ISurfaceObject<IElementSurface,INode>> surfaceElems,bool isVolumeObjs);
         /// <summary>
-        /// CreateSurfaceElementPresenter
+        /// CreateSurfaceGeometryPresenter
         /// </summary>
         /// <param name="surfaceGeom"></param>
+        /// <param name="isVolumeObjs"></param>
         /// <returns></returns>
-        IObjsPresenter CreateSurfaceGeometryPresenter(IEnumerable<ISurfaceObject<IGeometrySurface, IPoint>> surfaceGeom);
+        IObjsPresenter CreateSurfaceGeometryPresenter(IEnumerable<ISurfaceObject<IGeometrySurface, IPoint>> surfaceGeom, bool isVolumeObjs);
         /// <summary>
         /// CreatePresenter
         /// </summary>

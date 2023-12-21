@@ -3,17 +3,17 @@ using System.Collections.Generic;
 
 namespace ModelInterfaces.ObjectsComparers
 {
-    public class EqualityComparerByNumber : IEqualityComparer<IModelObject>
+    public class EqualityComparerByNumber<T> : IEqualityComparer<T> where T : IModelObject
     {
 
-        public bool Equals(IModelObject x, IModelObject y)
+        public bool Equals(T x, T y)
         {
             if (x.Number == y.Number)
                 return true;
             else return false;
         }
 
-        public int GetHashCode(IModelObject obj)
+        public int GetHashCode(T obj)
         {
             return obj.Number;
         }

@@ -1,12 +1,8 @@
 ﻿using Geometry;
-using Model.MeshObjects;
 using ModelInterfaces;
-using System;
+using ModelInterfaces.GeometryObjects;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Model.GeometryObjects
 {
@@ -24,7 +20,7 @@ namespace Model.GeometryObjects
         /// </summary>
         /// <param name="number"></param>
         /// <param name="points"></param>
-        public Figure2D(int number, Point[] points) : base(number)
+        public Figure2D(int number, GeometryPoint[] points) : base(number)
         {
             points.RoundSort(); //Anticlockwise(nodes);
             this.points = points;
@@ -49,7 +45,7 @@ namespace Model.GeometryObjects
         /// <summary>
         /// Points
         /// </summary>
-        Point[] points { get; }
+        GeometryPoint[] points { get; }
 /// <inheritdoc/>
 
         public override IEnumerable<Point3D> GetCoordinates()

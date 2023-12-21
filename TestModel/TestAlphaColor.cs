@@ -5,6 +5,7 @@ using System;
 using ModelController.ModelScenePresentator.GlObjsPresenters;
 using Model.MeshObjects;
 using Model.GeometryObjects;
+using ModelInterfaces.GeometryObjects;
 
 namespace TestModel
 {
@@ -29,11 +30,11 @@ namespace TestModel
         [TestMethod]
         public void TestLineObjsPresenter()
         {
-            var nodes = new Point[] { new Point(0, new Point3D(0.5f, 1.0f, 1.0f)),
-                                     new Point(1, new Point3D(1.0f, 1.0f, -1.0f))
+            var nodes = new GeometryPoint[] { new GeometryPoint(0, new Point3D(0.5f, 1.0f, 1.0f)),
+                                     new GeometryPoint(1, new Point3D(1.0f, 1.0f, -1.0f))
                                    };
             var lines = new Line[] { new Line(0, nodes) };
-            var presenter = new LineObjsPresenter<Point>(lines);
+            var presenter = new LineObjsPresenter<IGeometryPoint>(lines);
             var indices = presenter.CreateIndexes();
             var pointers = presenter.CreatePointers(indices.Item1);
             var colors = presenter.CreateVertexes(indices.Item3, "цвет");
@@ -54,7 +55,7 @@ namespace TestModel
                                      new Node(2, new Point3D(0.0f, 0.5f, 0.0f))
                                    };
             var triangle = new Element2D[] { new Triangle(0, nodes) };
-            var presenter = new SurfaceObjsPresenter<IElementSurface,INode>(triangle);
+            var presenter = new SurfaceObjsPresenter<IElementSurface,INode>(triangle,false);
             var indices = presenter.CreateIndexes();
             var pointers = presenter.CreatePointers(indices.Item1);
             var colors = presenter.CreateVertexes(indices.Item3, "цвет");
