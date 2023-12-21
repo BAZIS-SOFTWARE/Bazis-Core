@@ -172,10 +172,8 @@ namespace Model
             var temp = new Dictionary<ObjType, List<IModelObject>>();
             foreach (var item in modelObjects)
             {
-                var existObjs = item.Value.Where(x => x.ExistState == true).ToList();             
-
-                if (existObjs.Count() > 0)
-                    temp.Add(item.Key, existObjs);
+                var existObjs = item.Value.Where(x => x.ExistState == true).ToList();
+                temp.Add(item.Key, existObjs);
             }
             modelObjects = temp;
         }
@@ -183,15 +181,24 @@ namespace Model
 
         public void Remove(ObjType objType)
         {
-            foreach (var item in modelObjects[objType])
-                item.ExistState = false;
-            ClearNotExisted();
-        }
-        /// <inheritdoc/>
+            if(objType == ObjType.Объект)
+            {
+                foreach (var modelObject in modelObjects)
+                    foreach (var item in modelObject.Value)
+                    {
+                        item.ExistState = false;
+                    }
+            }
+            else if (objType == ObjType.Элемент)
+            {
+                foreach (var item in FindMany<IElement>())
+                    item.ExistState = false;
+            }
 
-        public void RemoveAt(ObjType objType,int objInd)
-        {
-                modelObjects[objType][objInd].ExistState = false;
+            else
+                foreach (var item in modelObjects[objType])
+                    item.ExistState = false;
+
             ClearNotExisted();
         }
 

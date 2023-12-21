@@ -32,21 +32,12 @@ namespace Model
             ObjectData = modelData.ObjectData;
             GroupData = modelData.GroupData;
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
-        public bool Remove(ObjType objType)
+        public void Remove(ObjType objType)
         {
-            if (ObjectData.ContainsKey(objType))
-            {
-                foreach (var obj in ObjectData[objType])
-                    obj.ExistState = false;
-
-                ObjectData.ClearNotExisted();
-
-                GroupData.ClearNotExisted();
-                return true;
-            }
-            else return false;
+            ObjectData.Remove(objType);
+            GroupData.ClearNotExisted();
         }
 
         /// <inheritdoc/>

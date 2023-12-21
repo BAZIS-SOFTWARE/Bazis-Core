@@ -156,14 +156,16 @@ namespace TestModel
             model.ObjectData.Add(ObjType.Линия, line);
             model.ObjectData.Add(ObjType.Точка, point2);
 
-            model.ObjectData.Remove(objType);
+            model.Remove(objType);
+
             //assert
-            Assert.AreEqual(model.ObjectData.ContainsKey(objType), false);
+            Assert.AreEqual(model.ObjectData[objType].Count(), 0);
         }
 
         [DataTestMethod]
         [DataRow(ObjType.Узел, 0, 0)]
         [DataRow(ObjType.Элемент3D, 4, 0)]
+        [DataRow(ObjType.Объект, 0, 0)]
         public void RemoveObjectsSyncWithGroups(ObjType objType, int nNumbs,int grps)
         {
             //assing
@@ -198,14 +200,14 @@ namespace TestModel
             model.Remove(objType);
             //assert            
             Assert.AreEqual(model.ObjectData.NumberOfNodes,nNumbs, 0);
-            Assert.AreEqual(model.ObjectData.ContainsKey(objType), false);
             Assert.AreEqual(model.GroupData.FindMany(objType).Count(), grps,0);
 
         }
 
         [DataTestMethod]
-        [DataRow(@"..\..\..\Examples\STL\ACII.stl")]
-        public void TestRemoveAllData(string stlPath)
+        [DataRow(@"..\..\..\Examples\STL\ACII.stl", ObjType.Узел, 0)]
+        [DataRow(@"..\..\..\Examples\STL\ACII.stl", ObjType.Элемент2D, 4)]
+        public void TestRemoveAllData(string stlPath, ObjType objType, int objNumb)
         {
             var ierr = 0;
             var status = true;
@@ -222,11 +224,9 @@ namespace TestModel
             modelData.ObjectData.Add(ObjType.Узел, nodes);
             modelData.ObjectData.Add(ObjType.Элемент2D, elements);
             //modelData.ObjectData.Sort();
-            modelData.ObjectData.Remove(ObjType.Элемент2D);
-            modelData.ObjectData.Remove(ObjType.Узел);//Здесь падает, эмулирую такое же поведение как в Базисе
-
+            modelData.Remove(objType);
             //assert
-            Assert.AreEqual(modelData.ObjectData.Count, 0);
+            Assert.AreEqual(modelData.ObjectData[ObjType.Узел].Count, objNumb);
         }
 
         [DataTestMethod]

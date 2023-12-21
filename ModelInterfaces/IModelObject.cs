@@ -12,6 +12,10 @@ namespace ModelInterfaces
     public enum ObjType
     {
         /// <summary>
+        /// Объект
+        /// </summary>
+        Объект,
+        /// <summary>
         /// Точка
         /// </summary>
         Точка,

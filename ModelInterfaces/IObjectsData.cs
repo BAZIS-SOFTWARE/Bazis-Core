@@ -60,12 +60,6 @@ namespace ModelInterfaces
         /// </summary>
         void ClearNotExisted();
         /// <summary>
-        /// RemoveAt
-        /// </summary>
-        /// <param name="objType"></param>
-        /// <param name="objInd"></param>
-        void RemoveAt(ObjType objType,int objInd);
-        /// <summary>
         /// Find
         /// </summary>
         /// <param name="objNumbr"></param>
