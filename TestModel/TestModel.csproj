@@ -105,7 +105,7 @@
     <Compile Include="TestElement.cs" />
     <Compile Include="TestIO.cs" />
     <Compile Include="TestModelControllerPoligon.cs" />
-    <Compile Include="TestsCutSection.cs" />
+    <Compile Include="TestsCrossSection.cs" />
     <Compile Include="TestServices.cs" />
     <Compile Include="TestSurface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

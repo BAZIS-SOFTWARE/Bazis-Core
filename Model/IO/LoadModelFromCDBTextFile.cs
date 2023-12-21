@@ -23,7 +23,7 @@ namespace Model.IO
         /// <summary>
         /// Загрузить модель из файла формата .cdb по указанному пути
         /// </summary>
-        public IModelData Load(string path, float factor = 1)
+        public IModelData Load(string path)
         {
             allNodes = new Dictionary<int, Node>();
             var model = new ModelData();
@@ -40,7 +40,7 @@ namespace Model.IO
                     if (line.Contains(NODE_BLOCK))
                     {
                         LoadEvent?.Invoke(this, new LoaderEventArgs("Начало загрузки узлов"));
-                        var nodes = ReadNodes(reader, tokens, factor).ToList();
+                        var nodes = ReadNodes(reader, tokens).ToList();
                         model.ObjectData.AddRange(nodes);
                     }
                     if (line.Contains(ELEMENTS_BLOCK))
@@ -83,7 +83,7 @@ namespace Model.IO
         /// <summary>
         /// Читает список узлов после строки NBLOCK в файле
         /// </summary>
-        private IEnumerable<Node> ReadNodes(StreamReader reader, string[] tokens, float factor)
+        private IEnumerable<Node> ReadNodes(StreamReader reader, string[] tokens)
         {
             var format = reader.ReadLine();
             var maxFieldsCount = int.Parse(tokens[1]);
@@ -98,9 +98,9 @@ namespace Model.IO
                     var missedCoordinatesCount = maxFieldsCount - coordinates.Count;
                     coordinates.AddRange(Enumerable.Repeat(0f, missedCoordinatesCount));
                 }
-                var x = (float)Math.Round(coordinates[0] * factor, 2);
-                var y = (float)Math.Round(coordinates[1] * factor, 2);
-                var z = (float)Math.Round(coordinates[2] * factor, 2);
+                var x = coordinates[0];
+                var y = coordinates[1];
+                var z = coordinates[2];
                 var point = new Point3D(x, y, z);
                 var node = new Node(nodeNumber, point);
                 allNodes.Add(nodeNumber, node);

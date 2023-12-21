@@ -17,7 +17,7 @@ namespace Model.IO
         private Dictionary<int, Node> allNodes = new Dictionary<int, Node>();
         private Dictionary<int, Element> allElements = new Dictionary<int, Element>();
 
-        public IModelData Load(string path, float factor = 1)
+        public IModelData Load(string path)
         {
             var model = new ModelData();
             using(var reader = new StreamReader(path))

@@ -11,7 +11,7 @@ using Model.MeshObjects;
 namespace TestModel
 {
     [TestClass]
-    public class TestsCutSection
+    public class TestsCrossSection
     {
         [TestMethod]
         public void GetSectionSurfaces_ShouldBeCorrect_OnSingleTetra()
@@ -74,13 +74,19 @@ namespace TestModel
         }
 
         [TestMethod]
-        public void TestLongModelCrossSection()
+        public void GetSectionSurfaces_ShouldWork_OnLargeModel()
         {
             var loader = new LoadModelFromCDBTextFile();
             loader.LoadEvent += (arg1, arg2) => { };
-            var modelData = loader.Load(@"..\..\Examples\CDB\longModel.cdb", 1000);
+            var modelData = loader.Load(@"..\..\Examples\CDB\longModel.cdb");
 
-            var points = new List<Point3D>()
+            // scale model
+            foreach (var node in modelData.ObjectData.FindMany<Node>())
+            {
+                node.Position = new Point3D(100 * node._x, 100 * node._y, 100 * node._z);
+            }
+
+            var points = new List<Point3D>
             {
                 new Point3D(0, 0, 10),
                 new Point3D(1, 0, 10),

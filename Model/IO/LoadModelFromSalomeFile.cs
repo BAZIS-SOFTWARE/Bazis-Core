@@ -14,7 +14,7 @@ namespace Model.IO
     {
         public event Action<object, ILoaderEventArgs> LoadEvent;
 
-        public IModelData Load(string path, float factor = 1)
+        public IModelData Load(string path)
         {
             var modelData = new ModelData();
             using (var reader = new StreamReader(path))

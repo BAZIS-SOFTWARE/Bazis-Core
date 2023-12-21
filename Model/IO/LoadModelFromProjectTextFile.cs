@@ -20,7 +20,7 @@ namespace Model.IO
     {
         public event Action<object, ILoaderEventArgs> LoadEvent;
 
-        public IModelData Load(string path, float factor = 1)
+        public IModelData Load(string path)
         {
             using (var sr = new StreamReader(path))
             {

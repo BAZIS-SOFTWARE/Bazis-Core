@@ -41,8 +41,14 @@ namespace ModelController.MeshObjsUtility
                     .ToArray();
                 if (nodes.Length >= 3 && nodes.Length <= 6)
                 {
-                        var surface = new ElementSurface(index++, nodes);
-                        result.Add(element.Number, surface);
+                    if (index == 363)
+                    {
+                        var elementPoints = element.GetVertexes().Select(n => n.Position);
+                        var sectionPoints = nodes.Select(n => n.Position);
+                        Debug(sectionPoints.Concat(elementPoints));
+                    }
+                    var surface = new ElementSurface(index++, nodes);
+                    result.Add(element.Number, surface);
                 }
                 else if (nodes.Length > 6)
                 {
@@ -59,11 +65,11 @@ namespace ModelController.MeshObjsUtility
         /// </summary>
         private bool IsIntersect(Point3D a, Point3D b, Plane plane)
         {
-            var d1 = plane.PointPosition(a);
-            var d2 = plane.PointPosition(b);
-            if (float.IsNaN(d1) || float.IsNaN(d2))
+            var d1 = Math.Round(plane.PointPosition(a), 2);
+            var d2 = Math.Round(plane.PointPosition(b), 2);
+            if (double.IsNaN(d1) || double.IsNaN(d2))
                 throw new ArgumentException("Degenerate plane");
-            if (Math.Abs(d1) < 10e-4 && Math.Abs(d2) < 10e-4)
+            if (Math.Abs(d1) < 10e-2 && Math.Abs(d2) < 10e-2) // лежат в одной плоскости
                 return false;
             return Math.Sign(d1) * Math.Sign(d2) <= 0;
         }
@@ -73,6 +79,10 @@ namespace ModelController.MeshObjsUtility
         /// </summary>
         private Point3D GetSectionPoint(Point3D P0, Point3D P1, Plane plane)
         {
+            if (Math.Abs(plane.PointPosition(P1)) < 1e-2)
+                return P1;
+            if (Math.Abs(plane.PointPosition(P0)) < 1e-2)
+                return P0;
             var A = plane.Normal._x;
             var B = plane.Normal._y;
             var C = plane.Normal._z;
@@ -80,7 +90,7 @@ namespace ModelController.MeshObjsUtility
             var dx = P1._x - P0._x;
             var dy = P1._y - P0._y;
             var dz = P1._z - P0._z;
-            var t = (-A * P0._x - B * P0._y - C * P0._z - D)
+            var t = -(A * P0._x + B * P0._y + C * P0._z + D)
                     / (A * dx + B * dy + C * dz);
             var x = (float)Math.Round(dx * t + P0._x, 2);
             var y = (float)Math.Round(dy * t + P0._y, 2);

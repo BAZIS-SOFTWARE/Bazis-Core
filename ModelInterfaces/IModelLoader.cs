@@ -4,7 +4,7 @@ namespace ModelInterfaces
 {
     public interface IModelLoader
     {
-        IModelData Load(string path, float factor = 1);
+        IModelData Load(string path);
 
         event Action<object, ILoaderEventArgs> LoadEvent;
     }
