@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Xml.Linq;
 
 namespace Model.IO
 {
@@ -29,9 +30,14 @@ namespace Model.IO
                     var elementsNumber = int.Parse(tokens[1]);
                     var nodes = GetNodes(reader, nodesNumber).ToList();
                     modelData.ObjectData.Add(ObjType.Узел, nodes);
-                    var elements = GetElements(reader, elementsNumber,
-                        nodes.ToDictionary(x => x.Number, x => x)).ToList();
-                    modelData.ObjectData.Add(ObjType.Элемент, elements);
+
+                    foreach (var item in GetElements(reader, elementsNumber,
+                        nodes.ToDictionary(x => x.Number, x => x)))
+                    {
+                        modelData.ObjectData.Add(item.ObjType, item);
+                    }
+    
+
                 }
             }
             return modelData;

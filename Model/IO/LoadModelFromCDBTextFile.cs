@@ -45,8 +45,9 @@ namespace Model.IO
                     if (line.Contains(ELEMENTS_BLOCK))
                     {
                         LoadEvent?.Invoke(this, new LoaderEventArgs("Начало загрузки элементов"));
-                        var elements = ReadElements(reader, tokens);
-                        model.ObjectData.Add(ObjType.Элемент, elements);
+
+                        foreach (var item in ReadElements(reader, tokens))
+                            model.ObjectData.Add(item.ObjType, item);                    
                     }
                 }
             }

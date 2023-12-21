@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using Model.MeshObjects;
+using ModelInterfaces;
 using System;
 using System.Collections.Generic;
 
@@ -10,29 +11,6 @@ namespace TestModel
     [TestClass]
     public class TestSorter
     {
-        [TestMethod]
-        public void SortObjectsByNumber()
-        {
-            //assing
-            var model = new ModelData();
-
-            //act
-            model.Load(@"..\..\..\Examples\3D\cub_unsorted.bpf");
-
-            //assert
-
-            foreach (var objItem in model.ObjectData)
-            {
-                var number = objItem.Value[0].Number;
-                foreach (var modelObj in objItem.Value)
-                {
-                    if (modelObj.Number < number)
-                        throw new Exception("Номер должен быть строго больше предыдущего!");
-                    number = modelObj.Number;
-                }
-            }
-        }
-
         [TestMethod]
         public void SortNodeByClockwise_XPositiveYPositive()
         {

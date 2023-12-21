@@ -42,7 +42,7 @@ namespace TestModel
             var nodes = new List<Node> { A, B, C, D, E, F, G, H };
             objectsData = new ObjectsData();
             objectsData.Add(ObjType.Узел, nodes);
-            objectsData.Add(ObjType.Элемент,elements);
+            objectsData.Add(ObjType.Элемент2D,elements);
         }
 
         [TestMethod]
@@ -125,21 +125,19 @@ namespace TestModel
             model.Loader = new LoadModelFromGMSHTextFile();
 
             //act
-            model.Load(@"C:\Projs\TestProjTerm\box\box1.inp");
-            model.Save(@"C:\Projs\TestProjTerm\box\task_1.bpf");
+            model.Load(@"..\..\..\Examples\3D\box1.inp");
+            model.Save(@"..\..\..\Examples\3D\task_1.bpf");
 
             model.Loader = new LoadModelFromProjectTextFile();
-            model.Load(@"C:\Projs\TestProjTerm\box\task_1.bpf");
+            model.Load(@"..\..\..\Examples\3D\task_1.bpf");
 
             var els3D = model.ObjectData.FindMany<IElement3D>();
-            var els2D = model.ObjectData.FindMany<Element2D>();
 
             var interNodesEls3DFinder = new InterfacedNodesFinder();
-            var interNodesEls2DFinder = new InterfacedNodesFinder();
 
             var interfacedNodesEls3D = interNodesEls3DFinder.Find(new List<int>() { 3, 48, 71 }, els3D);
 
-            var elsForNode = new List<int>() { 485,968,970,971 };
+            var elsForNode = new List<int>() { 1566,2049,2051, 2052 };
             //assert
             for (int i = 0; i < interfacedNodesEls3D[48].Count; i++)
             {

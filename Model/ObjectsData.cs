@@ -15,21 +15,33 @@ namespace Model
     public class ObjectsData : IObjectsData
     {
         Dictionary<ObjType,List<IModelObject>> modelObjects;
-        /// <inheritdoc/>
-        public IModelObject this[ObjType objType, int objIndex]
-        {
-            get { return modelObjects[objType][objIndex]; }
-            set { modelObjects[objType][objIndex] = value; }
-        }
+
         /// <inheritdoc/>
         public List<IModelObject> this[ObjType objType]
         {
             get 
             {
-                if(objType == ObjType.Элемент1D |
-                    objType == ObjType.Элемент2D |
-                    objType == ObjType.Элемент3D)
-                return modelObjects[ObjType.Элемент].Where(x => x.ObjType == objType).ToList();
+                if (objType == ObjType.Элемент)
+                {
+                    var list = new List<IModelObject>();
+                    list.AddRange(modelObjects[ObjType.Элемент1D]);
+                    list.AddRange(modelObjects[ObjType.Элемент2D]);
+                    list.AddRange(modelObjects[ObjType.Элемент3D]);
+
+                    return list;
+                }
+
+                else if (objType == ObjType.Фигура)
+                {
+
+                    var list = new List<IModelObject>();
+                    list.AddRange(modelObjects[ObjType.Фигура2D]);
+                    list.AddRange(modelObjects[ObjType.Фигура3D]);
+
+                    return list;
+
+                }
+
                 else
                     return modelObjects[objType];
             }
@@ -43,9 +55,12 @@ namespace Model
             {
                 {ObjType.Точка,new List<IModelObject>() },
                 {ObjType.Линия,new List<IModelObject>() },
-                {ObjType.Фигура,new List<IModelObject>() },
+                {ObjType.Фигура2D,new List<IModelObject>() },
+                {ObjType.Фигура3D,new List<IModelObject>() },
                 {ObjType.Узел,new List<IModelObject>() },
-                {ObjType.Элемент,new List<IModelObject>() }
+                {ObjType.Элемент1D,new List<IModelObject>() },
+                {ObjType.Элемент2D,new List<IModelObject>() },
+                {ObjType.Элемент3D,new List<IModelObject>() }
             };
         }
 /// <inheritdoc/>
@@ -82,17 +97,27 @@ namespace Model
         }
 /// <inheritdoc/>
 
-        public IModelObject GetLastObj(ObjType objType)
+        public int GetLastObjNumber(ObjType objType)
         {
-            if (objType == ObjType.Элемент1D |
-       objType == ObjType.Элемент2D |
-       objType == ObjType.Элемент3D)
-                return modelObjects[ObjType.Элемент].FindLast(x => x.ObjType == objType);
-            else if (objType == ObjType.Фигура2D |
-                objType == ObjType.Фигура3D)
-                return modelObjects[ObjType.Фигура].FindLast(x => x.ObjType == objType);
+            if (objType == ObjType.Элемент)
+            {
+                var e1 = modelObjects[ObjType.Элемент1D];
+                var e2 = modelObjects[ObjType.Элемент2D];
+                var e3 = modelObjects[ObjType.Элемент3D];
+
+                var e1Numb = e1.Count > 0 ? e1.Last().Number : 0;
+                var e2Numb = e2.Count > 0 ? e2.Last().Number : 0;
+                var e3Numb = e3.Count > 0 ? e3.Last().Number : 0;
+
+                var numb = e1Numb;
+                if (e1Numb < e2Numb)
+                    numb = e2Numb;
+                if (numb < e3Numb)
+                    numb = e3Numb;
+                return numb;
+            }
             else
-                return modelObjects[objType].FindLast(x => x.ObjType == objType);
+                return modelObjects[objType].Count > 0 ? modelObjects[objType].Last().Number : 0;
         }
 /// <inheritdoc/>
 
@@ -117,19 +142,19 @@ namespace Model
         }
         /// <inheritdoc/>
 
-        public int NumberOfVolumeElements
+        public int NumberOf3DElements
         {
             get { return FindMany<IElement3D>().Count(); }
         }
         /// <inheritdoc/>
 
-        public int NumberOfLineElements
+        public int NumberOf1DElements
         {
             get { return FindMany<IElement1D>().Count(); }
         }
         /// <inheritdoc/>
 
-        public int NumberOfSurfaceElements
+        public int NumberOf2DElements
         {
             get { return FindMany<IElement2D>().Count(); }
         }
@@ -147,12 +172,10 @@ namespace Model
             var temp = new Dictionary<ObjType, List<IModelObject>>();
             foreach (var item in modelObjects)
             {
-                var removedObjs = item.Value.Where(x => x.ExistState == false);
+                var existObjs = item.Value.Where(x => x.ExistState == true).ToList();             
 
-                var existObjects = item.Value.Except(removedObjs, new EqualityComparerByExistState()).ToList();
-
-                if (existObjects.Count > 0)
-                    temp.Add(item.Key, existObjects);
+                if (existObjs.Count() > 0)
+                    temp.Add(item.Key, existObjs);
             }
             modelObjects = temp;
         }
@@ -208,16 +231,6 @@ namespace Model
 
         public bool ContainsKey(ObjType objType)
         {
-            if (objType == ObjType.Элемент1D |
-                objType == ObjType.Элемент2D |
-                objType == ObjType.Элемент3D)
-                return modelObjects[ObjType.Элемент].Find(x => x.ObjType == objType)
-    != null ? true : false;
-            else if (objType == ObjType.Фигура2D |
-                objType == ObjType.Фигура3D)
-                return modelObjects[ObjType.Фигура].Find(x => x.ObjType == objType)
-!= null ? true : false;
-            else
                 return modelObjects.ContainsKey(objType);
         }
 

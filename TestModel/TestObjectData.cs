@@ -42,7 +42,7 @@ namespace TestModel
 
             var model = new ModelData();
             model.ObjectData.Add(ObjType.Узел,nodes);
-            model.ObjectData.Add(ObjType.Элемент, objs);
+            model.ObjectData.Add(ObjType.Элемент3D, objs);
             //act
             var elements = model.ObjectData.FindMany(objsNumbr);
             //assert
@@ -77,7 +77,7 @@ namespace TestModel
 
             var model = new ModelData();
             model.ObjectData.Add(ObjType.Узел, nodes);
-            model.ObjectData.Add(ObjType.Элемент, objs);
+            model.ObjectData.Add(ObjType.Элемент3D, objs);
 
             //assert            
             if (reqType == "Тетраэдры")
@@ -191,7 +191,7 @@ namespace TestModel
             var model = new ModelData();
 
             model.ObjectData.Add(ObjType.Узел, nodes);
-            model.ObjectData.Add(ObjType.Элемент, objects);
+            model.ObjectData.Add(ObjType.Элемент3D, objects);
 
             model.GroupData.Add(group);
 
@@ -220,7 +220,7 @@ namespace TestModel
             Assert.AreEqual(true, status);
             Assert.AreEqual(2, elements.Count);
             modelData.ObjectData.Add(ObjType.Узел, nodes);
-            modelData.ObjectData.Add(ObjType.Элемент, elements);
+            modelData.ObjectData.Add(ObjType.Элемент2D, elements);
             //modelData.ObjectData.Sort();
             modelData.ObjectData.Remove(ObjType.Элемент2D);
             modelData.ObjectData.Remove(ObjType.Узел);//Здесь падает, эмулирую такое же поведение как в Базисе

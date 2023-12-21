@@ -76,15 +76,15 @@ namespace TestModel
 
 
             var model = new ModelData();
-            model.ObjectData.Add(ObjType.Элемент, el0);
-            model.ObjectData.Add(ObjType.Элемент, el1);
+            model.ObjectData.Add(ObjType.Элемент3D, el0);
+            model.ObjectData.Add(ObjType.Элемент3D, el1);
 
 
             var creators = new Extract2DFrom3D();
 
-            var lastObj = model.ObjectData.GetLastObj(ObjType.Элемент2D);
+            var lastNumber = model.ObjectData.GetLastObjNumber(ObjType.Элемент2D);
 
-            var currentNumber = lastObj == null ? 0 : lastObj.Number + 1;
+            var currentNumber = lastNumber + 1;
 
             var element2D = creators.Create(currentNumber, model.ObjectData.FindMany<Element3D>().ToArray());
 

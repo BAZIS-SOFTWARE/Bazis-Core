@@ -22,7 +22,7 @@ namespace TestModel
                 new Node(2, new Point3D(0.5f,1.0f,0.0f)),
             };
             var el2D = new Triangle(0, nodes);
-            model.ObjectData.Add(ObjType.Элемент,el2D);
+            model.ObjectData.Add(ObjType.Элемент2D,el2D);
             var presentator = new ModelScenePresentator(model.ObjectData);
             var values = presentator[ObjType.Элемент2D.ToString()].CreateIndexes();
             var edges = presentator[ObjType.Элемент2D.ToString()].CreateEdgeFlags(values.Item4);
@@ -43,7 +43,7 @@ namespace TestModel
             };
             var el2D = new Quad(0, nodes);
 
-            model.ObjectData.Add(ObjType.Элемент,el2D);
+            model.ObjectData.Add(ObjType.Элемент2D,el2D);
 
             var presentator = new ModelScenePresentator(model.ObjectData);
             var values = presentator[ObjType.Элемент2D.ToString()].CreateIndexes();
@@ -69,7 +69,7 @@ namespace TestModel
             };
             var poligon = new Figure2D(0, points); 
 
-            model.ObjectData.Add(ObjType.Фигура, poligon);
+            model.ObjectData.Add(ObjType.Фигура2D, poligon);
             var presentator = new ModelScenePresentator(model.ObjectData);
             var values = presentator[ObjType.Фигура2D.ToString()].CreateIndexes();
             var edges = presentator[ObjType.Фигура2D.ToString()].CreateEdgeFlags(values.Item4);

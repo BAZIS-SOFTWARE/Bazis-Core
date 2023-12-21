@@ -31,9 +31,6 @@ namespace Model
 
             ObjectData = modelData.ObjectData;
             GroupData = modelData.GroupData;
-
-            foreach (var item in ObjectData)
-                MergeSort<IModelObject>.MergeSortFunction(item.Value);
         }
 /// <inheritdoc/>
 

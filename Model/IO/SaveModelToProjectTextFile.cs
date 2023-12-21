@@ -47,11 +47,11 @@ namespace Model.IO
                     }
 
 
-                    else if (objsType.Key == ObjType.Элемент)
+                    else if (objsType.Key == ObjType.Элемент1D |
+                        objsType.Key == ObjType.Элемент2D |
+                        objsType.Key == ObjType.Элемент3D)
                     {
-                        SaveElements(model, sw, ObjType.Элемент1D);
-                        SaveElements(model, sw, ObjType.Элемент2D);
-                        SaveElements(model, sw, ObjType.Элемент3D);
+                        SaveElements(model, sw, objsType.Key);
                     }
                 }
                 sw.WriteLine("");

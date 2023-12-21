@@ -104,16 +104,16 @@ namespace Model.IO
             while (line != null && !hasStopWord)
             {
                 var objType = GetObjType(elementKind);
-                var lastObj = newMesh.ObjectData.GetLastObj(objType);
+                var lastNumber = newMesh.ObjectData.GetLastObjNumber(ObjType.Элемент);
 
-                var currentNumber = lastObj == null ? 0 : lastObj.Number + 1;
+                var currentNumber = lastNumber + 1;
 
                 dict.Add(int.Parse(tokens[0]), currentNumber);
                 var selectedNodesId = tokens.Skip(1)
                     .Select(m => int.Parse(m) - 1)
                     .ToArray();
                 var element = BuildElement(elementKind, selectedNodesId, currentNumber);
-                newMesh.ObjectData.Add(ObjType.Элемент, element);
+                newMesh.ObjectData.Add(element.ObjType, element);
                 line = reader.ReadLine();
                 if (line != null)
                 {

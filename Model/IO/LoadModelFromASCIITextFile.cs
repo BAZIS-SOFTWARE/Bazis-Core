@@ -19,8 +19,8 @@ namespace Model.IO
 
         public IModelData Load(string path)
         {
-            var model = new ModelData();
-            using(var reader = new StreamReader(path))
+            ModelData model = new ModelData();
+            using (var reader = new StreamReader(path))
             {
                 while(!reader.EndOfStream)
                 {
@@ -28,13 +28,13 @@ namespace Model.IO
                     var tokens = line.Split().ToArray();
                     if(line.Contains("BEGIN_NODES"))
                     {
-                        var nodes = ReadNodes(reader, int.Parse(tokens[1]));
-                        model.ObjectData.Add(ObjType.Узел, nodes);
+                        foreach (var item in ReadNodes(reader, int.Parse(tokens[1])))
+                            model.ObjectData.Add(ObjType.Узел, item);                   
                     }
                     if(line.Contains("BEGIN_ELEMENTS"))
                     {
-                        var elements = ReadElements(reader, int.Parse(tokens[1]));
-                        model.ObjectData.Add(ObjType.Элемент,elements);
+                        foreach (var item in ReadElements(reader, int.Parse(tokens[1]),model))
+                            model.ObjectData.Add(item.ObjType, item);
                     }
                     if(line.Contains("BEGIN_GROUPS"))
                     {
@@ -64,33 +64,34 @@ namespace Model.IO
             }
         }
 
-        private IEnumerable<ModelObject> ReadElements(StreamReader reader, int count)
+        private IEnumerable<ModelObject> ReadElements(StreamReader reader, int count, ModelData model)
         {
             LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка элементов..."));
             for (var i = 0; i < count; i++)
             {
                 var line = reader.ReadLine();
                 var tokens = line.Split().ToArray();
-                var index = int.Parse(tokens[0]);
+                var elCurrentNumber = int.Parse(tokens[0]);
                 var type = int.Parse(tokens[1]);
                 var nodes = tokens.Skip(5)
                     .Select(int.Parse)
                     .Select(j => allNodes[j])
-                    .ToArray();      
+                    .ToArray();
 
-                var element = GetElementByType(nodes, type, index);
-                allElements.Add(index, element);
+                var elLastNumber = model.ObjectData.GetLastObjNumber(ObjType.Элемент) + 1;
+                var element = GetElementByType(nodes, type, elLastNumber);
+                allElements.Add(elCurrentNumber, element);
                 yield return element;
             }
         }
 
-        private Element GetElementByType(Node[] nodes, int type, int index)
+        private Element GetElementByType(Node[] nodes, int type,int elNumber)
         {
-            switch(type) 
+            switch (type) 
             {
-                case 3004: return new Tetra(index, nodes);
-                case 2003: return new Triangle(index, nodes);
-                case 1002: return new Beam(index, nodes);
+                case 3004: return new Tetra(elNumber, nodes);
+                case 2003: return new Triangle(elNumber, nodes);
+                case 1002: return new Beam(elNumber, nodes);
                 default: throw new ArgumentException($"Unable to recognize element of type {type}");
             }
         }
@@ -111,7 +112,7 @@ namespace Model.IO
                 ObjType objsType;
                 if (tokens[2] == "2")
                     objsType = allElements[numbers.First()].ObjType;
-                else objsType = ObjType.Точка;
+                else objsType = ObjType.Узел;
 
                 var group = new GroupsData.Group(groupName, objsType);
                 foreach (var number in numbers)

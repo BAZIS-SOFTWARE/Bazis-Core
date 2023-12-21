@@ -9,23 +9,15 @@ namespace ModelInterfaces
     public interface IObjectsData : IEnumerable<KeyValuePair<ObjType, List<IModelObject>>>
     {
         /// <summary>
-        /// objType
+        /// GetLastObjNumber
         /// </summary>
         /// <param name="objType"></param>
         /// <returns></returns>
-        IModelObject GetLastObj(ObjType objType);
+        int GetLastObjNumber(ObjType objType);
         /// <summary>
         /// Count
         /// </summary>
         int Count { get; }
-
-        /// <summary>
-        /// this
-        /// </summary>
-        /// <param name="objType"></param>
-        /// <param name="objIndex"></param>
-        /// <returns></returns>
-        IModelObject this[ObjType objType, int objIndex] { get;set; }
 
         /// <summary>
         /// this
@@ -50,15 +42,15 @@ namespace ModelInterfaces
         /// <summary>
         /// NumberOfVolumeElements
         /// </summary>
-        int NumberOfVolumeElements { get; }
+        int NumberOf3DElements { get; }
         /// <summary>
         /// NumberOfLineElements
         /// </summary>
-        int NumberOfLineElements { get; }
+        int NumberOf1DElements { get; }
         /// <summary>
         /// NumberOfSurfaceElements
         /// </summary>
-        int NumberOfSurfaceElements { get; }
+        int NumberOf2DElements { get; }
         /// <summary>
         /// NumberOfElements
         /// </summary>

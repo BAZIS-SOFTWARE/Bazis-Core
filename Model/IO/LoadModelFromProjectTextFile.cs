@@ -120,7 +120,7 @@ namespace Model.IO
                     else elemKind = ElementKind.Гекса;
 
                     var el3DObj = new Tetra(elNumber, nodeList.ToArray());
-                    newMesh.ObjectData.Add(ObjType.Элемент, el3DObj);
+                    newMesh.ObjectData.Add(ObjType.Элемент3D, el3DObj);
                 }
 
                 if (elType == "Элементы2D" | elType == "Элемент2D" | elType == "Элементы 2003")
@@ -131,7 +131,7 @@ namespace Model.IO
                     else elemKind = ElementKind.Квадрат;
 
                     var el2DObj = new Triangle(elNumber, nodeList.ToArray());
-                    newMesh.ObjectData.Add(ObjType.Элемент, el2DObj);
+                    newMesh.ObjectData.Add(ObjType.Элемент2D, el2DObj);
                 }
                 //number++;
                 line = sr.ReadLine();
@@ -178,7 +178,7 @@ namespace Model.IO
             var indexLine = splitLine[1].Remove(0, name.Length + 2);
             if (indexLine != "")
             {
-                var elements = newMesh.ObjectData.FindMany<Element>().ToList();
+                var elements = newMesh.ObjectData[objType];
                 var indexes = indexLine.Split(' ').Select(x => int.Parse(x)).ToList();
                 indexes.Sort();
 
