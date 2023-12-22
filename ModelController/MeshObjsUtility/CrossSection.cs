@@ -16,11 +16,9 @@ namespace ModelController.MeshObjsUtility
         /// Сечение элемента плоскостью
         /// Возвращает словарь (номер элемента, плоскость его сечения)
         /// </returns>
-
         public Dictionary<int, ElementSurface> GetSectionSurfaces(IEnumerable<Element3D> elements, Plane plane)
         {
             var result = new Dictionary<int, ElementSurface>();
-
             var index = 0;
             foreach (var element in elements)
             {
@@ -37,26 +35,18 @@ namespace ModelController.MeshObjsUtility
                         points.Add(sectionPoint);
                     }
                 }
-
                 var nodes = points
                     .Distinct()
                     .Select((p, i) => new Node(i, p))
                     .ToArray();
                 if (nodes.Length >= 3 && nodes.Length <= 6)
                 {
-                    if (index == 363)
-                    {
-                        var elementPoints = element.GetVertexes().Select(n => n.Position);
-                        var sectionPoints = nodes.Select(n => n.Position);
-                        Debug(sectionPoints.Concat(elementPoints));
-                    }
                     var surface = new ElementSurface(index++, nodes);
                     result.Add(element.Number, surface);
                 }
                 else if (nodes.Length > 6)
                 {
                     throw new Exception("Ошибка при построении сечения. Узлов плоскости более 6");
-
                 }
             }
 
@@ -73,7 +63,7 @@ namespace ModelController.MeshObjsUtility
             var d2 = Math.Round(plane.PointPosition(b), 2);
             if (double.IsNaN(d1) || double.IsNaN(d2))
                 throw new ArgumentException("Degenerate plane");
-            if (Math.Abs(d1) < 10e-2 && Math.Abs(d2) < 10e-2) // лежат в одной плоскости
+            if (Math.Abs(d1) < 10e-4 && Math.Abs(d2) < 10e-4) // лежат в одной плоскости
                 return false;
             return Math.Sign(d1) * Math.Sign(d2) <= 0;
         }

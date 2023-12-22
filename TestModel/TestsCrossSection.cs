@@ -80,17 +80,17 @@ namespace TestModel
             loader.LoadEvent += (arg1, arg2) => { };
             var modelData = loader.Load(@"..\..\Examples\CDB\longModel.cdb");
 
-            // scale model
+            // масштабирование модели
             foreach (var node in modelData.ObjectData.FindMany<Node>())
             {
-                node.Position = new Point3D(100 * node._x, 100 * node._y, 100 * node._z);
+                node.Position = new Point3D(1000 * node._x, 1000 * node._y, 1000 * node._z);
             }
 
             var points = new List<Point3D>
             {
-                new Point3D(0, 0, 10),
-                new Point3D(1, 0, 10),
-                new Point3D(0, 1, 10)
+                new Point3D(0, 0, 100),
+                new Point3D(1, 0, 100),
+                new Point3D(0, 1, 100)
             };
             var plane = new Plane(points[0], points[1], points[2]);
             var elements = modelData.ObjectData.FindMany<Element3D>().ToList();
