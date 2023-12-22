@@ -19,7 +19,8 @@ namespace ModelController.MeshObjsUtility
         public Dictionary<int, ElementSurface> GetSectionSurfaces(IEnumerable<Element3D> elements, Plane plane)
         {
             var result = new Dictionary<int, ElementSurface>();
-            var index = 0;
+            var surfaceIndex = 0;
+            var nodeIndex = 0;
             foreach (var element in elements)
             {
                 var points = new List<Point3D>();
@@ -37,11 +38,11 @@ namespace ModelController.MeshObjsUtility
                 }
                 var nodes = points
                     .Distinct()
-                    .Select((p, i) => new Node(i, p))
+                    .Select(p => new Node(nodeIndex++, p))
                     .ToArray();
                 if (nodes.Length >= 3 && nodes.Length <= 6)
                 {
-                    var surface = new ElementSurface(index++, nodes);
+                    var surface = new ElementSurface(surfaceIndex++, nodes);
                     result.Add(element.Number, surface);
                 }
                 else if (nodes.Length > 6)
