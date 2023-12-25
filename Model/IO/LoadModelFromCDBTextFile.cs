@@ -18,13 +18,14 @@ namespace Model.IO
         private const string ELEMENTS_BLOCK = "EBLOCK";
         private const int OFFSET_TO_READ_NODES = 11;
         private const string exponentialFloatPattern = "(-)?\\d+\\.\\d+E(\\+|-)\\d+";
-        private Dictionary<int, Node> allNodes = new Dictionary<int, Node>();
+        private Dictionary<int, Node> allNodes;
 
         /// <summary>
         /// Загрузить модель из файла формата .cdb по указанному пути
         /// </summary>
         public IModelData Load(string path)
         {
+            allNodes = new Dictionary<int, Node>();
             var model = new ModelData();
             using (var reader = new StreamReader(path))
             {
@@ -63,7 +64,10 @@ namespace Model.IO
             var matches = Regex.Matches(line, exponentialFloatPattern);
             foreach (Match match in matches)
             {
-                yield return float.Parse(match.Value, NumberStyles.Any, CultureInfo.InvariantCulture);
+                var value = double.Parse(match.Value, NumberStyles.Any, CultureInfo.InvariantCulture);
+                if (Math.Abs(value) < 1e-4)
+                    value = 0;
+                yield return (float)value;
             }
         }
 
@@ -72,7 +76,7 @@ namespace Model.IO
         /// </summary>
         private int GetNodeNumber(string line)
         {
-            var fields = line.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)
+            var fields = line.Split(new [] { " " }, StringSplitOptions.RemoveEmptyEntries)
                 .ToList();
             return int.Parse(fields[0]);
         }
@@ -95,7 +99,10 @@ namespace Model.IO
                     var missedCoordinatesCount = maxFieldsCount - coordinates.Count;
                     coordinates.AddRange(Enumerable.Repeat(0f, missedCoordinatesCount));
                 }
-                var point = new Point3D(coordinates[0], coordinates[1], coordinates[2]);
+                var x = coordinates[0];
+                var y = coordinates[1];
+                var z = coordinates[2];
+                var point = new Point3D(x, y, z);
                 var node = new Node(nodeNumber, point);
                 allNodes.Add(nodeNumber, node);
                 yield return node;
@@ -125,10 +132,10 @@ namespace Model.IO
             var format = reader.ReadLine();
             var maxFieldsInLine = int.Parse(tokens[1]);
             var elementsNumber = int.Parse(tokens[4]);
-            for (int i = 0; i < elementsNumber; i++)
+            for (var i = 0; i < elementsNumber; i++)
             {
                 var line = reader.ReadLine();
-                var fields = line.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)
+                var fields = line.Split(new [] { " " }, StringSplitOptions.RemoveEmptyEntries)
                     .Select(int.Parse)
                     .ToList();
                 var nodesCount = fields[8];
