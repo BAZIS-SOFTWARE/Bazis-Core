@@ -16,7 +16,10 @@ namespace ModelController.MeshObjsUtility
         {
             this.modelData = modelData;
         }
-
+        /// <summary>
+        /// Find
+        /// </summary>
+        /// <returns></returns>
         public List<string> Find()
         {
             var boundedEdges = new List<string>();

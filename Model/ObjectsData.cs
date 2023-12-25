@@ -15,37 +15,7 @@ namespace Model
     public class ObjectsData : IObjectsData
     {
         Dictionary<ObjType,List<IModelObject>> modelObjects;
-
-        /// <inheritdoc/>
-        public List<IModelObject> this[ObjType objType]
-        {
-            get 
-            {
-                if (objType == ObjType.Элемент)
-                {
-                    var list = new List<IModelObject>();
-                    list.AddRange(modelObjects[ObjType.Элемент1D]);
-                    list.AddRange(modelObjects[ObjType.Элемент2D]);
-                    list.AddRange(modelObjects[ObjType.Элемент3D]);
-
-                    return list;
-                }
-
-                else if (objType == ObjType.Фигура)
-                {
-
-                    var list = new List<IModelObject>();
-                    list.AddRange(modelObjects[ObjType.Фигура2D]);
-                    list.AddRange(modelObjects[ObjType.Фигура3D]);
-
-                    return list;
-
-                }
-
-                else
-                    return modelObjects[objType];
-            }
-        }
+       
         /// <summary>
         /// ObjectsData
         /// </summary>
@@ -72,7 +42,17 @@ namespace Model
         {
             modelObjects.Clear();
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
+
+        public IEnumerable<T> FindMany<T>() where T : IModelObject
+        {
+            foreach (var modelObject in modelObjects)
+                foreach (var obj in modelObject.Value)
+                    if (obj is T)
+                        yield return (T)obj;
+        }
+
+        /// <inheritdoc/>
 
         public IEnumerable<IModelObject> FindMany(int objNumbr)
         {
@@ -83,18 +63,47 @@ namespace Model
                     yield return obj;
             }
         }
-
-  
 /// <inheritdoc/>
 
-
-        public IEnumerable<T> FindMany<T>() where T : IModelObject
+        public IEnumerable<IModelObject> GetObjects(ObjType objType)
         {
-            foreach (var modelObject in modelObjects)
-                foreach (var obj in modelObject.Value)
-                    if (obj is T)
-                        yield return (T)obj;
+            var temp = new List<IModelObject>();
+            if(objType == ObjType.Объект)
+            {
+                foreach (var item in modelObjects)
+                    temp.AddRange(item.Value);
+            }
+            else if(objType == ObjType.Элемент)
+            {
+                var e1d = modelObjects[ObjType.Элемент1D];
+                var e2d = modelObjects[ObjType.Элемент2D];
+                var e3d = modelObjects[ObjType.Элемент3D];
+
+                temp.AddRange(e1d);
+                temp.AddRange(e2d);
+                temp.AddRange(e3d);
+            }
+            else if (objType == ObjType.Фигура)
+            {
+                var f2d = modelObjects[ObjType.Фигура2D];
+                var f3d = modelObjects[ObjType.Фигура3D];
+
+                temp.AddRange(f2d);
+                temp.AddRange(f3d);
+            }
+            else
+            {
+                temp.AddRange(modelObjects[objType]);
+            }
+
+            foreach (var item in temp)
+            {
+                yield return item;
+            }
         }
+
+
+
 /// <inheritdoc/>
 
         public int GetLastObjNumber(ObjType objType)
@@ -211,15 +220,8 @@ namespace Model
 
             return modelObjects[objType].Find(objNumbr);
         }
-        /// <inheritdoc/>
 
-        public void Sort(ObjType objType)
-        {
-            if (!modelObjects.ContainsKey(objType))
-                throw new Exception($"Объектов {objType} не найдено в коллекции!");
-
-            MergeSort<IModelObject>.MergeSortFunction(modelObjects[objType]);
-        }    
+   
 /// <inheritdoc/>
 
         public ICollection<ObjType> Keys { get { return modelObjects.Keys; } }
@@ -241,26 +243,11 @@ namespace Model
                 return modelObjects.ContainsKey(objType);
         }
 
-/// <inheritdoc/>
-
-        public IEnumerator<KeyValuePair<ObjType, List<IModelObject>>> GetEnumerator()
-        {
-            foreach (var objItem in modelObjects)
-            {
-                yield return objItem;
-            }
-        }
-
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public bool TryGetValue(ObjType key, out List<IModelObject> value)
         {
             return modelObjects.TryGetValue(key, out value);
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            throw new NotImplementedException();
         }
 
         /// <inheritdoc/>
@@ -290,6 +277,20 @@ namespace Model
             else
                 modelObjects[objType].AddRange(objsList);
 
+        }
+/// <inheritdoc/>
+
+        public IEnumerator<KeyValuePair<ObjType, List<IModelObject>>> GetEnumerator()
+        {
+            foreach (var item in modelObjects)
+            {
+                yield return item;
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException();
         }
     }
 }

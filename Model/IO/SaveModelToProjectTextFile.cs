@@ -74,7 +74,9 @@ namespace Model.IO
         private static void SaveElements(IModelData model, StreamWriter sw, ObjType objsType)
         {
             sw.WriteLine(objsType);
-            foreach (var obj in model.ObjectData[objsType])
+
+            var objs = model.ObjectData.GetObjects(objsType);
+            foreach (var obj in objs)
             {
                 var elem = (Element)obj;
                 var strAr = new List<string>();

@@ -159,7 +159,7 @@ namespace TestModel
             model.Remove(objType);
 
             //assert
-            Assert.AreEqual(model.ObjectData[objType].Count(), 0);
+            Assert.AreEqual(model.ObjectData.GetObjects(objType).Count(), 0);
         }
 
         [DataTestMethod]
@@ -207,7 +207,7 @@ namespace TestModel
         [DataTestMethod]
         [DataRow(@"..\..\..\Examples\STL\ACII.stl", ObjType.Узел, 0)]
         [DataRow(@"..\..\..\Examples\STL\ACII.stl", ObjType.Элемент2D, 4)]
-        public void TestRemoveAllData(string stlPath, ObjType objType, int objNumb)
+        public void TestRemoveAllData(string stlPath, ObjType objType, int nNumb)
         {
             var ierr = 0;
             var status = true;
@@ -226,7 +226,7 @@ namespace TestModel
             //modelData.ObjectData.Sort();
             modelData.Remove(objType);
             //assert
-            Assert.AreEqual(modelData.ObjectData[ObjType.Узел].Count, objNumb);
+            Assert.AreEqual(modelData.ObjectData.GetObjects(ObjType.Узел).Count(), nNumb);
         }
 
         [DataTestMethod]

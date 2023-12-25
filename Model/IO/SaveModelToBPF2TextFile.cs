@@ -33,7 +33,8 @@ namespace Model.IO
                     if (item.Key == ObjType.Узел)
                     {
                         sw.WriteLine("Узлы");
-                        foreach (var nodeItem in model.ObjectData[ObjType.Узел])
+                        var nodes = model.ObjectData.GetObjects(ObjType.Узел);
+                        foreach (var nodeItem in nodes)
                         {
                             var x = nodeItem._x;
                             var y = nodeItem._y;
@@ -47,7 +48,8 @@ namespace Model.IO
                     else if (item.Key == ObjType.Элемент)
                     {
                         sw.WriteLine("Элементы");
-                        foreach (var obj in model.ObjectData[ObjType.Элемент])
+
+                        foreach (var obj in model.ObjectData.GetObjects(ObjType.Элемент))
                         {
                             var elem = (Element)obj;
                             sw.WriteLine(elem.ToString());

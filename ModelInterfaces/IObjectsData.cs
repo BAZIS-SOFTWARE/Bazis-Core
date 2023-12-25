@@ -6,7 +6,10 @@ using System.Linq;
 
 namespace ModelInterfaces
 {
-    public interface IObjectsData : IEnumerable<KeyValuePair<ObjType, List<IModelObject>>>
+    /// <summary>
+    /// IObjectsData
+    /// </summary>
+    public interface IObjectsData : IEnumerable<KeyValuePair<ObjType,List<IModelObject>>>
     {
         /// <summary>
         /// GetLastObjNumber
@@ -19,12 +22,6 @@ namespace ModelInterfaces
         /// </summary>
         int Count { get; }
 
-        /// <summary>
-        /// this
-        /// </summary>
-        /// <param name="objType"></param>
-        /// <returns></returns>
-        List<IModelObject> this[ObjType objType] { get;}
         /// <summary>
         /// Clear
         /// </summary>
@@ -66,18 +63,18 @@ namespace ModelInterfaces
         /// <returns></returns>
         IEnumerable<IModelObject> FindMany(int objNumbr);
         /// <summary>
+        /// FindMany
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        IEnumerable<T> FindMany<T>() where T : IModelObject;
+        /// <summary>
         /// Find
         /// </summary>
         /// <param name="objType"></param>
         /// <param name="objNumbr"></param>
         /// <returns></returns>
         IModelObject Find(ObjType objType, int objNumbr);
-        /// <summary>
-        /// FindMany
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        IEnumerable<T> FindMany<T>() where T : IModelObject;
         /// <summary>
         /// Add
         /// </summary>
@@ -96,5 +93,11 @@ namespace ModelInterfaces
         /// </summary>
         /// <param name="objType"></param>
         void Remove(ObjType objType);
+        /// <summary>
+        /// GetObjects
+        /// </summary>
+        /// <param name="objType"></param>
+        /// <returns></returns>
+        IEnumerable<IModelObject> GetObjects(ObjType objType);
     }
 }

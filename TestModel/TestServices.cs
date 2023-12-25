@@ -166,13 +166,14 @@ namespace TestModel
 
             var noDouble = merger.Merge<Node>(coincidentNodes);
 
-            model.ObjectData[ObjType.Узел].Clear();
-            model.ObjectData[ObjType.Узел].AddRange(noDouble);
+            model.ObjectData.Remove(ObjType.Узел);
+            model.ObjectData.Add(ObjType.Узел,noDouble);
 
             //assert
-            var numb = model.ObjectData[ObjType.Узел].First().Number;
+            var nodes = model.ObjectData.GetObjects(ObjType.Узел).ToList();
+            var numb = nodes.First().Number;
 
-            foreach (var item in model.ObjectData[ObjType.Узел].Skip(1))
+            foreach (var item in nodes.Skip(1))
             {
                 if (item.Number <= numb)
                     throw new Exception($"{item.Number}");

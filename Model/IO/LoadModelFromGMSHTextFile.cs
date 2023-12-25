@@ -150,6 +150,9 @@ namespace Model.IO
 
                 var objType = GetObjType(elementKind);
                 var group = new Group(groupName, objType);
+
+                var objs = newMesh.ObjectData.GetObjects(objType).ToList();
+
                 while (line != null && !line.Contains("*NSET") && !line.Contains("*ELSET"))
                 {
                     strAr = line.Replace(" ", "").Split(',');
@@ -157,7 +160,7 @@ namespace Model.IO
                     dic[int.Parse(y)]);
                     foreach (var number in objsNumbers)
                     {
-                        var obj = newMesh.ObjectData[objType].Find(number);
+                        var obj = objs.Find(number);
                         group.Add(obj);
                     }
 
