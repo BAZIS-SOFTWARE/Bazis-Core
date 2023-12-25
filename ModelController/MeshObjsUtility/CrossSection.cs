@@ -16,9 +16,9 @@ namespace ModelController.MeshObjsUtility
         /// Сечение элемента плоскостью
         /// Возвращает словарь (номер элемента, плоскость его сечения)
         /// </returns>
-        public Dictionary<int, ElementSurface> GetSectionSurfaces(IEnumerable<Element3D> elements, Plane plane)
+        public Dictionary<int, Figure2D> GetSectionSurfaces(IEnumerable<Element3D> elements, Plane plane)
         {
-            var result = new Dictionary<int, ElementSurface>();
+            var result = new Dictionary<int, Figure2D>();
             var surfaceIndex = 0;
             var nodeIndex = 0;
             foreach (var element in elements)
@@ -38,11 +38,11 @@ namespace ModelController.MeshObjsUtility
                 }
                 var nodes = points
                     .Distinct()
-                    .Select(p => new Node(nodeIndex++, p))
+                    .Select(p => new GeometryPoint(nodeIndex++, p))
                     .ToArray();
                 if (nodes.Length >= 3 && nodes.Length <= 6)
                 {
-                    var surface = new ElementSurface(surfaceIndex++, nodes);
+                    var surface = new Figure2D(surfaceIndex++, nodes);
                     result.Add(element.Number, surface);
                 }
                 else if (nodes.Length > 6)

@@ -38,7 +38,7 @@ namespace TestModel
 
             var surface = instance.GetSectionSurfaces(new List<Element3D> { tetra }, plane).Values.First();
 
-            var actualPoints = surface.GetVertexes().Select(n => n.Position).ToHashSet();
+            var actualPoints = surface.GetCoordinates().ToHashSet();
             Assert.IsTrue(actualPoints.SetEquals(expectedPoints));
         }
 
@@ -70,7 +70,7 @@ namespace TestModel
             };
 
             var surface = instance.GetSectionSurfaces(new List<Element3D> { hexa }, plane).Values.First();
-            var actualPoints = surface.GetVertexes().Select(n => n.Position).ToHashSet();
+            var actualPoints = surface.GetCoordinates().ToHashSet();
             Assert.IsTrue(actualPoints.SetEquals(expectedPoints));
         }
 
