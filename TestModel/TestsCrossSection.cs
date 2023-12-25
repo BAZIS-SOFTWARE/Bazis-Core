@@ -79,7 +79,7 @@ namespace TestModel
         {
             var loader = new LoadModelFromCDBTextFile();
             loader.LoadEvent += (arg1, arg2) => { };
-            var modelData = loader.Load(@"..\..\Examples\CDB\longModel.cdb");
+            var modelData = loader.Load(@"..\..\..\Examples\CDB\longModel.cdb");
 
             // scale model
             foreach (var node in modelData.ObjectData.FindMany<Node>())
