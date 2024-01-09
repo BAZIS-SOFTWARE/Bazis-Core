@@ -5,6 +5,28 @@ using System.Collections.Generic;
 namespace ModelControllerInterfaces
 {
     /// <summary>
+    /// PresenterView
+    /// </summary>
+    public enum PresenterView
+    {
+        /// <summary>
+        /// Point
+        /// </summary>
+        Point,
+        /// <summary>
+        /// Line
+        /// </summary>
+        Line,
+        /// <summary>
+        /// Surface
+        /// </summary>
+        Surface,
+        /// <summary>
+        /// LineSurface
+        /// </summary>
+        LineSurface
+    }
+    /// <summary>
     /// PresenterType
     /// </summary>
     public enum PresenterType
@@ -31,6 +53,10 @@ namespace ModelControllerInterfaces
         /// IsVolumeObjs
         /// </summary>
         bool IsVolumeObjs { get; }
+        /// <summary>
+        /// PresenterView
+        /// </summary>
+        PresenterView PresenterView { get; set; }
         /// <summary>
         /// PresenterType
         /// </summary>

@@ -22,6 +22,8 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
 /// <inheritdoc/>
 
         public bool IsVolumeObjs { get; } = false;
+        /// <inheritdoc/>
+        public PresenterView PresenterView { get; set; } = PresenterView.LineSurface;
 
         /// <summary>
         /// SurfaceObjsPresenter
