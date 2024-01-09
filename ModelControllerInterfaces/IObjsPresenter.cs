@@ -64,5 +64,13 @@ namespace ModelControllerInterfaces
         /// </summary>
         /// <returns></returns>
         int Count();
+        /// <summary>
+        /// ClearNotExisted
+        /// </summary>
+        void ClearNotExisted();
+        /// <summary>
+        /// Clear
+        /// </summary>
+        void Clear();
     }
 }

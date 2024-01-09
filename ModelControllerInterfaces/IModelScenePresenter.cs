@@ -46,6 +46,11 @@ namespace ModelControllerInterfaces
         /// </summary>
         /// <param name="modelObjects"></param>
         /// <param name="objsType"></param>
-        void CreatePresenter(List<IModelObject> modelObjects, ObjType objsType);
+        void AddObjects(List<IModelObject> modelObjects, ObjType objsType);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        void ClearNotExisted();
     }
 }

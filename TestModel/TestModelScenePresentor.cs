@@ -18,6 +18,29 @@ namespace TestModel
     [TestClass]
     public class TestModelScenePresentor
     {
+        [DataTestMethod]
+        [DataRow(1)]
+        [DataRow(0)]
+        [DataRow(2)]
+        public void RemoveSomeObjectsByExistState(int objNumber)
+        {
+            //assing
+            var model = new ModelData();
+            model.Loader = new LoadModelFromASCIITextFile();
+
+            model.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
+
+            //act
+            var modelPresentor = new ModelScenePresentator(model.ObjectData);
+
+            model.ObjectData.Find(ObjType.Узел, objNumber).ExistState = false;
+            model.ClearNotExisted();
+            modelPresentor.ClearNotExisted();
+
+            //assert
+            Assert.AreEqual(model.ObjectData.NumberOf3DElements, modelPresentor[ObjType.Элемент3D.ToString()].Count());
+        }
+
 
         [DataTestMethod]
         [DataRow(new float[]

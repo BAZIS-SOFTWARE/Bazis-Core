@@ -22,7 +22,6 @@ namespace Model.GeometryObjects
         /// <param name="points"></param>
         public Figure2D(int number, GeometryPoint[] points) : base(number)
         {
-            points.RoundSort(); //Anticlockwise(nodes);
             this.points = points;
 
             surface = new GeometrySurface(number, points);

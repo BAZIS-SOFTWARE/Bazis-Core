@@ -16,7 +16,7 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
     public class LineObjsPresenter<T> : IObjsPresenter
         where T : IPoint
     {
-        IEnumerable<ILineObject<T>> lineObjects;
+        List<ILineObject<T>> lineObjects = new List<ILineObject<T>>();
 /// <inheritdoc/>
 
         public PresenterType PresenterType { get; } = PresenterType.Line;
@@ -24,14 +24,7 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
 
         public bool IsVolumeObjs { get; } = false;
 
-        /// <summary>
-        /// LineObjsPresenter
-        /// </summary>
-        /// <param name="lineObjects"></param>
-        public LineObjsPresenter(IEnumerable<ILineObject<T>> lineObjects)
-        {
-            this.lineObjects = lineObjects;
-        }
+
 /// <inheritdoc/>
 
         public Tuple<int, int, int,int> CreateIndexes()
@@ -127,6 +120,29 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
         IEnumerator IEnumerable.GetEnumerator()
         {
             throw new NotImplementedException();
+        }
+/// <inheritdoc/>
+
+        public void ClearNotExisted()
+        {
+            var existObjs = lineObjects.Where(x => x.ExistState == true).ToList();
+            lineObjects.Clear();
+            lineObjects.AddRange(existObjs);
+        }
+/// <inheritdoc/>
+
+        public void Clear()
+        {
+            lineObjects.Clear();
+        }
+        /// <summary>
+        /// Add
+        /// </summary>
+        /// <typeparam name="ILineObject"></typeparam>
+        /// <param name="objs"></param>
+        public void Add(IEnumerable<ILineObject<T>> objs)
+        {
+            lineObjects.AddRange(objs);
         }
     }
 }

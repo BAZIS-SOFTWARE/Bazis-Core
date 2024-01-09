@@ -22,8 +22,16 @@ namespace Model
         {
             ObjectData.Clear();
             GroupData.Clear();
-        }      
+        }
 /// <inheritdoc/>
+
+        public void ClearNotExisted()
+        {
+            ObjectData.ClearNotExisted();
+            GroupData.ClearNotExisted();
+        }
+
+        /// <inheritdoc/>
 
         public void Load(string path)
         {

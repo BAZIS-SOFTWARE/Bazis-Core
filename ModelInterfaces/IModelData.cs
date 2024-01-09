@@ -10,6 +10,13 @@ namespace ModelInterfaces
     {
         IObjectsData ObjectData { get; }
         IGroupData GroupData { get; }
+        /// <summary>
+        /// ClearNotExisted
+        /// </summary>
+        void ClearNotExisted();
+        /// <summary>
+        /// Clear
+        /// </summary>
         void Clear();
         /// <summary>
         /// Save

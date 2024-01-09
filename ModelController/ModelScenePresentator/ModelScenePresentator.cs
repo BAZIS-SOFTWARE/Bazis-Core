@@ -53,38 +53,49 @@ namespace ModelController.ModelScenePresentator
         {
             foreach (var objsItem in objectsData)
             {
-                CreatePresenter(objsItem.Value, objsItem.Key);
+                AddObjects(objsItem.Value, objsItem.Key);
             }
         }
 /// <inheritdoc/>
 
-        public void CreatePresenter(List<IModelObject> modelObjects, ObjType objsType)
+        public void AddObjects(List<IModelObject> modelObjects, ObjType objsType)
         {
             switch (objsType)
             {
                 case ObjType.Узел:
                 case ObjType.Точка:
-                    var pointsPresentor = CreatePointObjectsPresenter(modelObjects);
+                    var pointsPresentor = new PointObjsPresenter();
+                    pointsPresentor.Add(modelObjects);
                     presentors.Add(objsType.ToString(), pointsPresentor);
                     break;
                 case ObjType.Линия:
-                    var linesPresentor = CreateGeometryLinePresenter(modelObjects.Select(x => (ILineObject<IGeometryPoint>)x));
-                    presentors.Add(objsType.ToString(), linesPresentor);
+                    var linePres = new LineObjsPresenter<IGeometryPoint>();
+                    var lines = modelObjects.Select(x => (ILineObject<IGeometryPoint>)x);
+                    linePres.Add(lines);
+                    presentors.Add(objsType.ToString(), linePres);
                     break;
                 case ObjType.Фигура2D:
-                    var fig2dPresentor = CreateSurfaceGeometryPresenter(modelObjects.Select(x => (ISurfaceObject<IGeometrySurface, IPoint>)x), false);
+                    var fig2dPresentor = new SurfaceObjsPresenter<IGeometrySurface, IPoint>(false);
+                    var figs2d = modelObjects.Select(x => (ISurfaceObject<IGeometrySurface, IPoint>)x);
+                    fig2dPresentor.Add(figs2d);
                     presentors.Add(objsType.ToString(), fig2dPresentor);
                     break;
                 case ObjType.Элемент1D:
-                    var els1dPresentor = CreateBeamPresenter(modelObjects.Select(x => (ILineObject<INode>)x));
+                    var els1dPresentor = new LineObjsPresenter<INode>();
+                    var els1d = modelObjects.Select(x => (ILineObject<INode>)x);
+                    els1dPresentor.Add(els1d);
                     presentors.Add(objsType.ToString(), els1dPresentor);
                     break;
                 case ObjType.Элемент2D:
-                    var els2dPresentor = CreateSurfaceElementsPresenter(modelObjects.Select(x => (ISurfaceObject<IElementSurface, INode>)x), false);
+                    var els2dPresentor = new SurfaceObjsPresenter<IElementSurface, INode>(false);
+                    var els2d = modelObjects.Select(x => (ISurfaceObject<IElementSurface, INode>)x);
+                    els2dPresentor.Add(els2d);
                     presentors.Add(objsType.ToString(), els2dPresentor);
                     break;
                 case ObjType.Элемент3D:
-                    var els3dPresentor = CreateSurfaceElementsPresenter(modelObjects.Select(x => (ISurfaceObject<IElementSurface,INode>)x), true);
+                    var els3dPresentor = new SurfaceObjsPresenter<IElementSurface, INode>(true);
+                    var els3d = modelObjects.Select(x => (ISurfaceObject<IElementSurface, INode>)x);
+                    els3dPresentor.Add(els3d);
                     presentors.Add(objsType.ToString(), els3dPresentor);
                     break;             
             }
@@ -142,9 +153,26 @@ namespace ModelController.ModelScenePresentator
         {
             presentors.Clear();
         }
-/// <inheritdoc/>
 
-        public bool Contains(KeyValuePair<string, IObjsPresenter> item)
+        /// <summary>
+        /// Clear
+        /// </summary>
+        /// <param name="presentorName"></param>
+
+        public void Clear(string presentorName)
+        {
+            presentors[presentorName].Clear();
+        }
+        /// <inheritdoc/>
+        public void ClearNotExisted()
+        {
+            foreach (var presentor in presentors)
+                presentor.Value.ClearNotExisted();
+        }
+
+    /// <inheritdoc/>
+
+    public bool Contains(KeyValuePair<string, IObjsPresenter> item)
         {
             throw new NotImplementedException();
         }
@@ -162,35 +190,43 @@ namespace ModelController.ModelScenePresentator
         }
 /// <inheritdoc/>
 
-
         public IObjsPresenter CreatePointObjectsPresenter(IEnumerable<IModelObject> modelObjects)
         {
-            return new PointObjsPresenter(modelObjects);
-        }
-
-/// <inheritdoc/>
-
-        public IObjsPresenter CreateSurfaceElementsPresenter(IEnumerable<ISurfaceObject<IElementSurface, INode>> surfaceObjs, bool isVolumeObjs)
-        {
-            return new SurfaceObjsPresenter<IElementSurface, INode>(surfaceObjs, isVolumeObjs);
-        }
-/// <inheritdoc/>
-
-        public IObjsPresenter CreateSurfaceGeometryPresenter(IEnumerable<ISurfaceObject<IGeometrySurface, IPoint>> surfaceObjs, bool isVolumeObjs)
-        {
-            return new SurfaceObjsPresenter<IGeometrySurface, IPoint>(surfaceObjs, isVolumeObjs);
+            var pointsPresentor = new PointObjsPresenter();
+            pointsPresentor.Add(modelObjects);
+            return pointsPresentor;
         }
 /// <inheritdoc/>
 
         public IObjsPresenter CreateBeamPresenter(IEnumerable<ILineObject<INode>> lineObjs)
         {
-            return new LineObjsPresenter<INode>(lineObjs);
+            var els1dPresentor = new LineObjsPresenter<INode>();
+            els1dPresentor.Add(lineObjs);
+            return els1dPresentor;
         }
 /// <inheritdoc/>
 
         public IObjsPresenter CreateGeometryLinePresenter(IEnumerable<ILineObject<IGeometryPoint>> lineObjs)
         {
-            return new LineObjsPresenter<IGeometryPoint>(lineObjs);
+            var linePres = new LineObjsPresenter<IGeometryPoint>();
+            linePres.Add(lineObjs);
+            return linePres;
+        }
+/// <inheritdoc/>
+
+        public IObjsPresenter CreateSurfaceElementsPresenter(IEnumerable<ISurfaceObject<IElementSurface, INode>> surfaceElems, bool isVolumeObjs)
+        {
+            var elsPresentor = new SurfaceObjsPresenter<IElementSurface, INode>(isVolumeObjs);
+            elsPresentor.Add(surfaceElems);
+            return elsPresentor;
+        }
+/// <inheritdoc/>
+
+        public IObjsPresenter CreateSurfaceGeometryPresenter(IEnumerable<ISurfaceObject<IGeometrySurface, IPoint>> surfaceGeom, bool isVolumeObjs)
+        {
+            var fig2dPresentor = new SurfaceObjsPresenter<IGeometrySurface, IPoint>(isVolumeObjs);
+            fig2dPresentor.Add(surfaceGeom);
+            return fig2dPresentor;
         }
     }
 }

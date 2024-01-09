@@ -224,7 +224,8 @@ namespace Model
    
 /// <inheritdoc/>
 
-        public ICollection<ObjType> Keys { get { return modelObjects.Keys; } }
+        public ICollection<ObjType> GetTypes 
+        { get { return modelObjects.Keys; } }
 /// <inheritdoc/>
 
         public ICollection<List<IModelObject>> Values { get { return modelObjects.Values; } }

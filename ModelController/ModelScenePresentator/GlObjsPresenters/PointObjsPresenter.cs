@@ -15,21 +15,14 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
     public class PointObjsPresenter : IObjsPresenter
     {
 
-        IEnumerable<IModelObject> pointObjects;
+        List<IModelObject> pointObjects = new List<IModelObject>();
 /// <inheritdoc/>
         public bool IsVolumeObjs { get; } = false;
         /// <inheritdoc/>
 
         public PresenterType PresenterType { get; } = PresenterType.Point;
 
-        /// <summary>
-        /// PointObjsPresenter
-        /// </summary>
-        /// <param name="pointObjects"></param>
-        public PointObjsPresenter(IEnumerable<IModelObject> pointObjects)
-        {
-            this.pointObjects = pointObjects;
-        }
+
 /// <inheritdoc/>
 
 
@@ -122,6 +115,31 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
         IEnumerator IEnumerable.GetEnumerator()
         {
             throw new NotImplementedException();
+        }
+/// <inheritdoc/>
+
+        public void Clear()
+        {
+            pointObjects.Clear();
+        }
+
+/// <inheritdoc/>
+
+        public void ClearNotExisted()
+        {
+            var existObjs = pointObjects.Where(x => x.ExistState == true).ToList();
+            pointObjects.Clear();
+            pointObjects.AddRange(existObjs);
+        }
+
+        /// <summary>
+        /// Add
+        /// </summary>
+        /// <typeparam name="ISurfaceObject"></typeparam>
+        /// <param name="objs"></param>
+        public void Add(IEnumerable<IModelObject> objs)
+        {
+            pointObjects.AddRange(objs);
         }
     }
 }

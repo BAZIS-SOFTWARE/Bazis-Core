@@ -99,5 +99,9 @@ namespace ModelInterfaces
         /// <param name="objType"></param>
         /// <returns></returns>
         IEnumerable<IModelObject> GetObjects(ObjType objType);
+        /// <summary>
+        /// GetTypes
+        /// </summary>
+        ICollection<ObjType> GetTypes { get; }
     }
 }

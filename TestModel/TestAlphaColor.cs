@@ -16,7 +16,7 @@ namespace TestModel
         public void TestPointObjsPresenter()
         {
             var nodes = new Node[] { new Node(0, new Point3D(0.5f, 1.0f,-1.0f)) };
-            var presenter = new PointObjsPresenter(nodes);
+            var presenter = new PointObjsPresenter() { nodes };
             var indices = presenter.CreateIndexes();
             var pointers = presenter.CreatePointers(indices.Item1);
             var colors = presenter.CreateVertexes(indices.Item3, "цвет");
@@ -34,7 +34,8 @@ namespace TestModel
                                      new GeometryPoint(1, new Point3D(1.0f, 1.0f, -1.0f))
                                    };
             var lines = new Line[] { new Line(0, nodes) };
-            var presenter = new LineObjsPresenter<IGeometryPoint>(lines);
+            var presenter = new LineObjsPresenter<IGeometryPoint>();
+            presenter.Add(lines);
             var indices = presenter.CreateIndexes();
             var pointers = presenter.CreatePointers(indices.Item1);
             var colors = presenter.CreateVertexes(indices.Item3, "цвет");
@@ -55,7 +56,7 @@ namespace TestModel
                                      new Node(2, new Point3D(0.0f, 0.5f, 0.0f))
                                    };
             var triangle = new Element2D[] { new Triangle(0, nodes) };
-            var presenter = new SurfaceObjsPresenter<IElementSurface,INode>(triangle,false);
+            var presenter = new SurfaceObjsPresenter<IElementSurface, INode>(false) { triangle };
             var indices = presenter.CreateIndexes();
             var pointers = presenter.CreatePointers(indices.Item1);
             var colors = presenter.CreateVertexes(indices.Item3, "цвет");

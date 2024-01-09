@@ -15,7 +15,7 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
     public class SurfaceObjsPresenter<T,U> : IVolumeObjsPresenter
         where T : ISurface<U> where U : IPoint
     {
-        IEnumerable<ISurfaceObject<T,U>> surfaceObjects;
+        List<ISurfaceObject<T,U>> surfaceObjects = new List<ISurfaceObject<T, U>>();
 /// <inheritdoc/>
 
         public PresenterType PresenterType { get; } = PresenterType.Surface;
@@ -28,9 +28,8 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
         /// </summary>
         /// <param name="surfaceObjects"></param>
         /// <param name="isVolumeObjs"></param>
-        public SurfaceObjsPresenter(IEnumerable<ISurfaceObject<T,U>> surfaceObjects, bool isVolumeObjs)
+        public SurfaceObjsPresenter(bool isVolumeObjs)
         {
-            this.surfaceObjects = surfaceObjects;
             IsVolumeObjs = isVolumeObjs;
         }
 
@@ -189,6 +188,28 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
         IEnumerator IEnumerable.GetEnumerator()
         {
             throw new NotImplementedException();
+        }
+/// <inheritdoc/>
+
+        public void ClearNotExisted()
+        {
+            var existObjs = surfaceObjects.Where(x => x.ExistState == true).ToList();
+            surfaceObjects.Clear();
+            surfaceObjects.AddRange(existObjs);
+        }
+/// <inheritdoc/>
+
+        public void Clear()
+        {
+            surfaceObjects.Clear();
+        }
+        /// <summary>
+        /// Add
+        /// </summary>
+        /// <param name="objs"></param>
+        public void Add(IEnumerable<ISurfaceObject<T, U>> objs)
+        {
+                surfaceObjects.AddRange(objs);
         }
     }
 }
