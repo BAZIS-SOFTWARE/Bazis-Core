@@ -21,6 +21,7 @@
     <None Remove="Icon.png" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MeshObjsCreator\Map3DFrom2D.cs" />
     <Compile Include="MeshObjsCreator\MeshCreator.cs" />
     <Compile Include="MeshObjsCreator\Delone2D\DeloneTriangulation2D.cs" />
     <Compile Include="MeshObjsCreator\Delone2D\DeloneNode2D.cs" />
