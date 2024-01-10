@@ -3,6 +3,7 @@ using Model.MeshObjects;
 using Model.Events;
 using ModelInterfaces;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -24,8 +25,8 @@ namespace Model.IO
             catch (Exception e)
             {
                 if (e is IndexOutOfRangeException
-                   || e is FormatException
-                   || e is EndOfStreamException)
+                    || e is FormatException
+                    || e is EndOfStreamException)
                     throw new StlFileLoadExeption("Формат файла не соответствует формату STL", e);
 
                 throw;
@@ -41,20 +42,25 @@ namespace Model.IO
                 var str = String.Empty;
 
                 LoadEvent?.Invoke(this, new LoaderEventArgs("Начало импорта STL модели"));
-
-                while (str != "endsolid")
+                while (!reader.EndOfStream)
                 {
-                    if (str != null && str.Contains("outer loop"))
+                    while (str != "endsolid")
                     {
+                        if (str != null && str.Contains("outer loop"))
+                        {
+                            str = reader.ReadLine()?.Trim();
+                            var nodes = GetNodes(reader, str);
+                            modelData.ObjectData.Add(ObjType.Точка, nodes);
+                            var surface = new Figure2D(counter, nodes);
+                            modelData.ObjectData.Add(ObjType.Фигура2D, surface);
+                            counter++;
+                        }
+
                         str = reader.ReadLine()?.Trim();
-                        var nodes = GetNodes(reader, str);
-                        modelData.ObjectData.Add(ObjType.Точка, nodes);
-                        var surface = new Figure2D(counter, nodes);
-                        modelData.ObjectData.Add(ObjType.Фигура2D, surface);
-                        counter++;
                     }
-                    str = reader.ReadLine();
+                    str = String.Empty;
                 }
+
                 LoadEvent?.Invoke(this, new LoaderEventArgs("Модель загружена"));
             }
 
@@ -125,6 +131,7 @@ namespace Model.IO
             var node = new GeometryPoint(counter++, new Point3D(x, y, z));
             return node;
         }
+
     }
 
 
