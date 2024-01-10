@@ -32,6 +32,7 @@
     <Compile Include="GeometryObjects\GeometrySurface.cs" />
     <Compile Include="IO\LoadModelFromBPF2TextFile.cs" />
     <Compile Include="IO\SaveModelToBPF2TextFile.cs" />
+    <Compile Include="IO\SaveModelToSTLFile.cs" />
     <Compile Include="MeshObjects\Hexa.cs" />
     <Compile Include="GeometryObjects\GeometryPoint.cs" />
     <Compile Include="IO\LoadModelFromProjectTextFile.cs" />
