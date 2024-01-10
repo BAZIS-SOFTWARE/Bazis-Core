@@ -13,7 +13,9 @@
         /// Extractor2DFrom3D
         /// </summary>
         IExtractor2DFrom3D Extractor2DFrom3D { get; }
-
-        IMap3DFrom2D Map3DFrom2D { get; }
+        /// <summary>
+        /// Sew3DFrom2D
+        /// </summary>
+        ISew3DFrom2D Sew3DFrom2D { get; }
     }
 }
