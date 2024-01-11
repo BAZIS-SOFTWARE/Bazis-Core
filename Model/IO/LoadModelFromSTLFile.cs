@@ -95,18 +95,21 @@ namespace Model.IO
 
             using (BinaryReader reader = new BinaryReader(File.Open(path, FileMode.Open)))
             {
-                reader.BaseStream.Position += 80;
-                var count = reader.ReadUInt32();
-                reader.BaseStream.Position += 12;
-                for (int i = 0; i < count; i++)
+                while (reader.BaseStream.Position < reader.BaseStream.Length)
                 {
-                    var points = new GeometryPoint[3];
-                    points[0] = ReadNode(reader);
-                    points[1] = ReadNode(reader);
-                    points[2] = ReadNode(reader);
-                    var surface = new Figure2D(counter++, points);
-                    modelData.ObjectData.Add(ObjType.Фигура2D, surface);
-                    reader.BaseStream.Position += 14;
+                    reader.BaseStream.Position += 80;
+                    var count = reader.ReadUInt32();
+                    reader.BaseStream.Position += 12;
+                    for (int i = 0; i < count; i++)
+                    {
+                        var points = new GeometryPoint[3];
+                        points[0] = ReadNode(reader);
+                        points[1] = ReadNode(reader);
+                        points[2] = ReadNode(reader);
+                        var surface = new Figure2D(counter++, points);
+                        modelData.ObjectData.Add(ObjType.Фигура2D, surface);
+                        reader.BaseStream.Position += 14;
+                    }
                 }
             }
             LoadEvent?.Invoke(this, new LoaderEventArgs("Модель загружена"));
