@@ -40,7 +40,9 @@ namespace Model
 
         public void Clear()
         {
-            modelObjects.Clear();
+            foreach (var item in modelObjects)
+                item.Value.Clear();
+            //modelObjects.Clear();
         }
         /// <inheritdoc/>
 

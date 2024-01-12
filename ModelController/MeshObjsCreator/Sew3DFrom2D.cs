@@ -8,7 +8,7 @@ namespace ModelController.MeshObjsCreator
     /// <summary>
     /// Map3DFrom2D
     /// </summary>
-    public class Map3DFrom2D : IMap3DFrom2D
+    public class Sew3DFrom2D : ISew3DFrom2D
     {
 /// <inheritdoc/>
 
