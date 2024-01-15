@@ -100,6 +100,7 @@ namespace Model.GroupsData
         {
             objects.AddRange(items);
         }
+/// <inheritdoc/>
 
         public bool Contains(IModelObject item)
         {
