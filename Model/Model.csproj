@@ -29,6 +29,7 @@
     <Compile Include="Events\LoaderEventArgs.cs" />
     <Compile Include="Events\SaverEventArgs.cs" />
     <Compile Include="GeometryObjects\Figure2D.cs" />
+    <Compile Include="GeometryObjects\Figure3D.cs" />
     <Compile Include="GeometryObjects\GeometrySurface.cs" />
     <Compile Include="IO\LoadModelFromBPF2TextFile.cs" />
     <Compile Include="IO\SaveModelToBPF2TextFile.cs" />
