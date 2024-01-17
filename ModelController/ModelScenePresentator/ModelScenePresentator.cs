@@ -75,8 +75,8 @@ namespace ModelController.ModelScenePresentator
                     presentors.Add(objsType.ToString(), linePres);
                     break;
                 case ObjType.Фигура2D:
-                    var fig2dPresentor = new SurfaceObjsPresenter<IGeometrySurface, IPoint>(false);
-                    var figs2d = modelObjects.Select(x => (ISurfaceObject<IGeometrySurface, IPoint>)x);
+                    var fig2dPresentor = new SurfaceObjsPresenter<IGeometrySurface, IGeometryPoint>(false);
+                    var figs2d = modelObjects.Select(x => (ISurfaceObject<IGeometrySurface, IGeometryPoint>)x);
                     fig2dPresentor.Add(figs2d);
                     presentors.Add(objsType.ToString(), fig2dPresentor);
                     break;

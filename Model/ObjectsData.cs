@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ModelInterfaces.ObjectsComparers;
 using ModelInterfaces.ObjectsFinders;
+using ModelInterfaces.GeometryObjects;
 
 namespace Model
 {
@@ -15,7 +16,16 @@ namespace Model
     public class ObjectsData : IObjectsData
     {
         Dictionary<ObjType,List<IModelObject>> modelObjects;
-       
+
+        List<IModelObject> points = new List<IModelObject>();
+        List<ILineObject<IGeometryPoint>> lines = new List<ILineObject<IGeometryPoint>>();
+        List<ISurfaceObject<IGeometrySurface, IGeometryPoint>> figure2D = new List<ISurfaceObject<IGeometrySurface, IGeometryPoint>>();
+        List<ISurfaceObject<IGeometrySurface, IGeometryPoint>> figure3D = new List<ISurfaceObject<IGeometrySurface, IGeometryPoint>>();
+        List<IModelObject> nodes = new List<IModelObject>();
+        List<ISurfaceObject<IElementSurface, INode>> elements1D = new List<ISurfaceObject<IElementSurface, INode>>();
+        List<ISurfaceObject<IElementSurface, INode>> elements2D = new List<ISurfaceObject<IElementSurface, INode>>();
+        List<ISurfaceObject<IElementSurface, INode>> elements3D = new List<ISurfaceObject<IElementSurface, INode>>();
+
         /// <summary>
         /// ObjectsData
         /// </summary>
