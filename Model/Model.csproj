@@ -77,5 +77,8 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
+  </ItemGroup> 
+  <ItemGroup>
+    <Folder Include="ObjsData\" />
   </ItemGroup>
 </Project>
