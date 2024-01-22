@@ -2,6 +2,7 @@
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using ModelInterfaces;
+using ModelInterfaces.MeshObjects;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace Model.MeshObjects
     public abstract class Element3D : Element, IElement3D
     {
         private List<ElementSurface> surfaces = new List<ElementSurface>();
-        public Element3D(int number, Node[] nodes) : base(number, nodes)
+        public Element3D(int number, INode[] nodes) : base(number, nodes)
         {
 
             InitialColor = Color.FromArgb(255, 125, 0);
@@ -29,7 +30,7 @@ namespace Model.MeshObjects
 
         }
 
-        public Element3D(int number, Node[] nodes,int point) : this(number, nodes)
+        public Element3D(int number, INode[] nodes,int point) : this(number, nodes)
         {
 
 

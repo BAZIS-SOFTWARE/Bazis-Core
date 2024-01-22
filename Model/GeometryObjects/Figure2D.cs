@@ -9,7 +9,7 @@ namespace Model.GeometryObjects
     /// <summary>
     /// Figure2D
     /// </summary>
-    public class Figure2D : ModelObject, ISurfaceObject<IGeometrySurface, IPoint>
+    public class Figure2D : ModelObject, IFigure2D
     {
         /// <summary>
         /// Surface

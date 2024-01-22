@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Model.GroupsData;
+using ModelInterfaces.MeshObjects;
 
 namespace Model.IO
 {
@@ -63,7 +64,7 @@ namespace Model.IO
 
         }
 
-        private static void LoadNodes(StreamReader sr, ModelData newMesh, List<Node> nodes)
+        private void LoadNodes(StreamReader sr, ModelData newMesh, List<Node> nodes)
         {
             var line = string.Empty;
             while (line != "#Узлы")
@@ -84,7 +85,7 @@ namespace Model.IO
                     nodes.Add(node);
                 }
             }
-            newMesh.ObjectData.Add(ObjType.Узел,nodes);
+            newMesh.ObjectData.NodeCollection.AddRange(nodes);
 
         }
 
@@ -93,7 +94,6 @@ namespace Model.IO
             var line = String.Empty;
             line = sr.ReadLine();
 
-            var nodes = newMesh.ObjectData.FindMany<Node>().ToArray();
             //var number = newMesh.GetLastObjNumber() + 1;
             while (line != $"#{elType}")
             {
@@ -121,34 +121,34 @@ namespace Model.IO
                 if (!int.TryParse(elData[3], out elintPnts))
                     throw new Exception("Кол-во точек интегрирования задано некорректно!");
 
-                var nodeList = new List<Node>();
+                var nodeList = new List<INode>();
                 foreach (var nodeNumber in ndNumbers)
-                    nodeList.Add(nodes.Find(nodeNumber));
+                {
+                    var node = newMesh.ObjectData.NodeCollection.Find(nodeNumber);
+                    nodeList.Add(node);
+                }
 
-                Element elem;
                 switch (elKind)
                 {
                     case ElementKind.Стержень:
-                        elem = new Beam(elNum, nodeList.ToArray(), elintPnts);
+                        newMesh.ObjectData.E1DCollection.Add(new Beam(elNum, nodeList.ToArray(), elintPnts));
                         break;
                     case ElementKind.Треугольник:
-                        elem = new Triangle(elNum, nodeList.ToArray(), elintPnts);
+                        newMesh.ObjectData.E2DCollection.Add(new Triangle(elNum, nodeList.ToArray(), elintPnts));
                         break;
                     case ElementKind.Квадрат:
-                        elem = new Quad(elNum, nodeList.ToArray(), elintPnts);
+                        newMesh.ObjectData.E2DCollection.Add(new Quad(elNum, nodeList.ToArray(), elintPnts));
                         break;
                     case ElementKind.Тетра:
-                        elem = new Tetra(elNum, nodeList.ToArray(), elintPnts);
+                        newMesh.ObjectData.E3DCollection.Add(new Tetra(elNum, nodeList.ToArray(), elintPnts));
                         break;
                     case ElementKind.Гекса:
-                        elem = new Hexa(elNum, nodeList.ToArray(), elintPnts);
+                        newMesh.ObjectData.E3DCollection.Add(new Hexa(elNum, nodeList.ToArray(), elintPnts));
                         break;
                     default:
-                        elem = new Penta(elNum, nodeList.ToArray(), elintPnts);
+                        newMesh.ObjectData.E3DCollection.Add(new Penta(elNum, nodeList.ToArray(), elintPnts));
                         break;
                 }
-
-                newMesh.ObjectData.Add(ObjType.Элемент, elem);
                 line = sr.ReadLine();
             }
         }
@@ -193,7 +193,7 @@ namespace Model.IO
             var indexLine = splitLine[1].Remove(0, name.Length + 2);
             if (indexLine != "")
             {
-                var elements = newMesh.ObjectData.FindMany<Element>().ToList();
+                var elements = newMesh.ObjectData.GetObjects(ObjType.Элемент).ToList();
                 var indexes = indexLine.Split(' ').Select(x => int.Parse(x)).ToList();
                 indexes.Sort();
 

@@ -7,6 +7,10 @@ using System.Linq;
 using ModelInterfaces.ObjectsComparers;
 using ModelInterfaces.ObjectsFinders;
 using ModelInterfaces.GeometryObjects;
+using ModelInterfaces.MeshObjects;
+using Model.ObjectsCollections;
+using System.Security.Cryptography;
+using System.Collections.ObjectModel;
 
 namespace Model
 {
@@ -15,295 +19,389 @@ namespace Model
     /// </summary>
     public class ObjectsData : IObjectsData
     {
-        Dictionary<ObjType,List<IModelObject>> modelObjects;
 
-        List<IModelObject> points = new List<IModelObject>();
-        List<ILineObject<IGeometryPoint>> lines = new List<ILineObject<IGeometryPoint>>();
-        List<ISurfaceObject<IGeometrySurface, IGeometryPoint>> figure2D = new List<ISurfaceObject<IGeometrySurface, IGeometryPoint>>();
-        List<ISurfaceObject<IGeometrySurface, IGeometryPoint>> figure3D = new List<ISurfaceObject<IGeometrySurface, IGeometryPoint>>();
-        List<IModelObject> nodes = new List<IModelObject>();
-        List<ISurfaceObject<IElementSurface, INode>> elements1D = new List<ISurfaceObject<IElementSurface, INode>>();
-        List<ISurfaceObject<IElementSurface, INode>> elements2D = new List<ISurfaceObject<IElementSurface, INode>>();
-        List<ISurfaceObject<IElementSurface, INode>> elements3D = new List<ISurfaceObject<IElementSurface, INode>>();
+        public IObjectsCollection<INode> NodeCollection => new NodeCollection();
 
-        /// <summary>
-        /// ObjectsData
-        /// </summary>
-        public ObjectsData()
-        {
-            modelObjects = new Dictionary<ObjType, List<IModelObject>>()
-            {
-                {ObjType.Точка,new List<IModelObject>() },
-                {ObjType.Линия,new List<IModelObject>() },
-                {ObjType.Фигура2D,new List<IModelObject>() },
-                {ObjType.Фигура3D,new List<IModelObject>() },
-                {ObjType.Узел,new List<IModelObject>() },
-                {ObjType.Элемент1D,new List<IModelObject>() },
-                {ObjType.Элемент2D,new List<IModelObject>() },
-                {ObjType.Элемент3D,new List<IModelObject>() }
-            };
-        }
-/// <inheritdoc/>
+        public IObjectsCollection<IElement3D> E3DCollection => new Element3DCollection();
 
-        public bool IsReadOnly { get { return false; } }
-/// <inheritdoc/>
+        public IObjectsCollection<IElement2D> E2DCollection => new Element2DCollection();
 
-        public void Clear()
-        {
-            foreach (var item in modelObjects)
-                item.Value.Clear();
-            //modelObjects.Clear();
-        }
+        public IObjectsCollection<ILineObject<INode>> E1DCollection => new Element1DCollection();
+
+        public IObjectsCollection<IGeometryPoint> PointCollection => new PointCollection();
+
+        public IObjectsCollection<ILineObject<IGeometryPoint>> LineCollection => new LineCollection();
+
+        public IObjectsCollection<IFigure2D> Fig2DCollection => new Fig2DCollection();
+
+        public IObjectsCollection<IFigure3D> Fig3DCollection => new Fig3DCollection();
+
         /// <inheritdoc/>
 
-        public IEnumerable<T> FindMany<T>() where T : IModelObject
+        public bool IsReadOnly { get { return false; } }
+        /// <inheritdoc/>
+
+        public void ClearAll()
         {
-            foreach (var modelObject in modelObjects)
-                foreach (var obj in modelObject.Value)
-                    if (obj is T)
-                        yield return (T)obj;
+            PointCollection.Clear();
+            LineCollection.Clear();
+            Fig2DCollection.Clear();
+            Fig3DCollection.Clear();
+            NodeCollection.Clear();
+            E1DCollection.Clear();
+            E2DCollection.Clear();
+            E3DCollection.Clear();
+        }
+
+        /// <inheritdoc/>
+
+        public IModelObject Find(ObjType objType, int objNumbr)
+        {
+            if (Contains(objType))
+                return null;
+
+            switch (objType)
+            {
+                case ObjType.Точка:
+                    return PointCollection.Find(objNumbr);
+                case ObjType.Линия:
+                    return LineCollection.Find(objNumbr);
+                case ObjType.Фигура2D:
+                    return Fig2DCollection.Find(objNumbr);
+                case ObjType.Фигура3D:
+                    return Fig3DCollection.Find(objNumbr);
+                case ObjType.Узел:
+                    return NodeCollection.Find(objNumbr);
+                case ObjType.Элемент1D:
+                    return E1DCollection.Find(objNumbr);
+                case ObjType.Элемент2D:
+                    return E2DCollection.Find(objNumbr);
+                case ObjType.Элемент3D:
+                    return E3DCollection.Find(objNumbr);
+                default:
+                    return null;
+            }
         }
 
         /// <inheritdoc/>
 
         public IEnumerable<IModelObject> FindMany(int objNumbr)
         {
-            foreach (var modelObject in modelObjects)
+            IModelObject modelObject;
+            modelObject = PointCollection.Find(objNumbr);
+            if(modelObject != null)
+                yield return modelObject;
+            modelObject = LineCollection.Find(objNumbr);
+            if (modelObject != null)
+                yield return modelObject;
+            modelObject = Fig2DCollection.Find(objNumbr);
+            if (modelObject != null)
+                yield return modelObject;
+            modelObject = Fig3DCollection.Find(objNumbr);
+            if (modelObject != null)
+                yield return modelObject;
+            modelObject = NodeCollection.Find(objNumbr);
+            if (modelObject != null)
+                yield return modelObject;
+            modelObject = E1DCollection.Find(objNumbr);
+            if (modelObject != null)
+                yield return modelObject;
+            modelObject = E2DCollection.Find(objNumbr);
+            if (modelObject != null)
+                yield return modelObject;
+            modelObject = E3DCollection.Find(objNumbr);
+            if (modelObject != null)
+                yield return modelObject;
+            yield return LineCollection.Find(objNumbr);      
+        }
+        /// <inheritdoc/>
+
+        IEnumerable<IModelObject> GetObjects()
+        {
+            foreach (var item in PointCollection)
+                yield return item;
+            foreach (var item in LineCollection)
+                yield return item;
+            foreach (var item in Fig2DCollection)
+                yield return item;
+            foreach (var item in Fig3DCollection)
+                yield return item;
+            foreach (var item in NodeCollection)
+                yield return item;
+            foreach (var item in E1DCollection)
+                yield return item;
+            foreach (var item in E2DCollection)
+                yield return item;
+            foreach (var item in E3DCollection)
+                yield return item;
+        }
+
+        int GetLastElementNumber()
+        {
+            var e1Numb = E1DCollection.Count > 0 ? E1DCollection.Last().Number : -1;
+            var e2Numb = E2DCollection.Count > 0 ? E1DCollection.Last().Number : -1;
+            var e3Numb = E3DCollection.Count > 0 ? E1DCollection.Last().Number : -1;
+
+            var numb = e1Numb;
+            if (e1Numb < e2Numb)
+                numb = e2Numb;
+            if (numb < e3Numb)
+                numb = e3Numb;
+            return numb;
+        }
+
+        /// <inheritdoc/>
+
+        int NumberOfElements
+        {
+            get 
             {
-                var obj = modelObject.Value.Find(objNumbr);
-                if (obj != null)
-                    yield return obj;
+                var count = 0;
+                count += E1DCollection.Count;
+                count += E2DCollection.Count;
+                count += E3DCollection.Count;
+                return count;
+            }
+        }
+
+        int NumberOfFigures
+        {
+            get
+            {
+                var count = 0;
+                count += Fig2DCollection.Count;
+                count += Fig3DCollection.Count;
+                return count;
+            }
+        }
+        int NumberOfObjects
+        {
+            get
+            {
+                var count = 0;
+                count += NodeCollection.Count;
+                count += NumberOfElements;
+                count += PointCollection.Count;
+                count += NumberOfFigures;
+                count += LineCollection.Count;
+                return count;
+            }
+        }
+        /// <inheritdoc/>
+
+
+
+        public ICollection<ObjType> GetTypes
+        {
+            get 
+            {
+                return new Collection<ObjType>()
+                {
+                    ObjType.Точка,
+                    ObjType.Линия,
+                    ObjType.Фигура2D,
+                    ObjType.Фигура3D,
+                    ObjType.Узел,
+                    ObjType.Элемент1D,
+                    ObjType.Элемент2D,
+                    ObjType.Элемент3D
+                };
+            }
+        }
+
+        /// <inheritdoc/>
+
+        public void ClearNotExisted()
+        {
+            PointCollection.ClearNotExisted();
+            LineCollection.ClearNotExisted();
+            Fig2DCollection.ClearNotExisted();
+            Fig3DCollection.ClearNotExisted();
+            NodeCollection.ClearNotExisted();
+            E1DCollection.ClearNotExisted();
+            E2DCollection.ClearNotExisted();
+            E3DCollection.ClearNotExisted();
+        }
+/// <inheritdoc/>
+
+        public bool Contains(ObjType objType)
+        {
+            return GetTypes.Contains(objType);
+        }
+/// <inheritdoc/>
+
+        public IEnumerable<IElement> GetElements()
+        {
+            foreach (var item in E1DCollection)
+                yield return (IElement)item;
+            foreach (var item in E2DCollection)
+                yield return item;
+            foreach (var item in E3DCollection)
+                yield return item;
+        }
+        /// <inheritdoc/>
+        IEnumerable<IModelObject> GetFigures()
+        {
+
+            foreach (var item in Fig2DCollection)
+                yield return item;
+            foreach (var item in Fig3DCollection)
+                yield return item;
+        }
+
+        int GetLastFigureNumber()
+        {
+            throw new NotImplementedException();
+        }
+
+        void ClearElements()
+        {
+            E1DCollection.Clear();
+            E2DCollection.Clear();
+            E3DCollection.Clear();
+        }
+
+        void ClearFigures()
+        {
+            Fig2DCollection.Clear();
+            Fig3DCollection.Clear();
+        }
+/// <inheritdoc/>
+
+        public void Clear(ObjType objType)
+        {
+            switch (objType)
+            {
+                case ObjType.Объект:
+                    ClearAll();
+                    break;
+                case ObjType.Точка:
+                    PointCollection.Clear();
+                    ClearFigures();
+                    break;
+                case ObjType.Линия:
+                    LineCollection.Clear();
+                    break;
+                case ObjType.Фигура:
+                    ClearFigures();
+                    break;
+                case ObjType.Фигура2D:
+                    Fig2DCollection.Clear();
+                    break;
+                case ObjType.Фигура3D:
+                    Fig3DCollection.Clear();
+                    break;
+                case ObjType.Узел:
+                    NodeCollection.Clear();
+                    ClearElements();
+                    break;
+                case ObjType.Элемент:
+                    ClearElements();
+                    break;
+                case ObjType.Элемент1D:
+                    E1DCollection.Clear();
+                    break;
+                case ObjType.Элемент2D:
+                    E2DCollection.Clear();
+                    break;
+                case ObjType.Элемент3D:
+                    E3DCollection.Clear();
+                    break;
+                default:
+                    break;
             }
         }
 /// <inheritdoc/>
 
         public IEnumerable<IModelObject> GetObjects(ObjType objType)
         {
-            var temp = new List<IModelObject>();
-            if(objType == ObjType.Объект)
+            switch (objType)
             {
-                foreach (var item in modelObjects)
-                    temp.AddRange(item.Value);
+                case ObjType.Объект:
+                    return GetObjects();
+                case ObjType.Точка:
+                    return PointCollection;
+                case ObjType.Линия:
+                    return LineCollection;
+                case ObjType.Фигура:
+                    return GetFigures();
+                case ObjType.Фигура2D:
+                    return Fig2DCollection;
+                case ObjType.Фигура3D:
+                    return Fig3DCollection;
+                case ObjType.Узел:
+                    return NodeCollection;
+                case ObjType.Элемент:
+                    return GetElements();
+                case ObjType.Элемент1D:
+                    return E1DCollection;
+                case ObjType.Элемент2D:
+                    return E2DCollection;
+                case ObjType.Элемент3D:
+                    return E3DCollection;
+                default:
+                    return null;
             }
-            else if(objType == ObjType.Элемент)
-            {
-                var e1d = modelObjects[ObjType.Элемент1D];
-                var e2d = modelObjects[ObjType.Элемент2D];
-                var e3d = modelObjects[ObjType.Элемент3D];
-
-                temp.AddRange(e1d);
-                temp.AddRange(e2d);
-                temp.AddRange(e3d);
-            }
-            else if (objType == ObjType.Фигура)
-            {
-                var f2d = modelObjects[ObjType.Фигура2D];
-                var f3d = modelObjects[ObjType.Фигура3D];
-
-                temp.AddRange(f2d);
-                temp.AddRange(f3d);
-            }
-            else
-            {
-                temp.AddRange(modelObjects[objType]);
-            }
-
-            foreach (var item in temp)
-            {
-                yield return item;
-            }
-        }
-
-
-
-/// <inheritdoc/>
-
-        public int GetLastObjNumber(ObjType objType)
-        {
-            if (objType == ObjType.Элемент)
-            {
-                var e1 = modelObjects[ObjType.Элемент1D];
-                var e2 = modelObjects[ObjType.Элемент2D];
-                var e3 = modelObjects[ObjType.Элемент3D];
-
-                var e1Numb = e1.Count > 0 ? e1.Last().Number : 0;
-                var e2Numb = e2.Count > 0 ? e2.Last().Number : 0;
-                var e3Numb = e3.Count > 0 ? e3.Last().Number : 0;
-
-                var numb = e1Numb;
-                if (e1Numb < e2Numb)
-                    numb = e2Numb;
-                if (numb < e3Numb)
-                    numb = e3Numb;
-                return numb;
-            }
-            else
-                return modelObjects[objType].Count > 0 ? modelObjects[objType].Last().Number : 0;
         }
 /// <inheritdoc/>
 
-        public int Count
+        public int Count(ObjType objType)
         {
-            get 
+            switch (objType)
             {
-                var count = 0;
-
-                foreach (var item in modelObjects)
-                {
-                    count += item.Value.Count;
-                }
-                return count; 
+                case ObjType.Объект:
+                    return NumberOfObjects;
+                case ObjType.Точка:
+                    return PointCollection.Count;
+                case ObjType.Линия:
+                    return LineCollection.Count;
+                case ObjType.Фигура:
+                    return NumberOfFigures;
+                case ObjType.Фигура2D:
+                    return Fig2DCollection.Count;
+                case ObjType.Фигура3D:
+                    return Fig3DCollection.Count;
+                case ObjType.Узел:
+                    return NodeCollection.Count;
+                case ObjType.Элемент:
+                    return NumberOfElements;
+                case ObjType.Элемент1D:
+                    return E1DCollection.Count;
+                case ObjType.Элемент2D:
+                    return E2DCollection.Count;
+                case ObjType.Элемент3D:
+                    return E3DCollection.Count;
+                default:
+                    return 0;
             }
         }
-        /// <inheritdoc/>
+/// <inheritdoc/>
 
-        public int NumberOfNodes
+        public int GetLastNumber(ObjType objType)
         {
-            get { return FindMany<INode>().Count(); }
-        }
-        /// <inheritdoc/>
-
-        public int NumberOf3DElements
-        {
-            get { return FindMany<IElement3D>().Count(); }
-        }
-        /// <inheritdoc/>
-
-        public int NumberOf1DElements
-        {
-            get { return FindMany<IElement1D>().Count(); }
-        }
-        /// <inheritdoc/>
-
-        public int NumberOf2DElements
-        {
-            get { return FindMany<IElement2D>().Count(); }
-        }
-        /// <inheritdoc/>
-
-        public int NumberOfElements
-        {
-            get { return FindMany<IElement>().Count(); }
-        }
-  
-        /// <inheritdoc/>
-
-        public void ClearNotExisted()
-        {
-            var temp = new Dictionary<ObjType, List<IModelObject>>();
-            foreach (var item in modelObjects)
+            switch (objType)
             {
-                var existObjs = item.Value.Where(x => x.ExistState == true).ToList();
-                temp.Add(item.Key, existObjs);
+                case ObjType.Точка:
+                    return PointCollection.Count > 0 ? PointCollection.Last().Number : -1;
+                case ObjType.Линия:
+                    return LineCollection.Count > 0 ? LineCollection.Last().Number : -1;
+                case ObjType.Фигура:
+                    return GetLastFigureNumber();
+                case ObjType.Фигура2D:
+                    return Fig2DCollection.Count > 0 ? Fig2DCollection.Last().Number :  -1;
+                case ObjType.Фигура3D:
+                    return Fig3DCollection.Count > 0 ? Fig3DCollection.Last().Number : -1;
+                case ObjType.Узел:
+                    return NodeCollection.Count > 0 ? NodeCollection.Last().Number : -1;
+                case ObjType.Элемент:
+                    return GetLastElementNumber();
+                case ObjType.Элемент1D:
+                    return E1DCollection.Count > 0 ? E1DCollection.Last().Number : -1;
+                case ObjType.Элемент2D:
+                    return E2DCollection.Count > 0 ? E2DCollection.Last().Number : -1;             
+                default:
+                    return E3DCollection.Count > 0 ? E3DCollection.Last().Number : -1;
             }
-            modelObjects = temp;
-        }
-        /// <inheritdoc/>
-
-        public void Remove(ObjType objType)
-        {
-            if(objType == ObjType.Объект)
-            {
-                foreach (var modelObject in modelObjects)
-                    foreach (var item in modelObject.Value)
-                    {
-                        item.ExistState = false;
-                    }
-            }
-            else if (objType == ObjType.Элемент)
-            {
-                foreach (var item in FindMany<IElement>())
-                    item.ExistState = false;
-            }
-
-            else
-                foreach (var item in modelObjects[objType])
-                    item.ExistState = false;
-
-            ClearNotExisted();
-        }
-
-/// <inheritdoc/>
-
-        public IModelObject Find(ObjType objType, int objNumbr)
-        {
-            if (!modelObjects.ContainsKey(objType))
-                return null;
-
-            return modelObjects[objType].Find(objNumbr);
-        }
-
-   
-/// <inheritdoc/>
-
-        public ICollection<ObjType> GetTypes 
-        { get { return modelObjects.Keys; } }
-/// <inheritdoc/>
-
-        public ICollection<List<IModelObject>> Values { get { return modelObjects.Values; } }
-
-
-/// <inheritdoc/>
-
-        public bool Contains(KeyValuePair<ObjType, List<IModelObject>> item)
-        {
-            return modelObjects.Contains(item);
-        }
-/// <inheritdoc/>
-
-        public bool ContainsKey(ObjType objType)
-        {
-                return modelObjects.ContainsKey(objType);
-        }
-
-        /// <inheritdoc/>
-
-        public bool TryGetValue(ObjType key, out List<IModelObject> value)
-        {
-            return modelObjects.TryGetValue(key, out value);
-        }
-
-        /// <inheritdoc/>
-
-        public void Add(ObjType objType, IModelObject addObj)
-        {
-            if (modelObjects[objType].Count > 0)
-                if (addObj.Number <= modelObjects[objType].Last().Number)
-                    throw new Exception($"Последний элемент в коллекции {objType} больше добавляемого!");
-                else
-                    modelObjects[objType].Add(addObj);
-            else
-                modelObjects[objType].Add(addObj);
-        }
-        /// <inheritdoc/>
-
-        public void Add(ObjType objType,IEnumerable<IModelObject> addObjs)
-        {
-            var objsList = addObjs.ToList();
-            MergeSort<IModelObject>.MergeSortFunction(objsList);
-
-            if (modelObjects[objType].Count > 0)
-                if (objsList.First().Number <= modelObjects[objType].Last().Number)
-                    throw new Exception($"Первый элемент в добавляемой коллекции {objType} больше существующего последнего!");
-                else
-                    modelObjects[objType].AddRange(objsList);
-            else
-                modelObjects[objType].AddRange(objsList);
-
-        }
-/// <inheritdoc/>
-
-        public IEnumerator<KeyValuePair<ObjType, List<IModelObject>>> GetEnumerator()
-        {
-            foreach (var item in modelObjects)
-            {
-                yield return item;
-            }
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            throw new NotImplementedException();
-        }
+        }       
     }
 }

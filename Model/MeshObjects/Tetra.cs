@@ -2,8 +2,8 @@
 using MathNet.Numerics.Distributions;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Single;
-using ModelInterfaces;
 using ModelInterfaces.IntegralObject;
+using ModelInterfaces.MeshObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +14,7 @@ namespace Model.MeshObjects
 {
     public class Tetra : Element3D
     {
-        public Tetra(int number, Node[] nodes) : base(number, nodes)
+        public Tetra(int number, INode[] nodes) : base(number, nodes)
         {
             var intPoint = new IntegralPoint();
             intPoint.AddDirection("l1", 1 / 4);
@@ -28,7 +28,7 @@ namespace Model.MeshObjects
 
 
 
-        public Tetra(int number, Node[] nodes, int intpNumber) : base(number, nodes)
+        public Tetra(int number, INode[] nodes, int intpNumber) : base(number, nodes)
         {
             IntegralPoint intPoint;
             switch (intpNumber)

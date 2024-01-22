@@ -1,6 +1,7 @@
 ﻿using Geometry;
 using ModelInterfaces;
 using ModelInterfaces.Attributes;
+using ModelInterfaces.MeshObjects;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,13 +15,13 @@ namespace Model.MeshObjects
     /// </summary>
     public class ElementSurface : ModelObject, IElementSurface
     {
-        Node[] nodes;
+        INode[] nodes;
         /// <summary>
         /// Surface constructor
         /// </summary>
         /// <param name="number"></param>
         /// <param name="nodes"></param>
-        public ElementSurface(int number, Node[] nodes) : base(number)
+        public ElementSurface(int number, INode[] nodes) : base(number)
         {
             if (nodes.Length < 3)
                 throw new Exception("Для создания поверхности требуется не меньше 3-х узлов!");

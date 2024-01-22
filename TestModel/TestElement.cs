@@ -6,7 +6,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using ModelInterfaces;
 using ModelController.MeshObjsCreator;
-using ModelController.ModelScenePresentator;
 using Model.MeshObjects;
 
 namespace TestModel
@@ -76,17 +75,18 @@ namespace TestModel
 
 
             var model = new ModelData();
-            model.ObjectData.Add(ObjType.Элемент3D, el0);
-            model.ObjectData.Add(ObjType.Элемент3D, el1);
+            model.ObjectData.E3DCollection.Add(el0);
+            model.ObjectData.E3DCollection.Add(el1);
 
 
             var creators = new Extract2DFrom3D();
 
-            var lastNumber = model.ObjectData.GetLastObjNumber(ObjType.Элемент2D);
+            var lastNumber = model.ObjectData.E2DCollection.Count > 0 ? 
+                model.ObjectData.E2DCollection.Last().Number : -1;
 
             var currentNumber = lastNumber + 1;
 
-            var element2D = creators.Create(currentNumber, model.ObjectData.FindMany<Element3D>().ToArray());
+            var element2D = creators.Create(currentNumber, model.ObjectData.E3DCollection.ToArray());
 
             var inside = new ElementSurface(0, new Node[] { nodes[3], nodes[2], nodes[1] });
             foreach (var item in element2D)

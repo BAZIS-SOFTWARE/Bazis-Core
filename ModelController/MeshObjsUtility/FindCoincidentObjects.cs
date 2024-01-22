@@ -23,9 +23,9 @@ namespace ModelController.MeshObjsUtility
         /// <returns>
         /// Список групп элементов, находящихся на расстоянии друг от друга меньше заданного.
         /// </returns>
-        public List<List<int>> Find<T>() where T : IModelObject
+        public List<List<int>> Find(ObjType objType)
         {
-            var items = objectData.FindMany<T>().ToList();
+            var items = objectData.GetObjects(objType).ToList();
             var tree = BuildTree(items);
             items.ForEach(obj => obj.ViewState = false);
             var result = new List<List<int>>();

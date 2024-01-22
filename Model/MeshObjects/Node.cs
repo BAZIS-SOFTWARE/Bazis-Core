@@ -1,5 +1,6 @@
 ﻿using Geometry;
 using ModelInterfaces;
+using ModelInterfaces.MeshObjects;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

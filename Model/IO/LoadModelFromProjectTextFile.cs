@@ -10,6 +10,7 @@ using Model.Events;
 using ModelInterfaces;
 using ModelInterfaces.ObjectsFinders;
 using Model.MeshObjects;
+using ModelInterfaces.MeshObjects;
 
 namespace Model.IO
 {
@@ -85,7 +86,7 @@ namespace Model.IO
                     nodes.Add(node);
                 }
             }
-            newMesh.ObjectData.Add(ObjType.Узел, nodes);
+            newMesh.ObjectData.NodeCollection.AddRange(nodes);
 
         }
 
@@ -94,7 +95,6 @@ namespace Model.IO
             var line = String.Empty;
             line = sr.ReadLine();
 
-            var nodes = newMesh.ObjectData.FindMany<Node>().ToArray();
             //var number = newMesh.GetLastObjNumber() + 1;
             while (line != "#" + elType)
             {                
@@ -106,9 +106,10 @@ namespace Model.IO
                 var elNumber = ar[0];
                 ar.RemoveAt(0);
 
-                var nodeList = new List<Node>();
+                var nodeList = new List<INode>();
+              
                 foreach (var nodeNumber in ar)
-                    nodeList.Add(nodes.Find(nodeNumber));
+                    nodeList.Add(newMesh.ObjectData.NodeCollection.Find(nodeNumber));
 
                 ElementKind elemKind;
 
@@ -120,7 +121,7 @@ namespace Model.IO
                     else elemKind = ElementKind.Гекса;
 
                     var el3DObj = new Tetra(elNumber, nodeList.ToArray());
-                    newMesh.ObjectData.Add(ObjType.Элемент3D, el3DObj);
+                    newMesh.ObjectData.E3DCollection.Add(el3DObj);
                 }
 
                 if (elType == "Элементы2D" | elType == "Элемент2D" | elType == "Элементы 2003")
@@ -131,7 +132,7 @@ namespace Model.IO
                     else elemKind = ElementKind.Квадрат;
 
                     var el2DObj = new Triangle(elNumber, nodeList.ToArray());
-                    newMesh.ObjectData.Add(ObjType.Элемент2D, el2DObj);
+                    newMesh.ObjectData.E2DCollection.Add(el2DObj);
                 }
                 //number++;
                 line = sr.ReadLine();

@@ -20,7 +20,7 @@ namespace Model
 
         public void Clear()
         {
-            ObjectData.Clear();
+            ObjectData.Clear(ObjType.Объект);
             GroupData.Clear();
         }
 /// <inheritdoc/>
@@ -44,7 +44,7 @@ namespace Model
 
         public void Remove(ObjType objType)
         {
-            ObjectData.Remove(objType);
+            ObjectData.Clear(objType);
             GroupData.ClearNotExisted();
         }
 

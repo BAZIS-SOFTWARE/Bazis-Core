@@ -1,11 +1,11 @@
 ﻿using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ModelInterfaces;
 using System;
 using ModelController.ModelScenePresentator.GlObjsPresenters;
 using Model.MeshObjects;
 using Model.GeometryObjects;
 using ModelInterfaces.GeometryObjects;
+using ModelInterfaces.MeshObjects;
 
 namespace TestModel
 {

@@ -55,7 +55,7 @@ namespace Model.IO
                             line = reader.ReadLine();
                         }
                         var orderedNodes = nodes.OrderBy(x => x.Number);
-                        newMesh.ObjectData.Add(ObjType.Узел, orderedNodes);
+                        newMesh.ObjectData.NodeCollection.AddRange(orderedNodes);
                     }
                     if (line.Contains("type=T3D2"))
                     {
@@ -68,7 +68,7 @@ namespace Model.IO
             return newMesh;
         }
 
-        private ModelObject BuildElement(string elementKind, int[] selectedNodesId, int currentNumber)
+        private void BuildElement(string elementKind, int[] selectedNodesId, int currentNumber)
         {
             var nodeArr = new Node[selectedNodesId.Length];
             for (int i = 0; i < nodeArr.Length; i++)
@@ -77,10 +77,18 @@ namespace Model.IO
             }
             switch(elementKind)
             {
-                case "type=T3D2": return new Beam(currentNumber, nodeArr);
-                case "type=CPS3": return new Triangle(currentNumber, nodeArr);
-                case "type=CPS4": return new Quad(currentNumber, nodeArr);
-                case "type=C3D4": return new Tetra(currentNumber, nodeArr);
+                case "type=T3D2":
+                    newMesh.ObjectData.E1DCollection.Add(new Beam(currentNumber, nodeArr));
+                    break ;
+                case "type=CPS3":
+                    newMesh.ObjectData.E2DCollection.Add(new Triangle(currentNumber, nodeArr));
+                    break;
+                case "type=CPS4":
+                    newMesh.ObjectData.E2DCollection.Add(new Quad(currentNumber, nodeArr));
+                    break;
+                case "type=C3D4":
+                    newMesh.ObjectData.E3DCollection.Add(new Tetra(currentNumber, nodeArr));
+                    break;
                 default: throw new Exception($"Unknown element type with {selectedNodesId.Length} nodes");
             };
         }
@@ -101,19 +109,19 @@ namespace Model.IO
         {
             var tokens = line.Replace(" ", "").Split(',');
             var hasStopWord = nextElementFlags.Contains(tokens[0]);
+            var lastNumber = newMesh.ObjectData.GetLastNumber(ObjType.Элемент);
             while (line != null && !hasStopWord)
             {
                 var objType = GetObjType(elementKind);
-                var lastNumber = newMesh.ObjectData.GetLastObjNumber(ObjType.Элемент);
 
-                var currentNumber = lastNumber + 1;
+                lastNumber++;
 
-                dict.Add(int.Parse(tokens[0]), currentNumber);
+                dict.Add(int.Parse(tokens[0]), lastNumber);
                 var selectedNodesId = tokens.Skip(1)
                     .Select(m => int.Parse(m) - 1)
                     .ToArray();
-                var element = BuildElement(elementKind, selectedNodesId, currentNumber);
-                newMesh.ObjectData.Add(element.ObjType, element);
+                BuildElement(elementKind, selectedNodesId, lastNumber);
+
                 line = reader.ReadLine();
                 if (line != null)
                 {

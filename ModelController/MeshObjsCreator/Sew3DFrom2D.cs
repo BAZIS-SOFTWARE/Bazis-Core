@@ -1,6 +1,5 @@
-﻿using Model.MeshObjects;
-using ModelControllerInterfaces;
-using ModelInterfaces;
+﻿using ModelControllerInterfaces;
+using ModelInterfaces.MeshObjects;
 using System.Collections.Generic;
 
 namespace ModelController.MeshObjsCreator

@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ModelInterfaces;
 using System.Text;
 using System.Threading.Tasks;
 using Geometry;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Single;
 using ModelInterfaces.IntegralObject;
+using ModelInterfaces.MeshObjects;
 
 namespace Model.MeshObjects
 {
@@ -16,11 +16,11 @@ namespace Model.MeshObjects
         /// <inheritdoc/>
         public override ElementKind ElementKind { get; } = ElementKind.Пента;
 
-        public Penta(int number, Node[] nodes) : base(number, nodes)
+        public Penta(int number, INode[] nodes) : base(number, nodes)
         {
         }
 
-        public Penta(int number, Node[] nodes, int point) : base(number, nodes, point)
+        public Penta(int number, INode[] nodes, int point) : base(number, nodes, point)
         {
         }
 

@@ -28,12 +28,15 @@
   <ItemGroup>
     <Compile Include="Events\LoaderEventArgs.cs" />
     <Compile Include="Events\SaverEventArgs.cs" />
+    <Compile Include="ObjectsCollections\Fig2DCollection.cs" />
+    <Compile Include="ObjectsCollections\Fig3DCollection.cs" />
     <Compile Include="GeometryObjects\Figure2D.cs" />
     <Compile Include="GeometryObjects\Figure3D.cs" />
     <Compile Include="GeometryObjects\GeometrySurface.cs" />
     <Compile Include="IO\LoadModelFromBPF2TextFile.cs" />
     <Compile Include="IO\SaveModelToBPF2TextFile.cs" />
     <Compile Include="IO\SaveModelToSTLFile.cs" />
+    <Compile Include="ObjectsCollections\LineCollection.cs" />
     <Compile Include="MeshObjects\Hexa.cs" />
     <Compile Include="GeometryObjects\GeometryPoint.cs" />
     <Compile Include="IO\LoadModelFromProjectTextFile.cs" />
@@ -59,10 +62,15 @@
     <Compile Include="MeshObjects\Penta.cs" />
     <Compile Include="MeshObjects\Quad.cs" />
     <Compile Include="MeshObjects\SurfaceFinder.cs" />
+    <Compile Include="ObjectsCollections\Element1DCollection.cs" />
+    <Compile Include="ObjectsCollections\Element3DCollection.cs" />
+    <Compile Include="ObjectsCollections\Element2DCollection.cs" />
+    <Compile Include="ObjectsCollections\NodeCollection.cs" />
     <Compile Include="ObjectsData.cs" />
     <Compile Include="MeshObjects\ElementSurface.cs" />
     <Compile Include="MeshObjects\Tetra.cs" />
     <Compile Include="MeshObjects\Triangle.cs" />
+    <Compile Include="ObjectsCollections\PointCollection.cs" />
   </ItemGroup> 
   <ItemGroup>
     <PackageReference Include="Functions" Version="1.0.2.43" />
@@ -77,8 +85,5 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-  </ItemGroup> 
-  <ItemGroup>
-    <Folder Include="ObjsData\" />
   </ItemGroup>
 </Project>

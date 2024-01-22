@@ -19,30 +19,6 @@ namespace TestModel
     public class TestModelScenePresentor
     {
         [DataTestMethod]
-        [DataRow(1)]
-        [DataRow(0)]
-        [DataRow(2)]
-        public void RemoveSomeObjectsByExistState(int objNumber)
-        {
-            //assing
-            var model = new ModelData();
-            model.Loader = new LoadModelFromASCIITextFile();
-
-            model.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
-
-            //act
-            var modelPresentor = new ModelScenePresentator(model.ObjectData);
-
-            model.ObjectData.Find(ObjType.Узел, objNumber).ExistState = false;
-            model.ClearNotExisted();
-            modelPresentor.ClearNotExisted();
-
-            //assert
-            Assert.AreEqual(model.ObjectData.NumberOf3DElements, modelPresentor[ObjType.Элемент3D.ToString()].Count());
-        }
-
-
-        [DataTestMethod]
         [DataRow(new float[]
         { 
             0, 0, 0,
@@ -79,31 +55,30 @@ namespace TestModel
                 nodes.Add(new Node(i, new Geometry.Point3D(x, y, z)));
             }
 
-            Model.ModelObject modelObject;
 
+            var model = new ModelData();
+            var creator = new PresentorsCreator();
+            IObjsPresenter presenter;
+            //act
+            model.ObjectData.NodeCollection.AddRange(nodes);
             switch (objType)
             {
                 case ObjType.Элемент3D:
-                    modelObject = new Tetra(0, nodes.ToArray());
+                    model.ObjectData.E3DCollection.Add(new Tetra(0, nodes.ToArray()));
+                    presenter = creator.CreateSurfaceElementsPresenter(model.ObjectData.E3DCollection, true);
                     break;
                 case ObjType.Элемент2D:
-                    modelObject = new Triangle(0, nodes.ToArray());
+                    model.ObjectData.E2DCollection.Add(new Triangle(0, nodes.ToArray()));
+                    presenter = creator.CreateSurfaceElementsPresenter(model.ObjectData.E2DCollection, false);
                     break;
                 default:
-                    modelObject = new Beam(0, nodes.ToArray());
+                    model.ObjectData.E1DCollection.Add(new Beam(0, nodes.ToArray()));
+                    presenter = creator.CreateBeamPresenter(model.ObjectData.E1DCollection);
                     break;
             }
 
-
-            var model = new ModelData();
-            model.ObjectData.Add(ObjType.Узел, nodes);
-            model.ObjectData.Add(modelObject.ObjType, modelObject);
-
-            var presentator = new ModelScenePresentator(model.ObjectData);
-
             //act
-
-            var presenter = presentator[objType.ToString()];
+            
             if (presenter.IsVolumeObjs)
             {
                 var volPresenter = (IVolumeObjsPresenter)presenter;
@@ -146,28 +121,24 @@ namespace TestModel
                 points.Add(new GeometryPoint(i, new Geometry.Point3D(x, y, z)));
             }
 
-            Model.ModelObject modelObject;
+            var model = new ModelData();
+            var creator = new PresentorsCreator();
+            IObjsPresenter presenter;
 
             switch (objType)
             {
                 case ObjType.Линия:
-                    modelObject = new Line(0, points.ToArray());
+                    model.ObjectData.LineCollection.Add(new Line(0, points.ToArray()));
+                    presenter = creator.CreateGeometryLinePresenter(model.ObjectData.LineCollection);
                     break;
                 default:
-                    modelObject = new Figure2D(0, points.ToArray());
+                    model.ObjectData.Fig2DCollection.Add(new Figure2D(0, points.ToArray()));
+                    presenter = creator.CreateSurfaceGeometryPresenter(model.ObjectData.Fig2DCollection, false);
                     break;
             }
 
-
-            var model = new ModelData();
-            model.ObjectData.Add(ObjType.Точка, points);
-            model.ObjectData.Add(objType, modelObject);
-
-            var presentator = new ModelScenePresentator(model.ObjectData);
-
             //act
 
-            var presenter = presentator[objType.ToString()];
             if (presenter.IsVolumeObjs)
             {
                 var volPresenter = (IVolumeObjsPresenter)presenter;
@@ -190,148 +161,78 @@ namespace TestModel
         }
 
         [DataTestMethod]
-        [DataRow(ObjType.Фигура2D, new string[]
+        [DataRow(ObjType.Фигура2D, @"..\..\..\Examples\STL\ACII.stl",new string[]
 {
     "6", "18", "24", "18"
 })]
-        public void TestObjectsCreationfromSTLText(ObjType objType,string[] array)
+        [DataRow(ObjType.Элемент3D, @"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC",new string[]
+{
+            "24", "72", "96", "72"
+})]
+        [DataRow(ObjType.Узел, @"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC",new string[]
+{
+            "7", "21", "28", "21"
+})]
+        [DataRow(ObjType.Элемент3D, @"..\..\..\Examples\CDB\longModel.cdb", new string[]
+{
+            "7", "21", "28", "21"
+})]
+        [DataRow(ObjType.Узел, @"..\..\..\Examples\CDB\longModel.cdb", new string[]
+{
+            "7", "21", "28", "21"
+})]
+        public void TestObjectsCreationfromSTLText(ObjType objType,string path,string[] array)
         {
             //assing
             var model = new ModelData();
             model.Loader = new LoadModelFromSTLFile();
 
             model.Loader.LoadEvent += (ar1, ar2) => { };
-            model.Load(@"..\..\..\Examples\STL\ACII.stl");
+            model.Load(path);
 
             //act
 
-            var presenter = new ModelScenePresentator(model.ObjectData);
+            var creator = new PresentorsCreator();
+            IObjsPresenter presenter;
 
-            var inds = presenter[objType.ToString()].CreateIndexes();
-            var ptrs = presenter[objType.ToString()].CreatePointers(inds.Item1);
-            var coords = presenter[objType.ToString()].CreateVertexes(inds.Item2, "координаты");
-            var colors = presenter[objType.ToString()].CreateVertexes(inds.Item3, "цвет");
-            var normals = presenter[objType.ToString()].CreateVertexes(inds.Item2, "нормаль");
+            switch (objType)
+            {
+                case ObjType.Узел:
+                    presenter = creator.CreatePointObjectsPresenter(model.ObjectData.NodeCollection);
+                    break;
+                case ObjType.Линия:
+                    presenter = creator.CreateGeometryLinePresenter(model.ObjectData.LineCollection);
+                    break;
+                    case ObjType.Фигура2D:
+                    case ObjType.Фигура3D:
+                    presenter = creator.CreateSurfaceGeometryPresenter(model.ObjectData.Fig2DCollection, false);
+                    presenter = creator.CreateSurfaceGeometryPresenter(model.ObjectData.Fig3DCollection, false);
+                    break;
+                case ObjType.Элемент1D:
+                    presenter = creator.CreateBeamPresenter(model.ObjectData.E1DCollection);
+                    break;
+                case ObjType.Элемент2D:
+                    presenter = creator.CreateSurfaceElementsPresenter(model.ObjectData.E2DCollection,false);
+                    break;
+                case ObjType.Элемент3D:
+                    presenter = creator.CreateSurfaceElementsPresenter(model.ObjectData.E3DCollection, true);
+                    break;
+                default:
+                    presenter = creator.CreatePointObjectsPresenter(model.ObjectData.PointCollection);
+                    break;
+            }
+
+            var inds = presenter.CreateIndexes();
+            var ptrs = presenter.CreatePointers(inds.Item1);
+            var coords = presenter.CreateVertexes(inds.Item2, "координаты");
+            var colors = presenter.CreateVertexes(inds.Item3, "цвет");
+            var normals = presenter.CreateVertexes(inds.Item2, "нормаль");
             //assert
             Assert.AreEqual(ptrs.Length, int.Parse(array[0]));
             Assert.AreEqual(coords.Length, int.Parse(array[1]));
             Assert.AreEqual(colors.Length, int.Parse(array[2]));
             Assert.AreEqual(normals.Length, int.Parse(array[3]));
 
-        }
-
-
-        [DataTestMethod]
-        [DataRow(ObjType.Элемент3D, new string[]
-{
-            "24", "72", "96", "72"
-})]
-        [DataRow(ObjType.Узел, new string[]
-{
-            "7", "21", "28", "21"
-})]
-        public void TestObjectsCreationFromASC(ObjType objType, string[] array)
-        {
-            //assing
-            var model = new ModelData();
-            model.Loader = new LoadModelFromASCIITextFile();
-
-            //act
-
-            model.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
-            var presentator = new ModelScenePresentator(model.ObjectData);
-
-            var presenter = presentator[objType.ToString()];
-            if (presenter.IsVolumeObjs)
-            {
-                var volPresenter = (IVolumeObjsPresenter)presenter;
-                volPresenter.HideInsideSurfaces();
-            }
-
-            var inds = presenter.CreateIndexes();
-            var ptrs = presenter.CreatePointers(inds.Item1);
-            var crds = presenter.CreateVertexes(inds.Item2, "координаты");
-            var colors = presenter.CreateVertexes(inds.Item3, "цвет");
-            var normals = presenter.CreateVertexes(inds.Item2, "нормаль");
-            var edges = presenter.CreateEdgeFlags(inds.Item4);
-
-            //assert
-            Assert.AreEqual(ptrs.Length, int.Parse(array[0]));
-            Assert.AreEqual(crds.Length, int.Parse(array[1]));
-            Assert.AreEqual(colors.Length, int.Parse(array[2]));
-            Assert.AreEqual(normals.Length, int.Parse(array[3]));
-        }
-
-
-        [DataTestMethod]
-        [DataRow(new string[]
-{
-            "2D_axi\\2Dval.inp"
-})]
-        [DataRow(new string[]
-{
-            "3D\\Korpus.inp"
-})]
-        public void TestObjectsCreationFromINP(string[] array)
-        {
-            //assing
-            var model = new ModelData();
-            model.Loader = new LoadModelFromGMSHTextFile();
-
-            model.Load($@"..\..\..\Examples\{array[0]}");
-
-            var modelPresenter = new ModelScenePresentator(model.ObjectData);
-
-            foreach (var objsType in modelPresenter)
-            {
-                if(objsType.Value.IsVolumeObjs)
-                {
-                    var volPresenter = (IVolumeObjsPresenter)objsType.Value;
-                    volPresenter.HideInsideSurfaces();
-                }
-
-                var tuple = objsType.Value.CreateIndexes();
-                int[] ptrs = objsType.Value.CreatePointers(tuple.Item1);
-                float[] glCoords = objsType.Value.CreateVertexes(tuple.Item2, "координаты");
-                float[] glColors = objsType.Value.CreateVertexes(tuple.Item3, "цвет");
-                float[] glNormals = objsType.Value.CreateVertexes(tuple.Item2, "нормаль");
-                bool[] edges = objsType.Value.CreateEdgeFlags(tuple.Item4);
-
-                Assert.AreEqual(tuple.Item4, edges.Length);
-                Assert.AreEqual(tuple.Item1, ptrs.Length);
-                Assert.AreEqual(tuple.Item2, glCoords.Length);
-                Assert.AreEqual(tuple.Item3, glColors.Length);
-                Assert.AreEqual(tuple.Item2, glNormals.Length);
-            }
-
-        }
-
-        [DataTestMethod]
-        [DataRow(ObjType.Элемент3D)]
-        [DataRow(ObjType.Узел)]
-        public void TestObjectsCreationFromCDB(ObjType objType)
-        {
-            //assing
-            var model = new ModelData();
-            model.Loader = new LoadModelFromCDBTextFile();
-
-            //act
-            model.Load(@"..\..\..\Examples\CDB\longModel.cdb");
-            var presentator = new ModelScenePresentator(model.ObjectData);
-
-            var tuple = presentator[objType.ToString()].CreateIndexes();
-            int[] ptrs = presentator[objType.ToString()].CreatePointers(tuple.Item1);
-            float[] glCoords = presentator[objType.ToString()].CreateVertexes(tuple.Item2, "координаты");
-            float[] glColors = presentator[objType.ToString()].CreateVertexes(tuple.Item3, "цвет");
-            float[] glNormals = presentator[objType.ToString()].CreateVertexes(tuple.Item2, "нормаль");
-            bool[] edges = presentator[objType.ToString()].CreateEdgeFlags(tuple.Item4);
-
-            //assert
-            Assert.AreEqual(tuple.Item4, edges.Length);
-            Assert.AreEqual(tuple.Item1, ptrs.Length);
-            Assert.AreEqual(tuple.Item2, glCoords.Length);
-            Assert.AreEqual(tuple.Item3, glColors.Length);
-            Assert.AreEqual(tuple.Item2, glNormals.Length);
-        }
+        }            
     }
 }

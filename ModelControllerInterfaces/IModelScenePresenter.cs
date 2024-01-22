@@ -1,5 +1,6 @@
 ﻿using ModelInterfaces;
 using ModelInterfaces.GeometryObjects;
+using ModelInterfaces.MeshObjects;
 using System.Collections.Generic;
 
 namespace ModelControllerInterfaces
@@ -7,7 +8,7 @@ namespace ModelControllerInterfaces
     /// <summary>
     /// IModelPresenter
     /// </summary>
-    public interface IModelScenePresenter : IDictionary<string, IObjsPresenter>
+    public interface IModelScenePresenter
     {
         /// <summary>
         /// CreatePointObjectsPresenter
@@ -40,17 +41,6 @@ namespace ModelControllerInterfaces
         /// <param name="surfaceGeom"></param>
         /// <param name="isVolumeObjs"></param>
         /// <returns></returns>
-        IObjsPresenter CreateSurfaceGeometryPresenter(IEnumerable<ISurfaceObject<IGeometrySurface, IPoint>> surfaceGeom, bool isVolumeObjs);
-        /// <summary>
-        /// CreatePresenter
-        /// </summary>
-        /// <param name="modelObjects"></param>
-        /// <param name="objsType"></param>
-        void AddObjects(List<IModelObject> modelObjects, ObjType objsType);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        void ClearNotExisted();
+        IObjsPresenter CreateSurfaceGeometryPresenter(IEnumerable<ISurfaceObject<IGeometrySurface, IGeometryPoint>> surfaceGeom, bool isVolumeObjs);
     }
 }

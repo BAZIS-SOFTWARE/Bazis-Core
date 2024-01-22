@@ -5,6 +5,7 @@ using ModelInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ModelInterfaces.MeshObjects;
 
 namespace ModelController.MeshObjsUtility
 {
@@ -24,7 +25,8 @@ namespace ModelController.MeshObjsUtility
         {
             var boundedEdges = new List<string>();
 
-            var els = modelData.ObjectData.FindMany<ISurfaceElement>().ToArray();
+            var els = modelData.ObjectData.GetObjects(ObjType.Элемент).
+                Select(x => (ISurfaceElement)x).ToArray();
 
             var finder = new InterfacedNodesFinder();
             var interfacedNodes = finder.Find(els);

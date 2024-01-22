@@ -10,6 +10,8 @@ using Model.GeometryObjects;
 using Geometry;
 using System.Linq;
 using Model.GroupsData;
+using Model.ObjectsCollections;
+using System.Reflection;
 
 namespace TestModel
 {
@@ -30,7 +32,7 @@ namespace TestModel
                 new Node(2,new Point3D(0,10,0)),
                 new Node(3,new Point3D(0,0,10)),
             };
-            var objs = new Model.ModelObject[]
+            var objs = new Element3D[]
             {
                 new Tetra( 0,nodes),
                 new Tetra( 4,nodes),
@@ -41,8 +43,8 @@ namespace TestModel
             };
 
             var model = new ModelData();
-            model.ObjectData.Add(ObjType.Узел,nodes);
-            model.ObjectData.Add(ObjType.Элемент3D, objs);
+            model.ObjectData.NodeCollection.AddRange(nodes);
+            model.ObjectData.E3DCollection.AddRange(objs);
             //act
             var elements = model.ObjectData.FindMany(objsNumbr);
             //assert
@@ -63,7 +65,7 @@ namespace TestModel
                 new Node(2,new Point3D(0,10,0)),
                 new Node(3,new Point3D(0,0,10)),
             };
-            var objs = new Model.ModelObject[]
+            var objs = new Element3D[]
             {
                 new Tetra( 0,nodes),
                 new Tetra( 4,nodes),
@@ -76,16 +78,16 @@ namespace TestModel
             //act
 
             var model = new ModelData();
-            model.ObjectData.Add(ObjType.Узел, nodes);
-            model.ObjectData.Add(ObjType.Элемент3D, objs);
+            model.ObjectData.NodeCollection.AddRange(nodes);
+            model.ObjectData.E3DCollection.AddRange(objs);
 
             //assert            
             if (reqType == "Тетраэдры")
-                Assert.AreEqual(objsCount, model.ObjectData.FindMany<Tetra>().Count());
+                Assert.AreEqual(objsCount, model.ObjectData.E3DCollection.Count());
             else if (reqType == "Узлы")
-                Assert.AreEqual(objsCount, model.ObjectData.FindMany<Node>().Count());
+                Assert.AreEqual(objsCount, model.ObjectData.NodeCollection.Count());
             else
-                Assert.AreEqual(objsCount, model.ObjectData.FindMany<IModelObject>().Count());
+                Assert.AreEqual(objsCount, model.ObjectData.Count(ObjType.Объект));
         }
         [TestMethod]
         [ExpectedException(typeof(Exception))]
@@ -97,9 +99,9 @@ namespace TestModel
             //act
             var node0 = new Node(0, new Geometry.Point3D());
 
-            model.ObjectData.Add(ObjType.Узел, node0);
+            model.ObjectData.NodeCollection.Add(node0);
             //assert
-            model.ObjectData.Add(ObjType.Узел, node0);
+            model.ObjectData.NodeCollection.Add(node0);
         }
 
         [TestMethod]
@@ -113,9 +115,9 @@ namespace TestModel
             var node0 = new Node(0, new Geometry.Point3D());
             var node1 = new Node(1, new Geometry.Point3D());
 
-            model.ObjectData.Add(ObjType.Узел, node0);
+            model.ObjectData.NodeCollection.Add(node0);
             //assert
-            model.ObjectData.Add(ObjType.Узел, new List<Node>() { node0 ,node1});
+            model.ObjectData.NodeCollection.AddRange(new List<Node>() { node0 ,node1});
         }
 
         [TestMethod]
@@ -129,11 +131,11 @@ namespace TestModel
             var node0 = new Node(0, new Geometry.Point3D());
             var node1 = new Node(1, new Geometry.Point3D());
 
-            var modelObjects = new List<IModelObject>() { node0, node1 };
+            var modelObjects = new List<Node>() { node0, node1 };
 
-            model.ObjectData.Add(ObjType.Узел, node0);
+            model.ObjectData.NodeCollection.Add(node0);
             //assert
-            model.ObjectData.Add(ObjType.Узел, modelObjects);
+            model.ObjectData.NodeCollection.AddRange(modelObjects);
         }
 
         [DataTestMethod]
@@ -151,10 +153,10 @@ namespace TestModel
 
             var line = new Line(2, new GeometryPoint[] { point0, point1 });
 
-            model.ObjectData.Add(ObjType.Точка, point0);
-            model.ObjectData.Add(ObjType.Точка, point1);
-            model.ObjectData.Add(ObjType.Линия, line);
-            model.ObjectData.Add(ObjType.Точка, point2);
+            model.ObjectData.PointCollection.Add(point0);
+            model.ObjectData.PointCollection.Add(point1);
+            model.ObjectData.LineCollection.Add(line);
+            model.ObjectData.PointCollection.Add(point2);
 
             model.Remove(objType);
 
@@ -176,7 +178,7 @@ namespace TestModel
                 new Node(2,new Point3D(0,10,0)),
                 new Node(3,new Point3D(0,0,10)),
             };
-            var objects = new Model.ModelObject[]
+            var objects = new Element3D[]
             {
                 new Tetra( 0,nodes),
                 new Tetra( 4,nodes),
@@ -192,14 +194,14 @@ namespace TestModel
 
             var model = new ModelData();
 
-            model.ObjectData.Add(ObjType.Узел, nodes);
-            model.ObjectData.Add(ObjType.Элемент3D, objects);
+            model.ObjectData.NodeCollection.AddRange(nodes);
+            model.ObjectData.E3DCollection.AddRange(objects);
 
             model.GroupData.Add(group);
 
             model.Remove(objType);
             //assert            
-            Assert.AreEqual(model.ObjectData.NumberOfNodes,nNumbs, 0);
+            Assert.AreEqual(model.ObjectData.NodeCollection.Count,nNumbs, 0);
             Assert.AreEqual(model.GroupData.FindMany(objType).Count(), grps,0);
 
         }
@@ -221,8 +223,8 @@ namespace TestModel
             var elements = controller.GetMeshEntities(2, -1, ref status);
             Assert.AreEqual(true, status);
             Assert.AreEqual(2, elements.Count);
-            modelData.ObjectData.Add(ObjType.Узел, nodes);
-            modelData.ObjectData.Add(ObjType.Элемент2D, elements);
+            modelData.ObjectData.NodeCollection.AddRange(nodes);
+            //modelData.ObjectData.E2DCollection.AddRange(elements);
             //modelData.ObjectData.Sort();
             modelData.Remove(objType);
             //assert

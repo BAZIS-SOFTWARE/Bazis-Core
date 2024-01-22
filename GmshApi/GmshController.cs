@@ -9,6 +9,7 @@ using Functions.Extensions;
 using System.IO;
 using Model.MeshObjects;
 using Model.GeometryObjects;
+using ModelInterfaces.MeshObjects;
 
 namespace GmshApi.GmshController
 {
@@ -1864,11 +1865,11 @@ namespace GmshApi.GmshController
         /// </summary>
         /// <param name="status">Успешность вызова метода</param>
         /// <returns>Список узлов сетки</returns>
-        public List<ModelObject> GetNodes(ref bool status)
+        public List<INode> GetNodes(ref bool status)
         {
             long[] nodeTags;
             double[] local, parametric;
-            var nodes = new List<ModelObject>();
+            var nodes = new List<INode>();
             if (ModelMeshGetNodes(-1, -1, false, false, out nodeTags, out local, out parametric))
             {
                 for (var i = 0; i < nodeTags.Length; ++i)

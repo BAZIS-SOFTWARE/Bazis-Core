@@ -3,6 +3,7 @@ using Model.MeshObjects;
 using ModelInterfaces;
 using ModelInterfaces.Attributes;
 using ModelInterfaces.GeometryObjects;
+using ModelInterfaces.MeshObjects;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -37,7 +38,7 @@ namespace Model.GeometryObjects
         /// </summary>
         /// <param name="ind"></param>
         /// <returns></returns>
-        public IPoint this[int ind]
+        public IGeometryPoint this[int ind]
         {
             get { return points[ind]; }
         }
@@ -130,7 +131,7 @@ points.Contains(this.points[2].Position, new Point3DEqualityComparer()))
             return center.Div(NumberOfPoints);
         }
 
-        public Segment3D[] GetLinesFromSurface(ISurface<IPoint> surface)
+        public Segment3D[] GetLinesFromSurface(ISurface<IGeometryPoint> surface)
         {
             var n = surface.GetCoordinates().Count();
             var points = surface.GetCoordinates().ToArray();
@@ -144,7 +145,7 @@ points.Contains(this.points[2].Position, new Point3DEqualityComparer()))
         }
         /// <inheritdoc/>
 
-        public IEnumerable<IPoint> GetVertexes()
+        public IEnumerable<IGeometryPoint> GetVertexes()
         {
             foreach (var node in points)
             {

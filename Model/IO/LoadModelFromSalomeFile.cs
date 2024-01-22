@@ -14,10 +14,11 @@ namespace Model.IO
     public class LoadModelFromSalomeFile : IModelLoader
     {
         public event Action<object, ILoaderEventArgs> LoadEvent;
+        private ModelData modelData;
 
         public IModelData Load(string path)
         {
-            var modelData = new ModelData();
+            modelData = new ModelData();
             using (var reader = new StreamReader(path))
             {
                 LoadEvent(this, new LoaderEventArgs("Начало загрузки модели"));
@@ -29,15 +30,10 @@ namespace Model.IO
                     var nodesNumber = int.Parse(tokens[0]);
                     var elementsNumber = int.Parse(tokens[1]);
                     var nodes = GetNodes(reader, nodesNumber).ToList();
-                    modelData.ObjectData.Add(ObjType.Узел, nodes);
+                    modelData.ObjectData.NodeCollection.AddRange(nodes);
 
-                    foreach (var item in GetElements(reader, elementsNumber,
-                        nodes.ToDictionary(x => x.Number, x => x)))
-                    {
-                        modelData.ObjectData.Add(item.ObjType, item);
-                    }
-    
-
+                    GetElements(reader, elementsNumber,
+                        nodes.ToDictionary(x => x.Number, x => x)); 
                 }
             }
             return modelData;
@@ -55,7 +51,7 @@ namespace Model.IO
             }
         }
 
-        private IEnumerable<ModelObject> GetElements(StreamReader reader, int count,
+        private void GetElements(StreamReader reader, int count,
             Dictionary<int, Node> indexToNodeMapping)
         {
             for (var i = 0; i < count; i++)
@@ -69,19 +65,29 @@ namespace Model.IO
                     .Select(int.Parse)
                     .Select(x => indexToNodeMapping[x])
                     .ToArray();
-                yield return GetElement(elementType, nodes, elementIndex);
+                GetElement(elementType, nodes, elementIndex);
             }
         }
 
-        private ModelObject GetElement(string elementType, Node[] nodes, int elementIndex)
+        private void GetElement(string elementType, Node[] nodes, int elementIndex)
         {
             switch (elementType)
             {
-                case "102": return new Beam(elementIndex, nodes.ToArray());
-                case "203": return new Triangle(elementIndex, nodes.ToArray());
-                case "204": return new Quad(elementIndex, nodes.ToArray());
-                case "304": return new Tetra(elementIndex, nodes.ToArray());
-                case "308": return new Hexa(elementIndex, nodes.ToArray());
+                case "102": 
+                    modelData.ObjectData.E1DCollection.Add(new Beam(elementIndex, nodes.ToArray()));
+                    break;
+                case "203": 
+                    modelData.ObjectData.E2DCollection.Add(new Triangle(elementIndex, nodes.ToArray()));
+                    break;
+                case "204": 
+                    modelData.ObjectData.E2DCollection.Add(new Quad(elementIndex, nodes.ToArray()));
+                    break;
+                case "304": 
+                    modelData.ObjectData.E3DCollection.Add(new Tetra(elementIndex, nodes.ToArray()));
+                    break;
+                case "308": 
+                    modelData.ObjectData.E3DCollection.Add(new Hexa(elementIndex, nodes.ToArray()));
+                    break;
                 default: throw new ArgumentException($"Unable to recognize element {elementType}");
             }
         }

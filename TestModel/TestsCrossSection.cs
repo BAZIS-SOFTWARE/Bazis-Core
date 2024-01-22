@@ -82,7 +82,7 @@ namespace TestModel
             var modelData = loader.Load(@"..\..\..\Examples\CDB\longModel.cdb");
 
             // scale model
-            foreach (var node in modelData.ObjectData.FindMany<Node>())
+            foreach (var node in modelData.ObjectData.NodeCollection)
             {
                 node.Position = new Point3D((float)Math.Round(100 * node._x, 2), (float)Math.Round(100 * node._y, 2), (float)Math.Round(100 * node._z, 2));
             }
@@ -94,7 +94,7 @@ namespace TestModel
                 new Point3D(0, 1, 10)
             };
             var plane = new Plane(points[0], points[1], points[2]);
-            var elements = modelData.ObjectData.FindMany<Element3D>().ToList();
+            var elements = modelData.ObjectData.E3DCollection;
             var crossSection = new CrossSection();
             var crossNodes = crossSection.GetSectionSurfaces(elements, plane);
         }

@@ -1,4 +1,7 @@
 ﻿using Functions.Sort;
+using ModelInterfaces;
+using ModelInterfaces.GeometryObjects;
+using ModelInterfaces.MeshObjects;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,49 +12,57 @@ namespace ModelInterfaces
     /// <summary>
     /// IObjectsData
     /// </summary>
-    public interface IObjectsData : IEnumerable<KeyValuePair<ObjType,List<IModelObject>>>
+    public interface IObjectsData
     {
         /// <summary>
-        /// GetLastObjNumber
+        /// E3DCollection
         /// </summary>
-        /// <param name="objType"></param>
-        /// <returns></returns>
-        int GetLastObjNumber(ObjType objType);
+        IObjectsCollection<IElement3D> E3DCollection { get; }
+        /// <summary>
+        /// E2DCollection
+        /// </summary>
+        IObjectsCollection<IElement2D> E2DCollection { get; }
+        /// <summary>
+        /// E1DCollection
+        /// </summary>
+        IObjectsCollection<ILineObject<INode>> E1DCollection { get; }
+        /// <summary>
+        /// NodeCollection
+        /// </summary>
+        IObjectsCollection<INode> NodeCollection { get; }
+        /// <summary>
+        /// PointCollection
+        /// </summary>
+        IObjectsCollection<IGeometryPoint> PointCollection { get; }
+        /// <summary>
+        /// LineCollection
+        /// </summary>
+        IObjectsCollection<ILineObject<IGeometryPoint>> LineCollection { get; }
+        /// <summary>
+        /// Fig2DCollection
+        /// </summary>
+        IObjectsCollection<IFigure2D> Fig2DCollection { get; }
+        /// <summary>
+        /// Fig3DCollection
+        /// </summary>
+        IObjectsCollection<IFigure3D> Fig3DCollection { get; }
         /// <summary>
         /// Count
         /// </summary>
-        int Count { get; }
-
+        /// <param name="objType"></param>
+        /// <returns></returns>
+        int Count(ObjType objType);
         /// <summary>
         /// Clear
         /// </summary>
-        void Clear();
+        /// <param name="objType"></param>
+        void Clear(ObjType objType);
         /// <summary>
-        /// ContainsKey
+        /// ContainsCollection
         /// </summary>
         /// <param name="objType"></param>
         /// <returns></returns>
-        bool ContainsKey(ObjType objType);
-        /// <summary>
-        /// NumberOfNodes
-        /// </summary>
-        int NumberOfNodes { get; }
-        /// <summary>
-        /// NumberOfVolumeElements
-        /// </summary>
-        int NumberOf3DElements { get; }
-        /// <summary>
-        /// NumberOfLineElements
-        /// </summary>
-        int NumberOf1DElements { get; }
-        /// <summary>
-        /// NumberOfSurfaceElements
-        /// </summary>
-        int NumberOf2DElements { get; }
-        /// <summary>
-        /// NumberOfElements
-        /// </summary>
-        int NumberOfElements { get; }
+        bool Contains(ObjType objType);
         /// <summary>
         /// ClearNotExisted
         /// </summary>
@@ -63,12 +74,6 @@ namespace ModelInterfaces
         /// <returns></returns>
         IEnumerable<IModelObject> FindMany(int objNumbr);
         /// <summary>
-        /// FindMany
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        IEnumerable<T> FindMany<T>() where T : IModelObject;
-        /// <summary>
         /// Find
         /// </summary>
         /// <param name="objType"></param>
@@ -76,32 +81,23 @@ namespace ModelInterfaces
         /// <returns></returns>
         IModelObject Find(ObjType objType, int objNumbr);
         /// <summary>
-        /// Add
+        /// GetElements
         /// </summary>
-        /// <param name="objType"></param>
-        /// <param name="addObj"></param>
-        void Add(ObjType objType,IModelObject addObj);
-
-        /// <summary>
-        /// Add
-        /// </summary>
-        /// <param name="objType"></param>
-        /// <param name="addObjs"></param>
-        void Add(ObjType objType, IEnumerable<IModelObject> addObjs);
-        /// <summary>
-        /// Remove
-        /// </summary>
-        /// <param name="objType"></param>
-        void Remove(ObjType objType);
+        /// <returns></returns>
+        IEnumerable<IElement> GetElements();
         /// <summary>
         /// GetObjects
         /// </summary>
-        /// <param name="objType"></param>
         /// <returns></returns>
         IEnumerable<IModelObject> GetObjects(ObjType objType);
         /// <summary>
         /// GetTypes
         /// </summary>
         ICollection<ObjType> GetTypes { get; }
+        /// <summary>
+        /// GetLastNumber
+        /// </summary>
+        /// <returns></returns>
+        int GetLastNumber(ObjType objType);
     }
 }

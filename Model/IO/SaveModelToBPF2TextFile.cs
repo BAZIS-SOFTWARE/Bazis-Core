@@ -27,10 +27,10 @@ namespace Model.IO
 
                 sw.WriteLine(ver);
 
-                foreach (var item in model.ObjectData)
+                foreach (var item in model.ObjectData.GetTypes)
                 {
                     sw.WriteLine("");
-                    if (item.Key == ObjType.Узел)
+                    if (item == ObjType.Узел)
                     {
                         sw.WriteLine("Узлы");
                         var nodes = model.ObjectData.GetObjects(ObjType.Узел);
@@ -45,7 +45,7 @@ namespace Model.IO
                         sw.WriteLine("#Узлы");
                     }
 
-                    else if (item.Key == ObjType.Элемент)
+                    else if (item == ObjType.Элемент)
                     {
                         sw.WriteLine("Элементы");
 

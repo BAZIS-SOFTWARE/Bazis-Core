@@ -48,9 +48,9 @@ namespace Model.IO
                     {
                         str = reader.ReadLine()?.Trim();
                         var nodes = GetNodes(reader, str);
-                        modelData.ObjectData.Add(ObjType.Точка, nodes);
+                        modelData.ObjectData.PointCollection.AddRange(nodes);
                         var surface = new Figure2D(counter, nodes);
-                        modelData.ObjectData.Add(ObjType.Фигура2D, surface);
+                        modelData.ObjectData.Fig2DCollection.Add(surface);
                         counter++;
                     }
                     str = reader.ReadLine();
@@ -99,7 +99,7 @@ namespace Model.IO
                     points[1] = ReadNode(reader);
                     points[2] = ReadNode(reader);
                     var surface = new Figure2D(counter++, points);
-                    modelData.ObjectData.Add(ObjType.Фигура2D, surface);
+                    modelData.ObjectData.Fig2DCollection.Add(surface);
                     reader.BaseStream.Position += 14;
                 }
             }

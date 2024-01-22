@@ -8,6 +8,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using ModelInterfaces.MeshObjects;
+using System.Xml.Linq;
 
 namespace Model.IO
 {
@@ -29,12 +31,11 @@ namespace Model.IO
                     if(line.Contains("BEGIN_NODES"))
                     {
                         foreach (var item in ReadNodes(reader, int.Parse(tokens[1])))
-                            model.ObjectData.Add(ObjType.Узел, item);                   
+                            model.ObjectData.NodeCollection.Add(item);                   
                     }
                     if(line.Contains("BEGIN_ELEMENTS"))
                     {
-                        foreach (var item in ReadElements(reader, int.Parse(tokens[1]),model))
-                            model.ObjectData.Add(item.ObjType, item);
+                        ReadElements(reader, int.Parse(tokens[1]), model);
                     }
                     if(line.Contains("BEGIN_GROUPS"))
                     {
@@ -64,9 +65,10 @@ namespace Model.IO
             }
         }
 
-        private IEnumerable<ModelObject> ReadElements(StreamReader reader, int count, ModelData model)
+        private void ReadElements(StreamReader reader, int count, ModelData model)
         {
             LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка элементов..."));
+            var elLastNumber = model.ObjectData.GetLastNumber(ObjType.Элемент);
             for (var i = 0; i < count; i++)
             {
                 var line = reader.ReadLine();
@@ -78,20 +80,28 @@ namespace Model.IO
                     .Select(j => allNodes[j])
                     .ToArray();
 
-                var elLastNumber = model.ObjectData.GetLastObjNumber(ObjType.Элемент) + 1;
-                var element = GetElementByType(nodes, type, elLastNumber);
+                
+                var element = GetElementByType(nodes, model,type, elLastNumber + i);
                 allElements.Add(elCurrentNumber, element);
-                yield return element;
             }
         }
 
-        private Element GetElementByType(Node[] nodes, int type,int elNumber)
+        private Element GetElementByType(Node[] nodes, ModelData model,int type,int elNumber)
         {
             switch (type) 
             {
-                case 3004: return new Tetra(elNumber, nodes);
-                case 2003: return new Triangle(elNumber, nodes);
-                case 1002: return new Beam(elNumber, nodes);
+                case 3004:
+                    var tetra = new Tetra(elNumber, nodes);
+                    model.ObjectData.E3DCollection.Add(tetra);
+                    return tetra;
+                case 2003:
+                    var triangle = new Triangle(elNumber, nodes);
+                    model.ObjectData.E2DCollection.Add(triangle);
+                    return triangle;
+                case 1002:
+                    var beam = new Beam(elNumber, nodes);
+                    model.ObjectData.E1DCollection.Add(beam);
+                    return beam;
                 default: throw new ArgumentException($"Unable to recognize element of type {type}");
             }
         }

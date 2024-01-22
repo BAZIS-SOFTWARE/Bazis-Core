@@ -1,6 +1,7 @@
 ﻿using Geometry;
 using Model.GeometryObjects;
 using Model.MeshObjects;
+using ModelInterfaces.MeshObjects;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -16,7 +17,7 @@ namespace ModelController.MeshObjsUtility
         /// Сечение элемента плоскостью
         /// Возвращает словарь (номер элемента, плоскость его сечения)
         /// </returns>
-        public Dictionary<int, Figure2D> GetSectionSurfaces(IEnumerable<Element3D> elements, Plane plane)
+        public Dictionary<int, Figure2D> GetSectionSurfaces(IEnumerable<IElement3D> elements, Plane plane)
         {
             var result = new Dictionary<int, Figure2D>();
             var surfaceIndex = 0;

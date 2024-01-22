@@ -5,6 +5,10 @@ using ModelInterfaces;
 using ModelController.ModelScenePresentator;
 using Model.MeshObjects;
 using Model.GeometryObjects;
+using ModelController.ModelScenePresentator.GlObjsPresenters;
+using ModelInterfaces.MeshObjects;
+using Model.ObjectsCollections;
+using System.Linq;
 
 namespace TestModel
 {
@@ -22,10 +26,14 @@ namespace TestModel
                 new Node(2, new Point3D(0.5f,1.0f,0.0f)),
             };
             var el2D = new Triangle(0, nodes);
-            model.ObjectData.Add(ObjType.Элемент2D,el2D);
-            var presentator = new ModelScenePresentator(model.ObjectData);
-            var values = presentator[ObjType.Элемент2D.ToString()].CreateIndexes();
-            var edges = presentator[ObjType.Элемент2D.ToString()].CreateEdgeFlags(values.Item4);
+            model.ObjectData.E2DCollection.Add(el2D);
+
+            var creator = new PresentorsCreator();
+
+            var presentator = creator.CreateSurfaceElementsPresenter(model.ObjectData.E2DCollection, false);
+
+            var values = presentator.CreateIndexes();
+            var edges = presentator.CreateEdgeFlags(values.Item4);
             Assert.AreEqual(3, edges.Length);
             for (var i = 0; i < edges.Length; ++i)
                 Assert.AreEqual(true, edges[i]);
@@ -43,11 +51,13 @@ namespace TestModel
             };
             var el2D = new Quad(0, nodes);
 
-            model.ObjectData.Add(ObjType.Элемент2D,el2D);
+            model.ObjectData.E2DCollection.Add(el2D);
 
-            var presentator = new ModelScenePresentator(model.ObjectData);
-            var values = presentator[ObjType.Элемент2D.ToString()].CreateIndexes();
-            var edges = presentator[ObjType.Элемент2D.ToString()].CreateEdgeFlags(values.Item4);
+            var creator = new PresentorsCreator();
+            
+            var presentator = creator.CreateSurfaceElementsPresenter(model.ObjectData.E2DCollection, false);
+            var values = presentator.CreateIndexes();
+            var edges = presentator.CreateEdgeFlags(values.Item4);
             Assert.AreEqual(6, edges.Length);
             var expectedFlags = new bool[] { true, true, false, false, true, true };
             for (var i = 0; i < expectedFlags.Length; ++i)
@@ -69,10 +79,13 @@ namespace TestModel
             };
             var poligon = new Figure2D(0, points); 
 
-            model.ObjectData.Add(ObjType.Фигура2D, poligon);
-            var presentator = new ModelScenePresentator(model.ObjectData);
-            var values = presentator[ObjType.Фигура2D.ToString()].CreateIndexes();
-            var edges = presentator[ObjType.Фигура2D.ToString()].CreateEdgeFlags(values.Item4);
+            model.ObjectData.Fig2DCollection.Add(poligon);
+            var creator = new PresentorsCreator();
+
+            var presentator = creator.CreateSurfaceElementsPresenter(model.ObjectData.E2DCollection, false);
+
+            var values = presentator.CreateIndexes();
+            var edges = presentator.CreateEdgeFlags(values.Item4);
             
             Assert.AreEqual(12, edges.Length);
             var expectedFlags = new bool[] { true, true, false, false, true, false,
