@@ -120,5 +120,12 @@ namespace Model.GroupsData
             }
             groups = temp;
         }
+/// <inheritdoc/>
+
+        public int CompareTo(IGroup other)
+        {
+            //TO DO
+            throw new System.NotImplementedException();
+        }
     }
 }

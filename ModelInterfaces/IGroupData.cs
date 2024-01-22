@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace ModelInterfaces
@@ -6,7 +7,7 @@ namespace ModelInterfaces
     /// <summary>
     /// IGroupData
     /// </summary>
-    public interface IGroupData: IList<IGroup>
+    public interface IGroupData: IList<IGroup>, IComparable<IGroup>
     {
         /// <summary>
         /// ClearNotExisted
