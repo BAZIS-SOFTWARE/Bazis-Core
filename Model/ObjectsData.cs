@@ -11,6 +11,7 @@ using ModelInterfaces.MeshObjects;
 using Model.ObjectsCollections;
 using System.Security.Cryptography;
 using System.Collections.ObjectModel;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace Model
 {
@@ -19,22 +20,58 @@ namespace Model
     /// </summary>
     public class ObjectsData : IObjectsData
     {
+        /// <summary>
+        /// ObjectsData
+        /// </summary>
+        public ObjectsData()
+        {
+            E1DCollection = new Element1DCollection();
+            E2DCollection = new Element2DCollection();
+            E3DCollection = new Element3DCollection();
+            NodeCollection = new NodeCollection();
+            PointCollection = new PointCollection();
+            LineCollection = new LineCollection();
+            Fig2DCollection = new Fig2DCollection();
+            Fig3DCollection = new Fig3DCollection();
 
-        public IObjectsCollection<INode> NodeCollection => new NodeCollection();
+            ObjsTypes = new Collection<ObjType>()
+                {
+                    ObjType.Точка,
+                    ObjType.Линия,
+                    ObjType.Фигура2D,
+                    ObjType.Фигура3D,
+                    ObjType.Узел,
+                    ObjType.Элемент1D,
+                    ObjType.Элемент2D,
+                    ObjType.Элемент3D
+                };
 
-        public IObjectsCollection<IElement3D> E3DCollection => new Element3DCollection();
+        }
 
-        public IObjectsCollection<IElement2D> E2DCollection => new Element2DCollection();
+/// <inheritdoc/>
 
-        public IObjectsCollection<ILineObject<INode>> E1DCollection => new Element1DCollection();
+        public IObjectsCollection<INode> NodeCollection { get; }
+/// <inheritdoc/>
 
-        public IObjectsCollection<IGeometryPoint> PointCollection => new PointCollection();
+        public IObjectsCollection<IElement3D> E3DCollection { get; }
+/// <inheritdoc/>
 
-        public IObjectsCollection<ILineObject<IGeometryPoint>> LineCollection => new LineCollection();
+        public IObjectsCollection<IElement2D> E2DCollection { get; }
+/// <inheritdoc/>
 
-        public IObjectsCollection<IFigure2D> Fig2DCollection => new Fig2DCollection();
+        public IObjectsCollection<ILineObject<INode>> E1DCollection { get; }
+/// <inheritdoc/>
 
-        public IObjectsCollection<IFigure3D> Fig3DCollection => new Fig3DCollection();
+        public IObjectsCollection<IGeometryPoint> PointCollection { get; }
+/// <inheritdoc/>
+
+        public IObjectsCollection<ILineObject<IGeometryPoint>> LineCollection { get; }
+/// <inheritdoc/>
+
+        public IObjectsCollection<IFigure2D> Fig2DCollection { get; }
+/// <inheritdoc/>
+
+        public IObjectsCollection<IFigure3D> Fig3DCollection { get; }
 
         /// <inheritdoc/>
 
@@ -57,9 +94,6 @@ namespace Model
 
         public IModelObject Find(ObjType objType, int objNumbr)
         {
-            if (Contains(objType))
-                return null;
-
             switch (objType)
             {
                 case ObjType.Точка:
@@ -112,35 +146,17 @@ namespace Model
             modelObject = E3DCollection.Find(objNumbr);
             if (modelObject != null)
                 yield return modelObject;
-            yield return LineCollection.Find(objNumbr);      
+            modelObject = LineCollection.Find(objNumbr);
+            if (modelObject != null)
+                yield return modelObject;     
         }
-        /// <inheritdoc/>
 
-        IEnumerable<IModelObject> GetObjects()
-        {
-            foreach (var item in PointCollection)
-                yield return item;
-            foreach (var item in LineCollection)
-                yield return item;
-            foreach (var item in Fig2DCollection)
-                yield return item;
-            foreach (var item in Fig3DCollection)
-                yield return item;
-            foreach (var item in NodeCollection)
-                yield return item;
-            foreach (var item in E1DCollection)
-                yield return item;
-            foreach (var item in E2DCollection)
-                yield return item;
-            foreach (var item in E3DCollection)
-                yield return item;
-        }
 
         int GetLastElementNumber()
         {
             var e1Numb = E1DCollection.Count > 0 ? E1DCollection.Last().Number : -1;
-            var e2Numb = E2DCollection.Count > 0 ? E1DCollection.Last().Number : -1;
-            var e3Numb = E3DCollection.Count > 0 ? E1DCollection.Last().Number : -1;
+            var e2Numb = E2DCollection.Count > 0 ? E2DCollection.Last().Number : -1;
+            var e3Numb = E3DCollection.Count > 0 ? E3DCollection.Last().Number : -1;
 
             var numb = e1Numb;
             if (e1Numb < e2Numb)
@@ -189,25 +205,7 @@ namespace Model
         }
         /// <inheritdoc/>
 
-
-
-        public ICollection<ObjType> GetTypes
-        {
-            get 
-            {
-                return new Collection<ObjType>()
-                {
-                    ObjType.Точка,
-                    ObjType.Линия,
-                    ObjType.Фигура2D,
-                    ObjType.Фигура3D,
-                    ObjType.Узел,
-                    ObjType.Элемент1D,
-                    ObjType.Элемент2D,
-                    ObjType.Элемент3D
-                };
-            }
-        }
+        public ICollection<ObjType> ObjsTypes { get; }
 
         /// <inheritdoc/>
 
@@ -226,11 +224,33 @@ namespace Model
 
         public bool Contains(ObjType objType)
         {
-            return GetTypes.Contains(objType);
+            return ObjsTypes.Contains(objType);
         }
-/// <inheritdoc/>
 
-        public IEnumerable<IElement> GetElements()
+        /// <inheritdoc/>
+
+        public IEnumerable<IModelObject> GetAllObjects()
+        {
+            foreach (var item in PointCollection)
+                yield return item;
+            foreach (var item in LineCollection)
+                yield return item;
+            foreach (var item in Fig2DCollection)
+                yield return item;
+            foreach (var item in Fig3DCollection)
+                yield return item;
+            foreach (var item in NodeCollection)
+                yield return item;
+            foreach (var item in E1DCollection)
+                yield return item;
+            foreach (var item in E2DCollection)
+                yield return item;
+            foreach (var item in E3DCollection)
+                yield return item;
+        }
+        /// <inheritdoc/>
+
+        public IEnumerable<IElement> GetAllElements()
         {
             foreach (var item in E1DCollection)
                 yield return (IElement)item;
@@ -240,7 +260,7 @@ namespace Model
                 yield return item;
         }
         /// <inheritdoc/>
-        IEnumerable<IModelObject> GetFigures()
+        IEnumerable<IModelObject> GetAllFigures()
         {
 
             foreach (var item in Fig2DCollection)
@@ -273,38 +293,61 @@ namespace Model
             switch (objType)
             {
                 case ObjType.Объект:
+                    foreach (var item in GetAllObjects())
+                        item.ExistState = false;
                     ClearAll();
                     break;
                 case ObjType.Точка:
+                    foreach (var item in PointCollection)
+                        item.ExistState = false;
                     PointCollection.Clear();
+                    LineCollection.Clear();
                     ClearFigures();
                     break;
                 case ObjType.Линия:
+                    foreach (var item in LineCollection)
+                        item.ExistState = false;
                     LineCollection.Clear();
                     break;
                 case ObjType.Фигура:
+                    foreach (var item in GetAllFigures())
+                        item.ExistState = false;
                     ClearFigures();
                     break;
                 case ObjType.Фигура2D:
+                    foreach (var item in Fig2DCollection)
+                        item.ExistState = false;
                     Fig2DCollection.Clear();
                     break;
                 case ObjType.Фигура3D:
+                    foreach (var item in Fig3DCollection)
+                        item.ExistState = false;
                     Fig3DCollection.Clear();
                     break;
                 case ObjType.Узел:
+                    foreach (var item in NodeCollection)
+                        item.ExistState = false;
                     NodeCollection.Clear();
                     ClearElements();
                     break;
                 case ObjType.Элемент:
+                    foreach (var item in GetAllElements())
+                        item.ExistState = false;
                     ClearElements();
                     break;
                 case ObjType.Элемент1D:
+                    foreach (var item in E1DCollection)
+                        item.ExistState = false;
                     E1DCollection.Clear();
                     break;
                 case ObjType.Элемент2D:
+                    foreach (var item in E2DCollection)
+                        item.ExistState = false;
                     E2DCollection.Clear();
                     break;
                 case ObjType.Элемент3D:
+                    foreach (var item in E3DCollection)
+                        item.ExistState = false;
                     E3DCollection.Clear();
                     break;
                 default:
@@ -318,13 +361,13 @@ namespace Model
             switch (objType)
             {
                 case ObjType.Объект:
-                    return GetObjects();
+                    return GetAllObjects();
                 case ObjType.Точка:
                     return PointCollection;
                 case ObjType.Линия:
                     return LineCollection;
                 case ObjType.Фигура:
-                    return GetFigures();
+                    return GetAllFigures();
                 case ObjType.Фигура2D:
                     return Fig2DCollection;
                 case ObjType.Фигура3D:
@@ -332,7 +375,7 @@ namespace Model
                 case ObjType.Узел:
                     return NodeCollection;
                 case ObjType.Элемент:
-                    return GetElements();
+                    return GetAllElements();
                 case ObjType.Элемент1D:
                     return E1DCollection;
                 case ObjType.Элемент2D:

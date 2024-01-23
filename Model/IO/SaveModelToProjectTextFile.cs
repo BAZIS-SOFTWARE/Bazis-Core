@@ -7,6 +7,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using ModelInterfaces.MeshObjects;
 
 namespace Model.IO
 {
@@ -71,7 +72,7 @@ namespace Model.IO
             var objs = model.ObjectData.GetObjects(objsType);
             foreach (var obj in objs)
             {
-                var elem = (Element)obj;
+                var elem = (IElement)obj;
                 var strAr = new List<string>();
                 foreach (var node in elem.GetVertexes())
                     strAr.Add(node.Number.ToString());

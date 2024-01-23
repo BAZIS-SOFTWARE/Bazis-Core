@@ -4,7 +4,7 @@
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>ModelController</Title>
-    <Version>2.0.11.41</Version>
+    <Version>3.0.11.11</Version>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>ModelControllerKey.snk</AssemblyOriginatorKeyFile>
@@ -52,7 +52,7 @@
     <Compile Include="ModelScenePresentator\GlObjsVertexCreators\ColorLineObjsCreator.cs" />
     <Compile Include="ModelScenePresentator\GlObjsVertexCreators\ColorPointObjsCreator.cs" />
     <Compile Include="ModelScenePresentator\GlObjsVertexCreators\ColorSurfaceObjsCreator.cs" />
-    <Compile Include="ModelScenePresentator\PresentorsCreator.cs" />
+    <Compile Include="ModelScenePresentator\PresentersCreator.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icon.png">

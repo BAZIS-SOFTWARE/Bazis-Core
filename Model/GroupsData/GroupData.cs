@@ -41,7 +41,7 @@ namespace Model.GroupsData
 
         public bool Contains(IGroup item)
         {
-            return groups.Contains(item, new CompareGroupsByName());
+            return groups.Contains(item, new NameAndTypeGroupComparer());
         }
 
         public void CopyTo(IGroup[] array, int arrayIndex)
@@ -106,11 +106,9 @@ namespace Model.GroupsData
             var temp = new List<IGroup>();
             foreach (var item in groups)
             {
-                var removedObjs = item.Where(x => x.ExistState == false);
+                var existObjects = item.Where(x => x.ExistState == true);
 
-                var existObjects = item.Except(removedObjs, new EqualityComparerByExistState()).ToList();
-
-                if (existObjects.Count > 0)
+                if (existObjects.Count() > 0)
                 {
                     var gr = new Group(item.GroupName, item.ObjType);
                     gr.AddRange(existObjects);

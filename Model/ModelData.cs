@@ -16,19 +16,13 @@ namespace Model
         public IModelSaver Saver { get; set; } = new SaveModelToProjectTextFile();
         /// <inheritdoc/>
         public IModelLoader Loader { get; set; } = new LoadModelFromProjectTextFile();
-/// <inheritdoc/>
 
-        public void Clear()
+        /// <inheritdoc/>
+
+        public void ClearAll()
         {
-            ObjectData.Clear(ObjType.Объект);
+            ObjectData.ClearAll();
             GroupData.Clear();
-        }
-/// <inheritdoc/>
-
-        public void ClearNotExisted()
-        {
-            ObjectData.ClearNotExisted();
-            GroupData.ClearNotExisted();
         }
 
         /// <inheritdoc/>
@@ -40,13 +34,7 @@ namespace Model
             ObjectData = modelData.ObjectData;
             GroupData = modelData.GroupData;
         }
-        /// <inheritdoc/>
 
-        public void Remove(ObjType objType)
-        {
-            ObjectData.Clear(objType);
-            GroupData.ClearNotExisted();
-        }
 
         /// <inheritdoc/>
 

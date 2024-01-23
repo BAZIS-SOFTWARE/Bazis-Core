@@ -10,14 +10,11 @@ namespace ModelInterfaces
     {
         IObjectsData ObjectData { get; }
         IGroupData GroupData { get; }
+
         /// <summary>
-        /// ClearNotExisted
+        /// Clear all objects and groups
         /// </summary>
-        void ClearNotExisted();
-        /// <summary>
-        /// Clear
-        /// </summary>
-        void Clear();
+        void ClearAll();
         /// <summary>
         /// Save
         /// </summary>
@@ -48,10 +45,5 @@ namespace ModelInterfaces
         /// Loader for model
         /// </summary>
         IModelLoader Loader { get; set; }
-        /// <summary>
-        /// Remove objects with groups
-        /// </summary>
-        /// <param name="objType"></param>
-        void Remove(ObjType objType);
     }
 }

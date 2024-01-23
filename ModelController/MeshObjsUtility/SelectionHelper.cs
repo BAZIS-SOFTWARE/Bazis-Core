@@ -33,7 +33,7 @@ namespace ModelController.MeshObjsUtility
         /// </returns>
         public List<int> SelectInDirection(ObjType objType, float angleInGradus, int numbFirst, int numbSecond, Color color)     
         {
-            var elements = objectsData.GetObjects(objType).Select(x => (IElement)x).ToList();
+            var elements = objectsData.GetAllElements().ToList();
 
             var interfacedElements = new InterfacedNodesFinder().Find(elements);
             

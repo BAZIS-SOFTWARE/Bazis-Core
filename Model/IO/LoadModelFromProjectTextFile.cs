@@ -111,28 +111,38 @@ namespace Model.IO
                 foreach (var nodeNumber in ar)
                     nodeList.Add(newMesh.ObjectData.NodeCollection.Find(nodeNumber));
 
-                ElementKind elemKind;
-
                 if (elType == "Элементы3D" | elType == "Элемент3D" | elType == "Элементы 3004")
                 {
 
                     if (ar.Count == 4)
-                        elemKind = ElementKind.Тетра;
-                    else elemKind = ElementKind.Гекса;
+                    {
+                        var el3DObj = new Tetra(elNumber, nodeList.ToArray());
+                        newMesh.ObjectData.E3DCollection.Add(el3DObj);
+                    }
+                    else
+                    {
+                        var el3DObj = new Hexa(elNumber, nodeList.ToArray());
+                        newMesh.ObjectData.E3DCollection.Add(el3DObj);
+                    }
 
-                    var el3DObj = new Tetra(elNumber, nodeList.ToArray());
-                    newMesh.ObjectData.E3DCollection.Add(el3DObj);
+  
                 }
 
                 if (elType == "Элементы2D" | elType == "Элемент2D" | elType == "Элементы 2003")
                 {
-   
-                    if (ar.Count == 3)
-                        elemKind = ElementKind.Треугольник;
-                    else elemKind = ElementKind.Квадрат;
 
-                    var el2DObj = new Triangle(elNumber, nodeList.ToArray());
-                    newMesh.ObjectData.E2DCollection.Add(el2DObj);
+                    if (ar.Count == 3)
+                    {
+                        var el2DObj = new Triangle(elNumber, nodeList.ToArray());
+                        newMesh.ObjectData.E2DCollection.Add(el2DObj);
+                    }
+                    else
+                    {
+                        var el2DObj = new Quad(elNumber, nodeList.ToArray());
+                        newMesh.ObjectData.E2DCollection.Add(el2DObj);
+                    }
+
+
                 }
                 //number++;
                 line = sr.ReadLine();

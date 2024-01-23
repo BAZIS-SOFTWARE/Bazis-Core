@@ -15,10 +15,36 @@ namespace ModelController.ModelScenePresentator
     /// <summary>
     /// ModelScenePresentator
     /// </summary>
-    public class PresentorsCreator : IModelScenePresenter
+    public class PresentersCreator : IModelScenePresenter
     {
+        Dictionary<ObjType, PresenterView> ObjsViews;
+        /// <summary>
+        /// this
+        /// </summary>
+        /// <param name="objType"></param>
+        /// <returns></returns>
+        public PresenterView this[ObjType objType]
+        {
+            get { return ObjsViews[objType]; }
+            set { ObjsViews[objType] = value; }
+        }
 
-/// <inheritdoc/>
+        /// <summary>
+        /// PresentorsCreator
+        /// </summary>
+        public PresentersCreator()
+        {
+            ObjsViews.Add(ObjType.Точка, PresenterView.Point);
+            ObjsViews.Add(ObjType.Узел, PresenterView.Point);
+            ObjsViews.Add(ObjType.Линия, PresenterView.Line);
+            ObjsViews.Add(ObjType.Фигура2D, PresenterView.Surface);
+            ObjsViews.Add(ObjType.Фигура3D, PresenterView.Surface);
+            ObjsViews.Add(ObjType.Элемент1D, PresenterView.Line);
+            ObjsViews.Add(ObjType.Элемент2D, PresenterView.Surface);
+            ObjsViews.Add(ObjType.Элемент3D, PresenterView.Surface);
+        }
+        /// <inheritdoc/> 
+
 
         public IObjsPresenter CreatePointObjectsPresenter(IEnumerable<IModelObject> modelObjects)
         {

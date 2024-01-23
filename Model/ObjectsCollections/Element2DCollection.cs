@@ -5,18 +5,17 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Model.MeshObjects;
-using System.CodeDom;
 using Functions.Sort;
-using ModelInterfaces.ObjectsComparers;
-using System.Xml.Linq;
 
 namespace Model.ObjectsCollections
 {
     public class Element2DCollection : IObjectsCollection<IElement2D>
     {
+        /// <inheritdoc/>
+        public override string ToString()
+        {
+            return $@"{ObjType.Элемент2D} {elements2D.Count}";
+        }
         List<IElement2D> elements2D = new List<IElement2D>();
 /// <inheritdoc/>
 

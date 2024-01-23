@@ -28,7 +28,7 @@ namespace TestModel
             var el2D = new Triangle(0, nodes);
             model.ObjectData.E2DCollection.Add(el2D);
 
-            var creator = new PresentorsCreator();
+            var creator = new PresentersCreator();
 
             var presentator = creator.CreateSurfaceElementsPresenter(model.ObjectData.E2DCollection, false);
 
@@ -53,7 +53,7 @@ namespace TestModel
 
             model.ObjectData.E2DCollection.Add(el2D);
 
-            var creator = new PresentorsCreator();
+            var creator = new PresentersCreator();
             
             var presentator = creator.CreateSurfaceElementsPresenter(model.ObjectData.E2DCollection, false);
             var values = presentator.CreateIndexes();
@@ -80,9 +80,9 @@ namespace TestModel
             var poligon = new Figure2D(0, points); 
 
             model.ObjectData.Fig2DCollection.Add(poligon);
-            var creator = new PresentorsCreator();
+            var creator = new PresentersCreator();
 
-            var presentator = creator.CreateSurfaceElementsPresenter(model.ObjectData.E2DCollection, false);
+            var presentator = creator.CreateSurfaceGeometryPresenter(model.ObjectData.Fig2DCollection, false);
 
             var values = presentator.CreateIndexes();
             var edges = presentator.CreateEdgeFlags(values.Item4);

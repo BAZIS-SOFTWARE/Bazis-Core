@@ -12,6 +12,7 @@ using ModelController.ModelScenePresentator.GlObjsPresenters;
 using Model.GeometryObjects;
 using ModelControllerInterfaces;
 using ModelInterfaces.GeometryObjects;
+using System.IO;
 
 namespace TestModel
 {
@@ -57,7 +58,7 @@ namespace TestModel
 
 
             var model = new ModelData();
-            var creator = new PresentorsCreator();
+            var creator = new PresentersCreator();
             IObjsPresenter presenter;
             //act
             model.ObjectData.NodeCollection.AddRange(nodes);
@@ -122,7 +123,7 @@ namespace TestModel
             }
 
             var model = new ModelData();
-            var creator = new PresentorsCreator();
+            var creator = new PresentersCreator();
             IObjsPresenter presenter;
 
             switch (objType)
@@ -167,7 +168,7 @@ namespace TestModel
 })]
         [DataRow(ObjType.Элемент3D, @"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC",new string[]
 {
-            "24", "72", "96", "72"
+            "96", "288", "384", "288"
 })]
         [DataRow(ObjType.Узел, @"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC",new string[]
 {
@@ -175,24 +176,32 @@ namespace TestModel
 })]
         [DataRow(ObjType.Элемент3D, @"..\..\..\Examples\CDB\longModel.cdb", new string[]
 {
-            "7", "21", "28", "21"
+            "109620", "328860", "438480", "328860"
 })]
         [DataRow(ObjType.Узел, @"..\..\..\Examples\CDB\longModel.cdb", new string[]
 {
-            "7", "21", "28", "21"
+            "3321", "9963", "13284", "9963"
 })]
-        public void TestObjectsCreationfromSTLText(ObjType objType,string path,string[] array)
+        public void TestObjectsPresentorsCreation(ObjType objType,string path,string[] array)
         {
             //assing
             var model = new ModelData();
-            model.Loader = new LoadModelFromSTLFile();
+
+            var ext = Path.GetExtension(path);
+
+            if(ext == ".stl")
+                model.Loader = new LoadModelFromSTLFile();
+            else if(ext == ".ASC")
+                model.Loader = new LoadModelFromASCIITextFile();
+            else if (ext == ".cdb")
+                model.Loader = new LoadModelFromCDBTextFile();
 
             model.Loader.LoadEvent += (ar1, ar2) => { };
             model.Load(path);
 
             //act
 
-            var creator = new PresentorsCreator();
+            var creator = new PresentersCreator();
             IObjsPresenter presenter;
 
             switch (objType)
@@ -203,16 +212,17 @@ namespace TestModel
                 case ObjType.Линия:
                     presenter = creator.CreateGeometryLinePresenter(model.ObjectData.LineCollection);
                     break;
-                    case ObjType.Фигура2D:
-                    case ObjType.Фигура3D:
+                case ObjType.Фигура2D:
                     presenter = creator.CreateSurfaceGeometryPresenter(model.ObjectData.Fig2DCollection, false);
+                    break;
+                case ObjType.Фигура3D:
                     presenter = creator.CreateSurfaceGeometryPresenter(model.ObjectData.Fig3DCollection, false);
                     break;
                 case ObjType.Элемент1D:
                     presenter = creator.CreateBeamPresenter(model.ObjectData.E1DCollection);
                     break;
                 case ObjType.Элемент2D:
-                    presenter = creator.CreateSurfaceElementsPresenter(model.ObjectData.E2DCollection,false);
+                    presenter = creator.CreateSurfaceElementsPresenter(model.ObjectData.E2DCollection, false);
                     break;
                 case ObjType.Элемент3D:
                     presenter = creator.CreateSurfaceElementsPresenter(model.ObjectData.E3DCollection, true);

@@ -15,7 +15,7 @@ namespace Model.IO
         public void Save(IModelData modelData, string fileName)
         {
             var nodes = modelData.ObjectData.NodeCollection;
-            var elements = modelData.ObjectData.GetElements();
+            var elements = modelData.ObjectData.GetAllElements();
             var groups = modelData.GroupData;
             using(var writer = new StreamWriter(fileName))
             {          

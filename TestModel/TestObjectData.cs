@@ -158,8 +158,7 @@ namespace TestModel
             model.ObjectData.LineCollection.Add(line);
             model.ObjectData.PointCollection.Add(point2);
 
-            model.Remove(objType);
-
+            model.ObjectData.Clear(objType);
             //assert
             Assert.AreEqual(model.ObjectData.GetObjects(objType).Count(), 0);
         }
@@ -199,7 +198,8 @@ namespace TestModel
 
             model.GroupData.Add(group);
 
-            model.Remove(objType);
+            model.ObjectData.Clear(objType);
+            model.GroupData.ClearNotExisted();
             //assert            
             Assert.AreEqual(model.ObjectData.NodeCollection.Count,nNumbs, 0);
             Assert.AreEqual(model.GroupData.FindMany(objType).Count(), grps,0);
@@ -224,11 +224,10 @@ namespace TestModel
             Assert.AreEqual(true, status);
             Assert.AreEqual(2, elements.Count);
             modelData.ObjectData.NodeCollection.AddRange(nodes);
-            //modelData.ObjectData.E2DCollection.AddRange(elements);
-            //modelData.ObjectData.Sort();
-            modelData.Remove(objType);
+
+            modelData.ObjectData.Clear(objType);
             //assert
-            Assert.AreEqual(modelData.ObjectData.GetObjects(ObjType.Узел).Count(), nNumb);
+            Assert.AreEqual(modelData.ObjectData.NodeCollection.Count(), nNumb);
         }
 
         [DataTestMethod]

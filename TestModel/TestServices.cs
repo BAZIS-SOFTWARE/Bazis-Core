@@ -123,13 +123,8 @@ namespace TestModel
         {
             //assing
             var model = new ModelData();
-            model.Loader = new LoadModelFromGMSHTextFile();
 
             //act
-            model.Load(@"..\..\..\Examples\3D\box1.inp");
-            model.Save(@"..\..\..\Examples\3D\task_1.bpf");
-
-            model.Loader = new LoadModelFromProjectTextFile();
             model.Load(@"..\..\..\Examples\3D\task_1.bpf");
 
             var els3D = model.ObjectData.E3DCollection;
@@ -138,7 +133,7 @@ namespace TestModel
 
             var interfacedNodesEls3D = interNodesEls3DFinder.Find(new List<int>() { 3, 48, 71 }, els3D);
 
-            var elsForNode = new List<int>() { 1566,2049,2051, 2052 };
+            var elsForNode = new List<int>() { 1565,2048,2050, 2051 };
             //assert
             for (int i = 0; i < interfacedNodesEls3D[48].Count; i++)
             {

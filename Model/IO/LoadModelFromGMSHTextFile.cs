@@ -112,9 +112,8 @@ namespace Model.IO
             var lastNumber = newMesh.ObjectData.GetLastNumber(ObjType.Элемент);
             while (line != null && !hasStopWord)
             {
-                var objType = GetObjType(elementKind);
-
                 lastNumber++;
+                var objType = GetObjType(elementKind);
 
                 dict.Add(int.Parse(tokens[0]), lastNumber);
                 var selectedNodesId = tokens.Skip(1)

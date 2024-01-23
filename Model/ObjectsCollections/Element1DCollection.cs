@@ -1,52 +1,80 @@
-﻿using Model.MeshObjects;
+﻿using Functions.Sort;
 using ModelInterfaces;
+using ModelInterfaces.ObjectsFinders;
 using ModelInterfaces.MeshObjects;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Model.ObjectsCollections
 {
     public class Element1DCollection : IObjectsCollection<ILineObject<INode>>
     {
-
         /// <inheritdoc/>
-        public int Count => throw new NotImplementedException();
-/// <inheritdoc/>
+        public override string ToString()
+        {
+            return $@"{ObjType.Элемент1D} {elements1D.Count}";
+        }
+
+        List<ILineObject<INode>> elements1D = new List<ILineObject<INode>>();
+        /// <inheritdoc/>
+
+        public int Count => elements1D.Count;
+        /// <inheritdoc/>
 
         public void Add(ILineObject<INode> addObj)
         {
-            throw new NotImplementedException();
+            if (elements1D.Count > 0)
+                if (addObj.Number <= elements1D.Last().Number)
+                    throw new Exception($"Последний элемент в коллекции больше добавляемого!");
+                else
+                    elements1D.Add(addObj);
+            else
+                elements1D.Add(addObj);
         }
+        /// <inheritdoc/>
 
         public void AddRange(IEnumerable<ILineObject<INode>> addObjs)
         {
-            throw new NotImplementedException();
+            var objsList = addObjs.ToList();
+            MergeSort<ILineObject<INode>>.MergeSortFunction(objsList);
+
+            if (elements1D.Count > 0)
+                if (objsList.First().Number <= elements1D.Last().Number)
+                    throw new Exception($"Первый элемент в добавляемой коллекции больше существующего последнего!");
+                else
+                    elements1D.AddRange(addObjs);
+            else
+                elements1D.AddRange(addObjs);
+
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void Clear()
         {
-            throw new NotImplementedException();
+            elements1D.Clear();
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void ClearNotExisted()
         {
-            throw new NotImplementedException();
+            elements1D = elements1D.Where(x => x.ExistState == true).ToList();
         }
+        /// <inheritdoc/>
 
         public ILineObject<INode> Find(int objNumbr)
         {
-            throw new NotImplementedException();
+            return elements1D.Find(objNumbr);
         }
+        /// <inheritdoc/>
 
         public IEnumerator<ILineObject<INode>> GetEnumerator()
         {
-            throw new NotImplementedException();
+            foreach (var item in elements1D)
+            {
+                yield return item;
+            }
         }
 
         IEnumerator IEnumerable.GetEnumerator()

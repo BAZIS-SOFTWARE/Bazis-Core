@@ -53,6 +53,10 @@ namespace ModelInterfaces
         /// <returns></returns>
         int Count(ObjType objType);
         /// <summary>
+        /// ClearAll
+        /// </summary>
+        void ClearAll();
+        /// <summary>
         /// Clear
         /// </summary>
         /// <param name="objType"></param>
@@ -81,10 +85,15 @@ namespace ModelInterfaces
         /// <returns></returns>
         IModelObject Find(ObjType objType, int objNumbr);
         /// <summary>
-        /// GetElements
+        /// GetAllObjects
         /// </summary>
         /// <returns></returns>
-        IEnumerable<IElement> GetElements();
+        IEnumerable<IModelObject> GetAllObjects();
+        /// <summary>
+        /// GetAllElements
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<IElement> GetAllElements();
         /// <summary>
         /// GetObjects
         /// </summary>
@@ -93,7 +102,7 @@ namespace ModelInterfaces
         /// <summary>
         /// GetTypes
         /// </summary>
-        ICollection<ObjType> GetTypes { get; }
+        ICollection<ObjType> ObjsTypes { get; }
         /// <summary>
         /// GetLastNumber
         /// </summary>

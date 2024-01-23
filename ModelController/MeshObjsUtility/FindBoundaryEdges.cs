@@ -25,7 +25,7 @@ namespace ModelController.MeshObjsUtility
         {
             var boundedEdges = new List<string>();
 
-            var els = modelData.ObjectData.GetObjects(ObjType.Элемент).
+            var els = modelData.ObjectData.GetAllElements().
                 Select(x => (ISurfaceElement)x).ToArray();
 
             var finder = new InterfacedNodesFinder();

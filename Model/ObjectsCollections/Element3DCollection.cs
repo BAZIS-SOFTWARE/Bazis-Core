@@ -13,6 +13,11 @@ namespace Model.ObjectsCollections
 {
     public class Element3DCollection : IObjectsCollection<IElement3D>
     {
+        /// <inheritdoc/>
+        public override string ToString()
+        {
+            return $@"{ObjType.Элемент3D} {elements3D.Count}";
+        }
         List<IElement3D> elements3D = new List<IElement3D>();
         /// <inheritdoc/>
 

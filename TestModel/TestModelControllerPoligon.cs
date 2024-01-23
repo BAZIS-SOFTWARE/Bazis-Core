@@ -30,7 +30,7 @@ namespace TestModel
             model.ObjectData.Fig2DCollection.Add(fig2D);
 
             //act
-            var creator = new PresentorsCreator();
+            var creator = new PresentersCreator();
             var presentator = creator.CreateSurfaceGeometryPresenter(model.ObjectData.Fig2DCollection,false);
             var inds = presentator.CreateIndexes();
             var ptrs = presentator.CreatePointers(inds.Item1);
@@ -79,7 +79,7 @@ namespace TestModel
             model.ObjectData.Fig2DCollection.AddRange(figs2D);
 
             //act
-            var creator = new PresentorsCreator();
+            var creator = new PresentersCreator();
             var presentator = creator.CreateSurfaceGeometryPresenter(model.ObjectData.Fig2DCollection, false);
             var inds = presentator.CreateIndexes();
             var ptrs = presentator.CreatePointers(inds.Item1);

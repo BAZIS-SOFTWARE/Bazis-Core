@@ -11,7 +11,7 @@
     <AssemblyOriginatorKeyFile>ModelKey.snk</AssemblyOriginatorKeyFile>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>Model</Title>
-    <Version>2.0.9.73</Version>
+    <Version>3.0.9.11</Version>
     <Company>BAZIS SOFTWARE</Company>
     <Product>BAZIS</Product>
     <Description>Contains basic mesh oblects and geometry classes</Description>
@@ -49,7 +49,7 @@
     <Compile Include="IO\SaveModelToASCIITextFile.cs" />
     <Compile Include="MeshObjects\Beam.cs" />
     <Compile Include="GroupsData\Group.cs" />
-    <Compile Include="GroupsData\CompareGroupsByName.cs" />
+    <Compile Include="GroupsData\NameAndTypeGroupComparer.cs" />
     <Compile Include="GroupsData\GroupData.cs" />
     <Compile Include="MeshObjects\IntegralPoint.cs" />
     <Compile Include="ModelData.cs" />
