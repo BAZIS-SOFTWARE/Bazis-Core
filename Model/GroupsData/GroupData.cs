@@ -122,10 +122,9 @@ namespace Model.GroupsData
         }
 /// <inheritdoc/>
 
-        public int CompareTo(IGroup other)
+        public void Sort()
         {
-            //TO DO
-            throw new System.NotImplementedException();
+            groups = groups.OrderBy(x => x, new StringNumberGroupComparer()).ToList();
         }
     }
 }

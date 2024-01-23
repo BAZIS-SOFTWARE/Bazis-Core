@@ -19,7 +19,7 @@ namespace Model.GroupsData
             // x = y => =0
             // x > y => >0
             var isXBigger = xValues.Count > yValues.Count;
-            for(var i = 0; i < Math.Min(xValues.Count, yValues.Count); i++)
+            for (var i = 0; i < Math.Min(xValues.Count, yValues.Count); i++)
             {
                 var result = CompareStrings(xValues[i], yValues[i]);
                 if (result != 0 && xValues.Count == yValues.Count)
@@ -91,7 +91,9 @@ namespace Model.GroupsData
                 if (x[i] == y[i])
                     continue;
 
-                return Math.Sign(x[i].CompareTo(y[i]));
+                var comparation = x[i].CompareTo(y[i]);
+                if (char.IsLetter(x[i]) && char.IsLetter(y[i]) && x.Length == y.Length)
+                    return Math.Sign(comparation);
             }
             return isXLonger ? 1 : x.Length == y.Length ? 0 : -1;
         }
