@@ -30,7 +30,7 @@ namespace TestModel
 
             var creator = new PresentersCreator();
 
-            var presentator = creator.CreateSurfaceElementsPresenter(model.ObjectData.E2DCollection, false);
+            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E2DCollection, false);
 
             var values = presentator.CreateIndexes();
             var edges = presentator.CreateEdgeFlags(values.Item4);
@@ -55,7 +55,7 @@ namespace TestModel
 
             var creator = new PresentersCreator();
             
-            var presentator = creator.CreateSurfaceElementsPresenter(model.ObjectData.E2DCollection, false);
+            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E2DCollection, false);
             var values = presentator.CreateIndexes();
             var edges = presentator.CreateEdgeFlags(values.Item4);
             Assert.AreEqual(6, edges.Length);
@@ -82,7 +82,7 @@ namespace TestModel
             model.ObjectData.Fig2DCollection.Add(poligon);
             var creator = new PresentersCreator();
 
-            var presentator = creator.CreateSurfaceGeometryPresenter(model.ObjectData.Fig2DCollection, false);
+            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.Fig2DCollection, false);
 
             var values = presentator.CreateIndexes();
             var edges = presentator.CreateEdgeFlags(values.Item4);

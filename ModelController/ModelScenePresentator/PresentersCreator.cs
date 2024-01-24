@@ -52,45 +52,26 @@ namespace ModelController.ModelScenePresentator
             pointsPresentor.Add(modelObjects);
             return pointsPresentor;
         }
+
 /// <inheritdoc/>
 
-        public IObjsPresenter CreateBeamPresenter(IEnumerable<ILineObject<INode>> lineObjs)
+        public IObjsPresenter CreateLineObjectsPresenter<T>(IEnumerable<ILineObject<T>> lineObjs)
+            where T : IPoint
         {
-            var els1dPresentor = new LineObjsPresenter<INode>();
-            els1dPresentor.Add(lineObjs);
-            return els1dPresentor;
-        }
-/// <inheritdoc/>
-
-        public IObjsPresenter CreateGeometryLinePresenter(IEnumerable<ILineObject<IGeometryPoint>> lineObjs)
-        {
-            var linePres = new LineObjsPresenter<IGeometryPoint>();
+            var linePres = new LineObjsPresenter<T>();
             linePres.Add(lineObjs);
             return linePres;
         }
+
 /// <inheritdoc/>
 
-        public IObjsPresenter CreateSurfaceElementsPresenter(IEnumerable<ISurfaceObject<IElementSurface, INode>> surfaceElems, bool isVolumeObjs)
+        public IObjsPresenter CreateSurfaceObjectsPresenter<T,U>(IEnumerable<ISurfaceObject<T, U>> surfaceGeom, bool isVolumeObjs)
+                    where T : ISurface<U> where U : IPoint
         {
-            var elsPresentor = new SurfaceObjsPresenter<IElementSurface, INode>(isVolumeObjs);
-            elsPresentor.Add(surfaceElems);
-            return elsPresentor;
-        }
-/// <inheritdoc/>
 
-        public IObjsPresenter CreateSurfaceGeometryPresenter(IEnumerable<ISurfaceObject<IGeometrySurface, IGeometryPoint>> surfaceGeom, bool isVolumeObjs)
-        {
-            var fig2dPresentor = new SurfaceObjsPresenter<IGeometrySurface, IGeometryPoint>(isVolumeObjs);
-            fig2dPresentor.Add(surfaceGeom);
-            return fig2dPresentor;
-        }
-/// <inheritdoc/>
-
-        public IObjsPresenter CreateOtherSurfacePresenter(IEnumerable<ISurfaceObject<ISurface<IPoint>, IPoint>> surfaceGeom, bool isVolumeObjs)
-        {
-            var fig2dPresentor = new SurfaceObjsPresenter<ISurface<IPoint>, IPoint>(isVolumeObjs);
-            fig2dPresentor.Add(surfaceGeom);
-            return fig2dPresentor;
+            var presentor = new SurfaceObjsPresenter<T, U>(isVolumeObjs);
+            presentor.Add(surfaceGeom);
+            return presentor;
         }
     }
 }

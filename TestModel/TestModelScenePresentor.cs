@@ -66,15 +66,15 @@ namespace TestModel
             {
                 case ObjType.Элемент3D:
                     model.ObjectData.E3DCollection.Add(new Tetra(0, nodes.ToArray()));
-                    presenter = creator.CreateSurfaceElementsPresenter(model.ObjectData.E3DCollection, true);
+                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E3DCollection, true);
                     break;
                 case ObjType.Элемент2D:
                     model.ObjectData.E2DCollection.Add(new Triangle(0, nodes.ToArray()));
-                    presenter = creator.CreateSurfaceElementsPresenter(model.ObjectData.E2DCollection, false);
+                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E2DCollection, false);
                     break;
                 default:
                     model.ObjectData.E1DCollection.Add(new Beam(0, nodes.ToArray()));
-                    presenter = creator.CreateBeamPresenter(model.ObjectData.E1DCollection);
+                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.E1DCollection);
                     break;
             }
 
@@ -130,11 +130,11 @@ namespace TestModel
             {
                 case ObjType.Линия:
                     model.ObjectData.LineCollection.Add(new Line(0, points.ToArray()));
-                    presenter = creator.CreateGeometryLinePresenter(model.ObjectData.LineCollection);
+                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.LineCollection);
                     break;
                 default:
                     model.ObjectData.Fig2DCollection.Add(new Figure2D(0, points.ToArray()));
-                    presenter = creator.CreateSurfaceGeometryPresenter(model.ObjectData.Fig2DCollection, false);
+                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.Fig2DCollection, false);
                     break;
             }
 
@@ -210,22 +210,22 @@ namespace TestModel
                     presenter = creator.CreatePointObjectsPresenter(model.ObjectData.NodeCollection);
                     break;
                 case ObjType.Линия:
-                    presenter = creator.CreateGeometryLinePresenter(model.ObjectData.LineCollection);
+                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.LineCollection);
                     break;
                 case ObjType.Фигура2D:
-                    presenter = creator.CreateSurfaceGeometryPresenter(model.ObjectData.Fig2DCollection, false);
+                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.Fig2DCollection, false);
                     break;
                 case ObjType.Фигура3D:
-                    presenter = creator.CreateSurfaceGeometryPresenter(model.ObjectData.Fig3DCollection, false);
+                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.Fig3DCollection, false);
                     break;
                 case ObjType.Элемент1D:
-                    presenter = creator.CreateBeamPresenter(model.ObjectData.E1DCollection);
+                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.E1DCollection);
                     break;
                 case ObjType.Элемент2D:
-                    presenter = creator.CreateSurfaceElementsPresenter(model.ObjectData.E2DCollection, false);
+                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E2DCollection, false);
                     break;
                 case ObjType.Элемент3D:
-                    presenter = creator.CreateSurfaceElementsPresenter(model.ObjectData.E3DCollection, true);
+                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E3DCollection, true);
                     break;
                 default:
                     presenter = creator.CreatePointObjectsPresenter(model.ObjectData.PointCollection);

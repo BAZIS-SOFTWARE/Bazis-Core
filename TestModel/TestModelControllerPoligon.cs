@@ -31,7 +31,7 @@ namespace TestModel
 
             //act
             var creator = new PresentersCreator();
-            var presentator = creator.CreateSurfaceGeometryPresenter(model.ObjectData.Fig2DCollection,false);
+            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.Fig2DCollection,false);
             var inds = presentator.CreateIndexes();
             var ptrs = presentator.CreatePointers(inds.Item1);
             var coords = presentator.CreateVertexes(inds.Item2, "координаты");
@@ -80,7 +80,7 @@ namespace TestModel
 
             //act
             var creator = new PresentersCreator();
-            var presentator = creator.CreateSurfaceGeometryPresenter(model.ObjectData.Fig2DCollection, false);
+            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.Fig2DCollection, false);
             var inds = presentator.CreateIndexes();
             var ptrs = presentator.CreatePointers(inds.Item1);
             var coords = presentator.CreateVertexes(inds.Item2, "координаты");
