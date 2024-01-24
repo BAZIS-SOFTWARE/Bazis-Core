@@ -27,7 +27,7 @@ namespace ModelController.MeshObjsUtility
                 var points = new List<Point3D>();
                 foreach (var surface in element.GetSurfaces())
                 {
-                    foreach (var line in surface.GetLinesFromSurface(surface))
+                    foreach (var line in surface.GetLinesFromSurface())
                     {
                         var point1 = line.P0;
                         var point2 = line.P1;

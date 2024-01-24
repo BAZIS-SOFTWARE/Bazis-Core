@@ -15,9 +15,9 @@ namespace ModelController.ModelScenePresentator
     /// <summary>
     /// ModelScenePresentator
     /// </summary>
-    public class PresentersCreator : IModelScenePresenter
+    public class PresentersCreator : IPresentersCreator
     {
-        Dictionary<ObjType, PresenterView> ObjsViews;
+        Dictionary<ObjType, PresenterView> ObjsViews = new Dictionary<ObjType, PresenterView>();
         /// <summary>
         /// this
         /// </summary>
@@ -81,6 +81,14 @@ namespace ModelController.ModelScenePresentator
         public IObjsPresenter CreateSurfaceGeometryPresenter(IEnumerable<ISurfaceObject<IGeometrySurface, IGeometryPoint>> surfaceGeom, bool isVolumeObjs)
         {
             var fig2dPresentor = new SurfaceObjsPresenter<IGeometrySurface, IGeometryPoint>(isVolumeObjs);
+            fig2dPresentor.Add(surfaceGeom);
+            return fig2dPresentor;
+        }
+/// <inheritdoc/>
+
+        public IObjsPresenter CreateOtherSurfacePresenter(IEnumerable<ISurfaceObject<ISurface<IPoint>, IPoint>> surfaceGeom, bool isVolumeObjs)
+        {
+            var fig2dPresentor = new SurfaceObjsPresenter<ISurface<IPoint>, IPoint>(isVolumeObjs);
             fig2dPresentor.Add(surfaceGeom);
             return fig2dPresentor;
         }

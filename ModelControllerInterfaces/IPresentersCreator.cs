@@ -8,7 +8,7 @@ namespace ModelControllerInterfaces
     /// <summary>
     /// IModelPresenter
     /// </summary>
-    public interface IModelScenePresenter
+    public interface IPresentersCreator
     {
         /// <summary>
         /// CreatePointObjectsPresenter
@@ -42,5 +42,12 @@ namespace ModelControllerInterfaces
         /// <param name="isVolumeObjs"></param>
         /// <returns></returns>
         IObjsPresenter CreateSurfaceGeometryPresenter(IEnumerable<ISurfaceObject<IGeometrySurface, IGeometryPoint>> surfaceGeom, bool isVolumeObjs);
+        /// <summary>
+        /// CreateOtherSurfacePresenter
+        /// </summary>
+        /// <param name="surfaceGeom"></param>
+        /// <param name="isVolumeObjs"></param>
+        /// <returns></returns>
+        IObjsPresenter CreateOtherSurfacePresenter(IEnumerable<ISurfaceObject<ISurface<IPoint>, IPoint>> surfaceGeom, bool isVolumeObjs);
     }
 }

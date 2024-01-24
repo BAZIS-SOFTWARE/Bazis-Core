@@ -11,7 +11,7 @@
     <AssemblyOriginatorKeyFile>ModelKey.snk</AssemblyOriginatorKeyFile>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>Model</Title>
-    <Version>3.0.9.11</Version>
+    <Version>3.0.9.12</Version>
     <Company>BAZIS SOFTWARE</Company>
     <Product>BAZIS</Product>
     <Description>Contains basic mesh oblects and geometry classes</Description>
@@ -73,6 +73,13 @@
     <Compile Include="ObjectsCollections\PointCollection.cs" />
   </ItemGroup> 
   <ItemGroup>
+    <None Include="TestPlantUML.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TestPlantUML.mdpuml</DependentUpon>
+    </None>
+  </ItemGroup> 
+  <ItemGroup>
     <PackageReference Include="Functions" Version="1.0.2.43" />
     <PackageReference Include="Geometry" Version="2.0.7.20" />
     <PackageReference Include="MathNet.Numerics.Signed" Version="5.0.0" />
@@ -85,5 +92,12 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
+    <None Update="TestPlantUML.mdpuml">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>TestPlantUML.cs</LastGenOutput>
+    </None>
+  </ItemGroup> 
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
 </Project>
