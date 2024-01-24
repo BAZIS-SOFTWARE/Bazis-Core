@@ -1,5 +1,6 @@
 ﻿using ModelInterfaces;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Drawing.Text;
 using System.Linq;
@@ -15,13 +16,10 @@ namespace Model.GroupsData
         {
             var xValues = SubstractNumericAndStringValues(x.GroupName);
             var yValues = SubstractNumericAndStringValues(y.GroupName);
-            // x < y => <0
-            // x = y => =0
-            // x > y => >0
             var isXBigger = xValues.Count > yValues.Count;
             for (var i = 0; i < Math.Min(xValues.Count, yValues.Count); i++)
             {
-                var result = CompareStrings(xValues[i], yValues[i]);
+                var result = CompareStrings(xValues[i], yValues[i], i == Math.Min(xValues.Count, yValues.Count) - 1);
                 if (result != 0 && xValues.Count == yValues.Count)
                     return result;
             }
@@ -72,7 +70,7 @@ namespace Model.GroupsData
             return result;
         }
 
-        private int CompareStrings(string x, string y)
+        private int CompareStrings(string x, string y, bool isLast)
         {
             if (int.TryParse(x, out int xNum1))
             {
@@ -88,14 +86,28 @@ namespace Model.GroupsData
             var isXLonger = x.Length > y.Length;
             for (var i = 0; i < Math.Min(x.Length, y.Length); i++)
             {
-                if (x[i] == y[i])
+                if (x[i].Equals(y[i])
+                    || (Math.Abs(x[i].CompareTo(y[i])) == 32 && !isLast))
                     continue;
 
-                var comparation = x[i].CompareTo(y[i]);
-                if (char.IsLetter(x[i]) && char.IsLetter(y[i]) && x.Length == y.Length)
-                    return Math.Sign(comparation);
+                return CompareCharAlphabetic(x[i], y[i]);
             }
             return isXLonger ? 1 : x.Length == y.Length ? 0 : -1;
+        }
+
+        private int CompareCharAlphabetic(char x, char y)
+        {
+            if (char.IsLetter(x) && char.IsLetter(y))
+            {
+                var comparation = x.CompareTo(y);
+                if (char.IsUpper(x))
+                    return Math.Sign(comparation);
+
+                if (char.IsLower(x))
+                    return char.IsUpper(y) && comparation < 32 ? -1 * Math.Sign(comparation) : Math.Sign(comparation);
+                return Math.Sign(comparation);
+            }
+            return string.Compare(x.ToString(), y.ToString());
         }
     }
 }
