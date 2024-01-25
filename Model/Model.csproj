@@ -28,6 +28,7 @@
   <ItemGroup>
     <Compile Include="Events\LoaderEventArgs.cs" />
     <Compile Include="Events\SaverEventArgs.cs" />
+    <Compile Include="GroupsData\StringNumberGroupComparer.cs" />
     <Compile Include="ObjectsCollections\Fig2DCollection.cs" />
     <Compile Include="ObjectsCollections\Fig3DCollection.cs" />
     <Compile Include="GeometryObjects\Figure2D.cs" />
