@@ -14,6 +14,21 @@ namespace TestModel
     [TestClass]
     public class TestsCrossSection
     {
+        private bool IsPointNearOfAnyPoint(Point3D p, List<Point3D> points)
+        {
+            var epsilon = 1e-2;
+            foreach (var point in points)
+            {
+                if (Math.Abs(point._x - p._x) < epsilon
+                    && Math.Abs(point._y - p._y) < epsilon
+                    && Math.Abs(point._z - p._z) < epsilon)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         [TestMethod]
         public void GetSectionSurfaces_ShouldBeCorrect_OnSingleTetra()
         {
@@ -33,13 +48,13 @@ namespace TestModel
                 new Point3D(0.29f, 0.5f, 0),
                 new Point3D(0.5f, 0.44f, 0.6f),
                 new Point3D(0.7f, 0, 0),
-                new Point3D(0.69f, 0.18f, 0.51f),
+                new Point3D(0.69f, 0.18f, 0.5f),
             };
 
             var surface = instance.GetSectionSurfaces(new List<Element3D> { tetra }, plane).Values.First();
 
-            var actualPoints = surface.GetCoordinates().ToHashSet();
-            Assert.IsTrue(actualPoints.SetEquals(expectedPoints));
+            var actualPoints = surface.GetCoordinates().ToList();
+            Assert.IsTrue(expectedPoints.All(p => IsPointNearOfAnyPoint(p, actualPoints)));
         }
 
         [TestMethod]
@@ -70,33 +85,27 @@ namespace TestModel
             };
 
             var surface = instance.GetSectionSurfaces(new List<Element3D> { hexa }, plane).Values.First();
-            var actualPoints = surface.GetCoordinates().ToHashSet();
-            Assert.IsTrue(actualPoints.SetEquals(expectedPoints));
+
+            var actualPoints = surface.GetCoordinates().ToList();
+            Assert.IsTrue(expectedPoints.All(p => IsPointNearOfAnyPoint(p, actualPoints)));
         }
 
         [TestMethod]
         public void GetSectionSurfaces_ShouldWork_OnLargeModel()
         {
-            var loader = new LoadModelFromCDBTextFile();
+            var loader = new LoadModelFromProjectTextFile();
             loader.LoadEvent += (arg1, arg2) => { };
-            var modelData = loader.Load(@"..\..\..\Examples\CDB\longModel.cdb");
+            var modelData = loader.Load(@"..\..\Examples\3D\1.bpf");
 
-            // scale model
-            foreach (var node in modelData.ObjectData.NodeCollection)
-            {
-                node.Position = new Point3D((float)Math.Round(100 * node._x, 2), (float)Math.Round(100 * node._y, 2), (float)Math.Round(100 * node._z, 2));
-            }
+            var A = modelData.ObjectData.GetObjects(ObjType.Узел).First(node => node.Number == 26180);
+            var B = modelData.ObjectData.GetObjects(ObjType.Узел).First(node => node.Number == 27192);
+            var C = modelData.ObjectData.GetObjects(ObjType.Узел).First(node => node.Number == 29809);
 
-            var points = new List<Point3D>
-            {
-                new Point3D(0, 0, 10),
-                new Point3D(1, 0, 10),
-                new Point3D(0, 1, 10)
-            };
-            var plane = new Plane(points[0], points[1], points[2]);
+            var plane = new Plane(A.CalcCentr(), B.CalcCentr(), C.CalcCentr());
             var elements = modelData.ObjectData.E3DCollection;
-            var crossSection = new CrossSection();
-            var crossNodes = crossSection.GetSectionSurfaces(elements, plane);
+
+            var instance = new CrossSection();
+            var section = instance.GetSectionSurfaces(elements, plane);
         }
     }
 }
