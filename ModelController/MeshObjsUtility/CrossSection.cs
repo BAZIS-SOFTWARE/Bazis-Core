@@ -1,6 +1,7 @@
 ﻿using Geometry;
 using Model.GeometryObjects;
 using Model.MeshObjects;
+using ModelInterfaces.MeshObjects;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -16,7 +17,7 @@ namespace ModelController.MeshObjsUtility
         /// <summary>
         /// Find a sections of the surfaces of given elements by the given plane
         /// </summary>
-        public Dictionary<int, Figure2D> GetSectionSurfaces(IEnumerable<Element3D> elements, Plane plane)
+        public Dictionary<int, Figure2D> GetSectionSurfaces(IEnumerable<IElement3D> elements, Plane plane)
         {
             var result = new Dictionary<int, Figure2D>();
             foreach (var element in elements)
