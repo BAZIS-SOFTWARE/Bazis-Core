@@ -65,6 +65,7 @@ namespace TestModel
 
         [DataTestMethod]
         [DataRow(@"..\..\..\Examples\STL\ACII.stl")]
+        [DataRow(@"..\..\..\Examples\STL\sphere.stl")]
         public void ImportModelFromSTLtextFormat(string path)
         {
             //assing

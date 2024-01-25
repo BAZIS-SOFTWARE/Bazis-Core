@@ -17,13 +17,13 @@ namespace ModelController.ModelScenePresentator
     /// </summary>
     public class PresentersCreator : IPresentersCreator
     {
-        Dictionary<ObjType, PresenterView> ObjsViews = new Dictionary<ObjType, PresenterView>();
+        Dictionary<string, PresenterView> ObjsViews = new Dictionary<string, PresenterView>();
         /// <summary>
         /// this
         /// </summary>
         /// <param name="objType"></param>
         /// <returns></returns>
-        public PresenterView this[ObjType objType]
+        public PresenterView this[string objType]
         {
             get { return ObjsViews[objType]; }
             set { ObjsViews[objType] = value; }
@@ -34,14 +34,14 @@ namespace ModelController.ModelScenePresentator
         /// </summary>
         public PresentersCreator()
         {
-            ObjsViews.Add(ObjType.Точка, PresenterView.Point);
-            ObjsViews.Add(ObjType.Узел, PresenterView.Point);
-            ObjsViews.Add(ObjType.Линия, PresenterView.Line);
-            ObjsViews.Add(ObjType.Фигура2D, PresenterView.Surface);
-            ObjsViews.Add(ObjType.Фигура3D, PresenterView.Surface);
-            ObjsViews.Add(ObjType.Элемент1D, PresenterView.Line);
-            ObjsViews.Add(ObjType.Элемент2D, PresenterView.Surface);
-            ObjsViews.Add(ObjType.Элемент3D, PresenterView.Surface);
+            ObjsViews.Add(ObjType.Точка.ToString(), PresenterView.Point);
+            ObjsViews.Add(ObjType.Узел.ToString(), PresenterView.Point);
+            ObjsViews.Add(ObjType.Линия.ToString(), PresenterView.Line);
+            ObjsViews.Add(ObjType.Фигура2D.ToString(), PresenterView.Surface);
+            ObjsViews.Add(ObjType.Фигура3D.ToString(), PresenterView.Surface);
+            ObjsViews.Add(ObjType.Элемент1D.ToString(), PresenterView.Line);
+            ObjsViews.Add(ObjType.Элемент2D.ToString(), PresenterView.Surface);
+            ObjsViews.Add(ObjType.Элемент3D.ToString(), PresenterView.Surface);
         }
         /// <inheritdoc/> 
 

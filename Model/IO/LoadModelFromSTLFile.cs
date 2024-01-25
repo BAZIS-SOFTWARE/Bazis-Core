@@ -42,7 +42,7 @@ namespace Model.IO
 
                 LoadEvent?.Invoke(this, new LoaderEventArgs("Начало импорта STL модели"));
 
-                while (str != "endsolid")
+                while (str != null)
                 {
                     if (str != null && str.Contains("outer loop"))
                     {

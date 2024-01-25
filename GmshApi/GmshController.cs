@@ -10,6 +10,7 @@ using System.IO;
 using Model.MeshObjects;
 using Model.GeometryObjects;
 using ModelInterfaces.MeshObjects;
+using ModelInterfaces.GeometryObjects;
 
 namespace GmshApi.GmshController
 {
@@ -1786,9 +1787,9 @@ namespace GmshApi.GmshController
         /// </summary>
         /// <param name="tags">Идентификаторы</param>
         /// <returns>Список контрольных точек</returns>
-        public List<IModelObject> CreateControlPoints(int[] tags)
+        public List<IGeometryPoint> CreateControlPoints(int[] tags)
         {
-            var nodes = new List<IModelObject>();
+            var nodes = new List<IGeometryPoint>();
             double[] coords;
             for (var i = 1; i < tags.Length; i += 2)
             {
