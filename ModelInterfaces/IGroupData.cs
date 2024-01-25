@@ -7,7 +7,7 @@ namespace ModelInterfaces
     /// <summary>
     /// IGroupData
     /// </summary>
-    public interface IGroupData: IList<IGroup>, IComparable<IGroup>
+    public interface IGroupData: IList<IGroup>
     {
         /// <summary>
         /// ClearNotExisted
