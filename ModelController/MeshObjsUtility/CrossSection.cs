@@ -1,27 +1,24 @@
 ﻿using Geometry;
 using Model.GeometryObjects;
 using Model.MeshObjects;
-using ModelInterfaces.MeshObjects;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Xml.Serialization;
 
 namespace ModelController.MeshObjsUtility
 {
     public class CrossSection
     {
-        /// <returns>
-        /// Сечение элемента плоскостью
-        /// Возвращает словарь (номер элемента, плоскость его сечения)
-        /// </returns>
-        public Dictionary<int, Figure2D> GetSectionSurfaces(IEnumerable<IElement3D> elements, Plane plane)
+        /// <summary>
+        /// Find a sections of the surfaces of given elements by the given plane
+        /// </summary>
+        public Dictionary<int, Figure2D> GetSectionSurfaces(IEnumerable<Element3D> elements, Plane plane)
         {
             var result = new Dictionary<int, Figure2D>();
-            var surfaceIndex = 0;
-            var nodeIndex = 0;
             foreach (var element in elements)
             {
                 var points = new List<Point3D>();
@@ -29,71 +26,82 @@ namespace ModelController.MeshObjsUtility
                 {
                     foreach (var line in surface.GetLinesFromSurface())
                     {
-                        var point1 = line.P0;
-                        var point2 = line.P1;
-                        if (!IsIntersect(point1, point2, plane))
+                        if (!IsIntersect(line, plane))
                             continue;
-                        var sectionPoint = GetSectionPoint(point1, point2, plane);
-                        points.Add(sectionPoint);
+                        var sectionPoint = GetSectionPoint(line, plane);
+                        if (!IsPointNearOfAnyPoint(sectionPoint, points))
+                            points.Add(sectionPoint);
                     }
                 }
-                var nodes = points
-                    .Distinct()
-                    .Select(p => new GeometryPoint(nodeIndex++, p))
+                var sectionNodes = points
+                    .Select((p, index) => new GeometryPoint(index, p))
                     .ToArray();
-                if (nodes.Length >= 3 && nodes.Length <= 6)
+                if (sectionNodes.Length >= 3 && sectionNodes.Length <= 6)
                 {
-                    var surface = new Figure2D(surfaceIndex++, nodes);
-                    result.Add(element.Number, surface);
+                    var sectionSurface = new Figure2D(element.Number, sectionNodes);
+                    result.Add(element.Number, sectionSurface);
                 }
-                else if (nodes.Length > 6)
-                {
+                else if (sectionNodes.Length > 6)
                     throw new Exception("Ошибка при построении сечения. Узлов плоскости более 6");
-                }
             }
-
             return result;
         }
 
         /// <summary>
-        /// Проверка на пересечение прямой ab с плоскостью plane. 
-        /// Возвращает true, если есть точка пересечения
+        /// Check if a segment intersects a plane 
         /// </summary>
-        private bool IsIntersect(Point3D a, Point3D b, Plane plane)
+        private bool IsIntersect(Segment3D segment, Plane plane)
         {
-            var d1 = Math.Round(plane.PointPosition(a), 2);
-            var d2 = Math.Round(plane.PointPosition(b), 2);
+            var d1 = plane.PointPosition(segment.P0);
+            var d2 = plane.PointPosition(segment.P1);
             if (double.IsNaN(d1) || double.IsNaN(d2))
-                throw new ArgumentException("Degenerate plane");
-            if (Math.Abs(d1) < 10e-4 && Math.Abs(d2) < 10e-4) // лежат в одной плоскости
+                throw new ArgumentException("Вырожденная плоскость");
+            if (Math.Abs(d1) < 10e-2 && Math.Abs(d2) < 10e-2) // segment belongs to the plane
                 return false;
             return Math.Sign(d1) * Math.Sign(d2) <= 0;
         }
 
         /// <summary>
-        /// Вычисляет точку пересечения прямой и плоскости
+        /// Calculates the intersection point of a segment and a plane
         /// </summary>
-        private Point3D GetSectionPoint(Point3D P0, Point3D P1, Plane plane)
+        private Point3D GetSectionPoint(Segment3D segment, Plane plane)
         {
-            if (Math.Abs(plane.PointPosition(P1)) < 1e-2)
-                return P1;
-            if (Math.Abs(plane.PointPosition(P0)) < 1e-2)
-                return P0;
             var A = plane.Normal._x;
             var B = plane.Normal._y;
             var C = plane.Normal._z;
             var D = plane.Shifting;
-            var dx = P1._x - P0._x;
-            var dy = P1._y - P0._y;
-            var dz = P1._z - P0._z;
-            var t = -(A * P0._x + B * P0._y + C * P0._z + D)
-                    / (A * dx + B * dy + C * dz);
-            var x = (float)Math.Round(dx * t + P0._x, 2);
-            var y = (float)Math.Round(dy * t + P0._y, 2);
-            var z = (float)Math.Round(dz * t + P0._z, 2);
+            var a = segment.P0;
+            var b = segment.P1;
+            var dx = b._x - a._x;
+            var dy = b._y - a._y;
+            var dz = b._z - a._z;
+            var t = -(A * a._x + B * a._y + C * a._z + D) / (A * dx + B * dy + C * dz);
+            var x = dx * t + a._x;
+            var y = dy * t + a._y;
+            var z = dz * t + a._z;
             return new Point3D(x, y, z);
         }
 
+        /// <summary>
+        /// Check if the given list already contains the given point with some accuracy
+        /// </summary>
+        private bool IsPointNearOfAnyPoint(Point3D p, List<Point3D> points, float epsilon = 1e-2f)
+        {
+            foreach (var point in points)
+            {
+                if (Math.Abs(point._x - p._x) < epsilon
+                    && Math.Abs(point._y - p._y) < epsilon
+                    && Math.Abs(point._z - p._z) < epsilon)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Output the list of points content in the log.txt file
+        /// </summary>
         private void Debug(IEnumerable<Point3D> points)
         {
             Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
