@@ -57,7 +57,7 @@ namespace ModelController.MeshObjsUtility
             var d2 = plane.PointPosition(segment.P1);
             if (double.IsNaN(d1) || double.IsNaN(d2))
                 throw new ArgumentException("Вырожденная плоскость");
-            if (Math.Abs(d1) < 10e-2 && Math.Abs(d2) < 10e-2) // segment belongs to the plane
+            if (Math.Abs(d1) < 10e-4 && Math.Abs(d2) < 10e-4) // segment belongs to the plane
                 return false;
             return Math.Sign(d1) * Math.Sign(d2) <= 0;
         }
@@ -86,7 +86,7 @@ namespace ModelController.MeshObjsUtility
         /// <summary>
         /// Check if the given list already contains the given point with some accuracy
         /// </summary>
-        private bool IsPointNearOfAnyPoint(Point3D p, List<Point3D> points, float epsilon = 1e-2f)
+        private bool IsPointNearOfAnyPoint(Point3D p, List<Point3D> points, float epsilon = 5*1e-3f)
         {
             foreach (var point in points)
             {
