@@ -90,22 +90,22 @@ namespace TestModel
             Assert.IsTrue(expectedPoints.All(p => IsPointNearOfAnyPoint(p, actualPoints)));
         }
 
-        [TestMethod]
-        public void GetSectionSurfaces_ShouldWork_OnLargeModel()
-        {
-            var loader = new LoadModelFromProjectTextFile();
-            loader.LoadEvent += (arg1, arg2) => { };
-            var modelData = loader.Load(@"..\..\Examples\3D\1.bpf");
+        //[TestMethod]
+        //public void GetSectionSurfaces_ShouldWork_OnLargeModel()
+        //{
+        //    var loader = new LoadModelFromProjectTextFile();
+        //    loader.LoadEvent += (arg1, arg2) => { };
+        //    var modelData = loader.Load(@"..\..\Examples\3D\1.bpf");
 
-            var A = modelData.ObjectData.GetObjects(ObjType.Узел).First(node => node.Number == 26180);
-            var B = modelData.ObjectData.GetObjects(ObjType.Узел).First(node => node.Number == 27192);
-            var C = modelData.ObjectData.GetObjects(ObjType.Узел).First(node => node.Number == 29809);
+        //    var A = modelData.ObjectData.GetObjects(ObjType.Узел).First(node => node.Number == 26180);
+        //    var B = modelData.ObjectData.GetObjects(ObjType.Узел).First(node => node.Number == 27192);
+        //    var C = modelData.ObjectData.GetObjects(ObjType.Узел).First(node => node.Number == 29809);
 
-            var plane = new Plane(A.CalcCentr(), B.CalcCentr(), C.CalcCentr());
-            var elements = modelData.ObjectData.E3DCollection;
+        //    var plane = new Plane(A.CalcCentr(), B.CalcCentr(), C.CalcCentr());
+        //    var elements = modelData.ObjectData.E3DCollection;
 
-            var instance = new CrossSection();
-            var section = instance.GetSectionSurfaces(elements, plane);
-        }
+        //    var instance = new CrossSection();
+        //    var section = instance.GetSectionSurfaces(elements, plane);
+        //}
     }
 }

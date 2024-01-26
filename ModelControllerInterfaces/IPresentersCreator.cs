@@ -11,12 +11,6 @@ namespace ModelControllerInterfaces
     public interface IPresentersCreator
     {
         /// <summary>
-        /// this
-        /// </summary>
-        /// <param name="objType"></param>
-        /// <returns></returns>
-        PresenterView this[string objType] { get; set; }
-        /// <summary>
         /// CreatePointObjectsPresenter
         /// </summary>
         /// <param name="modelObjects"></param>
