@@ -12,13 +12,19 @@ using System.Linq;
 
 namespace Model.IO
 {
-    public class NewINPLoader : IModelLoader
+    /// <summary>
+    /// Loads ModelData from file in .inp (gmsh) format
+    /// </summary>
+    public class LoadModelFromGMSHTextFile : IModelLoader
     {
         public event Action<object, ILoaderEventArgs> LoadEvent;
         private Dictionary<int, Node> mapIndexToNode;
         private Dictionary<int, Element> mapIndexToElement;
         private ModelData modelData;
 
+        /// <summary>
+        /// Load a model in the .inp format from the specified path
+        /// </summary>
         public IModelData Load(string path)
         {
             modelData = new ModelData();
@@ -35,6 +41,9 @@ namespace Model.IO
             return modelData;
         }
 
+        /// <summary>
+        /// Reads a block of nodes using the reader until it encounters element's block marker. Then passes control to the ReadElements method
+        /// </summary>
         private void ReadNodes(StreamReader reader)
         {
             var nodes = new List<Node>();
@@ -56,11 +65,17 @@ namespace Model.IO
                     .ToArray();
                 var node = new Node(nodeIndex, new Point3D(coordinates[0], coordinates[1], coordinates[2]));
                 nodes.Add(node);
-                modelData.ObjectData.NodeCollection.Add(node);
             }
+            nodes.OrderBy(e => e.Number)
+                .ToList()
+                .ForEach(e => modelData.ObjectData.NodeCollection.Add(e));
         }
 
-        private ElementKind GetElementType(string line)
+
+        /// <summary>
+        /// Define an ElementKind by string constant from file
+        /// </summary>
+        private ElementKind GetElementKind(string line)
         {
             var elementType = line.Replace(" ", "").Split(',')[1].Replace("type=", "");
             switch (elementType)
@@ -73,18 +88,25 @@ namespace Model.IO
             }
         }
 
-        private Element GetElement(int elementIndex, Node[] elementNodes, ElementKind elementType)
+
+        /// <summary>
+        ///  Creates an element by passed index, nodes and type and returns it
+        /// </summary>
+        private Element GetElement(int elementIndex, Node[] elementNodes, ElementKind elementKind)
         {
-            switch (elementType)
+            switch (elementKind)
             {
                 case ElementKind.Стержень: return new Beam(elementIndex, elementNodes); 
                 case ElementKind.Треугольник: return new Triangle(elementIndex, elementNodes);
                 case ElementKind.Квадрат: return new Quad(elementIndex, elementNodes);
                 case ElementKind.Тетра: return new Tetra(elementIndex, elementNodes);
-                default: throw new ArgumentException($"Неизвестный формат элемента: {elementType}");
+                default: throw new ArgumentException($"Неизвестный формат элемента: {elementKind}");
             }
         }
 
+        /// <summary>
+        /// Adds an element to the corresponding ModelData collection
+        /// </summary>
         private void AddElementToModelData(Element element)
         {
             switch (element.ElementKind)
@@ -97,11 +119,14 @@ namespace Model.IO
             }
         }
 
+        /// <summary>
+        /// Reads an element's block from the reader until it encounters to 'ELSET' marker. Then passes control to the ReadGroups method
+        /// </summary>
         private void ReadElements(string startLine, StreamReader reader)
         {
             var elements = new List<Element>();
             LoadEvent?.Invoke(this, new LoaderEventArgs("Начало загрузки элементов"));
-            var elementType = GetElementType(startLine);
+            var elementType = GetElementKind(startLine);
             while (!reader.EndOfStream)
             {
                 var line = reader.ReadLine();
@@ -112,7 +137,7 @@ namespace Model.IO
                     break;
                 }
                 else if (line.StartsWith("*ELEMENT"))
-                    elementType = GetElementType(line);
+                    elementType = GetElementKind(line);
                 else
                 {
                     var tokens = line.Replace(" ", "").Split(',');
@@ -122,10 +147,12 @@ namespace Model.IO
                         .Select(i => mapIndexToNode[i])
                         .ToArray();
                     var element = GetElement(elementIndex, elementNodes, elementType);
-                    
                     elements.Add(element);
                 }
             }
+            elements.OrderBy(e => e.Number)
+                .ToList()
+                .ForEach(e => AddElementToModelData(e));
         }
 
         private void AddGroupToModelData(string groupName, List<Element> elements)
@@ -135,6 +162,9 @@ namespace Model.IO
             modelData.GroupData.Add(group);
         }
 
+        /// <summary>
+        /// Reads group's block from the reader until it encounters 'NSET' marker or end of stream
+        /// </summary>
         private void ReadGroups(string currentLine, StreamReader reader)
         {
             var elements = new List<Element>();
