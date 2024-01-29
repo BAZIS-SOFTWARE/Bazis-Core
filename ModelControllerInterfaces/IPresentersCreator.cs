@@ -11,6 +11,24 @@ namespace ModelControllerInterfaces
     public interface IPresentersCreator
     {
         /// <summary>
+        /// Add
+        /// </summary>
+        /// <param name="objsType"></param>
+        /// <param name="objsView"></param>
+        void Add(string objsType, PresenterView objsView);
+        /// <summary>
+        /// Remove
+        /// </summary>
+        /// <param name="objsType"></param>
+        /// <returns></returns>
+        bool Remove(string objsType);
+        /// <summary>
+        /// this
+        /// </summary>
+        /// <param name="objType"></param>
+        /// <returns></returns>
+        PresenterView this[string objType] { get; set;}
+        /// <summary>
         /// CreatePointObjectsPresenter
         /// </summary>
         /// <param name="modelObjects"></param>

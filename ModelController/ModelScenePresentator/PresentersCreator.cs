@@ -17,7 +17,35 @@ namespace ModelController.ModelScenePresentator
     /// </summary>
     public class PresentersCreator : IPresentersCreator
     {
+        Dictionary<string, PresenterView> ObjsViews = new Dictionary<string, PresenterView>();
+        /// <summary>
+        /// this
+        /// </summary>
+        /// <param name="objType"></param>
+        /// <returns></returns>
+        public PresenterView this[string objType]
+        {
+            get { return ObjsViews[objType]; }
+            set { ObjsViews[objType] = value; }
+        }
+
+        /// <summary>
+        /// PresentorsCreator
+        /// </summary>
+        public PresentersCreator()
+        {
+            ObjsViews.Add(ObjType.Точка.ToString(), PresenterView.Point);
+            ObjsViews.Add(ObjType.Узел.ToString(), PresenterView.Point);
+            ObjsViews.Add(ObjType.Линия.ToString(), PresenterView.Line);
+            ObjsViews.Add(ObjType.Фигура2D.ToString(), PresenterView.Surface);
+            ObjsViews.Add(ObjType.Фигура3D.ToString(), PresenterView.Surface);
+            ObjsViews.Add(ObjType.Элемент1D.ToString(), PresenterView.Line);
+            ObjsViews.Add(ObjType.Элемент2D.ToString(), PresenterView.Surface);
+            ObjsViews.Add(ObjType.Элемент3D.ToString(), PresenterView.Surface);
+        }
         /// <inheritdoc/> 
+
+
         public IObjsPresenter CreatePointObjectsPresenter(IEnumerable<IModelObject> modelObjects)
         {
             var pointsPresentor = new PointObjsPresenter();
@@ -44,6 +72,18 @@ namespace ModelController.ModelScenePresentator
             var presentor = new SurfaceObjsPresenter<T, U>(isVolumeObjs);
             presentor.Add(surfaceGeom);
             return presentor;
+        }
+/// <inheritdoc/>
+
+        public void Add(string objsType, PresenterView objsView)
+        {
+            ObjsViews.Add(objsType, objsView);
+        }
+/// <inheritdoc/>
+
+        public bool Remove(string objsType)
+        {
+            return ObjsViews.Remove(objsType);
         }
     }
 }
