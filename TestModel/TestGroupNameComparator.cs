@@ -15,10 +15,13 @@ namespace TestModel
     {
         [TestMethod]
         [DataRow("a", "A")]
-        [DataRow("W1", "WA")]
-        [DataRow("W1", "Wa")]
+        [DataRow("WA", "W1")]
+        [DataRow("Wa", "W1")]
         [DataRow("W1_b", "W1_a")]
         [DataRow("Wa_1", "Wa")]
+        [DataRow("name", null)]
+        [DataRow("A111", "A2")]
+
         public void PositiveComparationResult(string x, string y)
         {
             var xGroup = new Group(x, ModelInterfaces.ObjType.Элемент1D);
@@ -28,6 +31,9 @@ namespace TestModel
         }
 
         [TestMethod]
+        [DataRow("", null)]
+        [DataRow("", "")]
+        [DataRow(null, null)]
         [DataRow("w", "w")]
         [DataRow("W1", "W1")]
         [DataRow("wa", "wa")]
@@ -41,31 +47,12 @@ namespace TestModel
         }
 
         [TestMethod]
-        [DataRow(null, null)]
-        [DataRow("name", null)]
-        [DataRow(null, "")]
-
-        public void ShouldFail_NullReferenceException(string x, string y)
-        {
-            var xGroup = new Group(x, ModelInterfaces.ObjType.Элемент1D);
-            var yGroup = new Group(y, ModelInterfaces.ObjType.Элемент1D);
-            var comparator = new StringNumberGroupComparer();
-            Assert.ThrowsException<NullReferenceException>(() => comparator.Compare(xGroup, yGroup));
-        }
-
-        [TestMethod]
-        [DataRow("", "")]
-        public void ShoulFail_ArgumentNullException(string x, string y)
-        {
-            var xGroup = new Group(x, ModelInterfaces.ObjType.Элемент1D);
-            var yGroup = new Group(y, ModelInterfaces.ObjType.Элемент1D);
-            var comparator = new StringNumberGroupComparer();
-            Assert.ThrowsException<ArgumentNullException>(() => comparator.Compare(xGroup, yGroup));
-        }
-
-        [TestMethod]
         [DataRow(new[] { "A", "a", "A1", "a1", "W1", "A111", "A2" },
             new[] { "A", "a", "A1", "a1", "A2", "A111", "W1" })]
+        [DataRow(new[] { "b_01", "a", "a_1", "A1", "A2_b", "A111", "A" },
+            new[] { "A", "a", "a_1", "A1", "A2_b", "A111", "b_01" })]
+        [DataRow(new[] { "A_1", "A_b", "A1", "A_S", "A_s", "A2", "A2" },
+            new[] { "A_1", "A_b", "A_S", "A_s", "A1", "A2", "A2" })]
         public void CheckGroupSortWithComparator(string[] input, string[] expected)
         {
             var groupData = new GroupData();

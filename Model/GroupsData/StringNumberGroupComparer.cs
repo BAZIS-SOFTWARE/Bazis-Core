@@ -12,102 +12,120 @@ namespace Model.GroupsData
 {
     public class StringNumberGroupComparer : IComparer<IGroup>
     {
+        private string xName;
+        private string yName;
+        private int counter = 0;
+
+        private int xLength { get { return xName.Length; } }
+        private int yLength { get { return yName.Length; } }
+        private bool isLastInX { get { return counter == xLength - 1; } }
+        private bool isLastInY { get { return counter == yLength - 1; } }
+
         public int Compare(IGroup x, IGroup y)
         {
-            var xValues = SubstractNumericAndStringValues(x.GroupName);
-            var yValues = SubstractNumericAndStringValues(y.GroupName);
-            var isXBigger = xValues.Count > yValues.Count;
-            for (var i = 0; i < Math.Min(xValues.Count, yValues.Count); i++)
-            {
-                var result = CompareStrings(xValues[i], yValues[i], i == Math.Min(xValues.Count, yValues.Count) - 1);
-                if (result != 0 && xValues.Count == yValues.Count)
-                    return result;
-            }
-            return isXBigger ? 1 : xValues.Count == yValues.Count ? 0 : -1;
-        }
+            if (x.GroupName == null || x.GroupName == string.Empty)
+                return y.GroupName == null || y.GroupName == string.Empty ? 0 : -1;
 
-        private List<string> SubstractNumericAndStringValues(string groupName)
-        {
-            if (groupName.Length == 0)
-                throw new ArgumentNullException("Имя группы не может быть пустым");
-            var isDigitSelected = char.IsDigit(groupName[0]);
-            var isStringSelected = !isDigitSelected;
-            var sb = new StringBuilder();
+            if (y.GroupName == null || y.GroupName == string.Empty)
+                return x.GroupName == null || x.GroupName == string.Empty ? 0 : 1;
 
-            var result = new List<string>();
-            foreach (var letter in groupName)
+            xName = x.GroupName;
+            yName = y.GroupName;
+
+            if (xName.Length == 0 || yName.Length == 0)
+                return xName.Length == 0 ? yName.Length == 0 ? 0 : -1 : 1;
+
+            counter = 0;
+            while (counter < xLength && counter < yLength)
             {
-                if (char.IsDigit(letter))
-                {
-                    if (isDigitSelected)
-                        sb.Append(letter);
-                    else
-                    {
-                        isDigitSelected = true;
-                        isStringSelected = false;
-                        result.Add(sb.ToString());
-                        sb.Clear();
-                        sb.Append(letter);
-                    }
-                    continue;
-                }
+                var ASCIIx = (int)xName[counter];
+                var ASCIIy = (int)yName[counter];
+                int compare;
+
+                if (ASCIIx == 95)
+                    compare = ASCIIy == 95 ? 0 : -1;
+
+                else if (CheckInBound(48, 57, ASCIIx))
+                    compare = CompareDigit(ASCIIx, ASCIIy);
+
+                else if (CheckInBound(65, 90, ASCIIx))
+                    compare = CompareUpperLetter(ASCIIx, ASCIIy);
+
+                else if (CheckInBound(97, 122, ASCIIx))
+                    compare = CompareLowerLetter(ASCIIx, ASCIIy);
 
                 else
-                {
-                    if (isStringSelected)
-                        sb.Append(letter);
-                    else
-                    {
-                        isDigitSelected = false;
-                        isStringSelected = true;
-                        result.Add(sb.ToString());
-                        sb.Clear();
-                        sb.Append(letter);
-                    }
-                }
+                    compare = ASCIIx.CompareTo(ASCIIy);
+
+                counter++;
+                if (compare == 0)
+                    continue;
+                return compare;
             }
-            result.Add(sb.ToString());
-            return result;
+            var lenDif = xName.Length - yName.Length;
+            return lenDif == 0 ? 0 : Math.Sign(lenDif);
         }
 
-        private int CompareStrings(string x, string y, bool isLast)
+        private bool CheckInBound(int left, int right, int x) => x >= left && x <= right;
+
+        private int CompareUpperLetter(int ASCIIx, int ASCIIy)
         {
-            if (int.TryParse(x, out int xNum1))
-            {
-                if (int.TryParse(y, out int yNum1))
-                    return xNum1.CompareTo(yNum1);
-
-                return -1;
-            }
-
-            if (int.TryParse(y, out int number))
+            if (CheckInBound(48, 57, ASCIIy))
                 return 1;
 
-            var isXLonger = x.Length > y.Length;
-            for (var i = 0; i < Math.Min(x.Length, y.Length); i++)
-            {
-                if (x[i].Equals(y[i])
-                    || (Math.Abs(x[i].CompareTo(y[i])) == 32 && !isLast))
-                    continue;
+            if (CheckInBound(65, 90, ASCIIy))
+                return ASCIIx.CompareTo(ASCIIy);
 
-                return CompareCharAlphabetic(x[i], y[i]);
+            if (CheckInBound(97, 122, ASCIIy))
+            {
+                var comp = ASCIIx - ASCIIy + 32;
+                if (comp == 0)
+                    return isLastInX ? -1 : 0;
+                return Math.Sign(comp);
             }
-            return isXLonger ? 1 : x.Length == y.Length ? 0 : -1;
+            return 0;
         }
 
-        private int CompareCharAlphabetic(char x, char y)
+        private int CompareLowerLetter(int ASCIIx, int ASCIIy)
         {
-            if (char.IsLetter(x) && char.IsLetter(y))
-            {
-                var comparation = x.CompareTo(y);
-                if (char.IsUpper(x))
-                    return Math.Sign(comparation);
+            if (CheckInBound(48, 57, ASCIIy))
+                return 1;
 
-                if (char.IsLower(x))
-                    return char.IsUpper(y) && comparation < 32 ? -1 * Math.Sign(comparation) : Math.Sign(comparation);
-                return Math.Sign(comparation);
+            if (CheckInBound(65, 90, ASCIIy))
+            {
+                var comp = ASCIIx - ASCIIy - 32;
+                if (comp == 0)
+                    return isLastInY ? 1 : 0;
+                return Math.Sign(comp);
             }
-            return string.Compare(x.ToString(), y.ToString());
+
+            if (CheckInBound(97, 122, ASCIIy))
+                return ASCIIx.CompareTo(ASCIIy);
+            return 0;
+        }
+
+        private int CompareDigit(int ASCIIx, int ASCIIy)
+        {
+            if (CheckInBound(48, 57, ASCIIy))
+            {
+                var comp = ASCIIx.CompareTo(ASCIIy);
+                if (isLastInX)
+                    return isLastInY ? comp : char.IsDigit(yName[counter + 1]) ? -1 : comp;
+
+                if (isLastInY)
+                    return 1;
+
+                if (xName[counter + 1] == '_')
+                    return yName[counter + 1] == '_' ? 0 : -1;
+
+                if (yName[counter + 1] == '_')
+                    return xName[counter + 1] == '_' ? 0 : 1;
+                return comp;
+            }
+
+            if (CheckInBound(65, 90, ASCIIy) || CheckInBound(97, 122, ASCIIy))
+                return -1;
+            return 1;
         }
     }
 }
