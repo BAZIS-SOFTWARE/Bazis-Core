@@ -31,5 +31,9 @@ namespace ModelInterfaces
         /// <param name="objType"></param>
         /// <returns></returns>
         IEnumerable<IGroup> FindMany(ObjType objType);
+        /// <summary>
+        /// Sort
+        /// </summary>
+        void Sort();
     }
 }

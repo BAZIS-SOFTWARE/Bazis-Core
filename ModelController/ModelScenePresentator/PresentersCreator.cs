@@ -73,5 +73,17 @@ namespace ModelController.ModelScenePresentator
             presentor.Add(surfaceGeom);
             return presentor;
         }
+/// <inheritdoc/>
+
+        public void Add(string objsType, PresenterView objsView)
+        {
+            ObjsViews.Add(objsType, objsView);
+        }
+/// <inheritdoc/>
+
+        public bool Remove(string objsType)
+        {
+            return ObjsViews.Remove(objsType);
+        }
     }
 }
