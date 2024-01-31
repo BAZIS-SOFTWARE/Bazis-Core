@@ -74,10 +74,10 @@
     <Compile Include="ObjectsCollections\PointCollection.cs" />
   </ItemGroup> 
   <ItemGroup>
-    <None Include="TestPlantUML.cs">
+    <None Include="PrecedentsPlantUML.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>TestPlantUML.mdpuml</DependentUpon>
+      <DependentUpon>PrecedentsPlantUML.mdpuml</DependentUpon>
     </None>
   </ItemGroup> 
   <ItemGroup>
@@ -93,9 +93,9 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-    <None Update="TestPlantUML.mdpuml">
+    <None Update="PrecedentsPlantUML.mdpuml">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>TestPlantUML.cs</LastGenOutput>
+      <LastGenOutput>PrecedentsPlantUML.cs</LastGenOutput>
     </None>
   </ItemGroup> 
   <ItemGroup>
