@@ -103,6 +103,7 @@
     <Compile Include="TestCalcDistance.cs" />
     <Compile Include="TestEdgeFlags.cs" />
     <Compile Include="TestElement.cs" />
+    <Compile Include="TestGroupNameComparator.cs" />
     <Compile Include="TestIO.cs" />
     <Compile Include="TestModelControllerPoligon.cs" />
     <Compile Include="TestsCrossSection.cs" />
