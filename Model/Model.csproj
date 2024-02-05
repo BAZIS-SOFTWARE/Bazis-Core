@@ -52,6 +52,7 @@
     <Compile Include="GroupsData\Group.cs" />
     <Compile Include="GroupsData\NameAndTypeGroupComparer.cs" />
     <Compile Include="GroupsData\GroupData.cs" />
+	  <Compile Include="GroupsData\StringNumberGroupComparer.cs" />
     <Compile Include="MeshObjects\IntegralPoint.cs" />
     <Compile Include="ModelData.cs" />
     <Compile Include="ModelObject.cs" />
