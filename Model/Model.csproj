@@ -74,6 +74,11 @@
     <Compile Include="ObjectsCollections\PointCollection.cs" />
   </ItemGroup> 
   <ItemGroup>
+    <None Include="ClientServerPlantUML.cs">
+      <DependentUpon>ClientServerPlantUML.mdpuml</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </None>
     <None Include="PrecedentsPlantUML.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -92,6 +97,10 @@
     <None Update="Icon.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
+    </None>
+    <None Update="ClientServerPlantUML.mdpuml">
+      <LastGenOutput>ClientServerPlantUML.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="PrecedentsPlantUML.mdpuml">
       <Generator>TextTemplatingFileGenerator</Generator>
