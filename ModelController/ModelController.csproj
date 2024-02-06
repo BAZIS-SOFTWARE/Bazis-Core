@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NetOctree" Version="2.1.10" />
+    <PackageReference Include="System.Collections.Immutable" Version="8.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ModelControllerInterfaces\ModelControllerInterfaces.csproj" />
