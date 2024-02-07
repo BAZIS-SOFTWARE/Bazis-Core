@@ -97,15 +97,14 @@ namespace TestModel
         }
 
         [TestMethod]
-        [Timeout(10000)]
         public void FindBoundaryEdges_ShouldWork_OnModelWithDifferentElements()
         {
             var model = new ModelData();
             model.Loader = new LoadModelFromProjectTextFile();
-            model.Load(@"..\..\Examples\3D\1.bpf");
-
+            model.Load(@"..\..\Examples\3D\cub_unsorted.bpf");
             var instance = new FindBoundaryEdges(model);
-            instance.Find();
+            var bounds = instance.Find();
+            Assert.AreEqual(19, bounds.Count);
         }     
 
         [TestMethod]
