@@ -21,6 +21,7 @@ using MathNet.Numerics.Distributions;
 
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
+using System.Drawing;
 
 namespace ModelController.MeshObjsCreator
 {
@@ -29,34 +30,46 @@ namespace ModelController.MeshObjsCreator
     /// </summary>
     public class Map3DFrom2D : IMap3DFrom2D
     {
-
-        private class TriangleEdge
+        private static Vector3 ToVector3(Node n) => new Vector3(n.Position._x, n.Position._y, n.Position._z);
+        private static Vector3 ToVector3(Point3D n) => new Vector3(n._x, n._y, n._z);
+        private class TriangleFacet
         {
             public readonly Vector3 a;
             public readonly Vector3 b;
             public readonly Vector3 c;
+
+            public readonly Node na;
+            public readonly Node nb;
+            public readonly Node nc;
+
+
             public readonly Vector3 circumcenter;
 
             public Vector3 normal { get; private set; } // внешняя нормаль грани
 
-            public TriangleEdge(Vector3 a, Vector3 b, Vector3 c, Vector3 normal)
+            public TriangleFacet((Vector3 v, Node n) a, (Vector3 v, Node n) b, (Vector3 v, Node n) c, Vector3 normal)
             {
-                this.a = a;
-                this.b = b;
-                this.c = c;
+                this.a = a.v;
+                this.b = b.v;
+                this.c = c.v;
+
+                na = a.n;
+                nb = b.n;
+                nc = c.n;
+
                 this.normal = normal;
                 circumcenter = CalcCircumcenter();
             }
 
-            public TriangleEdge(Triangle triange)
+            public TriangleFacet(Triangle triange)
             {
                 var v = triange.GetVertexes().ToArray();
-                var na = v[0] as Node;
-                var nb = v[1] as Node;
-                var nc = v[2] as Node;
-                this.a = new Vector3(na._x, na._y, na._z);
-                this.b = new Vector3(nb._x, nb._y, nb._z);
-                this.c = new Vector3(nc._x, nc._y, nc._z);
+                na = v[0] as Node;
+                nb = v[1] as Node;
+                nc = v[2] as Node;
+                this.a = ToVector3(na); 
+                this.b = ToVector3(nb); 
+                this.c = ToVector3(nc); 
             }
 
             private Vector3 CalcCircumcenter()
@@ -79,12 +92,12 @@ namespace ModelController.MeshObjsCreator
 
             public override bool Equals(object obj)
             {
-                if (obj is TriangleEdge triangleEdge)
+                if (obj is TriangleFacet triangleEdge)
                     return Equals(triangleEdge);
                 return false;
             }
 
-            public bool Equals(TriangleEdge obj)
+            public bool Equals(TriangleFacet obj)
             {
                 return a.Equals(obj.a) && b.Equals(obj.b) && c.Equals(obj.c)
                        || a.Equals(obj.a) && b.Equals(obj.c) && c.Equals(obj.b)
@@ -100,10 +113,13 @@ namespace ModelController.MeshObjsCreator
             }
         }
 
-        private class EdgeSet : HashSet<TriangleEdge>
+        private class EdgeSet
         {
-            private HashSet<TriangleEdge> visited = new HashSet<TriangleEdge>();
-            private List<TriangleEdge> current = new List<TriangleEdge>();
+            // посещенные грани
+            private HashSet<TriangleFacet> visited = new HashSet<TriangleFacet>();
+            // очередь граней
+            private Queue<TriangleFacet> queue = new Queue<TriangleFacet>();
+
             public bool TryAddEdgesOfTetra(Node[] nodes)
             {
                 bool rsl = false;
@@ -113,71 +129,66 @@ namespace ModelController.MeshObjsCreator
                 }
                 return rsl;
             }
-
-            public void FixEdges()
+            internal void AddAsVisited(TriangleFacet facet)
             {
-                current = this.ToList();
+                visited.Add(facet);
             }
 
-            public TriangleEdge GetNext()
+            /// <summary>
+            /// грани достаются в порядке FIFO, отбрасывая уже обработанные
+            /// </summary>
+            /// <param name="facet"></param>
+            /// <returns></returns>
+            public bool TryGetNext(out TriangleFacet facet)
             {
-                while (true)
+                facet = null;
+                while (queue.Any())
                 {
-                    var edge = current.FirstOrDefault();
+                    facet = queue.Dequeue();
 
-
-                    if (edge == null)
+                    if (!visited.Contains(facet))
                     {
-                        FixEdges();
-                        continue;
-                    }     
-                    else 
-                        current.RemoveAt(0);
-
-
-                    if (Contains(edge))
-                        return edge;
+                        visited.Add(facet);
+                        return true;
+                    }
                 }
+                return false;
             }
 
-            private bool AddIfNotExist(TriangleEdge triangleEdge)
+            private bool AddIfNotExist(TriangleFacet facet)
             {
-                if (visited.Contains(triangleEdge))
-                {
-                    if (Contains(triangleEdge))
-                        Remove(triangleEdge);
+                if (visited.Contains(facet))
                     return false;
-                }
 
-                visited.Add(triangleEdge);
-                Add(triangleEdge);
+                queue.Enqueue(facet);
+
                 return true;
             }
-            private IEnumerable<TriangleEdge> GetEdgesOfTetra(Node[] nodes)
+            private IEnumerable<TriangleFacet> GetEdgesOfTetra(Node[] nodes)
             {
-                var a = ToVector3(nodes[0]);
-                var b = ToVector3(nodes[1]);
-                var c = ToVector3(nodes[2]);
-                var d = ToVector3(nodes[3]);
+                var a = (ToVector3(nodes[0]), nodes[0]);
+                var b = (ToVector3(nodes[1]), nodes[0]);
+                var c = (ToVector3(nodes[2]), nodes[0]);
+                var d = (ToVector3(nodes[3]), nodes[0]);
 
                 yield return GetEdgeOfTetra(a, b, c, d);
                 yield return GetEdgeOfTetra(d, b, c, a);
                 yield return GetEdgeOfTetra(a, d, c, b);
                 yield return GetEdgeOfTetra(a, b, d, c);
             }
-            private TriangleEdge GetEdgeOfTetra(Vector3 a, Vector3 b, Vector3 c, Vector3 d)
+            private TriangleFacet GetEdgeOfTetra((Vector3 v, Node n) a, (Vector3 v, Node n) b, (Vector3 v, Node n) c, (Vector3 v, Node n) d)
             {
-                var nabc = Vector3.Cross(a - b, a - c);
-                nabc *= Math.Sign(Vector3.Dot(nabc, a - d));
-                return new TriangleEdge(a, b, c, nabc);
+                var nabc = Vector3.Cross(a.v - b.v, a.v - c.v);
+                nabc *= Math.Sign(Vector3.Dot(nabc, a.v - d.v));
+                return new TriangleFacet(a, b, c, nabc);
             }
-            private Vector3 ToVector3(Node n) => new Vector3(n.Position._x, n.Position._y, n.Position._z);
+
         }
 
         interface ISearcher
         {
             Node GetNearestPoint(Point3D target);
-            Node GetNearestPoint(TriangleEdge edge);
+            Node GetNearestPoint(TriangleFacet facet);
             void AddPoints(IEnumerable<IElement2D> set);
             void Add(Tetra tetra);
         }
@@ -186,7 +197,7 @@ namespace ModelController.MeshObjsCreator
         {
             private const double EPS = 10E-4;
             private List<Node> points;
-            private Dictionary<int, List<Tetra>> map = new Dictionary<int, List<Tetra>>();
+            private Dictionary<int, List<Tetra>> mapOfTetra = new Dictionary<int, List<Tetra>>();
             public SimpleSearcher(IEnumerable<IElement2D> set)
             {
                 AddPoints(set);
@@ -203,10 +214,10 @@ namespace ModelController.MeshObjsCreator
             {
                 foreach (var id in tetra.GetVertexes().Select(x => x.Number))
                 {
-                    if (map.TryGetValue(id, out var lst))
+                    if (mapOfTetra.TryGetValue(id, out var lst))
                         lst.Add(tetra);
                     else
-                        map[id] = new List<Tetra>() { tetra };
+                        mapOfTetra[id] = new List<Tetra>() { tetra };
                 }
             }
 
@@ -225,33 +236,33 @@ namespace ModelController.MeshObjsCreator
                 }
                 return rsl;
             }
-            public Node GetNearestPoint(TriangleEdge edge)
+            public Node GetNearestPoint(TriangleFacet facet)
             {
-                Vector3 target = edge.circumcenter;
+                Vector3 target = facet.circumcenter;
                 var dist = float.MaxValue;
                 Node rsl = null;
 
 
-                var a = edge.a - target;
+                var a = facet.a - target;
                 var a2 = Vector3.Dot(a, a);
-                var an = Vector3.Dot(a, edge.normal);
+                var an = Vector3.Dot(a, facet.normal);
 
 
                 foreach (var point in points)
                 {
-
-                    var r = new Vector3(point.Position._x, point.Position._y, point.Position._z) - target;
-                    var ra = new Vector3(point.Position._x, point.Position._y, point.Position._z) - edge.a;
-                    var rb = new Vector3(point.Position._x, point.Position._y, point.Position._z) - edge.b;
-                    var rc = new Vector3(point.Position._x, point.Position._y, point.Position._z) - edge.c;
+                    var p = ToVector3(point);
+                    var r = p - target;
+                    var ra = p - facet.a;
+                    var rb = p - facet.b;
+                    var rc = p - facet.c;
                     var r2 = Vector3.Dot(r, r);
-                    var rn = Vector3.Dot(r, edge.normal);
+                    var rn = Vector3.Dot(r, facet.normal);
                     //var x = (r2 - a2) / (an - rn);
                     //var x = Math.Abs(-(r2 - a2) / rn);
                     var x = (r2 - a2) / rn;
                     //var sumSq = float.MaxValue;
 
-                    if (Vector3.Dot(r, edge.normal) > EPS) // проверка, что точка в нужной полуплоскости
+                    if (Vector3.Dot(r, facet.normal) > EPS) // проверка, что точка в нужной полуплоскости
                         if (!CrossAnyTetra(-r, point.Number))  // проверка, что вектор r не пересекает уже существующий тетраэдр
                             if (!CrossAnyTetra(-ra, point.Number) && !CrossAnyTetra(-rb, point.Number) && !CrossAnyTetra(-rc, point.Number))
                                 if (x < dist)
@@ -265,10 +276,10 @@ namespace ModelController.MeshObjsCreator
 
             private bool CrossAnyTetra(Vector3 r, int id)
             {
-                if (!map.ContainsKey(id))
+                if (!mapOfTetra.ContainsKey(id))
                     return false;
 
-                foreach (var tetra in map[id])
+                foreach (var tetra in mapOfTetra[id])
                 {
                     var (a, b, c) = GetBasis(tetra, id);
                     if (IsVectorInTetra(r, a, b, c))
@@ -319,9 +330,9 @@ namespace ModelController.MeshObjsCreator
                 var p = tetra.GetVertexes().Single(w => w.Number == id).Position;
                 var basis = tetra.GetVertexes().Where(w => w.Number != id).Select(w => w.Position.Sub(p)).ToArray();
                 return (
-                    new Vector3(basis[0]._x, basis[0]._y, basis[0]._z),
-                    new Vector3(basis[1]._x, basis[1]._y, basis[1]._z),
-                    new Vector3(basis[2]._x, basis[2]._y, basis[2]._z));
+                    ToVector3(basis[0]),
+                    ToVector3(basis[1]),
+                    ToVector3(basis[2]));
             }
 
 
@@ -339,23 +350,41 @@ namespace ModelController.MeshObjsCreator
         }
 
 
-        public class OctreeSearcher : ISearcher
+        private class OctreeSearcher : ISearcher
         {
+            private const double EPS = 10E-4;
             private PointOctree<Node> _tree;
             private Dictionary<Vector3, Node> map;
+            private Dictionary<int, List<Tetra>> mapOfTetra = new Dictionary<int, List<Tetra>>();
             private float _initialSize;
-            public OctreeSearcher(ImmutableList<IElement2D> set)
+            public OctreeSearcher(IReadOnlyList<IElement2D> set)
             {
-                _initialSize = GetModelSize(set);
-                var initialPosition = GetCentralPoint(set);
-                _tree = new PointOctree<Node>(_initialSize, initialPosition, 1e-6f);
+                _initialSize = GetModelSize(set); 
+                var initialPosition = ToVector3(set.First().GetCoordinates().First());
+                _tree = new PointOctree<Node>(_initialSize, initialPosition, (float)EPS);
+                AddPoints(set);
+            }
+
+            public void Add(Tetra tetra)
+            {
+                foreach (var id in tetra.GetVertexes().Select(x => x.Number))
+                {
+                    if (mapOfTetra.TryGetValue(id, out var lst))
+                        lst.Add(tetra);
+                    else
+                        mapOfTetra[id] = new List<Tetra>() { tetra };
+                }
+            }
+
+            public void AddPoints(IEnumerable<IElement2D> set)
+            {
                 map = new Dictionary<Vector3, Node>();
                 foreach (var elem in set)
                 {
                     var points = elem.GetVertexes().ToArray();
                     foreach (var point in points)
                     {
-                        var v = new Vector3(point._x, point._y, point._z);
+                        var v = ToVector3(point as Node);
                         if (!map.ContainsKey(v))
                             map[v] = point as Node;
                     }
@@ -366,38 +395,164 @@ namespace ModelController.MeshObjsCreator
                 }
             }
 
-            public void Add(Tetra tetra)
-            {
-                throw new NotImplementedException();
-            }
-
-            public void AddPoints(IEnumerable<IElement2D> set)
-            {
-                throw new NotImplementedException();
-            }
-
-
-            private Vector3 GetCentralPoint(ImmutableList<IElement2D> secSet)
-            {
-                var p = secSet.First().GetCoordinates().First();
-                return new Vector3(p._x, p._y, p._z);
-            }
-
-            private float GetModelSize(ImmutableList<IElement2D> secSet)
+            private float GetModelSize(IReadOnlyList<IElement2D> secSet)
             {
                 var points = secSet.First().GetCoordinates().ToArray();
                 var size = points[1].Sub(points[0]);
-                return (size._x + size._y + size._z) * 0.33f;
+                return (Math.Abs(size._x) + Math.Abs(size._y) + Math.Abs(size._z)) * 0.33f;
             }
 
-            Node ISearcher.GetNearestPoint(Point3D target)
+            public Node GetNearestPoint(Point3D target)
             {
-                throw new NotImplementedException();
+                if (_tree.Count == 0)
+                    return null;
+
+                var dist = float.MaxValue;
+                Node rsl = null;
+                var size = _initialSize;
+
+                while (true)
+                {
+                    var points = _tree.GetNearby(ToVector3(target), size);
+
+                    foreach (var point in points)
+                    {
+                        var sumSq = point.Position.Sub(target).GetSquareSumCoords();
+                        if (sumSq < dist)
+                        {
+                            dist = sumSq;
+                            rsl = point;
+                        }
+                    }
+
+                    if(rsl!= null) 
+                        return rsl;
+
+                    size *= 2;
+                }
             }
 
-            Node ISearcher.GetNearestPoint(TriangleEdge normal)
+
+            /// <summary>
+            /// Точка, находящаяся со стороны нормали и такая, что:
+            ///   1. можно достроить грань до тетраэдра не пересекая добавленных тетраэдров
+            ///   2. описанная сфера тетраэдра включает наименьшее число точек со стороны нормали.
+            /// 
+            /// </summary>
+            /// <param name="facet"></param>
+            /// <returns></returns>
+            public Node GetNearestPoint(TriangleFacet facet)
             {
-                throw new NotImplementedException();
+                Vector3 target = facet.circumcenter;
+                var dist = float.MaxValue;
+                Node rsl = null;
+
+
+                var a = facet.a - target;
+                var a2 = Vector3.Dot(a, a);
+                var an = Vector3.Dot(a, facet.normal);
+
+                var size = _initialSize;
+                var points = _tree.GetNearby(target, size);
+                while (true)
+                {
+                    foreach (var point in points)
+                    {
+                        var p = ToVector3(point.Position);
+                        var r = p - target;
+                        var ra = p - facet.a;
+                        var rb = p - facet.b;
+                        var rc = p - facet.c;
+                        var r2 = Vector3.Dot(r, r);
+                        var rn = Vector3.Dot(r, facet.normal);
+
+                        if (Math.Abs(rn) < EPS)
+                            continue;
+
+                        var x = (r2 - a2) / rn;
+
+                        if (x < dist)
+                            if (Vector3.Dot(r, facet.normal) > EPS) // проверка, что точка в нужной полуплоскости
+                                if (!CrossAnyTetra(-r, point.Number))  // проверка, что вектор r не пересекает уже существующий тетраэдр
+                                    if (!CrossAnyTetra(-ra, point.Number) && !CrossAnyTetra(-rb, point.Number) && !CrossAnyTetra(-rc, point.Number))
+                                    {
+                                        dist = x;
+                                        rsl = point;
+                                    }
+                    }
+
+                    if (rsl != null)
+                    {
+                        var p = ToVector3(rsl.Position);
+                        if ((p - target).LengthSquared() * 4 < size * size)
+                            return rsl;
+                    }
+                    else
+                    {
+                        if(size > _initialSize * 4)
+                            return null;
+                    }
+
+                    size *= 2;
+                }
+            }
+
+            private bool CrossAnyTetra(Vector3 r, int id)
+            {
+                if (!mapOfTetra.ContainsKey(id))
+                    return false;
+
+                foreach (var tetra in mapOfTetra[id])
+                {
+                    var (a, b, c) = GetBasis(tetra, id);
+                    if (IsVectorInTetra(r, a, b, c))
+                        return true;
+                }
+
+                return false;
+            }
+
+            /// <summary>
+            /// true, усли вектор r содержится в секторе, образованном векторами a, b, c
+            /// </summary>
+            /// <param name="r"></param>
+            /// <param name="a"></param>
+            /// <param name="b"></param>
+            /// <param name="c"></param>
+            /// <returns></returns>
+            private bool IsVectorInTetra(Vector3 r, Vector3 a, Vector3 b, Vector3 c)
+            {
+                var matrix = new double[,]
+                {
+                    { a.X, b.X, c.X },
+                    { a.Y, b.Y, c.Y },
+                    { a.Z, b.Z, c.Z }
+                };
+
+                var vec = new double[] { r.X, r.Y, r.Z };
+
+                var koeff = SolveSlau(matrix, vec);
+                
+                return koeff[0] > EPS && koeff[1] > EPS && koeff[2] > EPS;
+            }
+
+            private (Vector3 a, Vector3 b, Vector3 c) GetBasis(Tetra tetra, int id)
+            {
+                var p = tetra.GetVertexes().Single(w => w.Number == id).Position;
+                var basis = tetra.GetVertexes().Where(w => w.Number != id).Select(w => w.Position.Sub(p)).ToArray();
+                return (
+                    ToVector3(basis[0]),
+                    ToVector3(basis[1]),
+                    ToVector3(basis[2]));
+            }
+
+            private static double[] SolveSlau(double[,] matrix, double[] vec)
+            {
+                Matrix<double> A = DenseMatrix.OfArray(matrix);
+                MathNet.Numerics.LinearAlgebra.Vector<double> B = DenseVector.OfArray(vec);
+
+                var c = A.Solve(B);
+                return new double[] { c[0], c[1], c[2] };
             }
         }
 
@@ -421,46 +576,25 @@ namespace ModelController.MeshObjsCreator
             return CreateTetras(set1, set2);
         }
 
-        public class TetraIdComparer : IEqualityComparer<Tetra>
-        {
-            public bool Equals(Tetra x, Tetra y)
-            {
-                var ids1 = x.GetVertexes().Select(w => w.Number).OrderBy(w => w);
-                var ids2 = y.GetVertexes().Select(w => w.Number).OrderBy(w => w);
-                return ids1.SequenceEqual(ids2);
-            }
-
-            public int GetHashCode(Tetra obj)
-            {
-                var vertexes =  obj.GetVertexes().Select(w => w.Number).OrderBy(w => w).ToArray();
-                return (((vertexes[0]*41+11) * vertexes[1]*101 + 11) * vertexes[2]*317 + 11) ^ vertexes[3];
-            }
-            public static TetraIdComparer Instance = new TetraIdComparer();
-        }
-
         private List<IElement3D> CreateTetras(IReadOnlyList<IElement2D> set1, IReadOnlyList<IElement2D> set2)
         {
-            HashSet<Tetra> rsl = new HashSet<Tetra>(TetraIdComparer.Instance);
-            List<Tetra> rsl2 = new List<Tetra>();
+            List<IElement3D> rsl = new List<IElement3D>();
 
             var ponts2 = set2.First().GetCoordinates().ToArray();
             var plane2 = new Geometry.Plane(ponts2[0], ponts2[1], ponts2[2]);
 
             EdgeSet edgeSet = new EdgeSet();
 
-            Dictionary<Vector3, Node> map = new Dictionary<Vector3, Node>();
-            FillMap(set1, map);
-
-            ISearcher searcher = new SimpleSearcher(set2);
+            ISearcher searcher = new OctreeSearcher(set2);
 
             foreach (var elem in set1)
             {
                 // 1. находим центр описанной окружности 
                 var triange = elem as Triangle;
+                var edge = new TriangleFacet(triange);
                 Point3D circumcenter = CalcCircumcenter(triange);
 
-                edgeSet.Add(new TriangleEdge(triange));
-
+                edgeSet.AddAsVisited(edge);
                 // 2. находим проекцию центра описанной окружности на плоскость второго множества
                 Point3D projection = circumcenter.GetPointProectionOnPlane(plane2);
                 // 3. Находим вершину, ближайшую к p
@@ -473,68 +607,32 @@ namespace ModelController.MeshObjsCreator
 
                 var tetra = new Tetra(_number++, nodes);
 
-                if (rsl.Add(tetra))
-                {
-                    rsl2.Add(tetra);
-                    searcher.Add(tetra);
-                }
+                rsl.Add(tetra);
+                searcher.Add(tetra);
 
             }
             searcher.AddPoints(set1);
-            FillMap(set2, map);
-            edgeSet.FixEdges();
 
             // 5. По одной достаем грани и строим для нее тетраэдр
-            while (edgeSet.Any())
+            while (edgeSet.TryGetNext(out var edge))
             {
-                var edge = edgeSet.GetNext();
-                //var edge = edgeSet.First();
-
                 var node = searcher.GetNearestPoint(edge);
                 if (node != null)
                 {
-                    var nodes = new Node[4] { map[edge.a], map[edge.b], map[edge.c], node };
-
-                    if (nodes.Select(w => w.Number).ToHashSet().Count != 4)
-                        ;
+                    var nodes = new Node[4] { edge.na, edge.nb, edge.nc, node };
 
                     var tetra = new Tetra(_number++, nodes);
 
-                    var ids = nodes.Select(w => w.Number).ToHashSet();
-                    if (ids.Contains(4) &&
-                        ids.Contains(101) &&
-                        ids.Contains(105))
-                        ;
-
                     if (edgeSet.TryAddEdgesOfTetra(nodes))
                     {
-                       if(rsl.Add(tetra));
-                       {
-                           rsl2.Add(tetra);
-                           searcher.Add(tetra);
-                       }
+                       rsl.Add(tetra);
+                       searcher.Add(tetra);
                     }
                 }
-
-                edgeSet.Remove(edge);
             }
 
-            return rsl2.OfType<IElement3D>().ToList();
+            return rsl;
         }
-
-        private void FillMap(IReadOnlyList<IElement2D> set1, Dictionary<Vector3, Node> map)
-        {
-            foreach (var p in set1)
-            foreach (var node in p.GetVertexes())
-            {
-                var key = ToVector3(node as Node);
-                if (!map.ContainsKey(key))
-                    map[key] = node as Node;
-            }
-        }
-
-
-        Vector3 ToVector3(Node n) => new Vector3(n.Position._x, n.Position._y, n.Position._z);
 
         /// <summary>
         /// Вычисление координат центра описанной окружности треугольника
