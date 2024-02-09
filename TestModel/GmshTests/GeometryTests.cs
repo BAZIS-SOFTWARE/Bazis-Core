@@ -309,7 +309,7 @@ namespace TestModel.GmshTests
             int[] dimTags;
             controller.gmshOpen(path, ref ierr);
             controller.ModelGetGeometryEntities(out dimTags, 0);
-            var coords = controller.GetGeometricDensities(dimTags);
+            var coords = controller.GetMeshDensity(dimTags);
             CollectionAssert.AreEqual(expected, coords);
         }
         //Тест - устанавливаем плотность в точке, затем проверям(берем разные файлы моделей!)
@@ -328,7 +328,7 @@ namespace TestModel.GmshTests
                 var tag = dimTags[i];
                 controller.gmshModelMeshSetSize(new int[] { dim, tag }, (IntPtr)2 , expected[j], ref ierr);
             }
-            var coords = controller.GetGeometricDensities(dimTags);
+            var coords = controller.GetMeshDensity(dimTags);
             CollectionAssert.AreEqual(expected, coords);
         }
 

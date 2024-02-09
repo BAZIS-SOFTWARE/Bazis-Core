@@ -1423,7 +1423,7 @@ namespace GmshApi.GmshController
         /// </summary>
         /// <param name="dimTags">[In]Массив dim:tags</param>
         /// <returns>Геометрические плотности</returns>
-        public double[] GetGeometricDensities(int[] dimTags)
+        public double[] GetMeshDensity(int[] dimTags)
         {
             var ierr = 0;
             IntPtr sizes = IntPtr.Zero;
