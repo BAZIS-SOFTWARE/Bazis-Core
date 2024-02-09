@@ -10,7 +10,9 @@ actor "Инженер - технолог" as eTech
 
 actor "Инженер - конструктор" as eDesign
 rectangle Simmax-additive {
-  usecase "Загрузка CAD моделей" as UC1
+  usecase UC1 as "Загрузка CAD моделей:
+  --
+  STL"
   usecase "Отправка задач на расчет" as UC2
   usecase "Вывод результатов" as UC3
   usecase UC4 as "Постановка задачи выращивания:
@@ -19,6 +21,7 @@ rectangle Simmax-additive {
   usecase UC5 as "Постановка задачи термообработки:
   --
   задание граничных условий"
+  usecase "Экспорт деформированной STL модели" as UC6
 
 }
 "Специалист по технологии" --> UC1
@@ -26,8 +29,9 @@ rectangle Simmax-additive {
 "Специалист по технологии" --> UC3
 "Специалист по технологии" --> UC4
 "Специалист по технологии" --> UC5
+"Специалист по технологии" --> UC6
 eDesign --> UC3
-
+eDesign --> UC6
 @enduml
 ---
 * для справок
