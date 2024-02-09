@@ -332,6 +332,19 @@ namespace TestModel.GmshTests
             CollectionAssert.AreEqual(expected, coords);
         }
 
+        [DataTestMethod]
+        [DataRow(@"..\..\..\Examples\GMSHAPI\simple.geo", new string[] { "18", "bump","1.8"})]
+        public void SetAndGetCurveTransfinite(string path, string[] expected)
+        {
+            var ierr = 0;
+            controller.gmshOpen(path, ref ierr);
+            controller.gmshModelMeshSetTransfiniteCurve(1, 15, "Bump", 1.8, ref ierr);
+            controller.gmshModelSetAttribute("transfinite", expected, (IntPtr)3, ref ierr);
+            string[] attributes;
+            controller.ModelGetAttribute("transfinite", out attributes);
+            CollectionAssert.AreEqual(expected, attributes);
+        }
+
         private void RemoveNameTest(ref string entName, int dim, int delId, int maxId)
         {
             var ierr = 0;

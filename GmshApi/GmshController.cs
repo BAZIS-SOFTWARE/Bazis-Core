@@ -1969,7 +1969,7 @@ namespace GmshApi.GmshController
             log = GetStringPtr(error);
             return ierr == 0;
         }
-
+        
         private ISurfaceElement CreateModelObject(ref string elementName,
                                                   long elementId, Node[] nodes)
         {
