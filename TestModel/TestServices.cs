@@ -97,25 +97,14 @@ namespace TestModel
         }
 
         [TestMethod]
-        public void TestBoundEdge()
+        public void FindBoundaryEdges_ShouldWork_OnModelWithDifferentElements()
         {
-            //assing
             var model = new ModelData();
-            model.Loader = new LoadModelFromASCIITextFile();
-
-            model.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
-
-            //act
-            var elements = model.ObjectData.E3DCollection;
-            var nodes = model.ObjectData.NodeCollection;
-
-            var interNodesFinder = new InterfacedNodesFinder();
-            var edgeFinder = new FindBoundaryEdges(model);
-
-            var interNodes = interNodesFinder.Find(elements);
-
-            var edges = edgeFinder.Find();
-            //assert
+            model.Loader = new LoadModelFromProjectTextFile();
+            model.Load(@"..\..\Examples\3D\cub_unsorted.bpf");
+            var instance = new FindBoundaryEdges(model);
+            var bounds = instance.Find();
+            Assert.AreEqual(19, bounds.Count);
         }     
 
         [TestMethod]
