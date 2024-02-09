@@ -602,6 +602,26 @@ namespace GmshApi.GmshController
                                                             ref IntPtr surfaceTags_n, ref IntPtr surfaceTags_nn,
                                                             ref int ierr);
         private gmshModelOccGetSurfaceLoopsFun gmshModelOccGetSurfaceLoops;
+        /// <summary>
+        /// Задает плотность(MeshSize) для конкретных сущностей(dim:tags)
+        /// </summary>
+        /// <param name="dimTags">[In]Масив dim:tags</param>
+        /// <param name="dimTags_n">[In]Размер массива dim:tags</param>
+        /// <param name="size">[In]Задаваемая плотность</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelMeshSetSizeFun(int[] dimTags, IntPtr dimTags_n, double size, ref int ierr);///
+        public gmshModelMeshSetSizeFun gmshModelMeshSetSize;
+        /// <summary>
+        /// Возвращает плотность(MeshSize) для конкретных сущностей(dim:tags)
+        /// </summary>
+        /// <param name="dimTags">[In]Масив dim:tags</param>
+        /// <param name="dimTags_n">[In]Размер массива dim:tags</param>
+        /// <param name="sizes">[Out]Массив плотностей double</param>
+        /// <param name="sizes_n">[Out]Размер массива плотностей</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshModelMeshGetSizesFun(int[] dimTags, IntPtr dimTags_n, ref IntPtr sizes,
+                                                       ref IntPtr sizes_n, ref int ierr);
+        private gmshModelMeshGetSizesFun gmshModelMeshGetSizes;
         #endregion
         #region "Mesh Delegates"
         /// <summary>
@@ -1044,6 +1064,8 @@ namespace GmshApi.GmshController
             gmshModelReparametrizeOnSurface = GetFunction<gmshModelReparametrizeOnSurfaceFun>("gmshModelReparametrizeOnSurface");
             gmshModelOccGetCurveLoops = GetFunction<gmshModelOccGetCurveLoopsFun>("gmshModelOccGetCurveLoops");
             gmshModelOccGetSurfaceLoops = GetFunction<gmshModelOccGetSurfaceLoopsFun>("gmshModelOccGetSurfaceLoops");
+            gmshModelMeshSetSize = GetFunction<gmshModelMeshSetSizeFun>("gmshModelMeshSetSize");
+            gmshModelMeshGetSizes = GetFunction<gmshModelMeshGetSizesFun>("gmshModelMeshGetSizes");
             #endregion
             #region "Get Mesh delegates"
             gmshModelMeshGenerate = GetFunction<gmshModelMeshGenerateFun>("gmshModelMeshGenerate");
@@ -1395,6 +1417,21 @@ namespace GmshApi.GmshController
                 GetObjectsData(maxBounds, out max, maxBounds_n);
             }
             return status;
+        }
+        /// <summary>
+        /// Получить плотности для геометрии
+        /// </summary>
+        /// <param name="dimTags">[In]Массив dim:tags</param>
+        /// <returns>Геометрические плотности</returns>
+        public double[] GetMeshDensity(int[] dimTags)
+        {
+            var ierr = 0;
+            IntPtr sizes = IntPtr.Zero;
+            IntPtr sizes_n = IntPtr.Zero;
+            double[] dencities;
+            gmshModelMeshGetSizes(dimTags, (IntPtr)dimTags.Length, ref sizes, ref sizes_n, ref ierr);
+            GetObjectsData(sizes, out dencities, sizes_n);
+            return dencities;
         }
         #endregion
         #region "Mesh managed methods"
@@ -1932,7 +1969,7 @@ namespace GmshApi.GmshController
             log = GetStringPtr(error);
             return ierr == 0;
         }
-
+        
         private ISurfaceElement CreateModelObject(ref string elementName,
                                                   long elementId, Node[] nodes)
         {
