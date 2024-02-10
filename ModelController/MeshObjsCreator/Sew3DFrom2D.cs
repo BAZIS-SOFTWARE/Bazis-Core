@@ -574,20 +574,18 @@ namespace ModelController.MeshObjsCreator
         /// <exception cref="System.NotImplementedException"></exception>
         public List<IElement3D> Create(List<IElement2D> fistSet, List<IElement2D> secSet)
         {
-            var (set1, set2) = (fistSet, secSet);
-
-            if (set1.Count < set2.Count)
-                (set1, set2) = (set2, set1);
-
-            return CreateTetras(set1, set2);
+            if (fistSet.Count < secSet.Count)
+                return CreateTetras(secSet, fistSet);
+            else
+                return CreateTetras(fistSet, secSet);
         }
 
         private List<IElement3D> CreateTetras(IReadOnlyList<IElement2D> set1, IReadOnlyList<IElement2D> set2)
         {
             List<IElement3D> rsl = new List<IElement3D>();
 
-            var ponts2 = set2.First().GetCoordinates().ToArray();
-            var plane2 = new Geometry.Plane(ponts2[0], ponts2[1], ponts2[2]);
+            var points = set2.First().GetCoordinates().ToArray();
+            var plane2 = new Geometry.Plane(points[0], points[1], points[2]);
 
             EdgeQueue edgeQueue = new EdgeQueue();
 
