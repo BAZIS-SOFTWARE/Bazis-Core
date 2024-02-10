@@ -113,14 +113,14 @@ namespace ModelController.MeshObjsCreator
             }
         }
 
-        private class EdgeSet
+        private class EdgeQueue
         {
             // посещенные грани
             private HashSet<TriangleFacet> visited = new HashSet<TriangleFacet>();
             // очередь граней
             private Queue<TriangleFacet> queue = new Queue<TriangleFacet>();
 
-            public bool TryAddEdgesOfTetra(Node[] nodes)
+            public bool TryPushEdgesOfTetra(Node[] nodes)
             {
                 bool rsl = false;
                 foreach (var edge in GetEdgesOfTetra(nodes))
@@ -139,7 +139,7 @@ namespace ModelController.MeshObjsCreator
             /// </summary>
             /// <param name="facet"></param>
             /// <returns></returns>
-            public bool TryGetNext(out TriangleFacet facet)
+            public bool TryPop(out TriangleFacet facet)
             {
                 facet = null;
                 while (queue.Any())
@@ -444,6 +444,7 @@ namespace ModelController.MeshObjsCreator
             public Node GetNearestPoint(TriangleFacet facet)
             {
                 Vector3 target = facet.circumcenter;
+                Vector3 centre = (facet.a + facet.b + facet.c) / 3;
                 var dist = float.MaxValue;
                 Node rsl = null;
 
@@ -460,9 +461,7 @@ namespace ModelController.MeshObjsCreator
                     {
                         var p = ToVector3(point.Position);
                         var r = p - target;
-                        var ra = p - facet.a;
-                        var rb = p - facet.b;
-                        var rc = p - facet.c;
+                        var ro = p - centre; // к центру треугольника
                         var r2 = Vector3.Dot(r, r);
                         var rn = Vector3.Dot(r, facet.normal);
 
@@ -473,12 +472,19 @@ namespace ModelController.MeshObjsCreator
 
                         if (x < dist)
                             if (Vector3.Dot(r, facet.normal) > EPS) // проверка, что точка в нужной полуплоскости
-                                if (!CrossAnyTetra(-r, point.Number))  // проверка, что вектор r не пересекает уже существующий тетраэдр
+                                if (!CrossAnyTetra(-ro, point.Number)) // проверка, что вектор ro не пересекает уже существующий тетраэдр
+                                {
+                                    var ra = p - facet.a;
+                                    var rb = p - facet.b;
+                                    var rc = p - facet.c;
                                     if (!CrossAnyTetra(-ra, point.Number) && !CrossAnyTetra(-rb, point.Number) && !CrossAnyTetra(-rc, point.Number))
                                     {
                                         dist = x;
                                         rsl = point;
                                     }
+                                }
+
+
                     }
 
                     if (rsl != null)
@@ -583,7 +589,7 @@ namespace ModelController.MeshObjsCreator
             var ponts2 = set2.First().GetCoordinates().ToArray();
             var plane2 = new Geometry.Plane(ponts2[0], ponts2[1], ponts2[2]);
 
-            EdgeSet edgeSet = new EdgeSet();
+            EdgeQueue edgeQueue = new EdgeQueue();
 
             ISearcher searcher = new OctreeSearcher(set2);
 
@@ -594,16 +600,15 @@ namespace ModelController.MeshObjsCreator
                 var edge = new TriangleFacet(triange);
                 Point3D circumcenter = CalcCircumcenter(triange);
 
-                edgeSet.AddAsVisited(edge);
+                edgeQueue.AddAsVisited(edge);
                 // 2. находим проекцию центра описанной окружности на плоскость второго множества
                 Point3D projection = circumcenter.GetPointProectionOnPlane(plane2);
                 // 3. Находим вершину, ближайшую к p
                 Node[] nodes = new Node[4];
                 Array.Copy(elem.GetVertexes().ToArray(), nodes, 3);
                 nodes[3] = searcher.GetNearestPoint(projection);
-                // 4. добавляем грани тетраэдра в множество граней
-                // если грань еже была добавлена, она удаляется
-                edgeSet.TryAddEdgesOfTetra(nodes);
+                // 4. добавляем грани тетраэдра в очередь граней
+                edgeQueue.TryPushEdgesOfTetra(nodes);
 
                 var tetra = new Tetra(_number++, nodes);
 
@@ -613,8 +618,8 @@ namespace ModelController.MeshObjsCreator
             }
             searcher.AddPoints(set1);
 
-            // 5. По одной достаем грани и строим для нее тетраэдр
-            while (edgeSet.TryGetNext(out var edge))
+            // 5. По одной достаем грани и строим для них тетраэдры
+            while (edgeQueue.TryPop(out var edge))
             {
                 var node = searcher.GetNearestPoint(edge);
                 if (node != null)
@@ -623,7 +628,7 @@ namespace ModelController.MeshObjsCreator
 
                     var tetra = new Tetra(_number++, nodes);
 
-                    if (edgeSet.TryAddEdgesOfTetra(nodes))
+                    if (edgeQueue.TryPushEdgesOfTetra(nodes))
                     {
                        rsl.Add(tetra);
                        searcher.Add(tetra);
