@@ -105,7 +105,7 @@ namespace ModelController.MeshObjsUtility
         {
             var maxAngleRadians = ConvertGradusToRadian(angleInGradus);
             var elements = objectsData.E2DCollection.ToArray();
-            var graph = GetAdjacentElements(elements);
+            var graph = GetAdjacentElements<IElement2D>(elements);
             var queue = new Queue<int>();
             queue.Enqueue(startNumber);
             var used = new HashSet<int>();
@@ -136,7 +136,8 @@ namespace ModelController.MeshObjsUtility
         /// Словарь, где ключ - номер элемента (2D, 3D), значение - список номеров элементов, 
         /// имеющих хотя бы одну общую точку с ключом.
         /// </returns>
-        private Dictionary<int, List<int>> GetAdjacentElements(IEnumerable<IElement> elements)
+        private Dictionary<int, List<int>> GetAdjacentElements<T>(IEnumerable<IElement> elements)
+            where T: IElement
         {
             var graph = new Dictionary<int, List<int>>();
 
@@ -145,7 +146,7 @@ namespace ModelController.MeshObjsUtility
                 var neighbourElementsNumber = new HashSet<int>();
                 foreach (var node in element.GetVertexes())
                 {
-                    foreach (var elementAdjacent in node.GetElements())
+                    foreach (var elementAdjacent in node.GetElements().Where(x => x is T))
                     {
                         neighbourElementsNumber.Add(elementAdjacent.Number);
                     }
