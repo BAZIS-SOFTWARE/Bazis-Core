@@ -82,6 +82,7 @@ namespace TestModel
         {
             var model = new ModelData();
             model.Load(path);
+
             var selector = new SelectionHelper(model.ObjectData);
             var selectedElementNumbers = selector.SelectE2DInPlane(angle, first, Color.Green);
             Assert.IsTrue(selectedElementNumbers.Count > 0);

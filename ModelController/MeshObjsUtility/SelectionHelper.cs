@@ -105,7 +105,7 @@ namespace ModelController.MeshObjsUtility
         {
             var maxAngleRadians = ConvertGradusToRadian(angleInGradus);
             var elements = objectsData.E2DCollection.ToArray();
-            var graph = GetAdjacentElements<IElement2D>(elements);
+            var elementsAdjacency = GetAdjacentElements<IElement2D>(elements);
             var queue = new Queue<int>();
             queue.Enqueue(startNumber);
             var used = new HashSet<int>();
@@ -113,7 +113,7 @@ namespace ModelController.MeshObjsUtility
             {
                 var currentNumber = queue.Dequeue();
                 var currentElement = elements.Find(currentNumber);
-                foreach (var neighbourNumber in graph[currentNumber])
+                foreach (var neighbourNumber in elementsAdjacency[currentNumber])
                 {
                     if(!used.Contains(neighbourNumber))
                     {
@@ -139,8 +139,7 @@ namespace ModelController.MeshObjsUtility
         private Dictionary<int, List<int>> GetAdjacentElements<T>(IEnumerable<IElement> elements)
             where T: IElement
         {
-            var graph = new Dictionary<int, List<int>>();
-
+            var result = new Dictionary<int, List<int>>();
             foreach (var element in elements)
             {
                 var neighbourElementsNumber = new HashSet<int>();
@@ -151,9 +150,9 @@ namespace ModelController.MeshObjsUtility
                         neighbourElementsNumber.Add(elementAdjacent.Number);
                     }
                 }
-                graph.Add(element.Number, neighbourElementsNumber.ToList());
+                result.Add(element.Number, neighbourElementsNumber.ToList());
             }
-            return graph;
+            return result;
         }
 
         /// <summary>
