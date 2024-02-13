@@ -77,11 +77,12 @@ namespace TestModel
         }
 
         [DataTestMethod]
-        [DataRow(5, 272570, @"C:\Projs\Helen\powerMachine\comp_sm.bpf")]
+        [DataRow(5, 272570, @"..\..\Examples\3D\comp_sm.bpf")]
         public void SelectCorrectElementsUseModel(float angle, int first, string path)
         {
             var model = new ModelData();
             model.Load(path);
+
             var selector = new SelectionHelper(model.ObjectData);
             var selectedElementNumbers = selector.SelectE2DInPlane(angle, first, Color.Green);
             Assert.IsTrue(selectedElementNumbers.Count > 0);
@@ -89,7 +90,7 @@ namespace TestModel
 
         [DataTestMethod]
         [DataRow(19, 9, new int[] { 9, 10, 11, 12, 13, 14 })]
-        [DataRow(18, 8, new int[] { 9, 10, 11, 12, 13 })]
+        [DataRow(18, 9, new int[] { 9, 10, 11, 12, 13 })]
         public void SelectCorrectElements(float angle, int first, int[] expected)
         {
             LoadModel();
