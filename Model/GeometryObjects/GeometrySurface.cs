@@ -129,7 +129,7 @@ points.Contains(this.points[2].Position, new Point3DEqualityComparer()))
             {
                 center = center.Sum(point);
             }
-            return center.Div(NumberOfPoints);
+            return center.Div(points.Length);
         }
 /// <inheritdoc/>
 

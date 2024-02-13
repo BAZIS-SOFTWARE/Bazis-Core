@@ -72,27 +72,29 @@ namespace TestModel
         {
             LoadModel();
             var selector = new SelectionHelper(objectsData);
-            var actual = selector.SelectInDirection(ObjType.Элемент2D, angle, first, second, Color.Green);
+            var actual = selector.SelectNodeInDirection(angle, first, second, Color.Green);
             Assert.IsTrue(actual.SequenceEqual(expected)); 
         }
 
-        [TestMethod]
-        public void SelectCorrectElements1()
+        [DataTestMethod]
+        [DataRow(5, 272570, @"C:\Projs\Helen\powerMachine\comp_sm.bpf")]
+        public void SelectCorrectElementsUseModel(float angle, int first, string path)
         {
-            LoadModel();
-            var selector = new SelectionHelper(objectsData);
-            var selectedElementNumbers = selector.SelectInPlane(19, 9, Color.Green);
-            var expected = new List<int>() { 9, 10, 11, 12, 13, 14 };
-            Assert.IsTrue(selectedElementNumbers.SequenceEqual(expected));
+            var model = new ModelData();
+            model.Load(path);
+            var selector = new SelectionHelper(model.ObjectData);
+            var selectedElementNumbers = selector.SelectE2DInPlane(angle, first, Color.Green);
+            Assert.IsTrue(selectedElementNumbers.Count > 0);
         }
 
-        [TestMethod]
-        public void SelectCorrectElements2()
+        [DataTestMethod]
+        [DataRow(19, 9, new int[] { 9, 10, 11, 12, 13, 14 })]
+        [DataRow(18, 8, new int[] { 9, 10, 11, 12, 13 })]
+        public void SelectCorrectElements(float angle, int first, int[] expected)
         {
             LoadModel();
             var selector = new SelectionHelper(objectsData);
-            var selectedElementNumbers = selector.SelectInPlane(18, 9, Color.Green);
-            var expected = new List<int>() { 9, 10, 11, 12, 13 };
+            var selectedElementNumbers = selector.SelectE2DInPlane(angle, first, Color.Green);
             Assert.IsTrue(selectedElementNumbers.SequenceEqual(expected));
         }
 
