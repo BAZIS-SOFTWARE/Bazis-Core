@@ -622,6 +622,18 @@ namespace GmshApi.GmshController
         private delegate void gmshModelMeshGetSizesFun(int[] dimTags, IntPtr dimTags_n, ref IntPtr sizes,
                                                        ref IntPtr sizes_n, ref int ierr);
         private gmshModelMeshGetSizesFun gmshModelMeshGetSizes;
+        /// <summary>
+        /// Взять центр масс в dim:tag
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="x">[Out]x</param>
+        /// <param name="y">[Out]y</param>
+        /// <param name="z">[Out]z</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelOccGetCenterOfMassFun(int dim, int tag, ref double x, ref double y,
+                                                            ref double z, ref int ierr);///
+        public gmshModelOccGetCenterOfMassFun gmshModelOccGetCenterOfMass;
         #endregion
         #region "Mesh Delegates"
         /// <summary>
@@ -1066,6 +1078,7 @@ namespace GmshApi.GmshController
             gmshModelOccGetSurfaceLoops = GetFunction<gmshModelOccGetSurfaceLoopsFun>("gmshModelOccGetSurfaceLoops");
             gmshModelMeshSetSize = GetFunction<gmshModelMeshSetSizeFun>("gmshModelMeshSetSize");
             gmshModelMeshGetSizes = GetFunction<gmshModelMeshGetSizesFun>("gmshModelMeshGetSizes");
+            gmshModelOccGetCenterOfMass = GetFunction<gmshModelOccGetCenterOfMassFun>("gmshModelOccGetCenterOfMass");
             #endregion
             #region "Get Mesh delegates"
             gmshModelMeshGenerate = GetFunction<gmshModelMeshGenerateFun>("gmshModelMeshGenerate");
