@@ -44,12 +44,14 @@ namespace Model.IO
 
                 while (str != null)
                 {
+                    var surfaceFig = new Figure2D()
                     if (str != null && str.Contains("outer loop"))
                     {
                         str = reader.ReadLine()?.Trim();
-                        var nodes = GetNodes(reader, str);
-                        modelData.ObjectData.PointCollection.AddRange(nodes);
-                        var surface = new Figure2D(counter, nodes);
+                        var points = GetPoints(reader, str);
+                        modelData.ObjectData.PointCollection.AddRange(points);
+                        var surface = new GeometrySurface(counter, points);
+                        var surface = new Figure2D(counter, points);
                         modelData.ObjectData.Fig2DCollection.Add(surface);
                         counter++;
                     }
@@ -60,9 +62,9 @@ namespace Model.IO
 
             return modelData;
         }
-        private GeometryPoint[] GetNodes(StreamReader stl, string str)
+        private GeometryPoint[] GetPoints(StreamReader stl, string str)
         {
-            var nodes = new GeometryPoint[3];
+            var points = new GeometryPoint[3];
             for (int i = 0; i < 3; i++)
             {
                 if (str != null && str != "endloop" && str.Contains("vertex"))
@@ -74,11 +76,11 @@ namespace Model.IO
                     var z = float.Parse(lineData[2], NumberStyles.Float, CultureInfo.InvariantCulture);
                     var node = new GeometryPoint(counter, new Point3D(x, y, z));
                     counter++;
-                    nodes[i] = node;
+                    points[i] = node;
                     str = stl.ReadLine()?.Trim();
                 }
             }
-            return nodes;
+            return points;
         }
 
         private IModelData LoadBinary(string path)

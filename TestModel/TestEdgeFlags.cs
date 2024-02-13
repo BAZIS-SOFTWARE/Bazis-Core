@@ -77,7 +77,8 @@ namespace TestModel
                 new GeometryPoint(4, new Point3D(-1.0f,1.0f,0.0f)),
                 new GeometryPoint(5, new Point3D(-1.0f,0.0f,0.0f))
             };
-            var poligon = new Figure2D(0, points); 
+            var surface = new GeometrySurface(0, points);
+            var poligon = new Figure2D(0, new GeometrySurface[] { surface }); 
 
             model.ObjectData.Fig2DCollection.Add(poligon);
             var creator = new PresentersCreator();

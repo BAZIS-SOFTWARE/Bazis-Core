@@ -133,7 +133,8 @@ namespace TestModel
                     presenter = creator.CreateLineObjectsPresenter(model.ObjectData.LineCollection);
                     break;
                 default:
-                    model.ObjectData.Fig2DCollection.Add(new Figure2D(0, points.ToArray()));
+                    var surface = new GeometrySurface(0, points.ToArray());
+                    model.ObjectData.Fig2DCollection.Add(new Figure2D(0,new GeometrySurface[] { surface } ));
                     presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.Fig2DCollection, false);
                     break;
             }

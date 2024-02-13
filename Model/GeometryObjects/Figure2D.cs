@@ -14,17 +14,27 @@ namespace Model.GeometryObjects
         /// <summary>
         /// Surface
         /// </summary>
-        protected GeometrySurface surface;
+        protected IGeometrySurface[] surfaces;
         /// <summary>
         /// Figure2D
         /// </summary>
         /// <param name="number"></param>
-        /// <param name="points"></param>
-        public Figure2D(int number, GeometryPoint[] points) : base(number)
+        /// <param name="surfaces"></param>
+        public Figure2D(int number, IGeometrySurface[] surfaces) : base(number)
         {
+            var points = new HashSet<GeometryPoint>();
+
+            foreach (var surface in surfaces)
+            {
+                foreach (var point in surface.GetVertexes())
+                {
+
+                }
+            }
+
             this.points = points;
 
-            surface = new GeometrySurface(number, points);
+            this.surfaces = surfaces;
 
             InitialColor = Color.FromArgb(255, 125, 0);
             MasterColor = Color.FromArgb(255, 125, 0);
@@ -58,7 +68,11 @@ namespace Model.GeometryObjects
 
         public IEnumerable<IGeometrySurface> GetSurfaces()
         {
-            yield return surface;
+            foreach (var surface in surfaces)
+            {
+                yield return surface;
+            }
+
         }
     }
 }
