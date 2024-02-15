@@ -1,7 +1,7 @@
 ﻿using Functions.Sort;
 using ModelInterfaces;
-using ModelInterfaces.ObjectsFinders;
 using ModelInterfaces.GeometryObjects;
+using ModelInterfaces.ObjectsFinders;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,69 +9,72 @@ using System.Linq;
 
 namespace Model.ObjectsCollections
 {
-    public class Fig3DCollection : IObjectsCollection<IFigure3D>
+    /// <summary>
+    /// Набор плоских фигур из поверхностей
+    /// </summary>
+    public class SurfaceFiguresCollection : IObjectsCollection<ISurfaceFigure>
     {
         /// <inheritdoc/>
         public override string ToString()
         {
-            return $@"{ObjType.Фигура3D} {figures3D.Count}";
+            return $@"{ObjType.Фигура2D} {figures2D.Count}";
         }
 
-        List<IFigure3D> figures3D = new List<IFigure3D>();
+        List<ISurfaceFigure> figures2D = new List<ISurfaceFigure>();
         /// <inheritdoc/>
 
-        public int Count => figures3D.Count;
+        public int Count => figures2D.Count;
         /// <inheritdoc/>
 
-        public void Add(IFigure3D addObj)
+        public void Add(ISurfaceFigure addObj)
         {
-            if (figures3D.Count > 0)
-                if (addObj.Number <= figures3D.Last().Number)
+            if (figures2D.Count > 0)
+                if (addObj.Number <= figures2D.Last().Number)
                     throw new Exception($"Последний элемент в коллекции больше добавляемого!");
                 else
-                    figures3D.Add(addObj);
+                    figures2D.Add(addObj);
             else
-                figures3D.Add(addObj);
+                figures2D.Add(addObj);
         }
         /// <inheritdoc/>
 
-        public void AddRange(IEnumerable<IFigure3D> addObjs)
+        public void AddRange(IEnumerable<ISurfaceFigure> addObjs)
         {
             var objsList = addObjs.ToList();
-            MergeSort<IFigure3D>.MergeSortFunction(objsList);
+            MergeSort<ISurfaceFigure>.MergeSortFunction(objsList);
 
-            if (figures3D.Count > 0)
-                if (objsList.First().Number <= figures3D.Last().Number)
+            if (figures2D.Count > 0)
+                if (objsList.First().Number <= figures2D.Last().Number)
                     throw new Exception($"Первый элемент в добавляемой коллекции больше существующего последнего!");
                 else
-                    figures3D.AddRange(addObjs);
+                    figures2D.AddRange(addObjs);
             else
-                figures3D.AddRange(addObjs);
+                figures2D.AddRange(addObjs);
 
         }
         /// <inheritdoc/>
 
         public void Clear()
         {
-            figures3D.Clear();
+            figures2D.Clear();
         }
         /// <inheritdoc/>
 
         public void ClearNotExisted()
         {
-            figures3D = figures3D.Where(x => x.ExistState == true).ToList();
+            figures2D = figures2D.Where(x => x.ExistState == true).ToList();
         }
         /// <inheritdoc/>
 
-        public IFigure3D Find(int objNumbr)
+        public ISurfaceFigure Find(int objNumbr)
         {
-            return figures3D.Find(objNumbr);
+            return figures2D.Find(objNumbr);
         }
         /// <inheritdoc/>
 
-        public IEnumerator<IFigure3D> GetEnumerator()
+        public IEnumerator<ISurfaceFigure> GetEnumerator()
         {
-            foreach (var item in figures3D)
+            foreach (var item in figures2D)
             {
                 yield return item;
             }

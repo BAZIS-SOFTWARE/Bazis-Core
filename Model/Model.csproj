@@ -11,7 +11,7 @@
     <AssemblyOriginatorKeyFile>ModelKey.snk</AssemblyOriginatorKeyFile>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>Model</Title>
-    <Version>3.0.9.15</Version>
+    <Version>3.0.9.16</Version>
     <Company>BAZIS SOFTWARE</Company>
     <Product>BAZIS</Product>
     <Description>Contains basic mesh oblects and geometry classes</Description>
@@ -29,10 +29,10 @@
     <Compile Include="Events\LoaderEventArgs.cs" />
     <Compile Include="Events\SaverEventArgs.cs" />
     <Compile Include="GroupsData\StringNumberGroupComparer.cs" />
-    <Compile Include="ObjectsCollections\Fig2DCollection.cs" />
-    <Compile Include="ObjectsCollections\Fig3DCollection.cs" />
-    <Compile Include="GeometryObjects\Figure2D.cs" />
-    <Compile Include="GeometryObjects\Figure3D.cs" />
+    <Compile Include="ObjectsCollections\SurfaceFiguresCollection.cs" />
+    <Compile Include="ObjectsCollections\VolumeFiguresCollection.cs" />
+    <Compile Include="GeometryObjects\SurfaceFigure.cs" />
+    <Compile Include="GeometryObjects\VolumeFigure.cs" />
     <Compile Include="GeometryObjects\GeometrySurface.cs" />
     <Compile Include="IO\LoadModelFromBPF2TextFile.cs" />
     <Compile Include="IO\SaveModelToBPF2TextFile.cs" />
@@ -88,7 +88,7 @@
   </ItemGroup> 
   <ItemGroup>
     <PackageReference Include="Functions" Version="1.0.2.43" />
-    <PackageReference Include="Geometry" Version="2.0.7.20" />
+    <PackageReference Include="Geometry" Version="2.0.7.22" />
     <PackageReference Include="MathNet.Numerics.Signed" Version="5.0.0" />
   </ItemGroup> 
   <ItemGroup>

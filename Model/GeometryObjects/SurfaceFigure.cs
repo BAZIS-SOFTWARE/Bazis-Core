@@ -3,13 +3,14 @@ using ModelInterfaces;
 using ModelInterfaces.GeometryObjects;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace Model.GeometryObjects
 {
     /// <summary>
-    /// Figure2D
+    /// SurfaceFigure
     /// </summary>
-    public class Figure2D : ModelObject, IFigure2D
+    public class SurfaceFigure : ModelObject, ISurfaceFigure
     {
         /// <summary>
         /// Surface
@@ -20,20 +21,8 @@ namespace Model.GeometryObjects
         /// </summary>
         /// <param name="number"></param>
         /// <param name="surfaces"></param>
-        public Figure2D(int number, IGeometrySurface[] surfaces) : base(number)
+        public SurfaceFigure(int number, IGeometrySurface[] surfaces) : base(number)
         {
-            var points = new HashSet<GeometryPoint>();
-
-            foreach (var surface in surfaces)
-            {
-                foreach (var point in surface.GetVertexes())
-                {
-
-                }
-            }
-
-            this.points = points;
-
             this.surfaces = surfaces;
 
             InitialColor = Color.FromArgb(255, 125, 0);
@@ -45,26 +34,35 @@ namespace Model.GeometryObjects
         public int NumberOfSides { get; } = 1;
 /// <inheritdoc/>
 
-        public override int NumberOfPoints { get { return points.Length; } }
+        public override int NumberOfPoints { get { return GetVertexes().Count(); } }
 /// <inheritdoc/>
 
         public override ObjType ObjType { get; } = ObjType.Фигура2D;
 
-
-        /// <summary>
-        /// Points
-        /// </summary>
-        GeometryPoint[] points { get; }
 /// <inheritdoc/>
+
+        public float CalcSquare()
+        {
+            var square = 0.0f;
+            foreach (var surface in surfaces)
+            {
+                square += surface.CalcSquare();
+            }
+            return square;
+        }
+
+        /// <inheritdoc/>
 
         public override IEnumerable<Point3D> GetCoordinates()
         {
+            var points = GetVertexes();
             foreach (var point in points)
             {
                 yield return point.Position;
             }
         }
-/// <inheritdoc/>
+
+        /// <inheritdoc/>
 
         public IEnumerable<IGeometrySurface> GetSurfaces()
         {
@@ -73,6 +71,22 @@ namespace Model.GeometryObjects
                 yield return surface;
             }
 
+        }
+/// <inheritdoc/>
+
+        public IEnumerable<IGeometryPoint> GetVertexes()
+        {
+            var points = new List<IGeometryPoint>();
+
+            foreach (var surface in surfaces)
+            {
+                foreach (var point in surface.GetVertexes())
+                {
+                    if (!points.Contains(point))
+                        points.Add(point);
+                }
+            }
+            return points;
         }
     }
 }

@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 namespace ModelInterfaces.MeshObjects
 {
-    public interface IElement3D : ISurfaceElement
+    /// <summary>
+    /// IElement3D
+    /// </summary>
+    public interface IElement3D : ISurfaceElement, IVolume
     {
-        /// <summary>
-        /// CalcVolume
-        /// </summary>
-        /// <returns></returns>
-        float CalcVolume();
+
     }
 }

@@ -134,7 +134,7 @@ namespace TestModel
                     break;
                 default:
                     var surface = new GeometrySurface(0, points.ToArray());
-                    model.ObjectData.Fig2DCollection.Add(new Figure2D(0,new GeometrySurface[] { surface } ));
+                    model.ObjectData.Fig2DCollection.Add(new SurfaceFigure(0,new GeometrySurface[] { surface } ));
                     presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.Fig2DCollection, false);
                     break;
             }

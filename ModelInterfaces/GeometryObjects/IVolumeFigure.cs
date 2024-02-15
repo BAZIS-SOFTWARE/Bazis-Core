@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace ModelInterfaces.GeometryObjects
 {
-    public interface IFigure2D : ISurfaceObject<IGeometrySurface, IGeometryPoint>
+    /// <summary>
+    /// IVolumeFigure
+    /// </summary>
+    public interface IVolumeFigure : ISurfaceObject<IGeometrySurface, IGeometryPoint>, IVolume
     {
+
     }
 }

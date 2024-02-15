@@ -12,14 +12,17 @@ using System.Xml.Serialization;
 
 namespace ModelController.MeshObjsUtility
 {
+    /// <summary>
+    /// Построение плоскости сечения сеточных объектов
+    /// </summary>
     public class CrossSection
     {
         /// <summary>
         /// Find a sections of the surfaces of given elements by the given plane
         /// </summary>
-        public Dictionary<int, Figure2D> GetSectionSurfaces(IEnumerable<IElement3D> elements, Plane plane)
+        public SurfaceFigure GetSectionSurfaces(IEnumerable<IElement3D> elements, Plane plane)
         {
-            var result = new Dictionary<int, Figure2D>();
+            var result = new List<GeometrySurface>();
             foreach (var element in elements)
             {
                 var points = new List<Point3D>();
@@ -34,18 +37,18 @@ namespace ModelController.MeshObjsUtility
                             points.Add(sectionPoint);
                     }
                 }
-                var sectionNodes = points
+                var sectionPoints = points
                     .Select((p, index) => new GeometryPoint(index, p))
                     .ToArray();
-                if (sectionNodes.Length >= 3 && sectionNodes.Length <= 6)
+                if (sectionPoints.Length >= 3 && sectionPoints.Length <= 6)
                 {
-                    var sectionSurface = new Figure2D(element.Number, sectionNodes);
-                    result.Add(element.Number, sectionSurface);
+                    var sectionSurface = new GeometrySurface(element.Number, sectionPoints);
+                    result.Add(sectionSurface);
                 }
-                else if (sectionNodes.Length > 6)
+                else if (sectionPoints.Length > 6)
                     throw new Exception("Ошибка при построении сечения. Узлов плоскости более 6");
             }
-            return result;
+            return new SurfaceFigure(0, result.ToArray());
         }
 
         /// <summary>

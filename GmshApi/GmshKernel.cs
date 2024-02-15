@@ -3,6 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace GmshApi.GmshKernel
 {
+    /// <summary>
+    /// GmshKernel
+    /// </summary>
     public static class GmshKernel
     {
         [DllImport("kernel32.dll")]

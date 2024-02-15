@@ -41,11 +41,11 @@ namespace ModelInterfaces
         /// <summary>
         /// Fig2DCollection
         /// </summary>
-        IObjectsCollection<IFigure2D> Fig2DCollection { get; }
+        IObjectsCollection<ISurfaceFigure> Fig2DCollection { get; }
         /// <summary>
         /// Fig3DCollection
         /// </summary>
-        IObjectsCollection<IFigure3D> Fig3DCollection { get; }
+        IObjectsCollection<IVolumeFigure> Fig3DCollection { get; }
         /// <summary>
         /// Count
         /// </summary>

@@ -77,7 +77,7 @@ namespace TestModel
         }
 
         [DataTestMethod]
-        [DataRow(5, 272570, @"..\..\Examples\3D\comp_sm.bpf")]
+        [DataRow(5, 272570, @"..\..\..\Examples\3D\comp_sm.bpf")]
         public void SelectCorrectElementsUseModel(float angle, int first, string path)
         {
             var model = new ModelData();
@@ -104,7 +104,7 @@ namespace TestModel
         {
             var model = new ModelData();
             model.Loader = new LoadModelFromProjectTextFile();
-            model.Load(@"..\..\Examples\3D\cub_unsorted.bpf");
+            model.Load(@"..\..\..\Examples\3D\cub_unsorted.bpf");
             var instance = new FindBoundaryEdges(model);
             var bounds = instance.Find();
             Assert.AreEqual(19, bounds.Count);

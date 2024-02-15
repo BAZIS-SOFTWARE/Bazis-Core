@@ -24,8 +24,9 @@ namespace TestModel
                     new GeometryPoint(2,new Point3D(0.3650039f , 0 , 0.6349962f)),
                     new GeometryPoint(1,new Point3D(0.3650039f, 0.6349962f , 0))
                 };
+            var surface = new GeometrySurface(0, points);
+            var fig2D = new SurfaceFigure(0, new GeometrySurface[] { surface });
 
-            var fig2D = new Figure2D(0, points);
             var model = new ModelData();
             model.ObjectData.Fig2DCollection.Add(fig2D);
 
@@ -48,9 +49,9 @@ namespace TestModel
         public void TestPoligonsManySurfaces()
         {
             //assing
-            var figs2D = new List<Figure2D>()
+            var surfaces = new List<GeometrySurface>()
             {
-                               new Figure2D(0,
+                               new GeometrySurface(0,
                 new GeometryPoint[]
                 {
                     new GeometryPoint(0,new Point3D(0 ,1, 0)),
@@ -58,7 +59,7 @@ namespace TestModel
                     new GeometryPoint(2,new Point3D(0.3650039f , 0 , 0.6349962f)),
                     new GeometryPoint(3,new Point3D(0 , 0 , 1))
                 }),
-                new Figure2D(1,
+                new GeometrySurface(1,
                 new GeometryPoint[]
                 {
                     new GeometryPoint(0,new Point3D(0.3650039f , 0.6349962f , 0)),
@@ -66,7 +67,7 @@ namespace TestModel
                     new GeometryPoint(2,new Point3D(0.6829777f , 0 , 0.3170223f)),
                     new GeometryPoint(3,new Point3D(0.3650039f , 0 , 0.6349962f)),
                 }),
-                new Figure2D(2,
+                new GeometrySurface(2,
                 new GeometryPoint[]
                 {
                     new GeometryPoint(0,new Point3D(0.6829777f , 0.3170223f , 0)),
@@ -76,7 +77,7 @@ namespace TestModel
 
             };
             var model = new ModelData();
-            model.ObjectData.Fig2DCollection.AddRange(figs2D);
+            model.ObjectData.Fig2DCollection.Add(new SurfaceFigure(0,surfaces.ToArray()));
 
             //act
             var creator = new PresentersCreator();

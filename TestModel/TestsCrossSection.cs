@@ -51,7 +51,7 @@ namespace TestModel
                 new Point3D(0.69f, 0.18f, 0.5f),
             };
 
-            var surface = instance.GetSectionSurfaces(new List<Element3D> { tetra }, plane).Values.First();
+            var surface = instance.GetSectionSurfaces(new List<Element3D> { tetra }, plane);
 
             var actualPoints = surface.GetCoordinates().ToList();
             Assert.IsTrue(expectedPoints.All(p => IsPointNearOfAnyPoint(p, actualPoints)));
@@ -84,7 +84,7 @@ namespace TestModel
                 new Point3D(0.2f, 1, 1),
             };
 
-            var surface = instance.GetSectionSurfaces(new List<Element3D> { hexa }, plane).Values.First();
+            var surface = instance.GetSectionSurfaces(new List<Element3D> { hexa }, plane);
 
             var actualPoints = surface.GetCoordinates().ToList();
             Assert.IsTrue(expectedPoints.All(p => IsPointNearOfAnyPoint(p, actualPoints)));

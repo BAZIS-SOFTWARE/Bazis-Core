@@ -31,8 +31,8 @@ namespace Model
             NodeCollection = new NodeCollection();
             PointCollection = new PointCollection();
             LineCollection = new LineCollection();
-            Fig2DCollection = new Fig2DCollection();
-            Fig3DCollection = new Fig3DCollection();
+            Fig2DCollection = new SurfaceFiguresCollection();
+            Fig3DCollection = new VolumeFiguresCollection();
 
             ObjsTypes = new Collection<ObjType>()
                 {
@@ -68,10 +68,10 @@ namespace Model
         public IObjectsCollection<ILineObject<IGeometryPoint>> LineCollection { get; }
 /// <inheritdoc/>
 
-        public IObjectsCollection<IFigure2D> Fig2DCollection { get; }
+        public IObjectsCollection<ISurfaceFigure> Fig2DCollection { get; }
 /// <inheritdoc/>
 
-        public IObjectsCollection<IFigure3D> Fig3DCollection { get; }
+        public IObjectsCollection<IVolumeFigure> Fig3DCollection { get; }
 
         /// <inheritdoc/>
 
