@@ -16,7 +16,7 @@
     <Product>BAZIS</Product>
     <Description>Contains basic mesh oblects and geometry classes</Description>
     <Copyright>Bilenko Georgy</Copyright>
-    <Authors>Bilenko Georgy, Kapkaev Victor, Kochuk Nicolay, Kishun Kirill</Authors>
+    <Authors>Bilenko Georgy, Kapkaev Victor, Kochuk Nicolay, Kishun Kirill, Aleksey Konteev</Authors>
     <PackageIcon>Icon.png</PackageIcon>
     <PackageLicenseExpression> MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
