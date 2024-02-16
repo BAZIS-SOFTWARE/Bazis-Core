@@ -24,7 +24,6 @@ namespace ModelInterfaces
         /// <summary>
         /// GetLinesFromSurface
         /// </summary>
-        /// <param name="surface"></param>
         /// <returns></returns>
         Segment3D[] GetLinesFromSurface();
         /// <summary>
