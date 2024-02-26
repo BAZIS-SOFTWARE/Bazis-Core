@@ -1,6 +1,6 @@
-﻿using Model;
-using Model.Elements;
+﻿using Model.MeshObjects;
 using ModelInterfaces;
+using ModelInterfaces.MeshObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,16 +14,16 @@ namespace ModelController.MeshObjsUtility
         IObjectsData objsData;
         public FreeNodesFinder(IObjectsData objsData)
         {
-            if (objsData.FindMany<Node>() == null) throw new Exception("Модель не содержит узлов!");
+            if (objsData.NodeCollection.Count == 0) throw new Exception("Модель не содержит узлов!");
             this.objsData = objsData;
         }
-        public IEnumerable<int> Find<T>() where T : Element
+        public IEnumerable<int> Find()
         {
-            var elements = objsData.FindMany<T>().ToArray();
+            var elements = objsData.GetObjects(ObjType.Элемент).Select(x => (IElement)x);
             var finder = new InterfacedNodesFinder();
             var interfaceNodes = finder.Find(elements);
 
-            var nodesNumbersAll = objsData.FindMany<Node>().Select(x => x.Number);
+            var nodesNumbersAll = objsData.NodeCollection.Select(x => x.Number);
             var nodesNumbersElements = interfaceNodes.Keys;
             var distNodesNumbersElements = nodesNumbersElements.Distinct();
             var freeNodesNumbers = nodesNumbersAll.Except(distNodesNumbersElements);

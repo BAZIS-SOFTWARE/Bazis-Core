@@ -1,13 +1,9 @@
-﻿using Model;
-using Model.Elements;
+﻿using Model.MeshObjects;
 using ModelControllerInterfaces;
-using ModelInterfaces;
+using ModelInterfaces.MeshObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace ModelController.MeshObjsCreator
 {
@@ -28,7 +24,7 @@ namespace ModelController.MeshObjsCreator
 
             foreach (var surface in surfaces)
             {
-                if(surface.GetNodes().Count() == 3)
+                if (surface.GetVertexes().Count() == 3)
                 {
                     var n0 = new Node(surface[0].Number, surface[0].Position);
                     var n1 = new Node(surface[1].Number, surface[1].Position);
@@ -54,22 +50,22 @@ namespace ModelController.MeshObjsCreator
         /// FindOpenSurfaces
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<ISurface> FindOpenSurfaces(IElement3D[] elements)
+        public IEnumerable<IElementSurface> FindOpenSurfaces(IElement3D[] elements)
         {
-            var surfDict = new Dictionary<string, List<ISurface>>();
+            var surfDict = new Dictionary<string, List<IElementSurface>>();
 
-            foreach (var element in elements)
+            foreach (ISurfaceElement element in elements)
             {
                 //var normals = SurfaceNormalsCoords[i];
-                foreach (var surface in element.GetSurface())
+                foreach (var surface in element.GetSurfaces())
                 {
-                    var numbers = surface.GetNodes().Select(x => x.Number).ToArray();
+                    var numbers = surface.GetVertexes().Select(x => x.Number).ToArray();
 
                     Array.Sort(numbers);
                     var surfInd = string.Join("",numbers);
 
                     if (!surfDict.ContainsKey(surfInd))
-                        surfDict.Add(surfInd, new List<ISurface>() { surface });
+                        surfDict.Add(surfInd, new List<IElementSurface>() { surface });
                     else surfDict[surfInd].Add(surface);
                 }
             }

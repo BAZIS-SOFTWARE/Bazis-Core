@@ -1,5 +1,5 @@
 ﻿using Geometry;
-using Model.Elements;
+using Model.MeshObjects;
 using Model.Events;
 using ModelInterfaces;
 using System;
@@ -18,14 +18,16 @@ namespace Model.IO
         private const string ELEMENTS_BLOCK = "EBLOCK";
         private const int OFFSET_TO_READ_NODES = 11;
         private const string exponentialFloatPattern = "(-)?\\d+\\.\\d+E(\\+|-)\\d+";
-        private Dictionary<int, Node> allNodes = new Dictionary<int, Node>();
+        private Dictionary<int, Node> allNodes;
+        private ModelData model;
 
         /// <summary>
         /// Загрузить модель из файла формата .cdb по указанному пути
         /// </summary>
         public IModelData Load(string path)
         {
-            var model = new ModelData();
+            allNodes = new Dictionary<int, Node>();
+            model = new ModelData();
             using (var reader = new StreamReader(path))
             {
                 LoadEvent?.Invoke(this, new LoaderEventArgs("Начало загрузки модели"));
@@ -40,13 +42,13 @@ namespace Model.IO
                     {
                         LoadEvent?.Invoke(this, new LoaderEventArgs("Начало загрузки узлов"));
                         var nodes = ReadNodes(reader, tokens).ToList();
-                        model.ObjectData.AddRange(nodes);
+                        model.ObjectData.NodeCollection.AddRange(nodes);
                     }
                     if (line.Contains(ELEMENTS_BLOCK))
                     {
                         LoadEvent?.Invoke(this, new LoaderEventArgs("Начало загрузки элементов"));
-                        var elements = ReadElements(reader, tokens);
-                        model.ObjectData.AddRange(elements);
+
+                        ReadElements(reader, tokens);                  
                     }
                 }
             }
@@ -62,7 +64,10 @@ namespace Model.IO
             var matches = Regex.Matches(line, exponentialFloatPattern);
             foreach (Match match in matches)
             {
-                yield return float.Parse(match.Value, NumberStyles.Any, CultureInfo.InvariantCulture);
+                var value = double.Parse(match.Value, NumberStyles.Any, CultureInfo.InvariantCulture);
+                if (Math.Abs(value) < 1e-4)
+                    value = 0;
+                yield return (float)value;
             }
         }
 
@@ -71,7 +76,7 @@ namespace Model.IO
         /// </summary>
         private int GetNodeNumber(string line)
         {
-            var fields = line.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)
+            var fields = line.Split(new [] { " " }, StringSplitOptions.RemoveEmptyEntries)
                 .ToList();
             return int.Parse(fields[0]);
         }
@@ -94,7 +99,10 @@ namespace Model.IO
                     var missedCoordinatesCount = maxFieldsCount - coordinates.Count;
                     coordinates.AddRange(Enumerable.Repeat(0f, missedCoordinatesCount));
                 }
-                var point = new Point3D(coordinates[0], coordinates[1], coordinates[2]);
+                var x = coordinates[0];
+                var y = coordinates[1];
+                var z = coordinates[2];
+                var point = new Point3D(x, y, z);
                 var node = new Node(nodeNumber, point);
                 allNodes.Add(nodeNumber, node);
                 yield return node;
@@ -104,14 +112,17 @@ namespace Model.IO
         /// <summary>
         /// Определяет форму элемента по числу узлов
         /// </summary>
-        private ModelObject GetElement(int[] elementNodes, int elementNumber)
+        private void GetElement(int[] elementNodes, int elementNumber)
         {
             var nodes = elementNodes.Select(i => allNodes[i]).ToArray();
             switch (elementNodes.Length)
             {
-                case 4: return new Tetra(elementNumber, nodes);
-                case 6: return new Penta(elementNumber, nodes);
-                case 8: return new Hexa(elementNumber, nodes);
+                case 4: model.ObjectData.E3DCollection.Add(new Tetra(elementNumber, nodes));
+                    break;
+                case 6: model.ObjectData.E3DCollection.Add(new Penta(elementNumber, nodes));
+                        break;
+                case 8: model.ObjectData.E3DCollection.Add(new Hexa(elementNumber, nodes));
+                    break;
                 default: throw new Exception($"Unable to recognize element with {elementNodes.Length} nodes");
             }
         }
@@ -119,15 +130,15 @@ namespace Model.IO
         /// <summary>
         /// Читает список элементов после строки EBLOCK в файле
         /// </summary>
-        private IEnumerable<ModelObject> ReadElements(StreamReader reader, string[] tokens)
+        private void ReadElements(StreamReader reader, string[] tokens)
         {
             var format = reader.ReadLine();
             var maxFieldsInLine = int.Parse(tokens[1]);
             var elementsNumber = int.Parse(tokens[4]);
-            for (int i = 0; i < elementsNumber; i++)
+            for (var i = 0; i < elementsNumber; i++)
             {
                 var line = reader.ReadLine();
-                var fields = line.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)
+                var fields = line.Split(new [] { " " }, StringSplitOptions.RemoveEmptyEntries)
                     .Select(int.Parse)
                     .ToList();
                 var nodesCount = fields[8];
@@ -140,8 +151,7 @@ namespace Model.IO
                     fields.AddRange(nextLineFields);
                 }
                 var elementNodes = fields.Skip(OFFSET_TO_READ_NODES).Distinct().ToArray();
-                var element = GetElement(elementNodes, elementNumber);
-                yield return element;
+                GetElement(elementNodes, elementNumber);               
             }
         }
     }

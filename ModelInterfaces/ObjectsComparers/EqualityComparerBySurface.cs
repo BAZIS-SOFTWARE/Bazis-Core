@@ -2,17 +2,24 @@
 
 namespace ModelInterfaces.Comparers
 {
-    public class ElementSurfaceEqualityComparer : IEqualityComparer<ISurface>
+    /// <summary>
+    /// ElementSurfaceEqualityComparer
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class ElementSurfaceEqualityComparer<T> : IEqualityComparer<ISurface<T>>
+        where T : IPoint
     {
-        public bool Equals(ISurface s1, ISurface s2)
+        /// <inheritdoc/>
+        public bool Equals(ISurface<T> s1, ISurface<T> s2)
         {
             if (s1.Equals(s2))
                 return true;
             else
                 return false;
         }
+/// <inheritdoc/>
 
-        public int GetHashCode(ISurface s)
+        public int GetHashCode(ISurface<T> s)
         {
             return s.GetHashCode();
         }

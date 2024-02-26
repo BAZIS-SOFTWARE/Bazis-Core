@@ -1,76 +1,215 @@
 ﻿using GmshApi.GmshController;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
-using Model.Elements;
+using Model.MeshObjects;
 using Model.IO;
+using ModelInterfaces;
 using System;
 using System.Collections.Generic;
+using Model.GeometryObjects;
+using Geometry;
 using System.Linq;
+using Model.GroupsData;
+using Model.ObjectsCollections;
+using System.Reflection;
 
 namespace TestModel
 {
     [TestClass]
     public class TestObjectData
     {
-        [TestMethod]
-        [ExpectedException(typeof(Exception))]
-        public void TestObjectDataAddObjectWithSameNumbers()
+        [DataTestMethod]
+        [DataRow(0,2)]
+        [DataRow(8,1)]
+        [DataRow(3,1)]
+        public void FindManyObjsByNumber(int objsNumbr,int objsCount)
         {
-            //assign
+            //assing
+            var nodes = new Node[4]
+            {
+                new Node(0,new Point3D(0,0,0)),
+                new Node(1,new Point3D(10,0,0)),
+                new Node(2,new Point3D(0,10,0)),
+                new Node(3,new Point3D(0,0,10)),
+            };
+            var objs = new Element3D[]
+            {
+                new Tetra( 0,nodes),
+                new Tetra( 4,nodes),
+                new Tetra(5,nodes),
+                new Tetra( 6,nodes),
+                new Tetra(7,nodes),
+                new Tetra(8,nodes)
+            };
+
             var model = new ModelData();
-
+            model.ObjectData.NodeCollection.AddRange(nodes);
+            model.ObjectData.E3DCollection.AddRange(objs);
             //act
-            var node0 = new Node(0, new Geometry.Point3D());
-
-            model.ObjectData.Add(node0);
+            var elements = model.ObjectData.FindMany(objsNumbr);
             //assert
-            model.ObjectData.Add(node0);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(Exception))]
-        public void TestObjectDataAddObjectsWithSameNumbers()
-        {
-            //assign
-            var model = new ModelData();
-
-            //act
-            var node0 = new Node(0, new Geometry.Point3D());
-            var node1 = new Node(1, new Geometry.Point3D());
-
-            model.ObjectData.Add(node0);
-            //assert
-            model.ObjectData.AddRange(new List<Node>() { node0 ,node1});
-        }
-
-        [TestMethod]
-        public void TestObjectDataRemoveObjectsWithSameTypes()
-        {
-            //assign
-            var model = new ModelData();
-
-            //act
-            var node0 = new Node(0, new Geometry.Point3D());
-            var node1 = new Node(1, new Geometry.Point3D());
-            var node2 = new Node(3, new Geometry.Point3D());
-
-            var line = new Line(2, new Node[] { node0, node1 });
-
-            model.ObjectData.Add(node0);
-            model.ObjectData.Add(node1);
-            model.ObjectData.Add(line);
-            model.ObjectData.Add(node2);
-
-            model.ObjectData.RemoveRange("Линия");
-            //assert
-            Assert.AreEqual(model.ObjectData.NumberOfNodes, 3);
-            Assert.AreEqual(model.ObjectData.Find(0).Number, 0);
-            Assert.AreEqual(model.ObjectData.Find(3).Number, 3);
+            Assert.AreEqual(objsCount, elements.Count());
         }
 
         [DataTestMethod]
-        [DataRow(@"..\..\..\Examples\STL\ACII.stl")]
-        public void TestRemoveAllData(string stlPath)
+        [DataRow("Все объекты", 10)]
+        [DataRow("Тетраэдры", 6)]
+        [DataRow("Узлы", 4)]
+        public void FindManyObjsByType(string reqType, int objsCount)
+        {
+            //assing
+            var nodes = new Node[4]
+            {
+                new Node(0,new Point3D(0,0,0)),
+                new Node(1,new Point3D(10,0,0)),
+                new Node(2,new Point3D(0,10,0)),
+                new Node(3,new Point3D(0,0,10)),
+            };
+            var objs = new Element3D[]
+            {
+                new Tetra( 0,nodes),
+                new Tetra( 4,nodes),
+                new Tetra(5,nodes),
+                new Tetra( 6,nodes),
+                new Tetra(7,nodes),
+                new Tetra(8,nodes)
+            };
+
+            //act
+
+            var model = new ModelData();
+            model.ObjectData.NodeCollection.AddRange(nodes);
+            model.ObjectData.E3DCollection.AddRange(objs);
+
+            //assert            
+            if (reqType == "Тетраэдры")
+                Assert.AreEqual(objsCount, model.ObjectData.E3DCollection.Count());
+            else if (reqType == "Узлы")
+                Assert.AreEqual(objsCount, model.ObjectData.NodeCollection.Count());
+            else
+                Assert.AreEqual(objsCount, model.ObjectData.Count(ObjType.Объект));
+        }
+        [TestMethod]
+        [ExpectedException(typeof(Exception))]
+        public void AddObjectWithSameNumbers()
+        {
+            //assign
+            var model = new ModelData();
+
+            //act
+            var node0 = new Node(0, new Geometry.Point3D());
+
+            model.ObjectData.NodeCollection.Add(node0);
+            //assert
+            model.ObjectData.NodeCollection.Add(node0);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(Exception))]
+        public void AddSomeObjectsWithSameNumbers()
+        {
+            //assign
+            var model = new ModelData();
+
+            //act
+            var node0 = new Node(0, new Geometry.Point3D());
+            var node1 = new Node(1, new Geometry.Point3D());
+
+            model.ObjectData.NodeCollection.Add(node0);
+            //assert
+            model.ObjectData.NodeCollection.AddRange(new List<Node>() { node0 ,node1});
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(Exception))]
+        public void AddCertainObjectsWithSameNumbers()
+        {
+            //assign
+            var model = new ModelData();
+
+            //act
+            var node0 = new Node(0, new Geometry.Point3D());
+            var node1 = new Node(1, new Geometry.Point3D());
+
+            var modelObjects = new List<Node>() { node0, node1 };
+
+            model.ObjectData.NodeCollection.Add(node0);
+            //assert
+            model.ObjectData.NodeCollection.AddRange(modelObjects);
+        }
+
+        [DataTestMethod]
+        [DataRow(ObjType.Линия)]
+        [DataRow(ObjType.Точка)]
+        public void RemoveObjectsWithSameTypes(ObjType objType)
+        {
+            //assign
+            var model = new ModelData();
+
+            //act
+            var point0 = new GeometryPoint(0, new Geometry.Point3D());
+            var point1 = new GeometryPoint(1, new Geometry.Point3D());
+            var point2 = new GeometryPoint(3, new Geometry.Point3D());
+
+            var line = new Line(2, new GeometryPoint[] { point0, point1 });
+
+            model.ObjectData.PointCollection.Add(point0);
+            model.ObjectData.PointCollection.Add(point1);
+            model.ObjectData.LineCollection.Add(line);
+            model.ObjectData.PointCollection.Add(point2);
+
+            model.ObjectData.Clear(objType);
+            //assert
+            Assert.AreEqual(model.ObjectData.GetObjects(objType).Count(), 0);
+        }
+
+        [DataTestMethod]
+        [DataRow(ObjType.Узел, 0, 0)]
+        [DataRow(ObjType.Элемент3D, 4, 0)]
+        [DataRow(ObjType.Объект, 0, 0)]
+        public void RemoveObjectsSyncWithGroups(ObjType objType, int nNumbs,int grps)
+        {
+            //assing
+            var nodes = new Node[4]
+            {
+                new Node(0,new Point3D(0,0,0)),
+                new Node(1,new Point3D(10,0,0)),
+                new Node(2,new Point3D(0,10,0)),
+                new Node(3,new Point3D(0,0,10)),
+            };
+            var objects = new Element3D[]
+            {
+                new Tetra( 0,nodes),
+                new Tetra( 4,nodes),
+                new Tetra(5,nodes),
+                new Tetra( 6,nodes),
+                new Tetra(7,nodes),
+                new Tetra(8,nodes)
+            };
+
+            var group = new Group("test", objType);
+            group.AddRange(objects);
+            //act
+
+            var model = new ModelData();
+
+            model.ObjectData.NodeCollection.AddRange(nodes);
+            model.ObjectData.E3DCollection.AddRange(objects);
+
+            model.GroupData.Add(group);
+
+            model.ObjectData.Clear(objType);
+            model.GroupData.ClearNotExisted();
+            //assert            
+            Assert.AreEqual(model.ObjectData.NodeCollection.Count,nNumbs, 0);
+            Assert.AreEqual(model.GroupData.FindMany(objType).Count(), grps,0);
+
+        }
+
+        [DataTestMethod]
+        [DataRow(@"..\..\..\Examples\STL\ACII.stl", ObjType.Узел, 0)]
+        [DataRow(@"..\..\..\Examples\STL\ACII.stl", ObjType.Элемент2D, 4)]
+        public void TestRemoveAllData(string stlPath, ObjType objType, int nNumb)
         {
             var ierr = 0;
             var status = true;
@@ -81,24 +220,21 @@ namespace TestModel
             var nodes = controller.GetNodes(ref status);
             Assert.AreEqual(true, status);
             Assert.AreEqual(4, nodes.Count);
-            var surfaces = controller.GetMeshEntities(2, -1, ref status);
+            var elements = controller.GetMeshEntities(2, -1, ref status);
             Assert.AreEqual(true, status);
-            Assert.AreEqual(2, surfaces.Count);
-            modelData.ObjectData.AddRange(nodes);
-            modelData.ObjectData.AddRange(surfaces);
-            //modelData.ObjectData.Sort();
-            modelData.ObjectData.RemoveRange("Элементы2D");
-            modelData.ObjectData.RemoveRange("Узлы");//Здесь падает, эмулирую такое же поведение как в Базисе
+            Assert.AreEqual(2, elements.Count);
+            modelData.ObjectData.NodeCollection.AddRange(nodes);
 
+            modelData.ObjectData.Clear(objType);
             //assert
-            Assert.AreEqual(modelData.ObjectData.Count, 0);
+            Assert.AreEqual(modelData.ObjectData.NodeCollection.Count(), nNumb);
         }
 
         [DataTestMethod]
         [DataRow(1)]
         [DataRow(0)]
         [DataRow(2)]
-        public void TestRemoveSomeObjects(int objNumber)
+        public void RemoveSomeObjectsByExistState(int objNumber)
         {
             //assing
             var model = new ModelData();
@@ -107,11 +243,11 @@ namespace TestModel
             model.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
 
             //act
-            model.ObjectData[objNumber].ExistState = false;
-            model.ObjectData.ClearRemoved();
+            model.ObjectData.Find(ObjType.Узел,objNumber).ExistState = false;
+            model.ObjectData.ClearNotExisted();
 
             //assert
-            var res = model.ObjectData.Find(objNumber);
+            var res = model.ObjectData.Find(ObjType.Узел, objNumber);
             if (res != null)
                 throw new Exception();
         }

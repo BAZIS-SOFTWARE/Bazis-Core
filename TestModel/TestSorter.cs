@@ -1,7 +1,7 @@
 ﻿using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
-using Model.IO;
+using Model.MeshObjects;
 using ModelInterfaces;
 using System;
 using System.Collections.Generic;
@@ -11,24 +11,6 @@ namespace TestModel
     [TestClass]
     public class TestSorter
     {
-        [TestMethod]
-        public void SortObjectsByNumber()
-        {
-            //assing
-            var model = new ModelData();
-
-            //act
-            model.Load(@"..\..\..\Examples\3D\cub_unsorted.bpf");
-
-            //assert
-            var number = 0;
-            foreach (var modelObject in model.ObjectData)
-            {
-                Assert.AreEqual(number, modelObject.Number);
-                number++;
-            }
-        }
-
         [TestMethod]
         public void SortNodeByClockwise_XPositiveYPositive()
         {
@@ -43,7 +25,7 @@ namespace TestModel
             };
 
             //act
-            var surf = new Surface(0, nodes, ObjKind.ElementSurface);
+            var surf = new ElementSurface(0, nodes);
 
             //assert
             if (!surf[0].Number.Equals(0))
@@ -70,7 +52,7 @@ namespace TestModel
             };
 
             //act
-            var surf = new Surface(0, nodes, ObjKind.ElementSurface);
+            var surf = new ElementSurface(0, nodes);
 
             //assert
             //assert
@@ -131,7 +113,7 @@ namespace TestModel
             }
 
             //act
-            var surf = new Surface(0, nodes.ToArray(), ObjKind.ElementSurface);
+            var surf = new ElementSurface(0, nodes.ToArray());
 
             //assert
             Assert.AreEqual(surf.NumberOfPoints, nodes.Count);

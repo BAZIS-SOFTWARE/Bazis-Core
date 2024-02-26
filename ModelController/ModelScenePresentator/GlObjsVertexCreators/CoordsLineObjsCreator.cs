@@ -4,13 +4,14 @@ using System.Linq;
 
 namespace ModelController.ModelScenePresentator.GlObjsVertexCreators
 {
-    public class CoordsLineObjsCreator : ILineObjsVertexCreator
+    public class CoordsLineObjsCreator<T> : ILineObjsVertexCreator<T>
+        where T : IPoint
     {
-        public void Create(ref int stride, float[] vertexAtributes, INodeObject nodeObject)
+        public void Create(ref int stride, float[] vertexAtributes, IVertexObject<T> nodeObject)
         {
             if (nodeObject.ViewState)
             {
-                var points = nodeObject.GetPoints().ToArray();
+                var points = nodeObject.GetCoordinates().ToArray();
                 for (int k = 0; k < points.Length; k++)
                 {
                     vertexAtributes[stride + 3 * k + 0] = points[k]._x;

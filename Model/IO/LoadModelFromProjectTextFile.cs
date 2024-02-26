@@ -9,7 +9,8 @@ using Geometry;
 using Model.Events;
 using ModelInterfaces;
 using ModelInterfaces.ObjectsFinders;
-using Model.Elements;
+using Model.MeshObjects;
+using ModelInterfaces.MeshObjects;
 
 namespace Model.IO
 {
@@ -39,7 +40,8 @@ namespace Model.IO
                     }
                     if (line == "Элементы 3004" | line == "Элементы 2003" |
                         line == "Элементы3D" | line == "Элементы2D" |
-                        line == "Элементы1D")
+                        line == "Элементы1D" | line == "Элемент3D" | line == "Элемент2D" |
+                        line == "Элемент1D")
                     {
                         LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка элементов..."));
                         Thread.Sleep(100);
@@ -84,7 +86,7 @@ namespace Model.IO
                     nodes.Add(node);
                 }
             }
-            newMesh.ObjectData.AddRange(nodes);
+            newMesh.ObjectData.NodeCollection.AddRange(nodes);
 
         }
 
@@ -93,7 +95,6 @@ namespace Model.IO
             var line = String.Empty;
             line = sr.ReadLine();
 
-            var nodes = newMesh.ObjectData.FindMany<Node>().ToArray();
             //var number = newMesh.GetLastObjNumber() + 1;
             while (line != "#" + elType)
             {                
@@ -105,30 +106,43 @@ namespace Model.IO
                 var elNumber = ar[0];
                 ar.RemoveAt(0);
 
-                var nodeList = new List<Node>();
+                var nodeList = new List<INode>();
+              
                 foreach (var nodeNumber in ar)
-                    nodeList.Add(nodes.Find(nodeNumber));
+                    nodeList.Add(newMesh.ObjectData.NodeCollection.Find(nodeNumber));
 
-                if (elType == "Элементы3D" | elType == "Элементы 3004")
+                if (elType == "Элементы3D" | elType == "Элемент3D" | elType == "Элементы 3004")
                 {
-                    ObjKind objKind;
-                    if (ar.Count == 4)
-                        objKind = ObjKind.Tetra;
-                    else objKind = ObjKind.Hexa;
 
-                    var el3DObj = new Tetra(elNumber, nodeList.ToArray());
-                    newMesh.ObjectData.Add(el3DObj);
+                    if (ar.Count == 4)
+                    {
+                        var el3DObj = new Tetra(elNumber, nodeList.ToArray());
+                        newMesh.ObjectData.E3DCollection.Add(el3DObj);
+                    }
+                    else
+                    {
+                        var el3DObj = new Hexa(elNumber, nodeList.ToArray());
+                        newMesh.ObjectData.E3DCollection.Add(el3DObj);
+                    }
+
+  
                 }
 
-                if (elType == "Элементы2D" | elType == "Элементы 2003")
+                if (elType == "Элементы2D" | elType == "Элемент2D" | elType == "Элементы 2003")
                 {
-                    ObjKind objKind;
-                    if (ar.Count == 3)
-                        objKind = ObjKind.Triangle;
-                    else objKind = ObjKind.Quad;
 
-                    var el2DObj = new Triangle(elNumber, nodeList.ToArray());
-                    newMesh.ObjectData.Add(el2DObj);
+                    if (ar.Count == 3)
+                    {
+                        var el2DObj = new Triangle(elNumber, nodeList.ToArray());
+                        newMesh.ObjectData.E2DCollection.Add(el2DObj);
+                    }
+                    else
+                    {
+                        var el2DObj = new Quad(elNumber, nodeList.ToArray());
+                        newMesh.ObjectData.E2DCollection.Add(el2DObj);
+                    }
+
+
                 }
                 //number++;
                 line = sr.ReadLine();
@@ -144,30 +158,30 @@ namespace Model.IO
                 if (splitLine[0] == "Группа узлов ")
                 {
                     var name = splitLine[1].Split(' ')[1];
-                    var nodeGroup = new Group(name, "Узлы");
+                    var nodeGroup = new Group(name,ObjType.Узел);
                     var indexLine = splitLine[1].Remove(0, name.Length + 2);
                     var indexes = indexLine.Split(' ').Select(x => int.Parse(x)).ToList();
 
                     foreach (var index in indexes)
                     {
-                        var obj = newMesh.ObjectData.Find(index);
+                        var obj = newMesh.ObjectData.Find(ObjType.Узел,index);
                         nodeGroup.Add(obj);
                     }
                     newMesh.GroupData.Add(nodeGroup);
                 }
                 if (splitLine[0] == "Группа элементов 3D ")
                 {
-                    LoadElemGroup(newMesh, "Элементы3D", line);
+                    LoadElemGroup(newMesh, ObjType.Элемент3D, line);
                 }
                 if (splitLine[0] == "Группа элементов 2D ")
                 {
-                    LoadElemGroup(newMesh, "Элементы2D", line);
+                    LoadElemGroup(newMesh, ObjType.Элемент2D, line);
                 }
                 line = sr.ReadLine();
             }
         }
 
-        private static void LoadElemGroup(ModelData newMesh, string objType, string line)
+        private static void LoadElemGroup(ModelData newMesh, ObjType objType, string line)
         {
             var splitLine = line.Split(':');
             var name = splitLine[1].Split(' ')[1];
@@ -175,7 +189,7 @@ namespace Model.IO
             var indexLine = splitLine[1].Remove(0, name.Length + 2);
             if (indexLine != "")
             {
-                var elements = newMesh.ObjectData.FindMany<Element>().ToList();
+                var elements = newMesh.ObjectData.GetObjects(objType).ToList();
                 var indexes = indexLine.Split(' ').Select(x => int.Parse(x)).ToList();
                 indexes.Sort();
 

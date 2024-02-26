@@ -6,27 +6,28 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using ModelInterfaces.GeometryObjects;
 
 namespace ModelController.ModelScenePresentator.GlObjsPresenters
 {
     /// <summary>
     /// LineObjsPresenter
     /// </summary>
-    public class LineObjsPresenter : IObjsPresenter
+    public class LineObjsPresenter<T> : IObjsPresenter
+        where T : IPoint
     {
-        IEnumerable<ILineObject> lineObjects;
+        List<ILineObject<T>> lineObjects = new List<ILineObject<T>>();
 /// <inheritdoc/>
 
-        public PresenterType PresenterType { get; } = PresenterType.Line;
+        public PresenterView PresenterView { get; set; } = PresenterView.Line;
+        /// <inheritdoc/>
 
-        /// <summary>
-        /// LineObjsPresenter
-        /// </summary>
-        /// <param name="lineObjects"></param>
-        public LineObjsPresenter(IEnumerable<ILineObject> lineObjects)
-        {
-            this.lineObjects = lineObjects;
-        }
+        public PresenterType PresenterType { get; } = PresenterType.Line;
+/// <inheritdoc/>
+
+        public bool IsVolumeObjs { get; } = false;
+
+
 /// <inheritdoc/>
 
         public Tuple<int, int, int,int> CreateIndexes()
@@ -77,13 +78,13 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
             var vertexArray = new float[vertexLength];
             var stride = 0;
 
-            ILineObjsVertexCreator vertexCreator;
+            ILineObjsVertexCreator<T> vertexCreator;
 
             if (vertexType == "цвет")
-                vertexCreator = new ColorLineObjsCreator();
+                vertexCreator = new ColorLineObjsCreator<T>();
             else if (vertexType == "координаты")
-                vertexCreator = new CoordsLineObjsCreator();
-            else vertexCreator = new NormalsLineObjsCreator();
+                vertexCreator = new CoordsLineObjsCreator<T>();
+            else vertexCreator = new NormalsLineObjsCreator<T>();
 
             foreach (var lineObject in lineObjects)
             {
@@ -110,7 +111,6 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
 
             return edgesArray;
         }
-/// <inheritdoc/>
 
         public IEnumerator<IModelObject> GetEnumerator()
         {
@@ -123,6 +123,29 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
         IEnumerator IEnumerable.GetEnumerator()
         {
             throw new NotImplementedException();
+        }
+/// <inheritdoc/>
+
+        public void ClearNotExisted()
+        {
+            var existObjs = lineObjects.Where(x => x.ExistState == true).ToList();
+            lineObjects.Clear();
+            lineObjects.AddRange(existObjs);
+        }
+/// <inheritdoc/>
+
+        public void Clear()
+        {
+            lineObjects.Clear();
+        }
+        /// <summary>
+        /// Add
+        /// </summary>
+        /// <typeparam name="ILineObject"></typeparam>
+        /// <param name="objs"></param>
+        public void Add(IEnumerable<ILineObject<T>> objs)
+        {
+            lineObjects.AddRange(objs);
         }
     }
 }

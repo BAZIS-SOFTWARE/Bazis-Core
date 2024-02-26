@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ModelInterfaces
 {
-    public interface ILineObject : INodeObject
+    public interface ILineObject<T> : IModelObject,IVertexObject<T> where T : IPoint
     {
         /// <summary>
         /// CalcLength

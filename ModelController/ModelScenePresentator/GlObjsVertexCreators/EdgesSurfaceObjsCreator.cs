@@ -3,15 +3,16 @@ using System.Collections.Generic;
 
 namespace ModelController.ModelScenePresentator.GlObjsVertexCreators
 {
-    public class EdgesSurfaceObjsCreator
+    public class EdgesSurfaceObjsCreator<T,U>
+        where T : ISurface<U> where U : IPoint
     {
-        public void Create(ref int stride, bool[] vertexAtributes, IEnumerable<ISurfaceObject> surfaceElements)
+        public void Create(ref int stride, bool[] vertexAtributes, IEnumerable<ISurfaceObject<T,U>> surfaceElements)
         {
             foreach (var surfaceElement in surfaceElements)
             {
                 if (surfaceElement.ViewState)
                 {
-                    foreach (var surface in surfaceElement.GetSurface())
+                    foreach (var surface in surfaceElement.GetSurfaces())
                     {
                         if (surface.ViewState)
                         {

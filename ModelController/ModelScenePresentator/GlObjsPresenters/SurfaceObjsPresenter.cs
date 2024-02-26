@@ -12,24 +12,72 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
     /// <summary>
     /// SurfaceObjsPresenter
     /// </summary>
-    public class SurfaceObjsPresenter : IObjsPresenter
+    public class SurfaceObjsPresenter<T,U> : IVolumeObjsPresenter
+        where T : ISurface<U> where U : IPoint
     {
-        IEnumerable<ISurfaceObject> surfaceElements;
+        List<ISurfaceObject<T,U>> surfaceObjects = new List<ISurfaceObject<T, U>>();
 /// <inheritdoc/>
 
         public PresenterType PresenterType { get; } = PresenterType.Surface;
+/// <inheritdoc/>
+
+        public bool IsVolumeObjs { get; } = false;
+        /// <inheritdoc/>
 
         /// <summary>
         /// SurfaceObjsPresenter
         /// </summary>
-        /// <param name="surfaceElements"></param>
-        public SurfaceObjsPresenter(IEnumerable<ISurfaceObject> surfaceElements)
+        /// <param name="isVolumeObjs"></param>
+        public SurfaceObjsPresenter(bool isVolumeObjs)
         {
-            this.surfaceElements = surfaceElements;
+            IsVolumeObjs = isVolumeObjs;
         }
 
-        
-/// <inheritdoc/>
+        /// <inheritdoc/>
+
+        public void HideInsideSurfaces()
+        {
+            var surfDict = new Dictionary<string, List<ISurface<U>>>();
+
+            foreach (var element in surfaceObjects)
+            {
+                if (element.ViewState & element.NumberOfSides > 1)
+                    foreach (var surface in element.GetSurfaces())
+                    {
+                        var numbers = surface.GetVertexes().Select(x => x.Number).ToArray();
+
+                        Array.Sort(numbers);
+                        var surfInd = string.Join("", numbers);   //numbers[0].ToString() + numbers[1].ToString() + numbers[2].ToString();
+
+                        if (!surfDict.ContainsKey(surfInd))
+                        {
+                            surface.ViewState = true;
+                            surfDict.Add(surfInd, new List<ISurface<U>> () { surface });
+                        }
+
+                        else
+                        {
+                            surface.ViewState = false;
+                            surfDict[surfInd][0].ViewState = false;
+                            surfDict[surfInd].Add(surface);
+                        }
+                    }
+            }
+
+        }
+
+        /// <inheritdoc/>
+
+        public void ShowInsideSurfaces()
+        {
+            foreach (var element in surfaceObjects)
+            {
+                if (element.ViewState)
+                    foreach (var surface in element.GetSurfaces())
+                        surface.ViewState = true;
+            }
+        }
+        /// <inheritdoc/>
 
         public Tuple<int, int, int,int> CreateIndexes()
         {
@@ -38,10 +86,10 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
             var edges = 0;
             var colors = 0;
 
-            foreach (var surfaceObj in surfaceElements)
+            foreach (var surfaceObj in surfaceObjects)
             {
                 if(surfaceObj.ViewState)
-                    foreach (var surface in surfaceObj.GetSurface())
+                    foreach (var surface in surfaceObj.GetSurfaces())
                     {
                         if (surface.ViewState)
                         {
@@ -63,11 +111,11 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
             var ptr = new int[indexLength];
             var stride = 0;
 
-            foreach (var surfaceObj in surfaceElements)
+            foreach (var surfaceObj in surfaceObjects)
             {
                 if (surfaceObj.ViewState)
                 {
-                    foreach (var surface in surfaceObj.GetSurface())
+                    foreach (var surface in surfaceObj.GetSurfaces())
                     {
                         if (surface.ViewState)
                         {
@@ -91,15 +139,15 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
             var vertexArray = new float[vertexLength];
             var stride = 0;
 
-            ISurfaceObjsVertexCreator vertexCreator;
+            ISurfaceObjsVertexCreator<T,U> vertexCreator;
 
             if (vertexType == "цвет")
-                vertexCreator = new ColorSurfaceObjsCreator();
+                vertexCreator = new ColorSurfaceObjsCreator<T,U>();
             else if (vertexType == "координаты")
-                vertexCreator = new CoordsSurfaceObjsCreator();
-            else vertexCreator = new NormalsSurfaceObjsCreator();
+                vertexCreator = new CoordsSurfaceObjsCreator<T, U>();
+            else vertexCreator = new NormalsSurfaceObjsCreator<T, U>();
 
-            foreach (var surfaceElement in surfaceElements)
+            foreach (var surfaceElement in surfaceObjects)
             {
                 if (surfaceElement.ViewState)
                 {
@@ -116,8 +164,8 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
             var edgesArray = new bool[edgesLength];
             var stride = 0;
 
-            var vertexCreator = new EdgesSurfaceObjsCreator();
-            vertexCreator.Create(ref stride, edgesArray, surfaceElements);  
+            var vertexCreator = new EdgesSurfaceObjsCreator<T, U>();
+            vertexCreator.Create(ref stride, edgesArray, surfaceObjects);  
             return edgesArray;
         }
 
@@ -125,13 +173,13 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
 
         public int Count()
         {
-            return surfaceElements.Count();
+            return surfaceObjects.Count();
         }    
 /// <inheritdoc/>
 
         public IEnumerator<IModelObject> GetEnumerator()
         {
-            foreach (var surfaceElement in surfaceElements)
+            foreach (var surfaceElement in surfaceObjects)
             {
                 yield return surfaceElement;
             }
@@ -140,6 +188,16 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
         IEnumerator IEnumerable.GetEnumerator()
         {
             throw new NotImplementedException();
+        }
+
+
+        /// <summary>
+        /// Add
+        /// </summary>
+        /// <param name="objs"></param>
+        public void Add(IEnumerable<ISurfaceObject<T, U>> objs)
+        {
+                surfaceObjects.AddRange(objs);
         }
     }
 }

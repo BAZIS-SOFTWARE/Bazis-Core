@@ -17,5 +17,8 @@ namespace ModelController
 /// <inheritdoc/>
 
         public IExtractor2DFrom3D Extractor2DFrom3D { get; } = new Extract2DFrom3D();
+/// <inheritdoc/>
+
+        public ISew3DFrom2D Sew3DFrom2D { get; } = new Sew3DFrom2D();
     }
 }

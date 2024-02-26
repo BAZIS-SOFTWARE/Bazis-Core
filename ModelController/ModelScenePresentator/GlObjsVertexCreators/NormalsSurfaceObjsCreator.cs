@@ -3,14 +3,15 @@ using ModelController.ModelScenePresentator.Interfaces;
 
 namespace ModelController.ModelScenePresentator.GlObjsVertexCreators
 {
-    public class NormalsSurfaceObjsCreator : ISurfaceObjsVertexCreator
+    public class NormalsSurfaceObjsCreator<T,U> : ISurfaceObjsVertexCreator<T,U> 
+        where T : ISurface<U> where U : IPoint
     {
-        public void Create(ref int stride, float[] vertexAtributes, ISurfaceObject surfaceElement)
+        public void Create(ref int stride, float[] vertexAtributes, ISurfaceObject<T,U> surfaceElement)
         {
             if (surfaceElement.ViewState)
             {
                 //var centr = surfaceElement.CalcCentralPoint();
-                foreach (var surface in surfaceElement.GetSurface())
+                foreach (var surface in surfaceElement.GetSurfaces())
                 {
                     if (surface.ViewState)
                     {

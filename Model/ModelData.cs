@@ -2,6 +2,8 @@
 using Model.GroupsData;
 using Model.IO;
 using ModelInterfaces;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Model
@@ -15,12 +17,15 @@ namespace Model
         /// <inheritdoc/>
         public IModelLoader Loader { get; set; } = new LoadModelFromProjectTextFile();
 
-        public void Clear()
+        /// <inheritdoc/>
+
+        public void ClearAll()
         {
-            ObjectData.Clear();
+            ObjectData.ClearAll();
             GroupData.Clear();
-        }      
-/// <inheritdoc/>
+        }
+
+        /// <inheritdoc/>
 
         public void Load(string path)
         {
@@ -28,14 +33,10 @@ namespace Model
 
             ObjectData = modelData.ObjectData;
             GroupData = modelData.GroupData;
-
-            var list = ObjectData.ToList();
-            MergeSort<IModelObject>.MergeSortFunction(list);
-
-            ObjectData.Clear();
-            ObjectData.AddRange(list);
         }
-/// <inheritdoc/>
+
+
+        /// <inheritdoc/>
 
         public void Save(string path)
         {

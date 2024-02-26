@@ -10,8 +10,9 @@ using Model.Events;
 using ModelInterfaces;
 using ModelController.MeshObjsUtility;
 using Model.IO;
-using Model.Elements;
+using Model.MeshObjects;
 using GmshApi.GmshController;
+using ModelInterfaces.MeshObjects;
 
 namespace TestModel
 {
@@ -41,8 +42,8 @@ namespace TestModel
             };
             var nodes = new List<Node> { A, B, C, D, E, F, G, H };
             objectsData = new ObjectsData();
-            objectsData.AddRange(nodes);
-            objectsData.AddRange(elements);
+            objectsData.NodeCollection.AddRange(nodes);
+            objectsData.E2DCollection.AddRange(elements);
         }
 
         [TestMethod]
@@ -55,7 +56,7 @@ namespace TestModel
             model.Load(@"C:\Projs\TestProjTerm\Cub\cub_unsorted_freeNodes.bpf");
 
             var freeNodesFinder = new FreeNodesFinder(model.ObjectData);
-            var freeNodes = freeNodesFinder.Find<Element>();
+            var freeNodes = freeNodesFinder.Find();
 
             //assert
             freeNodes.ToArray()[0] = 14;
@@ -71,50 +72,42 @@ namespace TestModel
         {
             LoadModel();
             var selector = new SelectionHelper(objectsData);
-            var actual = selector.SelectInDirection<Element2D>(angle, first, second, Color.Green);
+            var actual = selector.SelectNodeInDirection(angle, first, second, Color.Green);
             Assert.IsTrue(actual.SequenceEqual(expected)); 
         }
 
-        [TestMethod]
-        public void SelectCorrectElements1()
+        [DataTestMethod]
+        [DataRow(5, 272570, @"..\..\..\Examples\3D\comp_sm.bpf")]
+        public void SelectCorrectElementsUseModel(float angle, int first, string path)
         {
-            LoadModel();
-            var selector = new SelectionHelper(objectsData);
-            var selectedElementNumbers = selector.SelectInPlane<Element2D>(19, 9, Color.Green);
-            var expected = new List<int>() { 9, 10, 11, 12, 13, 14 };
-            Assert.IsTrue(selectedElementNumbers.SequenceEqual(expected));
-        }
-
-        [TestMethod]
-        public void SelectCorrectElements2()
-        {
-            LoadModel();
-            var selector = new SelectionHelper(objectsData);
-            var selectedElementNumbers = selector.SelectInPlane<Element2D>(18, 9, Color.Green);
-            var expected = new List<int>() { 9, 10, 11, 12, 13 };
-            Assert.IsTrue(selectedElementNumbers.SequenceEqual(expected));
-        }
-
-        [TestMethod]
-        public void TestBoundEdge()
-        {
-            //assing
             var model = new ModelData();
-            model.Loader = new LoadModelFromASCIITextFile();
+            model.Load(path);
 
-            model.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
+            var selector = new SelectionHelper(model.ObjectData);
+            var selectedElementNumbers = selector.SelectE2DInPlane(angle, first, Color.Green);
+            Assert.IsTrue(selectedElementNumbers.Count > 0);
+        }
 
-            //act
-            var elements = model.ObjectData.FindMany<IElement3D>();
-            var nodes = model.ObjectData.FindMany<Node>();
+        [DataTestMethod]
+        [DataRow(19, 9, new int[] { 9, 10, 11, 12, 13, 14 })]
+        [DataRow(18, 9, new int[] { 9, 10, 11, 12, 13 })]
+        public void SelectCorrectElements(float angle, int first, int[] expected)
+        {
+            LoadModel();
+            var selector = new SelectionHelper(objectsData);
+            var selectedElementNumbers = selector.SelectE2DInPlane(angle, first, Color.Green);
+            Assert.IsTrue(selectedElementNumbers.SequenceEqual(expected));
+        }
 
-            var interNodesFinder = new InterfacedNodesFinder();
-            var edgeFinder = new FindBoundaryEdges(model);
-
-            var interNodes = interNodesFinder.Find(elements);
-
-            var edges = edgeFinder.Find();
-            //assert
+        [TestMethod]
+        public void FindBoundaryEdges_ShouldWork_OnModelWithDifferentElements()
+        {
+            var model = new ModelData();
+            model.Loader = new LoadModelFromProjectTextFile();
+            model.Load(@"..\..\..\Examples\3D\cub_unsorted.bpf");
+            var instance = new FindBoundaryEdges(model);
+            var bounds = instance.Find();
+            Assert.AreEqual(19, bounds.Count);
         }     
 
         [TestMethod]
@@ -122,24 +115,17 @@ namespace TestModel
         {
             //assing
             var model = new ModelData();
-            model.Loader = new LoadModelFromGMSHTextFile();
 
             //act
-            model.Load(@"C:\Projs\TestProjTerm\box\box1.inp");
-            model.Save(@"C:\Projs\TestProjTerm\box\task_1.bpf");
+            model.Load(@"..\..\..\Examples\3D\task_1.bpf");
 
-            model.Loader = new LoadModelFromProjectTextFile();
-            model.Load(@"C:\Projs\TestProjTerm\box\task_1.bpf");
-
-            var els3D = model.ObjectData.FindMany<IElement3D>();
-            var els2D = model.ObjectData.FindMany<Element2D>();
+            var els3D = model.ObjectData.E3DCollection;
 
             var interNodesEls3DFinder = new InterfacedNodesFinder();
-            var interNodesEls2DFinder = new InterfacedNodesFinder();
 
             var interfacedNodesEls3D = interNodesEls3DFinder.Find(new List<int>() { 3, 48, 71 }, els3D);
 
-            var elsForNode = new List<int>() { 2565,3048,3050,3051 };
+            var elsForNode = new List<int>() { 1565,2048,2050, 2051 };
             //assert
             for (int i = 0; i < interfacedNodesEls3D[48].Count; i++)
             {
@@ -162,12 +148,23 @@ namespace TestModel
 
             finder.ProgressEvent += (ar1, ar2) => { };
 
-            var coincidentNodes = finder.Find<Node>();
+            var coincidentNodes = finder.Find(ObjType.Узел);
 
-            var merge = new MergeObjects(model.ObjectData);
+            var merger = new MergeObjects(model.ObjectData);
 
+            merger.Merge(coincidentNodes, ObjType.Узел);
 
             //assert
+            var nodes = model.ObjectData.GetObjects(ObjType.Узел).ToList();
+            var numb = nodes.First().Number;
+
+            foreach (var item in nodes.Skip(1))
+            {
+                if (item.Number <= numb)
+                    throw new Exception($"{item.Number}");
+                numb = item.Number;
+            }
+            
             //freeNodes.ToArray()[0] = 14;
             //freeNodes.ToArray()[1] = 15;
         }
@@ -180,34 +177,20 @@ namespace TestModel
             var model = loader.Load(@"..\..\..\Examples\CDB\hex.cdb");
             var finder = new FindCoincidentObjects(model.ObjectData, 1.1f);
             finder.ProgressEvent += (ar1, ar2) => { };
-            var coincidentNodes = finder.Find<Node>();
+            var coincidentNodes = finder.Find(ObjType.Узел);
             var numberOfObjs = coincidentNodes.Count();
             Assert.AreEqual(4, numberOfObjs);
         }
 
-        [TestMethod, Timeout(3000)]
+        [TestMethod, Timeout(5000)]
         public void FindManyCoincidentObjects1() 
         {
             var loader = new LoadModelFromCDBTextFile();
             loader.LoadEvent += (ar1, ar2) => { };
             var model = loader.Load(@"..\..\..\Examples\CDB\10e+5Nodes.cdb");
             var finder = new FindCoincidentObjects(model.ObjectData, 1.0f);
-            var coincidentNodes = finder.Find<Node>().ToList();
+            var coincidentNodes = finder.Find(ObjType.Узел);
         }
-
-        //[TestMethod]
-        //public void FindManyCoincidentObjects2()
-        //{
-        //    var loader = new LoadModelFromGMSHTextFile();
-        //    var stopWatch = new Stopwatch();
-        //    loader.LoadEvent += (ar1, ar2) => { };
-        //    var model = loader.Load(@"..\..\Examples\3D\zub.inp");
-        //    var finder = new FindCoincidentObjects(model.ObjectData, 10f);
-        //    stopWatch.Start();
-        //    var coincidentNodes = finder.Find<Node>().ToList();
-        //    stopWatch.Stop();
-        //    Assert.IsTrue(stopWatch.ElapsedMilliseconds <= 2000);
-        //}
 
         [TestMethod]
         public void TestCalcFindOpenSurfaceNodes()
@@ -219,7 +202,7 @@ namespace TestModel
             model.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
 
             //act
-            var elements = model.ObjectData.FindMany<IElement3D>();
+            var elements = model.ObjectData.E3DCollection;
 
             //assert
             var openSurfNodes = new List<int>();

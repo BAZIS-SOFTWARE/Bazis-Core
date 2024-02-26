@@ -4,9 +4,10 @@ using System.Drawing;
 
 namespace ModelController.ModelScenePresentator.GlObjsVertexCreators
 {
-    public class ColorLineObjsCreator : ILineObjsVertexCreator
+    public class ColorLineObjsCreator<T> : ILineObjsVertexCreator<T>
+        where T : IPoint
     {
-        public void Create(ref int stride, float[] vertexAtributes, INodeObject nodeObject)
+        public void Create(ref int stride, float[] vertexAtributes, IVertexObject<T> nodeObject)
         {
             //Цвет черный с alpha 0.0 - установим alpha в 1.0f
             /*var color = nodeObject.MasterColor;*/

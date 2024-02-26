@@ -1,5 +1,5 @@
 ﻿using Geometry;
-using Model.Elements;
+using Model.MeshObjects;
 using Model.Events;
 using ModelInterfaces;
 using System;
@@ -8,6 +8,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using ModelInterfaces.MeshObjects;
+using System.Xml.Linq;
 
 namespace Model.IO
 {
@@ -19,8 +21,8 @@ namespace Model.IO
 
         public IModelData Load(string path)
         {
-            var model = new ModelData();
-            using(var reader = new StreamReader(path))
+            ModelData model = new ModelData();
+            using (var reader = new StreamReader(path))
             {
                 while(!reader.EndOfStream)
                 {
@@ -28,13 +30,12 @@ namespace Model.IO
                     var tokens = line.Split().ToArray();
                     if(line.Contains("BEGIN_NODES"))
                     {
-                        var nodes = ReadNodes(reader, int.Parse(tokens[1]));
-                        model.ObjectData.AddRange(nodes);
+                        foreach (var item in ReadNodes(reader, int.Parse(tokens[1])))
+                            model.ObjectData.NodeCollection.Add(item);                   
                     }
                     if(line.Contains("BEGIN_ELEMENTS"))
                     {
-                        var elements = ReadElements(reader, int.Parse(tokens[1]),model.ObjectData.Last().Number + 1);
-                        model.ObjectData.AddRange(elements);
+                        ReadElements(reader, int.Parse(tokens[1]), model);
                     }
                     if(line.Contains("BEGIN_GROUPS"))
                     {
@@ -47,7 +48,7 @@ namespace Model.IO
             return model;
         }
 
-        private IEnumerable<Node> ReadNodes(StreamReader reader, int count)
+        private IEnumerable<INode> ReadNodes(StreamReader reader, int count)
         {
             LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка узлов..."));
             for (var i = 0; i < count; i++)
@@ -64,33 +65,43 @@ namespace Model.IO
             }
         }
 
-        private IEnumerable<ModelObject> ReadElements(StreamReader reader, int count, int startNumber)
+        private void ReadElements(StreamReader reader, int count, ModelData model)
         {
             LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка элементов..."));
+            var elLastNumber = model.ObjectData.GetLastNumber(ObjType.Элемент);
             for (var i = 0; i < count; i++)
             {
                 var line = reader.ReadLine();
                 var tokens = line.Split().ToArray();
-                var index = int.Parse(tokens[0]);
+                var elCurrentNumber = int.Parse(tokens[0]);
                 var type = int.Parse(tokens[1]);
                 var nodes = tokens.Skip(5)
                     .Select(int.Parse)
                     .Select(j => allNodes[j])
-                    .ToArray();      
+                    .ToArray();
 
-                var element = GetElementByType(nodes, type, startNumber + i);
-                allElements.Add(index, element);
-                yield return element;
+                
+                var element = GetElementByType(nodes, model,type, elLastNumber + i);
+                allElements.Add(elCurrentNumber, element);
             }
         }
 
-        private Element GetElementByType(Node[] nodes, int type, int index)
+        private Element GetElementByType(Node[] nodes, ModelData model,int type,int elNumber)
         {
-            switch(type) 
+            switch (type) 
             {
-                case 3004: return new Tetra(index, nodes);
-                case 2003: return new Triangle(index, nodes);
-                case 1002: return new Beam(index, nodes);
+                case 3004:
+                    var tetra = new Tetra(elNumber, nodes);
+                    model.ObjectData.E3DCollection.Add(tetra);
+                    return tetra;
+                case 2003:
+                    var triangle = new Triangle(elNumber, nodes);
+                    model.ObjectData.E2DCollection.Add(triangle);
+                    return triangle;
+                case 1002:
+                    var beam = new Beam(elNumber, nodes);
+                    model.ObjectData.E1DCollection.Add(beam);
+                    return beam;
                 default: throw new ArgumentException($"Unable to recognize element of type {type}");
             }
         }
@@ -108,10 +119,10 @@ namespace Model.IO
                 var groupName = tokens[1];
                 var numbers = tokens.Skip(7).Select(int.Parse);
 
-                var objsType = "";
+                ObjType objsType;
                 if (tokens[2] == "2")
                     objsType = allElements[numbers.First()].ObjType;
-                else objsType = "Узлы";
+                else objsType = ObjType.Узел;
 
                 var group = new GroupsData.Group(groupName, objsType);
                 foreach (var number in numbers)

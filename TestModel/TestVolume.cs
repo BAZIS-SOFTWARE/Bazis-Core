@@ -1,12 +1,6 @@
 ﻿using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Model;
-using Model.Elements;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Model.MeshObjects;
 
 namespace TestModel
 {

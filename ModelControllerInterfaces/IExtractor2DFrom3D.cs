@@ -1,4 +1,4 @@
-﻿using ModelInterfaces;
+﻿using ModelInterfaces.MeshObjects;
 using System.Collections.Generic;
 
 namespace ModelControllerInterfaces
@@ -12,7 +12,7 @@ namespace ModelControllerInterfaces
         /// FindOpenSurfaces
         /// </summary>
         /// <returns></returns>
-        IEnumerable<ISurface> FindOpenSurfaces(IElement3D[] elements);
+        IEnumerable<IElementSurface> FindOpenSurfaces(IElement3D[] elements);
         /// <summary>
         /// Create
         /// </summary>

@@ -28,16 +28,16 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow("Cilindr.step", 6, ObjKind.Curve)]
-        [DataRow("Cilindr.step", 4, ObjKind.Point)]
-        public void GetGeometryObjectsTest(string fileName, int numbOfObjs, ObjKind objKind)
+        [DataRow("Cilindr.step", 6, ObjType.Линия)]
+        [DataRow("Cilindr.step", 4, ObjType.Точка)]
+        public void GetGeometryObjectsTest(string fileName, int numbOfObjs, ObjType objType)
         {
             var ierr = 0;
             controller.gmshOpen(modelFolder + fileName, ref ierr);
 
             int[] dimTags;
             var status = false;
-            if (objKind == ObjKind.Curve)
+            if (objType == ObjType.Линия)
                 status  = controller.ModelGetGeometryEntities(out dimTags, 1);
             else
                 status = controller.ModelGetGeometryEntities(out dimTags, 0);
@@ -45,14 +45,14 @@ namespace TestModel.GmshTests
             Assert.IsTrue(status);
 
             IEnumerable<IModelObject> objects;
-            if (objKind == ObjKind.Curve)
+            if (objType == ObjType.Линия)
                 objects = controller.CreateLines(dimTags, ref status);
             else
                 objects = controller.CreateControlPoints(dimTags);
 
             Assert.AreEqual(numbOfObjs, objects.Count());
             foreach (var obj in objects)
-                Assert.AreEqual(objKind, obj.ObjKind);
+                Assert.AreEqual(objType, obj.ObjType);
         }
 
         [DataTestMethod]
@@ -299,6 +299,50 @@ namespace TestModel.GmshTests
             Assert.AreNotEqual(1, ierr);
             elements = controller.GetMeshEntities(3, -1, ref status);
             Assert.AreNotEqual(0, elements.Count);
+        }
+        //Тест проверки 4 координаты контрольной точки в файле
+        [DataTestMethod]
+        [DataRow(@"..\..\..\Examples\GMSHAPI\simple.geo", new double[] { 0.1, 0.1, 0.1, 0.01 })]
+        public void CheckMeshSizesInFileTest(string path, double[] expected)
+        {
+            var ierr = 0;
+            int[] dimTags;
+            controller.gmshOpen(path, ref ierr);
+            controller.ModelGetGeometryEntities(out dimTags, 0);
+            var coords = controller.GetMeshDensity(dimTags);
+            CollectionAssert.AreEqual(expected, coords);
+        }
+        //Тест - устанавливаем плотность в точке, затем проверям(берем разные файлы моделей!)
+        [DataTestMethod]
+        [DataRow(@"..\..\..\Examples\GMSHAPI\Cilindr.step", new double[] { 0.35, 0.8, 0.25, 1.0 })]
+        [DataRow(@"..\..\..\Examples\GMSHAPI\simple.geo", new double[] { 0.5, 0.9, 0.01, 0.7 })]
+        public void SetAndGetMeshSizesTest(string path, double[] expected)
+        {
+            var ierr = 0;
+            int[] dimTags;
+            controller.gmshOpen(path, ref ierr);
+            controller.ModelGetGeometryEntities(out dimTags, 0);
+            for (int i = 1, j = 0; i < dimTags.Length; i += 2, ++j)
+            {
+                var dim = dimTags[i - 1];
+                var tag = dimTags[i];
+                controller.gmshModelMeshSetSize(new int[] { dim, tag }, (IntPtr)2 , expected[j], ref ierr);
+            }
+            var coords = controller.GetMeshDensity(dimTags);
+            CollectionAssert.AreEqual(expected, coords);
+        }
+
+        [DataTestMethod]
+        [DataRow(@"..\..\..\Examples\GMSHAPI\simple.geo", new string[] { "18", "bump","1.8"})]
+        public void SetAndGetCurveTransfinite(string path, string[] expected)
+        {
+            var ierr = 0;
+            controller.gmshOpen(path, ref ierr);
+            controller.gmshModelMeshSetTransfiniteCurve(1, 15, "Bump", 1.8, ref ierr);
+            controller.gmshModelSetAttribute("transfinite", expected, (IntPtr)3, ref ierr);
+            string[] attributes;
+            controller.ModelGetAttribute("transfinite", out attributes);
+            CollectionAssert.AreEqual(expected, attributes);
         }
 
         private void RemoveNameTest(ref string entName, int dim, int delId, int maxId)

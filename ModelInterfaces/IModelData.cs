@@ -10,7 +10,11 @@ namespace ModelInterfaces
     {
         IObjectsData ObjectData { get; }
         IGroupData GroupData { get; }
-        void Clear();
+
+        /// <summary>
+        /// Clear all objects and groups
+        /// </summary>
+        void ClearAll();
         /// <summary>
         /// Save
         /// </summary>

@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Drawing;
 using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
+using Model.GeometryObjects;
+using Model.MeshObjects;
 using ModelController.ModelScenePresentator;
 using ModelInterfaces;
 
@@ -15,29 +16,28 @@ namespace TestModel
         public void TestPoligonOneSurface()
         {
             //assing
-            var poligons = new List<Surface>()
-            {
-                               new Surface(0,
-                new Node[]
+            var points =
+                new GeometryPoint[]
                 {
-                    new Node(0,new Point3D(0 ,1, 0)),
-                    new Node(3,new Point3D(0 , 0 , 1)),
-                    new Node(2,new Point3D(0.3650039f , 0 , 0.6349962f)),
-                    new Node(1,new Point3D(0.3650039f, 0.6349962f , 0))
-                },
-                ObjKind.ElementSurface,Color.Orange)
-            };
+                    new GeometryPoint(0,new Point3D(0 ,1, 0)),
+                    new GeometryPoint(3,new Point3D(0 , 0 , 1)),
+                    new GeometryPoint(2,new Point3D(0.3650039f , 0 , 0.6349962f)),
+                    new GeometryPoint(1,new Point3D(0.3650039f, 0.6349962f , 0))
+                };
+            var surface = new GeometrySurface(0, points);
+            var fig2D = new SurfaceFigure(0, new GeometrySurface[] { surface });
 
             var model = new ModelData();
-            model.ObjectData.AddRange(poligons);
+            model.ObjectData.Fig2DCollection.Add(fig2D);
 
             //act
-            var presentator = new ModelScenePresentator(model.ObjectData);
-            var inds = presentator["Поверхности"].CreateIndexes();
-            var ptrs = presentator["Поверхности"].CreatePointers(inds.Item1);
-            var coords = presentator["Поверхности"].CreateVertexes(inds.Item2, "координаты");
-            var colors = presentator["Поверхности"].CreateVertexes(inds.Item3, "цвет");
-            var normals = presentator["Поверхности"].CreateVertexes(inds.Item2, "нормаль");
+            var creator = new PresentersCreator();
+            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.Fig2DCollection,false);
+            var inds = presentator.CreateIndexes();
+            var ptrs = presentator.CreatePointers(inds.Item1);
+            var coords = presentator.CreateVertexes(inds.Item2, "координаты");
+            var colors = presentator.CreateVertexes(inds.Item3, "цвет");
+            var normals = presentator.CreateVertexes(inds.Item2, "нормаль");
             //assert
             Assert.AreEqual(ptrs.Length, 6);
             Assert.AreEqual(coords.Length, 18);
@@ -49,46 +49,44 @@ namespace TestModel
         public void TestPoligonsManySurfaces()
         {
             //assing
-            var poligons = new List<Surface>()
+            var surfaces = new List<GeometrySurface>()
             {
-                               new Surface(0,
-                new Node[]
+                               new GeometrySurface(0,
+                new GeometryPoint[]
                 {
-                    new Node(0,new Point3D(0 ,1, 0)),
-                    new Node(1,new Point3D(0.3650039f, 0.6349962f , 0)),
-                    new Node(2,new Point3D(0.3650039f , 0 , 0.6349962f)),
-                    new Node(3,new Point3D(0 , 0 , 1))
-                },
-                ObjKind.ElementSurface,Color.Orange),
-                new Surface(1,
-                new Node[]
+                    new GeometryPoint(0,new Point3D(0 ,1, 0)),
+                    new GeometryPoint(1,new Point3D(0.3650039f, 0.6349962f , 0)),
+                    new GeometryPoint(2,new Point3D(0.3650039f , 0 , 0.6349962f)),
+                    new GeometryPoint(3,new Point3D(0 , 0 , 1))
+                }),
+                new GeometrySurface(1,
+                new GeometryPoint[]
                 {
-                    new Node(0,new Point3D(0.3650039f , 0.6349962f , 0)),
-                    new Node(1,new Point3D(0.6829777f , 0.3170223f , 0)),
-                    new Node(2,new Point3D(0.6829777f , 0 , 0.3170223f)),
-                    new Node(3,new Point3D(0.3650039f , 0 , 0.6349962f)),
-                },
-                ObjKind.ElementSurface,Color.Red),
-                new Surface(2,
-                new Node[]
+                    new GeometryPoint(0,new Point3D(0.3650039f , 0.6349962f , 0)),
+                    new GeometryPoint(1,new Point3D(0.6829777f , 0.3170223f , 0)),
+                    new GeometryPoint(2,new Point3D(0.6829777f , 0 , 0.3170223f)),
+                    new GeometryPoint(3,new Point3D(0.3650039f , 0 , 0.6349962f)),
+                }),
+                new GeometrySurface(2,
+                new GeometryPoint[]
                 {
-                    new Node(0,new Point3D(0.6829777f , 0.3170223f , 0)),
-                    new Node(1,new Point3D(1 , 0 , 0)),
-                    new Node(2,new Point3D(0.6829777f , 0 , 0.3170223f)),
-                },
-                ObjKind.ElementSurface,Color.Orange)
+                    new GeometryPoint(0,new Point3D(0.6829777f , 0.3170223f , 0)),
+                    new GeometryPoint(1,new Point3D(1 , 0 , 0)),
+                    new GeometryPoint(2,new Point3D(0.6829777f , 0 , 0.3170223f)),
+                })
 
             };
             var model = new ModelData();
-            model.ObjectData.AddRange(poligons);
+            model.ObjectData.Fig2DCollection.Add(new SurfaceFigure(0,surfaces.ToArray()));
 
             //act
-            var presentator = new ModelScenePresentator(model.ObjectData);
-            var inds = presentator["Поверхности"].CreateIndexes();
-            var ptrs = presentator["Поверхности"].CreatePointers(inds.Item1);
-            var coords = presentator["Поверхности"].CreateVertexes(inds.Item2, "координаты");
-            var colors = presentator["Поверхности"].CreateVertexes(inds.Item3, "цвет");
-            var normals = presentator["Поверхности"].CreateVertexes(inds.Item2, "нормаль");
+            var creator = new PresentersCreator();
+            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.Fig2DCollection, false);
+            var inds = presentator.CreateIndexes();
+            var ptrs = presentator.CreatePointers(inds.Item1);
+            var coords = presentator.CreateVertexes(inds.Item2, "координаты");
+            var colors = presentator.CreateVertexes(inds.Item3, "цвет");
+            var normals = presentator.CreateVertexes(inds.Item2, "нормаль");
             //assert
             Assert.AreEqual(ptrs.Length, 15);
             Assert.AreEqual(coords.Length, 45);

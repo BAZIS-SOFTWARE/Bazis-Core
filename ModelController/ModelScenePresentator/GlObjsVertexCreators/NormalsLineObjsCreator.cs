@@ -3,9 +3,10 @@ using ModelController.ModelScenePresentator.Interfaces;
 
 namespace ModelController.ModelScenePresentator.GlObjsVertexCreators
 {
-    public class NormalsLineObjsCreator : ILineObjsVertexCreator
+    public class NormalsLineObjsCreator<T> : ILineObjsVertexCreator<T>
+        where T : IPoint
     {
-        public void Create(ref int stride, float[] vertexAtributes, INodeObject nodeObject)
+        public void Create(ref int stride, float[] vertexAtributes, IVertexObject<T> nodeObject)
         {
             if (nodeObject.ViewState)
             {

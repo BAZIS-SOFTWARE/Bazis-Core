@@ -1,82 +1,112 @@
 ﻿using Functions.Sort;
+using ModelInterfaces;
+using ModelInterfaces.GeometryObjects;
+using ModelInterfaces.MeshObjects;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace ModelInterfaces
 {
-    public interface IObjectsData : IList<IModelObject>
+    /// <summary>
+    /// IObjectsData
+    /// </summary>
+    public interface IObjectsData
     {
         /// <summary>
-        /// FindMany
+        /// E3DCollection
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        IEnumerable<T> FindMany<T>() where T : IModelObject;
+        IObjectsCollection<IElement3D> E3DCollection { get; }
         /// <summary>
-        /// Sort objects by number use merge sort
+        /// E2DCollection
         /// </summary>
-        void Sort();
+        IObjectsCollection<IElement2D> E2DCollection { get; }
         /// <summary>
-        /// GetLastObjNumber
+        /// E1DCollection
         /// </summary>
-        /// <returns></returns>
-        int GetLastObjNumber();
+        IObjectsCollection<ILineObject<INode>> E1DCollection { get; }
         /// <summary>
-        /// NumberOfNodes
+        /// NodeCollection
         /// </summary>
-        int NumberOfNodes { get; }
+        IObjectsCollection<INode> NodeCollection { get; }
         /// <summary>
-        /// NumberOfVolumeElements
+        /// PointCollection
         /// </summary>
-        int NumberOfVolumeElements { get; }
+        IObjectsCollection<IGeometryPoint> PointCollection { get; }
         /// <summary>
-        /// NumberOfLineElements
+        /// LineCollection
         /// </summary>
-        int NumberOfLineElements { get; }
+        IObjectsCollection<ILineObject<IGeometryPoint>> LineCollection { get; }
         /// <summary>
-        /// NumberOfSurfaceElements
+        /// Fig2DCollection
         /// </summary>
-        int NumberOfSurfaceElements { get; }
+        IObjectsCollection<ISurfaceFigure> Fig2DCollection { get; }
         /// <summary>
-        /// NumberOfElements
+        /// Fig3DCollection
         /// </summary>
-        int NumberOfElements { get; }
+        IObjectsCollection<IVolumeFigure> Fig3DCollection { get; }
         /// <summary>
-        /// FindMany
-        /// </summary>
-        /// <param name="objKind"></param>
-        /// <returns></returns>
-        IEnumerable<IModelObject> FindMany(ObjKind objKind);
-        /// <summary>
-        /// FindMany
+        /// Count
         /// </summary>
         /// <param name="objType"></param>
         /// <returns></returns>
-        IEnumerable<IModelObject> FindMany(string objType);
+        int Count(ObjType objType);
         /// <summary>
-        /// ClearRemoved
+        /// ClearAll
         /// </summary>
-        void ClearRemoved();
+        void ClearAll();
         /// <summary>
-        /// Remove a range of objects. It is advisable to do a sort after removing.
+        /// Clear
         /// </summary>
         /// <param name="objType"></param>
-        void RemoveRange(string objType);
+        void Clear(ObjType objType);
         /// <summary>
-        /// RemoveAt
+        /// ContainsCollection
         /// </summary>
-        /// <param name="modelObjectInd"></param>
-
-        void RemoveAt(int modelObjectInd);
-
-        IModelObject Find(int objNumbr);
+        /// <param name="objType"></param>
+        /// <returns></returns>
+        bool Contains(ObjType objType);
         /// <summary>
-        /// Get objects types
+        /// ClearNotExisted
+        /// </summary>
+        void ClearNotExisted();
+        /// <summary>
+        /// Find
+        /// </summary>
+        /// <param name="objNumbr"></param>
+        /// <returns></returns>
+        IEnumerable<IModelObject> FindMany(int objNumbr);
+        /// <summary>
+        /// Find
+        /// </summary>
+        /// <param name="objType"></param>
+        /// <param name="objNumbr"></param>
+        /// <returns></returns>
+        IModelObject Find(ObjType objType, int objNumbr);
+        /// <summary>
+        /// GetAllObjects
         /// </summary>
         /// <returns></returns>
-        IEnumerable<string> GetObjectTypes();
-
-        void AddRange(IEnumerable<IModelObject> addObjects);
+        IEnumerable<IModelObject> GetAllObjects();
+        /// <summary>
+        /// GetAllElements
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<IElement> GetAllElements();
+        /// <summary>
+        /// GetObjects
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<IModelObject> GetObjects(ObjType objType);
+        /// <summary>
+        /// GetTypes
+        /// </summary>
+        ICollection<ObjType> ObjsTypes { get; }
+        /// <summary>
+        /// GetLastNumber
+        /// </summary>
+        /// <returns></returns>
+        int GetLastNumber(ObjType objType);
     }
 }

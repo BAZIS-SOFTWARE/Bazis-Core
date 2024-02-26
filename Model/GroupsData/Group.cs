@@ -24,7 +24,7 @@ namespace Model.GroupsData
         /// <summary>
         /// ObjType
         /// </summary>
-        public string ObjType { get; }
+        public ObjType ObjType { get; }
 
         
 /// <inheritdoc/>
@@ -33,10 +33,15 @@ namespace Model.GroupsData
         {
             get { return objects.Count; }
         }
+/// <inheritdoc/>
 
         public bool IsReadOnly => false;
 
-
+        /// <summary>
+        /// this
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public IModelObject this[int key]
         {
             get { return objects[key]; }
@@ -49,12 +54,14 @@ namespace Model.GroupsData
             var indStr = string.Join(" ", objects.Select(x => x.Number));
             return string.Format("{0} {1} {2} | {3}", GroupName, ObjType, objects.Count, indStr);
         }
+/// <inheritdoc/>
 
 
         public void Clear()
         {
             objects.Clear();
         }
+/// <inheritdoc/>
 
         public IEnumerator<IModelObject> GetEnumerator()
         {
@@ -93,6 +100,7 @@ namespace Model.GroupsData
         {
             objects.AddRange(items);
         }
+/// <inheritdoc/>
 
         public bool Contains(IModelObject item)
         {
@@ -109,12 +117,12 @@ namespace Model.GroupsData
             return objects.Remove(item);
         }
 
-        public Group(string groupName, string objType)
+        public Group(string groupName, ObjType objType)
         {
             GroupName = groupName;
             ObjType = objType;
-            ViewState = true;
         }
+/// <inheritdoc/>
 
         public bool Swap(int fInd, int sInd)
         {

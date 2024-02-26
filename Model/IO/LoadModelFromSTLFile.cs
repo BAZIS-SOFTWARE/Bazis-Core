@@ -1,10 +1,13 @@
 ﻿using Geometry;
+using Model.MeshObjects;
 using Model.Events;
 using ModelInterfaces;
 using System;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using Model.GeometryObjects;
+using System.Collections.Generic;
 
 namespace Model.IO
 {
@@ -40,27 +43,29 @@ namespace Model.IO
 
                 LoadEvent?.Invoke(this, new LoaderEventArgs("Начало импорта STL модели"));
 
-                while (str != "endsolid")
+                var surfaces = new List<GeometrySurface>();
+                while (str != null)
                 {
                     if (str != null && str.Contains("outer loop"))
                     {
                         str = reader.ReadLine()?.Trim();
-                        var nodes = GetNodes(reader, str);
-                        modelData.ObjectData.AddRange(nodes);
-                        var surface = new Surface(counter, nodes, ObjKind.GeometrySurface);
-                        modelData.ObjectData.Add(surface);
+                        var points = GetPoints(reader, str);
+                        modelData.ObjectData.PointCollection.AddRange(points);
+                        var surface = new GeometrySurface(counter, points);
+                        surfaces.Add(surface);
                         counter++;
                     }
                     str = reader.ReadLine();
                 }
+                modelData.ObjectData.Fig2DCollection.Add(new SurfaceFigure(0, surfaces.ToArray()));
                 LoadEvent?.Invoke(this, new LoaderEventArgs("Модель загружена"));
             }
 
             return modelData;
         }
-        private Node[] GetNodes(StreamReader stl, string str)
+        private GeometryPoint[] GetPoints(StreamReader stl, string str)
         {
-            var nodes = new Node[3];
+            var points = new GeometryPoint[3];
             for (int i = 0; i < 3; i++)
             {
                 if (str != null && str != "endloop" && str.Contains("vertex"))
@@ -70,13 +75,13 @@ namespace Model.IO
                     var x = float.Parse(lineData[0], NumberStyles.Float, CultureInfo.InvariantCulture);
                     var y = float.Parse(lineData[1], NumberStyles.Float, CultureInfo.InvariantCulture);
                     var z = float.Parse(lineData[2], NumberStyles.Float, CultureInfo.InvariantCulture);
-                    var node = new Node(counter, new Point3D(x, y, z));
+                    var node = new GeometryPoint(counter, new Point3D(x, y, z));
                     counter++;
-                    nodes[i] = node;
+                    points[i] = node;
                     str = stl.ReadLine()?.Trim();
                 }
             }
-            return nodes;
+            return points;
         }
 
         private IModelData LoadBinary(string path)
@@ -90,16 +95,21 @@ namespace Model.IO
                 reader.BaseStream.Position += 80;
                 var count = reader.ReadUInt32();
                 reader.BaseStream.Position += 12;
+
+                var surfaces = new List<GeometrySurface>();
+
                 for (int i = 0; i < count; i++)
                 {
-                    Node[] nodes = new Node[3];
-                    nodes[0] = ReadNode(reader);
-                    nodes[1] = ReadNode(reader);
-                    nodes[2] = ReadNode(reader);
-                    var surface = new Surface(counter++, nodes, ObjKind.GeometrySurface);
-                    modelData.ObjectData.Add(surface);
+                    var points = new GeometryPoint[3];
+                    points[0] = ReadNode(reader);
+                    points[1] = ReadNode(reader);
+                    points[2] = ReadNode(reader);
+                    var surface = new GeometrySurface(counter++, points);
+                    surfaces.Add(surface);
                     reader.BaseStream.Position += 14;
                 }
+
+                modelData.ObjectData.Fig2DCollection.Add(new SurfaceFigure(0, surfaces.ToArray()));
             }
             LoadEvent?.Invoke(this, new LoaderEventArgs("Модель загружена"));
             return modelData;
@@ -115,12 +125,12 @@ namespace Model.IO
             }
         }
 
-        Node ReadNode(BinaryReader reader)
+        GeometryPoint ReadNode(BinaryReader reader)
         {
             var x = reader.ReadSingle();
             var y = reader.ReadSingle();
             var z = reader.ReadSingle();
-            var node = new Node(counter++, new Point3D(x, y, z));
+            var node = new GeometryPoint(counter++, new Point3D(x, y, z));
             return node;
         }
     }
@@ -130,6 +140,4 @@ namespace Model.IO
     {
         public StlFileLoadExeption(string message, Exception inner) : base(message, inner) { }
     }
-
-
 }

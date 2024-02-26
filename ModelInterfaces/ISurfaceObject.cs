@@ -1,4 +1,5 @@
 ﻿using Geometry;
+using ModelInterfaces.GeometryObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,13 +8,21 @@ using System.Threading.Tasks;
 
 namespace ModelInterfaces
 {
-    public interface ISurfaceObject : INodeObject
+    /// <summary>
+    /// ISurfaceObject
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="U"></typeparam>
+    public interface ISurfaceObject<T,U> : IModelObject, IVertexObject<U> where T : ISurface<U> where U : IPoint
     {
-        IEnumerable<ISurface> GetSurface();
-
         /// <summary>
         /// NumberOfSides
         /// </summary>
         int NumberOfSides { get; }
+        /// <summary>
+        /// GetSurface
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<T> GetSurfaces();
     }
 }

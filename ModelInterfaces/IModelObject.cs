@@ -1,62 +1,64 @@
 ﻿using Geometry;
 using Geometry.Interfaces;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ModelInterfaces
 {
-  
-    /// <summary>
-    /// ObjKind
-    /// </summary>
-    public enum ObjKind
-    {
-        Node,
-        Penta,
-        Tetra,
-        Hexa,
-        Triangle,
-        ElementSurface,
-        GeometrySurface,
-        Quad,
-        Point,
-        Beam,
-        Curve
-    }
     /// <summary>
     /// ObjType
     /// </summary>
     public enum ObjType
     {
         /// <summary>
-        /// Узлы
+        /// Объект
         /// </summary>
-        Узлы,
+        Объект,
+        /// <summary>
+        /// Точка
+        /// </summary>
+        Точка,
         /// <summary>
         /// Поверхности
         /// </summary>
-        Поверхности,
+        Линия,
         /// <summary>
-        /// Элементы
+        /// Поверхность
         /// </summary>
-        Элементы,
+        Поверхность,
         /// <summary>
-        /// Элементы2D
+        /// Фигура
         /// </summary>
-        Элементы2D,
+        Фигура,
         /// <summary>
-        /// Элементы3D
+        /// Фигура2D
         /// </summary>
-        Элементы3D,
+        Фигура2D,
         /// <summary>
-        /// Элементы1D
+        /// Фигура3D
         /// </summary>
-        Элементы1D
+        Фигура3D,
+        /// <summary>
+        /// Узел
+        /// </summary>
+        Узел,
+        /// <summary>
+        /// Элемент
+        /// </summary>
+        Элемент,
+        /// <summary>
+        /// Элемент1D
+        /// </summary>
+        Элемент1D,
+        /// <summary>
+        /// Элемент2D
+        /// </summary>
+        Элемент2D,
+        /// <summary>
+        /// Элемент3D
+        /// </summary>
+        Элемент3D
     }
     /// <summary>
     /// Model object interface
@@ -89,26 +91,21 @@ namespace ModelInterfaces
         /// </summary>
         bool ExistState { get; set; }
         /// <summary>
-        /// ObjKind
-        /// </summary>
-        [Obsolete(@"Prop ""ObjKind"" is deprecated, please don't use.")]
-        ObjKind ObjKind { get; }
-        /// <summary>
         /// ObjType
         /// </summary>
-        string ObjType { get; }
+        ObjType ObjType { get; }
         /// <summary>
         /// NumberOfPoints
         /// </summary>
         int NumberOfPoints { get; }
         /// <summary>
-        /// GetPoints
+        /// GetCoordinates
         /// </summary>
-        IEnumerable<Point3D> GetPoints();
+        IEnumerable<Point3D> GetCoordinates();
         /// <summary>
         /// CalcCentralPoint
         /// </summary>
-        Point3D CalcCentralPoint();
+        Point3D CalcCentr();
         /// <summary>
         /// SetBackColor
         /// </summary>

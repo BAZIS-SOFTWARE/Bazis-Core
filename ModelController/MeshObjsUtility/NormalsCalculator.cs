@@ -1,5 +1,5 @@
 ﻿using Geometry;
-using ModelInterfaces;
+using ModelInterfaces.MeshObjects;
 using System.Collections.Generic;
 
 namespace ModelController.MeshObjsUtility
@@ -11,14 +11,14 @@ namespace ModelController.MeshObjsUtility
             var normals = new Dictionary<int, Point3D>();
             foreach (var element in elements)
             {
-                var centre = element.CalcCentralPoint();
-                foreach (var surface in element.GetSurface())
+                var centre = element.CalcCentr();
+                foreach (var surface in element.GetSurfaces())
                 {
                     var normal = surface.CalcNormal();
                     var plane = new Plane(surface[0].Position, normal);
                     var proj = centre.GetPointProectionOnPlane(plane);
                     var normalV = proj.Sub(centre);
-                    foreach (var node in surface.GetNodes())
+                    foreach (var node in surface.GetVertexes())
                     {
                         if (node.ViewState)
                             if (normals.ContainsKey(node.Number))
@@ -37,8 +37,8 @@ namespace ModelController.MeshObjsUtility
 
             foreach (var element in elements)
             {
-                var centr = element.CalcCentralPoint();
-                foreach (var surface in element.GetSurface())
+                var centr = element.CalcCentr();
+                foreach (var surface in element.GetSurfaces())
                 {
                     var normal = surface.CalcNormal();
 

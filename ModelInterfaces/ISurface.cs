@@ -8,12 +8,29 @@ using System.Threading.Tasks;
 
 namespace ModelInterfaces
 {
-    public interface ISurface : ISurfaceObject, INormal,ISquare, IEquatable<ISurface>
+    /// <summary>
+    /// ISurface
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public interface ISurface<T> : INormal,ISquare, IVertexObject<T>
+        where T : IPoint
     {
+        /// <summary>
+        /// GetDistance
+        /// </summary>
+        /// <param name="point3D"></param>
+        /// <returns></returns>
         float GetDistance(Point3D point3D);
-
-        Segment3D[] GetLinesFromSurface(ISurface surface);
-
-        INode this[int ind] { get; }
+        /// <summary>
+        /// GetLinesFromSurface
+        /// </summary>
+        /// <returns></returns>
+        Segment3D[] GetLinesFromSurface();
+        /// <summary>
+        /// this
+        /// </summary>
+        /// <param name="ind"></param>
+        /// <returns></returns>
+        T this[int ind] { get; }
     }
 }
