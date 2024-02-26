@@ -193,6 +193,8 @@ namespace ModelController.MeshObjsCreator
             void Add(Tetra tetra);
         }
 
+
+        // пока оставил для отладки
         private class SimpleSearcher : ISearcher
         {
             private const double EPS = 10E-4;
@@ -348,7 +350,6 @@ namespace ModelController.MeshObjsCreator
                 }
             }
         }
-
 
         private class OctreeSearcher : ISearcher
         {

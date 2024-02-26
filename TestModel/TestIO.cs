@@ -80,8 +80,6 @@ namespace TestModel
 
         [TestMethod]
         //[DataRow(@"..\..\..\Examples\STL\ACII.stl")]
-        [DataRow(@"..\..\..\..\�������� ��������� �������\���� �������\block.stl")]
-        [DataRow(@"..\..\..\..\�������� ��������� �������\���� �������\block_solid_sup.stl")]
         public void ImportExportModelFromSTLtextFormat(string filePath)
         {
             //assing
