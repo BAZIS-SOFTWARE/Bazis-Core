@@ -75,7 +75,7 @@ namespace TestModel
             model.Loader = new LoadModelFromSTLFile();
 
             //act
-            model.Load(filePath);
+            model.Load(path);
 
             //assert
         }
