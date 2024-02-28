@@ -1,6 +1,6 @@
 ﻿using MathNet.Numerics.LinearAlgebra.Single;
-using ModelInterfaces;
 using ModelInterfaces.IntegralObject;
+using ModelInterfaces.MeshObjects;
 using System;
 using System.Collections.Generic;
 
@@ -12,7 +12,7 @@ namespace Model.MeshObjects
 
         public override ElementKind ElementKind { get; } = ElementKind.Гекса;
 
-        public Hexa(int number, Node[] nodes) : base(number, nodes)
+        public Hexa(int number, INode[] nodes) : base(number, nodes)
         {
             var intPoint = new IntegralPoint();
             intPoint.AddDirection("ksi", 0.0f);
@@ -25,7 +25,7 @@ namespace Model.MeshObjects
 
 
 
-        public Hexa(int number, Node[] nodes, int intpNumber) : base(number, nodes)
+        public Hexa(int number, INode[] nodes, int intpNumber) : base(number, nodes)
         {
             IntegralPoint intPoint;
             switch (intpNumber)

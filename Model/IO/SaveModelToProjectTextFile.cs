@@ -7,6 +7,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using ModelInterfaces.MeshObjects;
 
 namespace Model.IO
 {
@@ -29,31 +30,24 @@ namespace Model.IO
 
                 sw.WriteLine(ver);
 
-                foreach (var objsType in model.ObjectData)
+
+                sw.WriteLine("");
+
+                sw.WriteLine("Узлы");
+                foreach (var nodeItem in model.ObjectData.NodeCollection)
                 {
-                    sw.WriteLine("");
-                    if (objsType.Key == ObjType.Узел)
-                    {
-                        sw.WriteLine("Узлы");
-                        foreach (var nodeItem in model.ObjectData.FindMany<Node>())
-                        {
-                            var x = nodeItem.Position._x;
-                            var y = nodeItem.Position._y;
-                            var z = nodeItem.Position._z;
-                            var numbr = nodeItem.Number;
-                            sw.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0} {1} {2} {3}", numbr, x, y, z));
-                        }
-                        sw.WriteLine("#Узлы");
-                    }
-
-
-                    else if (objsType.Key == ObjType.Элемент1D |
-                        objsType.Key == ObjType.Элемент2D |
-                        objsType.Key == ObjType.Элемент3D)
-                    {
-                        SaveElements(model, sw, objsType.Key);
-                    }
+                    var x = nodeItem.Position._x;
+                    var y = nodeItem.Position._y;
+                    var z = nodeItem.Position._z;
+                    var numbr = nodeItem.Number;
+                    sw.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0} {1} {2} {3}", numbr, x, y, z));
                 }
+                sw.WriteLine("#Узлы");
+
+                SaveElements(model, sw, ObjType.Элемент1D);
+                SaveElements(model, sw, ObjType.Элемент2D);
+                SaveElements(model, sw, ObjType.Элемент3D);
+
                 sw.WriteLine("");
                 sw.WriteLine("Группы узлов и элементов");
                 foreach (var group in model.GroupData)
@@ -78,7 +72,7 @@ namespace Model.IO
             var objs = model.ObjectData.GetObjects(objsType);
             foreach (var obj in objs)
             {
-                var elem = (Element)obj;
+                var elem = (IElement)obj;
                 var strAr = new List<string>();
                 foreach (var node in elem.GetVertexes())
                     strAr.Add(node.Number.ToString());

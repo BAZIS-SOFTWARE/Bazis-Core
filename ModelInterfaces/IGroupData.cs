@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace ModelInterfaces
@@ -30,5 +31,9 @@ namespace ModelInterfaces
         /// <param name="objType"></param>
         /// <returns></returns>
         IEnumerable<IGroup> FindMany(ObjType objType);
+        /// <summary>
+        /// Sort
+        /// </summary>
+        void Sort();
     }
 }

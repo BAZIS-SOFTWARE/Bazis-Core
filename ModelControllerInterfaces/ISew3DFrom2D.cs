@@ -1,4 +1,4 @@
-﻿using ModelInterfaces;
+﻿using ModelInterfaces.MeshObjects;
 using System.Collections.Generic;
 
 namespace ModelControllerInterfaces
@@ -6,7 +6,7 @@ namespace ModelControllerInterfaces
     /// <summary>
     /// Построение 3D сетки путем соединения сторон 2D сетки
     /// </summary>
-    public interface IMap3DFrom2D
+    public interface ISew3DFrom2D
     {
         /// <summary>
         /// Create

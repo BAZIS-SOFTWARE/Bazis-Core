@@ -28,7 +28,7 @@ namespace ModelController.MeshObjsCreator
     /// <summary>
     /// Map3DFrom2D
     /// </summary>
-    public class Map3DFrom2D : IMap3DFrom2D
+    public class Sew3DFrom2D : ISew3DFrom2D
     {
         private static Vector3 ToVector3(Node n) => new Vector3(n.Position._x, n.Position._y, n.Position._z);
         private static Vector3 ToVector3(Point3D n) => new Vector3(n._x, n._y, n._z);

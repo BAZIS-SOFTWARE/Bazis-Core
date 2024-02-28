@@ -65,11 +65,11 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Functions, Version=1.0.2.43, Culture=neutral, PublicKeyToken=65fde98421b2fc88, processorArchitecture=MSIL">
-      <HintPath>..\packages\Functions.1.0.2.43\lib\net48\Functions.dll</HintPath>
+    <Reference Include="Functions, Version=1.0.2.44, Culture=neutral, PublicKeyToken=65fde98421b2fc88, processorArchitecture=MSIL">
+      <HintPath>..\packages\Functions.1.0.2.44\lib\net48\Functions.dll</HintPath>
     </Reference>
-    <Reference Include="Geometry, Version=2.0.7.20, Culture=neutral, PublicKeyToken=d064922373770c4c, processorArchitecture=MSIL">
-      <HintPath>..\packages\Geometry.2.0.7.20\lib\net48\Geometry.dll</HintPath>
+    <Reference Include="Geometry, Version=2.0.7.24, Culture=neutral, PublicKeyToken=d064922373770c4c, processorArchitecture=MSIL">
+      <HintPath>..\packages\Geometry.2.0.7.24\lib\net48\Geometry.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -99,16 +99,15 @@
     <Compile Include="GmshTests\ConnectionTests.cs" />
     <Compile Include="GmshTests\ModelTests.cs" />
     <Compile Include="GmshTests\MeshQualityTests.cs" />
-    <Compile Include="TestAlphaColor.cs" />
     <Compile Include="TestCalcDistance.cs" />
-    <Compile Include="TestEdgeFlags.cs" />
     <Compile Include="TestElement.cs" />
+    <Compile Include="TestGeometryObjects.cs" />
+    <Compile Include="TestGroupNameComparator.cs" />
     <Compile Include="TestIO.cs" />
     <Compile Include="TestMap3DFrom2D.cs" />
     <Compile Include="TestModelControllerPoligon.cs" />
     <Compile Include="TestsCrossSection.cs" />
     <Compile Include="TestServices.cs" />
-    <Compile Include="TestSurface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestSorter.cs" />
     <Compile Include="TestModelScenePresentor.cs" />

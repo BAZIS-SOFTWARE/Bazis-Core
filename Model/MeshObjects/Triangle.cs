@@ -1,9 +1,9 @@
 ﻿using System;
-using ModelInterfaces;
 using System.Linq;
 using Geometry;
 using MathNet.Numerics.LinearAlgebra.Single;
 using ModelInterfaces.IntegralObject;
+using ModelInterfaces.MeshObjects;
 
 namespace Model.MeshObjects
 {
@@ -14,9 +14,9 @@ namespace Model.MeshObjects
 
         public override ElementKind ElementKind { get; } = ElementKind.Треугольник;
 
-        public Triangle(int number, Node[] nodes) : base(number, nodes)
+        public Triangle(int number, INode[] nodes) : base(number, nodes)
         {
-            surface = new ElementSurface(0, new Node[] { nodes[0], nodes[1], nodes[2] });
+            surface = new ElementSurface(0, new INode[] { nodes[0], nodes[1], nodes[2] });
 
             var intPoint = new IntegralPoint();
             intPoint.AddDirection("l1", 1 / 3);
@@ -27,7 +27,7 @@ namespace Model.MeshObjects
             jacobians.Add(DetJ(intPoint));
         }
 
-        public Triangle(int number, Node[] nodes, int intpNumber) : base(number, nodes)
+        public Triangle(int number, INode[] nodes, int intpNumber) : base(number, nodes)
         {
             IntegralPoint intPoint;
             switch (intpNumber)

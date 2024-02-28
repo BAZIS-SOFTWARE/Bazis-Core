@@ -3,6 +3,7 @@ using Model.MeshObjects;
 using ModelInterfaces;
 using ModelInterfaces.Attributes;
 using ModelInterfaces.GeometryObjects;
+using ModelInterfaces.MeshObjects;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -37,7 +38,7 @@ namespace Model.GeometryObjects
         /// </summary>
         /// <param name="ind"></param>
         /// <returns></returns>
-        public IPoint this[int ind]
+        public IGeometryPoint this[int ind]
         {
             get { return points[ind]; }
         }
@@ -67,6 +68,7 @@ namespace Model.GeometryObjects
             var svectors = points[2].Position.Sub(points[0].Position);
             return Vector.CrossProd(fvectors, svectors);
         }
+/// <inheritdoc/>
 
         public float CalcSquare()
         {
@@ -127,24 +129,23 @@ points.Contains(this.points[2].Position, new Point3DEqualityComparer()))
             {
                 center = center.Sum(point);
             }
-            return center.Div(NumberOfPoints);
+            return center.Div(points.Length);
         }
+/// <inheritdoc/>
 
-        public Segment3D[] GetLinesFromSurface(ISurface<IPoint> surface)
+        public Segment3D[] GetLinesFromSurface()
         {
-            var n = surface.GetCoordinates().Count();
-            var points = surface.GetCoordinates().ToArray();
-            var lines = new Segment3D[n];
-            for (int i = 0; i < n - 1; i++)
+            var lines = new Segment3D[points.Length];
+            for (int i = 0; i < points.Length - 1; i++)
             {
-                lines[i] = new Segment3D(points[i], points[i + 1]);
+                lines[i] = new Segment3D(points[i].Position, points[i + 1].Position);
             }
-            lines[n - 1] = new Segment3D(points[n - 1], points[0]);
+            lines[points.Length - 1] = new Segment3D(points[points.Length - 1].Position, points[0].Position);
             return lines;
         }
         /// <inheritdoc/>
 
-        public IEnumerable<IPoint> GetVertexes()
+        public IEnumerable<IGeometryPoint> GetVertexes()
         {
             foreach (var node in points)
             {

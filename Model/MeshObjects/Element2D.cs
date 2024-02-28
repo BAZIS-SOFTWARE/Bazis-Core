@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using MathNet.Numerics.LinearAlgebra.Single;
+using ModelInterfaces.MeshObjects;
 
 namespace Model.MeshObjects
 {
@@ -13,7 +14,7 @@ namespace Model.MeshObjects
     {
         protected IElementSurface surface;
 
-        public Element2D(int number, Node[] nodes) : base(number, nodes)
+        public Element2D(int number, INode[] nodes) : base(number, nodes)
         {
             InitialColor = Color.FromArgb(0, 0, 255);
             MasterColor = Color.FromArgb(0, 0, 255);
@@ -22,7 +23,7 @@ namespace Model.MeshObjects
         }
 
 
-        public Element2D(int number, Node[] nodes, int intPoints) : this(number, nodes)
+        public Element2D(int number, INode[] nodes, int intPoints) : this(number, nodes)
         {
 
         }

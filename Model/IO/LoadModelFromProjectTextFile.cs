@@ -10,6 +10,7 @@ using Model.Events;
 using ModelInterfaces;
 using ModelInterfaces.ObjectsFinders;
 using Model.MeshObjects;
+using ModelInterfaces.MeshObjects;
 
 namespace Model.IO
 {
@@ -85,7 +86,7 @@ namespace Model.IO
                     nodes.Add(node);
                 }
             }
-            newMesh.ObjectData.Add(ObjType.Узел, nodes);
+            newMesh.ObjectData.NodeCollection.AddRange(nodes);
 
         }
 
@@ -94,7 +95,6 @@ namespace Model.IO
             var line = String.Empty;
             line = sr.ReadLine();
 
-            var nodes = newMesh.ObjectData.FindMany<Node>().ToArray();
             //var number = newMesh.GetLastObjNumber() + 1;
             while (line != "#" + elType)
             {                
@@ -106,32 +106,43 @@ namespace Model.IO
                 var elNumber = ar[0];
                 ar.RemoveAt(0);
 
-                var nodeList = new List<Node>();
+                var nodeList = new List<INode>();
+              
                 foreach (var nodeNumber in ar)
-                    nodeList.Add(nodes.Find(nodeNumber));
-
-                ElementKind elemKind;
+                    nodeList.Add(newMesh.ObjectData.NodeCollection.Find(nodeNumber));
 
                 if (elType == "Элементы3D" | elType == "Элемент3D" | elType == "Элементы 3004")
                 {
 
                     if (ar.Count == 4)
-                        elemKind = ElementKind.Тетра;
-                    else elemKind = ElementKind.Гекса;
+                    {
+                        var el3DObj = new Tetra(elNumber, nodeList.ToArray());
+                        newMesh.ObjectData.E3DCollection.Add(el3DObj);
+                    }
+                    else
+                    {
+                        var el3DObj = new Hexa(elNumber, nodeList.ToArray());
+                        newMesh.ObjectData.E3DCollection.Add(el3DObj);
+                    }
 
-                    var el3DObj = new Tetra(elNumber, nodeList.ToArray());
-                    newMesh.ObjectData.Add(ObjType.Элемент3D, el3DObj);
+  
                 }
 
                 if (elType == "Элементы2D" | elType == "Элемент2D" | elType == "Элементы 2003")
                 {
-   
-                    if (ar.Count == 3)
-                        elemKind = ElementKind.Треугольник;
-                    else elemKind = ElementKind.Квадрат;
 
-                    var el2DObj = new Triangle(elNumber, nodeList.ToArray());
-                    newMesh.ObjectData.Add(ObjType.Элемент2D, el2DObj);
+                    if (ar.Count == 3)
+                    {
+                        var el2DObj = new Triangle(elNumber, nodeList.ToArray());
+                        newMesh.ObjectData.E2DCollection.Add(el2DObj);
+                    }
+                    else
+                    {
+                        var el2DObj = new Quad(elNumber, nodeList.ToArray());
+                        newMesh.ObjectData.E2DCollection.Add(el2DObj);
+                    }
+
+
                 }
                 //number++;
                 line = sr.ReadLine();

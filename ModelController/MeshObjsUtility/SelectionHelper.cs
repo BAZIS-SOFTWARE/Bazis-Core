@@ -6,13 +6,21 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using Model.MeshObjects;
+using ModelInterfaces.MeshObjects;
+using Model;
 
 namespace ModelController.MeshObjsUtility
 {
+    /// <summary>
+    /// SelectionHelper
+    /// </summary>
     public class SelectionHelper
     {
         private readonly IObjectsData objectsData;
-
+        /// <summary>
+        /// SelectionHelper
+        /// </summary>
+        /// <param name="objectsData"></param>
         public SelectionHelper(IObjectsData objectsData)
         {
             this.objectsData = objectsData;
@@ -22,25 +30,25 @@ namespace ModelController.MeshObjsUtility
         /// Выбор последовательности узлов по заданному напрвлению. Направление задаётся номерами двух смежных узлов.
         /// </summary>
         /// <param name="angleInGradus">Максимальный угол в градусах, под которым будет выделение</param>
-        /// <param name="indexFirst">Номер первого узла</param>
-        /// <param name="indexSecond">Номер второго узла</param>
+        /// <param name="numbFirst">Номер первого узла</param>
+        /// <param name="numbSecond">Номер второго узла</param>
         /// <param name="color">Цвет выделения</param>
         /// <returns>
         /// Номера выделенных узлов
         /// </returns>
-        public List<int> SelectInDirection<T>(float angleInGradus, int indexFirst, int indexSecond, Color color)
-            where T : Element
+        public List<int> SelectNodeInDirection(float angleInGradus, int numbFirst, int numbSecond, Color color)     
         {
-            var elements = objectsData.FindMany<T>().ToList();
+            var elements = objectsData.GetAllElements().ToList();
+
             var interfacedElements = new InterfacedNodesFinder().Find(elements);
             
-            var nodes = objectsData.FindMany<INode>().ToArray();
+            var nodes = objectsData.NodeCollection.ToArray();
             
-            var firstNode = nodes.Find(indexFirst);
-            var secondNode = nodes.Find(indexSecond);
+            var firstNode = nodes.Find(numbFirst);
+            var secondNode = nodes.Find(numbSecond);
 
             var previousDirection = secondNode.Position.Sub(firstNode.Position);
-            var result = new HashSet<int> { indexFirst, indexSecond };
+            var result = new HashSet<int> { numbFirst, numbSecond };
             var currentNode = secondNode;
             var isMoveNext = true;
             while (isMoveNext)
@@ -69,11 +77,15 @@ namespace ModelController.MeshObjsUtility
             }
             return result.ToList();
         }
-
-        public void SelectInPlane<T>(Plane plane, Color color)
-                    where T : Node
+        /// <summary>
+        /// SelectNodeInPlane
+        /// </summary>
+        /// <param name="plane"></param>
+        /// <param name="color"></param>
+        public void SelectNodeInPlane(Plane plane, Color color)
+                    
         {
-            var nodes = objectsData.FindMany<T>().ToArray();
+            var nodes = objectsData.NodeCollection.ToArray();
             foreach (var node in nodes)
             {
                 var dist = plane.PointPosition(node.Position);
@@ -89,12 +101,11 @@ namespace ModelController.MeshObjsUtility
         /// <returns>
         /// Список номеров выбранных элементов
         /// </returns>
-        public List<int> SelectInPlane<T>(float angleInGradus, int startNumber, Color color)
-            where T : IElement2D
+        public List<int> SelectE2DInPlane(float angleInGradus, int startNumber, Color color)         
         {
             var maxAngleRadians = ConvertGradusToRadian(angleInGradus);
-            var elements = objectsData.FindMany<Element2D>().ToArray();
-            var graph = GetAdjacentElements(elements);
+            var elements = objectsData.E2DCollection.ToArray();
+            var elementsAdjacency = GetAdjacentElements<IElement2D>(elements);
             var queue = new Queue<int>();
             queue.Enqueue(startNumber);
             var used = new HashSet<int>();
@@ -102,7 +113,7 @@ namespace ModelController.MeshObjsUtility
             {
                 var currentNumber = queue.Dequeue();
                 var currentElement = elements.Find(currentNumber);
-                foreach (var neighbourNumber in graph[currentNumber])
+                foreach (var neighbourNumber in elementsAdjacency[currentNumber])
                 {
                     if(!used.Contains(neighbourNumber))
                     {
@@ -125,23 +136,23 @@ namespace ModelController.MeshObjsUtility
         /// Словарь, где ключ - номер элемента (2D, 3D), значение - список номеров элементов, 
         /// имеющих хотя бы одну общую точку с ключом.
         /// </returns>
-        private Dictionary<int, List<int>> GetAdjacentElements(IEnumerable<IElement> elements)
+        private Dictionary<int, List<int>> GetAdjacentElements<T>(IEnumerable<IElement> elements)
+            where T: IElement
         {
-            var graph = new Dictionary<int, List<int>>();
-
+            var result = new Dictionary<int, List<int>>();
             foreach (var element in elements)
             {
                 var neighbourElementsNumber = new HashSet<int>();
                 foreach (var node in element.GetVertexes())
                 {
-                    foreach (var elementAdjacent in node.GetElements())
+                    foreach (var elementAdjacent in node.GetElements().Where(x => x is T))
                     {
                         neighbourElementsNumber.Add(elementAdjacent.Number);
                     }
                 }
-                graph.Add(element.Number, neighbourElementsNumber.ToList());
+                result.Add(element.Number, neighbourElementsNumber.ToList());
             }
-            return graph;
+            return result;
         }
 
         /// <summary>

@@ -1,6 +1,8 @@
 ﻿using Model.MeshObjects;
 using ModelInterfaces;
+using ModelInterfaces.MeshObjects;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -12,12 +14,12 @@ namespace Model.IO
     {
         public void Save(IModelData modelData, string fileName)
         {
-            var nodes = modelData.ObjectData.FindMany<Node>().ToList();
-            var elements = modelData.ObjectData.FindMany<Element>().ToList();
+            var nodes = modelData.ObjectData.NodeCollection;
+            var elements = modelData.ObjectData.GetAllElements();
             var groups = modelData.GroupData;
             using(var writer = new StreamWriter(fileName))
             {          
-                WriteHeaders(writer, nodes.Count, elements.Count);
+                WriteHeaders(writer, nodes.Count, elements.Count());
                 WriteNodes(writer, nodes);
                 WriteElements(writer, elements);
                 WriteGroups(writer, groups);
@@ -35,9 +37,9 @@ namespace Model.IO
             writer.WriteLine("END_INFORMATIONS");
         }
 
-        private void WriteNodes(StreamWriter writer, List<Node> nodes)
+        private void WriteNodes(StreamWriter writer, IEnumerable<INode> nodes)
         {
-            writer.WriteLine($"BEGIN_NODES {nodes.Count}");
+            writer.WriteLine($"BEGIN_NODES {nodes.Count()}");
             foreach(var node in nodes)
             {
                 var x = node.Position._x.ToString(new CultureInfo("en-US"));
@@ -49,9 +51,9 @@ namespace Model.IO
             writer.WriteLine($"END_NODES");
         }
 
-        private void WriteElements(StreamWriter writer, List<Element> elements)
+        private void WriteElements(StreamWriter writer, IEnumerable<IElement> elements)
         {
-            writer.WriteLine($"BEGIN_ELEMENTS {elements.Count}");
+            writer.WriteLine($"BEGIN_ELEMENTS {elements.Count()}");
             foreach (var element in elements)
             {
                 var nodes = string.Join(" ", element.GetVertexes().Select(x => x.Number));

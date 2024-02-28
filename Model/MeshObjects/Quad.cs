@@ -1,6 +1,6 @@
 ﻿using MathNet.Numerics.LinearAlgebra.Single;
-using ModelInterfaces;
 using ModelInterfaces.IntegralObject;
+using ModelInterfaces.MeshObjects;
 using System;
 using System.Collections.Generic;
 
@@ -11,9 +11,9 @@ namespace Model.MeshObjects
         /// <inheritdoc/>
         public override ElementKind ElementKind { get; } = ElementKind.Квадрат;
 
-        public Quad(int number, Node[] nodes) : base(number, nodes)
+        public Quad(int number, INode[] nodes) : base(number, nodes)
         {
-            surface = new ElementSurface(0, new Node[] { nodes[0], nodes[1], nodes[2], nodes[3] });
+            surface = new ElementSurface(0, new INode[] { nodes[0], nodes[1], nodes[2], nodes[3] });
 
             var intPoint = new IntegralPoint();
             intPoint.AddDirection("ksi", 0.0f);
@@ -24,9 +24,9 @@ namespace Model.MeshObjects
         }
 
 
-        public Quad(int number, Node[] nodes, int intpNumber) : base(number, nodes)
+        public Quad(int number, INode[] nodes, int intpNumber) : base(number, nodes)
         {
-            surface = new ElementSurface(0, new Node[] { nodes[0], nodes[1], nodes[2], nodes[3] });
+            surface = new ElementSurface(0, new INode[] { nodes[0], nodes[1], nodes[2], nodes[3] });
             IntegralPoint intPoint;
             switch (intpNumber)
             {
@@ -70,7 +70,7 @@ namespace Model.MeshObjects
                     for (int k = j + 1; k < nodes.Count - 1; k++)
                     {
 
-                        var x = new Node[] { nodes[i], nodes[j], nodes[k] };
+                        var x = new INode[] { nodes[i], nodes[j], nodes[k] };
                         var tetra = new Triangle(0, x);
                         sum += tetra.CalcSquare();
 

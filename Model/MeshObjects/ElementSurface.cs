@@ -1,11 +1,13 @@
 ﻿using Geometry;
 using ModelInterfaces;
 using ModelInterfaces.Attributes;
+using ModelInterfaces.MeshObjects;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 
 namespace Model.MeshObjects
 {
@@ -14,13 +16,13 @@ namespace Model.MeshObjects
     /// </summary>
     public class ElementSurface : ModelObject, IElementSurface
     {
-        Node[] nodes;
+        INode[] nodes;
         /// <summary>
         /// Surface constructor
         /// </summary>
         /// <param name="number"></param>
         /// <param name="nodes"></param>
-        public ElementSurface(int number, Node[] nodes) : base(number)
+        public ElementSurface(int number, INode[] nodes) : base(number)
         {
             if (nodes.Length < 3)
                 throw new Exception("Для создания поверхности требуется не меньше 3-х узлов!");
@@ -130,20 +132,20 @@ points.Contains(nodes[2].Position, new Point3DEqualityComparer()))
             }
             return center.Div(NumberOfPoints);
         }
+/// <inheritdoc/>
 
-        public Segment3D[] GetLinesFromSurface(ISurface<INode> surface)
+        public Segment3D[] GetLinesFromSurface()
         {
-            var n = surface.GetCoordinates().Count();
-            var points = surface.GetCoordinates().ToArray();
-            var lines = new Segment3D[n];
-            for (int i = 0; i < n - 1; i++)
+            var lines = new Segment3D[nodes.Length];
+            for (int i = 0; i < nodes.Length - 1; i++)
             {
-                lines[i] = new Segment3D(points[i], points[i + 1]);
+                lines[i] = new Segment3D(nodes[i].Position, nodes[i + 1].Position);
             }
-            lines[n - 1] = new Segment3D(points[n - 1], points[0]);
+            lines[nodes.Length - 1] = new Segment3D(nodes[nodes.Length - 1].Position, nodes[0].Position);
             return lines;
         }
-/// <inheritdoc/>
+
+        /// <inheritdoc/>
 
         public IEnumerable<INode> GetVertexes()
         {

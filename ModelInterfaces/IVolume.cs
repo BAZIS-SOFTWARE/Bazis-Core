@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace ModelInterfaces
 {
-    public interface IElement3D : ISurfaceElement
+    /// <summary>
+    /// IVolume
+    /// </summary>
+    public interface IVolume
     {
         /// <summary>
         /// CalcVolume

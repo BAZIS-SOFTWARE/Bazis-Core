@@ -5,12 +5,13 @@ using ModelInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ModelInterfaces.MeshObjects;
 
 namespace ModelController.MeshObjsUtility
 {
     public class FindBoundaryEdges
     {
-        IModelData modelData;
+        private IModelData modelData;
 
         public FindBoundaryEdges(IModelData modelData)
         {
@@ -24,14 +25,13 @@ namespace ModelController.MeshObjsUtility
         {
             var boundedEdges = new List<string>();
 
-            var els = modelData.ObjectData.FindMany<ISurfaceElement>().ToArray();
+            var els = modelData.ObjectData.GetAllElements().
+                Select(x => (ISurfaceElement)x)
+                .OrderBy(x => x.Number)
+                .ToArray();
 
             var finder = new InterfacedNodesFinder();
             var interfacedNodes = finder.Find(els);
-
-            //List<int> openSurfNodes = FindOpenSurfacedNodes(objects);
-
-            //var interfacedNodes = FindInterfaceNodes(objects, openSurfacedNodes);
 
             foreach (var interfacedNode in interfacedNodes)
             {
@@ -89,8 +89,6 @@ namespace ModelController.MeshObjsUtility
             return boundedEdges;
         }
 
-
-
         private bool CheckAdjacentAngle(Dictionary<IElement, List<IElementSurface>> adjElems)
         {
             var vec = new List<Point3D>();
@@ -100,7 +98,7 @@ namespace ModelController.MeshObjsUtility
                 var elNumb = adjElem.Key;
                 foreach (var elSurf in adjElem.Value)
                 {
-                    var normalsCoords = elSurf.CalcNormal();//GetSideNormal(elNumb, elSurf);
+                    var normalsCoords = elSurf.CalcNormal();
                     vec.Add(normalsCoords);
                 }
             }

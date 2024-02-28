@@ -20,34 +20,41 @@ namespace Model.GroupsData
             get { return groups[index]; }
             set { groups[index] = value; }
         }
+/// <inheritdoc/>
 
         public int Count
         {
             get { return groups.Count; }
         }
+        /// <inheritdoc/>
 
 
-        public bool IsReadOnly => throw new System.NotImplementedException();
+        public bool IsReadOnly => false;
+/// <inheritdoc/>
 
         public void Add(IGroup item)
         {
             groups.Add(item);
         }
+/// <inheritdoc/>
 
         public void Clear()
         {
             groups.Clear();
         }
+/// <inheritdoc/>
 
         public bool Contains(IGroup item)
         {
-            return groups.Contains(item, new CompareGroupsByName());
+            return groups.Contains(item, new NameAndTypeGroupComparer());
         }
+/// <inheritdoc/>
 
         public void CopyTo(IGroup[] array, int arrayIndex)
         {
             throw new System.NotImplementedException();
         }
+/// <inheritdoc/>
 
         public IEnumerator<IGroup> GetEnumerator()
         {
@@ -56,21 +63,25 @@ namespace Model.GroupsData
                 yield return group;
             }
         }
+/// <inheritdoc/>
 
         public int IndexOf(IGroup item)
         {
             return groups.IndexOf(item);
         }
+/// <inheritdoc/>
 
         public void Insert(int index, IGroup item)
         {
             throw new System.NotImplementedException();
         }
+/// <inheritdoc/>
 
         public bool Remove(IGroup item)
         {
             return groups.Remove(item);
         }
+/// <inheritdoc/>
 
         public void RemoveAt(int index)
         {
@@ -106,11 +117,9 @@ namespace Model.GroupsData
             var temp = new List<IGroup>();
             foreach (var item in groups)
             {
-                var removedObjs = item.Where(x => x.ExistState == false);
+                var existObjects = item.Where(x => x.ExistState == true);
 
-                var existObjects = item.Except(removedObjs, new EqualityComparerByExistState()).ToList();
-
-                if (existObjects.Count > 0)
+                if (existObjects.Count() > 0)
                 {
                     var gr = new Group(item.GroupName, item.ObjType);
                     gr.AddRange(existObjects);
@@ -119,6 +128,12 @@ namespace Model.GroupsData
   
             }
             groups = temp;
+        }
+/// <inheritdoc/>
+
+        public void Sort()
+        {
+            groups = groups.OrderBy(x => x, new StringNumberGroupComparer()).ToList();
         }
     }
 }

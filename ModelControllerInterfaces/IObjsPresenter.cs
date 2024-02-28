@@ -54,10 +54,6 @@ namespace ModelControllerInterfaces
         /// </summary>
         bool IsVolumeObjs { get; }
         /// <summary>
-        /// PresenterView
-        /// </summary>
-        PresenterView PresenterView { get; set; }
-        /// <summary>
         /// PresenterType
         /// </summary>
         PresenterType PresenterType { get; }
@@ -90,13 +86,5 @@ namespace ModelControllerInterfaces
         /// </summary>
         /// <returns></returns>
         int Count();
-        /// <summary>
-        /// ClearNotExisted
-        /// </summary>
-        void ClearNotExisted();
-        /// <summary>
-        /// Clear
-        /// </summary>
-        void Clear();
     }
 }

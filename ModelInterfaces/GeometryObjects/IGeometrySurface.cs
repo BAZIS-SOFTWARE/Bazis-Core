@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ModelInterfaces.GeometryObjects
 {
-    public interface IGeometrySurface : ISurface<IPoint>
+    public interface IGeometrySurface : ISurface<IGeometryPoint>
     {
     }
 }

@@ -19,6 +19,7 @@ namespace Model.IO
         private const int OFFSET_TO_READ_NODES = 11;
         private const string exponentialFloatPattern = "(-)?\\d+\\.\\d+E(\\+|-)\\d+";
         private Dictionary<int, Node> allNodes;
+        private ModelData model;
 
         /// <summary>
         /// Загрузить модель из файла формата .cdb по указанному пути
@@ -26,7 +27,7 @@ namespace Model.IO
         public IModelData Load(string path)
         {
             allNodes = new Dictionary<int, Node>();
-            var model = new ModelData();
+            model = new ModelData();
             using (var reader = new StreamReader(path))
             {
                 LoadEvent?.Invoke(this, new LoaderEventArgs("Начало загрузки модели"));
@@ -41,14 +42,13 @@ namespace Model.IO
                     {
                         LoadEvent?.Invoke(this, new LoaderEventArgs("Начало загрузки узлов"));
                         var nodes = ReadNodes(reader, tokens).ToList();
-                        model.ObjectData.Add(ObjType.Узел, nodes);
+                        model.ObjectData.NodeCollection.AddRange(nodes);
                     }
                     if (line.Contains(ELEMENTS_BLOCK))
                     {
                         LoadEvent?.Invoke(this, new LoaderEventArgs("Начало загрузки элементов"));
 
-                        foreach (var item in ReadElements(reader, tokens))
-                            model.ObjectData.Add(item.ObjType, item);                    
+                        ReadElements(reader, tokens);                  
                     }
                 }
             }
@@ -112,14 +112,17 @@ namespace Model.IO
         /// <summary>
         /// Определяет форму элемента по числу узлов
         /// </summary>
-        private ModelObject GetElement(int[] elementNodes, int elementNumber)
+        private void GetElement(int[] elementNodes, int elementNumber)
         {
             var nodes = elementNodes.Select(i => allNodes[i]).ToArray();
             switch (elementNodes.Length)
             {
-                case 4: return new Tetra(elementNumber, nodes);
-                case 6: return new Penta(elementNumber, nodes);
-                case 8: return new Hexa(elementNumber, nodes);
+                case 4: model.ObjectData.E3DCollection.Add(new Tetra(elementNumber, nodes));
+                    break;
+                case 6: model.ObjectData.E3DCollection.Add(new Penta(elementNumber, nodes));
+                        break;
+                case 8: model.ObjectData.E3DCollection.Add(new Hexa(elementNumber, nodes));
+                    break;
                 default: throw new Exception($"Unable to recognize element with {elementNodes.Length} nodes");
             }
         }
@@ -127,7 +130,7 @@ namespace Model.IO
         /// <summary>
         /// Читает список элементов после строки EBLOCK в файле
         /// </summary>
-        private IEnumerable<ModelObject> ReadElements(StreamReader reader, string[] tokens)
+        private void ReadElements(StreamReader reader, string[] tokens)
         {
             var format = reader.ReadLine();
             var maxFieldsInLine = int.Parse(tokens[1]);
@@ -148,8 +151,7 @@ namespace Model.IO
                     fields.AddRange(nextLineFields);
                 }
                 var elementNodes = fields.Skip(OFFSET_TO_READ_NODES).Distinct().ToArray();
-                var element = GetElement(elementNodes, elementNumber);
-                yield return element;
+                GetElement(elementNodes, elementNumber);               
             }
         }
     }

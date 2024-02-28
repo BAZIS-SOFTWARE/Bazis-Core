@@ -25,7 +25,7 @@ namespace TestModel
             model.Load(@"..\..\..\Examples\3D\task1.bpf2");
 
             //assert
-            Assert.AreNotEqual(model.ObjectData.Count, 0);
+            Assert.AreNotEqual(model.ObjectData.Count(ObjType.Объект), 0);
         }
 
         [TestMethod]
@@ -63,8 +63,10 @@ namespace TestModel
             //assert
         }
 
-        [DataTestMethod]
+
+        [TestMethod]
         [DataRow(@"..\..\..\Examples\STL\ACII.stl")]
+        [DataRow(@"..\..\..\Examples\STL\sphere.stl")]
         public void ImportModelFromSTLtextFormat(string path)
         {
             //assing
@@ -106,18 +108,38 @@ namespace TestModel
 
         [TestMethod]
         public void ImportModelFromGMSHtextFormat()
+
         {
-            //assing
             var model = new ModelData();
             model.Loader = new LoadModelFromGMSHTextFile();
 
-            //act
             model.Load(@"..\..\..\Examples\3D\Korpus.inp");
 
-            //assert
-            Assert.AreEqual(8448, model.ObjectData.NumberOfNodes);
-            Assert.AreEqual(17964, model.ObjectData.NumberOfElements);
+            Assert.AreEqual(8448, model.ObjectData.NodeCollection.Count);
         }
+
+        [TestMethod]
+        public void LoadModelFromGMSHTextFile_ShouldLoadCorrectNumberOfElements()
+        {
+            var model = new ModelData();
+            model.Loader = new LoadModelFromGMSHTextFile();
+
+            model.Load(@"..\..\..\Examples\3D\Korpus.inp");
+
+            Assert.AreEqual(17964, model.ObjectData.GetAllElements().Count());
+        }
+
+        //[TestMethod]
+        //public void LoadModelFromGMSHTextFile_ShouldLoadCorrectNumberOfGroups()
+        //{
+        //    var model = new ModelData();
+        //    model.Loader = new LoadModelFromGMSHTextFile();
+        //    model.Loader.LoadEvent += (x, y) => { };
+
+        //    model.Load(@"..\..\..\Examples\3D\T_joint.inp");
+
+        //    Assert.AreEqual(model.GroupData.Count, 6);
+        //}
 
         [TestMethod]
         public void ImportModelFromVisualMeshASCIITextFormat()
@@ -132,8 +154,8 @@ namespace TestModel
             model.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
             //loader.Load(@"C:\Bazis_newGUI\MESH\RadicMesh\Plate2DATA.ASC");
             //assert
-            Assert.AreEqual(7, model.ObjectData.NumberOfNodes);
-            Assert.AreEqual(8, model.ObjectData.NumberOfElements);
+            Assert.AreEqual(7, model.ObjectData.Count(ObjType.Узел));
+            Assert.AreEqual(8, model.ObjectData.Count(ObjType.Элемент));
         }
 
         [TestMethod]
@@ -142,7 +164,7 @@ namespace TestModel
             var loader = new LoadModelFromASCIITextFile();
             loader.LoadEvent += (ar1, ar2) => { };
             var model = loader.Load(@"..\..\..\Examples\VIsual-Mesh\DATA3.ASC");
-            Assert.AreEqual(3, model.ObjectData.FindMany<Beam>().Count());
+            Assert.AreEqual(3, model.ObjectData.Count(ObjType.Элемент1D));
         }
 
         [TestMethod]
@@ -154,7 +176,8 @@ namespace TestModel
             var saver = new SaveModelToASCIITextFile();
             saver.Save(modelBeforeSaving, @"..\..\..\Examples\VIsual-Mesh\result.ASC");
             var modelAfterSaving = loader.Load(@"..\..\..\Examples\VIsual-Mesh\result.ASC");
-            Assert.IsTrue(modelBeforeSaving.ObjectData.Count == modelAfterSaving.ObjectData.Count);
+            Assert.IsTrue(modelBeforeSaving.ObjectData.Count(ObjType.Объект) == 
+                modelAfterSaving.ObjectData.Count(ObjType.Объект));
         }
 
         [TestMethod]
@@ -164,9 +187,9 @@ namespace TestModel
             var import = new LoadModelFromCDBTextFile();
             import.LoadEvent += (ar1, ar2) => { };
             var model = import.Load(path);
-            var element = model.ObjectData.FindMany<Element3D>().First();
-            Assert.AreEqual(8, model.ObjectData.NumberOfNodes);
-            Assert.AreEqual(1, model.ObjectData.NumberOfElements);
+            var element = model.ObjectData.E3DCollection.First();
+            Assert.AreEqual(8, model.ObjectData.Count(ObjType.Узел));
+            Assert.AreEqual(1, model.ObjectData.Count(ObjType.Элемент));
             var surfaceNumber = element.NumberOfSides;
             Assert.AreEqual(6, surfaceNumber);
         }
@@ -178,8 +201,8 @@ namespace TestModel
             var import = new LoadModelFromCDBTextFile();
             import.LoadEvent += (ar1, ar2) => { };
             var model = import.Load(path);
-            Assert.AreEqual(3321, model.ObjectData.NumberOfNodes);
-            var elements = model.ObjectData.FindMany<Element3D>();
+            Assert.AreEqual(3321, model.ObjectData.Count(ObjType.Узел));
+            var elements = model.ObjectData.E3DCollection;
             Assert.IsTrue(elements.All(element => element.GetSurfaces().
             All(surface => surface.GetCoordinates().Count() > 2)));
         }
@@ -191,7 +214,7 @@ namespace TestModel
             var import = new LoadModelFromCDBTextFile();
             import.LoadEvent += (ar1, ar2) => { };
             var model = import.Load(path);
-            var elements = model.ObjectData.FindMany<Element3D>();
+            var elements = model.ObjectData.E3DCollection;
             Assert.IsTrue(elements.All(element => element.GetSurfaces().Count() >= 4));
         }
 
@@ -203,23 +226,23 @@ namespace TestModel
             var import = new LoadModelFromCDBTextFile();
             import.LoadEvent += (ar1, ar2) => { };
             var model = import.Load(path);
-            var element = model.ObjectData.FindMany<Element3D>().First();
-            Assert.AreEqual(nbrNodes, model.ObjectData.NumberOfNodes);
-            Assert.AreEqual(nbrEl, model.ObjectData.NumberOfElements);
+            var element = model.ObjectData.E3DCollection.First();
+            Assert.AreEqual(nbrNodes, model.ObjectData.Count(ObjType.Узел));
+            Assert.AreEqual(nbrEl, model.ObjectData.Count(ObjType.Элемент));
         }
 
         [DataTestMethod]
-        [DataRow(@"..\..\..\Examples\Salome\��������_������_V1.dat",3000,976, 4832,9600)]
-        [DataRow(@"..\..\..\Examples\Salome\��������_������_V2.dat",3161, 992, 3641, 5255)]
-        public void Load�ubeFromSalomeFileCorrectly(string filePath, int nodes, int lineElms, int surfElms, int volElems)
+        [DataRow(@"..\..\..\Examples\Salome\Çóá÷àòîå_êîëåñî_V1.dat",3000,976, 4832,9600)]
+        [DataRow(@"..\..\..\Examples\Salome\Çóá÷àòîå_êîëåñî_V2.dat",3161, 992, 3641, 5255)]
+        public void LoadÑubeFromSalomeFileCorrectly(string filePath, int nodes, int lineElms, int surfElms, int volElems)
         {
             var import = new LoadModelFromSalomeFile();
             import.LoadEvent += (ar1, ar2) => { };
             var model = import.Load(filePath);
-            Assert.AreEqual(nodes, model.ObjectData.FindMany<Node>().Distinct().Count());
-            Assert.AreEqual(lineElms, model.ObjectData.FindMany<Beam>().Distinct().Count());
-            Assert.AreEqual(surfElms, model.ObjectData.FindMany<Element2D>().Distinct().Count());
-            Assert.AreEqual(volElems, model.ObjectData.FindMany<Element3D>().Distinct().Count());
+            Assert.AreEqual(nodes, model.ObjectData.NodeCollection.Distinct().Count());
+            Assert.AreEqual(lineElms, model.ObjectData.E1DCollection.Distinct().Count());
+            Assert.AreEqual(surfElms, model.ObjectData.E2DCollection.Distinct().Count());
+            Assert.AreEqual(volElems, model.ObjectData.E3DCollection.Distinct().Count());
         }
     }
 }

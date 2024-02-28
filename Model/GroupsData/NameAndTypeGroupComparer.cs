@@ -7,17 +7,24 @@ using System.Threading.Tasks;
 
 namespace Model.GroupsData
 {
-    public class CompareGroupsByName : IEqualityComparer<IGroup>
+    public class NameAndTypeGroupComparer : IEqualityComparer<IGroup>
     {
+        /// <inheritdoc/>
         public bool Equals(IGroup x, IGroup y)
         {
             return (x.GroupName == y.GroupName && x.ObjType == y.ObjType);
         }
+        /// <inheritdoc/>
 
 
         public int GetHashCode(IGroup obj)
         {
-            throw new NotImplementedException();
+            unchecked
+            {
+                var hash = obj.GroupName.Length;
+                hash *= hash;
+                return 161 * hash;
+            }
         }
     }
 }

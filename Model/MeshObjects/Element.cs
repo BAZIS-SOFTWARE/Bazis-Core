@@ -4,14 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using Geometry;
 using MathNet.Numerics.LinearAlgebra;
-using ModelInterfaces;
 using ModelInterfaces.IntegralObject;
+using ModelInterfaces.MeshObjects;
 
 namespace Model.MeshObjects
 {
     public abstract class Element : ModelObject, IElement
     {
-        protected List<Node> nodes = new List<Node>();
+        protected List<INode> nodes = new List<INode>();
 
         protected List<IIntegralPoint> intPoints = new List<IIntegralPoint>();
 
@@ -24,7 +24,7 @@ namespace Model.MeshObjects
         /// <param name="number"></param>
         /// <param name="nodes"></param>
         /// <exception cref="Exception"></exception>
-        public Element(int number, Node[] nodes) : base(number)
+        public Element(int number, INode[] nodes) : base(number)
         {
             if (nodes.Length == 0)
                 throw new Exception("Массив узлов не может быть пустой!");

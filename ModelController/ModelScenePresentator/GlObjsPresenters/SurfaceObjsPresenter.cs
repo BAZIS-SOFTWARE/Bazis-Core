@@ -23,12 +23,10 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
 
         public bool IsVolumeObjs { get; } = false;
         /// <inheritdoc/>
-        public PresenterView PresenterView { get; set; } = PresenterView.LineSurface;
 
         /// <summary>
         /// SurfaceObjsPresenter
         /// </summary>
-        /// <param name="surfaceObjects"></param>
         /// <param name="isVolumeObjs"></param>
         public SurfaceObjsPresenter(bool isVolumeObjs)
         {
@@ -191,20 +189,8 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
         {
             throw new NotImplementedException();
         }
-/// <inheritdoc/>
 
-        public void ClearNotExisted()
-        {
-            var existObjs = surfaceObjects.Where(x => x.ExistState == true).ToList();
-            surfaceObjects.Clear();
-            surfaceObjects.AddRange(existObjs);
-        }
-/// <inheritdoc/>
 
-        public void Clear()
-        {
-            surfaceObjects.Clear();
-        }
         /// <summary>
         /// Add
         /// </summary>

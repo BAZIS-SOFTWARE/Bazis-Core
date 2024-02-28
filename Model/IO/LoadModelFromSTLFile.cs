@@ -8,6 +8,7 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using Model.GeometryObjects;
+using System.Collections.Generic;
 
 namespace Model.IO
 {
@@ -42,7 +43,10 @@ namespace Model.IO
                 var str = String.Empty;
 
                 LoadEvent?.Invoke(this, new LoaderEventArgs("Начало импорта STL модели"));
-                while (!reader.EndOfStream)
+
+
+                var surfaces = new List<GeometrySurface>();
+                while (str != null)
                 {
                     while (str != "endsolid")
                     {
@@ -66,9 +70,9 @@ namespace Model.IO
 
             return modelData;
         }
-        private GeometryPoint[] GetNodes(StreamReader stl, string str)
+        private GeometryPoint[] GetPoints(StreamReader stl, string str)
         {
-            var nodes = new GeometryPoint[3];
+            var points = new GeometryPoint[3];
             for (int i = 0; i < 3; i++)
             {
                 if (str != null && str != "endloop" && str.Contains("vertex"))
@@ -80,11 +84,11 @@ namespace Model.IO
                     var z = float.Parse(lineData[2], NumberStyles.Float, CultureInfo.InvariantCulture);
                     var node = new GeometryPoint(counter, new Point3D(x, y, z));
                     counter++;
-                    nodes[i] = node;
+                    points[i] = node;
                     str = stl.ReadLine()?.Trim();
                 }
             }
-            return nodes;
+            return points;
         }
 
         private IModelData LoadBinary(string path)
@@ -111,6 +115,8 @@ namespace Model.IO
                         reader.BaseStream.Position += 14;
                     }
                 }
+
+                modelData.ObjectData.Fig2DCollection.Add(new SurfaceFigure(0, surfaces.ToArray()));
             }
             LoadEvent?.Invoke(this, new LoaderEventArgs("Модель загружена"));
             return modelData;

@@ -2,7 +2,7 @@
 using ModelInterfaces.IntegralObject;
 using System.Collections.Generic;
 
-namespace ModelInterfaces
+namespace ModelInterfaces.MeshObjects
 {
     /// <summary>
     /// ElementKind

@@ -3,7 +3,7 @@ using Geometry.Interfaces;
 using System;
 using System.Collections.Generic;
 
-namespace ModelInterfaces
+namespace ModelInterfaces.MeshObjects
 {
     /// <summary>
     /// INode
