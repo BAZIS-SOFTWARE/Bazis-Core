@@ -11,9 +11,9 @@ namespace ModelControllerInterfaces
         /// <summary>
         /// Create
         /// </summary>
-        /// <param name="fistSet"></param>
+        /// <param name="firstSet"></param>
         /// <param name="secSet"></param>
         /// <returns></returns>
-        List<IElement3D> Create(List<IElement2D> fistSet,List<IElement2D> secSet);
+        List<IElement3D> Create(List<IElement2D> firstSet,List<IElement2D> secSet);
     }
 }

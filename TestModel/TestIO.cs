@@ -81,7 +81,34 @@ namespace TestModel
         }
 
         [TestMethod]
-        public void LoadModelFromGMSHTextFile_ShouldLoadCorrectNumberOfNodes()
+        //[DataRow(@"..\..\..\Examples\STL\ACII.stl")]
+        public void ImportExportModelFromSTLtextFormat(string filePath)
+        {
+            //assing
+            var model = new ModelData();
+
+            model.Loader = new LoadModelFromSTLFile();
+            model.Load(filePath);
+
+            model.Saver = new SaveModelToBinarySTLFile();
+            model.Save(filePath + ".bin.stl");
+
+            model.Saver = new SaveModelToTxtSTLFile();
+            model.Save(filePath + ".txt.stl");
+
+            var model2 = new ModelData();
+            model2.Loader = new LoadModelFromSTLFile();
+            model2.Load(filePath + ".bin.stl");
+
+            var model3 = new ModelData();
+            model3.Loader = new LoadModelFromSTLFile();
+            model3.Load(filePath + ".txt.stl");
+            //assert
+        }
+
+        [TestMethod]
+        public void ImportModelFromGMSHtextFormat()
+
         {
             var model = new ModelData();
             model.Loader = new LoadModelFromGMSHTextFile();

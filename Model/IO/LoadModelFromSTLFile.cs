@@ -3,6 +3,7 @@ using Model.MeshObjects;
 using Model.Events;
 using ModelInterfaces;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -25,8 +26,8 @@ namespace Model.IO
             catch (Exception e)
             {
                 if (e is IndexOutOfRangeException
-                   || e is FormatException
-                   || e is EndOfStreamException)
+                    || e is FormatException
+                    || e is EndOfStreamException)
                     throw new StlFileLoadExeption("Формат файла не соответствует формату STL", e);
 
                 throw;
@@ -43,21 +44,27 @@ namespace Model.IO
 
                 LoadEvent?.Invoke(this, new LoaderEventArgs("Начало импорта STL модели"));
 
+
                 var surfaces = new List<GeometrySurface>();
                 while (str != null)
                 {
-                    if (str != null && str.Contains("outer loop"))
+                    while (str != "endsolid")
                     {
+                        if (str != null && str.Contains("outer loop"))
+                        {
+                            str = reader.ReadLine()?.Trim();
+                            var nodes = GetNodes(reader, str);
+                            modelData.ObjectData.Add(ObjType.Точка, nodes);
+                            var surface = new Figure2D(counter, nodes);
+                            modelData.ObjectData.Add(ObjType.Фигура2D, surface);
+                            counter++;
+                        }
+
                         str = reader.ReadLine()?.Trim();
-                        var points = GetPoints(reader, str);
-                        modelData.ObjectData.PointCollection.AddRange(points);
-                        var surface = new GeometrySurface(counter, points);
-                        surfaces.Add(surface);
-                        counter++;
                     }
-                    str = reader.ReadLine();
+                    str = String.Empty;
                 }
-                modelData.ObjectData.Fig2DCollection.Add(new SurfaceFigure(0, surfaces.ToArray()));
+
                 LoadEvent?.Invoke(this, new LoaderEventArgs("Модель загружена"));
             }
 
@@ -92,21 +99,21 @@ namespace Model.IO
 
             using (BinaryReader reader = new BinaryReader(File.Open(path, FileMode.Open)))
             {
-                reader.BaseStream.Position += 80;
-                var count = reader.ReadUInt32();
-                reader.BaseStream.Position += 12;
-
-                var surfaces = new List<GeometrySurface>();
-
-                for (int i = 0; i < count; i++)
+                while (reader.BaseStream.Position < reader.BaseStream.Length)
                 {
-                    var points = new GeometryPoint[3];
-                    points[0] = ReadNode(reader);
-                    points[1] = ReadNode(reader);
-                    points[2] = ReadNode(reader);
-                    var surface = new GeometrySurface(counter++, points);
-                    surfaces.Add(surface);
-                    reader.BaseStream.Position += 14;
+                    reader.BaseStream.Position += 80;
+                    var count = reader.ReadUInt32();
+                    reader.BaseStream.Position += 12;
+                    for (int i = 0; i < count; i++)
+                    {
+                        var points = new GeometryPoint[3];
+                        points[0] = ReadNode(reader);
+                        points[1] = ReadNode(reader);
+                        points[2] = ReadNode(reader);
+                        var surface = new Figure2D(counter++, points);
+                        modelData.ObjectData.Add(ObjType.Фигура2D, surface);
+                        reader.BaseStream.Position += 14;
+                    }
                 }
 
                 modelData.ObjectData.Fig2DCollection.Add(new SurfaceFigure(0, surfaces.ToArray()));
@@ -133,6 +140,7 @@ namespace Model.IO
             var node = new GeometryPoint(counter++, new Point3D(x, y, z));
             return node;
         }
+
     }
 
 
