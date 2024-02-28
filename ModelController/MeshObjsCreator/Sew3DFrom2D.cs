@@ -1,27 +1,16 @@
 ﻿using Model.MeshObjects;
 using ModelControllerInterfaces;
-using ModelInterfaces;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Geometry;
-using System.Runtime.CompilerServices;
 using Octree;
 using System.Numerics;
-using System.Collections.Immutable;
-using System.ComponentModel;
-using System.Reflection.Emit;
-using System.Runtime.Remoting.Messaging;
-using System.Security.Policy;
-using System.Xml.Linq;
-using System.Security.Cryptography;
-using MathNet.Numerics.Distributions;
 
 
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
-using System.Drawing;
+using ModelInterfaces.MeshObjects;
 
 namespace ModelController.MeshObjsCreator
 {

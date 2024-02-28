@@ -11,11 +11,12 @@ using Model.MeshObjects;
 using Model.GeometryObjects;
 using ModelInterfaces.MeshObjects;
 using ModelInterfaces.GeometryObjects;
+using ModelInterfaces.ObjectsFinders;
 
 namespace GmshApi.GmshController
 {
     /// <summary>
-    /// Класс содержит информацию о типе извлечнного элемента
+    /// Класс содержит информацию о типе извлечнных элементов
     /// </summary>
     public class ElementProperties
     {
@@ -23,13 +24,14 @@ namespace GmshApi.GmshController
         public string elementName;
         /// <summary>Размерность</summary>
         public int dim;
-        /// <summary>Порядок</summary>
+        /// <summary>Порядок элементов (линейные, квадратичные, кубические и т.д.)</summary>
         public int order;
-        /// <summary>Количество узлов</summary>
+        /// <summary>Общее количество узлов, приходящиеся на один элемент указанного типа</summary>
         public int numNodes;
-        /// <summary>Массив координат</summary>
+        /// <summary>Массив координат узлов элементов. Сейчас не используется. Для получения координат
+        /// вызываем метод ModelMeshGetNodesByElementType</summary>
         public double[] coords;
-        /// <summary>Количество координат</summary>
+        /// <summary>Количество узлов на все элементы </summary>
         public int coords_n;
         /// <summary>Главные узлы</summary>
         public int numPrimaryNodes;
@@ -1453,9 +1455,9 @@ namespace GmshApi.GmshController
         /// </summary>
         /// <param name="dim">Размерность</param>
         /// <param name="tag">Идентификатор</param>
-        /// <param name="elementTypes">Типы элементов</param>
-        /// <param name="elementTags">Идентификаторы элементов</param>
-        /// <param name="nodeTags">Идентификаторы узлов элементов</param>
+        /// <param name="elementTypes">Индексы для массивов elementTags & nodeTags</param>
+        /// <param name="elementTags">Идентификаторы (номера) элементов</param>
+        /// <param name="nodeTags">Идентификаторы (номера) узлов элементов</param>
         /// <returns>Успешность вызова метода</returns>
         public bool ModelMeshGetElements(int dim, int tag, out int[] elementTypes,
                                          out long[][] elementTags, out long[][] nodeTags)
@@ -1565,7 +1567,7 @@ namespace GmshApi.GmshController
             return status;
         }
         /// <summary>
-        /// Извлекает координаты точек и их идентификаторы, для заданного типа элемента и идентификатора элемента
+        /// Извлекает координаты узлов и их идентификаторы, для заданного типа элементов и идентификатора элемента
         /// </summary>
         /// <param name="elementType">Тип элемента</param>
         /// <param name="tag">Идентификатор</param>
@@ -1888,11 +1890,13 @@ namespace GmshApi.GmshController
                     for (int i = 0; i < properties.Length; ++i)
                     {
                         var elements = elemTags[i];
+                        //TO DO вероятно убрать так как координаты всех узлов уже известны и работа идет только с их номерами
                         ModelMeshGetNodesByElementType(elementTypes[i], -1, false, out nodesT, out coords, out parametric);
+                        var nodesCount = properties[i].numNodes;
                         for (var j = 0; j < elements.Length; ++j)
                         {
-                            var nodesCount = properties[i].numNodes;
-                            var nodesPerElem = new Node[nodesCount];
+  
+                            var nodesPerElems = new Node[nodesCount];
                             for (int k = 0; k < nodesCount; ++k)
                             {
                                 var coordStride = j * nodesCount * 3 + k * 3;
@@ -1901,9 +1905,9 @@ namespace GmshApi.GmshController
                                 var y = (float)coords[coordStride + 1];
                                 var z = (float)coords[coordStride + 2];
                                 var point = new Point3D(x, y, z);
-                                nodesPerElem[k] = new Node((int)nodeTags[i][tagStride], point);
+                                nodesPerElems[k] = new Node((int)nodeTags[i][tagStride], point);
                             }
-                            list.Add(CreateModelObject(ref properties[i].elementName, elements[j], nodesPerElem));
+                            list.Add(CreateModelObject(ref properties[i].elementName, elements[j], nodesPerElems));
                         }
                     }
                     status = true;
