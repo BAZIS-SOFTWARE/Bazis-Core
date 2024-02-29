@@ -1868,73 +1868,77 @@ namespace GmshApi.GmshController
             return points;
         }
         /// <summary>
+        /// Возвращает отсортированные идентификаторы узлов для каждого типа элемента
+        /// </summary>
+        /// <param name="nodeTags">Двумерный массив идентификаторов</param>
+        /// <returns>Список списков идентификаторов узлов</returns>
+        public List<List<long>> GetSortedNodesTagsByElementTypes(long[][] nodeTags)
+        {
+            var nodes = new List<List<long>>();
+            foreach(var array in nodeTags)
+                nodes.Add(array.OrderBy(x => x).ToList());
+            return nodes;
+        }
+
+        /// <summary>
         /// Возвращает список элементов сетки
         /// </summary>
         /// <param name="dim">Размерность</param>
         /// <param name="tag">Идентификатор</param>
-        /// <param name="status">Успешность вызова метода</param>
+        /// <param name="nodes">Отсортированные узлы</param>
         /// <returns>Список элементов сетки</returns>
-        public List<ISurfaceElement> GetMeshEntities(int dim, int tag, ref bool status)
+        public List<ISurfaceElement> GetMeshEntities(int dim, int tag, List<INode> nodes)
         {
             ElementProperties[] properties;
             int[] elementTypes;
             long[][] elemTags, nodeTags;
-            long[] nodesT;
-            double[] coords, parametric;
             var list = new List<ISurfaceElement>();
-            status = false;
-            if (ModelMeshGetElements(dim, tag, out elementTypes, out elemTags, out nodeTags))
+            if (nodes.Count > 0)
             {
-                if (ModelMeshGetElementProperties(elementTypes, out properties))
+                ModelMeshGetElements(dim, tag, out elementTypes, out elemTags, out nodeTags);
+                ModelMeshGetElementProperties(elementTypes, out properties);
+                for (int i = 0; i < properties.Length; ++i)
                 {
-                    for (int i = 0; i < properties.Length; ++i)
+                    var elements = elemTags[i];//Идентификаторы элементов
+                    var nodesCount = properties[i].numNodes;
+                    for (var j = 0; j < elements.Length; ++j)
                     {
-                        var elements = elemTags[i];
-                        //TO DO вероятно убрать так как координаты всех узлов уже известны и работа идет только с их номерами
-                        ModelMeshGetNodesByElementType(elementTypes[i], -1, false, out nodesT, out coords, out parametric);
-                        var nodesCount = properties[i].numNodes;
-                        for (var j = 0; j < elements.Length; ++j)
+                        var nodesPerElems = new INode[nodesCount];
+                        for (int k = 0; k < nodesCount; ++k)
                         {
-  
-                            var nodesPerElems = new Node[nodesCount];
-                            for (int k = 0; k < nodesCount; ++k)
-                            {
-                                var coordStride = j * nodesCount * 3 + k * 3;
-                                var tagStride = j * nodesCount + k;
-                                var x = (float)coords[coordStride + 0];
-                                var y = (float)coords[coordStride + 1];
-                                var z = (float)coords[coordStride + 2];
-                                var point = new Point3D(x, y, z);
-                                nodesPerElems[k] = new Node((int)nodeTags[i][tagStride], point);
-                            }
-                            list.Add(CreateModelObject(ref properties[i].elementName, elements[j], nodesPerElems));
+                            var tagStride = j * nodesCount + k;
+                            nodesPerElems[k] = nodes.Find((int)nodeTags[i][tagStride]);
+                            if (nodesPerElems[k] == null)
+                                throw new Exception($"Элемент с номером {nodeTags[i][tagStride]} не найден");
                         }
+                        list.Add(CreateModelObject(ref properties[i].elementName, elements[j], nodesPerElems));
                     }
-                    status = true;
                 }
             }
             return list;
         }
         /// <summary>
-        /// Возвращает список узлов сетки
+        /// Возвращает список отсортированных узлов сетки.
+        /// Если запрашивается точки для dim <=0, флаг includeBoundary установить в false, иначе будут дубликаты
         /// </summary>
-        /// <param name="status">Успешность вызова метода</param>
+        /// <param name="dim">Размерность dim</param>
+        /// <param name="tag">Идентификатор узла или (-1 для всех)</param>
+        /// <param name="includeBoundary">Включать граничные точки</param>
         /// <returns>Список узлов сетки</returns>
-        public List<INode> GetNodes(ref bool status)
+        public List<INode> GetNodes(int dim = -1, int tag = -1, bool includeBoundary = true)
         {
             long[] nodeTags;
             double[] local, parametric;
             var nodes = new List<INode>();
-            if (ModelMeshGetNodes(-1, -1, false, false, out nodeTags, out local, out parametric))
+            if (ModelMeshGetNodes(dim, tag, includeBoundary, false, out nodeTags, out local, out parametric))
             {
                 for (var i = 0; i < nodeTags.Length; ++i)
                 {
                     var point = new Point3D((float)local[i * 3], (float)local[i * 3 + 1], (float)local[i * 3 + 2]);
                     nodes.Add(new Node((int)nodeTags[i], point));
                 }
-                status = true;
             }
-            return nodes;
+            return nodes.OrderBy(x => x.Number).ToList();//Сортировка внутри метода!
         }
         /// <summary>
         /// Удалить элементы сетки
@@ -1988,7 +1992,7 @@ namespace GmshApi.GmshController
         }
         
         private ISurfaceElement CreateModelObject(ref string elementName,
-                                                  long elementId, Node[] nodes)
+                                                  long elementId, INode[] nodes)
         {
             if (elementName.Contains("Triangle"))
                 return new Triangle((int)elementId, nodes);

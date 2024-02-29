@@ -38,7 +38,7 @@ namespace Model.IO
         {
             var modelData = new ModelData();
 
-            using (var reader = new StreamReader(path))
+            /*using (var reader = new StreamReader(path))
             {
                 var str = String.Empty;
 
@@ -66,7 +66,7 @@ namespace Model.IO
                 }
 
                 LoadEvent?.Invoke(this, new LoaderEventArgs("Модель загружена"));
-            }
+            }*/
 
             return modelData;
         }
@@ -95,7 +95,7 @@ namespace Model.IO
         {
             var modelData = new ModelData();
 
-            LoadEvent?.Invoke(this, new LoaderEventArgs("Начало импорта STL модели"));
+            /*LoadEvent?.Invoke(this, new LoaderEventArgs("Начало импорта STL модели"));
 
             using (BinaryReader reader = new BinaryReader(File.Open(path, FileMode.Open)))
             {
@@ -118,7 +118,7 @@ namespace Model.IO
 
                 modelData.ObjectData.Fig2DCollection.Add(new SurfaceFigure(0, surfaces.ToArray()));
             }
-            LoadEvent?.Invoke(this, new LoaderEventArgs("Модель загружена"));
+            LoadEvent?.Invoke(this, new LoaderEventArgs("Модель загружена"));*/
             return modelData;
         }
 

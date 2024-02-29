@@ -14,7 +14,7 @@ using System;
         public event Action<object, ISaverEventArgs> SaveEvent;
         public void Save(IModelData model, string path)
         {
-            using (BinaryWriter writer = new BinaryWriter(File.Open(path, FileMode.OpenOrCreate)))
+            /*using (BinaryWriter writer = new BinaryWriter(File.Open(path, FileMode.OpenOrCreate)))
             {
                 ushort zero = 0;
                 //сохранение координат узлов
@@ -50,7 +50,7 @@ using System;
                         writer.Write(zero); // – Attribute byte count
                     }
 
-            }
+            }*/
         }
     }
 
@@ -59,7 +59,7 @@ using System;
         public event Action<object, ISaverEventArgs> SaveEvent;
         public void Save(IModelData model, string path)
         {
-            using (var writer = new StreamWriter(path))
+            /*using (var writer = new StreamWriter(path))
             {
                 //сохранение координат узлов
                 var ver = Assembly.GetExecutingAssembly().GetName().Version;
@@ -90,7 +90,7 @@ using System;
                     writer.WriteLine($"   endfacet");
                 }
                 writer.WriteLine($"endsolid");
-            }
+            }*/
         }
     }
     public class StlFileWriteExeption : Exception

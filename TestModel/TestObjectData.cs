@@ -212,16 +212,16 @@ namespace TestModel
         public void TestRemoveAllData(string stlPath, ObjType objType, int nNumb)
         {
             var ierr = 0;
-            var status = true;
+            //var status = true;
             var modelData = new ModelData();
 
             var controller = new GmshController(@"..\..\..\..\GmshApi\gmsh.dll");
             controller.gmshMerge(stlPath, ref ierr);
-            var nodes = controller.GetNodes(ref status);
-            Assert.AreEqual(true, status);
+            var nodes = controller.GetNodes();
+            //Assert.AreEqual(true, status);
             Assert.AreEqual(4, nodes.Count);
-            var elements = controller.GetMeshEntities(2, -1, ref status);
-            Assert.AreEqual(true, status);
+            var elements = controller.GetMeshEntities(2, -1, nodes);
+            //Assert.AreEqual(true, status);
             Assert.AreEqual(2, elements.Count);
             modelData.ObjectData.NodeCollection.AddRange(nodes);
 
