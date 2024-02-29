@@ -45,21 +45,23 @@ namespace Model.IO
                 LoadEvent?.Invoke(this, new LoaderEventArgs("Начало импорта STL модели"));
 
 
-                var surfaces = new List<GeometrySurface>();
+                //var surfaces = new List<GeometrySurface>();
                 while (str != null)
                 {
+                    var surfaces = new List<GeometrySurface>();
+
                     while (str != "endsolid")
                     {
                         if (str != null && str.Contains("outer loop"))
                         {
                             str = reader.ReadLine()?.Trim();
-                            var nodes = GetNodes(reader, str);
-                            modelData.ObjectData.Add(ObjType.Точка, nodes);
-                            var surface = new Figure2D(counter, nodes);
-                            modelData.ObjectData.Add(ObjType.Фигура2D, surface);
-                            counter++;
+                            var points = GetPoints(reader, str);
+                            modelData.ObjectData.PointCollection.AddRange(points);
+                            var surface = new GeometrySurface(counter, points);
+                            surfaces.Add(surface);                          
                         }
-
+                        var surfaceFig = new SurfaceFigure(counter++, surfaces.ToArray());
+                        modelData.ObjectData.Fig2DCollection.Add(surfaceFig);
                         str = reader.ReadLine()?.Trim();
                     }
                     str = String.Empty;
@@ -101,6 +103,7 @@ namespace Model.IO
             {
                 while (reader.BaseStream.Position < reader.BaseStream.Length)
                 {
+                    var surfaces = new List<GeometrySurface>();
                     reader.BaseStream.Position += 80;
                     var count = reader.ReadUInt32();
                     reader.BaseStream.Position += 12;
@@ -110,13 +113,13 @@ namespace Model.IO
                         points[0] = ReadNode(reader);
                         points[1] = ReadNode(reader);
                         points[2] = ReadNode(reader);
-                        var surface = new Figure2D(counter++, points);
-                        modelData.ObjectData.Add(ObjType.Фигура2D, surface);
+                        var surface = new GeometrySurface(counter, points);
+                        surfaces.Add(surface);
                         reader.BaseStream.Position += 14;
                     }
+                    var surfaceFig = new SurfaceFigure(counter++, surfaces.ToArray());
+                    modelData.ObjectData.Fig2DCollection.Add(surfaceFig);
                 }
-
-                modelData.ObjectData.Fig2DCollection.Add(new SurfaceFigure(0, surfaces.ToArray()));
             }
             LoadEvent?.Invoke(this, new LoaderEventArgs("Модель загружена"));
             return modelData;

@@ -26,9 +26,8 @@ namespace TestModel
                 new Node(3, new Point3D( x3, y3, z3)),
             };
             var triangle = new Triangle(4, nodes);
-            var instance = new Map3DFrom2D();
 
-            var m = typeof(Map3DFrom2D).GetMethod("CalcCircumcenter", BindingFlags.NonPublic | BindingFlags.Static);
+            var m = typeof(Sew3DFrom2D).GetMethod("CalcCircumcenter", BindingFlags.NonPublic | BindingFlags.Static);
             var circumcenter = m.Invoke(null, new object[] { triangle }) as Point3D;
 
             var r1 = circumcenter.Sub(nodes[0].Position).GetSquareSumCoords();
