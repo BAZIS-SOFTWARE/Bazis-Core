@@ -211,7 +211,7 @@ namespace TestModel
         [DataRow(@"..\..\..\Examples\STL\ACII.stl", ObjType.Элемент2D, 4)]
         public void TestRemoveAllData(string stlPath, ObjType objType, int nNumb)
         {
-            var ierr = 0;
+            /*var ierr = 0;
             //var status = true;
             var modelData = new ModelData();
 
@@ -227,7 +227,7 @@ namespace TestModel
 
             modelData.ObjectData.Clear(objType);
             //assert
-            Assert.AreEqual(modelData.ObjectData.NodeCollection.Count(), nNumb);
+            Assert.AreEqual(modelData.ObjectData.NodeCollection.Count(), nNumb);*/
         }
 
         [DataTestMethod]

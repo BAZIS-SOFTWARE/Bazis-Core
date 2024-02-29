@@ -283,7 +283,6 @@ namespace TestModel.GmshTests
         public void AddElements3DForStlTest(string fileName)
         {
             var ierr = 0;
-            var status = false;
             controller.gmshOpen(@"..\..\..\Examples\STL\" + fileName, ref ierr);
             controller.gmshModelMeshGenerate(3, ref ierr);
             var nodes = controller.GetNodes(3, -1);

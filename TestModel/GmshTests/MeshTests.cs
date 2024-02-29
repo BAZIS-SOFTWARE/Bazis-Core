@@ -44,7 +44,6 @@ namespace TestModel.GmshTests
         public void TestRefineMesh(string fileName)
         {
             var ierr = 0;
-            var status = false;
             controller.gmshOpen(modelFolder + fileName, ref ierr);
             controller.gmshModelMeshGenerate(2, ref ierr);
             var nodesUntil = controller.GetNodes(-1, -1);
@@ -54,18 +53,19 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow("Cilindr.step", 46,1)]
-        [DataRow("Cilindr.step", 370,2)]
-        [DataRow("Cilindr.step", 707,3)]
-        public void TestGetElements(string fileName, int expected,int dim)
+        [DataRow("Cilindr.step", 223, 46, 370, 707)]
+        [DataRow("Korpus_Nasosa.step",2152,1438,3802,6992)]
+        public void GetMeshObjects(string fileName,int expNodes, int expE1d, int expE2d, int expE3d)
         {
             var ierr = 0;
             controller.gmshOpen(modelFolder + fileName, ref ierr);
-            controller.gmshModelMeshGenerate(dim, ref ierr);
-            var nodes = controller.GetNodes(dim, -1, true);
-            var e1d = controller.GetMeshEntities(dim, -1, nodes);
-            Assert.AreEqual(expected, e1d.Count);
-        }       
+            controller.gmshModelMeshGenerate(3, ref ierr);
+            controller.GetMeshObjects();
+            Assert.AreEqual(expNodes, controller.Nodes.Count());
+            Assert.AreEqual(expE1d, controller.E1D.Count());
+            Assert.AreEqual(expE2d, controller.E2D.Count());
+            Assert.AreEqual(expE3d, controller.E3D.Count());
+        }
 
         [DataTestMethod]
         [DataRow("Cilindr.step")]
@@ -111,7 +111,6 @@ namespace TestModel.GmshTests
         public void GetSurfaceByIdTest(string fileName, int[] tags, int[] expLength )
         {
             var ierr = 0;
-            //var status = false;
             controller.gmshOpen(modelFolder + fileName, ref ierr);
             controller.gmshModelMeshGenerate(2, ref ierr);
             for (var i = 0; i < tags.Length; ++i)
@@ -224,7 +223,6 @@ namespace TestModel.GmshTests
             var ierr = 0;
             controller.gmshOpen(modelFolder + fileName, ref ierr);
             controller.gmshModelMeshGenerate(2, ref ierr);
-            //var nodes = controller.GetNodes(ref status);
             for (var i = 0; i < surfTags.Length; ++i)
             {
                 var nodes = controller.GetNodes(2, surfTags[i], true);
@@ -329,7 +327,6 @@ namespace TestModel.GmshTests
         public void AddBoundaryLayerTest(string fileName)
         {
             var ierr = 0;
-            var status = false;
             controller.gmshOpen(modelFolder + fileName, ref ierr);
             controller.gmshModelMeshGenerate(2, ref ierr);
             var nodes = controller.GetNodes(2);
@@ -356,7 +353,6 @@ namespace TestModel.GmshTests
             var ierr = 0;
             controller.gmshOpen(modelFolder + fileName, ref ierr);
             controller.gmshModelMeshGenerate(2, ref ierr);
-            //var status = false;
             var nodes = controller.GetNodes(2);
             var beforeCount = controller.GetMeshEntities(2, -1, nodes).Count;
             controller.gmshModelMeshGenerate(1, ref ierr);
@@ -367,20 +363,18 @@ namespace TestModel.GmshTests
             var afterCount = controller.GetMeshEntities(2, -1, nodes).Count;
             Assert.IsTrue(afterCount != beforeCount);
         }
-
+        //Тест гарантирующий удаление элементов в случае удаления общего узла (проверка единой области памяти!)
         [DataTestMethod]
         [DataRow(@"..\..\..\Examples\GMSHAPI\simple.geo", 347, 673)]
         public void DeleteNodeTest(string path, int delNodeNumber, int expElementsAfterDel)
         {
             var ierr = 0;
             var modelData = new ModelData();
-            var controller = new GmshController(@"..\..\..\..\GmshApi\gmsh.dll");
             controller.gmshOpen(path, ref ierr);
-            controller.gmshModelMeshGenerate(2, ref ierr);
-            var nodes = controller.GetNodes(2);
-            modelData.ObjectData.NodeCollection.AddRange(nodes);
-            var elements = controller.GetMeshEntities(2, -1, nodes);
-            modelData.ObjectData.E2DCollection.AddRange(elements);//Не могу отправить коллекцию в e2dCollection
+            controller.gmshModelMeshGenerate(3, ref ierr);
+            controller.GetMeshObjects();
+            modelData.ObjectData.NodeCollection.AddRange(controller.Nodes);
+            modelData.ObjectData.E2DCollection.AddRange(controller.E2D);
             var delNode = modelData.ObjectData.Find(ObjType.Узел, delNodeNumber);
             delNode.ExistState = false;
             modelData.ObjectData.E2DCollection.ClearNotExisted();

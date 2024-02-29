@@ -45,6 +45,22 @@ namespace GmshApi.GmshController
         /// Указатель на DLL
         /// </summary>
         public IntPtr DLL { get; private set; }
+        /// <summary>
+        /// Узлы полученные после вызова метода GetMeshObjects
+        /// </summary>
+        public IEnumerable<INode> Nodes { get; private set; }
+        /// <summary>
+        /// Элементы 1D полученные после вызова метода GetMeshObjects
+        /// </summary>
+        public IEnumerable<ILineObject<INode>> E1D { get; private set; }
+        /// <summary>
+        /// Элементы 2D полученные после вызова метода GetMeshObjects
+        /// </summary>
+        public IEnumerable<IElement2D> E2D { get; private set; }
+        /// <summary>
+        /// Элементы 3D полученные после вызова метода GetMeshObjects
+        /// </summary>
+        public IEnumerable<IElement3D> E3D { get; private set; }
 
         private string GetStringPtr(IntPtr name)
         {
@@ -1868,19 +1884,6 @@ namespace GmshApi.GmshController
             return points;
         }
         /// <summary>
-        /// Возвращает отсортированные идентификаторы узлов для каждого типа элемента
-        /// </summary>
-        /// <param name="nodeTags">Двумерный массив идентификаторов</param>
-        /// <returns>Список списков идентификаторов узлов</returns>
-        public List<List<long>> GetSortedNodesTagsByElementTypes(long[][] nodeTags)
-        {
-            var nodes = new List<List<long>>();
-            foreach(var array in nodeTags)
-                nodes.Add(array.OrderBy(x => x).ToList());
-            return nodes;
-        }
-
-        /// <summary>
         /// Возвращает список элементов сетки
         /// </summary>
         /// <param name="dim">Размерность</param>
@@ -1918,6 +1921,42 @@ namespace GmshApi.GmshController
             return list;
         }
         /// <summary>
+        /// Возвращает список элементов сетки
+        /// </summary>
+        /// <param name="dim">Размерность</param>
+        /// <param name="tag">Идентификатор</param>
+        /// <param name="nodes">Отсортированные узлы</param>
+        /// <param name="fillDelegete">Делегат, который будет заполнять свой список ObjectData</param>
+        /// <returns>Список элементов сетки</returns>
+        private void GetMeshEntities(int dim, int tag, List<INode> nodes, Action<string, int, INode[]> fillDelegete)
+        {
+            ElementProperties[] properties;
+            int[] elementTypes;
+            long[][] elemTags, nodeTags;
+            if (nodes.Count > 0)
+            {
+                ModelMeshGetElements(dim, tag, out elementTypes, out elemTags, out nodeTags);
+                ModelMeshGetElementProperties(elementTypes, out properties);
+                for (int i = 0; i < properties.Length; ++i)
+                {
+                    var elements = elemTags[i];//Идентификаторы элементов
+                    var nodesCount = properties[i].numNodes;
+                    for (var j = 0; j < elements.Length; ++j)
+                    {
+                        var nodesPerElems = new INode[nodesCount];
+                        for (int k = 0; k < nodesCount; ++k)
+                        {
+                            var tagStride = j * nodesCount + k;
+                            nodesPerElems[k] = nodes.Find((int)nodeTags[i][tagStride]);
+                            if (nodesPerElems[k] == null)
+                                throw new Exception($"Элемент с номером {nodeTags[i][tagStride]} не найден");
+                        }
+                        fillDelegete(properties[i].elementName, (int)elements[j], nodesPerElems);
+                    }
+                }
+            }
+        }
+        /// <summary>
         /// Возвращает список отсортированных узлов сетки.
         /// Если запрашивается точки для dim <=0, флаг includeBoundary установить в false, иначе будут дубликаты
         /// </summary>
@@ -1939,6 +1978,43 @@ namespace GmshApi.GmshController
                 }
             }
             return nodes.OrderBy(x => x.Number).ToList();//Сортировка внутри метода!
+        }
+        /// <summary>
+        /// Заполняет поля всеми возможными сеточными элементами(узлы, 1D, 2D, 3D)
+        /// </summary>
+        public void GetMeshObjects()
+        {
+            var nodes = GetNodes(-1, -1, false);
+            var e1D = new List<ILineObject<INode>>();
+            var e2D = new List<IElement2D>();
+            var e3D = new List<IElement3D>();
+            Action<string, int, INode[]> filler1D = (s, i, n) =>
+            {
+                e1D.Add(new Beam(i, n));
+            };
+            Action<string, int, INode[]> filler2D = (s, i, n) =>
+            {
+                if (s.Contains("Triangle"))
+                    e2D.Add(new Triangle(i, n));
+                else
+                    e2D.Add(new Quad(i, n));
+            };
+            Action<string, int, INode[]> filler3D = (s, i, n) =>
+            {
+                if (s.Contains("Tetrahedron"))
+                    e3D.Add(new Tetra(i, n));
+                else if (s.Contains("Hexahedron"))
+                    e3D.Add(new Hexa(i, n));
+                else
+                    e3D.Add(new Penta(i, n));
+            };
+            GetMeshEntities(1, -1, nodes, filler1D);
+            GetMeshEntities(2, -1, nodes, filler2D);
+            GetMeshEntities(3, -1, nodes, filler3D);
+            Nodes = nodes;
+            E1D = e1D;
+            E2D = e2D;
+            E3D = e3D;
         }
         /// <summary>
         /// Удалить элементы сетки
