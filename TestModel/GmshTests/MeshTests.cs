@@ -397,5 +397,25 @@ namespace TestModel.GmshTests
             status = controller.gmshModelIsInside(2, surfTag, coords, (IntPtr)3, 0, ref ierr);
             Assert.AreEqual(0, status);
         }
+        //Тест гарантирующий сброс трансфиниции кривой в состояние по умолчанию :)
+        [DataTestMethod]
+        [DataRow("Cilindr.step", 2)]
+        public void ResetTransfinitionTest(string fileName, int curveTag)
+        {
+            var ierr = 0;
+            controller.gmshOpen(modelFolder + fileName, ref ierr);
+            controller.gmshModelMeshGenerate(1, ref ierr);
+            var defaultNodeCount = controller.GetNodes(1, curveTag).Count;
+            controller.gmshModelMeshClear(new int[0], (IntPtr)0, ref ierr);
+            controller.gmshModelMeshSetTransfiniteCurve(curveTag, 20, "Progression", 1.0, ref ierr);
+            controller.gmshModelMeshGenerate(1, ref ierr);
+            var afterTransfNodeCount = controller.GetNodes(1, curveTag).Count;
+            Assert.AreEqual(20, afterTransfNodeCount);
+            controller.gmshModelMeshClear(new int[0], (IntPtr)0, ref ierr);
+            controller.gmshModelMeshRemoveConstraints(new int[] { 1 , curveTag }, (IntPtr)2, ref ierr);
+            controller.gmshModelMeshGenerate(1, ref ierr);
+            var afterResetNodeCount = controller.GetNodes(1, curveTag).Count;
+            Assert.AreEqual(defaultNodeCount, afterResetNodeCount);
+        }
     }
 }

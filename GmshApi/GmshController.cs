@@ -805,6 +805,14 @@ namespace GmshApi.GmshController
                                                                   int recombine, ref int ierr);///
         public gmshModelMeshSetTransfiniteAutomaticFun gmshModelMeshSetTransfiniteAutomatic;
         /// <summary>
+        /// Удалить все ограничения для заданных dim:tag
+        /// </summary>
+        /// <param name="dimTags">[In]Массив dim:tag</param>
+        /// <param name="dimTags_n">[In]Длина массива dim:tag</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelMeshRemoveConstraintsFun(int[] dimTags, IntPtr dimTags_n, ref int ierr);///
+        public gmshModelMeshRemoveConstraintsFun gmshModelMeshRemoveConstraints;
+        /// <summary>
         /// Находит элементы сетки по переданной координате x,y,z
         /// </summary>
         /// <param name="x">[In]Координата x</param>
@@ -1123,6 +1131,7 @@ namespace GmshApi.GmshController
             gmshModelMeshSetTransfiniteSurface = GetFunction<gmshModelMeshSetTransfiniteSurfaceFun>("gmshModelMeshSetTransfiniteSurface");
             gmshModelMeshSetTransfiniteVolume = GetFunction<gmshModelMeshSetTransfiniteVolumeFun>("gmshModelMeshSetTransfiniteVolume");
             gmshModelMeshSetTransfiniteAutomatic = GetFunction<gmshModelMeshSetTransfiniteAutomaticFun>("gmshModelMeshSetTransfiniteAutomatic");
+            gmshModelMeshRemoveConstraints = GetFunction<gmshModelMeshRemoveConstraintsFun>("gmshModelMeshRemoveConstraints");
             gmshModelMeshGetElementsByCoordinates = GetFunction<gmshModelMeshGetElementsByCoordinatesFun>("gmshModelMeshGetElementsByCoordinates");
             gmshModelMeshGetLocalCoordinatesInElement = GetFunction<gmshModelMeshGetLocalCoordinatesInElementFun>("gmshModelMeshGetLocalCoordinatesInElement");
             gmshModelMeshRebuildNodeCache = GetFunction<gmshModelMeshRebuildNodeCacheFun>("gmshModelMeshRebuildNodeCache");
