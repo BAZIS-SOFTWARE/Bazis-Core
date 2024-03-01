@@ -35,7 +35,7 @@ namespace TestModel.GmshTests
             var ierr = 0;
             controller.gmshOpen(modelFolder + fileName, ref ierr);
             controller.gmshModelMeshGenerate(2, ref ierr);
-            var nodes = controller.GetNodes(-1,-1, false);
+            var nodes = controller.GetNodes(-1, -1, false);
             Assert.AreEqual(187, nodes.Count);
         }
 
@@ -48,14 +48,14 @@ namespace TestModel.GmshTests
             controller.gmshModelMeshGenerate(2, ref ierr);
             var nodesUntil = controller.GetNodes(-1, -1);
             controller.gmshModelMeshRefine(ref ierr);
-            var nodesAfter = controller.GetNodes(-1,-1);
+            var nodesAfter = controller.GetNodes(-1, -1);
             Assert.IsTrue(nodesAfter.Count() > nodesUntil.Count());
         }
 
         [DataTestMethod]
         [DataRow("Cilindr.step", 223, 46, 370, 707)]
-        [DataRow("Korpus_Nasosa.step",2152,1438,3802,6992)]
-        public void GetMeshObjects(string fileName,int expNodes, int expE1d, int expE2d, int expE3d)
+        [DataRow("Korpus_Nasosa.step", 2152, 1438, 3802, 6992)]
+        public void GetMeshObjects(string fileName, int expNodes, int expE1d, int expE2d, int expE3d)
         {
             var ierr = 0;
             controller.gmshOpen(modelFolder + fileName, ref ierr);
@@ -85,7 +85,7 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow("Cilindr.step",1)]
+        [DataRow("Cilindr.step", 1)]
         [DataRow("Cilindr.step", 2)]
         [DataRow("Cilindr.step", 3)]
         public void GetDensityForElementNodes(string fileName, int dim)
@@ -108,7 +108,7 @@ namespace TestModel.GmshTests
 
         [DataTestMethod]
         [DataRow("Cilindr.step", new int[] { 1, 2, 3 }, new int[] { 112, 112, 74 })]
-        public void GetSurfaceByIdTest(string fileName, int[] tags, int[] expLength )
+        public void GetSurfaceByIdTest(string fileName, int[] tags, int[] expLength)
         {
             var ierr = 0;
             controller.gmshOpen(modelFolder + fileName, ref ierr);
@@ -169,7 +169,7 @@ namespace TestModel.GmshTests
         [DataRow("Cilindr.step")]
         public void DeleteAllSurfaces(string fileName)
         {
-            var ierr = 0;;
+            var ierr = 0; ;
             controller.gmshOpen(modelFolder + fileName, ref ierr);
             controller.gmshModelMeshGenerate(2, ref ierr);
             var dimTags = new int[] { 2, 1, 2, 2, 2, 3, 2, 4 };
@@ -261,7 +261,7 @@ namespace TestModel.GmshTests
         [DataTestMethod]
         [DataRow("Cilindr.step", new int[] { 1, 2, 3 }, new int[] { 6, 10, 6 })]
         [DataRow("Korpus_Nasosa.step", new int[] { 1, 2, 3 }, new int[] { 3, 3, 3 })]
-        [DataRow("model.igs",  new int[] { 1, 2, 3 }, new int[] { 8, 2, 8 })]
+        [DataRow("model.igs", new int[] { 1, 2, 3 }, new int[] { 8, 2, 8 })]
         [DataRow("sphere.geo", new int[] { 1, 2, 3 }, new int[] { 4, 4, 4 })]
         public void GenerateMeshGetLineNodesByTag(string fileName, int[] tags, int[] expectedLength)
         {
@@ -333,10 +333,10 @@ namespace TestModel.GmshTests
             var el2dCount = controller.GetMeshEntities(2, -1, nodes).ToArray().Length;
             var view = controller.gmshModelMeshFieldAdd("BoundaryLayer", 0, ref ierr);
             controller.gmshModelMeshFieldSetNumbers(0, "CurvesList", new double[] { 4.0, 5.0 }, (IntPtr)2, ref ierr);
-            controller.gmshModelMeshFieldSetNumbers(0, "ExcludedSurfacesList", 
+            controller.gmshModelMeshFieldSetNumbers(0, "ExcludedSurfacesList",
                                                     new double[] { 1.0, 2.0 }, (IntPtr)2, ref ierr);
             controller.gmshModelMeshFieldSetNumbers(0, "PointsList", new double[] { 2.0, 4.0 }, (IntPtr)2, ref ierr);
-            controller.gmshModelMeshFieldSetNumber(0, "Thickness", 2.0 , ref ierr);
+            controller.gmshModelMeshFieldSetNumber(0, "Thickness", 2.0, ref ierr);
             controller.gmshModelMeshFieldSetAsBoundaryLayer(0, ref ierr);
             controller.gmshModelMeshGenerate(1, ref ierr);
             controller.gmshModelMeshGenerate(2, ref ierr);
@@ -379,6 +379,23 @@ namespace TestModel.GmshTests
             delNode.ExistState = false;
             modelData.ObjectData.E2DCollection.ClearNotExisted();
             Assert.AreEqual(expElementsAfterDel, modelData.ObjectData.E2DCollection.Count);
+        }
+        [DataTestMethod]
+        [DataRow("Cilindr.step", 1)]
+        [DataRow("Cilindr.step", 2)]
+        [DataRow("Cilindr.step", 3)]
+        [DataRow("Cilindr.step", 4)]
+        public void CenterOfSurfaceTest(string fileName, int surfTag)
+        {
+            var ierr = 0;
+            controller.gmshOpen(modelFolder + fileName, ref ierr);
+            var coords = new double[3];
+            controller.gmshModelOccGetCenterOfMass(2, surfTag, ref coords[0], ref coords[1], ref coords[2], ref ierr);
+            var status = controller.gmshModelIsInside(2, surfTag, coords, (IntPtr)3, 0, ref ierr);
+            Assert.AreEqual(1,status);
+            coords[1] -= 100;
+            status = controller.gmshModelIsInside(2, surfTag, coords, (IntPtr)3, 0, ref ierr);
+            Assert.AreEqual(0, status);
         }
     }
 }

@@ -12,6 +12,7 @@ using Model.GeometryObjects;
 using ModelInterfaces.MeshObjects;
 using ModelInterfaces.GeometryObjects;
 using ModelInterfaces.ObjectsFinders;
+using static GmshApi.GmshController.GmshController;
 
 namespace GmshApi.GmshController
 {
@@ -793,6 +794,17 @@ namespace GmshApi.GmshController
                                                                   ref int ierr);///
         public gmshModelMeshSetTransfiniteVolumeFun gmshModelMeshSetTransfiniteVolume;
         /// <summary>
+        /// Установить автоматическую трансфиницию для dim:tags
+        /// </summary>
+        /// <param name="dimTags">[In]Массив dim:tag</param>
+        /// <param name="dimTags_n">[In]Длина массива dim:tag</param>
+        /// <param name="cornerAngle">[In]Угол угла. Поврехности-квады выше заданного угла игнорируется</param>
+        /// <param name="recombine">[In]Установить флаг recombine</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelMeshSetTransfiniteAutomaticFun(int[] dimTags, IntPtr dimTags_n, double cornerAngle,
+                                                                  int recombine, ref int ierr);///
+        public gmshModelMeshSetTransfiniteAutomaticFun gmshModelMeshSetTransfiniteAutomatic;
+        /// <summary>
         /// Находит элементы сетки по переданной координате x,y,z
         /// </summary>
         /// <param name="x">[In]Координата x</param>
@@ -1110,6 +1122,7 @@ namespace GmshApi.GmshController
             gmshModelMeshSetTransfiniteCurve = GetFunction<gmshModelMeshSetTransfiniteCurveFun>("gmshModelMeshSetTransfiniteCurve");
             gmshModelMeshSetTransfiniteSurface = GetFunction<gmshModelMeshSetTransfiniteSurfaceFun>("gmshModelMeshSetTransfiniteSurface");
             gmshModelMeshSetTransfiniteVolume = GetFunction<gmshModelMeshSetTransfiniteVolumeFun>("gmshModelMeshSetTransfiniteVolume");
+            gmshModelMeshSetTransfiniteAutomatic = GetFunction<gmshModelMeshSetTransfiniteAutomaticFun>("gmshModelMeshSetTransfiniteAutomatic");
             gmshModelMeshGetElementsByCoordinates = GetFunction<gmshModelMeshGetElementsByCoordinatesFun>("gmshModelMeshGetElementsByCoordinates");
             gmshModelMeshGetLocalCoordinatesInElement = GetFunction<gmshModelMeshGetLocalCoordinatesInElementFun>("gmshModelMeshGetLocalCoordinatesInElement");
             gmshModelMeshRebuildNodeCache = GetFunction<gmshModelMeshRebuildNodeCacheFun>("gmshModelMeshRebuildNodeCache");
