@@ -33,5 +33,8 @@ namespace ModelController
         /// <inheritdoc/>
 
         public IPresentersCreator PresentersCreator { get; } = new PresentersCreator();
+/// <inheritdoc/>
+
+        public ICrossSectionMaker CrossSectionMaker { get; } = new CrossSection();
     }
 }

@@ -36,5 +36,9 @@
         /// PresentersCreator
         /// </summary>
         IPresentersCreator PresentersCreator { get; }
+        /// <summary>
+        /// CrossSectionMaker
+        /// </summary>
+        ICrossSectionMaker CrossSectionMaker { get; }
     }
 }
