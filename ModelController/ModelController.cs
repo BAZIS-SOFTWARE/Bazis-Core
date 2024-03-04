@@ -36,5 +36,8 @@ namespace ModelController
 /// <inheritdoc/>
 
         public ICrossSectionMaker CrossSectionMaker { get; } = new CrossSection();
+/// <inheritdoc/>
+
+        public ICoincidentObjectsFinder CoincidentObjectsFinder { get; } = new FindCoincidentObjects();
     }
 }

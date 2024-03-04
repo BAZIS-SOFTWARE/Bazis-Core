@@ -40,5 +40,10 @@
         /// CrossSectionMaker
         /// </summary>
         ICrossSectionMaker CrossSectionMaker { get; }
+
+        /// <summary>
+        /// CoincidentObjectsFinder
+        /// </summary>
+        ICoincidentObjectsFinder CoincidentObjectsFinder { get; }
     }
 }
