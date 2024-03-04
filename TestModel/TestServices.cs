@@ -157,9 +157,8 @@ namespace TestModel
 
             var coincidentNodes = finder.Find(model.ObjectData.GetObjects(ObjType.Узел).ToList(), 0.01f);
 
-            var merger = new MergeObjects(model.ObjectData);
-
-            merger.Merge(coincidentNodes, ObjType.Узел);
+            var merger = new MergeObjects();
+            merger.Merge(coincidentNodes, model.ObjectData.GetObjects(ObjType.Узел).ToList());
 
             //assert
             var nodes = model.ObjectData.GetObjects(ObjType.Узел).ToList();

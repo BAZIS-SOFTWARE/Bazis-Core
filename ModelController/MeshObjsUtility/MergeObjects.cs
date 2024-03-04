@@ -7,32 +7,19 @@ using Functions.Sort;
 using Model;
 using Model.ObjectsCollections;
 using ModelInterfaces.MeshObjects;
+using ModelControllerInterfaces;
 
 namespace ModelController.MeshObjsUtility
 {
     /// <summary>
     /// MergeObjects
     /// </summary>
-    public class MergeObjects
+    public class MergeObjects : IObjectsMerger
     {
-        IObjectsData objectData;
-        /// <summary>
-        /// MergeObjects
-        /// </summary>
-        /// <param name="objectData"></param>
-        public MergeObjects(IObjectsData objectData)
+        /// <inheritdoc/>
+        public void Merge(List<List<int>> numbers,List<IModelObject> modelObjects)
         {
-            this.objectData = objectData;
-        }
-        /// <summary>
-        /// Merge
-        /// </summary>
-        /// <param name="numbers"></param>
-        /// <param name="objType"></param>
-        public void Merge(List<List<int>> numbers,ObjType objType)
-        {
-            var masterObjs = objectData.GetObjects(objType).ToList();
-            var masterNumbers = masterObjs.Select(x => x.Number).ToList();
+            var masterNumbers = modelObjects.Select(x => x.Number).ToList();
             for (int i = 0; i < numbers.Count; i++)
             {
                 var masterNumber = numbers[i][0];
@@ -44,8 +31,8 @@ namespace ModelController.MeshObjsUtility
 
                     var slaveInd = masterNumbers.BinarySearch(slaveNumber);
 
-                    //установить ссылкуна мастер объект вместо номера мастер объекта
-                    masterObjs[slaveInd] = masterObjs[masterInd];
+                    //установить ссылку на мастер объект вместо номера мастер объекта
+                    modelObjects[slaveInd] = modelObjects[masterInd];
                 }
             }
             //var noDublicate = masterObjs.Distinct(new EqualityComparerByNumber<IModelObject>()).ToList();
