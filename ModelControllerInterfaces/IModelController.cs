@@ -45,5 +45,10 @@
         /// CoincidentObjectsFinder
         /// </summary>
         ICoincidentObjectsFinder CoincidentObjectsFinder { get; }
+
+        /// <summary>
+        /// ObjectsMerger
+        /// </summary>
+        IObjectsMerger ObjectsMerger { get; }
     }
 }

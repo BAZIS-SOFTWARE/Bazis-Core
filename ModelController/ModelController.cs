@@ -39,5 +39,8 @@ namespace ModelController
 /// <inheritdoc/>
 
         public ICoincidentObjectsFinder CoincidentObjectsFinder { get; } = new FindCoincidentObjects();
+/// <inheritdoc/>
+
+        public IObjectsMerger ObjectsMerger { get; } = new MergeObjects();
     }
 }
