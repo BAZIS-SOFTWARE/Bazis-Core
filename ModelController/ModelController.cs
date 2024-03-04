@@ -1,6 +1,7 @@
 ﻿using Model;
 using ModelController.MeshObjsCreator;
 using ModelController.MeshObjsUtility;
+using ModelController.ModelScenePresentator;
 using ModelControllerInterfaces;
 using System.Collections.Generic;
 
@@ -29,5 +30,8 @@ namespace ModelController
 /// <inheritdoc/>
 
         public IFreeNodesFinder FreeNodesFinder { get; } = new FreeNodesFinder();
+        /// <inheritdoc/>
+
+        public IPresentersCreator PresentersCreator { get; } = new PresentersCreator();
     }
 }

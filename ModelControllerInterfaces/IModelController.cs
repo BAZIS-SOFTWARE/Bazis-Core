@@ -31,5 +31,10 @@
         /// FreeNodesFinder
         /// </summary>
         IFreeNodesFinder FreeNodesFinder { get; }
+
+        /// <summary>
+        /// PresentersCreator
+        /// </summary>
+        IPresentersCreator PresentersCreator { get; }
     }
 }
