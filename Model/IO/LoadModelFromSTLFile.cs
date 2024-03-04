@@ -48,23 +48,30 @@ namespace Model.IO
                 //var surfaces = new List<GeometrySurface>();
                 while (str != null)
                 {
-                    var surfaces = new List<GeometrySurface>();
 
-                    while (str != "endsolid")
+                    if (str.Contains("solid"))
                     {
-                        if (str != null && str.Contains("outer loop"))
+                        var surfaces = new List<GeometrySurface>();
+                        //str = reader.ReadLine()?.Trim();
+                        while (true)
                         {
+                            if (str.Contains("outer loop"))
+                            {
+                                str = reader.ReadLine()?.Trim();
+                                var points = GetPoints(reader, str);
+                                modelData.ObjectData.PointCollection.AddRange(points);
+                                var surface = new GeometrySurface(counter, points);
+                                surfaces.Add(surface);
+
+                            }
+                            if (str.Contains("endsolid"))
+                                break;
                             str = reader.ReadLine()?.Trim();
-                            var points = GetPoints(reader, str);
-                            modelData.ObjectData.PointCollection.AddRange(points);
-                            var surface = new GeometrySurface(counter, points);
-                            surfaces.Add(surface);                          
                         }
                         var surfaceFig = new SurfaceFigure(counter++, surfaces.ToArray());
                         modelData.ObjectData.Fig2DCollection.Add(surfaceFig);
-                        str = reader.ReadLine()?.Trim();
                     }
-                    str = String.Empty;
+                    str = reader.ReadLine()?.Trim();
                 }
 
                 LoadEvent?.Invoke(this, new LoaderEventArgs("Модель загружена"));

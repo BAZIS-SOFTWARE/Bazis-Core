@@ -16,6 +16,20 @@
         /// <summary>
         /// Sew3DFrom2D
         /// </summary>
-        //ISew3DFrom2D Sew3DFrom2D { get; }
+        ISew3DFrom2D Sew3DFrom2D { get; }
+        /// <summary>
+        /// BoundaryEdgesFinder
+        /// </summary>
+        IBoundaryEdgesFinder BoundaryEdgesFinder { get; }
+
+        /// <summary>
+        /// SelectionHelper
+        /// </summary>
+        ISelectionHelper SelectionHelper { get; }
+
+        /// <summary>
+        /// FreeNodesFinder
+        /// </summary>
+        IFreeNodesFinder FreeNodesFinder { get; }
     }
 }

@@ -6,22 +6,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ModelInterfaces.MeshObjects;
+using ModelControllerInterfaces;
 
 namespace ModelController.MeshObjsUtility
 {
-    public class FindBoundaryEdges
+    /// <summary>
+    /// FindBoundaryEdges
+    /// </summary>
+    public class FindBoundaryEdges : IBoundaryEdgesFinder
     {
-        private IModelData modelData;
-
-        public FindBoundaryEdges(IModelData modelData)
-        {
-            this.modelData = modelData;
-        }
         /// <summary>
         /// Find
         /// </summary>
         /// <returns></returns>
-        public List<string> Find()
+        public List<string> Find(IModelData modelData)
         {
             var boundedEdges = new List<string>();
 

@@ -55,8 +55,8 @@ namespace TestModel
             //act
             model.Load(@"C:\Projs\TestProjTerm\Cub\cub_unsorted_freeNodes.bpf");
 
-            var freeNodesFinder = new FreeNodesFinder(model.ObjectData);
-            var freeNodes = freeNodesFinder.Find();
+            var freeNodesFinder = new FreeNodesFinder();
+            var freeNodes = freeNodesFinder.Find(model.ObjectData);
 
             //assert
             freeNodes.ToArray()[0] = 14;
@@ -71,8 +71,8 @@ namespace TestModel
         public void FindNodesInDirection(float angle, int first, int second, int[] expected)
         {
             LoadModel();
-            var selector = new SelectionHelper(objectsData);
-            var actual = selector.SelectNodeInDirection(angle, first, second, Color.Green);
+            var selector = new SelectionHelper();
+            var actual = selector.SelectNodeInDirection(objectsData,angle, first, second, Color.Green);
             Assert.IsTrue(actual.SequenceEqual(expected)); 
         }
 
@@ -83,8 +83,8 @@ namespace TestModel
             var model = new ModelData();
             model.Load(path);
 
-            var selector = new SelectionHelper(model.ObjectData);
-            var selectedElementNumbers = selector.SelectE2DInPlane(angle, first, Color.Green);
+            var selector = new SelectionHelper();
+            var selectedElementNumbers = selector.SelectE2DInPlane(model.ObjectData, angle, first, Color.Green);
             Assert.IsTrue(selectedElementNumbers.Count > 0);
         }
 
@@ -94,8 +94,8 @@ namespace TestModel
         public void SelectCorrectElements(float angle, int first, int[] expected)
         {
             LoadModel();
-            var selector = new SelectionHelper(objectsData);
-            var selectedElementNumbers = selector.SelectE2DInPlane(angle, first, Color.Green);
+            var selector = new SelectionHelper();
+            var selectedElementNumbers = selector.SelectE2DInPlane(objectsData,angle, first, Color.Green);
             Assert.IsTrue(selectedElementNumbers.SequenceEqual(expected));
         }
 
@@ -105,8 +105,8 @@ namespace TestModel
             var model = new ModelData();
             model.Loader = new LoadModelFromProjectTextFile();
             model.Load(@"..\..\..\Examples\3D\cub_unsorted.bpf");
-            var instance = new FindBoundaryEdges(model);
-            var bounds = instance.Find();
+            var instance = new FindBoundaryEdges();
+            var bounds = instance.Find(model);
             Assert.AreEqual(19, bounds.Count);
         }     
 

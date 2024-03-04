@@ -20,5 +20,14 @@ namespace ModelController
 /// <inheritdoc/>
 
         public ISew3DFrom2D Sew3DFrom2D { get; } = new Sew3DFrom2D();
+/// <inheritdoc/>
+
+        public IBoundaryEdgesFinder BoundaryEdgesFinder { get; } = new FindBoundaryEdges();
+        /// <inheritdoc/>
+
+        public ISelectionHelper SelectionHelper { get; } = new SelectionHelper();
+/// <inheritdoc/>
+
+        public IFreeNodesFinder FreeNodesFinder { get; } = new FreeNodesFinder();
     }
 }

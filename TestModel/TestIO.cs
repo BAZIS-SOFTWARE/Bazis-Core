@@ -81,7 +81,7 @@ namespace TestModel
         }
 
         [TestMethod]
-        //[DataRow(@"..\..\..\Examples\STL\ACII.stl")]
+        [DataRow(@"..\..\..\Examples\STL\ACII.stl")]
         public void ImportExportModelFromSTLtextFormat(string filePath)
         {
             //assing
@@ -232,8 +232,8 @@ namespace TestModel
         }
 
         [DataTestMethod]
-        [DataRow(@"..\..\..\Examples\Salome\Çóá÷àòîå_êîëåñî_V1.dat",3000,976, 4832,9600)]
-        [DataRow(@"..\..\..\Examples\Salome\Çóá÷àòîå_êîëåñî_V2.dat",3161, 992, 3641, 5255)]
+        [DataRow(@"..\..\..\Examples\Salome\Gear_V1.dat",3000,976, 4832,9600)]
+        [DataRow(@"..\..\..\Examples\Salome\Gear_V2.dat",3161, 992, 3641, 5255)]
         public void LoadÑubeFromSalomeFileCorrectly(string filePath, int nodes, int lineElms, int surfElms, int volElems)
         {
             var import = new LoadModelFromSalomeFile();
