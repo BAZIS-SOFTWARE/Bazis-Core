@@ -151,11 +151,11 @@ namespace TestModel
             //var modelBPF = loader.Load(@"C:\Projs\ExampleMesh\Tube.inp");
             model.Load(@"C:\Projs\ExampleMesh\Tube_3d_only.bpf");
 
-            var finder = new FindCoincidentObjects(model.ObjectData, 0.01f);
+            var finder = new FindCoincidentObjects();
 
             finder.ProgressEvent += (ar1, ar2) => { };
 
-            var coincidentNodes = finder.Find(ObjType.Узел);
+            var coincidentNodes = finder.Find(model.ObjectData.GetObjects(ObjType.Узел).ToList(), 0.01f);
 
             var merger = new MergeObjects(model.ObjectData);
 
@@ -182,9 +182,9 @@ namespace TestModel
             var loader = new LoadModelFromCDBTextFile();
             loader.LoadEvent += (ar1, ar2) => { };
             var model = loader.Load(@"..\..\..\Examples\CDB\hex.cdb");
-            var finder = new FindCoincidentObjects(model.ObjectData, 1.1f);
+            var finder = new FindCoincidentObjects();
             finder.ProgressEvent += (ar1, ar2) => { };
-            var coincidentNodes = finder.Find(ObjType.Узел);
+            var coincidentNodes = finder.Find(model.ObjectData.GetObjects(ObjType.Узел).ToList(), 1.1f);
             var numberOfObjs = coincidentNodes.Count();
             Assert.AreEqual(4, numberOfObjs);
         }
@@ -195,8 +195,8 @@ namespace TestModel
             var loader = new LoadModelFromCDBTextFile();
             loader.LoadEvent += (ar1, ar2) => { };
             var model = loader.Load(@"..\..\..\Examples\CDB\10e+5Nodes.cdb");
-            var finder = new FindCoincidentObjects(model.ObjectData, 1.0f);
-            var coincidentNodes = finder.Find(ObjType.Узел);
+            var finder = new FindCoincidentObjects();
+            var coincidentNodes = finder.Find(model.ObjectData.GetObjects(ObjType.Узел).ToList(), 1.0f);
         }
 
         [TestMethod]

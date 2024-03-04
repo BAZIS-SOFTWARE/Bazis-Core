@@ -5,35 +5,27 @@ using Geometry;
 using Octree;
 using System.Numerics;
 using ModelInterfaces;
+using ModelControllerInterfaces;
 
 namespace ModelController.MeshObjsUtility
 {
-    public class FindCoincidentObjects
+    public class FindCoincidentObjects : ICoincidentObjectsFinder
     {
+        /// <inheritdoc/>
         public event Action<object, float> ProgressEvent;
-        private IObjectsData objectData;
-        private float distance;
+/// <inheritdoc/>
 
-        public FindCoincidentObjects(IObjectsData objectData, float distance)
-        {
-            this.objectData = objectData;
-            this.distance = distance;
-        }
 
-        /// <returns>
-        /// Список групп элементов, находящихся на расстоянии друг от друга меньше заданного.
-        /// </returns>
-        public List<List<int>> Find(ObjType objType)
+        public List<List<int>> Find(List<IModelObject> modelObjects, float distance)
         {
-            var items = objectData.GetObjects(objType).ToList();
-            var tree = BuildTree(items);
-            items.ForEach(obj => obj.ViewState = false);
+            var tree = BuildTree(modelObjects);
+            modelObjects.ForEach(obj => obj.ViewState = false);
             var result = new List<List<int>>();
-            for (int i = 0; i < items.Count; i++)
+            for (int i = 0; i < modelObjects.Count; i++)
             {
-                if (!items[i].ViewState)
+                if (!modelObjects[i].ViewState)
                 {
-                    var point = items[i].CalcCentr();
+                    var point = modelObjects[i].CalcCentr();
                     var neighbourElements = RadialSearch(point, distance, tree);
                     neighbourElements.ForEach(x => x.ViewState = true);
                     result.Add(neighbourElements.Select(x => x.Number).ToList());
