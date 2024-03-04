@@ -1,4 +1,5 @@
 ﻿using ModelInterfaces;
+using ModelInterfaces.MeshObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,5 +19,12 @@ namespace ModelControllerInterfaces
         /// <param name="modelData"></param>
         /// <returns></returns>
         List<string> Find(IModelData modelData);
+
+        /// <summary>
+        /// CreateBoundaryEdges
+        /// </summary>
+        /// <param name="modelData"></param>
+        /// <returns></returns>
+        IEnumerable<ILineObject<INode>> CreateBoundaryEdges(IModelData modelData);
     }
 }
