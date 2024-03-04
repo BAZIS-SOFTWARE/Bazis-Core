@@ -14,13 +14,6 @@ namespace ModelControllerInterfaces
     public interface IBoundaryEdgesFinder
     {
         /// <summary>
-        /// Find
-        /// </summary>
-        /// <param name="modelData"></param>
-        /// <returns></returns>
-        List<string> Find(IModelData modelData);
-
-        /// <summary>
         /// CreateBoundaryEdges
         /// </summary>
         /// <param name="modelData"></param>

@@ -105,9 +105,16 @@ namespace TestModel
             var model = new ModelData();
             model.Loader = new LoadModelFromProjectTextFile();
             model.Load(@"..\..\..\Examples\3D\cub_unsorted.bpf");
-            var instance = new FindBoundaryEdges();
-            var bounds = instance.Find(model);
-            Assert.AreEqual(19, bounds.Count);
+
+            var modelController = new ModelController.ModelController();
+
+            var bounds = modelController.BoundaryEdgesFinder.CreateBoundaryEdges(model);
+            
+            Assert.AreEqual(19, bounds.Count());
+
+            var presentor = modelController.PresentersCreator.CreateLineObjectsPresenter(bounds);
+            Assert.AreEqual(19, presentor.Count());
+            
         }     
 
         [TestMethod]
@@ -183,7 +190,7 @@ namespace TestModel
         }
 
         [TestMethod, Timeout(5000)]
-        public void FindManyCoincidentObjects1() 
+        public void FindManyCoincidentObjects() 
         {
             var loader = new LoadModelFromCDBTextFile();
             loader.LoadEvent += (ar1, ar2) => { };

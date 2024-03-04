@@ -37,8 +37,12 @@ namespace ModelController.MeshObjsUtility
             }
         }
 
-    /// <inheritdoc/>
-    public List<string> Find(IModelData modelData)
+        /// <summary>
+        /// Find
+        /// </summary>
+        /// <param name="modelData"></param>
+        /// <returns></returns>
+        private List<string> Find(IModelData modelData)
         {
             var boundedEdges = new List<string>();
 
