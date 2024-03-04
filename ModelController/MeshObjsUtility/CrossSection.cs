@@ -17,9 +17,7 @@ namespace ModelController.MeshObjsUtility
     /// </summary>
     public class CrossSection : ICrossSectionMaker
     {
-        /// <summary>
-        /// Find a sections of the surfaces of given elements by the given plane
-        /// </summary>
+        /// <inheritdoc/>
         public ISurfaceFigure GetSectionSurfaces(IEnumerable<IElement3D> elements, Plane plane)
         {
             var result = new List<GeometrySurface>();
