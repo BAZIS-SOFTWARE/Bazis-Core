@@ -27,6 +27,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ElementProperties.cs" />
     <Compile Include="GmshController.cs" />
     <Compile Include="GmshKernel.cs" />
   </ItemGroup>

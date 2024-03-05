@@ -9,6 +9,7 @@ using Model.MeshObjects;
 using ModelController.MeshObjsCreator;
 using ModelInterfaces;
 using ModelInterfaces.MeshObjects;
+using ModelController.MeshObjsCreator.Delone2D;
 
 namespace TestModel
 {
@@ -30,7 +31,8 @@ namespace TestModel
                 new Node(7, new Point3D(-6, -4, 0)),
                 new Node(8, new Point3D(5, -4, 0))
             };
-            var instance = new MeshCreator(nodes);
+            var instance = new DeloneMesh2DCreator();
+            instance.MakeTriangulation(nodes);
             var triangulation = instance.GetElements().ToList();
 
             Assert.AreEqual(11, triangulation.Count);
@@ -49,7 +51,8 @@ namespace TestModel
                 new Node(5, new Point3D(-2, -3, 0)),
                 new Node(6, new Point3D(4, -2, 0))
             };
-            var instance = new MeshCreator(nodes);
+            var instance = new DeloneMesh2DCreator();
+            instance.MakeTriangulation(nodes);
             var triangulation = instance.GetElements().ToList();
 
             Assert.AreEqual(7, triangulation.Count);
@@ -65,7 +68,8 @@ namespace TestModel
                 new Node(2, new Point3D(1, -1, 0)),
                 new Node(3, new Point3D(-1, -1, 0))
             };
-            var instance = new MeshCreator(nodes);
+            var instance = new DeloneMesh2DCreator();
+            instance.MakeTriangulation(nodes);
             var triangulation = instance.GetElements().ToList();
             Assert.AreEqual(2, triangulation.Count);
         }
@@ -85,7 +89,8 @@ namespace TestModel
                     nodes.Add(node);
                 }
 
-                var instance = new MeshCreator(nodes);
+                var instance = new DeloneMesh2DCreator();
+                instance.MakeTriangulation(nodes);
                 var triangulation = instance.GetElements().ToList();
             }
         }
@@ -124,12 +129,14 @@ namespace TestModel
                         new Node(107, new Point3D(2, 1, 0).Sub(offset)),
                         new Node(108, new Point3D(2, 2, 0).Sub(offset)),
                     });
+            var instance = new DeloneMesh2DCreator();
+            instance.MakeTriangulation(pointsForFirstPlane);
 
-            var instance = new MeshCreator(pointsForFirstPlane);
-            var triangulation1 = instance.GetElements().ToList();
+            var triangulation1 = instance.GetElements();
+            
+            instance.MakeTriangulation(pointsForSecondPlane);
 
-            instance = new MeshCreator(pointsForSecondPlane);
-            var triangulation2 = instance.GetElements().ToList();
+            var triangulation2 = instance.GetElements();
 
             Assert.IsTrue(TestDeloneTriangles(triangulation1));
             Assert.IsTrue(TestDeloneTriangles(triangulation2));
@@ -139,7 +146,7 @@ namespace TestModel
             var map = tetraMapper.Create(triangulation1.OfType<IElement2D>().ToList(),
                 triangulation2.OfType<IElement2D>().ToList());
 
-            Assert.IsTrue(TestDeloneTetras(map.OfType<Tetra>().ToList()));*/
+            Assert.IsTrue(TestDeloneTetras(map.OfType<Tetra>().ToList()));
         }
 
         private (List<Node> pointsForFirstPlane, List<Node> pointsForSecondPlane) GetPointOn2Planes(int seed, int size)
@@ -162,7 +169,7 @@ namespace TestModel
             return (pointsForFirstPlane, pointsForSecondPlane);
         }
 
-        private bool TestDeloneTriangles(List<Triangle> triangulation)
+        private bool TestDeloneTriangles(IEnumerable<IElement2D> triangulation)
         {
             float EPS = 10e-3f;
 
@@ -239,7 +246,7 @@ namespace TestModel
         }
     
 
-    private Point3D CalcCircumcenter(Triangle elem)
+    private Point3D CalcCircumcenter(IElement2D elem)
         {
             //https://en.wikipedia.org/wiki/Circumcircle
             var vertexes = elem.GetCoordinates().ToList();

@@ -60,11 +60,11 @@ namespace TestModel.GmshTests
             var ierr = 0;
             controller.gmshOpen(modelFolder + fileName, ref ierr);
             controller.gmshModelMeshGenerate(3, ref ierr);
-            controller.GetMeshObjects();
-            Assert.AreEqual(expNodes, controller.Nodes.Count());
-            Assert.AreEqual(expE1d, controller.E1D.Count());
-            Assert.AreEqual(expE2d, controller.E2D.Count());
-            Assert.AreEqual(expE3d, controller.E3D.Count());
+            var result = controller.GetMeshObjects();
+            Assert.AreEqual(expNodes, result.Item1.Count());
+            Assert.AreEqual(expE1d, result.Item2.Count());
+            Assert.AreEqual(expE2d, result.Item3.Count());
+            Assert.AreEqual(expE3d, result.Item4.Count());
         }
 
         [DataTestMethod]
@@ -372,9 +372,9 @@ namespace TestModel.GmshTests
             var modelData = new ModelData();
             controller.gmshOpen(path, ref ierr);
             controller.gmshModelMeshGenerate(3, ref ierr);
-            controller.GetMeshObjects();
-            modelData.ObjectData.NodeCollection.AddRange(controller.Nodes);
-            modelData.ObjectData.E2DCollection.AddRange(controller.E2D);
+            var results = controller.GetMeshObjects();
+            modelData.ObjectData.NodeCollection.AddRange(results.Item1);
+            modelData.ObjectData.E2DCollection.AddRange(results.Item3);
             var delNode = modelData.ObjectData.Find(ObjType.Узел, delNodeNumber);
             delNode.ExistState = false;
             modelData.ObjectData.E2DCollection.ClearNotExisted();

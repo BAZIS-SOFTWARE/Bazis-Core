@@ -21,6 +21,6 @@ namespace ModelControllerInterfaces.Delone2D
         /// MakeTriangulation
         /// </summary>
         /// <param name="nodes"></param>
-        void MakeTriangulation(List<INode> nodes);
+        void MakeTriangulation(IEnumerable<INode> nodes);
     }
 }

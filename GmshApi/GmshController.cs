@@ -13,30 +13,10 @@ using ModelInterfaces.MeshObjects;
 using ModelInterfaces.GeometryObjects;
 using ModelInterfaces.ObjectsFinders;
 using static GmshApi.GmshController.GmshController;
+using Model.ObjectsCollections;
 
 namespace GmshApi.GmshController
 {
-    /// <summary>
-    /// Класс содержит информацию о типе извлечнных элементов
-    /// </summary>
-    public class ElementProperties
-    {
-        /// <summary>Имя элемента</summary>
-        public string elementName;
-        /// <summary>Размерность</summary>
-        public int dim;
-        /// <summary>Порядок элементов (линейные, квадратичные, кубические и т.д.)</summary>
-        public int order;
-        /// <summary>Общее количество узлов, приходящиеся на один элемент указанного типа</summary>
-        public int numNodes;
-        /// <summary>Массив координат узлов элементов. Сейчас не используется. Для получения координат
-        /// вызываем метод ModelMeshGetNodesByElementType</summary>
-        public double[] coords;
-        /// <summary>Количество узлов на все элементы </summary>
-        public int coords_n;
-        /// <summary>Главные узлы</summary>
-        public int numPrimaryNodes;
-    }
     /// <summary>
     /// Контроллер GmshApi
     /// </summary>
@@ -46,22 +26,6 @@ namespace GmshApi.GmshController
         /// Указатель на DLL
         /// </summary>
         public IntPtr DLL { get; private set; }
-        /// <summary>
-        /// Узлы полученные после вызова метода GetMeshObjects
-        /// </summary>
-        public IEnumerable<INode> Nodes { get; private set; }
-        /// <summary>
-        /// Элементы 1D полученные после вызова метода GetMeshObjects
-        /// </summary>
-        public IEnumerable<ILineObject<INode>> E1D { get; private set; }
-        /// <summary>
-        /// Элементы 2D полученные после вызова метода GetMeshObjects
-        /// </summary>
-        public IEnumerable<IElement2D> E2D { get; private set; }
-        /// <summary>
-        /// Элементы 3D полученные после вызова метода GetMeshObjects
-        /// </summary>
-        public IEnumerable<IElement3D> E3D { get; private set; }
 
         private string GetStringPtr(IntPtr name)
         {
@@ -2001,10 +1965,16 @@ namespace GmshApi.GmshController
             }
             return nodes.OrderBy(x => x.Number).ToList();//Сортировка внутри метода!
         }
-        /// <summary>
-        /// Заполняет поля всеми возможными сеточными элементами(узлы, 1D, 2D, 3D)
-        /// </summary>
-        public void GetMeshObjects()
+/// <summary>
+///
+/// </summary>
+/// <returns>
+/// item1 - nodes
+/// item2 - els1d
+/// item3 - els2d
+/// item4 - els3d
+/// </returns>
+        public (List<INode>,List<ILineObject<INode>>, List<IElement2D>, List<IElement3D>) GetMeshObjects()
         {
             var nodes = GetNodes(-1, -1, false);
             var e1D = new List<ILineObject<INode>>();
@@ -2033,10 +2003,8 @@ namespace GmshApi.GmshController
             GetMeshEntities(1, -1, nodes, filler1D);
             GetMeshEntities(2, -1, nodes, filler2D);
             GetMeshEntities(3, -1, nodes, filler3D);
-            Nodes = nodes;
-            E1D = e1D;
-            E2D = e2D;
-            E3D = e3D;
+
+            return (nodes, e1D, e2D, e3D);
         }
         /// <summary>
         /// Удалить элементы сетки

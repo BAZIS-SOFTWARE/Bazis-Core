@@ -46,7 +46,8 @@ namespace ModelController
 /// <inheritdoc/>
 
         public IDeloneMesh2DCreator DeloneMesh2DCreator { get; } = new DeloneMesh2DCreator();
+/// <inheritdoc/>
 
-        public IMesh2DRefiner Mesh2DRefiner { get; } = new Mesh2DRefiner()
+        public IMesh2DRefiner Mesh2DRefiner { get; } = new Mesh2DRefiner();
     }
 }

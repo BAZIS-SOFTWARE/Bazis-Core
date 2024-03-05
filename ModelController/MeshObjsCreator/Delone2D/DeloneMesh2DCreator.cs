@@ -25,13 +25,13 @@ namespace ModelController.MeshObjsCreator.Delone2D
         }
         /// <inheritdoc/>
 
-        public void MakeTriangulation(List<INode> nodes)
+        public void MakeTriangulation(IEnumerable<INode> nodes)
         {
             triangulation = new DeloneTriangulation2D(GetNodesInPlaneCoordinates(nodes));
             numberToNode = nodes.ToDictionary(n => n.Number, n => n);
         }
 
-        private List<DeloneNode2D> GetNodesInPlaneCoordinates(List<INode> nodes)
+        private List<DeloneNode2D> GetNodesInPlaneCoordinates(IEnumerable<INode> nodes)
         {
             return nodes.Select(n => new DeloneNode2D(n.Number, new Point2D(n.Position._x, n.Position._y)))
                 .ToList();
