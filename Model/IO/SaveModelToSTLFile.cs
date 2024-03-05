@@ -24,11 +24,9 @@ using System;
                 Array.Copy(buffer, captionBytes, Math.Min(buffer.Length, 80));
                 writer.Write(captionBytes); // – Header
 
-                var objects = model.ObjectData
-                    .FindMany<Figure2D>()
-                    .ToArray();
+                var objects = model.ObjectData.Fig2DCollection;
 
-                writer.Write(objects.Length); // – Number of triangles
+                writer.Write(objects.Count); // – Number of triangles
 
                 foreach (var item in objects)
                     foreach (var surface in item.GetSurfaces())
@@ -65,9 +63,7 @@ using System;
                 var ver = Assembly.GetExecutingAssembly().GetName().Version;
                 writer.WriteLine("solid Версия " + $"{ver.Major}.{ver.Minor}.{ver.Build}"); // – Header
 
-                var objects = model.ObjectData
-                    .FindMany<Figure2D>()
-                    .ToArray();
+                var objects = model.ObjectData.Fig2DCollection;
 
                 foreach (var item in objects)
                 foreach (var surface in item.GetSurfaces())

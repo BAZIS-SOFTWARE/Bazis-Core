@@ -1,6 +1,7 @@
 ﻿using Geometry;
 using Model.GeometryObjects;
-using Model.MeshObjects;
+using ModelControllerInterfaces;
+using ModelInterfaces.GeometryObjects;
 using ModelInterfaces.MeshObjects;
 using System;
 using System.Collections.Generic;
@@ -8,19 +9,16 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using System.Xml.Serialization;
 
 namespace ModelController.MeshObjsUtility
 {
     /// <summary>
     /// Построение плоскости сечения сеточных объектов
     /// </summary>
-    public class CrossSection
+    public class CrossSection : ICrossSectionMaker
     {
-        /// <summary>
-        /// Find a sections of the surfaces of given elements by the given plane
-        /// </summary>
-        public SurfaceFigure GetSectionSurfaces(IEnumerable<IElement3D> elements, Plane plane)
+        /// <inheritdoc/>
+        public ISurfaceFigure GetSectionSurfaces(IEnumerable<IElement3D> elements, Plane plane)
         {
             var result = new List<GeometrySurface>();
             foreach (var element in elements)

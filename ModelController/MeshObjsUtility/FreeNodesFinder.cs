@@ -1,24 +1,18 @@
-﻿using Model.MeshObjects;
+﻿using ModelControllerInterfaces;
 using ModelInterfaces;
 using ModelInterfaces.MeshObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ModelController.MeshObjsUtility
 {
-    public class FreeNodesFinder
+    public class FreeNodesFinder : IFreeNodesFinder
     {
-        IObjectsData objsData;
-        public FreeNodesFinder(IObjectsData objsData)
+        /// <inheritdoc/>
+        public IEnumerable<int> Find(IObjectsData objsData)
         {
             if (objsData.NodeCollection.Count == 0) throw new Exception("Модель не содержит узлов!");
-            this.objsData = objsData;
-        }
-        public IEnumerable<int> Find()
-        {
             var elements = objsData.GetObjects(ObjType.Элемент).Select(x => (IElement)x);
             var finder = new InterfacedNodesFinder();
             var interfaceNodes = finder.Find(elements);

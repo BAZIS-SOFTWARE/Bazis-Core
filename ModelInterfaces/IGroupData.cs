@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
 
 namespace ModelInterfaces
 {
@@ -35,5 +36,12 @@ namespace ModelInterfaces
         /// Sort
         /// </summary>
         void Sort();
+        /// <summary>
+        /// Create
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="objType"></param>
+        /// <returns></returns>
+        IGroup Create(string name, ObjType objType);
     }
 }

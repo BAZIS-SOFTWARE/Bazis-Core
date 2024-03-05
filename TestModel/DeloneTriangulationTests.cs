@@ -8,6 +8,7 @@ using System.Runtime.Remoting.Messaging;
 using Model.MeshObjects;
 using ModelController.MeshObjsCreator;
 using ModelInterfaces;
+using ModelInterfaces.MeshObjects;
 
 namespace TestModel
 {
@@ -133,7 +134,7 @@ namespace TestModel
             Assert.IsTrue(TestDeloneTriangles(triangulation1));
             Assert.IsTrue(TestDeloneTriangles(triangulation2));
 
-            /*Map3DFrom2D tetraMapper = new Map3DFrom2D();
+            var tetraMapper = new Sew3DFrom2D();
 
             var map = tetraMapper.Create(triangulation1.OfType<IElement2D>().ToList(),
                 triangulation2.OfType<IElement2D>().ToList());

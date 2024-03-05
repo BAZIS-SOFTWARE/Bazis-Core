@@ -6,22 +6,43 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ModelInterfaces.MeshObjects;
+using ModelControllerInterfaces;
+using Model.MeshObjects;
+using System.Drawing;
+using Model.GeometryObjects;
 
 namespace ModelController.MeshObjsUtility
 {
-    public class FindBoundaryEdges
+    /// <summary>
+    /// FindBoundaryEdges
+    /// </summary>
+    public class FindBoundaryEdges : IBoundaryEdgesFinder
     {
-        private IModelData modelData;
-
-        public FindBoundaryEdges(IModelData modelData)
+        /// <inheritdoc/>
+        public IEnumerable<ILineObject<INode>> CreateBoundaryEdges(IModelData modelData)
         {
-            this.modelData = modelData;
+            var lines = Find(modelData);
+            var counter = 0;
+            foreach (var item in lines)
+            {
+                var numbers = item.Split(' ');
+                var po = Convert.ToInt32(numbers[0]);
+                var p1 = Convert.ToInt32(numbers[1]);
+                var node0 = modelData.ObjectData.NodeCollection.Find(po);
+                var node1 = modelData.ObjectData.NodeCollection.Find(p1);
+                var beam = new Beam(counter, new INode[] { node0, node1 })
+                { MasterColor = Color.Red };
+                yield return beam;
+                counter++;
+            }
         }
+
         /// <summary>
         /// Find
         /// </summary>
+        /// <param name="modelData"></param>
         /// <returns></returns>
-        public List<string> Find()
+        private List<string> Find(IModelData modelData)
         {
             var boundedEdges = new List<string>();
 

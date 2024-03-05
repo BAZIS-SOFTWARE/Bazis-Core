@@ -8,35 +8,18 @@ using System.Linq;
 using Model.MeshObjects;
 using ModelInterfaces.MeshObjects;
 using Model;
+using ModelControllerInterfaces;
 
 namespace ModelController.MeshObjsUtility
 {
     /// <summary>
     /// SelectionHelper
     /// </summary>
-    public class SelectionHelper
+    public class SelectionHelper : ISelectionHelper
     {
-        private readonly IObjectsData objectsData;
-        /// <summary>
-        /// SelectionHelper
-        /// </summary>
-        /// <param name="objectsData"></param>
-        public SelectionHelper(IObjectsData objectsData)
-        {
-            this.objectsData = objectsData;
-        }
+/// <inheritdoc/>
 
-        /// <summary>
-        /// Выбор последовательности узлов по заданному напрвлению. Направление задаётся номерами двух смежных узлов.
-        /// </summary>
-        /// <param name="angleInGradus">Максимальный угол в градусах, под которым будет выделение</param>
-        /// <param name="numbFirst">Номер первого узла</param>
-        /// <param name="numbSecond">Номер второго узла</param>
-        /// <param name="color">Цвет выделения</param>
-        /// <returns>
-        /// Номера выделенных узлов
-        /// </returns>
-        public List<int> SelectNodeInDirection(float angleInGradus, int numbFirst, int numbSecond, Color color)     
+        public List<int> SelectNodeInDirection(IObjectsData objectsData,float angleInGradus, int numbFirst, int numbSecond, Color color)     
         {
             var elements = objectsData.GetAllElements().ToList();
 
@@ -77,12 +60,9 @@ namespace ModelController.MeshObjsUtility
             }
             return result.ToList();
         }
-        /// <summary>
-        /// SelectNodeInPlane
-        /// </summary>
-        /// <param name="plane"></param>
-        /// <param name="color"></param>
-        public void SelectNodeInPlane(Plane plane, Color color)
+/// <inheritdoc/>
+
+        public void SelectNodeInPlane(IObjectsData objectsData, Plane plane, Color color)
                     
         {
             var nodes = objectsData.NodeCollection.ToArray();
@@ -93,15 +73,10 @@ namespace ModelController.MeshObjsUtility
                     node.MasterColor = color;
             }
         }
+/// <inheritdoc/>
 
-        /// <summary>
-        /// Выбор всех элементов, лежащих в одной плоскости с заданным элементом, 
-        /// и углом между плоскостями, не большим чем заданный угол
-        /// </summary>
-        /// <returns>
-        /// Список номеров выбранных элементов
-        /// </returns>
-        public List<int> SelectE2DInPlane(float angleInGradus, int startNumber, Color color)         
+
+        public List<int> SelectE2DInPlane(IObjectsData objectsData, float angleInGradus, int startNumber, Color color)         
         {
             var maxAngleRadians = ConvertGradusToRadian(angleInGradus);
             var elements = objectsData.E2DCollection.ToArray();

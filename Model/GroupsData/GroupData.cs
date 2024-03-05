@@ -135,5 +135,11 @@ namespace Model.GroupsData
         {
             groups = groups.OrderBy(x => x, new StringNumberGroupComparer()).ToList();
         }
+/// <inheritdoc/>
+
+        public IGroup Create(string name, ObjType objType)
+        {
+            return new Group(name, objType);
+        }
     }
 }
