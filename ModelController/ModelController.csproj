@@ -21,8 +21,9 @@
     <None Remove="Icon.png" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Mesh2DRefiner.cs" />
     <Compile Include="MeshObjsCreator\Sew3DFrom2D.cs" />
-    <Compile Include="MeshObjsCreator\MeshCreator.cs" />
+    <Compile Include="MeshObjsCreator\Delone2D\DeloneMesh2DCreator.cs" />
     <Compile Include="MeshObjsCreator\Delone2D\DeloneTriangulation2D.cs" />
     <Compile Include="MeshObjsCreator\Delone2D\DeloneNode2D.cs" />
     <Compile Include="MeshObjsUtility\CrossSection.cs" />

@@ -1,9 +1,10 @@
-﻿using Model;
-using ModelController.MeshObjsCreator;
+﻿using ModelController.MeshObjsCreator;
+using ModelController.MeshObjsCreator.Delone2D;
 using ModelController.MeshObjsUtility;
 using ModelController.ModelScenePresentator;
 using ModelControllerInterfaces;
-using System.Collections.Generic;
+using ModelControllerInterfaces.Delone2D;
+using ModelControllerInterfaces.Utilities;
 
 namespace ModelController
 {
@@ -42,5 +43,10 @@ namespace ModelController
 /// <inheritdoc/>
 
         public IObjectsMerger ObjectsMerger { get; } = new MergeObjects();
+/// <inheritdoc/>
+
+        public IDeloneMesh2DCreator DeloneMesh2DCreator { get; } = new DeloneMesh2DCreator();
+
+        public IMesh2DRefiner Mesh2DRefiner { get; } = new Mesh2DRefiner()
     }
 }

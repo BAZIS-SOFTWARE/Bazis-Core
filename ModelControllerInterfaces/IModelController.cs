@@ -1,4 +1,7 @@
-﻿namespace ModelControllerInterfaces
+﻿using ModelControllerInterfaces.Delone2D;
+using ModelControllerInterfaces.Utilities;
+
+namespace ModelControllerInterfaces
 {
     /// <summary>
     /// IModelController
@@ -50,5 +53,14 @@
         /// ObjectsMerger
         /// </summary>
         IObjectsMerger ObjectsMerger { get; }
+        /// <summary>
+        /// DeloneMesh2DCreator. Creates 2D mesh use already existed nodes by Delone criterion. 
+        /// </summary>
+        IDeloneMesh2DCreator DeloneMesh2DCreator { get; }
+
+        /// <summary>
+        /// IMesh2DRefiner
+        /// </summary>
+        IMesh2DRefiner Mesh2DRefiner { get; }
     }
 }
