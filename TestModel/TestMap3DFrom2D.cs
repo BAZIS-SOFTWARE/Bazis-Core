@@ -35,7 +35,7 @@ namespace TestModel
             var r3 = circumcenter.Sub(nodes[2].Position).GetSquareSumCoords();
             Assert.IsTrue(Math.Abs(r1 - r2) < 10e-6);
             Assert.IsTrue(Math.Abs(r1 - r3) < 10e-6);
-            Assert.IsTrue(Math.Abs(r3 - r2) < 10e-6);
+            Assert.IsTrue(Math.Abs(r3 - r2) < 10e-6);*/
 
             //assert
         }

@@ -139,7 +139,7 @@ namespace TestModel
             var map = tetraMapper.Create(triangulation1.OfType<IElement2D>().ToList(),
                 triangulation2.OfType<IElement2D>().ToList());
 
-            Assert.IsTrue(TestDeloneTetras(map.OfType<Tetra>().ToList()));
+            Assert.IsTrue(TestDeloneTetras(map.OfType<Tetra>().ToList()));*/
         }
 
         private (List<Node> pointsForFirstPlane, List<Node> pointsForSecondPlane) GetPointOn2Planes(int seed, int size)

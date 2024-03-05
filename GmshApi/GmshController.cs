@@ -12,6 +12,7 @@ using Model.GeometryObjects;
 using ModelInterfaces.MeshObjects;
 using ModelInterfaces.GeometryObjects;
 using ModelInterfaces.ObjectsFinders;
+using static GmshApi.GmshController.GmshController;
 
 namespace GmshApi.GmshController
 {
@@ -45,6 +46,22 @@ namespace GmshApi.GmshController
         /// Указатель на DLL
         /// </summary>
         public IntPtr DLL { get; private set; }
+        /// <summary>
+        /// Узлы полученные после вызова метода GetMeshObjects
+        /// </summary>
+        public IEnumerable<INode> Nodes { get; private set; }
+        /// <summary>
+        /// Элементы 1D полученные после вызова метода GetMeshObjects
+        /// </summary>
+        public IEnumerable<ILineObject<INode>> E1D { get; private set; }
+        /// <summary>
+        /// Элементы 2D полученные после вызова метода GetMeshObjects
+        /// </summary>
+        public IEnumerable<IElement2D> E2D { get; private set; }
+        /// <summary>
+        /// Элементы 3D полученные после вызова метода GetMeshObjects
+        /// </summary>
+        public IEnumerable<IElement3D> E3D { get; private set; }
 
         private string GetStringPtr(IntPtr name)
         {
@@ -777,6 +794,25 @@ namespace GmshApi.GmshController
                                                                   ref int ierr);///
         public gmshModelMeshSetTransfiniteVolumeFun gmshModelMeshSetTransfiniteVolume;
         /// <summary>
+        /// Установить автоматическую трансфиницию для dim:tags
+        /// </summary>
+        /// <param name="dimTags">[In]Массив dim:tag</param>
+        /// <param name="dimTags_n">[In]Длина массива dim:tag</param>
+        /// <param name="cornerAngle">[In]Угол угла. Поврехности-квады выше заданного угла игнорируется</param>
+        /// <param name="recombine">[In]Установить флаг recombine</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelMeshSetTransfiniteAutomaticFun(int[] dimTags, IntPtr dimTags_n, double cornerAngle,
+                                                                  int recombine, ref int ierr);///
+        public gmshModelMeshSetTransfiniteAutomaticFun gmshModelMeshSetTransfiniteAutomatic;
+        /// <summary>
+        /// Удалить все ограничения для заданных dim:tag
+        /// </summary>
+        /// <param name="dimTags">[In]Массив dim:tag</param>
+        /// <param name="dimTags_n">[In]Длина массива dim:tag</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelMeshRemoveConstraintsFun(int[] dimTags, IntPtr dimTags_n, ref int ierr);///
+        public gmshModelMeshRemoveConstraintsFun gmshModelMeshRemoveConstraints;
+        /// <summary>
         /// Находит элементы сетки по переданной координате x,y,z
         /// </summary>
         /// <param name="x">[In]Координата x</param>
@@ -1094,6 +1130,8 @@ namespace GmshApi.GmshController
             gmshModelMeshSetTransfiniteCurve = GetFunction<gmshModelMeshSetTransfiniteCurveFun>("gmshModelMeshSetTransfiniteCurve");
             gmshModelMeshSetTransfiniteSurface = GetFunction<gmshModelMeshSetTransfiniteSurfaceFun>("gmshModelMeshSetTransfiniteSurface");
             gmshModelMeshSetTransfiniteVolume = GetFunction<gmshModelMeshSetTransfiniteVolumeFun>("gmshModelMeshSetTransfiniteVolume");
+            gmshModelMeshSetTransfiniteAutomatic = GetFunction<gmshModelMeshSetTransfiniteAutomaticFun>("gmshModelMeshSetTransfiniteAutomatic");
+            gmshModelMeshRemoveConstraints = GetFunction<gmshModelMeshRemoveConstraintsFun>("gmshModelMeshRemoveConstraints");
             gmshModelMeshGetElementsByCoordinates = GetFunction<gmshModelMeshGetElementsByCoordinatesFun>("gmshModelMeshGetElementsByCoordinates");
             gmshModelMeshGetLocalCoordinatesInElement = GetFunction<gmshModelMeshGetLocalCoordinatesInElementFun>("gmshModelMeshGetLocalCoordinatesInElement");
             gmshModelMeshRebuildNodeCache = GetFunction<gmshModelMeshRebuildNodeCacheFun>("gmshModelMeshRebuildNodeCache");
@@ -1872,69 +1910,133 @@ namespace GmshApi.GmshController
         /// </summary>
         /// <param name="dim">Размерность</param>
         /// <param name="tag">Идентификатор</param>
-        /// <param name="status">Успешность вызова метода</param>
+        /// <param name="nodes">Отсортированные узлы</param>
         /// <returns>Список элементов сетки</returns>
-        public List<ISurfaceElement> GetMeshEntities(int dim, int tag, ref bool status)
+        public List<ISurfaceElement> GetMeshEntities(int dim, int tag, List<INode> nodes)
         {
             ElementProperties[] properties;
             int[] elementTypes;
             long[][] elemTags, nodeTags;
-            long[] nodesT;
-            double[] coords, parametric;
             var list = new List<ISurfaceElement>();
-            status = false;
-            if (ModelMeshGetElements(dim, tag, out elementTypes, out elemTags, out nodeTags))
+            if (nodes.Count > 0)
             {
-                if (ModelMeshGetElementProperties(elementTypes, out properties))
+                ModelMeshGetElements(dim, tag, out elementTypes, out elemTags, out nodeTags);
+                ModelMeshGetElementProperties(elementTypes, out properties);
+                for (int i = 0; i < properties.Length; ++i)
                 {
-                    for (int i = 0; i < properties.Length; ++i)
+                    var elements = elemTags[i];//Идентификаторы элементов
+                    var nodesCount = properties[i].numNodes;
+                    for (var j = 0; j < elements.Length; ++j)
                     {
-                        var elements = elemTags[i];
-                        //TO DO вероятно убрать так как координаты всех узлов уже известны и работа идет только с их номерами
-                        ModelMeshGetNodesByElementType(elementTypes[i], -1, false, out nodesT, out coords, out parametric);
-                        var nodesCount = properties[i].numNodes;
-                        for (var j = 0; j < elements.Length; ++j)
+                        var nodesPerElems = new INode[nodesCount];
+                        for (int k = 0; k < nodesCount; ++k)
                         {
-  
-                            var nodesPerElems = new Node[nodesCount];
-                            for (int k = 0; k < nodesCount; ++k)
-                            {
-                                var coordStride = j * nodesCount * 3 + k * 3;
-                                var tagStride = j * nodesCount + k;
-                                var x = (float)coords[coordStride + 0];
-                                var y = (float)coords[coordStride + 1];
-                                var z = (float)coords[coordStride + 2];
-                                var point = new Point3D(x, y, z);
-                                nodesPerElems[k] = new Node((int)nodeTags[i][tagStride], point);
-                            }
-                            list.Add(CreateModelObject(ref properties[i].elementName, elements[j], nodesPerElems));
+                            var tagStride = j * nodesCount + k;
+                            nodesPerElems[k] = nodes.Find((int)nodeTags[i][tagStride]);
+                            if (nodesPerElems[k] == null)
+                                throw new Exception($"Элемент с номером {nodeTags[i][tagStride]} не найден");
                         }
+                        list.Add(CreateModelObject(ref properties[i].elementName, elements[j], nodesPerElems));
                     }
-                    status = true;
                 }
             }
             return list;
         }
         /// <summary>
-        /// Возвращает список узлов сетки
+        /// Возвращает список элементов сетки
         /// </summary>
-        /// <param name="status">Успешность вызова метода</param>
+        /// <param name="dim">Размерность</param>
+        /// <param name="tag">Идентификатор</param>
+        /// <param name="nodes">Отсортированные узлы</param>
+        /// <param name="fillDelegete">Делегат, который будет заполнять свой список ObjectData</param>
+        /// <returns>Список элементов сетки</returns>
+        private void GetMeshEntities(int dim, int tag, List<INode> nodes, Action<string, int, INode[]> fillDelegete)
+        {
+            ElementProperties[] properties;
+            int[] elementTypes;
+            long[][] elemTags, nodeTags;
+            if (nodes.Count > 0)
+            {
+                ModelMeshGetElements(dim, tag, out elementTypes, out elemTags, out nodeTags);
+                ModelMeshGetElementProperties(elementTypes, out properties);
+                for (int i = 0; i < properties.Length; ++i)
+                {
+                    var elements = elemTags[i];//Идентификаторы элементов
+                    var nodesCount = properties[i].numNodes;
+                    for (var j = 0; j < elements.Length; ++j)
+                    {
+                        var nodesPerElems = new INode[nodesCount];
+                        for (int k = 0; k < nodesCount; ++k)
+                        {
+                            var tagStride = j * nodesCount + k;
+                            nodesPerElems[k] = nodes.Find((int)nodeTags[i][tagStride]);
+                            if (nodesPerElems[k] == null)
+                                throw new Exception($"Элемент с номером {nodeTags[i][tagStride]} не найден");
+                        }
+                        fillDelegete(properties[i].elementName, (int)elements[j], nodesPerElems);
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// Возвращает список отсортированных узлов сетки.
+        /// Если запрашивается точки для dim <=0, флаг includeBoundary установить в false, иначе будут дубликаты
+        /// </summary>
+        /// <param name="dim">Размерность dim</param>
+        /// <param name="tag">Идентификатор узла или (-1 для всех)</param>
+        /// <param name="includeBoundary">Включать граничные точки</param>
         /// <returns>Список узлов сетки</returns>
-        public List<INode> GetNodes(ref bool status)
+        public List<INode> GetNodes(int dim = -1, int tag = -1, bool includeBoundary = true)
         {
             long[] nodeTags;
             double[] local, parametric;
             var nodes = new List<INode>();
-            if (ModelMeshGetNodes(-1, -1, false, false, out nodeTags, out local, out parametric))
+            if (ModelMeshGetNodes(dim, tag, includeBoundary, false, out nodeTags, out local, out parametric))
             {
                 for (var i = 0; i < nodeTags.Length; ++i)
                 {
                     var point = new Point3D((float)local[i * 3], (float)local[i * 3 + 1], (float)local[i * 3 + 2]);
                     nodes.Add(new Node((int)nodeTags[i], point));
                 }
-                status = true;
             }
-            return nodes;
+            return nodes.OrderBy(x => x.Number).ToList();//Сортировка внутри метода!
+        }
+        /// <summary>
+        /// Заполняет поля всеми возможными сеточными элементами(узлы, 1D, 2D, 3D)
+        /// </summary>
+        public void GetMeshObjects()
+        {
+            var nodes = GetNodes(-1, -1, false);
+            var e1D = new List<ILineObject<INode>>();
+            var e2D = new List<IElement2D>();
+            var e3D = new List<IElement3D>();
+            Action<string, int, INode[]> filler1D = (s, i, n) =>
+            {
+                e1D.Add(new Beam(i, n));
+            };
+            Action<string, int, INode[]> filler2D = (s, i, n) =>
+            {
+                if (s.Contains("Triangle"))
+                    e2D.Add(new Triangle(i, n));
+                else
+                    e2D.Add(new Quad(i, n));
+            };
+            Action<string, int, INode[]> filler3D = (s, i, n) =>
+            {
+                if (s.Contains("Tetrahedron"))
+                    e3D.Add(new Tetra(i, n));
+                else if (s.Contains("Hexahedron"))
+                    e3D.Add(new Hexa(i, n));
+                else
+                    e3D.Add(new Penta(i, n));
+            };
+            GetMeshEntities(1, -1, nodes, filler1D);
+            GetMeshEntities(2, -1, nodes, filler2D);
+            GetMeshEntities(3, -1, nodes, filler3D);
+            Nodes = nodes;
+            E1D = e1D;
+            E2D = e2D;
+            E3D = e3D;
         }
         /// <summary>
         /// Удалить элементы сетки
@@ -1988,7 +2090,7 @@ namespace GmshApi.GmshController
         }
         
         private ISurfaceElement CreateModelObject(ref string elementName,
-                                                  long elementId, Node[] nodes)
+                                                  long elementId, INode[] nodes)
         {
             if (elementName.Contains("Triangle"))
                 return new Triangle((int)elementId, nodes);

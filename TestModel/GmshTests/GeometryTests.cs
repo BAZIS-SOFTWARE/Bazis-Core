@@ -283,10 +283,10 @@ namespace TestModel.GmshTests
         public void AddElements3DForStlTest(string fileName)
         {
             var ierr = 0;
-            var status = false;
             controller.gmshOpen(@"..\..\..\Examples\STL\" + fileName, ref ierr);
             controller.gmshModelMeshGenerate(3, ref ierr);
-            var elements = controller.GetMeshEntities(3, -1, ref status);
+            var nodes = controller.GetNodes(3, -1);
+            var elements = controller.GetMeshEntities(3, -1, nodes);
             Assert.AreEqual(0, elements.Count);
             int[] dimTags;
             controller.ModelGetGeometryEntities(out dimTags, 2);
@@ -297,7 +297,8 @@ namespace TestModel.GmshTests
             controller.gmshModelGeoSynchronize(ref ierr);//Обязательный вызов Synchronize, после добавления объемов
             controller.gmshModelMeshGenerate(3, ref ierr);
             Assert.AreNotEqual(1, ierr);
-            elements = controller.GetMeshEntities(3, -1, ref status);
+            nodes = controller.GetNodes(3, -1);
+            elements = controller.GetMeshEntities(3, -1, nodes);
             Assert.AreNotEqual(0, elements.Count);
         }
         //Тест проверки 4 координаты контрольной точки в файле
