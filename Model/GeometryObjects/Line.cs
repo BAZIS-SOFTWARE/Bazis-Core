@@ -6,7 +6,7 @@ using ModelInterfaces.GeometryObjects;
 
 namespace Model.GeometryObjects
 {
-    public class Line : ModelObject, ILineObject<IGeometryPoint>
+    public class Line : ModelObject, ILine
     {
         private GeometryPoint[] points;
 

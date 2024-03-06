@@ -8,11 +8,12 @@ namespace TestModel.GmshTests
     [TestClass]
     public class ControllerConnectionTests
     {
-        private GmshController controller = new GmshController(@"..\..\..\..\GmshApi\gmsh.dll");
+        private GmshController controller = new GmshController();
 
         [TestMethod]
         public void GmshInitializeFinalize()
         {
+            controller.Load(@"..\..\..\..\GmshApi\gmsh.dll");
             var ierr = 0;
             Assert.AreEqual(1, controller.gmshIsInitialized(ref ierr));
             controller.gmshFinalize(ref ierr);

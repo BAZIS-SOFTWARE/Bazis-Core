@@ -13,12 +13,13 @@ namespace TestModel.GmshTests
     [TestClass]
     public class ControllerMeshTests
     {
-        private GmshController controller = new GmshController(@"..\..\..\..\GmshApi\gmsh.dll");
+        private GmshController controller = new GmshController();
         private static string modelFolder = @"..\..\..\Examples\GMSHAPI\";
 
         [TestInitialize]
         public void Init()
         {
+            controller.Load(@"..\..\..\..\GmshApi\gmsh.dll");
         }
 
         [TestCleanup]

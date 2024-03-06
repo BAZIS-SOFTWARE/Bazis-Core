@@ -9,12 +9,13 @@ namespace TestModel.GmshTests
     [TestClass]
     public class MeshQualityTests
     {
-        private GmshController controller = new GmshController(@"..\..\..\..\GmshApi\gmsh.dll");
+        private GmshController controller = new GmshController();
         private static string modelFolder = @"..\..\..\Examples\GMSHAPI\";
 
         [TestInitialize]
         public void Init()
         {
+            controller.Load(@"..\..\..\..\GmshApi\gmsh.dll");
             /*var argv = string.Empty;
             var ierr = 0;
             controller.gmshInitialize(0, ref argv, 0, 0, ref ierr);*/

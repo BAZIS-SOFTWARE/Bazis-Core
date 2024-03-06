@@ -10,11 +10,12 @@ namespace TestModel.GmshTests
     [TestClass]
     public class ControllerGeometryTests
     {
-        private GmshController controller = new GmshController(@"..\..\..\..\GmshApi\gmsh.dll");
+        private GmshController controller = new GmshController();
         private static string modelFolder = @"..\..\..\Examples\GMSHAPI\";
         [TestInitialize]
         public void Init()
         {
+            controller.Load(@"..\..\..\..\GmshApi\gmsh.dll");
             /*var argv = string.Empty;
             var ierr = 0;
             controller.gmshInitialize(0, ref argv, 0, 0, ref ierr);*/
@@ -34,9 +35,8 @@ namespace TestModel.GmshTests
         {
             var ierr = 0;
             controller.gmshOpen(modelFolder + fileName, ref ierr);
-
+            bool status;
             int[] dimTags;
-            var status = false;
             if (objType == ObjType.Линия)
                 status  = controller.ModelGetGeometryEntities(out dimTags, 1);
             else
@@ -46,7 +46,7 @@ namespace TestModel.GmshTests
 
             IEnumerable<IModelObject> objects;
             if (objType == ObjType.Линия)
-                objects = controller.CreateLines(dimTags, ref status);
+                objects = controller.CreateLines(dimTags);
             else
                 objects = controller.CreateControlPoints(dimTags);
 
@@ -61,14 +61,13 @@ namespace TestModel.GmshTests
         {
             var ierr = 0;
             controller.gmshOpen(modelFolder + fileName, ref ierr);
-            var status = false;
 
             int[] dimTags;
             controller.ModelGetGeometryEntities(out dimTags, 1);
 
-            var curveUntil = controller.CreateLines(dimTags,ref status).First();
+            var curveUntil = controller.CreateLines(dimTags).First();
             controller.gmshOptionSetNumber("Geometry.NumSubEdges", 15, ref ierr);
-            var curveAfter = controller.CreateLines(dimTags, ref status).First();
+            var curveAfter = controller.CreateLines(dimTags).First();
             Assert.IsTrue(curveAfter.NumberOfPoints < curveUntil.NumberOfPoints);
         }
 

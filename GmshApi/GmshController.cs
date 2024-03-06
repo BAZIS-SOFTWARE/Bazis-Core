@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Geometry;
-using Model;
 using ModelInterfaces;
 using Functions.Extensions;
 using System.IO;
@@ -12,15 +11,14 @@ using Model.GeometryObjects;
 using ModelInterfaces.MeshObjects;
 using ModelInterfaces.GeometryObjects;
 using ModelInterfaces.ObjectsFinders;
-using static GmshApi.GmshController.GmshController;
-using Model.ObjectsCollections;
+using ModelControllerInterfaces.GmshController;
 
 namespace GmshApi.GmshController
 {
     /// <summary>
     /// Контроллер GmshApi
     /// </summary>
-    public class GmshController
+    public class GmshController : IGmshController
     {
         /// <summary>
         /// Указатель на DLL
@@ -999,12 +997,10 @@ namespace GmshApi.GmshController
         /// <param name="ierr">[Out]Флаг ошибки</param>
         private delegate void gmshLoggerGetLastErrorFun(ref IntPtr error, ref int ierr);
         private gmshLoggerGetLastErrorFun gmshLoggerGetLastError;
+        /// <inheritdoc/>
         #endregion
-        /// <summary>
-        /// Конструктор
-        /// </summary>
-        /// <param name="dllToLoad">Путь до DLL</param>
-        public GmshController(string dllToLoad)
+
+        public void Load(string dllToLoad)
         {
             DLL = GmshKernel.GmshKernel.LoadLibrary(dllToLoad);
             #region "Get Initialization delegates"
@@ -1772,23 +1768,18 @@ namespace GmshApi.GmshController
                 return false;
             return true;
         }
-        /// <summary>
-        /// Возвращает список кривых
-        /// </summary>
-        /// <param name="tags">Идентификаторы кривых</param>
-        /// <param name="status">Успешность вызова метода</param>
-        /// <returns>Список кривых</returns>
-        public List<Line> CreateLines(int[] tags, ref bool status)
+/// <inheritdoc/>
+
+        public List<ILine> CreateLines(int[] tags)
         {
-            var lines = new List<Line>();
+            var lines = new List<ILine>();
             double[] minBounds;
             double[] maxBounds;
-            status = true;
+
             for (var i = 1; i < tags.Length; i += 2)
             {
                 if (!ModelGetParametrizationBounds(1, tags[i], out minBounds, out maxBounds))
                 {
-                    status = false;
                     lines.Clear();
                     break;
                 }
@@ -1836,11 +1827,8 @@ namespace GmshApi.GmshController
                         return false;
             return true;
         }
-        /// <summary>
-        /// Возвращает список контрольных точек
-        /// </summary>
-        /// <param name="tags">Идентификаторы</param>
-        /// <returns>Список контрольных точек</returns>
+/// <inheritdoc/>
+
         public List<IGeometryPoint> CreateControlPoints(int[] tags)
         {
             var nodes = new List<IGeometryPoint>();
@@ -1869,13 +1857,8 @@ namespace GmshApi.GmshController
             }
             return points;
         }
-        /// <summary>
-        /// Возвращает список элементов сетки
-        /// </summary>
-        /// <param name="dim">Размерность</param>
-        /// <param name="tag">Идентификатор</param>
-        /// <param name="nodes">Отсортированные узлы</param>
-        /// <returns>Список элементов сетки</returns>
+/// <inheritdoc/>
+
         public List<ISurfaceElement> GetMeshEntities(int dim, int tag, List<INode> nodes)
         {
             ElementProperties[] properties;
@@ -1942,14 +1925,8 @@ namespace GmshApi.GmshController
                 }
             }
         }
-        /// <summary>
-        /// Возвращает список отсортированных узлов сетки.
-        /// Если запрашивается точки для dim <=0, флаг includeBoundary установить в false, иначе будут дубликаты
-        /// </summary>
-        /// <param name="dim">Размерность dim</param>
-        /// <param name="tag">Идентификатор узла или (-1 для всех)</param>
-        /// <param name="includeBoundary">Включать граничные точки</param>
-        /// <returns>Список узлов сетки</returns>
+/// <inheritdoc/>
+
         public List<INode> GetNodes(int dim = -1, int tag = -1, bool includeBoundary = true)
         {
             long[] nodeTags;
@@ -1965,15 +1942,8 @@ namespace GmshApi.GmshController
             }
             return nodes.OrderBy(x => x.Number).ToList();//Сортировка внутри метода!
         }
-/// <summary>
-///
-/// </summary>
-/// <returns>
-/// item1 - nodes
-/// item2 - els1d
-/// item3 - els2d
-/// item4 - els3d
-/// </returns>
+/// <inheritdoc/>
+
         public (List<INode>,List<ILineObject<INode>>, List<IElement2D>, List<IElement3D>) GetMeshObjects()
         {
             var nodes = GetNodes(-1, -1, false);
