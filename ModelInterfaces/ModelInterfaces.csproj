@@ -9,7 +9,7 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-    <Version>3.0.0.16</Version>
+    <Version>3.0.0.17</Version>
     <Authors>Bilenko Georgy</Authors>
     <Company>BAZIS SOFTWARE</Company>
     <Product>BAZIS</Product>
