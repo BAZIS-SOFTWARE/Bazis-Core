@@ -19,13 +19,12 @@ namespace ModelController.MeshObjsUtility
     public class FindBoundaryEdges : IBoundaryEdgesFinder
     {
         /// <inheritdoc/>
-        public IEnumerable<ILineObject<INode>> CreateBoundaryEdges(IModelData modelData)
+        public IEnumerable<ILineObject<INode>> CreateBoundaryEdges(List<string> linesNodes ,IModelData modelData)
         {
-            var lines = Find(modelData);
             var counter = 0;
-            foreach (var item in lines)
+            foreach (var lineNodes in linesNodes)
             {
-                var numbers = item.Split(' ');
+                var numbers = lineNodes.Split(' ');
                 var po = Convert.ToInt32(numbers[0]);
                 var p1 = Convert.ToInt32(numbers[1]);
                 var node0 = modelData.ObjectData.NodeCollection.Find(po);
@@ -36,20 +35,14 @@ namespace ModelController.MeshObjsUtility
                 counter++;
             }
         }
+/// <inheritdoc/>
 
-        /// <summary>
-        /// Find
-        /// </summary>
-        /// <param name="modelData"></param>
-        /// <returns></returns>
-        private List<string> Find(IModelData modelData)
+
+        public List<string> Find(IEnumerable<ISurfaceElement> surfaceElements)
         {
             var boundedEdges = new List<string>();
 
-            var els = modelData.ObjectData.GetAllElements().
-                Select(x => (ISurfaceElement)x)
-                .OrderBy(x => x.Number)
-                .ToArray();
+            var els = surfaceElements.OrderBy(x => x.Number).ToArray();
 
             var finder = new InterfacedNodesFinder();
             var interfacedNodes = finder.Find(els);

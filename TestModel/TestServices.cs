@@ -107,8 +107,8 @@ namespace TestModel
             model.Load(@"..\..\..\Examples\3D\cub_unsorted.bpf");
 
             var modelController = new ModelController.ModelController();
-
-            var bounds = modelController.BoundaryEdgesFinder.CreateBoundaryEdges(model);
+            var linesNodes = modelController.BoundaryEdgesFinder.Find(model.ObjectData.GetAllElements().Select(x => (ISurfaceElement)x));
+            var bounds = modelController.BoundaryEdgesFinder.CreateBoundaryEdges(linesNodes,model);
             
             Assert.AreEqual(19, bounds.Count());
 

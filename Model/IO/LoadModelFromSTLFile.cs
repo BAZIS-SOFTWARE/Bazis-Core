@@ -38,14 +38,12 @@ namespace Model.IO
         {
             var modelData = new ModelData();
 
-            /*using (var reader = new StreamReader(path))
+            using (var reader = new StreamReader(path))
             {
                 var str = String.Empty;
 
                 LoadEvent?.Invoke(this, new LoaderEventArgs("Начало импорта STL модели"));
 
-
-                //var surfaces = new List<GeometrySurface>();
                 while (str != null)
                 {
 
@@ -75,7 +73,7 @@ namespace Model.IO
                 }
 
                 LoadEvent?.Invoke(this, new LoaderEventArgs("Модель загружена"));
-            }*/
+            }
 
             return modelData;
         }

@@ -4,7 +4,7 @@
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>ModelController</Title>
-    <Version>3.0.11.29</Version>
+    <Version>3.0.11.30</Version>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>ModelControllerKey.snk</AssemblyOriginatorKeyFile>
@@ -21,7 +21,7 @@
     <None Remove="Icon.png" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Mesh2DRefiner.cs" />
+    <Compile Include="MeshObjsCreator\Mesh2DRefiner.cs" />
     <Compile Include="MeshObjsCreator\Sew3DFrom2D.cs" />
     <Compile Include="MeshObjsCreator\Delone2D\DeloneMesh2DCreator.cs" />
     <Compile Include="MeshObjsCreator\Delone2D\DeloneTriangulation2D.cs" />

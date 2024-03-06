@@ -104,7 +104,6 @@
     <Compile Include="TestGeometryObjects.cs" />
     <Compile Include="TestGroupNameComparator.cs" />
     <Compile Include="TestIO.cs" />
-    <Compile Include="TestMap3DFrom2D.cs" />
     <Compile Include="TestModelControllerPoligon.cs" />
     <Compile Include="TestsCrossSection.cs" />
     <Compile Include="TestServices.cs" />
@@ -114,6 +113,7 @@
     <Compile Include="TestSurfaceFinder.cs" />
     <Compile Include="TestVolume.cs" />
     <Compile Include="TestObjectData.cs" />
+    <Compile Include="Sew3Dfrom2DTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

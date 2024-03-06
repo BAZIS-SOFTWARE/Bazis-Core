@@ -2,7 +2,7 @@
 using ModelInterfaces.MeshObjects;
 using System.Collections.Generic;
 
-namespace ModelController
+namespace ModelController.MeshObjsCreator
 {
     public class Mesh2DRefiner : IMesh2DRefiner
     {
