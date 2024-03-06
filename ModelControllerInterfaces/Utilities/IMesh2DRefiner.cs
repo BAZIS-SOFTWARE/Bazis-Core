@@ -17,6 +17,7 @@ namespace ModelControllerInterfaces.Utilities
         /// Refine
         /// </summary>
         /// <param name="elements"></param>
-        void Refine(IEnumerable<IElement2D> elements);
+        /// <param name="elementSize"></param>
+        void Refine(IEnumerable<IElement2D> elements, float elementSize);
     }
 }
