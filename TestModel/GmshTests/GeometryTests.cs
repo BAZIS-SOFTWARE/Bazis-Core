@@ -4,13 +4,14 @@ using GmshApi.GmshController;
 using ModelInterfaces;
 using System;
 using System.Collections.Generic;
+using ModelControllerInterfaces.GmshController;
 
 namespace TestModel.GmshTests
 {
     [TestClass]
     public class ControllerGeometryTests
     {
-        private GmshController controller = new GmshController();
+        private IGmshController controller = new GmshController();
         private static string modelFolder = @"..\..\..\Examples\GMSHAPI\";
         [TestInitialize]
         public void Init()
@@ -25,7 +26,7 @@ namespace TestModel.GmshTests
         {
             var ierr = 0;
             //controller.gmshFinalize(ref ierr);
-            controller.gmshClear(ref ierr);
+            controller.Clear(ref ierr);
         }
 
         [DataTestMethod]
@@ -34,7 +35,7 @@ namespace TestModel.GmshTests
         public void GetGeometryObjectsTest(string fileName, int numbOfObjs, ObjType objType)
         {
             var ierr = 0;
-            controller.gmshOpen(modelFolder + fileName, ref ierr);
+            controller.Open(modelFolder + fileName, ref ierr);
             bool status;
             int[] dimTags;
             if (objType == ObjType.Линия)
@@ -60,13 +61,13 @@ namespace TestModel.GmshTests
         public void TestCurveSteps(string fileName)
         {
             var ierr = 0;
-            controller.gmshOpen(modelFolder + fileName, ref ierr);
+            controller.Open(modelFolder + fileName, ref ierr);
 
             int[] dimTags;
             controller.ModelGetGeometryEntities(out dimTags, 1);
 
             var curveUntil = controller.CreateLines(dimTags).First();
-            controller.gmshOptionSetNumber("Geometry.NumSubEdges", 15, ref ierr);
+            controller.OptionSetNumber("Geometry.NumSubEdges", 15, ref ierr);
             var curveAfter = controller.CreateLines(dimTags).First();
             Assert.IsTrue(curveAfter.NumberOfPoints < curveUntil.NumberOfPoints);
         }
@@ -76,13 +77,13 @@ namespace TestModel.GmshTests
         public void RemoveEntityTest(string fileName, int[] dimArray)
         {
             var ierr = 0;
-            controller.gmshOpen(modelFolder + fileName, ref ierr);
+            controller.Open(modelFolder + fileName, ref ierr);
             for (var i = 0; i < dimArray.Length; ++i)
             {
                 int[] dimTags;
                 controller.ModelGetGeometryEntities(out dimTags, -1);
                 var lengthBefore = dimTags.Length;
-                controller.RemoveEntities(new int[] { dimArray[i], dimTags[1] });
+                controller.RemoveGeometryObjects(new int[] { dimArray[i], dimTags[1] });
                 controller.ModelGetGeometryEntities(out dimTags, -1);
                 var lengthAfter = dimTags.Length;
                 Assert.IsTrue(lengthBefore > lengthAfter);
@@ -96,8 +97,8 @@ namespace TestModel.GmshTests
         public void GetEntitiesGetAllDimensionTest(string fileName, string modelID, int[] expTags)
         {
             var ierr = 0;
-            controller.gmshOpen(modelFolder + fileName, ref ierr);
-            var dim = controller.gmshModelGetDimension(ref ierr);
+            controller.Open(modelFolder + fileName, ref ierr);
+            var dim = controller.GetGeometryObjectDimension(ref ierr);
             Assert.AreNotEqual(0, dim);
             var tagDims = new int[expTags.Length][];
             for (var i = 0; i < tagDims.GetLength(0); ++i)
@@ -118,7 +119,7 @@ namespace TestModel.GmshTests
         public void SetGetRemoveEntityNameTest(string fileName, string modelID, int[] entCount, string[] entName)
         {
             var ierr = 0;
-            controller.gmshOpen(modelFolder + fileName, ref ierr);
+            controller.Open(modelFolder + fileName, ref ierr);
             int[] dimTags;
             controller.ModelGetGeometryEntities(out dimTags,-1);
             for (var i = 1; i < dimTags.Length; i += 2)
@@ -126,7 +127,7 @@ namespace TestModel.GmshTests
                 var dim = dimTags[i - 1];
                 var tag = dimTags[i];
                 var expectedName = entName[dim] + tag.ToString();
-                controller.gmshModelSetEntityName(dim, tag, expectedName, ref ierr);
+                controller.ModelSetEntityName(dim, tag, expectedName, ref ierr);
                 string actual;
                 controller.ModelGetGeometryEntityName(dim, tag, out actual);
                 Assert.AreEqual(expectedName, actual);
@@ -148,10 +149,10 @@ namespace TestModel.GmshTests
         public void ModelBoundingBoxTest(string fileName, string modelID, double[] minExp, double[] maxExp)
         {
             var ierr = 0;
-            controller.gmshOpen(modelFolder + fileName, ref ierr);
+            controller.Open(modelFolder + fileName, ref ierr);
             double xMin = 0.0, yMin = 0.0, zMin = 0.0;
             double xMax = 0.0, yMax = 0.0, zMax = 0.0;
-            controller.gmshModelGetBoundingBox(-1, -1, ref xMin, ref yMin, ref zMin, ref xMax, 
+            controller.ModelGetBoundingBox(-1, -1, ref xMin, ref yMin, ref zMin, ref xMax, 
                                                 ref yMax, ref zMax, ref ierr);
             var min = new double[3] { xMin, yMin, zMin };
             var max = new double[3] { xMax, yMax, zMax };
@@ -195,7 +196,7 @@ namespace TestModel.GmshTests
         public void GetAdjacenciesTest(string fileName, string modelId, int tag, int[] downExp, int[] upExp, int dim)
         {
             var ierr = 0;
-            controller.gmshOpen(modelFolder + fileName, ref ierr);
+            controller.Open(modelFolder + fileName, ref ierr);
             int[] upward, downward;
             controller.ModelGetAdjacencies(dim, tag, out upward, out downward);
             CollectionAssert.AreEqual(downExp, downward);
@@ -213,7 +214,7 @@ namespace TestModel.GmshTests
                                                    double[] parametric, double[] expected)
         {
             var ierr = 0;
-            controller.gmshOpen(modelFolder + fileName, ref ierr);
+            controller.Open(modelFolder + fileName, ref ierr);
             double[] coord;
             controller.ModelGetValue(0, tag, parametric, out coord);
             for (var i = 0; i < expected.Length; ++i)
@@ -226,14 +227,14 @@ namespace TestModel.GmshTests
         public void ParametrizationCurvesTest(string fileName, int[] tags)
         {
             var ierr = 0;
-            controller.gmshOpen(modelFolder + fileName, ref ierr);
+            controller.Open(modelFolder + fileName, ref ierr);
             double[] min, max;
             for (var i = 0; i < tags.Length; ++i)
             {
                 controller.ModelGetParametrizationBounds(1, tags[i], out min, out max);
-                var numInsideCount = controller.gmshModelIsInside(1, tags[i], min, (IntPtr) min.Length, 1, ref ierr);
+                var numInsideCount = controller.ModelIsInside(1, tags[i], min, (IntPtr) min.Length, 1, ref ierr);
                 Assert.AreNotEqual(0, numInsideCount);
-                numInsideCount = controller.gmshModelIsInside(1, tags[i], max, (IntPtr)max.Length, 1, ref ierr);
+                numInsideCount = controller.ModelIsInside(1, tags[i], max, (IntPtr)max.Length, 1, ref ierr);
                 Assert.AreNotEqual(0, numInsideCount);
             }
         }
@@ -243,14 +244,14 @@ namespace TestModel.GmshTests
         public void ParametrizationSurfacesTest(string fileName, int[] tags)
         {
             var ierr = 0;
-            controller.gmshOpen(modelFolder + fileName, ref ierr);
+            controller.Open(modelFolder + fileName, ref ierr);
             double[] min, max;
             for (var i = 0; i < tags.Length; ++i)
             {
                 controller.ModelGetParametrizationBounds(2, tags[i], out min, out max);
-                var numInsideCount = controller.gmshModelIsInside(1, tags[i], min, (IntPtr)min.Length, 1, ref ierr);
+                var numInsideCount = controller.ModelIsInside(1, tags[i], min, (IntPtr)min.Length, 1, ref ierr);
                 Assert.AreNotEqual(0, numInsideCount);
-                numInsideCount = controller.gmshModelIsInside(2, tags[i], max, (IntPtr)max.Length, 1, ref ierr);
+                numInsideCount = controller.ModelIsInside(2, tags[i], max, (IntPtr)max.Length, 1, ref ierr);
                 Assert.AreNotEqual(0, numInsideCount);
             }
         }
@@ -260,19 +261,19 @@ namespace TestModel.GmshTests
         public void AttributeTest(string fileName, string modelName)
         {
             var ierr = 0;
-            controller.gmshOpen(modelFolder + fileName, ref ierr);
-            controller.gmshModelMeshSetTransfiniteCurve(4, 20, "Progression", 1.0, ref ierr);
+            controller.Open(modelFolder + fileName, ref ierr);
+            controller.ModelMeshSetTransfiniteCurve(4, 20, "Progression", 1.0, ref ierr);
             var expected = new string[] { "4", "5" };
-            controller.gmshModelSetAttribute("Progression", expected, (IntPtr)expected.Length, ref ierr);
+            controller.ModelSetAttribute("Progression", expected, (IntPtr)expected.Length, ref ierr);
             string[] attributes;
             controller.ModelGetAttribute("Progression", out attributes);
             CollectionAssert.AreEqual(expected, attributes);
             var transValues = new string[] { "1", "2" };
-            controller.gmshModelSetAttribute("Transfinite", transValues, (IntPtr)2, ref ierr);
+            controller.ModelSetAttribute("Transfinite", transValues, (IntPtr)2, ref ierr);
             string[] names;
             controller.ModelGetAttributeNames(out names);
             CollectionAssert.AreEqual(new string[] { "Progression", "Transfinite" }, names);
-            controller.gmshModelRemoveAttribute("Progression", ref ierr);
+            controller.ModelRemoveAttribute("Progression", ref ierr);
             controller.ModelGetAttributeNames(out names);
             CollectionAssert.AreEqual(new string[] { "Transfinite" }, names);
         }
@@ -282,19 +283,19 @@ namespace TestModel.GmshTests
         public void AddElements3DForStlTest(string fileName)
         {
             var ierr = 0;
-            controller.gmshOpen(@"..\..\..\Examples\STL\" + fileName, ref ierr);
-            controller.gmshModelMeshGenerate(3, ref ierr);
+            controller.Open(@"..\..\..\Examples\STL\" + fileName, ref ierr);
+            controller.ModelMeshGenerate(3, ref ierr);
             var nodes = controller.GetNodes(3, -1);
             var elements = controller.GetMeshEntities(3, -1, nodes);
             Assert.AreEqual(0, elements.Count);
             int[] dimTags;
             controller.ModelGetGeometryEntities(out dimTags, 2);
             dimTags = dimTags.Where((v,i) => (i & 1) == 1).ToArray();
-            var shell = controller.gmshModelGeoAddSurfaceLoop(dimTags, (IntPtr)dimTags.Length, -1, ref ierr);
+            var shell = controller.ModelGeoAddSurfaceLoop(dimTags, (IntPtr)dimTags.Length, -1, ref ierr);
             var shellTags = new int[] { shell };
-            var volume = controller.gmshModelGeoAddVolume(shellTags, (IntPtr)shellTags.Length, -1, ref ierr);
-            controller.gmshModelGeoSynchronize(ref ierr);//Обязательный вызов Synchronize, после добавления объемов
-            controller.gmshModelMeshGenerate(3, ref ierr);
+            var volume = controller.ModelGeoAddVolume(shellTags, (IntPtr)shellTags.Length, -1, ref ierr);
+            controller.ModelGeoSynchronize(ref ierr);//Обязательный вызов Synchronize, после добавления объемов
+            controller.ModelMeshGenerate(3, ref ierr);
             Assert.AreNotEqual(1, ierr);
             nodes = controller.GetNodes(3, -1);
             elements = controller.GetMeshEntities(3, -1, nodes);
@@ -307,7 +308,7 @@ namespace TestModel.GmshTests
         {
             var ierr = 0;
             int[] dimTags;
-            controller.gmshOpen(path, ref ierr);
+            controller.Open(path, ref ierr);
             controller.ModelGetGeometryEntities(out dimTags, 0);
             var coords = controller.GetMeshDensity(dimTags);
             CollectionAssert.AreEqual(expected, coords);
@@ -320,13 +321,13 @@ namespace TestModel.GmshTests
         {
             var ierr = 0;
             int[] dimTags;
-            controller.gmshOpen(path, ref ierr);
+            controller.Open(path, ref ierr);
             controller.ModelGetGeometryEntities(out dimTags, 0);
             for (int i = 1, j = 0; i < dimTags.Length; i += 2, ++j)
             {
                 var dim = dimTags[i - 1];
                 var tag = dimTags[i];
-                controller.gmshModelMeshSetSize(new int[] { dim, tag }, (IntPtr)2 , expected[j], ref ierr);
+                controller.ModelMeshSetSize(new int[] { dim, tag }, (IntPtr)2 , expected[j], ref ierr);
             }
             var coords = controller.GetMeshDensity(dimTags);
             CollectionAssert.AreEqual(expected, coords);
@@ -337,9 +338,9 @@ namespace TestModel.GmshTests
         public void SetAndGetCurveTransfinite(string path, string[] expected)
         {
             var ierr = 0;
-            controller.gmshOpen(path, ref ierr);
-            controller.gmshModelMeshSetTransfiniteCurve(1, 15, "Bump", 1.8, ref ierr);
-            controller.gmshModelSetAttribute("transfinite", expected, (IntPtr)3, ref ierr);
+            controller.Open(path, ref ierr);
+            controller.ModelMeshSetTransfiniteCurve(1, 15, "Bump", 1.8, ref ierr);
+            controller.ModelSetAttribute("transfinite", expected, (IntPtr)3, ref ierr);
             string[] attributes;
             controller.ModelGetAttribute("transfinite", out attributes);
             CollectionAssert.AreEqual(expected, attributes);
@@ -350,7 +351,7 @@ namespace TestModel.GmshTests
             var ierr = 0;
             var status = maxId >= delId;
             var delName = entName + delId.ToString();
-            controller.gmshModelRemoveEntityName(delName, ref ierr);
+            controller.ModelRemoveEntityName(delName, ref ierr);
             /*if (status)
                 Assert.AreEqual("", ControllerGeometry.GetEntityName(dim, delId));*/
         }

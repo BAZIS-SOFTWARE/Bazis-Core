@@ -82,7 +82,7 @@ namespace GmshApi.GmshController
         /// <param name="value">[In]Значение поля категории</param>
         /// <param name="ierr">[Out]Флаг ошибки</param>
         public delegate void gmshOptionSetNumberFun(string name, double value, ref int ierr);///
-        public gmshOptionSetNumberFun gmshOptionSetNumber;
+        gmshOptionSetNumberFun gmshOptionSetNumber;
         /// <summary>
         /// Возвращает значение из поля категории опций
         /// </summary>
@@ -142,8 +142,8 @@ namespace GmshApi.GmshController
         /// </summary>
         /// <param name="fileName">[In]Путь до файла скрипта</param>
         /// <param name="ierr">[Out]Флаг ошибки</param>
-        public delegate void gmshOpenFun(string fileName, ref int ierr);///
-        public gmshOpenFun gmshOpen;
+        public delegate void OpenFun(string fileName, ref int ierr);///
+        private OpenFun gmshOpen;
         /// <summary>
         /// Открывает скрипт и ассоциирует данные с текущей моделью
         /// </summary>
@@ -185,7 +185,7 @@ namespace GmshApi.GmshController
         /// </summary>
         /// <param name="ierr">[Out]Флаг ошибки</param>
         public delegate void gmshClearFun(ref int ierr);///
-        public gmshClearFun gmshClear;
+        gmshClearFun gmshClear;
         /// <summary>
         /// Устанавливает имя для текущей модели
         /// </summary>
@@ -204,7 +204,7 @@ namespace GmshApi.GmshController
         /// </summary>
         /// <param name="ierr">[Out]Флаг ошибки</param>
         public delegate void gmshModelGeoSynchronizeFun(ref int ierr);///
-        public gmshModelGeoSynchronizeFun gmshModelGeoSynchronize;
+        gmshModelGeoSynchronizeFun gmshModelGeoSynchronize;
         /// <summary>
         /// Возвращает путь до файла ассоциированный с данной моделью
         /// </summary>
@@ -286,7 +286,7 @@ namespace GmshApi.GmshController
         /// <param name="name">[In]Имя сущности</param>
         /// <param name="ierr">[Out]Флаг ошибки</param>
         public delegate void gmshModelSetEntityNameFun(int dim, int tag, string name, ref int ierr);///
-        public gmshModelSetEntityNameFun gmshModelSetEntityName;
+        gmshModelSetEntityNameFun gmshModelSetEntityName;
         /// <summary>
         /// Возвращает имя сущности для указанной dim:tag
         /// </summary>
@@ -302,7 +302,7 @@ namespace GmshApi.GmshController
         /// <param name="name">[In]Имя сущности</param>
         /// <param name="ierr">[Out]Флаг ошибки</param>
         public delegate void gmshModelRemoveEntityNameFun(string name, ref int ierr);///
-        public gmshModelRemoveEntityNameFun gmshModelRemoveEntityName;
+        gmshModelRemoveEntityNameFun gmshModelRemoveEntityName;
         /// <summary>
         /// Возвращает ограничивающий параллелепипед для заданных dim:tag
         /// </summary>
@@ -363,9 +363,9 @@ namespace GmshApi.GmshController
         /// <param name="ierr">[Out]Флаг ошибки</param>
         /// <returns>Максимальная размерность</returns>
         public delegate int gmshModelGetDimensionFun(ref int ierr);///
-        public gmshModelGetDimensionFun gmshModelGetDimension;
+        gmshModelGetDimensionFun gmshModelGetDimension;
         /// <summary>
-        /// Определяет находится ли точка параметрическая или локальная внутри массива
+        /// Определяет находится ли точка параметрическая или локальная внутри массива коодинат
         /// </summary>
         /// <param name="dim">[In]Размерность</param>
         /// <param name="tag">[In]Идентификатор</param>
@@ -376,7 +376,7 @@ namespace GmshApi.GmshController
         /// <returns>Число координат лежащих внутри модели</returns>
         public delegate int gmshModelIsInsideFun(int dim, int tag, double[] coord, IntPtr coord_n,
                                                  int parametric, ref int ierr);///
-        public gmshModelIsInsideFun gmshModelIsInside;
+        gmshModelIsInsideFun gmshModelIsInside;
         /// <summary>
         /// Устанавливает видимость для указанных пар dim:tags геометрических сущностей
         /// </summary>
@@ -396,7 +396,7 @@ namespace GmshApi.GmshController
         /// <param name="values_n">[In]Размер массива значений</param>
         /// <param name="ierr">[Out]Флаг ошибки</param>
         public delegate void gmshModelSetAttributeFun(string name, string[] values, IntPtr values_n, ref int ierr);///
-        public gmshModelSetAttributeFun gmshModelSetAttribute;
+        gmshModelSetAttributeFun gmshModelSetAttribute;
         /// <summary>
         /// Возвратит значения для заданного аттрибута
         /// </summary>
@@ -415,7 +415,7 @@ namespace GmshApi.GmshController
         /// <param name="ierr">[Out]Флаг ошибки</param>
         /// <returns>Идентификатор оболочки</returns>
         public delegate int gmshModelGeoAddSurfaceLoopFun(int[] surfaceTags, IntPtr surfaceTags_n, int tag, ref int ierr);///
-        public gmshModelGeoAddSurfaceLoopFun gmshModelGeoAddSurfaceLoop;
+        gmshModelGeoAddSurfaceLoopFun gmshModelGeoAddSurfaceLoop;
         /// <summary>
         /// Формирует объем из заданных оболочек, первый элемент массива замкнутая оболочка, следующие элементы
         /// указывают отверстия в геометрии
@@ -426,7 +426,7 @@ namespace GmshApi.GmshController
         /// <param name="ierr">[Out]Флаг ошибки</param>
         /// <returns>Идентификатор объема</returns>
         public delegate int gmshModelGeoAddVolumeFun(int[] shellTags, IntPtr shellTags_n, int tag, ref int ierr);///
-        public gmshModelGeoAddVolumeFun gmshModelGeoAddVolume;
+        gmshModelGeoAddVolumeFun gmshModelGeoAddVolume;
         /// <summary>
         /// Возвращает список имен аттрибутов
         /// </summary>
@@ -441,7 +441,7 @@ namespace GmshApi.GmshController
         /// <param name="name">[In]Имя аттрибута</param>
         /// <param name="ierr">[Out]Флаг ошибки</param>
         public delegate void gmshModelRemoveAttributeFun(string name, ref int ierr);///
-        public gmshModelRemoveAttributeFun gmshModelRemoveAttribute;
+        gmshModelRemoveAttributeFun gmshModelRemoveAttribute;
         /// <summary>
         /// Возвращает физическое имя для заданной размерности : идентификатора
         /// </summary>
@@ -591,7 +591,7 @@ namespace GmshApi.GmshController
         /// <param name="size">[In]Задаваемая плотность</param>
         /// <param name="ierr">[Out]Флаг ошибки</param>
         public delegate void gmshModelMeshSetSizeFun(int[] dimTags, IntPtr dimTags_n, double size, ref int ierr);///
-        public gmshModelMeshSetSizeFun gmshModelMeshSetSize;
+        gmshModelMeshSetSizeFun gmshModelMeshSetSize;
         /// <summary>
         /// Возвращает плотность(MeshSize) для конкретных сущностей(dim:tags)
         /// </summary>
@@ -623,7 +623,7 @@ namespace GmshApi.GmshController
         /// <param name="dim">[In]Размерность в которой нужно сгенерировать модель</param>
         /// <param name="ierr">[Out]Флаг ошибки</param>
         public delegate void gmshModelMeshGenerateFun(int dim, ref int ierr);///
-        public gmshModelMeshGenerateFun gmshModelMeshGenerate;
+        gmshModelMeshGenerateFun gmshModelMeshGenerate;
         /// <summary>
         /// Перегенерирует сетку преимущественно в четырехугольники
         /// </summary>
@@ -733,7 +733,7 @@ namespace GmshApi.GmshController
         /// <param name="ierr">[Out]Флаг ошибки</param>
         public delegate void gmshModelMeshSetTransfiniteCurveFun(int tag, int numNodes, string meshType,
                                                                   double coef, ref int ierr);///
-        public gmshModelMeshSetTransfiniteCurveFun gmshModelMeshSetTransfiniteCurve;
+        gmshModelMeshSetTransfiniteCurveFun gmshModelMeshSetTransfiniteCurve;
         /// <summary>
         /// Задает количество опорных точек для поверхности
         /// </summary>
@@ -1025,7 +1025,7 @@ namespace GmshApi.GmshController
             gmshPluginRun = GetFunction<gmshPluginRunFun>("gmshPluginRun");
             #endregion
             #region "Get IO delegates"
-            gmshOpen = GetFunction<gmshOpenFun>("gmshOpen");
+            gmshOpen = GetFunction<OpenFun>("gmshOpen");
             gmshMerge = GetFunction<gmshMergeFun>("gmshMerge");
             gmshWrite = GetFunction<gmshWriteFun>("gmshWrite");
             #endregion
@@ -1217,14 +1217,10 @@ namespace GmshApi.GmshController
 
             return status;
         }
+        /// <inheritdoc/>
         #endregion
         #region "Geometry managed methods"
-        /// <summary>
-        /// Возвращает список всех пар размерность:идентификатор для заданной размерности
-        /// </summary>
-        /// <param name="dimTags">Пары dim:tag</param>
-        /// <param name="dim">Заданная размерность</param>
-        /// <returns>Успешность вызова метода</returns>
+
         public bool ModelGetGeometryEntities(out int[] dimTags, int dim)
         {
             var ierr = 0;
@@ -1243,13 +1239,8 @@ namespace GmshApi.GmshController
                 GetObjectsData(dTags, out dimTags, dimTags_n);
             return status;
         }
-        /// <summary>
-        /// Возвращает имя сущности для указанной dim:tag
-        /// </summary>
-        /// <param name="dim">Размерность</param>
-        /// <param name="tag">Идентификатор</param>
-        /// <param name="name">Имя</param>
-        /// <returns>Успешность вызова метода</returns>
+/// <inheritdoc/>
+
         public bool ModelGetGeometryEntityName(int dim, int tag, out string name)
         {
             IntPtr unmanagedString = IntPtr.Zero;
@@ -1265,14 +1256,8 @@ namespace GmshApi.GmshController
 
             return status;
         }
-        /// <summary>
-        /// Возвращает соседей верхнего\нижнего уровня для текущей пары dim : tag
-        /// </summary>
-        /// <param name="dim">Размерность</param>
-        /// <param name="tag">Идентификатор</param>
-        /// <param name="upward">Соседи верхнего уровня</param>
-        /// <param name="downward">Соседи нижнего уровня</param>
-        /// <returns>Успешность вызова метода</returns>
+/// <inheritdoc/>
+
         public bool ModelGetAdjacencies(int dim, int tag, out int[] upward, out int[] downward)
         {
             var ierr = 0;
@@ -1289,12 +1274,8 @@ namespace GmshApi.GmshController
             }
             return status;
         }
-        /// <summary>
-        /// Возвратит значения для заданного аттрибута
-        /// </summary>
-        /// <param name="name">Имя аттрибута</param>
-        /// <param name="attributes">Значения аттрибута</param>
-        /// <returns>Успешность вызова метода</returns>
+/// <inheritdoc/>
+
         public bool ModelGetAttribute(string name, out string[] attributes)
         {
             var ierr = 0;
@@ -1306,11 +1287,8 @@ namespace GmshApi.GmshController
                 attributes = GetArrayOfString(values, values_n);
             return status;
         }
-        /// <summary>
-        /// Возвращает список имен аттрибутов
-        /// </summary>
-        /// <param name="names">Список имен аттрибутов</param>
-        /// <returns>Успешность вызова метода</returns>
+/// <inheritdoc/>
+
         public bool ModelGetAttributeNames(out string[] names)
         {
             var ierr = 0;
@@ -1364,14 +1342,8 @@ namespace GmshApi.GmshController
                 GetObjectsData(der, out derivative, der_n);
             return status;
         }
-        /// <summary>
-        /// Возвращает координаты точек заданные параметром для указанного идентификатора и размерности
-        /// </summary>
-        /// <param name="dim">Размерность</param>
-        /// <param name="tag">Идентификатор</param>
-        /// <param name="parametricCoord">Параметрические координаты</param>
-        /// <param name="coord">Локальные координаты</param>
-        /// <returns>Успешность вызова метода</returns>
+/// <inheritdoc/>
+
         public bool ModelGetValue(int dim, int tag, double[] parametricCoord, out double[] coord)
         {
             var ierr = 0;
@@ -1405,14 +1377,8 @@ namespace GmshApi.GmshController
                 GetObjectsData(pCoord, out parametricCoord, pCoord_n);
             return status;
         }
-        /// <summary>
-        /// Возвращает минимальные максимальные границы параметризации
-        /// </summary>
-        /// <param name="dim">Размерность</param>
-        /// <param name="tag">Идентификатор</param>
-        /// <param name="min">Минимальные границы</param>
-        /// <param name="max">Максимальные границы</param>
-        /// <returns>Успешность вызова метода</returns>
+/// <inheritdoc/>
+
         public bool ModelGetParametrizationBounds(int dim, int tag, out double[] min, out double[] max)
         {
             var ierr = 0;
@@ -1431,11 +1397,8 @@ namespace GmshApi.GmshController
             }
             return status;
         }
-        /// <summary>
-        /// Получить плотности для геометрии
-        /// </summary>
-        /// <param name="dimTags">[In]Массив dim:tags</param>
-        /// <returns>Геометрические плотности</returns>
+/// <inheritdoc/>
+
         public double[] GetMeshDensity(int[] dimTags)
         {
             var ierr = 0;
@@ -1720,27 +1683,23 @@ namespace GmshApi.GmshController
                 GetObjectsData(valuesInt, out values, valuesInt_n);
             return status;
         }
+        /// <inheritdoc/>
         #endregion
         #region "Utility methods"
-        /// <summary>
-        /// Удалить геометрические сущности указанные парой dim:tags
-        /// </summary>
-        /// <param name="dimTags">Массив пар dim:tags</param>
-        /// <param name="recursive">Рекурсивно удалять детей</param>
-        /// <returns>Успешность вызова метода</returns>
-        public bool RemoveEntities(int[] dimTags, bool recursive = false)
+
+        public bool RemoveGeometryObjects(int[] dimTags, bool delChild = false)
         {
             for (var i = 1; i < dimTags.Length; i += 2)
             {
                 if (!RemoveAdjointEntities(dimTags[i - 1], dimTags[i]))
                     return false;
-                if (!RemoveEntity(new int[] { dimTags[i - 1], dimTags[i] }, recursive))
+                if (!RemoveGeometryObject(new int[] { dimTags[i - 1], dimTags[i] }, delChild))
                     return false;
             }
             return true;
         }
 
-        private bool RemoveEntity(int[] dimTags, bool recursive)
+        private bool RemoveGeometryObject(int[] dimTags, bool recursive)
         {
             var ierr = 0;
             var recFlag = Convert.ToInt32(recursive);
@@ -1764,7 +1723,7 @@ namespace GmshApi.GmshController
                 if (!RemoveAdjointEntities(dim + 1, upward[i]))
                     return false;
             }
-            if (!RemoveEntity(new int[] { dim, tag }, false))
+            if (!RemoveGeometryObject(new int[] { dim, tag }, false))
                 return false;
             return true;
         }
@@ -2092,6 +2051,116 @@ namespace GmshApi.GmshController
             gmshFree(array);
             return result;
         }
+/// <inheritdoc/>
+
+        public int GetGeometryObjectDimension(ref int ierr)
+        {
+            return gmshModelGetDimension(ref ierr);
+        }
+/// <inheritdoc/>
+
+        public void OptionSetNumber(string name, double value, ref int ierr)
+        {
+            gmshOptionSetNumber(name, value, ref ierr);
+        }
+/// <inheritdoc/>
+
+        public void Clear(ref int ierr)
+        {
+            gmshClear(ref ierr);
+        }
+/// <inheritdoc/>
+
+        public void Open(string fileName, ref int ierr)
+        {
+            gmshOpen(fileName, ref ierr);
+        }
+/// <inheritdoc/>
+
+        public void ModelRemoveEntities(int[] dimTags, IntPtr dimTags_n, int recursive, ref int ierr)
+        {
+            gmshModelRemoveEntities(dimTags, dimTags_n, recursive, ref ierr);
+        }
+/// <inheritdoc/>
+
+        public void ModelSetEntityName(int dim, int tag, string name, ref int ierr)
+        {
+            gmshModelSetEntityName(dim, tag, name, ref ierr);
+        }
+/// <inheritdoc/>
+
+        public void ModelGetBoundingBox(int dim, int tag, ref double xmin, ref double ymin, ref double zmin, ref double xmax, ref double ymax, ref double zmax, ref int ierr)
+        {
+            gmshModelGetBoundingBox(dim, tag, ref xmin, ref ymin, ref zmin, ref xmax, ref ymax, ref zmax, ref ierr);
+        }
+/// <inheritdoc/>
+
+        public void ModelGetAdjacencies(int dim, int tag, ref IntPtr upward, ref IntPtr upward_n, ref IntPtr downward, ref IntPtr downward_n, ref int ierr)
+        {
+            gmshModelGetAdjacencies(dim, tag, ref upward, ref upward_n, ref downward, ref downward_n, ref ierr);
+        }
+/// <inheritdoc/>
+
+        public int ModelIsInside(int dim, int tag, double[] coord, IntPtr coord_n, int parametric, ref int ierr)
+        {
+            return gmshModelIsInside(dim, tag, coord, coord_n, parametric, ref ierr);
+        }
+/// <inheritdoc/>
+
+        public void ModelMeshSetTransfiniteCurve(int tag, int numNodes, string meshType, double coef, ref int ierr)
+        {
+            gmshModelMeshSetTransfiniteCurve(tag, numNodes, meshType, coef, ref ierr);
+        }
+/// <inheritdoc/>
+
+        public void ModelSetAttribute(string name, string[] values, IntPtr values_n, ref int ierr)
+        {
+            gmshModelSetAttribute(name, values, values_n, ref ierr);
+        }
+/// <inheritdoc/>
+
+        public void ModelRemoveAttribute(string name, ref int ierr)
+        {
+            gmshModelRemoveAttribute(name, ref ierr);
+        }
+/// <inheritdoc/>
+
+        public void ModelMeshGenerate(int dim, ref int ierr)
+        {
+            gmshModelMeshGenerate(dim, ref ierr);
+        }
+/// <inheritdoc/>
+
+        public int ModelGeoAddSurfaceLoop(int[] surfaceTags, IntPtr surfaceTags_n, int tag, ref int ierr)
+        {
+            return gmshModelGeoAddSurfaceLoop(surfaceTags, surfaceTags_n, tag, ref ierr);
+        }
+/// <inheritdoc/>
+
+        public int ModelGeoAddVolume(int[] shellTags, IntPtr shellTags_n, int tag, ref int ierr)
+        {
+            return gmshModelGeoAddVolume(shellTags, shellTags_n, tag, ref ierr);
+        }
+/// <inheritdoc/>
+
+        public void ModelGeoSynchronize(ref int ierr)
+        {
+            gmshModelGeoSynchronize(ref ierr);
+        }
+/// <inheritdoc/>
+
+        public void ModelMeshSetSize(int[] dimTags, IntPtr dimTags_n, double size, ref int ierr)
+        {
+            gmshModelMeshSetSize(dimTags, dimTags_n, size, ref ierr);
+        }
+/// <inheritdoc/>
+
+        public void ModelRemoveEntityName(string name, ref int ierr)
+        {
+            gmshModelRemoveEntityName(name, ref ierr);
+        }
+
+
         #endregion
     }
 }

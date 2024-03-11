@@ -26,7 +26,7 @@ namespace TestModel.GmshTests
         public void Cleanup()
         {
             var ierr = 0;
-            controller.gmshClear(ref ierr);
+            controller.Clear(ref ierr);
         }
 
         [DataTestMethod]
@@ -34,8 +34,8 @@ namespace TestModel.GmshTests
         public void GetNodes(string fileName)
         {
             var ierr = 0;
-            controller.gmshOpen(modelFolder + fileName, ref ierr);
-            controller.gmshModelMeshGenerate(2, ref ierr);
+            controller.Open(modelFolder + fileName, ref ierr);
+            controller.ModelMeshGenerate(2, ref ierr);
             var nodes = controller.GetNodes(-1, -1, false);
             Assert.AreEqual(187, nodes.Count);
         }
@@ -45,8 +45,8 @@ namespace TestModel.GmshTests
         public void TestRefineMesh(string fileName)
         {
             var ierr = 0;
-            controller.gmshOpen(modelFolder + fileName, ref ierr);
-            controller.gmshModelMeshGenerate(2, ref ierr);
+            controller.Open(modelFolder + fileName, ref ierr);
+            controller.ModelMeshGenerate(2, ref ierr);
             var nodesUntil = controller.GetNodes(-1, -1);
             controller.gmshModelMeshRefine(ref ierr);
             var nodesAfter = controller.GetNodes(-1, -1);
@@ -59,8 +59,8 @@ namespace TestModel.GmshTests
         public void GetMeshObjects(string fileName, int expNodes, int expE1d, int expE2d, int expE3d)
         {
             var ierr = 0;
-            controller.gmshOpen(modelFolder + fileName, ref ierr);
-            controller.gmshModelMeshGenerate(3, ref ierr);
+            controller.Open(modelFolder + fileName, ref ierr);
+            controller.ModelMeshGenerate(3, ref ierr);
             var result = controller.GetMeshObjects();
             Assert.AreEqual(expNodes, result.Item1.Count());
             Assert.AreEqual(expE1d, result.Item2.Count());
@@ -73,13 +73,13 @@ namespace TestModel.GmshTests
         public void TestDensity(string fileName)
         {
             var ierr = 0;
-            controller.gmshOpen(modelFolder + fileName, ref ierr);
-            controller.gmshModelMeshGenerate(2, ref ierr);
+            controller.Open(modelFolder + fileName, ref ierr);
+            controller.ModelMeshGenerate(2, ref ierr);
             var nodes = controller.GetNodes(2, -1, true);
             var untilElements = controller.GetMeshEntities(2, -1, nodes);
-            controller.gmshOptionSetNumber("Mesh.MeshSizeFactor", 0.5, ref ierr);
-            controller.gmshModelMeshGenerate(1, ref ierr);
-            controller.gmshModelMeshGenerate(2, ref ierr);
+            controller.OptionSetNumber("Mesh.MeshSizeFactor", 0.5, ref ierr);
+            controller.ModelMeshGenerate(1, ref ierr);
+            controller.ModelMeshGenerate(2, ref ierr);
             nodes = controller.GetNodes(2, -1, true);
             var afterElements = controller.GetMeshEntities(2, -1, nodes);
             Assert.IsTrue(untilElements.Count() < afterElements.Count());
@@ -92,17 +92,17 @@ namespace TestModel.GmshTests
         public void GetDensityForElementNodes(string fileName, int dim)
         {
             var ierr = 0;
-            controller.gmshOpen(modelFolder + fileName, ref ierr);
-            controller.gmshModelMeshGenerate(dim, ref ierr);
+            controller.Open(modelFolder + fileName, ref ierr);
+            controller.ModelMeshGenerate(dim, ref ierr);
             var lengthUntil = controller.GetNodes(dim).Count;
-            controller.gmshOptionSetNumber("Mesh.MeshSizeFactor", 0.5, ref ierr);
-            controller.gmshModelMeshGenerate(1, ref ierr);
-            controller.gmshModelMeshGenerate(dim, ref ierr);
+            controller.OptionSetNumber("Mesh.MeshSizeFactor", 0.5, ref ierr);
+            controller.ModelMeshGenerate(1, ref ierr);
+            controller.ModelMeshGenerate(dim, ref ierr);
             var lengthAfter = controller.GetNodes(dim).Count;
             Assert.AreEqual(true, lengthAfter > lengthUntil);
-            controller.gmshOptionSetNumber("Mesh.MeshSizeFactor", 1.0, ref ierr);
-            controller.gmshModelMeshGenerate(1, ref ierr);
-            controller.gmshModelMeshGenerate(dim, ref ierr);
+            controller.OptionSetNumber("Mesh.MeshSizeFactor", 1.0, ref ierr);
+            controller.ModelMeshGenerate(1, ref ierr);
+            controller.ModelMeshGenerate(dim, ref ierr);
             var lengthLast = controller.GetNodes(dim).Count;
             Assert.AreEqual(true, lengthLast < lengthAfter);
         }
@@ -112,8 +112,8 @@ namespace TestModel.GmshTests
         public void GetSurfaceByIdTest(string fileName, int[] tags, int[] expLength)
         {
             var ierr = 0;
-            controller.gmshOpen(modelFolder + fileName, ref ierr);
-            controller.gmshModelMeshGenerate(2, ref ierr);
+            controller.Open(modelFolder + fileName, ref ierr);
+            controller.ModelMeshGenerate(2, ref ierr);
             for (var i = 0; i < tags.Length; ++i)
             {
                 var nodes = controller.GetNodes(2, tags[i], true);
@@ -127,11 +127,11 @@ namespace TestModel.GmshTests
         public void TestChangeTriangulationAlgorithm2D(string fileName)
         {
             var ierr = 0;
-            controller.gmshOpen(modelFolder + fileName, ref ierr);
-            controller.gmshModelMeshGenerate(2, ref ierr);
+            controller.Open(modelFolder + fileName, ref ierr);
+            controller.ModelMeshGenerate(2, ref ierr);
             var nodesCountUntil = controller.GetNodes(2, -1).Count;
-            controller.gmshOptionSetNumber("Mesh.Algorithm", 2, ref ierr);
-            controller.gmshModelMeshGenerate(2, ref ierr);
+            controller.OptionSetNumber("Mesh.Algorithm", 2, ref ierr);
+            controller.ModelMeshGenerate(2, ref ierr);
             var nodesCountAfter = controller.GetNodes(2, -1).Count;
             Assert.IsTrue(nodesCountAfter != nodesCountUntil);
         }
@@ -141,12 +141,12 @@ namespace TestModel.GmshTests
         public void TestSetPointsOnCurve(string fileName)
         {
             var ierr = 0;
-            controller.gmshOpen(modelFolder + fileName, ref ierr);
-            controller.gmshModelMeshGenerate(2, ref ierr);
+            controller.Open(modelFolder + fileName, ref ierr);
+            controller.ModelMeshGenerate(2, ref ierr);
             var nodesCountUntil = controller.GetNodes(2, -1).Count;
-            controller.gmshModelMeshSetTransfiniteCurve(4, 10, "Progression", 1.5, ref ierr);
-            controller.gmshModelMeshGenerate(1, ref ierr);
-            controller.gmshModelMeshGenerate(2, ref ierr);
+            controller.ModelMeshSetTransfiniteCurve(4, 10, "Progression", 1.5, ref ierr);
+            controller.ModelMeshGenerate(1, ref ierr);
+            controller.ModelMeshGenerate(2, ref ierr);
             var nodesCountAfter = controller.GetNodes(2, -1).Count;
             Assert.IsTrue(nodesCountAfter != nodesCountUntil);
         }
@@ -156,8 +156,8 @@ namespace TestModel.GmshTests
         public void DeleteSurfaceTest(string fileName, int surfaceId)
         {
             var ierr = 0;
-            controller.gmshOpen(modelFolder + fileName, ref ierr);
-            controller.gmshModelMeshGenerate(2, ref ierr);
+            controller.Open(modelFolder + fileName, ref ierr);
+            controller.ModelMeshGenerate(2, ref ierr);
             var nodes = controller.GetNodes(2, surfaceId);
             var lengthBefore = controller.GetMeshEntities(2, surfaceId, nodes).ToArray().Length;
             controller.gmshModelMeshClear(new int[] { 2, surfaceId }, (IntPtr)2, ref ierr);
@@ -171,8 +171,8 @@ namespace TestModel.GmshTests
         public void DeleteAllSurfaces(string fileName)
         {
             var ierr = 0; ;
-            controller.gmshOpen(modelFolder + fileName, ref ierr);
-            controller.gmshModelMeshGenerate(2, ref ierr);
+            controller.Open(modelFolder + fileName, ref ierr);
+            controller.ModelMeshGenerate(2, ref ierr);
             var dimTags = new int[] { 2, 1, 2, 2, 2, 3, 2, 4 };
             controller.gmshModelMeshClear(dimTags, (IntPtr)dimTags.Length, ref ierr);
             var nodes = controller.GetNodes(2, -1);
@@ -185,8 +185,8 @@ namespace TestModel.GmshTests
         public void DeleteMeshElementsTest(string fileName, long[] elTags)
         {
             var ierr = 0;
-            controller.gmshOpen(modelFolder + fileName, ref ierr);
-            controller.gmshModelMeshGenerate(2, ref ierr);
+            controller.Open(modelFolder + fileName, ref ierr);
+            controller.ModelMeshGenerate(2, ref ierr);
             var nodes = controller.GetNodes(2, -1);
             var lengthBefore = controller.GetMeshEntities(2, -1, nodes).ToArray().Length;
             controller.DeleteMeshElements(elTags);
@@ -204,8 +204,8 @@ namespace TestModel.GmshTests
         public void GenerateMeshGet1DElementsByIdTest(string fileName, int[] lineTags, int[] expectedLength)
         {
             var ierr = 0;
-            controller.gmshOpen(modelFolder + fileName, ref ierr);
-            controller.gmshModelMeshGenerate(1, ref ierr);
+            controller.Open(modelFolder + fileName, ref ierr);
+            controller.ModelMeshGenerate(1, ref ierr);
             for (var i = 0; i < lineTags.Length; ++i)
             {
                 var nodes = controller.GetNodes(1, lineTags[i], true);
@@ -222,8 +222,8 @@ namespace TestModel.GmshTests
         public void GenerateMeshGet2DElementsByIdTest(string fileName, int[] surfTags, int[] expectedLength)
         {
             var ierr = 0;
-            controller.gmshOpen(modelFolder + fileName, ref ierr);
-            controller.gmshModelMeshGenerate(2, ref ierr);
+            controller.Open(modelFolder + fileName, ref ierr);
+            controller.ModelMeshGenerate(2, ref ierr);
             for (var i = 0; i < surfTags.Length; ++i)
             {
                 var nodes = controller.GetNodes(2, surfTags[i], true);
@@ -240,8 +240,8 @@ namespace TestModel.GmshTests
         public void GenerateMeshGetAllNodesTest(string fileName, int[] nodesDim, int[] paramsCount)
         {
             var ierr = 0;
-            controller.gmshOpen(modelFolder + fileName, ref ierr);
-            controller.gmshModelMeshGenerate(2, ref ierr);
+            controller.Open(modelFolder + fileName, ref ierr);
+            controller.ModelMeshGenerate(2, ref ierr);
             long[] nodes;
             double[] local, parametric;
             for (var i = 0; i < nodesDim.Length; ++i)
@@ -267,8 +267,8 @@ namespace TestModel.GmshTests
         public void GenerateMeshGetLineNodesByTag(string fileName, int[] tags, int[] expectedLength)
         {
             var ierr = 0;
-            controller.gmshOpen(modelFolder + fileName, ref ierr);
-            controller.gmshModelMeshGenerate(1, ref ierr);
+            controller.Open(modelFolder + fileName, ref ierr);
+            controller.ModelMeshGenerate(1, ref ierr);
             long[] nodes;
             double[] local, parametric;
             for (var i = 0; i < tags.Length; ++i)
@@ -284,8 +284,8 @@ namespace TestModel.GmshTests
         public void GenerateMeshGetSurfacesNodesByTag(string fileName, int[] tags, int[] expectedLength)
         {
             var ierr = 0;
-            controller.gmshOpen(modelFolder + fileName, ref ierr);
-            controller.gmshModelMeshGenerate(2, ref ierr);
+            controller.Open(modelFolder + fileName, ref ierr);
+            controller.ModelMeshGenerate(2, ref ierr);
             long[] nodes;
             double[] local, parametric;
             for (var i = 0; i < tags.Length; ++i)
@@ -300,8 +300,8 @@ namespace TestModel.GmshTests
         public void GenerateMeshGetElementsByCoordinates(string fileName, int expected)
         {
             var ierr = 0;
-            controller.gmshOpen(modelFolder + fileName, ref ierr);
-            controller.gmshModelMeshGenerate(2, ref ierr);
+            controller.Open(modelFolder + fileName, ref ierr);
+            controller.ModelMeshGenerate(2, ref ierr);
             var point = new double[] { -8.74248599355, 1.39424515076, 6.51327932777 };
             long[] elements;
             controller.ModelMeshGetElementsByCoordinates(point[0], point[1], point[2], 2, false, out elements);
@@ -313,7 +313,7 @@ namespace TestModel.GmshTests
         public void AddRemoveFieldTest(string fileName)
         {
             var ierr = 0;
-            controller.gmshOpen(modelFolder + fileName, ref ierr);
+            controller.Open(modelFolder + fileName, ref ierr);
             var view = controller.gmshModelMeshFieldAdd("BoundaryLayer", 0, ref ierr);
             int[] tags;
             controller.ModelMeshFieldList(out tags);
@@ -328,8 +328,8 @@ namespace TestModel.GmshTests
         public void AddBoundaryLayerTest(string fileName)
         {
             var ierr = 0;
-            controller.gmshOpen(modelFolder + fileName, ref ierr);
-            controller.gmshModelMeshGenerate(2, ref ierr);
+            controller.Open(modelFolder + fileName, ref ierr);
+            controller.ModelMeshGenerate(2, ref ierr);
             var nodes = controller.GetNodes(2);
             var el2dCount = controller.GetMeshEntities(2, -1, nodes).ToArray().Length;
             var view = controller.gmshModelMeshFieldAdd("BoundaryLayer", 0, ref ierr);
@@ -339,8 +339,8 @@ namespace TestModel.GmshTests
             controller.gmshModelMeshFieldSetNumbers(0, "PointsList", new double[] { 2.0, 4.0 }, (IntPtr)2, ref ierr);
             controller.gmshModelMeshFieldSetNumber(0, "Thickness", 2.0, ref ierr);
             controller.gmshModelMeshFieldSetAsBoundaryLayer(0, ref ierr);
-            controller.gmshModelMeshGenerate(1, ref ierr);
-            controller.gmshModelMeshGenerate(2, ref ierr);
+            controller.ModelMeshGenerate(1, ref ierr);
+            controller.ModelMeshGenerate(2, ref ierr);
             nodes = controller.GetNodes(2);
             var newEl2dCount = controller.GetMeshEntities(2, -1, nodes).ToArray().Length;
             Assert.AreNotEqual(el2dCount, newEl2dCount);
@@ -352,14 +352,14 @@ namespace TestModel.GmshTests
         public void TransfiniteSurfaceTest(string fileName)
         {
             var ierr = 0;
-            controller.gmshOpen(modelFolder + fileName, ref ierr);
-            controller.gmshModelMeshGenerate(2, ref ierr);
+            controller.Open(modelFolder + fileName, ref ierr);
+            controller.ModelMeshGenerate(2, ref ierr);
             var nodes = controller.GetNodes(2);
             var beforeCount = controller.GetMeshEntities(2, -1, nodes).Count;
-            controller.gmshModelMeshGenerate(1, ref ierr);
+            controller.ModelMeshGenerate(1, ref ierr);
             controller.gmshModelMeshSetTransfiniteSurface(1, "Left", new int[] { 4 }, (IntPtr)1, ref ierr);
             Assert.IsTrue(ierr == 0);
-            controller.gmshModelMeshGenerate(2, ref ierr);
+            controller.ModelMeshGenerate(2, ref ierr);
             nodes = controller.GetNodes(2);
             var afterCount = controller.GetMeshEntities(2, -1, nodes).Count;
             Assert.IsTrue(afterCount != beforeCount);
@@ -371,8 +371,8 @@ namespace TestModel.GmshTests
         {
             var ierr = 0;
             var modelData = new ModelData();
-            controller.gmshOpen(path, ref ierr);
-            controller.gmshModelMeshGenerate(3, ref ierr);
+            controller.Open(path, ref ierr);
+            controller.ModelMeshGenerate(3, ref ierr);
             var results = controller.GetMeshObjects();
             modelData.ObjectData.NodeCollection.AddRange(results.Item1);
             modelData.ObjectData.E2DCollection.AddRange(results.Item3);
@@ -389,13 +389,13 @@ namespace TestModel.GmshTests
         public void CenterOfSurfaceTest(string fileName, int surfTag)
         {
             var ierr = 0;
-            controller.gmshOpen(modelFolder + fileName, ref ierr);
+            controller.Open(modelFolder + fileName, ref ierr);
             var coords = new double[3];
             controller.gmshModelOccGetCenterOfMass(2, surfTag, ref coords[0], ref coords[1], ref coords[2], ref ierr);
-            var status = controller.gmshModelIsInside(2, surfTag, coords, (IntPtr)3, 0, ref ierr);
+            var status = controller.ModelIsInside(2, surfTag, coords, (IntPtr)3, 0, ref ierr);
             Assert.AreEqual(1,status);
             coords[1] -= 100;
-            status = controller.gmshModelIsInside(2, surfTag, coords, (IntPtr)3, 0, ref ierr);
+            status = controller.ModelIsInside(2, surfTag, coords, (IntPtr)3, 0, ref ierr);
             Assert.AreEqual(0, status);
         }
         //Тест гарантирующий сброс трансфиниции кривой в состояние по умолчанию :)
@@ -404,17 +404,17 @@ namespace TestModel.GmshTests
         public void ResetTransfinitionTest(string fileName, int curveTag)
         {
             var ierr = 0;
-            controller.gmshOpen(modelFolder + fileName, ref ierr);
-            controller.gmshModelMeshGenerate(1, ref ierr);
+            controller.Open(modelFolder + fileName, ref ierr);
+            controller.ModelMeshGenerate(1, ref ierr);
             var defaultNodeCount = controller.GetNodes(1, curveTag).Count;
             controller.gmshModelMeshClear(new int[0], (IntPtr)0, ref ierr);
-            controller.gmshModelMeshSetTransfiniteCurve(curveTag, 20, "Progression", 1.0, ref ierr);
-            controller.gmshModelMeshGenerate(1, ref ierr);
+            controller.ModelMeshSetTransfiniteCurve(curveTag, 20, "Progression", 1.0, ref ierr);
+            controller.ModelMeshGenerate(1, ref ierr);
             var afterTransfNodeCount = controller.GetNodes(1, curveTag).Count;
             Assert.AreEqual(20, afterTransfNodeCount);
             controller.gmshModelMeshClear(new int[0], (IntPtr)0, ref ierr);
             controller.gmshModelMeshRemoveConstraints(new int[] { 1 , curveTag }, (IntPtr)2, ref ierr);
-            controller.gmshModelMeshGenerate(1, ref ierr);
+            controller.ModelMeshGenerate(1, ref ierr);
             var afterResetNodeCount = controller.GetNodes(1, curveTag).Count;
             Assert.AreEqual(defaultNodeCount, afterResetNodeCount);
         }

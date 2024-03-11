@@ -55,6 +55,230 @@ namespace ModelControllerInterfaces.GmshController
         /// item4 - els3d
         /// </returns>
         (List<INode>, List<ILineObject<INode>>, List<IElement2D>, List<IElement3D>) GetMeshObjects();
+        /// <summary>
+        /// Возвращает список всех пар размерность:идентификатор для заданной размерности
+        /// </summary>
+        /// <param name="dimTags">Пары dim:tag</param>
+        /// <param name="dim">Заданная размерность</param>
+        /// <returns>Успешность вызова метода</returns>
+        bool ModelGetGeometryEntities(out int[] dimTags, int dim);
+        /// <summary>
+        /// Возвращает максимальную размерность текущего геометрического объекта
+        /// </summary>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        /// <returns>Максимальная размерность</returns>
+        int GetGeometryObjectDimension(ref int ierr);
+        /// <summary>
+        /// Задает значение поля категории опций
+        /// </summary>
+        /// <param name="name">[In]Строка в формате доступа к полю категории опций</param>
+        /// <param name="value">[In]Значение поля категории</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void OptionSetNumber(string name, double value, ref int ierr);
 
+        /// <summary>
+        /// Очищает список моделей
+        /// </summary>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void Clear(ref int ierr);
+
+        /// <summary>
+        /// Открывает скрипт файл .geo, .stp, .igs создает модель и делает ее текущей
+        /// </summary>
+        /// <param name="fileName">[In]Путь до файла скрипта</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void Open(string fileName, ref int ierr);
+        /// <summary>
+        /// Удаляет gmsh геометрически сущности заданные парой dimTags
+        /// </summary>
+        /// <param name="dimTags">[In]Массив пар dim:tag</param>
+        /// <param name="dimTags_n">[In]Длина массива</param>
+        /// <param name="recursive">[In]Рекурсивно улалять граничные элементы</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void ModelRemoveEntities(int[] dimTags, IntPtr dimTags_n, int recursive, ref int ierr);
+
+        /// <summary>
+        /// Удалить геометрические сущности указанные парой dim:tags
+        /// </summary>
+        /// <param name="dimTags">Массив пар dim:tags</param>
+        /// <param name="delChild">Рекурсивно удалять детей</param>
+        /// <returns>Успешность вызова метода</returns>
+        bool RemoveGeometryObjects(int[] dimTags, bool delChild = false);
+
+        /// <summary>
+        /// Задает имя сущности для текущих dim:tag
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="name">[In]Имя сущности</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void ModelSetEntityName(int dim, int tag, string name, ref int ierr);
+
+        /// <summary>
+        /// Возвращает имя сущности для указанной dim:tag
+        /// </summary>
+        /// <param name="dim">Размерность</param>
+        /// <param name="tag">Идентификатор</param>
+        /// <param name="name">Имя</param>
+        /// <returns>Успешность вызова метода</returns>
+        bool ModelGetGeometryEntityName(int dim, int tag, out string name);
+
+
+        /// <summary>
+        /// Возвращает ограничивающий параллелепипед для заданных dim:tag
+        /// </summary>
+        /// <param name="dim">[In]Размерность, или -1 использовать все размерности</param>
+        /// <param name="tag">[In]Идентификатор, или -1 использовать все идентификаторы</param>
+        /// <param name="xmin">[Out]Минимальное значение X</param>
+        /// <param name="ymin">[Out]Минимальное значение Y</param>
+        /// <param name="zmin">[Out]Минимальное значение Z</param>
+        /// <param name="xmax">[Out]Максимальное значение X</param>
+        /// <param name="ymax">[Out]Максимальное значение Y</param>
+        /// <param name="zmax">[Out]Максимальное значение Z</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void ModelGetBoundingBox(int dim, int tag, ref double xmin,
+                                                      ref double ymin, ref double zmin,
+                                                      ref double xmax, ref double ymax,
+                                                      ref double zmax, ref int ierr);
+
+        /// <summary>
+        /// Возвращает соседей верхнего\нижнего уровня для текущей пары dim : tag
+        /// </summary>
+        /// <param name="dim">Размерность</param>
+        /// <param name="tag">Идентификатор</param>
+        /// <param name="upward">Соседи верхнего уровня</param>
+        /// <param name="downward">Соседи нижнего уровня</param>
+        /// <returns>Успешность вызова метода</returns>
+        bool ModelGetAdjacencies(int dim, int tag, out int[] upward, out int[] downward);
+        /// <summary>
+        /// Возвращает координаты точек заданные параметром для указанного идентификатора и размерности
+        /// </summary>
+        /// <param name="dim">Размерность</param>
+        /// <param name="tag">Идентификатор</param>
+        /// <param name="parametricCoord">Параметрические координаты</param>
+        /// <param name="coord">Локальные координаты</param>
+        /// <returns>Успешность вызова метода</returns>
+        bool ModelGetValue(int dim, int tag, double[] parametricCoord, out double[] coord);
+
+        /// <summary>
+        /// Возвращает минимальные максимальные границы параметризации
+        /// </summary>
+        /// <param name="dim">Размерность</param>
+        /// <param name="tag">Идентификатор</param>
+        /// <param name="min">Минимальные границы</param>
+        /// <param name="max">Максимальные границы</param>
+        /// <returns>Успешность вызова метода</returns>
+        bool ModelGetParametrizationBounds(int dim, int tag, out double[] min, out double[] max);
+
+        /// <summary>
+        /// Определяет находится ли точка параметрическая или локальная внутри массива коодинат
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="coord">[In]Масив координат</param>
+        /// <param name="coord_n">[In]Количество координат</param>
+        /// <param name="parametric">[In]Флаг являяется ли координата параметрической</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        /// <returns>Число координат лежащих внутри модели</returns>
+        int ModelIsInside(int dim, int tag, double[] coord, IntPtr coord_n,
+                                                 int parametric, ref int ierr);
+
+
+        /// <summary>
+        /// Задает количество опорных точек на кривой, по которой будет строиться сетка
+        /// </summary>
+        /// <param name="tag">[In]Идентификатор кривой</param>
+        /// <param name="numNodes">[In]Число точек на кривой</param>
+        /// <param name="meshType">[In]Алгоритм распределения точек</param>
+        /// <param name="coef">[In]Коэффициент прогрессии</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void ModelMeshSetTransfiniteCurve(int tag, int numNodes, string meshType,
+                                                                  double coef, ref int ierr);
+
+        /// <summary>
+        /// Связать имя аттрибута со значениями
+        /// </summary>
+        /// <param name="name">[In]Имя аттрибута</param>
+        /// <param name="values">[In]Массив значений</param>
+        /// <param name="values_n">[In]Размер массива значений</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void ModelSetAttribute(string name, string[] values, IntPtr values_n, ref int ierr);
+
+        /// <summary>
+        /// Возвратит значения для заданного аттрибута
+        /// </summary>
+        /// <param name="name">Имя аттрибута</param>
+        /// <param name="attributes">Значения аттрибута</param>
+        /// <returns>Успешность вызова метода</returns>
+        bool ModelGetAttribute(string name, out string[] attributes);
+
+        /// <summary>
+        /// Возвращает список имен аттрибутов
+        /// </summary>
+        /// <param name="names">Список имен аттрибутов</param>
+        /// <returns>Успешность вызова метода</returns>
+        bool ModelGetAttributeNames(out string[] names);
+        /// <summary>
+        /// Удалить имя аттрибута
+        /// </summary>
+        /// <param name="name">[In]Имя аттрибута</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void ModelRemoveAttribute(string name, ref int ierr);
+        /// <summary>
+        /// Генерирует сетку в текущей размерности
+        /// </summary>
+        /// <param name="dim">[In]Размерность в которой нужно сгенерировать модель</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+       void ModelMeshGenerate(int dim, ref int ierr);
+
+
+        /// <summary>
+        /// Добавляет идентификаторы поверхностей, формирующих замкнутую оболочку, возвращает идентификатор оболочки
+        /// </summary>
+        /// <param name="surfaceTags">[In]Массив идентификаторов поверхностей</param>
+        /// <param name="surfaceTags_n">[In]Длина массива идентификаторов</param>
+        /// <param name="tag">[In]Идентификатор оболочки или -1 для автоматического назначения</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        /// <returns>Идентификатор оболочки</returns>
+        int ModelGeoAddSurfaceLoop(int[] surfaceTags, IntPtr surfaceTags_n, int tag, ref int ierr);
+
+        /// <summary>
+        /// Формирует объем из заданных оболочек, первый элемент массива замкнутая оболочка, следующие элементы
+        /// указывают отверстия в геометрии
+        /// </summary>
+        /// <param name="shellTags">[In]Массив идентификаторов оболочек</param>
+        /// <param name="shellTags_n">[In]Длина массива идентификаторов</param>
+        /// <param name="tag">[In]Идентификатор объема или -1 для автоматического назначения</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        /// <returns>Идентификатор объема</returns>
+        int ModelGeoAddVolume(int[] shellTags, IntPtr shellTags_n, int tag, ref int ierr);
+
+        /// <summary>
+        /// Проводит синхронизацию с ядром gmsh (например после добавления геометрических сущностей)
+        /// </summary>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void ModelGeoSynchronize(ref int ierr);
+
+        /// <summary>
+        /// Получить плотности для геометрии
+        /// </summary>
+        /// <param name="dimTags">[In]Массив dim:tags</param>
+        /// <returns>Геометрические плотности</returns>
+        double[] GetMeshDensity(int[] dimTags);
+
+        /// <summary>
+        /// Задает плотность(MeshSize) для конкретных сущностей(dim:tags)
+        /// </summary>
+        /// <param name="dimTags">[In]Масив dim:tags</param>
+        /// <param name="dimTags_n">[In]Размер массива dim:tags</param>
+        /// <param name="size">[In]Задаваемая плотность</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void ModelMeshSetSize(int[] dimTags, IntPtr dimTags_n, double size, ref int ierr);
+        /// <summary>
+        /// Удаляет сущность заданную именем
+        /// </summary>
+        /// <param name="name">[In]Имя сущности</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void ModelRemoveEntityName(string name, ref int ierr);
     }
 }

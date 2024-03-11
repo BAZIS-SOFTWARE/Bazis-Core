@@ -26,7 +26,7 @@ namespace TestModel.GmshTests
         {
             var ierr = 0;
             //controller.gmshFinalize(ref ierr);
-            controller.gmshClear(ref ierr);
+            controller.Clear(ref ierr);
         }
 
         [TestMethod]

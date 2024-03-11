@@ -24,7 +24,7 @@ namespace TestModel.GmshTests
         {
             var ierr = 0;
             //controller.gmshFinalize(ref ierr);
-            controller.gmshClear(ref ierr);
+            controller.Clear(ref ierr);
         }
         [DataTestMethod]
         [DataRow(new string[] { "" })]
@@ -173,7 +173,7 @@ namespace TestModel.GmshTests
             string[] list;
             for (var i = 0; i < add.Length; ++i)
                 controller.gmshModelAdd(add[i], ref ierr);
-            controller.gmshClear(ref ierr);
+            controller.Clear(ref ierr);
             controller.ModelList(out list);
             CollectionAssert.AreEqual(new string[] { expected }, list);
         }
@@ -197,7 +197,7 @@ namespace TestModel.GmshTests
         public void ModelTest(int count)
         {
             var ierr = 0;
-            controller.gmshClear(ref ierr);
+            controller.Clear(ref ierr);
             for (var i = 0; i < count; ++i)
                 controller.gmshModelAdd(i.ToString(), ref ierr);
             string[] list;
