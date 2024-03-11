@@ -614,7 +614,7 @@ namespace GmshApi.GmshController
         /// <param name="ierr">[Out]Флаг ошибки</param>
         public delegate void gmshModelOccGetCenterOfMassFun(int dim, int tag, ref double x, ref double y,
                                                             ref double z, ref int ierr);///
-        public gmshModelOccGetCenterOfMassFun gmshModelOccGetCenterOfMass;
+        gmshModelOccGetCenterOfMassFun gmshModelOccGetCenterOfMass;
         #endregion
         #region "Mesh Delegates"
         /// <summary>
@@ -635,7 +635,7 @@ namespace GmshApi.GmshController
         /// </summary>
         /// <param name="ierr">[Out]Флаг ошибки</param>
         public delegate void gmshModelMeshRefineFun(ref int ierr);///
-        public gmshModelMeshRefineFun gmshModelMeshRefine;
+        gmshModelMeshRefineFun gmshModelMeshRefine;
         /// <summary>
         /// Возвращает все элементы в текущей модели, их идентификаторы и идентификаторы точек внутри элемента
         /// </summary>
@@ -744,7 +744,7 @@ namespace GmshApi.GmshController
         /// <param name="ierr">[Out]Флаг ошибки</param>
         public delegate void gmshModelMeshSetTransfiniteSurfaceFun(int tag, string arrangement, int[] cornerTags,
                                                                        IntPtr cornerTags_n, ref int ierr);///
-        public gmshModelMeshSetTransfiniteSurfaceFun gmshModelMeshSetTransfiniteSurface;
+        gmshModelMeshSetTransfiniteSurfaceFun gmshModelMeshSetTransfiniteSurface;
         /// <summary>
         /// Задает количество опорных точек для объема
         /// </summary>
@@ -773,7 +773,7 @@ namespace GmshApi.GmshController
         /// <param name="dimTags_n">[In]Длина массива dim:tag</param>
         /// <param name="ierr">[Out]Флаг ошибки</param>
         public delegate void gmshModelMeshRemoveConstraintsFun(int[] dimTags, IntPtr dimTags_n, ref int ierr);///
-        public gmshModelMeshRemoveConstraintsFun gmshModelMeshRemoveConstraints;
+        gmshModelMeshRemoveConstraintsFun gmshModelMeshRemoveConstraints;
         /// <summary>
         /// Находит элементы сетки по переданной координате x,y,z
         /// </summary>
@@ -825,7 +825,7 @@ namespace GmshApi.GmshController
         /// <param name="dimTags_n">[In]Длина массива dim:tag</param>
         /// <param name="ierr">[Out]Флаг ошибок</param>
         public delegate void gmshModelMeshClearFun(int[] dimTags, IntPtr dimTags_n, ref int ierr);///
-        public gmshModelMeshClearFun gmshModelMeshClear;
+        gmshModelMeshClearFun gmshModelMeshClear;
         /// <summary>
         /// Задать видимость элементов
         /// </summary>
@@ -872,14 +872,14 @@ namespace GmshApi.GmshController
         /// <param name="ierr">[Out]Флаг ошибки</param>
         /// <returns>Идентификатор объекта Field</returns>
         public delegate int gmshModelMeshFieldAddFun(string fieldType, int tag, ref int ierr);///
-        public gmshModelMeshFieldAddFun gmshModelMeshFieldAdd;
+        gmshModelMeshFieldAddFun gmshModelMeshFieldAdd;
         /// <summary>
         /// Удалить объект MeshField
         /// </summary>
         /// <param name="tag">[In]Идентификатор</param>
         /// <param name="ierr">[Out]Флаг ошибки</param>
         public delegate void gmshModelMeshFieldRemoveFun(int tag, ref int ierr);///
-        public gmshModelMeshFieldRemoveFun gmshModelMeshFieldRemove;
+        gmshModelMeshFieldRemoveFun gmshModelMeshFieldRemove;
         /// <summary>
         /// Возвращает список объектов MeshField
         /// </summary>
@@ -904,7 +904,7 @@ namespace GmshApi.GmshController
         /// <param name="value">[In]Значение</param>
         /// <param name="ierr">[Out]Флаг ошибки</param>
         public delegate void gmshModelMeshFieldSetNumberFun(int tag, string option, double value, ref int ierr);///
-        public gmshModelMeshFieldSetNumberFun gmshModelMeshFieldSetNumber;
+        gmshModelMeshFieldSetNumberFun gmshModelMeshFieldSetNumber;
         /// <summary>
         /// Возвращает значение опции поля
         /// </summary>
@@ -942,7 +942,7 @@ namespace GmshApi.GmshController
         /// <param name="ierr">[Out]Флаг ошибки</param>
         public delegate void gmshModelMeshFieldSetNumbersFun(int tag, string option, double[] values,
                                                               IntPtr values_n, ref int ierr);///
-        public gmshModelMeshFieldSetNumbersFun gmshModelMeshFieldSetNumbers;
+        gmshModelMeshFieldSetNumbersFun gmshModelMeshFieldSetNumbers;
         /// <summary>
         /// Возвращает список значений для опции 
         /// </summary>
@@ -967,7 +967,7 @@ namespace GmshApi.GmshController
         /// <param name="tag">[In]Идентифкатор поля</param>
         /// <param name="ierr">[Out]Флаг ошибки</param>
         public delegate void gmshModelMeshFieldSetAsBoundaryLayerFun(int tag, ref int ierr);///
-        public gmshModelMeshFieldSetAsBoundaryLayerFun gmshModelMeshFieldSetAsBoundaryLayer;
+        gmshModelMeshFieldSetAsBoundaryLayerFun gmshModelMeshFieldSetAsBoundaryLayer;
         #endregion
         #region "Logger Delegates"
         /// <summary>
@@ -1400,17 +1400,10 @@ namespace GmshApi.GmshController
             GetObjectsData(sizes, out dencities, sizes_n);
             return dencities;
         }
+        /// <inheritdoc/>
         #endregion
         #region "Mesh managed methods"
-        /// <summary>
-        /// Возвращает все элементы в текущей модели, их идентификаторы и идентификаторы точек внутри элемента
-        /// </summary>
-        /// <param name="dim">Размерность</param>
-        /// <param name="tag">Идентификатор</param>
-        /// <param name="elementTypes">Индексы для массивов elementTags & nodeTags</param>
-        /// <param name="elementTags">Идентификаторы (номера) элементов</param>
-        /// <param name="nodeTags">Идентификаторы (номера) узлов элементов</param>
-        /// <returns>Успешность вызова метода</returns>
+
         public bool ModelMeshGetElements(int dim, int tag, out int[] elementTypes,
                                          out long[][] elementTags, out long[][] nodeTags)
         {
@@ -1485,17 +1478,8 @@ namespace GmshApi.GmshController
             }
             return status;
         }
-        /// <summary>
-        /// Извлекает координаты точек и их идентификаторы, по заданный параметрам dim:tag элемента
-        /// </summary>
-        /// <param name="dim">Размерность</param>
-        /// <param name="tag">Идентификатор</param>
-        /// <param name="includeBoundary">Включать граничные точки</param>
-        /// <param name="returnParametric">Возвращать параметрические координаты</param>
-        /// <param name="nodeTags">Идентификаторы узлов</param>
-        /// <param name="coords">Локальные координаты</param>
-        /// <param name="parametricCoord">Параметрические координаты</param>
-        /// <returns>Успешность вызова метода</returns>
+/// <inheritdoc/>
+
         public bool ModelMeshGetNodes(int dim, int tag, bool includeBoundary, bool returnParametric,
                                       out long[] nodeTags, out double[] coords, out double[] parametricCoord)
         {
@@ -1549,16 +1533,8 @@ namespace GmshApi.GmshController
             }
             return ierr == 0;
         }
-        /// <summary>
-        /// Находит элементы сетки по переданной координате x,y,z
-        /// </summary>
-        /// <param name="x">Локальный x</param>
-        /// <param name="y">Локальный y</param>
-        /// <param name="z">Локальный z</param>
-        /// <param name="dim">Размерность</param>
-        /// <param name="strict">Строгое соответствие</param>
-        /// <param name="elementTags">Идентификаторы элементов</param>
-        /// <returns>Успешность вызова метода</returns>
+ /// <inheritdoc/>
+ 
         public bool ModelMeshGetElementsByCoordinates(double x, double y, double z, int dim,
                                                       bool strict, out long[] elementTags)
         {
@@ -1597,13 +1573,10 @@ namespace GmshApi.GmshController
                 GetObjectsData(elemQuality, out elementsQuality, elemQuality_n);
             return status;
         }
+        /// <inheritdoc/>
         #endregion
         #region "Mesh Field managed methods"
-        /// <summary>
-        /// Возвращает список объектов MeshField
-        /// </summary>
-        /// <param name="tags">Идентифкаторы объектов</param>
-        /// <returns>Успешность вызова метода</returns>
+
         public bool ModelMeshFieldList(out int[] tags)
         {
             IntPtr tagsInt = IntPtr.Zero;
@@ -1926,11 +1899,8 @@ namespace GmshApi.GmshController
 
             return (nodes, e1D, e2D, e3D);
         }
-        /// <summary>
-        /// Удалить элементы сетки
-        /// </summary>
-        /// <param name="elementTags">Идентификаторы элементов</param>
-        /// <returns>Успешность вызова метода</returns>
+/// <inheritdoc/>
+
         public bool DeleteMeshElements(long[] elementTags)
         {
             var ierr = 0;
@@ -2176,6 +2146,66 @@ namespace GmshApi.GmshController
         public void Merge(string fileName, ref int ierr)
         {
             gmshMerge(fileName, ref ierr);
+        }
+/// <inheritdoc/>
+
+        public void ModelMeshClear(int[] dimTags, IntPtr dimTags_n, ref int ierr)
+        {
+            gmshModelMeshClear(dimTags, dimTags_n, ref ierr);
+        }
+/// <inheritdoc/>
+
+        public void ModelMeshRefine(ref int ierr)
+        {
+            gmshModelMeshRefine(ref ierr);
+        }
+/// <inheritdoc/>
+
+        public int ModelMeshFieldAdd(string fieldType, int tag, ref int ierr)
+        {
+            return gmshModelMeshFieldAdd(fieldType, tag, ref ierr);
+        }
+/// <inheritdoc/>
+
+        public void ModelMeshFieldSetNumber(int tag, string option, double value, ref int ierr)
+        {
+            gmshModelMeshFieldSetNumber(tag, option, value, ref ierr);
+        }
+/// <inheritdoc/>
+
+        public void ModelMeshFieldSetNumbers(int tag, string option, double[] values, IntPtr values_n, ref int ierr)
+        {
+            gmshModelMeshFieldSetNumbers(tag, option, values, values_n, ref ierr);
+        }
+/// <inheritdoc/>
+
+        public void ModelMeshFieldSetAsBoundaryLayer(int tag, ref int ierr)
+        {
+            gmshModelMeshFieldSetAsBoundaryLayer(tag, ref ierr);
+        }
+/// <inheritdoc/>
+
+        public void ModelMeshFieldRemove(int tag, ref int ierr)
+        {
+            gmshModelMeshFieldRemove(tag, ref ierr);
+        }
+/// <inheritdoc/>
+
+        public void ModelMeshSetTransfiniteSurface(int tag, string arrangement, int[] cornerTags, IntPtr cornerTags_n, ref int ierr)
+        {
+            gmshModelMeshSetTransfiniteSurface(tag, arrangement, cornerTags, cornerTags_n, ref ierr);
+        }
+/// <inheritdoc/>
+
+        public void ModelOccGetCenterOfMass(int dim, int tag, ref double x, ref double y, ref double z, ref int ierr)
+        {
+            gmshModelOccGetCenterOfMass(dim, tag, ref x, ref y, ref z, ref ierr);
+        }
+/// <inheritdoc/>
+
+        public void ModelMeshRemoveConstraints(int[] dimTags, IntPtr dimTags_n, ref int ierr)
+        {
+            gmshModelMeshRemoveConstraints(dimTags, dimTags_n, ref ierr);
         }
 
 

@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 
 namespace ModelControllerInterfaces.GmshController
 {
+
+
     public interface IGmshController
     {
         /// <summary>
@@ -17,6 +19,147 @@ namespace ModelControllerInterfaces.GmshController
         /// <param name="dllToLoad">Путь до DLL</param>
         void Load(string dllToLoad);
 
+        /// <summary>
+        /// Удалить все ограничения для заданных dim:tag
+        /// </summary>
+        /// <param name="dimTags">[In]Массив dim:tag</param>
+        /// <param name="dimTags_n">[In]Длина массива dim:tag</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void ModelMeshRemoveConstraints(int[] dimTags, IntPtr dimTags_n, ref int ierr);
+
+
+        /// <summary>
+        /// Взять центр масс в dim:tag
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="x">[Out]x</param>
+        /// <param name="y">[Out]y</param>
+        /// <param name="z">[Out]z</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void ModelOccGetCenterOfMass(int dim, int tag, ref double x, ref double y,
+                                                            ref double z, ref int ierr);
+
+
+        /// <summary>
+        /// Задает количество опорных точек для поверхности
+        /// </summary>
+        /// <param name="tag">[In]Идентифкатор поверхности</param>
+        /// <param name="arrangement">[In]Расположение "Left", "Right", "AlternateLeft", "AlternateRight"</param>
+        /// <param name="cornerTags">[In]Массив идентификаторов углов 3,4 и более по которым будет вестись инетрполяция</param>
+        /// <param name="cornerTags_n">[In]Размер массива идентификаторов</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void ModelMeshSetTransfiniteSurface(int tag, string arrangement, int[] cornerTags,
+                                                                       IntPtr cornerTags_n, ref int ierr);
+
+        /// <summary>
+        /// Установить поле как BoundaryLayer
+        /// </summary>
+        /// <param name="tag">[In]Идентифкатор поля</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void ModelMeshFieldSetAsBoundaryLayer(int tag, ref int ierr);
+
+        /// <summary>
+        /// Удалить объект MeshField
+        /// </summary>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void ModelMeshFieldRemove(int tag, ref int ierr);
+
+        /// <summary>
+        /// Задает значение опции поля
+        /// </summary>
+        /// <param name="tag">[In]Идентификатор поля</param>
+        /// <param name="option">[In]Опция</param>
+        /// <param name="value">[In]Значение</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void ModelMeshFieldSetNumber(int tag, string option, double value, ref int ierr);
+
+        /// <summary>
+        /// Задает список значений для опции 
+        /// </summary>
+        /// <param name="tag">[In]Идентификатор поля</param>
+        /// <param name="option">[In]Имя опции</param>
+        /// <param name="values">[In]Массив значений</param>
+        /// <param name="values_n">[In]количество значений</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void ModelMeshFieldSetNumbers(int tag, string option, double[] values,
+                                                              IntPtr values_n, ref int ierr);
+
+        /// <summary>
+        /// Добавить объект MeshField
+        /// </summary>
+        /// <param name="fieldType">[In]Тип поля</param>
+        /// <param name="tag">[In]Идентификатор (может быть -1, выделится автоматически)</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        /// <returns>Идентификатор объекта Field</returns>
+        int ModelMeshFieldAdd(string fieldType, int tag, ref int ierr);
+
+        /// <summary>
+        /// Возвращает список объектов MeshField
+        /// </summary>
+        /// <param name="tags">Идентифкаторы объектов</param>
+        /// <returns>Успешность вызова метода</returns>
+        bool ModelMeshFieldList(out int[] tags);
+
+        /// <summary>
+        /// Находит элементы сетки по переданной координате x,y,z
+        /// </summary>
+        /// <param name="x">Локальный x</param>
+        /// <param name="y">Локальный y</param>
+        /// <param name="z">Локальный z</param>
+        /// <param name="dim">Размерность</param>
+        /// <param name="strict">Строгое соответствие</param>
+        /// <param name="elementTags">Идентификаторы элементов</param>
+        /// <returns>Успешность вызова метода</returns>
+        bool ModelMeshGetElementsByCoordinates(double x, double y, double z, int dim,
+                                                      bool strict, out long[] elementTags);
+
+        /// <summary>
+        /// Извлекает координаты точек и их идентификаторы, по заданный параметрам dim:tag элемента
+        /// </summary>
+        /// <param name="dim">Размерность</param>
+        /// <param name="tag">Идентификатор</param>
+        /// <param name="includeBoundary">Включать граничные точки</param>
+        /// <param name="returnParametric">Возвращать параметрические координаты</param>
+        /// <param name="nodeTags">Идентификаторы узлов</param>
+        /// <param name="coords">Локальные координаты</param>
+        /// <param name="parametricCoord">Параметрические координаты</param>
+        /// <returns>Успешность вызова метода</returns>
+        bool ModelMeshGetNodes(int dim, int tag, bool includeBoundary, bool returnParametric,
+                                      out long[] nodeTags, out double[] coords, out double[] parametricCoord);
+
+        /// <summary>
+        /// Равномерно уплотняет сетку у текущей модели
+        /// </summary>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void ModelMeshRefine(ref int ierr);///
+
+        /// <summary>
+        /// Удалить элементы сетки
+        /// </summary>
+        /// <param name="elementTags">Идентификаторы элементов</param>
+        /// <returns>Успешность вызова метода</returns>
+        bool DeleteMeshElements(long[] elementTags);
+
+        /// <summary>
+        /// Удаляет сетку свзанную с массивом пар dim:tag, включая точки
+        /// </summary>
+        /// <param name="dimTags">[In]Пары dim:tag</param>
+        /// <param name="dimTags_n">[In]Длина массива dim:tag</param>
+        /// <param name="ierr">[Out]Флаг ошибок</param>
+        void ModelMeshClear(int[] dimTags, IntPtr dimTags_n, ref int ierr);
+        /// <summary>
+        /// Возвращает все элементы в текущей модели, их идентификаторы и идентификаторы точек внутри элемента
+        /// </summary>
+        /// <param name="dim">Размерность</param>
+        /// <param name="tag">Идентификатор</param>
+        /// <param name="elementTypes">Индексы для массивов elementTags & nodeTags</param>
+        /// <param name="elementTags">Идентификаторы (номера) элементов</param>
+        /// <param name="nodeTags">Идентификаторы (номера) узлов элементов</param>
+        /// <returns>Успешность вызова метода</returns>
+        bool ModelMeshGetElements(int dim, int tag, out int[] elementTypes,
+                                         out long[][] elementTags, out long[][] nodeTags);
         /// <summary>
         /// Открывает скрипт и ассоциирует данные с текущей моделью
         /// </summary>

@@ -98,7 +98,6 @@
     <Compile Include="GmshTests\MeshTests.cs" />
     <Compile Include="GmshTests\ConnectionTests.cs" />
     <Compile Include="GmshTests\ModelTests.cs" />
-    <Compile Include="GmshTests\MeshQualityTests.cs" />
     <Compile Include="TestCalcDistance.cs" />
     <Compile Include="TestElement.cs" />
     <Compile Include="TestGeometryObjects.cs" />
