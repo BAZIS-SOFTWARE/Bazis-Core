@@ -150,7 +150,7 @@ namespace GmshApi.GmshController
         /// <param name="fileName">[In]Путь до файла скрипта</param>
         /// <param name="ierr">[Out]Флаг ошибки</param>
         public delegate void gmshMergeFun(string fileName, ref int ierr);///
-        public gmshMergeFun gmshMerge;
+        gmshMergeFun gmshMerge;
         /// <summary>
         /// Экспортирует данные модели в файл, расширение задает выходной формат файла
         /// </summary>
@@ -166,20 +166,20 @@ namespace GmshApi.GmshController
         /// <param name="fileName">[In]Путь до файла</param>
         /// <param name="ierr">[Out]Флаг ошибки</param>
         public delegate void gmshModelSetFileNameFun(string fileName, ref int ierr);///
-        public gmshModelSetFileNameFun gmshModelSetFileName;
+        gmshModelSetFileNameFun gmshModelSetFileName;
         /// <summary>
         /// Добавляет новую модель с заданным именем в список моделей и делает ее текущей
         /// </summary>
         /// <param name="name">[In]Имя новой модели</param>
         /// <param name="ierr">[Out]Флаг ошибки</param>
         public delegate void gmshModelAddFun(string name, ref int ierr);///
-        public gmshModelAddFun gmshModelAdd;
+        gmshModelAddFun gmshModelAdd;
         /// <summary>
         /// Удаляет текущую модель из списка моделей
         /// </summary>
         /// <param name="ierr">[Out]Флаг ошибки</param>
         public delegate void gmshModelRemoveFun(ref int ierr);///
-        public gmshModelRemoveFun gmshModelRemove;
+        gmshModelRemoveFun gmshModelRemove;
         /// <summary>
         /// Очищает список моделей
         /// </summary>
@@ -192,7 +192,7 @@ namespace GmshApi.GmshController
         /// <param name="name">[In]Имя для текущей модели</param>
         /// <param name="ierr">[Out]Флаг ошибки</param>
         public delegate void gmshModelSetCurrentFun(string name, ref int ierr);///
-        public gmshModelSetCurrentFun gmshModelSetCurrent;
+        gmshModelSetCurrentFun gmshModelSetCurrent;
         /// <summary>
         /// Проводит синхронизацию с ядром OpenCascade (например после добавления геометрических сущностей)
         /// </summary>
@@ -1158,13 +1158,10 @@ namespace GmshApi.GmshController
 
             return status;
         }
+        /// <inheritdoc/>
         #endregion
         #region "Model managed methods"
-        /// <summary>
-        /// Возвращает путь до файла ассоциированный с данной моделью
-        /// </summary>
-        /// <param name="fileName">Путь до файла ассоциированный с данной моделью</param>
-        /// <returns>Успешность вызова метода</returns>
+
         public bool ModelGetFileName(out string fileName)
         {
             IntPtr unmanagedString = IntPtr.Zero;
@@ -1180,11 +1177,8 @@ namespace GmshApi.GmshController
 
             return status;
         }
-        /// <summary>
-        /// Возвращает список моделей в gmsh API
-        /// </summary>
-        /// <param name="modelList">Массив строк имен моделей</param>
-        /// <returns>Успешность вызова метода</returns>
+/// <inheritdoc/>
+
         public bool ModelList(out string[] modelList)
         {
             IntPtr names = IntPtr.Zero;
@@ -1197,11 +1191,8 @@ namespace GmshApi.GmshController
                 modelList = GetArrayOfString(names, names_n);
             return status;
         }
-        /// <summary>
-        /// Возвращает имя текущей модели
-        /// </summary>
-        /// <param name="current">Имя текущей модели</param>
-        /// <returns>Успешность вызова метода</returns>
+/// <inheritdoc/>
+
         public bool ModelGetCurrent(out string current)
         {
             IntPtr unmanagedString = IntPtr.Zero;
@@ -1972,11 +1963,8 @@ namespace GmshApi.GmshController
             logs = GetArrayOfString(log, log_n);
             return ierr == 0;
         }
-        /// <summary>
-        /// Вернуть последнюю запись об ошибке в журнале
-        /// </summary>
-        /// <param name="log">Запись об ошибке</param>
-        /// <returns>Успешность вызова метода</returns>
+/// <inheritdoc/>
+
         public bool LoggerGetLastError(out string log)
         {
             var ierr = 0;
@@ -2158,6 +2146,36 @@ namespace GmshApi.GmshController
         public void ModelRemoveEntityName(string name, ref int ierr)
         {
             gmshModelRemoveEntityName(name, ref ierr);
+        }
+/// <inheritdoc/>
+
+        public void ModelAdd(string name, ref int ierr)
+        {
+            gmshModelAdd(name, ref ierr);
+        }
+/// <inheritdoc/>
+
+        public void ModelSetCurrent(string name, ref int ierr)
+        {
+            gmshModelSetCurrent(name, ref ierr);
+        }
+/// <inheritdoc/>
+
+        public void ModelRemove(ref int ierr)
+        {
+            gmshModelRemove(ref ierr);
+        }
+/// <inheritdoc/>
+
+        public void ModelSetFileName(string fileName, ref int ierr)
+        {
+            gmshModelSetFileName(fileName, ref ierr);
+        }
+/// <inheritdoc/>
+
+        public void Merge(string fileName, ref int ierr)
+        {
+            gmshMerge(fileName, ref ierr);
         }
 
 

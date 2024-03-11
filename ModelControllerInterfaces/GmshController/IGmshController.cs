@@ -16,6 +16,61 @@ namespace ModelControllerInterfaces.GmshController
         /// </summary>
         /// <param name="dllToLoad">Путь до DLL</param>
         void Load(string dllToLoad);
+
+        /// <summary>
+        /// Открывает скрипт и ассоциирует данные с текущей моделью
+        /// </summary>
+        /// <param name="fileName">[In]Путь до файла скрипта</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void Merge(string fileName, ref int ierr);///
+
+        /// <summary>
+        /// Ассоциирует имя файла с текущей моделью
+        /// </summary>
+        /// <param name="fileName">[In]Путь до файла</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void ModelSetFileName(string fileName, ref int ierr);                                                                           
+        /// <summary>                                                                                   
+        /// Удаляет текущую модель из списка моделей                                                                             
+        /// </summary>                                                                         
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void ModelRemove(ref int ierr);
+        /// <summary>
+        /// Возвращает путь до файла ассоциированный с данной моделью
+        /// </summary>
+        /// <param name="fileName">Путь до файла ассоциированный с данной моделью</param>
+        /// <returns>Успешность вызова метода</returns>
+        bool ModelGetFileName(out string fileName);
+        /// <summary>
+        /// Устанавливает имя для текущей модели
+        /// </summary>
+        /// <param name="name">[In]Имя для текущей модели</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void ModelSetCurrent(string name, ref int ierr);
+        /// <summary>
+        /// Добавляет новую модель с заданным именем в список моделей и делает ее текущей
+        /// </summary>
+        /// <param name="name">[In]Имя новой модели</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void ModelAdd(string name, ref int ierr);
+        /// <summary>
+        /// Возвращает имя текущей модели
+        /// </summary>
+        /// <param name="current">Имя текущей модели</param>
+        /// <returns>Успешность вызова метода</returns>
+        bool ModelGetCurrent(out string current);
+        /// <summary>
+        /// Возвращает список моделей в gmsh API
+        /// </summary>
+        /// <param name="modelList">Массив строк имен моделей</param>
+        /// <returns>Успешность вызова метода</returns>
+        bool ModelList(out string[] modelList);
+        /// <summary>
+        /// Вернуть последнюю запись об ошибке в журнале
+        /// </summary>
+        /// <param name="log">Запись об ошибке</param>
+        /// <returns>Успешность вызова метода</returns>
+        bool LoggerGetLastError(out string log);
         /// <summary>
         /// Возвращает список кривых
         /// </summary>
