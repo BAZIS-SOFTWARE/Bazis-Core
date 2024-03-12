@@ -20,6 +20,19 @@ namespace ModelControllerInterfaces.GmshController
         void Load(string dllToLoad);
 
         /// <summary>
+        /// Перегенерирует сетку преимущественно в четырехугольники
+        /// </summary>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void ModelMeshRecombine(ref int ierr);
+
+
+        /// <summary>
+        /// Завершает работу Gmsh Api
+        /// </summary>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void Finalize(ref int ierr);
+
+        /// <summary>
         /// Удалить все ограничения для заданных dim:tag
         /// </summary>
         /// <param name="dimTags">[In]Массив dim:tag</param>

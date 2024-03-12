@@ -57,7 +57,7 @@ namespace GmshApi.GmshController
         /// </summary>
         /// <param name="ierr">[Out]Флаг ошибки</param>
         public delegate void gmshFinalizeFun(ref int ierr);///
-        public gmshFinalizeFun gmshFinalize;
+        gmshFinalizeFun gmshFinalize;
         #endregion
         #region "Memory Delegates"
         /// <summary>
@@ -629,7 +629,7 @@ namespace GmshApi.GmshController
         /// </summary>
         /// <param name="ierr">[Out]Флаг ошибки</param>
         public delegate void gmshModelMeshRecombineFun(ref int ierr);///
-        public gmshModelMeshRecombineFun gmshModelMeshRecombine;
+        gmshModelMeshRecombineFun gmshModelMeshRecombine;
         /// <summary>
         /// Равномерно уплотняет сетку у текущей модели
         /// </summary>
@@ -1177,7 +1177,7 @@ namespace GmshApi.GmshController
 
             return status;
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public bool ModelList(out string[] modelList)
         {
@@ -1191,7 +1191,7 @@ namespace GmshApi.GmshController
                 modelList = GetArrayOfString(names, names_n);
             return status;
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public bool ModelGetCurrent(out string current)
         {
@@ -1230,7 +1230,7 @@ namespace GmshApi.GmshController
                 GetObjectsData(dTags, out dimTags, dimTags_n);
             return status;
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public bool ModelGetGeometryEntityName(int dim, int tag, out string name)
         {
@@ -1247,7 +1247,7 @@ namespace GmshApi.GmshController
 
             return status;
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public bool ModelGetAdjacencies(int dim, int tag, out int[] upward, out int[] downward)
         {
@@ -1265,7 +1265,7 @@ namespace GmshApi.GmshController
             }
             return status;
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public bool ModelGetAttribute(string name, out string[] attributes)
         {
@@ -1278,7 +1278,7 @@ namespace GmshApi.GmshController
                 attributes = GetArrayOfString(values, values_n);
             return status;
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public bool ModelGetAttributeNames(out string[] names)
         {
@@ -1333,7 +1333,7 @@ namespace GmshApi.GmshController
                 GetObjectsData(der, out derivative, der_n);
             return status;
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public bool ModelGetValue(int dim, int tag, double[] parametricCoord, out double[] coord)
         {
@@ -1368,7 +1368,7 @@ namespace GmshApi.GmshController
                 GetObjectsData(pCoord, out parametricCoord, pCoord_n);
             return status;
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public bool ModelGetParametrizationBounds(int dim, int tag, out double[] min, out double[] max)
         {
@@ -1388,7 +1388,7 @@ namespace GmshApi.GmshController
             }
             return status;
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public double[] GetMeshDensity(int[] dimTags)
         {
@@ -1478,7 +1478,7 @@ namespace GmshApi.GmshController
             }
             return status;
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public bool ModelMeshGetNodes(int dim, int tag, bool includeBoundary, bool returnParametric,
                                       out long[] nodeTags, out double[] coords, out double[] parametricCoord)
@@ -1533,8 +1533,8 @@ namespace GmshApi.GmshController
             }
             return ierr == 0;
         }
- /// <inheritdoc/>
- 
+        /// <inheritdoc/>
+
         public bool ModelMeshGetElementsByCoordinates(double x, double y, double z, int dim,
                                                       bool strict, out long[] elementTags)
         {
@@ -1691,7 +1691,7 @@ namespace GmshApi.GmshController
                 return false;
             return true;
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public List<ILine> CreateLines(int[] tags)
         {
@@ -1750,7 +1750,7 @@ namespace GmshApi.GmshController
                         return false;
             return true;
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public List<IGeometryPoint> CreateControlPoints(int[] tags)
         {
@@ -1780,7 +1780,7 @@ namespace GmshApi.GmshController
             }
             return points;
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public List<ISurfaceElement> GetMeshEntities(int dim, int tag, List<INode> nodes)
         {
@@ -1848,7 +1848,7 @@ namespace GmshApi.GmshController
                 }
             }
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public List<INode> GetNodes(int dim = -1, int tag = -1, bool includeBoundary = true)
         {
@@ -1865,9 +1865,9 @@ namespace GmshApi.GmshController
             }
             return nodes.OrderBy(x => x.Number).ToList();//Сортировка внутри метода!
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
-        public (List<INode>,List<ILineObject<INode>>, List<IElement2D>, List<IElement3D>) GetMeshObjects()
+        public (List<INode>, List<ILineObject<INode>>, List<IElement2D>, List<IElement3D>) GetMeshObjects()
         {
             var nodes = GetNodes(-1, -1, false);
             var e1D = new List<ILineObject<INode>>();
@@ -1899,7 +1899,7 @@ namespace GmshApi.GmshController
 
             return (nodes, e1D, e2D, e3D);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public bool DeleteMeshElements(long[] elementTags)
         {
@@ -1933,7 +1933,7 @@ namespace GmshApi.GmshController
             logs = GetArrayOfString(log, log_n);
             return ierr == 0;
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public bool LoggerGetLastError(out string log)
         {
@@ -1943,7 +1943,7 @@ namespace GmshApi.GmshController
             log = GetStringPtr(error);
             return ierr == 0;
         }
-        
+
         private ISurfaceElement CreateModelObject(ref string elementName,
                                                   long elementId, INode[] nodes)
         {
@@ -2009,206 +2009,216 @@ namespace GmshApi.GmshController
             gmshFree(array);
             return result;
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public int GetGeometryObjectDimension(ref int ierr)
         {
             return gmshModelGetDimension(ref ierr);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void OptionSetNumber(string name, double value, ref int ierr)
         {
             gmshOptionSetNumber(name, value, ref ierr);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void Clear(ref int ierr)
         {
             gmshClear(ref ierr);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void Open(string fileName, ref int ierr)
         {
             gmshOpen(fileName, ref ierr);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void ModelRemoveEntities(int[] dimTags, IntPtr dimTags_n, int recursive, ref int ierr)
         {
             gmshModelRemoveEntities(dimTags, dimTags_n, recursive, ref ierr);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void ModelSetEntityName(int dim, int tag, string name, ref int ierr)
         {
             gmshModelSetEntityName(dim, tag, name, ref ierr);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void ModelGetBoundingBox(int dim, int tag, ref double xmin, ref double ymin, ref double zmin, ref double xmax, ref double ymax, ref double zmax, ref int ierr)
         {
             gmshModelGetBoundingBox(dim, tag, ref xmin, ref ymin, ref zmin, ref xmax, ref ymax, ref zmax, ref ierr);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void ModelGetAdjacencies(int dim, int tag, ref IntPtr upward, ref IntPtr upward_n, ref IntPtr downward, ref IntPtr downward_n, ref int ierr)
         {
             gmshModelGetAdjacencies(dim, tag, ref upward, ref upward_n, ref downward, ref downward_n, ref ierr);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public int ModelIsInside(int dim, int tag, double[] coord, IntPtr coord_n, int parametric, ref int ierr)
         {
             return gmshModelIsInside(dim, tag, coord, coord_n, parametric, ref ierr);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void ModelMeshSetTransfiniteCurve(int tag, int numNodes, string meshType, double coef, ref int ierr)
         {
             gmshModelMeshSetTransfiniteCurve(tag, numNodes, meshType, coef, ref ierr);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void ModelSetAttribute(string name, string[] values, IntPtr values_n, ref int ierr)
         {
             gmshModelSetAttribute(name, values, values_n, ref ierr);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void ModelRemoveAttribute(string name, ref int ierr)
         {
             gmshModelRemoveAttribute(name, ref ierr);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void ModelMeshGenerate(int dim, ref int ierr)
         {
             gmshModelMeshGenerate(dim, ref ierr);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public int ModelGeoAddSurfaceLoop(int[] surfaceTags, IntPtr surfaceTags_n, int tag, ref int ierr)
         {
             return gmshModelGeoAddSurfaceLoop(surfaceTags, surfaceTags_n, tag, ref ierr);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public int ModelGeoAddVolume(int[] shellTags, IntPtr shellTags_n, int tag, ref int ierr)
         {
             return gmshModelGeoAddVolume(shellTags, shellTags_n, tag, ref ierr);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void ModelGeoSynchronize(ref int ierr)
         {
             gmshModelGeoSynchronize(ref ierr);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void ModelMeshSetSize(int[] dimTags, IntPtr dimTags_n, double size, ref int ierr)
         {
             gmshModelMeshSetSize(dimTags, dimTags_n, size, ref ierr);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void ModelRemoveEntityName(string name, ref int ierr)
         {
             gmshModelRemoveEntityName(name, ref ierr);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void ModelAdd(string name, ref int ierr)
         {
             gmshModelAdd(name, ref ierr);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void ModelSetCurrent(string name, ref int ierr)
         {
             gmshModelSetCurrent(name, ref ierr);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void ModelRemove(ref int ierr)
         {
             gmshModelRemove(ref ierr);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void ModelSetFileName(string fileName, ref int ierr)
         {
             gmshModelSetFileName(fileName, ref ierr);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void Merge(string fileName, ref int ierr)
         {
             gmshMerge(fileName, ref ierr);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void ModelMeshClear(int[] dimTags, IntPtr dimTags_n, ref int ierr)
         {
             gmshModelMeshClear(dimTags, dimTags_n, ref ierr);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void ModelMeshRefine(ref int ierr)
         {
             gmshModelMeshRefine(ref ierr);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public int ModelMeshFieldAdd(string fieldType, int tag, ref int ierr)
         {
             return gmshModelMeshFieldAdd(fieldType, tag, ref ierr);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void ModelMeshFieldSetNumber(int tag, string option, double value, ref int ierr)
         {
             gmshModelMeshFieldSetNumber(tag, option, value, ref ierr);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void ModelMeshFieldSetNumbers(int tag, string option, double[] values, IntPtr values_n, ref int ierr)
         {
             gmshModelMeshFieldSetNumbers(tag, option, values, values_n, ref ierr);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void ModelMeshFieldSetAsBoundaryLayer(int tag, ref int ierr)
         {
             gmshModelMeshFieldSetAsBoundaryLayer(tag, ref ierr);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void ModelMeshFieldRemove(int tag, ref int ierr)
         {
             gmshModelMeshFieldRemove(tag, ref ierr);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void ModelMeshSetTransfiniteSurface(int tag, string arrangement, int[] cornerTags, IntPtr cornerTags_n, ref int ierr)
         {
             gmshModelMeshSetTransfiniteSurface(tag, arrangement, cornerTags, cornerTags_n, ref ierr);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void ModelOccGetCenterOfMass(int dim, int tag, ref double x, ref double y, ref double z, ref int ierr)
         {
             gmshModelOccGetCenterOfMass(dim, tag, ref x, ref y, ref z, ref ierr);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void ModelMeshRemoveConstraints(int[] dimTags, IntPtr dimTags_n, ref int ierr)
         {
             gmshModelMeshRemoveConstraints(dimTags, dimTags_n, ref ierr);
         }
+        /// <inheritdoc/>
 
+        public void Finalize(ref int ierr)
+        {
+            gmshFinalize(ref ierr);
+        }
+        /// <inheritdoc/>
 
+        public void ModelMeshRecombine(ref int ierr)
+        {
+            gmshModelMeshRecombine(ref ierr);
+        }
         #endregion
     }
 }
