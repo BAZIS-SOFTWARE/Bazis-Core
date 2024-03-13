@@ -14,21 +14,24 @@ using System;
         public event Action<object, ISaverEventArgs> SaveEvent;
         public void Save(IModelData model, string path)
         {
-            /*using (BinaryWriter writer = new BinaryWriter(File.Open(path, FileMode.OpenOrCreate)))
+            ushort attrib = 0;
+
+            using (BinaryWriter writer = new BinaryWriter(File.Open(path, FileMode.OpenOrCreate)))
             {
-                ushort zero = 0;
+                var objects = model.ObjectData.Fig2DCollection;
+
                 //сохранение координат узлов
                 var ver = Assembly.GetExecutingAssembly().GetName().Version;
                 byte[] buffer = System.Text.Encoding.UTF8.GetBytes("Версия " + $"{ver.Major}.{ver.Minor}.{ver.Build}");
                 var captionBytes = new byte[Math.Max(buffer.Length, 80)];
                 Array.Copy(buffer, captionBytes, Math.Min(buffer.Length, 80));
                 writer.Write(captionBytes); // – Header
+                var count = objects.Select(w => w.GetSurfaces().Count()).Sum();
 
-                var objects = model.ObjectData.Fig2DCollection;
-
-                writer.Write(objects.Count); // – Number of triangles
+                writer.Write((uint)count); // – Number of triangles
 
                 foreach (var item in objects)
+                {
                     foreach (var surface in item.GetSurfaces())
                     {
                         var points = surface.GetCoordinates().ToArray();
@@ -39,16 +42,27 @@ using System;
                         writer.Write(norm._x);
                         writer.Write(norm._y);
                         writer.Write(norm._z);
+
                         foreach (var point in points) // Vertex 1,2,3
                         {
                             writer.Write(point._x);
                             writer.Write(point._y);
                             writer.Write(point._z);
                         }
-                        writer.Write(zero); // – Attribute byte count
+                        writer.Write(attrib); // – Attribute byte count
                     }
 
-            }*/
+                    unchecked
+                    {
+                        attrib++;
+                    }
+
+                }
+
+
+
+
+            }
         }
     }
 
@@ -57,7 +71,7 @@ using System;
         public event Action<object, ISaverEventArgs> SaveEvent;
         public void Save(IModelData model, string path)
         {
-            /*using (var writer = new StreamWriter(path))
+            using (var writer = new StreamWriter(path))
             {
                 //сохранение координат узлов
                 var ver = Assembly.GetExecutingAssembly().GetName().Version;
@@ -66,27 +80,27 @@ using System;
                 var objects = model.ObjectData.Fig2DCollection;
 
                 foreach (var item in objects)
-                foreach (var surface in item.GetSurfaces())
+                    foreach (var surface in item.GetSurfaces())
                     {
-                    var points = surface.GetCoordinates().ToArray();
-                    if (points.Length != 3)
-                        throw new StlFileWriteExeption("В STL файл можно сохранять только треугольники");
+                        var points = surface.GetCoordinates().ToArray();
+                        if (points.Length != 3)
+                            throw new StlFileWriteExeption("В STL файл можно сохранять только треугольники");
 
-                    Point3D norm = surface.CalcNormal();
-                    writer.WriteLine(string.Format(System.Globalization.CultureInfo.InvariantCulture, "   facet normal {0:R} {1:R} {2:R}",
-                        (float)norm._x, (float)norm._y, (float)norm._z));
-                    writer.WriteLine($"      outer loop");
+                        Point3D norm = surface.CalcNormal();
+                        writer.WriteLine(string.Format(System.Globalization.CultureInfo.InvariantCulture, "   facet normal {0:R} {1:R} {2:R}",
+                            (float)norm._x, (float)norm._y, (float)norm._z));
+                        writer.WriteLine($"      outer loop");
 
-                    foreach (var point in points) // Vertex 1,2,3
-                    {
-                        writer.WriteLine(string.Format(System.Globalization.CultureInfo.InvariantCulture, "         vertex {0:R} {1:R} {2:R}",
-                            point._x, point._y, point._z));
+                        foreach (var point in points) // Vertex 1,2,3
+                        {
+                            writer.WriteLine(string.Format(System.Globalization.CultureInfo.InvariantCulture, "         vertex {0:R} {1:R} {2:R}",
+                                point._x, point._y, point._z));
+                        }
+                        writer.WriteLine($"      endloop");
+                        writer.WriteLine($"   endfacet");
                     }
-                    writer.WriteLine($"      endloop");
-                    writer.WriteLine($"   endfacet");
-                }
                 writer.WriteLine($"endsolid");
-            }*/
+            }
         }
     }
     public class StlFileWriteExeption : Exception

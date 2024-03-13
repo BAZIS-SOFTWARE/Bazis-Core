@@ -104,7 +104,7 @@ namespace Model.IO
                     var x = float.Parse(lineData[0], NumberStyles.Float, CultureInfo.InvariantCulture);
                     var y = float.Parse(lineData[1], NumberStyles.Float, CultureInfo.InvariantCulture);
                     var z = float.Parse(lineData[2], NumberStyles.Float, CultureInfo.InvariantCulture);
-                    var node = new GeometryPoint(counter, new Point3D(x, y, z));
+                    var node = new GeometryPoint(counter, ToDistinctPoint(new Point3D(x, y, z)));
                     counter++;
                     points[i] = node;
                     str = stl.ReadLine()?.Trim();
@@ -119,39 +119,48 @@ namespace Model.IO
 
             LoadEvent?.Invoke(this, new LoaderEventArgs("Начало импорта STL модели"));
 
-            using (BinaryReader reader = new BinaryReader(File.Open(path, FileMode.Open)))
+            using (BinaryReader reader = new BinaryReader(File.OpenRead(path)))
             {
-                while (reader.BaseStream.Position < reader.BaseStream.Length)
+                int prevAtrib = -1;
+
+                var surfaces = new List<GeometrySurface>();
+                reader.BaseStream.Position += 80;
+                var count = reader.ReadUInt32();
+
+                for (int i = 0; i < count; i++)
                 {
-                    var surfaces = new List<GeometrySurface>();
-                    reader.BaseStream.Position += 80;
-                    var count = reader.ReadUInt32();
                     reader.BaseStream.Position += 12;
-                    for (int i = 0; i < count; i++)
+                    var points = new GeometryPoint[3];
+                    points[0] = ReadNode(reader);
+                    points[1] = ReadNode(reader);
+                    points[2] = ReadNode(reader);
+                    if (IsValidTriangle(points[0].Position, points[1].Position, points[2].Position))
                     {
-
-                        var points = new GeometryPoint[3];
-                        points[0] = ReadNode(reader);
-                        points[1] = ReadNode(reader);
-                        points[2] = ReadNode(reader);
-                        if (IsValidTriangle(points[0].Position, points[1].Position, points[2].Position))
+                        try
                         {
-                            try
+                            var surface = new GeometrySurface(counter++, points);
+                            var attrib = reader.ReadUInt16();
+
+                            if (attrib != prevAtrib && prevAtrib != -1)
                             {
-                                var surface = new GeometrySurface(counter++, points);
-                                surfaces.Add(surface);
+                                modelData.ObjectData.Fig2DCollection.Add(new SurfaceFigure(counter++, surfaces.ToArray()));
+                                surfaces = new List<GeometrySurface>();
                             }
-                            catch (Exception e)
-                            {
-                                throw new StlFileLoadExeption("Невалидная поверхность в STL файле", e);
-                            }
+                            surfaces.Add(surface);
+
+                            prevAtrib = attrib;
                         }
-
-                        reader.BaseStream.Position += 14;
+                        catch (Exception e)
+                        {
+                            throw new StlFileLoadExeption("Невалидная поверхность в STL файле", e);
+                        }
                     }
-
-                    modelData.ObjectData.Fig2DCollection.Add(new SurfaceFigure(counter++, surfaces.ToArray()));
+                    else
+                    {
+                        reader.BaseStream.Position += 2;
+                    }
                 }
+                modelData.ObjectData.Fig2DCollection.Add(new SurfaceFigure(counter++, surfaces.ToArray()));
             }
             LoadEvent?.Invoke(this, new LoaderEventArgs("Модель загружена"));
             return modelData;
@@ -177,7 +186,7 @@ namespace Model.IO
             var x = reader.ReadSingle();
             var y = reader.ReadSingle();
             var z = reader.ReadSingle();
-            var node = new GeometryPoint(counter++, new Point3D(x, y, z));
+            var node = new GeometryPoint(counter++, ToDistinctPoint(new Point3D(x, y, z)));
             return node;
         }
 
