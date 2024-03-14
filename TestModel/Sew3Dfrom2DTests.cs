@@ -6,6 +6,7 @@ using ModelController.MeshObjsCreator;
 using ModelInterfaces.MeshObjects;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using System.Linq;
 
@@ -43,47 +44,19 @@ namespace TestModel
             //assert
         }
         [TestMethod]
-        //[DataRow(42, 2)]
-        [DataRow(0, 0)]
-        public void GetArbitraryTetras(int seed, int size)
+        public void GetArbitraryTetras()
         {
-            //var offset = new Point3D(-0.1f, -0.1f, -1);
-            var offset = new Point3D(-0f, -0f, -1);
-            var (pointsForFirstPlane, pointsForSecondPlane) = GetPointOn2Planes(seed, size);
-            if (seed == 0 && size == 0)
-                (pointsForFirstPlane, pointsForSecondPlane) = (
-                    new List<Node>()
-                    {
-                        new Node(0, new Point3D(0, 0, 0)),
-                        new Node(1, new Point3D(0, 1, 0)),
-                        new Node(2, new Point3D(0, 2, 0)),
-                        new Node(3, new Point3D(1, 0, 0)),
-                        new Node(4, new Point3D(1, 1, 0)),
-                        new Node(5, new Point3D(1, 2, 0)),
-                        new Node(6, new Point3D(2, 0, 0)),
-                        new Node(7, new Point3D(2, 1, 0)),
-                        new Node(8, new Point3D(2, 2, 0)),
-                    },
-                    new List<Node>()
-                    {
-                        new Node(100, new Point3D(0, 0, 0).Sub(offset)),
-                        new Node(101, new Point3D(0, 1, 0).Sub(offset)),
-                        new Node(102, new Point3D(0, 2, 0).Sub(offset)),
-                        new Node(103, new Point3D(1, 0, 0).Sub(offset)),
-                        new Node(104, new Point3D(1, 1, 0).Sub(offset)),
-                        new Node(105, new Point3D(1, 2, 0).Sub(offset)),
-                        new Node(106, new Point3D(2, 0, 0).Sub(offset)),
-                        new Node(107, new Point3D(2, 1, 0).Sub(offset)),
-                        new Node(108, new Point3D(2, 2, 0).Sub(offset)),
-                    });
+            var (pointsForFirstPlane, pointsForSecondPlane) = GetPointOn2Planes();
+
             var instance = new DeloneMesh2DCreator();
             instance.MakeTriangulation(pointsForFirstPlane);
 
-            var triangulation1 = instance.GetElements();
+            var triangulation1 = instance.GetElements().ToList();
+           
 
             instance.MakeTriangulation(pointsForSecondPlane);
 
-            var triangulation2 = instance.GetElements();
+            var triangulation2 = instance.GetElements().ToList();
 
             Assert.IsTrue(TestDeloneTriangles(triangulation1));
             Assert.IsTrue(TestDeloneTriangles(triangulation2));
@@ -176,31 +149,42 @@ namespace TestModel
 
         }
 
-        private (List<Node> pointsForFirstPlane, List<Node> pointsForSecondPlane) GetPointOn2Planes(int seed, int size)
+        private (List<Node> pointsForFirstPlane, List<Node> pointsForSecondPlane) GetPointOn2Planes()
         {
-            Random rnd = new Random(seed);
-            var pointsForFirstPlane = Enumerable.Range(0, size * size)
-                .Select(w => new Node(w,
-                    new Point3D(
-                        (float)rnd.NextDouble() * size,
-                        (float)rnd.NextDouble() * size,
-                        0)))
-                .ToList();
-            var pointsForSecondPlane = Enumerable.Range(0, size * size)
-                .Select(w => new Node(w + size * size,
-                    new Point3D(
-                        (float)rnd.NextDouble() * size,
-                        (float)rnd.NextDouble() * size,
-                        1)))
-                .ToList();
-            return (pointsForFirstPlane, pointsForSecondPlane);
+            var offset = new Point3D(-0f, -0f, -1);
+            return (
+                new List<Node>()
+                {
+                    new Node(0, new Point3D(0, 0, 0)),
+                    new Node(1, new Point3D(0, 1, 0)),
+                    new Node(2, new Point3D(0, 2, 0)),
+                    new Node(3, new Point3D(1, 0, 0)),
+                    new Node(4, new Point3D(1, 1, 0)),
+                    new Node(5, new Point3D(1, 2, 0)),
+                    new Node(6, new Point3D(2, 0, 0)),
+                    new Node(7, new Point3D(2, 1, 0)),
+                    new Node(8, new Point3D(2, 2, 0)),
+                },
+                new List<Node>()
+                {
+                    new Node(100, new Point3D(0, 0, 0).Sub(offset)),
+                    new Node(101, new Point3D(0, 1, 0).Sub(offset)),
+                    new Node(102, new Point3D(0, 2, 0).Sub(offset)),
+                    new Node(103, new Point3D(1, 0, 0).Sub(offset)),
+                    new Node(104, new Point3D(1, 1, 0).Sub(offset)),
+                    new Node(105, new Point3D(1, 2, 0).Sub(offset)),
+                    new Node(106, new Point3D(2, 0, 0).Sub(offset)),
+                    new Node(107, new Point3D(2, 1, 0).Sub(offset)),
+                    new Node(108, new Point3D(2, 2, 0).Sub(offset)),
+                }); 
         }
 
         private bool TestDeloneTriangles(IEnumerable<IElement2D> triangulation)
         {
             float EPS = 10e-3f;
 
-            foreach (var triangle in triangulation)
+
+            foreach (var triangle in triangulation.ToList())
             {
                 var center = CalcCircumcenter(triangle);
                 var points = triangle.GetCoordinates().ToArray();
