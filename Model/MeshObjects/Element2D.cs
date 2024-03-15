@@ -45,16 +45,18 @@ namespace Model.MeshObjects
             }
             return center.Div(NumberOfPoints);
         }
-/// <inheritdoc/>
 
-        public Point3D CalcNormal()
-        {
-            return surface.CalcNormal();
-        }
 /// <inheritdoc/>
 
         public abstract float CalcSquare();
 /// <inheritdoc/>
+
+        public IEnumerable<Point3D> CalcSurfacesNormals()
+        {
+            yield return surface.CalcNormal();
+        }
+
+        /// <inheritdoc/>
 
         /// <inheritdoc/>
 

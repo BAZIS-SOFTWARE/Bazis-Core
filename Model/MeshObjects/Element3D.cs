@@ -70,6 +70,19 @@ namespace Model.MeshObjects
             }
             return center.Div(NumberOfPoints);
         }
+/// <inheritdoc/>
+
+        public IEnumerable<Point3D> CalcSurfacesNormals()
+        {
+            var centr = CalcCentr();
+            foreach (var surface in surfaces)
+            {
+                var normal = surface.CalcNormal();
+                var plane = new Plane(surface[0].Position, normal);
+                var proj = centr.GetPointProectionOnPlane(plane);
+                yield return proj.Sub(centr);
+            }
+        }
 
         /// <summary>
         /// Calc volume

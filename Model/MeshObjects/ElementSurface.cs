@@ -70,6 +70,7 @@ namespace Model.MeshObjects
             var svectors = nodes[2].Position.Sub(nodes[0].Position);
             return Vector.CrossProd(fvectors, svectors);
         }
+/// <inheritdoc/>
 
         public float CalcSquare()
         {
