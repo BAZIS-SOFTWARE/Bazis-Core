@@ -100,12 +100,16 @@ namespace Model
                     return PointCollection.Find(objNumbr);
                 case ObjType.Линия:
                     return LineCollection.Find(objNumbr);
+                case ObjType.Фигура:
+                    return GetAllFigures().First(x => x.Number == objNumbr);
                 case ObjType.Фигура2D:
                     return Fig2DCollection.Find(objNumbr);
                 case ObjType.Фигура3D:
                     return Fig3DCollection.Find(objNumbr);
                 case ObjType.Узел:
                     return NodeCollection.Find(objNumbr);
+                case ObjType.Элемент:
+                    return GetAllElements().First(x => x.Number == objNumbr);
                 case ObjType.Элемент1D:
                     return E1DCollection.Find(objNumbr);
                 case ObjType.Элемент2D:
@@ -113,7 +117,7 @@ namespace Model
                 case ObjType.Элемент3D:
                     return E3DCollection.Find(objNumbr);
                 default:
-                    return null;
+                    return GetAllObjects().First(x => x.Number == objNumbr);
             }
         }
 
