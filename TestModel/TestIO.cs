@@ -10,6 +10,24 @@ namespace TestModel
     [TestClass]
     public class TestIO
     {
+        [DataTestMethod]
+        [DataRow(@"..\..\..\Examples\3D\cub_unsorted.bpf",6)]
+        [DataRow(@"c:\projs\6\6.bpf", 65502)]
+        public void OpenModelToBpfTextFormat(string path, int elCount)
+        {
+            //assing
+            var model = new ModelData();
+
+            model.Loader = new LoadModelFromProjectTextFile();
+
+            model.Loader.LoadEvent += (ar1, ar2) => { };
+
+            //act
+            model.Load(path);
+
+            //assert
+            Assert.AreEqual(model.ObjectData.Count(ObjType.Элемент), elCount);
+        }
 
         [TestMethod]
         public void OpenModelToBpf2TextFormat()
@@ -234,7 +252,7 @@ namespace TestModel
         [DataTestMethod]
         [DataRow(@"..\..\..\Examples\Salome\Gear_V1.dat",3000,976, 4832,9600)]
         [DataRow(@"..\..\..\Examples\Salome\Gear_V2.dat",3161, 992, 3641, 5255)]
-        public void LoadÑubeFromSalomeFileCorrectly(string filePath, int nodes, int lineElms, int surfElms, int volElems)
+        public void LoadMeshFromSalomeFileCorrectly(string filePath, int nodes, int lineElms, int surfElms, int volElems)
         {
             var import = new LoadModelFromSalomeFile();
             import.LoadEvent += (ar1, ar2) => { };

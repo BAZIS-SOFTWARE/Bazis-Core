@@ -4,7 +4,7 @@
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>ModelController</Title>
-    <Version>3.0.11.36</Version>
+    <Version>3.0.11.37</Version>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>ModelControllerKey.snk</AssemblyOriginatorKeyFile>
