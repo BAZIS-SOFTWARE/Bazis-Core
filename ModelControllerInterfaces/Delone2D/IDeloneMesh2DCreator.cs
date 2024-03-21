@@ -13,14 +13,9 @@ namespace ModelControllerInterfaces.Delone2D
     public interface IDeloneMesh2DCreator
     {
         /// <summary>
-        /// GetElements
-        /// </summary>
-        /// <returns></returns>
-        IEnumerable<IElement2D> GetElements();
-        /// <summary>
         /// MakeTriangulation
         /// </summary>
         /// <param name="nodes"></param>
-        void MakeTriangulation(IEnumerable<INode> nodes);
+        IEnumerable<IElement2D> MakeTriangulation(IEnumerable<INode> nodes);
     }
 }

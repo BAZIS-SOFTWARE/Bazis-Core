@@ -32,8 +32,8 @@ namespace TestModel
                 new Node(8, new Point3D(5, -4, 0))
             };
             var instance = new DeloneMesh2DCreator();
-            instance.MakeTriangulation(nodes);
-            var triangulation = instance.GetElements().ToList();
+            
+            var triangulation = instance.MakeTriangulation(nodes).ToList();
 
             Assert.AreEqual(11, triangulation.Count);
         }
@@ -54,12 +54,11 @@ namespace TestModel
                 new Node(8, new Point3D(5, -4, 0))
             };
             var instance = new DeloneMesh2DCreator();
-            instance.MakeTriangulation(nodes);
-            var triangulation = instance.GetElements().ToList();
+            var triangulation = instance.MakeTriangulation(nodes).ToList();
 
             Assert.AreEqual(11, triangulation.Count);
 
-            triangulation = instance.GetElements().ToList();
+            triangulation = instance.MakeTriangulation(nodes).ToList();
 
             Assert.AreEqual(11, triangulation.Count);
         }
@@ -78,8 +77,7 @@ namespace TestModel
                 new Node(6, new Point3D(4, -2, 0))
             };
             var instance = new DeloneMesh2DCreator();
-            instance.MakeTriangulation(nodes);
-            var triangulation = instance.GetElements().ToList();
+            var triangulation = instance.MakeTriangulation(nodes).ToList();
 
             Assert.AreEqual(7, triangulation.Count);
         }
@@ -95,8 +93,7 @@ namespace TestModel
                 new Node(3, new Point3D(-1, -1, 0))
             };
             var instance = new DeloneMesh2DCreator();
-            instance.MakeTriangulation(nodes);
-            var triangulation = instance.GetElements().ToList();
+            var triangulation = instance.MakeTriangulation(nodes).ToList();
             Assert.AreEqual(2, triangulation.Count);
         }
 
@@ -116,8 +113,7 @@ namespace TestModel
                 }
 
                 var instance = new DeloneMesh2DCreator();
-                instance.MakeTriangulation(nodes);
-                var triangulation = instance.GetElements().ToList();
+                var triangulation = instance.MakeTriangulation(nodes).ToList();
             }
         }
     }

@@ -8,24 +8,20 @@ namespace ModelController.MeshObjsCreator.Delone2D
     // S. W. Sloan. A fast algorithm for constructing Delaunay triangulations in the plane
     public class DeloneTriangulation2D
     {
-        private readonly List<DeloneNode2D> points;
-        private readonly List<DeloneNode2D> sortedPoints;
-        private readonly int[,] vertices;
-        private readonly int[,] adjacency;
+        private List<DeloneNode2D> points;
+        private List<DeloneNode2D> sortedPoints;
+        private int[,] vertices;
+        private int[,] adjacency;
         private int triangleNumber;
         private float largestDimension;
 
-        public DeloneTriangulation2D(List<DeloneNode2D> source)
+        public IEnumerable<DeloneNode2D[]> GetTriangles(List<DeloneNode2D> source)
         {
             vertices = new int[2 * source.Count + 6, 3];
             adjacency = new int[2 * source.Count + 6, 3];
             sortedPoints = SortPoints(source);
             points = MapPointsToUnitSquare(sortedPoints).ToList();
             triangleNumber = 1;
-        }
-
-        public IEnumerable<DeloneNode2D[]> GetTriangles()
-        {
             BuildTriangulation();
             for (var i = 0; i < triangleNumber; i++)
             {
