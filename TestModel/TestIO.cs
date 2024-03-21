@@ -13,7 +13,6 @@ namespace TestModel
     {
         [DataTestMethod]
         [DataRow(@"..\..\..\Examples\3D\cub_unsorted.bpf",6)]
-        [DataRow(@"c:\projs\6\6.bpf", 65502)]
         public void OpenModelToBpfTextFormat(string path, int elCount)
         {
             //assing
@@ -127,7 +126,6 @@ namespace TestModel
         public void ImportExportModelFromSTLtextFormat(string file)
         {
             string inputDir = @"\\fs\Plm-Ural\OrgUnits\CAE\+ESI_QForm\+SIMMAX\Тестовые заготовки деталей\";
-            //string inputDir = @"..\..\..\..\Тестовые заготовки деталей\";
             string outputDir = @"..\..\..\..\Тестовые заготовки деталей (test)\";
 
             var filePath = Path.Combine(inputDir, file);

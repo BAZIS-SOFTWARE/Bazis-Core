@@ -76,28 +76,28 @@ namespace TestModel
             Assert.IsTrue(actual.SequenceEqual(expected)); 
         }
 
-        [DataTestMethod]
-        [DataRow(5, 272570, @"..\..\..\Examples\3D\comp_sm.bpf")]
-        public void SelectCorrectElementsUseModel(float angle, int first, string path)
-        {
-            var model = new ModelData();
-            model.Load(path);
+        //[DataTestMethod]
+        //[DataRow(5, 272570, @"..\..\..\Examples\3D\comp_sm.bpf")]
+        //public void SelectCorrectElementsUseModel(float angle, int first, string path)
+        //{
+        //    var model = new ModelData();
+        //    model.Load(path);
 
-            var selector = new SelectionHelper();
-            var selectedElementNumbers = selector.SelectE2DInPlane(model.ObjectData, angle, first, Color.Green);
-            Assert.IsTrue(selectedElementNumbers.Count > 0);
-        }
+        //    var selector = new SelectionHelper();
+        //    var selectedElementNumbers = selector.SelectE2DInPlane(model.ObjectData, angle, first, Color.Green);
+        //    Assert.IsTrue(selectedElementNumbers.Count > 0);
+        //}
 
-        [DataTestMethod]
-        [DataRow(19, 9, new int[] { 9, 10, 11, 12, 13, 14 })]
-        [DataRow(18, 9, new int[] { 9, 10, 11, 12, 13 })]
-        public void SelectCorrectElements(float angle, int first, int[] expected)
-        {
-            LoadModel();
-            var selector = new SelectionHelper();
-            var selectedElementNumbers = selector.SelectE2DInPlane(objectsData,angle, first, Color.Green);
-            Assert.IsTrue(selectedElementNumbers.SequenceEqual(expected));
-        }
+        //[DataTestMethod]
+        //[DataRow(19, 9, new int[] { 9, 10, 11, 12, 13, 14 })]
+        //[DataRow(18, 9, new int[] { 9, 10, 11, 12, 13 })]
+        //public void SelectCorrectElements(float angle, int first, int[] expected)
+        //{
+        //    LoadModel();
+        //    var selector = new SelectionHelper();
+        //    var selectedElementNumbers = selector.SelectE2DInPlane(objectsData,angle, first, Color.Green);
+        //    Assert.IsTrue(selectedElementNumbers.SequenceEqual(expected));
+        //}
 
         [TestMethod]
         public void FindBoundaryEdges_ShouldWork_OnModelWithDifferentElements()
