@@ -9,11 +9,24 @@ using System.IO;
 using System.Text;
 using Model.GeometryObjects;
 using System.Collections.Generic;
+using System.Linq;
+using System.Numerics;
 
 namespace Model.IO
 {
     public class LoadModelFromSTLFile : IModelLoader
     {
+        private Dictionary<Vector3, Point3D> map = new Dictionary<Vector3, Point3D>();
+
+        private Point3D ToDistinctPoint(Point3D p)
+        {
+            var key = new Vector3(p._x, p._y, p._z);
+            if (map.TryGetValue(key, out var mappedPoint))
+                return mappedPoint;
+            map[key] = p;
+            return p;
+        }
+
         public event Action<object, ILoaderEventArgs> LoadEvent;
         private int counter = 0;
 
@@ -44,34 +57,36 @@ namespace Model.IO
 
                 LoadEvent?.Invoke(this, new LoaderEventArgs("Начало импорта STL модели"));
 
-                while (str != null)
+                while (!reader.EndOfStream)
                 {
-
-                    if (str.Contains("solid"))
+                    var surfaces = new List<GeometrySurface>();
+                    while (str != null && !str.Contains("endsolid"))
                     {
-                        var surfaces = new List<GeometrySurface>();
-                        //str = reader.ReadLine()?.Trim();
-                        while (true)
+                        if (str != null && str.Contains("outer loop"))
                         {
-                            if (str.Contains("outer loop"))
-                            {
-                                str = reader.ReadLine()?.Trim();
-                                var points = GetPoints(reader, str);
-                                modelData.ObjectData.PointCollection.AddRange(points);
-                                var surface = new GeometrySurface(counter, points);
-                                surfaces.Add(surface);
-
-                            }
-                            if (str.Contains("endsolid"))
-                                break;
                             str = reader.ReadLine()?.Trim();
-                        }
-                        var surfaceFig = new SurfaceFigure(counter++, surfaces.ToArray());
-                        modelData.ObjectData.Fig2DCollection.Add(surfaceFig);
-                    }
-                    str = reader.ReadLine()?.Trim();
-                }
+                            var points = GetPoints(reader, str);
+                            modelData.ObjectData.PointCollection.AddRange(points);
 
+                            if (IsValidTriangle(points[0].Position, points[1].Position, points[2].Position))
+                            {
+                                try
+                                {
+                                    var surface = new GeometrySurface(counter++, points);
+                                    surfaces.Add(surface);
+                                }
+                                catch (Exception e)
+                                {
+                                    throw new StlFileLoadExeption("Невалидная поверхность в STL файле", e);
+                                }
+                            }
+                            counter++;
+                        }
+                        str = reader.ReadLine();
+                    }
+                    str = reader.ReadLine();
+                    modelData.ObjectData.Fig2DCollection.Add(new SurfaceFigure(counter++, surfaces.ToArray()));
+                }
                 LoadEvent?.Invoke(this, new LoaderEventArgs("Модель загружена"));
             }
 
@@ -89,7 +104,7 @@ namespace Model.IO
                     var x = float.Parse(lineData[0], NumberStyles.Float, CultureInfo.InvariantCulture);
                     var y = float.Parse(lineData[1], NumberStyles.Float, CultureInfo.InvariantCulture);
                     var z = float.Parse(lineData[2], NumberStyles.Float, CultureInfo.InvariantCulture);
-                    var node = new GeometryPoint(counter, new Point3D(x, y, z));
+                    var node = new GeometryPoint(counter, ToDistinctPoint(new Point3D(x, y, z)));
                     counter++;
                     points[i] = node;
                     str = stl.ReadLine()?.Trim();
@@ -102,32 +117,58 @@ namespace Model.IO
         {
             var modelData = new ModelData();
 
-            /*LoadEvent?.Invoke(this, new LoaderEventArgs("Начало импорта STL модели"));
+            LoadEvent?.Invoke(this, new LoaderEventArgs("Начало импорта STL модели"));
 
-            using (BinaryReader reader = new BinaryReader(File.Open(path, FileMode.Open)))
+            using (BinaryReader reader = new BinaryReader(File.OpenRead(path)))
             {
-                while (reader.BaseStream.Position < reader.BaseStream.Length)
+                int prevAtrib = -1;
+
+                var surfaces = new List<GeometrySurface>();
+                reader.BaseStream.Position += 80;
+                var count = reader.ReadUInt32();
+
+                for (int i = 0; i < count; i++)
                 {
-                    var surfaces = new List<GeometrySurface>();
-                    reader.BaseStream.Position += 80;
-                    var count = reader.ReadUInt32();
                     reader.BaseStream.Position += 12;
-                    for (int i = 0; i < count; i++)
+                    var points = new GeometryPoint[3];
+                    points[0] = ReadNode(reader);
+                    points[1] = ReadNode(reader);
+                    points[2] = ReadNode(reader);
+                    if (IsValidTriangle(points[0].Position, points[1].Position, points[2].Position))
                     {
-                        var points = new GeometryPoint[3];
-                        points[0] = ReadNode(reader);
-                        points[1] = ReadNode(reader);
-                        points[2] = ReadNode(reader);
-                        var surface = new GeometrySurface(counter, points);
-                        surfaces.Add(surface);
-                        reader.BaseStream.Position += 14;
+                        try
+                        {
+                            var surface = new GeometrySurface(counter++, points);
+                            var attrib = reader.ReadUInt16();
+
+                            if (attrib != prevAtrib && prevAtrib != -1)
+                            {
+                                modelData.ObjectData.Fig2DCollection.Add(new SurfaceFigure(counter++, surfaces.ToArray()));
+                                surfaces = new List<GeometrySurface>();
+                            }
+                            surfaces.Add(surface);
+
+                            prevAtrib = attrib;
+                        }
+                        catch (Exception e)
+                        {
+                            throw new StlFileLoadExeption("Невалидная поверхность в STL файле", e);
+                        }
                     }
-                    var surfaceFig = new SurfaceFigure(counter++, surfaces.ToArray());
-                    modelData.ObjectData.Fig2DCollection.Add(surfaceFig);
+                    else
+                    {
+                        reader.BaseStream.Position += 2;
+                    }
                 }
+                modelData.ObjectData.Fig2DCollection.Add(new SurfaceFigure(counter++, surfaces.ToArray()));
             }
-            LoadEvent?.Invoke(this, new LoaderEventArgs("Модель загружена"));*/
+            LoadEvent?.Invoke(this, new LoaderEventArgs("Модель загружена"));
             return modelData;
+        }
+
+        private bool IsValidTriangle(Point3D p1, Point3D p2, Point3D p3)
+        {
+            return Vector.CrossProd(p1.Sub(p2), p1.Sub(p3)).GetSquareSumCoords() > 0;
         }
 
         private bool IsBinary(string path)
@@ -145,7 +186,7 @@ namespace Model.IO
             var x = reader.ReadSingle();
             var y = reader.ReadSingle();
             var z = reader.ReadSingle();
-            var node = new GeometryPoint(counter++, new Point3D(x, y, z));
+            var node = new GeometryPoint(counter++, ToDistinctPoint(new Point3D(x, y, z)));
             return node;
         }
 

@@ -1,3 +1,4 @@
+using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
@@ -83,10 +84,23 @@ namespace TestModel
 
 
         [TestMethod]
-        [DataRow(@"..\..\..\Examples\STL\ACII.stl")]
-        [DataRow(@"..\..\..\Examples\STL\sphere.stl")]
-        public void ImportModelFromSTLtextFormat(string path)
+        [DataRow(@"Блок каналов\block.stl")]
+        [DataRow(@"Блок каналов\block_solid_sup.stl")]
+        [DataRow(@"Форсунка\1n.stl")]
+        [DataRow(@"Форсунка\nozzle.stl")]
+        [DataRow(@"Форсунка\nozzle_sup.stl")]
+        [DataRow(@"Образец\specimen.stl")]
+        [DataRow(@"Образец\specimen_solid_sup.stl")]
+        [DataRow(@"Образец\specimen_wall_sup.stl")]
+        [DataRow(@"Кронштейн\bracket.stl")]
+        [DataRow(@"Кронштейн\bracket_solid_sup.stl")]
+        [DataRow(@"Кронштейн\bracket_wall_sup.stl")]
+        public void ImportModelFromSTLtextFormat(string file)
         {
+            string dir = @"\\fs\Plm-Ural\OrgUnits\CAE\+ESI_QForm\+SIMMAX\Тестовые заготовки деталей\";
+            //string dir = @"..\..\..\..\Тестовые заготовки деталей\";
+
+            var path = Path.Combine(dir, file);
             //assing
             var model = new ModelData();
 
@@ -99,28 +113,47 @@ namespace TestModel
         }
 
         [TestMethod]
-        [DataRow(@"..\..\..\Examples\STL\ACII.stl")]
-        public void ImportExportModelFromSTLtextFormat(string filePath)
+        [DataRow(@"Блок каналов\block.stl")]
+        [DataRow(@"Блок каналов\block_solid_sup.stl")]
+        [DataRow(@"Форсунка\1n.stl")]
+        [DataRow(@"Форсунка\nozzle.stl")]
+        [DataRow(@"Форсунка\nozzle_sup.stl")]
+        [DataRow(@"Образец\specimen.stl")]
+        [DataRow(@"Образец\specimen_solid_sup.stl")]
+        [DataRow(@"Образец\specimen_wall_sup.stl")]
+        [DataRow(@"Кронштейн\bracket.stl")]
+        [DataRow(@"Кронштейн\bracket_solid_sup.stl")]
+        [DataRow(@"Кронштейн\bracket_wall_sup.stl")]
+        public void ImportExportModelFromSTLtextFormat(string file)
         {
+            string inputDir = @"\\fs\Plm-Ural\OrgUnits\CAE\+ESI_QForm\+SIMMAX\Тестовые заготовки деталей\";
+            //string inputDir = @"..\..\..\..\Тестовые заготовки деталей\";
+            string outputDir = @"..\..\..\..\Тестовые заготовки деталей (test)\";
+
+            var filePath = Path.Combine(inputDir, file);
+            var outpath = Path.Combine(outputDir, file);
+
             //assing
             var model = new ModelData();
 
             model.Loader = new LoadModelFromSTLFile();
             model.Load(filePath);
 
+            Directory.CreateDirectory(Path.GetDirectoryName(outpath));
+
             model.Saver = new SaveModelToBinarySTLFile();
-            model.Save(filePath + ".bin.stl");
+            model.Save(outpath + ".bin.stl");
 
             model.Saver = new SaveModelToTxtSTLFile();
-            model.Save(filePath + ".txt.stl");
+            model.Save(outpath + ".txt.stl");
 
             var model2 = new ModelData();
             model2.Loader = new LoadModelFromSTLFile();
-            model2.Load(filePath + ".bin.stl");
+            model2.Load(outpath + ".bin.stl");
 
             var model3 = new ModelData();
             model3.Loader = new LoadModelFromSTLFile();
-            model3.Load(filePath + ".txt.stl");
+            model3.Load(outpath + ".txt.stl");
             //assert
         }
 
@@ -146,18 +179,6 @@ namespace TestModel
 
             Assert.AreEqual(17964, model.ObjectData.GetAllElements().Count());
         }
-
-        //[TestMethod]
-        //public void LoadModelFromGMSHTextFile_ShouldLoadCorrectNumberOfGroups()
-        //{
-        //    var model = new ModelData();
-        //    model.Loader = new LoadModelFromGMSHTextFile();
-        //    model.Loader.LoadEvent += (x, y) => { };
-
-        //    model.Load(@"..\..\..\Examples\3D\T_joint.inp");
-
-        //    Assert.AreEqual(model.GroupData.Count, 6);
-        //}
 
         [TestMethod]
         public void ImportModelFromVisualMeshASCIITextFormat()

@@ -39,6 +39,32 @@ namespace TestModel
         }
 
         [TestMethod]
+        public void GetElements_twiceCall()
+        {
+            var nodes = new List<Node>
+            {
+                new Node(0, new Point3D(0, 7, 0)),
+                new Node(1, new Point3D(-5, 5, 0)),
+                new Node(2, new Point3D(5, 5, 0)),
+                new Node(3, new Point3D(-2, 3, 0)),
+                new Node(4, new Point3D(3, 1, 0)),
+                new Node(5, new Point3D(-4, -1, 0)),
+                new Node(6, new Point3D(1, -2, 0)),
+                new Node(7, new Point3D(-6, -4, 0)),
+                new Node(8, new Point3D(5, -4, 0))
+            };
+            var instance = new DeloneMesh2DCreator();
+            instance.MakeTriangulation(nodes);
+            var triangulation = instance.GetElements().ToList();
+
+            Assert.AreEqual(11, triangulation.Count);
+
+            triangulation = instance.GetElements().ToList();
+
+            Assert.AreEqual(11, triangulation.Count);
+        }
+
+        [TestMethod]
         public void GetElements_ReturnCorrectTriangles_WhenThreePointsOnLine()
         {
             var nodes = new List<Node>
