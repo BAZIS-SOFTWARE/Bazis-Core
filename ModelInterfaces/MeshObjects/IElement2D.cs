@@ -2,7 +2,7 @@
 
 namespace ModelInterfaces.MeshObjects
 {
-    public interface IElement2D : ISurfaceElement, INormal, ISquare
+    public interface IElement2D : ISurfaceElement, ISquare
     {
 
     }

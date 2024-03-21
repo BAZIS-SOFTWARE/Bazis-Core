@@ -59,7 +59,7 @@ namespace Model.MeshObjects
                 default:
                     throw new ArgumentException();
             }
-        }
+        }        
 
         public override float CalcSquare()
         {

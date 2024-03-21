@@ -53,7 +53,7 @@ namespace TestModel
             var model = new ModelData();
 
             //act
-            model.Load(@"C:\Projs\TestProjTerm\Cub\cub_unsorted_freeNodes.bpf");
+            model.Load(@"..\..\..\Examples\3D\cub_unsorted_freeNodes.bpf");
 
             var freeNodesFinder = new FreeNodesFinder();
             var freeNodes = freeNodesFinder.Find(model.ObjectData);
@@ -149,7 +149,7 @@ namespace TestModel
 
             //act
             //var modelBPF = loader.Load(@"C:\Projs\ExampleMesh\Tube.inp");
-            model.Load(@"C:\Projs\ExampleMesh\Tube_3d_only.bpf");
+            model.Load(@"..\..\..\Examples\3D\cub_unsorted_freeNodesCoincident.bpf");
 
             var finder = new FindCoincidentObjects();
 

@@ -8,7 +8,7 @@
     <SignAssembly>True</SignAssembly>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>ModelControllerInterfaces</Title>
-    <Version>3.0.0.32</Version>
+    <Version>3.0.0.34</Version>
     <Authors>Bilenko Georgy</Authors>
     <Company>BAZIS SOFTWARE</Company>
     <Product>BAZIS</Product>
