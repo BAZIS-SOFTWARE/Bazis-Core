@@ -51,12 +51,9 @@ namespace TestModel
             var instance = new DeloneMesh2DCreator();
             instance.MakeTriangulation(pointsForFirstPlane);
 
-            var triangulation1 = instance.GetElements().ToList();
-           
+            var triangulation1 = instance.MakeTriangulation(pointsForFirstPlane).ToList();
 
-            instance.MakeTriangulation(pointsForSecondPlane);
-
-            var triangulation2 = instance.GetElements().ToList();
+            var triangulation2 = instance.MakeTriangulation(pointsForSecondPlane).ToList();
 
             Assert.IsTrue(TestDeloneTriangles(triangulation1));
             Assert.IsTrue(TestDeloneTriangles(triangulation2));

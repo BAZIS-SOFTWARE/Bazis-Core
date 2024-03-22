@@ -12,26 +12,23 @@ namespace ModelController.MeshObjsCreator.Delone2D
     /// </summary>
     public class DeloneMesh2DCreator : IDeloneMesh2DCreator
     {
-        private DeloneTriangulation2D triangulation;
-        private Dictionary<int, INode> numberToNode;
+        private DeloneTriangulation2D instance;
 
-/// <inheritdoc/>
-
-        public IEnumerable<IElement2D> GetElements()
+        public DeloneMesh2DCreator()
         {
-            var resultNodeIndeces = triangulation.GetTriangles();
-            return resultNodeIndeces.Select(
-                (t, i) => new Triangle(i, t.Select(node => numberToNode[node.Number]).ToArray()));
-        }
-        /// <inheritdoc/>
-
-        public void MakeTriangulation(IEnumerable<INode> nodes)
-        {
-            triangulation = new DeloneTriangulation2D(GetNodesInPlaneCoordinates(nodes));
-            numberToNode = nodes.ToDictionary(n => n.Number, n => n);
+            instance = new DeloneTriangulation2D();
         }
 
-        private List<DeloneNode2D> GetNodesInPlaneCoordinates(IEnumerable<INode> nodes)
+        public IEnumerable<IElement2D> MakeTriangulation(IEnumerable<INode> nodes)
+        {
+            var nodesInPlane = GetNodesInLocalPlaneCoordinates(nodes);
+            var numberToSourceNode = nodes.ToDictionary(n => n.Number, n => n);
+            var resultNodeIndeces = instance.GetTriangles(nodesInPlane);
+            return resultNodeIndeces.Select((nodeArray, index) => 
+                            new Triangle(index, nodeArray.Select(node => numberToSourceNode[node.Number]).ToArray()));
+        }
+
+        private List<DeloneNode2D> GetNodesInLocalPlaneCoordinates(IEnumerable<INode> nodes)
         {
             return nodes.Select(n => new DeloneNode2D(n.Number, new Point2D(n.Position._x, n.Position._y)))
                 .ToList();
