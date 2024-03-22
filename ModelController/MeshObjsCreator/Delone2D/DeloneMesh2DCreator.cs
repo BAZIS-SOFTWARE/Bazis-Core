@@ -14,10 +14,14 @@ namespace ModelController.MeshObjsCreator.Delone2D
     {
         private DeloneTriangulation2D instance;
 
+        /// <summary>
+        /// DeloneMesh2DCreator
+        /// </summary>
         public DeloneMesh2DCreator()
         {
             instance = new DeloneTriangulation2D();
         }
+/// <inheritdoc/>
 
         public IEnumerable<IElement2D> MakeTriangulation(IEnumerable<INode> nodes)
         {
