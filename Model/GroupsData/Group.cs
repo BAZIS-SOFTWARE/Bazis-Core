@@ -4,9 +4,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using ModelInterfaces.ObjectsSorters;
 using ModelInterfaces.Attributes;
 using ModelInterfaces.ObjectsComparers;
+using Geometry;
 
 namespace Model.GroupsData
 {
