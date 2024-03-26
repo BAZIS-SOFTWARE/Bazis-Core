@@ -1,5 +1,6 @@
 ﻿using ModelControllerInterfaces;
 using ModelInterfaces;
+using System;
 
 namespace ModelController
 {
@@ -11,7 +12,19 @@ namespace ModelController
         /// <inheritdoc/>
         public void IObjectsRenumber(IObjectsData objectsData, ObjType objType)
         {
-            throw new System.NotImplementedException();
+            switch(objType)
+            {
+                case ObjType.Элемент:
+                    break;
+
+                case ObjType.Фигура:
+                case ObjType.Фигура2D:
+                case ObjType.Фигура3D:
+                    throw new Exception("Данный метод не предназначени для работы с геометрией");
+
+                default:
+                    throw new NotImplementedException("Перенумерация данного конкретного типа не реализована");
+            }
         }
     }
 }
