@@ -46,5 +46,25 @@ namespace TestModel
                 i++;
             }
         }
+
+
+        [TestMethod]
+        [DataRow(ObjType.Точка)]
+        [DataRow(ObjType.Фигура)]
+        [DataRow(ObjType.Фигура3D)]
+        [DataRow(ObjType.Фигура2D)]
+        public void ObjectRenumber_ShouldFail_WhenGeometry(ObjType ot)
+        {
+            Assert.ThrowsException<Exception>( () => new ObjectsRenumber().IObjectsRenumber(new ModelData().ObjectData, ot));
+        }
+
+        [TestMethod]
+        [DataRow(ObjType.Линия)]
+        [DataRow(ObjType.Поверхность)]
+        [DataRow(ObjType.Узел)]
+        public void ObjectRenumber_ShouldFail_WhenNotImplementObjType(ObjType ot)
+        {
+            Assert.ThrowsException<NotImplementedException>(() => new ObjectsRenumber().IObjectsRenumber(new ModelData().ObjectData, ot));
+        }
     }
 }

@@ -30,6 +30,7 @@ namespace ModelController
                 case ObjType.Фигура:
                 case ObjType.Фигура2D:
                 case ObjType.Фигура3D:
+                case ObjType.Точка:
                     throw new Exception("Данный метод не предназначени для работы с геометрией");
 
                 default:
