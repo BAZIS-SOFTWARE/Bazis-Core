@@ -104,6 +104,7 @@
     <Compile Include="TestGroupNameComparator.cs" />
     <Compile Include="TestIO.cs" />
     <Compile Include="TestModelControllerPoligon.cs" />
+    <Compile Include="TestObjectsRenumber.cs" />
     <Compile Include="TestsCrossSection.cs" />
     <Compile Include="TestServices.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
