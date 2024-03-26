@@ -1,6 +1,8 @@
-﻿using ModelControllerInterfaces;
+﻿using Model.MeshObjects;
+using ModelControllerInterfaces;
 using ModelInterfaces;
 using System;
+using System.Collections.Generic;
 
 namespace ModelController
 {
@@ -15,6 +17,14 @@ namespace ModelController
             switch(objType)
             {
                 case ObjType.Элемент:
+                    {
+                        var elements = new List<IModelObject>();
+                        elements.AddRange(objectsData.GetAllElements());
+
+                        var number = 1;
+                        foreach (var elem in elements)
+                            elem.SetNumber(number++);
+                    }
                     break;
 
                 case ObjType.Фигура:
