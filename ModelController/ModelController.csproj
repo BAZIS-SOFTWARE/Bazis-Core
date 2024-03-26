@@ -54,6 +54,7 @@
     <Compile Include="ModelScenePresentator\GlObjsVertexCreators\ColorPointObjsCreator.cs" />
     <Compile Include="ModelScenePresentator\GlObjsVertexCreators\ColorSurfaceObjsCreator.cs" />
     <Compile Include="ModelScenePresentator\PresentersCreator.cs" />
+    <Compile Include="ObjectsRenumber.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icon.png">

@@ -11,6 +11,11 @@ namespace ModelControllerInterfaces
         /// <summary>
         /// InterfacedNodesFinder
         /// </summary>
+        IObjectsRenumber ObjectsRenumber { get; }
+
+        /// <summary>
+        /// InterfacedNodesFinder
+        /// </summary>
         IInterfacedNodesFinder InterfacedNodesFinder { get; }
         /// <summary>
         /// Extractor2DFrom3D
