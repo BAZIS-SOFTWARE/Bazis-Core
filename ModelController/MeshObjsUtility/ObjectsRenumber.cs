@@ -4,7 +4,7 @@ using ModelInterfaces;
 using System;
 using System.Collections.Generic;
 
-namespace ModelController
+namespace ModelController.MeshObjsUtility
 {
     /// <summary>
     /// ObjectsRenumber
@@ -14,7 +14,7 @@ namespace ModelController
         /// <inheritdoc/>
         public void IObjectsRenumber(IObjectsData objectsData, ObjType objType)
         {
-            switch(objType)
+            switch (objType)
             {
                 case ObjType.Элемент:
                     {

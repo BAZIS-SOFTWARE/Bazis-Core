@@ -4,7 +4,7 @@
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>ModelController</Title>
-    <Version>3.0.11.41</Version>
+    <Version>3.0.11.42</Version>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>ModelControllerKey.snk</AssemblyOriginatorKeyFile>
@@ -54,7 +54,7 @@
     <Compile Include="ModelScenePresentator\GlObjsVertexCreators\ColorPointObjsCreator.cs" />
     <Compile Include="ModelScenePresentator\GlObjsVertexCreators\ColorSurfaceObjsCreator.cs" />
     <Compile Include="ModelScenePresentator\PresentersCreator.cs" />
-    <Compile Include="ObjectsRenumber.cs" />
+    <Compile Include="MeshObjsUtility\ObjectsRenumber.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icon.png">

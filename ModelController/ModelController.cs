@@ -49,6 +49,7 @@ namespace ModelController
 /// <inheritdoc/>
 
         public IMesh2DRefiner Mesh2DRefiner { get; } = new Mesh2DRefiner();
+/// <inheritdoc/>
 
         public IObjectsRenumber ObjectsRenumber { get; } = new ObjectsRenumber();
     }
