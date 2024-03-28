@@ -21,13 +21,25 @@ namespace Model.MeshObjects
             InitialColor = Color.FromArgb(255, 125, 0);
             MasterColor = Color.FromArgb(255, 125, 0);
             SlaveColor = Color.FromArgb(255, 125, 0);
-
+            
+            var centr = CalcCentr();
             var surfNumber = 0;
             foreach (var surfNodes in SurfaceFinder.FindSurfaceNodes(nodes))
             {
-                surfaces.Add(new ElementSurface(surfNumber, surfNodes));
-            }
+                var surface = new ElementSurface(surfNumber, surfNodes);
 
+                var normal = surface.CalcNormal();
+                var plane = new Plane(surface[0].Position, normal);
+                var proj = centr.GetPointProectionOnPlane(plane);
+                var vec = proj.Sub(centr);
+                var res = Geometry.Vector.DotProd(normal, vec);
+
+                if (res < 0)
+                    surface.ReverseVertexes();
+
+                surfaces.Add(surface);
+                surfNumber++;
+            }
         }
 
         public Element3D(int number, INode[] nodes,int point) : this(number, nodes)
@@ -72,15 +84,11 @@ namespace Model.MeshObjects
         }
 /// <inheritdoc/>
 
-        public IEnumerable<Point3D> CalcSurfacesNormals()
+        public IEnumerable<Point3D> GetSurfacesNormals()
         {
-            var centr = CalcCentr();
             foreach (var surface in surfaces)
             {
-                var normal = surface.CalcNormal();
-                var plane = new Plane(surface[0].Position, normal);
-                var proj = centr.GetPointProectionOnPlane(plane);
-                yield return proj.Sub(centr);
+                yield return surface.CalcNormal();
             }
         }
 

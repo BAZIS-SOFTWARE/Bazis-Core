@@ -16,6 +16,10 @@ namespace ModelInterfaces
         where T : IPoint
     {
         /// <summary>
+        /// Поменять порядок обхода узлов
+        /// </summary>
+        void ReverseVertexes();
+        /// <summary>
         /// GetDistance
         /// </summary>
         /// <param name="point3D"></param>

@@ -31,7 +31,7 @@ namespace TestModel
             var F = new Node(6, new Point3D(0, 2, 0));
             var G = new Node(7, new Point3D(0, 2, 1));
             var H = new Node(8, new Point3D(-0.5f, 3.5f, 0));
-            var elements = new List<Element2D>
+            var elements2D = new List<Element2D>
             {
                 new Triangle(9, new Node[] { A, B, C }),
                 new Triangle(10, new Node[] { B, C, D }),
@@ -40,10 +40,16 @@ namespace TestModel
                 new Triangle(13, new Node[] { E, F, G }),
                 new Triangle(14, new Node[] { F, G, H }),
             };
+
+            var elements3D = new List<Element3D>
+            {
+                new Tetra(15,new Node[] { A, B, C,D })
+            };
             var nodes = new List<Node> { A, B, C, D, E, F, G, H };
             objectsData = new ObjectsData();
             objectsData.NodeCollection.AddRange(nodes);
-            objectsData.E2DCollection.AddRange(elements);
+            objectsData.E2DCollection.AddRange(elements2D);
+            objectsData.E3DCollection.AddRange(elements3D);
         }
 
         [TestMethod]

@@ -2,6 +2,7 @@
 using ModelInterfaces.IntegralObject;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace Model.MeshObjects
 {
@@ -36,7 +37,13 @@ namespace Model.MeshObjects
 
         public void AddDirection(string name,float value)
         {
-            this.directions.Add(name,value);
+            directions.Add(name,value);
+        }
+/// <inheritdoc/>
+
+        public override string ToString()
+        {
+            return $"{Weigt} : {string.Join(" ", directions)}";
         }
     }
 }

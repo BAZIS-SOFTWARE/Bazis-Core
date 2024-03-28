@@ -10,15 +10,13 @@ namespace ModelController.ModelScenePresentator.GlObjsVertexCreators
         {
             if (surfaceElement.ViewState)
             {
-                //var centr = surfaceElement.CalcCentralPoint();
+
                 foreach (var surface in surfaceElement.GetSurfaces())
                 {
                     if (surface.ViewState)
                     {
                         var normal = surface.CalcNormal();
-                        //var plane = new Plane(surface[0].Position, normal);
-                        //var proj = centr.GetPointProectionOnPlane(plane);
-                        //normal = proj.Sub(centr);
+
                         for (int k = 0; k < surface.NumberOfPoints - 2; k++)
                         {
                             vertexAtributes[stride + 9 * k + 0] = normal._x;

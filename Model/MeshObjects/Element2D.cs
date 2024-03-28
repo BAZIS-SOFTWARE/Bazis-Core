@@ -51,7 +51,7 @@ namespace Model.MeshObjects
         public abstract float CalcSquare();
 /// <inheritdoc/>
 
-        public IEnumerable<Point3D> CalcSurfacesNormals()
+        public IEnumerable<Point3D> GetSurfacesNormals()
         {
             yield return surface.CalcNormal();
         }

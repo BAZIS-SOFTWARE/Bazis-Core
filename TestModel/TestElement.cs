@@ -31,6 +31,44 @@ namespace TestModel
             var normals = elem.GetSurfaces().Select(x => x.CalcNormal()).ToList();
 
             //assert
+            var ptr = 0;
+            foreach (var surface in elem.GetSurfaces())
+            {
+                var angle = Vector.GetAngleVectors(surface.CalcNormal(), normals[ptr]);
+                Assert.AreEqual(1,Vector.GetAngleVectors(surface.CalcNormal(), normals[ptr]),0.1f);
+                    ptr++;
+            }
+        }
+
+        [TestMethod]
+        public void CalcHexaNormals()
+        {
+            //assing
+            var nodes = new Node[8]
+{
+                new Node(0,new Point3D(0,0,0)),
+                new Node(1,new Point3D(10,0,0)),
+                new Node(2,new Point3D(0,10,0)),
+                new Node(3,new Point3D(0,0,10)),
+                new Node(4,new Point3D(0,10,10)),
+                new Node(5,new Point3D(10,10,10)),
+                new Node(6,new Point3D(10,0,10)),
+                new Node(7,new Point3D(10,10,0)),
+};
+
+            var elem = new Hexa(0, nodes);
+
+            //act
+            var normals = elem.GetSurfaces().Select(x => x.CalcNormal()).ToList();
+
+            //assert
+            var ptr = 0;
+            foreach (var surface in elem.GetSurfaces())
+            {
+                var angle = Vector.GetAngleVectors(surface.CalcNormal(), normals[ptr]);
+                Assert.AreEqual(1, Vector.GetAngleVectors(surface.CalcNormal(), normals[ptr]), 0.1f);
+                ptr++;
+            }
         }
 
         [TestMethod]

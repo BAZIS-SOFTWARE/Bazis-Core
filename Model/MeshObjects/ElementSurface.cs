@@ -28,7 +28,7 @@ namespace Model.MeshObjects
                 throw new Exception("Для создания поверхности требуется не меньше 3-х узлов!");
 
             nodes.RoundSort(); //Anticlockwise(nodes);
-            this.nodes = nodes;
+            this.nodes = nodes;           
 
             InitialColor = Color.FromArgb(224, 0, 177);
             MasterColor = Color.FromArgb(224, 0, 177);
@@ -154,6 +154,12 @@ points.Contains(nodes[2].Position, new Point3DEqualityComparer()))
             {
                 yield return node;
             }
+        }
+/// <inheritdoc/>
+
+        public void ReverseVertexes()
+        {
+            nodes = nodes.Reverse().ToArray();
         }
     }
 }

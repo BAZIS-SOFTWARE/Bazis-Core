@@ -17,10 +17,10 @@ namespace Model.MeshObjects
         public Tetra(int number, INode[] nodes) : base(number, nodes)
         {
             var intPoint = new IntegralPoint();
-            intPoint.AddDirection("l1", 1 / 4);
-            intPoint.AddDirection("l2", 1 / 4);
-            intPoint.AddDirection("l3", 1 / 4);
-            intPoint.AddDirection("l4", 1 / 4);
+            intPoint.AddDirection("l1", 1.0f / 4);
+            intPoint.AddDirection("l2", 1.0f / 4);
+            intPoint.AddDirection("l3", 1.0f / 4);
+            intPoint.AddDirection("l4", 1.0f / 4);
             intPoint.Weigt = CalcVolume();
             //jacobians.Add(DetJ(intPoint));
             intPoints.Add(intPoint);

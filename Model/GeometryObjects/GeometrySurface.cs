@@ -152,5 +152,11 @@ points.Contains(this.points[2].Position, new Point3DEqualityComparer()))
                 yield return node;
             }
         }
+/// <inheritdoc/>
+
+        public void ReverseVertexes()
+        {
+            points = points.Reverse().ToArray();
+        }
     }
 }
