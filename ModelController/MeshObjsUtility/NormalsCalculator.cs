@@ -1,11 +1,18 @@
 ﻿using Geometry;
+using Model.GeometryObjects;
+using ModelControllerInterfaces.MeshObjsUtility;
+using ModelInterfaces.GeometryObjects;
 using ModelInterfaces.MeshObjects;
 using System.Collections.Generic;
 
 namespace ModelController.MeshObjsUtility
 {
-    public class NormalsCalculator
+    /// <summary>
+    /// NormalsCalculator
+    /// </summary>
+    public class NormalsCalculator : INormalCalculator
     {
+        /// <inheritdoc/>
         public Dictionary<int, Point3D> CalcNodeNormals(IEnumerable<IElement3D> elements)
         {
             var normals = new Dictionary<int, Point3D>();
@@ -30,28 +37,24 @@ namespace ModelController.MeshObjsUtility
 
             return normals;
         }
+/// <inheritdoc/>
 
-        public List<Segment3D> CalcElemsNormals(IEnumerable<IElement3D> elements)
+        public IEnumerable<ILine> CalcElemsNormals(IEnumerable<ISurfaceElement> elements)
         {
-            var lines = new List<Segment3D>();
-
             foreach (var element in elements)
             {
-                var centr = element.CalcCentr();
                 foreach (var surface in element.GetSurfaces())
                 {
                     var normal = surface.CalcNormal();
 
-                    var plane = new Plane(surface[0].Position, normal);
-                    var proj = centr.GetPointProectionOnPlane(plane);
+                    var p1 = new GeometryPoint(0, surface.CalcCentr());
 
-                    var p1 = proj.Sum(normal);
-
-                    var line = new Segment3D(proj, p1);
-                    lines.Add(line);
+                    var norm = Vector.GetVectorNorm(normal.Sub(surface.CalcCentr()));
+                    var mnorm = norm.Mult(10);
+                    var p2 = new GeometryPoint(1, surface.CalcCentr().Sum(mnorm));
+                    yield return new Line(surface.Number, new GeometryPoint[] {p1,p2 });
                 }
             }
-            return lines;
         }
     }
 }

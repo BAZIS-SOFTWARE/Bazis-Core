@@ -4,6 +4,7 @@ using ModelController.MeshObjsUtility;
 using ModelController.ModelScenePresentator;
 using ModelControllerInterfaces;
 using ModelControllerInterfaces.Delone2D;
+using ModelControllerInterfaces.MeshObjsUtility;
 using ModelControllerInterfaces.Utilities;
 
 namespace ModelController
@@ -52,5 +53,8 @@ namespace ModelController
 /// <inheritdoc/>
 
         public IObjectsRenumber ObjectsRenumber { get; } = new ObjectsRenumber();
+/// <inheritdoc/>
+
+        public INormalCalculator NormalCalculator { get; } = new NormalsCalculator();
     }
 }

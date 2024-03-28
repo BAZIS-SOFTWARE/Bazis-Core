@@ -1,4 +1,5 @@
 ﻿using ModelControllerInterfaces.Delone2D;
+using ModelControllerInterfaces.MeshObjsUtility;
 using ModelControllerInterfaces.Utilities;
 
 namespace ModelControllerInterfaces
@@ -67,5 +68,9 @@ namespace ModelControllerInterfaces
         /// IMesh2DRefiner
         /// </summary>
         IMesh2DRefiner Mesh2DRefiner { get; }
+        /// <summary>
+        /// NormalCalculator
+        /// </summary>
+        INormalCalculator NormalCalculator { get; }
     }
 }

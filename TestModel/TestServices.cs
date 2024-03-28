@@ -121,7 +121,24 @@ namespace TestModel
             var presentor = modelController.PresentersCreator.CreateLineObjectsPresenter(bounds);
             Assert.AreEqual(19, presentor.Count());
             
-        }     
+        }
+
+        [TestMethod]
+        public void GetElementsNormals()
+        {
+            var model = new ModelData();
+            model.Loader = new LoadModelFromProjectTextFile();
+            model.Load(@"..\..\..\Examples\3D\cub_unsorted.bpf");
+
+            var modelController = new ModelController.ModelController();
+            var normals = modelController.NormalCalculator.CalcElemsNormals(model.ObjectData.GetAllElements().Select(x => (ISurfaceElement)x)); 
+
+            Assert.AreNotEqual(0, normals.Count());
+
+            var presentor = modelController.PresentersCreator.CreateLineObjectsPresenter(normals);
+            Assert.AreNotEqual(0, presentor.Count());
+
+        }
 
         [TestMethod]
         public void FindElementNodes()
