@@ -18,6 +18,11 @@ namespace ModelController.ModelScenePresentator
     public class PresentersCreator : IPresentersCreator
     {
         Dictionary<string, PresenterView> ObjsViews = new Dictionary<string, PresenterView>();
+        Dictionary<string, int> ObjsTransparency = new Dictionary<string, int>();
+        
+        
+        
+        
         /// <summary>
         /// this
         /// </summary>
@@ -84,6 +89,18 @@ namespace ModelController.ModelScenePresentator
         public bool Remove(string objsType)
         {
             return ObjsViews.Remove(objsType);
+        }
+/// <inheritdoc/>
+
+        public void SetTransparency(string objType, int alpha)
+        {
+            ObjsTransparency[objType] = alpha;
+        }
+/// <inheritdoc/>
+
+        public int GetTransparency(string objType)
+        {
+            return ObjsTransparency[objType];
         }
     }
 }

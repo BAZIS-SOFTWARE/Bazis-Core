@@ -49,7 +49,7 @@ namespace ModelController.MeshObjsUtility
 
                     var p1 = new GeometryPoint(0, surface.CalcCentr());
 
-                    var norm = Vector.GetVectorNorm(normal.Sub(surface.CalcCentr()));
+                    var norm = Vector.GetVectorNorm(normal);
                     var mnorm = norm.Mult(10);
                     var p2 = new GeometryPoint(1, surface.CalcCentr().Sum(mnorm));
                     yield return new Line(surface.Number, new GeometryPoint[] {p1,p2 });
