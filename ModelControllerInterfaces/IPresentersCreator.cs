@@ -11,9 +11,9 @@ namespace ModelControllerInterfaces
     public interface IPresentersCreator
     {
         /// <summary>
-        /// Transparency
+        /// TransparencyValue
         /// </summary>
-        int Transparency { get; set; }
+        int TransparencyValue { get; set; }
         /// <summary>
         /// SetView
         /// </summary>

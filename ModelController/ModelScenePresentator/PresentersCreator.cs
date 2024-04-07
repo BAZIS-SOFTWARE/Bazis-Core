@@ -18,8 +18,9 @@ namespace ModelController.ModelScenePresentator
     public class PresentersCreator : IPresentersCreator
     {
         Dictionary<string, PresenterView> ObjsViews = new Dictionary<string, PresenterView>();
-        Dictionary<string, int> ObjsTransparency = new Dictionary<string, int>();
-         
+/// <inheritdoc/>
+
+        public int TransparencyValue { get; set; }
 
         /// <summary>
         /// PresentorsCreator
@@ -34,15 +35,6 @@ namespace ModelController.ModelScenePresentator
             ObjsViews.Add(ObjType.Элемент1D.ToString(), PresenterView.Line);
             ObjsViews.Add(ObjType.Элемент2D.ToString(), PresenterView.Surface);
             ObjsViews.Add(ObjType.Элемент3D.ToString(), PresenterView.Surface);
-
-            ObjsTransparency.Add(ObjType.Точка.ToString(), 100);
-            ObjsTransparency.Add(ObjType.Узел.ToString(), 100);
-            ObjsTransparency.Add(ObjType.Линия.ToString(), 100);
-            ObjsTransparency.Add(ObjType.Фигура2D.ToString(), 100);
-            ObjsTransparency.Add(ObjType.Фигура3D.ToString(), 100);
-            ObjsTransparency.Add(ObjType.Элемент1D.ToString(), 100);
-            ObjsTransparency.Add(ObjType.Элемент2D.ToString(), 100);
-            ObjsTransparency.Add(ObjType.Элемент3D.ToString(), 100);
         }
         /// <inheritdoc/> 
 
@@ -76,18 +68,6 @@ namespace ModelController.ModelScenePresentator
         }
 
 
-/// <inheritdoc/>
-
-        public void SetTransparency(string objType, int alpha)
-        {
-            ObjsTransparency[objType] = alpha;
-        }
-/// <inheritdoc/>
-
-        public int GetTransparency(string objType)
-        {
-            return ObjsTransparency[objType];
-        }
 /// <inheritdoc/>
 
 
