@@ -27,19 +27,13 @@ namespace ModelControllerInterfaces
         /// </summary>
         /// <param name="objsType"></param>
         /// <param name="objsView"></param>
-        void Add(string objsType, PresenterView objsView);
+        void SetView(string objsType, PresenterView objsView);
         /// <summary>
-        /// Remove
-        /// </summary>
-        /// <param name="objsType"></param>
-        /// <returns></returns>
-        bool Remove(string objsType);
-        /// <summary>
-        /// this
+        /// GetView
         /// </summary>
         /// <param name="objType"></param>
         /// <returns></returns>
-        PresenterView this[string objType] { get; set;}
+        PresenterView GetView(string objType);
         /// <summary>
         /// CreatePointObjectsPresenter
         /// </summary>

@@ -19,20 +19,7 @@ namespace ModelController.ModelScenePresentator
     {
         Dictionary<string, PresenterView> ObjsViews = new Dictionary<string, PresenterView>();
         Dictionary<string, int> ObjsTransparency = new Dictionary<string, int>();
-        
-        
-        
-        
-        /// <summary>
-        /// this
-        /// </summary>
-        /// <param name="objType"></param>
-        /// <returns></returns>
-        public PresenterView this[string objType]
-        {
-            get { return ObjsViews[objType]; }
-            set { ObjsViews[objType] = value; }
-        }
+         
 
         /// <summary>
         /// PresentorsCreator
@@ -87,18 +74,8 @@ namespace ModelController.ModelScenePresentator
             presentor.Add(surfaceGeom);
             return presentor;
         }
-/// <inheritdoc/>
 
-        public void Add(string objsType, PresenterView objsView)
-        {
-            ObjsViews.Add(objsType, objsView);
-        }
-/// <inheritdoc/>
 
-        public bool Remove(string objsType)
-        {
-            return ObjsViews.Remove(objsType);
-        }
 /// <inheritdoc/>
 
         public void SetTransparency(string objType, int alpha)
@@ -110,6 +87,19 @@ namespace ModelController.ModelScenePresentator
         public int GetTransparency(string objType)
         {
             return ObjsTransparency[objType];
+        }
+/// <inheritdoc/>
+
+
+        public void SetView(string objsType, PresenterView objsView)
+        {
+            ObjsViews.Add(objsType, objsView);
+        }
+/// <inheritdoc/>
+
+        public PresenterView GetView(string objType)
+        {
+            return ObjsViews[objType];
         }
     }
 }
