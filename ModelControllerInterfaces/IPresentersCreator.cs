@@ -11,19 +11,11 @@ namespace ModelControllerInterfaces
     public interface IPresentersCreator
     {
         /// <summary>
-        /// SetTransparency
+        /// Transparency
         /// </summary>
-        /// <param name="objType"></param>
-        /// <param name="alpha"></param>
-        void SetTransparency(string objType, int alpha);
+        int Transparency { get; set; }
         /// <summary>
-        /// GetTransparency
-        /// </summary>
-        /// <param name="objType"></param>
-        /// <returns></returns>
-        int GetTransparency(string objType);
-        /// <summary>
-        /// Add
+        /// SetView
         /// </summary>
         /// <param name="objsType"></param>
         /// <param name="objsView"></param>
