@@ -43,7 +43,7 @@ namespace ModelController.MeshObjsUtility
                     foreach(var node in element.GetVertexes())
                     {
                         var currentDirection = node.Position.Sub(currentNode.Position);
-                        var angle = Math.Acos(Vector.GetAngleVectors(currentDirection, previousDirection));
+                        var angle = Math.Acos(Vector.GetCosAngleVectors(currentDirection, previousDirection));
                         if(angle <= ConvertGradusToRadian(angleInGradus) && !result.Contains(node.Number))
                         {
                             currentNode = node;
@@ -93,7 +93,7 @@ namespace ModelController.MeshObjsUtility
                     if(!used.Contains(neighbourNumber))
                     {
                         var neighbourElement = elements.Find(neighbourNumber);
-                        var cos = Vector.GetAngleVectors(currentElement.GetSurfacesNormals().First(), neighbourElement.GetSurfacesNormals().First());
+                        var cos = Vector.GetCosAngleVectors(currentElement.GetSurfacesNormals().First(), neighbourElement.GetSurfacesNormals().First());
                         var angleRadian = Math.Acos(Math.Abs(cos));
                         if (angleRadian <= maxAngleRadians)
                         {

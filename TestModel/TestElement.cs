@@ -34,8 +34,8 @@ namespace TestModel
             var ptr = 0;
             foreach (var surface in elem.GetSurfaces())
             {
-                var angle = Vector.GetAngleVectors(surface.CalcNormal(), normals[ptr]);
-                Assert.AreEqual(1,Vector.GetAngleVectors(surface.CalcNormal(), normals[ptr]),0.1f);
+                var angle = Vector.GetCosAngleVectors(surface.CalcNormal(), normals[ptr]);
+                Assert.AreEqual(1,Vector.GetCosAngleVectors(surface.CalcNormal(), normals[ptr]),0.1f);
                     ptr++;
             }
         }
@@ -65,8 +65,8 @@ namespace TestModel
             var ptr = 0;
             foreach (var surface in elem.GetSurfaces())
             {
-                var angle = Vector.GetAngleVectors(surface.CalcNormal(), normals[ptr]);
-                Assert.AreEqual(1, Vector.GetAngleVectors(surface.CalcNormal(), normals[ptr]), 0.1f);
+                var angle = Vector.GetCosAngleVectors(surface.CalcNormal(), normals[ptr]);
+                Assert.AreEqual(1, Vector.GetCosAngleVectors(surface.CalcNormal(), normals[ptr]), 0.1f);
                 ptr++;
             }
         }

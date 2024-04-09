@@ -117,7 +117,7 @@ namespace ModelController.MeshObjsUtility
                 }
             }
 
-            var angle = Math.Abs(Vector.GetAngleVectors(vec[0], vec[1]));
+            var angle = Math.Abs(Vector.GetCosAngleVectors(vec[0], vec[1]));
             if (angle < 0.8f)
             {
                 return true;
