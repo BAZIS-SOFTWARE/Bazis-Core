@@ -93,7 +93,7 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
 
         public int Count()
         {
-            return pointObjects.Count();
+            return pointObjects.Count;
         }
 
 /// <inheritdoc/>

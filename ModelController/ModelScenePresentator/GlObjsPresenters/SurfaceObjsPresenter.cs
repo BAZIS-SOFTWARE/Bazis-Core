@@ -173,7 +173,7 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
 
         public int Count()
         {
-            return surfaceObjects.Count();
+            return surfaceObjects.Count;
         }    
 /// <inheritdoc/>
 

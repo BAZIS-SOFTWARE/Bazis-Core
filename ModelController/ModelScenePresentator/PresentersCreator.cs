@@ -73,7 +73,7 @@ namespace ModelController.ModelScenePresentator
 
         public void SetView(string objsType, PresenterView objsView)
         {
-            ObjsViews.Add(objsType, objsView);
+            ObjsViews[objsType] = objsView;
         }
 /// <inheritdoc/>
 
