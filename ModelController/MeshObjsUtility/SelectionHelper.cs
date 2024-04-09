@@ -21,7 +21,7 @@ namespace ModelController.MeshObjsUtility
 
         public List<int> SelectNodeInDirection(IObjectsData objectsData,float angleInGradus, int numbFirst, int numbSecond, Color color)     
         {
-            var elements = objectsData.GetAllElements().ToList();
+            var elements = objectsData.GetAllElements().OrderBy(x => x.Number).ToList();
 
             var interfacedElements = new InterfacedNodesFinder().Find(elements);
             
