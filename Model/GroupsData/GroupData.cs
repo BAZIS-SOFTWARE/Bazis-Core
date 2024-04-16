@@ -52,7 +52,7 @@ namespace Model.GroupsData
 
         public void CopyTo(IGroup[] array, int arrayIndex)
         {
-            throw new System.NotImplementedException();
+            groups.CopyTo(array, arrayIndex);
         }
 /// <inheritdoc/>
 
