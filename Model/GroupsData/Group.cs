@@ -75,26 +75,31 @@ namespace Model.GroupsData
         {
             throw new NotImplementedException();
         }
+/// <inheritdoc/>
 
         public int IndexOf(IModelObject item)
         {
             return objects.IndexOf(item);
         }
+/// <inheritdoc/>
 
         public void Insert(int index, IModelObject item)
         {
             throw new NotImplementedException();
         }
+/// <inheritdoc/>
 
         public void RemoveAt(int index)
         {
             objects.RemoveAt(index);
         }
+/// <inheritdoc/>
 
         public void Add(IModelObject item)
         {
             objects.Add(item);
         }
+/// <inheritdoc/>
 
         public void AddRange(IEnumerable<IModelObject> items)
         {
@@ -106,11 +111,13 @@ namespace Model.GroupsData
         {
             return objects.Contains(item);
         }
+/// <inheritdoc/>
 
         public void CopyTo(IModelObject[] array, int arrayIndex)
         {
-            throw new NotImplementedException();
+            objects.CopyTo(array, arrayIndex);
         }
+/// <inheritdoc/>
 
         public bool Remove(IModelObject item)
         {
