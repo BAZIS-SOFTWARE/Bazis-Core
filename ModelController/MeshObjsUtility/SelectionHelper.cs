@@ -17,6 +17,7 @@ namespace ModelController.MeshObjsUtility
     /// </summary>
     public class SelectionHelper : ISelectionHelper
     {
+        /// <inheritdoc/>
         public List<int> SelectNodeInDirection(IObjectsData objectsData, float angleInGradus, int numbFirst, int numbSecond, Color color)
         {
             var elements = objectsData.GetAllElements().OrderBy(x => x.Number).ToList();
@@ -53,6 +54,7 @@ namespace ModelController.MeshObjsUtility
             }
             return result.ToList();
         }
+/// <inheritdoc/>
 
         public void SelectNodeInPlane(IObjectsData objectsData, Plane plane, Color color)
                     
