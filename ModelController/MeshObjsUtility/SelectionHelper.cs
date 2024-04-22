@@ -17,34 +17,27 @@ namespace ModelController.MeshObjsUtility
     /// </summary>
     public class SelectionHelper : ISelectionHelper
     {
-/// <inheritdoc/>
-
-        public List<int> SelectNodeInDirection(IObjectsData objectsData,float angleInGradus, int numbFirst, int numbSecond, Color color)     
+        public List<int> SelectNodeInDirection(IObjectsData objectsData, float angleInGradus, int numbFirst, int numbSecond, Color color)
         {
             var elements = objectsData.GetAllElements().OrderBy(x => x.Number).ToList();
-
-            var interfacedElements = new InterfacedNodesFinder().Find(elements);
-            
             var nodes = objectsData.NodeCollection.ToArray();
-            
-            var firstNode = nodes.Find(numbFirst);
-            var secondNode = nodes.Find(numbSecond);
-
-            var previousDirection = secondNode.Position.Sub(firstNode.Position);
+            var nodeOne = nodes.Find(numbFirst);
+            var nodeTwo = nodes.Find(numbSecond);
+            var previousDirection = nodeTwo.Position.Sub(nodeOne.Position);
             var result = new HashSet<int> { numbFirst, numbSecond };
-            var currentNode = secondNode;
+            var currentNode = nodeTwo;
             var isMoveNext = true;
             while (isMoveNext)
             {
                 isMoveNext = false;
-                foreach(var elementNumber in interfacedElements[currentNode.Number])
-                {           
-                    var element = elements.Find(elementNumber);
-                    foreach(var node in element.GetVertexes())
+                foreach (var element in currentNode.GetElements())
+                {
+                    foreach (var node in element.GetVertexes())
                     {
                         var currentDirection = node.Position.Sub(currentNode.Position);
-                        var angle = Math.Acos(Vector.GetCosAngleVectors(currentDirection, previousDirection));
-                        if(angle <= ConvertGradusToRadian(angleInGradus) && !result.Contains(node.Number))
+                        var cos = Math.Round(Vector.GetCosAngleVectors(currentDirection, previousDirection), 2);
+                        var angle = Math.Acos(cos);
+                        if (angle <= ConvertGradusToRadian(angleInGradus) && !result.Contains(node.Number))
                         {
                             currentNode = node;
                             previousDirection = currentDirection;
@@ -60,7 +53,6 @@ namespace ModelController.MeshObjsUtility
             }
             return result.ToList();
         }
-/// <inheritdoc/>
 
         public void SelectNodeInPlane(IObjectsData objectsData, Plane plane, Color color)
                     
