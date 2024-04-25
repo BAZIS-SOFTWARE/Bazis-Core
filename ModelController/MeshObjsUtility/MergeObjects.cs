@@ -17,7 +17,8 @@ namespace ModelController.MeshObjsUtility
     public class MergeObjects : IObjectsMerger
     {
         /// <inheritdoc/>
-        public void Merge(List<List<int>> numbers,List<IModelObject> modelObjects)
+        public IEnumerable<T> Merge<T>(List<List<int>>numbers,List<T> modelObjects)
+            where T : IModelObject
         {
             var masterNumbers = modelObjects.Select(x => x.Number).ToList();
             for (int i = 0; i < numbers.Count; i++)
@@ -35,10 +36,7 @@ namespace ModelController.MeshObjsUtility
                     modelObjects[slaveInd] = modelObjects[masterInd];
                 }
             }
-            //var noDublicate = masterObjs.Distinct(new EqualityComparerByNumber<IModelObject>()).ToList();
-            //MergeSort<IModelObject>.MergeSortFunction(noDublicate);
-            //NodeCollection.Clear();
-            //NodeCollection.AddRange(noDublicate);
+            return modelObjects.Distinct();
         }
     }
 }

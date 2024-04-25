@@ -181,13 +181,15 @@ namespace TestModel
             var coincidentNodes = finder.Find(model.ObjectData.GetObjects(ObjType.Узел).ToList(), 0.01f);
 
             var merger = new MergeObjects();
-            merger.Merge(coincidentNodes, model.ObjectData.GetObjects(ObjType.Узел).ToList());
+
+            var mergedNodes = merger.Merge(coincidentNodes, model.ObjectData.NodeCollection.ToList());
 
             //assert
-            var nodes = model.ObjectData.GetObjects(ObjType.Узел).ToList();
-            var numb = nodes.First().Number;
+            model.ObjectData.NodeCollection.Clear();
+            model.ObjectData.NodeCollection.AddRange(mergedNodes);
+            var numb = mergedNodes.First().Number;
 
-            foreach (var item in nodes.Skip(1))
+            foreach (var item in mergedNodes.Skip(1))
             {
                 if (item.Number <= numb)
                     throw new Exception($"{item.Number}");

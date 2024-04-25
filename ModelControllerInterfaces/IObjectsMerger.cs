@@ -15,8 +15,13 @@ namespace ModelControllerInterfaces
         /// <summary>
         /// Merge
         /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <param name="numbers"></param>
         /// <param name="modelObjects"></param>
-        void Merge(List<List<int>> numbers, List<IModelObject> modelObjects);
+        /// <returns>
+        /// Перечисление слитых объектов
+        /// </returns>
+        IEnumerable<T> Merge<T>(List<List<int>> numbers, List<T> modelObjects)
+                    where T : IModelObject;
     }
 }
