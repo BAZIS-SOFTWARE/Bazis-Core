@@ -20,7 +20,8 @@ namespace ModelControllerInterfaces
         /// <returns>
         /// Список групп элементов, находящихся на расстоянии друг от друга меньше заданного.
         /// </returns>
-        List<List<int>> Find(List<IModelObject> modelObjects, float distance);
+        List<List<int>> Find<T>(List<T> modelObjects, float distance)
+            where T : IModelObject;
 
         /// <summary>
         /// ProgressEvent

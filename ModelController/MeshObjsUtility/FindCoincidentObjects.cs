@@ -16,7 +16,8 @@ namespace ModelController.MeshObjsUtility
 /// <inheritdoc/>
 
 
-        public List<List<int>> Find(List<IModelObject> modelObjects, float distance)
+        public List<List<int>> Find<T>(List<T> modelObjects, float distance)
+            where T : IModelObject
         {
             var tree = BuildTree(modelObjects);
             modelObjects.ForEach(obj => obj.ViewState = false);
