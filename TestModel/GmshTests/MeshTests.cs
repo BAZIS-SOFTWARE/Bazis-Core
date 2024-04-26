@@ -419,5 +419,33 @@ namespace TestModel.GmshTests
             var afterResetNodeCount = controller.GetNodes(1, curveTag).Count;
             Assert.AreEqual(defaultNodeCount, afterResetNodeCount);
         }
+
+        [DataTestMethod]
+        [DataRow("Cilindr.step", 15, 3, 139457)]
+        public void ExtendFilterTest(string fileName, double distFromBound, double sizeMax, int expElements)
+        {
+            var ierr = 0;
+            controller.Open(modelFolder + fileName, ref ierr);
+            var field = controller.ModelMeshFieldAdd("Extend", -1, ref ierr);
+            int[] pointDimTags, curveDimTags, surfDimTags;
+            controller.ModelGetGeometryEntities(out pointDimTags, 0);
+            controller.ModelMeshSetSize(pointDimTags, (IntPtr)pointDimTags.Length, 0.4, ref ierr);
+            controller.ModelGetGeometryEntities(out curveDimTags, 1);
+            controller.ModelGetGeometryEntities(out surfDimTags, 2);
+            var curveTags = curveDimTags.Where((v, i) => (i & 1) != 0)
+                                        .Select(v => (double)v).ToArray();
+            var surfTags = surfDimTags.Where((v, i) => (i & 1) != 0)
+                                      .Select(v => (double)v).ToArray();
+            controller.ModelMeshFieldSetNumbers(field, "CurvesList", curveTags, (IntPtr)curveTags.Length, ref ierr);
+            controller.ModelMeshFieldSetNumbers(field, "SurfacesList", surfTags, (IntPtr)surfTags.Length, ref ierr);
+            controller.ModelMeshFieldSetNumber(field, "DistMax", distFromBound, ref ierr);
+            controller.ModelMeshFieldSetNumber(field, "SizeMax", sizeMax, ref ierr);
+            controller.ModelMeshFieldSetAsBackgroundMesh(field, ref ierr);
+            controller.OptionSetNumber("Mesh.MeshSizeExtendFromBoundary", -2, ref ierr);
+            controller.ModelMeshGenerate(3, ref ierr);
+            var list = controller.GetMeshObjects();
+            controller.ModelMeshFieldRemove(field, ref ierr);
+            Assert.AreEqual(expElements, list.Item4.Count);
+        }
     }
 }

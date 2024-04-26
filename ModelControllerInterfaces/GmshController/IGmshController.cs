@@ -73,6 +73,13 @@ namespace ModelControllerInterfaces.GmshController
         void ModelMeshFieldSetAsBoundaryLayer(int tag, ref int ierr);
 
         /// <summary>
+        /// Установить поле как BackgroundMesh
+        /// </summary>
+        /// <param name="tag">[In]Идентифкатор поля</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void ModelMeshFieldSetAsBackgroundMesh(int tag, ref int ierr);
+
+        /// <summary>
         /// Удалить объект MeshField
         /// </summary>
         /// <param name="tag">[In]Идентификатор</param>

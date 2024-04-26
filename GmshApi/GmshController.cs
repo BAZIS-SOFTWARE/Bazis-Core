@@ -2185,6 +2185,12 @@ namespace GmshApi.GmshController
         }
         /// <inheritdoc/>
 
+        public void ModelMeshFieldSetAsBackgroundMesh(int tag, ref int ierr)
+        {
+            gmshModelMeshFieldSetAsBackgroundMesh(tag, ref ierr);
+        }
+        /// <inheritdoc/>
+
         public void ModelMeshFieldRemove(int tag, ref int ierr)
         {
             gmshModelMeshFieldRemove(tag, ref ierr);
