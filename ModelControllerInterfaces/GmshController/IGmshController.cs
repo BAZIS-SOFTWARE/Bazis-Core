@@ -307,6 +307,12 @@ namespace ModelControllerInterfaces.GmshController
         /// <param name="ierr">[Out]Флаг ошибки</param>
         void Open(string fileName, ref int ierr);
         /// <summary>
+        /// Экспортирует текущее состояние сетки\модели в форматы gmsh
+        /// </summary>
+        /// <param name="fileName">[In]Путь до файла</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void Write(string fileName, ref int ierr);
+        /// <summary>
         /// Удаляет gmsh геометрически сущности заданные парой dimTags
         /// </summary>
         /// <param name="dimTags">[In]Массив пар dim:tag</param>

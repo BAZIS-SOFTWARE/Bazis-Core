@@ -2035,6 +2035,12 @@ namespace GmshApi.GmshController
         }
         /// <inheritdoc/>
 
+        public void Write(string fileName, ref int ierr)
+        {
+            gmshWrite(fileName, ref ierr);
+        }
+        /// <inheritdoc/>
+
         public void ModelRemoveEntities(int[] dimTags, IntPtr dimTags_n, int recursive, ref int ierr)
         {
             gmshModelRemoveEntities(dimTags, dimTags_n, recursive, ref ierr);

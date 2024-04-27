@@ -8,6 +8,7 @@ using ModelInterfaces;
 using System.Collections.Generic;
 using Model.MeshObjects;
 using ModelControllerInterfaces.GmshController;
+using ModelInterfaces.ObjectsFinders;
 
 namespace TestModel.GmshTests
 {
@@ -420,6 +421,9 @@ namespace TestModel.GmshTests
             Assert.AreEqual(defaultNodeCount, afterResetNodeCount);
         }
 
+        //Тест фильтра Extend, проверяется последний аргумент(то что получили в gmsh) с актуальным значением
+        //Берется ближайший 3д элемент у границы модели и ближайший 3д элемент в центре, предполагается,
+        //что объем элементов около центральной точки будет больше объемов граничных элементов 
         [DataTestMethod]
         [DataRow("Cilindr.step", 15, 3, 139457)]
         public void ExtendFilterTest(string fileName, double distFromBound, double sizeMax, int expElements)
@@ -427,7 +431,7 @@ namespace TestModel.GmshTests
             var ierr = 0;
             controller.Open(modelFolder + fileName, ref ierr);
             var field = controller.ModelMeshFieldAdd("Extend", -1, ref ierr);
-            int[] pointDimTags, curveDimTags, surfDimTags;
+            int[] pointDimTags, curveDimTags, surfDimTags, volDimTags;
             controller.ModelGetGeometryEntities(out pointDimTags, 0);
             controller.ModelMeshSetSize(pointDimTags, (IntPtr)pointDimTags.Length, 0.4, ref ierr);
             controller.ModelGetGeometryEntities(out curveDimTags, 1);
@@ -441,11 +445,32 @@ namespace TestModel.GmshTests
             controller.ModelMeshFieldSetNumber(field, "DistMax", distFromBound, ref ierr);
             controller.ModelMeshFieldSetNumber(field, "SizeMax", sizeMax, ref ierr);
             controller.ModelMeshFieldSetAsBackgroundMesh(field, ref ierr);
+            //Устанавливаем флаг, чтобы gmsh учитывал фильтр Extend и применял для сетки
             controller.OptionSetNumber("Mesh.MeshSizeExtendFromBoundary", -2, ref ierr);
             controller.ModelMeshGenerate(3, ref ierr);
             var list = controller.GetMeshObjects();
             controller.ModelMeshFieldRemove(field, ref ierr);
             Assert.AreEqual(expElements, list.Item4.Count);
+            controller.ModelGetGeometryEntities(out volDimTags, 3);
+            double xC = 0 , yC = 0, zC = 0;//Точка центра объема
+            double xB = 0, yB = 0, zB = 0;//Точка на границе объема
+            long[] centerElemTags, boundElemTags;
+            controller.ModelOccGetCenterOfMass(3, volDimTags[1], ref xC, ref yC, ref zC, ref ierr);
+            controller.ModelMeshGetElementsByCoordinates(xC, yC, zC, 3, false, out centerElemTags);
+            controller.ModelOccGetCenterOfMass(0, pointDimTags[1], ref xB, ref yB, ref zB, ref ierr);
+            controller.ModelMeshGetElementsByCoordinates(xB, yB, zB, 3, false, out boundElemTags);
+            Assert.AreNotEqual(null, centerElemTags);
+            Assert.AreNotEqual(null, boundElemTags);
+            var centrElement = list.Item4.Find((int)centerElemTags[0]);
+            var boundElement = list.Item4.Find((int)boundElemTags[0]);
+            Assert.AreNotEqual(null, centrElement);
+            Assert.AreNotEqual(null, boundElement);
+            var cVolume = centrElement.CalcVolume();
+            var bVolume = boundElement.CalcVolume();
+            Assert.IsTrue(cVolume > bVolume);
+            /*
+            controller.OptionSetNumber("Mesh.SaveGroupsOfNodes", 1, ref ierr);//Для визуального теста
+            controller.Write(@"C:\Mesh\Cilindr.inp", ref ierr);*/
         }
     }
 }
