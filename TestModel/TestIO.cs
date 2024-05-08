@@ -109,6 +109,7 @@ namespace TestModel
             model.Load(path);
 
             //assert
+            Assert.AreNotEqual(model.GroupData.Count, 0);
         }
 
         [TestMethod]

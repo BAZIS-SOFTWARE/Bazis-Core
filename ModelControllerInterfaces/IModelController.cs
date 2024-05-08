@@ -63,11 +63,6 @@ namespace ModelControllerInterfaces
         /// DeloneMesh2DCreator. Creates 2D mesh use already existed nodes by Delone criterion. 
         /// </summary>
         IDeloneMesh2DCreator DeloneMesh2DCreator { get; }
-
-        /// <summary>
-        /// IMesh2DRefiner
-        /// </summary>
-        IMesh2DRefiner Mesh2DRefiner { get; }
         /// <summary>
         /// NormalCalculator
         /// </summary>

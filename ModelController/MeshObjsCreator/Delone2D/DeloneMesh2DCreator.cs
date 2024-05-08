@@ -4,6 +4,7 @@ using System.Linq;
 using Model.MeshObjects;
 using ModelControllerInterfaces.Delone2D;
 using ModelInterfaces.MeshObjects;
+using Mesher;
 
 namespace ModelController.MeshObjsCreator.Delone2D
 {
@@ -12,14 +13,14 @@ namespace ModelController.MeshObjsCreator.Delone2D
     /// </summary>
     public class DeloneMesh2DCreator : IDeloneMesh2DCreator
     {
-        private DeloneTriangulation2D instance;
+        private DeloneTriangulation instance;
 
         /// <summary>
         /// DeloneMesh2DCreator
         /// </summary>
         public DeloneMesh2DCreator()
         {
-            instance = new DeloneTriangulation2D();
+            instance = new DeloneTriangulation();
         }
 /// <inheritdoc/>
 
@@ -27,14 +28,20 @@ namespace ModelController.MeshObjsCreator.Delone2D
         {
             var nodesInPlane = GetNodesInLocalPlaneCoordinates(nodes);
             var numberToSourceNode = nodes.ToDictionary(n => n.Number, n => n);
-            var resultNodeIndeces = instance.GetTriangles(nodesInPlane);
-            return resultNodeIndeces.Select((nodeArray, index) => 
-                            new Triangle(index, nodeArray.Select(node => numberToSourceNode[node.Number]).ToArray()));
+            var resultNodeIndeces = instance.GetMesh(nodesInPlane);
+
+            var counter = 0;
+            foreach (var item in resultNodeIndeces.Elements)
+            {
+                var nds = item.GetNodes().Select(x => numberToSourceNode[x.Index]);
+                yield return new Triangle(counter++, nds.ToArray());
+            }
+
         }
 
-        private List<DeloneNode2D> GetNodesInLocalPlaneCoordinates(IEnumerable<INode> nodes)
+        private List<Node2D> GetNodesInLocalPlaneCoordinates(IEnumerable<INode> nodes)
         {
-            return nodes.Select(n => new DeloneNode2D(n.Number, new Point2D(n.Position._x, n.Position._y)))
+            return nodes.Select(n => new Node2D(n.Number, new Mesher.Point2D(n.Position._x, n.Position._y)))
                 .ToList();
         }
     }

@@ -11,6 +11,7 @@ using Model.GeometryObjects;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using Model.GroupsData;
 
 namespace Model.IO
 {
@@ -57,9 +58,11 @@ namespace Model.IO
 
                 LoadEvent?.Invoke(this, new LoaderEventArgs("Начало импорта STL модели"));
 
+                var solidCounter = 0;
                 while (!reader.EndOfStream)
                 {
                     var surfaces = new List<GeometrySurface>();
+
                     while (str != null && !str.Contains("endsolid"))
                     {
                         if (str != null && str.Contains("outer loop"))
@@ -86,6 +89,10 @@ namespace Model.IO
                     }
                     str = reader.ReadLine();
                     modelData.ObjectData.Fig2DCollection.Add(new SurfaceFigure(counter++, surfaces.ToArray()));
+
+                    var group = new Group($"newSolid_{solidCounter++}", ObjType.Фигура2D);
+                    group.AddRange(surfaces);
+                    modelData.GroupData.Add(group);
                 }
                 LoadEvent?.Invoke(this, new LoaderEventArgs("Модель загружена"));
             }
