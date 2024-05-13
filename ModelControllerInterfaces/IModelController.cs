@@ -1,6 +1,5 @@
-﻿using ModelControllerInterfaces.Delone2D;
+﻿using ModelControllerInterfaces.SurfaceMeshCreator;
 using ModelControllerInterfaces.MeshObjsUtility;
-using ModelControllerInterfaces.Utilities;
 
 namespace ModelControllerInterfaces
 {
@@ -22,10 +21,6 @@ namespace ModelControllerInterfaces
         /// Extractor2DFrom3D
         /// </summary>
         IExtractor2DFrom3D Extractor2DFrom3D { get; }
-        /// <summary>
-        /// Sew3DFrom2D
-        /// </summary>
-        ISew3DFrom2D Sew3DFrom2D { get; }
         /// <summary>
         /// BoundaryEdgesFinder
         /// </summary>
@@ -62,7 +57,11 @@ namespace ModelControllerInterfaces
         /// <summary>
         /// DeloneMesh2DCreator. Creates 2D mesh use already existed nodes by Delone criterion. 
         /// </summary>
-        IDeloneMesh2DCreator DeloneMesh2DCreator { get; }
+        ISurfaceMeshCreator SurfaceMeshCreator { get; }
+        /// <summary>
+        /// VolumeMesh3DCreator
+        /// </summary>
+        IVolumeMeshCreator VolumeMeshCreator { get; }
         /// <summary>
         /// NormalCalculator
         /// </summary>
