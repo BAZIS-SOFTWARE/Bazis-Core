@@ -65,11 +65,11 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Functions, Version=1.0.2.44, Culture=neutral, PublicKeyToken=65fde98421b2fc88, processorArchitecture=MSIL">
-      <HintPath>..\packages\Functions.1.0.2.44\lib\net48\Functions.dll</HintPath>
+    <Reference Include="ExtensionsLib, Version=1.0.1.14, Culture=neutral, PublicKeyToken=8c358dc795e42d21, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExtensionsLib.1.0.1.14\lib\net48\ExtensionsLib.dll</HintPath>
     </Reference>
-    <Reference Include="Geometry, Version=2.0.7.26, Culture=neutral, PublicKeyToken=d064922373770c4c, processorArchitecture=MSIL">
-      <HintPath>..\packages\Geometry.2.0.7.26\lib\net48\Geometry.dll</HintPath>
+    <Reference Include="Geometry, Version=2.0.7.30, Culture=neutral, PublicKeyToken=d064922373770c4c, processorArchitecture=MSIL">
+      <HintPath>..\packages\Geometry.2.0.7.30\lib\net48\Geometry.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -80,6 +80,12 @@
     </Reference>
     <Reference Include="Octree, Version=2.1.10.0, Culture=neutral, PublicKeyToken=2f43c75143b659d5, processorArchitecture=MSIL">
       <HintPath>..\packages\NetOctree.2.1.10\lib\net48\Octree.dll</HintPath>
+    </Reference>
+    <Reference Include="SurfaceMesher, Version=1.0.1.17, Culture=neutral, PublicKeyToken=408a34659fa24684, processorArchitecture=MSIL">
+      <HintPath>..\packages\SurfaceMesher.1.0.1.17\lib\net48\SurfaceMesher.dll</HintPath>
+    </Reference>
+    <Reference Include="SurfaceMesherInterfaces, Version=1.0.1.15, Culture=neutral, PublicKeyToken=408a34659fa24684, processorArchitecture=MSIL">
+      <HintPath>..\packages\SurfaceMesherInterfaces.1.0.1.15\lib\net48\SurfaceMesherInterfaces.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -151,7 +157,7 @@
       <Name>GmshApi</Name>
     </ProjectReference>
     <ProjectReference Include="..\ModelControllerInterfaces\ModelControllerInterfaces.csproj">
-      <Project>{a7ff5f36-3905-4526-b825-b8ae9cdbb635}</Project>
+      <Project>{A7FF5F36-3905-4526-B825-B8AE9CDBB635}</Project>
       <Name>ModelControllerInterfaces</Name>
     </ProjectReference>
     <ProjectReference Include="..\ModelController\ModelController.csproj">

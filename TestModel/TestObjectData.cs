@@ -1,5 +1,4 @@
-﻿using GmshApi.GmshController;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using Model.MeshObjects;
 using Model.IO;
@@ -10,8 +9,6 @@ using Model.GeometryObjects;
 using Geometry;
 using System.Linq;
 using Model.GroupsData;
-using Model.ObjectsCollections;
-using System.Reflection;
 
 namespace TestModel
 {

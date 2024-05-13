@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Linq;
+using SurfaceMesher;
 
 namespace TestModel
 {
@@ -31,7 +32,7 @@ namespace TestModel
             };
             var triangle = new Triangle(4, nodes);
 
-            var m = typeof(Sew3DFrom2D).GetMethod("CalcCircumcenter", BindingFlags.NonPublic | BindingFlags.Static);
+            var m = typeof(VolumeMeshCreator).GetMethod("CalcCircumcenter", BindingFlags.NonPublic | BindingFlags.Static);
             var circumcenter = m.Invoke(null, new object[] { triangle }) as Point3D;
 
             var r1 = circumcenter.Sub(nodes[0].Position).GetSquareSumCoords();
@@ -48,19 +49,19 @@ namespace TestModel
         {
             var (pointsForFirstPlane, pointsForSecondPlane) = GetPointOn2Planes();
 
-            var instance = new DeloneMesh2DCreator();
-            instance.MakeTriangulation(pointsForFirstPlane);
+            var instance = new SurfaceMeshCreator(new DeloneTriangulation());
+            instance.DeloneTriangulation(pointsForFirstPlane);
 
-            var triangulation1 = instance.MakeTriangulation(pointsForFirstPlane).ToList();
+            var triangulation1 = instance.DeloneTriangulation(pointsForFirstPlane).ToList();
 
-            var triangulation2 = instance.MakeTriangulation(pointsForSecondPlane).ToList();
+            var triangulation2 = instance.DeloneTriangulation(pointsForSecondPlane).ToList();
 
             Assert.IsTrue(TestDeloneTriangles(triangulation1));
             Assert.IsTrue(TestDeloneTriangles(triangulation2));
 
-            var tetraMapper = new Sew3DFrom2D();
+            var volumeMesher = new VolumeMeshCreator();
 
-            var map = tetraMapper.Create(triangulation1.OfType<IElement2D>().ToList(),
+            var map = volumeMesher.Sew3Dfrom2D(triangulation1.OfType<IElement2D>().ToList(),
                 triangulation2.OfType<IElement2D>().ToList());
 
             Assert.IsTrue(TestDeloneTetras(map.OfType<Tetra>().ToList()));

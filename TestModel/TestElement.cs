@@ -4,7 +4,6 @@ using System.Linq;
 using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
-using ModelInterfaces;
 using ModelController.MeshObjsCreator;
 using Model.MeshObjects;
 

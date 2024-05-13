@@ -1,15 +1,11 @@
-﻿using System;
-using Geometry;
+﻿using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
 using Model.MeshObjects;
-using ModelController.MeshObjsCreator;
-using ModelInterfaces;
-using ModelInterfaces.MeshObjects;
 using ModelController.MeshObjsCreator.Delone2D;
+using SurfaceMesher;
 
 namespace TestModel
 {
@@ -31,9 +27,9 @@ namespace TestModel
                 new Node(7, new Point3D(-6, -4, 0)),
                 new Node(8, new Point3D(5, -4, 0))
             };
-            var instance = new DeloneMesh2DCreator();
+            var instance = new SurfaceMeshCreator(new DeloneTriangulation());
             
-            var triangulation = instance.MakeTriangulation(nodes).ToList();
+            var triangulation = instance.DeloneTriangulation(nodes).ToList();
 
             Assert.AreEqual(11, triangulation.Count);
         }
@@ -53,12 +49,12 @@ namespace TestModel
                 new Node(7, new Point3D(-6, -4, 0)),
                 new Node(8, new Point3D(5, -4, 0))
             };
-            var instance = new DeloneMesh2DCreator();
-            var triangulation = instance.MakeTriangulation(nodes).ToList();
+            var instance = new SurfaceMeshCreator(new DeloneTriangulation());
+            var triangulation = instance.DeloneTriangulation(nodes).ToList();
 
             Assert.AreEqual(11, triangulation.Count);
 
-            triangulation = instance.MakeTriangulation(nodes).ToList();
+            triangulation = instance.DeloneTriangulation(nodes).ToList();
 
             Assert.AreEqual(11, triangulation.Count);
         }
@@ -76,8 +72,8 @@ namespace TestModel
                 new Node(5, new Point3D(-2, -3, 0)),
                 new Node(6, new Point3D(4, -2, 0))
             };
-            var instance = new DeloneMesh2DCreator();
-            var triangulation = instance.MakeTriangulation(nodes).ToList();
+            var instance = new SurfaceMeshCreator(new DeloneTriangulation());
+            var triangulation = instance.DeloneTriangulation(nodes).ToList();
 
             Assert.AreEqual(7, triangulation.Count);
         }
@@ -92,8 +88,8 @@ namespace TestModel
                 new Node(2, new Point3D(1, -1, 0)),
                 new Node(3, new Point3D(-1, -1, 0))
             };
-            var instance = new DeloneMesh2DCreator();
-            var triangulation = instance.MakeTriangulation(nodes).ToList();
+            var instance = new SurfaceMeshCreator(new DeloneTriangulation());
+            var triangulation = instance.DeloneTriangulation(nodes).ToList();
             Assert.AreEqual(2, triangulation.Count);
         }
 
@@ -112,8 +108,8 @@ namespace TestModel
                     nodes.Add(node);
                 }
 
-                var instance = new DeloneMesh2DCreator();
-                var triangulation = instance.MakeTriangulation(nodes).ToList();
+                var instance = new SurfaceMeshCreator(new DeloneTriangulation());
+                var triangulation = instance.DeloneTriangulation(nodes).ToList();
             }
         }
     }

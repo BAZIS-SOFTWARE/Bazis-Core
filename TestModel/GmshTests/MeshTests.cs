@@ -2,11 +2,8 @@
 using System.Linq;
 using GmshApi.GmshController;
 using System;
-using Functions.Sort;
 using Model;
 using ModelInterfaces;
-using System.Collections.Generic;
-using Model.MeshObjects;
 using ModelControllerInterfaces.GmshController;
 using ModelInterfaces.ObjectsFinders;
 
@@ -461,8 +458,8 @@ namespace TestModel.GmshTests
             controller.ModelMeshGetElementsByCoordinates(xB, yB, zB, 3, false, out boundElemTags);
             Assert.AreNotEqual(null, centerElemTags);
             Assert.AreNotEqual(null, boundElemTags);
-            var centrElement = list.Item4.Find((int)centerElemTags[0]);
-            var boundElement = list.Item4.Find((int)boundElemTags[0]);
+            var centrElement =  ByNumberFinder.Find(list.Item4,(int)centerElemTags[0]);
+            var boundElement = ByNumberFinder.Find(list.Item4,(int)boundElemTags[0]);
             Assert.AreNotEqual(null, centrElement);
             Assert.AreNotEqual(null, boundElement);
             var cVolume = centrElement.CalcVolume();

@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
-using Model.Events;
 using ModelInterfaces;
 using ModelController.MeshObjsUtility;
 using Model.IO;
 using Model.MeshObjects;
-using GmshApi.GmshController;
 using ModelInterfaces.MeshObjects;
 
 namespace TestModel

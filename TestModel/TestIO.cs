@@ -2,7 +2,6 @@ using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
-using Model.MeshObjects;
 using Model.IO;
 using ModelInterfaces;
 

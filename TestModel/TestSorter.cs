@@ -1,8 +1,6 @@
 ﻿using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Model;
 using Model.MeshObjects;
-using ModelInterfaces;
 using System;
 using System.Collections.Generic;
 

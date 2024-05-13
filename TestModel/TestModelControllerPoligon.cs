@@ -3,9 +3,7 @@ using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using Model.GeometryObjects;
-using Model.MeshObjects;
 using ModelController.ModelScenePresentator;
-using ModelInterfaces;
 
 namespace TestModel
 {

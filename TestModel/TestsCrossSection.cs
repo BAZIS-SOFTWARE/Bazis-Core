@@ -2,11 +2,8 @@ using System;
 using ModelController.MeshObjsUtility;
 using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ModelInterfaces;
-using Model.IO;
 using System.Collections.Generic;
 using System.Linq;
-using Model;
 using Model.MeshObjects;
 
 namespace TestModel
