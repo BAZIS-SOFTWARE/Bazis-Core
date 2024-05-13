@@ -4,7 +4,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using Geometry;
 using ModelInterfaces;
-using Functions.Extensions;
 using System.IO;
 using Model.MeshObjects;
 using Model.GeometryObjects;
@@ -12,6 +11,7 @@ using ModelInterfaces.MeshObjects;
 using ModelInterfaces.GeometryObjects;
 using ModelInterfaces.ObjectsFinders;
 using ModelControllerInterfaces.GmshController;
+using ExtensionsLib;
 
 namespace GmshApi.GmshController
 {
@@ -1802,7 +1802,7 @@ namespace GmshApi.GmshController
                         for (int k = 0; k < nodesCount; ++k)
                         {
                             var tagStride = j * nodesCount + k;
-                            nodesPerElems[k] = nodes.Find((int)nodeTags[i][tagStride]);
+                            nodesPerElems[k] = ByNumberFinder.Find(nodes,(int)nodeTags[i][tagStride]);
                             if (nodesPerElems[k] == null)
                                 throw new Exception($"Элемент с номером {nodeTags[i][tagStride]} не найден");
                         }
@@ -1839,7 +1839,7 @@ namespace GmshApi.GmshController
                         for (int k = 0; k < nodesCount; ++k)
                         {
                             var tagStride = j * nodesCount + k;
-                            nodesPerElems[k] = nodes.Find((int)nodeTags[i][tagStride]);
+                            nodesPerElems[k] = ByNumberFinder.Find(nodes,(int)nodeTags[i][tagStride]);
                             if (nodesPerElems[k] == null)
                                 throw new Exception($"Элемент с номером {nodeTags[i][tagStride]} не найден");
                         }
