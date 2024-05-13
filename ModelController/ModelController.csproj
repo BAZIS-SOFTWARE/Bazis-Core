@@ -4,7 +4,7 @@
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>ModelController</Title>
-    <Version>3.0.11.58</Version>
+    <Version>3.0.11.59</Version>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>ModelControllerKey.snk</AssemblyOriginatorKeyFile>
@@ -21,8 +21,8 @@
     <None Remove="Icon.png" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MeshObjsCreator\Sew3DFrom2D.cs" />
-    <Compile Include="MeshObjsCreator\Delone2D\DeloneMesh2DCreator.cs" />
+    <Compile Include="MeshObjsCreator\Delone2D\SurfaceMeshCreator.cs" />
+    <Compile Include="MeshObjsCreator\VolumeMeshCreator.cs" />
     <Compile Include="MeshObjsUtility\CrossSection.cs" />
     <Compile Include="ModelController.cs" />
     <Compile Include="ModelScenePresentator\GlObjsPresenters\LineObjsPresenter.cs" />
@@ -61,15 +61,11 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NetOctree" Version="2.1.10" />
+    <PackageReference Include="SurfaceMesherInterfaces" Version="1.0.1.15" />
     <PackageReference Include="System.Collections.Immutable" Version="8.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ModelControllerInterfaces\ModelControllerInterfaces.csproj" />
     <ProjectReference Include="..\Model\Model.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="Mesher">
-      <HintPath>..\DeloneMesher2D\Mesher.dll</HintPath>
-    </Reference>
   </ItemGroup>
 </Project>

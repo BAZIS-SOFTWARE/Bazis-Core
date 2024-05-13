@@ -1,12 +1,6 @@
-﻿using ModelInterfaces.ObjectsComparers;
-using ModelInterfaces.ObjectsFinders;
-using ModelInterfaces;
+﻿using ModelInterfaces;
 using System.Collections.Generic;
 using System.Linq;
-using Functions.Sort;
-using Model;
-using Model.ObjectsCollections;
-using ModelInterfaces.MeshObjects;
 using ModelControllerInterfaces;
 
 namespace ModelController.MeshObjsUtility

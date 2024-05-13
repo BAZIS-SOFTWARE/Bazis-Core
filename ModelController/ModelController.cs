@@ -1,9 +1,8 @@
 ﻿using ModelController.MeshObjsCreator;
-using ModelController.MeshObjsCreator.Delone2D;
 using ModelController.MeshObjsUtility;
 using ModelController.ModelScenePresentator;
 using ModelControllerInterfaces;
-using ModelControllerInterfaces.Delone2D;
+using ModelControllerInterfaces.SurfaceMeshCreator;
 using ModelControllerInterfaces.MeshObjsUtility;
 using ModelControllerInterfaces.Utilities;
 
@@ -20,9 +19,6 @@ namespace ModelController
 /// <inheritdoc/>
 
         public IExtractor2DFrom3D Extractor2DFrom3D { get; } = new Extract2DFrom3D();
-/// <inheritdoc/>
-
-        public ISew3DFrom2D Sew3DFrom2D { get; } = new Sew3DFrom2D();
 /// <inheritdoc/>
 
         public IBoundaryEdgesFinder BoundaryEdgesFinder { get; } = new FindBoundaryEdges();
@@ -46,7 +42,7 @@ namespace ModelController
         public IObjectsMerger ObjectsMerger { get; } = new MergeObjects();
 /// <inheritdoc/>
 
-        public IDeloneMesh2DCreator DeloneMesh2DCreator { get; } = new DeloneMesh2DCreator();
+        public ISurfaceMeshCreator SurfaceMeshCreator { get; set; }
 
 /// <inheritdoc/>
 
@@ -54,5 +50,8 @@ namespace ModelController
 /// <inheritdoc/>
 
         public INormalCalculator NormalCalculator { get; } = new NormalsCalculator();
+/// <inheritdoc/>
+
+        public IVolumeMeshCreator VolumeMeshCreator { get; set; }
     }
 }
