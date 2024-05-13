@@ -1,5 +1,4 @@
 ﻿using Geometry;
-using Model.MeshObjects;
 using Model.Events;
 using ModelInterfaces;
 using System;
@@ -8,8 +7,6 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using Model.GeometryObjects;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 using Model.GroupsData;
 

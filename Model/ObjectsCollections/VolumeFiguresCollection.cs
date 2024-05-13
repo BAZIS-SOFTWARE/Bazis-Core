@@ -1,11 +1,11 @@
-﻿using Functions.Sort;
-using ModelInterfaces;
+﻿using ModelInterfaces;
 using ModelInterfaces.ObjectsFinders;
 using ModelInterfaces.GeometryObjects;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using SortLib;
 
 namespace Model.ObjectsCollections
 {
@@ -68,7 +68,7 @@ namespace Model.ObjectsCollections
 
         public IVolumeFigure Find(int objNumbr)
         {
-            return figures3D.Find(objNumbr);
+            return ByNumberFinder.Find(figures3D,objNumbr);
         }
         /// <inheritdoc/>
 

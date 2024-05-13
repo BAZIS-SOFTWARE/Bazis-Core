@@ -1,7 +1,7 @@
-﻿using Functions.Sort;
-using ModelInterfaces;
+﻿using ModelInterfaces;
 using ModelInterfaces.GeometryObjects;
 using ModelInterfaces.ObjectsFinders;
+using SortLib;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -68,7 +68,7 @@ namespace Model.ObjectsCollections
 
         public ISurfaceFigure Find(int objNumbr)
         {
-            return figures2D.Find(objNumbr);
+            return ByNumberFinder.Find(figures2D,objNumbr);
         }
         /// <inheritdoc/>
 

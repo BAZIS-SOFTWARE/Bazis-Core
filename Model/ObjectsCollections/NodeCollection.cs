@@ -1,11 +1,11 @@
-﻿using Functions.Sort;
-using ModelInterfaces;
+﻿using ModelInterfaces;
 using ModelInterfaces.ObjectsFinders;
 using ModelInterfaces.MeshObjects;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using SortLib;
 
 namespace Model.ObjectsCollections
 {
@@ -64,7 +64,7 @@ namespace Model.ObjectsCollections
 
         public INode Find(int objNumbr)
         {
-            return nodes.Find(objNumbr);
+            return ByNumberFinder.Find(nodes,objNumbr);
         }
         /// <inheritdoc/>
 

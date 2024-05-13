@@ -5,7 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Functions.Sort;
+using SortLib;
 
 namespace Model.ObjectsCollections
 {
@@ -64,7 +64,7 @@ namespace Model.ObjectsCollections
 
         public IElement2D Find(int objNumbr)
         {
-            return elements2D.Find(objNumbr);
+            return ByNumberFinder.Find(elements2D,objNumbr);
         }
 /// <inheritdoc/>
 

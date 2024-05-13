@@ -199,7 +199,7 @@ namespace Model.IO
 
                 foreach (var index in indexes)
                 {
-                    var obj = elements.Find(index);
+                    var obj = ByNumberFinder.Find(elements,index);
                     newGroup.Add(obj);
                 }
 

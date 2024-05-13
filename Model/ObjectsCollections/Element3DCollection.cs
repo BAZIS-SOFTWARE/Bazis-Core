@@ -1,13 +1,11 @@
-﻿using Functions.Sort;
-using ModelInterfaces;
+﻿using ModelInterfaces;
 using ModelInterfaces.ObjectsFinders;
 using ModelInterfaces.MeshObjects;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using SortLib;
 
 namespace Model.ObjectsCollections
 {
@@ -66,7 +64,7 @@ namespace Model.ObjectsCollections
 
         public IElement3D Find(int objNumbr)
         {
-            return elements3D.Find(objNumbr);
+            return ByNumberFinder.Find(elements3D,objNumbr);
         }
         /// <inheritdoc/>
 

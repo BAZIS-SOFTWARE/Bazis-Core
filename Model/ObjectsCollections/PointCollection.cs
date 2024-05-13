@@ -1,4 +1,4 @@
-﻿using Functions.Sort;
+﻿using SortLib;
 using ModelInterfaces;
 using ModelInterfaces.GeometryObjects;
 using ModelInterfaces.ObjectsFinders;
@@ -64,7 +64,7 @@ namespace Model.ObjectsCollections
 
         public IGeometryPoint Find(int objNumbr)
         {
-            return points.Find(objNumbr);
+            return ByNumberFinder.Find(points,objNumbr);
         }
         /// <inheritdoc/>
 

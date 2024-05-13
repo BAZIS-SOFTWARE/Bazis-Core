@@ -11,7 +11,7 @@
     <AssemblyOriginatorKeyFile>ModelKey.snk</AssemblyOriginatorKeyFile>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>Model</Title>
-    <Version>3.0.9.30</Version>
+    <Version>3.0.9.31</Version>
     <Company>BAZIS SOFTWARE</Company>
     <Product>BAZIS</Product>
     <Description>Contains basic mesh oblects and geometry classes</Description>
@@ -87,9 +87,8 @@
     </None>
   </ItemGroup> 
   <ItemGroup>
-    <PackageReference Include="Functions" Version="1.0.2.44" />
-    <PackageReference Include="Geometry" Version="2.0.7.26" />
     <PackageReference Include="MathNet.Numerics.Signed" Version="5.0.0" />
+    <PackageReference Include="SortLib" Version="1.0.1.11" />
   </ItemGroup> 
   <ItemGroup>
     <ProjectReference Include="..\ModelInterfaces\ModelInterfaces.csproj" />

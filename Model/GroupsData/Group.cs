@@ -1,5 +1,4 @@
-﻿using Functions.Sort;
-using ModelInterfaces;
+﻿using ModelInterfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,6 +6,7 @@ using System.Linq;
 using ModelInterfaces.Attributes;
 using ModelInterfaces.ObjectsComparers;
 using Geometry;
+using ExtensionsLib;
 
 namespace Model.GroupsData
 {
