@@ -1,11 +1,6 @@
-﻿using Functions.Sort;
-using ModelInterfaces;
-using ModelInterfaces.GeometryObjects;
+﻿using ModelInterfaces.GeometryObjects;
 using ModelInterfaces.MeshObjects;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace ModelInterfaces
 {

@@ -9,7 +9,7 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-    <Version>3.0.0.23</Version>
+    <Version>3.0.0.24</Version>
     <Authors>Bilenko Georgy</Authors>
     <Company>BAZIS SOFTWARE</Company>
     <Product>BAZIS</Product>
@@ -32,11 +32,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Geometry" Version="2.0.7.26" />
+    <Folder Include="ObjectsSorters\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ObjectsSorters\" />
+    <PackageReference Include="Geometry" Version="2.0.7.30" />
   </ItemGroup>
 
 </Project>
