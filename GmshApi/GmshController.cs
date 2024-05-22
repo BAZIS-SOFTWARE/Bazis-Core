@@ -604,6 +604,15 @@ namespace GmshApi.GmshController
                                                        ref IntPtr sizes_n, ref int ierr);
         private gmshModelMeshGetSizesFun gmshModelMeshGetSizes;
         /// <summary>
+        /// Взять массу? у dim:tag (для кривых длина кривой)
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="mass">[Out]Масса</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshModelOccGetMassFun(int dim, int tag, ref double mass, ref int ierr);///
+        gmshModelOccGetMassFun gmshModelOccGetMass;
+        /// <summary>
         /// Взять центр масс в dim:tag
         /// </summary>
         /// <param name="dim">[In]Размерность</param>
@@ -1076,6 +1085,7 @@ namespace GmshApi.GmshController
             gmshModelOccGetSurfaceLoops = GetFunction<gmshModelOccGetSurfaceLoopsFun>("gmshModelOccGetSurfaceLoops");
             gmshModelMeshSetSize = GetFunction<gmshModelMeshSetSizeFun>("gmshModelMeshSetSize");
             gmshModelMeshGetSizes = GetFunction<gmshModelMeshGetSizesFun>("gmshModelMeshGetSizes");
+            gmshModelOccGetMass = GetFunction<gmshModelOccGetMassFun>("gmshModelOccGetMass");
             gmshModelOccGetCenterOfMass = GetFunction<gmshModelOccGetCenterOfMassFun>("gmshModelOccGetCenterOfMass");
             #endregion
             #region "Get Mesh delegates"
@@ -2230,6 +2240,22 @@ namespace GmshApi.GmshController
         public void ModelMeshRecombine(ref int ierr)
         {
             gmshModelMeshRecombine(ref ierr);
+        }
+        /// <inheritdoc/>
+        public double GetCurveLength(int curveTag)
+        {
+            var ierr = 0;
+            var length = 0.0;
+            gmshModelOccGetMass(1, curveTag, ref length, ref ierr);
+            return length;
+        }
+        /// <inheritdoc/>
+        public int GetPointsCountByElementSize(int curveTag, float elemSize)
+        {
+            if (elemSize < 0 || Math.Abs(elemSize) < 1E-4)
+                return 0;
+            var length = GetCurveLength(curveTag);
+            return (int)Math.Ceiling(length / elemSize) + 1;
         }
         #endregion
     }

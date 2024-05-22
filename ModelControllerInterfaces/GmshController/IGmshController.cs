@@ -501,5 +501,18 @@ namespace ModelControllerInterfaces.GmshController
         /// <param name="name">[In]Имя сущности</param>
         /// <param name="ierr">[Out]Флаг ошибки</param>
         void ModelRemoveEntityName(string name, ref int ierr);
+        /// <summary>
+        /// Возвращает длину кривой для заданного идентификатора
+        /// </summary>
+        /// <param name="curveTag">[In]Идентификатор кривой</param>
+        /// <returns>Длина кривой</returns>
+        double GetCurveLength(int curveTag);
+        /// <summary>
+        /// Получить число точек на кривой по желаемому размеру элемента
+        /// </summary>
+        /// <param name="curveTag">[In]Идентификатор кривой</param>
+        /// <param name="elemSize">[In]Желаемый размер элемента</param>
+        /// <returns>Число точек</returns>
+        int GetPointsCountByElementSize(int curveTag, float elemSize);
     }
 }
