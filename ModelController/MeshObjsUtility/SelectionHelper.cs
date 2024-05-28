@@ -86,8 +86,8 @@ namespace ModelController.MeshObjsUtility
                 {
                     if(!used.Contains(neighbourNumber))
                     {
-                        var neighbourElement = ByNumberFinder.Find(elements,neighbourNumber);
-                        var cos = Vector.GetCosAngleVectors(currentElement.GetSurfacesNormals().First(), neighbourElement.GetSurfacesNormals().First());
+                        var neighbourElement = ByNumberFinder.Find(elements, neighbourNumber);
+                        var cos = Math.Abs(Vector.GetCosAngleVectors(currentElement.GetSurfacesNormals().First(), neighbourElement.GetSurfacesNormals().First()));
                         var angleRadian = Math.Acos(Math.Abs(cos));
                         if (angleRadian <= maxAngleRadians)
                         {
