@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using ModelControllerInterfaces.GmshController;
 using ModelInterfaces;
+using Geometry;
 
 namespace TestModel.GmshTests
 {
@@ -344,6 +345,52 @@ namespace TestModel.GmshTests
             string[] attributes;
             controller.ModelGetAttribute("transfinite", out attributes);
             CollectionAssert.AreEqual(expected, attributes);
+        }
+
+        [DataTestMethod]
+        [DataRow("Cilindr.step", new int[] { 2, 4, 5, 6 })]
+        public void GetCurveLengthTest(string fileName, int[] curvesId)
+        {
+            var ierr = 0;
+            controller.Open(modelFolder + fileName, ref ierr);
+            for (var i = 0; i < curvesId.Length; ++i)
+            {
+                int[] down, up;
+                var coords = new double[2][];
+                controller.ModelGetAdjacencies(1, curvesId[i], out up, out down);
+                Assert.AreEqual(2, down.Length);
+                if (down.Length == 2)
+                {
+                    for (var j = 0; j < down.Length; ++j)
+                        controller.ModelGetValue(0, down[j], new double[0], out coords[j]);
+                    var point0 = new Point3D((float)coords[0][0], (float)coords[0][1], (float)coords[0][2]);
+                    var point1 = new Point3D((float)coords[1][0], (float)coords[1][1], (float)coords[1][2]);
+                    var radius = Vector.GetVectorLenght(point0.Sub(point1)) / 2;
+                    var expectedLength = Math.PI * radius;
+                    var actualLength = controller.GetCurveLength(curvesId[i]);
+                    Assert.AreEqual(expectedLength, actualLength, 1e-4);
+                }
+            }
+        }
+        [DataTestMethod]
+        [DataRow("Cilindr.step", 2, 3f)]
+        [DataRow("Cilindr.step", 3, 0.5f)]
+        [DataRow("Cilindr.step", 4, 4.2f)]
+        public void GetPointsCountByElementSizeTest(string fileName, int curveId, float elemSize)
+        {
+            var ierr = 0;
+            controller.Open(modelFolder + fileName, ref ierr);
+            var actual = controller.GetPointsCountByElementSize(curveId, elemSize);
+            //int[] pointDimTags;
+            //controller.ModelGetGeometryEntities(out pointDimTags, 0);
+            //controller.ModelMeshSetSize(pointDimTags, (IntPtr)pointDimTags.Length, elemSize, ref ierr);
+            controller.ModelMeshSetTransfiniteCurve(curveId, actual, "Progression", 1.0, ref ierr);
+            controller.ModelMeshGenerate(2, ref ierr);
+            long[] tags;
+            double[] coords, parametric;
+            controller.ModelMeshGetNodes(1, curveId, true, false, out tags, out coords, out parametric);
+            var expected = coords.Length / 3;
+            Assert.AreEqual(expected, actual);
         }
 
         private void RemoveNameTest(ref string entName, int dim, int delId, int maxId)
