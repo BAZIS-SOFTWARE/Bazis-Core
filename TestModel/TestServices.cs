@@ -40,10 +40,24 @@ namespace TestModel
         [DataRow(19, 1, 3, new int[] { 1, 3, 5, 6, 8 })]
         public void SelectionHelper_ShouldSelectCorrectNodes_WhenAngleGiven(float angle, int first, int second, int[] expected)
         {
-            var objectsData = InitializeSampleModel();
+            var objectsData = InitializeSampleModelWithAscendingNumbers();
             var selector = new SelectionHelper();
             var actual = selector.SelectNodeInDirection(objectsData,angle, first, second, Color.Green);
             Assert.IsTrue(actual.SequenceEqual(expected)); 
+        }
+
+        [DataTestMethod]
+        [DataRow(19, 0, new int[] { 0, 6, 10, 11, 100, 121 })]
+        [DataRow(18, 0, new int[] { 0, 6, 10, 11, 100 })]
+        public void SelectionHelper_ShouldSelectCorrect2DElements_MixingNumbers_WhenAngleGiven(float angle, int first, int[] expected)
+        {
+            var objectsData = InitializeSampleModelWithMixingNumbers();
+
+            //objectsData.E2DCollection.
+
+            var selector = new SelectionHelper();
+            var selectedElementNumbers = selector.SelectE2DInPlane(objectsData, angle, first, Color.Green);
+            Assert.IsTrue(selectedElementNumbers.SequenceEqual(expected));
         }
 
         [DataTestMethod]
@@ -51,7 +65,7 @@ namespace TestModel
         [DataRow(18, 9, new int[] { 9, 10, 11, 12, 13 })]
         public void SelectionHelper_ShouldSelectCorrect2DElements_WhenAngleGiven(float angle, int first, int[] expected)
         {
-            var objectsData = InitializeSampleModel();
+            var objectsData = InitializeSampleModelWithAscendingNumbers();
             var selector = new SelectionHelper();
             var selectedElementNumbers = selector.SelectE2DInPlane(objectsData, angle, first, Color.Green);
             Assert.IsTrue(selectedElementNumbers.SequenceEqual(expected));
@@ -197,7 +211,7 @@ namespace TestModel
                 throw new Exception("Последовательность содержит неверный узел!");
         }
 
-        private ObjectsData InitializeSampleModel()
+        private ObjectsData InitializeSampleModelWithAscendingNumbers()
         {
             var A = new Node(1, new Point3D(0, 0, 0));
             var B = new Node(2, new Point3D(0, 0, 1));
@@ -215,6 +229,37 @@ namespace TestModel
                 new Triangle(12, new Node[] { E, D, G }),
                 new Triangle(13, new Node[] { E, F, G }),
                 new Triangle(14, new Node[] { F, G, H }),
+            };
+            var elements3D = new List<Element3D>
+            {
+                new Tetra(15,new Node[] { A, B, C,D })
+            };
+            var nodes = new List<Node> { A, B, C, D, E, F, G, H };
+            var objectsData = new ObjectsData();
+            objectsData.NodeCollection.AddRange(nodes);
+            objectsData.E2DCollection.AddRange(elements2D);
+            objectsData.E3DCollection.AddRange(elements3D);
+            return objectsData;
+        }
+
+        private ObjectsData InitializeSampleModelWithMixingNumbers()
+        {
+            var A = new Node(1, new Point3D(0, 0, 0));
+            var B = new Node(2, new Point3D(0, 0, 1));
+            var C = new Node(3, new Point3D(0, 1, 0));
+            var D = new Node(4, new Point3D(0, 1, 1));
+            var E = new Node(5, new Point3D(0, 1.5f, 0));
+            var F = new Node(6, new Point3D(0, 2, 0));
+            var G = new Node(7, new Point3D(0, 2, 1));
+            var H = new Node(8, new Point3D(-0.5f, 3.5f, 0));
+            var elements2D = new List<Element2D>
+            {
+                new Triangle(0, new Node[] { A, B, C }),
+                new Triangle(6, new Node[] { B, C, D }),
+                new Triangle(10, new Node[] { D, C, E }),
+                new Triangle(11, new Node[] { E, D, G }),
+                new Triangle(100, new Node[] { E, F, G }),
+                new Triangle(121, new Node[] { F, G, H }),
             };
             var elements3D = new List<Element3D>
             {
