@@ -1,23 +1,24 @@
 ﻿using ModelInterfaces.MeshObjects;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace ModelControllerInterfaces
+namespace ModelControllerInterfaces.ObjsCreator
 {
-    /// <summary>
-    /// IExtractor2DFrom3D
-    /// </summary>
-    public interface IExtractor2DFrom3D
+    public interface IExtractor1DFrom2D
     {
         /// <summary>
         /// FindOpenSurfaces
         /// </summary>
         /// <returns></returns>
-        IEnumerable<IElementSurface> FindOpenSurfaces(IElement3D[] elements);
+        IEnumerable<IElementSurface> FindOpenSurfaces(IElement2D[] elements);
         /// <summary>
         /// Create
         /// </summary>
         /// <param name="StartNumber"></param>
         /// <returns></returns>
-        IEnumerable<IElement2D> Create(int StartNumber, IElement3D[] elements);
+        IEnumerable<IElement2D> Create(int StartNumber, IElement2D[] elements);
     }
 }

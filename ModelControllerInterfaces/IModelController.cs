@@ -1,5 +1,6 @@
 ﻿using ModelControllerInterfaces.SurfaceMeshCreator;
 using ModelControllerInterfaces.MeshObjsUtility;
+using ModelControllerInterfaces.ObjsCreator;
 
 namespace ModelControllerInterfaces
 {

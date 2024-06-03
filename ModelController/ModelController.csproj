@@ -4,7 +4,7 @@
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>ModelController</Title>
-    <Version>3.0.11.60</Version>
+    <Version>3.0.11.61</Version>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>ModelControllerKey.snk</AssemblyOriginatorKeyFile>
@@ -22,6 +22,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MeshObjsCreator\Delone2D\SurfaceMeshCreator.cs" />
+    <Compile Include="MeshObjsCreator\Extract1DFrom2D.cs" />
     <Compile Include="MeshObjsCreator\VolumeMeshCreator.cs" />
     <Compile Include="MeshObjsUtility\CrossSection.cs" />
     <Compile Include="ModelController.cs" />
