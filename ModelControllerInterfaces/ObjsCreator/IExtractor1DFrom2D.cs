@@ -1,4 +1,5 @@
-﻿using ModelInterfaces.MeshObjects;
+﻿using ModelInterfaces;
+using ModelInterfaces.MeshObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,12 +14,12 @@ namespace ModelControllerInterfaces.ObjsCreator
         /// FindOpenSurfaces
         /// </summary>
         /// <returns></returns>
-        IEnumerable<IElementSurface> FindOpenSurfaces(IElement2D[] elements);
+        IEnumerable<(INode, INode)> FindOpenSegments(IElement2D[] elements);
         /// <summary>
         /// Create
         /// </summary>
         /// <param name="StartNumber"></param>
         /// <returns></returns>
-        IEnumerable<IElement2D> Create(int StartNumber, IElement2D[] elements);
+        IEnumerable<ILineObject<INode>> Create(int StartNumber, IElement2D[] elements);
     }
 }
