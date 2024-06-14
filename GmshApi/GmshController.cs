@@ -624,6 +624,32 @@ namespace GmshApi.GmshController
         public delegate void gmshModelOccGetCenterOfMassFun(int dim, int tag, ref double x, ref double y,
                                                             ref double z, ref int ierr);///
         gmshModelOccGetCenterOfMassFun gmshModelOccGetCenterOfMass;
+        /// <summary>
+        /// Классифицирует (цветом) сеточные поверхности по углу и создает дискретные сущности(точки, кривые, поверхности)
+        /// </summary>
+        /// <param name="angle">[In]Пороговый угол разбиения поверхностей (в радианах)</param>
+        /// <param name="boundary">[In]Создавать дискретные кривые на открытых поверхностях ?</param>
+        /// <param name="forReparametrization">[In]Создавать кривые и поверхности, которые могут быть репараметризированы одним отображением?</param>
+        /// <param name="curveAngle">[In]Угол разбиения для кривых (в радианах)</param>
+        /// <param name="exportDiscrete">[In]Экспортировать дискретные сущности в движок CAD</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelMeshClassifySurfacesFun(double angle, int boundary, int forReparametrization,
+                                                              double curveAngle, int exportDiscrete, ref int ierr);///
+        gmshModelMeshClassifySurfacesFun gmshModelMeshClassifySurfaces;
+        /// <summary>
+        /// Создает геометрию по дискретным сущностям dimTags, создает параметризацию для кривых и поверхностей
+        /// </summary>
+        /// <param name="dimTags">[In]Масив dim:tags</param>
+        /// <param name="dimTags_n">[In]Размер массива dim:tags</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelMeshCreateGeometryFun(int[] dimTags, IntPtr dimTags_n, ref int ierr);///
+        public gmshModelMeshCreateGeometryFun gmshModelMeshCreateGeometry;
+        /*/// <summary>
+        /// Удаляет все дубликаты сущностей (которые имеют идентичную геометрию)
+        /// </summary>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelGeoRemoveAllDuplicatesFun(ref int ierr);///
+        public gmshModelGeoRemoveAllDuplicatesFun gmshModelGeoRemoveAllDuplicates;*/
         #endregion
         #region "Mesh Delegates"
         /// <summary>
@@ -1087,6 +1113,9 @@ namespace GmshApi.GmshController
             gmshModelMeshGetSizes = GetFunction<gmshModelMeshGetSizesFun>("gmshModelMeshGetSizes");
             gmshModelOccGetMass = GetFunction<gmshModelOccGetMassFun>("gmshModelOccGetMass");
             gmshModelOccGetCenterOfMass = GetFunction<gmshModelOccGetCenterOfMassFun>("gmshModelOccGetCenterOfMass");
+            gmshModelMeshClassifySurfaces = GetFunction<gmshModelMeshClassifySurfacesFun>("gmshModelMeshClassifySurfaces");
+            gmshModelMeshCreateGeometry = GetFunction<gmshModelMeshCreateGeometryFun>("gmshModelMeshCreateGeometry");
+            //gmshModelGeoRemoveAllDuplicates = GetFunction<gmshModelGeoRemoveAllDuplicatesFun>("gmshModelGeoRemoveAllDuplicates");
             #endregion
             #region "Get Mesh delegates"
             gmshModelMeshGenerate = GetFunction<gmshModelMeshGenerateFun>("gmshModelMeshGenerate");
@@ -2257,6 +2286,23 @@ namespace GmshApi.GmshController
             var length = GetCurveLength(curveTag);
             return (int)Math.Ceiling(length / elemSize) + 1;
         }
+
+        /// <inheritdoc/>
+        public void ModelMeshClassifySurfaces(double angle, int boundary, int forReparametrization,
+                                              double curveAngle, int exportDiscrete, ref int ierr)
+        {
+            gmshModelMeshClassifySurfaces(angle, boundary, forReparametrization, curveAngle, exportDiscrete, ref ierr);
+        }
+        /// <inheritdoc/>
+        public void ModelMeshCreateGeometry(int[] dimTags, IntPtr dimTags_n, ref int ierr)
+        {
+            gmshModelMeshCreateGeometry(dimTags, dimTags_n, ref ierr);
+        }
+        /*/// <inheritdoc/>
+        public void ModelGeoRemoveAllDuplicates(ref int ierr)
+        {
+            gmshModelGeoRemoveAllDuplicates(ref ierr);
+        }*/
         #endregion
     }
 }

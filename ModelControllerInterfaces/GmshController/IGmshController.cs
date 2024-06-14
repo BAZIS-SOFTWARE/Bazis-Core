@@ -514,5 +514,29 @@ namespace ModelControllerInterfaces.GmshController
         /// <param name="elemSize">[In]Желаемый размер элемента</param>
         /// <returns>Число точек</returns>
         int GetPointsCountByElementSize(int curveTag, float elemSize);
+        /// <summary>
+        /// Классифицирует (цветом) сеточные поверхности по углу и создает дискретные сущности(точки, кривые, поверхности)
+        /// </summary>
+        /// <param name="angle">[In]Пороговый угол разбиения поверхностей (в радианах)</param>
+        /// <param name="boundary">[In]Создавать дискретные кривые на открытых поверхностях ?</param>
+        /// <param name="forReparametrization">[In]Создавать кривые и поверхности, которые могут быть репараметризированы одним отображением?</param>
+        /// <param name="curveAngle">[In]Угол разбиения для кривых (в радианах)</param>
+        /// <param name="exportDiscrete">[In]Экспортировать дискретные сущности в движок CAD</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void ModelMeshClassifySurfaces(double angle, int boundary, int forReparametrization,
+                                       double curveAngle, int exportDiscrete, ref int ierr);
+        /// <summary>
+        /// Создает геометрию по дискретным сущностям dimTags, создает параметризацию для кривых и поверхностей
+        /// </summary>
+        /// <param name="dimTags">[In]Масив dim:tags</param>
+        /// <param name="dimTags_n">[In]Размер массива dim:tags</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void ModelMeshCreateGeometry(int[] dimTags, IntPtr dimTags_n, ref int ierr);
+
+        /*/// <summary>
+        /// Удаляет все дубликаты сущностей (которые имеют идентичную геометрию)
+        /// </summary>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void ModelGeoRemoveAllDuplicates(ref int ierr);*/
     }
 }

@@ -469,5 +469,42 @@ namespace TestModel.GmshTests
             controller.OptionSetNumber("Mesh.SaveGroupsOfNodes", 1, ref ierr);//Для визуального теста
             controller.Write(@"C:\Mesh\Cilindr.inp", ref ierr);*/
         }
+
+        [DataTestMethod]
+        [DataRow("sphere.stl", Math.PI / 4, Math.PI)]
+        [DataRow("box.stl", Math.PI / 3, Math.PI / 3)]
+        public void BuildGeometryFromMeshTest(string fileName, double classifyAngleSurf, double classifyAngleCurve)
+        {
+            var ierr = 0;
+            controller.Open(@"..\..\..\Examples\STL\" + fileName, ref ierr);
+            controller.ModelMeshClassifySurfaces(classifyAngleSurf, 1, 1, classifyAngleCurve, 1, ref ierr);
+            //controller.ModelGeoRemoveAllDuplicates(ref ierr);
+            int[] dimTags;
+            controller.ModelGetGeometryEntities(out dimTags, -1);
+            controller.ModelMeshCreateGeometry(dimTags, (IntPtr)dimTags.Length, ref ierr);
+            controller.ModelGetGeometryEntities(out dimTags, 2);
+            dimTags = dimTags.Where((v, i) => (i & 1) == 1).ToArray();
+            var tag = controller.ModelGeoAddSurfaceLoop(dimTags, (IntPtr)dimTags.Length, 1, ref ierr);
+            controller.ModelGeoAddVolume(new int[] { tag }, (IntPtr)1, -1, ref ierr);
+            controller.ModelGeoSynchronize(ref ierr);//Обязательный вызов Synchronize
+            controller.ModelGetGeometryEntities(out dimTags, 3);
+            Assert.AreNotEqual(0, dimTags.Length);
+            controller.ModelMeshGenerate(2, ref ierr);
+            var list = controller.GetMeshObjects();
+            var before = list.Item3.Count;
+            Assert.AreNotEqual(0, before);
+            controller.ModelGetGeometryEntities(out dimTags, 1);
+            controller.ModelMeshSetTransfiniteCurve(dimTags[1], 50, "Progression", 1.0, ref ierr);
+            controller.ModelMeshGenerate(2, ref ierr);
+            list = controller.GetMeshObjects();
+            var after = list.Item3.Count;
+            Assert.AreNotEqual(after, before);
+            //Проверка создания 3д элементов
+            controller.ModelMeshGenerate(3, ref ierr);
+            string error;
+            controller.LoggerGetLastError(out error);
+            list = controller.GetMeshObjects();
+            Assert.AreNotEqual(0, list.Item4.Count);
+        }
     }
 }
