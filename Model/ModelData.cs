@@ -9,7 +9,7 @@ namespace Model
         public IObjectsData ObjectData { get; private set; } = new ObjectsData();
         public IGroupData GroupData { get; private set; } = new GroupData();
         /// <inheritdoc/>
-        public IModelSaver Saver { get; set; } = new SaveModelToProjectTextFile();
+        public IModelSaver Saver { get; set; } = new SaveModelToBPFTextFile();
         /// <inheritdoc/>
         public IModelLoader Loader { get; set; } = new LoadModelFromProjectTextFile();
 

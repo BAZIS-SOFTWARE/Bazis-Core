@@ -1,6 +1,4 @@
-﻿using Model.MeshObjects;
-using Model.Events;
-using ModelInterfaces;
+﻿using ModelInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -14,7 +12,7 @@ namespace Model.IO
     /// <summary>
     /// SaveModelToProjectTextFile
     /// </summary>
-    public class SaveModelToProjectTextFile : IModelSaver
+    public class SaveModelToBPFTextFile : IModelSaver
     {
         /// <inheritdoc/>
         public event Action<object, ISaverEventArgs> SaveEvent;

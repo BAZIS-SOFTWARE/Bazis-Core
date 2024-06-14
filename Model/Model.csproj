@@ -11,7 +11,7 @@
     <AssemblyOriginatorKeyFile>ModelKey.snk</AssemblyOriginatorKeyFile>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>Model</Title>
-    <Version>3.0.9.31</Version>
+    <Version>3.0.9.32</Version>
     <Company>BAZIS SOFTWARE</Company>
     <Product>BAZIS</Product>
     <Description>Contains basic mesh oblects and geometry classes</Description>
@@ -41,7 +41,7 @@
     <Compile Include="MeshObjects\Hexa.cs" />
     <Compile Include="GeometryObjects\GeometryPoint.cs" />
     <Compile Include="IO\LoadModelFromProjectTextFile.cs" />
-    <Compile Include="IO\SaveModelToProjectTextFile.cs" />
+    <Compile Include="IO\SaveModelToBPFTextFile.cs" />
     <Compile Include="IO\LoadModelFromASCIITextFile.cs" />
     <Compile Include="IO\LoadModelFromCDBTextFile.cs" />
     <Compile Include="IO\LoadModelFromGMSHTextFile.cs" />
