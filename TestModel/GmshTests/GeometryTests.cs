@@ -12,7 +12,7 @@ namespace TestModel.GmshTests
     [TestClass]
     public class ControllerGeometryTests
     {
-        private IGmshController controller = new GmshController();
+        private GmshController controller = new GmshController();
         private static string modelFolder = @"..\..\..\Examples\GMSHAPI\";
         [TestInitialize]
         public void Init()
@@ -37,20 +37,12 @@ namespace TestModel.GmshTests
         {
             var ierr = 0;
             controller.Open(modelFolder + fileName, ref ierr);
-            bool status;
-            int[] dimTags;
-            if (objType == ObjType.Линия)
-                status  = controller.ModelGetGeometryEntities(out dimTags, 1);
-            else
-                status = controller.ModelGetGeometryEntities(out dimTags, 0);
-
-            Assert.IsTrue(status);
 
             IEnumerable<IModelObject> objects;
             if (objType == ObjType.Линия)
-                objects = controller.CreateLines(dimTags);
+                objects = controller.CreateLines();
             else
-                objects = controller.CreateControlPoints(dimTags);
+                objects = controller.CreateControlPoints();
 
             Assert.AreEqual(numbOfObjs, objects.Count());
             foreach (var obj in objects)
@@ -64,12 +56,9 @@ namespace TestModel.GmshTests
             var ierr = 0;
             controller.Open(modelFolder + fileName, ref ierr);
 
-            int[] dimTags;
-            controller.ModelGetGeometryEntities(out dimTags, 1);
-
-            var curveUntil = controller.CreateLines(dimTags).First();
+            var curveUntil = controller.CreateLines().First();
             controller.OptionSetNumber("Geometry.NumSubEdges", 15, ref ierr);
-            var curveAfter = controller.CreateLines(dimTags).First();
+            var curveAfter = controller.CreateLines().First();
             Assert.IsTrue(curveAfter.NumberOfPoints < curveUntil.NumberOfPoints);
         }
 

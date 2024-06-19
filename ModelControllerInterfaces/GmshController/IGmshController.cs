@@ -234,15 +234,13 @@ namespace ModelControllerInterfaces.GmshController
         /// <summary>
         /// Возвращает список кривых
         /// </summary>
-        /// <param name="tags">Идентификаторы кривых</param>
         /// <returns>Список кривых</returns>
-        List<ILine> CreateLines(int[] tags);
+        List<ILine> CreateLines();
         /// <summary>
         /// Возвращает список контрольных точек
         /// </summary>
-        /// <param name="tags">Идентификаторы</param>
         /// <returns>Список контрольных точек</returns>
-        List<IGeometryPoint> CreateControlPoints(int[] tags);
+        List<IGeometryPoint> CreateControlPoints();
         /// <summary>
         /// Возвращает список элементов сетки
         /// </summary>

@@ -1703,40 +1703,45 @@ namespace GmshApi.GmshController
         }
         /// <inheritdoc/>
 
-        public List<ILine> CreateLines(int[] tags)
+        public List<ILine> CreateLines()
         {
             var lines = new List<ILine>();
             double[] minBounds;
             double[] maxBounds;
+            int[] tags;
 
-            for (var i = 1; i < tags.Length; i += 2)
+            if(ModelGetGeometryEntities(out tags, 1))
             {
-                if (!ModelGetParametrizationBounds(1, tags[i], out minBounds, out maxBounds))
+                for (var i = 1; i < tags.Length; i += 2)
                 {
-                    lines.Clear();
-                    break;
+                    if (!ModelGetParametrizationBounds(1, tags[i], out minBounds, out maxBounds))
+                    {
+                        lines.Clear();
+                        break;
+                    }
+                    var newPB = minBounds.Concat(maxBounds).ToArray();
+                    if (!IsLine(1, tags[i], newPB))
+                    {
+                        var ierr = 0;
+                        var curvePoints = 0.0;
+                        gmshOptionGetNumber("Geometry.NumSubEdges", ref curvePoints, ref ierr);
+                        newPB = SetCustomStepParametrization(newPB, (int)curvePoints);
+                    }
+                    double[] coords;
+                    ModelGetValue(1, tags[i], newPB, out coords);
+                    var localPoints = ConvertLocalCoordsToPoints3D(coords);
+                    var points = new List<GeometryPoint>();
+                    var num = 0;
+                    foreach (var pair in localPoints.Bigrams(false))
+                    {
+                        var linePoints = new GeometryPoint[] { new GeometryPoint(num++, pair.Item1), new GeometryPoint(num++, pair.Item2) };
+                        points.AddRange(linePoints);
+                    }
+                    var line = new Line(tags[i], points.ToArray());
+                    lines.Add(line);
                 }
-                var newPB = minBounds.Concat(maxBounds).ToArray();
-                if (!IsLine(1, tags[i], newPB))
-                {
-                    var ierr = 0;
-                    var curvePoints = 0.0;
-                    gmshOptionGetNumber("Geometry.NumSubEdges", ref curvePoints, ref ierr);
-                    newPB = SetCustomStepParametrization(newPB, (int)curvePoints);
-                }
-                double[] coords;
-                ModelGetValue(1, tags[i], newPB, out coords);
-                var localPoints = ConvertLocalCoordsToPoints3D(coords);
-                var points = new List<GeometryPoint>();
-                var num = 0;
-                foreach (var pair in localPoints.Bigrams(false))
-                {
-                    var linePoints = new GeometryPoint[] { new GeometryPoint(num++, pair.Item1), new GeometryPoint(num++, pair.Item2) };
-                    points.AddRange(linePoints);
-                }
-                var line = new Line(tags[i], points.ToArray());
-                lines.Add(line);
             }
+            
             return lines;
         }
 
@@ -1762,20 +1767,24 @@ namespace GmshApi.GmshController
         }
         /// <inheritdoc/>
 
-        public List<IGeometryPoint> CreateControlPoints(int[] tags)
+        public List<IGeometryPoint> CreateControlPoints()
         {
+            int[] tags;
             var nodes = new List<IGeometryPoint>();
-            double[] coords;
-            for (var i = 1; i < tags.Length; i += 2)
+            if (ModelGetGeometryEntities(out tags, 0))
             {
-                if (!ModelGetValue(0, tags[i], new double[] { }, out coords))
+                double[] coords;
+                for (var i = 1; i < tags.Length; i += 2)
                 {
-                    nodes.Clear();
-                    break;
+                    if (!ModelGetValue(0, tags[i], new double[] { }, out coords))
+                    {
+                        nodes.Clear();
+                        break;
+                    }
+                    var points = ConvertLocalCoordsToPoints3D(coords);
+                    for (var j = 0; j < points.Length; ++j)
+                        nodes.Add(new GeometryPoint(tags[i], points[j]));
                 }
-                var points = ConvertLocalCoordsToPoints3D(coords);
-                for (var j = 0; j < points.Length; ++j)
-                    nodes.Add(new GeometryPoint(tags[i], points[j]));
             }
             return nodes;
         }
