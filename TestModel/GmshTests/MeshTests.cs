@@ -479,11 +479,8 @@ namespace TestModel.GmshTests
         {
             var ierr = 0;
             controller.Open(@"..\..\..\Examples\STL\" + fileName, ref ierr);
-            controller.ModelMeshClassifySurfaces(classifyAngleSurf, 1, 1, classifyAngleCurve, 1, ref ierr);
-            //controller.ModelGeoRemoveAllDuplicates(ref ierr);
+            controller.CreateGeometry(classifyAngleSurf, classifyAngleCurve);
             int[] dimTags;
-            controller.ModelGetGeometryEntities(out dimTags, -1);
-            controller.ModelMeshCreateGeometry(dimTags, (IntPtr)dimTags.Length, ref ierr);
             controller.ModelGetGeometryEntities(out dimTags, 2);
             dimTags = dimTags.Where((v, i) => (i & 1) == 1).ToArray();
             var tag = controller.ModelGeoAddSurfaceLoop(dimTags, (IntPtr)dimTags.Length, 1, ref ierr);

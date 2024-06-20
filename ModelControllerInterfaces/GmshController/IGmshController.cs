@@ -580,5 +580,11 @@ namespace ModelControllerInterfaces.GmshController
         /// <param name="nodeTags">[In]Массив перечисленных идентификаторов узлов элементов</param>
         /// <param name="ierr">[Out]Флаг ошибки</param>
         void ModelMeshAddElementsByType(int tag, int elementType, IntPtr[] elementTags, IntPtr[] nodeTags, ref int ierr);
+        /// <summary>
+        /// Построит геометрию по сетке автоматическим способом из загруженного сеточного формата
+        /// </summary>
+        /// <param name="surfAngle">[In]Пороговый угол разбиения поверхностей</param>
+        /// <param name="curveAngle">[In]Пороговый угол разбиения кривых</param>
+        void CreateGeometry(double surfAngle = Math.PI / 2, double curveAngle = Math.PI);
     }
 }

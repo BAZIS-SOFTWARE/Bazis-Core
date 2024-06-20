@@ -2393,6 +2393,16 @@ namespace GmshApi.GmshController
             gmshModelMeshAddElementsByType(tag, elementType, elementTags, (IntPtr)elementTags.Length, nodeTags,
                                            (IntPtr)nodeTags.Length, ref ierr);
         }
+
+        /// <inheritdoc/>
+        public void CreateGeometry(double surfAngle = Math.PI / 2, double curveAngle = Math.PI)
+        {
+            var ierr = 0;
+            ModelMeshClassifySurfaces(surfAngle, 1, 1, curveAngle, 1, ref ierr);
+            int[] dimTags;
+            ModelGetGeometryEntities(out dimTags, -1);
+            ModelMeshCreateGeometry(dimTags, (IntPtr)dimTags.Length, ref ierr);
+        }
         #endregion
     }
 }
