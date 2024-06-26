@@ -126,7 +126,7 @@ namespace TestModel
 
             var element2D = creators.Create(currentNumber, model.ObjectData.E3DCollection.ToArray());
 
-            var inside = new ElementSurface(0, new Node[] { nodes[3], nodes[2], nodes[1] });
+            var inside = new ElementSurface(currentNumber,0, new Node[] { nodes[3], nodes[2], nodes[1] });
             foreach (var item in element2D)
             {
                 foreach (var surface in item.GetSurfaces())

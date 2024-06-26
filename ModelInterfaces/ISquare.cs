@@ -15,6 +15,6 @@ namespace ModelInterfaces
         /// CalcSquare
         /// </summary>
         /// <returns></returns>
-        float CalcSquare();
+        double CalcSquare();
     }
 }

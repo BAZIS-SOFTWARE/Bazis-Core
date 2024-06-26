@@ -26,7 +26,7 @@ namespace Model.MeshObjects
 
         /// <inheritdoc/>
 
-        public override float DetJ(IIntegralPoint point3D)
+        public override double DetJ(IIntegralPoint point3D)
         {
             throw new NotImplementedException();
         }
@@ -55,13 +55,13 @@ namespace Model.MeshObjects
         }      
 /// <inheritdoc/>
 
-        public override float[] GetDerivativesFormFunctions(IIntegralPoint intPoint)
+        public override double[] GetDerivativesFormFunctions(IIntegralPoint intPoint)
         {
             throw new NotImplementedException();
         }
 /// <inheritdoc/>
 
-        public override float[] GetFormFunctions(IIntegralPoint intPoint)
+        public override double[] GetFormFunctions(IIntegralPoint intPoint)
         {
             throw new NotImplementedException();
         }

@@ -70,7 +70,7 @@ namespace Model.GeometryObjects
         }
 /// <inheritdoc/>
 
-        public float CalcSquare()
+        public double CalcSquare()
         {
             var square = 0.0f;
             for (int i = 0; i < NumberOfPoints - 2; i++)

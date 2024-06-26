@@ -16,12 +16,12 @@ namespace Model.MeshObjects
 
         public Triangle(int number, INode[] nodes) : base(number, nodes)
         {
-            surface = new ElementSurface(0, new INode[] { nodes[0], nodes[1], nodes[2] });
+            surface = new ElementSurface(number,0, new INode[] { nodes[0], nodes[1], nodes[2] });
 
             var intPoint = new IntegralPoint();
-            intPoint.AddDirection("l1", 1 / 3);
-            intPoint.AddDirection("l2", 1 / 3);
-            intPoint.AddDirection("l3", 1 / 3);
+            intPoint.AddCoordinate("l1", 1 / 3);
+            intPoint.AddCoordinate("l2", 1 / 3);
+            intPoint.AddCoordinate("l3", 1 / 3);
             intPoint.Weigt = CalcSquare();
             intPoints.Add(intPoint);
             jacobians.Add(DetJ(intPoint));
@@ -35,9 +35,9 @@ namespace Model.MeshObjects
             {
                 case 1:
                     intPoint = new IntegralPoint();
-                    intPoint.AddDirection("l1", 1 / 3);
-                    intPoint.AddDirection("l2", 1 / 3);
-                    intPoint.AddDirection("l3", 1 / 3);
+                    intPoint.AddCoordinate("l1", 1 / 3);
+                    intPoint.AddCoordinate("l2", 1 / 3);
+                    intPoint.AddCoordinate("l3", 1 / 3);
                     intPoint.Weigt = CalcSquare();
                     intPoints.Add(intPoint);
 
@@ -47,9 +47,9 @@ namespace Model.MeshObjects
                     for (int i = 0; i < 3; i++)
                     {
                         intPoint = new IntegralPoint();
-                        intPoint.AddDirection("l1", i == 2 ? 0 : 1 / 2);
-                        intPoint.AddDirection("l2", i == 0 ? 0 : 1 / 2);
-                        intPoint.AddDirection("l3", i == 1 ? 0 : 1 / 2);
+                        intPoint.AddCoordinate("l1", i == 2 ? 0 : 1 / 2);
+                        intPoint.AddCoordinate("l2", i == 0 ? 0 : 1 / 2);
+                        intPoint.AddCoordinate("l3", i == 1 ? 0 : 1 / 2);
                         intPoint.Weigt = 1/6f;
                         intPoints.Add(intPoint);
 
@@ -61,7 +61,7 @@ namespace Model.MeshObjects
             }
         }        
 
-        public override float CalcSquare()
+        public override double CalcSquare()
         {
             var pAr = GetCoordinates().ToArray();
 
@@ -75,7 +75,7 @@ namespace Model.MeshObjects
 
         /// <inheritdoc/>
 
-        public override float DetJ(IIntegralPoint point)
+        public override double DetJ(IIntegralPoint point)
         {
             var m = new DenseMatrix(2, 2)
             {
@@ -88,17 +88,17 @@ namespace Model.MeshObjects
         }
         /// <inheritdoc/>
 
-        public override float[] GetDerivativesFormFunctions(IIntegralPoint intPoint)
+        public override double[] GetDerivativesFormFunctions(IIntegralPoint intPoint)
         {
             // Расчитано для линейного элемента с одной т.интегрирования в центре
             // по формулам 14.11а и б
-            return new float[] { 1, 0, 0, 1, -1, -1 };
+            return new double[] { 1, 0, 0, 1, -1, -1 };
         }
         /// <inheritdoc/>
 
-        public override float[] GetFormFunctions(IIntegralPoint intPoint)
+        public override double[] GetFormFunctions(IIntegralPoint intPoint)
         {
-            return new float[] { intPoint["l1"], intPoint["l2"], intPoint["l3"] };
+            return new double[] { intPoint["l1"], intPoint["l2"], intPoint["l3"] };
         }
     }
 }

@@ -26,7 +26,7 @@ namespace Model.MeshObjects
             var surfNumber = 0;
             foreach (var surfNodes in SurfaceFinder.FindSurfaceNodes(nodes))
             {
-                var surface = new ElementSurface(surfNumber, surfNodes);
+                var surface = new ElementSurface(number,surfNumber, surfNodes);
 
                 var normal = surface.CalcNormal();
                 var plane = new Plane(surface[0].Position, normal);

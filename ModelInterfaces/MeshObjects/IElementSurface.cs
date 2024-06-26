@@ -11,6 +11,9 @@ namespace ModelInterfaces.MeshObjects
     /// </summary>
     public interface IElementSurface : ISurface<INode>
     {
-
+        /// <summary>
+        /// ElementNumber
+        /// </summary>
+        int ElementNumber { get; }
     }
 }

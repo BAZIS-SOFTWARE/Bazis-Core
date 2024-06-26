@@ -41,9 +41,9 @@ namespace Model.GeometryObjects
 
 /// <inheritdoc/>
 
-        public float CalcSquare()
+        public double CalcSquare()
         {
-            var square = 0.0f;
+            var square = 0.0;
             foreach (var surface in surfaces)
             {
                 square += surface.CalcSquare();

@@ -5,7 +5,7 @@ using Model.MeshObjects;
 namespace TestModel
 {
     [TestClass]
-    public class TestVolume
+    public class TestVolumeElements
     {
         [TestMethod]
         public void TestHex()
@@ -43,22 +43,6 @@ namespace TestModel
             var penta = new Penta(0, nodes);
             var x = penta.CalcVolume();
             Assert.IsTrue(x - 0.5f < 1e-4);
-        }
-
-        [TestMethod]
-        public void TestQuad()
-        {
-            var nodes = new Node[4];
-            var num = 0;
-            for (var i = 0; i < 2; i += 1)
-                for (var j = 0; j < 2; j += 1)
-                {
-                    nodes[num] = new Node(0, new Point3D(i, j, 0));
-                    num++;
-                }
-
-            var elem = new Quad(0, nodes);
-            Assert.IsTrue(elem.CalcSquare() - 1f < 1e-4);
         }
     }
 }

@@ -16,7 +16,7 @@ namespace Model.MeshObjects
             SlaveColor = Color.FromArgb(255, 192, 203);
 
             var intPoint = new IntegralPoint();
-            intPoint.AddDirection("ksi", 0.0f);
+            intPoint.AddCoordinate("ksi", 0.0f);
             intPoint.Weigt = CalcLength();
             intPoints.Add(intPoint);
             //jacobians.Add(DetJ(intPoint));
@@ -31,18 +31,18 @@ namespace Model.MeshObjects
             {
                 case 1:
                     intPoint = new IntegralPoint();
-                    intPoint.AddDirection("ksi", 0.0f);
+                    intPoint.AddCoordinate("ksi", 0.0f);
                     intPoint.Weigt = CalcLength();
                     intPoints.Add(intPoint);
                     break;
                 case 2:
                     intPoint = new IntegralPoint();
-                    intPoint.AddDirection("ksi", -(float)Math.Sqrt(3) / 3);
+                    intPoint.AddCoordinate("ksi", -(float)Math.Sqrt(3) / 3);
                     intPoint.Weigt = 1;
                     intPoints.Add(intPoint);
 
                     intPoint = new IntegralPoint();
-                    intPoint.AddDirection("ksi", (float)Math.Sqrt(3) / 3);
+                    intPoint.AddCoordinate("ksi", (float)Math.Sqrt(3) / 3);
                     intPoint.Weigt = 1;
                     intPoints.Add(intPoint);
                     break;
@@ -77,24 +77,24 @@ namespace Model.MeshObjects
         }
         /// <inheritdoc/>
 
-        public override float DetJ(IIntegralPoint point3D)
+        public override double DetJ(IIntegralPoint point3D)
         {
             throw new NotImplementedException();
         }
         /// <inheritdoc/>
 
-        public override float[] GetDerivativesFormFunctions(IIntegralPoint intPoint)
+        public override double[] GetDerivativesFormFunctions(IIntegralPoint intPoint)
         {
-            var answer = new float[2];
+            var answer = new double[2];
             answer[0] = -1 / CalcLength();
             answer[1] = 1 / CalcLength();
             return answer;
         }
         /// <inheritdoc/>
 
-        public override float[] GetFormFunctions(IIntegralPoint intPoint)
+        public override double[] GetFormFunctions(IIntegralPoint intPoint)
         {
-            var answer = new float[2];
+            var answer = new double[2];
             answer[0] = (nodes[1].Position._x - intPoint["ksi"]) / CalcLength();
             answer[1] = (intPoint["ksi"] - nodes[0].Position._x) / CalcLength();
             return answer;

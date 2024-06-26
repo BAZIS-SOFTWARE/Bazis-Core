@@ -17,10 +17,10 @@ namespace Model.MeshObjects
         public Tetra(int number, INode[] nodes) : base(number, nodes)
         {
             var intPoint = new IntegralPoint();
-            intPoint.AddDirection("l1", 1.0f / 4);
-            intPoint.AddDirection("l2", 1.0f / 4);
-            intPoint.AddDirection("l3", 1.0f / 4);
-            intPoint.AddDirection("l4", 1.0f / 4);
+            intPoint.AddCoordinate("l1", 1.0f / 4);
+            intPoint.AddCoordinate("l2", 1.0f / 4);
+            intPoint.AddCoordinate("l3", 1.0f / 4);
+            intPoint.AddCoordinate("l4", 1.0f / 4);
             intPoint.Weigt = CalcVolume();
             //jacobians.Add(DetJ(intPoint));
             intPoints.Add(intPoint);
@@ -36,10 +36,10 @@ namespace Model.MeshObjects
             {
                 case 1:
                     intPoint = new IntegralPoint();
-                    intPoint.AddDirection("l1", 1 / 4);
-                    intPoint.AddDirection("l2", 1 / 4);
-                    intPoint.AddDirection("l3", 1 / 4);
-                    intPoint.AddDirection("l4", 1 / 4);
+                    intPoint.AddCoordinate("l1", 1 / 4);
+                    intPoint.AddCoordinate("l2", 1 / 4);
+                    intPoint.AddCoordinate("l3", 1 / 4);
+                    intPoint.AddCoordinate("l4", 1 / 4);
                     intPoint.Weigt = CalcVolume();
                     intPoints.Add(intPoint);
 
@@ -52,10 +52,10 @@ namespace Model.MeshObjects
                     {
                         intPoint = new IntegralPoint();
                         for (int j = 0; j < i; j++)
-                            intPoint.AddDirection($"l{j + 1}", beta);
-                        intPoint.AddDirection($"l{i + 1}", alpha);
+                            intPoint.AddCoordinate($"l{j + 1}", beta);
+                        intPoint.AddCoordinate($"l{i + 1}", alpha);
                         for (int j = i + 1; j < 4; j++)
-                            intPoint.AddDirection($"l{j + 1}", beta);
+                            intPoint.AddCoordinate($"l{j + 1}", beta);
 
                         intPoint.Weigt = 1 / 4f;
                         intPoints.Add(intPoint);
@@ -91,23 +91,23 @@ namespace Model.MeshObjects
         }
         /// <inheritdoc/>
 
-        public override float DetJ(IIntegralPoint point3D)
+        public override double DetJ(IIntegralPoint point3D)
         {
             throw new NotImplementedException();
         }
         /// <inheritdoc/>
 
-        public override float[] GetDerivativesFormFunctions(IIntegralPoint intPoint)
+        public override double[] GetDerivativesFormFunctions(IIntegralPoint intPoint)
         {
             // Расчитано для линейного элемента с одной т.интегрирования в центре
             // по формулам 14.11а и б
-            return new float[] { 1,0,0, 0,1,0, 0,0,1, -1,-1,-1 };
+            return new double[] { 1,0,0, 0,1,0, 0,0,1, -1,-1,-1 };
         }
         /// <inheritdoc/>
 
-        public override float[] GetFormFunctions(IIntegralPoint intPoint)
+        public override double[] GetFormFunctions(IIntegralPoint intPoint)
         {
-            return new float[] { intPoint["l1"], intPoint["l2"], intPoint["l3"], intPoint["l4"] };
+            return new double[] { intPoint["l1"], intPoint["l2"], intPoint["l3"], intPoint["l4"] };
         }
     }
 }

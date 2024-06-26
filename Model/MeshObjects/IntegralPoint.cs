@@ -1,7 +1,9 @@
 ﻿using Geometry;
+using MathNet.Numerics.LinearAlgebra;
 using ModelInterfaces.IntegralObject;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 
 namespace Model.MeshObjects
@@ -11,39 +13,40 @@ namespace Model.MeshObjects
     /// </summary>
     public class IntegralPoint : IIntegralPoint
     {
-        private Dictionary<string, float> directions = new Dictionary<string, float>();
+        private Dictionary<string, double> coordinates = new Dictionary<string, double>();
+/// <inheritdoc/>
 
         /// <inheritdoc/>
-        public float Weigt { get; set; } = 1;
+        public double Weigt { get; set; } = 1;
         /// <summary>
         /// this
         /// </summary>
         /// <param name="dirName"></param>
         /// <returns></returns>
-        public float this[string dirName] 
+        public double this[string dirName] 
         { 
-            get { return directions[dirName]; } 
+            get { return coordinates[dirName]; } 
         }
 
         /// <inheritdoc/>
-        public IEnumerable<KeyValuePair<string, float>> GetDirections()
+        public IEnumerable<KeyValuePair<string, double>> GetCoordinates()
         {
-            foreach (var direction in directions)
+            foreach (var direction in coordinates)
             {
                 yield return direction;
             }
         }
 /// <inheritdoc/>
 
-        public void AddDirection(string name,float value)
+        public void AddCoordinate(string name,double value)
         {
-            directions.Add(name,value);
+            coordinates.Add(name,value);
         }
 /// <inheritdoc/>
 
         public override string ToString()
         {
-            return $"{Weigt} : {string.Join(" ", directions)}";
+            return $"{Weigt} : {string.Join(" ", coordinates)}";
         }
     }
 }

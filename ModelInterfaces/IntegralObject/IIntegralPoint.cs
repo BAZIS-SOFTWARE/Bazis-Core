@@ -15,23 +15,23 @@ namespace ModelInterfaces.IntegralObject
         /// <summary>
         /// Weigt
         /// </summary>
-        float Weigt { get; set; }
+        double Weigt { get; set; }
         /// <summary>
         /// GetLocalCoordinates
         /// </summary>
         /// <returns></returns>
-        IEnumerable<KeyValuePair<string, float>> GetDirections();
+        IEnumerable<KeyValuePair<string, double>> GetCoordinates();
         /// <summary>
         /// AddDirection
         /// </summary>
         /// <param name="name"></param>
         /// <param name="value"></param>
-        void AddDirection(string name, float value);
+        void AddCoordinate(string name, double value);
         /// <summary>
         /// this
         /// </summary>
         /// <param name="dirInd"></param>
         /// <returns></returns>
-        float this[string dirInd] { get; }
+        double this[string dirInd] { get; }
     }
 }

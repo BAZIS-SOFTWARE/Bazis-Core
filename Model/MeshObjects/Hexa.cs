@@ -1,4 +1,4 @@
-﻿using MathNet.Numerics.LinearAlgebra.Single;
+﻿using MathNet.Numerics.LinearAlgebra;
 using ModelInterfaces.IntegralObject;
 using ModelInterfaces.MeshObjects;
 using System;
@@ -15,9 +15,9 @@ namespace Model.MeshObjects
         public Hexa(int number, INode[] nodes) : base(number, nodes)
         {
             var intPoint = new IntegralPoint();
-            intPoint.AddDirection("ksi", 0.0f);
-            intPoint.AddDirection("eta", 0.0f);
-            intPoint.AddDirection("psi", 0.0f);
+            intPoint.AddCoordinate("ksi", 0.0f);
+            intPoint.AddCoordinate("eta", 0.0f);
+            intPoint.AddCoordinate("psi", 0.0f);
             intPoint.Weigt = CalcVolume();
             intPoints.Add(intPoint);
             jacobians.Add(DetJ(intPoint));
@@ -33,9 +33,9 @@ namespace Model.MeshObjects
                 case 1:
 
                     intPoint = new IntegralPoint();
-                    intPoint.AddDirection("ksi", 0.0f);
-                    intPoint.AddDirection("eta", 0.0f);
-                    intPoint.AddDirection("psi", 0.0f);
+                    intPoint.AddCoordinate("ksi", 0.0f);
+                    intPoint.AddCoordinate("eta", 0.0f);
+                    intPoint.AddCoordinate("psi", 0.0f);
                     intPoint.Weigt = CalcVolume();
                     intPoints.Add(intPoint);
 
@@ -48,9 +48,9 @@ namespace Model.MeshObjects
                             for (var k = -1; k <= 1; k += 2)
                             {
                                 intPoint = new IntegralPoint();
-                                intPoint.AddDirection("ksi", i * coordinate);
-                                intPoint.AddDirection("eta", j * coordinate);
-                                intPoint.AddDirection("psi", k * coordinate);
+                                intPoint.AddCoordinate("ksi", i * coordinate);
+                                intPoint.AddCoordinate("eta", j * coordinate);
+                                intPoint.AddCoordinate("psi", k * coordinate);
                                 intPoint.Weigt = 1;
                                 intPoints.Add(intPoint);
                                 
@@ -86,10 +86,10 @@ namespace Model.MeshObjects
         }
         /// <inheritdoc/>
 
-        public override float DetJ(IIntegralPoint intPoint)
+        public override double DetJ(IIntegralPoint intPoint)
         {
             var matrix = countDerivativeFormFunction(intPoint);
-            var matrixPoints = new DenseMatrix(8, 3);
+            var matrixPoints = Matrix<double>.Build.Dense(8, 3);
             for (var i = 0; i < nodes.Count; i++)
             {
                 matrixPoints[i, 0] = nodes[i].Position._x;
@@ -102,19 +102,19 @@ namespace Model.MeshObjects
         }
         /// <inheritdoc/>
 
-        public override float[] GetDerivativesFormFunctions(IIntegralPoint intPoint)
+        public override double[] GetDerivativesFormFunctions(IIntegralPoint intPoint)
         {
             return countDerivativeFormFunction(intPoint).ToColumnMajorArray();
         }
         /// <inheritdoc/>
 
-        public override float[] GetFormFunctions(IIntegralPoint intPoint)
+        public override double[] GetFormFunctions(IIntegralPoint intPoint)
         {
             var ksi = intPoint["ksi"];
             var eta = intPoint["eta"];
             var psi = intPoint["psi"];
 
-            var answer = new List<float>();
+            var answer = new List<double>();
             for (var i = -1; i <= 1; i += 2)
                 for (var j = -1; j <= 1; j += 2)
                     for (var k = -1; k <= 1; k += 2)
@@ -123,18 +123,19 @@ namespace Model.MeshObjects
         }
 
 
-        private DenseMatrix countDerivativeFormFunction(IIntegralPoint intPoint)
+        private Matrix<double> countDerivativeFormFunction(IIntegralPoint intPoint)
         {
             var ksi = intPoint["ksi"];
             var eta = intPoint["eta"];
             var psi = intPoint["psi"];
 
-            var answer = new DenseMatrix(3, 8);
+            var answer = Matrix<double>.Build.Dense(3, 8);
             var num = 0;
             for (var i = -1; i <= 1; i += 2)
                 for (var j = -1; j <= 1; j += 2)
                     for (var k = -1; k <= 1; k += 2)
                     {
+                        var a = answer[0, num];
                         answer[0, num] = i * (1 + j * eta) * (1 + k * psi) / 8;
                         answer[1, num] = j * (1 + i * ksi) * (1 + k * psi) / 8;
                         answer[2, num] = k * (1 + j * eta) * (1 + i * ksi) / 8;

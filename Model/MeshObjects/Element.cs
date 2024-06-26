@@ -15,7 +15,7 @@ namespace Model.MeshObjects
 
         protected List<IIntegralPoint> intPoints = new List<IIntegralPoint>();
 
-        protected List<float> jacobians = new List<float>();
+        protected List<double> jacobians = new List<double>();
 
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace Model.MeshObjects
         }
         /// <inheritdoc/>
 
-        public abstract float DetJ(IIntegralPoint integralPoint);
+        public abstract double DetJ(IIntegralPoint integralPoint);
 /// <inheritdoc/>
 
         public IEnumerable<IIntegralPoint> GetIntegralPoints()
@@ -115,20 +115,20 @@ namespace Model.MeshObjects
 
 /// <inheritdoc/>
 
-        public abstract float[] GetDerivativesFormFunctions(IIntegralPoint intPoint);
+        public abstract double[] GetDerivativesFormFunctions(IIntegralPoint intPoint);
 /// <inheritdoc/>
 
-        public abstract float[] GetFormFunctions(IIntegralPoint intPoint);
+        public abstract double[] GetFormFunctions(IIntegralPoint intPoint);
 
         /// <inheritdoc/>
 
-        public void AddDetJ(float j)
+        public void AddDetJ(double j)
         {
             jacobians.Add(j);
         }
         /// <inheritdoc/>
 
-        public IEnumerable<float> GetDetsJ()
+        public IEnumerable<double> GetDetsJ()
         {
             foreach (var jacobian in jacobians)
             {

@@ -8,7 +8,7 @@ namespace ModelInterfaces
     public interface IVertexObject<T> : IModelObject where T : IPoint
     {
         /// <summary>
-        /// GetNodes
+        /// GetVertexes
         /// </summary>
         /// <returns></returns>
         IEnumerable<T> GetVertexes();

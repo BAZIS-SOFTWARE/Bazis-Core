@@ -1,8 +1,10 @@
-﻿using MathNet.Numerics.LinearAlgebra.Single;
+﻿using MathNet.Numerics.Distributions;
+using MathNet.Numerics.LinearAlgebra;
 using ModelInterfaces.IntegralObject;
 using ModelInterfaces.MeshObjects;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Model.MeshObjects
 {
@@ -13,12 +15,9 @@ namespace Model.MeshObjects
 
         public Quad(int number, INode[] nodes) : base(number, nodes)
         {
-            surface = new ElementSurface(0, new INode[] { nodes[0], nodes[1], nodes[2], nodes[3] });
+            surface = new ElementSurface(number,0, new INode[] { nodes[0], nodes[1], nodes[2], nodes[3] });
 
-            var intPoint = new IntegralPoint();
-            intPoint.AddDirection("ksi", 0.0f);
-            intPoint.AddDirection("eta", 0.0f);
-            intPoint.Weigt = CalcSquare();
+            var intPoint = CreateIntegrationPoint(2, 0, 0, 0.0);
             intPoints.Add(intPoint);
             jacobians.Add(DetJ(intPoint));
         }
@@ -26,113 +25,113 @@ namespace Model.MeshObjects
 
         public Quad(int number, INode[] nodes, int intpNumber) : base(number, nodes)
         {
-            surface = new ElementSurface(0, new INode[] { nodes[0], nodes[1], nodes[2], nodes[3] });
+            surface = new ElementSurface(number, 0, new INode[] { nodes[0], nodes[1], nodes[2], nodes[3] });
+            this.nodes = surface.GetVertexes().ToList();
+
             IntegralPoint intPoint;
             switch (intpNumber)
             {
                 case 1:
-                    intPoint = new IntegralPoint();
-                    intPoint.AddDirection("ksi", 0.0f);
-                    intPoint.AddDirection("eta", 0.0f);
-                    intPoint.Weigt = CalcSquare();
+                    intPoint = CreateIntegrationPoint(2, 0, 0, 0.0);
                     intPoints.Add(intPoint);
-
                     jacobians.Add(DetJ(intPoint));
                     break;
-                case 8:
-                    var coordinate = (float)Math.Sqrt(3) / 3;
-                    for (var i = -1; i <= 1; i += 2)
-                        for (var j = -1; j <= 1; j += 2)
-                        {
-                            intPoint = new IntegralPoint();
-                            intPoint.AddDirection("ksi", i * coordinate);
-                            intPoint.AddDirection("eta", j * coordinate);
-                            intPoint.Weigt = 1;
+                case 4:
+                    var coordinate = Math.Sqrt(3)/3;
+                    var counter = 0;
+                    foreach (var item in surface.GetVertexes())
+                    {
+                        if(counter == 0)
+                            intPoint = CreateIntegrationPoint(1, -1,-1,coordinate);
+                        else if(counter == 1)
+                            intPoint = CreateIntegrationPoint(1, -1, 1, coordinate);
+                        else if (counter == 2)
+                            intPoint = CreateIntegrationPoint(1, 1, 1, coordinate);
+                        else 
+                            intPoint = CreateIntegrationPoint(1, 1, -1, coordinate);
 
-                            jacobians.Add(DetJ(intPoint));
-                        }
+                        intPoints.Add(intPoint);
+                        jacobians.Add(DetJ(intPoint));
+                        counter++;
+                    }
                     break;
                 default:
                     throw new ArgumentException();
             }
 
         }
+
+        private IntegralPoint CreateIntegrationPoint(int w, int ksi, int eta, double coordinate)
+        {
+            var intPoint = new IntegralPoint();
+            intPoint.AddCoordinate("ksi", ksi * coordinate);
+            intPoint.AddCoordinate("eta", eta * coordinate);
+            intPoint.Weigt = w;
+
+            return intPoint;
+        }
+
         /// <inheritdoc/>
 
-        public override float CalcSquare()
+        public override double CalcSquare()
         {
-            var sum = 0f;
+            var sum = 0.0;
 
-            for (int i = 0; i < nodes.Count - 3; i++)
-            {
-                for (int j = i + 1; j < nodes.Count - 2; j++)
-                {
-                    for (int k = j + 1; k < nodes.Count - 1; k++)
-                    {
+            foreach (var item in jacobians)
+                sum += item;
 
-                        var x = new INode[] { nodes[i], nodes[j], nodes[k] };
-                        var tetra = new Triangle(0, x);
-                        sum += tetra.CalcSquare();
-
-                    }
-                }
-            }
-            return sum / 2;
+            return Math.Abs(sum);
         }
 
 
         /// <inheritdoc/>
 
-        public override float DetJ(IIntegralPoint intPoint)
+        public override double DetJ(IIntegralPoint intPoint)
         {
-            var matrix = countDerivativeFormFunction(intPoint);
-            var matrixPoints = new DenseMatrix(8, 3);
+            var derFormFunctions = FormFunctionDerrivatives(intPoint);
+            var matrixPoints = Matrix<double>.Build.Dense(4, 2);
+
             for (var i = 0; i < nodes.Count; i++)
             {
                 matrixPoints[i, 0] = nodes[i].Position._x;
                 matrixPoints[i, 1] = nodes[i].Position._y;
-                matrixPoints[i, 2] = nodes[i].Position._z;
             }
 
-            var result = matrix.Multiply(matrixPoints);
+            var result = derFormFunctions.Multiply(matrixPoints);
             return result.Determinant();
         }
+
+        private Matrix<double> FormFunctionDerrivatives(IIntegralPoint intPoint)
+        {
+            var eta = intPoint["eta"];
+            var ksi = intPoint["ksi"];
+            var formFunctDerivatives = new double[,]
+            {
+                { -(1 - eta), (1 - eta), 1 + eta, -(1+eta) },
+                { -(1 - ksi), -(1 + ksi), 1 + ksi , 1 - ksi }
+};
+            return Matrix<double>.Build.DenseOfArray(formFunctDerivatives).Divide(4);
+        }
+
         /// <inheritdoc/>
 
-        public override float[] GetDerivativesFormFunctions(IIntegralPoint intPoint)
+        public override double[] GetDerivativesFormFunctions(IIntegralPoint intPoint)
         {
-            return countDerivativeFormFunction(intPoint).ToColumnMajorArray();
+            return FormFunctionDerrivatives(intPoint).ToColumnMajorArray();
         }
         /// <inheritdoc/>
 
-        public override float[] GetFormFunctions(IIntegralPoint intPoint)
+        public override double[] GetFormFunctions(IIntegralPoint intPoint)
         {
 
             var ksi = intPoint["ksi"];
             var eta = intPoint["eta"];
 
-            var answer = new List<float>();
+            var answer = new List<double>();
             for (var i = -1; i <= 1; i += 2)
                 for (var j = -1; j <= 1; j += 2)
                     answer.Add((1 + i * ksi) * (1 + j * eta) / 4);
             return answer.ToArray();
-        }
-
-        private DenseMatrix countDerivativeFormFunction(IIntegralPoint intPoint)
-        {
-            var ksi = intPoint["ksi"];
-            var eta = intPoint["eta"];
-            var answer = new DenseMatrix(3, 8);
-            var num = 0;
-            for (var i = -1; i <= 1; i += 2)
-                for (var j = -1; j <= 1; j += 2)
-                    for (var k = -1; k <= 1; k += 2)
-                    {
-                        answer[0, num] = i * (1 + j * eta) / 4;
-                        answer[1, num] = j * (1 + i * ksi) / 4;
-                        num++;
-                    }
-            return answer;
         }
     }
 }

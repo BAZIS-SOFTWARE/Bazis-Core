@@ -20,9 +20,10 @@ namespace Model.MeshObjects
         /// <summary>
         /// Surface constructor
         /// </summary>
+        /// <param name="elementNumber"></param>
         /// <param name="number"></param>
         /// <param name="nodes"></param>
-        public ElementSurface(int number, INode[] nodes) : base(number)
+        public ElementSurface(int elementNumber, int number, INode[] nodes) : base(number)
         {
             if (nodes.Length < 3)
                 throw new Exception("Для создания поверхности требуется не меньше 3-х узлов!");
@@ -61,6 +62,9 @@ namespace Model.MeshObjects
         /// <inheritdoc/>
 
         public override int NumberOfPoints { get { return nodes.Length; } }
+/// <inheritdoc/>
+
+        public int ElementNumber { get; }
 
         /// <inheritdoc/>
 
@@ -72,7 +76,7 @@ namespace Model.MeshObjects
         }
 /// <inheritdoc/>
 
-        public float CalcSquare()
+        public double CalcSquare()
         {
             var square = 0.0f;
             for (int i = 0; i < NumberOfPoints - 2; i++)

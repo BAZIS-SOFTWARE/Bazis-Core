@@ -47,12 +47,12 @@ namespace ModelInterfaces.MeshObjects
         /// кси,эта,дзета если гекса или пента. кси,эта если прямоугольник. кси если стержень.
         /// l координаты если треугольник или тетраэдр
         /// <returns></returns>
-        float DetJ(IIntegralPoint integralPoint);
+        double DetJ(IIntegralPoint integralPoint);
         /// <summary>
         /// Get Jacobians of all intPoints
         /// </summary>
         /// <returns></returns>
-        IEnumerable<float> GetDetsJ();
+        IEnumerable<double> GetDetsJ();
         /// <summary>
         /// ElementKind
         /// </summary>
@@ -69,12 +69,12 @@ namespace ModelInterfaces.MeshObjects
         /// </summary>
         /// <param name="intPoint"></param>
         /// <returns></returns>
-        float[] GetDerivativesFormFunctions(IIntegralPoint intPoint);
+        double[] GetDerivativesFormFunctions(IIntegralPoint intPoint);
         /// <summary>
         /// GetFormFunctions
         /// </summary>
         /// <param name="intPoint"></param>
         /// <returns></returns>
-        float[] GetFormFunctions(IIntegralPoint intPoint);
+        double[] GetFormFunctions(IIntegralPoint intPoint);
     }
 }
