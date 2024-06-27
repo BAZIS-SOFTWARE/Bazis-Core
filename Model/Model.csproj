@@ -87,6 +87,7 @@
     </None>
   </ItemGroup> 
   <ItemGroup>
+    <PackageReference Include="ExtensionsLib" Version="1.0.1.14" />
     <PackageReference Include="MathNet.Numerics.Signed" Version="5.0.0" />
     <PackageReference Include="SortLib" Version="1.0.1.11" />
   </ItemGroup> 

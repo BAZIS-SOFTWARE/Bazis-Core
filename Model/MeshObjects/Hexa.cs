@@ -3,6 +3,7 @@ using ModelInterfaces.IntegralObject;
 using ModelInterfaces.MeshObjects;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Model.MeshObjects
 {
@@ -14,6 +15,7 @@ namespace Model.MeshObjects
 
         public Hexa(int number, INode[] nodes) : base(number, nodes)
         {
+            this.nodes = SortNodes(4).ToList();
             var intPoint = new IntegralPoint();
             intPoint.AddCoordinate("ksi", 0.0f);
             intPoint.AddCoordinate("eta", 0.0f);

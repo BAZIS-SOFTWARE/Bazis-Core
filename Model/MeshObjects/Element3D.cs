@@ -8,6 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using ExtensionsLib;
 
 namespace Model.MeshObjects
 {
@@ -17,7 +18,6 @@ namespace Model.MeshObjects
         private List<ElementSurface> surfaces = new List<ElementSurface>();
         public Element3D(int number, INode[] nodes) : base(number, nodes)
         {
-
             InitialColor = Color.FromArgb(255, 125, 0);
             MasterColor = Color.FromArgb(255, 125, 0);
             SlaveColor = Color.FromArgb(255, 125, 0);
@@ -108,6 +108,49 @@ namespace Model.MeshObjects
             {
                 yield return surface;
             }
+        }
+
+        protected IEnumerable<INode> SortNodes(int mainSurfaceNodesNumber)
+        {
+            var result = new List<INode>();
+            var edges = new HashSet<Tuple<INode, INode>>();
+            INode masterStartNode = null;
+            var masterSurface = new HashSet<INode>();
+            var graph = new Dictionary<INode, HashSet<INode>>();
+            foreach (var surface in surfaces)
+            {
+                foreach(var pair in surface.GetVertexes().Bigrams(true))
+                {
+                    if (!graph.ContainsKey(pair.Item1))
+                        graph.Add(pair.Item1, new HashSet<INode>());
+                    if (!graph.ContainsKey(pair.Item2))
+                        graph.Add(pair.Item2, new HashSet<INode>());
+                    graph[pair.Item1].Add(pair.Item2);
+                    graph[pair.Item2].Add(pair.Item1);
+                }
+                if(surface.NumberOfPoints == mainSurfaceNodesNumber && masterStartNode == null)
+                {
+                    masterStartNode = surface[0];
+                    masterSurface = surface.GetVertexes().ToHashSet();
+                }
+            }
+            var currentNode = masterStartNode;
+            result.Add(currentNode);
+            for (var i = 0; i < mainSurfaceNodesNumber - 1; i++)
+            {
+                var nextNode = graph[currentNode].Where(x => masterSurface.Contains(x) && !result.Contains(x)).First();
+                result.Add(nextNode);
+                currentNode = nextNode;
+            }
+            currentNode = graph[masterStartNode].Where(x => !result.Contains(x)).First();
+            result.Add(currentNode);
+            for (var i = 0; i < mainSurfaceNodesNumber - 1; i++)
+            {
+                var nextNode = graph[currentNode].Where(x => !result.Contains(x) && graph[result[i + 1]].Contains(x)).First();
+                result.Add(nextNode);
+                currentNode = nextNode;
+            }
+            return result;
         }
     }
 }
