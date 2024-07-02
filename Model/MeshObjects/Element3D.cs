@@ -114,26 +114,8 @@ namespace Model.MeshObjects
         {
             var result = new List<INode>();
             var edges = new HashSet<Tuple<INode, INode>>();
-            INode masterStartNode = null;
-            var masterSurface = new HashSet<INode>();
-            var graph = new Dictionary<INode, HashSet<INode>>();
-            foreach (var surface in surfaces)
-            {
-                foreach(var pair in surface.GetVertexes().Bigrams(true))
-                {
-                    if (!graph.ContainsKey(pair.Item1))
-                        graph.Add(pair.Item1, new HashSet<INode>());
-                    if (!graph.ContainsKey(pair.Item2))
-                        graph.Add(pair.Item2, new HashSet<INode>());
-                    graph[pair.Item1].Add(pair.Item2);
-                    graph[pair.Item2].Add(pair.Item1);
-                }
-                if(surface.NumberOfPoints == mainSurfaceNodesNumber && masterStartNode == null)
-                {
-                    masterStartNode = surface[0];
-                    masterSurface = surface.GetVertexes().ToHashSet();
-                }
-            }
+            var graph = BuildGraph();
+            var (masterStartNode, masterSurface) = GetStartNodeAndSurface(mainSurfaceNodesNumber);
             var currentNode = masterStartNode;
             result.Add(currentNode);
             for (var i = 0; i < mainSurfaceNodesNumber - 1; i++)
@@ -151,6 +133,39 @@ namespace Model.MeshObjects
                 currentNode = nextNode;
             }
             return result;
+        }
+
+        private Dictionary<INode, HashSet<INode>> BuildGraph()
+        {
+            var graph = new Dictionary<INode, HashSet<INode>>();
+            foreach (var surface in surfaces)
+            {
+                foreach (var pair in surface.GetVertexes().Bigrams(true))
+                {
+                    if (!graph.ContainsKey(pair.Item1))
+                        graph.Add(pair.Item1, new HashSet<INode>());
+                    if (!graph.ContainsKey(pair.Item2))
+                        graph.Add(pair.Item2, new HashSet<INode>());
+                    graph[pair.Item1].Add(pair.Item2);
+                    graph[pair.Item2].Add(pair.Item1);
+                }
+            }
+            return graph;
+        }
+
+        private (INode, HashSet<INode>) GetStartNodeAndSurface(int mainSurfaceNodesNumber)
+        {
+            INode masterStartNode = null;
+            var masterSurface = new HashSet<INode>();
+            foreach (var surface in surfaces)
+            {
+                if (surface.NumberOfPoints == mainSurfaceNodesNumber)
+                {
+                    masterStartNode = surface[0];
+                    masterSurface = surface.GetVertexes().ToHashSet();
+                }
+            }
+            return (masterStartNode, masterSurface);
         }
     }
 }

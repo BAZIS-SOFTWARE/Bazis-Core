@@ -183,7 +183,7 @@ namespace TestModel
             var hexa = new Hexa(1, new INode[] { A, B, C, D, E, F, G, H });
 
             var actual = hexa.GetVertexes().ToList();
-            var expected = new List<INode> { F, B, A, E, G, C, D, H };
+            var expected = new List<INode> { G, F, E, H, C, B, A, D };
             for(var i = 0; i < actual.Count; i++)
             {
                 Assert.AreEqual(expected[i], actual[i]);
@@ -203,7 +203,7 @@ namespace TestModel
             var penta = new Penta(1, new INode[] { A, B, D, E, F, H });
 
             var actual = penta.GetVertexes().ToList();
-            var expected = new List<INode> { A, B, D, E, F, H };
+            var expected = new List<INode> { H, E, F, D, A, B };
             for (var i = 0; i < actual.Count; i++)
             {
                 Assert.AreEqual(expected[i], actual[i]);
