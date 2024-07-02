@@ -113,7 +113,6 @@ namespace Model.MeshObjects
         protected IEnumerable<INode> SortNodes(int mainSurfaceNodesNumber)
         {
             var result = new List<INode>();
-            var edges = new HashSet<Tuple<INode, INode>>();
             var graph = BuildGraph();
             var (masterStartNode, masterSurface) = GetStartNodeAndSurface(mainSurfaceNodesNumber);
             var currentNode = masterStartNode;
