@@ -6,6 +6,7 @@ using Model;
 using ModelInterfaces;
 using ModelControllerInterfaces.GmshController;
 using ModelInterfaces.ObjectsFinders;
+using System.Collections.Generic;
 
 namespace TestModel.GmshTests
 {
@@ -468,6 +469,101 @@ namespace TestModel.GmshTests
             /*
             controller.OptionSetNumber("Mesh.SaveGroupsOfNodes", 1, ref ierr);//Для визуального теста
             controller.Write(@"C:\Mesh\Cilindr.inp", ref ierr);*/
+        }
+
+        /// Проверка автоматического создания геометрической оболочки по готовой stl сетке
+        [DataTestMethod]
+        [DataRow("sphere.stl", Math.PI / 4, Math.PI)]
+        [DataRow("box.stl", Math.PI / 3, Math.PI / 3)]
+        public void BuildGeometryFromMeshTest(string fileName, double classifyAngleSurf, double classifyAngleCurve)
+        {
+            var ierr = 0;
+            controller.Open(@"..\..\..\Examples\STL\" + fileName, ref ierr);
+            controller.CreateGeometry(classifyAngleSurf, classifyAngleCurve);
+            int[] dimTags;
+            controller.ModelGetGeometryEntities(out dimTags, 2);
+            dimTags = dimTags.Where((v, i) => (i & 1) == 1).ToArray();
+            var tag = controller.ModelGeoAddSurfaceLoop(dimTags, (IntPtr)dimTags.Length, 1, ref ierr);
+            controller.ModelGeoAddVolume(new int[] { tag }, (IntPtr)1, -1, ref ierr);
+            controller.ModelGeoSynchronize(ref ierr);//Обязательный вызов Synchronize
+            controller.ModelGetGeometryEntities(out dimTags, 3);
+            Assert.AreNotEqual(0, dimTags.Length);
+            controller.ModelMeshGenerate(2, ref ierr);
+            var list = controller.GetMeshObjects();
+            var before = list.Item3.Count;
+            Assert.AreNotEqual(0, before);
+            controller.ModelGetGeometryEntities(out dimTags, 1);
+            controller.ModelMeshSetTransfiniteCurve(dimTags[1], 50, "Progression", 1.0, ref ierr);
+            controller.ModelMeshGenerate(2, ref ierr);
+            list = controller.GetMeshObjects();
+            var after = list.Item3.Count;
+            Assert.AreNotEqual(after, before);
+            //Проверка создания 3д элементов
+            controller.ModelMeshGenerate(3, ref ierr);
+            list = controller.GetMeshObjects();
+            Assert.AreNotEqual(0, list.Item4.Count);
+        }
+
+        ///Проверяем построение геометрической 2D оболочки ручным созданием дискретных сущностей,
+        ///проверяем построение сетки по построенной оболочке и перегенерацию сетки с увеличенной плотностью
+        [DataTestMethod]
+        public void BuildManualDiscrete2DGeometryTest()
+        {
+            var ierr = 0;
+            controller.ModelAdd("Discrete2D", ref ierr);
+            var localPoints = new double[] { -0.5, -0.5, 0,
+                                              0.5, -0.5, 0,
+                                              0.5,  0.5, 0,
+                                             -0.5,  0.5, 0,
+                                            };
+            var nodeTags = new IntPtr[] { (IntPtr)1, (IntPtr)2, (IntPtr)3, (IntPtr)4 };
+            var linesTags = new IntPtr[] { (IntPtr)1, (IntPtr)2, (IntPtr)3, (IntPtr)4, (IntPtr)1 };
+            var trisTags = new IntPtr[] { (IntPtr)1, (IntPtr)2, (IntPtr)4, (IntPtr)2, (IntPtr)3, (IntPtr)4 };
+            //Геометрические точки
+            for (int i = 0; i < 4; ++i)
+            {
+                var index = i * 3;
+                controller.ModelAddDiscreteEntity(0, i + 1, new int[0], ref ierr);
+                controller.ModelSetCoordinates(i + 1, localPoints[index], localPoints[index + 1], 
+                                               localPoints[index + 2], ref ierr);
+            }
+            int[] dimTags;
+            controller.ModelGetGeometryEntities(out dimTags, 0);
+            Assert.AreEqual(8, dimTags.Length);
+            controller.ModelMeshSetSize(dimTags, (IntPtr)dimTags.Length, 1, ref ierr);
+            //Кривые
+            for (int i = 1; i < 5; ++i)
+            {
+                var last = i == 4 ? 1 : i + 1;
+                controller.ModelAddDiscreteEntity(1, i, new int[] { i, last }, ref ierr);
+            }
+            controller.ModelGetGeometryEntities(out dimTags, 1);
+            Assert.AreEqual(8, dimTags.Length);
+            //Поверхности
+            controller.ModelAddDiscreteEntity(2, 1, new int[] { 1, 2, 3, 4 }, ref ierr);
+            controller.ModelGetGeometryEntities(out dimTags, 2);
+            Assert.AreEqual(2, dimTags.Length);
+            controller.ModelMeshAddNodes(2, 1, nodeTags, localPoints, new double[0], ref ierr);
+            for(var i = 0; i < 4; ++i)
+            {
+                controller.ModelMeshAddElementsByType(i + 1, 15, new IntPtr[0], new IntPtr[] { nodeTags[i] }, ref ierr);
+                controller.ModelMeshAddElementsByType(i + 1, 1, new IntPtr[0], new IntPtr[] { linesTags[i], linesTags[i + 1] },
+                                                      ref ierr);
+            }
+            controller.ModelMeshAddElementsByType(1, 2, new IntPtr[0], trisTags, ref ierr);
+            controller.ModelGetGeometryEntities(out dimTags, -1);
+            controller.ModelMeshReclassifyNodes(ref ierr);
+            controller.ModelMeshCreateGeometry(dimTags, (IntPtr)dimTags.Length, ref ierr);
+            controller.ModelMeshGenerate(2, ref ierr);
+            var list = controller.GetMeshObjects();
+            var before = list.Item3.Count;
+            Assert.AreNotEqual(0, before);
+            controller.ModelGetGeometryEntities(out dimTags, 0);
+            controller.ModelMeshSetSize(dimTags, (IntPtr)dimTags.Length, 0.4, ref ierr);
+            controller.ModelMeshGenerate(2, ref ierr);
+            list = controller.GetMeshObjects();
+            var after = list.Item3.Count;
+            Assert.IsTrue(after > before);
         }
     }
 }

@@ -624,6 +624,52 @@ namespace GmshApi.GmshController
         public delegate void gmshModelOccGetCenterOfMassFun(int dim, int tag, ref double x, ref double y,
                                                             ref double z, ref int ierr);///
         gmshModelOccGetCenterOfMassFun gmshModelOccGetCenterOfMass;
+        /// <summary>
+        /// Классифицирует (цветом) сеточные поверхности по углу и создает дискретные сущности(точки, кривые, поверхности)
+        /// </summary>
+        /// <param name="angle">[In]Пороговый угол разбиения поверхностей (в радианах)</param>
+        /// <param name="boundary">[In]Создавать дискретные кривые на открытых поверхностях ?</param>
+        /// <param name="forReparametrization">[In]Создавать кривые и поверхности, которые могут быть репараметризированы одним отображением?</param>
+        /// <param name="curveAngle">[In]Угол разбиения для кривых (в радианах)</param>
+        /// <param name="exportDiscrete">[In]Экспортировать дискретные сущности в движок CAD</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelMeshClassifySurfacesFun(double angle, int boundary, int forReparametrization,
+                                                              double curveAngle, int exportDiscrete, ref int ierr);///
+        gmshModelMeshClassifySurfacesFun gmshModelMeshClassifySurfaces;
+        /// <summary>
+        /// Создает геометрию по дискретным сущностям dimTags, создает параметризацию для кривых и поверхностей
+        /// </summary>
+        /// <param name="dimTags">[In]Масив dim:tags</param>
+        /// <param name="dimTags_n">[In]Размер массива dim:tags</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelMeshCreateGeometryFun(int[] dimTags, IntPtr dimTags_n, ref int ierr);///
+        public gmshModelMeshCreateGeometryFun gmshModelMeshCreateGeometry;
+        /*/// <summary>
+        /// Удаляет все дубликаты сущностей (которые имеют идентичную геометрию)
+        /// </summary>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelGeoRemoveAllDuplicatesFun(ref int ierr);///
+        public gmshModelGeoRemoveAllDuplicatesFun gmshModelGeoRemoveAllDuplicates;*/
+        /// <summary>
+        /// Создает геометрическую точку с идендификатором tag и локальными координатами x,y,z
+        /// </summary>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="x">[In]Локальная координата X</param>
+        /// <param name="y">[In]Локальная координата Y</param>
+        /// <param name="z">[In]Локальная координата Z</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelSetCoordinatesFun(int tag, double x, double y, double z, ref int ierr);///
+        public gmshModelSetCoordinatesFun gmshModelSetCoordinates;
+        /// <summary>
+        /// Создает дискретную сущность dim:tag с граничным идентификаторами(dim - 1) в массиве 
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="boundary">[In]Массив с гарничными идентификаторами (dim - 1) или пустой массив если нет границ</param>
+        /// <param name="boundary_n">[In]Размер массива с гарничными идентификаторами</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelAddDiscreteEntityFun(int dim, int tag, int[] boundary, IntPtr boundary_n, ref int ierr);///
+        public gmshModelAddDiscreteEntityFun gmshModelAddDiscreteEntity;
         #endregion
         #region "Mesh Delegates"
         /// <summary>
@@ -871,6 +917,42 @@ namespace GmshApi.GmshController
                                                                       string qualityName, IntPtr task,
                                                                       IntPtr numTasks, ref int ierr);
         private gmshModelMeshGetElementQualitiesFun gmshModelMeshGetElementQualities;
+        /// <summary>
+        /// Классифицировать узлы
+        /// </summary>
+        /// <param name="ierr"></param>
+        public delegate void gmshModelMeshReclassifyNodesFun(ref int ierr);///
+        public gmshModelMeshReclassifyNodesFun gmshModelMeshReclassifyNodes;
+        /// <summary>
+        /// Добавляет узлы к указанному dim:tag предоставляя координаты и опционально идентификаторы точек и параметрические координаты
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="nodeTags">[In]Массив идентификаторов точек (опционально)</param>
+        /// <param name="nodeTags_n">[In]Длина массива идентификаторов точек</param>
+        /// <param name="coord">[In]Массив локальных координат</param>
+        /// <param name="coord_n">[In]Длина массива локальных координат</param>
+        /// <param name="parametricCoord">[In]Массив параметрических координат (опционально)</param>
+        /// <param name="parametricCoord_n">[In]Длина массива параметрических координат</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelMeshAddNodesFun(int dim, int tag, IntPtr[] nodeTags, IntPtr nodeTags_n,
+                                                      double[] coord, IntPtr coord_n, double[] parametricCoord,
+                                                      IntPtr parametricCoord_n, ref int ierr);///
+        public gmshModelMeshAddNodesFun gmshModelMeshAddNodes;
+        /// <summary>
+        /// Добавляет элементы и их нумерацию согласно типу элемента и его геометрическому идентификатору
+        /// </summary>
+        /// <param name="tag">[In]Геометрический идентификатор</param>
+        /// <param name="elementType">[In]Тип элемента</param>
+        /// <param name="elementTags">[In]Массив идентифкаторов элементов (опционально)</param>
+        /// <param name="elementTags_n">[In]Размер массива идентифкаторов элементов</param>
+        /// <param name="nodeTags">[In]Массив перечисленных идентификаторов узлов элементов</param>
+        /// <param name="nodeTags_n">[In]Размер массива перечисленных идентификаторов узлов элементов</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        public delegate void gmshModelMeshAddElementsByTypeFun(int tag, int elementType, IntPtr[] elementTags, 
+                                                            IntPtr elementTags_n, IntPtr[] nodeTags, IntPtr nodeTags_n,
+                                                            ref int ierr);///
+        public gmshModelMeshAddElementsByTypeFun gmshModelMeshAddElementsByType;
         #endregion
         #region "Mesh Field Delegates"
         /// <summary>
@@ -1087,6 +1169,11 @@ namespace GmshApi.GmshController
             gmshModelMeshGetSizes = GetFunction<gmshModelMeshGetSizesFun>("gmshModelMeshGetSizes");
             gmshModelOccGetMass = GetFunction<gmshModelOccGetMassFun>("gmshModelOccGetMass");
             gmshModelOccGetCenterOfMass = GetFunction<gmshModelOccGetCenterOfMassFun>("gmshModelOccGetCenterOfMass");
+            gmshModelMeshClassifySurfaces = GetFunction<gmshModelMeshClassifySurfacesFun>("gmshModelMeshClassifySurfaces");
+            gmshModelMeshCreateGeometry = GetFunction<gmshModelMeshCreateGeometryFun>("gmshModelMeshCreateGeometry");
+            //gmshModelGeoRemoveAllDuplicates = GetFunction<gmshModelGeoRemoveAllDuplicatesFun>("gmshModelGeoRemoveAllDuplicates");
+            gmshModelSetCoordinates = GetFunction<gmshModelSetCoordinatesFun>("gmshModelSetCoordinates");
+            gmshModelAddDiscreteEntity = GetFunction<gmshModelAddDiscreteEntityFun>("gmshModelAddDiscreteEntity");
             #endregion
             #region "Get Mesh delegates"
             gmshModelMeshGenerate = GetFunction<gmshModelMeshGenerateFun>("gmshModelMeshGenerate");
@@ -1110,6 +1197,8 @@ namespace GmshApi.GmshController
             gmshModelMeshSetVisibility = GetFunction<gmshModelMeshSetVisibilityFun>("gmshModelMeshSetVisibility");
             gmshModelMeshSetAlgorithm = GetFunction<gmshModelMeshSetAlgorithmFun>("gmshModelMeshSetAlgorithm");
             gmshModelMeshGetElementQualities = GetFunction<gmshModelMeshGetElementQualitiesFun>("gmshModelMeshGetElementQualities");
+            gmshModelMeshAddElementsByType = GetFunction<gmshModelMeshAddElementsByTypeFun>("gmshModelMeshAddElementsByType");
+            gmshModelMeshAddNodes = GetFunction<gmshModelMeshAddNodesFun>("gmshModelMeshAddNodes");
             #endregion
             #region "Get Mesh Field delegates"
             gmshModelMeshFieldAdd = GetFunction<gmshModelMeshFieldAddFun>("gmshModelMeshFieldAdd");
@@ -1124,6 +1213,7 @@ namespace GmshApi.GmshController
             gmshModelMeshFieldGetNumbers = GetFunction<gmshModelMeshFieldGetNumbersFun>("gmshModelMeshFieldGetNumbers");
             gmshModelMeshFieldSetAsBackgroundMesh = GetFunction<gmshModelMeshFieldSetAsBackgroundMeshFun>("gmshModelMeshFieldSetAsBackgroundMesh");
             gmshModelMeshFieldSetAsBoundaryLayer = GetFunction<gmshModelMeshFieldSetAsBoundaryLayerFun>("gmshModelMeshFieldSetAsBoundaryLayer");
+            gmshModelMeshReclassifyNodes = GetFunction<gmshModelMeshReclassifyNodesFun>("gmshModelMeshReclassifyNodes");
             #endregion
             #region "Get Logger delegates"
             gmshLoggerStart = GetFunction<gmshLoggerStartFun>("gmshLoggerStart");
@@ -2265,6 +2355,62 @@ namespace GmshApi.GmshController
                 return 0;
             var length = GetCurveLength(curveTag);
             return (int)Math.Ceiling(length / elemSize) + 1;
+        }
+
+        /// <inheritdoc/>
+        public void ModelMeshClassifySurfaces(double angle, int boundary, int forReparametrization,
+                                              double curveAngle, int exportDiscrete, ref int ierr)
+        {
+            gmshModelMeshClassifySurfaces(angle, boundary, forReparametrization, curveAngle, exportDiscrete, ref ierr);
+        }
+        /// <inheritdoc/>
+        public void ModelMeshCreateGeometry(int[] dimTags, IntPtr dimTags_n, ref int ierr)
+        {
+            gmshModelMeshCreateGeometry(dimTags, dimTags_n, ref ierr);
+        }
+        /*/// <inheritdoc/>
+        public void ModelGeoRemoveAllDuplicates(ref int ierr)
+        {
+            gmshModelGeoRemoveAllDuplicates(ref ierr);
+        }*/
+        /// <inheritdoc/>
+        public void ModelSetCoordinates(int tag, double x, double y, double z, ref int ierr)
+        {
+            gmshModelSetCoordinates(tag, x, y, z, ref ierr);
+        }
+        /// <inheritdoc/>
+        public void ModelAddDiscreteEntity(int dim, int tag, int[] boundary, ref int ierr)
+        {
+            gmshModelAddDiscreteEntity(dim, tag, boundary,(IntPtr)boundary.Length, ref ierr);
+        }
+        /// <inheritdoc/>
+        public void ModelMeshReclassifyNodes(ref int ierr)
+        {
+            gmshModelMeshReclassifyNodes(ref ierr);
+        }
+
+        /// <inheritdoc/>
+        public void ModelMeshAddNodes(int dim, int tag, IntPtr[] nodeTags, double[] coord, double[] parametricCoord, ref int ierr)
+        {
+            gmshModelMeshAddNodes(dim, tag, nodeTags, (IntPtr)nodeTags.Length, coord, (IntPtr)coord.Length,
+                                  parametricCoord, (IntPtr)parametricCoord.Length, ref ierr);
+        }
+
+        /// <inheritdoc/>
+        public void ModelMeshAddElementsByType(int tag,int elementType, IntPtr[] elementTags, IntPtr[] nodeTags,ref int ierr)
+        {
+            gmshModelMeshAddElementsByType(tag, elementType, elementTags, (IntPtr)elementTags.Length, nodeTags,
+                                           (IntPtr)nodeTags.Length, ref ierr);
+        }
+
+        /// <inheritdoc/>
+        public void CreateGeometry(double surfAngle = Math.PI / 2, double curveAngle = Math.PI)
+        {
+            var ierr = 0;
+            ModelMeshClassifySurfaces(surfAngle, 1, 1, curveAngle, 1, ref ierr);
+            int[] dimTags;
+            ModelGetGeometryEntities(out dimTags, -1);
+            ModelMeshCreateGeometry(dimTags, (IntPtr)dimTags.Length, ref ierr);
         }
         #endregion
     }

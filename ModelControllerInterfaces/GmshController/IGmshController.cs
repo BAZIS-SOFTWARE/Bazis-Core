@@ -512,5 +512,77 @@ namespace ModelControllerInterfaces.GmshController
         /// <param name="elemSize">[In]Желаемый размер элемента</param>
         /// <returns>Число точек</returns>
         int GetPointsCountByElementSize(int curveTag, float elemSize);
+        /// <summary>
+        /// Классифицирует (цветом) сеточные поверхности по углу и создает дискретные сущности(точки, кривые, поверхности)
+        /// </summary>
+        /// <param name="angle">[In]Пороговый угол разбиения поверхностей (в радианах)</param>
+        /// <param name="boundary">[In]Создавать дискретные кривые на открытых поверхностях ?</param>
+        /// <param name="forReparametrization">[In]Создавать кривые и поверхности, которые могут быть репараметризированы одним отображением?</param>
+        /// <param name="curveAngle">[In]Угол разбиения для кривых (в радианах)</param>
+        /// <param name="exportDiscrete">[In]Экспортировать дискретные сущности в движок CAD</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void ModelMeshClassifySurfaces(double angle, int boundary, int forReparametrization,
+                                       double curveAngle, int exportDiscrete, ref int ierr);
+        /// <summary>
+        /// Создает геометрию по дискретным сущностям dimTags, создает параметризацию для кривых и поверхностей
+        /// </summary>
+        /// <param name="dimTags">[In]Масив dim:tags</param>
+        /// <param name="dimTags_n">[In]Размер массива dim:tags</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void ModelMeshCreateGeometry(int[] dimTags, IntPtr dimTags_n, ref int ierr);
+
+        /*/// <summary>
+        /// Удаляет все дубликаты сущностей (которые имеют идентичную геометрию)
+        /// </summary>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void ModelGeoRemoveAllDuplicates(ref int ierr);*/
+
+        /// <summary>
+        /// Создает геометрическую точку с идендификатором tag и локальными координатами x,y,z
+        /// </summary>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="x">[In]Локальная координата X</param>
+        /// <param name="y">[In]Локальная координата Y</param>
+        /// <param name="z">[In]Локальная координата Z</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void ModelSetCoordinates(int tag, double x, double y, double z, ref int ierr);
+        /// <summary>
+        /// Создает дискретную сущность dim:tag с граничным идентификаторами(dim - 1) в массиве 
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="boundary">[In]Массив с гарничными идентификаторами (dim - 1) или пустой массив если нет границ</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void ModelAddDiscreteEntity(int dim, int tag, int[] boundary, ref int ierr);
+        /// <summary>
+        /// Классифицировать узлы
+        /// </summary>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void ModelMeshReclassifyNodes(ref int ierr);
+        /// <summary>
+        /// Добавляет узлы к указанному dim:tag предоставляя координаты и опционально идентификаторы точек и параметрические координаты
+        /// </summary>
+        /// <param name="dim">[In]Размерность</param>
+        /// <param name="tag">[In]Идентификатор</param>
+        /// <param name="nodeTags">[In]Массив идентификаторов точек (опционально)</param>
+        /// <param name="coord">[In]Массив локальных координат</param>
+        /// <param name="parametricCoord">[In]Массив параметрических координат (опционально)</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void ModelMeshAddNodes(int dim, int tag, IntPtr[] nodeTags, double[] coord, double[] parametricCoord, ref int ierr);
+        /// <summary>
+        /// Добавляет элементы и их нумерацию согласно типу элемента и его геометрическому идентификатору
+        /// </summary>
+        /// <param name="tag">[In]Геометрический идентификатор</param>
+        /// <param name="elementType">[In]Тип элемента</param>
+        /// <param name="elementTags">[In]Массив идентифкаторов элементов (опционально)</param>
+        /// <param name="nodeTags">[In]Массив перечисленных идентификаторов узлов элементов</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void ModelMeshAddElementsByType(int tag, int elementType, IntPtr[] elementTags, IntPtr[] nodeTags, ref int ierr);
+        /// <summary>
+        /// Построит геометрию по сетке автоматическим способом из загруженного сеточного формата
+        /// </summary>
+        /// <param name="surfAngle">[In]Пороговый угол разбиения поверхностей</param>
+        /// <param name="curveAngle">[In]Пороговый угол разбиения кривых</param>
+        void CreateGeometry(double surfAngle = Math.PI / 2, double curveAngle = Math.PI);
     }
 }
