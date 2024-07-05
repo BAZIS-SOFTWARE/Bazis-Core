@@ -11,6 +11,11 @@ namespace ModelInterfaces.MeshObjects
     /// </summary>
     public interface IElement3D : ISurfaceElement, IVolume
     {
-
+        /// <summary>
+        /// SortNodes
+        /// </summary>
+        /// <param name="mainSurfaceNodesNumber"></param>
+        /// <returns></returns>
+        IEnumerable<INode> SortNodes(int mainSurfaceNodesNumber);
     }
 }

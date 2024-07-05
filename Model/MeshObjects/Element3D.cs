@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using ExtensionsLib;
+using ModelInterfaces.ObjectsComparers;
 
 namespace Model.MeshObjects
 {
@@ -109,28 +110,41 @@ namespace Model.MeshObjects
                 yield return surface;
             }
         }
+/// <inheritdoc/>
 
-        protected IEnumerable<INode> SortNodes(int mainSurfaceNodesNumber)
+        public IEnumerable<INode> SortNodes(int mainSurfaceNodesNumber)
         {
             var result = new List<INode>();
             var graph = BuildGraph();
-            var (masterStartNode, masterSurface) = GetStartNodeAndSurface(mainSurfaceNodesNumber);
-            var currentNode = masterStartNode;
-            result.Add(currentNode);
-            for (var i = 0; i < mainSurfaceNodesNumber - 1; i++)
+            var masterSurface = GetMasterSurface(mainSurfaceNodesNumber);          
+
+            result.AddRange(masterSurface.GetVertexes());
+
+            var slaveStartNode = graph[masterSurface[0]].Where(x => !masterSurface.GetVertexes().Contains(x)).First();
+            //находим противолеж. поверхность
+            var slaveNodes = new List<INode>();
+            var slaveNodeIndex = 0;
+            foreach (var item in surfaces)
             {
-                var nextNode = graph[currentNode].Where(x => masterSurface.Contains(x) && !result.Contains(x)).First();
-                result.Add(nextNode);
-                currentNode = nextNode;
+                var res = item.GetVertexes().Intersect(masterSurface.GetVertexes());
+
+                if(res.Count() == 0)
+                {
+                    slaveNodes = item.GetVertexes().ToList();
+                    slaveNodes.Reverse();
+                    slaveNodeIndex = slaveNodes.IndexOf(slaveStartNode);
+                    break;
+                }
+
             }
-            currentNode = graph[masterStartNode].Where(x => !result.Contains(x)).First();
-            result.Add(currentNode);
-            for (var i = 0; i < mainSurfaceNodesNumber - 1; i++)
-            {
-                var nextNode = graph[currentNode].Where(x => !result.Contains(x) && graph[result[i + 1]].Contains(x)).First();
-                result.Add(nextNode);
-                currentNode = nextNode;
-            }
+          
+            // проходим после индекса до конца
+            for (int i = slaveNodeIndex; i < slaveNodes.Count; i++)
+                result.Add(slaveNodes[i]);
+            // проходим с начала до индекса
+            for (int i = 0; i < slaveNodeIndex; i++)
+                result.Add(slaveNodes[i]);
+
             return result;
         }
 
@@ -152,19 +166,19 @@ namespace Model.MeshObjects
             return graph;
         }
 
-        private (INode, HashSet<INode>) GetStartNodeAndSurface(int mainSurfaceNodesNumber)
+        private IElementSurface GetMasterSurface(int masterSurfaceNodesNumber)
         {
-            INode masterStartNode = null;
-            var masterSurface = new HashSet<INode>();
+
+            IElementSurface masterSurface = null;
             foreach (var surface in surfaces)
             {
-                if (surface.NumberOfPoints == mainSurfaceNodesNumber)
+                if (surface.NumberOfPoints == masterSurfaceNodesNumber)
                 {
-                    masterStartNode = surface[0];
-                    masterSurface = surface.GetVertexes().ToHashSet();
+                    masterSurface = surface;
+                    break;
                 }
             }
-            return (masterStartNode, masterSurface);
+            return masterSurface;
         }
     }
 }

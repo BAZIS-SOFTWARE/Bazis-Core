@@ -168,7 +168,8 @@ namespace TestModel
         }
 
 
-        [TestMethod]
+        [DataTestMethod]
+        []
         public void SortNodes_ShouldSortNodesCorrectly_OnHexa()
         {
             var A = new Node(1, new Point3D(0, 0, 0));
@@ -180,10 +181,10 @@ namespace TestModel
             var G = new Node(7, new Point3D(1, 1, 1));
             var H = new Node(8, new Point3D(1, 0, 1));
 
-            var hexa = new Hexa(1, new INode[] { A, B, C, D, E, F, G, H });
+            var hexa = new Hexa(1, new INode[] { A, B, C, D, F, G, H, E });
 
             var actual = hexa.GetVertexes().ToList();
-            var expected = new List<INode> { G, F, E, H, C, B, A, D };
+            var expected = new List<INode> { A, B, C, D, F, G, H, E };
             for(var i = 0; i < actual.Count; i++)
             {
                 Assert.AreEqual(expected[i], actual[i]);
