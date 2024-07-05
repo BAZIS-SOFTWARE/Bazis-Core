@@ -110,6 +110,13 @@ namespace Model.MeshObjects
                 yield return surface;
             }
         }
+
+        public IEnumerable<INode> SortNodesEx(int mainSurfaceNodesNumber)
+        {
+            // TO DO 
+            // ПРЕДЛОЖИТЬ РЕАЛИЗАЦИЮ СОРТИРОВКИ УЗЛОВ ИСПОЛЬЗУЯ ПРЕИМУЩЕСТВЕННО ГРАФ ЭЛЕМЕНТА
+            return null;
+        }
 /// <inheritdoc/>
 
         public IEnumerable<INode> SortNodes(int mainSurfaceNodesNumber)
