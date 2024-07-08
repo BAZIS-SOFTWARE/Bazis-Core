@@ -5,9 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Model.MeshObjects
+namespace Model.Utilities
 {
-    public class SurfaceFinder
+    public class SurfacesFinder
     {
         /// <param name="nodes">Узлы, задающие выпуклую 3D модель</param>
         /// <returns>Перечисление поверхностей, составляющих грани 3D модели</returns>
@@ -20,6 +20,7 @@ namespace Model.MeshObjects
                     continue;
                 var otherNodes = nodes.ToHashSet().Except(subset).ToList();
                 var points = subset.Select(x => x.Position).ToArray();
+
                 var plane = new Plane(points[0], points[1], points[2]);
                 var accept = true;
                 var initialSign = plane.PointPosition(otherNodes.First().Position) >= 0;
@@ -57,7 +58,7 @@ namespace Model.MeshObjects
                 {
                     for (var k = j + 1; k < set.Length; k++)
                     {
-                        yield return new [] { set[i], set[j], set[k] };
+                        yield return new[] { set[i], set[j], set[k] };
                     }
                 }
             }

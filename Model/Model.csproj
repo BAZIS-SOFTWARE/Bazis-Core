@@ -29,6 +29,7 @@
     <Compile Include="Events\LoaderEventArgs.cs" />
     <Compile Include="Events\SaverEventArgs.cs" />
     <Compile Include="GroupsData\StringNumberGroupComparer.cs" />
+    <Compile Include="Utilities\SurfacesFinder.cs" />
     <Compile Include="ObjectsCollections\SurfaceFiguresCollection.cs" />
     <Compile Include="ObjectsCollections\VolumeFiguresCollection.cs" />
     <Compile Include="GeometryObjects\SurfaceFigure.cs" />
@@ -63,7 +64,6 @@
     <Compile Include="MeshObjects\Node.cs" />
     <Compile Include="MeshObjects\Penta.cs" />
     <Compile Include="MeshObjects\Quad.cs" />
-    <Compile Include="MeshObjects\SurfaceFinder.cs" />
     <Compile Include="ObjectsCollections\Element1DCollection.cs" />
     <Compile Include="ObjectsCollections\Element3DCollection.cs" />
     <Compile Include="ObjectsCollections\Element2DCollection.cs" />
@@ -73,6 +73,7 @@
     <Compile Include="MeshObjects\Tetra.cs" />
     <Compile Include="MeshObjects\Triangle.cs" />
     <Compile Include="ObjectsCollections\PointCollection.cs" />
+    <Compile Include="Utilities\SurfacesCreator.cs" />
   </ItemGroup> 
   <ItemGroup>
     <None Include="ClientServerPlantUML.cs">

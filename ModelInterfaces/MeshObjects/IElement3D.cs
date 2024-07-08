@@ -15,7 +15,10 @@ namespace ModelInterfaces.MeshObjects
         /// SortNodes
         /// </summary>
         /// <param name="mainSurfaceNodesNumber"></param>
-        /// <returns></returns>
-        IEnumerable<INode> SortNodes(int mainSurfaceNodesNumber);
+        /// /// <param name="surfaces"></param>
+        /// <returns>
+        /// Список отсортированных узлов спиралевидно образующих объемную фигу если обойти их координаты
+        /// </returns>
+        //IEnumerable<INode> SortNodes(int mainSurfaceNodesNumber, IEnumerable<IElementSurface> surfaces);
     }
 }

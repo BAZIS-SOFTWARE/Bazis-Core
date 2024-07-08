@@ -10,38 +10,25 @@ using System.Drawing;
 using System.Linq;
 using ExtensionsLib;
 using ModelInterfaces.ObjectsComparers;
+using Model.Utilities;
 
 namespace Model.MeshObjects
 {
 
     public abstract class Element3D : Element, IElement3D
     {
-        private List<ElementSurface> surfaces = new List<ElementSurface>();
+        protected List<ElementSurface> surfaces = new List<ElementSurface>();
         public Element3D(int number, INode[] nodes) : base(number, nodes)
         {
             InitialColor = Color.FromArgb(255, 125, 0);
             MasterColor = Color.FromArgb(255, 125, 0);
             SlaveColor = Color.FromArgb(255, 125, 0);
-            
-            var centr = CalcCentr();
-            var surfNumber = 0;
-            foreach (var surfNodes in SurfaceFinder.FindSurfaceNodes(nodes))
-            {
-                var surface = new ElementSurface(number,surfNumber, surfNodes);
 
-                var normal = surface.CalcNormal();
-                var plane = new Plane(surface[0].Position, normal);
-                var proj = centr.GetPointProectionOnPlane(plane);
-                var vec = proj.Sub(centr);
-                var res = Geometry.Vector.DotProd(normal, vec);
 
-                if (res < 0)
-                    surface.ReverseVertexes();
-
-                surfaces.Add(surface);
-                surfNumber++;
-            }
+            surfaces = SurfacesCreator.CreateSurfacesFromSetOfNodes(number, nodes);
         }
+
+
 
         public Element3D(int number, INode[] nodes,int point) : this(number, nodes)
         {
@@ -119,43 +106,54 @@ namespace Model.MeshObjects
         }
 /// <inheritdoc/>
 
-        public IEnumerable<INode> SortNodes(int mainSurfaceNodesNumber)
+        public static List<INode> SortNodes(int mainSurfaceIndex, List<ElementSurface> surfaces)
         {
             var result = new List<INode>();
-            var graph = BuildGraph();
-            var masterSurface = GetMasterSurface(mainSurfaceNodesNumber);          
+            var graph = BuildGraph(surfaces);
+            var masterSurface = surfaces[mainSurfaceIndex];          
 
             result.AddRange(masterSurface.GetVertexes());
 
-            var slaveStartNode = graph[masterSurface[0]].Where(x => !masterSurface.GetVertexes().Contains(x)).First();
-            //находим противолеж. поверхность
-            var slaveNodes = new List<INode>();
-            var slaveNodeIndex = 0;
-            foreach (var item in surfaces)
+            foreach (var item in masterSurface.GetVertexes())
             {
-                var res = item.GetVertexes().Intersect(masterSurface.GetVertexes());
-
-                if(res.Count() == 0)
-                {
-                    slaveNodes = item.GetVertexes().ToList();
-                    slaveNodes.Reverse();
-                    slaveNodeIndex = slaveNodes.IndexOf(slaveStartNode);
-                    break;
-                }
-
+                var slaveNode = graph[item].Where(x => !masterSurface.GetVertexes().Contains(x)).First();
+                result.Add(slaveNode);
             }
+
+
+
+            //находим противолеж. поверхность
+            //var slaveNodes = new List<INode>();
+            //var slaveNodeIndex = 0;
+            //foreach (var item in surfaces)
+            //{
+            //    var res = item.GetVertexes().Intersect(masterSurface.GetVertexes());
+
+            //    if(res.Count() == 0)
+            //    {
+            //        slaveNodes = item.GetVertexes().ToList();
+            //        slaveNodes.Reverse();
+            //        slaveNodeIndex = slaveNodes.IndexOf(slaveStartNode);
+            //        break;
+            //    }
+
+            //}
           
-            // проходим после индекса до конца
-            for (int i = slaveNodeIndex; i < slaveNodes.Count; i++)
-                result.Add(slaveNodes[i]);
-            // проходим с начала до индекса
-            for (int i = 0; i < slaveNodeIndex; i++)
-                result.Add(slaveNodes[i]);
+            //// проходим после индекса до конца
+            //for (int i = slaveNodeIndex; i < slaveNodes.Count; i++)
+            //    result.Add(slaveNodes[i]);
+            //// проходим с начала до индекса
+            //for (int i = 0; i < slaveNodeIndex; i++)
+            //    result.Add(slaveNodes[i]);
 
             return result;
         }
-
-        private Dictionary<INode, HashSet<INode>> BuildGraph()
+        /// <summary>
+        /// Создать граф элемента
+        /// </summary>
+        /// <param name="surfaces"></param>
+        /// <returns></returns>
+        public static Dictionary<INode, HashSet<INode>> BuildGraph(IEnumerable<IElementSurface> surfaces)
         {
             var graph = new Dictionary<INode, HashSet<INode>>();
             foreach (var surface in surfaces)
@@ -172,8 +170,13 @@ namespace Model.MeshObjects
             }
             return graph;
         }
-
-        private IElementSurface GetMasterSurface(int masterSurfaceNodesNumber)
+        /// <summary>
+        /// GetMasterSurface
+        /// </summary>
+        /// <param name="masterSurfaceNodesNumber"></param>
+        /// <param name="surfaces"></param>
+        /// <returns></returns>
+        public static IElementSurface GetMasterSurface(int masterSurfaceNodesNumber, IEnumerable<IElementSurface> surfaces)
         {
 
             IElementSurface masterSurface = null;

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model.MeshObjects;
+using Model.Utilities;
 
 namespace TestModel
 {
@@ -26,7 +27,7 @@ namespace TestModel
                 new Node(7, new Point3D(0, 1, 1)),
                 new Node(8, new Point3D(1, 1, 1))
             };
-            var surfaces = SurfaceFinder.FindSurfaceNodes(nodes.ToArray())
+            var surfaces = SurfacesFinder.FindSurfaceNodes(nodes.ToArray())
                 .Select(array => array.Select(node => node.Number).ToHashSet());
 
             var expected = new HashSet<HashSet<int>>

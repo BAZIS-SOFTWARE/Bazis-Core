@@ -21,15 +21,17 @@ namespace Model.MeshObjects
         /// Surface constructor
         /// </summary>
         /// <param name="elementNumber"></param>
-        /// <param name="number"></param>
+        /// <param name="surfaceNumber"></param>
         /// <param name="nodes"></param>
-        public ElementSurface(int elementNumber, int number, INode[] nodes) : base(number)
+        public ElementSurface(int elementNumber, int surfaceNumber, INode[] nodes) : base(surfaceNumber)
         {
             if (nodes.Length < 3)
                 throw new Exception("Для создания поверхности требуется не меньше 3-х узлов!");
 
             nodes.RoundSort(); //Anticlockwise(nodes);
-            this.nodes = nodes;           
+            this.nodes = nodes;
+
+            ElementNumber = elementNumber;
 
             InitialColor = Color.FromArgb(224, 0, 177);
             MasterColor = Color.FromArgb(224, 0, 177);

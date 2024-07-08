@@ -18,12 +18,14 @@ namespace Model.MeshObjects
 
         public Penta(int number, INode[] nodes) : base(number, nodes)
         {
-            this.nodes = SortNodes(3).ToList();
+            var masterSurface = GetMasterSurface(3, surfaces);
+            this.nodes = SortNodes(masterSurface.Number, surfaces).ToList();
         }
 
         public Penta(int number, INode[] nodes, int point) : base(number, nodes, point)
         {
-            this.nodes = SortNodes(3).ToList();
+            var masterSurface = GetMasterSurface(3, surfaces);
+            this.nodes = SortNodes(masterSurface.Number, surfaces).ToList();
         }
 
         /// <inheritdoc/>

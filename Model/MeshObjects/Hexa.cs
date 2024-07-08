@@ -1,4 +1,5 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
+using Model.Utilities;
 using ModelInterfaces.IntegralObject;
 using ModelInterfaces.MeshObjects;
 using System;
@@ -15,7 +16,8 @@ namespace Model.MeshObjects
 
         public Hexa(int number, INode[] nodes) : base(number, nodes)
         {
-            this.nodes = SortNodes(4).ToList();
+            var masterSurface = GetMasterSurface(4, surfaces);
+            this.nodes = SortNodes(masterSurface.Number, surfaces).ToList();
             var intPoint = new IntegralPoint();
             intPoint.AddCoordinate("ksi", 0.0f);
             intPoint.AddCoordinate("eta", 0.0f);

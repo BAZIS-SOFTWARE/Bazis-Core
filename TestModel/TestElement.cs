@@ -7,6 +7,7 @@ using Model;
 using ModelController.MeshObjsCreator;
 using Model.MeshObjects;
 using ModelInterfaces.MeshObjects;
+using Model.Utilities;
 
 namespace TestModel
 {
@@ -169,25 +170,31 @@ namespace TestModel
 
 
         [DataTestMethod]
-        []
-        public void SortNodes_ShouldSortNodesCorrectly_OnHexa()
+        [DataRow(0, new int[] { 1, 2, 3, 4, 5, 6, 7, 8 })]
+        [DataRow(1, new int[] { 1, 2, 3, 4, 5, 6, 7, 8 })]
+        [DataRow(2, new int[] { 1, 2, 3, 4, 5, 6, 7, 8 })]
+        [DataRow(3, new int[] { 1, 2, 3, 4, 5, 6, 7, 8 })]
+        public void SortNodes_ShouldSortNodesCorrectly_OnHexa(int mainSurfaceIndex, int[] expectedNodesNumbers)
         {
-            var A = new Node(1, new Point3D(0, 0, 0));
-            var B = new Node(2, new Point3D(0, 1, 0));
-            var C = new Node(3, new Point3D(1, 1, 0));
-            var D = new Node(4, new Point3D(1, 0, 0));
-            var E = new Node(5, new Point3D(0, 0, 1));
-            var F = new Node(6, new Point3D(0, 1, 1));
-            var G = new Node(7, new Point3D(1, 1, 1));
-            var H = new Node(8, new Point3D(1, 0, 1));
-
-            var hexa = new Hexa(1, new INode[] { A, B, C, D, F, G, H, E });
-
-            var actual = hexa.GetVertexes().ToList();
-            var expected = new List<INode> { A, B, C, D, F, G, H, E };
-            for(var i = 0; i < actual.Count; i++)
+            var nodes = new INode[]
             {
-                Assert.AreEqual(expected[i], actual[i]);
+                new Node(1, new Point3D(0, 0, 0)),
+                new Node(2, new Point3D(0, 1, 0)),
+                new Node(3, new Point3D(1, 1, 0)),
+                new Node(4, new Point3D(1, 0, 0)),
+                new Node(5, new Point3D(0, 0, 1)),
+                new Node(6, new Point3D(0, 1, 1)),
+                new Node(7, new Point3D(1, 1, 1)),
+                new Node(8, new Point3D(1, 0, 1)),
+            };
+
+            var surfaces = SurfacesCreator.CreateSurfacesFromSetOfNodes(0, nodes);
+
+            var sortedNodes = Element3D.SortNodes(mainSurfaceIndex, surfaces);
+
+            for (var i = 0; i < sortedNodes.Count(); i++)
+            {
+                Assert.AreEqual(expectedNodesNumbers[i], sortedNodes[i].Number);
             }
         }
 
