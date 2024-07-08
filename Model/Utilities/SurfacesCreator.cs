@@ -26,7 +26,7 @@ namespace Model.Utilities
             var surfaces = new List<ElementSurface>();
             var centr = CalcCentr(nodes);
             var surfNumber = 0;
-            var x = SurfacesFinder.FindSurfaceNodes(nodes).ToList();
+
             foreach (var surfNodes in SurfacesFinder.FindSurfaceNodes(nodes))
             {
                 var surface = new ElementSurface(elementNumber, surfNumber, surfNodes);
