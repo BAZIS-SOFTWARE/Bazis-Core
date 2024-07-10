@@ -1,4 +1,5 @@
 ﻿using Geometry;
+using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using ModelInterfaces;
 using System;
@@ -9,39 +10,39 @@ namespace Model.Utilities
 {
     public class SurfacesFinder
     {
+        private const double epsilon = 1e-6;
+
         /// <param name="nodes">Узлы, задающие выпуклую 3D модель</param>
         /// <returns>Перечисление поверхностей, составляющих грани 3D модели</returns>
         public static IEnumerable<T[]> FindSurfaceNodes<T>(T[] nodes) where T : IPoint
         {
-            var surfaces = new List<HashSet<T>>();
+            var usedSurfaces = new List<bool[]>();
             foreach (var subset in GetSubsets(nodes))
             {
-                if (IsSubsetUsed(surfaces, subset.ToHashSet()))
+                if (usedSurfaces.Any(arr => arr[subset[0]] && arr[subset[1]] && arr[subset[2]]))
                     continue;
-                var otherNodes = nodes.ToHashSet().Except(subset).ToList();
-                var points = subset.Select(x => x.Position).ToArray();
-
-                var plane = new Plane(points[0], points[1], points[2]);
-                var accept = true;
-                var initialSign = plane.PointPosition(otherNodes.First().Position) >= 0;
-                var surface = new List<T>();
-                foreach (var node in otherNodes)
+                var plane = new Plane(nodes[subset[0]].Position, nodes[subset[1]].Position, nodes[subset[2]].Position);
+                var surfaceNodeIndeces = new List<int> { subset[0], subset[1], subset[2] };
+                var signs = new List<int>();
+                for (var i = 0; i < nodes.Length; i++)
                 {
-                    var distance = plane.PointPosition(node.Position);
-                    var currentSign = distance >= 0;
-                    if (Math.Abs(distance) < 1e-6)
-                        surface.Add(node);
-                    else if (currentSign != initialSign)
+                    if (i == subset[0] || i == subset[1] || i == subset[2])
+                        continue;
+                    var distance = plane.PointPosition(nodes[i].Position);
+                    if (Math.Abs(distance) < epsilon)
+                        surfaceNodeIndeces.Add(i);
+                    else
                     {
-                        accept = false;
-                        break;
+                        var currentSign = Math.Sign(plane.PointPosition(nodes[i].Position));
+                        signs.Add(currentSign);
                     }
                 }
-                if (accept)
+                if (signs.All(x => x > 0) || signs.All(x => x < 0))
                 {
-                    surface.AddRange(subset);
-                    surfaces.Add(surface.ToHashSet());
-                    yield return surface.ToArray();
+                    var used = new bool[nodes.Length];
+                    surfaceNodeIndeces.ForEach(i => used[i] = true);
+                    usedSurfaces.Add(used);
+                    yield return surfaceNodeIndeces.Select(i => nodes[i]).ToArray();
                 }
             }
         }
@@ -50,7 +51,7 @@ namespace Model.Utilities
         /// Перечисляет все трёхэлементные подмножества заданного множества.
         /// Необходимо для перебора из заданного множества узлов троек для построения плоскости
         /// </summary>
-        private static IEnumerable<T[]> GetSubsets<T>(T[] set)
+        private static IEnumerable<int[]> GetSubsets<T>(T[] set)
         {
             for (var i = 0; i < set.Length - 2; i++)
             {
@@ -58,23 +59,10 @@ namespace Model.Utilities
                 {
                     for (var k = j + 1; k < set.Length; k++)
                     {
-                        yield return new[] { set[i], set[j], set[k] };
+                        yield return new[] { i, j, k };
                     }
                 }
             }
-        }
-
-        /// <summary>
-        /// Определяет, находится ли подмножество в списке используемых подмножеств
-        /// </summary>
-        private static bool IsSubsetUsed<T>(List<HashSet<T>> usedSubsets, HashSet<T> subset)
-        {
-            foreach (var item in usedSubsets)
-            {
-                if (!subset.Except(item).Any())
-                    return true;
-            }
-            return false;
         }
     }
 }

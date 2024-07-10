@@ -43,5 +43,62 @@ namespace TestModel
             Assert.IsTrue(expected.All(expectedSet => 
                 surfaces.Any(actualSet => actualSet.SetEquals(expectedSet))));
         }
+
+        [TestMethod]
+        public void FindSurfaceNodes_ReturnsCorrectSurfaceNumber_OnPenta()
+        {
+            var nodes = new List<Node>
+            {
+                new Node(1, new Point3D(0, 0, 0)),
+                new Node(2, new Point3D(0, 1, 0)),
+                new Node(4, new Point3D(1, 0, 0)),
+                new Node(5, new Point3D(0, 0, 1)),
+                new Node(6, new Point3D(0, 1, 1)),
+                new Node(8, new Point3D(1, 0, 1))
+            };
+
+            var surfaces = SurfacesFinder.FindSurfaceNodes(nodes.ToArray()).ToList();
+
+            Assert.AreEqual(5, surfaces.Count);
+        }
+
+        [TestMethod]
+        public void FindSurfaceNodes_ReturnsCorrectSurfaceNumber_OnPyramid()
+        {
+            var nodes = new List<Node>
+            {
+                new Node(1, new Point3D(0, 0, 0)),
+                new Node(2, new Point3D(0, 1, 0)),
+                new Node(3, new Point3D(1, 1, 0)),
+                new Node(4, new Point3D(1, 0, 0)),
+                new Node(5, new Point3D(0.5f, 0.5f, 1)),
+            };
+
+            var surfaces = SurfacesFinder.FindSurfaceNodes(nodes.ToArray()).ToList();
+
+            Assert.AreEqual(5, surfaces.Count);
+        }
+
+        [TestMethod]
+        public void Sample()
+        {
+            var nodes = new List<Node>
+            {
+                new Node(1, new Point3D(0, 0, 0)),
+                new Node(2, new Point3D(0, 1, 0)),
+                new Node(3, new Point3D(1, 1, 0)),
+                new Node(4, new Point3D(1, 0, 0)),
+                new Node(5, new Point3D(0, 0, 1)),
+                new Node(6, new Point3D(0, 1, 1)),
+                new Node(7, new Point3D(1, 1, 1)),
+                new Node(8, new Point3D(1, 0, 1)),
+                new Node(9, new Point3D(1, 1.5f, 0.5f)),
+                new Node(10, new Point3D(0, 1.5f, 0.5f))
+            };
+
+            var surfaces = SurfacesFinder.FindSurfaceNodes(nodes.ToArray()).ToList();
+
+            Assert.AreEqual(7, surfaces.Count);
+        }
     }
 }
