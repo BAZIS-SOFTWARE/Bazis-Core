@@ -1891,12 +1891,12 @@ namespace GmshApi.GmshController
         }
         /// <inheritdoc/>
 
-        public List<ISurfaceElement> GetMeshEntities(int dim, int tag, List<INode> nodes)
+        public List<IElement> GetMeshEntities(int dim, int tag, List<INode> nodes)
         {
             ElementProperties[] properties;
             int[] elementTypes;
             long[][] elemTags, nodeTags;
-            var list = new List<ISurfaceElement>();
+            var list = new List<IElement>();
             if (nodes.Count > 0)
             {
                 ModelMeshGetElements(dim, tag, out elementTypes, out elemTags, out nodeTags);
@@ -2053,11 +2053,13 @@ namespace GmshApi.GmshController
             return ierr == 0;
         }
 
-        private ISurfaceElement CreateModelObject(ref string elementName,
+        private IElement CreateModelObject(ref string elementName,
                                                   long elementId, INode[] nodes)
         {
             if (elementName.Contains("Triangle"))
                 return new Triangle((int)elementId, nodes);
+            else if (elementName.Contains("Line"))
+                return new Beam((int)elementId, nodes);
             else if (elementName.Contains("Quadrilateral"))
                 return new Quad((int)elementId, nodes);
             else if (elementName.Contains("Tetrahedron"))
