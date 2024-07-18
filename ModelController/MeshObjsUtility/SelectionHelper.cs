@@ -33,21 +33,22 @@ namespace ModelController.MeshObjsUtility
                 isMoveNext = false;
                 foreach (var element in currentNode.GetElements())
                 {
-                    foreach (var node in element.GetVertexes())
-                    {
-                        var currentDirection = node.Position.Sub(currentNode.Position);
-                        var cos = Math.Round(Vector.GetCosAngleVectors(currentDirection, previousDirection), 2);
-                        var angle = Math.Acos(cos);
-                        if (angle <= ConvertGradusToRadian(angleInGradus) && !result.Contains(node.Number))
+                    if (element.ViewState)
+                        foreach (var node in element.GetVertexes())
                         {
-                            currentNode = node;
-                            previousDirection = currentDirection;
-                            node.MasterColor = color;
-                            result.Add(node.Number);
-                            isMoveNext = true;
-                            break;
+                            var currentDirection = node.Position.Sub(currentNode.Position);
+                            var cos = Math.Round(Vector.GetCosAngleVectors(currentDirection, previousDirection), 2);
+                            var angle = Math.Acos(cos);
+                            if (angle <= ConvertGradusToRadian(angleInGradus) && !result.Contains(node.Number))
+                            {
+                                currentNode = node;
+                                previousDirection = currentDirection;
+                                node.MasterColor = color;
+                                result.Add(node.Number);
+                                isMoveNext = true;
+                                break;
+                            }
                         }
-                    }
                     if (isMoveNext)
                         break;
                 }
