@@ -248,7 +248,7 @@ namespace ModelControllerInterfaces.GmshController
         /// <param name="tag">Идентификатор</param>
         /// <param name="nodes">Отсортированные узлы</param>
         /// <returns>Список элементов сетки</returns>
-        List<ISurfaceElement> GetMeshEntities(int dim, int tag, List<INode> nodes);
+        List<IElement> GetMeshEntities(int dim, int tag, List<INode> nodes);
         /// <summary>
         /// Возвращает список отсортированных узлов сетки.
         /// Если запрашивается точки для dim <=0, флаг includeBoundary установить в false, иначе будут дубликаты
