@@ -481,15 +481,20 @@ namespace TestModel.GmshTests
             controller.Open(@"..\..\..\Examples\STL\" + fileName, ref ierr);
             controller.CreateGeometry(classifyAngleSurf, classifyAngleCurve);
             int[] dimTags;
+
             controller.ModelGetGeometryEntities(out dimTags, 2);
             dimTags = dimTags.Where((v, i) => (i & 1) == 1).ToArray();
             var tag = controller.ModelGeoAddSurfaceLoop(dimTags, (IntPtr)dimTags.Length, 1, ref ierr);
+            
+            // если нужно замешивать объем
             controller.ModelGeoAddVolume(new int[] { tag }, (IntPtr)1, -1, ref ierr);
+
             controller.ModelGeoSynchronize(ref ierr);//Обязательный вызов Synchronize
             controller.ModelGetGeometryEntities(out dimTags, 3);
             Assert.AreNotEqual(0, dimTags.Length);
             controller.ModelMeshGenerate(2, ref ierr);
             var list = controller.GetMeshObjects();
+
             var before = list.Item3.Count;
             Assert.AreNotEqual(0, before);
             controller.ModelGetGeometryEntities(out dimTags, 1);

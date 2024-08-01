@@ -97,13 +97,6 @@ namespace Model.MeshObjects
                 yield return surface;
             }
         }
-
-        public IEnumerable<INode> SortNodesEx(int mainSurfaceNodesNumber)
-        {
-            // TO DO 
-            // ПРЕДЛОЖИТЬ РЕАЛИЗАЦИЮ СОРТИРОВКИ УЗЛОВ ИСПОЛЬЗУЯ ПРЕИМУЩЕСТВЕННО ГРАФ ЭЛЕМЕНТА
-            return null;
-        }
 /// <inheritdoc/>
 
         public static List<INode> SortNodes(int mainSurfaceIndex, List<ElementSurface> surfaces)
@@ -119,32 +112,6 @@ namespace Model.MeshObjects
                 var slaveNode = graph[item].Where(x => !masterSurface.GetVertexes().Contains(x)).First();
                 result.Add(slaveNode);
             }
-
-
-
-            //находим противолеж. поверхность
-            //var slaveNodes = new List<INode>();
-            //var slaveNodeIndex = 0;
-            //foreach (var item in surfaces)
-            //{
-            //    var res = item.GetVertexes().Intersect(masterSurface.GetVertexes());
-
-            //    if(res.Count() == 0)
-            //    {
-            //        slaveNodes = item.GetVertexes().ToList();
-            //        slaveNodes.Reverse();
-            //        slaveNodeIndex = slaveNodes.IndexOf(slaveStartNode);
-            //        break;
-            //    }
-
-            //}
-          
-            //// проходим после индекса до конца
-            //for (int i = slaveNodeIndex; i < slaveNodes.Count; i++)
-            //    result.Add(slaveNodes[i]);
-            //// проходим с начала до индекса
-            //for (int i = 0; i < slaveNodeIndex; i++)
-            //    result.Add(slaveNodes[i]);
 
             return result;
         }

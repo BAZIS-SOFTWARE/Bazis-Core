@@ -1,4 +1,5 @@
-﻿using MathNet.Numerics.Distributions;
+﻿using ExtensionsLib;
+using MathNet.Numerics.Distributions;
 using MathNet.Numerics.LinearAlgebra;
 using ModelInterfaces.IntegralObject;
 using ModelInterfaces.MeshObjects;
@@ -17,9 +18,7 @@ namespace Model.MeshObjects
         {
             surface = new ElementSurface(number,0, new INode[] { nodes[0], nodes[1], nodes[2], nodes[3] });
 
-            var intPoint = CreateIntegrationPoint(2, 0, 0, 0.0);
-            intPoints.Add(intPoint);
-            jacobians.Add(DetJ(intPoint));
+            CreateIntegrationPoint(2, 0, 0, 0.0);
         }
 
 
@@ -28,32 +27,17 @@ namespace Model.MeshObjects
             surface = new ElementSurface(number, 0, new INode[] { nodes[0], nodes[1], nodes[2], nodes[3] });
             this.nodes = surface.GetVertexes().ToList();
 
-            IntegralPoint intPoint;
             switch (intpNumber)
             {
                 case 1:
-                    intPoint = CreateIntegrationPoint(2, 0, 0, 0.0);
-                    intPoints.Add(intPoint);
-                    jacobians.Add(DetJ(intPoint));
+                    CreateIntegrationPoint(2, 0, 0, 0.0);
                     break;
                 case 4:
                     var coordinate = Math.Sqrt(3)/3;
-                    var counter = 0;
-                    foreach (var item in surface.GetVertexes())
-                    {
-                        if(counter == 0)
-                            intPoint = CreateIntegrationPoint(1, -1,-1,coordinate);
-                        else if(counter == 1)
-                            intPoint = CreateIntegrationPoint(1, -1, 1, coordinate);
-                        else if (counter == 2)
-                            intPoint = CreateIntegrationPoint(1, 1, 1, coordinate);
-                        else 
-                            intPoint = CreateIntegrationPoint(1, 1, -1, coordinate);
-
-                        intPoints.Add(intPoint);
-                        jacobians.Add(DetJ(intPoint));
-                        counter++;
-                    }
+                    CreateIntegrationPoint(1, -1, -1, coordinate);
+                    CreateIntegrationPoint(1, -1, 1, coordinate);
+                    CreateIntegrationPoint(1, 1, 1, coordinate);
+                    CreateIntegrationPoint(1, 1, -1, coordinate);
                     break;
                 default:
                     throw new ArgumentException();
@@ -61,26 +45,22 @@ namespace Model.MeshObjects
 
         }
 
-        private IntegralPoint CreateIntegrationPoint(int w, int ksi, int eta, double coordinate)
+        private void CreateIntegrationPoint(int w, int ksi, int eta, double coordinate)
         {
             var intPoint = new IntegralPoint();
             intPoint.AddCoordinate("ksi", ksi * coordinate);
             intPoint.AddCoordinate("eta", eta * coordinate);
             intPoint.Weigt = w;
 
-            return intPoint;
+            intPoints.Add(intPoint);
+            jacobians.Add(DetJ(intPoint));
         }
 
         /// <inheritdoc/>
 
         public override double CalcSquare()
         {
-            var sum = 0.0;
-
-            foreach (var item in jacobians)
-                sum += item;
-
-            return Math.Abs(sum);
+            return surface.CalcSquare();
         }
 
 

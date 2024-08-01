@@ -99,11 +99,12 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DeloneTriangulationTests.cs" />
+    <Compile Include="ModelControllerTests\DeloneTriangulationTests.cs" />
     <Compile Include="GmshTests\GeometryTests.cs" />
     <Compile Include="GmshTests\MeshTests.cs" />
     <Compile Include="GmshTests\ConnectionTests.cs" />
     <Compile Include="GmshTests\ModelTests.cs" />
+    <Compile Include="ModelControllerTests\MeshUtility.cs" />
     <Compile Include="TestCalcDistance.cs" />
     <Compile Include="TestElement.cs" />
     <Compile Include="TestGeometryObjects.cs" />
@@ -119,7 +120,7 @@
     <Compile Include="TestSurfaceFinder.cs" />
     <Compile Include="TestVolumeElements.cs" />
     <Compile Include="TestObjectData.cs" />
-    <Compile Include="Sew3Dfrom2DTests.cs" />
+    <Compile Include="ModelControllerTests\Sew3Dfrom2DTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
