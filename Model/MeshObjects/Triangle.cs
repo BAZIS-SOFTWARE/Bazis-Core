@@ -88,17 +88,23 @@ namespace Model.MeshObjects
         }
         /// <inheritdoc/>
 
-        public override double[] GetDerivativesFormFunctions(IIntegralPoint intPoint)
+        public override double[,] GetDerivativesFormFunctions(IIntegralPoint intPoint)
         {
             // Расчитано для линейного элемента с одной т.интегрирования в центре
             // по формулам 14.11а и б
-            return new double[] { 1, 0, 0, 1, -1, -1 };
+            return new double[,] { { 1, 0, 0 }, { 1, -1, -1 } };
         }
         /// <inheritdoc/>
 
         public override double[] GetFormFunctions(IIntegralPoint intPoint)
         {
             return new double[] { intPoint["l1"], intPoint["l2"], intPoint["l3"] };
+        }
+/// <inheritdoc/>
+
+        public override void CreateIntegrationPoint(int w, double ksi, double eta)
+        {
+            throw new NotImplementedException();
         }
     }
 }

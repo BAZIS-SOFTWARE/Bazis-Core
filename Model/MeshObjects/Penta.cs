@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,54 +21,110 @@ namespace Model.MeshObjects
         {
             var masterSurface = GetMasterSurface(3, surfaces);
             this.nodes = SortNodes(masterSurface.Number, surfaces).ToList();
+
+            CreateIntegrationPoint(1, 0.3333, 0.3333, 0);
         }
 
-        public Penta(int number, INode[] nodes, int point) : base(number, nodes, point)
+        public Penta(int number, INode[] nodes, int intpNumber) : base(number, nodes, intpNumber)
         {
             var masterSurface = GetMasterSurface(3, surfaces);
             this.nodes = SortNodes(masterSurface.Number, surfaces).ToList();
+
+            switch (intpNumber)
+            {
+                case 1:
+                    CreateIntegrationPoint(1, 0.3333, 0.3333, 0);
+                    break;
+                case 2:
+                    CreateIntegrationPoint(0.5f, 0.3333, 0.3333, -0.5774);
+                    CreateIntegrationPoint(0.5f, 0.3333, 0.3333, 0.5774);
+                    break;
+                default:
+                    throw new ArgumentException();
+            }
+        }
+/// <inheritdoc/>
+
+        public override void CreateIntegrationPoint(float w, double ksi, double eta, double dze)
+        {
+            var intPoint = new IntegralPoint();
+            intPoint.AddCoordinate("ksi", ksi);
+            intPoint.AddCoordinate("eta", eta);
+            intPoint.AddCoordinate("dze", dze);
+            intPoint.Weigt = w;
+
+            intPoints.Add(intPoint);
+            jacobians.Add(DetJ(intPoint));
         }
 
         /// <inheritdoc/>
 
-        public override double DetJ(IIntegralPoint point3D)
+        public override double DetJ(IIntegralPoint intPoint)
         {
-            throw new NotImplementedException();
+            var derFormFunctions = GetDerivativesFormFunctions(intPoint);
+            var matrixDFF = Matrix<double>.Build.DenseOfArray(derFormFunctions);
+            var matrixPoints = Matrix<double>.Build.Dense(6, 3);
+
+            for (var i = 0; i < nodes.Count; i++)
+            {
+                matrixPoints[i, 0] = nodes[i].Position._x;
+                matrixPoints[i, 1] = nodes[i].Position._y;
+                matrixPoints[i, 2] = nodes[i].Position._z;
+            }
+            var result = matrixDFF.Multiply(matrixPoints);
+            return result.Determinant();
         }
 /// <inheritdoc/>
 
         public override float CalcVolume()
         {
-            var sum = 0f;
+            var vol = 0.0f;
+            var counter = 0;
 
-            for (int i = 0; i < nodes.Count - 3; i++)
+            foreach (var item in GetDetsJ())
             {
-                for (int j = i + 1; j < nodes.Count - 2; j++)
-                {
-                    for (int k = j + 1; k < nodes.Count - 1; k++)
-                    {
-                        for (int l = k + 1; l < nodes.Count; l++)
-                        {
-                            var x = new Node[] { (Node)nodes[i], (Node)nodes[j], (Node)nodes[k], (Node)nodes[l] };
-                            var tetra = new Tetra(0, x);
-                            sum += tetra.CalcVolume();
-                        }
-                    }
-                }
+                vol += (float)(item * intPoints[counter].Weigt);
+                counter++;
             }
-            return sum / 4;
-        }      
-/// <inheritdoc/>
-
-        public override double[] GetDerivativesFormFunctions(IIntegralPoint intPoint)
-        {
-            throw new NotImplementedException();
+            return Math.Abs(vol);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
+
+        public override double[,] GetDerivativesFormFunctions(IIntegralPoint intPoint)
+        {
+            var eta = intPoint["eta"];
+            var ksi = intPoint["ksi"];
+            var dze = intPoint["dze"];
+
+            return new double[,]
+            {
+                // по ksi
+                { -(1 - dze) / 2, (1 - dze) / 2,0, -(1 + dze) / 2,(1 + dze) / 2, 0},
+                // по eta
+                { -(1 - dze) / 2, 0,(1 - dze) / 2, -(1 + dze) / 2,0,(1 + dze) / 2},
+                // по dze
+                { -(1 - ksi - eta) / 2, -(ksi / 2), -(eta / 2),(1 - ksi - eta) / 2, ksi / 2, eta / 2}
+};
+
+        }
+        /// <inheritdoc/>
 
         public override double[] GetFormFunctions(IIntegralPoint intPoint)
         {
-            throw new NotImplementedException();
+            var eta = intPoint["eta"];
+            var ksi = intPoint["ksi"];
+            var dze = intPoint["dze"];
+
+            var formFunctions = new double[]
+            {
+                (1 - ksi - eta) * (1 - dze) / 2,
+                ksi * (1 - dze) / 2,
+                eta * (1 - dze) / 2,
+                (1 - ksi - eta) * (1 + dze) / 2,
+                ksi * (1 + dze) / 2,
+                eta * (1 + dze) / 2
+            };
+            return formFunctions;
         }
     }
 }

@@ -41,6 +41,105 @@ namespace TestModel
             }
         }
 
+
+        [DataTestMethod]
+        [DataRow(new float[] { -1.5f, 0, 15.25f, 0, 11, 5, 5.025f, 5.75f }, 61.5f)]
+        [DataRow(new float[] { 0, 0, 15, 0, 10, 5, 5, 5 }, 50)]
+        [DataRow(new float[] { 15, 0, 0, 0, 10, 5, 5, 5 }, 50)]
+        [DataRow(new float[] { 5, 5, 0, 0, 15, 0, 10, 5 }, 50)]
+        public void QuadSquare(float[] arCoord, float square)
+        {
+            var nodes = new Node[4];
+            var num = 0;
+            for (var i = 0; i < 4; i += 1)
+            {
+                nodes[num] = new Node(num, new Point3D(arCoord[2 * i + 0], arCoord[2 * i + 1], 0));
+                num++;
+            }
+
+            var elem = new Quad(0, nodes, 4);
+            Assert.AreEqual(elem.CalcSquare(), square, 0.15f);
+        }
+
+        [DataTestMethod]
+        [DataRow(new float[] { 0, 0, 15, 0, 10, 5, 5, 5 }, new double[] { 16.10875f, 8.89125f, 8.89125f, 16.10875f })]
+
+        public void QuadJacobians(float[] arCoord, double [] detJ)
+        {
+            var nodes = new Node[4];
+            var num = 0;
+            for (var i = 0; i < 4; i += 1)
+            {
+                nodes[num] = new Node(num, new Point3D(arCoord[2 * i + 0], arCoord[2 * i + 1], 0));
+                num++;
+            }
+
+            var elem = new Quad(0, nodes, 4);
+
+            var counter = 0;
+            foreach (var item in elem.GetDetsJ())
+                Assert.AreEqual(detJ[counter++], item, 0.025);
+        }
+
+        [DataTestMethod]
+        [DataRow(
+            new float[]
+            {
+                0, 0, 0,
+                1, 0, 0,
+                1, 1,0,
+                0,0,1,
+                1.2f,0,1,
+                1,1,0.7f
+            }, 0.495f)]
+        public void HexVolume(float[] coords, float vol)
+        {
+            var nodes = new Node[8];
+            var num = 0;
+            for (var i = 0; i < coords.Length; i += 3)
+            {
+                var x = coords[i + 0];
+                var y = coords[i + 1];
+                var z = coords[i + 2];
+                nodes[num] = new Node(num, new Point3D(x, y, z));
+                num++;
+            }
+
+            var penta = new Hexa(0, nodes);
+
+            Assert.AreEqual(penta.CalcVolume(), vol, 0.025f);
+        }
+
+        [DataTestMethod]
+        [DataRow(
+            new float[] 
+            { 
+                0, 0, 0, 
+                1, 0, 0, 
+                1, 1,0,
+                0,0,1,
+                1.2f,0,1,
+                1,1,0.7f
+            }, 0.495f)]
+        public void PentaVolume(float[] coords, float vol)
+        {
+            var nodes = new Node[6];
+            var num = 0;
+            for (var i = 0; i < coords.Length; i+=3)
+            {
+                var x = coords[i + 0];
+                var y = coords[i + 1];
+                var z = coords[i + 2];
+                nodes[num] = new Node(num, new Point3D(x, y, z));
+                num++;
+            }
+               
+            var penta = new Penta(0, nodes,2);
+
+            Assert.AreEqual(penta.CalcVolume(), vol, 0.025f);
+        }
+
+
         [TestMethod]
         public void CalcHexaNormals()
         {

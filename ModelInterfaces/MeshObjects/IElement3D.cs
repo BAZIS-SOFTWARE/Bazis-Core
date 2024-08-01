@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ModelInterfaces.IntegralObject;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,13 +13,12 @@ namespace ModelInterfaces.MeshObjects
     public interface IElement3D : ISurfaceElement, IVolume
     {
         /// <summary>
-        /// SortNodes
+        /// CreateIntegrationPoint
         /// </summary>
-        /// <param name="mainSurfaceNodesNumber"></param>
-        /// /// <param name="surfaces"></param>
-        /// <returns>
-        /// Список отсортированных узлов спиралевидно образующих объемную фигу если обойти их координаты
-        /// </returns>
-        //IEnumerable<INode> SortNodes(int mainSurfaceNodesNumber, IEnumerable<IElementSurface> surfaces);
+        /// <param name="w"></param>
+        /// <param name="ksi"></param>
+        /// <param name="eta"></param>
+        /// <param name="dze"></param>
+        void CreateIntegrationPoint(float w, double ksi, double eta, double dze);
     }
 }

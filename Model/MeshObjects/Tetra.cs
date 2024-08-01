@@ -89,6 +89,13 @@ namespace Model.MeshObjects
             //var str = cMatr.ToString(4, 4);
             return cMatr;
         }
+/// <inheritdoc/>
+
+        public override void CreateIntegrationPoint(float w, double ksi, double eta, double dze)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <inheritdoc/>
 
         public override double DetJ(IIntegralPoint point3D)
@@ -97,11 +104,17 @@ namespace Model.MeshObjects
         }
         /// <inheritdoc/>
 
-        public override double[] GetDerivativesFormFunctions(IIntegralPoint intPoint)
+        public override double[,] GetDerivativesFormFunctions(IIntegralPoint intPoint)
         {
             // Расчитано для линейного элемента с одной т.интегрирования в центре
             // по формулам 14.11а и б
-            return new double[] { 1,0,0, 0,1,0, 0,0,1, -1,-1,-1 };
+            return new double[,] 
+            { 
+                { 1, 0, 0 }, 
+                { 0, 1, 0 }, 
+                { 0, 0, 1 }, 
+                { -1, -1, -1 } 
+            };
         }
         /// <inheritdoc/>
 

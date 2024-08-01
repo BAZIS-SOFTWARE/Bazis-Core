@@ -64,5 +64,8 @@ namespace Model.MeshObjects
         {
             yield return surface;
         }
+/// <inheritdoc/>
+
+        public abstract void CreateIntegrationPoint(int w, double ksi, double eta);
     }
 }

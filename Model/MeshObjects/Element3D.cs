@@ -11,6 +11,7 @@ using System.Linq;
 using ExtensionsLib;
 using ModelInterfaces.ObjectsComparers;
 using Model.Utilities;
+using ModelInterfaces.IntegralObject;
 
 namespace Model.MeshObjects
 {
@@ -97,6 +98,8 @@ namespace Model.MeshObjects
                 yield return surface;
             }
         }
+
+
 /// <inheritdoc/>
 
         public static List<INode> SortNodes(int mainSurfaceIndex, List<ElementSurface> surfaces)
@@ -157,5 +160,8 @@ namespace Model.MeshObjects
             }
             return masterSurface;
         }
+/// <inheritdoc/>
+
+        public abstract void CreateIntegrationPoint(float w, double ksi, double eta, double dze);
     }
 }

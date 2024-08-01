@@ -113,9 +113,9 @@ namespace Model.MeshObjects
             }
         }
 
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
-        public abstract double[] GetDerivativesFormFunctions(IIntegralPoint intPoint);
+        public abstract double[,] GetDerivativesFormFunctions(IIntegralPoint intPoint);
 /// <inheritdoc/>
 
         public abstract double[] GetFormFunctions(IIntegralPoint intPoint);

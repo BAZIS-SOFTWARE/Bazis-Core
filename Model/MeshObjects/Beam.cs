@@ -83,11 +83,11 @@ namespace Model.MeshObjects
         }
         /// <inheritdoc/>
 
-        public override double[] GetDerivativesFormFunctions(IIntegralPoint intPoint)
+        public override double[,] GetDerivativesFormFunctions(IIntegralPoint intPoint)
         {
-            var answer = new double[2];
-            answer[0] = -1 / CalcLength();
-            answer[1] = 1 / CalcLength();
+            var answer = new double[1,2];
+            answer[0,0] = -1 / CalcLength();
+            answer[0,1] = 1 / CalcLength();
             return answer;
         }
         /// <inheritdoc/>

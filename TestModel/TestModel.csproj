@@ -118,7 +118,6 @@
     <Compile Include="TestSorter.cs" />
     <Compile Include="TestModelScenePresentor.cs" />
     <Compile Include="TestSurfaceFinder.cs" />
-    <Compile Include="TestVolumeElements.cs" />
     <Compile Include="TestObjectData.cs" />
     <Compile Include="ModelControllerTests\Sew3Dfrom2DTests.cs" />
   </ItemGroup>
@@ -147,7 +146,6 @@
     <None Include="Examples\VIsual-Mesh\Test_DATA1.ASC" />
     <None Include="Examples\VIsual-Mesh\Test_DATA1.ASC.bak_fp" />
     <None Include="packages.config" />
-    <Compile Include="TestSurfaceElements.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Examples\CDB\" />

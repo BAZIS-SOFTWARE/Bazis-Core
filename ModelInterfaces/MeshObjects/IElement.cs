@@ -69,12 +69,6 @@ namespace ModelInterfaces.MeshObjects
         /// </summary>
         /// <param name="intPoint"></param>
         /// <returns></returns>
-        double[] GetDerivativesFormFunctions(IIntegralPoint intPoint);
-        /// <summary>
-        /// GetFormFunctions
-        /// </summary>
-        /// <param name="intPoint"></param>
-        /// <returns></returns>
-        double[] GetFormFunctions(IIntegralPoint intPoint);
+        double[,] GetDerivativesFormFunctions(IIntegralPoint intPoint);
     }
 }
