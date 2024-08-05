@@ -65,9 +65,15 @@ namespace Model.MeshObjects
             return result.Determinant();
         }
 
-/// <inheritdoc/>
 
-        public override void CreateIntegrationPoint(float w, double ksi, double eta, double dze)
+        /// <summary>
+        /// CreateIntegrationPoint
+        /// </summary>
+        /// <param name="w"></param>
+        /// <param name="ksi"></param>
+        /// <param name="eta"></param>
+        /// <param name="dze"></param>
+        public void CreateIntegrationPoint(double w, double ksi, double eta, double dze)
         {
             var intPoint = new IntegralPoint();
             intPoint.AddCoordinate("ksi", ksi);

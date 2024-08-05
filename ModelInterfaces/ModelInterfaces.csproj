@@ -9,7 +9,7 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-    <Version>3.0.0.25</Version>
+    <Version>3.0.0.26</Version>
     <Authors>Bilenko Georgy</Authors>
     <Company>BAZIS SOFTWARE</Company>
     <Product>BAZIS</Product>
@@ -37,6 +37,7 @@
 
   <ItemGroup>
     <PackageReference Include="Geometry" Version="2.0.7.30" />
+    <PackageReference Include="MathNet.Numerics.Signed" Version="5.0.0" />
   </ItemGroup>
 
 </Project>

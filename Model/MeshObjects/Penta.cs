@@ -45,7 +45,7 @@ namespace Model.MeshObjects
         }
 /// <inheritdoc/>
 
-        public override void CreateIntegrationPoint(float w, double ksi, double eta, double dze)
+        public void CreateIntegrationPoint(double w, double ksi, double eta, double dze)
         {
             var intPoint = new IntegralPoint();
             intPoint.AddCoordinate("ksi", ksi);

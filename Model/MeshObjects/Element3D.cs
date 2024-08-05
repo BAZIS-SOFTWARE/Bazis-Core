@@ -160,8 +160,5 @@ namespace Model.MeshObjects
             }
             return masterSurface;
         }
-/// <inheritdoc/>
-
-        public abstract void CreateIntegrationPoint(float w, double ksi, double eta, double dze);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Geometry;
+﻿using Geometry.Interfaces;
+using MathNet.Numerics.LinearAlgebra;
 
 namespace ModelInterfaces.MeshObjects
 {
@@ -8,12 +9,14 @@ namespace ModelInterfaces.MeshObjects
     public interface IElement2D : ISurfaceElement, ISquare
     {
         /// <summary>
-        /// CreateIntegrationPoint
+        /// TransitionMatrix. Матрица перехода к плоскости XOY
         /// </summary>
-        /// <param name="w"></param>
-        /// <param name="ksi"></param>
-        /// <param name="eta"></param>
-        void CreateIntegrationPoint(int w, double ksi, double eta);
+        Matrix<double> TransitionMatrix { get; set; }
+        /// <summary>
+        /// GetTransitionMatrix
+        /// </summary>
+        /// <returns></returns>
+        double[,] CalcTransitionMatrix( IPoint3D[] points);
 
     }
 }

@@ -8,6 +8,7 @@ using ModelController.MeshObjsCreator;
 using Model.MeshObjects;
 using ModelInterfaces.MeshObjects;
 using Model.Utilities;
+using MathNet.Numerics.LinearAlgebra;
 
 namespace TestModel
 {
@@ -59,6 +60,41 @@ namespace TestModel
 
             var elem = new Quad(0, nodes, 4);
             Assert.AreEqual(elem.CalcSquare(), square, 0.15f);
+        }
+
+        [DataTestMethod]
+        [DataRow(new float[] { 0, 0, 3,2, 1, 6 }, new double[] { -1, 2, -6, -4 })]
+
+        public void TriangleJacobyMatrix(float[] arCoord, double[] J)
+        {
+            var nodes = new Node[3];
+            var num = 0;
+            for (var i = 0; i < 3; i += 1)
+            {
+                nodes[num] = new Node(num, new Point3D(arCoord[2 * i + 0], arCoord[2 * i + 1], 0));
+                num++;
+            }
+
+            var elem = new Triangle(0, nodes, 1);
+            
+            var derFormFunctions = elem.GetDerivativesFormFunctions(elem.GetIntegralPoints().First());
+            var matrixDFF = Matrix<double>.Build.DenseOfArray(derFormFunctions);
+            var matrixPoints = Matrix<double>.Build.Dense(3, 2);
+
+            for (var i = 0; i < nodes.Length; i++)
+            {
+                matrixPoints[i, 0] = nodes[i].Position._x;
+                matrixPoints[i, 1] = nodes[i].Position._y;
+            }
+
+            var s = matrixPoints.ToString();
+            var s1 = matrixDFF.ToString();
+
+            var result = matrixDFF.Multiply(matrixPoints).ToColumnMajorArray();
+
+            for (int i = 0; i < result.Length; i++)
+                Assert.AreEqual(J[i], result[i], 0.025);
+
         }
 
         [DataTestMethod]
@@ -121,6 +157,16 @@ namespace TestModel
                 1.2f,0,1,
                 1,1,0.7f
             }, 0.495f)]
+        [DataRow(
+            new float[]
+            {
+                0, 0, 0,
+                5, 0, 0,
+                5, 1,0,
+                0,0,1,
+                1.2f,0,1,
+                1,1,0.7f
+            }, 1.395f)]
         public void PentaVolume(float[] coords, float vol)
         {
             var nodes = new Node[6];

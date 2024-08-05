@@ -1,4 +1,5 @@
 ﻿using ExtensionsLib;
+using Geometry;
 using MathNet.Numerics.Distributions;
 using MathNet.Numerics.LinearAlgebra;
 using ModelInterfaces.IntegralObject;
@@ -16,15 +17,12 @@ namespace Model.MeshObjects
 
         public Quad(int number, INode[] nodes) : base(number, nodes)
         {
-            surface = new ElementSurface(number,0, new INode[] { nodes[0], nodes[1], nodes[2], nodes[3] });
-
             CreateIntegrationPoint(2, 0, 0);
         }
 
 
         public Quad(int number, INode[] nodes, int intpNumber) : base(number, nodes)
         {
-            surface = new ElementSurface(number, 0, new INode[] { nodes[0], nodes[1], nodes[2], nodes[3] });
             this.nodes = surface.GetVertexes().ToList();
 
             switch (intpNumber)
@@ -46,7 +44,7 @@ namespace Model.MeshObjects
         }
 /// <inheritdoc/>
 
-        public override void CreateIntegrationPoint(int w, double ksi, double eta)
+        public void CreateIntegrationPoint(double w, double ksi, double eta)
         {
             var intPoint = new IntegralPoint();
             intPoint.AddCoordinate("ksi", ksi);
@@ -87,7 +85,6 @@ namespace Model.MeshObjects
 
         public override double[] GetFormFunctions(IIntegralPoint intPoint)
         {
-
             var ksi = intPoint["ksi"];
             var eta = intPoint["eta"];
 

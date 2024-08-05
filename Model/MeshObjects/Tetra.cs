@@ -16,14 +16,7 @@ namespace Model.MeshObjects
     {
         public Tetra(int number, INode[] nodes) : base(number, nodes)
         {
-            var intPoint = new IntegralPoint();
-            intPoint.AddCoordinate("l1", 1.0f / 4);
-            intPoint.AddCoordinate("l2", 1.0f / 4);
-            intPoint.AddCoordinate("l3", 1.0f / 4);
-            intPoint.AddCoordinate("l4", 1.0f / 4);
-            intPoint.Weigt = CalcVolume();
-            //jacobians.Add(DetJ(intPoint));
-            intPoints.Add(intPoint);
+            CreateIntegrationPoint(1, 1.0 / 4, 1.0 / 4, 1.0 / 4, 1.0 / 4);
         }
 
 
@@ -35,33 +28,15 @@ namespace Model.MeshObjects
 
             {
                 case 1:
-                    intPoint = new IntegralPoint();
-                    intPoint.AddCoordinate("l1", 1 / 4);
-                    intPoint.AddCoordinate("l2", 1 / 4);
-                    intPoint.AddCoordinate("l3", 1 / 4);
-                    intPoint.AddCoordinate("l4", 1 / 4);
-                    intPoint.Weigt = CalcVolume();
-                    intPoints.Add(intPoint);
-
-                    //jacobians.Add(DetJ(intPoint));
+                    CreateIntegrationPoint(1, 1.0 / 4, 1.0 / 4, 1.0 / 4, 1.0 / 4);
                     break;
                 case 4:
-                    float alpha = 0.58541020f;
-                    float beta = 0.13819660f;
-                    for (int i = 0; i < 4; i++)
-                    {
-                        intPoint = new IntegralPoint();
-                        for (int j = 0; j < i; j++)
-                            intPoint.AddCoordinate($"l{j + 1}", beta);
-                        intPoint.AddCoordinate($"l{i + 1}", alpha);
-                        for (int j = i + 1; j < 4; j++)
-                            intPoint.AddCoordinate($"l{j + 1}", beta);
-
-                        intPoint.Weigt = 1 / 4f;
-                        intPoints.Add(intPoint);
-
-                        //jacobians.Add(DetJ(intPoint));
-                    }
+                    var a = 0.58541020;
+                    var b = 0.13819660;
+                    CreateIntegrationPoint(1.0 / 4, a, b, b, b);
+                    CreateIntegrationPoint(1.0 / 4, b, a, b, b);
+                    CreateIntegrationPoint(1.0 / 4, b, b, a, b);
+                    CreateIntegrationPoint(1.0 / 4, b, b, b, a);
                     break;
                 default:
                     throw new ArgumentException();
@@ -91,30 +66,41 @@ namespace Model.MeshObjects
         }
 /// <inheritdoc/>
 
-        public override void CreateIntegrationPoint(float w, double ksi, double eta, double dze)
+        public void CreateIntegrationPoint(double w, double l1, double l2, double l3,double l4)
         {
-            throw new NotImplementedException();
+            var intPoint = new IntegralPoint();
+            intPoint.AddCoordinate("l1", l1);
+            intPoint.AddCoordinate("l2", l2);
+            intPoint.AddCoordinate("l3", l3);
+            intPoint.AddCoordinate("l4", l4);
+            intPoint.Weigt = w;
+            intPoints.Add(intPoint);
+            jacobians.Add(DetJ(intPoint));
         }
 
         /// <inheritdoc/>
 
-        public override double DetJ(IIntegralPoint point3D)
+        public override double DetJ(IIntegralPoint intPoint)
         {
-            throw new NotImplementedException();
+            var derFormFunctions = GetDerivativesFormFunctions(intPoint);
+            var matrixDFF = Matrix<double>.Build.DenseOfArray(derFormFunctions);
+            var matrixPoints = Matrix<double>.Build.Dense(4, 3);
+
+            for (var i = 0; i < nodes.Count; i++)
+            {
+                matrixPoints[i, 0] = nodes[i].Position._x;
+                matrixPoints[i, 1] = nodes[i].Position._y;
+                matrixPoints[i, 2] = nodes[i].Position._z;
+            }
+
+            var result = matrixDFF.Multiply(matrixPoints);
+            return result.Determinant();
         }
         /// <inheritdoc/>
 
         public override double[,] GetDerivativesFormFunctions(IIntegralPoint intPoint)
         {
-            // Расчитано для линейного элемента с одной т.интегрирования в центре
-            // по формулам 14.11а и б
-            return new double[,] 
-            { 
-                { 1, 0, 0 }, 
-                { 0, 1, 0 }, 
-                { 0, 0, 1 }, 
-                { -1, -1, -1 } 
-            };
+            return new double[,] { { 1, 0,0,-1 }, { 0, 1,0,-1 }, { 0, 0, 1,-1 } };
         }
         /// <inheritdoc/>
 

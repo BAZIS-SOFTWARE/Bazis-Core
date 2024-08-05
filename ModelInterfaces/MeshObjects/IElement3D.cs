@@ -12,13 +12,6 @@ namespace ModelInterfaces.MeshObjects
     /// </summary>
     public interface IElement3D : ISurfaceElement, IVolume
     {
-        /// <summary>
-        /// CreateIntegrationPoint
-        /// </summary>
-        /// <param name="w"></param>
-        /// <param name="ksi"></param>
-        /// <param name="eta"></param>
-        /// <param name="dze"></param>
-        void CreateIntegrationPoint(float w, double ksi, double eta, double dze);
+
     }
 }

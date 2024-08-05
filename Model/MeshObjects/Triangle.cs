@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Geometry;
+using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Single;
 using ModelInterfaces.IntegralObject;
 using ModelInterfaces.MeshObjects;
@@ -16,50 +17,27 @@ namespace Model.MeshObjects
 
         public Triangle(int number, INode[] nodes) : base(number, nodes)
         {
-            surface = new ElementSurface(number,0, new INode[] { nodes[0], nodes[1], nodes[2] });
-
-            var intPoint = new IntegralPoint();
-            intPoint.AddCoordinate("l1", 1 / 3);
-            intPoint.AddCoordinate("l2", 1 / 3);
-            intPoint.AddCoordinate("l3", 1 / 3);
-            intPoint.Weigt = CalcSquare();
-            intPoints.Add(intPoint);
-            jacobians.Add(DetJ(intPoint));
+            CreateIntegrationPoint(1.0 / 2, 1.0 / 3, 1.0 / 3, 1.0 / 3);
         }
 
         public Triangle(int number, INode[] nodes, int intpNumber) : base(number, nodes)
         {
-            IntegralPoint intPoint;
             switch (intpNumber)
 
             {
                 case 1:
-                    intPoint = new IntegralPoint();
-                    intPoint.AddCoordinate("l1", 1 / 3);
-                    intPoint.AddCoordinate("l2", 1 / 3);
-                    intPoint.AddCoordinate("l3", 1 / 3);
-                    intPoint.Weigt = CalcSquare();
-                    intPoints.Add(intPoint);
-
-                    jacobians.Add(DetJ(intPoint));
+                    CreateIntegrationPoint(1.0 / 2, 1.0 / 3, 1.0 / 3, 1.0 / 3);
                     break;
                 case 3:
-                    for (int i = 0; i < 3; i++)
-                    {
-                        intPoint = new IntegralPoint();
-                        intPoint.AddCoordinate("l1", i == 2 ? 0 : 1 / 2);
-                        intPoint.AddCoordinate("l2", i == 0 ? 0 : 1 / 2);
-                        intPoint.AddCoordinate("l3", i == 1 ? 0 : 1 / 2);
-                        intPoint.Weigt = 1/6f;
-                        intPoints.Add(intPoint);
-
-                        jacobians.Add(DetJ(intPoint));
-                    }
+                    CreateIntegrationPoint(1.0 / 6, 1.0 / 2, 0, 1.0 / 2);
+                    CreateIntegrationPoint(1.0 / 6, 1.0 / 2, 1.0 / 2, 0);
+                    CreateIntegrationPoint(1.0 / 6, 0, 1.0 / 2, 1.0 / 2);
                     break;
                 default:
                     throw new ArgumentException();
             }
         }        
+/// <inheritdoc/>
 
         public override double CalcSquare()
         {
@@ -75,24 +53,27 @@ namespace Model.MeshObjects
 
         /// <inheritdoc/>
 
-        public override double DetJ(IIntegralPoint point)
+        public override double DetJ(IIntegralPoint intPoint)
         {
-            var m = new DenseMatrix(2, 2)
+            var derFormFunctions = GetDerivativesFormFunctions(intPoint);
+            var matrixDFF = Matrix<double>.Build.DenseOfArray(derFormFunctions);
+            var matrixPoints = Matrix<double>.Build.Dense(3, 2);
+
+            for (var i = 0; i < nodes.Count; i++)
             {
-                [0, 0] = nodes[0].Position._x - nodes[2].Position._x,
-                [0, 1] = nodes[0].Position._y - nodes[2].Position._y,
-                [1, 0] = nodes[1].Position._x - nodes[2].Position._x,
-                [1, 1] = nodes[1].Position._y - nodes[2].Position._y
-            };
-            return m.Determinant();
+                matrixPoints[i, 0] = nodes[i].Position._x;
+                matrixPoints[i, 1] = nodes[i].Position._y;
+            }
+
+            var result = matrixDFF.Multiply(matrixPoints);
+            return result.Determinant();
+
         }
         /// <inheritdoc/>
 
         public override double[,] GetDerivativesFormFunctions(IIntegralPoint intPoint)
         {
-            // Расчитано для линейного элемента с одной т.интегрирования в центре
-            // по формулам 14.11а и б
-            return new double[,] { { 1, 0, 0 }, { 1, -1, -1 } };
+            return new double[,] { { 1, 0,-1 }, { 0, 1,-1 } };
         }
         /// <inheritdoc/>
 
@@ -102,9 +83,16 @@ namespace Model.MeshObjects
         }
 /// <inheritdoc/>
 
-        public override void CreateIntegrationPoint(int w, double ksi, double eta)
+        public void CreateIntegrationPoint(double w, double l1, double l2, double l3)
         {
-            throw new NotImplementedException();
+            var intPoint = new IntegralPoint();
+            intPoint.AddCoordinate("l1", l1);
+            intPoint.AddCoordinate("l2", l2);
+            intPoint.AddCoordinate("l3", l2);
+            intPoint.Weigt = w;
+
+            intPoints.Add(intPoint);
+            jacobians.Add(DetJ(intPoint));
         }
     }
 }

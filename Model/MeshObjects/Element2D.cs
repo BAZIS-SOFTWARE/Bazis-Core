@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using MathNet.Numerics.LinearAlgebra.Single;
 using ModelInterfaces.MeshObjects;
+using Geometry.Interfaces;
 
 namespace Model.MeshObjects
 {
@@ -20,8 +21,42 @@ namespace Model.MeshObjects
             MasterColor = Color.FromArgb(0, 0, 255);
             SlaveColor = Color.FromArgb(0, 0, 255);
 
-        }
+            surface = new ElementSurface(number, 0, nodes);
 
+            this.nodes = surface.GetVertexes().ToList();
+
+            var basis = CalcTransitionMatrix(GetCoordinates().ToArray());
+
+            TransitionMatrix = Matrix<double>.Build.DenseOfArray(basis).Inverse();
+        }
+/// <inheritdoc/>
+
+        public double[,] CalcTransitionMatrix( IPoint3D[] points )
+        {
+            var fPnt = points[0];
+            var sPnt = points[1];
+            var lPnt = points.Last();
+
+            var v1 = new Point3D(sPnt._x - fPnt._x, sPnt._y - fPnt._y, sPnt._z - fPnt._z);
+            var v2 = new Point3D(lPnt._x - fPnt._x, lPnt._y - fPnt._y, lPnt._z - fPnt._z);
+
+            var v3 = Geometry.Vector.CrossProd(v1, v2);
+
+            //для гарантии что СК прямолинейная
+            var v4 = Geometry.Vector.CrossProd(v1, v3);
+
+            var xn = Geometry.Vector.GetVectorNorm(v1);
+            var yn = Geometry.Vector.GetVectorNorm(v4).Mult(-1);
+            var zn = Geometry.Vector.GetVectorNorm(v3);
+
+            var basis = new double[,]
+            {
+                {xn._x,yn._x,zn._x },
+                {xn._y,yn._y,zn._y },
+                {xn._z,zn._z,zn._z }
+            };
+            return basis;
+        }
 
         public Element2D(int number, INode[] nodes, int intPoints) : this(number, nodes)
         {
@@ -34,6 +69,10 @@ namespace Model.MeshObjects
 
         public int NumberOfSides { get { return 1; } }
 /// <inheritdoc/>
+
+        public Matrix<double> TransitionMatrix { get; set; }
+
+        /// <inheritdoc/>
 
         public override Point3D CalcCentr()
         {
@@ -64,8 +103,6 @@ namespace Model.MeshObjects
         {
             yield return surface;
         }
-/// <inheritdoc/>
 
-        public abstract void CreateIntegrationPoint(int w, double ksi, double eta);
     }
 }
