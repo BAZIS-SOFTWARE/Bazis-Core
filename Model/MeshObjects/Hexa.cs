@@ -115,12 +115,7 @@ namespace Model.MeshObjects
 
             var formFunctions = new double[]
             {
-               // (1 - ksi - eta) * (1 - dze) / 2,
-               // ksi * (1 - dze) / 2,
-               // eta * (1 - dze) / 2,
-               // (1 - ksi - eta) * (1 + dze) / 2,
-              //  ksi * (1 + dze) / 2,
-               // eta * (1 + dze) / 2
+      
 
                 (1-ksi)*(1-eta)*(1-dze)/8,
                 (1+ksi)*(1-eta)*(1-dze)/8,
