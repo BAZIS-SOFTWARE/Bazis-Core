@@ -31,10 +31,21 @@ namespace Model.MeshObjects
             {
                 case 1:
 
-                    CreateIntegrationPoint(2, 0, 0, 0);
+                    CreateIntegrationPoint(8, 0, 0, 0);
+                    // вес тут 8, так как вес каждой точки 0 равен 2 (2*2*2=8)
                     break;
                 case 8:
-                    throw new NotImplementedException("Не реализовано создание точек интегрирования");
+                CreateIntegrationPoint(1, 0.5774, 0.5774, 0.5774);
+                CreateIntegrationPoint(1, 0.5774, 0.5774, -0.5774);
+                 CreateIntegrationPoint(1, 0.5774, -0.5774, 0.5774);
+                CreateIntegrationPoint(1, 0.5774, -0.5774, -0.5774);
+                 CreateIntegrationPoint(1, -0.5774, 0.5774, 0.5774);
+                 CreateIntegrationPoint(1, -0.5774, 0.5774, -0.5774);
+                 CreateIntegrationPoint(1, -0.5774, -0.5774, 0.5774);
+                CreateIntegrationPoint(1, -0.5774, -0.5774, -0.5774);
+                 break;
+
+                
                 default:
                     throw new ArgumentException();
             }
@@ -88,12 +99,35 @@ namespace Model.MeshObjects
 
         public override double[,] GetDerivativesFormFunctions(IIntegralPoint intPoint)
         {
+
+        
+
             throw new NotImplementedException();
         }
 /// <inheritdoc/>
 
         public override double[] GetFormFunctions(IIntegralPoint intPoint)
         {
+
+            var eta = intPoint["eta"];
+            var ksi = intPoint["ksi"];
+            var dze = intPoint["dze"];
+
+            var formFunctions = new double[]
+            {
+      
+
+                (1-ksi)*(1-eta)*(1-dze)/8,
+                (1+ksi)*(1-eta)*(1-dze)/8,
+                (1+ksi)*(1+eta)*(1-dze)/8,
+                (1-ksi)*(1+eta)*(1-dze)/8,
+                (1-ksi)*(1-eta)*(1+dze)/8,
+                (1+ksi)*(1-eta)*(1+dze)/8,
+                (1+ksi)*(1+eta)*(1+dze)/8,
+                (1-ksi)*(1+eta)*(1+dze)/8
+
+            };
+            return formFunctions;
             throw new NotImplementedException();
         }
     }
