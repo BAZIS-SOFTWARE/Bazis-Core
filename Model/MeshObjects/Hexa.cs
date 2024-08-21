@@ -98,17 +98,13 @@ namespace Model.MeshObjects
 /// <inheritdoc/>
 
         public override double[,] GetDerivativesFormFunctions(IIntegralPoint intPoint)
-        {
-
-        
-
+        {    
             throw new NotImplementedException();
         }
 /// <inheritdoc/>
 
         public override double[] GetFormFunctions(IIntegralPoint intPoint)
         {
-
             var eta = intPoint["eta"];
             var ksi = intPoint["ksi"];
             var dze = intPoint["dze"];
@@ -128,7 +124,6 @@ namespace Model.MeshObjects
 
             };
             return formFunctions;
-            throw new NotImplementedException();
         }
     }
 }

@@ -71,6 +71,26 @@ namespace TestModel
             Assert.IsTrue(selectedElementNumbers.SequenceEqual(expected));
         }
 
+        [DataTestMethod]
+        [DataRow(9, 62528, @"..\..\..\Examples\2D\curvedStrip.bpf")]
+        [DataRow(0, 62528, @"..\..\..\Examples\2D\curvedStrip.bpf")]
+        [DataRow(15, 62528, @"..\..\..\Examples\2D\curvedStrip.bpf")]
+
+        public void SelectionHelper_OutSideModel_WhenAngleGiven(float angle, int first, string path)
+        {
+            //assing
+            var model = new ModelData();
+
+            //act
+            model.Load(path);
+
+            var selector = new SelectionHelper();
+            var selectedElementNumbers = selector.SelectE2DInPlane(model.ObjectData, angle, first, Color.Green);
+
+            Assert.AreEqual(selectedElementNumbers.Count, model.ObjectData.E2DCollection.Count);
+
+        }
+
         [TestMethod]
         public void FindBoundaryEdges_ShouldWork_OnModelWithDifferentElements()
         {
