@@ -22,7 +22,9 @@
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
   </PropertyGroup> 
   <ItemGroup>
+    <EmbeddedResource Remove="Extensions\**" />
     <EmbeddedResource Remove="Interfaces\**" />
+    <None Remove="Extensions\**" />
     <None Remove="Interfaces\**" />
   </ItemGroup> 
   <ItemGroup>
@@ -88,9 +90,7 @@
     </None>
   </ItemGroup> 
   <ItemGroup>
-    <PackageReference Include="ExtensionsLib" Version="1.0.1.14" />
     <PackageReference Include="MathNet.Numerics.Signed" Version="5.0.0" />
-    <PackageReference Include="SortLib" Version="1.0.1.11" />
   </ItemGroup> 
   <ItemGroup>
     <ProjectReference Include="..\ModelInterfaces\ModelInterfaces.csproj" />

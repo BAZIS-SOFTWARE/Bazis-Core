@@ -68,8 +68,8 @@
     <Reference Include="ExtensionsLib, Version=1.0.1.14, Culture=neutral, PublicKeyToken=8c358dc795e42d21, processorArchitecture=MSIL">
       <HintPath>..\packages\ExtensionsLib.1.0.1.14\lib\net48\ExtensionsLib.dll</HintPath>
     </Reference>
-    <Reference Include="Geometry, Version=2.0.7.30, Culture=neutral, PublicKeyToken=d064922373770c4c, processorArchitecture=MSIL">
-      <HintPath>..\packages\Geometry.2.0.7.30\lib\net48\Geometry.dll</HintPath>
+    <Reference Include="Geometry, Version=2.0.7.31, Culture=neutral, PublicKeyToken=d064922373770c4c, processorArchitecture=MSIL">
+      <HintPath>..\packages\Geometry.2.0.7.31\lib\net48\Geometry.dll</HintPath>
     </Reference>
     <Reference Include="MathNet.Numerics, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cd8b63ad3d691a37, processorArchitecture=MSIL">
       <HintPath>..\packages\MathNet.Numerics.Signed.5.0.0\lib\net48\MathNet.Numerics.dll</HintPath>

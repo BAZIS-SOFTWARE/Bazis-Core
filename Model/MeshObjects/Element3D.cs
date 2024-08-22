@@ -1,17 +1,11 @@
 ﻿using Geometry;
-using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.LinearAlgebra.Complex;
 using ModelInterfaces;
 using ModelInterfaces.MeshObjects;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using ExtensionsLib;
-using ModelInterfaces.ObjectsComparers;
 using Model.Utilities;
-using ModelInterfaces.IntegralObject;
+using Geometry.Exteisions;
 
 namespace Model.MeshObjects
 {

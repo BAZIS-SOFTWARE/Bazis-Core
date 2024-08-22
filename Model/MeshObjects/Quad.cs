@@ -1,7 +1,4 @@
-﻿using ExtensionsLib;
-using Geometry;
-using MathNet.Numerics.Distributions;
-using MathNet.Numerics.LinearAlgebra;
+﻿using MathNet.Numerics.LinearAlgebra;
 using ModelInterfaces.IntegralObject;
 using ModelInterfaces.MeshObjects;
 using System;

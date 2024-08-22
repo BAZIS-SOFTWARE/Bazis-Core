@@ -1,14 +1,10 @@
-﻿using ExtensionsLib;
-using Geometry;
+﻿using Geometry.Exteisions;
 using Model.MeshObjects;
 using ModelControllerInterfaces.ObjsCreator;
-using ModelInterfaces;
 using ModelInterfaces.MeshObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ModelController.MeshObjsCreator
 {
