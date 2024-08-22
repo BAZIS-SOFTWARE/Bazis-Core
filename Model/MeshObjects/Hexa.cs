@@ -120,7 +120,7 @@ namespace Model.MeshObjects
             
 
 
-            throw new NotImplementedException();
+            
         }
 /// <inheritdoc/>
 
