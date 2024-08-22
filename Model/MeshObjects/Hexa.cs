@@ -19,7 +19,7 @@ namespace Model.MeshObjects
             var masterSurface = GetMasterSurface(4, surfaces);
             this.nodes = SortNodes(masterSurface.Number, surfaces).ToList();
 
-            //CreateIntegrationPoint(2, 0, 0, 0);
+            CreateIntegrationPoint(8, 0, 0, 0);
         }
 
 
@@ -95,27 +95,27 @@ namespace Model.MeshObjects
             intPoints.Add(intPoint);
             jacobians.Add(DetJ(intPoint));
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public override double[,] GetDerivativesFormFunctions(IIntegralPoint intPoint)
-        
-            {
-                var eta = intPoint["eta"];
-                var ksi = intPoint["ksi"];
-                var dze = intPoint["dze"];
 
-                return new double[,]
-                {
+        {
+            var eta = intPoint["eta"];
+            var ksi = intPoint["ksi"];
+            var dze = intPoint["dze"];
+
+            return new double[,]
+            {
                 // по ksi
                 { -(1-eta)*(1-dze)/8,   (1-eta)*(1-dze) / 8,   (1+eta)*(1-dze)/8,   -(1+eta)*(1-dze)/8,
                         -(1-eta)*(1+dze)/8,   (1-eta)*(1+dze)/8,   (1+eta)*(1+dze)/8,   -(1+eta)*(1+dze)/8},
                 // по eta
-                { -(1-ksi)*(1-dze)/8,   -(1+ksi)*(1-dze)/8,   (1+ksi)*(1-dze)/8,   (1-ksi)*(1-dze)/8,   
+                { -(1-ksi)*(1-dze)/8,   -(1+ksi)*(1-dze)/8,   (1+ksi)*(1-dze)/8,   (1-ksi)*(1-dze)/8,
                     -(1-ksi)*(1+dze)/8,   -(1+ksi)*(1+dze)/8,   (1+ksi)*(1+dze)/8,   (1-ksi)*(1+dze)/8   },
                 // по dze
                 {  -(1-ksi)*(1-eta)/8,   -(1+ksi)*(1-eta)/8,   -(1+ksi)*(1+eta)/8,   -(1-ksi)*(1+eta)/8,
                     (1-ksi)*(1-eta)/8,   (1+ksi)*(1-eta)/8,   (1+ksi)*(1+eta)/8,   (1-ksi)*(1+eta)/8 }
-    };
+};
 
         }
 /// <inheritdoc/>

@@ -22,15 +22,15 @@
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
   </PropertyGroup> 
   <ItemGroup>
-    <EmbeddedResource Remove="Extensions\**" />
     <EmbeddedResource Remove="Interfaces\**" />
-    <None Remove="Extensions\**" />
     <None Remove="Interfaces\**" />
   </ItemGroup> 
   <ItemGroup>
     <Compile Include="Events\LoaderEventArgs.cs" />
     <Compile Include="Events\SaverEventArgs.cs" />
+    <Compile Include="Extensions\ListExtentions.cs" />
     <Compile Include="GroupsData\StringNumberGroupComparer.cs" />
+    <Compile Include="Sort\MergeSorts.cs" />
     <Compile Include="Utilities\SurfacesFinder.cs" />
     <Compile Include="ObjectsCollections\SurfaceFiguresCollection.cs" />
     <Compile Include="ObjectsCollections\VolumeFiguresCollection.cs" />

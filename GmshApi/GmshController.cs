@@ -11,7 +11,7 @@ using ModelInterfaces.MeshObjects;
 using ModelInterfaces.GeometryObjects;
 using ModelInterfaces.ObjectsFinders;
 using ModelControllerInterfaces.GmshController;
-using ExtensionsLib;
+using Geometry.Exteisions;
 
 namespace GmshApi.GmshController
 {

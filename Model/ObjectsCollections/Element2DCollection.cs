@@ -5,7 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using SortLib;
+using Model.Sort;
 
 namespace Model.ObjectsCollections
 {

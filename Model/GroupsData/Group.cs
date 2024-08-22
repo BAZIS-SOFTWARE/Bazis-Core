@@ -6,7 +6,7 @@ using System.Linq;
 using ModelInterfaces.Attributes;
 using ModelInterfaces.ObjectsComparers;
 using Geometry;
-using ExtensionsLib;
+using Model.Extensions;
 
 namespace Model.GroupsData
 {

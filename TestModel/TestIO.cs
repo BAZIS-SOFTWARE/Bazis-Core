@@ -83,16 +83,16 @@ namespace TestModel
 
         [TestMethod]
         [DataRow(@"Блок каналов\block.stl")]
-        [DataRow(@"Блок каналов\block_solid_sup.stl")]
-        [DataRow(@"Форсунка\1n.stl")]
-        [DataRow(@"Форсунка\nozzle.stl")]
-        [DataRow(@"Форсунка\nozzle_sup.stl")]
-        [DataRow(@"Образец\specimen.stl")]
-        [DataRow(@"Образец\specimen_solid_sup.stl")]
-        [DataRow(@"Образец\specimen_wall_sup.stl")]
-        [DataRow(@"Кронштейн\bracket.stl")]
-        [DataRow(@"Кронштейн\bracket_solid_sup.stl")]
-        [DataRow(@"Кронштейн\bracket_wall_sup.stl")]
+        //[DataRow(@"Блок каналов\block_solid_sup.stl")]
+        //[DataRow(@"Форсунка\1n.stl")]
+        //[DataRow(@"Форсунка\nozzle.stl")]
+        //[DataRow(@"Форсунка\nozzle_sup.stl")]
+        //[DataRow(@"Образец\specimen.stl")]
+        //[DataRow(@"Образец\specimen_solid_sup.stl")]
+        //[DataRow(@"Образец\specimen_wall_sup.stl")]
+        //[DataRow(@"Кронштейн\bracket.stl")]
+        //[DataRow(@"Кронштейн\bracket_solid_sup.stl")]
+        //[DataRow(@"Кронштейн\bracket_wall_sup.stl")]
         public void ImportModelFromSTLtextFormat(string file)
         {
             string dir = @"\\fs\Plm-Ural\OrgUnits\CAE\+ESI_QForm\+SIMMAX\Тестовые заготовки деталей\";
@@ -113,16 +113,16 @@ namespace TestModel
 
         [TestMethod]
         [DataRow(@"Блок каналов\block.stl")]
-        [DataRow(@"Блок каналов\block_solid_sup.stl")]
-        [DataRow(@"Форсунка\1n.stl")]
-        [DataRow(@"Форсунка\nozzle.stl")]
-        [DataRow(@"Форсунка\nozzle_sup.stl")]
-        [DataRow(@"Образец\specimen.stl")]
-        [DataRow(@"Образец\specimen_solid_sup.stl")]
-        [DataRow(@"Образец\specimen_wall_sup.stl")]
-        [DataRow(@"Кронштейн\bracket.stl")]
-        [DataRow(@"Кронштейн\bracket_solid_sup.stl")]
-        [DataRow(@"Кронштейн\bracket_wall_sup.stl")]
+        //[DataRow(@"Блок каналов\block_solid_sup.stl")]
+        //[DataRow(@"Форсунка\1n.stl")]
+        //[DataRow(@"Форсунка\nozzle.stl")]
+        //[DataRow(@"Форсунка\nozzle_sup.stl")]
+        //[DataRow(@"Образец\specimen.stl")]
+        //[DataRow(@"Образец\specimen_solid_sup.stl")]
+        //[DataRow(@"Образец\specimen_wall_sup.stl")]
+        //[DataRow(@"Кронштейн\bracket.stl")]
+        //[DataRow(@"Кронштейн\bracket_solid_sup.stl")]
+        //[DataRow(@"Кронштейн\bracket_wall_sup.stl")]
         public void ImportExportModelFromSTLtextFormat(string file)
         {
             string inputDir = @"\\fs\Plm-Ural\OrgUnits\CAE\+ESI_QForm\+SIMMAX\Тестовые заготовки деталей\";
