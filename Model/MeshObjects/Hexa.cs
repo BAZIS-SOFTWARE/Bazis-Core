@@ -117,16 +117,11 @@ namespace Model.MeshObjects
                     (1-ksi)*(1-eta)/8,   (1+ksi)*(1-eta)/8,   (1+ksi)*(1+eta)/8,   (1-ksi)*(1+eta)/8 }
     };
 
-            
-
-
-            
         }
 /// <inheritdoc/>
 
         public override double[] GetFormFunctions(IIntegralPoint intPoint)
         {
-
             var eta = intPoint["eta"];
             var ksi = intPoint["ksi"];
             var dze = intPoint["dze"];
@@ -145,6 +140,7 @@ namespace Model.MeshObjects
                 (1-ksi)*(1+eta)*(1+dze)/8
 
             };
+
           return formFunctions;
            
         }
