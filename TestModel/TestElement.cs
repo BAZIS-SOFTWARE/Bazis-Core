@@ -134,14 +134,14 @@ namespace TestModel
             new float[]
             {
                 0, 0, 0,
-                3, 0, 0,
+                1.5f, 0, 0,
                 1, 1,0,
                 0,1,0,
                 0,0,1,
                 1.2f,0,1,
                 1,1,0.7f,
                 0,1.5f,1,
-            }, 1.51375f)]
+            }, 1.310278f)]
         [DataRow(
             new float[]
             {
@@ -154,8 +154,33 @@ namespace TestModel
                 1,1,0.7f,
                 0,1.5f,1,
             }, 3.628749f)]
+        [DataRow(
+            new float[]
+            {
+                0, 0, 0,
+                1, 0, 0,
+                1, 1,0,
+                0,1,0,
+                0,0,1,
+                1,0,1,
+                1,1,1,
+                0,1,1,
+            }, 1)]
+        [DataRow(
+            new float[]
+            {
+                0, 0, 0,
+                10, 0, 0,
+                10, 10,0,
+                0,10,0,
+                0,0,10,
+                10,0,10,
+                10,10,10,
+                0,10,10,
+            }, 1000)]
         public void HexVolume(float[] coords, float vol)
         {
+            //assign
             var nodes = new Node[8];
             var num = 0;
             for (var i = 0; i < coords.Length; i += 3)
@@ -169,7 +194,65 @@ namespace TestModel
 
             var hexa = new Hexa(0, nodes,8);
 
-            Assert.AreEqual(hexa.CalcVolume(), vol, 0.10f);
+            //act
+            var hNodes = hexa.GetVertexes().ToArray();
+
+            var hVol = new Tetra(0, new INode[] { hNodes[0], hNodes[1], hNodes[2], hNodes[5] }).CalcVolume();
+            hVol += new Tetra(0, new INode[] { hNodes[0], hNodes[2], hNodes[5], hNodes[6] }).CalcVolume();
+            hVol += new Tetra(0, new INode[] { hNodes[0], hNodes[2], hNodes[3], hNodes[6] }).CalcVolume();
+
+            hVol += new Tetra(0, new INode[] { hNodes[0], hNodes[3], hNodes[6], hNodes[7] }).CalcVolume();
+            hVol += new Tetra(0, new INode[] { hNodes[0], hNodes[4], hNodes[6], hNodes[7] }).CalcVolume();
+            hVol += new Tetra(0, new INode[] { hNodes[0], hNodes[4], hNodes[5], hNodes[6] }).CalcVolume();
+            
+            //assert
+            Assert.AreEqual(hVol, hexa.CalcVolume(), 0.1f);
+        }
+
+        [DataTestMethod]
+        [DataRow(
+            new float[]
+            {
+                0, 0, 0,
+                0.5f, 0, 0,
+                0, 1.9f,0,
+                0,0,0.1f,
+
+            }, 19f / 1200)]
+        [DataRow(
+            new float[]
+            {
+                0, 0, 0,
+                0.5f, 0, 0,
+                0, 1.9f,0,
+                0,0,100.1f,
+
+            }, 19019f / 1200)]
+        [DataRow(
+            new float[]
+            {
+                0, 0, 0,
+                1, 0, 0,
+                0, 1,0,
+                0,0,1,
+
+            }, 1f/6)]
+        public void TetraVolume(float[] coords, float vol)
+        {
+            var nodes = new Node[4];
+            var num = 0;
+            for (var i = 0; i < coords.Length; i += 3)
+            {
+                var x = coords[i + 0];
+                var y = coords[i + 1];
+                var z = coords[i + 2];
+                nodes[num] = new Node(num, new Point3D(x, y, z));
+                num++;
+            }
+
+            var tetra = new Tetra(0, nodes, 1);
+
+            Assert.AreEqual(tetra.CalcVolume(), vol, 0.05f);
         }
 
         [DataTestMethod]
