@@ -48,7 +48,7 @@ namespace Model.MeshObjects
 
         /// <inheritdoc/>
 
-        public override float CalcVolume()
+        public override double CalcVolume()
         {
             var mCoord = new float[4, 4];
             var p = new Point3D[] { nodes[0].Position, nodes[1].Position, nodes[2].Position, nodes[3].Position };

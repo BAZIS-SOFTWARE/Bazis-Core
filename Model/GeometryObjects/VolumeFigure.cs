@@ -80,7 +80,7 @@ namespace Model.GeometryObjects
         }
 /// <inheritdoc/>
 
-        public float CalcVolume()
+        public double CalcVolume()
         {
             throw new NotImplementedException();
         }

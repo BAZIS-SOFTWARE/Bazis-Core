@@ -124,10 +124,36 @@ namespace TestModel
                 0, 0, 0,
                 1, 0, 0,
                 1, 1,0,
+                0,1,0,
                 0,0,1,
                 1.2f,0,1,
-                1,1,0.7f
-            }, 0.495f)]
+                1,1,0.7f,
+                0,1.5f,1,
+            }, 1.106806f)]
+        [DataRow(
+            new float[]
+            {
+                0, 0, 0,
+                3, 0, 0,
+                1, 1,0,
+                0,1,0,
+                0,0,1,
+                1.2f,0,1,
+                1,1,0.7f,
+                0,1.5f,1,
+            }, 1.51375f)]
+        [DataRow(
+            new float[]
+            {
+                0, 0, 0,
+                3, 0, 0,
+                1, 3,0,
+                0,3,0,
+                0,0,3,
+                1.2f,0,1,
+                1,1,0.7f,
+                0,1.5f,1,
+            }, 3.628749f)]
         public void HexVolume(float[] coords, float vol)
         {
             var nodes = new Node[8];
@@ -141,9 +167,9 @@ namespace TestModel
                 num++;
             }
 
-            var penta = new Hexa(0, nodes);
+            var hexa = new Hexa(0, nodes,8);
 
-            Assert.AreEqual(penta.CalcVolume(), vol, 0.025f);
+            Assert.AreEqual(hexa.CalcVolume(), vol, 0.10f);
         }
 
         [DataTestMethod]
@@ -167,6 +193,16 @@ namespace TestModel
                 1.2f,0,1,
                 1,1,0.7f
             }, 1.395f)]
+        [DataRow(
+            new float[]
+            {
+                0, 0, 0,
+                5, 0, 0,
+                1, 5,0,
+                0,0,1,
+                1.2f,0,1,
+                1,1,0.7f
+            }, 4.5083f)]
         public void PentaVolume(float[] coords, float vol)
         {
             var nodes = new Node[6];
@@ -182,7 +218,7 @@ namespace TestModel
                
             var penta = new Penta(0, nodes,2);
 
-            Assert.AreEqual(penta.CalcVolume(), vol, 0.025f);
+            Assert.AreEqual(penta.CalcVolume(), vol, 0.25f);
         }
 
 

@@ -15,6 +15,6 @@ namespace ModelInterfaces
         /// CalcVolume
         /// </summary>
         /// <returns></returns>
-        float CalcVolume();
+        double CalcVolume();
     }
 }

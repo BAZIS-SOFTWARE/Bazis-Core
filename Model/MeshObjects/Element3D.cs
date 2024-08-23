@@ -79,7 +79,7 @@ namespace Model.MeshObjects
         /// Calc volume
         /// </summary>
         /// <returns></returns>
-        public abstract float CalcVolume();
+        public abstract double CalcVolume();
 /// <inheritdoc/>
 
 

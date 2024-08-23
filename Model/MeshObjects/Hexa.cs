@@ -53,9 +53,17 @@ namespace Model.MeshObjects
 
         /// <inheritdoc/>
 
-        public override float CalcVolume()
+        public override double CalcVolume()
         {
-            throw new NotImplementedException("Не реализовано вычисление объема");
+            var vol = 0.0;
+            var counter = 0;
+
+            foreach (var item in GetDetsJ())
+            {
+                vol += item * intPoints[counter].Weigt;
+                counter++;
+            }
+            return Math.Abs(vol);
         }
         /// <inheritdoc/>
 

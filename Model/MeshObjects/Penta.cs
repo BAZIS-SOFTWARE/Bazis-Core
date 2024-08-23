@@ -76,14 +76,14 @@ namespace Model.MeshObjects
         }
 /// <inheritdoc/>
 
-        public override float CalcVolume()
+        public override double CalcVolume()
         {
-            var vol = 0.0f;
+            var vol = 0.0;
             var counter = 0;
 
             foreach (var item in GetDetsJ())
             {
-                vol += (float)(item * intPoints[counter].Weigt);
+                vol += item * intPoints[counter].Weigt;
                 counter++;
             }
             return Math.Abs(vol);
