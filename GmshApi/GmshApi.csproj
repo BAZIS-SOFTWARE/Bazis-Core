@@ -5,7 +5,7 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <SignAssembly>True</SignAssembly>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>3.0.2.44</Version>
+    <Version>3.0.2.45</Version>
     <Company>BAZIS SOFTWARE</Company>
     <Product>BAZIS</Product>
     <Description>Contains basic mesh oblects and geometry classes</Description>
