@@ -172,7 +172,7 @@ namespace Model.IO
 
         private bool IsValidTriangle(Point3D p1, Point3D p2, Point3D p3)
         {
-            return Vector.CrossProd(p1.Sub(p2), p1.Sub(p3)).GetSquareSumCoords() > 0;
+            return Geometry.Vector.CrossProd(p1.Sub(p2), p1.Sub(p3)).GetSquareSumCoords() > 0;
         }
 
         private bool IsBinary(string path)

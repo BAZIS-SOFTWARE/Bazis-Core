@@ -168,7 +168,7 @@ namespace TestModel
 
             var merger = new MergeObjects();
 
-            var mergedNodes = merger.Merge(coincidentNodes, model.ObjectData.NodeCollection.ToList());
+            var mergedNodes = merger.Merge<INode>(coincidentNodes, model.ObjectData.NodeCollection.ToList());
 
             //assert
             model.ObjectData.NodeCollection.Clear();

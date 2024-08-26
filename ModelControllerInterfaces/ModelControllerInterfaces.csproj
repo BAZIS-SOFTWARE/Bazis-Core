@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net48</TargetFrameworks>    
+    <TargetFrameworks>netstandard2.0</TargetFrameworks> 
     <AssemblyName>ModelControllerInterfaces</AssemblyName>
     <RootNamespace>ModelControllerInterfaces</RootNamespace>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <SignAssembly>True</SignAssembly>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>ModelControllerInterfaces</Title>
-    <Version>3.0.0.56</Version>
+    <Version>3.0.1.0</Version>
     <Authors>Bilenko Georgy</Authors>
     <Company>BAZIS SOFTWARE</Company>
     <Product>BAZIS</Product>

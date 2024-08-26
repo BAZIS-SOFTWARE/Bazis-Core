@@ -1,10 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net48</TargetFrameworks>
-    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <Title>ModelController</Title>
-    <Version>3.0.11.68</Version>
+    <Version>3.1.11.0</Version>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>ModelControllerKey.snk</AssemblyOriginatorKeyFile>
@@ -18,41 +16,12 @@
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="Icon.png" />
+    <Compile Remove="MeshObjsCreator\Delone2D\**" />
+    <EmbeddedResource Remove="MeshObjsCreator\Delone2D\**" />
+    <None Remove="MeshObjsCreator\Delone2D\**" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MeshObjsCreator\Delone2D\SurfaceMeshCreator.cs" />
-    <Compile Include="MeshObjsCreator\Extract1DFrom2D.cs" />
-    <Compile Include="MeshObjsCreator\VolumeMeshCreator.cs" />
-    <Compile Include="MeshObjsUtility\CrossSection.cs" />
-    <Compile Include="ModelController.cs" />
-    <Compile Include="ModelScenePresentator\GlObjsPresenters\LineObjsPresenter.cs" />
-    <Compile Include="ModelScenePresentator\GlObjsPresenters\PointObjsPresenter.cs" />
-    <Compile Include="ModelScenePresentator\GlObjsPresenters\SurfaceObjsPresenter.cs" />
-    <Compile Include="ModelScenePresentator\GlObjsVertexCreators\CoordsLineObjsCreator.cs" />
-    <Compile Include="ModelScenePresentator\GlObjsVertexCreators\CoordsPointObjsCreator.cs" />
-    <Compile Include="ModelScenePresentator\GlObjsVertexCreators\CoordsSurfaceObjsCreator.cs" />
-    <Compile Include="ModelScenePresentator\GlObjsVertexCreators\EdgesSurfaceObjsCreator.cs" />
-    <Compile Include="ModelScenePresentator\Interfaces\ILineObjsVertexCreator.cs" />
-    <Compile Include="ModelScenePresentator\Interfaces\IPointObjsVertexCreator.cs" />
-    <Compile Include="ModelScenePresentator\Interfaces\ISurfaceObjsVertexCreator.cs" />
-    <Compile Include="MeshObjsCreator\Extract2DFrom3D.cs" />
-    <Compile Include="MeshObjsUtility\FindCoincidentObjects.cs" />
-    <Compile Include="MeshObjsUtility\InterfacedNodesFinder.cs" />
-    <Compile Include="MeshObjsUtility\FindBoundaryEdges.cs" />
-    <Compile Include="MeshObjsUtility\MergeObjects.cs" />
-    <Compile Include="MeshObjsUtility\NormalsCalculator.cs" />
-    <Compile Include="MeshObjsUtility\FreeNodesFinder.cs" />
-    <Compile Include="MeshObjsUtility\FindOpenSurfaceNodes.cs" />
-    <Compile Include="MeshObjsUtility\SelectionHelper.cs" />
-    <Compile Include="ModelScenePresentator\GlObjsVertexCreators\NormalsLineObjsCreator.cs" />
-    <Compile Include="ModelScenePresentator\GlObjsVertexCreators\NormalsPointObjsCreator.cs" />
-    <Compile Include="ModelScenePresentator\GlObjsVertexCreators\NormalsSurfaceObjsCreator.cs" />
-    <Compile Include="ModelScenePresentator\GlObjsVertexCreators\ColorLineObjsCreator.cs" />
-    <Compile Include="ModelScenePresentator\GlObjsVertexCreators\ColorPointObjsCreator.cs" />
-    <Compile Include="ModelScenePresentator\GlObjsVertexCreators\ColorSurfaceObjsCreator.cs" />
-    <Compile Include="ModelScenePresentator\PresentersCreator.cs" />
-    <Compile Include="MeshObjsUtility\ObjectsRenumber.cs" />
+    <None Remove="Icon.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icon.png">
@@ -61,9 +30,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="NetOctree" Version="2.1.10" />
-    <PackageReference Include="SurfaceMesherInterfaces" Version="1.0.1.15" />
-    <PackageReference Include="System.Collections.Immutable" Version="8.0.0" />
+    <PackageReference Include="NetOctree" Version="2.1.11" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ModelControllerInterfaces\ModelControllerInterfaces.csproj" />

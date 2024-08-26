@@ -1,11 +1,7 @@
-﻿using Functions.Extensions;
-using GmshApi.GmshKernel;
-using Model;
-using Model.Interfaces;
+﻿using Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 
 namespace GmshApi.GmshController
 {

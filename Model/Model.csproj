@@ -1,8 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk"> 
   <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
-    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
-    <AutoGenerateBindingRedirects>True</AutoGenerateBindingRedirects>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <OutputType>Library</OutputType>
     <AssemblyName>Model</AssemblyName>
     <RootNamespace>Model</RootNamespace>
@@ -11,7 +9,7 @@
     <AssemblyOriginatorKeyFile>ModelKey.snk</AssemblyOriginatorKeyFile>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>Model</Title>
-    <Version>3.0.9.37</Version>
+    <Version>3.1.0.0</Version>
     <Company>BAZIS SOFTWARE</Company>
     <Product>BAZIS</Product>
     <Description>Contains basic mesh oblects and geometry classes</Description>
@@ -26,71 +24,19 @@
     <None Remove="Interfaces\**" />
   </ItemGroup> 
   <ItemGroup>
-    <Compile Include="Events\LoaderEventArgs.cs" />
-    <Compile Include="Events\SaverEventArgs.cs" />
-    <Compile Include="Extensions\ListExtentions.cs" />
-    <Compile Include="GroupsData\StringNumberGroupComparer.cs" />
-    <Compile Include="Sort\MergeSorts.cs" />
-    <Compile Include="Utilities\SurfacesFinder.cs" />
-    <Compile Include="ObjectsCollections\SurfaceFiguresCollection.cs" />
-    <Compile Include="ObjectsCollections\VolumeFiguresCollection.cs" />
-    <Compile Include="GeometryObjects\SurfaceFigure.cs" />
-    <Compile Include="GeometryObjects\VolumeFigure.cs" />
-    <Compile Include="GeometryObjects\GeometrySurface.cs" />
-    <Compile Include="IO\LoadModelFromBPF2TextFile.cs" />
-    <Compile Include="IO\SaveModelToBPF2TextFile.cs" />
-    <Compile Include="IO\SaveModelToSTLFile.cs" />
-    <Compile Include="ObjectsCollections\LineCollection.cs" />
-    <Compile Include="MeshObjects\Hexa.cs" />
-    <Compile Include="GeometryObjects\GeometryPoint.cs" />
-    <Compile Include="IO\LoadModelFromProjectTextFile.cs" />
-    <Compile Include="IO\SaveModelToBPFTextFile.cs" />
-    <Compile Include="IO\LoadModelFromASCIITextFile.cs" />
-    <Compile Include="IO\LoadModelFromCDBTextFile.cs" />
-    <Compile Include="IO\LoadModelFromGMSHTextFile.cs" />
-    <Compile Include="IO\LoadModelFromSalomeFile.cs" />
-    <Compile Include="IO\LoadModelFromSTLFile.cs" />
-    <Compile Include="IO\SaveModelToASCIITextFile.cs" />
-    <Compile Include="MeshObjects\Beam.cs" />
-    <Compile Include="GroupsData\Group.cs" />
-    <Compile Include="GroupsData\NameAndTypeGroupComparer.cs" />
-    <Compile Include="GroupsData\GroupData.cs" />
-	  <Compile Include="GroupsData\StringNumberGroupComparer.cs" />
-    <Compile Include="MeshObjects\IntegralPoint.cs" />
-    <Compile Include="ModelData.cs" />
-    <Compile Include="ModelObject.cs" />
-    <Compile Include="GeometryObjects\Line.cs" />
-    <Compile Include="MeshObjects\Element.cs" />
-    <Compile Include="MeshObjects\Element2D.cs" />
-    <Compile Include="MeshObjects\Element3D.cs" />
-    <Compile Include="MeshObjects\Node.cs" />
-    <Compile Include="MeshObjects\Penta.cs" />
-    <Compile Include="MeshObjects\Quad.cs" />
-    <Compile Include="ObjectsCollections\Element1DCollection.cs" />
-    <Compile Include="ObjectsCollections\Element3DCollection.cs" />
-    <Compile Include="ObjectsCollections\Element2DCollection.cs" />
-    <Compile Include="ObjectsCollections\NodeCollection.cs" />
-    <Compile Include="ObjectsData.cs" />
-    <Compile Include="MeshObjects\ElementSurface.cs" />
-    <Compile Include="MeshObjects\Tetra.cs" />
-    <Compile Include="MeshObjects\Triangle.cs" />
-    <Compile Include="ObjectsCollections\PointCollection.cs" />
-    <Compile Include="Utilities\SurfacesCreator.cs" />
-  </ItemGroup> 
-  <ItemGroup>
-    <None Include="ClientServerPlantUML.cs">
-      <DependentUpon>ClientServerPlantUML.mdpuml</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </None>
-    <None Include="PrecedentsPlantUML.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>PrecedentsPlantUML.mdpuml</DependentUpon>
-    </None>
+    <Compile Remove="Interfaces\IElement.cs" />
+    <Compile Remove="Interfaces\IElement2D.cs" />
+    <Compile Remove="Interfaces\IElement3D.cs" />
+    <Compile Remove="Interfaces\ILineObject.cs" />
+    <Compile Remove="Interfaces\IModelObject.cs" />
+    <Compile Remove="Interfaces\INodeObject.cs" />
+    <Compile Remove="Interfaces\ISurface.cs" />
+    <Compile Remove="Interfaces\ISurfaceElement.cs" />
+    <Compile Remove="Interfaces\ISurfaceObject.cs" />
   </ItemGroup> 
   <ItemGroup>
     <PackageReference Include="MathNet.Numerics.Signed" Version="5.0.0" />
+    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
   </ItemGroup> 
   <ItemGroup>
     <ProjectReference Include="..\ModelInterfaces\ModelInterfaces.csproj" />
@@ -99,10 +45,6 @@
     <None Update="Icon.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
-    </None>
-    <None Update="ClientServerPlantUML.mdpuml">
-      <LastGenOutput>ClientServerPlantUML.cs</LastGenOutput>
-      <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="PrecedentsPlantUML.mdpuml">
       <Generator>TextTemplatingFileGenerator</Generator>

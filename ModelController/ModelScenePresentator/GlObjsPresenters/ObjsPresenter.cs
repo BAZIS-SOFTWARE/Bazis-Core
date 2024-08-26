@@ -1,13 +1,7 @@
-﻿using Geometry;
-using Model;
-using Model.Interfaces;
-using ModelControllerInterfaces;
+﻿using ModelInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ModelController.ModelScenePresentator.GlObjsPresenters
 {
@@ -40,6 +34,6 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
 
         public abstract int Count();
         
-        public abstract Model.Interfaces.IModelObject FindObj(int objNumbr);
+        public abstract IModelObject FindObj(int objNumbr);
     }
 }

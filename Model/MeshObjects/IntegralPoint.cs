@@ -1,10 +1,5 @@
-﻿using Geometry;
-using MathNet.Numerics.LinearAlgebra;
-using ModelInterfaces.IntegralObject;
+﻿using ModelInterfaces.IntegralObject;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Linq;
 
 namespace Model.MeshObjects
 {

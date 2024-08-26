@@ -129,7 +129,19 @@ namespace TestModel
                 1.2f,0,1,
                 1,1,0.7f,
                 0,1.5f,1,
-            }, 1.106806f)]
+            }, 8)]
+        [DataRow(
+            new float[]
+            {
+                0, 0, 0,
+                1, 0, 0,
+                1, 1,0,
+                0,1,0,
+                0,0,1,
+                1.2f,0,1,
+                1,1,0.7f,
+                0,1.5f,1,
+            }, 1)]
         [DataRow(
             new float[]
             {
@@ -141,7 +153,7 @@ namespace TestModel
                 1.2f,0,1,
                 1,1,0.7f,
                 0,1.5f,1,
-            }, 1.310278f)]
+            }, 8)]
         [DataRow(
             new float[]
             {
@@ -153,7 +165,19 @@ namespace TestModel
                 1.2f,0,1,
                 1,1,0.7f,
                 0,1.5f,1,
-            }, 3.628749f)]
+            }, 8)]
+        [DataRow(
+            new float[]
+            {
+                0, 0, 0,
+                1.75f, 0, 0,
+                1, 2,0,
+                0,1.75f,0,
+                0,0,1.75f,
+                1.2f,0,1,
+                1,1,0.7f,
+                0,1.5f,1,
+            }, 1)]
         [DataRow(
             new float[]
             {
@@ -177,8 +201,20 @@ namespace TestModel
                 10,0,10,
                 10,10,10,
                 0,10,10,
-            }, 1000)]
-        public void HexVolume(float[] coords, float vol)
+            }, 1)]
+        [DataRow(
+            new float[]
+            {
+                0, 0, 0,
+                10, 0, 0,
+                10, 10,0,
+                0,10,0,
+                0,0,10,
+                10,0,10,
+                10,10,10,
+                0,10,10,
+            }, 8)]
+        public void HexVolume(float[] coords, int intPoints)
         {
             //assign
             var nodes = new Node[8];
@@ -192,7 +228,7 @@ namespace TestModel
                 num++;
             }
 
-            var hexa = new Hexa(0, nodes,8);
+            var hexa = new Hexa(0, nodes, intPoints);
 
             //act
             var hNodes = hexa.GetVertexes().ToArray();
