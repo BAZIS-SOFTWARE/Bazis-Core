@@ -114,7 +114,7 @@
     <Compile Include="TestCalcDistance.cs" />
     <Compile Include="TestElement.cs" />
     <Compile Include="TestGeometryObjects.cs" />
-    <Compile Include="TestGroupNameComparator.cs" />
+    <Compile Include="TestGroupData.cs" />
     <Compile Include="TestIO.cs" />
     <Compile Include="TestModelControllerPoligon.cs" />
     <Compile Include="TestObjectsRenumber.cs" />

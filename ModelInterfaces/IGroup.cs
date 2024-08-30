@@ -14,7 +14,7 @@ namespace ModelInterfaces
         /// <summary>
         /// GroupName
         /// </summary>
-        string GroupName { get; set; }
+        string Name { get; set; }
         /// <summary>
         /// ObjType
         /// </summary>

@@ -20,7 +20,7 @@ namespace Model.GroupsData
         /// <summary>
         /// GroupName
         /// </summary>
-        public string GroupName { get; set; }
+        public string Name { get; set; }
         /// <summary>
         /// ObjType
         /// </summary>
@@ -52,7 +52,7 @@ namespace Model.GroupsData
         public override string ToString()
         {
             var indStr = string.Join(" ", objects.Select(x => x.Number));
-            return string.Format("{0} {1} {2} | {3}", GroupName, ObjType, objects.Count, indStr);
+            return string.Format("{0} {1} {2} | {3}", Name, ObjType, objects.Count, indStr);
         }
 /// <inheritdoc/>
 
@@ -126,7 +126,7 @@ namespace Model.GroupsData
 
         public Group(string groupName, ObjType objType)
         {
-            GroupName = groupName;
+            Name = groupName;
             ObjType = objType;
         }
 /// <inheritdoc/>

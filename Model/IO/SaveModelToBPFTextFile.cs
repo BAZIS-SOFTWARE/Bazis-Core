@@ -50,7 +50,7 @@ namespace Model.IO
                 sw.WriteLine("Группы узлов и элементов");
                 foreach (var group in model.GroupData)
                 {
-                    var name = group.GroupName;
+                    var name = group.Name;
                     var objInd = string.Join(" ", group.Select(x => x.Number));
                     var resu = name + " " + objInd;
 

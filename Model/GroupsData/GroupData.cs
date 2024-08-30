@@ -102,7 +102,7 @@ namespace Model.GroupsData
 
         public IGroup Find(string grName)
         {
-            return groups.Find(x => x.GroupName == grName);
+            return groups.Find(x => x.Name == grName);
         }
 /// <inheritdoc/>
 
@@ -121,7 +121,7 @@ namespace Model.GroupsData
 
                 if (existObjects.Count() > 0)
                 {
-                    var gr = new Group(item.GroupName, item.ObjType);
+                    var gr = new Group(item.Name, item.ObjType);
                     gr.AddRange(existObjects);
                     temp.Add(gr);
                 }
@@ -140,6 +140,35 @@ namespace Model.GroupsData
         public IGroup Create(string name, ObjType objType)
         {
             return new Group(name, objType);
+        }
+/// <inheritdoc/>
+
+        public IGroup Create(IEnumerable<IModelObject> modelObjects)
+        {
+            var objType = modelObjects.First().ObjType;
+
+            if (!modelObjects.All(x => x.ObjType == objType))
+                throw new System.Exception("Все объекты должны быть одного типа!");
+
+            var grps = FindMany(objType);
+
+            var counter = 1;
+            var name = $"{objType}_{grps.Count() + counter}";
+
+            while (true)
+            {
+                if (Find(name) != null)
+                {
+                    counter++;
+                    name = $"{objType}_{grps.Count() + counter}";
+                }
+                else break;
+            }
+
+            var group = Create(name, objType);
+
+            group.AddRange(modelObjects);
+            return group;
         }
     }
 }

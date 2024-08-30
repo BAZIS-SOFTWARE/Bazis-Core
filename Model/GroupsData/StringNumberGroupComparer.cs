@@ -17,14 +17,14 @@ namespace Model.GroupsData
 
         public int Compare(IGroup x, IGroup y)
         {
-            if (x.GroupName == null || x.GroupName == string.Empty)
-                return y.GroupName == null || y.GroupName == string.Empty ? 0 : -1;
+            if (x.Name == null || x.Name == string.Empty)
+                return y.Name == null || y.Name == string.Empty ? 0 : -1;
 
-            if (y.GroupName == null || y.GroupName == string.Empty)
-                return x.GroupName == null || x.GroupName == string.Empty ? 0 : 1;
+            if (y.Name == null || y.Name == string.Empty)
+                return x.Name == null || x.Name == string.Empty ? 0 : 1;
 
-            xName = x.GroupName;
-            yName = y.GroupName;
+            xName = x.Name;
+            yName = y.Name;
 
             if (xName.Length == 0 || yName.Length == 0)
                 return xName.Length == 0 ? yName.Length == 0 ? 0 : -1 : 1;

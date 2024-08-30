@@ -43,5 +43,12 @@ namespace ModelInterfaces
         /// <param name="objType"></param>
         /// <returns></returns>
         IGroup Create(string name, ObjType objType);
+
+        /// <summary>
+        /// Create
+        /// </summary>
+        /// <param name="modelObjects"></param>
+        /// <returns></returns>
+        IGroup Create(IEnumerable<IModelObject> modelObjects);
     }
 }

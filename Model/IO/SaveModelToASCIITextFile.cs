@@ -81,7 +81,7 @@ namespace Model.IO
             foreach (var group in groupData)
             {
                 var elements = string.Join(" ", group.Select(x => x.Number));
-                writer.WriteLine($"{index++} {group.GroupName} 2 0 " +
+                writer.WriteLine($"{index++} {group.Name} 2 0 " +
                     $"\"PART_ID {index}\"  \"\"  \"PART built in Visual-Environment\" {elements}");
             }
             writer.WriteLine($"END_GROUPS");

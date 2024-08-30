@@ -12,7 +12,7 @@ namespace Model.GroupsData
         /// <inheritdoc/>
         public bool Equals(IGroup x, IGroup y)
         {
-            return (x.GroupName == y.GroupName && x.ObjType == y.ObjType);
+            return (x.Name == y.Name && x.ObjType == y.ObjType);
         }
         /// <inheritdoc/>
 
@@ -21,7 +21,7 @@ namespace Model.GroupsData
         {
             unchecked
             {
-                var hash = obj.GroupName.Length;
+                var hash = obj.Name.Length;
                 hash *= hash;
                 return 161 * hash;
             }

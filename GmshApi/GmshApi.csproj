@@ -4,13 +4,13 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <SignAssembly>True</SignAssembly>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>3.0.3.0</Version>
+    <Version>3.0.3.1</Version>
     <Company>BAZIS SOFTWARE</Company>
     <Product>BAZIS</Product>
     <Description>Contains basic mesh oblects and geometry classes</Description>
     <Copyright>Bilenko Georgy</Copyright>
     <Authors>Bilenko Georgy, Kapkaev Victor, Kochuk Nicolay</Authors>
-    <PackageIcon>Icon.png</PackageIcon>
+    <PackageIcon></PackageIcon>
     <PackageLicenseExpression> MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <AssemblyOriginatorKeyFile>GmshApiKey.snk</AssemblyOriginatorKeyFile>
@@ -20,9 +20,6 @@
     <Compile Remove="GmshController\**" />
     <EmbeddedResource Remove="GmshController\**" />
     <None Remove="GmshController\**" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Icon.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="GmshApiKey.snk" />

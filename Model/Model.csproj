@@ -9,7 +9,7 @@
     <AssemblyOriginatorKeyFile>ModelKey.snk</AssemblyOriginatorKeyFile>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>Model</Title>
-    <Version>3.1.0.0</Version>
+    <Version>3.1.0.1</Version>
     <Company>BAZIS SOFTWARE</Company>
     <Product>BAZIS</Product>
     <Description>Contains basic mesh oblects and geometry classes</Description>
@@ -35,6 +35,15 @@
     <Compile Remove="Interfaces\ISurfaceObject.cs" />
   </ItemGroup> 
   <ItemGroup>
+    <None Remove="Icon.png" />
+  </ItemGroup> 
+  <ItemGroup>
+    <EmbeddedResource Include="Icon.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </EmbeddedResource>
+  </ItemGroup> 
+  <ItemGroup>
     <PackageReference Include="MathNet.Numerics.Signed" Version="5.0.0" />
     <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
   </ItemGroup> 
@@ -42,10 +51,6 @@
     <ProjectReference Include="..\ModelInterfaces\ModelInterfaces.csproj" />
   </ItemGroup> 
   <ItemGroup>
-    <None Update="Icon.png">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
     <None Update="PrecedentsPlantUML.mdpuml">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>PrecedentsPlantUML.cs</LastGenOutput>

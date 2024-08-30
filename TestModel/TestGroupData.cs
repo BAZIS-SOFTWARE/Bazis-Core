@@ -1,5 +1,7 @@
+using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model.GroupsData;
+using Model.MeshObjects;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -11,8 +13,36 @@ using System.Threading.Tasks;
 namespace TestModel
 {
     [TestClass]
-    public class TestGroupNameComparator
+    public class TestGroupData
     {
+        [TestMethod]
+
+        public void CroupCreation()
+        {
+            var objs = new List<Node>() { new Node(0, new Point3D()), new Node(1, new Point3D()) };
+
+            var grData = new GroupData();
+
+            var gr = grData.Create(objs);
+
+            Assert.AreNotEqual(gr.Count, 0);
+        }
+
+        [TestMethod]
+
+        public void SeveralCroupsCreation()
+        {
+            var objs = new List<Node>() { new Node(0, new Point3D()), new Node(1, new Point3D()) };
+
+            var grData = new GroupData();
+
+            var gr = grData.Create(objs);
+            grData.Add(gr);
+
+            var gr1 = grData.Create(objs);
+
+            Assert.AreNotEqual(gr.Name, gr1.Name);
+        }
         [TestMethod]
         [DataRow("a", "A")]
         [DataRow("WA", "W1")]
@@ -60,7 +90,7 @@ namespace TestModel
                 groupData.Add(new Group(name, ModelInterfaces.ObjType.Элемент1D));
 
             groupData.Sort();
-            CollectionAssert.AreEqual(expected, groupData.Select(x => x.GroupName).ToArray());
+            CollectionAssert.AreEqual(expected, groupData.Select(x => x.Name).ToArray());
         }
     }
 }
