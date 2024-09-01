@@ -1,5 +1,7 @@
 using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Model;
+using Model.GeometryObjects;
 using Model.GroupsData;
 using Model.MeshObjects;
 using System;
@@ -32,7 +34,28 @@ namespace TestModel
 
         public void SeveralCroupsCreation()
         {
-            var objs = new List<Node>() { new Node(0, new Point3D()), new Node(1, new Point3D()) };
+            var objs = new List<ModelObject>() { new Node(0, new Point3D()), new Node(1, new Point3D()) };
+
+            var grData = new GroupData();
+
+            var gr = grData.Create(objs);
+            grData.Add(gr);
+
+            var gr1 = grData.Create(objs);
+
+            Assert.AreNotEqual(gr.Name, gr1.Name);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(Exception))]
+        public void SeveralCroupsCreationWithException()
+        {
+            var objs = new List<ModelObject>()
+            {
+                new Node(0, new Point3D()),
+                new Node(1, new Point3D()) ,
+                new GeometryPoint(0,new Point3D())
+            };
 
             var grData = new GroupData();
 

@@ -6,6 +6,7 @@ using ModelControllerInterfaces.SurfaceMeshCreator;
 using ModelControllerInterfaces.MeshObjsUtility;
 using ModelControllerInterfaces.Utilities;
 using ModelControllerInterfaces.ObjsCreator;
+using ModelInterfaces;
 
 namespace ModelController
 {
@@ -54,5 +55,7 @@ namespace ModelController
 /// <inheritdoc/>
 
         public IVolumeMeshCreator VolumeMeshCreator { get; set; }
+        /// <inheritdoc/>
+        public IModelData ModelData { get; set; }
     }
 }
