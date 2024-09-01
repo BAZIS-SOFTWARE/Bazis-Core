@@ -13,7 +13,7 @@ namespace ModelControllerInterfaces
         /// <summary>
         /// ModelData
         /// </summary>
-        IModelData ModelData { get; set; }
+        IModelData ModelData { get; }
         /// <summary>
         /// InterfacedNodesFinder
         /// </summary>

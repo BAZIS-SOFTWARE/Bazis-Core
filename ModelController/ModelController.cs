@@ -56,6 +56,14 @@ namespace ModelController
 
         public IVolumeMeshCreator VolumeMeshCreator { get; set; }
         /// <inheritdoc/>
-        public IModelData ModelData { get; set; }
+        public IModelData ModelData { get; }
+        /// <summary>
+        /// ModelController
+        /// </summary>
+        /// <param name="modelData"></param>
+        public ModelController(IModelData modelData)
+        {
+            ModelData = modelData;
+        }
     }
 }
