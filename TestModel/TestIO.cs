@@ -82,8 +82,8 @@ namespace TestModel
 
 
         [TestMethod]
-        [DataRow(@"Блок каналов\block.stl")]
-        //[DataRow(@"Блок каналов\block_solid_sup.stl")]
+        [DataRow(@"block_allElements3D_25538.stl", DisplayName = "block_allElements3D_25538.stl")]
+        [DataRow(@"block.stl", DisplayName = "block.stl")]
         //[DataRow(@"Форсунка\1n.stl")]
         //[DataRow(@"Форсунка\nozzle.stl")]
         //[DataRow(@"Форсунка\nozzle_sup.stl")]
@@ -95,7 +95,7 @@ namespace TestModel
         //[DataRow(@"Кронштейн\bracket_wall_sup.stl")]
         public void ImportModelFromSTLtextFormat(string file)
         {
-            string dir = @"\\fs\Plm-Ural\OrgUnits\CAE\+ESI_QForm\+SIMMAX\Тестовые заготовки деталей\";
+            string dir = @"..\..\..\Examples\STL";
             //string dir = @"..\..\..\..\Тестовые заготовки деталей\";
 
             var path = Path.Combine(dir, file);
@@ -108,7 +108,8 @@ namespace TestModel
             model.Load(path);
 
             //assert
-            Assert.AreNotEqual(model.GroupData.Count, 0);
+            Assert.AreNotEqual(model.ObjectData.E2DCollection.Count, 0);
+            //Assert.AreNotEqual(model.GroupData.Count, 0);
         }
 
         [TestMethod]

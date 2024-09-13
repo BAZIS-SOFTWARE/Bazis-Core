@@ -9,6 +9,7 @@ using System.Text;
 using Model.GeometryObjects;
 using System.Numerics;
 using Model.GroupsData;
+using Model.MeshObjects;
 
 namespace Model.IO
 {
@@ -58,47 +59,46 @@ namespace Model.IO
                 var solidCounter = 0;
                 while (!reader.EndOfStream)
                 {
-                    var surfaces = new List<GeometrySurface>();
+                    
 
                     while (str != null && !str.Contains("endsolid"))
                     {
                         if (str != null && str.Contains("outer loop"))
                         {
                             str = reader.ReadLine()?.Trim();
-                            var points = GetPoints(reader, str);
-                            modelData.ObjectData.PointCollection.AddRange(points);
+                            var nodes = GetPoints(reader, str);
+                            modelData.ObjectData.NodeCollection.AddRange(nodes);
 
-                            if (IsValidTriangle(points[0].Position, points[1].Position, points[2].Position))
+                            if (IsValidTriangle(nodes[0].Position, nodes[1].Position, nodes[2].Position))
                             {
                                 try
                                 {
-                                    var surface = new GeometrySurface(counter++, points);
-                                    surfaces.Add(surface);
+                                    modelData.ObjectData.E2DCollection.Add(new Triangle(counter++, nodes));
                                 }
                                 catch (Exception e)
                                 {
                                     throw new StlFileLoadExeption("Невалидная поверхность в STL файле", e);
                                 }
                             }
-                            counter++;
+                            //counter++;
                         }
                         str = reader.ReadLine();
                     }
                     str = reader.ReadLine();
-                    modelData.ObjectData.Fig2DCollection.Add(new SurfaceFigure(counter++, surfaces.ToArray()));
 
-                    var group = new Group($"newSolid_{solidCounter++}", ObjType.Фигура2D);
-                    group.AddRange(surfaces);
-                    modelData.GroupData.Add(group);
+
+                    //var group = new Group($"newSolid_{solidCounter++}", ObjType.Фигура2D);
+                    //group.AddRange(surfaces);
+                    //modelData.GroupData.Add(group);
                 }
                 LoadEvent?.Invoke(this, new LoaderEventArgs("Модель загружена"));
             }
 
             return modelData;
         }
-        private GeometryPoint[] GetPoints(StreamReader stl, string str)
+        private Node[] GetPoints(StreamReader stl, string str)
         {
-            var points = new GeometryPoint[3];
+            var points = new Node[3];
             for (int i = 0; i < 3; i++)
             {
                 if (str != null && str != "endloop" && str.Contains("vertex"))
@@ -108,7 +108,7 @@ namespace Model.IO
                     var x = float.Parse(lineData[0], NumberStyles.Float, CultureInfo.InvariantCulture);
                     var y = float.Parse(lineData[1], NumberStyles.Float, CultureInfo.InvariantCulture);
                     var z = float.Parse(lineData[2], NumberStyles.Float, CultureInfo.InvariantCulture);
-                    var node = new GeometryPoint(counter, ToDistinctPoint(new Point3D(x, y, z)));
+                    var node = new Node(counter, ToDistinctPoint(new Point3D(x, y, z)));
                     counter++;
                     points[i] = node;
                     str = stl.ReadLine()?.Trim();
@@ -127,30 +127,30 @@ namespace Model.IO
             {
                 int prevAtrib = -1;
 
-                var surfaces = new List<GeometrySurface>();
                 reader.BaseStream.Position += 80;
                 var count = reader.ReadUInt32();
 
                 for (int i = 0; i < count; i++)
                 {
                     reader.BaseStream.Position += 12;
-                    var points = new GeometryPoint[3];
-                    points[0] = ReadNode(reader);
-                    points[1] = ReadNode(reader);
-                    points[2] = ReadNode(reader);
-                    if (IsValidTriangle(points[0].Position, points[1].Position, points[2].Position))
+                    var nodes = new Node[3];
+                    nodes[0] = ReadNode(reader);
+                    nodes[1] = ReadNode(reader);
+                    nodes[2] = ReadNode(reader);
+
+                    modelData.ObjectData.NodeCollection.AddRange(nodes);
+
+                    if (IsValidTriangle(nodes[0].Position, nodes[1].Position, nodes[2].Position))
                     {
                         try
                         {
-                            var surface = new GeometrySurface(counter++, points);
                             var attrib = reader.ReadUInt16();
 
-                            if (attrib != prevAtrib && prevAtrib != -1)
+                            if (prevAtrib != -1)
+                                //if (attrib != prevAtrib && prevAtrib != -1)
                             {
-                                modelData.ObjectData.Fig2DCollection.Add(new SurfaceFigure(counter++, surfaces.ToArray()));
-                                surfaces = new List<GeometrySurface>();
+                                modelData.ObjectData.E2DCollection.Add(new Triangle(counter++, nodes));
                             }
-                            surfaces.Add(surface);
 
                             prevAtrib = attrib;
                         }
@@ -164,7 +164,6 @@ namespace Model.IO
                         reader.BaseStream.Position += 2;
                     }
                 }
-                modelData.ObjectData.Fig2DCollection.Add(new SurfaceFigure(counter++, surfaces.ToArray()));
             }
             LoadEvent?.Invoke(this, new LoaderEventArgs("Модель загружена"));
             return modelData;
@@ -185,12 +184,12 @@ namespace Model.IO
             }
         }
 
-        GeometryPoint ReadNode(BinaryReader reader)
+        Node ReadNode(BinaryReader reader)
         {
             var x = reader.ReadSingle();
             var y = reader.ReadSingle();
             var z = reader.ReadSingle();
-            var node = new GeometryPoint(counter++, ToDistinctPoint(new Point3D(x, y, z)));
+            var node = new Node(counter++, ToDistinctPoint(new Point3D(x, y, z)));
             return node;
         }
 
