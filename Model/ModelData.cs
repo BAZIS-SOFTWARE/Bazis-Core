@@ -11,7 +11,7 @@ namespace Model
         /// <inheritdoc/>
         public IModelSaver Saver { get; set; } = new SaveModelToBPFTextFile();
         /// <inheritdoc/>
-        public IModelLoader Loader { get; set; } = new LoadModelFromProjectTextFile();
+        public IModelLoader Loader { get; set; } = new LoadModelFromBPFTextFile();
 
         /// <inheritdoc/>
 

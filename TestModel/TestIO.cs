@@ -12,12 +12,13 @@ namespace TestModel
     {
         [DataTestMethod]
         [DataRow(@"..\..\..\Examples\3D\cub_unsorted.bpf",6)]
+        //[DataRow(@"c:\BazisGUI\GUI\Projects\HeatTreatment\Heating\2D_axi\2D_val.bpf", 752)]
         public void OpenModelToBpfTextFormat(string path, int elCount)
         {
             //assing
             var model = new ModelData();
 
-            model.Loader = new LoadModelFromProjectTextFile();
+            model.Loader = new LoadModelFromBPFTextFile();
 
             model.Loader.LoadEvent += (ar1, ar2) => { };
 

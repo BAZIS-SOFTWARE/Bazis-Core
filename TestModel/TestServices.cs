@@ -95,7 +95,7 @@ namespace TestModel
         public void FindBoundaryEdges_ShouldWork_OnModelWithDifferentElements()
         {
             var model = new ModelData();
-            model.Loader = new LoadModelFromProjectTextFile();
+            model.Loader = new LoadModelFromBPFTextFile();
             model.Load(@"..\..\..\Examples\3D\cub_unsorted.bpf");
 
             var modelController = new ModelController.ModelController(model);
@@ -113,7 +113,7 @@ namespace TestModel
         public void GetElementsNormals()
         {
             var model = new ModelData();
-            model.Loader = new LoadModelFromProjectTextFile();
+            model.Loader = new LoadModelFromBPFTextFile();
             model.Load(@"..\..\..\Examples\3D\cub_unsorted.bpf");
 
             var modelController = new ModelController.ModelController(model);

@@ -17,7 +17,7 @@ namespace Model.IO
     /// <summary>
     /// LoadModelFromProjectTextFile
     /// </summary>
-    public class LoadModelFromProjectTextFile : IModelLoader
+    public class LoadModelFromBPFTextFile : IModelLoader
     {
         public event Action<object, ILoaderEventArgs> LoadEvent;
 
@@ -144,6 +144,11 @@ namespace Model.IO
 
 
                 }
+                if(elType == "Элементы1D" | elType == "Элемент1D" | elType == "Элементы 1002")
+                {
+                        var el2DObj = new Beam(elNumber, nodeList.ToArray());
+                        newMesh.ObjectData.E1DCollection.Add(el2DObj);                  
+                }
                 //number++;
                 line = sr.ReadLine();
             }
@@ -176,6 +181,10 @@ namespace Model.IO
                 if (splitLine[0] == "Группа элементов 2D ")
                 {
                     LoadElemGroup(newMesh, ObjType.Элемент2D, line);
+                }
+                if (splitLine[0] == "Группа элементов 1D ")
+                {
+                    LoadElemGroup(newMesh, ObjType.Элемент1D, line);
                 }
                 line = sr.ReadLine();
             }
