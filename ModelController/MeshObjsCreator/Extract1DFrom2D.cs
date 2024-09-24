@@ -8,8 +8,12 @@ using System.Linq;
 
 namespace ModelController.MeshObjsCreator
 {
+    /// <summary>
+    /// Extract1DFrom2D
+    /// </summary>
     public class Extract1DFrom2D : IExtractor1DFrom2D
     {
+        /// <inheritdoc/>
         public IEnumerable<Beam> Create(int startNumber, IElement2D[] elements)
         {
             var usedElements = new HashSet<Tuple<INode, INode>>();

@@ -57,6 +57,9 @@ namespace ModelController
         public IVolumeMeshCreator VolumeMeshCreator { get; set; }
         /// <inheritdoc/>
         public IModelData ModelData { get; }
+
+        public IExtractor1DFrom2D Extractor1DFrom2D { get; } = new Extract1DFrom2D();
+
         /// <summary>
         /// ModelController
         /// </summary>

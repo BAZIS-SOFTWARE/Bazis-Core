@@ -28,6 +28,10 @@ namespace ModelControllerInterfaces
         /// </summary>
         IExtractor2DFrom3D Extractor2DFrom3D { get; }
         /// <summary>
+        /// Extractor1DFrom2D
+        /// </summary>
+        IExtractor1DFrom2D Extractor1DFrom2D { get; }
+        /// <summary>
         /// BoundaryEdgesFinder
         /// </summary>
         IBoundaryEdgesFinder BoundaryEdgesFinder { get; }

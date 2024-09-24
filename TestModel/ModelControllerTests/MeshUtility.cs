@@ -39,7 +39,7 @@ namespace TestModel.ModelControllerTests
         }
 
         [TestMethod]
-        public void FindOpenSurfacesTwoElements()
+        public void Extract2DFrom3D()
         {
             var nodes = new List<Node>()
             {
