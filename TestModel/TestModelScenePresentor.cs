@@ -302,7 +302,7 @@ namespace TestModel
         }
 
         [DataTestMethod]
-        [DataRow(ObjType.Фигура2D, @"..\..\..\Examples\STL\ACII.stl",new string[]
+        [DataRow(ObjType.Элемент2D, @"..\..\..\Examples\STL\ACII.stl",new string[]
 {
     "6", "18", "24", "18"
 })]
