@@ -57,6 +57,7 @@ namespace Model.IO
                     if (group.ObjType == ObjType.Узел) sw.WriteLine("Группа узлов : {0}", resu);
                     if (group.ObjType == ObjType.Элемент3D) sw.WriteLine("Группа элементов 3D : {0}", resu);
                     if (group.ObjType == ObjType.Элемент2D) sw.WriteLine("Группа элементов 2D : {0}", resu);
+                    if (group.ObjType == ObjType.Элемент1D) sw.WriteLine("Группа элементов 1D : {0}", resu);
                 }
                 sw.WriteLine("#Группы узлов и элементов");
                 sw.Dispose();
