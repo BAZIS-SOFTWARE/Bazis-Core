@@ -180,30 +180,23 @@ namespace TestModel
             Assert.AreEqual(17964, model.ObjectData.GetAllElements().Count());
         }
 
-        [TestMethod]
-        public void ImportModelFromVisualMeshASCIITextFormat()
+        [DataTestMethod]
+        [DataRow(7,8,0, @"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC", DisplayName = "rhombDATA1.ASC")]
+        [DataRow(44, 113, 3, @"..\..\..\Examples\VIsual-Mesh\DATA3.ASC", DisplayName = "DATA3.ASC")]
+        
+        public void ImportModelFromVisualMeshASCIITextFormat(int nodeCount, int elemCount, int elem1D, string path)
         {
             //assing
-            var model = new ModelData();
-            model.Loader = new LoadModelFromASCIITextFile();
-
-            model.Loader.LoadEvent += (ar1, ar2) => { };
-
-            //act
-            model.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
-            //loader.Load(@"C:\Bazis_newGUI\MESH\RadicMesh\Plate2DATA.ASC");
-            //assert
-            Assert.AreEqual(7, model.ObjectData.Count(ObjType.Узел));
-            Assert.AreEqual(8, model.ObjectData.Count(ObjType.Элемент));
-        }
-
-        [TestMethod]
-        public void LoadASCII_ShouldImport1DElements()
-        {
             var loader = new LoadModelFromASCIITextFile();
             loader.LoadEvent += (ar1, ar2) => { };
-            var model = loader.Load(@"..\..\..\Examples\VIsual-Mesh\DATA3.ASC");
-            Assert.AreEqual(3, model.ObjectData.Count(ObjType.Элемент1D));
+
+            //act
+            var model = loader.Load(path);
+            //loader.Load(@"C:\Bazis_newGUI\MESH\RadicMesh\Plate2DATA.ASC");
+            //assert
+            Assert.AreEqual(nodeCount, model.ObjectData.Count(ObjType.Узел));
+            Assert.AreEqual(elemCount, model.ObjectData.Count(ObjType.Элемент));
+            Assert.AreEqual(elem1D, model.ObjectData.Count(ObjType.Элемент1D));
         }
 
         [TestMethod]

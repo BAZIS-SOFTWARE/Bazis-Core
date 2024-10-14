@@ -68,7 +68,10 @@ namespace Model.IO
         private void ReadElements(StreamReader reader, int count, ModelData model)
         {
             LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка элементов..."));
-            var elLastNumber = model.ObjectData.GetLastNumber(ObjType.Элемент);
+            var elLastNumber = 0;
+            if (model.ObjectData.GetAllElements().Count() > 0)
+                elLastNumber = model.ObjectData.GetLastNumber(ObjType.Элемент);
+
             for (var i = 0; i < count; i++)
             {
                 var line = reader.ReadLine();
@@ -81,7 +84,7 @@ namespace Model.IO
                     .ToArray();
 
                 
-                var element = GetElementByType(nodes, model,type, elLastNumber + i);
+                var element = GetElementByType(nodes, model,type, elLastNumber + i + 1);
                 allElements.Add(elCurrentNumber, element);
             }
         }

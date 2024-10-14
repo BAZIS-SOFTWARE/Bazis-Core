@@ -15,7 +15,7 @@ namespace Model.MeshObjects
 
         protected List<IIntegralPoint> intPoints = new List<IIntegralPoint>();
 
-        protected List<double> jacobians = new List<double>();
+        protected List<Matrix<double>> jacobiMatrixes = new List<Matrix<double>>();
 
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace Model.MeshObjects
         }
         /// <inheritdoc/>
 
-        public abstract double DetJ(IIntegralPoint integralPoint);
+        public abstract Matrix<double> CalcJacobi(IIntegralPoint integralPoint);
 /// <inheritdoc/>
 
         public IEnumerable<IIntegralPoint> GetIntegralPoints()
@@ -122,15 +122,15 @@ namespace Model.MeshObjects
 
         /// <inheritdoc/>
 
-        public void AddDetJ(double j)
+        public void AddJacobiMatrix(Matrix<double> j)
         {
-            jacobians.Add(j);
+            jacobiMatrixes.Add(j);
         }
         /// <inheritdoc/>
 
-        public IEnumerable<double> GetDetsJ()
+        public IEnumerable<Matrix<double>> GetJacobiMatrixes()
         {
-            foreach (var jacobian in jacobians)
+            foreach (var jacobian in jacobiMatrixes)
             {
                 yield return jacobian;
             }

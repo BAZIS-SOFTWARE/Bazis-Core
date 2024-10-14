@@ -12,17 +12,20 @@ namespace ModelController.MeshObjsUtility
     public class ObjectsRenumber : IObjectsRenumber
     {
         /// <inheritdoc/>
-        public void IObjectsRenumber(IObjectsData objectsData, ObjType objType)
+        public void Renumber(IObjectsData objectsData, ObjType objType)
         {
+            var number = 0;
             switch (objType)
             {
+                case ObjType.Узел:
+                    {
+                        foreach (var node in objectsData.NodeCollection)
+                            node.SetNumber(number++);
+                    }
+                    break;
                 case ObjType.Элемент:
                     {
-                        var elements = new List<IModelObject>();
-                        elements.AddRange(objectsData.GetAllElements());
-
-                        var number = 1;
-                        foreach (var elem in elements)
+                        foreach (var elem in objectsData.GetAllElements())
                             elem.SetNumber(number++);
                     }
                     break;

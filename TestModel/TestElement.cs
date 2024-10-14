@@ -113,8 +113,8 @@ namespace TestModel
             var elem = new Quad(0, nodes, 4);
 
             var counter = 0;
-            foreach (var item in elem.GetDetsJ())
-                Assert.AreEqual(detJ[counter++], item, 0.025);
+            foreach (var item in elem.GetJacobiMatrixes())
+                Assert.AreEqual(detJ[counter++], item.Determinant(), 0.025);
         }
 
         [DataTestMethod]

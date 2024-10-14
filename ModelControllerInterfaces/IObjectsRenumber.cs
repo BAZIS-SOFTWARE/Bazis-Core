@@ -14,6 +14,6 @@ namespace ModelControllerInterfaces
         /// <param name="objectsData"></param>
         /// <param name="objType"></param>
         [Warning("Не использовать для фигур и точек!")]
-        void IObjectsRenumber(IObjectsData objectsData, ObjType objType);
+        void Renumber(IObjectsData objectsData, ObjType objType);
     }
 }

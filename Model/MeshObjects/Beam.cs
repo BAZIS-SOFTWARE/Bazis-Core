@@ -1,4 +1,5 @@
 ﻿using Geometry;
+using MathNet.Numerics.LinearAlgebra;
 using ModelInterfaces;
 using ModelInterfaces.IntegralObject;
 using ModelInterfaces.MeshObjects;
@@ -77,7 +78,7 @@ namespace Model.MeshObjects
         }
         /// <inheritdoc/>
 
-        public override double DetJ(IIntegralPoint point3D)
+        public override Matrix<double> CalcJacobi(IIntegralPoint point3D)
         {
             throw new NotImplementedException();
         }

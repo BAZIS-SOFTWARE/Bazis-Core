@@ -1,5 +1,6 @@
 ﻿using Geometry;
 using ModelInterfaces;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 
@@ -15,6 +16,8 @@ namespace Model
         /// </summary>
         public ModelObject(int number)
         {
+            if (number < 0)
+                throw new Exception("Номер не может быть меньше нуля");
             Number = number;
             ExistState = true;
         }

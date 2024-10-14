@@ -1,4 +1,5 @@
 ﻿using Geometry;
+using MathNet.Numerics.LinearAlgebra;
 using ModelInterfaces.IntegralObject;
 using System.Collections.Generic;
 
@@ -47,12 +48,12 @@ namespace ModelInterfaces.MeshObjects
         /// кси,эта,дзета если гекса или пента. кси,эта если прямоугольник. кси если стержень.
         /// l координаты если треугольник или тетраэдр
         /// <returns></returns>
-        double DetJ(IIntegralPoint integralPoint);
+        Matrix<double> CalcJacobi(IIntegralPoint integralPoint);
         /// <summary>
         /// Get Jacobians of all intPoints
         /// </summary>
         /// <returns></returns>
-        IEnumerable<double> GetDetsJ();
+        IEnumerable<Matrix<double>> GetJacobiMatrixes();
         /// <summary>
         /// ElementKind
         /// </summary>

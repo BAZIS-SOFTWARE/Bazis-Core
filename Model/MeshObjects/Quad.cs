@@ -49,7 +49,7 @@ namespace Model.MeshObjects
             intPoint.Weigt = w;
 
             intPoints.Add(intPoint);
-            jacobians.Add(DetJ(intPoint));
+            jacobiMatrixes.Add(CalcJacobi(intPoint));
         }
 
         /// <inheritdoc/>
@@ -62,7 +62,7 @@ namespace Model.MeshObjects
 
         /// <inheritdoc/>
 
-        public override double DetJ(IIntegralPoint intPoint)
+        public override Matrix<double> CalcJacobi(IIntegralPoint intPoint)
         {
             var derFormFunctions = GetDerivativesFormFunctions(intPoint);
             var matrixDFF = Matrix<double>.Build.DenseOfArray(derFormFunctions).Divide(4);
@@ -75,7 +75,7 @@ namespace Model.MeshObjects
             }
 
             var result = matrixDFF.Multiply(matrixPoints);
-            return result.Determinant();
+            return result;
         }
 
         /// <inheritdoc/>

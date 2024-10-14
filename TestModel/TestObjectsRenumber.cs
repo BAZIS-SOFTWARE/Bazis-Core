@@ -31,15 +31,15 @@ namespace TestModel
             modelData.ObjectData.E1DCollection.Add(new Beam(4, beamNodes));
             modelData.ObjectData.E2DCollection.Add(new Quad(1, quadNodes));
             modelData.ObjectData.E2DCollection.Add(new Triangle(2, triangleNodes));
-            modelData.ObjectData.E3DCollection.Add(new Tetra(3, tetraNodes));
+            modelData.ObjectData.E3DCollection.Add(new Tetra(6, tetraNodes));
 
             var renumber = new ObjectsRenumber();
-            renumber.IObjectsRenumber(modelData.ObjectData, ObjType.Элемент);
+            renumber.Renumber(modelData.ObjectData, ObjType.Элемент);
 
             var i = 0;
             foreach (var data in modelData.ObjectData.GetObjects(ObjType.Элемент))
             {
-                Assert.AreEqual(i + 1, data.Number);
+                Assert.AreEqual(i, data.Number);
                 Assert.AreEqual(expectedTypes[i], data.ObjType);
                 i++;
             }
@@ -53,16 +53,15 @@ namespace TestModel
         [DataRow(ObjType.Фигура2D)]
         public void ObjectRenumber_ShouldFail_WhenGeometry(ObjType ot)
         {
-            Assert.ThrowsException<Exception>( () => new ObjectsRenumber().IObjectsRenumber(new ModelData().ObjectData, ot));
+            Assert.ThrowsException<Exception>( () => new ObjectsRenumber().Renumber(new ModelData().ObjectData, ot));
         }
 
         [TestMethod]
         [DataRow(ObjType.Линия)]
         [DataRow(ObjType.Поверхность)]
-        [DataRow(ObjType.Узел)]
         public void ObjectRenumber_ShouldFail_WhenNotImplementObjType(ObjType ot)
         {
-            Assert.ThrowsException<NotImplementedException>(() => new ObjectsRenumber().IObjectsRenumber(new ModelData().ObjectData, ot));
+            Assert.ThrowsException<NotImplementedException>(() => new ObjectsRenumber().Renumber(new ModelData().ObjectData, ot));
         }
     }
 }

@@ -152,9 +152,9 @@ namespace Model
 
         int GetLastElementNumber()
         {
-            var e1Numb = E1DCollection.Count > 0 ? E1DCollection.Last().Number : -1;
-            var e2Numb = E2DCollection.Count > 0 ? E2DCollection.Last().Number : -1;
-            var e3Numb = E3DCollection.Count > 0 ? E3DCollection.Last().Number : -1;
+            var e1Numb = E1DCollection.Last().Number;
+            var e2Numb = E2DCollection.Last().Number;
+            var e3Numb = E3DCollection.Last().Number;
 
             var numb = e1Numb;
             if (e1Numb < e2Numb)
@@ -423,25 +423,25 @@ namespace Model
             switch (objType)
             {
                 case ObjType.Точка:
-                    return PointCollection.Count > 0 ? PointCollection.Last().Number : -1;
+                    return PointCollection.Count > 0 ? PointCollection.Last().Number : 0;
                 case ObjType.Линия:
-                    return LineCollection.Count > 0 ? LineCollection.Last().Number : -1;
+                    return LineCollection.Count > 0 ? LineCollection.Last().Number : 0;
                 case ObjType.Фигура:
                     return GetLastFigureNumber();
                 case ObjType.Фигура2D:
-                    return Fig2DCollection.Count > 0 ? Fig2DCollection.Last().Number :  -1;
+                    return Fig2DCollection.Count > 0 ? Fig2DCollection.Last().Number :  0;
                 case ObjType.Фигура3D:
-                    return Fig3DCollection.Count > 0 ? Fig3DCollection.Last().Number : -1;
+                    return Fig3DCollection.Count > 0 ? Fig3DCollection.Last().Number : 0;
                 case ObjType.Узел:
-                    return NodeCollection.Count > 0 ? NodeCollection.Last().Number : -1;
+                    return NodeCollection.Count > 0 ? NodeCollection.Last().Number : 0;
                 case ObjType.Элемент:
                     return GetLastElementNumber();
                 case ObjType.Элемент1D:
-                    return E1DCollection.Count > 0 ? E1DCollection.Last().Number : -1;
+                    return E1DCollection.Count > 0 ? E1DCollection.Last().Number : 0;
                 case ObjType.Элемент2D:
-                    return E2DCollection.Count > 0 ? E2DCollection.Last().Number : -1;             
+                    return E2DCollection.Count > 0 ? E2DCollection.Last().Number : 0;             
                 default:
-                    return E3DCollection.Count > 0 ? E3DCollection.Last().Number : -1;
+                    return E3DCollection.Count > 0 ? E3DCollection.Last().Number : 0;
             }
         }       
     }
