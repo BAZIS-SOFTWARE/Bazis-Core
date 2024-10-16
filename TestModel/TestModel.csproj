@@ -106,6 +106,18 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GeometryTests\TestConvexHull.cs" />
+    <Compile Include="GeometryTests\TestExtensions.cs" />
+    <Compile Include="GeometryTests\TestFrame.cs" />
+    <Compile Include="GeometryTests\TestPlain.cs" />
+    <Compile Include="GeometryTests\TestPoint2D.cs" />
+    <Compile Include="GeometryTests\TestPoint3D.cs" />
+    <Compile Include="GeometryTests\TestPointsSorter.cs" />
+    <Compile Include="GeometryTests\TestRectangleBox.cs" />
+    <Compile Include="GeometryTests\TestSegment2D.cs" />
+    <Compile Include="GeometryTests\TestSegment3D.cs" />
+    <Compile Include="GeometryTests\TestSelection.cs" />
+    <Compile Include="GeometryTests\TestVector.cs" />
     <Compile Include="GmshTests\GeometryTests.cs" />
     <Compile Include="GmshTests\MeshTests.cs" />
     <Compile Include="GmshTests\ConnectionTests.cs" />

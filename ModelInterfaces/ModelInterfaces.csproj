@@ -34,8 +34,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Geometry" Version="2.0.8.2" />
     <PackageReference Include="MathNet.Numerics.Signed" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PrGeometry\Geometry.csproj" />
   </ItemGroup>
 
 </Project>
