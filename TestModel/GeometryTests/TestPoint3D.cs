@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Geometry;
-using Geometry.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace PrTests

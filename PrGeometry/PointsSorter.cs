@@ -104,6 +104,31 @@ namespace Geometry
             return null;
         }
 
+        private static Plane TryGetPlane<T>(List<T> objects) where T : IPosition3D
+        {
+            var p0 = new Point3D(objects[0]._x, objects[0]._y, objects[0]._z);
+            var p1 = new Point3D(objects[1]._x, objects[1]._y, objects[1]._z);
+
+            for (int i = 0; i < objects.Count - 2; i++)
+            {
+                var p2 = new Point3D(objects[i + 2]._x, objects[i + 2]._y, objects[i + 2]._z);
+
+                var fvectors = p1.Sub(p0);  //new Point3D(p1._x - p0._x, p1._y - p0._y, p1._z - p0._z);
+                var svectors = p2.Sub(p0); //new Point3D(p2._x - p0._x, p2._y - p0._y, p2._z - p0._z);
+
+                var normal = Vector.CrossProd(fvectors, svectors);
+                if (Vector.GetVectorLenght(normal) > 1e-6)
+                {
+                    var plane = new Plane(p0, normal);
+                    plane.Shifting = 0;
+                    return plane;
+                }
+
+            }
+
+            return null;
+        }
+
         private static bool CheckVectorsOrientation<T>(T[] points, int firstInd, int secondInd, Plane plane) where T : IPosition3D
         {
             //bool isPointInside = false;
@@ -149,12 +174,10 @@ namespace Geometry
             var fInd = 0;
             var sInd = 1;
 
-            var p0 = new Point3D(points[0]._x, points[0]._y, points[0]._z);
-            var p1 = new Point3D(points[1]._x, points[1]._y, points[1]._z);
-            var p2 = new Point3D(points[2]._x, points[2]._y, points[2]._z);
+            var plane = TryGetPlane(points);
 
-            var plane = new Plane(p0, p1, p2);
-            plane.Shifting = 0;
+            if (plane == null)
+                return;
 
             while (true)
             {

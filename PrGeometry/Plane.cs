@@ -13,6 +13,7 @@ namespace Geometry
     /// </summary>
     public class Plane : IPlane
     {
+        private const float INV_FACTOR = 1e-12f;
         /// <inheritdoc/>
         public Point3D Normal { get; }
 /// <inheritdoc/>
@@ -34,7 +35,7 @@ namespace Geometry
             var svectors = p2.Sub(p0); //new Point3D(p2._x - p0._x, p2._y - p0._y, p2._z - p0._z);
 
             Normal = Vector.CrossProd(fvectors, svectors);
-            if (Vector.GetVectorLenght(Normal) < 1e-6)
+            if (Vector.GetVectorLenght(Normal) < INV_FACTOR)
                 throw new Exception("Вектор нормали плоскости равен нулю");
             Shifting =  -(Normal._x * p0._x + Normal._y * p0._y + Normal._z * p0._z);
         }
@@ -45,7 +46,7 @@ namespace Geometry
         /// <param name="normal"></param>
         public Plane(Point3D p0, Point3D normal)
         {
-            if (Vector.GetVectorLenght(normal) < 1e-6)
+            if (Vector.GetVectorLenght(normal) < INV_FACTOR)
                 throw new Exception("Вектор нормали плоскости равен нулю");
             Normal = normal;
             Shifting = -(Normal._x * p0._x + Normal._y * p0._y + Normal._z * p0._z);
@@ -57,7 +58,7 @@ namespace Geometry
         /// <param name="shifting"></param>
         public Plane(Point3D normal, float shifting)
         {
-            if (Vector.GetVectorLenght(normal) < 1e-6)
+            if (Vector.GetVectorLenght(normal) < INV_FACTOR)
                 throw new Exception("Вектор нормали плоскости равен нулю");
             Normal = normal;
             Shifting = shifting;

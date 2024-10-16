@@ -65,12 +65,6 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ExtensionsLib, Version=1.0.1.14, Culture=neutral, PublicKeyToken=8c358dc795e42d21, processorArchitecture=MSIL">
-      <HintPath>..\packages\ExtensionsLib.1.0.1.14\lib\net48\ExtensionsLib.dll</HintPath>
-    </Reference>
-    <Reference Include="Geometry, Version=2.0.8.2, Culture=neutral, PublicKeyToken=d064922373770c4c, processorArchitecture=MSIL">
-      <HintPath>..\packages\Geometry.2.0.8.2\lib\netstandard2.0\Geometry.dll</HintPath>
-    </Reference>
     <Reference Include="MathNet.Numerics, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cd8b63ad3d691a37, processorArchitecture=MSIL">
       <HintPath>..\packages\MathNet.Numerics.Signed.5.0.0\lib\net48\MathNet.Numerics.dll</HintPath>
     </Reference>
@@ -83,12 +77,6 @@
     </Reference>
     <Reference Include="Octree, Version=2.1.11.0, Culture=neutral, PublicKeyToken=2f43c75143b659d5, processorArchitecture=MSIL">
       <HintPath>..\packages\NetOctree.2.1.11\lib\netstandard2.0\Octree.dll</HintPath>
-    </Reference>
-    <Reference Include="SurfaceMesher, Version=1.0.1.17, Culture=neutral, PublicKeyToken=408a34659fa24684, processorArchitecture=MSIL">
-      <HintPath>..\packages\SurfaceMesher.1.0.1.17\lib\net48\SurfaceMesher.dll</HintPath>
-    </Reference>
-    <Reference Include="SurfaceMesherInterfaces, Version=1.0.1.15, Culture=neutral, PublicKeyToken=408a34659fa24684, processorArchitecture=MSIL">
-      <HintPath>..\packages\SurfaceMesherInterfaces.1.0.1.15\lib\net48\SurfaceMesherInterfaces.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -188,6 +176,10 @@
     <ProjectReference Include="..\Model\Model.csproj">
       <Project>{a6b0cebb-8f7c-467e-90bb-924103dae30b}</Project>
       <Name>Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PrGeometry\Geometry.csproj">
+      <Project>{95ed498b-f3e1-4d57-8039-960ac9d790f5}</Project>
+      <Name>Geometry</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

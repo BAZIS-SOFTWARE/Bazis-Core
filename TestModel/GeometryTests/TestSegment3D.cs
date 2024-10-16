@@ -47,19 +47,7 @@ namespace PrTests
                 0, 0.9047f, 0
             }
             )]       
-        [DataRow(  // line parallel to plane
-            new float[]
-            {
-                1, -2, 1.4f,
-                0, -2, 1.6f,
-                -1, 0, -0.6f
-            },
-            new float[]
-            {                
-                1, -2, 2,
-                3, 1, -2
-            },
-            new float[] { })]
+
         [DataRow( //point on the plane
             new float[]
             {
@@ -77,7 +65,46 @@ namespace PrTests
                 0, 1.5f, 0
             } 
             )]
-        public void PlaneIntersection(float[] arPlane, float[] arLine, float[] point)
+        public void PlaneIntersectionShouldPass(float[] arPlane, float[] arLine, float[] point)
+        {
+            //arrange            
+            var nodesPlane = new Point3D[3];
+            CreateNodes(nodesPlane, arPlane);
+            var surface = new Plane(nodesPlane[0], nodesPlane[1], nodesPlane[2]);
+
+            var nodesLine = new Point3D[2];
+            CreateNodes(nodesLine, arLine);
+            var line = new Segment3D(nodesLine[0], nodesLine[1]);
+            var asIntersecPoint = new Point3D();
+            if (point.Length != 0)
+            {
+                asIntersecPoint = new Point3D(point[0], point[1], point[2]);
+            }
+
+            //act check intersection and point on surface
+
+            var state = false;
+            var actIntersecPoint = line.GetPlaneIntersection(ref state, surface);
+
+            //assert
+            Assert.AreEqual(asIntersecPoint, actIntersecPoint);
+        }
+        [DataTestMethod]
+        [DataRow(  // line parallel to plane
+            new float[]
+            {
+                1, -2, 1.4f,
+                0, -2, 1.6f,
+                -1, 0, -0.6f
+            },
+            new float[]
+            {
+                1, -2, 2,
+                3, 1, -2
+            },
+            new float[] { })]
+        [ExpectedException(typeof(Exception))]
+        public void PlaneIntersectionShouldFail(float[] arPlane, float[] arLine, float[] point)
         {
             //arrange            
             var nodesPlane = new Point3D[3];
