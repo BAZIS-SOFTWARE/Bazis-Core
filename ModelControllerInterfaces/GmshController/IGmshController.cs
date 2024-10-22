@@ -57,10 +57,8 @@ namespace ModelControllerInterfaces.GmshController
         /// <param name="tag">[In]Идентифкатор поверхности</param>
         /// <param name="arrangement">[In]Расположение "Left", "Right", "AlternateLeft", "AlternateRight"</param>
         /// <param name="cornerTags">[In]Массив идентификаторов углов 3,4 и более по которым будет вестись инетрполяция</param>
-        /// <param name="cornerTags_n">[In]Размер массива идентификаторов</param>
         /// <param name="ierr">[Out]Флаг ошибки</param>
-        void ModelMeshSetTransfiniteSurface(int tag, string arrangement, int[] cornerTags,
-                                                                       IntPtr cornerTags_n, ref int ierr);
+        void ModelMeshSetTransfiniteSurface(int tag, string arrangement, int[] cornerTags, ref int ierr);
 
         /// <summary>
         /// Установить поле как BoundaryLayer
@@ -590,5 +588,20 @@ namespace ModelControllerInterfaces.GmshController
         /// </summary>
         /// <returns>Словарь:Key=идентификатор поврехности,Value=массив объемов-идентификаторов, которым принадлежит эта поверхность</returns>
         Dictionary<int, int[]> GetConjugatedSurfaces();
+        /// <summary>
+        /// Вычисляет булево пересечение object и tool, в результате ремаппинга tool становится частью object
+        /// </summary>
+        /// <param name="objectDimTags">[In]Массив dim:tag объекта</param>
+        /// <param name="toolDimTags">[In]Массив dim:tag инструмента</param>
+        /// <param name="tag">[In]Идентификатор операции boolean или -1 для автоматического вычисления</param>
+        /// <param name="removeObject">[In]Удалить dim:tag объекта после раммапинга?</param>
+        /// <param name="removeTool">[In]Удалить dim:tag инструмента после раммапинга?</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        /// <returns>Item1:Массив входных dim:tags, который возможно получил новый маппинг
+        /// Item2: Внешний массив - рассматриваемая пара dim:tag входного массива, 
+        /// Внутренний массив - dim:tags новых сущностей, возможно получивших реммаппинг
+        /// </returns>
+        Tuple<int[], int[][]> ModelOccFragment(int[] objectDimTags, int[] toolDimTags, int tag,
+                                               bool removeObject, bool removeTool, ref int ierr);
     }
 }

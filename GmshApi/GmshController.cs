@@ -670,6 +670,30 @@ namespace GmshApi.GmshController
         /// <param name="ierr">[Out]Флаг ошибки</param>
         public delegate void gmshModelAddDiscreteEntityFun(int dim, int tag, int[] boundary, IntPtr boundary_n, ref int ierr);///
         public gmshModelAddDiscreteEntityFun gmshModelAddDiscreteEntity;
+        /// <summary>
+        /// Вычисляет булево пересечение object и tool, в результате ремаппинга tool становится частью object
+        /// </summary>
+        /// <param name="objectDimTags">[In]Массив dim:tag объекта</param>
+        /// <param name="objectDimTags_n">[In]Размер массива dim:tag объекта</param>
+        /// <param name="toolDimTags">[In]Массив dim:tag инструмента</param>
+        /// <param name="toolDimTags_n">[In]Размер массива dim:tag инструмента</param>
+        /// <param name="outDimTags">[Out]Массив входных dim:tag, который мог измениться при ремаппинге</param>
+        /// <param name="outDimTags_n">[Out]Размер массива входных dim:tag, который мог измениться при ремаппинге </param>
+        /// <param name="outDimTagsMap">[Out]Массив новых dim:tag, который мог измениться при ремаппинге</param>
+        /// <param name="outDimTagsMap_n">[Out]Размер нового внешнего массива dim:tag, который мог измениться при ремаппинге</param>
+        /// <param name="outDimTagsMap_nn">[Out]Размер нового внутреннего масиива dim:tag, который мог измениться при ремаппинге</param>
+        /// <param name="tag">[In]Идентификатор операции boolean или -1 для автоматического вычисления</param>
+        /// <param name="removeObject">[In]Удалить старые dim:tag объекта после ремаппинга</param>
+        /// <param name="removeTool">[In]Удалить старые dim:tag инструмента после ремаппинга</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshModelOccFragmentFun(int[] objectDimTags, IntPtr objectDimTags_n,
+                                                      int[] toolDimTags, IntPtr toolDimTags_n,
+                                                      ref IntPtr outDimTags, ref IntPtr outDimTags_n,
+                                                      ref IntPtr outDimTagsMap, ref IntPtr outDimTagsMap_n,
+                                                      ref IntPtr outDimTagsMap_nn, int tag,
+                                                      int removeObject, int removeTool,
+                                                      ref int ierr);///
+        gmshModelOccFragmentFun gmshModelOccFragment;
         #endregion
         #region "Mesh Delegates"
         /// <summary>
@@ -1174,6 +1198,7 @@ namespace GmshApi.GmshController
             //gmshModelGeoRemoveAllDuplicates = GetFunction<gmshModelGeoRemoveAllDuplicatesFun>("gmshModelGeoRemoveAllDuplicates");
             gmshModelSetCoordinates = GetFunction<gmshModelSetCoordinatesFun>("gmshModelSetCoordinates");
             gmshModelAddDiscreteEntity = GetFunction<gmshModelAddDiscreteEntityFun>("gmshModelAddDiscreteEntity");
+            gmshModelOccFragment = GetFunction<gmshModelOccFragmentFun>("gmshModelOccFragment");
             #endregion
             #region "Get Mesh delegates"
             gmshModelMeshGenerate = GetFunction<gmshModelMeshGenerateFun>("gmshModelMeshGenerate");
@@ -2071,7 +2096,7 @@ namespace GmshApi.GmshController
         }
         #endregion
         #region "Memory managed methods"
-        private void FillTwoDimArray(IntPtr eTags, IntPtr eTags_n, IntPtr eTags_nn, out long[][] eData)
+        private void FillTwoDimArray<T>(IntPtr eTags, IntPtr eTags_n, IntPtr eTags_nn, out T[][] eData)
         {
             var objsTypesCount = eTags_nn.ToInt32();
             IntPtr[] tagsData, lengthData;
@@ -2081,11 +2106,11 @@ namespace GmshApi.GmshController
             gmshFree(eTags);
         }
 
-        private void NewTwoDimArray(IntPtr eTags, IntPtr eTags_n, IntPtr eTags_nn,
-                                    out IntPtr[] tagsData, out IntPtr[] lengthData, out long[][] eData)
+        private void NewTwoDimArray<T>(IntPtr eTags, IntPtr eTags_n, IntPtr eTags_nn,
+                                    out IntPtr[] tagsData, out IntPtr[] lengthData, out T[][] eData)
         {
             var objectsCount = eTags_nn.ToInt32();
-            eData = new long[objectsCount][];
+            eData = new T[objectsCount][];
             tagsData = new IntPtr[objectsCount];
             lengthData = new IntPtr[objectsCount];
 
@@ -2314,9 +2339,9 @@ namespace GmshApi.GmshController
         }
         /// <inheritdoc/>
 
-        public void ModelMeshSetTransfiniteSurface(int tag, string arrangement, int[] cornerTags, IntPtr cornerTags_n, ref int ierr)
+        public void ModelMeshSetTransfiniteSurface(int tag, string arrangement, int[] cornerTags, ref int ierr)
         {
-            gmshModelMeshSetTransfiniteSurface(tag, arrangement, cornerTags, cornerTags_n, ref ierr);
+            gmshModelMeshSetTransfiniteSurface(tag, arrangement, cornerTags, (IntPtr)cornerTags.Length, ref ierr);
         }
         /// <inheritdoc/>
 
@@ -2428,6 +2453,27 @@ namespace GmshApi.GmshController
                     conjugated.Add(tag, upward);
             }
             return conjugated;
+        }
+        /// <inheritdoc/>
+        public Tuple<int[], int[][]> ModelOccFragment(int[] objectDimTags, int[] toolDimTags, int tag,
+                                               bool removeObject, bool removeTool, ref int ierr)
+        {
+            IntPtr outDimTags = IntPtr.Zero;
+            IntPtr outDimTags_n = IntPtr.Zero;
+            IntPtr outDimTagsMap = IntPtr.Zero;
+            IntPtr outDimTagsMap_n = IntPtr.Zero;
+            IntPtr outDimTagsMap_nn = IntPtr.Zero;
+            int removeO = Convert.ToInt32(removeObject);
+            int removeT = Convert.ToInt32(removeTool);
+            gmshModelOccFragment(objectDimTags, (IntPtr)objectDimTags.Length, toolDimTags,
+                                 (IntPtr)toolDimTags.Length, ref outDimTags, ref outDimTags_n,
+                                 ref outDimTagsMap, ref outDimTagsMap_n, ref outDimTagsMap_nn,
+                                 tag, removeO, removeT, ref ierr);
+            int[] newOutDimTags;
+            int[][] newProjDimTags;
+            GetObjectsData(outDimTags, out newOutDimTags, outDimTags_n);
+            FillTwoDimArray(outDimTagsMap, outDimTagsMap_n, outDimTagsMap_nn, out newProjDimTags);
+            return Tuple.Create(newOutDimTags, newProjDimTags);
         }
         #endregion
     }

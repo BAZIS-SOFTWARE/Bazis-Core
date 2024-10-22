@@ -357,7 +357,7 @@ namespace TestModel.GmshTests
             var nodes = controller.GetNodes(2);
             var beforeCount = controller.GetMeshEntities(2, -1, nodes).Count;
             controller.ModelMeshGenerate(1, ref ierr);
-            controller.ModelMeshSetTransfiniteSurface(1, "Left", new int[] { 4 }, (IntPtr)1, ref ierr);
+            controller.ModelMeshSetTransfiniteSurface(1, "Left", new int[] { 4 }, ref ierr);
             Assert.IsTrue(ierr == 0);
             controller.ModelMeshGenerate(2, ref ierr);
             nodes = controller.GetNodes(2);
