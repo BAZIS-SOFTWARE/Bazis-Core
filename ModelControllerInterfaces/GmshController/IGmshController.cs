@@ -584,5 +584,11 @@ namespace ModelControllerInterfaces.GmshController
         /// <param name="surfAngle">[In]Пороговый угол разбиения поверхностей</param>
         /// <param name="curveAngle">[In]Пороговый угол разбиения кривых</param>
         void CreateGeometry(double surfAngle = Math.PI / 2, double curveAngle = Math.PI);
+
+        /// <summary>
+        /// Находит сопряженные поврехности модели или возращает пустой словарь, если нет сопряженных поверхностей
+        /// </summary>
+        /// <returns>Словарь:Key=идентификатор поврехности,Value=массив объемов-идентификаторов, которым принадлежит эта поверхность</returns>
+        Dictionary<int, int[]> GetConjugatedSurfaces();
     }
 }

@@ -2414,6 +2414,21 @@ namespace GmshApi.GmshController
             ModelGetGeometryEntities(out dimTags, -1);
             ModelMeshCreateGeometry(dimTags, (IntPtr)dimTags.Length, ref ierr);
         }
+        /// <inheritdoc/>
+        public Dictionary<int, int[]> GetConjugatedSurfaces()
+        {
+            var conjugated = new Dictionary<int, int[]>();
+            int[] dimTags, upward, downward;
+            ModelGetGeometryEntities(out dimTags, 2);
+            for(var i = 1; i < dimTags.Length; i+=2)
+            {
+                var tag = dimTags[i];
+                ModelGetAdjacencies(2, tag, out upward, out downward);
+                if(upward.Length > 1)
+                    conjugated.Add(tag, upward);
+            }
+            return conjugated;
+        }
         #endregion
     }
 }

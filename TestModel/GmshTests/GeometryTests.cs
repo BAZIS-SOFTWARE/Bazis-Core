@@ -382,7 +382,32 @@ namespace TestModel.GmshTests
             Assert.AreEqual(expected, actual);
         }
 
-        private void RemoveNameTest(ref string entName, int dim, int delId, int maxId)
+        [DataTestMethod]
+        [DataRow("T_joint.geo", "46:1,2 50:1,10 54:1,3 68:2,9 72:2,4 86:3,8 90:3,5 112:4,6 134:5,7 167:8,10 184:9,10 202:10,11 224:11,12")]
+        [DataRow("cubes.geo", "")]//No conjugated test
+        public void TestConjugatedSurfaces(string fileName, string expStr)
+        {
+            var expected = expStr.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                               .Select(v => v.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries))
+                               .ToDictionary(k => int.Parse(k[0]), 
+                                             v => v[1].Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                                                      .Select(p => int.Parse(p)).ToArray());
+
+            var ierr = 0;
+            controller.Open(modelFolder + fileName, ref ierr);
+            var conjugated = controller.GetConjugatedSurfaces();
+            Assert.AreEqual(expected.Count, conjugated.Count);
+            foreach(var entry in conjugated)
+            {
+                Assert.IsTrue(expected.ContainsKey(entry.Key));
+                var expValues = expected[entry.Key];
+                Assert.IsTrue(entry.Value.Length == expValues.Length);
+                for (var i = 0; i < entry.Value.Length; ++i)
+                    Assert.AreEqual(expValues[i], entry.Value[i]);
+            }
+        }
+
+    private void RemoveNameTest(ref string entName, int dim, int delId, int maxId)
         {
             var ierr = 0;
             var status = maxId >= delId;
