@@ -12,6 +12,7 @@ using ModelInterfaces.GeometryObjects;
 using ModelInterfaces.ObjectsFinders;
 using ModelControllerInterfaces.GmshController;
 using Geometry.Exteisions;
+using System.ComponentModel;
 
 namespace GmshApi.GmshController
 {
@@ -842,9 +843,9 @@ namespace GmshApi.GmshController
         /// <param name="cornerAngle">[In]Угол угла. Поврехности-квады выше заданного угла игнорируется</param>
         /// <param name="recombine">[In]Установить флаг recombine</param>
         /// <param name="ierr">[Out]Флаг ошибки</param>
-        public delegate void gmshModelMeshSetTransfiniteAutomaticFun(int[] dimTags, IntPtr dimTags_n, double cornerAngle,
+        private delegate void gmshModelMeshSetTransfiniteAutomaticFun(int[] dimTags, IntPtr dimTags_n, double cornerAngle,
                                                                   int recombine, ref int ierr);///
-        public gmshModelMeshSetTransfiniteAutomaticFun gmshModelMeshSetTransfiniteAutomatic;
+        private gmshModelMeshSetTransfiniteAutomaticFun gmshModelMeshSetTransfiniteAutomatic;
         /// <summary>
         /// Удалить все ограничения для заданных dim:tag
         /// </summary>
@@ -2474,6 +2475,11 @@ namespace GmshApi.GmshController
             GetObjectsData(outDimTags, out newOutDimTags, outDimTags_n);
             FillTwoDimArray(outDimTagsMap, outDimTagsMap_n, outDimTagsMap_nn, out newProjDimTags);
             return Tuple.Create(newOutDimTags, newProjDimTags);
+        }
+        /// <inheritdoc/>
+        public void ModelMeshSetTransfiniteAutomatic(int[] dimTags, double cornerAngle, bool recombine, ref int ierr)
+        {
+            gmshModelMeshSetTransfiniteAutomatic(dimTags, (IntPtr)dimTags.Length, cornerAngle, Convert.ToInt32(recombine), ref ierr);
         }
         #endregion
     }

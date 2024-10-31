@@ -603,5 +603,13 @@ namespace ModelControllerInterfaces.GmshController
         /// </returns>
         Tuple<int[], int[][]> ModelOccFragment(int[] objectDimTags, int[] toolDimTags, int tag,
                                                bool removeObject, bool removeTool, ref int ierr);
+        /// <summary>
+        /// Установить автоматическую трансфиницию для dim:tags
+        /// </summary>
+        /// <param name="dimTags">[In]Массив dim:tag</param>
+        /// <param name="cornerAngle">[In]Угол угла. Поврехности-квады выше заданного угла игнорируется</param>
+        /// <param name="recombine">[In]Установить флаг recombine</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void ModelMeshSetTransfiniteAutomatic(int[] dimTags, double cornerAngle, bool recombine, ref int ierr);
     }
 }

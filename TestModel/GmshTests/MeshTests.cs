@@ -7,6 +7,7 @@ using ModelInterfaces;
 using ModelControllerInterfaces.GmshController;
 using ModelInterfaces.ObjectsFinders;
 using System.Collections.Generic;
+using System.IO;
 
 namespace TestModel.GmshTests
 {
@@ -569,6 +570,25 @@ namespace TestModel.GmshTests
             list = controller.GetMeshObjects();
             var after = list.Item3.Count;
             Assert.IsTrue(after > before);
+        }
+
+        [DataTestMethod]
+        //[DataRow("T_joint.geo")]
+        [DataRow("Build1.step")]
+        public void AutomaticSurfaceTransfinitionTest(string fileName)
+        {
+            var ierr = 0;
+            controller.Open(modelFolder + fileName, ref ierr);
+            int[] surfaces;
+            controller.ModelGetGeometryEntities(out surfaces, 2);
+            controller.ModelMeshSetTransfiniteAutomatic(surfaces, Math.PI, true, ref ierr);
+            controller.ModelMeshGenerate(2, ref ierr);
+            string actual;
+            controller.LoggerGetLastError(out actual);
+            Assert.AreEqual("", actual);
+            /*//Визуальный тест
+            var name = Path.GetFileNameWithoutExtension(fileName);
+            controller.Write($@"D:\{name}.inp", ref ierr);*/
         }
     }
 }
