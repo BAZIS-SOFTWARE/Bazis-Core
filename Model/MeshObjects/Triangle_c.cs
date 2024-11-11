@@ -13,7 +13,7 @@ namespace Model.MeshObjects
     {
         public Triangle_c(int number, INode[] nodes) : base(number, nodes)
         {
-            CreateIntegrationPoint(1.0 / 6, 1.0 / 4, 1.0 / 4);
+            CreateIntegrationPoint(1.0 / 2, 1.0 / 3, 1.0 / 3);
         }
 
         /// <summary>
