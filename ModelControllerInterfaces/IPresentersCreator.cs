@@ -2,6 +2,7 @@
 using ModelInterfaces.GeometryObjects;
 using ModelInterfaces.MeshObjects;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace ModelControllerInterfaces
 {
@@ -10,15 +11,15 @@ namespace ModelControllerInterfaces
     /// </summary>
     public interface IPresentersCreator
     {
-        /// <summary>
-        /// TransparencyValue
-        /// </summary>
-        int TransparencyValue { get; set; }
-        /// <summary>
-        /// SetView
-        /// </summary>
-        /// <param name="objsType"></param>
-        /// <param name="objsView"></param>
+        ///// <summary>
+        ///// TransparencyValue
+        ///// </summary>
+        //int TransparencyValue { get; set; }
+        ///// <summary>
+        ///// SetView
+        ///// </summary>
+        ///// <param name="objsType"></param>
+        ///// <param name="objsView"></param>
         void SetView(string objsType, PresenterView objsView);
         /// <summary>
         /// GetView
@@ -26,6 +27,18 @@ namespace ModelControllerInterfaces
         /// <param name="objType"></param>
         /// <returns></returns>
         PresenterView GetView(string objType);
+        ///// <summary>
+        ///// SetColor
+        ///// </summary>
+        ///// <param name="objsType"></param>
+        ///// <param name="objsColor"></param>
+        //void SetColor(ObjType objsType, Color objsColor);
+        ///// <summary>
+        ///// GetColor
+        ///// </summary>
+        ///// <param name="objType"></param>
+        ///// <returns></returns>
+        //Color GetColor(ObjType objType);
         /// <summary>
         /// CreatePointObjectsPresenter
         /// </summary>

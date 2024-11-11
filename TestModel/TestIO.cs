@@ -12,8 +12,8 @@ namespace TestModel
     {
         [DataTestMethod]
         [DataRow(@"..\..\..\Examples\3D\cub_unsorted.bpf",6)]
-        //[DataRow(@"c:\BazisGUI\GUI\Projects\HeatTreatment\Heating\2D_axi\2D_val.bpf", 752)]
-        public void OpenModelToBpfTextFormat(string path, int elCount)
+        [DataRow(@"c:\GridExport_XYZ_3.850259_Grid_Узел.bpf", 752)]
+        public void LoadModelFromBpfTextFormat(string path, int elCount)
         {
             //assing
             var model = new ModelData();

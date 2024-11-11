@@ -9,6 +9,7 @@ using System.Linq;
 using Model.MeshObjects;
 using ModelInterfaces.GeometryObjects;
 using ModelInterfaces.MeshObjects;
+using System.Drawing;
 
 namespace ModelController.ModelScenePresentator
 {
@@ -18,9 +19,11 @@ namespace ModelController.ModelScenePresentator
     public class PresentersCreator : IPresentersCreator
     {
         Dictionary<string, PresenterView> ObjsViews = new Dictionary<string, PresenterView>();
-/// <inheritdoc/>
 
-        public int TransparencyValue { get; set; }
+        //Dictionary<ObjType, Color> ObjsColors = new Dictionary<ObjType, Color>();
+        ///// <inheritdoc/>
+
+        //public int TransparencyValue { get; set; }
 
         /// <summary>
         /// PresentorsCreator
@@ -81,5 +84,17 @@ namespace ModelController.ModelScenePresentator
         {
             return ObjsViews[objType];
         }
+///// <inheritdoc/>
+
+//        public void SetColor(ObjType objsType, Color objsColor)
+//        {
+//            ObjsColors[objsType] = objsColor;
+//        }
+///// <inheritdoc/>
+
+//        public Color GetColor(ObjType objsType)
+//        {
+//            return ObjsColors[objsType];
+//        }
     }
 }
