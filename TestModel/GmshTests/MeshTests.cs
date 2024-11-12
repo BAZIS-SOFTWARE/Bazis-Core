@@ -8,6 +8,7 @@ using ModelControllerInterfaces.GmshController;
 using ModelInterfaces.ObjectsFinders;
 using System.Collections.Generic;
 using System.IO;
+using GmshApi;
 
 namespace TestModel.GmshTests
 {
@@ -589,6 +590,40 @@ namespace TestModel.GmshTests
             /*//Визуальный тест
             var name = Path.GetFileNameWithoutExtension(fileName);
             controller.Write($@"D:\{name}.inp", ref ierr);*/
+        }
+
+        [DataTestMethod]
+        [DataRow("Cilindr.step")]
+        public void GeoWriterTest(string fileName)
+        {
+            var ierr = 0;
+            controller.Open(modelFolder + fileName, ref ierr);
+            var geoWriter = new GmshGeoWriter(controller);
+
+            controller.ModelMeshSetSize(new int[] { 0, 1, 0, 2 }, (IntPtr)4, 0.3, ref ierr);
+            controller.ModelMeshSetSize(new int[] { 0, 3 }, (IntPtr)2, 0.7, ref ierr);
+            controller.ModelMeshSetSize(new int[] { 0, 4 }, (IntPtr)2, 0.95, ref ierr);
+
+            controller.ModelSetAttribute("transfinite 2", new string[] {"7","Bump","1.23"}, (IntPtr)3, ref ierr);
+            controller.ModelMeshSetTransfiniteCurve(2, 7, "Bump", 1.23, ref ierr);
+
+            controller.ModelSetAttribute("transfinite 6", new string[] { "7", "Bump", "1.23" }, (IntPtr)3, ref ierr);
+            controller.ModelMeshSetTransfiniteCurve(6, 7, "Bump", 1.23, ref ierr);
+
+            controller.ModelSetAttribute("transfinite 4", new string[] { "16", "Beta", "1.7" }, (IntPtr)3, ref ierr);
+            controller.ModelMeshSetTransfiniteCurve(4, 16, "Beta", 1.7, ref ierr);
+
+            controller.ModelSetAttribute("transfinite 5", new string[] { "5", "Progression", "0.7" }, (IntPtr)3, ref ierr);
+            controller.ModelMeshSetTransfiniteCurve(5, 5, "Progression", 0.7, ref ierr);
+
+            controller.ModelSetAttribute("transfinite 3", new string[] { "", "Progression", "0.7" }, (IntPtr)3, ref ierr);
+
+            geoWriter.WriteSettingsToGeo();
+
+            controller.Clear(ref ierr);
+            controller.Open(geoWriter.ResultFileName, ref ierr);
+
+            Assert.AreEqual(0, ierr);
         }
     }
 }

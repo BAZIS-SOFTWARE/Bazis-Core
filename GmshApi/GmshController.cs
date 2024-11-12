@@ -108,6 +108,33 @@ namespace GmshApi.GmshController
         /// <param name="ierr">[Out]Флаг ошибки</param>
         private delegate void gmshOptionGetStringFun(string name, ref IntPtr value, ref int ierr);
         private gmshOptionGetStringFun gmshOptionGetString;
+        /// <summary>
+        /// Вернуть все имена параметров в БД для регулярного выражения search, если search пустой вернуть все содержимое БД
+        /// </summary>
+        /// <param name="names">[Out]Массивы имен параметров</param>
+        /// <param name="names_n">[Out] Длина массива имен параметров</param>
+        /// <param name="search">[In]Регулярное выражение поиска</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshOnelabGetNamesFun(ref IntPtr names, ref IntPtr names_n, string search, ref int ierr);
+        private gmshOnelabGetNamesFun gmshOnelabGetNames;
+        /*/// <summary>
+        /// Обновить или создать(если не существует) параметр name в БД gmsh
+        /// </summary>
+        /// <param name="name">[In]Имя параметра</param>
+        /// <param name="value">[In]Массив значений</param>
+        /// <param name="value_n">[In]Размер массива значений</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshOnelabSetNumberFun(string name, double[] value, IntPtr value_n, ref int ierr);
+        private gmshOnelabSetNumberFun gmshOnelabSetNumber;
+        /// <summary>
+        /// Вернет значения указанного параметра или пустой массив, если параметра не существует
+        /// </summary>
+        /// <param name="name">[In]Имя параметра</param>
+        /// <param name="value">[Out]Массив значений</param>
+        /// <param name="value_n">[Out]Размер массива значений</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshOnelabGetNumberFun(string name, ref IntPtr value, ref IntPtr value_n, ref int ierr);
+        private gmshOnelabGetNumberFun gmshOnelabGetNumber;*/
         #endregion
         #region "Plugin Delegates"
         /// <summary>
@@ -1134,6 +1161,9 @@ namespace GmshApi.GmshController
             gmshOptionSetString = GetFunction<gmshOptionSetStringFun>("gmshOptionSetString");
             //Private members
             gmshOptionGetString = GetFunction<gmshOptionGetStringFun>("gmshOptionGetString");
+            gmshOnelabGetNames = GetFunction<gmshOnelabGetNamesFun>("gmshOnelabGetNames");
+            /*gmshOnelabSetNumber = GetFunction<gmshOnelabSetNumberFun>("gmshOnelabSetNumber");
+            gmshOnelabGetNumber = GetFunction<gmshOnelabGetNumberFun>("gmshOnelabGetNumber");*/
             #endregion
             #region "Get Plugin delegates"
             gmshPluginSetNumber = GetFunction<gmshPluginSetNumberFun>("gmshPluginSetNumber");
@@ -2481,6 +2511,27 @@ namespace GmshApi.GmshController
         {
             gmshModelMeshSetTransfiniteAutomatic(dimTags, (IntPtr)dimTags.Length, cornerAngle, Convert.ToInt32(recombine), ref ierr);
         }
+        /// <inheritdoc/>
+        public void OnelabGetNames(out string[] names, string search, ref int ierr)
+        {
+            IntPtr namesInt = IntPtr.Zero;
+            IntPtr names_n = IntPtr.Zero;
+            gmshOnelabGetNames(ref namesInt, ref names_n, search, ref ierr);
+            names = GetArrayOfString(namesInt, names_n);
+        }
+        /*/// <inheritdoc/>
+        public void OnelabSetNumber(string name, double[] value, ref int ierr)
+        {
+            gmshOnelabSetNumber(name, value, (IntPtr)value.Length, ref ierr);
+        }
+        /// <inheritdoc/>
+        public void OnelabGetNumber(string name, out double[] value, ref int ierr)
+        {
+            IntPtr valueInt = IntPtr.Zero;
+            IntPtr value_n = IntPtr.Zero;
+            gmshOnelabGetNumber(name, ref valueInt, ref value_n, ref ierr);
+            GetObjectsData<double>(valueInt, out value, value_n);
+        }*/
         #endregion
     }
 }

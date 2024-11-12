@@ -611,5 +611,26 @@ namespace ModelControllerInterfaces.GmshController
         /// <param name="recombine">[In]Установить флаг recombine</param>
         /// <param name="ierr">[Out]Флаг ошибки</param>
         void ModelMeshSetTransfiniteAutomatic(int[] dimTags, double cornerAngle, bool recombine, ref int ierr);
+        /// <summary>
+        /// Вернуть все имена параметров в БД для регулярного выражения search, если search пустой вернуть все содержимое БД
+        /// </summary>
+        /// <param name="names">[Out]Массив имен параметров</param>
+        /// <param name="search">[In]Регулярное выражение поиска, пустая строка для возврата всех параметров</param>
+        /// <param name="ierr"><[Out]Флаг ошибки/param>
+        void OnelabGetNames(out string[] names, string search, ref int ierr);
+        /*/// <summary>
+        /// Обновить или создать(если не существует) параметр name в БД gmsh
+        /// </summary>
+        /// <param name="name">[In]Имя параметра</param>
+        /// <param name="value">[In]Массив значений</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void OnelabSetNumber(string name, double[] value, ref int ierr);
+        /// <summary>
+        /// Вернет значения указанного параметра или пустой массив, если параметра не существует
+        /// </summary>
+        /// <param name="name">[In]Имя параметра</param>
+        /// <param name="value">[In]Массив значений</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void OnelabGetNumber(string name, out double[] value, ref int ierr);*/
     }
 }
