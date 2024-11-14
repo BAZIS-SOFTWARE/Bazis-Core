@@ -22,7 +22,35 @@ namespace Model.MeshObjects
         {
             CreateIntegrationPoint(1.0/6, 1.0 / 4, 1.0 / 4, 1.0 / 4);
         }
-/// <inheritdoc/>
+        /// <summary>
+        /// Tetra_c
+        /// </summary>
+        /// <param name="number"></param>
+        /// <param name="nodes"></param>
+        /// <param name="intpNumber"></param>
+        /// <exception cref="ArgumentException"></exception>
+        public Tetra_c(int number, INode[] nodes, int intpNumber) : base(number, nodes)
+        {
+            IntegralPoint intPoint;
+            switch (intpNumber)
+
+            {
+                case 1:
+                    CreateIntegrationPoint(1.0 / 6, 1.0 / 4, 1.0 / 4, 1.0 / 4);
+                    break;
+                case 4:
+                    var a = 0.58541020;
+                    var b = 0.13819660;
+                    CreateIntegrationPoint(1.0 / 24, a, b, b );
+                    CreateIntegrationPoint(1.0 / 24, b, a, b );
+                    CreateIntegrationPoint(1.0 / 24, b, b, a );
+                    CreateIntegrationPoint(1.0 / 24, b, b, b );
+                    break;
+                default:
+                    throw new ArgumentException("Введите другое кол-во точек интегрирования");
+            }
+        }
+        /// <inheritdoc/>
 
         public override ElementKind ElementKind { get; } = ElementKind.Тетра;
 /// <inheritdoc/>
@@ -47,19 +75,15 @@ namespace Model.MeshObjects
 
         public override double CalcVolume()
         {
-            var mCoord = new float[4, 4];
-            var p = new Point3D[] { nodes[0].Position, nodes[1].Position, nodes[2].Position, nodes[3].Position };
-            for (int j = 0; j < p.Length; j++)
-            {
-                mCoord[j, 0] = 1;
-                mCoord[j, 1] = p[j]._x;
-                mCoord[j, 2] = p[j]._y;
-                mCoord[j, 3] = p[j]._z;
-            }
+            var vol = 0.0;
+            var counter = 0;
 
-            var cMatr = Math.Abs(Matrix<float>.Build.DenseOfArray(mCoord).Determinant() / 6);
-            //var str = cMatr.ToString(4, 4);
-            return cMatr;
+            foreach (var item in GetJacobiMatrixes())
+            {
+                vol += Math.Abs(item.Determinant()) * intPoints[counter].Weigt;
+                counter++;
+            }
+            return Math.Abs(vol);
         }
 
         /// <summary>

@@ -2,7 +2,7 @@
 using System.Linq;
 using GmshApi.GmshController;
 using System;
-using ModelControllerInterfaces.GmshController;
+using GmshApi;
 
 namespace TestModel.GmshTests
 {

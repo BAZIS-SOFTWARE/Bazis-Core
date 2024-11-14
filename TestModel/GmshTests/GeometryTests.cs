@@ -3,7 +3,6 @@ using System.Linq;
 using GmshApi.GmshController;
 using System;
 using System.Collections.Generic;
-using ModelControllerInterfaces.GmshController;
 using ModelInterfaces;
 using Geometry;
 

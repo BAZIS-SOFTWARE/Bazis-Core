@@ -11,9 +11,38 @@ namespace Model.MeshObjects
 {
     public class Triangle_c : Element2D
     {
+        /// <summary>
+        /// Triangle_c
+        /// </summary>
+        /// <param name="number"></param>
+        /// <param name="nodes"></param>
         public Triangle_c(int number, INode[] nodes) : base(number, nodes)
         {
             CreateIntegrationPoint(1.0 / 2, 1.0 / 3, 1.0 / 3);
+        }
+        /// <summary>
+        /// Triangle_c
+        /// </summary>
+        /// <param name="number"></param>
+        /// <param name="nodes"></param>
+        /// <param name="intpNumber"></param>
+        /// <exception cref="ArgumentException"></exception>
+        public Triangle_c(int number, INode[] nodes, int intpNumber) : base(number, nodes)
+        {
+            switch (intpNumber)
+
+            {
+                case 1:
+                    CreateIntegrationPoint(1.0 / 2, 1.0 / 3, 1.0 / 3);
+                    break;
+                case 3:
+                    CreateIntegrationPoint(1.0 / 6, 1.0 / 2, 0);
+                    CreateIntegrationPoint(1.0 / 6, 0, 1.0 / 2);
+                    CreateIntegrationPoint(1.0 / 6, 1.0 / 2, 1.0 / 2);
+                    break;
+                default:
+                    throw new ArgumentException();
+            }
         }
 
         /// <summary>
@@ -56,14 +85,15 @@ namespace Model.MeshObjects
 
         public override double CalcSquare()
         {
-            var pAr = GetCoordinates().ToArray();
+            var vol = 0.0;
+            var counter = 0;
 
-            var v1 = new Point3D(pAr[1]._x - pAr[0]._x, pAr[1]._y - pAr[0]._y, pAr[1]._z - pAr[0]._z);
-            var v2 = new Point3D(pAr[2]._x - pAr[0]._x, pAr[2]._y - pAr[0]._y, pAr[2]._z - pAr[0]._z);
-
-            var vProd = Geometry.Vector.CrossProd(v1, v2);
-            var square = Math.Abs(Geometry.Vector.GetVectorLenght(vProd) / 2);
-            return square;
+            foreach (var item in GetJacobiMatrixes())
+            {
+                vol += Math.Abs(item.Determinant()) * intPoints[counter].Weigt;
+                counter++;
+            }
+            return Math.Abs(vol);
         }
 /// <inheritdoc/>
 
@@ -71,8 +101,8 @@ namespace Model.MeshObjects
         {
             return new double[,]
 {
-                { -1, 1, 0},
-                { -1, 0, 1}
+                { -1, 1, 0},// i,j,k to ksi axis
+                { -1, 0, 1} // i,j,k to eta axis
 };
         }
 /// <inheritdoc/>

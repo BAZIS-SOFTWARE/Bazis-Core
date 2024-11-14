@@ -10,7 +10,6 @@ using Model.GeometryObjects;
 using ModelInterfaces.MeshObjects;
 using ModelInterfaces.GeometryObjects;
 using ModelInterfaces.ObjectsFinders;
-using ModelControllerInterfaces.GmshController;
 using Geometry.Exteisions;
 
 namespace GmshApi.GmshController
