@@ -9,6 +9,7 @@ using ModelInterfaces.ObjectsFinders;
 using System.Collections.Generic;
 using System.IO;
 using GmshApi;
+using System.Globalization;
 
 namespace TestModel.GmshTests
 {
@@ -593,37 +594,151 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow("Cilindr.step")]
-        public void GeoWriterTest(string fileName)
+        [DataRow("Cilindr.step", false, false, false, false)]
+        [DataRow("Cilindr.step", true, false, false, false)]
+        [DataRow("Cilindr.step", false, true, false, false)]
+        [DataRow("Cilindr.step", true, true, false, false)]
+        [DataRow("Cilindr.step", false, false, true, false)]
+        [DataRow("Cilindr.step", true, false, true, false)]
+        [DataRow("Cilindr.step", false, true, true, false)]
+        [DataRow("Cilindr.step", true, true, true, false)]
+        [DataRow("Cilindr.step", false, false, false, true)]
+        [DataRow("Cilindr.step", true, false, false, true)]
+        [DataRow("Cilindr.step", false, true, false, true)]
+        [DataRow("Cilindr.step", true, true, false, true)]
+        [DataRow("Cilindr.step", false, false, true, true)]
+        [DataRow("Cilindr.step", true, false, true, true)]
+        [DataRow("Cilindr.step", false, true, true, true)]
+        [DataRow("Cilindr.step", true, true, true, true)]
+        public void GeoWriterTest(string fileName, bool changePoints, bool changeCurves, bool changeGradient, bool changeGeneral)
         {
             var ierr = 0;
             controller.Open(modelFolder + fileName, ref ierr);
+
+            if (changePoints)
+                SetPointsRandomSize();
+            if (changeCurves)
+                SetCurvesRandomTransfinition();
+            if (changeGradient)
+                ChangeGradientRandom();
+            if (changeGeneral)
+                ChangeGeneralRandom();
+
             var geoWriter = new GmshGeoWriter(controller);
-
-            controller.ModelMeshSetSize(new int[] { 0, 1, 0, 2 }, (IntPtr)4, 0.3, ref ierr);
-            controller.ModelMeshSetSize(new int[] { 0, 3 }, (IntPtr)2, 0.7, ref ierr);
-            controller.ModelMeshSetSize(new int[] { 0, 4 }, (IntPtr)2, 0.95, ref ierr);
-
-            controller.ModelSetAttribute("transfinite 2", new string[] {"7","Bump","1.23"}, (IntPtr)3, ref ierr);
-            controller.ModelMeshSetTransfiniteCurve(2, 7, "Bump", 1.23, ref ierr);
-
-            controller.ModelSetAttribute("transfinite 6", new string[] { "7", "Bump", "1.23" }, (IntPtr)3, ref ierr);
-            controller.ModelMeshSetTransfiniteCurve(6, 7, "Bump", 1.23, ref ierr);
-
-            controller.ModelSetAttribute("transfinite 4", new string[] { "16", "Beta", "1.7" }, (IntPtr)3, ref ierr);
-            controller.ModelMeshSetTransfiniteCurve(4, 16, "Beta", 1.7, ref ierr);
-
-            controller.ModelSetAttribute("transfinite 5", new string[] { "5", "Progression", "0.7" }, (IntPtr)3, ref ierr);
-            controller.ModelMeshSetTransfiniteCurve(5, 5, "Progression", 0.7, ref ierr);
-
-            controller.ModelSetAttribute("transfinite 3", new string[] { "", "Progression", "0.7" }, (IntPtr)3, ref ierr);
-
             geoWriter.WriteSettingsToGeo();
+
+            controller.ModelMeshGenerate(3, ref ierr);
+            var data = controller.GetMeshObjects();
 
             controller.Clear(ref ierr);
             controller.Open(geoWriter.ResultFileName, ref ierr);
-
+            //string error;
+            //controller.LoggerGetLastError(out error);
             Assert.AreEqual(0, ierr);
+            controller.ModelMeshGenerate(3, ref ierr);
+            var data_1 = controller.GetMeshObjects();
+            Assert.AreEqual(data.Item1.Count, data_1.Item1.Count);
+            Assert.AreEqual(data.Item2.Count, data_1.Item2.Count);
+            Assert.AreEqual(data.Item3.Count, data_1.Item3.Count);
+            Assert.AreEqual(data.Item4.Count, data_1.Item4.Count);
+        }
+
+        private void SetPointsRandomSize()
+        {
+            int[] dimTags;
+            controller.ModelGetGeometryEntities(out dimTags, 0);
+            var rand = new Random();
+
+            var tagsCount = rand.Next(dimTags.Length / 2 + 1);
+            var ierr = 0;
+
+            for (var i = 0; i < tagsCount; ++i)
+            {
+                var size = Math.Round(rand.NextDouble() + 0.5, 4);//Генерировать не меньше 0.5, чтобы уменьшить нагрузку на генератор
+                controller.ModelMeshSetSize(new int[] { 0, dimTags[i * 2 + 1] }, (IntPtr)2, size, ref ierr);
+            }
+        }
+
+        private void SetCurvesRandomTransfinition()
+        {
+            int[] dimTags;
+            controller.ModelGetGeometryEntities(out dimTags, 1);
+            var rand = new Random();
+
+            var tagsCount = rand.Next(dimTags.Length / 2 + 1);
+            var transfType = new string[] { "Progression", "Bump", "Beta" };
+
+            var numFormat = new NumberFormatInfo();
+
+            for (var i = 0; i < tagsCount; ++i)
+            {
+                var tag = dimTags[i * 2 + 1];
+
+                var pointsCount = rand.Next(5, 30);
+                var typeChoice = rand.Next(3);
+                var coef = Math.Round(rand.NextDouble() + 0.5, 4);
+
+                var settings = new string[] { pointsCount.ToString(), transfType[typeChoice], coef.ToString(numFormat) };
+                WriteCurveTransfinition(tag, settings);
+            }
+        }
+
+        private void WriteCurveTransfinition(int curveTag, string[] settings)
+        {
+            var ierr = 0;
+            controller.ModelSetAttribute($"transfinite {curveTag}", settings, (IntPtr)3, ref ierr);
+            var points = int.Parse(settings[0]);
+            var coef = double.Parse(settings[2], CultureInfo.InvariantCulture);
+            controller.ModelMeshSetTransfiniteCurve(curveTag, points, settings[1], coef, ref ierr);
+        }
+
+        private void ChangeGradientRandom()
+        {
+            var rand = new Random();
+            var ierr = 0;
+            controller.ModelMeshFieldAdd("Extend", 1, ref ierr);
+
+            var outSize = Math.Round(rand.NextDouble() + 0.5, 4);//Генерировать не меньше 0.5, чтобы уменьшить нагрузку на генератор
+
+            int[] dimTags;
+            controller.ModelGetGeometryEntities(out dimTags, 0);
+            controller.ModelMeshSetSize(dimTags, (IntPtr)dimTags.Length, outSize, ref ierr);
+
+            controller.ModelGetGeometryEntities(out dimTags, 1);
+            var curveTags = dimTags.Where((v, i) => (i & 1) == 1).Select(v => (double)v).ToArray();
+            controller.ModelMeshFieldSetNumbers(1, "CurvesList", curveTags, (IntPtr)curveTags.Length, ref ierr);
+
+            controller.ModelGetGeometryEntities(out dimTags, 2);
+            var surfTags = dimTags.Where((v, i) => (i & 1) == 1).Select(v => (double)v).ToArray();
+            controller.ModelMeshFieldSetNumbers(1, "SurfacesList", surfTags, (IntPtr)surfTags.Length, ref ierr);
+
+            var power = rand.Next(4);
+            var distMax = Math.Round(rand.NextDouble() * 2 + 0.7, 4);
+            var sizeMax = (double)rand.Next(2,8);
+
+            controller.ModelMeshFieldSetNumber(1, "Power", power, ref ierr);
+            controller.ModelMeshFieldSetNumber(1, "DistMax", distMax, ref ierr);
+            controller.ModelMeshFieldSetNumber(1, "SizeMax", sizeMax, ref ierr);
+            controller.ModelMeshFieldSetAsBackgroundMesh(1, ref ierr);
+
+            controller.OptionSetNumber("Mesh.MeshSizeExtendFromBoundary", -2, ref ierr);
+        }
+
+        private void ChangeGeneralRandom()
+        {
+            var rand = new Random();
+            var algoChoice = new int[] { 1, 2, 5, 6 };
+            var index = rand.Next(algoChoice.Length);
+
+            var sizeMin = Math.Round(rand.NextDouble() + 0.5, 4);
+            var sizeMax = Math.Round(sizeMin + rand.NextDouble() + 2, 4);
+            var sizeFactor = Math.Round(rand.NextDouble() + 0.7, 4);
+
+            var ierr = 0;
+            controller.OptionSetNumber("Mesh.Algorithm", algoChoice[index], ref ierr);
+            controller.OptionSetNumber("Mesh.MeshSizeMin", sizeMin, ref ierr);
+            controller.OptionSetNumber("Mesh.MeshSizeMax", sizeMax, ref ierr);
+            controller.OptionSetNumber("Mesh.MeshSizeFactor", sizeFactor, ref ierr);
         }
     }
 }

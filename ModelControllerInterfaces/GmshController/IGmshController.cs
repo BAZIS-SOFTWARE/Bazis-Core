@@ -100,6 +100,22 @@ namespace ModelControllerInterfaces.GmshController
         /// <param name="ierr">[Out]Флаг ошибки</param>
         void ModelMeshFieldSetNumbers(int tag, string option, double[] values,
                                                               IntPtr values_n, ref int ierr);
+        /// <summary>
+        /// Возвращает список значений для опции 
+        /// </summary>
+        /// <param name="tag">[In]Идентификатор поля</param>
+        /// <param name="option">[In]Имя опции</param>
+        /// <param name="values">[Out]Массив значений типа double</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void MeshFieldGetNumbers(int tag, string option, out double[] values, ref int ierr);
+        /// <summary>
+        /// Возвращает значение опции поля
+        /// </summary>
+        /// <param name="tag">[In]Идентификатор поля</param>
+        /// <param name="option">[In]Опция</param>
+        /// <param name="value">[In]Значение</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void MeshFieldGetNumber(int tag, string option, ref double value, ref int ierr);
 
         /// <summary>
         /// Добавить объект MeshField
@@ -286,7 +302,13 @@ namespace ModelControllerInterfaces.GmshController
         /// <param name="value">[In]Значение поля категории</param>
         /// <param name="ierr">[Out]Флаг ошибки</param>
         void OptionSetNumber(string name, double value, ref int ierr);
-
+        /// <summary>
+        /// Возвращает значение из поля категории опций
+        /// </summary>
+        /// <param name="name">[In]Строка в формате доступа к полю категории опций</param>
+        /// <param name="value">[Out]Значение поля категории</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void OptionGetNumber(string name, ref double value, ref int ierr);
         /// <summary>
         /// Очищает список моделей
         /// </summary>
@@ -618,7 +640,7 @@ namespace ModelControllerInterfaces.GmshController
         /// <param name="search">[In]Регулярное выражение поиска, пустая строка для возврата всех параметров</param>
         /// <param name="ierr"><[Out]Флаг ошибки/param>
         void OnelabGetNames(out string[] names, string search, ref int ierr);
-        /*/// <summary>
+        /// <summary>
         /// Обновить или создать(если не существует) параметр name в БД gmsh
         /// </summary>
         /// <param name="name">[In]Имя параметра</param>
@@ -631,6 +653,26 @@ namespace ModelControllerInterfaces.GmshController
         /// <param name="name">[In]Имя параметра</param>
         /// <param name="value">[In]Массив значений</param>
         /// <param name="ierr">[Out]Флаг ошибки</param>
-        void OnelabGetNumber(string name, out double[] value, ref int ierr);*/
+        void OnelabGetNumber(string name, out double[] value, ref int ierr);
+        /// <summary>
+        /// Обновить или создать(если не существует) строковый параметр name в БД gmsh
+        /// </summary>
+        /// <param name="name">[In]Имя параметра</param>
+        /// <param name="value">[In]Строка значений</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void OnelabSetString(string name, string[] value, ref int ierr);
+        /// <summary>
+        /// Обновить или создать(если не существует) строковый параметр name в БД gmsh
+        /// </summary>
+        /// <param name="name">[In]Имя параметра</param>
+        /// <param name="value">[In]Массив строк со значениями</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void OnelabGetString(string name, out string[] value, ref int ierr);
+        /// <summary>
+        /// Удаляет из БД запись параметра
+        /// </summary>
+        /// <param name="name">[In]Имя параметра</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void OnelabClear(string name, ref int ierr);
     }
 }

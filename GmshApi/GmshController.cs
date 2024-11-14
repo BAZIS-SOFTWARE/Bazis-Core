@@ -13,6 +13,7 @@ using ModelInterfaces.ObjectsFinders;
 using ModelControllerInterfaces.GmshController;
 using Geometry.Exteisions;
 using System.ComponentModel;
+using System.Xml.Linq;
 
 namespace GmshApi.GmshController
 {
@@ -117,7 +118,7 @@ namespace GmshApi.GmshController
         /// <param name="ierr">[Out]Флаг ошибки</param>
         private delegate void gmshOnelabGetNamesFun(ref IntPtr names, ref IntPtr names_n, string search, ref int ierr);
         private gmshOnelabGetNamesFun gmshOnelabGetNames;
-        /*/// <summary>
+        /// <summary>
         /// Обновить или создать(если не существует) параметр name в БД gmsh
         /// </summary>
         /// <param name="name">[In]Имя параметра</param>
@@ -134,7 +135,32 @@ namespace GmshApi.GmshController
         /// <param name="value_n">[Out]Размер массива значений</param>
         /// <param name="ierr">[Out]Флаг ошибки</param>
         private delegate void gmshOnelabGetNumberFun(string name, ref IntPtr value, ref IntPtr value_n, ref int ierr);
-        private gmshOnelabGetNumberFun gmshOnelabGetNumber;*/
+        private gmshOnelabGetNumberFun gmshOnelabGetNumber;
+        /// <summary>
+        /// Обновить или создать(если не существует) строковый параметр name в БД gmsh
+        /// </summary>
+        /// <param name="name">[In]Имя параметра</param>
+        /// <param name="value">[In]Строка значения</param>
+        /// <param name="value_n">[In]Размер массива значений</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshOnelabSetStringFun(string name, string[] value, IntPtr value_n, ref int ierr);
+        private gmshOnelabSetStringFun gmshOnelabSetString;
+        /// <summary>
+        /// Обновить или создать(если не существует) строковый параметр name в БД gmsh
+        /// </summary>
+        /// <param name="name">[In]Имя параметра</param>
+        /// <param name="value">[In]Массив строк со значениями</param>
+        /// <param name="value_n">[In]Размер массива строк со значениями</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshOnelabGetStringFun(string name, ref IntPtr value, ref IntPtr value_n, ref int ierr);
+        private gmshOnelabGetStringFun gmshOnelabGetString;
+        /// <summary>
+        /// Удаляет из БД запись параметра
+        /// </summary>
+        /// <param name="name">[In]Имя параметра</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshOnelabClearFun(string name, ref int ierr);
+        private gmshOnelabClearFun gmshOnelabClear;
         #endregion
         #region "Plugin Delegates"
         /// <summary>
@@ -1055,8 +1081,8 @@ namespace GmshApi.GmshController
         /// <param name="option">[In]Опция</param>
         /// <param name="value">[In]Значение</param>
         /// <param name="ierr">[Out]Флаг ошибки</param>
-        public delegate void gmshModelMeshFieldGetNumberFun(int tag, string option, ref double value, ref int ierr);///
-        public gmshModelMeshFieldGetNumberFun gmshModelMeshFieldGetNumber;
+        private delegate void gmshModelMeshFieldGetNumberFun(int tag, string option, ref double value, ref int ierr);///
+        private gmshModelMeshFieldGetNumberFun gmshModelMeshFieldGetNumber;
         /// <summary>
         /// Задает строку значений для опции
         /// </summary>
@@ -1162,8 +1188,11 @@ namespace GmshApi.GmshController
             //Private members
             gmshOptionGetString = GetFunction<gmshOptionGetStringFun>("gmshOptionGetString");
             gmshOnelabGetNames = GetFunction<gmshOnelabGetNamesFun>("gmshOnelabGetNames");
-            /*gmshOnelabSetNumber = GetFunction<gmshOnelabSetNumberFun>("gmshOnelabSetNumber");
-            gmshOnelabGetNumber = GetFunction<gmshOnelabGetNumberFun>("gmshOnelabGetNumber");*/
+            gmshOnelabSetNumber = GetFunction<gmshOnelabSetNumberFun>("gmshOnelabSetNumber");
+            gmshOnelabGetNumber = GetFunction<gmshOnelabGetNumberFun>("gmshOnelabGetNumber");
+            gmshOnelabSetString = GetFunction<gmshOnelabSetStringFun>("gmshOnelabSetString");
+            gmshOnelabGetString = GetFunction<gmshOnelabGetStringFun>("gmshOnelabGetString");
+            gmshOnelabClear = GetFunction<gmshOnelabClearFun>("gmshOnelabClear");
             #endregion
             #region "Get Plugin delegates"
             gmshPluginSetNumber = GetFunction<gmshPluginSetNumberFun>("gmshPluginSetNumber");
@@ -1784,24 +1813,19 @@ namespace GmshApi.GmshController
                 value = GetStringPtr(valueInt);
             return status;
         }
-        /// <summary>
-        /// Возвращает список значений для опции
-        /// </summary>
-        /// <param name="tag">Идентификатор поля</param>
-        /// <param name="option">Имя опции</param>
-        /// <param name="values">Значения опции</param>
-        /// <returns>Успешность вызова метода</returns>
-        public bool MeshFieldGetNumbers(int tag, string option, out double[] values)
+        /// <inheritdoc/>
+        public void MeshFieldGetNumbers(int tag, string option, out double[] values, ref int ierr)
         {
             IntPtr valuesInt = IntPtr.Zero;
             IntPtr valuesInt_n = IntPtr.Zero;
-            var ierr = 0;
-            values = null;
             gmshModelMeshFieldGetNumbers(tag, option, ref valuesInt, ref valuesInt_n, ref ierr);
-            var status = ierr == 0;
-            if (status)
-                GetObjectsData(valuesInt, out values, valuesInt_n);
-            return status;
+            GetObjectsData(valuesInt, out values, valuesInt_n);
+        }
+
+        /// <inheritdoc/>
+        public void MeshFieldGetNumber(int tag, string option, ref double value, ref int ierr)
+        {
+            gmshModelMeshFieldGetNumber(tag, option, ref value, ref ierr);
         }
         /// <inheritdoc/>
         #endregion
@@ -2189,6 +2213,11 @@ namespace GmshApi.GmshController
             gmshOptionSetNumber(name, value, ref ierr);
         }
         /// <inheritdoc/>
+        public void OptionGetNumber(string name, ref double value, ref int ierr)
+        {
+            gmshOptionGetNumber(name, ref value, ref ierr);
+        }
+        /// <inheritdoc/>
 
         public void Clear(ref int ierr)
         {
@@ -2519,7 +2548,7 @@ namespace GmshApi.GmshController
             gmshOnelabGetNames(ref namesInt, ref names_n, search, ref ierr);
             names = GetArrayOfString(namesInt, names_n);
         }
-        /*/// <inheritdoc/>
+        /// <inheritdoc/>
         public void OnelabSetNumber(string name, double[] value, ref int ierr)
         {
             gmshOnelabSetNumber(name, value, (IntPtr)value.Length, ref ierr);
@@ -2531,7 +2560,25 @@ namespace GmshApi.GmshController
             IntPtr value_n = IntPtr.Zero;
             gmshOnelabGetNumber(name, ref valueInt, ref value_n, ref ierr);
             GetObjectsData<double>(valueInt, out value, value_n);
-        }*/
+        }
+        /// <inheritdoc/>
+        public void OnelabSetString(string name, string[] value, ref int ierr)
+        {
+            gmshOnelabSetString(name, value, (IntPtr)value.Length, ref ierr);
+        }
+        /// <inheritdoc/>
+        public void OnelabGetString(string name, out string[] value, ref int ierr)
+        {
+            IntPtr valueInt = IntPtr.Zero;
+            IntPtr value_n = IntPtr.Zero;
+            gmshOnelabGetString(name, ref valueInt, ref value_n, ref ierr);
+            value = GetArrayOfString(valueInt, value_n);
+        }
+        /// <inheritdoc/>
+        public void OnelabClear(string name, ref int ierr)
+        {
+            gmshOnelabClear(name, ref ierr);
+        }
         #endregion
     }
 }
