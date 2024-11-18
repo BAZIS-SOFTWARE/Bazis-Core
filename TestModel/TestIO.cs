@@ -276,14 +276,5 @@ namespace TestModel
             Assert.AreEqual(surfElms, model.ObjectData.E2DCollection.Distinct().Count());
             Assert.AreEqual(volElems, model.ObjectData.E3DCollection.Distinct().Count());
         }
-
-        [TestMethod]
-        public void Sample()
-        {
-            var path = "./test_model.bpf";
-            var loader = new LoadModelFromBPFTextFile();
-            loader.LoadEvent += (ar1, ar2) => { };
-            var model = loader.Load(path);
-        }
     }
 }

@@ -68,14 +68,13 @@ namespace Model.IO
             var nodes = new List<Node>();
             while (line != "#Узлы")
             {
-                var coordinates = line.Split()
+                var tokens = line.Split()
                     .Where(m => float.TryParse(m, NumberStyles.Float, CultureInfo.InvariantCulture, out var val))
-                    .Select(m => float.Parse(m, CultureInfo.InvariantCulture))
-                    .ToList();
-                if (coordinates.Count != 0)
+                    .Select(m => float.Parse(m, CultureInfo.InvariantCulture));
+                if (tokens.Count() != 0)
                 {
-                    var nodeIndex = (int)coordinates[0];
-                    coordinates.RemoveAt(0);
+                    var nodeIndex = (int)tokens.First();
+                    var coordinates = tokens.Skip(1).ToArray();
                     var position = new Point3D(coordinates[0], coordinates[1], coordinates[2]);
                     var node = new Node(nodeIndex, position);
                     nodes.Add(node);
@@ -92,9 +91,8 @@ namespace Model.IO
             {                
                 var tokens = line.Split()
                     .Where(m => int.TryParse(m, out var val))
-                    .Select(int.Parse)
-                    .ToList();
-                var elementNumber = tokens[0];
+                    .Select(int.Parse);
+                var elementNumber = tokens.First();
                 var nodes = GetNodes(newMesh, tokens.Skip(1)).ToArray();
                 if (elementType == "Элементы3D" | elementType == "Элемент3D" | elementType == "Элементы 3004")
                 {
