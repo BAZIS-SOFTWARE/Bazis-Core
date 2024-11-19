@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using GmshApi;
 using System.Globalization;
+using System.Runtime;
 
 namespace TestModel.GmshTests
 {
@@ -624,16 +625,21 @@ namespace TestModel.GmshTests
             if (changeGeneral)
                 ChangeGeneralRandom();
 
+            var extension = Path.GetExtension(fileName);
+            var modelName = Path.GetFileNameWithoutExtension(fileName);
+            var currentPath = Path.GetDirectoryName(modelFolder + fileName);
+            var savePath = Path.Combine(currentPath, modelName) + "Settings" + ".geo";
+
             var geoWriter = new GmshGeoWriter(controller);
-            geoWriter.WriteSettingsToGeo();
+            geoWriter.WriteSettingsToGeo(savePath);
 
             controller.ModelMeshGenerate(3, ref ierr);
             var data = controller.GetMeshObjects();
 
             controller.Clear(ref ierr);
-            controller.Open(geoWriter.ResultFileName, ref ierr);
-            //string error;
-            //controller.LoggerGetLastError(out error);
+            controller.Open(savePath, ref ierr);
+            string error;
+            controller.LoggerGetLastError(out error);
             Assert.AreEqual(0, ierr);
             controller.ModelMeshGenerate(3, ref ierr);
             var data_1 = controller.GetMeshObjects();

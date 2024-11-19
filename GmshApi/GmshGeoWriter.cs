@@ -20,14 +20,6 @@ namespace GmshApi
         /// Ключ настроек трансфиниций кривых по которому нужно искать во внутренних структурах gmsh
         /// </summary>
         public static string TransfinitionCurveKey {  get; set; } = "transfinite";
-        /// <summary>
-        /// Зарезервированная часть названия файла, которая будет подставляться для формирования результирующего файла .geo
-        /// </summary>
-        public static string FileNamePostfix { get; set; } = "Settings";
-        /// <summary>
-        /// Путь до трансформированного geo файла
-        /// </summary>
-        public string ResultFileName { get; private set; }
         private IGmshController Controller { get; set; }
         /// <summary>
         /// Конструктор
@@ -40,17 +32,15 @@ namespace GmshApi
         /// <summary>
         /// Записать настройки в geo
         /// </summary>
-        public void WriteSettingsToGeo()
+        public void WriteSettingsToGeo(string path)
         {
             string fileName;
             Controller.ModelGetFileName(out fileName);
 
             var extension = Path.GetExtension(fileName);
             var modelName = Path.GetFileNameWithoutExtension(fileName);
-            var currentPath = Path.GetDirectoryName(fileName);
-            ResultFileName = Path.Combine(currentPath, modelName) + FileNamePostfix + ".geo";
 
-            using (var writer = File.CreateText(ResultFileName))
+            using (var writer = File.CreateText(path))
             {
                 writer.WriteLine($"Merge \"{modelName + extension}\";");
                 var core = extension == ".geo" ? "Built-in" : "OpenCASCADE";
