@@ -1,16 +1,15 @@
-﻿using Model.GroupsData;
+﻿using Geometry;
+using Model.Events;
+using Model.GroupsData;
+using Model.MeshObjects;
+using ModelInterfaces;
+using ModelInterfaces.ObjectsFinders;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using Geometry;
-using Model.Events;
-using ModelInterfaces;
-using ModelInterfaces.ObjectsFinders;
-using Model.MeshObjects;
-using ModelInterfaces.MeshObjects;
 
 namespace Model.IO
 {
@@ -26,21 +25,19 @@ namespace Model.IO
             using (var sr = new StreamReader(path))
             {
                 var newModel = new ModelData();
-                var nodes = new List<Node>();
                 var line = string.Empty;
 
                 while (!sr.EndOfStream)
                 {
-
                     if (line == "Узлы")
                     {
                         LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка узлов..."));
                         Thread.Sleep(100);
-                        LoadNodes(sr, newModel, nodes);
+                        LoadNodes(sr, newModel);
                     }
-                    if (line == "Элементы 3004" | line == "Элементы 2003" |
-                        line == "Элементы3D" | line == "Элементы2D" |
-                        line == "Элементы1D" | line == "Элемент3D" | line == "Элемент2D" |
+                    if (line == "Элементы 3004" || line == "Элементы 2003" ||
+                        line == "Элементы3D" || line == "Элементы2D" ||
+                        line == "Элементы1D" || line == "Элемент3D" || line == "Элемент2D" ||
                         line == "Элемент1D")
                     {
                         LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка элементов..."));
@@ -65,92 +62,83 @@ namespace Model.IO
 
         }
 
-        private static void LoadNodes(StreamReader sr, ModelData newMesh, List<Node> nodes)
+        private static void LoadNodes(StreamReader reader, ModelData newMesh)
         {
-            var line = string.Empty;
+            var line = reader.ReadLine();
+            var nodes = new List<Node>();
             while (line != "#Узлы")
             {
-                line = sr.ReadLine();
-                float val = 0;
-                var ar = line.Split(' ')
-        .Where(m => float.TryParse(m, NumberStyles.Float, CultureInfo.InvariantCulture, out val))
-        .Select(m => float.Parse(m, CultureInfo.InvariantCulture))
-                                    .ToList();
-
-                if (ar.Count != 0)
+                var tokens = line.Split()
+                    .Where(m => float.TryParse(m, NumberStyles.Float, CultureInfo.InvariantCulture, out var val))
+                    .Select(m => float.Parse(m, CultureInfo.InvariantCulture));
+                if (tokens.Count() != 0)
                 {
-                    var nInd = (int)ar[0];
-                    ar.RemoveAt(0);
-                    var coord = new Point3D(ar[0], ar[1], ar[2]);
-                    var node = new Node(nInd, coord);
+                    var nodeIndex = (int)tokens.First();
+                    var coordinates = tokens.Skip(1).ToArray();
+                    var position = new Point3D(coordinates[0], coordinates[1], coordinates[2]);
+                    var node = new Node(nodeIndex, position);
                     nodes.Add(node);
                 }
+                line = reader.ReadLine();
             }
-            newMesh.ObjectData.NodeCollection.AddRange(nodes);
-
+            newMesh.ObjectData.NodeCollection.AddRange(nodes.OrderBy(n => n.Number));
         }
 
-        private void LoadElement(StreamReader sr, string elType, ModelData newMesh)
+        private void LoadElement(StreamReader reader, string elementType, ModelData newMesh)
         {
-            var line = String.Empty;
-            line = sr.ReadLine();
-
-            //var number = newMesh.GetLastObjNumber() + 1;
-            while (line != "#" + elType)
+            var line = reader.ReadLine();
+            while (line != $"#{elementType}")
             {                
-                int val = 0;
-                var ar = line.Split(' ')
-        .Where(m => int.TryParse(m, out val))
-        .Select(m => int.Parse(m)).ToList();
-
-                var elNumber = ar[0];
-                ar.RemoveAt(0);
-
-                var nodeList = new List<INode>();
-              
-                foreach (var nodeNumber in ar)
-                    nodeList.Add(newMesh.ObjectData.NodeCollection.Find(nodeNumber));
-
-                if (elType == "Элементы3D" | elType == "Элемент3D" | elType == "Элементы 3004")
+                var tokens = line.Split()
+                    .Where(m => int.TryParse(m, out var val))
+                    .Select(int.Parse);
+                var elementNumber = tokens.First();
+                var nodes = GetNodes(newMesh, tokens.Skip(1)).ToArray();
+                if (elementType == "Элементы3D" | elementType == "Элемент3D" | elementType == "Элементы 3004")
                 {
-
-                    if (ar.Count == 4)
-                    {
-                        var el3DObj = new Tetra(elNumber, nodeList.ToArray());
-                        newMesh.ObjectData.E3DCollection.Add(el3DObj);
-                    }
-                    else
-                    {
-                        var el3DObj = new Hexa(elNumber, nodeList.ToArray());
-                        newMesh.ObjectData.E3DCollection.Add(el3DObj);
-                    }
-
-  
+                    var element = GetElement3D(nodes, elementNumber);
+                    newMesh.ObjectData.E3DCollection.Add(element);
                 }
-
-                if (elType == "Элементы2D" | elType == "Элемент2D" | elType == "Элементы 2003")
+                if (elementType == "Элементы2D" | elementType == "Элемент2D" | elementType == "Элементы 2003")
                 {
-
-                    if (ar.Count == 3)
-                    {
-                        var el2DObj = new Triangle(elNumber, nodeList.ToArray());
-                        newMesh.ObjectData.E2DCollection.Add(el2DObj);
-                    }
-                    else
-                    {
-                        var el2DObj = new Quad(elNumber, nodeList.ToArray());
-                        newMesh.ObjectData.E2DCollection.Add(el2DObj);
-                    }
-
-
+                    var element = GetElement2D(nodes, elementNumber);
+                    newMesh.ObjectData.E2DCollection.Add(element);
                 }
-                if(elType == "Элементы1D" | elType == "Элемент1D" | elType == "Элементы 1002")
+                if(elementType == "Элементы1D" | elementType == "Элемент1D" | elementType == "Элементы 1002")
                 {
-                        var el2DObj = new Beam(elNumber, nodeList.ToArray());
-                        newMesh.ObjectData.E1DCollection.Add(el2DObj);                  
+                    var el2DObj = new Beam(elementNumber, nodes.ToArray());
+                    newMesh.ObjectData.E1DCollection.Add(el2DObj);                  
                 }
-                //number++;
-                line = sr.ReadLine();
+                line = reader.ReadLine();
+            }
+        }
+
+        private IEnumerable<Node> GetNodes(ModelData modelData, IEnumerable<int> indeces)
+        {
+            foreach (var nodeNumber in indeces)
+            {
+                yield return (Node)modelData.ObjectData.NodeCollection.Find(nodeNumber);
+            }
+        }
+
+        private Element3D GetElement3D(Node[] nodes, int elementNumber)
+        {
+            switch (nodes.Length)
+            {
+                case 4: return new Tetra(elementNumber, nodes);
+                case 6: return new Penta(elementNumber, nodes);
+                case 8: return new Hexa(elementNumber, nodes);
+                default: throw new ArgumentException($"Undefined element {elementNumber}");
+            }
+        }
+
+        private Element2D GetElement2D(Node[] nodes, int elementNumber)
+        {
+            switch(nodes.Length)
+            {
+                case 3: return new Triangle(elementNumber, nodes);
+                case 4: return new Quad(elementNumber, nodes);
+                default: throw new ArgumentException($"Undefined element {elementNumber}");
             }
         }
 
