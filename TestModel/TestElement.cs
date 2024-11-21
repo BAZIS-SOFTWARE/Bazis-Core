@@ -42,6 +42,25 @@ namespace TestModel
             }
         }
 
+        [DataTestMethod]
+        [DataRow(new float[] { -1.5f, 0, 15.25f, 0, 11, 5}, 61.5f)]
+        [DataRow(new float[] { 0, 0, 15, 0, 10, 5 }, 50)]
+        [DataRow(new float[] { 15, 0, 0, 0, 10, 5}, 50)]
+        [DataRow(new float[] { 5, 5, 0, 0, 15, 0}, 50)]
+        public void BeamLength(float[] arCoord, float length)
+        {
+            var nodes = new Node[4];
+            var num = 0;
+            for (var i = 0; i < 6; i += 1)
+            {
+                nodes[num] = new Node(num, new Point3D(arCoord[2 * i + 0], arCoord[2 * i + 1], 0));
+                num++;
+            }
+
+            var elem = new Quad(0, nodes, 4);
+            Assert.AreEqual(elem.CalcSquare(), length, 0.15f);
+        }
+
 
         [DataTestMethod]
         [DataRow(new float[] { -1.5f, 0, 15.25f, 0, 11, 5, 5.025f, 5.75f }, 61.5f)]

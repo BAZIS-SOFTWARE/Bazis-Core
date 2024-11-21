@@ -18,10 +18,10 @@ namespace Model.MeshObjects
             MasterColor = Color.FromArgb(255, 192, 203);
             SlaveColor = Color.FromArgb(255, 192, 203);
 
-            var intPoint = new IntegralPoint();
-            intPoint.AddCoordinate("ksi", 0.0f);
-            intPoint.Weigt = CalcLength();
-            intPoints.Add(intPoint);
+            //var intPoint = new IntegralPoint();
+            //intPoint.AddCoordinate("ksi", 0.0f);
+            //intPoint.Weigt = CalcLength();
+            //intPoints.Add(intPoint);
             //jacobians.Add(DetJ(intPoint));
         }
 
