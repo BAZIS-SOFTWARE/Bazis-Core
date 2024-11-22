@@ -12,7 +12,6 @@ namespace TestModel
     {
         [DataTestMethod]
         [DataRow(@"..\..\..\Examples\3D\cub_unsorted.bpf",6)]
-        [DataRow(@"c:\GridExport_XYZ_3.850259_Grid_Узел.bpf", 752)]
         public void LoadModelFromBpfTextFormat(string path, int elCount)
         {
             //assing
