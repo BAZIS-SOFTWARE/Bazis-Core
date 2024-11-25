@@ -43,20 +43,21 @@ namespace TestModel
         }
 
         [DataTestMethod]
-        [DataRow(new float[] { -1.5f, 0, 15.25f, 0, 11, 5}, 11.1018f)]
-        [DataRow(new float[] { 15, 0, 0, 0, 10, 5}, 18.02776f)]
+        [DataRow(new float[] { -1.5f, 0, 15.25f, 0, 11, 5}, 15.11f)]
+        [DataRow(new float[] { 15, 0, 0, 0, 10, 5}, 18.7082f)]
+        [DataRow(new float[] { 8.5f, 4, 0, 7.5f, 4, 0 }, 1)]
         public void BeamLength(float[] arCoord, float length)
         {
             var nodes = new Node[2];
             var num = 0;
             for (var i = 0; i < 2; i += 1)
             {
-                nodes[num] = new Node(num, new Point3D(arCoord[3 * i + 0], arCoord[3 * i + 1], 0));
+                nodes[num] = new Node(num, new Point3D(arCoord[3 * i + 0], arCoord[3 * i + 1], arCoord[3 * i + 2]));
                 num++;
             }
 
-            var elem = new Beam(0, nodes);
-            Assert.AreEqual(elem.CalcLength(), length, 0.15f);
+            var elem = new Beam(0, nodes,2);
+            Assert.AreEqual(length,elem.CalcLength(), 0.15f);
         }
 
 
