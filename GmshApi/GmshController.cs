@@ -2515,6 +2515,16 @@ namespace GmshApi.GmshController
             return conjugated;
         }
         /// <inheritdoc/>
+        public Dictionary<int, int[]> FindConjugatedSurfaces(float accuracy = 1e-2f)
+        {
+            var surfaces = new Dictionary<int, GmshEntitiesGraph>();
+            int[] dimTags, upward, downward;
+            ModelGetGeometryEntities(out dimTags, 2);
+
+
+            return null;
+        }
+        /// <inheritdoc/>
         public Tuple<int[], int[][]> ModelOccFragment(int[] objectDimTags, int[] toolDimTags, int tag,
                                                bool removeObject, bool removeTool, ref int ierr)
         {

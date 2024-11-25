@@ -25,6 +25,9 @@
     <None Include="GmshApiKey.snk" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="NetOctree" Version="2.1.11" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\ModelControllerInterfaces\ModelControllerInterfaces.csproj" />
     <ProjectReference Include="..\Model\Model.csproj" />
   </ItemGroup>
