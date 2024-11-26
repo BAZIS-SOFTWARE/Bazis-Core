@@ -1,11 +1,6 @@
-﻿using Model.MeshObjects;
-using ModelInterfaces;
+﻿using ModelInterfaces;
 using ModelInterfaces.MeshObjects;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ModelControllerInterfaces.ObjsCreator
 {
@@ -20,6 +15,6 @@ namespace ModelControllerInterfaces.ObjsCreator
         /// <param name="startNumber"></param>
         /// /// <param name="elements"></param>
         /// <returns></returns>
-        IEnumerable<Beam> Create(int startNumber, IElement2D[] elements);
+        IEnumerable<ILineObject<INode>> Create(int startNumber, IElement2D[] elements);
     }
 }
