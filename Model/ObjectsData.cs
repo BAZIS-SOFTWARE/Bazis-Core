@@ -152,9 +152,9 @@ namespace Model
 
         int GetLastElementNumber()
         {
-            var e1Numb = E1DCollection.Last().Number;
-            var e2Numb = E2DCollection.Last().Number;
-            var e3Numb = E3DCollection.Last().Number;
+            var e1Numb = E1DCollection.Count > 0 ? E1DCollection.Last().Number : 0;
+            var e2Numb = E2DCollection.Count > 0 ? E2DCollection.Last().Number : 0;
+            var e3Numb = E3DCollection.Count > 0 ? E3DCollection.Last().Number : 0;
 
             var numb = e1Numb;
             if (e1Numb < e2Numb)

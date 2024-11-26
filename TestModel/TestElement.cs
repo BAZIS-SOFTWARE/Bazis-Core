@@ -57,6 +57,7 @@ namespace TestModel
             }
 
             var elem = new Beam(0, nodes,2);
+
             Assert.AreEqual(length,elem.CalcLength(), 0.15f);
         }
 

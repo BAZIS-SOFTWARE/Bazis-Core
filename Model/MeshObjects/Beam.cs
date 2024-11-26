@@ -43,11 +43,13 @@ namespace Model.MeshObjects
                     intPoint.AddCoordinate("ksi", -(float)Math.Sqrt(3) / 3);
                     intPoint.Weigt = 1;
                     intPoints.Add(intPoint);
+                    jacobiMatrixes.Add(CalcJacobi(intPoint));
 
                     intPoint = new IntegralPoint();
                     intPoint.AddCoordinate("ksi", (float)Math.Sqrt(3) / 3);
                     intPoint.Weigt = 1;
                     intPoints.Add(intPoint);
+                    jacobiMatrixes.Add(CalcJacobi(intPoint));
                     break;
                 default:
                     throw new ArgumentException();
@@ -83,7 +85,7 @@ namespace Model.MeshObjects
         public override Matrix<double> CalcJacobi(IIntegralPoint intPoint)
         {
             var derFormFunctions = GetDerivativesFormFunctions(intPoint);
-            var matrixDFF = Matrix<double>.Build.DenseOfArray(derFormFunctions).Divide(4);
+            var matrixDFF = Matrix<double>.Build.DenseOfArray(derFormFunctions);
             var matrixPoints = Matrix<double>.Build.Dense(2, 1);
 
             for (var i = 0; i < nodes.Count; i++)
@@ -100,8 +102,7 @@ namespace Model.MeshObjects
         {
             return new double[,]
             {
-                {-0.5},
-                { 0.5}
+                {-0.5,0.5}
             };
         }
         /// <inheritdoc/>
