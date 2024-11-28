@@ -649,6 +649,17 @@ namespace TestModel.GmshTests
             Assert.AreEqual(data.Item4.Count, data_1.Item4.Count);
         }
 
+        [DataTestMethod]
+        //[DataRow("Cilindr.step")]
+        [DataRow("Build1.step")]
+        public void FindConjugatedSurfaceTest(string fileName)
+        {
+            var ierr = 0;
+            controller.Open(modelFolder + fileName, ref ierr);
+            var c = controller as GmshController;
+            var data = c.FindConjugatedSurfaces();
+        }
+
         private void SetPointsRandomSize()
         {
             int[] dimTags;

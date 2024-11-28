@@ -3,6 +3,7 @@ using ModelInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Numerics;
 
 namespace GmshApi
 {
@@ -18,10 +19,14 @@ namespace GmshApi
         /// <inheritdoc/>
         public Dictionary<int, GmshPoint> Points { get; private set; }
         /// <summary>
-        /// Строит граф смежности для текущей модели, в модели должны присутствовать объемы иначе граф не построится
+        /// Задать координаты геометрических точек?
         /// </summary>
-        /// <param name="controller"></param>
-        public GmshEntitiesGraph(IGmshController controller)
+        public bool SetPointsCoords { get; set; } = true;
+        /// <summary>
+        /// Построить граф смежности геометрических сущностей
+        /// </summary>
+        /// <param name="controller">Контроллер Gmsh</param>
+        public void BuildGraph(IGmshController controller)
         {
             int[] dimTags;
             controller.ModelGetGeometryEntities(out dimTags, 3);
@@ -33,11 +38,11 @@ namespace GmshApi
                 {
                     var surfaceTag = surfTags[j];
                     var curveTags = GetSurfaceAdjacencies(controller, Volumes[volumeTag], surfaceTag);
-                    for(var k = 0; k < curveTags.Length; ++k)
+                    for (var k = 0; k < curveTags.Length; ++k)
                     {
                         var curveTag = curveTags[k];
                         var pointTags = GetCurveAdjacencies(controller, Surfaces[surfaceTag], curveTag);
-                        for(var l = 0; l < pointTags.Length; ++l)
+                        for (var l = 0; l < pointTags.Length; ++l)
                         {
                             ProcessPoints(controller, Curves[curveTag], pointTags[l]);
                         }
@@ -115,8 +120,16 @@ namespace GmshApi
             if (!Points.ContainsKey(pointTag))
                 Points.Add(pointTag, new GmshPoint(pointTag));
             var point = Points[pointTag];
-            curve.Points.Add(pointTag, point);
-            point.Curves.Add(curve.Tag, curve);
+            if(!curve.Points.ContainsKey(pointTag))
+                curve.Points.Add(pointTag, point);
+            if (!point.Curves.ContainsKey(curve.Tag))
+                point.Curves.Add(curve.Tag, curve);
+            if(SetPointsCoords)
+            {
+                double[] coords;
+                controller.ModelGetValue(0, pointTag, new double[0], out coords);
+                point.Coords = new Vector3() { X = (float)coords[0], Y = (float)coords[1], Z = (float)coords[2] };
+            }
         }
     }
 }

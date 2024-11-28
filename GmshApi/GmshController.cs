@@ -14,6 +14,8 @@ using ModelControllerInterfaces.GmshController;
 using Geometry.Exteisions;
 using System.ComponentModel;
 using System.Xml.Linq;
+using Octree;
+using System.Numerics;
 
 namespace GmshApi.GmshController
 {
@@ -2515,14 +2517,106 @@ namespace GmshApi.GmshController
             return conjugated;
         }
         /// <inheritdoc/>
-        public Dictionary<int, int[]> FindConjugatedSurfaces(float accuracy = 1e-2f)
+        public double GetModelMaxDimension()
         {
-            var surfaces = new Dictionary<int, GmshEntitiesGraph>();
-            int[] dimTags, upward, downward;
-            ModelGetGeometryEntities(out dimTags, 2);
+            var ierr = 0;
+            double xMin = 0, yMin = 0, zMin = 0;
+            double xMax = 0, yMax = 0, zMax = 0;
+            ModelGetBoundingBox(-1, -1, ref xMin, ref yMin, ref zMin, ref xMax, ref yMax, ref zMax, ref ierr);
+
+            var xSize = xMax - xMin;
+            var ySize = yMax - yMin;
+            var zSize = zMax - zMin;
+
+            var maxDim = Math.Max(xSize, ySize);
+            return Math.Max(maxDim, zSize);
+        }
+        /// <inheritdoc/>
+        public void GetModelCenter(ref double x, ref double y, ref double z)
+        {
+            int ierr = 0;
+            int[] dimTags;
+            ModelGetGeometryEntities(out dimTags, 3);
+            x = 0; 
+            y = 0; 
+            z = 0;
+            var volumeCount = dimTags.Length / 2;
+            for(var i = 1; i < dimTags.Length; i += 2)
+            {
+                double xC = 0, yC = 0, zC = 0;
+                ModelOccGetCenterOfMass(3, dimTags[i], ref xC, ref yC, ref zC, ref ierr);
+                x += xC;
+                y += yC;
+                z += zC;
+            }
+            x /= volumeCount;
+            y /= volumeCount;
+            z /= volumeCount;
+        }
 
 
-            return null;
+        /// <inheritdoc/>
+        public List<Tuple<int[], int[]>> FindConjugatedSurfaces(float accuracy = 1e-2f)
+        {
+            var graph = new GmshEntitiesGraph();
+            graph.BuildGraph(this);
+            //TODO_1: Создаем октодерево, при создании можно вытянуть BoundingBox модели и центр
+            //Итерируемся по точкам(точки уникальны) заполняем октодерево, координата доступна в точке, данные ассоциируем с GmshPoint
+            //TODO_2: Нужно найти смежные поверхности - итерироваться по ним, если у поверхности больше одного объема переходим к следующей,
+            //вытянуть исправленный цикл точек (первая не общая, остальные общие),для кривых вытянуть касательный вектор в этой исправленной точке,
+            //он будет представлять луч, а точка начало луча
+            //TODO_3: Для всех записей {начало луча: направление} пытаться найти смежную точку, то есть вызов метода GetNearby должен вернуть более одной
+            //точки (запоминать результат), если вернулась одна точка, перейти к рассмотрению другой поверхности.
+            //Если условие выполняется для всех точек поверхности, значит мы нашли все точки двух смежных поверхностей, запоминаем и переходим к TODO_4
+            //TODO_4: На предыдущем пункте выявили смежную поверхность, получим идентификаторы точек противоположной поверхности и найдем поверхность
+            //(задача TODO_5), определим объем у поверхности он не должен содержать больше одного объема и идентикаторы этого объема не должны совпадать
+            //с объемом исключенной поверхности
+            //TODO_5: Исключить из рассмотрения точки текущей поверхности, по полученным точкам найти общий идентификатор поверхности (искать пересечение)
+            double xC = 0, yC = 0, zC = 0;
+            GetModelCenter(ref xC, ref yC, ref zC);
+            var maxDim = GetModelMaxDimension();
+
+            var octoTree = new PointOctree<GmshPoint>((float)maxDim, new Vector3((float)xC, (float)yC, (float)zC), 1f);
+            foreach (var node in graph.Points.Values)
+                octoTree.Add(node, node.Coords);
+
+            var conjugated = new List<Tuple<int[], int[]>>();//Первый и второй член кортежа массив[поверхность : объем}] сопряженных поверхностей
+            foreach (var surface in graph.Surfaces)
+            {
+                var curSurf = surface.Value;
+                if (curSurf.Volumes.Count == 1 && !curSurf.Visited)
+                {
+                    var points = curSurf.GetSurfacePoints().ToArray();
+                    var foundPts = new List<GmshPoint>();
+                    foreach (var point in points)
+                    {
+                        var result = octoTree.GetNearby(point.Coords, accuracy);
+                        if (result.Length < 2)
+                            break;
+                        var filteredPoints = result.Where(v => v.Tag != point.Tag);
+                        foundPts.AddRange(filteredPoints);
+                    }
+                    if(foundPts.Count >= points.Length)
+                    {
+                        var surfId = GmshPoint.FindSurfaceByPoints(foundPts, points.Length);
+                        if (surfId != 0)
+                        {
+                            var foundSurf = graph.Surfaces[surfId];
+                            var srcVolume = curSurf.Volumes.Values.FirstOrDefault();
+                            var foundVolume = foundSurf.Volumes.Values.FirstOrDefault();
+                            if (foundSurf.Volumes.Count == 1 && srcVolume.Tag != foundVolume.Tag)
+                            {
+                                var first = new int[] { curSurf.Tag, srcVolume.Tag };
+                                var second = new int[] { surfId, foundVolume.Tag };
+                                conjugated.Add(Tuple.Create(first, second));
+                                curSurf.Visited = true;
+                            }
+                        }
+                    }
+                }
+                curSurf.Visited = true;
+            }
+            return conjugated;
         }
         /// <inheritdoc/>
         public Tuple<int[], int[][]> ModelOccFragment(int[] objectDimTags, int[] toolDimTags, int tag,
