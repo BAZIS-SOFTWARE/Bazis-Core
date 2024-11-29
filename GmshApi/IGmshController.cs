@@ -4,7 +4,7 @@ using ModelInterfaces.MeshObjects;
 using System;
 using System.Collections.Generic;
 
-namespace ModelControllerInterfaces.GmshController
+namespace GmshApi
 {
 
 

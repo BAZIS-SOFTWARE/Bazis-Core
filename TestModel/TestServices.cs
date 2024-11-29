@@ -75,6 +75,7 @@ namespace TestModel
         [DataRow(9, 62528, @"..\..\..\Examples\2D\curvedStrip.bpf")]
         [DataRow(0, 62528, @"..\..\..\Examples\2D\curvedStrip.bpf")]
         [DataRow(15, 62528, @"..\..\..\Examples\2D\curvedStrip.bpf")]
+        [DataRow(5, 62528, @"..\..\..\Examples\2D\curvedStrip.bpf")]
 
         public void SelectionHelper_OutSideModel_WhenAngleGiven(float angle, int first, string path)
         {

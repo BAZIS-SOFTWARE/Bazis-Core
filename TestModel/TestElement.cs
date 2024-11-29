@@ -42,6 +42,25 @@ namespace TestModel
             }
         }
 
+        [DataTestMethod]
+        [DataRow(new float[] { -1.5f, 0, 15.25f, 0, 11, 5}, 15.11f)]
+        [DataRow(new float[] { 15, 0, 0, 0, 10, 5}, 18.7082f)]
+        [DataRow(new float[] { 8.5f, 4, 0, 7.5f, 4, 0 }, 1)]
+        public void BeamLength(float[] arCoord, float length)
+        {
+            var nodes = new Node[2];
+            var num = 0;
+            for (var i = 0; i < 2; i += 1)
+            {
+                nodes[num] = new Node(num, new Point3D(arCoord[3 * i + 0], arCoord[3 * i + 1], arCoord[3 * i + 2]));
+                num++;
+            }
+
+            var elem = new Beam(0, nodes,2);
+
+            Assert.AreEqual(length,elem.CalcLength(), 0.15f);
+        }
+
 
         [DataTestMethod]
         [DataRow(new float[] { -1.5f, 0, 15.25f, 0, 11, 5, 5.025f, 5.75f }, 61.5f)]
@@ -289,6 +308,52 @@ namespace TestModel
             var tetra = new Tetra(0, nodes, 1);
 
             Assert.AreEqual(tetra.CalcVolume(), vol, 0.05f);
+        }
+
+        [DataTestMethod]
+        [DataRow(
+            new float[]
+            {
+                0, 0, 0,
+                0.5f, 0, 0,
+                0, 1.9f,0,
+                0,0,0.1f,
+
+            }, 19f / 1200)]
+        [DataRow(
+            new float[]
+            {
+                0, 0, 0,
+                0.5f, 0, 0,
+                0, 1.9f,0,
+                0,0,100.1f,
+
+            }, 19019f / 1200)]
+        [DataRow(
+            new float[]
+            {
+                0, 0, 0,
+                1, 0, 0,
+                0, 1,0,
+                0,0,1,
+
+            }, 1f / 6)]
+        public void Tetra_c_Volume(float[] coords, float vol)
+        {
+            var nodes = new Node[4];
+            var num = 0;
+            for (var i = 0; i < coords.Length; i += 3)
+            {
+                var x = coords[i + 0];
+                var y = coords[i + 1];
+                var z = coords[i + 2];
+                nodes[num] = new Node(num, new Point3D(x, y, z));
+                num++;
+            }
+
+            var tetra = new Tetra_c(0, nodes, 1);
+
+            Assert.AreEqual(tetra.CalcVolume(), vol, vol / 100);
         }
 
         [DataTestMethod]
