@@ -4,7 +4,6 @@ using GmshApi.GmshController;
 using System;
 using Model;
 using ModelInterfaces;
-using ModelControllerInterfaces.GmshController;
 using ModelInterfaces.ObjectsFinders;
 using System.Collections.Generic;
 using System.IO;
