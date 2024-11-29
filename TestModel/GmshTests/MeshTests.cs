@@ -650,14 +650,44 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        //[DataRow("Cilindr.step")]
-        [DataRow("Build1.step")]
-        public void FindConjugatedSurfaceTest(string fileName)
+        [DataRow("Build1.step", "115:17,178:27", "169:26,142:21", "111:16,172:26")]//Смежные поверхности проверены в gmsh
+        public void FindConjugatedSurfaceTest(string fileName, params string[] conjugated)
         {
             var ierr = 0;
             controller.Open(modelFolder + fileName, ref ierr);
             var c = controller as GmshController;
             var data = c.FindConjugatedSurfaces();
+
+            var expected = conjugated.Select(s =>
+            {
+                var tokens = s.Split(',');
+                var entry_0 = tokens[0].Split(':');
+                var entry_1 = tokens[1].Split(':');
+                
+                var item_0_0 = int.Parse(entry_0[0]);
+                var item_0_1 = int.Parse(entry_0[1]);
+
+                var item_1_0 = int.Parse(entry_1[0]);
+                var item_1_1 = int.Parse(entry_1[1]);
+
+                var tuple = Tuple.Create(new int[] { item_0_0, item_0_1 }, new int[] { item_1_0, item_1_1 });
+
+                return tuple;
+            }).ToList();
+
+            var actual = data.Where(e =>
+            { 
+                for(var i = 0; i < expected.Count; ++i)
+                {
+                    var f = expected[i].Item1[0] == e.Item1[0] || expected[i].Item2[0] == e.Item2[0];
+                    var s = expected[i].Item1[1] == e.Item1[1] || expected[i].Item2[1] == e.Item2[1];
+                    if (f && s)
+                        return true;
+                }
+                return false;
+            }).ToList();
+
+            Assert.AreEqual(expected.Count, actual.Count);
         }
 
         private void SetPointsRandomSize()
