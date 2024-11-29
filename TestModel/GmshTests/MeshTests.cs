@@ -662,7 +662,7 @@ namespace TestModel.GmshTests
                 var tokens = s.Split(',');
                 var entry_0 = tokens[0].Split(':');
                 var entry_1 = tokens[1].Split(':');
-                
+
                 var item_0_0 = int.Parse(entry_0[0]);
                 var item_0_1 = int.Parse(entry_0[1]);
 
@@ -675,11 +675,11 @@ namespace TestModel.GmshTests
             }).ToList();
 
             var actual = data.Where(e =>
-            { 
+            {
                 for(var i = 0; i < expected.Count; ++i)
                 {
-                    var f = expected[i].Item1[0] == e.Item1[0] || expected[i].Item2[0] == e.Item2[0];
-                    var s = expected[i].Item1[1] == e.Item1[1] || expected[i].Item2[1] == e.Item2[1];
+                    var f = expected[i].Item1[0] == e.Item1[0] || expected[i].Item1[0] == e.Item2[0];
+                    var s = expected[i].Item1[1] == e.Item1[1] || expected[i].Item1[1] == e.Item2[1];
                     if (f && s)
                         return true;
                 }

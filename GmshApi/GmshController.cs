@@ -2596,7 +2596,7 @@ namespace GmshApi.GmshController
                                 var first = new int[] { curSurf.Tag, srcVolume.Tag };
                                 var second = new int[] { surfId, foundVolume.Tag };
                                 conjugated.Add(Tuple.Create(first, second));
-                                curSurf.Visited = true;
+                                foundSurf.Visited = true;
                             }
                         }
                     }
