@@ -12,6 +12,8 @@ namespace TestModel
     {
         [DataTestMethod]
         [DataRow(@"..\..\..\Examples\3D\cub_unsorted.bpf",6)]
+        [DataRow(@"c:\projs\AdditiveTest\nozzle.stlout_penta.bpf", 65606)]
+        [DataRow(@"c:\projs\AdditiveTest\nozzle.stlout_penta_beam_m.bpf", 67245)]
         public void LoadModelFromBpfTextFormat(string path, int elCount)
         {
             //assing
@@ -23,6 +25,8 @@ namespace TestModel
 
             //act
             model.Load(path);
+
+            var pentas = model.ObjectData.E3DCollection.Where(x => x.ElementKind == ModelInterfaces.MeshObjects.ElementKind.Пента);
 
             //assert
             Assert.AreEqual(model.ObjectData.Count(ObjType.Элемент), elCount);

@@ -16,6 +16,8 @@ namespace Model.MeshObjects
 
         public Hexa(int number, INode[] nodes) : base(number, nodes)
         {
+            if (surfaces.Count != 6)
+                throw new Exception($"Коллличество поверхностей в гексаэлементе {number} должно быть 6");
             var masterSurface = GetMasterSurface(4, surfaces);
             this.nodes = SortNodes(masterSurface.Number, surfaces).ToList();
 
