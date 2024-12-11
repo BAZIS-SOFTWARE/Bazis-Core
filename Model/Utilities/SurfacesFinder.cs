@@ -17,27 +17,27 @@ namespace Model.Utilities
         public static IEnumerable<T[]> FindSurfaceNodes<T>(T[] nodes) where T : IPoint
         {
             var usedSurfaces = new List<bool[]>();
-            foreach (var subset in GetSubsets(nodes))
+            foreach (var indexes in GetSubsets(nodes))
             {
-                if (usedSurfaces.Any(arr => arr[subset[0]] && arr[subset[1]] && arr[subset[2]]))
+                if (usedSurfaces.Any(arr => arr[indexes[0]] && arr[indexes[1]] && arr[indexes[2]])) // проверяем использована ли плоскость по индексам узлов
                     continue;
-                var plane = new Plane(nodes[subset[0]].Position, nodes[subset[1]].Position, nodes[subset[2]].Position);
-                var surfaceNodeIndeces = new List<int> { subset[0], subset[1], subset[2] };
+                var plane = new Plane(nodes[indexes[0]].Position, nodes[indexes[1]].Position, nodes[indexes[2]].Position);
+                var surfaceNodeIndeces = new List<int> { indexes[0], indexes[1], indexes[2] };
                 var signs = new List<int>();
                 for (var i = 0; i < nodes.Length; i++)
                 {
-                    if (i == subset[0] || i == subset[1] || i == subset[2])
+                    if (i == indexes[0] || i == indexes[1] || i == indexes[2]) // отсеиваем узлы образующие текущую плоскость поиска
                         continue;
                     var distance = plane.PointPosition(nodes[i].Position);
-                    if (Math.Abs(distance) < epsilon)
+                    if (Math.Abs(distance) < epsilon) // если узел лежит в плоскости
                         surfaceNodeIndeces.Add(i);
                     else
                     {
-                        var currentSign = Math.Sign(plane.PointPosition(nodes[i].Position));
+                        var currentSign = Math.Sign(plane.PointPosition(nodes[i].Position));//если узел не в плоскости
                         signs.Add(currentSign);
                     }
                 }
-                if (signs.All(x => x > 0) || signs.All(x => x < 0))
+                if (signs.All(x => x > 0) || signs.All(x => x < 0)) //проверка граничная ли это плоскость
                 {
                     var used = new bool[nodes.Length];
                     surfaceNodeIndeces.ForEach(i => used[i] = true);

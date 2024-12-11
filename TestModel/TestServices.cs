@@ -242,6 +242,7 @@ namespace TestModel
             var F = new Node(6, new Point3D(0, 2, 0));
             var G = new Node(7, new Point3D(0, 2, 1));
             var H = new Node(8, new Point3D(-0.5f, 3.5f, 0));
+            var K = new Node(9, new Point3D(1, 0, 0));
             var elements2D = new List<Element2D>
             {
                 new Triangle(9, new Node[] { A, B, C }),
@@ -253,7 +254,7 @@ namespace TestModel
             };
             var elements3D = new List<Element3D>
             {
-                new Tetra(15,new Node[] { A, B, C,D })
+                new Tetra(15,new Node[] { A, B, C,K })
             };
             var nodes = new List<Node> { A, B, C, D, E, F, G, H };
             var objectsData = new ObjectsData();
@@ -273,6 +274,7 @@ namespace TestModel
             var F = new Node(6, new Point3D(0, 2, 0));
             var G = new Node(7, new Point3D(0, 2, 1));
             var H = new Node(8, new Point3D(-0.5f, 3.5f, 0));
+            var K = new Node(9, new Point3D(1, 0, 0));
             var elements2D = new List<Element2D>
             {
                 new Triangle(0, new Node[] { A, B, C }),
@@ -284,7 +286,7 @@ namespace TestModel
             };
             var elements3D = new List<Element3D>
             {
-                new Tetra(15,new Node[] { A, B, C,D })
+                new Tetra(15,new Node[] { A, B, C,K })
             };
             var nodes = new List<Node> { A, B, C, D, E, F, G, H };
             var objectsData = new ObjectsData();
