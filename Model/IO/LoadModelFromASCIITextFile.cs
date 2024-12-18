@@ -1,14 +1,14 @@
 ﻿using Geometry;
 using Model.MeshObjects;
 using Model.Events;
-using ModelInterfaces;
+using Model.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using ModelInterfaces.MeshObjects;
+using Model.Interfaces.MeshObjects;
 using System.Xml.Linq;
 
 namespace Model.IO

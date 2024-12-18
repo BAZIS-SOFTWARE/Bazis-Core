@@ -20,21 +20,6 @@
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
   </PropertyGroup> 
   <ItemGroup>
-    <EmbeddedResource Remove="Interfaces\**" />
-    <None Remove="Interfaces\**" />
-  </ItemGroup> 
-  <ItemGroup>
-    <Compile Remove="Interfaces\IElement.cs" />
-    <Compile Remove="Interfaces\IElement2D.cs" />
-    <Compile Remove="Interfaces\IElement3D.cs" />
-    <Compile Remove="Interfaces\ILineObject.cs" />
-    <Compile Remove="Interfaces\IModelObject.cs" />
-    <Compile Remove="Interfaces\INodeObject.cs" />
-    <Compile Remove="Interfaces\ISurface.cs" />
-    <Compile Remove="Interfaces\ISurfaceElement.cs" />
-    <Compile Remove="Interfaces\ISurfaceObject.cs" />
-  </ItemGroup> 
-  <ItemGroup>
     <None Remove="Icon.png" />
   </ItemGroup> 
   <ItemGroup>
@@ -48,7 +33,7 @@
     <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
   </ItemGroup> 
   <ItemGroup>
-    <ProjectReference Include="..\ModelInterfaces\ModelInterfaces.csproj" />
+    <ProjectReference Include="..\PrGeometry\Geometry.csproj" />
   </ItemGroup> 
   <ItemGroup>
     <None Update="PrecedentsPlantUML.mdpuml">

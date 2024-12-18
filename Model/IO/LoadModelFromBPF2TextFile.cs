@@ -1,8 +1,8 @@
 ﻿using Geometry;
 using Model.Events;
 using Model.MeshObjects;
-using ModelInterfaces.ObjectsFinders;
-using ModelInterfaces;
+using Model.Interfaces.ObjectsFinders;
+using Model.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Model.GroupsData;
-using ModelInterfaces.MeshObjects;
+using Model.Interfaces.MeshObjects;
 
 namespace Model.IO
 {

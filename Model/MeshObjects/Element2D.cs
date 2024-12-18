@@ -1,12 +1,12 @@
 ﻿using Geometry;
 using MathNet.Numerics.LinearAlgebra;
-using ModelInterfaces;
+using Model.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using MathNet.Numerics.LinearAlgebra.Single;
-using ModelInterfaces.MeshObjects;
+using Model.Interfaces.MeshObjects;
 using Geometry.Interfaces;
 
 namespace Model.MeshObjects

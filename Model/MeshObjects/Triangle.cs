@@ -3,8 +3,8 @@ using System.Linq;
 using Geometry;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Single;
-using ModelInterfaces.IntegralObject;
-using ModelInterfaces.MeshObjects;
+using Model.Interfaces.IntegralObject;
+using Model.Interfaces.MeshObjects;
 
 namespace Model.MeshObjects
 {

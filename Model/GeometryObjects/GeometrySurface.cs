@@ -1,9 +1,9 @@
 ﻿using Geometry;
 using Model.MeshObjects;
-using ModelInterfaces;
-using ModelInterfaces.Attributes;
-using ModelInterfaces.GeometryObjects;
-using ModelInterfaces.MeshObjects;
+using Model.Interfaces;
+using Model.Interfaces.Attributes;
+using Model.Interfaces.GeometryObjects;
+using Model.Interfaces.MeshObjects;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

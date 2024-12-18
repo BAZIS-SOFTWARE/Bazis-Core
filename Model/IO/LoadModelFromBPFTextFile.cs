@@ -2,8 +2,8 @@
 using Model.Events;
 using Model.GroupsData;
 using Model.MeshObjects;
-using ModelInterfaces;
-using ModelInterfaces.ObjectsFinders;
+using Model.Interfaces;
+using Model.Interfaces.ObjectsFinders;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

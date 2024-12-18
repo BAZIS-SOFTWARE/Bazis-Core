@@ -1,6 +1,6 @@
 ﻿using Geometry;
-using ModelInterfaces;
-using ModelInterfaces.MeshObjects;
+using Model.Interfaces;
+using Model.Interfaces.MeshObjects;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;

@@ -1,11 +1,11 @@
 
 ﻿using Geometry;
-using ModelInterfaces;
+using Model.Interfaces;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System;
- using Model.GeometryObjects;
+using Model.GeometryObjects;
 
  namespace Model.IO
 {

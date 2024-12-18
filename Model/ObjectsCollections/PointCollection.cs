@@ -1,7 +1,7 @@
 ﻿using Model.Sort;
-using ModelInterfaces;
-using ModelInterfaces.GeometryObjects;
-using ModelInterfaces.ObjectsFinders;
+using Model.Interfaces;
+using Model.Interfaces.GeometryObjects;
+using Model.Interfaces.ObjectsFinders;
 using System;
 using System.Collections;
 using System.Collections.Generic;

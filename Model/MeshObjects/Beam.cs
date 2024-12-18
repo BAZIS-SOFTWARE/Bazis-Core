@@ -1,9 +1,9 @@
 ﻿using Geometry;
 using MathNet.Numerics.Distributions;
 using MathNet.Numerics.LinearAlgebra;
-using ModelInterfaces;
-using ModelInterfaces.IntegralObject;
-using ModelInterfaces.MeshObjects;
+using Model.Interfaces;
+using Model.Interfaces.IntegralObject;
+using Model.Interfaces.MeshObjects;
 using System;
 using System.Drawing;
 using System.Net;

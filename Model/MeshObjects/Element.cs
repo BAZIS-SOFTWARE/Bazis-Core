@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Geometry;
 using MathNet.Numerics.LinearAlgebra;
-using ModelInterfaces.IntegralObject;
-using ModelInterfaces.MeshObjects;
+using Model.Interfaces.IntegralObject;
+using Model.Interfaces.MeshObjects;
 
 namespace Model.MeshObjects
 {

@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Geometry;
-using ModelInterfaces;
+using Model.Interfaces;
 using System.IO;
 using Model.MeshObjects;
 using Model.GeometryObjects;
-using ModelInterfaces.MeshObjects;
-using ModelInterfaces.GeometryObjects;
-using ModelInterfaces.ObjectsFinders;
+using Model.Interfaces.MeshObjects;
+using Model.Interfaces.GeometryObjects;
+using Model.Interfaces.ObjectsFinders;
 using Geometry.Exteisions;
 
 namespace GmshApi.GmshController

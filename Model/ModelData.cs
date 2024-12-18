@@ -1,6 +1,6 @@
 ﻿using Model.GroupsData;
 using Model.IO;
-using ModelInterfaces;
+using Model.Interfaces;
 
 namespace Model
 {

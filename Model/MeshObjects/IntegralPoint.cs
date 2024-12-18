@@ -1,4 +1,4 @@
-﻿using ModelInterfaces.IntegralObject;
+﻿using Model.Interfaces.IntegralObject;
 using System.Collections.Generic;
 
 namespace Model.MeshObjects

@@ -1,5 +1,4 @@
-﻿using Model.Events;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,8 +8,8 @@ namespace Model.Interfaces
 {
     public interface ILoader
     {
-        ModelData Load(string path);
+        IModelData Load(string path);
 
-        event Action<object,LoaderEventArgs> LoadEvent;
+        event Action<object,ILoaderEventArgs> LoadEvent;
     }
 }

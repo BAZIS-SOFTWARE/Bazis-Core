@@ -1,9 +1,5 @@
-﻿using ModelInterfaces;
-using System;
+﻿using Model.Interfaces;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Model.GroupsData
 {

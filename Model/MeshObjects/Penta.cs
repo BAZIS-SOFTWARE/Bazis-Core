@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Geometry;
 using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.LinearAlgebra.Single;
-using ModelInterfaces.IntegralObject;
-using ModelInterfaces.MeshObjects;
+using Model.Interfaces.IntegralObject;
+using Model.Interfaces.MeshObjects;
 
 namespace Model.MeshObjects
 {

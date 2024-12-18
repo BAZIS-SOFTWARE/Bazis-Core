@@ -1,13 +1,11 @@
-﻿using Model;
-using Model.Events;
-using System;
+﻿using System;
 
 namespace Model.Interfaces
 {
     public interface IModelLoader
     {
-        ModelData Load(string path);
+        IModelData Load(string path);
 
-        event Action<object, LoaderEventArgs> LoadEvent;
+        event Action<object, ILoaderEventArgs> LoadEvent;
     }
 }

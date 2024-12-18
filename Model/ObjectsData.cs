@@ -1,9 +1,9 @@
-﻿using ModelInterfaces;
+﻿using Model.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ModelInterfaces.GeometryObjects;
-using ModelInterfaces.MeshObjects;
+using Model.Interfaces.GeometryObjects;
+using Model.Interfaces.MeshObjects;
 using Model.ObjectsCollections;
 using System.Collections.ObjectModel;
 

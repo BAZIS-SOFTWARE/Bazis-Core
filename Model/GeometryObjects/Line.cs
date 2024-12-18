@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Geometry;
-using ModelInterfaces;
-using ModelInterfaces.GeometryObjects;
+using Model.Interfaces;
+using Model.Interfaces.GeometryObjects;
 
 namespace Model.GeometryObjects
 {

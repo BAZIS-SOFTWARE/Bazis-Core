@@ -1,7 +1,7 @@
 ﻿using Geometry;
 using Model;
-using ModelInterfaces.ObjectsFinders;
-using ModelInterfaces;
+using Model.Interfaces.ObjectsFinders;
+using Model.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,7 +1,7 @@
 ﻿using Geometry;
 using Model.MeshObjects;
 using Model.Events;
-using ModelInterfaces;
+using Model.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

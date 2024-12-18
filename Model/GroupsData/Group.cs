@@ -1,10 +1,10 @@
-﻿using ModelInterfaces;
+﻿using Model.Interfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using ModelInterfaces.Attributes;
-using ModelInterfaces.ObjectsComparers;
+using Model.Interfaces.Attributes;
+using Model.Interfaces.ObjectsComparers;
 using Geometry;
 using Model.Extensions;
 

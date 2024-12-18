@@ -1,6 +1,6 @@
-﻿using ModelInterfaces;
-using ModelInterfaces.ObjectsFinders;
-using ModelInterfaces.MeshObjects;
+﻿using Model.Interfaces;
+using Model.Interfaces.ObjectsFinders;
+using Model.Interfaces.MeshObjects;
 using System;
 using System.Collections;
 using System.Collections.Generic;
