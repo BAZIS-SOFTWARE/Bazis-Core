@@ -117,7 +117,7 @@ namespace Model.IO
             {
                 var line = reader.ReadLine();
                 tokens = ReplaceQuotes(line)
-                    .Split(new char[] {' '}, StringSplitOptions.RemoveEmptyEntries)
+                    .Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
                     .ToArray();
                 var groupName = tokens[1];
                 var numbers = tokens.Skip(7).Select(int.Parse);
@@ -128,14 +128,23 @@ namespace Model.IO
                 else objsType = ObjType.Узел;
 
                 var group = new GroupsData.Group(groupName, objsType);
+
                 foreach (var number in numbers)
                 {
-                    var obj = allElements[number];
-                    group.Add(obj);
+                    if (objsType == ObjType.Узел)
+                    {
+                        var obj = allNodes[number];
+                        group.Add(obj);
+                    }
+                    else
+                    {
+                        var obj = allElements[number];
+                        group.Add(obj);
+                    }
                 }
+
                 model.GroupData.Add(group);
             }
-
         }
 
         private string ReplaceQuotes(string source)
