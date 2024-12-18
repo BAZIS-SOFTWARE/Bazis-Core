@@ -1,5 +1,5 @@
 ﻿using ModelControllerInterfaces;
-using ModelInterfaces.MeshObjects;
+using Model.Interfaces.MeshObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;

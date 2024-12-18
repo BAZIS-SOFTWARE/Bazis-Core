@@ -3,7 +3,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using Model.IO;
-using ModelInterfaces;
+using Model.Interfaces;
 
 namespace TestModel
 {
@@ -27,7 +27,7 @@ namespace TestModel
             //act
             model.Load(path);
 
-            var pentas = model.ObjectData.E3DCollection.Where(x => x.ElementKind == ModelInterfaces.MeshObjects.ElementKind.Пента);
+            var pentas = model.ObjectData.E3DCollection.Where(x => x.ElementKind == Model.Interfaces.MeshObjects.ElementKind.Пента);
 
             //assert
             Assert.AreEqual(model.ObjectData.Count(ObjType.Элемент), elCount);

@@ -37,7 +37,7 @@ namespace Model.IO
             writer.WriteLine("END_INFORMATIONS");
         }
 
-        private void WriteNodes(StreamWriter writer, IEnumerable<INode> nodes)
+        private void WriteNodes(StreamWriter writer, IEnumerable<Node> nodes)
         {
             writer.WriteLine($"BEGIN_NODES {nodes.Count()}");
             foreach(var node in nodes)

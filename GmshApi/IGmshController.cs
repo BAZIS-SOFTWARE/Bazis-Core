@@ -1,6 +1,8 @@
-﻿using Model.Interfaces;
+﻿using Model.GeometryObjects;
+using Model.Interfaces;
 using Model.Interfaces.GeometryObjects;
 using Model.Interfaces.MeshObjects;
+using Model.MeshObjects;
 using System;
 using System.Collections.Generic;
 
@@ -240,7 +242,7 @@ namespace GmshApi
         /// Возвращает список контрольных точек
         /// </summary>
         /// <returns>Список контрольных точек</returns>
-        List<IGeometryPoint> CreateControlPoints();
+        List<GeometryPoint> CreateControlPoints();
         /// <summary>
         /// Возвращает список элементов сетки
         /// </summary>
@@ -248,7 +250,7 @@ namespace GmshApi
         /// <param name="tag">Идентификатор</param>
         /// <param name="nodes">Отсортированные узлы</param>
         /// <returns>Список элементов сетки</returns>
-        List<IElement> GetMeshEntities(int dim, int tag, List<INode> nodes);
+        List<IElement> GetMeshEntities(int dim, int tag, List<Node> nodes);
         /// <summary>
         /// Возвращает список отсортированных узлов сетки.
         /// Если запрашивается точки для dim <=0, флаг includeBoundary установить в false, иначе будут дубликаты
@@ -257,7 +259,7 @@ namespace GmshApi
         /// <param name="tag">Идентификатор узла или (-1 для всех)</param>
         /// <param name="includeBoundary">Включать граничные точки</param>
         /// <returns>Список узлов сетки</returns>
-        List<INode> GetNodes(int dim = -1, int tag = -1, bool includeBoundary = true);
+        List<Node> GetNodes(int dim = -1, int tag = -1, bool includeBoundary = true);
         /// <summary>
         ///GetMeshObjects
         /// </summary>
@@ -267,7 +269,7 @@ namespace GmshApi
         /// item3 - els2d
         /// item4 - els3d
         /// </returns>
-        (List<INode>, List<ILineObject<INode>>, List<IElement2D>, List<IElement3D>) GetMeshObjects();
+        (List<Node>, List<ILineObject<Node>>, List<IElement2D>, List<IElement3D>) GetMeshObjects();
         /// <summary>
         /// Возвращает список всех пар размерность:идентификатор для заданной размерности
         /// </summary>

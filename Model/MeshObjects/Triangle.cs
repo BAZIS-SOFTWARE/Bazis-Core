@@ -15,12 +15,12 @@ namespace Model.MeshObjects
 
         public override ElementKind ElementKind { get; } = ElementKind.Треугольник;
 
-        public Triangle(int number, INode[] nodes) : base(number, nodes)
+        public Triangle(int number,Node[] nodes) : base(number, nodes)
         {
             CreateIntegrationPoint(1.0 / 2, 1.0 / 3, 1.0 / 3, 1.0 / 3);
         }
 
-        public Triangle(int number, INode[] nodes, int intpNumber) : base(number, nodes)
+        public Triangle(int number, Node[] nodes, int intpNumber) : base(number, nodes)
         {
             switch (intpNumber)
 

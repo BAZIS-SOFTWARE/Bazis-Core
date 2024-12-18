@@ -3,8 +3,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using Model.MeshObjects;
 using ModelController.MeshObjsUtility;
-using ModelInterfaces;
-using ModelInterfaces.MeshObjects;
+using Model.Interfaces;
+using Model.Interfaces.MeshObjects;
 using System;
 
 namespace TestModel
@@ -19,12 +19,12 @@ namespace TestModel
         public void BaseCheck()
         {
             var expectedTypes = new[] { ObjType.Элемент1D, ObjType.Элемент2D, ObjType.Элемент2D, ObjType.Элемент3D};
-            var beamNodes = new INode[] { new Node(0, new Point3D()), new Node(1, new Point3D(1, 1, 1)) };
-            var quadNodes = new INode[] { new Node(0, new Point3D()), new Node(1, new Point3D(1, 0, 0)),
+            var beamNodes = new Node[] { new Node(0, new Point3D()), new Node(1, new Point3D(1, 1, 1)) };
+            var quadNodes = new Node[] { new Node(0, new Point3D()), new Node(1, new Point3D(1, 0, 0)),
                 new Node(2, new Point3D(0, 1, 0)), new Node(3, new Point3D(1, 1, 0)) };
-            var triangleNodes = new INode[] { new Node(0, new Point3D()), new Node(1, new Point3D(1, 1, 1)),
+            var triangleNodes = new Node[] { new Node(0, new Point3D()), new Node(1, new Point3D(1, 1, 1)),
                 new Node(2, new Point3D(1, 0, 1)) };
-            var tetraNodes = new INode[] { new Node(0, new Point3D()), new Node(1, new Point3D(1, 1, 1)), new Node(2, new Point3D(2, 1, 1)),
+            var tetraNodes = new Node[] { new Node(0, new Point3D()), new Node(1, new Point3D(1, 1, 1)), new Node(2, new Point3D(2, 1, 1)),
                 new Node(3, new Point3D(1, 2, 1)) };
 
             var modelData = new ModelData();

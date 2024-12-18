@@ -1,5 +1,5 @@
 ﻿using Geometry;
-using ModelInterfaces.MeshObjects;
+using Model.Interfaces.MeshObjects;
 using System.Collections.Generic;
 
 namespace ModelController.MeshObjsUtility

@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using ModelController.MeshObjsCreator;
 using Model.MeshObjects;
-using ModelInterfaces.MeshObjects;
+using Model.Interfaces.MeshObjects;
 using Model.Utilities;
 using MathNet.Numerics.LinearAlgebra;
 
@@ -252,13 +252,13 @@ namespace TestModel
             //act
             var hNodes = hexa.GetVertexes().ToArray();
 
-            var hVol = new Tetra(0, new INode[] { hNodes[0], hNodes[1], hNodes[2], hNodes[5] }).CalcVolume();
-            hVol += new Tetra(0, new INode[] { hNodes[0], hNodes[2], hNodes[5], hNodes[6] }).CalcVolume();
-            hVol += new Tetra(0, new INode[] { hNodes[0], hNodes[2], hNodes[3], hNodes[6] }).CalcVolume();
+            var hVol = new Tetra(0, new Node[] { hNodes[0], hNodes[1], hNodes[2], hNodes[5] }).CalcVolume();
+            hVol += new Tetra(0, new Node[] { hNodes[0], hNodes[2], hNodes[5], hNodes[6] }).CalcVolume();
+            hVol += new Tetra(0, new Node[] { hNodes[0], hNodes[2], hNodes[3], hNodes[6] }).CalcVolume();
 
-            hVol += new Tetra(0, new INode[] { hNodes[0], hNodes[3], hNodes[6], hNodes[7] }).CalcVolume();
-            hVol += new Tetra(0, new INode[] { hNodes[0], hNodes[4], hNodes[6], hNodes[7] }).CalcVolume();
-            hVol += new Tetra(0, new INode[] { hNodes[0], hNodes[4], hNodes[5], hNodes[6] }).CalcVolume();
+            hVol += new Tetra(0, new Node[] { hNodes[0], hNodes[3], hNodes[6], hNodes[7] }).CalcVolume();
+            hVol += new Tetra(0, new Node[] { hNodes[0], hNodes[4], hNodes[6], hNodes[7] }).CalcVolume();
+            hVol += new Tetra(0, new Node[] { hNodes[0], hNodes[4], hNodes[5], hNodes[6] }).CalcVolume();
             
             //assert
             Assert.AreEqual(hVol, hexa.CalcVolume(), 0.1f);
@@ -467,7 +467,7 @@ namespace TestModel
         [DataRow(3, new int[] { 6, 7, 3, 2, 5, 8, 4, 1 })]
         public void SortNodes_ShouldSortNodesCorrectly_OnHexa(int mainSurfaceIndex, int[] expectedNodesNumbers)
         {
-            var nodes = new INode[]
+            var nodes = new Node[]
             {
                 new Node(1, new Point3D(0, 0, 0)),
                 new Node(2, new Point3D(0, 1, 0)),
@@ -494,7 +494,7 @@ namespace TestModel
         [DataRow(4, new int[] { 6,5,4,3,2,1})]
         public void SortNodes_ShouldSortNodesCorrectly_OnPenta(int mainSurfaceIndex, int[] expectedNodesNumbers)
         {
-            var nodes = new INode[]
+            var nodes = new Node[]
 {
                 new Node(1, new Point3D(0, 0, 0)),
                 new Node(2, new Point3D(0, 1, 0)),

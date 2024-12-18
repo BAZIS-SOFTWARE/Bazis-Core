@@ -1,8 +1,8 @@
 ﻿using Geometry;
 using Model.GeometryObjects;
 using ModelControllerInterfaces.MeshObjsUtility;
-using ModelInterfaces.GeometryObjects;
-using ModelInterfaces.MeshObjects;
+using Model.Interfaces.GeometryObjects;
+using Model.Interfaces.MeshObjects;
 using System.Collections.Generic;
 
 namespace ModelController.MeshObjsUtility

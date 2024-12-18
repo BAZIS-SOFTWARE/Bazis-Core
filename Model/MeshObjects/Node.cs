@@ -9,7 +9,7 @@ namespace Model.MeshObjects
     /// <summary>
     /// Node
     /// </summary>
-    public class Node : ModelObject, INode
+    public class Node : ModelObject, IPoint
     {
         List<IElement> elements = new List<IElement>();
   /// <inheritdoc/>

@@ -6,23 +6,24 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Model.Sort;
+using Model.GeometryObjects;
 
 namespace Model.ObjectsCollections
 {
-    internal class LineCollection : IObjectsCollection<ILineObject<IGeometryPoint>>
+    internal class LineCollection : IObjectsCollection<ILineObject<GeometryPoint>>
     {
         /// <inheritdoc/>
         public override string ToString()
         {
             return $@"{ObjType.Линия} {lines.Count}";
         }
-        List<ILineObject<IGeometryPoint>> lines = new List<ILineObject<IGeometryPoint>>();
+        List<ILineObject<GeometryPoint>> lines = new List<ILineObject<GeometryPoint>>();
         /// <inheritdoc/>
 
         public int Count => lines.Count;
         /// <inheritdoc/>
 
-        public void Add(ILineObject<IGeometryPoint> addObj)
+        public void Add(ILineObject<GeometryPoint> addObj)
         {
             if (lines.Count > 0)
                 if (addObj.Number <= lines.Last().Number)
@@ -34,10 +35,10 @@ namespace Model.ObjectsCollections
         }
         /// <inheritdoc/>
 
-        public void AddRange(IEnumerable<ILineObject<IGeometryPoint>> addObjs)
+        public void AddRange(IEnumerable<ILineObject<GeometryPoint>> addObjs)
         {
             var objsList = addObjs.ToList();
-            MergeSort<ILineObject<IGeometryPoint>>.MergeSortFunction(objsList);
+            MergeSort<ILineObject<GeometryPoint>>.MergeSortFunction(objsList);
 
             if (lines.Count > 0)
                 if (objsList.First().Number <= lines.Last().Number)
@@ -62,13 +63,13 @@ namespace Model.ObjectsCollections
         }
         /// <inheritdoc/>
 
-        public ILineObject<IGeometryPoint> Find(int objNumbr)
+        public ILineObject<GeometryPoint> Find(int objNumbr)
         {
             return ByNumberFinder.Find(lines,objNumbr);
         }
         /// <inheritdoc/>
 
-        public IEnumerator<ILineObject<IGeometryPoint>> GetEnumerator()
+        public IEnumerator<ILineObject<GeometryPoint>> GetEnumerator()
         {
             foreach (var item in lines)
             {

@@ -52,7 +52,7 @@ namespace Model.GeometryObjects
         }
 /// <inheritdoc/>
 
-        public IEnumerable<IGeometryPoint> GetVertexes()
+        public IEnumerable<GeometryPoint> GetVertexes()
         {
             foreach (var point in points)
             {

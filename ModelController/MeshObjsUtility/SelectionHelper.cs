@@ -1,12 +1,12 @@
 ﻿using Geometry;
-using ModelInterfaces.ObjectsFinders;
-using ModelInterfaces;
+using Model.Interfaces.ObjectsFinders;
+using Model.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using Model.MeshObjects;
-using ModelInterfaces.MeshObjects;
+using Model.Interfaces.MeshObjects;
 using Model;
 using ModelControllerInterfaces;
 

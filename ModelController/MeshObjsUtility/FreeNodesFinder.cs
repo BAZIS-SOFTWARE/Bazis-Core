@@ -1,6 +1,6 @@
 ﻿using ModelControllerInterfaces;
-using ModelInterfaces;
-using ModelInterfaces.MeshObjects;
+using Model.Interfaces;
+using Model.Interfaces.MeshObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;

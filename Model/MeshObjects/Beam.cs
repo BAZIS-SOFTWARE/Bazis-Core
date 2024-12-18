@@ -10,9 +10,9 @@ using System.Net;
 
 namespace Model.MeshObjects
 {
-    public class Beam : Element, ILineObject<INode>
+    public class Beam : Element, ILineObject<Node>
     {
-        public Beam(int number, INode[] nodes) : base(number, nodes)
+        public Beam(int number, Node[] nodes) : base(number, nodes)
         {
             InitialColor = Color.FromArgb(255, 192, 203);
             MasterColor = Color.FromArgb(255, 192, 203);
@@ -27,7 +27,7 @@ namespace Model.MeshObjects
 
 
 
-        public Beam(int number, INode[] nodes, int intpNumber) : base(number, nodes)
+        public Beam(int number, Node[] nodes, int intpNumber) : base(number, nodes)
         {
             IntegralPoint intPoint;
             switch (intpNumber)

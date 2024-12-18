@@ -1,4 +1,4 @@
-﻿using ModelInterfaces;
+﻿using Model.Interfaces;
 using ModelController.ModelScenePresentator.GlObjsVertexCreators;
 using ModelController.ModelScenePresentator.Interfaces;
 using ModelControllerInterfaces;
@@ -6,7 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using ModelInterfaces.GeometryObjects;
+using Model.Interfaces.GeometryObjects;
 
 namespace ModelController.ModelScenePresentator.GlObjsPresenters
 {

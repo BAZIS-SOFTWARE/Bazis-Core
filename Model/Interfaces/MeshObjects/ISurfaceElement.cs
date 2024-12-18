@@ -1,10 +1,11 @@
 ﻿using Geometry;
+using Model.MeshObjects;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace Model.Interfaces.MeshObjects
 {
-    public interface ISurfaceElement : IElement, ISurfaceObject<IElementSurface, INode>
+    public interface ISurfaceElement : IElement, ISurfaceObject<ElementSurface, Node>
     {
         /// <summary>
         /// Get surfaces normals

@@ -14,7 +14,7 @@ namespace Model.MeshObjects
 
         public override ElementKind ElementKind { get; } = ElementKind.Гекса;
 
-        public Hexa(int number, INode[] nodes) : base(number, nodes)
+        public Hexa(int number, Node[] nodes) : base(number, nodes)
         {
             if (surfaces.Count != 6)
                 throw new Exception($"Коллличество поверхностей в гексаэлементе {number} должно быть 6");
@@ -26,7 +26,7 @@ namespace Model.MeshObjects
 
 
 
-        public Hexa(int number, INode[] nodes, int intpNumber) : base(number, nodes)
+        public Hexa(int number, Node[] nodes, int intpNumber) : base(number, nodes)
         {
             IntegralPoint intPoint;
             switch (intpNumber)

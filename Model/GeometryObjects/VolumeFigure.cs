@@ -17,13 +17,13 @@ namespace Model.GeometryObjects
     /// </summary>
     public class VolumeFigure : ModelObject, IVolumeFigure
     {
-        IGeometrySurface[] surfaces;
+        GeometrySurface[] surfaces;
 
-        IGeometryPoint[] points
+        GeometryPoint[] points
         {
             get
             {
-                var points = new List<IGeometryPoint>();
+                var points = new List<GeometryPoint>();
 
                 foreach (var surface in surfaces)
                 {
@@ -43,7 +43,7 @@ namespace Model.GeometryObjects
         /// </summary>
         /// <param name="number"></param>
         /// <param name="surfaces"></param>
-        public VolumeFigure(int number, IGeometrySurface[] surfaces) : base(number)
+        public VolumeFigure(int number, GeometrySurface[] surfaces) : base(number)
         {
             InitialColor = Color.FromArgb(255, 125, 0);
             MasterColor = Color.FromArgb(255, 125, 0);
@@ -71,7 +71,7 @@ namespace Model.GeometryObjects
         }
 /// <inheritdoc/>
 
-        public IEnumerable<IGeometrySurface> GetSurfaces()
+        public IEnumerable<GeometrySurface> GetSurfaces()
         {
             foreach (var item in surfaces)
             {
@@ -86,9 +86,9 @@ namespace Model.GeometryObjects
         }
 /// <inheritdoc/>
 
-        public IEnumerable<IGeometryPoint> GetVertexes()
+        public IEnumerable<GeometryPoint> GetVertexes()
         {
-            var points = new List<IGeometryPoint>();
+            var points = new List<GeometryPoint>();
 
             foreach (var surface in surfaces)
             {

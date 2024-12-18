@@ -16,7 +16,7 @@ namespace Model.MeshObjects
         /// </summary>
         /// <param name="number"></param>
         /// <param name="nodes"></param>
-        public Triangle_c(int number, INode[] nodes) : base(number, nodes)
+        public Triangle_c(int number, Node[] nodes) : base(number, nodes)
         {
             CreateIntegrationPoint(1.0 / 2, 1.0 / 3, 1.0 / 3);
         }
@@ -27,7 +27,7 @@ namespace Model.MeshObjects
         /// <param name="nodes"></param>
         /// <param name="intpNumber"></param>
         /// <exception cref="ArgumentException"></exception>
-        public Triangle_c(int number, INode[] nodes, int intpNumber) : base(number, nodes)
+        public Triangle_c(int number, Node[] nodes, int intpNumber) : base(number, nodes)
         {
             switch (intpNumber)
 

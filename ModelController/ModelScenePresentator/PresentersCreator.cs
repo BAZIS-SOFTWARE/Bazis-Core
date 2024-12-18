@@ -1,5 +1,5 @@
 ﻿using Model;
-using ModelInterfaces;
+using Model.Interfaces;
 using ModelController.ModelScenePresentator.GlObjsPresenters;
 using ModelControllerInterfaces;
 using System;
@@ -7,8 +7,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Model.MeshObjects;
-using ModelInterfaces.GeometryObjects;
-using ModelInterfaces.MeshObjects;
+using Model.Interfaces.GeometryObjects;
+using Model.Interfaces.MeshObjects;
 using System.Drawing;
 
 namespace ModelController.ModelScenePresentator

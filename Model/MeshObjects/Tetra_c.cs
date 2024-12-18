@@ -18,7 +18,7 @@ namespace Model.MeshObjects
         /// </summary>
         /// <param name="number"></param>
         /// <param name="nodes"></param>
-        public Tetra_c(int number, INode[] nodes) : base(number, nodes)
+        public Tetra_c(int number, Node[] nodes) : base(number, nodes)
         {
             CreateIntegrationPoint(1.0/6, 1.0 / 4, 1.0 / 4, 1.0 / 4);
         }
@@ -29,7 +29,7 @@ namespace Model.MeshObjects
         /// <param name="nodes"></param>
         /// <param name="intpNumber"></param>
         /// <exception cref="ArgumentException"></exception>
-        public Tetra_c(int number, INode[] nodes, int intpNumber) : base(number, nodes)
+        public Tetra_c(int number, Node[] nodes, int intpNumber) : base(number, nodes)
         {
             IntegralPoint intPoint;
             switch (intpNumber)

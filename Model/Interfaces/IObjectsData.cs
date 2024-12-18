@@ -1,5 +1,7 @@
-﻿using Model.Interfaces.GeometryObjects;
+﻿using Model.GeometryObjects;
+using Model.Interfaces.GeometryObjects;
 using Model.Interfaces.MeshObjects;
+using Model.MeshObjects;
 using System.Collections.Generic;
 
 namespace Model.Interfaces
@@ -20,19 +22,19 @@ namespace Model.Interfaces
         /// <summary>
         /// E1DCollection
         /// </summary>
-        IObjectsCollection<ILineObject<INode>> E1DCollection { get; }
+        IObjectsCollection<ILineObject<Node>> E1DCollection { get; }
         /// <summary>
         /// NodeCollection
         /// </summary>
-        IObjectsCollection<INode> NodeCollection { get; }
+        IObjectsCollection<Node> NodeCollection { get; }
         /// <summary>
         /// PointCollection
         /// </summary>
-        IObjectsCollection<IGeometryPoint> PointCollection { get; }
+        IObjectsCollection<GeometryPoint> PointCollection { get; }
         /// <summary>
         /// LineCollection
         /// </summary>
-        IObjectsCollection<ILineObject<IGeometryPoint>> LineCollection { get; }
+        IObjectsCollection<ILineObject<GeometryPoint>> LineCollection { get; }
         /// <summary>
         /// Fig2DCollection
         /// </summary>

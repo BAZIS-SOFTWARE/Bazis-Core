@@ -6,23 +6,24 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Model.GeometryObjects;
 
 namespace Model.ObjectsCollections
 {
-    public class PointCollection : IObjectsCollection<IGeometryPoint>
+    public class PointCollection : IObjectsCollection<GeometryPoint>
     {
         /// <inheritdoc/>
         public override string ToString()
         {
             return $@"{ObjType.Точка} {points.Count}";
         }
-        List<IGeometryPoint> points = new List<IGeometryPoint>();
+        List<GeometryPoint> points = new List<GeometryPoint>();
         /// <inheritdoc/>
 
         public int Count => points.Count;
         /// <inheritdoc/>
 
-        public void Add(IGeometryPoint addObj)
+        public void Add(GeometryPoint addObj)
         {
             if (points.Count > 0)
                 if (addObj.Number <= points.Last().Number)
@@ -34,10 +35,10 @@ namespace Model.ObjectsCollections
         }
         /// <inheritdoc/>
 
-        public void AddRange(IEnumerable<IGeometryPoint> addObjs)
+        public void AddRange(IEnumerable<GeometryPoint> addObjs)
         {
             var objsList = addObjs.ToList();
-            MergeSort<IGeometryPoint>.MergeSortFunction(objsList);
+            MergeSort<GeometryPoint>.MergeSortFunction(objsList);
 
             if (points.Count > 0)
                 if (objsList.First().Number <= points.Last().Number)
@@ -62,13 +63,13 @@ namespace Model.ObjectsCollections
         }
         /// <inheritdoc/>
 
-        public IGeometryPoint Find(int objNumbr)
+        public GeometryPoint Find(int objNumbr)
         {
             return ByNumberFinder.Find(points,objNumbr);
         }
         /// <inheritdoc/>
 
-        public IEnumerator<IGeometryPoint> GetEnumerator()
+        public IEnumerator<GeometryPoint> GetEnumerator()
         {
             foreach (var item in points)
             {

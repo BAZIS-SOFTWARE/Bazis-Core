@@ -6,7 +6,7 @@ using ModelControllerInterfaces.SurfaceMeshCreator;
 using ModelControllerInterfaces.MeshObjsUtility;
 using ModelControllerInterfaces.Utilities;
 using ModelControllerInterfaces.ObjsCreator;
-using ModelInterfaces;
+using Model.Interfaces;
 
 namespace ModelController
 {

@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Model.GeometryObjects
 {
-    public class GeometrySurface : ModelObject, IGeometrySurface
+    public class GeometrySurface : ModelObject, ISurface<GeometryPoint>
     {
         GeometryPoint[] points;
         /// <summary>
@@ -38,7 +38,7 @@ namespace Model.GeometryObjects
         /// </summary>
         /// <param name="ind"></param>
         /// <returns></returns>
-        public IGeometryPoint this[int ind]
+        public GeometryPoint this[int ind]
         {
             get { return points[ind]; }
         }
@@ -96,7 +96,7 @@ namespace Model.GeometryObjects
         }
         /// <inheritdoc/>
 
-        public bool Equals(INode other)
+        public bool Equals(Node other)
         {
             var points = other.GetCoordinates().ToArray();
             if (points.Contains(this.points[0].Position, new Point3DEqualityComparer()) &&
@@ -145,7 +145,7 @@ points.Contains(this.points[2].Position, new Point3DEqualityComparer()))
         }
         /// <inheritdoc/>
 
-        public IEnumerable<IGeometryPoint> GetVertexes()
+        public IEnumerable<GeometryPoint> GetVertexes()
         {
             foreach (var node in points)
             {

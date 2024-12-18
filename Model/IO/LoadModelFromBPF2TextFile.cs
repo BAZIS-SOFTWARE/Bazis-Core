@@ -121,7 +121,7 @@ namespace Model.IO
                 if (!int.TryParse(elData[3], out elintPnts))
                     throw new Exception("Кол-во точек интегрирования задано некорректно!");
 
-                var nodeList = new List<INode>();
+                var nodeList = new List<Node>();
                 foreach (var nodeNumber in ndNumbers)
                 {
                     var node = newMesh.ObjectData.NodeCollection.Find(nodeNumber);

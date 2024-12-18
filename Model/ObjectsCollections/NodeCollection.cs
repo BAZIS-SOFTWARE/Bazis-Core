@@ -6,23 +6,24 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Model.Sort;
+using Model.MeshObjects;
 
 namespace Model.ObjectsCollections
 {
-    public class NodeCollection : IObjectsCollection<INode>
+    public class NodeCollection : IObjectsCollection<Node>
     {
         /// <inheritdoc/>
         public override string ToString()
         {
             return $@"{ObjType.Узел} {nodes.Count}";
         }
-        List<INode> nodes = new List<INode>();
+        List<Node> nodes = new List<Node>();
         /// <inheritdoc/>
 
         public int Count => nodes.Count;
         /// <inheritdoc/>
 
-        public void Add(INode addObj)
+        public void Add(Node addObj)
         {
             if (nodes.Count > 0)
                 if (addObj.Number <= nodes.Last().Number)
@@ -34,10 +35,10 @@ namespace Model.ObjectsCollections
         }
         /// <inheritdoc/>
 
-        public void AddRange(IEnumerable<INode> addObjs)
+        public void AddRange(IEnumerable<Node> addObjs)
         {
             var objsList = addObjs.ToList();
-            MergeSort<INode>.MergeSortFunction(objsList);
+            MergeSort<Node>.MergeSortFunction(objsList);
 
             if (nodes.Count > 0)
                 if (objsList.First().Number <= nodes.Last().Number)
@@ -62,13 +63,13 @@ namespace Model.ObjectsCollections
         }
         /// <inheritdoc/>
 
-        public INode Find(int objNumbr)
+        public Node Find(int objNumbr)
         {
             return ByNumberFinder.Find(nodes,objNumbr);
         }
         /// <inheritdoc/>
 
-        public IEnumerator<INode> GetEnumerator()
+        public IEnumerator<Node> GetEnumerator()
         {
             foreach (var item in nodes)
             {

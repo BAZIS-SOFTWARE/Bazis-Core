@@ -5,7 +5,7 @@ using Model.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ModelInterfaces.MeshObjects;
+using Model.Interfaces.MeshObjects;
 using ModelControllerInterfaces;
 using Model.MeshObjects;
 using System.Drawing;
@@ -19,7 +19,7 @@ namespace ModelController.MeshObjsUtility
     public class FindBoundaryEdges : IBoundaryEdgesFinder
     {
         /// <inheritdoc/>
-        public IEnumerable<ILineObject<INode>> CreateBoundaryEdges(List<string> linesNodes ,IModelData modelData)
+        public IEnumerable<ILineObject<Node>> CreateBoundaryEdges(List<string> linesNodes ,IModelData modelData)
         {
             var counter = 0;
             foreach (var lineNodes in linesNodes)
@@ -29,7 +29,7 @@ namespace ModelController.MeshObjsUtility
                 var p1 = Convert.ToInt32(numbers[1]);
                 var node0 = modelData.ObjectData.NodeCollection.Find(po);
                 var node1 = modelData.ObjectData.NodeCollection.Find(p1);
-                var beam = new Beam(counter, new INode[] { node0, node1 })
+                var beam = new Beam(counter, new Node[] { node0, node1 })
                 { MasterColor = Color.Red };
                 yield return beam;
                 counter++;
@@ -50,7 +50,7 @@ namespace ModelController.MeshObjsUtility
             foreach (var interfacedNode in interfacedNodes)
             {
                 //edge, <el,surf>
-                var sharedEdges = new Dictionary<string, Dictionary<IElement, List<IElementSurface>>>();
+                var sharedEdges = new Dictionary<string, Dictionary<IElement, List<ElementSurface>>>();
                 foreach (var sharedElement in interfacedNode.Value)
                 {
                     var element = ByNumberFinder.Find(els,sharedElement);
@@ -80,12 +80,12 @@ namespace ModelController.MeshObjsUtility
 
 
                                 if (!sharedEdges.Keys.Contains(edge))
-                                    sharedEdges.Add(edge, new Dictionary<IElement, List<IElementSurface>>()
-                                    { { element, new List<IElementSurface>() { surface } } });
+                                    sharedEdges.Add(edge, new Dictionary<IElement, List<ElementSurface>>()
+                                    { { element, new List<ElementSurface>() { surface } } });
                                 else
                                 {
                                     if (!sharedEdges[edge].ContainsKey(element))
-                                        sharedEdges[edge].Add(element, new List<IElementSurface>() { surface });
+                                        sharedEdges[edge].Add(element, new List<ElementSurface>() { surface });
                                     else sharedEdges[edge][element].Add(surface);
 
                                     if (CheckAdjacentAngle(sharedEdges[edge]))
@@ -103,7 +103,7 @@ namespace ModelController.MeshObjsUtility
             return boundedEdges;
         }
 
-        private bool CheckAdjacentAngle(Dictionary<IElement, List<IElementSurface>> adjElems)
+        private bool CheckAdjacentAngle(Dictionary<IElement, List<ElementSurface>> adjElems)
         {
             var vec = new List<Point3D>();
 

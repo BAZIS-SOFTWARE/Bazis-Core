@@ -1,4 +1,4 @@
-﻿using ModelInterfaces;
+﻿using Model.Interfaces;
 using ModelController.ModelScenePresentator.GlObjsVertexCreators;
 using ModelController.ModelScenePresentator.Interfaces;
 using ModelControllerInterfaces;

@@ -20,6 +20,12 @@
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
   </PropertyGroup> 
   <ItemGroup>
+    <Compile Remove="Interfaces\GeometryObjects\IGeometryPoint.cs" />
+    <Compile Remove="Interfaces\GeometryObjects\IGeometrySurface.cs" />
+    <Compile Remove="Interfaces\MeshObjects\IElementSurface.cs" />
+    <Compile Remove="Interfaces\MeshObjects\INode.cs" />
+  </ItemGroup> 
+  <ItemGroup>
     <None Remove="Icon.png" />
   </ItemGroup> 
   <ItemGroup>

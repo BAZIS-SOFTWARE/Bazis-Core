@@ -3,8 +3,8 @@ using System.Linq;
 using GmshApi.GmshController;
 using System;
 using Model;
-using ModelInterfaces;
-using ModelInterfaces.ObjectsFinders;
+using Model.Interfaces;
+using Model.Interfaces.ObjectsFinders;
 using GmshApi;
 
 namespace TestModel.GmshTests

@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
-using ModelInterfaces;
+using Model.Interfaces;
 using Model.IO;
 using ModelController.ModelScenePresentator;
 using System;
@@ -11,10 +11,10 @@ using Model.MeshObjects;
 using ModelController.ModelScenePresentator.GlObjsPresenters;
 using Model.GeometryObjects;
 using ModelControllerInterfaces;
-using ModelInterfaces.GeometryObjects;
+using Model.Interfaces.GeometryObjects;
 using System.IO;
 using Geometry;
-using ModelInterfaces.MeshObjects;
+using Model.Interfaces.MeshObjects;
 
 namespace TestModel
 {
@@ -43,7 +43,7 @@ namespace TestModel
                                      new GeometryPoint(1, new Point3D(1.0f, 1.0f, -1.0f))
                                    };
             var lines = new Line[] { new Line(0, nodes) };
-            var presenter = new LineObjsPresenter<IGeometryPoint>();
+            var presenter = new LineObjsPresenter<GeometryPoint>();
             presenter.Add(lines);
             var indices = presenter.CreateIndexes();
             var pointers = presenter.CreatePointers(indices.Item1);
@@ -65,7 +65,7 @@ namespace TestModel
                                      new Node(2, new Point3D(0.0f, 0.5f, 0.0f))
                                    };
             var triangle = new Element2D[] { new Triangle(0, nodes) };
-            var presenter = new SurfaceObjsPresenter<IElementSurface, INode>(false) { triangle };
+            var presenter = new SurfaceObjsPresenter<ElementSurface, Node>(false) { triangle };
             var indices = presenter.CreateIndexes();
             var pointers = presenter.CreatePointers(indices.Item1);
             var colors = presenter.CreateVertexes(indices.Item3, "цвет");

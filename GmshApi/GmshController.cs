@@ -1856,10 +1856,10 @@ namespace GmshApi.GmshController
         }
         /// <inheritdoc/>
 
-        public List<IGeometryPoint> CreateControlPoints()
+        public List<GeometryPoint> CreateControlPoints()
         {
             int[] tags;
-            var nodes = new List<IGeometryPoint>();
+            var nodes = new List<GeometryPoint>();
             if (ModelGetGeometryEntities(out tags, 0))
             {
                 double[] coords;
@@ -1890,7 +1890,7 @@ namespace GmshApi.GmshController
         }
         /// <inheritdoc/>
 
-        public List<IElement> GetMeshEntities(int dim, int tag, List<INode> nodes)
+        public List<IElement> GetMeshEntities(int dim, int tag, List<Node> nodes)
         {
             ElementProperties[] properties;
             int[] elementTypes;
@@ -1906,7 +1906,7 @@ namespace GmshApi.GmshController
                     var nodesCount = properties[i].numNodes;
                     for (var j = 0; j < elements.Length; ++j)
                     {
-                        var nodesPerElems = new INode[nodesCount];
+                        var nodesPerElems = new Node[nodesCount];
                         for (int k = 0; k < nodesCount; ++k)
                         {
                             var tagStride = j * nodesCount + k;
@@ -1928,7 +1928,7 @@ namespace GmshApi.GmshController
         /// <param name="nodes">Отсортированные узлы</param>
         /// <param name="fillDelegete">Делегат, который будет заполнять свой список ObjectData</param>
         /// <returns>Список элементов сетки</returns>
-        private void GetMeshEntities(int dim, int tag, List<INode> nodes, Action<string, int, INode[]> fillDelegete)
+        private void GetMeshEntities(int dim, int tag, List<Node> nodes, Action<string, int, Node[]> fillDelegete)
         {
             ElementProperties[] properties;
             int[] elementTypes;
@@ -1943,7 +1943,7 @@ namespace GmshApi.GmshController
                     var nodesCount = properties[i].numNodes;
                     for (var j = 0; j < elements.Length; ++j)
                     {
-                        var nodesPerElems = new INode[nodesCount];
+                        var nodesPerElems = new Node[nodesCount];
                         for (int k = 0; k < nodesCount; ++k)
                         {
                             var tagStride = j * nodesCount + k;
@@ -1958,11 +1958,11 @@ namespace GmshApi.GmshController
         }
         /// <inheritdoc/>
 
-        public List<INode> GetNodes(int dim = -1, int tag = -1, bool includeBoundary = true)
+        public List<Node> GetNodes(int dim = -1, int tag = -1, bool includeBoundary = true)
         {
             long[] nodeTags;
             double[] local, parametric;
-            var nodes = new List<INode>();
+            var nodes = new List<Node>();
             if (ModelMeshGetNodes(dim, tag, includeBoundary, false, out nodeTags, out local, out parametric))
             {
                 for (var i = 0; i < nodeTags.Length; ++i)
@@ -1975,24 +1975,24 @@ namespace GmshApi.GmshController
         }
         /// <inheritdoc/>
 
-        public (List<INode>, List<ILineObject<INode>>, List<IElement2D>, List<IElement3D>) GetMeshObjects()
+        public (List<Node>, List<ILineObject<Node>>, List<IElement2D>, List<IElement3D>) GetMeshObjects()
         {
             var nodes = GetNodes(-1, -1, false);
-            var e1D = new List<ILineObject<INode>>();
+            var e1D = new List<ILineObject<Node>>();
             var e2D = new List<IElement2D>();
             var e3D = new List<IElement3D>();
-            Action<string, int, INode[]> filler1D = (s, i, n) =>
+            Action<string, int, Node[]> filler1D = (s, i, n) =>
             {
                 e1D.Add(new Beam(i, n));
             };
-            Action<string, int, INode[]> filler2D = (s, i, n) =>
+            Action<string, int, Node[]> filler2D = (s, i, n) =>
             {
                 if (s.Contains("Triangle"))
                     e2D.Add(new Triangle(i, n));
                 else
                     e2D.Add(new Quad(i, n));
             };
-            Action<string, int, INode[]> filler3D = (s, i, n) =>
+            Action<string, int, Node[]> filler3D = (s, i, n) =>
             {
                 if (s.Contains("Tetrahedron"))
                     e3D.Add(new Tetra(i, n));
@@ -2053,7 +2053,7 @@ namespace GmshApi.GmshController
         }
 
         private IElement CreateModelObject(ref string elementName,
-                                                  long elementId, INode[] nodes)
+                                                  long elementId, Node[] nodes)
         {
             if (elementName.Contains("Triangle"))
                 return new Triangle((int)elementId, nodes);

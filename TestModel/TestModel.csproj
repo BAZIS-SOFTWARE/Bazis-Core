@@ -161,17 +161,9 @@
       <Project>{1fe044a5-fe40-4f59-b05e-5cdb5bb25282}</Project>
       <Name>GmshApi</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ModelControllerInterfaces\ModelControllerInterfaces.csproj">
-      <Project>{A7FF5F36-3905-4526-B825-B8AE9CDBB635}</Project>
-      <Name>ModelControllerInterfaces</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ModelController\ModelController.csproj">
       <Project>{0040c7b5-aa26-42c4-b3a0-c7ff40ec8709}</Project>
       <Name>ModelController</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ModelInterfaces\ModelInterfaces.csproj">
-      <Project>{4cd55397-85a3-4982-9339-cd7cefb014a2}</Project>
-      <Name>ModelInterfaces</Name>
     </ProjectReference>
     <ProjectReference Include="..\Model\Model.csproj">
       <Project>{a6b0cebb-8f7c-467e-90bb-924103dae30b}</Project>

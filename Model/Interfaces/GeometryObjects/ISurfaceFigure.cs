@@ -1,9 +1,11 @@
-﻿namespace Model.Interfaces.GeometryObjects
+﻿using Model.GeometryObjects;
+
+namespace Model.Interfaces.GeometryObjects
 {
     /// <summary>
     /// ISurfaceFigure
     /// </summary>
-    public interface ISurfaceFigure : ISurfaceObject<IGeometrySurface, IGeometryPoint>, ISquare
+    public interface ISurfaceFigure : ISurfaceObject<GeometrySurface, GeometryPoint>, ISquare
     {
 
     }

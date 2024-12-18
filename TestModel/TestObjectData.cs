@@ -2,7 +2,7 @@
 using Model;
 using Model.MeshObjects;
 using Model.IO;
-using ModelInterfaces;
+using Model.Interfaces;
 using System;
 using System.Collections.Generic;
 using Model.GeometryObjects;

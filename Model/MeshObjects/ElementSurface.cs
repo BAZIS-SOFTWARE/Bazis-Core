@@ -11,16 +11,16 @@ namespace Model.MeshObjects
     /// <summary>
     /// Surface class
     /// </summary>
-    public class ElementSurface : ModelObject, IElementSurface
+    public class ElementSurface : ModelObject, ISurface<Node>
     {
-        INode[] nodes;
+        Node[] nodes;
         /// <summary>
         /// Surface constructor
         /// </summary>
         /// <param name="elementNumber"></param>
         /// <param name="surfaceNumber"></param>
         /// <param name="nodes"></param>
-        public ElementSurface(int elementNumber, int surfaceNumber, INode[] nodes) : base(surfaceNumber)
+        public ElementSurface(int elementNumber, int surfaceNumber, Node[] nodes) : base(surfaceNumber)
         {
             if (nodes.Length < 3)
                 throw new Exception("Для создания поверхности требуется не меньше 3-х узлов!");
@@ -40,7 +40,7 @@ namespace Model.MeshObjects
         /// </summary>
         /// <param name="ind"></param>
         /// <returns></returns>
-        public INode this[int ind]
+        public Node this[int ind]
         {
             get { return nodes[ind]; }
         }
@@ -101,7 +101,7 @@ namespace Model.MeshObjects
         }
         /// <inheritdoc/>
 
-        public bool Equals(INode other)
+        public bool Equals(Node other)
         {
             var points = other.GetCoordinates().ToArray();
             if (points.Contains(nodes[0].Position, new Point3DEqualityComparer()) &&
@@ -151,7 +151,7 @@ points.Contains(nodes[2].Position, new Point3DEqualityComparer()))
 
         /// <inheritdoc/>
 
-        public IEnumerable<INode> GetVertexes()
+        public IEnumerable<Node> GetVertexes()
         {
             foreach (var node in nodes)
             {

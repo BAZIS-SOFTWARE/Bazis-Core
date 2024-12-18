@@ -13,9 +13,9 @@ namespace Model.MeshObjects
 {
     public abstract class Element2D : Element, IElement2D
     {
-        protected IElementSurface surface;
+        protected ElementSurface surface;
 
-        public Element2D(int number, INode[] nodes) : base(number, nodes)
+        public Element2D(int number, Node[] nodes) : base(number, nodes)
         {
             InitialColor = Color.FromArgb(0, 0, 255);
             MasterColor = Color.FromArgb(0, 0, 255);
@@ -58,7 +58,7 @@ namespace Model.MeshObjects
             return basis;
         }
 
-        public Element2D(int number, INode[] nodes, int intPoints) : this(number, nodes)
+        public Element2D(int number, Node[] nodes, int intPoints) : this(number, nodes)
         {
 
         }
@@ -99,7 +99,7 @@ namespace Model.MeshObjects
 
         /// <inheritdoc/>
 
-        public IEnumerable<IElementSurface> GetSurfaces()
+        public IEnumerable<ElementSurface> GetSurfaces()
         {
             yield return surface;
         }

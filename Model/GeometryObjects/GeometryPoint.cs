@@ -9,7 +9,7 @@ namespace Model.GeometryObjects
     /// <summary>
     /// Point
     /// </summary>
-    public class GeometryPoint : ModelObject, IGeometryPoint
+    public class GeometryPoint : ModelObject, IPoint
     {
         List<ILineObject<IPoint>> lines = new List<ILineObject<IPoint>>();
         /// <summary>

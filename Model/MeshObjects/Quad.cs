@@ -12,13 +12,13 @@ namespace Model.MeshObjects
         /// <inheritdoc/>
         public override ElementKind ElementKind { get; } = ElementKind.Квадрат;
 
-        public Quad(int number, INode[] nodes) : base(number, nodes)
+        public Quad(int number, Node[] nodes) : base(number, nodes)
         {
             CreateIntegrationPoint(2, 0, 0);
         }
 
 
-        public Quad(int number, INode[] nodes, int intpNumber) : base(number, nodes)
+        public Quad(int number, Node[] nodes, int intpNumber) : base(number, nodes)
         {
             this.nodes = surface.GetVertexes().ToList();
 

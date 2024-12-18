@@ -1,7 +1,7 @@
 ﻿using ModelController.ModelScenePresentator.GlObjsVertexCreators;
 using ModelController.ModelScenePresentator.Interfaces;
 using ModelControllerInterfaces;
-using ModelInterfaces;
+using Model.Interfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;

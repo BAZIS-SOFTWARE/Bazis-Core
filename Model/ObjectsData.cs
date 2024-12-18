@@ -6,6 +6,8 @@ using Model.Interfaces.GeometryObjects;
 using Model.Interfaces.MeshObjects;
 using Model.ObjectsCollections;
 using System.Collections.ObjectModel;
+using Model.MeshObjects;
+using Model.GeometryObjects;
 
 namespace Model
 {
@@ -44,7 +46,7 @@ namespace Model
 
 /// <inheritdoc/>
 
-        public IObjectsCollection<INode> NodeCollection { get; }
+        public IObjectsCollection<Node> NodeCollection { get; }
 /// <inheritdoc/>
 
         public IObjectsCollection<IElement3D> E3DCollection { get; }
@@ -53,13 +55,13 @@ namespace Model
         public IObjectsCollection<IElement2D> E2DCollection { get; }
 /// <inheritdoc/>
 
-        public IObjectsCollection<ILineObject<INode>> E1DCollection { get; }
+        public IObjectsCollection<ILineObject<Node>> E1DCollection { get; }
 /// <inheritdoc/>
 
-        public IObjectsCollection<IGeometryPoint> PointCollection { get; }
+        public IObjectsCollection<GeometryPoint> PointCollection { get; }
 /// <inheritdoc/>
 
-        public IObjectsCollection<ILineObject<IGeometryPoint>> LineCollection { get; }
+        public IObjectsCollection<ILineObject<GeometryPoint>> LineCollection { get; }
 /// <inheritdoc/>
 
         public IObjectsCollection<ISurfaceFigure> Fig2DCollection { get; }

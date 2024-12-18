@@ -11,7 +11,7 @@ namespace Model.MeshObjects
         /// <inheritdoc/>
         public override ElementKind ElementKind { get; } = ElementKind.Пента;
 
-        public Penta(int number, INode[] nodes) : base(number, nodes)
+        public Penta(int number, Node[] nodes) : base(number, nodes)
         {
             if (surfaces.Count != 5)
                 throw new Exception($"Коллличество поверхностей в пентаэлементе {number} должно быть 5");
@@ -21,7 +21,7 @@ namespace Model.MeshObjects
             CreateIntegrationPoint(1, 0.3333, 0.3333, 0);
         }
 
-        public Penta(int number, INode[] nodes, int intpNumber) : base(number, nodes, intpNumber)
+        public Penta(int number, Node[] nodes, int intpNumber) : base(number, nodes, intpNumber)
         {
             var masterSurface = GetMasterSurface(3, surfaces);
             this.nodes = SortNodes(masterSurface.Number, surfaces).ToList();

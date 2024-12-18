@@ -48,7 +48,7 @@ namespace Model.IO
             return model;
         }
 
-        private IEnumerable<INode> ReadNodes(StreamReader reader, int count)
+        private IEnumerable<Node> ReadNodes(StreamReader reader, int count)
         {
             LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка узлов..."));
             for (var i = 0; i < count; i++)

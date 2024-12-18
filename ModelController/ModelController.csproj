@@ -23,18 +23,25 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Icon.png" />
+    <None Remove="Interfaces\Icon.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icon.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </EmbeddedResource>
+    <EmbeddedResource Include="Interfaces\Icon.png">
+      <PackagePath>\</PackagePath>
+      <Pack>True</Pack>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NetOctree" Version="2.1.11" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ModelControllerInterfaces\ModelControllerInterfaces.csproj" />
     <ProjectReference Include="..\Model\Model.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Interfaces\GmshController\" />
   </ItemGroup>
 </Project>

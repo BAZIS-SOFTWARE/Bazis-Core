@@ -6,10 +6,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Model.Sort;
+using Model.MeshObjects;
 
 namespace Model.ObjectsCollections
 {
-    public class Element1DCollection : IObjectsCollection<ILineObject<INode>>
+    public class Element1DCollection : IObjectsCollection<ILineObject<Node>>
     {
         /// <inheritdoc/>
         public override string ToString()
@@ -17,13 +18,13 @@ namespace Model.ObjectsCollections
             return $@"{ObjType.Элемент1D} {elements1D.Count}";
         }
 
-        List<ILineObject<INode>> elements1D = new List<ILineObject<INode>>();
+        List<ILineObject<Node>> elements1D = new List<ILineObject<Node>>();
         /// <inheritdoc/>
 
         public int Count => elements1D.Count;
         /// <inheritdoc/>
 
-        public void Add(ILineObject<INode> addObj)
+        public void Add(ILineObject<Node> addObj)
         {
             if (elements1D.Count > 0)
                 if (addObj.Number <= elements1D.Last().Number)
@@ -35,10 +36,10 @@ namespace Model.ObjectsCollections
         }
         /// <inheritdoc/>
 
-        public void AddRange(IEnumerable<ILineObject<INode>> addObjs)
+        public void AddRange(IEnumerable<ILineObject<Node>> addObjs)
         {
             var objsList = addObjs.ToList();
-            MergeSort<ILineObject<INode>>.MergeSortFunction(objsList);
+            MergeSort<ILineObject<Node>>.MergeSortFunction(objsList);
 
             if (elements1D.Count > 0)
                 if (objsList.First().Number <= elements1D.Last().Number)
@@ -63,13 +64,13 @@ namespace Model.ObjectsCollections
         }
         /// <inheritdoc/>
 
-        public ILineObject<INode> Find(int objNumbr)
+        public ILineObject<Node> Find(int objNumbr)
         {
             return ByNumberFinder.Find(elements1D,objNumbr);
         }
         /// <inheritdoc/>
 
-        public IEnumerator<ILineObject<INode>> GetEnumerator()
+        public IEnumerator<ILineObject<Node>> GetEnumerator()
         {
             foreach (var item in elements1D)
             {

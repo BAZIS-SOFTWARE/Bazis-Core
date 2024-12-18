@@ -1,5 +1,6 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
 using Model.Interfaces.IntegralObject;
+using Model.MeshObjects;
 using System.Collections.Generic;
 
 namespace Model.Interfaces.MeshObjects
@@ -37,7 +38,7 @@ namespace Model.Interfaces.MeshObjects
     /// <summary>
     /// IElement
     /// </summary>
-    public interface IElement : IVertexObject<INode>, IIntegralObject
+    public interface IElement : IVertexObject<Node>, IIntegralObject
     {
         /// <summary>
         /// Calc jacobian for some intPoint
@@ -63,7 +64,7 @@ namespace Model.Interfaces.MeshObjects
         /// </summary>
         /// <param name="nodeInd"></param>
         /// <returns></returns>
-        INode this[int nodeInd] { get; }
+        Node this[int nodeInd] { get; }
         /// <summary>
         /// GetDerivativesFormFunctions
         /// </summary>

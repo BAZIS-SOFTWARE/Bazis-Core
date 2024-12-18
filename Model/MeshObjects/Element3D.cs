@@ -13,7 +13,7 @@ namespace Model.MeshObjects
     public abstract class Element3D : Element, IElement3D
     {
         protected List<ElementSurface> surfaces = new List<ElementSurface>();
-        public Element3D(int number, INode[] nodes) : base(number, nodes)
+        public Element3D(int number, Node[] nodes) : base(number, nodes)
         {
             InitialColor = Color.FromArgb(255, 125, 0);
             MasterColor = Color.FromArgb(255, 125, 0);
@@ -25,7 +25,7 @@ namespace Model.MeshObjects
 
 
 
-        public Element3D(int number, INode[] nodes,int point) : this(number, nodes)
+        public Element3D(int number, Node[] nodes,int point) : this(number, nodes)
         {
 
 
@@ -85,7 +85,7 @@ namespace Model.MeshObjects
 
 /// <inheritdoc/>
 
-        public IEnumerable<IElementSurface> GetSurfaces()
+        public IEnumerable<ElementSurface> GetSurfaces()
         {
             foreach (var surface in surfaces)
             {
@@ -96,9 +96,9 @@ namespace Model.MeshObjects
 
 /// <inheritdoc/>
 
-        public static List<INode> SortNodes(int mainSurfaceIndex, List<ElementSurface> surfaces)
+        public static List<Node> SortNodes(int mainSurfaceIndex, List<ElementSurface> surfaces)
         {
-            var result = new List<INode>();
+            var result = new List<Node>();
             var graph = BuildGraph(surfaces);
             var masterSurface = surfaces[mainSurfaceIndex];          
 
@@ -117,17 +117,17 @@ namespace Model.MeshObjects
         /// </summary>
         /// <param name="surfaces"></param>
         /// <returns></returns>
-        public static Dictionary<INode, HashSet<INode>> BuildGraph(IEnumerable<IElementSurface> surfaces)
+        public static Dictionary<Node, HashSet<Node>> BuildGraph(IEnumerable<ElementSurface> surfaces)
         {
-            var graph = new Dictionary<INode, HashSet<INode>>();
+            var graph = new Dictionary<Node, HashSet<Node>>();
             foreach (var surface in surfaces)
             {
                 foreach (var pair in surface.GetVertexes().Bigrams(true))
                 {
                     if (!graph.ContainsKey(pair.Item1))
-                        graph.Add(pair.Item1, new HashSet<INode>());
+                        graph.Add(pair.Item1, new HashSet<Node>());
                     if (!graph.ContainsKey(pair.Item2))
-                        graph.Add(pair.Item2, new HashSet<INode>());
+                        graph.Add(pair.Item2, new HashSet<Node>());
                     graph[pair.Item1].Add(pair.Item2);
                     graph[pair.Item2].Add(pair.Item1);
                 }
@@ -140,10 +140,10 @@ namespace Model.MeshObjects
         /// <param name="masterSurfaceNodesNumber"></param>
         /// <param name="surfaces"></param>
         /// <returns></returns>
-        public static IElementSurface GetMasterSurface(int masterSurfaceNodesNumber, IEnumerable<IElementSurface> surfaces)
+        public static ElementSurface GetMasterSurface(int masterSurfaceNodesNumber, IEnumerable<ElementSurface> surfaces)
         {
 
-            IElementSurface masterSurface = null;
+            ElementSurface masterSurface = null;
             foreach (var surface in surfaces)
             {
                 if (surface.NumberOfPoints == masterSurfaceNodesNumber)

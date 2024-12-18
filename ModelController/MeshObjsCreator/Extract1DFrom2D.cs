@@ -1,8 +1,8 @@
 ﻿using Geometry.Exteisions;
 using Model.MeshObjects;
 using ModelControllerInterfaces.ObjsCreator;
-using ModelInterfaces;
-using ModelInterfaces.MeshObjects;
+using Model.Interfaces;
+using Model.Interfaces.MeshObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +15,9 @@ namespace ModelController.MeshObjsCreator
     public class Extract1DFrom2D : IExtractor1DFrom2D
     {
         /// <inheritdoc/>
-        public IEnumerable<ILineObject<INode>> Create(int startNumber, IElement2D[] elements)
+        public IEnumerable<ILineObject<Node>> Create(int startNumber, IElement2D[] elements)
         {
-            var usedElements = new HashSet<Tuple<INode, INode>>();
+            var usedElements = new HashSet<Tuple<Node, Node>>();
             foreach (var element in elements)
             {
                 foreach (var edge in element.GetVertexes().Bigrams(true))

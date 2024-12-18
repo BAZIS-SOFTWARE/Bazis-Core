@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Model.MeshObjects;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,7 @@ namespace Model.Interfaces.MeshObjects
     /// <summary>
     /// IElementSurface
     /// </summary>
-    public interface IElementSurface : ISurface<INode>
+    public interface IElementSurface : ISurface<Node>
     {
         /// <summary>
         /// ElementNumber

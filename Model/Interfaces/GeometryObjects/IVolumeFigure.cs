@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Model.GeometryObjects;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,7 @@ namespace Model.Interfaces.GeometryObjects
     /// <summary>
     /// IVolumeFigure
     /// </summary>
-    public interface IVolumeFigure : ISurfaceObject<IGeometrySurface, IGeometryPoint>, IVolume
+    public interface IVolumeFigure : ISurfaceObject<GeometrySurface, GeometryPoint>, IVolume
     {
 
     }

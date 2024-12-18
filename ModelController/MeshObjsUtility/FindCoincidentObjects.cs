@@ -4,7 +4,7 @@ using System.Linq;
 using Geometry;
 using Octree;
 using System.Numerics;
-using ModelInterfaces;
+using Model.Interfaces;
 using ModelControllerInterfaces;
 
 namespace ModelController.MeshObjsUtility

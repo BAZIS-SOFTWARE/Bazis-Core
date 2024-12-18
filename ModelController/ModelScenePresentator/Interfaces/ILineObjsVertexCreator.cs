@@ -1,4 +1,4 @@
-﻿using ModelInterfaces;
+﻿using Model.Interfaces;
 
 namespace ModelController.ModelScenePresentator.Interfaces
 {

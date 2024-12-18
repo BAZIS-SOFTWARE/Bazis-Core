@@ -8,7 +8,7 @@ namespace Model.MeshObjects
 {
     public class Tetra : Element3D
     {
-        public Tetra(int number, INode[] nodes) : base(number, nodes)
+        public Tetra(int number, Node[] nodes) : base(number, nodes)
         {
             if (surfaces.Count != 4)
                 throw new Exception($"Коллличество поверхностей в тетраэлементе {number} должно быть 4");
@@ -17,7 +17,7 @@ namespace Model.MeshObjects
 
 
 
-        public Tetra(int number, INode[] nodes, int intpNumber) : base(number, nodes)
+        public Tetra(int number, Node[] nodes, int intpNumber) : base(number, nodes)
         {
             IntegralPoint intPoint;
             switch (intpNumber)

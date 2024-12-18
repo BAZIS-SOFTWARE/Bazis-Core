@@ -11,7 +11,7 @@ namespace Model.MeshObjects
 {
     public abstract class Element : ModelObject, IElement
     {
-        protected List<INode> nodes = new List<INode>();
+        protected List<Node> nodes = new List<Node>();
 
         protected List<IIntegralPoint> intPoints = new List<IIntegralPoint>();
 
@@ -24,7 +24,7 @@ namespace Model.MeshObjects
         /// <param name="number"></param>
         /// <param name="nodes"></param>
         /// <exception cref="Exception"></exception>
-        public Element(int number, INode[] nodes) : base(number)
+        public Element(int number, Node[] nodes) : base(number)
         {
             if (nodes.Length == 0)
                 throw new Exception("Массив узлов не может быть пустой!");
@@ -53,7 +53,7 @@ namespace Model.MeshObjects
         /// </summary>
         /// <param name="nodeInd"></param>
         /// <returns></returns>
-        public INode this[int nodeInd] => nodes[nodeInd];
+        public Node this[int nodeInd] => nodes[nodeInd];
 
         /// <inheritdoc/>
 
@@ -64,7 +64,7 @@ namespace Model.MeshObjects
 
 
         /// <inheritdoc/>
-        public IEnumerator<INode> GetEnumerator()
+        public IEnumerator<Node> GetEnumerator()
         {
             foreach (var node in nodes)
             {
@@ -93,7 +93,7 @@ namespace Model.MeshObjects
         }
 /// <inheritdoc/>
 
-        public IEnumerable<INode> GetVertexes()
+        public IEnumerable<Node> GetVertexes()
         {
             foreach (var node in nodes)
             {

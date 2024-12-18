@@ -21,7 +21,7 @@ namespace Model.Utilities
         /// <param name="elementNumber"></param>
         /// <param name="nodes"></param>
         /// <returns></returns>
-        public static List<ElementSurface> CreateSurfacesFromSetOfNodes(int elementNumber, INode[] nodes)
+        public static List<ElementSurface> CreateSurfacesFromSetOfNodes(int elementNumber, Node[] nodes)
         {
             var surfaces = new List<ElementSurface>();
             var centr = CalcCentr(nodes);
@@ -50,7 +50,7 @@ namespace Model.Utilities
         /// Вычисление центра области узлов
         /// </summary>
         /// <returns></returns>
-        private static Point3D CalcCentr(INode[] nodes)
+        private static Point3D CalcCentr(Node[] nodes)
         {
             var center = new Point3D();
 

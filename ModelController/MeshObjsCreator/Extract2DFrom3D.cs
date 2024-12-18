@@ -1,6 +1,6 @@
 ﻿using Model.MeshObjects;
 using ModelControllerInterfaces.ObjsCreator;
-using ModelInterfaces.MeshObjects;
+using Model.Interfaces.MeshObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,9 +50,9 @@ namespace ModelController.MeshObjsCreator
         /// FindOpenSurfaces
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<IElementSurface> FindOpenSurfaces(IElement3D[] elements)
+        public IEnumerable<ElementSurface> FindOpenSurfaces(IElement3D[] elements)
         {
-            var surfDict = new Dictionary<string, List<IElementSurface>>();
+            var surfDict = new Dictionary<string, List<ElementSurface>>();
 
             foreach (ISurfaceElement element in elements)
             {
@@ -65,7 +65,7 @@ namespace ModelController.MeshObjsCreator
                     var surfInd = string.Join("",numbers);
 
                     if (!surfDict.ContainsKey(surfInd))
-                        surfDict.Add(surfInd, new List<IElementSurface>() { surface });
+                        surfDict.Add(surfInd, new List<ElementSurface>() { surface });
                     else surfDict[surfInd].Add(surface);
                 }
             }

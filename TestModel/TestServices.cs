@@ -5,11 +5,11 @@ using System.Linq;
 using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
-using ModelInterfaces;
+using Model.Interfaces;
 using ModelController.MeshObjsUtility;
 using Model.IO;
 using Model.MeshObjects;
-using ModelInterfaces.MeshObjects;
+using Model.Interfaces.MeshObjects;
 
 namespace TestModel
 {
@@ -169,7 +169,7 @@ namespace TestModel
 
             var merger = new MergeObjects();
 
-            var mergedNodes = merger.Merge<INode>(coincidentNodes, model.ObjectData.NodeCollection.ToList());
+            var mergedNodes = merger.Merge<Node>(coincidentNodes, model.ObjectData.NodeCollection.ToList());
 
             //assert
             model.ObjectData.NodeCollection.Clear();

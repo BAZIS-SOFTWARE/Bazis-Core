@@ -1,6 +1,6 @@
 ﻿using ModelControllerInterfaces;
-using ModelInterfaces.Attributes;
-using ModelInterfaces.MeshObjects;
+using Model.Interfaces.Attributes;
+using Model.Interfaces.MeshObjects;
 using System.Collections.Generic;
 
 namespace ModelController.MeshObjsUtility

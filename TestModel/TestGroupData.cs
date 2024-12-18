@@ -77,8 +77,8 @@ namespace TestModel
 
         public void PositiveComparationResult(string x, string y)
         {
-            var xGroup = new Group(x, ModelInterfaces.ObjType.Элемент1D);
-            var yGroup = new Group(y, ModelInterfaces.ObjType.Элемент1D);
+            var xGroup = new Group(x, Model.Interfaces.ObjType.Элемент1D);
+            var yGroup = new Group(y, Model.Interfaces.ObjType.Элемент1D);
             var comparator = new StringNumberGroupComparer();
             Assert.AreEqual(1, comparator.Compare(xGroup, yGroup));
         }
@@ -93,8 +93,8 @@ namespace TestModel
         [DataRow("1", "1")]
         public void NeutralComparationResult(string x, string y)
         {
-            var xGroup = new Group(x, ModelInterfaces.ObjType.Элемент1D);
-            var yGroup = new Group(y, ModelInterfaces.ObjType.Элемент1D);
+            var xGroup = new Group(x, Model.Interfaces.ObjType.Элемент1D);
+            var yGroup = new Group(y, Model.Interfaces.ObjType.Элемент1D);
             var comparator = new StringNumberGroupComparer();
             Assert.AreEqual(0, comparator.Compare(xGroup, yGroup));
         }
@@ -110,7 +110,7 @@ namespace TestModel
         {
             var groupData = new GroupData();
             foreach (var name in input)
-                groupData.Add(new Group(name, ModelInterfaces.ObjType.Элемент1D));
+                groupData.Add(new Group(name, Model.Interfaces.ObjType.Элемент1D));
 
             groupData.Sort();
             CollectionAssert.AreEqual(expected, groupData.Select(x => x.Name).ToArray());
