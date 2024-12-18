@@ -128,11 +128,21 @@ namespace Model.IO
                 else objsType = ObjType.Узел;
 
                 var group = new GroupsData.Group(groupName, objsType);
+
                 foreach (var number in numbers)
                 {
-                    var obj = allElements[number];
-                    group.Add(obj);
+                    if (objsType == ObjType.Узел)
+                    {
+                        var obj = allNodes[number];
+                        group.Add(obj);
+                    }
+                    else
+                    {
+                        var obj = allElements[number];
+                        group.Add(obj);
+                    }
                 }
+
                 model.GroupData.Add(group);
             }
 

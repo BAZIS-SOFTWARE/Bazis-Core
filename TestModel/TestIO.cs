@@ -187,7 +187,7 @@ namespace TestModel
         [DataTestMethod]
         [DataRow(7,8,0, @"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC", DisplayName = "rhombDATA1.ASC")]
         [DataRow(44, 113, 3, @"..\..\..\Examples\VIsual-Mesh\DATA3.ASC", DisplayName = "DATA3.ASC")]
-        
+        [DataRow(104, 337, 0, @"c:\projs\ElenaLu\Mesh\Cilinder3DATA1.ASC", DisplayName = "Cilinder3DATA1.ASC")]
         public void ImportModelFromVisualMeshASCIITextFormat(int nodeCount, int elemCount, int elem1D, string path)
         {
             //assing
