@@ -1,0 +1,32 @@
+{
+  "BodyTemp": 20.0,
+  "ChemicalFile": "",
+  "ThermalFile": "C:\\BazisComponents\\ProjectSolution\\TestProject\\Examples\\термическая_*_0_2.db",
+  "SaveRate": 5,
+  "RestartFile": "",
+  "SolverSettings": {
+    "MaxIter": 100,
+    "Solver": "SOR_iterative",
+    "Relaxation": 1.25,
+    "Precision": 0.0001,
+    "Priority": "Наивысший"
+  },
+  "TimeSettings": {
+    "MaxTimeStep": 100.0,
+    "MinTimeStep": 1E-05,
+    "StartTime": 0.0,
+    "StopTime": 2.0,
+    "InitTimeStep": 0.1
+  },
+  "ConvergenceSettings": {
+    "Is_Switched_DXmi": true,
+    "DXmi": 0.0005,
+    "Is_Switched_DXmt": false,
+    "DXmt": 0.0,
+    "Is_Switched_DYmi": false,
+    "DYmi": 0.0,
+    "Is_Switched_DYmt": false,
+    "DYmt": 0.0,
+    "Iterations": 25
+  }
+}

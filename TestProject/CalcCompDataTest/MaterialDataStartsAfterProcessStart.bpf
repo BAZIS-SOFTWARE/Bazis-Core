@@ -1,0 +1,13 @@
+Проект
+Название : MaterialDataStartsAfterProcessStart.bpf
+Сведения : newComments
+Вид : Volume
+Среда : test Коэф.теплоотдачи.воздух 20 0 150 *
+Материал : test Сталь_20ХМ 1 150 *
+Нагрев : ARC;6;500;50 test 0 10 test|test;5;test;test;0|0|0|0
+Нагрев : ARC;6;500;50 test 11 21 test|test;5;test;test;0|0|0|0
+Нагрев : ARC;6;500;50 test 22 32 test|test;5;test;test;0|0|0|0
+Нагрев : ARC;7;500;50 test 33 43 test|test;5;test;test;0|0|0|0
+Нагрев : ARC;7;500;50 test 44 54 test|test;5;test;test;0|0|0|0
+Закрепление : test Жесткое X * 0 150 *
+#Проект

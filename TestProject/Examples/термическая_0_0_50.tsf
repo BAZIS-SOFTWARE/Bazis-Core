@@ -1,0 +1,35 @@
+{
+  "ChemicalFile": "",
+  "TermalProcesses": [
+    "Охлаждение",
+    "Нагрев"
+  ],
+  "InitTemp": 20.0,
+  "SaveRate": 1,
+  "RestartFile": "",
+  "SolverSettings": {
+    "MaxIter": 100,
+    "Solver": "SOR_iterative",
+    "Relaxation": 1.05,
+    "Precision": 0.01,
+    "Priority": "Наивысший"
+  },
+  "TimeSettings": {
+    "MaxTimeStep": 0.5,
+    "MinTimeStep": 1E-05,
+    "StartTime": 0.0,
+    "StopTime": 50.0,
+    "InitTimeStep": 0.1
+  },
+  "ConvergenceSettings": {
+    "Is_Switched_DXmi": false,
+    "DXmi": 0.0,
+    "Is_Switched_DXmt": true,
+    "DXmt": 1500.0,
+    "Is_Switched_DYmi": false,
+    "DYmi": 0.0,
+    "Is_Switched_DYmt": false,
+    "DYmt": 0.0,
+    "Iterations": 2
+  }
+}

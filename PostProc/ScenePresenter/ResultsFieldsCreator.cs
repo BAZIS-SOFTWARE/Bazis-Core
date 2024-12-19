@@ -1,0 +1,103 @@
+﻿using Geometry;
+using Model.Interfaces;
+using Model.Interfaces.MeshObjects;
+using Model.MeshObjects;
+using PostProc.ScenePresenter.Interfaces;
+using Project.Interfaces;
+using Project.Results;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+
+namespace PostProc.ScenePresenter
+{
+    public class ResultsFieldsCreator : IResultsFieldsCreator
+    {
+        ItemRange[] itemRanges;
+        Color[] itemColors;
+
+        /// <summary>
+        /// ScaleFactor
+        /// </summary>
+        public int ScaleFactor { get; set; }      
+
+        public IEnumerable<ILineObject<IPoint>> CreateLineObjects(IResult result, ObjType objsType, string resDescr, ILineObject<Node> beamElement)
+        {
+            var gradsCreator = new LineGradientsCreator();
+
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<ResultFigure> CreateSurfaceObjects(Result result, ObjType objsType, string resDescr, IEnumerable<ISurfaceElement> surfaceObjects)
+        {
+            var gradsCreator = new SurfaceGradientsCreator();
+            var surfacetObjects = new List<ResultFigure>();
+            foreach (var surfaceObject in surfaceObjects)
+            {
+                if(surfaceObject.ViewState)
+                {
+                    foreach (var surface in surfaceObject.GetSurfaces())
+                    {
+                        if (surface.ViewState)
+                        {
+                            var nodeCoords = new List<Point3D>();
+                            var nodeRes = new List<float>();
+
+                            foreach (var node in surface.GetVertexes())
+                            {
+                                var nodeDispl = GetNodeDispls(resDescr, node.Number, result);
+                                nodeCoords.Add(node.Position.Sum(nodeDispl));
+                                if (objsType == ObjType.Узел)
+                                    nodeRes.Add(result.GetNodeValue(node.Number, resDescr));
+                                else nodeRes.Add(result.GetElementValue(surfaceObject.Number, resDescr));
+                            }
+                            var surfaces = gradsCreator.CreateGradientObjects(itemRanges, itemColors, nodeCoords, nodeRes);
+                            surfacetObjects.AddRange(surfaces);
+                        }
+                    }
+                }
+            }    
+            return surfacetObjects;
+        }
+/// <inheritdoc/>
+
+        public void SetScaleItems(Color[] itemColors, ItemRange[] itemRanges)
+        {
+            if (itemColors.Length != itemRanges.Length)
+                throw new Exception("Диапазоны должны совпадать");
+
+            this.itemRanges = itemRanges;
+            this.itemColors = itemColors;
+        }
+
+        private Point3D GetNodeDispls(string nodeRes, int nodeNumber, IResult result)
+        {
+            if(result.TaskKind == TaskKind.механическая)
+            {
+                if (nodeRes == "X")
+                {
+                    var x = result.GetNodeValue(nodeNumber, "X") * ScaleFactor;
+                    return new Point3D(x, 0, 0);
+                }
+                else if (nodeRes == "Y")
+                {
+                    var y = result.GetNodeValue(nodeNumber, "Y") * ScaleFactor;
+                    return new Point3D(0, y, 0);
+                }
+                else if (nodeRes == "Z")
+                {
+                    var z = result.GetNodeValue(nodeNumber, "Z") * ScaleFactor;
+                    return new Point3D(0, 0, z);
+                }
+                else
+                {
+                    var x = result.GetNodeValue(nodeNumber, "X") * ScaleFactor;
+                    var y = result.GetNodeValue(nodeNumber, "Y") * ScaleFactor;
+                    var z = result.GetNodeValue(nodeNumber, "Z") * ScaleFactor;
+                    return new Point3D(x, y, z);
+                }
+            }
+            else return new Point3D();
+        }
+    }
+}

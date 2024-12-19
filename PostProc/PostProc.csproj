@@ -1,0 +1,74 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <SignAssembly>True</SignAssembly>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>Results</Title>
+    <Version>3.0.1.82</Version>
+    <Authors>Bilenko Georgy, Kirill Kishun</Authors>
+    <Company>BAZIS SOFTWARE</Company>
+    <Product>BAZIS</Product>
+    <Description>Gradient fields creator</Description>
+    <Copyright>Bilenko Georgy</Copyright>
+    <PackageIcon>Icon.png</PackageIcon>
+    <PackageTags>Gradients</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <AssemblyName>PostProc</AssemblyName>
+    <RootNamespace>PostProc</RootNamespace>
+    <AssemblyOriginatorKeyFile>ResultsKey.snk</AssemblyOriginatorKeyFile>
+    <Platforms>AnyCPU;x64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="ExportTypes\**" />
+    <EmbeddedResource Remove="IO\ResultExport\**" />
+    <EmbeddedResource Remove="ResultsData\**" />
+    <None Remove="ExportTypes\**" />
+    <None Remove="IO\ResultExport\**" />
+    <None Remove="ResultsData\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="IO\GridExporter.cs" />
+    <Compile Include="IO\GridExport\IGridSurfacesSaver.cs" />
+    <Compile Include="IO\IGridExporter.cs" />
+	<Compile Include="IO\GridExport\SaveGridSurfacesToBPF.cs" />
+    <Compile Include="IO\GridExport\SaveGridSurfacesToBinSTL.cs" />
+    <Compile Include="IO\GridExport\SaveGridSurfacesToSTLBase.cs" />
+    <Compile Include="IO\GridExport\SaveGridSurfacesToTxtSTL.cs" />
+    <Compile Include="IResultsController.cs" />
+    <Compile Include="IResultsMerger.cs" />
+    <Compile Include="MergeResults.cs" />
+    <Compile Include="ResultsController.cs" />
+    <Compile Include="ScenePresenter\Interfaces\IResultsFieldsCreator.cs" />
+    <Compile Include="ScenePresenter\ItemRange.cs" />
+    <Compile Include="ScenePresenter\ResultsFieldsCreator.cs" />
+    <Compile Include="ScenePresenter\Interfaces\IGradientsCreator.cs" />
+    <Compile Include="ScenePresenter\LineGradientsCreator.cs" />
+    <Compile Include="ScenePresenter\ResultPoint.cs" />
+    <Compile Include="ScenePresenter\ResultSurface.cs" />
+    <Compile Include="ScenePresenter\SortValues.cs" />
+    <Compile Include="ScenePresenter\ResultFigure.cs" />
+    <Compile Include="ScenePresenter\SurfaceGradientsCreator.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Icon.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Project\Project.csproj" />
+  </ItemGroup>
+
+</Project>
