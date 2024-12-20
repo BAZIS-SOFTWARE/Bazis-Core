@@ -1,4 +1,4 @@
-﻿namespace Tasks.Interfaces
+﻿namespace PreProc.Interfaces
 {
     public interface ISolverSettings
     {

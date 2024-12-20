@@ -3,17 +3,16 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using Tasks.IO;
-using Tasks;
+using PreProc;
 using Model.GroupsData;
-using ModelInterfaces;
 using Project;
 using Model;
-using ProjectInterfaces.Tasks;
+using Project.Interfaces.Tasks;
+using Project.Tasks.IO;
+using Project.Tasks;
+using Model.Interfaces;
+using PreProc.Interfaces;
 
 namespace TestProject
 {
@@ -110,7 +109,7 @@ namespace TestProject
         )]
         public void SortingByTimeAndTypeCheck(string[] strsIn, string[]strsOut)
         {
-            var preProc = new PreProc();
+            var preProc = new PreProc.PreProc();
 
             var results = preProc.SortCompDataByTimeAndType(strsIn);
 
@@ -136,7 +135,7 @@ namespace TestProject
         [DataRow(new[] { "путь\\type_int_float_float.tsf" })]
         public void SortingByTimeAndTypeCheck_ShouldFail_WhenContainsIlligalSymbol(string[] strsIn)
         {
-            var preProc = new PreProc();
+            var preProc = new PreProc.PreProc();
             Assert.ThrowsException<Exception>( () => preProc.SortCompDataByTimeAndType(strsIn));
         }
 
@@ -156,7 +155,7 @@ namespace TestProject
                 new ClampData(new Group("",ObjType.Объект),clampInfo)
             };
 
-            var preProc = new PreProc();
+            var preProc = new PreProc.PreProc();
             preProc.CalcCompDataV1(valuableData, ProcessType.Welding, projPath);
         }
 
@@ -179,7 +178,7 @@ namespace TestProject
                 new HeatData(new Group("",ObjType.Объект),heatInfo),
                 new MatData(new Group("",ObjType.Объект),matInfo)
             };
-            var preProc = new PreProc();
+            var preProc = new PreProc.PreProc();
             Assert.ThrowsException<Exception>(() => preProc.CalcCompDataV1(valuableData, pt, projPath));
         }
 
@@ -201,7 +200,7 @@ namespace TestProject
                 new MatData(new Group("",ObjType.Объект),matInfo),
                 new ClampData(new Group("",ObjType.Объект),clampInfo)
             };
-            var preProc = new PreProc();
+            var preProc = new PreProc.PreProc();
             preProc.CalcCompDataV1(valuableData, ProcessType.Welding, projPath);
 
             var projDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
@@ -227,7 +226,7 @@ namespace TestProject
                 new MatData(new Group("",ObjType.Объект),matInfo),
                 new ClampData(new Group("",ObjType.Объект),clampInfo)
             };
-            var preProc = new PreProc();
+            var preProc = new PreProc.PreProc();
             preProc.CalcCompDataV1(valuableData, ProcessType.Welding, projPath);
         }
 
@@ -253,7 +252,7 @@ namespace TestProject
             {
                 resData.Add(data as ValuableData);
             }
-            var preProc = new PreProc();
+            var preProc = new PreProc.PreProc();
             preProc.CalcCompDataV1(resData, pt, projPath);
         }
 
@@ -279,7 +278,7 @@ namespace TestProject
             {
                 resData.Add(data as ValuableData);
             }
-            var preProc = new PreProc();
+            var preProc = new PreProc.PreProc();
             Assert.ThrowsException<Exception>(() => preProc.CalcCompDataV1(resData, ProcessType.Welding, projPath));
         }
 
@@ -294,7 +293,7 @@ namespace TestProject
                 new MatData(new Group("",ObjType.Объект),"mat Сталь_20ХМ 0 1500 *")
             };
 
-            var preProc = new PreProc();
+            var preProc = new PreProc.PreProc();
             preProc.CalcCompDataV1(resData, ProcessType.Welding, projPath);
         }
     }

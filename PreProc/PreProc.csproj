@@ -11,6 +11,7 @@
     <PackageIcon>Icon.png</PackageIcon>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <Description>Generation command tsf files</Description>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>TaskKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>

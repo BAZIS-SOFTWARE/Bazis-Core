@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tasks
+namespace PreProc
 {
     public static class SolverSettingsIO
     {

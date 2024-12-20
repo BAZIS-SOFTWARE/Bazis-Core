@@ -19,7 +19,7 @@ namespace Project.Results.IO
         public event Action<object, ILoadEventArgs> LoadEvent;
 /// <inheritdoc/>
 
-        public IEnumerable<IResult> Load(string path)
+        public IEnumerable<Result> Load(string path)
         {
             LoadEvent?.Invoke(this, new LoadEventArgs("Загрузка результатов *.db"));
             return GetResultsFromDb(path);
@@ -30,7 +30,7 @@ namespace Project.Results.IO
         /// <param name="fullPath"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public IEnumerable<IResult> GetResultsFromDb(string fullPath)
+        public IEnumerable<Result> GetResultsFromDb(string fullPath)
         {
             var dbName = Path.GetFileNameWithoutExtension(fullPath).Split('_')[0];
 

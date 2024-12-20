@@ -1,7 +1,7 @@
 ﻿using System;
-using Tasks.Interfaces;
+using PreProc.Interfaces;
 
-namespace Tasks
+namespace PreProc
 {
     [Serializable]
     public class ChemicalParameters : GeneralParameters, IThermalDependent

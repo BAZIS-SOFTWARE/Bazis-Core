@@ -8,9 +8,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using Tasks.Interfaces;
+using PreProc.Interfaces;
 
-namespace Tasks
+namespace PreProc
 {
     /// <summary>
     /// PreProc. Препроцессор

@@ -13,8 +13,8 @@ namespace Model.MeshObjects
 
         public Penta(int number, Node[] nodes) : base(number, nodes)
         {
-            if (surfaces.Count != 5)
-                throw new Exception($"Коллличество поверхностей в пентаэлементе {number} должно быть 5");
+            if (surfaces.Count < 5)
+                throw new Exception($"Коллличество поверхностей в пентаэлементе {number} должно быть не меньше 5");
             var masterSurface = GetMasterSurface(3, surfaces);
             this.nodes = SortNodes(masterSurface.Number, surfaces).ToList();
 

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tasks.TaskParameters
+namespace PreProc.TaskParameters
 {
     [Serializable]
     public class TermalConvergence

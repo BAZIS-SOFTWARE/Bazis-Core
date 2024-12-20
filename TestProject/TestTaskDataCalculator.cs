@@ -2,14 +2,12 @@
 using Model;
 using Project;
 using Project.IO;
+using Project.Tasks;
+using Project.Tasks.Functions;
 using System;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
 using System.Threading;
-using Tasks;
-using Tasks.Functions;
-using Tasks.IO;
 
 namespace TestProject
 {

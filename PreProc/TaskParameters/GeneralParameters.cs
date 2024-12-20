@@ -1,9 +1,9 @@
 ﻿
 using System;
 using System.Collections.Generic;
-using Tasks.Interfaces;
+using PreProc.Interfaces;
 
-namespace Tasks.TaskParameters
+namespace PreProc.TaskParameters
 {
     [Serializable]
     public class GeneralParameters : IGeneralParameters

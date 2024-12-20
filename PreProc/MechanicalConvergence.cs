@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tasks
+namespace PreProc
 {
     [Serializable]
     public class MechanicalConvergence

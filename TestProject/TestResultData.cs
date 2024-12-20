@@ -9,22 +9,23 @@ using Model;
 using System.Globalization;
 using System.Threading;
 using ModelController.MeshObjsUtility;
-using Results.IO;
-using Results;
-using Results.ScenePresenter;
-using ProjectInterfaces;
+using Project.Interfaces;
 using Results.ResultsData;
-using ProjectInterfaces.Tasks;
-using Tasks;
+using Project.Interfaces.Tasks;
 using Model.MeshObjects;
 using ModelController.ModelScenePresentator;
-using ModelInterfaces.MeshObjects;
-using ProjectInterfaces.Results;
-using ModelInterfaces;
-using Results.IO.GridExportImplementation;
-using Results.IO.ResultExportImplementation;
+using Model.Interfaces.MeshObjects;
+using Model.Interfaces;
 using System.Data;
 using System.IO;
+using Project.Results.IO;
+using PostProc.ScenePresenter;
+using PostProc;
+using Project.Tasks;
+using Project.Results;
+using Results.ScenePresenter;
+using PostProc.IO.GridExport;
+using Project.Results.IO.ResultExport;
 
 
 namespace TestProject
@@ -288,7 +289,7 @@ var loaderDB = new LoadResultsFileDB();
             resultsCreator.SetScaleItems(сolorRanges, itemRanges);
 
             var resultObjects = resultsCreator.CreateSurfaceObjects(result.First(), ObjType.Узел,resDesc, elements);
-            var points = new List<IResultPoint>();
+            var points = new List<ResultPoint>();
             foreach (var elems in resultObjects)
                 points.AddRange(elems.GetVertexes());
 
@@ -506,16 +507,16 @@ var loaderDB = new LoadResultsFileDB();
             var resSurfaces = surfGrad.CreateGradientObjects(intervalVals, сolorRange, nodes.Select(x => x.Position).ToList(), nodesVal).ToList();
 
             //assert           
-            var comSurfaces = new List<ResultFigure2D>()
+            var comSurfaces = new List<ResultFigure>()
             {
-                new ResultFigure2D(
+                new ResultFigure(
                 new List<Point3D>
                 {
                     new Point3D(1,0,0),
                     new Point3D(0.3333f,0.6666f,0),
                     new Point3D(0.5f, 0, 0)                   
                 },Color.Red),
-                new ResultFigure2D(
+                new ResultFigure(
                 new List<Point3D>
                 {
                     new Point3D(0.3333f,0.6666f,0),
@@ -578,9 +579,9 @@ var loaderDB = new LoadResultsFileDB();
             var resSurfaces = surfGrad.CreateGradientObjects(intervalVals, сolorRange, nodes.Select(x => x.Position).ToList(), nodesVal).ToList();
 
             //assert  
-            var comSurfaces = new List<ResultFigure2D>()
+            var comSurfaces = new List<ResultFigure>()
             {
-                new ResultFigure2D(
+                new ResultFigure(
                 new List<Point3D>()
                 {
                     new Point3D(1,0,0),
@@ -588,7 +589,7 @@ var loaderDB = new LoadResultsFileDB();
                     new Point3D(0.75f, 0, 0)
                 },
                 Color.Red),
-                new ResultFigure2D(
+                new ResultFigure(
                 new List<Point3D>()
                 {
                     new Point3D(0.6666f,0.3333f,0),
@@ -597,7 +598,7 @@ var loaderDB = new LoadResultsFileDB();
                     new Point3D(0.75f, 0, 0),
                 },
                 Color.Red),
-                new ResultFigure2D(
+                new ResultFigure(
                 new List<Point3D>
                 {
                     new Point3D(0.3333f,0.6666f,0),
@@ -606,7 +607,7 @@ var loaderDB = new LoadResultsFileDB();
                     new Point3D(0.5f, 0, 0)
                 },
                 Color.Red),
-                new ResultFigure2D(
+                new ResultFigure(
                 new List<Point3D>
                 {
                     new Point3D(0,1,0),

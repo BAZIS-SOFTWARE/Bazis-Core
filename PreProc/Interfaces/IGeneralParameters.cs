@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Tasks.Interfaces
+namespace PreProc.Interfaces
 {
     public interface IGeneralParameters
     {

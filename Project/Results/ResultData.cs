@@ -12,14 +12,14 @@ namespace Results.ResultsData
 {
     public class ResultData : IResultData
     {
-        List<IResult> results;
+        List<Result> results;
 
         public ResultData()
         {
-            results = new List<IResult>();
+            results = new List<Result>();
         }
 
-        public IResult this[int ind]
+        public Result this[int ind]
         {
             get { return results[ind]; }
             set { results[ind] = value; }
@@ -67,25 +67,25 @@ namespace Results.ResultsData
         }
 /// <inheritdoc/>
 
-        public void AddRange(IEnumerable<IResult> results)
+        public void AddRange(IEnumerable<Result> results)
         {
             this.results.AddRange(results);           
         }
 
-        public void AddRange(IEnumerable<IResult> results, IEqualityComparer<IResult> comparer)
+        public void AddRange(IEnumerable<Result> results, IEqualityComparer<Result> comparer)
         {
             this.results.AddRange(results);
             var distResults = this.results.Distinct(comparer).ToList();
             this.results = distResults;
         }
 
-        public IEnumerable<IResult> GetResults()
+        public IEnumerable<Result> GetResults()
         {
             foreach (var result in results) 
                 yield return result;
         }
 
-        public IEnumerator<IResult> GetEnumerator()
+        public IEnumerator<Result> GetEnumerator()
         {
             foreach (var result in results) yield return result;
         }
@@ -102,7 +102,7 @@ namespace Results.ResultsData
 /// <inheritdoc/>
 
 
-        public void Add(IResult results)
+        public void Add(Result results)
         {
             this.results.Add(results);
         }
@@ -125,7 +125,7 @@ namespace Results.ResultsData
         }
 /// <inheritdoc/>
 
-        public IEnumerable<IResult> FindByTimeInterval(string taskKind, float firstTime, float lastTime)
+        public IEnumerable<Result> FindByTimeInterval(string taskKind, float firstTime, float lastTime)
         {
             var findRes = results.Where(x => x.TaskKind.ToString() == taskKind &&
 
@@ -139,21 +139,21 @@ namespace Results.ResultsData
         /// </summary>
         /// <param name="taskKind"></param>
         /// <returns></returns>
-        public IEnumerable<IResult> FindByTaskKind(TaskKind taskKind)
+        public IEnumerable<Result> FindByTaskKind(TaskKind taskKind)
         {
             var findRes = results.Where(x => x.TaskKind == taskKind);
             return findRes;
         }
 /// <inheritdoc/>
 
-        public IEnumerable<IResult> FindByTaskKind(string taskKind)
+        public IEnumerable<Result> FindByTaskKind(string taskKind)
         {
             var findRes = results.Where(x => x.TaskKind.ToString() == taskKind);
             return findRes;
         }
 /// <inheritdoc/>
 
-        public IResult FindByTime(TaskKind taskKind, float time)
+        public Result FindByTime(TaskKind taskKind, float time)
         {
             var findRes = results.Find(x => x.TaskKind == taskKind && x.Equals(time));
 
@@ -161,7 +161,7 @@ namespace Results.ResultsData
         }
 /// <inheritdoc/>
 
-        public IResult FindByTime(TaskKind taskKind, float time, float delta)
+        public Result FindByTime(TaskKind taskKind, float time, float delta)
         {
             var findRes = results.Find(x => x.TaskKind == taskKind && Math.Abs(x.Time - time) < delta);
 
@@ -169,7 +169,7 @@ namespace Results.ResultsData
         }
         /// <inheritdoc/>
 
-        public IResult FindByTime(string taskKind, float time)
+        public Result FindByTime(string taskKind, float time)
         {
             var findRes = results.Find(x => x.TaskKind.ToString() == taskKind && x.Time.Equals(time));
 
@@ -177,7 +177,7 @@ namespace Results.ResultsData
         }
 /// <inheritdoc/>
 
-        public IResult FindByTime(string taskKind, float time, float delta)
+        public Result FindByTime(string taskKind, float time, float delta)
         {
             var findRes = results.Find(x => x.TaskKind.ToString() == taskKind && Math.Abs(x.Time - time) < delta);
 
@@ -187,13 +187,13 @@ namespace Results.ResultsData
 
 /// <inheritdoc/>
 
-        public int IndexOf(IResult item)
+        public int IndexOf(Result item)
         {
             return results.IndexOf(item);
         }
 /// <inheritdoc/>
 
-        public void Insert(int index, IResult item)
+        public void Insert(int index, Result item)
         {
             throw new NotImplementedException();
         }
@@ -212,19 +212,19 @@ namespace Results.ResultsData
         }
 /// <inheritdoc/>
 
-        public bool Contains(IResult item)
+        public bool Contains(Result item)
         {
             return results.Find(x => x.TaskKind == item.TaskKind & x.Time.Equals(item.Time)) == null ? false : true;
         }
 /// <inheritdoc/>
 
-        public void CopyTo(IResult[] array, int arrayIndex)
+        public void CopyTo(Result[] array, int arrayIndex)
         {
             results.CopyTo(array, arrayIndex); 
         }
 /// <inheritdoc/>
 
-        public bool Remove(IResult item)
+        public bool Remove(Result item)
         {
             return results.Remove(item);
         }

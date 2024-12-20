@@ -1,4 +1,5 @@
 ﻿using Project.Interfaces.IO;
+using Project.Results;
 using System.Collections.Generic;
 using System.Data;
 
@@ -7,7 +8,7 @@ namespace Project.Interfaces
     /// <summary>
     /// IResultData
     /// </summary>
-    public interface IResultData : IList<IResult>
+    public interface IResultData : IList<Result>
     {
         /// <summary>
         /// Load
@@ -27,13 +28,13 @@ namespace Project.Interfaces
         /// AddRange
         /// </summary>
         /// <param name="results"></param>
-        void AddRange(IEnumerable<IResult> results);
+        void AddRange(IEnumerable<Result> results);
         /// <summary>
         /// AddRange
         /// </summary>
         /// <param name="results"></param>
         /// <param name="comparer"></param>
-        void AddRange(IEnumerable<IResult> results, IEqualityComparer<IResult> comparer);
+        void AddRange(IEnumerable<Result> results, IEqualityComparer<Result> comparer);
         /// <summary>
         /// FindByTimeInterval
         /// </summary>
@@ -41,29 +42,14 @@ namespace Project.Interfaces
         /// <param name="firstTime"></param>
         /// <param name="lastTime"></param>
         /// <returns></returns>
-        IEnumerable<IResult> FindByTimeInterval(string taskKind, float firstTime, float lastTime);
+        IEnumerable<Result> FindByTimeInterval(string taskKind, float firstTime, float lastTime);
         /// <summary>
         /// FindByTime
         /// </summary>
         /// <param name="taskKind"></param>
         /// <param name="time"></param>
         /// <returns></returns>
-        IResult FindByTime(TaskKind taskKind, float time);
-        /// <summary>
-        /// FindByTime
-        /// </summary>
-        /// <param name="taskKind"></param>
-        /// <param name="time"></param>
-        /// <param name="delta"></param>
-        /// <returns></returns>
-        IResult FindByTime(TaskKind taskKind, float time, float delta);
-        /// <summary>
-        /// FindByTime
-        /// </summary>
-        /// <param name="taskKind"></param>
-        /// <param name="time"></param>
-        /// <returns></returns>
-        IResult FindByTime(string taskKind, float time);
+        Result FindByTime(TaskKind taskKind, float time);
         /// <summary>
         /// FindByTime
         /// </summary>
@@ -71,19 +57,34 @@ namespace Project.Interfaces
         /// <param name="time"></param>
         /// <param name="delta"></param>
         /// <returns></returns>
-        IResult FindByTime(string taskKind, float time, float delta);
+        Result FindByTime(TaskKind taskKind, float time, float delta);
+        /// <summary>
+        /// FindByTime
+        /// </summary>
+        /// <param name="taskKind"></param>
+        /// <param name="time"></param>
+        /// <returns></returns>
+        Result FindByTime(string taskKind, float time);
+        /// <summary>
+        /// FindByTime
+        /// </summary>
+        /// <param name="taskKind"></param>
+        /// <param name="time"></param>
+        /// <param name="delta"></param>
+        /// <returns></returns>
+        Result FindByTime(string taskKind, float time, float delta);
         /// <summary>
         /// FindByTaskKind
         /// </summary>
         /// <param name="taskKind"></param>
         /// <returns></returns>
-        IEnumerable<IResult> FindByTaskKind(string taskKind);
+        IEnumerable<Result> FindByTaskKind(string taskKind);
         /// <summary>
         /// FindByTaskKind
         /// </summary>
         /// <param name="taskKind"></param>
         /// <returns></returns>
-        IEnumerable<IResult> FindByTaskKind(TaskKind taskKind);
+        IEnumerable<Result> FindByTaskKind(TaskKind taskKind);
 
         /// <summary>
         /// Save task data

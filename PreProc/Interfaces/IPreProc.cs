@@ -2,7 +2,7 @@
 using Project.Interfaces.Tasks;
 using System.Collections.Generic;
 
-namespace Tasks.Interfaces
+namespace PreProc.Interfaces
 {
     /// <summary>
     /// Тип процесса для препроцессора по созданию пользовательских задач

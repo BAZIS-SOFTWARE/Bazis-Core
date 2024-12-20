@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Project.Results;
+using System;
 using System.Collections.Generic;
 
 namespace Project.Interfaces.IO
@@ -13,7 +14,7 @@ namespace Project.Interfaces.IO
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        IEnumerable<IResult> Load(string path);
+        IEnumerable<Result> Load(string path);
         /// <summary>
         /// LoadEvent
         /// </summary>

@@ -1,7 +1,7 @@
 ﻿using System;
-using Tasks.Interfaces;
+using PreProc.Interfaces;
 
-namespace Tasks.TaskParameters
+namespace PreProc.TaskParameters
 {
     [Serializable]
     public class SolverSettings : ISolverSettings

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Tasks
+namespace PreProc
 {
     [Serializable]
     public class TermalConvergence

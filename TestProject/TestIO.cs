@@ -6,13 +6,10 @@ using System.Threading;
 using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
-using Model.IO;
+using PostProc.IO;
+using PostProc.ScenePresenter;
 using Project;
-using ProjectInterfaces.Results;
-using Results.IO;
-using Results.ScenePresenter;
-using Tasks;
-using Tasks.IO;
+using Project.Tasks;
 
 namespace TestProject
 {
@@ -27,7 +24,7 @@ namespace TestProject
 
         [DataTestMethod]
         //[DataRow("c:\\projs\\testProj\\Tempering", "proj.bpf")]
-        [DataRow("..\\..\\Examples", "proj_traj.bpf")]
+        [DataRow(@"..\..\Examples", "proj_traj.bpf")]
         //[DataRow("c:\\BazisSolver\\TestTaskSolutionMSTest\\ExampleProj\\Mech\\3D\\ConstLoadAndTemp500\\", "proj.bpf")]
         //[DataRow("c:\\projs\\ifm", "proj_v1.bpf")]
         public void LoadProjectFiletextFormat(string path, string name)
@@ -75,9 +72,9 @@ namespace TestProject
         public void IResultExporter_ShouldPass_WhenExportGridFileCreated(string format)
         {
             var points = new List<Point3D>() { new Point3D(-1f, -1f, 0f), new Point3D(1f, 1f, 0f), new Point3D(-1f, 1f, 0f) };
-            var figures = new List<IResultFigure2D> 
+            var figures = new List<ResultFigure> 
             { 
-                new ResultFigure2D(points, Color.Black)
+                new ResultFigure(points, Color.Black)
             };
 
             var exporter = new GridExporter();

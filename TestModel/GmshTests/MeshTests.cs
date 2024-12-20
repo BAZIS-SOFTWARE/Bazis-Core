@@ -13,7 +13,7 @@ namespace TestModel.GmshTests
     public class ControllerMeshTests
     {
         private IGmshController controller = new GmshController();
-        private static string modelFolder = @"..\..\..\Examples\GMSHAPI\";
+        private static string modelFolder = @"..\..\..\Examples";
 
         [TestInitialize]
         public void Init()
@@ -29,7 +29,7 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow("Cilindr.step")]
+        [DataRow(@"\CAD\Cilindr.step")]
         public void GetNodes(string fileName)
         {
             var ierr = 0;
@@ -40,7 +40,7 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow("Cilindr.step")]
+        [DataRow(@"\CAD\Cilindr.step")]
         public void TestRefineMesh(string fileName)
         {
             var ierr = 0;
@@ -53,8 +53,8 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow("Cilindr.step", 223, 46, 370, 707)]
-        [DataRow("Korpus_Nasosa.step", 2152, 1438, 3802, 6992)]
+        [DataRow(@"\CAD\Cilindr.step", 223, 46, 370, 707)]
+        [DataRow(@"\CAD\nasos.step", 2152, 1438, 3802, 6992)]
         public void GetMeshObjects(string fileName, int expNodes, int expE1d, int expE2d, int expE3d)
         {
             var ierr = 0;
@@ -68,7 +68,7 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow("Cilindr.step")]
+        [DataRow(@"\CAD\Cilindr.step")]
         public void TestDensity(string fileName)
         {
             var ierr = 0;
@@ -85,9 +85,9 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow("Cilindr.step", 1)]
-        [DataRow("Cilindr.step", 2)]
-        [DataRow("Cilindr.step", 3)]
+        [DataRow(@"\CAD\Cilindr.step", 1)]
+        [DataRow(@"\CAD\Cilindr.step", 2)]
+        [DataRow(@"\CAD\Cilindr.step", 3)]
         public void GetDensityForElementNodes(string fileName, int dim)
         {
             var ierr = 0;
@@ -107,7 +107,7 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow("Cilindr.step", new int[] { 1, 2, 3 }, new int[] { 112, 112, 74 })]
+        [DataRow(@"\CAD\Cilindr.step", new int[] { 1, 2, 3 }, new int[] { 112, 112, 74 })]
         public void GetSurfaceByIdTest(string fileName, int[] tags, int[] expLength)
         {
             var ierr = 0;
@@ -122,7 +122,7 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow("Cilindr.step")]
+        [DataRow(@"\CAD\Cilindr.step")]
         public void TestChangeTriangulationAlgorithm2D(string fileName)
         {
             var ierr = 0;
@@ -136,7 +136,7 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow("Cilindr.step")]
+        [DataRow(@"\CAD\Cilindr.step")]
         public void TestSetPointsOnCurve(string fileName)
         {
             var ierr = 0;
@@ -151,7 +151,7 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow("Cilindr.step", 2)]
+        [DataRow(@"\CAD\Cilindr.step", 2)]
         public void DeleteSurfaceTest(string fileName, int surfaceId)
         {
             var ierr = 0;
@@ -166,7 +166,7 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow("Cilindr.step")]
+        [DataRow(@"\CAD\Cilindr.step")]
         public void DeleteAllSurfaces(string fileName)
         {
             var ierr = 0; ;
@@ -180,7 +180,7 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow("Cilindr.step", new long[] { 206, 261, 251, 265, 210, 213 })]
+        [DataRow(@"\CAD\Cilindr.step", new long[] { 206, 261, 251, 265, 210, 213 })]
         public void DeleteMeshElementsTest(string fileName, long[] elTags)
         {
             var ierr = 0;
@@ -195,10 +195,10 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow("Cilindr.step", new int[] { 7, 8, 1, 3, 6 }, new int[] { 0, 0, 5, 5, 9 })]
-        [DataRow("Korpus_Nasosa.step", new int[] { 700, 720, 670, 667, 663 }, new int[] { 0, 0, 5, 2, 9 })]
-        [DataRow("model.igs", new int[] { 124, 126, 140, 136, 137 }, new int[] { 1, 1, 0, 5, 6 })]
-        [DataRow("sphere.geo", new int[] { 13, 14, 1, 2, 3 }, new int[] { 0, 0, 3, 3, 3 })]
+        [DataRow(@"\CAD\Cilindr.step", new int[] { 7, 8, 1, 3, 6 }, new int[] { 0, 0, 5, 5, 9 })]
+        [DataRow(@"\CAD\nasos.step", new int[] { 700, 720, 670, 667, 663 }, new int[] { 0, 0, 5, 2, 9 })]
+        [DataRow(@"\CAD\block.igs", new int[] { 124, 126, 140, 136, 137 }, new int[] { 1, 1, 0, 5, 6 })]
+        [DataRow(@"\GMSHAPI\sphere.geo", new int[] { 13, 14, 1, 2, 3 }, new int[] { 0, 0, 3, 3, 3 })]
 
         public void GenerateMeshGet1DElementsByIdTest(string fileName, int[] lineTags, int[] expectedLength)
         {
@@ -214,10 +214,10 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow("Cilindr.step", new int[] { 1, 2, 4, 5, 6 }, new int[] { 112, 112, 72, 0, 0 })]
-        [DataRow("Korpus_Nasosa.step", new int[] { 1, 2, 7, 292, 293 }, new int[] { 6, 10, 6, 0, 0 })]
-        [DataRow("model.igs", new int[] { 3, 4, 5, 29, 30 }, new int[] { 2, 28, 2, 0, 0 })]
-        [DataRow("sphere.geo", new int[] { 1, 2, 3, 14, 20 }, new int[] { 0, 0, 0, 13, 15 })]
+        [DataRow(@"\CAD\Cilindr.step", new int[] { 1, 2, 4, 5, 6 }, new int[] { 112, 112, 72, 0, 0 })]
+        [DataRow(@"\CAD\nasos.step", new int[] { 1, 2, 7, 292, 293 }, new int[] { 6, 10, 6, 0, 0 })]
+        [DataRow(@"\CAD\block.igs", new int[] { 3, 4, 5, 29, 30 }, new int[] { 2, 28, 2, 0, 0 })]
+        [DataRow(@"\GMSHAPI\sphere.geo", new int[] { 1, 2, 3, 14, 20 }, new int[] { 0, 0, 0, 13, 15 })]
         public void GenerateMeshGet2DElementsByIdTest(string fileName, int[] surfTags, int[] expectedLength)
         {
             var ierr = 0;
@@ -232,10 +232,10 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow("Cilindr.step", new int[] { -1, 1, 2 }, new int[] { 0, 1, 2 })]
-        [DataRow("Korpus_Nasosa.step", new int[] { -1, 1, 2 }, new int[] { 0, 1, 2 })]
-        [DataRow("model.igs", new int[] { -1, 1, 2 }, new int[] { 0, 1, 2 })]
-        [DataRow("sphere.geo", new int[] { -1, 1, 2 }, new int[] { 0, 1, 2 })]
+        [DataRow(@"\CAD\Cilindr.step", new int[] { -1, 1, 2 }, new int[] { 0, 1, 2 })]
+        [DataRow(@"\CAD\nasos.step", new int[] { -1, 1, 2 }, new int[] { 0, 1, 2 })]
+        [DataRow(@"\CAD\block.igs", new int[] { -1, 1, 2 }, new int[] { 0, 1, 2 })]
+        [DataRow(@"\GMSHAPI\sphere.geo", new int[] { -1, 1, 2 }, new int[] { 0, 1, 2 })]
         public void GenerateMeshGetAllNodesTest(string fileName, int[] nodesDim, int[] paramsCount)
         {
             var ierr = 0;
@@ -259,10 +259,10 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow("Cilindr.step", new int[] { 1, 2, 3 }, new int[] { 6, 10, 6 })]
-        [DataRow("Korpus_Nasosa.step", new int[] { 1, 2, 3 }, new int[] { 3, 3, 3 })]
-        [DataRow("model.igs", new int[] { 1, 2, 3 }, new int[] { 8, 2, 8 })]
-        [DataRow("sphere.geo", new int[] { 1, 2, 3 }, new int[] { 4, 4, 4 })]
+        [DataRow(@"\CAD\Cilindr.step", new int[] { 1, 2, 3 }, new int[] { 6, 10, 6 })]
+        [DataRow(@"\CAD\nasos.step", new int[] { 1, 2, 3 }, new int[] { 3, 3, 3 })]
+        [DataRow(@"\CAD\block.igs", new int[] { 1, 2, 3 }, new int[] { 8, 2, 8 })]
+        [DataRow(@"\GMSHAPI\sphere.geo", new int[] { 1, 2, 3 }, new int[] { 4, 4, 4 })]
         public void GenerateMeshGetLineNodesByTag(string fileName, int[] tags, int[] expectedLength)
         {
             var ierr = 0;
@@ -278,8 +278,8 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow("Korpus_Nasosa.step", new int[] { 170, 168, 166 }, new int[] { 4, 8, 8 })]
-        [DataRow("model.igs", new int[] { 5, 3, 12 }, new int[] { 4, 4, 9 })]
+        [DataRow(@"\CAD\nasos.step", new int[] { 170, 168, 166 }, new int[] { 4, 8, 8 })]
+        [DataRow(@"\CAD\block.igs", new int[] { 5, 3, 12 }, new int[] { 4, 4, 9 })]
         public void GenerateMeshGetSurfacesNodesByTag(string fileName, int[] tags, int[] expectedLength)
         {
             var ierr = 0;
@@ -295,7 +295,7 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow("Cilindr.step", 75)]
+        [DataRow(@"\CAD\Cilindr.step", 75)]
         public void GenerateMeshGetElementsByCoordinates(string fileName, int expected)
         {
             var ierr = 0;
@@ -308,7 +308,7 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow("Cilindr.step")]
+        [DataRow(@"\CAD\Cilindr.step")]
         public void AddRemoveFieldTest(string fileName)
         {
             var ierr = 0;
@@ -323,11 +323,11 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow("Cilindr.step")]
-        public void AddBoundaryLayerTest(string fileName)
+        [DataRow(@"..\..\..\Examples\CAD\cilindr.step", DisplayName = "AddBoundaryLayer for \"cilindr.step\"")]
+        public void AddBoundaryLayerTest(string fullFileName)
         {
             var ierr = 0;
-            controller.Open(modelFolder + fileName, ref ierr);
+            controller.Open(fullFileName, ref ierr);
             controller.ModelMeshGenerate(2, ref ierr);
             var nodes = controller.GetNodes(2);
             var el2dCount = controller.GetMeshEntities(2, -1, nodes).ToArray().Length;
@@ -347,7 +347,7 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow("Cilindr.step")]
+        [DataRow(@"\CAD\Cilindr.step")]
         public void TransfiniteSurfaceTest(string fileName)
         {
             var ierr = 0;
@@ -381,14 +381,14 @@ namespace TestModel.GmshTests
             Assert.AreEqual(expElementsAfterDel, modelData.ObjectData.E2DCollection.Count);
         }
         [DataTestMethod]
-        [DataRow("Cilindr.step", 1)]
-        [DataRow("Cilindr.step", 2)]
-        [DataRow("Cilindr.step", 3)]
-        [DataRow("Cilindr.step", 4)]
-        public void CenterOfSurfaceTest(string fileName, int surfTag)
+        [DataRow(@"..\..\..\Examples\CAD\cilindr.step", 1)]
+        [DataRow(@"..\..\..\Examples\CAD\cilindr.step", 2)]
+        [DataRow(@"..\..\..\Examples\CAD\cilindr.step", 3)]
+        [DataRow(@"..\..\..\Examples\CAD\cilindr.step", 4)]
+        public void CenterOfSurfaceTest(string fullFileName, int surfTag)
         {
             var ierr = 0;
-            controller.Open(modelFolder + fileName, ref ierr);
+            controller.Open(fullFileName, ref ierr);
             var coords = new double[3];
             controller.ModelOccGetCenterOfMass(2, surfTag, ref coords[0], ref coords[1], ref coords[2], ref ierr);
             var status = controller.ModelIsInside(2, surfTag, coords, (IntPtr)3, 0, ref ierr);
@@ -399,7 +399,7 @@ namespace TestModel.GmshTests
         }
         //Тест гарантирующий сброс трансфиниции кривой в состояние по умолчанию :)
         [DataTestMethod]
-        [DataRow("Cilindr.step", 2)]
+        [DataRow(@"\CAD\Cilindr.step", 2)]
         public void ResetTransfinitionTest(string fileName, int curveTag)
         {
             var ierr = 0;
@@ -422,7 +422,7 @@ namespace TestModel.GmshTests
         //Берется ближайший 3д элемент у границы модели и ближайший 3д элемент в центре, предполагается,
         //что объем элементов около центральной точки будет больше объемов граничных элементов 
         [DataTestMethod]
-        [DataRow("Cilindr.step", 15, 3, 139457)]
+        [DataRow(@"\CAD\Cilindr.step", 15, 3, 139457)]
         public void ExtendFilterTest(string fileName, double distFromBound, double sizeMax, int expElements)
         {
             var ierr = 0;

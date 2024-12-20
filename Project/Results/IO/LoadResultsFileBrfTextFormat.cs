@@ -16,7 +16,7 @@ namespace Project.Results.IO
     {
         public event Action<object, ILoadEventArgs> LoadEvent;
 
-        public IEnumerable<IResult> Load(string path)
+        public IEnumerable<Result> Load(string path)
         {
             using (var sr = new StreamReader(path))
             {
@@ -24,11 +24,11 @@ namespace Project.Results.IO
             }
         }
 
-        public List<IResult> ReadResults(StreamReader sr)
+        public List<Result> ReadResults(StreamReader sr)
         {
             var line = sr.ReadLine();
             var format = new Dictionary<string, Dictionary<TaskKind, string[]>>();
-            var results = new List<IResult>();
+            var results = new List<Result>();
 
             while (line != "#Результаты")
             {
@@ -92,11 +92,11 @@ namespace Project.Results.IO
             }
         }
 
-        public List<IResult> ReadResultsKind(StreamReader sr, TaskKind taskKind, Dictionary<string, Dictionary<TaskKind, string[]>> format)
+        public List<Result> ReadResultsKind(StreamReader sr, TaskKind taskKind, Dictionary<string, Dictionary<TaskKind, string[]>> format)
         {
             //var resultsDataSetList = new List<ResultsDataSet>();
             //var timeList = new List<float>();
-            var results = new List<IResult>();
+            var results = new List<Result>();
             if (format.Count == 0)
                 ReadOldResultDescription(format);
 

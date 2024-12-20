@@ -4,21 +4,17 @@ using Project;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Tasks.Functions;
-using Tasks;
 using System.Data;
 using System.Globalization;
 using System.Threading;
 using Geometry;
-using ModelInterfaces;
-using Newtonsoft.Json;
-using ModelInterfaces.MeshObjects;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
-using ProjectInterfaces.Tasks;
 using Model.MeshObjects;
 using Model.GroupsData;
+using Model.Interfaces.MeshObjects;
+using Project.Tasks;
+using Model.Interfaces;
+using Project.Tasks.Functions;
+using Project.Interfaces.Tasks;
 
 namespace TestProject
 {
@@ -567,7 +563,7 @@ namespace TestProject
 
             for (int i = 0; i < input.Length; i += 12)
             {
-                var nodes = new INode[]
+                var nodes = new Node[]
                 {
                     new Node(i, new Point3D(input[i], input[i + 1], input[i + 2])),
                     new Node(i + 1, new Point3D(input[i + 3], input[i + 4], input[i + 5])),

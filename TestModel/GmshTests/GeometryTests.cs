@@ -12,7 +12,7 @@ namespace TestModel.GmshTests
     public class ControllerGeometryTests
     {
         private GmshController controller = new GmshController();
-        private static string modelFolder = @"..\..\..\Examples\GMSHAPI\";
+        private static string modelFolder = @"..\..\..\Examples";
         [TestInitialize]
         public void Init()
         {
@@ -30,8 +30,8 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow("Cilindr.step", 6, ObjType.Линия)]
-        [DataRow("Cilindr.step", 4, ObjType.Точка)]
+        [DataRow(@"\CAD\Cilindr.step", 6, ObjType.Линия)]
+        [DataRow(@"\CAD\Cilindr.step", 4, ObjType.Точка)]
         public void GetGeometryObjectsTest(string fileName, int numbOfObjs, ObjType objType)
         {
             var ierr = 0;
@@ -62,7 +62,7 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow("Cilindr.step", new int[] { 1 })]
+        [DataRow(@"\CAD\Cilindr.step", new int[] { 1 })]
         public void RemoveEntityTest(string fileName, int[] dimArray)
         {
             var ierr = 0;
@@ -80,9 +80,9 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow("Cilindr.step", "1", new int[] { 4, 6, 4, 1 })]
-        [DataRow("Korpus_Nasosa.step", "2", new int[] { 376, 684, 291, 1 })]
-        [DataRow("model.igs", "3", new int[] { 136, 138, 28 })]
+        [DataRow(@"\CAD\Cilindr.step", "1", new int[] { 4, 6, 4, 1 })]
+        [DataRow(@"\CAD\nasos.step", "2", new int[] { 376, 684, 291, 1 })]
+        [DataRow(@"\CAD\block.igs", "3", new int[] { 136, 138, 28 })]
         public void GetEntitiesGetAllDimensionTest(string fileName, string modelID, int[] expTags)
         {
             var ierr = 0;
@@ -100,11 +100,11 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow("Cilindr.step", "1", new int[] { 4, 6, 4, 1 },
+        [DataRow(@"\CAD\Cilindr.step", "1", new int[] { 4, 6, 4, 1 },
                   new string[] { "Point", "Curve", "Surface", "Volume" })]
-        [DataRow("Korpus_Nasosa.step", "2", new int[] { 376, 684, 291, 1 },
+        [DataRow(@"\CAD\Korpus_Nasosa.step", "2", new int[] { 376, 684, 291, 1 },
                   new string[] { "Point", "Curve", "Surface", "Volume" })]
-        [DataRow("model.igs", "3", new int[] { 136, 138, 28 }, new string[] { "Point", "Curve", "Surface" })]
+        [DataRow(@"\CAD\model.igs", "3", new int[] { 136, 138, 28 }, new string[] { "Point", "Curve", "Surface" })]
         public void SetGetRemoveEntityNameTest(string fileName, string modelID, int[] entCount, string[] entName)
         {
             var ierr = 0;
@@ -127,13 +127,13 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow("Cilindr.step", "1", new double[] { -14.2188, -2.7094, -13.2231 },
+        [DataRow(@"\CAD\Cilindr.step", "1", new double[] { -14.2188, -2.7094, -13.2231 },
                                       new double[] { 10.6366, 19.599, 10.7593 })]
-        [DataRow("Korpus_Nasosa.step", "2", new double[] { -88.2608, -0.679586, -61.2934 },
+        [DataRow(@"\CAD\nasos.step", "2", new double[] { -88.2608, -0.679586, -61.2934 },
                                             new double[] { 88.2608, 273.279, 61.2934 })]
-        [DataRow("model.igs", "3", new double[] { -1.72724e-05, -179.902, -0.0020751 },
+        [DataRow(@"\CAD\block.igs", "3", new double[] { -1.72724e-05, -179.902, -0.0020751 },
                                    new double[] { 2591.2, 2540, 508 })]
-        [DataRow("sphere.geo", "4", new double[] { -1, -1, -1 },
+        [DataRow(@"\GMSHAPI\sphere.geo", "4", new double[] { -1, -1, -1 },
                                     new double[] { 1, 1, 1 })]
         public void ModelBoundingBoxTest(string fileName, string modelID, double[] minExp, double[] maxExp)
         {
@@ -152,36 +152,36 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow("Cilindr.step", "1", 1, new int[] { }, new int[] { 1, 2, 6 }, 0)]
-        [DataRow("Cilindr.step", "1", 2, new int[] { }, new int[] { 1, 4, 5 }, 0)]
-        [DataRow("Cilindr.step", "1", 3, new int[] { }, new int[] { 2, 3, 6 }, 0)]
-        [DataRow("Cilindr.step", "1", 4, new int[] { }, new int[] { 3, 4, 5 }, 0)]
-        [DataRow("sphere.geo", "2", 1, new int[] { }, new int[] { }, 0)]
-        [DataRow("sphere.geo", "2", 2, new int[] { }, new int[] { 1, 4, 9, 12 }, 0)]
-        [DataRow("sphere.geo", "2", 3, new int[] { }, new int[] { 1, 2, 5, 8 }, 0)]
-        [DataRow("sphere.geo", "2", 4, new int[] { }, new int[] { 2, 3, 10, 11 }, 0)]
-        [DataRow("sphere.geo", "2", 5, new int[] { }, new int[] { 3, 4, 6, 7 }, 0)]
-        [DataRow("sphere.geo", "2", 6, new int[] { }, new int[] { 5, 6, 11, 12 }, 0)]
-        [DataRow("sphere.geo", "2", 7, new int[] { }, new int[] { 7, 8, 9, 10 }, 0)]
-        [DataRow("sphere.geo", "1", 1, new int[] { 2, 3 }, new int[] { 18, 22 }, 1)]
-        [DataRow("sphere.geo", "1", 2, new int[] { 3, 4 }, new int[] { 14, 20 }, 1)]
-        [DataRow("sphere.geo", "1", 3, new int[] { 4, 5 }, new int[] { 16, 24 }, 1)]
-        [DataRow("sphere.geo", "1", 4, new int[] { 5, 2 }, new int[] { 26, 28 }, 1)]
-        [DataRow("sphere.geo", "1", 5, new int[] { 3, 6 }, new int[] { 20, 22 }, 1)]
-        [DataRow("sphere.geo", "1", 6, new int[] { 6, 5 }, new int[] { 24, 28 }, 1)]
-        [DataRow("sphere.geo", "1", 7, new int[] { 5, 7 }, new int[] { 16, 26 }, 1)]
-        [DataRow("sphere.geo", "1", 8, new int[] { 7, 3 }, new int[] { 14, 18 }, 1)]
-        [DataRow("sphere.geo", "1", 9, new int[] { 2, 7 }, new int[] { 18, 26 }, 1)]
-        [DataRow("sphere.geo", "1", 10, new int[] { 7, 4 }, new int[] { 14, 16 }, 1)]
-        [DataRow("sphere.geo", "1", 11, new int[] { 4, 6 }, new int[] { 20, 24 }, 1)]
-        [DataRow("sphere.geo", "1", 12, new int[] { 6, 2 }, new int[] { 22, 28 }, 1)]
-        [DataRow("Cilindr.step", "1", 1, new int[] { 1, 2, 3, 4 }, new int[] { 1 }, 2)]
-        [DataRow("Cilindr.step", "1", 2, new int[] { 1, 5, 3, 6 }, new int[] { 1 }, 2)]
-        [DataRow("Cilindr.step", "1", 3, new int[] { 4, 5 }, new int[] { 1 }, 2)]
-        [DataRow("Cilindr.step", "1", 4, new int[] { 6, 2 }, new int[] { 1 }, 2)]
-        [DataRow("Cilindr.step", "1", 1, new int[] { 1, 2, 3, 4 }, new int[] { }, 3)]
-        [DataRow("sphere.geo", "2", 30, new int[] { 28, 26, 16, 14, 20, 24, 22, 18 }, new int[] { }, 3)]
-        [DataRow("sphere.geo", "2", 1, null, null, 3)]//Not Found Test
+        [DataRow(@"\CAD\Cilindr.step", "1", 1, new int[] { }, new int[] { 1, 2, 6 }, 0)]
+        [DataRow(@"\CAD\Cilindr.step", "1", 2, new int[] { }, new int[] { 1, 4, 5 }, 0)]
+        [DataRow(@"\CAD\Cilindr.step", "1", 3, new int[] { }, new int[] { 2, 3, 6 }, 0)]
+        [DataRow(@"\CAD\Cilindr.step", "1", 4, new int[] { }, new int[] { 3, 4, 5 }, 0)]
+        [DataRow(@"\GMSHAPI\sphere.geo", "2", 1, new int[] { }, new int[] { }, 0)]
+        [DataRow(@"\GMSHAPI\sphere.geo", "2", 2, new int[] { }, new int[] { 1, 4, 9, 12 }, 0)]
+        [DataRow(@"\GMSHAPI\sphere.geo", "2", 3, new int[] { }, new int[] { 1, 2, 5, 8 }, 0)]
+        [DataRow(@"\GMSHAPI\sphere.geo", "2", 4, new int[] { }, new int[] { 2, 3, 10, 11 }, 0)]
+        [DataRow(@"\GMSHAPI\sphere.geo", "2", 5, new int[] { }, new int[] { 3, 4, 6, 7 }, 0)]
+        [DataRow(@"\GMSHAPI\sphere.geo", "2", 6, new int[] { }, new int[] { 5, 6, 11, 12 }, 0)]
+        [DataRow(@"\GMSHAPI\sphere.geo", "2", 7, new int[] { }, new int[] { 7, 8, 9, 10 }, 0)]
+        [DataRow(@"\GMSHAPI\sphere.geo", "1", 1, new int[] { 2, 3 }, new int[] { 18, 22 }, 1)]
+        [DataRow(@"\GMSHAPI\sphere.geo", "1", 2, new int[] { 3, 4 }, new int[] { 14, 20 }, 1)]
+        [DataRow(@"\GMSHAPI\sphere.geo", "1", 3, new int[] { 4, 5 }, new int[] { 16, 24 }, 1)]
+        [DataRow(@"\GMSHAPI\sphere.geo", "1", 4, new int[] { 5, 2 }, new int[] { 26, 28 }, 1)]
+        [DataRow(@"\GMSHAPI\sphere.geo", "1", 5, new int[] { 3, 6 }, new int[] { 20, 22 }, 1)]
+        [DataRow(@"\GMSHAPI\sphere.geo", "1", 6, new int[] { 6, 5 }, new int[] { 24, 28 }, 1)]
+        [DataRow(@"\GMSHAPI\sphere.geo", "1", 7, new int[] { 5, 7 }, new int[] { 16, 26 }, 1)]
+        [DataRow(@"\GMSHAPI\sphere.geo", "1", 8, new int[] { 7, 3 }, new int[] { 14, 18 }, 1)]
+        [DataRow(@"\GMSHAPI\sphere.geo", "1", 9, new int[] { 2, 7 }, new int[] { 18, 26 }, 1)]
+        [DataRow(@"\GMSHAPI\sphere.geo", "1", 10, new int[] { 7, 4 }, new int[] { 14, 16 }, 1)]
+        [DataRow(@"\GMSHAPI\sphere.geo", "1", 11, new int[] { 4, 6 }, new int[] { 20, 24 }, 1)]
+        [DataRow(@"\GMSHAPI\sphere.geo", "1", 12, new int[] { 6, 2 }, new int[] { 22, 28 }, 1)]
+        [DataRow(@"\CAD\Cilindr.step", "1", 1, new int[] { 1, 2, 3, 4 }, new int[] { 1 }, 2)]
+        [DataRow(@"\CAD\Cilindr.step", "1", 2, new int[] { 1, 5, 3, 6 }, new int[] { 1 }, 2)]
+        [DataRow(@"\CAD\Cilindr.step", "1", 3, new int[] { 4, 5 }, new int[] { 1 }, 2)]
+        [DataRow(@"\CAD\Cilindr.step", "1", 4, new int[] { 6, 2 }, new int[] { 1 }, 2)]
+        [DataRow(@"\CAD\Cilindr.step", "1", 1, new int[] { 1, 2, 3, 4 }, new int[] { }, 3)]
+        [DataRow(@"\GMSHAPI\sphere.geo", "2", 30, new int[] { 28, 26, 16, 14, 20, 24, 22, 18 }, new int[] { }, 3)]
+        [DataRow(@"\GMSHAPI\sphere.geo", "2", 1, null, null, 3)]//Not Found Test
         public void GetAdjacenciesTest(string fileName, string modelId, int tag, int[] downExp, int[] upExp, int dim)
         {
             var ierr = 0;
@@ -193,11 +193,11 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow("Cilindr.step", "1", 1, new double[] { }, new double[] { 7.04956865241, 19.1445358209, -2.46386184958 })]
-        [DataRow("Cilindr.step", "1", 2, new double[] { }, new double[] { 10.6317844476, 2.25496193279, 0 })]
-        [DataRow("Cilindr.step", "1", 3, new double[] { }, new double[] { -14.2140002427, 14.6346119553, -2.46386184958 })]
-        [DataRow("Cilindr.step", "1", 4, new double[] { }, new double[] { -10.6317844476, -2.25496193279, 2.33468147911e-16 })]
-        [DataRow("Cilindr.step", "1", 5, new double[] { }, new double[] { })]//Not found test
+        [DataRow(@"\CAD\Cilindr.step", "1", 1, new double[] { }, new double[] { 7.04956865241, 19.1445358209, -2.46386184958 })]
+        [DataRow(@"\CAD\Cilindr.step", "1", 2, new double[] { }, new double[] { 10.6317844476, 2.25496193279, 0 })]
+        [DataRow(@"\CAD\Cilindr.step", "1", 3, new double[] { }, new double[] { -14.2140002427, 14.6346119553, -2.46386184958 })]
+        [DataRow(@"\CAD\Cilindr.step", "1", 4, new double[] { }, new double[] { -10.6317844476, -2.25496193279, 2.33468147911e-16 })]
+        [DataRow(@"\CAD\Cilindr.step", "1", 5, new double[] { }, new double[] { })]//Not found test
 
         public void GetLocalCoordsByParametricTest(string fileName, string modelID, int tag,
                                                    double[] parametric, double[] expected)
@@ -211,8 +211,8 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow("Cilindr.step", new int[] { 1, 2, 3, 4, 5, 6 })]
-        [DataRow("sphere.geo", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 })]
+        [DataRow(@"\CAD\Cilindr.step", new int[] { 1, 2, 3, 4, 5, 6 })]
+        [DataRow(@"\GMSHAPI\sphere.geo", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 })]
         public void ParametrizationCurvesTest(string fileName, int[] tags)
         {
             var ierr = 0;
@@ -229,7 +229,7 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow("Cilindr.step", new int[] { 1 })]
+        [DataRow(@"\CAD\Cilindr.step", new int[] { 1 })]
         public void ParametrizationSurfacesTest(string fileName, int[] tags)
         {
             var ierr = 0;
@@ -304,7 +304,7 @@ namespace TestModel.GmshTests
         }
         //Тест - устанавливаем плотность в точке, затем проверям(берем разные файлы моделей!)
         [DataTestMethod]
-        [DataRow(@"..\..\..\Examples\GMSHAPI\Cilindr.step", new double[] { 0.35, 0.8, 0.25, 1.0 })]
+        [DataRow(@"..\..\..\Examples\CAD\Cilindr.step", new double[] { 0.35, 0.8, 0.25, 1.0 })]
         [DataRow(@"..\..\..\Examples\GMSHAPI\simple.geo", new double[] { 0.5, 0.9, 0.01, 0.7 })]
         public void SetAndGetMeshSizesTest(string path, double[] expected)
         {
@@ -336,7 +336,7 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow("Cilindr.step", new int[] { 2, 4, 5, 6 })]
+        [DataRow(@"\CAD\Cilindr.step", new int[] { 2, 4, 5, 6 })]
         public void GetCurveLengthTest(string fileName, int[] curvesId)
         {
             var ierr = 0;
@@ -361,9 +361,9 @@ namespace TestModel.GmshTests
             }
         }
         [DataTestMethod]
-        [DataRow("Cilindr.step", 2, 3f)]
-        [DataRow("Cilindr.step", 3, 0.5f)]
-        [DataRow("Cilindr.step", 4, 4.2f)]
+        [DataRow(@"\CAD\Cilindr.step", 2, 3f)]
+        [DataRow(@"\CAD\Cilindr.step", 3, 0.5f)]
+        [DataRow(@"\CAD\Cilindr.step", 4, 4.2f)]
         public void GetPointsCountByElementSizeTest(string fileName, int curveId, float elemSize)
         {
             var ierr = 0;

@@ -9,14 +9,14 @@ using Model;
 using Newtonsoft.Json;
 using System.IO;
 using Project;
-using Tasks;
-using Tasks.Functions;
-using ProjectInterfaces.Tasks;
+using PreProc;
+using Project.Interfaces.Tasks;
 using Model.GroupsData;
-using ModelInterfaces;
+using Model.Interfaces;
 using Geometry;
-using TasksParameters;
 using System.Runtime.InteropServices;
+using Project.Tasks;
+using Project.Tasks.Functions;
 
 namespace TestProject
 {

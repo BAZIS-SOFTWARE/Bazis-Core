@@ -58,20 +58,11 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CsvHelper, Version=33.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
-      <HintPath>..\packages\CsvHelper.33.0.1\lib\net48\CsvHelper.dll</HintPath>
-    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-    </Reference>
-    <Reference Include="Geometry, Version=2.0.8.4, Culture=neutral, PublicKeyToken=d064922373770c4c, processorArchitecture=MSIL">
-      <HintPath>..\packages\Geometry.2.0.8.4\lib\netstandard2.0\Geometry.dll</HintPath>
-    </Reference>
-    <Reference Include="MathNet.Numerics, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cd8b63ad3d691a37, processorArchitecture=MSIL">
-      <HintPath>..\packages\MathNet.Numerics.Signed.5.0.0\lib\net48\MathNet.Numerics.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.8.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
@@ -86,23 +77,8 @@
     <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\MSTest.TestFramework.3.1.1\lib\net462\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll</HintPath>
     </Reference>
-    <Reference Include="Model, Version=3.1.2.1, Culture=neutral, PublicKeyToken=fb50939feb9441b1, processorArchitecture=MSIL">
-      <HintPath>..\packages\Model.3.1.2.1\lib\netstandard2.0\Model.dll</HintPath>
-    </Reference>
-    <Reference Include="ModelController, Version=3.1.13.1, Culture=neutral, PublicKeyToken=e09ec217329c0175, processorArchitecture=MSIL">
-      <HintPath>..\packages\ModelController.3.1.13.1\lib\netstandard2.0\ModelController.dll</HintPath>
-    </Reference>
-    <Reference Include="ModelControllerInterfaces, Version=3.0.2.1, Culture=neutral, PublicKeyToken=52509cc2c5d48acc, processorArchitecture=MSIL">
-      <HintPath>..\packages\ModelControllerInterfaces.3.0.2.1\lib\netstandard2.0\ModelControllerInterfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="ModelInterfaces, Version=3.0.1.7, Culture=neutral, PublicKeyToken=998e39182864f357, processorArchitecture=MSIL">
-      <HintPath>..\packages\ModelInterfaces.3.0.1.7\lib\netstandard2.0\ModelInterfaces.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="Octree, Version=2.1.11.0, Culture=neutral, PublicKeyToken=2f43c75143b659d5, processorArchitecture=MSIL">
-      <HintPath>..\packages\NetOctree.2.1.11\lib\netstandard2.0\Octree.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -209,25 +185,29 @@
     <Content Include="Examples\ProjAndResults\watcher_1.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ProjectInterfaces\ProjectInterfaces.csproj">
-      <Project>{d12fd8ad-3ca9-48b3-9071-21042ec65b50}</Project>
-      <Name>ProjectInterfaces</Name>
+    <ProjectReference Include="..\ModelController\ModelController.csproj">
+      <Project>{a27fb4c7-19a3-4ad6-8eb3-1eae77654719}</Project>
+      <Name>ModelController</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Model\Model.csproj">
+      <Project>{a6b0cebb-8f7c-467e-90bb-924103dae30b}</Project>
+      <Name>Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PostProc\PostProc.csproj">
+      <Project>{d89c1656-b753-4241-9962-fd6999c67529}</Project>
+      <Name>PostProc</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PreProc\PreProc.csproj">
+      <Project>{e5435134-cbb2-4572-a8fa-222c2a46ace8}</Project>
+      <Name>PreProc</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PrGeometry\Geometry.csproj">
+      <Project>{95ed498b-f3e1-4d57-8039-960ac9d790f5}</Project>
+      <Name>Geometry</Name>
     </ProjectReference>
     <ProjectReference Include="..\Project\Project.csproj">
       <Project>{8f33f5f1-239d-466c-8761-dc7b3dd528aa}</Project>
       <Name>Project</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Results\Results.csproj">
-      <Project>{3d49391c-7b43-4782-98e5-284b6106fd38}</Project>
-      <Name>Results</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TaskParameters\TasksParameters.csproj">
-      <Project>{8ff15162-871c-4196-9487-e7f5b56a729d}</Project>
-      <Name>TasksParameters</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Tasks\Tasks.csproj">
-      <Project>{2c1061b3-4898-450f-b37d-c248b79f2161}</Project>
-      <Name>Tasks</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
