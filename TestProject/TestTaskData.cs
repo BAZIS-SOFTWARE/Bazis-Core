@@ -23,6 +23,7 @@ namespace TestProject
     [TestClass]
     public class TestTaskData
     {
+        string testDir = @"..\..\..\Examples";
         [TestInitialize]
         public void Init()
         {
@@ -37,7 +38,7 @@ namespace TestProject
             proj.ModelData = new ModelData();
             proj.TaskData = new TaskData();
             //act
-            proj.Load(@"..\..\Examples\proj_traj.bpf");
+            proj.Load($@"{testDir}\proj_traj.bpf");
 
             var dic = proj.TaskData.Find("Закрепление").ToArray();
 
@@ -57,7 +58,7 @@ namespace TestProject
             proj.ModelData = new ModelData();
             proj.TaskData = new TaskData();
             //act
-            proj.Load(@"..\..\Examples\proj_traj.bpf");
+            proj.Load($@"{testDir}\proj_traj.bpf");
 
             proj.ModelData.GroupData.RemoveAt(5);
 
@@ -77,7 +78,7 @@ namespace TestProject
             proj.ModelData = new ModelData();
             proj.TaskData = new TaskData();
             //act
-            proj.Load(@"..\..\Examples\proj_traj.bpf");
+            proj.Load(@"..\..\..\Examples\proj_traj.bpf");
 
             var res = proj.TaskData.Find<IValuableData>();
             //assert
@@ -87,8 +88,8 @@ namespace TestProject
         }
 
         [TestMethod]
-        [DataRow(@"..\..\Examples\proj_traj.bpf", DisplayName = "proj_traj")]
-        [DataRow(@"..\..\Examples\proj_traj_save.bpf", DisplayName = "proj_traj_save")]
+        [DataRow(@"..\..\..\Examples\proj_traj.bpf", DisplayName = "proj_traj")]
+        [DataRow(@"..\..\..\Examples\proj_traj_save.bpf", DisplayName = "proj_traj_save")]
         [DataRow(@"c:\projs\ElenaLu\Bulk\1.bpf", DisplayName = "1")]
         //[DataRow(@"c:\projs\testProj\TubeToTubeTJoint\proj_v1.bpf")]
         //[DataRow(@"c:\projs\kamaz\4.bpf")]
@@ -134,7 +135,7 @@ namespace TestProject
             proj.TaskData = new TaskData();
 
             //act
-            proj.Load(@"..\..\Examples\proj_traj.bpf");
+            proj.Load(@"..\..\..\Examples\proj_traj.bpf");
 
             var selectedData = proj.TaskData.Find("Нагрев").Select(x => (IValuableData)x).ToArray();
 
@@ -153,7 +154,7 @@ namespace TestProject
             proj.TaskData = new TaskData();
 
             //act
-            proj.Load(@"..\..\Examples\proj_traj.bpf");
+            proj.Load(@"..\..\..\Examples\proj_traj.bpf");
 
             var selectedData = proj.TaskData.Find("Нагрев").Select(x => (IValuableData)x).ToArray();
 
@@ -195,7 +196,7 @@ namespace TestProject
             proj.TaskData = new TaskData();
 
             //act
-            proj.Load(@"..\..\Examples\test_t_lazer_0_10.bpf");
+            proj.Load(@"..\..\..\Examples\test_t_lazer_0_10.bpf");
 
             var heatData = proj.TaskData.Find("Нагрев").Select(x => (HeatData)x).ToArray()[0];
 
@@ -226,7 +227,7 @@ namespace TestProject
             proj.ModelData = new ModelData();
             proj.TaskData = new TaskData();
             //act
-            proj.Load(@"..\..\Examples\test_t_lazer_180_0_10.bpf");
+            proj.Load(@"..\..\..\Examples\test_t_lazer_180_0_10.bpf");
 
             var heatData = proj.TaskData.Find("Нагрев").Select(x => (HeatData)x).ToArray()[0];
 
@@ -279,7 +280,7 @@ namespace TestProject
             project.ModelData = new ModelData();
             project.TaskData = new TaskData();
             //act
-            project.Load(@"..\..\Examples\proj_traj.bpf");
+            project.Load(@"..\..\..\Examples\proj_traj.bpf");
  
             //assert
 
@@ -514,22 +515,22 @@ namespace TestProject
             else
                 serParams = JsonConvert.SerializeObject((ChemicalParameters)parameters, settingsSerializer);
 
-            File.WriteAllText($@"../../TestTaskParameters/{ar[0]}_testParam.jsp", serParams);
+            File.WriteAllText($@"{testDir}\TestTaskParameters\{ar[0]}_testParam.jsp", serParams);
 
             if (ar[0] == "тепловая")
             {
                 var desParamsTerm = JsonConvert.DeserializeObject<TermalParameters>
-(File.ReadAllText($@"../../TestTaskParameters/{ar[0]}_testParam.jsp"), settingsSerializer);
+(File.ReadAllText($@"{testDir}\TestTaskParameters\{ar[0]}_testParam.jsp"), settingsSerializer);
             }
             else if (ar[0] == "механическая")
             {
                 var desParamsMech = JsonConvert.DeserializeObject<MechanicalParameters>
-(File.ReadAllText($@"../../TestTaskParameters/{ar[0]}_testParam.jsp"), settingsSerializer);
+(File.ReadAllText($@"{testDir}\TestTaskParameters\{ar[0]}_testParam.jsp"), settingsSerializer);
             }
             else
             {
                 var desParams = JsonConvert.DeserializeObject<ChemicalParameters>
-(File.ReadAllText($@"../../TestTaskParameters/{ar[0]}_testParam.jsp"), settingsSerializer);
+(File.ReadAllText($@"{testDir}\TestTaskParameters\{ar[0]}_testParam.jsp"), settingsSerializer);
             }
         }
 

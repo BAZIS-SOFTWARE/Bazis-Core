@@ -12,7 +12,7 @@
   "RestartFile": "",
   "Iterations": 2,
   "SolverSettings": {
-    "$type": "TasksParameters.SolverSettings, TasksParameters",
+    "$type": "PreProc.SolverSettings, PreProc",
     "MaxIter": 100,
     "Solver": "SOR_iterative",
     "MaxRelaxation": 1.5,
@@ -21,7 +21,7 @@
     "Priority": "Наивысший"
   },
   "TimeSettings": {
-    "$type": "TasksParameters.TimeSettings, TasksParameters",
+    "$type": "PreProc.TimeSettings, PreProc",
     "MaxTimeStep": 100.0,
     "MinTimeStep": 0.0005,
     "StartTime": 0.0,

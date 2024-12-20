@@ -12,7 +12,7 @@ namespace PostProc
     /// <summary>
     /// IResultsController
     /// </summary>
-    public interface IResultsController
+    public interface IPostProcController
     {
         /// <summary>
         /// ResultsMerger

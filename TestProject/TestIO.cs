@@ -16,6 +16,7 @@ namespace TestProject
     [TestClass]
     public class TestIO
     {
+        string testDir = @"..\..\..\Examples";
         [TestInitialize]
         public void Init()
         {
@@ -24,10 +25,10 @@ namespace TestProject
 
         [DataTestMethod]
         //[DataRow("c:\\projs\\testProj\\Tempering", "proj.bpf")]
-        [DataRow(@"..\..\Examples", "proj_traj.bpf")]
+        [DataRow("proj_traj.bpf")]
         //[DataRow("c:\\BazisSolver\\TestTaskSolutionMSTest\\ExampleProj\\Mech\\3D\\ConstLoadAndTemp500\\", "proj.bpf")]
         //[DataRow("c:\\projs\\ifm", "proj_v1.bpf")]
-        public void LoadProjectFiletextFormat(string path, string name)
+        public void LoadProjectFiletextFormat(string name)
         {
             //assing
             //c:\projs\testProj\Tempering\
@@ -35,7 +36,7 @@ namespace TestProject
             project.ModelData = new ModelData();
             project.TaskData = new TaskData();
             project.Loader.LoadEvent += (ar1, ar2) => { };
-            project.Load($@"{path}\{name}");
+            project.Load($@"{testDir}\{name}");
 
             //assert
             var loadDataStr = project.TaskData.Find<Data>().First().GetInfo;
@@ -45,8 +46,7 @@ namespace TestProject
         public void SaveProjectFiletextFormat()
         {
             //assing
-            var path = @"..\..\Examples";
-            var project = new ProjectData("someName", path);
+            var project = new ProjectData("someName", testDir);
             project.ModelData = new ModelData();
             project.ModelData.Loader.LoadEvent += (ar1, ar2) => { };
             project.ModelData.Saver.SaveEvent += (ar1, ar2) => { };
@@ -55,7 +55,7 @@ namespace TestProject
             project.Loader.LoadEvent += (ar1, ar2) => { };
 
             //act
-            project.Load($@"{path}\proj_traj.bpf");
+            project.Load($@"{testDir}\proj_traj.bpf");
 
             project.Saver.SaveEvent += (ar1,ar2) => { };
             project.GeneralData.Name = "proj_traj_save.bpf";
@@ -78,7 +78,7 @@ namespace TestProject
             };
 
             var exporter = new GridExporter();
-            exporter.ExportGridSurfaces(figures, "..\\..\\Examples\\" + "export" + format.ToLower().Split('-')[0], format);
+            exporter.ExportGridSurfaces(figures, $@"{testDir}\export" + format.ToLower().Split('-')[0], format);
         }
     }
 }

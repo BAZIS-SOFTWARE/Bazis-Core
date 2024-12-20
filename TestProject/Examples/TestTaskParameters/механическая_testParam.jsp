@@ -1,8 +1,14 @@
 {
   "ChemicalFile": "",
-  "TermalConvergence": {
-    "Is_Switched_Tm": true,
-    "Tm": 1500.0
+  "ThermalFile": "",
+  "MechanicalConvergence": {
+    "Is_Switched_Um": false,
+    "Um": 0.0,
+    "DUm": 0.0,
+    "Is_Physically_NonLinear": false,
+    "PlasticityCriterion": 0.0,
+    "SiStm": 0.0,
+    "MaterialPlasticityCoeff": 0.0
   },
   "MetallurgicalProcesses": [
     "Охлаждение",
@@ -13,7 +19,7 @@
   "RestartFile": "",
   "Iterations": 0,
   "SolverSettings": {
-    "$type": "TasksParameters.SolverSettings, TasksParameters",
+    "$type": "PreProc.SolverSettings, PreProc",
     "MaxIter": 0,
     "Solver": "Gauss_direct",
     "MaxRelaxation": 1.5,
@@ -22,7 +28,7 @@
     "Priority": "Наивысший"
   },
   "TimeSettings": {
-    "$type": "TasksParameters.TimeSettings, TasksParameters",
+    "$type": "PreProc.TimeSettings, PreProc",
     "MaxTimeStep": 0.0,
     "MinTimeStep": 0.0,
     "StartTime": 0.0,

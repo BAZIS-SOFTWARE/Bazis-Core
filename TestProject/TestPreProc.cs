@@ -19,7 +19,7 @@ namespace TestProject
     [TestClass]
     public class TestPreProc
     {
-        private static string projPath = @"..\..\CalcCompDataTest\TsfFolder";
+        private static string projPath = @"..\..\..\CalcCompDataTest\TsfFolder";
         [TestInitialize]
         public void Init()
         {
@@ -231,7 +231,7 @@ namespace TestProject
         }
 
         [TestMethod]
-        [DataRow(@"..\..\CalcCompDataTest\MNOGOPROHOD.bpf", ProcessType.Welding)]
+        [DataRow(@"..\..\..\CalcCompDataTest\MNOGOPROHOD.bpf", ProcessType.Welding)]
         [DataRow(@"c:\projs\testProj\Tempering\proj.bpf", ProcessType.Heating)]
         [DataRow(@"c:\projs\testProj\Tempering\proj.bpf", ProcessType.Quenching)]
         [DataRow(@"c:\projs\testProj\Tempering\proj.bpf", ProcessType.Tempering)]
@@ -257,16 +257,16 @@ namespace TestProject
         }
 
         [TestMethod]
-        [DataRow(@"..\..\CalcCompDataTest\MatDataShorterThenBoundData.bpf", DisplayName = "MatDataShorterThenBoundData")]
-        [DataRow(@"..\..\CalcCompDataTest\NoMaterialData.bpf", DisplayName = "NoMaterialData")]
-        [DataRow(@"..\..\CalcCompDataTest\NoBoundData.bpf", DisplayName = "NoBoundData")]
-        [DataRow(@"..\..\CalcCompDataTest\ClampDataStartsAfterProcessStart.bpf", DisplayName = "ClampDataStartsAfterProcessStart")]
-        [DataRow(@"..\..\CalcCompDataTest\MedDataStartsAfterProcessStart.bpf",DisplayName = "MedDataStartsAfterProcessStart")]
-        [DataRow(@"..\..\CalcCompDataTest\MaterialDataStartsAfterProcessStart.bpf")]
-        [DataRow(@"..\..\CalcCompDataTest\FreeSpacesBetweenClampData.bpf")]
-        [DataRow(@"..\..\CalcCompDataTest\FreeSpacesBetweenMediaData.bpf")]
-        [DataRow(@"..\..\CalcCompDataTest\FreeSpacesBetweenMaterialData.bpf")]
-        [DataRow(@"..\..\CalcCompDataTest\HeatDataContiniousWithoutMediaData.bpf")]
+        [DataRow(@"..\..\..\CalcCompDataTest\MatDataShorterThenBoundData.bpf", DisplayName = "MatDataShorterThenBoundData")]
+        [DataRow(@"..\..\..\CalcCompDataTest\NoMaterialData.bpf", DisplayName = "NoMaterialData")]
+        [DataRow(@"..\..\..\CalcCompDataTest\NoBoundData.bpf", DisplayName = "NoBoundData")]
+        [DataRow(@"..\..\..\CalcCompDataTest\ClampDataStartsAfterProcessStart.bpf", DisplayName = "ClampDataStartsAfterProcessStart")]
+        [DataRow(@"..\..\..\CalcCompDataTest\MedDataStartsAfterProcessStart.bpf", DisplayName = "MedDataStartsAfterProcessStart")]
+        [DataRow(@"..\..\..\CalcCompDataTest\MaterialDataStartsAfterProcessStart.bpf")]
+        [DataRow(@"..\..\..\CalcCompDataTest\FreeSpacesBetweenClampData.bpf")]
+        [DataRow(@"..\..\..\CalcCompDataTest\FreeSpacesBetweenMediaData.bpf")]
+        [DataRow(@"..\..\..\CalcCompDataTest\FreeSpacesBetweenMaterialData.bpf")]
+        [DataRow(@"..\..\..\CalcCompDataTest\HeatDataContiniousWithoutMediaData.bpf")]
         public void PreProc_GenerateTSF_ShouldFail(string path)
         {
             var resData = new List<IValuableData>();

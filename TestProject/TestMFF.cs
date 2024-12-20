@@ -21,6 +21,7 @@ namespace TestProject
     [TestClass]
     public class TestMFF
     {
+        string testDir = @"..\..\..\Examples";
         [TestInitialize]
         public void Init()
         {
@@ -29,9 +30,9 @@ namespace TestProject
  
 
         [TestMethod]
-        [DataRow(@"..\..\Examples\LWTest.bpf", DisplayName = "LW")]
-        [DataRow(@"..\..\Examples\ARCTest.bpf", DisplayName = "ARC")]
-        [DataRow(@"..\..\Examples\WeldingHeatSource\FSW\proj.bpf", DisplayName = "FSW")]
+        [DataRow(@"\LWTest.bpf", DisplayName = "LW")]
+        [DataRow(@"\ARCTest.bpf", DisplayName = "ARC")]
+        [DataRow(@"\WeldingHeatSource\FSW\proj.bpf", DisplayName = "FSW")]
         public void MFF_EnergyCalculated(string path)
         {
             //assign
@@ -40,7 +41,7 @@ namespace TestProject
             proj.TaskData = new TaskData();
 
             //act
-            proj.Load(path);
+            proj.Load($@"{testDir}\{path}");
 
             var lazerData = proj.TaskData.Find("Нагрев").Select(x => (HeatData)x).ToArray();
             for (var i = 0; i < lazerData.Count(); i++)

@@ -39,8 +39,8 @@ namespace TestProject
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
         }
         [DataTestMethod]
-        [DataRow(@"..\..\Examples\ProjAndResults", "термическая_0_0_0.5.db", 0.5f)]
-        [DataRow(@"..\..\Examples\ProjAndResults", "термическая_0_0_1500.db", 200.8569f)]
+        [DataRow(@"..\..\..\Examples\ProjAndResults", "термическая_0_0_0.5.db", 0.5f)]
+        [DataRow(@"..\..\..\Examples\ProjAndResults", "термическая_0_0_1500.db", 200.8569f)]
         public void TestLoadDBSQLiteFindByTime(string path, string resName, float time)
         {
             var loaderDB = new LoadResultsFileDB();
@@ -81,7 +81,7 @@ var loaderDB = new LoadResultsFileDB();
             //saverDB.Save(resList, dir + "\\temp.db", false);
 
             var els3D = project.ModelData.ObjectData.E3DCollection;
-            var controller = new ResultsController();
+            var controller = new PostProcController();
 
             var intervalVals = new ItemRange[]
 {
@@ -114,7 +114,7 @@ var loaderDB = new LoadResultsFileDB();
             var loaderDB = new LoadResultsFileDB();
             loaderDB.LoadEvent += (ar1, ar2) => { };
 
-            var project = new ProjectData("", @"..\..\Examples\ProjAndResults");
+            var project = new ProjectData("", @"..\..\..\Examples\ProjAndResults");
             var results = loaderDB.Load(project.GeneralData.Path + @"\термическая_0_0_0.5.db");
 
             project.ResultData = new ResultData();
@@ -131,13 +131,13 @@ var loaderDB = new LoadResultsFileDB();
             proj.ModelData = new ModelData();
             proj.TaskData = new TaskData();
 
-            proj.Load(@"..\..\Examples\ProjAndResults\two_tetra_term_cycle_multiStep.bpf");
+            proj.Load(@"..\..\..\Examples\ProjAndResults\two_tetra_term_cycle_multiStep.bpf");
 
             proj.ResultData = new ResultData();
 
             var loaderDB = new LoadResultsFileDB();
             loaderDB.LoadEvent += (ar1, ar2) => { };
-            var results = loaderDB.Load(@"..\..\Examples\ProjAndResults\термическая_0_0_0.5.db");
+            var results = loaderDB.Load(@"..\..\..\Examples\ProjAndResults\термическая_0_0_0.5.db");
 
             proj.ResultData.AddRange(results);
 
@@ -165,17 +165,17 @@ var loaderDB = new LoadResultsFileDB();
             proj.TaskData = new TaskData();
 
             //act
-            proj.Load(@"..\..\Examples\ProjAndResults\two_tetra_term_cycle_multiStep.bpf");
+            proj.Load(@"..\..\..\Examples\ProjAndResults\two_tetra_term_cycle_multiStep.bpf");
 
             proj.ResultData = new ResultData();
 
             var loaderDB = new LoadResultsFileDB();
             loaderDB.LoadEvent += (ar1, ar2) => { };
 
-            var results1 = loaderDB.Load(@"..\..\Examples\ProjAndResults\термическая_0_0_0.5.db");
+            var results1 = loaderDB.Load(@"..\..\..\Examples\ProjAndResults\термическая_0_0_0.5.db");
             proj.ResultData.AddRange(results1, new ResultsComparer());
 
-            var results0 = loaderDB.Load(@"..\..\Examples\ProjAndResults\термическая_0_0_0.5.db");
+            var results0 = loaderDB.Load(@"..\..\..\Examples\ProjAndResults\термическая_0_0_0.5.db");
             proj.ResultData.AddRange(results0,new ResultsComparer());
 
             //Assert.AreEqual(project.ResultData.Count(), results.Count);
@@ -184,7 +184,7 @@ var loaderDB = new LoadResultsFileDB();
         [TestMethod]
         public void CreateDBSQLite_ResultPage_Result_Presenter()
         {
-            var project = new ProjectData("", @"..\..\Examples\ProjAndResults");
+            var project = new ProjectData("", @"..\..\..\Examples\ProjAndResults");
             project.ResultData = new ResultData();
             var loaderDB = new LoadResultsFileDB();
             loaderDB.LoadEvent += (ar1, ar2) => { };
@@ -209,7 +209,7 @@ var loaderDB = new LoadResultsFileDB();
         [DataRow("csv_table_1.csv")]
         public void CreateAndSaveDBSQLite_Example(string file)
         {
-            var csvPath = @"..\..\ResultTableCSV";
+            var csvPath = @"..\..\..\ResultTableCSV";
 
             var convert = new CSVToDataTableConverter();
 
@@ -254,7 +254,7 @@ var loaderDB = new LoadResultsFileDB();
         [DataTestMethod]
         [DataRow(
             "two_tetra_term_cycle_multiStep.bpf","термическая_0_0_0.5.db","термическая", 0f,0.0002f,20,"T",
-            @"..\..\Examples\ProjAndResults")]
+            @"..\..\..\Examples\ProjAndResults")]
         public void Test_Scene_Result_Presenter(string projName,string resName,string resKind,float min,float max,float curVal,string resDesc,string resPath )
         {
             var proj = new ProjectData();

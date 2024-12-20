@@ -16,7 +16,7 @@
   "RestartFile": "механическая_1_0_49.998.db",
   "Iterations": 25,
   "SolverSettings": {
-    "$type": "TasksParameters.SolverSettings, TasksParameters",
+    "$type": "PreProc.SolverSettings, PreProc",
     "MaxIter": 1000,
     "Solver": "SOR_iterative",
     "MaxRelaxation": 1.5,
@@ -25,7 +25,7 @@
     "Priority": "Наивысший"
   },
   "TimeSettings": {
-    "$type": "TasksParameters.TimeSettings, TasksParameters",
+    "$type": "PreProc.TimeSettings, PreProc",
     "MaxTimeStep": 100.0,
     "MinTimeStep": 0.0005,
     "StartTime": 49.998,

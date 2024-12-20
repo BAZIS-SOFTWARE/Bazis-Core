@@ -9,7 +9,7 @@ namespace PostProc
     /// <summary>
     /// ResultsController
     /// </summary>
-    public class ResultsController : IResultsController
+    public class PostProcController : IPostProcController
     {
         /// <inheritdoc/>
         public IResultsMerger ResultsMerger { get; } = new MergeResults();
