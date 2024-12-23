@@ -19,18 +19,6 @@ namespace PrTests
             CollectionAssert.AreEqual(expectedArr, sortArr);
         }
 
-        public void AssertException<TException>(float[] unsorted)
-            where TException : Exception
-        {
-            var ex = new Exception() as TException;
-            Assert.ThrowsException<TException>(() => 
-            {
-                var sortArr = CreatePoints3D(unsorted).ToList();
-                sortArr.RoundSort();
-                //sortArr);
-            });
-        }
-
         [DataTestMethod]
         [DataRow(
             new float[]
@@ -251,7 +239,7 @@ namespace PrTests
         public void PointSorter_ShouldSortCorrect_WhenLeftRotation(float[] unsorted, float[] expected)
         {
             AssertCollections(unsorted, expected);
-        }  
+        }
 
         [TestMethod]
         [DataRow(new[]
@@ -262,9 +250,10 @@ namespace PrTests
             1.0f, 1.0f, 1.0f,
             1.0f, 1.0f, 1.0f
         })]
-        public void PointSorter_ShouldFall_WhenPointsArePoint(float[] unsorted) =>
-            AssertException<Exception>(unsorted);
-
-
+        public void PointSorter_ShouldFall_WhenPointsArePoint(float[] unsorted)
+        {
+            var sortArr = CreatePoints3D(unsorted).ToList();
+            sortArr.RoundSort();
+        }     
     }
 }

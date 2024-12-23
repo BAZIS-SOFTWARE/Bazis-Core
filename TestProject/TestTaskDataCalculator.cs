@@ -40,7 +40,7 @@ namespace TestProject
             proj.TaskData = new TaskData();
             proj.Loader.LoadEvent += (ar1, ar2) => { };
             //act
-            proj.Load(@"..\..\Examples\proj_traj.bpf");
+            proj.Load(@"..\..\..\Examples\proj_traj.bpf");
 
             var heat = proj.TaskData.Find<HeatData>().First();
             
@@ -62,7 +62,7 @@ namespace TestProject
 
             proj.Loader.LoadEvent += (ar1, ar2) => { };
             //act
-            proj.Load(@"..\..\Examples\proj_traj.bpf");
+            proj.Load(@"..\..\..\Examples\proj_traj.bpf");
 
             var baseLineGr = proj.ModelData.GroupData.Find("baseLine");
             var refLineGr = proj.ModelData.GroupData.Find("refLine");
@@ -89,7 +89,7 @@ namespace TestProject
 
             proj.Loader.LoadEvent += (ar1, ar2) => { };
             //act
-            proj.Load(@"..\..\Examples\proj_traj_baseLine_not_sorted.bpf");
+            proj.Load(@"..\..\..\Examples\proj_traj_baseLine_not_sorted.bpf");
 
             var baseLineGr = proj.ModelData.GroupData.Find("baseLine");
             var refLineGr = proj.ModelData.GroupData.Find("refLine");
@@ -117,7 +117,7 @@ namespace TestProject
             proj.ModelData = new ModelData();
 
             proj.Loader.LoadEvent += (ar1, ar2) => { };
-            proj.Load(@"..\..\Examples\TrajTest.bpf");
+            proj.Load(@"..\..\..\Examples\TrajTest.bpf");
 
             return new MovedFrame(1)
             {

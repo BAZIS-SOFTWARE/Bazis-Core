@@ -13,7 +13,7 @@
   "RestartFile": "термическая_8_43_44.db",
   "Iterations": 2,
   "SolverSettings": {
-    "$type": "TasksParameters.SolverSettings, TasksParameters",
+    "$type": "PreProc.SolverSettings, PreProc",
     "MaxIter": 500,
     "Solver": "SOR_iterative",
     "MaxRelaxation": 1.5,
@@ -22,7 +22,7 @@
     "Priority": "Наивысший"
   },
   "TimeSettings": {
-    "$type": "TasksParameters.TimeSettings, TasksParameters",
+    "$type": "PreProc.TimeSettings, PreProc",
     "MaxTimeStep": 0.5,
     "MinTimeStep": 0.0005,
     "StartTime": 44.0,
