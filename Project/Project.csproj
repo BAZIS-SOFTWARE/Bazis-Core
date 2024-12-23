@@ -69,9 +69,6 @@
     <Compile Include="Results\IO\LoadEventArgs.cs" />
     <Compile Include="Results\IO\LoadResultsFileBrfTextFormat.cs" />
     <Compile Include="Results\IO\LoadResultsFileDB.cs" />
-    <Compile Include="Results\IO\ResultExport\SaveObjectsResultsToCSV.cs" />
-    <Compile Include="Results\IO\ResultExport\SaveObjectsResultsToTXT.cs" />
-    <Compile Include="Results\IO\ResultsExporter.cs" />
     <Compile Include="Results\IO\SaveEventArgs.cs" />
     <Compile Include="Results\IO\SaveResultsFileDb.cs" />
     <Compile Include="Results\IO\SaveResultsFileTextFormat.cs" />

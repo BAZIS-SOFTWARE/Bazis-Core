@@ -3,9 +3,9 @@ using Project.Interfaces.Results;
 using Project.Interfaces;
 using System;
 using System.Collections.Generic;
-using Project.Results.IO.ResultExport;
+using PostProc.IO.ResultExport;
 
-namespace Project.Results.IO
+namespace PostProc.IO
 {
     /// <summary>
     /// ResultExporter
