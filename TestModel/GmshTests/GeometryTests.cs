@@ -49,7 +49,7 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow("test.geo")]
+        [DataRow(@"\GMSHAPI\test.geo")]
         public void TestCurveSteps(string fileName)
         {
             var ierr = 0;
