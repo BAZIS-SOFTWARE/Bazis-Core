@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using Geometry;
 using Model.Interfaces;
+using Model;
 
 namespace TestModel.GmshTests
 {
@@ -59,6 +60,29 @@ namespace TestModel.GmshTests
             controller.OptionSetNumber("Geometry.NumSubEdges", 15, ref ierr);
             var curveAfter = controller.CreateLines().First();
             Assert.IsTrue(curveAfter.NumberOfPoints < curveUntil.NumberOfPoints);
+        }
+
+        [DataTestMethod]
+        [DataRow(@"..\..\..\Examples\STL\ACII.stl", ObjType.Узел)]
+        [DataRow(@"..\..\..\Examples\STL\ACII.stl", ObjType.Элемент2D)]
+        public void RemoveAllData(string stlPath, ObjType objType, int nNumb)
+        {
+            var ierr = 0;
+            //var status = true;
+            var modelData = new ModelData();
+
+            controller.Merge(stlPath, ref ierr);
+            var nodes = controller.GetNodes();
+            //Assert.AreEqual(true, status);
+            Assert.AreEqual(4, nodes.Count);
+            var elements = controller.GetMeshEntities(2, -1, nodes);
+            //Assert.AreEqual(true, status);
+            Assert.AreEqual(2, elements.Count);
+            modelData.ObjectData.NodeCollection.AddRange(nodes);
+
+            modelData.ObjectData.Clear(objType);
+            //assert
+            Assert.AreEqual(modelData.ObjectData.NodeCollection.Count(), nNumb);
         }
 
         [DataTestMethod]

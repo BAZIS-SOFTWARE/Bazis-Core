@@ -9,6 +9,7 @@ using Model.GeometryObjects;
 using Geometry;
 using System.Linq;
 using Model.GroupsData;
+using GmshApi.GmshController;
 
 namespace TestModel
 {
@@ -16,7 +17,7 @@ namespace TestModel
     public class TestObjectData
     {
         [DataTestMethod]
-        [DataRow(ObjType.Узел, 3,DisplayName = "Узел")]
+        [DataRow(ObjType.Узел, 3, DisplayName = "Узел")]
         [DataRow(ObjType.Элемент, 8, DisplayName = "Элемент")]
         [DataRow(ObjType.Элемент3D, 8, DisplayName = "Элемент3D")]
         [DataRow(ObjType.Объект, 8, DisplayName = "Объект")]
@@ -52,10 +53,10 @@ namespace TestModel
         }
 
         [DataTestMethod]
-        [DataRow(0,2)]
-        [DataRow(8,1)]
-        [DataRow(3,1)]
-        public void FindManyObjsByNumber(int objsNumbr,int objsCount)
+        [DataRow(0, 2)]
+        [DataRow(8, 1)]
+        [DataRow(3, 1)]
+        public void FindManyObjsByNumber(int objsNumbr, int objsCount)
         {
             //assing
             var nodes = new Node[4]
@@ -150,7 +151,7 @@ namespace TestModel
 
             model.ObjectData.NodeCollection.Add(node0);
             //assert
-            model.ObjectData.NodeCollection.AddRange(new List<Node>() { node0 ,node1});
+            model.ObjectData.NodeCollection.AddRange(new List<Node>() { node0, node1 });
         }
 
         [TestMethod]
@@ -200,7 +201,7 @@ namespace TestModel
         [DataRow(ObjType.Узел, 0, 0)]
         [DataRow(ObjType.Элемент3D, 4, 0)]
         [DataRow(ObjType.Объект, 0, 0)]
-        public void RemoveObjectsSyncWithGroups(ObjType objType, int nNumbs,int grps)
+        public void RemoveObjectsSyncWithGroups(ObjType objType, int nNumbs, int grps)
         {
             //assing
             var nodes = new Node[4]
@@ -234,33 +235,9 @@ namespace TestModel
             model.ObjectData.Clear(objType);
             model.GroupData.ClearNotExisted();
             //assert            
-            Assert.AreEqual(model.ObjectData.NodeCollection.Count,nNumbs, 0);
-            Assert.AreEqual(model.GroupData.FindMany(objType).Count(), grps,0);
+            Assert.AreEqual(model.ObjectData.NodeCollection.Count, nNumbs, 0);
+            Assert.AreEqual(model.GroupData.FindMany(objType).Count(), grps, 0);
 
-        }
-
-        [DataTestMethod]
-        [DataRow(@"..\..\..\Examples\STL\ACII.stl", ObjType.Узел, 0)]
-        [DataRow(@"..\..\..\Examples\STL\ACII.stl", ObjType.Элемент2D, 4)]
-        public void TestRemoveAllData(string stlPath, ObjType objType, int nNumb)
-        {
-            /*var ierr = 0;
-            //var status = true;
-            var modelData = new ModelData();
-
-            var controller = new GmshController(@"..\..\..\..\GmshApi\gmsh.dll");
-            controller.gmshMerge(stlPath, ref ierr);
-            var nodes = controller.GetNodes();
-            //Assert.AreEqual(true, status);
-            Assert.AreEqual(4, nodes.Count);
-            var elements = controller.GetMeshEntities(2, -1, nodes);
-            //Assert.AreEqual(true, status);
-            Assert.AreEqual(2, elements.Count);
-            modelData.ObjectData.NodeCollection.AddRange(nodes);
-
-            modelData.ObjectData.Clear(objType);
-            //assert
-            Assert.AreEqual(modelData.ObjectData.NodeCollection.Count(), nNumb);*/
         }
 
         [DataTestMethod]
@@ -276,13 +253,71 @@ namespace TestModel
             model.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
 
             //act
-            model.ObjectData.Find(ObjType.Узел,objNumber).ExistState = false;
+            model.ObjectData.Find(ObjType.Узел, objNumber).ExistState = false;
             model.ObjectData.ClearNotExisted();
 
             //assert
             var res = model.ObjectData.Find(ObjType.Узел, objNumber);
             if (res != null)
                 throw new Exception();
+        }
+
+        [DataTestMethod]
+        [DataRow(@"..\..\..\Examples\STL\ACII.stl", ObjType.Узел)]
+        [DataRow(@"..\..\..\Examples\STL\sphere.stl", ObjType.Узел)]
+        public void MoveObjects(string filePath, ObjType objType)
+        {
+            //assign
+            var modelData = new ModelData();
+            modelData.Loader = new LoadModelFromSTLFile();
+            modelData.Load(filePath);
+
+            var oldCoords = new List<Point3D>();
+
+            foreach (var item in modelData.ObjectData.GetObjects(objType))
+                oldCoords.Add(item.CalcCentr());
+
+            //act
+            modelData.ObjectData.Move(objType, new Point3D(1, 1, 1));
+
+            //assert
+            var newCoords = modelData.ObjectData.GetObjects(objType).
+                Select(x => x.CalcCentr()).ToList();
+
+            for (int i = 0; i < newCoords.Count(); i++)
+            {
+                Assert.AreEqual(oldCoords[i]._x, newCoords[i]._x - 1, 0.001f);
+                Assert.AreEqual(oldCoords[i]._y, newCoords[i]._y - 1, 0.001f);
+                Assert.AreEqual(oldCoords[i]._z, newCoords[i]._z - 1, 0.001f);
+            }
+
+        }
+
+        [DataTestMethod]
+        [DataRow(@"..\..\..\Examples\STL\sphere.stl", ObjType.Узел)]
+        public void RotateObjects(string filePath, ObjType objType)
+        {
+            //assign
+            var modelData = new ModelData();
+            modelData.Loader = new LoadModelFromSTLFile();
+            modelData.Load(filePath);
+
+            var oldCoords = new List<Point3D>();
+
+            foreach (var item in modelData.ObjectData.GetObjects(objType))
+                oldCoords.Add(item.CalcCentr());
+
+            //act
+            modelData.ObjectData.Rotate(objType, new Point3D(1, 1, 1),25.0f);
+
+            //assert
+            var newCoords = modelData.ObjectData.GetObjects(objType).
+                Select(x => x.CalcCentr()).ToList();
+
+            for (int i = 0; i < newCoords.Count(); i++)
+            {
+                Assert.AreNotEqual(oldCoords[i], newCoords[i]);
+            }
         }
     }
 }

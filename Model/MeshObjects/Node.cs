@@ -91,7 +91,7 @@ namespace Model.MeshObjects
 
         public override Point3D CalcCentr()
         {
-            return Position;
+            return new Point3D(Position._x, Position._y, Position._z);
         }
     }
 }

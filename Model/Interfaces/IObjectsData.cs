@@ -1,8 +1,10 @@
-﻿using Model.GeometryObjects;
+﻿using Geometry;
+using Model.GeometryObjects;
 using Model.Interfaces.GeometryObjects;
 using Model.Interfaces.MeshObjects;
 using Model.MeshObjects;
 using System.Collections.Generic;
+using System.Numerics;
 
 namespace Model.Interfaces
 {
@@ -64,6 +66,21 @@ namespace Model.Interfaces
         /// <param name="objType"></param>
         /// <returns></returns>
         bool Contains(ObjType objType);
+        /// <summary>
+        /// Move
+        /// </summary>
+        /// <param name="objType"></param>
+        /// <param name="vector"></param>
+        /// <returns></returns>
+        void Move(ObjType objType, Point3D vector);
+        /// <summary>
+        /// Rotate
+        /// </summary>
+        /// <param name="objType"></param>
+        /// <param name="axis"></param>
+        /// <param name="angle"></param>
+        /// <returns></returns>
+        void Rotate(ObjType objType, Point3D axis, float angle);
         /// <summary>
         /// ClearNotExisted
         /// </summary>

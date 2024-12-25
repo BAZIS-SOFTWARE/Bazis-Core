@@ -15,16 +15,17 @@ namespace Model.IO
 {
     public class LoadModelFromSTLFile : IModelLoader
     {
-        private Dictionary<Vector3, Point3D> map = new Dictionary<Vector3, Point3D>();
+        private Dictionary<Vector3, Node> map = new Dictionary<Vector3, Node>();
 
-        private Point3D ToDistinctPoint(Point3D p)
-        {
-            var key = new Vector3(p._x, p._y, p._z);
-            if (map.TryGetValue(key, out var mappedPoint))
-                return mappedPoint;
-            map[key] = p;
-            return p;
-        }
+        //private Node IsPointExisted(Vector3 p)
+        //{
+        //    //var key = new Vector3(p._x, p._y, p._z);
+        //    if (map.TryGetValue(p, out var mappedPoint))
+        //        return mappedPoint;
+
+        //    map[p] = new Geometry.Point3D(p.X,p.Y,p.Z);
+        //    return p;
+        //}
 
         public event Action<object, ILoaderEventArgs> LoadEvent;
         private int counter = 0;
@@ -93,7 +94,6 @@ namespace Model.IO
                 }
                 LoadEvent?.Invoke(this, new LoaderEventArgs("Модель загружена"));
             }
-
             return modelData;
         }
         private Node[] GetPoints(StreamReader stl, string str)
@@ -108,8 +108,11 @@ namespace Model.IO
                     var x = float.Parse(lineData[0], NumberStyles.Float, CultureInfo.InvariantCulture);
                     var y = float.Parse(lineData[1], NumberStyles.Float, CultureInfo.InvariantCulture);
                     var z = float.Parse(lineData[2], NumberStyles.Float, CultureInfo.InvariantCulture);
-                    var node = new Node(counter, ToDistinctPoint(new Point3D(x, y, z)));
+                    var node = new Node(counter, new Point3D(x, y, z));
                     counter++;
+
+                    if (map.TryGetValue(new Vector3(x, y, z), out var mappedPoint))
+                        points[i] = mappedPoint;
                     points[i] = node;
                     str = stl.ReadLine()?.Trim();
                 }
@@ -189,8 +192,11 @@ namespace Model.IO
             var x = reader.ReadSingle();
             var y = reader.ReadSingle();
             var z = reader.ReadSingle();
-            var node = new Node(counter++, ToDistinctPoint(new Point3D(x, y, z)));
-            return node;
+
+            if (map.TryGetValue(new Vector3(x, y, z), out var mappedPoint))
+                return mappedPoint;
+
+            return new Node(counter++, new Point3D(x, y, z));
         }
 
     }

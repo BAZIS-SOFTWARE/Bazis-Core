@@ -8,6 +8,8 @@ using Model.ObjectsCollections;
 using System.Collections.ObjectModel;
 using Model.MeshObjects;
 using Model.GeometryObjects;
+using System.Numerics;
+using Geometry;
 
 namespace Model
 {
@@ -445,6 +447,47 @@ namespace Model
                 default:
                     return E3DCollection.Count > 0 ? E3DCollection.Last().Number : 0;
             }
-        }       
+        }
+/// <inheritdoc/>
+
+        public void Move(ObjType objType, Point3D vector)
+        {
+            if (objType == ObjType.Точка | objType == ObjType.Узел)
+            {
+                var objs = GetObjects(objType);
+                foreach (var item in objs)
+                {
+                    foreach (var coord in item.GetCoordinates())
+                    {
+                        coord._x += vector._x;
+                        coord._y += vector._y;
+                        coord._z += vector._z;
+                    }
+                }
+            }
+
+            else throw new Exception("Операция доступна только для узлов или точек");
+        }
+/// <inheritdoc/>
+
+        public void Rotate(ObjType objType, Point3D axis, float angle)
+        {
+            if (objType == ObjType.Точка | objType == ObjType.Узел)
+            {
+                var objs = GetObjects(objType);
+                foreach (var item in objs)
+                {
+                    foreach (var coord in item.GetCoordinates())
+                    {
+                        var rot = Geometry.Vector.GetVectorRotation(coord, axis, angle);
+                        coord._x += rot._x;
+                        coord._y += rot._y;
+                        coord._z += rot._z;
+                    }
+                }
+            }
+
+            else throw new Exception("Операция доступна только для узлов или точек");
+        }
     }
 }
