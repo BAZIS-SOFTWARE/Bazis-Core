@@ -9,7 +9,7 @@
     <AssemblyOriginatorKeyFile>ModelKey.snk</AssemblyOriginatorKeyFile>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>Model</Title>
-    <Version>3.1.2.6</Version>
+    <Version>3.1.2.9</Version>
     <Company>BAZIS SOFTWARE</Company>
     <Product>BAZIS</Product>
     <Description>Contains basic mesh oblects and geometry classes</Description>
@@ -18,6 +18,8 @@
     <PackageIcon>Icon.png</PackageIcon>
     <PackageLicenseExpression> MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+    <PackageOutputPath>c:\BazisComponents\IntPackages_v2\$(Configuration)</PackageOutputPath>
   </PropertyGroup> 
   <ItemGroup>
     <Compile Remove="Interfaces\GeometryObjects\IGeometryPoint.cs" />

@@ -10,6 +10,7 @@ using Model.GeometryObjects;
 using System.Numerics;
 using Model.GroupsData;
 using Model.MeshObjects;
+using Model.ObjectsCollections;
 
 namespace Model.IO
 {
@@ -67,8 +68,7 @@ namespace Model.IO
                         if (str != null && str.Contains("outer loop"))
                         {
                             str = reader.ReadLine()?.Trim();
-                            var nodes = GetPoints(reader, str);
-                            modelData.ObjectData.NodeCollection.AddRange(nodes);
+                            var nodes = GetPoints(reader, str, modelData.ObjectData.NodeCollection);
 
                             if (IsValidTriangle(nodes[0].Position, nodes[1].Position, nodes[2].Position))
                             {
@@ -96,7 +96,7 @@ namespace Model.IO
             }
             return modelData;
         }
-        private Node[] GetPoints(StreamReader stl, string str)
+        private Node[] GetPoints(StreamReader stl, string str, IObjectsCollection<Node> nodes)
         {
             var points = new Node[3];
             for (int i = 0; i < 3; i++)
@@ -108,12 +108,20 @@ namespace Model.IO
                     var x = float.Parse(lineData[0], NumberStyles.Float, CultureInfo.InvariantCulture);
                     var y = float.Parse(lineData[1], NumberStyles.Float, CultureInfo.InvariantCulture);
                     var z = float.Parse(lineData[2], NumberStyles.Float, CultureInfo.InvariantCulture);
+
                     var node = new Node(counter, new Point3D(x, y, z));
                     counter++;
 
+                    //points[i] = node;
                     if (map.TryGetValue(new Vector3(x, y, z), out var mappedPoint))
                         points[i] = mappedPoint;
-                    points[i] = node;
+                    else
+                    {
+                        map.Add(new Vector3(x, y, z), node);
+                        points[i] = node;
+                        nodes.Add(node);
+                    }
+
                     str = stl.ReadLine()?.Trim();
                 }
             }

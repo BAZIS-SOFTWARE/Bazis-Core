@@ -15,6 +15,7 @@ namespace TestModel
         [DataRow(@"c:\projs\AdditiveTest\nozzle.stlout_penta.bpf", 65606)]
         [DataRow(@"c:\projs\AdditiveTest\nozzle.stlout_penta_beam.bpf", 67245)]
         [DataRow(@"c:\projs\AdditiveTest\nozzle.stlout_penta_beam_v.bpf", 67245)]
+        [DataRow(@"c:\projs\AdditiveTest\cube_rotated.bpf", 11)]
         public void LoadModelFromBpfTextFormat(string path, int elCount)
         {
             //assing

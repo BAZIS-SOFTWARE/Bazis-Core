@@ -77,7 +77,7 @@ using Model.GeometryObjects;
                 var ver = Assembly.GetExecutingAssembly().GetName().Version;
                 writer.WriteLine("solid Версия " + $"{ver.Major}.{ver.Minor}.{ver.Build}"); // – Header
 
-                var objects = model.ObjectData.Fig2DCollection;
+                var objects = model.ObjectData.E2DCollection;
 
                 foreach (var item in objects)
                     foreach (var surface in item.GetSurfaces())
