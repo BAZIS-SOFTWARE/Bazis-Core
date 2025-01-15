@@ -427,6 +427,28 @@ namespace GmshApi.GmshController
         public delegate int gmshModelGeoAddVolumeFun(int[] shellTags, IntPtr shellTags_n, int tag, ref int ierr);///
         gmshModelGeoAddVolumeFun gmshModelGeoAddVolume;
         /// <summary>
+        /// Добавляет идентификаторы поверхностей, формирующих замкнутую оболочку, возвращает идентификатор оболочки
+        /// </summary>
+        /// <param name="surfaceTags">[In]Массив идентификаторов поверхностей</param>
+        /// <param name="surfaceTags_n">[In]Длина массива идентификаторов</param>
+        /// <param name="tag">[In]Идентификатор оболочки или -1 для автоматического назначения</param>
+        /// <param name="sewing">[In]Флаг указывающий на возможное наличие геометрически одинаковых, но топологически разных поверхностей</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        /// <returns>Идентификатор оболочки</returns>
+        public delegate int gmshModelOccAddSurfaceLoopFun(int[] surfaceTags, IntPtr surfaceTags_n, int tag, int sewing, ref int ierr);///
+        gmshModelOccAddSurfaceLoopFun gmshModelOccAddSurfaceLoop;
+        /// <summary>
+        /// Формирует объем из заданных оболочек, первый элемент массива замкнутая оболочка, следующие элементы
+        /// указывают отверстия в геометрии
+        /// </summary>
+        /// <param name="shellTags">[In]Массив идентификаторов оболочек</param>
+        /// <param name="shellTags_n">[In]Длина массива идентификаторов</param>
+        /// <param name="tag">[In]Идентификатор объема или -1 для автоматического назначения</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        /// <returns>Идентификатор объема</returns>
+        public delegate int gmshModelOccAddVolumeFun(int[] shellTags, IntPtr shellTags_n, int tag, ref int ierr);///
+        gmshModelOccAddVolumeFun gmshModelOccAddVolume;
+        /// <summary>
         /// Возвращает список имен аттрибутов
         /// </summary>
         /// <param name="names">[Out]Массив имен аттрибутов</param>
@@ -1152,6 +1174,8 @@ namespace GmshApi.GmshController
             gmshModelGetAttribute = GetFunction<gmshModelGetAttributeFun>("gmshModelGetAttribute");
             gmshModelGeoAddSurfaceLoop = GetFunction<gmshModelGeoAddSurfaceLoopFun>("gmshModelGeoAddSurfaceLoop");
             gmshModelGeoAddVolume = GetFunction<gmshModelGeoAddVolumeFun>("gmshModelGeoAddVolume");
+            gmshModelOccAddSurfaceLoop = GetFunction<gmshModelOccAddSurfaceLoopFun>("gmshModelOccAddSurfaceLoop");
+            gmshModelOccAddVolume = GetFunction<gmshModelOccAddVolumeFun>("gmshModelOccAddVolume");
             gmshModelGetAttributeNames = GetFunction<gmshModelGetAttributeNamesFun>("gmshModelGetAttributeNames");
             gmshModelRemoveAttribute = GetFunction<gmshModelRemoveAttributeFun>("gmshModelRemoveAttribute");
             gmshModelGetPhysicalName = GetFunction<gmshModelGetPhysicalNameFun>("gmshModelGetPhysicalName");
@@ -2216,10 +2240,26 @@ namespace GmshApi.GmshController
             return gmshModelGeoAddVolume(shellTags, shellTags_n, tag, ref ierr);
         }
         /// <inheritdoc/>
+        public int ModelOccAddSurfaceLoop(int[] surfaceTags, IntPtr surfaceTags_n, int tag, int sewing, ref int ierr)
+        {
+            return gmshModelOccAddSurfaceLoop(surfaceTags, surfaceTags_n, tag, sewing, ref ierr);
+        }
+        /// <inheritdoc/>
+
+        public int ModelOccAddVolume(int[] shellTags, IntPtr shellTags_n, int tag, ref int ierr)
+        {
+            return gmshModelOccAddVolume(shellTags, shellTags_n, tag, ref ierr);
+        }
+        /// <inheritdoc/>
 
         public void ModelGeoSynchronize(ref int ierr)
         {
             gmshModelGeoSynchronize(ref ierr);
+        }
+        /// <inheritdoc/>
+        public void ModelOccSynchronize(ref int ierr)
+        {
+            gmshModelOccSynchronize(ref ierr);
         }
         /// <inheritdoc/>
 

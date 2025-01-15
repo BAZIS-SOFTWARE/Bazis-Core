@@ -5,6 +5,9 @@ using System;
 using System.Collections.Generic;
 using ModelInterfaces;
 using Geometry;
+using GmshApi;
+using System.IO;
+using System.Security.Cryptography;
 
 namespace TestModel.GmshTests
 {
@@ -380,6 +383,56 @@ namespace TestModel.GmshTests
             var expected = coords.Length / 3;
             Assert.AreEqual(expected, actual);
         }
+        [DataTestMethod]
+        [DataRow("CilindrWithHole.iges")]
+        [DataRow("Cilindr.iges")]
+        //[DataRow("gear.igs")]//Модель не проходит тест
+        //[DataRow("block.igs")]//Модель не проходит тест
+        
+        public void IgsGenerateVolumeTest(string filename)
+        {
+            var ierr = 0;
+            var fullPath = @"..\..\..\Examples\CAD\" + filename;
+            controller.Open(fullPath, ref ierr);
+            if(controller.GetGeometryObjectDimension(ref ierr) == 2)
+            {
+                int[] dimTags;
+                controller.ModelGetGeometryEntities(out dimTags, 2);
+                dimTags = dimTags.Where((v, i) => (i & 1) == 1).ToArray();
+                var shell = controller.ModelOccAddSurfaceLoop(dimTags, (IntPtr)dimTags.Length, -1, 1, ref ierr);
+                var shellTags = new int[] { shell };
+                controller.ModelOccAddVolume(shellTags, (IntPtr)shellTags.Length, -1, ref ierr);
+                controller.ModelOccSynchronize(ref ierr);
+                //ApplyCristopheRecomendedCommandsBeforeGeneartion();//Рекомендации Кристофа, для проблемных моделей (не работает)
+                controller.ModelMeshGenerate(3, ref ierr);
+                string errorLog;
+                controller.LoggerGetLastError(out errorLog);
+                Assert.IsTrue(string.IsNullOrEmpty(errorLog));
+                var list = controller.GetMeshObjects();
+                Assert.IsTrue(list.Item4.Count != 0);
+                /*var file = Path.GetFileNameWithoutExtension(fullPath);
+                controller.OptionSetNumber("Mesh.SaveGroupsOfNodes", 1, ref ierr);//Для визуального теста
+                controller.Write(@"C:\Mesh\" + file + ".inp", ref ierr);*/
+            }
+        }
+        /*
+        private void ApplyCristopheRecomendedCommandsBeforeGeneartion()
+        {
+            var ierr = 0;
+            controller.OptionSetNumber("Mesh.Algorithm", 5 ,ref ierr);
+            controller.OptionSetNumber("Mesh.Algorithm3D", 1, ref ierr);
+            controller.OptionSetNumber("Mesh.MinimumCircleNodes", 16, ref ierr);
+            controller.OptionSetNumber("Mesh.MinimumCurveNodes", 16, ref ierr);
+            controller.OptionSetNumber("Mesh.MinimumCirclePoints", 16, ref ierr);
+            controller.OptionSetNumber("Mesh.MinimumCurvePoints", 16, ref ierr);
+            controller.OptionSetNumber("Mesh.MeshSizeFromCurvature", 16, ref ierr);
+            controller.OptionSetNumber("Mesh.MeshSizeMin", 0.1, ref ierr);
+            controller.OptionSetNumber("Mesh.MeshSizeMax", 1, ref ierr);
+            controller.OptionSetNumber("Mesh.MeshSizeFromPoints", 0, ref ierr);
+            controller.OptionSetNumber("Mesh.MeshSizeFromParametricPoints", 0, ref ierr);
+            controller.OptionSetNumber("Mesh.MeshSizeExtendFromBoundary", 1, ref ierr);
+            controller.OptionSetNumber("Mesh.ToleranceInitialDelaunay", 1e-12, ref ierr);
+        }*/
 
         private void RemoveNameTest(ref string entName, int dim, int delId, int maxId)
         {

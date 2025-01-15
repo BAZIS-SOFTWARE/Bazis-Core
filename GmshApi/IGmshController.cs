@@ -471,12 +471,36 @@ namespace GmshApi
         /// <param name="ierr">[Out]Флаг ошибки</param>
         /// <returns>Идентификатор объема</returns>
         int ModelGeoAddVolume(int[] shellTags, IntPtr shellTags_n, int tag, ref int ierr);
-
+        /// <summary>
+        /// Добавляет идентификаторы поверхностей, формирующих замкнутую оболочку, возвращает идентификатор оболочки
+        /// </summary>
+        /// <param name="surfaceTags">[In]Массив идентификаторов поверхностей</param>
+        /// <param name="surfaceTags_n">[In]Длина массива идентификаторов</param>
+        /// <param name="tag">[In]Идентификатор оболочки или -1 для автоматического назначения</param>
+        /// <param name="sewing">[In]Флаг указывающий на возможное наличие геометрически одинаковых, но топологически разных поверхностей</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        /// <returns>Идентификатор оболочки</returns>
+        int ModelOccAddSurfaceLoop(int[] surfaceTags, IntPtr surfaceTags_n, int tag, int sewing, ref int ierr);
+        /// <summary>
+        /// Формирует объем из заданных оболочек, первый элемент массива замкнутая оболочка, следующие элементы
+        /// указывают отверстия в геометрии
+        /// </summary>
+        /// <param name="shellTags">[In]Массив идентификаторов оболочек</param>
+        /// <param name="shellTags_n">[In]Длина массива идентификаторов</param>
+        /// <param name="tag">[In]Идентификатор объема или -1 для автоматического назначения</param>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        /// <returns>Идентификатор объема</returns>
+        int ModelOccAddVolume(int[] shellTags, IntPtr shellTags_n, int tag, ref int ierr);
         /// <summary>
         /// Проводит синхронизацию с ядром gmsh (например после добавления геометрических сущностей)
         /// </summary>
         /// <param name="ierr">[Out]Флаг ошибки</param>
         void ModelGeoSynchronize(ref int ierr);
+        /// <summary>
+        /// Проводит синхронизацию с ядром occ (например после добавления геометрических сущностей)
+        /// </summary>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void ModelOccSynchronize(ref int ierr);
 
         /// <summary>
         /// Получить плотности для геометрии
