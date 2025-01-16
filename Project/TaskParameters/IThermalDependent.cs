@@ -1,6 +1,6 @@
 ﻿
 
-namespace PreProc.Interfaces
+namespace Project.TaskParameters
 {
     public interface IThermalDependent
     {

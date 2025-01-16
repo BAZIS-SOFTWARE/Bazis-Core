@@ -1,10 +1,9 @@
 ﻿using System;
-using PreProc.Interfaces;
 
-namespace PreProc
+namespace Project.TaskParameters
 {
     [Serializable]
-    public class SolverSettings : ISolverSettings
+    public class SolverSettings
     {   
         public int MaxIter { get; set; }
         public string Solver { get; set; } = "Gauss_direct";

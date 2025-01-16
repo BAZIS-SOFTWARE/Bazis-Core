@@ -1,10 +1,9 @@
 ﻿using System;
-using PreProc.Interfaces;
 
-namespace PreProc.TaskParameters
+namespace Project.TaskParameters
 {
     [Serializable]
-    public class TimeSettings : ITimeSettings
+    public class TimeSettings
     {
         public float MaxTimeStep { get; set; }
         public float MinTimeStep { get; set; }

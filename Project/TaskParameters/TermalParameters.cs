@@ -1,8 +1,7 @@
 ﻿
 using System;
-using PreProc.Interfaces;
 
-namespace PreProc.TaskParameters
+namespace Project.TaskParameters
 {
     [Serializable]
     public class TermalParameters : GeneralParameters, IChemicalDependent 

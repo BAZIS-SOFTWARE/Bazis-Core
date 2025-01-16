@@ -1,4 +1,4 @@
-﻿namespace PreProc.Interfaces
+﻿namespace Project.TaskParameters
 {
     public interface IChemicalDependent
     {

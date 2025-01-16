@@ -9,7 +9,6 @@ using Model;
 using Newtonsoft.Json;
 using System.IO;
 using Project;
-using PreProc;
 using Project.Interfaces.Tasks;
 using Model.GroupsData;
 using Model.Interfaces;
@@ -17,6 +16,7 @@ using Geometry;
 using System.Runtime.InteropServices;
 using Project.Tasks;
 using Project.Tasks.Functions;
+using Project.TaskParameters;
 
 namespace TestProject
 {

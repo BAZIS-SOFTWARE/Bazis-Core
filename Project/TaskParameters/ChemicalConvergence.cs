@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PreProc
+namespace Project.TaskParameters
 {
     [Serializable]
     public class ChemicalConvergence

@@ -5,7 +5,7 @@
     "Tm": 1500.0
   },
   "MetallurgicalProcesses": [
-    "Выдержка"
+    "Нагрев"
   ],
   "InitTemp": 20.0,
   "SaveRate": 1,

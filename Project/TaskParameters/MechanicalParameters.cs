@@ -1,7 +1,6 @@
 ﻿using System;
-using PreProc.Interfaces;
 
-namespace PreProc
+namespace Project.TaskParameters
 {
     [Serializable]
     public class MechanicalParameters : GeneralParameters, IChemicalDependent,IThermalDependent

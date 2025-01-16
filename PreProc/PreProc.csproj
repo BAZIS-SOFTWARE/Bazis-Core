@@ -18,6 +18,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Interfaces\IChemicalDependent.cs" />
+    <Compile Remove="Interfaces\IGeneralParameters.cs" />
+    <Compile Remove="Interfaces\ISolverSettings.cs" />
+    <Compile Remove="Interfaces\IThermalDependent.cs" />
+    <Compile Remove="Interfaces\ITimeSettings.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 

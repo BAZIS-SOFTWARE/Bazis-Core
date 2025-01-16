@@ -1,5 +1,6 @@
 ﻿
 using Project.Interfaces.Tasks;
+using Project.TaskParameters;
 using System.Collections.Generic;
 
 namespace PreProc.Interfaces
