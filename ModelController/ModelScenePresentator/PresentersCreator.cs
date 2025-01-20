@@ -20,7 +20,7 @@ namespace ModelController.ModelScenePresentator
     {
         Dictionary<string, PresenterView> ObjsViews = new Dictionary<string, PresenterView>();
 
-        //Dictionary<ObjType, Color> ObjsColors = new Dictionary<ObjType, Color>();
+        Dictionary<string, ObjectsItem> ObjsItems = new Dictionary<string, ObjectsItem>();
         ///// <inheritdoc/>
 
         //public int TransparencyValue { get; set; }
