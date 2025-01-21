@@ -1,1 +1,1 @@
-https://github.com/ONEGOCH/SceneSolution/blob/Master/README.md
+Набор библиотек для хранения геометрии и сетки, а также пре и пост обработке результатов
