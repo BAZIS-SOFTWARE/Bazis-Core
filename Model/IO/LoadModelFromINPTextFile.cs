@@ -15,7 +15,7 @@ namespace Model.IO
     /// <summary>
     /// Loads ModelData from file in .inp (gmsh) format
     /// </summary>
-    public class LoadModelFromGMSHTextFile : IModelLoader
+    public class LoadModelFromINPTextFile : IModelLoader
     {
         public event Action<object, ILoaderEventArgs> LoadEvent;
         private Dictionary<int, Node> mapIndexToNode;
