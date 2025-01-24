@@ -11,7 +11,10 @@ using System.Text.RegularExpressions;
 
 namespace Model.IO
 {
-    public class LoadModelFromGMSHTextFile : IModelLoader
+    /// <summary>
+    /// Loads ModelData from file in .inp (gmsh) format
+    /// </summary>
+    public class LoadModelFromINPTextFile : IModelLoader
     {
         public event Action<object, ILoaderEventArgs> LoadEvent;
 

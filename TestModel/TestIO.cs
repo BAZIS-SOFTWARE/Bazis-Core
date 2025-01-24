@@ -73,7 +73,7 @@ namespace TestModel
             //assing
             var model = new ModelData();
 
-            model.Loader = new LoadModelFromGMSHTextFile();
+            model.Loader = new LoadModelFromINPTextFile();
             model.Saver = new SaveModelToBPF2TextFile();
 
             model.Loader.LoadEvent += (ar1, ar2) => { };
@@ -162,26 +162,19 @@ namespace TestModel
             //assert
         }
 
-        [TestMethod]
-        public void ImportModelFromGMSHtextFormat()
+        [DataTestMethod]
+        [DataRow(8448, 17964, @"..\..\..\Examples\3D\Korpus.inp", DisplayName = "Korpus.inp")]
+        [DataRow(4, 1, @"..\..\..\Examples\3D\abacus.inp", DisplayName = "abacus.inp")]
+        public void ImportModelFromINPTextFormat(int nodeCount, int elemCount, string path)
+
         {
             var model = new ModelData();
-            model.Loader = new LoadModelFromGMSHTextFile();
+            model.Loader = new LoadModelFromINPTextFile();
 
-            model.Load(@"..\..\Examples\3D\Korpus.inp");
+            model.Load(path);
 
-            Assert.AreEqual(8448, model.ObjectData.NodeCollection.Count);
-        }
-
-        [TestMethod]
-        public void LoadModelFromGMSHTextFile_ShouldLoadCorrectNumberOfElements()
-        {
-            var model = new ModelData();
-            model.Loader = new LoadModelFromGMSHTextFile();
-
-            model.Load(@"..\..\Examples\3D\Korpus.inp");
-
-            Assert.AreEqual(17964, model.ObjectData.GetAllElements().Count());
+            Assert.AreEqual(nodeCount, model.ObjectData.NodeCollection.Count);
+            Assert.AreEqual(elemCount, model.ObjectData.GetAllElements().Count());
         }
 
         [DataTestMethod]
@@ -279,17 +272,6 @@ namespace TestModel
             Assert.AreEqual(lineElms, model.ObjectData.E1DCollection.Distinct().Count());
             Assert.AreEqual(surfElms, model.ObjectData.E2DCollection.Distinct().Count());
             Assert.AreEqual(volElems, model.ObjectData.E3DCollection.Distinct().Count());
-        }
-
-        [TestMethod]
-        public void LoadModelFromGMSHTextFile_ShouldLoad_FromAbacusFileFormat()
-        {
-            var filepath = @"..\..\Examples\3D\abacus.inp";
-            var instance = new LoadModelFromGMSHTextFile();
-
-            var model = instance.Load(filepath);
-
-            Assert.AreEqual(1, model.ObjectData.E3DCollection.Count);
         }
     }
 }
