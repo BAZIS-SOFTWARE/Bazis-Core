@@ -1,3 +1,0 @@
-@startuml
-[ModelController] -> [Model] : use
-@enduml
