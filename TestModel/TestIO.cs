@@ -169,7 +169,7 @@ namespace TestModel
             var model = new ModelData();
             model.Loader = new LoadModelFromGMSHTextFile();
 
-            model.Load(@"..\..\..\Examples\3D\Korpus.inp");
+            model.Load(@"..\..\Examples\3D\Korpus.inp");
 
             Assert.AreEqual(8448, model.ObjectData.NodeCollection.Count);
         }
@@ -180,7 +180,7 @@ namespace TestModel
             var model = new ModelData();
             model.Loader = new LoadModelFromGMSHTextFile();
 
-            model.Load(@"..\..\..\Examples\3D\Korpus.inp");
+            model.Load(@"..\..\Examples\3D\Korpus.inp");
 
             Assert.AreEqual(17964, model.ObjectData.GetAllElements().Count());
         }
@@ -280,6 +280,17 @@ namespace TestModel
             Assert.AreEqual(lineElms, model.ObjectData.E1DCollection.Distinct().Count());
             Assert.AreEqual(surfElms, model.ObjectData.E2DCollection.Distinct().Count());
             Assert.AreEqual(volElems, model.ObjectData.E3DCollection.Distinct().Count());
+        }
+
+        [TestMethod]
+        public void LoadModelFromGMSHTextFile_ShouldLoad_FromAbacusFileFormat()
+        {
+            var filepath = @"..\..\Examples\3D\abacus.inp";
+            var instance = new LoadModelFromGMSHTextFile();
+
+            var model = instance.Load(filepath);
+
+            Assert.AreEqual(1, model.ObjectData.E3DCollection.Count);
         }
     }
 }

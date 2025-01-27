@@ -1,6 +1,5 @@
 ﻿using Geometry;
 using Model.Events;
-using Model.GroupsData;
 using Model.MeshObjects;
 using Model.Interfaces;
 using Model.Interfaces.MeshObjects;
@@ -9,18 +8,27 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Model.IO
 {
     /// <summary>
-    /// Loads ModelData from file in .inp (gmsh) format
+    /// Loads ModelData from file in .inp format
     /// </summary>
     public class LoadModelFromGMSHTextFile : IModelLoader
     {
         public event Action<object, ILoaderEventArgs> LoadEvent;
-        private Dictionary<int, Node> mapIndexToNode;
-        private Dictionary<int, Element> mapIndexToElement;
-        private ModelData modelData;
+        private Dictionary<int, Node> mapIndexToNode; //
+        private Dictionary<int, Element> mapIndexToElement; //
+        private ModelData modelData; //
+        private static Regex readNumbers;
+        private static Regex elementType;
+
+        static LoadModelFromGMSHTextFile()
+        {
+            readNumbers = new Regex(@"\d+(\.\d+(e-\d+)?)?");
+            elementType = new Regex(@"(?<=TYPE=)\w+");
+        }
 
         /// <summary>
         /// Load a model in the .inp format from the specified path
@@ -41,6 +49,15 @@ namespace Model.IO
             return modelData;
         }
 
+        private string[] ReadNumbersFromLine(string line)
+        {
+            return readNumbers
+                    .Matches(line)
+                    .Cast<Match>()
+                    .Select(x => x.Value)
+                    .ToArray();
+        }
+
         /// <summary>
         /// Reads a block of nodes using the reader until it encounters element's block marker. Then passes control to the ReadElements method
         /// </summary>
@@ -51,20 +68,27 @@ namespace Model.IO
             while (!reader.EndOfStream)
             {
                 var line = reader.ReadLine();
-                if (line == "******* E L E M E N T S *************")
+                if (line.StartsWith("**"))
                 {
                     mapIndexToNode = nodes.ToDictionary(n => n.Number, n => n);
-                    var startLine = reader.ReadLine();
-                    ReadElements(startLine, reader);
+                    while(!line.StartsWith("*ELEMENT") && !reader.EndOfStream)
+                        line = reader.ReadLine();
+                    if(!reader.EndOfStream)
+                        ReadElements(line, reader);
                     break;
                 }
-                var tokens = line.Replace(" ", "").Split(',');
-                var nodeIndex = int.Parse(tokens[0]);
-                var coordinates = tokens.Skip(1)
-                    .Select(x => float.Parse(x, NumberStyles.Float, CultureInfo.InvariantCulture))
-                    .ToArray();
-                var node = new Node(nodeIndex, new Point3D(coordinates[0], coordinates[1], coordinates[2]));
-                nodes.Add(node);
+                var tokens = ReadNumbersFromLine(line);
+                if (tokens.Length == 4)
+                {
+                    var nodeIndex = int.Parse(tokens[0]);
+                    var coordinates = tokens.Skip(1)
+                        .Select(x => float.Parse(x, NumberStyles.Float, CultureInfo.InvariantCulture))
+                        .ToArray();
+                    var node = new Node(nodeIndex, new Point3D(coordinates[0], coordinates[1], coordinates[2]));
+                    nodes.Add(node);
+                }
+                else
+                    continue;
             }
             nodes.OrderBy(e => e.Number)
                 .ToList()
@@ -77,8 +101,8 @@ namespace Model.IO
         /// </summary>
         private ElementKind GetElementKind(string line)
         {
-            var elementType = line.Replace(" ", "").Split(',')[1].Replace("type=", "");
-            switch (elementType)
+            var elementKind = elementType.Match(line.ToUpper()).Value;
+            switch (elementKind)
             {
                 case "T3D2": return ElementKind.Стержень;
                 case "CPS3": return ElementKind.Треугольник;
@@ -130,24 +154,32 @@ namespace Model.IO
             while (!reader.EndOfStream)
             {
                 var line = reader.ReadLine();
-                if (line.StartsWith("*ELSET"))
+                if (line.StartsWith("*ELSET") || line.StartsWith("**"))
                 {
                     mapIndexToElement = elements.ToDictionary(e => e.Number, e => e);
-                    ReadGroups(line, reader);
+                    while (!line.StartsWith("*ELSET") && !reader.EndOfStream)
+                        line = reader.ReadLine();
+                    if(!reader.EndOfStream)
+                        ReadGroups(line, reader);
                     break;
                 }
                 else if (line.StartsWith("*ELEMENT"))
                     elementType = GetElementKind(line);
                 else
                 {
-                    var tokens = line.Replace(" ", "").Split(',');
-                    var elementIndex = int.Parse(tokens[0]);
-                    var elementNodes = tokens.Skip(1)
-                        .Select(int.Parse)
-                        .Select(i => mapIndexToNode[i])
-                        .ToArray();
-                    var element = GetElement(elementIndex, elementNodes, elementType);
-                    elements.Add(element);
+                    var tokens = ReadNumbersFromLine(line);
+                    if (tokens.Length > 0)
+                    {
+                        var elementIndex = int.Parse(tokens[0]);
+                        var elementNodes = tokens.Skip(1)
+                            .Select(int.Parse)
+                            .Select(i => mapIndexToNode[i])
+                            .ToArray();
+                        var element = GetElement(elementIndex, elementNodes, elementType);
+                        elements.Add(element);
+                    }
+                    else
+                        continue;
                 }
             }
             elements.OrderBy(e => e.Number)
@@ -157,7 +189,7 @@ namespace Model.IO
 
         private void AddGroupToModelData(string groupName, List<Element> elements)
         {
-            var group = new Group(groupName, elements.First().ObjType);
+            var group = new Model.GroupsData.Group(groupName, elements.First().ObjType);
             group.AddRange(elements);
             modelData.GroupData.Add(group);
         }
