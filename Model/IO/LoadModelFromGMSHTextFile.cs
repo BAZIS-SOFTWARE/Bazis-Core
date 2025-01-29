@@ -15,16 +15,11 @@ namespace Model.IO
     public class LoadModelFromGMSHTextFile : IModelLoader
     {
         public event Action<object, ILoaderEventArgs> LoadEvent;
-        private static Regex extractNumbers;
-        private static Regex extractElementType;
-        private static Regex extractGroupName;
 
-        static LoadModelFromGMSHTextFile()
-        {
-            extractNumbers = new Regex(@"\d+(\.\d+(e-\d+)?)?");
-            extractElementType = new Regex(@"(?<=TYPE=)\w+");
-            extractGroupName = new Regex(@"(?<=ELSET=)\w*");
-        }
+        private static string extractNumbersPattern = @"\d+(\.\d+(e-\d+)?)?";
+        private static string extractElementTypePattern = @"(?<=TYPE=)\w+";
+        private static string extractGroupNamePattern = @"(?<=ELSET=)\w*";
+
 
         public IModelData Load(string path)
         {
@@ -44,8 +39,7 @@ namespace Model.IO
 
         private string[] ReadNumbersFromLine(string line)
         {
-            return extractNumbers
-                    .Matches(line)
+            return Regex.Matches(line, extractNumbersPattern)
                     .Cast<Match>()
                     .Select(x => x.Value)
                     .ToArray();
@@ -54,11 +48,10 @@ namespace Model.IO
         private void ReadNodes(StreamReader reader, ModelData modelData)
         {
             var indexToNode = new Dictionary<int, Node>();
-            LoadEvent?.Invoke(this, new LoaderEventArgs("Начало загрузки узлов"));
             while (!reader.EndOfStream)
             {
                 var line = reader.ReadLine();
-                if (line.StartsWith("**")) // end of nodes block
+                if (line.StartsWith("**")) // end of block
                 {
                     while(!line.StartsWith("*ELEMENT") && !reader.EndOfStream)
                         line = reader.ReadLine();
@@ -90,31 +83,6 @@ namespace Model.IO
             return node;
         }
 
-        private ElementKind GetElementKind(string line)
-        {
-            var elementKind = extractElementType.Match(line.ToUpper()).Value;
-            switch (elementKind)
-            {
-                case "T3D2": return ElementKind.Стержень;
-                case "CPS3": return ElementKind.Треугольник;
-                case "CPS4": return ElementKind.Квадрат;
-                case "C3D4": return ElementKind.Тетра;
-                default: throw new ArgumentException($"Неизвестный формат элемента: {extractElementType}");
-            }
-        }
-
-        private Element GetElement(int elementIndex, Node[] elementNodes, ElementKind elementKind)
-        {
-            switch (elementKind)
-            {
-                case ElementKind.Стержень: return new Beam(elementIndex, elementNodes); 
-                case ElementKind.Треугольник: return new Triangle(elementIndex, elementNodes);
-                case ElementKind.Квадрат: return new Quad(elementIndex, elementNodes);
-                case ElementKind.Тетра: return new Tetra(elementIndex, elementNodes);
-                default: throw new ArgumentException($"Неизвестный формат элемента: {elementKind}");
-            }
-        }
-
         private void AddElementToModelData(Element element, ModelData modelData)
         {
             switch (element.ElementKind)
@@ -130,8 +98,7 @@ namespace Model.IO
         private void ReadElements(string startLine, StreamReader reader, Dictionary<int, Node> indexToNode, ModelData modelData)
         {
             var indexToElement = new Dictionary<int, Element>();
-            LoadEvent?.Invoke(this, new LoaderEventArgs("Начало загрузки элементов"));
-            var elementKind = GetElementKind(startLine);
+            var elementType = Regex.Match(startLine.ToUpper(), extractElementTypePattern).Value;
             while (!reader.EndOfStream)
             {
                 var line = reader.ReadLine();
@@ -139,18 +106,18 @@ namespace Model.IO
                 {
                     while (!line.StartsWith("*ELSET") && !reader.EndOfStream)
                         line = reader.ReadLine();
-                    if(!reader.EndOfStream)
+                    if (line.StartsWith("*ELSET"))
                         ReadGroups(line, reader, indexToElement, modelData);
                     break;
                 }
                 else if (line.StartsWith("*ELEMENT"))
-                    elementKind = GetElementKind(line);
+                    elementType = Regex.Match(line.ToUpper(), extractElementTypePattern).Value;
                 else
                 {
                     var tokens = ReadNumbersFromLine(line);
                     if (tokens.Length > 0)
                     {
-                        var element = ParseElementFromLine(tokens, elementKind, indexToNode);
+                        var element = ParseElementFromLine(tokens, elementType, indexToNode);
                         indexToElement.Add(element.Number, element);
                     }
                     else
@@ -162,25 +129,37 @@ namespace Model.IO
                 .ForEach(e => AddElementToModelData(e.Value, modelData));
         }
 
-        private Element ParseElementFromLine(string[] tokens, ElementKind elementKind, Dictionary<int, Node> indexToNode)
+        private Element ParseElementFromLine(string[] tokens, string elementType, Dictionary<int, Node> indexToNode)
         {
             var elementIndex = int.Parse(tokens[0]);
             var elementNodes = tokens.Skip(1)
                 .Select(int.Parse)
                 .Select(i => indexToNode[i])
                 .ToArray();
-            var element = GetElement(elementIndex, elementNodes, elementKind);
+            var element = GetElement(elementIndex, elementNodes, elementType);
             return element;
+        }
+
+        private Element GetElement(int elementIndex, Node[] elementNodes, string elementType)
+        {
+            switch (elementType)
+            {
+                case "T3D2": return new Beam(elementIndex, elementNodes);
+                case "CPS3": return new Triangle(elementIndex, elementNodes);
+                case "CPS4": return new Quad(elementIndex, elementNodes);
+                case "C3D4": return new Tetra(elementIndex, elementNodes);
+                default: throw new ArgumentException($"Неизвестный формат элемента: {elementType}");
+            }
         }
 
         private void ReadGroups(string currentLine, StreamReader reader, Dictionary<int, Element> indexToElement, ModelData modelData)
         {
-            var groupName = extractGroupName.Match(currentLine).Value;
+            var groupName = Regex.Match(currentLine, extractGroupNamePattern).Value;
             while (!reader.EndOfStream)
             {
                 var line = reader.ReadLine();
                 if (line.StartsWith("*ELSET"))
-                    groupName = extractGroupName.Match(line).Value;
+                    groupName = Regex.Match(line, extractGroupNamePattern).Value;
                 else
                 {
                     var elements = ReadNumbersFromLine(line)
