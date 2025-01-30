@@ -164,7 +164,6 @@ namespace TestModel
 
         [TestMethod]
         public void ImportModelFromGMSHtextFormat()
-
         {
             var model = new ModelData();
             model.Loader = new LoadModelFromGMSHTextFile();

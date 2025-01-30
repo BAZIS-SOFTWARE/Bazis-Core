@@ -37,12 +37,13 @@ namespace Model.IO
             return modelData;
         }
 
-        private string[] ReadNumbersFromLine(string line)
+        private IEnumerable<string> ReadNumbersFromLine(string line)
         {
-            return Regex.Matches(line, extractNumbersPattern)
-                    .Cast<Match>()
-                    .Select(x => x.Value)
-                    .ToArray();
+            var matches = Regex.Matches(line, extractNumbersPattern);
+            for(var i = 0; i < matches.Count; i++)
+            {
+                yield return matches[i].Value;
+            }
         }
 
         private void ReadNodes(StreamReader reader, ModelData modelData)
@@ -59,7 +60,7 @@ namespace Model.IO
                         ReadElements(line, reader, indexToNode, modelData);
                     break;
                 }
-                var tokens = ReadNumbersFromLine(line);
+                var tokens = ReadNumbersFromLine(line).ToArray();
                 if (tokens.Length == 4) // parse coordinates
                 {
                     var node = ParseNodeFromLine(tokens);
@@ -114,7 +115,7 @@ namespace Model.IO
                     elementType = Regex.Match(line.ToUpper(), extractElementTypePattern).Value;
                 else
                 {
-                    var tokens = ReadNumbersFromLine(line);
+                    var tokens = ReadNumbersFromLine(line).ToArray();
                     if (tokens.Length > 0)
                     {
                         var element = ParseElementFromLine(tokens, elementType, indexToNode);
