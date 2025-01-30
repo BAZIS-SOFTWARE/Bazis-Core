@@ -6,7 +6,41 @@ using System.Collections.Generic;
 namespace PreProc.Interfaces
 {
     /// <summary>
-    /// Тип процесса для препроцессора по созданию пользовательских задач
+    /// Задачи для препроцессора для создания пользовательских задач
+    /// </summary>
+    public enum ComplexTaskType : int 
+    { 
+        /// <summary>
+        /// ХИМИЧЕСКАЯ задача с одиночным процессом.
+        /// Один тип файлов задач
+        /// </summary>
+        химическая,
+        /// <summary>
+        /// ТЕРМИЧЕСКАЯ задача с одиночным процессом.
+        /// Один тип файлов задач
+        /// </summary>
+        термическая,
+        /// <summary>
+        /// МЕХАНИЧЕСКАЯ задача с одиночным процессом.
+        /// Один тип файлов задач
+        /// </summary>
+        механическая,
+        /// <summary>
+        /// ТЕРМИЧЕСКО_ХИМИЧЕСКАЯ задача с комплексным процессом из термической и химической.
+        /// Два тип файлов задач.
+        /// Главный - термическая
+        /// </summary>
+        термическая_химическая,
+        /// <summary>
+        /// ТЕРМИЧЕСКО_МЕХАНИЧЕСКАЯ задача с комплексным процессом состоящим из термической и механической.
+        /// Два тип файлов задач.
+        /// Главный - термическая
+        /// </summary>
+        термическая_механическая
+    };
+
+    /// <summary>
+    /// Тип подпроцесса для препроцессора по созданию пользовательских термических задач
     /// </summary>
     public enum ProcessType
     {
@@ -41,7 +75,8 @@ namespace PreProc.Interfaces
         /// - Нагрев от источника сварки должен быть задан
         /// - Закрепления должны быть заданы
         /// - Среда и нагрев не должны выходить за время действия материала
-        /// - Создается всегда четное кол-во tsf файлов-инструкций. На каждый временной интервал по паре тепловой и механической задачи соответственно.
+        /// - Создается всегда четное кол-во tsf файлов-инструкций. 
+        /// - На каждый временной интервал по паре тепловой и механической задачи соответственно.
         /// Для ТО:
         /// - Требования теже, что и в сварке кроме требований нагрева
         /// - Общая тепловая и механическая задачи также поддерживаются
@@ -51,6 +86,7 @@ namespace PreProc.Interfaces
         /// <param name="path">путь папки сохранения расчетных файлов данных</param>>
         /// <returns>список расчитанных данных CompData</returns>
         void CalcCompDataV1(List<IValuableData> data, ProcessType processType, string path);
+
         /// <summary>
         /// SortCompDataByTimeAndType
         /// </summary>
@@ -59,13 +95,13 @@ namespace PreProc.Interfaces
         /// Отсортированный по названиям и по времени действия список задач
         /// </returns>
         List<string> SortCompDataByTimeAndType(string[] dataStrs);
+
         /// <summary>
         /// SetDraftParameters
         /// </summary>
         /// <typeparam name="ResultParam"></typeparam>
-        /// <param name="parameter"></param>
-        /// <param name="processType">тип задачи</param>>
-        void SetDraftParameters<ResultParam>(ResultParam parameter, ProcessType processType)
+        /// <param name="parameter"></param>>
+        void SetDraftParameters<ResultParam>(ResultParam parameter)
             where ResultParam : GeneralParameters, new();
     }
 }
