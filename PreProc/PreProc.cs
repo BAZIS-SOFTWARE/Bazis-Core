@@ -13,7 +13,6 @@ using Project.TaskParameters;
 
 namespace PreProc
 {
-    public enum TasksSet : int { химическая, термическая, механическая, химическая_и_термическая, термическая_и_механическая };
     /// <summary>
     /// PreProc. Препроцессор
     /// </summary>
@@ -27,14 +26,12 @@ namespace PreProc
 
         private Dictionary<DataKind, List<Tuple<float, float>>> TimeSeparators = new Dictionary<DataKind, List<Tuple<float, float>>>();
 
-        private float[] AllTimeSeparators { get; set; }
-
-        private ProcessType _processType;
+        private float[] AllTimeSeparators;
+        private ProcessProperty processProp;
         private string _path;
 
-
         /// <summary>
-        /// Препроцессор под задачи сварки и то, работает только с тепловыми и механическими задачами.
+        /// Препроцессор под задачи сварки и термообработки, работает только с тепловыми и механическими задачами.
         /// </summary>
         /// <param name="data"></param>
         /// <param name="processType"></param>
@@ -42,7 +39,7 @@ namespace PreProc
         public void CalcCompDataV1(List<IValuableData> data, ProcessType processType, string path)
         {
             SetUpTimeSeparators(data);
-            _processType = processType;
+            processProp = new ProcessProperty { commonTaskType = processType, generalTaskType = ComplexTaskType.термическая_механическая };
             _path = path;
 
             var termParamData = GetParameters<HeatData, MediaData, TermalParameters>(data);
@@ -50,57 +47,53 @@ namespace PreProc
 
             CreateFilesForProcess(termParamData, mechParamData);
         }
+
         /// <summary>
         /// CalcCompDataV1. Обновленный препроцессор, который учитывает с каким набором задач он работает.
         /// </summary>
         /// <param name="data"></param>
-        /// <param name="tasksSet"></param>
-        /// <param name="processType"></param>
+        /// <param name="property"></param>
         /// <param name="path"></param>
-        public void CalcCompDataV1(List<IValuableData> data, TasksSet tasksSet, ProcessType processType, string path)
+        public void CalcCompDataV1(List<IValuableData> data, ProcessProperty property, string path)
         {
             //TO DO/ Метод излагает саму идею поддержки наборов результатов.
             // Оператор switch показывает как это реализовать. 
             // Я думаю стоит обобщить метод CreateFilesForProcess так, чтобы он принимал разные граничные условия, 
             // а не только тепловые и механические
             SetUpTimeSeparators(data);
-            _processType = processType;
+            processProp = property;
             _path = path;
 
-                switch (tasksSet)
-                {
-                    case TasksSet.химическая:
-                        //var chemParamData = GetParameters<null, ChemData, ChemicalParameters>(data);
-                        break;
-                    case TasksSet.термическая:
-                        { 
-                            var termParamData = GetParameters<HeatData, MediaData, TermalParameters>(data);
-                            break; 
-                        }
-                case TasksSet.механическая:
-                        {
-                            var mechParamData = GetParameters<LoadData, ClampData, MechanicalParameters>(data);
-                            break;
-                        }
-                case TasksSet.химическая_и_термическая:
-                        {
-                            //var termParamData = GetParameters<HeatData, MediaData, TermalParameters>(data);
-                            //var chemParamData = GetParameters<null, ChemData, ChemicalParameters>(data);
+            IEnumerable<GeneralParameters> mainParameters, minorParameter;
+            switch (processProp.generalTaskType)
+            {
+                //case ComplexTaskType.химическая:
+                //    mainParameters = GetParameters<ChemicalData, MediaData, ChemicalParameters>(data);
+                //    CreateFilesForSingleProcess(processProp.generalTaskType.ToString(), mainParameters as List<Chemical>);
+                //    break;
 
-                            //CreateFilesForProcess(termParamData, chemParamData);
-                            break;
-                        }
-
-                case TasksSet.термическая_и_механическая:
-                        {
-                            var termParamData = GetParameters<HeatData, MediaData, TermalParameters>(data);
-                            var mechParamData = GetParameters<LoadData, ClampData, MechanicalParameters>(data);
-
-                            CreateFilesForProcess(termParamData, mechParamData);
-                            break;
-                        }
-                default:
+                case ComplexTaskType.термическая:
+                    mainParameters = GetParameters<HeatData, MediaData, TermalParameters>(data);
+                    CreateFilesForSingleProcess(processProp.generalTaskType.ToString(), mainParameters as List<TermalParameters>);
                     break;
+
+                case ComplexTaskType.механическая:
+                    mainParameters = GetParameters<LoadData, ClampData, MechanicalParameters>(data);
+                    CreateFilesForSingleProcess(processProp.generalTaskType.ToString(), mainParameters as List<MechanicalParameters>);
+                    break;
+
+                //case ComplexTaskType.химическая_термическая:
+                //    mainParameters = GetParameters<ChemicalData, MediaData, ChemicalParameters>(data);
+                //    minorParameter = GetParameters<HeatData, MediaData, TermalParameters>(data);
+                //    break;
+
+                case ComplexTaskType.термическая_механическая:
+                    mainParameters = GetParameters<HeatData, MediaData, TermalParameters>(data);
+                    minorParameter = GetParameters<LoadData, ClampData, MechanicalParameters>(data);
+                    break;
+
+                default:
+                    throw new NotImplementedException();
             }
         }
 
@@ -160,7 +153,7 @@ namespace PreProc
             {
                 var startStop = Tuple.Create(AllTimeSeparators[i], AllTimeSeparators[i + 1]);
                 var parameter = new ResultParam();
-                SetDraftParameters(parameter, _processType);
+                SetDraftParameters(parameter);
                 parameter.TimeSettings.StartTime = startStop.Item1;
                 parameter.TimeSettings.StopTime = startStop.Item2;
 
@@ -176,14 +169,14 @@ namespace PreProc
 
             return result;
         }
-/// <inheritdoc/>
 
-        public void SetDraftParameters<ResultParam>(ResultParam parameter, ProcessType processType)
+        /// <inheritdoc/>
+        public void SetDraftParameters<ResultParam>(ResultParam parameter)
             where ResultParam : GeneralParameters, new()
         {
             if (parameter is TermalParameters termalParameter)
             {
-                switch (processType)
+                switch (processProp.commonTaskType)
                 {
                     case ProcessType.Welding:
                         WeldingTermDraft(termalParameter);
@@ -198,14 +191,11 @@ namespace PreProc
                         TemperingTermDraft(termalParameter);
                         break;
                 }
-
             }
 
-
-            else
+            else if (parameter is MechanicalParameters mechParameter)
             {
-                var mechParameter = parameter as MechanicalParameters;
-                switch (processType)
+                switch (processProp.commonTaskType)
                 {
                     case ProcessType.Welding:
                         WeldingMechDraft(mechParameter);
@@ -221,7 +211,6 @@ namespace PreProc
                         break;
                 }
             }
-                
         }
 
         private void HeatingMechDraft(MechanicalParameters mech)
@@ -336,7 +325,7 @@ namespace PreProc
 
         /// <summary>
         /// Принимает внешние и внутрениие данные процесса.
-        /// Главный процесс долже быть всегда дольше внутреннего.
+        /// Главный процесс должен быть всегда дольше внутреннего.
         /// После конца внутреннего процесса, главный должен его подхватывать, или продолжаться.
         /// Главный процесс стартует с 0.
         /// Внутри главного процесса не должно быть пустых промежутков (бездействие главного процесса)
@@ -387,55 +376,56 @@ namespace PreProc
         /// Создает .tsf-файлы
         /// </summary>
         /// <typeparam name="DataParameter">Тип параметра данных для создания файлов</typeparam>
-        /// <param name="tasKind">Тип задачи</param>
+        /// <param name="taskKind">Тип задачи</param>
         /// <param name="parametrizedParams">Список созданных параметров для создания фалов</param>
         /// <returns>возвращает список строк для создания CompData</returns>
-        private void CreateFilesForSingleProcess<DataParameter>( TaskKind tasKind,
-            List<DataParameter> parametrizedParams)
+        private void CreateFilesForSingleProcess<DataParameter>(string taskKind, List<DataParameter> parametrizedParams)
             where DataParameter : GeneralParameters
         {
-
             for (var i = 0; i < parametrizedParams.Count; i++)
             {
                 if (i > 0)
-                    parametrizedParams[i].RestartFile = $"{tasKind}_{i}_{parametrizedParams[i - 1].TimeSettings.StartTime}_{parametrizedParams[i - 1].TimeSettings.StopTime}.db";
+                    parametrizedParams[i].RestartFile = $"{taskKind}_{i}_{parametrizedParams[i - 1].TimeSettings.StartTime}_{parametrizedParams[i - 1].TimeSettings.StopTime}.db";
 
                 var serializedData = JsonConvert.SerializeObject(parametrizedParams[i], settingsSerializer);
-                var fileName = $"{tasKind}_{i + 1}_{parametrizedParams[i].TimeSettings.StartTime}_{parametrizedParams[i].TimeSettings.StopTime}.tsf";
+                var fileName = $"{taskKind}_{i + 1}_{parametrizedParams[i].TimeSettings.StartTime}_{parametrizedParams[i].TimeSettings.StopTime}.tsf";
 
                 File.WriteAllBytes($"{_path}\\{fileName}", Encoding.UTF8.GetBytes(serializedData));
             }
         }
 
         /// <summary>
-        /// Создает файлы для термообработки
+        /// Создает файлы для термического процесса
         /// </summary>
-        /// <param name="termPars">Набор термических параметров</param>
-        /// <param name="mechPars">Набор механических параметров</param>
+        /// <param name="mainParameters">Набор термических параметров</param>
+        /// <param name="minorParameters">Набор механических параметров</param>
         /// <returns>Список строк для создания CompData</returns>
-        private void CreateFilesForProcess
-            (List<TermalParameters> termPars, List<MechanicalParameters> mechPars)
+        private void CreateFilesForProcess<MainParameter, MinorParameter>(List<MainParameter> mainParameters, List<MinorParameter> minorParameters)
+            where MainParameter : GeneralParameters
+            where MinorParameter : GeneralParameters, IThermalDependent
         {
-            CreateFilesForSingleProcess(TaskKind.термическая, termPars);
+            // 0 - main
+            // 1 - minor
+            string[] names = processProp.ToString().Split('_');
+            CreateFilesForSingleProcess(names[0], mainParameters);
 
-            mechPars[0].ThermalFile = $"термическая_{1}_{mechPars[0].TimeSettings.StartTime}_{mechPars[0].TimeSettings.StopTime}.db";
+            minorParameters[0].ThermalFile = $"{names[0]}_{1}_{minorParameters[0].TimeSettings.StartTime}_{minorParameters[0].TimeSettings.StopTime}.db";
 
-            for (var i = 0; i < mechPars.Count; i++)
+            for (var i = 0; i < minorParameters.Count; i++)
             {
                 if (i > 0)
                 {
-                    mechPars[i].RestartFile = $"механическая_{i}_{mechPars[i - 1].TimeSettings.StartTime}_{mechPars[i - 1].TimeSettings.StopTime}.db";
-                    mechPars[i].ThermalFile = $"термическая_{i + 1}_{mechPars[i].TimeSettings.StartTime}_{mechPars[i].TimeSettings.StopTime}.db";
+                    minorParameters[i].RestartFile = $"{names[1]}_{i}_{minorParameters[i - 1].TimeSettings.StartTime}_{minorParameters[i - 1].TimeSettings.StopTime}.db";
+                    minorParameters[i].ThermalFile = $"{names[0]}_{i + 1}_{minorParameters[i].TimeSettings.StartTime}_{minorParameters[i].TimeSettings.StopTime}.db";
                 }
-                var serializedData = JsonConvert.SerializeObject(mechPars[i], settingsSerializer);
-                var fileName = $"механическая_{i + 1}_{mechPars[i].TimeSettings.StartTime}_{mechPars[i].TimeSettings.StopTime}.tsf";
+                var serializedData = JsonConvert.SerializeObject(minorParameters[i], settingsSerializer);
+                var fileName = $"{names[1]}_{i + 1}_{minorParameters[i].TimeSettings.StartTime}_{minorParameters[i].TimeSettings.StopTime}.tsf";
 
                 File.WriteAllBytes($"{_path}\\{fileName}", Encoding.UTF8.GetBytes(serializedData));
             }
         }
 
-/// <inheritdoc/>
-
+        /// <inheritdoc/>
         public List<string> SortCompDataByTimeAndType(string[] dataStrs)
         {
             var sortedLines = new List<string>();
