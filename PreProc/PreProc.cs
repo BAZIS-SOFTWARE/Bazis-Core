@@ -13,6 +13,7 @@ using Project.TaskParameters;
 
 namespace PreProc
 {
+    public enum TasksSet : int { химическая, термическая, механическая, химическая_и_термическая, термическая_и_механическая };
     /// <summary>
     /// PreProc. Препроцессор
     /// </summary>
@@ -31,8 +32,13 @@ namespace PreProc
         private ProcessType _processType;
         private string _path;
 
-        /// <inheritdoc/>
 
+        /// <summary>
+        /// Препроцессор под задачи сварки и то, работает только с тепловыми и механическими задачами.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="processType"></param>
+        /// <param name="path"></param>
         public void CalcCompDataV1(List<IValuableData> data, ProcessType processType, string path)
         {
             SetUpTimeSeparators(data);
@@ -43,6 +49,59 @@ namespace PreProc
             var mechParamData = GetParameters<LoadData, ClampData, MechanicalParameters>(data);
 
             CreateFilesForProcess(termParamData, mechParamData);
+        }
+        /// <summary>
+        /// CalcCompDataV1. Обновленный препроцессор, который учитывает с каким набором задач он работает.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="tasksSet"></param>
+        /// <param name="processType"></param>
+        /// <param name="path"></param>
+        public void CalcCompDataV1(List<IValuableData> data, TasksSet tasksSet, ProcessType processType, string path)
+        {
+            //TO DO/ Метод излагает саму идею поддержки наборов результатов.
+            // Оператор switch показывает как это реализовать. 
+            // Я думаю стоит обобщить метод CreateFilesForProcess так, чтобы он принимал разные граничные условия, 
+            // а не только тепловые и механические
+            SetUpTimeSeparators(data);
+            _processType = processType;
+            _path = path;
+
+                switch (tasksSet)
+                {
+                    case TasksSet.химическая:
+                        //var chemParamData = GetParameters<null, ChemData, ChemicalParameters>(data);
+                        break;
+                    case TasksSet.термическая:
+                        { 
+                            var termParamData = GetParameters<HeatData, MediaData, TermalParameters>(data);
+                            break; 
+                        }
+                case TasksSet.механическая:
+                        {
+                            var mechParamData = GetParameters<LoadData, ClampData, MechanicalParameters>(data);
+                            break;
+                        }
+                case TasksSet.химическая_и_термическая:
+                        {
+                            //var termParamData = GetParameters<HeatData, MediaData, TermalParameters>(data);
+                            //var chemParamData = GetParameters<null, ChemData, ChemicalParameters>(data);
+
+                            //CreateFilesForProcess(termParamData, chemParamData);
+                            break;
+                        }
+
+                case TasksSet.термическая_и_механическая:
+                        {
+                            var termParamData = GetParameters<HeatData, MediaData, TermalParameters>(data);
+                            var mechParamData = GetParameters<LoadData, ClampData, MechanicalParameters>(data);
+
+                            CreateFilesForProcess(termParamData, mechParamData);
+                            break;
+                        }
+                default:
+                    break;
+            }
         }
 
         private void SetUpTimeSeparators(List<IValuableData> valuableData)

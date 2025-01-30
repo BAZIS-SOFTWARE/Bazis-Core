@@ -1,11 +1,13 @@
 ﻿using Geometry;
 using MathNet.Numerics.LinearAlgebra;
+using Model.Interfaces.Attributes;
 using Model.Interfaces.IntegralObject;
 using Model.Interfaces.MeshObjects;
 using System;
 
 namespace Model.MeshObjects
 {
+    [Warning("Не использовать в решателе. Вместо него применять Tetra_c")]
     public class Tetra : Element3D
     {
         public Tetra(int number, Node[] nodes) : base(number, nodes)
