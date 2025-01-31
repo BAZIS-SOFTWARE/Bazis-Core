@@ -298,14 +298,15 @@ namespace TestProject
             preProc.CalcCompDataV1(resData, ProcessType.Welding, projPath);
         }
 
-        [DataRow(ComplexTaskType.термическая, ProcessType.Welding, new[] { "air Коэф.теплоотдачи.воздух 20 0 1500 *", "ARC;15;75;15 Элемент3D_2 0 95.08694 Узел_5|Узел_6;2;Узел_7;Узел_7;0|0|0|0\"" })]
+        [DataRow(ComplexTaskType.термическая, ProcessType.Welding, new[] { "Med/air Коэф.теплоотдачи.воздух 20 0 1500 *", "Heat/ARC;15;75;15 Элемент3D_2 0 95.08694 Узел_5|Узел_6;2;Узел_7;Узел_7;0|0|0|0", "Mat/mat Сталь_20ХМ 0 1500 *" })]
         [TestMethod]
         public void CalcCompDataV2_ShouldPass_OnSingleProcessTaskCreation(ComplexTaskType generalTaskType, ProcessType commonTaskType, params string[] valuableDataStrings)
         {
             var data = new List<IValuableData>();
             foreach(var str in valuableDataStrings.Select(x => x.Split('/')))
             {
-
+                switch(str[0])
+                    case "Med":
             }
 
             var preProc = new PreProc.PreProc();
