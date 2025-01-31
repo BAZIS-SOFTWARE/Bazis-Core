@@ -1,6 +1,7 @@
 ﻿
 using Project.Interfaces.Tasks;
 using Project.TaskParameters;
+using Project.Tasks;
 using System.Collections.Generic;
 
 namespace PreProc.Interfaces
@@ -86,6 +87,27 @@ namespace PreProc.Interfaces
         /// <param name="path">путь папки сохранения расчетных файлов данных</param>>
         /// <returns>список расчитанных данных CompData</returns>
         void CalcCompDataV1(List<IValuableData> data, ProcessType processType, string path);
+
+        /// <summary>
+        /// Препроцессор по обработке данных пользователя в команды в формате .tsf-файлов и CompData.
+        /// Актуален для процессов указанных в  "ProcessType".
+        /// Для сварки:
+        /// - Реализована поддержка многопроходной сварки с последовательно идущими проходами и с интервалами между ними
+        /// - Среда сварки должна быть задана
+        /// - Нагрев от источника сварки должен быть задан
+        /// - Закрепления должны быть заданы
+        /// - Среда и нагрев не должны выходить за время действия материала
+        /// - Создается всегда четное кол-во tsf файлов-инструкций. 
+        /// - На каждый временной интервал по паре тепловой и механической задачи соответственно.
+        /// Для ТО:
+        /// - Требования теже, что и в сварке кроме требований нагрева
+        /// - Общая тепловая и механическая задачи также поддерживаются
+        /// </summary>
+        /// <param name="data">список входных данных ValuableData</param>
+        /// <param name="prop">Свойства задачи для подготовки файлов препроессором. Состоит из главной задачи и подзадачи, для создания и параметризации файлов</param>
+        /// <param name="path">путь папки сохранения расчетных файлов данных</param>>
+        /// <returns>список расчитанных данных CompData в виде файлов *.stf</returns>
+        void CalcCompDataV2(List<IValuableData> data, ProcessProperty prop, string path);
 
         /// <summary>
         /// SortCompDataByTimeAndType

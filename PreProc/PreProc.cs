@@ -30,12 +30,7 @@ namespace PreProc
         private ProcessProperty processProp;
         private string _path;
 
-        /// <summary>
-        /// Препроцессор под задачи сварки и термообработки, работает только с тепловыми и механическими задачами.
-        /// </summary>
-        /// <param name="data"></param>
-        /// <param name="processType"></param>
-        /// <param name="path"></param>
+        /// <inheritdoc/>
         public void CalcCompDataV1(List<IValuableData> data, ProcessType processType, string path)
         {
             SetUpTimeSeparators(data);
@@ -48,13 +43,8 @@ namespace PreProc
             CreateFilesForProcess(termParamData, mechParamData);
         }
 
-        /// <summary>
-        /// CalcCompDataV1. Обновленный препроцессор, который учитывает с каким набором задач он работает.
-        /// </summary>
-        /// <param name="data"></param>
-        /// <param name="property"></param>
-        /// <param name="path"></param>
-        public void CalcCompDataV1(List<IValuableData> data, ProcessProperty property, string path)
+        /// <inheritdoc/>
+        public void CalcCompDataV2(List<IValuableData> data, ProcessProperty property, string path)
         {
             //TO DO/ Метод излагает саму идею поддержки наборов результатов.
             // Оператор switch показывает как это реализовать. 
@@ -406,7 +396,7 @@ namespace PreProc
         {
             // 0 - main
             // 1 - minor
-            string[] names = processProp.ToString().Split('_');
+            string[] names = processProp.generalTaskType.ToString().Split('_');
             CreateFilesForSingleProcess(names[0], mainParameters);
 
             minorParameters[0].ThermalFile = $"{names[0]}_{1}_{minorParameters[0].TimeSettings.StartTime}_{minorParameters[0].TimeSettings.StopTime}.db";
