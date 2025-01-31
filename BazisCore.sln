@@ -23,7 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject", "TestProject\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Элементы решения", "Элементы решения", "{2AB3C118-1783-48EE-AAE6-A39B3D64635A}"
 	ProjectSection(SolutionItems) = preProject
-		ChangeObjsCollectionsColorDiagram.mdpuml = ChangeObjsCollectionsColorDiagram.mdpuml
+		CreateBoundaryCondition_ActDiag.mdpuml = CreateBoundaryCondition_ActDiag.mdpuml
+		ChangeObjsCollectionsColor_ActDiag.mdpuml = ChangeObjsCollectionsColor_ActDiag.mdpuml
 	EndProjectSection
 EndProject
 Global
