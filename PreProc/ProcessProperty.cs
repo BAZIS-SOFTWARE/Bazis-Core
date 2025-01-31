@@ -13,11 +13,11 @@ namespace PreProc
         /// <summary>
         /// Общий тип задачи
         /// </summary>
-        public ComplexTaskType generalTaskType;
+        public ComplexTaskType GeneralTaskType;
 
         /// <summary>
         /// Тип подзадачи, в рамках generalTaskType
         /// </summary>
-        public ProcessType commonTaskType;
+        public ProcessType CommonTaskType;
     }
 }

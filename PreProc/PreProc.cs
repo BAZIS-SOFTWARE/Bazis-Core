@@ -34,7 +34,7 @@ namespace PreProc
         public void CalcCompDataV1(List<IValuableData> data, ProcessType processType, string path)
         {
             SetUpTimeSeparators(data);
-            processProp = new ProcessProperty { commonTaskType = processType, generalTaskType = ComplexTaskType.термическая_механическая };
+            processProp = new ProcessProperty { CommonTaskType = processType, GeneralTaskType = ComplexTaskType.термическая_механическая };
             _path = path;
 
             var termParamData = GetParameters<HeatData, MediaData, TermalParameters>(data);
@@ -55,7 +55,7 @@ namespace PreProc
             _path = path;
 
             IEnumerable<GeneralParameters> mainParameters, minorParameter;
-            switch (processProp.generalTaskType)
+            switch (processProp.GeneralTaskType)
             {
                 //case ComplexTaskType.химическая:
                 //    mainParameters = GetParameters<ChemicalData, MediaData, ChemicalParameters>(data);
@@ -64,12 +64,12 @@ namespace PreProc
 
                 case ComplexTaskType.термическая:
                     mainParameters = GetParameters<HeatData, MediaData, TermalParameters>(data);
-                    CreateFilesForSingleProcess(processProp.generalTaskType.ToString(), mainParameters as List<TermalParameters>);
+                    CreateFilesForSingleProcess(processProp.GeneralTaskType.ToString(), mainParameters as List<TermalParameters>);
                     break;
 
                 case ComplexTaskType.механическая:
                     mainParameters = GetParameters<LoadData, ClampData, MechanicalParameters>(data);
-                    CreateFilesForSingleProcess(processProp.generalTaskType.ToString(), mainParameters as List<MechanicalParameters>);
+                    CreateFilesForSingleProcess(processProp.GeneralTaskType.ToString(), mainParameters as List<MechanicalParameters>);
                     break;
 
                 //case ComplexTaskType.химическая_термическая:
@@ -166,7 +166,7 @@ namespace PreProc
         {
             if (parameter is TermalParameters termalParameter)
             {
-                switch (processProp.commonTaskType)
+                switch (processProp.CommonTaskType)
                 {
                     case ProcessType.Welding:
                         WeldingTermDraft(termalParameter);
@@ -185,7 +185,7 @@ namespace PreProc
 
             else if (parameter is MechanicalParameters mechParameter)
             {
-                switch (processProp.commonTaskType)
+                switch (processProp.CommonTaskType)
                 {
                     case ProcessType.Welding:
                         WeldingMechDraft(mechParameter);
@@ -396,7 +396,7 @@ namespace PreProc
         {
             // 0 - main
             // 1 - minor
-            string[] names = processProp.generalTaskType.ToString().Split('_');
+            string[] names = processProp.GeneralTaskType.ToString().Split('_');
             CreateFilesForSingleProcess(names[0], mainParameters);
 
             minorParameters[0].ThermalFile = $"{names[0]}_{1}_{minorParameters[0].TimeSettings.StartTime}_{minorParameters[0].TimeSettings.StopTime}.db";

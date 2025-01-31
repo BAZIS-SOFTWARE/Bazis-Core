@@ -13,6 +13,7 @@ using Project.Tasks.IO;
 using Project.Tasks;
 using Model.Interfaces;
 using PreProc.Interfaces;
+using System.Linq;
 
 namespace TestProject
 {
@@ -295,6 +296,20 @@ namespace TestProject
 
             var preProc = new PreProc.PreProc();
             preProc.CalcCompDataV1(resData, ProcessType.Welding, projPath);
+        }
+
+        [DataRow(ComplexTaskType.термическая, ProcessType.Welding, new[] { "air Коэф.теплоотдачи.воздух 20 0 1500 *", "ARC;15;75;15 Элемент3D_2 0 95.08694 Узел_5|Узел_6;2;Узел_7;Узел_7;0|0|0|0\"" })]
+        [TestMethod]
+        public void CalcCompDataV2_ShouldPass_OnSingleProcessTaskCreation(ComplexTaskType generalTaskType, ProcessType commonTaskType, params string[] valuableDataStrings)
+        {
+            var data = new List<IValuableData>();
+            foreach(var str in valuableDataStrings.Select(x => x.Split('/')))
+            {
+
+            }
+
+            var preProc = new PreProc.PreProc();
+            preProc.CalcCompDataV2(data, new ProcessProperty { GeneralTaskType = generalTaskType, CommonTaskType = commonTaskType }, projPath);
         }
     }
 }
