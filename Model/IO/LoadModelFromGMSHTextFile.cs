@@ -16,7 +16,7 @@ namespace Model.IO
     {
         public event Action<object, ILoaderEventArgs> LoadEvent;
 
-        private static string extractNumbersPattern = @"\d+(\.\d+(e-\d+)?)?";
+        private static string extractNumbersPattern = @"(-)?\d+(\.\d+(e(-|\+)\d+)?)?";
         private static string extractElementTypePattern = @"(?<=TYPE=)\w+";
         private static string extractGroupNamePattern = @"(?<=ELSET=)\w*";
 
