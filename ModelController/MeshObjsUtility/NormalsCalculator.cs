@@ -1,7 +1,6 @@
 ﻿using Geometry;
 using Model.GeometryObjects;
 using ModelControllerInterfaces.MeshObjsUtility;
-using Model.Interfaces.GeometryObjects;
 using Model.Interfaces.MeshObjects;
 using System.Collections.Generic;
 
@@ -39,7 +38,7 @@ namespace ModelController.MeshObjsUtility
         }
 /// <inheritdoc/>
 
-        public IEnumerable<ILine> CalcElemsNormals(IEnumerable<ISurfaceElement> elements)
+        public IEnumerable<Line> CalcElemsNormals(IEnumerable<ISurfaceElement> elements)
         {
             foreach (var element in elements)
             {

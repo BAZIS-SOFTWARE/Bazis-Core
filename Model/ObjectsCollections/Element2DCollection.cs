@@ -6,6 +6,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Model.Sort;
+using Model.MeshObjects;
+using MathNet.Numerics.Financial;
 
 namespace Model.ObjectsCollections
 {
@@ -16,38 +18,11 @@ namespace Model.ObjectsCollections
         {
             return $@"{ObjType.Элемент2D} {elements2D.Count}";
         }
-        List<IElement2D> elements2D = new List<IElement2D>();
+        Dictionary<string,ObjectsSet<IElement2D>> elements2D = new Dictionary<string, ObjectsSet<IElement2D>>();
 /// <inheritdoc/>
 
         public int Count => elements2D.Count;
-/// <inheritdoc/>
 
-        public void Add(IElement2D addObj)
-        {
-            if (elements2D.Count > 0)
-                if (addObj.Number <= elements2D.Last().Number)
-                    throw new Exception($"Последний элемент в коллекции больше добавляемого!");
-                else
-                    elements2D.Add(addObj);
-            else
-                elements2D.Add(addObj);
-        }
-        /// <inheritdoc/>
-
-        public void AddRange(IEnumerable<IElement2D> addObjs)
-        {
-            var objsList = addObjs.ToList();
-            MergeSort<IElement2D>.MergeSortFunction(objsList);
-
-            if (elements2D.Count > 0)
-                if (objsList.First().Number <= elements2D.Last().Number)
-                    throw new Exception($"Первый элемент в добавляемой коллекции больше существующего последнего!");
-                else
-                    elements2D.AddRange(addObjs);
-            else
-                elements2D.AddRange(addObjs);
-
-        }
 /// <inheritdoc/>
 
         public void Clear()
@@ -58,13 +33,19 @@ namespace Model.ObjectsCollections
 
         public void ClearNotExisted()
         {
-            elements2D = elements2D.Where(x => x.ExistState == true).ToList();
+            elements2D = elements2D.Where(x => x.Value.Count != 0).
+                ToDictionary(x => x.Key,y => y.Value);
         }
 /// <inheritdoc/>
 
         public IElement2D Find(int objNumbr)
         {
-            return ByNumberFinder.Find(elements2D,objNumbr);
+            foreach (var objsSet in elements2D)
+            {
+                if (objsSet.Value.ContainsKey(objNumbr))
+                    return objsSet.Value[objNumbr];
+            }
+            return null;
         }
 /// <inheritdoc/>
 
@@ -72,13 +53,82 @@ namespace Model.ObjectsCollections
         {
             foreach (var item in elements2D)
             {
-                yield return item;
+                foreach (var itemValue in item.Value)
+                {
+                    yield return itemValue.Value;
+                }
             }
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
             throw new NotImplementedException();
+        }
+        /// <inheritdoc/>
+
+        public void Add(string collName, IElement2D addObj)
+        {
+            if (!elements2D.ContainsKey(collName))
+                elements2D.Add(collName, new ObjectsSet<IElement2D>());
+
+            elements2D[collName].Add(addObj.Number, addObj);
+        }
+        /// <inheritdoc/>
+        public void AddRange(string collName, IEnumerable<IElement2D> addObjs)
+        {
+            if (!elements2D.ContainsKey(collName))
+                elements2D.Add(collName, new ObjectsSet<IElement2D>());
+
+            var dic = addObjs.ToDictionary(x => x.Number);
+
+            foreach (var item in dic)
+                elements2D[collName].Add(item);       
+        }
+
+        /// <inheritdoc/>
+
+        //public void Add(IElement2D addObj)
+        //{
+        //    if (elements2D.Count > 0)
+        //        if (addObj.Number <= elements2D.Last().Number)
+        //            throw new Exception($"Последний элемент в коллекции больше добавляемого!");
+        //        else
+        //            elements2D.Add(addObj);
+        //    else
+        //        elements2D.Add(addObj);
+        //}
+        /// <inheritdoc/>
+
+        //public void AddRange(IEnumerable<IElement2D> addObjs)
+        //{
+        //    var objsList = addObjs.ToList();
+        //    MergeSort<IElement2D>.MergeSortFunction(objsList);
+
+        //    if (elements2D.Count > 0)
+        //        if (objsList.First().Number <= elements2D.Last().Number)
+        //            throw new Exception($"Первый элемент в добавляемой коллекции больше существующего последнего!");
+        //        else
+        //            elements2D.AddRange(addObjs);
+        //    else
+        //        elements2D.AddRange(addObjs);
+
+        //}
+/// <inheritdoc/>
+
+        public bool ContainsNumber(int objNumbr)
+        {
+            foreach (var item in elements2D)
+            {
+                if (item.Value.ContainsKey(objNumbr))
+                    return true;
+            }
+            return false;
+        }
+/// <inheritdoc/>
+
+        public bool ContainsName(string collName)
+        {
+            return elements2D.ContainsKey(collName) ?  true : false;
         }
     }
 }

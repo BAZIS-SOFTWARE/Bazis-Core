@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using Geometry;
 using Model.Interfaces;
-using Model.Interfaces.GeometryObjects;
 
 namespace Model.GeometryObjects
 {
-    public class Line : ModelObject, ILine
+    public class Line : ModelObject, ILineObject<GeometryPoint>
     {
         private GeometryPoint[] points;
 

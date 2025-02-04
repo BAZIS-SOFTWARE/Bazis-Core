@@ -33,7 +33,7 @@ namespace Model.IO
                     if (item == ObjType.Узел)
                     {
                         sw.WriteLine("Узлы");
-                        var nodes = model.ObjectData.NodeCollection;
+                        var nodes = model.ObjectData.NodeCollection.GetObjects();
                         foreach (var nodeItem in nodes)
                         {
                             var x = nodeItem._x;

@@ -10,7 +10,7 @@ using Model.MeshObjects;
 
 namespace Model.ObjectsCollections
 {
-    public class Element1DCollection : IObjectsCollection<ILineObject<Node>>
+    public class Element1DCollection : IObjectsCollection<Beam>
     {
         /// <inheritdoc/>
         public override string ToString()
@@ -79,6 +79,47 @@ namespace Model.ObjectsCollections
         }
 
         IEnumerator IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
+
+        public void Add(string collName, Beam addObj)
+        {
+            if (!elements2D.ContainsKey(collName))
+                elements2D.Add(collName, new ObjectsSet<IElement2D>());
+
+            elements2D[collName].Add(addObj.Number, addObj);
+        }
+        /// <inheritdoc/>
+        public void AddRange(string collName, IEnumerable<Beam> addObjs)
+        {
+            if (!elements2D.ContainsKey(collName))
+                elements2D.Add(collName, new ObjectsSet<IElement2D>());
+
+            var dic = addObjs.ToDictionary(x => x.Number);
+
+            foreach (var item in dic)
+                elements2D[collName].Add(item);
+        }
+
+        Beam IObjectsCollection<Beam>.Find(int objNumbr)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool ContainsNumber(int objNumbr)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool ContainsName(string collName)
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerator<Beam> IEnumerable<Beam>.GetEnumerator()
         {
             throw new NotImplementedException();
         }

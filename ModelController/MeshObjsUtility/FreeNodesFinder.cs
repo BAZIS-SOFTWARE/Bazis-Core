@@ -17,7 +17,7 @@ namespace ModelController.MeshObjsUtility
             var finder = new InterfacedNodesFinder();
             var interfaceNodes = finder.Find(elements);
 
-            var nodesNumbersAll = objsData.NodeCollection.Select(x => x.Number);
+            var nodesNumbersAll = objsData.NodeCollection.GetObjects().Select(x => x.Number);
             var nodesNumbersElements = interfaceNodes.Keys;
             var distNodesNumbersElements = nodesNumbersElements.Distinct();
             var freeNodesNumbers = nodesNumbersAll.Except(distNodesNumbersElements);

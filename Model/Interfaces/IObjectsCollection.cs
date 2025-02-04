@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Model.ObjectsCollections;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,19 +10,45 @@ namespace Model.Interfaces
     /// <summary>
     /// IObjectsCollection
     /// </summary>
-    public interface IObjectsCollection<T> : IEnumerable<T>
+    public interface IObjectsCollection<T> : IEnumerable<KeyValuePair<string, ObjectsSet<T>>>
     {
+        /// <summary>
+        /// Remove
+        /// </summary>
+        /// <param name="state"></param>
+        void Remove(bool state);
+        /// <summary>
+        /// Remove
+        /// </summary>
+        /// <param name="name"></param>
+        bool Remove(string name);
+        /// <summary>
+        /// Count
+        /// </summary>
+        int Count { get; }
+        /// <summary>
+        /// GetMaxNumber
+        /// </summary>
+        /// <returns></returns>
+        int GetMaxNumber();
+        /// <summary>
+        /// GetMinNumber
+        /// </summary>
+        /// <returns></returns>
+        int GetMinNumber();
         /// <summary>
         /// Add
         /// </summary>
+        /// <param name="collName"></param>
         /// <param name="addObj"></param>
-        void Add(T addObj);
+        void Add(string collName,T addObj);
 
         /// <summary>
         /// AddRange
         /// </summary>
+        /// <param name="collName"></param>
         /// <param name="addObjs"></param>
-        void AddRange(IEnumerable<T> addObjs);
+        void AddRange(string collName, IEnumerable<T> addObjs);
         /// <summary>
         /// Clear
         /// </summary>
@@ -33,12 +60,33 @@ namespace Model.Interfaces
         /// <returns></returns>
         T Find(int objNumbr);
         /// <summary>
-        /// Count
+        /// SetsNames
         /// </summary>
-        int Count { get; }
+        ICollection<string> Names { get; }
+        /// <summary>
+        /// SetsObjects
+        /// </summary>
+        ICollection<ObjectsSet<T>> Objects { get; }
+        /// <summary>
+        /// GetObjects
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<T> GetObjects();
         /// <summary>
         /// ClearNotExisted
         /// </summary>
-        void ClearNotExisted();
+        void ClearEmpty();
+        /// <summary>
+        /// ContainsNumber
+        /// </summary>
+        /// <param name="objNumbr"></param>
+        /// <returns></returns>
+        bool ContainsNumber(int objNumbr);
+        /// <summary>
+        /// ContainsName
+        /// </summary>
+        /// <param name="collName"></param>
+        /// <returns></returns>
+        bool ContainsName(string collName);
     }
 }

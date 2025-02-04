@@ -373,11 +373,14 @@ namespace TestModel.GmshTests
             controller.Open(path, ref ierr);
             controller.ModelMeshGenerate(3, ref ierr);
             var results = controller.GetMeshObjects();
-            modelData.ObjectData.NodeCollection.AddRange(results.Item1);
-            modelData.ObjectData.E2DCollection.AddRange(results.Item3);
-            var delNode = modelData.ObjectData.Find(ObjType.Узел, delNodeNumber);
-            delNode.ExistState = false;
-            modelData.ObjectData.E2DCollection.ClearNotExisted();
+            modelData.ObjectData.NodeCollection.AddRange(ObjType.Узел.ToString(), results.Item1);
+            modelData.ObjectData.E2DCollection.AddRange(ObjType.Элемент2D.ToString(), results.Item3);
+            
+            //act
+            modelData.ObjectData.Remove(ObjType.Узел, delNodeNumber);   
+            modelData.ObjectData.E2DCollection.ClearEmpty();
+
+            //assert
             Assert.AreEqual(expElementsAfterDel, modelData.ObjectData.E2DCollection.Count);
         }
         [DataTestMethod]

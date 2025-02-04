@@ -68,7 +68,7 @@ namespace Model.IO
             }
             nodes.OrderBy(e => e.Number)
                 .ToList()
-                .ForEach(e => modelData.ObjectData.NodeCollection.Add(e));
+                .ForEach(e => modelData.ObjectData.NodeCollection.Add(ObjType.Узел.ToString(), e));
         }
 
 
@@ -111,10 +111,10 @@ namespace Model.IO
         {
             switch (element.ElementKind)
             {
-                case ElementKind.Стержень: modelData.ObjectData.E1DCollection.Add((Beam)element); break;
-                case ElementKind.Треугольник: modelData.ObjectData.E2DCollection.Add((Triangle)element); break;
-                case ElementKind.Квадрат: modelData.ObjectData.E2DCollection.Add((Quad)element); break;
-                case ElementKind.Тетра: modelData.ObjectData.E3DCollection.Add((Tetra)element); break;
+                case ElementKind.Стержень: modelData.ObjectData.E1DCollection.Add(ObjType.Элемент1D.ToString(),(Beam)element); break;
+                case ElementKind.Треугольник: modelData.ObjectData.E2DCollection.Add(ObjType.Элемент2D.ToString(), (Triangle)element); break;
+                case ElementKind.Квадрат: modelData.ObjectData.E2DCollection.Add(ObjType.Элемент2D.ToString(), (Quad)element); break;
+                case ElementKind.Тетра: modelData.ObjectData.E3DCollection.Add(ObjType.Элемент3D.ToString(), (Tetra)element); break;
                 default: throw new ArgumentException($"Неизвестный формат элемента: {element.ElementKind}");
             }
         }

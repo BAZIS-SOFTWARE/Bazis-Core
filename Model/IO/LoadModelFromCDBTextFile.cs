@@ -42,7 +42,7 @@ namespace Model.IO
                     {
                         LoadEvent?.Invoke(this, new LoaderEventArgs("Начало загрузки узлов"));
                         var nodes = ReadNodes(reader, tokens).ToList();
-                        model.ObjectData.NodeCollection.AddRange(nodes);
+                        model.ObjectData.NodeCollection.AddRange(ObjType.Узел.ToString(), nodes);
                     }
                     if (line.Contains(ELEMENTS_BLOCK))
                     {
@@ -117,11 +117,11 @@ namespace Model.IO
             var nodes = elementNodes.Select(i => allNodes[i]).ToArray();
             switch (elementNodes.Length)
             {
-                case 4: model.ObjectData.E3DCollection.Add(new Tetra(elementNumber, nodes));
+                case 4: model.ObjectData.E3DCollection.Add(ObjType.Элемент3D.ToString(), new Tetra(elementNumber, nodes));
                     break;
-                case 6: model.ObjectData.E3DCollection.Add(new Penta(elementNumber, nodes));
+                case 6: model.ObjectData.E3DCollection.Add(ObjType.Элемент3D.ToString(), new Penta(elementNumber, nodes));
                         break;
-                case 8: model.ObjectData.E3DCollection.Add(new Hexa(elementNumber, nodes));
+                case 8: model.ObjectData.E3DCollection.Add(ObjType.Элемент3D.ToString(), new Hexa(elementNumber, nodes));
                     break;
                 default: throw new Exception($"Unable to recognize element with {elementNodes.Length} nodes");
             }

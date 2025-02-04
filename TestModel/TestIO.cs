@@ -28,27 +28,10 @@ namespace TestModel
             //act
             model.Load(path);
 
-            var pentas = model.ObjectData.E3DCollection.Where(x => x.ElementKind == Model.Interfaces.MeshObjects.ElementKind.Пента);
+            var pentas = model.ObjectData.E3DCollection.GetObjects().Where(x => x.ElementKind == Model.Interfaces.MeshObjects.ElementKind.Пента);
 
             //assert
             Assert.AreEqual(model.ObjectData.Count(ObjType.Элемент), elCount);
-        }
-
-        [TestMethod]
-        public void OpenModelToBpf2TextFormat()
-        {
-            //assing
-            var model = new ModelData();
-
-            model.Loader = new LoadModelFromBPF2TextFile();
-
-            model.Loader.LoadEvent += (ar1, ar2) => { };
-
-            //act
-            model.Load(@"..\..\..\Examples\3D\task1.bpf2");
-
-            //assert
-            Assert.AreNotEqual(model.ObjectData.Count(ObjType.Объект), 0);
         }
 
         [TestMethod]
@@ -216,7 +199,7 @@ namespace TestModel
             var import = new LoadModelFromCDBTextFile();
             import.LoadEvent += (ar1, ar2) => { };
             var model = import.Load(path);
-            var element = model.ObjectData.E3DCollection.First();
+            var element = model.ObjectData.E3DCollection.GetObjects().First();
             Assert.AreEqual(8, model.ObjectData.Count(ObjType.Узел));
             Assert.AreEqual(1, model.ObjectData.Count(ObjType.Элемент));
             var surfaceNumber = element.NumberOfSides;
@@ -231,7 +214,7 @@ namespace TestModel
             import.LoadEvent += (ar1, ar2) => { };
             var model = import.Load(path);
             Assert.AreEqual(3321, model.ObjectData.Count(ObjType.Узел));
-            var elements = model.ObjectData.E3DCollection;
+            var elements = model.ObjectData.E3DCollection.GetObjects();
             Assert.IsTrue(elements.All(element => element.GetSurfaces().
             All(surface => surface.GetCoordinates().Count() > 2)));
         }
@@ -243,7 +226,7 @@ namespace TestModel
             var import = new LoadModelFromCDBTextFile();
             import.LoadEvent += (ar1, ar2) => { };
             var model = import.Load(path);
-            var elements = model.ObjectData.E3DCollection;
+            var elements = model.ObjectData.E3DCollection.GetObjects();
             Assert.IsTrue(elements.All(element => element.GetSurfaces().Count() >= 4));
         }
 

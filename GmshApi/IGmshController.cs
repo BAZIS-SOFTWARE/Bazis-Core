@@ -1,6 +1,5 @@
 ﻿using Model.GeometryObjects;
 using Model.Interfaces;
-using Model.Interfaces.GeometryObjects;
 using Model.Interfaces.MeshObjects;
 using Model.MeshObjects;
 using System;
@@ -237,7 +236,7 @@ namespace GmshApi
         /// Возвращает список кривых
         /// </summary>
         /// <returns>Список кривых</returns>
-        List<ILine> CreateLines();
+        List<Line> CreateLines();
         /// <summary>
         /// Возвращает список контрольных точек
         /// </summary>
