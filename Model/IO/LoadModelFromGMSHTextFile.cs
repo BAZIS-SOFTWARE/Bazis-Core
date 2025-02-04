@@ -1,5 +1,4 @@
 ﻿using Geometry;
-using Model.Events;
 using Model.MeshObjects;
 using Model.Interfaces;
 using Model.Interfaces.MeshObjects;
@@ -16,24 +15,47 @@ namespace Model.IO
     {
         public event Action<object, ILoaderEventArgs> LoadEvent;
 
+        private string[] lines;
+
         private static string extractNumbersPattern = @"(-)?\d+(\.\d+(e(-|\+)\d+)?)?";
         private static string extractElementTypePattern = @"(?<=TYPE=)\w+";
-        private static string extractGroupNamePattern = @"(?<=ELSET=)\w*";
-
+        private static string extractGroupNamePattern = @"(?<=(EL|N)SET=)\w*";
 
         public IModelData Load(string path)
         {
-            var modelData = new ModelData();
-            using (var reader = new StreamReader(path))
+            var indexToNode = new Dictionary<int, Node>();
+            var indexToElement = new Dictionary<int, Element>();
+            var groups = new List<GroupsData.Group>();
+            lines = File.ReadAllLines(path);
+            var i = 0;
+            var offset = 0;
+            while(i < lines.Length)
             {
-                LoadEvent?.Invoke(this, new LoaderEventArgs("Начало загрузки модели"));
-                while (!reader.EndOfStream)
-                {
-                    var line = reader.ReadLine();
-                    if (line.StartsWith("*NODE"))
-                        ReadNodes(reader, modelData);
-                }
+                if (lines[i].StartsWith("*NODE", StringComparison.OrdinalIgnoreCase))
+                    indexToNode = ReadNodes(i, out offset);
+                else if (lines[i].StartsWith("*ELEMENT", StringComparison.OrdinalIgnoreCase))
+                    indexToElement = ReadElements(i, out offset, indexToNode);
+                else if (Regex.Match(lines[i], @"\*(EL|N)SET", RegexOptions.IgnoreCase).Success)
+                    groups = ReadGroups(i, out offset, indexToElement, indexToNode);
+                i += (offset > 0) 
+                    ? offset 
+                    : 1;
+                offset = 0;
             }
+            var modelData = GetModelData(indexToNode.Values, indexToElement.Values, groups);
+            return modelData;
+        }
+
+        private IModelData GetModelData(IEnumerable<Node> nodes, IEnumerable<Element> elements, List<GroupsData.Group> groups)
+        {
+            var modelData = new ModelData();
+            nodes.OrderBy(n => n.Number)
+                .ToList()
+                .ForEach(n => modelData.ObjectData.NodeCollection.Add(n));
+            elements.OrderBy(e => e.Number)
+                .ToList()
+                .ForEach(e => AddElementToModelData(e, modelData));
+            groups.ForEach(g => modelData.GroupData.Add(g));
             return modelData;
         }
 
@@ -46,32 +68,23 @@ namespace Model.IO
             }
         }
 
-        private void ReadNodes(StreamReader reader, ModelData modelData)
+        private Dictionary<int, Node> ReadNodes(int start, out int offset)
         {
             var indexToNode = new Dictionary<int, Node>();
-            while (!reader.EndOfStream)
+            offset = 0;
+            for(var i = start; i < lines.Length; i++)
             {
-                var line = reader.ReadLine();
-                if (line.StartsWith("**")) // end of block
-                {
-                    while(!line.StartsWith("*ELEMENT") && !reader.EndOfStream)
-                        line = reader.ReadLine();
-                    if(line.StartsWith("*ELEMENT"))
-                        ReadElements(line, reader, indexToNode, modelData);
+                if (lines[i].StartsWith("**"))
                     break;
-                }
-                var tokens = ReadNumbersFromLine(line).ToArray();
-                if (tokens.Length == 4) // parse coordinates
+                var tokens = ReadNumbersFromLine(lines[i]).ToArray();
+                if (tokens.Length == 4)
                 {
                     var node = ParseNodeFromLine(tokens);
                     indexToNode.Add(node.Number, node);
                 }
-                else
-                    continue;
+                offset++;
             }
-            indexToNode.OrderBy(e => e.Key)
-                .ToList()
-                .ForEach(e => modelData.ObjectData.NodeCollection.Add(e.Value));
+            return indexToNode;
         }
 
         private Node ParseNodeFromLine(string[] tokens)
@@ -92,42 +105,35 @@ namespace Model.IO
                 case ElementKind.Треугольник: modelData.ObjectData.E2DCollection.Add((Triangle)element); break;
                 case ElementKind.Квадрат: modelData.ObjectData.E2DCollection.Add((Quad)element); break;
                 case ElementKind.Тетра: modelData.ObjectData.E3DCollection.Add((Tetra)element); break;
+                case ElementKind.Пента: modelData.ObjectData.E3DCollection.Add((Penta)element); break;
+                case ElementKind.Гекса: modelData.ObjectData.E3DCollection.Add((Hexa)element); break;
                 default: throw new ArgumentException($"Неизвестный формат элемента: {element.ElementKind}");
             }
         }
 
-        private void ReadElements(string startLine, StreamReader reader, Dictionary<int, Node> indexToNode, ModelData modelData)
+        private Dictionary<int, Element> ReadElements(int start, out int offset, Dictionary<int, Node> indexToNode)
         {
             var indexToElement = new Dictionary<int, Element>();
-            var elementType = Regex.Match(startLine.ToUpper(), extractElementTypePattern).Value;
-            while (!reader.EndOfStream)
+            var elementType = string.Empty;
+            offset = 0;
+            for(var i = start; i < lines.Length; i++)
             {
-                var line = reader.ReadLine();
-                if (line.StartsWith("*ELSET") || line.StartsWith("**"))
-                {
-                    while (!line.StartsWith("*ELSET") && !reader.EndOfStream)
-                        line = reader.ReadLine();
-                    if (line.StartsWith("*ELSET"))
-                        ReadGroups(line, reader, indexToElement, modelData);
+                if (lines[i].StartsWith("*ELSET", StringComparison.OrdinalIgnoreCase) || lines[i].StartsWith("**"))
                     break;
-                }
-                else if (line.StartsWith("*ELEMENT"))
-                    elementType = Regex.Match(line.ToUpper(), extractElementTypePattern).Value;
+                else if (lines[i].StartsWith("*ELEMENT", StringComparison.OrdinalIgnoreCase))
+                    elementType = Regex.Match(lines[i], extractElementTypePattern, RegexOptions.IgnoreCase).Value;
                 else
                 {
-                    var tokens = ReadNumbersFromLine(line).ToArray();
+                    var tokens = ReadNumbersFromLine(lines[i]).ToArray();
                     if (tokens.Length > 0)
                     {
                         var element = ParseElementFromLine(tokens, elementType, indexToNode);
                         indexToElement.Add(element.Number, element);
                     }
-                    else
-                        continue;
                 }
+                offset++;
             }
-            indexToElement.OrderBy(e => e.Key)
-                .ToList()
-                .ForEach(e => AddElementToModelData(e.Value, modelData));
+            return indexToElement;
         }
 
         private Element ParseElementFromLine(string[] tokens, string elementType, Dictionary<int, Node> indexToNode)
@@ -149,28 +155,54 @@ namespace Model.IO
                 case "CPS3": return new Triangle(elementIndex, elementNodes);
                 case "CPS4": return new Quad(elementIndex, elementNodes);
                 case "C3D4": return new Tetra(elementIndex, elementNodes);
+                case "C3D6": return new Penta(elementIndex, elementNodes);
+                case "C3D8": return new Hexa(elementIndex, elementNodes);
                 default: throw new ArgumentException($"Неизвестный формат элемента: {elementType}");
             }
         }
 
-        private void ReadGroups(string currentLine, StreamReader reader, Dictionary<int, Element> indexToElement, ModelData modelData)
+        private List<GroupsData.Group> ReadGroups(int start, out int offset, Dictionary<int, Element> indexToElement, 
+            Dictionary<int, Node> indexToNode)
         {
-            var groupName = Regex.Match(currentLine, extractGroupNamePattern).Value;
-            while (!reader.EndOfStream)
+            var groups = new List<GroupsData.Group>();
+            var groupName = string.Empty;
+            offset = 0;
+            var isReadNodes = false;
+            for(var i = start; i < lines.Length; i++)
             {
-                var line = reader.ReadLine();
-                if (line.StartsWith("*ELSET"))
-                    groupName = Regex.Match(line, extractGroupNamePattern).Value;
+                if (lines[i].StartsWith("**"))
+                    break;
+                else if (Regex.Match(lines[i], @"\*(EL|N)SET", RegexOptions.IgnoreCase).Success)
+                    groupName = GetGroupName(lines[i], out isReadNodes);
                 else
                 {
-                    var elements = ReadNumbersFromLine(line)
-                        .Select(int.Parse)
-                        .Select(i => indexToElement[i]);
-                    var group = new GroupsData.Group(groupName, elements.First().ObjType);
-                    group.AddRange(elements);
-                    modelData.GroupData.Add(group);
+                    var group = isReadNodes
+                        ? ReadOneGroup(lines[i], indexToNode, groupName)
+                        : ReadOneGroup(lines[i], indexToElement, groupName);
+                    groups.Add(group);
                 }
+                offset++;
             }
+            return groups;
+        }
+
+        private GroupsData.Group ReadOneGroup<T>(string line, Dictionary<int, T> mapping, string groupName)
+            where T : ModelObject
+        {
+            var elements = ReadNumbersFromLine(line)
+                        .Select(int.Parse)
+                        .Select(idx => mapping[idx]);
+            var group = new GroupsData.Group(groupName, elements.First().ObjType);
+            group.AddRange(elements);
+            return group;
+        }
+
+        private string GetGroupName(string line, out bool isReadNodes)
+        {
+            isReadNodes = false;
+            if (line.StartsWith("*NSET", StringComparison.OrdinalIgnoreCase))
+                isReadNodes = true;
+            return Regex.Match(line, extractGroupNamePattern, RegexOptions.IgnoreCase).Value;
         }
     }
 }
