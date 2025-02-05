@@ -50,21 +50,15 @@ namespace Model.IO
 
                     else if (item == ObjType.Элемент1D)
                     {
-                        sw.WriteLine(item);
                         SaveElements(model.ObjectData.E1DCollection.Objects, sw);
-                        sw.WriteLine($"#{item}");
                     }
                     else if (item == ObjType.Элемент2D)
                     {
-                        sw.WriteLine(item);
                         SaveElements(model.ObjectData.E2DCollection.Objects, sw);
-                        sw.WriteLine($"#{item}");
                     }
                     else if (item == ObjType.Элемент3D)
                     {
-                        sw.WriteLine(item);
                         SaveElements(model.ObjectData.E3DCollection.Objects, sw);
-                        sw.WriteLine($"#{item}");
                     }
                 }
                 sw.WriteLine("");
@@ -88,12 +82,16 @@ namespace Model.IO
         private void SaveElements<T>(ICollection<ObjectsSet<T>> collection, StreamWriter sw)
             where T : IElement
         {
-            foreach (var elem in collection)
+            foreach (var set in collection)
             {
-                sw.WriteLine(elem.Name);
-                foreach (var value in elem)
-                    sw.WriteLine(value.Value);
-                sw.WriteLine($"#{elem.Name}");
+                sw.WriteLine($"{set.ObjType} {set.Name}");
+                foreach (var value in set)
+                {
+                    var verts = value.Value.GetVertexes();
+                    var str = string.Join(" ", verts.Select(x => x.Number.ToString()));
+                    sw.WriteLine($"{value.Value.Number} {value.Value.Level} : {str}");
+                }
+                sw.WriteLine($"#{set.ObjType}");
             }
         }
     }

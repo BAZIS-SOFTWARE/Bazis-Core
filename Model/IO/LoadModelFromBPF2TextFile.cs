@@ -1,59 +1,58 @@
 ﻿using Geometry;
 using Model.Events;
+using Model.GroupsData;
 using Model.MeshObjects;
-using Model.Interfaces.ObjectsFinders;
 using Model.Interfaces;
+using Model.Interfaces.ObjectsFinders;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using Model.GroupsData;
-using Model.Interfaces.MeshObjects;
+using Model.ObjectsCollections;
 
 namespace Model.IO
 {
+    /// <summary>
+    /// LoadModelFromProjectTextFile
+    /// </summary>
     public class LoadModelFromBPF2TextFile : IModelLoader
     {
-        /// <inheritdoc/>
         public event Action<object, ILoaderEventArgs> LoadEvent;
-/// <inheritdoc/>
 
         public IModelData Load(string path)
         {
             using (var sr = new StreamReader(path))
             {
                 var newModel = new ModelData();
-                var nodes = new List<Node>();
-                var line = string.Empty;
 
+                string[] token = new string[1];
                 while (!sr.EndOfStream)
                 {
-
-                    if (line == "Узлы")
+                    if (token[0] == "Узлы")
                     {
                         LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка узлов..."));
                         Thread.Sleep(100);
-                        LoadNodes(sr, newModel, nodes);
+                        LoadNodes(sr, newModel);
                     }
-                    if (line == "Элемент1D" | line == "Элемент3D" | 
-                        line == "Элемент2D" | line == "Элемент1D")
+                    if (token[0] == "Элементы 3004" || token[0] == "Элементы 2003" ||
+                        token[0] == "Элементы3D" || token[0] == "Элементы2D" ||
+                        token[0] == "Элементы1D" || token[0] == "Элемент3D" || token[0] == "Элемент2D" ||
+                        token[0] == "Элемент1D")
                     {
                         LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка элементов..."));
                         Thread.Sleep(100);
-                        LoadElement(sr, line, newModel);
+                        LoadElement(sr, token, newModel);
                     }
 
-                    if (line == "Группы узлов и элементов")
+                    if (token[0] == "Группы узлов и элементов")
                     {
                         LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка групп..."));
                         Thread.Sleep(100);
                         LoadGroup(sr, newModel);
                     }
-                    line = sr.ReadLine();
+                    token = sr.ReadLine().Split(' ');
                 }
 
                 LoadEvent?.Invoke(this, new LoaderEventArgs("Модель загружена"));
@@ -64,92 +63,89 @@ namespace Model.IO
 
         }
 
-        private void LoadNodes(StreamReader sr, ModelData newMesh, List<Node> nodes)
+        private static void LoadNodes(StreamReader reader, ModelData newMesh)
         {
-            var line = string.Empty;
+            var line = reader.ReadLine();
+            var nodes = new List<Node>();
             while (line != "#Узлы")
             {
-                line = sr.ReadLine();
-                float val = 0;
-                var ar = line.Split(' ')
-        .Where(m => float.TryParse(m, NumberStyles.Float, CultureInfo.InvariantCulture, out val))
-        .Select(m => float.Parse(m, CultureInfo.InvariantCulture))
-                                    .ToList();
-
-                if (ar.Count != 0)
+                var tokens = line.Split()
+                    .Where(m => float.TryParse(m, NumberStyles.Float, CultureInfo.InvariantCulture, out var val))
+                    .Select(m => float.Parse(m, CultureInfo.InvariantCulture));
+                if (tokens.Count() != 0)
                 {
-                    var nInd = (int)ar[0];
-                    ar.RemoveAt(0);
-                    var coord = new Point3D(ar[0], ar[1], ar[2]);
-                    var node = new Node(nInd, coord);
+                    var nodeIndex = (int)tokens.First();
+                    var coordinates = tokens.Skip(1).ToArray();
+                    var position = new Point3D(coordinates[0], coordinates[1], coordinates[2]);
+                    var node = new Node(nodeIndex, position);
                     nodes.Add(node);
                 }
+                line = reader.ReadLine();
             }
-            newMesh.ObjectData.NodeCollection.AddRange(ObjType.Узел.ToString(),nodes);
-
+            newMesh.ObjectData.NodeCollection.AddRange(ObjType.Узел.ToString(), nodes.OrderBy(n => n.Number));
         }
 
-        private void LoadElement(StreamReader sr, string elType, ModelData newMesh)
+        private void LoadElement(StreamReader reader, string[] token, ModelData newMesh)
         {
-            var line = String.Empty;
-            line = sr.ReadLine();
+            var setName = token[1];
+            var elType = token[0];
 
-            //var number = newMesh.GetLastObjNumber() + 1;
+            var line = reader.ReadLine();
+
             while (line != $"#{elType}")
             {
-                int val = 0;
-                var ar = line.Split(':');
-
-        var ndNumbers = ar[1].TrimStart(' ').Split(' ').Where(m => int.TryParse(m, out val))
-        .Select(m => int.Parse(m)).ToList();
-
-                var elData = ar[0].TrimEnd(' ').Split(' ');
-
-                int elNum;
-                if(!int.TryParse(elData[0],out elNum))
-                    throw new Exception("Номер элемента задан некорректно!");
-
-                ObjType elType2;
-                if(!Enum.TryParse(elData[1], out elType2))
-                    throw new Exception("Найден элемент неизвестного типа!");
-
-                ElementKind elKind;
-                if (!Enum.TryParse(elData[2], out elKind))
-                    throw new Exception("Найден элемент неизвестного вида!");
-                
-                int elintPnts;
-                if (!int.TryParse(elData[3], out elintPnts))
-                    throw new Exception("Кол-во точек интегрирования задано некорректно!");
-
-                var nodeList = new List<Node>();
-                foreach (var nodeNumber in ndNumbers)
+                var tokens = line.Split()
+.Where(m => int.TryParse(m, out var val))
+.Select(int.Parse);
+                var elementNumber = tokens.First();
+                var level = tokens.Skip(1).First();
+                var nodes = GetNodes(newMesh, tokens.Skip(2)).ToArray();
+                if (elType == "Элементы3D" | elType == "Элемент3D" | elType == "Элементы 3004")
                 {
-                    var node = newMesh.ObjectData.NodeCollection.Find(nodeNumber);
-                    nodeList.Add(node);
+                    var element = GetElement3D(nodes, elementNumber, level);
+                    newMesh.ObjectData.E3DCollection.Add(setName, element);
                 }
-
-                switch (elKind)
+                if (elType == "Элементы2D" | elType == "Элемент2D" | elType == "Элементы 2003")
                 {
-                    case ElementKind.Стержень:
-                        newMesh.ObjectData.E1DCollection.Add(ObjType.Элемент1D.ToString(), new Beam(elNum, nodeList.ToArray(), elintPnts));
-                        break;
-                    case ElementKind.Треугольник:
-                        newMesh.ObjectData.E2DCollection.Add(ObjType.Элемент2D.ToString(),new Triangle(elNum, nodeList.ToArray(), elintPnts));
-                        break;
-                    case ElementKind.Квадрат:
-                        newMesh.ObjectData.E2DCollection.Add(ObjType.Элемент2D.ToString(),new Quad(elNum, nodeList.ToArray(), elintPnts));
-                        break;
-                    case ElementKind.Тетра:
-                        newMesh.ObjectData.E3DCollection.Add(ObjType.Элемент3D.ToString(),new Tetra(elNum, nodeList.ToArray(), elintPnts));
-                        break;
-                    case ElementKind.Гекса:
-                        newMesh.ObjectData.E3DCollection.Add(ObjType.Элемент3D.ToString(),new Hexa(elNum, nodeList.ToArray(), elintPnts));
-                        break;
-                    default:
-                        newMesh.ObjectData.E3DCollection.Add(ObjType.Элемент3D.ToString(),new Penta(elNum, nodeList.ToArray(), elintPnts));
-                        break;
+                    var element = GetElement2D(nodes, elementNumber, level);
+                    newMesh.ObjectData.E2DCollection.Add(setName, element);
                 }
-                line = sr.ReadLine();
+                if (elType == "Элементы1D" | elType == "Элемент1D" | elType == "Элементы 1002")
+                {
+                    var el2DObj = new Beam(elementNumber, nodes.ToArray())
+                    { Level = level };
+                    newMesh.ObjectData.E1DCollection.Add(setName, el2DObj);
+                }
+                line = reader.ReadLine();
+            }
+        }
+
+        private IEnumerable<Node> GetNodes(ModelData modelData, IEnumerable<int> indeces)
+        {
+            foreach (var nodeNumber in indeces)
+            {
+                yield return (Node)modelData.ObjectData.NodeCollection.Find(nodeNumber);
+            }
+        }
+
+        private Element3D GetElement3D(Node[] nodes, int elementNumber, int level)
+        {
+            switch (nodes.Length)
+            {
+                case 4: return new Tetra(elementNumber, nodes) { Level = level };
+                case 6: return new Penta(elementNumber, nodes) { Level = level };
+                case 8: return new Hexa(elementNumber, nodes) { Level = level };
+                default: throw new ArgumentException($"Undefined element {elementNumber}");
+            }
+        }
+
+        private Element2D GetElement2D(Node[] nodes, int elementNumber, int level)
+        {
+            switch (nodes.Length)
+            {
+                case 3: return new Triangle(elementNumber, nodes) { Level = level};
+                case 4: return new Quad(elementNumber, nodes) { Level = level };
+                default: throw new ArgumentException($"Undefined element {elementNumber}");
             }
         }
 
@@ -162,13 +158,13 @@ namespace Model.IO
                 if (splitLine[0] == "Группа узлов ")
                 {
                     var name = splitLine[1].Split(' ')[1];
-                    var nodeGroup = new Group(name, ObjType.Точка);
+                    var nodeGroup = new Group(name, ObjType.Узел);
                     var indexLine = splitLine[1].Remove(0, name.Length + 2);
                     var indexes = indexLine.Split(' ').Select(x => int.Parse(x)).ToList();
 
                     foreach (var index in indexes)
                     {
-                        var obj = newMesh.ObjectData.Find(ObjType.Точка, index);
+                        var obj = newMesh.ObjectData.Find(ObjType.Узел, index);
                         nodeGroup.Add(obj);
                     }
                     newMesh.GroupData.Add(nodeGroup);
@@ -180,6 +176,10 @@ namespace Model.IO
                 if (splitLine[0] == "Группа элементов 2D ")
                 {
                     LoadElemGroup(newMesh, ObjType.Элемент2D, line);
+                }
+                if (splitLine[0] == "Группа элементов 1D ")
+                {
+                    LoadElemGroup(newMesh, ObjType.Элемент1D, line);
                 }
                 line = sr.ReadLine();
             }
@@ -193,13 +193,13 @@ namespace Model.IO
             var indexLine = splitLine[1].Remove(0, name.Length + 2);
             if (indexLine != "")
             {
-                var elements = newMesh.ObjectData.GetAllElements().ToList();
+                var elements = newMesh.ObjectData.GetObjects(objType).ToList();
                 var indexes = indexLine.Split(' ').Select(x => int.Parse(x)).ToList();
                 indexes.Sort();
 
                 foreach (var index in indexes)
                 {
-                    var obj = ByNumberFinder.Find(elements,index);
+                    var obj = ByNumberFinder.Find(elements, index);
                     newGroup.Add(obj);
                 }
 

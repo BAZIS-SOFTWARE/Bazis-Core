@@ -64,9 +64,63 @@ namespace TestModel
 
             //act
             model.Load(@"..\..\..\Examples\3D\box2.inp");
-            model.Save(@"..\..\..\Examples\3D\task1.bpf2");
+            model.Save(@"..\..\..\Examples\BPF2TXT\box2_test.bpf2");
 
             //assert
+        }
+
+        [DataTestMethod]
+        [DataRow(@"..\..\..\Examples\BPF2TXT\cub_unsorted.bpf2", 2, ObjType.Элемент3D,DisplayName = "Sets Элемент3D = 2")]
+        [DataRow(@"..\..\..\Examples\BPF2TXT\cub_unsorted.bpf2", 1, ObjType.Узел, DisplayName = "Sets Узел = 1")]
+        [DataRow(@"..\..\..\Examples\BPF2TXT\cub_unsorted_oneSet.bpf2", 1, ObjType.Элемент3D, DisplayName = "Sets Элемент3D = 1")]
+        public void LoadModelFromBpf2TextFormat(string path, int sets, ObjType objType)
+        {
+            //assing
+            var model = new ModelData();
+
+            model.Loader = new LoadModelFromBPF2TextFile();
+            model.Saver = new SaveModelToBPF2TextFile();
+
+            model.Loader.LoadEvent += (ar1, ar2) => { };
+            model.Saver.SaveEvent += (ar1, ar2) => { };
+
+            //act
+            model.Load(path);
+
+            //assert
+            switch (objType)
+            {
+                case ObjType.Объект:
+                    break;
+                case ObjType.Точка:
+                    break;
+                case ObjType.Линия:
+                    break;
+                case ObjType.Поверхность:
+                    break;
+                case ObjType.Фигура:
+                    break;
+                case ObjType.Фигура2D:
+                    break;
+                case ObjType.Фигура3D:
+                    break;
+                case ObjType.Узел:
+                    Assert.AreEqual(model.ObjectData.NodeCollection.Count(), sets);
+                    break;
+                case ObjType.Элемент:
+                    break;
+                case ObjType.Элемент1D:
+                    Assert.AreEqual(model.ObjectData.E1DCollection.Count(), sets);
+                    break;
+                case ObjType.Элемент2D:
+                    Assert.AreEqual(model.ObjectData.E2DCollection.Count(), sets);
+                    break;
+                case ObjType.Элемент3D:
+                    Assert.AreEqual(model.ObjectData.E3DCollection.Count(), sets);
+                    break;
+                default:
+                    break;
+            }
         }
 
 

@@ -42,7 +42,7 @@ namespace Model.ObjectsCollections
         public void Add(string collName, T addObj)
         {
             if (!objects.ContainsKey(collName))
-                objects.Add(collName, new ObjectsSet<T>(collName));
+                objects.Add(collName, new ObjectsSet<T>(collName, addObj.ObjType));
 
             objects[collName].Add(addObj.Number, addObj);
         }
@@ -50,7 +50,7 @@ namespace Model.ObjectsCollections
         public void AddRange(string collName, IEnumerable<T> addObjs)
         {
             if (!objects.ContainsKey(collName))
-                objects.Add(collName, new ObjectsSet<T>(collName));
+                objects.Add(collName, new ObjectsSet<T>(collName, addObjs.First().ObjType));
 
             var dic = addObjs.ToDictionary(x => x.Number);
 

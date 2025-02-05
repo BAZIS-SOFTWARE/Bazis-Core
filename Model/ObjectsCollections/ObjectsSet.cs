@@ -19,9 +19,10 @@ namespace Model.ObjectsCollections
         /// ObjectsSet
         /// </summary>
         /// <param name="name"></param>
-        public ObjectsSet(string name)
+        public ObjectsSet(string name, ObjType objType)
         {
             Name = name;
+            ObjType = objType;
         }
 
         Dictionary<int,T> objectsSet = new Dictionary<int, T>();
@@ -37,7 +38,10 @@ namespace Model.ObjectsCollections
 /// <inheritdoc/>
 
         public bool IsReadOnly => false;
-/// <inheritdoc/>
+
+        public ObjType ObjType { get; }
+
+        /// <inheritdoc/>
 
 
         public override string ToString()
