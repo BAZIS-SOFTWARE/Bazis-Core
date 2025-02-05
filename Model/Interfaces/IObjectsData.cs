@@ -1,7 +1,9 @@
 ﻿using Geometry;
 using Model.GeometryObjects;
 using Model.Interfaces.MeshObjects;
+using Model.Interfaces.ObjectsCollections;
 using Model.MeshObjects;
+using Model.ObjectsCollections;
 using System.Collections.Generic;
 using System.Numerics;
 

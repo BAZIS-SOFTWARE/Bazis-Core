@@ -9,6 +9,7 @@ using Model.MeshObjects;
 using Model.GeometryObjects;
 using Geometry;
 using System.Reflection;
+using Model.Interfaces.ObjectsCollections;
 
 namespace Model
 {
@@ -45,28 +46,28 @@ namespace Model
 
         }
 
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public IObjectsCollection<Node> NodeCollection { get; }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public IObjectsCollection<IElement3D> E3DCollection { get; }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public IObjectsCollection<IElement2D> E2DCollection { get; }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public IObjectsCollection<Beam> E1DCollection { get; }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public IObjectsCollection<GeometryPoint> PointCollection { get; }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public IObjectsCollection<Line> LineCollection { get; }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public IObjectsCollection<SurfaceFigure> Fig2DCollection { get; }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public IObjectsCollection<VolumeFigure> Fig3DCollection { get; }
 
@@ -124,7 +125,7 @@ namespace Model
         {
             IModelObject modelObject;
             modelObject = PointCollection.Find(objNumbr);
-            if(modelObject != null)
+            if (modelObject != null)
                 yield return modelObject;
             modelObject = LineCollection.Find(objNumbr);
             if (modelObject != null)
@@ -149,7 +150,7 @@ namespace Model
                 yield return modelObject;
             modelObject = LineCollection.Find(objNumbr);
             if (modelObject != null)
-                yield return modelObject;     
+                yield return modelObject;
         }
 
 
@@ -171,7 +172,7 @@ namespace Model
 
         int NumberOfElements
         {
-            get 
+            get
             {
                 var count = 0;
                 count += E1DCollection.Count;
@@ -221,7 +222,7 @@ namespace Model
             E2DCollection.ClearEmpty();
             E3DCollection.ClearEmpty();
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public bool Contains(ObjType objType)
         {
@@ -287,7 +288,7 @@ namespace Model
             Fig2DCollection.Clear();
             Fig3DCollection.Clear();
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void Clear(ObjType objType)
         {
@@ -355,7 +356,8 @@ namespace Model
                     break;
             }
         }
-/// <inheritdoc/>
+
+        /// <inheritdoc/>
 
         public IEnumerable<IModelObject> GetObjects(ObjType objType)
         {

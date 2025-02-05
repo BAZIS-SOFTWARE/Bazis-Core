@@ -7,6 +7,7 @@ using System.Collections;
 using System.Linq;
 using MathNet.Numerics;
 using System.Xml.Linq;
+using Model.Interfaces.ObjectsCollections;
 
 namespace Model.ObjectsCollections
 {
@@ -16,6 +17,12 @@ namespace Model.ObjectsCollections
     /// <typeparam name="T"></typeparam>
     public class ObjectsCollection<T> : IObjectsCollection<T> where T : IModelObject
     {
+
+        public ObjectsSet<T> this[string key]
+        {
+            get { return objects[key]; }
+        }
+
 /// <inheritdoc/>
 
         public ICollection<string> Names => objects.Keys;

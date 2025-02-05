@@ -5,13 +5,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Model.Interfaces
+namespace Model.Interfaces.ObjectsCollections
 {
     /// <summary>
     /// IObjectsCollection
     /// </summary>
     public interface IObjectsCollection<T> : IEnumerable<KeyValuePair<string, ObjectsSet<T>>>
+         where T : IModelObject
     {
+        /// <summary>
+        /// this
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        ObjectsSet<T> this[string key] { get; }
         /// <summary>
         /// Remove
         /// </summary>
@@ -41,7 +48,7 @@ namespace Model.Interfaces
         /// </summary>
         /// <param name="collName"></param>
         /// <param name="addObj"></param>
-        void Add(string collName,T addObj);
+        void Add(string collName, T addObj);
 
         /// <summary>
         /// AddRange

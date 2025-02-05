@@ -29,7 +29,6 @@
   <ItemGroup>
     <Compile Remove="Interfaces\MeshObjects\IElementSurface.cs" />
     <Compile Remove="Interfaces\MeshObjects\INode.cs" />
-    <Compile Remove="IO\LoadModelFromBPF2TextFile.cs" />
     <Compile Remove="ObjectsCollections\Element1DCollection.cs" />
     <Compile Remove="ObjectsCollections\Element2DCollection.cs" />
     <Compile Remove="ObjectsCollections\Element3DCollection.cs" />

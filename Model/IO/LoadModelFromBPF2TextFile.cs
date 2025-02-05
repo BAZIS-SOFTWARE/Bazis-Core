@@ -85,7 +85,7 @@ namespace Model.IO
                     nodes.Add(node);
                 }
             }
-            newMesh.ObjectData.NodeCollection.AddRange(nodes);
+            newMesh.ObjectData.NodeCollection.AddRange(ObjType.Узел.ToString(),nodes);
 
         }
 
@@ -131,22 +131,22 @@ namespace Model.IO
                 switch (elKind)
                 {
                     case ElementKind.Стержень:
-                        newMesh.ObjectData.E1DCollection.Add(new Beam(elNum, nodeList.ToArray(), elintPnts));
+                        newMesh.ObjectData.E1DCollection.Add(ObjType.Элемент1D.ToString(), new Beam(elNum, nodeList.ToArray(), elintPnts));
                         break;
                     case ElementKind.Треугольник:
-                        newMesh.ObjectData.E2DCollection.Add(new Triangle(elNum, nodeList.ToArray(), elintPnts));
+                        newMesh.ObjectData.E2DCollection.Add(ObjType.Элемент2D.ToString(),new Triangle(elNum, nodeList.ToArray(), elintPnts));
                         break;
                     case ElementKind.Квадрат:
-                        newMesh.ObjectData.E2DCollection.Add(new Quad(elNum, nodeList.ToArray(), elintPnts));
+                        newMesh.ObjectData.E2DCollection.Add(ObjType.Элемент2D.ToString(),new Quad(elNum, nodeList.ToArray(), elintPnts));
                         break;
                     case ElementKind.Тетра:
-                        newMesh.ObjectData.E3DCollection.Add(new Tetra(elNum, nodeList.ToArray(), elintPnts));
+                        newMesh.ObjectData.E3DCollection.Add(ObjType.Элемент3D.ToString(),new Tetra(elNum, nodeList.ToArray(), elintPnts));
                         break;
                     case ElementKind.Гекса:
-                        newMesh.ObjectData.E3DCollection.Add(new Hexa(elNum, nodeList.ToArray(), elintPnts));
+                        newMesh.ObjectData.E3DCollection.Add(ObjType.Элемент3D.ToString(),new Hexa(elNum, nodeList.ToArray(), elintPnts));
                         break;
                     default:
-                        newMesh.ObjectData.E3DCollection.Add(new Penta(elNum, nodeList.ToArray(), elintPnts));
+                        newMesh.ObjectData.E3DCollection.Add(ObjType.Элемент3D.ToString(),new Penta(elNum, nodeList.ToArray(), elintPnts));
                         break;
                 }
                 line = sr.ReadLine();

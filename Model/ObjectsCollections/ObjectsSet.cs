@@ -1,4 +1,6 @@
-﻿using Model.Interfaces.MeshObjects;
+﻿using Model.Interfaces;
+using Model.Interfaces.MeshObjects;
+using Model.Interfaces.ObjectsCollections;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,7 +9,7 @@ using System.Text;
 
 namespace Model.ObjectsCollections
 {
-    public class ObjectsSet<T>: IDictionary<int,T>
+    public class ObjectsSet<T>: IObjectsSet<T> where T : IModelObject
     {
         /// <summary>
         /// Имя набора

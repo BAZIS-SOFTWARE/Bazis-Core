@@ -11,6 +11,7 @@ using System.Numerics;
 using Model.GroupsData;
 using Model.MeshObjects;
 using Model.ObjectsCollections;
+using Model.Interfaces.ObjectsCollections;
 
 namespace Model.IO
 {
