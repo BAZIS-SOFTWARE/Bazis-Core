@@ -305,10 +305,10 @@ namespace TestModel
             var import = new LoadModelFromSalomeFile();
             import.LoadEvent += (ar1, ar2) => { };
             var model = import.Load(filePath);
-            Assert.AreEqual(nodes, model.ObjectData.NodeCollection.Distinct().Count());
-            Assert.AreEqual(lineElms, model.ObjectData.E1DCollection.Distinct().Count());
-            Assert.AreEqual(surfElms, model.ObjectData.E2DCollection.Distinct().Count());
-            Assert.AreEqual(volElems, model.ObjectData.E3DCollection.Distinct().Count());
+            Assert.AreEqual(nodes, model.ObjectData.NodeCollection.Count);
+            Assert.AreEqual(lineElms, model.ObjectData.E1DCollection.Count);
+            Assert.AreEqual(surfElms, model.ObjectData.E2DCollection.Count);
+            Assert.AreEqual(volElems, model.ObjectData.E3DCollection.Count);
         }
     }
 }
