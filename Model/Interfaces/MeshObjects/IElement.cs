@@ -41,6 +41,12 @@ namespace Model.Interfaces.MeshObjects
     public interface IElement : IVertexObject<Node>, IIntegralObject
     {
         /// <summary>
+        /// Уровень точности (расчетов) интегрирования внутри элемента.
+        /// 1 - одна точка интегрирования. Этот уровень лучше использовать для расчетов граничных условиий.
+        /// 2 - две или более. Зависит от формы элемента. Этот уровень лучше использовать для расчетов среды.
+        /// </summary>
+        int Level { get; set; }
+        /// <summary>
         /// Calc jacobian for some intPoint
         /// </summary>
         /// <param name="integralPoint"></param>

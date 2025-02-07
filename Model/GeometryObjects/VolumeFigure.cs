@@ -1,23 +1,18 @@
 ﻿using Geometry;
 using Model.Interfaces;
-using Model.Interfaces.GeometryObjects;
-using Model.Interfaces.MeshObjects;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Model.GeometryObjects
 {
     /// <summary>
     /// VolumeFigure
     /// </summary>
-    public class VolumeFigure : ModelObject, IVolumeFigure
+    public class VolumeFigure : ModelObject, ISurfaceObject<GeometrySurface, GeometryPoint>, IVolume
     {
-        GeometrySurface[] surfaces;
+        protected GeometrySurface[] surfaces;
+        SurfaceFigure[] surfaceFigure;
 
         GeometryPoint[] points
         {

@@ -1,6 +1,5 @@
 ﻿using Geometry;
 using Model.GeometryObjects;
-using Model.Interfaces.GeometryObjects;
 using ModelControllerInterfaces;
 using Model.Interfaces.MeshObjects;
 using System;
@@ -18,7 +17,7 @@ namespace ModelController.MeshObjsUtility
     public class CrossSection : ICrossSectionMaker
     {
         /// <inheritdoc/>
-        public ISurfaceFigure GetSectionSurfaces(IEnumerable<IElement3D> elements, Plane plane)
+        public SurfaceFigure GetSectionSurfaces(IEnumerable<IElement3D> elements, Plane plane)
         {
             var result = new List<GeometrySurface>();
             foreach (var element in elements)

@@ -61,6 +61,8 @@ namespace Model.MeshObjects
 /// <inheritdoc/>
 
         public abstract ElementKind ElementKind { get; }
+        /// <inheritdoc/>
+        public int Level { get; set; } = 1;
 
 
         /// <inheritdoc/>
@@ -89,7 +91,7 @@ namespace Model.MeshObjects
 
             var str = string.Join(" ", strArr);
 
-            return $"{base.ToString()} {ElementKind} {intPoints.Count} : {str}";
+            return $"{base.ToString()} {ElementKind} {Level} : {str}";
         }
 /// <inheritdoc/>
 

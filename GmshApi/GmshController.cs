@@ -8,7 +8,6 @@ using System.IO;
 using Model.MeshObjects;
 using Model.GeometryObjects;
 using Model.Interfaces.MeshObjects;
-using Model.Interfaces.GeometryObjects;
 using Model.Interfaces.ObjectsFinders;
 using Geometry.Exteisions;
 
@@ -1792,9 +1791,9 @@ namespace GmshApi.GmshController
         }
         /// <inheritdoc/>
 
-        public List<ILine> CreateLines()
+        public List<Line> CreateLines()
         {
-            var lines = new List<ILine>();
+            var lines = new List<Line>();
             double[] minBounds;
             double[] maxBounds;
             int[] tags;

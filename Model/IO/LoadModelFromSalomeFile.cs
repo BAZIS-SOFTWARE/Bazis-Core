@@ -30,7 +30,7 @@ namespace Model.IO
                     var nodesNumber = int.Parse(tokens[0]);
                     var elementsNumber = int.Parse(tokens[1]);
                     var nodes = GetNodes(reader, nodesNumber).ToList();
-                    modelData.ObjectData.NodeCollection.AddRange(nodes);
+                    modelData.ObjectData.NodeCollection.AddRange(ObjType.Узел.ToString(), nodes);
 
                     GetElements(reader, elementsNumber,
                         nodes.ToDictionary(x => x.Number, x => x)); 
@@ -74,19 +74,19 @@ namespace Model.IO
             switch (elementType)
             {
                 case "102": 
-                    modelData.ObjectData.E1DCollection.Add(new Beam(elementIndex, nodes.ToArray()));
+                    modelData.ObjectData.E1DCollection.Add(ObjType.Элемент1D.ToString(), new Beam(elementIndex, nodes.ToArray()));
                     break;
                 case "203": 
-                    modelData.ObjectData.E2DCollection.Add(new Triangle(elementIndex, nodes.ToArray()));
+                    modelData.ObjectData.E2DCollection.Add(ObjType.Элемент2D.ToString(), new Triangle(elementIndex, nodes.ToArray()));
                     break;
                 case "204": 
-                    modelData.ObjectData.E2DCollection.Add(new Quad(elementIndex, nodes.ToArray()));
+                    modelData.ObjectData.E2DCollection.Add(ObjType.Элемент2D.ToString(), new Quad(elementIndex, nodes.ToArray()));
                     break;
                 case "304": 
-                    modelData.ObjectData.E3DCollection.Add(new Tetra(elementIndex, nodes.ToArray()));
+                    modelData.ObjectData.E3DCollection.Add(ObjType.Элемент3D.ToString(), new Tetra(elementIndex, nodes.ToArray()));
                     break;
                 case "308": 
-                    modelData.ObjectData.E3DCollection.Add(new Hexa(elementIndex, nodes.ToArray()));
+                    modelData.ObjectData.E3DCollection.Add(ObjType.Элемент3D.ToString(), new Hexa(elementIndex, nodes.ToArray()));
                     break;
                 default: throw new ArgumentException($"Unable to recognize element {elementType}");
             }

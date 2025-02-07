@@ -1,8 +1,9 @@
 ﻿using Geometry;
 using Model.GeometryObjects;
-using Model.Interfaces.GeometryObjects;
 using Model.Interfaces.MeshObjects;
+using Model.Interfaces.ObjectsCollections;
 using Model.MeshObjects;
+using Model.ObjectsCollections;
 using System.Collections.Generic;
 using System.Numerics;
 
@@ -14,6 +15,12 @@ namespace Model.Interfaces
     public interface IObjectsData
     {
         /// <summary>
+        /// Remove
+        /// </summary>
+        /// <param name="objType"></param>
+        /// <param name="objNumber"></param>
+        void Remove(ObjType objType, int objNumber);
+        /// <summary>
         /// E3DCollection
         /// </summary>
         IObjectsCollection<IElement3D> E3DCollection { get; }
@@ -24,7 +31,7 @@ namespace Model.Interfaces
         /// <summary>
         /// E1DCollection
         /// </summary>
-        IObjectsCollection<ILineObject<Node>> E1DCollection { get; }
+        IObjectsCollection<Beam> E1DCollection { get; }
         /// <summary>
         /// NodeCollection
         /// </summary>
@@ -36,15 +43,15 @@ namespace Model.Interfaces
         /// <summary>
         /// LineCollection
         /// </summary>
-        IObjectsCollection<ILineObject<GeometryPoint>> LineCollection { get; }
+        IObjectsCollection<Line> LineCollection { get; }
         /// <summary>
         /// Fig2DCollection
         /// </summary>
-        IObjectsCollection<ISurfaceFigure> Fig2DCollection { get; }
+        IObjectsCollection<SurfaceFigure> Fig2DCollection { get; }
         /// <summary>
         /// Fig3DCollection
         /// </summary>
-        IObjectsCollection<IVolumeFigure> Fig3DCollection { get; }
+        IObjectsCollection<VolumeFigure> Fig3DCollection { get; }
         /// <summary>
         /// Count
         /// </summary>
@@ -84,7 +91,7 @@ namespace Model.Interfaces
         /// <summary>
         /// ClearNotExisted
         /// </summary>
-        void ClearNotExisted();
+        void ClearEmpty();
         /// <summary>
         /// Find
         /// </summary>
@@ -121,6 +128,6 @@ namespace Model.Interfaces
         /// GetLastNumber
         /// </summary>
         /// <returns></returns>
-        int GetLastNumber(ObjType objType);
+        int GetMaxNumber(ObjType objType);
     }
 }

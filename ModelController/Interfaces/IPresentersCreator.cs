@@ -1,8 +1,5 @@
 ﻿using Model.Interfaces;
-using Model.Interfaces.GeometryObjects;
-using Model.Interfaces.MeshObjects;
 using System.Collections.Generic;
-using System.Drawing;
 
 namespace ModelControllerInterfaces
 {

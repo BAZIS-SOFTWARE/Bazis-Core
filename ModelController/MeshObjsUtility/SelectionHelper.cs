@@ -21,9 +21,9 @@ namespace ModelController.MeshObjsUtility
         public List<int> SelectNodeInDirection(IObjectsData objectsData, float angleInGradus, int numbFirst, int numbSecond, Color color)
         {
             var elements = objectsData.GetAllElements().OrderBy(x => x.Number).ToList();
-            var nodes = objectsData.NodeCollection.ToArray();
-            var nodeOne = ByNumberFinder.Find(nodes,numbFirst);
-            var nodeTwo = ByNumberFinder.Find(nodes,numbSecond);
+            var nodes = objectsData.NodeCollection;
+            var nodeOne = nodes.Find(numbFirst);
+            var nodeTwo = nodes.Find(numbSecond);
             var previousDirection = nodeTwo.Position.Sub(nodeOne.Position);
             var result = new HashSet<int> { numbFirst, numbSecond };
             var currentNode = nodeTwo;
@@ -60,8 +60,8 @@ namespace ModelController.MeshObjsUtility
         public void SelectNodeInPlane(IObjectsData objectsData, Plane plane, Color color)
                     
         {
-            var nodes = objectsData.NodeCollection.ToArray();
-            foreach (var node in nodes)
+            var nodes = objectsData.NodeCollection;
+            foreach (var node in nodes.GetObjects())
             {
                 var dist = plane.PointPosition(node.Position);
                 if (Math.Abs(dist) < 1e-2)
@@ -74,20 +74,20 @@ namespace ModelController.MeshObjsUtility
         public List<int> SelectE2DInPlane(IObjectsData objectsData, float angleInGradus, int startNumber, Color color)         
         {
             var maxAngleRadians = ConvertGradusToRadian(angleInGradus);
-            var elements = objectsData.E2DCollection.ToArray();
-            var elementsAdjacency = GetAdjacentElements<IElement2D>(elements);
+            var elements = objectsData.E2DCollection;
+            var elementsAdjacency = GetAdjacentElements<IElement2D>(elements.GetObjects());
             var queue = new Queue<int>();
             queue.Enqueue(startNumber);
             var used = new HashSet<int>();
             while(queue.Count > 0)
             {
                 var currentNumber = queue.Dequeue();
-                var currentElement = ByNumberFinder.Find(elements,currentNumber);
+                var currentElement = elements.Find(currentNumber);
                 foreach (var neighbourNumber in elementsAdjacency[currentNumber])
                 {
                     if(!used.Contains(neighbourNumber))
                     {
-                        var neighbourElement = ByNumberFinder.Find(elements, neighbourNumber);
+                        var neighbourElement = elements.Find(neighbourNumber);
                         var cos = Math.Abs(Vector.GetCosAngleVectors(currentElement.GetSurfacesNormals().First(), neighbourElement.GetSurfacesNormals().First()));
                         var angleRadian = Math.Acos(Math.Abs(cos));
                         if (angleRadian <= maxAngleRadians)

@@ -63,8 +63,8 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow(@"..\..\..\Examples\STL\ACII.stl", ObjType.Узел)]
-        [DataRow(@"..\..\..\Examples\STL\ACII.stl", ObjType.Элемент2D)]
+        [DataRow(@"..\..\..\Examples\STL\ACII.stl", ObjType.Узел,0)]
+        [DataRow(@"..\..\..\Examples\STL\ACII.stl", ObjType.Элемент2D,4)]
         public void RemoveAllData(string stlPath, ObjType objType, int nNumb)
         {
             var ierr = 0;
@@ -78,11 +78,11 @@ namespace TestModel.GmshTests
             var elements = controller.GetMeshEntities(2, -1, nodes);
             //Assert.AreEqual(true, status);
             Assert.AreEqual(2, elements.Count);
-            modelData.ObjectData.NodeCollection.AddRange(nodes);
+            modelData.ObjectData.NodeCollection.AddRange(ObjType.Узел.ToString(), nodes);
 
             modelData.ObjectData.Clear(objType);
             //assert
-            Assert.AreEqual(modelData.ObjectData.NodeCollection.Count(), nNumb);
+            Assert.AreEqual(modelData.ObjectData.NodeCollection.Count, nNumb);
         }
 
         [DataTestMethod]
