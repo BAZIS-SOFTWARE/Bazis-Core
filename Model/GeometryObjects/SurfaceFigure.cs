@@ -1,6 +1,5 @@
 ﻿using Geometry;
 using Model.Interfaces;
-using Model.Interfaces.GeometryObjects;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -10,7 +9,7 @@ namespace Model.GeometryObjects
     /// <summary>
     /// SurfaceFigure
     /// </summary>
-    public class SurfaceFigure : ModelObject, ISurfaceFigure
+    public class SurfaceFigure : ModelObject, ISurfaceObject<GeometrySurface, GeometryPoint>, ISquare
     {
         /// <summary>
         /// Surface

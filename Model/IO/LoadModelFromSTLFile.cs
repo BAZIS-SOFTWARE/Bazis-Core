@@ -11,6 +11,7 @@ using System.Numerics;
 using Model.GroupsData;
 using Model.MeshObjects;
 using Model.ObjectsCollections;
+using Model.Interfaces.ObjectsCollections;
 
 namespace Model.IO
 {
@@ -74,7 +75,7 @@ namespace Model.IO
                             {
                                 try
                                 {
-                                    modelData.ObjectData.E2DCollection.Add(new Triangle(counter++, nodes));
+                                    modelData.ObjectData.E2DCollection.Add(ObjType.Элемент2D.ToString(), new Triangle(counter++, nodes));
                                 }
                                 catch (Exception e)
                                 {
@@ -119,7 +120,7 @@ namespace Model.IO
                     {
                         map.Add(new Vector3(x, y, z), node);
                         points[i] = node;
-                        nodes.Add(node);
+                        nodes.Add(ObjType.Узел.ToString(), node);
                     }
 
                     str = stl.ReadLine()?.Trim();
@@ -149,7 +150,7 @@ namespace Model.IO
                     nodes[1] = ReadNode(reader);
                     nodes[2] = ReadNode(reader);
 
-                    modelData.ObjectData.NodeCollection.AddRange(nodes);
+                    modelData.ObjectData.NodeCollection.AddRange(ObjType.Узел.ToString(), nodes);
 
                     if (IsValidTriangle(nodes[0].Position, nodes[1].Position, nodes[2].Position))
                     {
@@ -160,7 +161,8 @@ namespace Model.IO
                             if (prevAtrib != -1)
                                 //if (attrib != prevAtrib && prevAtrib != -1)
                             {
-                                modelData.ObjectData.E2DCollection.Add(new Triangle(counter++, nodes));
+                                modelData.ObjectData.E2DCollection.
+                                    Add(ObjType.Элемент2D.ToString(), new Triangle(counter++, nodes));
                             }
 
                             prevAtrib = attrib;

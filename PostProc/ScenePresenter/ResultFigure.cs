@@ -1,12 +1,8 @@
 ﻿using Geometry;
-using Model.GeometryObjects;
 using Model.Interfaces;
-using Model.Interfaces.GeometryObjects;
-using Project.Interfaces.Results;
 using Results.ScenePresenter;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Xml.Linq;
 
 namespace PostProc.ScenePresenter
 {

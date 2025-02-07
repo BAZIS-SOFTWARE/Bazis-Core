@@ -1,5 +1,5 @@
 ﻿using Geometry;
-using Model.Interfaces.GeometryObjects;
+using Model.GeometryObjects;
 using Model.Interfaces.MeshObjects;
 using System.Collections.Generic;
 
@@ -10,6 +10,6 @@ namespace ModelControllerInterfaces
         /// <summary>
         /// Find a sections of the surfaces of given elements by the given plane
         /// </summary>
-        ISurfaceFigure GetSectionSurfaces(IEnumerable<IElement3D> elements, Plane plane);
+        SurfaceFigure GetSectionSurfaces(IEnumerable<IElement3D> elements, Plane plane);
     }
 }

@@ -18,7 +18,7 @@ namespace ModelController.MeshObjsCreator
         /// <param name="StartNumber"></param>
         /// <param name="elements"></param>
         /// <returns></returns>
-        public IEnumerable<IElement2D> Create(int StartNumber, IElement3D[] elements)
+        public IEnumerable<IElement2D> Create(int StartNumber,IEnumerable<IElement3D> elements)
         {
             var surfaces = FindOpenSurfaces(elements);
 
@@ -50,7 +50,7 @@ namespace ModelController.MeshObjsCreator
         /// FindOpenSurfaces
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<ElementSurface> FindOpenSurfaces(IElement3D[] elements)
+        public IEnumerable<ElementSurface> FindOpenSurfaces(IEnumerable<IElement3D> elements)
         {
             var surfDict = new Dictionary<string, List<ElementSurface>>();
 

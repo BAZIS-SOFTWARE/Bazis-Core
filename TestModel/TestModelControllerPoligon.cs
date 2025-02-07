@@ -3,6 +3,7 @@ using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using Model.GeometryObjects;
+using Model.Interfaces;
 using ModelController.ModelScenePresentator;
 
 namespace TestModel
@@ -26,11 +27,11 @@ namespace TestModel
             var fig2D = new SurfaceFigure(0, new GeometrySurface[] { surface });
 
             var model = new ModelData();
-            model.ObjectData.Fig2DCollection.Add(fig2D);
+            model.ObjectData.Fig2DCollection.Add(ObjType.Фигура2D.ToString(), fig2D);
 
             //act
             var creator = new PresentersCreator();
-            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.Fig2DCollection,false);
+            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.Fig2DCollection.GetObjects(),false);
             var inds = presentator.CreateIndexes();
             var ptrs = presentator.CreatePointers(inds.Item1);
             var coords = presentator.CreateVertexes(inds.Item2, "координаты");
@@ -75,11 +76,11 @@ namespace TestModel
 
             };
             var model = new ModelData();
-            model.ObjectData.Fig2DCollection.Add(new SurfaceFigure(0,surfaces.ToArray()));
+            model.ObjectData.Fig2DCollection.Add(ObjType.Фигура2D.ToString(), new SurfaceFigure(0,surfaces.ToArray()));
 
             //act
             var creator = new PresentersCreator();
-            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.Fig2DCollection, false);
+            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.Fig2DCollection.GetObjects(), false);
             var inds = presentator.CreateIndexes();
             var ptrs = presentator.CreatePointers(inds.Item1);
             var coords = presentator.CreateVertexes(inds.Item2, "координаты");

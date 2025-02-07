@@ -28,10 +28,10 @@ namespace TestModel
                 new Node(3, new Point3D(1, 2, 1)) };
 
             var modelData = new ModelData();
-            modelData.ObjectData.E1DCollection.Add(new Beam(4, beamNodes));
-            modelData.ObjectData.E2DCollection.Add(new Quad(1, quadNodes));
-            modelData.ObjectData.E2DCollection.Add(new Triangle(2, triangleNodes));
-            modelData.ObjectData.E3DCollection.Add(new Tetra(6, tetraNodes));
+            modelData.ObjectData.E1DCollection.Add(ObjType.Элемент1D.ToString(), new Beam(4, beamNodes));
+            modelData.ObjectData.E2DCollection.Add(ObjType.Элемент2D.ToString(),new Quad(1, quadNodes));
+            modelData.ObjectData.E2DCollection.Add(ObjType.Элемент2D.ToString(),new Triangle(2, triangleNodes));
+            modelData.ObjectData.E3DCollection.Add(ObjType.Элемент3D.ToString(),new Tetra(6, tetraNodes));
 
             var renumber = new ObjectsRenumber();
             renumber.Renumber(modelData.ObjectData, ObjType.Элемент);

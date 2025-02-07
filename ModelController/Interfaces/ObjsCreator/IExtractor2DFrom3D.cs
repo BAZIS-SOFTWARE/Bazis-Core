@@ -12,13 +12,15 @@ namespace ModelControllerInterfaces.ObjsCreator
         /// <summary>
         /// FindOpenSurfaces
         /// </summary>
+        /// <param name="elements"></param>
         /// <returns></returns>
-        IEnumerable<ElementSurface> FindOpenSurfaces(IElement3D[] elements);
+        IEnumerable<ElementSurface> FindOpenSurfaces(IEnumerable<IElement3D> elements);
         /// <summary>
         /// Create
         /// </summary>
         /// <param name="StartNumber"></param>
+        /// <param name="elements"></param>
         /// <returns></returns>
-        IEnumerable<IElement2D> Create(int StartNumber, IElement3D[] elements);
+        IEnumerable<IElement2D> Create(int StartNumber, IEnumerable<IElement3D> elements);
     }
 }

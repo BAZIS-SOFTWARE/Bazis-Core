@@ -140,7 +140,7 @@ namespace TestModel
 
             var interNodesEls3DFinder = new InterfacedNodesFinder();
 
-            var interfacedNodesEls3D = interNodesEls3DFinder.Find(new List<int>() { 3, 48, 71 }, els3D);
+            var interfacedNodesEls3D = interNodesEls3DFinder.Find(new List<int>() { 3, 48, 71 }, els3D.GetObjects());
 
             var elsForNode = new List<int>() { 1565,2048,2050, 2051 };
             //assert
@@ -169,11 +169,11 @@ namespace TestModel
 
             var merger = new MergeObjects();
 
-            var mergedNodes = merger.Merge<Node>(coincidentNodes, model.ObjectData.NodeCollection.ToList());
+            var mergedNodes = merger.Merge<Node>(coincidentNodes, model.ObjectData.NodeCollection.GetObjects().ToList());
 
             //assert
             model.ObjectData.NodeCollection.Clear();
-            model.ObjectData.NodeCollection.AddRange(mergedNodes);
+            model.ObjectData.NodeCollection.AddRange(ObjType.Узел.ToString(), mergedNodes);
             var numb = mergedNodes.First().Number;
 
             foreach (var item in mergedNodes.Skip(1))
@@ -226,7 +226,7 @@ namespace TestModel
             var openSurfNodes = new List<int>();
 
             var finder = new FindOpenSurfaceNodes();
-            var surfaceNodes = finder.Find(elements);
+            var surfaceNodes = finder.Find(elements.GetObjects());
             var distinctNumbers = surfaceNodes.Distinct();
             if (distinctNumbers.Contains(0))
                 throw new Exception("Последовательность содержит неверный узел!");
@@ -258,9 +258,9 @@ namespace TestModel
             };
             var nodes = new List<Node> { A, B, C, D, E, F, G, H };
             var objectsData = new ObjectsData();
-            objectsData.NodeCollection.AddRange(nodes);
-            objectsData.E2DCollection.AddRange(elements2D);
-            objectsData.E3DCollection.AddRange(elements3D);
+            objectsData.NodeCollection.AddRange(ObjType.Узел.ToString(), nodes);
+            objectsData.E2DCollection.AddRange(ObjType.Элемент2D.ToString(), elements2D);
+            objectsData.E3DCollection.AddRange(ObjType.Элемент3D.ToString(), elements3D);
             return objectsData;
         }
 
@@ -290,9 +290,9 @@ namespace TestModel
             };
             var nodes = new List<Node> { A, B, C, D, E, F, G, H };
             var objectsData = new ObjectsData();
-            objectsData.NodeCollection.AddRange(nodes);
-            objectsData.E2DCollection.AddRange(elements2D);
-            objectsData.E3DCollection.AddRange(elements3D);
+            objectsData.NodeCollection.AddRange(ObjType.Узел.ToString(), nodes);
+            objectsData.E2DCollection.AddRange(ObjType.Элемент2D.ToString(), elements2D);
+            objectsData.E3DCollection.AddRange(ObjType.Элемент3D.ToString(), elements3D);
             return objectsData;
         }
     }

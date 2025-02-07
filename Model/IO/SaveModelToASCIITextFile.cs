@@ -20,7 +20,7 @@ namespace Model.IO
             using(var writer = new StreamWriter(fileName))
             {          
                 WriteHeaders(writer, nodes.Count, elements.Count());
-                WriteNodes(writer, nodes);
+                WriteNodes(writer, nodes.GetObjects());
                 WriteElements(writer, elements);
                 WriteGroups(writer, groups);
             }

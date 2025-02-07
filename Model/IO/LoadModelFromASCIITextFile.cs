@@ -31,7 +31,7 @@ namespace Model.IO
                     if(line.Contains("BEGIN_NODES"))
                     {
                         foreach (var item in ReadNodes(reader, int.Parse(tokens[1])))
-                            model.ObjectData.NodeCollection.Add(item);                   
+                            model.ObjectData.NodeCollection.Add(ObjType.Узел.ToString(), item);                   
                     }
                     if(line.Contains("BEGIN_ELEMENTS"))
                     {
@@ -70,7 +70,7 @@ namespace Model.IO
             LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка элементов..."));
             var elLastNumber = 0;
             if (model.ObjectData.GetAllElements().Count() > 0)
-                elLastNumber = model.ObjectData.GetLastNumber(ObjType.Элемент);
+                elLastNumber = model.ObjectData.GetMaxNumber(ObjType.Элемент);
 
             for (var i = 0; i < count; i++)
             {
@@ -95,15 +95,15 @@ namespace Model.IO
             {
                 case 3004:
                     var tetra = new Tetra(elNumber, nodes);
-                    model.ObjectData.E3DCollection.Add(tetra);
+                    model.ObjectData.E3DCollection.Add(ObjType.Элемент3D.ToString(),tetra);
                     return tetra;
                 case 2003:
                     var triangle = new Triangle(elNumber, nodes);
-                    model.ObjectData.E2DCollection.Add(triangle);
+                    model.ObjectData.E2DCollection.Add(ObjType.Элемент2D.ToString(),triangle);
                     return triangle;
                 case 1002:
                     var beam = new Beam(elNumber, nodes);
-                    model.ObjectData.E1DCollection.Add(beam);
+                    model.ObjectData.E1DCollection.Add(ObjType.Элемент1D.ToString(),beam);
                     return beam;
                 default: throw new ArgumentException($"Unable to recognize element of type {type}");
             }

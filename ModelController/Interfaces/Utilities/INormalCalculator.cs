@@ -1,6 +1,5 @@
 ﻿using Geometry;
-using Model.Interfaces;
-using Model.Interfaces.GeometryObjects;
+using Model.GeometryObjects;
 using Model.Interfaces.MeshObjects;
 using System.Collections.Generic;
 
@@ -20,7 +19,7 @@ namespace ModelControllerInterfaces.MeshObjsUtility
         /// </summary>
         /// <param name="elements"></param>
         /// <returns></returns>
-        IEnumerable<ILine> CalcElemsNormals(IEnumerable<ISurfaceElement> elements);
+        IEnumerable<Line> CalcElemsNormals(IEnumerable<ISurfaceElement> elements);
 
     }
 }
