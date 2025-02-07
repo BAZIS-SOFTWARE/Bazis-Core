@@ -1,4 +1,6 @@
 ﻿using Geometry;
+using Model.Events;
+using Model.GroupsData;
 using Model.MeshObjects;
 using Model.Interfaces;
 using Model.Interfaces.MeshObjects;
@@ -9,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
+
 namespace Model.IO
 {
     /// <summary>
@@ -17,7 +20,6 @@ namespace Model.IO
     public class LoadModelFromINPTextFile : IModelLoader
     {
         public event Action<object, ILoaderEventArgs> LoadEvent;
-
         private string[] lines;
 
         private static string extractNumbersPattern = @"(-)?\d+(\.\d+(e(-|\+)\d+)?)?";
@@ -210,6 +212,7 @@ namespace Model.IO
             if (line.StartsWith("*NSET", StringComparison.OrdinalIgnoreCase))
                 isReadNodes = true;
             return Regex.Match(line, extractGroupNamePattern, RegexOptions.IgnoreCase).Value;
+
         }
     }
 }
