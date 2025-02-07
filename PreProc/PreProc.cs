@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using Project.Interfaces;
 using Project.Interfaces.Tasks;
 using Project.Tasks;
 using System;
@@ -37,49 +36,42 @@ namespace PreProc
             processProp = new ProcessProperty { CommonTaskType = processType, GeneralTaskType = ComplexTaskType.термическая_механическая };
             _path = path;
 
-            var termParamData = GetParameters<HeatData, MediaData, TermalParameters>(data);
-            var mechParamData = GetParameters<LoadData, ClampData, MechanicalParameters>(data);
-
-            CreateFilesForProcess(termParamData, mechParamData);
+            CreateFilesForComplexProcess(
+                GetParameters<HeatData, MediaData, TermalParameters>(data),
+                GetParameters<LoadData, ClampData, MechanicalParameters>(data));
         }
 
         /// <inheritdoc/>
         public void CalcCompDataV2(List<IValuableData> data, ProcessProperty property, string path)
         {
-            //TO DO/ Метод излагает саму идею поддержки наборов результатов.
-            // Оператор switch показывает как это реализовать. 
-            // Я думаю стоит обобщить метод CreateFilesForProcess так, чтобы он принимал разные граничные условия, 
-            // а не только тепловые и механические
             SetUpTimeSeparators(data);
             processProp = property;
             _path = path;
 
-            IEnumerable<GeneralParameters> mainParameters, minorParameter;
             switch (processProp.GeneralTaskType)
             {
                 //case ComplexTaskType.химическая:
-                //    mainParameters = GetParameters<ChemicalData, MediaData, ChemicalParameters>(data);
-                //    CreateFilesForSingleProcess(processProp.generalTaskType.ToString(), mainParameters as List<Chemical>);
+                //    CreateFilesForSingleProcess(processProp.CommonTaskType.ToString(), GetParameters<ChemicalData, MediaData, ChemicalParameters>(data));
                 //    break;
 
                 case ComplexTaskType.термическая:
-                    mainParameters = GetParameters<HeatData, MediaData, TermalParameters>(data);
-                    CreateFilesForSingleProcess(processProp.GeneralTaskType.ToString(), mainParameters as List<TermalParameters>);
+                    CreateFilesForSingleProcess(processProp.CommonTaskType.ToString(), GetParameters<HeatData, MediaData, TermalParameters>(data));
                     break;
 
                 case ComplexTaskType.механическая:
-                    mainParameters = GetParameters<LoadData, ClampData, MechanicalParameters>(data);
-                    CreateFilesForSingleProcess(processProp.GeneralTaskType.ToString(), mainParameters as List<MechanicalParameters>);
+                    CreateFilesForSingleProcess(processProp.CommonTaskType.ToString(), GetParameters<LoadData, ClampData, MechanicalParameters>(data));
                     break;
 
                 //case ComplexTaskType.химическая_термическая:
-                //    mainParameters = GetParameters<ChemicalData, MediaData, ChemicalParameters>(data);
-                //    minorParameter = GetParameters<HeatData, MediaData, TermalParameters>(data);
+                //    CreateFilesForComplexProcess(
+                //        GetParameters<ChemicalData, MediaData, ChemicalParameters>(data),
+                //        GetParameters<HeatData, MediaData, TermalParameters>(data));
                 //    break;
 
                 case ComplexTaskType.термическая_механическая:
-                    mainParameters = GetParameters<HeatData, MediaData, TermalParameters>(data);
-                    minorParameter = GetParameters<LoadData, ClampData, MechanicalParameters>(data);
+                    CreateFilesForComplexProcess(
+                        GetParameters<HeatData, MediaData, TermalParameters>(data),
+                        GetParameters<LoadData, ClampData, MechanicalParameters>(data));
                     break;
 
                 default:
@@ -168,18 +160,10 @@ namespace PreProc
             {
                 switch (processProp.CommonTaskType)
                 {
-                    case ProcessType.Welding:
-                        WeldingTermDraft(termalParameter);
-                        break;
-                    case ProcessType.Heating:
-                        HeatingTermDraft(termalParameter);
-                        break;
-                    case ProcessType.Quenching:
-                        QuenchingTermDraft(termalParameter);
-                        break;
-                    default:
-                        TemperingTermDraft(termalParameter);
-                        break;
+                    case ProcessType.Welding: WeldingTermDraft(termalParameter); break;
+                    case ProcessType.Heating: HeatingTermDraft(termalParameter); break;
+                    case ProcessType.Quenching: QuenchingTermDraft(termalParameter); break;
+                    default: TemperingTermDraft(termalParameter); break;
                 }
             }
 
@@ -187,18 +171,10 @@ namespace PreProc
             {
                 switch (processProp.CommonTaskType)
                 {
-                    case ProcessType.Welding:
-                        WeldingMechDraft(mechParameter);
-                        break;
-                    case ProcessType.Heating:
-                        HeatingMechDraft(mechParameter);
-                        break;
-                    case ProcessType.Quenching:
-                        HeatingMechDraft(mechParameter);
-                        break;
-                    default:
-                        HeatingMechDraft(mechParameter);
-                        break;
+                    case ProcessType.Welding: WeldingMechDraft(mechParameter); break;
+                    case ProcessType.Heating: HeatingMechDraft(mechParameter); break;
+                    case ProcessType.Quenching: HeatingMechDraft(mechParameter); break;
+                    default: HeatingMechDraft(mechParameter); break;
                 }
             }
         }
@@ -390,7 +366,7 @@ namespace PreProc
         /// <param name="mainParameters">Набор термических параметров</param>
         /// <param name="minorParameters">Набор механических параметров</param>
         /// <returns>Список строк для создания CompData</returns>
-        private void CreateFilesForProcess<MainParameter, MinorParameter>(List<MainParameter> mainParameters, List<MinorParameter> minorParameters)
+        private void CreateFilesForComplexProcess<MainParameter, MinorParameter>(List<MainParameter> mainParameters, List<MinorParameter> minorParameters)
             where MainParameter : GeneralParameters
             where MinorParameter : GeneralParameters, IThermalDependent
         {
