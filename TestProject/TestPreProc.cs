@@ -21,6 +21,29 @@ namespace TestProject
     public class TestPreProc
     {
         private static string projPath = Path.GetFullPath(@".\..\..\CalcCompDataTest\TsfFolder\");
+
+        /// <summary>
+        /// Создать ValuableDat, для параметризации тестов
+        /// </summary>
+        /// <param name="typeAndArgs">Массив строк, которые состоят из типа задачи и аргументов, разделенных подстрокой "/"</param>
+        /// <returns>Ленивая коллекция из IValuableData, представляющая данные по задачам</returns>
+        private static IEnumerable<IValuableData> CreateValuableData(string[] typeAndArgs)
+        {
+            foreach (var str in typeAndArgs.Select(x => x.Split('/')))
+            {
+                Func<Group, string,IValuableData > func;
+                switch (str[0].ToLower())
+                {
+                    case "media": func = (g, s) => new MediaData(g, s); break;
+                    case "heat": func = (g, s) => new HeatData(g, s); break;
+                    case "clamp": func = (g, s) => new ClampData(g, s); break;
+                    case "load": func = (g, s) => new LoadData(g, s); break;
+                    default: func = (g, s) => new MatData(g, s); break;
+                }
+                yield return func(new Group("", ObjType.Объект), str[1]);
+            }
+        }
+
         [TestInitialize]
         public void Init()
         {
@@ -115,9 +138,7 @@ namespace TestProject
             var results = preProc.SortCompDataByTimeAndType(strsIn);
 
             for (int i = 0; i < results.Count; i++)
-            {
                 Assert.AreEqual(results[i], strsOut[i]);
-            }
         }
 
         [TestMethod]
@@ -141,23 +162,17 @@ namespace TestProject
         }
 
         [TestMethod]
-        public void BaseCheck()
+        [DataRow(new string[]
         {
-            var heatInfo = "ARC;4;100;25 Load 0 49 baseLine|refLine;2;startNodes;startNodes";
-            var medInfo = "air Коэф.теплоотдачи.воздух 20 0 1500 *";
-            var matInfo = "Элементы3D_3 Сталь_20ХМ 0 1500 *";
-            var clampInfo = "Узел_8 Жесткое X * 0 1500 *";
-
-            var valuableData = new List<IValuableData>()
-            {
-                new MediaData(new Group("",ObjType.Объект),medInfo),
-                new HeatData(new Group("",ObjType.Объект),heatInfo),
-                new MatData(new Group("",ObjType.Объект),matInfo),
-                new ClampData(new Group("",ObjType.Объект),clampInfo)
-            };
-
+            "heat/ARC;4;100;25 Load 0 49 baseLine|refLine;2;startNodes;startNodes",
+            "media/air Коэф.теплоотдачи.воздух 20 0 1500 *",
+            "mat/Элементы3D_3 Сталь_20ХМ 0 1500 *",
+            "clamp/Узел_8 Жесткое X * 0 1500 *"
+        })]
+        public void BaseCheck(string[] parameters)
+        {
             var preProc = new PreProc.PreProc();
-            preProc.CalcCompDataV1(valuableData, ProcessType.Welding, projPath);
+            preProc.CalcCompDataV1(CreateValuableData(parameters).ToList(), ProcessType.Welding, projPath);
         }
 
         [TestMethod]
@@ -166,43 +181,35 @@ namespace TestProject
         public void CalcCompData_Fails_WhenHeatDataStartEarlierThenMedDataStop
             (float heatStart, float heatStop, float medStart, float medStop, ProcessType pt)
         {
-            var heatInfo = $"ARC;4;100;25 Load {heatStart} {heatStop} baseLine|refLine;2;startNodes;startNodes";
-            var medInfo = $"air Коэф.теплоотдачи.воздух 20 {medStart} {medStop} *";
-            var matInfo = "Элементы3D_3 Сталь_20ХМ 0 1500 *";
-
             var heatfileName = $"термическая термическая{1}{heatStart}_{heatStop}.tsf выполнить";
             var medfileName = $"термическая термическая{2}{medStart}_{medStop}.tsf выполнить";
 
-            var valuableData = new List<IValuableData>()
+            var valuableData = CreateValuableData(new[]
             {
-                new MediaData(new Group("",ObjType.Объект),medInfo),
-                new HeatData(new Group("",ObjType.Объект),heatInfo),
-                new MatData(new Group("",ObjType.Объект),matInfo)
-            };
+                $"media/air Коэф.теплоотдачи.воздух 20 {medStart} {medStop} *",
+                $"heat/ARC;4;100;25 Load {heatStart} {heatStop} baseLine|refLine;2;startNodes;startNodes",
+                "mat/Элементы3D_3 Сталь_20ХМ 0 1500 *"
+            }).ToList();
+            
             var preProc = new PreProc.PreProc();
             Assert.ThrowsException<Exception>(() => preProc.CalcCompDataV1(valuableData, pt, projPath));
         }
 
         [TestMethod]
-        public void CalcCompData_ReturnsTrue_WhenFileTSFSuccesfullyCreated()
+        [DataRow(new[]
         {
-            var heatInfo = "ARC;4;100;25 Load 0 50 baseLine|refLine;2;startNodes;startNodes";
-            var medInfo = $"air Коэф.теплоотдачи.воздух 20 0 1500 *";
-            var matInfo = "Элементы3D_3 Сталь_20ХМ 0 1500 *";
-            var clampInfo = "Узел_8 Жесткое X * 0 1500 *";
-
+            "heat/ARC;4;100;25 Load 0 50 baseLine|refLine;2;startNodes;startNodes",
+            "media/air Коэф.теплоотдачи.воздух 20 0 1500 *",
+            "mat/Элементы3D_3 Сталь_20ХМ 0 1500 *",
+            "clamp/Узел_8 Жесткое X * 0 1500 *"
+        })]
+        public void CalcCompData_ReturnsTrue_WhenFileTSFSuccesfullyCreated(string[] parameters)
+        {
             var heatFileName = $"термическая термическая10_50.tsf выполнить";
             var medFileName = $"термическая термическая20_1500.tsf выполнить";
 
-            var valuableData = new List<IValuableData>()
-            {
-                new MediaData(new Group("",ObjType.Объект),medInfo),
-                new HeatData(new Group("",ObjType.Объект),heatInfo),
-                new MatData(new Group("",ObjType.Объект),matInfo),
-                new ClampData(new Group("",ObjType.Объект),clampInfo)
-            };
             var preProc = new PreProc.PreProc();
-            preProc.CalcCompDataV1(valuableData, ProcessType.Welding, projPath);
+            preProc.CalcCompDataV1(CreateValuableData(parameters).ToList(), ProcessType.Welding, projPath);
 
             var projDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             var heatLocation = Path.GetFullPath(heatFileName);
@@ -213,22 +220,17 @@ namespace TestProject
         }
 
         [TestMethod]
-        public void CalcCompData_ReturnsTrue_WhenMaterialContinousWholeProcess()
+        [DataRow(new[]
         {
-            var matInfo = "Элементы3D_3 Сталь_20ХМ 0 1500 *";
-            var medInfo = "air Коэф.теплоотдачи.воздух 20 0 1500 *";
-            var heatInfo = "ARC;4;100;25 Load 0 49.998 baseLine|refLine;2;startNodes;startNodes;0|0|0|0";
-            var clampInfo = "Узел_8 Жесткое X * 0 1500 *";
-
-            var valuableData = new List<IValuableData>()
-            {
-                new MediaData(new Group("",ObjType.Объект),medInfo),
-                new HeatData(new Group("",ObjType.Объект),heatInfo),
-                new MatData(new Group("",ObjType.Объект),matInfo),
-                new ClampData(new Group("",ObjType.Объект),clampInfo)
-            };
+            "mat/Элементы3D_3 Сталь_20ХМ 0 1500 *",
+            "media/air Коэф.теплоотдачи.воздух 20 0 1500 *",
+            "heat/ARC;4;100;25 Load 0 49.998 baseLine|refLine;2;startNodes;startNodes;0|0|0|0",
+            "clamp/Узел_8 Жесткое X * 0 1500 *"
+        })]
+        public void CalcCompData_ReturnsTrue_WhenMaterialContinousWholeProcess(string[] parameters)
+        {
             var preProc = new PreProc.PreProc();
-            preProc.CalcCompDataV1(valuableData, ProcessType.Welding, projPath);
+            preProc.CalcCompDataV1(CreateValuableData(parameters).ToList(), ProcessType.Welding, projPath);
         }
 
         [TestMethod]
@@ -284,33 +286,30 @@ namespace TestProject
         }
 
         [TestMethod]
-        public void FastCheck()
+        [DataRow(new[]
         {
-            var resData = new List<IValuableData>
-            {
-                new MediaData(new Group("",ObjType.Объект),"air Коэф.теплоотдачи.воздух 20 0 1500 *"),
-                new HeatData(new Group("",ObjType.Объект),"ARC;15;75;15 Элемент3D_2 0 95.08694 Узел_5|Узел_6;2;Узел_7;Узел_7;0|0|0|0"),
-                new ClampData(new Group("",ObjType.Объект),"Узел_8 Жесткое X * 0 1500 *"),
-                new MatData(new Group("",ObjType.Объект),"mat Сталь_20ХМ 0 1500 *")
-            };
-
+            "media/air Коэф.теплоотдачи.воздух 20 0 1500 *",
+                "heat/ARC;15;75;15 Элемент3D_2 0 95.08694 Узел_5|Узел_6;2;Узел_7;Узел_7;0|0|0|0",
+                "clamp/Узел_8 Жесткое X * 0 1500 *",
+                "mat/mat Сталь_20ХМ 0 1500 *"
+        })]
+        public void FastCheck(string[] parameters)
+        {
             var preProc = new PreProc.PreProc();
-            preProc.CalcCompDataV1(resData, ProcessType.Welding, projPath);
+            preProc.CalcCompDataV1(CreateValuableData(parameters).ToList(), ProcessType.Welding, projPath);
         }
 
-        [DataRow(ComplexTaskType.термическая, ProcessType.Welding, new[] { "Med/air Коэф.теплоотдачи.воздух 20 0 1500 *", "Heat/ARC;15;75;15 Элемент3D_2 0 95.08694 Узел_5|Узел_6;2;Узел_7;Узел_7;0|0|0|0", "Mat/mat Сталь_20ХМ 0 1500 *" })]
+        [DataRow(ComplexTaskType.термическая, ProcessType.Welding, new[] 
+        { 
+            "Med/air Коэф.теплоотдачи.воздух 20 0 1500 *",
+            "Heat/ARC;15;75;15 Элемент3D_2 0 95.08694 Узел_5|Узел_6;2;Узел_7;Узел_7;0|0|0|0",
+            "Mat/mat Сталь_20ХМ 0 1500 *" 
+        })]
         [TestMethod]
-        public void CalcCompDataV2_ShouldPass_OnSingleProcessTaskCreation(ComplexTaskType generalTaskType, ProcessType commonTaskType, params string[] valuableDataStrings)
+        public void CalcCompDataV2_ShouldPass_OnSingleProcessTaskCreation(ComplexTaskType generalTaskType, ProcessType commonTaskType, string[] valuableDataStrings)
         {
-            var data = new List<IValuableData>();
-            foreach(var str in valuableDataStrings.Select(x => x.Split('/')))
-            {
-                switch(str[0])
-                    case "Med":
-            }
-
             var preProc = new PreProc.PreProc();
-            preProc.CalcCompDataV2(data, new ProcessProperty { GeneralTaskType = generalTaskType, CommonTaskType = commonTaskType }, projPath);
+            preProc.CalcCompDataV2(CreateValuableData(valuableDataStrings).ToList(), new ProcessProperty { GeneralTaskType = generalTaskType, CommonTaskType = commonTaskType }, projPath);
         }
     }
 }
