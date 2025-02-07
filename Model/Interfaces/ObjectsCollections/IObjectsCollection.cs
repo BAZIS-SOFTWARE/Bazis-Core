@@ -43,19 +43,27 @@ namespace Model.Interfaces.ObjectsCollections
         /// </summary>
         /// <returns></returns>
         int GetMinNumber();
+
         /// <summary>
-        /// Add
+        /// Add set
         /// </summary>
-        /// <param name="collName"></param>
+        /// <param name="setName"></param>
+        /// /// <param name="objType"></param>
+        void Add(string setName, ObjType objType);
+
+        /// <summary>
+        /// Add set and object
+        /// </summary>
+        /// <param name="setName"></param>
         /// <param name="addObj"></param>
-        void Add(string collName, T addObj);
+        void Add(string setName, T addObj);
 
         /// <summary>
         /// AddRange
         /// </summary>
         /// <param name="collName"></param>
         /// <param name="addObjs"></param>
-        void AddRange(string collName, IEnumerable<T> addObjs);
+        void AddRange(string setName, IEnumerable<T> addObjs);
         /// <summary>
         /// Clear
         /// </summary>
@@ -94,6 +102,6 @@ namespace Model.Interfaces.ObjectsCollections
         /// </summary>
         /// <param name="collName"></param>
         /// <returns></returns>
-        bool ContainsName(string collName);
+        bool ContainsName(string setName);
     }
 }

@@ -81,7 +81,8 @@ namespace Model.IO
                 }
                 line = reader.ReadLine();
             }
-            newMesh.ObjectData.NodeCollection.AddRange(ObjType.Узел.ToString(),nodes.OrderBy(n => n.Number));
+
+            newMesh.ObjectData.NodeCollection.AddRange(ObjType.Узел.ToString(),nodes);
         }
 
         private void LoadElement(StreamReader reader, string elementType, ModelData newMesh)
@@ -117,7 +118,7 @@ namespace Model.IO
         {
             foreach (var nodeNumber in indeces)
             {
-                yield return (Node)modelData.ObjectData.NodeCollection.Find(nodeNumber);
+                yield return modelData.ObjectData.NodeCollection.Find(nodeNumber);
             }
         }
 

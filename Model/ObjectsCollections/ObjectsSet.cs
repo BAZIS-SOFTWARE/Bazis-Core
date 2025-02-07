@@ -15,10 +15,12 @@ namespace Model.ObjectsCollections
         /// Имя набора
         /// </summary>
         public string Name { get; set; }
+
         /// <summary>
         /// ObjectsSet
         /// </summary>
         /// <param name="name"></param>
+        /// /// <param name="objType"></param>
         public ObjectsSet(string name, ObjType objType)
         {
             Name = name;

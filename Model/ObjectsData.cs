@@ -10,6 +10,8 @@ using Model.GeometryObjects;
 using Geometry;
 using System.Reflection;
 using Model.Interfaces.ObjectsCollections;
+using System.Security.Cryptography;
+using System.Drawing;
 
 namespace Model
 {
@@ -26,7 +28,10 @@ namespace Model
             E1DCollection = new ObjectsCollection<Beam>();
             E2DCollection = new ObjectsCollection<IElement2D>();
             E3DCollection = new ObjectsCollection<IElement3D>();
-            NodeCollection = new ObjectsCollection<Node>();
+            NodeCollection = new ObjectsCollection<Node>
+            {
+                { ObjType.Узел.ToString(), ObjType.Узел }
+            };
             PointCollection = new ObjectsCollection<GeometryPoint>();
             LineCollection = new ObjectsCollection<Line>();
             Fig2DCollection = new ObjectsCollection<SurfaceFigure>();
@@ -156,9 +161,12 @@ namespace Model
 
         int GetMaxElementNumber()
         {
-            var e1Numb = E1DCollection.GetMaxNumber();
-            var e2Numb = E2DCollection.GetMaxNumber();
-            var e3Numb = E3DCollection.GetMaxNumber();
+            var e1Numb = E1DCollection.Count != 0 ? E1DCollection.GetMaxNumber() : 0;
+            var e2Numb = E2DCollection.Count != 0 ? E2DCollection.GetMaxNumber() : 0;
+            var e3Numb = E3DCollection.Count != 0 ? E3DCollection.GetMaxNumber() : 0;
+
+            if (e1Numb == e2Numb && e2Numb == e3Numb && e1Numb == 0)
+                throw new Exception("Коллекции элементов пустые");
 
             var numb = e1Numb;
             if (e1Numb < e2Numb)

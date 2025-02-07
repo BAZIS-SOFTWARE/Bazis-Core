@@ -66,9 +66,7 @@ namespace Model.IO
                 var node = new Node(nodeIndex, new Point3D(coordinates[0], coordinates[1], coordinates[2]));
                 nodes.Add(node);
             }
-            nodes.OrderBy(e => e.Number)
-                .ToList()
-                .ForEach(e => modelData.ObjectData.NodeCollection.Add(ObjType.Узел.ToString(), e));
+            modelData.ObjectData.NodeCollection.AddRange(ObjType.Узел.ToString(),nodes);
         }
 
 

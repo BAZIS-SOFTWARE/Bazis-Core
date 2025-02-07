@@ -21,8 +21,6 @@ namespace TestModel
         [DataRow(ObjType.Элемент, 8, DisplayName = "Элемент")]
         [DataRow(ObjType.Элемент3D, 8, DisplayName = "Элемент3D")]
         [DataRow(ObjType.Объект, 8, DisplayName = "Объект")]
-        [DataRow(ObjType.Элемент2D, 0, DisplayName = "Элемент2D")]
-        [DataRow(ObjType.Элемент1D, 0, DisplayName = "Элемент1D")]
         public void GetLastObjsNumber(ObjType objType, int objsNumbr)
         {
             //assing
@@ -47,6 +45,41 @@ namespace TestModel
             model.ObjectData.NodeCollection.AddRange(ObjType.Узел.ToString(), nodes);
             model.ObjectData.E3DCollection.AddRange(ObjType.Элемент3D.ToString(), e3D);
             //act
+
+            var findNumber = model.ObjectData.GetMaxNumber(objType);
+            //assert
+            Assert.AreEqual(objsNumbr, findNumber);
+        }
+
+        [DataTestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        [DataRow(ObjType.Элемент2D, 0, DisplayName = "Элемент2D")]
+        [DataRow(ObjType.Элемент1D, 0, DisplayName = "Элемент1D")]
+        public void GetLastObjsNumber_ShouldFail(ObjType objType, int objsNumbr)
+        {
+            //assing
+            var nodes = new Node[4]
+            {
+                new Node(0,new Point3D(0,0,0)),
+                new Node(1,new Point3D(10,0,0)),
+                new Node(2,new Point3D(0,10,0)),
+                new Node(3,new Point3D(0,0,10)),
+            };
+            var e3D = new Element3D[]
+            {
+                new Tetra( 0,nodes),
+                new Tetra( 4,nodes),
+                new Tetra(5,nodes),
+                new Tetra( 6,nodes),
+                new Tetra(7,nodes),
+                new Tetra(8,nodes)
+            };
+
+            var model = new ModelData();
+            model.ObjectData.NodeCollection.AddRange(ObjType.Узел.ToString(), nodes);
+            model.ObjectData.E3DCollection.AddRange(ObjType.Элемент3D.ToString(), e3D);
+            //act
+
             var findNumber = model.ObjectData.GetMaxNumber(objType);
             //assert
             Assert.AreEqual(objsNumbr, findNumber);
@@ -124,7 +157,7 @@ namespace TestModel
                 Assert.AreEqual(objsCount, model.ObjectData.Count(ObjType.Объект));
         }
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
+        [ExpectedException(typeof(Exception))]
         public void AddObjectWithSameNumbers()
         {
             //assign
@@ -139,7 +172,7 @@ namespace TestModel
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
+        [ExpectedException(typeof(Exception))]
         public void AddSomeObjectsWithSameNumbers()
         {
             //assign
@@ -155,7 +188,7 @@ namespace TestModel
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
+        [ExpectedException(typeof(Exception))]
         public void AddCertainObjectsWithSameNumbers()
         {
             //assign

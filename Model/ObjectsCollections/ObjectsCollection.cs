@@ -36,26 +36,36 @@ namespace Model.ObjectsCollections
         /// <inheritdoc/> 
 
         Dictionary<string, ObjectsSet<T>> objects = new Dictionary<string, ObjectsSet<T>>();
+        /// <inheritdoc/>
+
+        public void Add(string setName, ObjType objType)
+        {
+            objects.Add(setName, new ObjectsSet<T>(setName, objType));
+        }
 
         /// <inheritdoc/>
 
-        public void Add(string collName, T addObj)
+        public void Add(string setName, T addObj)
         {
-            if (!objects.ContainsKey(collName))
-                objects.Add(collName, new ObjectsSet<T>(collName, addObj.ObjType));
-
-            objects[collName].Add(addObj.Number, addObj);
+            if (!objects.ContainsKey(setName))
+                objects.Add(setName, new ObjectsSet<T>(setName, addObj.ObjType));
+            if (!ContainsNumber(addObj.Number))
+                objects[setName].Add(addObj.Number, addObj);
+            else 
+                throw new Exception("Объект с таким номером уже добавлен в коллекцию!");
         }
         /// <inheritdoc/>
-        public void AddRange(string collName, IEnumerable<T> addObjs)
+        public void AddRange(string setName, IEnumerable<T> addObjs)
         {
-            if (!objects.ContainsKey(collName))
-                objects.Add(collName, new ObjectsSet<T>(collName, addObjs.First().ObjType));
+            if (!objects.ContainsKey(setName))
+                objects.Add(setName, new ObjectsSet<T>(setName, addObjs.First().ObjType));
 
-            var dic = addObjs.ToDictionary(x => x.Number);
-
-            foreach (var item in dic)
-                objects[collName].Add(item);       
+            foreach (var addObj in addObjs)
+            {
+                if (!ContainsNumber(addObj.Number))
+                    objects[setName].Add(addObj.Number, addObj);
+                else throw new Exception("Объект с таким номером уже добавлен в коллекцию!");
+            }    
         }
 /// <inheritdoc/>
 
@@ -82,18 +92,13 @@ namespace Model.ObjectsCollections
 
         public bool ContainsName(string collName)
         {
-            return objects.ContainsKey(collName) ? true : false;
+            return objects.ContainsKey(collName);
         }
 /// <inheritdoc/>
 
         public bool ContainsNumber(int objNumbr)
         {
-            foreach (var item in objects)
-            {
-                if (item.Value.ContainsKey(objNumbr))
-                    return true;
-            }
-            return false;
+            return objects.Any(x => x.Value.ContainsKey(objNumbr));
         }
 /// <inheritdoc/>
 
