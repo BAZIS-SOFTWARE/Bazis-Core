@@ -120,7 +120,7 @@ namespace Model.IO
                     {
                         map.Add(new Vector3(x, y, z), node);
                         points[i] = node;
-                        nodes.Add(ObjType.Узел.ToString(), node);
+                        nodes[ObjType.Узел.ToString()].Add(node.Number, node);
                     }
 
                     str = stl.ReadLine()?.Trim();
@@ -150,7 +150,9 @@ namespace Model.IO
                     nodes[1] = ReadNode(reader);
                     nodes[2] = ReadNode(reader);
 
-                    modelData.ObjectData.NodeCollection.AddRange(ObjType.Узел.ToString(), nodes);
+                    modelData.ObjectData.NodeCollection[ObjType.Узел.ToString()].Add(nodes[0].Number, nodes[0]);
+                    modelData.ObjectData.NodeCollection[ObjType.Узел.ToString()].Add(nodes[1].Number, nodes[1]);
+                    modelData.ObjectData.NodeCollection[ObjType.Узел.ToString()].Add(nodes[2].Number, nodes[2]);
 
                     if (IsValidTriangle(nodes[0].Position, nodes[1].Position, nodes[2].Position))
                     {
