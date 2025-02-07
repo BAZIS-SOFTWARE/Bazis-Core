@@ -52,9 +52,12 @@ namespace Model.IO
         private IModelData GetModelData(IEnumerable<Node> nodes, IEnumerable<Element> elements, List<GroupsData.Group> groups)
         {
             var modelData = new ModelData();
-            nodes.OrderBy(n => n.Number)
-                .ToList()
-                .ForEach(n => modelData.ObjectData.NodeCollection.Add(n));
+            foreach (var node in nodes)
+            {
+                modelData.ObjectData.NodeCollection[ObjType.Узел.ToString()].
+                    Add(node.Number, node);
+            }
+
             elements.OrderBy(e => e.Number)
                 .ToList()
                 .ForEach(e => AddElementToModelData(e, modelData));
@@ -102,14 +105,15 @@ namespace Model.IO
 
         private void AddElementToModelData(Element element, ModelData modelData)
         {
+            var name = element.ObjType.ToString();
             switch (element.ElementKind)
             {
-                case ElementKind.Стержень: modelData.ObjectData.E1DCollection.Add((Beam)element); break;
-                case ElementKind.Треугольник: modelData.ObjectData.E2DCollection.Add((Triangle)element); break;
-                case ElementKind.Квадрат: modelData.ObjectData.E2DCollection.Add((Quad)element); break;
-                case ElementKind.Тетра: modelData.ObjectData.E3DCollection.Add((Tetra)element); break;
-                case ElementKind.Пента: modelData.ObjectData.E3DCollection.Add((Penta)element); break;
-                case ElementKind.Гекса: modelData.ObjectData.E3DCollection.Add((Hexa)element); break;
+                case ElementKind.Стержень: modelData.ObjectData.E1DCollection.Add(name, (Beam)element); break;
+                case ElementKind.Треугольник: modelData.ObjectData.E2DCollection.Add(name, (Triangle)element); break;
+                case ElementKind.Квадрат: modelData.ObjectData.E2DCollection.Add(name, (Quad)element); break;
+                case ElementKind.Тетра: modelData.ObjectData.E3DCollection.Add(name, (Tetra)element); break;
+                case ElementKind.Пента: modelData.ObjectData.E3DCollection.Add(name, (Penta)element); break;
+                case ElementKind.Гекса: modelData.ObjectData.E3DCollection.Add(name, (Hexa)element); break;
                 default: throw new ArgumentException($"Неизвестный формат элемента: {element.ElementKind}");
             }
         }
