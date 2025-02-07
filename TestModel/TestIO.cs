@@ -206,7 +206,7 @@ namespace TestModel
 
         {
             var model = new ModelData();
-            model.Loader = new LoadModelFromINPTextFile();
+            model.Loader = new LoadModelFromINPTextFile_v2();
 
             model.Load(path);
 

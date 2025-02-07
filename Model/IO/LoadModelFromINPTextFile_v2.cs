@@ -68,7 +68,7 @@ namespace Model.IO
             }
             nodes.OrderBy(e => e.Number)
                 .ToList()
-                .ForEach(e => modelData.ObjectData.NodeCollection.Add(ObjType.Узел.ToString(), e));
+                .ForEach(e => modelData.ObjectData.NodeCollection[ObjType.Узел.ToString()].Add(e.Key,e.Value));
         }
 
 
