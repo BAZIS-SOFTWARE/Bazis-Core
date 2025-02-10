@@ -1,6 +1,7 @@
 ﻿using Model.MeshObjects;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Text;
 
 namespace Model.Interfaces.ObjectsCollections
@@ -9,7 +10,7 @@ namespace Model.Interfaces.ObjectsCollections
     /// IObjectsSet
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IObjectsSet<T> : IDictionary<int, T> where T : IModelObject
+    public interface IObjectsSet<T> : IObjectsView,IDictionary<int, T> where T : IModelObject
     {
         /// <summary>
         /// Name

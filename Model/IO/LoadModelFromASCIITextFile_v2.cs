@@ -10,6 +10,10 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Model.Interfaces.MeshObjects;
 using System.Xml.Linq;
+using System.Drawing;
+using Model.ObjectsCollections;
+using Model.Interfaces.ObjectsCollections;
+using System.Reflection;
 
 namespace Model.IO
 {
@@ -113,6 +117,8 @@ namespace Model.IO
         {
             LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка группы объектов "));
             string[] tokens;
+            var rnd = new Random();
+
             for (var i = 0; i < count; i++)
             {
                 var line = reader.ReadLine();
@@ -133,33 +139,79 @@ namespace Model.IO
                 if (colType == "COLLECTOR_ID")
                     CreateGroup(model, name, numbers, objsType);
                 else
-                    CreateSet(model, name, numbers, objsType);
+                {
+                    var color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
+                    CreateSet(model, name, objsType,color, numbers);
+                    //set.SetColor(color);
+                    //FillSet(set, numbers);
+                }
+
             }
         }
 
-        private void CreateSet(ModelData model, string setName, IEnumerable<int> numbers, ObjType objsType)
+        private void CreateSet(ModelData model, string setName,  ObjType objsType, Color color, IEnumerable<int> numbers)
         {
-            var group = new GroupsData.Group(setName, objsType);
+            if (objsType == ObjType.Элемент1D)
+            {
+                model.ObjectData.E1DCollection.Add(setName, objsType);
+                var set1D = model.ObjectData.E1DCollection[setName];
+                set1D.SetViewMode(ViewMode.Line);
+                set1D.SetColor(color);
+                FillSet_v2(model.ObjectData.E1DCollection[setName], numbers);
+            }
 
+            else if (objsType == ObjType.Элемент2D)
+            {
+                model.ObjectData.E2DCollection.Add(setName, objsType);
+                var set2D = model.ObjectData.E2DCollection[setName];
+                set2D.SetViewMode(ViewMode.LineSurface);
+                set2D.SetColor(color);
+                FillSet_v2(model.ObjectData.E2DCollection[setName], numbers);
+            }
+    
+            else
+            {
+                model.ObjectData.E3DCollection.Add(setName, objsType);
+                var set3D = model.ObjectData.E3DCollection[setName];
+                set3D.SetViewMode(ViewMode.LineSurface);
+                set3D.SetColor(color);
+                FillSet_v2(set3D, numbers);
+            }
+        }
+
+        private void FillSet_v2<T>(ObjectsSet<T> set, IEnumerable<int> numbers)
+    where T : Element
+        {
             foreach (var number in numbers)
             {
-                if(objsType == ObjType.Элемент1D)
-                {
-                    var obj = allElements[number];
-                    model.ObjectData.E1DCollection.Add(setName, (Beam)obj);                  
-                }
-                else if (objsType == ObjType.Элемент2D)
-                {
-                    var obj = allElements[number];
-                    model.ObjectData.E2DCollection.Add(setName, (IElement2D)obj);
-                }
-                else if (objsType == ObjType.Элемент3D)
-                {
-                    var obj = allElements[number];
-                    model.ObjectData.E3DCollection.Add(setName, (IElement3D)obj);
-                }
+                var obj = allElements[number];
+                set.Add(obj.Number, (T)obj);
             }
         }
+
+        //private void FillSet(ModelData model, ObjType objsType, IEnumerable<int> numbers)
+        //{
+        //    if (objsType == ObjType.Элемент1D)
+        //    {
+        //        model.ObjectData.E1DCollection.Add(setName, objsType);
+        //    }
+
+        //    else if (objsType == ObjType.Элемент2D)
+        //    {
+        //        model.ObjectData.E2DCollection.Add(setName, objsType);
+        //    }
+
+        //    else
+        //    {
+        //        model.ObjectData.E3DCollection.Add(setName, objsType);
+        //    }
+
+        //    foreach (var number in numbers)
+        //    {
+        //        var obj = allElements[number];
+        //        set.Add(obj.Number, obj);
+        //    }
+        //}
 
         private void CreateGroup(ModelData model, string setName, IEnumerable<int> numbers, ObjType objsType)
         {

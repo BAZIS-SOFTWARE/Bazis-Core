@@ -11,8 +11,8 @@ namespace ModelController.ModelScenePresentator.GlObjsVertexCreators
         {
             //Цвет черный с alpha 0.0 - установим alpha в 1.0f
             /*var color = nodeObject.MasterColor;*/
-            var color = Color.FromArgb(255, nodeObject.MasterColor.R, nodeObject.MasterColor.G,
-                                                                      nodeObject.MasterColor.B);
+            var color = Color.FromArgb(255, nodeObject.Color.R, nodeObject.Color.G,
+                                                                      nodeObject.Color.B);
 
             for (int k = 0; k < nodeObject.NumberOfPoints; k++)
             {

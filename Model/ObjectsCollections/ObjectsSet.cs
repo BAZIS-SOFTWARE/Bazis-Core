@@ -4,6 +4,7 @@ using Model.Interfaces.ObjectsCollections;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 
@@ -42,15 +43,20 @@ namespace Model.ObjectsCollections
 /// <inheritdoc/>
 
         public bool IsReadOnly => false;
+/// <inheritdoc/>
 
         public ObjType ObjType { get; }
+        /// <inheritdoc/>
+        public Color Color { get; private set; }
+        /// <inheritdoc/>
+        public ViewMode ViewMode { get; private set; }
 
         /// <inheritdoc/>
 
 
         public override string ToString()
         {
-            return $@"{Name} {objectsSet.Count}";
+            return $@"{Name} {Color} {ViewMode} {objectsSet.Count}";
         }
 
         /// <inheritdoc/>
@@ -108,6 +114,7 @@ namespace Model.ObjectsCollections
         {
             return objectsSet.Remove(item.Key);
         }
+/// <inheritdoc/>
 
         public bool TryGetValue(int key, out T value)
         {
@@ -117,6 +124,19 @@ namespace Model.ObjectsCollections
         IEnumerator IEnumerable.GetEnumerator()
         {
             throw new NotImplementedException();
+        }
+        /// <inheritdoc/>
+        public void SetColor(Color color)
+        {
+            Color = color;
+            foreach (var item in objectsSet)
+                item.Value.Color = color;
+        }
+        /// <inheritdoc/>
+        public void SetViewMode(ViewMode viewMode)
+        {
+            if (ObjType != ObjType.Узел | ObjType != ObjType.Точка)
+                ViewMode = viewMode;
         }
     }
 }

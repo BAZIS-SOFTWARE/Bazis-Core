@@ -24,9 +24,7 @@ namespace Model.GeometryObjects
         {
             this.surfaces = surfaces;
 
-            InitialColor = Color.FromArgb(255, 125, 0);
-            MasterColor = Color.FromArgb(255, 125, 0);
-            SlaveColor = Color.FromArgb(255, 125, 0);
+            Color = Color.FromArgb(255, 125, 0);
         }
 /// <inheritdoc/>
 

@@ -17,9 +17,7 @@ namespace Model.MeshObjects
 
         public Element2D(int number, Node[] nodes) : base(number, nodes)
         {
-            InitialColor = Color.FromArgb(0, 0, 255);
-            MasterColor = Color.FromArgb(0, 0, 255);
-            SlaveColor = Color.FromArgb(0, 0, 255);
+            Color = Color.FromArgb(0, 0, 255);
 
             surface = new ElementSurface(number, 0, nodes);
 

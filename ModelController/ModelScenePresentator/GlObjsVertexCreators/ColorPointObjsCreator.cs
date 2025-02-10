@@ -9,7 +9,7 @@ namespace ModelController.ModelScenePresentator.GlObjsVertexCreators
         {
             if(pointObject.ViewState)
             {
-                var color = pointObject.MasterColor;
+                var color = pointObject.Color;
 
                 vertexAtributes[stride + 0] = color.R / 255.0f;
                 vertexAtributes[stride + 1] = color.G / 255.0f;

@@ -16,9 +16,7 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
         where T : IPoint
     {
         List<ILineObject<T>> lineObjects = new List<ILineObject<T>>();
-/// <inheritdoc/>
 
-        public PresenterView PresenterView { get; set; } = PresenterView.Line;
         /// <inheritdoc/>
 
         public PresenterType PresenterType { get; } = PresenterType.Line;

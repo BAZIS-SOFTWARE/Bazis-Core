@@ -73,15 +73,7 @@ namespace Model.Interfaces
         /// <summary>
         /// MasterColor
         /// </summary>
-        Color MasterColor { get; set; }
-        /// <summary>
-        /// SlaveColor
-        /// </summary>
-        Color SlaveColor { get; set; }
-        /// <summary>
-        /// InitialColor
-        /// </summary>
-        Color InitialColor { get; set; }
+        Color Color { get; set; }
         /// <summary>
         /// View state flag
         /// </summary>
@@ -106,10 +98,6 @@ namespace Model.Interfaces
         /// CalcCentralPoint
         /// </summary>
         Point3D CalcCentr();
-        /// <summary>
-        /// SetBackColor
-        /// </summary>
-        void SetBackColor();
         /// <summary>
         /// SetNumber
         /// </summary>
