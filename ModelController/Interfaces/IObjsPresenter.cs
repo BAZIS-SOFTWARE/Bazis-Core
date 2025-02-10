@@ -5,28 +5,6 @@ using System.Collections.Generic;
 namespace ModelControllerInterfaces
 {
     /// <summary>
-    /// PresenterView
-    /// </summary>
-    public enum PresenterView
-    {
-        /// <summary>
-        /// Point
-        /// </summary>
-        Point,
-        /// <summary>
-        /// Line
-        /// </summary>
-        Line,
-        /// <summary>
-        /// Surface
-        /// </summary>
-        Surface,
-        /// <summary>
-        /// LineSurface
-        /// </summary>
-        LineSurface
-    }
-    /// <summary>
     /// PresenterType
     /// </summary>
     public enum PresenterType

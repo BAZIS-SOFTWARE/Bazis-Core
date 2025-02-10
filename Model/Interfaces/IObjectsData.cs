@@ -23,35 +23,35 @@ namespace Model.Interfaces
         /// <summary>
         /// E3DCollection
         /// </summary>
-        IObjectsCollection<IElement3D> E3DCollection { get; }
+        ObjectsCollection<Element3D> E3DCollection { get; }
         /// <summary>
         /// E2DCollection
         /// </summary>
-        IObjectsCollection<IElement2D> E2DCollection { get; }
+        ObjectsCollection<Element2D> E2DCollection { get; }
         /// <summary>
         /// E1DCollection
         /// </summary>
-        IObjectsCollection<Beam> E1DCollection { get; }
+        ObjectsCollection<Beam> E1DCollection { get; }
         /// <summary>
         /// NodeCollection
         /// </summary>
-        IObjectsSet<Node> NodesSet { get; }
+        ObjectsSet<Node> NodesSet { get; }
         /// <summary>
         /// PointCollection
         /// </summary>
-        IObjectsSet<GeometryPoint> PointsSet { get; }
+        ObjectsSet<GeometryPoint> PointsSet { get; }
         /// <summary>
         /// LineCollection
         /// </summary>
-        IObjectsCollection<Line> LineCollection { get; }
+        ObjectsCollection<Line> LineCollection { get; }
         /// <summary>
         /// Fig2DCollection
         /// </summary>
-        IObjectsCollection<SurfaceFigure> Fig2DCollection { get; }
+        ObjectsCollection<SurfaceFigure> Fig2DCollection { get; }
         /// <summary>
         /// Fig3DCollection
         /// </summary>
-        IObjectsCollection<VolumeFigure> Fig3DCollection { get; }
+        ObjectsCollection<VolumeFigure> Fig3DCollection { get; }
         /// <summary>
         /// Count
         /// </summary>

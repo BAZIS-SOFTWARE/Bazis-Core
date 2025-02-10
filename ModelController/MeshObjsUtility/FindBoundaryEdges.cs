@@ -30,7 +30,7 @@ namespace ModelController.MeshObjsUtility
                 var node0 = modelData.ObjectData.NodesSet[po];
                 var node1 = modelData.ObjectData.NodesSet[p1];
                 var beam = new Beam(counter, new Node[] { node0, node1 })
-                { MasterColor = Color.Red };
+                { Color = Color.Red };
                 yield return beam;
                 counter++;
             }

@@ -21,9 +21,7 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
         /// <inheritdoc/>
 
         public PresenterType PresenterType { get; } = PresenterType.Point;
-/// <inheritdoc/>
 
-        public PresenterView PresenterView { get; set; } = PresenterView.Point;
         /// <inheritdoc/>
 
 

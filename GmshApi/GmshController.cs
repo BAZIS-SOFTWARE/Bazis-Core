@@ -1974,12 +1974,12 @@ namespace GmshApi.GmshController
         }
         /// <inheritdoc/>
 
-        public (List<Node>, List<ILineObject<Node>>, List<IElement2D>, List<IElement3D>) GetMeshObjects()
+        public (List<Node>, List<ILineObject<Node>>, List<Element2D>, List<Element3D>) GetMeshObjects()
         {
             var nodes = GetNodes(-1, -1, false);
             var e1D = new List<ILineObject<Node>>();
-            var e2D = new List<IElement2D>();
-            var e3D = new List<IElement3D>();
+            var e2D = new List<Element2D>();
+            var e3D = new List<Element3D>();
             Action<string, int, Node[]> filler1D = (s, i, n) =>
             {
                 e1D.Add(new Beam(i, n));

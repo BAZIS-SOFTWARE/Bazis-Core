@@ -14,9 +14,7 @@ namespace Model.MeshObjects
     {
         public Beam(int number, Node[] nodes) : base(number, nodes)
         {
-            InitialColor = Color.FromArgb(255, 192, 203);
-            MasterColor = Color.FromArgb(255, 192, 203);
-            SlaveColor = Color.FromArgb(255, 192, 203);
+            Color = Color.FromArgb(255, 192, 203);
 
             //var intPoint = new IntegralPoint();
             //intPoint.AddCoordinate("ksi", 0.0f);

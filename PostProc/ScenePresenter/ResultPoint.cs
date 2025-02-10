@@ -44,7 +44,7 @@ namespace Results.ScenePresenter
 
         public int Number { get; }
 
-        public Color MasterColor { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public Color Color { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public Color SlaveColor { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         /// <inheritdoc/>
         public Color InitialColor { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }

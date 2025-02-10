@@ -43,7 +43,7 @@ namespace ModelController.MeshObjsUtility
                             {
                                 currentNode = node;
                                 previousDirection = currentDirection;
-                                node.MasterColor = color;
+                                node.Color = color;
                                 result.Add(node.Number);
                                 isMoveNext = true;
                                 break;
@@ -65,7 +65,7 @@ namespace ModelController.MeshObjsUtility
             {
                 var dist = plane.PointPosition(node.Position);
                 if (Math.Abs(dist) < 1e-2)
-                    node.MasterColor = color;
+                    node.Color = color;
             }
         }
 /// <inheritdoc/>
@@ -94,7 +94,7 @@ namespace ModelController.MeshObjsUtility
                         {
                             used.Add(neighbourNumber);
                             queue.Enqueue(neighbourNumber);                            
-                            neighbourElement.MasterColor = color;
+                            neighbourElement.Color = color;
                         }
                     }
                 }

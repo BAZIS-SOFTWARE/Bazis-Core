@@ -40,9 +40,7 @@ namespace Model.GeometryObjects
         /// <param name="surfaces"></param>
         public VolumeFigure(int number, GeometrySurface[] surfaces) : base(number)
         {
-            InitialColor = Color.FromArgb(255, 125, 0);
-            MasterColor = Color.FromArgb(255, 125, 0);
-            SlaveColor = Color.FromArgb(255, 125, 0);
+            Color = Color.FromArgb(255, 125, 0);
 
             this.surfaces = surfaces;
         }

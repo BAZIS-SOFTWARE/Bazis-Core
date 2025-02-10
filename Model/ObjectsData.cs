@@ -26,16 +26,18 @@ namespace Model
         public ObjectsData()
         {
             E1DCollection = new ObjectsCollection<Beam>();
-            E2DCollection = new ObjectsCollection<IElement2D>();
-            E3DCollection = new ObjectsCollection<IElement3D>();
+            E2DCollection = new ObjectsCollection<Element2D>();
+            E3DCollection = new ObjectsCollection<Element3D>();
             NodesSet = new ObjectsSet<Node>(ObjType.Узел.ToString(), ObjType.Узел);
-            //{
-            //    { ObjType.Узел.ToString(), ObjType.Узел }
-            //};
+            NodesSet.SetColor(Color.FromArgb(0, 0, 255));
+            NodesSet.SetViewMode(ViewMode.Point);
             PointsSet = new ObjectsSet<GeometryPoint>(ObjType.Точка.ToString(), ObjType.Точка);
+            PointsSet.SetColor(Color.FromArgb(255, 207, 64));
+            PointsSet.SetViewMode(ViewMode.Point);
             LineCollection = new ObjectsCollection<Line>();
             Fig2DCollection = new ObjectsCollection<SurfaceFigure>();
             Fig3DCollection = new ObjectsCollection<VolumeFigure>();
+
 
             ObjsTypes = new Collection<ObjType>()
                 {
@@ -53,28 +55,28 @@ namespace Model
 
         /// <inheritdoc/>
 
-        public IObjectsSet<Node> NodesSet { get; }
+        public ObjectsSet<Node> NodesSet { get; }
         /// <inheritdoc/>
 
-        public IObjectsCollection<IElement3D> E3DCollection { get; }
+        public ObjectsCollection<Element3D> E3DCollection { get; }
         /// <inheritdoc/>
 
-        public IObjectsCollection<IElement2D> E2DCollection { get; }
+        public ObjectsCollection<Element2D> E2DCollection { get; }
         /// <inheritdoc/>
 
-        public IObjectsCollection<Beam> E1DCollection { get; }
+        public ObjectsCollection<Beam> E1DCollection { get; }
         /// <inheritdoc/>
 
-        public IObjectsSet<GeometryPoint> PointsSet { get; }
+        public ObjectsSet<GeometryPoint> PointsSet { get; }
         /// <inheritdoc/>
 
-        public IObjectsCollection<Line> LineCollection { get; }
+        public ObjectsCollection<Line> LineCollection { get; }
         /// <inheritdoc/>
 
-        public IObjectsCollection<SurfaceFigure> Fig2DCollection { get; }
+        public ObjectsCollection<SurfaceFigure> Fig2DCollection { get; }
         /// <inheritdoc/>
 
-        public IObjectsCollection<VolumeFigure> Fig3DCollection { get; }
+        public ObjectsCollection<VolumeFigure> Fig3DCollection { get; }
 
         /// <inheritdoc/>
 

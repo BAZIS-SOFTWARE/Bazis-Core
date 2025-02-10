@@ -9,22 +9,6 @@ namespace ModelControllerInterfaces
     public interface IPresentersCreator
     {
         ///// <summary>
-        ///// TransparencyValue
-        ///// </summary>
-        //int TransparencyValue { get; set; }
-        ///// <summary>
-        ///// SetView
-        ///// </summary>
-        ///// <param name="objsType"></param>
-        ///// <param name="objsView"></param>
-        void SetView(string objsType, PresenterView objsView);
-        /// <summary>
-        /// GetView
-        /// </summary>
-        /// <param name="objType"></param>
-        /// <returns></returns>
-        PresenterView GetView(string objType);
-        ///// <summary>
         ///// SetColor
         ///// </summary>
         ///// <param name="objsType"></param>

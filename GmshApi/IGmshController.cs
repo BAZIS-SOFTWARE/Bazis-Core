@@ -268,7 +268,7 @@ namespace GmshApi
         /// item3 - els2d
         /// item4 - els3d
         /// </returns>
-        (List<Node>, List<ILineObject<Node>>, List<IElement2D>, List<IElement3D>) GetMeshObjects();
+        (List<Node>, List<ILineObject<Node>>, List<Element2D>, List<Element3D>) GetMeshObjects();
         /// <summary>
         /// Возвращает список всех пар размерность:идентификатор для заданной размерности
         /// </summary>

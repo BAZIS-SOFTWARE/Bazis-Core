@@ -24,9 +24,7 @@ namespace Model.GeometryObjects
             points.RoundSort(); //Anticlockwise(nodes);
             this.points = points;
 
-            InitialColor = Color.FromArgb(224, 0, 177);
-            MasterColor = Color.FromArgb(224, 0, 177);
-            SlaveColor = Color.FromArgb(224, 0, 177);
+            Color = Color.FromArgb(224, 0, 177);
         }       
         /// <summary>
         /// this

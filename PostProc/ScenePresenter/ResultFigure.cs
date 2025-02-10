@@ -13,7 +13,7 @@ namespace PostProc.ScenePresenter
 
         public ResultFigure(List<Point3D> points, Color color)
         {
-            MasterColor = color;
+            Color = color;
             SlaveColor = color;
             InitialColor = color;
 
@@ -39,7 +39,7 @@ namespace PostProc.ScenePresenter
         public int Number { get { return 0; } }
 /// <inheritdoc/>
 
-        public Color MasterColor { get; set; }
+        public Color Color { get; set; }
         /// <inheritdoc/>
         public Color SlaveColor { get ; set ; }
         /// <inheritdoc/>

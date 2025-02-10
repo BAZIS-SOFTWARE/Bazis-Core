@@ -397,7 +397,7 @@ var loaderDB = new LoadResultsFileDB();
 
             //assert  
             Assert.AreEqual(resSurfaces.Count, 1);
-            Assert.AreEqual(resSurfaces[0].MasterColor, сolorRange[3]);
+            Assert.AreEqual(resSurfaces[0].Color, сolorRange[3]);
         }
 
         [TestMethod]
@@ -438,7 +438,7 @@ var loaderDB = new LoadResultsFileDB();
 
             //assert  
             Assert.AreEqual(resSurfaces.Count, 1);
-            Assert.AreEqual(resSurfaces[0].MasterColor, сolorRange[0]);
+            Assert.AreEqual(resSurfaces[0].Color, сolorRange[0]);
         }
 
         [TestMethod]
