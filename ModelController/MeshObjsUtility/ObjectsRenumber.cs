@@ -19,7 +19,7 @@ namespace ModelController.MeshObjsUtility
             {
                 case ObjType.Узел:
                     {
-                        foreach (var node in objectsData.NodeCollection.GetObjects())
+                        foreach (var node in objectsData.NodesSet.Values)
                             node.SetNumber(number++);
                     }
                     break;

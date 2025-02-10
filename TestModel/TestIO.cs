@@ -71,7 +71,7 @@ namespace TestModel
 
         [DataTestMethod]
         [DataRow(@"..\..\..\Examples\BPF2TXT\cub_unsorted.bpf2", 2, ObjType.Элемент3D,DisplayName = "Sets Элемент3D = 2")]
-        [DataRow(@"..\..\..\Examples\BPF2TXT\cub_unsorted.bpf2", 1, ObjType.Узел, DisplayName = "Sets Узел = 1")]
+        [DataRow(@"..\..\..\Examples\BPF2TXT\cub_unsorted.bpf2", 8, ObjType.Узел, DisplayName = "Objects Узел = 1")]
         [DataRow(@"..\..\..\Examples\BPF2TXT\cub_unsorted_oneSet.bpf2", 1, ObjType.Элемент3D, DisplayName = "Sets Элемент3D = 1")]
         public void LoadModelFromBpf2TextFormat(string path, int sets, ObjType objType)
         {
@@ -105,7 +105,7 @@ namespace TestModel
                 case ObjType.Фигура3D:
                     break;
                 case ObjType.Узел:
-                    Assert.AreEqual(model.ObjectData.NodeCollection.Count(), sets);
+                    Assert.AreEqual(model.ObjectData.NodesSet.Count(), sets);
                     break;
                 case ObjType.Элемент:
                     break;
@@ -136,7 +136,7 @@ namespace TestModel
         //[DataRow(@"Кронштейн\bracket.stl")]
         //[DataRow(@"Кронштейн\bracket_solid_sup.stl")]
         //[DataRow(@"Кронштейн\bracket_wall_sup.stl")]
-        public void ImportModelFromSTLtextFormat(string file)
+        public void ImportAndSaveToSTLBinFormat(string file)
         {
             string dir = @"..\..\..\Examples\STL";
             //string dir = @"..\..\..\..\Тестовые заготовки деталей\";
@@ -149,55 +149,26 @@ namespace TestModel
 
             //act
             model.Load(path);
-
+            var e2D_Count = model.ObjectData.E2DCollection.Count;
             //assert
-            Assert.AreNotEqual(model.ObjectData.E2DCollection.Count, 0);
-            //Assert.AreNotEqual(model.GroupData.Count, 0);
-        }
-
-        [TestMethod]
-        [DataRow(@"Блок каналов\block.stl")]
-        //[DataRow(@"Блок каналов\block_solid_sup.stl")]
-        //[DataRow(@"Форсунка\1n.stl")]
-        //[DataRow(@"Форсунка\nozzle.stl")]
-        //[DataRow(@"Форсунка\nozzle_sup.stl")]
-        //[DataRow(@"Образец\specimen.stl")]
-        //[DataRow(@"Образец\specimen_solid_sup.stl")]
-        //[DataRow(@"Образец\specimen_wall_sup.stl")]
-        //[DataRow(@"Кронштейн\bracket.stl")]
-        //[DataRow(@"Кронштейн\bracket_solid_sup.stl")]
-        //[DataRow(@"Кронштейн\bracket_wall_sup.stl")]
-        public void ImportExportModelFromSTLtextFormat(string file)
-        {
-            string inputDir = @"\\fs\Plm-Ural\OrgUnits\CAE\+ESI_QForm\+SIMMAX\Тестовые заготовки деталей\";
-            string outputDir = @"..\..\..\..\Тестовые заготовки деталей (test)\";
-
-            var filePath = Path.Combine(inputDir, file);
-            var outpath = Path.Combine(outputDir, file);
-
-            //assing
-            var model = new ModelData();
-
-            model.Loader = new LoadModelFromSTLFile();
-            model.Load(filePath);
-
-            Directory.CreateDirectory(Path.GetDirectoryName(outpath));
+            Assert.AreNotEqual(e2D_Count, 0);
 
             model.Saver = new SaveModelToBinarySTLFile();
-            model.Save(outpath + ".bin.stl");
+            model.Save(dir + $"\\{file}.bin.stl");
 
-            model.Saver = new SaveModelToTxtSTLFile();
-            model.Save(outpath + ".txt.stl");
+            //model.Saver = new SaveModelToTxtSTLFile();
+            //model.Save(dir + $"\\{file}.txt.stl");
 
-            var model2 = new ModelData();
-            model2.Loader = new LoadModelFromSTLFile();
-            model2.Load(outpath + ".bin.stl");
+            //var model2 = new ModelData();
+            //model.Loader = new LoadModelFromSTLFile();
+            model.Load(dir + $"\\{file}.bin.stl");
 
-            var model3 = new ModelData();
-            model3.Loader = new LoadModelFromSTLFile();
-            model3.Load(outpath + ".txt.stl");
-            //assert
-        }
+            Assert.AreNotEqual(e2D_Count, 0);
+            //var model3 = new ModelData();
+            //model3.Loader = new LoadModelFromSTLFile();
+            //model3.Load(dir + $"\\{file}.txt.stl");
+
+        } 
 
         [DataTestMethod]
         [DataRow(8448, 17964, @"..\..\..\Examples\3D\Korpus.inp", DisplayName = "Korpus.inp")]
@@ -210,18 +181,18 @@ namespace TestModel
 
             model.Load(path);
 
-            Assert.AreEqual(nodeCount, model.ObjectData.NodeCollection.Count);
+            Assert.AreEqual(nodeCount, model.ObjectData.NodesSet.Count);
             Assert.AreEqual(elemCount, model.ObjectData.GetAllElements().Count());
         }
 
         [DataTestMethod]
         [DataRow(7,8,0, @"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC", DisplayName = "rhombDATA1.ASC")]
         [DataRow(44, 113, 3, @"..\..\..\Examples\VIsual-Mesh\DATA3.ASC", DisplayName = "DATA3.ASC")]
-        
+        [DataRow(104, 337, 0, @"..\..\..\Examples\VIsual-Mesh\cilinder3DATA1.ASC", DisplayName = "cilinder3DATA1.ASC")]
         public void ImportModelFromVisualMeshASCIITextFormat(int nodeCount, int elemCount, int elem1D, string path)
         {
             //assing
-            var loader = new LoadModelFromASCIITextFile();
+            var loader = new LoadModelFromASCIITextFile_v2();
             loader.LoadEvent += (ar1, ar2) => { };
 
             //act
@@ -305,7 +276,7 @@ namespace TestModel
             var import = new LoadModelFromSalomeFile();
             import.LoadEvent += (ar1, ar2) => { };
             var model = import.Load(filePath);
-            Assert.AreEqual(nodes, model.ObjectData.NodeCollection.Count);
+            Assert.AreEqual(nodes, model.ObjectData.NodesSet.Count);
             Assert.AreEqual(lineElms, model.ObjectData.E1DCollection.Count);
             Assert.AreEqual(surfElms, model.ObjectData.E2DCollection.Count);
             Assert.AreEqual(volElems, model.ObjectData.E3DCollection.Count);

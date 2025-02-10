@@ -46,14 +46,14 @@ namespace Model.IO
         /// </summary>
         private void ReadNodes(StreamReader reader)
         {
-            var nodes = new List<Node>();
+            //var nodes = new List<Node>();
             LoadEvent?.Invoke(this, new LoaderEventArgs("Начало загрузки узлов"));
             while (!reader.EndOfStream)
             {
                 var line = reader.ReadLine();
                 if (line == "******* E L E M E N T S *************")
                 {
-                    mapIndexToNode = nodes.ToDictionary(n => n.Number, n => n);
+                    //mapIndexToNode = nodes.ToDictionary(n => n.Number, n => n);
                     var startLine = reader.ReadLine();
                     ReadElements(startLine, reader);
                     break;
@@ -64,11 +64,8 @@ namespace Model.IO
                     .Select(x => float.Parse(x, NumberStyles.Float, CultureInfo.InvariantCulture))
                     .ToArray();
                 var node = new Node(nodeIndex, new Point3D(coordinates[0], coordinates[1], coordinates[2]));
-                nodes.Add(node);
+                modelData.ObjectData.NodesSet.Add(node.Number, node);
             }
-            nodes.OrderBy(e => e.Number)
-                .ToList()
-                .ForEach(e => modelData.ObjectData.NodeCollection.Add(ObjType.Узел.ToString(), e));
         }
 
 

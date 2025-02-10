@@ -66,7 +66,7 @@ namespace Model.IO
         private static void LoadNodes(StreamReader reader, ModelData newMesh)
         {
             var line = reader.ReadLine();
-            var nodes = new List<Node>();
+            //var nodes = new List<Node>();
             while (line != "#Узлы")
             {
                 var tokens = line.Split()
@@ -78,11 +78,11 @@ namespace Model.IO
                     var coordinates = tokens.Skip(1).ToArray();
                     var position = new Point3D(coordinates[0], coordinates[1], coordinates[2]);
                     var node = new Node(nodeIndex, position);
-                    nodes.Add(node);
+                    newMesh.ObjectData.NodesSet.Add(node.Number,node);
                 }
                 line = reader.ReadLine();
             }
-            newMesh.ObjectData.NodeCollection.AddRange(ObjType.Узел.ToString(), nodes.OrderBy(n => n.Number));
+            //newMesh.ObjectData.NodeCollection.AddRange(ObjType.Узел.ToString(), nodes.OrderBy(n => n.Number));
         }
 
         private void LoadElement(StreamReader reader, string[] token, ModelData newMesh)
@@ -124,7 +124,7 @@ namespace Model.IO
         {
             foreach (var nodeNumber in indeces)
             {
-                yield return (Node)modelData.ObjectData.NodeCollection.Find(nodeNumber);
+                yield return (Node)modelData.ObjectData.NodesSet[nodeNumber];
             }
         }
 

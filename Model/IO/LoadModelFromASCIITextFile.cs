@@ -31,7 +31,7 @@ namespace Model.IO
                     if(line.Contains("BEGIN_NODES"))
                     {
                         foreach (var item in ReadNodes(reader, int.Parse(tokens[1])))
-                            model.ObjectData.NodeCollection.Add(ObjType.Узел.ToString(), item);                   
+                            model.ObjectData.NodesSet.Add(item.Number, item);                   
                     }
                     if(line.Contains("BEGIN_ELEMENTS"))
                     {

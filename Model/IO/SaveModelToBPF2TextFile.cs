@@ -36,7 +36,7 @@ namespace Model.IO
                     if (item == ObjType.Узел)
                     {
                         sw.WriteLine(item);
-                        var nodes = model.ObjectData.NodeCollection.GetObjects();
+                        var nodes = model.ObjectData.NodesSet.Values;
                         foreach (var nodeItem in nodes)
                         {
                             var x = nodeItem._x;

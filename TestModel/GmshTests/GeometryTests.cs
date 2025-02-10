@@ -78,11 +78,11 @@ namespace TestModel.GmshTests
             var elements = controller.GetMeshEntities(2, -1, nodes);
             //Assert.AreEqual(true, status);
             Assert.AreEqual(2, elements.Count);
-            modelData.ObjectData.NodeCollection.AddRange(ObjType.Узел.ToString(), nodes);
+            nodes.ForEach(x =>  modelData.ObjectData.NodesSet.Add(x.Number, x));
 
             modelData.ObjectData.Clear(objType);
             //assert
-            Assert.AreEqual(modelData.ObjectData.NodeCollection.Count, nNumb);
+            Assert.AreEqual(modelData.ObjectData.NodesSet.Count, nNumb);
         }
 
         [DataTestMethod]

@@ -41,8 +41,9 @@ namespace Model.IO
                     if (line.Contains(NODE_BLOCK))
                     {
                         LoadEvent?.Invoke(this, new LoaderEventArgs("Начало загрузки узлов"));
-                        var nodes = ReadNodes(reader, tokens).ToList();
-                        model.ObjectData.NodeCollection.AddRange(ObjType.Узел.ToString(), nodes);
+
+                        foreach (var node in ReadNodes(reader, tokens))
+                            model.ObjectData.NodesSet.Add(node.Number, node);
                     }
                     if (line.Contains(ELEMENTS_BLOCK))
                     {

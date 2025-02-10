@@ -10,6 +10,7 @@ using Model.GeometryObjects;
 using ModelControllerInterfaces;
 using System.IO;
 using Geometry;
+using System.Linq;
 
 namespace TestModel
 {
@@ -180,34 +181,36 @@ namespace TestModel
         {
 
             //assign
-            var nodes = new List<Node>();
+            var model = new ModelData();
+            //var nodes = new List<Node>();
             var len = coords.Length / 3;
             for (int i = 0; i < len; i++)
             {
                 var x = coords[3 * i + 0];
                 var y = coords[3 * i + 1];
                 var z = coords[3 * i + 2];
-                nodes.Add(new Node(i, new Geometry.Point3D(x, y, z)));
+                var node = new Node(i, new Geometry.Point3D(x, y, z));
+                model.ObjectData.NodesSet.Add(node.Number, node);
             }
 
 
-            var model = new ModelData();
+
             var creator = new PresentersCreator();
             IObjsPresenter presenter;
             //act
-            model.ObjectData.NodeCollection.AddRange(ObjType.Узел.ToString(), nodes);
+
             switch (objType)
             {
                 case ObjType.Элемент3D:
-                    model.ObjectData.E3DCollection.Add(ObjType.Элемент3D.ToString(), new Tetra(0, nodes.ToArray()));
+                    model.ObjectData.E3DCollection.Add(ObjType.Элемент3D.ToString(), new Tetra(0, model.ObjectData.NodesSet.Values.ToArray()));
                     presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E3DCollection.GetObjects(), true);
                     break;
                 case ObjType.Элемент2D:
-                    model.ObjectData.E2DCollection.Add(ObjType.Элемент2D.ToString(), new Triangle(0, nodes.ToArray()));
+                    model.ObjectData.E2DCollection.Add(ObjType.Элемент2D.ToString(), new Triangle(0, model.ObjectData.NodesSet.Values.ToArray()));
                     presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E2DCollection.GetObjects(), false);
                     break;
                 default:
-                    model.ObjectData.E1DCollection.Add(ObjType.Элемент1D.ToString(), new Beam(0, nodes.ToArray()));
+                    model.ObjectData.E1DCollection.Add(ObjType.Элемент1D.ToString(), new Beam(0, model.ObjectData.NodesSet.Values.ToArray()));
                     presenter = creator.CreateLineObjectsPresenter(model.ObjectData.E1DCollection.GetObjects());
                     break;
             }
@@ -342,7 +345,7 @@ namespace TestModel
             switch (objType)
             {
                 case ObjType.Узел:
-                    presenter = creator.CreatePointObjectsPresenter(model.ObjectData.NodeCollection.GetObjects());
+                    presenter = creator.CreatePointObjectsPresenter(model.ObjectData.NodesSet.Values);
                     break;
                 case ObjType.Линия:
                     presenter = creator.CreateLineObjectsPresenter(model.ObjectData.LineCollection.GetObjects());
@@ -363,7 +366,7 @@ namespace TestModel
                     presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E3DCollection.GetObjects(), true);
                     break;
                 default:
-                    presenter = creator.CreatePointObjectsPresenter(model.ObjectData.PointCollection.GetObjects());
+                    presenter = creator.CreatePointObjectsPresenter(model.ObjectData.PointsSet.Values);
                     break;
             }
 

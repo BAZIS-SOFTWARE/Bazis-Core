@@ -69,7 +69,7 @@ namespace Model.IO
                         if (str != null && str.Contains("outer loop"))
                         {
                             str = reader.ReadLine()?.Trim();
-                            var nodes = GetPoints(reader, str, modelData.ObjectData.NodeCollection);
+                            var nodes = GetPoints(reader, str, modelData.ObjectData.NodesSet);
 
                             if (IsValidTriangle(nodes[0].Position, nodes[1].Position, nodes[2].Position))
                             {
@@ -97,7 +97,7 @@ namespace Model.IO
             }
             return modelData;
         }
-        private Node[] GetPoints(StreamReader stl, string str, IObjectsCollection<Node> nodes)
+        private Node[] GetPoints(StreamReader stl, string str, IObjectsSet<Node> nodes)
         {
             var points = new Node[3];
             for (int i = 0; i < 3; i++)
@@ -120,7 +120,7 @@ namespace Model.IO
                     {
                         map.Add(new Vector3(x, y, z), node);
                         points[i] = node;
-                        nodes[ObjType.Узел.ToString()].Add(node.Number, node);
+                        nodes.Add(node.Number, node);
                     }
 
                     str = stl.ReadLine()?.Trim();
@@ -150,9 +150,9 @@ namespace Model.IO
                     nodes[1] = ReadNode(reader);
                     nodes[2] = ReadNode(reader);
 
-                    modelData.ObjectData.NodeCollection[ObjType.Узел.ToString()].Add(nodes[0].Number, nodes[0]);
-                    modelData.ObjectData.NodeCollection[ObjType.Узел.ToString()].Add(nodes[1].Number, nodes[1]);
-                    modelData.ObjectData.NodeCollection[ObjType.Узел.ToString()].Add(nodes[2].Number, nodes[2]);
+                    modelData.ObjectData.NodesSet.Add(nodes[0].Number, nodes[0]);
+                    modelData.ObjectData.NodesSet.Add(nodes[1].Number, nodes[1]);
+                    modelData.ObjectData.NodesSet.Add(nodes[2].Number, nodes[2]);
 
                     if (IsValidTriangle(nodes[0].Position, nodes[1].Position, nodes[2].Position))
                     {

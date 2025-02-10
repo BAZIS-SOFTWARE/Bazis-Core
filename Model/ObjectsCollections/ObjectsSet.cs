@@ -30,8 +30,10 @@ namespace Model.ObjectsCollections
         Dictionary<int,T> objectsSet = new Dictionary<int, T>();
 
         public T this[int key] { get => objectsSet[key]; set => objectsSet[key] = value; }
+/// <inheritdoc/>
 
         public ICollection<int> Keys => objectsSet.Keys;
+/// <inheritdoc/>
 
         public ICollection<T> Values => objectsSet.Values;
 /// <inheritdoc/>
@@ -63,6 +65,7 @@ namespace Model.ObjectsCollections
         {
             objectsSet.Add(item.Key, item.Value);
         }
+/// <inheritdoc/>
 
         public void Clear()
         {

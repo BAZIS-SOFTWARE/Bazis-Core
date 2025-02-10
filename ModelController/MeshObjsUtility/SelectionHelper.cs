@@ -21,9 +21,9 @@ namespace ModelController.MeshObjsUtility
         public List<int> SelectNodeInDirection(IObjectsData objectsData, float angleInGradus, int numbFirst, int numbSecond, Color color)
         {
             var elements = objectsData.GetAllElements().OrderBy(x => x.Number).ToList();
-            var nodes = objectsData.NodeCollection;
-            var nodeOne = nodes.Find(numbFirst);
-            var nodeTwo = nodes.Find(numbSecond);
+            var nodes = objectsData.NodesSet;
+            var nodeOne = nodes[numbFirst];
+            var nodeTwo = nodes[numbSecond];
             var previousDirection = nodeTwo.Position.Sub(nodeOne.Position);
             var result = new HashSet<int> { numbFirst, numbSecond };
             var currentNode = nodeTwo;
@@ -60,8 +60,8 @@ namespace ModelController.MeshObjsUtility
         public void SelectNodeInPlane(IObjectsData objectsData, Plane plane, Color color)
                     
         {
-            var nodes = objectsData.NodeCollection;
-            foreach (var node in nodes.GetObjects())
+            var nodes = objectsData.NodesSet;
+            foreach (var node in nodes.Values)
             {
                 var dist = plane.PointPosition(node.Position);
                 if (Math.Abs(dist) < 1e-2)

@@ -301,14 +301,14 @@ var loaderDB = new LoadResultsFileDB();
             var resultNodesTXTPath = $@"{resPath}\testResultNodes.txt";
             var resultElementsTXTPath = $@"{resPath}\testResultElemets.txt";
 
-            TXTSaver.SaveResults(proj.ModelData.ObjectData.NodeCollection.GetObjects(), result.First(), resDesc, resultNodesTXTPath);
+            TXTSaver.SaveResults(proj.ModelData.ObjectData.NodesSet.Values, result.First(), resDesc, resultNodesTXTPath);
             TXTSaver.SaveResults(proj.ModelData.ObjectData.GetAllElements(), result.First(), resDesc, resultElementsTXTPath);
 
             var CSVSaver = new SaveObjectsResultsToCSV();
             var resultNodesCSVPath = $@"{resPath}\testResultNodes.csv";
             var resultElementsCSVPath = $@"{resPath}\testResultElements.csv";
 
-            CSVSaver.SaveResults(proj.ModelData.ObjectData.NodeCollection.GetObjects(), result.First(), resDesc, resultNodesCSVPath);
+            CSVSaver.SaveResults(proj.ModelData.ObjectData.NodesSet.Values, result.First(), resDesc, resultNodesCSVPath);
             CSVSaver.SaveResults(proj.ModelData.ObjectData.GetAllElements(), result.First(), resDesc, resultElementsCSVPath);
 
             var modelPresenter = new PresentersCreator();

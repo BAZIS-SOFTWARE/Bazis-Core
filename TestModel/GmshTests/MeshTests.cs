@@ -373,7 +373,8 @@ namespace TestModel.GmshTests
             controller.Open(path, ref ierr);
             controller.ModelMeshGenerate(3, ref ierr);
             var results = controller.GetMeshObjects();
-            modelData.ObjectData.NodeCollection.AddRange(ObjType.Узел.ToString(), results.Item1);
+
+            results.Item1.ForEach(x => modelData.ObjectData.NodesSet.Add(x.Number, x));
             modelData.ObjectData.E2DCollection.AddRange(ObjType.Элемент2D.ToString(), results.Item3);
             
             //act

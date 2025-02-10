@@ -8,6 +8,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
+using System.Security.Cryptography;
+using Model.Interfaces.ObjectsCollections;
 
 namespace Model.IO
 {
@@ -29,11 +31,13 @@ namespace Model.IO
                         .ToArray();
                     var nodesNumber = int.Parse(tokens[0]);
                     var elementsNumber = int.Parse(tokens[1]);
-                    var nodes = GetNodes(reader, nodesNumber).ToList();
-                    modelData.ObjectData.NodeCollection.AddRange(ObjType.Узел.ToString(), nodes);
+                    //var nodes = .ToList();
 
+                    foreach (var item in GetNodes(reader, nodesNumber))
+                        modelData.ObjectData.NodesSet.Add(item.Number, item);
+                
                     GetElements(reader, elementsNumber,
-                        nodes.ToDictionary(x => x.Number, x => x)); 
+                        modelData.ObjectData.NodesSet); 
                 }
             }
             return modelData;
@@ -52,7 +56,7 @@ namespace Model.IO
         }
 
         private void GetElements(StreamReader reader, int count,
-            Dictionary<int, Node> indexToNodeMapping)
+            IObjectsSet<Node> indexToNodeMapping)
         {
             for (var i = 0; i < count; i++)
             {

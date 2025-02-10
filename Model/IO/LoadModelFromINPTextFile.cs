@@ -56,7 +56,7 @@ namespace Model.IO
             var modelData = new ModelData();
             foreach (var node in nodes)
             {
-                modelData.ObjectData.NodeCollection[ObjType.Узел.ToString()].
+                modelData.ObjectData.NodesSet.
                     Add(node.Number, node);
             }
 

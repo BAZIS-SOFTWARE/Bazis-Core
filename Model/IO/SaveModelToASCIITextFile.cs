@@ -14,13 +14,13 @@ namespace Model.IO
     {
         public void Save(IModelData modelData, string fileName)
         {
-            var nodes = modelData.ObjectData.NodeCollection;
+            var nodes = modelData.ObjectData.NodesSet;
             var elements = modelData.ObjectData.GetAllElements();
             var groups = modelData.GroupData;
             using(var writer = new StreamWriter(fileName))
             {          
                 WriteHeaders(writer, nodes.Count, elements.Count());
-                WriteNodes(writer, nodes.GetObjects());
+                WriteNodes(writer, nodes.Values);
                 WriteElements(writer, elements);
                 WriteGroups(writer, groups);
             }

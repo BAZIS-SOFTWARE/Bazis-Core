@@ -27,8 +27,8 @@ namespace ModelController.MeshObjsUtility
                 var numbers = lineNodes.Split(' ');
                 var po = Convert.ToInt32(numbers[0]);
                 var p1 = Convert.ToInt32(numbers[1]);
-                var node0 = modelData.ObjectData.NodeCollection.Find(po);
-                var node1 = modelData.ObjectData.NodeCollection.Find(p1);
+                var node0 = modelData.ObjectData.NodesSet[po];
+                var node1 = modelData.ObjectData.NodesSet[p1];
                 var beam = new Beam(counter, new Node[] { node0, node1 })
                 { MasterColor = Color.Red };
                 yield return beam;

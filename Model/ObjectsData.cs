@@ -28,11 +28,11 @@ namespace Model
             E1DCollection = new ObjectsCollection<Beam>();
             E2DCollection = new ObjectsCollection<IElement2D>();
             E3DCollection = new ObjectsCollection<IElement3D>();
-            NodeCollection = new ObjectsCollection<Node>
-            {
-                { ObjType.Узел.ToString(), ObjType.Узел }
-            };
-            PointCollection = new ObjectsCollection<GeometryPoint>();
+            NodesSet = new ObjectsSet<Node>(ObjType.Узел.ToString(), ObjType.Узел);
+            //{
+            //    { ObjType.Узел.ToString(), ObjType.Узел }
+            //};
+            PointsSet = new ObjectsSet<GeometryPoint>(ObjType.Точка.ToString(), ObjType.Точка);
             LineCollection = new ObjectsCollection<Line>();
             Fig2DCollection = new ObjectsCollection<SurfaceFigure>();
             Fig3DCollection = new ObjectsCollection<VolumeFigure>();
@@ -53,7 +53,7 @@ namespace Model
 
         /// <inheritdoc/>
 
-        public IObjectsCollection<Node> NodeCollection { get; }
+        public IObjectsSet<Node> NodesSet { get; }
         /// <inheritdoc/>
 
         public IObjectsCollection<IElement3D> E3DCollection { get; }
@@ -65,7 +65,7 @@ namespace Model
         public IObjectsCollection<Beam> E1DCollection { get; }
         /// <inheritdoc/>
 
-        public IObjectsCollection<GeometryPoint> PointCollection { get; }
+        public IObjectsSet<GeometryPoint> PointsSet { get; }
         /// <inheritdoc/>
 
         public IObjectsCollection<Line> LineCollection { get; }
@@ -83,11 +83,11 @@ namespace Model
 
         public void ClearAll()
         {
-            PointCollection.Clear();
+            PointsSet.Clear();
             LineCollection.Clear();
             Fig2DCollection.Clear();
             Fig3DCollection.Clear();
-            NodeCollection.Clear();
+            NodesSet.Clear();
             E1DCollection.Clear();
             E2DCollection.Clear();
             E3DCollection.Clear();
@@ -100,7 +100,7 @@ namespace Model
             switch (objType)
             {
                 case ObjType.Точка:
-                    return PointCollection.Find(objNumbr);
+                    return PointsSet.ContainsKey(objNumbr) ? PointsSet[objNumbr] : null;
                 case ObjType.Линия:
                     return LineCollection.Find(objNumbr);
                 case ObjType.Фигура:
@@ -110,7 +110,7 @@ namespace Model
                 case ObjType.Фигура3D:
                     return Fig3DCollection.Find(objNumbr);
                 case ObjType.Узел:
-                    return NodeCollection.Find(objNumbr);
+                    return NodesSet.ContainsKey(objNumbr) ? NodesSet[objNumbr] : null;
                 case ObjType.Элемент:
                     return GetAllElements().First(x => x.Number == objNumbr);
                 case ObjType.Элемент1D:
@@ -129,7 +129,7 @@ namespace Model
         public IEnumerable<IModelObject> FindMany(int objNumbr)
         {
             IModelObject modelObject;
-            modelObject = PointCollection.Find(objNumbr);
+            modelObject = PointsSet.ContainsKey(objNumbr) ? PointsSet[objNumbr] : null;
             if (modelObject != null)
                 yield return modelObject;
             modelObject = LineCollection.Find(objNumbr);
@@ -141,7 +141,7 @@ namespace Model
             modelObject = Fig3DCollection.Find(objNumbr);
             if (modelObject != null)
                 yield return modelObject;
-            modelObject = NodeCollection.Find(objNumbr);
+            modelObject = NodesSet.ContainsKey(objNumbr) ? NodesSet[objNumbr] : null;
             if (modelObject != null)
                 yield return modelObject;
             modelObject = E1DCollection.Find(objNumbr);
@@ -205,9 +205,9 @@ namespace Model
             get
             {
                 var count = 0;
-                count += NodeCollection.Count;
+                count += NodesSet.Count;
                 count += NumberOfElements;
-                count += PointCollection.Count;
+                count += PointsSet.Count;
                 count += NumberOfFigures;
                 count += LineCollection.Count;
                 return count;
@@ -221,11 +221,11 @@ namespace Model
 
         public void ClearEmpty()
         {
-            PointCollection.ClearEmpty();
+            //PointCollection.ClearEmpty();
             LineCollection.ClearEmpty();
             Fig2DCollection.ClearEmpty();
             Fig3DCollection.ClearEmpty();
-            NodeCollection.ClearEmpty();
+            //NodeCollection.ClearEmpty();
             E1DCollection.ClearEmpty();
             E2DCollection.ClearEmpty();
             E3DCollection.ClearEmpty();
@@ -241,7 +241,7 @@ namespace Model
 
         public IEnumerable<IModelObject> GetAllObjects()
         {
-            foreach (var item in PointCollection.GetObjects())
+            foreach (var item in PointsSet.Values)
                 yield return item;
             foreach (var item in LineCollection.GetObjects())
                 yield return item;
@@ -249,7 +249,7 @@ namespace Model
                 yield return item;
             foreach (var item in Fig3DCollection.GetObjects())
                 yield return item;
-            foreach (var item in NodeCollection.GetObjects())
+            foreach (var item in NodesSet.Values)
                 yield return item;
             foreach (var item in E1DCollection.GetObjects())
                 yield return item;
@@ -308,9 +308,9 @@ namespace Model
                     ClearAll();
                     break;
                 case ObjType.Точка:
-                    foreach (var item in PointCollection.GetObjects())
+                    foreach (var item in PointsSet.Values)
                         item.ExistState = false;
-                    PointCollection.Clear();
+                    PointsSet.Clear();
                     LineCollection.Clear();
                     ClearFigures();
                     break;
@@ -335,9 +335,9 @@ namespace Model
                     Fig3DCollection.Clear();
                     break;
                 case ObjType.Узел:
-                    foreach (var item in NodeCollection.GetObjects())
+                    foreach (var item in NodesSet.Values)
                         item.ExistState = false;
-                    NodeCollection.Clear();
+                    NodesSet.Clear();
                     ClearElements();
                     break;
                 case ObjType.Элемент:
@@ -374,7 +374,7 @@ namespace Model
                 case ObjType.Объект:
                     return GetAllObjects();
                 case ObjType.Точка:
-                    return PointCollection.GetObjects();
+                    return PointsSet.Values;
                 case ObjType.Линия:
                     return LineCollection.GetObjects();
                 case ObjType.Фигура:
@@ -384,7 +384,7 @@ namespace Model
                 case ObjType.Фигура3D:
                     return Fig3DCollection.GetObjects();
                 case ObjType.Узел:
-                    return NodeCollection.GetObjects();
+                    return NodesSet.Values;
                 case ObjType.Элемент:
                     return GetAllElements();
                 case ObjType.Элемент1D:
@@ -406,7 +406,7 @@ namespace Model
                 case ObjType.Объект:
                     return NumberOfObjects;
                 case ObjType.Точка:
-                    return PointCollection.Count;
+                    return PointsSet.Count;
                 case ObjType.Линия:
                     return LineCollection.Count;
                 case ObjType.Фигура:
@@ -416,7 +416,7 @@ namespace Model
                 case ObjType.Фигура3D:
                     return Fig3DCollection.Count;
                 case ObjType.Узел:
-                    return NodeCollection.Count;
+                    return NodesSet.Count;
                 case ObjType.Элемент:
                     return NumberOfElements;
                 case ObjType.Элемент1D:
@@ -436,7 +436,7 @@ namespace Model
             switch (objType)
             {
                 case ObjType.Точка:
-                    return PointCollection.GetMaxNumber();
+                    return PointsSet.Max(x => x.Key);
                 case ObjType.Линия:
                     return LineCollection.GetMaxNumber();
                 case ObjType.Фигура:
@@ -446,7 +446,7 @@ namespace Model
                 case ObjType.Фигура3D:
                     return Fig3DCollection.GetMaxNumber();
                 case ObjType.Узел:
-                    return NodeCollection.GetMaxNumber();
+                    return NodesSet.Max(x => x.Key);
                 case ObjType.Элемент:
                     return GetMaxElementNumber();
                 case ObjType.Элемент1D:
@@ -504,11 +504,13 @@ namespace Model
         {
             Find(objType, objNumber).ExistState = false;
 
-            NodeCollection.Remove(false);
+            if(objType == ObjType.Точка)
+                PointsSet.Remove(objNumber);
             LineCollection.Remove(false);
             Fig2DCollection.Remove(false);
             Fig3DCollection.Remove(false);
-            NodeCollection.Remove(false);
+            if (objType == ObjType.Узел)
+                NodesSet.Remove(objNumber);
             E1DCollection.Remove(false);
             E2DCollection.Remove(false);
             E3DCollection.Remove(false);

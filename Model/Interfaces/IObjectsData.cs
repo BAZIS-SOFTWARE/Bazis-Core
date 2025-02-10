@@ -35,11 +35,11 @@ namespace Model.Interfaces
         /// <summary>
         /// NodeCollection
         /// </summary>
-        IObjectsCollection<Node> NodeCollection { get; }
+        IObjectsSet<Node> NodesSet { get; }
         /// <summary>
         /// PointCollection
         /// </summary>
-        IObjectsCollection<GeometryPoint> PointCollection { get; }
+        IObjectsSet<GeometryPoint> PointsSet { get; }
         /// <summary>
         /// LineCollection
         /// </summary>

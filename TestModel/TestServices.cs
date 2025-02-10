@@ -169,11 +169,14 @@ namespace TestModel
 
             var merger = new MergeObjects();
 
-            var mergedNodes = merger.Merge<Node>(coincidentNodes, model.ObjectData.NodeCollection.GetObjects().ToList());
+            var mergedNodes = merger.Merge(coincidentNodes, model.ObjectData.NodesSet.Values.ToList());
 
             //assert
-            model.ObjectData.NodeCollection.Clear();
-            model.ObjectData.NodeCollection.AddRange(ObjType.Узел.ToString(), mergedNodes);
+            model.ObjectData.NodesSet.Clear();
+
+            foreach (var item in mergedNodes)
+                model.ObjectData.NodesSet.Add(item.Number, item);
+
             var numb = mergedNodes.First().Number;
 
             foreach (var item in mergedNodes.Skip(1))
@@ -258,7 +261,7 @@ namespace TestModel
             };
             var nodes = new List<Node> { A, B, C, D, E, F, G, H };
             var objectsData = new ObjectsData();
-            objectsData.NodeCollection.AddRange(ObjType.Узел.ToString(), nodes);
+            nodes.ForEach(x => objectsData.NodesSet.Add(x.Number, x));
             objectsData.E2DCollection.AddRange(ObjType.Элемент2D.ToString(), elements2D);
             objectsData.E3DCollection.AddRange(ObjType.Элемент3D.ToString(), elements3D);
             return objectsData;
@@ -290,7 +293,7 @@ namespace TestModel
             };
             var nodes = new List<Node> { A, B, C, D, E, F, G, H };
             var objectsData = new ObjectsData();
-            objectsData.NodeCollection.AddRange(ObjType.Узел.ToString(), nodes);
+            nodes.ForEach(x =>  objectsData.NodesSet.Add(x.Number, x));
             objectsData.E2DCollection.AddRange(ObjType.Элемент2D.ToString(), elements2D);
             objectsData.E3DCollection.AddRange(ObjType.Элемент3D.ToString(), elements3D);
             return objectsData;

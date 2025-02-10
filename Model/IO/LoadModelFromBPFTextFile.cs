@@ -77,12 +77,12 @@ namespace Model.IO
                     var coordinates = tokens.Skip(1).ToArray();
                     var position = new Point3D(coordinates[0], coordinates[1], coordinates[2]);
                     var node = new Node(nodeIndex, position);
-                    nodes.Add(node);
+                    newMesh.ObjectData.NodesSet.Add(node.Number,node);
                 }
                 line = reader.ReadLine();
             }
 
-            newMesh.ObjectData.NodeCollection.AddRange(ObjType.Узел.ToString(),nodes);
+            //newMesh.ObjectData.NodeCollection.AddRange(ObjType.Узел.ToString(),nodes);
         }
 
         private void LoadElement(StreamReader reader, string elementType, ModelData newMesh)
@@ -118,7 +118,7 @@ namespace Model.IO
         {
             foreach (var nodeNumber in indeces)
             {
-                yield return modelData.ObjectData.NodeCollection.Find(nodeNumber);
+                yield return modelData.ObjectData.NodesSet[nodeNumber];
             }
         }
 
