@@ -568,15 +568,15 @@ namespace Model
                     NodesSet.SetBackColor();
                     break;
                 case ObjType.Элемент1D:
-                    foreach (var item in Fig3DCollection)
+                    foreach (var item in E1DCollection)
                         item.Value.SetBackColor();
                     break;
                 case ObjType.Элемент2D:
-                    foreach (var item in Fig3DCollection)
+                    foreach (var item in E2DCollection)
                         item.Value.SetBackColor();
                     break;
                 case ObjType.Элемент3D:
-                    foreach (var item in Fig3DCollection)
+                    foreach (var item in E3DCollection)
                         item.Value.SetBackColor();
                     break;
             }

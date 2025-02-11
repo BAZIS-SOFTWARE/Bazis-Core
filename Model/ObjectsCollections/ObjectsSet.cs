@@ -47,9 +47,9 @@ namespace Model.ObjectsCollections
 
         public ObjType ObjType { get; }
         /// <inheritdoc/>
-        public Color Color { get; private set; }
+        public Color Color { get; private set; } = Color.DarkGray;
         /// <inheritdoc/>
-        public ViewMode ViewMode { get; private set; }
+        public ViewMode ViewMode { get; private set; } = ViewMode.Point;
 
         /// <inheritdoc/>
 
