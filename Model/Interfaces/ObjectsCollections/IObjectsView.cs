@@ -47,6 +47,10 @@ namespace Model.Interfaces.ObjectsCollections
         /// <param name="color"></param>
         void SetColor(Color color);
         /// <summary>
+        /// SetBackColor
+        /// </summary>
+        void SetBackColor();
+        /// <summary>
         /// SetViewMode
         /// </summary>
         /// <param name="viewMode"></param>

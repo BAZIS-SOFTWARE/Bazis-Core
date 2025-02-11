@@ -1,4 +1,5 @@
 ﻿using Model.Interfaces;
+using Model.Interfaces.ObjectsCollections;
 using ModelController.ModelScenePresentator.GlObjsVertexCreators;
 using ModelController.ModelScenePresentator.Interfaces;
 using ModelControllerInterfaces;
@@ -24,8 +25,9 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
 
         public bool IsVolumeObjs { get; } = false;
 
-
-/// <inheritdoc/>
+        /// <inheritdoc/>
+        public ViewMode ViewMode { get; set; } = ViewMode.Line;
+        /// <inheritdoc/>
 
         public Tuple<int, int, int,int> CreateIndexes()
         {

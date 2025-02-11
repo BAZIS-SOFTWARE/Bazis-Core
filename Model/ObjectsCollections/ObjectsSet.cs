@@ -132,6 +132,13 @@ namespace Model.ObjectsCollections
             foreach (var item in objectsSet)
                 item.Value.Color = color;
         }
+/// <inheritdoc/>
+
+        public void SetBackColor()
+        {
+            foreach (var item in objectsSet)
+                item.Value.Color = Color;
+        }
         /// <inheritdoc/>
         public void SetViewMode(ViewMode viewMode)
         {

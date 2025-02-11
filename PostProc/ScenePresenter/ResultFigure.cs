@@ -14,8 +14,6 @@ namespace PostProc.ScenePresenter
         public ResultFigure(List<Point3D> points, Color color)
         {
             Color = color;
-            SlaveColor = color;
-            InitialColor = color;
 
             foreach (var point in points)
                 this.points.Add(new ResultPoint(point));

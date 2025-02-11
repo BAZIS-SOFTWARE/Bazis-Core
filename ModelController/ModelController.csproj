@@ -23,6 +23,9 @@
     <None Remove="MeshObjsCreator\Delone2D\**" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Remove="ModelScenePresentator\GlObjsPresenters\ObjsPresenter.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <None Remove="Icon.png" />
     <None Remove="Interfaces\Icon.png" />
   </ItemGroup>

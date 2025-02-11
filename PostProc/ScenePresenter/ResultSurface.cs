@@ -20,9 +20,7 @@ namespace PostProc.ScenePresenter
 
             this.points = points;
 
-            InitialColor = color;
             Color = color;
-            SlaveColor = color;
         }
         /// <summary>
         /// this

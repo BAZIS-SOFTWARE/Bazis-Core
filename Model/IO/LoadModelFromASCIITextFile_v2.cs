@@ -21,7 +21,7 @@ namespace Model.IO
     {
         public event Action<object, ILoaderEventArgs> LoadEvent;
         private Dictionary<int, Node> allNodes = new Dictionary<int, Node>();
-        private Dictionary<int, Element> allElements = new Dictionary<int, Element>();
+        private Dictionary<int, IElement> allElements = new Dictionary<int, IElement>();
 
         public IModelData Load(string path)
         {
@@ -180,7 +180,7 @@ namespace Model.IO
         }
 
         private void FillSet_v2<T>(ObjectsSet<T> set, IEnumerable<int> numbers)
-    where T : Element
+    where T : IElement
         {
             foreach (var number in numbers)
             {

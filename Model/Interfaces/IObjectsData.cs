@@ -23,35 +23,35 @@ namespace Model.Interfaces
         /// <summary>
         /// E3DCollection
         /// </summary>
-        ObjectsCollection<Element3D> E3DCollection { get; }
+        IObjectsCollection<Element3D> E3DCollection { get; }
         /// <summary>
         /// E2DCollection
         /// </summary>
-        ObjectsCollection<Element2D> E2DCollection { get; }
+        IObjectsCollection<Element2D> E2DCollection { get; }
         /// <summary>
         /// E1DCollection
         /// </summary>
-        ObjectsCollection<Beam> E1DCollection { get; }
+        IObjectsCollection<Beam> E1DCollection { get; }
         /// <summary>
         /// NodeCollection
         /// </summary>
-        ObjectsSet<Node> NodesSet { get; }
+        IObjectsSet<Node> NodesSet { get; }
         /// <summary>
         /// PointCollection
         /// </summary>
-        ObjectsSet<GeometryPoint> PointsSet { get; }
+        IObjectsSet<GeometryPoint> PointsSet { get; }
         /// <summary>
         /// LineCollection
         /// </summary>
-        ObjectsCollection<Line> LineCollection { get; }
+        IObjectsCollection<Line> LineCollection { get; }
         /// <summary>
         /// Fig2DCollection
         /// </summary>
-        ObjectsCollection<SurfaceFigure> Fig2DCollection { get; }
+        IObjectsCollection<SurfaceFigure> Fig2DCollection { get; }
         /// <summary>
         /// Fig3DCollection
         /// </summary>
-        ObjectsCollection<VolumeFigure> Fig3DCollection { get; }
+        IObjectsCollection<VolumeFigure> Fig3DCollection { get; }
         /// <summary>
         /// Count
         /// </summary>
@@ -121,6 +121,13 @@ namespace Model.Interfaces
         /// <returns></returns>
         IEnumerable<IModelObject> GetObjects(ObjType objType);
         /// <summary>
+        /// GetObjects
+        /// </summary>
+        /// <param name="objType"></param>
+        /// <param name="setName"></param>
+        /// <returns></returns>
+        IEnumerable<IModelObject> GetObjects(ObjType objType, string setName);
+        /// <summary>
         /// GetTypes
         /// </summary>
         ICollection<ObjType> ObjsTypes { get; }
@@ -129,5 +136,10 @@ namespace Model.Interfaces
         /// </summary>
         /// <returns></returns>
         int GetMaxNumber(ObjType objType);
+        /// <summary>
+        /// SetBackColor
+        /// </summary>
+        /// <param name="objType"></param>
+        void SetBackColor(ObjType objType);
     }
 }

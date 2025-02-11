@@ -20,6 +20,7 @@ namespace Model
     /// </summary>
     public class ObjectsData : IObjectsData
     {
+
         /// <summary>
         /// ObjectsData
         /// </summary>
@@ -30,10 +31,8 @@ namespace Model
             E3DCollection = new ObjectsCollection<Element3D>();
             NodesSet = new ObjectsSet<Node>(ObjType.Узел.ToString(), ObjType.Узел);
             NodesSet.SetColor(Color.FromArgb(0, 0, 255));
-            NodesSet.SetViewMode(ViewMode.Point);
             PointsSet = new ObjectsSet<GeometryPoint>(ObjType.Точка.ToString(), ObjType.Точка);
             PointsSet.SetColor(Color.FromArgb(255, 207, 64));
-            PointsSet.SetViewMode(ViewMode.Point);
             LineCollection = new ObjectsCollection<Line>();
             Fig2DCollection = new ObjectsCollection<SurfaceFigure>();
             Fig3DCollection = new ObjectsCollection<VolumeFigure>();
@@ -55,28 +54,28 @@ namespace Model
 
         /// <inheritdoc/>
 
-        public ObjectsSet<Node> NodesSet { get; }
+        public IObjectsSet<Node> NodesSet { get; }
         /// <inheritdoc/>
 
-        public ObjectsCollection<Element3D> E3DCollection { get; }
+        public IObjectsCollection<Element3D> E3DCollection { get; }
         /// <inheritdoc/>
 
-        public ObjectsCollection<Element2D> E2DCollection { get; }
+        public IObjectsCollection<Element2D> E2DCollection { get; }
         /// <inheritdoc/>
 
-        public ObjectsCollection<Beam> E1DCollection { get; }
+        public IObjectsCollection<Beam> E1DCollection { get; }
         /// <inheritdoc/>
 
-        public ObjectsSet<GeometryPoint> PointsSet { get; }
+        public IObjectsSet<GeometryPoint> PointsSet { get; }
         /// <inheritdoc/>
 
-        public ObjectsCollection<Line> LineCollection { get; }
+        public IObjectsCollection<Line> LineCollection { get; }
         /// <inheritdoc/>
 
-        public ObjectsCollection<SurfaceFigure> Fig2DCollection { get; }
+        public IObjectsCollection<SurfaceFigure> Fig2DCollection { get; }
         /// <inheritdoc/>
 
-        public ObjectsCollection<VolumeFigure> Fig3DCollection { get; }
+        public IObjectsCollection<VolumeFigure> Fig3DCollection { get; }
 
         /// <inheritdoc/>
 
@@ -218,6 +217,7 @@ namespace Model
         /// <inheritdoc/>
 
         public ICollection<ObjType> ObjsTypes { get; }
+
 
         /// <inheritdoc/>
 
@@ -516,6 +516,70 @@ namespace Model
             E1DCollection.Remove(false);
             E2DCollection.Remove(false);
             E3DCollection.Remove(false);
+        }
+/// <inheritdoc/>
+
+        public IEnumerable<IModelObject> GetObjects(ObjType objType, string setName)
+        {
+            switch (objType)
+            {
+                case ObjType.Точка:
+                    return PointsSet.Values;
+                case ObjType.Линия:
+                    return LineCollection[setName].Values;
+                case ObjType.Фигура2D:
+                    return Fig2DCollection[setName].Values;
+                case ObjType.Фигура3D:
+                    return Fig3DCollection[setName].Values;
+                case ObjType.Узел:
+                    return NodesSet.Values;
+                case ObjType.Элемент1D:
+                    return E1DCollection[setName].Values;
+                case ObjType.Элемент2D:
+                    return E2DCollection[setName].Values;
+                case ObjType.Элемент3D:
+                    return E3DCollection[setName].Values;
+                default:
+                    return null;
+            }
+        }
+/// <inheritdoc/>
+
+        public void SetBackColor(ObjType objType)
+        {
+            switch (objType)
+            {
+                case ObjType.Точка:
+                    PointsSet.SetBackColor();
+                    break;
+                case ObjType.Линия:
+                    foreach (var item in LineCollection)
+                        item.Value.SetBackColor();
+                    break;
+                case ObjType.Фигура2D:
+                    foreach (var item in Fig2DCollection)
+                        item.Value.SetBackColor();
+                    break;
+                case ObjType.Фигура3D:
+                    foreach (var item in Fig3DCollection)
+                        item.Value.SetBackColor();
+                    break;
+                case ObjType.Узел:
+                    NodesSet.SetBackColor();
+                    break;
+                case ObjType.Элемент1D:
+                    foreach (var item in Fig3DCollection)
+                        item.Value.SetBackColor();
+                    break;
+                case ObjType.Элемент2D:
+                    foreach (var item in Fig3DCollection)
+                        item.Value.SetBackColor();
+                    break;
+                case ObjType.Элемент3D:
+                    foreach (var item in Fig3DCollection)
+                        item.Value.SetBackColor();
+                    break;
+            }
         }
     }
 }

@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Model.Interfaces.ObjectsCollections;
 
 namespace ModelController.ModelScenePresentator.GlObjsPresenters
 {
@@ -21,6 +22,8 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
         /// <inheritdoc/>
 
         public PresenterType PresenterType { get; } = PresenterType.Point;
+        /// <inheritdoc/>
+        public ViewMode ViewMode { get; set; } = ViewMode.Point;
 
         /// <inheritdoc/>
 

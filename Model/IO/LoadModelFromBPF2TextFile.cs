@@ -124,7 +124,7 @@ namespace Model.IO
         {
             foreach (var nodeNumber in indeces)
             {
-                yield return (Node)modelData.ObjectData.NodesSet[nodeNumber];
+                yield return modelData.ObjectData.NodesSet[nodeNumber];
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using Model.Interfaces;
+using Model.Interfaces.ObjectsCollections;
 using System;
 using System.Collections.Generic;
 
@@ -27,6 +28,10 @@ namespace ModelControllerInterfaces
     /// </summary>
     public interface IObjsPresenter : IEnumerable<IModelObject>
     {
+        /// <summary>
+        /// ViewMode
+        /// </summary>
+        ViewMode ViewMode { get; set; }
         /// <summary>
         /// IsVolumeObjs
         /// </summary>
