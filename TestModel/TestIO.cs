@@ -94,8 +94,6 @@ namespace TestModel
                     break;
                 case ObjType.Линия:
                     break;
-                case ObjType.Поверхность:
-                    break;
                 case ObjType.Фигура2D:
                     break;
                 case ObjType.Фигура3D:

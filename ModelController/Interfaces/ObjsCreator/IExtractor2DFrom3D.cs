@@ -21,6 +21,6 @@ namespace ModelControllerInterfaces.ObjsCreator
         /// <param name="StartNumber"></param>
         /// <param name="elements"></param>
         /// <returns></returns>
-        IEnumerable<IElement2D> Create(int StartNumber, IEnumerable<IElement3D> elements);
+        IEnumerable<Element2D> Create(int StartNumber, IEnumerable<IElement3D> elements);
     }
 }

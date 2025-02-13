@@ -15,7 +15,7 @@ namespace ModelController.MeshObjsCreator
     public class Extract1DFrom2D : IExtractor1DFrom2D
     {
         /// <inheritdoc/>
-        public IEnumerable<ILineObject<Node>> Create(int startNumber, IElement2D[] elements)
+        public IEnumerable<Beam> Create(int startNumber, IElement2D[] elements)
         {
             var usedElements = new HashSet<Tuple<Node, Node>>();
             foreach (var element in elements)

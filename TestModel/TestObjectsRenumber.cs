@@ -61,7 +61,6 @@ namespace TestModel
 
         [TestMethod]
         [DataRow(ObjType.Линия)]
-        [DataRow(ObjType.Поверхность)]
         public void ObjectRenumber_ShouldFail_WhenNotImplementObjType(ObjType ot)
         {
             Assert.ThrowsException<NotImplementedException>(() => new ObjectsRenumber().Renumber(new ModelData().ObjectData, ot));
