@@ -259,8 +259,8 @@ namespace TestModel
             model.ObjectData.Clear(objType);
             model.GroupData.ClearNotExisted();
             //assert            
-            Assert.AreEqual(model.ObjectData.NodesSet.Count, nNumbs, 0);
-            Assert.AreEqual(model.GroupData.FindMany(objType).Count(), grps, 0);
+            Assert.AreEqual(model.ObjectData.NodesSet.Count, nNumbs);
+            Assert.AreEqual(model.GroupData.FindMany(objType).Count(), grps);
 
         }
 

@@ -29,27 +29,13 @@ namespace Model
             E1DCollection = new ObjectsCollection<Beam>();
             E2DCollection = new ObjectsCollection<Element2D>();
             E3DCollection = new ObjectsCollection<Element3D>();
-            NodesSet = new ObjectsSet<Node>(ObjType.Узел.ToString(), ObjType.Узел);
+            NodesSet = new ObjectsSet<Node>(ObjType.Узел.ToString());
             NodesSet.SetColor(Color.FromArgb(0, 0, 255));
-            PointsSet = new ObjectsSet<GeometryPoint>(ObjType.Точка.ToString(), ObjType.Точка);
+            PointsSet = new ObjectsSet<GeometryPoint>(ObjType.Точка.ToString());
             PointsSet.SetColor(Color.FromArgb(255, 207, 64));
             LineCollection = new ObjectsCollection<Line>();
             Fig2DCollection = new ObjectsCollection<SurfaceFigure>();
             Fig3DCollection = new ObjectsCollection<VolumeFigure>();
-
-
-            ObjsTypes = new Collection<ObjType>()
-                {
-                    ObjType.Точка,
-                    ObjType.Линия,
-                    ObjType.Фигура2D,
-                    ObjType.Фигура3D,
-                    ObjType.Узел,
-                    ObjType.Элемент1D,
-                    ObjType.Элемент2D,
-                    ObjType.Элемент3D
-                };
-
         }
 
         /// <inheritdoc/>
@@ -208,9 +194,6 @@ namespace Model
                 return count;
             }
         }
-        /// <inheritdoc/>
-
-        public ICollection<ObjType> ObjsTypes { get; }
 
 
         /// <inheritdoc/>
@@ -223,12 +206,6 @@ namespace Model
             E1DCollection.ClearEmpty();
             E2DCollection.ClearEmpty();
             E3DCollection.ClearEmpty();
-        }
-        /// <inheritdoc/>
-
-        public bool Contains(ObjType objType)
-        {
-            return ObjsTypes.Contains(objType);
         }
 
         /// <inheritdoc/>
@@ -341,12 +318,18 @@ namespace Model
                     ClearElements();
                     break;
                 case ObjType.Элемент1D:
+                    foreach (var item in E1DCollection.GetObjects())
+                        item.ExistState = false;
                     E1DCollection.Clear();
                     break;
                 case ObjType.Элемент2D:
+                    foreach (var item in E2DCollection.GetObjects())
+                        item.ExistState = false;
                     E2DCollection.Clear();
                     break;
                 case ObjType.Элемент3D:
+                    foreach (var item in E3DCollection.GetObjects())
+                        item.ExistState = false;
                     E3DCollection.Clear();
                     break;
                 default:
@@ -612,6 +595,30 @@ namespace Model
                         var res = E3DCollection.Where(x => x.Value.ContainsKey(objNumber));
                         return res.Count() > 0 ? res.First().Value : null;
                     }
+            }
+        }
+        /// <inheritdoc/>
+
+        public IEnumerable<ISetInfo> GetSetsInfo(ObjType objType)
+        {
+            switch (objType)
+            {
+                case ObjType.Точка:
+                    return new ISetInfo[] { PointsSet };
+                case ObjType.Линия:
+                    return LineCollection.Objects;
+                case ObjType.Фигура2D:
+                    return Fig2DCollection.Objects;
+                case ObjType.Фигура3D:
+                    return Fig3DCollection.Objects;
+                case ObjType.Узел:
+                    return new ISetInfo[] { NodesSet };
+                case ObjType.Элемент1D:
+                    return E1DCollection.Objects;
+                case ObjType.Элемент2D:
+                    return E2DCollection.Objects;
+                default:
+                    return E3DCollection.Objects;
             }
         }
     }

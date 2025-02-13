@@ -30,7 +30,7 @@ namespace Model.IO
 
                 sw.WriteLine(ver);
 
-                foreach (var item in model.ObjectData.ObjsTypes)
+                foreach (ObjType item in Enum.GetValues(typeof(ObjType)))
                 {
                     sw.WriteLine("");
                     if (item == ObjType.Узел)

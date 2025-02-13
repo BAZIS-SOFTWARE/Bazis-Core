@@ -1,6 +1,8 @@
-﻿using Model.Interfaces;
+﻿using Model.GeometryObjects;
+using Model.Interfaces;
 using Model.Interfaces.MeshObjects;
 using Model.Interfaces.ObjectsCollections;
+using Model.MeshObjects;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -21,11 +23,27 @@ namespace Model.ObjectsCollections
         /// ObjectsSet
         /// </summary>
         /// <param name="name"></param>
-        /// /// <param name="objType"></param>
-        public ObjectsSet(string name, ObjType objType)
+        public ObjectsSet(string name)
         {
             Name = name;
-            ObjType = objType;
+
+            if (typeof(T) == typeof(Node))
+                ObjType = ObjType.Узел;
+            else if (typeof(T) == typeof(Beam))
+                ObjType = ObjType.Элемент1D;
+            else if (typeof(T) == typeof(Element2D))
+                ObjType = ObjType.Элемент2D;
+            else if (typeof(T) == typeof(Element3D))
+                ObjType = ObjType.Элемент3D;
+            else if (typeof(T) == typeof(GeometryPoint))
+                ObjType = ObjType.Точка;
+            else if (typeof(T) == typeof(Line))
+                ObjType = ObjType.Линия;
+            else if (typeof(T) == typeof(SurfaceFigure))
+                ObjType = ObjType.Фигура2D;
+            else
+                ObjType = ObjType.Фигура3D;
+
         }
 
         Dictionary<int,T> objectsSet = new Dictionary<int, T>();

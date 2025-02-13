@@ -8,6 +8,7 @@ using System.Linq;
 using MathNet.Numerics;
 using System.Xml.Linq;
 using Model.Interfaces.ObjectsCollections;
+using Model.MeshObjects;
 
 namespace Model.ObjectsCollections
 {
@@ -38,9 +39,9 @@ namespace Model.ObjectsCollections
         Dictionary<string, ObjectsSet<T>> objects = new Dictionary<string, ObjectsSet<T>>();
         /// <inheritdoc/>
 
-        public void Add(string setName, ObjType objType)
+        public void Add(string setName)
         {
-            objects.Add(setName, new ObjectsSet<T>(setName, objType));
+            objects.Add(setName, new ObjectsSet<T>(setName));
         }
 
         /// <inheritdoc/>
@@ -48,7 +49,7 @@ namespace Model.ObjectsCollections
         public void Add(string setName, T addObj)
         {
             if (!objects.ContainsKey(setName))
-                objects.Add(setName, new ObjectsSet<T>(setName, addObj.ObjType));
+                objects.Add(setName, new ObjectsSet<T>(setName));
             if (!ContainsNumber(addObj.Number))
                 objects[setName].Add(addObj.Number, addObj);
             else 
@@ -58,7 +59,7 @@ namespace Model.ObjectsCollections
         public void AddRange(string setName, IEnumerable<T> addObjs)
         {
             if (!objects.ContainsKey(setName))
-                objects.Add(setName, new ObjectsSet<T>(setName, addObjs.First().ObjType));
+                objects.Add(setName, new ObjectsSet<T>(setName));
 
             foreach (var addObj in addObjs)
             {

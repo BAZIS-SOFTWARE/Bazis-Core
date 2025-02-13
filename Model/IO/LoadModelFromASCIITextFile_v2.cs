@@ -153,7 +153,7 @@ namespace Model.IO
         {
             if (objsType == ObjType.Элемент1D)
             {
-                model.ObjectData.E1DCollection.Add(setName, objsType);
+                model.ObjectData.E1DCollection.Add(setName);
                 var set1D = model.ObjectData.E1DCollection[setName];
                 set1D.SetViewMode(ViewMode.Line);
                 set1D.SetColor(color);
@@ -162,7 +162,7 @@ namespace Model.IO
 
             else if (objsType == ObjType.Элемент2D)
             {
-                model.ObjectData.E2DCollection.Add(setName, objsType);
+                model.ObjectData.E2DCollection.Add(setName);
                 var set2D = model.ObjectData.E2DCollection[setName];
                 set2D.SetViewMode(ViewMode.LineSurface);
                 set2D.SetColor(color);
@@ -171,7 +171,7 @@ namespace Model.IO
     
             else
             {
-                model.ObjectData.E3DCollection.Add(setName, objsType);
+                model.ObjectData.E3DCollection.Add(setName);
                 var set3D = model.ObjectData.E3DCollection[setName];
                 set3D.SetViewMode(ViewMode.LineSurface);
                 set3D.SetColor(color);

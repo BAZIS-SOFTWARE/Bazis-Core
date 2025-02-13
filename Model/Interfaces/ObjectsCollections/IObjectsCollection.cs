@@ -48,8 +48,7 @@ namespace Model.Interfaces.ObjectsCollections
         /// Add set
         /// </summary>
         /// <param name="setName"></param>
-        /// /// <param name="objType"></param>
-        void Add(string setName, ObjType objType);
+        void Add(string setName);
 
         /// <summary>
         /// Add set and object

@@ -76,12 +76,6 @@ namespace Model.Interfaces
         /// <param name="objType"></param>
         void Clear(ObjType objType);
         /// <summary>
-        /// ContainsCollection
-        /// </summary>
-        /// <param name="objType"></param>
-        /// <returns></returns>
-        bool Contains(ObjType objType);
-        /// <summary>
         /// Move
         /// </summary>
         /// <param name="objType"></param>
@@ -132,16 +126,18 @@ namespace Model.Interfaces
         /// <returns></returns>
         IEnumerable<IModelObject> GetObjects(ObjType objType, string setName);
         /// <summary>
-        /// GetObjects
+        /// GetSetsInfo
+        /// </summary>
+        /// <param name="objType"></param>
+        /// <returns></returns>
+        IEnumerable<ISetInfo> GetSetsInfo(ObjType objType);
+        /// <summary>
+        /// GetSetInfo
         /// </summary>
         /// <param name="objType"></param>
         /// <param name="objNumber"></param>
         /// <returns></returns>
         ISetInfo GetSetInfo(ObjType objType, int objNumber);
-        /// <summary>
-        /// GetTypes
-        /// </summary>
-        ICollection<ObjType> ObjsTypes { get; }
         /// <summary>
         /// GetLastNumber
         /// </summary>
