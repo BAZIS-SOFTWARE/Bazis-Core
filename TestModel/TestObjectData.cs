@@ -19,9 +19,9 @@ namespace TestModel
     {
         [DataTestMethod]
         [DataRow(ObjType.Узел, 3, DisplayName = "Узел")]
-        [DataRow(ObjType.Элемент, 8, DisplayName = "Элемент")]
+        //[DataRow(ObjType.Элемент, 8, DisplayName = "Элемент")]
         [DataRow(ObjType.Элемент3D, 8, DisplayName = "Элемент3D")]
-        [DataRow(ObjType.Объект, 8, DisplayName = "Объект")]
+        //[DataRow(ObjType.Объект, 8, DisplayName = "Объект")]
         public void GetLastObjsNumber(ObjType objType, int objsNumbr)
         {
             //assing
@@ -159,7 +159,7 @@ namespace TestModel
             else if (reqType == "Узлы")
                 Assert.AreEqual(objsCount, model.ObjectData.NodesSet.Count);
             else
-                Assert.AreEqual(objsCount, model.ObjectData.Count(ObjType.Объект));
+                Assert.AreEqual(objsCount, model.ObjectData.GetAllObjects().Count());
         }
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
@@ -196,7 +196,7 @@ namespace TestModel
         [DataTestMethod]
         [DataRow(ObjType.Линия)]
         [DataRow(ObjType.Точка)]
-        public void RemoveObjectsWithSameTypes(ObjType objType)
+        public void RemoveGeometryByTypes(ObjType objType)
         {
             //assign
             var model = new ModelData();
@@ -221,7 +221,7 @@ namespace TestModel
         [DataTestMethod]
         [DataRow(ObjType.Узел, 0, 0)]
         [DataRow(ObjType.Элемент3D, 4, 0)]
-        [DataRow(ObjType.Объект, 0, 0)]
+        //[DataRow(ObjType.Объект, 0, 0)]
         public void RemoveObjectsSyncWithGroups(ObjType objType, int nNumbs, int grps)
         {
             //assing
@@ -268,7 +268,7 @@ namespace TestModel
         [DataRow(1)]
         [DataRow(0)]
         [DataRow(2)]
-        public void RemoveSomeObjectsByExistState(int objNumber)
+        public void RemoveNodesByNumber(int objNumber)
         {
             //assing
             var model = new ModelData();
@@ -277,12 +277,56 @@ namespace TestModel
             model.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
 
             //act
-            model.ObjectData.Remove(ObjType.Узел, objNumber);
-            model.ObjectData.ClearEmpty();
+            model.ObjectData.NodesSet.Remove(objNumber);           
+            model.ObjectData.ClearNotExisted();
 
             //assert
             var res = model.ObjectData.Find(ObjType.Узел, objNumber);
             if (res != null)
+                throw new Exception();
+        }
+
+        [DataTestMethod]
+        [DataRow(1)]
+        [DataRow(5)]
+        [DataRow(2)]
+        public void RemoveElementsByNumber(int objNumber)
+        {
+            //assing
+            var model = new ModelData();
+            model.Loader = new LoadModelFromASCIITextFile();
+
+            model.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
+
+            //act
+            model.ObjectData.E3DCollection.Remove(objNumber);
+            model.ObjectData.E3DCollection.ClearNotExisted();
+
+            //assert
+            var res = model.ObjectData.Find(ObjType.Элемент3D, objNumber);
+            if (res != null)
+                throw new Exception();
+        }
+
+        [DataTestMethod]
+        [DataRow(ObjType.Узел)]
+        [DataRow(ObjType.Элемент3D)]
+        public void RemoveMeshByNumber(ObjType objType)
+        {
+            //assing
+            var model = new ModelData();
+            model.Loader = new LoadModelFromASCIITextFile();
+
+            model.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
+
+            //act
+            model.ObjectData.Clear(objType);
+            model.ObjectData.E3DCollection.ClearNotExisted();
+            model.ObjectData.E3DCollection.ClearEmpty();
+
+            //assert
+            var res = model.ObjectData.Count(objType);
+            if (res != 0)
                 throw new Exception();
         }
 

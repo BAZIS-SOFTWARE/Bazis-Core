@@ -15,10 +15,14 @@ namespace TestModel
     [TestClass]
     public class TestObjectsRenumber
     {
-        [TestMethod]
-        public void BaseCheck()
+        [DataTestMethod]
+        [DataRow(ObjType.Элемент1D)]
+        [DataRow(ObjType.Элемент2D)]
+        [DataRow(ObjType.Элемент2D)]
+        [DataRow(ObjType.Элемент3D)]
+        public void BaseCheck(ObjType expType)
         {
-            var expectedTypes = new[] { ObjType.Элемент1D, ObjType.Элемент2D, ObjType.Элемент2D, ObjType.Элемент3D};
+            //var expectedTypes = new[] { ObjType.Элемент1D, ObjType.Элемент2D, ObjType.Элемент2D, ObjType.Элемент3D};
             var beamNodes = new Node[] { new Node(0, new Point3D()), new Node(1, new Point3D(1, 1, 1)) };
             var quadNodes = new Node[] { new Node(0, new Point3D()), new Node(1, new Point3D(1, 0, 0)),
                 new Node(2, new Point3D(0, 1, 0)), new Node(3, new Point3D(1, 1, 0)) };
@@ -34,13 +38,13 @@ namespace TestModel
             modelData.ObjectData.E3DCollection.Add(ObjType.Элемент3D.ToString(),new Tetra(6, tetraNodes));
 
             var renumber = new ObjectsRenumber();
-            renumber.Renumber(modelData.ObjectData, ObjType.Элемент);
+            renumber.Renumber(modelData.ObjectData, expType);
 
             var i = 0;
-            foreach (var data in modelData.ObjectData.GetObjects(ObjType.Элемент))
+            foreach (var data in modelData.ObjectData.GetObjects(expType))
             {
                 Assert.AreEqual(i, data.Number);
-                Assert.AreEqual(expectedTypes[i], data.ObjType);
+                Assert.AreEqual(expType, data.ObjType);
                 i++;
             }
         }
@@ -48,7 +52,6 @@ namespace TestModel
 
         [TestMethod]
         [DataRow(ObjType.Точка)]
-        [DataRow(ObjType.Фигура)]
         [DataRow(ObjType.Фигура3D)]
         [DataRow(ObjType.Фигура2D)]
         public void ObjectRenumber_ShouldFail_WhenGeometry(ObjType ot)

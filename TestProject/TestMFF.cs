@@ -515,7 +515,7 @@ namespace TestProject
 
         private (List<IElement>, List<IElement>) SetUpTest(float[] input, float[] expected)
         {
-            var heatData = new HeatData(new Group("",ObjType.Объект), "ARC;10;100;25 Load 0 49 baseLine|refLine;5;startNodes;startNodes");
+            var heatData = new HeatData(new Group("",ObjType.Элемент3D), "ARC;10;100;25 Load 0 49 baseLine|refLine;5;startNodes;startNodes");
 
             var baseLine = new Group("base", ObjType.Узел);
             var refLine = new Group("ref", ObjType.Узел);

@@ -11,10 +11,7 @@ namespace Model.Interfaces
     /// </summary>
     public enum ObjType
     {
-        /// <summary>
-        /// Объект
-        /// </summary>
-        Объект,
+
         /// <summary>
         /// Точка
         /// </summary>
@@ -28,10 +25,6 @@ namespace Model.Interfaces
         /// </summary>
         Поверхность,
         /// <summary>
-        /// Фигура
-        /// </summary>
-        Фигура,
-        /// <summary>
         /// Фигура2D
         /// </summary>
         Фигура2D,
@@ -43,10 +36,6 @@ namespace Model.Interfaces
         /// Узел
         /// </summary>
         Узел,
-        /// <summary>
-        /// Элемент
-        /// </summary>
-        Элемент,
         /// <summary>
         /// Элемент1D
         /// </summary>

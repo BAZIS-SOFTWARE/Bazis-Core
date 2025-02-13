@@ -31,7 +31,7 @@ namespace TestModel
             var pentas = model.ObjectData.E3DCollection.GetObjects().Where(x => x.ElementKind == Model.Interfaces.MeshObjects.ElementKind.Пента);
 
             //assert
-            Assert.AreEqual(model.ObjectData.Count(ObjType.Элемент), elCount);
+            Assert.AreEqual(model.ObjectData.GetAllElements().Count(), elCount);
         }
 
         [TestMethod]
@@ -90,15 +90,11 @@ namespace TestModel
             //assert
             switch (objType)
             {
-                case ObjType.Объект:
-                    break;
                 case ObjType.Точка:
                     break;
                 case ObjType.Линия:
                     break;
                 case ObjType.Поверхность:
-                    break;
-                case ObjType.Фигура:
                     break;
                 case ObjType.Фигура2D:
                     break;
@@ -106,8 +102,6 @@ namespace TestModel
                     break;
                 case ObjType.Узел:
                     Assert.AreEqual(model.ObjectData.NodesSet.Count(), sets);
-                    break;
-                case ObjType.Элемент:
                     break;
                 case ObjType.Элемент1D:
                     Assert.AreEqual(model.ObjectData.E1DCollection.Count(), sets);
@@ -200,7 +194,7 @@ namespace TestModel
             //loader.Load(@"C:\Bazis_newGUI\MESH\RadicMesh\Plate2DATA.ASC");
             //assert
             Assert.AreEqual(nodeCount, model.ObjectData.Count(ObjType.Узел));
-            Assert.AreEqual(elemCount, model.ObjectData.Count(ObjType.Элемент));
+            Assert.AreEqual(elemCount, model.ObjectData.GetAllElements().Count());
             Assert.AreEqual(elem1D, model.ObjectData.Count(ObjType.Элемент1D));
         }
 
@@ -213,8 +207,8 @@ namespace TestModel
             var saver = new SaveModelToASCIITextFile();
             saver.Save(modelBeforeSaving, @"..\..\..\Examples\VIsual-Mesh\result.ASC");
             var modelAfterSaving = loader.Load(@"..\..\..\Examples\VIsual-Mesh\result.ASC");
-            Assert.IsTrue(modelBeforeSaving.ObjectData.Count(ObjType.Объект) == 
-                modelAfterSaving.ObjectData.Count(ObjType.Объект));
+            Assert.IsTrue(modelBeforeSaving.ObjectData.GetAllObjects().Count() == 
+                modelAfterSaving.ObjectData.GetAllObjects().Count());
         }
 
         [TestMethod]
@@ -226,7 +220,7 @@ namespace TestModel
             var model = import.Load(path);
             var element = model.ObjectData.E3DCollection.GetObjects().First();
             Assert.AreEqual(8, model.ObjectData.Count(ObjType.Узел));
-            Assert.AreEqual(1, model.ObjectData.Count(ObjType.Элемент));
+            Assert.AreEqual(1, model.ObjectData.GetAllElements().Count());
             var surfaceNumber = element.NumberOfSides;
             Assert.AreEqual(6, surfaceNumber);
         }
@@ -265,7 +259,7 @@ namespace TestModel
             var model = import.Load(path);
             var element = model.ObjectData.E3DCollection.First();
             Assert.AreEqual(nbrNodes, model.ObjectData.Count(ObjType.Узел));
-            Assert.AreEqual(nbrEl, model.ObjectData.Count(ObjType.Элемент));
+            Assert.AreEqual(nbrEl, model.ObjectData.GetAllElements().Count());
         }
 
         [DataTestMethod]

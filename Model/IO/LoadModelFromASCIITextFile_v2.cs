@@ -74,7 +74,7 @@ namespace Model.IO
             LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка элементов..."));
             var elLastNumber = 0;
             if (model.ObjectData.GetAllElements().Count() > 0)
-                elLastNumber = model.ObjectData.GetMaxNumber(ObjType.Элемент);
+                elLastNumber = model.ObjectData.GetMaxElementNumber();
 
             for (var i = 0; i < count; i++)
             {

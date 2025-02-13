@@ -63,6 +63,14 @@ namespace Model.Interfaces
         /// </summary>
         void ClearAll();
         /// <summary>
+        /// ClearEmpty
+        /// </summary>
+        void ClearEmpty();
+        /// <summary>
+        /// ClearNotExisted
+        /// </summary>
+        void ClearNotExisted();
+        /// <summary>
         /// Clear
         /// </summary>
         /// <param name="objType"></param>
@@ -88,10 +96,6 @@ namespace Model.Interfaces
         /// <param name="angle"></param>
         /// <returns></returns>
         void Rotate(ObjType objType, Point3D axis, float angle);
-        /// <summary>
-        /// ClearNotExisted
-        /// </summary>
-        void ClearEmpty();
         /// <summary>
         /// Find
         /// </summary>
@@ -128,6 +132,13 @@ namespace Model.Interfaces
         /// <returns></returns>
         IEnumerable<IModelObject> GetObjects(ObjType objType, string setName);
         /// <summary>
+        /// GetObjects
+        /// </summary>
+        /// <param name="objType"></param>
+        /// <param name="objNumber"></param>
+        /// <returns></returns>
+        ISetInfo GetSetInfo(ObjType objType, int objNumber);
+        /// <summary>
         /// GetTypes
         /// </summary>
         ICollection<ObjType> ObjsTypes { get; }
@@ -141,5 +152,10 @@ namespace Model.Interfaces
         /// </summary>
         /// <param name="objType"></param>
         void SetBackColor(ObjType objType);
+        /// <summary>
+        /// GetMaxElementNumber
+        /// </summary>
+        /// <returns></returns>
+        int GetMaxElementNumber();
     }
 }

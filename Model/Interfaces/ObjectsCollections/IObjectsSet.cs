@@ -10,15 +10,16 @@ namespace Model.Interfaces.ObjectsCollections
     /// IObjectsSet
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IObjectsSet<T> : IObjectsView,IDictionary<int, T> where T : IModelObject
+    public interface IObjectsSet<T> : ISetInfo,IDictionary<int, T> where T : IModelObject
     {
-        /// <summary>
-        /// Name
-        /// </summary>
-        string Name { get; set; }
         /// <summary>
         /// ObjType
         /// </summary>
         ObjType ObjType { get; }
+        /// <summary>
+        /// ClearNotExisted
+        /// </summary>
+        void ClearNotExisted();
+
     }
 }

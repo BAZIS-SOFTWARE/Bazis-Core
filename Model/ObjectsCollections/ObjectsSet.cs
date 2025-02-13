@@ -106,7 +106,7 @@ namespace Model.ObjectsCollections
 
         public bool Remove(int key)
         {
-            return objectsSet.Remove(key);
+            return objectsSet[key].ExistState = false;
         }
 /// <inheritdoc/>
 
@@ -144,6 +144,21 @@ namespace Model.ObjectsCollections
         {
             if (ObjType != ObjType.Узел | ObjType != ObjType.Точка)
                 ViewMode = viewMode;
+        }
+/// <inheritdoc/>
+
+        public void ClearNotExisted()
+        {
+            var temp = new Dictionary<int, T>();
+            //var notExistedNumbs = objectsSet.Where(x => x.Value.ExistState == false).Select(x => x.Key);
+            var existed = objectsSet.Where(x => x.Value.ExistState == true);
+
+            foreach (var item in existed)
+            {
+                temp.Add(item.Key, item.Value);
+            }
+
+            objectsSet = temp;
         }
     }
 }

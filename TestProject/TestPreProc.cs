@@ -149,10 +149,10 @@ namespace TestProject
 
             var valuableData = new List<IValuableData>()
             {
-                new MediaData(new Group("",ObjType.Объект),medInfo),
-                new HeatData(new Group("",ObjType.Объект),heatInfo),
-                new MatData(new Group("",ObjType.Объект),matInfo),
-                new ClampData(new Group("",ObjType.Объект),clampInfo)
+               new MediaData(new Group("",ObjType.Элемент2D),medInfo),
+                new HeatData(new Group("",ObjType.Элемент3D),heatInfo),
+                new MatData(new Group("",ObjType.Элемент3D),matInfo),
+                new ClampData(new Group("",ObjType.Узел),clampInfo)
             };
 
             var preProc = new PreProc.PreProc();
@@ -174,9 +174,9 @@ namespace TestProject
 
             var valuableData = new List<IValuableData>()
             {
-                new MediaData(new Group("",ObjType.Объект),medInfo),
-                new HeatData(new Group("",ObjType.Объект),heatInfo),
-                new MatData(new Group("",ObjType.Объект),matInfo)
+               new MediaData(new Group("",ObjType.Элемент2D),medInfo),
+                new HeatData(new Group("",ObjType.Элемент3D),heatInfo),
+                new MatData(new Group("",ObjType.Элемент3D),matInfo),
             };
             var preProc = new PreProc.PreProc();
             Assert.ThrowsException<Exception>(() => preProc.CalcCompDataV1(valuableData, pt, projPath));
@@ -195,10 +195,10 @@ namespace TestProject
 
             var valuableData = new List<IValuableData>()
             {
-                new MediaData(new Group("",ObjType.Объект),medInfo),
-                new HeatData(new Group("",ObjType.Объект),heatInfo),
-                new MatData(new Group("",ObjType.Объект),matInfo),
-                new ClampData(new Group("",ObjType.Объект),clampInfo)
+               new MediaData(new Group("",ObjType.Элемент2D),medInfo),
+                new HeatData(new Group("",ObjType.Элемент3D),heatInfo),
+                new MatData(new Group("",ObjType.Элемент3D),matInfo),
+                new ClampData(new Group("",ObjType.Узел),clampInfo)
             };
             var preProc = new PreProc.PreProc();
             preProc.CalcCompDataV1(valuableData, ProcessType.Welding, projPath);
@@ -221,10 +221,10 @@ namespace TestProject
 
             var valuableData = new List<IValuableData>()
             {
-                new MediaData(new Group("",ObjType.Объект),medInfo),
-                new HeatData(new Group("",ObjType.Объект),heatInfo),
-                new MatData(new Group("",ObjType.Объект),matInfo),
-                new ClampData(new Group("",ObjType.Объект),clampInfo)
+                new MediaData(new Group("",ObjType.Элемент2D),medInfo),
+                new HeatData(new Group("",ObjType.Элемент3D),heatInfo),
+                new MatData(new Group("",ObjType.Элемент3D),matInfo),
+                new ClampData(new Group("",ObjType.Узел),clampInfo)
             };
             var preProc = new PreProc.PreProc();
             preProc.CalcCompDataV1(valuableData, ProcessType.Welding, projPath);
@@ -270,7 +270,7 @@ namespace TestProject
         public void PreProc_GenerateTSF_ShouldFail(string path)
         {
             var resData = new List<IValuableData>();
-            var group = new Group("test",ObjType.Объект);
+            var group = new Group("test",ObjType.Узел);
             var groupData = new GroupData();
             groupData.Add(group);
             var textData = new LoadTaskDataTextFormat().Load(path, groupData);
@@ -287,10 +287,10 @@ namespace TestProject
         {
             var resData = new List<IValuableData>
             {
-                new MediaData(new Group("",ObjType.Объект),"air Коэф.теплоотдачи.воздух 20 0 1500 *"),
-                new HeatData(new Group("",ObjType.Объект),"ARC;15;75;15 Элемент3D_2 0 95.08694 Узел_5|Узел_6;2;Узел_7;Узел_7;0|0|0|0"),
-                new ClampData(new Group("",ObjType.Объект),"Узел_8 Жесткое X * 0 1500 *"),
-                new MatData(new Group("",ObjType.Объект),"mat Сталь_20ХМ 0 1500 *")
+                new MediaData(new Group("",ObjType.Элемент2D),"air Коэф.теплоотдачи.воздух 20 0 1500 *"),
+                new HeatData(new Group("",ObjType.Элемент3D),"ARC;15;75;15 Элемент3D_2 0 95.08694 Узел_5|Узел_6;2;Узел_7;Узел_7;0|0|0|0"),
+                new ClampData(new Group("",ObjType.Узел),"Узел_8 Жесткое X * 0 1500 *"),
+                new MatData(new Group("",ObjType.Элемент3D),"mat Сталь_20ХМ 0 1500 *")
             };
 
             var preProc = new PreProc.PreProc();

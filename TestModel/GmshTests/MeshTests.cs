@@ -379,7 +379,7 @@ namespace TestModel.GmshTests
             
             //act
             modelData.ObjectData.Remove(ObjType.Узел, delNodeNumber);   
-            modelData.ObjectData.E2DCollection.ClearEmpty();
+            modelData.ObjectData.E2DCollection.ClearNotExisted();
 
             //assert
             Assert.AreEqual(expElementsAfterDel, modelData.ObjectData.E2DCollection.Count);

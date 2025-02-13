@@ -13,7 +13,7 @@ namespace ModelController.MeshObjsUtility
         public IEnumerable<int> Find(IObjectsData objsData)
         {
             if (objsData.NodesSet.Count == 0) throw new Exception("Модель не содержит узлов!");
-            var elements = objsData.GetObjects(ObjType.Элемент).Select(x => (IElement)x);
+            var elements = objsData.GetAllElements();
             var finder = new InterfacedNodesFinder();
             var interfaceNodes = finder.Find(elements);
 

@@ -23,14 +23,14 @@ namespace ModelController.MeshObjsUtility
                             node.SetNumber(number++);
                     }
                     break;
-                case ObjType.Элемент:
-                    {
-                        foreach (var elem in objectsData.GetAllElements())
-                            elem.SetNumber(number++);
-                    }
-                    break;
+                //case ObjType.Элемент:
+                //    {
+                //        foreach (var elem in objectsData.GetAllElements())
+                //            elem.SetNumber(number++);
+                //    }
+                //    break;
 
-                case ObjType.Фигура:
+
                 case ObjType.Фигура2D:
                 case ObjType.Фигура3D:
                 case ObjType.Точка:

@@ -23,7 +23,7 @@ namespace Model.Interfaces.ObjectsCollections
         /// Remove
         /// </summary>
         /// <param name="state"></param>
-        void Remove(bool state);
+        void Remove(int objNumber);
         /// <summary>
         /// Remove
         /// </summary>
@@ -89,6 +89,10 @@ namespace Model.Interfaces.ObjectsCollections
         IEnumerable<T> GetObjects();
         /// <summary>
         /// ClearNotExisted
+        /// </summary>
+        void ClearNotExisted();
+        /// <summary>
+        /// ClearEmpty
         /// </summary>
         void ClearEmpty();
         /// <summary>

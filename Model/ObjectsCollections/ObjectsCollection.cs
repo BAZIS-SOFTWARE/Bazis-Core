@@ -90,7 +90,16 @@ namespace Model.ObjectsCollections
         }
 /// <inheritdoc/>
 
-        public bool ContainsName(string collName)
+        public void ClearNotExisted()
+        {
+            foreach (var item in objects)
+                item.Value.ClearNotExisted();
+        }
+
+
+/// <inheritdoc/>
+
+public bool ContainsName(string collName)
         {
             return objects.ContainsKey(collName);
         }
@@ -154,16 +163,11 @@ namespace Model.ObjectsCollections
         }
 /// <inheritdoc/>
 
-        public void Remove(bool state)
+        public void Remove(int objNumber)
         {
             foreach (var item in objects)
             {
-                var filtObjs = item.Value.Where(y => y.Value.ExistState != state).ToList();
-
-                objects[item.Key].Clear();
-
-                foreach (var filtObj in filtObjs)
-                    objects[item.Key].Add(filtObj);
+                item.Value.Remove(objNumber);
             }
         }
 /// <inheritdoc/>

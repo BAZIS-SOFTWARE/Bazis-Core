@@ -31,7 +31,7 @@ namespace Model.Interfaces.ObjectsCollections
     /// <summary>
     /// IObjectsView
     /// </summary>
-    public interface IObjectsView
+    public interface ISetView
     {
         /// <summary>
         /// Color
