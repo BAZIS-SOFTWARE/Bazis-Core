@@ -27,11 +27,11 @@ namespace TestModel
             var fig2D = new SurfaceFigure(0, new GeometrySurface[] { surface });
 
             var model = new ModelData();
-            model.ObjectData.Fig2DCollection.Add(ObjType.Фигура2D.ToString(), fig2D);
+            model.ObjectData.SurfaceCollection.Add(ObjType.Поверхность.ToString(), fig2D);
 
             //act
             var creator = new PresentersCreator();
-            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.Fig2DCollection.GetObjects(),false);
+            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.SurfaceCollection.GetObjects(),false);
             var inds = presentator.CreateIndexes();
             var ptrs = presentator.CreatePointers(inds.Item1);
             var coords = presentator.CreateVertexes(inds.Item2, "координаты");
@@ -76,11 +76,11 @@ namespace TestModel
 
             };
             var model = new ModelData();
-            model.ObjectData.Fig2DCollection.Add(ObjType.Фигура2D.ToString(), new SurfaceFigure(0,surfaces.ToArray()));
+            model.ObjectData.SurfaceCollection.Add(ObjType.Поверхность.ToString(), new SurfaceFigure(0,surfaces.ToArray()));
 
             //act
             var creator = new PresentersCreator();
-            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.Fig2DCollection.GetObjects(), false);
+            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.SurfaceCollection.GetObjects(), false);
             var inds = presentator.CreateIndexes();
             var ptrs = presentator.CreatePointers(inds.Item1);
             var coords = presentator.CreateVertexes(inds.Item2, "координаты");

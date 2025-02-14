@@ -19,7 +19,7 @@ namespace ModelControllerInterfaces.MeshObjsUtility
         /// </summary>
         /// <param name="elements"></param>
         /// <returns></returns>
-        IEnumerable<Line> CalcElemsNormals(IEnumerable<ISurfaceElement> elements);
+        IEnumerable<Curve> CalcElemsNormals(IEnumerable<ISurfaceElement> elements);
 
     }
 }

@@ -12,9 +12,27 @@ namespace Model.Interfaces
     /// ISurface
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface ISurface<T> : INormal,ISquare, IVertexObject<T>
+    public interface ISurface<T> : INormal,ISquare
         where T : IPoint
     {
+        //Position3D Position
+        /// <summary>
+        /// Number
+        /// </summary>
+        int Number { get; }
+        /// <summary>
+        /// NumberOfPoints
+        /// </summary>
+        int NumberOfPoints { get; }
+        /// <summary>
+        /// View state flag
+        /// </summary>
+        bool ViewState { get; set; }
+        /// <summary>
+        /// GetVertexes
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<T> GetVertexes();
         /// <summary>
         /// Поменять порядок обхода узлов
         /// </summary>

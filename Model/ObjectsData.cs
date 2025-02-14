@@ -33,9 +33,9 @@ namespace Model
             NodesSet.SetColor(Color.FromArgb(0, 0, 255));
             PointsSet = new ObjectsSet<GeometryPoint>(ObjType.Точка.ToString());
             PointsSet.SetColor(Color.FromArgb(255, 207, 64));
-            LineCollection = new ObjectsCollection<Line>();
-            Fig2DCollection = new ObjectsCollection<SurfaceFigure>();
-            Fig3DCollection = new ObjectsCollection<VolumeFigure>();
+            CurveCollection = new ObjectsCollection<Curve>();
+            SurfaceCollection = new ObjectsCollection<SurfaceFigure>();
+            VolumeCollection = new ObjectsCollection<VolumeFigure>();
         }
 
         /// <inheritdoc/>
@@ -55,13 +55,13 @@ namespace Model
         public IObjectsSet<GeometryPoint> PointsSet { get; }
         /// <inheritdoc/>
 
-        public IObjectsCollection<Line> LineCollection { get; }
+        public IObjectsCollection<Curve> CurveCollection { get; }
         /// <inheritdoc/>
 
-        public IObjectsCollection<SurfaceFigure> Fig2DCollection { get; }
+        public IObjectsCollection<SurfaceFigure> SurfaceCollection { get; }
         /// <inheritdoc/>
 
-        public IObjectsCollection<VolumeFigure> Fig3DCollection { get; }
+        public IObjectsCollection<VolumeFigure> VolumeCollection { get; }
 
         /// <inheritdoc/>
 
@@ -71,9 +71,9 @@ namespace Model
         public void ClearAll()
         {
             PointsSet.Clear();
-            LineCollection.Clear();
-            Fig2DCollection.Clear();
-            Fig3DCollection.Clear();
+            CurveCollection.Clear();
+            SurfaceCollection.Clear();
+            VolumeCollection.Clear();
             NodesSet.Clear();
             E1DCollection.Clear();
             E2DCollection.Clear();
@@ -88,12 +88,12 @@ namespace Model
             {
                 case ObjType.Точка:
                     return PointsSet.ContainsKey(objNumbr) ? PointsSet[objNumbr] : null;
-                case ObjType.Линия:
-                    return LineCollection.Find(objNumbr);
-                case ObjType.Фигура2D:
-                    return Fig2DCollection.Find(objNumbr);
-                case ObjType.Фигура3D:
-                    return Fig3DCollection.Find(objNumbr);
+                case ObjType.Кривая:
+                    return CurveCollection.Find(objNumbr);
+                case ObjType.Поверхность:
+                    return SurfaceCollection.Find(objNumbr);
+                case ObjType.Объем:
+                    return VolumeCollection.Find(objNumbr);
                 case ObjType.Узел:
                     return NodesSet.ContainsKey(objNumbr) ? NodesSet[objNumbr] : null;
                 case ObjType.Элемент1D:
@@ -113,13 +113,13 @@ namespace Model
             modelObject = PointsSet.ContainsKey(objNumbr) ? PointsSet[objNumbr] : null;
             if (modelObject != null)
                 yield return modelObject;
-            modelObject = LineCollection.Find(objNumbr);
+            modelObject = CurveCollection.Find(objNumbr);
             if (modelObject != null)
                 yield return modelObject;
-            modelObject = Fig2DCollection.Find(objNumbr);
+            modelObject = SurfaceCollection.Find(objNumbr);
             if (modelObject != null)
                 yield return modelObject;
-            modelObject = Fig3DCollection.Find(objNumbr);
+            modelObject = VolumeCollection.Find(objNumbr);
             if (modelObject != null)
                 yield return modelObject;
             modelObject = NodesSet.ContainsKey(objNumbr) ? NodesSet[objNumbr] : null;
@@ -134,7 +134,7 @@ namespace Model
             modelObject = E3DCollection.Find(objNumbr);
             if (modelObject != null)
                 yield return modelObject;
-            modelObject = LineCollection.Find(objNumbr);
+            modelObject = CurveCollection.Find(objNumbr);
             if (modelObject != null)
                 yield return modelObject;
         }
@@ -176,8 +176,8 @@ namespace Model
             get
             {
                 var count = 0;
-                count += Fig2DCollection.Count;
-                count += Fig3DCollection.Count;
+                count += SurfaceCollection.Count;
+                count += VolumeCollection.Count;
                 return count;
             }
         }
@@ -190,7 +190,7 @@ namespace Model
                 count += NumberOfElements;
                 count += PointsSet.Count;
                 count += NumberOfFigures;
-                count += LineCollection.Count;
+                count += CurveCollection.Count;
                 return count;
             }
         }
@@ -200,9 +200,9 @@ namespace Model
 
         public void ClearEmpty()
         {
-            LineCollection.ClearEmpty();
-            Fig2DCollection.ClearEmpty();
-            Fig3DCollection.ClearEmpty();
+            CurveCollection.ClearEmpty();
+            SurfaceCollection.ClearEmpty();
+            VolumeCollection.ClearEmpty();
             E1DCollection.ClearEmpty();
             E2DCollection.ClearEmpty();
             E3DCollection.ClearEmpty();
@@ -214,11 +214,11 @@ namespace Model
         {
             foreach (var item in PointsSet.Values)
                 yield return item;
-            foreach (var item in LineCollection.GetObjects())
+            foreach (var item in CurveCollection.GetObjects())
                 yield return item;
-            foreach (var item in Fig2DCollection.GetObjects())
+            foreach (var item in SurfaceCollection.GetObjects())
                 yield return item;
-            foreach (var item in Fig3DCollection.GetObjects())
+            foreach (var item in VolumeCollection.GetObjects())
                 yield return item;
             foreach (var item in NodesSet.Values)
                 yield return item;
@@ -244,9 +244,9 @@ namespace Model
         IEnumerable<IModelObject> GetAllFigures()
         {
 
-            foreach (var item in Fig2DCollection.GetObjects())
+            foreach (var item in SurfaceCollection.GetObjects())
                 yield return item;
-            foreach (var item in Fig3DCollection.GetObjects())
+            foreach (var item in VolumeCollection.GetObjects())
                 yield return item;
         }
 
@@ -264,17 +264,17 @@ namespace Model
 
         void ClearFigures()
         {
-            Fig2DCollection.Clear();
-            Fig3DCollection.Clear();
+            SurfaceCollection.Clear();
+            VolumeCollection.Clear();
         }
 /// <inheritdoc/>
 
         public void ClearNotExisted()
         {
             PointsSet.ClearNotExisted();
-            LineCollection.ClearNotExisted();
-            Fig2DCollection.ClearNotExisted();
-            Fig3DCollection.ClearNotExisted();
+            CurveCollection.ClearNotExisted();
+            SurfaceCollection.ClearNotExisted();
+            VolumeCollection.ClearNotExisted();
             NodesSet.ClearNotExisted();
             E1DCollection.ClearNotExisted();
             E2DCollection.ClearNotExisted();
@@ -293,23 +293,23 @@ namespace Model
                     foreach (var item in PointsSet.Values)
                         item.ExistState = false;
                     PointsSet.Clear();
-                    LineCollection.Clear();
+                    CurveCollection.Clear();
                     ClearFigures();
                     break;
-                case ObjType.Линия:
-                    foreach (var item in LineCollection.GetObjects())
+                case ObjType.Кривая:
+                    foreach (var item in CurveCollection.GetObjects())
                         item.ExistState = false;
-                    LineCollection.Clear();
+                    CurveCollection.Clear();
                     break;
-                case ObjType.Фигура2D:
-                    foreach (var item in Fig2DCollection.GetObjects())
+                case ObjType.Поверхность:
+                    foreach (var item in SurfaceCollection.GetObjects())
                         item.ExistState = false;
-                    Fig2DCollection.Clear();
+                    SurfaceCollection.Clear();
                     break;
-                case ObjType.Фигура3D:
-                    foreach (var item in Fig3DCollection.GetObjects())
+                case ObjType.Объем:
+                    foreach (var item in VolumeCollection.GetObjects())
                         item.ExistState = false;
-                    Fig3DCollection.Clear();
+                    VolumeCollection.Clear();
                     break;
                 case ObjType.Узел:
                     foreach (var item in NodesSet.Values)
@@ -345,12 +345,12 @@ namespace Model
             {
                 case ObjType.Точка:
                     return PointsSet.Values;
-                case ObjType.Линия:
-                    return LineCollection.GetObjects();
-                case ObjType.Фигура2D:
-                    return Fig2DCollection.GetObjects();
-                case ObjType.Фигура3D:
-                    return Fig3DCollection.GetObjects();
+                case ObjType.Кривая:
+                    return CurveCollection.GetObjects();
+                case ObjType.Поверхность:
+                    return SurfaceCollection.GetObjects();
+                case ObjType.Объем:
+                    return VolumeCollection.GetObjects();
                 case ObjType.Узел:
                     return NodesSet.Values;
                 case ObjType.Элемент1D:
@@ -371,12 +371,12 @@ namespace Model
             {
                 case ObjType.Точка:
                     return PointsSet.Count;
-                case ObjType.Линия:
-                    return LineCollection.Count;
-                case ObjType.Фигура2D:
-                    return Fig2DCollection.Count;
-                case ObjType.Фигура3D:
-                    return Fig3DCollection.Count;
+                case ObjType.Кривая:
+                    return CurveCollection.Count;
+                case ObjType.Поверхность:
+                    return SurfaceCollection.Count;
+                case ObjType.Объем:
+                    return VolumeCollection.Count;
                 case ObjType.Узел:
                     return NodesSet.Count;
                 case ObjType.Элемент1D:
@@ -397,12 +397,12 @@ namespace Model
             {
                 case ObjType.Точка:
                     return PointsSet.Max(x => x.Key);
-                case ObjType.Линия:
-                    return LineCollection.GetMaxNumber();
-                case ObjType.Фигура2D:
-                    return Fig2DCollection.GetMaxNumber();
-                case ObjType.Фигура3D:
-                    return Fig3DCollection.GetMaxNumber();
+                case ObjType.Кривая:
+                    return CurveCollection.GetMaxNumber();
+                case ObjType.Поверхность:
+                    return SurfaceCollection.GetMaxNumber();
+                case ObjType.Объем:
+                    return VolumeCollection.GetMaxNumber();
                 case ObjType.Узел:
                     return NodesSet.Max(x => x.Key);
                 case ObjType.Элемент1D:
@@ -464,16 +464,14 @@ namespace Model
                 case ObjType.Точка:
                     PointsSet.Remove(objNumber);
                     break;
-                case ObjType.Линия:
-                    LineCollection.Remove(objNumber);
+                case ObjType.Кривая:
+                    CurveCollection.Remove(objNumber);
                     break;
                 case ObjType.Поверхность:
+                    SurfaceCollection.Remove(objNumber);
                     break;
-                case ObjType.Фигура2D:
-                    Fig2DCollection.Remove(objNumber);
-                    break;
-                case ObjType.Фигура3D:
-                    Fig3DCollection.Remove(objNumber);
+                case ObjType.Объем:
+                    VolumeCollection.Remove(objNumber);
                     break;
                 case ObjType.Узел:
                     NodesSet.Remove(objNumber);
@@ -499,12 +497,12 @@ namespace Model
             {
                 case ObjType.Точка:
                     return PointsSet.Values;
-                case ObjType.Линия:
-                    return LineCollection[setName].Values;
-                case ObjType.Фигура2D:
-                    return Fig2DCollection[setName].Values;
-                case ObjType.Фигура3D:
-                    return Fig3DCollection[setName].Values;
+                case ObjType.Кривая:
+                    return CurveCollection[setName].Values;
+                case ObjType.Поверхность:
+                    return SurfaceCollection[setName].Values;
+                case ObjType.Объем:
+                    return VolumeCollection[setName].Values;
                 case ObjType.Узел:
                     return NodesSet.Values;
                 case ObjType.Элемент1D:
@@ -526,16 +524,16 @@ namespace Model
                 case ObjType.Точка:
                     PointsSet.SetBackColor();
                     break;
-                case ObjType.Линия:
-                    foreach (var item in LineCollection)
+                case ObjType.Кривая:
+                    foreach (var item in CurveCollection)
                         item.Value.SetBackColor();
                     break;
-                case ObjType.Фигура2D:
-                    foreach (var item in Fig2DCollection)
+                case ObjType.Поверхность:
+                    foreach (var item in SurfaceCollection)
                         item.Value.SetBackColor();
                     break;
-                case ObjType.Фигура3D:
-                    foreach (var item in Fig3DCollection)
+                case ObjType.Объем:
+                    foreach (var item in VolumeCollection)
                         item.Value.SetBackColor();
                     break;
                 case ObjType.Узел:
@@ -563,19 +561,19 @@ namespace Model
             {
                 case ObjType.Точка:
                     return PointsSet.ContainsKey(objNumber) ? PointsSet : null;
-                case ObjType.Линия:
+                case ObjType.Кривая:
                     {
-                        var res = LineCollection.Where(x => x.Value.ContainsKey(objNumber));
+                        var res = CurveCollection.Where(x => x.Value.ContainsKey(objNumber));
                         return res.Count() > 0 ? res.First().Value : null;
                     }
-                case ObjType.Фигура2D:
+                case ObjType.Поверхность:
                     {
-                        var res = Fig2DCollection.Where(x => x.Value.ContainsKey(objNumber));
+                        var res = SurfaceCollection.Where(x => x.Value.ContainsKey(objNumber));
                         return res.Count() > 0 ? res.First().Value : null;
                     }
-                case ObjType.Фигура3D:
+                case ObjType.Объем:
                     {
-                        var res = Fig3DCollection.Where(x => x.Value.ContainsKey(objNumber));
+                        var res = VolumeCollection.Where(x => x.Value.ContainsKey(objNumber));
                         return res.Count() > 0 ? res.First().Value : null;
                     }
                 case ObjType.Узел:
@@ -605,12 +603,12 @@ namespace Model
             {
                 case ObjType.Точка:
                     return new ISetInfo[] { PointsSet };
-                case ObjType.Линия:
-                    return LineCollection.Objects;
-                case ObjType.Фигура2D:
-                    return Fig2DCollection.Objects;
-                case ObjType.Фигура3D:
-                    return Fig3DCollection.Objects;
+                case ObjType.Кривая:
+                    return CurveCollection.Objects;
+                case ObjType.Поверхность:
+                    return SurfaceCollection.Objects;
+                case ObjType.Объем:
+                    return VolumeCollection.Objects;
                 case ObjType.Узел:
                     return new ISetInfo[] { NodesSet };
                 case ObjType.Элемент1D:

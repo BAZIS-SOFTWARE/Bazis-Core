@@ -34,7 +34,7 @@ namespace Model.GeometryObjects
         public override int NumberOfPoints { get { return GetVertexes().Count(); } }
 /// <inheritdoc/>
 
-        public override ObjType ObjType { get; } = ObjType.Фигура2D;
+        public override ObjType ObjType { get; } = ObjType.Поверхность;
 
 /// <inheritdoc/>
 

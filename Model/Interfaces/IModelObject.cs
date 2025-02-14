@@ -19,19 +19,15 @@ namespace Model.Interfaces
         /// <summary>
         /// Поверхности
         /// </summary>
-        Линия,
+        Кривая,
         /// <summary>
         /// Поверхность
         /// </summary>
         Поверхность,
         /// <summary>
-        /// Фигура2D
+        /// Объем
         /// </summary>
-        Фигура2D,
-        /// <summary>
-        /// Фигура3D
-        /// </summary>
-        Фигура3D,
+        Объем,
         /// <summary>
         /// Узел
         /// </summary>

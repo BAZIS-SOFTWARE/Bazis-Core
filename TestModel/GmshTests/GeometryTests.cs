@@ -31,7 +31,7 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow(@"\CAD\Cilindr.step", 6, ObjType.Линия)]
+        [DataRow(@"\CAD\Cilindr.step", 6, ObjType.Кривая)]
         [DataRow(@"\CAD\Cilindr.step", 4, ObjType.Точка)]
         public void GetGeometryObjectsTest(string fileName, int numbOfObjs, ObjType objType)
         {
@@ -39,7 +39,7 @@ namespace TestModel.GmshTests
             controller.Open(modelFolder + fileName, ref ierr);
 
             IEnumerable<IModelObject> objects;
-            if (objType == ObjType.Линия)
+            if (objType == ObjType.Кривая)
                 objects = controller.CreateLines();
             else
                 objects = controller.CreateControlPoints();

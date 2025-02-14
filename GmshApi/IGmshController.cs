@@ -236,7 +236,7 @@ namespace GmshApi
         /// Возвращает список кривых
         /// </summary>
         /// <returns>Список кривых</returns>
-        List<Line> CreateLines();
+        List<Curve> CreateLines();
         /// <summary>
         /// Возвращает список контрольных точек
         /// </summary>
