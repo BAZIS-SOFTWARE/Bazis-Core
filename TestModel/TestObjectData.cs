@@ -194,7 +194,7 @@ namespace TestModel
         }
 
         [DataTestMethod]
-        [DataRow(ObjType.Линия)]
+        [DataRow(ObjType.Кривая)]
         [DataRow(ObjType.Точка)]
         public void RemoveGeometryByTypes(ObjType objType)
         {
@@ -206,11 +206,11 @@ namespace TestModel
             var point1 = new GeometryPoint(1, new Geometry.Point3D());
             var point2 = new GeometryPoint(3, new Geometry.Point3D());
 
-            var line = new Line(2, new GeometryPoint[] { point0, point1 });
+            var line = new Curve(2, new GeometryPoint[] { point0, point1 });
 
             model.ObjectData.PointsSet.Add(point0.Number, point0);
             model.ObjectData.PointsSet.Add(point1.Number, point1);
-            model.ObjectData.LineCollection.Add(ObjType.Линия.ToString(), line);
+            model.ObjectData.CurveCollection.Add(ObjType.Кривая.ToString(), line);
             model.ObjectData.PointsSet.Add(point2.Number, point2);
 
             model.ObjectData.Clear(objType);

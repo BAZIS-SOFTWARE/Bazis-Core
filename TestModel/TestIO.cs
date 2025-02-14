@@ -92,11 +92,11 @@ namespace TestModel
             {
                 case ObjType.Точка:
                     break;
-                case ObjType.Линия:
+                case ObjType.Кривая:
                     break;
-                case ObjType.Фигура2D:
+                case ObjType.Поверхность:
                     break;
-                case ObjType.Фигура3D:
+                case ObjType.Объем:
                     break;
                 case ObjType.Узел:
                     Assert.AreEqual(model.ObjectData.NodesSet.Count(), sets);

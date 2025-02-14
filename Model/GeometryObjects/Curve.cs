@@ -5,18 +5,18 @@ using Model.Interfaces;
 
 namespace Model.GeometryObjects
 {
-    public class Line : ModelObject, ILineObject<GeometryPoint>
+    public class Curve : ModelObject, ILineObject<GeometryPoint>
     {
         private GeometryPoint[] points;
 
-        public Line(int number, GeometryPoint[] points) : base(number)
+        public Curve(int number, GeometryPoint[] points) : base(number)
         {
             NumberOfPoints = points.Length;
             this.points = points;
         }
 
         /// <inheritdoc/>
-        public override ObjType ObjType { get; } = ObjType.Линия;
+        public override ObjType ObjType { get; } = ObjType.Кривая;
         /// <inheritdoc/>
 
         public override int NumberOfPoints { get; }

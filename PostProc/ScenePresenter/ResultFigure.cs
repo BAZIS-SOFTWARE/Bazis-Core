@@ -47,7 +47,7 @@ namespace PostProc.ScenePresenter
         /// <inheritdoc/>
         public bool ExistState { get; set; } = true;
         /// <inheritdoc/>
-        public ObjType ObjType { get; } = ObjType.Фигура2D;
+        public ObjType ObjType { get; } = ObjType.Поверхность;
 /// <inheritdoc/>
 
         public int NumberOfPoints { get { return points.Count; } }

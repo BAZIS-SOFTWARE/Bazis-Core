@@ -37,12 +37,12 @@ namespace Model.ObjectsCollections
                 ObjType = ObjType.Элемент3D;
             else if (typeof(T) == typeof(GeometryPoint))
                 ObjType = ObjType.Точка;
-            else if (typeof(T) == typeof(Line))
-                ObjType = ObjType.Линия;
+            else if (typeof(T) == typeof(Curve))
+                ObjType = ObjType.Кривая;
             else if (typeof(T) == typeof(SurfaceFigure))
-                ObjType = ObjType.Фигура2D;
+                ObjType = ObjType.Поверхность;
             else
-                ObjType = ObjType.Фигура3D;
+                ObjType = ObjType.Объем;
 
         }
 

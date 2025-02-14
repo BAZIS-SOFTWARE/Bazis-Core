@@ -52,15 +52,15 @@ namespace TestModel
 
         [TestMethod]
         [DataRow(ObjType.Точка)]
-        [DataRow(ObjType.Фигура3D)]
-        [DataRow(ObjType.Фигура2D)]
+        [DataRow(ObjType.Объем)]
+        [DataRow(ObjType.Поверхность)]
         public void ObjectRenumber_ShouldFail_WhenGeometry(ObjType ot)
         {
             Assert.ThrowsException<Exception>( () => new ObjectsRenumber().Renumber(new ModelData().ObjectData, ot));
         }
 
         [TestMethod]
-        [DataRow(ObjType.Линия)]
+        [DataRow(ObjType.Кривая)]
         public void ObjectRenumber_ShouldFail_WhenNotImplementObjType(ObjType ot)
         {
             Assert.ThrowsException<NotImplementedException>(() => new ObjectsRenumber().Renumber(new ModelData().ObjectData, ot));

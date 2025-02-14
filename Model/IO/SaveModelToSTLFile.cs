@@ -18,7 +18,7 @@ using Model.GeometryObjects;
 
             using (BinaryWriter writer = new BinaryWriter(File.Open(path, FileMode.OpenOrCreate)))
             {
-                var objects = model.ObjectData.Fig2DCollection.GetObjects();
+                var objects = model.ObjectData.SurfaceCollection.GetObjects();
 
                 //сохранение координат узлов
                 var ver = Assembly.GetExecutingAssembly().GetName().Version;

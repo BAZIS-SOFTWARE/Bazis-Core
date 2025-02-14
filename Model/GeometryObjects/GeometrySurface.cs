@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Model.GeometryObjects
 {
-    public class GeometrySurface : ModelObject, ISurface<GeometryPoint>
+    public class GeometrySurface : ISurface<GeometryPoint>
     {
         GeometryPoint[] points;
         /// <summary>
@@ -16,7 +16,7 @@ namespace Model.GeometryObjects
         /// </summary>
         /// <param name="number"></param>
         /// <param name="points"></param>
-        public GeometrySurface(int number, GeometryPoint[] points) : base(number)
+        public GeometrySurface(int number, GeometryPoint[] points)
         {
             if (points.Length < 3)
                 throw new Exception("Для создания поверхности требуется не меньше 3-х узлов!");
@@ -24,7 +24,9 @@ namespace Model.GeometryObjects
             points.RoundSort(); //Anticlockwise(nodes);
             this.points = points;
 
-            Color = Color.FromArgb(224, 0, 177);
+            Number = number;
+
+            //Color = Color.FromArgb(224, 0, 177);
         }       
         /// <summary>
         /// this
@@ -48,10 +50,14 @@ namespace Model.GeometryObjects
 
         /// <inheritdoc/>
 
-        public override ObjType ObjType { get; } = ObjType.Поверхность;
+        //public override ObjType ObjType { get; } = ObjType.Поверхность;
         /// <inheritdoc/>
 
-        public override int NumberOfPoints { get { return points.Length; } }
+        public int NumberOfPoints { get { return points.Length; } }
+
+        public bool ViewState { get; set; } = true;
+
+        public int Number { get; }
 
         /// <inheritdoc/>
 
@@ -80,7 +86,7 @@ namespace Model.GeometryObjects
         }
         /// <inheritdoc/>
 
-        public override IEnumerable<Point3D> GetCoordinates()
+        public IEnumerable<Point3D> GetCoordinates()
         {
             foreach (var node in points)
             {
@@ -114,7 +120,7 @@ points.Contains(this.points[2].Position, new Point3DEqualityComparer()))
         }
         /// <inheritdoc/>
 
-        public override Point3D CalcCentr()
+        public Point3D CalcCentr()
         {
             var center = new Point3D();
 

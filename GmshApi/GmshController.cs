@@ -1791,9 +1791,9 @@ namespace GmshApi.GmshController
         }
         /// <inheritdoc/>
 
-        public List<Line> CreateLines()
+        public List<Curve> CreateLines()
         {
-            var lines = new List<Line>();
+            var lines = new List<Curve>();
             double[] minBounds;
             double[] maxBounds;
             int[] tags;
@@ -1825,7 +1825,7 @@ namespace GmshApi.GmshController
                         var linePoints = new GeometryPoint[] { new GeometryPoint(num++, pair.Item1), new GeometryPoint(num++, pair.Item2) };
                         points.AddRange(linePoints);
                     }
-                    var line = new Line(tags[i], points.ToArray());
+                    var line = new Curve(tags[i], points.ToArray());
                     lines.Add(line);
                 }
             }
