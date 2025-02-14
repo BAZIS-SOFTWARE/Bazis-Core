@@ -7,6 +7,7 @@ using Model.Interfaces.MeshObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Model.Interfaces;
 
 namespace TestModel.ModelControllerTests
 {
@@ -57,18 +58,18 @@ namespace TestModel.ModelControllerTests
 
 
             var model = new ModelData();
-            model.ObjectData.E3DCollection.Add(el0);
-            model.ObjectData.E3DCollection.Add(el1);
+            model.ObjectData.E3DCollection.Add(ObjType.Элемент3D.ToString(), el0);
+            model.ObjectData.E3DCollection.Add(ObjType.Элемент3D.ToString(), el1);
 
 
             var creators = new Extract2DFrom3D();
 
-            var lastNumber = model.ObjectData.E2DCollection.Count > 0 ?
-                model.ObjectData.E2DCollection.Last().Number : -1;
+            var maxNumber = model.ObjectData.E2DCollection.Count > 0 ?
+                model.ObjectData.E2DCollection.GetMaxNumber() : 0;
 
-            var currentNumber = lastNumber + 1;
+            var currentNumber = maxNumber + 1;
 
-            var element2D = creators.Create(currentNumber, model.ObjectData.E3DCollection.ToArray());
+            var element2D = creators.Create(currentNumber, model.ObjectData.E3DCollection.GetObjects());
 
             var inside = new ElementSurface(currentNumber, 0, new Node[] { nodes[3], nodes[2], nodes[1] });
             foreach (var item in element2D)

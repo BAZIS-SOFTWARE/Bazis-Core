@@ -31,9 +31,7 @@ namespace Model.MeshObjects
         {
             Position = position;
 
-            InitialColor = Color.FromArgb(0, 0, 255);
-            MasterColor = Color.FromArgb(0, 0, 255);
-            SlaveColor = Color.FromArgb(0, 0, 255);
+            Color = Color.FromArgb(0, 0, 255);
         }
         /// <inheritdoc/>
 

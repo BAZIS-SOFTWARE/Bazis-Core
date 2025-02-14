@@ -1,7 +1,6 @@
 ﻿using Geometry;
 using Model.GeometryObjects;
 using ModelControllerInterfaces.MeshObjsUtility;
-using Model.Interfaces.GeometryObjects;
 using Model.Interfaces.MeshObjects;
 using System.Collections.Generic;
 
@@ -39,7 +38,7 @@ namespace ModelController.MeshObjsUtility
         }
 /// <inheritdoc/>
 
-        public IEnumerable<ILine> CalcElemsNormals(IEnumerable<ISurfaceElement> elements)
+        public IEnumerable<Curve> CalcElemsNormals(IEnumerable<ISurfaceElement> elements)
         {
             foreach (var element in elements)
             {
@@ -52,7 +51,7 @@ namespace ModelController.MeshObjsUtility
                     var norm = Vector.GetVectorNorm(normal);
                     var mnorm = norm.Mult(10);
                     var p2 = new GeometryPoint(1, surface.CalcCentr().Sum(mnorm));
-                    yield return new Line(surface.Number, new GeometryPoint[] {p1,p2 });
+                    yield return new Curve(surface.Number, new GeometryPoint[] {p1,p2 });
                 }
             }
         }

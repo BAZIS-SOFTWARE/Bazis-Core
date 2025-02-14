@@ -11,10 +11,7 @@ namespace Model.Interfaces
     /// </summary>
     public enum ObjType
     {
-        /// <summary>
-        /// Объект
-        /// </summary>
-        Объект,
+
         /// <summary>
         /// Точка
         /// </summary>
@@ -22,31 +19,19 @@ namespace Model.Interfaces
         /// <summary>
         /// Поверхности
         /// </summary>
-        Линия,
+        Кривая,
         /// <summary>
         /// Поверхность
         /// </summary>
         Поверхность,
         /// <summary>
-        /// Фигура
+        /// Объем
         /// </summary>
-        Фигура,
-        /// <summary>
-        /// Фигура2D
-        /// </summary>
-        Фигура2D,
-        /// <summary>
-        /// Фигура3D
-        /// </summary>
-        Фигура3D,
+        Объем,
         /// <summary>
         /// Узел
         /// </summary>
         Узел,
-        /// <summary>
-        /// Элемент
-        /// </summary>
-        Элемент,
         /// <summary>
         /// Элемент1D
         /// </summary>
@@ -73,15 +58,7 @@ namespace Model.Interfaces
         /// <summary>
         /// MasterColor
         /// </summary>
-        Color MasterColor { get; set; }
-        /// <summary>
-        /// SlaveColor
-        /// </summary>
-        Color SlaveColor { get; set; }
-        /// <summary>
-        /// InitialColor
-        /// </summary>
-        Color InitialColor { get; set; }
+        Color Color { get; set; }
         /// <summary>
         /// View state flag
         /// </summary>
@@ -106,10 +83,6 @@ namespace Model.Interfaces
         /// CalcCentralPoint
         /// </summary>
         Point3D CalcCentr();
-        /// <summary>
-        /// SetBackColor
-        /// </summary>
-        void SetBackColor();
         /// <summary>
         /// SetNumber
         /// </summary>

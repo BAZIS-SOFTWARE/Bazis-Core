@@ -210,7 +210,6 @@ namespace TestProject
         {
             var heatFileName = $"термическая термическая10_50.tsf выполнить";
             var medFileName = $"термическая термическая20_1500.tsf выполнить";
-
             var preProc = new PreProc.PreProc();
             preProc.CalcCompDataV1(CreateValuableData(parameters).ToList(), ProcessType.Welding, projPath);
             preProc.CalcCompDataV2(CreateValuableData(parameters).ToList(), new ProcessProperty { GeneralTaskType = ComplexTaskType.термическая_механическая, CommonTaskType = ProcessType.Welding }, projPath);
@@ -278,7 +277,7 @@ namespace TestProject
         public void PreProc_GenerateTSF_ShouldFail(string path)
         {
             var resData = new List<IValuableData>();
-            var group = new Group("test",ObjType.Объект);
+            var group = new Group("test",ObjType.Узел);
             var groupData = new GroupData();
             groupData.Add(group);
             var textData = new LoadTaskDataTextFormat().Load(path, groupData);
@@ -329,6 +328,7 @@ namespace TestProject
             var preProc = new PreProc.PreProc();
             preProc.CalcCompDataV2(CreateValuableData(valuableDataStrings).ToList(), new ProcessProperty { GeneralTaskType = generalTaskType, CommonTaskType = commonTaskType }, projPath);
         }
+
 
         [DataRow(ComplexTaskType.термическая_механическая, ProcessType.Welding, new[]
         {

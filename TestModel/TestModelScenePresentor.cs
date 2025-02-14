@@ -3,18 +3,14 @@ using Model;
 using Model.Interfaces;
 using Model.IO;
 using ModelController.ModelScenePresentator;
-using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
 using Model.MeshObjects;
 using ModelController.ModelScenePresentator.GlObjsPresenters;
 using Model.GeometryObjects;
 using ModelControllerInterfaces;
-using Model.Interfaces.GeometryObjects;
 using System.IO;
 using Geometry;
-using Model.Interfaces.MeshObjects;
+using System.Linq;
 
 namespace TestModel
 {
@@ -42,7 +38,7 @@ namespace TestModel
             var nodes = new GeometryPoint[] { new GeometryPoint(0, new Point3D(0.5f, 1.0f, 1.0f)),
                                      new GeometryPoint(1, new Point3D(1.0f, 1.0f, -1.0f))
                                    };
-            var lines = new Line[] { new Line(0, nodes) };
+            var lines = new Curve[] { new Curve(0, nodes) };
             var presenter = new LineObjsPresenter<GeometryPoint>();
             presenter.Add(lines);
             var indices = presenter.CreateIndexes();
@@ -89,11 +85,11 @@ namespace TestModel
                 new Node(2, new Point3D(0.5f,1.0f,0.0f)),
             };
             var el2D = new Triangle(0, nodes);
-            model.ObjectData.E2DCollection.Add(el2D);
+            model.ObjectData.E2DCollection.Add(ObjType.Элемент2D.ToString(), el2D);
 
             var creator = new PresentersCreator();
 
-            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E2DCollection, false);
+            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E2DCollection.GetObjects(), false);
 
             var values = presentator.CreateIndexes();
             var edges = presentator.CreateEdgeFlags(values.Item4);
@@ -114,11 +110,11 @@ namespace TestModel
             };
             var el2D = new Quad(0, nodes);
 
-            model.ObjectData.E2DCollection.Add(el2D);
+            model.ObjectData.E2DCollection.Add(ObjType.Элемент2D.ToString(), el2D);
 
             var creator = new PresentersCreator();
 
-            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E2DCollection, false);
+            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E2DCollection.GetObjects(), false);
             var values = presentator.CreateIndexes();
             var edges = presentator.CreateEdgeFlags(values.Item4);
             Assert.AreEqual(6, edges.Length);
@@ -143,10 +139,10 @@ namespace TestModel
             var surface = new GeometrySurface(0, points);
             var poligon = new SurfaceFigure(0, new GeometrySurface[] { surface });
 
-            model.ObjectData.Fig2DCollection.Add(poligon);
+            model.ObjectData.SurfaceCollection.Add(ObjType.Поверхность.ToString(), poligon);
             var creator = new PresentersCreator();
 
-            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.Fig2DCollection, false);
+            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.SurfaceCollection.GetObjects(), false);
 
             var values = presentator.CreateIndexes();
             var edges = presentator.CreateEdgeFlags(values.Item4);
@@ -185,35 +181,37 @@ namespace TestModel
         {
 
             //assign
-            var nodes = new List<Node>();
+            var model = new ModelData();
+            //var nodes = new List<Node>();
             var len = coords.Length / 3;
             for (int i = 0; i < len; i++)
             {
                 var x = coords[3 * i + 0];
                 var y = coords[3 * i + 1];
                 var z = coords[3 * i + 2];
-                nodes.Add(new Node(i, new Geometry.Point3D(x, y, z)));
+                var node = new Node(i, new Geometry.Point3D(x, y, z));
+                model.ObjectData.NodesSet.Add(node.Number, node);
             }
 
 
-            var model = new ModelData();
+
             var creator = new PresentersCreator();
             IObjsPresenter presenter;
             //act
-            model.ObjectData.NodeCollection.AddRange(nodes);
+
             switch (objType)
             {
                 case ObjType.Элемент3D:
-                    model.ObjectData.E3DCollection.Add(new Tetra(0, nodes.ToArray()));
-                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E3DCollection, true);
+                    model.ObjectData.E3DCollection.Add(ObjType.Элемент3D.ToString(), new Tetra(0, model.ObjectData.NodesSet.Values.ToArray()));
+                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E3DCollection.GetObjects(), true);
                     break;
                 case ObjType.Элемент2D:
-                    model.ObjectData.E2DCollection.Add(new Triangle(0, nodes.ToArray()));
-                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E2DCollection, false);
+                    model.ObjectData.E2DCollection.Add(ObjType.Элемент2D.ToString(), new Triangle(0, model.ObjectData.NodesSet.Values.ToArray()));
+                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E2DCollection.GetObjects(), false);
                     break;
                 default:
-                    model.ObjectData.E1DCollection.Add(new Beam(0, nodes.ToArray()));
-                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.E1DCollection);
+                    model.ObjectData.E1DCollection.Add(ObjType.Элемент1D.ToString(), new Beam(0, model.ObjectData.NodesSet.Values.ToArray()));
+                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.E1DCollection.GetObjects());
                     break;
             }
 
@@ -246,7 +244,7 @@ namespace TestModel
             0, 0, 0,
             10,10,0,
         },
-            ObjType.Линия, new int[] { 2, 6, 8, 6, 1 })]
+            ObjType.Кривая, new int[] { 2, 6, 8, 6, 1 })]
         public void TestGeomObjectsCreationManual(float[] coords, ObjType objType, int[] indsR)
         {
 
@@ -267,14 +265,14 @@ namespace TestModel
 
             switch (objType)
             {
-                case ObjType.Линия:
-                    model.ObjectData.LineCollection.Add(new Line(0, points.ToArray()));
-                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.LineCollection);
+                case ObjType.Кривая:
+                    model.ObjectData.CurveCollection.Add(ObjType.Кривая.ToString(), new Curve(0, points.ToArray()));
+                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.CurveCollection.GetObjects());
                     break;
                 default:
                     var surface = new GeometrySurface(0, points.ToArray());
-                    model.ObjectData.Fig2DCollection.Add(new SurfaceFigure(0,new GeometrySurface[] { surface } ));
-                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.Fig2DCollection, false);
+                    model.ObjectData.SurfaceCollection.Add(ObjType.Поверхность.ToString(), new SurfaceFigure(0,new GeometrySurface[] { surface } ));
+                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.SurfaceCollection.GetObjects(), false);
                     break;
             }
 
@@ -347,28 +345,28 @@ namespace TestModel
             switch (objType)
             {
                 case ObjType.Узел:
-                    presenter = creator.CreatePointObjectsPresenter(model.ObjectData.NodeCollection);
+                    presenter = creator.CreatePointObjectsPresenter(model.ObjectData.NodesSet.Values);
                     break;
-                case ObjType.Линия:
-                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.LineCollection);
+                case ObjType.Кривая:
+                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.CurveCollection.GetObjects());
                     break;
-                case ObjType.Фигура2D:
-                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.Fig2DCollection, false);
+                case ObjType.Поверхность:
+                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.SurfaceCollection.GetObjects(), false);
                     break;
-                case ObjType.Фигура3D:
-                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.Fig3DCollection, false);
+                case ObjType.Объем:
+                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.VolumeCollection.GetObjects(), false);
                     break;
                 case ObjType.Элемент1D:
-                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.E1DCollection);
+                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.E1DCollection.GetObjects());
                     break;
                 case ObjType.Элемент2D:
-                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E2DCollection, false);
+                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E2DCollection.GetObjects(), false);
                     break;
                 case ObjType.Элемент3D:
-                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E3DCollection, true);
+                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E3DCollection.GetObjects(), true);
                     break;
                 default:
-                    presenter = creator.CreatePointObjectsPresenter(model.ObjectData.PointCollection);
+                    presenter = creator.CreatePointObjectsPresenter(model.ObjectData.PointsSet.Values);
                     break;
             }
 

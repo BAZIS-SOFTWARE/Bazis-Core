@@ -1,6 +1,5 @@
 ﻿using Geometry;
 using Model.Interfaces;
-using Model.Interfaces.GeometryObjects;
 using System.Collections.Generic;
 using System.Drawing;
 
@@ -21,10 +20,7 @@ namespace Model.GeometryObjects
         {
  
             Position = position;
-
-            InitialColor = Color.FromArgb(255, 207, 64);
-            MasterColor = Color.FromArgb(255, 207, 64);
-            SlaveColor = Color.FromArgb(255, 207, 64);
+            Color = Color.FromArgb(255, 207, 64);
         }
         /// <inheritdoc/>
 

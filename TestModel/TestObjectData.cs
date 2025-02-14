@@ -10,6 +10,7 @@ using Geometry;
 using System.Linq;
 using Model.GroupsData;
 using GmshApi.GmshController;
+using System.Drawing;
 
 namespace TestModel
 {
@@ -18,11 +19,9 @@ namespace TestModel
     {
         [DataTestMethod]
         [DataRow(ObjType.Узел, 3, DisplayName = "Узел")]
-        [DataRow(ObjType.Элемент, 8, DisplayName = "Элемент")]
+        //[DataRow(ObjType.Элемент, 8, DisplayName = "Элемент")]
         [DataRow(ObjType.Элемент3D, 8, DisplayName = "Элемент3D")]
-        [DataRow(ObjType.Объект, 8, DisplayName = "Объект")]
-        [DataRow(ObjType.Элемент2D, 0, DisplayName = "Элемент2D")]
-        [DataRow(ObjType.Элемент1D, 0, DisplayName = "Элемент1D")]
+        //[DataRow(ObjType.Объект, 8, DisplayName = "Объект")]
         public void GetLastObjsNumber(ObjType objType, int objsNumbr)
         {
             //assing
@@ -44,10 +43,47 @@ namespace TestModel
             };
 
             var model = new ModelData();
-            model.ObjectData.NodeCollection.AddRange(nodes);
-            model.ObjectData.E3DCollection.AddRange(e3D);
+            foreach (var item in nodes)
+                model.ObjectData.NodesSet.Add(item.Number, item);
+            model.ObjectData.E3DCollection.AddRange(ObjType.Элемент3D.ToString(), e3D);
             //act
-            var findNumber = model.ObjectData.GetLastNumber(objType);
+
+            var findNumber = model.ObjectData.GetMaxNumber(objType);
+            //assert
+            Assert.AreEqual(objsNumbr, findNumber);
+        }
+
+        [DataTestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        [DataRow(ObjType.Элемент2D, 0, DisplayName = "Элемент2D")]
+        [DataRow(ObjType.Элемент1D, 0, DisplayName = "Элемент1D")]
+        public void GetLastObjsNumber_ShouldFail(ObjType objType, int objsNumbr)
+        {
+            //assing
+            var nodes = new Node[4]
+            {
+                new Node(0,new Point3D(0,0,0)),
+                new Node(1,new Point3D(10,0,0)),
+                new Node(2,new Point3D(0,10,0)),
+                new Node(3,new Point3D(0,0,10)),
+            };
+            var e3D = new Element3D[]
+            {
+                new Tetra( 0,nodes),
+                new Tetra( 4,nodes),
+                new Tetra(5,nodes),
+                new Tetra( 6,nodes),
+                new Tetra(7,nodes),
+                new Tetra(8,nodes)
+            };
+
+            var model = new ModelData();
+            foreach (var item in nodes)
+                model.ObjectData.NodesSet.Add(item.Number, item);
+            model.ObjectData.E3DCollection.AddRange(ObjType.Элемент3D.ToString(), e3D);
+            //act
+
+            var findNumber = model.ObjectData.GetMaxNumber(objType);
             //assert
             Assert.AreEqual(objsNumbr, findNumber);
         }
@@ -77,8 +113,9 @@ namespace TestModel
             };
 
             var model = new ModelData();
-            model.ObjectData.NodeCollection.AddRange(nodes);
-            model.ObjectData.E3DCollection.AddRange(objs);
+            foreach (var item in nodes)
+                model.ObjectData.NodesSet.Add(item.Number, item);
+            model.ObjectData.E3DCollection.AddRange(ObjType.Элемент3D.ToString(), objs);
             //act
             var elements = model.ObjectData.FindMany(objsNumbr);
             //assert
@@ -112,19 +149,20 @@ namespace TestModel
             //act
 
             var model = new ModelData();
-            model.ObjectData.NodeCollection.AddRange(nodes);
-            model.ObjectData.E3DCollection.AddRange(objs);
+            foreach (var item in nodes)
+                model.ObjectData.NodesSet.Add(item.Number, item);
+            model.ObjectData.E3DCollection.AddRange(ObjType.Элемент3D.ToString(), objs);
 
             //assert            
             if (reqType == "Тетраэдры")
-                Assert.AreEqual(objsCount, model.ObjectData.E3DCollection.Count());
+                Assert.AreEqual(objsCount, model.ObjectData.E3DCollection.Count);
             else if (reqType == "Узлы")
-                Assert.AreEqual(objsCount, model.ObjectData.NodeCollection.Count());
+                Assert.AreEqual(objsCount, model.ObjectData.NodesSet.Count);
             else
-                Assert.AreEqual(objsCount, model.ObjectData.Count(ObjType.Объект));
+                Assert.AreEqual(objsCount, model.ObjectData.GetAllObjects().Count());
         }
         [TestMethod]
-        [ExpectedException(typeof(Exception))]
+        [ExpectedException(typeof(ArgumentException))]
         public void AddObjectWithSameNumbers()
         {
             //assign
@@ -133,14 +171,14 @@ namespace TestModel
             //act
             var node0 = new Node(0, new Geometry.Point3D());
 
-            model.ObjectData.NodeCollection.Add(node0);
+            model.ObjectData.NodesSet.Add(node0.Number, node0);
             //assert
-            model.ObjectData.NodeCollection.Add(node0);
+            model.ObjectData.NodesSet.Add(node0.Number, node0);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(Exception))]
-        public void AddSomeObjectsWithSameNumbers()
+        [ExpectedException(typeof(ArgumentException))]
+        public void AddSomeNodesWithSameNumbers()
         {
             //assign
             var model = new ModelData();
@@ -149,33 +187,16 @@ namespace TestModel
             var node0 = new Node(0, new Geometry.Point3D());
             var node1 = new Node(1, new Geometry.Point3D());
 
-            model.ObjectData.NodeCollection.Add(node0);
+            model.ObjectData.NodesSet.Add(node0.Number, node0);
             //assert
-            model.ObjectData.NodeCollection.AddRange(new List<Node>() { node0, node1 });
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(Exception))]
-        public void AddCertainObjectsWithSameNumbers()
-        {
-            //assign
-            var model = new ModelData();
-
-            //act
-            var node0 = new Node(0, new Geometry.Point3D());
-            var node1 = new Node(1, new Geometry.Point3D());
-
-            var modelObjects = new List<Node>() { node0, node1 };
-
-            model.ObjectData.NodeCollection.Add(node0);
-            //assert
-            model.ObjectData.NodeCollection.AddRange(modelObjects);
+            new List<Node>() { node0, node1 }.ForEach(x =>
+            model.ObjectData.NodesSet.Add(x.Number, x));
         }
 
         [DataTestMethod]
-        [DataRow(ObjType.Линия)]
+        [DataRow(ObjType.Кривая)]
         [DataRow(ObjType.Точка)]
-        public void RemoveObjectsWithSameTypes(ObjType objType)
+        public void RemoveGeometryByTypes(ObjType objType)
         {
             //assign
             var model = new ModelData();
@@ -185,12 +206,12 @@ namespace TestModel
             var point1 = new GeometryPoint(1, new Geometry.Point3D());
             var point2 = new GeometryPoint(3, new Geometry.Point3D());
 
-            var line = new Line(2, new GeometryPoint[] { point0, point1 });
+            var line = new Curve(2, new GeometryPoint[] { point0, point1 });
 
-            model.ObjectData.PointCollection.Add(point0);
-            model.ObjectData.PointCollection.Add(point1);
-            model.ObjectData.LineCollection.Add(line);
-            model.ObjectData.PointCollection.Add(point2);
+            model.ObjectData.PointsSet.Add(point0.Number, point0);
+            model.ObjectData.PointsSet.Add(point1.Number, point1);
+            model.ObjectData.CurveCollection.Add(ObjType.Кривая.ToString(), line);
+            model.ObjectData.PointsSet.Add(point2.Number, point2);
 
             model.ObjectData.Clear(objType);
             //assert
@@ -200,7 +221,7 @@ namespace TestModel
         [DataTestMethod]
         [DataRow(ObjType.Узел, 0, 0)]
         [DataRow(ObjType.Элемент3D, 4, 0)]
-        [DataRow(ObjType.Объект, 0, 0)]
+        //[DataRow(ObjType.Объект, 0, 0)]
         public void RemoveObjectsSyncWithGroups(ObjType objType, int nNumbs, int grps)
         {
             //assing
@@ -227,16 +248,19 @@ namespace TestModel
 
             var model = new ModelData();
 
-            model.ObjectData.NodeCollection.AddRange(nodes);
-            model.ObjectData.E3DCollection.AddRange(objects);
+            foreach (var item in nodes)
+                model.ObjectData.NodesSet.Add(item.Number, item);
+
+
+            model.ObjectData.E3DCollection.AddRange(ObjType.Элемент3D.ToString(), objects);
 
             model.GroupData.Add(group);
 
             model.ObjectData.Clear(objType);
             model.GroupData.ClearNotExisted();
             //assert            
-            Assert.AreEqual(model.ObjectData.NodeCollection.Count, nNumbs, 0);
-            Assert.AreEqual(model.GroupData.FindMany(objType).Count(), grps, 0);
+            Assert.AreEqual(model.ObjectData.NodesSet.Count, nNumbs);
+            Assert.AreEqual(model.GroupData.FindMany(objType).Count(), grps);
 
         }
 
@@ -244,7 +268,7 @@ namespace TestModel
         [DataRow(1)]
         [DataRow(0)]
         [DataRow(2)]
-        public void RemoveSomeObjectsByExistState(int objNumber)
+        public void RemoveNodesByNumber(int objNumber)
         {
             //assing
             var model = new ModelData();
@@ -253,12 +277,56 @@ namespace TestModel
             model.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
 
             //act
-            model.ObjectData.Find(ObjType.Узел, objNumber).ExistState = false;
+            model.ObjectData.NodesSet.Remove(objNumber);           
             model.ObjectData.ClearNotExisted();
 
             //assert
             var res = model.ObjectData.Find(ObjType.Узел, objNumber);
             if (res != null)
+                throw new Exception();
+        }
+
+        [DataTestMethod]
+        [DataRow(1)]
+        [DataRow(5)]
+        [DataRow(2)]
+        public void RemoveElementsByNumber(int objNumber)
+        {
+            //assing
+            var model = new ModelData();
+            model.Loader = new LoadModelFromASCIITextFile();
+
+            model.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
+
+            //act
+            model.ObjectData.E3DCollection.Remove(objNumber);
+            model.ObjectData.E3DCollection.ClearNotExisted();
+
+            //assert
+            var res = model.ObjectData.Find(ObjType.Элемент3D, objNumber);
+            if (res != null)
+                throw new Exception();
+        }
+
+        [DataTestMethod]
+        [DataRow(ObjType.Узел)]
+        [DataRow(ObjType.Элемент3D)]
+        public void RemoveMeshByNumber(ObjType objType)
+        {
+            //assing
+            var model = new ModelData();
+            model.Loader = new LoadModelFromASCIITextFile();
+
+            model.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
+
+            //act
+            model.ObjectData.Clear(objType);
+            model.ObjectData.E3DCollection.ClearNotExisted();
+            model.ObjectData.E3DCollection.ClearEmpty();
+
+            //assert
+            var res = model.ObjectData.Count(objType);
+            if (res != 0)
                 throw new Exception();
         }
 
@@ -318,6 +386,59 @@ namespace TestModel
             {
                 Assert.AreNotEqual(oldCoords[i], newCoords[i]);
             }
+        }
+
+        public static IEnumerable<object[]> AdditionData
+        {
+            get
+            {
+                return new[]
+                {
+            new object[] { ObjType.Элемент3D, Color.DarkGray },
+            new object[] { ObjType.Узел, Color.Blue }
+        };
+            }
+        }
+
+        [DataTestMethod]
+        [DynamicData(nameof(AdditionData))]
+        public void SetBackColor(ObjType reqType, Color color)
+        {
+            //assing
+            var nodes = new Node[4]
+            {
+                new Node(0,new Point3D(0,0,0)){ Color = Color.Red},
+                new Node(1,new Point3D(10,0,0)){ Color = Color.Red},
+                new Node(2,new Point3D(0,10,0)){ Color = Color.Red},
+                new Node(3,new Point3D(0,0,10)){ Color = Color.Red}
+            };
+            var objs = new Element3D[]
+            {
+                new Tetra( 0,nodes){ Color = Color.Red},
+                new Tetra( 4,nodes){ Color = Color.Red},
+                new Tetra(5,nodes){ Color = Color.Red},
+                new Tetra( 6,nodes){ Color = Color.Red},
+                new Tetra(7,nodes){ Color = Color.Red},
+                new Tetra(8,nodes){ Color = Color.Red}
+            };
+
+            //act
+
+            var model = new ModelData();
+            foreach (var item in nodes)
+                model.ObjectData.NodesSet.Add(item.Number, item);
+            model.ObjectData.E3DCollection.AddRange(ObjType.Элемент3D.ToString(), objs);
+
+            model.ObjectData.SetBackColor(reqType);
+
+            //assert
+            foreach (var item in model.ObjectData.GetObjects(reqType))
+            {
+                Assert.AreEqual(item.Color.R, color.R);
+                Assert.AreEqual(item.Color.G, color.G);
+                Assert.AreEqual(item.Color.B, color.B);
+            }
+                
         }
     }
 }

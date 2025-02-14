@@ -19,20 +19,20 @@ namespace ModelController.MeshObjsUtility
             {
                 case ObjType.Узел:
                     {
-                        foreach (var node in objectsData.NodeCollection)
+                        foreach (var node in objectsData.NodesSet.Values)
                             node.SetNumber(number++);
                     }
                     break;
-                case ObjType.Элемент:
-                    {
-                        foreach (var elem in objectsData.GetAllElements())
-                            elem.SetNumber(number++);
-                    }
-                    break;
+                //case ObjType.Элемент:
+                //    {
+                //        foreach (var elem in objectsData.GetAllElements())
+                //            elem.SetNumber(number++);
+                //    }
+                //    break;
 
-                case ObjType.Фигура:
-                case ObjType.Фигура2D:
-                case ObjType.Фигура3D:
+
+                case ObjType.Поверхность:
+                case ObjType.Объем:
                 case ObjType.Точка:
                     throw new Exception("Данный метод не предназначени для работы с геометрией");
 

@@ -1,8 +1,9 @@
 ﻿using Geometry;
 using Model.GeometryObjects;
-using Model.Interfaces.GeometryObjects;
 using Model.Interfaces.MeshObjects;
+using Model.Interfaces.ObjectsCollections;
 using Model.MeshObjects;
+using Model.ObjectsCollections;
 using System.Collections.Generic;
 using System.Numerics;
 
@@ -14,37 +15,43 @@ namespace Model.Interfaces
     public interface IObjectsData
     {
         /// <summary>
+        /// Remove
+        /// </summary>
+        /// <param name="objType"></param>
+        /// <param name="objNumber"></param>
+        void Remove(ObjType objType, int objNumber);
+        /// <summary>
         /// E3DCollection
         /// </summary>
-        IObjectsCollection<IElement3D> E3DCollection { get; }
+        IObjectsCollection<Element3D> E3DCollection { get; }
         /// <summary>
         /// E2DCollection
         /// </summary>
-        IObjectsCollection<IElement2D> E2DCollection { get; }
+        IObjectsCollection<Element2D> E2DCollection { get; }
         /// <summary>
         /// E1DCollection
         /// </summary>
-        IObjectsCollection<ILineObject<Node>> E1DCollection { get; }
+        IObjectsCollection<Beam> E1DCollection { get; }
         /// <summary>
         /// NodeCollection
         /// </summary>
-        IObjectsCollection<Node> NodeCollection { get; }
+        IObjectsSet<Node> NodesSet { get; }
         /// <summary>
         /// PointCollection
         /// </summary>
-        IObjectsCollection<GeometryPoint> PointCollection { get; }
+        IObjectsSet<GeometryPoint> PointsSet { get; }
         /// <summary>
         /// LineCollection
         /// </summary>
-        IObjectsCollection<ILineObject<GeometryPoint>> LineCollection { get; }
+        IObjectsCollection<Curve> CurveCollection { get; }
         /// <summary>
         /// Fig2DCollection
         /// </summary>
-        IObjectsCollection<ISurfaceFigure> Fig2DCollection { get; }
+        IObjectsCollection<SurfaceFigure> SurfaceCollection { get; }
         /// <summary>
         /// Fig3DCollection
         /// </summary>
-        IObjectsCollection<IVolumeFigure> Fig3DCollection { get; }
+        IObjectsCollection<VolumeFigure> VolumeCollection { get; }
         /// <summary>
         /// Count
         /// </summary>
@@ -56,16 +63,18 @@ namespace Model.Interfaces
         /// </summary>
         void ClearAll();
         /// <summary>
+        /// ClearEmpty
+        /// </summary>
+        void ClearEmpty();
+        /// <summary>
+        /// ClearNotExisted
+        /// </summary>
+        void ClearNotExisted();
+        /// <summary>
         /// Clear
         /// </summary>
         /// <param name="objType"></param>
         void Clear(ObjType objType);
-        /// <summary>
-        /// ContainsCollection
-        /// </summary>
-        /// <param name="objType"></param>
-        /// <returns></returns>
-        bool Contains(ObjType objType);
         /// <summary>
         /// Move
         /// </summary>
@@ -81,10 +90,6 @@ namespace Model.Interfaces
         /// <param name="angle"></param>
         /// <returns></returns>
         void Rotate(ObjType objType, Point3D axis, float angle);
-        /// <summary>
-        /// ClearNotExisted
-        /// </summary>
-        void ClearNotExisted();
         /// <summary>
         /// Find
         /// </summary>
@@ -114,13 +119,39 @@ namespace Model.Interfaces
         /// <returns></returns>
         IEnumerable<IModelObject> GetObjects(ObjType objType);
         /// <summary>
-        /// GetTypes
+        /// GetObjects
         /// </summary>
-        ICollection<ObjType> ObjsTypes { get; }
+        /// <param name="objType"></param>
+        /// <param name="setName"></param>
+        /// <returns></returns>
+        IEnumerable<IModelObject> GetObjects(ObjType objType, string setName);
+        /// <summary>
+        /// GetSetsInfo
+        /// </summary>
+        /// <param name="objType"></param>
+        /// <returns></returns>
+        IEnumerable<ISetInfo> GetSetsInfo(ObjType objType);
+        /// <summary>
+        /// GetSetInfo
+        /// </summary>
+        /// <param name="objType"></param>
+        /// <param name="objNumber"></param>
+        /// <returns></returns>
+        ISetInfo GetSetInfo(ObjType objType, int objNumber);
         /// <summary>
         /// GetLastNumber
         /// </summary>
         /// <returns></returns>
-        int GetLastNumber(ObjType objType);
+        int GetMaxNumber(ObjType objType);
+        /// <summary>
+        /// SetBackColor
+        /// </summary>
+        /// <param name="objType"></param>
+        void SetBackColor(ObjType objType);
+        /// <summary>
+        /// GetMaxElementNumber
+        /// </summary>
+        /// <returns></returns>
+        int GetMaxElementNumber();
     }
 }

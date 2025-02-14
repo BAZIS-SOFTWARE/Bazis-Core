@@ -77,11 +77,12 @@ namespace Model.IO
                     var coordinates = tokens.Skip(1).ToArray();
                     var position = new Point3D(coordinates[0], coordinates[1], coordinates[2]);
                     var node = new Node(nodeIndex, position);
-                    nodes.Add(node);
+                    newMesh.ObjectData.NodesSet.Add(node.Number,node);
                 }
                 line = reader.ReadLine();
             }
-            newMesh.ObjectData.NodeCollection.AddRange(nodes.OrderBy(n => n.Number));
+
+            //newMesh.ObjectData.NodeCollection.AddRange(ObjType.Узел.ToString(),nodes);
         }
 
         private void LoadElement(StreamReader reader, string elementType, ModelData newMesh)
@@ -97,17 +98,17 @@ namespace Model.IO
                 if (elementType == "Элементы3D" | elementType == "Элемент3D" | elementType == "Элементы 3004")
                 {
                     var element = GetElement3D(nodes, elementNumber);
-                    newMesh.ObjectData.E3DCollection.Add(element);
+                    newMesh.ObjectData.E3DCollection.Add(elementType,element);
                 }
                 if (elementType == "Элементы2D" | elementType == "Элемент2D" | elementType == "Элементы 2003")
                 {
                     var element = GetElement2D(nodes, elementNumber);
-                    newMesh.ObjectData.E2DCollection.Add(element);
+                    newMesh.ObjectData.E2DCollection.Add(elementType,element);
                 }
                 if(elementType == "Элементы1D" | elementType == "Элемент1D" | elementType == "Элементы 1002")
                 {
                     var el2DObj = new Beam(elementNumber, nodes.ToArray());
-                    newMesh.ObjectData.E1DCollection.Add(el2DObj);                  
+                    newMesh.ObjectData.E1DCollection.Add(elementType,el2DObj);                  
                 }
                 line = reader.ReadLine();
             }
@@ -117,7 +118,7 @@ namespace Model.IO
         {
             foreach (var nodeNumber in indeces)
             {
-                yield return (Node)modelData.ObjectData.NodeCollection.Find(nodeNumber);
+                yield return modelData.ObjectData.NodesSet[nodeNumber];
             }
         }
 

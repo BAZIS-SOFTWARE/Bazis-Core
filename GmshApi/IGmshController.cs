@@ -1,6 +1,5 @@
 ﻿using Model.GeometryObjects;
 using Model.Interfaces;
-using Model.Interfaces.GeometryObjects;
 using Model.Interfaces.MeshObjects;
 using Model.MeshObjects;
 using System;
@@ -237,7 +236,7 @@ namespace GmshApi
         /// Возвращает список кривых
         /// </summary>
         /// <returns>Список кривых</returns>
-        List<ILine> CreateLines();
+        List<Curve> CreateLines();
         /// <summary>
         /// Возвращает список контрольных точек
         /// </summary>
@@ -269,7 +268,7 @@ namespace GmshApi
         /// item3 - els2d
         /// item4 - els3d
         /// </returns>
-        (List<Node>, List<ILineObject<Node>>, List<IElement2D>, List<IElement3D>) GetMeshObjects();
+        (List<Node>, List<ILineObject<Node>>, List<Element2D>, List<Element3D>) GetMeshObjects();
         /// <summary>
         /// Возвращает список всех пар размерность:идентификатор для заданной размерности
         /// </summary>

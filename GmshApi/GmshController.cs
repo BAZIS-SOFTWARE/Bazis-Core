@@ -8,7 +8,6 @@ using System.IO;
 using Model.MeshObjects;
 using Model.GeometryObjects;
 using Model.Interfaces.MeshObjects;
-using Model.Interfaces.GeometryObjects;
 using Model.Interfaces.ObjectsFinders;
 using Geometry.Exteisions;
 
@@ -1792,9 +1791,9 @@ namespace GmshApi.GmshController
         }
         /// <inheritdoc/>
 
-        public List<ILine> CreateLines()
+        public List<Curve> CreateLines()
         {
-            var lines = new List<ILine>();
+            var lines = new List<Curve>();
             double[] minBounds;
             double[] maxBounds;
             int[] tags;
@@ -1826,7 +1825,7 @@ namespace GmshApi.GmshController
                         var linePoints = new GeometryPoint[] { new GeometryPoint(num++, pair.Item1), new GeometryPoint(num++, pair.Item2) };
                         points.AddRange(linePoints);
                     }
-                    var line = new Line(tags[i], points.ToArray());
+                    var line = new Curve(tags[i], points.ToArray());
                     lines.Add(line);
                 }
             }
@@ -1975,12 +1974,12 @@ namespace GmshApi.GmshController
         }
         /// <inheritdoc/>
 
-        public (List<Node>, List<ILineObject<Node>>, List<IElement2D>, List<IElement3D>) GetMeshObjects()
+        public (List<Node>, List<ILineObject<Node>>, List<Element2D>, List<Element3D>) GetMeshObjects()
         {
             var nodes = GetNodes(-1, -1, false);
             var e1D = new List<ILineObject<Node>>();
-            var e2D = new List<IElement2D>();
-            var e3D = new List<IElement3D>();
+            var e2D = new List<Element2D>();
+            var e3D = new List<Element3D>();
             Action<string, int, Node[]> filler1D = (s, i, n) =>
             {
                 e1D.Add(new Beam(i, n));

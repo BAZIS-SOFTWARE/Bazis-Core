@@ -1,70 +1,44 @@
 ﻿using Geometry;
 using Model.Interfaces;
-using Model.Interfaces.GeometryObjects;
-using Model.Interfaces.MeshObjects;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Model.GeometryObjects
 {
     /// <summary>
     /// VolumeFigure
     /// </summary>
-    public class VolumeFigure : ModelObject, IVolumeFigure
+    public class VolumeFigure : ModelObject, ISurfaceObject<GeometrySurface, GeometryPoint>, IVolume
     {
-        GeometrySurface[] surfaces;
-
-        GeometryPoint[] points
-        {
-            get
-            {
-                var points = new List<GeometryPoint>();
-
-                foreach (var surface in surfaces)
-                {
-                    foreach (var point in surface.GetVertexes())
-                    {
-                        if (!points.Contains(point))
-                            points.Add(point);
-                    }
-                }
-                return points.ToArray();
-            }
-
-        }
+        SurfaceFigure[] surfaceFigure;
 
         /// <summary>
         /// Figure3D
         /// </summary>
         /// <param name="number"></param>
-        /// <param name="surfaces"></param>
-        public VolumeFigure(int number, GeometrySurface[] surfaces) : base(number)
+        /// <param name="surfaceFigures"></param>
+        public VolumeFigure(int number, SurfaceFigure[] surfaceFigures) : base(number)
         {
-            InitialColor = Color.FromArgb(255, 125, 0);
-            MasterColor = Color.FromArgb(255, 125, 0);
-            SlaveColor = Color.FromArgb(255, 125, 0);
+            Color = Color.FromArgb(255, 125, 0);
 
-            this.surfaces = surfaces;
+
         }
 /// <inheritdoc/>
 
-        public int NumberOfSides => surfaces.Length;
+        public int NumberOfSides => surfaceFigure.Length;
 /// <inheritdoc/>
 
-        public override int NumberOfPoints => points.Length;
+        public override int NumberOfPoints => GetVertexes().Count();
 /// <inheritdoc/>
 
-        public override ObjType ObjType => ObjType.Фигура3D;
+        public override ObjType ObjType => ObjType.Объем;
 /// <inheritdoc/>
 
         public override IEnumerable<Point3D> GetCoordinates()
         {
-            foreach (var point in points)
+            foreach (var point in GetVertexes())
             {
                 yield return point.Position;
             }
@@ -73,10 +47,9 @@ namespace Model.GeometryObjects
 
         public IEnumerable<GeometrySurface> GetSurfaces()
         {
-            foreach (var item in surfaces)
-            {
-                yield return item;
-            }
+            foreach (var item in surfaceFigure)
+                foreach (var surface in item.GetSurfaces())
+                    yield return surface;
         }
 /// <inheritdoc/>
 
@@ -88,17 +61,13 @@ namespace Model.GeometryObjects
 
         public IEnumerable<GeometryPoint> GetVertexes()
         {
-            var points = new List<GeometryPoint>();
-
-            foreach (var surface in surfaces)
+            foreach (var surface in surfaceFigure)
             {
                 foreach (var point in surface.GetVertexes())
                 {
-                    if (!points.Contains(point))
-                        points.Add(point);
+                    yield return point;
                 }
             }
-            return points;
         }
     }
 }

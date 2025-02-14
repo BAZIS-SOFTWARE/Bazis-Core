@@ -1,6 +1,5 @@
 ﻿using Geometry;
 using Model.Interfaces;
-using Model.Interfaces.GeometryObjects;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -10,7 +9,7 @@ namespace Model.GeometryObjects
     /// <summary>
     /// SurfaceFigure
     /// </summary>
-    public class SurfaceFigure : ModelObject, ISurfaceFigure
+    public class SurfaceFigure : ModelObject, ISurfaceObject<GeometrySurface, GeometryPoint>, ISquare
     {
         /// <summary>
         /// Surface
@@ -25,9 +24,7 @@ namespace Model.GeometryObjects
         {
             this.surfaces = surfaces;
 
-            InitialColor = Color.FromArgb(255, 125, 0);
-            MasterColor = Color.FromArgb(255, 125, 0);
-            SlaveColor = Color.FromArgb(255, 125, 0);
+            Color = Color.FromArgb(255, 125, 0);
         }
 /// <inheritdoc/>
 
@@ -37,7 +34,7 @@ namespace Model.GeometryObjects
         public override int NumberOfPoints { get { return GetVertexes().Count(); } }
 /// <inheritdoc/>
 
-        public override ObjType ObjType { get; } = ObjType.Фигура2D;
+        public override ObjType ObjType { get; } = ObjType.Поверхность;
 
 /// <inheritdoc/>
 

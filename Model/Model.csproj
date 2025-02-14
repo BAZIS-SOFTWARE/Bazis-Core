@@ -9,7 +9,7 @@
     <AssemblyOriginatorKeyFile>ModelKey.snk</AssemblyOriginatorKeyFile>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>Model</Title>
-    <Version>3.1.2.9</Version>
+    <Version>4.2.21.0</Version>
     <Company>BAZIS SOFTWARE</Company>
     <Product>BAZIS</Product>
     <Description>Contains basic mesh oblects and geometry classes</Description>
@@ -22,10 +22,21 @@
     <PackageOutputPath>c:\BazisComponents\IntPackages_v2\$(Configuration)</PackageOutputPath>
   </PropertyGroup> 
   <ItemGroup>
-    <Compile Remove="Interfaces\GeometryObjects\IGeometryPoint.cs" />
-    <Compile Remove="Interfaces\GeometryObjects\IGeometrySurface.cs" />
+    <Compile Remove="Interfaces\GeometryObjects\**" />
+    <EmbeddedResource Remove="Interfaces\GeometryObjects\**" />
+    <None Remove="Interfaces\GeometryObjects\**" />
+  </ItemGroup> 
+  <ItemGroup>
     <Compile Remove="Interfaces\MeshObjects\IElementSurface.cs" />
     <Compile Remove="Interfaces\MeshObjects\INode.cs" />
+    <Compile Remove="ObjectsCollections\Element1DCollection.cs" />
+    <Compile Remove="ObjectsCollections\Element2DCollection.cs" />
+    <Compile Remove="ObjectsCollections\Element3DCollection.cs" />
+    <Compile Remove="ObjectsCollections\LineCollection.cs" />
+    <Compile Remove="ObjectsCollections\NodeCollection.cs" />
+    <Compile Remove="ObjectsCollections\PointCollection.cs" />
+    <Compile Remove="ObjectsCollections\SurfaceFiguresCollection.cs" />
+    <Compile Remove="ObjectsCollections\VolumeFiguresCollection.cs" />
   </ItemGroup> 
   <ItemGroup>
     <None Remove="Icon.png" />

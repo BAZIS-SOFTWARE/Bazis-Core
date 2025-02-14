@@ -102,7 +102,7 @@ var loaderDB = new LoadResultsFileDB();
 
             controller.ResultsFieldsCreator.SetScaleItems(сolorRange, intervalVals);
             controller.ResultsFieldsCreator.ScaleFactor = 1;
-            var elsResults = controller.ResultsFieldsCreator.CreateSurfaceObjects(results.First(), ObjType.Узел, "T", els3D);
+            var elsResults = controller.ResultsFieldsCreator.CreateSurfaceObjects(results.First(), ObjType.Узел, "T", els3D.GetObjects());
 
             Assert.AreNotEqual(elsResults, null);
             Assert.AreNotEqual(elsResults.Count(), 0);
@@ -141,12 +141,12 @@ var loaderDB = new LoadResultsFileDB();
 
             proj.ResultData.AddRange(results);
 
-            IElement[] elements;
+            IEnumerable<IElement> elements;
             if (proj.TaskType == TaskType.Volume)
             {
-                elements = proj.ModelData.ObjectData.E3DCollection.ToArray();
+                elements = proj.ModelData.ObjectData.E3DCollection.GetObjects();
             }
-            else elements = proj.ModelData.ObjectData.E2DCollection.ToArray();
+            else elements = proj.ModelData.ObjectData.E2DCollection.GetObjects();
 
             var interfaceNodesFinder = new InterfacedNodesFinder();
             var resultsFind = proj.ResultData.FindByTimeInterval("термическая", 0, 0.5f);
@@ -288,7 +288,7 @@ var loaderDB = new LoadResultsFileDB();
             resultsCreator.ScaleFactor = 1;
             resultsCreator.SetScaleItems(сolorRanges, itemRanges);
 
-            var resultObjects = resultsCreator.CreateSurfaceObjects(result.First(), ObjType.Узел,resDesc, elements);
+            var resultObjects = resultsCreator.CreateSurfaceObjects(result.First(), ObjType.Узел,resDesc, elements.GetObjects());
             var points = new List<ResultPoint>();
             foreach (var elems in resultObjects)
                 points.AddRange(elems.GetVertexes());
@@ -301,14 +301,14 @@ var loaderDB = new LoadResultsFileDB();
             var resultNodesTXTPath = $@"{resPath}\testResultNodes.txt";
             var resultElementsTXTPath = $@"{resPath}\testResultElemets.txt";
 
-            TXTSaver.SaveResults(proj.ModelData.ObjectData.NodeCollection, result.First(), resDesc, resultNodesTXTPath);
+            TXTSaver.SaveResults(proj.ModelData.ObjectData.NodesSet.Values, result.First(), resDesc, resultNodesTXTPath);
             TXTSaver.SaveResults(proj.ModelData.ObjectData.GetAllElements(), result.First(), resDesc, resultElementsTXTPath);
 
             var CSVSaver = new SaveObjectsResultsToCSV();
             var resultNodesCSVPath = $@"{resPath}\testResultNodes.csv";
             var resultElementsCSVPath = $@"{resPath}\testResultElements.csv";
 
-            CSVSaver.SaveResults(proj.ModelData.ObjectData.NodeCollection, result.First(), resDesc, resultNodesCSVPath);
+            CSVSaver.SaveResults(proj.ModelData.ObjectData.NodesSet.Values, result.First(), resDesc, resultNodesCSVPath);
             CSVSaver.SaveResults(proj.ModelData.ObjectData.GetAllElements(), result.First(), resDesc, resultElementsCSVPath);
 
             var modelPresenter = new PresentersCreator();
@@ -397,7 +397,7 @@ var loaderDB = new LoadResultsFileDB();
 
             //assert  
             Assert.AreEqual(resSurfaces.Count, 1);
-            Assert.AreEqual(resSurfaces[0].MasterColor, сolorRange[3]);
+            Assert.AreEqual(resSurfaces[0].Color, сolorRange[3]);
         }
 
         [TestMethod]
@@ -438,7 +438,7 @@ var loaderDB = new LoadResultsFileDB();
 
             //assert  
             Assert.AreEqual(resSurfaces.Count, 1);
-            Assert.AreEqual(resSurfaces[0].MasterColor, сolorRange[0]);
+            Assert.AreEqual(resSurfaces[0].Color, сolorRange[0]);
         }
 
         [TestMethod]

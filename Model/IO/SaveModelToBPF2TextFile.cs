@@ -8,6 +8,9 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Model.Interfaces.ObjectsCollections;
+using Model.Interfaces.MeshObjects;
+using Model.ObjectsCollections;
 
 namespace Model.IO
 {
@@ -27,13 +30,13 @@ namespace Model.IO
 
                 sw.WriteLine(ver);
 
-                foreach (var item in model.ObjectData.ObjsTypes)
+                foreach (ObjType item in Enum.GetValues(typeof(ObjType)))
                 {
                     sw.WriteLine("");
                     if (item == ObjType.Узел)
                     {
-                        sw.WriteLine("Узлы");
-                        var nodes = model.ObjectData.NodeCollection;
+                        sw.WriteLine(item);
+                        var nodes = model.ObjectData.NodesSet.Values;
                         foreach (var nodeItem in nodes)
                         {
                             var x = nodeItem._x;
@@ -42,17 +45,20 @@ namespace Model.IO
                             var numbr = nodeItem.Number;
                             sw.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0} {1} {2} {3}", numbr, x, y, z));
                         }
-                        sw.WriteLine("#Узлы");
+                        sw.WriteLine($"#{item}");
                     }
 
-                    else if (item == ObjType.Элемент)
+                    else if (item == ObjType.Элемент1D)
                     {
-                        sw.WriteLine("Элементы");
-
-                        foreach (var elem in model.ObjectData.GetAllElements())
-                            sw.WriteLine(elem.ToString());
-
-                        sw.WriteLine($"#Элементы");
+                        SaveElements(model.ObjectData.E1DCollection.Objects, sw);
+                    }
+                    else if (item == ObjType.Элемент2D)
+                    {
+                        SaveElements(model.ObjectData.E2DCollection.Objects, sw);
+                    }
+                    else if (item == ObjType.Элемент3D)
+                    {
+                        SaveElements(model.ObjectData.E3DCollection.Objects, sw);
                     }
                 }
                 sw.WriteLine("");
@@ -66,9 +72,26 @@ namespace Model.IO
                     if (group.ObjType == ObjType.Узел) sw.WriteLine("Группа узлов : {0}", resu);
                     if (group.ObjType == ObjType.Элемент3D) sw.WriteLine("Группа элементов 3D : {0}", resu);
                     if (group.ObjType == ObjType.Элемент2D) sw.WriteLine("Группа элементов 2D : {0}", resu);
+                    if (group.ObjType == ObjType.Элемент1D) sw.WriteLine("Группа элементов 1D : {0}", resu);
                 }
                 sw.WriteLine("#Группы узлов и элементов");
                 sw.Dispose();
+            }
+        }
+
+        private void SaveElements<T>(ICollection<ObjectsSet<T>> collection, StreamWriter sw)
+            where T : IElement
+        {
+            foreach (var set in collection)
+            {
+                sw.WriteLine($"{set.ObjType} {set.Name}");
+                foreach (var value in set)
+                {
+                    var verts = value.Value.GetVertexes();
+                    var str = string.Join(" ", verts.Select(x => x.Number.ToString()));
+                    sw.WriteLine($"{value.Value.Number} {value.Value.Level} : {str}");
+                }
+                sw.WriteLine($"#{set.ObjType}");
             }
         }
     }

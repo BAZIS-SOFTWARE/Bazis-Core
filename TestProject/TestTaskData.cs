@@ -180,7 +180,7 @@ namespace TestProject
         {
             //assign
             //act
-            var heatData = new HeatData(new Group("", ObjType.Объект), input);
+            var heatData = new HeatData(new Group("", ObjType.Элемент3D), input);
 
             //assert
             Assert.AreEqual(heatData.MovedFrame.Rotation, rotation);
@@ -301,16 +301,16 @@ namespace TestProject
             switch (dataKind)
             {
                 case DataKind.Mat:
-                    data = new MatData(new Group("", ObjType.Объект), dataString)
-                    { Group = new Group(dataAr[0], ObjType.Элемент) };
+                    data = new MatData(new Group("", ObjType.Элемент3D), dataString)
+                    { Group = new Group(dataAr[0], ObjType.Элемент3D) };
                     break;
                 case DataKind.Med:
-                    data = new MediaData(new Group("", ObjType.Объект), dataString)
-                    { Group = new Group(dataAr[1], ObjType.Элемент) };
+                    data = new MediaData(new Group("", ObjType.Элемент3D), dataString)
+                    { Group = new Group(dataAr[1], ObjType.Элемент3D) };
                     break;
                 case DataKind.Heat:
-                    var heatData = new HeatData(new Group("", ObjType.Объект), dataString)
-                    { Group = new Group(dataAr[1], ObjType.Элемент) };
+                    var heatData = new HeatData(new Group("", ObjType.Элемент3D), dataString)
+                    { Group = new Group(dataAr[1], ObjType.Элемент3D) };
                     var baseLine = new Group("baseLine", ObjType.Узел);
                     var refLine = new Group("refLine", ObjType.Узел);
                     var startNodes = new Group("startNodes", ObjType.Узел);
@@ -321,12 +321,12 @@ namespace TestProject
                     data = heatData;
                     break;
                 case DataKind.Clamp:
-                    data = new ClampData(new Group("", ObjType.Объект), dataString)
-                    { Group = new Group(dataAr[0], ObjType.Элемент) };
+                    data = new ClampData(new Group("", ObjType.Узел), dataString)
+                    { Group = new Group(dataAr[0], ObjType.Узел) };
                     break;
                 default:
-                    data = new LoadData(new Group("", ObjType.Объект), dataString)
-                    { Group = new Group(dataAr[0], ObjType.Элемент) };
+                    data = new LoadData(new Group("", ObjType.Узел), dataString)
+                    { Group = new Group(dataAr[0], ObjType.Узел) };
                     break;
             }
         }
@@ -424,16 +424,16 @@ namespace TestProject
             switch (dataKind)
             {
                 case DataKind.Mat:
-                    data = new MatData(new Group("", ObjType.Объект), dataString) 
-                    { Group = new Group(dataAr[0],ObjType.Элемент)};
+                    data = new MatData(new Group("", ObjType.Элемент3D), dataString) 
+                    { Group = new Group(dataAr[0], ObjType.Элемент3D) };
                     break;
                 case DataKind.Med:
-                    data = new MediaData(new Group("", ObjType.Объект), dataString)
-                    { Group = new Group(dataAr[0], ObjType.Элемент) };
+                    data = new MediaData(new Group("", ObjType.Элемент2D), dataString)
+                    { Group = new Group(dataAr[0], ObjType.Элемент2D) };
                     break;
                 case DataKind.Heat:
-                    var heatData = new HeatData(new Group("", ObjType.Объект), dataString)
-                    { Group = new Group(dataAr[1], ObjType.Элемент) };
+                    var heatData = new HeatData(new Group("", ObjType.Элемент3D), dataString)
+                    { Group = new Group(dataAr[1], ObjType.Элемент3D) };
                     var baseLine = new Group("baseLine", ObjType.Узел);
                     var refLine = new Group("refLine", ObjType.Узел);
                     var startNodes = new Group("startNodes", ObjType.Узел);
@@ -449,12 +449,12 @@ namespace TestProject
                     data = heatData;
                     break;
                 case DataKind.Clamp:
-                    data = new ClampData(new Group("", ObjType.Объект), dataString)
-                    { Group = new Group(dataAr[0], ObjType.Элемент) };
+                    data = new ClampData(new Group("", ObjType.Узел), dataString)
+                    { Group = new Group(dataAr[0], ObjType.Узел) };
                     break;
                 default:
-                    data = new LoadData(new Group("", ObjType.Объект), dataString)
-                    { Group = new Group(dataAr[0], ObjType.Элемент) };
+                    data = new LoadData(new Group("", ObjType.Узел), dataString)
+                    { Group = new Group(dataAr[0], ObjType.Узел) };
                     break;
             }
             //assert
@@ -476,7 +476,7 @@ namespace TestProject
         {
             //assign
 
-            var data = new MediaData(new Group("", ObjType.Объект), dataString);
+            var data = new MediaData(new Group("", ObjType.Элемент2D), dataString);
 
             //assert
 

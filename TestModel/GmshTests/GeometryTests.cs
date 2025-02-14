@@ -31,7 +31,7 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow(@"\CAD\Cilindr.step", 6, ObjType.Линия)]
+        [DataRow(@"\CAD\Cilindr.step", 6, ObjType.Кривая)]
         [DataRow(@"\CAD\Cilindr.step", 4, ObjType.Точка)]
         public void GetGeometryObjectsTest(string fileName, int numbOfObjs, ObjType objType)
         {
@@ -39,7 +39,7 @@ namespace TestModel.GmshTests
             controller.Open(modelFolder + fileName, ref ierr);
 
             IEnumerable<IModelObject> objects;
-            if (objType == ObjType.Линия)
+            if (objType == ObjType.Кривая)
                 objects = controller.CreateLines();
             else
                 objects = controller.CreateControlPoints();
@@ -63,8 +63,8 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow(@"..\..\..\Examples\STL\ACII.stl", ObjType.Узел)]
-        [DataRow(@"..\..\..\Examples\STL\ACII.stl", ObjType.Элемент2D)]
+        [DataRow(@"..\..\..\Examples\STL\ACII.stl", ObjType.Узел,0)]
+        [DataRow(@"..\..\..\Examples\STL\ACII.stl", ObjType.Элемент2D,4)]
         public void RemoveAllData(string stlPath, ObjType objType, int nNumb)
         {
             var ierr = 0;
@@ -78,11 +78,11 @@ namespace TestModel.GmshTests
             var elements = controller.GetMeshEntities(2, -1, nodes);
             //Assert.AreEqual(true, status);
             Assert.AreEqual(2, elements.Count);
-            modelData.ObjectData.NodeCollection.AddRange(nodes);
+            nodes.ForEach(x =>  modelData.ObjectData.NodesSet.Add(x.Number, x));
 
             modelData.ObjectData.Clear(objType);
             //assert
-            Assert.AreEqual(modelData.ObjectData.NodeCollection.Count(), nNumb);
+            Assert.AreEqual(modelData.ObjectData.NodesSet.Count, nNumb);
         }
 
         [DataTestMethod]

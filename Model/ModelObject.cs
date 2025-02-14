@@ -36,15 +36,7 @@ namespace Model
         /// <summary>
         /// MasterColor
         /// </summary>
-        public Color MasterColor { get ; set; }
-        /// <summary>
-        /// SlaveColor
-        /// </summary>
-        public Color SlaveColor { get; set; }
-        /// <summary>
-        /// InitialColor
-        /// </summary>
-        public Color InitialColor { get; set; }
+        public Color Color { get ; set; }
 
         bool viewState;
         bool existState;
@@ -58,8 +50,6 @@ namespace Model
             {
                 if(existState)
                 {
-                    if (!value)
-                        SetBackColor();
                     viewState = value;
                 }
             }
@@ -123,34 +113,6 @@ namespace Model
             }
         }
 
-
-
-
-        /// <summary>
-        /// Set initial color
-        /// </summary>
-        public void SetInitialColor()
-        {
-            var temp = InitialColor;
-            SlaveColor = temp;
-            MasterColor = temp;
-        }
-        /// <summary>
-        /// Set back color
-        /// </summary>
-        public void SetBackColor()
-        {
-            var temp = SlaveColor;
-            MasterColor = temp;
-        }
-        /// <summary>
-        /// Set new color
-        /// </summary>
-        public void SetNewColor(Color objColor)
-        {
-            SlaveColor = objColor;
-            MasterColor = objColor;
-        }
         /// <summary>
         /// Get points
         /// </summary>

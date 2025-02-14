@@ -1,31 +1,10 @@
 ﻿using Model.Interfaces;
+using Model.Interfaces.ObjectsCollections;
 using System;
 using System.Collections.Generic;
 
 namespace ModelControllerInterfaces
 {
-    /// <summary>
-    /// PresenterView
-    /// </summary>
-    public enum PresenterView
-    {
-        /// <summary>
-        /// Point
-        /// </summary>
-        Point,
-        /// <summary>
-        /// Line
-        /// </summary>
-        Line,
-        /// <summary>
-        /// Surface
-        /// </summary>
-        Surface,
-        /// <summary>
-        /// LineSurface
-        /// </summary>
-        LineSurface
-    }
     /// <summary>
     /// PresenterType
     /// </summary>
@@ -49,6 +28,10 @@ namespace ModelControllerInterfaces
     /// </summary>
     public interface IObjsPresenter : IEnumerable<IModelObject>
     {
+        /// <summary>
+        /// ViewMode
+        /// </summary>
+        ViewMode ViewMode { get; set; }
         /// <summary>
         /// IsVolumeObjs
         /// </summary>

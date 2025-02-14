@@ -32,7 +32,7 @@ namespace Model.IO
                 sw.WriteLine("");
 
                 sw.WriteLine("Узлы");
-                foreach (var nodeItem in model.ObjectData.NodeCollection)
+                foreach (var nodeItem in model.ObjectData.NodesSet.Values)
                 {
                     var x = nodeItem.Position._x;
                     var y = nodeItem.Position._y;

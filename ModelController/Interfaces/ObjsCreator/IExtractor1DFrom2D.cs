@@ -16,6 +16,6 @@ namespace ModelControllerInterfaces.ObjsCreator
         /// <param name="startNumber"></param>
         /// /// <param name="elements"></param>
         /// <returns></returns>
-        IEnumerable<ILineObject<Node>> Create(int startNumber, IElement2D[] elements);
+        IEnumerable<Beam> Create(int startNumber, IElement2D[] elements);
     }
 }

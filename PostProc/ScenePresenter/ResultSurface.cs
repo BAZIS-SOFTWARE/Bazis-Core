@@ -20,9 +20,7 @@ namespace PostProc.ScenePresenter
 
             this.points = points;
 
-            InitialColor = color;
-            MasterColor = color;
-            SlaveColor = color;
+            Color = color;
         }
         /// <summary>
         /// this
@@ -36,7 +34,7 @@ namespace PostProc.ScenePresenter
 
     public int Number => throw new NotImplementedException();
 
-        public Color MasterColor { get ; set ; }
+        public Color Color { get ; set ; }
         public Color SlaveColor { get ; set ; }
         public Color InitialColor { get; set ; }
         public bool ViewState { get; set; } = true;

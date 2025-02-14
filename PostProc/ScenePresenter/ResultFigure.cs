@@ -1,12 +1,8 @@
 ﻿using Geometry;
-using Model.GeometryObjects;
 using Model.Interfaces;
-using Model.Interfaces.GeometryObjects;
-using Project.Interfaces.Results;
 using Results.ScenePresenter;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Xml.Linq;
 
 namespace PostProc.ScenePresenter
 {
@@ -17,9 +13,7 @@ namespace PostProc.ScenePresenter
 
         public ResultFigure(List<Point3D> points, Color color)
         {
-            MasterColor = color;
-            SlaveColor = color;
-            InitialColor = color;
+            Color = color;
 
             foreach (var point in points)
                 this.points.Add(new ResultPoint(point));
@@ -43,7 +37,7 @@ namespace PostProc.ScenePresenter
         public int Number { get { return 0; } }
 /// <inheritdoc/>
 
-        public Color MasterColor { get; set; }
+        public Color Color { get; set; }
         /// <inheritdoc/>
         public Color SlaveColor { get ; set ; }
         /// <inheritdoc/>
@@ -53,7 +47,7 @@ namespace PostProc.ScenePresenter
         /// <inheritdoc/>
         public bool ExistState { get; set; } = true;
         /// <inheritdoc/>
-        public ObjType ObjType { get; } = ObjType.Фигура2D;
+        public ObjType ObjType { get; } = ObjType.Поверхность;
 /// <inheritdoc/>
 
         public int NumberOfPoints { get { return points.Count; } }

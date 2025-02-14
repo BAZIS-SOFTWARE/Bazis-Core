@@ -1,4 +1,5 @@
 ﻿using Model.Interfaces;
+using Model.Interfaces.ObjectsCollections;
 using ModelController.ModelScenePresentator.GlObjsVertexCreators;
 using ModelController.ModelScenePresentator.Interfaces;
 using ModelControllerInterfaces;
@@ -6,7 +7,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Model.Interfaces.GeometryObjects;
 
 namespace ModelController.ModelScenePresentator.GlObjsPresenters
 {
@@ -17,9 +17,7 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
         where T : IPoint
     {
         List<ILineObject<T>> lineObjects = new List<ILineObject<T>>();
-/// <inheritdoc/>
 
-        public PresenterView PresenterView { get; set; } = PresenterView.Line;
         /// <inheritdoc/>
 
         public PresenterType PresenterType { get; } = PresenterType.Line;
@@ -27,8 +25,9 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
 
         public bool IsVolumeObjs { get; } = false;
 
-
-/// <inheritdoc/>
+        /// <inheritdoc/>
+        public ViewMode ViewMode { get; set; } = ViewMode.Line;
+        /// <inheritdoc/>
 
         public Tuple<int, int, int,int> CreateIndexes()
         {

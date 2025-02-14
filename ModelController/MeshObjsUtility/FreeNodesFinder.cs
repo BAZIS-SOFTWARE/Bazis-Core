@@ -12,12 +12,12 @@ namespace ModelController.MeshObjsUtility
         /// <inheritdoc/>
         public IEnumerable<int> Find(IObjectsData objsData)
         {
-            if (objsData.NodeCollection.Count == 0) throw new Exception("Модель не содержит узлов!");
-            var elements = objsData.GetObjects(ObjType.Элемент).Select(x => (IElement)x);
+            if (objsData.NodesSet.Count == 0) throw new Exception("Модель не содержит узлов!");
+            var elements = objsData.GetAllElements();
             var finder = new InterfacedNodesFinder();
             var interfaceNodes = finder.Find(elements);
 
-            var nodesNumbersAll = objsData.NodeCollection.Select(x => x.Number);
+            var nodesNumbersAll = objsData.NodesSet.Values.Select(x => x.Number);
             var nodesNumbersElements = interfaceNodes.Keys;
             var distNodesNumbersElements = nodesNumbersElements.Distinct();
             var freeNodesNumbers = nodesNumbersAll.Except(distNodesNumbersElements);

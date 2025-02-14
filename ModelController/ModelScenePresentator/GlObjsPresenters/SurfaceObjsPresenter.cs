@@ -1,4 +1,5 @@
 ﻿using Model.Interfaces;
+using Model.Interfaces.ObjectsCollections;
 using ModelController.ModelScenePresentator.GlObjsVertexCreators;
 using ModelController.ModelScenePresentator.Interfaces;
 using ModelControllerInterfaces;
@@ -22,6 +23,9 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
 /// <inheritdoc/>
 
         public bool IsVolumeObjs { get; } = false;
+        /// <inheritdoc/>
+        public ViewMode ViewMode { get; set; } = ViewMode.LineSurface;
+
         /// <inheritdoc/>
 
         /// <summary>
