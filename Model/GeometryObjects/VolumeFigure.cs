@@ -22,7 +22,7 @@ namespace Model.GeometryObjects
         public VolumeFigure(int number, SurfaceFigure[] surfaceFigures) : base(number)
         {
             Color = Color.FromArgb(255, 125, 0);
-
+            surfaceFigure = surfaceFigures;
 
         }
 /// <inheritdoc/>
@@ -44,6 +44,11 @@ namespace Model.GeometryObjects
             }
         }
 /// <inheritdoc/>
+        public IEnumerable<SurfaceFigure> GetSurfaceFigures()
+        {
+            foreach (var item in surfaceFigure)
+                yield return item;
+        }
 
         public IEnumerable<GeometrySurface> GetSurfaces()
         {

@@ -6,6 +6,8 @@ using Model;
 using Model.Interfaces;
 using Model.Interfaces.ObjectsFinders;
 using GmshApi;
+using System.Collections.Generic;
+using Model.GeometryObjects;
 
 namespace TestModel.GmshTests
 {
@@ -572,6 +574,36 @@ namespace TestModel.GmshTests
             list = controller.GetMeshObjects();
             var after = list.Item3.Count;
             Assert.IsTrue(after > before);
+        }
+
+        [DataTestMethod]
+        [DataRow(@"\CAD\screw.step")]
+        [DataRow(@"\CAD\assembly_1.step")]
+        [DataRow(@"\CAD\assembly_2.stp")]
+        [DataRow(@"\CAD\nasos.step")]
+        [DataRow(@"\CAD\block.igs")]
+        [DataRow(@"\GMSHAPI\cubes.geo")]//Для geo ядра презентация STL не работает (как и в gmsh)
+        public void StlRepresentationTest(string fileName)
+        {
+            var ierr = 0;
+            controller.Open(modelFolder + fileName, ref ierr);
+            controller.ModelMeshImportStl(ref ierr);
+            var volumes = controller.GetVolumeFigures();
+
+            Action<IEnumerable<SurfaceFigure>> surfaceCheck = (s) =>
+            {
+                foreach (var surface in s)
+                {
+                    var expected = controller.GetNodes(2, surface.Number, false).Count;
+                    Assert.AreEqual(expected, surface.NumberOfPoints);
+                }
+            };
+            
+            if (volumes.Count > 0)
+                foreach (var volume in volumes)
+                    surfaceCheck(volume.GetSurfaceFigures());
+            else
+                surfaceCheck(controller.GetSurfaceFigures());
         }
     }
 }

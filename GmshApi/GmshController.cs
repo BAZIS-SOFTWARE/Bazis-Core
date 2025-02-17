@@ -10,6 +10,7 @@ using Model.GeometryObjects;
 using Model.Interfaces.MeshObjects;
 using Model.Interfaces.ObjectsFinders;
 using Geometry.Exteisions;
+using Model;
 
 namespace GmshApi.GmshController
 {
@@ -668,6 +669,13 @@ namespace GmshApi.GmshController
         /// <param name="ierr">[Out]Флаг ошибки</param>
         public delegate void gmshModelAddDiscreteEntityFun(int dim, int tag, int[] boundary, IntPtr boundary_n, ref int ierr);///
         public gmshModelAddDiscreteEntityFun gmshModelAddDiscreteEntity;
+
+        /// <summary>
+        /// Создает сеточное прдеставление STL
+        /// </summary>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        private delegate void gmshModelMeshImportStlFun(ref int ierr);///
+        private gmshModelMeshImportStlFun gmshModelMeshImportStl;
         #endregion
         #region "Mesh Delegates"
         /// <summary>
@@ -1172,6 +1180,7 @@ namespace GmshApi.GmshController
             //gmshModelGeoRemoveAllDuplicates = GetFunction<gmshModelGeoRemoveAllDuplicatesFun>("gmshModelGeoRemoveAllDuplicates");
             gmshModelSetCoordinates = GetFunction<gmshModelSetCoordinatesFun>("gmshModelSetCoordinates");
             gmshModelAddDiscreteEntity = GetFunction<gmshModelAddDiscreteEntityFun>("gmshModelAddDiscreteEntity");
+            gmshModelMeshImportStl = GetFunction<gmshModelMeshImportStlFun>("gmshModelMeshImportStl");
             #endregion
             #region "Get Mesh delegates"
             gmshModelMeshGenerate = GetFunction<gmshModelMeshGenerateFun>("gmshModelMeshGenerate");
@@ -2411,6 +2420,101 @@ namespace GmshApi.GmshController
             int[] dimTags;
             ModelGetGeometryEntities(out dimTags, -1);
             ModelMeshCreateGeometry(dimTags, (IntPtr)dimTags.Length, ref ierr);
+        }
+
+        /// <inheritdoc/>
+        public void ModelMeshImportStl(ref int ierr)
+        {
+            gmshModelMeshImportStl(ref ierr);
+        }
+
+        /// <inheritdoc/>
+        public List<VolumeFigure> GetVolumeFigures()
+        {
+            var ierr = 0;
+            var volumeFigures = new List<VolumeFigure>();
+            if (GetGeometryObjectDimension(ref ierr) > 2)
+            {
+                var surfaceFigures = GetSurfaceFigures();
+                if (surfaceFigures.Count > 0)
+                {
+                    surfaceFigures = surfaceFigures.OrderBy(v => v.Number).ToList();
+                    int[] dimTags;
+                    ModelGetGeometryEntities(out dimTags, 3);
+
+                    for (var i = 0; i < dimTags.Length; i += 2)
+                    {
+                        var dim = dimTags[i];
+                        var tag = dimTags[i + 1];
+                        int[] upward, downward;
+                        ModelGetAdjacencies(dim, tag, out upward, out downward);
+
+                        var surfacesOfVolume = new SurfaceFigure[downward.Length];
+                        for (var j = 0; j < downward.Length; ++j)
+                        {
+                            var surfaceFigure = ByNumberFinder.Find(surfaceFigures, downward[j]);
+                            if (surfaceFigure == null)
+                                throw new Exception($"Поверхность с номером {surfaceFigures} не найдена");
+                            else
+                                surfacesOfVolume[j] = surfaceFigure;
+                        }
+                        volumeFigures.Add(new VolumeFigure(tag, surfacesOfVolume));
+                    }
+                }
+            }
+            return volumeFigures;
+        }
+
+        /// <inheritdoc/>
+        public List<SurfaceFigure> GetSurfaceFigures()
+        {
+            var points = GetNodes(2, -1, false).Select(v => new GeometryPoint(v.Number, v.Position)).ToList();
+            var surfaceFigures = new List<SurfaceFigure>();
+            if (points.Count > 0)
+            {
+                int[] dimTags;
+                ModelGetGeometryEntities(out dimTags, 2);
+                
+                for (var i = 1; i < dimTags.Length; i += 2)
+                {
+                    var surfaceFigure = GetSurfaceFigure(points, dimTags[i]);
+                    surfaceFigures.Add(surfaceFigure);
+                }
+            }
+            return surfaceFigures;
+        }
+
+
+        /// <inheritdoc/>
+        public SurfaceFigure GetSurfaceFigure(List<GeometryPoint> points, int surfaceTag)
+        {
+            int[] elementTypes;
+            long[][] elemTags, nodeTags;
+            ElementProperties[] properties;
+
+            ModelMeshGetElements(2, surfaceTag, out elementTypes, out elemTags, out nodeTags);
+            ModelMeshGetElementProperties(elementTypes, out properties);
+            var geometrySurfaces = new List<GeometrySurface>();
+            //N - число точек поверхности, сложность O(N*logN) т.к выполняется бинарный поиск, можно улучшить до O(N);
+            for (int j = 0; j < properties.Length; ++j)
+            {
+                var elements = elemTags[j];//Идентификаторы элементов
+                var nodesCount = properties[j].numNodes;
+                for (var k = 0; k < elements.Length; ++k)
+                {
+                    var nodesPerElems = new GeometryPoint[nodesCount];
+                    for (int l = 0; l < nodesCount; ++l)
+                    {
+                        var tagStride = k * nodesCount + l;
+                        nodesPerElems[l] = ByNumberFinder.Find(points, (int)nodeTags[j][tagStride]);
+                        if (nodesPerElems[l] == null)
+                            throw new Exception($"Элемент с номером {nodeTags[j][tagStride]} не найден");
+                    }
+                    geometrySurfaces.Add(new GeometrySurface((int)elements[k], nodesPerElems));
+                }
+            }
+            var sFigure = new SurfaceFigure(surfaceTag, geometrySurfaces.ToArray());
+            return sFigure;
         }
         #endregion
     }
