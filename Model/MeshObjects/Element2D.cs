@@ -21,7 +21,7 @@ namespace Model.MeshObjects
 
             surface = new ElementSurface(number, 0, nodes);
 
-            this.nodes = surface.GetVertexes().ToList();
+            //this.nodes = surface.GetVertexes().ToList();
 
             var basis = CalcTransitionMatrix(GetCoordinates().ToArray());
 

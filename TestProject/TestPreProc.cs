@@ -21,7 +21,7 @@ namespace TestProject
     [TestClass]
     public class TestPreProc
     {
-        private static string projPath = Path.GetFullPath(@".\..\..\CalcCompDataTest\TsfFolder\");
+        private static string projPath = Path.GetFullPath(@".\..\..\..\CalcCompDataTest\TsfFolder\");
 
         /// <summary>
         /// Создать ValuableDat, для параметризации тестов
@@ -41,7 +41,7 @@ namespace TestProject
                     case "load": func = (g, s) => new LoadData(g, s); break;
                     default: func = (g, s) => new MatData(g, s); break;
                 }
-                yield return func(new Group("", ObjType.Объект), str[1]);
+                yield return func(new Group("", ObjType.Узел), str[1]);
             }
         }
 
@@ -238,7 +238,7 @@ namespace TestProject
         }
 
         [TestMethod]
-        [DataRow(@".\..\..\CalcCompDataTest\MNOGOPROHOD.bpf", ProcessType.Welding)]
+        [DataRow(@".\..\..\..\CalcCompDataTest\MNOGOPROHOD.bpf", ProcessType.Welding)]
         //[DataRow(@"c:\projs\testProj\Tempering\proj.bpf", ProcessType.Heating)]
         //[DataRow(@"c:\projs\testProj\Tempering\proj.bpf", ProcessType.Quenching)]
         //[DataRow(@"c:\projs\testProj\Tempering\proj.bpf", ProcessType.Tempering)]
@@ -264,16 +264,16 @@ namespace TestProject
         }
 
         [TestMethod]
-        [DataRow(@".\..\..\CalcCompDataTest\MatDataShorterThenBoundData.bpf", DisplayName = "MatData_Shorter_Then_BoundData")]
-        [DataRow(@".\..\..\CalcCompDataTest\NoMaterialData.bpf", DisplayName = "No_MaterialData")]
-        [DataRow(@".\..\..\CalcCompDataTest\NoBoundData.bpf", DisplayName = "No_BoundData")]
-        [DataRow(@".\..\..\CalcCompDataTest\ClampDataStartsAfterProcessStart.bpf", DisplayName = "ClampData_Starts_After_Process_Start")]
-        [DataRow(@".\..\..\CalcCompDataTest\MedDataStartsAfterProcessStart.bpf", DisplayName = "MedData_Starts_After_Process_Start")]
-        [DataRow(@".\..\..\CalcCompDataTest\MaterialDataStartsAfterProcessStart.bpf")]
-        [DataRow(@".\..\..\CalcCompDataTest\FreeSpacesBetweenClampData.bpf")]
-        [DataRow(@".\..\..\CalcCompDataTest\FreeSpacesBetweenMediaData.bpf")]
-        [DataRow(@".\..\..\CalcCompDataTest\FreeSpacesBetweenMaterialData.bpf")]
-        [DataRow(@".\..\..\CalcCompDataTest\HeatDataContiniousWithoutMediaData.bpf")]
+        [DataRow(@".\..\..\..\CalcCompDataTest\MatDataShorterThenBoundData.bpf", DisplayName = "MatData_Shorter_Then_BoundData")]
+        [DataRow(@".\..\..\..\CalcCompDataTest\NoMaterialData.bpf", DisplayName = "No_MaterialData")]
+        [DataRow(@".\..\..\..\CalcCompDataTest\NoBoundData.bpf", DisplayName = "No_BoundData")]
+        [DataRow(@".\..\..\..\CalcCompDataTest\ClampDataStartsAfterProcessStart.bpf", DisplayName = "ClampData_Starts_After_Process_Start")]
+        [DataRow(@".\..\..\..\CalcCompDataTest\MedDataStartsAfterProcessStart.bpf", DisplayName = "MedData_Starts_After_Process_Start")]
+        [DataRow(@".\..\..\..\CalcCompDataTest\MaterialDataStartsAfterProcessStart.bpf")]
+        [DataRow(@".\..\..\..\CalcCompDataTest\FreeSpacesBetweenClampData.bpf")]
+        [DataRow(@".\..\..\..\CalcCompDataTest\FreeSpacesBetweenMediaData.bpf")]
+        [DataRow(@".\..\..\..\CalcCompDataTest\FreeSpacesBetweenMaterialData.bpf")]
+        [DataRow(@".\..\..\..\CalcCompDataTest\HeatDataContiniousWithoutMediaData.bpf")]
         public void PreProc_GenerateTSF_ShouldFail(string path)
         {
             var resData = new List<IValuableData>();

@@ -12,8 +12,15 @@ namespace Model.MeshObjects
     {
         public Tetra(int number, Node[] nodes) : base(number, nodes)
         {
-            if (surfaces.Count != 4)
-                throw new Exception($"Коллличество поверхностей в тетраэлементе {number} должно быть 4");
+            //if (surfaces.Count != 4)
+            //    throw new Exception($"Коллличество поверхностей в тетраэлементе {number} должно быть 4");
+
+            surfaces.Add(new ElementSurface(number, 0, new Node[] { nodes[0], nodes[1], nodes[2] }));
+            surfaces.Add(new ElementSurface(number, 1, new Node[] { nodes[0], nodes[3], nodes[1] }));
+            surfaces.Add(new ElementSurface(number, 1, new Node[] { nodes[1], nodes[3], nodes[2] }));
+            surfaces.Add(new ElementSurface(number, 1, new Node[] { nodes[0], nodes[2], nodes[3] }));
+
+
             CreateIntegrationPoint(1, 1.0 / 4, 1.0 / 4, 1.0 / 4, 1.0 / 4);
         }
 

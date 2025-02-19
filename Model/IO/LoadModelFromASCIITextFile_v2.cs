@@ -97,18 +97,18 @@ namespace Model.IO
         {
             switch (type) 
             {
+                case 3006:
+                    return new Penta(elNumber, nodes);
+                case 3008:
+                    return new Hexa(elNumber, nodes);
                 case 3004:
-                    var tetra = new Tetra(elNumber, nodes);
-                    //model.ObjectData.E3DCollection.Add(ObjType.Элемент3D.ToString(),tetra);
-                    return tetra;
+                    return new Tetra(elNumber, nodes);
+                case 2004:
+                    return new Quad(elNumber, nodes);
                 case 2003:
-                    var triangle = new Triangle(elNumber, nodes);
-                    //model.ObjectData.E2DCollection.Add(ObjType.Элемент2D.ToString(),triangle);
-                    return triangle;
+                    return new Triangle(elNumber, nodes);
                 case 1002:
-                    var beam = new Beam(elNumber, nodes);
-                    //model.ObjectData.E1DCollection.Add(ObjType.Элемент1D.ToString(),beam);
-                    return beam;
+                    return new Beam(elNumber, nodes);
                 default: throw new ArgumentException($"Unable to recognize element of type {type}");
             }
         }
@@ -155,27 +155,27 @@ namespace Model.IO
             {
                 model.ObjectData.E1DCollection.Add(setName);
                 var set1D = model.ObjectData.E1DCollection[setName];
+                FillSet_v2(set1D, numbers);
                 set1D.SetViewMode(ViewMode.Line);
                 set1D.SetColor(color);
-                FillSet_v2(model.ObjectData.E1DCollection[setName], numbers);
             }
 
             else if (objsType == ObjType.Элемент2D)
             {
                 model.ObjectData.E2DCollection.Add(setName);
                 var set2D = model.ObjectData.E2DCollection[setName];
+                FillSet_v2(set2D, numbers);
                 set2D.SetViewMode(ViewMode.LineSurface);
                 set2D.SetColor(color);
-                FillSet_v2(model.ObjectData.E2DCollection[setName], numbers);
             }
     
             else
             {
                 model.ObjectData.E3DCollection.Add(setName);
                 var set3D = model.ObjectData.E3DCollection[setName];
+                FillSet_v2(set3D, numbers);
                 set3D.SetViewMode(ViewMode.LineSurface);
                 set3D.SetColor(color);
-                FillSet_v2(set3D, numbers);
             }
         }
 

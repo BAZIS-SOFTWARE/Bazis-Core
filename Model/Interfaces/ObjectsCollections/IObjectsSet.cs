@@ -13,10 +13,6 @@ namespace Model.Interfaces.ObjectsCollections
     public interface IObjectsSet<T> : ISetInfo,IDictionary<int, T> where T : IModelObject
     {
         /// <summary>
-        /// ObjType
-        /// </summary>
-        ObjType ObjType { get; }
-        /// <summary>
         /// ClearNotExisted
         /// </summary>
         void ClearNotExisted();

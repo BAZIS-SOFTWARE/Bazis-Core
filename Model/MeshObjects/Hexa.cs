@@ -16,11 +16,20 @@ namespace Model.MeshObjects
 
         public Hexa(int number, Node[] nodes) : base(number, nodes)
         {
-            if (surfaces.Count < 6)
-                throw new Exception($"Коллличество поверхностей в гексаэлементе {number} должно быть не меньше 6");
-            var masterSurface = GetMasterSurface(4, surfaces);
-            this.nodes = SortNodes(masterSurface.Number, surfaces).ToList();
+            if (nodes.Length < 8)
+                throw new Exception($"Коллличество узлов в гексаэлементе {number} должно быть не меньше 6");
+            //var masterSurface = GetMasterSurface(4, surfaces);
 
+            //if(masterSurface == null)
+            //    masterSurface = GetMasterSurface(3, surfaces);
+            //this.nodes = SortNodes(masterSurface.Number, surfaces);
+
+            surfaces.Add(new ElementSurface(number, 0, new Node[] { nodes[0], nodes[1], nodes[2], nodes[3] }));
+            surfaces.Add(new ElementSurface(number, 1, new Node[] { nodes[4], nodes[7], nodes[6], nodes[5] }));
+            surfaces.Add(new ElementSurface(number, 2, new Node[] { nodes[0], nodes[4], nodes[5], nodes[1] }));
+            surfaces.Add(new ElementSurface(number, 3, new Node[] { nodes[7], nodes[3], nodes[2], nodes[6] }));
+            surfaces.Add(new ElementSurface(number, 4, new Node[] { nodes[1], nodes[5], nodes[6], nodes[2] }));
+            surfaces.Add(new ElementSurface(number, 5, new Node[] { nodes[7], nodes[4], nodes[0], nodes[3] }));
             CreateIntegrationPoint(8, 0, 0, 0);
         }
 

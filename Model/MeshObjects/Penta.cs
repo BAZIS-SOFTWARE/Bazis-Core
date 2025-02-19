@@ -13,10 +13,16 @@ namespace Model.MeshObjects
 
         public Penta(int number, Node[] nodes) : base(number, nodes)
         {
-            if (surfaces.Count < 5)
-                throw new Exception($"Коллличество поверхностей в пентаэлементе {number} должно быть не меньше 5");
-            var masterSurface = GetMasterSurface(3, surfaces);
-            this.nodes = SortNodes(masterSurface.Number, surfaces).ToList();
+            if (nodes.Length < 6)
+                throw new Exception($"Коллличество узлов в пентаэлементе {number} должно быть не меньше 5");
+            //var masterSurface = GetMasterSurface(3, surfaces);
+            //this.nodes = SortNodes(masterSurface.Number, surfaces);
+
+            surfaces.Add(new ElementSurface(number, 0, new Node[] { nodes[0], nodes[1], nodes[2] }));
+            surfaces.Add(new ElementSurface(number, 1, new Node[] { nodes[3], nodes[5], nodes[4] }));
+            surfaces.Add(new ElementSurface(number, 2, new Node[] { nodes[0], nodes[2], nodes[5], nodes[3] }));
+            surfaces.Add(new ElementSurface(number, 3, new Node[] { nodes[0], nodes[3], nodes[4], nodes[1] }));
+            surfaces.Add(new ElementSurface(number, 4, new Node[] { nodes[1], nodes[4], nodes[5], nodes[2] }));
 
             CreateIntegrationPoint(1, 0.3333, 0.3333, 0);
         }

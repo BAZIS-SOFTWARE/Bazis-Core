@@ -27,8 +27,6 @@ namespace Model.IO
                 var verStr = "Версия " + $"{ver.Major}.{ver.Minor}.{ver.Build}";
 
                 sw.WriteLine(ver);
-
-
                 sw.WriteLine("");
 
                 sw.WriteLine("Узлы");

@@ -38,7 +38,8 @@ namespace Model.IO
                     if (line == "Элементы 3004" || line == "Элементы 2003" ||
                         line == "Элементы3D" || line == "Элементы2D" ||
                         line == "Элементы1D" || line == "Элемент3D" || line == "Элемент2D" ||
-                        line == "Элемент1D")
+                        line == "Элемент1D" || line == "Элементы 3004" || line == "Элементы 3006" ||
+                        line == "Элементы 3008")
                     {
                         LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка элементов..."));
                         Thread.Sleep(100);
@@ -95,7 +96,8 @@ namespace Model.IO
                     .Select(int.Parse);
                 var elementNumber = tokens.First();
                 var nodes = GetNodes(newMesh, tokens.Skip(1)).ToArray();
-                if (elementType == "Элементы3D" | elementType == "Элемент3D" | elementType == "Элементы 3004")
+                if (elementType == "Элементы3D" | elementType == "Элемент3D" |
+                    elementType == "Элементы 3004" | elementType == "Элементы 3006" | elementType == "Элементы 3008")
                 {
                     var element = GetElement3D(nodes, elementNumber);
                     newMesh.ObjectData.E3DCollection.Add(elementType,element);

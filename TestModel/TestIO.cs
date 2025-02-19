@@ -12,6 +12,7 @@ namespace TestModel
     {
         [DataTestMethod]
         [DataRow(@"..\..\..\Examples\3D\cub_unsorted.bpf",6)]
+        [DataRow(@"..\..\..\Examples\3D\hexa.bpf", 4)]
         [DataRow(@"c:\projs\AdditiveTest\nozzle.stlout_penta.bpf", 65606)]
         [DataRow(@"c:\projs\AdditiveTest\nozzle.stlout_penta_beam.bpf", 67245)]
         [DataRow(@"c:\projs\AdditiveTest\nozzle.stlout_penta_beam_v.bpf", 67245)]
@@ -27,8 +28,6 @@ namespace TestModel
 
             //act
             model.Load(path);
-
-            var pentas = model.ObjectData.E3DCollection.GetObjects().Where(x => x.ElementKind == Model.Interfaces.MeshObjects.ElementKind.Пента);
 
             //assert
             Assert.AreEqual(model.ObjectData.GetAllElements().Count(), elCount);
@@ -181,6 +180,8 @@ namespace TestModel
         [DataRow(7,8,0, @"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC", DisplayName = "rhombDATA1.ASC")]
         [DataRow(44, 113, 3, @"..\..\..\Examples\VIsual-Mesh\DATA3.ASC", DisplayName = "DATA3.ASC")]
         [DataRow(104, 337, 0, @"..\..\..\Examples\VIsual-Mesh\cilinder3DATA1.ASC", DisplayName = "cilinder3DATA1.ASC")]
+        [DataRow(104, 337, 0, @"..\..\..\Examples\VIsual-Mesh\cilinder3DATA1.ASC", DisplayName = "cilinder3DATA1.ASC")]
+        //[DataRow(145286, 193532, 2380, @"c:\projs\Kamaz_ini\iniMesh_DATA3.ASC", DisplayName = "stress test")]
         public void ImportModelFromVisualMeshASCIITextFormat(int nodeCount, int elemCount, int elem1D, string path)
         {
             //assing

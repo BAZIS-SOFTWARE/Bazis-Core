@@ -17,7 +17,7 @@ namespace Model.MeshObjects
         {
             Color = Color.FromArgb(255, 125, 0);
 
-            surfaces = SurfacesCreator.CreateSurfacesFromSetOfNodes(number, nodes);
+            //surfaces = SurfacesCreator.CreateSurfacesFromSetOfNodes(number, nodes);
         }
 
 

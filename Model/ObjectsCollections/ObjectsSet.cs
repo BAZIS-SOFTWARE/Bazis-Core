@@ -68,6 +68,9 @@ namespace Model.ObjectsCollections
         public Color Color { get; private set; } = Color.DarkGray;
         /// <inheritdoc/>
         public ViewMode ViewMode { get; private set; } = ViewMode.Point;
+/// <inheritdoc/>
+
+        public int NumberOfObjects => objectsSet.Count;
 
         /// <inheritdoc/>
 
@@ -95,6 +98,7 @@ namespace Model.ObjectsCollections
         {
             objectsSet.Clear();
         }
+/// <inheritdoc/>
 
         public bool Contains(KeyValuePair<int, T> item)
         {
@@ -106,6 +110,7 @@ namespace Model.ObjectsCollections
         {
             return objectsSet.ContainsKey(key);
         }
+/// <inheritdoc/>
 
         public void CopyTo(KeyValuePair<int, T>[] array, int arrayIndex)
         {

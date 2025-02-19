@@ -36,8 +36,7 @@ namespace Model.IO
                         Thread.Sleep(100);
                         LoadNodes(sr, newModel);
                     }
-                    if (token[0] == "Элементы 3004" || token[0] == "Элементы 2003" ||
-                        token[0] == "Элементы3D" || token[0] == "Элементы2D" ||
+                    if (token[0] == "Элементы3D" || token[0] == "Элементы2D" ||
                         token[0] == "Элементы1D" || token[0] == "Элемент3D" || token[0] == "Элемент2D" ||
                         token[0] == "Элемент1D")
                     {

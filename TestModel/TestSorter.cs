@@ -23,6 +23,7 @@ namespace TestModel
             };
 
             //act
+            nodes.RoundSort(); //Anticlockwise(nodes);
             var surf = new ElementSurface(0,0, nodes);
 
             //assert
@@ -50,6 +51,7 @@ namespace TestModel
             };
 
             //act
+            nodes.RoundSort(); //Anticlockwise(nodes);
             var surf = new ElementSurface(0,0, nodes);
 
             //assert

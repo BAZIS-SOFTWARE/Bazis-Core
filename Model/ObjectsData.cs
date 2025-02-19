@@ -454,7 +454,41 @@ namespace Model
 
             else throw new Exception("Операция доступна только для узлов или точек");
         }
-/// <inheritdoc/>
+
+        /// <inheritdoc/>
+
+        public void Remove(ObjType objType, string objSet)
+        {
+            //Find(objType, objNumber).ExistState = false;
+            switch (objType)
+            {
+                case ObjType.Точка:
+                    Clear(objType);
+                    break;
+                case ObjType.Кривая:
+                    CurveCollection.Remove(objSet);
+                    break;
+                case ObjType.Поверхность:
+                    SurfaceCollection.Remove(objSet);
+                    break;
+                case ObjType.Объем:
+                    VolumeCollection.Remove(objSet);
+                    break;
+                case ObjType.Узел:
+                    Clear(objType);
+                    break;
+                case ObjType.Элемент1D:
+                    E1DCollection.Remove(objSet);
+                    break;
+                case ObjType.Элемент2D:
+                    E2DCollection.Remove(objSet);
+                    break;
+                default:
+                    E3DCollection.Remove(objSet);
+                    break;
+            }
+        }
+        /// <inheritdoc/>
 
         public void Remove(ObjType objType, int objNumber)
         {

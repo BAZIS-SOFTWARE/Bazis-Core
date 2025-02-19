@@ -25,7 +25,7 @@ namespace Model.MeshObjects
             if (nodes.Length < 3)
                 throw new Exception("Для создания поверхности требуется не меньше 3-х узлов!");
 
-            nodes.RoundSort(); //Anticlockwise(nodes);
+            //nodes.RoundSort(); //Anticlockwise(nodes);
             this.nodes = nodes;
 
             ElementNumber = elementNumber;
