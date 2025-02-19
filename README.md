@@ -23,6 +23,7 @@
 
 
 # Схемы интегрирования конечных элементов для решения задач для всех типов элементов 2D и 3D (Проект Model).
-![image](https://github.com/user-attachments/assets/74be7c6a-4e03-4524-b0c3-4c5f8fca1a8d)
+![image](https://github.com/user-attachments/assets/de06da91-25e0-402a-a73a-1d7a1a9fd0e8)
+
 
 
