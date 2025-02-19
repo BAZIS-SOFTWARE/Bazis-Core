@@ -250,23 +250,6 @@ namespace Model
                 yield return item;
         }
 
-        int GetMaxFigureNumber()
-        {
-            throw new NotImplementedException();
-        }
-
-        void ClearElements()
-        {
-            E1DCollection.Clear();
-            E2DCollection.Clear();
-            E3DCollection.Clear();
-        }
-
-        void ClearFigures()
-        {
-            SurfaceCollection.Clear();
-            VolumeCollection.Clear();
-        }
 /// <inheritdoc/>
 
         public void ClearNotExisted()
@@ -287,49 +270,32 @@ namespace Model
 
         public void Clear(ObjType objType)
         {
+            // пробегаем по коллекции с целью синхронизации удаления в группах,
+            //где есть эти объекты
             switch (objType)
             {
                 case ObjType.Точка:
-                    foreach (var item in PointsSet.Values)
-                        item.ExistState = false;
                     PointsSet.Clear();
-                    CurveCollection.Clear();
-                    ClearFigures();
                     break;
                 case ObjType.Кривая:
-                    foreach (var item in CurveCollection.GetObjects())
-                        item.ExistState = false;
                     CurveCollection.Clear();
                     break;
                 case ObjType.Поверхность:
-                    foreach (var item in SurfaceCollection.GetObjects())
-                        item.ExistState = false;
                     SurfaceCollection.Clear();
                     break;
                 case ObjType.Объем:
-                    foreach (var item in VolumeCollection.GetObjects())
-                        item.ExistState = false;
                     VolumeCollection.Clear();
                     break;
                 case ObjType.Узел:
-                    foreach (var item in NodesSet.Values)
-                        item.ExistState = false;
                     NodesSet.Clear();
-                    ClearElements();
                     break;
                 case ObjType.Элемент1D:
-                    foreach (var item in E1DCollection.GetObjects())
-                        item.ExistState = false;
                     E1DCollection.Clear();
                     break;
                 case ObjType.Элемент2D:
-                    foreach (var item in E2DCollection.GetObjects())
-                        item.ExistState = false;
                     E2DCollection.Clear();
                     break;
                 case ObjType.Элемент3D:
-                    foreach (var item in E3DCollection.GetObjects())
-                        item.ExistState = false;
                     E3DCollection.Clear();
                     break;
                 default:
@@ -463,7 +429,7 @@ namespace Model
             switch (objType)
             {
                 case ObjType.Точка:
-                    Clear(objType);
+                    PointsSet.Clear();
                     break;
                 case ObjType.Кривая:
                     CurveCollection.Remove(objSet);
@@ -475,7 +441,7 @@ namespace Model
                     VolumeCollection.Remove(objSet);
                     break;
                 case ObjType.Узел:
-                    Clear(objType);
+                    NodesSet.Clear();
                     break;
                 case ObjType.Элемент1D:
                     E1DCollection.Remove(objSet);

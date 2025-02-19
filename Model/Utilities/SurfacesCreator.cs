@@ -29,6 +29,7 @@ namespace Model.Utilities
 
             foreach (var surfNodes in SurfacesFinder.FindSurfaceNodes(nodes))
             {
+                surfNodes.RoundSort(); //Anticlockwise(nodes);
                 var surface = new ElementSurface(elementNumber, surfNumber, surfNodes);
 
                 var normal = surface.CalcNormal();

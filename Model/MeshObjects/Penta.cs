@@ -30,7 +30,7 @@ namespace Model.MeshObjects
         public Penta(int number, Node[] nodes, int intpNumber) : base(number, nodes, intpNumber)
         {
             var masterSurface = GetMasterSurface(3, surfaces);
-            this.nodes = SortNodes(masterSurface.Number, surfaces).ToList();
+            //this.nodes = SortNodes(masterSurface.Number, surfaces).ToList();
 
             switch (intpNumber)
             {

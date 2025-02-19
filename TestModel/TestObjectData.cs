@@ -277,7 +277,7 @@ namespace TestModel
             model.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
 
             //act
-            model.ObjectData.NodesSet.Remove(objNumber);           
+            model.ObjectData.Remove(ObjType.Узел, objNumber);         
             model.ObjectData.ClearNotExisted();
 
             //assert

@@ -96,6 +96,9 @@ namespace Model.ObjectsCollections
 
         public void Clear()
         {
+            foreach (var item in objectsSet)
+                item.Value.ExistState = false;
+
             objectsSet.Clear();
         }
 /// <inheritdoc/>

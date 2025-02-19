@@ -80,6 +80,8 @@ namespace Model.ObjectsCollections
 
         public void Clear()
         {
+            foreach (var item in objects)
+                item.Value.Clear();
             objects.Clear();
         }
 /// <inheritdoc/>
@@ -168,6 +170,7 @@ public bool ContainsName(string collName)
         {
             foreach (var item in objects)
             {
+                item.Value[objNumber].ExistState = false;
                 item.Value.Remove(objNumber);
             }
         }
@@ -175,6 +178,9 @@ public bool ContainsName(string collName)
 
         public bool Remove(string name)
         {
+            foreach (var item in objects[name])
+                item.Value.ExistState = false;
+
             return objects.Remove(name);
         }
     }

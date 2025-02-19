@@ -12,7 +12,7 @@ namespace TestModel
     {
         [DataTestMethod]
         [DataRow(@"..\..\..\Examples\3D\cub_unsorted.bpf",6)]
-        [DataRow(@"..\..\..\Examples\3D\hexa.bpf", 4)]
+        [DataRow(@"..\..\..\Examples\3D\hexa.bpf", 3)]
         [DataRow(@"c:\projs\AdditiveTest\nozzle.stlout_penta.bpf", 65606)]
         [DataRow(@"c:\projs\AdditiveTest\nozzle.stlout_penta_beam.bpf", 67245)]
         [DataRow(@"c:\projs\AdditiveTest\nozzle.stlout_penta_beam_v.bpf", 67245)]
