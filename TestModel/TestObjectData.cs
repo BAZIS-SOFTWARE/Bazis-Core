@@ -219,10 +219,10 @@ namespace TestModel
         }
 
         [DataTestMethod]
-        [DataRow(ObjType.Узел, 0, 0)]
-        [DataRow(ObjType.Элемент3D, 4, 0)]
-        //[DataRow(ObjType.Объект, 0, 0)]
-        public void RemoveObjectsSyncWithGroups(ObjType objType, int nNumbs, int grps)
+        [DataRow(ObjType.Узел, 0, 0,0,0)]
+        [DataRow(ObjType.Элемент3D, 4, 1,0,0)]
+        [DataRow(ObjType.Элемент2D, 4, 0, 6,1)]
+        public void RemoveObjectsSyncWithGroups(ObjType objType, int nNumbs, int e2Numbs, int e3Numbs, int grps)
         {
             //assing
             var nodes = new Node[4]
@@ -232,7 +232,11 @@ namespace TestModel
                 new Node(2,new Point3D(0,10,0)),
                 new Node(3,new Point3D(0,0,10)),
             };
-            var objects = new Element3D[]
+            var objects2d = new Element2D[]
+{
+                new Quad( 0,nodes)
+};
+            var objects3d = new Element3D[]
             {
                 new Tetra( 0,nodes),
                 new Tetra( 4,nodes),
@@ -243,7 +247,7 @@ namespace TestModel
             };
 
             var group = new Group("test", objType);
-            group.AddRange(objects);
+            group.AddRange(objects3d);
             //act
 
             var model = new ModelData();
@@ -251,15 +255,16 @@ namespace TestModel
             foreach (var item in nodes)
                 model.ObjectData.NodesSet.Add(item.Number, item);
 
-
-            model.ObjectData.E3DCollection.AddRange(ObjType.Элемент3D.ToString(), objects);
+            model.ObjectData.E2DCollection.AddRange(ObjType.Элемент2D.ToString(), objects2d);
+            model.ObjectData.E3DCollection.AddRange(ObjType.Элемент3D.ToString(), objects3d);
 
             model.GroupData.Add(group);
 
             model.ObjectData.Clear(objType);
-            model.GroupData.ClearNotExisted();
             //assert            
             Assert.AreEqual(model.ObjectData.NodesSet.Count, nNumbs);
+            Assert.AreEqual(model.ObjectData.E2DCollection.Count, e2Numbs);
+            Assert.AreEqual(model.ObjectData.E3DCollection.Count, e3Numbs);
             Assert.AreEqual(model.GroupData.FindMany(objType).Count(), grps);
 
         }
@@ -277,8 +282,7 @@ namespace TestModel
             model.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
 
             //act
-            model.ObjectData.Remove(ObjType.Узел, objNumber);         
-            model.ObjectData.ClearNotExisted();
+            model.ObjectData.Remove(ObjType.Узел, objNumber);
 
             //assert
             var res = model.ObjectData.Find(ObjType.Узел, objNumber);

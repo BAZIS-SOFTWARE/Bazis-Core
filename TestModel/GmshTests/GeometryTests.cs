@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Geometry;
 using Model.Interfaces;
 using Model;
+using Model.MeshObjects;
 
 namespace TestModel.GmshTests
 {
@@ -63,9 +64,9 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow(@"..\..\..\Examples\STL\ACII.stl", ObjType.Узел,0)]
-        [DataRow(@"..\..\..\Examples\STL\ACII.stl", ObjType.Элемент2D,4)]
-        public void RemoveAllData(string stlPath, ObjType objType, int nNumb)
+        [DataRow(@"..\..\..\Examples\STL\ACII.stl", ObjType.Узел,0,0)]
+        [DataRow(@"..\..\..\Examples\STL\ACII.stl", ObjType.Элемент2D,4,0)]
+        public void RemoveAllData(string stlPath, ObjType objType, int nNumb, int eNumb)
         {
             var ierr = 0;
             //var status = true;
@@ -79,10 +80,12 @@ namespace TestModel.GmshTests
             //Assert.AreEqual(true, status);
             Assert.AreEqual(2, elements.Count);
             nodes.ForEach(x =>  modelData.ObjectData.NodesSet.Add(x.Number, x));
-
+            modelData.ObjectData.E2DCollection.Add("e2d");
+            elements.ForEach(x => modelData.ObjectData.E2DCollection.Add("e2d", (Element2D)x));
             modelData.ObjectData.Clear(objType);
             //assert
             Assert.AreEqual(modelData.ObjectData.NodesSet.Count, nNumb);
+            Assert.AreEqual(modelData.ObjectData.E2DCollection.Count, eNumb);
         }
 
         [DataTestMethod]

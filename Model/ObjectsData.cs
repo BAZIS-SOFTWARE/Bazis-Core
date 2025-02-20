@@ -276,18 +276,27 @@ namespace Model
             {
                 case ObjType.Точка:
                     PointsSet.Clear();
+                    CurveCollection.ClearNotExisted();
+                    SurfaceCollection.ClearNotExisted();
+                    VolumeCollection.ClearNotExisted();
                     break;
                 case ObjType.Кривая:
                     CurveCollection.Clear();
+                    SurfaceCollection.ClearNotExisted();
+                    VolumeCollection.ClearNotExisted();
                     break;
                 case ObjType.Поверхность:
                     SurfaceCollection.Clear();
+                    VolumeCollection.ClearNotExisted();
                     break;
                 case ObjType.Объем:
                     VolumeCollection.Clear();
                     break;
                 case ObjType.Узел:
                     NodesSet.Clear();
+                    E1DCollection.ClearNotExisted();
+                    E2DCollection.ClearNotExisted();
+                    E3DCollection.ClearNotExisted();
                     break;
                 case ObjType.Элемент1D:
                     E1DCollection.Clear();
@@ -428,20 +437,17 @@ namespace Model
             //Find(objType, objNumber).ExistState = false;
             switch (objType)
             {
-                case ObjType.Точка:
-                    PointsSet.Clear();
-                    break;
                 case ObjType.Кривая:
                     CurveCollection.Remove(objSet);
+                    SurfaceCollection.ClearNotExisted();
+                    VolumeCollection.ClearNotExisted();
                     break;
                 case ObjType.Поверхность:
                     SurfaceCollection.Remove(objSet);
+                    VolumeCollection.ClearNotExisted();
                     break;
                 case ObjType.Объем:
                     VolumeCollection.Remove(objSet);
-                    break;
-                case ObjType.Узел:
-                    NodesSet.Clear();
                     break;
                 case ObjType.Элемент1D:
                     E1DCollection.Remove(objSet);
@@ -449,9 +455,11 @@ namespace Model
                 case ObjType.Элемент2D:
                     E2DCollection.Remove(objSet);
                     break;
-                default:
+                case ObjType.Элемент3D:
                     E3DCollection.Remove(objSet);
                     break;
+                default:
+                    throw new Exception($"Операция не поддерживается для данных типа {objType}");
             }
         }
         /// <inheritdoc/>
@@ -463,18 +471,27 @@ namespace Model
             {
                 case ObjType.Точка:
                     PointsSet.Remove(objNumber);
+                    CurveCollection.ClearNotExisted();
+                    SurfaceCollection.ClearNotExisted();
+                    VolumeCollection.ClearNotExisted();
                     break;
                 case ObjType.Кривая:
                     CurveCollection.Remove(objNumber);
+                    SurfaceCollection.ClearNotExisted();
+                    VolumeCollection.ClearNotExisted();
                     break;
                 case ObjType.Поверхность:
                     SurfaceCollection.Remove(objNumber);
+                    VolumeCollection.ClearNotExisted();
                     break;
                 case ObjType.Объем:
                     VolumeCollection.Remove(objNumber);
                     break;
                 case ObjType.Узел:
                     NodesSet.Remove(objNumber);
+                    E1DCollection.ClearNotExisted();
+                    E2DCollection.ClearNotExisted();
+                    E3DCollection.ClearNotExisted();
                     break;
                 case ObjType.Элемент1D:
                     E1DCollection.Remove(objNumber);
