@@ -17,7 +17,7 @@ namespace PostProc.ScenePresenter.Interfaces
         /// </summary>
         /// <param name="rangesColors"></param>
         /// <param name="rangesValues"></param>
-        void SetScaleItems(Color[] rangesColors, ItemRange[] rangesValues);
+        void SetScaleItems(ItemRange[] rangesValues);
         /// <summary>
         /// CreateSurfaceObjects
         /// </summary>

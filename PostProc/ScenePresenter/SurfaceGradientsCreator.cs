@@ -17,21 +17,21 @@ namespace PostProc.ScenePresenter
         /// CreateGradientObjects
         /// </summary>
         float difference = 1e-6f;
-        public IEnumerable<ResultFigure> CreateGradientObjects(ItemRange[] itemsRanges, Color[] colors, List<Point3D> nodesCoords, List<float> nodesResults)
+        public IEnumerable<ResultFigure> CreateGradientObjects(ItemRange[] itemsRanges, List<Point3D> nodesCoords, List<float> nodesResults)
         {
             //int nodesOnSide = nodesCoords.Count;
             var subSurfs = new List<ResultFigure>();
 
             if (itemsRanges.Length == 1)
-                subSurfs.Add(new ResultFigure(nodesCoords, colors[0]));
+                subSurfs.Add(new ResultFigure(nodesCoords, itemsRanges[0].Color));
 
             else
             {
                 var check = CheckOutOfRanges(itemsRanges, nodesResults);
                 if (check > 0)
-                    subSurfs.Add(new ResultFigure(nodesCoords, colors[colors.Length - 1]));
+                    subSurfs.Add(new ResultFigure(nodesCoords, itemsRanges[itemsRanges.Length - 1].Color));
                 else if (check < 0)
-                    subSurfs.Add(new ResultFigure(nodesCoords, colors[0]));
+                    subSurfs.Add(new ResultFigure(nodesCoords, itemsRanges[0].Color));
                 else
                 {
                     for (int i = 0; i < itemsRanges.Length; i++)
@@ -40,7 +40,7 @@ namespace PostProc.ScenePresenter
 
                         if (CheckAllResultsInsideRange(itemRange, nodesResults))
                         {
-                            subSurfs.Add(new ResultFigure(nodesCoords, colors[i]));
+                            subSurfs.Add(new ResultFigure(nodesCoords, itemsRanges[i].Color));
                         }
                         else
                         {
@@ -72,7 +72,7 @@ namespace PostProc.ScenePresenter
                             }
 
                             if (surfPoints.Count() > 2)
-                                subSurfs.Add(new ResultFigure(surfPoints, colors[i]));
+                                subSurfs.Add(new ResultFigure(surfPoints, itemsRanges[i].Color));
                         }
                     }
                 }

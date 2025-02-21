@@ -14,7 +14,6 @@ namespace PostProc.ScenePresenter
     public class ResultsFieldsCreator : IResultsFieldsCreator
     {
         ItemRange[] itemRanges;
-        Color[] itemColors;
 
         /// <summary>
         /// ScaleFactor
@@ -51,7 +50,7 @@ namespace PostProc.ScenePresenter
                                     nodeRes.Add(result.GetNodeValue(node.Number, resDescr));
                                 else nodeRes.Add(result.GetElementValue(surfaceObject.Number, resDescr));
                             }
-                            var surfaces = gradsCreator.CreateGradientObjects(itemRanges, itemColors, nodeCoords, nodeRes);
+                            var surfaces = gradsCreator.CreateGradientObjects(itemRanges, nodeCoords, nodeRes);
                             surfacetObjects.AddRange(surfaces);
                         }
                     }
@@ -61,13 +60,12 @@ namespace PostProc.ScenePresenter
         }
 /// <inheritdoc/>
 
-        public void SetScaleItems(Color[] itemColors, ItemRange[] itemRanges)
+        public void SetScaleItems(ItemRange[] itemRanges)
         {
-            if (itemColors.Length != itemRanges.Length)
-                throw new Exception("Диапазоны должны совпадать");
+            if (itemRanges.Length == 0)
+                throw new Exception("Последовательность не содержит диапазонов");
 
             this.itemRanges = itemRanges;
-            this.itemColors = itemColors;
         }
 
         private Point3D GetNodeDispls(string nodeRes, int nodeNumber, IResult result)

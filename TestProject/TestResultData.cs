@@ -85,22 +85,15 @@ var loaderDB = new LoadResultsFileDB();
 
             var intervalVals = new ItemRange[]
 {
-                new ItemRange() { Min = 20, Max = 316 },
-                new ItemRange() { Min = 316, Max = 612 },
-                new ItemRange() { Min = 612, Max = 908 },
-                new ItemRange() { Min = 908, Max = 1204 },
-                new ItemRange() { Min = 1204, Max = 1500 }
+                new ItemRange() { Min = 20, Max = 316,Color = Color.FromArgb(0, 0, 255) },
+                new ItemRange() { Min = 316, Max = 612,Color = Color.FromArgb(0, 128, 255) },
+                new ItemRange() { Min = 612, Max = 908,Color = Color.FromArgb(0, 128, 255) },
+                new ItemRange() { Min = 908, Max = 1204,Color = Color.FromArgb(0, 128, 255) },
+                new ItemRange() { Min = 1204, Max = 1500,Color = Color.FromArgb(0, 128, 255) }
 };
             //act find subsurf for one interval
-            var сolorRange = new Color[5];
 
-            сolorRange[0] = Color.FromArgb(0, 0, 255);
-            сolorRange[1] = Color.FromArgb(0, 128, 255);
-            сolorRange[2] = Color.FromArgb(0, 128, 255);
-            сolorRange[3] = Color.FromArgb(0, 128, 255);
-            сolorRange[4] = Color.FromArgb(0, 128, 255);
-
-            controller.ResultsFieldsCreator.SetScaleItems(сolorRange, intervalVals);
+            controller.ResultsFieldsCreator.SetScaleItems(intervalVals);
             controller.ResultsFieldsCreator.ScaleFactor = 1;
             var elsResults = controller.ResultsFieldsCreator.CreateSurfaceObjects(results.First(), ObjType.Узел, "T", els3D.GetObjects());
 
@@ -278,15 +271,12 @@ var loaderDB = new LoadResultsFileDB();
 
             var itemRanges = new ItemRange[]
 {
-                new ItemRange() { Min = min, Max = max }
+                new ItemRange() { Min = min, Max = max, Color = Color.FromArgb(0, 0, 255) }
 };
-            //act find subsurf for one interval
-            var сolorRanges = new Color[1];
-            сolorRanges[0] = Color.FromArgb(0, 0, 255);
 
             var resultsCreator = new ResultsFieldsCreator();
             resultsCreator.ScaleFactor = 1;
-            resultsCreator.SetScaleItems(сolorRanges, itemRanges);
+            resultsCreator.SetScaleItems(itemRanges);
 
             var resultObjects = resultsCreator.CreateSurfaceObjects(result.First(), ObjType.Узел,resDesc, elements.GetObjects());
             var points = new List<ResultPoint>();
@@ -377,27 +367,19 @@ var loaderDB = new LoadResultsFileDB();
 
             var intervalVals = new ItemRange[]
             {
-                new ItemRange() { Min = 1, Max = 2 },
-                new ItemRange() { Min = 2, Max = 3 },
-                new ItemRange() { Min = 3, Max = 4 },
-                new ItemRange() { Min = 4, Max = 5 }
+                new ItemRange() { Min = 1, Max = 2,Color = Color.FromArgb(0, 0, 255) },
+                new ItemRange() { Min = 2, Max = 3,Color = Color.FromArgb(0, 128, 255) },
+                new ItemRange() { Min = 3, Max = 4,Color = Color.FromArgb(0, 255, 255) },
+                new ItemRange() { Min = 4, Max = 5,Color = Color.FromArgb(0, 255, 80) }
         };
-
-            var сolorRange = new Color[4];
-
-            сolorRange[0] = Color.FromArgb(0, 0, 255);
-            сolorRange[1] = Color.FromArgb(0, 128, 255);
-            сolorRange[2] = Color.FromArgb(0, 255, 255);
-            сolorRange[3] = Color.FromArgb(0, 255, 80);
-
 
             //act find subsurf for one interval
 
-            var resSurfaces = surfGrad.CreateGradientObjects(intervalVals, сolorRange, nodes.Select(x => x.Position).ToList(), nodesVal).ToList();
+            var resSurfaces = surfGrad.CreateGradientObjects(intervalVals, nodes.Select(x => x.Position).ToList(), nodesVal).ToList();
 
             //assert  
             Assert.AreEqual(resSurfaces.Count, 1);
-            Assert.AreEqual(resSurfaces[0].Color, сolorRange[3]);
+            Assert.AreEqual(resSurfaces[0].Color, intervalVals[3].Color);
         }
 
         [TestMethod]
@@ -418,27 +400,18 @@ var loaderDB = new LoadResultsFileDB();
 
             var intervalVals = new ItemRange[]
             {
-                new ItemRange() { Min = 1, Max = 2 },
-                new ItemRange() { Min = 2, Max = 3 },
-                new ItemRange() { Min = 3, Max = 4 },
-                new ItemRange() { Min = 4, Max = 5 }
+                new ItemRange() { Min = 1, Max = 2,Color = Color.FromArgb(0, 0, 255) },
+                new ItemRange() { Min = 2, Max = 3,Color = Color.FromArgb(0, 128, 255)},
+                new ItemRange() { Min = 3, Max = 4,Color = Color.FromArgb(0, 255, 255) },
+                new ItemRange() { Min = 4, Max = 5,Color = Color.FromArgb(0, 255, 80) }
         };
-
-            var сolorRange = new Color[4];
-
-            сolorRange[0] = Color.FromArgb(0, 0, 255);
-            сolorRange[1] = Color.FromArgb(0, 128, 255);
-            сolorRange[2] = Color.FromArgb(0, 255, 255);
-            сolorRange[3] = Color.FromArgb(0, 255, 80);
-
-
             //act find subsurf for one interval
 
-            var resSurfaces = surfGrad.CreateGradientObjects(intervalVals, сolorRange, nodes.Select(x => x.Position).ToList(), nodesVal).ToList();
+            var resSurfaces = surfGrad.CreateGradientObjects(intervalVals, nodes.Select(x => x.Position).ToList(), nodesVal).ToList();
 
             //assert  
             Assert.AreEqual(resSurfaces.Count, 1);
-            Assert.AreEqual(resSurfaces[0].Color, сolorRange[0]);
+            Assert.AreEqual(resSurfaces[0].Color, intervalVals[0].Color);
         }
 
         [TestMethod]
@@ -458,19 +431,15 @@ var loaderDB = new LoadResultsFileDB();
 
             var intervalVals = new ItemRange[]
             {
-                new ItemRange() { Min = 20, Max = 30 },
-                new ItemRange() { Min = 30, Max = 40 }
+                new ItemRange() { Min = 20, Max = 30, Color = Color.FromArgb(0, 0, 255) },
+                new ItemRange() { Min = 30, Max = 40,Color = Color.FromArgb(0, 128, 255) }
         };
             //act find subsurf for one interval
-            var сolorRange = new Color[2];
-
-            сolorRange[0] = Color.FromArgb(0, 0, 255);
-            сolorRange[1] = Color.FromArgb(0, 128, 255);
 
             var nodesVal = new List<float>() { v1, v2, v3,v4 };
             var surfGrad = new SurfaceGradientsCreator();
 
-            var resSurfaces = surfGrad.CreateGradientObjects(intervalVals, сolorRange, nodes.Select(x => x.Position).ToList(), nodesVal).ToList();
+            var resSurfaces = surfGrad.CreateGradientObjects(intervalVals, nodes.Select(x => x.Position).ToList(), nodesVal).ToList();
 
             //assert           
             Assert.AreNotEqual(resSurfaces.Count, 0);
@@ -492,19 +461,15 @@ var loaderDB = new LoadResultsFileDB();
  
             var intervalVals = new ItemRange[]
             {
-                new ItemRange() { Min = 2, Max = 3 },
-                new ItemRange() { Min = 3, Max = 4 }
+                new ItemRange() { Min = 2, Max = 3,Color = Color.FromArgb(0, 0, 255) },
+                new ItemRange() { Min = 3, Max = 4,Color = Color.FromArgb(0, 128, 255) }
         };
             //act find subsurf for one interval
-            var сolorRange = new Color[2];
-
-            сolorRange[0] = Color.FromArgb(0, 0, 255);
-            сolorRange[1] = Color.FromArgb(0, 128, 255);
 
             var nodesVal = new List<float>() { 1, 4, 5 };
             var surfGrad = new SurfaceGradientsCreator();
 
-            var resSurfaces = surfGrad.CreateGradientObjects(intervalVals, сolorRange, nodes.Select(x => x.Position).ToList(), nodesVal).ToList();
+            var resSurfaces = surfGrad.CreateGradientObjects(intervalVals, nodes.Select(x => x.Position).ToList(), nodesVal).ToList();
 
             //assert           
             var comSurfaces = new List<ResultFigure>()
@@ -560,23 +525,15 @@ var loaderDB = new LoadResultsFileDB();
 
             var intervalVals = new ItemRange[]
             {
-                new ItemRange() { Min = 1, Max = 2 },
-                new ItemRange() { Min = 2, Max = 3 },
-                new ItemRange() { Min = 3, Max = 4 },
-                new ItemRange() { Min = 4, Max = 5 }
+                new ItemRange() { Min = 1, Max = 2, Color = Color.FromArgb(0, 0, 255) },
+                new ItemRange() { Min = 2, Max = 3, Color = Color.FromArgb(0, 128, 255) },
+                new ItemRange() { Min = 3, Max = 4,Color = Color.FromArgb(0, 255, 255) },
+                new ItemRange() { Min = 4, Max = 5,Color = Color.FromArgb(0, 255, 80) }
         };
-
-            var сolorRange = new Color[4];
-
-            сolorRange[0] = Color.FromArgb(0, 0, 255);
-            сolorRange[1] = Color.FromArgb(0, 128, 255);
-            сolorRange[2] = Color.FromArgb(0, 255, 255);
-            сolorRange[3] = Color.FromArgb(0, 255, 80);
-
 
             //act find subsurf for one interval
 
-            var resSurfaces = surfGrad.CreateGradientObjects(intervalVals, сolorRange, nodes.Select(x => x.Position).ToList(), nodesVal).ToList();
+            var resSurfaces = surfGrad.CreateGradientObjects(intervalVals, nodes.Select(x => x.Position).ToList(), nodesVal).ToList();
 
             //assert  
             var comSurfaces = new List<ResultFigure>()
@@ -650,25 +607,16 @@ var loaderDB = new LoadResultsFileDB();
 
             var intervalVals = new ItemRange[]
  {
-                new ItemRange() { Min = 20, Max = 316 },
-                new ItemRange() { Min = 316, Max = 612 },
-                new ItemRange() { Min = 612, Max = 908 },
-                new ItemRange() { Min = 908, Max = 1204 },
-                new ItemRange() { Min = 1204, Max = 1500 }
+                new ItemRange() { Min = 20, Max = 316,Color = Color.FromArgb(0, 0, 255) },
+                new ItemRange() { Min = 316, Max = 612,Color = Color.FromArgb(0, 128, 255) },
+                new ItemRange() { Min = 612, Max = 908,Color = Color.FromArgb(0, 255, 255) },
+                new ItemRange() { Min = 908, Max = 1204,Color = Color.FromArgb(0, 255, 80) },
+                new ItemRange() { Min = 1204, Max = 1500,Color = Color.FromArgb(0, 255, 80) }
  };
-
-            var сolorRange = new Color[5];
-
-            сolorRange[0] = Color.FromArgb(0, 0, 255);
-            сolorRange[1] = Color.FromArgb(0, 128, 255);
-            сolorRange[2] = Color.FromArgb(0, 255, 255);
-            сolorRange[3] = Color.FromArgb(0, 255, 80);
-            сolorRange[4] = Color.FromArgb(0, 255, 80);
-
 
             //act find subsurf for one interval
 
-            var resSurfaces = surfGrad.CreateGradientObjects(intervalVals, сolorRange, nodes.Select(x => x.Position).ToList(), nodesVal).ToList();
+            var resSurfaces = surfGrad.CreateGradientObjects(intervalVals, nodes.Select(x => x.Position).ToList(), nodesVal).ToList();
 
             //assert  
             
