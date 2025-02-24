@@ -11,7 +11,7 @@ namespace PostProc.ScenePresenter
         List<ResultPoint> points = new List<ResultPoint>();
         protected ResultSurface surface;
 
-        public ResultFigure(List<Point3D> points, Color color)
+        public ResultFigure(IEnumerable<Point3D> points, Color color)
         {
             Color = color;
 
@@ -34,7 +34,7 @@ namespace PostProc.ScenePresenter
         public int NumberOfSides { get { return 1; } }
 /// <inheritdoc/>
 
-        public int Number { get { return 0; } }
+        public int Number { get; private set; }
 /// <inheritdoc/>
 
         public Color Color { get; set; }
@@ -158,17 +158,12 @@ namespace PostProc.ScenePresenter
         {
             yield return surface;
         }
-/// <inheritdoc/>
 
-        public void SetBackColor()
-        {
-            throw new System.NotImplementedException();
-        }
 /// <inheritdoc/>
 
         public void SetNumber(int number)
         {
-            throw new System.NotImplementedException();
+            Number = number;
         }
 /// <inheritdoc/>
 

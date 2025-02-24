@@ -16,7 +16,7 @@ namespace PostProc.ScenePresenter
             if (points.Count < 3)
                 throw new Exception("Для создания поверхности требуется не меньше 3-х узлов!");
 
-            points.RoundSort(); //Anticlockwise(nodes);
+            //points.RoundSort(); //Anticlockwise(nodes);
 
             this.points = points;
 

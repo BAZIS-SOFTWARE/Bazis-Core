@@ -85,15 +85,15 @@ namespace Model.MeshObjects
 
         public override double CalcSquare()
         {
-            var vol = 0.0;
+            var sqr = 0.0;
             var counter = 0;
 
             foreach (var item in GetJacobiMatrixes())
             {
-                vol += Math.Abs(item.Determinant()) * intPoints[counter].Weigt;
+                sqr += Math.Abs(item.Determinant()) * intPoints[counter].Weigt;
                 counter++;
             }
-            return Math.Abs(vol);
+            return sqr;
         }
 /// <inheritdoc/>
 

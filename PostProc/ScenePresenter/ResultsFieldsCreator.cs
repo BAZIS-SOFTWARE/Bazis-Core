@@ -39,18 +39,23 @@ namespace PostProc.ScenePresenter
                     {
                         if (surface.ViewState)
                         {
-                            var nodeCoords = new List<Point3D>();
-                            var nodeRes = new List<float>();
+                            //var nodeCoords = new List<Point3D>();
+                            //var nodeRes = new List<float>();
+                            var resItems = new List<ResultItem>(); 
 
                             foreach (var node in surface.GetVertexes())
                             {
                                 var nodeDispl = GetNodeDispls(resDescr, node.Number, result);
-                                nodeCoords.Add(node.Position.Sum(nodeDispl));
+                                //nodeCoords.Add(node.Position.Sum(nodeDispl));
+                                var resItem = new ResultItem();
+                                resItem.Coord = node.Position.Sum(nodeDispl);
+
                                 if (objsType == ObjType.Узел)
-                                    nodeRes.Add(result.GetNodeValue(node.Number, resDescr));
-                                else nodeRes.Add(result.GetElementValue(surfaceObject.Number, resDescr));
+                                    resItem.Value = result.GetNodeValue(node.Number, resDescr);
+                                else resItem.Value = result.GetElementValue(surfaceObject.Number, resDescr);
+                                resItems.Add(resItem);
                             }
-                            var surfaces = gradsCreator.CreateGradientObjects(itemRanges, nodeCoords, nodeRes);
+                            var surfaces = gradsCreator.CreateGradientObjects(itemRanges, resItems);
                             surfacetObjects.AddRange(surfaces);
                         }
                     }
