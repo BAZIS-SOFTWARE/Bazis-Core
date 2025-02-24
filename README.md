@@ -17,6 +17,11 @@
 - PostProc (генерация поля результатов на открытых поверхностях элементов, участвующих в расчетах)
 - PreProc (автоматизированое создание инструкций согласно типу и виду задачи, а также набору граничных условий)
 
+# Спецификация Model
+
+![modelData](https://github.com/user-attachments/assets/8e83b944-4b13-44b6-8b0e-b7ea48f7b836)
+
+
 # Спецификация GmshApi
  
 ![YouML_image](https://github.com/user-attachments/assets/3c507a90-e613-4f01-8973-8a583237ff37)
