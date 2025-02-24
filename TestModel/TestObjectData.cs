@@ -219,10 +219,10 @@ namespace TestModel
         }
 
         [DataTestMethod]
-        [DataRow(ObjType.Узел, 0, 0,0,0)]
-        [DataRow(ObjType.Элемент3D, 4, 1,0,0)]
-        [DataRow(ObjType.Элемент2D, 4, 0, 6,1)]
-        public void RemoveObjectsSyncWithGroups(ObjType objType, int nNumbs, int e2Numbs, int e3Numbs, int grps)
+        [DataRow(ObjType.Узел, 0, 0,0)]
+        [DataRow(ObjType.Элемент3D, 4, 1,0)]
+        [DataRow(ObjType.Элемент2D, 4, 0, 6)]
+        public void RemoveObjectsSyncWithGroups(ObjType objType, int nNumbs, int e2Numbs, int e3Numbs)
         {
             //assing
             var nodes = new Node[4]
@@ -247,7 +247,12 @@ namespace TestModel
             };
 
             var group = new Group("test", objType);
-            group.AddRange(objects3d);
+            if(objType == ObjType.Узел)
+                group.AddRange(nodes);
+            else if (objType == ObjType.Элемент2D)
+                group.AddRange(objects2d);
+            else if (objType == ObjType.Элемент3D)
+                group.AddRange(objects3d);
             //act
 
             var model = new ModelData();
@@ -261,11 +266,12 @@ namespace TestModel
             model.GroupData.Add(group);
 
             model.ObjectData.Clear(objType);
+            model.GroupData.ClearNotExisted();
             //assert            
             Assert.AreEqual(model.ObjectData.NodesSet.Count, nNumbs);
             Assert.AreEqual(model.ObjectData.E2DCollection.Count, e2Numbs);
             Assert.AreEqual(model.ObjectData.E3DCollection.Count, e3Numbs);
-            Assert.AreEqual(model.GroupData.FindMany(objType).Count(), grps);
+            Assert.AreEqual(model.GroupData.FindMany(objType).Count(), 0);
 
         }
 

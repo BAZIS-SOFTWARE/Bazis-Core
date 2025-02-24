@@ -65,7 +65,7 @@ namespace TestModel
         [DataTestMethod]
         [DataRow(new float[] { -1.5f, 0, 15.25f, 0, 11, 5, 5.025f, 5.75f }, 61.5f)]
         [DataRow(new float[] { 0, 0, 15, 0, 10, 5, 5, 5 }, 50)]
-        [DataRow(new float[] { 15, 0, 0, 0, 10, 5, 5, 5 }, 50)]
+        [DataRow(new float[] { 15, 0, 0, 0, 5, 5,10, 5 }, 50)]
         [DataRow(new float[] { 5, 5, 0, 0, 15, 0, 10, 5 }, 50)]
         public void QuadSquare(float[] arCoord, float square)
         {

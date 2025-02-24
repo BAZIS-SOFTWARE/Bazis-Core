@@ -132,7 +132,8 @@ namespace Model.ObjectsCollections
 
         public bool Remove(int key)
         {
-            return objectsSet[key].ExistState = false;
+            objectsSet[key].ExistState = false;
+            return objectsSet.Remove(key);
         }
 /// <inheritdoc/>
 
