@@ -56,7 +56,15 @@ namespace Model.MeshObjects
 
         public override double CalcSquare()
         {
-            return surface.CalcSquare();
+            var sqr = 0.0;
+            var counter = 0;
+
+            foreach (var item in GetJacobiMatrixes())
+            {
+                sqr += Math.Abs(item.Determinant()) * intPoints[counter].Weigt;
+                counter++;
+            }
+            return sqr;
         }
 
 

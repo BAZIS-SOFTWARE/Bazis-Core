@@ -2,7 +2,7 @@
 
 namespace PostProc.ScenePresenter
 {
-    public static class SortValues
+    public static class SwapValues
     {
         public static void Sort<T, V>(T p1, T p2, V p1V, V p2V, out V[] ndRes, out T[] ndCoords) where V : IComparable<V>
         {

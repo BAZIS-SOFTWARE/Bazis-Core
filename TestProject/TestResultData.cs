@@ -323,26 +323,24 @@ var loaderDB = new LoadResultsFileDB();
         [DataRow(-7.0001f, 7.00015f, true)]
         [DataRow(-7.0001f, 0.00015f, false)]
         [DataRow(11.0001f, 12.00015f, false)]
-        public void TestSurfaceGradientsCreator_TryIntervalsIntersecCloseResults(float v1,float v2,bool res)
+        public void TryIntervalsIntersecCloseResults(float v1,float v2,bool res)
         {
             //arrange
 
-            var nodesCoords = new Point3D[]
+            var ResultItems = new ResultItem[]
             {
-                new Point3D(1, 0, 0),
-                new Point3D(0, 1, 0)
+                new ResultItem(new Point3D(1, 0, 0),v1),
+                new ResultItem(new Point3D(0, 1, 0),v2)
             };
 
             var surfGrad = new SurfaceGradientsCreator();
-
-            var nodesVal = new float[] { v1, v2};
 
             var interval = new ItemRange() { Min = 1, Max = 10 };
 
 
             //act find subsurf for one interval
             List<Point3D> egCoords;
-            var resTry = surfGrad.TryIntervalsIntersec(interval, nodesVal, nodesCoords, out egCoords);
+            var resTry = surfGrad.TryIntervalsIntersec(interval, ResultItems[0], ResultItems[1], out egCoords);
 
             //assert  
             Assert.AreEqual(resTry, res);
@@ -350,20 +348,18 @@ var loaderDB = new LoadResultsFileDB();
 
 
         [TestMethod]
-        public void TestSurfaceGradientsCreator_OutOfIntervalsUp()
+        public void OneTriangleSurface_OutOfIntervalsUp()
         {
             //arrange
 
-            var nodes = new Node[]
+            var resItems = new List<ResultItem>()
             {
-                new Node(0,new Point3D(1, 0, 0)),
-                new Node(1,new Point3D(0, 1, 0)),
-                new Node(2,new Point3D(0, 0, 0))
+                new ResultItem(new Point3D(1, 0, 0),7),
+                new ResultItem(new Point3D(0, 1, 0),8),
+                new ResultItem(new Point3D(0, 0, 0),6)
             };
 
             var surfGrad = new SurfaceGradientsCreator();
-
-            var nodesVal = new List<float>() { 7, 8, 6 };
 
             var intervalVals = new ItemRange[]
             {
@@ -375,7 +371,7 @@ var loaderDB = new LoadResultsFileDB();
 
             //act find subsurf for one interval
 
-            var resSurfaces = surfGrad.CreateGradientObjects(intervalVals, nodes.Select(x => x.Position).ToList(), nodesVal).ToList();
+            var resSurfaces = surfGrad.CreateGradientObjects(intervalVals, resItems).ToList();
 
             //assert  
             Assert.AreEqual(resSurfaces.Count, 1);
@@ -383,20 +379,18 @@ var loaderDB = new LoadResultsFileDB();
         }
 
         [TestMethod]
-        public void TestSurfaceGradientsCreator_OutOfIntervalsDown()
+        public void OneTriangleSurface_OutOfIntervalsDown()
         {
             //arrange
-
-            var nodes = new Node[]
+            var resItems = new List<ResultItem>()
             {
-                new Node(0,new Point3D(1, 0, 0)),
-                new Node(1,new Point3D(0, 1, 0)),
-                new Node(2,new Point3D(0, 0, 0))
+                new ResultItem(new Point3D(1, 0, 0),-1),
+                new ResultItem(new Point3D(0, 1, 0),0),
+                new ResultItem(new Point3D(0, 0, 0),0.5f)
             };
 
-            var surfGrad = new SurfaceGradientsCreator();
 
-            var nodesVal = new List<float>() { -1, 0, 0.5f };
+            var surfGrad = new SurfaceGradientsCreator();
 
             var intervalVals = new ItemRange[]
             {
@@ -407,7 +401,7 @@ var loaderDB = new LoadResultsFileDB();
         };
             //act find subsurf for one interval
 
-            var resSurfaces = surfGrad.CreateGradientObjects(intervalVals, nodes.Select(x => x.Position).ToList(), nodesVal).ToList();
+            var resSurfaces = surfGrad.CreateGradientObjects(intervalVals, resItems).ToList();
 
             //assert  
             Assert.AreEqual(resSurfaces.Count, 1);
@@ -417,15 +411,15 @@ var loaderDB = new LoadResultsFileDB();
         [TestMethod]
         [DataRow(19.99998f, 19.99998f, 20.00001f, 20.00001f)]
         [DataRow(20.00001f, 19.99998f, 20.00001f, 19.99998f)]
-        public void TestSurfaceGradientsCreator_OneTetraTwoIntervalsShouldCreateResults(float v1,float v2,float v3,float v4)
+        public void OneTetraTwoIntervalsShouldCreateResults(float v1,float v2,float v3,float v4)
         {
-            //arrange
-            var nodes = new Node[]
+            //assign
+            var resItems = new List<ResultItem>()
             {
-                new Node(0,new Point3D(1, 0, 0)),
-                new Node(1,new Point3D(0, 1, 0)),
-                new Node(2,new Point3D(0, 0, 0)),
-                new Node(3,new Point3D(0, 0, 1))
+                new ResultItem(new Point3D(1, 0, 0),v1),
+                new ResultItem(new Point3D(0, 1, 0),v2),
+                new ResultItem(new Point3D(0, 0, 0),v3),
+                new ResultItem(new Point3D(0, 0, 1),v4)
             };
 
 
@@ -435,41 +429,66 @@ var loaderDB = new LoadResultsFileDB();
                 new ItemRange() { Min = 30, Max = 40,Color = Color.FromArgb(0, 128, 255) }
         };
             //act find subsurf for one interval
-
-            var nodesVal = new List<float>() { v1, v2, v3,v4 };
             var surfGrad = new SurfaceGradientsCreator();
 
-            var resSurfaces = surfGrad.CreateGradientObjects(intervalVals, nodes.Select(x => x.Position).ToList(), nodesVal).ToList();
+            var resSurfaces = surfGrad.CreateGradientObjects(intervalVals, resItems).ToList();
 
             //assert           
             Assert.AreNotEqual(resSurfaces.Count, 0);
         }
 
-
-
         [TestMethod]
-        public void TestSurfaceGradientsCreator_OneSurfaceTwoIntervals()
+        public void OneQuadSurface_TwoIntervals()
         {
             //arrange
-            var nodes = new Node[]
+            var resItems = new List<ResultItem>()
             {
-                new Node(0,new Point3D(1, 0, 0)),
-                new Node(1,new Point3D(0, 1, 0)),
-                new Node(2,new Point3D(0, 0, 0))
+                new ResultItem(new Point3D(1, 0, 0),1),
+                new ResultItem(new Point3D(1, 1, 0),5),
+                new ResultItem(new Point3D(0, 1, 0),4),
+                new ResultItem(new Point3D(0, 0, 0),1)
             };
 
- 
+
             var intervalVals = new ItemRange[]
             {
                 new ItemRange() { Min = 2, Max = 3,Color = Color.FromArgb(0, 0, 255) },
                 new ItemRange() { Min = 3, Max = 4,Color = Color.FromArgb(0, 128, 255) }
         };
             //act find subsurf for one interval
-
-            var nodesVal = new List<float>() { 1, 4, 5 };
             var surfGrad = new SurfaceGradientsCreator();
 
-            var resSurfaces = surfGrad.CreateGradientObjects(intervalVals, nodes.Select(x => x.Position).ToList(), nodesVal).ToList();
+            var resSurfaces = surfGrad.CreateGradientObjects(intervalVals, resItems).ToList();
+
+            //assert
+            Assert.AreEqual(resSurfaces.Count, 2);
+            Assert.AreEqual(resSurfaces[0].NumberOfPoints, 4);
+            Assert.AreEqual(resSurfaces[1].NumberOfPoints, 4);
+        }
+
+
+
+        [TestMethod]
+        public void OneTriangleSurface_TwoIntervals()
+        {
+            //arrange
+            var resItems = new List<ResultItem>()
+            {
+                new ResultItem(new Point3D(1, 0, 0),1),
+                new ResultItem(new Point3D(0, 1, 0),4),
+                new ResultItem(new Point3D(0, 0, 0),5)
+            };
+
+
+            var intervalVals = new ItemRange[]
+            {
+                new ItemRange() { Min = 2, Max = 3,Color = Color.FromArgb(0, 0, 255) },
+                new ItemRange() { Min = 3, Max = 4,Color = Color.FromArgb(0, 128, 255) }
+        };
+            //act find subsurf for one interval
+            var surfGrad = new SurfaceGradientsCreator();
+
+            var resSurfaces = surfGrad.CreateGradientObjects(intervalVals, resItems).ToList();
 
             //assert           
             var comSurfaces = new List<ResultFigure>()
@@ -508,20 +527,18 @@ var loaderDB = new LoadResultsFileDB();
         }
 
         [TestMethod]
-        public void TestSurfaceGradientsCreator_OneSurfaceSeveralIntervals()
+        public void OneTriangleSurface_SeveralIntervals()
         {
             //arrange
 
-            var nodes = new Node[]
+            var resItems = new List<ResultItem>()
             {
-                new Node(0,new Point3D(1, 0, 0)),
-                new Node(1,new Point3D(0, 1, 0)),
-                new Node(2,new Point3D(0, 0, 0))
+                new ResultItem(new Point3D(1, 0, 0),1),
+                new ResultItem(new Point3D(0, 1, 0),4),
+                new ResultItem(new Point3D(0, 0, 0),5)
             };
 
             var surfGrad = new SurfaceGradientsCreator();
-
-            var nodesVal = new List<float>() { 1, 4, 5 };
 
             var intervalVals = new ItemRange[]
             {
@@ -533,7 +550,7 @@ var loaderDB = new LoadResultsFileDB();
 
             //act find subsurf for one interval
 
-            var resSurfaces = surfGrad.CreateGradientObjects(intervalVals, nodes.Select(x => x.Position).ToList(), nodesVal).ToList();
+            var resSurfaces = surfGrad.CreateGradientObjects(intervalVals, resItems).ToList();
 
             //assert  
             var comSurfaces = new List<ResultFigure>()
@@ -568,8 +585,8 @@ var loaderDB = new LoadResultsFileDB();
                 new List<Point3D>
                 {
                     new Point3D(0,1,0),
-                    new Point3D(0.25f, 0, 0),
-                    new Point3D(0, 0, 0)
+                    new Point3D(0, 0, 0),
+                    new Point3D(0.25f, 0, 0)
                 },
                 Color.Red)
             };
@@ -593,17 +610,14 @@ var loaderDB = new LoadResultsFileDB();
         public void OneSurfaceFiveIntervals()
         {
             //arrange
-
-            var nodes = new Node[]
+            var resItems = new List<ResultItem>()
             {
-                new Node(0,new Point3D(59003.5f, 12318.13f, 52106.64f)),
-                new Node(1,new Point3D(59005.25f, 12318.13f, 52106.64f)),
-                new Node(2,new Point3D(59003.5f, 12315.9f, 52104.03f))
+                new ResultItem(new Point3D(59003.5f, 12318.13f, 52106.64f),1),
+                new ResultItem(new Point3D(59005.25f, 12318.13f, 52106.64f),4),
+                new ResultItem(new Point3D(59003.5f, 12315.9f, 52104.03f),5)
             };
 
             var surfGrad = new SurfaceGradientsCreator();
-
-            var nodesVal = new List<float>() { 1, 4, 5 };
 
             var intervalVals = new ItemRange[]
  {
@@ -616,7 +630,7 @@ var loaderDB = new LoadResultsFileDB();
 
             //act find subsurf for one interval
 
-            var resSurfaces = surfGrad.CreateGradientObjects(intervalVals, nodes.Select(x => x.Position).ToList(), nodesVal).ToList();
+            var resSurfaces = surfGrad.CreateGradientObjects(intervalVals, resItems).ToList();
 
             //assert  
             

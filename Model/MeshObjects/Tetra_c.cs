@@ -83,7 +83,7 @@ namespace Model.MeshObjects
                 vol += Math.Abs(item.Determinant()) * intPoints[counter].Weigt;
                 counter++;
             }
-            return Math.Abs(vol);
+            return vol;
         }
 
         /// <summary>

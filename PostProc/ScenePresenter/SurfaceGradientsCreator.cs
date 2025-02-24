@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using Project.Interfaces.Results;
+using Geometry.Exteisions;
+using Model.Extensions;
 
 namespace PostProc.ScenePresenter
 {
@@ -17,59 +19,89 @@ namespace PostProc.ScenePresenter
         /// CreateGradientObjects
         /// </summary>
         float difference = 1e-6f;
-        public IEnumerable<ResultFigure> CreateGradientObjects(ItemRange[] itemsRanges, List<Point3D> nodesCoords, List<float> nodesResults)
+        public IEnumerable<ResultFigure> CreateGradientObjects(ItemRange[] itemsRanges, List<ResultItem> resItems)
         {
             //int nodesOnSide = nodesCoords.Count;
             var subSurfs = new List<ResultFigure>();
 
             if (itemsRanges.Length == 1)
-                subSurfs.Add(new ResultFigure(nodesCoords, itemsRanges[0].Color));
+                subSurfs.Add(new ResultFigure(resItems.Select(x => x.Coord), itemsRanges[0].Color));
 
             else
             {
-                var check = CheckOutOfRanges(itemsRanges, nodesResults);
+                var check = CheckOutOfRanges(itemsRanges, resItems.Select(x => x.Value));
                 if (check > 0)
-                    subSurfs.Add(new ResultFigure(nodesCoords, itemsRanges[itemsRanges.Length - 1].Color));
+                    subSurfs.Add(new ResultFigure(resItems.Select(x => x.Coord), itemsRanges[itemsRanges.Length - 1].Color));
                 else if (check < 0)
-                    subSurfs.Add(new ResultFigure(nodesCoords, itemsRanges[0].Color));
+                    subSurfs.Add(new ResultFigure(resItems.Select(x => x.Coord), itemsRanges[0].Color));
                 else
                 {
                     for (int i = 0; i < itemsRanges.Length; i++)
                     {
                         var itemRange = itemsRanges[i];
 
-                        if (CheckAllResultsInsideRange(itemRange, nodesResults))
+                        if (CheckAllResultsInsideRange(itemRange, resItems))
                         {
-                            subSurfs.Add(new ResultFigure(nodesCoords, itemsRanges[i].Color));
+                            subSurfs.Add(new ResultFigure(resItems.Select(x => x.Coord), itemsRanges[i].Color));
                         }
                         else
                         {
                             var surfPoints = new List<Point3D>();
-                            for (int j = 0; j < nodesCoords.Count; j++)
+
+                            foreach (var item in resItems.Bigrams(true))
                             {
-
-                                for (int k = j + 1; k < nodesCoords.Count; k++)
+                                //проверить результаты в диапазоне или нет
+                                List<Point3D> edCoords;
+                                Tuple<ResultItem, ResultItem> temp = item;
+                                var inv = false;
+                                if (item.Item1.Value.CompareTo(item.Item2.Value) > 0)
                                 {
-                                    float[] ndRes;
-                                    Point3D[] ndCoords;
-                                    SortValues.Sort(nodesCoords[j], nodesCoords[k], nodesResults[j], nodesResults[k], out ndRes, out ndCoords);
+                                    temp = new Tuple<ResultItem, ResultItem>(item.Item2, item.Item1);
+                                    inv = true;
+                                }
+                                    
+                                var resu = TryIntervalsIntersec(itemRange, temp.Item1, temp.Item2, out edCoords);
 
-                                    //проверить результаты в диапазоне или нет
-                                    List<Point3D> edCoords;
+                                if (resu)
+                                {
+                                    if (i == 0) edCoords[0] = temp.Item1.Coord;
+                                    else if (i == itemsRanges.Length - 1) edCoords[1] = temp.Item2.Coord;
 
-                                    var resu = TryIntervalsIntersec(itemRange, ndRes, ndCoords,out edCoords);
+                                    if (inv)
+                                        edCoords.SwapList(1, 0);
 
-                                    if (resu)
-                                    {
-                                        if (i == 0) edCoords[0] = ndCoords[0];
-                                        else if (i == itemsRanges.Length - 1) edCoords[1] = ndCoords[1];
-
-                                        foreach (var r in edCoords)
-                                            if (!surfPoints.Contains(r))
-                                                surfPoints.Add(r);
-                                    }
+                                    foreach (var r in edCoords)
+                                        if (!surfPoints.Contains(r))
+                                            surfPoints.Add(r);
                                 }
                             }
+
+
+                            //for (int j = 0; j < resItems.Count; j++)
+                            //{
+
+                            //    for (int k = j + 1; k < resItems.Count; k++)
+                            //    {
+                            //        float[] ndRes;
+                            //        Point3D[] ndCoords;
+                            //        SortValues.Sort(resItems[j], resItems[k], nodesResults[j], nodesResults[k], out ndRes, out ndCoords);
+
+                            //        //проверить результаты в диапазоне или нет
+                            //        List<Point3D> edCoords;
+
+                            //        var resu = TryIntervalsIntersec(itemRange, ndRes, ndCoords,out edCoords);
+
+                            //        if (resu)
+                            //        {
+                            //            if (i == 0) edCoords[0] = ndCoords[0];
+                            //            else if (i == itemsRanges.Length - 1) edCoords[1] = ndCoords[1];
+
+                            //            foreach (var r in edCoords)
+                            //                if (!surfPoints.Contains(r))
+                            //                    surfPoints.Add(r);
+                            //        }
+                            //    }
+                            //}
 
                             if (surfPoints.Count() > 2)
                                 subSurfs.Add(new ResultFigure(surfPoints, itemsRanges[i].Color));
@@ -89,15 +121,16 @@ namespace PostProc.ScenePresenter
         /// <param name="ndRes"></param>
         /// <param name="edCoords"></param>
         /// <returns></returns>
-        public bool TryIntervalsIntersec(ItemRange itemRange, float[] ndRes, Point3D[] ndCoords, out List<Point3D> edCoords)
+        public bool TryIntervalsIntersec(ItemRange itemRange, ResultItem res0, ResultItem res1, out List<Point3D> edCoords)
         {
             edCoords = new List<Point3D>();
 
-            if (Math.Abs(ndRes[0] - ndRes[1]) < difference)
+            if (Math.Abs(res1.Value - res0.Value) < difference)
             {
-                if (ndRes[0] >= itemRange.Min && ndRes[0] <= itemRange.Max)
+                if (res0.Value >= itemRange.Min && res0.Value <= itemRange.Max)
                 {
-                    edCoords.AddRange(ndCoords);
+                    edCoords.Add(res0.Coord);
+                    edCoords.Add(res1.Coord);
                     return true;
                 }
 
@@ -106,16 +139,16 @@ namespace PostProc.ScenePresenter
             else
             {
                 //Сводим задачу к построению пересечения двух одномерных отрезков.
-                var ab = ndCoords[1].Sub(ndCoords[0]);
-                var firstCoefficient = (itemRange.Min - ndRes[0]) / (ndRes[1] - ndRes[0]);
-                var secondCoefficient = (itemRange.Max - ndRes[0]) / (ndRes[1] - ndRes[0]);
+                var ab = res1.Coord.Sub(res0.Coord);
+                var firstCoefficient = (itemRange.Min - res0.Value) / (res1.Value - res0.Value);
+                var secondCoefficient = (itemRange.Max - res0.Value) / (res1.Value - res0.Value);
                 var minCoefficient = Math.Min(firstCoefficient, secondCoefficient);
                 var maxCoefficient = Math.Max(firstCoefficient, secondCoefficient);
 
                 if (minCoefficient > 1 || maxCoefficient < 0)
                     return false;
-                var p1 = ndCoords[0].Sum(ab.Mult(Math.Max(0, minCoefficient)));
-                var p2 = ndCoords[0].Sum(ab.Mult(Math.Min(1, maxCoefficient)));
+                var p1 = res0.Coord.Sum(ab.Mult(Math.Max(0, minCoefficient)));
+                var p2 = res0.Coord.Sum(ab.Mult(Math.Min(1, maxCoefficient)));
                 edCoords = new List<Point3D> { p1,p2};
 
                 return true;
@@ -123,23 +156,24 @@ namespace PostProc.ScenePresenter
 
         }
 
-        private bool CheckAllResultsInsideRange(ItemRange itemRange, List<float> values)
+        private bool CheckAllResultsInsideRange(ItemRange itemRange, List<ResultItem> resultItems)
         {
             var counter = 0;
-            for (int i = 0; i < values.Count; i++)
+
+            foreach (var item in resultItems)
             {
-                if (values[i] >= itemRange.Min && values[i] <= itemRange.Max)
+                if (item.Value >= itemRange.Min && item.Value <= itemRange.Max)
                     counter++;
             }
 
-            if (counter == values.Count)
+            if (counter == resultItems.Count)
             {
                 return true;
             }
             else return false;
         }
 
-        private int CheckOutOfRanges(ItemRange[] itemsRanges, List<float> nodesResults)
+        private int CheckOutOfRanges(ItemRange[] itemsRanges, IEnumerable<float> nodesResults)
         {
             var ranValMax = itemsRanges[itemsRanges.Length - 1].Max;
             var ranValMin = itemsRanges[0].Min;
