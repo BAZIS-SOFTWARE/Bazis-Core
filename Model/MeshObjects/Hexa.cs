@@ -71,10 +71,10 @@ namespace Model.MeshObjects
 
             foreach (var item in GetJacobiMatrixes())
             {
-                vol += item.Determinant() * intPoints[counter].Weigt;
+                vol += Math.Abs(item.Determinant()) * intPoints[counter].Weigt;
                 counter++;
             }
-            return Math.Abs(vol);
+            return vol;
         }
         /// <inheritdoc/>
 

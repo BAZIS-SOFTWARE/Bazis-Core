@@ -28,18 +28,18 @@ namespace Model.MeshObjects
                     CreateIntegrationPoint(2, 0, 0);
                     break;
                 case 4:
-                    var coordinate = Math.Sqrt(3)/3;
+                    var coordinate = Math.Sqrt(3) / 3;
                     CreateIntegrationPoint(1, -coordinate, -coordinate);
-                    CreateIntegrationPoint(1, -coordinate, coordinate);
-                    CreateIntegrationPoint(1, coordinate, coordinate);
                     CreateIntegrationPoint(1, coordinate, -coordinate);
+                    CreateIntegrationPoint(1, coordinate, coordinate);
+                    CreateIntegrationPoint(1, -coordinate, coordinate);
                     break;
                 default:
                     throw new ArgumentException();
             }
 
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void CreateIntegrationPoint(double w, double ksi, double eta)
         {
@@ -73,7 +73,7 @@ namespace Model.MeshObjects
         public override Matrix<double> CalcJacobi(IIntegralPoint intPoint)
         {
             var derFormFunctions = GetDerivativesFormFunctions(intPoint);
-            var matrixDFF = Matrix<double>.Build.DenseOfArray(derFormFunctions).Divide(4);
+            var matrixDFF = Matrix<double>.Build.DenseOfArray(derFormFunctions);
             var matrixPoints = Matrix<double>.Build.Dense(4, 2);
 
             for (var i = 0; i < nodes.Count; i++)
@@ -93,15 +93,17 @@ namespace Model.MeshObjects
             var ksi = intPoint["ksi"];
             var eta = intPoint["eta"];
 
-            var answer = new List<double>();
+            var formFunctions = new double[]
+            {
+                (1-ksi)*(1-eta)/4,
+                (1+ksi)*(1-eta)/4,
+                (1+ksi)*(1+eta)/4,
+                (1-ksi)*(1+eta)/4,
+            };
 
-            // TO DO проверить правильность счета. Проверить формулу и коэффициенты
-            for (var i = -1; i <= 1; i += 2)
-                for (var j = -1; j <= 1; j += 2)
-                    answer.Add((1 + i * ksi) * (1 + j * eta) / 4);
-            return answer.ToArray();
+            return formFunctions;
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public override double[,] GetDerivativesFormFunctions(IIntegralPoint intPoint)
         {
@@ -109,9 +111,13 @@ namespace Model.MeshObjects
             var ksi = intPoint["ksi"];
             return new double[,]
             {
-                { -(1 - eta), (1 - eta), 1 + eta, -(1+eta) },
-                { -(1 - ksi), -(1 + ksi), 1 + ksi , 1 - ksi }
-};
+                // по ksi
+                { -(1 - eta) / 4, (1 - eta) / 4, (1 + eta) / 4, -(1 + eta) / 4 },
+
+                // по eta
+                { -(1 - ksi) / 4, -(1 + ksi) / 4, (1 + ksi) / 4, (1 - ksi) / 4 }
+            };
+
         }
     }
 }

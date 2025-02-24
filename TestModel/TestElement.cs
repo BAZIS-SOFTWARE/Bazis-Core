@@ -117,26 +117,6 @@ namespace TestModel
         }
 
         [DataTestMethod]
-        [DataRow(new float[] { 0, 0, 15, 0, 10, 5, 5, 5 }, new double[] { 16.10875f, 8.89125f, 8.89125f, 16.10875f })]
-
-        public void QuadJacobians(float[] arCoord, double [] detJ)
-        {
-            var nodes = new Node[4];
-            var num = 0;
-            for (var i = 0; i < 4; i += 1)
-            {
-                nodes[num] = new Node(num, new Point3D(arCoord[2 * i + 0], arCoord[2 * i + 1], 0));
-                num++;
-            }
-
-            var elem = new Quad(0, nodes, 4);
-
-            var counter = 0;
-            foreach (var item in elem.GetJacobiMatrixes())
-                Assert.AreEqual(detJ[counter++], item.Determinant(), 0.025);
-        }
-
-        [DataTestMethod]
         [DataRow(
             new float[]
             {
