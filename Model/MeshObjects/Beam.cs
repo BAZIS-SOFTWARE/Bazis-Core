@@ -14,44 +14,17 @@ namespace Model.MeshObjects
     {
         public Beam(int number, Node[] nodes) : base(number, nodes)
         {
+            if (nodes.Length < 2)
+                throw new Exception($"Коллличество узлов в элементе {number} должно быть не меньше 2");
             Color = Color.FromArgb(255, 192, 203);
-
-            //var intPoint = new IntegralPoint();
-            //intPoint.AddCoordinate("ksi", 0.0f);
-            //intPoint.Weigt = CalcLength();
-            //intPoints.Add(intPoint);
-            //jacobians.Add(DetJ(intPoint));
+            Level = 1;
         }
 
 
 
-        public Beam(int number, Node[] nodes, int intpNumber) : base(number, nodes)
+        public Beam(int number, Node[] nodes, int level) : this(number, nodes)
         {
-            IntegralPoint intPoint;
-            switch (intpNumber)
-            {
-                case 1:
-                    intPoint = new IntegralPoint();
-                    intPoint.AddCoordinate("ksi", 0.0f);
-                    intPoint.Weigt = 2;
-                    intPoints.Add(intPoint);
-                    break;
-                case 2:
-                    intPoint = new IntegralPoint();
-                    intPoint.AddCoordinate("ksi", -(float)Math.Sqrt(3) / 3);
-                    intPoint.Weigt = 1;
-                    intPoints.Add(intPoint);
-                    jacobiMatrixes.Add(CalcJacobi(intPoint));
-
-                    intPoint = new IntegralPoint();
-                    intPoint.AddCoordinate("ksi", (float)Math.Sqrt(3) / 3);
-                    intPoint.Weigt = 1;
-                    intPoints.Add(intPoint);
-                    jacobiMatrixes.Add(CalcJacobi(intPoint));
-                    break;
-                default:
-                    throw new ArgumentException();
-            }
+            Level = level;
         }
         /// <inheritdoc/>
 
@@ -60,6 +33,37 @@ namespace Model.MeshObjects
         /// <inheritdoc/>
 
         public override ObjType ObjType { get; } = ObjType.Элемент1D;
+        /// <inheritdoc/>
+        public override int Level 
+        
+        {
+            get => intPoints.Count; 
+            set
+            {
+                intPoints.Clear();
+                jacobiMatrixes.Clear();
+                if (value == 1)
+                {
+                    CreateIntegrationPoint(2, 0.0);
+                }
+                else
+                {
+                    CreateIntegrationPoint(1, -Math.Sqrt(3) / 3);
+                    CreateIntegrationPoint(1, Math.Sqrt(3) / 3);
+                }
+            }
+        }
+
+        public void CreateIntegrationPoint(double w, double ksi)
+        {
+            var intPoint = new IntegralPoint();
+            intPoint.AddCoordinate("ksi", ksi);
+            intPoint.Weigt = w;
+
+            intPoints.Add(intPoint);
+            jacobiMatrixes.Add(CalcJacobi(intPoint));
+        }
+
         /// <inheritdoc/>
 
         public override Point3D CalcCentr()

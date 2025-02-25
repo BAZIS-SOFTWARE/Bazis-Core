@@ -10,42 +10,52 @@ namespace Model.MeshObjects
     [Warning("Не использовать в решателе. Вместо него применять Tetra_c")]
     public class Tetra : Element3D
     {
-        public Tetra(int number, Node[] nodes) : base(number, nodes)
+        /// <inheritdoc/>
+        public override int Level
         {
-            //if (surfaces.Count != 4)
-            //    throw new Exception($"Коллличество поверхностей в тетраэлементе {number} должно быть 4");
-
-            surfaces.Add(new ElementSurface(number, 0, new Node[] { nodes[0], nodes[1], nodes[2] }));
-            surfaces.Add(new ElementSurface(number, 1, new Node[] { nodes[0], nodes[3], nodes[1] }));
-            surfaces.Add(new ElementSurface(number, 1, new Node[] { nodes[1], nodes[3], nodes[2] }));
-            surfaces.Add(new ElementSurface(number, 1, new Node[] { nodes[0], nodes[2], nodes[3] }));
-
-
-            CreateIntegrationPoint(1, 1.0 / 4, 1.0 / 4, 1.0 / 4, 1.0 / 4);
-        }
-
-
-
-        public Tetra(int number, Node[] nodes, int intpNumber) : base(number, nodes)
-        {
-            IntegralPoint intPoint;
-            switch (intpNumber)
-
+            get
             {
-                case 1:
+                if (intPoints.Count == 1)
+                    return 1;
+                else return 2;
+            }
+            set
+            {
+                intPoints.Clear();
+                jacobiMatrixes.Clear();
+                if (value == 1)
+                {
                     CreateIntegrationPoint(1, 1.0 / 4, 1.0 / 4, 1.0 / 4, 1.0 / 4);
-                    break;
-                case 4:
+                }
+                else
+                {
                     var a = 0.58541020;
                     var b = 0.13819660;
                     CreateIntegrationPoint(1.0 / 4, a, b, b, b);
                     CreateIntegrationPoint(1.0 / 4, b, a, b, b);
                     CreateIntegrationPoint(1.0 / 4, b, b, a, b);
                     CreateIntegrationPoint(1.0 / 4, b, b, b, a);
-                    break;
-                default:
-                    throw new ArgumentException();
+                }
             }
+        }
+        public Tetra(int number, Node[] nodes) : base(number, nodes)
+        {
+            if (nodes.Length < 4)
+                throw new Exception($"Коллличество узлов в элементе {ElementKind} {number} должно быть не меньше 4");
+
+            surfaces.Add(new ElementSurface(number, 0, new Node[] { nodes[0], nodes[1], nodes[2] }));
+            surfaces.Add(new ElementSurface(number, 1, new Node[] { nodes[0], nodes[3], nodes[1] }));
+            surfaces.Add(new ElementSurface(number, 1, new Node[] { nodes[1], nodes[3], nodes[2] }));
+            surfaces.Add(new ElementSurface(number, 1, new Node[] { nodes[0], nodes[2], nodes[3] }));
+
+            Level = 1;
+        }
+
+
+
+        public Tetra(int number, Node[] nodes, int level) : this(number, nodes)
+        {
+            Level = level;
         }
         /// <inheritdoc/>
 

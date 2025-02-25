@@ -13,11 +13,41 @@ namespace Model.MeshObjects
         /// <inheritdoc/>
 
         public override ElementKind ElementKind { get; } = ElementKind.Гекса;
+        /// <inheritdoc/>
+        public override int Level 
+        { 
+            get
+            {
+                if (intPoints.Count == 1)
+                    return 1;
+                else return 2;
+            }
+            set
+            {
+                intPoints.Clear();
+                jacobiMatrixes.Clear();
+                if (value == 1)
+                {
+                    CreateIntegrationPoint(8, 0, 0, 0);
+                }
+                else
+                {
+                    CreateIntegrationPoint(1, 0.5774, 0.5774, 0.5774);
+                    CreateIntegrationPoint(1, 0.5774, 0.5774, -0.5774);
+                    CreateIntegrationPoint(1, 0.5774, -0.5774, 0.5774);
+                    CreateIntegrationPoint(1, 0.5774, -0.5774, -0.5774);
+                    CreateIntegrationPoint(1, -0.5774, 0.5774, 0.5774);
+                    CreateIntegrationPoint(1, -0.5774, 0.5774, -0.5774);
+                    CreateIntegrationPoint(1, -0.5774, -0.5774, 0.5774);
+                    CreateIntegrationPoint(1, -0.5774, -0.5774, -0.5774);
+                }
+            }
+        }
 
         public Hexa(int number, Node[] nodes) : base(number, nodes)
         {
             if (nodes.Length < 8)
-                throw new Exception($"Коллличество узлов в гексаэлементе {number} должно быть не меньше 6");
+                throw new Exception($"Коллличество узлов в элементе {ElementKind} {number} должно быть не меньше 8");
             //var masterSurface = GetMasterSurface(4, surfaces);
 
             //if(masterSurface == null)
@@ -30,36 +60,15 @@ namespace Model.MeshObjects
             surfaces.Add(new ElementSurface(number, 3, new Node[] { nodes[7], nodes[3], nodes[2], nodes[6] }));
             surfaces.Add(new ElementSurface(number, 4, new Node[] { nodes[1], nodes[5], nodes[6], nodes[2] }));
             surfaces.Add(new ElementSurface(number, 5, new Node[] { nodes[7], nodes[4], nodes[0], nodes[3] }));
-            CreateIntegrationPoint(8, 0, 0, 0);
+
+            Level = 1;
         }
 
 
 
-        public Hexa(int number, Node[] nodes, int intpNumber) : base(number, nodes)
+        public Hexa(int number, Node[] nodes, int level) : this(number, nodes)
         {
-            IntegralPoint intPoint;
-            switch (intpNumber)
-            {
-                case 1:
-
-                    CreateIntegrationPoint(8, 0, 0, 0);
-                    // вес тут 8, так как вес каждой точки 0 равен 2 (2*2*2=8)
-                    break;
-                case 8:
-                CreateIntegrationPoint(1, 0.5774, 0.5774, 0.5774);
-                CreateIntegrationPoint(1, 0.5774, 0.5774, -0.5774);
-                 CreateIntegrationPoint(1, 0.5774, -0.5774, 0.5774);
-                CreateIntegrationPoint(1, 0.5774, -0.5774, -0.5774);
-                 CreateIntegrationPoint(1, -0.5774, 0.5774, 0.5774);
-                 CreateIntegrationPoint(1, -0.5774, 0.5774, -0.5774);
-                 CreateIntegrationPoint(1, -0.5774, -0.5774, 0.5774);
-                CreateIntegrationPoint(1, -0.5774, -0.5774, -0.5774);
-                 break;
-
-                
-                default:
-                    throw new ArgumentException();
-            }
+            Level = level;
         }
 
         /// <inheritdoc/>

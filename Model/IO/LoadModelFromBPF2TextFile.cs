@@ -30,7 +30,7 @@ namespace Model.IO
                 string[] token = new string[1];
                 while (!sr.EndOfStream)
                 {
-                    if (token[0] == "Узлы")
+                    if (token[0] == "Узел")
                     {
                         LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка узлов..."));
                         Thread.Sleep(100);
@@ -66,7 +66,7 @@ namespace Model.IO
         {
             var line = reader.ReadLine();
             //var nodes = new List<Node>();
-            while (line != "#Узлы")
+            while (line != "#Узел")
             {
                 var tokens = line.Split()
                     .Where(m => float.TryParse(m, NumberStyles.Float, CultureInfo.InvariantCulture, out var val))
