@@ -585,5 +585,20 @@ namespace GmshApi
         /// <param name="surfAngle">[In]Пороговый угол разбиения поверхностей</param>
         /// <param name="curveAngle">[In]Пороговый угол разбиения кривых</param>
         void CreateGeometry(double surfAngle = Math.PI / 2, double curveAngle = Math.PI);
+        /// <summary>
+        /// Создает сеточное прдеставление STL
+        /// </summary>
+        /// <param name="ierr">[Out]Флаг ошибки</param>
+        void ModelMeshImportStl(ref int ierr);
+        /// <summary>
+        /// Вытянуть триангулированные геметрические объемы, если они имеются
+        /// </summary>
+        /// <returns>Список VolumeFigure</returns>
+        List<VolumeFigure> GetVolumeFigures();
+        /// <summary>
+        /// Вытянуть триангулированные геметрические поверхности, если они имеются
+        /// </summary>
+        /// <returns>Список SurfaceFigure</returns>
+        List<SurfaceFigure> GetSurfaceFigures();
     }
 }
