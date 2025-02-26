@@ -10,11 +10,35 @@ namespace Model.MeshObjects
     {
         /// <inheritdoc/>
         public override ElementKind ElementKind { get; } = ElementKind.Пента;
+        /// <inheritdoc/>
+        public override int Level
+        {
+            get
+            {
+                if (intPoints.Count == 1)
+                    return 1;
+                else return 2;
+            }
+            set
+            {
+                intPoints.Clear();
+                jacobiMatrixes.Clear();
+                if (value == 1)
+                {
+                    CreateIntegrationPoint(1, 0.3333, 0.3333, 0);
+                }
+                else
+                {
+                    CreateIntegrationPoint(0.5f, 0.3333, 0.3333, -0.5774);
+                    CreateIntegrationPoint(0.5f, 0.3333, 0.3333, 0.5774);
+                }
+            }
+        }
 
         public Penta(int number, Node[] nodes) : base(number, nodes)
         {
             if (nodes.Length < 6)
-                throw new Exception($"Коллличество узлов в пентаэлементе {number} должно быть не меньше 5");
+                throw new Exception($"Коллличество узлов в элементе {ElementKind} {number} должно быть не меньше 6");
             //var masterSurface = GetMasterSurface(3, surfaces);
             //this.nodes = SortNodes(masterSurface.Number, surfaces);
 
@@ -27,23 +51,9 @@ namespace Model.MeshObjects
             CreateIntegrationPoint(1, 0.3333, 0.3333, 0);
         }
 
-        public Penta(int number, Node[] nodes, int intpNumber) : base(number, nodes, intpNumber)
+        public Penta(int number, Node[] nodes, int level) : this(number, nodes)
         {
-            var masterSurface = GetMasterSurface(3, surfaces);
-            //this.nodes = SortNodes(masterSurface.Number, surfaces).ToList();
-
-            switch (intpNumber)
-            {
-                case 1:
-                    CreateIntegrationPoint(1, 0.3333, 0.3333, 0);
-                    break;
-                case 2:
-                    CreateIntegrationPoint(0.5f, 0.3333, 0.3333, -0.5774);
-                    CreateIntegrationPoint(0.5f, 0.3333, 0.3333, 0.5774);
-                    break;
-                default:
-                    throw new ArgumentException();
-            }
+            Level = level;
         }
 /// <inheritdoc/>
 

@@ -11,6 +11,31 @@ namespace Model.MeshObjects
 {
     public class Triangle_c : Element2D
     {
+        /// <inheritdoc/>
+        public override int Level
+        {
+            get
+            {
+                if (intPoints.Count == 1)
+                    return 1;
+                else return 2;
+            }
+            set
+            {
+                intPoints.Clear();
+                jacobiMatrixes.Clear();
+                if (value == 1)
+                {
+                    CreateIntegrationPoint(1.0 / 2, 1.0 / 3, 1.0 / 3);
+                }
+                else
+                {
+                    CreateIntegrationPoint(1.0 / 6, 1.0 / 2, 0);
+                    CreateIntegrationPoint(1.0 / 6, 0, 1.0 / 2);
+                    CreateIntegrationPoint(1.0 / 6, 1.0 / 2, 1.0 / 2);
+                }
+            }
+        }
         /// <summary>
         /// Triangle_c
         /// </summary>
@@ -18,31 +43,21 @@ namespace Model.MeshObjects
         /// <param name="nodes"></param>
         public Triangle_c(int number, Node[] nodes) : base(number, nodes)
         {
-            CreateIntegrationPoint(1.0 / 2, 1.0 / 3, 1.0 / 3);
+            if (nodes.Length < 3)
+                throw new Exception($"Коллличество узлов в элементе {ElementKind} {number} должно быть не меньше 3");
+
+            Level = 1;
         }
         /// <summary>
         /// Triangle_c
         /// </summary>
         /// <param name="number"></param>
         /// <param name="nodes"></param>
-        /// <param name="intpNumber"></param>
+        /// <param name="level"></param>
         /// <exception cref="ArgumentException"></exception>
-        public Triangle_c(int number, Node[] nodes, int intpNumber) : base(number, nodes)
+        public Triangle_c(int number, Node[] nodes, int level) : this(number, nodes)
         {
-            switch (intpNumber)
-
-            {
-                case 1:
-                    CreateIntegrationPoint(1.0 / 2, 1.0 / 3, 1.0 / 3);
-                    break;
-                case 3:
-                    CreateIntegrationPoint(1.0 / 6, 1.0 / 2, 0);
-                    CreateIntegrationPoint(1.0 / 6, 0, 1.0 / 2);
-                    CreateIntegrationPoint(1.0 / 6, 1.0 / 2, 1.0 / 2);
-                    break;
-                default:
-                    throw new ArgumentException();
-            }
+            Level = level;
         }
 
         /// <summary>

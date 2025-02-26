@@ -10,45 +10,60 @@ namespace Model.MeshObjects
 {
     public class Triangle : Element2D
     {
-
+        /// <inheritdoc/>
+        public override int Level
+        {
+            get
+            {
+                if (intPoints.Count == 1)
+                    return 1;
+                else return 2;
+            }
+            set
+            {
+                intPoints.Clear();
+                jacobiMatrixes.Clear();
+                if (value == 1)
+                {
+                    CreateIntegrationPoint(1.0 / 2, 1.0 / 3, 1.0 / 3, 1.0 / 3);
+                }
+                else
+                {
+                    CreateIntegrationPoint(1.0 / 6, 1.0 / 2, 0, 1.0 / 2);
+                    CreateIntegrationPoint(1.0 / 6, 1.0 / 2, 1.0 / 2, 0);
+                    CreateIntegrationPoint(1.0 / 6, 0, 1.0 / 2, 1.0 / 2);
+                }
+            }
+        }
         /// <inheritdoc/>
 
         public override ElementKind ElementKind { get; } = ElementKind.Треугольник;
 
         public Triangle(int number,Node[] nodes) : base(number, nodes)
         {
-            CreateIntegrationPoint(1.0 / 2, 1.0 / 3, 1.0 / 3, 1.0 / 3);
+            if (nodes.Length < 3)
+                throw new Exception($"Коллличество узлов в элементе {ElementKind} {number} должно быть не меньше 3");
+
+            Level = 1;
         }
 
-        public Triangle(int number, Node[] nodes, int intpNumber) : base(number, nodes)
+        public Triangle(int number, Node[] nodes, int level) : this(number, nodes)
         {
-            switch (intpNumber)
-
-            {
-                case 1:
-                    CreateIntegrationPoint(1.0 / 2, 1.0 / 3, 1.0 / 3, 1.0 / 3);
-                    break;
-                case 3:
-                    CreateIntegrationPoint(1.0 / 6, 1.0 / 2, 0, 1.0 / 2);
-                    CreateIntegrationPoint(1.0 / 6, 1.0 / 2, 1.0 / 2, 0);
-                    CreateIntegrationPoint(1.0 / 6, 0, 1.0 / 2, 1.0 / 2);
-                    break;
-                default:
-                    throw new ArgumentException();
-            }
+            Level = level;
         }        
 /// <inheritdoc/>
 
         public override double CalcSquare()
         {
-            var pAr = GetCoordinates().ToArray();
+            var sqr = 0.0;
+            var counter = 0;
 
-            var v1 = new Point3D(pAr[1]._x - pAr[0]._x, pAr[1]._y - pAr[0]._y, pAr[1]._z - pAr[0]._z);
-            var v2 = new Point3D(pAr[2]._x - pAr[0]._x, pAr[2]._y - pAr[0]._y, pAr[2]._z - pAr[0]._z);
-
-            var vProd = Geometry.Vector.CrossProd(v1, v2);
-            var square = Math.Abs(Geometry.Vector.GetVectorLenght(vProd) / 2);
-            return square;
+            foreach (var item in GetJacobiMatrixes())
+            {
+                sqr += Math.Abs(item.Determinant()) * intPoints[counter].Weigt;
+                counter++;
+            }
+            return sqr;
         }
 
         /// <inheritdoc/>
@@ -88,7 +103,7 @@ namespace Model.MeshObjects
             var intPoint = new IntegralPoint();
             intPoint.AddCoordinate("l1", l1);
             intPoint.AddCoordinate("l2", l2);
-            intPoint.AddCoordinate("l3", l2);
+            intPoint.AddCoordinate("l3", l3);
             intPoint.Weigt = w;
 
             intPoints.Add(intPoint);

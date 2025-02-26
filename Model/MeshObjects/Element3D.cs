@@ -19,14 +19,6 @@ namespace Model.MeshObjects
 
             //surfaces = SurfacesCreator.CreateSurfacesFromSetOfNodes(number, nodes);
         }
-
-
-
-        public Element3D(int number, Node[] nodes,int point) : this(number, nodes)
-        {
-
-
-        }
         /// <inheritdoc/>
 
 

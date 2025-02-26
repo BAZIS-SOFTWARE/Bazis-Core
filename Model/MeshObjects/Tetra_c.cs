@@ -13,6 +13,34 @@ namespace Model.MeshObjects
     /// </summary>
     public class Tetra_c : Element3D
     {
+        /// <inheritdoc/>
+        public override int Level
+        {
+            get
+            {
+                if (intPoints.Count == 1)
+                    return 1;
+                else return 2;
+            }
+            set
+            {
+                intPoints.Clear();
+                jacobiMatrixes.Clear();
+                if (value == 1)
+                {
+                    CreateIntegrationPoint(1.0 / 6, 1.0 / 4, 1.0 / 4, 1.0 / 4);
+                }
+                else
+                {
+                    var a = 0.58541020;
+                    var b = 0.13819660;
+                    CreateIntegrationPoint(1.0 / 24, a, b, b);
+                    CreateIntegrationPoint(1.0 / 24, b, a, b);
+                    CreateIntegrationPoint(1.0 / 24, b, b, a);
+                    CreateIntegrationPoint(1.0 / 24, b, b, b);
+                }
+            }
+        }
         /// <summary>
         /// Tetra_pure
         /// </summary>
@@ -20,35 +48,26 @@ namespace Model.MeshObjects
         /// <param name="nodes"></param>
         public Tetra_c(int number, Node[] nodes) : base(number, nodes)
         {
-            CreateIntegrationPoint(1.0/6, 1.0 / 4, 1.0 / 4, 1.0 / 4);
+            if (nodes.Length < 4)
+                throw new Exception($"Коллличество узлов в элементе {ElementKind} {number} должно быть не меньше 4");
+
+            surfaces.Add(new ElementSurface(number, 0, new Node[] { nodes[0], nodes[1], nodes[2] }));
+            surfaces.Add(new ElementSurface(number, 1, new Node[] { nodes[0], nodes[3], nodes[1] }));
+            surfaces.Add(new ElementSurface(number, 1, new Node[] { nodes[1], nodes[3], nodes[2] }));
+            surfaces.Add(new ElementSurface(number, 1, new Node[] { nodes[0], nodes[2], nodes[3] }));
+
+            Level = 1;
         }
         /// <summary>
         /// Tetra_c
         /// </summary>
         /// <param name="number"></param>
         /// <param name="nodes"></param>
-        /// <param name="intpNumber"></param>
+        /// <param name="level"></param>
         /// <exception cref="ArgumentException"></exception>
-        public Tetra_c(int number, Node[] nodes, int intpNumber) : base(number, nodes)
+        public Tetra_c(int number, Node[] nodes, int level) : this(number, nodes)
         {
-            IntegralPoint intPoint;
-            switch (intpNumber)
-
-            {
-                case 1:
-                    CreateIntegrationPoint(1.0 / 6, 1.0 / 4, 1.0 / 4, 1.0 / 4);
-                    break;
-                case 4:
-                    var a = 0.58541020;
-                    var b = 0.13819660;
-                    CreateIntegrationPoint(1.0 / 24, a, b, b );
-                    CreateIntegrationPoint(1.0 / 24, b, a, b );
-                    CreateIntegrationPoint(1.0 / 24, b, b, a );
-                    CreateIntegrationPoint(1.0 / 24, b, b, b );
-                    break;
-                default:
-                    throw new ArgumentException("Введите другое кол-во точек интегрирования");
-            }
+            Level = level;
         }
         /// <inheritdoc/>
 

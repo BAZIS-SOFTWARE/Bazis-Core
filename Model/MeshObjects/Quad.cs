@@ -1,4 +1,5 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
+using Model.Interfaces;
 using Model.Interfaces.IntegralObject;
 using Model.Interfaces.MeshObjects;
 using System;
@@ -10,33 +11,47 @@ namespace Model.MeshObjects
     public class Quad : Element2D
     {
         /// <inheritdoc/>
-        public override ElementKind ElementKind { get; } = ElementKind.Квадрат;
-
-        public Quad(int number, Node[] nodes) : base(number, nodes)
+        public override int Level
         {
-            CreateIntegrationPoint(2, 0, 0);
-        }
-
-
-        public Quad(int number, Node[] nodes, int intpNumber) : base(number, nodes)
-        {
-            this.nodes = surface.GetVertexes().ToList();
-
-            switch (intpNumber)
+            get
             {
-                case 1:
-                    CreateIntegrationPoint(2, 0, 0);
-                    break;
-                case 4:
+                if (intPoints.Count == 1)
+                    return 1;
+                else return 2;
+            }
+            set
+            {
+                intPoints.Clear();
+                jacobiMatrixes.Clear();
+                if (value == 1)
+                {
+                    CreateIntegrationPoint(4, 0, 0);
+                }
+                else
+                {
                     var coordinate = Math.Sqrt(3) / 3;
                     CreateIntegrationPoint(1, -coordinate, -coordinate);
                     CreateIntegrationPoint(1, coordinate, -coordinate);
                     CreateIntegrationPoint(1, coordinate, coordinate);
                     CreateIntegrationPoint(1, -coordinate, coordinate);
-                    break;
-                default:
-                    throw new ArgumentException();
+                }
             }
+        }
+        /// <inheritdoc/>
+        public override ElementKind ElementKind { get; } = ElementKind.Квадрат;
+
+        public Quad(int number, Node[] nodes) : base(number, nodes)
+        {
+            if (nodes.Length < 4)
+                throw new Exception($"Коллличество узлов в элементе {ElementKind} {number} должно быть не меньше 4");
+
+            Level = 1;
+        }
+
+
+        public Quad(int number, Node[] nodes, int level) : this(number, nodes)
+        {
+            Level = level;
 
         }
         /// <inheritdoc/>

@@ -28,7 +28,7 @@ namespace Model.IO
                 var ver = Assembly.GetExecutingAssembly().GetName().Version;
                 var verStr = "Версия " + $"{ver.Major}.{ver.Minor}.{ver.Build}";
 
-                sw.WriteLine(ver);
+                sw.WriteLine(verStr);
 
                 foreach (ObjType item in Enum.GetValues(typeof(ObjType)))
                 {

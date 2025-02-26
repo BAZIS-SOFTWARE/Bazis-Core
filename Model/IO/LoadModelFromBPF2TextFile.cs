@@ -30,7 +30,7 @@ namespace Model.IO
                 string[] token = new string[1];
                 while (!sr.EndOfStream)
                 {
-                    if (token[0] == "Узлы")
+                    if (token[0] == "Узел")
                     {
                         LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка узлов..."));
                         Thread.Sleep(100);
@@ -66,7 +66,7 @@ namespace Model.IO
         {
             var line = reader.ReadLine();
             //var nodes = new List<Node>();
-            while (line != "#Узлы")
+            while (line != "#Узел")
             {
                 var tokens = line.Split()
                     .Where(m => float.TryParse(m, NumberStyles.Float, CultureInfo.InvariantCulture, out var val))
@@ -131,7 +131,7 @@ namespace Model.IO
         {
             switch (nodes.Length)
             {
-                case 4: return new Tetra(elementNumber, nodes) { Level = level };
+                case 4: return new Tetra_c(elementNumber, nodes) { Level = level };
                 case 6: return new Penta(elementNumber, nodes) { Level = level };
                 case 8: return new Hexa(elementNumber, nodes) { Level = level };
                 default: throw new ArgumentException($"Undefined element {elementNumber}");
@@ -142,7 +142,7 @@ namespace Model.IO
         {
             switch (nodes.Length)
             {
-                case 3: return new Triangle(elementNumber, nodes) { Level = level};
+                case 3: return new Triangle_c(elementNumber, nodes) { Level = level};
                 case 4: return new Quad(elementNumber, nodes) { Level = level };
                 default: throw new ArgumentException($"Undefined element {elementNumber}");
             }

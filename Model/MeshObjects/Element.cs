@@ -61,8 +61,9 @@ namespace Model.MeshObjects
 /// <inheritdoc/>
 
         public abstract ElementKind ElementKind { get; }
+
         /// <inheritdoc/>
-        public int Level { get; set; } = 1;
+        public abstract int Level { get; set; }
 
 
         /// <inheritdoc/>

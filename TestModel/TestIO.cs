@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using Model.IO;
 using Model.Interfaces;
+using System.Data;
 
 namespace TestModel
 {
@@ -49,23 +50,51 @@ namespace TestModel
             //assert
         }
 
-        [TestMethod]
-        public void SaveModelToBpf2TextFormat()
+        [DataTestMethod]
+        [DataRow(@"..\..\..\Examples\3D\box2.inp", @"..\..\..\Examples\BPF2TXT\box2_test.bpf2")]
+        [DataRow(@"c:\projs\ElenaLu\Dnishe\Dnishe2d.ASC", @"c:\projs\ElenaLu\Dnishe\Dnishe2d.bpf2")]
+        public void SaveModelToBpf2FromInp(string loadPath, string savePath)
         {
             //assing
             var model = new ModelData();
 
-            model.Loader = new LoadModelFromINPTextFile();
+            var ext = Path.GetExtension(loadPath);
+
+            if(ext == ".inp")
+                model.Loader = new LoadModelFromINPTextFile();
+            else if (ext == ".bpf2")
+                model.Loader = new LoadModelFromBPF2TextFile();
+            else if (ext == ".ASC")
+                model.Loader = new LoadModelFromASCIITextFile_v2();
+
             model.Saver = new SaveModelToBPF2TextFile();
 
             model.Loader.LoadEvent += (ar1, ar2) => { };
             model.Saver.SaveEvent += (ar1, ar2) => { };
 
             //act
-            model.Load(@"..\..\..\Examples\3D\box2.inp");
-            model.Save(@"..\..\..\Examples\BPF2TXT\box2_test.bpf2");
+            model.Load(loadPath);
+
+            var node = model.ObjectData.NodesSet.Count;
+            var elem1D = model.ObjectData.E1DCollection.Count;
+            var elem2D = model.ObjectData.E2DCollection.Count;
+            var elem3D = model.ObjectData.E3DCollection.Count;
+
+            model.Save(savePath);
+            model.Loader = new LoadModelFromBPF2TextFile();
+            model.Load(savePath);
+
+            var node_l = model.ObjectData.NodesSet.Count;
+            var elem1D_l = model.ObjectData.E1DCollection.Count;
+            var elem2D_l = model.ObjectData.E2DCollection.Count;
+            var elem3D_l = model.ObjectData.E3DCollection.Count;
 
             //assert
+
+            Assert.AreEqual(node, node_l);
+            Assert.AreEqual(elem1D, elem1D_l);
+            Assert.AreEqual(elem2D, elem2D_l);
+            Assert.AreEqual(elem3D, elem3D_l);
         }
 
         [DataTestMethod]
