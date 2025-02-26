@@ -353,8 +353,18 @@ namespace TestProject
             "Clamp/Узлы_7 Жесткое Z * 0 1500 *",
             "Heat/ARC;4;100;25 Load 0 50 baseLine|refLine;2;startNodes;startNodes;0|0|0|0"
         })]
+        [DataRow(ComplexTaskType.термическая, ProcessType.Welding, new[]
+        {
+            "Mat/Элементы3D_3 Сталь_20ХМ 0 1500 *",
+            "Media/air Коэф.теплоотдачи.воздух 20 0 1500 *"
+        })]
+        [DataRow(ComplexTaskType.механическая, ProcessType.Welding, new[]
+        {
+            "Mat/Элементы3D_3 Сталь_20ХМ 0 1500 *",
+            "Clamp/Узлы_7 Жесткое X * 0 1500 *",
+        })]
         [TestMethod]
-        public void CalcCompDataV2_ShouldPass_OnTestCase21022025(ComplexTaskType generalTaskType, ProcessType commonTaskType, string[] valuableDataStrings)
+        public void CalcCompDataV2_ShouldPass_WithoutWeldingTSF(ComplexTaskType generalTaskType, ProcessType commonTaskType, string[] valuableDataStrings)
         {
             var preProc = new PreProc.PreProc();
             var path = Path.GetFullPath(projPath) + "\\V2TestCase";

@@ -55,11 +55,11 @@ namespace PreProc
                 //    break;
 
                 case ComplexTaskType.термическая:
-                    CreateFilesForSingleProcess(processProp.CommonTaskType.ToString(), GetParameters<HeatData, MediaData, TermalParameters>(data));
+                    CreateFilesForSingleProcess(processProp.GeneralTaskType.ToString(), GetParameters<HeatData, MediaData, TermalParameters>(data));
                     break;
 
                 case ComplexTaskType.механическая:
-                    CreateFilesForSingleProcess(processProp.CommonTaskType.ToString(), GetParameters<LoadData, ClampData, MechanicalParameters>(data));
+                    CreateFilesForSingleProcess(processProp.GeneralTaskType.ToString(), GetParameters<LoadData, ClampData, MechanicalParameters>(data));
                     break;
 
                 //case ComplexTaskType.химическая_термическая:
