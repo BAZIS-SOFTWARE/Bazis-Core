@@ -131,7 +131,7 @@ namespace Model.IO
         {
             switch (nodes.Length)
             {
-                case 4: return new Tetra(elementNumber, nodes) { Level = level };
+                case 4: return new Tetra_c(elementNumber, nodes) { Level = level };
                 case 6: return new Penta(elementNumber, nodes) { Level = level };
                 case 8: return new Hexa(elementNumber, nodes) { Level = level };
                 default: throw new ArgumentException($"Undefined element {elementNumber}");
@@ -142,7 +142,7 @@ namespace Model.IO
         {
             switch (nodes.Length)
             {
-                case 3: return new Triangle(elementNumber, nodes) { Level = level};
+                case 3: return new Triangle_c(elementNumber, nodes) { Level = level};
                 case 4: return new Quad(elementNumber, nodes) { Level = level };
                 default: throw new ArgumentException($"Undefined element {elementNumber}");
             }

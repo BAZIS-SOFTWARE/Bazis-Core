@@ -65,19 +65,15 @@ namespace Model.MeshObjects
 
         public override double CalcVolume()
         {
-            var mCoord = new float[4, 4];
-            var p = new Point3D[] { nodes[0].Position, nodes[1].Position, nodes[2].Position, nodes[3].Position };
-            for (int j = 0; j < p.Length; j++)
-            {
-                mCoord[j, 0] = 1;
-                mCoord[j, 1] = p[j]._x;
-                mCoord[j, 2] = p[j]._y;
-                mCoord[j, 3] = p[j]._z;
-            }
+            var vol = 0.0;
+            var counter = 0;
 
-            var cMatr = Math.Abs(Matrix<float>.Build.DenseOfArray(mCoord).Determinant() / 6);
-            //var str = cMatr.ToString(4, 4);
-            return cMatr;
+            foreach (var item in GetJacobiMatrixes())
+            {
+                vol += Math.Abs(item.Determinant()) * intPoints[counter].Weigt;
+                counter++;
+            }
+            return vol;
         }
 /// <inheritdoc/>
 

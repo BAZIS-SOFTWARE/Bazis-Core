@@ -25,7 +25,7 @@ namespace Model.MeshObjects
                 jacobiMatrixes.Clear();
                 if (value == 1)
                 {
-                    CreateIntegrationPoint(2, 0, 0);
+                    CreateIntegrationPoint(4, 0, 0);
                 }
                 else
                 {

@@ -55,14 +55,15 @@ namespace Model.MeshObjects
 
         public override double CalcSquare()
         {
-            var pAr = GetCoordinates().ToArray();
+            var sqr = 0.0;
+            var counter = 0;
 
-            var v1 = new Point3D(pAr[1]._x - pAr[0]._x, pAr[1]._y - pAr[0]._y, pAr[1]._z - pAr[0]._z);
-            var v2 = new Point3D(pAr[2]._x - pAr[0]._x, pAr[2]._y - pAr[0]._y, pAr[2]._z - pAr[0]._z);
-
-            var vProd = Geometry.Vector.CrossProd(v1, v2);
-            var square = Math.Abs(Geometry.Vector.GetVectorLenght(vProd) / 2);
-            return square;
+            foreach (var item in GetJacobiMatrixes())
+            {
+                sqr += Math.Abs(item.Determinant()) * intPoints[counter].Weigt;
+                counter++;
+            }
+            return sqr;
         }
 
         /// <inheritdoc/>
