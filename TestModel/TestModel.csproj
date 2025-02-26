@@ -106,6 +106,7 @@
     <Compile Include="GeometryTests\TestSegment3D.cs" />
     <Compile Include="GeometryTests\TestSelection.cs" />
     <Compile Include="GeometryTests\TestVector.cs" />
+    <Compile Include="GmshTests\ControllerTest.cs" />
     <Compile Include="GmshTests\GeometryTests.cs" />
     <Compile Include="GmshTests\MeshTests.cs" />
     <Compile Include="GmshTests\ConnectionTests.cs" />

@@ -1,6 +1,6 @@
 ﻿using System;
 using static GmshApi.GmshKernel;
-using static GmshApi.GmshMemory;
+using static GmshApi.Memory;
 
 namespace GmshApi
 {
@@ -47,7 +47,7 @@ namespace GmshApi
             var ierr = 0;
             var intValue = IntPtr.Zero;
             gmshOptionGetString(name, ref intValue, ref ierr);
-            return GmshMemory.GetString(intValue);
+            return Memory.GetString(intValue);
         }
 
     }

@@ -1,9 +1,8 @@
 ﻿using System;
-using static GmshApi.GmshController.GmshController;
 using static GmshApi.GmshKernel;
-using static GmshApi.GmshMemory;
+using static GmshApi.Memory;
 
-namespace GmshApi.Wrapper
+namespace GmshApi
 {
     /// <inheritdoc/>
     public class Model
@@ -114,6 +113,21 @@ namespace GmshApi.Wrapper
 
         private delegate void gmshModelRemoveAttributeFun(string name, ref int ierr);
         private gmshModelRemoveAttributeFun gmshModelRemoveAttribute = GetFunction<gmshModelRemoveAttributeFun>("gmshModelRemoveAttribute");
+
+        /// <inheritdoc/>
+        public Mesh Mesh { get; private set; }
+        /// <inheritdoc/>
+        public Geo Geo { get; private set; }
+        /// <inheritdoc/>
+        public Occ Occ { get; private set; }
+
+        /// <inheritdoc/>
+        public Model()
+        {
+            Mesh = new Mesh();
+            Geo = new Geo();
+            Occ = new Occ();
+        }
 
         /// <inheritdoc/>
         public void Add(string name)
@@ -244,6 +258,123 @@ namespace GmshApi.Wrapper
         {
             var ierr = 0;
             gmshModelRemoveEntities(dimTags, (IntPtr)dimTags.Length,Convert.ToInt32(recursive), ref ierr);
+        }
+        /// <inheritdoc/>
+        public string GetType(int dim, int tag)
+        {
+            var ierr = 0;
+            var intValue = IntPtr.Zero;
+            gmshModelGetType(dim, tag, ref intValue, ref ierr);
+            return intValue.ToString();
+        }
+        /// <inheritdoc/>
+        public double[] GetValue(int dim, int tag, double[] parametricCoord)
+        {
+            var ierr = 0;
+            var intValue = IntPtr.Zero;
+            var intValue_n = IntPtr.Zero;
+            gmshModelGetValue(dim, tag, parametricCoord, (IntPtr)parametricCoord.Length, ref intValue, ref intValue_n, ref ierr);
+            return GetObjectsData<double>(intValue, intValue_n);
+        }
+        /// <inheritdoc/>
+        public double[] GetDerivative(int dim, int tag, double[] parametricCoord)
+        {
+            var ierr = 0;
+            var intValue = IntPtr.Zero;
+            var intValue_n = IntPtr.Zero;
+            gmshModelGetDerivative(dim, tag, parametricCoord, (IntPtr)parametricCoord.Length, ref intValue, ref intValue_n, ref ierr);
+            return GetObjectsData<double>(intValue, intValue_n);
+        }
+        /// <inheritdoc/>
+        public double[] GetSecondDerivative(int dim, int tag, double[] parametricCoord)
+        {
+            var ierr = 0;
+            var intValue = IntPtr.Zero;
+            var intValue_n = IntPtr.Zero;
+            gmshModelGetSecondDerivative(dim, tag, parametricCoord, (IntPtr)parametricCoord.Length, ref intValue, ref intValue_n, ref ierr);
+            return GetObjectsData<double>(intValue, intValue_n);
+        }
+        /// <inheritdoc/>
+        public double[] GetCurvature(int dim, int tag, double[] parametricCoord)
+        {
+            var ierr = 0;
+            var intValue = IntPtr.Zero;
+            var intValue_n = IntPtr.Zero;
+            gmshModelGetCurvature(dim, tag, parametricCoord, (IntPtr)parametricCoord.Length, ref intValue, ref intValue_n, ref ierr);
+            return GetObjectsData<double>(intValue, intValue_n);
+        }
+        /// <inheritdoc/>
+        public double[] GetParametrization(int dim, int tag, double[] coord)
+        {
+            var ierr = 0;
+            var intValue = IntPtr.Zero;
+            var intValue_n = IntPtr.Zero;
+            gmshModelGetParametrization(dim, tag, coord, (IntPtr)coord.Length, ref intValue, ref intValue_n, ref ierr);
+            return GetObjectsData<double>(intValue, intValue_n);
+        }
+        /// <inheritdoc/>
+        public Tuple<double[], double[]> GetParametrizationBounds(int dim, int tag)
+        {
+            var ierr = 0;
+            var intValueMin = IntPtr.Zero;
+            var intValueMin_n = IntPtr.Zero;
+            var intValueMax = IntPtr.Zero;
+            var intValueMax_n = IntPtr.Zero;
+            gmshModelGetParametrizationBounds(dim, tag, ref intValueMin, ref intValueMin_n, ref intValueMax, ref intValueMax_n, ref ierr);
+            var min = GetObjectsData<double>(intValueMin, intValueMin_n);
+            var max = GetObjectsData<double>(intValueMax, intValueMax_n);
+            return Tuple.Create(min, max);
+        }
+        /// <inheritdoc/>
+        public int IsInside(int dim, int tag, double[] coord, bool parametric = false)
+        {
+            var ierr = 0;
+            return gmshModelIsInside(dim, tag, coord, (IntPtr)coord.Length, Convert.ToInt32(parametric), ref ierr);
+        }
+        /// <inheritdoc/>
+        public double[] ReparametrizeOnSurface(int dim, int tag, double[] parametricCoord, int surfaceTag, int which = 0)
+        {
+            var ierr = 0;
+            var intValue = IntPtr.Zero;
+            var intValue_n = IntPtr.Zero;
+            gmshModelReparametrizeOnSurface(dim,tag, parametricCoord, (IntPtr)parametricCoord.Length, surfaceTag, ref intValue, ref intValue_n, which, ref ierr);
+            return GetObjectsData<double> (intValue, intValue_n);
+        }
+        /// <inheritdoc/>
+        public void SetCoordinates(int tag, double x, double y, double z)
+        {
+            var ierr = 0;
+            gmshModelSetCoordinates(tag, x, y, z, ref ierr);
+        }
+        /// <inheritdoc/>
+        public void SetAttribute(string name, string[] values)
+        {
+            var ierr = 0;
+            gmshModelSetAttribute(name, values, (IntPtr)values.Length, ref ierr);
+        }
+        /// <inheritdoc/>
+        public string[] GetAttribute(string name)
+        {
+            var ierr = 0;
+            var intValue = IntPtr.Zero;
+            var intValue_n = IntPtr.Zero;
+            gmshModelGetAttribute(name, ref intValue, ref intValue_n, ref ierr);
+            return GetArrayOfString(intValue, intValue_n);
+        }
+        /// <inheritdoc/>
+        public string[] GetAttributeNames()
+        {
+            var ierr = 0;
+            var intValue = IntPtr.Zero;
+            var intValue_n = IntPtr.Zero;
+            gmshModelGetAttributeNames(ref intValue, ref intValue_n, ref ierr);
+            return GetArrayOfString(intValue, intValue_n);
+        }
+        /// <inheritdoc/>
+        public void RemoveAttribute(string name)
+        {
+            var ierr = 0;
+            gmshModelRemoveAttribute(name, ref ierr);
         }
     }
 }

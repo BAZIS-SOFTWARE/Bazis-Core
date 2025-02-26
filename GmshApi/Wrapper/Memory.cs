@@ -9,7 +9,7 @@ using static GmshApi.GmshKernel;
 namespace GmshApi
 {
     /// <inheritdoc/>
-    internal static class GmshMemory
+    internal static class Memory
     {
         private delegate IntPtr gmshMallocFun(IntPtr n);
         private static gmshMallocFun gmshMalloc = GetFunction<gmshMallocFun>("gmshMalloc");

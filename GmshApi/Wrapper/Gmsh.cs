@@ -27,6 +27,25 @@ namespace GmshApi
         //Очистка всех данных
         private delegate void gmshClearFun(ref int ierr);
         private gmshClearFun gmshClear = GetFunction<gmshClearFun>("gmshClear");
+        
+        /// <inheritdoc/>
+        public Option Option { get; private set; }
+        /// <inheritdoc/>
+        public Model Model { get; private set; }
+        /// <inheritdoc/>
+        public Plugin Plugin { get; private set; }
+
+        /// <inheritdoc/>
+        public Logger Logger { get; private set; }
+
+        /// <inheritdoc/>
+        public Gmsh()
+        {
+            Option = new Option();
+            Model = new Model();
+            Plugin = new Plugin();
+        }
+
 
         /// <inheritdoc/>
         public void Initialize(int argc = 0, string[] argv = null, bool readConfigFiles = true, bool run = false)

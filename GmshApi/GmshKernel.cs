@@ -8,7 +8,8 @@ namespace GmshApi
     /// </summary>
     public static class GmshKernel
     {
-        private static IntPtr DLL { get; set; }
+        /// <inheritdoc/>
+        public static IntPtr DLL { get; set; }
         /// <inheritdoc/>
         [DllImport("kernel32.dll")]
         public static extern IntPtr LoadLibrary(string dllToLoad);
