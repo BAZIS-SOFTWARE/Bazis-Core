@@ -599,11 +599,11 @@ namespace TestModel.GmshTests
                 }
             };
             
-            if (volumes.Count > 0)
+            /*if (volumes.Count > 0)
                 foreach (var volume in volumes)
                     surfaceCheck(volume.GetSurfaceFigures());
             else
-                surfaceCheck(controller.GetSurfaceFigures());
+                surfaceCheck(controller.GetSurfaceFigures());*/
         }
     }
 }

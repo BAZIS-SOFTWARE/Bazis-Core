@@ -34,4 +34,7 @@
       <PackagePath>\</PackagePath>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Wrapper\Interfaces\" />
+  </ItemGroup>
 </Project>

@@ -1099,7 +1099,7 @@ namespace GmshApi.GmshController
 
         public void Load(string dllToLoad)
         {
-            DLL = GmshKernel.GmshKernel.LoadLibrary(dllToLoad);
+            DLL = GmshKernel.LoadLibrary(dllToLoad);
             #region "Get Initialization delegates"
             gmshInitialize = GetFunction<gmshInitializeFun>("gmshInitialize");
             gmshIsInitialized = GetFunction<gmshIsInitializedFun>("gmshIsInitialized");
@@ -1240,7 +1240,7 @@ namespace GmshApi.GmshController
         /// <returns>Делегат</returns>
         public T GetFunction<T>(string functionName)
         {
-            var funPtr = GmshKernel.GmshKernel.GetProcAddress(DLL, functionName);
+            var funPtr = GmshKernel.GetProcAddress(DLL, functionName);
             return Marshal.GetDelegateForFunctionPointer<T>(funPtr);
         }
         #region "General managed methods"
