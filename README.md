@@ -27,12 +27,13 @@
 </details>
 
 # Спецификация GmshApi
- 
+ <details>
 ![YouML_image](https://github.com/user-attachments/assets/3c507a90-e613-4f01-8973-8a583237ff37)
-
+</details>
 
 # Схемы интегрирования конечных элементов для решения задач для всех типов элементов 2D и 3D (Проект Model).
+<details>
 ![image](https://github.com/user-attachments/assets/de06da91-25e0-402a-a73a-1d7a1a9fd0e8)
-
+</details>
 
 
