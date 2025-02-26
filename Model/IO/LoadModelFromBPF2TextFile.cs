@@ -45,7 +45,7 @@ namespace Model.IO
                         LoadElement(sr, token, newModel);
                     }
 
-                    if (token[0] == "Группы узлов и элементов")
+                    if (token[0] == "Группы")
                     {
                         LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка групп..."));
                         Thread.Sleep(100);
@@ -151,7 +151,7 @@ namespace Model.IO
         private static void LoadGroup(StreamReader sr, ModelData newMesh)
         {
             var line = sr.ReadLine();
-            while (line != "#Группы узлов и элементов")
+            while (line != "#Группы")
             {
                 var splitLine = line.Split(':');
                 if (splitLine[0] == "Группа узлов ")

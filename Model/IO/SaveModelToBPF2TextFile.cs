@@ -62,7 +62,7 @@ namespace Model.IO
                     }
                 }
                 sw.WriteLine("");
-                sw.WriteLine("Группы узлов и элементов");
+                sw.WriteLine("Группы");
                 foreach (var group in model.GroupData)
                 {
                     var name = group.Name;
@@ -74,7 +74,7 @@ namespace Model.IO
                     if (group.ObjType == ObjType.Элемент2D) sw.WriteLine("Группа элементов 2D : {0}", resu);
                     if (group.ObjType == ObjType.Элемент1D) sw.WriteLine("Группа элементов 1D : {0}", resu);
                 }
-                sw.WriteLine("#Группы узлов и элементов");
+                sw.WriteLine("#Группы");
                 sw.Dispose();
             }
         }
