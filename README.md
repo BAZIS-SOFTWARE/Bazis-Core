@@ -22,9 +22,9 @@
 - PreProc (автоматизированое создание инструкций согласно типу и виду задачи, а также набору граничных условий)
 
 # Спецификация Model
-
+<details>
 ![modelData](https://github.com/user-attachments/assets/8e83b944-4b13-44b6-8b0e-b7ea48f7b836)
-
+</details>
 
 # Спецификация GmshApi
  
