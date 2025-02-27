@@ -134,6 +134,7 @@
     <None Include="Examples\3D\box2.inp" />
     <None Include="Examples\3D\Korpus.inp" />
     <None Include="Examples\3D\Lazer.inp" />
+    <None Include="Examples\3D\Physical_groups_mesh.inp" />
     <None Include="Examples\3D\untitled.inp" />
     <None Include="Examples\STL\ACII.stl" />
     <None Include="Examples\VIsual-Mesh\big_cubeDATA1.ASC" />

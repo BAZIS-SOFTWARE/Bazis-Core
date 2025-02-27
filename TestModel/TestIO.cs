@@ -277,7 +277,7 @@ namespace TestModel
 
         [DataTestMethod]
         [DataRow(1000, 12, 6, 0, @"..\..\Examples\3D\box2.inp", DisplayName = "box2.inp")]
-        [DataRow(377, 6, 1, 0, @"..\..\Examples\3D\box2.inp", DisplayName = "box2.inp")]
+        [DataRow(8, 12, 6, 1, @"..\..\Examples\3D\Physical_groups_mesh.inp", DisplayName = "Physical_groups_mesh.inp")]
         public void ImportModelFromINPFormat_v2(int nodeCount, int elem1D, int elem2D, int elem3D, string path)
         {
             //assing
