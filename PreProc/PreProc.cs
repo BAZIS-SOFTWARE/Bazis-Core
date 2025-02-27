@@ -399,8 +399,8 @@ namespace PreProc
             foreach (var line in dataStrs)
             {
                 var file = Path.GetFileName(line);
-
-                if (!Regex.IsMatch(file, "^((термическая|механическая)_((\\d{1,})|(\\*))_((\\d{1,})|((\\d{1,}).(\\d{1,5}))|\\*)_((\\d{1,})|((\\d{1,}).(\\d{1,5}))|\\*)(.tsf))$"))
+                if (!Enum.GetValues(typeof(ComplexTaskType)).OfType<ComplexTaskType>().Any(x => x.ToString().Equals(file.Split('_')[0])) 
+                    || !Regex.IsMatch(file, "^(([a-zA-z]{1,})_((\\d{1,})|(\\*))_((\\d{1,})|((\\d{1,}).(\\d{1,5}))|\\*)_((\\d{1,})|((\\d{1,}).(\\d{1,5}))|\\*)(.tsf))$"))
                     throw new Exception("Имя полученного файла не соответствует шаблону: " +
                     "<тип процесса>_<номер задачи>_<время начала>_<время окончания>.tsf");
 
