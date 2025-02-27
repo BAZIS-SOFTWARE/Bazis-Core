@@ -274,5 +274,24 @@ namespace TestModel
             Assert.AreEqual(surfElms, model.ObjectData.E2DCollection.Count);
             Assert.AreEqual(volElems, model.ObjectData.E3DCollection.Count);
         }
+
+        [DataTestMethod]
+        [DataRow(1000, 12, 6, 0, @"..\..\Examples\3D\box2.inp", DisplayName = "box2.inp")]
+        [DataRow(377, 6, 1, 0, @"..\..\Examples\3D\box2.inp", DisplayName = "box2.inp")]
+        public void ImportModelFromINPFormat_v2(int nodeCount, int elem1D, int elem2D, int elem3D, string path)
+        {
+            //assing
+            var loader = new LoadModelFromINPTextFile_v2();
+            loader.LoadEvent += (ar1, ar2) => { };
+
+            //act
+            var model = loader.Load(path);
+
+            //assert
+            Assert.AreEqual(nodeCount, model.ObjectData.Count(ObjType.Узел));
+            Assert.AreEqual(elem1D, model.ObjectData.E1DCollection.Count());
+            Assert.AreEqual(elem2D, model.ObjectData.E2DCollection.Count());
+            Assert.AreEqual(elem3D, model.ObjectData.E3DCollection.Count());
+        }
     }
 }
