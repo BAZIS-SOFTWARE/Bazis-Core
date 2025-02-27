@@ -47,7 +47,7 @@ namespace Project.Results
         public float GetElementValue(int elemNumber, string resDescr)
         {
             var resu = Data.Tables["elements"].Rows.Find(elemNumber);
-            if (resu != null)
+            if (resu != null && Data.Tables["elements"].Columns.Contains(resDescr))
             {
                 return (float)resu[resDescr];
             }
@@ -56,10 +56,10 @@ namespace Project.Results
 /// <inheritdoc/>
 
         public float GetNodeValue(int nodeNumber, string resDescr)
-        {
+        {         
             var resu = Data.Tables["nodes"].Rows.Find(nodeNumber);
-            if (resu != null)
-            {
+            if (resu != null && Data.Tables["nodes"].Columns.Contains(resDescr))
+            {           
                 return (float)resu[resDescr];
             }
             else return 0.0f;

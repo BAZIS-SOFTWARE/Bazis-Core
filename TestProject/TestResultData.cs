@@ -26,6 +26,9 @@ using Project.Results;
 using Results.ScenePresenter;
 using PostProc.IO.GridExport;
 using PostProc.IO.ResultExport;
+using Model.IO;
+using Model.Interfaces.ObjectsCollections;
+using Model.ObjectsCollections;
 
 
 namespace TestProject
@@ -246,12 +249,20 @@ var loaderDB = new LoadResultsFileDB();
 
         [DataTestMethod]
         [DataRow(
-            "two_tetra_term_cycle_multiStep.bpf","термическая_0_0_0.5.db","термическая", 0f,0.0002f,20,"T",
+            "two_tetra_term_cycle_multiStep.bpf","термическая_0_0_0.5.db","термическая", 0f,0.0002f,"T",
             @"..\..\..\Examples\ProjAndResults")]
-        public void Test_Scene_Result_Presenter(string projName,string resName,string resKind,float min,float max,float curVal,string resDesc,string resPath )
+        [DataRow(
+            "one_quad_term_cycle.bpf2", "механическая_1_0_3.db", "механическая", 0f, 0.0037f,"XY",
+            @"..\..\..\Examples\ProjAndResults")]
+        public void Test_Scene_Result_Presenter(string projName,string resName,string resKind,float min,float max,string resDesc,string resPath )
         {
             var proj = new ProjectData();
             proj.ModelData = new ModelData();
+
+            var ext = Path.GetExtension(projName);
+            if (ext == ".bpf2")
+                proj.ModelData.Loader = new LoadModelFromBPF2TextFile();
+
             proj.TaskData = new TaskData();
             proj.Loader.LoadEvent += (ar1, ar2) => { };
 
@@ -267,8 +278,12 @@ var loaderDB = new LoadResultsFileDB();
             proj.ResultData.AddRange(results);
             var result = proj.ResultData.FindByTaskKind(resKind);
 
-            var elements = proj.ModelData.ObjectData.E3DCollection;
-
+            IEnumerable<ISurfaceElement> elements;
+            if(proj.GeneralData.TaskType == TaskType.Volume)
+                elements = proj.ModelData.ObjectData.E3DCollection.GetObjects();
+            else
+                elements = proj.ModelData.ObjectData.E2DCollection.GetObjects();
+            
             var itemRanges = new ItemRange[]
 {
                 new ItemRange() { Min = min, Max = max, Color = Color.FromArgb(0, 0, 255) }
@@ -278,7 +293,7 @@ var loaderDB = new LoadResultsFileDB();
             resultsCreator.ScaleFactor = 1;
             resultsCreator.SetScaleItems(itemRanges);
 
-            var resultObjects = resultsCreator.CreateSurfaceObjects(result.First(), ObjType.Узел,resDesc, elements.GetObjects());
+            var resultObjects = resultsCreator.CreateSurfaceObjects(result.First(), ObjType.Узел,resDesc, elements);
             var points = new List<ResultPoint>();
             foreach (var elems in resultObjects)
                 points.AddRange(elems.GetVertexes());

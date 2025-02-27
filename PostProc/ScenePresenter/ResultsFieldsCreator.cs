@@ -55,8 +55,23 @@ namespace PostProc.ScenePresenter
                                 else resItem.Value = result.GetElementValue(surfaceObject.Number, resDescr);
                                 resItems.Add(resItem);
                             }
-                            var surfaces = gradsCreator.CreateGradientObjects(itemRanges, resItems);
-                            surfacetObjects.AddRange(surfaces);
+
+                            IEnumerable<ResultFigure> surfaces;
+                            if (resItems.Count > 3)
+                            {
+                                surfaces = gradsCreator.CreateGradientObjects(itemRanges, 
+                                    new List<ResultItem>() { resItems[0], resItems[1], resItems[2] });
+                                surfacetObjects.AddRange(surfaces);
+                                surfaces = gradsCreator.CreateGradientObjects(itemRanges, 
+                                    new List<ResultItem>() { resItems[0], resItems[2], resItems[3] });
+                                surfacetObjects.AddRange(surfaces);
+                            }
+                            else
+                            {
+                                surfaces = gradsCreator.CreateGradientObjects(itemRanges, resItems);
+                                surfacetObjects.AddRange(surfaces);
+                            }    
+
                         }
                     }
                 }
