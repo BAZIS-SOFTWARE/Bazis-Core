@@ -19,15 +19,21 @@ namespace GmshApi
         private delegate void gmshOptionGetStringFun(string name, ref IntPtr value, ref int ierr);
         private gmshOptionGetStringFun gmshOptionGetString = GetFunction<gmshOptionGetStringFun>("gmshOptionGetString");
 
-        /// <inheritdoc/>
-        public double SetNumber(string name, double value)
+        /// <summary>
+        /// Задает значение поля категории опций
+        /// </summary>
+        /// <param name="name">Строка в формате доступа к полю категории опций</param>
+        /// <param name="value">Значение поля категории</param>
+        public void SetNumber(string name, double value)
         {
             var ierr = 0;
-            double result = 0.0;
             gmshOptionSetNumber(name, value, ref ierr);
-            return result;
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Возвращает значение из поля категории опций
+        /// </summary>
+        /// <param name="name">Строка в формате доступа к полю категории опций</param>
+        /// <returns>Значение поля категории опций</returns>
         public double GetNumber(string name)
         {
             var ierr = 0;
@@ -35,13 +41,21 @@ namespace GmshApi
             gmshOptionGetNumber(name, ref result, ref ierr);
             return result;
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Устанавливает строку параметров для категории опций
+        /// </summary>
+        /// <param name="name">Строка в формате доступа к полю категории опций</param>
+        /// <param name="value">Значение поля категории</param>
         public void SetString(string name, string value)
         {
             var ierr = 0;
             gmshOptionSetString(name, value, ref ierr);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Возвращает строку параметров для категории опций
+        /// </summary>
+        /// <param name="name">Строка в формате доступа к полю категории опций</param>
+        /// <returns>Строка параметров для категории опций</returns>
         public string GetString(string name)
         {
             var ierr = 0;

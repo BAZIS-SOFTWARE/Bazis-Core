@@ -20,19 +20,26 @@ namespace GmshApi
         private delegate void gmshLoggerGetLastErrorFun(ref IntPtr error, ref int ierr);
         private gmshLoggerGetLastErrorFun gmshLoggerGetLastError = GetFunction<gmshLoggerGetLastErrorFun>("gmshLoggerGetLastError");
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Начинает запись в журнал
+        /// </summary>
         public void Start()
         {
             var ierr = 0;
             gmshLoggerStart(ref ierr);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Останавливает запись в журнал
+        /// </summary>
         public void Stop()
         {
             var ierr = 0;
             gmshLoggerStop(ref ierr);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Возвращает все записи журнала
+        /// </summary>
+        /// <returns>Записи журнала</returns>
         public string[] Get()
         {
             var ierr = 0;
@@ -41,7 +48,10 @@ namespace GmshApi
             gmshLoggerGet(ref log, ref log_n, ref ierr);
             return GetArrayOfString(log, log_n);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Возвращает последнюю запись ошибки из журнала
+        /// </summary>
+        /// <returns>Запись ошибки</returns>
         public string GetLastError()
         {
             var ierr = 0;

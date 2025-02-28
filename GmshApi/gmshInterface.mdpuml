@@ -1,0 +1,114 @@
+﻿@startuml
+
+interface IGmshController
+{
+    +Load(...);
+    +Unload();
+    +GetMeshObjects();
+}
+
+class GmshController
+{
+    +Gmsh Gmsh;
+--
+    +Load(...);
+    +Unload();
+    +GetMeshObjects();
+}
+
+class Gmsh
+{
+    +Option Option;
+    +Model Model;
+    +Logger Logger;
+--
+    +Gmsh();
+    +void Initialize(...);
+    +void Open(...)
+}
+
+
+class Option
+{
+    +SetNumber(...);
+}
+
+class Logger
+{
+    +GetLastError(...);
+}
+
+class Model
+{
+    +Mesh Mesh;
+    +Geo Geo;
+    +Occ Occ;
+--
+    +Model();
+    +GetEntities(...);
+}
+
+
+class Mesh
+{
+    +Field Field;
+--
+    +Mesh();
+    +Generate(...);
+    +GetElements(...);
+}
+
+
+class Field
+{
+    +Add(...);
+}
+
+class Geo
+{
+    +Synchronize(...);
+}
+
+class Occ
+{
+    +AddPoint(...);
+    +Synchronize(...);
+}
+
+
+IGmshController <|.. GmshController
+GmshController o-- Gmsh
+
+Gmsh o-- Option
+Gmsh o-- Model
+Gmsh o-- Logger
+
+Model o-- Mesh
+Model o-- Geo
+Model o-- Occ
+
+Mesh o-- Field
+
+note right of GmshController
+<b><color:Blue>Пример обращения к API
+    var controller = new GmshController();
+    controller.Load(dllPath);
+    controller.Gmsh.Open("box.step");
+    
+    controller.Gmsh.Model.Occ.AddPoint(...);
+    controller.Gmsh.Model.Occ.Synchronize(...);
+    
+    controller.Gmsh.Model.GetEntities(...);
+    
+    controller.Gmsh.Model.Mesh.Field.Add(...);
+    controller.Gmsh.Option.SetNumber(...);
+    controller.Gmsh.Model.Mesh.Generate(...);
+    
+    controller.Gmsh.Logger.GetLastError();
+    
+    controller.GetMeshObjects();
+    
+    controller.Unload();
+end note
+
+@enduml

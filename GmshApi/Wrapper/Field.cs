@@ -43,19 +43,30 @@ namespace GmshApi
         private delegate void gmshModelMeshFieldSetAsBoundaryLayerFun(int tag, ref int ierr);
         private gmshModelMeshFieldSetAsBoundaryLayerFun gmshModelMeshFieldSetAsBoundaryLayer = GetFunction<gmshModelMeshFieldSetAsBoundaryLayerFun>("gmshModelMeshFieldSetAsBoundaryLayer");
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Добавить объект MeshField
+        /// </summary>
+        /// <param name="fieldType">Тип поля</param>
+        /// <param name="tag">Идентификатор (может быть -1, назначится автоматически)</param>
+        /// <returns>Идентификатор объекта MeshField</returns>
         public int Add(FieldType fieldType, int tag = -1)
         {
             var ierr = 0;
             return gmshModelMeshFieldAdd(fieldType.ToString(), tag, ref ierr);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Удалить объект MeshField
+        /// </summary>
+        /// <param name="tag">Идентификатор объекта MeshField</param>
         public void Remove(int tag)
         {
             var ierr = 0;
             gmshModelMeshFieldRemove(tag, ref ierr);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Возвращает список идентификаторов объектов MeshField
+        /// </summary>
+        /// <returns>Массив идентификаторов объектов MeshField</returns>
         public int[] List()
         {
             var ierr = 0;
@@ -64,7 +75,11 @@ namespace GmshApi
             gmshModelMeshFieldList(ref intValue, ref intValue_n, ref ierr);
             return GetObjectsData<int>(intValue, intValue_n);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Возвращает тип объекта MeshField
+        /// </summary>
+        /// <param name="tag">Идентификатор объекта MeshField</param>
+        /// <returns>Тип объекта MeshField</returns>
         public string GetType(int tag)
         {
             var ierr = 0;
@@ -72,13 +87,23 @@ namespace GmshApi
             gmshModelMeshFieldGetType(tag, ref intValue, ref ierr);
             return Memory.GetString(intValue);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Задает значение для опции объекта MeshField
+        /// </summary>
+        /// <param name="tag">Идентификатор объекта MeshField</param>
+        /// <param name="option">Имя опции</param>
+        /// <param name="value">Значение опции</param>
         public void SetNumber(int tag, string option, double value)
         {
             var ierr = 0;
             gmshModelMeshFieldSetNumber(tag, option, value, ref ierr);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Возвращает значение для опции объекта MeshField
+        /// </summary>
+        /// <param name="tag">Идентификатор объекта MeshField</param>
+        /// <param name="option">Имя опции</param>
+        /// <returns>Значение для опции объекта MeshField</returns>
         public double GetNumber(int tag, string option)
         {
             var ierr = 0;
@@ -86,13 +111,23 @@ namespace GmshApi
             gmshModelMeshFieldGetNumber(tag, option, ref value, ref ierr);
             return value;
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Задает строку-значение для опции
+        /// </summary>
+        /// <param name="tag">Идентификатор объекта MeshField</param>
+        /// <param name="option">Имя опции</param>
+        /// <param name="value">Строка значение для опции</param>
         public void SetString(int tag, string option, string value)
         {
             var ierr = 0;
             gmshModelMeshFieldSetString(tag, option, value, ref ierr);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Возвращает строку-значение для опции
+        /// </summary>
+        /// <param name="tag">Идентификатор объекта MeshField</param>
+        /// <param name="option">Имя опции</param>
+        /// <returns>Строка-значение для опции</returns>
         public string GetString(int tag, string option)
         {
             var ierr = 0;
@@ -100,14 +135,24 @@ namespace GmshApi
             gmshModelMeshFieldGetString(tag, option, ref intValue, ref ierr);
             return Memory.GetString(intValue);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Задает список значений для опции 
+        /// </summary>
+        /// <param name="tag">Идентификатор объекта MeshField</param>
+        /// <param name="option">Имя опции</param>
+        /// <param name="values">Массив значений</param>
         public void SetNumbers(int tag, string option, double[] values)
         {
             var ierr = 0;
             var intValue = IntPtr.Zero;
             gmshModelMeshFieldSetNumbers(tag, option, values, (IntPtr)values.Length, ref ierr);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Возвращает список значений для опции 
+        /// </summary>
+        /// <param name="tag">Идентификатор объекта MeshField</param>
+        /// <param name="option">Имя опции</param>
+        /// <returns>Список значений для опции </returns>
         public double[] GetNumbers(int tag, string option)
         {
             var ierr = 0;
@@ -116,13 +161,19 @@ namespace GmshApi
             gmshModelMeshFieldGetNumbers(tag, option, ref intValue, ref intValue_n, ref ierr);
             return GetObjectsData<double>(intValue, intValue_n);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Установить объект MeshField как BoundaryLayer
+        /// </summary>
+        /// <param name="tag">Идентификатор объекта MeshField</param>
         public void SetAsBoundaryLayer(int tag)
         {
             var ierr = 0;
             gmshModelMeshFieldSetAsBoundaryLayer(tag, ref ierr);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Установить объект MeshField как BackgroundMesh
+        /// </summary>
+        /// <param name="tag">Идентификатор объекта MeshField</param>
         public void SetAsBackgroundMesh(int tag)
         {
             var ierr = 0;

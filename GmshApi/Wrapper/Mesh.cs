@@ -120,31 +120,48 @@ namespace GmshApi
             Field = new Field();
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Генерирует сеточные элементы модели: 0 - узлы, 1 - элементы 1D, 2 - элементы 2D, 3 - элементы 3D
+        /// </summary>
+        /// <param name="dim">[In]Элементы которые нужно сгенерировать</param>
         public void Generate(int dim)
         {
             var ierr = 0;
             gmshModelMeshGenerate(dim, ref ierr);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Генирирует сетку преимущественно в четырехугольники
+        /// </summary>
         public void Recombine()
         {
             var ierr = 0;
             gmshModelMeshRecombine(ref ierr);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Равномерно уплотнить сетку
+        /// </summary>
         public void Refine()
         {
             var ierr = 0;
             gmshModelMeshRefine(ref ierr);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Удаляет сетку связанную с массивом пар dim:tag, включая точки. Если массив пустой удаляет сетку у всей модели
+        /// </summary>
+        /// <param name="dimTags">[In]Массив пары dim:tag для удаления с которыми ассоциирована сетка</param>
         public void Clear(int[] dimTags)
         {
             var ierr = 0;
             gmshModelMeshClear(dimTags, (IntPtr)dimTags.Length, ref ierr);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Возвращает идентификаторы, координаты, параметрические координаты(опционально) узлов элементов. Если dim и tag равен -1 возвращает узлы для всей модели.
+        /// </summary>
+        /// <param name="dim">-1 все геометрические сущности, 0 - геометрические точки, 1 - кривые, 2 - поверхности, 3 - объемы</param>
+        /// <param name="tag">-1 - все идентификаторы, tag >= 0 - конкретный идентификатор</param>
+        /// <param name="includeBoundary">Флаг, указывающий, включать ли узлы на границах модели</param>
+        /// <param name="returnParametricCoord">Флаг, указывающий, возвращать ли параметрические координаты узлов</param>
+        /// <returns>Идентификаторы, координаты, параметрические координаты</returns>
         public Tuple<IntPtr[], double[], double[]> GetNodes(int dim = -1, int tag = -1, bool includeBoundary = false, bool returnParametricCoord = true)
         {
             var ierr = 0;
@@ -161,7 +178,12 @@ namespace GmshApi
             var parametric = GetObjectsData<double>(parametricCoord, parametricCoord_n);
             return Tuple.Create(tags, coords, parametric);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Возвращает идентификаторы, координаты, параметрические координаты(опционально) узлов по типу и идентификатору элемента.
+        /// </summary>
+        /// <param name="elementType">Тип элемента</param>
+        /// <param name="tag">Идентификатор элемента</param>
+        /// <param name="returnParametricCoord">Флаг, указывающий, возвращать ли параметрические координаты узлов</param>
         public Tuple<IntPtr[], double[], double[]> GetNodesByElementType(int elementType, int tag = -1, bool returnParametricCoord = true)
         {
             var ierr = 0;
@@ -178,7 +200,14 @@ namespace GmshApi
             var parametric = GetObjectsData<double>(parametricCoord, parametricCoord_n);
             return Tuple.Create(tags, coords, parametric);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Добавляет узлы к указанной паре dim:tag предоставляя координаты и опционально идентификаторы точек и параметрические координаты
+        /// </summary>
+        /// <param name="dim">0 - геометрические точки, 1 - кривые, 2 - поверхности, 3 - объемы</param>
+        /// <param name="tag">Идентификатор геометрической сущности</param>
+        /// <param name="nodeTags">Массив идентификаторов точек (опционально), если массив пуст, идентифкаторы сгенеририруются автоматически</param>
+        /// <param name="coord">Массив локальных координат</param>
+        /// <param name="parametricCoord">[In]Массив параметрических координат (опционально), может быть пустым</param>
         public void AddNodes(int dim, int tag, IntPtr[] nodeTags, double[] coord, double[] parametricCoord = null)
         {
             var ierr = 0;
@@ -186,13 +215,20 @@ namespace GmshApi
             gmshModelMeshAddNodes(dim, tag, nodeTags, (IntPtr)nodeTags.Length, coord, (IntPtr)coord.Length,
                                   parametricCoord, (IntPtr)parametricCoord.Length, ref ierr);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Классифицировать узлы
+        /// </summary>
         public void ReclassifyNodes()
         {
             var ierr = 0;
             gmshModelMeshReclassifyNodes(ref ierr);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Возвращает сеточные элементы по указанному dim:tag, если dim и tag = -1 вернуть элементы всей модели
+        /// </summary>
+        /// <param name="dim">-1 все геометрические сущности, 0 - геометрические точки, 1 - кривые, 2 - поверхности, 3 - объемы</param>
+        /// <param name="tag">-1 - все идентификаторы, tag >= 0 - конкретный идентификатор</param>
+        /// <returns>Типы элементов, массив идентификаторов элементов по конкретному типу, массив идентификаторов узлов по конкретному типу</returns>
         public Tuple<int[], IntPtr[][], IntPtr[][]> GetElements(int dim = -1, int tag = -1)
         {
             var ierr = 0;
@@ -212,7 +248,15 @@ namespace GmshApi
             var nTags = GetArrayOfObjectsData<IntPtr>(nodeTags, nodeTags_nn, nodeTags_n);
             return Tuple.Create(eTypes, eTags, nTags);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Возвращает идентификаторы элементов по указанной координате
+        /// </summary>
+        /// <param name="x">Координата X</param>
+        /// <param name="y">Координата Y</param>
+        /// <param name="z">Координата Z</param>
+        /// <param name="dim">-1 все геометрические сущности, 0 - геометрические точки, 1 - кривые, 2 - поверхности, 3 - объемы</param>
+        /// <param name="strict">Флаг, указывающий, строгое соответствие координате</param>
+        /// <returns>Идентифкаторы элементов</returns>
         public IntPtr[] GetElementsByCoordinates(double x, double y, double z, int dim = -1, bool strict = false)
         {
             var ierr = 0;
@@ -221,7 +265,12 @@ namespace GmshApi
             gmshModelMeshGetElementsByCoordinates(x, y, z, ref elemTags, ref elemTags_n, dim, Convert.ToInt32(strict), ref ierr);
             return GetObjectsData<IntPtr>(elemTags, elemTags_n);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Возвращает типы элементов по указанному dim:tag
+        /// </summary>
+        /// <param name="dim">-1 все геометрические сущности, 0 - геометрические точки, 1 - кривые, 2 - поверхности, 3 - объемы</param>
+        /// <param name="tag">-1 - все идентификаторы, tag >= 0 - конкретный идентификатор</param>
+        /// <returns>Типы элементов</returns>
         public int[] GetElementTypes(int dim = -1, int tag = -1)
         {
             var ierr = 0;
@@ -230,7 +279,11 @@ namespace GmshApi
             gmshModelMeshGetElementTypes(ref elemTypes, ref elemTypes_n, dim, tag, ref ierr);
             return GetObjectsData<int>(elemTypes, elemTypes_n);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Возвращает свойство элемента для указанного типа элемента
+        /// </summary>
+        /// <param name="elementType">Тип элемента</param>
+        /// <returns>Свойство элемента</returns>
         public ElementProperties GetElementProperties(int elementType)
         {
             var ierr = 0;
@@ -247,29 +300,50 @@ namespace GmshApi
             elemProperties.coords_n = elemProperties.coords.Length;
             return elemProperties;
         }
-        /// <inheritdoc/>
-        public double[] GetElementQualities(IntPtr[] elementTags, string qualityName = "minSICN", int task = 0, int numTasks = 1)
+        /// <summary>
+        /// Получить качество элемента
+        /// </summary>
+        /// <param name="elementTags">Массив идентификаторов элементов</param>
+        /// <param name="qualityName">Параметр запроса</param>
+        /// <param name="task">Номер потока</param>
+        /// <param name="numTasks">Число потоков</param>
+        /// <returns>Массив качеств для элементов</returns>
+        public double[] GetElementQualities(IntPtr[] elementTags, QualityName qualityName = QualityName.minSICN, int task = 0, int numTasks = 1)
         {
             var ierr = 0;
             var elemQuality = IntPtr.Zero;
             var elemQuality_n = IntPtr.Zero;
             gmshModelMeshGetElementQualities(elementTags, (IntPtr)elementTags.Length, ref elemQuality, ref elemQuality_n,
-                                             qualityName, (IntPtr)task, (IntPtr)numTasks, ref ierr);
+                                             qualityName.ToString(), (IntPtr)task, (IntPtr)numTasks, ref ierr);
             return GetObjectsData<double>(elemQuality, elemQuality_n);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Добавляет идентифкаторы элементов и их узлов согласно типу элемента и его геометрическому идентификатору
+        /// </summary>
+        /// <param name="tag">Геометрический идентификатор</param>
+        /// <param name="elementType">Тип элемента</param>
+        /// <param name="elementTags">Массив идентифкаторов элементов (опционально), может быть пустым</param>
+        /// <param name="nodeTags">Массив перечисленных идентификаторов узлов элементов</param>
         public void AddElementsByType(int tag, int elementType, IntPtr[] elementTags, IntPtr[] nodeTags)
         {
             var ierr = 0;
             gmshModelMeshAddElementsByType(tag, elementType, elementTags, (IntPtr)elementTags.Length, nodeTags, (IntPtr)nodeTags.Length, ref ierr);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Задает плотность для геометрических точек (4 координата)
+        /// </summary>
+        /// <param name="dimTags">Масив пар dim:tags (поддерживается только для dim = 0)</param>
+        /// <param name="size">Задаваемая плотность</param>
         public void SetSize(int[] dimTags, double size)
         {
             var ierr = 0;
             gmshModelMeshSetSize(dimTags, (IntPtr)dimTags.Length, size, ref ierr);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Возвращает плотности для указанных геометрических точек
+        /// </summary>
+        /// <param name="dimTags">Масив пар dim:tags (поддерживается только для dim = 0)</param>
+        /// <returns>Массив плотностей для указанных геометрических точек</returns>
         public double[] GetSizes(int[] dimTags)
         {
             var ierr = 0;
@@ -278,58 +352,99 @@ namespace GmshApi
             gmshModelMeshGetSizes(dimTags, (IntPtr)dimTags.Length, ref sizes, ref sizes_n, ref ierr);
             return GetObjectsData<double>(sizes, sizes_n);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Задать трансфиницию кривых (уплотнение точек вдоль кривой) по определенному закону
+        /// </summary>
+        /// <param name="tag">Идентификатор кривой</param>
+        /// <param name="numNodes">Число точек</param>
+        /// <param name="meshType">Закон распределения точек</param>
+        /// <param name="coef">Коэффициент распределения</param>
         public void SetTransfiniteCurve(int tag, int numNodes, MeshType meshType = MeshType.Progression, double coef = 1)
         {
             var ierr = 0;
             gmshModelMeshSetTransfiniteCurve(tag, numNodes, meshType.ToString(), coef, ref ierr);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Назначить трансфиницию поверхности (равномерная сетка) с указанным направлением ребер
+        /// </summary>
+        /// <param name="tag">Идентифкатор поверхности</param>
+        /// <param name="arrangement">Направление расположения ребер</param>
+        /// <param name="cornerTags">Пустой массив для автоматического определения углов или указанные точки массива (допускается число точек 3 или 4)</param>
         public void SetTransfiniteSurface(int tag, Arrangement arrangement = Arrangement.Left, int[] cornerTags = null)
         {
             var ierr = 0;
             cornerTags = cornerTags ?? new int[0];
             gmshModelMeshSetTransfiniteSurface(tag, arrangement.ToString(), cornerTags, (IntPtr)cornerTags.Length, ref ierr);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Назначить трансфиницию объема (равномерный объем)
+        /// </summary>
+        /// <param name="tag">Идентифкатор объема</param>
+        /// <param name="cornerTags">Пустой массив для автоматического определения углов или указанные точки массива (допускается число точек 6 или 8)</param>
         public void SetTransfiniteVolume(int tag, int[] cornerTags = null)
         {
             var ierr = 0;
             cornerTags = cornerTags ?? new int[0];
             gmshModelMeshSetTransfiniteVolume(tag, cornerTags, (IntPtr)cornerTags.Length, ref ierr);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Установить автоматическую трансфиницию для dim:tags
+        /// </summary>
+        /// <param name="dimTags">Массив dim:tag</param>
+        /// <param name="cornerAngle">Пороговый угол</param>
+        /// <param name="recombine">Флаг, указывающий, нужна ли сетка из четырехугольников</param>
         public void SetTransfiniteAutomatic(int[] dimTags, double cornerAngle = 2.35, bool recombine = true)
         {
             var ierr = 0;
             gmshModelMeshSetTransfiniteAutomatic(dimTags, (IntPtr)dimTags.Length, cornerAngle, Convert.ToInt32(recombine), ref ierr);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Установить алгоритм генериации сетки для конкретного dim:tag (поддерживается только для dim = 2)
+        /// </summary>
+        /// <param name="dim">0 - геометрические точки, 1 - кривые, 2 - поверхности, 3 - объемы</param>
+        /// <param name="tag">Идентификатор</param>
+        /// <param name="val">Алгоритм</param>
         public void SetAlgorithm(int dim, int tag, MeshAlgorithm val = MeshAlgorithm.Automatic)
         {
             var ierr = 0;
             gmshModelMeshSetAlgorithm(dim, tag, (int)val, ref ierr);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Удалить все ограничители для заданных пар dim:tag (трансфиниция кривых, поверхностей, объемов, плотность в точках)
+        /// </summary>
+        /// <param name="dimTags">Массив пар dim:tag или пустой массив(снять все ограничения)</param>
         public void RemoveConstraints(int[] dimTags = null)
         {
             var ierr = 0;
             dimTags = dimTags ?? new int[0];
             gmshModelMeshRemoveConstraints(dimTags, (IntPtr)dimTags.Length, ref ierr);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Генерирует сетку для геометрии (поддерживаются только форматы OCC)
+        /// </summary>
         public void ImportStl()
         {
             var ierr = 0;
             gmshModelMeshImportStl(ref ierr);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Установить флаг видимости для массива идентификаторов элементов (например для последующего удаления)
+        /// </summary>
+        /// <param name="elementTags">Массив идентификаторов элементов</param>
+        /// <param name="value">Флаг видимости</param>
         public void SetVisibility(IntPtr[] elementTags, int value)
         {
             var ierr = 0;
             gmshModelMeshSetVisibility(elementTags, (IntPtr)elementTags.Length, value, ref ierr);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Классифицирует (цветом) сеточные поверхности по углу и создает дискретные сущности(точки, кривые, поверхности)
+        /// </summary>
+        /// <param name="angle">Пороговый угол разбиения поверхностей (в радианах)</param>
+        /// <param name="boundary">Создавать дискретные кривые на открытых поверхностях?</param>
+        /// <param name="forReparametrization">Создавать кривые и поверхности, которые могут быть репараметризированы одним отображением?</param>
+        /// <param name="curveAngle">Угол разбиения для кривых (в радианах)</param>
+        /// <param name="exportDiscrete">Экспортировать дискретные сущности в ядро CAD</param>
         public void ClassifySurfaces(double angle, bool boundary = true, bool forReparametrization = false,
                                      double curveAngle = Math.PI, bool exportDiscrete = true)
         {
@@ -337,7 +452,10 @@ namespace GmshApi
             gmshModelMeshClassifySurfaces(angle, Convert.ToInt32(boundary), Convert.ToInt32(forReparametrization), 
                                           curveAngle, Convert.ToInt32(exportDiscrete), ref ierr);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Создает геометрию по дискретным сущностям dim:tags, создает параметризацию для кривых и поверхностей
+        /// </summary>
+        /// <param name="dimTags">[In]Масив dim:tags</param>
         public void CreateGeometry(int[] dimTags = null)
         {
             var ierr = 0;

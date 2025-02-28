@@ -47,44 +47,66 @@ namespace GmshApi
         }
 
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Инициализирует gmshApi
+        /// </summary>
+        /// <param name="argc">Количество строковых аргументов командной строки</param>
+        /// <param name="argv">Массив строк аргуметов командной строки</param>
+        /// <param name="readConfigFiles">Флаг - читать конфигурационный файл gmsh</param>
+        /// <param name="run">Флаг запуска приложения из командной строке</param>
         public void Initialize(int argc = 0, string[] argv = null, bool readConfigFiles = true, bool run = false)
         {
             var ierr = 0;
             argv = argv ?? new string[0];
             gmshInitialize(argc, argv, Convert.ToInt32(readConfigFiles), Convert.ToInt32(run), ref ierr);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Возвращает флаг инициализации gmshApi
+        /// </summary>
+        /// <returns>1 - инциализированно, 0 - не инициализированно</returns>
         public int IsInitialized()
         {
             var ierr = 0;
             return gmshIsInitialized(ref ierr);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Деинициализирует gmshApi
+        /// </summary>
         public void finalize()
         {
             var ierr = 0;
             gmshFinalize(ref ierr);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Открывает файл (.geo,step,.iges ...) и делает модель текущей
+        /// </summary>
+        /// <param name="fileName">Путь до файла</param>
         public void Open(string fileName)
         {
             var ierr = 0;
             gmshOpen(fileName, ref ierr);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Открывает файл (.geo,step,.iges ...) и делает слияние с текущей моделью
+        /// </summary>
+        /// <param name="fileName">Путь до файла</param>
         public void Merge(string fileName)
         {
             var ierr = 0;
             gmshMerge(fileName, ref ierr);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Записывает текущую модель в файл (.geo,step,.iges ...)
+        /// </summary>
+        /// <param name="fileName">Путь до файла</param>
         public void Write(string fileName)
         {
             var ierr = 0;
             gmshWrite(fileName, ref ierr);
         }
-        /// <inheritdoc/>
+        /// <summary>
+        /// Очищает пространсто gmshApi от всех моделей и данных постпроцессинга
+        /// </summary>
         public void Clear()
         {
             var ierr = 0;
