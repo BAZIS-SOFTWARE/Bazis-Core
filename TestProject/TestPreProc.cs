@@ -21,7 +21,7 @@ namespace TestProject
     [TestClass]
     public class TestPreProc
     {
-        private static string projPath = Path.GetFullPath(@".\..\..\..\CalcCompDataTest\TsfFolder\");
+        private static string projPath = Path.GetFullPath(@".\..\..\..\TestProject\CalcCompDataTest\TsfFolder\");
 
         /// <summary>
         /// Создать ValuableDat, для параметризации тестов
@@ -238,7 +238,7 @@ namespace TestProject
         }
 
         [TestMethod]
-        [DataRow(@".\..\..\..\CalcCompDataTest\MNOGOPROHOD.bpf", ProcessType.Welding)]
+        [DataRow(@".\..\..\..\TestProject\CalcCompDataTest\MNOGOPROHOD.bpf", ProcessType.Welding)]
         //[DataRow(@"c:\projs\testProj\Tempering\proj.bpf", ProcessType.Heating)]
         //[DataRow(@"c:\projs\testProj\Tempering\proj.bpf", ProcessType.Quenching)]
         //[DataRow(@"c:\projs\testProj\Tempering\proj.bpf", ProcessType.Tempering)]
@@ -264,16 +264,16 @@ namespace TestProject
         }
 
         [TestMethod]
-        [DataRow(@".\..\..\..\CalcCompDataTest\MatDataShorterThenBoundData.bpf", DisplayName = "MatData_Shorter_Then_BoundData")]
-        [DataRow(@".\..\..\..\CalcCompDataTest\NoMaterialData.bpf", DisplayName = "No_MaterialData")]
-        [DataRow(@".\..\..\..\CalcCompDataTest\NoBoundData.bpf", DisplayName = "No_BoundData")]
-        [DataRow(@".\..\..\..\CalcCompDataTest\ClampDataStartsAfterProcessStart.bpf", DisplayName = "ClampData_Starts_After_Process_Start")]
-        [DataRow(@".\..\..\..\CalcCompDataTest\MedDataStartsAfterProcessStart.bpf", DisplayName = "MedData_Starts_After_Process_Start")]
-        [DataRow(@".\..\..\..\CalcCompDataTest\MaterialDataStartsAfterProcessStart.bpf")]
-        [DataRow(@".\..\..\..\CalcCompDataTest\FreeSpacesBetweenClampData.bpf")]
-        [DataRow(@".\..\..\..\CalcCompDataTest\FreeSpacesBetweenMediaData.bpf")]
-        [DataRow(@".\..\..\..\CalcCompDataTest\FreeSpacesBetweenMaterialData.bpf")]
-        [DataRow(@".\..\..\..\CalcCompDataTest\HeatDataContiniousWithoutMediaData.bpf")]
+        [DataRow(@".\..\..\..\TestProject\CalcCompDataTest\MatDataShorterThenBoundData.bpf", DisplayName = "MatData_Shorter_Then_BoundData")]
+        [DataRow(@".\..\..\..\TestProject\CalcCompDataTest\NoMaterialData.bpf", DisplayName = "No_MaterialData")]
+        [DataRow(@".\..\..\..\TestProject\CalcCompDataTest\NoBoundData.bpf", DisplayName = "No_BoundData")]
+        [DataRow(@".\..\..\..\TestProject\CalcCompDataTest\ClampDataStartsAfterProcessStart.bpf", DisplayName = "ClampData_Starts_After_Process_Start")]
+        [DataRow(@".\..\..\..\TestProject\CalcCompDataTest\MedDataStartsAfterProcessStart.bpf", DisplayName = "MedData_Starts_After_Process_Start")]
+        [DataRow(@".\..\..\..\TestProject\CalcCompDataTest\MaterialDataStartsAfterProcessStart.bpf")]
+        [DataRow(@".\..\..\..\TestProject\CalcCompDataTest\FreeSpacesBetweenClampData.bpf")]
+        [DataRow(@".\..\..\..\TestProject\CalcCompDataTest\FreeSpacesBetweenMediaData.bpf")]
+        [DataRow(@".\..\..\..\TestProject\CalcCompDataTest\FreeSpacesBetweenMaterialData.bpf")]
+        [DataRow(@".\..\..\..\TestProject\CalcCompDataTest\HeatDataContiniousWithoutMediaData.bpf")]
         public void PreProc_GenerateTSF_ShouldFail(string path)
         {
             var resData = new List<IValuableData>();
@@ -342,6 +342,34 @@ namespace TestProject
         {
             var preProc = new PreProc.PreProc();
             preProc.CalcCompDataV2(CreateValuableData(valuableDataStrings).ToList(), new ProcessProperty { GeneralTaskType = generalTaskType, CommonTaskType = commonTaskType }, projPath);
+        }
+
+        [DataRow(ComplexTaskType.термическая_механическая, ProcessType.Welding, new[]
+        {
+            "Mat/Элементы3D_3 Сталь_20ХМ 0 1500 *",
+            "Media/air Коэф.теплоотдачи.воздух 20 0 1500 *",
+            "Clamp/Узлы_7 Жесткое X * 0 1500 *",
+            "Clamp/Узлы_7 Жесткое Y * 0 1500 *",
+            "Clamp/Узлы_7 Жесткое Z * 0 1500 *",
+            "Heat/ARC;4;100;25 Load 0 50 baseLine|refLine;2;startNodes;startNodes;0|0|0|0"
+        })]
+        [DataRow(ComplexTaskType.термическая, ProcessType.Welding, new[]
+        {
+            "Mat/Элементы3D_3 Сталь_20ХМ 0 1500 *",
+            "Media/air Коэф.теплоотдачи.воздух 20 0 1500 *"
+        })]
+        [DataRow(ComplexTaskType.механическая, ProcessType.Welding, new[]
+        {
+            "Mat/Элементы3D_3 Сталь_20ХМ 0 1500 *",
+            "Clamp/Узлы_7 Жесткое X * 0 1500 *",
+        })]
+        [TestMethod]
+        public void CalcCompDataV2_ShouldPass_WithoutWeldingTSF(ComplexTaskType generalTaskType, ProcessType commonTaskType, string[] valuableDataStrings)
+        {
+            var preProc = new PreProc.PreProc();
+            var path = Path.GetFullPath(projPath) + "\\V2TestCase";
+            preProc.CalcCompDataV2(CreateValuableData(valuableDataStrings).ToList(), new ProcessProperty { GeneralTaskType = generalTaskType, CommonTaskType = commonTaskType }, path);
+            preProc.SortCompDataByTimeAndType(Directory.GetFiles(path));
         }
     }
 }

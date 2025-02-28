@@ -264,3 +264,5 @@ __pycache__/
 *.inp
 /GmshApi/gmsh.dll
 /GmshApi/gmsh.dll
+
+*.tsf
