@@ -69,9 +69,9 @@ namespace TestModel
         }
 
         [DataTestMethod]
-        [DataRow(@"..\..\..\Examples\BPF2TXT\cub_unsorted.bpf2", 2, ObjType.Элемент3D,DisplayName = "Sets Элемент3D = 2")]
-        [DataRow(@"..\..\..\Examples\BPF2TXT\cub_unsorted.bpf2", 8, ObjType.Узел, DisplayName = "Objects Узел = 1")]
-        [DataRow(@"..\..\..\Examples\BPF2TXT\cub_unsorted_oneSet.bpf2", 1, ObjType.Элемент3D, DisplayName = "Sets Элемент3D = 1")]
+        [DataRow(@"..\..\..\Examples\BPF2TXT\cub_unsorted.bpf2", 2, ObjType.Элемент3D, DisplayName = "Sets Р­Р»РµРјРµРЅС‚3D = 2")]
+        [DataRow(@"..\..\..\Examples\BPF2TXT\cub_unsorted.bpf2", 8, ObjType.Элемент3D, DisplayName = "Objects РЈР·РµР» = 1")]
+        [DataRow(@"..\..\..\Examples\BPF2TXT\cub_unsorted_oneSet.bpf2", 1, ObjType.Элемент3D, DisplayName = "Sets Р­Р»РµРјРµРЅС‚3D = 1")]
         public void LoadModelFromBpf2TextFormat(string path, int sets, ObjType objType)
         {
             //assing
@@ -89,24 +89,24 @@ namespace TestModel
             //assert
             switch (objType)
             {
-                case ObjType.Точка:
+                case ObjType.РўРѕС‡РєР°:
                     break;
-                case ObjType.Кривая:
+                case ObjType.РљСЂРёРІР°СЏ:
                     break;
-                case ObjType.Поверхность:
+                case ObjType.РџРѕРІРµСЂС…РЅРѕСЃС‚СЊ:
                     break;
-                case ObjType.Объем:
+                case ObjType.РћР±СЉРµРј:
                     break;
-                case ObjType.Узел:
+                case ObjType.РЈР·РµР»:
                     Assert.AreEqual(model.ObjectData.NodesSet.Count(), sets);
                     break;
-                case ObjType.Элемент1D:
+                case ObjType.Р­Р»РµРјРµРЅС‚1D:
                     Assert.AreEqual(model.ObjectData.E1DCollection.Count(), sets);
                     break;
-                case ObjType.Элемент2D:
+                case ObjType.Р­Р»РµРјРµРЅС‚2D:
                     Assert.AreEqual(model.ObjectData.E2DCollection.Count(), sets);
                     break;
-                case ObjType.Элемент3D:
+                case ObjType.Р­Р»РµРјРµРЅС‚3D:
                     Assert.AreEqual(model.ObjectData.E3DCollection.Count(), sets);
                     break;
                 default:
@@ -118,19 +118,19 @@ namespace TestModel
         [TestMethod]
         [DataRow(@"block_allElements3D_25538.stl", DisplayName = "block_allElements3D_25538.stl")]
         [DataRow(@"block.stl", DisplayName = "block.stl")]
-        //[DataRow(@"Форсунка\1n.stl")]
-        //[DataRow(@"Форсунка\nozzle.stl")]
-        //[DataRow(@"Форсунка\nozzle_sup.stl")]
-        //[DataRow(@"Образец\specimen.stl")]
-        //[DataRow(@"Образец\specimen_solid_sup.stl")]
-        //[DataRow(@"Образец\specimen_wall_sup.stl")]
-        //[DataRow(@"Кронштейн\bracket.stl")]
-        //[DataRow(@"Кронштейн\bracket_solid_sup.stl")]
-        //[DataRow(@"Кронштейн\bracket_wall_sup.stl")]
+        //[DataRow(@"Р¤РѕСЂСЃСѓРЅРєР°\1n.stl")]
+        //[DataRow(@"Р¤РѕСЂСЃСѓРЅРєР°\nozzle.stl")]
+        //[DataRow(@"Р¤РѕСЂСЃСѓРЅРєР°\nozzle_sup.stl")]
+        //[DataRow(@"РћР±СЂР°Р·РµС†\specimen.stl")]
+        //[DataRow(@"РћР±СЂР°Р·РµС†\specimen_solid_sup.stl")]
+        //[DataRow(@"РћР±СЂР°Р·РµС†\specimen_wall_sup.stl")]
+        //[DataRow(@"РљСЂРѕРЅС€С‚РµР№РЅ\bracket.stl")]
+        //[DataRow(@"РљСЂРѕРЅС€С‚РµР№РЅ\bracket_solid_sup.stl")]
+        //[DataRow(@"РљСЂРѕРЅС€С‚РµР№РЅ\bracket_wall_sup.stl")]
         public void ImportAndSaveToSTLBinFormat(string file)
         {
             string dir = @"..\..\..\Examples\STL";
-            //string dir = @"..\..\..\..\Тестовые заготовки деталей\";
+            //string dir = @"..\..\..\..\РўРµСЃС‚РѕРІС‹Рµ Р·Р°РіРѕС‚РѕРІРєРё РґРµС‚Р°Р»РµР№\";
 
             var path = Path.Combine(dir, file);
             //assing
@@ -192,9 +192,9 @@ namespace TestModel
             var model = loader.Load(path);
             //loader.Load(@"C:\Bazis_newGUI\MESH\RadicMesh\Plate2DATA.ASC");
             //assert
-            Assert.AreEqual(nodeCount, model.ObjectData.Count(ObjType.Узел));
+            Assert.AreEqual(nodeCount, model.ObjectData.Count(ObjType.РЈР·РµР»));
             Assert.AreEqual(elemCount, model.ObjectData.GetAllElements().Count());
-            Assert.AreEqual(elem1D, model.ObjectData.Count(ObjType.Элемент1D));
+            Assert.AreEqual(elem1D, model.ObjectData.Count(ObjType.Р­Р»РµРјРµРЅС‚1D));
         }
 
         [TestMethod]
@@ -218,7 +218,7 @@ namespace TestModel
             import.LoadEvent += (ar1, ar2) => { };
             var model = import.Load(path);
             var element = model.ObjectData.E3DCollection.GetObjects().First();
-            Assert.AreEqual(8, model.ObjectData.Count(ObjType.Узел));
+            Assert.AreEqual(8, model.ObjectData.Count(ObjType.РЈР·РµР»));
             Assert.AreEqual(1, model.ObjectData.GetAllElements().Count());
             var surfaceNumber = element.NumberOfSides;
             Assert.AreEqual(6, surfaceNumber);
@@ -231,7 +231,7 @@ namespace TestModel
             var import = new LoadModelFromCDBTextFile();
             import.LoadEvent += (ar1, ar2) => { };
             var model = import.Load(path);
-            Assert.AreEqual(3321, model.ObjectData.Count(ObjType.Узел));
+            Assert.AreEqual(3321, model.ObjectData.Count(ObjType.РЈР·РµР»));
             var elements = model.ObjectData.E3DCollection.GetObjects();
             Assert.IsTrue(elements.All(element => element.GetSurfaces().
             All(surface => surface.GetCoordinates().Count() > 2)));
@@ -257,7 +257,7 @@ namespace TestModel
             import.LoadEvent += (ar1, ar2) => { };
             var model = import.Load(path);
             var element = model.ObjectData.E3DCollection.First();
-            Assert.AreEqual(nbrNodes, model.ObjectData.Count(ObjType.Узел));
+            Assert.AreEqual(nbrNodes, model.ObjectData.Count(ObjType.РЈР·РµР»));
             Assert.AreEqual(nbrEl, model.ObjectData.GetAllElements().Count());
         }
 
@@ -276,22 +276,23 @@ namespace TestModel
         }
 
         [DataTestMethod]
-        [DataRow(1000, 12, 6, 0, @"..\..\Examples\3D\box2.inp", DisplayName = "box2.inp")]
-        [DataRow(8, 12, 6, 1, @"..\..\Examples\3D\Physical_groups_mesh.inp", DisplayName = "Physical_groups_mesh.inp")]
-        public void ImportModelFromINPFormat_v2(int nodeCount, int elem1D, int elem2D, int elem3D, string path)
+        [DataRow(1000, 12, 6, 0, 0, @"..\..\Examples\3D\box2.inp", DisplayName = "box2.inp")]
+        [DataRow(8, 13, 7, 2, 4, @"..\..\Examples\3D\Physical_groups_mesh.inp", DisplayName = "Physical_groups_mesh.inp")]
+        public void ImportModelFromINPFormat_v2(int nodeCount, int elem1D, int elem2D, int elem3D, int countGroup, string path)
         {
             //assing
             var loader = new LoadModelFromINPTextFile_v2();
             loader.LoadEvent += (ar1, ar2) => { };
 
             //act
-            var model = loader.Load(path);
+            var model = loader.Load(path);            
 
             //assert
-            Assert.AreEqual(nodeCount, model.ObjectData.Count(ObjType.����));
+            Assert.AreEqual(nodeCount, model.ObjectData.Count(ObjType.Узел));
             Assert.AreEqual(elem1D, model.ObjectData.E1DCollection.Count());
             Assert.AreEqual(elem2D, model.ObjectData.E2DCollection.Count());
             Assert.AreEqual(elem3D, model.ObjectData.E3DCollection.Count());
+            Assert.AreEqual(countGroup, model.GroupData.Count());
         }
     }
 }

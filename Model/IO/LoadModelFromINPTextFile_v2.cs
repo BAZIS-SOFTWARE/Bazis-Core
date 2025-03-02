@@ -22,8 +22,7 @@ namespace Model.IO
     public class LoadModelFromINPTextFile_v2 : IModelLoader
     {
         public event Action<object, ILoaderEventArgs> LoadEvent;
-        private Dictionary<int, Node> mapIndexToNode;
-        private Dictionary<int, Element> mapIndexToElement;
+        private Dictionary<int, IElement> mapIndexToElement = new Dictionary<int, IElement>();
         private Dictionary<int, IElement> allElements = new Dictionary<int, IElement>();
         private ModelData modelData;
 
@@ -98,7 +97,7 @@ namespace Model.IO
         {
             switch (elementKind)
             {
-                case ElementKind.Стержень: return new Beam(elementIndex, elementNodes); 
+                case ElementKind.Стержень: return new Beam(elementIndex, elementNodes);
                 case ElementKind.Треугольник: return new Triangle(elementIndex, elementNodes);
                 case ElementKind.Квадрат: return new Quad(elementIndex, elementNodes);
                 case ElementKind.Тетра: return new Tetra(elementIndex, elementNodes);
@@ -111,12 +110,9 @@ namespace Model.IO
         /// </summary>
         private void ReadElements(string startLine, StreamReader reader)
         {
-            var elements = new List<Element>();
-            var rnd = new Random();
             int elementIndex = 0;
             LoadEvent?.Invoke(this, new LoaderEventArgs("Начало загрузки элементов"));
             var elementType = GetElementKind(startLine);
-
             var elementName = startLine.Replace(" ", "").Split(',')[2].Replace("ELSET=", "");
 
             while (!reader.EndOfStream)
@@ -124,19 +120,17 @@ namespace Model.IO
                 var line = reader.ReadLine();
                 if (line.StartsWith("*ELSET"))
                 {
-                    mapIndexToElement = elements.ToDictionary(e => e.Number, e => e);
+                    CreateSet(elementName, mapIndexToElement[elementIndex].ObjType);
+                    mapIndexToElement.Clear();
                     ReadGroups(line, reader);
-                    break;
                 }
                 else if (line.StartsWith("*ELEMENT"))
                 {
-                    var color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
-                    CreateSet(modelData, elementName, allElements[elementIndex].ObjType, color);
-                    allElements.Clear();
+                    CreateSet(elementName, mapIndexToElement[elementIndex].ObjType);
+                    mapIndexToElement.Clear();
                     elementName = line.Replace(" ", "").Split(',')[2].Replace("ELSET=", "");
                     elementType = GetElementKind(line);
                 }
-
                 else
                 {
                     var tokens = line.Replace(" ", "").Split(',');
@@ -146,16 +140,29 @@ namespace Model.IO
                         .Select(i => modelData.ObjectData.NodesSet[i])
                         .ToArray();
                     var element = GetElement(elementIndex, elementNodes, elementType);
+                    mapIndexToElement.Add(elementIndex, element);
                     allElements.Add(elementIndex, element);
                 }
-
             }
         }
 
-        private void AddGroupToModelData(string groupName, List<Element> elements)
+        private void AddGroupToModelData(string groupName, ObjType objsType, IEnumerable<int> numbers)
         {
-            var group = new Group(groupName, elements.First().ObjType);
-            group.AddRange(elements);
+            var group = new GroupsData.Group(groupName, objsType);
+
+            foreach (var number in numbers)
+            {
+                if (objsType == ObjType.Узел)
+                {
+                    var obj = modelData.ObjectData.NodesSet[number];
+                    group.Add(obj);
+                }
+                else
+                {
+                    var obj = allElements[number];
+                    group.Add(obj);
+                }
+            }
             modelData.GroupData.Add(group);
         }
 
@@ -164,36 +171,66 @@ namespace Model.IO
         /// </summary>
         private void ReadGroups(string currentLine, StreamReader reader)
         {
-            var elements = new List<Element>();
             var groupName = currentLine.Split(',')[1].Replace("ELSET=", "");
+
+            var line = reader.ReadLine();
+            var tokens = line.Replace(", ", " ").Trim().Split(' ');
+            var numbers = tokens.Select(int.Parse);
+            ObjType objsType = allElements[numbers.First()].ObjType;
+            SaveElements(numbers);
+
             while (!reader.EndOfStream)
             {
-                var line = reader.ReadLine();
+                line = reader.ReadLine();
                 if (line.StartsWith("*NSET"))
                 {
-                    AddGroupToModelData(groupName, elements);
-                    break;
+                    if (mapIndexToElement.Count != 0)
+                    {
+                        CreateSet(groupName, objsType);
+                        mapIndexToElement.Clear();
+                    }
+                    else AddGroupToModelData(groupName, objsType, numbers);
+                    groupName = line.Split(',')[1].Replace("NSET=", "");
+                    objsType = ObjType.Узел;
                 }
                 else if (line.StartsWith("*ELSET"))
                 {
-                    AddGroupToModelData(groupName, elements);
-                    elements = new List<Element>();
+                    CreateSet(groupName, objsType);
                     groupName = line.Split(',')[1].Replace("ELSET=", "");
+                    mapIndexToElement.Clear();
                 }
                 else
                 {
-                    var tokens = line.Replace(", ", " ").Trim().Split(' ');
-                    var indexes = tokens.Select(int.Parse);
-                    elements.AddRange(indexes.Select(i => mapIndexToElement[i]));
+                    tokens = line.Replace(", ", " ").Trim().Split(' ');
+                    numbers = tokens.Select(int.Parse);
+                    if (objsType != ObjType.Узел)
+                    {
+                        objsType = allElements[numbers.First()].ObjType;
+                        SaveElements(numbers);
+                    }
                 }
             }
+            AddGroupToModelData(groupName, objsType, numbers);
         }
-        private void CreateSet(ModelData model, string setName, ObjType objsType, Color color)
+
+        private void SaveElements(IEnumerable<int> numbers)
         {
+            mapIndexToElement.Clear();
+            foreach (int number in numbers)
+            {
+                mapIndexToElement.Add(number, allElements[number]);
+            }
+        }
+
+        private void CreateSet(string setName, ObjType objsType)
+        {
+            var rnd = new Random();
+            var color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
+
             if (objsType == ObjType.Элемент1D)
             {
-                model.ObjectData.E1DCollection.Add(setName);
-                var set1D = model.ObjectData.E1DCollection[setName];
+                modelData.ObjectData.E1DCollection.Add(setName);
+                var set1D = modelData.ObjectData.E1DCollection[setName];
                 FillSet_v2(set1D);
                 set1D.SetViewMode(ViewMode.Line);
                 set1D.SetColor(color);
@@ -201,8 +238,8 @@ namespace Model.IO
 
             else if (objsType == ObjType.Элемент2D)
             {
-                model.ObjectData.E2DCollection.Add(setName);
-                var set2D = model.ObjectData.E2DCollection[setName];
+                modelData.ObjectData.E2DCollection.Add(setName);
+                var set2D = modelData.ObjectData.E2DCollection[setName];
                 FillSet_v2(set2D);
                 set2D.SetViewMode(ViewMode.LineSurface);
                 set2D.SetColor(color);
@@ -210,8 +247,8 @@ namespace Model.IO
 
             else
             {
-                model.ObjectData.E3DCollection.Add(setName);
-                var set3D = model.ObjectData.E3DCollection[setName];
+                modelData.ObjectData.E3DCollection.Add(setName);
+                var set3D = modelData.ObjectData.E3DCollection[setName];
                 FillSet_v2(set3D);
                 set3D.SetViewMode(ViewMode.LineSurface);
                 set3D.SetColor(color);
@@ -220,7 +257,7 @@ namespace Model.IO
         private void FillSet_v2<T>(ObjectsSet<T> set)
     where T : IElement
         {
-            foreach (var element in allElements)
+            foreach (var element in mapIndexToElement)
             {
                 var obj = element.Value;
                 set.Add(element.Key, (T)obj);
