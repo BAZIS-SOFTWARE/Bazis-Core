@@ -102,5 +102,21 @@ namespace Model.MeshObjects
             yield return surface;
         }
 
+        /// <summary>
+        /// CreateIntegrationPoint
+        /// </summary>
+        /// <param name="w"></param>
+        /// <param name="ksi"></param>
+        /// <param name="eta"></param>
+        /// <returns></returns>
+        public IntegralPoint CreateIntegrationPoint(double w, double ksi, double eta)
+        {
+            var intPoint = new IntegralPoint();
+            intPoint.AddCoordinate("ksi", ksi);
+            intPoint.AddCoordinate("eta", eta);
+            intPoint.Weigt = w;
+
+            return intPoint;
+        }
     }
 }

@@ -143,5 +143,17 @@ namespace Model.MeshObjects
             }
             return masterSurface;
         }
+/// <inheritdoc/>
+
+        public IntegralPoint CreateIntegrationPoint(double w, double ksi, double eta, double dze)
+        {
+            var intPoint = new IntegralPoint();
+            intPoint.AddCoordinate("ksi", ksi);
+            intPoint.AddCoordinate("eta", eta);
+            intPoint.AddCoordinate("dze", dze);
+            intPoint.Weigt = w;
+
+            return intPoint;
+        }
     }
 }

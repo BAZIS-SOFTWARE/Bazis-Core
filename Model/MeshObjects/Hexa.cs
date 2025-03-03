@@ -28,18 +28,43 @@ namespace Model.MeshObjects
                 jacobiMatrixes.Clear();
                 if (value == 1)
                 {
-                    CreateIntegrationPoint(8, 0, 0, 0);
+                    var intPoint =CreateIntegrationPoint(8, 0, 0, 0);
+                    intPoints.Add(intPoint);
+                    jacobiMatrixes.Add(CalcJacobi(intPoint));
                 }
                 else
                 {
-                    CreateIntegrationPoint(1, 0.5774, 0.5774, 0.5774);
-                    CreateIntegrationPoint(1, 0.5774, 0.5774, -0.5774);
-                    CreateIntegrationPoint(1, 0.5774, -0.5774, 0.5774);
-                    CreateIntegrationPoint(1, 0.5774, -0.5774, -0.5774);
-                    CreateIntegrationPoint(1, -0.5774, 0.5774, 0.5774);
-                    CreateIntegrationPoint(1, -0.5774, 0.5774, -0.5774);
-                    CreateIntegrationPoint(1, -0.5774, -0.5774, 0.5774);
-                    CreateIntegrationPoint(1, -0.5774, -0.5774, -0.5774);
+                    var int0 = CreateIntegrationPoint(1, 0.5774, 0.5774, 0.5774);
+                    intPoints.Add(int0);
+                    jacobiMatrixes.Add(CalcJacobi(int0));
+
+                    var int1 = CreateIntegrationPoint(1, 0.5774, 0.5774, -0.5774);
+                    intPoints.Add(int1);
+                    jacobiMatrixes.Add(CalcJacobi(int1));
+
+                    var int2 = CreateIntegrationPoint(1, 0.5774, -0.5774, 0.5774);
+                    intPoints.Add(int2);
+                    jacobiMatrixes.Add(CalcJacobi(int2));
+
+                    var int3 = CreateIntegrationPoint(1, 0.5774, -0.5774, -0.5774);
+                    intPoints.Add(int3);
+                    jacobiMatrixes.Add(CalcJacobi(int3));
+
+                    var int4 = CreateIntegrationPoint(1, -0.5774, 0.5774, 0.5774);
+                    intPoints.Add(int4);
+                    jacobiMatrixes.Add(CalcJacobi(int4));
+
+                    var int5 = CreateIntegrationPoint(1, -0.5774, 0.5774, -0.5774);
+                    intPoints.Add(int5);
+                    jacobiMatrixes.Add(CalcJacobi(int5));
+
+                    var int6 = CreateIntegrationPoint(1, -0.5774, -0.5774, 0.5774);
+                    intPoints.Add(int6);
+                    jacobiMatrixes.Add(CalcJacobi(int6));
+
+                    var int7 = CreateIntegrationPoint(1, -0.5774, -0.5774, -0.5774);
+                    intPoints.Add(int7);
+                    jacobiMatrixes.Add(CalcJacobi(int7));
                 }
             }
         }
@@ -104,25 +129,6 @@ namespace Model.MeshObjects
             return result;
         }
 
-
-        /// <summary>
-        /// CreateIntegrationPoint
-        /// </summary>
-        /// <param name="w"></param>
-        /// <param name="ksi"></param>
-        /// <param name="eta"></param>
-        /// <param name="dze"></param>
-        public void CreateIntegrationPoint(double w, double ksi, double eta, double dze)
-        {
-            var intPoint = new IntegralPoint();
-            intPoint.AddCoordinate("ksi", ksi);
-            intPoint.AddCoordinate("eta", eta);
-            intPoint.AddCoordinate("dze", dze);
-            intPoint.Weigt = w;
-
-            intPoints.Add(intPoint);
-            jacobiMatrixes.Add(CalcJacobi(intPoint));
-        }
         /// <inheritdoc/>
 
         public override double[,] GetDerivativesFormFunctions(IIntegralPoint intPoint)
@@ -171,6 +177,26 @@ namespace Model.MeshObjects
 
           return formFunctions;
            
+        }
+/// <inheritdoc/>
+
+        public override IEnumerable<IntegralPoint> CreateIntegrationPoints(int level)
+        {
+            if (level == 1)
+            {
+                yield return CreateIntegrationPoint(8, 0, 0, 0);
+            }
+            else
+            {
+                yield return CreateIntegrationPoint(1, 0.5774, 0.5774, 0.5774);
+                yield return CreateIntegrationPoint(1, 0.5774, 0.5774, -0.5774);
+                yield return CreateIntegrationPoint(1, 0.5774, -0.5774, 0.5774);
+                yield return CreateIntegrationPoint(1, 0.5774, -0.5774, -0.5774);
+                yield return CreateIntegrationPoint(1, -0.5774, 0.5774, 0.5774);
+                yield return CreateIntegrationPoint(1, -0.5774, 0.5774, -0.5774);
+                yield return CreateIntegrationPoint(1, -0.5774, -0.5774, 0.5774);
+                yield return CreateIntegrationPoint(1, -0.5774, -0.5774, -0.5774);
+            }
         }
     }
 }

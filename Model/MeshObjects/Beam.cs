@@ -5,6 +5,7 @@ using Model.Interfaces;
 using Model.Interfaces.IntegralObject;
 using Model.Interfaces.MeshObjects;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Net;
 
@@ -115,6 +116,11 @@ namespace Model.MeshObjects
             answer[0] = (1 - intPoint["ksi"]) / 2;
             answer[1] = (1 + intPoint["ksi"]) / 2;
             return answer;
+        }
+
+        public override IEnumerable<IntegralPoint> CreateIntegrationPoints(int level)
+        {
+            throw new NotImplementedException();
         }
     }
 }

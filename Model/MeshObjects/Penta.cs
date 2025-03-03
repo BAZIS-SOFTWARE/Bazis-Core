@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using MathNet.Numerics.LinearAlgebra;
 using Model.Interfaces.IntegralObject;
@@ -25,12 +26,18 @@ namespace Model.MeshObjects
                 jacobiMatrixes.Clear();
                 if (value == 1)
                 {
-                    CreateIntegrationPoint(1, 0.3333, 0.3333, 0);
+                    var intPoint = CreateIntegrationPoint(1, 0.3333, 0.3333, 0);
+                    intPoints.Add(intPoint);
+                    jacobiMatrixes.Add(CalcJacobi(intPoint));
                 }
                 else
                 {
-                    CreateIntegrationPoint(0.5f, 0.3333, 0.3333, -0.5774);
-                    CreateIntegrationPoint(0.5f, 0.3333, 0.3333, 0.5774);
+                    var int0 = CreateIntegrationPoint(0.5f, 0.3333, 0.3333, -0.5774);
+                    intPoints.Add(int0);
+                    jacobiMatrixes.Add(CalcJacobi(int0));
+                    var int1 = CreateIntegrationPoint(0.5f, 0.3333, 0.3333, 0.5774);
+                    intPoints.Add(int1);
+                    jacobiMatrixes.Add(CalcJacobi(int1));
                 }
             }
         }
@@ -54,19 +61,6 @@ namespace Model.MeshObjects
         public Penta(int number, Node[] nodes, int level) : this(number, nodes)
         {
             Level = level;
-        }
-/// <inheritdoc/>
-
-        public void CreateIntegrationPoint(double w, double ksi, double eta, double dze)
-        {
-            var intPoint = new IntegralPoint();
-            intPoint.AddCoordinate("ksi", ksi);
-            intPoint.AddCoordinate("eta", eta);
-            intPoint.AddCoordinate("dze", dze);
-            intPoint.Weigt = w;
-
-            intPoints.Add(intPoint);
-            jacobiMatrixes.Add(CalcJacobi(intPoint));
         }
 
         /// <inheritdoc/>
@@ -137,6 +131,20 @@ namespace Model.MeshObjects
                 eta * (1 + dze) / 2
             };
             return formFunctions;
+        }
+/// <inheritdoc/>
+
+        public override IEnumerable<IntegralPoint> CreateIntegrationPoints(int level)
+        {
+            if (level == 1)
+            {
+                yield return CreateIntegrationPoint(1, 0.3333, 0.3333, 0);
+            }
+            else
+            {
+                yield return CreateIntegrationPoint(0.5f, 0.3333, 0.3333, -0.5774);
+                yield return CreateIntegrationPoint(0.5f, 0.3333, 0.3333, 0.5774);
+            }
         }
     }
 }

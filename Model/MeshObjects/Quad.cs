@@ -5,6 +5,7 @@ using Model.Interfaces.MeshObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 
 namespace Model.MeshObjects
 {
@@ -25,15 +26,29 @@ namespace Model.MeshObjects
                 jacobiMatrixes.Clear();
                 if (value == 1)
                 {
-                    CreateIntegrationPoint(4, 0, 0);
+                    var intPoint = CreateIntegrationPoint(4, 0, 0);
+
+                    intPoints.Add(intPoint);
+                    jacobiMatrixes.Add(CalcJacobi(intPoint));
                 }
                 else
                 {
                     var coordinate = Math.Sqrt(3) / 3;
-                    CreateIntegrationPoint(1, -coordinate, -coordinate);
-                    CreateIntegrationPoint(1, coordinate, -coordinate);
-                    CreateIntegrationPoint(1, coordinate, coordinate);
-                    CreateIntegrationPoint(1, -coordinate, coordinate);
+                    var int0 = CreateIntegrationPoint(1, -coordinate, -coordinate);
+                    intPoints.Add(int0);
+                    jacobiMatrixes.Add(CalcJacobi(int0));
+
+                    var int1 = CreateIntegrationPoint(1, coordinate, -coordinate);
+                    intPoints.Add(int1);
+                    jacobiMatrixes.Add(CalcJacobi(int1));
+
+                    var int2 = CreateIntegrationPoint(1, coordinate, coordinate);
+                    intPoints.Add(int2);
+                    jacobiMatrixes.Add(CalcJacobi(int2));
+
+                    var int3 = CreateIntegrationPoint(1, -coordinate, coordinate);
+                    intPoints.Add(int3);
+                    jacobiMatrixes.Add(CalcJacobi(int3));
                 }
             }
         }
@@ -54,17 +69,27 @@ namespace Model.MeshObjects
             Level = level;
 
         }
-        /// <inheritdoc/>
 
-        public void CreateIntegrationPoint(double w, double ksi, double eta)
+        /// <summary>
+        /// CreateIntegrationPoint
+        /// </summary>
+        /// <param name="level"></param>
+        /// <returns></returns>
+        public override IEnumerable<IntegralPoint> CreateIntegrationPoints(int level)
         {
-            var intPoint = new IntegralPoint();
-            intPoint.AddCoordinate("ksi", ksi);
-            intPoint.AddCoordinate("eta", eta);
-            intPoint.Weigt = w;
 
-            intPoints.Add(intPoint);
-            jacobiMatrixes.Add(CalcJacobi(intPoint));
+            if (level == 1)
+            {
+                yield return CreateIntegrationPoint(4, 0, 0);
+            }
+            else
+            {
+                var coordinate = Math.Sqrt(3) / 3;
+                yield return CreateIntegrationPoint(1, -coordinate, -coordinate);
+                yield return CreateIntegrationPoint(1, coordinate, -coordinate);
+                yield return CreateIntegrationPoint(1, coordinate, coordinate);
+                yield return CreateIntegrationPoint(1, -coordinate, coordinate);
+            }
         }
 
         /// <inheritdoc/>

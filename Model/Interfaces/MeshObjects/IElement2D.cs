@@ -1,5 +1,6 @@
 ﻿using Geometry.Interfaces;
 using MathNet.Numerics.LinearAlgebra;
+using Model.MeshObjects;
 
 namespace Model.Interfaces.MeshObjects
 {
@@ -17,6 +18,14 @@ namespace Model.Interfaces.MeshObjects
         /// </summary>
         /// <returns></returns>
         double[,] CalcTransitionMatrix( IPoint3D[] points);
+        /// <summary>
+        /// CreateIntegrationPoint
+        /// </summary>
+        /// <param name="w"></param>
+        /// <param name="ksi"></param>
+        /// <param name="eta"></param>
+        /// <returns></returns>
+        IntegralPoint CreateIntegrationPoint(double w, double ksi, double eta);
 
     }
 }

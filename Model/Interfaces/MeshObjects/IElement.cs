@@ -83,5 +83,11 @@ namespace Model.Interfaces.MeshObjects
         /// <param name="intPoint"></param>
         /// <returns></returns>
         double[] GetFormFunctions(IIntegralPoint intPoint);
+        /// <summary>
+        /// CreateIntegrationPoint
+        /// </summary>
+        /// <param name="level"></param>
+        /// <returns></returns>
+        IEnumerable<IntegralPoint> CreateIntegrationPoints(int level);
     }
 }

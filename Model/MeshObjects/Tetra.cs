@@ -4,6 +4,7 @@ using Model.Interfaces.Attributes;
 using Model.Interfaces.IntegralObject;
 using Model.Interfaces.MeshObjects;
 using System;
+using System.Collections.Generic;
 
 namespace Model.MeshObjects
 {
@@ -25,16 +26,29 @@ namespace Model.MeshObjects
                 jacobiMatrixes.Clear();
                 if (value == 1)
                 {
-                    CreateIntegrationPoint(1, 1.0 / 4, 1.0 / 4, 1.0 / 4, 1.0 / 4);
+                    var intPoint = CreateIntegrationPoint(1.0/6, 1.0 / 4, 1.0 / 4, 1.0 / 4, 1.0 / 4);
+                    intPoints.Add(intPoint);
+                    jacobiMatrixes.Add(CalcJacobi(intPoint));
                 }
                 else
                 {
                     var a = 0.58541020;
                     var b = 0.13819660;
-                    CreateIntegrationPoint(1.0 / 4, a, b, b, b);
-                    CreateIntegrationPoint(1.0 / 4, b, a, b, b);
-                    CreateIntegrationPoint(1.0 / 4, b, b, a, b);
-                    CreateIntegrationPoint(1.0 / 4, b, b, b, a);
+                    var int0 = CreateIntegrationPoint(1.0 / 4, a, b, b, b);
+                    intPoints.Add(int0);
+                    jacobiMatrixes.Add(CalcJacobi(int0));
+
+                    var int1 = CreateIntegrationPoint(1.0 / 4, b, a, b, b);
+                    intPoints.Add(int1);
+                    jacobiMatrixes.Add(CalcJacobi(int1));
+
+                    var int2 = CreateIntegrationPoint(1.0 / 4, b, b, a, b);
+                    intPoints.Add(int2);
+                    jacobiMatrixes.Add(CalcJacobi(int2));
+
+                    var int3 = CreateIntegrationPoint(1.0 / 4, b, b, b, a);
+                    intPoints.Add(int3);
+                    jacobiMatrixes.Add(CalcJacobi(int3));
                 }
             }
         }
@@ -77,7 +91,7 @@ namespace Model.MeshObjects
         }
 /// <inheritdoc/>
 
-        public void CreateIntegrationPoint(double w, double l1, double l2, double l3,double l4)
+        public IntegralPoint CreateIntegrationPoint(double w, double l1, double l2, double l3,double l4)
         {
             var intPoint = new IntegralPoint();
             intPoint.AddCoordinate("l1", l1);
@@ -85,8 +99,7 @@ namespace Model.MeshObjects
             intPoint.AddCoordinate("l3", l3);
             intPoint.AddCoordinate("l4", l4);
             intPoint.Weigt = w;
-            intPoints.Add(intPoint);
-            jacobiMatrixes.Add(CalcJacobi(intPoint));
+            return intPoint;
         }
 
         /// <inheritdoc/>
@@ -118,6 +131,23 @@ namespace Model.MeshObjects
         public override double[] GetFormFunctions(IIntegralPoint intPoint)
         {
             return new double[] { intPoint["l1"], intPoint["l2"], intPoint["l3"], intPoint["l4"] };
+        }
+
+        public override IEnumerable<IntegralPoint> CreateIntegrationPoints(int level)
+        {
+            if (level == 1)
+            {
+                yield return CreateIntegrationPoint(1, 1.0 / 4, 1.0 / 4, 1.0 / 4, 1.0 / 4);
+            }
+            else
+            {
+                var a = 0.58541020;
+                var b = 0.13819660;
+                yield return CreateIntegrationPoint(1.0 / 4, a, b, b, b);
+                yield return CreateIntegrationPoint(1.0 / 4, b, a, b, b);
+                yield return CreateIntegrationPoint(1.0 / 4, b, b, a, b);
+                yield return CreateIntegrationPoint(1.0 / 4, b, b, b, a);
+            }
         }
     }
 }

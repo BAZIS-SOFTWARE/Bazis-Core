@@ -75,6 +75,7 @@ namespace Model.IO
                     if (group.ObjType == ObjType.Элемент1D) sw.WriteLine("Группа элементов 1D : {0}", resu);
                 }
                 sw.WriteLine("#Группы");
+                sw.WriteLine("");
                 sw.Dispose();
             }
         }

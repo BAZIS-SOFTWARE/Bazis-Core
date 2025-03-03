@@ -138,5 +138,8 @@ namespace Model.MeshObjects
                 yield return jacobian;
             }
         }
+/// <inheritdoc/>
+
+        public abstract IEnumerable<IntegralPoint> CreateIntegrationPoints(int level);
     }
 }

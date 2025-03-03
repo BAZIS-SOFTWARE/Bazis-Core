@@ -28,16 +28,29 @@ namespace Model.MeshObjects
                 jacobiMatrixes.Clear();
                 if (value == 1)
                 {
-                    CreateIntegrationPoint(1.0 / 6, 1.0 / 4, 1.0 / 4, 1.0 / 4);
+                    var intPoint = CreateIntegrationPoint(1.0 / 6, 1.0 / 4, 1.0 / 4, 1.0 / 4);
+                    intPoints.Add(intPoint);
+                    jacobiMatrixes.Add(CalcJacobi(intPoint));
                 }
                 else
                 {
                     var a = 0.58541020;
                     var b = 0.13819660;
-                    CreateIntegrationPoint(1.0 / 24, a, b, b);
-                    CreateIntegrationPoint(1.0 / 24, b, a, b);
-                    CreateIntegrationPoint(1.0 / 24, b, b, a);
-                    CreateIntegrationPoint(1.0 / 24, b, b, b);
+                    var int0 = CreateIntegrationPoint(1.0 / 24, a, b, b);
+                    intPoints.Add(int0);
+                    jacobiMatrixes.Add(CalcJacobi(int0));
+
+                    var int1 = CreateIntegrationPoint(1.0 / 24, b, a, b);
+                    intPoints.Add(int1);
+                    jacobiMatrixes.Add(CalcJacobi(int1));
+
+                    var int2 = CreateIntegrationPoint(1.0 / 24, b, b, a);
+                    intPoints.Add(int2);
+                    jacobiMatrixes.Add(CalcJacobi(int2));
+
+                    var int3 = CreateIntegrationPoint(1.0 / 24, b, b, b);
+                    intPoints.Add(int3);
+                    jacobiMatrixes.Add(CalcJacobi(int3));
                 }
             }
         }
@@ -105,25 +118,6 @@ namespace Model.MeshObjects
             return vol;
         }
 
-        /// <summary>
-        /// CreateIntegrationPoint
-        /// </summary>
-        /// <param name="w"></param>
-        /// <param name="ksi"></param>
-        /// <param name="eta"></param>
-        /// <param name="dze"></param>
-        public void CreateIntegrationPoint(double w, double ksi, double eta, double dze)
-        {
-            var intPoint = new IntegralPoint();
-            intPoint.AddCoordinate("ksi", ksi);
-            intPoint.AddCoordinate("eta", eta);
-            intPoint.AddCoordinate("dze", dze);
-            intPoint.Weigt = w;
-
-            intPoints.Add(intPoint);
-            jacobiMatrixes.Add(CalcJacobi(intPoint));
-        }
-
         /// <inheritdoc/>
 
         public override double[,] GetDerivativesFormFunctions(IIntegralPoint intPoint)
@@ -152,6 +146,11 @@ namespace Model.MeshObjects
             };
 
             return formFunctions;
+        }
+
+        public override IEnumerable<IntegralPoint> CreateIntegrationPoints(int level)
+        {
+            throw new NotImplementedException();
         }
     }
 }
