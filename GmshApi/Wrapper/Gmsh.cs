@@ -44,6 +44,7 @@ namespace GmshApi
             Option = new Option();
             Model = new Model();
             Plugin = new Plugin();
+            Logger = new Logger();
         }
 
 

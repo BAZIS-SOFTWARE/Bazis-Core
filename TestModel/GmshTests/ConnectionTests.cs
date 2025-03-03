@@ -13,10 +13,10 @@ namespace TestModel.GmshTests
         {
             controller.Load(@"..\..\..\..\GmshApi\gmsh.dll");
             var ierr = 0;
-            Assert.AreEqual(1, controller.gmshIsInitialized(ref ierr));
+            Assert.AreEqual(1, controller.Gmsh.IsInitialized());
 
-            controller.Finalize(ref ierr);
-            Assert.AreEqual(0, controller.gmshIsInitialized(ref ierr));
+            controller.Unload();
+            Assert.AreEqual(0, controller.Gmsh.IsInitialized());
         }
     }
 }

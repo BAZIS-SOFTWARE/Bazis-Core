@@ -8,6 +8,9 @@ namespace GmshApi
     /// <inheritdoc/>
     public class Logger
     {
+        private delegate void gmshLoggerWriteFun(string message, string level, ref int ierr);
+        private gmshLoggerWriteFun gmshLoggerWrite = GetFunction<gmshLoggerWriteFun>("gmshLoggerWrite");
+
         private delegate void gmshLoggerStartFun(ref int ierr);
         private gmshLoggerStartFun gmshLoggerStart = GetFunction<gmshLoggerStartFun>("gmshLoggerStart");
 
@@ -19,6 +22,15 @@ namespace GmshApi
 
         private delegate void gmshLoggerGetLastErrorFun(ref IntPtr error, ref int ierr);
         private gmshLoggerGetLastErrorFun gmshLoggerGetLastError = GetFunction<gmshLoggerGetLastErrorFun>("gmshLoggerGetLastError");
+
+        /// <summary>
+        /// Записывает в поток заданный параметро level сообщение
+        /// </summary>
+        public void Write(string message, LoggerLevel level = LoggerLevel.info)
+        {
+            var ierr = 0;
+            gmshLoggerWrite(message, level.ToString(), ref ierr);
+        }
 
         /// <summary>
         /// Начинает запись в журнал

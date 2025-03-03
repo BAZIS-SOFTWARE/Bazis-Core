@@ -149,9 +149,10 @@ namespace GmshApi
         /// Удаляет сетку связанную с массивом пар dim:tag, включая точки. Если массив пустой удаляет сетку у всей модели
         /// </summary>
         /// <param name="dimTags">[In]Массив пары dim:tag для удаления с которыми ассоциирована сетка</param>
-        public void Clear(int[] dimTags)
+        public void Clear(int[] dimTags = null)
         {
             var ierr = 0;
+            dimTags = dimTags ?? new int[0];
             gmshModelMeshClear(dimTags, (IntPtr)dimTags.Length, ref ierr);
         }
         /// <summary>

@@ -10,14 +10,14 @@ namespace GmshApi
     public enum ExtendOptions
     {
         /// <inheritdoc/>
-        CurvesList = 0,
+        CurvesList,
         /// <inheritdoc/>
-        DistMax = 1,
+        DistMax,
         /// <inheritdoc/>
-        Power = 1,
+        Power,
         /// <inheritdoc/>
-        SizeMax = 1,
+        SizeMax,
         /// <inheritdoc/>
-        SurfacesList = 0
+        SurfacesList
     }
 }

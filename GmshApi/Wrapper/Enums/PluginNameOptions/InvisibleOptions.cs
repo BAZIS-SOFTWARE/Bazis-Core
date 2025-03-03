@@ -8,20 +8,20 @@ namespace GmshApi
     public enum InvisibleOptions
     {
         /// <inheritdoc/>
-        DeleteElements = 1,
+        DeleteElements,
         /// <inheritdoc/>
-        ReverseElements = 0,
+        ReverseElements,
         /// <inheritdoc/>
-        XMin = 0,
+        XMin,
         /// <inheritdoc/>
-        YMin = 0,
+        YMin,
         /// <inheritdoc/>
-        ZMin = 0,
+        ZMin,
         /// <inheritdoc/>
-        XMax = 0,
+        XMax,
         /// <inheritdoc/>
-        YMax = 0,
+        YMax,
         /// <inheritdoc/>
-        ZMax = 0,
+        ZMax,
     }
 }

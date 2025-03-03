@@ -265,7 +265,7 @@ namespace GmshApi
         /// </summary>
         /// <param name="dim">0 - геометрические точки, 1 - кривые, 2 - поверхности, 3 - объемы</param>
         /// <param name="tag">Идентификатор геометрической сущности</param>
-        /// <returns>(массив идентификаторов врехнего уровня соседей, массив идентификаторов нижнего уровня соседей)</returns>
+        /// <returns>(массив идентификаторов верхнего уровня соседей, массив идентификаторов нижнего уровня соседей)</returns>
         public Tuple<int[], int[]> GetAdjacencies(int dim, int tag)
         {
             var ierr = 0;
@@ -280,7 +280,7 @@ namespace GmshApi
         }
 
         /// <summary>
-        /// Вернуть ограничивающий параллелепипед для текущих dim tag
+        /// Вернуть ограничивающий параллелепипед для текущих dim tag. Если dim = tag = -1 взять параллелепипед всей модели
         /// </summary>
         /// <param name="dim">0 - геометрические точки, 1 - кривые, 2 - поверхности, 3 - объемы</param>
         /// <param name="tag">Идентификатор геометрической сущности</param>
@@ -335,7 +335,7 @@ namespace GmshApi
             var ierr = 0;
             var intValue = IntPtr.Zero;
             gmshModelGetType(dim, tag, ref intValue, ref ierr);
-            return intValue.ToString();
+            return GetString(intValue);
         }
         /// <summary>
         /// Возвращает координаты точек заданные параметром для указанного идентификатора и размерности

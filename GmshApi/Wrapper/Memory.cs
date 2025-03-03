@@ -38,9 +38,12 @@ namespace GmshApi
             var size = Marshal.SizeOf(value) * count;
             var buffer = new byte[size];
             var dst = new T[count];
-            Marshal.Copy(src, buffer, 0, size);
-            Buffer.BlockCopy(buffer, 0, dst, 0, size);
-            Free(src);
+            if (src != IntPtr.Zero)//Защита от нулевого указателя
+            {
+                Marshal.Copy(src, buffer, 0, size);
+                Buffer.BlockCopy(buffer, 0, dst, 0, size);
+                Free(src);
+            }
             return dst;
         }
 
@@ -51,19 +54,26 @@ namespace GmshApi
             var tArray = new IntPtr[outLength];
             var result = new T[outLength][];
             var inLength = new IntPtr[outLength];
-            Marshal.Copy(outArray, tArray, 0, outLength);
-            Marshal.Copy(inArray, inLength, 0, outLength);
-            for (var i = 0; i < outLength; ++i)
-                result[i] = GetObjectsData<T>(tArray[i], inLength[i]);
-            Free(outArray);
+            if (outArray != IntPtr.Zero && inArray != IntPtr.Zero)//Защита от нулевого указателя
+            {
+                Marshal.Copy(outArray, tArray, 0, outLength);
+                Marshal.Copy(inArray, inLength, 0, outLength);
+                for (var i = 0; i < outLength; ++i)
+                    result[i] = GetObjectsData<T>(tArray[i], inLength[i]);
+                Free(outArray);
+            }
             return result;
         }
 
         /// <inheritdoc/>
         public static string GetString(IntPtr ptr)
         {
-            var result = Marshal.PtrToStringAnsi(ptr);
-            Free(ptr);
+            var result = string.Empty;
+            if (ptr != IntPtr.Zero)//Защита от нулевого указателя
+            {
+                result = Marshal.PtrToStringAnsi(ptr);
+                Free(ptr);
+            }
             return result;
         }
 
@@ -73,10 +83,13 @@ namespace GmshApi
             var arrayLength = length.ToInt32();
             var stringArray = new IntPtr[arrayLength];
             var result = new string[arrayLength];
-            Marshal.Copy(array, stringArray, 0, arrayLength);
-            for (var i = 0; i < arrayLength; ++i)
-                result[i] = GetString(stringArray[i]);
-            Free(array);
+            if (array != IntPtr.Zero)//Защита от нулевого указателя
+            {
+                Marshal.Copy(array, stringArray, 0, arrayLength);
+                for (var i = 0; i < arrayLength; ++i)
+                    result[i] = GetString(stringArray[i]);
+                Free(array);
+            }
             return result;
         }
     }
