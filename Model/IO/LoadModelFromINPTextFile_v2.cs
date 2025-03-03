@@ -176,7 +176,7 @@ namespace Model.IO
             var line = reader.ReadLine();
             var tokens = line.Replace(", ", " ").Trim().Split(' ');
             var numbers = tokens.Select(int.Parse);
-            ObjType objsType = allElements[numbers.First()].ObjType;
+            var objsType = allElements[numbers.First()].ObjType;
             SaveElements(numbers);
 
             while (!reader.EndOfStream)
@@ -223,45 +223,41 @@ namespace Model.IO
         }
 
         private void CreateSet(string setName, ObjType objsType)
-        {
-            var rnd = new Random();
-            var color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
-
+        {           
             if (objsType == ObjType.Элемент1D)
             {
                 modelData.ObjectData.E1DCollection.Add(setName);
                 var set1D = modelData.ObjectData.E1DCollection[setName];
-                FillSet_v2(set1D);
-                set1D.SetViewMode(ViewMode.Line);
-                set1D.SetColor(color);
+                FillSet_v2(set1D, ViewMode.Line);              
             }
 
             else if (objsType == ObjType.Элемент2D)
             {
                 modelData.ObjectData.E2DCollection.Add(setName);
                 var set2D = modelData.ObjectData.E2DCollection[setName];
-                FillSet_v2(set2D);
-                set2D.SetViewMode(ViewMode.LineSurface);
-                set2D.SetColor(color);
+                FillSet_v2(set2D, ViewMode.LineSurface);                
             }
 
             else
             {
                 modelData.ObjectData.E3DCollection.Add(setName);
                 var set3D = modelData.ObjectData.E3DCollection[setName];
-                FillSet_v2(set3D);
-                set3D.SetViewMode(ViewMode.LineSurface);
-                set3D.SetColor(color);
+                FillSet_v2(set3D, ViewMode.LineSurface);               
             }
         }
-        private void FillSet_v2<T>(ObjectsSet<T> set)
+        private void FillSet_v2<T>(ObjectsSet<T> set, ViewMode mode)
     where T : IElement
         {
+            var rnd = new Random();
+            var color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
+
             foreach (var element in mapIndexToElement)
             {
                 var obj = element.Value;
                 set.Add(element.Key, (T)obj);
-            }
+            }            
+            set.SetViewMode(mode);
+            set.SetColor(color);
         }
     }
 }
