@@ -22,16 +22,22 @@ namespace ModelController.MeshObjsUtility
             var tree = BuildTree(modelObjects);
             modelObjects.ForEach(obj => obj.ViewState = false);
             var result = new List<List<int>>();
-            for (int i = 0; i < modelObjects.Count; i++)
+
+            var spec = new List<int>();
+
+            foreach (var obj in modelObjects)
             {
-                if (!modelObjects[i].ViewState)
+                if (!obj.ViewState)
                 {
-                    var point = modelObjects[i].CalcCentr();
+                    var point = obj.CalcCentr();
                     var neighbourElements = RadialSearch(point, distance, tree);
                     neighbourElements.ForEach(x => x.ViewState = true);
-                    result.Add(neighbourElements.Select(x => x.Number).ToList());
+                    if(neighbourElements.Count > 1)
+                        result.Add(neighbourElements.Select(x => x.Number).ToList());
                 }
+
             }
+
             return result;
         }
 

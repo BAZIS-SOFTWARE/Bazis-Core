@@ -8,12 +8,71 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Model.Interfaces;
+using Model.IO;
+using ModelController.MeshObjsUtility;
+using System.IO;
 
 namespace TestModel.ModelControllerTests
 {
     [TestClass]
     public class MeshUtility
     {
+        [DataTestMethod]
+        [DataRow(@"..\..\..\Examples\CDB\hex.cdb", 0.001f, 0)]
+        [DataRow(@"c:\projs\Matushkin\T_project.bpf",0.001f,2)]
+        [DataRow(@"..\..\..\Examples\CDB\hex.cdb", 1.1f, 4)]
+        public void FindCoincidentNodes(string path, float dist, int count)
+        {
+            var ext = Path.GetExtension(path);
+            IModelLoader loader;
+            if(ext == ".cdb")
+                loader = new LoadModelFromCDBTextFile();
+            else
+                loader = new LoadModelFromBPFTextFile();
+
+            var model = loader.Load(path);
+            var finder = new FindCoincidentObjects();
+            finder.ProgressEvent += (ar1, ar2) => { };
+            var coincidentNodes = finder.Find(model.ObjectData.GetObjects(ObjType.Узел).ToList(), dist);
+            var numberOfObjs = coincidentNodes.Count();
+            Assert.AreEqual(count, numberOfObjs);
+        }
+
+        [DataTestMethod]
+        [DataRow(@"c:\projs\Matushkin\T_project.bpf", 0.001f,5280)]
+        [DataRow(@"..\..\..\Examples\3D\cub_unsorted_freeNodesCoincident.bpf", 0.01f,10)]
+        public void MergeNodes(string path, float dist, int count)
+        {
+            //assing
+            var model = new ModelData();
+
+            //act
+            //var modelBPF = loader.Load(@"C:\Projs\ExampleMesh\Tube.inp");
+            model.Load(path);
+
+            var finder = new FindCoincidentObjects();
+
+            finder.ProgressEvent += (ar1, ar2) => { };
+
+            var coincidentNodes = finder.Find(model.ObjectData.GetObjects(ObjType.Узел).ToList(), dist);
+
+            var merger = new MergeObjects();
+
+            var mergedNodes = merger.Merge(coincidentNodes, model.ObjectData.NodesSet.Values.ToList());
+
+            //assert
+            model.ObjectData.NodesSet.Clear();
+
+            foreach (var item in mergedNodes)
+                model.ObjectData.NodesSet.Add(item.Number, item);
+
+            Assert.AreEqual(model.ObjectData.NodesSet.Count, count);
+
+            //freeNodes.ToArray()[0] = 14;
+            //freeNodes.ToArray()[1] = 15;
+        }
+
+
         [TestMethod]
         public void Extract1DFrom2D_ShouldReturnCorrectElementsNumber()
         {

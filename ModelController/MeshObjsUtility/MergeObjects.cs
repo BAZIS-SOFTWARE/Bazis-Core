@@ -15,6 +15,7 @@ namespace ModelController.MeshObjsUtility
             where T : IModelObject
         {
             var masterNumbers = modelObjects.Select(x => x.Number).ToList();
+            masterNumbers.Sort();
             for (int i = 0; i < numbers.Count; i++)
             {
                 var masterNumber = numbers[i][0];

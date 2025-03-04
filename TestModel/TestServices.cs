@@ -10,6 +10,7 @@ using ModelController.MeshObjsUtility;
 using Model.IO;
 using Model.MeshObjects;
 using Model.Interfaces.MeshObjects;
+using System.Data;
 
 namespace TestModel
 {
@@ -149,59 +150,7 @@ namespace TestModel
                 if (!elsForNode.Contains(interfacedNodesEls3D[48][i]))
                     throw new Exception("номера не совпадают");
             }
-        }   
-
-        [TestMethod]
-        public void MergeNodes()
-        {
-            //assing
-            var model = new ModelData();
-
-            //act
-            //var modelBPF = loader.Load(@"C:\Projs\ExampleMesh\Tube.inp");
-            model.Load(@"..\..\..\Examples\3D\cub_unsorted_freeNodesCoincident.bpf");
-
-            var finder = new FindCoincidentObjects();
-
-            finder.ProgressEvent += (ar1, ar2) => { };
-
-            var coincidentNodes = finder.Find(model.ObjectData.GetObjects(ObjType.Узел).ToList(), 0.01f);
-
-            var merger = new MergeObjects();
-
-            var mergedNodes = merger.Merge(coincidentNodes, model.ObjectData.NodesSet.Values.ToList());
-
-            //assert
-            model.ObjectData.NodesSet.Clear();
-
-            foreach (var item in mergedNodes)
-                model.ObjectData.NodesSet.Add(item.Number, item);
-
-            var numb = mergedNodes.First().Number;
-
-            foreach (var item in mergedNodes.Skip(1))
-            {
-                if (item.Number <= numb)
-                    throw new Exception($"{item.Number}");
-                numb = item.Number;
-            }
-            
-            //freeNodes.ToArray()[0] = 14;
-            //freeNodes.ToArray()[1] = 15;
-        }
-
-        [TestMethod]
-        public void FindCoincidentNodes()
-        {
-            var loader = new LoadModelFromCDBTextFile();
-            loader.LoadEvent += (ar1, ar2) => { };
-            var model = loader.Load(@"..\..\..\Examples\CDB\hex.cdb");
-            var finder = new FindCoincidentObjects();
-            finder.ProgressEvent += (ar1, ar2) => { };
-            var coincidentNodes = finder.Find(model.ObjectData.GetObjects(ObjType.Узел).ToList(), 1.1f);
-            var numberOfObjs = coincidentNodes.Count();
-            Assert.AreEqual(4, numberOfObjs);
-        }
+        }         
 
         [TestMethod, Timeout(5000)]
         public void FindManyCoincidentObjects() 
