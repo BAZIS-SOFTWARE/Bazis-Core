@@ -42,7 +42,6 @@ namespace Model.MeshObjects
             set
             {
                 intPoints.Clear();
-                jacobiMatrixes.Clear();
                 if (value == 1)
                 {
                     CreateIntegrationPoint(2, 0.0);
@@ -60,9 +59,9 @@ namespace Model.MeshObjects
             var intPoint = new IntegralPoint();
             intPoint.AddCoordinate("ksi", ksi);
             intPoint.Weigt = w;
+            intPoint.Jacobi = CalcJacobi(intPoint);
 
             intPoints.Add(intPoint);
-            jacobiMatrixes.Add(CalcJacobi(intPoint));
         }
 
         /// <inheritdoc/>

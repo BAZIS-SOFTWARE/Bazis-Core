@@ -25,12 +25,10 @@ namespace Model.MeshObjects
             set
             {
                 intPoints.Clear();
-                jacobiMatrixes.Clear();
                 if (value == 1)
                 {
                     var intPoint = CreateIntegrationPoint(1.0 / 6, 1.0 / 4, 1.0 / 4, 1.0 / 4);
                     intPoints.Add(intPoint);
-                    jacobiMatrixes.Add(CalcJacobi(intPoint));
                 }
                 else
                 {
@@ -38,19 +36,15 @@ namespace Model.MeshObjects
                     var b = 0.13819660;
                     var int0 = CreateIntegrationPoint(1.0 / 24, a, b, b);
                     intPoints.Add(int0);
-                    jacobiMatrixes.Add(CalcJacobi(int0));
 
                     var int1 = CreateIntegrationPoint(1.0 / 24, b, a, b);
                     intPoints.Add(int1);
-                    jacobiMatrixes.Add(CalcJacobi(int1));
 
                     var int2 = CreateIntegrationPoint(1.0 / 24, b, b, a);
                     intPoints.Add(int2);
-                    jacobiMatrixes.Add(CalcJacobi(int2));
 
                     var int3 = CreateIntegrationPoint(1.0 / 24, b, b, b);
                     intPoints.Add(int3);
-                    jacobiMatrixes.Add(CalcJacobi(int3));
                 }
             }
         }
@@ -110,9 +104,9 @@ namespace Model.MeshObjects
             var vol = 0.0;
             var counter = 0;
 
-            foreach (var item in GetJacobiMatrixes())
+            foreach (var item in GetIntegralPoints())
             {
-                vol += Math.Abs(item.Determinant()) * intPoints[counter].Weigt;
+                vol += Math.Abs(item.Jacobi.Determinant()) * intPoints[counter].Weigt;
                 counter++;
             }
             return vol;

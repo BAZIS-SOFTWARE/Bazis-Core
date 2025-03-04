@@ -1,4 +1,5 @@
 ﻿using Geometry.Interfaces;
+using MathNet.Numerics.LinearAlgebra;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,10 @@ namespace Model.Interfaces.IntegralObject
     /// </summary>
     public interface IIntegralPoint
     {
+        /// <summary>
+        /// Index
+        /// </summary>
+        int Index { get; set; }
         /// <summary>
         /// Weigt
         /// </summary>
@@ -33,5 +38,9 @@ namespace Model.Interfaces.IntegralObject
         /// <param name="dirInd"></param>
         /// <returns></returns>
         double this[string dirInd] { get; }
+        /// <summary>
+        /// Jacobi matrix
+        /// </summary>
+        Matrix<double> Jacobi { get; }
     }
 }

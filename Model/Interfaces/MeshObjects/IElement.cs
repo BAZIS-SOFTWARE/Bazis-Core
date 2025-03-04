@@ -56,11 +56,6 @@ namespace Model.Interfaces.MeshObjects
         /// <returns></returns>
         Matrix<double> CalcJacobi(IIntegralPoint integralPoint);
         /// <summary>
-        /// Get Jacobians of all intPoints
-        /// </summary>
-        /// <returns></returns>
-        IEnumerable<Matrix<double>> GetJacobiMatrixes();
-        /// <summary>
         /// ElementKind
         /// </summary>
         ElementKind ElementKind { get; }

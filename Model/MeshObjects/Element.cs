@@ -15,7 +15,7 @@ namespace Model.MeshObjects
 
         protected List<IIntegralPoint> intPoints = new List<IIntegralPoint>();
 
-        protected List<Matrix<double>> jacobiMatrixes = new List<Matrix<double>>();
+        //protected List<Matrix<double>> jacobiMatrixes = new List<Matrix<double>>();
 
 
         /// <summary>
@@ -123,21 +123,6 @@ namespace Model.MeshObjects
 
         public abstract double[] GetFormFunctions(IIntegralPoint intPoint);
 
-        /// <inheritdoc/>
-
-        public void AddJacobiMatrix(Matrix<double> j)
-        {
-            jacobiMatrixes.Add(j);
-        }
-        /// <inheritdoc/>
-
-        public IEnumerable<Matrix<double>> GetJacobiMatrixes()
-        {
-            foreach (var jacobian in jacobiMatrixes)
-            {
-                yield return jacobian;
-            }
-        }
 /// <inheritdoc/>
 
         public abstract IEnumerable<IntegralPoint> CreateIntegrationPoints(int level);

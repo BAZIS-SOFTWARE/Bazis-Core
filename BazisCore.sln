@@ -24,7 +24,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Элементы решения", "Элементы решения", "{2AB3C118-1783-48EE-AAE6-A39B3D64635A}"
 	ProjectSection(SolutionItems) = preProject
 		ChangeObjsCollectionsColor_ActDiag.mdpuml = ChangeObjsCollectionsColor_ActDiag.mdpuml
-		CreateBoundaryCondition_ActDiag.mdpuml = CreateBoundaryCondition_ActDiag.mdpuml
 		GetSurfaceFigures_ActDiag.mdpuml = GetSurfaceFigures_ActDiag.mdpuml
 		GetVolumeFigures_ActDiag.mdpuml = GetVolumeFigures_ActDiag.mdpuml
 	EndProjectSection

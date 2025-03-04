@@ -153,6 +153,9 @@ namespace Model.MeshObjects
             intPoint.AddCoordinate("dze", dze);
             intPoint.Weigt = w;
 
+            var jacoby = CalcJacobi(intPoint);
+            intPoint.Jacobi = jacoby;
+
             return intPoint;
         }
     }

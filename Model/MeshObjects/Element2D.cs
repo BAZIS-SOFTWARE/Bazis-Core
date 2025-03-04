@@ -116,6 +116,8 @@ namespace Model.MeshObjects
             intPoint.AddCoordinate("eta", eta);
             intPoint.Weigt = w;
 
+            intPoint.Jacobi = CalcJacobi(intPoint);
+
             return intPoint;
         }
     }

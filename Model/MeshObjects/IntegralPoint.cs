@@ -1,5 +1,7 @@
-﻿using Model.Interfaces.IntegralObject;
+﻿using MathNet.Numerics.LinearAlgebra;
+using Model.Interfaces.IntegralObject;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace Model.MeshObjects
 {
@@ -13,6 +15,13 @@ namespace Model.MeshObjects
 
         /// <inheritdoc/>
         public double Weigt { get; set; } = 1;
+/// <inheritdoc/>
+
+        public int Index { get; set; }
+/// <inheritdoc/>
+
+        public Matrix<double> Jacobi { get; set; }
+
         /// <summary>
         /// this
         /// </summary>
