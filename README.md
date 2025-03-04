@@ -9,8 +9,9 @@
       - ObjectsSet (класс для хранения геометрических **GeometryObjects** и сеточных **MeshObjects** сущностей ModelObject)
   - GroupData (класс для хранения ссылок на геометрические и сеточные сущности ModelObject)
   
-MeshObjects (набор классов реализующих конкретные сеточные сущности: Node,Hexa,Penta и т.д.)
-GeometryObjects (набор классов реализующих конкретные геометрические сущности: GeometryPoint, Curve и т.д.)
+**MeshObjects** (набор классов реализующих конкретные сеточные сущности: Node,Hexa,Penta и т.д.)
+
+**GeometryObjects** (набор классов реализующих конкретные геометрические сущности: GeometryPoint, Curve и т.д.)
 
 - ModelController (реализует агрегатные функции:
   <details>
