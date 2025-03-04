@@ -30,6 +30,13 @@
 # Спецификация Model
 <details>
 ![modelData](https://github.com/user-attachments/assets/8e83b944-4b13-44b6-8b0e-b7ea48f7b836)
+
+ ![ObjectsData](https://github.com/user-attachments/assets/cdfcf914-2c1c-4d55-88f6-396057acc585)
+
+ ![ObjectsCollection](https://github.com/user-attachments/assets/97cd62d2-77ce-4f3c-ab2c-d6c74464813c)
+
+![ObjectsSet](https://github.com/user-attachments/assets/bdfb771b-a905-4162-993b-8176b827b11a)
+
 </details>
 
 # Спецификация GmshApi
