@@ -58,16 +58,52 @@ namespace TestModel.ModelControllerTests
 
             var merger = new MergeObjects();
 
-            var mergedNodes = merger.Merge(coincidentNodes, model.ObjectData.NodesSet.Values.ToList());
+            merger.Merge(coincidentNodes, model.ObjectData.NodesSet);
 
             //assert
-            model.ObjectData.NodesSet.Clear();
-
-            foreach (var item in mergedNodes)
-                model.ObjectData.NodesSet.Add(item.Number, item);
 
             Assert.AreEqual(model.ObjectData.NodesSet.Count, count);
 
+            foreach (var elem in model.ObjectData.GetAllElements())
+            {
+                foreach (var item in elem.GetVertexes())
+                {
+                    if(model.ObjectData.NodesSet.All(x => x.Value.Number != item.Number))
+                        throw new Exception("Узел не удален");
+                }
+            }
+
+            //freeNodes.ToArray()[0] = 14;
+            //freeNodes.ToArray()[1] = 15;
+        }
+
+
+        [DataTestMethod]
+        //[DataRow(@"c:\projs\Matushkin\T_project.bpf", 0.001f, 5280)]
+        [DataRow(@"..\..\..\Examples\3D\cub_unsorted_freeNodesCoincident.bpf", 0.01f, 4,3)]
+        public void DeleteNodeAfterMergeNodes(string path, float dist, int index,int elemCount)
+        {
+            //assing
+            var model = new ModelData();
+
+            //act
+            //var modelBPF = loader.Load(@"C:\Projs\ExampleMesh\Tube.inp");
+            model.Load(path);
+
+            var finder = new FindCoincidentObjects();
+
+            finder.ProgressEvent += (ar1, ar2) => { };
+
+            var coincidentNodes = finder.Find(model.ObjectData.GetObjects(ObjType.Узел).ToList(), dist);
+
+            var merger = new MergeObjects();
+
+            merger.Merge(coincidentNodes, model.ObjectData.NodesSet);
+
+            //assert
+
+            model.ObjectData.Remove(ObjType.Узел, index);
+            Assert.AreEqual(model.ObjectData.GetAllElements().Count(), elemCount);
             //freeNodes.ToArray()[0] = 14;
             //freeNodes.ToArray()[1] = 15;
         }

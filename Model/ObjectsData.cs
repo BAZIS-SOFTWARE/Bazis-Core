@@ -470,6 +470,7 @@ namespace Model
             switch (objType)
             {
                 case ObjType.Точка:
+                    PointsSet[objNumber].ExistState = false;
                     PointsSet.Remove(objNumber);
                     CurveCollection.ClearNotExisted();
                     SurfaceCollection.ClearNotExisted();
@@ -488,6 +489,7 @@ namespace Model
                     VolumeCollection.Remove(objNumber);
                     break;
                 case ObjType.Узел:
+                    NodesSet[objNumber].ExistState = false;
                     NodesSet.Remove(objNumber);
                     E1DCollection.ClearNotExisted();
                     E2DCollection.ClearNotExisted();

@@ -1,4 +1,6 @@
 ﻿using Model.Interfaces;
+using Model.Interfaces.ObjectsCollections;
+using Model.MeshObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +23,6 @@ namespace ModelControllerInterfaces
         /// <returns>
         /// Перечисление слитых объектов
         /// </returns>
-        IEnumerable<T> Merge<T>(List<List<int>> numbers, List<T> modelObjects)
-                    where T : IModelObject;
+        void Merge(List<List<int>> numbers, IObjectsSet<Node> modelObjects);
     }
 }

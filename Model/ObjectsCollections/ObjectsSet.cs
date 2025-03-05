@@ -128,14 +128,14 @@ namespace Model.ObjectsCollections
                 yield return item;
             }
         }
+
 /// <inheritdoc/>
 
         public bool Remove(int key)
         {
-            objectsSet[key].ExistState = false;
             return objectsSet.Remove(key);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public bool Remove(KeyValuePair<int, T> item)
         {

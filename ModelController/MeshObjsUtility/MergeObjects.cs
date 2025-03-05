@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using ModelControllerInterfaces;
+using Model.MeshObjects;
+using Model.Utilities;
+using Model.Interfaces.ObjectsCollections;
 
 namespace ModelController.MeshObjsUtility
 {
@@ -11,27 +14,30 @@ namespace ModelController.MeshObjsUtility
     public class MergeObjects : IObjectsMerger
     {
         /// <inheritdoc/>
-        public IEnumerable<T> Merge<T>(List<List<int>>numbers,List<T> modelObjects)
-            where T : IModelObject
+        public void Merge(List<List<int>>numbers,IObjectsSet<Node> nodes)
         {
-            var masterNumbers = modelObjects.Select(x => x.Number).ToList();
-            masterNumbers.Sort();
+            //var masterNumbers = modelObjects.Select(x => x.Number).ToList();
+            //masterNumbers.Sort();
             for (int i = 0; i < numbers.Count; i++)
             {
                 var masterNumber = numbers[i][0];
                 //найти индкс мастер объекта
-                var masterInd = masterNumbers.BinarySearch(masterNumber);
+                var masterNode = nodes[masterNumber];
                 for (int j = 1; j < numbers[i].Count; j++)
                 {
                     var slaveNumber = numbers[i][j];
 
-                    var slaveInd = masterNumbers.BinarySearch(slaveNumber);
+                    var slaveNode = nodes[slaveNumber];
+                    slaveNode.SetNumber(masterNode.Number);
+                    slaveNode.Position = masterNode.Position;
 
+                    nodes.Remove(slaveNumber);
                     //установить ссылку на мастер объект вместо номера мастер объекта
-                    modelObjects[slaveInd] = modelObjects[masterInd];
+                    //slaveNode.SetNumber(masterNode.Number);// = modelObjects[masterInd].Number;
+                    //modelObjects[slaveNode].Position = modelObjects[masterNode].Position;
                 }
             }
-            return modelObjects.Distinct();
+            //return modelObjects.Distinct(new ModelObjectsComparer());
         }
     }
 }

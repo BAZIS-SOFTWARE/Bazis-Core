@@ -88,5 +88,7 @@ namespace Model.Interfaces
         /// </summary>
         /// <param name="number"></param>
         void SetNumber(int number);
+
+        //void SetCopy(IModelObject modelObject);
     }
 }
