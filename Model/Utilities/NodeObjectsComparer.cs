@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Model.Utilities
 {
-    public class ModelObjectsComparer : IEqualityComparer<Node>
+    public class NodeObjectsComparer : IEqualityComparer<Node>
     {
 /// <inheritdoc/>
 
