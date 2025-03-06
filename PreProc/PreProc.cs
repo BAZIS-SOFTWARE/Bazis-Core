@@ -392,6 +392,12 @@ namespace PreProc
         }
 
         /// <inheritdoc/>
+        /// Регулярное выражение разбивается на 5 сегментов:
+        /// 1 - тип задачи из ComplexTaskType. Принимаются раздельные значения из ComplexTaskType
+        /// 2 - индекс задачи. Любое число произвольной длины, кроме нуля. Может быть не задано (*)
+        /// 3 - время начала задачи. Целое/дробное положительное число. Может быть не задано (*)
+        /// 4 - время конца задачи. Целое/дробное положительное число. Может быть не задано (*)
+        /// 5 - расширение файла: .tsf
         public List<string> SortCompDataByTimeAndType(string[] dataStrs)
         {
             var sortedLines = new List<string>();
@@ -408,7 +414,11 @@ namespace PreProc
             var res = names.Distinct();
 
             var available = string.Join("|", res).ToString();
-            var pattern = "^((" + available + ")_((\\d{1,})|(\\*))_((\\d{1,})|((\\d{1,}).(\\d{1,5}))|\\*)_((\\d{1,})|((\\d{1,}).(\\d{1,5}))|\\*)(.tsf))$";
+            var pattern = "^((" + available + ")_" +
+                "(([1-9]{1,})|(\\*))_" +
+                "((\\d{1,})|((\\d{1,}).(\\d{1,5}))|\\*)_" +
+                "((\\d{1,})|((\\d{1,}).(\\d{1,5}))|\\*)" +
+                "(.tsf))$";
 
             foreach (var line in dataStrs)
             {
