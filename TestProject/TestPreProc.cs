@@ -362,6 +362,7 @@ namespace TestProject
             preProc.CalcCompDataV2(CreateValuableData(valuableDataStrings).ToList(), new ProcessProperty { GeneralTaskType = generalTaskType, CommonTaskType = commonTaskType }, projPath);
         }
 
+        [TestMethod]
         [DataRow(ComplexTaskType.термическая_механическая, ProcessType.Welding, new[]
         {
             "Mat/Элементы3D_3 Сталь_20ХМ 0 1500 *",
@@ -381,11 +382,10 @@ namespace TestProject
             "Mat/Элементы3D_3 Сталь_20ХМ 0 1500 *",
             "Clamp/Узлы_7 Жесткое X * 0 1500 *",
         })]
-        [TestMethod]
         public void CalcCompDataV2_ShouldPass_WithoutWeldingTSF(ComplexTaskType generalTaskType, ProcessType commonTaskType, string[] valuableDataStrings)
         {
             var preProc = new PreProc.PreProc();
-            var path = Path.GetFullPath(projPath) + "\\V2TestCase";
+            var path = Path.GetFullPath(projPath) + "\\TsfFolder\\\\V2TestCase";
             preProc.CalcCompDataV2(CreateValuableData(valuableDataStrings).ToList(), new ProcessProperty { GeneralTaskType = generalTaskType, CommonTaskType = commonTaskType }, path);
             preProc.SortCompDataByTimeAndType(Directory.GetFiles(path));
         }
