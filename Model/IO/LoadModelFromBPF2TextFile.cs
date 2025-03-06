@@ -157,7 +157,7 @@ namespace Model.IO
             }
         }
 
-        private static void LoadGroup(StreamReader sr, ModelData newMesh)
+        private void LoadGroup(StreamReader sr, ModelData newMesh)
         {
             var line = sr.ReadLine();
             while (line != "#Группы")
@@ -193,7 +193,7 @@ namespace Model.IO
             }
         }
 
-        private static void LoadElemGroup(ModelData newMesh, ObjType objType, string line)
+        private void LoadElemGroup(ModelData newMesh, ObjType objType, string line)
         {
             var splitLine = line.Split(':');
             var name = splitLine[1].Split(' ')[1];
@@ -201,13 +201,12 @@ namespace Model.IO
             var indexLine = splitLine[1].Remove(0, name.Length + 2);
             if (indexLine != "")
             {
-                var elements = newMesh.ObjectData.GetObjects(objType).ToList();
                 var indexes = indexLine.Split(' ').Select(x => int.Parse(x)).ToList();
                 indexes.Sort();
 
                 foreach (var index in indexes)
                 {
-                    var obj = ByNumberFinder.Find(elements, index);
+                    var obj = newMesh.ObjectData.Find(objType, index);
                     newGroup.Add(obj);
                 }
 

@@ -101,8 +101,8 @@ namespace TestModel
         [DataRow(@"..\..\..\Examples\BPF2TXT\cub_unsorted.bpf2", 2, ObjType.Элемент3D,DisplayName = "Sets Элемент3D = 2")]
         [DataRow(@"..\..\..\Examples\BPF2TXT\cub_unsorted.bpf2", 8, ObjType.Узел, DisplayName = "Objects Узел = 1")]
         [DataRow(@"..\..\..\Examples\BPF2TXT\cub_unsorted_oneSet.bpf2", 1, ObjType.Элемент3D, DisplayName = "Sets Элемент3D = 1")]
-        [DataRow(@"c:\BazisSolver\TestTaskSolutionMSTest\ExampleProj\Term\2D_axi\Quad\one_quad_term_cycle.bpf2", 1, ObjType.Элемент2D, DisplayName = "Sets Элемент2D = 1")]
-        //[DataRow(@"c:\projs\Matushkin\T_project_merge.bpf2", 1, ObjType.Узел)]
+        //[DataRow(@"c:\BazisSolver\TestTaskSolutionMSTest\ExampleProj\Term\2D_axi\Quad\one_quad_term_cycle.bpf2", 1, ObjType.Элемент2D, DisplayName = "Sets Элемент2D = 1")]
+        //[DataRow(@"c:\projs\ElenaLu\Dnishe\Dnishe2d.bpf2", 2312, ObjType.Узел)]
         public void LoadModelFromBpf2TextFormat(string path, int sets, ObjType objType)
         {
             //assing

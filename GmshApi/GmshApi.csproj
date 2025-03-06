@@ -4,7 +4,7 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <SignAssembly>True</SignAssembly>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>3.1.0.6</Version>
+    <Version>3.1.0.8</Version>
     <Company>BAZIS SOFTWARE</Company>
     <Product>BAZIS</Product>
     <Description>Contains basic mesh oblects and geometry classes</Description>
@@ -20,14 +20,16 @@
 
   <!--Копирование собранного пакета в необходимую папку-->
   <Target Name="CopyPackage" AfterTargets="Pack">
-    <Copy SourceFiles="$(PackageOutputPath)\$(PackageId).$(PackageVersion).nupkg"
-          DestinationFolder="\\fs\Plm-Ural\OrgUnits\developers\Packages\Core\$(Configuration)" />
+    <Copy SourceFiles="$(PackageOutputPath)\$(PackageId).$(PackageVersion).nupkg" DestinationFolder="\\fs\Plm-Ural\OrgUnits\developers\Packages\Core\$(Configuration)" />
   </Target>
   
   <ItemGroup>
     <Compile Remove="GmshController\**" />
+    <Compile Remove="Wrapper\Interfaces\**" />
     <EmbeddedResource Remove="GmshController\**" />
+    <EmbeddedResource Remove="Wrapper\Interfaces\**" />
     <None Remove="GmshController\**" />
+    <None Remove="Wrapper\Interfaces\**" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Controller.cs" />
@@ -43,8 +45,5 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Wrapper\Interfaces\" />
   </ItemGroup>
 </Project>
