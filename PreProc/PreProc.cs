@@ -396,11 +396,24 @@ namespace PreProc
         {
             var sortedLines = new List<string>();
 
+            // Принимаются все доступные значения из Enum ComplexTaskType
+            // сложные процессы разбиваются на составляющее и добавляются к допустимым названиям процессов
+            // дубликаты убираются
+            var names = new List<string>();
+            foreach (var name in Enum.GetNames(typeof(ComplexTaskType)))
+            {
+                if (name.Contains('_')) names.AddRange(name.Split('_'));
+                else names.Add(name);
+            }
+            var res = names.Distinct();
+
+            var available = string.Join("|", res).ToString();
+            var pattern = "^((" + available + ")_((\\d{1,})|(\\*))_((\\d{1,})|((\\d{1,}).(\\d{1,5}))|\\*)_((\\d{1,})|((\\d{1,}).(\\d{1,5}))|\\*)(.tsf))$";
+
             foreach (var line in dataStrs)
             {
                 var file = Path.GetFileName(line);
-                if (!Enum.GetValues(typeof(ComplexTaskType)).OfType<ComplexTaskType>().Any(x => x.ToString().Equals(file.Split('_')[0])) 
-                    || !Regex.IsMatch(file, "^(([a-zA-z]{1,})_((\\d{1,})|(\\*))_((\\d{1,})|((\\d{1,}).(\\d{1,5}))|\\*)_((\\d{1,})|((\\d{1,}).(\\d{1,5}))|\\*)(.tsf))$"))
+                if (!Regex.IsMatch(file, pattern))
                     throw new Exception("Имя полученного файла не соответствует шаблону: " +
                     "<тип процесса>_<номер задачи>_<время начала>_<время окончания>.tsf");
 
