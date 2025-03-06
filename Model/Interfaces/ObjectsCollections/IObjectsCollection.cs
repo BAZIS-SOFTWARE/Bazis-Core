@@ -43,9 +43,14 @@ namespace Model.Interfaces.ObjectsCollections
         /// </summary>
         /// <returns></returns>
         int GetMinNumber();
+        /// <summary>
+        /// Add set as object
+        /// </summary>
+        /// <param name="set"></param>
+        void Add(ObjectsSet<T> set);
 
         /// <summary>
-        /// Add set
+        /// Add set use name
         /// </summary>
         /// <param name="setName"></param>
         void Add(string setName);

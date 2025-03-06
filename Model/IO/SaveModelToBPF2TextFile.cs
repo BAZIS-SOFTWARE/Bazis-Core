@@ -30,38 +30,13 @@ namespace Model.IO
 
                 sw.WriteLine(verStr);
 
-                foreach (ObjType item in Enum.GetValues(typeof(ObjType)))
-                {
-                    sw.WriteLine("");
-                    if (item == ObjType.Узел)
-                    {
-                        sw.WriteLine(item);
-                        var nodes = model.ObjectData.NodesSet.Values;
-                        foreach (var nodeItem in nodes)
-                        {
-                            var x = nodeItem._x;
-                            var y = nodeItem._y;
-                            var z = nodeItem._z;
-                            var numbr = nodeItem.Number;
-                            sw.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0} {1} {2} {3}", numbr, x, y, z));
-                        }
-                        sw.WriteLine($"#{item}");
-                    }
-
-                    else if (item == ObjType.Элемент1D)
-                    {
-                        SaveElements(model.ObjectData.E1DCollection.Objects, sw);
-                    }
-                    else if (item == ObjType.Элемент2D)
-                    {
-                        SaveElements(model.ObjectData.E2DCollection.Objects, sw);
-                    }
-                    else if (item == ObjType.Элемент3D)
-                    {
-                        SaveElements(model.ObjectData.E3DCollection.Objects, sw);
-                    }
-                }
                 sw.WriteLine("");
+                SaveNodes(model, sw);
+                SaveElements(model.ObjectData.E1DCollection.Objects, sw);
+                SaveElements(model.ObjectData.E2DCollection.Objects, sw);
+                SaveElements(model.ObjectData.E3DCollection.Objects, sw);
+                sw.WriteLine("");
+
                 sw.WriteLine("Группы");
                 foreach (var group in model.GroupData)
                 {
@@ -78,6 +53,20 @@ namespace Model.IO
                 sw.WriteLine("");
                 sw.Dispose();
             }
+        }
+        private void SaveNodes(IModelData model, StreamWriter sw)
+        {
+            sw.WriteLine(ObjType.Узел);
+            var nodes = model.ObjectData.NodesSet.Values;
+            foreach (var nodeItem in nodes)
+            {
+                var x = nodeItem._x;
+                var y = nodeItem._y;
+                var z = nodeItem._z;
+                var numbr = nodeItem.Number;
+                sw.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0} {1} {2} {3}", numbr, x, y, z));
+            }
+            sw.WriteLine($"#{ObjType.Узел}");
         }
 
         private void SaveElements<T>(ICollection<ObjectsSet<T>> collection, StreamWriter sw)

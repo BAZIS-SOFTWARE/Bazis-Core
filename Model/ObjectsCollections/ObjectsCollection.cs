@@ -44,6 +44,11 @@ namespace Model.ObjectsCollections
             objects.Add(setName, new ObjectsSet<T>(setName));
         }
 
+        public void Add(ObjectsSet<T> set)
+        {
+            objects.Add(set.Name, set);
+        }
+
         /// <inheritdoc/>
 
         public void Add(string setName, T addObj)

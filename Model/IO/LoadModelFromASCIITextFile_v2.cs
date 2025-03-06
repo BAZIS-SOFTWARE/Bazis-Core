@@ -153,11 +153,11 @@ namespace Model.IO
         {
             if (objsType == ObjType.Элемент1D)
             {
-                model.ObjectData.E1DCollection.Add(setName);
-                var set1D = model.ObjectData.E1DCollection[setName];
+                var set1D = new ObjectsSet<Beam>(setName);
                 FillSet_v2(set1D, numbers);
                 set1D.SetViewMode(ViewMode.Line);
                 set1D.SetColor(color);
+                model.ObjectData.E1DCollection.Add(set1D);
             }
 
             else if (objsType == ObjType.Элемент2D)

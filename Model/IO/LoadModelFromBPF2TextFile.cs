@@ -11,6 +11,10 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using Model.ObjectsCollections;
+using System.Drawing;
+using System.Data;
+using Model.Interfaces.MeshObjects;
+using System.Xml.Linq;
 
 namespace Model.IO
 {
@@ -26,7 +30,7 @@ namespace Model.IO
             using (var sr = new StreamReader(path))
             {
                 var newModel = new ModelData();
-
+                var rnd = new Random();
                 string[] token = new string[1];
                 while (!sr.EndOfStream)
                 {
@@ -36,13 +40,29 @@ namespace Model.IO
                         Thread.Sleep(100);
                         LoadNodes(sr, newModel);
                     }
-                    if (token[0] == "Элементы3D" || token[0] == "Элементы2D" ||
-                        token[0] == "Элементы1D" || token[0] == "Элемент3D" || token[0] == "Элемент2D" ||
-                        token[0] == "Элемент1D")
+                    if (token[0] == "Элемент3D")
                     {
-                        LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка элементов..."));
-                        Thread.Sleep(100);
-                        LoadElement(sr, token, newModel);
+                        var color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
+                        var set = new ObjectsSet<Element3D>(token[1]);
+                        set.SetColor(color);
+                        FillSet(sr, set, newModel);
+                        newModel.ObjectData.E3DCollection.Add(set);
+                    }
+                    if (token[0] == "Элемент2D")
+                    {
+                        var color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
+                        var set = new ObjectsSet<Element2D>(token[1]);
+                        set.SetColor(color);
+                        FillSet(sr, set, newModel);
+                        newModel.ObjectData.E2DCollection.Add(set);
+                    }
+                    if (token[0] == "Элемент1D")
+                    {
+                        var color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
+                        var set = new ObjectsSet<Beam>(token[1]);
+                        set.SetColor(color);
+                        FillSet(sr, set, newModel);
+                        newModel.ObjectData.E1DCollection.Add(set);
                     }
 
                     if (token[0] == "Группы")
@@ -84,48 +104,37 @@ namespace Model.IO
             //newMesh.ObjectData.NodeCollection.AddRange(ObjType.Узел.ToString(), nodes.OrderBy(n => n.Number));
         }
 
-        private void LoadElement(StreamReader reader, string[] token, ModelData newMesh)
+        private void FillSet<T>(StreamReader reader, ObjectsSet<T> set, ModelData newMesh)
+            where T : IElement
         {
-            var setName = token[1];
-            var elType = token[0];
+            LoadEvent?.Invoke(this, new LoaderEventArgs($"Загрузка набора {set.Name}..."));
+            Thread.Sleep(100);
 
             var line = reader.ReadLine();
 
-            while (line != $"#{elType}")
+            while (line != $"#{set.ObjType}")
             {
                 var tokens = line.Split()
 .Where(m => int.TryParse(m, out var val))
 .Select(int.Parse);
                 var elementNumber = tokens.First();
                 var level = tokens.Skip(1).First();
-                var nodes = GetNodes(newMesh, tokens.Skip(2)).ToArray();
-                if (elType == "Элементы3D" | elType == "Элемент3D" | elType == "Элементы 3004")
-                {
-                    var element = GetElement3D(nodes, elementNumber, level);
-                    newMesh.ObjectData.E3DCollection.Add(setName, element);
-                }
-                if (elType == "Элементы2D" | elType == "Элемент2D" | elType == "Элементы 2003")
-                {
-                    var element = GetElement2D(nodes, elementNumber, level);
-                    newMesh.ObjectData.E2DCollection.Add(setName, element);
-                }
-                if (elType == "Элементы1D" | elType == "Элемент1D" | elType == "Элементы 1002")
-                {
-                    var el2DObj = new Beam(elementNumber, nodes.ToArray())
-                    { Level = level };
-                    newMesh.ObjectData.E1DCollection.Add(setName, el2DObj);
-                }
+
+                var nodes = tokens.Skip(2).Select(x => newMesh.ObjectData.NodesSet[x]).ToArray();
+
+                IElement elem;
+                if (typeof(T) == typeof(Element3D))
+                    elem = GetElement3D(nodes, elementNumber, level);          
+                else if (typeof(T) == typeof(Element2D))
+                    elem = GetElement2D(nodes, elementNumber, level);
+                else
+                    elem = new Beam(elementNumber, nodes.ToArray()){ Level = level };
+
+                set.Add(elem.Number, (T)elem);
                 line = reader.ReadLine();
             }
         }
 
-        private IEnumerable<Node> GetNodes(ModelData modelData, IEnumerable<int> indeces)
-        {
-            foreach (var nodeNumber in indeces)
-            {
-                yield return modelData.ObjectData.NodesSet[nodeNumber];
-            }
-        }
 
         private Element3D GetElement3D(Node[] nodes, int elementNumber, int level)
         {
