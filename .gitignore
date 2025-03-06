@@ -266,3 +266,6 @@ __pycache__/
 /GmshApi/gmsh.dll
 
 *.tsf
+
+/TestProject/CalcCompDataTest/TsfFolder/*
+/TestProject/CalcCompDataTest/V2TestCase/*
