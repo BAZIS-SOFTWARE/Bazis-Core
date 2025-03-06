@@ -15,13 +15,15 @@ using Model.Interfaces;
 using PreProc.Interfaces;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Windows.Forms;
 
 namespace TestProject
 {
     [TestClass]
     public class TestPreProc
     {
-        private static string projPath = Path.GetFullPath(@".\..\..\..\TestProject\CalcCompDataTest\TsfFolder\");
+        
+        private static string projPath =  Path.GetFullPath(@".\..\..\..\..\TestProject\CalcCompDataTest\");
 
         /// <summary>
         /// Создать ValuableDat, для параметризации тестов
@@ -189,7 +191,7 @@ namespace TestProject
         public void BaseCheck(string[] parameters)
         {
             var preProc = new PreProc.PreProc();
-            preProc.CalcCompDataV1(CreateValuableData(parameters).ToList(), ProcessType.Welding, projPath);
+            preProc.CalcCompDataV1(CreateValuableData(parameters).ToList(), ProcessType.Welding, projPath + "TsfFolder\\");
             preProc.CalcCompDataV2(CreateValuableData(parameters).ToList(), new ProcessProperty { GeneralTaskType = ComplexTaskType.термическая_механическая, CommonTaskType = ProcessType.Welding }, projPath);
         }
 
@@ -210,7 +212,7 @@ namespace TestProject
             }).ToList();
             
             var preProc = new PreProc.PreProc();
-            Assert.ThrowsException<Exception>(() => preProc.CalcCompDataV1(valuableData, pt, projPath));
+            Assert.ThrowsException<Exception>(() => preProc.CalcCompDataV1(valuableData, pt, projPath + "TsfFolder\\"));
             Assert.ThrowsException<Exception>(() => preProc.CalcCompDataV2(valuableData, new ProcessProperty { GeneralTaskType = ComplexTaskType.термическая_механическая, CommonTaskType = pt }, projPath));
         }
 
@@ -227,7 +229,7 @@ namespace TestProject
             var heatFileName = $"термическая термическая10_50.tsf выполнить";
             var medFileName = $"термическая термическая20_1500.tsf выполнить";
             var preProc = new PreProc.PreProc();
-            preProc.CalcCompDataV1(CreateValuableData(parameters).ToList(), ProcessType.Welding, projPath);
+            preProc.CalcCompDataV1(CreateValuableData(parameters).ToList(), ProcessType.Welding, projPath + "TsfFolder\\");
             preProc.CalcCompDataV2(CreateValuableData(parameters).ToList(), new ProcessProperty { GeneralTaskType = ComplexTaskType.термическая_механическая, CommonTaskType = ProcessType.Welding }, projPath);
 
             var projDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
@@ -249,25 +251,25 @@ namespace TestProject
         public void CalcCompData_ReturnsTrue_WhenMaterialContinousWholeProcess(string[] parameters)
         {
             var preProc = new PreProc.PreProc();
-            preProc.CalcCompDataV1(CreateValuableData(parameters).ToList(), ProcessType.Welding, projPath);
+            preProc.CalcCompDataV1(CreateValuableData(parameters).ToList(), ProcessType.Welding, projPath + "TsfFolder\\");
             preProc.CalcCompDataV2(CreateValuableData(parameters).ToList(), new ProcessProperty { GeneralTaskType = ComplexTaskType.термическая_механическая, CommonTaskType = ProcessType.Welding }, projPath);
         }
 
         [TestMethod]
-        [DataRow(@".\..\..\..\TestProject\CalcCompDataTest\MNOGOPROHOD.bpf", ProcessType.Welding)]
+        [DataRow(@"MNOGOPROHOD.bpf", ProcessType.Welding)]
         //[DataRow(@"c:\projs\testProj\Tempering\proj.bpf", ProcessType.Heating)]
         //[DataRow(@"c:\projs\testProj\Tempering\proj.bpf", ProcessType.Quenching)]
         //[DataRow(@"c:\projs\testProj\Tempering\proj.bpf", ProcessType.Tempering)]
         //[DataRow(@".\..\..\CalcCompDataTest\1.bpf", ProcessType.Welding)]
         //[DataRow(@".\..\..\CalcCompDataTest\6.bpf", ProcessType.Welding)]
-        public void PreProc_GenerateTSF_ShouldPass(string path, ProcessType pt)
+        public void PreProc_GenerateTSF_ShouldPass(string file, ProcessType pt)
         {
             var project = new ProjectData();
 
             project.ModelData = new ModelData();
             project.TaskData = new TaskData();
 
-            project.Load(path);
+            project.Load(projPath + file);
 
             var resData = new List<IValuableData>();
 
@@ -275,28 +277,28 @@ namespace TestProject
                 resData.Add(data as ValuableData);
 
             var preProc = new PreProc.PreProc();
-            preProc.CalcCompDataV1(resData, pt, projPath);
-            preProc.CalcCompDataV2(resData, new ProcessProperty { GeneralTaskType = ComplexTaskType.термическая_механическая, CommonTaskType = pt }, projPath);
+            preProc.CalcCompDataV1(resData, pt, projPath + "TsfFolder\\");
+            preProc.CalcCompDataV2(resData, new ProcessProperty { GeneralTaskType = ComplexTaskType.термическая_механическая, CommonTaskType = pt }, projPath + "TsfFolder\\");
         }
 
         [TestMethod]
-        [DataRow(@".\..\..\..\TestProject\CalcCompDataTest\MatDataShorterThenBoundData.bpf", DisplayName = "MatData_Shorter_Then_BoundData")]
-        [DataRow(@".\..\..\..\TestProject\CalcCompDataTest\NoMaterialData.bpf", DisplayName = "No_MaterialData")]
-        [DataRow(@".\..\..\..\TestProject\CalcCompDataTest\NoBoundData.bpf", DisplayName = "No_BoundData")]
-        [DataRow(@".\..\..\..\TestProject\CalcCompDataTest\ClampDataStartsAfterProcessStart.bpf", DisplayName = "ClampData_Starts_After_Process_Start")]
-        [DataRow(@".\..\..\..\TestProject\CalcCompDataTest\MedDataStartsAfterProcessStart.bpf", DisplayName = "MedData_Starts_After_Process_Start")]
-        [DataRow(@".\..\..\..\TestProject\CalcCompDataTest\MaterialDataStartsAfterProcessStart.bpf")]
-        [DataRow(@".\..\..\..\TestProject\CalcCompDataTest\FreeSpacesBetweenClampData.bpf")]
-        [DataRow(@".\..\..\..\TestProject\CalcCompDataTest\FreeSpacesBetweenMediaData.bpf")]
-        [DataRow(@".\..\..\..\TestProject\CalcCompDataTest\FreeSpacesBetweenMaterialData.bpf")]
-        [DataRow(@".\..\..\..\TestProject\CalcCompDataTest\HeatDataContiniousWithoutMediaData.bpf")]
-        public void PreProc_GenerateTSF_ShouldFail(string path)
+        [DataRow(@"MatDataShorterThenBoundData.bpf", DisplayName = "MatData_Shorter_Then_BoundData")]
+        [DataRow(@"NoMaterialData.bpf", DisplayName = "No_MaterialData")]
+        [DataRow(@"NoBoundData.bpf", DisplayName = "No_BoundData")]
+        [DataRow(@"ClampDataStartsAfterProcessStart.bpf", DisplayName = "ClampData_Starts_After_Process_Start")]
+        [DataRow(@"MedDataStartsAfterProcessStart.bpf", DisplayName = "MedData_Starts_After_Process_Start")]
+        [DataRow(@"MaterialDataStartsAfterProcessStart.bpf")]
+        [DataRow(@"FreeSpacesBetweenClampData.bpf")]
+        [DataRow(@"FreeSpacesBetweenMediaData.bpf")]
+        [DataRow(@"FreeSpacesBetweenMaterialData.bpf")]
+        [DataRow(@"HeatDataContiniousWithoutMediaData.bpf")]
+        public void PreProc_GenerateTSF_ShouldFail(string file)
         {
             var resData = new List<IValuableData>();
             var group = new Group("test",ObjType.Узел);
             var groupData = new GroupData();
             groupData.Add(group);
-            var textData = new LoadTaskDataTextFormat().Load(path, groupData);
+            var textData = new LoadTaskDataTextFormat().Load(projPath + file, groupData);
             foreach (var data in textData)
             {
                 resData.Add(data as ValuableData);
