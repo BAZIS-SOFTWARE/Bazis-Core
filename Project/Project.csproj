@@ -23,12 +23,12 @@
   </PropertyGroup>
 
   <!--Копирование собранного пакета в необходимую папку-->
-  <Target Name="CopyPackage" AfterTargets="Pack">
+	<!--<Target Name="CopyPackage" AfterTargets="Pack">
     <Copy SourceFiles="$(PackageOutputPath)\$(PackageId).$(PackageVersion).nupkg"
           DestinationFolder="\\fs\Plm-Ural\OrgUnits\developers\Packages\Core\$(Configuration)" />
-  </Target>
+  </Target>-->
 
-  <ItemGroup>
+	<ItemGroup>
     <EmbeddedResource Remove="TasksData\**" />
     <None Remove="TasksData\**" />
   </ItemGroup>

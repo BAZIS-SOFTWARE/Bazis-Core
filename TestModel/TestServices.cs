@@ -11,6 +11,8 @@ using Model.IO;
 using Model.MeshObjects;
 using Model.Interfaces.MeshObjects;
 using System.Data;
+using Model.GroupsData;
+using ModelController.MeshObjsCreator;
 
 namespace TestModel
 {
@@ -182,6 +184,62 @@ namespace TestModel
             var distinctNumbers = surfaceNodes.Distinct();
             if (distinctNumbers.Contains(0))
                 throw new Exception("Последовательность содержит неверный узел!");
+        }
+
+        [TestMethod]
+        [DataRow(1, 4, DisplayName = "by cube edges")]
+        [DataRow(0.5d, 0, DisplayName = "less than cube edges")]
+        [DataRow(2d, 4, DisplayName = "more than the largest cube diagonal")]
+        public void BeamGroupConnection_Create_ShouldBeCorrect_OnIdentityCube(double searchRadius, int expected)
+        {
+            var instance = new SimpleBeamGroupConnection();
+
+            var master = new Group("master", ObjType.Узел)
+            {
+                new Node(0, new Point3D(0, 0, 0)),
+                new Node(1, new Point3D(1, 0, 0)),
+                new Node(2, new Point3D(1, 1, 0)),
+                new Node(3, new Point3D(0, 1, 0))
+            };
+
+            var slave = new Group("slave", ObjType.Узел)
+            {
+                new Node(4, new Point3D(0, 0, 1)),
+                new Node(5, new Point3D(1, 0, 1)),
+                new Node(6, new Point3D(1, 1, 1)),
+                new Node(7, new Point3D(0, 1, 1))
+            };
+
+            var beams = instance.Create(master, slave, searchRadius).ToList();
+
+            Assert.AreEqual(expected, beams.Count);
+        }
+
+        [TestMethod]
+        [DataRow(1, 1, DisplayName = "by cube edges")]
+        [DataRow(0.5d, 0, DisplayName = "less than cube edges")]
+        [DataRow(1.42d, 3, DisplayName = "as sqrt(2)")]
+        [DataRow(1.74d, 4, DisplayName = "as sqrt(3)")]
+        public void BeamGroupConnection_Create_ShouldBeCorrect_OnDifferentSizeGroups(double searchRadius, int expected)
+        {
+            var instance = new SimpleBeamGroupConnection();
+
+            var master = new Group("master", ObjType.Узел)
+            {
+                new Node(0, new Point3D(0, 0, 0)),
+            };
+
+            var slave = new Group("slave", ObjType.Узел)
+            {
+                new Node(4, new Point3D(0, 0, 1)),
+                new Node(5, new Point3D(1, 0, 1)),
+                new Node(6, new Point3D(1, 1, 1)),
+                new Node(7, new Point3D(0, 1, 1))
+            };
+
+            var beams = instance.Create(master, slave, searchRadius).ToList();
+
+            Assert.AreEqual(expected, beams.Count);
         }
 
         private ObjectsData InitializeSampleModelWithAscendingNumbers()
