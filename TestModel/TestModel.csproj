@@ -94,6 +94,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BeamGroupConnection_should.cs" />
     <Compile Include="GeometryTests\TestConvexHull.cs" />
     <Compile Include="GeometryTests\TestExtensions.cs" />
     <Compile Include="GeometryTests\TestFrame.cs" />
