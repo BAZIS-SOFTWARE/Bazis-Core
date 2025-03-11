@@ -24,8 +24,7 @@
 
   <!--Копирование собранного пакета в необходимую папку-->
   <Target Name="CopyPackage" AfterTargets="Pack">
-    <Copy SourceFiles="$(PackageOutputPath)\$(PackageId).$(PackageVersion).nupkg"
-          DestinationFolder="\\fs\Plm-Ural\OrgUnits\developers\Packages\Core\$(Configuration)" />
+    <Copy SourceFiles="$(PackageOutputPath)\$(PackageId).$(PackageVersion).nupkg" DestinationFolder="\\fs\Plm-Ural\OrgUnits\developers\Packages\Core\$(Configuration)" />
   </Target>
 
   <ItemGroup>
@@ -81,7 +80,6 @@
     <Compile Include="Results\IO\SaveResultsFileDb.cs" />
     <Compile Include="Results\IO\SaveResultsFileTextFormat.cs" />
     <Compile Include="Results\Result.cs" />
-    <Compile Include="Results\ResultData.cs" />
     <Compile Include="Results\ResultDataBase.cs" />
     <Compile Include="Results\ResultsComparer.cs" />
     <Compile Include="TaskParameters\ChemicalConvergence.cs" />

@@ -26,7 +26,7 @@ namespace Project.Interfaces.IO
         /// <param name="tableName"></param>
         /// <param name="time"></param>
         /// <returns></returns>
-        Result GetResultFromDb(string fullPath, string tableName);
+        Result GetResultFromDb(string fullPath, string tableName, float time);
         /// <summary>
         /// GetValuesFromDb. Возвращает только уникальные значения.
         /// </summary>

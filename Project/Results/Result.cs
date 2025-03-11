@@ -37,9 +37,16 @@ namespace Project.Results
             return schema;
         }
 
-        public Result(DataTable data, TaskKind taskKind)
+        public Result(DataTable table, float time, TaskKind taskKind)
         {
-            AddData(data);
+            Data = table;
+            Time = time;
+            TaskKind = taskKind;
+        }
+
+        public Result(float time, TaskKind taskKind)
+        {
+            Time = time;
             TaskKind = taskKind;
         }
 /// <inheritdoc/>
@@ -70,50 +77,7 @@ namespace Project.Results
 
         public void AddData(DataTable dbDataTable)
         {
-
-            // + Time.ToString(CultureInfo.InvariantCulture));
-
-            if (!dbDataTable.Columns.Contains("Time"))
-                throw new Exception($"Таблица не содержит данных о времени {Time}");
-
-            if (dbDataTable.Rows.Count == 0)
-                throw new Exception($"Таблица не содержит строк");
-
-            var time = Convert.ToSingle(dbDataTable.Rows[0]["Time"]);
-            
-            if(dbDataTable.Select($"Time = {time}").Length != dbDataTable.Rows.Count)
-                throw new Exception($"Значения времени в строках не совпадают");
-
-            var newTable = new DataTable(dbDataTable.TableName);
-
-            var columnsCount = dbDataTable.Columns.Count;
-
-            newTable.Columns.Add("Индекс", typeof(int));
-            for (int i = 3; i < columnsCount; i++)
-            {
-                var column = new DataColumn(dbDataTable.Columns[i].ColumnName, typeof(float)) { DefaultValue = 0 };
-                newTable.Columns.Add(column);
-            }
-
-            var rows = dbDataTable.Rows;
-            var columns = dbDataTable.Columns;
-
-            for (int i = 0; i < rows.Count; i++)
-            {
-                var row = newTable.NewRow();
-
-                for (int j = 2; j < columns.Count; j++)
-                {
-                    row[j - 2] = rows[i][j];
-                }
-                newTable.Rows.Add(row);
-            }
-
-            var key = new DataColumn[1];
-            key[0] = newTable.Columns[0];
-            newTable.PrimaryKey = key;
-
-            Data = newTable;
+            Data = dbDataTable;
         }
     }
 

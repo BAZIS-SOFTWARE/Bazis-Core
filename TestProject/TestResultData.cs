@@ -30,6 +30,8 @@ using Model.IO;
 using Model.Interfaces.ObjectsCollections;
 using Model.ObjectsCollections;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Xml.Linq;
 
 
 namespace TestProject
@@ -52,15 +54,30 @@ namespace TestProject
             var project = new ProjectData("", path);
 
             var results = loaderDB.GetResultFromDb(project.GeneralData.Path + $@"\{resName}",
-                $"nodes WHERE Time = {time}") ;
-            
+                $"nodes", time) ; 
 
-            project.ResultData = new ResultData() { results };
+            Assert.AreNotEqual(results, null);
+            Assert.AreNotEqual(results.Data.Rows.Count, 0);
+        }
 
-            var search = project.ResultData.FindByTime("термическая", time).FirstOrDefault();
+        [TestMethod]
+        [DataRow(@"..\..\..\Examples\ProjAndResults", "термическая_0_0_0.5.db")]
+        public void TestLoadDBSQLiteFindByTimeInterval(string path, string dbName)
+        {
+            var loaderDB = new LoadResultsFileDB();
+            loaderDB.LoadEvent += (ar1, ar2) => { };
+
+            var project = new ProjectData("", path);
+            var results = loaderDB.Load(project.GeneralData.Path + $@"\{dbName}");
+
+            var kind = dbName.Split('_')[0];
+
+            var search = results.Where(x => x.TaskKind.ToString() == kind &&
+
+x.Time.CompareTo(0) >= 0
+& x.Time.CompareTo(0.25f) <= 0);
 
             Assert.AreNotEqual(search, null);
-            Assert.AreNotEqual(search.Data.Rows.Count, 0);
         }
 
         [DataTestMethod]
@@ -103,24 +120,11 @@ var loaderDB = new LoadResultsFileDB();
             Assert.AreNotEqual(elsResults.Count(), 0);
         }
 
-        [TestMethod]
-        public void TestLoadDBSQLiteFindByTimeInterval()
-        {
-            var loaderDB = new LoadResultsFileDB();
-            loaderDB.LoadEvent += (ar1, ar2) => { };
 
-            var project = new ProjectData("", @"..\..\..\Examples\ProjAndResults");
-            var results = loaderDB.Load(project.GeneralData.Path + @"\термическая_0_0_0.5.db");
-
-            project.ResultData = new ResultData();
-
-            project.ResultData.AddRange(results);
-
-            var search = project.ResultData.FindByTimeInterval("термическая", 0,0.25f);
-        }
 
         [TestMethod]
-        public void TestMergeResults()
+        [DataRow(@"..\..\..\Examples\ProjAndResults\термическая_0_0_0.5.db")]
+        public void TestMergeResults(string dbName)
         {
             var proj = new ProjectData();
             proj.ModelData = new ModelData();
@@ -128,76 +132,34 @@ var loaderDB = new LoadResultsFileDB();
 
             proj.Load(@"..\..\..\Examples\ProjAndResults\two_tetra_term_cycle_multiStep.bpf");
 
-            proj.ResultData = new ResultData();
+            proj.ResultDB = dbName;
 
             var loaderDB = new LoadResultsFileDB();
             loaderDB.LoadEvent += (ar1, ar2) => { };
-            var results = loaderDB.Load(@"..\..\..\Examples\ProjAndResults\термическая_0_0_0.5.db");
-
-            proj.ResultData.AddRange(results);
+            var results = loaderDB.Load(proj.ResultDB);
 
             IEnumerable<IElement> elements;
-            if (proj.TaskType == TaskType.Volume)
+            if (proj.GeneralData.TaskType == TaskType.Volume)
             {
                 elements = proj.ModelData.ObjectData.E3DCollection.GetObjects();
             }
             else elements = proj.ModelData.ObjectData.E2DCollection.GetObjects();
 
             var interfaceNodesFinder = new InterfacedNodesFinder();
-            var resultsFind = proj.ResultData.FindByTimeInterval("термическая", 0, 0.5f);
+
+            var dbFile = Path.GetFileNameWithoutExtension(dbName);
+            var ar = dbFile.Split('_');
+            var kind = ar[0];
+            var fTime = Convert.ToSingle(ar[2],CultureInfo.InvariantCulture);
+            var sTime = Convert.ToSingle(ar[3], CultureInfo.InvariantCulture);
+            var search = results.Where(x => x.TaskKind.ToString() == kind &&
+
+x.Time.CompareTo(fTime) >= 0
+& x.Time.CompareTo(sTime) <= 0);
 
             var mergeResults = new MergeResults();
 
-            mergeResults.Merge(interfaceNodesFinder.Find(elements), "Q", resultsFind.ToList());
-        }
-
-        [TestMethod]
-        public void TestDistinctResults()
-        {
-            //assign
-            var proj = new ProjectData();
-            proj.ModelData = new ModelData();
-            proj.TaskData = new TaskData();
-
-            //act
-            proj.Load(@"..\..\..\Examples\ProjAndResults\two_tetra_term_cycle_multiStep.bpf");
-
-            proj.ResultData = new ResultData();
-
-            var loaderDB = new LoadResultsFileDB();
-            loaderDB.LoadEvent += (ar1, ar2) => { };
-
-            var results1 = loaderDB.Load(@"..\..\..\Examples\ProjAndResults\термическая_0_0_0.5.db");
-            proj.ResultData.AddRange(results1, new ResultsComparer());
-
-            var results0 = loaderDB.Load(@"..\..\..\Examples\ProjAndResults\термическая_0_0_0.5.db");
-            proj.ResultData.AddRange(results0,new ResultsComparer());
-
-            //Assert.AreEqual(project.ResultData.Count(), results.Count);
-        }
-
-        [TestMethod]
-        public void CreateDBSQLite_ResultPage_Result_Presenter()
-        {
-            var project = new ProjectData("", @"..\..\..\Examples\ProjAndResults");
-            project.ResultData = new ResultData();
-            var loaderDB = new LoadResultsFileDB();
-            loaderDB.LoadEvent += (ar1, ar2) => { };
-            var results = loaderDB.Load(project.GeneralData.Path + @"\термическая_0_0_0.5.db");
-            project.ResultData.AddRange(results);
-
-            //var resPagePresenter = new ResultPagePresenter(project.ResultData);
-
- 
-            var kindRes = project.ResultData.GetResultKinds();
-            var timeRes = project.ResultData.FindByTime("термическая",0);
-
-            if (kindRes.Count() == 0)
-                throw new Exception();
-            foreach (var res in kindRes)
-                Assert.AreEqual(res, TaskKind.термическая);
-
-            Assert.AreEqual(timeRes.First().Time, 0);
+            mergeResults.Merge(interfaceNodesFinder.Find(elements), "Q", search);
         }
 
         [DataTestMethod]
@@ -211,7 +173,7 @@ var loaderDB = new LoadResultsFileDB();
             var dataTable = convert.ConvertCSVtoDataTable($@"{csvPath}\{file}");
             dataTable.TableName = "nodes";
 
-            var result = new Result(dataTable, TaskKind.термическая);
+            var result = new Result(dataTable, 0.87051f,TaskKind.термическая);
 
             var dbPath = $@"{csvPath}\results.db";
 
@@ -222,7 +184,7 @@ var loaderDB = new LoadResultsFileDB();
             loaderDB.LoadEvent += (ar1, ar2) => { };
             var times = loaderDB.GetValuesFromDb(dbPath, "nodes", "Time");
 
-            var resultTOLoad = loaderDB.GetResultFromDb(dbPath, $"nodes WHERE Time = {times.First()}");
+            var resultTOLoad = loaderDB.GetResultFromDb(dbPath, $"nodes", times.First());
 
             Assert.AreEqual(resultTOLoad.TaskKind, TaskKind.механическая);
         }
@@ -247,16 +209,13 @@ var loaderDB = new LoadResultsFileDB();
             proj.Loader.LoadEvent += (ar1, ar2) => { };
 
             proj.Load($@"{resPath}\{projName}");
-            proj.ResultData = new ResultData();
+
             var dbExtension = System.IO.Path.GetExtension($@"{resPath}\{resName}");
             //var dbExtension = System.IO.Path.GetExtension(@"C:\Bazis_newGUI\PROJ\Test_3D\Term\Termal_0_0,5.db");
 
             var loaderDB = new LoadResultsFileDB();
             loaderDB.LoadEvent += (ar1, ar2) => { };
             var results = loaderDB.Load($@"{resPath}\{resName}");
-
-            proj.ResultData.AddRange(results);
-            var result = proj.ResultData.FindByTaskKind(resKind);
 
             IEnumerable<ISurfaceElement> elements;
             if(proj.GeneralData.TaskType == TaskType.Volume)
@@ -273,7 +232,7 @@ var loaderDB = new LoadResultsFileDB();
             resultsCreator.ScaleFactor = 1;
             resultsCreator.SetScaleItems(itemRanges);
 
-            var resultObjects = resultsCreator.CreateSurfaceObjects(result.First(), ObjType.Узел,resDesc, elements);
+            var resultObjects = resultsCreator.CreateSurfaceObjects(results.First(), ObjType.Узел,resDesc, elements);
             var points = new List<ResultPoint>();
             foreach (var elems in resultObjects)
                 points.AddRange(elems.GetVertexes());
@@ -286,15 +245,15 @@ var loaderDB = new LoadResultsFileDB();
             var resultNodesTXTPath = $@"{resPath}\testResultNodes.txt";
             var resultElementsTXTPath = $@"{resPath}\testResultElemets.txt";
 
-            TXTSaver.SaveResults(proj.ModelData.ObjectData.NodesSet.Values, result.First(), resDesc, resultNodesTXTPath);
-            TXTSaver.SaveResults(proj.ModelData.ObjectData.GetAllElements(), result.First(), resDesc, resultElementsTXTPath);
+            TXTSaver.SaveResults(proj.ModelData.ObjectData.NodesSet.Values, results.First(), resDesc, resultNodesTXTPath);
+            TXTSaver.SaveResults(proj.ModelData.ObjectData.GetAllElements(), results.First(), resDesc, resultElementsTXTPath);
 
             var CSVSaver = new SaveObjectsResultsToCSV();
             var resultNodesCSVPath = $@"{resPath}\testResultNodes.csv";
             var resultElementsCSVPath = $@"{resPath}\testResultElements.csv";
 
-            CSVSaver.SaveResults(proj.ModelData.ObjectData.NodesSet.Values, result.First(), resDesc, resultNodesCSVPath);
-            CSVSaver.SaveResults(proj.ModelData.ObjectData.GetAllElements(), result.First(), resDesc, resultElementsCSVPath);
+            CSVSaver.SaveResults(proj.ModelData.ObjectData.NodesSet.Values, results.First(), resDesc, resultNodesCSVPath);
+            CSVSaver.SaveResults(proj.ModelData.ObjectData.GetAllElements(), results.First(), resDesc, resultElementsCSVPath);
 
             var modelPresenter = new PresentersCreator();
             var presenter = modelPresenter.CreateSurfaceObjectsPresenter(resultObjects, false);

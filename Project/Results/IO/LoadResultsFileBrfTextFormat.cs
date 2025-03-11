@@ -117,7 +117,7 @@ namespace Project.Results.IO
                             ReadObjsResults(sr, taskKind, new_resultsData, format[line]);
                         line = sr.ReadLine();
                     }
-                    results.Add(new Result(new_resultsData, taskKind));
+                    results.Add(new Result(new_resultsData, time,taskKind));
                     //resultsDataSetList.Add(new_resultsDataSet);
                 }
                 line = sr.ReadLine();
@@ -184,17 +184,12 @@ namespace Project.Results.IO
             format.Add("Элементы", taskDataNode);
         }
 
-        public Result GetResultFromDb(string fullPath, List<string> tablesNames, float time)
-        {
-            throw new NotImplementedException();
-        }
-
         public IEnumerable<float> GetValuesFromDb(string fullPath, string table, string column)
         {
             throw new NotImplementedException();
         }
 
-        public Result GetResultFromDb(string fullPath, string tableName)
+        public Result GetResultFromDb(string fullPath, string tableName, float time)
         {
             throw new NotImplementedException();
         }
