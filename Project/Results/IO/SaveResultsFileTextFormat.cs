@@ -29,32 +29,22 @@ namespace Project.Results.IO
             }
         }
 
-        private void WriteResultsValue(DataSet dataSet, float time, TaskKind taskKind, StreamWriter sw)
+        private void WriteResultsValue(DataTable dataTable, float time, TaskKind taskKind, StreamWriter sw)
         {
 
             sw.WriteLine("Время " + time.ToString());
-            sw.WriteLine("Узлы");
+            sw.WriteLine(dataTable.TableName);
 
             DataRowCollection rows;
 
-            rows = dataSet.Tables["nodes"].Rows;
+            rows = dataTable.Rows;
 
             var rowsCount = rows.Count;
 
             for (int j = 0; j < rowsCount; j++)
                 sw.WriteLine(string.Join(" ", rows[j].ItemArray));
 
-            sw.WriteLine("#Узлы");
-            sw.WriteLine("Элементы");
-
-            rows = dataSet.Tables["elements"].Rows;
-
-            rowsCount = rows.Count;
-
-            for (int j = 0; j < rowsCount; j++)
-                sw.WriteLine(string.Join(" ", rows[j].ItemArray));
-
-            sw.WriteLine("#Элементы");
+            sw.WriteLine($"#{dataTable.TableName}");         
             sw.WriteLine("#Время " + time.ToString());
         }
 
@@ -63,22 +53,15 @@ namespace Project.Results.IO
             var str = new List<string>();
 
             str.Add(result.TaskKind.ToString());
-            str.Add("Узлы");
+            str.Add(result.Name);
 
-            foreach (DataColumn col in result.Data.Tables["nodes"].Columns)
+            foreach (DataColumn col in result.Data.Columns)
             {
                 str.Add(col.ColumnName);
             }
 
             sw.WriteLine(string.Join(" ", str.ToArray()));
             str.Clear();
-            str.Add("Элементы");
-
-            foreach (DataColumn col in result.Data.Tables["elements"].Columns)
-            {
-                str.Add(col.ColumnName);
-            }
-            sw.WriteLine(string.Join(" ", str.ToArray()));
         }
     }
 }

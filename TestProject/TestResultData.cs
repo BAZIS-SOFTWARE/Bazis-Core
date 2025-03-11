@@ -29,6 +29,7 @@ using PostProc.IO.ResultExport;
 using Model.IO;
 using Model.Interfaces.ObjectsCollections;
 using Model.ObjectsCollections;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 
 
 namespace TestProject
@@ -50,18 +51,16 @@ namespace TestProject
             loaderDB.LoadEvent += (ar1,ar2) => { };
             var project = new ProjectData("", path);
 
-            var results = loaderDB.Load(project.GeneralData.Path + $@"\{resName}");
+            var results = loaderDB.GetResultFromDb(project.GeneralData.Path + $@"\{resName}",
+                $"nodes WHERE Time = {time}") ;
+            
 
+            project.ResultData = new ResultData() { results };
 
-            project.ResultData = new ResultData();
-
-            project.ResultData.AddRange(results);
-
-            var search = project.ResultData.FindByTime("термическая", time);
+            var search = project.ResultData.FindByTime("термическая", time).FirstOrDefault();
 
             Assert.AreNotEqual(search, null);
-            Assert.AreNotEqual(search.Data.Tables.Count, 0);
-            Assert.AreNotEqual(search.Data.Tables[0].Rows.Count, 0);
+            Assert.AreNotEqual(search.Data.Rows.Count, 0);
         }
 
         [DataTestMethod]
@@ -198,7 +197,7 @@ var loaderDB = new LoadResultsFileDB();
             foreach (var res in kindRes)
                 Assert.AreEqual(res, TaskKind.термическая);
 
-            Assert.AreEqual(timeRes.Time, 0);
+            Assert.AreEqual(timeRes.First().Time, 0);
         }
 
         [DataTestMethod]
@@ -211,40 +210,21 @@ var loaderDB = new LoadResultsFileDB();
 
             var dataTable = convert.ConvertCSVtoDataTable($@"{csvPath}\{file}");
             dataTable.TableName = "nodes";
-            var dataSet = new System.Data.DataSet();
-            dataSet.Tables.Add(dataTable);
-            var result = new Result(dataSet,0.87051f,TaskKind.термическая);
 
-            var db = new ResultDataBase($@"{csvPath}\results.db");
+            var result = new Result(dataTable, TaskKind.термическая);
 
-            db.OpenConnection();
+            var dbPath = $@"{csvPath}\results.db";
 
-            db.DeleteTable("nodes");
-            db.DeleteTable("elements");
-
-            db.CreateTables("elements", GetTableSchema(result.Data.Tables["nodes"]));
-            db.CreateTables("nodes", GetTableSchema(result.Data.Tables["nodes"]));
-
-            db.AddData(result);
-            db.CloseConnection();
-
+            var saverDB = new SaveResultsFileDb();
+            saverDB.Save(new List<IResult>() { result }, dbPath, false);
+   
             var loaderDB = new LoadResultsFileDB();
             loaderDB.LoadEvent += (ar1, ar2) => { };
-            var resultTOLoad = loaderDB.Load($@"{csvPath}\results.db");
+            var times = loaderDB.GetValuesFromDb(dbPath, "nodes", "Time");
 
-            Assert.AreEqual(resultTOLoad.First().TaskKind, TaskKind.механическая);
-        }
+            var resultTOLoad = loaderDB.GetResultFromDb(dbPath, $"nodes WHERE Time = {times.First()}");
 
-        public List<string> GetTableSchema(DataTable dataTable)
-        {
-            var schema = new List<string>();
-
-            for (int i = 1; i < dataTable.Columns.Count; i++)
-            {
-                schema.Add(dataTable.Columns[i].ColumnName);
-            }
-
-            return schema;
+            Assert.AreEqual(resultTOLoad.TaskKind, TaskKind.механическая);
         }
 
         [DataTestMethod]

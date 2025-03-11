@@ -19,5 +19,21 @@ namespace Project.Interfaces.IO
         /// LoadEvent
         /// </summary>
         event Action<object, ILoadEventArgs> LoadEvent;
+        /// <summary>
+        /// GetResultFromDb
+        /// </summary>
+        /// <param name="fullPath"></param>
+        /// <param name="tableName"></param>
+        /// <param name="time"></param>
+        /// <returns></returns>
+        Result GetResultFromDb(string fullPath, string tableName);
+        /// <summary>
+        /// GetValuesFromDb. Возвращает только уникальные значения.
+        /// </summary>
+        /// <param name="fullPath"></param>
+        /// <param name="tableName"></param>
+        /// <param name="column"></param>
+        /// <returns></returns>
+        IEnumerable<float> GetValuesFromDb(string fullPath, string tableName, string column);
     }
 }

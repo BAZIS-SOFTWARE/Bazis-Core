@@ -18,16 +18,40 @@ namespace Project.Interfaces
     /// </summary>
     public interface IResult : ISerializable
     {
-        TaskKind TaskKind { get; set; }
-
+        /// <summary>
+        /// TaskKind
+        /// </summary>
+        TaskKind TaskKind { get; }
+        /// <summary>
+        /// Time
+        /// </summary>
         float Time { get; }
+        /// <summary>
+        /// Data
+        /// </summary>
+        DataTable Data { get; }
+        /// <summary>
+        /// Name
+        /// </summary>
+        string Name { get; }
+        /// <summary>
+        /// GetDataSchema
+        /// </summary>
+        /// <returns></returns>
+        List<string> GetDataSchema();
+        /// <summary>
+        /// GetValue
+        /// </summary>
+        /// <param name="objNumber"></param>
+        /// <param name="resDescr"></param>
+        /// <returns></returns>
+        float GetValue(int objNumber, string resDescr);
+        /// <summary>
+        /// AddData
+        /// </summary>
+        /// <param name="dbDataTable"></param>
+        void AddData(DataTable dbDataTable);
 
-        DataSet Data { get; }
-
-        List<string> GetDataSchema(string dataName);
-
-        float GetElementValue(int elemNumber, string resDescr);
-
-        float GetNodeValue(int nodeNumber, string resDescr);
+        //float GetNodeValue(int nodeNumber, string resDescr);
     }
 }

@@ -107,17 +107,17 @@ namespace Project.Results.IO
                 if (line.Split(' ')[0] == "Время")
                 {
                     var time = float.Parse(line.Split(' ')[1], CultureInfo.InvariantCulture);
-                    var new_resultsDataSet = new DataSet();
+                    var new_resultsData = new DataTable();
                     //timeList.Add(time);
                     LoadEvent(this, new LoadEventArgs("Время " + time.ToString()));
                     Thread.Sleep(100);
                     while (line.Split(' ')[0] != "#Время")
                     {
                         if (line == "Узлы" | line == "Элементы")
-                            ReadObjsResults(sr, taskKind, new_resultsDataSet, format[line]);
+                            ReadObjsResults(sr, taskKind, new_resultsData, format[line]);
                         line = sr.ReadLine();
                     }
-                    results.Add(new Result(new_resultsDataSet, time, taskKind));
+                    results.Add(new Result(new_resultsData, taskKind));
                     //resultsDataSetList.Add(new_resultsDataSet);
                 }
                 line = sr.ReadLine();
@@ -126,15 +126,12 @@ namespace Project.Results.IO
             return results;
         }
 
-        private void ReadObjsResults(StreamReader sr, TaskKind taskKind, DataSet new_resultsDataSet, Dictionary<TaskKind, string[]> dataNames)
+        private void ReadObjsResults(StreamReader sr, TaskKind taskKind, DataTable new_resultsData, Dictionary<TaskKind, string[]> dataNames)
         {
             string line = sr.ReadLine();
             while (line != "#" + dataNames[taskKind][0])
             {
-                DataRow new_row;
-                if (dataNames[taskKind][0] == "Узлы")
-                    new_row = new_resultsDataSet.Tables["nodes"].NewRow();
-                else new_row = new_resultsDataSet.Tables["elements"].NewRow();
+                var new_row = new_resultsData.NewRow();
 
                 var dataValues = line.Split(' ');
                 var dataNamesCut = new string[dataNames[taskKind].Length - 2];
@@ -145,10 +142,7 @@ namespace Project.Results.IO
 
                 AdaptDataFormat(dataValues, new_row, dataNamesCut);
 
-                if (dataNames[taskKind][0] == "Узлы")
-                    new_resultsDataSet.Tables["nodes"].Rows.Add(new_row);
-                else new_resultsDataSet.Tables["elements"].Rows.Add(new_row);
-
+                new_resultsData.Rows.Add(new_row);
                 line = sr.ReadLine();
             }
         }
@@ -188,6 +182,21 @@ namespace Project.Results.IO
                     { TaskKind.механическая,resElemTermoMech.Split(' ') }
                 };
             format.Add("Элементы", taskDataNode);
+        }
+
+        public Result GetResultFromDb(string fullPath, List<string> tablesNames, float time)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<float> GetValuesFromDb(string fullPath, string table, string column)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Result GetResultFromDb(string fullPath, string tableName)
+        {
+            throw new NotImplementedException();
         }
     }
 }
