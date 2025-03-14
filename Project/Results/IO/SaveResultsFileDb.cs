@@ -19,7 +19,7 @@ namespace Project.Results.IO
         public event Action<object, ISaveEventArgs> SaveEvent;
         /// <inheritdoc/>
 
-        public void Save(List<IResult> results, string path, bool append)
+        public void Save(List<Result> results, string path, bool append)
         {
             SaveEvent?.Invoke(this, new SaveEventArgs("Сохранение результатов..."));
             var db = new ResultDataBase(path);
@@ -53,7 +53,7 @@ namespace Project.Results.IO
         /// </summary>
         /// <param name="db"></param>
         /// <param name="result"></param>
-        public void AddData(ResultDataBase db, IResult result)
+        public void AddData(ResultDataBase db, Result result)
         {
             var table = result.Data;
             var rowCount = table.Rows.Count;

@@ -20,7 +20,7 @@ namespace PostProc.ScenePresenter
         /// </summary>
         public int ScaleFactor { get; set; }      
 
-        public IEnumerable<ILineObject<IPoint>> CreateLineObjects(IResult result, ObjType objsType, string resDescr, ILineObject<Node> beamElement)
+        public IEnumerable<ILineObject<IPoint>> CreateLineObjects(Result result, ObjType objsType, string resDescr, ILineObject<Node> beamElement)
         {
             var gradsCreator = new LineGradientsCreator();
 
@@ -88,7 +88,7 @@ namespace PostProc.ScenePresenter
             this.itemRanges = itemRanges;
         }
 
-        private Point3D GetNodeDispls(string nodeRes, int nodeNumber, IResult result)
+        private Point3D GetNodeDispls(string nodeRes, int nodeNumber, Result result)
         {
             if(result.TaskKind == TaskKind.механическая)
             {

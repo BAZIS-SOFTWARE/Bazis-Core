@@ -6,6 +6,7 @@ using Model.MeshObjects;
 using Project.Interfaces;
 using Project.Interfaces.IO;
 using Project.Interfaces.Results;
+using Project.Results;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,7 +20,7 @@ namespace PostProc.IO.ResultExport
     {
         public event Action<object, ISaveEventArgs> SaveEvent;
 
-        public void SaveResults(IEnumerable<IModelObject> objects, IResult result, string resDescr, string savePath)
+        public void SaveResults(IEnumerable<IModelObject> objects, Result result, string resDescr, string savePath)
         {
             using (var sw = new StreamWriter(savePath, true, Encoding.Unicode) { AutoFlush = true })
             using (var csvWriter = new CsvWriter(sw, culture:System.Globalization.CultureInfo.InvariantCulture, false))

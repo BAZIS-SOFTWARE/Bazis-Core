@@ -9,9 +9,19 @@ using System.Runtime.Serialization;
 namespace Project.Results
 {
     /// <summary>
+    /// TaskKind
+    /// </summary>
+    public enum TaskKind
+    {
+        термическая,
+        механическая,
+        химическая
+    }
+    /// <summary>
     /// Result
     /// </summary>
-    public class Result : IResult
+    [Serializable]
+    public class Result
     {
         /// <inheritdoc/>
         public TaskKind TaskKind { get;}

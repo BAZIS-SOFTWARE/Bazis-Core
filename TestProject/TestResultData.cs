@@ -178,7 +178,7 @@ x.Time.CompareTo(fTime) >= 0
             var dbPath = $@"{csvPath}\results.db";
 
             var saverDB = new SaveResultsFileDb();
-            saverDB.Save(new List<IResult>() { result }, dbPath, false);
+            saverDB.Save(new List<Result>() { result }, dbPath, false);
    
             var loaderDB = new LoadResultsFileDB();
             loaderDB.LoadEvent += (ar1, ar2) => { };

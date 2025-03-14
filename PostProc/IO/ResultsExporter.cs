@@ -4,6 +4,7 @@ using Project.Interfaces;
 using System;
 using System.Collections.Generic;
 using PostProc.IO.ResultExport;
+using Project.Results;
 
 namespace PostProc.IO
 {
@@ -14,7 +15,7 @@ namespace PostProc.IO
     {
 /// <inheritdoc/>
 
-        public void ExportObjectsResults(IEnumerable<IModelObject> objs, IResult result, string resDesc, string savePath, string format)
+        public void ExportObjectsResults(IEnumerable<IModelObject> objs, Result result, string resDesc, string savePath, string format)
         {
             IResultsExportSaver saver;
             if (format.Equals("txt"))

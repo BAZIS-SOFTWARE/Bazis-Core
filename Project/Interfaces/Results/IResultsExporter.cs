@@ -1,9 +1,6 @@
 ﻿using Model.Interfaces;
-using System;
+using Project.Results;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Project.Interfaces.Results
 {
@@ -20,7 +17,7 @@ namespace Project.Interfaces.Results
         /// <param name="resDesc">Описание результата</param>
         /// <param name="savePath">Путь (без названия и расширения) сохранения файла экспорта</param>
         /// <param name="format">Формат выходного файла</param>
-        void ExportObjectsResults(IEnumerable<IModelObject> objects, IResult result,string resDesc, string savePath, string format);
+        void ExportObjectsResults(IEnumerable<IModelObject> objects, Result result,string resDesc, string savePath, string format);
 
         /// <summary>
         /// ExportResultPoints. Сохраняет результаты по узлам

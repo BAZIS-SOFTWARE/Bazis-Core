@@ -1,4 +1,5 @@
 ﻿using Project.Interfaces;
+using Project.Results;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -9,10 +10,10 @@ namespace PostProc
     /// <summary>
     /// MergeResults
     /// </summary>
-    public class MergeResults : IResultsMerger
+    public class MergeResults
     {
         /// <inheritdoc/>
-        public void Merge(Dictionary<int, List<int>> interfaceNodes, string resultDescr, IEnumerable<IResult> results)
+        public void Merge(Dictionary<int, List<int>> interfaceNodes, string resultDescr, IEnumerable<Result> results)
         {
             var resNodes = results.Where(x => x.Data.TableName == "nodes");
             var resElements = results.Where(x => x.Data.TableName == "elements");
@@ -21,7 +22,7 @@ namespace PostProc
                 throw new System.Exception("Наборы результатов узлов и элементов не равны");
 
 
-            var resBigrams = new List<Tuple<IResult, IResult>>();
+            var resBigrams = new List<Tuple<Result, Result>>();
 
             foreach (var item in resNodes)
             {
@@ -30,7 +31,7 @@ namespace PostProc
                 if(find == null)
                     throw new System.Exception("Набор элементов не содержит результатов с таким же индексом");
                 
-                resBigrams.Add(new Tuple<IResult, IResult>(item, find));
+                resBigrams.Add(new Tuple<Result, Result>(item, find));
             }
 
             foreach (var item in resBigrams)

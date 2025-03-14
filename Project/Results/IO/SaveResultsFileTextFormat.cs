@@ -12,7 +12,7 @@ namespace Project.Results.IO
         /// <inheritdoc/>
         public event Action<object, ISaveEventArgs> SaveEvent;
 
-        public void Save(List<IResult> results, string path, bool append)
+        public void Save(List<Result> results, string path, bool append)
         {
             using (var sw = new StreamWriter(path, append, System.Text.Encoding.Unicode) { AutoFlush = true })
             {
@@ -48,7 +48,7 @@ namespace Project.Results.IO
             sw.WriteLine("#Время " + time.ToString());
         }
 
-        private void WriteResultsDescription(StreamWriter sw, IResult result)
+        private void WriteResultsDescription(StreamWriter sw, Result result)
         {
             var str = new List<string>();
 

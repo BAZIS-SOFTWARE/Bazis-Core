@@ -47,13 +47,11 @@
     <Compile Include="Interfaces\IO\ITaskDataSaver.cs" />
     <Compile Include="Interfaces\IProject.cs" />
     <Compile Include="Interfaces\IProjectData.cs" />
-    <Compile Include="Interfaces\IResult.cs" />
     <Compile Include="Interfaces\IResultData.cs" />
     <Compile Include="Interfaces\Results\IResultsExporter.cs" />
     <Compile Include="Interfaces\Results\IResultsExportSaver.cs" />
     <Compile Include="Interfaces\Tasks\FunctionParameter.cs" />
     <Compile Include="Interfaces\Tasks\ICillindricalFunction.cs" />
-    <Compile Include="Interfaces\Tasks\ICompData.cs" />
     <Compile Include="Interfaces\Tasks\IData.cs" />
     <Compile Include="Interfaces\Tasks\IFrameData.cs" />
     <Compile Include="Interfaces\Tasks\IFrameFunction.cs" />

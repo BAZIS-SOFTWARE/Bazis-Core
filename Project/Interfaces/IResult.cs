@@ -5,15 +5,6 @@ using System.Runtime.Serialization;
 namespace Project.Interfaces
 {
     /// <summary>
-    /// TaskKind
-    /// </summary>
-    public enum TaskKind
-    {
-        термическая,
-        механическая,
-        химическая
-    }
-    /// <summary>
     /// IResult
     /// </summary>
     public interface IResult : ISerializable
