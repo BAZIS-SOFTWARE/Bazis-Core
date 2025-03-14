@@ -15,7 +15,7 @@ namespace PostProc
         public MergeResults ResultsMerger { get; } = new MergeResults();
 
         /// <inheritdoc/>
-        public IResultsFieldsCreator ResultsFieldsCreator { get; } = new ResultsFieldsCreator();
+        public ResultsFieldsCreator ResultsFieldsCreator { get; } = new ResultsFieldsCreator();
 
         /// <inheritdoc/>
         public IResultsExporter ResultsExporter { get; }  = new ResultsExporter();

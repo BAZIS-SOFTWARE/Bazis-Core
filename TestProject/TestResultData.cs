@@ -114,7 +114,11 @@ var loaderDB = new LoadResultsFileDB();
 
             controller.ResultsFieldsCreator.SetScaleItems(intervalVals);
             controller.ResultsFieldsCreator.ScaleFactor = 1;
-            var elsResults = controller.ResultsFieldsCreator.CreateSurfaceObjects(results.First(), ObjType.Узел, "T", els3D.GetObjects());
+
+            results = results.Where(x => x.Time.Equals(time));
+            var ndRes = results.First();
+            var elRes = results.Skip(1).First();
+            var elsResults = controller.ResultsFieldsCreator.CreateSurfaceObjects(ndRes, elRes, ObjType.Узел, "T", els3D.GetObjects());
 
             Assert.AreNotEqual(elsResults, null);
             Assert.AreNotEqual(elsResults.Count(), 0);
@@ -303,7 +307,10 @@ x.Time.CompareTo(fTime) >= 0
             resultsCreator.ScaleFactor = 1;
             resultsCreator.SetScaleItems(itemRanges);
 
-            var resultObjects = resultsCreator.CreateSurfaceObjects(results.First(), ObjType.Узел,resDesc, elements);
+            var ndRes = results.First();
+            var elRes = results.Skip(1).First();
+
+            var resultObjects = resultsCreator.CreateSurfaceObjects(ndRes, elRes,ObjType.Узел,resDesc, elements);
             var points = new List<ResultPoint>();
             foreach (var elems in resultObjects)
                 points.AddRange(elems.GetVertexes());

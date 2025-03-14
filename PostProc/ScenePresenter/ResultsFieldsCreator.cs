@@ -11,7 +11,7 @@ using System.Drawing;
 
 namespace PostProc.ScenePresenter
 {
-    public class ResultsFieldsCreator : IResultsFieldsCreator
+    public class ResultsFieldsCreator
     {
         ItemRange[] itemRanges;
 
@@ -27,7 +27,7 @@ namespace PostProc.ScenePresenter
             throw new NotImplementedException();
         }
 
-        public IEnumerable<ResultFigure> CreateSurfaceObjects(Result result, ObjType objsType, string resDescr, IEnumerable<ISurfaceElement> surfaceObjects)
+        public IEnumerable<ResultFigure> CreateSurfaceObjects(Result ndRes, Result elRes,ObjType objsType, string resDescr, IEnumerable<ISurfaceElement> surfaceObjects)
         {
             var gradsCreator = new SurfaceGradientsCreator();
             var surfacetObjects = new List<ResultFigure>();
@@ -45,14 +45,14 @@ namespace PostProc.ScenePresenter
 
                             foreach (var node in surface.GetVertexes())
                             {
-                                var nodeDispl = GetNodeDispls(resDescr, node.Number, result);
+                                var nodeDispl = GetNodeDispls(resDescr, node.Number, ndRes);
                                 //nodeCoords.Add(node.Position.Sum(nodeDispl));
                                 var resItem = new ResultItem();
                                 resItem.Coord = node.Position.Sum(nodeDispl);
 
                                 if (objsType == ObjType.Узел)
-                                    resItem.Value = result.GetValue(node.Number, resDescr);
-                                else resItem.Value = result.GetValue(surfaceObject.Number, resDescr);
+                                    resItem.Value = ndRes.GetValue(node.Number, resDescr);
+                                else resItem.Value = elRes.GetValue(surfaceObject.Number, resDescr);
                                 resItems.Add(resItem);
                             }
 

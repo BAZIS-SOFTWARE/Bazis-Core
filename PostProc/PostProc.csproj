@@ -49,7 +49,6 @@
     <Compile Include="IO\ResultsExporter.cs" />
     <Compile Include="MergeResults.cs" />
     <Compile Include="PostProcController.cs" />
-    <Compile Include="ScenePresenter\Interfaces\IResultsFieldsCreator.cs" />
     <Compile Include="ScenePresenter\ItemRange.cs" />
     <Compile Include="ScenePresenter\ResultItem.cs" />
     <Compile Include="ScenePresenter\ResultsFieldsCreator.cs" />
