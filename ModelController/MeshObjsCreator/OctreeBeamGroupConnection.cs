@@ -11,15 +11,17 @@ namespace ModelController.MeshObjsCreator
 {
     public class OctreeBeamGroupConnection : BeamGroupConnection
     {
-        protected override IEnumerable<Beam> ConnectGroups(Group smaller, Group larger, double searchRadius, int beamsCount, int similarityFactor)
+        private Dictionary<Node, int> incidentEdgesCount;
+        private PointOctree<Node> octree;
+
+        protected override IEnumerable<Beam> ConnectGroups(Group smaller, Group larger)
         {
-            var octree = CreateOctree(larger.Cast<Node>());
-            var incidentEdgesCount = larger.Cast<Node>().ToDictionary(n => n, _ => 0);
-            var connectionValue = (beamsCount == 0) ? similarityFactor : beamsCount;
+            octree = CreateOctree(larger.Cast<Node>());
+            incidentEdgesCount = larger.Cast<Node>().ToDictionary(n => n, _ => 0);
             var startIndex = 0;
             foreach (var node in smaller.Cast<Node>())
             {
-                foreach (var result in ConnectOneToMany(node, larger, searchRadius, connectionValue, octree, startIndex, incidentEdgesCount))
+                foreach (var result in ConnectOneToMany(node, larger, startIndex))
                 {
                     yield return result;
                     startIndex++;
@@ -50,14 +52,12 @@ namespace ModelController.MeshObjsCreator
             return octree;
         }
 
-        private IEnumerable<Beam> ConnectOneToMany(Node node, Group group, 
-            double searchRadius, int toConnect, PointOctree<Node> octree, int startIndex,
-            Dictionary<Node, int> incidentEdgesCount)
+        private IEnumerable<Beam> ConnectOneToMany(Node node, Group group, int startIndex)
         {
             return octree.GetNearby(new Vector3(node._x, node._y, node._z), (float)searchRadius)
                          .OrderBy(n => GetSquaredDistance(n, node))
                          .ThenBy(n => incidentEdgesCount[n])
-                         .Take(toConnect)
+                         .Take(maxIncidentBeams)
                          .Select((other, i) =>
                          {
                              incidentEdgesCount[other]++;

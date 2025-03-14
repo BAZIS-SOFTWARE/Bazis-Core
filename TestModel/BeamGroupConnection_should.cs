@@ -7,8 +7,6 @@ using ModelController.MeshObjsCreator;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TestModel
 {
@@ -28,14 +26,35 @@ namespace TestModel
         }
 
         [TestMethod]
-        [DataRow(1, 4, DisplayName = "by cube edge")]
-        [DataRow(0.5, 0, DisplayName = "less than cube edge")]
-        [DataRow(2, 4, DisplayName = "more than the largest cube diagonal")]
-        public void Create_ShouldBeCorrect_OnIdentityCube(double searchRadius, int expected)
+        [DataRow(0, 0, DisplayName = "radius is zero")]
+        [DataRow(1, 0, DisplayName = "radius is cube edge")]
+        [DataRow(0.5, 0, DisplayName = "radius is less than cube edge")]
+        [DataRow(2, 0, DisplayName = "radius is more than the largest cube diagonal")]
+        public void Create_ShouldReturnEmptyEnumerable_WhenGroupsAreEmpty(double searchRadius, int expected)
+        {
+            foreach (var type in typesToTest)
+            {
+                var instance = GetInstanceOf(type);
+
+                var master = new Group("master", ObjType.Узел) { };
+
+                var slave = new Group("slave", ObjType.Узел) { };
+
+                var beams = instance.Create(master, slave, searchRadius).ToList();
+
+                Assert.AreEqual(expected, beams.Count);
+            }
+        }
+
+        [TestMethod]
+        [DataRow(1, 4, DisplayName = "radius is cube edge")]
+        [DataRow(0.5, 0, DisplayName = "radius is less than cube edge")]
+        [DataRow(2, 4, DisplayName = "radius is more than the largest cube diagonal")]
+        public void Create_ShouldBeCorrect_OnIdentityCube_WhenBeamsCountNotSpecified(double searchRadius, int expected)
         {
             foreach(var type in typesToTest)
             {
-                var instance = (IBeamGroupConnection)type.GetConstructor(new Type[] { }).Invoke(new object[] { });
+                var instance = GetInstanceOf(type);
 
                 var master = new Group("master", ObjType.Узел)
                     {
@@ -61,15 +80,15 @@ namespace TestModel
 
         [TestMethod]
         [DataRow(0, 0, DisplayName = "zero radius, default incidence")]
-        [DataRow(1, 1, DisplayName = "by cube edge")]
-        [DataRow(0.5, 0, DisplayName = "less than cube edge")]
-        [DataRow(1.42, 3, DisplayName = "as sqrt(2)")]
-        [DataRow(1.74, 4, DisplayName = "as sqrt(3)")]
-        public void Create_ShouldBeCorrect_OnDifferentSizeGroups(double searchRadius, int expected)
+        [DataRow(1, 1, DisplayName = "radius is cube edge")]
+        [DataRow(0.5, 0, DisplayName = "radius is less than cube edge")]
+        [DataRow(1.42, 3, DisplayName = "radius is the smallest cube diagonal")]
+        [DataRow(1.74, 4, DisplayName = "radius is the largest cube diagonal")]
+        public void Create_ShouldBeCorrect_OnDifferentSizeGroups_WhenBeamsCountNotSpecified(double searchRadius, int expected)
         {
             foreach (var type in typesToTest)
             {
-                var instance = (IBeamGroupConnection)type.GetConstructor(new Type[] { }).Invoke(new object[] { });
+                var instance = GetInstanceOf(type);
 
                 var master = new Group("master", ObjType.Узел)
                 {
@@ -100,11 +119,11 @@ namespace TestModel
         [DataRow(1.42, 4, 6, DisplayName = "radius is minimal cube diagonal, incidence is 4")]
         [DataRow(1.74, 4, 8, DisplayName = "radius is more than maximal cube diagonal, incidence is 4")]
         [DataRow(2, 4, 8, DisplayName = "radius is 2, incidence is 4")]
-        public void Create_ShouldBeCorrect_WhenBeamsCountSpecified(double searchRadius, int beamsCount, int expected)
+        public void Create_ShouldBeCorrect_OnDifferentSize_WhenBeamsCountSpecified(double searchRadius, int beamsCount, int expected)
         {
             foreach(var type in typesToTest)
             {
-                var instance = (IBeamGroupConnection)type.GetConstructor(new Type[] { }).Invoke(new object[] { });
+                var instance = GetInstanceOf(type);
 
                 var master = new Group("master", ObjType.Узел)
                 {
@@ -124,6 +143,11 @@ namespace TestModel
 
                 Assert.AreEqual(expected, beams.Count);
             }
+        }
+
+        private IBeamGroupConnection GetInstanceOf(Type type)
+        {
+            return (IBeamGroupConnection)type.GetConstructor(new Type[] { }).Invoke(new object[] { });
         }
     }
 }

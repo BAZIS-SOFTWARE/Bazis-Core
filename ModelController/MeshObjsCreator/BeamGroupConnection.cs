@@ -11,16 +11,32 @@ namespace ModelController.MeshObjsCreator
 {
     public abstract class BeamGroupConnection : IBeamGroupConnection
     {
-        public IEnumerable<Beam> Create(Group master, Group slave, double searchRadius, int beamsCount = 0)
+        protected double searchRadius;
+        protected int maxIncidentBeams;
+
+        public IEnumerable<Beam> Create(Group master, Group slave, double radius, int beamsCount = 0)
         {
             if (master.Count == 0 || slave.Count == 0)
                 return Enumerable.Empty<Beam>();
-
+            searchRadius = radius;
             var k = 1d * master.Count / slave.Count;
-
-            return k <= 1
-                ? ConnectGroups(master, slave, searchRadius, beamsCount, (int)Math.Ceiling(1 / k))
-                : ConnectGroups(slave, master, searchRadius, beamsCount, (int)Math.Ceiling(k));
+            if(beamsCount == 0)
+            {
+                if (k <= 1)
+                {
+                    maxIncidentBeams = (int)Math.Ceiling(1 / k);
+                    return ConnectGroups(master, slave);
+                }
+                else
+                {
+                    maxIncidentBeams = (int)Math.Ceiling(k);
+                    return ConnectGroups(slave, master);
+                }
+            }
+            maxIncidentBeams = beamsCount;
+            if (k <= 1)
+                return ConnectGroups(master, slave);
+            return ConnectGroups(slave, master);
         }
 
         protected double GetSquaredDistance(Node one, Node two)
@@ -29,6 +45,6 @@ namespace ModelController.MeshObjsCreator
             return vector.GetSquareSumCoords();
         }
 
-        protected abstract IEnumerable<Beam> ConnectGroups(Group smaller, Group larger, double searchRadius, int beamsCount, int similarityFactor);
+        protected abstract IEnumerable<Beam> ConnectGroups(Group smaller, Group larger);
     }
 }

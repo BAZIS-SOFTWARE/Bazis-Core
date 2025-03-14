@@ -9,14 +9,15 @@ namespace ModelController.MeshObjsCreator
 {
     public class SimpleBeamGroupConnection : BeamGroupConnection
     {
-        protected override IEnumerable<Beam> ConnectGroups(Group smaller, Group larger, double searchRadius, int beamsCount, int similarityFactor)
+        private Dictionary<Node, int> incidentEdgesCount;
+
+        protected override IEnumerable<Beam> ConnectGroups(Group smaller, Group larger)
         {
             var startIndex = 0;
-            var incidentEdgesCount = larger.Cast<Node>().ToDictionary(n => n, _ => 0);
-            var connectionValue = (beamsCount == 0) ? similarityFactor : beamsCount;
+            incidentEdgesCount = larger.Cast<Node>().ToDictionary(n => n, _ => 0);
             foreach (var node in smaller.Cast<Node>())
             {
-                foreach (var result in ConnectOneToMany(node, larger, searchRadius, connectionValue, startIndex, incidentEdgesCount))
+                foreach (var result in ConnectOneToMany(node, larger, startIndex))
                 {
                     yield return result;
                     startIndex++;
@@ -24,20 +25,18 @@ namespace ModelController.MeshObjsCreator
             }
         }
 
-        private IEnumerable<Beam> ConnectOneToMany(Node node, Group group, double searchRadius, int maxBinded, int startIndex, Dictionary<Node, int> incidentEdgesCount)
+        private IEnumerable<Beam> ConnectOneToMany(Node node, Group group, int startIndex)
         {
             var binded = 0;
-            foreach (var other in group.Cast<Node>().OrderBy(n => incidentEdgesCount[n]))
+            foreach (var other in group.Cast<Node>()
+                                       .Where(n => GetSquaredDistance(node, n) <= searchRadius * searchRadius)
+                                       .OrderBy(n => GetSquaredDistance(node, n))
+                                       .ThenBy(n => incidentEdgesCount[n])
+                                       .Take(maxIncidentBeams))
             {
-                var squaredDistance = GetSquaredDistance(node, other);
-                if (squaredDistance <= searchRadius * searchRadius)
-                {
-                    incidentEdgesCount[other]++;
-                    yield return new Beam(startIndex + binded, new Node[] { node, other });
-                    binded++;
-                }
-                if (binded >= maxBinded)
-                    yield break;
+                incidentEdgesCount[other]++;
+                yield return new Beam(startIndex + binded, new Node[] { node, other });
+                binded++;
             }
         }
     }
