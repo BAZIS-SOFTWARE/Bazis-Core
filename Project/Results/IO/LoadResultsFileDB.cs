@@ -42,7 +42,7 @@ namespace Project.Results.IO
             var db = new ResultDataBase(fullPath);
 
             db.OpenConnection();
-            var dataTable = db.GetResults($"{table} WHERE Time = {time}", "*");
+            var dataTable = db.GetResults($"{table}", "*", $" WHERE Time = {time}");
             db.CloseConnection();
 
             var newTable = CreateResultTables(dataTable);
@@ -58,7 +58,7 @@ namespace Project.Results.IO
             var db = new ResultDataBase(fullPath);
             db.OpenConnection();
 
-            var timeDataTable = db.GetResults(table, $"DISTINCT {column}");
+            var timeDataTable = db.GetResults(table, $"DISTINCT {column}","");
 
             db.CloseConnection();
 
@@ -94,7 +94,7 @@ namespace Project.Results.IO
             IEnumerable<string> tables;
             if (table == "sqlite_master")
             {
-                var namesTable = db.GetResults("sqlite_master WHERE type='table'", "name");
+                var namesTable = db.GetResults("sqlite_master", "name", " WHERE type='table'");
                 tables = namesTable.Rows.Cast<DataRow>().Select(x => Convert.ToString(x[0])).
                     Where(x => x != "sqlite_sequence" & x != "name");
             }
@@ -103,13 +103,13 @@ namespace Project.Results.IO
 
             foreach (var item in tables)
             {
-                var timeTable = db.GetResults(item, "DISTINCT Time");
+                var timeTable = db.GetResults(item, "DISTINCT Time","");
 
                 var times = timeTable.Rows.Cast<DataRow>().Select(x => Convert.ToSingle(x[0]));
 
                 foreach (var time in times)
                 {
-                    var dataTable = db.GetResults($"{item} WHERE Time = {time}", "*");
+                    var dataTable = db.GetResults($"{item}", "*",$" WHERE Time = {time}");
                     var newTable = CreateResultTables(dataTable);
                     var newResult = new Result(newTable,time, taskKind);
 

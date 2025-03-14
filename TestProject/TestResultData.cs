@@ -140,7 +140,8 @@ var loaderDB = new LoadResultsFileDB();
 
             var loaderDB = new LoadResultsFileDB();
             loaderDB.LoadEvent += (ar1, ar2) => { };
-            var results = loaderDB.Load(proj.ResultDB);
+            var ndRes = loaderDB.GetResultsFromDb(proj.ResultDB,"nodes").ToArray();
+            var elRes = loaderDB.GetResultsFromDb(proj.ResultDB, "elements").ToArray();
 
             IEnumerable<IElement> elements;
             if (proj.GeneralData.TaskType == TaskType.Volume)
@@ -151,19 +152,11 @@ var loaderDB = new LoadResultsFileDB();
 
             var interfaceNodesFinder = new InterfacedNodesFinder();
 
-            var dbFile = Path.GetFileNameWithoutExtension(dbName);
-            var ar = dbFile.Split('_');
-            var kind = ar[0];
-            var fTime = Convert.ToSingle(ar[2]);
-            var sTime = Convert.ToSingle(ar[3]);
-            var search = results.Where(x => x.TaskKind.ToString() == kind &&
-
-x.Time.CompareTo(fTime) >= 0
-& x.Time.CompareTo(sTime) <= 0);
-
             var mergeResults = new MergeResults();
+            var intNodes = interfaceNodesFinder.Find(elements);
+            for (int i = 0; i < ndRes.Length; i++)
+                mergeResults.Merge(intNodes, "Q", ndRes[i], elRes[i]);
 
-            mergeResults.Merge(interfaceNodesFinder.Find(elements), "Q", search);
         }
 
         [DataTestMethod]
@@ -257,7 +250,7 @@ x.Time.CompareTo(fTime) >= 0
 
             var cmd = db.CreateAddCommand("testTable", clmStr, valStr);
             db.AddData(cmd);
-            var table = db.GetResults("testTable", "*");
+            var table = db.GetResults("testTable", "*","");
 
             db.CloseConnection();
 
@@ -307,6 +300,7 @@ x.Time.CompareTo(fTime) >= 0
             resultsCreator.ScaleFactor = 1;
             resultsCreator.SetScaleItems(itemRanges);
 
+            results = results.Where(x => x.Time.Equals(0));
             var ndRes = results.First();
             var elRes = results.Skip(1).First();
 

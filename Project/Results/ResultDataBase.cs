@@ -98,12 +98,13 @@ namespace Project.Results
         /// </summary>
         /// <param name="table"></param>
         /// <param name="column"></param>
+        /// <param name="filter"></param>
         /// <returns></returns>
 
-        public DataTable GetResults(string table, string column)
+        public DataTable GetResults(string table, string column, string filter)
         {
             var dataTable = new DataTable(table);
-            var cmdStr = "SELECT " + column + " FROM " + table;
+            var cmdStr = $"SELECT {column} FROM {table}{filter}";
             var adapter = new SQLiteDataAdapter(cmdStr, connection);
             adapter.Fill(dataTable);
             return dataTable;

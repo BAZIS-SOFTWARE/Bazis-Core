@@ -13,44 +13,33 @@ namespace PostProc
     public class MergeResults
     {
         /// <inheritdoc/>
-        public void Merge(Dictionary<int, List<int>> interfaceNodes, string resultDescr, IEnumerable<Result> results)
+        public void Merge(Dictionary<int, List<int>> interfaceNodes, string resultDescr, Result ndRes, Result elRes)
         {
-            var resNodes = results.Where(x => x.Data.TableName == "nodes");
-            var resElements = results.Where(x => x.Data.TableName == "elements");
+            if(ndRes.Data.Columns[0].DataType != typeof(int))
+                throw new System.Exception("Неверный тип данных колонки с номерами узлов");
 
-            if (resNodes.Count() != resElements.Count())
-                throw new System.Exception("Наборы результатов узлов и элементов не равны");
+            if (elRes.Data.Columns[0].DataType != typeof(int))
+                throw new System.Exception("Неверный тип данных колонки с номерами узлов");
+
+            if (!elRes.Time.Equals(ndRes.Time))
+                throw new System.Exception("Время в результатах не совпадает");
 
 
-            var resBigrams = new List<Tuple<Result, Result>>();
-
-            foreach (var item in resNodes)
+            foreach (DataRow row in ndRes.Data.Rows)
             {
-                var find = resElements.FirstOrDefault(x => x.Time.Equals(item.Time));
+                var nodeNumber = (int)row[0];
 
-                if(find == null)
-                    throw new System.Exception("Набор элементов не содержит результатов с таким же индексом");
-                
-                resBigrams.Add(new Tuple<Result, Result>(item, find));
-            }
-
-            foreach (var item in resBigrams)
-            {
-                foreach (DataRow row in item.Item1.Data.Rows)
+                var value = 0.0f;
+                if (interfaceNodes.ContainsKey(nodeNumber))
                 {
-                    var nodeNumber = (int)row["Индекс"];
-
-                    var value = 0.0f;
-                    if (interfaceNodes.ContainsKey(nodeNumber))
+                    foreach (var elemNumber in interfaceNodes[nodeNumber])
                     {
-                        foreach (var elemNumber in interfaceNodes[nodeNumber])
-                        {
-                            value += item.Item2.GetValue(elemNumber, resultDescr);
-                        }
-                        value /= interfaceNodes[nodeNumber].Count;
-                        item.Item1.Data.Rows.Find(nodeNumber)[resultDescr] = value;
+                        value += elRes.GetValue(elemNumber, resultDescr);
                     }
+                    value /= interfaceNodes[nodeNumber].Count;
+                    ndRes.Data.Rows.Find(nodeNumber)[resultDescr] = value;
                 }
+
             }
         }       
     }
