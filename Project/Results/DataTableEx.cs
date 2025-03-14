@@ -7,13 +7,13 @@ namespace Project.Results
 {
     public static class DataTableEx
     {
-        public static List<string> GetTableSchema(this DataTable dataTable)
+        public static string[] GetTableSchema(this DataTable dataTable)
         {
-            var schema = new List<string>();
+            var schema = new string[dataTable.Columns.Count];
 
-            for (int i = 1; i < dataTable.Columns.Count; i++)
+            for (int i = 0; i < dataTable.Columns.Count; i++)
             {
-                schema.Add(dataTable.Columns[i].ColumnName);
+                schema[i] = dataTable.Columns[i].ColumnName;
             }
 
             return schema;

@@ -55,7 +55,7 @@ namespace TestProject
 
             var results = loaderDB.GetResultFromDb(project.GeneralData.Path + $@"\{resName}",
                 $"nodes", time) ; 
-
+            
             Assert.AreNotEqual(results, null);
             Assert.AreNotEqual(results.Data.Rows.Count, 0);
         }
@@ -150,8 +150,8 @@ var loaderDB = new LoadResultsFileDB();
             var dbFile = Path.GetFileNameWithoutExtension(dbName);
             var ar = dbFile.Split('_');
             var kind = ar[0];
-            var fTime = Convert.ToSingle(ar[2],CultureInfo.InvariantCulture);
-            var sTime = Convert.ToSingle(ar[3], CultureInfo.InvariantCulture);
+            var fTime = Convert.ToSingle(ar[2]);
+            var sTime = Convert.ToSingle(ar[3]);
             var search = results.Where(x => x.TaskKind.ToString() == kind &&
 
 x.Time.CompareTo(fTime) >= 0
@@ -164,7 +164,7 @@ x.Time.CompareTo(fTime) >= 0
 
         [DataTestMethod]
         [DataRow("csv_table_1.csv")]
-        public void CreateAndSaveDBSQLite_Example(string file)
+        public void CSVToDataTableConverter_Example(string file)
         {
             var csvPath = @"..\..\..\ResultTableCSV";
 
@@ -187,6 +187,77 @@ x.Time.CompareTo(fTime) >= 0
             var resultTOLoad = loaderDB.GetResultFromDb(dbPath, $"nodes", times.First());
 
             Assert.AreEqual(resultTOLoad.TaskKind, TaskKind.механическая);
+        }   
+
+        [DataTestMethod]
+        [DataRow(new string[]
+       {
+            "Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL",
+            "[Time] real DEFAULT(0) NOT NULL",
+            "[Index] INTEGER DEFAULT(0) NOT NULL",
+            "[Value] real DEFAULT(0) NOT NULL"
+       },
+            
+       new object[]
+       {
+            0.01,
+            2,
+            1.666666
+       },
+            DisplayName = "3 with [] and 1 without")]
+        [DataRow(new string[]
+       {
+            "[Id] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL",
+            "[Time] real DEFAULT(0) NOT NULL",
+            "[Index] INTEGER DEFAULT(0) NOT NULL",
+            "[Value] real DEFAULT(0) NOT NULL"
+       },
+            new object[]
+       {
+            0.01,
+            2,
+            1.666666
+       },
+
+            DisplayName = "4 with []")]
+        [DataRow(new string[]
+       {
+            "Number INTEGER PRIMARY KEY NOT NULL",
+            "Time real DEFAULT(0) NOT NULL",
+            "Value real DEFAULT(0) NOT NULL"
+       },
+                 new object[]
+       {
+            2,
+            0.01,
+            1.666666
+       },
+
+            DisplayName = "3 without  []")]
+        public void BasicDbOperations(string[] columns, object[] values)
+        {
+            var path = @"..\..\..\TestTableColumns\test.db";
+
+            var db = new ResultDataBase(path);
+            db.OpenConnection();
+
+            db.DeleteTable("testTable");
+            db.CreateTables("testTable", columns);
+
+            var valStr = string.Join(",", values);
+
+            var columns_ch = columns.Where(x => !x.Contains("AUTOINCREMENT")).
+                Select(x => x.Split(' ')[0]);
+
+            var clmStr = string.Join(",", columns_ch);
+
+            var cmd = db.CreateAddCommand("testTable", clmStr, valStr);
+            db.AddData(cmd);
+            var table = db.GetResults("testTable", "*");
+
+            db.CloseConnection();
+
+            Assert.AreEqual(table.Columns.Count, columns.Length);
         }
 
         [DataTestMethod]

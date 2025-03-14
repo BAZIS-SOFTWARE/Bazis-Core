@@ -5,6 +5,7 @@ using System.Data;
 using System.Data.SQLite;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 
 namespace Project.Results
 {
@@ -29,19 +30,16 @@ namespace Project.Results
 
         }
         /// <summary>
-        /// CreateTables
+        /// CreateTables. Первая колонка всегда имеет тип int и используется 
+        /// для хранения номера объекта. Не использовать название "Index" для колонны.
         /// </summary>
         /// <param name="tableName"></param>
         /// <param name="columnsName"></param>
-        public void CreateTables(string tableName, List<string> columnsName)
+        public void CreateTables(string tableName, string[] columnsName)
         {
-            var cmdLine = "CREATE TABLE IF NOT EXISTS[" + tableName + "] " +
-                "([Id] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL " +
-                ", [Time] real DEFAULT(0) NOT NULL" +
-                ", [Индекс] INTEGER DEFAULT(0) NOT NULL";
+            var cmdLine = $"CREATE TABLE IF NOT EXISTS[{tableName}] (";
 
-            foreach (var columnName in columnsName)
-                cmdLine += string.Format(", [{0}] real DEFAULT(0) NOT NULL", columnName);
+            cmdLine += string.Join(", ", columnsName);
 
             cmdLine += ")";
 

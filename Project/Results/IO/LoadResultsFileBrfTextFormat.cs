@@ -193,5 +193,10 @@ namespace Project.Results.IO
         {
             throw new NotImplementedException();
         }
+
+        public IEnumerable<Result> GetResultsFromDb(string fullPath, string table)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

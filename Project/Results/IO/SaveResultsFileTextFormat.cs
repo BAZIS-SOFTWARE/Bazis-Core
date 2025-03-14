@@ -53,7 +53,7 @@ namespace Project.Results.IO
             var str = new List<string>();
 
             str.Add(result.TaskKind.ToString());
-            str.Add(result.Name);
+            str.Add(result.Data.TableName);
 
             foreach (DataColumn col in result.Data.Columns)
             {

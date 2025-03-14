@@ -14,8 +14,8 @@ namespace PostProc
         /// <inheritdoc/>
         public void Merge(Dictionary<int, List<int>> interfaceNodes, string resultDescr, IEnumerable<IResult> results)
         {
-            var resNodes = results.Where(x => x.Name == "nodes");
-            var resElements = results.Where(x => x.Name == "elements");
+            var resNodes = results.Where(x => x.Data.TableName == "nodes");
+            var resElements = results.Where(x => x.Data.TableName == "elements");
 
             if (resNodes.Count() != resElements.Count())
                 throw new System.Exception("Наборы результатов узлов и элементов не равны");

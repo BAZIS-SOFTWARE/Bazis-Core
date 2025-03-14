@@ -27,12 +27,20 @@ namespace Project.Results.IO
 
             foreach (var item in results)
             {
+                var schema = item.Data.GetTableSchema();
+                var fullColumnsName = new string[schema.Length + 2];
+                fullColumnsName[0] = "Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL";
+                fullColumnsName[1] = "Time real DEFAULT(0) NOT NULL";
+                fullColumnsName[2] = $"{schema[0]} INTEGER DEFAULT(0) NOT NULL";
 
-                db.CreateTables(item.Name, item.GetDataSchema());
+                for (int i = 1; i < schema.Length; i++)
+                    fullColumnsName[i + 2] = $"{schema[i]} real DEFAULT(0) NOT NULL";
+
+                db.CreateTables(item.Data.TableName, fullColumnsName);
 
                 if (!append)
-                    db.ClearTable(item.Name);
-                AddData(db, item.Time, item.Data);
+                    db.ClearTable(item.Data.TableName);
+                AddData(db, item);
 
             }
 
@@ -43,10 +51,11 @@ namespace Project.Results.IO
         /// <summary>
         /// AddData
         /// </summary>
-        /// <param name="time"></param>
-        /// <param name="table"></param>
-        public void AddData(ResultDataBase db, float time, DataTable table)
+        /// <param name="db"></param>
+        /// <param name="result"></param>
+        public void AddData(ResultDataBase db, IResult result)
         {
+            var table = result.Data;
             var rowCount = table.Rows.Count;
             var colCount = table.Columns.Count;
 
@@ -57,7 +66,9 @@ namespace Project.Results.IO
                 stopInd = 100;
             else stopInd = 1;
 
-            var columnsStr = CreateColumns(table);
+            var schemaStr = String.Join(",", result.Data.GetTableSchema());
+            var columnsStr = $"Time,{schemaStr}";
+
             var valAr = new string[colCount];
             var valStr = string.Empty;
             var queStr = string.Empty;
@@ -74,7 +85,7 @@ namespace Project.Results.IO
                             valAr[k] = table.Rows[j][k].ToString();
                         }
                         valStr = string.Join(",", valAr);
-                        var timeStr = time.ToString("0.######", CultureInfo.InvariantCulture);
+                        var timeStr = result.Time.ToString("0.######", CultureInfo.InvariantCulture);
                         valStr = $"{timeStr},{valStr}";
 
                         queStr += db.CreateAddCommand(table.TableName, columnsStr, valStr);
@@ -90,20 +101,6 @@ namespace Project.Results.IO
                     stopInd = stopInd + step;
                     if (stopInd > rowCount) stopInd = rowCount;
                 }
-        }
-
-        private string CreateColumns(DataTable dataTable)
-        {
-            var columns = dataTable.Columns;
-            string[] valStr = new string[columns.Count];
-
-            for (int i = 0; i < columns.Count; i++)
-            {
-                valStr[i] = columns[i].ColumnName;
-            }
-
-            var resVal = String.Join(",", valStr);
-            return "Time," + resVal;
         }
     }
 }

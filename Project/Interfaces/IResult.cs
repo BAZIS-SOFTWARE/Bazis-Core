@@ -31,15 +31,6 @@ namespace Project.Interfaces
         /// </summary>
         DataTable Data { get; }
         /// <summary>
-        /// Name
-        /// </summary>
-        string Name { get; }
-        /// <summary>
-        /// GetDataSchema
-        /// </summary>
-        /// <returns></returns>
-        List<string> GetDataSchema();
-        /// <summary>
         /// GetValue
         /// </summary>
         /// <param name="objNumber"></param>

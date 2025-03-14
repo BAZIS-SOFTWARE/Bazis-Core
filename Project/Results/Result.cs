@@ -21,21 +21,6 @@ namespace Project.Results
 /// <inheritdoc/>
 
         public DataTable Data { get; private set; }
-/// <inheritdoc/>
-
-        public string Name { get { return Data.TableName; } }
-
-        /// <inheritdoc/>
-
-        public List<string> GetDataSchema()
-        {
-            var table = Data.Clone();
-
-            var schema = new List<string>(); 
-            foreach (DataColumn column in table.Columns)
-                schema.Add(column.ColumnName);
-            return schema;
-        }
 
         public Result(DataTable table, float time, TaskKind taskKind)
         {
@@ -53,7 +38,7 @@ namespace Project.Results
 
         public override string ToString()
         {
-            return TaskKind + " " + Time.ToString();
+            return $"{TaskKind} {Data.TableName} {Time}";
         }
 /// <inheritdoc/>
 

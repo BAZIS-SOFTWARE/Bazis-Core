@@ -35,5 +35,15 @@ namespace Project.Interfaces.IO
         /// <param name="column"></param>
         /// <returns></returns>
         IEnumerable<float> GetValuesFromDb(string fullPath, string tableName, string column);
+
+        /// <summary>
+        /// GetResultsFromDb
+        /// </summary>
+        /// <param name="fullPath"></param>
+        /// <param name="table">
+        /// Используйте название "sqlite_master" для выгрузки всех таблиц в виде результатов.
+        /// </param>
+        /// <returns></returns>
+        IEnumerable<Result> GetResultsFromDb(string fullPath, string table);
     }
 }

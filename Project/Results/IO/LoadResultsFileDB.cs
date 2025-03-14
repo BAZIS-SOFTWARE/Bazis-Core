@@ -22,7 +22,7 @@ namespace Project.Results.IO
         public IEnumerable<Result> Load(string path)
         {
             LoadEvent?.Invoke(this, new LoadEventArgs("Загрузка результатов *.db"));
-            return GetResultsFromDb(path);
+            return GetResultsFromDb(path, "sqlite_master");
         }
 /// <inheritdoc/>
 
@@ -45,7 +45,8 @@ namespace Project.Results.IO
             var dataTable = db.GetResults($"{table} WHERE Time = {time}", "*");
             db.CloseConnection();
 
-            var newTable = CreateResultTables(time, dataTable);
+            var newTable = CreateResultTables(dataTable);
+
             var newResult = new Result(newTable, time,taskKind);    
 
             return newResult;
@@ -72,9 +73,10 @@ namespace Project.Results.IO
         /// GetResultsFromDb
         /// </summary>
         /// <param name="fullPath"></param>
+        /// <param name="table"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public IEnumerable<Result> GetResultsFromDb(string fullPath)
+        public IEnumerable<Result> GetResultsFromDb(string fullPath, string table)
         {
             var dbAr = Path.GetFileNameWithoutExtension(fullPath).Split('_');
 
@@ -89,25 +91,26 @@ namespace Project.Results.IO
 
             db.OpenConnection();
 
-            var namesTable = db.GetResults("sqlite_master WHERE type='table'", "name");
+            IEnumerable<string> tables;
+            if (table == "sqlite_master")
+            {
+                var namesTable = db.GetResults("sqlite_master WHERE type='table'", "name");
+                tables = namesTable.Rows.Cast<DataRow>().Select(x => Convert.ToString(x[0])).
+                    Where(x => x != "sqlite_sequence" & x != "name");
+            }
+            else
+                tables = new List<string> { table };
 
-            var names = namesTable.Rows.Cast<DataRow>().Select(x => Convert.ToString(x[0])).
-                Where(x => x != "sqlite_sequence" & x != "name");
-
-            foreach (var item in names)
+            foreach (var item in tables)
             {
                 var timeTable = db.GetResults(item, "DISTINCT Time");
 
                 var times = timeTable.Rows.Cast<DataRow>().Select(x => Convert.ToSingle(x[0]));
 
-                if (times.Count() == 0)
-                    throw new Exception("База данных не содержит результатов по времени!");
-
-                var dataTable = db.GetResults(item, "*");
-
                 foreach (var time in times)
                 {
-                    var newTable = CreateResultTables(time, dataTable);
+                    var dataTable = db.GetResults($"{item} WHERE Time = {time}", "*");
+                    var newTable = CreateResultTables(dataTable);
                     var newResult = new Result(newTable,time, taskKind);
 
                     LoadEvent?.Invoke(this, new LoadEventArgs("Загружены результаты для времени " + time.ToString()));
@@ -118,20 +121,16 @@ namespace Project.Results.IO
             db.CloseConnection();
         }
 
-        private DataTable CreateResultTables(float time, DataTable dbDataTable)
+        private DataTable CreateResultTables(DataTable dbDataTable)
         {
-            var rows = dbDataTable.Select("Time = " + time.ToString(CultureInfo.InvariantCulture));
-
-            if (rows.Length == 0)
-                throw new Exception($"Таблица не содержит строк");
-
+            var rows = dbDataTable.Rows;
             var columns = dbDataTable.Columns;
 
             var newTable = new DataTable(dbDataTable.TableName);
 
             var columnsCount = dbDataTable.Columns.Count;
 
-            newTable.Columns.Add("Индекс", typeof(int));
+            newTable.Columns.Add(dbDataTable.Columns[2].ColumnName, typeof(int));
             for (int i = 3; i < columnsCount; i++)
             {
                 var column = new DataColumn(dbDataTable.Columns[i].ColumnName, typeof(float)) { DefaultValue = 0 };
@@ -139,7 +138,7 @@ namespace Project.Results.IO
             }
 
 
-            for (int i = 0; i < rows.Length; i++)
+            for (int i = 0; i < rows.Count; i++)
             {
                 var row = newTable.NewRow();
 
