@@ -44,7 +44,7 @@ namespace Model.IO
                     }
                     else if (line.Contains("*ELSET") || line.Contains("*NSET"))
                     {
-                        ReadGroups(line, reader);
+                        ReadGroups(reader);
                     }
                     else line = reader.ReadLine();
                 }
@@ -210,7 +210,7 @@ namespace Model.IO
         /// <summary>
         /// Reads group's block from the reader until it encounters 'NSET' marker or end of stream
         /// </summary>
-        private void ReadGroups(string currentLine, StreamReader reader)
+        private void ReadGroups(StreamReader reader)
         {
             while (!reader.EndOfStream)
             {
