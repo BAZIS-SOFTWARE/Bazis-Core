@@ -10,6 +10,9 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Model.ObjectsCollections;
+using System.Drawing;
+using Group = Model.GroupsData.Group;
 
 
 namespace Model.IO
@@ -20,8 +23,10 @@ namespace Model.IO
     public class LoadModelFromINPTextFile : IModelLoader
     {
         public event Action<object, ILoaderEventArgs> LoadEvent;
+
         private string[] lines;
 
+        private static Random random = new Random();
         private static string extractNumbersPattern = @"(-)?\d+(\.\d+(e(-|\+)\d+)?)?";
         private static string extractElementTypePattern = @"(?<=TYPE=)\w+";
         private static string extractGroupNamePattern = @"(?<=(EL|N)SET=)\w*";
@@ -30,7 +35,8 @@ namespace Model.IO
         {
             var indexToNode = new Dictionary<int, Node>();
             var indexToElement = new Dictionary<int, Element>();
-            var groups = new List<GroupsData.Group>();
+            var groups = new List<Group>();
+            var sets = new List<ObjectsSet<Element>>();
             lines = File.ReadAllLines(path);
             var i = 0;
             var offset = 0;
@@ -40,31 +46,48 @@ namespace Model.IO
                     indexToNode = ReadNodes(i, out offset);
                 else if (lines[i].StartsWith("*ELEMENT", StringComparison.OrdinalIgnoreCase))
                     indexToElement = ReadElements(i, out offset, indexToNode);
-                else if (Regex.Match(lines[i], @"\*(EL|N)SET", RegexOptions.IgnoreCase).Success)
-                    groups = ReadGroups(i, out offset, indexToElement, indexToNode);
+                else if (Regex.Match(lines[i], @"\*ELSET", RegexOptions.IgnoreCase).Success)
+                    sets = ReadObjectsSet(i, out offset, indexToElement);
+                else if (Regex.Match(lines[i], @"\*NSET", RegexOptions.IgnoreCase).Success)
+                    groups = ReadGroups(i, out offset, indexToNode);
                 i += (offset > 0) 
                     ? offset 
                     : 1;
                 offset = 0;
             }
-            var modelData = GetModelData(indexToNode.Values, indexToElement.Values, groups);
+            var modelData = GetModelData(indexToNode.Values, indexToElement.Values, groups, sets);
             return modelData;
         }
 
-        private IModelData GetModelData(IEnumerable<Node> nodes, IEnumerable<Element> elements, List<GroupsData.Group> groups)
+        private IModelData GetModelData(IEnumerable<Node> nodes, IEnumerable<Element> elements, List<Group> groups, List<ObjectsSet<Element>> sets)
         {
             var modelData = new ModelData();
+
             foreach (var node in nodes)
             {
-                modelData.ObjectData.NodesSet.
-                    Add(node.Number, node);
+                modelData.ObjectData.NodesSet.Add(node.Number, node);
             }
 
             elements.OrderBy(e => e.Number)
                 .ToList()
                 .ForEach(e => AddElementToModelData(e, modelData));
+
             groups.ForEach(g => modelData.GroupData.Add(g));
+
+            sets.ForEach(s => AddObjectsSetToModelData(modelData, s));
+
             return modelData;
+        }
+
+        private void AddObjectsSetToModelData<T>(ModelData modelData, ObjectsSet<T> s)
+            where T : Element
+        {
+            switch(s.ObjType)
+            {
+                case ObjType.Элемент1D: modelData.ObjectData.E1DCollection.Add(s as ObjectsSet<Beam>); break;
+                case ObjType.Элемент2D: modelData.ObjectData.E2DCollection.Add(s as ObjectsSet<Element2D>); break;
+                case ObjType.Элемент3D: modelData.ObjectData.E3DCollection.Add(s as ObjectsSet<Element3D>); break;
+            }
         }
 
         private IEnumerable<string> ReadNumbersFromLine(string line)
@@ -122,7 +145,7 @@ namespace Model.IO
 
         private Dictionary<int, Element> ReadElements(int start, out int offset, Dictionary<int, Node> indexToNode)
         {
-            var indexToElement = new Dictionary<int, Element>();
+            var indexToElement = new Dictionary<int,Element>();
             var elementType = string.Empty;
             offset = 0;
             for(var i = start; i < lines.Length; i++)
@@ -170,24 +193,20 @@ namespace Model.IO
             }
         }
 
-        private List<GroupsData.Group> ReadGroups(int start, out int offset, Dictionary<int, Element> indexToElement, 
-            Dictionary<int, Node> indexToNode)
+        private List<GroupsData.Group> ReadGroups(int start, out int offset, Dictionary<int, Node> indexToNode)
         {
             var groups = new List<GroupsData.Group>();
             var groupName = string.Empty;
             offset = 0;
-            var isReadNodes = false;
-            for(var i = start; i < lines.Length; i++)
+            for (var i = start; i < lines.Length; i++)
             {
                 if (lines[i].StartsWith("**"))
                     break;
-                else if (Regex.Match(lines[i], @"\*(EL|N)SET", RegexOptions.IgnoreCase).Success)
-                    groupName = GetGroupName(lines[i], out isReadNodes);
+                else if (Regex.Match(lines[i], @"\*NSET", RegexOptions.IgnoreCase).Success)
+                    groupName = GetGroupName(lines[i]);
                 else
                 {
-                    var group = isReadNodes
-                        ? ReadOneGroup(lines[i], indexToNode, groupName)
-                        : ReadOneGroup(lines[i], indexToElement, groupName);
+                    var group = GetGroup(lines[i], indexToNode, groupName);
                     groups.Add(group);
                 }
                 offset++;
@@ -195,24 +214,55 @@ namespace Model.IO
             return groups;
         }
 
-        private GroupsData.Group ReadOneGroup<T>(string line, Dictionary<int, T> mapping, string groupName)
-            where T : ModelObject
+        private List<ObjectsSet<T>> ReadObjectsSet<T>(int start, out int offset, Dictionary<int, T> indexToElement)
+            where T : Element
         {
-            var elements = ReadNumbersFromLine(line)
-                        .Select(int.Parse)
-                        .Select(idx => mapping[idx]);
-            var group = new GroupsData.Group(groupName, elements.First().ObjType);
-            group.AddRange(elements);
+            var sets = new List<ObjectsSet<T>>();
+            var groupName = string.Empty;
+            offset = 0;
+            for (var i = start; i < lines.Length; i++)
+            {
+                if (lines[i].StartsWith("**") || Regex.Match(lines[i], @"\*NSET", RegexOptions.IgnoreCase).Success)
+                    break;
+                else if (Regex.Match(lines[i], @"\*ELSET", RegexOptions.IgnoreCase).Success)
+                    groupName = GetGroupName(lines[i]);
+                else
+                {
+                    var objectSet = GetObjectSet(lines[i], indexToElement, groupName);
+                    sets.Add(objectSet);
+                }
+                offset++;
+            }
+            return sets;
+        }
+
+        private ObjectsSet<T> GetObjectSet<T>(string line, Dictionary<int, T> mapping, string groupName)
+            where T : Element
+        {
+            var objectSet = new ObjectsSet<T>(groupName);
+            ReadNumbersFromLine(line)
+                .Select(int.Parse)
+                .Select(index => mapping[index])
+                .ToList()
+                .ForEach(e => objectSet.Add(e.Number, e));
+            objectSet.SetColor(Color.FromArgb(random.Next(256), random.Next(256), random.Next(256)));
+            return objectSet;
+        }
+
+        private Group GetGroup(string line, Dictionary<int, Node> mapping, string groupName)
+        {
+            var group = new Group(groupName, ObjType.Узел);
+            ReadNumbersFromLine(line)
+                .Select(int.Parse)
+                .Select(index => mapping[index])
+                .ToList()
+                .ForEach(e => group.Add(e));
             return group;
         }
 
-        private string GetGroupName(string line, out bool isReadNodes)
+        private string GetGroupName(string line)
         {
-            isReadNodes = false;
-            if (line.StartsWith("*NSET", StringComparison.OrdinalIgnoreCase))
-                isReadNodes = true;
             return Regex.Match(line, extractGroupNamePattern, RegexOptions.IgnoreCase).Value;
-
         }
     }
 }
