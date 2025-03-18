@@ -107,6 +107,7 @@ namespace Project.Results.IO
                 if (line.Split(' ')[0] == "Время")
                 {
                     var time = float.Parse(line.Split(' ')[1], CultureInfo.InvariantCulture);
+                    var result = new Result(time, taskKind);
                     var new_resultsData = new DataTable();
                     //timeList.Add(time);
                     LoadEvent(this, new LoadEventArgs("Время " + time.ToString()));
@@ -117,7 +118,7 @@ namespace Project.Results.IO
                             ReadObjsResults(sr, taskKind, new_resultsData, format[line]);
                         line = sr.ReadLine();
                     }
-                    results.Add(new Result(new_resultsData, time,taskKind));
+                    results.Add();
                     //resultsDataSetList.Add(new_resultsDataSet);
                 }
                 line = sr.ReadLine();

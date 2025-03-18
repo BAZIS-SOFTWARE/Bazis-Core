@@ -13,19 +13,20 @@ namespace PostProc
     public class MergeResults
     {
         /// <inheritdoc/>
-        public void Merge(Dictionary<int, List<int>> interfaceNodes, string resultDescr, Result ndRes, Result elRes)
+        public void Merge(Dictionary<int, List<int>> interfaceNodes, string resultDescr, Result res)
         {
-            if(ndRes.Data.Columns[0].DataType != typeof(int))
+
+            if (res.Data.Tables.Count < 1)
+                throw new System.Exception("Результаты должны содержать две таблицы для усреднения");
+
+            if (res.Data.Tables[0].Columns[0].DataType != typeof(int))
                 throw new System.Exception("Неверный тип данных колонки с номерами узлов");
 
-            if (elRes.Data.Columns[0].DataType != typeof(int))
-                throw new System.Exception("Неверный тип данных колонки с номерами узлов");
-
-            if (!elRes.Time.Equals(ndRes.Time))
-                throw new System.Exception("Время в результатах не совпадает");
+            if (res.Data.Tables[1].Columns[0].DataType != typeof(int))
+                throw new System.Exception("Неверный тип данных колонки с номерами элементов");
 
 
-            foreach (DataRow row in ndRes.Data.Rows)
+            foreach (DataRow row in res.Data.Tables[0].Rows)
             {
                 var nodeNumber = (int)row[0];
 
@@ -34,10 +35,10 @@ namespace PostProc
                 {
                     foreach (var elemNumber in interfaceNodes[nodeNumber])
                     {
-                        value += elRes.GetValue(elemNumber, resultDescr);
+                        value += res.GetValue(1,elemNumber, resultDescr);
                     }
                     value /= interfaceNodes[nodeNumber].Count;
-                    ndRes.Data.Rows.Find(nodeNumber)[resultDescr] = value;
+                    res.Data.Tables[0].Rows.Find(nodeNumber)[resultDescr] = value;
                 }
 
             }

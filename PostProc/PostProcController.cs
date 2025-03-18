@@ -11,16 +11,28 @@ namespace PostProc
     /// </summary>
     public class PostProcController
     {
-        /// <inheritdoc/>
+        /// <summary>
+        /// ResultDBPath
+        /// </summary>
+        public string ResultDBPath { get; set; }
+        /// <summary>
+        /// ResultsMerger
+        /// </summary>
         public MergeResults ResultsMerger { get; } = new MergeResults();
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// ResultsFieldsCreator
+        /// </summary>
         public ResultsFieldsCreator ResultsFieldsCreator { get; } = new ResultsFieldsCreator();
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// ResultsExporter
+        /// </summary>
         public IResultsExporter ResultsExporter { get; }  = new ResultsExporter();
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// GridExporter
+        /// </summary>
         public IGridExporter GridExporter { get; } = new GridExporter();
     }
 }

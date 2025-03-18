@@ -7,6 +7,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using Project.Results;
+using System.Security.Cryptography;
 
 namespace Project.Results.IO
 {
@@ -17,18 +18,9 @@ namespace Project.Results.IO
     {
         /// <inheritdoc/>
         public event Action<object, ILoadEventArgs> LoadEvent;
+
 /// <inheritdoc/>
-
-        public IEnumerable<Result> Load(string path)
-        {
-            LoadEvent?.Invoke(this, new LoadEventArgs("Загрузка результатов *.db"));
-            return GetResultsFromDb(path, "sqlite_master");
-        }
-/// <inheritdoc/>
-
-
-
-        public Result GetResultFromDb(string fullPath, string table, float time)
+        public Result GetResult(string fullPath, List<string> tables, float time)
         {
             var dbName = Path.GetFileNameWithoutExtension(fullPath).Split('_')[0];
 
@@ -40,20 +32,63 @@ namespace Project.Results.IO
                 taskKind = TaskKind.механическая;
 
             var db = new ResultDataBase(fullPath);
-
+            var newResult = new Result(time, taskKind);
             db.OpenConnection();
-            var dataTable = db.GetResults($"{table}", "*", $" WHERE Time = {time}");
+            foreach (var table in tables)
+            {
+                LoadEvent?.Invoke(this, new LoadEventArgs($"Загрузка результатов из таблицы {table}")) ;
+                var dataTable = db.GetResults($"{table}", "*", $" WHERE Time = {time}");
+
+                if(dataTable == null)
+                    throw new System.Exception($"Время {time} отсутсвует в таблице {table}");
+
+                newResult.AddDataTable(CreateResultTables(dataTable));
+            }
+
             db.CloseConnection();
-
-            var newTable = CreateResultTables(dataTable);
-
-            var newResult = new Result(newTable, time,taskKind);    
 
             return newResult;
         }
 /// <inheritdoc/>
 
-        public IEnumerable<float> GetValuesFromDb(string fullPath, string table,string column)
+        public IEnumerable<Result> GetResults(string fullPath, List<string> tables)
+        {
+            var dbName = Path.GetFileNameWithoutExtension(fullPath).Split('_')[0];
+
+            TaskKind taskKind;
+
+            if (dbName == "термическая")
+                taskKind = TaskKind.термическая;
+            else
+                taskKind = TaskKind.механическая;
+
+            var times = GetValues(fullPath, tables[0], "Time");
+
+            var db = new ResultDataBase(fullPath);
+            db.OpenConnection();
+
+            foreach (var time in times)
+            {
+                var newResult = new Result(time, taskKind);
+                foreach (var table in tables)
+                {
+                    LoadEvent?.Invoke(this, new LoadEventArgs($"Загрузка результатов из таблицы {table}"));
+                    var dataTable = db.GetResults($"{table}", "*", $" WHERE Time = {time}");
+
+                    if (dataTable == null)
+                        throw new System.Exception($"Время {time} отсутсвует в таблице {table}");
+
+                    newResult.AddDataTable(CreateResultTables(dataTable));
+                }
+
+                yield return newResult;
+            }
+            
+            db.CloseConnection();
+        }
+        /// <inheritdoc/>
+
+        public IEnumerable<float> GetValues(string fullPath, string table,string column)
         {
             var db = new ResultDataBase(fullPath);
             db.OpenConnection();
@@ -68,58 +103,22 @@ namespace Project.Results.IO
 
             return times;
         }
+/// <inheritdoc/>
 
-        /// <summary>
-        /// GetResultsFromDb
-        /// </summary>
-        /// <param name="fullPath"></param>
-        /// <param name="table"></param>
-        /// <returns></returns>
-        /// <exception cref="Exception"></exception>
-        public IEnumerable<Result> GetResultsFromDb(string fullPath, string table)
+        public IEnumerable<string> GetTablesNames(string fullPath)
         {
-            var dbAr = Path.GetFileNameWithoutExtension(fullPath).Split('_');
-
-            TaskKind taskKind;
-
-            if (dbAr[0] == "термическая")
-                taskKind = TaskKind.термическая;
-            else
-                taskKind = TaskKind.механическая;
-
             var db = new ResultDataBase(fullPath);
-
             db.OpenConnection();
-
-            IEnumerable<string> tables;
-            if (table == "sqlite_master")
-            {
-                var namesTable = db.GetResults("sqlite_master", "name", " WHERE type='table'");
-                tables = namesTable.Rows.Cast<DataRow>().Select(x => Convert.ToString(x[0])).
-                    Where(x => x != "sqlite_sequence" & x != "name");
-            }
-            else
-                tables = new List<string> { table };
-
-            foreach (var item in tables)
-            {
-                var timeTable = db.GetResults(item, "DISTINCT Time","");
-
-                var times = timeTable.Rows.Cast<DataRow>().Select(x => Convert.ToSingle(x[0]));
-
-                foreach (var time in times)
-                {
-                    var dataTable = db.GetResults($"{item}", "*",$" WHERE Time = {time}");
-                    var newTable = CreateResultTables(dataTable);
-                    var newResult = new Result(newTable,time, taskKind);
-
-                    LoadEvent?.Invoke(this, new LoadEventArgs("Загружены результаты для времени " + time.ToString()));
-                    yield return newResult;
-                }
-
-            }
+                var namesTable = db.GetResults("sqlite_master", "name", "WHERE type='table'");
             db.CloseConnection();
+            var tables = namesTable.Rows.Cast<DataRow>().Select(x => Convert.ToString(x[0])).
+                    Where(x => x != "sqlite_sequence" & x != "name");
+                return tables;
+  
+
         }
+
+
 
         private DataTable CreateResultTables(DataTable dbDataTable)
         {
@@ -154,6 +153,25 @@ namespace Project.Results.IO
             newTable.PrimaryKey = key;
 
             return newTable;
+        }
+/// <inheritdoc/>
+
+        public IEnumerable<KeyValuePair<string, List<string>>> GetTablesSchemes(string fullPath)
+        {
+            var db = new ResultDataBase(fullPath);
+            db.OpenConnection();
+            var namesTable = db.GetResults("sqlite_master", "name", "WHERE type = 'table'");
+
+            var tables = namesTable.Rows.Cast<DataRow>().Select(x => Convert.ToString(x[0])).
+                    Where(x => x != "sqlite_sequence" & x != "name");
+
+            foreach (var table in tables)
+            {
+                var columns = db.GetTableShema(table).Skip(2).ToList();
+                yield return new KeyValuePair<string, List<string>>(table, columns);
+            }
+
+            db.CloseConnection();
         }
     }
 }

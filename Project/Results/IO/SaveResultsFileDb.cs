@@ -27,21 +27,23 @@ namespace Project.Results.IO
 
             foreach (var item in results)
             {
-                var schema = item.Data.GetTableSchema();
-                var fullColumnsName = new string[schema.Length + 2];
-                fullColumnsName[0] = "Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL";
-                fullColumnsName[1] = "Time real DEFAULT(0) NOT NULL";
-                fullColumnsName[2] = $"{schema[0]} INTEGER DEFAULT(0) NOT NULL";
+                foreach (DataTable table in item.Data.Tables)
+                {
+                    var schema = table.GetTableSchema();
+                    var fullColumnsName = new string[schema.Length + 2];
+                    fullColumnsName[0] = "Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL";
+                    fullColumnsName[1] = "Time real DEFAULT(0) NOT NULL";
+                    fullColumnsName[2] = $"{schema[0]} INTEGER DEFAULT(0) NOT NULL";
 
-                for (int i = 1; i < schema.Length; i++)
-                    fullColumnsName[i + 2] = $"{schema[i]} real DEFAULT(0) NOT NULL";
+                    for (int i = 1; i < schema.Length; i++)
+                        fullColumnsName[i + 2] = $"{schema[i]} real DEFAULT(0) NOT NULL";
 
-                db.CreateTables(item.Data.TableName, fullColumnsName);
+                    db.CreateTables(table.TableName, fullColumnsName);        
 
-                if (!append)
-                    db.ClearTable(item.Data.TableName);
-                AddData(db, item);
-
+                    if (!append)
+                        db.ClearTable(table.TableName);
+                    AddData(db, table, item.Time);
+                }
             }
 
             db.CloseConnection();
@@ -52,10 +54,9 @@ namespace Project.Results.IO
         /// AddData
         /// </summary>
         /// <param name="db"></param>
-        /// <param name="result"></param>
-        public void AddData(ResultDataBase db, Result result)
+        /// <param name="table"></param>
+        public void AddData(ResultDataBase db, DataTable table, float time)
         {
-            var table = result.Data;
             var rowCount = table.Rows.Count;
             var colCount = table.Columns.Count;
 
@@ -66,7 +67,7 @@ namespace Project.Results.IO
                 stopInd = 100;
             else stopInd = 1;
 
-            var schemaStr = String.Join(",", result.Data.GetTableSchema());
+            var schemaStr = String.Join(",", table.GetTableSchema());
             var columnsStr = $"Time,{schemaStr}";
 
             var valAr = new string[colCount];
@@ -85,7 +86,7 @@ namespace Project.Results.IO
                             valAr[k] = table.Rows[j][k].ToString();
                         }
                         valStr = string.Join(",", valAr);
-                        var timeStr = result.Time.ToString("0.######", CultureInfo.InvariantCulture);
+                        var timeStr = time.ToString("0.######", CultureInfo.InvariantCulture);
                         valStr = $"{timeStr},{valStr}";
 
                         queStr += db.CreateAddCommand(table.TableName, columnsStr, valStr);

@@ -27,7 +27,7 @@ namespace PostProc.ScenePresenter
             throw new NotImplementedException();
         }
 
-        public IEnumerable<ResultFigure> CreateSurfaceObjects(Result ndRes, Result elRes,ObjType objsType, string resDescr, IEnumerable<ISurfaceElement> surfaceObjects)
+        public IEnumerable<ResultFigure> CreateSurfaceObjects(Result result, ObjType objsType, string resDescr, IEnumerable<ISurfaceElement> surfaceObjects)
         {
             var gradsCreator = new SurfaceGradientsCreator();
             var surfacetObjects = new List<ResultFigure>();
@@ -45,14 +45,14 @@ namespace PostProc.ScenePresenter
 
                             foreach (var node in surface.GetVertexes())
                             {
-                                var nodeDispl = GetNodeDispls(resDescr, node.Number, ndRes);
+                                var nodeDispl = GetNodeDispls(resDescr, node.Number, result);
                                 //nodeCoords.Add(node.Position.Sum(nodeDispl));
                                 var resItem = new ResultItem();
                                 resItem.Coord = node.Position.Sum(nodeDispl);
 
                                 if (objsType == ObjType.Узел)
-                                    resItem.Value = ndRes.GetValue(node.Number, resDescr);
-                                else resItem.Value = elRes.GetValue(surfaceObject.Number, resDescr);
+                                    resItem.Value = result.GetValue(0,node.Number, resDescr);
+                                else resItem.Value = result.GetValue(1,surfaceObject.Number, resDescr);
                                 resItems.Add(resItem);
                             }
 
@@ -94,24 +94,24 @@ namespace PostProc.ScenePresenter
             {
                 if (nodeRes == "X")
                 {
-                    var x = result.GetValue(nodeNumber, "X") * ScaleFactor;
+                    var x = result.GetValue(0,nodeNumber, "X") * ScaleFactor;
                     return new Point3D(x, 0, 0);
                 }
                 else if (nodeRes == "Y")
                 {
-                    var y = result.GetValue(nodeNumber, "Y") * ScaleFactor;
+                    var y = result.GetValue(0,nodeNumber, "Y") * ScaleFactor;
                     return new Point3D(0, y, 0);
                 }
                 else if (nodeRes == "Z")
                 {
-                    var z = result.GetValue(nodeNumber, "Z") * ScaleFactor;
+                    var z = result.GetValue(0,nodeNumber, "Z") * ScaleFactor;
                     return new Point3D(0, 0, z);
                 }
                 else
                 {
-                    var x = result.GetValue(nodeNumber, "X") * ScaleFactor;
-                    var y = result.GetValue(nodeNumber, "Y") * ScaleFactor;
-                    var z = result.GetValue(nodeNumber, "Z") * ScaleFactor;
+                    var x = result.GetValue(0,nodeNumber, "X") * ScaleFactor;
+                    var y = result.GetValue(0,nodeNumber, "Y") * ScaleFactor;
+                    var z = result.GetValue(0,nodeNumber, "Z") * ScaleFactor;
                     return new Point3D(x, y, z);
                 }
             }

@@ -1,4 +1,5 @@
 ﻿
+using MathNet.Numerics.Distributions;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -46,6 +47,22 @@ namespace Project.Results
             command.CommandText = cmdLine;
             command.ExecuteNonQuery();
         }
+
+        /// <summary>
+        /// GetTableShema
+        /// </summary>
+        /// <param name="tableName"></param>
+        public IEnumerable<string> GetTableShema(string tableName)
+        {
+            var cmdLine = $"PRAGMA table_info({tableName})";
+            command.CommandText = cmdLine;
+            var dr = command.ExecuteReader();
+
+            while (dr.Read())//loop through the various columns and their info
+                yield return (string)dr.GetValue(1);//column 1 from the result contains the column names
+
+            dr.Close();
+        }
         /// <summary>
         /// DeleteTable
         /// </summary>
@@ -90,7 +107,7 @@ namespace Project.Results
         {
             command.CommandText = "BEGIN TRANSACTION;" + queStr + "COMMIT;";
             //command.CommandText = strBulder.ToString();
-            return command.ExecuteNonQuery();
+            return command.ExecuteNonQuery();           
         }
 
         /// <summary>
@@ -104,7 +121,7 @@ namespace Project.Results
         public DataTable GetResults(string table, string column, string filter)
         {
             var dataTable = new DataTable(table);
-            var cmdStr = $"SELECT {column} FROM {table}{filter}";
+            var cmdStr = $"SELECT {column} FROM {table} {filter}";
             var adapter = new SQLiteDataAdapter(cmdStr, connection);
             adapter.Fill(dataTable);
             return dataTable;

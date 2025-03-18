@@ -29,23 +29,25 @@ namespace Project.Results.IO
             }
         }
 
-        private void WriteResultsValue(DataTable dataTable, float time, TaskKind taskKind, StreamWriter sw)
+        private void WriteResultsValue(DataSet dataSet, float time, TaskKind taskKind, StreamWriter sw)
         {
+            foreach (DataTable item in dataSet.Tables)
+            {
+                sw.WriteLine("Время " + time.ToString());
+                sw.WriteLine(item.TableName);
 
-            sw.WriteLine("Время " + time.ToString());
-            sw.WriteLine(dataTable.TableName);
+                DataRowCollection rows;
 
-            DataRowCollection rows;
+                rows = item.Rows;
 
-            rows = dataTable.Rows;
+                var rowsCount = rows.Count;
 
-            var rowsCount = rows.Count;
+                for (int j = 0; j < rowsCount; j++)
+                    sw.WriteLine(string.Join(" ", rows[j].ItemArray));
 
-            for (int j = 0; j < rowsCount; j++)
-                sw.WriteLine(string.Join(" ", rows[j].ItemArray));
-
-            sw.WriteLine($"#{dataTable.TableName}");         
-            sw.WriteLine("#Время " + time.ToString());
+                sw.WriteLine($"#{item.TableName}");
+                sw.WriteLine("#Время " + time.ToString());
+            }  
         }
 
         private void WriteResultsDescription(StreamWriter sw, Result result)
@@ -53,11 +55,14 @@ namespace Project.Results.IO
             var str = new List<string>();
 
             str.Add(result.TaskKind.ToString());
-            str.Add(result.Data.TableName);
 
-            foreach (DataColumn col in result.Data.Columns)
+            foreach (DataTable table in result.Data.Tables)
             {
-                str.Add(col.ColumnName);
+                str.Add(table.TableName);
+                foreach (DataColumn col in table.Columns)
+                {
+                    str.Add(col.ColumnName);
+                }
             }
 
             sw.WriteLine(string.Join(" ", str.ToArray()));

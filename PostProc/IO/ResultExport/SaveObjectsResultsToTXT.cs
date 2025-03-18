@@ -26,7 +26,12 @@ namespace PostProc.IO.ResultExport
             {
                 foreach (var obj in objs)
                 {
-                    var value = result.GetValue(obj.Number, resDescr);
+                    var value = 0.0f;
+                    if (obj is Node node)
+                        value = result.GetValue(0, obj.Number, resDescr);
+                    if (obj is IElement element)
+                        value = result.GetValue(1, obj.Number, resDescr);
+
                     sw.WriteLine($"{obj.Number} {obj.CalcCentr()} {value}");
                 }
                 sw.WriteLine($"");

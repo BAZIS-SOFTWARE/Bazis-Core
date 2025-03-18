@@ -30,17 +30,17 @@ namespace Project.Results
         public float Time { get; }
 /// <inheritdoc/>
 
-        public DataTable Data { get; private set; }
+        public DataSet Data { get; private set; }
 
-        public Result(DataTable table, float time, TaskKind taskKind)
+        public Result(DataSet dataSet, float time, TaskKind taskKind):
+            this(time,taskKind)
         {
-            Data = table;
-            Time = time;
-            TaskKind = taskKind;
+            Data = dataSet;
         }
 
         public Result(float time, TaskKind taskKind)
         {
+            Data = new DataSet();
             Time = time;
             TaskKind = taskKind;
         }
@@ -48,31 +48,28 @@ namespace Project.Results
 
         public override string ToString()
         {
-            return $"{TaskKind} {Data.TableName} {Time}";
+            return $"{TaskKind} {Time}";
         }
 /// <inheritdoc/>
 
-        public float GetValue(int objNumber, string resDescr)
+        public float GetValue(string tableName,int objNumber, string resDescr)
         {
-            var resu = Data.Rows.Find(objNumber);
-            if (resu != null && Data.Columns.Contains(resDescr))
-            {
-                return (float)resu[resDescr];
-            }
-            else return 0.0f;
+            var table = Data.Tables[tableName];
+            return table.GetTableData(objNumber, resDescr);
         }
 
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        public float GetValue(int tableInd, int objNumber, string resDescr)
         {
-            throw new System.NotImplementedException();
+            var table = Data.Tables[tableInd];
+            return table.GetTableData(objNumber, resDescr);
         }
 /// <inheritdoc/>
 
-        public void AddData(DataTable dbDataTable)
+        public void AddDataTable(DataTable dbDataTable)
         {
-            Data = dbDataTable;
+            Data.Tables.Add(dbDataTable);
         }
     }
 

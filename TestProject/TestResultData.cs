@@ -53,11 +53,26 @@ namespace TestProject
             loaderDB.LoadEvent += (ar1,ar2) => { };
             var project = new ProjectData("", path);
 
-            var results = loaderDB.GetResultFromDb(project.GeneralData.Path + $@"\{resName}",
-                $"nodes", time) ; 
+            var results = loaderDB.GetResult(project.GeneralData.Path + $@"\{resName}",
+                new List<string>() { "nodes" }, time) ; 
             
             Assert.AreNotEqual(results, null);
-            Assert.AreNotEqual(results.Data.Rows.Count, 0);
+            Assert.AreNotEqual(results.Data.Tables["nodes"].Rows.Count, 0);
+        }
+
+        [DataTestMethod]
+        [DataRow(@"..\..\..\Examples\ProjAndResults", "термическая_0_0_0.5.db")]
+        [DataRow(@"..\..\..\Examples\ProjAndResults", "термическая_0_0_1500.db")]
+        public void TestLoadDBSQLiteTablesScheme(string path, string resName)
+        {
+            var loaderDB = new LoadResultsFileDB();
+            loaderDB.LoadEvent += (ar1, ar2) => { };
+            var project = new ProjectData("", path);
+
+            var shemes = loaderDB.GetTablesSchemes(project.GeneralData.Path + $@"\{resName}").ToList();
+
+            Assert.AreNotEqual(shemes, null);
+            //Assert.AreNotEqual(results.Data.Tables["nodes"].Rows.Count, 0);
         }
 
         [TestMethod]
@@ -68,7 +83,16 @@ namespace TestProject
             loaderDB.LoadEvent += (ar1, ar2) => { };
 
             var project = new ProjectData("", path);
-            var results = loaderDB.Load(project.GeneralData.Path + $@"\{dbName}");
+
+            var times = loaderDB.GetValues(project.GeneralData.Path + $@"\{dbName}", "nodes", "Time");
+
+            var results = new List<Result>();
+
+            foreach (var item in times)
+            {
+                results.Add(loaderDB.GetResult(project.GeneralData.Path + $@"\{dbName}",
+                    new List<string> { "nodes", "elements" }, item));
+            }
 
             var kind = dbName.Split('_')[0];
 
@@ -93,11 +117,11 @@ var loaderDB = new LoadResultsFileDB();
             var project = new ProjectData(file, dir);
             project.ModelData = new ModelData();
             project.Load();
-            var results = loaderDB.Load(project.GeneralData.Path + $@"\{resName}");
-            //var search = results.Where(x => x.TaskKind.ToString() == "термическая" & x.Time == time);
-            //var resList = search.ToList();
-            //var saverDB = new SaveResultsFileDb();
-            //saverDB.Save(resList, dir + "\\temp.db", false);
+
+            var times = loaderDB.GetValues(project.GeneralData.Path + $@"\{resName}", "nodes", "Time");
+
+            var results = loaderDB.GetResults(project.GeneralData.Path + $@"\{resName}",
+                    new List<string> { "nodes", "elements" });
 
             var els3D = project.ModelData.ObjectData.E3DCollection;
             var controller = new PostProcController();
@@ -115,10 +139,9 @@ var loaderDB = new LoadResultsFileDB();
             controller.ResultsFieldsCreator.SetScaleItems(intervalVals);
             controller.ResultsFieldsCreator.ScaleFactor = 1;
 
-            results = results.Where(x => x.Time.Equals(time));
-            var ndRes = results.First();
-            var elRes = results.Skip(1).First();
-            var elsResults = controller.ResultsFieldsCreator.CreateSurfaceObjects(ndRes, elRes, ObjType.Узел, "T", els3D.GetObjects());
+            var search = results.FirstOrDefault(x => x.Time.Equals(time));
+       
+            var elsResults = controller.ResultsFieldsCreator.CreateSurfaceObjects(search, ObjType.Узел, "T", els3D.GetObjects());
 
             Assert.AreNotEqual(elsResults, null);
             Assert.AreNotEqual(elsResults.Count(), 0);
@@ -136,12 +159,11 @@ var loaderDB = new LoadResultsFileDB();
 
             proj.Load(@"..\..\..\Examples\ProjAndResults\two_tetra_term_cycle_multiStep.bpf");
 
-            proj.ResultDB = dbName;
-
             var loaderDB = new LoadResultsFileDB();
             loaderDB.LoadEvent += (ar1, ar2) => { };
-            var ndRes = loaderDB.GetResultsFromDb(proj.ResultDB,"nodes").ToArray();
-            var elRes = loaderDB.GetResultsFromDb(proj.ResultDB, "elements").ToArray();
+            
+            
+            var res = loaderDB.GetResults(dbName, new List<string>() { "nodes", "elements" }).ToArray();
 
             IEnumerable<IElement> elements;
             if (proj.GeneralData.TaskType == TaskType.Volume)
@@ -154,8 +176,8 @@ var loaderDB = new LoadResultsFileDB();
 
             var mergeResults = new MergeResults();
             var intNodes = interfaceNodesFinder.Find(elements);
-            for (int i = 0; i < ndRes.Length; i++)
-                mergeResults.Merge(intNodes, "Q", ndRes[i], elRes[i]);
+            for (int i = 0; i < res.Length; i++)
+                mergeResults.Merge(intNodes, "Q", res[i]);
 
         }
 
@@ -170,7 +192,9 @@ var loaderDB = new LoadResultsFileDB();
             var dataTable = convert.ConvertCSVtoDataTable($@"{csvPath}\{file}");
             dataTable.TableName = "nodes";
 
-            var result = new Result(dataTable, 0.87051f,TaskKind.термическая);
+            var dataSet = new DataSet();
+            dataSet.Tables.Add(dataTable);
+            var result = new Result(dataSet, 0.87051f,TaskKind.термическая);
 
             var dbPath = $@"{csvPath}\results.db";
 
@@ -179,9 +203,9 @@ var loaderDB = new LoadResultsFileDB();
    
             var loaderDB = new LoadResultsFileDB();
             loaderDB.LoadEvent += (ar1, ar2) => { };
-            var times = loaderDB.GetValuesFromDb(dbPath, "nodes", "Time");
+            var times = loaderDB.GetValues(dbPath, "nodes", "Time");
 
-            var resultTOLoad = loaderDB.GetResultFromDb(dbPath, $"nodes", times.First());
+            var resultTOLoad = loaderDB.GetResult(dbPath, new List<string>() { "nodes"}, times.First());
 
             Assert.AreEqual(resultTOLoad.TaskKind, TaskKind.механическая);
         }   
@@ -252,8 +276,10 @@ var loaderDB = new LoadResultsFileDB();
             db.AddData(cmd);
             var table = db.GetResults("testTable", "*","");
 
-            db.CloseConnection();
+            var schema = db.GetTableShema("testTable").ToList();
 
+            db.CloseConnection();
+            Assert.AreEqual(table.Columns.Count, schema.Count());
             Assert.AreEqual(table.Columns.Count, columns.Length);
         }
 
@@ -283,7 +309,7 @@ var loaderDB = new LoadResultsFileDB();
 
             var loaderDB = new LoadResultsFileDB();
             loaderDB.LoadEvent += (ar1, ar2) => { };
-            var results = loaderDB.Load($@"{resPath}\{resName}");
+            var results = loaderDB.GetResults($@"{resPath}\{resName}",new List<string>() { "nodes","elements"});
 
             IEnumerable<ISurfaceElement> elements;
             if(proj.GeneralData.TaskType == TaskType.Volume)
@@ -300,11 +326,9 @@ var loaderDB = new LoadResultsFileDB();
             resultsCreator.ScaleFactor = 1;
             resultsCreator.SetScaleItems(itemRanges);
 
-            results = results.Where(x => x.Time.Equals(0));
-            var ndRes = results.First();
-            var elRes = results.Skip(1).First();
+            var search = results.FirstOrDefault(x => x.Time.Equals(0));
 
-            var resultObjects = resultsCreator.CreateSurfaceObjects(ndRes, elRes,ObjType.Узел,resDesc, elements);
+            var resultObjects = resultsCreator.CreateSurfaceObjects(search, ObjType.Узел,resDesc, elements);
             var points = new List<ResultPoint>();
             foreach (var elems in resultObjects)
                 points.AddRange(elems.GetVertexes());

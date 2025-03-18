@@ -29,9 +29,9 @@ namespace PostProc.IO.ResultExport
                 {
                     var value = 0.0f;
                     if (obj is Node node)
-                        value = result.GetValue(obj.Number, resDescr);
+                        value = result.GetValue(0,obj.Number, resDescr);
                     if (obj is IElement element)
-                        value = result.GetValue(obj.Number, resDescr);
+                        value = result.GetValue(1,obj.Number, resDescr);
 
                     csvWriter.WriteField(obj.Number);
                     csvWriter.WriteField(obj.CalcCentr());
