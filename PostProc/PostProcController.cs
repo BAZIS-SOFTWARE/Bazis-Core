@@ -12,10 +12,6 @@ namespace PostProc
     public class PostProcController
     {
         /// <summary>
-        /// ResultDBPath
-        /// </summary>
-        public string ResultDBPath { get; set; }
-        /// <summary>
         /// ResultsMerger
         /// </summary>
         public MergeResults ResultsMerger { get; } = new MergeResults();
