@@ -141,7 +141,7 @@ var loaderDB = new LoadResultsFileDB();
 
             var search = results.FirstOrDefault(x => x.Time.Equals(time));
        
-            var elsResults = controller.ResultsFieldsCreator.CreateSurfaceObjects(search, ObjType.Узел, "T", els3D.GetObjects());
+            var elsResults = controller.ResultsFieldsCreator.CreateSurfaceObjects(search, "nodes", "T", els3D.GetObjects());
 
             Assert.AreNotEqual(elsResults, null);
             Assert.AreNotEqual(elsResults.Count(), 0);
@@ -328,7 +328,7 @@ var loaderDB = new LoadResultsFileDB();
 
             var search = results.FirstOrDefault(x => x.Time.Equals(0));
 
-            var resultObjects = resultsCreator.CreateSurfaceObjects(search, ObjType.Узел,resDesc, elements);
+            var resultObjects = resultsCreator.CreateSurfaceObjects(search, "nodes", resDesc, elements);
             var points = new List<ResultPoint>();
             foreach (var elems in resultObjects)
                 points.AddRange(elems.GetVertexes());

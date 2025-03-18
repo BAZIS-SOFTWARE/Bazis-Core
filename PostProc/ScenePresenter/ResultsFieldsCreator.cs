@@ -27,7 +27,7 @@ namespace PostProc.ScenePresenter
             throw new NotImplementedException();
         }
 
-        public IEnumerable<ResultFigure> CreateSurfaceObjects(Result result, ObjType objsType, string resDescr, IEnumerable<ISurfaceElement> surfaceObjects)
+        public IEnumerable<ResultFigure> CreateSurfaceObjects(Result result, string table, string resDescr, IEnumerable<ISurfaceElement> surfaceObjects)
         {
             var gradsCreator = new SurfaceGradientsCreator();
             var surfacetObjects = new List<ResultFigure>();
@@ -50,9 +50,8 @@ namespace PostProc.ScenePresenter
                                 var resItem = new ResultItem();
                                 resItem.Coord = node.Position.Sum(nodeDispl);
 
-                                if (objsType == ObjType.Узел)
-                                    resItem.Value = result.GetValue(0,node.Number, resDescr);
-                                else resItem.Value = result.GetValue(1,surfaceObject.Number, resDescr);
+                                resItem.Value = result.GetValue(table, surfaceObject.Number, resDescr);
+
                                 resItems.Add(resItem);
                             }
 
