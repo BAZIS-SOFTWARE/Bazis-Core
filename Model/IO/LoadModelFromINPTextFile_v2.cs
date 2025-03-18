@@ -20,9 +20,10 @@ namespace Model.IO
     /// </summary>
     public class LoadModelFromINPTextFile_v2 : IModelLoader
     {
-        public event Action<object, ILoaderEventArgs> LoadEvent;        
+        public event Action<object, ILoaderEventArgs> LoadEvent;
         private Dictionary<int, IElement> allElements = new Dictionary<int, IElement>();
         private ModelData modelData;
+        private Random rnd = new Random();
         private string line;
 
         /// <summary>
@@ -36,7 +37,7 @@ namespace Model.IO
                 LoadEvent?.Invoke(this, new LoaderEventArgs("Начало загрузки модели"));
                 line = reader.ReadLine();
                 while (!reader.EndOfStream)
-                {                                      
+                {
                     if (line.Contains("*NODE"))
                     {
                         foreach (var item in ReadNodes(reader))
@@ -46,7 +47,8 @@ namespace Model.IO
                     {
                         ReadGroups(reader);
                     }
-                    else line = reader.ReadLine();
+                    else
+                        line = reader.ReadLine();
                 }
             }
             return modelData;
@@ -83,45 +85,42 @@ namespace Model.IO
         private void ReadElements(StreamReader reader)
         {
             LoadEvent?.Invoke(this, new LoaderEventArgs("Начало загрузки элементов"));
-            line = reader.ReadLine();
-            var rnd = new Random();
-            SetParametersElements(reader, rnd);
+            line = reader.ReadLine();            
+            SetParametersElements(reader);
         }
 
-        private void SetParametersElements(StreamReader reader, Random rnd)
+        private void SetParametersElements(StreamReader reader)
         {
             var setName = GetName(line);
             var elementType = GetElementKind(line);
-            var objsType = GetType(elementType);                       
-            CreateSet(reader, rnd, setName, elementType, objsType);
+            var objsType = GetType(elementType);
+            CreateSet(reader,setName, elementType, objsType);
         }
 
-        private void CreateSet(StreamReader reader, Random rnd, string setName, ElementKind elementType, ObjType objsType)
-        {
-            var color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
-
+        private void CreateSet(StreamReader reader, string setName, ElementKind elementType, ObjType objsType)
+        {           
             if (objsType == ObjType.Элемент1D)
             {
                 modelData.ObjectData.E1DCollection.Add(setName);
                 var set1D = modelData.ObjectData.E1DCollection[setName];
-                FillSet(set1D, ViewMode.Line, color, reader, elementType, rnd);
+                FillSet(set1D, ViewMode.Line, reader, elementType);
             }
 
             else if (objsType == ObjType.Элемент2D)
             {
                 modelData.ObjectData.E2DCollection.Add(setName);
                 var set2D = modelData.ObjectData.E2DCollection[setName];
-                FillSet(set2D, ViewMode.LineSurface, color, reader, elementType, rnd);
+                FillSet(set2D, ViewMode.LineSurface, reader, elementType);
             }
             else
             {
                 modelData.ObjectData.E3DCollection.Add(setName);
                 var set3D = modelData.ObjectData.E3DCollection[setName];
-                FillSet(set3D, ViewMode.LineSurface, color, reader, elementType, rnd);
+                FillSet(set3D, ViewMode.LineSurface, reader, elementType);
             }
         }
         private string GetName(string line)
-        {          
+        {
             if (line.StartsWith("*ELEMENT"))
             {
                 return line.Replace(" ", "").Split(',')[2].Replace("ELSET=", "");
@@ -136,20 +135,23 @@ namespace Model.IO
             }
             else
             {
-                throw new ArgumentException($"Неизвестный формат строки: {line}");                
+                throw new ArgumentException($"Неизвестный формат строки: {line}");
             }
         }
-        private void FillSet<T>(ObjectsSet<T> set, ViewMode mode, Color color, StreamReader reader, ElementKind elementKind, Random rnd)
+
+        private void FillSet<T>(ObjectsSet<T> set, ViewMode mode, StreamReader reader, ElementKind elementKind)
     where T : IElement
         {
+            var color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
             set.SetViewMode(mode);
             set.SetColor(color);
+
             while (!reader.EndOfStream)
             {
                 line = reader.ReadLine();
                 if (line.StartsWith("*ELEMENT"))
                 {
-                    SetParametersElements(reader, rnd);
+                    SetParametersElements(reader);
                     break;
                 }
                 else if (line.StartsWith("*ELSET") || line.StartsWith("*NSET"))
@@ -164,9 +166,10 @@ namespace Model.IO
                     .ToArray();
                 var element = GetElement(elementIndex, elementNodes, elementKind);
                 allElements.Add(elementIndex, element);
-                set.Add(elementIndex, (T)allElements[elementIndex]);                             
+                set.Add(elementIndex, (T)allElements[elementIndex]);
             }
         }
+
         private ObjType GetType(ElementKind elementKind)
         {
             switch (elementKind)
@@ -189,7 +192,7 @@ namespace Model.IO
                 case "T3D2": return ElementKind.Стержень;
                 case "CPS3": return ElementKind.Треугольник;
                 case "CPS4": return ElementKind.Квадрат;
-                case "C3D4": return ElementKind.Тетра;                
+                case "C3D4": return ElementKind.Тетра;
                 default: throw new ArgumentException($"Неизвестный формат элемента: {elementType}");
             }
         }
@@ -219,7 +222,7 @@ namespace Model.IO
                 line = reader.ReadLine();
                 var tokens = line.Replace(", ", " ").Trim().Split(' ');
                 var numbers = tokens.Select(int.Parse);
-                
+
                 ObjType objsType;
                 if (previousLine.StartsWith("*ELSET"))
                     objsType = allElements[numbers.First()].ObjType;
@@ -245,9 +248,9 @@ namespace Model.IO
                 {
                     var obj = allElements[number];
                     group.Add(obj);
-                }                
+                }
             }
-            modelData.GroupData.Add(group);            
+            modelData.GroupData.Add(group);
         }
     }
 }
