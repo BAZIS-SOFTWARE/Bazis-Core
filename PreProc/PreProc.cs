@@ -13,6 +13,10 @@ using Project.TaskParameters;
 namespace PreProc
 {
     /// <summary>
+    /// TaskStatus
+    /// </summary>
+    public enum TaskStatus : int { выполнить, пропустить };
+    /// <summary>
     /// PreProc. Препроцессор
     /// </summary>
     public class PreProc : IPreProc

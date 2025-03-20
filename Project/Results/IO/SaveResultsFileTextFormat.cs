@@ -12,7 +12,7 @@ namespace Project.Results.IO
         /// <inheritdoc/>
         public event Action<object, ISaveEventArgs> SaveEvent;
 
-        public void Save(List<IResult> results, string path, bool append)
+        public void Save(List<Result> results, string path, bool append)
         {
             using (var sw = new StreamWriter(path, append, System.Text.Encoding.Unicode) { AutoFlush = true })
             {
@@ -31,54 +31,42 @@ namespace Project.Results.IO
 
         private void WriteResultsValue(DataSet dataSet, float time, TaskKind taskKind, StreamWriter sw)
         {
+            foreach (DataTable item in dataSet.Tables)
+            {
+                sw.WriteLine("Время " + time.ToString());
+                sw.WriteLine(item.TableName);
 
-            sw.WriteLine("Время " + time.ToString());
-            sw.WriteLine("Узлы");
+                DataRowCollection rows;
 
-            DataRowCollection rows;
+                rows = item.Rows;
 
-            rows = dataSet.Tables["nodes"].Rows;
+                var rowsCount = rows.Count;
 
-            var rowsCount = rows.Count;
+                for (int j = 0; j < rowsCount; j++)
+                    sw.WriteLine(string.Join(" ", rows[j].ItemArray));
 
-            for (int j = 0; j < rowsCount; j++)
-                sw.WriteLine(string.Join(" ", rows[j].ItemArray));
-
-            sw.WriteLine("#Узлы");
-            sw.WriteLine("Элементы");
-
-            rows = dataSet.Tables["elements"].Rows;
-
-            rowsCount = rows.Count;
-
-            for (int j = 0; j < rowsCount; j++)
-                sw.WriteLine(string.Join(" ", rows[j].ItemArray));
-
-            sw.WriteLine("#Элементы");
-            sw.WriteLine("#Время " + time.ToString());
+                sw.WriteLine($"#{item.TableName}");
+                sw.WriteLine("#Время " + time.ToString());
+            }  
         }
 
-        private void WriteResultsDescription(StreamWriter sw, IResult result)
+        private void WriteResultsDescription(StreamWriter sw, Result result)
         {
             var str = new List<string>();
 
             str.Add(result.TaskKind.ToString());
-            str.Add("Узлы");
 
-            foreach (DataColumn col in result.Data.Tables["nodes"].Columns)
+            foreach (DataTable table in result.Data.Tables)
             {
-                str.Add(col.ColumnName);
+                str.Add(table.TableName);
+                foreach (DataColumn col in table.Columns)
+                {
+                    str.Add(col.ColumnName);
+                }
             }
 
             sw.WriteLine(string.Join(" ", str.ToArray()));
             str.Clear();
-            str.Add("Элементы");
-
-            foreach (DataColumn col in result.Data.Tables["elements"].Columns)
-            {
-                str.Add(col.ColumnName);
-            }
-            sw.WriteLine(string.Join(" ", str.ToArray()));
         }
     }
 }

@@ -1,74 +1,75 @@
 ﻿using Project.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
+using System.Linq;
 using System.Runtime.Serialization;
 
 namespace Project.Results
 {
     /// <summary>
+    /// TaskKind
+    /// </summary>
+    public enum TaskKind
+    {
+        термическая,
+        механическая,
+        химическая
+    }
+    /// <summary>
     /// Result
     /// </summary>
-    public class Result : IResult
+    [Serializable]
+    public class Result
     {
         /// <inheritdoc/>
-        public TaskKind TaskKind { get; set; }
+        public TaskKind TaskKind { get;}
 /// <inheritdoc/>
 
         public float Time { get; }
 /// <inheritdoc/>
 
-        public DataSet Data { get; }
-/// <inheritdoc/>
+        public DataSet Data { get; private set; }
 
-        public List<string> GetDataSchema(string dataName)
+        public Result(DataSet dataSet, float time, TaskKind taskKind):
+            this(time,taskKind)
         {
-            var table = Data.Tables[dataName].Clone();
-
-            var schema = new List<string>(); 
-            foreach (DataColumn column in table.Columns)
-                schema.Add(column.ColumnName);
-            return schema;
+            Data = dataSet;
         }
 
-        public Result(DataSet data, float time, TaskKind taskKind)
+        public Result(float time, TaskKind taskKind)
         {
-            TaskKind = taskKind;
-            Data = data;
+            Data = new DataSet();
             Time = time;
+            TaskKind = taskKind;
         }
 /// <inheritdoc/>
 
         public override string ToString()
         {
-            return TaskKind + " " + Time.ToString();
+            return $"{TaskKind} {Time}";
         }
 /// <inheritdoc/>
 
-        public float GetElementValue(int elemNumber, string resDescr)
+        public float GetValue(string tableName,int objNumber, string resDescr)
         {
-            var resu = Data.Tables["elements"].Rows.Find(elemNumber);
-            if (resu != null && Data.Tables["elements"].Columns.Contains(resDescr))
-            {
-                return (float)resu[resDescr];
-            }
-            else return 0.0f;
+            var table = Data.Tables[tableName];
+            return table.GetTableData(objNumber, resDescr);
         }
-/// <inheritdoc/>
 
-        public float GetNodeValue(int nodeNumber, string resDescr)
-        {         
-            var resu = Data.Tables["nodes"].Rows.Find(nodeNumber);
-            if (resu != null && Data.Tables["nodes"].Columns.Contains(resDescr))
-            {           
-                return (float)resu[resDescr];
-            }
-            else return 0.0f;
-        }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        public float GetValue(int tableInd, int objNumber, string resDescr)
         {
-            throw new System.NotImplementedException();
+            var table = Data.Tables[tableInd];
+            return table.GetTableData(objNumber, resDescr);
+        }
+/// <inheritdoc/>
+
+        public void AddDataTable(DataTable dbDataTable)
+        {
+            Data.Tables.Add(dbDataTable);
         }
     }
 

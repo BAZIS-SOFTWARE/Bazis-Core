@@ -9,18 +9,26 @@ namespace PostProc
     /// <summary>
     /// ResultsController
     /// </summary>
-    public class PostProcController : IPostProcController
+    public class PostProcController
     {
-        /// <inheritdoc/>
-        public IResultsMerger ResultsMerger { get; } = new MergeResults();
+        /// <summary>
+        /// ResultsMerger
+        /// </summary>
+        public MergeResults ResultsMerger { get; } = new MergeResults();
 
-        /// <inheritdoc/>
-        public IResultsFieldsCreator ResultsFieldsCreator { get; } = new ResultsFieldsCreator();
+        /// <summary>
+        /// ResultsFieldsCreator
+        /// </summary>
+        public ResultsFieldsCreator ResultsFieldsCreator { get; } = new ResultsFieldsCreator();
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// ResultsExporter
+        /// </summary>
         public IResultsExporter ResultsExporter { get; }  = new ResultsExporter();
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// GridExporter
+        /// </summary>
         public IGridExporter GridExporter { get; } = new GridExporter();
     }
 }

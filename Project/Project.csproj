@@ -4,7 +4,7 @@
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
 	  <SignAssembly>True</SignAssembly>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>4.3.8</Version>
+    <Version>4.4.3</Version>
     <Title>Project</Title>
     <Authors>Bilenko Georgy</Authors>
     <Company>BAZIS SOFTWARE</Company>
@@ -24,8 +24,7 @@
 
   <!--Копирование собранного пакета в необходимую папку-->
   <Target Name="CopyPackage" AfterTargets="Pack">
-    <Copy SourceFiles="$(PackageOutputPath)\$(PackageId).$(PackageVersion).nupkg"
-          DestinationFolder="\\fs\Plm-Ural\OrgUnits\developers\Packages\Core\$(Configuration)" />
+    <Copy SourceFiles="$(PackageOutputPath)\$(PackageId).$(PackageVersion).nupkg" DestinationFolder="\\fs\Plm-Ural\OrgUnits\developers\Packages\Core\$(Configuration)" />
   </Target>
 
   <ItemGroup>
@@ -48,13 +47,10 @@
     <Compile Include="Interfaces\IO\ITaskDataSaver.cs" />
     <Compile Include="Interfaces\IProject.cs" />
     <Compile Include="Interfaces\IProjectData.cs" />
-    <Compile Include="Interfaces\IResult.cs" />
-    <Compile Include="Interfaces\IResultData.cs" />
     <Compile Include="Interfaces\Results\IResultsExporter.cs" />
     <Compile Include="Interfaces\Results\IResultsExportSaver.cs" />
     <Compile Include="Interfaces\Tasks\FunctionParameter.cs" />
     <Compile Include="Interfaces\Tasks\ICillindricalFunction.cs" />
-    <Compile Include="Interfaces\Tasks\ICompData.cs" />
     <Compile Include="Interfaces\Tasks\IData.cs" />
     <Compile Include="Interfaces\Tasks\IFrameData.cs" />
     <Compile Include="Interfaces\Tasks\IFrameFunction.cs" />
@@ -75,13 +71,10 @@
     <Compile Include="Results\DataTableEx.cs" />
     <Compile Include="Results\IO\CSVToDataTableConverter.cs" />
     <Compile Include="Results\IO\LoadEventArgs.cs" />
-    <Compile Include="Results\IO\LoadResultsFileBrfTextFormat.cs" />
     <Compile Include="Results\IO\LoadResultsFileDB.cs" />
     <Compile Include="Results\IO\SaveEventArgs.cs" />
     <Compile Include="Results\IO\SaveResultsFileDb.cs" />
-    <Compile Include="Results\IO\SaveResultsFileTextFormat.cs" />
     <Compile Include="Results\Result.cs" />
-    <Compile Include="Results\ResultData.cs" />
     <Compile Include="Results\ResultDataBase.cs" />
     <Compile Include="Results\ResultsComparer.cs" />
     <Compile Include="TaskParameters\ChemicalConvergence.cs" />
