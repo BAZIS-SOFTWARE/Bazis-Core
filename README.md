@@ -40,8 +40,17 @@
 </details>
 
 # Схемы интегрирования конечных элементов для решения задач для всех типов элементов 2D и 3D (Проект Model).
-<details>
-![image](https://github.com/user-attachments/assets/de06da91-25e0-402a-a73a-1d7a1a9fd0e8)
-</details>
+
+Естественные функции формы и их производные для различных элементов.
+
+Отрезок (одномерный элемент):
+ 
+N_i=(1/2)*(1-ξ)
+N_j=(1/2)*(1+ξ)
+(dN_i)/dξ=-1/2
+(dN_j)/dξ=1/2
+
+![image](https://github.com/user-attachments/assets/591598b4-bb94-4639-b53a-1bcaf2ec752f)
+
 
 

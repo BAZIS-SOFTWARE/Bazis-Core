@@ -11,6 +11,8 @@ using Model.IO;
 using Model.MeshObjects;
 using Model.Interfaces.MeshObjects;
 using System.Data;
+using Model.GroupsData;
+using ModelController.MeshObjsCreator;
 
 namespace TestModel
 {
