@@ -17,16 +17,14 @@ namespace Project
 
         public ITaskData TaskData { get; set; }
         /// <inheritdoc/>
-        public IResultData ResultData { get; set; }
-        /// <inheritdoc/>
+        public string ResultDB { get; set; } = "";
 
-        public TaskType TaskType { get; set; } = TaskType.AxiPlain;
 /// <inheritdoc/>
 
         public void ClearAllData()
         {
             TaskData?.Clear();
-            ResultData?.Clear();
+            ResultDB = "";
             ModelData?.ClearAll();
         }
 /// <inheritdoc/>
