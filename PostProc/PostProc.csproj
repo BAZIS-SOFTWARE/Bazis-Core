@@ -7,7 +7,7 @@
     <SignAssembly>True</SignAssembly>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>Results</Title>
-    <Version>1.0.85</Version>
+    <Version>1.0.87</Version>
     <Authors>Bilenko Georgy, Kirill Kishun</Authors>
     <Company>BAZIS SOFTWARE</Company>
     <Product>BAZIS</Product>
