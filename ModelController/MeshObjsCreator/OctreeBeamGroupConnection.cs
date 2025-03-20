@@ -31,14 +31,14 @@ namespace ModelController.MeshObjsCreator
 
         private PointOctree<Node> CreateOctree(IEnumerable<Node> allNodes)
         {
-            var minX = allNodes.Select(n => n.Position._x).Min();
-            var maxX = allNodes.Select(n => n.Position._x).Max();
+            var minX = allNodes.Min(n => n.Position._x);
+            var maxX = allNodes.Max(n => n.Position._x);
 
-            var minY = allNodes.Select(n => n.Position._y).Min();
-            var maxY = allNodes.Select(n => n.Position._y).Max();
+            var minY = allNodes.Min(n => n.Position._y);
+            var maxY = allNodes.Max(n => n.Position._y);
 
-            var minZ = allNodes.Select(n => n.Position._z).Min();
-            var maxZ = allNodes.Select(n => n.Position._z).Max();
+            var minZ = allNodes.Min(n => n.Position._z);
+            var maxZ = allNodes.Max(n => n.Position._z);
 
             var size = Math.Max(maxX - minX, Math.Max(maxY - minY, maxZ - minZ));
 
