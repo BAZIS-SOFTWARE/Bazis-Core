@@ -570,41 +570,33 @@ namespace TestModel.GmshTests
         [DataRow(@"\CAD\weld_seam_1.step", 38, new int[] { 18, 19, 23, 24 }, new int[] { 2 }, new double[] { 0.25, 0.05, 0.5 })]
         [DataRow(@"\CAD\weld_seam_2.step", 38, new int[] { 18, 19, 23, 24 }, new int[] { 2 }, new double[] { 0.25, 0.05, 0.5 })]
         [DataRow(@"\CAD\Tavr.step", 6, new int[] { 25, 27, 29, 31, 32, 33, 34, 36, 38, 40, 41, 42 }, new int[] { 3, 4 }, new double[] { 20, 10, 3.5, 3.5 })]
-        public void VolumeSizesManipuationTest(string fileName, int seamPointCurves, int[] seamCurves, int[] seamVolumes, double[] volumeSizes)
+        public void VolumeSizesPointSizesCase(string fileName, int seamPointCurves, int[] seamCurves, int[] seamVolumes, double[] volumeSizes)
         {
             controller.Gmsh.Open(modelFolder + fileName);
-            //Вариант 1 - использование плотностей в точках, сначало генерируем плотности в точках, затем проводим трансфиницию (порядок важен!)
             var volumes = controller.Gmsh.Model.GetEntities(3);
-            Action makeTransfinite = () =>
-            {
-                //Трансфиниция кривых
-                for (var i = 0; i < seamCurves.Length; ++i)
-                    controller.Gmsh.Model.Mesh.SetTransfiniteCurve(seamCurves[i], seamPointCurves);
-                //Трансфиниция поверхностей
-                for (var i = 0; i < seamVolumes.Length; ++i)
-                {
-                    var seamData = controller.Gmsh.Model.GetAdjacencies(3, seamVolumes[i]);
-                    var seamSurfs = seamData.Item2;
-                    for (var j = 0; j < seamSurfs.Length; ++j)
-                        controller.Gmsh.Model.Mesh.SetTransfiniteAutomatic(new int[] { 2, seamSurfs[j] }, 2.35, false);
-                }
-            };
-
+            //Вариант 1 - использование плотностей в точках, сначало генерируем плотности в точках, затем проводим трансфиницию (порядок важен!)
             for(int i = 0, j = 0; i < volumes.Length; i += 2, ++j)
             {
                 var dimTags = new int[] { volumes[i], volumes[i + 1] };
                 var points = controller.Gmsh.Model.GetBoundary(dimTags, true, true, true);
                 controller.Gmsh.Model.Mesh.SetSize(points, volumeSizes[j]);
             }
-            makeTransfinite.Invoke();
+            MakeTranfinite(seamPointCurves, seamCurves, seamVolumes);
             controller.Gmsh.Model.Mesh.Generate(3);
             var error = controller.Gmsh.Logger.GetLastError();
             Assert.IsTrue(string.IsNullOrEmpty(error));
             //var file = Path.GetFileNameWithoutExtension(fileName);
             //controller.Gmsh.Write($@"D:\{file}.inp");//Для визуального теста
-            controller.Gmsh.Model.Mesh.RemoveConstraints();
-            controller.Gmsh.Model.Mesh.Clear();
+        }
 
+        [DataTestMethod]
+        [DataRow(@"\CAD\weld_seam_1.step", 38, new int[] { 18, 19, 23, 24 }, new int[] { 2 }, new double[] { 0.25, 0.05, 0.5 })]
+        [DataRow(@"\CAD\weld_seam_2.step", 38, new int[] { 18, 19, 23, 24 }, new int[] { 2 }, new double[] { 0.25, 0.05, 0.5 })]
+        [DataRow(@"\CAD\Tavr.step", 6, new int[] { 25, 27, 29, 31, 32, 33, 34, 36, 38, 40, 41, 42 }, new int[] { 3, 4 }, new double[] { 20, 10, 3.5, 3.5 })]
+        public void VolumeSizesMeshFieldsCase(string fileName, int seamPointCurves, int[] seamCurves, int[] seamVolumes, double[] volumeSizes)
+        {
+            controller.Gmsh.Open(modelFolder + fileName);
+            var volumes = controller.Gmsh.Model.GetEntities(3);
             //Вариант 2 - использование Mesh Fields, сначало генерируем Mesh Fields, затем проводим трансфиницию (порядок важен!)
             for (int i = 0, j = 0; i < volumes.Length; i += 2, ++j)
             {
@@ -617,12 +609,27 @@ namespace TestModel.GmshTests
             var baseField = controller.Gmsh.Model.Mesh.Field.Add(FieldType.Min);
             controller.Gmsh.Model.Mesh.Field.SetNumbers(baseField, "FieldsList", list);
             controller.Gmsh.Model.Mesh.Field.SetAsBackgroundMesh(baseField);
-            makeTransfinite.Invoke();
+            MakeTranfinite(seamPointCurves, seamCurves, seamVolumes);
             controller.Gmsh.Model.Mesh.Generate(3);
-            error = controller.Gmsh.Logger.GetLastError();
+            var error = controller.Gmsh.Logger.GetLastError();
             Assert.IsTrue(string.IsNullOrEmpty(error));
             //file = Path.GetFileNameWithoutExtension(fileName);
             //controller.Gmsh.Write($@"D:\{file}_field.inp");//Для визуального теста
+        }
+
+        private void MakeTranfinite(int seamPointCurves, int[] seamCurves, int[] seamVolumes)
+        {
+            //Трансфиниция кривых
+            for (var i = 0; i < seamCurves.Length; ++i)
+                controller.Gmsh.Model.Mesh.SetTransfiniteCurve(seamCurves[i], seamPointCurves);
+            //Трансфиниция поверхностей
+            for (var i = 0; i < seamVolumes.Length; ++i)
+            {
+                var seamData = controller.Gmsh.Model.GetAdjacencies(3, seamVolumes[i]);
+                var seamSurfs = seamData.Item2;
+                for (var j = 0; j < seamSurfs.Length; ++j)
+                    controller.Gmsh.Model.Mesh.SetTransfiniteAutomatic(new int[] { 2, seamSurfs[j] }, 2.35, false);
+            }
         }
     }
 }
