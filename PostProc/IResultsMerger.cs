@@ -1,4 +1,5 @@
 ﻿using Project.Interfaces;
+using Project.Results;
 using System.Collections.Generic;
 
 namespace PostProc
@@ -11,6 +12,6 @@ namespace PostProc
         /// <param name="interfaceNodes"></param>
         /// <param name="resultDescr"></param>
         /// <param name="results"></param>
-        void Merge(Dictionary<int, List<int>> interfaceNodes, string resultDescr, IEnumerable<IResult> results);
+        void Merge(Dictionary<int, List<int>> interfaceNodes, string resultDescr, IEnumerable<Result> results);
     }
 }

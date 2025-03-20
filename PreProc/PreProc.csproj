@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>1.0.66</Version>
+    <Version>1.0.68</Version>
     <Authors>Bilenko Georgy, Ustinov Nikita</Authors>
     <Company>BazisSoftware</Company>
     <Product>BAZIS</Product>
@@ -17,9 +17,13 @@
     <PackageOutputPath>c:\BazisComponents\IntPackages_v2\$(Configuration)</PackageOutputPath>
   </PropertyGroup>
 
+  <!--Копирование собранного пакета в необходимую папку-->
+	<Target Name="CopyPackage" AfterTargets="Pack">
+		<Copy SourceFiles="$(PackageOutputPath)\$(PackageId).$(PackageVersion).nupkg"
+			  DestinationFolder="\\fs\Plm-Ural\OrgUnits\developers\Packages\Core\$(Configuration)" />
+	</Target>
 
-
-  <ItemGroup>
+	<ItemGroup>
     <Compile Remove="Interfaces\IChemicalDependent.cs" />
     <Compile Remove="Interfaces\IGeneralParameters.cs" />
     <Compile Remove="Interfaces\ISolverSettings.cs" />

@@ -17,13 +17,7 @@ namespace Project.Interfaces
         void Load(string path);
 
         List<TaskKind> GetResultKinds();
-        /// <summary>
-        /// Add
-        /// </summary>
-        /// <param name="time"></param>
-        /// <param name="data"></param>
-        /// <param name="taskKind"></param>
-        void Add(float time, DataSet data, TaskKind taskKind);
+
         /// <summary>
         /// AddRange
         /// </summary>
@@ -49,7 +43,7 @@ namespace Project.Interfaces
         /// <param name="taskKind"></param>
         /// <param name="time"></param>
         /// <returns></returns>
-        Result FindByTime(TaskKind taskKind, float time);
+        IEnumerable<Result> FindByTime(TaskKind taskKind, float time);
         /// <summary>
         /// FindByTime
         /// </summary>
@@ -57,14 +51,14 @@ namespace Project.Interfaces
         /// <param name="time"></param>
         /// <param name="delta"></param>
         /// <returns></returns>
-        Result FindByTime(TaskKind taskKind, float time, float delta);
+        IEnumerable<Result> FindByTime(TaskKind taskKind, float time, float delta);
         /// <summary>
         /// FindByTime
         /// </summary>
         /// <param name="taskKind"></param>
         /// <param name="time"></param>
         /// <returns></returns>
-        Result FindByTime(string taskKind, float time);
+        IEnumerable<Result> FindByTime(string taskKind, float time);
         /// <summary>
         /// FindByTime
         /// </summary>
@@ -72,7 +66,7 @@ namespace Project.Interfaces
         /// <param name="time"></param>
         /// <param name="delta"></param>
         /// <returns></returns>
-        Result FindByTime(string taskKind, float time, float delta);
+        IEnumerable<Result> FindByTime(string taskKind, float time, float delta);
         /// <summary>
         /// FindByTaskKind
         /// </summary>

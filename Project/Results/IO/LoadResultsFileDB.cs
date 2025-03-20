@@ -7,6 +7,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using Project.Results;
+using System.Security.Cryptography;
 
 namespace Project.Results.IO
 {
@@ -17,25 +18,13 @@ namespace Project.Results.IO
     {
         /// <inheritdoc/>
         public event Action<object, ILoadEventArgs> LoadEvent;
-/// <inheritdoc/>
 
-        public IEnumerable<Result> Load(string path)
-        {
-            LoadEvent?.Invoke(this, new LoadEventArgs("Загрузка результатов *.db"));
-            return GetResultsFromDb(path);
-        }
-        /// <summary>
-        /// GetResultsFromDb
-        /// </summary>
-        /// <param name="fullPath"></param>
-        /// <returns></returns>
-        /// <exception cref="Exception"></exception>
-        public IEnumerable<Result> GetResultsFromDb(string fullPath)
+/// <inheritdoc/>
+        public Result GetResult(string fullPath, List<string> tables, float time)
         {
             var dbName = Path.GetFileNameWithoutExtension(fullPath).Split('_')[0];
 
             TaskKind taskKind;
-
 
             if (dbName == "термическая")
                 taskKind = TaskKind.термическая;
@@ -43,45 +32,104 @@ namespace Project.Results.IO
                 taskKind = TaskKind.механическая;
 
             var db = new ResultDataBase(fullPath);
+            var newResult = new Result(time, taskKind);
             db.OpenConnection();
+            foreach (var table in tables)
+            {
+                LoadEvent?.Invoke(this, new LoadEventArgs($"Загрузка результатов из таблицы {table}")) ;
+                var dataTable = db.GetResults($"{table}", "*", $" WHERE Time = {time}");
 
-            var timeDataTable = db.GetResults("nodes", "DISTINCT Time");
+                if(dataTable == null)
+                    throw new System.Exception($"Время {time} отсутсвует в таблице {table}");
 
-            var times = timeDataTable.Rows.Cast<DataRow>().Select(x => Convert.ToSingle(x[0]));
+                newResult.AddDataTable(CreateResultTables(dataTable));
+            }
 
-            if (times.Count() == 0)
-                throw new Exception("База данных не содержит результатов!");
-
-            var nodesDataTable = db.GetResults("nodes", "*");
-            var elemsDataTable = db.GetResults("elements", "*");
             db.CloseConnection();
+
+            return newResult;
+        }
+/// <inheritdoc/>
+
+        public IEnumerable<Result> GetResults(string fullPath, List<string> tables)
+        {
+            var dbName = Path.GetFileNameWithoutExtension(fullPath).Split('_')[0];
+
+            TaskKind taskKind;
+
+            if (dbName == "термическая")
+                taskKind = TaskKind.термическая;
+            else
+                taskKind = TaskKind.механическая;
+
+            var times = GetValues(fullPath, tables[0], "Time");
+
+            var db = new ResultDataBase(fullPath);
+            db.OpenConnection();
 
             foreach (var time in times)
             {
-                var newDataSet = new DataSet();
+                var newResult = new Result(time, taskKind);
+                foreach (var table in tables)
+                {
+                    LoadEvent?.Invoke(this, new LoadEventArgs($"Загрузка результатов из таблицы {table}"));
+                    var dataTable = db.GetResults($"{table}", "*", $" WHERE Time = {time}");
 
-                var newResult = new Result(newDataSet, time, taskKind);
+                    if (dataTable == null)
+                        throw new System.Exception($"Время {time} отсутсвует в таблице {table}");
 
-                FillResultTables(newResult, nodesDataTable);
-                FillResultTables(newResult, elemsDataTable);
-
-                LoadEvent?.Invoke(this, new LoadEventArgs("Загружены результаты для времени " + time.ToString()));
+                    newResult.AddDataTable(CreateResultTables(dataTable));
+                }
 
                 yield return newResult;
             }
+            
+            db.CloseConnection();
+        }
+        /// <inheritdoc/>
+
+        public IEnumerable<float> GetValues(string fullPath, string table,string column)
+        {
+            var db = new ResultDataBase(fullPath);
+            db.OpenConnection();
+
+            var timeDataTable = db.GetResults(table, $"DISTINCT {column}","");
+
+            db.CloseConnection();
+
+            var times = timeDataTable.Rows.Cast<DataRow>().Select(x => Convert.ToSingle(x[0]));
+            if (times.Count() == 0)
+                throw new Exception("База данных не содержит результатов!");
+
+            return times;
+        }
+/// <inheritdoc/>
+
+        public IEnumerable<string> GetTablesNames(string fullPath)
+        {
+            var db = new ResultDataBase(fullPath);
+            db.OpenConnection();
+                var namesTable = db.GetResults("sqlite_master", "name", "WHERE type='table'");
+            db.CloseConnection();
+            var tables = namesTable.Rows.Cast<DataRow>().Select(x => Convert.ToString(x[0])).
+                    Where(x => x != "sqlite_sequence" & x != "name");
+                return tables;
+  
+
         }
 
-        private void FillResultTables(Result result, DataTable dbDataTable)
+
+
+        private DataTable CreateResultTables(DataTable dbDataTable)
         {
-            var time = result.Time;
-            var rows = dbDataTable.Select("Time = " + time.ToString(CultureInfo.InvariantCulture));
+            var rows = dbDataTable.Rows;
             var columns = dbDataTable.Columns;
 
             var newTable = new DataTable(dbDataTable.TableName);
 
             var columnsCount = dbDataTable.Columns.Count;
 
-            newTable.Columns.Add("Индекс", typeof(int));
+            newTable.Columns.Add(dbDataTable.Columns[2].ColumnName, typeof(int));
             for (int i = 3; i < columnsCount; i++)
             {
                 var column = new DataColumn(dbDataTable.Columns[i].ColumnName, typeof(float)) { DefaultValue = 0 };
@@ -89,7 +137,7 @@ namespace Project.Results.IO
             }
 
 
-            for (int i = 0; i < rows.Length; i++)
+            for (int i = 0; i < rows.Count; i++)
             {
                 var row = newTable.NewRow();
 
@@ -104,7 +152,26 @@ namespace Project.Results.IO
             key[0] = newTable.Columns[0];
             newTable.PrimaryKey = key;
 
-            result.Data.Tables.Add(newTable);
+            return newTable;
+        }
+/// <inheritdoc/>
+
+        public IEnumerable<KeyValuePair<string, List<string>>> GetTablesSchemes(string fullPath)
+        {
+            var db = new ResultDataBase(fullPath);
+            db.OpenConnection();
+            var namesTable = db.GetResults("sqlite_master", "name", "WHERE type = 'table'");
+
+            var tables = namesTable.Rows.Cast<DataRow>().Select(x => Convert.ToString(x[0])).
+                    Where(x => x != "sqlite_sequence" & x != "name");
+
+            foreach (var table in tables)
+            {
+                var columns = db.GetTableShema(table).Skip(2).ToList();
+                yield return new KeyValuePair<string, List<string>>(table, columns);
+            }
+
+            db.CloseConnection();
         }
     }
 }

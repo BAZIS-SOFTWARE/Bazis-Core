@@ -1,11 +1,12 @@
 ﻿
-using Project.Interfaces;
+using MathNet.Numerics.Distributions;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 
 namespace Project.Results
 {
@@ -14,7 +15,10 @@ namespace Project.Results
     {
         SQLiteConnection connection;
         SQLiteCommand command;
-
+        /// <summary>
+        /// ResultDataBase
+        /// </summary>
+        /// <param name="fullName"></param>
         public ResultDataBase(string fullName)
         {
             command = new SQLiteCommand();
@@ -26,16 +30,17 @@ namespace Project.Results
             command.Connection = connection;
 
         }
-
-        public void CreateTables(string tableName, List<string> columnsName)
+        /// <summary>
+        /// CreateTables. Первая колонка всегда имеет тип int и используется 
+        /// для хранения номера объекта. Не использовать название "Index" для колонны.
+        /// </summary>
+        /// <param name="tableName"></param>
+        /// <param name="columnsName"></param>
+        public void CreateTables(string tableName, string[] columnsName)
         {
-            var cmdLine = "CREATE TABLE IF NOT EXISTS[" + tableName + "] " +
-                "([Id] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL " +
-                ", [Time] real DEFAULT(0) NOT NULL" +
-                ", [Индекс] INTEGER DEFAULT(0) NOT NULL";
+            var cmdLine = $"CREATE TABLE IF NOT EXISTS[{tableName}] (";
 
-            foreach (var columnName in columnsName)
-                cmdLine += string.Format(", [{0}] real DEFAULT(0) NOT NULL", columnName);
+            cmdLine += string.Join(", ", columnsName);
 
             cmdLine += ")";
 
@@ -43,112 +48,94 @@ namespace Project.Results
             command.ExecuteNonQuery();
         }
 
+        /// <summary>
+        /// GetTableShema
+        /// </summary>
+        /// <param name="tableName"></param>
+        public IEnumerable<string> GetTableShema(string tableName)
+        {
+            var cmdLine = $"PRAGMA table_info({tableName})";
+            command.CommandText = cmdLine;
+            var dr = command.ExecuteReader();
+
+            while (dr.Read())//loop through the various columns and their info
+                yield return (string)dr.GetValue(1);//column 1 from the result contains the column names
+
+            dr.Close();
+        }
+        /// <summary>
+        /// DeleteTable
+        /// </summary>
+        /// <param name="tableName"></param>
         public void DeleteTable(string tableName)
         {
             var cmdLine = "DROP TABLE IF EXISTS " + tableName;
 
             command.CommandText = cmdLine;
             command.ExecuteNonQuery();
-        }   
-
-        public void AddData(IResult results)
-        {
-                AddDataKind(results.Time, results.Data);           
         }
-
-        public void Clear()
+        /// <summary>
+        /// Clear
+        /// </summary>
+        /// <param name="tableName"></param>
+        public void ClearTable(string tableName)
         {           
-            command.CommandText = "DELETE FROM nodes";
+            command.CommandText = $"DELETE FROM {tableName}";
             command.ExecuteNonQuery();
-            command.CommandText = "DELETE FROM elements";
-            command.ExecuteNonQuery();
-        }     
-
-        private void AddDataKind(float time, DataSet dataSet)
+        }
+        /// <summary>
+        /// CreateAddCommand. Добавление одной строки в таблицу.
+        /// Кол-во столбцов и данных должно быть одинаковым.
+        /// Название колонн и данные разделены в строке запятой
+        /// </summary>
+        /// <param name="table"></param>
+        /// <param name="columns"></param>
+        /// <param name="values"></param>
+        /// <returns></returns>
+        public string CreateAddCommand(string table, string columns, string values)
         {
-            for (int i = 0; i < dataSet.Tables.Count; i++)
-            {
-                var dataTable = dataSet.Tables[i];
-                var rowCount = dataTable.Rows.Count;
-                var colCount = dataTable.Columns.Count;
-
-                var startInd = 0;
-                var stopInd = 0;
-                var step = 10;
-                if (rowCount > 100)
-                    stopInd = 100;
-                else stopInd = 1;
-
-                var insertCmd = CreateAddCommand(dataTable);
-                var valAr = new string[colCount];
-                var valStr = string.Empty;
-                var queStr = string.Empty;
-    
-                if (rowCount > 0)
-                    while (true)
-                    {
-                        queStr = string.Empty;
-                        for (int j = startInd; j < stopInd; j++)
-                        {
-                            valAr[0] = dataTable.Rows[j][0].ToString();
-                            for (int k = 1; k < colCount; k++)
-                            {
-                                //var val = Convert.ToSingle(dataSet.Tables[i].Rows[j][k], CultureInfo.InvariantCulture);
-                                //valAr[k] = val.ToString(CultureInfo.InvariantCulture); 
-                                valAr[k] = dataSet.Tables[i].Rows[j][k].ToString();
-                            }
-                            valStr = string.Join(",", valAr);
-                            valStr = string.Format("( {0},{1} );", time.ToString("0.######",
-                            CultureInfo.InvariantCulture), valStr);
-                            queStr = queStr + insertCmd + valStr;
-                        }
-                        //strBulder.Append("COMMIT;");
-                        command.CommandText = "BEGIN TRANSACTION;" + queStr + "COMMIT;";
-                        //command.CommandText = strBulder.ToString();
-                        command.ExecuteNonQuery();
-
-                        if (stopInd == rowCount)
-                            break;
-
-                        startInd = stopInd;
-                        stopInd = stopInd + step;
-                        if (stopInd > rowCount) stopInd = rowCount;
-                    }
-            }
+            return $"INSERT INTO {table} ({columns}) VALUES ({values});";
         }
 
-        private string CreateAddCommand(DataTable dataTable)
+        /// <summary>
+        /// AddData
+        /// </summary>
+        /// <param name="queStr"></param>
+        /// <returns></returns>
+
+        public int AddData(string queStr)
         {
-            var columns = dataTable.Columns;
-            string[] valStr = new string[columns.Count];
-
-            for (int i = 0; i < columns.Count; i++)
-            {
-                valStr[i] = columns[i].ColumnName;   
-            }
-
-            var resVal = String.Join(",", valStr);
-            resVal = "Time," + resVal;
-
-            return String.Format("INSERT INTO {0} ({1}) VALUES ", dataTable.TableName, resVal);
+            command.CommandText = "BEGIN TRANSACTION;" + queStr + "COMMIT;";
+            //command.CommandText = strBulder.ToString();
+            return command.ExecuteNonQuery();           
         }
 
+        /// <summary>
+        /// GetResults
+        /// </summary>
+        /// <param name="table"></param>
+        /// <param name="column"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
 
-
-        public DataTable GetResults(string table, string column)
+        public DataTable GetResults(string table, string column, string filter)
         {
             var dataTable = new DataTable(table);
-            var cmdStr = "SELECT " + column + " FROM " + table;
+            var cmdStr = $"SELECT {column} FROM {table} {filter}";
             var adapter = new SQLiteDataAdapter(cmdStr, connection);
             adapter.Fill(dataTable);
             return dataTable;
         }
-
+        /// <summary>
+        /// OpenConnection
+        /// </summary>
         public void OpenConnection()
         {
             connection.Open();           
         }
-
+        /// <summary>
+        /// CloseConnection
+        /// </summary>
         public void CloseConnection()
         {
                 connection.Close();           
