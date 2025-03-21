@@ -1,23 +1,24 @@
 # Набор библиотек для хранения геометрии и сетки, а также пре/пост обработки результатов
-принятые обозначения:
--> наследование от класса
+**принятые обозначения:**  
+(->) наследование от класса<br/>
+(-) библиотеки. Выходной файл dll<br/>
 
 В состав входят следующие библиотеки:
 - Project (ProjectData: библиотека, хранящая и управляющая граничными условиями,сеточными и геометрическими сущностями. Осуществляет функции CRUD над перечисленными объектами)
   + TaskData
-    > Data -> ObjectData -> ValueableData (абстрактный класс для хранения физических данных об условиях задачи)
-    > ValueableData -> HeatData
-    > ValueableData -> LoadData
-    > ValueableData -> MatData
-    > ValueableData -> MediaData
-    > ValueableData -> ClampData
+    > Data -> ObjectData -> ValueableData (абстрактный класс для хранения физических данных об условиях задачи)<br/>
+    > ValueableData -> HeatData<br/>
+    > ValueableData -> LoadData<br/>
+    > ValueableData -> MatData<br/>
+    > ValueableData -> MediaData<br/>
+    > ValueableData -> ClampData<br/>
   + ModelData
     > ObjectData
     > GroupData
 - Geometry (геометрические примитивые: **точка**, **линия**, **плоскость** и методы работы с ними. Также векторные операции)
 - GmshApi (интерфейс с добавленными функциями к GMSH сеточному генератору. Спецификация ниже)
 - Model (библиотека, хранящая сеточные и геометрические сущности: узел сетки или геометрии, элементы, поверхности и т.д. Осуществляет функции CRUD над перечисленными объектами)
-  + ObjectData (класс для хранения коллекций ObjectsCollection)
+  + ObjectData (класс для хранения коллекций ObjectsCollection)<br/>
     > ObjectsCollection (класс для хранения наборов ObjectsSet)
       - ObjectsSet (класс для хранения геометрических **GeometryObjects** и сеточных **MeshObjects** сущностей ModelObject)
   + GroupData (класс для хранения ссылок на геометрические и сеточные сущности ModelObject)
@@ -40,9 +41,9 @@
 
 # Спецификация Model
 <details>
-![ModelData](https://github.com/user-attachments/assets/8e83b944-4b13-44b6-8b0e-b7ea48f7b836)
-![ObjectsData](https://github.com/user-attachments/assets/cdfcf914-2c1c-4d55-88f6-396057acc585)
-![ObjectsCollection](https://github.com/user-attachments/assets/97cd62d2-77ce-4f3c-ab2c-d6c74464813c)
+![ModelData](https://github.com/user-attachments/assets/8e83b944-4b13-44b6-8b0e-b7ea48f7b836)<br/>
+![ObjectsData](https://github.com/user-attachments/assets/cdfcf914-2c1c-4d55-88f6-396057acc585)<br/>
+![ObjectsCollection](https://github.com/user-attachments/assets/97cd62d2-77ce-4f3c-ab2c-d6c74464813c)<br/>
 ![ObjectsSet](https://github.com/user-attachments/assets/bdfb771b-a905-4162-993b-8176b827b11a)
 </details>
 
