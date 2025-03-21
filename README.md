@@ -1,7 +1,6 @@
 # Набор библиотек для хранения геометрии и сетки, а также пре/пост обработки результатов
 **принятые обозначения:**  
 (->) наследование от класса<br/>
-(-) библиотеки. Выходной файл dll<br/>
 
 В состав входят следующие библиотеки:
 - Project (ProjectData: библиотека, хранящая и управляющая граничными условиями,сеточными и геометрическими сущностями. Осуществляет функции CRUD над перечисленными объектами)
@@ -13,14 +12,30 @@
     > ValueableData -> MediaData<br/>
     > ValueableData -> ClampData<br/>
   + ModelData
-    > ObjectData
+    > ObjectData<br/>
     > GroupData
 - Geometry (геометрические примитивые: **точка**, **линия**, **плоскость** и методы работы с ними. Также векторные операции)
 - GmshApi (интерфейс с добавленными функциями к GMSH сеточному генератору. Спецификация ниже)
 - Model (библиотека, хранящая сеточные и геометрические сущности: узел сетки или геометрии, элементы, поверхности и т.д. Осуществляет функции CRUD над перечисленными объектами)
-  + ObjectData (класс для хранения коллекций ObjectsCollection)<br/>
-    > ObjectsCollection (класс для хранения наборов ObjectsSet)
-      - ObjectsSet (класс для хранения геометрических **GeometryObjects** и сеточных **MeshObjects** сущностей ModelObject)
+  + ModelData
+    > ObjectData (класс для хранения коллекций ObjectsCollection)
+      - ObjectsCollection (класс для хранения наборов ObjectsSet)
+        + ObjectsSet (класс для хранения геометрических **GeometryObjects** и сеточных **MeshObjects** сущностей ModelObject)
+          <details>
+          > ModelObject -> beam<br/>
+          > ModelObject -> Node<br/>
+          > ModelObject -> Hexa<br/>
+          > ModelObject -> Penta<br/>
+          > ModelObject -> Tetra<br/>
+          > ModelObject -> Tetra_c<br/>
+          > ModelObject -> Triangle<br/>
+          > ModelObject -> Triangle_c<br/>
+          > ModelObject -> Quad<br/>
+          > ModelObject -> Curve<br/>
+          > ModelObject -> GeometryPoint<br/>
+          > ModelObject -> SurfaceFigure<br/>
+          > ModelObject -> VolumeFigure<br/>
+          </details>
   + GroupData (класс для хранения ссылок на геометрические и сеточные сущности ModelObject)
 - ModelController (реализует агрегатные функции:
   + Построение сечения внутри элементов сетки
@@ -56,7 +71,7 @@
 
 Естественные функции формы и их производные для различных элементов.
 
-Отрезок (одномерный элемент):
+Beam (одномерный элемент):
  
 N_i=(1/2)*(1-ξ)
 N_j=(1/2)*(1+ξ)
