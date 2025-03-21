@@ -1,48 +1,49 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>1.0.66</Version>
-    <Authors>Bilenko Georgy, Ustinov Nikita</Authors>
-    <Company>BazisSoftware</Company>
-    <Product>BAZIS</Product>
-    <Copyright>Bilenko Georgy</Copyright>
-    <PackageIcon>Icon.png</PackageIcon>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <Description>Generation command tsf files</Description>
-    <SignAssembly>True</SignAssembly>
-    <AssemblyOriginatorKeyFile>TaskKey.snk</AssemblyOriginatorKeyFile>
-    <PackageOutputPath>c:\BazisComponents\IntPackages_v2\$(Configuration)</PackageOutputPath>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<Version>1.0.69</Version>
+		<Authors>Bilenko Georgy, Ustinov Nikita</Authors>
+		<Company>BazisSoftware</Company>
+		<Product>BAZIS</Product>
+		<Copyright>Bilenko Georgy</Copyright>
+		<PackageIcon>Icon.png</PackageIcon>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<Description>Generation command tsf files</Description>
+		<SignAssembly>True</SignAssembly>
+		<AssemblyOriginatorKeyFile>TaskKey.snk</AssemblyOriginatorKeyFile>
+		<PackageOutputPath>c:\BazisComponents\IntPackages_v2\$(Configuration)</PackageOutputPath>
+	</PropertyGroup>
 
 	<!--Копирование собранного пакета в необходимую папку-->
 	<Target Name="CopyPackage" AfterTargets="Pack">
-		<Copy SourceFiles="$(PackageOutputPath)\$(PackageId).$(PackageVersion).nupkg" DestinationFolder="\\fs\Plm-Ural\OrgUnits\developers\Packages\Core\$(Configuration)" />
+		<Copy SourceFiles="$(PackageOutputPath)\$(PackageId).$(PackageVersion).nupkg"
+			  DestinationFolder="\\fs\Plm-Ural\OrgUnits\developers\Packages\Core\$(Configuration)" />
 	</Target>
-	
-  <ItemGroup>
-    <Compile Remove="Interfaces\IChemicalDependent.cs" />
-    <Compile Remove="Interfaces\IGeneralParameters.cs" />
-    <Compile Remove="Interfaces\ISolverSettings.cs" />
-    <Compile Remove="Interfaces\IThermalDependent.cs" />
-    <Compile Remove="Interfaces\ITimeSettings.cs" />
-  </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="Interfaces\IChemicalDependent.cs" />
+		<Compile Remove="Interfaces\IGeneralParameters.cs" />
+		<Compile Remove="Interfaces\ISolverSettings.cs" />
+		<Compile Remove="Interfaces\IThermalDependent.cs" />
+		<Compile Remove="Interfaces\ITimeSettings.cs" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Project\Project.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Update="Icon.png">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Project\Project.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="Icon.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
 
 </Project>

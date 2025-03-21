@@ -1,49 +1,46 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
-    <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <SignAssembly>True</SignAssembly>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>3.1.0.8</Version>
-    <Company>BAZIS SOFTWARE</Company>
-    <Product>BAZIS</Product>
-    <Description>Contains basic mesh oblects and geometry classes</Description>
-    <Copyright>Bilenko Georgy</Copyright>
-    <Authors>Bilenko Georgy, Kapkaev Victor, Kochuk Nicolay</Authors>
-    <PackageIcon></PackageIcon>
-    <PackageLicenseExpression> MIT</PackageLicenseExpression>
-    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-    <AssemblyOriginatorKeyFile>GmshApiKey.snk</AssemblyOriginatorKeyFile>
-    <Title>GmshApi</Title>
-    <PackageOutputPath>c:\BazisComponents\IntPackages_v2\$(Configuration)</PackageOutputPath>
-  </PropertyGroup>
+﻿﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0</TargetFrameworks>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<SignAssembly>True</SignAssembly>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<Version>3.1.0.9</Version>
+		<Company>BAZIS SOFTWARE</Company>
+		<Product>BAZIS</Product>
+		<Description>Contains basic mesh oblects and geometry classes</Description>
+		<Copyright>Bilenko Georgy</Copyright>
+		<Authors>Bilenko Georgy, Kapkaev Victor, Kochuk Nicolay</Authors>
+		<PackageIcon></PackageIcon>
+		<PackageLicenseExpression> MIT</PackageLicenseExpression>
+		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+		<AssemblyOriginatorKeyFile>GmshApiKey.snk</AssemblyOriginatorKeyFile>
+		<Title>GmshApi</Title>
+		<PackageOutputPath>c:\BazisComponents\IntPackages_v2\$(Configuration)</PackageOutputPath>
+	</PropertyGroup>
 
 	<!--Копирование собранного пакета в необходимую папку-->
 	<Target Name="CopyPackage" AfterTargets="Pack">
 		<Copy SourceFiles="$(PackageOutputPath)\$(PackageId).$(PackageVersion).nupkg" DestinationFolder="\\fs\Plm-Ural\OrgUnits\developers\Packages\Core\$(Configuration)" />
 	</Target>
-	
-  <ItemGroup>
-    <Compile Remove="GmshController\**" />
-    <Compile Remove="Wrapper\Interfaces\**" />
-    <EmbeddedResource Remove="GmshController\**" />
-    <EmbeddedResource Remove="Wrapper\Interfaces\**" />
-    <None Remove="GmshController\**" />
-    <None Remove="Wrapper\Interfaces\**" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="Controller.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="GmshApiKey.snk" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Model\Model.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="Icon.png">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
+
+	<ItemGroup>
+		<Compile Remove="GmshController\**" />
+		<Compile Remove="Wrapper\Interfaces\**" />
+		<EmbeddedResource Remove="GmshController\**" />
+		<EmbeddedResource Remove="Wrapper\Interfaces\**" />
+		<None Remove="GmshController\**" />
+		<None Remove="Wrapper\Interfaces\**" />
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Remove="Controller.cs" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="GmshApiKey.snk" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Update="Icon.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
 </Project>
