@@ -36,7 +36,7 @@
           > ModelObject -> SurfaceFigure<br/>
           > ModelObject -> VolumeFigure<br/>
           </details>
-  + GroupData (класс для хранения ссылок на геометрические и сеточные сущности ModelObject)
+    > GroupData (класс для хранения ссылок на геометрические и сеточные сущности ModelObject)
 - ModelController (реализует агрегатные функции:
   + Построение сечения внутри элементов сетки
   + Поиск контуров сетки
