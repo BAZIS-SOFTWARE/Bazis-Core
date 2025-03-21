@@ -1,73 +1,72 @@
-﻿﻿<Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0</TargetFrameworks>
-		<OutputType>Library</OutputType>
-		<AssemblyName>Model</AssemblyName>
-		<RootNamespace>Model</RootNamespace>
-		<GenerateDocumentationFile>True</GenerateDocumentationFile>
-		<SignAssembly>True</SignAssembly>
-		<AssemblyOriginatorKeyFile>ModelKey.snk</AssemblyOriginatorKeyFile>
-		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<Title>Model</Title>
-		<Version>4.2.62.20</Version>
-		<Company>BAZIS SOFTWARE</Company>
-		<Product>BAZIS</Product>
-		<Description>Contains basic mesh oblects and geometry classes</Description>
-		<Copyright>Bilenko Georgy</Copyright>
-		<Authors>Bilenko Georgy, Kapkaev Victor, Kochuk Nicolay, Kishun Kirill, Aleksey Konteev</Authors>
-		<PackageIcon>Icon.png</PackageIcon>
-		<PackageLicenseExpression> MIT</PackageLicenseExpression>
-		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-		<RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
-		<PackageOutputPath>c:\BazisComponents\IntPackages_v2\$(Configuration)</PackageOutputPath>
-	</PropertyGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk"> 
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <OutputType>Library</OutputType>
+    <AssemblyName>Model</AssemblyName>
+    <RootNamespace>Model</RootNamespace>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>ModelKey.snk</AssemblyOriginatorKeyFile>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>Model</Title>
+    <Version>4.2.62.17</Version>
+    <Company>BAZIS SOFTWARE</Company>
+    <Product>BAZIS</Product>
+    <Description>Contains basic mesh oblects and geometry classes</Description>
+    <Copyright>Bilenko Georgy</Copyright>
+    <Authors>Bilenko Georgy, Kapkaev Victor, Kochuk Nicolay, Kishun Kirill, Aleksey Konteev</Authors>
+    <PackageIcon>Icon.png</PackageIcon>
+    <PackageLicenseExpression> MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+    <PackageOutputPath>c:\BazisComponents\IntPackages_v2\$(Configuration)</PackageOutputPath>
+  </PropertyGroup>
 
 	<!--Копирование собранного пакета в необходимую папку-->
 	<Target Name="CopyPackage" AfterTargets="Pack">
-		<Copy SourceFiles="$(PackageOutputPath)\$(PackageId).$(PackageVersion).nupkg"
-			  DestinationFolder="\\fs\Plm-Ural\OrgUnits\developers\Packages\Core\$(Configuration)" />
+		<Copy SourceFiles="$(PackageOutputPath)\$(PackageId).$(PackageVersion).nupkg" DestinationFolder="\\fs\Plm-Ural\OrgUnits\developers\Packages\Core\$(Configuration)" />
 	</Target>
-
-	<ItemGroup>
-		<Compile Remove="Interfaces\GeometryObjects\**" />
-		<EmbeddedResource Remove="Interfaces\GeometryObjects\**" />
-		<None Remove="Interfaces\GeometryObjects\**" />
-	</ItemGroup>
-	<ItemGroup>
-		<Compile Remove="Interfaces\MeshObjects\IElementSurface.cs" />
-		<Compile Remove="Interfaces\MeshObjects\INode.cs" />
-		<Compile Remove="ObjectsCollections\Element1DCollection.cs" />
-		<Compile Remove="ObjectsCollections\Element2DCollection.cs" />
-		<Compile Remove="ObjectsCollections\Element3DCollection.cs" />
-		<Compile Remove="ObjectsCollections\LineCollection.cs" />
-		<Compile Remove="ObjectsCollections\NodeCollection.cs" />
-		<Compile Remove="ObjectsCollections\PointCollection.cs" />
-		<Compile Remove="ObjectsCollections\SurfaceFiguresCollection.cs" />
-		<Compile Remove="ObjectsCollections\VolumeFiguresCollection.cs" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Remove="Icon.png" />
-	</ItemGroup>
-	<ItemGroup>
-		<EmbeddedResource Include="Icon.png">
-			<Pack>True</Pack>
-			<PackagePath>\</PackagePath>
-		</EmbeddedResource>
-	</ItemGroup>
-	<ItemGroup>
-		<PackageReference Include="MathNet.Numerics.Signed" Version="5.0.0" />
-		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
-	</ItemGroup>
-	<ItemGroup>
-		<ProjectReference Include="..\PrGeometry\Geometry.csproj" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Update="PrecedentsPlantUML.mdpuml">
-			<Generator>TextTemplatingFileGenerator</Generator>
-			<LastGenOutput>PrecedentsPlantUML.cs</LastGenOutput>
-		</None>
-	</ItemGroup>
-	<ItemGroup>
-		<Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
-	</ItemGroup>
+	
+  <ItemGroup>
+    <Compile Remove="Interfaces\GeometryObjects\**" />
+    <EmbeddedResource Remove="Interfaces\GeometryObjects\**" />
+    <None Remove="Interfaces\GeometryObjects\**" />
+  </ItemGroup> 
+  <ItemGroup>
+    <Compile Remove="Interfaces\MeshObjects\IElementSurface.cs" />
+    <Compile Remove="Interfaces\MeshObjects\INode.cs" />
+    <Compile Remove="ObjectsCollections\Element1DCollection.cs" />
+    <Compile Remove="ObjectsCollections\Element2DCollection.cs" />
+    <Compile Remove="ObjectsCollections\Element3DCollection.cs" />
+    <Compile Remove="ObjectsCollections\LineCollection.cs" />
+    <Compile Remove="ObjectsCollections\NodeCollection.cs" />
+    <Compile Remove="ObjectsCollections\PointCollection.cs" />
+    <Compile Remove="ObjectsCollections\SurfaceFiguresCollection.cs" />
+    <Compile Remove="ObjectsCollections\VolumeFiguresCollection.cs" />
+  </ItemGroup> 
+  <ItemGroup>
+    <None Remove="Icon.png" />
+  </ItemGroup> 
+  <ItemGroup>
+    <EmbeddedResource Include="Icon.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </EmbeddedResource>
+  </ItemGroup> 
+  <ItemGroup>
+    <PackageReference Include="MathNet.Numerics.Signed" Version="5.0.0" />
+    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
+  </ItemGroup> 
+  <ItemGroup>
+    <ProjectReference Include="..\PrGeometry\Geometry.csproj" />
+  </ItemGroup> 
+  <ItemGroup>
+    <None Update="PrecedentsPlantUML.mdpuml">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>PrecedentsPlantUML.cs</LastGenOutput>
+    </None>
+  </ItemGroup> 
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
 </Project>
