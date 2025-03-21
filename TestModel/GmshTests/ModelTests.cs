@@ -1,8 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
-using GmshApi.GmshController;
-using System;
 using GmshApi;
+using ModelController.GmshController;
 
 namespace TestModel.GmshTests
 {

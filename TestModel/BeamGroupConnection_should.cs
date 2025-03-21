@@ -145,9 +145,9 @@ namespace TestModel
             }
         }
 
-        private IBeamGroupConnection GetInstanceOf(Type type)
+        private BeamGroupConnection GetInstanceOf(Type type)
         {
-            return (IBeamGroupConnection)type.GetConstructor(new Type[] { }).Invoke(new object[] { });
+            return (BeamGroupConnection)type.GetConstructor(new Type[] { }).Invoke(new object[] { });
         }
     }
 }

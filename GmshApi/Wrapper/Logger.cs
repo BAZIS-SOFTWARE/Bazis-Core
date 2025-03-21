@@ -1,5 +1,4 @@
 ﻿using System;
-using static GmshApi.GmshController.GmshController;
 using static GmshApi.GmshKernel;
 using static GmshApi.Memory;
 

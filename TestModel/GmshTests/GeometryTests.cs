@@ -1,12 +1,12 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
-using GmshApi.GmshController;
 using System;
 using System.Collections.Generic;
 using Geometry;
 using Model.Interfaces;
 using Model;
 using Model.MeshObjects;
+using ModelController.GmshController;
 
 namespace TestModel.GmshTests
 {

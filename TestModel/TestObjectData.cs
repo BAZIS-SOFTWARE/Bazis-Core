@@ -9,7 +9,6 @@ using Model.GeometryObjects;
 using Geometry;
 using System.Linq;
 using Model.GroupsData;
-using GmshApi.GmshController;
 using System.Drawing;
 
 namespace TestModel
