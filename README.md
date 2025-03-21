@@ -1,8 +1,16 @@
 # Набор библиотек для хранения геометрии и сетки, а также пре/пост обработки результатов
+принятые обозначения:
+-> наследование от класса
 
 В состав входят следующие библиотеки:
 - Project (ProjectData: библиотека, хранящая и управляющая граничными условиями,сеточными и геометрическими сущностями. Осуществляет функции CRUD над перечисленными объектами)
   + TaskData
+    > Data -> ObjectData -> ValueableData (абстрактный класс для хранения физических данных об условиях задачи)
+    > ValueableData -> HeatData
+    > ValueableData -> LoadData
+    > ValueableData -> MatData
+    > ValueableData -> MediaData
+    > ValueableData -> ClampData
   + ModelData
     > ObjectData
     > GroupData
