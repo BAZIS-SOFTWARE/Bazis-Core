@@ -4,8 +4,10 @@ using Model.MeshObjects;
 using Project.Interfaces;
 using Project.Interfaces.IO;
 using Project.Interfaces.Results;
+using Project.Results;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -18,17 +20,18 @@ namespace PostProc.IO.ResultExport
     {
         public event Action<object, ISaveEventArgs> SaveEvent;
 
-        public void SaveResults(IEnumerable<IModelObject> objects, IResult result, string resDescr, string savePath)
+        public void SaveResults(IEnumerable<IModelObject> objs, Result result, string resDescr, string savePath)
         {
             using (var sw = new StreamWriter(savePath, true, Encoding.Unicode) { AutoFlush = true })
             {
-                foreach (var obj in objects)
+                foreach (var obj in objs)
                 {
                     var value = 0.0f;
                     if (obj is Node node)
-                        value = result.GetNodeValue(obj.Number, resDescr);
+                        value = result.GetValue(0, obj.Number, resDescr);
                     if (obj is IElement element)
-                        value = result.GetElementValue(obj.Number, resDescr);
+                        value = result.GetValue(1, obj.Number, resDescr);
+
                     sw.WriteLine($"{obj.Number} {obj.CalcCentr()} {value}");
                 }
                 sw.WriteLine($"");

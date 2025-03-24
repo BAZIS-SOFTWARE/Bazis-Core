@@ -28,7 +28,7 @@ namespace Project.Interfaces
         /// <summary>
         /// ResultData
         /// </summary>
-        IResultData ResultData { get; set; }
+        string ResultDB { get; set; }
         /// <summary>
         /// GeneralData
         /// </summary>

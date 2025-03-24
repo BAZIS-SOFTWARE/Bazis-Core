@@ -7,9 +7,9 @@ using Model.MeshObjects;
 using Model.GeometryObjects;
 using Model.Interfaces.MeshObjects;
 using Model.Interfaces.ObjectsFinders;
-using System.IO;
+using GmshApi;
 
-namespace GmshApi.GmshController
+namespace ModelController.GmshController
 {
     /// <summary>
     /// Контроллер GmshApi

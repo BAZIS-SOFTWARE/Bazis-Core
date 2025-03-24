@@ -1,5 +1,6 @@
 ﻿using Model.Interfaces;
 using Project.Interfaces.IO;
+using Project.Results;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,6 @@ namespace Project.Interfaces.Results
         /// <param name="result"></param>
         /// <param name="resDescr"></param>
         /// <param name="savePath"></param>
-        void SaveResults(IEnumerable<IModelObject> objects, IResult result, string resDescr, string savePath);
+        void SaveResults(IEnumerable<IModelObject> objects, Result result, string resDescr, string savePath);
     }
 }

@@ -144,7 +144,19 @@ namespace Model.MeshObjects
 
         public override IEnumerable<IntegralPoint> CreateIntegrationPoints(int level)
         {
-            throw new NotImplementedException();
+            if (level == 1)
+            {
+                yield return CreateIntegrationPoint(1.0 / 6, 1.0 / 4, 1.0 / 4, 1.0 / 4);
+            }
+            else
+            {
+                var a = 0.58541020;
+                var b = 0.13819660;
+                yield return CreateIntegrationPoint(1.0 / 24, a, b, b);
+                yield return CreateIntegrationPoint(1.0 / 24, b, a, b);
+                yield return CreateIntegrationPoint(1.0 / 24, b, b, a);
+                yield return CreateIntegrationPoint(1.0 / 24, b, b, b);
+            }
         }
     }
 }

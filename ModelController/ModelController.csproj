@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <Title>ModelController</Title>
-    <Version>3.1.35.3</Version>
+    <Version>3.1.35.5</Version>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>ModelControllerKey.snk</AssemblyOriginatorKeyFile>
@@ -18,11 +18,12 @@
     <PackageOutputPath>c:\BazisComponents\IntPackages_v2\$(Configuration)</PackageOutputPath>
   </PropertyGroup>
 
-	<!--Копирование собранного пакета в необходимую папку-->
+  <!--Копирование собранного пакета в необходимую папку-->
 	<Target Name="CopyPackage" AfterTargets="Pack">
-		<Copy SourceFiles="$(PackageOutputPath)\$(PackageId).$(PackageVersion).nupkg" DestinationFolder="\\fs\Plm-Ural\OrgUnits\developers\Packages\Core\$(Configuration)" />
-	</Target>
-	
+    <Copy SourceFiles="$(PackageOutputPath)\$(PackageId).$(PackageVersion).nupkg" 
+          DestinationFolder="\\fs\Plm-Ural\OrgUnits\developers\Packages\Core\$(Configuration)" />
+  </Target>
+   
   <ItemGroup>
     <Compile Remove="MeshObjsCreator\Delone2D\**" />
     <EmbeddedResource Remove="MeshObjsCreator\Delone2D\**" />
@@ -49,6 +50,7 @@
     <PackageReference Include="NetOctree" Version="2.1.11" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GmshApi\GmshApi.csproj" />
     <ProjectReference Include="..\Model\Model.csproj" />
   </ItemGroup>
   <ItemGroup>

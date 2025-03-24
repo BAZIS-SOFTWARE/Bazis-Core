@@ -1,10 +1,4 @@
-﻿using MathNet.Numerics;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
-
-namespace GmshApi
+﻿namespace GmshApi
 {
     /// <inheritdoc/>
     public enum ExtendOptions

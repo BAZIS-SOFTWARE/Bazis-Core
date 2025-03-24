@@ -73,7 +73,7 @@ namespace Model.GroupsData
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return GetEnumerator();
         }
 /// <inheritdoc/>
 

@@ -29,6 +29,9 @@ using PostProc.IO.ResultExport;
 using Model.IO;
 using Model.Interfaces.ObjectsCollections;
 using Model.ObjectsCollections;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Xml.Linq;
 
 
 namespace TestProject
@@ -50,18 +53,55 @@ namespace TestProject
             loaderDB.LoadEvent += (ar1,ar2) => { };
             var project = new ProjectData("", path);
 
-            var results = loaderDB.Load(project.GeneralData.Path + $@"\{resName}");
+            var results = loaderDB.GetResult(project.GeneralData.Path + $@"\{resName}",
+                new List<string>() { "nodes" }, time) ; 
+            
+            Assert.AreNotEqual(results, null);
+            Assert.AreNotEqual(results.Data.Tables["nodes"].Rows.Count, 0);
+        }
 
+        [DataTestMethod]
+        [DataRow(@"..\..\..\Examples\ProjAndResults", "термическая_0_0_0.5.db")]
+        [DataRow(@"..\..\..\Examples\ProjAndResults", "термическая_0_0_1500.db")]
+        public void TestLoadDBSQLiteTablesScheme(string path, string resName)
+        {
+            var loaderDB = new LoadResultsFileDB();
+            loaderDB.LoadEvent += (ar1, ar2) => { };
+            var project = new ProjectData("", path);
 
-            project.ResultData = new ResultData();
+            var shemes = loaderDB.GetTablesSchemes(project.GeneralData.Path + $@"\{resName}").ToList();
 
-            project.ResultData.AddRange(results);
+            Assert.AreNotEqual(shemes, null);
+            //Assert.AreNotEqual(results.Data.Tables["nodes"].Rows.Count, 0);
+        }
 
-            var search = project.ResultData.FindByTime("термическая", time);
+        [TestMethod]
+        [DataRow(@"..\..\..\Examples\ProjAndResults", "термическая_0_0_0.5.db")]
+        public void TestLoadDBSQLiteFindByTimeInterval(string path, string dbName)
+        {
+            var loaderDB = new LoadResultsFileDB();
+            loaderDB.LoadEvent += (ar1, ar2) => { };
+
+            var project = new ProjectData("", path);
+
+            var times = loaderDB.GetValues(project.GeneralData.Path + $@"\{dbName}", "nodes", "Time");
+
+            var results = new List<Result>();
+
+            foreach (var item in times)
+            {
+                results.Add(loaderDB.GetResult(project.GeneralData.Path + $@"\{dbName}",
+                    new List<string> { "nodes", "elements" }, item));
+            }
+
+            var kind = dbName.Split('_')[0];
+
+            var search = results.Where(x => x.TaskKind.ToString() == kind &&
+
+x.Time.CompareTo(0) >= 0
+& x.Time.CompareTo(0.25f) <= 0);
 
             Assert.AreNotEqual(search, null);
-            Assert.AreNotEqual(search.Data.Tables.Count, 0);
-            Assert.AreNotEqual(search.Data.Tables[0].Rows.Count, 0);
         }
 
         [DataTestMethod]
@@ -77,11 +117,11 @@ var loaderDB = new LoadResultsFileDB();
             var project = new ProjectData(file, dir);
             project.ModelData = new ModelData();
             project.Load();
-            var results = loaderDB.Load(project.GeneralData.Path + $@"\{resName}");
-            //var search = results.Where(x => x.TaskKind.ToString() == "термическая" & x.Time == time);
-            //var resList = search.ToList();
-            //var saverDB = new SaveResultsFileDb();
-            //saverDB.Save(resList, dir + "\\temp.db", false);
+
+            var times = loaderDB.GetValues(project.GeneralData.Path + $@"\{resName}", "nodes", "Time");
+
+            var results = loaderDB.GetResults(project.GeneralData.Path + $@"\{resName}",
+                    new List<string> { "nodes", "elements" });
 
             var els3D = project.ModelData.ObjectData.E3DCollection;
             var controller = new PostProcController();
@@ -98,30 +138,20 @@ var loaderDB = new LoadResultsFileDB();
 
             controller.ResultsFieldsCreator.SetScaleItems(intervalVals);
             controller.ResultsFieldsCreator.ScaleFactor = 1;
-            var elsResults = controller.ResultsFieldsCreator.CreateSurfaceObjects(results.First(), ObjType.Узел, "T", els3D.GetObjects());
+
+            var search = results.FirstOrDefault(x => x.Time.Equals(time));
+       
+            var elsResults = controller.ResultsFieldsCreator.CreateSurfaceObjects(search, "nodes", "T", els3D.GetObjects());
 
             Assert.AreNotEqual(elsResults, null);
             Assert.AreNotEqual(elsResults.Count(), 0);
         }
 
-        [TestMethod]
-        public void TestLoadDBSQLiteFindByTimeInterval()
-        {
-            var loaderDB = new LoadResultsFileDB();
-            loaderDB.LoadEvent += (ar1, ar2) => { };
 
-            var project = new ProjectData("", @"..\..\..\Examples\ProjAndResults");
-            var results = loaderDB.Load(project.GeneralData.Path + @"\термическая_0_0_0.5.db");
-
-            project.ResultData = new ResultData();
-
-            project.ResultData.AddRange(results);
-
-            var search = project.ResultData.FindByTimeInterval("термическая", 0,0.25f);
-        }
 
         [TestMethod]
-        public void TestMergeResults()
+        [DataRow(@"..\..\..\Examples\ProjAndResults\термическая_0_0_0.5.db")]
+        public void TestMergeResults(string dbName)
         {
             var proj = new ProjectData();
             proj.ModelData = new ModelData();
@@ -129,81 +159,31 @@ var loaderDB = new LoadResultsFileDB();
 
             proj.Load(@"..\..\..\Examples\ProjAndResults\two_tetra_term_cycle_multiStep.bpf");
 
-            proj.ResultData = new ResultData();
-
             var loaderDB = new LoadResultsFileDB();
             loaderDB.LoadEvent += (ar1, ar2) => { };
-            var results = loaderDB.Load(@"..\..\..\Examples\ProjAndResults\термическая_0_0_0.5.db");
-
-            proj.ResultData.AddRange(results);
+            
+            
+            var res = loaderDB.GetResults(dbName, new List<string>() { "nodes", "elements" }).ToArray();
 
             IEnumerable<IElement> elements;
-            if (proj.TaskType == TaskType.Volume)
+            if (proj.GeneralData.TaskType == TaskType.Volume)
             {
                 elements = proj.ModelData.ObjectData.E3DCollection.GetObjects();
             }
             else elements = proj.ModelData.ObjectData.E2DCollection.GetObjects();
 
             var interfaceNodesFinder = new InterfacedNodesFinder();
-            var resultsFind = proj.ResultData.FindByTimeInterval("термическая", 0, 0.5f);
 
             var mergeResults = new MergeResults();
+            var intNodes = interfaceNodesFinder.Find(elements);
+            for (int i = 0; i < res.Length; i++)
+                mergeResults.Merge(intNodes, "Q", res[i]);
 
-            mergeResults.Merge(interfaceNodesFinder.Find(elements), "Q", resultsFind.ToList());
-        }
-
-        [TestMethod]
-        public void TestDistinctResults()
-        {
-            //assign
-            var proj = new ProjectData();
-            proj.ModelData = new ModelData();
-            proj.TaskData = new TaskData();
-
-            //act
-            proj.Load(@"..\..\..\Examples\ProjAndResults\two_tetra_term_cycle_multiStep.bpf");
-
-            proj.ResultData = new ResultData();
-
-            var loaderDB = new LoadResultsFileDB();
-            loaderDB.LoadEvent += (ar1, ar2) => { };
-
-            var results1 = loaderDB.Load(@"..\..\..\Examples\ProjAndResults\термическая_0_0_0.5.db");
-            proj.ResultData.AddRange(results1, new ResultsComparer());
-
-            var results0 = loaderDB.Load(@"..\..\..\Examples\ProjAndResults\термическая_0_0_0.5.db");
-            proj.ResultData.AddRange(results0,new ResultsComparer());
-
-            //Assert.AreEqual(project.ResultData.Count(), results.Count);
-        }
-
-        [TestMethod]
-        public void CreateDBSQLite_ResultPage_Result_Presenter()
-        {
-            var project = new ProjectData("", @"..\..\..\Examples\ProjAndResults");
-            project.ResultData = new ResultData();
-            var loaderDB = new LoadResultsFileDB();
-            loaderDB.LoadEvent += (ar1, ar2) => { };
-            var results = loaderDB.Load(project.GeneralData.Path + @"\термическая_0_0_0.5.db");
-            project.ResultData.AddRange(results);
-
-            //var resPagePresenter = new ResultPagePresenter(project.ResultData);
-
- 
-            var kindRes = project.ResultData.GetResultKinds();
-            var timeRes = project.ResultData.FindByTime("термическая",0);
-
-            if (kindRes.Count() == 0)
-                throw new Exception();
-            foreach (var res in kindRes)
-                Assert.AreEqual(res, TaskKind.термическая);
-
-            Assert.AreEqual(timeRes.Time, 0);
         }
 
         [DataTestMethod]
         [DataRow("csv_table_1.csv")]
-        public void CreateAndSaveDBSQLite_Example(string file)
+        public void CSVToDataTableConverter_Example(string file)
         {
             var csvPath = @"..\..\..\ResultTableCSV";
 
@@ -211,40 +191,96 @@ var loaderDB = new LoadResultsFileDB();
 
             var dataTable = convert.ConvertCSVtoDataTable($@"{csvPath}\{file}");
             dataTable.TableName = "nodes";
-            var dataSet = new System.Data.DataSet();
+
+            var dataSet = new DataSet();
             dataSet.Tables.Add(dataTable);
-            var result = new Result(dataSet,0.87051f,TaskKind.термическая);
+            var result = new Result(dataSet, 0.87051f,TaskKind.термическая);
 
-            var db = new ResultDataBase($@"{csvPath}\results.db");
+            var dbPath = $@"{csvPath}\results.db";
 
-            db.OpenConnection();
-
-            db.DeleteTable("nodes");
-            db.DeleteTable("elements");
-
-            db.CreateTables("elements", GetTableSchema(result.Data.Tables["nodes"]));
-            db.CreateTables("nodes", GetTableSchema(result.Data.Tables["nodes"]));
-
-            db.AddData(result);
-            db.CloseConnection();
-
+            var saverDB = new SaveResultsFileDb();
+            saverDB.Save(new List<Result>() { result }, dbPath, false);
+   
             var loaderDB = new LoadResultsFileDB();
             loaderDB.LoadEvent += (ar1, ar2) => { };
-            var resultTOLoad = loaderDB.Load($@"{csvPath}\results.db");
+            var times = loaderDB.GetValues(dbPath, "nodes", "Time");
 
-            Assert.AreEqual(resultTOLoad.First().TaskKind, TaskKind.механическая);
-        }
+            var resultTOLoad = loaderDB.GetResult(dbPath, new List<string>() { "nodes"}, times.First());
 
-        public List<string> GetTableSchema(DataTable dataTable)
+            Assert.AreEqual(resultTOLoad.TaskKind, TaskKind.механическая);
+        }   
+
+        [DataTestMethod]
+        [DataRow(new string[]
+       {
+            "Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL",
+            "[Time] real DEFAULT(0) NOT NULL",
+            "[Index] INTEGER DEFAULT(0) NOT NULL",
+            "[Value] real DEFAULT(0) NOT NULL"
+       },
+            
+       new object[]
+       {
+            0.01,
+            2,
+            1.666666
+       },
+            DisplayName = "3 with [] and 1 without")]
+        [DataRow(new string[]
+       {
+            "[Id] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL",
+            "[Time] real DEFAULT(0) NOT NULL",
+            "[Index] INTEGER DEFAULT(0) NOT NULL",
+            "[Value] real DEFAULT(0) NOT NULL"
+       },
+            new object[]
+       {
+            0.01,
+            2,
+            1.666666
+       },
+
+            DisplayName = "4 with []")]
+        [DataRow(new string[]
+       {
+            "Number INTEGER PRIMARY KEY NOT NULL",
+            "Time real DEFAULT(0) NOT NULL",
+            "Value real DEFAULT(0) NOT NULL"
+       },
+                 new object[]
+       {
+            2,
+            0.01,
+            1.666666
+       },
+
+            DisplayName = "3 without  []")]
+        public void BasicDbOperations(string[] columns, object[] values)
         {
-            var schema = new List<string>();
+            var path = @"..\..\..\TestTableColumns\test.db";
 
-            for (int i = 1; i < dataTable.Columns.Count; i++)
-            {
-                schema.Add(dataTable.Columns[i].ColumnName);
-            }
+            var db = new ResultDataBase(path);
+            db.OpenConnection();
 
-            return schema;
+            db.DeleteTable("testTable");
+            db.CreateTables("testTable", columns);
+
+            var valStr = string.Join(",", values);
+
+            var columns_ch = columns.Where(x => !x.Contains("AUTOINCREMENT")).
+                Select(x => x.Split(' ')[0]);
+
+            var clmStr = string.Join(",", columns_ch);
+
+            var cmd = db.CreateAddCommand("testTable", clmStr, valStr);
+            db.AddData(cmd);
+            var table = db.GetResults("testTable", "*","");
+
+            var schema = db.GetTableShema("testTable").ToList();
+
+            db.CloseConnection();
+            Assert.AreEqual(table.Columns.Count, schema.Count());
+            Assert.AreEqual(table.Columns.Count, columns.Length);
         }
 
         [DataTestMethod]
@@ -267,16 +303,13 @@ var loaderDB = new LoadResultsFileDB();
             proj.Loader.LoadEvent += (ar1, ar2) => { };
 
             proj.Load($@"{resPath}\{projName}");
-            proj.ResultData = new ResultData();
+
             var dbExtension = System.IO.Path.GetExtension($@"{resPath}\{resName}");
             //var dbExtension = System.IO.Path.GetExtension(@"C:\Bazis_newGUI\PROJ\Test_3D\Term\Termal_0_0,5.db");
 
             var loaderDB = new LoadResultsFileDB();
             loaderDB.LoadEvent += (ar1, ar2) => { };
-            var results = loaderDB.Load($@"{resPath}\{resName}");
-
-            proj.ResultData.AddRange(results);
-            var result = proj.ResultData.FindByTaskKind(resKind);
+            var results = loaderDB.GetResults($@"{resPath}\{resName}",new List<string>() { "nodes","elements"});
 
             IEnumerable<ISurfaceElement> elements;
             if(proj.GeneralData.TaskType == TaskType.Volume)
@@ -293,7 +326,9 @@ var loaderDB = new LoadResultsFileDB();
             resultsCreator.ScaleFactor = 1;
             resultsCreator.SetScaleItems(itemRanges);
 
-            var resultObjects = resultsCreator.CreateSurfaceObjects(result.First(), ObjType.Узел,resDesc, elements);
+            var search = results.FirstOrDefault(x => x.Time.Equals(0));
+
+            var resultObjects = resultsCreator.CreateSurfaceObjects(search, "nodes", resDesc, elements);
             var points = new List<ResultPoint>();
             foreach (var elems in resultObjects)
                 points.AddRange(elems.GetVertexes());
@@ -306,15 +341,15 @@ var loaderDB = new LoadResultsFileDB();
             var resultNodesTXTPath = $@"{resPath}\testResultNodes.txt";
             var resultElementsTXTPath = $@"{resPath}\testResultElemets.txt";
 
-            TXTSaver.SaveResults(proj.ModelData.ObjectData.NodesSet.Values, result.First(), resDesc, resultNodesTXTPath);
-            TXTSaver.SaveResults(proj.ModelData.ObjectData.GetAllElements(), result.First(), resDesc, resultElementsTXTPath);
+            TXTSaver.SaveResults(proj.ModelData.ObjectData.NodesSet.Values, results.First(), resDesc, resultNodesTXTPath);
+            TXTSaver.SaveResults(proj.ModelData.ObjectData.GetAllElements(), results.First(), resDesc, resultElementsTXTPath);
 
             var CSVSaver = new SaveObjectsResultsToCSV();
             var resultNodesCSVPath = $@"{resPath}\testResultNodes.csv";
             var resultElementsCSVPath = $@"{resPath}\testResultElements.csv";
 
-            CSVSaver.SaveResults(proj.ModelData.ObjectData.NodesSet.Values, result.First(), resDesc, resultNodesCSVPath);
-            CSVSaver.SaveResults(proj.ModelData.ObjectData.GetAllElements(), result.First(), resDesc, resultElementsCSVPath);
+            CSVSaver.SaveResults(proj.ModelData.ObjectData.NodesSet.Values, results.First(), resDesc, resultNodesCSVPath);
+            CSVSaver.SaveResults(proj.ModelData.ObjectData.GetAllElements(), results.First(), resDesc, resultElementsCSVPath);
 
             var modelPresenter = new PresentersCreator();
             var presenter = modelPresenter.CreateSurfaceObjectsPresenter(resultObjects, false);

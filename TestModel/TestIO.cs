@@ -1,4 +1,4 @@
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
@@ -98,7 +98,7 @@ namespace TestModel
         }
 
         [DataTestMethod]
-        [DataRow(@"..\..\..\Examples\BPF2TXT\cub_unsorted.bpf2", 2, ObjType.Элемент3D,DisplayName = "Sets Элемент3D = 2")]
+        [DataRow(@"..\..\..\Examples\BPF2TXT\cub_unsorted.bpf2", 2, ObjType.Элемент3D, DisplayName = "Sets Элемент3D = 2")]
         [DataRow(@"..\..\..\Examples\BPF2TXT\cub_unsorted.bpf2", 8, ObjType.Узел, DisplayName = "Objects Узел = 1")]
         [DataRow(@"..\..\..\Examples\BPF2TXT\cub_unsorted_oneSet.bpf2", 1, ObjType.Элемент3D, DisplayName = "Sets Элемент3D = 1")]
         //[DataRow(@"c:\BazisSolver\TestTaskSolutionMSTest\ExampleProj\Term\2D_axi\Quad\one_quad_term_cycle.bpf2", 1, ObjType.Элемент2D, DisplayName = "Sets Элемент2D = 1")]
@@ -304,6 +304,26 @@ namespace TestModel
             Assert.AreEqual(lineElms, model.ObjectData.E1DCollection.Count);
             Assert.AreEqual(surfElms, model.ObjectData.E2DCollection.Count);
             Assert.AreEqual(volElems, model.ObjectData.E3DCollection.Count);
+        }
+
+        [DataTestMethod]
+        [DataRow(1000, 12, 6, 1, 0, @"..\..\..\Examples\3D\box2.inp", DisplayName = "box2.inp")]
+        //[DataRow(8, 12, 6, 1, 7, @"..\..\..\Examples\3D\Physical_groups_mesh.inp", DisplayName = "Physical_groups_mesh.inp")]
+        public void ImportModelFromINPFormat_v2(int nodeCount, int elem1D, int elem2D, int elem3D, int countGroup, string path)
+        {
+            //assing
+            var loader = new LoadModelFromINPTextFile_v2();
+            loader.LoadEvent += (ar1, ar2) => { };
+
+            //act
+            var model = loader.Load(path);            
+
+            //assert
+            Assert.AreEqual(nodeCount, model.ObjectData.Count(ObjType.Узел));
+            Assert.AreEqual(elem1D, model.ObjectData.E1DCollection.Count());
+            Assert.AreEqual(elem2D, model.ObjectData.E2DCollection.Count());
+            Assert.AreEqual(elem3D, model.ObjectData.E3DCollection.Count());
+            Assert.AreEqual(countGroup, model.GroupData.Count());
         }
     }
 }

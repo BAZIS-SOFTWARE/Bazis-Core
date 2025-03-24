@@ -57,14 +57,6 @@ namespace Results.ResultsData
         /// <inheritdoc/>
         public IResultsLoader Loader { get; set; } = new LoadResultsFileDB();
 
-        public void Add(float time, DataSet data, TaskKind taskKind)
-        {
-            var res = results.Find(x => x.Time.Equals(time) & x.TaskKind == taskKind);
-            if (res != null)
-            {
-                results.Add(new Result(data, time, taskKind));
-            }
-        }
 /// <inheritdoc/>
 
         public void AddRange(IEnumerable<Result> results)
@@ -153,33 +145,33 @@ namespace Results.ResultsData
         }
 /// <inheritdoc/>
 
-        public Result FindByTime(TaskKind taskKind, float time)
+        public IEnumerable<Result> FindByTime(TaskKind taskKind, float time)
         {
-            var findRes = results.Find(x => x.TaskKind == taskKind && x.Equals(time));
+            var findRes = results.Where(x => x.TaskKind == taskKind && x.Equals(time));
 
             return findRes;
         }
 /// <inheritdoc/>
 
-        public Result FindByTime(TaskKind taskKind, float time, float delta)
+        public IEnumerable<Result> FindByTime(TaskKind taskKind, float time, float delta)
         {
-            var findRes = results.Find(x => x.TaskKind == taskKind && Math.Abs(x.Time - time) < delta);
+            var findRes = results.Where(x => x.TaskKind == taskKind && Math.Abs(x.Time - time) < delta);
 
             return findRes;
         }
         /// <inheritdoc/>
 
-        public Result FindByTime(string taskKind, float time)
+        public IEnumerable<Result> FindByTime(string taskKind, float time)
         {
-            var findRes = results.Find(x => x.TaskKind.ToString() == taskKind && x.Time.Equals(time));
+            var findRes = results.Where(x => x.TaskKind.ToString() == taskKind && x.Time.Equals(time));
 
             return findRes;
         }
 /// <inheritdoc/>
 
-        public Result FindByTime(string taskKind, float time, float delta)
+        public IEnumerable<Result> FindByTime(string taskKind, float time, float delta)
         {
-            var findRes = results.Find(x => x.TaskKind.ToString() == taskKind && Math.Abs(x.Time - time) < delta);
+            var findRes = results.Where(x => x.TaskKind.ToString() == taskKind && Math.Abs(x.Time - time) < delta);
 
             return findRes;
         }
