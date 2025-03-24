@@ -25,7 +25,7 @@
 		<Copy SourceFiles="$(PackageOutputPath)\$(PackageId).$(PackageVersion).nupkg"
 			  DestinationFolder="\\fs\Plm-Ural\OrgUnits\developers\Packages\Core\$(Configuration)" />
 	</Target>
-  
+   
   <ItemGroup>
     <EmbeddedResource Include="Icon.png">
       <Pack>True</Pack>

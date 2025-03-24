@@ -1,6 +1,4 @@
 ﻿using Geometry;
-using Model.Events;
-using Model.GroupsData;
 using Model.MeshObjects;
 using Model.Interfaces;
 using Model.Interfaces.MeshObjects;
@@ -10,6 +8,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Group = Model.GroupsData.Group;
 
 
 namespace Model.IO
@@ -20,6 +19,7 @@ namespace Model.IO
     public class LoadModelFromINPTextFile : IModelLoader
     {
         public event Action<object, ILoaderEventArgs> LoadEvent;
+
         private string[] lines;
 
         private static string extractNumbersPattern = @"(-)?\d+(\.\d+(e(-|\+)\d+)?)?";
@@ -28,42 +28,22 @@ namespace Model.IO
 
         public IModelData Load(string path)
         {
-            var indexToNode = new Dictionary<int, Node>();
+            var modelData = new ModelData();
             var indexToElement = new Dictionary<int, Element>();
-            var groups = new List<GroupsData.Group>();
             lines = File.ReadAllLines(path);
             var i = 0;
             var offset = 0;
             while(i < lines.Length)
             {
                 if (lines[i].StartsWith("*NODE", StringComparison.OrdinalIgnoreCase))
-                    indexToNode = ReadNodes(i, out offset);
+                    ReadNodes(i, out offset, modelData);
                 else if (lines[i].StartsWith("*ELEMENT", StringComparison.OrdinalIgnoreCase))
-                    indexToElement = ReadElements(i, out offset, indexToNode);
+                    ReadElements(i, out offset, indexToElement, modelData);
                 else if (Regex.Match(lines[i], @"\*(EL|N)SET", RegexOptions.IgnoreCase).Success)
-                    groups = ReadGroups(i, out offset, indexToElement, indexToNode);
-                i += (offset > 0) 
-                    ? offset 
-                    : 1;
+                    ReadGroups(i, out offset, indexToElement, modelData);
+                i += (offset > 0) ? offset : 1;
                 offset = 0;
             }
-            var modelData = GetModelData(indexToNode.Values, indexToElement.Values, groups);
-            return modelData;
-        }
-
-        private IModelData GetModelData(IEnumerable<Node> nodes, IEnumerable<Element> elements, List<GroupsData.Group> groups)
-        {
-            var modelData = new ModelData();
-            foreach (var node in nodes)
-            {
-                modelData.ObjectData.NodesSet.
-                    Add(node.Number, node);
-            }
-
-            elements.OrderBy(e => e.Number)
-                .ToList()
-                .ForEach(e => AddElementToModelData(e, modelData));
-            groups.ForEach(g => modelData.GroupData.Add(g));
             return modelData;
         }
 
@@ -76,9 +56,8 @@ namespace Model.IO
             }
         }
 
-        private Dictionary<int, Node> ReadNodes(int start, out int offset)
+        private void ReadNodes(int start, out int offset, ModelData modelData)
         {
-            var indexToNode = new Dictionary<int, Node>();
             offset = 0;
             for(var i = start; i < lines.Length; i++)
             {
@@ -88,11 +67,10 @@ namespace Model.IO
                 if (tokens.Length == 4)
                 {
                     var node = ParseNodeFromLine(tokens);
-                    indexToNode.Add(node.Number, node);
+                    modelData.ObjectData.NodesSet.Add(node.Number, node);
                 }
                 offset++;
             }
-            return indexToNode;
         }
 
         private Node ParseNodeFromLine(string[] tokens)
@@ -105,59 +83,54 @@ namespace Model.IO
             return node;
         }
 
-        private void AddElementToModelData(Element element, ModelData modelData)
+        private void AddElementToModelData(Element element, string groupName, ModelData modelData)
         {
-            var name = element.ObjType.ToString();
-            switch (element.ElementKind)
-            {
-                case ElementKind.Стержень: modelData.ObjectData.E1DCollection.Add(name, (Beam)element); break;
-                case ElementKind.Треугольник: modelData.ObjectData.E2DCollection.Add(name, (Triangle)element); break;
-                case ElementKind.Квадрат: modelData.ObjectData.E2DCollection.Add(name, (Quad)element); break;
-                case ElementKind.Тетра: modelData.ObjectData.E3DCollection.Add(name, (Tetra)element); break;
-                case ElementKind.Пента: modelData.ObjectData.E3DCollection.Add(name, (Penta)element); break;
-                case ElementKind.Гекса: modelData.ObjectData.E3DCollection.Add(name, (Hexa)element); break;
-                default: throw new ArgumentException($"Неизвестный формат элемента: {element.ElementKind}");
-            }
+            if (element is Element3D element3D)
+                modelData.ObjectData.E3DCollection.Add(groupName, element3D);
+            else if (element is Element2D element2D)
+                modelData.ObjectData.E2DCollection.Add(groupName, element2D);
+            else if (element is Beam beam)
+                modelData.ObjectData.E1DCollection.Add(groupName, beam);
+            else
+                throw new ArgumentException($"Неизвестный тип элемента: {element}");
         }
 
-        private Dictionary<int, Element> ReadElements(int start, out int offset, Dictionary<int, Node> indexToNode)
+        private void ReadElements(int start, out int offset, Dictionary<int, Element> indexToElement, ModelData modelData)
         {
-            var indexToElement = new Dictionary<int, Element>();
             var elementType = string.Empty;
+            var groupName = string.Empty;
             offset = 0;
             for(var i = start; i < lines.Length; i++)
             {
                 if (lines[i].StartsWith("*ELSET", StringComparison.OrdinalIgnoreCase) || lines[i].StartsWith("**"))
                     break;
                 else if (lines[i].StartsWith("*ELEMENT", StringComparison.OrdinalIgnoreCase))
+                {
                     elementType = Regex.Match(lines[i], extractElementTypePattern, RegexOptions.IgnoreCase).Value;
+                    groupName = GetGroupName(lines[i]);
+                }
                 else
                 {
                     var tokens = ReadNumbersFromLine(lines[i]).ToArray();
                     if (tokens.Length > 0)
                     {
-                        var element = ParseElementFromLine(tokens, elementType, indexToNode);
+                        var element = CreateElement(tokens, elementType, modelData);
                         indexToElement.Add(element.Number, element);
+                        AddElementToModelData(element, groupName, modelData);
                     }
                 }
                 offset++;
             }
-            return indexToElement;
         }
 
-        private Element ParseElementFromLine(string[] tokens, string elementType, Dictionary<int, Node> indexToNode)
+        private Element CreateElement(string[] tokens, string elementType, ModelData modelData)
         {
             var elementIndex = int.Parse(tokens[0]);
             var elementNodes = tokens.Skip(1)
                 .Select(int.Parse)
-                .Select(i => indexToNode[i])
+                .Select(index => modelData.ObjectData.NodesSet[index])
                 .ToArray();
-            var element = GetElement(elementIndex, elementNodes, elementType);
-            return element;
-        }
 
-        private Element GetElement(int elementIndex, Node[] elementNodes, string elementType)
-        {
             switch (elementType)
             {
                 case "T3D2": return new Beam(elementIndex, elementNodes);
@@ -170,49 +143,47 @@ namespace Model.IO
             }
         }
 
-        private List<GroupsData.Group> ReadGroups(int start, out int offset, Dictionary<int, Element> indexToElement, 
-            Dictionary<int, Node> indexToNode)
+        private void ReadGroups(int start, out int offset, Dictionary<int, Element> indexToElement, ModelData modelData)
         {
-            var groups = new List<GroupsData.Group>();
             var groupName = string.Empty;
-            offset = 0;
             var isReadNodes = false;
-            for(var i = start; i < lines.Length; i++)
+            offset = 0;
+            for (var i = start; i < lines.Length; i++)
             {
                 if (lines[i].StartsWith("**"))
                     break;
                 else if (Regex.Match(lines[i], @"\*(EL|N)SET", RegexOptions.IgnoreCase).Success)
-                    groupName = GetGroupName(lines[i], out isReadNodes);
+                {
+                    groupName = GetGroupName(lines[i]);
+                    isReadNodes = Regex.Match(lines[i], @"\*NSET", RegexOptions.IgnoreCase).Success;
+                }
                 else
                 {
                     var group = isReadNodes
-                        ? ReadOneGroup(lines[i], indexToNode, groupName)
-                        : ReadOneGroup(lines[i], indexToElement, groupName);
-                    groups.Add(group);
+                        ? GetGroup(lines[i], index => modelData.ObjectData.NodesSet[index], groupName)
+                        : GetGroup(lines[i], index => indexToElement[index], groupName);
+                    modelData.GroupData.Add(group);
                 }
                 offset++;
             }
-            return groups;
         }
 
-        private GroupsData.Group ReadOneGroup<T>(string line, Dictionary<int, T> mapping, string groupName)
+        private Group GetGroup<T>(string line, Func<int, T> mapping, string groupName)
             where T : ModelObject
         {
             var elements = ReadNumbersFromLine(line)
-                        .Select(int.Parse)
-                        .Select(idx => mapping[idx]);
-            var group = new GroupsData.Group(groupName, elements.First().ObjType);
-            group.AddRange(elements);
+                                                    .Select(int.Parse)
+                                                    .Select(index => mapping(index))
+                                                    .ToList();
+            var objType = elements[0].ObjType;
+            var group = new Group(groupName, objType);
+            elements.ForEach(e => group.Add(e));
             return group;
         }
 
-        private string GetGroupName(string line, out bool isReadNodes)
+        private string GetGroupName(string line)
         {
-            isReadNodes = false;
-            if (line.StartsWith("*NSET", StringComparison.OrdinalIgnoreCase))
-                isReadNodes = true;
             return Regex.Match(line, extractGroupNamePattern, RegexOptions.IgnoreCase).Value;
-
         }
     }
 }
