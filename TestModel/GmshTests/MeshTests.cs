@@ -9,6 +9,8 @@ using GmshApi;
 using System.Collections.Generic;
 using Model.GeometryObjects;
 using System.IO;
+using System.Drawing;
+using Model.MeshObjects;
 
 namespace TestModel.GmshTests
 {
@@ -615,6 +617,26 @@ namespace TestModel.GmshTests
             Assert.IsTrue(string.IsNullOrEmpty(error));
             //file = Path.GetFileNameWithoutExtension(fileName);
             //controller.Gmsh.Write($@"D:\{file}_field.inp");//Для визуального теста
+        }
+
+        [DataTestMethod]
+        [DataRow(@"\STL\sphere2.stl", ""/*@"D:\sphere.step"*/)]
+        [DataRow(@"\STL\cube2.stl", ""/*@"D:\cube.step"*/)]
+        public void CadFromStlTest(string fileName, string savePath)
+        {
+            controller.CreateCadFromMesh(modelFolder + fileName, savePath);
+            var error = controller.Gmsh.Logger.GetLastError();
+            Assert.IsTrue(string.IsNullOrEmpty(error));
+        }
+
+
+        [DataTestMethod]
+        [DataRow(@"\STL\sphere2.stl", @"\STL\cube2.stl", "", ""/*@"D:\merged.stl", @"D:\merged.step"*/)]
+        public void MergeTwoStlTest(string first, string second, string mergedStl, string mergedStep)
+        {
+            controller.MergeTwoMeshes(modelFolder + first, modelFolder + second, mergedStl, mergedStep);
+            var error = controller.Gmsh.Logger.GetLastError();
+            Assert.IsTrue(string.IsNullOrEmpty(error));
         }
 
         private void MakeTranfinite(int seamPointCurves, int[] seamCurves, int[] seamVolumes)

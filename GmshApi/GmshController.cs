@@ -8,6 +8,10 @@ using Model.GeometryObjects;
 using Model.Interfaces.MeshObjects;
 using Model.Interfaces.ObjectsFinders;
 using System.IO;
+using MathNet.Numerics.RootFinding;
+using System.Drawing;
+using System.Reflection;
+using System.Net;
 
 namespace GmshApi.GmshController
 {
@@ -174,7 +178,7 @@ namespace GmshApi.GmshController
         /// <inheritdoc/>
         public void CreateGeometry(double surfAngle = Math.PI / 2, double curveAngle = Math.PI)
         {
-            Gmsh.Model.Mesh.ClassifySurfaces(surfAngle, true, true);
+            Gmsh.Model.Mesh.ClassifySurfaces(surfAngle, true, true, curveAngle);
             var dimTags = Gmsh.Model.GetEntities(-1);
             Gmsh.Model.Mesh.CreateGeometry(dimTags);
         }
@@ -273,6 +277,118 @@ namespace GmshApi.GmshController
                     return false;
             }
             return true;
+        }
+        /// <inheritdoc/>
+        public void MergeTwoMeshes(string meshFirstPath, string meshSecondPath, string resultMeshPath = "", string resultCadPath = "")
+        {
+            Gmsh.Merge(meshFirstPath);
+            Gmsh.Merge(meshSecondPath);
+
+            var cadSurfaces = GetCadSurfacesFromMesh();
+            AddVolumes(cadSurfaces);
+
+            var volumes = Gmsh.Model.GetEntities(3);
+            var first = volumes.Take(2).ToArray();
+            var second = volumes.Skip(2).ToArray();
+
+            Gmsh.Model.Occ.Fuse(first, second);
+            Gmsh.Model.Occ.Synchronize();
+
+            if (!string.IsNullOrEmpty(resultCadPath))
+                Gmsh.Write(resultCadPath);
+
+            if (!string.IsNullOrEmpty(resultMeshPath))
+            {
+                Gmsh.Model.Mesh.Generate(2);
+                Gmsh.Write(resultMeshPath);
+            }
+        }
+        /// <inheritdoc/>
+        public void CreateCadFromMesh(string meshPath, string resultCadPath = "")
+        {
+            Gmsh.Merge(meshPath);
+            var cadSurfaces = GetCadSurfacesFromMesh();
+
+            AddVolumes(cadSurfaces);
+            if (!string.IsNullOrEmpty(resultCadPath))
+                Gmsh.Write(resultCadPath);
+            Gmsh.Model.Mesh.Clear();
+        }
+        /// <inheritdoc/>
+        public void AddVolumes(int[][] cadSurfaces)
+        {
+            for (var i = 0; i < cadSurfaces.Length; ++i)
+            {
+                var shell = Gmsh.Model.Occ.AddSurfaceLoop(cadSurfaces[i]);
+                Gmsh.Model.Occ.AddVolume(new int[] { shell });
+            }
+            Gmsh.Model.Occ.Synchronize();
+        }
+        /// <inheritdoc/>
+        public int[][] GetCadSurfacesFromMesh()
+        {
+            var dimTags = Gmsh.Model.GetEntities(2);
+            var cadSurfs = new int[dimTags.Length / 2][];
+            for (int i = 0, surfCount = 0; i < dimTags.Length; i += 2, ++surfCount)
+            {
+                var points = CreateDictOfPoints(dimTags[i], dimTags[i + 1]);
+                var data = Gmsh.Model.Mesh.GetElements(dimTags[i], dimTags[i + 1]);
+                var surfaces = new List<int>();
+                for (var j = 0; j < data.Item1.Length; ++j)
+                {
+                    var lines = new Dictionary<string, int>();
+                    var properties = Gmsh.Model.Mesh.GetElementProperties(data.Item1[j]);
+                    var nodesCount = properties.numNodes;
+                    var elements = data.Item2[j];
+                    var nodes = data.Item3[j];
+
+                    for (var k = 0; k < elements.Length; ++k)
+                    {
+                        var idLines = new List<int>();
+                        for (int l = 1; l < nodesCount; ++l)
+                            idLines.Add(GetLine(lines, points, (int)nodes[k * nodesCount + l - 1], (int)nodes[k * nodesCount + l]));
+                        idLines.Add(GetLine(lines, points, (int)nodes[k * nodesCount + nodesCount - 1], (int)nodes[k * nodesCount]));
+
+                        var loop = Gmsh.Model.Occ.AddCurveLoop(idLines.ToArray());
+                        surfaces.Add(Gmsh.Model.Occ.AddPlaneSurface(new int[] { loop }));
+                    }
+                }
+                cadSurfs[surfCount] = surfaces.ToArray();
+            }
+            return cadSurfs;
+        }
+
+        private Dictionary<int, int> CreateDictOfPoints(int dim, int tag)
+        {
+            var dict = new Dictionary<int, int>();
+            var data = Gmsh.Model.Mesh.GetNodes(dim, tag, false, false);
+            for (var i = 0; i < data.Item1.Length; ++i)
+            {
+                var stride = i * 3;
+                var number = (int)data.Item1[i];
+                var idPoint = Gmsh.Model.Occ.AddPoint(data.Item2[stride], data.Item2[stride + 1], data.Item2[stride + 2] , 0, number);
+                dict.Add(number, idPoint);
+            }
+            return dict;
+        }
+
+        private int GetLine(Dictionary<string, int> lines, Dictionary<int, int> points, int point0Index, int point1Index)
+        {
+            var p0 = points[point0Index];
+            var p1 = points[point1Index];
+            var lineId = 0;
+            var key = $"{p0} {p1}";
+            var altKey = $"{p1} {p0}";
+            if (lines.ContainsKey(key))
+                lineId = lines[key];
+            else if (lines.ContainsKey(altKey))
+                lineId = -lines[altKey];
+            else
+            {
+                lineId = Gmsh.Model.Occ.AddLine(p0, p1);
+                lines.Add(key, lineId);
+            }
+            return lineId;
         }
 
         private IElement CreateModelObject(ref string elementName,
