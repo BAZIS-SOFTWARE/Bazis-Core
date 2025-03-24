@@ -146,9 +146,11 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
             ISurfaceObjsVertexCreator<T,U> vertexCreator;
 
             if (vertexType == "цвет")
-                vertexCreator = new ColorSurfaceObjsCreator<T,U>();
+                vertexCreator = new ColorSurfaceObjsCreator<T, U>();
             else if (vertexType == "координаты")
                 vertexCreator = new CoordsSurfaceObjsCreator<T, U>();
+            else if (vertexType == "разметка")
+                vertexCreator = new LayoutSurfaceObjsCreator<T, U>();
             else vertexCreator = new NormalsSurfaceObjsCreator<T, U>();
 
             foreach (var surfaceElement in surfaceObjects)

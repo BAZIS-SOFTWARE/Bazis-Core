@@ -80,6 +80,8 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
                 vertexCreator = new ColorPointObjsCreator();
             else if (vertexType == "координаты")
                 vertexCreator = new CoordsPointObjsCreator();
+            else if (vertexType == "разметка")
+                vertexCreator = new LayoutPointObjsCreator();
             else vertexCreator = new NormalsPointObjsCreator();
 
 
