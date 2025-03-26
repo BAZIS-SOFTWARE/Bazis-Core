@@ -1,11 +1,12 @@
-﻿using Model.GeometryObjects;
+﻿using GmshApi;
+using Model.GeometryObjects;
 using Model.Interfaces;
 using Model.Interfaces.MeshObjects;
 using Model.MeshObjects;
 using System;
 using System.Collections.Generic;
 
-namespace GmshApi
+namespace ModelController.GmshController
 {
 
     /// <summary>

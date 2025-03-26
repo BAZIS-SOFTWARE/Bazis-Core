@@ -9,7 +9,7 @@ using System.Numerics;
 
 namespace ModelController.MeshObjsCreator
 {
-    public abstract class BeamGroupConnection : IBeamGroupConnection
+    public abstract class BeamGroupConnection
     {
         protected double searchRadius;
         protected int maxIncidentBeams;

@@ -1,8 +1,5 @@
-﻿using MathNet.Numerics.Integration;
-using System;
-using System.Globalization;
+﻿using System;
 using System.Runtime.InteropServices;
-using System.Security.Cryptography;
 using static GmshApi.GmshKernel;
 
 

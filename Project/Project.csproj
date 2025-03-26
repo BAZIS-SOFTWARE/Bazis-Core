@@ -4,7 +4,7 @@
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
 	  <SignAssembly>True</SignAssembly>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>4.4.3</Version>
+    <Version>4.4.4</Version>
     <Title>Project</Title>
     <Authors>Bilenko Georgy</Authors>
     <Company>BAZIS SOFTWARE</Company>
@@ -22,10 +22,11 @@
     <PackageOutputPath>c:\BazisComponents\IntPackages_v2\$(Configuration)</PackageOutputPath>
   </PropertyGroup>
 
-  <!--Копирование собранного пакета в необходимую папку
+  <!--Копирование собранного пакета в необходимую папку-->
   <Target Name="CopyPackage" AfterTargets="Pack">
-    <Copy SourceFiles="$(PackageOutputPath)\$(PackageId).$(PackageVersion).nupkg" DestinationFolder="\\fs\Plm-Ural\OrgUnits\developers\Packages\Core\$(Configuration)" />
-  </Target>-->
+    <Copy SourceFiles="$(PackageOutputPath)\$(PackageId).$(PackageVersion).nupkg" 
+          DestinationFolder="\\fs\Plm-Ural\OrgUnits\developers\Packages\Core\$(Configuration)" />
+  </Target>
 
 	<ItemGroup>
     <EmbeddedResource Remove="TasksData\**" />
