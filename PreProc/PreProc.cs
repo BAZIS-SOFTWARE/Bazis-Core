@@ -419,7 +419,7 @@ namespace PreProc
 
             var available = string.Join("|", res).ToString();
             var pattern = "^((" + available + ")_" +
-                "(([1-9]{1,})|(\\*))_" +
+                "(([1-9])(\\d)*)_" +
                 "((\\d{1,})|((\\d{1,}).(\\d{1,5}))|\\*)_" +
                 "((\\d{1,})|((\\d{1,}).(\\d{1,5}))|\\*)" +
                 "(.tsf))$";
