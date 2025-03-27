@@ -216,6 +216,56 @@ namespace TestProject
         }
 
         [TestMethod]
+        [DataRow(new string[]
+        {
+            "mat/Элементы3D_3 Сталь_20ХМ 0 1500 *",
+            "media/air Коэф.теплоотдачи.воздух 20 0 1500 *",
+            "media/air Коэф.теплоотдачи.воздух 20 0 3 *",
+            "media/air Коэф.теплоотдачи.воздух 20 103 106 *",
+            "media/air Коэф.теплоотдачи.воздух 20 206 209 *",
+            "clamp/Узел_8 Жесткое X * 0 1500 *"
+        })]
+        [DataRow(new string[]
+        {
+            "mat/Элементы3D_3 Сталь_20ХМ 0 1500 *",
+            "media/air Коэф.теплоотдачи.воздух 20 0 1500 *",
+            "media/air Коэф.теплоотдачи.воздух 20 0 3 *",
+            "media/air Коэф.теплоотдачи.воздух 20 103 106 *",
+            "media/air Коэф.теплоотдачи.воздух 20 206 209 *",
+            "clamp/Узел_8 Жесткое X * 0 1500 *",
+            "clamp/Узел_8 Жесткое X * 0 3 *",
+            "clamp/Узел_8 Жесткое X * 103 106 *",
+            "clamp/Узел_8 Жесткое X * 206 209 *",
+        })]
+        [DataRow(new string[]
+        {
+            "mat/Элементы3D_3 Сталь_20ХМ 0 100 *",
+            "media/air Коэф.теплоотдачи.воздух 20 0 100 *",
+            "media/air Коэф.теплоотдачи.воздух 20 0 5 *",
+            "media/air Коэф.теплоотдачи.воздух 20 15 20 *",
+            "media/air Коэф.теплоотдачи.воздух 20 25 30 *",
+            "clamp/Узел_8 Жесткое X * 0 100 *"
+        })]
+        [DataRow(new string[]
+        {
+            "mat/Элементы3D_3 Сталь_20ХМ 0 100 *",
+            "media/air Коэф.теплоотдачи.воздух 20 0 100 *",
+            "media/air Коэф.теплоотдачи.воздух 20 0 5 *",
+            "media/air Коэф.теплоотдачи.воздух 20 15 20 *",
+            "media/air Коэф.теплоотдачи.воздух 20 25 30 *",
+            "clamp/Узел_8 Жесткое X * 0 100 *",
+            "clamp/Узел_8 Жесткое X * 0 5 *",
+            "clamp/Узел_8 Жесткое X * 15 20 *",
+            "clamp/Узел_8 Жесткое X * 25 30 *",
+        })]
+        public void CalcCompData_ShouldPass_WhenMainBoundDataBoundsMinors(string[] parameters)
+        {
+            var preProc = new PreProc.PreProc();
+            preProc.CalcCompDataV1(CreateValuableData(parameters).ToList(), ProcessType.Welding, projPath + "TsfFolder\\");
+            preProc.CalcCompDataV2(CreateValuableData(parameters).ToList(), new ProcessProperty { GeneralTaskType = ComplexTaskType.термическая_механическая, CommonTaskType = ProcessType.Welding }, projPath);
+        }
+
+        [TestMethod]
         [DataRow(0, 120, 1, 1500, 0)]
         [DataRow(0, 50.0001f, 50.001f, 100, 0)]
         public void CalcCompData_Fails_WhenHeatDataStartEarlierThenMedDataStop
