@@ -323,7 +323,9 @@ namespace PreProc
             {
                 for (var i = 1; i < boundData.Count; i++)
                 {
-                    if (boundData[i - 1].StopTime < boundData[i].StartTime)
+
+                    if (boundData[i - 1].StopTime < boundData[i].StartTime
+                        && !boundData.Any(x => x.StartTime < boundData[i - 1].StopTime && x.StopTime > boundData[i].StartTime))
                         throw new Exception($"Неопределенность: между {typeof(BoundData)} есть пустые промежутки");
                 }
             }
