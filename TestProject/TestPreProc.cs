@@ -150,6 +150,26 @@ namespace TestProject
             "механическая путь\\механическая_3_20.12732_21.12732.tsf выполнить"
         }
         )]
+        [DataRow(
+            new string[]
+        {
+            "путь\\механическая_10_0.001_0.12732.tsf",
+            "путь\\механическая_20_0.12732_20.12732.tsf",
+            "путь\\механическая_30_20.12732_21.12732.tsf",
+            "путь\\термическая_10_0.001_0.12732.tsf",
+            "путь\\термическая_20_0.12732_20.12732.tsf",
+            "путь\\термическая_30_20.12732_21.12732.tsf"
+        },
+                        new string[]
+        {
+            "термическая путь\\термическая_10_0.001_0.12732.tsf выполнить",
+            "механическая путь\\механическая_10_0.001_0.12732.tsf выполнить",
+            "термическая путь\\термическая_20_0.12732_20.12732.tsf выполнить",
+            "механическая путь\\механическая_20_0.12732_20.12732.tsf выполнить",
+            "термическая путь\\термическая_30_20.12732_21.12732.tsf выполнить",
+            "механическая путь\\механическая_30_20.12732_21.12732.tsf выполнить"
+        }
+        )]
         public void SortingByTimeAndTypeCheck(string[] strsIn, string[]strsOut)
         {
             var preProc = new PreProc.PreProc();
@@ -189,6 +209,56 @@ namespace TestProject
             "clamp/Узел_8 Жесткое X * 0 1500 *"
         })]
         public void BaseCheck(string[] parameters)
+        {
+            var preProc = new PreProc.PreProc();
+            preProc.CalcCompDataV1(CreateValuableData(parameters).ToList(), ProcessType.Welding, projPath + "TsfFolder\\");
+            preProc.CalcCompDataV2(CreateValuableData(parameters).ToList(), new ProcessProperty { GeneralTaskType = ComplexTaskType.термическая_механическая, CommonTaskType = ProcessType.Welding }, projPath);
+        }
+
+        [TestMethod]
+        [DataRow(new string[]
+        {
+            "mat/Элементы3D_3 Сталь_20ХМ 0 1500 *",
+            "media/air Коэф.теплоотдачи.воздух 20 0 1500 *",
+            "media/air Коэф.теплоотдачи.воздух 20 0 3 *",
+            "media/air Коэф.теплоотдачи.воздух 20 103 106 *",
+            "media/air Коэф.теплоотдачи.воздух 20 206 209 *",
+            "clamp/Узел_8 Жесткое X * 0 1500 *"
+        })]
+        [DataRow(new string[]
+        {
+            "mat/Элементы3D_3 Сталь_20ХМ 0 1500 *",
+            "media/air Коэф.теплоотдачи.воздух 20 0 1500 *",
+            "media/air Коэф.теплоотдачи.воздух 20 0 3 *",
+            "media/air Коэф.теплоотдачи.воздух 20 103 106 *",
+            "media/air Коэф.теплоотдачи.воздух 20 206 209 *",
+            "clamp/Узел_8 Жесткое X * 0 1500 *",
+            "clamp/Узел_8 Жесткое X * 0 3 *",
+            "clamp/Узел_8 Жесткое X * 103 106 *",
+            "clamp/Узел_8 Жесткое X * 206 209 *",
+        })]
+        [DataRow(new string[]
+        {
+            "mat/Элементы3D_3 Сталь_20ХМ 0 100 *",
+            "media/air Коэф.теплоотдачи.воздух 20 0 100 *",
+            "media/air Коэф.теплоотдачи.воздух 20 0 5 *",
+            "media/air Коэф.теплоотдачи.воздух 20 15 20 *",
+            "media/air Коэф.теплоотдачи.воздух 20 25 30 *",
+            "clamp/Узел_8 Жесткое X * 0 100 *"
+        })]
+        [DataRow(new string[]
+        {
+            "mat/Элементы3D_3 Сталь_20ХМ 0 100 *",
+            "media/air Коэф.теплоотдачи.воздух 20 0 100 *",
+            "media/air Коэф.теплоотдачи.воздух 20 0 5 *",
+            "media/air Коэф.теплоотдачи.воздух 20 15 20 *",
+            "media/air Коэф.теплоотдачи.воздух 20 25 30 *",
+            "clamp/Узел_8 Жесткое X * 0 100 *",
+            "clamp/Узел_8 Жесткое X * 0 5 *",
+            "clamp/Узел_8 Жесткое X * 15 20 *",
+            "clamp/Узел_8 Жесткое X * 25 30 *",
+        })]
+        public void CalcCompData_ShouldPass_WhenMainBoundDataBoundsMinors(string[] parameters)
         {
             var preProc = new PreProc.PreProc();
             preProc.CalcCompDataV1(CreateValuableData(parameters).ToList(), ProcessType.Welding, projPath + "TsfFolder\\");
