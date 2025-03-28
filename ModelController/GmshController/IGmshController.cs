@@ -93,18 +93,9 @@ namespace ModelController.GmshController
         /// <returns>Список SurfaceFigure</returns>
         List<SurfaceFigure> GetSurfaceFigures();
         /// <summary>
-        /// Создать CAD геометрию из сетки
+        /// Объединяет сетки, убирая пересекающиеся части
         /// </summary>
-        /// <param name="meshPath">Путь до файла с сеткой</param>
-        /// <param name="resultCadPath">Путь до CAD файла при необходимости</param>
-        void CreateCadFromMesh(string meshPath, string resultCadPath = "");
-        /// <summary>
-        /// Объединяет две сетки, убирая пересекающиеся части
-        /// </summary>
-        /// <param name="meshFirstPath">Путь до файла первой сетки</param>
-        /// <param name="meshSecondPath">Путь до файла второй сетки</param>
-        /// <param name="resultMeshPath">Путь до файла с результирующей сеткой (если нужна)</param>
-        /// <param name="resultCadPath">Путь до файла CAD (если нужен)</param>
-        void MergeTwoMeshes(string meshFirstPath, string meshSecondPath, string resultMeshPath = "", string resultCadPath = "");
+        /// <param name="meshFiles">Перечисление путей до файлов с сеткой</param>
+        void MergeTwoMeshes(IEnumerable<string> meshFiles);
     }
 }

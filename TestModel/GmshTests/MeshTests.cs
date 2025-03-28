@@ -616,23 +616,15 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow(@"\STL\sphere2.stl", ""/*@"D:\sphere.step"*/)]
-        [DataRow(@"\STL\cube2.stl", ""/*@"D:\cube.step"*/)]
-        public void CadFromStlTest(string fileName, string savePath)
+        [DataRow(@"\STL\sphere2.stl", @"\STL\cube2.stl")]
+        public void MergeTwoStlTest(string first, string second)
         {
-            controller.CreateCadFromMesh(modelFolder + fileName, savePath);
+            var meshFiles = new string[] { modelFolder + first, modelFolder + second };
+            controller.MergeTwoMeshes(meshFiles);
+            controller.Gmsh.Model.Mesh.Generate(2);
             var error = controller.Gmsh.Logger.GetLastError();
             Assert.IsTrue(string.IsNullOrEmpty(error));
-        }
-
-
-        [DataTestMethod]
-        [DataRow(@"\STL\sphere2.stl", @"\STL\cube2.stl", "", ""/*@"D:\merged.stl", @"D:\merged.step"*/)]
-        public void MergeTwoStlTest(string first, string second, string mergedStl, string mergedStep)
-        {
-            controller.MergeTwoMeshes(modelFolder + first, modelFolder + second, mergedStl, mergedStep);
-            var error = controller.Gmsh.Logger.GetLastError();
-            Assert.IsTrue(string.IsNullOrEmpty(error));
+            controller.Gmsh.Write(@"\..\..\..\..\Mesh\mergeResult.stl");
         }
 
         private void MakeTranfinite(int seamPointCurves, int[] seamCurves, int[] seamVolumes)
