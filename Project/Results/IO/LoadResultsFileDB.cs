@@ -72,7 +72,7 @@ namespace Project.Results.IO
                 var newResult = new Result(time, taskKind);
                 foreach (var table in tables)
                 {
-                    LoadEvent?.Invoke(this, new LoadEventArgs($"Загрузка результатов из таблицы {table}"));
+                    LoadEvent?.Invoke(this, new LoadEventArgs($"Загрузка результатов из таблицы {table} время {time}"));
                     var dataTable = db.GetResults($"{table}", "*", $" WHERE Time = {time}");
 
                     if (dataTable == null)
