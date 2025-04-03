@@ -83,8 +83,6 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
                 vertexCreator = new ColorLineObjsCreator<T>();
             else if (vertexType == "координаты")
                 vertexCreator = new CoordsLineObjsCreator<T>();
-            else if (vertexType == "разметка")
-                vertexCreator = new LayoutLineObjsCreator<T>();
             else vertexCreator = new NormalsLineObjsCreator<T>();
 
             foreach (var lineObject in lineObjects)
