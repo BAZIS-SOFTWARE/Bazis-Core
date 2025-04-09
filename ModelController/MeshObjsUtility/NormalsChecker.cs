@@ -19,22 +19,23 @@ namespace ModelController.MeshObjsUtility
     {
         private class ElementData
         {
-            public List<Point3D> SurfaceNormals { get; set; }
-            public List<Point3D> SurfacePoints { get; set; }
-            public List<Point3D> SurfaceEdges { get; set; }
-            public Point3D Center { get; set; }
+            public readonly List<Point3D> surfaceNormals;
+            public readonly List<Point3D> surfacePoints;
+            public readonly List<Point3D> surfaceEdges;
+            public Point3D center;
 
             public ElementData()
             {
-                SurfaceNormals = new List<Point3D>();
-                SurfacePoints = new List<Point3D>();
-                SurfaceEdges = new List<Point3D>();
+                surfaceNormals = new List<Point3D>();
+                surfacePoints = new List<Point3D>();
+                surfaceEdges = new List<Point3D>();
 
-                Center = new Point3D();
+                center = new Point3D();
             }
         }
 
-        private StreamWriter LogWriter { get; set; }
+        private StreamWriter logWriter;
+        private StringBuilder logStorage;
 
         private SurfaceObjsPresenter<ElementSurface, Node> Presenter { get; set; }
         /// <summary>
@@ -71,13 +72,17 @@ namespace ModelController.MeshObjsUtility
             var normals = Presenter.CreateVertexes(inds.Item2, "нормаль");
             var separators = Presenter.CreateSeparators();
 
-            LogWriter = string.IsNullOrEmpty(Log) ? null : new StreamWriter(Log);
+            if (!string.IsNullOrEmpty(Log))
+            {
+                logWriter = new StreamWriter(Log);
+                logStorage = new StringBuilder(100);
+            }
             for (var i = 1; i < separators.Length; ++i)
             {
                 var elData = GetElementData(separators[i - 1], separators[i], coords, normals);
                 CheckElement(elData, i - 1);
             }
-            LogWriter?.Close();
+            logWriter?.Close();
         }
         /// <summary>
         /// Определить тип элемента по количеству треугольников
@@ -110,9 +115,9 @@ namespace ModelController.MeshObjsUtility
 
             var triangleCount = end - start;
 
-            var points = elementData.SurfacePoints;
-            var normals = elementData.SurfaceNormals;
-            var edges = elementData.SurfaceEdges;
+            var points = elementData.surfacePoints;
+            var normals = elementData.surfaceNormals;
+            var edges = elementData.surfaceEdges;
 
             for (var i = 0; i < triangleCount; ++i)
             {
@@ -121,7 +126,7 @@ namespace ModelController.MeshObjsUtility
                     var stride = (start + i) * 9 + j;
 
                     var point = new Point3D(rawCoords[stride], rawCoords[stride + 1], rawCoords[stride + 2]);
-                    elementData.Center = elementData.Center.Sum(point);
+                    elementData.center = elementData.center.Sum(point);
                     if (j == 0)
                     {
                         points.Add(point);
@@ -135,22 +140,22 @@ namespace ModelController.MeshObjsUtility
                 }
             }
             var scale = 1f / (triangleCount * 3);
-            elementData.Center = elementData.Center.Mult(scale);
+            elementData.center = elementData.center.Mult(scale);
             return elementData;
         }
 
         private void CheckElement(ElementData elData, int index)
         {
-            var triangles = elData.SurfaceNormals.Count;
+            var triangles = elData.surfaceNormals.Count;
             WriteElementKind(triangles, index);
 
             for (var i = 0; i < triangles; ++i)
             {
-                var edge = Vector.GetVectorNorm(elData.SurfaceEdges[i]);
-                var normal = Vector.GetVectorNorm(elData.SurfaceNormals[i]);
+                var edge = Vector.GetVectorNorm(elData.surfaceEdges[i]);
+                var normal = Vector.GetVectorNorm(elData.surfaceNormals[i]);
                 var length = Vector.GetVectorLenght(normal);
 
-                var reference = elData.SurfacePoints[i].Sub(elData.Center);
+                var reference = elData.surfacePoints[i].Sub(elData.center);
                 reference = Vector.GetVectorNorm(reference);
 
                 var dpEdge = Vector.DotProd(edge, normal);
@@ -162,28 +167,32 @@ namespace ModelController.MeshObjsUtility
 
                 WriteNormalInfo(i, length, dpEdge, dpRef);
             }
-            LogWriter?.WriteLine();
+            logWriter?.WriteLine();
         }
 
         private void WriteElementKind(int triangles, int index)
         {
-            if (LogWriter != null)
+            if (logWriter != null)
             {
                 var elemKind = IdentifyByTriangles(triangles);
-                LogWriter.WriteLine($"{elemKind.ToString()} {index}");
+                logWriter.WriteLine($"{elemKind.ToString()} {index}");
             }
         }
 
         private void WriteNormalInfo(int index, float length, float dpEdge, float dpRef)
         {
-            if (LogWriter != null)
+            if (logWriter != null)
             {
-                var message = length < 1e-6f ? "(Имеет нулевую длину) " : "";
-                message += dpEdge > 1e-4f ? "(Не перпендикулярна плоскости) " : "";
-                message += dpRef < 0 ? "(Инвертирована) " : "";
-
-                message = string.IsNullOrEmpty(message) ? "Корректна" : message;
-                LogWriter.WriteLine($"Нормаль поверхности {index}: {message}");
+                if (length < 1e-6f)
+                    logStorage.Append("(Имеет нулевую длину) ");
+                if (dpEdge > 1e-4f)
+                    logStorage.Append("(Не перпендикулярна плоскости) ");
+                if (dpRef < 0)
+                    logStorage.Append("(Инвертирована) ");
+                if (logStorage.Length == 0)
+                    logStorage.Append("Корректна");
+                logWriter.WriteLine($"Нормаль поверхности {index}: { logStorage.ToString() }");
+                logStorage.Clear();
             }
         }
     }

@@ -417,7 +417,6 @@ namespace TestModel
                     model.Loader = new LoadModelFromASCIITextFile();
                 else if (ext == ".cdb")
                     model.Loader = new LoadModelFromCDBTextFile();
-                model.Loader.LoadEvent += (ar1, ar2) => { };
                 model.Load(path);
             }
 
@@ -447,7 +446,6 @@ namespace TestModel
             var model = new ModelData();
 
             model.Loader = new LoadModelFromBPFTextFile();
-            model.Loader.LoadEvent += (ar1, ar2) => { };
             model.Load(fileName);
 
             var surfPresenter = new SurfaceObjsPresenter<ElementSurface, Node>(isVolume);
