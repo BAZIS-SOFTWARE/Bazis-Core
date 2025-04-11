@@ -68,13 +68,13 @@ namespace Model.MeshObjects
             //if(masterSurface == null)
             //    masterSurface = GetMasterSurface(3, surfaces);
             //this.nodes = SortNodes(masterSurface.Number, surfaces);
-
-            surfaces.Add(new ElementSurface(number, 0, new Node[] { nodes[0], nodes[1], nodes[2], nodes[3] }));
-            surfaces.Add(new ElementSurface(number, 1, new Node[] { nodes[4], nodes[7], nodes[6], nodes[5] }));
-            surfaces.Add(new ElementSurface(number, 2, new Node[] { nodes[0], nodes[4], nodes[5], nodes[1] }));
-            surfaces.Add(new ElementSurface(number, 3, new Node[] { nodes[7], nodes[3], nodes[2], nodes[6] }));
-            surfaces.Add(new ElementSurface(number, 4, new Node[] { nodes[1], nodes[5], nodes[6], nodes[2] }));
-            surfaces.Add(new ElementSurface(number, 5, new Node[] { nodes[7], nodes[4], nodes[0], nodes[3] }));
+            //Точки те же, но перечислены в обратном направлениии
+            surfaces.Add(new ElementSurface(number, 0, new Node[] { nodes[3], nodes[2], nodes[1], nodes[0] }));
+            surfaces.Add(new ElementSurface(number, 1, new Node[] { nodes[5], nodes[6], nodes[7], nodes[4] }));
+            surfaces.Add(new ElementSurface(number, 2, new Node[] { nodes[1], nodes[5], nodes[4], nodes[0] }));
+            surfaces.Add(new ElementSurface(number, 3, new Node[] { nodes[6], nodes[2], nodes[3], nodes[7] }));
+            surfaces.Add(new ElementSurface(number, 4, new Node[] { nodes[2], nodes[6], nodes[5], nodes[1] }));
+            surfaces.Add(new ElementSurface(number, 5, new Node[] { nodes[3], nodes[0], nodes[4], nodes[7] }));
 
             Level = 1;
         }

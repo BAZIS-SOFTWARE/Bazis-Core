@@ -27,7 +27,7 @@
  <Copy SourceFiles="$(PackageOutputPath)\$(PackageId).$(PackageVersion).nupkg" DestinationFolder="\\fs\Plm-Ural\OrgUnits\developers\Packages\Core\$(Configuration)" />
  </Target>-->
 
-  <ItemGroup>
+	<ItemGroup>
     <Compile Remove="Interfaces\GeometryObjects\**" />
     <EmbeddedResource Remove="Interfaces\GeometryObjects\**" />
     <None Remove="Interfaces\GeometryObjects\**" />
