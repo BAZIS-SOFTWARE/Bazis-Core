@@ -534,5 +534,28 @@ namespace TestProject
             }
         }
 
+
+        [TestMethod]
+        public void UpdateHeatData()
+        {
+            //assign
+            var proj = new ProjectData();
+            proj.ModelData = new ModelData();
+            proj.TaskData = new TaskData();
+
+            //act
+            proj.Load(@"..\..\..\Examples\proj.bpf");
+
+            var selectedData = proj.TaskData.First(x => x.Name == "Нагрев");
+
+            var data = selectedData.GetInfo;
+
+            var heat = selectedData as HeatData;
+            
+            heat.SetInfo("ARC;4;100;25 Load 0 10 baseLine|refLine;10;startNodes;startNodes;0|0|0|0");
+
+            selectedData = heat as IData;
+            data = selectedData.GetInfo;
+        }
     }
 }
