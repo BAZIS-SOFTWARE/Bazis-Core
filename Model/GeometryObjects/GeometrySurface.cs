@@ -54,8 +54,10 @@ namespace Model.GeometryObjects
         /// <inheritdoc/>
 
         public int NumberOfPoints { get { return points.Length; } }
+/// <inheritdoc/>
 
         public bool ViewState { get; set; } = true;
+/// <inheritdoc/>
 
         public int Number { get; }
 

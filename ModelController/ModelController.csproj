@@ -54,5 +54,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Interfaces\GmshController\" />
+    <Folder Include="GeomObjsCreator\" />
   </ItemGroup>
 </Project>
