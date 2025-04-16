@@ -27,7 +27,7 @@ namespace TestProject
         {
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
         }
- 
+
 
         [TestMethod]
         [DataRow(@"\LWTest.bpf", DisplayName = "LW")]
@@ -472,7 +472,7 @@ namespace TestProject
             var resultList = setup.Item2;
 
             Assert.IsTrue(expectedElements.Count == resultList.Count);
-            for(var i = 0; i < expectedElements.Count; i++)
+            for (var i = 0; i < expectedElements.Count; i++)
             {
                 Assert.AreEqual(expectedElements.ToString(), resultList.ToString());
                 for (var j = 0; j < 4; j++)
@@ -515,7 +515,7 @@ namespace TestProject
 
         private (List<IElement>, List<IElement>) SetUpTest(float[] input, float[] expected)
         {
-            var heatData = new HeatData(new Group("",ObjType.Элемент3D), "ARC;10;100;25 Load 0 49 baseLine|refLine;5;startNodes;startNodes");
+            var heatData = new HeatData(new Group("", ObjType.Элемент3D), "ARC;10;100;25 Load 0 49 baseLine|refLine;5;startNodes;startNodes");
 
             var baseLine = new Group("base", ObjType.Узел);
             var refLine = new Group("ref", ObjType.Узел);
@@ -600,6 +600,43 @@ namespace TestProject
             Assert.IsTrue(mff.IsOverlappingSelf(velocity));
         }
 
+        [TestMethod]
+        [DataRow(new[] { 15f, 15f, 15f }, "inside", DisplayName = "central point")]
+        [DataRow(new[] { 14.7f, 13.7f, 15f }, "inside", DisplayName = "point in head ellipse, inside")]
+        [DataRow(new[] { 12f, 19f, 14f }, "inside", DisplayName = "point in head ellipse, inside")]
+        [DataRow(new[] { 2.8f, 15f, 14.6f }, "outside", DisplayName = "point in head ellipse, outside")]
+        [DataRow(new[] { 10f, 19f, 13f }, "outside", DisplayName = "point in head ellipse, outside")]
+        [DataRow(new[] { 15.3f, 0.4f, 15f }, "inside", DisplayName = "point in back ellipse, inside")]
+        [DataRow(new[] { 12f, 3f, 14f }, "inside", DisplayName = "point in back ellipse, inside")]
+        [DataRow(new[] { 15f, 3.8f, 10f }, "outside", DisplayName = "point in back ellipse, outside")]
+        [DataRow(new[] { 10f, 5f, 5f }, "outside", DisplayName = "point in back ellipse, outside")]
+        public void DoubleEllipsIsPointInside(float[] checkPoint, string location)
+        {
+            var doubleEllips = new DoubleEllips();
+            doubleEllips.Width = 14;
+            doubleEllips.Depth = 5;
+            doubleEllips.FrontPart = 5;
+            doubleEllips.BackPart = 15;
 
+            var frame = new Frame(new Point3D(20f, 15f, 15f), new Point3D(15f, 20f, 15f), new Point3D(15f, 15f, 20f), new Point3D(15f, 15f, 15f));
+            var point = new Point3D(checkPoint[0], checkPoint[1], checkPoint[2]);
+
+            if (location == "inside")
+                Assert.IsTrue(doubleEllips.IsPointInside(frame, point));
+            else
+                Assert.IsFalse(doubleEllips.IsPointInside(frame, point));
+        }
+
+        [TestMethod]
+        [DataRow(2, 5, 10)]
+        [DataRow(7.5f, 5, 10)]      
+        public void IsOverlappingSelfEllips_ShouldPass_WhenOverlap(float velocity, float frontPart, float backPart)
+        {
+            var doubleEllips = new DoubleEllips();
+            doubleEllips.FrontPart = frontPart;
+            doubleEllips.BackPart = backPart;
+            
+            Assert.IsTrue(doubleEllips.IsOverlappingSelf(velocity));
+        }
     }
 }

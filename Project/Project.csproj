@@ -24,8 +24,8 @@
 
   <!--Копирование собранного пакета в необходимую папку-->
   <Target Name="CopyPackage" AfterTargets="Pack">
-    <Copy SourceFiles="$(PackageOutputPath)\$(PackageId).$(PackageVersion).nupkg" 
-          DestinationFolder="\\fs\Plm-Ural\OrgUnits\developers\Packages\Core\$(Configuration)" />
+	  <Copy SourceFiles="$(PackageOutputPath)\$(PackageId).$(PackageVersion).nupkg"
+			DestinationFolder="\\fs\Plm-Ural\OrgUnits\developers\Packages\Core\$(Configuration)" />
   </Target>
 
 	<ItemGroup>
@@ -95,6 +95,7 @@
     <Compile Include="Tasks\Functions\Arc.cs" />
     <Compile Include="Tasks\Functions\ArcBuilder.cs" />
     <Compile Include="Tasks\Functions\CillindricalFunction.cs" />
+    <Compile Include="Tasks\Functions\DoubleEllips.cs" />
     <Compile Include="Tasks\Functions\FSWPin.cs" />
     <Compile Include="Tasks\Functions\FSWPinBuilder.cs" />
     <Compile Include="Tasks\Functions\FSWShoulder.cs" />
