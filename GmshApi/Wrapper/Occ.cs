@@ -7,6 +7,13 @@ namespace GmshApi
     /// <inheritdoc/>
     public class Occ
     {
+        private delegate int gmshModelOccAddBoxFun(double x, double y, double z, double dx, double dy, double dz, int tag, ref int ierr);
+        private gmshModelOccAddBoxFun gmshModelOccAddBox = GetFunction<gmshModelOccAddBoxFun>("gmshModelOccAddBox");
+
+        private delegate int gmshModelOccAddWedgeFun(double x, double y, double z, double dx, double dy, double dz, 
+                                                      int tag, double ltx, double[] zAxis, IntPtr zAxis_n, ref int ierr);
+        private gmshModelOccAddWedgeFun gmshModelOccAddWedge = GetFunction<gmshModelOccAddWedgeFun>("gmshModelOccAddWedge");
+
         private delegate void gmshModelOccRemoveFun(int[] dimTags, IntPtr dimTags_n, int recursive, ref int ierr);
         private gmshModelOccRemoveFun gmshModelOccRemove = GetFunction<gmshModelOccRemoveFun>("gmshModelOccRemove");
 
@@ -38,6 +45,42 @@ namespace GmshApi
         private delegate void gmshModelOccSynchronizeFun(ref int ierr);
         private gmshModelOccSynchronizeFun gmshModelOccSynchronize = GetFunction<gmshModelOccSynchronizeFun>("gmshModelOccSynchronize");
 
+        /// <summary>
+        /// Создает параллелепипед в геометрическом ядре OCC
+        /// </summary>
+        /// <param name="x">Координата x начала координат угла основания параллелепипеда</param>
+        /// <param name="y">Координата y начала координат угла основания параллелепипеда</param>
+        /// <param name="z">Координата z начала координат угла основания параллелепипеда</param>
+        /// <param name="dx">Размерность вдоль оси x</param>
+        /// <param name="dy">Размерность вдоль оси y</param>
+        /// <param name="dz">Размерность вдоль оси z</param>
+        /// <param name="tag">Желаемый идентификатор объема</param>
+        /// <returns>Идентификатор объема</returns>
+        public int AddBox(double x, double y, double z, double dx, double dy, double dz, int tag = -1)
+        {
+            var ierr = 0;
+            return gmshModelOccAddBox(x, y, z, dx, dy, dz, tag, ref ierr);
+        }
+        /// <summary>
+        /// Создает призму в геометрическом ядре OCC
+        /// </summary>
+        /// <param name="x">Координата x начала координат правильного угла основания призмы</param>
+        /// <param name="y">Координата y начала координат правильного угла основания призмы</param>
+        /// <param name="z">Координата z начала координат правильного угла основания призмы</param>
+        /// <param name="dx">Размерность вдоль оси x</param>
+        /// <param name="dy">Размерность вдоль оси y</param>
+        /// <param name="dz">Размерность вдоль оси z</param>
+        /// <param name="tag">Желаемый идентификатор объема</param>
+        /// <param name="ltx">Верхнее расширение вдоль оси x</param>
+        /// <param name="zAxis">Вектор оси z(опционально)</param>
+        /// <returns>Идентификатор объема</returns>
+        public int AddWedge(double x, double y, double z, double dx, double dy, double dz, 
+                            int tag = -1, double ltx = 0, double[] zAxis = null)
+        {
+            var ierr = 0;
+            zAxis = zAxis ?? new double[0];
+            return gmshModelOccAddWedge(x, y, z, dx, dy, dz, tag, ltx, zAxis, (IntPtr)zAxis.Length, ref ierr);
+        }
         /// <summary>
         /// Удалить пары dim:tag заданные массивом. Если пара dim:tag опирается на соcедей верхнего уровня, то удаление невозможно.
         /// </summary>
