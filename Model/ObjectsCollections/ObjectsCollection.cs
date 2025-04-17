@@ -9,6 +9,7 @@ using MathNet.Numerics;
 using System.Xml.Linq;
 using Model.Interfaces.ObjectsCollections;
 using Model.MeshObjects;
+using System.Collections.ObjectModel;
 
 namespace Model.ObjectsCollections
 {
@@ -43,9 +44,19 @@ namespace Model.ObjectsCollections
         {
             objects.Add(setName, new ObjectsSet<T>(setName));
         }
+/// <inheritdoc/>
 
         public void Add(ObjectsSet<T> set)
         {
+            if(objects.Count != 0)
+            {
+                var max = GetMaxNumber();
+                var min = set.Min(x => x.Key);
+
+                if (min <= max)
+                    throw new Exception("Минимальный номер в добавляемом наборе меньше или равен максимальному");
+            }
+
             objects.Add(set.Name, set);
         }
 
@@ -187,6 +198,32 @@ public bool ContainsName(string collName)
                 item.Value.ExistState = false;
 
             return objects.Remove(name);
+        }
+/// <inheritdoc/>
+
+        public void Append(IObjectsCollection<T> collection)
+        {
+            var shifting = 0;
+
+            if (objects.Count != 0)
+            {
+                var max = GetMaxNumber();
+                var min = collection.GetMinNumber();
+                if (min <= max)
+                    shifting = max + 1;
+            }
+            var counter = 0;
+            foreach (var set in collection)
+            {
+                var newSetName = $"append_{shifting + counter++}";
+                Add(newSetName);
+                foreach (var item in set.Value)
+                {
+                    var number = item.Value.Number + shifting;
+                    item.Value.SetNumber(number);
+                    objects[newSetName].Add(number,item.Value);
+                }
+            }
         }
     }
 }

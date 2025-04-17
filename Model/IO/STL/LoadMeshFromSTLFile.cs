@@ -13,9 +13,9 @@ using Model.MeshObjects;
 using Model.ObjectsCollections;
 using Model.Interfaces.ObjectsCollections;
 
-namespace Model.IO
+namespace Model.IO.STL
 {
-    public class LoadModelFromSTLFile : IModelLoader
+    public class LoadMeshFromSTLFile : IModelLoader
     {
         private Dictionary<Vector3, Node> map = new Dictionary<Vector3, Node>();
 
@@ -55,15 +55,15 @@ namespace Model.IO
 
             using (var reader = new StreamReader(path))
             {
-                var str = String.Empty;
+                var str = string.Empty;
 
                 LoadEvent?.Invoke(this, new LoaderEventArgs("Начало импорта STL модели"));
 
                 var solidCounter = 0;
                 while (!reader.EndOfStream)
                 {
-                    
 
+                    var set = new ObjectsSet<Element2D>($"newSolid_{solidCounter++}");
                     while (str != null && !str.Contains("endsolid"))
                     {
                         if (str != null && str.Contains("outer loop"))
@@ -75,7 +75,7 @@ namespace Model.IO
                             {
                                 try
                                 {
-                                    modelData.ObjectData.E2DCollection.Add(ObjType.Элемент2D.ToString(), new Triangle(counter++, nodes));
+                                    set.Add(counter++, new Triangle(counter++, nodes));
                                 }
                                 catch (Exception e)
                                 {
@@ -88,10 +88,7 @@ namespace Model.IO
                     }
                     str = reader.ReadLine();
 
-
-                    //var group = new Group($"newSolid_{solidCounter++}", ObjType.Фигура2D);
-                    //group.AddRange(surfaces);
-                    //modelData.GroupData.Add(group);
+                    modelData.ObjectData.E2DCollection.Add(set);
                 }
                 LoadEvent?.Invoke(this, new LoaderEventArgs("Модель загружена"));
             }
@@ -161,7 +158,7 @@ namespace Model.IO
                             var attrib = reader.ReadUInt16();
 
                             if (prevAtrib != -1)
-                                //if (attrib != prevAtrib && prevAtrib != -1)
+                            //if (attrib != prevAtrib && prevAtrib != -1)
                             {
                                 modelData.ObjectData.E2DCollection.
                                     Add(ObjType.Элемент2D.ToString(), new Triangle(counter++, nodes));

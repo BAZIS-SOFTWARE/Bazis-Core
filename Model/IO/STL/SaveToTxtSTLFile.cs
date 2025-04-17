@@ -1,13 +1,14 @@
 
-﻿using Geometry;
+using Geometry;
 using Model.Interfaces;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System;
 using Model.GeometryObjects;
+using System.Collections.Generic;
 
- namespace Model.IO
+namespace Model.IO.STL
 {
     public class SaveModelToBinarySTLFile : IModelSaver
     {
@@ -56,50 +57,62 @@ using Model.GeometryObjects;
                     {
                         attrib++;
                     }
-
                 }
-
-
-
-
             }
         }
     }
 
-    public class SaveModelToTxtSTLFile : IModelSaver
+    public class SaveToTxtSTLFile : IModelSaver
     {
+        /// <inheritdoc/>
         public event Action<object, ISaverEventArgs> SaveEvent;
+/// <inheritdoc/>
+
         public void Save(IModelData model, string path)
         {
             using (var writer = new StreamWriter(path))
             {
                 //сохранение координат узлов
                 var ver = Assembly.GetExecutingAssembly().GetName().Version;
-                writer.WriteLine("solid Версия " + $"{ver.Major}.{ver.Minor}.{ver.Build}"); // – Header
 
-                var objects = model.ObjectData.E2DCollection.GetObjects();
-
-                foreach (var item in objects)
-                    foreach (var surface in item.GetSurfaces())
+                foreach (var set in model.ObjectData.E2DCollection)
+                {
+                    writer.WriteLine($"solid {set.Key}"); // – Header
+                    foreach (var element in set.Value)
                     {
-                        var points = surface.GetCoordinates().ToArray();
-                        if (points.Length != 3)
-                            throw new StlFileWriteExeption("В STL файл можно сохранять только треугольники");
-
-                        Point3D norm = surface.CalcNormal();
-                        writer.WriteLine(string.Format(System.Globalization.CultureInfo.InvariantCulture, "   facet normal {0:R} {1:R} {2:R}",
-                            (float)norm._x, (float)norm._y, (float)norm._z));
-                        writer.WriteLine($"      outer loop");
-
-                        foreach (var point in points) // Vertex 1,2,3
-                        {
-                            writer.WriteLine(string.Format(System.Globalization.CultureInfo.InvariantCulture, "         vertex {0:R} {1:R} {2:R}",
-                                point._x, point._y, point._z));
-                        }
-                        writer.WriteLine($"      endloop");
-                        writer.WriteLine($"   endfacet");
+                        SaveSurfaces(writer, element.Value.GetSurfaces());
                     }
-                writer.WriteLine($"endsolid");
+                    writer.WriteLine($"endsolid");
+                }
+            }
+        }
+        /// <summary>
+        /// SaveSurfaces
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="writer"></param>
+        /// <param name="surfaces"></param>
+        /// <exception cref="StlFileWriteExeption"></exception>
+        public void SaveSurfaces<T>(StreamWriter writer, IEnumerable<ISurface<T>> surfaces) where T : IPoint
+        {
+            foreach (var surface in surfaces)
+            {
+                var points = surface.GetVertexes();
+                if (points.Count() != 3)
+                    throw new StlFileWriteExeption("В STL файл можно сохранять только треугольники");
+
+                Point3D norm = surface.CalcNormal();
+                writer.WriteLine(string.Format(System.Globalization.CultureInfo.InvariantCulture, "   facet normal {0:R} {1:R} {2:R}",
+                    norm._x, norm._y, norm._z));
+                writer.WriteLine($"      outer loop");
+
+                foreach (var point in points) // Vertex 1,2,3
+                {
+                    writer.WriteLine(string.Format(System.Globalization.CultureInfo.InvariantCulture, "         vertex {0:R} {1:R} {2:R}",
+                        point._x, point._y, point._z));
+                }
+                writer.WriteLine($"      endloop");
+                writer.WriteLine($"   endfacet");
             }
         }
     }
