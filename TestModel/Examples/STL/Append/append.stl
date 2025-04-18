@@ -84,7 +84,7 @@ solid newSolid_0
       endloop
    endfacet
 endsolid
-solid append_0
+solid append_1
    facet normal 0 0 -441
       outer loop
          vertex -5.33218575 14.8704691 5.735347

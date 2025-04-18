@@ -19,18 +19,9 @@ namespace Model.IO.STL
     {
         private Dictionary<Vector3, Node> map = new Dictionary<Vector3, Node>();
 
-        //private Node IsPointExisted(Vector3 p)
-        //{
-        //    //var key = new Vector3(p._x, p._y, p._z);
-        //    if (map.TryGetValue(p, out var mappedPoint))
-        //        return mappedPoint;
-
-        //    map[p] = new Geometry.Point3D(p.X,p.Y,p.Z);
-        //    return p;
-        //}
-
         public event Action<object, ILoaderEventArgs> LoadEvent;
-        private int counter = 0;
+        private int nodes_counter = 0;
+        private int elems_counter = 0;
 
         public IModelData Load(string path)
         {
@@ -52,7 +43,7 @@ namespace Model.IO.STL
         private IModelData LoadTxt(string path)
         {
             var modelData = new ModelData();
-
+            
             using (var reader = new StreamReader(path))
             {
                 var str = string.Empty;
@@ -66,7 +57,7 @@ namespace Model.IO.STL
                     var set = new ObjectsSet<Element2D>($"newSolid_{solidCounter++}");
                     while (str != null && !str.Contains("endsolid"))
                     {
-                        if (str != null && str.Contains("outer loop"))
+                        if (str.Contains("outer loop"))
                         {
                             str = reader.ReadLine()?.Trim();
                             var nodes = GetPoints(reader, str, modelData.ObjectData.NodesSet);
@@ -75,7 +66,8 @@ namespace Model.IO.STL
                             {
                                 try
                                 {
-                                    set.Add(counter++, new Triangle(counter++, nodes));
+                                    set.Add(elems_counter, new Triangle(elems_counter, nodes));
+                                    elems_counter++;
                                 }
                                 catch (Exception e)
                                 {
@@ -107,8 +99,8 @@ namespace Model.IO.STL
                     var y = float.Parse(lineData[1], NumberStyles.Float, CultureInfo.InvariantCulture);
                     var z = float.Parse(lineData[2], NumberStyles.Float, CultureInfo.InvariantCulture);
 
-                    var node = new Node(counter, new Point3D(x, y, z));
-                    counter++;
+                    var node = new Node(nodes_counter, new Point3D(x, y, z));
+                    nodes_counter++;
 
                     //points[i] = node;
                     if (map.TryGetValue(new Vector3(x, y, z), out var mappedPoint))
@@ -161,7 +153,7 @@ namespace Model.IO.STL
                             //if (attrib != prevAtrib && prevAtrib != -1)
                             {
                                 modelData.ObjectData.E2DCollection.
-                                    Add(ObjType.Элемент2D.ToString(), new Triangle(counter++, nodes));
+                                    Add(ObjType.Элемент2D.ToString(), new Triangle(elems_counter++, nodes));
                             }
 
                             prevAtrib = attrib;
@@ -205,7 +197,7 @@ namespace Model.IO.STL
             if (map.TryGetValue(new Vector3(x, y, z), out var mappedPoint))
                 return mappedPoint;
 
-            return new Node(counter++, new Point3D(x, y, z));
+            return new Node(nodes_counter++, new Point3D(x, y, z));
         }
 
     }

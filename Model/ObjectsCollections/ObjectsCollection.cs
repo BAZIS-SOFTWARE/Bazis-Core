@@ -212,10 +212,10 @@ public bool ContainsName(string collName)
                 if (min <= max)
                     shifting = max + 1;
             }
-            var counter = 0;
+
             foreach (var set in collection)
             {
-                var newSetName = $"append_{shifting + counter++}";
+                var newSetName = $"append_{objects.Count}";
                 Add(newSetName);
                 foreach (var item in set.Value)
                 {

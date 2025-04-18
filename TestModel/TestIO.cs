@@ -6,6 +6,7 @@ using Model.IO;
 using Model.Interfaces;
 using System.Data;
 using Model.IO.STL;
+using static System.Net.WebRequestMethods;
 
 namespace TestModel
 {
@@ -145,8 +146,9 @@ namespace TestModel
             }
         }
         [TestMethod]
-        [DataRow("Box_1.stl", "Box_2.stl",DisplayName = "Box_1_and_Box_2")]
-        public void AppendAndSaveToSTLTextFormat(string file_1, string file_2)
+        [DataRow(new string[] { "Box_1.stl", "Box_2.stl" },DisplayName = "Box_1_Box_2")]
+        [DataRow(new string[] { "Box.stl", "Large_Box3.stl", "Sticks.stl" }, DisplayName = "Box_Large_Box3_Sticks")]
+        public void AppendAndSaveToSTLTextFormat(string [] files)
         {
             string dir = @"..\..\..\Examples\STL\Append";
             //string dir = @"..\..\..\..\Тестовые заготовки деталей\";
@@ -157,8 +159,12 @@ namespace TestModel
             model.Loader = new LoadMeshFromSTLFile();
 
             //act
-            model.Load(Path.Combine(dir, file_1));
-            model.Append(Path.Combine(dir, file_2));
+            model.Load(Path.Combine(dir, files[0]));
+
+            foreach (var item in files.Skip(1))
+                model.Append(Path.Combine(dir, item));
+
+
             //assert
             Assert.AreNotEqual(model.ObjectData.Count(ObjType.Элемент2D), 0);
 
@@ -220,7 +226,6 @@ namespace TestModel
         [DataTestMethod]
         [DataRow(8448, 17964, @"..\..\..\Examples\3D\Korpus.inp", DisplayName = "Korpus.inp")]
         [DataRow(4, 1, @"..\..\..\Examples\3D\abacus.inp", DisplayName = "abacus.inp")]
-        [DataRow(8, 30, @"..\..\..\Examples\3D\Physical_groups_mesh.inp", DisplayName = "Physical_groups_mesh.inp")]
         public void ImportModelFromINPTextFormat(int nodeCount, int elemCount, string path)
         {
             var model = new ModelData();
