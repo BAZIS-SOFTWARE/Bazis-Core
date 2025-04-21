@@ -217,6 +217,8 @@ public bool ContainsName(string collName)
             {
                 var newSetName = $"append_{objects.Count}";
                 Add(newSetName);
+                objects[newSetName].SetColor(set.Value.Color);
+
                 foreach (var item in set.Value)
                 {
                     var number = item.Value.Number + shifting;

@@ -151,7 +151,6 @@ namespace TestModel
         public void AppendAndSaveToSTLTextFormat(string [] files)
         {
             string dir = @"..\..\..\Examples\STL\Append";
-            //string dir = @"..\..\..\..\Тестовые заготовки деталей\";
 
             //assing
             var model = new ModelData();
