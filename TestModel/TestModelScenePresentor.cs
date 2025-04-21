@@ -335,7 +335,7 @@ namespace TestModel
             var ext = Path.GetExtension(path);
 
             if(ext == ".stl")
-                model.Loader = new LoadMeshFromSTLFile();
+                model.Loader = new LoadFromSTLFile();
             else if(ext == ".ASC")
                 model.Loader = new LoadModelFromASCIITextFile();
             else if (ext == ".cdb")
@@ -413,7 +413,7 @@ namespace TestModel
             else
             {
                 if (ext == ".stl")
-                    model.Loader = new LoadMeshFromSTLFile();
+                    model.Loader = new LoadFromSTLFile();
                 else if (ext == ".ASC")
                     model.Loader = new LoadModelFromASCIITextFile();
                 else if (ext == ".cdb")

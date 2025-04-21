@@ -12,10 +12,11 @@ using Model.GroupsData;
 using Model.MeshObjects;
 using Model.ObjectsCollections;
 using Model.Interfaces.ObjectsCollections;
+using System.Drawing;
 
 namespace Model.IO.STL
 {
-    public class LoadMeshFromSTLFile : IModelLoader
+    public class LoadFromSTLFile : IModelLoader
     {
         private Dictionary<Vector3, Node> map = new Dictionary<Vector3, Node>();
 
@@ -51,10 +52,13 @@ namespace Model.IO.STL
                 LoadEvent?.Invoke(this, new LoaderEventArgs("Начало импорта STL модели"));
 
                 var solidCounter = 0;
+                var rnd = new Random();
+
                 while (!reader.EndOfStream)
                 {
-
                     var set = new ObjectsSet<Element2D>($"newSolid_{solidCounter++}");
+                    var color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
+                    set.SetColor(color);
                     while (str != null && !str.Contains("endsolid"))
                     {
                         if (str.Contains("outer loop"))

@@ -156,7 +156,7 @@ namespace TestModel
             //assing
             var model = new ModelData();
 
-            model.Loader = new LoadMeshFromSTLFile();
+            model.Loader = new LoadFromSTLFile();
 
             //act
             model.Load(Path.Combine(dir, files[0]));
@@ -198,7 +198,7 @@ namespace TestModel
             //assing
             var model = new ModelData();
 
-            model.Loader = new LoadMeshFromSTLFile();
+            model.Loader = new LoadFromSTLFile();
 
             //act
             model.Load(path);

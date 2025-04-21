@@ -424,7 +424,7 @@ namespace TestModel
         {
             //assign
             var modelData = new ModelData();
-            modelData.Loader = new LoadMeshFromSTLFile();
+            modelData.Loader = new LoadFromSTLFile();
             modelData.Load(filePath);
 
             var oldCoords = new List<Point3D>();
@@ -454,7 +454,7 @@ namespace TestModel
         {
             //assign
             var modelData = new ModelData();
-            modelData.Loader = new LoadMeshFromSTLFile();
+            modelData.Loader = new LoadFromSTLFile();
             modelData.Load(filePath);
 
             var oldCoords = new List<Point3D>();
