@@ -212,10 +212,11 @@ public bool ContainsName(string collName)
                 if (min <= max)
                     shifting = max + 1;
             }
+            var counter = objects.Count;
 
             foreach (var set in collection)
             {
-                var newSetName = $"append_{objects.Count}";
+                var newSetName = $"append_{counter++}";
                 Add(newSetName);
                 objects[newSetName].SetColor(set.Value.Color);
 
