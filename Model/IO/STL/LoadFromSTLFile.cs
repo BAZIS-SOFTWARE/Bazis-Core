@@ -103,8 +103,7 @@ namespace Model.IO.STL
                     var y = float.Parse(lineData[1], NumberStyles.Float, CultureInfo.InvariantCulture);
                     var z = float.Parse(lineData[2], NumberStyles.Float, CultureInfo.InvariantCulture);
 
-                    var node = new Node(nodes_counter, new Point3D(x, y, z));
-                    nodes_counter++;
+                    var node = new Node(nodes_counter++, new Point3D(x, y, z));
 
                     //points[i] = node;
                     if (map.TryGetValue(new Vector3(x, y, z), out var mappedPoint))
