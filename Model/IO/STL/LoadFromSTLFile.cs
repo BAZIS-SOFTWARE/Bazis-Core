@@ -57,8 +57,7 @@ namespace Model.IO.STL
                 while (!reader.EndOfStream)
                 {
                     var set = new ObjectsSet<Element2D>($"newSolid_{solidCounter++}");
-                    var color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
-                    set.SetColor(color);
+
                     while (str != null && !str.Contains("endsolid"))
                     {
                         if (str.Contains("outer loop"))
@@ -82,6 +81,8 @@ namespace Model.IO.STL
                         }
                         str = reader.ReadLine();
                     }
+                    var color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
+                    set.SetColor(color);
                     str = reader.ReadLine();
 
                     modelData.ObjectData.E2DCollection.Add(set);
