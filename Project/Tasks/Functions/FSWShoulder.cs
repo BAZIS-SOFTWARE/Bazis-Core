@@ -34,17 +34,17 @@ namespace Project.Tasks.Functions
  /// <inheritdoc/>
  
 
-        public float CalcPower(Frame frame, Point3D elementCenter)
+        public float CalcPower(Point3D elementCenter)
         {
             float r, r0, r1, r2;
 
-            if (IsPointInside(frame, elementCenter, out r, out r0, out r1, out r2))
+            if (IsPointInside(elementCenter, out r, out r0, out r1, out r2))
             {
                 var r3 = BottomDiam / 3; // shoulderLength;
                 var frictionForce = AxisForce * parameters[0].Value; // ;
                 var shearStress = frictionForce / (float)Math.PI * (r2 * r2 - r3 * r3);
        
-                var sholderVol = (1.0f / 3) * (float)Math.PI * Math.Abs(frame.Centre._z) * (r1 * r1 + r1 * r2 + r2 * r2); // объем усеченного конуса
+                var sholderVol = (1.0f / 3) * (float)Math.PI * Math.Abs(Frame.Centre._z) * (r1 * r1 + r1 * r2 + r2 * r2); // объем усеченного конуса
                 var sholderPower = shearStress * r * RotSpeed;
                 return sholderPower / sholderVol;
             }

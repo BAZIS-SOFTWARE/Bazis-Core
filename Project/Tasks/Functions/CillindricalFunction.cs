@@ -16,6 +16,8 @@ namespace Project.Tasks.Functions
         public float Length { get; internal set; }
         /// <inheritdoc/>
         public string Name { get; set; }
+        /// <inheritdoc/>
+        public Frame Frame { get; set; }
 
         /// <summary>
         /// IsPointInside
@@ -27,23 +29,23 @@ namespace Project.Tasks.Functions
         /// <param name="r1"></param>
         /// <param name="r2"></param>
         /// <returns></returns>
-        public bool IsPointInside(Frame frame, Point3D elementCenter, out float r, out float r0, out float r1, out float r2)
+        public bool IsPointInside(Point3D elementCenter, out float r, out float r0, out float r1, out float r2)
         {
             r = 0f;
             r0 = 0f;
             r1 = 0f;
             r2 = 0f;           
 
-            var hsPlane = new Plane(frame.X, frame.Centre, frame.Y);
+            var hsPlane = new Plane(Frame.X, Frame.Centre, Frame.Y);
             var res = hsPlane.PointPosition(elementCenter);
 
             if (res < 0 | res > Length)
                 return false;
 
-            var hsAxis = new Segment3D(frame.Centre, frame.Z);
+            var hsAxis = new Segment3D(Frame.Centre, Frame.Z);
             r = elementCenter.GetDistanceToLine(hsAxis);
 
-            var elDist = elementCenter.Sub(frame.Centre);
+            var elDist = elementCenter.Sub(Frame.Centre);
             var rad = Vector.GetVectorLenght(elDist);
 
             var zc = 0.0f;
@@ -58,12 +60,12 @@ namespace Project.Tasks.Functions
         }
         /// <inheritdoc/>
 
-        public List<T> GetIntersectedObjects<T>(Frame frame, List<T> elements) where T : IModelObject
+        public List<T> GetIntersectedObjects<T>(List<T> elements) where T : IModelObject
         {
             var insideElements = new List<T>();
 
             foreach (var element in elements)
-                if (IsPointInside(frame, element.CalcCentr(), out _, out _, out _, out _))
+                if (IsPointInside(element.CalcCentr(), out _, out _, out _, out _))
                     insideElements.Add(element);
 
             return insideElements;

@@ -11,10 +11,9 @@ namespace Project.Interfaces.Tasks
         /// <summary>
         /// CalcPower
         /// </summary>
-        /// <param name="frame"></param>
         /// <param name="elementCenter"></param>
         /// <returns></returns>
-        float CalcPower(Frame frame, Point3D elementCenter);
+        float CalcPower(Point3D elementCenter);
 
         /// <summary>
         /// CreateParameter

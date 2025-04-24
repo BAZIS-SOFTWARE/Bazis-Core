@@ -77,7 +77,7 @@ namespace Project.Tasks
         public override string GetInfo
         {
             get { return string.Format("{0} {1} {2} {3} {4} {5} {6}", 
-                Group.Name, ClampKind, Direction, ClampFunction, StartTime, StopTime,TrajectoryInfo); }
+                Group.Name, ClampKind, Direction, ClampFunction, StartTime, StopTime,"*"); }
         }
         /// <summary>
         /// ClampFunction

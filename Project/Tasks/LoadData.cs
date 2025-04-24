@@ -69,8 +69,11 @@ namespace Project.Tasks
         {
             get
             {
+                var mfInfo = "*";
+                if (MovedFrame != null)
+                    mfInfo = MovedFrame.ToString();
                 return string.Format("{0} {1} {2} {3} {4} {5} {6} {7}",
-                    Group.Name, LoadKind, Direction, LoadValue, LoadFunction, StartTime, StopTime,TrajectoryInfo);
+                    Group.Name, LoadKind, Direction, LoadValue, LoadFunction, StartTime, StopTime, mfInfo);
             }
         }
         /// <summary>

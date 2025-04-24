@@ -14,16 +14,19 @@ namespace Project.Interfaces.Tasks
     public interface IFrameFunction
     {
         /// <summary>
+        /// Frame
+        /// </summary>
+        Frame Frame { get; set; }
+        /// <summary>
         /// Name
         /// </summary>
         string Name { get; set; }
         /// <summary>
         /// GetIntersectedElements
         /// </summary>
-        /// <param name="frame"></param>
         /// <param name="elements"></param>
         /// <returns></returns>
-        List<T> GetIntersectedObjects<T>(Frame frame, List<T> elements) where T : IModelObject;
+        List<T> GetIntersectedObjects<T>(List<T> elements) where T : IModelObject;
         /// <summary>
         /// ChechOverlappingIfMoving
         /// </summary>

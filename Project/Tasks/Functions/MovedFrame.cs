@@ -5,40 +5,65 @@ using System;
 using System.Globalization;
 using System.Linq;
 using Model.Interfaces.ObjectsComparers;
+using System.Collections.Generic;
 
 namespace Project.Tasks.Functions
 {
-    public class MovedFrame : IMovedFrame
+    public class MovedFrame
     {
-        public MovedFrame(float velocity)
+        public MovedFrame(IGroup baseLine, IGroup refLine,float velocity)
         {
+            if (baseLine.Count == 0 || refLine.Count == 0)
+                throw new Exception("Линия должна собержать точки!");
             if (velocity == 0)
                 throw new Exception("Скорость не может равняться нулю!");
             Velosity = velocity;
+
+
+            if (baseLine.Count != refLine.Count)
+                throw new Exception("Траектории должны содержать одинаковое кол-во точек!");
+
+            var res = baseLine.Intersect(refLine, new EqualityComparerByNumber<IModelObject>());
+            if (res.Count() != 0)
+                throw new Exception("Траектории пересекаются!");
+
+            BaseLine = baseLine;
+            RefLine = refLine;
+
+            //CheckStartPoints(startPoints, baseLine);
+            //CheckStartPoints(startPoints, refLine);
+
+            //SortTrajNodes(startPoints, baseLine);
+            //SortTrajNodes(startPoints, refLine);
         }
 
         /// <inheritdoc/>
-        public string GetTrajectoryInfo()
+        public override string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture,
-                "{0}|{1};{2};{3};{4};{5}|{6}", 
-                BaseLine.Name, RefLine.Name, Velosity,
-                StartPoints.Name, StopPoints.Name, Shifting.ToString(),Rotation);
+                "{0}|{1};{2};{3}|{4}", 
+                BaseLine.Name, RefLine.Name, Velosity, Shifting.ToString(),Rotation);
         }
         /// <inheritdoc/>
-        public IGroup StartPoints { get; set; }
-/// <inheritdoc/>
+        public IModelObject StartPoint 
+        { 
+            get { return BaseLine.First(); }
+        }
+        /// <inheritdoc/>
 
-        public IGroup StopPoints { get;  set; }
-/// <inheritdoc/>
+        public IModelObject StopPoint
+        {
+            get { return BaseLine.Last(); }
+        }
+        /// <inheritdoc/>
 
         public float Velosity { get; set; }
 /// <inheritdoc/>
 
-        public IGroup BaseLine { get; set; }
+        public IGroup BaseLine { get; }
 /// <inheritdoc/>
 
-        public IGroup RefLine { get;  set; }
+        public IGroup RefLine { get; }
 /// <inheritdoc/>
 
         public Point3D Shifting { get;  set; } = new Point3D();
@@ -122,39 +147,6 @@ namespace Project.Tasks.Functions
 
             return stopTime;
         }
-/// <inheritdoc/>
 
-        public void CheckTrajNodes()
-        {
-            //var nodes = nodesGr.ObjsNumbers.Select(x => (Node)project.Model.ObjectData.Find(x)).ToList();
-            if (StartPoints.Count != 2)
-                throw new Exception("Должно быть только две точки старта!");
-
-            if (StopPoints.Count != 2)
-                throw new Exception("Должно быть только две точки конца!");
-
-            if (BaseLine.Count == 0 || RefLine.Count == 0)
-                throw new Exception("Линия должна собержать точки!");
-
-            var resIntersec = StartPoints.Intersect(BaseLine, new EqualityComparerByNumber<IModelObject>());
-
-            if (resIntersec.Count() == 0)
-                throw new Exception(string.Format("Точки {0} не принадлежат линии {1}!", StartPoints.Name, BaseLine.Name));
-            if (resIntersec.Count() == 2)
-                throw new Exception(string.Format("Обе точки группы {0} принадлежат линии {1}!", StartPoints.Name, BaseLine.Name));
-        }
-/// <inheritdoc/>
-
-        public void SortTrajNodes()
-        {
-            var stBaseNodeInd = StartPoints.Select(x => BaseLine.IndexOf(x)).Where(ind => ind > -1);
-            var stRefNodeInd = StartPoints.Select(x => RefLine.IndexOf(x)).Where(ind => ind > -1);
-
-            BaseLine.Swap(0, stBaseNodeInd.First());
-            RefLine.Swap(0, stRefNodeInd.First());
-
-            BaseLine.SortByDistance();
-            RefLine.SortByDistance();
-        }
     }
 }

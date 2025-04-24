@@ -23,11 +23,11 @@ namespace Project.Tasks.Functions
         }
 /// <inheritdoc/>
 
-        public float CalcPower(Frame frame, Point3D elementCenter)
+        public float CalcPower(Point3D elementCenter)
         {
             float rad, halfBead;
 
-            if (IsPointInside(frame, elementCenter, out rad, out halfBead))
+            if (IsPointInside(elementCenter, out rad, out halfBead))
             {
 
                 var power = Power * 0.85f;

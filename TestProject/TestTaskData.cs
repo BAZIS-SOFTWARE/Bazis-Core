@@ -208,9 +208,11 @@ namespace TestProject
 
             var counter = 0;
             var frame = heatData.MovedFrame.CalcFrame(1);
+            lazer.Frame = frame;
+
             foreach (var obj in gr)
             {
-                energy[counter] = lazer.CalcPower(frame, obj.CalcCentr());
+                energy[counter] = lazer.CalcPower(obj.CalcCentr());
                 counter++;
             }
             var max = energy.Max();
@@ -232,16 +234,14 @@ namespace TestProject
             var heatData = proj.TaskData.Find("Нагрев").Select(x => (HeatData)x).ToArray()[0];
 
             var gr = heatData.Group;
-
+            var lazer = (Lazer)heatData.FrameFunction;
             //assert
             var energy = new Dictionary<int,float>();
             var frame = heatData.MovedFrame.CalcFrame(1);
+            lazer.Frame = frame;
             foreach (var obj in gr)
             {
-
-                var lazer = (Lazer)heatData.FrameFunction;
-
-                var energyVal = lazer.CalcPower(frame, obj.CalcCentr());
+                var energyVal = lazer.CalcPower(obj.CalcCentr());
                 energy.Add(obj.Number, energyVal);
             }
             var max = energy.Max(x => x.Value);
@@ -313,11 +313,9 @@ namespace TestProject
                     { Group = new Group(dataAr[1], ObjType.Элемент3D) };
                     var baseLine = new Group("baseLine", ObjType.Узел);
                     var refLine = new Group("refLine", ObjType.Узел);
-                    var startNodes = new Group("startNodes", ObjType.Узел);
-                    heatData.MovedFrame.BaseLine = baseLine;
-                    heatData.MovedFrame.RefLine = refLine;
-                    heatData.MovedFrame.StartPoints = startNodes;
-                    heatData.MovedFrame.StopPoints = startNodes;
+
+                    heatData.MovedFrame = new MovedFrame(baseLine, refLine, 5);
+
                     data = heatData;
                     break;
                 case DataKind.Clamp:
@@ -395,9 +393,9 @@ namespace TestProject
             SetUpTestLoadBoundTaskDataException(dataKind, dataString);
 
         [DataTestMethod]
-        [DataRow(DataKind.Heat, "PowerCycle Load 0 49.99998 *")]
-        [DataRow(DataKind.Heat, "0.001 Load 0 49.99998 *")]
-        [DataRow(DataKind.Heat, "ARC;4;100;25 Load 0 49.99998 baseLine|refLine;2;startNodes;startNodes;0|0|0|0")]
+        [DataRow(DataKind.Heat, "1 PowerCycle * Load 0 49.99998 *")]
+        [DataRow(DataKind.Heat, "0.001 * * Load 0 49.99998 *")]
+        [DataRow(DataKind.Heat, "1 * ARC Load 0 49.99998 mff")]
         [DataRow(DataKind.Med, "air Коэф.теплоотдачи.воздух 20 0 1500 *")]
         [DataRow(DataKind.Med, "air * 25 0 1500 *")]
         [DataRow(DataKind.Med, "air * Термоцикл 0 1500 *")]
@@ -413,8 +411,8 @@ namespace TestProject
         [DataRow(DataKind.Load, "Узлы_7 Сила Z 0 * 0 1500 *")]
         [DataRow(DataKind.Load, "Узлы_7 Сила X 0.0001 loadCycle 0 1500 *")]
         [DataRow(DataKind.Mat, "Элементы3D_3 Сталь_20ХМ 0 1500 *")]
-        [DataRow(DataKind.Heat, "FSWPin;100;12;12;8;120 load 0 1 baseLine|refLine;2;startNodes;startNodes;0|0|0|0")]
-        [DataRow(DataKind.Heat, "FSWShoulder;100;100;30;12;12;120 load 0 1 baseLine|refLine;2;startNodes;startNodes;0|0|0|0")]
+        [DataRow(DataKind.Heat, "1 * FSWPin load 0 1 mff")]
+        [DataRow(DataKind.Heat, "1 * FSWShoulder load 0 1 *")]
         public void TestCreateTaskData(DataKind dataKind,  string dataString)
         {
             //assign
@@ -434,17 +432,11 @@ namespace TestProject
                 case DataKind.Heat:
                     var heatData = new HeatData(new Group("", ObjType.Элемент3D), dataString)
                     { Group = new Group(dataAr[1], ObjType.Элемент3D) };
-                    var baseLine = new Group("baseLine", ObjType.Узел);
-                    var refLine = new Group("refLine", ObjType.Узел);
-                    var startNodes = new Group("startNodes", ObjType.Узел);
+                    //var baseLine = new Group("baseLine", ObjType.Узел);
+                    //var refLine = new Group("refLine", ObjType.Узел);
+                    //var start = new Group("startNodes", ObjType.Узел);
 
-                    if (heatData.MovedFrame != null)
-                    {
-                        heatData.MovedFrame.BaseLine = baseLine;
-                        heatData.MovedFrame.RefLine = refLine;
-                        heatData.MovedFrame.StartPoints = startNodes;
-                        heatData.MovedFrame.StopPoints = startNodes;
-                    }
+                    //heatData.MovedFrame = new MovedFrame(start, baseLine, refLine, 5);
 
                     data = heatData;
                     break;

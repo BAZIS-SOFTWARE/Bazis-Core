@@ -20,8 +20,11 @@ namespace Project.Tasks
         public override string GetInfo
         {
             get
-            { 
-                return string.Format("{0} {1} {2} {3} {4}", Group.Name, MatName, StartTime, StopTime, TrajectoryInfo);
+            {
+                var mfInfo = "*";
+                if (MovedFrame != null)
+                    mfInfo = MovedFrame.Name;
+                return string.Format("{0} {1} {2} {3} {4}", Group.Name, MatName, StartTime, StopTime, mfInfo);
             }
         }
 /// <inheritdoc/>

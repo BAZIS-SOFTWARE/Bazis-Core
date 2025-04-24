@@ -17,15 +17,15 @@ namespace Project.Tasks.Functions
 
         public override string ToString()
         {
-            return string.Format("{0};{1};{2};{3};{4}", Name, SurfacePower, Length,UpperDiam, BottomDiam);
+            return $"{Name};{SurfacePower};{Length};{UpperDiam};{BottomDiam}";
         }
 /// <inheritdoc/>
 
-        public float CalcPower(Frame frame, Point3D elementCenter)
+        public float CalcPower(Point3D elementCenter)
         {
             float r, r0, r1, r2;
             
-            if (IsPointInside(frame, elementCenter, out r, out r0, out r1, out r2))
+            if (IsPointInside(elementCenter, out r, out r0, out r1, out r2))
             {
                 var vol = (1.0f / 3) * 3.14f * Length * (r1 * r1 + r1 * r2 + r2 * r2); // объем усеченного конуса
                 var powerDensity = SurfacePower / vol;

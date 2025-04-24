@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Project.Tasks.Functions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,10 +16,6 @@ namespace Project.Interfaces.Tasks
         /// <summary>
         /// MovedFrame
         /// </summary>
-        IMovedFrame MovedFrame { get; }
-        /// <summary>
-        /// TrajectoryInfo
-        /// </summary>
-        string TrajectoryInfo { get; }
+        MovedFrame MovedFrame { get; set; }
     }
 }

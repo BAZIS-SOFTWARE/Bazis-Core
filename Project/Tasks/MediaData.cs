@@ -105,29 +105,33 @@ namespace Project.Tasks
         {
             get
             {
+                var mfInfo = "*";
+                if (MovedFrame != null)
+                    mfInfo = MovedFrame.ToString();
+
                 if (MediaType == MediaType.ConstantTemp)
                 {
                     if (TemperatureFunc == "*")
                         return string.Format("{0} {1} {2} {3} {4} {5}",
-                      Group.Name, "*", TemperatureValue, StartTime, StopTime, TrajectoryInfo);
+                      Group.Name, "*", TemperatureValue, StartTime, StopTime, mfInfo);
                     else
                         return string.Format("{0} {1} {2} {3} {4} {5}",
-Group.Name, "*", TemperatureFunc, StartTime, StopTime, TrajectoryInfo);
+Group.Name, "*", TemperatureFunc, StartTime, StopTime, mfInfo);
                 }
                 else
                 {
                     if (HeatExchangeFunc == "*" & TemperatureFunc == "*")
                         return string.Format("{0} {1} {2} {3} {4} {5}",
-                      Group.Name, HeatExchangeValue, TemperatureValue, StartTime, StopTime, TrajectoryInfo);
+                      Group.Name, HeatExchangeValue, TemperatureValue, StartTime, StopTime, mfInfo);
                     else if (HeatExchangeFunc == "*" & TemperatureFunc != "*")
                         return string.Format("{0} {1} {2} {3} {4} {5}",
-                      Group.Name, HeatExchangeValue, TemperatureFunc, StartTime, StopTime, TrajectoryInfo);
+                      Group.Name, HeatExchangeValue, TemperatureFunc, StartTime, StopTime, mfInfo);
                     else if (HeatExchangeFunc != "*" & TemperatureFunc == "*")
                         return string.Format("{0} {1} {2} {3} {4} {5}",
-                      Group.Name, HeatExchangeFunc, TemperatureValue, StartTime, StopTime, TrajectoryInfo);
+                      Group.Name, HeatExchangeFunc, TemperatureValue, StartTime, StopTime, mfInfo);
                     else
                         return string.Format("{0} {1} {2} {3} {4} {5}",
-                      Group.Name, HeatExchangeFunc, TemperatureFunc, StartTime, StopTime, TrajectoryInfo);
+                      Group.Name, HeatExchangeFunc, TemperatureFunc, StartTime, StopTime, mfInfo);
                 }
             }
         }

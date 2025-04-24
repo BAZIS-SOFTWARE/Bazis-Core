@@ -1,5 +1,6 @@
 ﻿using Model.Interfaces;
 using Project.Interfaces.Tasks;
+using Project.Tasks.Functions;
 
 namespace Project.Tasks
 {
@@ -13,7 +14,7 @@ namespace Project.Tasks
         }
 
         /// <inheritdoc/>
-        public IFrameFunction FrameFunction { get ; internal set; }
+        public IFrameFunction FrameFunction { get ; set; }
         
 /// <inheritdoc/>
 
@@ -24,20 +25,7 @@ namespace Project.Tasks
 
         /// <inheritdoc/>
 
-        public string TrajectoryInfo
-        {
-            get
-            {
-                if (FrameFunction != null)
-                    return MovedFrame.GetTrajectoryInfo();
-                else return "*";
-            }
-
-        }
-
-        /// <inheritdoc/>
-
-        public IMovedFrame MovedFrame { get; internal set; }
+        public MovedFrame MovedFrame { get; set; }
 
 /// <inheritdoc/>
 

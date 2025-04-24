@@ -94,6 +94,8 @@
     <Compile Include="Tasks\Functions\Arc.cs" />
     <Compile Include="Tasks\Functions\ArcBuilder.cs" />
     <Compile Include="Tasks\Functions\CillindricalFunction.cs" />
+    <Compile Include="Tasks\Functions\FrameFunction.cs" />
+    <Compile Include="Tasks\Functions\FrameFunctionBuilder.cs" />
     <Compile Include="Tasks\Functions\FSWPin.cs" />
     <Compile Include="Tasks\Functions\FSWPinBuilder.cs" />
     <Compile Include="Tasks\Functions\FSWShoulder.cs" />
@@ -101,6 +103,7 @@
     <Compile Include="Tasks\Functions\Lazer.cs" />
     <Compile Include="Tasks\Functions\LazerBuilder.cs" />
     <Compile Include="Tasks\Functions\MovedFrame.cs" />
+    <Compile Include="Tasks\Functions\MovedFrameBuilder.cs" />
     <Compile Include="Tasks\Functions\SphereFunction.cs" />
     <Compile Include="Tasks\Functions\TableFunction.cs" />
     <Compile Include="Tasks\Functions\Trajectory.cs" />

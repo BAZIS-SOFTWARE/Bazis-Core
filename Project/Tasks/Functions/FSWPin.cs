@@ -28,12 +28,12 @@ namespace Project.Tasks.Functions
 
 /// <inheritdoc/>
 
-        public float CalcPower(Frame frame, Point3D elementCenter)
+        public float CalcPower(Point3D elementCenter)
         {
             float r, r0, r1, r2;
 
             //var H = float.Parse(heatSourceParam.Split(',')[3]); // light heght
-            if (IsPointInside(frame, elementCenter, out r, out r0, out r1, out r2))
+            if (IsPointInside(elementCenter, out r, out r0, out r1, out r2))
             {
                 var pinVol = (1.0f / 3) * (float)Math.PI * Length * (r1 * r1 + r1 * r2 + r2 * r2); // объем усеченного конуса
                 var m = 0.16f; // уточнить коэффициент рассеяния механической энергии
