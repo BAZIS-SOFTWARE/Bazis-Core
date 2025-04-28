@@ -4,6 +4,7 @@ using Project;
 using Project.IO;
 using Project.Tasks;
 using Project.Tasks.Functions;
+using Project.Tasks.LocalFrame;
 using System;
 using System.Globalization;
 using System.Linq;
@@ -44,7 +45,7 @@ namespace TestProject
 
             var heat = proj.TaskData.Find<HeatData>().First();
             
-            var motionTime = heat.MovedFrame.CalcMotionTime();
+            var motionTime = (heat.LocalFrame as MovedFrame).CalcMotionTime();
             var stopTime = heat.StartTime + motionTime;
 
             //assert

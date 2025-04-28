@@ -19,14 +19,13 @@ namespace Project.Tasks
 
         public LoadData(IGroup group, string info) : base(group, info)
         {
-            Kind = DataKind.Load;
-            Name = "Нагрузка";
+            Kind = DataKind.Нагрузка;
         }
 
         public LoadKind LoadKind { get; internal set; }
 /// <inheritdoc/>
 
-        public override void SetInfo(string info)
+        protected override void SetInfo(string info)
         {
             var loadDataAr = info.Split(' ');
 
@@ -65,13 +64,13 @@ namespace Project.Tasks
 
 /// <inheritdoc/>
 
-        public override string GetInfo
+        protected override string GetInfo
         {
             get
             {
                 var mfInfo = "*";
-                if (MovedFrame != null)
-                    mfInfo = MovedFrame.ToString();
+                if (LocalFrame != null)
+                    mfInfo = LocalFrame.ToString();
                 return string.Format("{0} {1} {2} {3} {4} {5} {6} {7}",
                     Group.Name, LoadKind, Direction, LoadValue, LoadFunction, StartTime, StopTime, mfInfo);
             }

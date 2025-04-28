@@ -7,11 +7,11 @@ using System.Linq;
 using Model.Interfaces.ObjectsComparers;
 using System.Collections.Generic;
 
-namespace Project.Tasks.Functions
+namespace Project.Tasks.LocalFrame
 {
-    public class MovedFrame
+    public class MovedFrame : LocalFrame
     {
-        public MovedFrame(IGroup baseLine, IGroup refLine,float velocity)
+        public MovedFrame(IGroup baseLine, IGroup refLine, float velocity)
         {
             if (baseLine.Count == 0 || refLine.Count == 0)
                 throw new Exception("Линия должна собержать точки!");
@@ -41,12 +41,12 @@ namespace Project.Tasks.Functions
         public override string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture,
-                "{0}|{1};{2};{3}|{4}", 
-                BaseLine.Name, RefLine.Name, Velosity, Shifting.ToString(),Rotation);
+                "{0}|{1};{2};{3}|{4}",
+                BaseLine.Name, RefLine.Name, Velosity, Shifting.ToString(), Rotation);
         }
         /// <inheritdoc/>
-        public IModelObject StartPoint 
-        { 
+        public IModelObject StartPoint
+        {
             get { return BaseLine.First(); }
         }
         /// <inheritdoc/>
@@ -58,29 +58,20 @@ namespace Project.Tasks.Functions
         /// <inheritdoc/>
 
         public float Velosity { get; set; }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public IGroup BaseLine { get; }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public IGroup RefLine { get; }
-/// <inheritdoc/>
 
-        public Point3D Shifting { get;  set; } = new Point3D();
-/// <inheritdoc/>
-
-        public float Rotation { get;  set; }
-/// <inheritdoc/>
-
-        public string Name { get;  set; }
-
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void SetShiftingAndRotation(string shiftingData)
         {
             var shifftingData = shiftingData.Split('|');
 
-            if(shifftingData.Length == 4)
+            if (shifftingData.Length == 4)
             {
                 if (!float.TryParse(shifftingData[0], out float x))
                     throw new Exception("Смещение по X задано неверно!");
@@ -93,9 +84,9 @@ namespace Project.Tasks.Functions
 
                 Shifting = new Point3D(x, y, z);
                 Rotation = angle;
-            }                     
+            }
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
 
         public Frame CalcFrame(float time)
@@ -135,7 +126,7 @@ namespace Project.Tasks.Functions
             return sFrame.Rotate(axis, Rotation);
         }
 
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public double CalcMotionTime()
         {

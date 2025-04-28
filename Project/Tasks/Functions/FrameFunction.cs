@@ -9,21 +9,50 @@ namespace Project.Tasks.Functions
 {
     public abstract class FrameFunction : IFrameFunction
     {
-        public Frame Frame { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public string Name { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        protected List<FunctionParameter> parameters = new List<FunctionParameter>();
+        /// <inheritdoc/>
+        public Frame Frame { get; set; }
+        /// <inheritdoc/>
+        public string Name { get; set; }
+/// <inheritdoc/>
 
-        public List<T> GetIntersectedObjects<T>(List<T> elements) where T : IModelObject
-        {
-            throw new NotImplementedException();
-        }
+        public abstract float CalcPower(Point3D elementCenter);
 
-        public bool IsOverlappingSelf(float velocity)
+        /// <inheritdoc/>
+        public void CreateParameter(string name, float value)
         {
-            throw new NotImplementedException();
+            var fParam = new FunctionParameter() { Name = name, Value = value };
+            parameters.Add(fParam);
         }
+        /// <inheritdoc/>
+
+        public void CreateParameter(string name)
+        {
+            var fParam = new FunctionParameter() { Name = name };
+            parameters.Add(fParam);
+        }
+        /// <inheritdoc/>
+
+        public IEnumerable<FunctionParameter> GetParameters()
+        {
+            foreach (var item in parameters)
+            {
+                yield return item;
+            }
+        }
+/// <inheritdoc/>
+
+
+
+        public abstract List<T> GetIntersectedObjects<T>(List<T> elements) where T : IModelObject;
+/// <inheritdoc/>
+
+
+        public abstract bool IsOverlappingSelf(float velocity);
+        /// <inheritdoc/>
         public override string ToString()
         {
-            return $"{Name};{Frame}";
+            return $"{Name}";
         }
     }
 }

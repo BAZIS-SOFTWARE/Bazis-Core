@@ -5,14 +5,10 @@ using Project.Interfaces.Tasks;
 
 namespace Project.Tasks.Functions
 {
-    public abstract class SphereFunction : ISphereFunction
+    public abstract class SphereFunction : FrameFunction
     {
         /// <inheritdoc/>
         public float Width { get; internal set; }
-        /// <inheritdoc/>
-        public string Name { get; set; }
-        /// <inheritdoc/>
-        public Frame Frame { get; set; }
 
         /// <summary>
         /// 
@@ -30,7 +26,7 @@ namespace Project.Tasks.Functions
 
 /// <inheritdoc/>
 
-        public List<T> GetIntersectedObjects<T>(List<T> elements) where T : IModelObject
+        public override List<T> GetIntersectedObjects<T>(List<T> elements)
         {
             var insideElements = new List<T>();
 
@@ -42,7 +38,7 @@ namespace Project.Tasks.Functions
         }
 /// <inheritdoc/>
 
-        public bool IsOverlappingSelf(float velocity)
+        public override bool IsOverlappingSelf(float velocity)
         {
             return velocity <= Width / 2;
         }

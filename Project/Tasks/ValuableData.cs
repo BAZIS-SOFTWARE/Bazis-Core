@@ -1,6 +1,5 @@
 ﻿using Model.Interfaces;
 using Project.Interfaces.Tasks;
-using Project.Tasks.Functions;
 
 namespace Project.Tasks
 {
@@ -15,20 +14,21 @@ namespace Project.Tasks
 
         /// <inheritdoc/>
         public IFrameFunction FrameFunction { get ; set; }
-        
 /// <inheritdoc/>
+
 
         public override string ToString()
         {
-            return string.Format("{0} : {1}", Name, GetInfo);
+            return $"{Kind} : {GetInfo}";
         }
 
         /// <inheritdoc/>
 
-        public MovedFrame MovedFrame { get; set; }
+        public ILocalFrame LocalFrame { get; set; }
 
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public Direction Direction { get; internal set; }
+
     }
 }

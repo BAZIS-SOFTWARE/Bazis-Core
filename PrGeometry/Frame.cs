@@ -15,10 +15,10 @@ namespace Geometry
 
         public override string ToString()
         {
-            return string.Format("{0};{1};{2};{3}", Centre, X, Y, Z);
+            return $"{Centre};{X};{Y};{Z}";
         }
 
-        public Frame(Point3D x, Point3D y, Point3D z, Point3D centre)
+        public Frame(Point3D centre,Point3D x, Point3D y, Point3D z)
         {
             var dirX = x.Sub(centre);
             var dirY = y.Sub(centre);
@@ -94,7 +94,7 @@ namespace Geometry
             var sY = Y.Sum(delta);
             var sZ = Z.Sum(delta);
 
-            return new Frame(sX, sY, sZ, sCentr);
+            return new Frame(sCentr,sX, sY, sZ);
         }
 
         public Frame Rotate(Point3D axis, float angle)
@@ -111,7 +111,7 @@ namespace Geometry
             var rotZ = Vector.GetVectorRotation(dirZ, axis, angle);
             var z = Centre.Sum(rotZ);
 
-            return new Frame(x, y, z, Centre);
+            return new Frame(Centre,x, y, z);
         }
     }
 }

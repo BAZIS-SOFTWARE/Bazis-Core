@@ -7,23 +7,11 @@ using Project.Interfaces.Tasks;
 
 namespace Project.Tasks.Functions
 {
-    public class FSWShoulder : CillindricalFunction, IPowerFunction
+    public class FSWShoulder : CillindricalFunction
     {
         public float RotSpeed { get; internal set; }
         public float AxisForce { get; internal set; }
 /// <inheritdoc/>
-
-        //public string FrictionModuleFunc { get; internal set; }
-        /// <inheritdoc/>
-        //public float FrictionModulefVal { get; set; }
-
-        /// <summary>
-        /// parameters[0] = FrictionModule.
-        /// </summary>
-        List<FunctionParameter> parameters = new List<FunctionParameter>();
-
-        /// <inheritdoc/>
-
 
         public override string ToString()
         {
@@ -34,7 +22,7 @@ namespace Project.Tasks.Functions
  /// <inheritdoc/>
  
 
-        public float CalcPower(Point3D elementCenter)
+        public override float CalcPower(Point3D elementCenter)
         {
             float r, r0, r1, r2;
 
@@ -49,29 +37,6 @@ namespace Project.Tasks.Functions
                 return sholderPower / sholderVol;
             }
             return 0;
-        }
-
-        /// <inheritdoc/>
-        public void CreateParameter(string name, float value)
-        {
-            var fParam = new FunctionParameter() { Name = name, Value = value };
-            parameters.Add(fParam);
-        }
-        /// <inheritdoc/>
-
-        public void CreateParameter(string name)
-        {
-            var fParam = new FunctionParameter() { Name = name };
-            parameters.Add(fParam);
-        }
-        /// <inheritdoc/>
-
-        public IEnumerable<FunctionParameter> GetParameters()
-        {
-            foreach (var item in parameters)
-            {
-                yield return item;
-            }
-        }
+        }       
     }
 }

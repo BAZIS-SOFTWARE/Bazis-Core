@@ -17,6 +17,8 @@ using System.Runtime.InteropServices;
 using Project.Tasks;
 using Project.Tasks.Functions;
 using Project.TaskParameters;
+using Project.Tasks.LocalFrame;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace TestProject
 {
@@ -40,7 +42,7 @@ namespace TestProject
             //act
             proj.Load($@"{testDir}\proj_traj.bpf");
 
-            var dic = proj.TaskData.Find("Закрепление").ToArray();
+            var dic = proj.TaskData.Find(DataKind.Закрепление).ToArray();
 
             foreach (var item in dic)
                 proj.TaskData.Remove(item);
@@ -89,8 +91,8 @@ namespace TestProject
 
         [TestMethod]
         [DataRow(@"..\..\..\Examples\proj_traj.bpf", DisplayName = "proj_traj")]
-        [DataRow(@"..\..\..\Examples\proj_traj_save.bpf", DisplayName = "proj_traj_save")]
-        [DataRow(@"c:\projs\ElenaLu\Bulk\1.bpf", DisplayName = "1")]
+        [DataRow(@"..\..\..\Examples\proj_traj_baseLine_not_sorted.bpf", DisplayName = "proj_traj_baseLine_not_sorted")]
+
         //[DataRow(@"c:\projs\testProj\TubeToTubeTJoint\proj_v1.bpf")]
         //[DataRow(@"c:\projs\kamaz\4.bpf")]
         public void TestFrameFunctionInTime(string relativeProjPath)
@@ -103,13 +105,13 @@ namespace TestProject
             //act
             proj.Load(relativeProjPath);
 
-            var selectedData = proj.TaskData.Find("Нагрев").Select(x => (IValuableData)x).ToArray();
+            var selectedData = proj.TaskData.Find(DataKind.Нагрев).Select(x => (IValuableData)x).ToArray();
             foreach (var preFrame in selectedData)
             {
                 var stepTime = (preFrame.StopTime - preFrame.StartTime) / 10;
                 for (float i = preFrame.StartTime; i < preFrame.StopTime; i+= stepTime)
                 {
-                    var frame = preFrame.MovedFrame.CalcFrame(i);
+                    var frame = (preFrame.LocalFrame as MovedFrame).CalcFrame(i);
 
                     if (frame.Centre._x is float.NaN || frame.Centre._y is float.NaN || frame.Centre._z is float.NaN)
                         throw new Exception($"СК определена неверно!: одна из координат центра не определена. frame: {preFrame}");
@@ -127,7 +129,7 @@ namespace TestProject
         }
 
         [TestMethod]
-        public void TestFrameFunctionSetInfo()
+        public void TestFrameFunctionSortingTrajectory()
         {
             //assign
             var proj = new ProjectData();
@@ -137,28 +139,11 @@ namespace TestProject
             //act
             proj.Load(@"..\..\..\Examples\proj_traj.bpf");
 
-            var selectedData = proj.TaskData.Find("Нагрев").Select(x => (IValuableData)x).ToArray();
+            var selectedData = proj.TaskData.Find(DataKind.Нагрев).Select(x => (IValuableData)x).ToArray();
 
+            
 
-            //assert
-            selectedData[0].SetInfo("ARC;4;100;25 Load 0 49.99998 baseLine|refLine;2;startNodes;startNodes");
-            //
-        }
-
-        [TestMethod]
-        public void TestFrameFunctionTrajectory()
-        {
-            //assign
-            var proj = new ProjectData();
-            proj.ModelData = new ModelData();
-            proj.TaskData = new TaskData();
-
-            //act
-            proj.Load(@"..\..\..\Examples\proj_traj.bpf");
-
-            var selectedData = proj.TaskData.Find("Нагрев").Select(x => (IValuableData)x).ToArray();
-
-            var baseLine = selectedData[0].MovedFrame.BaseLine;
+            var baseLine = (selectedData[0].LocalFrame as MovedFrame).BaseLine;
             //assert
             var first = baseLine[0];
             var secd = baseLine[1];
@@ -173,22 +158,10 @@ namespace TestProject
         }
 
         [DataTestMethod]
-        [DataRow("ARC;4;100;25 Load 0 10.3 baseLine|refLine;2;startNodes;startNodes;1|0.5|0|10.1",10.1f,1,0.5f,0)]
-        [DataRow("ARC;4;100;25 Load 0 10.3 baseLine|refLine;2;startNodes;startNodes;*",0,0,0,0)]
-        [DataRow("ARC;4;100;25 Load 0 10.3 baseLine|refLine;2;startNodes;startNodes", 0, 0, 0, 0)]
-        public void TestFrameFunctionShifting(string input, float rotation,float p0,float p1,float p2)
-        {
-            //assign
-            //act
-            var heatData = new HeatData(new Group("", ObjType.Элемент3D), input);
-
-            //assert
-            Assert.AreEqual(heatData.MovedFrame.Rotation, rotation);
-            Assert.AreEqual(heatData.MovedFrame.Shifting, new Geometry.Point3D(p0,p1,p2));
-        }
-
-        [TestMethod]
-        public void TestLazerHeatSource()
+        [DataRow(10.1f,1,0.5f,0)]
+        [DataRow(0,0,0,0)]
+        [DataRow(0, 0, 0, 0)]
+        public void TestFrameFunctionShifting(float rotation,float x,float y,float z)
         {
             //assign
             var proj = new ProjectData();
@@ -196,84 +169,24 @@ namespace TestProject
             proj.TaskData = new TaskData();
 
             //act
-            proj.Load(@"..\..\..\Examples\test_t_lazer_0_10.bpf");
+            proj.Load(@"..\..\..\Examples\proj_traj.bpf");
 
-            var heatData = proj.TaskData.Find("Нагрев").Select(x => (HeatData)x).ToArray()[0];
-
-            var gr = heatData.Group;
-
-            var lazer = (Lazer)heatData.FrameFunction;
+            var heatData = proj.TaskData.Find(DataKind.Нагрев).Select(h => (HeatData)h).First();
+            heatData.LocalFrame.Rotation = rotation;
+            heatData.LocalFrame.Shifting._x = x;
+            heatData.LocalFrame.Shifting._y = y;
+            heatData.LocalFrame.Shifting._z = z;
             //assert
-            var energy = new float[gr.Count];
-
-            var counter = 0;
-            var frame = heatData.MovedFrame.CalcFrame(1);
-            lazer.Frame = frame;
-
-            foreach (var obj in gr)
-            {
-                energy[counter] = lazer.CalcPower(obj.CalcCentr());
-                counter++;
-            }
-            var max = energy.Max();
-            if (max == 0)
-                throw new Exception("Энергия не вводится!");
-        }
-
-        [TestMethod]
-        public void TestLazerHeatSource_Rotation180_And_Shifting4_HeatSource()
-        {
-            Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
-            //assign
-            var proj = new ProjectData();
-            proj.ModelData = new ModelData();
-            proj.TaskData = new TaskData();
-            //act
-            proj.Load(@"..\..\..\Examples\test_t_lazer_180_0_10.bpf");
-
-            var heatData = proj.TaskData.Find("Нагрев").Select(x => (HeatData)x).ToArray()[0];
-
-            var gr = heatData.Group;
-            var lazer = (Lazer)heatData.FrameFunction;
-            //assert
-            var energy = new Dictionary<int,float>();
-            var frame = heatData.MovedFrame.CalcFrame(1);
-            lazer.Frame = frame;
-            foreach (var obj in gr)
-            {
-                var energyVal = lazer.CalcPower(obj.CalcCentr());
-                energy.Add(obj.Number, energyVal);
-            }
-            var max = energy.Max(x => x.Value);
-
-            var nanOrInfRes = energy.Where(x => float.IsNaN(x.Value) | float.IsInfinity(x.Value));
-
-            // centre 21446 21450 21486 21642 21694
-            var e1 = energy[21446];
-            var e2 = energy[21450];
-            var e3 = energy[21486];
-            var e4 = energy[21642];
-            var e5 = energy[21694];
-
-            // side 21486 21833 21834 21835 21836 21837 21838
-            var e11 = energy[21833];
-            var e22 = energy[21834];
-            var e33 = energy[21835];
-            var e44 = energy[21836];
-            var e55 = energy[21837];
-
-            if (max == 0)
-                throw new Exception("Энергия не вводится!");
-            if (nanOrInfRes.Count() > 0)
-                throw new Exception("Решение содержит NaN!");
-        }
+            Assert.AreEqual(heatData.LocalFrame.Rotation, rotation);
+            Assert.AreEqual(heatData.LocalFrame.Shifting, new Geometry.Point3D(x,y,z));
+        }            
 
         [DataTestMethod]
-        [DataRow("Нагрев")]
-        [DataRow("Среда")]
-        [DataRow("Закрепление")]
-        [DataRow("Материал")]
-        public void TestFindTaskData(string dataType)
+        [DataRow(DataKind.Нагрев)]
+        [DataRow(DataKind.Среда)]
+        [DataRow(DataKind.Закрепление)]
+        [DataRow(DataKind.Материал)]
+        public void TestFindTaskData(DataKind datakind)
         {
             //assign
             var project = new ProjectData();
@@ -286,7 +199,7 @@ namespace TestProject
 
             var nodeInfo = project.ModelData.GroupData.Find("Узлы");
 
-            var dataInfo = project.TaskData.Find(dataType);
+            var dataInfo = project.TaskData.Find(datakind);
             if (dataInfo.Count() == 0)
                 throw new Exception("Ошибка выгрузки данных");
         }
@@ -300,25 +213,25 @@ namespace TestProject
             Data data;
             switch (dataKind)
             {
-                case DataKind.Mat:
+                case DataKind.Материал:
                     data = new MatData(new Group("", ObjType.Элемент3D), dataString)
                     { Group = new Group(dataAr[0], ObjType.Элемент3D) };
                     break;
-                case DataKind.Med:
+                case DataKind.Среда:
                     data = new MediaData(new Group("", ObjType.Элемент3D), dataString)
                     { Group = new Group(dataAr[1], ObjType.Элемент3D) };
                     break;
-                case DataKind.Heat:
+                case DataKind.Нагрев:
                     var heatData = new HeatData(new Group("", ObjType.Элемент3D), dataString)
                     { Group = new Group(dataAr[1], ObjType.Элемент3D) };
                     var baseLine = new Group("baseLine", ObjType.Узел);
                     var refLine = new Group("refLine", ObjType.Узел);
 
-                    heatData.MovedFrame = new MovedFrame(baseLine, refLine, 5);
+                    heatData.LocalFrame = new MovedFrame(baseLine, refLine, 5);
 
                     data = heatData;
                     break;
-                case DataKind.Clamp:
+                case DataKind.Закрепление:
                     data = new ClampData(new Group("", ObjType.Узел), dataString)
                     { Group = new Group(dataAr[0], ObjType.Узел) };
                     break;
@@ -330,89 +243,87 @@ namespace TestProject
         }
 
         [DataTestMethod]
-        [DataRow(DataKind.Med, null)]
-        [DataRow(DataKind.Mat, null)]
-        [DataRow(DataKind.Heat, null)]
-        [DataRow(DataKind.Clamp, null)]
-        [DataRow(DataKind.Load, null)]
+        [DataRow(DataKind.Среда, null)]
+        [DataRow(DataKind.Материал, null)]
+        [DataRow(DataKind.Нагрев, null)]
+        [DataRow(DataKind.Закрепление, null)]
+        [DataRow(DataKind.Нагрузка, null)]
         [ExpectedException(typeof(NullReferenceException))]
         public void TestTaskDataNullReferenceException(DataKind dataKind, string dataString) =>
             SetUpTestLoadBoundTaskDataException(dataKind, dataString);
 
         [DataTestMethod]
-        [DataRow(DataKind.Med, "")]
-        [DataRow(DataKind.Med, "Элементы3D_3")]
+        [DataRow(DataKind.Среда, "")]
+        [DataRow(DataKind.Среда, "Элементы3D_3")]
 
-        [DataRow(DataKind.Mat, "")]
-        [DataRow(DataKind.Mat, "Элементы3D_3")]
-        [DataRow(DataKind.Mat, "Элементы3D_3 Сталь_10 ")]
+        [DataRow(DataKind.Материал, "")]
+        [DataRow(DataKind.Материал, "Элементы3D_3")]
+        [DataRow(DataKind.Материал, "Элементы3D_3 Сталь_10 ")]
 
-        [DataRow(DataKind.Heat, "")]
-        [DataRow(DataKind.Heat, "ARC;4;100;25 Load 0 49.99998")]
-        [DataRow(DataKind.Heat, "Load 0 49.99998 baseLine|refLine;2;startNodes;startNodes;0|0|0|0")]
-        [DataRow(DataKind.Heat, "ARC;4;100;25 0 49.99998 baseLine|refLine;2;startNodes;startNodes;0|0|0|0")]
-        [DataRow(DataKind.Heat, "ARC;4;100;25 Load 49.99998 baseLine|refLine;2;startNodes;startNodes;0|0|0|0")]
-        [DataRow(DataKind.Heat, "ARC;4;100;25 Load 0 baseLine|refLine;2;startNodes;startNodes;0|0|0|0")]
+        [DataRow(DataKind.Нагрев, "")]
+        [DataRow(DataKind.Нагрев, "ARC;4;100;25 Load 0 49.99998")]
+        [DataRow(DataKind.Нагрев, "Load 0 49.99998 baseLine|refLine;2;startNodes;startNodes;0|0|0|0")]
+        [DataRow(DataKind.Нагрев, "ARC;4;100;25 0 49.99998 baseLine|refLine;2;startNodes;startNodes;0|0|0|0")]
+        [DataRow(DataKind.Нагрев, "ARC;4;100;25 Load 49.99998 baseLine|refLine;2;startNodes;startNodes;0|0|0|0")]
+        [DataRow(DataKind.Нагрев, "ARC;4;100;25 Load 0 baseLine|refLine;2;startNodes;startNodes;0|0|0|0")]
 
-        [DataRow(DataKind.Clamp, "")]
+        [DataRow(DataKind.Закрепление, "")]
 
-        [DataRow(DataKind.Load, "")]
-        [DataRow(DataKind.Load, "Сила Z 0 * 0 1500 *")]
-        [DataRow(DataKind.Load, "Узлы_7 Z 0 * 0 1500 *")]
-        [DataRow(DataKind.Load, "Узлы_7 Сила 0 * 0 1500 *")]
-        [DataRow(DataKind.Load, "Узлы_7 Сила Z * 0 1500 *")]
+        [DataRow(DataKind.Нагрузка, "")]
+        [DataRow(DataKind.Нагрузка, "Сила Z 0 * 0 1500 *")]
+        [DataRow(DataKind.Нагрузка, "Узлы_7 Z 0 * 0 1500 *")]
+        [DataRow(DataKind.Нагрузка, "Узлы_7 Сила 0 * 0 1500 *")]
+        [DataRow(DataKind.Нагрузка, "Узлы_7 Сила Z * 0 1500 *")]
         [ExpectedException(typeof(Exception))]
         public void TestTaskDataException(DataKind dataKind, string dataString) =>
             SetUpTestLoadBoundTaskDataException(dataKind, dataString);
 
         [DataTestMethod]
-        [DataRow(DataKind.Mat, "Сталь_20ХМ 0 1500 *")]
-        [DataRow(DataKind.Mat, "Элементы3D_3 Сталь_20ХМ  1500 *")]
-        [DataRow(DataKind.Mat, "Элементы3D_3 Сталь_20ХМ 0  *")]
-        [DataRow(DataKind.Mat, "Элементы3D_3 Сталь_10 * * *")]
+        [DataRow(DataKind.Материал, "Сталь_20ХМ 0 1500 *")]
+        [DataRow(DataKind.Материал, "Элементы3D_3 Сталь_20ХМ  1500 *")]
+        [DataRow(DataKind.Материал, "Элементы3D_3 Сталь_20ХМ 0  *")]
+        [DataRow(DataKind.Материал, "Элементы3D_3 Сталь_10 * * *")]
 
-        [DataRow(DataKind.Med, "Элементы3D_2  20 0 1")]
-        [DataRow(DataKind.Med, "Коэф.теплоотдачи.воздух 20 0 1 *")]
-        [DataRow(DataKind.Med, "Элементы3D_2 20 0 1 *")]
-        [DataRow(DataKind.Med, "Элементы3D_2 Коэф.теплоотдачи.воздух 0 1 *")]
-        [DataRow(DataKind.Med, "Элементы3D_2 Коэф.теплоотдачи.воздух 20 1 *")]
-        [DataRow(DataKind.Med, "Элементы3D_2 Коэф.теплоотдачи.воздух 20 0 *")]
+        [DataRow(DataKind.Среда, "Элементы3D_2  20 0 1")]
+        [DataRow(DataKind.Среда, "Коэф.теплоотдачи.воздух 20 0 1 *")]
+        [DataRow(DataKind.Среда, "Элементы3D_2 20 0 1 *")]
+        [DataRow(DataKind.Среда, "Элементы3D_2 Коэф.теплоотдачи.воздух 0 1 *")]
+        [DataRow(DataKind.Среда, "Элементы3D_2 Коэф.теплоотдачи.воздух 20 1 *")]
+        [DataRow(DataKind.Среда, "Элементы3D_2 Коэф.теплоотдачи.воздух 20 0 *")]
 
-        [DataRow(DataKind.Clamp, "Жесткое X * 0 1500 *")]
-        [DataRow(DataKind.Clamp, "Узлы_7 X * 0 1500 *")]
-        [DataRow(DataKind.Clamp, "Узлы_7 Жесткое * 0 1500 *")]
-        [DataRow(DataKind.Clamp, "Узлы_7 Жесткое X 0.0.0 1500 *")]
-        [DataRow(DataKind.Clamp, "Узлы_7 Жесткое X r5r 1500 *")]
-        [DataRow(DataKind.Clamp, "Узлы_7 Жесткое X !!! 0 *")]
+        [DataRow(DataKind.Закрепление, "Жесткое X * 0 1500 *")]
+        [DataRow(DataKind.Закрепление, "Узлы_7 X * 0 1500 *")]
+        [DataRow(DataKind.Закрепление, "Узлы_7 Жесткое * 0 1500 *")]
+        [DataRow(DataKind.Закрепление, "Узлы_7 Жесткое X 0.0.0 1500 *")]
+        [DataRow(DataKind.Закрепление, "Узлы_7 Жесткое X r5r 1500 *")]
+        [DataRow(DataKind.Закрепление, "Узлы_7 Жесткое X !!! 0 *")]
 
-        [DataRow(DataKind.Load, "Узлы_7 Сила Z 0 0 1500 *")]
-        [DataRow(DataKind.Load, "Узлы_7 Сила Z 0 0,0! 1500 *")]
-        [DataRow(DataKind.Load, "Узлы_7 Сила Z 0 000!& 0 *")]
+        [DataRow(DataKind.Нагрузка, "Узлы_7 Сила Z 0 0 1500 *")]
+        [DataRow(DataKind.Нагрузка, "Узлы_7 Сила Z 0 0,0! 1500 *")]
+        [DataRow(DataKind.Нагрузка, "Узлы_7 Сила Z 0 000!& 0 *")]
         [ExpectedException(typeof(Exception))]
         public void TestTaskDataFormatException(DataKind dataKind, string dataString) =>
             SetUpTestLoadBoundTaskDataException(dataKind, dataString);
 
         [DataTestMethod]
-        [DataRow(DataKind.Heat, "1 PowerCycle * Load 0 49.99998 *")]
-        [DataRow(DataKind.Heat, "0.001 * * Load 0 49.99998 *")]
-        [DataRow(DataKind.Heat, "1 * ARC Load 0 49.99998 mff")]
-        [DataRow(DataKind.Med, "air Коэф.теплоотдачи.воздух 20 0 1500 *")]
-        [DataRow(DataKind.Med, "air * 25 0 1500 *")]
-        [DataRow(DataKind.Med, "air * Термоцикл 0 1500 *")]
-        [DataRow(DataKind.Med, "air 0.002 Термоцикл 0 1500 *")]
-        [DataRow(DataKind.Med, "air Коэф.теплоотдачи.воздух 20.01 0 1500 *")]
-        [DataRow(DataKind.Med, "Элементы3D_2 Коэф.теплоотдачи.воздух 20 0 1 *")]
-        [DataRow(DataKind.Clamp, "Узлы_7 Жесткое X * 0 1500 *")]
-        [DataRow(DataKind.Clamp, "Узлы_7 Жесткое None * 0 1500 *")]
-        [DataRow(DataKind.Clamp, "Узлы_7 Жесткое X Функция 0 1500 *")]
-        [DataRow(DataKind.Clamp, "Узлы_7 Жесткое Y * 0 1500 *")]
-        [DataRow(DataKind.Clamp, "Узлы_7 Жесткое Z * 0 1500 *")]
-        [DataRow(DataKind.Load, "Узлы_7 Сила None 0 * 0 1500 *")]
-        [DataRow(DataKind.Load, "Узлы_7 Сила Z 0 * 0 1500 *")]
-        [DataRow(DataKind.Load, "Узлы_7 Сила X 0.0001 loadCycle 0 1500 *")]
-        [DataRow(DataKind.Mat, "Элементы3D_3 Сталь_20ХМ 0 1500 *")]
-        [DataRow(DataKind.Heat, "1 * FSWPin load 0 1 mff")]
-        [DataRow(DataKind.Heat, "1 * FSWShoulder load 0 1 *")]
+        [DataRow(DataKind.Нагрев, "1 PowerCycle * Load 0 49.99998 *")]
+        [DataRow(DataKind.Нагрев, "0.001 * * Load 0 49.99998 *")]
+        [DataRow(DataKind.Нагрев, "1 timeFunc * Load 0.0001 49 *")]
+        [DataRow(DataKind.Среда, "air Коэф.теплоотдачи.воздух 20 0 1500 *")]
+        [DataRow(DataKind.Среда, "air * 25 0 1500 *")]
+        [DataRow(DataKind.Среда, "air * Термоцикл 0 1500 *")]
+        [DataRow(DataKind.Среда, "air 0.002 Термоцикл 0 1500 *")]
+        [DataRow(DataKind.Среда, "air Коэф.теплоотдачи.воздух 20.01 0 1500 *")]
+        [DataRow(DataKind.Среда, "Элементы3D_2 Коэф.теплоотдачи.воздух 20 0 1 *")]
+        [DataRow(DataKind.Закрепление, "Узлы_7 Жесткое X * 0 1500 *")]
+        [DataRow(DataKind.Закрепление, "Узлы_7 Жесткое None * 0 1500 *")]
+        [DataRow(DataKind.Закрепление, "Узлы_7 Жесткое X Функция 0 1500 *")]
+        [DataRow(DataKind.Закрепление, "Узлы_7 Жесткое Y * 0 1500 *")]
+        [DataRow(DataKind.Закрепление, "Узлы_7 Жесткое Z * 0 1500 *")]
+        [DataRow(DataKind.Нагрузка, "Узлы_7 Сила None 0 * 0 1500 *")]
+        [DataRow(DataKind.Нагрузка, "Узлы_7 Сила Z 0 * 0 1500 *")]
+        [DataRow(DataKind.Нагрузка, "Узлы_7 Сила X 0.0001 loadCycle 0 1500 *")]
+        [DataRow(DataKind.Материал, "Элементы3D_3 Сталь_20ХМ 0 1500 *")]
         public void TestCreateTaskData(DataKind dataKind,  string dataString)
         {
             //assign
@@ -421,37 +332,26 @@ namespace TestProject
             Data data;
             switch (dataKind)
             {
-                case DataKind.Mat:
-                    data = new MatData(new Group("", ObjType.Элемент3D), dataString) 
-                    { Group = new Group(dataAr[0], ObjType.Элемент3D) };
+                case DataKind.Материал:
+                    data = new MatData(new Group(dataAr[0], ObjType.Элемент3D), dataString);
                     break;
-                case DataKind.Med:
-                    data = new MediaData(new Group("", ObjType.Элемент2D), dataString)
-                    { Group = new Group(dataAr[0], ObjType.Элемент2D) };
+                case DataKind.Среда:
+                    data = new MediaData(new Group(dataAr[0], ObjType.Элемент2D), dataString);
                     break;
-                case DataKind.Heat:
-                    var heatData = new HeatData(new Group("", ObjType.Элемент3D), dataString)
-                    { Group = new Group(dataAr[1], ObjType.Элемент3D) };
-                    //var baseLine = new Group("baseLine", ObjType.Узел);
-                    //var refLine = new Group("refLine", ObjType.Узел);
-                    //var start = new Group("startNodes", ObjType.Узел);
-
-                    //heatData.MovedFrame = new MovedFrame(start, baseLine, refLine, 5);
-
+                case DataKind.Нагрев:
+                    var heatData = new HeatData(new Group(dataAr[3], ObjType.Элемент3D), dataString);
                     data = heatData;
                     break;
-                case DataKind.Clamp:
-                    data = new ClampData(new Group("", ObjType.Узел), dataString)
-                    { Group = new Group(dataAr[0], ObjType.Узел) };
+                case DataKind.Закрепление:
+                    data = new ClampData(new Group(dataAr[0], ObjType.Узел), dataString);
                     break;
                 default:
-                    data = new LoadData(new Group("", ObjType.Узел), dataString)
-                    { Group = new Group(dataAr[0], ObjType.Узел) };
+                    data = new LoadData(new Group(dataAr[0], ObjType.Узел), dataString);
                     break;
             }
             //assert
 
-            Assert.AreEqual(data.GetInfo, dataString);
+            Assert.AreEqual($"{dataKind} : {dataString}",data.ToString() );
 
         }
 
@@ -524,30 +424,6 @@ namespace TestProject
                 var desParams = JsonConvert.DeserializeObject<ChemicalParameters>
 (File.ReadAllText($@"{testDir}\TestTaskParameters\{ar[0]}_testParam.jsp"), settingsSerializer);
             }
-        }
-
-
-        [TestMethod]
-        public void UpdateHeatData()
-        {
-            //assign
-            var proj = new ProjectData();
-            proj.ModelData = new ModelData();
-            proj.TaskData = new TaskData();
-
-            //act
-            proj.Load(@"..\..\..\Examples\proj.bpf");
-
-            var selectedData = proj.TaskData.First(x => x.Name == "Нагрев");
-
-            var data = selectedData.GetInfo;
-
-            var heat = selectedData as HeatData;
-            
-            heat.SetInfo("ARC;4;100;25 Load 0 10 baseLine|refLine;10;startNodes;startNodes;0|0|0|0");
-
-            selectedData = heat as IData;
-            data = selectedData.GetInfo;
         }
     }
 }

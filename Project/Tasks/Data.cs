@@ -9,12 +9,10 @@ namespace Project.Tasks
     public abstract class Data : IData
     {
         /// <inheritdoc/>
-        public string Name { get; internal set; }
-        /// <inheritdoc/>
         public DataKind Kind { get; internal set; }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
-        public abstract string GetInfo { get; }
+        protected abstract string GetInfo { get; }
         /// <summary>
         /// Data
         /// </summary>
@@ -32,6 +30,6 @@ namespace Project.Tasks
         }
         /// <inheritdoc/>
 
-        public abstract void SetInfo(string info);
+        protected abstract void SetInfo(string info);
     }
 }

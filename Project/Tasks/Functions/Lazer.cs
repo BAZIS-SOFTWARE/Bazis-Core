@@ -5,23 +5,22 @@ using System.Collections.Generic;
 
 namespace Project.Tasks.Functions
 {
-    public class Lazer : CillindricalFunction, IPowerFunction
+    public class Lazer : CillindricalFunction
     {
         /// <summary>
         /// SurfacePower
         /// </summary>
         public float SurfacePower { get; internal set; }
 
-        List<FunctionParameter> parameters = new List<FunctionParameter>();
         /// <inheritdoc/>
 
         public override string ToString()
         {
-            return $"{Name};{SurfacePower};{Length};{UpperDiam};{BottomDiam}";
+            return $"{base.ToString()};{SurfacePower};{Length};{UpperDiam};{BottomDiam}";
         }
 /// <inheritdoc/>
 
-        public float CalcPower(Point3D elementCenter)
+        public override float CalcPower(Point3D elementCenter)
         {
             float r, r0, r1, r2;
             
@@ -34,29 +33,6 @@ namespace Project.Tasks.Functions
                 return relPowerDensity;
             }
             return 0;
-        }
-
-        /// <inheritdoc/>
-        public void CreateParameter(string name, float value)
-        {
-            var fParam = new FunctionParameter() { Name = name, Value = value };
-            parameters.Add(fParam);
-        }
-        /// <inheritdoc/>
-
-        public void CreateParameter(string name)
-        {
-            var fParam = new FunctionParameter() { Name = name };
-            parameters.Add(fParam);
-        }
-        /// <inheritdoc/>
-
-        public IEnumerable<FunctionParameter> GetParameters()
-        {
-            foreach (var item in parameters)
-            {
-                yield return item;
-            }
-        }
+        }       
     }
 }

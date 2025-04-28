@@ -14,6 +14,7 @@ using Model.Interfaces.MeshObjects;
 using Project.Tasks;
 using Model.Interfaces;
 using Project.Tasks.Functions;
+using Project.Tasks.LocalFrame;
 using Project.Interfaces.Tasks;
 
 namespace TestProject
@@ -30,9 +31,12 @@ namespace TestProject
  
 
         [TestMethod]
-        [DataRow(@"\WeldingHeatSource\LWTest_v.bpf", DisplayName = "LW")]
+        [DataRow(@"\WeldingHeatSource\LWTest_v.bpf", DisplayName = "LWTest_v.bpf")]
+        [DataRow(@"\test_t_lazer_0_10.bpf", DisplayName = "test_t_lazer_0_10.bpf")]
+        [DataRow(@"\test_t_lazer_180_0_10.bpf", DisplayName = "test_t_lazer_180_0_10.bpf")]
         [DataRow(@"\WeldingHeatSource\ARCTest_v.bpf", DisplayName = "ARC")]
         [DataRow(@"\WeldingHeatSource\FSW\proj.bpf", DisplayName = "FSW")]
+
         public void MFF_EnergyCalculated(string path)
         {
             //assign
@@ -43,7 +47,7 @@ namespace TestProject
             //act
             proj.Load($@"{testDir}\{path}");
 
-            var lazerData = proj.TaskData.Find("Нагрев").Select(x => (HeatData)x).ToArray();
+            var lazerData = proj.TaskData.Find(DataKind.Нагрев).Select(x => (HeatData)x).ToArray();
             for (var i = 0; i < lazerData.Count(); i++)
             {
                 var heatData = lazerData[i];
@@ -54,10 +58,10 @@ namespace TestProject
                 if (heatData.FrameFunction is FSWShoulder fswShoulder)
                     fswShoulder.GetParameters().ElementAt(0).Value = 0.001f;
 
-                var powerFunc = (IPowerFunction)heatData.FrameFunction;
+                var powerFunc = heatData.FrameFunction;
                 //assert
                 var energy = new float[gr.Count];
-                var frame = heatData.MovedFrame.CalcFrame(1);
+                var frame = (heatData.LocalFrame as MovedFrame).CalcFrame(1);
                 powerFunc.Frame = frame;
                 var counter = 0;
                 foreach (var obj in gr)
@@ -149,8 +153,8 @@ namespace TestProject
         [TestMethod]
         public void FrameFunction_GetIntersectedObjects(string fName, float[] checkPoint,int res)
         {
-            var frame = new Frame(new Point3D(5f, 0f, 0f), new Point3D(0f, 5f, 0f), new Point3D(0f, 0f, 5f), new Point3D(0f, 0f, 0f));
-            IPowerFunction pFunction;
+            var frame = new Frame(new Point3D(0f, 0f, 0f),new Point3D(5f, 0f, 0f), new Point3D(0f, 5f, 0f), new Point3D(0f, 0f, 5f));
+            FrameFunction pFunction;
             if(fName == "arc")
             {
                 var arc = new ArcBuilder();
@@ -406,9 +410,9 @@ namespace TestProject
                 refLine.Add(new Node(i + 5000, new Point3D(0f, -1f, i)));
             }
 
-            heatData.MovedFrame = new MovedFrame(baseLine,refLine,5);
+            heatData.LocalFrame = new MovedFrame(baseLine,refLine,5);
 
-            heatData.FrameFunction = new FrameFunctionBuilder().Build(new string[] { "ARC", "10", "100", "25" });
+            heatData.FrameFunction = (FrameFunction)(new FrameFunctionBuilder(new string[] { "ARC", "10", "100", "25" }));
 
             var expectedElements = new List<IElement>();
             var inputElements = new List<IElement>();
@@ -418,12 +422,12 @@ namespace TestProject
             if (input.Count() >= 12)
                 inputElements = GetTetraElements(input);
             var resultList = new List<IElement>();
+            var mf = heatData.LocalFrame as MovedFrame;
+            var end = mf.CalcMotionTime();
 
-            var end = heatData.MovedFrame.CalcMotionTime();
-
-            for (var time = 0f; time < end; time += heatData.MovedFrame.Velosity)
+            for (var time = 0f; time < end; time += mf.Velosity)
             {
-                var frame = heatData.MovedFrame.CalcFrame(time);
+                var frame = mf.CalcFrame(time);
                 heatData.FrameFunction.Frame = frame;
                 resultList.AddRange(heatData.FrameFunction.GetIntersectedObjects(inputElements));
             }

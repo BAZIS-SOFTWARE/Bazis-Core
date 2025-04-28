@@ -1,35 +1,36 @@
 ﻿using Geometry;
+using Project.Interfaces.Tasks;
 using System.Collections.Generic;
 
-namespace Project.Interfaces.Tasks
+namespace Project.Tasks.Functions
 {
     /// <summary>
     /// IHeatPowerFunction
     /// </summary>
-    public interface IPowerFunction : IFrameFunction
+    public abstract class PowerFunction : IFrameFunction
     {
         /// <summary>
         /// CalcPower
         /// </summary>
         /// <param name="elementCenter"></param>
         /// <returns></returns>
-        float CalcPower(Point3D elementCenter);
+        public abstract float CalcPower(Point3D elementCenter);
 
         /// <summary>
         /// CreateParameter
         /// </summary>
         /// <param name="name"></param>
         /// <param name="value"></param>
-        void CreateParameter(string name, float value);
+        public abstract void CreateParameter(string name, float value);
         /// <summary>
         /// CreateParameter
         /// </summary>
         /// <param name="name"></param>
-        void CreateParameter(string name);
+        public abstract void CreateParameter(string name);
         /// <summary>
         /// GetParameters
         /// </summary>
         /// <returns></returns>
-        IEnumerable<FunctionParameter> GetParameters();
+        public abstract IEnumerable<FunctionParameter> GetParameters();
     }
 }

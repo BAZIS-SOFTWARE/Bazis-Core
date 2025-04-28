@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Project.Tasks.Functions
 {
-    public abstract class CillindricalFunction : ICillindricalFunction
+    public abstract class CillindricalFunction : FrameFunction
     {
         /// <inheritdoc/>
         public float BottomDiam { get; internal set; }
@@ -14,15 +14,10 @@ namespace Project.Tasks.Functions
         public float UpperDiam { get; internal set; }
         /// <inheritdoc/>
         public float Length { get; internal set; }
-        /// <inheritdoc/>
-        public string Name { get; set; }
-        /// <inheritdoc/>
-        public Frame Frame { get; set; }
 
         /// <summary>
         /// IsPointInside
         /// </summary>
-        /// <param name="frame"></param>
         /// <param name="elementCenter"></param>
         /// <param name="r"></param>
         /// <param name="r0"></param>
@@ -60,7 +55,7 @@ namespace Project.Tasks.Functions
         }
         /// <inheritdoc/>
 
-        public List<T> GetIntersectedObjects<T>(List<T> elements) where T : IModelObject
+        public override List<T> GetIntersectedObjects<T>(List<T> elements)
         {
             var insideElements = new List<T>();
 
@@ -70,9 +65,9 @@ namespace Project.Tasks.Functions
 
             return insideElements;
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
-        public bool IsOverlappingSelf( float velocity)
+        public override bool IsOverlappingSelf( float velocity)
         {
             return velocity <= BottomDiam / 2 && velocity <= UpperDiam / 2;
         }

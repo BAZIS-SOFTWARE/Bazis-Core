@@ -2,6 +2,7 @@
 using Project.Interfaces.IO;
 using Project.Interfaces.Tasks;
 using Project.Tasks.Functions;
+using Project.Tasks.LocalFrame;
 using System;
 using System.IO;
 using System.Linq;
@@ -62,23 +63,33 @@ namespace Project.Tasks.IO
                         var group = groupData.Find(subAr[3]);
                         var data = new HeatData(group, dataAr);
 
-                        var frameFunction = CreateFrameFunction(subAr[2].Split(';'));
-                        data.FrameFunction = frameFunction;
-
-                        var trajAr = subAr[6].Split(';');
-                        if (trajAr.Length > 1)
+                        if(subAr[2] != "*")
                         {
-                            var baseLineGrName = trajAr[0].Split('|')[0];
-                            var refLineGrName = trajAr[0].Split('|')[1];
-
-                            var startNodesGrName = trajAr[2];
-
-                            var baseLine = groupData.Find(baseLineGrName);
-                            var refLine = groupData.Find(refLineGrName);
-                            var vel = float.Parse(trajAr[1]);
-
-                            data.MovedFrame = new Functions.MovedFrame(baseLine, refLine, vel);            
+                            var builder = new FrameFunctionBuilder(subAr[2].Split(';'));
+                            data.FrameFunction = (FrameFunction)builder;
                         }
+
+                        if(subAr[6] != "*")
+                        {
+                            var trajAr = subAr[6].Split(';');
+                            if (trajAr.Length == 3)
+                            {
+                                var baseLineGrName = trajAr[0].Split('|')[0];
+                                var refLineGrName = trajAr[0].Split('|')[1];
+
+                                var baseLine = groupData.Find(baseLineGrName);
+                                var refLine = groupData.Find(refLineGrName);
+                                var vel = float.Parse(trajAr[1]);
+
+                                data.LocalFrame = new MovedFrame(baseLine, refLine, vel);
+                            }
+                            else
+                            {
+                                var frameGr = groupData.Find(trajAr[0]);
+                                data.LocalFrame = new StaticFrame(frameGr);
+                            }
+                        }
+                        
 
                         taskData.Add(data);
                     }
@@ -95,35 +106,35 @@ namespace Project.Tasks.IO
             return taskData;
         }
 
-        private IPowerFunction CreateFrameFunction(string[] heatSourceAr)
-        {
-            HeatSources processType;
-            if (!Enum.TryParse(heatSourceAr[0], out processType))
-                throw new Exception("Источник задан неверно!");
+        //private IPowerFunction CreateFrameFunction(string[] heatSourceAr)
+        //{
+        //    HeatSources processType;
+        //    if (!Enum.TryParse(heatSourceAr[0], out processType))
+        //        throw new Exception("Источник задан неверно!");
 
-            if (processType == HeatSources.ARC)
-            {
-                return (Arc)new ArcBuilder().SetCurrent(heatSourceAr[2]).SetVoltage(heatSourceAr[3]).
-                    SetWidth(heatSourceAr[1]);
-            }
+        //    if (processType == HeatSources.ARC)
+        //    {
+        //        return (Arc)new ArcBuilder().SetCurrent(heatSourceAr[2]).SetVoltage(heatSourceAr[3]).
+        //            SetWidth(heatSourceAr[1]);
+        //    }
 
-            else if (processType == HeatSources.FSWPin)
-            {
-                return (FSWPin)new FSWPinBuilder().SetRotSpeed(heatSourceAr[1]).SetLength(heatSourceAr[2]).
-                    SetBottomDiam(heatSourceAr[3]).SetUpperDiam(heatSourceAr[4]).SetYieldFunc(heatSourceAr[5]);
+        //    else if (processType == HeatSources.FSWPin)
+        //    {
+        //        return (FSWPin)new FSWPinBuilder().SetRotSpeed(heatSourceAr[1]).SetLength(heatSourceAr[2]).
+        //            SetBottomDiam(heatSourceAr[3]).SetUpperDiam(heatSourceAr[4]).SetYieldFunc(heatSourceAr[5]);
 
-            }
-            else if (processType == HeatSources.FSWShoulder)
-            {
-                return (FSWShoulder)new FSWShoulderBuilder().SetAxisForce(heatSourceAr[1]).
-                    SetRotSpeed(heatSourceAr[2]).SetLength(heatSourceAr[3]).
-                    SetBottomDiam(heatSourceAr[4]).SetUpperDiam(heatSourceAr[5]).
-                    SetFricModuleFunc(heatSourceAr[6]);
-            }
-            else
-            {
-                return (Lazer)new LazerBuilder().SetPower(heatSourceAr[1]).SetLength(heatSourceAr[2]).SetUpperDiam(heatSourceAr[3]).SetBottomDiam(heatSourceAr[4]);
-            }
-        }
+        //    }
+        //    else if (processType == HeatSources.FSWShoulder)
+        //    {
+        //        return (FSWShoulder)new FSWShoulderBuilder().SetAxisForce(heatSourceAr[1]).
+        //            SetRotSpeed(heatSourceAr[2]).SetLength(heatSourceAr[3]).
+        //            SetBottomDiam(heatSourceAr[4]).SetUpperDiam(heatSourceAr[5]).
+        //            SetFricModuleFunc(heatSourceAr[6]);
+        //    }
+        //    else
+        //    {
+        //        return (Lazer)new LazerBuilder().SetPower(heatSourceAr[1]).SetLength(heatSourceAr[2]).SetUpperDiam(heatSourceAr[3]).SetBottomDiam(heatSourceAr[4]);
+        //    }
+        //}
     }
 }

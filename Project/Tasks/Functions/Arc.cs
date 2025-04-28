@@ -8,13 +8,13 @@ using System.Globalization;
 
 namespace Project.Tasks.Functions
 {
-    public class Arc : SphereFunction, IPowerFunction
+    public class Arc : SphereFunction
     {
         public float Current { get; internal set; }
         public float Voltage { get; internal set; }
         public float Power { get { return Current * Voltage; } }
 
-        List<FunctionParameter> parameters = new List<FunctionParameter>();
+
         /// <inheritdoc/>
 
         public override string ToString()
@@ -23,7 +23,7 @@ namespace Project.Tasks.Functions
         }
 /// <inheritdoc/>
 
-        public float CalcPower(Point3D elementCenter)
+        public override float CalcPower(Point3D elementCenter)
         {
             float rad, halfBead;
 
@@ -37,29 +37,6 @@ namespace Project.Tasks.Functions
                 return powerDensity * (float)Math.Exp(-1 * ((rad * rad) / (halfBead * halfBead)));
             }
             return 0;
-        }
-
-        /// <inheritdoc/>
-        public void CreateParameter(string name, float value)
-        {
-            var fParam = new FunctionParameter() { Name = name, Value = value };
-            parameters.Add(fParam);
-        }
-        /// <inheritdoc/>
-
-        public void CreateParameter(string name)
-        {
-            var fParam = new FunctionParameter() { Name = name };
-            parameters.Add(fParam);
-        }
-        /// <inheritdoc/>
-
-        public IEnumerable<FunctionParameter> GetParameters()
-        {
-            foreach (var item in parameters)
-            {
-                yield return item;
-            }
-        }
+        }       
     }
 }

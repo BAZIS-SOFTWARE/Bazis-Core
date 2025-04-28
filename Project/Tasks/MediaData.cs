@@ -27,19 +27,13 @@ namespace Project.Tasks
 
         public MediaData(IGroup group, string info) : base(group, info)
         {
-            Kind = DataKind.Med;
-            Name = "Среда";
+            Kind = DataKind.Среда;
         }
+
+
 /// <inheritdoc/>
 
-
-        public override string ToString()
-        {
-                return string.Format("{0} : {1}",Name, GetInfo);           
-        }
-/// <inheritdoc/>
-
-        public override void SetInfo(string info)
+        protected override void SetInfo(string info)
         {
             var medDataAr = info.Split(' ');
 
@@ -101,13 +95,13 @@ namespace Project.Tasks
 
 /// <inheritdoc/>
 
-        public override string GetInfo
+        protected override string GetInfo
         {
             get
             {
                 var mfInfo = "*";
-                if (MovedFrame != null)
-                    mfInfo = MovedFrame.ToString();
+                if (LocalFrame != null)
+                    mfInfo = LocalFrame.ToString();
 
                 if (MediaType == MediaType.ConstantTemp)
                 {

@@ -28,29 +28,27 @@ namespace Project.Tasks
         public string PowerFunction{ get; private set; } = "*";
 
         /// <inheritdoc/>
-        public override string GetInfo
+        protected override string GetInfo
         {
             get
             {
                 var mfInfo = "*";
-                if (MovedFrame != null)
-                    mfInfo = MovedFrame.Name;
+                if (LocalFrame != null)
+                    mfInfo = LocalFrame.ToString();
 
                 var ffInfo = "*";
                 if (FrameFunction != null)
-                    ffInfo = FrameFunction.Name;
+                    ffInfo = FrameFunction.ToString();
 
                 return
-                  string.Format(CultureInfo.InvariantCulture, "{0} {1} {2} {3} {4}", PowerValue,
-                  PowerFunction, ffInfo
-                    , Group.Name, StartTime, StopTime, mfInfo);
+                  $"{PowerValue} {PowerFunction} {ffInfo} {Group.Name} {StartTime} {StopTime} {mfInfo}";
             }
         }
 
 
         /// <inheritdoc/>
 
-        public override void SetInfo(string info)
+        protected override void SetInfo(string info)
         {
             var heatDataAr = info.Split(' ');
 
@@ -80,8 +78,7 @@ namespace Project.Tasks
 
         public HeatData(IGroup group, string info) : base(group, info)
         {
-            Kind = DataKind.Heat;
-            Name = "Нагрев";       
+            Kind = DataKind.Нагрев;     
         }
     }
 }

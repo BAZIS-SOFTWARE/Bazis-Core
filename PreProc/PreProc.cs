@@ -115,7 +115,7 @@ namespace PreProc
             where LoadData : ValuableData
             where BoundData : ValuableData
         {
-            var matData = data.Where(md => md.Kind == DataKind.Mat).OrderBy(md => md.StartTime).ToList();
+            var matData = data.Where(md => md.Kind == DataKind.Материал).OrderBy(md => md.StartTime).ToList();
             var loadData = data.Where(ld => ld is LoadData).OrderBy(ld => ld.StartTime).ToList();
             var boundData = data.Where(bd => bd is BoundData).OrderBy(bd => bd.StartTime).ToList();
 
@@ -143,8 +143,8 @@ namespace PreProc
                 parameter.TimeSettings.StartTime = startStop.Item1;
                 parameter.TimeSettings.StopTime = startStop.Item2;
 
-                if (TimeSeparators.ContainsKey(DataKind.Heat))
-                    if (!TimeSeparators[DataKind.Heat].Any(x => x.Item1 == startStop.Item1 && x.Item2 == startStop.Item2))
+                if (TimeSeparators.ContainsKey(DataKind.Нагрев))
+                    if (!TimeSeparators[DataKind.Нагрев].Any(x => x.Item1 == startStop.Item1 && x.Item2 == startStop.Item2))
                     {
                         parameter.TimeSettings.InitTimeStep = 0.5f;
                         parameter.TimeSettings.MaxTimeStep = 100f;
