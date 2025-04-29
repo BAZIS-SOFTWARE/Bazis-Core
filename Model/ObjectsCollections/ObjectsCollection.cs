@@ -9,6 +9,8 @@ using MathNet.Numerics;
 using System.Xml.Linq;
 using Model.Interfaces.ObjectsCollections;
 using Model.MeshObjects;
+using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace Model.ObjectsCollections
 {
@@ -43,9 +45,19 @@ namespace Model.ObjectsCollections
         {
             objects.Add(setName, new ObjectsSet<T>(setName));
         }
+/// <inheritdoc/>
 
         public void Add(ObjectsSet<T> set)
         {
+            if(objects.Count != 0)
+            {
+                var max = GetMaxNumber();
+                var min = set.Min(x => x.Key);
+
+                if (min <= max)
+                    throw new Exception("Минимальный номер в добавляемом наборе меньше или равен максимальному");
+            }
+
             objects.Add(set.Name, set);
         }
 
@@ -187,6 +199,44 @@ public bool ContainsName(string collName)
                 item.Value.ExistState = false;
 
             return objects.Remove(name);
+        }
+/// <inheritdoc/>
+
+        public void Append(IObjectsCollection<T> collection)
+        {
+            //string newSetName;
+            //var appendMatching = objects.Where(x => Regex.IsMatch(x.name, "append_\\d+"));
+            //if (appendMatching is null || appendMatching.Count() < 1)
+            //    newSetName = "append_1";
+            //else
+            //{
+            //    var lastUsedNumber = appendMatching.Max(y => int.Parse(y.Split('_')[1]));
+            //    newSetName = $"append_{++lastUsedNumber}";
+            //}
+            var shifting = 0;
+
+            if (objects.Count != 0)
+            {
+                var max = GetMaxNumber();
+                var min = collection.GetMinNumber();
+                if (min <= max)
+                    shifting = max + 1;
+            }
+            var counter = objects.Count;
+
+            foreach (var set in collection)
+            {
+                var newSetName = $"append_{counter++}";
+                Add(newSetName);
+                objects[newSetName].SetColor(set.Value.Color);
+
+                foreach (var item in set.Value)
+                {
+                    var number = item.Value.Number + shifting;
+                    item.Value.SetNumber(number);
+                    objects[newSetName].Add(number,item.Value);
+                }
+            }
         }
     }
 }
