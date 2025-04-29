@@ -10,6 +10,7 @@ using System.Xml.Linq;
 using Model.Interfaces.ObjectsCollections;
 using Model.MeshObjects;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace Model.ObjectsCollections
 {
@@ -203,6 +204,15 @@ public bool ContainsName(string collName)
 
         public void Append(IObjectsCollection<T> collection)
         {
+            //string newSetName;
+            //var appendMatching = objects.Where(x => Regex.IsMatch(x.name, "append_\\d+"));
+            //if (appendMatching is null || appendMatching.Count() < 1)
+            //    newSetName = "append_1";
+            //else
+            //{
+            //    var lastUsedNumber = appendMatching.Max(y => int.Parse(y.Split('_')[1]));
+            //    newSetName = $"append_{++lastUsedNumber}";
+            //}
             var shifting = 0;
 
             if (objects.Count != 0)
