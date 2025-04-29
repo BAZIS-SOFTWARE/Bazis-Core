@@ -115,11 +115,11 @@ namespace TestProject
 
                     if (frame.Centre._x is float.NaN || frame.Centre._y is float.NaN || frame.Centre._z is float.NaN)
                         throw new Exception($"СК определена неверно!: одна из координат центра не определена. frame: {preFrame}");
-                    if (frame.X._x is float.NaN || frame.X._y is float.NaN || frame.X._z is float.NaN)
+                    if (frame.Dir_X._x is float.NaN || frame.Dir_X._y is float.NaN || frame.Dir_X._z is float.NaN)
                         throw new Exception($"СК определена неверно!: одна из координат оси X не определена. frame: {preFrame}");
-                    if (frame.Y._x is float.NaN || frame.Y._y is float.NaN || frame.Y._z is float.NaN)
+                    if (frame.Dir_Y._x is float.NaN || frame.Dir_Y._y is float.NaN || frame.Dir_Y._z is float.NaN)
                         throw new Exception($"СК определена неверно!: одна из координат оси Y не определена. frame: {preFrame}");
-                    if (frame.Z._x is float.NaN || frame.Z._y is float.NaN || frame.Z._z is float.NaN)
+                    if (frame.Dir_Z._x is float.NaN || frame.Dir_Z._y is float.NaN || frame.Dir_Z._z is float.NaN)
                         throw new Exception($"СК определена неверно!: одна из координат оси Z не определена. frame: {preFrame}");
                 }
 

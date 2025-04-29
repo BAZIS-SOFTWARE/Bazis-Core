@@ -31,13 +31,13 @@ namespace Project.Tasks.Functions
             r1 = 0f;
             r2 = 0f;           
 
-            var hsPlane = new Plane(Frame.X, Frame.Centre, Frame.Y);
+            var hsPlane = new Plane(Frame.Dir_X, Frame.Centre, Frame.Dir_Y);
             var res = hsPlane.PointPosition(elementCenter);
 
             if (res < 0 | res > Length)
                 return false;
 
-            var hsAxis = new Segment3D(Frame.Centre, Frame.Z);
+            var hsAxis = new Segment3D(Frame.Centre, Frame.Dir_Z);
             r = elementCenter.GetDistanceToLine(hsAxis);
 
             var elDist = elementCenter.Sub(Frame.Centre);

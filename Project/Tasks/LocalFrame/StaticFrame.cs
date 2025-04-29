@@ -1,6 +1,7 @@
 ﻿using Geometry;
 using Model.Interfaces;
 using Project.Interfaces.Tasks;
+using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -15,10 +16,8 @@ namespace Project.Tasks.LocalFrame
         {
             if (baseGr.ObjType != ObjType.Узел)
                 throw new System.Exception("Группа должна состоять из узлов");
-            else if (baseGr.Count() < 3)
-                throw new System.Exception("Должно быть не менее трех узлов");
-            else if (baseGr.Count() > 4)
-                throw new System.Exception("Должно быть не более четырех узлов");
+            else if (baseGr.Count() != 3)
+                throw new System.Exception("Должно быть три узла");
 
             BaseGroup = baseGr;
         }
@@ -28,10 +27,10 @@ namespace Project.Tasks.LocalFrame
         {
             var points = BaseGroup.Select(x => x.CalcCentr()).ToArray();
 
-            if (points.Length == 4)
-                return new Frame(points[0], points[1], points[2], points[3]);
-            else
-                return new Frame(points[0], points[1], points[2]);
+            if (points.Length != 3)
+                throw new System.Exception("Должно быть три узла");
+
+            return new Frame(points[0], points[2], points[1]);
         }
 
         /// <inheritdoc/>

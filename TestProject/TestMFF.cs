@@ -153,7 +153,7 @@ namespace TestProject
         [TestMethod]
         public void FrameFunction_GetIntersectedObjects(string fName, float[] checkPoint,int res)
         {
-            var frame = new Frame(new Point3D(0f, 0f, 0f),new Point3D(5f, 0f, 0f), new Point3D(0f, 5f, 0f), new Point3D(0f, 0f, 5f));
+            var frame = new Frame();
             FrameFunction pFunction;
             if(fName == "arc")
             {
