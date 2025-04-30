@@ -498,13 +498,13 @@ namespace TestProject
             doubleEllips.FrontPart = 5;
             doubleEllips.BackPart = 15;
 
-            var frame = new Frame(new Point3D(20f, 15f, 15f), new Point3D(15f, 20f, 15f), new Point3D(15f, 15f, 20f), new Point3D(15f, 15f, 15f));
+            doubleEllips.Frame = new Frame(new Point3D(20f, 15f, 15f), new Point3D(15f, 15f, 20f),new Point3D(15f, 20f, 15f));
             var point = new Point3D(checkPoint[0], checkPoint[1], checkPoint[2]);
 
             if (location == "inside")
-                Assert.IsTrue(doubleEllips.IsPointInside(frame, point));
+                Assert.IsTrue(doubleEllips.IsPointInside(point));
             else
-                Assert.IsFalse(doubleEllips.IsPointInside(frame, point));
+                Assert.IsFalse(doubleEllips.IsPointInside(point));
         }
 
         [TestMethod]

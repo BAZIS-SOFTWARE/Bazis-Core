@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Project.Tasks.Functions
 {
-    public class DoubleEllips : IFrameFunction
+    public class DoubleEllips : FrameFunction
     {
         public string Name { get; set; }
 
@@ -33,23 +33,23 @@ namespace Project.Tasks.Functions
         public float BackPart { get; set; } // по оси Y
 
 
-        public List<T> GetIntersectedObjects<T>(Frame frame, List<T> elements) where T : IModelObject
+        public override List<T> GetIntersectedObjects<T>(List<T> elements)
         {
             var insideElements = new List<T>();
 
             foreach (var element in elements)
-                if (IsPointInside(frame, element.CalcCentr()))
+                if (IsPointInside(element.CalcCentr()))
                     insideElements.Add(element);
 
             return insideElements;
         }
 
-        public bool IsPointInside(Frame frame, Point3D elementCenter)
+        public bool IsPointInside(Point3D elementCenter)
         {
-            var desiredPoint = elementCenter.Sub(frame.Centre);
+            var desiredPoint = elementCenter.Sub(Frame.Centre);
 
             float semiEllipsoid;
-            if (elementCenter._y < frame.Centre._y)
+            if (elementCenter._y < Frame.Centre._y)
                 semiEllipsoid = BackPart;
             else semiEllipsoid = FrontPart;
 
@@ -59,9 +59,14 @@ namespace Project.Tasks.Functions
             return result <= 1;
         }
 
-        public bool IsOverlappingSelf(float velocity)
+        public override bool IsOverlappingSelf(float velocity)
         {
             return velocity <= (FrontPart + BackPart) / 2;
+        }
+
+        public override float CalcPower(Point3D elementCenter)
+        {
+            throw new NotImplementedException();
         }
     }
 }

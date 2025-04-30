@@ -63,6 +63,9 @@
     <Compile Include="Interfaces\Tasks\ITimeDependentData.cs" />
     <Compile Include="Interfaces\Tasks\ITrajectory.cs" />
     <Compile Include="Interfaces\Tasks\IValuableData.cs" />
+    <Compile Include="Tasks\Functions\DoubleEllips.cs" />
+    <Compile Include="Tasks\Functions\FrameFunction.cs" />
+    <Compile Include="Tasks\Functions\FrameFunctionBuilder.cs" />
     <Compile Include="Tasks\LocalFrame\LocalFrame.cs" />
     <Compile Include="Tasks\LocalFrame\StaticFrame.cs" />
     <Compile Include="IO\LoadEventArgs.cs" />
