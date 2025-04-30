@@ -146,7 +146,7 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
             ISurfaceObjsVertexCreator<T,U> vertexCreator;
 
             if (vertexType == "цвет")
-                vertexCreator = new ColorSurfaceObjsCreator<T,U>();
+                vertexCreator = new ColorSurfaceObjsCreator<T, U>();
             else if (vertexType == "координаты")
                 vertexCreator = new CoordsSurfaceObjsCreator<T, U>();
             else vertexCreator = new NormalsSurfaceObjsCreator<T, U>();
@@ -202,6 +202,28 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
         public void Add(IEnumerable<ISurfaceObject<T, U>> objs)
         {
                 surfaceObjects.AddRange(objs);
+        }
+        /// <summary>
+        /// Создать сепараторы, по разнице текущего и предыдущего значения в массиве можно определить тип элемента(кол-во треугольников)
+        /// </summary>
+        /// <returns>Массив сепараторов</returns>
+        public int[] CreateSeparators()
+        {
+            var surfObjs = surfaceObjects.ToArray();
+            var separators = new int[surfObjs.Length + 1];
+
+            var stride = 0;
+            var i = 0;
+
+            for(; i < surfObjs.Length; ++i)
+            {
+                separators[i] = stride;
+                foreach(var surface in surfObjs[i].GetSurfaces())
+                    stride += surface.NumberOfPoints - 2;
+            }
+            separators[i] = stride;
+
+            return separators;
         }
     }
 }

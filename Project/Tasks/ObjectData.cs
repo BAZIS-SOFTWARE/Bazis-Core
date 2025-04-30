@@ -17,7 +17,7 @@ namespace Project.Tasks
         protected ObjectData(IGroup group, string info) : base(info)
         {
             if (group == null)
-                throw new Exception($"Группа {group} пустая в строке : {info}");
+                throw new NullReferenceException($"Группа {group} не существует в строке : {info}");
             Group = group;
         }
 

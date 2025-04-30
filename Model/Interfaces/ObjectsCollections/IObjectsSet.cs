@@ -16,6 +16,11 @@ namespace Model.Interfaces.ObjectsCollections
         /// ClearNotExisted
         /// </summary>
         void ClearNotExisted();
+        /// <summary>
+        /// Append
+        /// </summary>
+        /// <param name="appSet"></param>
+        void Append(IObjectsSet<T> appSet);
 
     }
 }

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Geometry;
+using System;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Project.Tasks.Functions
 {
@@ -15,6 +12,7 @@ namespace Project.Tasks.Functions
         {
             shoulder = new FSWShoulder();
             shoulder.Name = "FSWShoulder";
+            shoulder.Frame = new Frame();
         }
 
         public FSWShoulderBuilder SetRotSpeed(string rotSpeed)
@@ -50,6 +48,12 @@ namespace Project.Tasks.Functions
         public FSWShoulderBuilder SetLength(string length)
         {
             shoulder.Length = float.Parse(length, NumberStyles.Float, CultureInfo.InvariantCulture);
+            return this;
+        }
+
+        public FSWShoulderBuilder SetFrame(Frame frame)
+        {
+            shoulder.Frame = frame;
             return this;
         }
 

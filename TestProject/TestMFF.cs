@@ -14,6 +14,7 @@ using Model.Interfaces.MeshObjects;
 using Project.Tasks;
 using Model.Interfaces;
 using Project.Tasks.Functions;
+using Project.Tasks.LocalFrame;
 using Project.Interfaces.Tasks;
 
 namespace TestProject
@@ -30,9 +31,12 @@ namespace TestProject
 
 
         [TestMethod]
-        [DataRow(@"\LWTest.bpf", DisplayName = "LW")]
-        [DataRow(@"\ARCTest.bpf", DisplayName = "ARC")]
+        [DataRow(@"\WeldingHeatSource\LWTest_v.bpf", DisplayName = "LWTest_v.bpf")]
+        [DataRow(@"\test_t_lazer_0_10.bpf", DisplayName = "test_t_lazer_0_10.bpf")]
+        [DataRow(@"\test_t_lazer_180_0_10.bpf", DisplayName = "test_t_lazer_180_0_10.bpf")]
+        [DataRow(@"\WeldingHeatSource\ARCTest_v.bpf", DisplayName = "ARC")]
         [DataRow(@"\WeldingHeatSource\FSW\proj.bpf", DisplayName = "FSW")]
+
         public void MFF_EnergyCalculated(string path)
         {
             //assign
@@ -43,7 +47,7 @@ namespace TestProject
             //act
             proj.Load($@"{testDir}\{path}");
 
-            var lazerData = proj.TaskData.Find("Нагрев").Select(x => (HeatData)x).ToArray();
+            var lazerData = proj.TaskData.Find(DataKind.Нагрев).Select(x => (HeatData)x).ToArray();
             for (var i = 0; i < lazerData.Count(); i++)
             {
                 var heatData = lazerData[i];
@@ -54,14 +58,15 @@ namespace TestProject
                 if (heatData.FrameFunction is FSWShoulder fswShoulder)
                     fswShoulder.GetParameters().ElementAt(0).Value = 0.001f;
 
-                var powerFunc = (IPowerFunction)heatData.FrameFunction;
+                var powerFunc = heatData.FrameFunction;
                 //assert
                 var energy = new float[gr.Count];
-                var frame = heatData.MovedFrame.CalcFrame(1);
+                var frame = (heatData.LocalFrame as MovedFrame).CalcFrame(1);
+                powerFunc.Frame = frame;
                 var counter = 0;
                 foreach (var obj in gr)
                 {
-                    energy[counter] = powerFunc.CalcPower(frame, obj.CalcCentr());
+                    energy[counter] = powerFunc.CalcPower(obj.CalcCentr());
                     counter++;
                 }
                 var max = energy.Max();
@@ -70,253 +75,126 @@ namespace TestProject
             }
         }
 
-        //ARC//
-        [DataRow(new[] { -10.0000001f, 0f, 0f })]
-        [DataRow(new[] { 0f, -10.0000001f, 0f })]
-        [DataRow(new[] { 0f, 0f, -10.0000001f })]
-        [DataRow(new[] { 10.0000001f, 0f, 0f })]
-        [DataRow(new[] { 0f, 10.0000001f, 0f })]
-        [DataRow(new[] { 0f, 0f, 10.0000001f })]
-        [DataRow(new[] { 9.99f, 0f, 0f })]
-        [DataRow(new[] { 0f, 9.99f, 0f })]
-        [DataRow(new[] { 0f, 0f, 9.99f })]
-        [DataRow(new[] { 10f, 0f, 0f })]
-        [DataRow(new[] { 0f, 10f, 0f })]
-        [DataRow(new[] { 0f, 0f, 10f })]
-        [TestMethod]
-        public void SphereFuncIsPointInside_ShouldPass_WhenPointInsideSphere(float[] checkPoint)
-        {
-            var arc = new ArcBuilder();
-            arc.SetWidth("20");
-
-            var frame = new Frame(new Point3D(5f, 0f, 0f), new Point3D(0f, 5f, 0f), new Point3D(0f, 0f, 5f), new Point3D(0f, 0f, 0f));
-            var point = new Point3D(checkPoint[0], checkPoint[1], checkPoint[2]);
-
-            Assert.IsTrue(((Arc)arc).IsPointInside(frame, point, out _, out _));
-        }
-
-
-        [TestMethod]
-        [DataRow(new[] { -1f, -1f, -1f })]
-        [DataRow(new[] { -5f, -5f, -5f })]
-        [DataRow(new[] { 0f, 0f, 0f })]
-        [DataRow(new[] { -9f, 2f, 0f })]
-        public void SphereFuncIsPointInside_ShouldPass_WhenHasEdgeCollision(float[] checkPoint)
-        {
-            var arc = new ArcBuilder();
-            arc.SetWidth("20");
-
-            var frame = new Frame(new Point3D(5f, 0f, 0f), new Point3D(0f, 5f, 0f), new Point3D(0f, 0f, 5f), new Point3D(0f, 0f, 0f));
-            var point = new Point3D(checkPoint[0], checkPoint[1], checkPoint[2]);
-
-            Assert.IsTrue(((Arc)arc).IsPointInside(frame, point, out _, out _));
-        }
-
-
-        [DataTestMethod]
-        [DataRow(new[] { 10.1f, 0f, 0f })]
-        [DataRow(new[] { 0f, 10.1f, 0f })]
-        [DataRow(new[] { 0f, 0f, 10.1f })]
-        [DataRow(new[] { 12f, 6f, 5f })]
-        [DataRow(new[] { -10.1f, 0f, 0f })]
-        [DataRow(new[] { 0f, -10.1f, 0f })]
-        [DataRow(new[] { 0f, 0f, -10.1f })]
-        public void SphereFuncIsPointInside_ShouldFail_WhenNoCollision(float[] checkPoint)
-        {
-            var arc = new ArcBuilder();
-            arc.SetWidth("20");
-
-            var frame = new Frame(new Point3D(5f, 0f, 0f), new Point3D(0f, 5f, 0f), new Point3D(0f, 0f, 5f), new Point3D(0f, 0f, 0f));
-            var point = new Point3D(checkPoint[0], checkPoint[1], checkPoint[2]);
-
-            Assert.IsFalse(((Arc)arc).IsPointInside(frame, point, out _, out _));
-        }
-
-        //Lazer//
-
-        [TestMethod]
-        [DataRow(new[] { 2f, 5f, 0f })]
-        [DataRow(new[] { 0f, 5f, -3f })]
-        [DataRow(new[] { 0f, 5f, -6f })]
-        public void LazerFuncIsPointInside_ShouldPass_WhenPointInsideCillinder(float[] checkPoint)
-        {
-            var lazer = new LazerBuilder();
-            lazer.SetLength("10");
-            lazer.SetBottomDiam("10");
-            lazer.SetUpperDiam("20");
-
-            var frame = new Frame(new Point3D(5f, 0f, 0f), new Point3D(0f, 5f, 0f), new Point3D(0f, 0f, 5f), new Point3D(0f, 0f, 0f));
-            var point = new Point3D(checkPoint[0], checkPoint[1], checkPoint[2]);
-
-            Assert.IsTrue(((Lazer)lazer).IsPointInside(frame, point, out _, out _, out _, out _));
-        }
-
+        [DataRow("arc",new[] { -10.0000001f, 0f, 0f },1,DisplayName = "arc_WhenPointInsideSphere")]
+        [DataRow("arc", new[] { 0f, -10.0000001f, 0f }, 1, DisplayName = "arc_WhenPointInsideSphere")]
+        [DataRow("arc", new[] { 0f, 0f, -10.0000001f }, 1, DisplayName = "arc_WhenPointInsideSphere")]
+        [DataRow("arc", new[] { 10.0000001f, 0f, 0f }, 1, DisplayName = "arc_WhenPointInsideSphere")]
+        [DataRow("arc", new[] { 0f, 10.0000001f, 0f }, 1, DisplayName = "arc_WhenPointInsideSphere")]
+        [DataRow("arc", new[] { 0f, 0f, 10.0000001f }, 1, DisplayName = "arc_WhenPointInsideSphere")]
+        [DataRow("arc", new[] { 9.99f, 0f, 0f }, 1, DisplayName = "arc_WhenPointInsideSphere")]
+        [DataRow("arc", new[] { 0f, 9.99f, 0f }, 1, DisplayName = "arc_WhenPointInsideSphere")]
+        [DataRow("arc", new[] { 0f, 0f, 9.99f }, 1, DisplayName = "arc_WhenPointInsideSphere")]
+        [DataRow("arc", new[] { 10f, 0f, 0f }, 1, DisplayName = "arc_WhenPointInsideSphere")]
+        [DataRow("arc", new[] { 0f, 10f, 0f }, 1, DisplayName = "arc_WhenPointInsideSphere")]
+        [DataRow("arc", new[] { 0f, 0f, 10f }, 1, DisplayName = "arc_WhenPointInsideSphere")]
+        [DataRow("arc", new[] { -1f, -1f, -1f }, 1, DisplayName = "arc_WhenPointInsideSphere")]
+        [DataRow("arc", new[] { -5f, -5f, -5f }, 1, DisplayName = "arc_WhenPointInsideSphere")]
+        [DataRow("arc", new[] { 0f, 0f, 0f }, 1, DisplayName = "arc_WhenPointInsideSphere")]
+        [DataRow("arc", new[] { -9f, 2f, 0f }, 1, DisplayName = "arc_WhenPointInsideSphere")]
+        [DataRow("arc", new[] { 10.1f, 0f, 0f }, 0, DisplayName = "arc_NoCollision")]
+        [DataRow("arc", new[] { 0f, 10.1f, 0f }, 0, DisplayName = "arc_NoCollision")]
+        [DataRow("arc", new[] { 0f, 0f, 10.1f }, 0, DisplayName = "arc_NoCollision")]
+        [DataRow("arc", new[] { 12f, 6f, 5f }, 0, DisplayName = "arc_NoCollision")]
+        [DataRow("arc", new[] { -10.1f, 0f, 0f }, 0, DisplayName = "arc_NoCollision")]
+        [DataRow("arc", new[] { 0f, -10.1f, 0f }, 0, DisplayName = "arc_NoCollision")]
+        [DataRow("arc", new[] { 0f, 0f, -10.1f }, 0, DisplayName = "arc_NoCollision")]
+        [DataRow("lz", new[] { 2f, 5f, 0f }, 1, DisplayName = "lz_WhenPointInsideSphere")]
+        [DataRow("lz", new[] { 0f, 5f, -3f }, 1, DisplayName = "lz_WhenPointInsideSphere")]
+        [DataRow("lz", new[] { 0f, 5f, -6f }, 1, DisplayName = "lz_WhenPointInsideSphere")]
+        [DataRow("lz", new[] { 4.99f, 0f, 0f }, 1, DisplayName = "lz_WhenPointTouches")]
+        [DataRow("lz", new[] { 9.99f, 0f, 0f }, 1, DisplayName = "lz_WhenPointTouches")]
+        [DataRow("lz", new[] { 0f, 0f, -4.99f }, 1, DisplayName = "lz_WhenPointTouches")]
+        [DataRow("lz", new[] { 0f, 0f, -9.99f }, 1, DisplayName = "lz_WhenPointTouches")]
+        [DataRow("lz", new[] { 4.99f, 5f, 0f }, 1, DisplayName = "lz_WhenPointTouches")]
+        [DataRow("lz", new[] { 0f, 5f, -4.99f }, 1, DisplayName = "lz_WhenPointTouches")]
+        [DataRow("lz", new[] { 0f, 5f, -9.99f }, 1, DisplayName = "lz_WhenPointTouches")]
+        [DataRow("lz", new[] { 4.99f, 10f, 0f }, 0, DisplayName = "lz_NoCollision")]
+        [DataRow("lz", new[] { 9.99f, 10f, 0f }, 0, DisplayName = "lz_NoCollision")]
+        [DataRow("lz", new[] { 0f, 10f, -4.99f }, 0, DisplayName = "lz_NoCollision")]
+        [DataRow("lz", new[] { 0f, 10f, -9.99f }, 0, DisplayName = "lz_NoCollision")]
+        [DataRow("lz", new[] { 9.99f, 5f, 0f }, 0, DisplayName = "lz_NoCollision")]
+        [DataRow("lz", new[] { 4.99f, -10f, 0f }, 0, DisplayName = "lz_NoCollision")]
+        [DataRow("lz", new[] { 9.99f, -10f, 0f }, 0, DisplayName = "lz_NoCollision")]
+        [DataRow("FSWShoulder", new[] { 2f, 5f, 0f }, 1, DisplayName = "FSWShoulder_WhenPointTouches")]
+        [DataRow("FSWShoulder", new[] { 0f, 5f, -3f }, 1, DisplayName = "FSWShoulder_WhenPointTouches")]
+        [DataRow("FSWShoulder", new[] { 0f, 5f, -6f }, 1, DisplayName = "FSWShoulder_WhenPointTouches")]
+        [DataRow("FSWShoulder", new[] { 0f, 10f, -9.99f }, 1, DisplayName = "FSWShoulder_WhenPointTouches")]
+        [DataRow("FSWShoulder", new[] { 0f, 10f, -4.99f }, 1, DisplayName = "FSWShoulder_WhenPointTouches")]
+        [DataRow("FSWShoulder", new[] { 4.99f, 0f, 0f }, 1, DisplayName = "FSWShoulder_WhenHasEdgeCollision")]
+        [DataRow("FSWShoulder", new[] { 0f, 0f, -4.99f }, 1, DisplayName = "FSWShoulder_WhenHasEdgeCollision")]
+        [DataRow("FSWShoulder", new[] { 0f, 0f, -9.99f }, 1, DisplayName = "FSWShoulder_WhenHasEdgeCollision")]
+        [DataRow("FSWShoulder", new[] { 4.99f, 5f, 0f }, 1, DisplayName = "FSWShoulder_WhenHasEdgeCollision")]
+        [DataRow("FSWShoulder", new[] { 0f, 5f, -4.99f }, 1, DisplayName = "FSWShoulder_WhenHasEdgeCollision")]
+        [DataRow("FSWShoulder", new[] { 0f, 5f, -9.99f }, 1, DisplayName = "FSWShoulder_WhenHasEdgeCollision")]
+        [DataRow("FSWShoulder", new[] { 4.99f, 10f, 0f }, 0, DisplayName = "FSWShoulder_NoCollision")]
+        [DataRow("FSWShoulder", new[] { 9.99f, 10f, 0f }, 0, DisplayName = "FSWShoulder_NoCollision")]
+        [DataRow("FSWShoulder", new[] { 9.99f, 0f, 0f }, 1, DisplayName = "FSWShoulder_NoCollision")]
+        [DataRow("FSWShoulder", new[] { 9.99f, 5f, 0f }, 0, DisplayName = "FSWShoulder_NoCollision")]
+        [DataRow("FSWShoulder", new[] { 4.99f, -10f, 0f }, 0, DisplayName = "FSWShoulder_NoCollision")]
+        [DataRow("FSWShoulder", new[] { 9.99f, -10f, 0f }, 0, DisplayName = "FSWShoulder_NoCollision")]
+        [DataRow("FSWPin", new[] { 2f, 5f, 0f }, 1, DisplayName = "FSWPin_WhenPointInsideCillinder")]
+        [DataRow("FSWPin", new[] { 0f, 5f, -3f }, 1, DisplayName = "FSWPin_WhenPointInsideCillinder")]
+        [DataRow("FSWPin", new[] { 0f, 5f, -6f }, 1, DisplayName = "FSWPin_WhenPointInsideCillinder")]
+        [DataRow("FSWPin", new[] { 4.99f, 0f, 0f }, 1, DisplayName = "FSWPin_WhenHasEdgeCollision")]
+        [DataRow("FSWPin", new[] { 9.99f, 0f, 0f }, 1, DisplayName = "FSWPin_WhenHasEdgeCollision")]
+        [DataRow("FSWPin", new[] { 0f, 0f, -4.99f }, 1, DisplayName = "FSWPin_WhenHasEdgeCollision")]
+        [DataRow("FSWPin", new[] { 0f, 0f, -9.99f }, 1, DisplayName = "FSWPin_WhenHasEdgeCollision")]
+        [DataRow("FSWPin", new[] { 4.99f, 5f, 0f }, 1, DisplayName = "FSWPin_WhenHasEdgeCollision")]
+        [DataRow("FSWPin", new[] { 0f, 5f, -4.99f }, 1, DisplayName = "FSWPin_WhenHasEdgeCollision")]
+        [DataRow("FSWPin", new[] { 0f, 5f, -9.99f }, 1, DisplayName = "FSWPin_WhenHasEdgeCollision")]
+        [DataRow("FSWPin", new[] { 4.99f, 10f, 0f }, 0, DisplayName = "FSWPin_NoCollision")]
+        [DataRow("FSWPin", new[] { 9.99f, 10f, 0f }, 0, DisplayName = "FSWPin_NoCollision")]
+        [DataRow("FSWPin", new[] { 0f, 10f, -4.99f }, 0, DisplayName = "FSWPin_NoCollision")]
+        [DataRow("FSWPin", new[] { 0f, 10f, -9.99f }, 0, DisplayName = "FSWPin_NoCollision")]
+        [DataRow("FSWPin", new[] { 9.99f, 5f, 0f }, 0, DisplayName = "FSWPin_NoCollision")]
+        [DataRow("FSWPin", new[] { 4.99f, -10f, 0f }, 0, DisplayName = "FSWPin_NoCollision")]
+        [DataRow("FSWPin", new[] { 9.99f, -10f, 0f }, 0, DisplayName = "FSWPin_NoCollision")]
 
         [TestMethod]
-        [DataRow(new[] { 4.99f, 0f, 0f })]
-        [DataRow(new[] { 9.99f, 0f, 0f })]
-        [DataRow(new[] { 0f, 0f, -4.99f })]
-        [DataRow(new[] { 0f, 0f, -9.99f })]
-        [DataRow(new[] { 4.99f, 5f, 0f })]
-        [DataRow(new[] { 0f, 5f, -4.99f })]
-        [DataRow(new[] { 0f, 5f, -9.99f })]
-        public void LazerFuncIsPointInside_ShouldPass_WhenHasEdgeCollision(float[] checkPoint)
+        public void FrameFunction_GetIntersectedObjects(string fName, float[] checkPoint,int res)
         {
-            var lazer = new LazerBuilder();
-            lazer.SetLength("10");
-            lazer.SetBottomDiam("10");
-            lazer.SetUpperDiam("20");
+            var frame = new Frame();
+            FrameFunction pFunction;
+            if(fName == "arc")
+            {
+                var arc = new ArcBuilder();
+                arc.SetWidth("20");
 
-            var frame = new Frame(new Point3D(5f, 0f, 0f), new Point3D(0f, 5f, 0f), new Point3D(0f, 0f, 5f), new Point3D(0f, 0f, 0f));
+                arc.SetFrame(frame);
+                pFunction = (Arc)arc;
+            }
+            else if(fName == "lz")
+            {
+                var lazer = new LazerBuilder();
+                lazer.SetLength("10");
+                lazer.SetBottomDiam("10");
+                lazer.SetUpperDiam("20");
+                lazer.SetFrame(frame);
+                pFunction = (Lazer)lazer;
+            }
+            else if(fName == "FSWShoulder")
+            {
+                var fswShoulder = new FSWShoulderBuilder();
+                fswShoulder.SetLength("10");
+                fswShoulder.SetBottomDiam("20");
+                fswShoulder.SetUpperDiam("20");
+                fswShoulder.SetFrame(frame);
+                pFunction = (FSWShoulder)fswShoulder;
+            }
+            else
+            {
+                var fswPin = new FSWPinBuilder();
+                fswPin.SetLength("10");
+                fswPin.SetBottomDiam("10");
+                fswPin.SetUpperDiam("20");
+                fswPin.SetFrame(frame);
+                pFunction = (FSWPin)fswPin;
+            }
+
             var point = new Point3D(checkPoint[0], checkPoint[1], checkPoint[2]);
-
-            Assert.IsTrue(((Lazer)lazer).IsPointInside(frame, point, out _, out _, out _, out _));
-        }
-
-
-        [TestMethod]
-        [DataRow(new[] { 4.99f, 10f, 0f })]
-        [DataRow(new[] { 9.99f, 10f, 0f })]
-        [DataRow(new[] { 0f, 10f, -4.99f })]
-        [DataRow(new[] { 0f, 10f, -9.99f })]
-        [DataRow(new[] { 9.99f, 5f, 0f })]
-        [DataRow(new[] { 4.99f, -10f, 0f })]
-        [DataRow(new[] { 9.99f, -10f, 0f })]
-        public void LazerFuncIsPointInside_ShouldFail_WhenNoCollision(float[] checkPoint)
-        {
-            var lazer = new LazerBuilder();
-            lazer.SetLength("10");
-            lazer.SetBottomDiam("10");
-            lazer.SetUpperDiam("20");
-
-            var frame = new Frame(new Point3D(10f, 0f, 0f), new Point3D(0f, 10f, 0f), new Point3D(0f, 0f, 10f), new Point3D(0f, 0f, 0f));
-            var point = new Point3D(checkPoint[0], checkPoint[1], checkPoint[2]);
-
-            Assert.IsFalse(((Lazer)lazer).IsPointInside(frame, point, out _, out _, out _, out _));
-        }
-
-        //FSWShoulder//
-        [TestMethod]
-        [DataRow(new[] { 2f, 5f, 0f })]
-        [DataRow(new[] { 0f, 5f, -3f })]
-        [DataRow(new[] { 0f, 5f, -6f })]
-        [DataRow(new[] { 0f, 10f, -9.99f })]
-        [DataRow(new[] { 0f, 10f, -4.99f })]
-        public void FSWShoulderFuncIsPointInside_ShouldPass_WhenPointInsideCillinder(float[] checkPoint)
-        {
-            var fswShoulder = new FSWShoulderBuilder();
-            fswShoulder.SetLength("10");
-            fswShoulder.SetBottomDiam("20");
-            fswShoulder.SetUpperDiam("20");
-
-            var frame = new Frame(new Point3D(5f, 1f, 0f), new Point3D(0f, 6f, 0f), new Point3D(0f, 1f, 5f), new Point3D(0f, 1f, 0f));
-            var point = new Point3D(checkPoint[0], checkPoint[1], checkPoint[2]);
-
-            Assert.IsTrue(((FSWShoulder)fswShoulder).IsPointInside(frame, point, out _, out _, out _, out _));
-        }
-
-
-        [TestMethod]
-        [DataRow(new[] { 4.99f, 0f, 0f })]
-        [DataRow(new[] { 0f, 0f, -4.99f })]
-        [DataRow(new[] { 0f, 0f, -9.99f })]
-        [DataRow(new[] { 4.99f, 5f, 0f })]
-        [DataRow(new[] { 0f, 5f, -4.99f })]
-        [DataRow(new[] { 0f, 5f, -9.99f })]
-        public void FSWShoulderFuncIsPointInside_ShouldPass_WhenHasEdgeCollision(float[] checkPoint)
-        {
-            var fswShoulder = new FSWShoulderBuilder();
-            fswShoulder.SetLength("10");
-            fswShoulder.SetBottomDiam("20");
-            fswShoulder.SetUpperDiam("20");
-
-            var frame = new Frame(new Point3D(5f, 1f, 0f), new Point3D(0f, 6f, 0f), new Point3D(0f, 1f, 5f), new Point3D(0f, 1f, 0f));
-            var point = new Point3D(checkPoint[0], checkPoint[1], checkPoint[2]);
-
-            Assert.IsTrue(((FSWShoulder)fswShoulder).IsPointInside(frame, point, out _, out _, out _, out _));
-        }
-
-
-        [TestMethod]
-        [DataRow(new[] { 4.99f, 10f, 0f })]
-        [DataRow(new[] { 9.99f, 10f, 0f })]
-        [DataRow(new[] { 9.99f, 0f, 0f })]
-        [DataRow(new[] { 9.99f, 5f, 0f })]
-        [DataRow(new[] { 4.99f, -10f, 0f })]
-        [DataRow(new[] { 9.99f, -10f, 0f })]
-        public void FSWShoulderFuncIsPointInside_ShouldFail_WhenNoCollision(float[] checkPoint)
-        {
-            var fswShoulder = new FSWShoulderBuilder();
-            fswShoulder.SetLength("10");
-            fswShoulder.SetBottomDiam("20");
-            fswShoulder.SetUpperDiam("20");
-
-            var frame = new Frame(new Point3D(5f, 1f, 0f), new Point3D(0f, 6f, 0f), new Point3D(0f, 1f, 5f), new Point3D(0f, 1f, 0f));
-            var point = new Point3D(checkPoint[0], checkPoint[1], checkPoint[2]);
-
-            Assert.IsFalse(((FSWShoulder)fswShoulder).IsPointInside(frame, point, out _, out _, out _, out _));
-        }
-
-        //FSWPin//
-
-        [TestMethod]
-        [DataRow(new[] { 2f, 5f, 0f })]
-        [DataRow(new[] { 0f, 5f, -3f })]
-        [DataRow(new[] { 0f, 5f, -6f })]
-        public void FSWPinFuncIsPointInside_ShouldPass_WhenPointInsideCillinder(float[] checkPoint)
-        {
-            var fswPin = new FSWPinBuilder();
-            fswPin.SetLength("10");
-            fswPin.SetBottomDiam("10");
-            fswPin.SetUpperDiam("20");
-
-            var frame = new Frame(new Point3D(5f, 0f, 0f), new Point3D(0f, 5f, 0f), new Point3D(0f, 0f, 5f), new Point3D(0f, 0f, 0f));
-            var point = new Point3D(checkPoint[0], checkPoint[1], checkPoint[2]);
-
-            Assert.IsTrue(((FSWPin)fswPin).IsPointInside(frame, point, out _, out _, out _, out _));
-        }
-
-        [TestMethod]
-        [DataRow(new[] { 4.99f, 0f, 0f })]
-        [DataRow(new[] { 9.99f, 0f, 0f })]
-        [DataRow(new[] { 0f, 0f, -4.99f })]
-        [DataRow(new[] { 0f, 0f, -9.99f })]
-        [DataRow(new[] { 4.99f, 5f, 0f })]
-        [DataRow(new[] { 0f, 5f, -4.99f })]
-        [DataRow(new[] { 0f, 5f, -9.99f })]
-        public void FSWPinFuncIsPointInside_ShouldPass_WhenHasEdgeCollision(float[] checkPoint)
-        {
-            var fswPin = new FSWPinBuilder();
-            fswPin.SetLength("10");
-            fswPin.SetBottomDiam("10");
-            fswPin.SetUpperDiam("20");
-
-            var frame = new Frame(new Point3D(5f, 0f, 0f), new Point3D(0f, 5f, 0f), new Point3D(0f, 0f, 5f), new Point3D(0f, 0f, 0f));
-            var point = new Point3D(checkPoint[0], checkPoint[1], checkPoint[2]);
-
-            Assert.IsTrue(((FSWPin)fswPin).IsPointInside(frame, point, out _, out _, out _, out _));
-        }
-
-
-        [TestMethod]
-        [DataRow(new[] { 4.99f, 10f, 0f })]
-        [DataRow(new[] { 9.99f, 10f, 0f })]
-        [DataRow(new[] { 0f, 10f, -4.99f })]
-        [DataRow(new[] { 0f, 10f, -9.99f })]
-        [DataRow(new[] { 9.99f, 5f, 0f })]
-        [DataRow(new[] { 4.99f, -10f, 0f })]
-        [DataRow(new[] { 9.99f, -10f, 0f })]
-        public void FSWPinFuncIsPointInside_ShouldFail_WhenNoCollision(float[] checkPoint)
-        {
-            var fswPin = new FSWPinBuilder();
-            fswPin.SetLength("10");
-            fswPin.SetBottomDiam("10");
-            fswPin.SetUpperDiam("20");
-
-            var frame = new Frame(new Point3D(5f, 0f, 0f), new Point3D(0f, 5f, 0f), new Point3D(0f, 0f, 5f), new Point3D(0f, 0f, 0f));
-            var point = new Point3D(checkPoint[0], checkPoint[1], checkPoint[2]);
-
-            Assert.IsFalse(((FSWPin)fswPin).IsPointInside(frame, point, out _, out _, out _, out _));
+            //pFunction.
+            var list = new List<Node>() { new Node(0, point) };
+            Assert.AreEqual(pFunction.GetIntersectedObjects(list).Count,res);
         }
 
         [DataRow(
@@ -515,7 +393,7 @@ namespace TestProject
 
         private (List<IElement>, List<IElement>) SetUpTest(float[] input, float[] expected)
         {
-            var heatData = new HeatData(new Group("", ObjType.Элемент3D), "ARC;10;100;25 Load 0 49 baseLine|refLine;5;startNodes;startNodes");
+            var heatData = new HeatData(new Group("",ObjType.Элемент3D), "1 * ARC;10;100;25 Load 0 49 baseLine|refLine;5");
 
             var baseLine = new Group("base", ObjType.Узел);
             var refLine = new Group("ref", ObjType.Узел);
@@ -523,17 +401,18 @@ namespace TestProject
             var start = new Group("start", ObjType.Узел);
             start.AddRange(new[] { new Node(10000, new Point3D(0f, 0f, 0f)), new Node(10001, new Point3D(0f, 0f, 1f)) });
 
+
+            //Добавить ультилиту проверки траекторий
+
             for (var i = 0; i < heatData.StopTime; i++)
             {
                 baseLine.Add(new Node(i, new Point3D(0f, 0f, i)));
                 refLine.Add(new Node(i + 5000, new Point3D(0f, -1f, i)));
             }
 
-            var mf = heatData.MovedFrame;
-            mf.BaseLine = baseLine;
-            mf.RefLine = refLine;
-            mf.StartPoints = start;
-            mf.StopPoints = start;
+            heatData.LocalFrame = new MovedFrame(baseLine,refLine,5);
+
+            heatData.FrameFunction = (FrameFunction)(new FrameFunctionBuilder(new string[] { "ARC", "10", "100", "25" }));
 
             var expectedElements = new List<IElement>();
             var inputElements = new List<IElement>();
@@ -543,13 +422,14 @@ namespace TestProject
             if (input.Count() >= 12)
                 inputElements = GetTetraElements(input);
             var resultList = new List<IElement>();
-
+            var mf = heatData.LocalFrame as MovedFrame;
             var end = mf.CalcMotionTime();
 
             for (var time = 0f; time < end; time += mf.Velosity)
             {
                 var frame = mf.CalcFrame(time);
-                resultList.AddRange(heatData.FrameFunction.GetIntersectedObjects(frame, inputElements));
+                heatData.FrameFunction.Frame = frame;
+                resultList.AddRange(heatData.FrameFunction.GetIntersectedObjects(inputElements));
             }
 
             return (expectedElements, resultList);

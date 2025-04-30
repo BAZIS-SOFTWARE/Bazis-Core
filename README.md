@@ -5,6 +5,13 @@
 В состав входят следующие библиотеки:
 - Project (ProjectData: библиотека, хранящая и управляющая граничными условиями,сеточными и геометрическими сущностями. Осуществляет функции CRUD над перечисленными объектами)
   + TaskData
+    > Functions
+      <details>
+      - SphereFunction -> Arc<br/>
+      - CillindricalFunction -> Lazer<br/>
+      - CillindricalFunction -> FSWPin<br/>
+      - CillindricalFunction -> FSWShoulder<br/>
+      </details>
     > Data -> ObjectData -> ValueableData (абстрактный класс для хранения физических данных об условиях задачи)<br/>
     > ValueableData -> HeatData<br/>
     > ValueableData -> LoadData<br/>
@@ -73,12 +80,47 @@
 
 Beam (одномерный элемент):
  
-N_i=(1/2)*(1-ξ)
-N_j=(1/2)*(1+ξ)
-(dN_i)/dξ=-1/2
-(dN_j)/dξ=1/2
+N_i=(1/2)*(1-ξ),
+N_j=(1/2)*(1+ξ),
+(dN_i)/dξ=-1/2,
+(dN_j)/dξ=1/2,
 
 ![image](https://github.com/user-attachments/assets/591598b4-bb94-4639-b53a-1bcaf2ec752f)
+
+Пентаэдр (Пента) 
+
+![пента](https://github.com/user-attachments/assets/c5ffbc19-4f08-4fbf-9cfc-0acd4dc4e272)
+
+Xi, Xj, …Xn - функции формы для пенты (Ni,Nj,…Nn – другое обозначение тех же самых функций форм):
+
+![Ф ф для пенты](https://github.com/user-attachments/assets/ae04fed3-4d50-417d-81c1-b436021b7bae)
+
+Производные функции форм:
+<details>
+(dN_i)/dξ=-(1-ζ)/2<br/>
+(dN_j)/dξ=(1-ζ)/2<br/>
+(dN_k)/dξ=0<br/>
+(dN_l)/dξ=-(1+ζ)/2<br/>
+(dN_m)/dξ=(1+ζ)/2<br/>
+(dN_n)/dξ=0<br/>
+<br/>
+(dN_i)/dη=-(1-ζ)/2<br/>
+(dN_j)/dη=0<br/>
+(dN_k)/dη=(1-ζ)/2<br/>
+(dN_l)/dη=-(1+ζ)/2<br/>
+(dN_m)/dη=0<br/>
+(dN_n)/dη=(1+ζ)/2<br/>
+<br/>
+(dN_i)/dζ=-(1-ξ-η)/2<br/>
+(dN_j)/dζ=-ξ/2<br/>
+(dN_k)/dζ=-η/2<br/>
+(dN_l)/dζ=(1-ξ-η)/2<br/>
+(dN_m)/dζ=ξ/2<br/>
+(dN_n)/dζ=η/2<br/>
+</details>
+
+# Разработан алгоритм для определения положения точки относительно источника в виде двойного эллипсоида Голдака. 
+![image](https://github.com/user-attachments/assets/1a09a437-25b1-4018-8cd1-c4f8797b6d25)
 
 
 

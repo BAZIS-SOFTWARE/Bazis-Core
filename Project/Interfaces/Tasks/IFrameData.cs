@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Project.Tasks.LocalFrame;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,12 +14,8 @@ namespace Project.Interfaces.Tasks
         /// </summary>
         IFrameFunction FrameFunction { get; }
         /// <summary>
-        /// MovedFrame
+        /// LocalFrame
         /// </summary>
-        IMovedFrame MovedFrame { get; }
-        /// <summary>
-        /// TrajectoryInfo
-        /// </summary>
-        string TrajectoryInfo { get; }
+        ILocalFrame LocalFrame { get; set; }
     }
 }

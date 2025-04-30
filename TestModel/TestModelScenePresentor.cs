@@ -11,6 +11,13 @@ using ModelControllerInterfaces;
 using System.IO;
 using Geometry;
 using System.Linq;
+using GmshApi;
+using Model.Interfaces.MeshObjects;
+using ModelController.GmshController;
+using System.Xml.Linq;
+using System;
+using ModelController.MeshObjsUtility;
+using Model.IO.STL;
 
 namespace TestModel
 {
@@ -328,7 +335,7 @@ namespace TestModel
             var ext = Path.GetExtension(path);
 
             if(ext == ".stl")
-                model.Loader = new LoadModelFromSTLFile();
+                model.Loader = new LoadFromSTLFile();
             else if(ext == ".ASC")
                 model.Loader = new LoadModelFromASCIITextFile();
             else if (ext == ".cdb")
@@ -381,6 +388,94 @@ namespace TestModel
             Assert.AreEqual(colors.Length, int.Parse(array[2]));
             Assert.AreEqual(normals.Length, int.Parse(array[3]));
 
-        }            
+        }
+
+        //Тест на нормали, презентатор отправляет некоррректные нормали 3д элементов на сцену :(
+        [DataTestMethod]
+        [DataRow(@"..\..\..\Examples\CDB\longModel.cdb")]
+        [DataRow(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC")]
+        [DataRow(@"..\..\..\Examples\CAD\cilindr.step")]
+        public void TestNormals(string path)
+        {
+            var model = new ModelData();
+
+            var ext = Path.GetExtension(path);
+            if(ext == ".step")
+            {
+                var controller = new GmshController();
+                controller.Load(@"..\..\..\..\GmshApi\gmsh.dll");
+                controller.Gmsh.Open(path);
+                controller.Gmsh.Model.Mesh.Generate(3);
+                var elements = controller.GetMeshObjects().Item4;
+                model.ObjectData.E3DCollection.AddRange("Элементы3D", elements);
+                controller.Unload();
+            }
+            else
+            {
+                if (ext == ".stl")
+                    model.Loader = new LoadFromSTLFile();
+                else if (ext == ".ASC")
+                    model.Loader = new LoadModelFromASCIITextFile();
+                else if (ext == ".cdb")
+                    model.Loader = new LoadModelFromCDBTextFile();
+                model.Load(path);
+            }
+
+            var presenter = new SurfaceObjsPresenter<ElementSurface, Node>(true);
+            var elems = model.ObjectData.E3DCollection.GetObjects();
+            presenter.Add(elems);
+
+            var inds = presenter.CreateIndexes();
+            var coords = presenter.CreateVertexes(inds.Item2, "координаты");
+            var normals = presenter.CreateVertexes(inds.Item2, "нормаль");
+            var separators = presenter.CreateSeparators();
+
+            var checker = new NormalsChecker(presenter);
+            checker.Log = $@".\{Path.GetFileNameWithoutExtension(path)}_log.log";
+            checker.Check();
+
+            Assert.IsTrue(checker.NotOthogonals == 0);
+            Assert.IsTrue(checker.ZeroLengths == 0);
+            Assert.IsTrue(checker.Inverted == 0);
+        }
+
+        [DataTestMethod]
+        [DataRow(@"..\..\..\Examples\3D\mixElements.bpf", false)]
+        [DataRow(@"..\..\..\Examples\3D\mixElements.bpf", true)]
+        public void TestSeparators(string fileName, bool isVolume)
+        {
+            var model = new ModelData();
+
+            model.Loader = new LoadModelFromBPFTextFile();
+            model.Load(fileName);
+
+            var surfPresenter = new SurfaceObjsPresenter<ElementSurface, Node>(isVolume);
+
+            Element[] elements;
+            if (isVolume)
+            {
+                var elems = model.ObjectData.E3DCollection.GetObjects().ToArray();
+                surfPresenter.Add(elems);
+                elements = elems;
+            }
+            else
+            {
+                var elems = model.ObjectData.E2DCollection.GetObjects().ToArray();
+                surfPresenter.Add(elems);
+                elements = elems;
+            }
+
+            var inds = surfPresenter.CreateIndexes();
+            var coords = surfPresenter.CreateVertexes(inds.Item2, "координаты");
+            var separators = surfPresenter.CreateSeparators();
+
+            Assert.IsTrue(elements.Length == separators.Length - 1);
+
+            for(var i = 1; i < separators.Length; ++i)
+            {
+                var trCount = separators[i] - separators[i - 1];
+                Assert.IsTrue(NormalsChecker.IdentifyByTriangles(trCount) == elements[i - 1].ElementKind);
+            }
+        }
     }
 }

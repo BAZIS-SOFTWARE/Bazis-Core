@@ -54,11 +54,11 @@ namespace Project.Tasks
         }
 /// <inheritdoc/>
 
-        public IEnumerable<IData> Find(string name)
+        public IEnumerable<IData> Find(DataKind kind)
         {
             foreach (var data in taskData)
             {
-                if (data.Name == name)
+                if (data.Kind == kind)
                     yield return data;
             }
         }
@@ -74,7 +74,7 @@ namespace Project.Tasks
         {
             foreach (var data in dataInfo)
             {
-                var ind = taskData.FindIndex(x => x.GetInfo == data);
+                var ind = taskData.FindIndex(x => x.ToString() == data);
                 taskData.RemoveAt(ind);
             }
         }
@@ -106,7 +106,7 @@ namespace Project.Tasks
 
         public bool Contains(IData item)
         {
-            return taskData.Find(x => x.Kind == item.Kind & x.GetInfo.Equals(item.GetInfo)) == null ? false : true;
+            return taskData.Find(x => x.Kind == item.Kind & x.ToString().Equals(item.ToString())) == null ? false : true;
         }
 /// <inheritdoc/>
 
@@ -121,9 +121,9 @@ namespace Project.Tasks
             return taskData.Remove(item);
         }
 
-        public int RemoveAll(string dataName)
+        public int RemoveAll(DataKind kind)
         {
-            return taskData.RemoveAll(x => x.Name == dataName);
+            return taskData.RemoveAll(x => x.Kind == kind);
         }
 
         public IEnumerator<IData> GetEnumerator()

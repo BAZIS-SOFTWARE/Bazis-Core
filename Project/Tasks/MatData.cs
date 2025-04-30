@@ -8,8 +8,7 @@ namespace Project.Tasks
     {
         public MatData(IGroup group, string info) : base(group, info)
         {
-            Kind = DataKind.Mat;
-            Name = "Материал";
+            Kind = DataKind.Материал;
         }
         /// <summary>
         /// MatName
@@ -17,16 +16,19 @@ namespace Project.Tasks
         public string MatName { get; set; }
 /// <inheritdoc/>
 
-        public override string GetInfo
+        protected override string GetInfo
         {
             get
-            { 
-                return string.Format("{0} {1} {2} {3} {4}", Group.Name, MatName, StartTime, StopTime, TrajectoryInfo);
+            {
+                var mfInfo = "*";
+                if (LocalFrame != null)
+                    mfInfo = LocalFrame.ToString();
+                return string.Format("{0} {1} {2} {3} {4}", Group.Name, MatName, StartTime, StopTime, mfInfo);
             }
         }
 /// <inheritdoc/>
 
-        public override void SetInfo(string info)
+        protected override void SetInfo(string info)
         {
             if (info.Split(' ').Length < 4)
                 throw new Exception("Строка данных имеет неверный формат!");
