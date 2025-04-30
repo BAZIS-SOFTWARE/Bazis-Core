@@ -57,7 +57,10 @@ namespace Geometry
 
             var plane = new Plane(p0, p2, p1);
             Dir_Z = plane.Normal;
+            Dir_Z = Vector.GetVectorNorm(Dir_Z);
+
             Dir_X = p2.Sub(p0);
+            Dir_X = Vector.GetVectorNorm(Dir_X);
 
             Dir_Y = Vector.CrossProd(Dir_Z, Dir_X);
 
