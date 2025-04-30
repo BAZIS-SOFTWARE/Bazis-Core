@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 using Geometry;
@@ -16,6 +17,7 @@ namespace Project.Tasks.Functions
         {
             lazer = new Lazer();
             lazer.Name  = "LW";
+            lazer.Frame = new Frame();
         }
 
         public LazerBuilder SetPower(string power)
@@ -38,6 +40,12 @@ namespace Project.Tasks.Functions
         public LazerBuilder SetLength(string length)
         {
             lazer.Length = float.Parse(length, NumberStyles.Float, CultureInfo.InvariantCulture);
+            return this;
+        }
+
+        public LazerBuilder SetFrame(Frame frame)
+        {
+            lazer.Frame = frame;
             return this;
         }
 

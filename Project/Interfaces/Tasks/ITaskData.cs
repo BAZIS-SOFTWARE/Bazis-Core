@@ -31,9 +31,9 @@ namespace Project.Interfaces.Tasks
         /// <summary>
         /// Find all data according to name
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="kind"></param>
         /// <returns></returns>
-        IEnumerable<IData> Find(string name);
+        IEnumerable<IData> Find(DataKind kind);
 
         /// <summary>
         /// Find all data as T

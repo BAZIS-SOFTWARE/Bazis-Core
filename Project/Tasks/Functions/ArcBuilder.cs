@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using Geometry;
+using System.Globalization;
 
 namespace Project.Tasks.Functions
 {
@@ -10,6 +11,13 @@ namespace Project.Tasks.Functions
         {
             arcHeatSource = new Arc();
             arcHeatSource.Name  = "ARC";
+            arcHeatSource.Frame = new Frame();
+        }
+
+        public ArcBuilder SetFrame(Frame frame)
+        {
+            arcHeatSource.Frame = frame;
+            return this;
         }
 
         public ArcBuilder SetCurrent(string current)
