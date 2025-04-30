@@ -75,19 +75,61 @@ namespace Project.Tasks
         /// <summary>
         /// HeatExchangeValue
         /// </summary>
-        public float HeatExchangeValue { get; private set; } = 1;
+        public float HeatExchangeValue 
+        {
+            get { return heatExchangeValue; }
+            set
+            {
+                heatExchangeFunc = "*";
+                heatExchangeValue = value;
+            }
+        } 
         /// <summary>
         /// HeatExchangeFunc
         /// </summary>
-        public string HeatExchangeFunc { get; private set; } = "*";
+        public string HeatExchangeFunc 
+        {
+            get { return heatExchangeFunc; }
+            set
+            {
+                heatExchangeFunc = value;
+                heatExchangeValue = 1;
+            }
+        }
+
+        private float heatExchangeValue = 1;
+        private string heatExchangeFunc = "*";
+        private string temperatureFunc = "*";
+        private float temperatureValue = 1;
+
         /// <summary>
         /// HeatExchangeValue
         /// </summary>
-        public float TemperatureValue { get; private set; } = 1;
+        public float TemperatureValue 
+        { 
+            get
+            {
+                return temperatureValue;
+            }  
+            set
+            {
+                temperatureFunc = "*";
+                temperatureValue = value;
+            }
+        }
         /// <summary>
         /// Temperature of media or body
         /// </summary>
-        public string TemperatureFunc { get; private set; } = "*";
+        public string TemperatureFunc
+        {
+            get { return temperatureFunc; }
+            set
+            {
+                temperatureFunc = value;
+                temperatureValue = 1;
+            }
+        }
+
         /// <summary>
         /// MediaType
         /// </summary>

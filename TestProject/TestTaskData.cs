@@ -359,19 +359,19 @@ namespace TestProject
         [DataRow("air Коэф.теплоотдачи.воздух 20.005 0 1500 *", MediaType.HeatFlux, "20.005")]
         [DataRow("air * Термоцикл 0 1500 *", MediaType.ConstantTemp, "Термоцикл")]
         [DataRow("air Коэф.теплоотдачи.воздух 20 0 1500 *", MediaType.HeatFlux, "20")]
-        [DataRow("air * Термоцикл 0 1500 *", MediaType.ConstantTemp, "Термоцикл")]
         [DataRow("air 0.002 Термоцикл 0 1500 *", MediaType.HeatFlux, "Термоцикл")]
         [DataRow("air Коэф.теплоотдачи.воздух 20 0 1500.001 *", MediaType.HeatFlux, "20")]
-        [DataRow("air 0.00001 19.9999 0 1500.001 *", MediaType.HeatFlux, "19.9999")]
+        [DataRow("air 1E-05 19.9999 0 1500.001 *", MediaType.HeatFlux, "19.9999")]
+        [DataRow("air * 19.9999 0 1500.001 *", MediaType.ConstantTemp, "19.9999")]
 
         public void CheckMediaData(string dataString, MediaType mediaType, string tempVal)
         {
             //assign
 
-            var data = new MediaData(new Group("", ObjType.Элемент2D), dataString);
+            var data = new MediaData(new Group("air", ObjType.Элемент2D), dataString);
 
             //assert
-
+            Assert.AreEqual($"{DataKind.Среда} : {dataString}", data.ToString());
             Assert.AreEqual(data.MediaType, mediaType);
             Assert.AreEqual(data.Direction, Direction.None);
         }
