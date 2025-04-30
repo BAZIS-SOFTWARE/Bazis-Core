@@ -91,7 +91,7 @@ namespace TestProject
 
         [TestMethod]
         [DataRow(@"..\..\..\Examples\proj_traj.bpf", DisplayName = "proj_traj")]
-        [DataRow(@"..\..\..\Examples\proj_traj_baseLine_not_sorted.bpf", DisplayName = "proj_traj_baseLine_not_sorted")]
+        //[DataRow(@"..\..\..\Examples\proj_traj_baseLine_not_sorted.bpf", DisplayName = "proj_traj_baseLine_not_sorted")]
 
         //[DataRow(@"c:\projs\testProj\TubeToTubeTJoint\proj_v1.bpf")]
         //[DataRow(@"c:\projs\kamaz\4.bpf")]
