@@ -26,21 +26,21 @@ namespace Project.Interfaces.Tasks
         /// </summary>
         Volume = 4
     }
-    public interface ITaskData : IList<IData>
+    public interface ITaskData : IList<IPhysicalData>
     {
         /// <summary>
         /// Find all data according to name
         /// </summary>
         /// <param name="kind"></param>
         /// <returns></returns>
-        IEnumerable<IData> Find(DataKind kind);
+        IEnumerable<IPhysicalData> Find(DataKind kind);
 
         /// <summary>
         /// Find all data as T
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        IEnumerable<T> Find<T>() where T : IData;
+        IEnumerable<T> Find<T>() where T : IPhysicalData;
         /// <summary>
         /// Remove range
         /// </summary>
@@ -59,7 +59,7 @@ namespace Project.Interfaces.Tasks
         /// <summary>
         /// Name
         /// </summary>
-        void AddRange(IEnumerable<IData> datas);
+        void AddRange(IEnumerable<IPhysicalData> datas);
         /// <summary>
         /// Save task data
         /// </summary>
@@ -80,6 +80,6 @@ namespace Project.Interfaces.Tasks
         /// <param name="dataInfo"></param>
         /// <param name="group"></param>
         /// <returns></returns>
-        IData Create(string name, string dataInfo, IGroup group);
+        IPhysicalData Create(string name, string dataInfo, IGroup group);
     }
 }

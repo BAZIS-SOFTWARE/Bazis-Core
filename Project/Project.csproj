@@ -4,7 +4,7 @@
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
 	  <SignAssembly>True</SignAssembly>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>4.5.2</Version>
+    <Version>4.6.44</Version>
     <Title>Project</Title>
     <Authors>Bilenko Georgy</Authors>
     <Company>BAZIS SOFTWARE</Company>
@@ -52,7 +52,6 @@
     <Compile Include="Interfaces\Tasks\FunctionParameter.cs" />
     <Compile Include="Interfaces\Tasks\ICillindricalFunction.cs" />
     <Compile Include="Interfaces\Tasks\IData.cs" />
-    <Compile Include="Interfaces\Tasks\IFrameData.cs" />
     <Compile Include="Interfaces\Tasks\IFrameFunction.cs" />
     <Compile Include="Interfaces\Tasks\IGroupDependent.cs" />
     <Compile Include="Interfaces\Tasks\ILocalFrame.cs" />
@@ -62,7 +61,7 @@
     <Compile Include="Interfaces\Tasks\ITaskData.cs" />
     <Compile Include="Interfaces\Tasks\ITimeDependentData.cs" />
     <Compile Include="Interfaces\Tasks\ITrajectory.cs" />
-    <Compile Include="Interfaces\Tasks\IValuableData.cs" />
+    <Compile Include="Interfaces\Tasks\IPhysicalData.cs" />
     <Compile Include="Tasks\LocalFrame\LocalFrame.cs" />
     <Compile Include="Tasks\LocalFrame\StaticFrame.cs" />
     <Compile Include="IO\LoadEventArgs.cs" />
@@ -92,7 +91,6 @@
     <Compile Include="TaskParameters\TermalParameters.cs" />
     <Compile Include="TaskParameters\TimeSettings.cs" />
     <Compile Include="Tasks\ClampData.cs" />
-    <Compile Include="Tasks\Data.cs" />
     <Compile Include="Tasks\Functions\Arc.cs" />
     <Compile Include="Tasks\Functions\ArcBuilder.cs" />
     <Compile Include="Tasks\Functions\CillindricalFunction.cs" />
@@ -117,10 +115,9 @@
     <Compile Include="Tasks\LoadData.cs" />
     <Compile Include="Tasks\MatData.cs" />
     <Compile Include="Tasks\MediaData.cs" />
-    <Compile Include="Tasks\ObjectData.cs" />
     <Compile Include="Tasks\TaskData.cs" />
     <Compile Include="Tasks\Utilities\Interpolation.cs" />
-    <Compile Include="Tasks\ValuableData.cs" />
+    <Compile Include="Tasks\PhysicalData.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icon.png">

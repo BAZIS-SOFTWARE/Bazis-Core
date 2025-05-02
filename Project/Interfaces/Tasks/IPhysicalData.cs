@@ -7,11 +7,19 @@
     /// <summary>
     /// IValuableData
     /// </summary>
-    public interface IValuableData : IFrameData
+    public interface IPhysicalData : IData, IGroupDependent, ITimeDependentData
     {
         /// <summary>
         /// Direction
         /// </summary>
         Direction Direction { get; }
+        /// <summary>
+        /// FrameFunction
+        /// </summary>
+        IFrameFunction FrameFunction { get; }
+        /// <summary>
+        /// LocalFrame
+        /// </summary>
+        ILocalFrame LocalFrame { get; set; }
     }
 }

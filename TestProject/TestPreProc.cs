@@ -30,11 +30,11 @@ namespace TestProject
         /// </summary>
         /// <param name="typeAndArgs">Массив строк, которые состоят из типа задачи и аргументов, разделенных подстрокой "/"</param>
         /// <returns>Ленивая коллекция из IValuableData, представляющая данные по задачам</returns>
-        private static IEnumerable<IValuableData> CreateValuableData(string[] typeAndArgs)
+        private static IEnumerable<IPhysicalData> CreateValuableData(string[] typeAndArgs)
         {
             foreach (var str in typeAndArgs.Select(x => x.Split('/')))
             {
-                Func<Group, string,IValuableData > func;
+                Func<Group, string,IPhysicalData > func;
                 switch (str[0].ToLower())
                 {
                     case "media": func = (g, s) => new MediaData(g, s); break;
@@ -341,10 +341,10 @@ namespace TestProject
 
             project.Load(projPath + file);
 
-            var resData = new List<IValuableData>();
+            var resData = new List<IPhysicalData>();
 
             foreach (var data in project.TaskData)
-                resData.Add(data as ValuableData);
+                resData.Add(data as PhysicalData);
 
             var preProc = new PreProc.PreProc();
             preProc.CalcCompDataV1(resData, pt, projPath + "TsfFolder\\");
@@ -364,14 +364,14 @@ namespace TestProject
         [DataRow(@"HeatDataContiniousWithoutMediaData.bpf")]
         public void PreProc_GenerateTSF_ShouldFail(string file)
         {
-            var resData = new List<IValuableData>();
+            var resData = new List<IPhysicalData>();
             var group = new Group("test",ObjType.Узел);
             var groupData = new GroupData();
             groupData.Add(group);
             var textData = new LoadTaskDataTextFormat().Load(projPath + file, groupData);
             foreach (var data in textData)
             {
-                resData.Add(data as ValuableData);
+                resData.Add(data as PhysicalData);
             }
             var preProc = new PreProc.PreProc();
             Assert.ThrowsException<Exception>(() => preProc.CalcCompDataV1(resData, ProcessType.Welding, projPath));

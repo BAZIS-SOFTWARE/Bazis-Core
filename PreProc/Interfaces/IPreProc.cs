@@ -86,7 +86,7 @@ namespace PreProc.Interfaces
         /// <param name="processType">тип задачи</param>>
         /// <param name="path">путь папки сохранения расчетных файлов данных</param>>
         /// <returns>список расчитанных данных CompData</returns>
-        void CalcCompDataV1(List<IValuableData> data, ProcessType processType, string path);
+        void CalcCompDataV1(List<IPhysicalData> data, ProcessType processType, string path);
 
         /// <summary>
         /// Препроцессор по обработке данных пользователя в команды в формате .tsf-файлов и CompData.
@@ -107,7 +107,7 @@ namespace PreProc.Interfaces
         /// <param name="prop">Свойства задачи для подготовки файлов препроессором. Состоит из главной задачи и подзадачи, для создания и параметризации файлов</param>
         /// <param name="path">путь папки сохранения расчетных файлов данных</param>>
         /// <returns>список расчитанных данных CompData в виде файлов *.stf</returns>
-        void CalcCompDataV2(List<IValuableData> data, ProcessProperty prop, string path);
+        void CalcCompDataV2(List<IPhysicalData> data, ProcessProperty prop, string path);
 
         /// <summary>
         /// SortCompDataByTimeAndType

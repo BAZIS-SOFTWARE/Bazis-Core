@@ -10,7 +10,7 @@ namespace Project.Tasks
         Сила,
         Давление
     }
-    public class LoadData : ValuableData
+    public class LoadData : PhysicalData
     {
         /// <summary>
         /// Value
@@ -18,6 +18,11 @@ namespace Project.Tasks
         public float LoadValue { get; set; }
 
         public LoadData(IGroup group, string info) : base(group, info)
+        {
+            Kind = DataKind.Нагрузка;
+        }
+
+        public LoadData(IGroup group, float start, float stop) : base(group, start, stop)
         {
             Kind = DataKind.Нагрузка;
         }

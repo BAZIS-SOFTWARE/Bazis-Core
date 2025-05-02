@@ -25,16 +25,20 @@ namespace Project.Tasks
         Локальная
     }
 
-    public class ClampData : ValuableData
+    public class ClampData : PhysicalData
     {
-        public ClampData(IGroup group,string info) : base (group,info)
+        public ClampData(IGroup group, string info) : base(group, info)
+        {
+            Kind = DataKind.Закрепление;
+        }
+        public ClampData(IGroup group,float start,float stop) : base (group,start,stop)
         {
             Kind = DataKind.Закрепление;
         }
 
         public ClampKind ClampKind { get; private set; }
 
-        public ClampType ClampType { get; private set; }
+        public ClampType ClampType { get; private set; } = ClampType.Статическое;
 
         public ClampFrame ClampFrame { get; private set; }
 /// <inheritdoc/>

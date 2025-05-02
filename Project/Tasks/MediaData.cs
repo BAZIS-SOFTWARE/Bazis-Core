@@ -18,7 +18,7 @@ namespace Project.Tasks
         /// </summary>
         ConstantTemp
     }
-    public class MediaData : ValuableData
+    public class MediaData : PhysicalData
     {
         /// <summary>
         /// MediaProcess
@@ -30,8 +30,13 @@ namespace Project.Tasks
             Kind = DataKind.Среда;
         }
 
+        public MediaData(IGroup group, float start, float stop) : base(group, start, stop)
+        {
+            Kind = DataKind.Среда;
+        }
 
-/// <inheritdoc/>
+
+        /// <inheritdoc/>
 
         protected override void SetInfo(string info)
         {
