@@ -1,4 +1,5 @@
 ﻿using Model.Interfaces;
+using Model.Interfaces.Attributes;
 using Project.Interfaces.Tasks;
 using System;
 
@@ -22,7 +23,7 @@ namespace Project.Tasks
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="Exception"></exception>
         /// <exception cref="NullReferenceException"></exception>
-
+        [Obsolete("Не использовать этот конструктор. Указывать время начала и конца по-умолчанию")]
         protected PhysicalData(IGroup group, string info)
         {
             if (info == null)
