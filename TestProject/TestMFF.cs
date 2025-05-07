@@ -16,6 +16,7 @@ using Model.Interfaces;
 using Project.Tasks.Functions;
 using Project.Tasks.LocalFrame;
 using Project.Interfaces.Tasks;
+using MathNet.Numerics.LinearAlgebra;
 
 namespace TestProject
 {
@@ -75,7 +76,7 @@ namespace TestProject
             }
         }
 
-        [DataRow("arc",new[] { -10.0000001f, 0f, 0f },1,DisplayName = "arc_WhenPointInsideSphere")]
+        [DataRow("arc", new[] { -10.0000001f, 0f, 0f }, 1, DisplayName = "arc_WhenPointInsideSphere")]
         [DataRow("arc", new[] { 0f, -10.0000001f, 0f }, 1, DisplayName = "arc_WhenPointInsideSphere")]
         [DataRow("arc", new[] { 0f, 0f, -10.0000001f }, 1, DisplayName = "arc_WhenPointInsideSphere")]
         [DataRow("arc", new[] { 10.0000001f, 0f, 0f }, 1, DisplayName = "arc_WhenPointInsideSphere")]
@@ -151,11 +152,11 @@ namespace TestProject
         [DataRow("FSWPin", new[] { 9.99f, -10f, 0f }, 0, DisplayName = "FSWPin_NoCollision")]
 
         [TestMethod]
-        public void FrameFunction_GetIntersectedObjects(string fName, float[] checkPoint,int res)
+        public void FrameFunction_GetIntersectedObjects(string fName, float[] checkPoint, int res)
         {
             var frame = new Frame();
             FrameFunction pFunction;
-            if(fName == "arc")
+            if (fName == "arc")
             {
                 var arc = new ArcBuilder();
                 arc.SetWidth("20");
@@ -163,7 +164,7 @@ namespace TestProject
                 arc.SetFrame(frame);
                 pFunction = (Arc)arc;
             }
-            else if(fName == "lz")
+            else if (fName == "lz")
             {
                 var lazer = new LazerBuilder();
                 lazer.SetLength("10");
@@ -172,7 +173,7 @@ namespace TestProject
                 lazer.SetFrame(frame);
                 pFunction = (Lazer)lazer;
             }
-            else if(fName == "FSWShoulder")
+            else if (fName == "FSWShoulder")
             {
                 var fswShoulder = new FSWShoulderBuilder();
                 fswShoulder.SetLength("10");
@@ -194,7 +195,7 @@ namespace TestProject
             var point = new Point3D(checkPoint[0], checkPoint[1], checkPoint[2]);
             //pFunction.
             var list = new List<Node>() { new Node(0, point) };
-            Assert.AreEqual(pFunction.GetIntersectedObjects(list).Count,res);
+            Assert.AreEqual(pFunction.GetIntersectedObjects(list).Count, res);
         }
 
         [DataRow(
@@ -393,7 +394,7 @@ namespace TestProject
 
         private (List<IElement>, List<IElement>) SetUpTest(float[] input, float[] expected)
         {
-            var heatData = new HeatData(new Group("",ObjType.Элемент3D), "1 * ARC;10;100;25 Load 0 49 baseLine|refLine;5");
+            var heatData = new HeatData(new Group("", ObjType.Элемент3D), "1 * ARC;10;100;25 Load 0 49 baseLine|refLine;5");
 
             var baseLine = new Group("base", ObjType.Узел);
             var refLine = new Group("ref", ObjType.Узел);
@@ -410,7 +411,7 @@ namespace TestProject
                 refLine.Add(new Node(i + 5000, new Point3D(0f, -1f, i)));
             }
 
-            heatData.LocalFrame = new MovedFrame(baseLine,refLine,5);
+            heatData.LocalFrame = new MovedFrame(baseLine, refLine, 5);
 
             heatData.FrameFunction = (FrameFunction)(new FrameFunctionBuilder(new string[] { "ARC", "10", "100", "25" }));
 
@@ -486,19 +487,43 @@ namespace TestProject
         [DataRow(new[] { 12f, 19f, 14f }, "inside", DisplayName = "point in head ellipse, inside")]
         [DataRow(new[] { 2.8f, 15f, 14.6f }, "outside", DisplayName = "point in head ellipse, outside")]
         [DataRow(new[] { 10f, 19f, 13f }, "outside", DisplayName = "point in head ellipse, outside")]
-        [DataRow(new[] { 15.3f, 0.4f, 15f }, "inside", DisplayName = "point in back ellipse, inside")]
+        [DataRow(new[] { 15.3f, 14.4f, 15f }, "inside", DisplayName = "point in back ellipse, inside")]
         [DataRow(new[] { 12f, 3f, 14f }, "inside", DisplayName = "point in back ellipse, inside")]
         [DataRow(new[] { 15f, 3.8f, 10f }, "outside", DisplayName = "point in back ellipse, outside")]
-        [DataRow(new[] { 10f, 5f, 5f }, "outside", DisplayName = "point in back ellipse, outside")]
-        public void DoubleEllipsIsPointInside(float[] checkPoint, string location)
+        [DataRow(new[] { 10f, 4f, 5f }, "outside", DisplayName = "point in back ellipse, outside")]
+        public void DoubleEllipsIsPointInside_FrameParallelGlobalAxes(float[] checkPoint, string location)
         {
             var doubleEllips = new DoubleEllips();
             doubleEllips.Width = 14;
             doubleEllips.Depth = 5;
             doubleEllips.FrontPart = 5;
             doubleEllips.BackPart = 15;
+            doubleEllips.MaxAndMinSemiaxis();
+            doubleEllips.Frame = new Frame(new Point3D(15, 15, 15), new Point3D(15, 16, 15), new Point3D(16, 15, 15));            
+            doubleEllips.DetermineInverseMatrix();
+            var point = new Point3D(checkPoint[0], checkPoint[1], checkPoint[2]);
 
-            doubleEllips.Frame = new Frame(new Point3D(20f, 15f, 15f), new Point3D(15f, 15f, 20f),new Point3D(15f, 20f, 15f));
+            if (location == "inside")
+                Assert.IsTrue(doubleEllips.IsPointInside(point));
+            else
+                Assert.IsFalse(doubleEllips.IsPointInside(point));
+
+        }
+
+        [TestMethod]
+        [DataRow(new[] { 25f, 22.2f, 19.5f }, "inside", DisplayName = "point in head ellipse, inside")]
+        [DataRow(new[] { 25f, 24.3f, 20f }, "outside", DisplayName = "point in head ellipse, outside")]
+        [DataRow(new[] { 24.7f, 23.7f, 20f }, "outside", DisplayName = "point in head ellipse, outside")]
+        public void DoubleEllipsIsPointInside_FrameXYRotated30DegreesGlobalAxes(float[] checkPoint, string location)
+        {
+            var doubleEllips = new DoubleEllips();
+            doubleEllips.Width = 14;
+            doubleEllips.Depth = 5;
+            doubleEllips.FrontPart = 5;
+            doubleEllips.BackPart = 15;
+            doubleEllips.MaxAndMinSemiaxis();
+            doubleEllips.Frame = new Frame(new Point3D(20f, 20f, 20f), new Point3D(19.5f, 20.866f, 20f), new Point3D(20.866f, 20.5f, 20f));
+            doubleEllips.DetermineInverseMatrix();
             var point = new Point3D(checkPoint[0], checkPoint[1], checkPoint[2]);
 
             if (location == "inside")
@@ -507,16 +532,54 @@ namespace TestProject
                 Assert.IsFalse(doubleEllips.IsPointInside(point));
         }
 
+
         [TestMethod]
         [DataRow(2, 5, 10)]
-        [DataRow(7.5f, 5, 10)]      
+        [DataRow(7.5f, 5, 10)]
         public void IsOverlappingSelfEllips_ShouldPass_WhenOverlap(float velocity, float frontPart, float backPart)
         {
             var doubleEllips = new DoubleEllips();
             doubleEllips.FrontPart = frontPart;
             doubleEllips.BackPart = backPart;
-            
+
             Assert.IsTrue(doubleEllips.IsOverlappingSelf(velocity));
         }
+
+        [TestMethod]
+        [DataRow(
+    new float[]
+    { 1f, 1f, 0f,
+       0f, 0f, 1f       
+    },
+    new float[]
+    { 0.707107f, 0.707107f,  0f,
+       0f,   0f,    1f,
+       0.707107f, -0.707107f, 0f
+    })]
+        public void DetermineInverseMatrixTest(float[] pointsArr, float[] resultArr)
+        {
+            var doubleEllips = new DoubleEllips();
+            doubleEllips.Frame = new Frame(
+                new Point3D(0f, 0f, 0f),
+                 new Point3D(pointsArr[3], pointsArr[4], pointsArr[5]),
+                new Point3D(pointsArr[0], pointsArr[1], pointsArr[2]));
+
+            doubleEllips.DetermineInverseMatrix();
+            var matrix = doubleEllips.InverseTransitionMatrix;
+            var result = Matrix<float>.Build.DenseOfArray(new float[3, 3] {
+                                               {resultArr[0], resultArr[1], resultArr[2]},
+                                               {resultArr[3], resultArr[4], resultArr[5]},
+                                               {resultArr[6], resultArr[7], resultArr[8]}});
+
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    Assert.AreEqual(result[i,j], matrix[i, j], 1e-6);
+                }
+                
+            }
+        }
+
     }
 }
