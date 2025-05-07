@@ -552,7 +552,7 @@ namespace TestModel
         //Тест на модель не проходит, большие погрешности
         [DataTestMethod]
         [DataRow(@"..\..\..\Examples\STL\block.stl", new float[] {0, 0, 1 }, 90.0f)]
-        public void RotateModelTest(string filePath, float[] axis, float angle, ObjType objType)
+        public void RotateModelTest(string filePath, float[] axis, float angle)
         {
             var modelData = new ModelData();
             modelData.Loader = new LoadFromSTLFile();
