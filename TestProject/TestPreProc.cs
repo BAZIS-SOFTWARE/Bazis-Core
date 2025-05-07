@@ -30,11 +30,11 @@ namespace TestProject
         /// </summary>
         /// <param name="typeAndArgs">Массив строк, которые состоят из типа задачи и аргументов, разделенных подстрокой "/"</param>
         /// <returns>Ленивая коллекция из IValuableData, представляющая данные по задачам</returns>
-        private static IEnumerable<IValuableData> CreateValuableData(string[] typeAndArgs)
+        private static IEnumerable<IPhysicalData> CreateValuableData(string[] typeAndArgs)
         {
             foreach (var str in typeAndArgs.Select(x => x.Split('/')))
             {
-                Func<Group, string,IValuableData > func;
+                Func<Group, string,IPhysicalData > func;
                 switch (str[0].ToLower())
                 {
                     case "media": func = (g, s) => new MediaData(g, s); break;
@@ -203,7 +203,7 @@ namespace TestProject
         [TestMethod]
         [DataRow(new string[]
         {
-            "heat/ARC;4;100;25 Load 0 49 baseLine|refLine;2;startNodes;startNodes",
+            "heat/1 * * Load 0 49 baseLine|refLine;2;0|0|0|0",
             "media/air Коэф.теплоотдачи.воздух 20 0 1500 *",
             "mat/Элементы3D_3 Сталь_20ХМ 0 1500 *",
             "clamp/Узел_8 Жесткое X * 0 1500 *"
@@ -277,7 +277,7 @@ namespace TestProject
             var valuableData = CreateValuableData(new[]
             {
                 $"media/air Коэф.теплоотдачи.воздух 20 {medStart} {medStop} *",
-                $"heat/ARC;4;100;25 Load {heatStart} {heatStop} baseLine|refLine;2;startNodes;startNodes",
+                $"heat/1 * * Load {heatStart} {heatStop} baseLine|refLine;2;0|0|0|0",
                 "mat/Элементы3D_3 Сталь_20ХМ 0 1500 *"
             }).ToList();
             
@@ -289,7 +289,7 @@ namespace TestProject
         [TestMethod]
         [DataRow(new[]
         {
-            "heat/ARC;4;100;25 Load 0 50 baseLine|refLine;2;startNodes;startNodes",
+            "heat/1 * * Load 0 50 baseLine|refLine;2;0|0|0|0",
             "media/air Коэф.теплоотдачи.воздух 20 0 1500 *",
             "mat/Элементы3D_3 Сталь_20ХМ 0 1500 *",
             "clamp/Узел_8 Жесткое X * 0 1500 *"
@@ -315,7 +315,7 @@ namespace TestProject
         {
             "mat/Элементы3D_3 Сталь_20ХМ 0 1500 *",
             "media/air Коэф.теплоотдачи.воздух 20 0 1500 *",
-            "heat/ARC;4;100;25 Load 0 49.998 baseLine|refLine;2;startNodes;startNodes;0|0|0|0",
+            "heat/1 * * Load 0 49.998 baseLine|refLine;2;0|0|0|0",
             "clamp/Узел_8 Жесткое X * 0 1500 *"
         })]
         public void CalcCompData_ReturnsTrue_WhenMaterialContinousWholeProcess(string[] parameters)
@@ -341,10 +341,10 @@ namespace TestProject
 
             project.Load(projPath + file);
 
-            var resData = new List<IValuableData>();
+            var resData = new List<IPhysicalData>();
 
             foreach (var data in project.TaskData)
-                resData.Add(data as ValuableData);
+                resData.Add(data as PhysicalData);
 
             var preProc = new PreProc.PreProc();
             preProc.CalcCompDataV1(resData, pt, projPath + "TsfFolder\\");
@@ -364,14 +364,14 @@ namespace TestProject
         [DataRow(@"HeatDataContiniousWithoutMediaData.bpf")]
         public void PreProc_GenerateTSF_ShouldFail(string file)
         {
-            var resData = new List<IValuableData>();
+            var resData = new List<IPhysicalData>();
             var group = new Group("test",ObjType.Узел);
             var groupData = new GroupData();
             groupData.Add(group);
             var textData = new LoadTaskDataTextFormat().Load(projPath + file, groupData);
             foreach (var data in textData)
             {
-                resData.Add(data as ValuableData);
+                resData.Add(data as PhysicalData);
             }
             var preProc = new PreProc.PreProc();
             Assert.ThrowsException<Exception>(() => preProc.CalcCompDataV1(resData, ProcessType.Welding, projPath));
@@ -382,7 +382,7 @@ namespace TestProject
         [DataRow(new[]
         {
             "media/air Коэф.теплоотдачи.воздух 20 0 1500 *",
-            "heat/ARC;15;75;15 Элемент3D_2 0 95.08694 Узел_5|Узел_6;2;Узел_7;Узел_7;0|0|0|0",
+            "heat/1 * * Элемент3D_2 0 95.08694 Узел_5|Узел_6;2;0|0|0|0",
             "clamp/Узел_8 Жесткое X * 0 1500 *",
             "mat/mat Сталь_20ХМ 0 1500 *"
         })]
@@ -396,7 +396,7 @@ namespace TestProject
         [DataRow(ComplexTaskType.термическая, ProcessType.Welding, new[]
         {
             "Media/air Коэф.теплоотдачи.воздух 20 0 1500 *",
-            "Heat/ARC;15;75;15 Элемент3D_2 0 95.08694 Узел_5|Узел_6;2;Узел_7;Узел_7;0|0|0|0",
+            "Heat/1 * * Элемент3D_2 0 95.08694 Узел_5|Узел_6;2;0|0|0|0",
             "Mat/mat Сталь_20ХМ 0 1500 *"
         })]
         [DataRow(ComplexTaskType.термическая, ProcessType.Tempering, new[]
@@ -421,7 +421,7 @@ namespace TestProject
         [DataRow(ComplexTaskType.термическая_механическая, ProcessType.Welding, new[]
         {
             "Media/air Коэф.теплоотдачи.воздух 20 0 1500 *",
-            "Heat/ARC;15;75;15 Элемент3D_2 0 95.08694 Узел_5|Узел_6;2;Узел_7;Узел_7;0|0|0|0",
+            "Heat/1 * * Элемент3D_2 0 95.08694 Узел_5|Узел_6;2;0|0|0|0",
             "Mat/mat Сталь_20ХМ 0 1500 *",
             "Clamp/Узел_8 Жесткое X * 0 1500 *"
         })]
@@ -440,7 +440,7 @@ namespace TestProject
             "Clamp/Узлы_7 Жесткое X * 0 1500 *",
             "Clamp/Узлы_7 Жесткое Y * 0 1500 *",
             "Clamp/Узлы_7 Жесткое Z * 0 1500 *",
-            "Heat/ARC;4;100;25 Load 0 50 baseLine|refLine;2;startNodes;startNodes;0|0|0|0"
+            "Heat/1 * * Load 0 50 baseLine|refLine;2;0|0|0|0"
         })]
         [DataRow(ComplexTaskType.термическая, ProcessType.Welding, new[]
         {

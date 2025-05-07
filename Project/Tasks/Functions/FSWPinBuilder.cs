@@ -1,4 +1,6 @@
-﻿using System.Globalization;
+﻿using Geometry;
+using System;
+using System.Globalization;
 
 namespace Project.Tasks.Functions
 {
@@ -10,6 +12,7 @@ namespace Project.Tasks.Functions
         {
             pin = new FSWPin();
             pin.Name = "FSWPin";
+            pin.Frame = new Frame();
         }
 
         public FSWPinBuilder SetRotSpeed(string rotSpeed)
@@ -39,6 +42,12 @@ namespace Project.Tasks.Functions
         public FSWPinBuilder SetLength(string length)
         {
             pin.Length = float.Parse(length, NumberStyles.Float, CultureInfo.InvariantCulture);
+            return this;
+        }
+
+        public FSWPinBuilder SetFrame(Frame frame)
+        {
+            pin.Frame = frame;
             return this;
         }
 

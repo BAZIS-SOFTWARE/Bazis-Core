@@ -34,7 +34,7 @@ namespace PreProc
         private string _path;
 
         /// <inheritdoc/>
-        public void CalcCompDataV1(List<IValuableData> data, ProcessType processType, string path)
+        public void CalcCompDataV1(List<IPhysicalData> data, ProcessType processType, string path)
         {
             SetUpTimeSeparators(data);
             processProp = new ProcessProperty { CommonTaskType = processType, GeneralTaskType = ComplexTaskType.термическая_механическая };
@@ -46,7 +46,7 @@ namespace PreProc
         }
 
         /// <inheritdoc/>
-        public void CalcCompDataV2(List<IValuableData> data, ProcessProperty property, string path)
+        public void CalcCompDataV2(List<IPhysicalData> data, ProcessProperty property, string path)
         {
             SetUpTimeSeparators(data);
             processProp = property;
@@ -83,7 +83,7 @@ namespace PreProc
             }
         }
 
-        private void SetUpTimeSeparators(List<IValuableData> valuableData)
+        private void SetUpTimeSeparators(List<IPhysicalData> valuableData)
         {
             var separators = new List<float>();
 
@@ -110,12 +110,12 @@ namespace PreProc
         /// <typeparam name="ResultParam">Параметризованные данные, в которых указано время начала и конца конкретного LoadData или BoundData</typeparam>
         /// <param name="data">Список ValuableData, хранящий данные разных процессов</param>
         /// <returns>список с параметризованными данными</returns>
-        public List<ResultParam> GetParameters<LoadData, BoundData, ResultParam>(List<IValuableData> data)
+        public List<ResultParam> GetParameters<LoadData, BoundData, ResultParam>(List<IPhysicalData> data)
             where ResultParam : GeneralParameters, new()
-            where LoadData : ValuableData
-            where BoundData : ValuableData
+            where LoadData : PhysicalData
+            where BoundData : PhysicalData
         {
-            var matData = data.Where(md => md.Kind == DataKind.Mat).OrderBy(md => md.StartTime).ToList();
+            var matData = data.Where(md => md.Kind == DataKind.Материал).OrderBy(md => md.StartTime).ToList();
             var loadData = data.Where(ld => ld is LoadData).OrderBy(ld => ld.StartTime).ToList();
             var boundData = data.Where(bd => bd is BoundData).OrderBy(bd => bd.StartTime).ToList();
 
@@ -143,8 +143,8 @@ namespace PreProc
                 parameter.TimeSettings.StartTime = startStop.Item1;
                 parameter.TimeSettings.StopTime = startStop.Item2;
 
-                if (TimeSeparators.ContainsKey(DataKind.Heat))
-                    if (!TimeSeparators[DataKind.Heat].Any(x => x.Item1 == startStop.Item1 && x.Item2 == startStop.Item2))
+                if (TimeSeparators.ContainsKey(DataKind.Нагрев))
+                    if (!TimeSeparators[DataKind.Нагрев].Any(x => x.Item1 == startStop.Item1 && x.Item2 == startStop.Item2))
                     {
                         parameter.TimeSettings.InitTimeStep = 0.5f;
                         parameter.TimeSettings.MaxTimeStep = 100f;
@@ -307,7 +307,7 @@ namespace PreProc
         /// <param name="boundData">Лист класса BoundData</param>
         /// <exception cref="Exception">Некоректно заданы данные</exception>
         private static void CheckLoadDataInsideBoundDataInterval<LoadData, BoundData>
-            (List<IValuableData> loadData, List<IValuableData> boundData)
+            (List<IPhysicalData> loadData, List<IPhysicalData> boundData)
         {
             if (boundData.Count == 0)
                 throw new Exception($"Нет данных среды выполнения {typeof(BoundData)}");

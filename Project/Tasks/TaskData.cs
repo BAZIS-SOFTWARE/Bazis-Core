@@ -13,7 +13,7 @@ namespace Project.Tasks
 
     public class TaskData :  ITaskData
     {
-        List<IData> taskData;
+        List<IPhysicalData> taskData;
 
         public int Count { get { return taskData.Count; } }
 
@@ -24,7 +24,7 @@ namespace Project.Tasks
         /// <inheritdoc/>
         public ITaskDataLoader Loader { get; set; } = new LoadTaskDataTextFormat();
 
-        public IData this[int ind]
+        public IPhysicalData this[int ind]
         {
             get
             {
@@ -40,11 +40,11 @@ namespace Project.Tasks
         /// </summary>
         public TaskData()
         {
-            taskData = new List<IData>();
+            taskData = new List<IPhysicalData>();
         }
 /// <inheritdoc/>
 
-        public IEnumerable<T> Find<T>() where T : IData
+        public IEnumerable<T> Find<T>() where T : IPhysicalData
         {
             foreach (var data in taskData)
             {
@@ -54,17 +54,17 @@ namespace Project.Tasks
         }
 /// <inheritdoc/>
 
-        public IEnumerable<IData> Find(string name)
+        public IEnumerable<IPhysicalData> Find(DataKind kind)
         {
             foreach (var data in taskData)
             {
-                if (data.Name == name)
+                if (data.Kind == kind)
                     yield return data;
             }
         }
 /// <inheritdoc/>
 
-        public void Add(IData data)
+        public void Add(IPhysicalData data)
         {
             taskData.Add(data);
         }
@@ -74,19 +74,19 @@ namespace Project.Tasks
         {
             foreach (var data in dataInfo)
             {
-                var ind = taskData.FindIndex(x => x.GetInfo == data);
+                var ind = taskData.FindIndex(x => x.ToString() == data);
                 taskData.RemoveAt(ind);
             }
         }
 /// <inheritdoc/>
 
-        public int IndexOf(IData item)
+        public int IndexOf(IPhysicalData item)
         {
             return taskData.IndexOf(item);
         }
 /// <inheritdoc/>
 
-        public void Insert(int index, IData item)
+        public void Insert(int index, IPhysicalData item)
         {
             throw new System.NotImplementedException();
         }
@@ -104,29 +104,29 @@ namespace Project.Tasks
         }
 /// <inheritdoc/>
 
-        public bool Contains(IData item)
+        public bool Contains(IPhysicalData item)
         {
-            return taskData.Find(x => x.Kind == item.Kind & x.GetInfo.Equals(item.GetInfo)) == null ? false : true;
+            return taskData.Find(x => x.Kind == item.Kind & x.ToString().Equals(item.ToString())) == null ? false : true;
         }
 /// <inheritdoc/>
 
-        public void CopyTo(IData[] array, int arrayIndex)
+        public void CopyTo(IPhysicalData[] array, int arrayIndex)
         {
             taskData.CopyTo(array, arrayIndex);
         }
 /// <inheritdoc/>
 
-        public bool Remove(IData item)
+        public bool Remove(IPhysicalData item)
         {
             return taskData.Remove(item);
         }
 
-        public int RemoveAll(string dataName)
+        public int RemoveAll(DataKind kind)
         {
-            return taskData.RemoveAll(x => x.Name == dataName);
+            return taskData.RemoveAll(x => x.Kind == kind);
         }
 
-        public IEnumerator<IData> GetEnumerator()
+        public IEnumerator<IPhysicalData> GetEnumerator()
         {
             foreach (var data in taskData)
             {
@@ -147,7 +147,7 @@ namespace Project.Tasks
         }
 /// <inheritdoc/>
 
-        public void AddRange(IEnumerable<IData> datas)
+        public void AddRange(IEnumerable<IPhysicalData> datas)
         {
             taskData.AddRange(datas);
         }
@@ -170,16 +170,16 @@ namespace Project.Tasks
 
         public void ClearNotExisted(IGroupData gropData)
         {
-            var valData = taskData.Select(x => (IValuableData)x);
+            //var valData = taskData.Select(x => (IPhysicalData)x);
 
-            var existData = valData.Where(x => gropData.Contains(x.Group)).ToList();
+            var existData = taskData.Where(x => gropData.Contains(x.Group)).ToList();
 
             taskData.Clear();
             taskData.AddRange(existData);
         }
 /// <inheritdoc/>
 
-        public IData Create(string name, string dataInfo, IGroup group)
+        public IPhysicalData Create(string name, string info,IGroup group)
         {
             if (group == null)
             {
@@ -188,28 +188,28 @@ namespace Project.Tasks
 
             if (name == "Материал" | name == "Материалы")
             {
-                return new MatData(group, dataInfo);
+                return new MatData(group, info);
             }
 
             else if (name == "Среда")
             {
-                return new MediaData(group, dataInfo);
+                return new MediaData(group, info);
             }
 
             else if (name == "Нагрузка")
             {
-                return new LoadData(group, dataInfo);
+                return new LoadData(group, info);
             }
 
             else if (name == "Нагрев")
             {
-                dataInfo = dataInfo.Replace("*", "0");
-                return new HeatData(group, dataInfo);
+                //dataInfo = dataInfo.Replace("*", "0");
+                return new HeatData(group, info);
             }
 
             else if (name == "Закрепления" | name == "Закрепление")
             {
-                return new ClampData(group,dataInfo);
+                return new ClampData(group, info);
             }
             else return null;
         }

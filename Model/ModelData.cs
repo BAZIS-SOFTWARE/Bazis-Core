@@ -1,6 +1,12 @@
 ﻿using Model.GroupsData;
 using Model.IO;
 using Model.Interfaces;
+using Model.Interfaces.MeshObjects;
+using Model.ObjectsCollections;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Model.Interfaces.ObjectsCollections;
 
 namespace Model
 {
@@ -12,6 +18,29 @@ namespace Model
         public IModelSaver Saver { get; set; } = new SaveModelToBPFTextFile();
         /// <inheritdoc/>
         public IModelLoader Loader { get; set; } = new LoadModelFromBPFTextFile();
+/// <inheritdoc/>
+
+        public void Append(string path)
+        {
+            var modelData = Loader.Load(path);
+
+            ObjectData.NodesSet.Append(modelData.ObjectData.NodesSet);
+
+            ObjectData.E1DCollection.Append(modelData.ObjectData.E1DCollection);
+            ObjectData.E2DCollection.Append(modelData.ObjectData.E2DCollection);
+            ObjectData.E3DCollection.Append(modelData.ObjectData.E3DCollection);
+
+            ObjectData.PointsSet.Append(modelData.ObjectData.PointsSet);
+
+            ObjectData.CurveCollection.Append(modelData.ObjectData.CurveCollection);
+            ObjectData.SurfaceCollection.Append(modelData.ObjectData.SurfaceCollection);
+            ObjectData.VolumeCollection.Append(modelData.ObjectData.VolumeCollection);
+
+            foreach (var item in modelData.GroupData)
+                GroupData.Add(item);
+        }
+
+
 
         /// <inheritdoc/>
 

@@ -25,16 +25,16 @@ namespace PrTests
             //assert
             var frameRes = new Frame(
                 new Point3D(0.7071f, 0, -0.7071f),
-                new Point3D(0, 1, 0),
                 new Point3D(0.7071f, 0, 0.7071f),
-                new Point3D(0, 0, 0)
+                new Point3D(0, 1, 0)
+                //new Point3D(0, 0, 0)
                 );
 
-            if (frameRot.X != frameRes.X)
+            if (frameRot.Dir_X != frameRes.Dir_X)
                 throw new Exception();
-            if (frameRot.Y != frameRes.Y)
+            if (frameRot.Dir_Y != frameRes.Dir_Y)
                 throw new Exception();
-            if (frameRot.Z != frameRes.Z)
+            if (frameRot.Dir_Z != frameRes.Dir_Z)
                 throw new Exception();
         }
 
@@ -49,7 +49,7 @@ namespace PrTests
         public void FrameCreation_ShouldFail_WhenEmptyAxis()
         {
             var emptyVector = new Point3D();
-            Assert.ThrowsException<Exception>(() => new Frame(emptyVector, emptyVector, emptyVector, emptyVector));
+            Assert.ThrowsException<Exception>(() => new Frame(emptyVector, emptyVector, emptyVector));
         }
 
         [DataRow(
@@ -80,7 +80,7 @@ namespace PrTests
             var axisZ = new Point3D(p3[0], p3[1], p3[2]);
             var center = new Point3D();
 
-            Assert.ThrowsException<Exception>(() => new Frame(axisX, axisY, axisZ, center));
+            Assert.ThrowsException<Exception>(() => new Frame(center, axisY,axisX));
         }
 
         [DataRow(
@@ -163,7 +163,7 @@ namespace PrTests
             var axisZ = new Point3D(p3[0], p3[1], p3[2]);
             var center = new Point3D();
 
-            Assert.ThrowsException<Exception>(() => new Frame(axisX, axisY, axisZ, center));
+            Assert.ThrowsException<Exception>(() => new Frame(center, axisY, axisX));
         }
 
         [DataRow(
@@ -181,7 +181,7 @@ namespace PrTests
             var axisY = new Point3D(p2[0], p2[1], p2[2]);
             var axisZ = new Point3D(p3[0], p3[1], p3[2]);
             var center = new Point3D();
-            new Frame(axisX, axisY, axisZ, center);
+            new Frame(center, axisY, axisX);
         }
 
         [DataRow(
@@ -222,7 +222,7 @@ namespace PrTests
             var axisY = new Point3D(p2[0], p2[1], p2[2]);
             var axisZ = new Point3D(p3[0], p3[1], p3[2]);
             var cen = new Point3D(c[0], c[1], c[2]);
-            new Frame(axisX, axisY, axisZ, cen);
+            new Frame(cen, axisY, axisX);
         }
         [TestMethod]
         [DataRow( new[] { 0.0f, 0.0f, 0.0f })]
@@ -230,7 +230,7 @@ namespace PrTests
         public void FrameCreation_ShouldPass_WhenShifting(float[] points)
         {
             var shifting = new Point3D(points[0], points[1], points[2]);
-            var frame = new Frame(new Point3D(1,0,0), new Point3D(0, 1, 0), new Point3D(0, 0, 1), new Point3D());
+            var frame = new Frame(new Point3D(),new Point3D(0, 1, 0), new Point3D(1, 0, 0));
             frame.Shift(shifting);
         }
 
@@ -244,7 +244,7 @@ namespace PrTests
 
             var frame = new Frame(posit, posit.Sum(dirY), posit.Sum(dirX));
             var sFrame = frame.Shift(shifting);
-            var axis = sFrame.Y.Sub(sFrame.Centre);
+            var axis = sFrame.Dir_Y.Sub(sFrame.Centre);
             axis = Vector.GetVectorNorm(axis);
             var res = sFrame.Rotate(axis, 0);
         }

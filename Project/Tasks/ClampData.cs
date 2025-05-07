@@ -25,22 +25,25 @@ namespace Project.Tasks
         Локальная
     }
 
-    public class ClampData : ValuableData
+    public class ClampData : PhysicalData
     {
-        public ClampData(IGroup group,string info) : base (group,info)
+        public ClampData(IGroup group, string info) : base(group, info)
         {
-            Kind = DataKind.Clamp;
-            Name = "Закрепление";
+            Kind = DataKind.Закрепление;
+        }
+        public ClampData(IGroup group,float start,float stop) : base (group,start,stop)
+        {
+            Kind = DataKind.Закрепление;
         }
 
         public ClampKind ClampKind { get; private set; }
 
-        public ClampType ClampType { get; private set; }
+        public ClampType ClampType { get; private set; } = ClampType.Статическое;
 
         public ClampFrame ClampFrame { get; private set; }
 /// <inheritdoc/>
 
-        public override void SetInfo(string info)
+        protected override void SetInfo(string info)
         {
             var clampDataAr = info.Split(' ');
 
@@ -72,12 +75,12 @@ namespace Project.Tasks
             
             StopTime = stopTime;
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
-        public override string GetInfo
+        protected override string GetInfo
         {
             get { return string.Format("{0} {1} {2} {3} {4} {5} {6}", 
-                Group.Name, ClampKind, Direction, ClampFunction, StartTime, StopTime,TrajectoryInfo); }
+                Group.Name, ClampKind, Direction, ClampFunction, StartTime, StopTime,"*"); }
         }
         /// <summary>
         /// ClampFunction

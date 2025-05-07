@@ -22,7 +22,7 @@ namespace Model.Interfaces.ObjectsCollections
         /// <summary>
         /// Remove
         /// </summary>
-        /// <param name="state"></param>
+        /// <param name="objNumber"></param>
         void Remove(int objNumber);
         /// <summary>
         /// Remove
@@ -43,6 +43,12 @@ namespace Model.Interfaces.ObjectsCollections
         /// </summary>
         /// <returns></returns>
         int GetMinNumber();
+        /// <summary>
+        /// Append
+        /// </summary>
+        /// <param name="collection"></param>
+        void Append(IObjectsCollection<T> collection);
+
         /// <summary>
         /// Add set as object
         /// </summary>
@@ -65,7 +71,7 @@ namespace Model.Interfaces.ObjectsCollections
         /// <summary>
         /// AddRange
         /// </summary>
-        /// <param name="collName"></param>
+        /// <param name="setName"></param>
         /// <param name="addObjs"></param>
         void AddRange(string setName, IEnumerable<T> addObjs);
         /// <summary>
@@ -108,7 +114,7 @@ namespace Model.Interfaces.ObjectsCollections
         /// <summary>
         /// ContainsName
         /// </summary>
-        /// <param name="collName"></param>
+        /// <param name="setName"></param>
         /// <returns></returns>
         bool ContainsName(string setName);
     }

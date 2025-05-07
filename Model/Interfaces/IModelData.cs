@@ -26,6 +26,11 @@ namespace Model.Interfaces
         /// <param name="path"></param>
         void Load(string path);
         /// <summary>
+        /// Append
+        /// </summary>
+        /// <param name="path"></param>
+        void Append(string path);
+        /// <summary>
         /// SetObjectData
         /// </summary>
         /// <param name="objectData"></param>

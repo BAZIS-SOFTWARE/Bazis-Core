@@ -39,7 +39,7 @@ namespace TestProject
             project.Load($@"{testDir}\{name}");
 
             //assert
-            var loadDataStr = project.TaskData.Find<Data>().First().GetInfo;
+            Assert.AreNotEqual(project.TaskData.Find<PhysicalData>().First(),null);
         }
 
         [TestMethod]

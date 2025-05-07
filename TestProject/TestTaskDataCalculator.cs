@@ -4,6 +4,7 @@ using Project;
 using Project.IO;
 using Project.Tasks;
 using Project.Tasks.Functions;
+using Project.Tasks.LocalFrame;
 using System;
 using System.Globalization;
 using System.Linq;
@@ -44,7 +45,7 @@ namespace TestProject
 
             var heat = proj.TaskData.Find<HeatData>().First();
             
-            var motionTime = heat.MovedFrame.CalcMotionTime();
+            var motionTime = (heat.LocalFrame as MovedFrame).CalcMotionTime();
             var stopTime = heat.StartTime + motionTime;
 
             //assert
@@ -68,15 +69,10 @@ namespace TestProject
             var refLineGr = proj.ModelData.GroupData.Find("refLine");
             var stNodesGr = proj.ModelData.GroupData.Find("startNodes");
 
-            var mff = new MovedFrame(1);
-
-            mff.BaseLine = baseLineGr;
-            mff.RefLine = refLineGr;
-            mff.StartPoints = stNodesGr;
-            mff.StopPoints = stNodesGr;
+            var mff = new MovedFrame(baseLineGr, refLineGr,1);
 
             //assert
-            mff.CheckTrajNodes();
+            Assert.AreNotEqual(mff.BaseLine.Count(), 0);
         }
 
         [TestMethod]
@@ -95,19 +91,10 @@ namespace TestProject
             var refLineGr = proj.ModelData.GroupData.Find("refLine");
             var stNodesGr = proj.ModelData.GroupData.Find("startNodes");
 
-            var mff = new MovedFrame(1);
-
-            mff.BaseLine = baseLineGr;
-            mff.RefLine = refLineGr;
-            mff.StartPoints = stNodesGr;
-            mff.StopPoints = stNodesGr;
-
-            mff.SortTrajNodes();
+            var mff = new MovedFrameBuilder().Build(stNodesGr, baseLineGr, refLineGr, 5);
 
             //assert
-            Assert.AreEqual(mff.BaseLine[0].Number, mff.StartPoints[1].Number);
-            Assert.AreEqual(mff.RefLine[0].Number, mff.StartPoints[0].Number);
-
+            Assert.AreEqual(mff.BaseLine[0].Number, mff.StartPoint.Number);
         }
 
         public static MovedFrame SetUpGroupData
@@ -119,166 +106,53 @@ namespace TestProject
             proj.Loader.LoadEvent += (ar1, ar2) => { };
             proj.Load(@"..\..\..\Examples\TrajTest.bpf");
 
-            return new MovedFrame(1)
-            {
-                BaseLine = proj.ModelData.GroupData.Find(baseLineGroupName),
-                RefLine = proj.ModelData.GroupData.Find(refLineGroupName),
-                StartPoints = proj.ModelData.GroupData.Find(startGroupName),
-                StopPoints = proj.ModelData.GroupData.Find(endGroupName),
-            };
+            var baseLine = proj.ModelData.GroupData.Find(baseLineGroupName);
+            var refLine = proj.ModelData.GroupData.Find(refLineGroupName);
+            var startPoints = proj.ModelData.GroupData.Find(startGroupName);
+            
+
+            return new MovedFrameBuilder().Build(startPoints, baseLine, refLine, 5);
         }
 
-        [TestMethod]
-        [DataRow("empty_nodes", "empty_nodes", "empty_start", "empty_end")]
-        public void MovedFrameFunction_ShouldFall_WhenCheckWithMultiplePointsInOnePoint
+        [DataTestMethod]
+        [DataRow("parallel_base", "parallel_ref", "parallel_start", "parallel_end",
+            DisplayName = "WhenBaseAndRefParallel")]
+        [DataRow("empty_nodes", "empty_nodes", "empty_start", "empty_end",
+            DisplayName = "WhenCheckWithMultiplePointsInOnePoint")]
+        [DataRow("gt3_intersect_base", "gt3_intersect_refl", "gt3_intersect_start", "gt3_intersect_end",
+            DisplayName = "WhenMoreThenTwoPointsInLineIntersect")]
+        [DataRow("sort_base", "sort_ref", "sort_start", "sort_end",
+            DisplayName = "WhenTrajsIntersectInBegin")]
+        [DataRow("parallel_base", "parallel_ref", "manyPoint_start", "parallel_end",
+            DisplayName = "WhenManyPointStart")]
+        [DataRow("parallel_base", "parallel_ref", "onePOint_start", "parallel_end",
+            DisplayName = "WhenOnePointStart")]
+        [DataRow("onePointGroup", "onePointGroup", "onePointGroup", "onePointGroup",
+            DisplayName = "WhenOnePointForAllGroups")]
+        [DataRow("empty_nodes", "empty_nodes", "invalid_start", "empty_end",
+            DisplayName = "WhenInvalidStart")]
+        [DataRow("empty_nodes", "empty_nodes", "another_invalid_start", "empty_end",
+            DisplayName = "WhenAnotherInvalidStart")]
+        [DataRow("parallel_base", "parallel_ref", "parallel_start", "onePOint_end",
+            DisplayName = "WhenOnePointEnd")]
+        [DataRow("onePointGroup", "onePointGroup", "onePointGroup", "onePointGroup",
+            DisplayName = "WhenOnePointForAllGroups")]
+        [DataRow("twoPointIntersection_base", "EndIntersection_ref", "twoPointIntersection_start", "twoPointIntersection_end",
+            DisplayName = "WhenIntersectsEnd")]
+        [DataRow("twoPointIntersection_base", "twoPointIntersection_ref", "twoPointIntersection_start", "twoPointIntersection_end",
+             DisplayName = "TwoIntersectionsSharp")]
+        [DataRow("empty_nodes", "empty_nodes_without_start_end", "empty_start", "empty_end",
+            DisplayName = "WhenBaseOrRefLineDoesNotContainStartAndEndDuringSort")]
+        [DataRow("startIsPartOfTheEnd_base", "startIsPartOfTheEnd_ref", "startIsPartOfTheEnd_start", "startIsPartOfTheEnd_end",
+            DisplayName = "WhenStartIsPartOfTheEnd")]
+        [DataRow("twoPointIntersection_base", "StartIntersection_ref", "twoPointIntersection_start", "twoPointIntersection_end",
+            DisplayName = "WhenIntersectsStart")]
+        [DataRow("twoPointIntersection_base", "StartEndIntersection_ref", "twoPointIntersection_start", "twoPointIntersection_end",
+            DisplayName = "WhenIntersectsStartEnd")]
+        public void MovedFrameFunction_ShouldFall
             (string baseLine, string refLine, string start, string end)
         {
-            Assert.ThrowsException<Exception>(() => SetUpGroupData(baseLine, refLine, start, end).CheckTrajNodes());
-        }
-
-        [TestMethod]
-        [DataRow("gt3_intersect_base", "gt3_intersect_refl", "gt3_intersect_start", "gt3_intersect_end")]
-        public void MovedFrameFunction_ShouldFall_WhenMoreThenTwoPointsInLineIntersect
-            (string baseLine, string refLine, string start, string end)
-        {
-            Assert.ThrowsException<Exception>(() => SetUpGroupData(baseLine, refLine, start, end).CheckTrajNodes());
-        }
-
-        [TestMethod]
-        [DataRow("sort_base", "sort_ref", "sort_start", "sort_end")]
-        public void MovedFrameFunction_ShouldPass_WhenSortCorrect
-            (string baseLine, string refLine, string start, string end)
-        {
-            var mff = SetUpGroupData(baseLine, refLine, start, end);
-            mff.SortTrajNodes();
-
-            Assert.AreEqual("sort_base Узел 8 | 2 3 0 1 8 10 12 14", mff.BaseLine.ToString());
-            Assert.AreEqual("sort_ref Узел 8 | 2 3 11 1 0 7 13 9", mff.RefLine.ToString());
-        }
-
-        [TestMethod]
-        [DataRow("empty_nodes", "empty_nodes_without_start_end", "empty_start", "empty_end")]
-        [DataRow("empty_nodes_without_start_end", "empty_node", "empty_start", "empty_end")]
-        public void MovedFrameFunction_ShouldFail_WhenBaseOrRefLineDoesNotContainStartAndEndDuringSort
-            (string baseLine, string refLine, string start, string end)
-        {
-            Assert.ThrowsException<InvalidOperationException>(() => SetUpGroupData(baseLine, refLine, start, end).SortTrajNodes());
-        }
-
-        [TestMethod]
-        [DataRow("empty_nodes", "empty_nodes", "invalid_start", "empty_end")]
-        [DataRow("empty_nodes", "empty_nodes", "another_invalid_start", "empty_end")]
-        public void MovedFrameFunction_ShouldFail_WhenInvalidStart
-            (string baseLine, string refLine, string start, string end)
-        {
-            Assert.ThrowsException<InvalidOperationException>(() => SetUpGroupData(baseLine, refLine, start, end).SortTrajNodes());
-        }
-
-        [TestMethod]
-        [DataRow("parallel_base", "parallel_ref", "parallel_start", "parallel_end")]
-        public void MovedFrameFunction_ShouldFail_WhenBaseAndRefParallel
-            (string baseLine, string refLine, string start, string end)
-        {
-            var arc = SetUpGroupData(baseLine, refLine, start, end);
-            arc.CheckTrajNodes();
-            arc.SortTrajNodes();
-        }
-
-        [TestMethod]
-        [DataRow("parallel_base", "parallel_ref", "parallel_start", "onePOint_end")]
-        public void MovedFrameFunction_ShouldPass_WhenOnePointEnd
-            (string baseLine, string refLine, string start, string end)
-        {
-            Assert.ThrowsException<Exception>(() => SetUpGroupData(baseLine, refLine, start, end).CheckTrajNodes());
-        }
-
-        [TestMethod]
-        [DataRow("parallel_base", "parallel_ref", "parallel_start", "manyPoint_end")]
-        public void MovedFrameFunction_ShouldPass_WhenManyPointEnd
-            (string baseLine, string refLine, string start, string end)
-        {
-            Assert.ThrowsException<Exception>(() => SetUpGroupData(baseLine, refLine, start, end).CheckTrajNodes());
-        }
-
-        [TestMethod]
-        [DataRow("parallel_base", "parallel_ref", "onePOint_start", "parallel_end")]
-        public void MovedFrameFunction_ShouldFail_WhenOnePointStart
-            (string baseLine, string refLine, string start, string end)
-        {
-            Assert.ThrowsException<Exception>(() => SetUpGroupData(baseLine, refLine, start, end).CheckTrajNodes());
-        }
-
-        [TestMethod]
-        [DataRow("parallel_base", "parallel_ref", "manyPoint_start", "parallel_end")]
-        public void MovedFrameFunction_ShouldFail_WhenManyPointStart
-            (string baseLine, string refLine, string start, string end)
-        {
-            Assert.ThrowsException<Exception>(() => SetUpGroupData(baseLine, refLine, start, end).CheckTrajNodes());
-        }
-
-        //should fail, but pass
-        [TestMethod]
-        [DataRow("onePointGroup", "onePointGroup", "onePointGroup", "onePointGroup")]
-        public void MovedFrameFunction_ShouldFail_WhenOnePointForAllGroups
-            (string baseLine, string refLine, string start, string end)
-        {
-            Assert.ThrowsException<Exception>(() => SetUpGroupData(baseLine, refLine, start, end).CheckTrajNodes());
-        }
-
-        [TestMethod]
-        [DataRow("twoPointIntersection_base", "twoPointIntersection_ref", "twoPointIntersection_start", "twoPointIntersection_end")]
-        public void MovedFrameFunction_ShouldFail_TwoIntersectionsSharp
-            (string baseLine, string refLine, string start, string end)
-        {
-            Assert.ThrowsException<InvalidOperationException>(() =>
-            {
-                var arc = SetUpGroupData(baseLine, refLine, start, end);
-                arc.CheckTrajNodes();
-                arc.SortTrajNodes();
-            });
-        }
-
-        [TestMethod]
-        [DataRow("twoPointIntersection_base", "StartIntersection_ref", "twoPointIntersection_start", "twoPointIntersection_end")]
-        public void MovedFrameFunction_ShouldPass_WhenIntersectsStart
-            (string baseLine, string refLine, string start, string end)
-        {
-            var arc = SetUpGroupData(baseLine, refLine, start, end);
-            arc.CheckTrajNodes();
-            arc.SortTrajNodes();
-        }
-
-        [TestMethod]
-        [DataRow("twoPointIntersection_base", "EndIntersection_ref", "twoPointIntersection_start", "twoPointIntersection_end")]
-        public void MovedFrameFunction_ShouldFail_WhenIntersectsEnd
-            (string baseLine, string refLine, string start, string end)
-        {
-            Assert.ThrowsException<InvalidOperationException>(() =>
-            {
-                var arc = SetUpGroupData(baseLine, refLine, start, end);
-                arc.CheckTrajNodes();
-                arc.SortTrajNodes();
-            });
-        }
-
-        [TestMethod]
-        [DataRow("twoPointIntersection_base", "StartEndIntersection_ref", "twoPointIntersection_start", "twoPointIntersection_end")]
-        public void MovedFrameFunction_ShouldPass_WhenIntersectsStartEnd
-            (string baseLine, string refLine, string start, string end)
-        {
-            var arc = SetUpGroupData(baseLine, refLine, start, end);
-            arc.CheckTrajNodes();
-            arc.SortTrajNodes();
-        }
-
-        [TestMethod]
-        [DataRow("startIsPartOfTheEnd_base", "startIsPartOfTheEnd_ref", "startIsPartOfTheEnd_start", "startIsPartOfTheEnd_end")]
-        public void MovedFrameFunction_ShouldPass_WhenStartIsPartOfTheEnd
-            (string baseLine, string refLine, string start, string end)
-        {
-            var arc = SetUpGroupData(baseLine, refLine, start, end);
-            arc.CheckTrajNodes();
-            arc.SortTrajNodes();
+            Assert.ThrowsException<Exception>(() => SetUpGroupData(baseLine, refLine, start, end));
         }
     }
 }

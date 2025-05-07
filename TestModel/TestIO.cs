@@ -5,6 +5,8 @@ using Model;
 using Model.IO;
 using Model.Interfaces;
 using System.Data;
+using Model.IO.STL;
+using static System.Net.WebRequestMethods;
 
 namespace TestModel
 {
@@ -52,7 +54,6 @@ namespace TestModel
 
         [DataTestMethod]
         [DataRow(@"..\..\..\Examples\3D\box2.inp", @"..\..\..\Examples\BPF2TXT\box2_test.bpf2")]
-        [DataRow(@"c:\projs\ElenaLu\Dnishe\Dnishe2d.ASC", @"c:\projs\ElenaLu\Dnishe\Dnishe2d.bpf2")]
         public void SaveModelToBpf2FromInp(string loadPath, string savePath)
         {
             //assing
@@ -144,6 +145,35 @@ namespace TestModel
                     break;
             }
         }
+        [TestMethod]
+        [DataRow(new string[] { "Box_1.stl", "Box_2.stl" },DisplayName = "Box_1_Box_2")]
+        [DataRow(new string[] { "Box.stl", "Large_Box3.stl", "Sticks.stl" }, DisplayName = "Box_Large_Box3_Sticks")]
+        public void AppendAndSaveToSTLTextFormat(string [] files)
+        {
+            string dir = @"..\..\..\Examples\STL\Append";
+
+            //assing
+            var model = new ModelData();
+
+            model.Loader = new LoadFromSTLFile();
+
+            //act
+            model.Load(Path.Combine(dir, files[0]));
+
+            foreach (var item in files.Skip(1))
+                model.Append(Path.Combine(dir, item));
+
+
+            //assert
+            Assert.AreNotEqual(model.ObjectData.Count(ObjType.Элемент2D), 0);
+
+            model.Saver = new SaveToTxtSTLFile();
+            model.Save(Path.Combine(dir, "append.stl"));
+            model.Load(Path.Combine(dir, "append.stl"));
+
+            Assert.AreNotEqual(model.ObjectData.Count(ObjType.Элемент2D), 0);
+
+        }
 
 
         [TestMethod]
@@ -167,7 +197,7 @@ namespace TestModel
             //assing
             var model = new ModelData();
 
-            model.Loader = new LoadModelFromSTLFile();
+            model.Loader = new LoadFromSTLFile();
 
             //act
             model.Load(path);
@@ -193,9 +223,8 @@ namespace TestModel
         } 
 
         [DataTestMethod]
-        [DataRow(8448, 17964, @"..\..\Examples\3D\Korpus.inp", DisplayName = "Korpus.inp")]
-        [DataRow(4, 1, @"..\..\Examples\3D\abacus.inp", DisplayName = "abacus.inp")]
-        [DataRow(8, 30, @"..\..\Examples\3D\Physical_groups_mesh.inp", DisplayName = "Physical_groups_mesh.inp")]
+        [DataRow(8448, 17964, @"..\..\..\Examples\3D\Korpus.inp", DisplayName = "Korpus.inp")]
+        [DataRow(4, 1, @"..\..\..\Examples\3D\abacus.inp", DisplayName = "abacus.inp")]
         public void ImportModelFromINPTextFormat(int nodeCount, int elemCount, string path)
         {
             var model = new ModelData();

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 
 namespace Model.ObjectsCollections
 {
@@ -78,6 +79,28 @@ namespace Model.ObjectsCollections
         public override string ToString()
         {
             return $@"{Name} {Color} {ViewMode} {objectsSet.Count}";
+        }
+
+/// <inheritdoc/>
+
+        public void Append(IObjectsSet<T> appSet)
+        {
+            var shifting = 0;
+            if (objectsSet.Count != 0)
+            {
+                var max = objectsSet.Max(x => x.Key);
+                var min = appSet.Min(x => x.Key);
+
+                if (min <= max)
+                    shifting = max + 1;
+            }
+
+            foreach (var value in appSet)
+            {
+                var number = value.Value.Number + shifting;
+                value.Value.SetNumber(number);
+                objectsSet.Add(number, value.Value);
+            }
         }
 
         /// <inheritdoc/>
