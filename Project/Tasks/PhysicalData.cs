@@ -81,7 +81,7 @@ namespace Project.Tasks
 
         /// <inheritdoc/>
 
-        public Direction Direction { get; internal set; }
+        public Direction Direction { get; set; }
 
     }
 }
