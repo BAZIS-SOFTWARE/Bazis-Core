@@ -23,7 +23,7 @@ namespace Project.Tasks
         /// </summary>
         public float PowerValue { get; private set; } = 1;
         /// <summary>
-        /// PowerFunctionValue
+        /// PowerFunction
         /// </summary>
         public string PowerFunction{ get; private set; } = "*";
 

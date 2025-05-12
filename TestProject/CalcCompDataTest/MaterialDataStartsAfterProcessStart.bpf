@@ -9,5 +9,5 @@
 Нагрев : ARC;6;500;50 test 22 32 test|test;5;test;test;0|0|0|0
 Нагрев : ARC;7;500;50 test 33 43 test|test;5;test;test;0|0|0|0
 Нагрев : ARC;7;500;50 test 44 54 test|test;5;test;test;0|0|0|0
-Закрепление : test Жесткое X * 0 150 *
+Закрепление : test Жесткое X 0 * 0 150 *
 #Проект
