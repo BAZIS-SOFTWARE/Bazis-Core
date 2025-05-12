@@ -3,6 +3,7 @@ using System.Linq;
 using System;
 using Model;
 using Model.Interfaces;
+using Model.Interfaces.MeshObjects;
 using Model.Interfaces.ObjectsFinders;
 using GmshApi;
 using System.IO;
@@ -614,6 +615,42 @@ namespace TestModel.GmshTests
             //file = Path.GetFileNameWithoutExtension(fileName);
             //controller.Gmsh.Write($@"D:\{file}_field.inp");//Для визуального теста
         }
+
+        [DataTestMethod]
+        //[DataRow("Prism", "Automatic")]//Для призм автоматическая трансфиниция не работает
+        [DataRow("Prism", "Manual")]
+        [DataRow("Hexa", "Automatic")]
+        [DataRow("Hexa","Manual")]
+        public void GenHexaPentaElementsForPrismAndBoxTest(string volumeType, string genMethod)
+        {
+            var volume = volumeType == "Prism" ? controller.Gmsh.Model.Occ.AddWedge(0, 0, 0, 1, 1, 1)
+                                               : controller.Gmsh.Model.Occ.AddBox(0, 0, 0, 1, 1, 1);
+            controller.Gmsh.Model.Occ.Synchronize();
+
+            var surfaces = controller.Gmsh.Model.GetEntities(2);
+            if (genMethod == "Manual")
+                for (var i = 0; i < surfaces.Length; i += 2)
+                {
+                    controller.Gmsh.Model.Mesh.SetTransfiniteSurface(surfaces[i + 1]);
+                    controller.Gmsh.Model.Mesh.SetRecombine(surfaces[i], surfaces[i + 1]);
+                }
+            else
+                controller.Gmsh.Model.Mesh.SetTransfiniteAutomatic(surfaces);
+
+            controller.Gmsh.Model.Mesh.SetTransfiniteVolume(volume);
+
+            controller.Gmsh.Model.Mesh.Generate(3);
+
+            var error = controller.Gmsh.Logger.GetLastError();
+            Assert.IsTrue(string.IsNullOrEmpty(error));
+
+            var elements = controller.GetMeshObjects();
+            foreach (var element in elements.Item4) 
+                Assert.IsTrue(element.ElementKind == ElementKind.Пента || element.ElementKind == ElementKind.Гекса);
+
+            //controller.Gmsh.Write($@"D:\{volumeType}{genMethod}.inp");//Для визуального теста
+        }
+
 
         private void MakeTranfinite(int seamPointCurves, int[] seamCurves, int[] seamVolumes)
         {
