@@ -9,8 +9,8 @@ namespace Project.Tasks.Functions
 {
     public class FSWShoulder : CillindricalFunction
     {
-        public float RotSpeed { get; internal set; }
-        public float AxisForce { get; internal set; }
+        public float RotSpeed { get; set; }
+        public float AxisForce { get; set; }
 /// <inheritdoc/>
 
         public override string ToString()

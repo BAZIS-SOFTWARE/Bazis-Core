@@ -27,7 +27,7 @@ namespace Project.Tasks
             Kind = DataKind.Нагрузка;
         }
 
-        public LoadKind LoadKind { get; internal set; }
+        public LoadKind LoadKind { get; set; }
 /// <inheritdoc/>
 
         protected override void SetInfo(string info)
@@ -83,6 +83,6 @@ namespace Project.Tasks
         /// <summary>
         /// LoadFunction
         /// </summary>
-        public string LoadFunction { get; private set; } = "*";
+        public string LoadFunction { get; set; } = "*";
     }
 }
