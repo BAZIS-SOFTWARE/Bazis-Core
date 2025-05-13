@@ -80,14 +80,10 @@ namespace Project.Tasks.Functions
             var inverseBazisMatrix = transposedBazisMatrix.Inverse();
             var transitionMatrix = inverseBazisMatrix * transposedFrameArr;
 
-            try
-            {
-                InverseTransitionMatrix = transitionMatrix.Inverse();
-            }
-            catch (Exception ex)
-            {
-                throw new StlFileLoadExeption("Матрица вырождена, обратной матрицы не существует", ex);
-            }
+            if (transitionMatrix.Determinant() == 0)          
+                throw new StlFileLoadExeption("Матрица вырождена, обратной матрицы не существует", new Exception());
+            else 
+                InverseTransitionMatrix = transitionMatrix.Inverse();           
         }
 
 
