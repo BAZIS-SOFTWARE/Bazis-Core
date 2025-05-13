@@ -24,7 +24,7 @@ namespace Project.Tasks
             Kind = DataKind.Закрепление;
         }
 
-        public ClampKind ClampKind { get; private set; }
+        public ClampKind ClampKind { get; set; }
 /// <inheritdoc/>
 
         protected override void SetInfo(string info)
