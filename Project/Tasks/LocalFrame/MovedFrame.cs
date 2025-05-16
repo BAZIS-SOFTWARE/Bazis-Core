@@ -120,10 +120,11 @@ namespace Project.Tasks.LocalFrame
 
             var frame = new Frame(posit, posit.Sum(dirY), posit.Sum(dirX));
 
-            var sFrame = frame.Shift(Shifting);
-            var axis = sFrame.Dir_Y.Sub(sFrame.Centre);
+            frame.Shift(Shifting);
+            var axis = frame.Dir_Y.Sub(frame.Centre);
             axis = Vector.GetVectorNorm(axis);
-            return sFrame.Rotate(axis, Rotation);
+            frame.Rotate(axis, Rotation);
+            return frame;
         }
 
         /// <inheritdoc/>

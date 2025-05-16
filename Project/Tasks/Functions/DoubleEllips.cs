@@ -94,21 +94,21 @@ namespace Project.Tasks.Functions
             if (vectorLength <= MinSemiaxis) return true;
             else if (vectorLength > MaxSemiaxis) return false;
 
-            var desiredPointMatrix = Matrix<float>.Build.DenseOfArray(new float[1, 3]{
-                                                                { displayPoint._x, displayPoint._y, displayPoint._z } });
+            var desiredPointMatrix = Vector<float>.Build.DenseOfArray(new float[]
+                                                                { displayPoint._x, displayPoint._y, displayPoint._z });
 
-            var pointInEllipsCoordinate = desiredPointMatrix * InverseTransitionMatrix;            
+            var pointInEllipsCoordinate = InverseTransitionMatrix.Multiply(desiredPointMatrix);            
 
             float semiEllipsoid;
-            if (elementCenter._y < Frame.Centre._y)
+            if (pointInEllipsCoordinate[1] < 0)
                 semiEllipsoid = BackPart;
             else semiEllipsoid = FrontPart;
 
-            var result = Math.Pow(pointInEllipsCoordinate[0, 0] / (Width / 2), 2) +
-                Math.Pow(pointInEllipsCoordinate[0, 1] / semiEllipsoid, 2) +
-                Math.Pow(pointInEllipsCoordinate[0, 2] / Depth, 2);
+            var result = Math.Pow(pointInEllipsCoordinate[0] / (Width / 2), 2) +
+                Math.Pow(pointInEllipsCoordinate[1] / semiEllipsoid, 2) +
+                Math.Pow(pointInEllipsCoordinate[2] / Depth, 2) - 1;
 
-            return result <= 1;
+            return result <= 0;
 
         }
 

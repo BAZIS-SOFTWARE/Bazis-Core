@@ -419,7 +419,7 @@ namespace Model
                 {
                     foreach (var coord in item.GetCoordinates())
                     {
-                        var rot = Geometry.Vector.GetVectorRotation(coord, axis, angle);
+                        var rot = Vector.GetVectorRotation(coord, axis, angle);
                         coord._x += rot._x;
                         coord._y += rot._y;
                         coord._z += rot._z;

@@ -499,7 +499,7 @@ namespace TestProject
             doubleEllips.FrontPart = 5;
             doubleEllips.BackPart = 15;
             doubleEllips.MaxAndMinSemiaxis();
-            doubleEllips.Frame = new Frame(new Point3D(15, 15, 15), new Point3D(15, 16, 15), new Point3D(16, 15, 15));            
+            doubleEllips.Frame = new Frame(new Point3D(15, 15, 15), new Point3D(16, 15, 15), new Point3D(15, 16, 15));            
             doubleEllips.DetermineInverseMatrix();
             var point = new Point3D(checkPoint[0], checkPoint[1], checkPoint[2]);
 
@@ -511,9 +511,12 @@ namespace TestProject
         }
 
         [TestMethod]
-        [DataRow(new[] { 25f, 22.2f, 19.5f }, "inside", DisplayName = "point in head ellipse, inside")]
-        [DataRow(new[] { 25f, 24.3f, 20f }, "outside", DisplayName = "point in head ellipse, outside")]
-        [DataRow(new[] { 24.7f, 23.7f, 20f }, "outside", DisplayName = "point in head ellipse, outside")]
+        [DataRow(new[] { 25f, 22.2f, 19.5f }, "inside", DisplayName = "25f, 22.2f, 19.5f")]
+        [DataRow(new[] { 25f, 24.3f, 20f }, "inside", DisplayName = "25f, 24.3f, 20f")]
+        [DataRow(new[] { 24.7f, 23.7f, 20f }, "inside", DisplayName = "24.7f, 23.7f, 20f")]
+        [DataRow(new[] { 25f, 24f, 19.5f }, "inside", DisplayName = "25f, 24.0f, 19.5f")]
+        [DataRow(new[] { 13f, 25f, 20f }, "outside", DisplayName = "13f, 25f, 20f")]
+        [DataRow(new[] { 13f, 20f, 20f }, "outside", DisplayName = "13f, 20f, 20f")]
         public void DoubleEllipsIsPointInside_FrameXYRotated30DegreesGlobalAxes(float[] checkPoint, string location)
         {
             var doubleEllips = new DoubleEllips();
@@ -522,8 +525,10 @@ namespace TestProject
             doubleEllips.FrontPart = 5;
             doubleEllips.BackPart = 15;
             doubleEllips.MaxAndMinSemiaxis();
-            doubleEllips.Frame = new Frame(new Point3D(20f, 20f, 20f), new Point3D(19.5f, 20.866f, 20f), new Point3D(20.866f, 20.5f, 20f));
+            doubleEllips.Frame = new Frame(new Point3D(20f, 20f, 20f), new Point3D(20.866f, 20.5f, 20f), new Point3D(19.5f, 20.866f, 20f));
             doubleEllips.DetermineInverseMatrix();
+
+            var str = doubleEllips.InverseTransitionMatrix.ToString();
             var point = new Point3D(checkPoint[0], checkPoint[1], checkPoint[2]);
 
             if (location == "inside")
@@ -561,8 +566,9 @@ namespace TestProject
             var doubleEllips = new DoubleEllips();
             doubleEllips.Frame = new Frame(
                 new Point3D(0f, 0f, 0f),
-                 new Point3D(pointsArr[3], pointsArr[4], pointsArr[5]),
-                new Point3D(pointsArr[0], pointsArr[1], pointsArr[2]));
+                 new Point3D(pointsArr[0], pointsArr[1], pointsArr[2]),
+                 new Point3D(pointsArr[3], pointsArr[4], pointsArr[5])
+                );
 
             doubleEllips.DetermineInverseMatrix();
             var matrix = doubleEllips.InverseTransitionMatrix;
