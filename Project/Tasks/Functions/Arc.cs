@@ -10,8 +10,8 @@ namespace Project.Tasks.Functions
 {
     public class Arc : SphereFunction
     {
-        public float Current { get; internal set; }
-        public float Voltage { get; internal set; }
+        public float Current { get; set; }
+        public float Voltage { get; set; }
         public float Power { get { return Current * Voltage; } }
 
 

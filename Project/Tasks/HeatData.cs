@@ -16,14 +16,14 @@ namespace Project.Tasks
     /// <summary>
     /// HeatData
     /// </summary>
-    public class HeatData : ValuableData
+    public class HeatData : PhysicalData
     {
         /// <summary>
         /// PowerValue
         /// </summary>
         public float PowerValue { get; private set; } = 1;
         /// <summary>
-        /// PowerFunctionValue
+        /// PowerFunction
         /// </summary>
         public string PowerFunction{ get; private set; } = "*";
 
@@ -79,6 +79,11 @@ namespace Project.Tasks
         public HeatData(IGroup group, string info) : base(group, info)
         {
             Kind = DataKind.Нагрев;     
+        }
+
+        public HeatData(IGroup group, float start, float stop) : base(group, start, stop)
+        {
+            Kind = DataKind.Нагрев;
         }
     }
 }

@@ -197,18 +197,18 @@ namespace TestModel
         }
 
         [TestMethod]
-        [DataRow(0,0,0,1)]
+        [DataRow(0, 0, 0, 1)]
         [DataRow(0, 10, 0, 10)]
         [DataRow(1, 0, 1, 2)]
-        public void AppendSets(int ini_fNumber,int ini_sNumber, int res_fNumber, int res_sNumber)
+        public void AppendSets(int ini_fNumber, int ini_sNumber, int res_fNumber, int res_sNumber)
         {
             //assign
             var model = new ModelData();
 
             //act
-            var node0 = new Node(0, new Geometry.Point3D(0,0,0));
-            var node1 = new Node(1, new Geometry.Point3D(1,0,0));
-            var node2 = new Node(2, new Geometry.Point3D(0,1,0));
+            var node0 = new Node(0, new Geometry.Point3D(0, 0, 0));
+            var node1 = new Node(1, new Geometry.Point3D(1, 0, 0));
+            var node2 = new Node(2, new Geometry.Point3D(0, 1, 0));
 
             model.ObjectData.NodesSet.Add(node0.Number, node0);
             model.ObjectData.NodesSet.Add(node1.Number, node0);
@@ -229,7 +229,7 @@ namespace TestModel
         }
 
         [TestMethod]
-        [DataRow(new int[] {0,1,2,3}, new int[] { 0, 1, 2, 3 })]
+        [DataRow(new int[] { 0, 1, 2, 3 }, new int[] { 0, 1, 2, 3 })]
         [DataRow(new int[] { 0, 1, 0, 1 }, new int[] { 0, 1, 2, 3 })]
         [DataRow(new int[] { 0, 10, 1, 2 }, new int[] { 0, 10, 12, 13 })]
         public void AppendCollections(int[] iniNumb, int[] resNumb)
@@ -296,8 +296,8 @@ namespace TestModel
         }
 
         [DataTestMethod]
-        [DataRow(ObjType.Узел, 0, 0,0)]
-        [DataRow(ObjType.Элемент3D, 4, 1,0)]
+        [DataRow(ObjType.Узел, 0, 0, 0)]
+        [DataRow(ObjType.Элемент3D, 4, 1, 0)]
         [DataRow(ObjType.Элемент2D, 4, 0, 6)]
         public void RemoveObjectsSyncWithGroups(ObjType objType, int nNumbs, int e2Numbs, int e3Numbs)
         {
@@ -324,7 +324,7 @@ namespace TestModel
             };
 
             var group = new Group("test", objType);
-            if(objType == ObjType.Узел)
+            if (objType == ObjType.Узел)
                 group.AddRange(nodes);
             else if (objType == ObjType.Элемент2D)
                 group.AddRange(objects2d);
@@ -463,7 +463,7 @@ namespace TestModel
                 oldCoords.Add(item.CalcCentr());
 
             //act
-            modelData.ObjectData.Rotate(objType, new Point3D(1, 1, 1),25.0f);
+            modelData.ObjectData.Rotate(objType, new Point3D(1, 1, 1), 25.0f);
 
             //assert
             var newCoords = modelData.ObjectData.GetObjects(objType).
@@ -473,6 +473,110 @@ namespace TestModel
             {
                 Assert.AreNotEqual(oldCoords[i], newCoords[i]);
             }
+        }
+
+        [DataTestMethod]
+        [DataRow(new float[] { 0, 0, 1 }, new float[] { 0, 1, 0 }, new float[] { 0, 1, 1 })]
+        [DataRow(new float[] { 0, 0, 1 }, new float[] { 1, 0, 0 }, new float[] { 1, 0, 1 })]
+        [DataRow(new float[] { 0, 1, 0 }, new float[] { 0, 0, -1 }, new float[] { 0, 1, -1 })]
+        [DataRow(new float[] { 0, 1, 0 }, new float[] { -1, 0, 0 }, new float[] { -1, 1, 0 })]
+        public void MoveSimpleTest(float[] srcPoint, float[] translate, float[] expected)
+        {
+            var modelData = new ModelData();
+
+            var point = new Node(1, new Point3D(srcPoint[0], srcPoint[1], srcPoint[2]));
+            modelData.ObjectData.NodesSet.Add(1, point);
+
+            var translateVec = new Point3D(translate[0], translate[1], translate[2]);
+            modelData.ObjectData.Move(ObjType.Узел, translateVec);
+
+            var actual = modelData.ObjectData.NodesSet.Select(v => v.Value).ToArray();
+
+            Assert.AreEqual(expected[0], actual[0].Position._x, 1e-4);
+            Assert.AreEqual(expected[1], actual[0].Position._y, 1e-4);
+            Assert.AreEqual(expected[2], actual[0].Position._z, 1e-4);
+        }
+
+        [DataTestMethod]
+        [DataRow(new float[] { 0, 0, 1 }, new float[] { 0, 1, 0 }, 90.0f, new float[] { 1, 0, 0 })]
+        [DataRow(new float[] { 0, 0, 1 }, new float[] { 1, 0, 0 }, -90.0f, new float[] { 0, 1, 0 })]
+        [DataRow(new float[] { 0, 0, 1 }, new float[] { 0, 0, 1 }, 90.0f, new float[] { 0, 0, 1 })]
+        [DataRow(new float[] { 0, 1, 0 }, new float[] { 0, 0, 1 }, -90.0f, new float[] { 1, 0, 0 })]
+        public void RotateSimpleTest(float[] srcPoint, float[] axis, float angle, float[] expected)
+        {
+            var modelData = new ModelData();
+
+            var point = new Node(1, new Point3D(srcPoint[0], srcPoint[1], srcPoint[2]));
+            modelData.ObjectData.NodesSet.Add(1, point);
+
+            var axisVec = new Point3D(axis[0], axis[1], axis[2]);
+            modelData.ObjectData.Rotate(ObjType.Узел, axisVec, angle);
+
+            var actual = modelData.ObjectData.NodesSet.Select(v => v.Value).ToArray();
+
+            Assert.AreEqual(expected[0], actual[0].Position._x, 1e-4);
+            Assert.AreEqual(expected[1], actual[0].Position._y, 1e-4);
+            Assert.AreEqual(expected[2], actual[0].Position._z, 1e-4);
+        }
+
+        [DataTestMethod]
+        [DataRow(@"..\..\..\Examples\STL\block.stl", new float[] { -5, 10, 5 })]
+        public void MoveModelTest(string filePath, float[] translate)
+        {
+            var modelData = new ModelData();
+            modelData.Loader = new LoadFromSTLFile();
+            modelData.Load(filePath);
+
+            var keepOld = new ModelData();
+            keepOld.Loader = new LoadFromSTLFile();
+            keepOld.Load(filePath);
+
+            var translateVec = new Point3D(translate[0], translate[1], translate[2]);
+            modelData.ObjectData.Move(ObjType.Узел, translateVec);
+
+            var oldNodes = keepOld.ObjectData.NodesSet.Select(v => v.Value).ToArray();
+            var newNodes = modelData.ObjectData.NodesSet.Select(v => v.Value).ToArray();
+
+            var srcPoint = newNodes[0].Position.Sub(oldNodes[0].Position);
+            var srcDelta = Vector.GetVectorLenght(srcPoint);
+
+            for (var i = 1; i < newNodes.Length; ++i)
+            {
+                var curPoint = newNodes[i].Position.Sub(oldNodes[i].Position);
+                var curDelta = Vector.GetVectorLenght(curPoint);
+                Assert.AreEqual(srcDelta, curDelta, 1e-4);
+            }
+        }
+
+
+        //Тест на модель не проходит, большие погрешности
+        [DataTestMethod]
+        [DataRow(@"..\..\..\Examples\STL\block.stl", new float[] {0, 0, 1 }, 90.0f)]
+        public void RotateModelTest(string filePath, float[] axis, float angle)
+        {
+            var modelData = new ModelData();
+            modelData.Loader = new LoadFromSTLFile();
+            modelData.Load(filePath);
+
+            var keepOld = new ModelData();
+            keepOld.Loader = new LoadFromSTLFile();
+            keepOld.Load(filePath);
+
+            var axisVec = new Point3D(axis[0], axis[1], axis[2]);
+            modelData.ObjectData.Rotate(ObjType.Узел, axisVec, angle);
+
+            var oldNodes = keepOld.ObjectData.NodesSet.Select(v => v.Value).ToArray();
+            var newNodes = modelData.ObjectData.NodesSet.Select(v => v.Value).ToArray();
+
+            var srcPoint = newNodes[0].Position.Sub(oldNodes[0].Position);
+            var srcDelta = Vector.GetVectorLenght(srcPoint);
+
+            for(var i = 1; i < newNodes.Length; ++i)
+            {
+                var curPoint = newNodes[i].Position.Sub(oldNodes[i].Position);
+                var curDelta = Vector.GetVectorLenght(curPoint);
+                Assert.AreEqual(srcDelta, curDelta, 1e-4);
+            }  
         }
 
         public static IEnumerable<object[]> AdditionData

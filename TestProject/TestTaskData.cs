@@ -82,7 +82,7 @@ namespace TestProject
             //act
             proj.Load(@"..\..\..\Examples\proj_traj.bpf");
 
-            var res = proj.TaskData.Find<IValuableData>();
+            var res = proj.TaskData.Find<IPhysicalData>();
             //assert
 
             Assert.AreEqual(res.Count(), 6);
@@ -105,7 +105,7 @@ namespace TestProject
             //act
             proj.Load(relativeProjPath);
 
-            var selectedData = proj.TaskData.Find(DataKind.Нагрев).Select(x => (IValuableData)x).ToArray();
+            var selectedData = proj.TaskData.Find(DataKind.Нагрев).Select(x => (IPhysicalData)x).ToArray();
             foreach (var preFrame in selectedData)
             {
                 var stepTime = (preFrame.StopTime - preFrame.StartTime) / 10;
@@ -139,7 +139,7 @@ namespace TestProject
             //act
             proj.Load(@"..\..\..\Examples\proj_traj.bpf");
 
-            var selectedData = proj.TaskData.Find(DataKind.Нагрев).Select(x => (IValuableData)x).ToArray();
+            var selectedData = proj.TaskData.Find(DataKind.Нагрев).Select(x => (IPhysicalData)x).ToArray();
 
             
 
@@ -210,7 +210,7 @@ namespace TestProject
             //assign
             var project = new ProjectData("", "");
             var dataAr = dataString.Split(' ');
-            Data data;
+            PhysicalData data;
             switch (dataKind)
             {
                 case DataKind.Материал:
@@ -315,11 +315,11 @@ namespace TestProject
         [DataRow(DataKind.Среда, "air 0.002 Термоцикл 0 1500 *")]
         [DataRow(DataKind.Среда, "air Коэф.теплоотдачи.воздух 20.01 0 1500 *")]
         [DataRow(DataKind.Среда, "Элементы3D_2 Коэф.теплоотдачи.воздух 20 0 1 *")]
-        [DataRow(DataKind.Закрепление, "Узлы_7 Жесткое X * 0 1500 *")]
-        [DataRow(DataKind.Закрепление, "Узлы_7 Жесткое None * 0 1500 *")]
-        [DataRow(DataKind.Закрепление, "Узлы_7 Жесткое X Функция 0 1500 *")]
-        [DataRow(DataKind.Закрепление, "Узлы_7 Жесткое Y * 0 1500 *")]
-        [DataRow(DataKind.Закрепление, "Узлы_7 Жесткое Z * 0 1500 *")]
+        [DataRow(DataKind.Закрепление, "Узлы_7 Жесткое X 0.255 * 0 1500 *")]
+        [DataRow(DataKind.Закрепление, "Узлы_7 Жесткое None 0.255 * 0 1500 *")]
+        [DataRow(DataKind.Закрепление, "Узлы_7 Жесткое X 1 Функция 0 1500 *")]
+        [DataRow(DataKind.Закрепление, "Узлы_7 Жесткое Y 0 * 0 1500 *")]
+        [DataRow(DataKind.Закрепление, "Узлы_7 Жесткое Z 0 * 0 1500 *")]
         [DataRow(DataKind.Нагрузка, "Узлы_7 Сила None 0 * 0 1500 *")]
         [DataRow(DataKind.Нагрузка, "Узлы_7 Сила Z 0 * 0 1500 *")]
         [DataRow(DataKind.Нагрузка, "Узлы_7 Сила X 0.0001 loadCycle 0 1500 *")]
@@ -329,7 +329,7 @@ namespace TestProject
             //assign
             var project = new ProjectData("","");
             var dataAr = dataString.Split(' ');
-            Data data;
+            PhysicalData data;
             switch (dataKind)
             {
                 case DataKind.Материал:

@@ -93,6 +93,9 @@ namespace GmshApi
         private delegate void gmshModelMeshSetTransfiniteAutomaticFun(int[] dimTags, IntPtr dimTags_n, double cornerAngle, int recombine, ref int ierr);
         private gmshModelMeshSetTransfiniteAutomaticFun gmshModelMeshSetTransfiniteAutomatic = GetFunction<gmshModelMeshSetTransfiniteAutomaticFun>("gmshModelMeshSetTransfiniteAutomatic");
 
+        private delegate void gmshModelMeshSetRecombineFun(int dim, int tag, double angle, ref int ierr);
+        private gmshModelMeshSetRecombineFun gmshModelMeshSetRecombine = GetFunction<gmshModelMeshSetRecombineFun>("gmshModelMeshSetRecombine");
+
         private delegate void gmshModelMeshSetAlgorithmFun(int dim, int tag, int val, ref int ierr);
         private gmshModelMeshSetAlgorithmFun gmshModelMeshSetAlgorithm = GetFunction<gmshModelMeshSetAlgorithmFun>("gmshModelMeshSetAlgorithm");
 
@@ -399,6 +402,18 @@ namespace GmshApi
             var ierr = 0;
             gmshModelMeshSetTransfiniteAutomatic(dimTags, (IntPtr)dimTags.Length, cornerAngle, Convert.ToInt32(recombine), ref ierr);
         }
+        /// <summary>
+        /// Помечает указанный dim:tag флагом генерации преимущественно квадратных элементов вместо треугольных (работает только для dim = 2)
+        /// </summary>
+        /// <param name="dim">0 - геометрические точки, 1 - кривые, 2 - поверхности, 3 - объемы</param>
+        /// <param name="tag">Идентификатор</param>
+        /// <param name="angle">Значение порогового угла для внутреннего алгоритма gmsh</param>
+        public void SetRecombine(int dim, int tag, double angle = 45.0)
+        {
+            var ierr = 0;
+            gmshModelMeshSetRecombine(dim, tag, angle, ref ierr);
+        }
+        /*gmshModelMeshSetRecombineFun(int dim, int tag, double angle, ref int ierr);*/
         /// <summary>
         /// Установить алгоритм генериации сетки для конкретного dim:tag (поддерживается только для dim = 2)
         /// </summary>

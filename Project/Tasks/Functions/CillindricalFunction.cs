@@ -9,11 +9,11 @@ namespace Project.Tasks.Functions
     public abstract class CillindricalFunction : FrameFunction
     {
         /// <inheritdoc/>
-        public float BottomDiam { get; internal set; }
+        public float BottomDiam { get;  set; }
         /// <inheritdoc/>
-        public float UpperDiam { get; internal set; }
+        public float UpperDiam { get;  set; }
         /// <inheritdoc/>
-        public float Length { get; internal set; }
+        public float Length { get;  set; }
 
         /// <summary>
         /// IsPointInside

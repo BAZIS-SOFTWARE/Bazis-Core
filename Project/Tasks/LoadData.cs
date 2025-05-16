@@ -10,7 +10,7 @@ namespace Project.Tasks
         Сила,
         Давление
     }
-    public class LoadData : ValuableData
+    public class LoadData : PhysicalData
     {
         /// <summary>
         /// Value
@@ -22,7 +22,12 @@ namespace Project.Tasks
             Kind = DataKind.Нагрузка;
         }
 
-        public LoadKind LoadKind { get; internal set; }
+        public LoadData(IGroup group, float start, float stop) : base(group, start, stop)
+        {
+            Kind = DataKind.Нагрузка;
+        }
+
+        public LoadKind LoadKind { get; set; }
 /// <inheritdoc/>
 
         protected override void SetInfo(string info)
@@ -78,6 +83,6 @@ namespace Project.Tasks
         /// <summary>
         /// LoadFunction
         /// </summary>
-        public string LoadFunction { get; private set; } = "*";
+        public string LoadFunction { get; set; } = "*";
     }
 }

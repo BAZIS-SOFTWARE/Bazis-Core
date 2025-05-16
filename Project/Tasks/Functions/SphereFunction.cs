@@ -8,7 +8,7 @@ namespace Project.Tasks.Functions
     public abstract class SphereFunction : FrameFunction
     {
         /// <inheritdoc/>
-        public float Width { get; internal set; }
+        public float Width { get; set; }
 
         /// <summary>
         /// 

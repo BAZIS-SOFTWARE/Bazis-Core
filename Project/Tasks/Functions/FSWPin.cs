@@ -10,7 +10,7 @@ namespace Project.Tasks.Functions
         /// <summary>
         /// RotSpeed
         /// </summary>
-        public float RotSpeed { get; internal set; }
+        public float RotSpeed { get; set; }
 
         /// <inheritdoc/>
 
