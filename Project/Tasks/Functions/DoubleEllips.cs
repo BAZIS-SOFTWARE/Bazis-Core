@@ -76,9 +76,7 @@ namespace Project.Tasks.Functions
                                                       {0, 0, 1}});
 
             var transposedFrameArr = frameArr.Transpose();
-            var transposedBazisMatrix = bazisMatrix.Transpose();
-            var inverseBazisMatrix = transposedBazisMatrix.Inverse();
-            var transitionMatrix = inverseBazisMatrix * transposedFrameArr;
+            var transitionMatrix = bazisMatrix * transposedFrameArr;
 
             if (transitionMatrix.Determinant() == 0)          
                 throw new StlFileLoadExeption("Матрица вырождена, обратной матрицы не существует", new Exception());
