@@ -1,4 +1,5 @@
 ﻿using MathNet.Numerics.Distributions;
+using MathNet.Numerics.LinearAlgebra;
 using System;
 
 namespace Geometry
@@ -8,6 +9,10 @@ namespace Geometry
     /// </summary>
     public class Frame
     {
+        /// <summary>
+        /// InverseTransitionMatrix
+        /// </summary>
+        public Matrix<float> InverseTransitionMatrix { get; private set; }
         public Point3D Dir_X { get; private set; }
         public Point3D Dir_Y { get; private set; }
         public Point3D Dir_Z { get; private set; }
@@ -17,6 +22,39 @@ namespace Geometry
         public override string ToString()
         {
             return $"{Centre};{Dir_X};{Dir_Y};{Dir_Z}";
+        }
+
+        public Point3D GetCoordsInFrame(Point3D point)
+        {
+            var localVector = point.Sub(Centre);
+
+            var desiredPointMatrix = Vector<float>.Build.DenseOfArray
+                (new float[]
+                { localVector._x, localVector._y, localVector._z });
+            var res = InverseTransitionMatrix.Multiply(desiredPointMatrix);
+
+            return new Point3D(res[0], res[1], res[2]);
+        }
+
+        public void DetermineInverseMatrix()
+        {
+            var frameArr = Matrix<float>.Build.DenseOfArray(new float[3, 3]
+                {{Dir_X._x, Dir_X._y, Dir_X._z  },
+                 {Dir_Y._x, Dir_Y._y, Dir_Y._z},
+                 {Dir_Z._x, Dir_Z._y, Dir_Z._z}});
+
+            var bazisMatrix = Matrix<float>.Build.DenseOfArray(new float[3, 3] {
+                                                      {1, 0, 0},
+                                                      {0, 1, 0},
+                                                      {0, 0, 1}});
+
+            var transposedFrameArr = frameArr.Transpose();
+            var transitionMatrix = bazisMatrix * transposedFrameArr;
+
+            if (transitionMatrix.Determinant() == 0)
+                throw new Exception("Матрица вырождена, обратной матрицы не существует");
+            else
+                InverseTransitionMatrix = transitionMatrix.Inverse();
         }
 
         //public Frame(Point3D centre, Point3D x, Point3D y, Point3D z)
@@ -77,6 +115,8 @@ namespace Geometry
             //Dir_Y = new Point3D(p0._x + dirY._x, p0._y + dirY._y, p0._z + dirY._z);
             //Dir_X = new Point3D(p0._x + dirX._x, p0._y + dirX._y, p0._z + dirX._z);
             Centre = p0;
+
+            DetermineInverseMatrix();
         }
 
         public void Shift(Point3D shifting)
@@ -124,6 +164,7 @@ namespace Geometry
             //var z = Centre.Sum(rotZ);
 
             //return new Frame(Centre, dir_X,dir_Y);
+            DetermineInverseMatrix();
         }
     }
 }

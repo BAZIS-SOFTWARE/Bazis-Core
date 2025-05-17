@@ -37,7 +37,7 @@ namespace Project.Tasks.Functions
         /// </summary>
         public float BackPart { get; set; } // по оси Y
 
-        public Matrix<float> InverseTransitionMatrix { get; set; }
+        //public Matrix<float> InverseTransitionMatrix { get; set; }
 
         private float MaxSemiaxis { get; set; }
         private float MinSemiaxis { get; set; }
@@ -45,7 +45,7 @@ namespace Project.Tasks.Functions
         public override List<T> GetIntersectedObjects<T>(List<T> elements)
         {
             var insideElements = new List<T>();
-            DetermineInverseMatrix();
+            //DetermineInverseMatrix();
             MaxAndMinSemiaxis();
 
             foreach (var element in elements)
@@ -63,48 +63,24 @@ namespace Project.Tasks.Functions
             MinSemiaxis = Math.Min(Min1, FrontPart);
         }
 
-        public void DetermineInverseMatrix()
-        {            
-            var frameArr = Matrix<float>.Build.DenseOfArray(new float[3, 3]
-                {{Frame.Dir_X._x, Frame.Dir_X._y, Frame.Dir_X._z  },
-                 {Frame.Dir_Y._x, Frame.Dir_Y._y, Frame.Dir_Y._z},
-                 {Frame.Dir_Z._x, Frame.Dir_Z._y, Frame.Dir_Z._z}});
-
-            var bazisMatrix = Matrix<float>.Build.DenseOfArray(new float[3, 3] {
-                                                      {1, 0, 0},
-                                                      {0, 1, 0},
-                                                      {0, 0, 1}});
-
-            var transposedFrameArr = frameArr.Transpose();
-            var transitionMatrix = bazisMatrix * transposedFrameArr;
-
-            if (transitionMatrix.Determinant() == 0)          
-                throw new StlFileLoadExeption("Матрица вырождена, обратной матрицы не существует", new Exception());
-            else 
-                InverseTransitionMatrix = transitionMatrix.Inverse();           
-        }
-
 
         public bool IsPointInside(Point3D elementCenter)
         {
-            var displayPoint = elementCenter.Sub(Frame.Centre);
+            var displayPoint = elementCenter.Sub(Frame.Centre);     
             var vectorLength = Geometry.Vector.GetVectorLenght(displayPoint);
             if (vectorLength <= MinSemiaxis) return true;
             else if (vectorLength > MaxSemiaxis) return false;
 
-            var desiredPointMatrix = Vector<float>.Build.DenseOfArray(new float[]
-                                                                { displayPoint._x, displayPoint._y, displayPoint._z });
-
-            var pointInEllipsCoordinate = InverseTransitionMatrix.Multiply(desiredPointMatrix);            
+            var pointInEllipsCoordinate = Frame.GetCoordsInFrame(elementCenter);            
 
             float semiEllipsoid;
-            if (pointInEllipsCoordinate[1] < 0)
+            if (pointInEllipsCoordinate._y < 0)
                 semiEllipsoid = BackPart;
             else semiEllipsoid = FrontPart;
 
-            var result = Math.Pow(pointInEllipsCoordinate[0] / (Width / 2), 2) +
-                Math.Pow(pointInEllipsCoordinate[1] / semiEllipsoid, 2) +
-                Math.Pow(pointInEllipsCoordinate[2] / Depth, 2) - 1;
+            var result = Math.Pow(pointInEllipsCoordinate._x / (Width / 2), 2) +
+                Math.Pow(pointInEllipsCoordinate._y / semiEllipsoid, 2) +
+                Math.Pow(pointInEllipsCoordinate._z / Depth, 2) - 1;
 
             return result <= 0;
 

@@ -500,7 +500,7 @@ namespace TestProject
             doubleEllips.BackPart = 15;
             doubleEllips.MaxAndMinSemiaxis();
             doubleEllips.Frame = new Frame(new Point3D(15, 15, 15), new Point3D(16, 15, 15), new Point3D(15, 16, 15));            
-            doubleEllips.DetermineInverseMatrix();
+            //doubleEllips.DetermineInverseMatrix();
             var point = new Point3D(checkPoint[0], checkPoint[1], checkPoint[2]);
 
             if (location == "inside")
@@ -526,9 +526,8 @@ namespace TestProject
             doubleEllips.BackPart = 15;
             doubleEllips.MaxAndMinSemiaxis();
             doubleEllips.Frame = new Frame(new Point3D(20f, 20f, 20f), new Point3D(20.866f, 20.5f, 20f), new Point3D(19.5f, 20.866f, 20f));
-            doubleEllips.DetermineInverseMatrix();
-
-            var str = doubleEllips.InverseTransitionMatrix.ToString();
+            //doubleEllips.DetermineInverseMatrix();
+  
             var point = new Point3D(checkPoint[0], checkPoint[1], checkPoint[2]);
 
             if (location == "inside")
@@ -570,8 +569,8 @@ namespace TestProject
                  new Point3D(pointsArr[3], pointsArr[4], pointsArr[5])
                 );
 
-            doubleEllips.DetermineInverseMatrix();
-            var matrix = doubleEllips.InverseTransitionMatrix;
+            //doubleEllips.DetermineInverseMatrix();
+            var matrix = doubleEllips.Frame.InverseTransitionMatrix;
             var result = Matrix<float>.Build.DenseOfArray(new float[3, 3] {
                                                {resultArr[0], resultArr[1], resultArr[2]},
                                                {resultArr[3], resultArr[4], resultArr[5]},
