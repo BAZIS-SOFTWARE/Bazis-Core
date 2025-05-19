@@ -203,10 +203,8 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
         {
                 surfaceObjects.AddRange(objs);
         }
-        /// <summary>
-        /// Создать сепараторы, по разнице текущего и предыдущего значения в массиве можно определить тип элемента(кол-во треугольников)
-        /// </summary>
-        /// <returns>Массив сепараторов</returns>
+/// <inheritdoc/>
+
         public int[] CreateSeparators()
         {
             var surfObjs = surfaceObjects.ToArray();

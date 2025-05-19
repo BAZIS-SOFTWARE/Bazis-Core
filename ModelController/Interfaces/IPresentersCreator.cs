@@ -39,7 +39,7 @@ namespace ModelControllerInterfaces
         /// <param name="surfaceGeom"></param>
         /// <param name="isVolumeObjs"></param>
         /// <returns></returns>
-        IObjsPresenter CreateSurfaceObjectsPresenter<T, U>(IEnumerable<ISurfaceObject<T, U>> surfaceGeom, bool isVolumeObjs)
+        ISurfaceObjsPresenter CreateSurfaceObjectsPresenter<T, U>(IEnumerable<ISurfaceObject<T, U>> surfaceGeom, bool isVolumeObjs)
                     where T : ISurface<U> where U : IPoint;
     }
 }

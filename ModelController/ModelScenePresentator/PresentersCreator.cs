@@ -30,7 +30,7 @@ namespace ModelController.ModelScenePresentator
 
 /// <inheritdoc/>
 
-        public IObjsPresenter CreateSurfaceObjectsPresenter<T,U>(IEnumerable<ISurfaceObject<T, U>> surfaceGeom, bool isVolumeObjs)
+        public ISurfaceObjsPresenter CreateSurfaceObjectsPresenter<T,U>(IEnumerable<ISurfaceObject<T, U>> surfaceGeom, bool isVolumeObjs)
                     where T : ISurface<U> where U : IPoint
         {
 
