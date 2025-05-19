@@ -22,20 +22,9 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
         public PresenterType PresenterType { get; } = PresenterType.Surface;
 /// <inheritdoc/>
 
-        public bool IsVolumeObjs { get; } = false;
+        //public bool IsVolumeObjs { get; } = false;
         /// <inheritdoc/>
         public ViewMode ViewMode { get; set; } = ViewMode.LineSurface;
-
-        /// <inheritdoc/>
-
-        /// <summary>
-        /// SurfaceObjsPresenter
-        /// </summary>
-        /// <param name="isVolumeObjs"></param>
-        public SurfaceObjsPresenter(bool isVolumeObjs)
-        {
-            IsVolumeObjs = isVolumeObjs;
-        }
 
         /// <inheritdoc/>
 
