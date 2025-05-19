@@ -10,6 +10,7 @@ namespace Project.Tasks.Functions
 {
     public class Arc : SphereFunction
     {
+
         public float Current { get; set; }
         public float Voltage { get; set; }
         public float Power { get { return Current * Voltage; } }
@@ -23,7 +24,7 @@ namespace Project.Tasks.Functions
         }
 /// <inheritdoc/>
 
-        public override float CalcPower(Point3D elementCenter)
+        public override float CalcValue(Point3D elementCenter)
         {
             float rad, halfBead;
 

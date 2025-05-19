@@ -7,7 +7,7 @@ namespace Project.Tasks.Functions
     /// <summary>
     /// IHeatPowerFunction
     /// </summary>
-    public abstract class PowerFunction : IFrameFunction
+    public abstract class PowerFunction
     {
         /// <summary>
         /// CalcPower

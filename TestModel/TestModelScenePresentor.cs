@@ -226,7 +226,7 @@ namespace TestModel
             
             if (presenter.IsVolumeObjs)
             {
-                var volPresenter = (IVolumeObjsPresenter)presenter;
+                var volPresenter = (ISurfaceObjsPresenter)presenter;
                 volPresenter.HideInsideSurfaces();
             }
 
@@ -287,7 +287,7 @@ namespace TestModel
 
             if (presenter.IsVolumeObjs)
             {
-                var volPresenter = (IVolumeObjsPresenter)presenter;
+                var volPresenter = (ISurfaceObjsPresenter)presenter;
                 volPresenter.HideInsideSurfaces();
             }
 

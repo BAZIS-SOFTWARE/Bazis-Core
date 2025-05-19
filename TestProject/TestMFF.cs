@@ -14,7 +14,7 @@ using Model.Interfaces.MeshObjects;
 using Project.Tasks;
 using Model.Interfaces;
 using Project.Tasks.Functions;
-using Project.Tasks.LocalFrame;
+using Project.Tasks.FrameCreators;
 using Project.Interfaces.Tasks;
 using MathNet.Numerics.LinearAlgebra;
 
@@ -67,7 +67,7 @@ namespace TestProject
                 var counter = 0;
                 foreach (var obj in gr)
                 {
-                    energy[counter] = powerFunc.CalcPower(obj.CalcCentr());
+                    energy[counter] = powerFunc.CalcValue(obj.CalcCentr());
                     counter++;
                 }
                 var max = energy.Max();

@@ -10,7 +10,7 @@ namespace ModelControllerInterfaces
     /// <summary>
     /// IVolumeObjsPresenter
     /// </summary>
-    public interface IVolumeObjsPresenter : IObjsPresenter
+    public interface ISurfaceObjsPresenter : IObjsPresenter
     {
         /// <summary>
         /// HideInsideSurfaces

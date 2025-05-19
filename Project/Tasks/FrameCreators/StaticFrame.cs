@@ -6,9 +6,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
-namespace Project.Tasks.LocalFrame
+namespace Project.Tasks.FrameCreators
 {
-    public class StaticFrame : LocalFrame
+    public class StaticFrame : FrameCreator
     {
         public IGroup BaseGroup { get; }
 
@@ -23,14 +23,14 @@ namespace Project.Tasks.LocalFrame
         }
 /// <inheritdoc/>
 
-        public Frame CalcFrame()
+        public Frame CreateFrame()
         {
             var points = BaseGroup.Select(x => x.CalcCentr()).ToArray();
 
             if (points.Length != 3)
                 throw new System.Exception("Должно быть три узла");
 
-            return new Frame(points[0], points[2], points[1]);
+            return new Frame(points[0], points[1],points[2]);
         }
 
         /// <inheritdoc/>

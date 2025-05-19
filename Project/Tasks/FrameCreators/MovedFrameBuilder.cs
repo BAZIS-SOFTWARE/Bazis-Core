@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Project.Tasks.LocalFrame
+namespace Project.Tasks.FrameCreators
 {
     public class MovedFrameBuilder
     {

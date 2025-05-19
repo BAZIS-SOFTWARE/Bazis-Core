@@ -13,7 +13,7 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
     /// <summary>
     /// SurfaceObjsPresenter
     /// </summary>
-    public class SurfaceObjsPresenter<T,U> : IVolumeObjsPresenter
+    public class SurfaceObjsPresenter<T,U> : ISurfaceObjsPresenter
         where T : ISurface<U> where U : IPoint
     {
         List<ISurfaceObject<T,U>> surfaceObjects = new List<ISurfaceObject<T, U>>();

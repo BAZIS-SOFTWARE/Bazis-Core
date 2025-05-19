@@ -16,7 +16,7 @@ namespace Project.Tasks.Functions
         public string Name { get; set; }
 /// <inheritdoc/>
 
-        public abstract float CalcPower(Point3D elementCenter);
+        public abstract float CalcValue(Point3D elementCenter);
 
         /// <inheritdoc/>
         public void CreateParameter(string name, float value)

@@ -22,7 +22,7 @@ namespace Project.Tasks.Functions
 
 /// <inheritdoc/>
 
-        public override float CalcPower(Point3D elementCenter)
+        public override float CalcValue(Point3D elementCenter)
         {
             float r, r0, r1, r2;
 

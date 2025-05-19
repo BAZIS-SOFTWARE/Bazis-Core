@@ -91,7 +91,7 @@ namespace Project.Tasks.Functions
             return velocity <= (FrontPart + BackPart) / 2;
         }
 
-        public override float CalcPower(Point3D elementCenter)
+        public override float CalcValue(Point3D elementCenter)
         {
             throw new NotImplementedException();
         }
