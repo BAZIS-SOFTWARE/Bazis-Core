@@ -14,27 +14,25 @@ namespace PrTests
             //arrange
             var frame = new Frame(
                 new Point3D(0, 0, 0),
-                new Point3D(0, 1, 0),
-                new Point3D(1, 0, 0)
+                new Point3D(1, 0, 0),
+                new Point3D(0, 1, 0)
                 );
 
             //act points on surface
 
-                var frameRot = frame.Rotate(new Point3D(0, 1, 0), 45);
-            
-            //assert
-            var frameRes = new Frame(
-                new Point3D(0.7071f, 0, -0.7071f),
-                new Point3D(0.7071f, 0, 0.7071f),
-                new Point3D(0, 1, 0)
-                //new Point3D(0, 0, 0)
-                );
+                frame.Rotate(new Point3D(0, 1, 0), 45);
 
-            if (frameRot.Dir_X != frameRes.Dir_X)
+            //assert
+
+            var dir_x = new Point3D(0.7071f, 0, -0.7071f);
+            var dir_z = new Point3D(0.7071f, 0, 0.7071f);
+            var dir_y = new Point3D(0, 1, 0);
+
+            if (frame.Dir_X != dir_x)
                 throw new Exception();
-            if (frameRot.Dir_Y != frameRes.Dir_Y)
+            if (frame.Dir_Y != dir_y)
                 throw new Exception();
-            if (frameRot.Dir_Z != frameRes.Dir_Z)
+            if (frame.Dir_Z != dir_z)
                 throw new Exception();
         }
 
@@ -158,12 +156,11 @@ namespace PrTests
         [TestMethod]
         public void FrameCreation_ShouldFail_WhenTwoSameAxis(float[] p1, float[] p2, float[] p3)
         {
-            var axisX = new Point3D(p1[0], p1[1], p1[2]);
-            var axisY = new Point3D(p2[0], p2[1], p2[2]);
-            var axisZ = new Point3D(p3[0], p3[1], p3[2]);
-            var center = new Point3D();
+            var center = new Point3D(p1[0], p1[1], p1[2]);
+            var x = new Point3D(p2[0], p2[1], p2[2]);
+            var y = new Point3D(p3[0], p3[1], p3[2]);
 
-            Assert.ThrowsException<Exception>(() => new Frame(center, axisY, axisX));
+            Assert.ThrowsException<Exception>(() => new Frame(center, x, y));
         }
 
         [DataRow(
@@ -208,21 +205,18 @@ namespace PrTests
         [DataRow(
              new[] { -1f, 0f, 0f },
              new[] { 0f, -1f, 0f },
-             new[] { 0f, 0f, -1f },
              new[] { 0f, 0f, 0f})]
         [DataRow(
              new[] { 1f, 0f, 0f },
              new[] { 0f, 1f, 0f },
-             new[] { 0f, 0f, 1f },
              new[] { 0f, 0f, 0f })]
         [TestMethod]
-        public void FrameCreation_ShouldPass_WhenBaseNotNullable(float[] p1, float[] p2, float[] p3, float[] c)
+        public void FrameCreation_ShouldPass_WhenBaseNotNullable(float[] p1, float[] p2, float[] c)
         {
             var axisX = new Point3D(p1[0], p1[1], p1[2]);
             var axisY = new Point3D(p2[0], p2[1], p2[2]);
-            var axisZ = new Point3D(p3[0], p3[1], p3[2]);
             var cen = new Point3D(c[0], c[1], c[2]);
-            new Frame(cen, axisY, axisX);
+            new Frame(cen, axisX,axisY);
         }
         [TestMethod]
         [DataRow( new[] { 0.0f, 0.0f, 0.0f })]
@@ -230,7 +224,7 @@ namespace PrTests
         public void FrameCreation_ShouldPass_WhenShifting(float[] points)
         {
             var shifting = new Point3D(points[0], points[1], points[2]);
-            var frame = new Frame(new Point3D(),new Point3D(0, 1, 0), new Point3D(1, 0, 0));
+            var frame = new Frame(new Point3D(),new Point3D(1, 0, 0), new Point3D(0, 1, 0));
             frame.Shift(shifting);
         }
 
@@ -243,10 +237,10 @@ namespace PrTests
             var shifting = new Point3D(0, 0, 0);
 
             var frame = new Frame(posit, posit.Sum(dirY), posit.Sum(dirX));
-            var sFrame = frame.Shift(shifting);
-            var axis = sFrame.Dir_Y.Sub(sFrame.Centre);
+            frame.Shift(shifting);
+            var axis = frame.Dir_Y.Sub(frame.Centre);
             axis = Vector.GetVectorNorm(axis);
-            var res = sFrame.Rotate(axis, 0);
+            frame.Rotate(axis, 0);
         }
     }
 }

@@ -35,7 +35,7 @@ namespace ModelControllerInterfaces
         /// <summary>
         /// IsVolumeObjs
         /// </summary>
-        bool IsVolumeObjs { get; }
+        //bool IsVolumeObjs { get; }
         /// <summary>
         /// PresenterType
         /// </summary>

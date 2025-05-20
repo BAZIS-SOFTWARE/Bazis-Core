@@ -20,6 +20,6 @@
         /// <summary>
         /// LocalFrame
         /// </summary>
-        ILocalFrame LocalFrame { get; set; }
+        IFrameCreator LocalFrame { get; set; }
     }
 }

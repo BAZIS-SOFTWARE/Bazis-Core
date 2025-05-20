@@ -13,7 +13,7 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
     /// <summary>
     /// SurfaceObjsPresenter
     /// </summary>
-    public class SurfaceObjsPresenter<T,U> : IVolumeObjsPresenter
+    public class SurfaceObjsPresenter<T,U> : ISurfaceObjsPresenter
         where T : ISurface<U> where U : IPoint
     {
         List<ISurfaceObject<T,U>> surfaceObjects = new List<ISurfaceObject<T, U>>();
@@ -22,20 +22,9 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
         public PresenterType PresenterType { get; } = PresenterType.Surface;
 /// <inheritdoc/>
 
-        public bool IsVolumeObjs { get; } = false;
+        //public bool IsVolumeObjs { get; } = false;
         /// <inheritdoc/>
         public ViewMode ViewMode { get; set; } = ViewMode.LineSurface;
-
-        /// <inheritdoc/>
-
-        /// <summary>
-        /// SurfaceObjsPresenter
-        /// </summary>
-        /// <param name="isVolumeObjs"></param>
-        public SurfaceObjsPresenter(bool isVolumeObjs)
-        {
-            IsVolumeObjs = isVolumeObjs;
-        }
 
         /// <inheritdoc/>
 
@@ -203,10 +192,8 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
         {
                 surfaceObjects.AddRange(objs);
         }
-        /// <summary>
-        /// Создать сепараторы, по разнице текущего и предыдущего значения в массиве можно определить тип элемента(кол-во треугольников)
-        /// </summary>
-        /// <returns>Массив сепараторов</returns>
+/// <inheritdoc/>
+
         public int[] CreateSeparators()
         {
             var surfObjs = surfaceObjects.ToArray();

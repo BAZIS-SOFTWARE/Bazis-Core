@@ -38,7 +38,7 @@ namespace Project.Interfaces.Tasks
         /// </summary>
         /// <param name="elementCenter"></param>
         /// <returns></returns>
-        float CalcPower(Point3D elementCenter);
+        float CalcValue(Point3D elementCenter);
 
         /// <summary>
         /// CreateParameter

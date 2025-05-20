@@ -8,7 +8,7 @@ namespace Project.Interfaces.Tasks
     /// <summary>
     /// ILocalFrame
     /// </summary>
-    public interface ILocalFrame
+    public interface IFrameCreator
     {
         /// <summary>
         /// Shifting

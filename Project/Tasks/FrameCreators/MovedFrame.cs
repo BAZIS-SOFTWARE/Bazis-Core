@@ -7,9 +7,9 @@ using System.Linq;
 using Model.Interfaces.ObjectsComparers;
 using System.Collections.Generic;
 
-namespace Project.Tasks.LocalFrame
+namespace Project.Tasks.FrameCreators
 {
-    public class MovedFrame : LocalFrame
+    public class MovedFrame : FrameCreator
     {
         public MovedFrame(IGroup baseLine, IGroup refLine, float velocity)
         {
@@ -120,10 +120,12 @@ namespace Project.Tasks.LocalFrame
 
             var frame = new Frame(posit, posit.Sum(dirY), posit.Sum(dirX));
 
-            var sFrame = frame.Shift(Shifting);
-            var axis = sFrame.Dir_Y.Sub(sFrame.Centre);
-            axis = Vector.GetVectorNorm(axis);
-            return sFrame.Rotate(axis, Rotation);
+            frame.Rotate(frame.Dir_X, Rotation);
+            frame.Shift(Shifting);
+            //var axis = frame.Dir_Y.Sub(frame.Centre);
+            //axis = Vector.GetVectorNorm(axis);
+            
+            return frame;
         }
 
         /// <inheritdoc/>

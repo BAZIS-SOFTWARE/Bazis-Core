@@ -77,7 +77,7 @@ namespace Project.Tasks
 
         /// <inheritdoc/>
 
-        public ILocalFrame LocalFrame { get; set; }
+        public IFrameCreator LocalFrame { get; set; }
 
         /// <inheritdoc/>
 

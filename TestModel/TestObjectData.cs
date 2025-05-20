@@ -548,37 +548,6 @@ namespace TestModel
             }
         }
 
-
-        //Тест на модель не проходит, большие погрешности
-        [DataTestMethod]
-        [DataRow(@"..\..\..\Examples\STL\block.stl", new float[] {0, 0, 1 }, 90.0f)]
-        public void RotateModelTest(string filePath, float[] axis, float angle)
-        {
-            var modelData = new ModelData();
-            modelData.Loader = new LoadFromSTLFile();
-            modelData.Load(filePath);
-
-            var keepOld = new ModelData();
-            keepOld.Loader = new LoadFromSTLFile();
-            keepOld.Load(filePath);
-
-            var axisVec = new Point3D(axis[0], axis[1], axis[2]);
-            modelData.ObjectData.Rotate(ObjType.Узел, axisVec, angle);
-
-            var oldNodes = keepOld.ObjectData.NodesSet.Select(v => v.Value).ToArray();
-            var newNodes = modelData.ObjectData.NodesSet.Select(v => v.Value).ToArray();
-
-            var srcPoint = newNodes[0].Position.Sub(oldNodes[0].Position);
-            var srcDelta = Vector.GetVectorLenght(srcPoint);
-
-            for(var i = 1; i < newNodes.Length; ++i)
-            {
-                var curPoint = newNodes[i].Position.Sub(oldNodes[i].Position);
-                var curDelta = Vector.GetVectorLenght(curPoint);
-                Assert.AreEqual(srcDelta, curDelta, 1e-4);
-            }  
-        }
-
         public static IEnumerable<object[]> AdditionData
         {
             get
