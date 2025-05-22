@@ -352,7 +352,7 @@ var loaderDB = new LoadResultsFileDB();
             CSVSaver.SaveResults(proj.ModelData.ObjectData.GetAllElements(), results.First(), resDesc, resultElementsCSVPath);
 
             var modelPresenter = new PresentersCreator();
-            var presenter = modelPresenter.CreateSurfaceObjectsPresenter(resultObjects, false);
+            var presenter = modelPresenter.CreateSurfaceObjectsPresenter(resultObjects);
 
             if (resultObjects.Count() == 0)
                 throw new Exception();
