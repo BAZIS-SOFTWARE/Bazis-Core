@@ -43,25 +43,25 @@ namespace Model.IO
                     if (token[0] == "Элемент3D")
                     {
                         var color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
-                        var set = new ObjectsSet<Element3D>(token[1]);
-                        set.SetColor(color);
+                        var set = new ObjectsSet<Element3D>(token[1]);           
                         FillSet(sr, set, newModel);
+                        set.SetColor(color);
                         newModel.ObjectData.E3DCollection.Add(set);
                     }
                     if (token[0] == "Элемент2D")
                     {
                         var color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
-                        var set = new ObjectsSet<Element2D>(token[1]);
-                        set.SetColor(color);
+                        var set = new ObjectsSet<Element2D>(token[1]);          
                         FillSet(sr, set, newModel);
+                        set.SetColor(color);
                         newModel.ObjectData.E2DCollection.Add(set);
                     }
                     if (token[0] == "Элемент1D")
                     {
                         var color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
                         var set = new ObjectsSet<Beam>(token[1]);
-                        set.SetColor(color);
                         FillSet(sr, set, newModel);
+                        set.SetColor(color);
                         newModel.ObjectData.E1DCollection.Add(set);
                     }
 
