@@ -94,11 +94,7 @@ namespace Model.IO
             var setName = GetName(line);
             var elementType = GetElementKind(line);
             var objsType = GetType(elementType);
-            CreateSet(reader,setName, elementType, objsType);
-        }
 
-        private void CreateSet(StreamReader reader, string setName, ElementKind elementType, ObjType objsType)
-        {           
             if (objsType == ObjType.Элемент1D)
             {
                 modelData.ObjectData.E1DCollection.Add(setName);
@@ -119,6 +115,7 @@ namespace Model.IO
                 FillSet(set3D, ViewMode.LineSurface, reader, elementType);
             }
         }
+
         private string GetName(string line)
         {
             if (line.StartsWith("*ELEMENT"))

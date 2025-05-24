@@ -225,9 +225,10 @@ namespace TestModel
         } 
 
         [DataTestMethod]
-        [DataRow(8448, 17964, @"..\..\..\Examples\3D\Korpus.inp", DisplayName = "Korpus.inp")]
-        [DataRow(4, 1, @"..\..\..\Examples\3D\abacus.inp", DisplayName = "abacus.inp")]
-        public void ImportModelFromINPTextFormat(int nodeCount, int elemCount, string path)
+        [DataRow(8448, 17964,0, @"..\..\..\Examples\3D\Korpus.inp", DisplayName = "Korpus.inp")]
+        [DataRow(4, 1,0, @"..\..\..\Examples\3D\abacus.inp", DisplayName = "abacus.inp")]
+        [DataRow(1000, 5454, 0, @"..\..\..\Examples\3D\box2.inp", DisplayName = "box2.inp")]
+        public void ImportModelFromINPTextFormat(int nodeCount, int elemCount, int grCount,string path)
         {
             var model = new ModelData();
             model.Loader = new LoadModelFromINPTextFile();
@@ -338,7 +339,7 @@ namespace TestModel
         }
 
         [DataTestMethod]
-        [DataRow(1000, 12, 6, 1, 0, @"..\..\..\Examples\3D\box2.inp", DisplayName = "box2.inp")]
+        [DataRow(1000, 12, 6, 1, 0, @"..\..\..\Examples\3D\box2.inp")]
         //[DataRow(8, 12, 6, 1, 7, @"..\..\..\Examples\3D\Physical_groups_mesh.inp", DisplayName = "Physical_groups_mesh.inp")]
         public void ImportModelFromINPFormat_v2(int nodeCount, int elem1D, int elem2D, int elem3D, int countGroup, string path)
         {
