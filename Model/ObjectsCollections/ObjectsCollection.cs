@@ -49,26 +49,18 @@ namespace Model.ObjectsCollections
 
         public void Add(ObjectsSet<T> set)
         {
-            if(objects.Count != 0)
+            if (objects.Count != 0)
             {
 
                 foreach (var _set in objects)
                 {
-                    if(_set.Value.Any(x => set.ContainsKey(x.Key)))
-                           throw new Exception($"В наборе {set.Name} есть элементы существующие в коллекции {typeof(T)}");
+                    if (_set.Value.Any(x => set.ContainsKey(x.Key)))
+                        throw new Exception($"В наборе {set.Name} есть элементы существующие в коллекции {typeof(T)}");
                     //foreach (var item in _set.Value)
-                        //if (set.ContainsKey(item.Key))
-                            //throw new Exception("Номер объекта уже добавлен в коллекцию");
+                    //if (set.ContainsKey(item.Key))
+                    //throw new Exception("Номер объекта уже добавлен в коллекцию");
                 }
-
-/*
-                var max = GetMaxNumber();
-                var min = set.Min(x => x.Key);
-
-                if (min <= max)
-                    throw new Exception("Минимальный номер в добавляемом наборе меньше или равен максимальному");
-            */
-                }
+            }
 
             objects.Add(set.Name, set);
         }
@@ -78,7 +70,9 @@ namespace Model.ObjectsCollections
         public void Add(string setName, T addObj)
         {
             if (!objects.ContainsKey(setName))
-                objects.Add(setName, new ObjectsSet<T>(setName));
+                objects.Add(setName, new ObjectsSet<T>(setName) { });
+            
+            
             if (!ContainsNumber(addObj.Number))
                 objects[setName].Add(addObj.Number, addObj);
             else 

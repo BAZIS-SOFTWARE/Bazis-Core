@@ -9,6 +9,9 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Group = Model.GroupsData.Group;
+using Model.ObjectsCollections;
+using Model.Interfaces.ObjectsCollections;
+using System.Drawing;
 
 
 namespace Model.IO
@@ -37,8 +40,10 @@ namespace Model.IO
             {
                 if (lines[i].StartsWith("*NODE", StringComparison.OrdinalIgnoreCase))
                     ReadNodes(i, out offset, modelData);
+                // по нашему наборы
                 else if (lines[i].StartsWith("*ELEMENT", StringComparison.OrdinalIgnoreCase))
                     ReadElements(i, out offset, indexToElement, modelData);
+                // по нашему  group
                 else if (Regex.Match(lines[i], @"\*(EL|N)SET", RegexOptions.IgnoreCase).Success)
                     ReadGroups(i, out offset, indexToElement, modelData);
                 i += (offset > 0) ? offset : 1;
@@ -83,14 +88,14 @@ namespace Model.IO
             return node;
         }
 
-        private void AddElementToModelData(Element element, string groupName, ModelData modelData)
+        private void AddElementToModelData(Element element, string setName, ModelData modelData)
         {
             if (element is Element3D element3D)
-                modelData.ObjectData.E3DCollection.Add(groupName, element3D);
+                modelData.ObjectData.E3DCollection.Add(setName, element3D);
             else if (element is Element2D element2D)
-                modelData.ObjectData.E2DCollection.Add(groupName, element2D);
+                modelData.ObjectData.E2DCollection.Add(setName, element2D);
             else if (element is Beam beam)
-                modelData.ObjectData.E1DCollection.Add(groupName, beam);
+                modelData.ObjectData.E1DCollection.Add(setName, beam);
             else
                 throw new ArgumentException($"Неизвестный тип элемента: {element}");
         }
@@ -98,7 +103,9 @@ namespace Model.IO
         private void ReadElements(int start, out int offset, Dictionary<int, Element> indexToElement, ModelData modelData)
         {
             var elementType = string.Empty;
-            var groupName = string.Empty;
+            var setName = string.Empty;
+            var rnd = new Random();
+
             offset = 0;
             for(var i = start; i < lines.Length; i++)
             {
@@ -106,8 +113,13 @@ namespace Model.IO
                     break;
                 else if (lines[i].StartsWith("*ELEMENT", StringComparison.OrdinalIgnoreCase))
                 {
+                    if (setName != string.Empty)
+                    {
+                        var color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
+                        SetColor(setName, elementType, modelData, color);
+                    }
                     elementType = Regex.Match(lines[i], extractElementTypePattern, RegexOptions.IgnoreCase).Value;
-                    groupName = GetGroupName(lines[i]);
+                    setName = GetGroupName(lines[i]);
                 }
                 else
                 {
@@ -116,10 +128,31 @@ namespace Model.IO
                     {
                         var element = CreateElement(tokens, elementType, modelData);
                         indexToElement.Add(element.Number, element);
-                        AddElementToModelData(element, groupName, modelData);
+                        AddElementToModelData(element, setName, modelData);
                     }
                 }
                 offset++;
+            }
+        }
+
+        private void SetColor(string setName, string elementType, ModelData modelData, Color color)
+        {
+            switch (elementType)
+            {
+                case "T3D2": 
+                    modelData.ObjectData.E1DCollection[setName].SetColor(color);
+                    break;
+                case "CPS3":
+                case "CPS4":
+                    modelData.ObjectData.E2DCollection[setName].SetColor(color);
+                    break;
+
+                case "C3D4": 
+                case "C3D6": 
+                case "C3D8":
+                    modelData.ObjectData.E3DCollection[setName].SetColor(color);
+                    break;
+                default: throw new ArgumentException($"Неизвестный формат элемента: {elementType}");
             }
         }
 
