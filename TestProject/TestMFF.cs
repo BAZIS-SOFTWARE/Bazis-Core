@@ -62,7 +62,9 @@ namespace TestProject
                 var powerFunc = heatData.FrameFunction;
                 //assert
                 var energy = new float[gr.Count];
-                var frame = (heatData.LocalFrame as MovedFrame).CalcFrame(1);
+                var mf = heatData.LocalFrame as MovedFrame;
+                mf.Time = 1;
+                var frame = mf.Build();
                 powerFunc.Frame = frame;
                 var counter = 0;
                 foreach (var obj in gr)
@@ -426,9 +428,10 @@ namespace TestProject
             var mf = heatData.LocalFrame as MovedFrame;
             var end = mf.CalcMotionTime();
 
-            for (var time = 0f; time < end; time += mf.Velosity)
+            for (var time = 0.0f; time < end; time += mf.Velocity)
             {
-                var frame = mf.CalcFrame(time);
+                mf.Time = time;
+                var frame = mf.Build();
                 heatData.FrameFunction.Frame = frame;
                 resultList.AddRange(heatData.FrameFunction.GetIntersectedObjects(inputElements));
             }

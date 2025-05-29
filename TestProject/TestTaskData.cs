@@ -111,7 +111,9 @@ namespace TestProject
                 var stepTime = (preFrame.StopTime - preFrame.StartTime) / 10;
                 for (float i = preFrame.StartTime; i < preFrame.StopTime; i+= stepTime)
                 {
-                    var frame = (preFrame.LocalFrame as MovedFrame).CalcFrame(i);
+                    var mf = preFrame.LocalFrame as MovedFrame;
+                    mf.Time = i;
+                    var frame = mf.Build();
 
                     if (frame.Centre._x is float.NaN || frame.Centre._y is float.NaN || frame.Centre._z is float.NaN)
                         throw new Exception($"СК определена неверно!: одна из координат центра не определена. frame: {preFrame}");

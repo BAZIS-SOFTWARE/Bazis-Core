@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Project.Tasks.FrameCreators
 {
-    public class StaticFrame : FrameCreator
+    public class StaticFrame : LocalFrame
     {
         public IGroup BaseGroup { get; }
 
@@ -23,7 +23,7 @@ namespace Project.Tasks.FrameCreators
         }
 /// <inheritdoc/>
 
-        public Frame CreateFrame()
+        public override Frame Build()
         {
             var points = BaseGroup.Select(x => x.CalcCentr()).ToArray();
 

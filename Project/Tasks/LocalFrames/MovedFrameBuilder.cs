@@ -9,7 +9,7 @@ namespace Project.Tasks.FrameCreators
 {
     public class MovedFrameBuilder
     {
-        MovedFrame arcHeatSource;
+        MovedFrame movedFrame;
 
         public MovedFrame Build(IGroup startPoints, IGroup baseLine, IGroup refLine, float velocity)
         {
@@ -45,7 +45,7 @@ namespace Project.Tasks.FrameCreators
 
         public static implicit operator MovedFrame(MovedFrameBuilder builder)
         {
-            return builder.arcHeatSource;
+            return builder.movedFrame;
         }
     }
 }

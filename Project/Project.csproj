@@ -4,7 +4,7 @@
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
 	  <SignAssembly>True</SignAssembly>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>4.6.66</Version>
+    <Version>4.6.67</Version>
     <Title>Project</Title>
     <Authors>Bilenko Georgy</Authors>
     <Company>BAZIS SOFTWARE</Company>
@@ -54,7 +54,7 @@
     <Compile Include="Interfaces\Tasks\IData.cs" />
     <Compile Include="Interfaces\Tasks\IFrameFunction.cs" />
     <Compile Include="Interfaces\Tasks\IGroupDependent.cs" />
-    <Compile Include="Interfaces\Tasks\IFrameCreator.cs" />
+    <Compile Include="Interfaces\Tasks\ILocalFrame.cs" />
     <Compile Include="Interfaces\Tasks\ISphereFunction.cs" />
     <Compile Include="Interfaces\Tasks\ITableFunction.cs" />
     <Compile Include="Interfaces\Tasks\ITaskData.cs" />
@@ -64,8 +64,8 @@
     <Compile Include="Tasks\Functions\DoubleEllips.cs" />
     <Compile Include="Tasks\Functions\FrameFunction.cs" />
     <Compile Include="Tasks\Functions\FrameFunctionBuilder.cs" />
-    <Compile Include="Tasks\FrameCreators\FrameCreator.cs" />
-    <Compile Include="Tasks\FrameCreators\StaticFrame.cs" />
+    <Compile Include="Tasks\LocalFrames\LocalFrame.cs" />
+    <Compile Include="Tasks\LocalFrames\StaticFrame.cs" />
     <Compile Include="IO\LoadEventArgs.cs" />
     <Compile Include="IO\LoadProjectFileTextFormat.cs" />
     <Compile Include="IO\SaveProjectFileTextFormat.cs" />
@@ -102,8 +102,8 @@
     <Compile Include="Tasks\Functions\FSWShoulderBuilder.cs" />
     <Compile Include="Tasks\Functions\Lazer.cs" />
     <Compile Include="Tasks\Functions\LazerBuilder.cs" />
-    <Compile Include="Tasks\FrameCreators\MovedFrame.cs" />
-    <Compile Include="Tasks\FrameCreators\MovedFrameBuilder.cs" />
+    <Compile Include="Tasks\LocalFrames\MovedFrame.cs" />
+    <Compile Include="Tasks\LocalFrames\MovedFrameBuilder.cs" />
     <Compile Include="Tasks\Functions\SphereFunction.cs" />
     <Compile Include="Tasks\Functions\TableFunction.cs" />
     <Compile Include="Tasks\Functions\Trajectory.cs" />

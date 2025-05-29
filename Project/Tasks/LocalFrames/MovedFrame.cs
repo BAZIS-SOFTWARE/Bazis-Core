@@ -9,15 +9,15 @@ using System.Collections.Generic;
 
 namespace Project.Tasks.FrameCreators
 {
-    public class MovedFrame : FrameCreator
+    public class MovedFrame : LocalFrame
     {
-        public MovedFrame(IGroup baseLine, IGroup refLine, float velocity)
+        public MovedFrame(IGroup baseLine, IGroup refLine, float _velocity)
         {
             if (baseLine.Count == 0 || refLine.Count == 0)
                 throw new Exception("Линия должна собержать точки!");
-            if (velocity == 0)
+            if (_velocity == 0)
                 throw new Exception("Скорость не может равняться нулю!");
-            Velosity = velocity;
+            velocity = _velocity;
 
 
             if (baseLine.Count != refLine.Count)
@@ -42,7 +42,7 @@ namespace Project.Tasks.FrameCreators
         {
             return string.Format(CultureInfo.InvariantCulture,
                 "{0}|{1};{2};{3}|{4}",
-                BaseLine.Name, RefLine.Name, Velosity, Shifting.ToString(), Rotation);
+                BaseLine.Name, RefLine.Name, Velocity, Shifting.ToString(), Rotation);
         }
         /// <inheritdoc/>
         public IModelObject StartPoint
@@ -55,9 +55,47 @@ namespace Project.Tasks.FrameCreators
         {
             get { return BaseLine.Last(); }
         }
-        /// <inheritdoc/>
 
-        public float Velosity { get; set; }
+        float PathPassed
+        {
+            get { return velocity * time; }
+        }
+
+        float time;
+        /// <summary>
+        /// Time
+        /// </summary>       
+        public float Time 
+        { 
+            get
+            {
+                return time;
+            }
+            set
+            {
+                if (value < 0)
+                    throw new Exception("Время меньше 0");
+
+                time = value;
+            }
+        }
+
+        float velocity;
+
+        /// <summary>
+        /// Velosity
+        /// </summary>
+        public float Velocity 
+        {
+            get { return velocity; }
+            set
+            {
+                if (value < 0)
+                    throw new Exception("Скорость меньше 0");
+
+                velocity = value;
+            }
+        }
         /// <inheritdoc/>
 
         public IGroup BaseLine { get; }
@@ -89,9 +127,9 @@ namespace Project.Tasks.FrameCreators
         /// <inheritdoc/>
 
 
-        public Frame CalcFrame(float time)
+        public override Frame Build()
         {
-            var pathPassed = Velosity * time;
+
             var posit = new Point3D();
             var path = 0.0f;
 
@@ -104,9 +142,9 @@ namespace Project.Tasks.FrameCreators
                 path = path + line.GetLength();
                 dirY = BaseLine[i + 1].CalcCentr().Sub(BaseLine[i].CalcCentr());
                 dirX = BaseLine[i].CalcCentr().Sub(RefLine[i].CalcCentr());
-                if (path >= pathPassed)
+                if (path >= PathPassed)
                 {
-                    var delta = path - pathPassed;
+                    var delta = path - PathPassed;
                     var p = line.GetPointOnLine(line.GetLength() - delta);
 
                     posit = BaseLine[i].CalcCentr().Sum(p);
@@ -130,13 +168,13 @@ namespace Project.Tasks.FrameCreators
 
         /// <inheritdoc/>
 
-        public double CalcMotionTime()
+        public float CalcMotionTime()
         {
             var path = 0.0f;
             for (int i = 1; i < BaseLine.Count; i++)
                 path = path + new Segment3D(BaseLine[i].CalcCentr(), BaseLine[i - 1].CalcCentr()).GetLength();
 
-            var stopTime = path / Velosity;
+            var stopTime = path / velocity;
 
             return stopTime;
         }
