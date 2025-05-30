@@ -147,8 +147,8 @@ namespace Project.Tasks
             get
             {
                 var mfInfo = "*";
-                if (LocalFrame != null)
-                    mfInfo = LocalFrame.ToString();
+                if (FrameFunction?.LocalFrame != null)
+                    mfInfo = FrameFunction.LocalFrame.ToString();
 
                 if (MediaType == MediaType.ConstantTemp)
                 {

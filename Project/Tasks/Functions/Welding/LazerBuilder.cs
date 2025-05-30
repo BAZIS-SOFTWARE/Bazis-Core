@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 using Geometry;
+using Project.Tasks.FrameCreators;
 
-namespace Project.Tasks.Functions
+namespace Project.Tasks.Functions.Welding
 {
     public class LazerBuilder
     {
@@ -16,8 +18,8 @@ namespace Project.Tasks.Functions
         public LazerBuilder()
         {
             lazer = new Lazer();
-            lazer.Name  = "LW";
-            lazer.Frame = new Frame();
+            lazer.Name = "LW";
+            lazer.LocalFrame = new StaticFrame();
         }
 
         public LazerBuilder SetPower(string power)
@@ -45,7 +47,7 @@ namespace Project.Tasks.Functions
 
         public LazerBuilder SetFrame(Frame frame)
         {
-            lazer.Frame = frame;
+            lazer.LocalFrame = new StaticFrame(frame);
             return this;
         }
 

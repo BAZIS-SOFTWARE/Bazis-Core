@@ -1,4 +1,5 @@
 ﻿using Geometry;
+using Project.Tasks.Functions.Welding;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -18,9 +19,9 @@ namespace Project.Tasks.Functions
 
             if (processType == HeatSources.ARC)
             {
-                var builder = new ArcBuilder().SetCurrent(heatSourceAr[2]).SetVoltage(heatSourceAr[3]).
+                var builder = new ArcSBuilder().SetCurrent(heatSourceAr[2]).SetVoltage(heatSourceAr[3]).
                         SetWidth(heatSourceAr[1]);
-                frameFunction = (Arc)builder;
+                frameFunction = (ArcS)builder;
             }
 
             else if (processType == HeatSources.FSWPin)
@@ -50,7 +51,7 @@ namespace Project.Tasks.Functions
         }
         public FrameFunctionBuilder SetFrame(Frame frame)
         {
-            frameFunction.Frame = frame;
+            frameFunction.LocalFrame.Frame = frame;
             return this;
         }
 

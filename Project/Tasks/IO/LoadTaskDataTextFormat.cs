@@ -81,12 +81,12 @@ namespace Project.Tasks.IO
                                 var refLine = groupData.Find(refLineGrName);
                                 var vel = float.Parse(trajAr[1]);
 
-                                data.LocalFrame = new MovedFrame(baseLine, refLine, vel);
+                                data.FrameFunction.LocalFrame = new MovedFrame(baseLine, refLine, vel);
                             }
                             else
                             {
                                 var frameGr = groupData.Find(trajAr[0]);
-                                data.LocalFrame = new StaticFrame(frameGr);
+                                data.FrameFunction.LocalFrame = new StaticFrame(frameGr);
                             }
                         }
                         

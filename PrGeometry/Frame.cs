@@ -145,7 +145,7 @@ namespace Geometry
             //var sX = Dir_X.Sum(delta);
             //var sY = Dir_Y.Sum(delta);
             //var sZ = Dir_Z.Sum(delta);
-            var sCentr = Centre.Sum(shifting);
+            Centre = Centre.Sum(shifting);
             //return new Frame(sCentr, Dir_X,Dir_Y);
         }
 

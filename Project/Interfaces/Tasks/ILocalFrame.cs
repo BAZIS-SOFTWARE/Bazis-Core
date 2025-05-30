@@ -19,9 +19,9 @@ namespace Project.Interfaces.Tasks
         /// </summary>
         float Rotation { get; set; }
         /// <summary>
-        /// CreateFrame
+        /// Frame
         /// </summary>
         /// <returns></returns>
-        Frame Build();
+        Frame Frame { get; set; }
     }
 }

@@ -3,7 +3,7 @@ using Geometry;
 using Model.Interfaces;
 using Project.Interfaces.Tasks;
 
-namespace Project.Tasks.Functions
+namespace Project.Tasks.Functions.Welding
 {
     public abstract class SphereFunction : FrameFunction
     {
@@ -20,11 +20,12 @@ namespace Project.Tasks.Functions
         public bool IsPointInside(Point3D elementCenter, out float rad, out float halfBead)
         {
             halfBead = Width / 2;
-            rad = Vector.GetVectorLenght(elementCenter.Sub(Frame.Centre));
+            var frame = LocalFrame.Frame;
+            rad = Vector.GetVectorLenght(elementCenter.Sub(frame.Centre));
             return rad <= halfBead;
         }
 
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public override List<T> GetIntersectedObjects<T>(List<T> elements)
         {
@@ -36,7 +37,7 @@ namespace Project.Tasks.Functions
 
             return insideElements;
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public override bool IsOverlappingSelf(float velocity)
         {

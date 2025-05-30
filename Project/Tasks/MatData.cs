@@ -26,8 +26,8 @@ namespace Project.Tasks
             get
             {
                 var mfInfo = "*";
-                if (LocalFrame != null)
-                    mfInfo = LocalFrame.ToString();
+                if (FrameFunction?.LocalFrame != null)
+                    mfInfo = FrameFunction.LocalFrame.ToString();
                 return string.Format("{0} {1} {2} {3} {4}", Group.Name, MatName, StartTime, StopTime, mfInfo);
             }
         }

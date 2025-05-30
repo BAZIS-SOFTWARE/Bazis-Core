@@ -15,7 +15,7 @@ namespace Project.Tasks
         /// <summary>
         /// Value
         /// </summary>
-        public float LoadValue { get; set; }
+        public float Value { get; set; }
 
         public LoadData(IGroup group, string info) : base(group, info)
         {
@@ -49,10 +49,10 @@ namespace Project.Tasks
             if (!float.TryParse(loadDataAr[3], out value))
                 throw new Exception("Значение усилия должно быть числом!");
  
-            LoadValue = value;
+            Value = value;
 
             if (loadDataAr[4] != "*")
-                LoadFunction = loadDataAr[4];
+                TimeFunction = loadDataAr[4];
 
             float startTime;
             if (!float.TryParse(loadDataAr[5], out startTime))
@@ -74,15 +74,15 @@ namespace Project.Tasks
             get
             {
                 var mfInfo = "*";
-                if (LocalFrame != null)
-                    mfInfo = LocalFrame.ToString();
+                if (FrameFunction?.LocalFrame != null)
+                    mfInfo = FrameFunction.LocalFrame.ToString();
                 return string.Format("{0} {1} {2} {3} {4} {5} {6} {7}",
-                    Group.Name, LoadKind, Direction, LoadValue, LoadFunction, StartTime, StopTime, mfInfo);
+                    Group.Name, LoadKind, Direction, Value, TimeFunction, StartTime, StopTime, mfInfo);
             }
         }
         /// <summary>
         /// LoadFunction
         /// </summary>
-        public string LoadFunction { get; set; } = "*";
+        public string TimeFunction { get; set; } = "*";
     }
 }

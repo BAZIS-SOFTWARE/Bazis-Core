@@ -17,9 +17,5 @@
         /// FrameFunction
         /// </summary>
         IFrameFunction FrameFunction { get; }
-        /// <summary>
-        /// LocalFrame
-        /// </summary>
-        ILocalFrame LocalFrame { get; set; }
     }
 }

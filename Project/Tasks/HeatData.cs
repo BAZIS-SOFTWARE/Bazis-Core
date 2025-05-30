@@ -21,11 +21,11 @@ namespace Project.Tasks
         /// <summary>
         /// PowerValue
         /// </summary>
-        public float PowerValue { get; private set; } = 1;
+        public float Value { get; private set; } = 1;
         /// <summary>
         /// PowerFunction
         /// </summary>
-        public string PowerFunction{ get; private set; } = "*";
+        public string TimeFunction { get; private set; } = "*";
 
         /// <inheritdoc/>
         protected override string GetInfo
@@ -33,15 +33,15 @@ namespace Project.Tasks
             get
             {
                 var mfInfo = "*";
-                if (LocalFrame != null)
-                    mfInfo = LocalFrame.ToString();
+                if (FrameFunction?.LocalFrame != null)
+                    mfInfo = FrameFunction.LocalFrame.ToString();
 
                 var ffInfo = "*";
                 if (FrameFunction != null)
                     ffInfo = FrameFunction.ToString();
 
                 return
-                  $"{PowerValue} {PowerFunction} {ffInfo} {Group.Name} {StartTime} {StopTime} {mfInfo}";
+                  $"{Value} {TimeFunction} {ffInfo} {Group.Name} {StartTime} {StopTime} {mfInfo}";
             }
         }
 
@@ -57,10 +57,10 @@ namespace Project.Tasks
 
             float value;
             if (float.TryParse(heatDataAr[0], out value))
-                PowerValue = value;
+                Value = value;
 
 
-            PowerFunction = heatDataAr[1];
+            TimeFunction = heatDataAr[1];
 
             float startTime;
             if (!float.TryParse(heatDataAr[4], out startTime))

@@ -1,8 +1,9 @@
 ﻿using Geometry;
+using Project.Tasks.FrameCreators;
 using System;
 using System.Globalization;
 
-namespace Project.Tasks.Functions
+namespace Project.Tasks.Functions.Welding
 {
     public class FSWPinBuilder
     {
@@ -12,7 +13,7 @@ namespace Project.Tasks.Functions
         {
             pin = new FSWPin();
             pin.Name = "FSWPin";
-            pin.Frame = new Frame();
+            pin.LocalFrame = new StaticFrame();
         }
 
         public FSWPinBuilder SetRotSpeed(string rotSpeed)
@@ -47,7 +48,7 @@ namespace Project.Tasks.Functions
 
         public FSWPinBuilder SetFrame(Frame frame)
         {
-            pin.Frame = frame;
+            pin.LocalFrame = new StaticFrame(frame);
             return this;
         }
 
