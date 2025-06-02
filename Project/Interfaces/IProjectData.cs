@@ -1,6 +1,7 @@
 ﻿using Model.Interfaces;
 using Project.Interfaces.IO;
 using Project.Interfaces.Tasks;
+using System;
 
 namespace Project.Interfaces
 {
@@ -9,6 +10,14 @@ namespace Project.Interfaces
     /// </summary>
     public interface IProjectData
     {
+        //public event Action DeleteAllGroupsEvent;
+        //public event Action DeleteGroupEvent;
+        //public event Action DeleteObjectsEvent;
+        //public event Action DeleteSelectedObjectsEvent;
+
+
+
+
         /// <summary>
         /// Saver
         /// </summary>
@@ -51,5 +60,11 @@ namespace Project.Interfaces
         /// </summary>
         /// <param name="projectFile"></param>
         void Load(string projectFile);
+        /// <summary>
+        /// ChangeTaskType
+        /// </summary>
+        /// <param name="taskType"></param>
+        /// <returns></returns>
+        void ChangeTaskType(TaskType taskType);
     }
 }

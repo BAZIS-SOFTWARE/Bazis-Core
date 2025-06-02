@@ -111,7 +111,9 @@ namespace TestProject
                 var stepTime = (preFrame.StopTime - preFrame.StartTime) / 10;
                 for (float i = preFrame.StartTime; i < preFrame.StopTime; i+= stepTime)
                 {
-                    var frame = (preFrame.LocalFrame as MovedFrame).CalcFrame(i);
+                    var mf = preFrame.FrameFunction.LocalFrame as MovedFrame;
+                    mf.Time = i;
+                    var frame = mf.Frame;
 
                     if (frame.Centre._x is float.NaN || frame.Centre._y is float.NaN || frame.Centre._z is float.NaN)
                         throw new Exception($"СК определена неверно!: одна из координат центра не определена. frame: {preFrame}");
@@ -143,7 +145,7 @@ namespace TestProject
 
             
 
-            var baseLine = (selectedData[0].LocalFrame as MovedFrame).BaseLine;
+            var baseLine = (selectedData[0].FrameFunction.LocalFrame as MovedFrame).BaseLine;
             //assert
             var first = baseLine[0];
             var secd = baseLine[1];
@@ -161,7 +163,7 @@ namespace TestProject
         [DataRow(10.1f,1,0.5f,0)]
         [DataRow(0,0,0,0)]
         [DataRow(0, 0, 0, 0)]
-        public void TestFrameFunctionShifting(float rotation,float x,float y,float z)
+        public void TestFrameFunctionTransformation(float rotation,float x,float y,float z)
         {
             //assign
             var proj = new ProjectData();
@@ -172,14 +174,12 @@ namespace TestProject
             proj.Load(@"..\..\..\Examples\proj_traj.bpf");
 
             var heatData = proj.TaskData.Find(DataKind.Нагрев).Select(h => (HeatData)h).First();
-            heatData.LocalFrame.Rotation = rotation;
-            heatData.LocalFrame.Shifting._x = x;
-            heatData.LocalFrame.Shifting._y = y;
-            heatData.LocalFrame.Shifting._z = z;
+            heatData.FrameFunction.LocalFrame.Rotation = rotation;
+            heatData.FrameFunction.LocalFrame.Shifting = new Point3D(x,y,z);
             //assert
-            Assert.AreEqual(heatData.LocalFrame.Rotation, rotation);
-            Assert.AreEqual(heatData.LocalFrame.Shifting, new Geometry.Point3D(x,y,z));
-        }            
+            Assert.AreEqual(heatData.FrameFunction.LocalFrame.Rotation, rotation);
+            Assert.AreEqual(heatData.FrameFunction.LocalFrame.Shifting, new Point3D(x,y,z));
+        }
 
         [DataTestMethod]
         [DataRow(DataKind.Нагрев)]
@@ -227,7 +227,7 @@ namespace TestProject
                     var baseLine = new Group("baseLine", ObjType.Узел);
                     var refLine = new Group("refLine", ObjType.Узел);
 
-                    heatData.LocalFrame = new MovedFrame(baseLine, refLine, 5);
+                    heatData.FrameFunction.LocalFrame = new MovedFrame(baseLine, refLine, 5);
 
                     data = heatData;
                     break;

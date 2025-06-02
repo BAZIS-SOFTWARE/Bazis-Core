@@ -8,7 +8,7 @@ namespace Project.Interfaces.Tasks
     /// <summary>
     /// ILocalFrame
     /// </summary>
-    public interface IFrameCreator
+    public interface ILocalFrame
     {
         /// <summary>
         /// Shifting
@@ -18,5 +18,10 @@ namespace Project.Interfaces.Tasks
         /// Rotation
         /// </summary>
         float Rotation { get; set; }
+        /// <summary>
+        /// Frame
+        /// </summary>
+        /// <returns></returns>
+        Frame Frame { get; set; }
     }
 }

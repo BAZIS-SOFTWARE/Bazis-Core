@@ -4,16 +4,16 @@ using Project.Interfaces.Tasks;
 using System;
 using System.Collections.Generic;
 
-namespace Project.Tasks.Functions
+namespace Project.Tasks.Functions.Welding
 {
     public abstract class CillindricalFunction : FrameFunction
     {
         /// <inheritdoc/>
-        public float BottomDiam { get;  set; }
+        public float BottomDiam { get; set; }
         /// <inheritdoc/>
-        public float UpperDiam { get;  set; }
+        public float UpperDiam { get; set; }
         /// <inheritdoc/>
-        public float Length { get;  set; }
+        public float Length { get; set; }
 
         /// <summary>
         /// IsPointInside
@@ -29,18 +29,18 @@ namespace Project.Tasks.Functions
             r = 0f;
             r0 = 0f;
             r1 = 0f;
-            r2 = 0f;           
-
-            var hsPlane = new Plane(Frame.Dir_X, Frame.Centre, Frame.Dir_Y);
+            r2 = 0f;
+            var frame = LocalFrame.Frame;
+            var hsPlane = new Plane(frame.Dir_X, frame.Centre, frame.Dir_Y);
             var res = hsPlane.PointPosition(elementCenter);
 
             if (res < 0 | res > Length)
                 return false;
 
-            var hsAxis = new Segment3D(Frame.Centre, Frame.Dir_Z);
+            var hsAxis = new Segment3D(frame.Centre, frame.Dir_Z);
             r = elementCenter.GetDistanceToLine(hsAxis);
 
-            var elDist = elementCenter.Sub(Frame.Centre);
+            var elDist = elementCenter.Sub(frame.Centre);
             var rad = Vector.GetVectorLenght(elDist);
 
             var zc = 0.0f;
@@ -67,7 +67,7 @@ namespace Project.Tasks.Functions
         }
         /// <inheritdoc/>
 
-        public override bool IsOverlappingSelf( float velocity)
+        public override bool IsOverlappingSelf(float velocity)
         {
             return velocity <= BottomDiam / 2 && velocity <= UpperDiam / 2;
         }

@@ -17,6 +17,7 @@ using Project.Tasks.Functions;
 using Project.Tasks.FrameCreators;
 using Project.Interfaces.Tasks;
 using MathNet.Numerics.LinearAlgebra;
+using Project.Tasks.Functions.Welding;
 
 namespace TestProject
 {
@@ -62,8 +63,8 @@ namespace TestProject
                 var powerFunc = heatData.FrameFunction;
                 //assert
                 var energy = new float[gr.Count];
-                var frame = (heatData.LocalFrame as MovedFrame).CalcFrame(1);
-                powerFunc.Frame = frame;
+                var mf = heatData.FrameFunction.LocalFrame as MovedFrame;
+                mf.Time = 1;
                 var counter = 0;
                 foreach (var obj in gr)
                 {
@@ -158,11 +159,11 @@ namespace TestProject
             FrameFunction pFunction;
             if (fName == "arc")
             {
-                var arc = new ArcBuilder();
+                var arc = new ArcSBuilder();
                 arc.SetWidth("20");
 
                 arc.SetFrame(frame);
-                pFunction = (Arc)arc;
+                pFunction = (ArcS)arc;
             }
             else if (fName == "lz")
             {
@@ -411,9 +412,8 @@ namespace TestProject
                 refLine.Add(new Node(i + 5000, new Point3D(0f, -1f, i)));
             }
 
-            heatData.LocalFrame = new MovedFrame(baseLine, refLine, 5);
-
             heatData.FrameFunction = (FrameFunction)(new FrameFunctionBuilder(new string[] { "ARC", "10", "100", "25" }));
+            heatData.FrameFunction.LocalFrame = new MovedFrame(baseLine, refLine, 5);
 
             var expectedElements = new List<IElement>();
             var inputElements = new List<IElement>();
@@ -423,13 +423,12 @@ namespace TestProject
             if (input.Count() >= 12)
                 inputElements = GetTetraElements(input);
             var resultList = new List<IElement>();
-            var mf = heatData.LocalFrame as MovedFrame;
+            var mf = heatData.FrameFunction.LocalFrame as MovedFrame;
             var end = mf.CalcMotionTime();
 
-            for (var time = 0f; time < end; time += mf.Velosity)
+            for (var time = 0.0f; time < end; time += mf.Velocity)
             {
-                var frame = mf.CalcFrame(time);
-                heatData.FrameFunction.Frame = frame;
+                mf.Time = time;
                 resultList.AddRange(heatData.FrameFunction.GetIntersectedObjects(inputElements));
             }
 
@@ -465,7 +464,7 @@ namespace TestProject
         [TestMethod]
         public void IsOverlappingSelfSphere_ShouldPass_WhenOverlap(float velocity, float width)
         {
-            Arc mff = new ArcBuilder().SetWidth(width.ToString());
+            ArcS mff = new ArcSBuilder().SetWidth(width.ToString());
             Assert.IsTrue(mff.IsOverlappingSelf(velocity));
         }
 
@@ -493,14 +492,17 @@ namespace TestProject
         [DataRow(new[] { 10f, 4f, 5f }, "outside", DisplayName = "point in back ellipse, outside")]
         public void DoubleEllipsIsPointInside_FrameParallelGlobalAxes(float[] checkPoint, string location)
         {
-            var doubleEllips = new DoubleEllips();
-            doubleEllips.Width = 14;
-            doubleEllips.Depth = 5;
-            doubleEllips.FrontPart = 5;
-            doubleEllips.BackPart = 15;
+            var doubleEllips = (ArcD)new ArcDBuilder().
+                SetWidth(14).
+                SetDepth(5).
+                SetFrontPart(5).
+                SetBackPart(15).
+    SetFrame(new Frame(new Point3D(15, 15, 15),
+    new Point3D(16, 15, 15),
+    new Point3D(15, 16, 15)));
+
             doubleEllips.MaxAndMinSemiaxis();
-            doubleEllips.Frame = new Frame(new Point3D(15, 15, 15), new Point3D(16, 15, 15), new Point3D(15, 16, 15));            
-            //doubleEllips.DetermineInverseMatrix();
+       
             var point = new Point3D(checkPoint[0], checkPoint[1], checkPoint[2]);
 
             if (location == "inside")
@@ -519,13 +521,15 @@ namespace TestProject
         [DataRow(new[] { 13f, 20f, 20f }, "outside", DisplayName = "13f, 20f, 20f")]
         public void DoubleEllipsIsPointInside_FrameXYRotated30DegreesGlobalAxes(float[] checkPoint, string location)
         {
-            var doubleEllips = new DoubleEllips();
-            doubleEllips.Width = 14;
-            doubleEllips.Depth = 5;
-            doubleEllips.FrontPart = 5;
-            doubleEllips.BackPart = 15;
+            var doubleEllips = (ArcD)new ArcDBuilder().SetWidth(14).SetDepth(5).
+                SetFrontPart(5).
+                SetBackPart(15).
+                SetFrame(new Frame(new Point3D(20f, 20f, 20f), 
+                new Point3D(20.866f, 20.5f, 20f), 
+                new Point3D(19.5f, 20.866f, 20f)));
+
             doubleEllips.MaxAndMinSemiaxis();
-            doubleEllips.Frame = new Frame(new Point3D(20f, 20f, 20f), new Point3D(20.866f, 20.5f, 20f), new Point3D(19.5f, 20.866f, 20f));
+
             //doubleEllips.DetermineInverseMatrix();
   
             var point = new Point3D(checkPoint[0], checkPoint[1], checkPoint[2]);
@@ -542,9 +546,9 @@ namespace TestProject
         [DataRow(7.5f, 5, 10)]
         public void IsOverlappingSelfEllips_ShouldPass_WhenOverlap(float velocity, float frontPart, float backPart)
         {
-            var doubleEllips = new DoubleEllips();
-            doubleEllips.FrontPart = frontPart;
-            doubleEllips.BackPart = backPart;
+            var doubleEllips = (ArcD)new ArcDBuilder().
+    SetFrontPart(frontPart).
+    SetBackPart(backPart);
 
             Assert.IsTrue(doubleEllips.IsOverlappingSelf(velocity));
         }
@@ -562,15 +566,16 @@ namespace TestProject
     })]
         public void DetermineInverseMatrixTest(float[] pointsArr, float[] resultArr)
         {
-            var doubleEllips = new DoubleEllips();
-            doubleEllips.Frame = new Frame(
+            var doubleEllips = (ArcD)new ArcDBuilder().
+                SetFrame(new Frame(
                 new Point3D(0f, 0f, 0f),
                  new Point3D(pointsArr[0], pointsArr[1], pointsArr[2]),
                  new Point3D(pointsArr[3], pointsArr[4], pointsArr[5])
-                );
+                ));
+            
 
             //doubleEllips.DetermineInverseMatrix();
-            var matrix = doubleEllips.Frame.InverseTransitionMatrix;
+            var matrix = doubleEllips.LocalFrame.Frame.InverseTransitionMatrix;
             var result = Matrix<float>.Build.DenseOfArray(new float[3, 3] {
                                                {resultArr[0], resultArr[1], resultArr[2]},
                                                {resultArr[3], resultArr[4], resultArr[5]},

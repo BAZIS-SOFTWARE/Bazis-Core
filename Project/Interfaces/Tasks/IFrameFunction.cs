@@ -1,5 +1,6 @@
 ﻿using Geometry;
 using Model.Interfaces;
+using Project.Tasks.FrameCreators;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace Project.Interfaces.Tasks
         /// <summary>
         /// Frame
         /// </summary>
-        Frame Frame { get; set; }
+        LocalFrame LocalFrame { get; set; }
         /// <summary>
         /// Name
         /// </summary>

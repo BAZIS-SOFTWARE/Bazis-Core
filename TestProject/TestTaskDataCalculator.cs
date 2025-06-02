@@ -45,7 +45,7 @@ namespace TestProject
 
             var heat = proj.TaskData.Find<HeatData>().First();
             
-            var motionTime = (heat.LocalFrame as MovedFrame).CalcMotionTime();
+            var motionTime = (heat.FrameFunction.LocalFrame as MovedFrame).CalcMotionTime();
             var stopTime = heat.StartTime + motionTime;
 
             //assert

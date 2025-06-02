@@ -71,8 +71,8 @@ namespace Project.Tasks
         {
             get {
                 var mff = "*";
-                if (LocalFrame != null)
-                    mff = LocalFrame.ToString();
+                if (FrameFunction?.LocalFrame != null)
+                    mff = FrameFunction.LocalFrame.ToString();
 
                 return $"{Group.Name} {ClampKind} {Direction} {ClampValue} {ClampFunction} " +
                     $"{StartTime} {StopTime} {mff}"; 

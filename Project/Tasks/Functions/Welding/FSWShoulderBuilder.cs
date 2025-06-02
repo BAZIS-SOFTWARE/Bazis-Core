@@ -1,8 +1,10 @@
 ﻿using Geometry;
+using Project.Tasks.FrameCreators;
 using System;
+using System.Diagnostics;
 using System.Globalization;
 
-namespace Project.Tasks.Functions
+namespace Project.Tasks.Functions.Welding
 {
     public class FSWShoulderBuilder
     {
@@ -12,7 +14,7 @@ namespace Project.Tasks.Functions
         {
             shoulder = new FSWShoulder();
             shoulder.Name = "FSWShoulder";
-            shoulder.Frame = new Frame();
+            shoulder.LocalFrame = new StaticFrame();
         }
 
         public FSWShoulderBuilder SetRotSpeed(string rotSpeed)
@@ -53,7 +55,7 @@ namespace Project.Tasks.Functions
 
         public FSWShoulderBuilder SetFrame(Frame frame)
         {
-            shoulder.Frame = frame;
+            shoulder.LocalFrame = new StaticFrame(frame);
             return this;
         }
 

@@ -1,6 +1,7 @@
 ﻿using Geometry;
 using Model.Interfaces;
 using Project.Interfaces.Tasks;
+using Project.Tasks.FrameCreators;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,7 +12,7 @@ namespace Project.Tasks.Functions
     {
         protected List<FunctionParameter> parameters = new List<FunctionParameter>();
         /// <inheritdoc/>
-        public Frame Frame { get; set; }
+        public LocalFrame LocalFrame { get; set; }
         /// <inheritdoc/>
         public string Name { get; set; }
 /// <inheritdoc/>

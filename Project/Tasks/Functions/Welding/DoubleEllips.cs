@@ -11,9 +11,9 @@ using Model.IO;
 using CsvHelper;
 using Model.IO.STL;
 
-namespace Project.Tasks.Functions
+namespace Project.Tasks.Functions.Welding
 {
-    public class DoubleEllips : FrameFunction
+    public abstract class DoubleEllips : FrameFunction
     {
         public string Name { get; set; }
 
@@ -66,12 +66,13 @@ namespace Project.Tasks.Functions
 
         public bool IsPointInside(Point3D elementCenter)
         {
-            var displayPoint = elementCenter.Sub(Frame.Centre);     
+            var frame = LocalFrame.Frame;
+            var displayPoint = elementCenter.Sub(frame.Centre);
             var vectorLength = Geometry.Vector.GetVectorLenght(displayPoint);
             if (vectorLength <= MinSemiaxis) return true;
             else if (vectorLength > MaxSemiaxis) return false;
 
-            var pointInEllipsCoordinate = Frame.GetCoordsInFrame(elementCenter);            
+            var pointInEllipsCoordinate = frame.GetCoordsInFrame(elementCenter);
 
             float semiEllipsoid;
             if (pointInEllipsCoordinate._y < 0)
