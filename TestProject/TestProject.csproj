@@ -134,6 +134,7 @@
     <Compile Include="TestIO.cs" />
     <Compile Include="TestMFF.cs" />
     <Compile Include="TestPreProc.cs" />
+    <Compile Include="TestProjectData.cs" />
     <Compile Include="TestResultData.cs" />
     <Compile Include="TestTaskData.cs" />
     <Compile Include="TestTaskDataCalculator.cs" />

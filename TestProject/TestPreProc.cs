@@ -336,9 +336,6 @@ namespace TestProject
         {
             var project = new ProjectData();
 
-            project.ModelData = new ModelData();
-            project.TaskData = new TaskData();
-
             project.Load(projPath + file);
 
             var resData = new List<IPhysicalData>();

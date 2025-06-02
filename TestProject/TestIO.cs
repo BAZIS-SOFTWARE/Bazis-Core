@@ -33,8 +33,7 @@ namespace TestProject
             //assing
             //c:\projs\testProj\Tempering\
             var project = new ProjectData();
-            project.ModelData = new ModelData();
-            project.TaskData = new TaskData();
+
             project.Loader.LoadEvent += (ar1, ar2) => { };
             project.Load($@"{testDir}\{name}");
 
@@ -47,11 +46,10 @@ namespace TestProject
         {
             //assing
             var project = new ProjectData("someName", testDir);
-            project.ModelData = new ModelData();
+ 
             project.ModelData.Loader.LoadEvent += (ar1, ar2) => { };
             project.ModelData.Saver.SaveEvent += (ar1, ar2) => { };
 
-            project.TaskData = new TaskData();
             project.Loader.LoadEvent += (ar1, ar2) => { };
 
             //act

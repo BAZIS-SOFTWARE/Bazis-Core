@@ -6,6 +6,7 @@ using Project.Interfaces.IO;
 using Model.Interfaces;
 using System;
 using Project.Tasks.IO;
+using Model.GroupsData;
 
 
 namespace Project.Tasks
@@ -63,6 +64,16 @@ namespace Project.Tasks
             }
         }
 /// <inheritdoc/>
+
+        public IEnumerable<IPhysicalData> Find(string grName)
+        {
+            foreach (var data in taskData)
+            {
+                if (data.Group.Name == grName)
+                    yield return data;
+            }
+        }
+        /// <inheritdoc/>
 
         public void Add(IPhysicalData data)
         {
@@ -166,7 +177,15 @@ namespace Project.Tasks
             this.taskData.Clear();
             this.taskData.AddRange(taskData);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
+        public void ClearNotExisted(IGroup group)
+        {
+            var existData = taskData.Where(x => x.Group == group).ToList();
+
+            foreach (var item in existData)
+                taskData.Remove(item);
+        }
+        /// <inheritdoc/>
 
         public void ClearNotExisted(IGroupData gropData)
         {
@@ -212,6 +231,13 @@ namespace Project.Tasks
                 return new ClampData(group, info);
             }
             else return null;
+        }
+/// <inheritdoc/>
+
+        public bool Contains(string grName)
+        {
+            return taskData.FirstOrDefault(x => x.Group.Name == grName)
+                == null ? false : true;
         }
     }
 }

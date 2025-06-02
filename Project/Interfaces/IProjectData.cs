@@ -1,7 +1,10 @@
 ﻿using Model.Interfaces;
+using Model.Interfaces.ObjectsCollections;
 using Project.Interfaces.IO;
 using Project.Interfaces.Tasks;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Project.Interfaces
 {
@@ -11,7 +14,32 @@ namespace Project.Interfaces
     public interface IProjectData
     {
         //public event Action DeleteAllGroupsEvent;
-        //public event Action DeleteGroupEvent;
+
+        /// <summary>
+        /// DeleteGroup
+        /// </summary>
+        /// <param name="objType"></param>
+        /// <param name="objNumbs"></param>
+        void DeleteMeshObjects(ObjType objType, IEnumerable<int> objNumbs);
+
+        /// <summary>
+        /// DeleteMeshGroup
+        /// </summary>
+        /// <param name="grName"></param>
+        void DeleteMeshGroup(string grName);
+        /// <summary>
+        /// DeleteMeshSet
+        /// </summary>
+        /// <param name="objType"></param>
+        /// <param name="name"></param>
+        void DeleteMeshSet(ObjType objType, string name);
+
+        /// <summary>
+        /// ClearMeshCollection
+        /// </summary>
+        /// <param name="objType"></param>
+        void ClearMeshCollection(ObjType objType);
+
         //public event Action DeleteObjectsEvent;
         //public event Action DeleteSelectedObjectsEvent;
 
@@ -29,11 +57,11 @@ namespace Project.Interfaces
         /// <summary>
         /// Model
         /// </summary>
-        IModelData ModelData { get; set; }
+        IModelData ModelData { get;}
         /// <summary>
         /// TaskData
         /// </summary>
-        ITaskData TaskData { get; set; }
+        ITaskData TaskData { get; }
         /// <summary>
         /// ResultData
         /// </summary>
@@ -41,7 +69,7 @@ namespace Project.Interfaces
         /// <summary>
         /// GeneralData
         /// </summary>
-        IGeneralData GeneralData { get; set; }
+        IGeneralData GeneralData { get;  }
         /// <summary>
         /// ClearAllData
         /// </summary>

@@ -43,8 +43,6 @@ namespace TestProject
         {
             //assign
             var proj = new ProjectData();
-            proj.ModelData = new ModelData();
-            proj.TaskData = new TaskData();
 
             //act
             proj.Load($@"{testDir}\{path}");

@@ -117,5 +117,11 @@ namespace Model.Interfaces.ObjectsCollections
         /// <param name="setName"></param>
         /// <returns></returns>
         bool ContainsName(string setName);
+        /// <summary>
+        /// ChangeName
+        /// </summary>
+        /// <param name="oldName"></param>
+        /// <param name="newName"></param>
+        void ChangeName(string oldName, string newName);
     }
 }

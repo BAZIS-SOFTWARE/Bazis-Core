@@ -29,6 +29,12 @@ namespace Project.Interfaces.Tasks
     public interface ITaskData : IList<IPhysicalData>
     {
         /// <summary>
+        /// Find by group name
+        /// </summary>
+        /// <param name="grName"></param>
+        /// <returns></returns>
+        IEnumerable<IPhysicalData> Find(string grName);
+        /// <summary>
         /// Find all data according to name
         /// </summary>
         /// <param name="kind"></param>
@@ -76,10 +82,22 @@ namespace Project.Interfaces.Tasks
         /// <summary>
         /// Create data by name (dataType)
         /// </summary>
+        /// <param name="group"></param>
+        /// <returns></returns>           
+        void ClearNotExisted(IGroup group);
+        /// <summary>
+        /// Create
+        /// </summary>
         /// <param name="name"></param>
         /// <param name="dataInfo"></param>
         /// <param name="group"></param>
         /// <returns></returns>
         IPhysicalData Create(string name, string dataInfo, IGroup group);
+        /// <summary>
+        /// Contains
+        /// </summary>
+        /// <param name="grName"></param>
+        /// <returns></returns>
+        bool Contains(string grName);
     }
 }

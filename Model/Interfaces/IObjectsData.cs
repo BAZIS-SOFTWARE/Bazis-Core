@@ -26,6 +26,13 @@ namespace Model.Interfaces
         /// <param name="objType"></param>
         /// <param name="objNumber"></param>
         void Remove(ObjType objType, int objNumber);
+
+
+        /// <summary>
+        /// Remove
+        /// </summary>
+        /// <param name="objType"></param>
+        void Clear(ObjType objType);
         /// <summary>
         /// E3DCollection
         /// </summary>
@@ -76,11 +83,7 @@ namespace Model.Interfaces
         /// ClearNotExisted
         /// </summary>
         void ClearNotExisted();
-        /// <summary>
-        /// Clear
-        /// </summary>
-        /// <param name="objType"></param>
-        void Clear(ObjType objType);
+
         /// <summary>
         /// Move
         /// </summary>

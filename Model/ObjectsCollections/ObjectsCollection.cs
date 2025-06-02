@@ -244,5 +244,17 @@ public bool ContainsName(string collName)
                 }
             }
         }
+/// <inheritdoc/>
+
+        public void ChangeName(string oldName, string newName)
+        {
+            // TO DO
+            // Проверяешь существует ли набор в коллекции методом ContainsName
+            // Если есть, берешь набор и меняешь его свойство Name и сохраняешь в темп
+            // Удаляешь из словаря старый набор
+            // Добавляешь из темп в словарь
+
+            throw new NotImplementedException();
+        }
     }
 }

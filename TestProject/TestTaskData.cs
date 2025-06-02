@@ -37,8 +37,7 @@ namespace TestProject
             //assign
 
             var proj = new ProjectData();
-            proj.ModelData = new ModelData();
-            proj.TaskData = new TaskData();
+
             //act
             proj.Load($@"{testDir}\proj_traj.bpf");
 
@@ -57,8 +56,6 @@ namespace TestProject
             //assign
 
             var proj = new ProjectData();
-            proj.ModelData = new ModelData();
-            proj.TaskData = new TaskData();
             //act
             proj.Load($@"{testDir}\proj_traj.bpf");
 
@@ -77,8 +74,7 @@ namespace TestProject
             //assign
 
             var proj = new ProjectData();
-            proj.ModelData = new ModelData();
-            proj.TaskData = new TaskData();
+
             //act
             proj.Load(@"..\..\..\Examples\proj_traj.bpf");
 
@@ -99,8 +95,6 @@ namespace TestProject
         {
             //assign
             var proj = new ProjectData();
-            proj.ModelData = new ModelData();
-            proj.TaskData = new TaskData();
 
             //act
             proj.Load(relativeProjPath);
@@ -135,8 +129,6 @@ namespace TestProject
         {
             //assign
             var proj = new ProjectData();
-            proj.ModelData = new ModelData();
-            proj.TaskData = new TaskData();
 
             //act
             proj.Load(@"..\..\..\Examples\proj_traj.bpf");
@@ -167,8 +159,6 @@ namespace TestProject
         {
             //assign
             var proj = new ProjectData();
-            proj.ModelData = new ModelData();
-            proj.TaskData = new TaskData();
 
             //act
             proj.Load(@"..\..\..\Examples\proj_traj.bpf");
@@ -190,8 +180,7 @@ namespace TestProject
         {
             //assign
             var project = new ProjectData();
-            project.ModelData = new ModelData();
-            project.TaskData = new TaskData();
+
             //act
             project.Load(@"..\..\..\Examples\proj_traj.bpf");
  
