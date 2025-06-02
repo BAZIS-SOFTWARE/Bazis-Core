@@ -26,7 +26,7 @@ namespace Project.Tasks.FrameCreators
 
 
             if (baseLine.Count != refLine.Count)
-                throw new Exception("Траектории должны содержать одинаковое кол-во точек!");
+                throw new Exception($"Траектории {baseLine.Name} {refLine.Name} должны содержать одинаковое кол-во точек!");
 
             var res = baseLine.Intersect(refLine, new EqualityComparerByNumber<IModelObject>());
             if (res.Count() != 0)
