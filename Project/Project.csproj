@@ -45,7 +45,6 @@
     <Compile Include="Interfaces\IO\ISaveEventArgs.cs" />
     <Compile Include="Interfaces\IO\ITaskDataLoader.cs" />
     <Compile Include="Interfaces\IO\ITaskDataSaver.cs" />
-    <Compile Include="Interfaces\IProject.cs" />
     <Compile Include="Interfaces\IProjectData.cs" />
     <Compile Include="Interfaces\Results\IResultsExporter.cs" />
     <Compile Include="Interfaces\Results\IResultsExportSaver.cs" />

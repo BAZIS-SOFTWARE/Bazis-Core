@@ -48,6 +48,13 @@ namespace Project
         {
             Loader.Load(this, $@"{GeneralData.Path}\{GeneralData.Name}");
         }
+/// <inheritdoc/>
+
+        public void ChangeTaskType(TaskType taskType)
+        {
+            GeneralData.TaskType = taskType;
+            TaskData.Clear();
+        }
 
 
 
@@ -58,7 +65,11 @@ namespace Project
 
         public IProjectLoader Loader { get; set; } = new LoadProjectFromTextFormat();
         /// <inheritdoc/>
-        public IGeneralData GeneralData { get; set; } = new GeneralData();
+        public IGeneralData GeneralData 
+        { 
+            get; 
+            set; 
+        } = new GeneralData();
 
         /// <summary>
         /// ProjectData
