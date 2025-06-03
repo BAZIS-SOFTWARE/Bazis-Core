@@ -251,17 +251,11 @@ public bool ContainsName(string collName)
             ObjectsSet<T> temp = new ObjectsSet<T>(newName);
             if (ContainsName(oldName))
             {
-                foreach (var item in objects)
-                {
-                    if (item.Key == oldName)
-                    {
-                        temp = item.Value;
-                        temp.Name = newName;
-                        Remove(item.Key);
-                        objects.Add(newName, temp);
-                        return;
-                    }
-                }
+                var item1= objects[oldName];
+                temp = item1;
+                temp.Name = newName;
+                Remove(oldName);
+                objects.Add(newName, temp);
             }
         }
     }
