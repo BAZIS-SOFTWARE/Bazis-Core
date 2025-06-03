@@ -248,13 +248,21 @@ public bool ContainsName(string collName)
 
         public void ChangeName(string oldName, string newName)
         {
-            // TO DO
-            // Проверяешь существует ли набор в коллекции методом ContainsName
-            // Если есть, берешь набор и меняешь его свойство Name и сохраняешь в темп
-            // Удаляешь из словаря старый набор
-            // Добавляешь из темп в словарь
-
-            throw new NotImplementedException();
+            ObjectsSet<T> temp = new ObjectsSet<T>(newName);
+            if (ContainsName(oldName))
+            {
+                foreach (var item in objects)
+                {
+                    if (item.Key == oldName)
+                    {
+                        temp = item.Value;
+                        temp.Name = newName;
+                        Remove(item.Key);
+                        objects.Add(newName, temp);
+                        return;
+                    }
+                }
+            }
         }
     }
 }

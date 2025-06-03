@@ -1,25 +1,32 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Geometry;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
-using Model.MeshObjects;
-using Model.IO;
+using Model.GeometryObjects;
+using Model.GroupsData;
 using Model.Interfaces;
+using Model.Interfaces.MeshObjects;
+using Model.Interfaces.ObjectsCollections;
+using Model.IO;
+using Model.IO.STL;
+using Model.MeshObjects;
+using Model.ObjectsCollections;
+using ModelController.MeshObjsCreator;
 using System;
 using System.Collections.Generic;
-using Model.GeometryObjects;
-using Geometry;
-using System.Linq;
-using Model.GroupsData;
 using System.Drawing;
-using Model.ObjectsCollections;
-using Model.Interfaces.ObjectsCollections;
-using Model.Interfaces.MeshObjects;
-using Model.IO.STL;
+using System.Linq;
 
 namespace TestModel
 {
     [TestClass]
     public class TestObjectData
     {
+
+        [ClassInitialize]
+        public static void SetUp(TestContext testContext)
+        {
+
+        } 
         [DataTestMethod]
         [DataRow(ObjType.Узел, 3, DisplayName = "Узел")]
         //[DataRow(ObjType.Элемент, 8, DisplayName = "Элемент")]
@@ -268,6 +275,53 @@ namespace TestModel
 
             Assert.AreEqual(col1.GetMaxNumber(), resNumb.Last());
             Assert.AreEqual(col1.GetMinNumber(), resNumb.First());
+        }
+
+        [TestMethod]
+        [DataRow(new int[] { 0, 10, 1, 2 }, new int[] { 0, 10, 12, 13 })]
+        public void ChangeName(int[] iniNumb, int[] resNumb)
+        {
+            //assign
+            var model = new ModelData();
+
+            //act
+            var node0 = new Node(0, new Geometry.Point3D(0, 0, 0));
+            var node1 = new Node(1, new Geometry.Point3D(1, 0, 0));
+            var node2 = new Node(2, new Geometry.Point3D(0, 1, 0));
+
+            model.ObjectData.NodesSet.Add(node0.Number, node0);
+            model.ObjectData.NodesSet.Add(node1.Number, node0);
+            model.ObjectData.NodesSet.Add(node2.Number, node0);
+
+
+            var set1 = new ObjectsSet<Element2D>("e2D_1");
+            set1.Add(iniNumb[0], new Triangle_c(iniNumb[0], new[] { node0, node1, node2 }));
+            set1.Add(iniNumb[1], new Triangle_c(iniNumb[1], new[] { node0, node1, node2 }));
+
+            var set2 = new ObjectsSet<Element2D>("e2D_2");
+            set2.Add(iniNumb[2], new Triangle_c(iniNumb[2], new[] { node0, node1, node2 }));
+            set2.Add(iniNumb[3], new Triangle_c(iniNumb[3], new[] { node0, node1, node2 }));
+
+            var col1 = new ObjectsCollection<Element2D>();
+            col1.Add(set1);
+
+            var col2 = new ObjectsCollection<Element2D>();
+            col2.Add(set2);
+
+            col1.Append(col2);
+            var name = "";
+
+            var result = col1
+                .Select((item, index) => new { item, index })
+                .Last(a => a.item.Value.Name.Contains("append"));
+            var obj = result.item.Value;
+            name = obj.Name;
+
+            col1.ChangeName(name, "newNameCol");
+
+            //assert
+            Assert.IsTrue(col1.Any(x => x.Key == "newNameCol"));
+            Assert.AreEqual(col1.Where(x => x.Key == "newNameCol").Count(), 1);
         }
 
         [DataTestMethod]
