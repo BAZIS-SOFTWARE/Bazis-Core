@@ -38,6 +38,48 @@ namespace TestProject
             //assert
             Assert.AreEqual(res, proj.ModelData.GroupData.Find(grName) != null);
             Assert.AreEqual(res, proj.TaskData.Contains(grName));
-        } 
+        }
+
+        [DataTestMethod]
+        [DataRow(@"..\..\..\Examples\TestCRUDFunction\one_quad_term_cycle.bpf2", "A17", ObjType.Элемент2D, "newMesh false", DisplayName = "newMesh false")]
+        [DataRow(@"..\..\..\Examples\TestCRUDFunction\one_quad_term_cycle.bpf2", "A17aa", ObjType.Элемент2D, "newMesh true", DisplayName = "newMesh true")]
+        [DataRow(@"..\..\..\Examples\TestCRUDFunction\one_quad_term_cycle.bpf2", "t4", ObjType.Элемент3D, "newMesh true", DisplayName = "newMesh true")]
+        public void RemoveSetByNameAndType(string path, string setName, ObjType type, string resStr)
+        {
+            //assing
+            var proj = new ProjectData();
+            proj.ModelData.Loader = new LoadModelFromBPF2TextFile();
+
+            proj.Load(path);
+            var grName = resStr.Split(' ')[0];
+            var res = bool.Parse(resStr.Split(' ')[1]);
+            //act
+            proj.DeleteMeshSet(type, setName);
+
+            //assert
+            Assert.AreEqual(res, proj.ModelData.GroupData.Find(grName) != null);
+            Assert.AreEqual(res, proj.TaskData.Contains(grName));
+        }
+
+        [DataTestMethod]
+        [DataRow(@"..\..\..\Examples\TestCRUDFunction\one_quad_term_cycle.bpf2", ObjType.Узел, "clamp false", DisplayName = "clamp false")]
+        [DataRow(@"..\..\..\Examples\TestCRUDFunction\one_quad_term_cycle.bpf2",  ObjType.Элемент2D, "newMesh false", DisplayName = "newMesh false")]
+        [DataRow(@"..\..\..\Examples\TestCRUDFunction\one_quad_term_cycle.bpf2",  ObjType.Элемент3D, "newMesh true", DisplayName = "newMesh true")]
+        public void ClearMeshCollection(string path, ObjType type, string resStr)
+        {
+            //assing
+            var proj = new ProjectData();
+            proj.ModelData.Loader = new LoadModelFromBPF2TextFile();
+
+            proj.Load(path);
+            var grName = resStr.Split(' ')[0];
+            var res = bool.Parse(resStr.Split(' ')[1]);
+            //act
+            proj.ClearMeshCollection(type);
+
+            //assert
+            Assert.AreEqual(res, proj.ModelData.GroupData.Find(grName) != null);
+            Assert.AreEqual(res, proj.TaskData.Contains(grName));
+        }
     }
 }

@@ -57,16 +57,11 @@ namespace ModelController
         public IVolumeMeshCreator VolumeMeshCreator { get; set; }
         /// <inheritdoc/>
         public IModelData ModelData { get; }
+/// <inheritdoc/>
 
         public IExtractor1DFrom2D Extractor1DFrom2D { get; } = new Extract1DFrom2D();
+/// <inheritdoc/>
 
-        /// <summary>
-        /// ModelController
-        /// </summary>
-        /// <param name="modelData"></param>
-        public ModelController(IModelData modelData)
-        {
-            ModelData = modelData;
-        }
+        public ChangeInsideSurface ChangeInsideSurface => new ChangeInsideSurface();
     }
 }

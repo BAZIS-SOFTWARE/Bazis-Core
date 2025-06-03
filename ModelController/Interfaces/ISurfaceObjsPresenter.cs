@@ -15,11 +15,11 @@ namespace ModelControllerInterfaces
         /// <summary>
         /// HideInsideSurfaces
         /// </summary>
-        void HideInsideSurfaces();
+        //void HideInsideSurfaces();
         /// <summary>
         /// ShowInsideSurfaces
         /// </summary>
-        void ShowInsideSurfaces();
+        //void ShowInsideSurfaces();
 
         /// <summary>
         /// Создать сепараторы, по разнице текущего и предыдущего значения в массиве можно определить тип элемента(кол-во треугольников)

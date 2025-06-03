@@ -210,6 +210,8 @@ namespace TestModel
             {
                 case ObjType.Элемент3D:
                     model.ObjectData.E3DCollection.Add(ObjType.Элемент3D.ToString(), new Tetra(0, model.ObjectData.NodesSet.Values.ToArray()));
+                    var surfChanger = new ChangeInsideSurface();
+                    surfChanger.HideInsideSurfaces(model.ObjectData.E3DCollection.GetObjects());
                     presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E3DCollection.GetObjects());
                     break;
                 case ObjType.Элемент2D:
@@ -223,10 +225,7 @@ namespace TestModel
             }
 
             //act
-            
-            if (presenter is ISurfaceObjsPresenter sPre)
-                sPre.HideInsideSurfaces();
-
+           
             var inds = presenter.CreateIndexes();
             var ptrs = presenter.CreatePointers(inds.Item1);
             var crds = presenter.CreateVertexes(inds.Item2, "координаты");
@@ -281,9 +280,6 @@ namespace TestModel
             }
 
             //act
-
-            if (presenter is ISurfaceObjsPresenter sPre)
-                sPre.HideInsideSurfaces();
 
             var inds = presenter.CreateIndexes();
             var ptrs = presenter.CreatePointers(inds.Item1);

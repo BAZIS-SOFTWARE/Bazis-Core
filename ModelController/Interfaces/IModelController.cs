@@ -2,6 +2,7 @@
 using ModelControllerInterfaces.MeshObjsUtility;
 using ModelControllerInterfaces.ObjsCreator;
 using Model.Interfaces;
+using ModelController.MeshObjsUtility;
 
 namespace ModelControllerInterfaces
 {
@@ -11,9 +12,9 @@ namespace ModelControllerInterfaces
     public interface IModelController
     {
         /// <summary>
-        /// ModelData
+        /// ChangeInsideSurface
         /// </summary>
-        IModelData ModelData { get; }
+        ChangeInsideSurface ChangeInsideSurface { get; }
         /// <summary>
         /// InterfacedNodesFinder
         /// </summary>
