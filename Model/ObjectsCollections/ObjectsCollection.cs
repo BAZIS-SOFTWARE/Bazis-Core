@@ -244,17 +244,15 @@ public bool ContainsName(string collName)
                 }
             }
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void ChangeName(string oldName, string newName)
         {
-            ObjectsSet<T> temp = new ObjectsSet<T>(newName);
             if (ContainsName(oldName))
             {
-                var item1= objects[oldName];
-                temp = item1;
+                var temp = objects[oldName];
                 temp.Name = newName;
-                Remove(oldName);
+                objects.Remove(oldName);
                 objects.Add(newName, temp);
             }
         }

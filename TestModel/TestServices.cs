@@ -102,7 +102,7 @@ namespace TestModel
             model.Loader = new LoadModelFromBPFTextFile();
             model.Load(@"..\..\..\Examples\3D\cub_unsorted.bpf");
 
-            var modelController = new ModelController.ModelController(model);
+            var modelController = new ModelController.ModelController();
             var linesNodes = modelController.BoundaryEdgesFinder.Find(model.ObjectData.GetAllElements().Select(x => (ISurfaceElement)x));
             var bounds = modelController.BoundaryEdgesFinder.CreateBoundaryEdges(linesNodes,model);
             
@@ -120,7 +120,7 @@ namespace TestModel
             model.Loader = new LoadModelFromBPFTextFile();
             model.Load(@"..\..\..\Examples\3D\cub_unsorted.bpf");
 
-            var modelController = new ModelController.ModelController(model);
+            var modelController = new ModelController.ModelController();
             var normals = modelController.NormalCalculator.CalcElemsNormals(model.ObjectData.GetAllElements().Select(x => (ISurfaceElement)x)); 
 
             Assert.AreNotEqual(0, normals.Count());
