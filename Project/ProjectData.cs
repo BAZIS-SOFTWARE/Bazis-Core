@@ -8,6 +8,11 @@ using Model.Interfaces.ObjectsCollections;
 using System.Collections.Generic;
 using Project.Tasks;
 using System.Data.SqlTypes;
+using Project.Tasks.FrameCreators;
+using System.Drawing;
+using System;
+using Project.Tasks.Functions;
+using Model.GroupsData;
 
 namespace Project
 {
@@ -27,7 +32,7 @@ namespace Project
         /// <inheritdoc/>
         public string ResultDB { get; set; } = "";
 
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void ClearAllData()
         {

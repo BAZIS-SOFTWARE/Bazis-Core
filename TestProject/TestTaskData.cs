@@ -295,9 +295,9 @@ namespace TestProject
             SetUpTestLoadBoundTaskDataException(dataKind, dataString);
 
         [DataTestMethod]
-        [DataRow(DataKind.Нагрев, "1 PowerCycle * Load 0 49.99998 *")]
-        [DataRow(DataKind.Нагрев, "0.001 * * Load 0 49.99998 *")]
-        [DataRow(DataKind.Нагрев, "1 timeFunc * Load 0.0001 49 *")]
+        [DataRow(DataKind.Нагрев, "1 PowerCycle * Load 0 49.99998")]
+        [DataRow(DataKind.Нагрев, "0.001 * * Load 0 49.99998")]
+        [DataRow(DataKind.Нагрев, "1 timeFunc * Load 0.0001 49")]
         [DataRow(DataKind.Среда, "air Коэф.теплоотдачи.воздух 20 0 1500 *")]
         [DataRow(DataKind.Среда, "air * 25 0 1500 *")]
         [DataRow(DataKind.Среда, "air * Термоцикл 0 1500 *")]

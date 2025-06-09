@@ -30,9 +30,7 @@ namespace ModelController
 /// <inheritdoc/>
 
         public IFreeNodesFinder FreeNodesFinder { get; } = new FreeNodesFinder();
-        /// <inheritdoc/>
 
-        public IPresentersCreator PresentersCreator { get; } = new PresentersCreator();
 /// <inheritdoc/>
 
         public ICrossSectionMaker CrossSectionMaker { get; } = new CrossSection();
@@ -55,13 +53,13 @@ namespace ModelController
 /// <inheritdoc/>
 
         public IVolumeMeshCreator VolumeMeshCreator { get; set; }
-        /// <inheritdoc/>
-        public IModelData ModelData { get; }
+
 /// <inheritdoc/>
 
         public IExtractor1DFrom2D Extractor1DFrom2D { get; } = new Extract1DFrom2D();
 /// <inheritdoc/>
 
         public ChangeInsideSurface ChangeInsideSurface => new ChangeInsideSurface();
+        
     }
 }

@@ -34,8 +34,8 @@ namespace TestProject
 
         [TestMethod]
         [DataRow(@"\WeldingHeatSource\LWTest_v.bpf", DisplayName = "LWTest_v.bpf")]
-        [DataRow(@"\test_t_lazer_0_10.bpf", DisplayName = "test_t_lazer_0_10.bpf")]
-        [DataRow(@"\test_t_lazer_180_0_10.bpf", DisplayName = "test_t_lazer_180_0_10.bpf")]
+        [DataRow(@"\WeldingHeatSource\test_t_lazer_0_10.bpf", DisplayName = "test_t_lazer_0_10.bpf")]
+        [DataRow(@"\WeldingHeatSource\test_t_lazer_180_0_10.bpf", DisplayName = "test_t_lazer_180_0_10.bpf")]
         [DataRow(@"\WeldingHeatSource\ARCTest_v.bpf", DisplayName = "ARC")]
         [DataRow(@"\WeldingHeatSource\FSW\proj.bpf", DisplayName = "FSW")]
 

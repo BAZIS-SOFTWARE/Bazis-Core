@@ -25,8 +25,10 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
         //public bool IsVolumeObjs { get; } = false;
         /// <inheritdoc/>
         public ViewMode ViewMode { get; set; } = ViewMode.LineSurface;
+        /// <inheritdoc/>
+        public string Name { get; set; }
 
-  
+
         /// <inheritdoc/>
 
         public Tuple<int, int, int,int> CreateIndexes()

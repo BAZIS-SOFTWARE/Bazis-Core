@@ -59,6 +59,10 @@ namespace TestProject
             project.GeneralData.Name = "proj_traj_save.bpf";
 
             project.Save();
+
+            //Assert
+
+            project.Load($@"{testDir}\proj_traj_save.bpf");
         }
 
 

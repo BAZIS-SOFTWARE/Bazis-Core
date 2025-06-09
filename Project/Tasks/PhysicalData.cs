@@ -46,8 +46,8 @@ namespace Project.Tasks
                 throw new NullReferenceException($"Группа {group} не существует");
             Group = group;
 
-            if(startTime.CompareTo(stopTime) == -1)
-                throw new Exception("Время окончания не может быть меньше времени начала!");
+            if(startTime.CompareTo(stopTime) >= 0)
+                throw new Exception("Время окончания не может быть меньше или равно времени начала!");
 
             StartTime = startTime;
             StopTime = stopTime;

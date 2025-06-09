@@ -88,11 +88,11 @@ namespace Project.Interfaces.Tasks
         /// <summary>
         /// Create
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="kind"></param>
         /// <param name="dataInfo"></param>
-        /// <param name="group"></param>
+        /// <param name="groupData"></param>
         /// <returns></returns>
-        IPhysicalData Create(string name, string dataInfo, IGroup group);
+        IPhysicalData Create(DataKind kind, string dataInfo, IGroupData groupData);
         /// <summary>
         /// Contains
         /// </summary>

@@ -32,16 +32,12 @@ namespace Project.Tasks
         {
             get
             {
-                var mfInfo = "*";
-                if (FrameFunction?.LocalFrame != null)
-                    mfInfo = FrameFunction.LocalFrame.ToString();
-
                 var ffInfo = "*";
                 if (FrameFunction != null)
                     ffInfo = FrameFunction.ToString();
 
                 return
-                  $"{Value} {TimeFunction} {ffInfo} {Group.Name} {StartTime} {StopTime} {mfInfo}";
+                  $"{Value} {TimeFunction} {ffInfo} {Group.Name} {StartTime} {StopTime}";
             }
         }
 

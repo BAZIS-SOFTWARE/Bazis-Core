@@ -16,7 +16,7 @@ namespace Project.Tasks.Functions.Welding
 
         public override string ToString()
         {
-            return $"{base.ToString()};{SurfacePower};{Length};{UpperDiam};{BottomDiam}";
+            return $"{Name};{SurfacePower};{Length};{UpperDiam};{BottomDiam};{LocalFrame}";
         }
         /// <inheritdoc/>
 
