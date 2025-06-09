@@ -254,7 +254,7 @@ public bool ContainsName(string collName)
                 var item1= objects[oldName];
                 temp = item1;
                 temp.Name = newName;
-                Remove(oldName);
+                objects.Remove(oldName);
                 objects.Add(newName, temp);
             }
         }

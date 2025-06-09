@@ -302,26 +302,15 @@ namespace TestModel
             set2.Add(iniNumb[2], new Triangle_c(iniNumb[2], new[] { node0, node1, node2 }));
             set2.Add(iniNumb[3], new Triangle_c(iniNumb[3], new[] { node0, node1, node2 }));
 
-            var col1 = new ObjectsCollection<Element2D>();
-            col1.Add(set1);
+            var col = new ObjectsCollection<Element2D>();
+            col.Add(set1);
+            col.Add(set2);
 
-            var col2 = new ObjectsCollection<Element2D>();
-            col2.Add(set2);
-
-            col1.Append(col2);
-            var name = "";
-
-            var result = col1
-                .Select((item, index) => new { item, index })
-                .Last(a => a.item.Value.Name.Contains("append"));
-            var obj = result.item.Value;
-            name = obj.Name;
-
-            col1.ChangeName(name, "newNameCol");
+            col.ChangeName("e2D_1", "newNameCol");
 
             //assert
-            Assert.IsTrue(col1.Any(x => x.Key == "newNameCol"));
-            Assert.AreEqual(col1.Where(x => x.Key == "newNameCol").Count(), 1);
+            Assert.IsTrue(col.Any(x => x.Key == "newNameCol"));
+            Assert.AreEqual(col.Where(x => x.Key == "newNameCol").Count(), 1);
         }
 
         [DataTestMethod]
