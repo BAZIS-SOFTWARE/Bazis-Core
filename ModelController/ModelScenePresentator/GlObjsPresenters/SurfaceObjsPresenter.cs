@@ -153,17 +153,20 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
 
         public int[] CreateSeparators()
         {
+            if (surfaceObjects.Count == 0)
+                return new int[0];
+
             var surfObjs = surfaceObjects.ToArray();
             var separators = new int[surfObjs.Length + 1];
-
             var stride = 0;
-            var i = 0;
 
-            for(; i < surfObjs.Length; ++i)
+            var i = 0;
+            for (; i < surfObjs.Length; ++i)
             {
                 separators[i] = stride;
-                foreach(var surface in surfObjs[i].GetSurfaces())
-                    stride += surface.NumberOfPoints - 2;
+                foreach (var surface in surfObjs[i].GetSurfaces())
+                    if (surface.ViewState)
+                        stride += surface.NumberOfPoints - 2;
             }
             separators[i] = stride;
 
