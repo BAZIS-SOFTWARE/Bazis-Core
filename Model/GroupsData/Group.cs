@@ -85,7 +85,7 @@ namespace Model.GroupsData
 
         public void Insert(int index, IModelObject item)
         {
-            throw new NotImplementedException();
+            objects.Insert(index, item);
         }
 /// <inheritdoc/>
 

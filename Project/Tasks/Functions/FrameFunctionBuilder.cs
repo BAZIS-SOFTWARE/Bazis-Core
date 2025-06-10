@@ -51,7 +51,7 @@ namespace Project.Tasks.Functions
         }
         public FrameFunctionBuilder SetFrame(Frame frame)
         {
-            frameFunction.LocalFrame.Frame = frame;
+            frameFunction.LocalFrame.frame = frame;
             return this;
         }
 

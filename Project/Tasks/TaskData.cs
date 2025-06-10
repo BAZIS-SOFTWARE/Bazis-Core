@@ -7,6 +7,10 @@ using Model.Interfaces;
 using System;
 using Project.Tasks.IO;
 using Model.GroupsData;
+using Model;
+using Project.Tasks.FrameCreators;
+using Project.Tasks.Functions;
+using System.Runtime.InteropServices.ComTypes;
 
 
 namespace Project.Tasks
@@ -198,41 +202,105 @@ namespace Project.Tasks
         }
 /// <inheritdoc/>
 
-        public IPhysicalData Create(string name, string info,IGroup group)
+        public IPhysicalData Create(DataKind kind, string info,IGroupData groupData)
         {
-            if (group == null)
+            if (groupData == null)
             {
-                throw new ArgumentNullException(nameof(group));
+                throw new ArgumentNullException(nameof(groupData));
             }
 
-            if (name == "Материал" | name == "Материалы")
+            PhysicalData physicalData;
+
+            var infoAr = info.Split(' ');  
+
+            if (kind == DataKind.Материал)
             {
-                return new MatData(group, info);
+                var start = float.Parse(infoAr[2]);
+                var stop = float.Parse(infoAr[3]);
+
+                physicalData = new MatData(groupData.Find(infoAr[0]), start, stop);
             }
 
-            else if (name == "Среда")
+            else if (kind == DataKind.Среда)
             {
-                return new MediaData(group, info);
+                var start = float.Parse(infoAr[3]);
+                var stop = float.Parse(infoAr[4]);
+
+                physicalData = new MediaData(groupData.Find(infoAr[0]), start, stop);
             }
 
-            else if (name == "Нагрузка")
+            else if (kind == DataKind.Нагрузка)
             {
-                return new LoadData(group, info);
+                var start = float.Parse(infoAr[5]);
+                var stop = float.Parse(infoAr[6]);
+
+                physicalData = new LoadData(groupData.Find(infoAr[0]), start, stop);
             }
 
-            else if (name == "Нагрев")
+            else if (kind == DataKind.Нагрев)
             {
+                var start = float.Parse(infoAr[4]);
+                var stop = float.Parse(infoAr[5]);
                 //dataInfo = dataInfo.Replace("*", "0");
-                return new HeatData(group, info);
+                physicalData =  new HeatData(groupData.Find(infoAr[3]), start, stop);
+
+                if (infoAr[2] != "*")
+                {
+                    var builder = new FrameFunctionBuilder(infoAr[2].Split(';'));
+                    physicalData.FrameFunction = (FrameFunction)builder;
+                }
             }
 
-            else if (name == "Закрепления" | name == "Закрепление")
+            else
             {
-                return new ClampData(group, info);
+                var start = float.Parse(infoAr[5]);
+                var stop = float.Parse(infoAr[6]);
+
+                physicalData = new ClampData(groupData.Find(infoAr[0]), start, stop);
             }
-            else return null;
+
+            if(physicalData.FrameFunction != null)
+                physicalData.FrameFunction.LocalFrame = GetLocalFrame(infoAr,groupData);
+
+            return physicalData;
         }
-/// <inheritdoc/>
+
+        private LocalFrame GetLocalFrame(string [] dataAr, IGroupData groupData)
+        {
+            if (dataAr.Any(x => x.Contains("MRF")))
+            {
+                var mrfStr = dataAr.First(x => x.Contains("MRF"));
+                var stopInd = mrfStr.IndexOf("MRF") + 4;
+                mrfStr = mrfStr.Remove(0, stopInd);
+
+                var mrfAr = mrfStr.Split(';');
+                if (mrfAr.Length == 3)
+                {
+                    var baseLineGrName = mrfAr[0].Split('|')[0];
+                    var refLineGrName = mrfAr[0].Split('|')[1];
+
+                    var baseLine = groupData.Find(baseLineGrName);
+                    var refLine = groupData.Find(refLineGrName);
+                    var vel = float.Parse(mrfAr[1]);
+
+                    return new MovedFrame(baseLine, refLine, vel);
+                }
+                else throw new Exception("Неправильный ввод данных");
+            }
+            else
+            {
+                var srfStr = dataAr.First(x => x.Contains("SRF"));
+                var stopInd = srfStr.IndexOf("SRF") + 4;
+                srfStr = srfStr.Remove(0, stopInd);
+
+                var srfAr = srfStr.Split(';');
+
+                var frameGr = groupData.Find(srfAr[0]);
+                return new StaticFrame(frameGr);
+            }
+        }
+
+        /// <inheritdoc/>
 
         public bool Contains(string grName)
         {

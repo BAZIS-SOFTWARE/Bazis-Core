@@ -16,6 +16,7 @@ using PreProc.Interfaces;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Windows.Forms;
+using Model.MeshObjects;
 
 namespace TestProject
 {
@@ -362,7 +363,11 @@ namespace TestProject
         public void PreProc_GenerateTSF_ShouldFail(string file)
         {
             var resData = new List<IPhysicalData>();
-            var group = new Group("test",ObjType.Узел);
+            var group = new Group("test", ObjType.Узел);
+            group.Insert(0, new Node(0, new Geometry.Point3D()));
+            group.Insert(0, new Node(0, new Geometry.Point3D()));
+            group.Insert(0, new Node(0, new Geometry.Point3D()));
+
             var groupData = new GroupData();
             groupData.Add(group);
             var textData = new LoadTaskDataTextFormat().Load(projPath + file, groupData);

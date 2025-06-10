@@ -13,8 +13,6 @@ namespace Project.Interfaces
     /// </summary>
     public interface IProjectData
     {
-        //public event Action DeleteAllGroupsEvent;
-
         /// <summary>
         /// DeleteGroup
         /// </summary>
@@ -39,13 +37,6 @@ namespace Project.Interfaces
         /// </summary>
         /// <param name="objType"></param>
         void ClearMeshCollection(ObjType objType);
-
-        //public event Action DeleteObjectsEvent;
-        //public event Action DeleteSelectedObjectsEvent;
-
-
-
-
         /// <summary>
         /// Saver
         /// </summary>

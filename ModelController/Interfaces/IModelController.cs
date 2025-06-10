@@ -48,10 +48,6 @@ namespace ModelControllerInterfaces
         IFreeNodesFinder FreeNodesFinder { get; }
 
         /// <summary>
-        /// PresentersCreator
-        /// </summary>
-        IPresentersCreator PresentersCreator { get; }
-        /// <summary>
         /// CrossSectionMaker
         /// </summary>
         ICrossSectionMaker CrossSectionMaker { get; }

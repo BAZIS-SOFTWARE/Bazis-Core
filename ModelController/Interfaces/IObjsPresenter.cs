@@ -29,6 +29,10 @@ namespace ModelControllerInterfaces
     public interface IObjsPresenter : IEnumerable<IModelObject>
     {
         /// <summary>
+        /// Name
+        /// </summary>
+        string Name { get; set; }
+        /// <summary>
         /// ViewMode
         /// </summary>
         ViewMode ViewMode { get; set; }

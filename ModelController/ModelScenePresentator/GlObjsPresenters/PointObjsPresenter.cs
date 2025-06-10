@@ -15,6 +15,8 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
     /// </summary>
     public class PointObjsPresenter : IObjsPresenter
     {
+        /// <inheritdoc/>
+        public string Name { get; set; }
 
         List<IModelObject> pointObjects = new List<IModelObject>();
 /// <inheritdoc/>

@@ -18,9 +18,13 @@ namespace Project.Tasks.FrameCreators
         /// <summary>
         /// Frame
         /// </summary>
-        protected Frame frame;
+        internal Frame frame;
 /// <inheritdoc/>
 
-        public abstract Frame Frame { get; set; }
+        public abstract Frame Frame { get;}
+        /// <summary>
+        /// CalcPosition
+        /// </summary>
+        public abstract void CalcPosition();
     }
 }

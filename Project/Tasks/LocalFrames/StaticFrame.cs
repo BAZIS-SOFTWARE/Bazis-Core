@@ -42,24 +42,7 @@ namespace Project.Tasks.FrameCreators
         {
             get 
             {
-                if (BaseGroup == null)
-                    return frame;
-                else
-                {
-                    var points = BaseGroup.Select(x => x.CalcCentr()).ToArray();
-
-                    if (points.Length != 3)
-                        throw new System.Exception("Должно быть три узла");
-
-                    frame = new Frame(points[0], points[1], points[2]);
-                    frame.Rotate(frame.Dir_X, Rotation);
-                    frame.Shift(Shifting);
-                    return frame;
-                }
-            }
-            set
-            {
-                frame = value;
+                return frame;
             }
         }
 
@@ -67,7 +50,20 @@ namespace Project.Tasks.FrameCreators
         /// <inheritdoc/>
         public override string ToString()
         {
-            return $"{BaseGroup.Name};{Shifting}|{Rotation}";
+            return $"SRF;{BaseGroup.Name};{Shifting}|{Rotation}";
+        }
+/// <inheritdoc/>
+
+        public override void CalcPosition()
+        {
+            var points = BaseGroup.Select(x => x.CalcCentr()).ToArray();
+
+            if (points.Length != 3)
+                throw new System.Exception("Должно быть три узла");
+
+            frame = new Frame(points[0], points[1], points[2]);
+            frame.Rotate(frame.Dir_X, Rotation);
+            frame.Shift(Shifting);
         }
     }
 }

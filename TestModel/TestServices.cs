@@ -13,6 +13,8 @@ using Model.Interfaces.MeshObjects;
 using System.Data;
 using Model.GroupsData;
 using ModelController.MeshObjsCreator;
+using ModelController.ModelScenePresentator;
+using ModelControllerInterfaces;
 
 namespace TestModel
 {
@@ -102,13 +104,14 @@ namespace TestModel
             model.Loader = new LoadModelFromBPFTextFile();
             model.Load(@"..\..\..\Examples\3D\cub_unsorted.bpf");
 
-            var modelController = new ModelController.ModelController(model);
+            var modelController = new ModelController.ModelController();
             var linesNodes = modelController.BoundaryEdgesFinder.Find(model.ObjectData.GetAllElements().Select(x => (ISurfaceElement)x));
             var bounds = modelController.BoundaryEdgesFinder.CreateBoundaryEdges(linesNodes,model);
             
             Assert.AreEqual(19, bounds.Count());
 
-            var presentor = modelController.PresentersCreator.CreateLineObjectsPresenter(bounds);
+            var presentersCreator  = new PresentersCreator();
+            var presentor = presentersCreator.CreateLineObjectsPresenter(bounds);
             Assert.AreEqual(19, presentor.Count());
             
         }
@@ -120,12 +123,13 @@ namespace TestModel
             model.Loader = new LoadModelFromBPFTextFile();
             model.Load(@"..\..\..\Examples\3D\cub_unsorted.bpf");
 
-            var modelController = new ModelController.ModelController(model);
+            var modelController = new ModelController.ModelController();
             var normals = modelController.NormalCalculator.CalcElemsNormals(model.ObjectData.GetAllElements().Select(x => (ISurfaceElement)x)); 
 
             Assert.AreNotEqual(0, normals.Count());
 
-            var presentor = modelController.PresentersCreator.CreateLineObjectsPresenter(normals);
+            var presentersCreator = new PresentersCreator();
+            var presentor = presentersCreator.CreateLineObjectsPresenter(normals);
             Assert.AreNotEqual(0, presentor.Count());
 
         }

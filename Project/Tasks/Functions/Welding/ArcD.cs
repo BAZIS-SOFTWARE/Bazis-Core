@@ -17,7 +17,7 @@ namespace Project.Tasks.Functions.Welding
 
         public override string ToString()
         {
-            return string.Format(CultureInfo.InvariantCulture, "{0};{1};{2};{3}", Name, Width, Current, Voltage);
+            return $"{Name};{Width};{Current};{Voltage};{LocalFrame}";
         }
         /// <inheritdoc/>
 
