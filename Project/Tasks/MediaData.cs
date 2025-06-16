@@ -36,47 +36,6 @@ namespace Project.Tasks
         }
 
 
-        /// <inheritdoc/>
-
-        protected override void SetInfo(string info)
-        {
-            var medDataAr = info.Split(' ');
-
-            if (medDataAr.Length < 6)
-                throw new Exception("Строка данных имеет неверный формат.");
-
-            if (medDataAr[1] != "*")
-            {
-                MediaType = MediaType.HeatFlux;
-                var resEx = 0.0f;
-                if (float.TryParse(medDataAr[1], out resEx))
-                    HeatExchangeValue = resEx;
-                else
-                    HeatExchangeFunc = medDataAr[1];
-            }
-
-            if (medDataAr[2] == "*")
-                throw new Exception("Граничное условие тепловой задачи должно содержать сведения о температуре.");
-
-            var res = 0.0f;
-                if (float.TryParse(medDataAr[2], out res))
-                    TemperatureValue = res;
-                else
-                    TemperatureFunc = medDataAr[2];
-            
-
-            float startTime;
-            if (!float.TryParse(medDataAr[3], out startTime))
-                throw new Exception("Время старта задано неверно!");
-
-            StartTime = startTime;
-
-            float stopTime;
-            if (!float.TryParse(medDataAr[4], out stopTime))
-                throw new Exception("Время окончания задано неверно!");
-
-            StopTime = stopTime;
-        }
         /// <summary>
         /// HeatExchangeValue
         /// </summary>

@@ -25,46 +25,7 @@ namespace Project.Tasks
         }
 
         public ClampKind ClampKind { get; set; }
-/// <inheritdoc/>
 
-        protected override void SetInfo(string info)
-        {
-            var clampDataAr = info.Split(' ');
-
-            if (clampDataAr.Length < 6)
-                throw new Exception("Строка данных имеет неверный формат!");
-
-            var clmKind = clampDataAr[1];
-
-            ClampKind clampKind;
-            Enum.TryParse(clampDataAr[1], out clampKind);
-            ClampKind = clampKind;
-
-            Direction direction;
-            Enum.TryParse(clampDataAr[2], out direction);
-            Direction = direction;
-
-            float clampValue;
-            if (!float.TryParse(clampDataAr[3], out clampValue))
-                throw new Exception("Величина закрепления задана неверно!");
-
-            ClampValue = clampValue;
-
-            if (clampDataAr[4] != "*")
-                ClampFunction = clampDataAr[4];
-
-            float startTime;
-            if (!float.TryParse(clampDataAr[5], out startTime))
-                throw new Exception("Время старта задано неверно!");
-
-            StartTime = startTime;
-
-            float stopTime;
-            if (!float.TryParse(clampDataAr[6], out stopTime))
-                throw new Exception("Время окончания задано неверно!");
-            
-            StopTime = stopTime;
-        }
         /// <inheritdoc/>
 
         protected override string GetInfo
@@ -74,18 +35,18 @@ namespace Project.Tasks
                 if (FrameFunction?.LocalFrame != null)
                     mff = FrameFunction.LocalFrame.ToString();
 
-                return $"{Group.Name} {ClampKind} {Direction} {ClampValue} {ClampFunction} " +
+                return $"{Group.Name} {ClampKind} {Direction} {Value} {ValueFunction} " +
                     $"{StartTime} {StopTime} {mff}"; 
             }
         }
         /// <summary>
-        /// ClampFunction
+        /// Function of one argument
         /// </summary>
-        public string ClampFunction { get; set; } = "*";
+        public string ValueFunction { get; set; } = "*";
 
         /// <summary>
         /// PowerValue
         /// </summary>
-        public float ClampValue { get; set; } = 1;
+        public float Value { get; set; } = 1;
     }
 }

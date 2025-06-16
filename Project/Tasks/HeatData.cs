@@ -21,11 +21,11 @@ namespace Project.Tasks
         /// <summary>
         /// PowerValue
         /// </summary>
-        public float Value { get; private set; } = 1;
+        public float Value { get; set; } = 1;
         /// <summary>
         /// PowerFunction
         /// </summary>
-        public string TimeFunction { get; private set; } = "*";
+        public string TimeFunction { get; set; } = "*";
 
         /// <inheritdoc/>
         protected override string GetInfo
@@ -40,37 +40,7 @@ namespace Project.Tasks
                   $"{Value} {TimeFunction} {ffInfo} {Group.Name} {StartTime} {StopTime}";
             }
         }
-
-
-        /// <inheritdoc/>
-
-        protected override void SetInfo(string info)
-        {
-            var heatDataAr = info.Split(' ');
-
-            if (heatDataAr.Length < 5)
-                throw new Exception("Строка данных имеет неверный формат!");
-
-            float value;
-            if (float.TryParse(heatDataAr[0], out value))
-                Value = value;
-
-
-            TimeFunction = heatDataAr[1];
-
-            float startTime;
-            if (!float.TryParse(heatDataAr[4], out startTime))
-                throw new Exception("Время старта задано неверно!");
-
-            StartTime = startTime;
-
-            float stopTime;
-            if (!float.TryParse(heatDataAr[5], out stopTime))
-                throw new Exception("Время окончания задано неверно!");
-
-            StopTime = stopTime;
-
-        }     
+    
 
         public HeatData(IGroup group, string info) : base(group, info)
         {
