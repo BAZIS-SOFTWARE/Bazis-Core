@@ -15,16 +15,12 @@ namespace Project.Tasks
 
     public class ClampData : PhysicalData
     {
-        public ClampData(IGroup group, string info) : base(group, info)
-        {
-            Kind = DataKind.Закрепление;
-        }
         public ClampData(IGroup group,float start,float stop) : base (group,start,stop)
         {
             Kind = DataKind.Закрепление;
         }
 
-        public ClampKind ClampKind { get; set; }
+        public ClampKind ClampKind { get; private set; }
 
         /// <inheritdoc/>
 
@@ -42,11 +38,40 @@ namespace Project.Tasks
         /// <summary>
         /// Function of one argument
         /// </summary>
-        public string ValueFunction { get; set; } = "*";
+        public string ValueFunction { get; private set; } = "*";
 
         /// <summary>
         /// PowerValue
         /// </summary>
-        public float Value { get; set; } = 1;
+        public float Value { get; private set; } = 1;
+
+        public void TrySetKind(string v)
+        {
+            ClampKind clampKind;
+            Enum.TryParse(v, out clampKind);
+            ClampKind = clampKind;
+        }
+
+        public void TrySetDirection(string v)
+        {
+            Direction direction;
+            Enum.TryParse(v, out direction);
+            Direction = direction;
+        }
+
+        public void TrySetValue(string v)
+        {
+ 
+            if (!float.TryParse(v, out var clampValue))
+                throw new Exception("Величина закрепления задана неверно!");
+
+            Value = clampValue;
+        }
+
+        public void TrySetTimeFunction(string v)
+        {
+            if (v != "*")
+                ValueFunction = v;
+        }
     }
 }

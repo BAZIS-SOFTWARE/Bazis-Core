@@ -37,7 +37,7 @@ namespace PreProc
         public void CalcCompDataV1(List<IPhysicalData> data, ProcessType processType, string path)
         {
             SetUpTimeSeparators(data);
-            processProp = new ProcessProperty { CommonTaskType = processType, GeneralTaskType = ComplexTaskType.термическая_механическая };
+            processProp = new ProcessProperty { CommonTaskType = processType, TaskKind = TaskKind.термическая_механическая };
             _path = path;
 
             CreateFilesForComplexProcess(
@@ -52,18 +52,18 @@ namespace PreProc
             processProp = property;
             _path = path;
 
-            switch (processProp.GeneralTaskType)
+            switch (processProp.TaskKind)
             {
                 //case ComplexTaskType.химическая:
                 //    CreateFilesForSingleProcess(processProp.CommonTaskType.ToString(), GetParameters<ChemicalData, MediaData, ChemicalParameters>(data));
                 //    break;
 
-                case ComplexTaskType.термическая:
-                    CreateFilesForSingleProcess(processProp.GeneralTaskType.ToString(), GetParameters<HeatData, MediaData, TermalParameters>(data));
+                case TaskKind.термическая:
+                    CreateFilesForSingleProcess(processProp.TaskKind.ToString(), GetParameters<HeatData, MediaData, TermalParameters>(data));
                     break;
 
-                case ComplexTaskType.механическая:
-                    CreateFilesForSingleProcess(processProp.GeneralTaskType.ToString(), GetParameters<LoadData, ClampData, MechanicalParameters>(data));
+                case TaskKind.механическая:
+                    CreateFilesForSingleProcess(processProp.TaskKind.ToString(), GetParameters<LoadData, ClampData, MechanicalParameters>(data));
                     break;
 
                 //case ComplexTaskType.химическая_термическая:
@@ -72,7 +72,7 @@ namespace PreProc
                 //        GetParameters<HeatData, MediaData, TermalParameters>(data));
                 //    break;
 
-                case ComplexTaskType.термическая_механическая:
+                case TaskKind.термическая_механическая:
                     CreateFilesForComplexProcess(
                         GetParameters<HeatData, MediaData, TermalParameters>(data),
                         GetParameters<LoadData, ClampData, MechanicalParameters>(data));
@@ -378,7 +378,7 @@ namespace PreProc
         {
             // 0 - main
             // 1 - minor
-            string[] names = processProp.GeneralTaskType.ToString().Split('_');
+            var names = processProp.TaskKind.ToString().Split('_');
             CreateFilesForSingleProcess(names[0], mainParameters);
 
             minorParameters[0].ThermalFile = $"{names[0]}_{1}_{minorParameters[0].TimeSettings.StartTime}_{minorParameters[0].TimeSettings.StopTime}.db";
@@ -412,7 +412,7 @@ namespace PreProc
             // сложные процессы разбиваются на составляющее и добавляются к допустимым названиям процессов
             // дубликаты убираются
             var names = new List<string>();
-            foreach (var name in Enum.GetNames(typeof(ComplexTaskType)))
+            foreach (var name in Enum.GetNames(typeof(TaskKind)))
             {
                 if (name.Contains('_')) names.AddRange(name.Split('_'));
                 else names.Add(name);

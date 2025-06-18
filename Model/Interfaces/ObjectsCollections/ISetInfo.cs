@@ -21,5 +21,10 @@ namespace Model.Interfaces.ObjectsCollections
         /// Count
         /// </summary>
         int NumberOfObjects { get; }
+        /// <summary>
+        /// GetObjectsInfo
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<string> GetObjectsInfo();
     }
 }

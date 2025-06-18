@@ -1,4 +1,5 @@
 ﻿using PreProc.Interfaces;
+using Project.Interfaces.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,7 +14,7 @@ namespace PreProc
         /// <summary>
         /// Общий тип задачи
         /// </summary>
-        public ComplexTaskType GeneralTaskType;
+        public TaskKind TaskKind;
 
         /// <summary>
         /// Тип подзадачи, в рамках generalTaskType

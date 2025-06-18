@@ -247,25 +247,8 @@ namespace Project.Tasks
 
                 var mediaData = new MediaData(groupData.Find(infoAr[0]), start, stop);
 
-
-                if (infoAr[1] != "*")
-                {
-                    mediaData.MediaType = MediaType.HeatFlux;
-                    var resEx = 0.0f;
-                    if (float.TryParse(infoAr[1], out resEx))
-                        mediaData.HeatExchangeValue = resEx;
-                    else
-                        mediaData.HeatExchangeFunc = infoAr[1];
-                }
-
-                if (infoAr[2] == "*")
-                    throw new Exception("Граничное условие тепловой задачи должно содержать сведения о температуре.");
-
-                var res = 0.0f;
-                if (float.TryParse(infoAr[2], out res))
-                    mediaData.TemperatureValue = res;
-                else
-                    mediaData.TemperatureFunc = infoAr[2];
+                mediaData.TrySetHeatExchange(infoAr[1]);
+                mediaData.TrySetTemp(infoAr[2]);
 
                 physicalData = mediaData;
             }
@@ -285,22 +268,10 @@ namespace Project.Tasks
 
                 var loadData = new LoadData(groupData.Find(infoAr[0]), start, stop);
 
-                LoadKind loadKind;
-                Enum.TryParse(infoAr[1], out loadKind);
-
-                loadData.LoadKind = loadKind;
-
-                Direction direction;
-                Enum.TryParse(infoAr[2], out direction);
-
-                float value;
-                if (!float.TryParse(infoAr[3], out value))
-                    throw new Exception("Значение усилия должно быть числом!");
-
-                loadData.Value = value;
-
-                if (infoAr[4] != "*")
-                    loadData.ValueFunction = infoAr[4];
+                loadData.TrySetKind(infoAr[1]);
+                loadData.TrySetDirection(infoAr[2]);
+                loadData.TrySetValue(infoAr[3]);
+                loadData.TrySetTimeFunction(infoAr[4]);
                 
                 physicalData = loadData;
             }
@@ -322,15 +293,9 @@ namespace Project.Tasks
                 //dataInfo = dataInfo.Replace("*", "0");
                 var heatData =  new HeatData(groupData.Find(infoAr[3]), start, stop);
 
-                if (infoAr[2] != "*")
-                    heatData.FrameFunction = (FrameFunction)new FrameFunctionBuilder(infoAr[2].Split(';'));
-
-                float value;
-                if (float.TryParse(infoAr[0], out value))
-                    heatData.Value = value;
-
-                if (infoAr[1] != "*")
-                    heatData.TimeFunction = infoAr[1];
+                heatData.TrySetFrameFunction(infoAr[2]);
+                heatData.TrySetValue(infoAr[0]);
+                heatData.TrySetTimeFunction(infoAr[1]);
 
                 physicalData = heatData;
             }
@@ -350,22 +315,10 @@ namespace Project.Tasks
 
                 var clampData = new ClampData(groupData.Find(infoAr[0]), start, stop);
 
-                ClampKind clampKind;
-                Enum.TryParse(infoAr[1], out clampKind);
-                clampData.ClampKind = clampKind;
-
-                Direction direction;
-                Enum.TryParse(infoAr[2], out direction);
-                clampData.Direction = direction;
-
-                float clampValue;
-                if (!float.TryParse(infoAr[3], out clampValue))
-                    throw new Exception("Величина закрепления задана неверно!");
-
-                clampData.Value = clampValue;
-
-                if (infoAr[4] != "*")
-                    clampData.ValueFunction = infoAr[4];
+                clampData.TrySetKind(infoAr[1]);
+                clampData.TrySetDirection(infoAr[2]);
+                clampData.TrySetValue(infoAr[3]);
+                clampData.TrySetTimeFunction(infoAr[4]);
 
                 physicalData = clampData;
             }

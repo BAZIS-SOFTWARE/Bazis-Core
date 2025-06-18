@@ -12,10 +12,6 @@ namespace ModelControllerInterfaces
     public interface IModelController
     {
         /// <summary>
-        /// ChangeInsideSurface
-        /// </summary>
-        ChangeInsideSurface ChangeInsideSurface { get; }
-        /// <summary>
         /// InterfacedNodesFinder
         /// </summary>
         IObjectsRenumber ObjectsRenumber { get; }

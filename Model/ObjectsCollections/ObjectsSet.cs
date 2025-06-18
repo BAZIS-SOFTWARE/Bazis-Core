@@ -210,5 +210,13 @@ namespace Model.ObjectsCollections
 
             objectsSet = temp;
         }
+
+        public IEnumerable<string> GetObjectsInfo()
+        {
+            foreach (var item in objectsSet)
+            {
+                yield return item.Value.ToString();
+            }
+        }
     }
 }

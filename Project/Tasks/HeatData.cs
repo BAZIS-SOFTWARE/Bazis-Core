@@ -3,6 +3,7 @@ using Project.Interfaces.Tasks;
 using Project.Tasks.Functions;
 using System;
 using System.Globalization;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace Project.Tasks
 {
@@ -19,9 +20,10 @@ namespace Project.Tasks
     public class HeatData : PhysicalData
     {
         /// <summary>
-        /// PowerValue
+        /// Heat.J/mm3
         /// </summary>
-        public float Value { get; set; } = 1;
+        public float Heat { get; set; } = 1;
+
         /// <summary>
         /// PowerFunction
         /// </summary>
@@ -37,19 +39,35 @@ namespace Project.Tasks
                     ffInfo = FrameFunction.ToString();
 
                 return
-                  $"{Value} {TimeFunction} {ffInfo} {Group.Name} {StartTime} {StopTime}";
+                  $"{Heat} {TimeFunction} {ffInfo} {Group.Name} {StartTime} {StopTime}";
             }
-        }
-    
-
-        public HeatData(IGroup group, string info) : base(group, info)
-        {
-            Kind = DataKind.Нагрев;     
         }
 
         public HeatData(IGroup group, float start, float stop) : base(group, start, stop)
         {
             Kind = DataKind.Нагрев;
+        }
+
+        public void TrySetFrameFunction(string v)
+        {
+            if (v != "*")
+                FrameFunction = (FrameFunction)new FrameFunctionBuilder(v.Split(';'));
+        }
+
+        public bool TrySetValue(string v)
+        {
+            if (!float.TryParse(v, out var heat))
+                return false;
+
+            Heat = heat;
+            return true;
+
+        }
+
+        public void TrySetTimeFunction(string v)
+        {
+            if (v != "*")
+                TimeFunction = v;
         }
     }
 }

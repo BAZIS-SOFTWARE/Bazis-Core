@@ -17,11 +17,6 @@ namespace Project.Tasks
         /// </summary>
         public double Value { get; set; }
 
-        public LoadData(IGroup group, string info) : base(group, info)
-        {
-            Kind = DataKind.Нагрузка;
-        }
-
         public LoadData(IGroup group, float start, float stop) : base(group, start, stop)
         {
             Kind = DataKind.Нагрузка;
@@ -47,5 +42,34 @@ namespace Project.Tasks
         /// LoadFunction
         /// </summary>
         public string ValueFunction { get; set; } = "*";
+
+        public void TrySetKind(string v)
+        {
+            LoadKind loadKind;
+            if(Enum.TryParse(v, out loadKind))
+                LoadKind = loadKind;
+        }
+
+        public void TrySetDirection(string v)
+        {
+            Direction direction;
+            if (Enum.TryParse(v, out direction))
+                Direction = direction;
+        }
+
+        public void TrySetValue(string v)
+        {
+
+            if (double.TryParse(v, out var value))
+                Value = value;
+            else
+                throw new Exception("Значение усилия должно быть числом!");
+        }
+
+        public void TrySetTimeFunction(string v)
+        {
+            if (v != "*")
+                ValueFunction = v;
+        }
     }
 }

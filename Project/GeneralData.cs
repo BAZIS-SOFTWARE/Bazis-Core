@@ -20,5 +20,7 @@ namespace Project
         public string Functions { get; set; }
         /// <inheritdoc/>
         public TaskType TaskType { get ; set; }
+
+        public TaskKind TaskKind { get; set; }
     }
 }

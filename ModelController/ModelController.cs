@@ -56,10 +56,6 @@ namespace ModelController
 
 /// <inheritdoc/>
 
-        public IExtractor1DFrom2D Extractor1DFrom2D { get; } = new Extract1DFrom2D();
-/// <inheritdoc/>
-
-        public ChangeInsideSurface ChangeInsideSurface => new ChangeInsideSurface();
-        
+        public IExtractor1DFrom2D Extractor1DFrom2D { get; } = new Extract1DFrom2D();     
     }
 }

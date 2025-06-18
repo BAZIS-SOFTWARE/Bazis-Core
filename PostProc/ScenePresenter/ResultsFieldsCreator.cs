@@ -4,6 +4,7 @@ using Model.Interfaces.MeshObjects;
 using Model.MeshObjects;
 using PostProc.ScenePresenter.Interfaces;
 using Project.Interfaces;
+using Project.Interfaces.Tasks;
 using Project.Results;
 using System;
 using System.Collections.Generic;

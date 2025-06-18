@@ -6,11 +6,6 @@ namespace Project.Tasks
 {
     public class MatData : PhysicalData
     {
-        public MatData(IGroup group, string info) : base(group, info)
-        {
-            Kind = DataKind.Материал;
-        }
-
         public MatData(IGroup group, float start, float stop) : base(group, start, stop)
         {
             Kind = DataKind.Материал;

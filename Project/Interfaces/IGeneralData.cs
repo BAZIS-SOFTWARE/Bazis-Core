@@ -36,5 +36,9 @@ namespace Project.Interfaces
         /// TaskType
         /// </summary>
         TaskType TaskType { get; set; }
+        /// <summary>
+        /// TaskKind
+        /// </summary>
+        TaskKind TaskKind { get; set; }
     }
 }

@@ -112,13 +112,13 @@ namespace Project.Tasks.FrameCreators
 
             if (shifftingData.Length == 4)
             {
-                if (!float.TryParse(shifftingData[0], out float x))
+                if (!float.TryParse(shifftingData[0], out var x))
                     throw new Exception("Смещение по X задано неверно!");
-                if (!float.TryParse(shifftingData[1], out float y))
+                if (!float.TryParse(shifftingData[1], out var y))
                     throw new Exception("Смещение по Y задано неверно!");
-                if (!float.TryParse(shifftingData[2], out float z))
+                if (!float.TryParse(shifftingData[2], out var z))
                     throw new Exception("Смещение по Z задано неверно!");
-                if (!float.TryParse(shifftingData[3], out float angle))
+                if (!float.TryParse(shifftingData[3], out var angle))
                     throw new Exception("Угол задан неверно!");
 
                 Shifting = new Point3D(x, y, z);
@@ -141,7 +141,7 @@ namespace Project.Tasks.FrameCreators
         public float CalcMotionTime()
         {
             var path = 0.0f;
-            for (int i = 1; i < BaseLine.Count; i++)
+            for (var i = 1; i < BaseLine.Count; i++)
                 path = path + new Segment3D(BaseLine[i].CalcCentr(), BaseLine[i - 1].CalcCentr()).GetLength();
 
             var stopTime = path / velocity;
@@ -155,10 +155,10 @@ namespace Project.Tasks.FrameCreators
             var posit = new Point3D();
             var path = 0.0f;
 
-            Point3D dirY = new Point3D();
-            Point3D dirX = new Point3D();
+            var dirY = new Point3D();
+            var dirX = new Point3D();
 
-            for (int i = 0; i < BaseLine.Count - 1; i++)
+            for (var i = 0; i < BaseLine.Count - 1; i++)
             {
                 var line = new Segment3D(BaseLine[i].CalcCentr(), BaseLine[i + 1].CalcCentr());
                 path = path + line.GetLength();
