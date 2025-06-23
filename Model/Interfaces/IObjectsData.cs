@@ -78,7 +78,7 @@ namespace Model.Interfaces
         /// <summary>
         /// ClearEmpty
         /// </summary>
-        void ClearEmpty();
+        void ClearEmptySet();
         /// <summary>
         /// ClearNotExisted
         /// </summary>

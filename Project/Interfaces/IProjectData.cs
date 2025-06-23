@@ -54,10 +54,6 @@ namespace Project.Interfaces
         /// </summary>
         ITaskData TaskData { get; }
         /// <summary>
-        /// ResultData
-        /// </summary>
-        string ResultDB { get; set; }
-        /// <summary>
         /// GeneralData
         /// </summary>
         IGeneralData GeneralData { get;  }

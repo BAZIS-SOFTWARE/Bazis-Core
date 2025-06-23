@@ -198,14 +198,14 @@ namespace Model
 
         /// <inheritdoc/>
 
-        public void ClearEmpty()
+        public void ClearEmptySet()
         {
-            CurveCollection.ClearEmpty();
-            SurfaceCollection.ClearEmpty();
-            VolumeCollection.ClearEmpty();
-            E1DCollection.ClearEmpty();
-            E2DCollection.ClearEmpty();
-            E3DCollection.ClearEmpty();
+            CurveCollection.ClearEmptySets();
+            SurfaceCollection.ClearEmptySets();
+            VolumeCollection.ClearEmptySets();
+            E1DCollection.ClearEmptySets();
+            E2DCollection.ClearEmptySets();
+            E3DCollection.ClearEmptySets();
         }
 
         /// <inheritdoc/>
@@ -255,13 +255,13 @@ namespace Model
         public void ClearNotExisted()
         {
             PointsSet.ClearNotExisted();
-            CurveCollection.ClearNotExisted();
-            SurfaceCollection.ClearNotExisted();
-            VolumeCollection.ClearNotExisted();
+            CurveCollection.RemoveNotExistedObjects();
+            SurfaceCollection.RemoveNotExistedObjects();
+            VolumeCollection.RemoveNotExistedObjects();
             NodesSet.ClearNotExisted();
-            E1DCollection.ClearNotExisted();
-            E2DCollection.ClearNotExisted();
-            E3DCollection.ClearNotExisted();
+            E1DCollection.RemoveNotExistedObjects();
+            E2DCollection.RemoveNotExistedObjects();
+            E3DCollection.RemoveNotExistedObjects();
 
         }
 
@@ -276,27 +276,27 @@ namespace Model
             {
                 case ObjType.Точка:
                     PointsSet.Clear();
-                    CurveCollection.ClearNotExisted();
-                    SurfaceCollection.ClearNotExisted();
-                    VolumeCollection.ClearNotExisted();
+                    CurveCollection.RemoveNotExistedObjects();
+                    SurfaceCollection.RemoveNotExistedObjects();
+                    VolumeCollection.RemoveNotExistedObjects();
                     break;
                 case ObjType.Кривая:
                     CurveCollection.Clear();
-                    SurfaceCollection.ClearNotExisted();
-                    VolumeCollection.ClearNotExisted();
+                    SurfaceCollection.RemoveNotExistedObjects();
+                    VolumeCollection.RemoveNotExistedObjects();
                     break;
                 case ObjType.Поверхность:
                     SurfaceCollection.Clear();
-                    VolumeCollection.ClearNotExisted();
+                    VolumeCollection.RemoveNotExistedObjects();
                     break;
                 case ObjType.Объем:
                     VolumeCollection.Clear();
                     break;
                 case ObjType.Узел:
                     NodesSet.Clear();
-                    E1DCollection.ClearNotExisted();
-                    E2DCollection.ClearNotExisted();
-                    E3DCollection.ClearNotExisted();
+                    E1DCollection.RemoveNotExistedObjects();
+                    E2DCollection.RemoveNotExistedObjects();
+                    E3DCollection.RemoveNotExistedObjects();
                     break;
                 case ObjType.Элемент1D:
                     E1DCollection.Clear();
@@ -439,12 +439,12 @@ namespace Model
             {
                 case ObjType.Кривая:
                     CurveCollection.Remove(objSet);
-                    SurfaceCollection.ClearNotExisted();
-                    VolumeCollection.ClearNotExisted();
+                    SurfaceCollection.RemoveNotExistedObjects();
+                    VolumeCollection.RemoveNotExistedObjects();
                     break;
                 case ObjType.Поверхность:
                     SurfaceCollection.Remove(objSet);
-                    VolumeCollection.ClearNotExisted();
+                    VolumeCollection.RemoveNotExistedObjects();
                     break;
                 case ObjType.Объем:
                     VolumeCollection.Remove(objSet);
@@ -472,18 +472,18 @@ namespace Model
                 case ObjType.Точка:
                     PointsSet[objNumber].ExistState = false;
                     PointsSet.Remove(objNumber);
-                    CurveCollection.ClearNotExisted();
-                    SurfaceCollection.ClearNotExisted();
-                    VolumeCollection.ClearNotExisted();
+                    CurveCollection.RemoveNotExistedObjects();
+                    SurfaceCollection.RemoveNotExistedObjects();
+                    VolumeCollection.RemoveNotExistedObjects();
                     break;
                 case ObjType.Кривая:
                     CurveCollection.Remove(objNumber);
-                    SurfaceCollection.ClearNotExisted();
-                    VolumeCollection.ClearNotExisted();
+                    SurfaceCollection.RemoveNotExistedObjects();
+                    VolumeCollection.RemoveNotExistedObjects();
                     break;
                 case ObjType.Поверхность:
                     SurfaceCollection.Remove(objNumber);
-                    VolumeCollection.ClearNotExisted();
+                    VolumeCollection.RemoveNotExistedObjects();
                     break;
                 case ObjType.Объем:
                     VolumeCollection.Remove(objNumber);
@@ -491,9 +491,9 @@ namespace Model
                 case ObjType.Узел:
                     NodesSet[objNumber].ExistState = false;
                     NodesSet.Remove(objNumber);
-                    E1DCollection.ClearNotExisted();
-                    E2DCollection.ClearNotExisted();
-                    E3DCollection.ClearNotExisted();
+                    E1DCollection.RemoveNotExistedObjects();
+                    E2DCollection.RemoveNotExistedObjects();
+                    E3DCollection.RemoveNotExistedObjects();
                     break;
                 case ObjType.Элемент1D:
                     E1DCollection.Remove(objNumber);

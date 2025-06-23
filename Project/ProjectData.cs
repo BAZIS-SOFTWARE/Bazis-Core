@@ -29,15 +29,12 @@ namespace Project
         /// <inheritdoc/>
 
         public ITaskData TaskData { get { return taskData; } } 
-        /// <inheritdoc/>
-        public string ResultDB { get; set; } = "";
 
         /// <inheritdoc/>
 
         public void ClearAllData()
         {
             TaskData?.Clear();
-            ResultDB = "";
             ModelData?.ClearAll();
         }
 /// <inheritdoc/>

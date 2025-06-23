@@ -181,6 +181,7 @@ namespace TestModel
         [TestMethod]
         [DataRow(@"block_allElements3D_25538.stl", DisplayName = "block_allElements3D_25538.stl")]
         [DataRow(@"block.stl", DisplayName = "block.stl")]
+        [DataRow(@"Деталь_пример.stl", DisplayName = "Деталь_пример.stl")]
         //[DataRow(@"Форсунка\1n.stl")]
         //[DataRow(@"Форсунка\nozzle.stl")]
         //[DataRow(@"Форсунка\nozzle_sup.stl")]

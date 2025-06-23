@@ -430,7 +430,7 @@ namespace TestModel
 
             //act
             model.ObjectData.E3DCollection.Remove(objNumber);
-            model.ObjectData.E3DCollection.ClearNotExisted();
+            model.ObjectData.E3DCollection.RemoveNotExistedObjects();
 
             //assert
             var res = model.ObjectData.Find(ObjType.Элемент3D, objNumber);
@@ -451,8 +451,8 @@ namespace TestModel
 
             //act
             model.ObjectData.Clear(objType);
-            model.ObjectData.E3DCollection.ClearNotExisted();
-            model.ObjectData.E3DCollection.ClearEmpty();
+            model.ObjectData.E3DCollection.RemoveNotExistedObjects();
+            model.ObjectData.E3DCollection.ClearEmptySets();
 
             //assert
             var res = model.ObjectData.Count(objType);

@@ -100,11 +100,11 @@ namespace Model.Interfaces.ObjectsCollections
         /// <summary>
         /// ClearNotExisted
         /// </summary>
-        void ClearNotExisted();
+        void RemoveNotExistedObjects();
         /// <summary>
         /// ClearEmpty
         /// </summary>
-        void ClearEmpty();
+        void ClearEmptySets();
         /// <summary>
         /// ContainsNumber
         /// </summary>

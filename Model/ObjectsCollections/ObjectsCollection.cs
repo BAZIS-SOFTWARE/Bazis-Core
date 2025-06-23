@@ -109,14 +109,14 @@ namespace Model.ObjectsCollections
         }
 /// <inheritdoc/>
 
-        public void ClearEmpty()
+        public void ClearEmptySets()
         {
             objects = objects.Where(x => x.Value.Count != 0).
     ToDictionary(x => x.Key, y => y.Value);
         }
 /// <inheritdoc/>
 
-        public void ClearNotExisted()
+        public void RemoveNotExistedObjects()
         {
             foreach (var item in objects)
                 item.Value.ClearNotExisted();
