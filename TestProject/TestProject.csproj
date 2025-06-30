@@ -136,7 +136,6 @@
     <Compile Include="TestPreProc.cs" />
     <Compile Include="TestProjectData.cs" />
     <Compile Include="TestResultData.cs" />
-    <Compile Include="TestItemsScale.cs" />
     <Compile Include="TestTaskData.cs" />
     <Compile Include="TestTaskDataCalculator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
