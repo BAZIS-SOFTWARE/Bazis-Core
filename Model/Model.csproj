@@ -9,7 +9,7 @@
     <AssemblyOriginatorKeyFile>ModelKey.snk</AssemblyOriginatorKeyFile>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>Model</Title>
-    <Version>4.2.63.24</Version>
+    <Version>4.2.63.26</Version>
     <Company>BAZIS SOFTWARE</Company>
     <Product>BAZIS</Product>
     <Description>Contains basic mesh oblects and geometry classes</Description>
@@ -55,7 +55,7 @@
   </ItemGroup> 
   <ItemGroup>
     <PackageReference Include="MathNet.Numerics.Signed" Version="5.0.0" />
-    <PackageReference Include="System.Numerics.Vectors" Version="4.6.1" />
+    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
   </ItemGroup> 
   <ItemGroup>
     <ProjectReference Include="..\PrGeometry\Geometry.csproj" />
