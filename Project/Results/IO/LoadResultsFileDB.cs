@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using Project.Results;
 using System.Security.Cryptography;
+using Project.Interfaces.Tasks;
 
 namespace Project.Results.IO
 {

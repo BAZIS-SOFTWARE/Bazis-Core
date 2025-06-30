@@ -1,25 +1,32 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Geometry;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
-using Model.MeshObjects;
-using Model.IO;
+using Model.GeometryObjects;
+using Model.GroupsData;
 using Model.Interfaces;
+using Model.Interfaces.MeshObjects;
+using Model.Interfaces.ObjectsCollections;
+using Model.IO;
+using Model.IO.STL;
+using Model.MeshObjects;
+using Model.ObjectsCollections;
+using ModelController.MeshObjsCreator;
 using System;
 using System.Collections.Generic;
-using Model.GeometryObjects;
-using Geometry;
-using System.Linq;
-using Model.GroupsData;
 using System.Drawing;
-using Model.ObjectsCollections;
-using Model.Interfaces.ObjectsCollections;
-using Model.Interfaces.MeshObjects;
-using Model.IO.STL;
+using System.Linq;
 
 namespace TestModel
 {
     [TestClass]
     public class TestObjectData
     {
+
+        [ClassInitialize]
+        public static void SetUp(TestContext testContext)
+        {
+
+        } 
         [DataTestMethod]
         [DataRow(ObjType.Узел, 3, DisplayName = "Узел")]
         //[DataRow(ObjType.Элемент, 8, DisplayName = "Элемент")]
@@ -270,6 +277,42 @@ namespace TestModel
             Assert.AreEqual(col1.GetMinNumber(), resNumb.First());
         }
 
+        [TestMethod]
+        [DataRow(new int[] { 0, 10, 1, 2 }, new int[] { 0, 10, 12, 13 })]
+        public void ChangeName(int[] iniNumb, int[] resNumb)
+        {
+            //assign
+            var model = new ModelData();
+
+            //act
+            var node0 = new Node(0, new Geometry.Point3D(0, 0, 0));
+            var node1 = new Node(1, new Geometry.Point3D(1, 0, 0));
+            var node2 = new Node(2, new Geometry.Point3D(0, 1, 0));
+
+            model.ObjectData.NodesSet.Add(node0.Number, node0);
+            model.ObjectData.NodesSet.Add(node1.Number, node0);
+            model.ObjectData.NodesSet.Add(node2.Number, node0);
+
+
+            var set1 = new ObjectsSet<Element2D>("e2D_1");
+            set1.Add(iniNumb[0], new Triangle_c(iniNumb[0], new[] { node0, node1, node2 }));
+            set1.Add(iniNumb[1], new Triangle_c(iniNumb[1], new[] { node0, node1, node2 }));
+
+            var set2 = new ObjectsSet<Element2D>("e2D_2");
+            set2.Add(iniNumb[2], new Triangle_c(iniNumb[2], new[] { node0, node1, node2 }));
+            set2.Add(iniNumb[3], new Triangle_c(iniNumb[3], new[] { node0, node1, node2 }));
+
+            var col = new ObjectsCollection<Element2D>();
+            col.Add(set1);
+            col.Add(set2);
+
+            col.ChangeName("e2D_1", "newNameCol");
+
+            //assert
+            Assert.IsTrue(col.Any(x => x.Key == "newNameCol"));
+            Assert.AreEqual(col.Where(x => x.Key == "newNameCol").Count(), 1);
+        }
+
         [DataTestMethod]
         [DataRow(ObjType.Кривая)]
         [DataRow(ObjType.Точка)]
@@ -387,7 +430,7 @@ namespace TestModel
 
             //act
             model.ObjectData.E3DCollection.Remove(objNumber);
-            model.ObjectData.E3DCollection.ClearNotExisted();
+            model.ObjectData.E3DCollection.RemoveNotExistedObjects();
 
             //assert
             var res = model.ObjectData.Find(ObjType.Элемент3D, objNumber);
@@ -408,8 +451,8 @@ namespace TestModel
 
             //act
             model.ObjectData.Clear(objType);
-            model.ObjectData.E3DCollection.ClearNotExisted();
-            model.ObjectData.E3DCollection.ClearEmpty();
+            model.ObjectData.E3DCollection.RemoveNotExistedObjects();
+            model.ObjectData.E3DCollection.ClearEmptySets();
 
             //assert
             var res = model.ObjectData.Count(objType);

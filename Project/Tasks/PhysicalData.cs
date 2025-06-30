@@ -23,7 +23,7 @@ namespace Project.Tasks
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="Exception"></exception>
         /// <exception cref="NullReferenceException"></exception>
-        [Obsolete("Не использовать этот конструктор. Указывать время начала и конца по-умолчанию")]
+        [Obsolete("Не использовать этот конструктор! Указывать время начала и конца по-умолчанию")]
         protected PhysicalData(IGroup group, string info)
         {
             if (info == null)
@@ -35,19 +35,17 @@ namespace Project.Tasks
                 throw new NullReferenceException($"Группа {group} не существует. Строка {info}");
             Group = group;
 
-            SetInfo(info);
+            //SetInfo(info);
         }
-        /// <inheritdoc/>
 
-        protected abstract void SetInfo(string info);
         protected PhysicalData(IGroup group, float startTime, float stopTime)
         {
             if (group == null)
                 throw new NullReferenceException($"Группа {group} не существует");
             Group = group;
 
-            if(startTime.CompareTo(stopTime) == -1)
-                throw new Exception("Время окончания не может быть меньше времени начала!");
+            if(startTime.CompareTo(stopTime) >= 0)
+                throw new Exception("Время окончания не может быть меньше или равно времени начала!");
 
             StartTime = startTime;
             StopTime = stopTime;

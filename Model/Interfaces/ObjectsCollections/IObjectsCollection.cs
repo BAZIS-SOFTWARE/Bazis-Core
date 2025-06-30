@@ -100,11 +100,11 @@ namespace Model.Interfaces.ObjectsCollections
         /// <summary>
         /// ClearNotExisted
         /// </summary>
-        void ClearNotExisted();
+        void RemoveNotExistedObjects();
         /// <summary>
         /// ClearEmpty
         /// </summary>
-        void ClearEmpty();
+        void ClearEmptySets();
         /// <summary>
         /// ContainsNumber
         /// </summary>
@@ -117,5 +117,11 @@ namespace Model.Interfaces.ObjectsCollections
         /// <param name="setName"></param>
         /// <returns></returns>
         bool ContainsName(string setName);
+        /// <summary>
+        /// ChangeName
+        /// </summary>
+        /// <param name="oldName"></param>
+        /// <param name="newName"></param>
+        void ChangeName(string oldName, string newName);
     }
 }

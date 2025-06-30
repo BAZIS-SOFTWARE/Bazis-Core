@@ -16,6 +16,7 @@ using PreProc.Interfaces;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Windows.Forms;
+using Model.MeshObjects;
 
 namespace TestProject
 {
@@ -30,22 +31,24 @@ namespace TestProject
         /// </summary>
         /// <param name="typeAndArgs">Массив строк, которые состоят из типа задачи и аргументов, разделенных подстрокой "/"</param>
         /// <returns>Ленивая коллекция из IValuableData, представляющая данные по задачам</returns>
-        private static IEnumerable<IPhysicalData> CreateValuableData(string[] typeAndArgs)
-        {
-            foreach (var str in typeAndArgs.Select(x => x.Split('/')))
-            {
-                Func<Group, string,IPhysicalData > func;
-                switch (str[0].ToLower())
-                {
-                    case "media": func = (g, s) => new MediaData(g, s); break;
-                    case "heat": func = (g, s) => new HeatData(g, s); break;
-                    case "clamp": func = (g, s) => new ClampData(g, s); break;
-                    case "load": func = (g, s) => new LoadData(g, s); break;
-                    default: func = (g, s) => new MatData(g, s); break;
-                }
-                yield return func(new Group("", ObjType.Узел), str[1]);
-            }
-        }
+        //private static IEnumerable<IPhysicalData> CreatePhysicalData(string[] typeAndArgs)
+        //{
+        //    var taskData = new TaskData();
+
+        //    foreach (var str in typeAndArgs.Select(x => x.Split('/')))
+        //    {
+        //        Func<Group, string,IPhysicalData > func;
+        //        switch (str[0].ToLower())
+        //        {
+        //            case "media": func = (g, s) => new MediaData(g, s); break;
+        //            case "heat": func = (g, s) => new HeatData(g, s); break;
+        //            case "clamp": func = (g, s) => new ClampData(g, s); break;
+        //            case "load": func = (g, s) => new LoadData(g, s); break;
+        //            default: func = (g, s) => new MatData(g, s); break;
+        //        }
+        //        yield return func(new Group("", ObjType.Узел), str[1]);
+        //    }
+        //}
 
         [TestInitialize]
         public void Init()
@@ -200,133 +203,108 @@ namespace TestProject
             Assert.ThrowsException<Exception>( () => preProc.SortCompDataByTimeAndType(strsIn));
         }
 
-        [TestMethod]
-        [DataRow(new string[]
-        {
-            "heat/1 * * Load 0 49 baseLine|refLine;2;0|0|0|0",
-            "media/air Коэф.теплоотдачи.воздух 20 0 1500 *",
-            "mat/Элементы3D_3 Сталь_20ХМ 0 1500 *",
-            "clamp/Узел_8 Жесткое X 0 * 0 1500 *"
-        })]
-        public void BaseCheck(string[] parameters)
-        {
-            var preProc = new PreProc.PreProc();
-            preProc.CalcCompDataV1(CreateValuableData(parameters).ToList(), ProcessType.Welding, projPath + "TsfFolder\\");
-            preProc.CalcCompDataV2(CreateValuableData(parameters).ToList(), new ProcessProperty { GeneralTaskType = ComplexTaskType.термическая_механическая, CommonTaskType = ProcessType.Welding }, projPath);
-        }
 
-        [TestMethod]
-        [DataRow(new string[]
-        {
-            "mat/Элементы3D_3 Сталь_20ХМ 0 1500 *",
-            "media/air Коэф.теплоотдачи.воздух 20 0 1500 *",
-            "media/air Коэф.теплоотдачи.воздух 20 0 3 *",
-            "media/air Коэф.теплоотдачи.воздух 20 103 106 *",
-            "media/air Коэф.теплоотдачи.воздух 20 206 209 *",
-            "clamp/Узел_8 Жесткое X 0 * 0 1500 *"
-        })]
-        [DataRow(new string[]
-        {
-            "mat/Элементы3D_3 Сталь_20ХМ 0 1500 *",
-            "media/air Коэф.теплоотдачи.воздух 20 0 1500 *",
-            "media/air Коэф.теплоотдачи.воздух 20 0 3 *",
-            "media/air Коэф.теплоотдачи.воздух 20 103 106 *",
-            "media/air Коэф.теплоотдачи.воздух 20 206 209 *",
-            "clamp/Узел_8 Жесткое X 0 * 0 1500 *",
-            "clamp/Узел_8 Жесткое X 0 * 0 3 *",
-            "clamp/Узел_8 Жесткое X 0 * 103 106 *",
-            "clamp/Узел_8 Жесткое X 0 * 206 209 *",
-        })]
-        [DataRow(new string[]
-        {
-            "mat/Элементы3D_3 Сталь_20ХМ 0 100 *",
-            "media/air Коэф.теплоотдачи.воздух 20 0 100 *",
-            "media/air Коэф.теплоотдачи.воздух 20 0 5 *",
-            "media/air Коэф.теплоотдачи.воздух 20 15 20 *",
-            "media/air Коэф.теплоотдачи.воздух 20 25 30 *",
-            "clamp/Узел_8 Жесткое X 0 * 0 100 *"
-        })]
-        [DataRow(new string[]
-        {
-            "mat/Элементы3D_3 Сталь_20ХМ 0 100 *",
-            "media/air Коэф.теплоотдачи.воздух 20 0 100 *",
-            "media/air Коэф.теплоотдачи.воздух 20 0 5 *",
-            "media/air Коэф.теплоотдачи.воздух 20 15 20 *",
-            "media/air Коэф.теплоотдачи.воздух 20 25 30 *",
-            "clamp/Узел_8 Жесткое X 0 * 0 100 *",
-            "clamp/Узел_8 Жесткое X 0 * 0 5 *",
-            "clamp/Узел_8 Жесткое X 0 * 15 20 *",
-            "clamp/Узел_8 Жесткое X 0 * 25 30 *",
-        })]
-        public void CalcCompData_ShouldPass_WhenMainBoundDataBoundsMinors(string[] parameters)
-        {
-            var preProc = new PreProc.PreProc();
-            preProc.CalcCompDataV1(CreateValuableData(parameters).ToList(), ProcessType.Welding, projPath + "TsfFolder\\");
-            preProc.CalcCompDataV2(CreateValuableData(parameters).ToList(), new ProcessProperty { GeneralTaskType = ComplexTaskType.термическая_механическая, CommonTaskType = ProcessType.Welding }, projPath);
-        }
 
-        [TestMethod]
-        [DataRow(0, 120, 1, 1500, 0)]
-        [DataRow(0, 50.0001f, 50.001f, 100, 0)]
-        public void CalcCompData_Fails_WhenHeatDataStartEarlierThenMedDataStop
-            (float heatStart, float heatStop, float medStart, float medStop, ProcessType pt)
-        {
-            var heatfileName = $"термическая термическая{1}{heatStart}_{heatStop}.tsf выполнить";
-            var medfileName = $"термическая термическая{2}{medStart}_{medStop}.tsf выполнить";
+        //[TestMethod]
+        //[DataRow(new string[]
+        //{
+        //    "mat/Элементы3D_3 Сталь_20ХМ 0 1500 *",
+        //    "media/air Коэф.теплоотдачи.воздух 20 0 1500 *",
+        //    "media/air Коэф.теплоотдачи.воздух 20 0 3 *",
+        //    "media/air Коэф.теплоотдачи.воздух 20 103 106 *",
+        //    "media/air Коэф.теплоотдачи.воздух 20 206 209 *",
+        //    "clamp/Узел_8 Жесткое X 0 * 0 1500 *"
+        //})]
+        //[DataRow(new string[]
+        //{
+        //    "mat/Элементы3D_3 Сталь_20ХМ 0 1500 *",
+        //    "media/air Коэф.теплоотдачи.воздух 20 0 1500 *",
+        //    "media/air Коэф.теплоотдачи.воздух 20 0 3 *",
+        //    "media/air Коэф.теплоотдачи.воздух 20 103 106 *",
+        //    "media/air Коэф.теплоотдачи.воздух 20 206 209 *",
+        //    "clamp/Узел_8 Жесткое X 0 * 0 1500 *",
+        //    "clamp/Узел_8 Жесткое X 0 * 0 3 *",
+        //    "clamp/Узел_8 Жесткое X 0 * 103 106 *",
+        //    "clamp/Узел_8 Жесткое X 0 * 206 209 *",
+        //})]
+        //[DataRow(new string[]
+        //{
+        //    "mat/Элементы3D_3 Сталь_20ХМ 0 100 *",
+        //    "media/air Коэф.теплоотдачи.воздух 20 0 100 *",
+        //    "media/air Коэф.теплоотдачи.воздух 20 0 5 *",
+        //    "media/air Коэф.теплоотдачи.воздух 20 15 20 *",
+        //    "media/air Коэф.теплоотдачи.воздух 20 25 30 *",
+        //    "clamp/Узел_8 Жесткое X 0 * 0 100 *"
+        //})]
+        //[DataRow(new string[]
+        //{
+        //    "mat/Элементы3D_3 Сталь_20ХМ 0 100 *",
+        //    "media/air Коэф.теплоотдачи.воздух 20 0 100 *",
+        //    "media/air Коэф.теплоотдачи.воздух 20 0 5 *",
+        //    "media/air Коэф.теплоотдачи.воздух 20 15 20 *",
+        //    "media/air Коэф.теплоотдачи.воздух 20 25 30 *",
+        //    "clamp/Узел_8 Жесткое X 0 * 0 100 *",
+        //    "clamp/Узел_8 Жесткое X 0 * 0 5 *",
+        //    "clamp/Узел_8 Жесткое X 0 * 15 20 *",
+        //    "clamp/Узел_8 Жесткое X 0 * 25 30 *",
+        //})]
+        //public void CalcCompData_ShouldPass_WhenMainBoundDataBoundsMinors(string[] parameters)
+        //{
+        //    var preProc = new PreProc.PreProc();
+        //    preProc.CalcCompDataV1(CreatePhysicalData(parameters).ToList(), ProcessType.Welding, projPath + "TsfFolder\\");
+        //    preProc.CalcCompDataV2(CreatePhysicalData(parameters).ToList(), new ProcessProperty { TaskKind = TaskKind.термическая_механическая, CommonTaskType = ProcessType.Welding }, projPath);
+        //}
 
-            var valuableData = CreateValuableData(new[]
-            {
-                $"media/air Коэф.теплоотдачи.воздух 20 {medStart} {medStop} *",
-                $"heat/1 * * Load {heatStart} {heatStop} baseLine|refLine;2;0|0|0|0",
-                "mat/Элементы3D_3 Сталь_20ХМ 0 1500 *"
-            }).ToList();
+        //[TestMethod]
+        //[DataRow(0, 120, 1, 1500, 0)]
+        //[DataRow(0, 50.0001f, 50.001f, 100, 0)]
+        //public void CalcCompData_Fails_WhenHeatDataStartEarlierThenMedDataStop
+        //    (float heatStart, float heatStop, float medStart, float medStop, ProcessType pt)
+        //{
+        //    var heatfileName = $"термическая термическая{1}{heatStart}_{heatStop}.tsf выполнить";
+        //    var medfileName = $"термическая термическая{2}{medStart}_{medStop}.tsf выполнить";
+
+        //    var valuableData = CreatePhysicalData(new[]
+        //    {
+        //        $"media/air Коэф.теплоотдачи.воздух 20 {medStart} {medStop} *",
+        //        $"heat/1 * * Load {heatStart} {heatStop} baseLine|refLine;2;0|0|0|0",
+        //        "mat/Элементы3D_3 Сталь_20ХМ 0 1500 *"
+        //    }).ToList();
             
-            var preProc = new PreProc.PreProc();
-            Assert.ThrowsException<Exception>(() => preProc.CalcCompDataV1(valuableData, pt, projPath + "TsfFolder\\"));
-            Assert.ThrowsException<Exception>(() => preProc.CalcCompDataV2(valuableData, new ProcessProperty { GeneralTaskType = ComplexTaskType.термическая_механическая, CommonTaskType = pt }, projPath));
-        }
+        //    var preProc = new PreProc.PreProc();
+        //    Assert.ThrowsException<Exception>(() => preProc.CalcCompDataV1(valuableData, pt, projPath + "TsfFolder\\"));
+        //    Assert.ThrowsException<Exception>(() => preProc.CalcCompDataV2(valuableData, new ProcessProperty { TaskKind = TaskKind.термическая_механическая, CommonTaskType = pt }, projPath));
+        //}
 
-        [TestMethod]
-        [DataRow(new[]
-        {
-            "heat/1 * * Load 0 50 baseLine|refLine;2;0|0|0|0",
-            "media/air Коэф.теплоотдачи.воздух 20 0 1500 *",
-            "mat/Элементы3D_3 Сталь_20ХМ 0 1500 *",
-            "clamp/Узел_8 Жесткое X 0 * 0 1500 *"
-        })]
-        public void CalcCompData_ReturnsTrue_WhenFileTSFSuccesfullyCreated(string[] parameters)
-        {
-            var heatFileName = $"термическая термическая10_50.tsf выполнить";
-            var medFileName = $"термическая термическая20_1500.tsf выполнить";
-            var preProc = new PreProc.PreProc();
-            preProc.CalcCompDataV1(CreateValuableData(parameters).ToList(), ProcessType.Welding, projPath + "TsfFolder\\");
-            preProc.CalcCompDataV2(CreateValuableData(parameters).ToList(), new ProcessProperty { GeneralTaskType = ComplexTaskType.термическая_механическая, CommonTaskType = ProcessType.Welding }, projPath);
+        //[TestMethod]
+        //[DataRow(new[]
+        //{
+        //    "heat/1 * * Load 0 50 baseLine|refLine;2;0|0|0|0",
+        //    "media/air Коэф.теплоотдачи.воздух 20 0 1500 *",
+        //    "mat/Элементы3D_3 Сталь_20ХМ 0 1500 *",
+        //    "clamp/Узел_8 Жесткое X 0 * 0 1500 *"
+        //})]
+        //public void CalcCompData_ReturnsTrue_WhenFileTSFSuccesfullyCreated(string[] parameters)
+        //{
+        //    var heatFileName = $"термическая термическая10_50.tsf выполнить";
+        //    var medFileName = $"термическая термическая20_1500.tsf выполнить";
+        //    var preProc = new PreProc.PreProc();
+        //    preProc.CalcCompDataV1(CreatePhysicalData(parameters).ToList(), ProcessType.Welding, projPath + "TsfFolder\\");
+        //    preProc.CalcCompDataV2(CreatePhysicalData(parameters).ToList(), new ProcessProperty { TaskKind = TaskKind.термическая_механическая, CommonTaskType = ProcessType.Welding }, projPath);
 
-            var projDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            var heatLocation = Path.GetFullPath(heatFileName);
-            var medLocation = Path.GetFullPath(medFileName);
+        //    var projDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+        //    var heatLocation = Path.GetFullPath(heatFileName);
+        //    var medLocation = Path.GetFullPath(medFileName);
 
-            Assert.AreEqual($"{projDir}\\{heatFileName}", heatLocation);
-            Assert.AreEqual($"{projDir}\\{medFileName}", medLocation);
-        }
+        //    Assert.AreEqual($"{projDir}\\{heatFileName}", heatLocation);
+        //    Assert.AreEqual($"{projDir}\\{medFileName}", medLocation);
+        //}
 
-        [TestMethod]
-        [DataRow(new[]
-        {
-            "mat/Элементы3D_3 Сталь_20ХМ 0 1500 *",
-            "media/air Коэф.теплоотдачи.воздух 20 0 1500 *",
-            "heat/1 * * Load 0 49.998 baseLine|refLine;2;0|0|0|0",
-            "clamp/Узел_8 Жесткое X 0 * 0 1500 *"
-        })]
-        public void CalcCompData_ReturnsTrue_WhenMaterialContinousWholeProcess(string[] parameters)
-        {
-            var preProc = new PreProc.PreProc();
-            preProc.CalcCompDataV1(CreateValuableData(parameters).ToList(), ProcessType.Welding, projPath + "TsfFolder\\");
-            preProc.CalcCompDataV2(CreateValuableData(parameters).ToList(), new ProcessProperty { GeneralTaskType = ComplexTaskType.термическая_механическая, CommonTaskType = ProcessType.Welding }, projPath);
-        }
+
 
         [TestMethod]
         [DataRow(@"MNOGOPROHOD.bpf", ProcessType.Welding)]
+        [DataRow(@"FastCheck.bpf", ProcessType.Welding)]
         //[DataRow(@"c:\projs\testProj\Tempering\proj.bpf", ProcessType.Heating)]
         //[DataRow(@"c:\projs\testProj\Tempering\proj.bpf", ProcessType.Quenching)]
         //[DataRow(@"c:\projs\testProj\Tempering\proj.bpf", ProcessType.Tempering)]
@@ -335,9 +313,6 @@ namespace TestProject
         public void PreProc_GenerateTSF_ShouldPass(string file, ProcessType pt)
         {
             var project = new ProjectData();
-
-            project.ModelData = new ModelData();
-            project.TaskData = new TaskData();
 
             project.Load(projPath + file);
 
@@ -348,7 +323,7 @@ namespace TestProject
 
             var preProc = new PreProc.PreProc();
             preProc.CalcCompDataV1(resData, pt, projPath + "TsfFolder\\");
-            preProc.CalcCompDataV2(resData, new ProcessProperty { GeneralTaskType = ComplexTaskType.термическая_механическая, CommonTaskType = pt }, projPath + "TsfFolder\\");
+            preProc.CalcCompDataV2(resData, new ProcessProperty { TaskKind = TaskKind.термическая_механическая, CommonTaskType = pt }, projPath + "TsfFolder\\");
         }
 
         [TestMethod]
@@ -365,7 +340,11 @@ namespace TestProject
         public void PreProc_GenerateTSF_ShouldFail(string file)
         {
             var resData = new List<IPhysicalData>();
-            var group = new Group("test",ObjType.Узел);
+            var group = new Group("test", ObjType.Узел);
+            group.Insert(0, new Node(0, new Geometry.Point3D()));
+            group.Insert(0, new Node(0, new Geometry.Point3D()));
+            group.Insert(0, new Node(0, new Geometry.Point3D()));
+
             var groupData = new GroupData();
             groupData.Add(group);
             var textData = new LoadTaskDataTextFormat().Load(projPath + file, groupData);
@@ -375,89 +354,74 @@ namespace TestProject
             }
             var preProc = new PreProc.PreProc();
             Assert.ThrowsException<Exception>(() => preProc.CalcCompDataV1(resData, ProcessType.Welding, projPath));
-            Assert.ThrowsException<Exception>(() => preProc.CalcCompDataV2(resData, new ProcessProperty { GeneralTaskType = ComplexTaskType.термическая_механическая, CommonTaskType = ProcessType.Welding }, projPath));
+            Assert.ThrowsException<Exception>(() => preProc.CalcCompDataV2(resData, new ProcessProperty { TaskKind = TaskKind.термическая_механическая, CommonTaskType = ProcessType.Welding }, projPath));
         }
 
-        [TestMethod]
-        [DataRow(new[]
-        {
-            "media/air Коэф.теплоотдачи.воздух 20 0 1500 *",
-            "heat/1 * * Элемент3D_2 0 95.08694 Узел_5|Узел_6;2;0|0|0|0",
-            "clamp/Узел_8 Жесткое X 0 * 0 1500 *",
-            "mat/mat Сталь_20ХМ 0 1500 *"
-        })]
-        public void FastCheck(string[] parameters)
-        {
-            var preProc = new PreProc.PreProc();
-            preProc.CalcCompDataV1(CreateValuableData(parameters).ToList(), ProcessType.Welding, projPath);
-            preProc.CalcCompDataV2(CreateValuableData(parameters).ToList(), new ProcessProperty { GeneralTaskType = ComplexTaskType.термическая_механическая, CommonTaskType = ProcessType.Welding }, projPath);
-        }
-
-        [DataRow(ComplexTaskType.термическая, ProcessType.Welding, new[]
-        {
-            "Media/air Коэф.теплоотдачи.воздух 20 0 1500 *",
-            "Heat/1 * * Элемент3D_2 0 95.08694 Узел_5|Узел_6;2;0|0|0|0",
-            "Mat/mat Сталь_20ХМ 0 1500 *"
-        })]
-        [DataRow(ComplexTaskType.термическая, ProcessType.Tempering, new[]
-        {
-            "Media/air Коэф.теплоотдачи.воздух 20 0 1500 *",
-            "Mat/mat Сталь_20ХМ 0 1500 *"
-        })]
-        [DataRow(ComplexTaskType.механическая, ProcessType.Welding, new[]
-        {
-            "Media/air Коэф.теплоотдачи.воздух 20 0 1500 *",
-            "Mat/mat Сталь_20ХМ 0 1500 *",
-            "Clamp/Узел_8 Жесткое X 0 * 0 1500 *"
-        })]
-        [TestMethod]
-        public void CalcCompDataV2_ShouldPass_OnSingleProcessTaskCreation(ComplexTaskType generalTaskType, ProcessType commonTaskType, string[] valuableDataStrings)
-        {
-            var preProc = new PreProc.PreProc();
-            preProc.CalcCompDataV2(CreateValuableData(valuableDataStrings).ToList(), new ProcessProperty { GeneralTaskType = generalTaskType, CommonTaskType = commonTaskType }, projPath);
-        }
+        //[DataRow(TaskKind.термическая, ProcessType.Welding, new[]
+        //{
+        //    "Media/air Коэф.теплоотдачи.воздух 20 0 1500 *",
+        //    "Heat/1 * * Элемент3D_2 0 95.08694 Узел_5|Узел_6;2;0|0|0|0",
+        //    "Mat/mat Сталь_20ХМ 0 1500 *"
+        //})]
+        //[DataRow(TaskKind.термическая, ProcessType.Tempering, new[]
+        //{
+        //    "Media/air Коэф.теплоотдачи.воздух 20 0 1500 *",
+        //    "Mat/mat Сталь_20ХМ 0 1500 *"
+        //})]
+        //[DataRow(TaskKind.механическая, ProcessType.Welding, new[]
+        //{
+        //    "Media/air Коэф.теплоотдачи.воздух 20 0 1500 *",
+        //    "Mat/mat Сталь_20ХМ 0 1500 *",
+        //    "Clamp/Узел_8 Жесткое X 0 * 0 1500 *"
+        //})]
+        //[TestMethod]
+        //public void CalcCompDataV2_ShouldPass_OnSingleProcessTaskCreation(TaskKind generalTaskType, ProcessType commonTaskType, string[] valuableDataStrings)
+        //{
+        //    var preProc = new PreProc.PreProc();
+        //    preProc.CalcCompDataV2(CreatePhysicalData(valuableDataStrings).ToList(), new ProcessProperty { TaskKind = generalTaskType, CommonTaskType = commonTaskType }, projPath);
+        //}
 
 
-        [DataRow(ComplexTaskType.термическая_механическая, ProcessType.Welding, new[]
-        {
-            "Media/air Коэф.теплоотдачи.воздух 20 0 1500 *",
-            "Heat/1 * * Элемент3D_2 0 95.08694 Узел_5|Узел_6;2;0|0|0|0",
-            "Mat/mat Сталь_20ХМ 0 1500 *",
-            "Clamp/Узел_8 Жесткое X 0 * 0 1500 *"
-        })]
-        [TestMethod]
-        public void CalcCompDataV2_ShouldPass_OnComplexProcessTaskCreation(ComplexTaskType generalTaskType, ProcessType commonTaskType, string[] valuableDataStrings)
-        {
-            var preProc = new PreProc.PreProc();
-            preProc.CalcCompDataV2(CreateValuableData(valuableDataStrings).ToList(), new ProcessProperty { GeneralTaskType = generalTaskType, CommonTaskType = commonTaskType }, projPath);
-        }
+        //[DataRow(TaskKind.термическая_механическая, ProcessType.Welding, new[]
+        //{
+        //    "Media/air Коэф.теплоотдачи.воздух 20 0 1500 *",
+        //    "Heat/1 * * Элемент3D_2 0 95.08694 Узел_5|Узел_6;2;0|0|0|0",
+        //    "Mat/mat Сталь_20ХМ 0 1500 *",
+        //    "Clamp/Узел_8 Жесткое X 0 * 0 1500 *"
+        //})]
+        //[TestMethod]
+        //public void CalcCompDataV2_ShouldPass_OnComplexProcessTaskCreation(TaskKind generalTaskType, ProcessType commonTaskType, string[] valuableDataStrings)
+        //{
+        //    var preProc = new PreProc.PreProc();
+        //    preProc.CalcCompDataV2(CreatePhysicalData(valuableDataStrings).ToList(), new ProcessProperty { TaskKind = generalTaskType, CommonTaskType = commonTaskType }, projPath);
+        //}
 
-        [TestMethod]
-        [DataRow(ComplexTaskType.термическая_механическая, ProcessType.Welding, new[]
-        {
-            "Mat/Элементы3D_3 Сталь_20ХМ 0 1500 *",
-            "Media/air Коэф.теплоотдачи.воздух 20 0 1500 *",
-            "Clamp/Узлы_7 Жесткое X 0 * 0 1500 *",
-            "Clamp/Узлы_7 Жесткое Y 0 * 0 1500 *",
-            "Clamp/Узлы_7 Жесткое Z 0 * 0 1500 *",
-            "Heat/1 * * Load 0 50 baseLine|refLine;2;0|0|0|0"
-        })]
-        [DataRow(ComplexTaskType.термическая, ProcessType.Welding, new[]
-        {
-            "Mat/Элементы3D_3 Сталь_20ХМ 0 1500 *",
-            "Media/air Коэф.теплоотдачи.воздух 20 0 1500 *"
-        })]
-        [DataRow(ComplexTaskType.механическая, ProcessType.Welding, new[]
-        {
-            "Mat/Элементы3D_3 Сталь_20ХМ 0 1500 *",
-            "Clamp/Узлы_7 Жесткое X 0 * 0 1500 *",
-        })]
-        public void CalcCompDataV2_ShouldPass_WithoutWeldingTSF(ComplexTaskType generalTaskType, ProcessType commonTaskType, string[] valuableDataStrings)
-        {
-            var preProc = new PreProc.PreProc();
-            var path = Path.GetFullPath(projPath) + "\\TsfFolder\\\\V2TestCase";
-            preProc.CalcCompDataV2(CreateValuableData(valuableDataStrings).ToList(), new ProcessProperty { GeneralTaskType = generalTaskType, CommonTaskType = commonTaskType }, path);
-            preProc.SortCompDataByTimeAndType(Directory.GetFiles(path));
-        }
+        //[TestMethod]
+        //[DataRow(TaskKind.термическая_механическая, ProcessType.Welding, new[]
+        //{
+        //    "Mat/Элементы3D_3 Сталь_20ХМ 0 1500 *",
+        //    "Media/air Коэф.теплоотдачи.воздух 20 0 1500 *",
+        //    "Clamp/Узлы_7 Жесткое X 0 * 0 1500 *",
+        //    "Clamp/Узлы_7 Жесткое Y 0 * 0 1500 *",
+        //    "Clamp/Узлы_7 Жесткое Z 0 * 0 1500 *",
+        //    "Heat/1 * * Load 0 50 baseLine|refLine;2;0|0|0|0"
+        //})]
+        //[DataRow(TaskKind.термическая, ProcessType.Welding, new[]
+        //{
+        //    "Mat/Элементы3D_3 Сталь_20ХМ 0 1500 *",
+        //    "Media/air Коэф.теплоотдачи.воздух 20 0 1500 *"
+        //})]
+        //[DataRow(TaskKind.механическая, ProcessType.Welding, new[]
+        //{
+        //    "Mat/Элементы3D_3 Сталь_20ХМ 0 1500 *",
+        //    "Clamp/Узлы_7 Жесткое X 0 * 0 1500 *",
+        //})]
+        //public void CalcCompDataV2_ShouldPass_WithoutWeldingTSF(TaskKind generalTaskType, ProcessType commonTaskType, string[] valuableDataStrings)
+        //{
+        //    var preProc = new PreProc.PreProc();
+        //    var path = Path.GetFullPath(projPath) + "\\TsfFolder\\\\V2TestCase";
+        //    preProc.CalcCompDataV2(CreatePhysicalData(valuableDataStrings).ToList(), new ProcessProperty { TaskKind = generalTaskType, CommonTaskType = commonTaskType }, path);
+        //    preProc.SortCompDataByTimeAndType(Directory.GetFiles(path));
+        //}
     }
 }

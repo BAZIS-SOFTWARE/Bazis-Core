@@ -6,6 +6,11 @@ using Project.Interfaces.IO;
 using Model.Interfaces;
 using System;
 using Project.Tasks.IO;
+using Model.GroupsData;
+using Model;
+using Project.Tasks.FrameCreators;
+using Project.Tasks.Functions;
+using System.Runtime.InteropServices.ComTypes;
 
 
 namespace Project.Tasks
@@ -63,6 +68,16 @@ namespace Project.Tasks
             }
         }
 /// <inheritdoc/>
+
+        public IEnumerable<IPhysicalData> Find(string grName)
+        {
+            foreach (var data in taskData)
+            {
+                if (data.Group.Name == grName)
+                    yield return data;
+            }
+        }
+        /// <inheritdoc/>
 
         public void Add(IPhysicalData data)
         {
@@ -166,7 +181,15 @@ namespace Project.Tasks
             this.taskData.Clear();
             this.taskData.AddRange(taskData);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
+        public void ClearNotExisted(IGroup group)
+        {
+            var existData = taskData.Where(x => x.Group == group).ToList();
+
+            foreach (var item in existData)
+                taskData.Remove(item);
+        }
+        /// <inheritdoc/>
 
         public void ClearNotExisted(IGroupData gropData)
         {
@@ -179,39 +202,174 @@ namespace Project.Tasks
         }
 /// <inheritdoc/>
 
-        public IPhysicalData Create(string name, string info,IGroup group)
+        public IPhysicalData Create(DataKind kind, string info,IGroupData groupData)
         {
-            if (group == null)
+            if (groupData == null)
             {
-                throw new ArgumentNullException(nameof(group));
+                throw new ArgumentNullException(nameof(groupData));
             }
 
-            if (name == "Материал" | name == "Материалы")
+            PhysicalData physicalData;
+
+            var infoAr = info.Split(' ');  
+
+            if (kind == DataKind.Материал)
             {
-                return new MatData(group, info);
+                if (info.Split(' ').Length < 4)
+                    throw new Exception("Строка данных имеет неверный формат!");
+
+                float start;
+                if (!float.TryParse(infoAr[2], out start))
+                    throw new Exception("Время старта задано неверно!");
+
+                float stop;
+                if (!float.TryParse(infoAr[3], out stop))
+                    throw new Exception("Время окончания задано неверно!");
+
+                var matData = new MatData(groupData.Find(infoAr[0]), start, stop);
+                matData.MatName = infoAr[1];
+
+                physicalData = matData;
             }
 
-            else if (name == "Среда")
+            else if (kind == DataKind.Среда)
             {
-                return new MediaData(group, info);
+                if (infoAr.Length < 6)
+                    throw new Exception("Строка данных имеет неверный формат.");
+
+                float start;
+                if (!float.TryParse(infoAr[3], out start))
+                    throw new Exception("Время старта задано неверно!");
+
+                float stop;
+                if (!float.TryParse(infoAr[4], out stop))
+                    throw new Exception("Время окончания задано неверно!");
+
+                var mediaData = new MediaData(groupData.Find(infoAr[0]), start, stop);
+
+                mediaData.TrySetHeatExchange(infoAr[1]);
+                mediaData.TrySetTemp(infoAr[2]);
+
+                physicalData = mediaData;
             }
 
-            else if (name == "Нагрузка")
+            else if (kind == DataKind.Нагрузка)
             {
-                return new LoadData(group, info);
+                if (infoAr.Length < 7)
+                    throw new Exception("Строка данных имеет неверный формат!");
+
+                float start;
+                if (!float.TryParse(infoAr[5], out start))
+                    throw new Exception("Время старта задано неверно!");
+
+                float stop;
+                if (!float.TryParse(infoAr[6], out stop))
+                    throw new Exception("Время окончания задано неверно!");
+
+                var loadData = new LoadData(groupData.Find(infoAr[0]), start, stop);
+
+                loadData.TrySetKind(infoAr[1]);
+                loadData.TrySetDirection(infoAr[2]);
+                loadData.TrySetValue(infoAr[3]);
+                loadData.TrySetTimeFunction(infoAr[4]);
+                
+                physicalData = loadData;
             }
 
-            else if (name == "Нагрев")
+            else if (kind == DataKind.Нагрев)
             {
+
+                if (infoAr.Length < 5)
+                    throw new Exception("Строка данных имеет неверный формат!");
+
+                float start;
+                if (!float.TryParse(infoAr[4], out start))
+                    throw new Exception("Время старта задано неверно!");
+
+                float stop;
+                if (!float.TryParse(infoAr[5], out stop))
+                    throw new Exception("Время окончания задано неверно!");
+
                 //dataInfo = dataInfo.Replace("*", "0");
-                return new HeatData(group, info);
+                var heatData =  new HeatData(groupData.Find(infoAr[3]), start, stop);
+
+                heatData.TrySetFrameFunction(infoAr[2]);
+                heatData.TrySetValue(infoAr[0]);
+                heatData.TrySetTimeFunction(infoAr[1]);
+
+                physicalData = heatData;
             }
 
-            else if (name == "Закрепления" | name == "Закрепление")
+            else
             {
-                return new ClampData(group, info);
+                if (infoAr.Length < 6)
+                    throw new Exception("Строка данных имеет неверный формат!");
+
+                float start;
+                if (!float.TryParse(infoAr[5], out start))
+                    throw new Exception("Время старта задано неверно!");
+
+                float stop;
+                if (!float.TryParse(infoAr[6], out stop))
+                    throw new Exception("Время окончания задано неверно!");
+
+                var clampData = new ClampData(groupData.Find(infoAr[0]), start, stop);
+
+                clampData.TrySetKind(infoAr[1]);
+                clampData.TrySetDirection(infoAr[2]);
+                clampData.TrySetValue(infoAr[3]);
+                clampData.TrySetTimeFunction(infoAr[4]);
+
+                physicalData = clampData;
             }
-            else return null;
+
+            if(physicalData.FrameFunction != null)
+                physicalData.FrameFunction.LocalFrame = GetLocalFrame(infoAr,groupData);
+
+            return physicalData;
+        }
+
+        private LocalFrame GetLocalFrame(string [] dataAr, IGroupData groupData)
+        {
+            if (dataAr.Any(x => x.Contains("MRF")))
+            {
+                var mrfStr = dataAr.First(x => x.Contains("MRF"));
+                var stopInd = mrfStr.IndexOf("MRF") + 4;
+                mrfStr = mrfStr.Remove(0, stopInd);
+
+                var mrfAr = mrfStr.Split(';');
+                if (mrfAr.Length == 3)
+                {
+                    var baseLineGrName = mrfAr[0].Split('|')[0];
+                    var refLineGrName = mrfAr[0].Split('|')[1];
+
+                    var baseLine = groupData.Find(baseLineGrName);
+                    var refLine = groupData.Find(refLineGrName);
+                    var vel = float.Parse(mrfAr[1]);
+
+                    return new MovedFrame(baseLine, refLine, vel);
+                }
+                else throw new Exception("Неправильный ввод данных");
+            }
+            else
+            {
+                var srfStr = dataAr.First(x => x.Contains("SRF"));
+                var stopInd = srfStr.IndexOf("SRF") + 4;
+                srfStr = srfStr.Remove(0, stopInd);
+
+                var srfAr = srfStr.Split(';');
+
+                var frameGr = groupData.Find(srfAr[0]);
+                return new StaticFrame(frameGr);
+            }
+        }
+
+        /// <inheritdoc/>
+
+        public bool Contains(string grName)
+        {
+            return taskData.FirstOrDefault(x => x.Group.Name == grName)
+                == null ? false : true;
         }
     }
 }

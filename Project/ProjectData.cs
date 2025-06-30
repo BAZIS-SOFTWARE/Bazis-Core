@@ -3,6 +3,16 @@ using Project.Interfaces;
 using Project.IO;
 using Project.Interfaces.IO;
 using Project.Interfaces.Tasks;
+using Model;
+using Model.Interfaces.ObjectsCollections;
+using System.Collections.Generic;
+using Project.Tasks;
+using System.Data.SqlTypes;
+using Project.Tasks.FrameCreators;
+using System.Drawing;
+using System;
+using Project.Tasks.Functions;
+using Model.GroupsData;
 
 namespace Project
 {
@@ -11,20 +21,20 @@ namespace Project
     /// </summary>
     public class ProjectData : IProjectData
     {
+        IModelData modelData = new ModelData();
+        ITaskData taskData = new TaskData();
+        IGeneralData generalData = new GeneralData();
         /// <inheritdoc/>
-        public IModelData ModelData { get; set; }
+        public IModelData ModelData { get { return modelData; } } 
         /// <inheritdoc/>
 
-        public ITaskData TaskData { get; set; }
-        /// <inheritdoc/>
-        public string ResultDB { get; set; } = "";
+        public ITaskData TaskData { get { return taskData; } } 
 
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void ClearAllData()
         {
             TaskData?.Clear();
-            ResultDB = "";
             ModelData?.ClearAll();
         }
 /// <inheritdoc/>
@@ -53,7 +63,53 @@ namespace Project
         public void ChangeTaskType(TaskType taskType)
         {
             GeneralData.TaskType = taskType;
-            TaskData.Clear();
+            taskData.Clear();
+        }
+/// <inheritdoc/>
+
+        public void ClearMeshCollection(ObjType objType)
+        {
+            modelData.ObjectData.Clear(objType);
+            modelData.GroupData.ClearNotExisted();
+
+            taskData.ClearNotExisted(ModelData.GroupData);
+        }
+        /// <inheritdoc/>
+
+        public void DeleteMeshGroup(string grName)
+        {
+            var gr = modelData.GroupData.Find(grName);
+            if (gr != null)
+            {
+                modelData.GroupData.Remove(gr);
+                taskData.ClearNotExisted(gr);
+            }
+
+        }
+/// <inheritdoc/>
+
+        public void DeleteMeshSet(ObjType objType, string name)
+        {
+            modelData.ObjectData.Remove(objType, name);
+            modelData.GroupData.ClearNotExisted();
+
+            taskData.ClearNotExisted(ModelData.GroupData);
+        }
+/// <inheritdoc/>
+
+        public void DeleteMeshObjects(ObjType objType, IEnumerable<int> objNumbs)
+        {
+
+            foreach (var numb in objNumbs)
+            {
+                var obj = modelData.ObjectData.Find(objType, numb);
+                if (obj != null)
+                    obj.ExistState = false;
+            }
+
+            modelData.ObjectData.ClearNotExisted();
+            modelData.GroupData.ClearNotExisted();
+            taskData.ClearNotExisted(ModelData.GroupData);
         }
 
 
@@ -66,10 +122,10 @@ namespace Project
         public IProjectLoader Loader { get; set; } = new LoadProjectFromTextFormat();
         /// <inheritdoc/>
         public IGeneralData GeneralData 
-        { 
-            get; 
-            set; 
-        } = new GeneralData();
+        {
+            get { return generalData; }
+            
+        } 
 
         /// <summary>
         /// ProjectData
@@ -78,8 +134,8 @@ namespace Project
         /// <param name="_path"></param>
         public ProjectData(string _name, string _path)
         {
-            GeneralData.Name = _name;
-            GeneralData.Path = _path;
+            generalData.Name = _name;
+            generalData.Path = _path;
         }
         /// <summary>
         /// ProjectData

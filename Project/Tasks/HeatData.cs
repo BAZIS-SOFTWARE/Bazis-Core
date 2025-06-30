@@ -3,6 +3,7 @@ using Project.Interfaces.Tasks;
 using Project.Tasks.Functions;
 using System;
 using System.Globalization;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace Project.Tasks
 {
@@ -19,71 +20,54 @@ namespace Project.Tasks
     public class HeatData : PhysicalData
     {
         /// <summary>
-        /// PowerValue
+        /// Heat.J/mm3
         /// </summary>
-        public float Value { get; private set; } = 1;
+        public float Heat { get; set; } = 1;
+
         /// <summary>
         /// PowerFunction
         /// </summary>
-        public string TimeFunction { get; private set; } = "*";
+        public string TimeFunction { get; set; } = "*";
 
         /// <inheritdoc/>
         protected override string GetInfo
         {
             get
             {
-                var mfInfo = "*";
-                if (FrameFunction?.LocalFrame != null)
-                    mfInfo = FrameFunction.LocalFrame.ToString();
-
                 var ffInfo = "*";
                 if (FrameFunction != null)
                     ffInfo = FrameFunction.ToString();
 
                 return
-                  $"{Value} {TimeFunction} {ffInfo} {Group.Name} {StartTime} {StopTime} {mfInfo}";
+                  $"{Heat} {TimeFunction} {ffInfo} {Group.Name} {StartTime} {StopTime}";
             }
-        }
-
-
-        /// <inheritdoc/>
-
-        protected override void SetInfo(string info)
-        {
-            var heatDataAr = info.Split(' ');
-
-            if (heatDataAr.Length < 5)
-                throw new Exception("Строка данных имеет неверный формат!");
-
-            float value;
-            if (float.TryParse(heatDataAr[0], out value))
-                Value = value;
-
-
-            TimeFunction = heatDataAr[1];
-
-            float startTime;
-            if (!float.TryParse(heatDataAr[4], out startTime))
-                throw new Exception("Время старта задано неверно!");
-
-            StartTime = startTime;
-
-            float stopTime;
-            if (!float.TryParse(heatDataAr[5], out stopTime))
-                throw new Exception("Время окончания задано неверно!");
-
-            StopTime = stopTime;
-
-        }     
-
-        public HeatData(IGroup group, string info) : base(group, info)
-        {
-            Kind = DataKind.Нагрев;     
         }
 
         public HeatData(IGroup group, float start, float stop) : base(group, start, stop)
         {
             Kind = DataKind.Нагрев;
+        }
+
+        public void TrySetFrameFunction(string v)
+        {
+            if (v != "*")
+                FrameFunction = (FrameFunction)new FrameFunctionBuilder(v.Split(';'));
+        }
+
+        public bool TrySetValue(string v)
+        {
+            if (!float.TryParse(v, out var heat))
+                return false;
+
+            Heat = heat;
+            return true;
+
+        }
+
+        public void TrySetTimeFunction(string v)
+        {
+            if (v != "*")
+                TimeFunction = v;
         }
     }
 }

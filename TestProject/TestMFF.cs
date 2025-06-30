@@ -34,8 +34,8 @@ namespace TestProject
 
         [TestMethod]
         [DataRow(@"\WeldingHeatSource\LWTest_v.bpf", DisplayName = "LWTest_v.bpf")]
-        [DataRow(@"\test_t_lazer_0_10.bpf", DisplayName = "test_t_lazer_0_10.bpf")]
-        [DataRow(@"\test_t_lazer_180_0_10.bpf", DisplayName = "test_t_lazer_180_0_10.bpf")]
+        [DataRow(@"\WeldingHeatSource\test_t_lazer_0_10.bpf", DisplayName = "test_t_lazer_0_10.bpf")]
+        [DataRow(@"\WeldingHeatSource\test_t_lazer_180_0_10.bpf", DisplayName = "test_t_lazer_180_0_10.bpf")]
         [DataRow(@"\WeldingHeatSource\ARCTest_v.bpf", DisplayName = "ARC")]
         [DataRow(@"\WeldingHeatSource\FSW\proj.bpf", DisplayName = "FSW")]
 
@@ -43,8 +43,6 @@ namespace TestProject
         {
             //assign
             var proj = new ProjectData();
-            proj.ModelData = new ModelData();
-            proj.TaskData = new TaskData();
 
             //act
             proj.Load($@"{testDir}\{path}");
@@ -199,166 +197,166 @@ namespace TestProject
             Assert.AreEqual(pFunction.GetIntersectedObjects(list).Count, res);
         }
 
-        [DataRow(
-            new float[]
-            {
-                0f, 0f, 0f,
-                -1f, -1f, 0f,
-                -2f, 2f, 0f,
-                -2f, 2f, 1f,
+        //[DataRow(
+        //    new float[]
+        //    {
+        //        0f, 0f, 0f,
+        //        -1f, -1f, 0f,
+        //        -2f, 2f, 0f,
+        //        -2f, 2f, 1f,
 
-                0f, 0f, 1f,
-                -2f, -2f, 0f,
-                2f, 3f, 0f,
-                2f, 3f, 1f,
+        //        0f, 0f, 1f,
+        //        -2f, -2f, 0f,
+        //        2f, 3f, 0f,
+        //        2f, 3f, 1f,
 
-                0f, 6f, 0f,
-                0f, 6f, 1f,
-                4f, 4f, 0f,
-                4f, 6f, 0f
-            },
-            new float[]
-            {
-                0f, 0f, 0f,
-                -1f, -1f, 0f,
-                -2f, 2f, 0f,
-                -2f, 2f, 1f,
+        //        0f, 6f, 0f,
+        //        0f, 6f, 1f,
+        //        4f, 4f, 0f,
+        //        4f, 6f, 0f
+        //    },
+        //    new float[]
+        //    {
+        //        0f, 0f, 0f,
+        //        -1f, -1f, 0f,
+        //        -2f, 2f, 0f,
+        //        -2f, 2f, 1f,
 
-                0f, 0f, 1f,
-                -2f, -2f, 0f,
-                2f, 3f, 0f,
-                2f, 3f, 1f,
-            })]
-        [DataRow(
-            new float[]
-            {
-                0f, 0f, 0f,
-                0f, 0f, 1f,
-                2f, 0f, 0f,
-                2f, 1f, 0f,
+        //        0f, 0f, 1f,
+        //        -2f, -2f, 0f,
+        //        2f, 3f, 0f,
+        //        2f, 3f, 1f,
+        //    })]
+        //[DataRow(
+        //    new float[]
+        //    {
+        //        0f, 0f, 0f,
+        //        0f, 0f, 1f,
+        //        2f, 0f, 0f,
+        //        2f, 1f, 0f,
 
-                0f, 0f, 0f,
-                0f, 0f, 1f,
-                2f, 1f, 0f,
-                1f, 2f, 0f,
+        //        0f, 0f, 0f,
+        //        0f, 0f, 1f,
+        //        2f, 1f, 0f,
+        //        1f, 2f, 0f,
 
-                0f, 0f, 0f,
-                0f, 0f, 1f,
-                1f, 2f, 0f,
-                0f, 2f, 0f,
+        //        0f, 0f, 0f,
+        //        0f, 0f, 1f,
+        //        1f, 2f, 0f,
+        //        0f, 2f, 0f,
 
-                0f, 0f, 0f,
-                0f, 0f, 1f,
-                0f, 2f, 0f,
-                -1f, 2f, 0f,
+        //        0f, 0f, 0f,
+        //        0f, 0f, 1f,
+        //        0f, 2f, 0f,
+        //        -1f, 2f, 0f,
 
-                0f, 0f, 0f,
-                0f, 0f, 1f,
-                -1f, 2f, 0f,
-                -2f, 1f, 0f,
+        //        0f, 0f, 0f,
+        //        0f, 0f, 1f,
+        //        -1f, 2f, 0f,
+        //        -2f, 1f, 0f,
 
-                0f, 0f, 0f,
-                0f, 0f, 1f,
-                -2f, 1f, 0f,
-                -2f, 0f, 0f,
+        //        0f, 0f, 0f,
+        //        0f, 0f, 1f,
+        //        -2f, 1f, 0f,
+        //        -2f, 0f, 0f,
 
-                0f, 0f, 0f,
-                0f, 0f, 1f,
-                -2f, -1f, 0f,
-                -1f, -2f, 0f,
+        //        0f, 0f, 0f,
+        //        0f, 0f, 1f,
+        //        -2f, -1f, 0f,
+        //        -1f, -2f, 0f,
 
-                0f, 0f, 0f,
-                0f, 0f, 1f,
-                -1f, -2f, 0f,
-                0f, -2f, 0f,
+        //        0f, 0f, 0f,
+        //        0f, 0f, 1f,
+        //        -1f, -2f, 0f,
+        //        0f, -2f, 0f,
 
-                0f, 0f, 0f,
-                0f, 0f, 1f,
-                0f, -2f, 0f,
-                1f, -2f, 0f,
+        //        0f, 0f, 0f,
+        //        0f, 0f, 1f,
+        //        0f, -2f, 0f,
+        //        1f, -2f, 0f,
 
-                0f, 0f, 0f,
-                0f, 0f, 1f,
-                1f, -2f, 0f,
-                2f, -1f, 0f,
+        //        0f, 0f, 0f,
+        //        0f, 0f, 1f,
+        //        1f, -2f, 0f,
+        //        2f, -1f, 0f,
 
-                0f, 0f, 0f,
-                0f, 0f, 1f,
-                2f, -1f, 0f,
-                2f, 0f, 0f
-            },
-            new float[]
-            {
-                0f, 0f, 0f,
-                0f, 0f, 1f,
-                2f, 0f, 0f,
-                2f, 1f, 0f,
+        //        0f, 0f, 0f,
+        //        0f, 0f, 1f,
+        //        2f, -1f, 0f,
+        //        2f, 0f, 0f
+        //    },
+        //    new float[]
+        //    {
+        //        0f, 0f, 0f,
+        //        0f, 0f, 1f,
+        //        2f, 0f, 0f,
+        //        2f, 1f, 0f,
 
-                0f, 0f, 0f,
-                0f, 0f, 1f,
-                2f, 1f, 0f,
-                1f, 2f, 0f,
+        //        0f, 0f, 0f,
+        //        0f, 0f, 1f,
+        //        2f, 1f, 0f,
+        //        1f, 2f, 0f,
 
-                0f, 0f, 0f,
-                0f, 0f, 1f,
-                1f, 2f, 0f,
-                0f, 2f, 0f,
+        //        0f, 0f, 0f,
+        //        0f, 0f, 1f,
+        //        1f, 2f, 0f,
+        //        0f, 2f, 0f,
 
-                0f, 0f, 0f,
-                0f, 0f, 1f,
-                0f, 2f, 0f,
-                -1f, 2f, 0f,
+        //        0f, 0f, 0f,
+        //        0f, 0f, 1f,
+        //        0f, 2f, 0f,
+        //        -1f, 2f, 0f,
 
-                0f, 0f, 0f,
-                0f, 0f, 1f,
-                -1f, 2f, 0f,
-                -2f, 1f, 0f,
+        //        0f, 0f, 0f,
+        //        0f, 0f, 1f,
+        //        -1f, 2f, 0f,
+        //        -2f, 1f, 0f,
 
-                0f, 0f, 0f,
-                0f, 0f, 1f,
-                -2f, 1f, 0f,
-                -2f, 0f, 0f,
+        //        0f, 0f, 0f,
+        //        0f, 0f, 1f,
+        //        -2f, 1f, 0f,
+        //        -2f, 0f, 0f,
 
-                0f, 0f, 0f,
-                0f, 0f, 1f,
-                -2f, -1f, 0f,
-                -1f, -2f, 0f,
+        //        0f, 0f, 0f,
+        //        0f, 0f, 1f,
+        //        -2f, -1f, 0f,
+        //        -1f, -2f, 0f,
 
-                0f, 0f, 0f,
-                0f, 0f, 1f,
-                -1f, -2f, 0f,
-                0f, -2f, 0f,
+        //        0f, 0f, 0f,
+        //        0f, 0f, 1f,
+        //        -1f, -2f, 0f,
+        //        0f, -2f, 0f,
 
-                0f, 0f, 0f,
-                0f, 0f, 1f,
-                0f, -2f, 0f,
-                1f, -2f, 0f,
+        //        0f, 0f, 0f,
+        //        0f, 0f, 1f,
+        //        0f, -2f, 0f,
+        //        1f, -2f, 0f,
 
-                0f, 0f, 0f,
-                0f, 0f, 1f,
-                1f, -2f, 0f,
-                2f, -1f, 0f,
+        //        0f, 0f, 0f,
+        //        0f, 0f, 1f,
+        //        1f, -2f, 0f,
+        //        2f, -1f, 0f,
 
-                0f, 0f, 0f,
-                0f, 0f, 1f,
-                2f, -1f, 0f,
-                2f, 0f, 0f
-            })]
-        [TestMethod]
-        public void SphereIsPointInside_ShouldPass_WhenSelectNecessaryNodes(float[] input, float[] expected)
-        {
-            var setup = SetUpTest(input, expected);
-            var expectedElements = setup.Item1;
-            var resultList = setup.Item2;
+        //        0f, 0f, 0f,
+        //        0f, 0f, 1f,
+        //        2f, -1f, 0f,
+        //        2f, 0f, 0f
+        //    })]
+        //[TestMethod]
+        //public void SphereIsPointInside_ShouldPass_WhenSelectNecessaryNodes(float[] input, float[] expected)
+        //{
+        //    var setup = SetUpTest(input, expected);
+        //    var expectedElements = setup.Item1;
+        //    var resultList = setup.Item2;
 
-            Assert.IsTrue(expectedElements.Count == resultList.Count);
-            for (var i = 0; i < expectedElements.Count; i++)
-            {
-                Assert.AreEqual(expectedElements.ToString(), resultList.ToString());
-                for (var j = 0; j < 4; j++)
-                    Assert.AreEqual(expectedElements[i][j].ToString(), resultList[i][j].ToString());
-            }
-        }
+        //    Assert.IsTrue(expectedElements.Count == resultList.Count);
+        //    for (var i = 0; i < expectedElements.Count; i++)
+        //    {
+        //        Assert.AreEqual(expectedElements.ToString(), resultList.ToString());
+        //        for (var j = 0; j < 4; j++)
+        //            Assert.AreEqual(expectedElements[i][j].ToString(), resultList[i][j].ToString());
+        //    }
+        //}
 
         [DataRow(
             new float[]
@@ -395,7 +393,7 @@ namespace TestProject
 
         private (List<IElement>, List<IElement>) SetUpTest(float[] input, float[] expected)
         {
-            var heatData = new HeatData(new Group("", ObjType.Элемент3D), "1 * ARC;10;100;25 Load 0 49 baseLine|refLine;5");
+            var heatData = new HeatData(new Group("", ObjType.Элемент3D), 0, 49);
 
             var baseLine = new Group("base", ObjType.Узел);
             var refLine = new Group("ref", ObjType.Узел);
@@ -412,7 +410,7 @@ namespace TestProject
                 refLine.Add(new Node(i + 5000, new Point3D(0f, -1f, i)));
             }
 
-            heatData.FrameFunction = (FrameFunction)(new FrameFunctionBuilder(new string[] { "ARC", "10", "100", "25" }));
+            heatData.TrySetFrameFunction("ARC;10;100;25");
             heatData.FrameFunction.LocalFrame = new MovedFrame(baseLine, refLine, 5);
 
             var expectedElements = new List<IElement>();

@@ -2,6 +2,7 @@
 using ModelControllerInterfaces.MeshObjsUtility;
 using ModelControllerInterfaces.ObjsCreator;
 using Model.Interfaces;
+using ModelController.MeshObjsUtility;
 
 namespace ModelControllerInterfaces
 {
@@ -10,10 +11,6 @@ namespace ModelControllerInterfaces
     /// </summary>
     public interface IModelController
     {
-        /// <summary>
-        /// ModelData
-        /// </summary>
-        IModelData ModelData { get; }
         /// <summary>
         /// InterfacedNodesFinder
         /// </summary>
@@ -46,10 +43,6 @@ namespace ModelControllerInterfaces
         /// </summary>
         IFreeNodesFinder FreeNodesFinder { get; }
 
-        /// <summary>
-        /// PresentersCreator
-        /// </summary>
-        IPresentersCreator PresentersCreator { get; }
         /// <summary>
         /// CrossSectionMaker
         /// </summary>

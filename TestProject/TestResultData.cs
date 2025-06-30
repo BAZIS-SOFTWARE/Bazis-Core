@@ -115,7 +115,6 @@ var loaderDB = new LoadResultsFileDB();
             var file = Path.GetFileName(path);
 
             var project = new ProjectData(file, dir);
-            project.ModelData = new ModelData();
             project.Load();
 
             var times = loaderDB.GetValues(project.GeneralData.Path + $@"\{resName}", "nodes", "Time");
@@ -154,8 +153,6 @@ var loaderDB = new LoadResultsFileDB();
         public void TestMergeResults(string dbName)
         {
             var proj = new ProjectData();
-            proj.ModelData = new ModelData();
-            proj.TaskData = new TaskData();
 
             proj.Load(@"..\..\..\Examples\ProjAndResults\two_tetra_term_cycle_multiStep.bpf");
 
@@ -293,13 +290,11 @@ var loaderDB = new LoadResultsFileDB();
         public void Test_Scene_Result_Presenter(string projName,string resName,string resKind,float min,float max,string resDesc,string resPath )
         {
             var proj = new ProjectData();
-            proj.ModelData = new ModelData();
 
             var ext = Path.GetExtension(projName);
             if (ext == ".bpf2")
                 proj.ModelData.Loader = new LoadModelFromBPF2TextFile();
 
-            proj.TaskData = new TaskData();
             proj.Loader.LoadEvent += (ar1, ar2) => { };
 
             proj.Load($@"{resPath}\{projName}");

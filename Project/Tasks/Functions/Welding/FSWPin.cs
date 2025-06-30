@@ -16,8 +16,7 @@ namespace Project.Tasks.Functions.Welding
 
         public override string ToString()
         {
-            return string.Join(";",
-                Name, RotSpeed, Length, BottomDiam, UpperDiam, parameters[0].Name);
+            return $"{Name};{RotSpeed};{Length};{BottomDiam};{UpperDiam};{parameters[0].Name};{LocalFrame}";
         }
 
         /// <inheritdoc/>

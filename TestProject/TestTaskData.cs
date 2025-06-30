@@ -37,8 +37,7 @@ namespace TestProject
             //assign
 
             var proj = new ProjectData();
-            proj.ModelData = new ModelData();
-            proj.TaskData = new TaskData();
+
             //act
             proj.Load($@"{testDir}\proj_traj.bpf");
 
@@ -57,8 +56,6 @@ namespace TestProject
             //assign
 
             var proj = new ProjectData();
-            proj.ModelData = new ModelData();
-            proj.TaskData = new TaskData();
             //act
             proj.Load($@"{testDir}\proj_traj.bpf");
 
@@ -77,8 +74,7 @@ namespace TestProject
             //assign
 
             var proj = new ProjectData();
-            proj.ModelData = new ModelData();
-            proj.TaskData = new TaskData();
+
             //act
             proj.Load(@"..\..\..\Examples\proj_traj.bpf");
 
@@ -99,8 +95,6 @@ namespace TestProject
         {
             //assign
             var proj = new ProjectData();
-            proj.ModelData = new ModelData();
-            proj.TaskData = new TaskData();
 
             //act
             proj.Load(relativeProjPath);
@@ -135,8 +129,6 @@ namespace TestProject
         {
             //assign
             var proj = new ProjectData();
-            proj.ModelData = new ModelData();
-            proj.TaskData = new TaskData();
 
             //act
             proj.Load(@"..\..\..\Examples\proj_traj.bpf");
@@ -167,8 +159,6 @@ namespace TestProject
         {
             //assign
             var proj = new ProjectData();
-            proj.ModelData = new ModelData();
-            proj.TaskData = new TaskData();
 
             //act
             proj.Load(@"..\..\..\Examples\proj_traj.bpf");
@@ -190,8 +180,7 @@ namespace TestProject
         {
             //assign
             var project = new ProjectData();
-            project.ModelData = new ModelData();
-            project.TaskData = new TaskData();
+
             //act
             project.Load(@"..\..\..\Examples\proj_traj.bpf");
  
@@ -205,153 +194,162 @@ namespace TestProject
         }
 
         // TO DO Добавить тесты на исключения 
-        private void SetUpTestLoadBoundTaskDataException(DataKind dataKind, string dataString)
+        //private void SetUpTestLoadBoundTaskDataException(DataKind dataKind, string dataString)
+        //{
+        //    //assign
+        //    var project = new ProjectData("", "");
+        //    var dataAr = dataString.Split(' ');
+        //    PhysicalData data;
+        //    switch (dataKind)
+        //    {
+        //        case DataKind.Материал:
+        //            data = new MatData(new Group("", ObjType.Элемент3D), dataString)
+        //            { Group = new Group(dataAr[0], ObjType.Элемент3D) };
+        //            break;
+        //        case DataKind.Среда:
+        //            data = new MediaData(new Group("", ObjType.Элемент3D), dataString)
+        //            { Group = new Group(dataAr[1], ObjType.Элемент3D) };
+        //            break;
+        //        case DataKind.Нагрев:
+        //            var heatData = new HeatData(new Group("", ObjType.Элемент3D), dataString)
+        //            { Group = new Group(dataAr[1], ObjType.Элемент3D) };
+        //            var baseLine = new Group("baseLine", ObjType.Узел);
+        //            var refLine = new Group("refLine", ObjType.Узел);
+
+        //            heatData.FrameFunction.LocalFrame = new MovedFrame(baseLine, refLine, 5);
+
+        //            data = heatData;
+        //            break;
+        //        case DataKind.Закрепление:
+        //            data = new ClampData(new Group("", ObjType.Узел), dataString)
+        //            { Group = new Group(dataAr[0], ObjType.Узел) };
+        //            break;
+        //        default:
+        //            data = new LoadData(new Group("", ObjType.Узел), dataString)
+        //            { Group = new Group(dataAr[0], ObjType.Узел) };
+        //            break;
+        //    }
+        //}
+
+        //[DataTestMethod]
+        //[DataRow(DataKind.Среда, "")]
+        //[DataRow(DataKind.Среда, "Элементы3D_3")]
+
+        //[DataRow(DataKind.Материал, "")]
+        //[DataRow(DataKind.Материал, "Элементы3D_3")]
+        //[DataRow(DataKind.Материал, "Элементы3D_3 Сталь_10 ")]
+
+        //[DataRow(DataKind.Нагрев, "")]
+        //[DataRow(DataKind.Нагрев, "ARC;4;100;25 Load 0 49.99998")]
+        //[DataRow(DataKind.Нагрев, "Load 0 49.99998 baseLine|refLine;2;startNodes;startNodes;0|0|0|0")]
+        //[DataRow(DataKind.Нагрев, "ARC;4;100;25 0 49.99998 baseLine|refLine;2;startNodes;startNodes;0|0|0|0")]
+        //[DataRow(DataKind.Нагрев, "ARC;4;100;25 Load 49.99998 baseLine|refLine;2;startNodes;startNodes;0|0|0|0")]
+        //[DataRow(DataKind.Нагрев, "ARC;4;100;25 Load 0 baseLine|refLine;2;startNodes;startNodes;0|0|0|0")]
+
+        //[DataRow(DataKind.Закрепление, "")]
+
+        //[DataRow(DataKind.Нагрузка, "")]
+        //[DataRow(DataKind.Нагрузка, "Сила Z 0 * 0 1500 *")]
+        //[DataRow(DataKind.Нагрузка, "Узлы_7 Z 0 * 0 1500 *")]
+        //[DataRow(DataKind.Нагрузка, "Узлы_7 Сила 0 * 0 1500 *")]
+        //[DataRow(DataKind.Нагрузка, "Узлы_7 Сила Z * 0 1500 *")]
+        //[ExpectedException(typeof(Exception))]
+        //public void TestTaskDataException(DataKind dataKind, string dataString) =>
+        //    SetUpTestLoadBoundTaskDataException(dataKind, dataString);
+
+        //[DataTestMethod]
+        //[DataRow(DataKind.Материал, "Сталь_20ХМ 0 1500 *")]
+        //[DataRow(DataKind.Материал, "Элементы3D_3 Сталь_20ХМ  1500 *")]
+        //[DataRow(DataKind.Материал, "Элементы3D_3 Сталь_20ХМ 0  *")]
+        //[DataRow(DataKind.Материал, "Элементы3D_3 Сталь_10 * * *")]
+
+        //[DataRow(DataKind.Среда, "Элементы3D_2  20 0 1")]
+        //[DataRow(DataKind.Среда, "Коэф.теплоотдачи.воздух 20 0 1 *")]
+        //[DataRow(DataKind.Среда, "Элементы3D_2 20 0 1 *")]
+        //[DataRow(DataKind.Среда, "Элементы3D_2 Коэф.теплоотдачи.воздух 0 1 *")]
+        //[DataRow(DataKind.Среда, "Элементы3D_2 Коэф.теплоотдачи.воздух 20 1 *")]
+        //[DataRow(DataKind.Среда, "Элементы3D_2 Коэф.теплоотдачи.воздух 20 0 *")]
+
+        //[DataRow(DataKind.Закрепление, "Жесткое X * 0 1500 *")]
+        //[DataRow(DataKind.Закрепление, "Узлы_7 X * 0 1500 *")]
+        //[DataRow(DataKind.Закрепление, "Узлы_7 Жесткое * 0 1500 *")]
+        //[DataRow(DataKind.Закрепление, "Узлы_7 Жесткое X 0.0.0 1500 *")]
+        //[DataRow(DataKind.Закрепление, "Узлы_7 Жесткое X r5r 1500 *")]
+        //[DataRow(DataKind.Закрепление, "Узлы_7 Жесткое X !!! 0 *")]
+
+        //[DataRow(DataKind.Нагрузка, "Узлы_7 Сила Z 0 0 1500 *")]
+        //[DataRow(DataKind.Нагрузка, "Узлы_7 Сила Z 0 0,0! 1500 *")]
+        //[DataRow(DataKind.Нагрузка, "Узлы_7 Сила Z 0 000!& 0 *")]
+        //[ExpectedException(typeof(Exception))]
+        //public void TestTaskDataFormatException(DataKind dataKind, string dataString) =>
+        //    SetUpTestLoadBoundTaskDataException(dataKind, dataString);
+
+        [DataTestMethod]
+        [DataRow("1 PowerCycle * Load 0 49.99998")]
+        [DataRow("0.001 * * Load 0 49.99998")]
+        [DataRow("1 timeFunc * Load 0.0001 49")]
+        
+
+        public void CheckHeatData(string dataString)
         {
             //assign
-            var project = new ProjectData("", "");
-            var dataAr = dataString.Split(' ');
-            PhysicalData data;
-            switch (dataKind)
-            {
-                case DataKind.Материал:
-                    data = new MatData(new Group("", ObjType.Элемент3D), dataString)
-                    { Group = new Group(dataAr[0], ObjType.Элемент3D) };
-                    break;
-                case DataKind.Среда:
-                    data = new MediaData(new Group("", ObjType.Элемент3D), dataString)
-                    { Group = new Group(dataAr[1], ObjType.Элемент3D) };
-                    break;
-                case DataKind.Нагрев:
-                    var heatData = new HeatData(new Group("", ObjType.Элемент3D), dataString)
-                    { Group = new Group(dataAr[1], ObjType.Элемент3D) };
-                    var baseLine = new Group("baseLine", ObjType.Узел);
-                    var refLine = new Group("refLine", ObjType.Узел);
+            var strAr = dataString.Split(' ');
+            var startTime = float.Parse(strAr[4]);
+            var stopTime = float.Parse(strAr[5]);
 
-                    heatData.FrameFunction.LocalFrame = new MovedFrame(baseLine, refLine, 5);
+            var heatData = new HeatData(new Group(strAr[3], ObjType.Узел), startTime, stopTime);
+            
+            heatData.TrySetFrameFunction(strAr[2]);
+            heatData.TrySetValue(strAr[0]);
+            heatData.TrySetTimeFunction(strAr[1]);
 
-                    data = heatData;
-                    break;
-                case DataKind.Закрепление:
-                    data = new ClampData(new Group("", ObjType.Узел), dataString)
-                    { Group = new Group(dataAr[0], ObjType.Узел) };
-                    break;
-                default:
-                    data = new LoadData(new Group("", ObjType.Узел), dataString)
-                    { Group = new Group(dataAr[0], ObjType.Узел) };
-                    break;
-            }
+            //assert
+            Assert.AreEqual($"{DataKind.Нагрев} : {dataString}", heatData.ToString());
+
         }
 
-        [DataTestMethod]
-        [DataRow(DataKind.Среда, null)]
-        [DataRow(DataKind.Материал, null)]
-        [DataRow(DataKind.Нагрев, null)]
-        [DataRow(DataKind.Закрепление, null)]
-        [DataRow(DataKind.Нагрузка, null)]
-        [ExpectedException(typeof(NullReferenceException))]
-        public void TestTaskDataNullReferenceException(DataKind dataKind, string dataString) =>
-            SetUpTestLoadBoundTaskDataException(dataKind, dataString);
+        [DataRow("Узлы_7 Жесткое X 0.255 * 0 1500 *")]
+        [DataRow("Узлы_7 Жесткое None 0.255 * 0 1500 *")]
+        [DataRow("Узлы_7 Жесткое X 1 Функция 0 1500 *")]
+        [DataRow("Узлы_7 Жесткое Y 0 * 0 1500 *")]
+        [DataRow("Узлы_7 Жесткое Z 0 * 0 1500 *")]
 
-        [DataTestMethod]
-        [DataRow(DataKind.Среда, "")]
-        [DataRow(DataKind.Среда, "Элементы3D_3")]
-
-        [DataRow(DataKind.Материал, "")]
-        [DataRow(DataKind.Материал, "Элементы3D_3")]
-        [DataRow(DataKind.Материал, "Элементы3D_3 Сталь_10 ")]
-
-        [DataRow(DataKind.Нагрев, "")]
-        [DataRow(DataKind.Нагрев, "ARC;4;100;25 Load 0 49.99998")]
-        [DataRow(DataKind.Нагрев, "Load 0 49.99998 baseLine|refLine;2;startNodes;startNodes;0|0|0|0")]
-        [DataRow(DataKind.Нагрев, "ARC;4;100;25 0 49.99998 baseLine|refLine;2;startNodes;startNodes;0|0|0|0")]
-        [DataRow(DataKind.Нагрев, "ARC;4;100;25 Load 49.99998 baseLine|refLine;2;startNodes;startNodes;0|0|0|0")]
-        [DataRow(DataKind.Нагрев, "ARC;4;100;25 Load 0 baseLine|refLine;2;startNodes;startNodes;0|0|0|0")]
-
-        [DataRow(DataKind.Закрепление, "")]
-
-        [DataRow(DataKind.Нагрузка, "")]
-        [DataRow(DataKind.Нагрузка, "Сила Z 0 * 0 1500 *")]
-        [DataRow(DataKind.Нагрузка, "Узлы_7 Z 0 * 0 1500 *")]
-        [DataRow(DataKind.Нагрузка, "Узлы_7 Сила 0 * 0 1500 *")]
-        [DataRow(DataKind.Нагрузка, "Узлы_7 Сила Z * 0 1500 *")]
-        [ExpectedException(typeof(Exception))]
-        public void TestTaskDataException(DataKind dataKind, string dataString) =>
-            SetUpTestLoadBoundTaskDataException(dataKind, dataString);
-
-        [DataTestMethod]
-        [DataRow(DataKind.Материал, "Сталь_20ХМ 0 1500 *")]
-        [DataRow(DataKind.Материал, "Элементы3D_3 Сталь_20ХМ  1500 *")]
-        [DataRow(DataKind.Материал, "Элементы3D_3 Сталь_20ХМ 0  *")]
-        [DataRow(DataKind.Материал, "Элементы3D_3 Сталь_10 * * *")]
-
-        [DataRow(DataKind.Среда, "Элементы3D_2  20 0 1")]
-        [DataRow(DataKind.Среда, "Коэф.теплоотдачи.воздух 20 0 1 *")]
-        [DataRow(DataKind.Среда, "Элементы3D_2 20 0 1 *")]
-        [DataRow(DataKind.Среда, "Элементы3D_2 Коэф.теплоотдачи.воздух 0 1 *")]
-        [DataRow(DataKind.Среда, "Элементы3D_2 Коэф.теплоотдачи.воздух 20 1 *")]
-        [DataRow(DataKind.Среда, "Элементы3D_2 Коэф.теплоотдачи.воздух 20 0 *")]
-
-        [DataRow(DataKind.Закрепление, "Жесткое X * 0 1500 *")]
-        [DataRow(DataKind.Закрепление, "Узлы_7 X * 0 1500 *")]
-        [DataRow(DataKind.Закрепление, "Узлы_7 Жесткое * 0 1500 *")]
-        [DataRow(DataKind.Закрепление, "Узлы_7 Жесткое X 0.0.0 1500 *")]
-        [DataRow(DataKind.Закрепление, "Узлы_7 Жесткое X r5r 1500 *")]
-        [DataRow(DataKind.Закрепление, "Узлы_7 Жесткое X !!! 0 *")]
-
-        [DataRow(DataKind.Нагрузка, "Узлы_7 Сила Z 0 0 1500 *")]
-        [DataRow(DataKind.Нагрузка, "Узлы_7 Сила Z 0 0,0! 1500 *")]
-        [DataRow(DataKind.Нагрузка, "Узлы_7 Сила Z 0 000!& 0 *")]
-        [ExpectedException(typeof(Exception))]
-        public void TestTaskDataFormatException(DataKind dataKind, string dataString) =>
-            SetUpTestLoadBoundTaskDataException(dataKind, dataString);
-
-        [DataTestMethod]
-        [DataRow(DataKind.Нагрев, "1 PowerCycle * Load 0 49.99998 *")]
-        [DataRow(DataKind.Нагрев, "0.001 * * Load 0 49.99998 *")]
-        [DataRow(DataKind.Нагрев, "1 timeFunc * Load 0.0001 49 *")]
-        [DataRow(DataKind.Среда, "air Коэф.теплоотдачи.воздух 20 0 1500 *")]
-        [DataRow(DataKind.Среда, "air * 25 0 1500 *")]
-        [DataRow(DataKind.Среда, "air * Термоцикл 0 1500 *")]
-        [DataRow(DataKind.Среда, "air 0.002 Термоцикл 0 1500 *")]
-        [DataRow(DataKind.Среда, "air Коэф.теплоотдачи.воздух 20.01 0 1500 *")]
-        [DataRow(DataKind.Среда, "Элементы3D_2 Коэф.теплоотдачи.воздух 20 0 1 *")]
-        [DataRow(DataKind.Закрепление, "Узлы_7 Жесткое X 0.255 * 0 1500 *")]
-        [DataRow(DataKind.Закрепление, "Узлы_7 Жесткое None 0.255 * 0 1500 *")]
-        [DataRow(DataKind.Закрепление, "Узлы_7 Жесткое X 1 Функция 0 1500 *")]
-        [DataRow(DataKind.Закрепление, "Узлы_7 Жесткое Y 0 * 0 1500 *")]
-        [DataRow(DataKind.Закрепление, "Узлы_7 Жесткое Z 0 * 0 1500 *")]
-        [DataRow(DataKind.Нагрузка, "Узлы_7 Сила None 0 * 0 1500 *")]
-        [DataRow(DataKind.Нагрузка, "Узлы_7 Сила Z 0 * 0 1500 *")]
-        [DataRow(DataKind.Нагрузка, "Узлы_7 Сила X 0.0001 loadCycle 0 1500 *")]
-        [DataRow(DataKind.Материал, "Элементы3D_3 Сталь_20ХМ 0 1500 *")]
-        public void TestCreateTaskData(DataKind dataKind,  string dataString)
+        public void CheckClampData(string dataString)
         {
             //assign
-            var project = new ProjectData("","");
-            var dataAr = dataString.Split(' ');
-            PhysicalData data;
-            switch (dataKind)
-            {
-                case DataKind.Материал:
-                    data = new MatData(new Group(dataAr[0], ObjType.Элемент3D), dataString);
-                    break;
-                case DataKind.Среда:
-                    data = new MediaData(new Group(dataAr[0], ObjType.Элемент2D), dataString);
-                    break;
-                case DataKind.Нагрев:
-                    var heatData = new HeatData(new Group(dataAr[3], ObjType.Элемент3D), dataString);
-                    data = heatData;
-                    break;
-                case DataKind.Закрепление:
-                    data = new ClampData(new Group(dataAr[0], ObjType.Узел), dataString);
-                    break;
-                default:
-                    data = new LoadData(new Group(dataAr[0], ObjType.Узел), dataString);
-                    break;
-            }
-            //assert
+            var strAr = dataString.Split(' ');
+            var startTime = float.Parse(strAr[5]);
+            var stopTime = float.Parse(strAr[6]);
 
-            Assert.AreEqual($"{dataKind} : {dataString}",data.ToString() );
+            var clampData = new ClampData(new Group(strAr[0], ObjType.Узел), startTime, stopTime);
+            clampData.TrySetKind(strAr[1]);
+            clampData.TrySetDirection(strAr[2]);
+            clampData.TrySetValue(strAr[3]);
+            clampData.TrySetTimeFunction(strAr[4]);
+
+            //assert
+            Assert.AreEqual($"{DataKind.Закрепление} : {dataString}", clampData.ToString());
+
+        }
+
+        [DataRow("Узлы_7 Сила None 0 * 0 1500 *")]
+        [DataRow("Узлы_7 Сила Z 0 * 0 1500 *")]
+        [DataRow("Узлы_7 Сила X 0.0001 loadCycle 0 1500 *")]
+        public void CheckLoadData(string dataString)
+        {
+            //assign
+            var strAr = dataString.Split(' ');
+            var startTime = float.Parse(strAr[5]);
+            var stopTime = float.Parse(strAr[6]);
+
+            var loadData = new LoadData(new Group(strAr[0], ObjType.Узел), startTime,stopTime);
+            loadData.TrySetKind(strAr[1]);
+            loadData.TrySetDirection(strAr[2]);
+            loadData.TrySetValue(strAr[3]);
+            loadData.TrySetTimeFunction(strAr[4]);
+
+            //assert
+            Assert.AreEqual($"{DataKind.Нагрузка} : {dataString}", loadData.ToString());
 
         }
 
@@ -367,9 +365,15 @@ namespace TestProject
         public void CheckMediaData(string dataString, MediaType mediaType, string tempVal)
         {
             //assign
+            var strAr = dataString.Split(' ');
+            var startTime = float.Parse(strAr[3]);
+            var stopTime = float.Parse(strAr[4]);
 
-            var data = new MediaData(new Group("air", ObjType.Элемент2D), dataString);
+            var data = new MediaData(new Group("air", ObjType.Элемент2D), startTime,stopTime);
 
+            data.TrySetTemp(strAr[2]);
+            data.TrySetHeatExchange(strAr[1]);
+            
             //assert
             Assert.AreEqual($"{DataKind.Среда} : {dataString}", data.ToString());
             Assert.AreEqual(data.MediaType, mediaType);

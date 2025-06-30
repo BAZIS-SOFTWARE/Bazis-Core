@@ -28,6 +28,7 @@ namespace Project.IO
                 sw.WriteLine("Название : {0}", project.GeneralData.Name);
                 sw.WriteLine("Сведения : {0}", project.GeneralData.Comments);
                 sw.WriteLine("Вид : {0}", project.GeneralData.TaskType);
+                sw.WriteLine("Тип : {0}", project.GeneralData.TaskKind);
                 sw.WriteLine("БазаМатериалов : {0}", project.GeneralData.Materials);
                 sw.WriteLine("БазаФункций : {0}", project.GeneralData.Functions);
 

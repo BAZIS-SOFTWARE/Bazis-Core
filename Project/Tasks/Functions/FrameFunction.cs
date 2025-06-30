@@ -50,10 +50,5 @@ namespace Project.Tasks.Functions
 
 
         public abstract bool IsOverlappingSelf(float velocity);
-        /// <inheritdoc/>
-        public override string ToString()
-        {
-            return $"{Name}";
-        }
     }
 }

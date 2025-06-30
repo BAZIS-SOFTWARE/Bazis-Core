@@ -20,14 +20,53 @@ namespace Project.Interfaces.Tasks
         /// <summary>
         /// 2d axi simmetry case
         /// </summary>
-        AxiPlain = 3,
+        AxiPlain = 4,
         /// <summary>
         /// 3d case
         /// </summary>
-        Volume = 4
+        Volume = 6
     }
+    /// <summary>
+    /// Задачи для препроцессора для создания пользовательских задач
+    /// </summary>
+    public enum TaskKind : int
+    {
+        /// <summary>
+        /// ХИМИЧЕСКАЯ задача с одиночным процессом.
+        /// Один тип файлов задач
+        /// </summary>
+        химическая = 1,
+        /// <summary>
+        /// ТЕРМИЧЕСКАЯ задача с одиночным процессом.
+        /// Один тип файлов задач
+        /// </summary>
+        термическая = 2,
+        /// <summary>
+        /// МЕХАНИЧЕСКАЯ задача с одиночным процессом.
+        /// Один тип файлов задач
+        /// </summary>
+        механическая = 4,
+        /// <summary>
+        /// ТЕРМИЧЕСКО_ХИМИЧЕСКАЯ задача с комплексным процессом из термической и химической.
+        /// Два тип файлов задач.
+        /// Главный - термическая
+        /// </summary>
+        термическая_химическая = термическая & химическая,
+        /// <summary>
+        /// ТЕРМИЧЕСКО_МЕХАНИЧЕСКАЯ задача с комплексным процессом состоящим из термической и механической.
+        /// Два тип файлов задач.
+        /// Главный - термическая
+        /// </summary>
+        термическая_механическая = термическая & механическая
+    };
     public interface ITaskData : IList<IPhysicalData>
     {
+        /// <summary>
+        /// Find by group name
+        /// </summary>
+        /// <param name="grName"></param>
+        /// <returns></returns>
+        IEnumerable<IPhysicalData> Find(string grName);
         /// <summary>
         /// Find all data according to name
         /// </summary>
@@ -76,10 +115,22 @@ namespace Project.Interfaces.Tasks
         /// <summary>
         /// Create data by name (dataType)
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="dataInfo"></param>
         /// <param name="group"></param>
+        /// <returns></returns>           
+        void ClearNotExisted(IGroup group);
+        /// <summary>
+        /// Create
+        /// </summary>
+        /// <param name="kind"></param>
+        /// <param name="dataInfo"></param>
+        /// <param name="groupData"></param>
         /// <returns></returns>
-        IPhysicalData Create(string name, string dataInfo, IGroup group);
+        IPhysicalData Create(DataKind kind, string dataInfo, IGroupData groupData);
+        /// <summary>
+        /// Contains
+        /// </summary>
+        /// <param name="grName"></param>
+        /// <returns></returns>
+        bool Contains(string grName);
     }
 }

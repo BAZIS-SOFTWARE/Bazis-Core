@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace PostProc.ScenePresenter
+namespace PostProc
 {
     public class ItemRange
     {

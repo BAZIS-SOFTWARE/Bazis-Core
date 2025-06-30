@@ -25,69 +25,18 @@ namespace Project.Tasks
         /// </summary>
         //public string MediaProcess { get; internal set; } 
 
-        public MediaData(IGroup group, string info) : base(group, info)
-        {
-            Kind = DataKind.Среда;
-        }
-
         public MediaData(IGroup group, float start, float stop) : base(group, start, stop)
         {
             Kind = DataKind.Среда;
         }
 
 
-        /// <inheritdoc/>
-
-        protected override void SetInfo(string info)
-        {
-            var medDataAr = info.Split(' ');
-
-            if (medDataAr.Length < 6)
-                throw new Exception("Строка данных имеет неверный формат.");
-
-            if (medDataAr[1] != "*")
-            {
-                MediaType = MediaType.HeatFlux;
-                var resEx = 0.0f;
-                if (float.TryParse(medDataAr[1], out resEx))
-                    HeatExchangeValue = resEx;
-                else
-                    HeatExchangeFunc = medDataAr[1];
-            }
-
-            if (medDataAr[2] == "*")
-                throw new Exception("Граничное условие тепловой задачи должно содержать сведения о температуре.");
-
-            var res = 0.0f;
-                if (float.TryParse(medDataAr[2], out res))
-                    TemperatureValue = res;
-                else
-                    TemperatureFunc = medDataAr[2];
-            
-
-            float startTime;
-            if (!float.TryParse(medDataAr[3], out startTime))
-                throw new Exception("Время старта задано неверно!");
-
-            StartTime = startTime;
-
-            float stopTime;
-            if (!float.TryParse(medDataAr[4], out stopTime))
-                throw new Exception("Время окончания задано неверно!");
-
-            StopTime = stopTime;
-        }
         /// <summary>
         /// HeatExchangeValue
         /// </summary>
         public float HeatExchangeValue 
         {
             get { return heatExchangeValue; }
-            set
-            {
-                heatExchangeFunc = "*";
-                heatExchangeValue = value;
-            }
         } 
         /// <summary>
         /// HeatExchangeFunc
@@ -95,14 +44,9 @@ namespace Project.Tasks
         public string HeatExchangeFunc 
         {
             get { return heatExchangeFunc; }
-            set
-            {
-                heatExchangeFunc = value;
-                heatExchangeValue = 1;
-            }
         }
 
-        private float heatExchangeValue = 1;
+        private float heatExchangeValue = 0;
         private string heatExchangeFunc = "*";
         private string temperatureFunc = "*";
         private float temperatureValue = 1;
@@ -116,11 +60,6 @@ namespace Project.Tasks
             {
                 return temperatureValue;
             }  
-            set
-            {
-                temperatureFunc = "*";
-                temperatureValue = value;
-            }
         }
         /// <summary>
         /// Temperature of media or body
@@ -128,17 +67,19 @@ namespace Project.Tasks
         public string TemperatureFunc
         {
             get { return temperatureFunc; }
-            set
-            {
-                temperatureFunc = value;
-                temperatureValue = 1;
-            }
         }
 
         /// <summary>
         /// MediaType
         /// </summary>
-        public MediaType MediaType { get; set; } = MediaType.ConstantTemp;
+        public MediaType MediaType 
+        { 
+            get
+            {
+                return heatExchangeFunc == "*" & heatExchangeValue == 0 ?
+                    MediaType.ConstantTemp : MediaType.HeatFlux;
+            }
+        }
 
 /// <inheritdoc/>
 
@@ -175,6 +116,52 @@ Group.Name, "*", TemperatureFunc, StartTime, StopTime, mfInfo);
                       Group.Name, HeatExchangeFunc, TemperatureFunc, StartTime, StopTime, mfInfo);
                 }
             }
+        }
+        /// <summary>
+        /// TrySetTemp
+        /// </summary>
+        /// <param name="v"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void TrySetTemp(string v)
+        {
+            if (v == "*")
+                throw new Exception("Граничное условие тепловой задачи должно содержать сведения о температуре.");
+
+            var res = 0.0f;
+            if (float.TryParse(v, out res))
+            {
+                temperatureValue = res;
+                temperatureFunc = "*";
+            }
+  
+            else
+            {
+                temperatureValue = 1;
+                temperatureFunc = v;
+            }
+    
+        }
+        /// <summary>
+        /// TrySetHeatExchange
+        /// </summary>
+        /// <param name="v"></param>
+        public void TrySetHeatExchange(string v)
+        {
+            if (float.TryParse(v, out var media))
+            {
+                heatExchangeValue = media;
+                heatExchangeFunc = "*";
+            }
+               
+            else 
+            {
+                if (v != "*")
+                    heatExchangeValue = 1;
+                else
+                    heatExchangeValue = 0;
+                heatExchangeFunc = v;
+            }
+
         }
     }
 }

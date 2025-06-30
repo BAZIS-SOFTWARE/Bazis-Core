@@ -24,7 +24,6 @@ namespace TestProject
         private ProjectData StartUpProjForTests(string path)
         {
             var proj = new ProjectData();
-            proj.ModelData = new ModelData();
 
             proj.Loader.LoadEvent += (ar1, ar2) => { };
             proj.Load(path);
@@ -37,8 +36,7 @@ namespace TestProject
             //assign
 
             var proj = new ProjectData();
-            proj.ModelData = new ModelData();
-            proj.TaskData = new TaskData();
+
             proj.Loader.LoadEvent += (ar1, ar2) => { };
             //act
             proj.Load(@"..\..\..\Examples\proj_traj.bpf");
@@ -59,7 +57,6 @@ namespace TestProject
             //assign
 
             var proj = new ProjectData();
-            proj.ModelData = new ModelData();
 
             proj.Loader.LoadEvent += (ar1, ar2) => { };
             //act
@@ -81,7 +78,6 @@ namespace TestProject
             //assign
 
             var proj = new ProjectData();
-            proj.ModelData = new ModelData();
 
             proj.Loader.LoadEvent += (ar1, ar2) => { };
             //act
@@ -101,7 +97,6 @@ namespace TestProject
             (string baseLineGroupName, string refLineGroupName, string startGroupName, string endGroupName)
         {
             var proj = new ProjectData();
-            proj.ModelData = new ModelData();
 
             proj.Loader.LoadEvent += (ar1, ar2) => { };
             proj.Load(@"..\..\..\Examples\TrajTest.bpf");

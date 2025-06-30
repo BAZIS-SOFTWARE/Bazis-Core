@@ -1,4 +1,5 @@
 ﻿using Project.Interfaces;
+using Project.Interfaces.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -8,15 +9,6 @@ using System.Runtime.Serialization;
 
 namespace Project.Results
 {
-    /// <summary>
-    /// TaskKind
-    /// </summary>
-    public enum TaskKind
-    {
-        термическая,
-        механическая,
-        химическая
-    }
     /// <summary>
     /// Result
     /// </summary>

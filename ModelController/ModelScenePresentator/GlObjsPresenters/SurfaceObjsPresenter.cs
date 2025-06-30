@@ -25,51 +25,10 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
         //public bool IsVolumeObjs { get; } = false;
         /// <inheritdoc/>
         public ViewMode ViewMode { get; set; } = ViewMode.LineSurface;
-
         /// <inheritdoc/>
+        public string Name { get; set; }
 
-        public void HideInsideSurfaces()
-        {
-            var surfDict = new Dictionary<string, List<ISurface<U>>>();
 
-            foreach (var element in surfaceObjects)
-            {
-                if (element.ViewState & element.NumberOfSides > 1)
-                    foreach (var surface in element.GetSurfaces())
-                    {
-                        var numbers = surface.GetVertexes().Select(x => x.Number).ToArray();
-
-                        Array.Sort(numbers);
-                        var surfInd = string.Join("", numbers);   //numbers[0].ToString() + numbers[1].ToString() + numbers[2].ToString();
-
-                        if (!surfDict.ContainsKey(surfInd))
-                        {
-                            surface.ViewState = true;
-                            surfDict.Add(surfInd, new List<ISurface<U>> () { surface });
-                        }
-
-                        else
-                        {
-                            surface.ViewState = false;
-                            surfDict[surfInd][0].ViewState = false;
-                            surfDict[surfInd].Add(surface);
-                        }
-                    }
-            }
-
-        }
-
-        /// <inheritdoc/>
-
-        public void ShowInsideSurfaces()
-        {
-            foreach (var element in surfaceObjects)
-            {
-                if (element.ViewState)
-                    foreach (var surface in element.GetSurfaces())
-                        surface.ViewState = true;
-            }
-        }
         /// <inheritdoc/>
 
         public Tuple<int, int, int,int> CreateIndexes()
@@ -196,17 +155,20 @@ namespace ModelController.ModelScenePresentator.GlObjsPresenters
 
         public int[] CreateSeparators()
         {
+            if (surfaceObjects.Count == 0)
+                return new int[0];
+
             var surfObjs = surfaceObjects.ToArray();
             var separators = new int[surfObjs.Length + 1];
-
             var stride = 0;
-            var i = 0;
 
-            for(; i < surfObjs.Length; ++i)
+            var i = 0;
+            for (; i < surfObjs.Length; ++i)
             {
                 separators[i] = stride;
-                foreach(var surface in surfObjs[i].GetSurfaces())
-                    stride += surface.NumberOfPoints - 2;
+                foreach (var surface in surfObjs[i].GetSurfaces())
+                    if (surface.ViewState)
+                        stride += surface.NumberOfPoints - 2;
             }
             separators[i] = stride;
 

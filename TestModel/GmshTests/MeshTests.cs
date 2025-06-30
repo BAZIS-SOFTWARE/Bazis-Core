@@ -355,7 +355,7 @@ namespace TestModel.GmshTests
             
             //act
             modelData.ObjectData.Remove(ObjType.Узел, delNodeNumber);   
-            modelData.ObjectData.E2DCollection.ClearNotExisted();
+            modelData.ObjectData.E2DCollection.RemoveNotExistedObjects();
 
             //assert
             Assert.AreEqual(expElementsAfterDel, modelData.ObjectData.E2DCollection.Count);

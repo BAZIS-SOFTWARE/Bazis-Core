@@ -109,14 +109,14 @@ namespace Model.ObjectsCollections
         }
 /// <inheritdoc/>
 
-        public void ClearEmpty()
+        public void ClearEmptySets()
         {
             objects = objects.Where(x => x.Value.Count != 0).
     ToDictionary(x => x.Key, y => y.Value);
         }
 /// <inheritdoc/>
 
-        public void ClearNotExisted()
+        public void RemoveNotExistedObjects()
         {
             foreach (var item in objects)
                 item.Value.ClearNotExisted();
@@ -242,6 +242,20 @@ public bool ContainsName(string collName)
                     item.Value.SetNumber(number);
                     objects[newSetName].Add(number,item.Value);
                 }
+            }
+        }
+/// <inheritdoc/>
+
+        public void ChangeName(string oldName, string newName)
+        {
+            ObjectsSet<T> temp = new ObjectsSet<T>(newName);
+            if (ContainsName(oldName))
+            {
+                var item1= objects[oldName];
+                temp = item1;
+                temp.Name = newName;
+                objects.Remove(oldName);
+                objects.Add(newName, temp);
             }
         }
     }
