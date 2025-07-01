@@ -24,8 +24,11 @@
  </Target>-->
    
   <ItemGroup>
+    <Compile Remove="Interfaces\GmshController\**" />
     <Compile Remove="MeshObjsCreator\Delone2D\**" />
+    <EmbeddedResource Remove="Interfaces\GmshController\**" />
     <EmbeddedResource Remove="MeshObjsCreator\Delone2D\**" />
+    <None Remove="Interfaces\GmshController\**" />
     <None Remove="MeshObjsCreator\Delone2D\**" />
   </ItemGroup>
   <ItemGroup>
@@ -51,8 +54,5 @@
   <ItemGroup>
     <ProjectReference Include="..\GmshApi\GmshApi.csproj" />
     <ProjectReference Include="..\Model\Model.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Interfaces\GmshController\" />
   </ItemGroup>
 </Project>
