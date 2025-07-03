@@ -162,5 +162,12 @@ namespace Model.Interfaces
         /// </summary>
         /// <returns></returns>
         int GetMaxElementNumber();
+        /// <summary>
+        /// GetSetInfo
+        /// </summary>
+        /// <param name="objType"></param>
+        /// <param name="setName"></param>
+        /// <returns></returns>
+        ISetInfo GetSetInfo(ObjType objType, string setName);
     }
 }

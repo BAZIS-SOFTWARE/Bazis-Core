@@ -572,7 +572,55 @@ namespace Model
                     break;
             }
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
+
+        public ISetInfo GetSetInfo(ObjType objType, string setName)
+        {
+            switch (objType)
+            {
+                case ObjType.Точка:
+                    return PointsSet;
+                case ObjType.Кривая:
+                    {
+                        return 
+                            CurveCollection.ContainsName(setName) ?
+                            CurveCollection[setName] : null;
+                    }
+                case ObjType.Поверхность:
+                    {
+                        return
+                        SurfaceCollection.ContainsName(setName) ?
+                        SurfaceCollection[setName] : null;
+                    }
+                case ObjType.Объем:
+                    {
+                        return
+VolumeCollection.ContainsName(setName) ?
+VolumeCollection[setName] : null;
+                    }
+                case ObjType.Узел:
+                    return NodesSet;
+                case ObjType.Элемент1D:
+                    {
+                        return
+    E1DCollection.ContainsName(setName) ?
+    E1DCollection[setName] : null;
+                    }
+                case ObjType.Элемент2D:
+                    {
+                        return
+E2DCollection.ContainsName(setName) ?
+E2DCollection[setName] : null;
+                    }
+                default:
+                    {
+                        return
+E3DCollection.ContainsName(setName) ?
+E3DCollection[setName] : null;
+                    }
+            }
+        }
+        /// <inheritdoc/>
 
         public ISetInfo GetSetInfo(ObjType objType, int objNumber)
         {
