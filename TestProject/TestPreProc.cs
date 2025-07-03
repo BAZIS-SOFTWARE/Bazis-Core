@@ -24,7 +24,7 @@ namespace TestProject
     public class TestPreProc
     {
         
-        private static string projPath =  Path.GetFullPath(@".\..\..\..\..\TestProject\CalcCompDataTest\");
+        private static string projPath =  Path.GetFullPath(@".\..\..\..\TestProject\CalcCompDataTest\");
 
         /// <summary>
         /// Создать ValuableDat, для параметризации тестов
@@ -205,55 +205,65 @@ namespace TestProject
 
 
 
-        //[TestMethod]
-        //[DataRow(new string[]
-        //{
-        //    "mat/Элементы3D_3 Сталь_20ХМ 0 1500 *",
-        //    "media/air Коэф.теплоотдачи.воздух 20 0 1500 *",
-        //    "media/air Коэф.теплоотдачи.воздух 20 0 3 *",
-        //    "media/air Коэф.теплоотдачи.воздух 20 103 106 *",
-        //    "media/air Коэф.теплоотдачи.воздух 20 206 209 *",
-        //    "clamp/Узел_8 Жесткое X 0 * 0 1500 *"
-        //})]
-        //[DataRow(new string[]
-        //{
-        //    "mat/Элементы3D_3 Сталь_20ХМ 0 1500 *",
-        //    "media/air Коэф.теплоотдачи.воздух 20 0 1500 *",
-        //    "media/air Коэф.теплоотдачи.воздух 20 0 3 *",
-        //    "media/air Коэф.теплоотдачи.воздух 20 103 106 *",
-        //    "media/air Коэф.теплоотдачи.воздух 20 206 209 *",
-        //    "clamp/Узел_8 Жесткое X 0 * 0 1500 *",
-        //    "clamp/Узел_8 Жесткое X 0 * 0 3 *",
-        //    "clamp/Узел_8 Жесткое X 0 * 103 106 *",
-        //    "clamp/Узел_8 Жесткое X 0 * 206 209 *",
-        //})]
-        //[DataRow(new string[]
-        //{
-        //    "mat/Элементы3D_3 Сталь_20ХМ 0 100 *",
-        //    "media/air Коэф.теплоотдачи.воздух 20 0 100 *",
-        //    "media/air Коэф.теплоотдачи.воздух 20 0 5 *",
-        //    "media/air Коэф.теплоотдачи.воздух 20 15 20 *",
-        //    "media/air Коэф.теплоотдачи.воздух 20 25 30 *",
-        //    "clamp/Узел_8 Жесткое X 0 * 0 100 *"
-        //})]
-        //[DataRow(new string[]
-        //{
-        //    "mat/Элементы3D_3 Сталь_20ХМ 0 100 *",
-        //    "media/air Коэф.теплоотдачи.воздух 20 0 100 *",
-        //    "media/air Коэф.теплоотдачи.воздух 20 0 5 *",
-        //    "media/air Коэф.теплоотдачи.воздух 20 15 20 *",
-        //    "media/air Коэф.теплоотдачи.воздух 20 25 30 *",
-        //    "clamp/Узел_8 Жесткое X 0 * 0 100 *",
-        //    "clamp/Узел_8 Жесткое X 0 * 0 5 *",
-        //    "clamp/Узел_8 Жесткое X 0 * 15 20 *",
-        //    "clamp/Узел_8 Жесткое X 0 * 25 30 *",
-        //})]
-        //public void CalcCompData_ShouldPass_WhenMainBoundDataBoundsMinors(string[] parameters)
-        //{
-        //    var preProc = new PreProc.PreProc();
-        //    preProc.CalcCompDataV1(CreatePhysicalData(parameters).ToList(), ProcessType.Welding, projPath + "TsfFolder\\");
-        //    preProc.CalcCompDataV2(CreatePhysicalData(parameters).ToList(), new ProcessProperty { TaskKind = TaskKind.термическая_механическая, CommonTaskType = ProcessType.Welding }, projPath);
-        //}
+        [TestMethod]
+        [DataRow(@"ModelForPreProcTestRightJoint.bpf2", new string[]
+        {
+            "mat/Элементы3D_3 Сталь_20ХМ 0 1500 *",
+            "media/air Коэф.теплоотдачи.воздух 20 0 1500 *",
+            "media/air Коэф.теплоотдачи.воздух 20 0 3 *",
+            "media/air Коэф.теплоотдачи.воздух 20 103 106 *",
+            "media/air Коэф.теплоотдачи.воздух 20 206 209 *",
+            "clamp/Узел_8 Жесткое X 0 * 0 1500 *"
+        })]
+        [DataRow(@"ModelForPreProcTestRightJoint.bpf2", new string[]
+        {
+            "mat/Элементы3D_3 Сталь_20ХМ 0 1500 *",
+            "media/air Коэф.теплоотдачи.воздух 20 0 1500 *",
+            "media/air Коэф.теплоотдачи.воздух 20 0 3 *",
+            "media/air Коэф.теплоотдачи.воздух 20 103 106 *",
+            "media/air Коэф.теплоотдачи.воздух 20 206 209 *",
+            "clamp/Узел_8 Жесткое X 0 * 0 1500 *",
+            "clamp/Узел_8 Жесткое X 0 * 0 3 *",
+            "clamp/Узел_8 Жесткое X 0 * 103 106 *",
+            "clamp/Узел_8 Жесткое X 0 * 206 209 *",
+        })]
+        [DataRow(@"ModelForPreProcTestRightJoint.bpf2", new string[]
+        {
+            "mat/Элементы3D_3 Сталь_20ХМ 0 100 *",
+            "media/air Коэф.теплоотдачи.воздух 20 0 100 *",
+            "media/air Коэф.теплоотдачи.воздух 20 0 5 *",
+            "media/air Коэф.теплоотдачи.воздух 20 15 20 *",
+            "media/air Коэф.теплоотдачи.воздух 20 25 30 *",
+            "clamp/Узел_8 Жесткое X 0 * 0 100 *"
+        })]
+        [DataRow(@"ModelForPreProcTestRightJoint.bpf2", new string[]
+        {
+            "mat /Элементы3D_3 Сталь_20ХМ 0 100 *",
+            "media/air Коэф.теплоотдачи.воздух 20 0 100 *",
+            "media/air Коэф.теплоотдачи.воздух 20 0 5 *",
+            "media/air Коэф.теплоотдачи.воздух 20 15 20 *",
+            "media/air Коэф.теплоотдачи.воздух 20 25 30 *",
+            "clamp/Узел_8 Жесткое X 0 * 0 100 *",
+            "clamp/Узел_8 Жесткое X 0 * 0 5 *",
+            "clamp/Узел_8 Жесткое X 0 * 15 20 *",
+            "clamp/Узел_8 Жесткое X 0 * 25 30 *",
+        })]
+        public void CalcCompData_ShouldPass_WhenMainBoundDataBoundsMinors(string file, string[] parameters)
+        {
+            var project = new ProjectData();
+
+            project.Load(projPath + file);
+
+            var resData = new List<IPhysicalData>();
+
+            foreach (var data in project.TaskData)
+                resData.Add(data as PhysicalData);
+
+            var preProc = new PreProc.PreProc();
+            
+            Assert.ThrowsException<Exception>(() => preProc.CalcCompDataV1(resData, ProcessType.Welding, projPath + "TsfFolder\\"));
+            Assert.ThrowsException<Exception>(() => preProc.CalcCompDataV2(resData, new ProcessProperty { TaskKind = TaskKind.термическая_механическая, CommonTaskType = ProcessType.Welding }, projPath));
+        }
 
         //[TestMethod]
         //[DataRow(0, 120, 1, 1500, 0)]
@@ -270,7 +280,7 @@ namespace TestProject
         //        $"heat/1 * * Load {heatStart} {heatStop} baseLine|refLine;2;0|0|0|0",
         //        "mat/Элементы3D_3 Сталь_20ХМ 0 1500 *"
         //    }).ToList();
-            
+
         //    var preProc = new PreProc.PreProc();
         //    Assert.ThrowsException<Exception>(() => preProc.CalcCompDataV1(valuableData, pt, projPath + "TsfFolder\\"));
         //    Assert.ThrowsException<Exception>(() => preProc.CalcCompDataV2(valuableData, new ProcessProperty { TaskKind = TaskKind.термическая_механическая, CommonTaskType = pt }, projPath));
