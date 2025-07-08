@@ -33,10 +33,6 @@ namespace Project.Interfaces
         /// </summary>
         string Functions { get; set; }
         /// <summary>
-        /// ResultDB
-        /// </summary>
-        string ResultDB { get; set; }
-        /// <summary>
         /// TaskType
         /// </summary>
         TaskType TaskType { get; set; }

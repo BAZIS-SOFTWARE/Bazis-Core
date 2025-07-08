@@ -163,10 +163,6 @@
       <Project>{1fe044a5-fe40-4f59-b05e-5cdb5bb25282}</Project>
       <Name>GmshApi</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ModelController\ProjectController.csproj">
-      <Project>{AEB42567-6BD4-414D-96FD-870661CBA3EC}</Project>
-      <Name>ProjectController</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Model\Model.csproj">
       <Project>{a6b0cebb-8f7c-467e-90bb-924103dae30b}</Project>
       <Name>Model</Name>
@@ -174,6 +170,10 @@
     <ProjectReference Include="..\PrGeometry\Geometry.csproj">
       <Project>{95ed498b-f3e1-4d57-8039-960ac9d790f5}</Project>
       <Name>Geometry</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ProjectController\ProjectController.csproj">
+      <Project>{f816c836-8834-4cb4-875c-4b81a7a9afef}</Project>
+      <Name>ProjectController</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

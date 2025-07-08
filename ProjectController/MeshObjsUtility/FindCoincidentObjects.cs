@@ -1,0 +1,98 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Geometry;
+using Octree;
+using System.Numerics;
+using Model.Interfaces;
+using ModelControllerInterfaces;
+
+namespace ProjectController.MeshObjsUtility
+{
+    public class FindCoincidentObjects : ICoincidentObjectsFinder
+    {
+        /// <inheritdoc/>
+        public event Action<object, float> ProgressEvent;
+/// <inheritdoc/>
+
+
+        public List<List<int>> Find<T>(List<T> modelObjects, float distance)
+            where T : IModelObject
+        {
+            var tree = BuildTree(modelObjects);
+            modelObjects.ForEach(obj => obj.ViewState = false);
+            var result = new List<List<int>>();
+
+            var spec = new List<int>();
+
+            foreach (var obj in modelObjects)
+            {
+                if (!obj.ViewState)
+                {
+                    var point = obj.CalcCentr();
+                    var neighbourElements = RadialSearch(point, distance, tree);
+                    neighbourElements.ForEach(x => x.ViewState = true);
+                    if(neighbourElements.Count > 1)
+                        result.Add(neighbourElements.Select(x => x.Number).ToList());
+                }
+
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Построение октодерева из списка элементов
+        /// </summary>
+        private PointOctree<T> BuildTree<T>(List<T> items) 
+            where T : IModelObject
+        {
+            var initialSize = GetModelSize(items);
+            var initialPosition = GetCentralPoint(items);
+            var tree = new PointOctree<T>(initialSize, initialPosition, 1e-6f);
+            foreach (var item in items)
+            {
+                var point = item.CalcCentr();
+                tree.Add(item, new Vector3(point._x, point._y, point._z));
+            }
+            return tree;
+        }
+
+        /// <summary>
+        /// Возвращает все объекты октодерева, находящиеся внутри сферы заданного радиуса, 
+        /// с центром в заданной точке
+        /// </summary>
+        private List<T> RadialSearch<T>(Point3D point, float radius, PointOctree<T> tree)
+            where T : IModelObject
+        {
+            return tree.GetNearby(new Vector3(point._x, point._y, point._z), radius)
+                .ToList();
+        }
+
+        /// <summary>
+        /// Вычисляет центральную точку всей модели
+        /// </summary>
+        private Vector3 GetCentralPoint<T>(List<T> items)
+            where T : IModelObject
+        {
+            var points = items.Select(i => i.CalcCentr());
+            var x = points.Select(p => p._x).Sum() / points.Count();
+            var y = points.Select(p => p._y).Sum() / points.Count();
+            var z = points.Select(p => p._z).Sum() / points.Count();
+            return new Vector3(x, y, z);
+        }
+
+        /// <summary>
+        /// Вычисляет размер модели - диаметр сферы, которая описывает её
+        /// </summary>
+        private float GetModelSize<T>(List<T> items)
+            where T : IModelObject
+        {
+            var points = items.Select(i => i.CalcCentr());
+            var dx = Math.Abs(points.Select(p => p._x).Max() - points.Select(p => p._x).Min());
+            var dy = Math.Abs(points.Select(p => p._y).Max() - points.Select(p => p._y).Min());
+            var dz = Math.Abs(points.Select(p => p._z).Max() - points.Select(p => p._z).Min());
+            return Math.Max(dx, Math.Max(dy, dz));
+        }
+    }
+}

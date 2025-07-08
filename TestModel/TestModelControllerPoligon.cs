@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using Model.GeometryObjects;
 using Model.Interfaces;
-using ModelController.ModelScenePresentator;
+using ProjectController.ModelScenePresentator;
 
 namespace TestModel
 {

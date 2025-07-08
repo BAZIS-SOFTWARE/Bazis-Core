@@ -4,7 +4,7 @@ using System;
 
 namespace Project.Tasks
 {
-    public class MatData : PhysicalData
+    public class MatData : CondData
     {
         public MatData(IGroup group, float start, float stop) : base(group, start, stop)
         {

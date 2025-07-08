@@ -5,33 +5,22 @@ using System.Linq;
 using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Project;
-using Model;
 using System.Globalization;
 using System.Threading;
-using ModelController.MeshObjsUtility;
-using Project.Interfaces;
-using Results.ResultsData;
 using Project.Interfaces.Tasks;
-using Model.MeshObjects;
-using ModelController.ModelScenePresentator;
 using Model.Interfaces.MeshObjects;
-using Model.Interfaces;
 using System.Data;
 using System.IO;
 using Project.Results.IO;
 using PostProc.ScenePresenter;
 using PostProc;
-using Project.Tasks;
 using Project.Results;
 using Results.ScenePresenter;
 using PostProc.IO.GridExport;
 using PostProc.IO.ResultExport;
 using Model.IO;
-using Model.Interfaces.ObjectsCollections;
-using Model.ObjectsCollections;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using System.Xml.Linq;
+using ProjectController.MeshObjsUtility;
+using ProjectController.ModelScenePresentator;
 
 
 namespace TestProject

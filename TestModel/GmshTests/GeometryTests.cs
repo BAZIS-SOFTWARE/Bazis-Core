@@ -6,7 +6,7 @@ using Geometry;
 using Model.Interfaces;
 using Model;
 using Model.MeshObjects;
-using ModelController.GmshController;
+using ProjectController.GmshController;
 
 namespace TestModel.GmshTests
 {

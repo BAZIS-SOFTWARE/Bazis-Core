@@ -2,22 +2,18 @@
 using Model;
 using Model.Interfaces;
 using Model.IO;
-using ModelController.ModelScenePresentator;
 using System.Collections.Generic;
 using Model.MeshObjects;
-using ModelController.ModelScenePresentator.GlObjsPresenters;
 using Model.GeometryObjects;
 using ModelControllerInterfaces;
 using System.IO;
 using Geometry;
 using System.Linq;
-using GmshApi;
-using Model.Interfaces.MeshObjects;
-using ModelController.GmshController;
-using System.Xml.Linq;
-using System;
-using ModelController.MeshObjsUtility;
 using Model.IO.STL;
+using ProjectController.ModelScenePresentator.GlObjsPresenters;
+using ProjectController.ModelScenePresentator;
+using ProjectController.MeshObjsUtility;
+using ProjectController.GmshController;
 
 namespace TestModel
 {

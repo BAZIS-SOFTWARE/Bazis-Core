@@ -58,7 +58,7 @@
     <Compile Include="Interfaces\Tasks\ITaskData.cs" />
     <Compile Include="Interfaces\Tasks\ITimeDependentData.cs" />
     <Compile Include="Interfaces\Tasks\ITrajectory.cs" />
-    <Compile Include="Interfaces\Tasks\IPhysicalData.cs" />
+    <Compile Include="Interfaces\Tasks\ICondData.cs" />
     <Compile Include="Tasks\Functions\Welding\ArcD.cs" />
     <Compile Include="Tasks\Functions\Welding\ArcDBuilder.cs" />
     <Compile Include="Tasks\Functions\Welding\DoubleEllips.cs" />
@@ -117,7 +117,7 @@
     <Compile Include="Tasks\MediaData.cs" />
     <Compile Include="Tasks\TaskData.cs" />
     <Compile Include="Tasks\Utilities\Interpolation.cs" />
-    <Compile Include="Tasks\PhysicalData.cs" />
+    <Compile Include="Tasks\CondData.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icon.png">

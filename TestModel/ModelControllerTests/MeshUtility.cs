@@ -2,15 +2,15 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using Model.MeshObjects;
-using ModelController.MeshObjsCreator;
 using Model.Interfaces.MeshObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Model.Interfaces;
 using Model.IO;
-using ModelController.MeshObjsUtility;
 using System.IO;
+using ProjectController.MeshObjsUtility;
+using ProjectController.MeshObjsCreator;
 
 namespace TestModel.ModelControllerTests
 {
