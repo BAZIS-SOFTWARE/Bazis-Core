@@ -189,9 +189,9 @@
     <Content Include="Examples\ProjAndResults\watcher_1.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ModelController\ModelController.csproj">
-      <Project>{a27fb4c7-19a3-4ad6-8eb3-1eae77654719}</Project>
-      <Name>ModelController</Name>
+    <ProjectReference Include="..\ModelController\ProjectController.csproj">
+      <Project>{AEB42567-6BD4-414D-96FD-870661CBA3EC}</Project>
+      <Name>ProjectController</Name>
     </ProjectReference>
     <ProjectReference Include="..\Model\Model.csproj">
       <Project>{a6b0cebb-8f7c-467e-90bb-924103dae30b}</Project>

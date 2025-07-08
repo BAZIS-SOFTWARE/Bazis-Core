@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Geometry", "PrGeometry\Geom
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Model", "Model\Model.csproj", "{58939D21-AA8F-4C2F-98C5-732C6426B82F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModelController", "ModelController\ModelController.csproj", "{AEB42567-6BD4-414D-96FD-870661CBA3EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectController", "ModelController\ProjectController.csproj", "{AEB42567-6BD4-414D-96FD-870661CBA3EC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GmshApi", "GmshApi\GmshApi.csproj", "{AFDD2EF2-F604-4BD2-9FA8-30EEC8998F1B}"
 EndProject
@@ -29,9 +29,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Элементы решен
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8F452548-69C6-4B04-AA4C-358C15F0FB83}"
-	ProjectSection(SolutionItems) = preProject
-		.editorconfig = .editorconfig
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
