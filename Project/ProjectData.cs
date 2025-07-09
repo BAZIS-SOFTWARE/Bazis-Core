@@ -32,11 +32,7 @@ namespace Project
 
         /// <inheritdoc/>
 
-        public void ClearAllData()
-        {
-            TaskData?.Clear();
-            ModelData?.ClearAll();
-        }
+        
 /// <inheritdoc/>
 
         public void Load(string projectFile)
@@ -58,61 +54,6 @@ namespace Project
         {
             Loader.Load(this, $@"{GeneralData.Path}\{GeneralData.Name}");
         }
-/// <inheritdoc/>
-
-        public void ChangeTaskType(TaskType taskType)
-        {
-            GeneralData.TaskType = taskType;
-            taskData.Clear();
-        }
-/// <inheritdoc/>
-
-        public void ClearMeshCollection(ObjType objType)
-        {
-            modelData.ObjectData.Clear(objType);
-            modelData.GroupData.ClearNotExisted();
-
-            taskData.ClearNotExisted(ModelData.GroupData);
-        }
-        /// <inheritdoc/>
-
-        public void DeleteMeshGroup(string grName)
-        {
-            var gr = modelData.GroupData.Find(grName);
-            if (gr != null)
-            {
-                modelData.GroupData.Remove(gr);
-                taskData.ClearNotExisted(gr);
-            }
-
-        }
-/// <inheritdoc/>
-
-        public void DeleteMeshSet(ObjType objType, string name)
-        {
-            modelData.ObjectData.Remove(objType, name);
-            modelData.GroupData.ClearNotExisted();
-
-            taskData.ClearNotExisted(ModelData.GroupData);
-        }
-/// <inheritdoc/>
-
-        public void DeleteMeshObjects(ObjType objType, IEnumerable<int> objNumbs)
-        {
-
-            foreach (var numb in objNumbs)
-            {
-                var obj = modelData.ObjectData.Find(objType, numb);
-                if (obj != null)
-                    obj.ExistState = false;
-            }
-
-            modelData.ObjectData.ClearNotExisted();
-            modelData.GroupData.ClearNotExisted();
-            taskData.ClearNotExisted(ModelData.GroupData);
-        }
-
-
 
         /// <inheritdoc/>
 

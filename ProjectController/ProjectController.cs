@@ -21,15 +21,20 @@ using System.Linq;
 using Model.Interfaces.MeshObjects;
 using System.Drawing;
 using Geometry;
+using System.Numerics;
+using Model.GeometryObjects;
+using Model.Interfaces.ObjectsCollections;
+using Model.ObjectsCollections;
 
 namespace ProjectController
 {
     /// <summary>
-    /// ModelController
+    /// ProjectController
     /// </summary>
-    public class ProjectController : IProjectController
+    public partial class ProjectController : IProjectController
     {
-        ProjectData project;
+        ProjectData project = new ProjectData();
+
 /// <inheritdoc/>
 
 
@@ -53,47 +58,80 @@ namespace ProjectController
             project.Load();
         }
 
+
+
+        /// <inheritdoc/>
+        /// 
+        public void ClearAllData()
+        {
+            TaskData?.Clear();
+            ModelData?.ClearAll();
+        }
+/// <inheritdoc/>
+
+        public void ChangeTaskType(TaskType taskType)
+        {
+            GeneralData.TaskType = taskType;
+            TaskData.Clear();
+        }
         /// <inheritdoc/>
 
-        IInterfacedNodesFinder interfacedNodesFinder { get; } = new InterfacedNodesFinder();
-
-        public Dictionary<int, List<int>> FindInterfacedNodes(List<int> nodes, int elemDim)
+        public void ClearModelCollection(ObjType objType)
         {
-            if (elemDim > 3 | elemDim < 0)
-                throw new Exception("Неправильная размерность элементов");
+            ModelData.ObjectData.Clear(objType);
+            ModelData.GroupData.ClearNotExisted();
 
-            if(elemDim == 0)
-                return interfacedNodesFinder.Find(nodes, ModelData.ObjectData.GetAllElements());
-            else if (elemDim == 1)
-                return interfacedNodesFinder.Find(nodes, ModelData.ObjectData.E1DCollection.GetObjects());
-            else if (elemDim == 2)
-                return interfacedNodesFinder.Find(nodes, ModelData.ObjectData.E2DCollection.GetObjects());
-            else
-                return interfacedNodesFinder.Find(nodes, ModelData.ObjectData.E3DCollection.GetObjects());
+            TaskData.ClearNotExisted(ModelData.GroupData);
         }
+        /// <inheritdoc/>
 
-        public Dictionary<int, List<int>> FindInterfacedNodes(int elemDim)
+        public void DeleteModelGroup(string grName)
         {
-            if (elemDim > 3 | elemDim < 0)
-                throw new Exception("Неправильная размерность элементов");
+            var gr = ModelData.GroupData.Find(grName);
+            if (gr != null)
+            {
+                ModelData.GroupData.Remove(gr);
+                TaskData.ClearNotExisted(gr);
+            }
 
-            if (elemDim == 0)
-                return interfacedNodesFinder.Find(ModelData.ObjectData.GetAllElements());
-            else if (elemDim == 1)
-                return interfacedNodesFinder.Find(ModelData.ObjectData.E1DCollection.GetObjects());
-            else if (elemDim == 2)
-                return interfacedNodesFinder.Find(ModelData.ObjectData.E2DCollection.GetObjects());
-            else
-                return interfacedNodesFinder.Find(ModelData.ObjectData.E3DCollection.GetObjects());
         }
+        /// <inheritdoc/>
+
+        public void DeleteModelSet(ObjType objType, string name)
+        {
+            ModelData.ObjectData.Remove(objType, name);
+            ModelData.GroupData.ClearNotExisted();
+
+            TaskData.ClearNotExisted(ModelData.GroupData);
+        }
+        /// <inheritdoc/>
+
+        public void DeleteModelObjects(ObjType objType, IEnumerable<int> objNumbs)
+        {
+
+            foreach (var numb in objNumbs)
+            {
+                var obj = ModelData.ObjectData.Find(objType, numb);
+                if (obj != null)
+                    obj.ExistState = false;
+            }
+
+            ModelData.ObjectData.ClearNotExisted();
+            ModelData.GroupData.ClearNotExisted();
+            TaskData.ClearNotExisted(ModelData.GroupData);
+        } 
 
         /// <inheritdoc/>
 
         IExtractor2DFrom3D extractor2DFrom3D { get; } = new Extract2DFrom3D();
+/// <inheritdoc/>
 
-        public IEnumerable<Element2D> Create2DForm3D(int StartNumber)
+        public void Create2DForm3D(string setName)
         {
-            return extractor2DFrom3D.Create(StartNumber, ModelData.ObjectData.E3DCollection.GetObjects());
+            //return extractor2DFrom3D.Create(StartNumber, ModelData.ObjectData.E3DCollection.GetObjects());
+            var number = ModelData.ObjectData.E2DCollection.GetMaxNumber() + 1;
+            var e2d = extractor2DFrom3D.Create(number, ModelData.ObjectData.E3DCollection.GetObjects().ToArray());
+            ModelData.ObjectData.E2DCollection.AddRange(setName, e2d);
         }
 
 /// <inheritdoc/>
@@ -103,7 +141,7 @@ namespace ProjectController
 
         public IEnumerable<ILineObject<Node>> CreateBoundaryEdges(List<string> linesNodes)
         {
-            return boundaryEdgesFinder.CreateBoundaryEdges(linesNodes);
+            return boundaryEdgesFinder.CreateBoundaryEdges(linesNodes, ModelData);
         }
         /// <inheritdoc/>
         public List<string> FindBoundaryEdges()
@@ -114,46 +152,97 @@ namespace ProjectController
         }
 
         ISelectionHelper selectionHelper { get; } = new SelectionHelper();
+/// <inheritdoc/>
 
         public List<int> SelectNodeInDirection(float angleInGradus, int numbFirst, int numbSecond, Color color)
         {
             return selectionHelper.SelectNodeInDirection(ModelData.ObjectData, angleInGradus, numbFirst, numbSecond, color);
         }
-
-        public void SelectNodeInPlane(Plane plane, Color color)
+        /// <inheritdoc/>
+        public void SelectNodeInPlane(Geometry.Plane plane, Color color)
         {
             selectionHelper.SelectNodeInPlane(ModelData.ObjectData, plane, color);
         }
+        /// <inheritdoc/>
+        public List<int> SelectE2DInPlane(float angleInGradus, int startNumber, Color color)
+        {
+            return selectionHelper.SelectE2DInPlane(ModelData.ObjectData,angleInGradus, startNumber, color);
+        }
 /// <inheritdoc/>
 
-        public IFreeNodesFinder FreeNodesFinder { get; } = new FreeNodesFinder();
-
-/// <inheritdoc/>
-
-        public ICrossSectionMaker CrossSectionMaker { get; } = new CrossSection();
-/// <inheritdoc/>
-
-        public ICoincidentObjectsFinder CoincidentObjectsFinder { get; } = new FindCoincidentObjects();
-/// <inheritdoc/>
-
-        public IObjectsMerger ObjectsMerger { get; } = new MergeObjects();
-/// <inheritdoc/>
-
-        public ISurfaceMeshCreator SurfaceMeshCreator { get; set; }
+        IFreeNodesFinder freeNodesFinder { get; } = new FreeNodesFinder();
+        /// <inheritdoc/>
+        public IEnumerable<int> FindFreeNodes()
+        {
+            return freeNodesFinder.Find(ModelData.ObjectData);
+        }
 
 /// <inheritdoc/>
 
-        public IObjectsRenumber ObjectsRenumber { get; } = new ObjectsRenumber();
+        ICrossSectionMaker crossSectionMaker { get; } = new CrossSection();
 /// <inheritdoc/>
 
-        public INormalCalculator NormalCalculator { get; } = new NormalsCalculator();
+        public SurfaceFigure GetSectionSurfaces(Geometry.Plane plane)
+        {
+            return crossSectionMaker.GetSectionSurfaces(ModelData.ObjectData.E3DCollection.GetObjects(), plane);
+        }
+
+        ICoincidentObjectsFinder coincidentObjectsFinder { get; } = new FindCoincidentObjects();
+        /// <inheritdoc/>
+        public List<List<int>> FindCoincidentObjects(ObjType objType, float distance)
+        {
+            var objs = ModelData.ObjectData.GetObjects(objType).ToList();
+            return coincidentObjectsFinder.Find(objs, distance);
+        }
+
+        IObjectsMerger objectsMerger { get; } = new MergeObjects();
+
+        /// <inheritdoc/>
+        public void MergeNodes(List<List<int>> numbers)
+        {
+            objectsMerger.Merge(numbers, ModelData.ObjectData.NodesSet);
+        }
+
+        ISurfaceMeshCreator surfaceMeshCreator { get; set; }
+
 /// <inheritdoc/>
 
-        public IVolumeMeshCreator VolumeMeshCreator { get; set; }
+        IObjectsRenumber objectsRenumber { get; } = new ObjectsRenumber();
+/// <inheritdoc/>
+
+        INormalCalculator normalCalculator { get; } = new NormalsCalculator();
+        /// <inheritdoc/>
+        public Dictionary<int, Point3D> CalcNodeNormals()
+        {
+            return normalCalculator.CalcNodeNormals(ModelData.ObjectData.E3DCollection.GetObjects());
+        }
+        /// <inheritdoc/>
+        public IEnumerable<Curve> CalcElemsNormals(int elemDim)
+        {
+            if (elemDim > 3 | elemDim < 2)
+                throw new Exception("Неправильная размерность элементов");
+
+            if (elemDim == 2)
+                return normalCalculator.CalcElemsNormals(ModelData.ObjectData.E2DCollection.GetObjects());
+            else
+                return normalCalculator.CalcElemsNormals(ModelData.ObjectData.E3DCollection.GetObjects());
+
+        }
+        /// <inheritdoc/>
+
+        IVolumeMeshCreator volumeMeshCreator { get; set; }
 
 /// <inheritdoc/>
 
-        public IExtractor1DFrom2D Extractor1DFrom2D { get; } = new Extract1DFrom2D();
+        IExtractor1DFrom2D extractor1DFrom2D { get; } = new Extract1DFrom2D();
+/// <inheritdoc/>
+
+        public void Create1DFrom2D(string setName)
+        {
+            var number = ModelData.ObjectData.E1DCollection.GetMaxNumber() + 1;
+            var e1d = extractor1DFrom2D.Create(number, ModelData.ObjectData.E2DCollection.GetObjects().ToArray());
+            ModelData.ObjectData.E1DCollection.AddRange("", e1d);
+        }
         /// <inheritdoc/>
         public ITaskData TaskData => project.TaskData;
 /// <inheritdoc/>

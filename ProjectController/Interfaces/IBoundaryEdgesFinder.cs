@@ -20,7 +20,7 @@ namespace ModelControllerInterfaces
         /// <param name="linesNodes. Nodes written one by one splitted by space n1 n2"></param>
         /// <param name="modelData"></param>
         /// <returns></returns>
-        IEnumerable<ILineObject<Node>> CreateBoundaryEdges(List<string> linesNodes);
+        IEnumerable<ILineObject<Node>> CreateBoundaryEdges(List<string> linesNodesб, IModelData modelData);
         /// <summary>
         /// Find
         /// </summary>

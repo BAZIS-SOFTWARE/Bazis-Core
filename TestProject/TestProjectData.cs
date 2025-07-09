@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Project;
+using ProjectController;
 
 namespace TestProject
 {
@@ -26,18 +27,18 @@ namespace TestProject
         public void RemoveObjsByNumber(string path, int[] objNumbers, ObjType type, string resStr)
         {
             //assing
-            var proj = new ProjectData();
-            proj.ModelData.Loader = new LoadModelFromBPF2TextFile();
+            var control = new ProjectController.ProjectController();
+            control.ModelData.Loader = new LoadModelFromBPF2TextFile();
 
-            proj.Load(path);
+            control.Load(path);
             var grName = resStr.Split(' ')[0];
             var res = bool.Parse(resStr.Split(' ')[1]);
             //act
-            proj.DeleteMeshObjects(type, objNumbers);
+            control.DeleteModelObjects(type, objNumbers);
 
             //assert
-            Assert.AreEqual(res, proj.ModelData.GroupData.Find(grName) != null);
-            Assert.AreEqual(res, proj.TaskData.Contains(grName));
+            Assert.AreEqual(res, control.ModelData.GroupData.Find(grName) != null);
+            Assert.AreEqual(res, control.TaskData.Contains(grName));
         }
 
         [DataTestMethod]
@@ -47,18 +48,18 @@ namespace TestProject
         public void RemoveSetByNameAndType(string path, string setName, ObjType type, string resStr)
         {
             //assing
-            var proj = new ProjectData();
-            proj.ModelData.Loader = new LoadModelFromBPF2TextFile();
+            var control = new ProjectController.ProjectController();
+            control.ModelData.Loader = new LoadModelFromBPF2TextFile();
 
-            proj.Load(path);
+            control.Load(path);
             var grName = resStr.Split(' ')[0];
             var res = bool.Parse(resStr.Split(' ')[1]);
             //act
-            proj.DeleteMeshSet(type, setName);
+            control.DeleteModelSet(type, setName);
 
             //assert
-            Assert.AreEqual(res, proj.ModelData.GroupData.Find(grName) != null);
-            Assert.AreEqual(res, proj.TaskData.Contains(grName));
+            Assert.AreEqual(res, control.ModelData.GroupData.Find(grName) != null);
+            Assert.AreEqual(res, control.TaskData.Contains(grName));
         }
 
         [DataTestMethod]
@@ -68,18 +69,18 @@ namespace TestProject
         public void ClearMeshCollection(string path, ObjType type, string resStr)
         {
             //assing
-            var proj = new ProjectData();
-            proj.ModelData.Loader = new LoadModelFromBPF2TextFile();
+            var control = new ProjectController.ProjectController();
+            control.ModelData.Loader = new LoadModelFromBPF2TextFile();
 
-            proj.Load(path);
+            control.Load(path);
             var grName = resStr.Split(' ')[0];
             var res = bool.Parse(resStr.Split(' ')[1]);
             //act
-            proj.ClearMeshCollection(type);
+            control.ClearModelCollection(type);
 
             //assert
-            Assert.AreEqual(res, proj.ModelData.GroupData.Find(grName) != null);
-            Assert.AreEqual(res, proj.TaskData.Contains(grName));
+            Assert.AreEqual(res, control.ModelData.GroupData.Find(grName) != null);
+            Assert.AreEqual(res, control.TaskData.Contains(grName));
         }
 
         [TestMethod]

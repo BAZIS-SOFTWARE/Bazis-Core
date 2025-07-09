@@ -116,12 +116,12 @@ namespace TestModel
         [TestMethod]
         public void GetElementsNormals()
         {
-            var model = new ModelData();
-            model.Loader = new LoadModelFromBPFTextFile();
-            model.Load(@"..\..\..\Examples\3D\cub_unsorted.bpf");
+            var controller = new ProjectController.ProjectController();
+            controller.ModelData.Loader = new LoadModelFromBPFTextFile();
+            
+            controller.Load(@"..\..\..\Examples\3D\cub_unsorted.bpf");
 
-            var modelController = new ProjectController.ProjectController();
-            var normals = modelController.NormalCalculator.CalcElemsNormals(model.ObjectData.GetAllElements().Select(x => (ISurfaceElement)x)); 
+            var normals = controller.CalcElemsNormals(3); 
 
             Assert.AreNotEqual(0, normals.Count());
 

@@ -35,7 +35,13 @@ namespace ProjectController.MeshObjsUtility
                 counter++;
             }
         }
-/// <inheritdoc/>
+
+        public IEnumerable<ILineObject<Node>> CreateBoundaryEdges(List<string> linesNodes)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
 
 
         public List<string> Find(IEnumerable<ISurfaceElement> surfaceElements)
