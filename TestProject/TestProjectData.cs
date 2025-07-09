@@ -9,12 +9,20 @@ using System.Text;
 using System.Threading.Tasks;
 using Project;
 using ProjectController;
+using System.Globalization;
+using System.Threading;
 
 namespace TestProject
 {
+
     [TestClass]
     public class TestProjectData
     {
+        [TestInitialize]
+        public void Init()
+        {
+            Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+        }
         [DataTestMethod]
         [DataRow(@"..\..\..\Examples\TestCRUDFunction\one_quad_term_cycle.bpf2", new int[] { 1 }, ObjType.Узел, "clamp true", DisplayName = "clamp true")]
         [DataRow(@"..\..\..\Examples\TestCRUDFunction\one_quad_term_cycle.bpf2", new int[] { 0 }, ObjType.Узел, "clamp true", DisplayName = "clamp true")]
@@ -28,9 +36,10 @@ namespace TestProject
         {
             //assing
             var control = new ProjectController.ProjectController();
-            control.ModelData.Loader = new LoadModelFromBPF2TextFile();
 
-            control.Load(path);
+            control.Create(path);
+            control.ModelData.Loader = new LoadModelFromBPF2TextFile();
+            control.Load();
             var grName = resStr.Split(' ')[0];
             var res = bool.Parse(resStr.Split(' ')[1]);
             //act
@@ -49,9 +58,9 @@ namespace TestProject
         {
             //assing
             var control = new ProjectController.ProjectController();
+            control.Create(path);
             control.ModelData.Loader = new LoadModelFromBPF2TextFile();
-
-            control.Load(path);
+            control.Load();
             var grName = resStr.Split(' ')[0];
             var res = bool.Parse(resStr.Split(' ')[1]);
             //act
@@ -70,9 +79,11 @@ namespace TestProject
         {
             //assing
             var control = new ProjectController.ProjectController();
-            control.ModelData.Loader = new LoadModelFromBPF2TextFile();
 
-            control.Load(path);
+            control.Create(path);
+            control.ModelData.Loader = new LoadModelFromBPF2TextFile();
+            control.Load();
+
             var grName = resStr.Split(' ')[0];
             var res = bool.Parse(resStr.Split(' ')[1]);
             //act

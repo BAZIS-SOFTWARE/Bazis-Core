@@ -38,10 +38,9 @@ namespace ProjectController
 /// <inheritdoc/>
 
 
-        public void Load(string projectFile)
+        public void Load()
         {
-            project = new ProjectData();
-            project.Load(projectFile);
+            project.Load();
         }
 /// <inheritdoc/>
 
@@ -52,10 +51,17 @@ namespace ProjectController
         }
 /// <inheritdoc/>
 
-        public void Load(string path, string proj)
+        public void Create(string projectFile)
+        {
+            project = new ProjectData();
+            GeneralData.Name = System.IO.Path.GetFileName(projectFile);
+            GeneralData.Path = System.IO.Path.GetDirectoryName(projectFile);
+        }
+/// <inheritdoc/>
+
+        public void Create(string path, string proj)
         {
             project = new ProjectData(path, proj);
-            project.Load();
         }
 
 

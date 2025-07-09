@@ -44,14 +44,18 @@ namespace ModelControllerInterfaces
         /// <summary>
         /// Load
         /// </summary>
-        /// <param name="projectFile"></param>
-        void Load(string projectFile);
+        void Load();
         /// <summary>
-        /// Load
+        /// Create
+        /// </summary>
+        /// <param name="projectFile"></param>
+        void Create(string projectFile);
+        /// <summary>
+        /// Create
         /// </summary>
         /// <param name="path"></param>
         /// <param name="proj"></param>
-        void Load(string path, string proj);
+        void Create(string path, string proj);
         /// <summary>
         /// FindBoundaryEdges
         /// </summary>

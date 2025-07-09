@@ -100,8 +100,8 @@ namespace TestModel
         {
             var controller = new ProjectController.ProjectController();
             controller.ModelData.Loader = new LoadModelFromBPFTextFile();
-            controller.Load(@"..\..\..\Examples\3D\cub_unsorted.bpf");
-
+            controller.Create(@"..\..\..\Examples\3D\cub_unsorted.bpf");
+            controller.Load();
             var linesNodes = controller.FindBoundaryEdges();
             var bounds = controller.CreateBoundaryEdges(linesNodes);
             
@@ -119,8 +119,8 @@ namespace TestModel
             var controller = new ProjectController.ProjectController();
             controller.ModelData.Loader = new LoadModelFromBPFTextFile();
             
-            controller.Load(@"..\..\..\Examples\3D\cub_unsorted.bpf");
-
+            controller.Create(@"..\..\..\Examples\3D\cub_unsorted.bpf");
+            controller.Load();
             var normals = controller.CalcElemsNormals(3); 
 
             Assert.AreNotEqual(0, normals.Count());

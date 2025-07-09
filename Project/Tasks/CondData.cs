@@ -66,6 +66,8 @@ namespace Project.Tasks
         /// <inheritdoc/>
         public IFrameFunction FrameFunction { get; set; }
         /// <inheritdoc/>
+  
+        public string PythonS { get; set; } // путь к питон функции
 
 
         public override string ToString()
