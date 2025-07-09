@@ -9,8 +9,8 @@ using System.Linq;
 using Model.Interfaces;
 using Model.IO;
 using System.IO;
-using ProjectController.MeshObjsUtility;
-using ProjectController.MeshObjsCreator;
+using OperationalController.MeshObjsUtility;
+using OperationalController.MeshObjsCreator;
 
 namespace TestModel.ModelControllerTests
 {

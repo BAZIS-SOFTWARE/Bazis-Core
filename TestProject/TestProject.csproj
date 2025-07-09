@@ -193,6 +193,10 @@
       <Project>{a6b0cebb-8f7c-467e-90bb-924103dae30b}</Project>
       <Name>Model</Name>
     </ProjectReference>
+    <ProjectReference Include="..\OperationalController\OperationalController.csproj">
+      <Project>{283f3c11-ae5d-48a8-af96-c5f44501df24}</Project>
+      <Name>OperationalController</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PostProc\PostProc.csproj">
       <Project>{d89c1656-b753-4241-9962-fd6999c67529}</Project>
       <Name>PostProc</Name>
@@ -204,10 +208,6 @@
     <ProjectReference Include="..\PrGeometry\Geometry.csproj">
       <Project>{95ed498b-f3e1-4d57-8039-960ac9d790f5}</Project>
       <Name>Geometry</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ProjectController\ProjectController.csproj">
-      <Project>{F816C836-8834-4CB4-875C-4B81A7A9AFEF}</Project>
-      <Name>ProjectController</Name>
     </ProjectReference>
     <ProjectReference Include="..\Project\Project.csproj">
       <Project>{8f33f5f1-239d-466c-8761-dc7b3dd528aa}</Project>

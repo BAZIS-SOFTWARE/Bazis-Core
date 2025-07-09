@@ -1,16 +1,12 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model.Interfaces;
 using Model.IO;
-using Model;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Project;
-using ProjectController;
 using System.Globalization;
 using System.Threading;
+using OperationalController;
 
 namespace TestProject
 {
@@ -35,7 +31,7 @@ namespace TestProject
         public void RemoveObjsByNumber(string path, int[] objNumbers, ObjType type, string resStr)
         {
             //assing
-            var control = new ProjectController.ProjectController();
+            var control = new Controller();
 
             control.Create(path);
             control.ModelData.Loader = new LoadModelFromBPF2TextFile();
@@ -57,7 +53,7 @@ namespace TestProject
         public void RemoveSetByNameAndType(string path, string setName, ObjType type, string resStr)
         {
             //assing
-            var control = new ProjectController.ProjectController();
+            var control = new Controller();
             control.Create(path);
             control.ModelData.Loader = new LoadModelFromBPF2TextFile();
             control.Load();
@@ -78,7 +74,7 @@ namespace TestProject
         public void ClearMeshCollection(string path, ObjType type, string resStr)
         {
             //assing
-            var control = new ProjectController.ProjectController();
+            var control = new Controller();
 
             control.Create(path);
             control.ModelData.Loader = new LoadModelFromBPF2TextFile();

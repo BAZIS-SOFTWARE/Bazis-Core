@@ -10,9 +10,9 @@ using Model.IO;
 using Model.MeshObjects;
 using Model.Interfaces.MeshObjects;
 using System.Data;
-using ProjectController.MeshObjsUtility;
-using ProjectController.ModelScenePresentator;
-using ProjectController;
+using OperationalController.MeshObjsUtility;
+using OperationalController.ModelScenePresentator;
+using OperationalController;
 
 namespace TestModel
 {
@@ -98,7 +98,7 @@ namespace TestModel
         [TestMethod]
         public void FindBoundaryEdges_ShouldWork_OnModelWithDifferentElements()
         {
-            var controller = new ProjectController.ProjectController();
+            var controller = new OperationalController.Controller();
             controller.ModelData.Loader = new LoadModelFromBPFTextFile();
             controller.Create(@"..\..\..\Examples\3D\cub_unsorted.bpf");
             controller.Load();
@@ -116,7 +116,7 @@ namespace TestModel
         [TestMethod]
         public void GetElementsNormals()
         {
-            var controller = new ProjectController.ProjectController();
+            var controller = new OperationalController.Controller();
             controller.ModelData.Loader = new LoadModelFromBPFTextFile();
             
             controller.Create(@"..\..\..\Examples\3D\cub_unsorted.bpf");

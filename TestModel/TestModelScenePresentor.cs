@@ -5,15 +5,15 @@ using Model.IO;
 using System.Collections.Generic;
 using Model.MeshObjects;
 using Model.GeometryObjects;
-using ModelControllerInterfaces;
+using OperationalController;
 using System.IO;
 using Geometry;
 using System.Linq;
 using Model.IO.STL;
-using ProjectController.ModelScenePresentator.GlObjsPresenters;
-using ProjectController.ModelScenePresentator;
-using ProjectController.MeshObjsUtility;
-using ProjectController.GmshController;
+using OperationalController.ModelScenePresentator.GlObjsPresenters;
+using OperationalController.ModelScenePresentator;
+using OperationalController.MeshObjsUtility;
+using OperationalController.GmshController;
 
 namespace TestModel
 {
