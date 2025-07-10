@@ -14,6 +14,8 @@ using OperationalController.ModelScenePresentator.GlObjsPresenters;
 using OperationalController.ModelScenePresentator;
 using OperationalController.MeshObjsUtility;
 using OperationalController.GmshController;
+using System;
+using System.Drawing;
 
 namespace TestModel
 {
@@ -462,6 +464,144 @@ namespace TestModel
                 var trCount = separators[i] - separators[i - 1];
                 Assert.IsTrue(NormalsChecker.IdentifyByTriangles(trCount) == elements[i - 1].ElementKind);
             }
+        }
+
+        [DataTestMethod]
+        [DataRow(@"..\..\..\Examples\3D\Lazer.inp", 35)]
+        [DataRow(@"..\..\..\Examples\3D\untitled.inp", 6)]
+        public void Test2DSeparatorsAfterHideElementsByColor(string fileName, int hideElemsBySet)
+        {
+            var model = new ModelData();
+
+            model.Loader = new LoadModelFromINPTextFile();
+            model.Load(fileName);
+
+            var elemCounter = 0;
+            var setCounter = 0;
+            //Перебираем каждый набор и назначаем первым hideElemsBySet элементам цвет зеленый
+            foreach (var set in model.ObjectData.E2DCollection)
+            {
+                ++setCounter;
+                foreach (var elements in set.Value)
+                {
+                    if(elemCounter == hideElemsBySet)
+                        break;
+                    ++elemCounter;
+                    elements.Value.Color = Color.Green;
+                }
+                elemCounter = 0;
+            }
+            
+            var selObjs = SelectorProvider(model.ObjectData, ObjType.Элемент2D.ToString()).Where(x => x.Color == Color.Green);
+            foreach (var selObj in selObjs)
+                selObj.ViewState = false;
+
+            var elems = model.ObjectData.E2DCollection.GetObjects().ToArray();
+
+            var expectedHideElements = setCounter * hideElemsBySet;
+            var expectedShown = elems.Length - expectedHideElements;
+            var actualShown = elems.Where(x => x.ViewState == true).Count();
+
+            Assert.AreEqual(expectedShown, actualShown);
+            
+            var surfPresenter = new SurfaceObjsPresenter<ElementSurface, Node>();
+            surfPresenter.Add(elems);
+
+            var inds = surfPresenter.CreateIndexes();
+            var coords = surfPresenter.CreateVertexes(inds.Item2, "координаты");
+            var separators = surfPresenter.CreateSeparators();
+
+            actualShown = 0;
+            var maxSeparator = separators[0];//Для проверки "дружелюбности" сепараторов с индексами
+            for (var i = 1; i < separators.Length; ++i)
+            {
+                maxSeparator = Math.Max(maxSeparator, separators[i]);
+                var viewState = Convert.ToInt32(separators[i] - separators[i - 1] > 0);
+                actualShown += viewState;
+            }
+
+            Assert.AreEqual(expectedShown, actualShown);
+            Assert.AreEqual(inds.Item1, maxSeparator * 3);
+        }
+
+        [DataTestMethod]
+        [DataRow(@"..\..\..\Examples\3D\Lazer.inp", 10)]
+        [DataRow(@"..\..\..\Examples\3D\untitled.inp", 47)]
+        public void Test3DSeparatorsAfterHideElementsByColor(string fileName, int hideElemsBySet)
+        {
+            var model = new ModelData();
+
+            model.Loader = new LoadModelFromINPTextFile();
+            model.Load(fileName);
+
+            var elemCounter = 0;
+            var setCounter = 0;
+            //Перебираем каждый набор и назначаем первым hideElemsBySet элементам цвет зеленый
+            foreach (var set in model.ObjectData.E3DCollection)
+            {
+                ++setCounter;
+                foreach (var elements in set.Value)
+                {
+                    if (elemCounter == hideElemsBySet)
+                        break;
+                    ++elemCounter;
+                    elements.Value.Color = Color.Green;
+                }
+                elemCounter = 0;
+            }
+
+            var selObjs = SelectorProvider(model.ObjectData, ObjType.Элемент3D.ToString()).Where(x => x.Color == Color.Green);
+            foreach (var selObj in selObjs)
+                selObj.ViewState = false;
+
+            var elems = model.ObjectData.E3DCollection.GetObjects().ToArray();
+
+            var expectedHideElements = setCounter * hideElemsBySet;
+            var expectedShown = elems.Length - expectedHideElements;
+            var actualShown = elems.Where(x => x.ViewState == true).Count();
+
+            Assert.AreEqual(expectedShown, actualShown);
+
+            var surfPresenter = new SurfaceObjsPresenter<ElementSurface, Node>();
+            surfPresenter.Add(elems);
+
+            var inds = surfPresenter.CreateIndexes();
+            var coords = surfPresenter.CreateVertexes(inds.Item2, "координаты");
+            var separators = surfPresenter.CreateSeparators();
+
+            actualShown = 0;
+            var maxSeparator = separators[0];//Для проверки "дружелюбности" сепараторов с индексами
+            for (var i = 1; i < separators.Length; ++i)
+            {
+                maxSeparator = Math.Max(maxSeparator, separators[i]);
+                var viewState = Convert.ToInt32(separators[i] - separators[i - 1] > 0);
+                actualShown += viewState;
+            }
+
+            Assert.AreEqual(expectedShown, actualShown);
+            Assert.AreEqual(inds.Item1, maxSeparator * 3);
+        }
+
+        private  IEnumerable<IModelObject> SelectorProvider(IObjectsData objectsData, string objects)
+        {
+            if (objects == "Объекты")
+                return objectsData.GetAllObjects();
+            else if (objects == "Элементы")
+                return objectsData.GetAllElements();
+            else if (objects == "Фигуры")
+                return objectsData.GetAllElements();
+            else
+            {
+                var objType = ConvertToObjsType(objects);
+                return objectsData.GetObjects(objType);
+            }
+        }
+
+        private ObjType ConvertToObjsType(string objects)
+        {
+            ObjType objType;
+            return Enum.TryParse(objects, out objType) ? objType :
+                throw new Exception($"Ошибка конвертации объектов {objects}");
         }
     }
 }
