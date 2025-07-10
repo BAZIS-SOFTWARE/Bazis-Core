@@ -11,8 +11,20 @@ namespace OperationalController
     {
         PresentersCreator presentersCreator = new PresentersCreator();
         ChangeInsideSurface changeInsideSurface => new ChangeInsideSurface();
+/// <inheritdoc/>
 
-        public IObjsPresenter CreateModelObjectsPresentor(ObjType objType, bool isInsideObjectsShown)
+        public void ChangeInsideSurfacesState(bool state)
+        {
+            var e3D = ModelData.ObjectData.E3DCollection.GetObjects();
+            
+            if(state)
+                changeInsideSurface.ShowInsideSurfaces(e3D);
+            else
+                changeInsideSurface.HideInsideSurfaces(e3D);
+        }
+/// <inheritdoc/>
+
+        public IObjsPresenter CreateModelObjectsPresentor(ObjType objType)
         {
             IObjsPresenter pre;
             switch (objType)
@@ -36,8 +48,6 @@ namespace OperationalController
                     pre = presentersCreator.CreateSurfaceObjectsPresenter(ModelData.ObjectData.E2DCollection.GetObjects());
                     break;
                 case ObjType.Элемент3D:
-                    if (isInsideObjectsShown)
-                        changeInsideSurface.HideInsideSurfaces(ModelData.ObjectData.E3DCollection.GetObjects());
                     pre = presentersCreator.CreateSurfaceObjectsPresenter(ModelData.ObjectData.E3DCollection.GetObjects());
                     break;
                 default:

@@ -173,8 +173,12 @@ namespace OperationalController
         /// CreateModelObjectsPresentor
         /// </summary>
         /// <param name="objType"></param>
-        /// <param name="isInsideObjectsShown"></param>
         /// <returns></returns>
-        IObjsPresenter CreateModelObjectsPresentor(ObjType objType, bool isInsideObjectsShown);
+        IObjsPresenter CreateModelObjectsPresentor(ObjType objType);
+        /// <summary>
+        /// ChangeInsideSurfacesState
+        /// </summary>
+        /// <param name="state"></param>
+        void ChangeInsideSurfacesState(bool state);
     }
 }
