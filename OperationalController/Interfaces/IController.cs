@@ -46,6 +46,12 @@ namespace OperationalController
         /// <param name="proj"></param>
         void Create(string path, string proj);
         /// <summary>
+        /// GetModelObjects
+        /// </summary>
+        /// <param name="objects"></param>
+        /// <returns></returns>
+        IEnumerable<IModelObject> GetModelObjects(string objects);
+        /// <summary>
         /// FindBoundaryEdges
         /// </summary>
         /// <returns></returns>

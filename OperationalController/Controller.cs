@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Drawing;
 using System;
+using OperationalController.Extensions;
 
 namespace OperationalController
 {
@@ -53,8 +54,21 @@ namespace OperationalController
         {
             project = new ProjectData(path, proj);
         }
-
-
+        /// <inheritdoc/>
+        public IEnumerable<IModelObject> GetModelObjects(string objects)
+        {
+            if (objects == "Объекты")
+                return ModelData.ObjectData.GetAllObjects();
+            else if (objects == "Элементы")
+                return ModelData.ObjectData.GetAllElements();
+            else if (objects == "Фигуры")
+                return ModelData.ObjectData.GetAllElements();
+            else
+            {
+                var objType = objects.ToEnum<ObjType>();
+                return ModelData.ObjectData.GetObjects(objType);
+            }
+        }
 
         /// <inheritdoc/>
         /// 
