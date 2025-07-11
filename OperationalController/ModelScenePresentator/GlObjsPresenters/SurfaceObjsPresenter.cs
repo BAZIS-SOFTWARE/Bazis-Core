@@ -163,12 +163,14 @@ namespace OperationalController.ModelScenePresentator.GlObjsPresenters
             var stride = 0;
 
             var i = 0;
-            for (; i < surfObjs.Length; ++i)
+            foreach (var element in surfaceObjects)
             {
                 separators[i] = stride;
-                foreach (var surface in surfObjs[i].GetSurfaces())
-                    if (surface.ViewState)
-                        stride += surface.NumberOfPoints - 2;
+                if(element.ViewState)
+                    foreach (var surface in element.GetSurfaces())
+                        if (surface.ViewState)
+                            stride += surface.NumberOfPoints - 2;
+                ++i;
             }
             separators[i] = stride;
 
