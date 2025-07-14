@@ -18,6 +18,7 @@ using System.Drawing;
 using System;
 using OperationalController.Extensions;
 using Model.Interfaces.ObjectsCollections;
+using Model;
 
 namespace OperationalController
 {
@@ -248,15 +249,58 @@ namespace OperationalController
         }
 /// <inheritdoc/>
 
-        public IEnumerable<ISetInfo> GetModelSetsInfo(ObjType objType)
+        public IEnumerable<ISetInfo> GetModelSetsInfo(string objects)
         {
-            return ModelData?.ObjectData?.GetSetsInfo(objType);
+            if (objects == "Объекты")
+            {
+                foreach (var item in ModelData.ObjectData.GetSetsInfo(ObjType.Точка))
+                    yield return item;
+                foreach (var item in ModelData.ObjectData.GetSetsInfo(ObjType.Кривая))
+                    yield return item;
+                foreach (var item in ModelData.ObjectData.GetSetsInfo(ObjType.Поверхность))
+                    yield return item;
+                foreach (var item in ModelData.ObjectData.GetSetsInfo(ObjType.Узел))
+                    yield return item;
+                foreach (var item in ModelData.ObjectData.GetSetsInfo(ObjType.Элемент1D))
+                    yield return item;
+                foreach (var item in ModelData.ObjectData.GetSetsInfo(ObjType.Элемент2D))
+                    yield return item;
+                foreach (var item in ModelData.ObjectData.GetSetsInfo(ObjType.Элемент3D))
+                    yield return item;
+
+            }
+            else if (objects == "Элементы")
+            {
+                foreach (var item in ModelData.ObjectData.GetSetsInfo(ObjType.Элемент1D))
+                    yield return item;
+                foreach (var item in ModelData.ObjectData.GetSetsInfo(ObjType.Элемент2D))
+                    yield return item;
+                foreach (var item in ModelData.ObjectData.GetSetsInfo(ObjType.Элемент3D))
+                    yield return item;
+            }
+
+            else if (objects == "Фигуры")
+            {
+                foreach (var item in ModelData.ObjectData.GetSetsInfo(ObjType.Точка))
+                    yield return item;
+                foreach (var item in ModelData.ObjectData.GetSetsInfo(ObjType.Кривая))
+                    yield return item;
+                foreach (var item in ModelData.ObjectData.GetSetsInfo(ObjType.Поверхность))
+                    yield return item;
+            }
+            else
+            {
+                var objType = objects.ToEnum<ObjType>();
+                foreach (var item in ModelData.ObjectData.GetSetsInfo(objType))
+                    yield return item;
+            }
         }
 /// <inheritdoc/>
 
-        public ISetInfo GetModelSetInfo(ObjType objType, string setName)
+        public ISetInfo GetModelSetInfo(string objects, string setName)
         {
-            return ModelData?.ObjectData?.GetSetInfo(objType, setName);
+            var objType = objects.ToEnum<ObjType>();
+            return ModelData.ObjectData.GetSetInfo(objType, setName);
         }
 /// <inheritdoc/>
 

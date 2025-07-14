@@ -186,16 +186,16 @@ namespace OperationalController
         /// <summary>
         /// GetModelSetsInfo
         /// </summary>
-        /// <param name="objType"></param>
+        /// <param name="objects"></param>
         /// <returns></returns>
-        IEnumerable<ISetInfo> GetModelSetsInfo(ObjType objType);
+        IEnumerable<ISetInfo> GetModelSetsInfo(string objects);
         /// <summary>
         /// GetModelSetInfo
         /// </summary>
-        /// <param name="objType"></param>
+        /// <param name="objects"></param>
         /// <param name="setName"></param>
         /// <returns></returns>
-        ISetInfo GetModelSetInfo(ObjType objType, string setName);
+        ISetInfo GetModelSetInfo(string objects, string setName);
         /// <summary>
         /// SetModelObjectsBackColor
         /// </summary>

@@ -247,5 +247,11 @@ namespace Model.ObjectsCollections
         {
             return objectsSet[number].ViewState;
         }
+/// <inheritdoc/>
+
+        public void SetBackColor(int number)
+        {
+            objectsSet[number].Color = Color;
+        }
     }
 }
