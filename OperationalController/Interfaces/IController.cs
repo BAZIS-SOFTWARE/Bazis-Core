@@ -6,6 +6,7 @@ using Model.GeometryObjects;
 using Model.MeshObjects;
 using System.Collections.Generic;
 using System.Drawing;
+using Model.Interfaces.ObjectsCollections;
 
 namespace OperationalController
 {
@@ -181,6 +182,25 @@ namespace OperationalController
         /// <param name="objType"></param>
         /// <returns></returns>
         IObjsPresenter CreateModelObjectsPresentor(ObjType objType);
+
+        /// <summary>
+        /// GetModelSetsInfo
+        /// </summary>
+        /// <param name="objType"></param>
+        /// <returns></returns>
+        IEnumerable<ISetInfo> GetModelSetsInfo(ObjType objType);
+        /// <summary>
+        /// GetModelSetInfo
+        /// </summary>
+        /// <param name="objType"></param>
+        /// <param name="setName"></param>
+        /// <returns></returns>
+        ISetInfo GetModelSetInfo(ObjType objType, string setName);
+        /// <summary>
+        /// SetModelObjectsBackColor
+        /// </summary>
+        /// <param name="objType"></param>
+        void SetModelObjectsBackColor(ObjType objType);
         /// <summary>
         /// ChangeInsideSurfacesState
         /// </summary>

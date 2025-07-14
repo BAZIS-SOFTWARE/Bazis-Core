@@ -1,4 +1,5 @@
-﻿using Model.GeometryObjects;
+﻿using Geometry;
+using Model.GeometryObjects;
 using Model.Interfaces;
 using Model.Interfaces.MeshObjects;
 using Model.Interfaces.ObjectsCollections;
@@ -74,7 +75,6 @@ namespace Model.ObjectsCollections
         public int NumberOfObjects => objectsSet.Count;
 
         /// <inheritdoc/>
-
 
         public override string ToString()
         {
@@ -176,12 +176,7 @@ namespace Model.ObjectsCollections
             throw new NotImplementedException();
         }
         /// <inheritdoc/>
-        public void SetColor(Color color)
-        {
-            Color = color;
-            foreach (var item in objectsSet)
-                item.Value.Color = color;
-        }
+
 /// <inheritdoc/>
 
         public void SetBackColor()
@@ -210,13 +205,47 @@ namespace Model.ObjectsCollections
 
             objectsSet = temp;
         }
-
+        /// <inheritdoc/>
         public IEnumerable<string> GetObjectsInfo()
         {
             foreach (var item in objectsSet)
             {
                 yield return item.Value.ToString();
             }
+        }
+        /// <inheritdoc/>
+        public void SetColor(Color color)
+        {
+            Color = color;
+            foreach (var item in objectsSet)
+                item.Value.Color = color;
+        }
+        /// <inheritdoc/>
+        public void SetColor(Color color, int number)
+        {
+            objectsSet[number].Color = color;
+        }
+        /// <inheritdoc/>
+        public IEnumerable<Point3D> GetCoords(int number)
+        {
+            return objectsSet[number].GetCoordinates();
+        }
+/// <inheritdoc/>
+
+        public IEnumerable<int> GetNumbers()
+        {
+            return objectsSet.Keys;
+        }
+        /// <inheritdoc/>
+        public void SetViewState(int number,bool viewState)
+        {
+            objectsSet[number].ViewState = viewState;
+        }
+/// <inheritdoc/>
+
+        public bool GetViewState(int number)
+        {
+            return objectsSet[number].ViewState;
         }
     }
 }

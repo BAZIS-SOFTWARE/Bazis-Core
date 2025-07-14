@@ -17,6 +17,7 @@ using System.Linq;
 using System.Drawing;
 using System;
 using OperationalController.Extensions;
+using Model.Interfaces.ObjectsCollections;
 
 namespace OperationalController
 {
@@ -25,20 +26,23 @@ namespace OperationalController
     /// </summary>
     public partial class Controller : IController
     {
-        ProjectData project = new ProjectData();
+        ProjectData project;
 
 /// <inheritdoc/>
 
         public void Load()
         {
+            if (project == null)
+                throw new Exception("Проект не создан");
             project.Load();
         }
 /// <inheritdoc/>
 
         public void Save()
         {
-            if(project != null)
-                project.Save();
+            if (project == null)
+                throw new Exception("Проект не создан");
+            project.Save();
         }
 /// <inheritdoc/>
 
@@ -131,18 +135,7 @@ namespace OperationalController
             TaskData.ClearNotExisted(ModelData.GroupData);
         } 
 
-        /// <inheritdoc/>
 
-        IExtractor2DFrom3D extractor2DFrom3D { get; } = new Extract2DFrom3D();
-/// <inheritdoc/>
-
-        public void Create2DForm3D(string setName)
-        {
-            //return extractor2DFrom3D.Create(StartNumber, ModelData.ObjectData.E3DCollection.GetObjects());
-            var number = ModelData.ObjectData.E2DCollection.GetMaxNumber() + 1;
-            var e2d = extractor2DFrom3D.Create(number, ModelData.ObjectData.E3DCollection.GetObjects().ToArray());
-            ModelData.ObjectData.E2DCollection.AddRange(setName, e2d);
-        }
 
 /// <inheritdoc/>
 
@@ -253,13 +246,31 @@ namespace OperationalController
             var e1d = extractor1DFrom2D.Create(number, ModelData.ObjectData.E2DCollection.GetObjects().ToArray());
             ModelData.ObjectData.E1DCollection.AddRange("", e1d);
         }
-
-        /// <inheritdoc/>
-        public ITaskData TaskData => project.TaskData;
 /// <inheritdoc/>
 
-        public IModelData ModelData => project.ModelData;
+        public IEnumerable<ISetInfo> GetModelSetsInfo(ObjType objType)
+        {
+            return ModelData?.ObjectData?.GetSetsInfo(objType);
+        }
+/// <inheritdoc/>
+
+        public ISetInfo GetModelSetInfo(ObjType objType, string setName)
+        {
+            return ModelData?.ObjectData?.GetSetInfo(objType, setName);
+        }
+/// <inheritdoc/>
+
+        public void SetModelObjectsBackColor(ObjType objType)
+        {
+            ModelData?.ObjectData?.SetBackColor(objType);
+        }
+
         /// <inheritdoc/>
-        public IGeneralData GeneralData => project.GeneralData;
+        public ITaskData TaskData => project?.TaskData;
+/// <inheritdoc/>
+
+        public IModelData ModelData => project?.ModelData;
+        /// <inheritdoc/>
+        public IGeneralData GeneralData => project?.GeneralData;
     }
 }

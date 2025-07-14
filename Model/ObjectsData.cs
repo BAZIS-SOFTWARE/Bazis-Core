@@ -620,48 +620,8 @@ E3DCollection[setName] : null;
                     }
             }
         }
-        /// <inheritdoc/>
 
-        public ISetInfo GetSetInfo(ObjType objType, int objNumber)
-        {
-            switch (objType)
-            {
-                case ObjType.Точка:
-                    return PointsSet.ContainsKey(objNumber) ? PointsSet : null;
-                case ObjType.Кривая:
-                    {
-                        var res = CurveCollection.Where(x => x.Value.ContainsKey(objNumber));
-                        return res.Count() > 0 ? res.First().Value : null;
-                    }
-                case ObjType.Поверхность:
-                    {
-                        var res = SurfaceCollection.Where(x => x.Value.ContainsKey(objNumber));
-                        return res.Count() > 0 ? res.First().Value : null;
-                    }
-                case ObjType.Объем:
-                    {
-                        var res = VolumeCollection.Where(x => x.Value.ContainsKey(objNumber));
-                        return res.Count() > 0 ? res.First().Value : null;
-                    }
-                case ObjType.Узел:
-                    return NodesSet.ContainsKey(objNumber) ? NodesSet : null;
-                case ObjType.Элемент1D:
-                    {
-                        var res = E1DCollection.Where(x => x.Value.ContainsKey(objNumber));
-                        return res.Count() > 0 ? res.First().Value : null;
-                    }
-                case ObjType.Элемент2D:
-                    {
-                        var res = E2DCollection.Where(x => x.Value.ContainsKey(objNumber));
-                        return res.Count() > 0 ? res.First().Value : null;
-                    }
-                default:
-                    {
-                        var res = E3DCollection.Where(x => x.Value.ContainsKey(objNumber));
-                        return res.Count() > 0 ? res.First().Value : null;
-                    }
-            }
-        }
+   
         /// <inheritdoc/>
 
         public IEnumerable<ISetInfo> GetSetsInfo(ObjType objType)
