@@ -253,5 +253,11 @@ namespace Model.ObjectsCollections
         {
             objectsSet[number].Color = Color;
         }
+        /// <inheritdoc/>
+
+        public Point3D GetCentr(int number)
+        {
+            return objectsSet[number].CalcCentr();
+        }
     }
 }

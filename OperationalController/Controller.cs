@@ -59,84 +59,15 @@ namespace OperationalController
         {
             project = new ProjectData(path, proj);
         }
-        /// <inheritdoc/>
-        public IEnumerable<IModelObject> GetModelObjects(string objects)
-        {
-            if (objects == "Объекты")
-                return ModelData.ObjectData.GetAllObjects();
-            else if (objects == "Элементы")
-                return ModelData.ObjectData.GetAllElements();
-            else if (objects == "Фигуры")
-                return ModelData.ObjectData.GetAllElements();
-            else
-            {
-                var objType = objects.ToEnum<ObjType>();
-                return ModelData.ObjectData.GetObjects(objType);
-            }
-        }
 
         /// <inheritdoc/>
-        /// 
-        public void ClearAllData()
-        {
-            TaskData?.Clear();
-            ModelData?.ClearAll();
-        }
-/// <inheritdoc/>
 
         public void ChangeTaskType(TaskType taskType)
         {
             GeneralData.TaskType = taskType;
             TaskData.Clear();
         }
-        /// <inheritdoc/>
-
-        public void ClearModelCollection(ObjType objType)
-        {
-            ModelData.ObjectData.Clear(objType);
-            ModelData.GroupData.ClearNotExisted();
-
-            TaskData.ClearNotExisted(ModelData.GroupData);
-        }
-        /// <inheritdoc/>
-
-        public void DeleteModelGroup(string grName)
-        {
-            var gr = ModelData.GroupData.Find(grName);
-            if (gr != null)
-            {
-                ModelData.GroupData.Remove(gr);
-                TaskData.ClearNotExisted(gr);
-            }
-
-        }
-        /// <inheritdoc/>
-
-        public void DeleteModelSet(ObjType objType, string name)
-        {
-            ModelData.ObjectData.Remove(objType, name);
-            ModelData.GroupData.ClearNotExisted();
-
-            TaskData.ClearNotExisted(ModelData.GroupData);
-        }
-        /// <inheritdoc/>
-
-        public void DeleteModelObjects(ObjType objType, IEnumerable<int> objNumbs)
-        {
-
-            foreach (var numb in objNumbs)
-            {
-                var obj = ModelData.ObjectData.Find(objType, numb);
-                if (obj != null)
-                    obj.ExistState = false;
-            }
-
-            ModelData.ObjectData.ClearNotExisted();
-            ModelData.GroupData.ClearNotExisted();
-            TaskData.ClearNotExisted(ModelData.GroupData);
-        } 
-
-
+      
 
 /// <inheritdoc/>
 
@@ -247,67 +178,15 @@ namespace OperationalController
             var e1d = extractor1DFrom2D.Create(number, ModelData.ObjectData.E2DCollection.GetObjects().ToArray());
             ModelData.ObjectData.E1DCollection.AddRange("", e1d);
         }
-/// <inheritdoc/>
-
-        public IEnumerable<ISetInfo> GetModelSetsInfo(string objects)
-        {
-            if (objects == "Объекты")
-            {
-                foreach (var item in ModelData.ObjectData.GetSetsInfo(ObjType.Точка))
-                    yield return item;
-                foreach (var item in ModelData.ObjectData.GetSetsInfo(ObjType.Кривая))
-                    yield return item;
-                foreach (var item in ModelData.ObjectData.GetSetsInfo(ObjType.Поверхность))
-                    yield return item;
-                foreach (var item in ModelData.ObjectData.GetSetsInfo(ObjType.Узел))
-                    yield return item;
-                foreach (var item in ModelData.ObjectData.GetSetsInfo(ObjType.Элемент1D))
-                    yield return item;
-                foreach (var item in ModelData.ObjectData.GetSetsInfo(ObjType.Элемент2D))
-                    yield return item;
-                foreach (var item in ModelData.ObjectData.GetSetsInfo(ObjType.Элемент3D))
-                    yield return item;
-
-            }
-            else if (objects == "Элементы")
-            {
-                foreach (var item in ModelData.ObjectData.GetSetsInfo(ObjType.Элемент1D))
-                    yield return item;
-                foreach (var item in ModelData.ObjectData.GetSetsInfo(ObjType.Элемент2D))
-                    yield return item;
-                foreach (var item in ModelData.ObjectData.GetSetsInfo(ObjType.Элемент3D))
-                    yield return item;
-            }
-
-            else if (objects == "Фигуры")
-            {
-                foreach (var item in ModelData.ObjectData.GetSetsInfo(ObjType.Точка))
-                    yield return item;
-                foreach (var item in ModelData.ObjectData.GetSetsInfo(ObjType.Кривая))
-                    yield return item;
-                foreach (var item in ModelData.ObjectData.GetSetsInfo(ObjType.Поверхность))
-                    yield return item;
-            }
-            else
-            {
-                var objType = objects.ToEnum<ObjType>();
-                foreach (var item in ModelData.ObjectData.GetSetsInfo(objType))
-                    yield return item;
-            }
-        }
-/// <inheritdoc/>
-
-        public ISetInfo GetModelSetInfo(string objects, string setName)
-        {
-            var objType = objects.ToEnum<ObjType>();
-            return ModelData.ObjectData.GetSetInfo(objType, setName);
-        }
+        
 /// <inheritdoc/>
 
         public void SetModelObjectsBackColor(ObjType objType)
         {
             ModelData?.ObjectData?.SetBackColor(objType);
         }
+
+
 
         /// <inheritdoc/>
         public ITaskData TaskData => project?.TaskData;

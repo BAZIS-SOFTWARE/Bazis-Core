@@ -7,6 +7,7 @@ using Model.MeshObjects;
 using System.Collections.Generic;
 using System.Drawing;
 using Model.Interfaces.ObjectsCollections;
+using Model.Interfaces.MeshObjects;
 
 namespace OperationalController
 {
@@ -52,6 +53,23 @@ namespace OperationalController
         /// <param name="objects"></param>
         /// <returns></returns>
         IEnumerable<IModelObject> GetModelObjects(string objects);
+        /// <summary>
+        /// GetAllModelObjects
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<IModelObject> GetAllModelObjects();
+        /// <summary>
+        /// GetModelGroup
+        /// </summary>
+        /// <returns>
+        /// Возвращает группу объектов
+        /// </returns>
+        IGroup GetModelGroup(int grIndex);
+        /// <summary>
+        /// GetModelElements
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<IElement> GetModelElements();
         /// <summary>
         /// FindBoundaryEdges
         /// </summary>

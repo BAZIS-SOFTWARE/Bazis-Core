@@ -35,6 +35,12 @@ namespace Model.Interfaces.ObjectsCollections
         /// <returns></returns>
         IEnumerable<Point3D> GetCoords(int number);
         /// <summary>
+        /// GetCentr
+        /// </summary>
+        /// <param name="number"></param>
+        /// <returns></returns>
+        Point3D GetCentr(int number);
+        /// <summary>
         /// GetNumbers
         /// </summary>
         /// <returns></returns>
