@@ -1,15 +1,10 @@
 ﻿using Model.Interfaces.ObjectsCollections;
 using Model.Interfaces;
-using OperationalController;
 using OperationalController.Extensions;
-using OperationalController.MeshObjsCreator;
-using OperationalController.MeshObjsUtility;
-using OperationalController.ObjsCreator;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Model.Interfaces.MeshObjects;
+using Project.Interfaces.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace OperationalController
 {
@@ -55,6 +50,47 @@ namespace OperationalController
         public IGroup GetModelGroup(int grIndex)
         {
             return ModelData.GroupData[grIndex];
+        }
+
+        /// <inheritdoc/>
+        public string MaterialsDB
+        {
+            get { return GeneralData.Materials; }
+            set { GeneralData.Materials = value; }
+        }
+        /// <inheritdoc/>
+
+        public string FunctionsDB
+        {
+            get { return GeneralData.Functions; }
+            set { GeneralData.Functions = value; }
+        }
+
+        /// <inheritdoc/>
+        public TaskKind ProjectKind
+        {
+            get 
+            {
+                return GeneralData.TaskKind;
+            }
+            set
+            {
+                TaskData.Clear();
+                GeneralData.TaskKind = value;
+            }         
+        }
+        /// <inheritdoc/>
+        public TaskType GetProjectType
+        {
+            get
+            {
+                return GeneralData.TaskType;
+            }
+            set
+            {
+                TaskData.Clear();
+                GeneralData.TaskType = value;
+            }
         }
     }
 }

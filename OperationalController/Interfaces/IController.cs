@@ -17,6 +17,22 @@ namespace OperationalController
     public interface IController
     {
         /// <summary>
+        /// FunctionsDB
+        /// </summary>
+        string FunctionsDB { get; set; }
+        /// <summary>
+        /// MaterialsDB
+        /// </summary>
+        string MaterialsDB { get; set; }
+        /// <summary>
+        /// ProjectKind
+        /// </summary>
+        TaskKind ProjectKind { get; set; }
+        /// <summary>
+        /// GetProjectType
+        /// </summary>
+        TaskType GetProjectType { get; set; }
+        /// <summary>
         /// TaskData
         /// </summary>
         ITaskData TaskData {get;}
@@ -92,7 +108,7 @@ namespace OperationalController
         /// <summary>
         /// Create2DForm3D
         /// </summary>
-        /// <param name="StartNumber"></param>
+        /// <param name="setName"></param>
         /// <returns></returns>
         void Create2DForm3D(string setName);
         /// <summary>
