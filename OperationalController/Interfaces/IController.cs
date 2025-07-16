@@ -31,7 +31,7 @@ namespace OperationalController
         /// <summary>
         /// GetProjectType
         /// </summary>
-        TaskType GetProjectType { get; set; }
+        TaskType ProjectType { get; set; }
         /// <summary>
         /// TaskData
         /// </summary>
@@ -41,9 +41,13 @@ namespace OperationalController
         /// </summary>
         IModelData ModelData { get; }
         /// <summary>
-        /// TaskData
+        /// Path
         /// </summary>
-        IGeneralData GeneralData { get; }
+        string Path { get; set; }
+        /// <summary>
+        /// Path
+        /// </summary>
+        string Name { get; set; }
         /// <summary>
         /// Save
         /// </summary>
@@ -58,17 +62,11 @@ namespace OperationalController
         /// <param name="projectFile"></param>
         void Create(string projectFile);
         /// <summary>
-        /// Create
-        /// </summary>
-        /// <param name="path"></param>
-        /// <param name="proj"></param>
-        void Create(string path, string proj);
-        /// <summary>
         /// GetModelObjects
         /// </summary>
-        /// <param name="objects"></param>
+        /// <param name="objType"></param>
         /// <returns></returns>
-        IEnumerable<IModelObject> GetModelObjects(string objects);
+        IEnumerable<IModelObject> GetModelObjects(ObjType objType);
         /// <summary>
         /// GetAllModelObjects
         /// </summary>
@@ -182,12 +180,6 @@ namespace OperationalController
         /// <returns></returns>
         void Create1DFrom2D(string setName);
         /// <summary>
-        /// ChangeTaskType
-        /// </summary>
-        /// <param name="taskType"></param>
-        /// <returns></returns>
-        void ChangeTaskType(TaskType taskType);
-        /// <summary>
         /// DeleteGroup
         /// </summary>
         /// <param name="objType"></param>
@@ -220,16 +212,16 @@ namespace OperationalController
         /// <summary>
         /// GetModelSetsInfo
         /// </summary>
-        /// <param name="objects"></param>
+        /// <param name="objType"></param>
         /// <returns></returns>
-        IEnumerable<ISetInfo> GetModelSetsInfo(string objects);
+        IEnumerable<ISetInfo> GetModelSetsInfo(ObjType objType);
         /// <summary>
         /// GetModelSetInfo
         /// </summary>
-        /// <param name="objects"></param>
+        /// <param name="objType"></param>
         /// <param name="setName"></param>
         /// <returns></returns>
-        ISetInfo GetModelSetInfo(string objects, string setName);
+        ISetInfo GetModelSetInfo(ObjType objType, string setName);
         /// <summary>
         /// SetModelObjectsBackColor
         /// </summary>

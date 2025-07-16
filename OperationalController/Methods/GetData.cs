@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Model.Interfaces.MeshObjects;
 using Project.Interfaces.Tasks;
 using Newtonsoft.Json.Linq;
+using System.IO;
 
 namespace OperationalController
 {
@@ -12,24 +13,21 @@ namespace OperationalController
     {
         /// <inheritdoc/>
 
-        public IEnumerable<ISetInfo> GetModelSetsInfo(string objects)
+        public IEnumerable<ISetInfo> GetModelSetsInfo(ObjType objType)
         {
-            var objType = objects.ToEnum<ObjType>();
             foreach (var item in ModelData.ObjectData.GetSetsInfo(objType))
                 yield return item;
 
         }
         /// <inheritdoc/>
-        public IEnumerable<IModelObject> GetModelObjects(string objects)
+        public IEnumerable<IModelObject> GetModelObjects(ObjType objType)
         {
-            var objType = objects.ToEnum<ObjType>();
             return ModelData.ObjectData.GetObjects(objType);
         }
         /// <inheritdoc/>
 
-        public ISetInfo GetModelSetInfo(string objects, string setName)
+        public ISetInfo GetModelSetInfo(ObjType objType, string setName)
         {
-            var objType = objects.ToEnum<ObjType>();
             return ModelData.ObjectData.GetSetInfo(objType, setName);
         }
 
@@ -55,14 +53,14 @@ namespace OperationalController
         /// <inheritdoc/>
         public string MaterialsDB
         {
-            get { return GeneralData.Materials; }
+            get { return project.GeneralData.Materials; }
             set { GeneralData.Materials = value; }
         }
         /// <inheritdoc/>
 
         public string FunctionsDB
         {
-            get { return GeneralData.Functions; }
+            get { return project.GeneralData.Functions; }
             set { GeneralData.Functions = value; }
         }
 
@@ -80,10 +78,10 @@ namespace OperationalController
             }         
         }
         /// <inheritdoc/>
-        public TaskType GetProjectType
+        public TaskType ProjectType
         {
             get
-            {
+            {               
                 return GeneralData.TaskType;
             }
             set

@@ -19,6 +19,9 @@ using System;
 using OperationalController.Extensions;
 using Model.Interfaces.ObjectsCollections;
 using Model;
+using System.IO;
+using Model.IO;
+using Newtonsoft.Json.Linq;
 
 namespace OperationalController
 {
@@ -45,33 +48,12 @@ namespace OperationalController
                 throw new Exception("Проект не создан");
             project.Save();
         }
-/// <inheritdoc/>
 
-        public void Create(string projectFile)
-        {
-            project = new ProjectData();
-            GeneralData.Name = System.IO.Path.GetFileName(projectFile);
-            GeneralData.Path = System.IO.Path.GetDirectoryName(projectFile);
-        }
-/// <inheritdoc/>
-
-        public void Create(string path, string proj)
-        {
-            project = new ProjectData(path, proj);
-        }
-
-        /// <inheritdoc/>
-
-        public void ChangeTaskType(TaskType taskType)
-        {
-            GeneralData.TaskType = taskType;
-            TaskData.Clear();
-        }
       
 
 /// <inheritdoc/>
 
-        IBoundaryEdgesFinder boundaryEdgesFinder { get; } = new FindBoundaryEdges();
+        IBoundaryEdgesFinder boundaryEdgesFinder { get; set; } = new FindBoundaryEdges();
         /// <inheritdoc/>
 
         public IEnumerable<ILineObject<Node>> CreateBoundaryEdges(List<string> linesNodes)
@@ -86,7 +68,7 @@ namespace OperationalController
             
         }
 
-        ISelectionHelper selectionHelper { get; } = new SelectionHelper();
+        ISelectionHelper selectionHelper { get; set; } = new SelectionHelper();
 /// <inheritdoc/>
 
         public List<int> SelectNodeInDirection(float angleInGradus, int numbFirst, int numbSecond, Color color)
@@ -105,7 +87,7 @@ namespace OperationalController
         }
 /// <inheritdoc/>
 
-        IFreeNodesFinder freeNodesFinder { get; } = new FreeNodesFinder();
+        IFreeNodesFinder freeNodesFinder { get; set; } = new FreeNodesFinder();
         /// <inheritdoc/>
         public IEnumerable<int> FindFreeNodes()
         {
@@ -114,7 +96,7 @@ namespace OperationalController
 
 /// <inheritdoc/>
 
-        ICrossSectionMaker crossSectionMaker { get; } = new CrossSection();
+        ICrossSectionMaker crossSectionMaker { get; set; } = new CrossSection();
 /// <inheritdoc/>
 
         public SurfaceFigure GetSectionSurfaces(Geometry.Plane plane)
@@ -122,7 +104,7 @@ namespace OperationalController
             return crossSectionMaker.GetSectionSurfaces(ModelData.ObjectData.E3DCollection.GetObjects(), plane);
         }
 
-        ICoincidentObjectsFinder coincidentObjectsFinder { get; } = new FindCoincidentObjects();
+        ICoincidentObjectsFinder coincidentObjectsFinder { get; set; } = new FindCoincidentObjects();
         /// <inheritdoc/>
         public List<List<int>> FindCoincidentObjects(ObjType objType, float distance)
         {
@@ -130,7 +112,7 @@ namespace OperationalController
             return coincidentObjectsFinder.Find(objs, distance);
         }
 
-        IObjectsMerger objectsMerger { get; } = new MergeObjects();
+        IObjectsMerger objectsMerger { get; set; } = new MergeObjects();
 
         /// <inheritdoc/>
         public void MergeNodes(List<List<int>> numbers)
@@ -142,10 +124,10 @@ namespace OperationalController
 
 /// <inheritdoc/>
 
-        IObjectsRenumber objectsRenumber { get; } = new ObjectsRenumber();
+        IObjectsRenumber objectsRenumber { get; set; } = new ObjectsRenumber();
 /// <inheritdoc/>
 
-        INormalCalculator normalCalculator { get; } = new NormalsCalculator();
+        INormalCalculator normalCalculator { get; set; } = new NormalsCalculator();
         /// <inheritdoc/>
         public Dictionary<int, Point3D> CalcNodeNormals()
         {
@@ -169,7 +151,7 @@ namespace OperationalController
 
 /// <inheritdoc/>
 
-        IExtractor1DFrom2D extractor1DFrom2D { get; } = new Extract1DFrom2D();
+        IExtractor1DFrom2D extractor1DFrom2D { get; set; } = new Extract1DFrom2D();
 /// <inheritdoc/>
 
         public void Create1DFrom2D(string setName)
@@ -193,7 +175,21 @@ namespace OperationalController
 /// <inheritdoc/>
 
         public IModelData ModelData => project?.ModelData;
+
+        IGeneralData GeneralData => project?.GeneralData;
         /// <inheritdoc/>
-        public IGeneralData GeneralData => project?.GeneralData;
+        public string Path 
+        { 
+            get => GeneralData.Path;
+            set => GeneralData.Path = value;
+        }
+        /// <inheritdoc/>
+        public string Name 
+        {
+            get => GeneralData.Name;
+            set => GeneralData.Name = value;
+        }
+
+
     }
 }
