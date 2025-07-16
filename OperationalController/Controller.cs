@@ -1,8 +1,6 @@
 ﻿using OperationalController.MeshObjsCreator;
 using OperationalController.MeshObjsUtility;
-using OperationalController;
 using OperationalController.SurfaceMeshCreator;
-using OperationalController.MeshObjsUtility;
 using OperationalController.ObjsCreator;
 using Model.Interfaces;
 using Project;
@@ -16,12 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Drawing;
 using System;
-using OperationalController.Extensions;
-using Model.Interfaces.ObjectsCollections;
-using Model;
-using System.IO;
 using Model.IO;
-using Newtonsoft.Json.Linq;
 
 namespace OperationalController
 {
@@ -166,6 +159,28 @@ namespace OperationalController
         public void SetModelObjectsBackColor(ObjType objType)
         {
             ModelData?.ObjectData?.SetBackColor(objType);
+        }
+        /// <inheritdoc/>
+        public void SaveAs(string projectFile)
+        {
+            var ext = System.IO.Path.GetExtension(projectFile);
+
+            if (ext == ".bpf2")
+                ModelData.Saver = new SaveModelToBPF2TextFile();
+            else
+                ModelData.Saver = new SaveModelToBPFTextFile();
+
+            Save();
+        }
+        /// <inheritdoc/>
+        public IEnumerable<IGroup> GetAllModelGroups()
+        {
+            return ModelData.GroupData;
+        }
+        /// <inheritdoc/>
+        public IEnumerable<ICondData> GetAllCondData()
+        {
+            return TaskData;
         }
 
 
