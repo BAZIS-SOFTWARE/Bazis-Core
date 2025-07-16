@@ -1,8 +1,6 @@
 ﻿using OperationalController.MeshObjsCreator;
 using OperationalController.MeshObjsUtility;
-using OperationalController;
 using OperationalController.SurfaceMeshCreator;
-using OperationalController.MeshObjsUtility;
 using OperationalController.ObjsCreator;
 using Model.Interfaces;
 using Project;
@@ -16,12 +14,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Drawing;
 using System;
-using OperationalController.Extensions;
-using Model.Interfaces.ObjectsCollections;
-using Model;
-using System.IO;
-using Model.IO;
-using Newtonsoft.Json.Linq;
 
 namespace OperationalController
 {
