@@ -2,10 +2,9 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using Model.MeshObjects;
-using ModelController.MeshObjsUtility;
 using Model.Interfaces;
-using Model.Interfaces.MeshObjects;
 using System;
+using OperationalController.MeshObjsUtility;
 
 namespace TestModel
 {

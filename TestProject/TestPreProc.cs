@@ -316,10 +316,10 @@ namespace TestProject
 
             project.Load(projPath + file);
 
-            var resData = new List<IPhysicalData>();
+            var resData = new List<ICondData>();
 
             foreach (var data in project.TaskData)
-                resData.Add(data as PhysicalData);
+                resData.Add(data as CondData);
 
             var preProc = new PreProc.PreProc();
             preProc.CalcCompDataV1(resData, pt, projPath + "TsfFolder\\");
@@ -339,7 +339,7 @@ namespace TestProject
         [DataRow(@"HeatDataContiniousWithoutMediaData.bpf")]
         public void PreProc_GenerateTSF_ShouldFail(string file)
         {
-            var resData = new List<IPhysicalData>();
+            var resData = new List<ICondData>();
             var group = new Group("test", ObjType.Узел);
             group.Insert(0, new Node(0, new Geometry.Point3D()));
             group.Insert(0, new Node(0, new Geometry.Point3D()));
@@ -350,7 +350,7 @@ namespace TestProject
             var textData = new LoadTaskDataTextFormat().Load(projPath + file, groupData);
             foreach (var data in textData)
             {
-                resData.Add(data as PhysicalData);
+                resData.Add(data as CondData);
             }
             var preProc = new PreProc.PreProc();
             Assert.ThrowsException<Exception>(() => preProc.CalcCompDataV1(resData, ProcessType.Welding, projPath));

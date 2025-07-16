@@ -1,19 +1,24 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model.Interfaces;
 using Model.IO;
-using Model;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Project;
+using System.Globalization;
+using System.Threading;
+using OperationalController;
 
 namespace TestProject
 {
+
     [TestClass]
     public class TestProjectData
     {
+        [TestInitialize]
+        public void Init()
+        {
+            Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+        }
         [DataTestMethod]
         [DataRow(@"..\..\..\Examples\TestCRUDFunction\one_quad_term_cycle.bpf2", new int[] { 1 }, ObjType.Узел, "clamp true", DisplayName = "clamp true")]
         [DataRow(@"..\..\..\Examples\TestCRUDFunction\one_quad_term_cycle.bpf2", new int[] { 0 }, ObjType.Узел, "clamp true", DisplayName = "clamp true")]
@@ -26,18 +31,19 @@ namespace TestProject
         public void RemoveObjsByNumber(string path, int[] objNumbers, ObjType type, string resStr)
         {
             //assing
-            var proj = new ProjectData();
-            proj.ModelData.Loader = new LoadModelFromBPF2TextFile();
+            var control = new Controller();
 
-            proj.Load(path);
+            control.Create(path);
+            control.ModelData.Loader = new LoadModelFromBPF2TextFile();
+            control.Load();
             var grName = resStr.Split(' ')[0];
             var res = bool.Parse(resStr.Split(' ')[1]);
             //act
-            proj.DeleteMeshObjects(type, objNumbers);
+            control.DeleteModelObjects(type, objNumbers);
 
             //assert
-            Assert.AreEqual(res, proj.ModelData.GroupData.Find(grName) != null);
-            Assert.AreEqual(res, proj.TaskData.Contains(grName));
+            Assert.AreEqual(res, control.ModelData.GroupData.Find(grName) != null);
+            Assert.AreEqual(res, control.TaskData.Contains(grName));
         }
 
         [DataTestMethod]
@@ -47,18 +53,18 @@ namespace TestProject
         public void RemoveSetByNameAndType(string path, string setName, ObjType type, string resStr)
         {
             //assing
-            var proj = new ProjectData();
-            proj.ModelData.Loader = new LoadModelFromBPF2TextFile();
-
-            proj.Load(path);
+            var control = new Controller();
+            control.Create(path);
+            control.ModelData.Loader = new LoadModelFromBPF2TextFile();
+            control.Load();
             var grName = resStr.Split(' ')[0];
             var res = bool.Parse(resStr.Split(' ')[1]);
             //act
-            proj.DeleteMeshSet(type, setName);
+            control.DeleteModelSet(type, setName);
 
             //assert
-            Assert.AreEqual(res, proj.ModelData.GroupData.Find(grName) != null);
-            Assert.AreEqual(res, proj.TaskData.Contains(grName));
+            Assert.AreEqual(res, control.ModelData.GroupData.Find(grName) != null);
+            Assert.AreEqual(res, control.TaskData.Contains(grName));
         }
 
         [DataTestMethod]
@@ -68,18 +74,20 @@ namespace TestProject
         public void ClearMeshCollection(string path, ObjType type, string resStr)
         {
             //assing
-            var proj = new ProjectData();
-            proj.ModelData.Loader = new LoadModelFromBPF2TextFile();
+            var control = new Controller();
 
-            proj.Load(path);
+            control.Create(path);
+            control.ModelData.Loader = new LoadModelFromBPF2TextFile();
+            control.Load();
+
             var grName = resStr.Split(' ')[0];
             var res = bool.Parse(resStr.Split(' ')[1]);
             //act
-            proj.ClearMeshCollection(type);
+            control.ClearModelCollection(type);
 
             //assert
-            Assert.AreEqual(res, proj.ModelData.GroupData.Find(grName) != null);
-            Assert.AreEqual(res, proj.TaskData.Contains(grName));
+            Assert.AreEqual(res, control.ModelData.GroupData.Find(grName) != null);
+            Assert.AreEqual(res, control.TaskData.Contains(grName));
         }
 
         [TestMethod]

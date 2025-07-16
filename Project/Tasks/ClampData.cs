@@ -13,7 +13,7 @@ namespace Project.Tasks
         Контакт
     }
 
-    public class ClampData : PhysicalData
+    public class ClampData : CondData
     {
         public ClampData(IGroup group,float start,float stop) : base (group,start,stop)
         {

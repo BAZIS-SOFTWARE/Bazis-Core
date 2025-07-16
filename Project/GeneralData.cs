@@ -23,7 +23,5 @@ namespace Project
 /// <inheritdoc/>
 
         public TaskKind TaskKind { get; set; }
-        /// <inheritdoc/>
-        public string ResultDB { get; set; }
     }
 }

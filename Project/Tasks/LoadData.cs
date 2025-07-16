@@ -10,7 +10,7 @@ namespace Project.Tasks
         Сила,
         Давление
     }
-    public class LoadData : PhysicalData
+    public class LoadData : CondData
     {
         /// <summary>
         /// Value

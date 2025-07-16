@@ -18,7 +18,7 @@ namespace Project.Tasks
 
     public class TaskData :  ITaskData
     {
-        List<IPhysicalData> taskData;
+        List<ICondData> taskData;
 
         public int Count { get { return taskData.Count; } }
 
@@ -29,7 +29,7 @@ namespace Project.Tasks
         /// <inheritdoc/>
         public ITaskDataLoader Loader { get; set; } = new LoadTaskDataTextFormat();
 
-        public IPhysicalData this[int ind]
+        public ICondData this[int ind]
         {
             get
             {
@@ -45,11 +45,11 @@ namespace Project.Tasks
         /// </summary>
         public TaskData()
         {
-            taskData = new List<IPhysicalData>();
+            taskData = new List<ICondData>();
         }
 /// <inheritdoc/>
 
-        public IEnumerable<T> Find<T>() where T : IPhysicalData
+        public IEnumerable<T> Find<T>() where T : ICondData
         {
             foreach (var data in taskData)
             {
@@ -59,7 +59,7 @@ namespace Project.Tasks
         }
 /// <inheritdoc/>
 
-        public IEnumerable<IPhysicalData> Find(DataKind kind)
+        public IEnumerable<ICondData> Find(DataKind kind)
         {
             foreach (var data in taskData)
             {
@@ -69,7 +69,7 @@ namespace Project.Tasks
         }
 /// <inheritdoc/>
 
-        public IEnumerable<IPhysicalData> Find(string grName)
+        public IEnumerable<ICondData> Find(string grName)
         {
             foreach (var data in taskData)
             {
@@ -79,7 +79,7 @@ namespace Project.Tasks
         }
         /// <inheritdoc/>
 
-        public void Add(IPhysicalData data)
+        public void Add(ICondData data)
         {
             taskData.Add(data);
         }
@@ -95,13 +95,13 @@ namespace Project.Tasks
         }
 /// <inheritdoc/>
 
-        public int IndexOf(IPhysicalData item)
+        public int IndexOf(ICondData item)
         {
             return taskData.IndexOf(item);
         }
 /// <inheritdoc/>
 
-        public void Insert(int index, IPhysicalData item)
+        public void Insert(int index, ICondData item)
         {
             throw new System.NotImplementedException();
         }
@@ -119,19 +119,19 @@ namespace Project.Tasks
         }
 /// <inheritdoc/>
 
-        public bool Contains(IPhysicalData item)
+        public bool Contains(ICondData item)
         {
             return taskData.Find(x => x.Kind == item.Kind & x.ToString().Equals(item.ToString())) == null ? false : true;
         }
 /// <inheritdoc/>
 
-        public void CopyTo(IPhysicalData[] array, int arrayIndex)
+        public void CopyTo(ICondData[] array, int arrayIndex)
         {
             taskData.CopyTo(array, arrayIndex);
         }
 /// <inheritdoc/>
 
-        public bool Remove(IPhysicalData item)
+        public bool Remove(ICondData item)
         {
             return taskData.Remove(item);
         }
@@ -141,7 +141,7 @@ namespace Project.Tasks
             return taskData.RemoveAll(x => x.Kind == kind);
         }
 
-        public IEnumerator<IPhysicalData> GetEnumerator()
+        public IEnumerator<ICondData> GetEnumerator()
         {
             foreach (var data in taskData)
             {
@@ -162,7 +162,7 @@ namespace Project.Tasks
         }
 /// <inheritdoc/>
 
-        public void AddRange(IEnumerable<IPhysicalData> datas)
+        public void AddRange(IEnumerable<ICondData> datas)
         {
             taskData.AddRange(datas);
         }
@@ -202,14 +202,14 @@ namespace Project.Tasks
         }
 /// <inheritdoc/>
 
-        public IPhysicalData Create(DataKind kind, string info,IGroupData groupData)
+        public ICondData Create(DataKind kind, string info,IGroupData groupData)
         {
             if (groupData == null)
             {
                 throw new ArgumentNullException(nameof(groupData));
             }
 
-            PhysicalData physicalData;
+            CondData physicalData;
 
             var infoAr = info.Split(' ');  
 

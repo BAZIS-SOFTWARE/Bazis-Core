@@ -141,13 +141,6 @@ namespace Model.Interfaces
         /// <returns></returns>
         IEnumerable<ISetInfo> GetSetsInfo(ObjType objType);
         /// <summary>
-        /// GetSetInfo
-        /// </summary>
-        /// <param name="objType"></param>
-        /// <param name="objNumber"></param>
-        /// <returns></returns>
-        ISetInfo GetSetInfo(ObjType objType, int objNumber);
-        /// <summary>
         /// GetLastNumber
         /// </summary>
         /// <returns></returns>

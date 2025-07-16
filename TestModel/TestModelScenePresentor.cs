@@ -2,22 +2,20 @@
 using Model;
 using Model.Interfaces;
 using Model.IO;
-using ModelController.ModelScenePresentator;
 using System.Collections.Generic;
 using Model.MeshObjects;
-using ModelController.ModelScenePresentator.GlObjsPresenters;
 using Model.GeometryObjects;
-using ModelControllerInterfaces;
+using OperationalController;
 using System.IO;
 using Geometry;
 using System.Linq;
-using GmshApi;
-using Model.Interfaces.MeshObjects;
-using ModelController.GmshController;
-using System.Xml.Linq;
-using System;
-using ModelController.MeshObjsUtility;
 using Model.IO.STL;
+using OperationalController.ModelScenePresentator.GlObjsPresenters;
+using OperationalController.ModelScenePresentator;
+using OperationalController.MeshObjsUtility;
+using OperationalController.GmshController;
+using System;
+using System.Drawing;
 
 namespace TestModel
 {
@@ -434,38 +432,82 @@ namespace TestModel
         [DataRow(@"..\..\..\Examples\3D\mixElements.bpf", true)]
         public void TestSeparators(string fileName, bool isVolume)
         {
-            var model = new ModelData();
+            var controller = new Controller();
+            controller.Create(fileName);
+            controller.ModelData.Loader = new LoadModelFromBPFTextFile();
 
-            model.Loader = new LoadModelFromBPFTextFile();
-            model.Load(fileName);
+            controller.Load();
+            controller.ChangeInsideSurfacesState(isVolume);
 
-            var surfPresenter = new SurfaceObjsPresenter<ElementSurface, Node>();
-
-            Element[] elements;
-            if (isVolume)
-            {
-                var elems = model.ObjectData.E3DCollection.GetObjects().ToArray();
-                surfPresenter.Add(elems);
-                elements = elems;
-            }
-            else
-            {
-                var elems = model.ObjectData.E2DCollection.GetObjects().ToArray();
-                surfPresenter.Add(elems);
-                elements = elems;
-            }
-
+            var presenter = controller.CreateModelObjectsPresentor(ObjType.Элемент2D);
+            var surfPresenter = (ISurfaceObjsPresenter)presenter;
             var inds = surfPresenter.CreateIndexes();
             var coords = surfPresenter.CreateVertexes(inds.Item2, "координаты");
             var separators = surfPresenter.CreateSeparators();
 
-            Assert.IsTrue(elements.Length == separators.Length - 1);
+            Assert.IsTrue(surfPresenter.Count() == separators.Length - 1);
+        } 
 
-            for(var i = 1; i < separators.Length; ++i)
+        [DataTestMethod]
+        [DataRow(@"..\..\..\Examples\3D\Lazer.inp", 10, ObjType.Элемент3D)]
+        [DataRow(@"..\..\..\Examples\3D\untitled.inp", 47, ObjType.Элемент3D)]
+        [DataRow(@"..\..\..\Examples\3D\Lazer.inp", 35, ObjType.Элемент2D)]
+        [DataRow(@"..\..\..\Examples\3D\untitled.inp", 6, ObjType.Элемент2D)]
+        public void TestSeparatorsAfterHideElementsByColor(string fileName, int hideElemsBySet, ObjType objType)
+        {
+            var controller = new Controller();
+            controller.Create(fileName);
+            controller.ModelData.Loader = new LoadModelFromINPTextFile();
+            controller.Load();
+
+            var elemCounter = 0;
+
+            var sets = controller.ModelData.ObjectData.GetSetsInfo(objType);
+
+            //Перебираем каждый набор и назначаем первым hideElemsBySet элементам цвет зеленый
+            foreach (var set in sets)
             {
-                var trCount = separators[i] - separators[i - 1];
-                Assert.IsTrue(NormalsChecker.IdentifyByTriangles(trCount) == elements[i - 1].ElementKind);
+
+                foreach (var item in set.GetNumbers())
+                {
+                    if (elemCounter == hideElemsBySet)
+                        break;
+                    ++elemCounter;
+                    set.SetViewState(item, false);
+                }
             }
+
+            var expectedShown = sets.Sum(x => x.NumberOfObjects) - elemCounter;
+            var actualShown = 0;
+            foreach (var set in controller.ModelData.ObjectData.GetSetsInfo(objType))
+            {
+                foreach (var item in set.GetNumbers())
+                {
+                    if (set.GetViewState(item))
+                        actualShown++;
+                }
+
+            }
+
+            Assert.AreEqual(expectedShown, actualShown);
+
+            var surfPresenter = (ISurfaceObjsPresenter)controller.CreateModelObjectsPresentor(objType);
+            
+            var inds = surfPresenter.CreateIndexes();
+            var coords = surfPresenter.CreateVertexes(inds.Item2, "координаты");
+            var separators = surfPresenter.CreateSeparators();
+
+            actualShown = 0;
+            var maxSeparator = separators[0];//Для проверки "дружелюбности" сепараторов с индексами
+            for (var i = 1; i < separators.Length; ++i)
+            {
+                maxSeparator = Math.Max(maxSeparator, separators[i]);
+                var viewState = Convert.ToInt32(separators[i] - separators[i - 1] > 0);
+                actualShown += viewState;
+            }
+
+            Assert.AreEqual(expectedShown, actualShown);
+            Assert.AreEqual(inds.Item1, maxSeparator * 3);
         }
     }
 }

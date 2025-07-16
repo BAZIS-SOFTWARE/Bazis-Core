@@ -17,7 +17,7 @@ namespace Project.Tasks
     /// <summary>
     /// HeatData
     /// </summary>
-    public class HeatData : PhysicalData
+    public class HeatData : CondData
     {
         /// <summary>
         /// Heat.J/mm3

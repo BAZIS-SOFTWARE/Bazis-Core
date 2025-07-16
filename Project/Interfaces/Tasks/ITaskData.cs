@@ -59,27 +59,27 @@ namespace Project.Interfaces.Tasks
         /// </summary>
         термическая_механическая = термическая & механическая
     };
-    public interface ITaskData : IList<IPhysicalData>
+    public interface ITaskData : IList<ICondData>
     {
         /// <summary>
         /// Find by group name
         /// </summary>
         /// <param name="grName"></param>
         /// <returns></returns>
-        IEnumerable<IPhysicalData> Find(string grName);
+        IEnumerable<ICondData> Find(string grName);
         /// <summary>
         /// Find all data according to name
         /// </summary>
         /// <param name="kind"></param>
         /// <returns></returns>
-        IEnumerable<IPhysicalData> Find(DataKind kind);
+        IEnumerable<ICondData> Find(DataKind kind);
 
         /// <summary>
         /// Find all data as T
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        IEnumerable<T> Find<T>() where T : IPhysicalData;
+        IEnumerable<T> Find<T>() where T : ICondData;
         /// <summary>
         /// Remove range
         /// </summary>
@@ -98,7 +98,7 @@ namespace Project.Interfaces.Tasks
         /// <summary>
         /// Name
         /// </summary>
-        void AddRange(IEnumerable<IPhysicalData> datas);
+        void AddRange(IEnumerable<ICondData> datas);
         /// <summary>
         /// Save task data
         /// </summary>
@@ -125,7 +125,7 @@ namespace Project.Interfaces.Tasks
         /// <param name="dataInfo"></param>
         /// <param name="groupData"></param>
         /// <returns></returns>
-        IPhysicalData Create(DataKind kind, string dataInfo, IGroupData groupData);
+        ICondData Create(DataKind kind, string dataInfo, IGroupData groupData);
         /// <summary>
         /// Contains
         /// </summary>

@@ -18,7 +18,7 @@ namespace Project.Tasks
         /// </summary>
         ConstantTemp
     }
-    public class MediaData : PhysicalData
+    public class MediaData : CondData
     {
         /// <summary>
         /// MediaProcess

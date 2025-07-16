@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model.GroupsData;
 using Model.Interfaces;
 using Model.MeshObjects;
-using ModelController.MeshObjsCreator;
+using OperationalController.MeshObjsCreator;
 using System;
 using System.Collections.Generic;
 using System.Linq;

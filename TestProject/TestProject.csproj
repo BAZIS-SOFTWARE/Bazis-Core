@@ -189,13 +189,13 @@
     <Content Include="Examples\ProjAndResults\watcher_1.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ModelController\ModelController.csproj">
-      <Project>{a27fb4c7-19a3-4ad6-8eb3-1eae77654719}</Project>
-      <Name>ModelController</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Model\Model.csproj">
       <Project>{a6b0cebb-8f7c-467e-90bb-924103dae30b}</Project>
       <Name>Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OperationalController\OperationalController.csproj">
+      <Project>{283f3c11-ae5d-48a8-af96-c5f44501df24}</Project>
+      <Name>OperationalController</Name>
     </ProjectReference>
     <ProjectReference Include="..\PostProc\PostProc.csproj">
       <Project>{d89c1656-b753-4241-9962-fd6999c67529}</Project>

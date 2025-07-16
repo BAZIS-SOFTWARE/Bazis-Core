@@ -6,15 +6,13 @@ using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using Model.Interfaces;
-using ModelController.MeshObjsUtility;
 using Model.IO;
 using Model.MeshObjects;
 using Model.Interfaces.MeshObjects;
 using System.Data;
-using Model.GroupsData;
-using ModelController.MeshObjsCreator;
-using ModelController.ModelScenePresentator;
-using ModelControllerInterfaces;
+using OperationalController.MeshObjsUtility;
+using OperationalController.ModelScenePresentator;
+using OperationalController;
 
 namespace TestModel
 {
@@ -100,13 +98,12 @@ namespace TestModel
         [TestMethod]
         public void FindBoundaryEdges_ShouldWork_OnModelWithDifferentElements()
         {
-            var model = new ModelData();
-            model.Loader = new LoadModelFromBPFTextFile();
-            model.Load(@"..\..\..\Examples\3D\cub_unsorted.bpf");
-
-            var modelController = new ModelController.ModelController();
-            var linesNodes = modelController.BoundaryEdgesFinder.Find(model.ObjectData.GetAllElements().Select(x => (ISurfaceElement)x));
-            var bounds = modelController.BoundaryEdgesFinder.CreateBoundaryEdges(linesNodes,model);
+            var controller = new OperationalController.Controller();
+            controller.ModelData.Loader = new LoadModelFromBPFTextFile();
+            controller.Create(@"..\..\..\Examples\3D\cub_unsorted.bpf");
+            controller.Load();
+            var linesNodes = controller.FindBoundaryEdges();
+            var bounds = controller.CreateBoundaryEdges(linesNodes);
             
             Assert.AreEqual(19, bounds.Count());
 
@@ -119,12 +116,12 @@ namespace TestModel
         [TestMethod]
         public void GetElementsNormals()
         {
-            var model = new ModelData();
-            model.Loader = new LoadModelFromBPFTextFile();
-            model.Load(@"..\..\..\Examples\3D\cub_unsorted.bpf");
-
-            var modelController = new ModelController.ModelController();
-            var normals = modelController.NormalCalculator.CalcElemsNormals(model.ObjectData.GetAllElements().Select(x => (ISurfaceElement)x)); 
+            var controller = new OperationalController.Controller();
+            controller.ModelData.Loader = new LoadModelFromBPFTextFile();
+            
+            controller.Create(@"..\..\..\Examples\3D\cub_unsorted.bpf");
+            controller.Load();
+            var normals = controller.CalcElemsNormals(3); 
 
             Assert.AreNotEqual(0, normals.Count());
 

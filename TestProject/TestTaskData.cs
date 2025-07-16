@@ -78,7 +78,7 @@ namespace TestProject
             //act
             proj.Load(@"..\..\..\Examples\proj_traj.bpf");
 
-            var res = proj.TaskData.Find<IPhysicalData>();
+            var res = proj.TaskData.Find<ICondData>();
             //assert
 
             Assert.AreEqual(res.Count(), 6);
@@ -99,7 +99,7 @@ namespace TestProject
             //act
             proj.Load(relativeProjPath);
 
-            var selectedData = proj.TaskData.Find(DataKind.Нагрев).Select(x => (IPhysicalData)x).ToArray();
+            var selectedData = proj.TaskData.Find(DataKind.Нагрев).Select(x => (ICondData)x).ToArray();
             foreach (var preFrame in selectedData)
             {
                 var stepTime = (preFrame.StopTime - preFrame.StartTime) / 10;
@@ -133,7 +133,7 @@ namespace TestProject
             //act
             proj.Load(@"..\..\..\Examples\proj_traj.bpf");
 
-            var selectedData = proj.TaskData.Find(DataKind.Нагрев).Select(x => (IPhysicalData)x).ToArray();
+            var selectedData = proj.TaskData.Find(DataKind.Нагрев).Select(x => (ICondData)x).ToArray();
 
             
 

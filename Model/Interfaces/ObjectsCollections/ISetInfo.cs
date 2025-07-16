@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Geometry;
+using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Text;
 
 namespace Model.Interfaces.ObjectsCollections
@@ -26,5 +28,28 @@ namespace Model.Interfaces.ObjectsCollections
         /// </summary>
         /// <returns></returns>
         IEnumerable<string> GetObjectsInfo();
+        /// <summary>
+        /// GetCoords
+        /// </summary>
+        /// <param name="number"></param>
+        /// <returns></returns>
+        IEnumerable<Point3D> GetCoords(int number);
+        /// <summary>
+        /// GetCentr
+        /// </summary>
+        /// <param name="number"></param>
+        /// <returns></returns>
+        Point3D GetCentr(int number);
+        /// <summary>
+        /// GetNumbers
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<int> GetNumbers();
+        /// <summary>
+        /// SetViewState
+        /// </summary>
+        /// <param name="number"></param>
+        /// <param name="viewState"></param>
+        void SetViewState(int number, bool viewState);
     }
 }

@@ -14,30 +14,6 @@ namespace Project.Interfaces
     public interface IProjectData
     {
         /// <summary>
-        /// DeleteGroup
-        /// </summary>
-        /// <param name="objType"></param>
-        /// <param name="objNumbs"></param>
-        void DeleteMeshObjects(ObjType objType, IEnumerable<int> objNumbs);
-
-        /// <summary>
-        /// DeleteMeshGroup
-        /// </summary>
-        /// <param name="grName"></param>
-        void DeleteMeshGroup(string grName);
-        /// <summary>
-        /// DeleteMeshSet
-        /// </summary>
-        /// <param name="objType"></param>
-        /// <param name="name"></param>
-        void DeleteMeshSet(ObjType objType, string name);
-
-        /// <summary>
-        /// ClearMeshCollection
-        /// </summary>
-        /// <param name="objType"></param>
-        void ClearMeshCollection(ObjType objType);
-        /// <summary>
         /// Saver
         /// </summary>
         IProjectSaver Saver { get; set; }
@@ -58,11 +34,6 @@ namespace Project.Interfaces
         /// </summary>
         IGeneralData GeneralData { get;  }
         /// <summary>
-        /// ClearAllData
-        /// </summary>
-        void ClearAllData();
-
-        /// <summary>
         /// Save
         /// </summary>
         void Save();
@@ -75,11 +46,5 @@ namespace Project.Interfaces
         /// </summary>
         /// <param name="projectFile"></param>
         void Load(string projectFile);
-        /// <summary>
-        /// ChangeTaskType
-        /// </summary>
-        /// <param name="taskType"></param>
-        /// <returns></returns>
-        void ChangeTaskType(TaskType taskType);
     }
 }

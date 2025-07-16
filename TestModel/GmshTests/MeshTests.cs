@@ -7,7 +7,7 @@ using Model.Interfaces.MeshObjects;
 using Model.Interfaces.ObjectsFinders;
 using GmshApi;
 using System.IO;
-using ModelController.GmshController;
+using OperationalController.GmshController;
 
 namespace TestModel.GmshTests
 {
