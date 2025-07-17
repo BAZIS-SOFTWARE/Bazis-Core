@@ -72,5 +72,16 @@ namespace Model.Interfaces.ObjectsCollections
         /// <param name="number"></param>
         /// <returns></returns>
         bool GetViewState(int number);
+        /// <summary>
+        /// SetViewState
+        /// </summary>
+        /// <param name="number"></param>
+        /// <param name="viewState"></param>
+        void SetViewState(int number, bool viewState);
+        /// <summary>
+        /// SetViewState
+        /// </summary>
+        /// <param name="viewState"></param>
+        void SetViewState(bool viewState);
     }
 }

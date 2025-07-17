@@ -167,8 +167,10 @@ namespace OperationalController
 
             if (ext == ".bpf2")
                 ModelData.Saver = new SaveModelToBPF2TextFile();
-            else
+            else if (ext == ".bpf")
                 ModelData.Saver = new SaveModelToBPFTextFile();
+            else
+                throw new Exception("неизвестное расширение файла");
 
             Save();
         }

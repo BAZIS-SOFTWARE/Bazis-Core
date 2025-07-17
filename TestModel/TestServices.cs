@@ -99,7 +99,7 @@ namespace TestModel
         public void FindBoundaryEdges_ShouldWork_OnModelWithDifferentElements()
         {
             var controller = new OperationalController.Controller();
-            controller.ModelData.Loader = new LoadModelFromBPFTextFile();
+            //controller.ModelData.Loader = new LoadModelFromBPFTextFile();
             controller.Create(@"..\..\..\Examples\3D\cub_unsorted.bpf");
             controller.Load();
             var linesNodes = controller.FindBoundaryEdges();
@@ -117,7 +117,7 @@ namespace TestModel
         public void GetElementsNormals()
         {
             var controller = new OperationalController.Controller();
-            controller.ModelData.Loader = new LoadModelFromBPFTextFile();
+            //controller.ModelData.Loader = new LoadModelFromBPFTextFile();
             
             controller.Create(@"..\..\..\Examples\3D\cub_unsorted.bpf");
             controller.Load();

@@ -45,11 +45,5 @@ namespace Model.Interfaces.ObjectsCollections
         /// </summary>
         /// <returns></returns>
         IEnumerable<int> GetNumbers();
-        /// <summary>
-        /// SetViewState
-        /// </summary>
-        /// <param name="number"></param>
-        /// <param name="viewState"></param>
-        void SetViewState(int number, bool viewState);
     }
 }
