@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Drawing;
 using System;
+using Model.IO;
 
 namespace OperationalController
 {
@@ -158,6 +159,30 @@ namespace OperationalController
         public void SetModelObjectsBackColor(ObjType objType)
         {
             ModelData?.ObjectData?.SetBackColor(objType);
+        }
+        /// <inheritdoc/>
+        public void SaveAs(string projectFile)
+        {
+            var ext = System.IO.Path.GetExtension(projectFile);
+
+            if (ext == ".bpf2")
+                ModelData.Saver = new SaveModelToBPF2TextFile();
+            else if (ext == ".bpf")
+                ModelData.Saver = new SaveModelToBPFTextFile();
+            else
+                throw new Exception("неизвестное расширение файла");
+
+            Save();
+        }
+        /// <inheritdoc/>
+        public IEnumerable<IGroup> GetAllModelGroups()
+        {
+            return ModelData.GroupData;
+        }
+        /// <inheritdoc/>
+        public IEnumerable<ICondData> GetAllCondData()
+        {
+            return TaskData;
         }
 
 

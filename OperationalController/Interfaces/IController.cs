@@ -53,6 +53,11 @@ namespace OperationalController
         /// </summary>
         void Save();
         /// <summary>
+        /// SaveAs
+        /// </summary>
+        /// <param name="projectFile"></param>
+        void SaveAs(string projectFile);
+        /// <summary>
         /// Load
         /// </summary>
         void Load();
@@ -79,6 +84,16 @@ namespace OperationalController
         /// Возвращает группу объектов
         /// </returns>
         IGroup GetModelGroup(int grIndex);
+        /// <summary>
+        /// GetAllModelGroups
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<IGroup> GetAllModelGroups();
+        /// <summary>
+        /// GetAllCondData
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<ICondData> GetAllCondData();
         /// <summary>
         /// GetModelElements
         /// </summary>

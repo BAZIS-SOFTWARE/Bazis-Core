@@ -241,7 +241,13 @@ namespace Model.ObjectsCollections
         {
             objectsSet[number].ViewState = viewState;
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
+        public void SetViewState(bool viewState)
+        {
+            foreach (var item in objectsSet)
+                item.Value.ViewState = viewState;
+        }
+        /// <inheritdoc/>
 
         public bool GetViewState(int number)
         {
