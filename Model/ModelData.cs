@@ -32,9 +32,9 @@ namespace Model
 
             ObjectData.PointsSet.Append(modelData.ObjectData.PointsSet);
 
-            ObjectData.CurveCollection.Append(modelData.ObjectData.CurveCollection);
-            ObjectData.SurfaceCollection.Append(modelData.ObjectData.SurfaceCollection);
-            ObjectData.VolumeCollection.Append(modelData.ObjectData.VolumeCollection);
+            ObjectData.CurveSet.Append(modelData.ObjectData.CurveSet);
+            ObjectData.SurfaceSet.Append(modelData.ObjectData.SurfaceSet);
+            ObjectData.VolumeSet.Append(modelData.ObjectData.VolumeSet);
 
             foreach (var item in modelData.GroupData)
                 GroupData.Add(item);

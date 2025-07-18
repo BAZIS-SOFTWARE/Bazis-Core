@@ -187,6 +187,7 @@ namespace OperationalController
 
 
 
+
         /// <inheritdoc/>
         public ITaskData TaskData => project?.TaskData;
 /// <inheritdoc/>

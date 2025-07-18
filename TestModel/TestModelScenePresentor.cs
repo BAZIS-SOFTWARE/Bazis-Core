@@ -144,10 +144,10 @@ namespace TestModel
             var surface = new GeometrySurface(0, points);
             var poligon = new SurfaceFigure(0, new GeometrySurface[] { surface });
 
-            model.ObjectData.SurfaceCollection.Add(ObjType.Поверхность.ToString(), poligon);
+            model.ObjectData.SurfaceSet.Add(0, poligon);
             var creator = new PresentersCreator();
 
-            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.SurfaceCollection.GetObjects());
+            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.SurfaceSet.Values);
 
             var values = presentator.CreateIndexes();
             var edges = presentator.CreateEdgeFlags(values.Item4);
@@ -267,13 +267,13 @@ namespace TestModel
             switch (objType)
             {
                 case ObjType.Кривая:
-                    model.ObjectData.CurveCollection.Add(ObjType.Кривая.ToString(), new Curve(0, points.ToArray()));
-                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.CurveCollection.GetObjects());
+                    model.ObjectData.CurveSet.Add(0, new Curve(0, points.ToArray()));
+                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.CurveSet.Values);
                     break;
                 default:
                     var surface = new GeometrySurface(0, points.ToArray());
-                    model.ObjectData.SurfaceCollection.Add(ObjType.Поверхность.ToString(), new SurfaceFigure(0,new GeometrySurface[] { surface } ));
-                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.SurfaceCollection.GetObjects());
+                    model.ObjectData.SurfaceSet.Add(0, new SurfaceFigure(0,new GeometrySurface[] { surface } ));
+                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.SurfaceSet.Values);
                     break;
             }
 
@@ -343,13 +343,13 @@ namespace TestModel
                     presenter = creator.CreatePointObjectsPresenter(model.ObjectData.NodesSet.Values);
                     break;
                 case ObjType.Кривая:
-                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.CurveCollection.GetObjects());
+                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.CurveSet.Values);
                     break;
                 case ObjType.Поверхность:
-                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.SurfaceCollection.GetObjects());
+                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.SurfaceSet.Values);
                     break;
                 case ObjType.Объем:
-                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.VolumeCollection.GetObjects());
+                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.VolumeSet.Values);
                     break;
                 case ObjType.Элемент1D:
                     presenter = creator.CreateLineObjectsPresenter(model.ObjectData.E1DCollection.GetObjects());

@@ -1,5 +1,6 @@
 ﻿using Model;
 using Model.Interfaces;
+using Newtonsoft.Json.Linq;
 using OperationalController;
 using OperationalController.MeshObjsUtility;
 using OperationalController.ModelScenePresentator;
@@ -33,13 +34,13 @@ namespace OperationalController
                     pre = presentersCreator.CreatePointObjectsPresenter(ModelData.ObjectData.NodesSet.Values);
                     break;
                 case ObjType.Кривая:
-                    pre = presentersCreator?.CreateLineObjectsPresenter(ModelData.ObjectData.CurveCollection.GetObjects());
+                    pre = presentersCreator?.CreateLineObjectsPresenter(ModelData.ObjectData.CurveSet.Values);
                     break;
                 case ObjType.Поверхность:
-                    pre = presentersCreator.CreateSurfaceObjectsPresenter(ModelData.ObjectData.SurfaceCollection.GetObjects());
+                    pre = presentersCreator.CreateSurfaceObjectsPresenter(ModelData.ObjectData.SurfaceSet.Values);
                     break;
                 case ObjType.Объем:
-                    pre = presentersCreator.CreateSurfaceObjectsPresenter(ModelData.ObjectData.VolumeCollection.GetObjects());
+                    pre = presentersCreator.CreateSurfaceObjectsPresenter(ModelData.ObjectData.VolumeSet.Values);
                     break;
                 case ObjType.Элемент1D:
                     pre = presentersCreator.CreateLineObjectsPresenter(ModelData.ObjectData.E1DCollection.GetObjects());

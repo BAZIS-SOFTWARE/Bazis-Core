@@ -238,6 +238,13 @@ namespace OperationalController
         /// <returns></returns>
         ISetInfo GetModelSetInfo(ObjType objType, string setName);
         /// <summary>
+        /// ChangeMeshSetName
+        /// </summary>
+        /// <param name="elemDim"></param>
+        /// <param name="oldName"></param>
+        /// <param name="newName"></param>
+        void ChangeMeshSetName(int elemDim, string oldName, string newName);
+        /// <summary>
         /// SetModelObjectsBackColor
         /// </summary>
         /// <param name="objType"></param>

@@ -327,7 +327,7 @@ namespace TestModel
 
             model.ObjectData.PointsSet.Add(point0.Number, point0);
             model.ObjectData.PointsSet.Add(point1.Number, point1);
-            model.ObjectData.CurveCollection.Add(ObjType.Кривая.ToString(), line);
+            model.ObjectData.CurveSet.Add(0, line);
             model.ObjectData.PointsSet.Add(point2.Number, point2);
 
             model.ObjectData.Clear(objType);
