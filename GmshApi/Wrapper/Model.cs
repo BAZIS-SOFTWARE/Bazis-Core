@@ -201,7 +201,10 @@ namespace GmshApi
         /// Возвращает массив dim:tag(геометрические сущности) по указанному dim
         /// </summary>
         /// <param name="dim">-1 все геометрические сущности, 0 - геометрические точки, 1 - кривые, 2 - поверхности, 3 - объемы</param>
-        /// <returns>Массив пар dim:tag</returns>
+        /// <returns>
+        /// Массив пар 
+        /// dim - размерность объекта : tag - номер объекта
+        /// </returns>
         public int[] GetEntities(int dim = -1)
         {
             var ierr = 0;

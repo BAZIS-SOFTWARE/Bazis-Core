@@ -83,12 +83,12 @@ namespace OperationalController.GmshController
         /// <param name="curveAngle">[In]Пороговый угол разбиения кривых</param>
         void CreateGeometry(double surfAngle = Math.PI / 2, double curveAngle = Math.PI);
         /// <summary>
-        /// Вытянуть триангулированные геметрические объемы, если они имеются
+        /// Вытянуть триангулированные геометрические объемы, если они имеются
         /// </summary>
         /// <returns>Список VolumeFigure</returns>
         List<VolumeFigure> GetVolumeFigures();
         /// <summary>
-        /// Вытянуть триангулированные геметрические поверхности, если они имеются
+        /// Вытянуть триангулированные геометрические поверхности, если они имеются
         /// </summary>
         /// <returns>Список SurfaceFigure</returns>
         List<SurfaceFigure> GetSurfaceFigures();

@@ -66,6 +66,14 @@ namespace OperationalController
         /// </summary>
         /// <param name="projectFile"></param>
         void Create(string projectFile);
+
+        /// <summary>
+        /// GetModelObject
+        /// </summary>
+        /// <param name="objType"></param>
+        /// <param name="setNumber"></param>
+        /// <returns></returns>
+        IModelObject GetModelObject(ObjType objType, int setNumber);
         /// <summary>
         /// GetModelObjects
         /// </summary>

@@ -65,6 +65,7 @@ namespace OperationalController.GmshController
             var curves = Gmsh.Model.GetEntities(1);
             for (var i = 1; i < curves.Length; i += 2)
             {
+                // кол-во отрезков по-умолчанию равно 40
                 var steps = Gmsh.Model.GetType(curves[i - 1], curves[i]).Contains("Line") ? 1 : (int)Gmsh.Option.GetNumber("Geometry.NumSubEdges");
                 var tInc = 1d / steps;
                 var curInc = 0.0;

@@ -543,7 +543,9 @@ namespace TestModel.GmshTests
         [DataRow(@"\CAD\assembly_1.step")]
         [DataRow(@"\CAD\assembly_2.stp")]
         [DataRow(@"\CAD\nasos.step")]
+        [DataRow(@"\CAD\model_with_free_surfaces.stp")]
         [DataRow(@"\CAD\block.igs")]
+
         [DataRow(@"\GMSHAPI\cubes.geo")]//Для geo ядра презентация STL не работает (как и в gmsh)
         public void StlRepresentationTest(string fileName)
         {
