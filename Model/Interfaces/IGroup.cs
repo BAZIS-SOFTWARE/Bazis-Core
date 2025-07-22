@@ -8,10 +8,6 @@ namespace Model.Interfaces
     public interface IGroup : IList<IModelObject>
     {
         /// <summary>
-        /// ViewState
-        /// </summary>
-        bool ViewState { get; set; }
-        /// <summary>
         /// GroupName
         /// </summary>
         string Name { get; set; }

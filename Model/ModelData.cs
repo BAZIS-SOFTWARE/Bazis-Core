@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Model.Interfaces.ObjectsCollections;
+using Model.GeometryObjects;
 
 namespace Model
 {
@@ -18,7 +19,8 @@ namespace Model
         public IModelSaver Saver { get; set; } = new SaveModelToBPFTextFile();
         /// <inheritdoc/>
         public IModelLoader Loader { get; set; } = new LoadModelFromBPFTextFile();
-/// <inheritdoc/>
+
+        /// <inheritdoc/>
 
         public void Append(string path)
         {
@@ -33,8 +35,7 @@ namespace Model
             ObjectData.PointsSet.Append(modelData.ObjectData.PointsSet);
 
             ObjectData.CurveSet.Append(modelData.ObjectData.CurveSet);
-            ObjectData.SurfaceSet.Append(modelData.ObjectData.SurfaceSet);
-            ObjectData.VolumeSet.Append(modelData.ObjectData.VolumeSet);
+            ObjectData.SurfaceCollection.Append(modelData.ObjectData.SurfaceCollection);
 
             foreach (var item in modelData.GroupData)
                 GroupData.Add(item);

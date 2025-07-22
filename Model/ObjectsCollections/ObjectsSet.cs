@@ -41,10 +41,8 @@ namespace Model.ObjectsCollections
                 ObjType = ObjType.Точка;
             else if (typeof(T) == typeof(Curve))
                 ObjType = ObjType.Кривая;
-            else if (typeof(T) == typeof(SurfaceFigure))
-                ObjType = ObjType.Поверхность;
             else
-                ObjType = ObjType.Объем;
+                ObjType = ObjType.Поверхность;
 
         }
 

@@ -553,18 +553,18 @@ namespace TestModel.GmshTests
             controller.Gmsh.Model.Mesh.ImportStl();
 
             var ext = Path.GetExtension(fileName);
-            var volumes = controller.GetVolumeFigures();
+            var surfSets = controller.CreateSurfaceSets();
             if (ext.Contains("step") || ext.Contains("stp"))
             {
-                Assert.AreNotEqual(0, volumes.Count);
+                Assert.AreNotEqual(0, surfSets.Count);
             }
             else if (ext.Contains("igs"))
             {
-                var surfaces = controller.GetSurfaceFigures();
+                var surfaces = controller.CreateSurfaceFigures();
                 Assert.AreNotEqual(0, surfaces.Count);
             }
             else
-                Assert.AreEqual(0, volumes.Count);
+                Assert.AreEqual(0, surfSets.Count);
         }
 
         [DataTestMethod]

@@ -10,18 +10,25 @@ namespace Model.GeometryObjects
     /// <summary>
     /// VolumeFigure
     /// </summary>
-    public class VolumeFigure : ModelObject, ISurfaceObject<GeometrySurface, GeometryPoint>, IVolume
+    public class VolumeFigure : IVolume
     {
         SurfaceFigure[] surfaceFigure;
-
+        /// <summary>
+        /// Number
+        /// </summary>
+        public int Number { get; }
+        /// <summary>
+        /// Name
+        /// </summary>
+        public string Name { get; set; }
         /// <summary>
         /// Figure3D
         /// </summary>
         /// <param name="number"></param>
         /// <param name="surfaceFigures"></param>
-        public VolumeFigure(int number, SurfaceFigure[] surfaceFigures) : base(number)
+        public VolumeFigure(int number, SurfaceFigure[] surfaceFigures)
         {
-            Color = Color.FromArgb(255, 125, 0);
+            Number = number;
             surfaceFigure = surfaceFigures;
 
         }
@@ -30,13 +37,11 @@ namespace Model.GeometryObjects
         public int NumberOfSides => surfaceFigure.Length;
 /// <inheritdoc/>
 
-        public override int NumberOfPoints => GetVertexes().Count();
+        public int NumberOfPoints => GetVertexes().Count();
+
 /// <inheritdoc/>
 
-        public override ObjType ObjType => ObjType.Объем;
-/// <inheritdoc/>
-
-        public override IEnumerable<Point3D> GetCoordinates()
+        public IEnumerable<Point3D> GetCoordinates()
         {
             foreach (var point in GetVertexes())
             {
@@ -49,7 +54,10 @@ namespace Model.GeometryObjects
             foreach (var item in surfaceFigure)
                 yield return item;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<GeometrySurface> GetSurfaces()
         {
             foreach (var item in surfaceFigure)
@@ -60,7 +68,9 @@ namespace Model.GeometryObjects
 
         public double CalcVolume()
         {
-            throw new NotImplementedException();
+            // TO DO
+            // Реализовать Метод Монте-Карло
+            return 0;
         }
 /// <inheritdoc/>
 

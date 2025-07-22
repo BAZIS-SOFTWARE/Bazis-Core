@@ -19,7 +19,7 @@ namespace Model.IO.STL
 
             using (BinaryWriter writer = new BinaryWriter(File.Open(path, FileMode.OpenOrCreate)))
             {
-                var objects = model.ObjectData.SurfaceSet.Values;
+                var objects = model.ObjectData.SurfaceCollection.GetObjects();
 
                 //сохранение координат узлов
                 var ver = Assembly.GetExecutingAssembly().GetName().Version;

@@ -8,6 +8,9 @@ using Model.GeometryObjects;
 using Model.Interfaces.MeshObjects;
 using Model.Interfaces.ObjectsFinders;
 using GmshApi;
+using System.Drawing;
+using Model.ObjectsCollections;
+using Model.Interfaces.ObjectsCollections;
 
 namespace OperationalController.GmshController
 {
@@ -154,14 +157,14 @@ namespace OperationalController.GmshController
         }
 
         /// <inheritdoc/>
-        public double GetCurveLength(int curveTag) => Gmsh.Model.Occ.GetMass(1, curveTag);
+        public double CalcCurveLength(int curveTag) => Gmsh.Model.Occ.GetMass(1, curveTag);
 
         /// <inheritdoc/>
         public int GetPointsCountByElementSize(int curveTag, float elemSize)
         {
             if (elemSize < 0 || Math.Abs(elemSize) < 1E-4)
                 return 0;
-            var length = GetCurveLength(curveTag);
+            var length = CalcCurveLength(curveTag);
             return (int)Math.Ceiling(length / elemSize) + 1;
         }
         /// <inheritdoc/>
@@ -181,43 +184,59 @@ namespace OperationalController.GmshController
         }
 
         /// <inheritdoc/>
-        public List<VolumeFigure> GetVolumeFigures()
+        public List<ObjectsSet<SurfaceFigure>> CreateSurfaceSets()
         {
-            var volumeFigures = new List<VolumeFigure>();
+            var volumes = new List<ObjectsSet<SurfaceFigure>>();
+            var rnd = new Random();
+
+            var surfaceFigures = CreateSurfaceFigures();
+
+            var freeSurfaces = new ObjectsSet<SurfaceFigure>("FreeSurfaces");
+            freeSurfaces.SetColor(Color.FromArgb(255, 125, 0));
+
+            surfaceFigures.ForEach(x => freeSurfaces.Add(x.Number, x));
             if (Gmsh.Model.GetDimension() > 2)
             {
-                var surfaceFigures = GetSurfaceFigures();
-                if (surfaceFigures.Count > 0)
+                var color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
+
+                //surfaceFigures = surfaceFigures.OrderBy(v => v.Number).ToList();
+                var dimTags = Gmsh.Model.GetEntities(3);
+
+                for (var i = 0; i < dimTags.Length; i += 2)
                 {
-                    surfaceFigures = surfaceFigures.OrderBy(v => v.Number).ToList();
-                    var dimTags = Gmsh.Model.GetEntities(3);
-
-                    for (var i = 0; i < dimTags.Length; i += 2)
+                    var dim = dimTags[i];
+                    var tag = dimTags[i + 1];
+                    var data = Gmsh.Model.GetAdjacencies(dim, tag);
+                    var upward = data.Item1;
+                    var downward = data.Item2;
+                    var set = new ObjectsSet<SurfaceFigure>(tag.ToString());
+                    set.SetColor(color);
+                    for (var j = 0; j < downward.Length; ++j)
                     {
-                        var dim = dimTags[i];
-                        var tag = dimTags[i + 1];
-                        var data = Gmsh.Model.GetAdjacencies(dim, tag);
-                        var upward = data.Item1;
-                        var downward = data.Item2;
-
-                        var surfacesOfVolume = new SurfaceFigure[downward.Length];
-                        for (var j = 0; j < downward.Length; ++j)
+                        var numb = downward[j];
+                        if (!freeSurfaces.ContainsKey(numb))
+                            throw new Exception($"Поверхность с номером {surfaceFigures} не найдена");
+                        else
                         {
-                            var surfaceFigure = ByNumberFinder.Find(surfaceFigures, downward[j]);
-                            if (surfaceFigure == null)
-                                throw new Exception($"Поверхность с номером {surfaceFigures} не найдена");
-                            else
-                                surfacesOfVolume[j] = surfaceFigure;
+                            set.Add(numb, surfaceFigures[numb]);
+                            freeSurfaces.Remove(numb);
                         }
-                        volumeFigures.Add(new VolumeFigure(tag, surfacesOfVolume));
                     }
+                    volumes.Add(set);
                 }
+
+                if (freeSurfaces.Count > 0)
+                    volumes.Add(freeSurfaces);
+                return volumes;
             }
-            return volumeFigures;
+            else
+            {
+                return new List<ObjectsSet<SurfaceFigure>>() { freeSurfaces };
+            }
         }
 
         /// <inheritdoc/>
-        public List<SurfaceFigure> GetSurfaceFigures()
+        public List<SurfaceFigure> CreateSurfaceFigures()
         {
             var points = GetNodes(2, -1, false).Select(v => new GeometryPoint(v.Number, v.Position)).ToList();
             var surfaceFigures = new List<SurfaceFigure>();
@@ -227,14 +246,14 @@ namespace OperationalController.GmshController
 
                 for (var i = 1; i < dimTags.Length; i += 2)
                 {
-                    var surfaceFigure = GetSurfaceFigure(points, dimTags[i]);
+                    var surfaceFigure = CreateSurfaceFigure(points, dimTags[i]);
                     surfaceFigures.Add(surfaceFigure);
                 }
             }
             return surfaceFigures;
         }
         /// <inheritdoc/>
-        public SurfaceFigure GetSurfaceFigure(List<GeometryPoint> points, int surfaceTag)
+        public SurfaceFigure CreateSurfaceFigure(List<GeometryPoint> points, int surfaceTag)
         {
             var data = Gmsh.Model.Mesh.GetElements(2, surfaceTag);
             var nodeTags = data.Item3;
@@ -340,6 +359,50 @@ namespace OperationalController.GmshController
             if (!RemoveGeometryObject(new int[] { dim, tag }, false))
                 return false;
             return true;
+        }
+/// <inheritdoc/>
+
+        public double CalcVolume(int volTag)
+        {
+            // Реализовать метод вычисления объема по функции
+            // заданной параметрически (из коробки)
+            return 0;
+        }
+/// <inheritdoc/>
+
+        public List<VolumeFigure> CreateVolumeFigures()
+        {
+            var volumeFigures = new List<VolumeFigure>();
+            if (Gmsh.Model.GetDimension() > 2)
+            {
+                var surfaceFigures = CreateSurfaceFigures();
+                if (surfaceFigures.Count > 0)
+                {
+                    surfaceFigures = surfaceFigures.OrderBy(v => v.Number).ToList();
+                    var dimTags = Gmsh.Model.GetEntities(3);
+
+                    for (var i = 0; i < dimTags.Length; i += 2)
+                    {
+                        var dim = dimTags[i];
+                        var tag = dimTags[i + 1];
+                        var data = Gmsh.Model.GetAdjacencies(dim, tag);
+                        var upward = data.Item1;
+                        var downward = data.Item2;
+
+                        var surfacesOfVolume = new SurfaceFigure[downward.Length];
+                        for (var j = 0; j < downward.Length; ++j)
+                        {
+                            var surfaceFigure = ByNumberFinder.Find(surfaceFigures, downward[j]);
+                            if (surfaceFigure == null)
+                                throw new Exception($"Поверхность с номером {surfaceFigures} не найдена");
+                            else
+                                surfacesOfVolume[j] = surfaceFigure;
+                        }
+                        volumeFigures.Add(new VolumeFigure(tag, surfacesOfVolume));
+                    }
+                }
+            }
+            return volumeFigures;
         }
     }
 }

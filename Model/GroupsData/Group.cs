@@ -13,10 +13,7 @@ namespace Model.GroupsData
     public class Group : IGroup
     {
         List<IModelObject> objects = new List<IModelObject>();
-        /// <summary>
-        /// ViewState
-        /// </summary>
-        public bool ViewState { get; set; } = true;
+
         /// <summary>
         /// GroupName
         /// </summary>
@@ -123,13 +120,17 @@ namespace Model.GroupsData
         {
             return objects.Remove(item);
         }
-
+        /// <summary>
+        /// Group
+        /// </summary>
+        /// <param name="groupName"></param>
+        /// <param name="objType"></param>
         public Group(string groupName, ObjType objType)
         {
             Name = groupName;
             ObjType = objType;
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public bool Swap(int fInd, int sInd)
         {

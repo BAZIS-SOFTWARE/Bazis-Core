@@ -42,13 +42,13 @@ namespace Model.Interfaces
         /// <param name="name"></param>
         /// <param name="objType"></param>
         /// <returns></returns>
-        IGroup Create(string name, ObjType objType);
+        void  Create(string name, ObjType objType);
 
         /// <summary>
         /// Create
         /// </summary>
         /// <param name="modelObjects"></param>
         /// <returns></returns>
-        IGroup Create(IEnumerable<IModelObject> modelObjects);
+        void Create(IEnumerable<IModelObject> modelObjects);
     }
 }

@@ -51,7 +51,6 @@ namespace TestModel
 
         [TestMethod]
         [DataRow(ObjType.Точка)]
-        [DataRow(ObjType.Объем)]
         [DataRow(ObjType.Поверхность)]
         public void ObjectRenumber_ShouldFail_WhenGeometry(ObjType ot)
         {

@@ -37,10 +37,7 @@ namespace OperationalController
                     pre = presentersCreator?.CreateLineObjectsPresenter(ModelData.ObjectData.CurveSet.Values);
                     break;
                 case ObjType.Поверхность:
-                    pre = presentersCreator.CreateSurfaceObjectsPresenter(ModelData.ObjectData.SurfaceSet.Values);
-                    break;
-                case ObjType.Объем:
-                    pre = presentersCreator.CreateSurfaceObjectsPresenter(ModelData.ObjectData.VolumeSet.Values);
+                    pre = presentersCreator.CreateSurfaceObjectsPresenter(ModelData.ObjectData.SurfaceCollection.GetObjects());
                     break;
                 case ObjType.Элемент1D:
                     pre = presentersCreator.CreateLineObjectsPresenter(ModelData.ObjectData.E1DCollection.GetObjects());

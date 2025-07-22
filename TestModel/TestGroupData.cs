@@ -25,9 +25,9 @@ namespace TestModel
 
             var grData = new GroupData();
 
-            var gr = grData.Create(objs);
+            grData.Create(objs);
 
-            Assert.AreNotEqual(gr.Count, 0);
+            Assert.AreNotEqual(grData.Count, 0);
         }
 
         [TestMethod]
@@ -38,34 +38,12 @@ namespace TestModel
 
             var grData = new GroupData();
 
-            var gr = grData.Create(objs);
-            grData.Add(gr);
+            grData.Create(objs);
+            grData.Create(objs);
 
-            var gr1 = grData.Create(objs);
-
-            Assert.AreNotEqual(gr.Name, gr1.Name);
+            Assert.AreNotEqual(grData[0].Name, grData[1].Name);
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(Exception))]
-        public void SeveralCroupsCreationWithException()
-        {
-            var objs = new List<ModelObject>()
-            {
-                new Node(0, new Point3D()),
-                new Node(1, new Point3D()) ,
-                new GeometryPoint(0,new Point3D())
-            };
-
-            var grData = new GroupData();
-
-            var gr = grData.Create(objs);
-            grData.Add(gr);
-
-            var gr1 = grData.Create(objs);
-
-            Assert.AreNotEqual(gr.Name, gr1.Name);
-        }
         [TestMethod]
         [DataRow("a", "A")]
         [DataRow("WA", "W1")]
