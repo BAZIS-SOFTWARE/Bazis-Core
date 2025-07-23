@@ -197,18 +197,17 @@ namespace OperationalController.GmshController
             var surfaceFigures = CreateSurfaceFigures();
 
             var freeSurfaces = new ObjectsSet<SurfaceFigure>("FreeSurfaces");
-            freeSurfaces.SetColor(Color.FromArgb(255, 125, 0));
-
             surfaceFigures.ForEach(x => freeSurfaces.Add(x.Number, x));
+            freeSurfaces.SetColor(Color.FromArgb(255, 125, 0));
             if (Gmsh.Model.GetDimension() > 2)
-            {
-                var color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
-
+            {    
                 //surfaceFigures = surfaceFigures.OrderBy(v => v.Number).ToList();
                 var dimTags = Gmsh.Model.GetEntities(3);
 
                 for (var i = 0; i < dimTags.Length; i += 2)
                 {
+                    var color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
+
                     var dim = dimTags[i];
                     var tag = dimTags[i + 1];
                     var data = Gmsh.Model.GetAdjacencies(dim, tag);
@@ -221,7 +220,7 @@ namespace OperationalController.GmshController
                         name = name.Replace("Shapes/", "");
 
                     var set = new ObjectsSet<SurfaceFigure>(name);
-                    set.SetColor(color);
+                    
                     for (var j = 0; j < downward.Length; ++j)
                     {
                         var numb = downward[j];
@@ -233,6 +232,7 @@ namespace OperationalController.GmshController
                             freeSurfaces.Remove(numb);
                         }
                     }
+                    set.SetColor(color);
                     volumes.Add(set);
                 }
 
