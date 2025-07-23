@@ -12,7 +12,7 @@ using OperationalController.GmshController;
 namespace TestModel.GmshTests
 {
     [TestClass]
-    public class ControllerMeshTests
+    public class MeshTests
     {
         private IGmshController controller = new GmshController();
         private static string modelFolder = @"..\..\..\Examples";
@@ -546,7 +546,8 @@ namespace TestModel.GmshTests
         [DataRow(@"\CAD\model_with_free_surfaces.stp")]
         [DataRow(@"\CAD\block.igs")]
 
-        [DataRow(@"\GMSHAPI\cubes.geo")]//Для geo ядра презентация STL не работает (как и в gmsh)
+        //[DataRow(@"\GMSHAPI\cubes.geo")]
+        //Для geo ядра презентация STL не работает (как и в gmsh)
         public void StlRepresentationTest(string fileName)
         {
             controller.Gmsh.Open(modelFolder + fileName);

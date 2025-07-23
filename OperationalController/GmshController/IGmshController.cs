@@ -79,8 +79,6 @@ namespace OperationalController.GmshController
         /// <returns></returns>
         double CalcVolume(int volTag);
 
-        
-
         /// <summary>
         /// Удалить элементы сетки
         /// </summary>
@@ -105,7 +103,8 @@ namespace OperationalController.GmshController
         List<SurfaceFigure> CreateSurfaceFigures();
         /// <summary>
         /// Возвращает поверхности рассортированные по наборам.
-        /// Каждый набор представляет конкретный объем.
+        /// Каждый набор представляет конкретный объем. 
+        /// Если объемов нет, то остается набор "FreeSurfaces"
         /// </summary>
         /// <returns></returns>
         List<ObjectsSet<SurfaceFigure>> CreateSurfaceSets();

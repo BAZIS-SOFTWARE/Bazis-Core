@@ -4,7 +4,7 @@ using OperationalController.GmshController;
 namespace TestModel.GmshTests
 {
     [TestClass]
-    public class ControllerConnectionTests
+    public class ConnectionTests
     {
         private GmshController controller = new GmshController();
 

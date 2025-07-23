@@ -11,7 +11,7 @@ using OperationalController.GmshController;
 namespace TestModel.GmshTests
 {
     [TestClass]
-    public class ControllerGeometryTests
+    public class GeometryTests
     {
         private GmshController controller = new GmshController();
         private static string modelFolder = @"..\..\..\Examples";

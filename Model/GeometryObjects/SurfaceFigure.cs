@@ -37,8 +37,17 @@ namespace Model.GeometryObjects
 /// <inheritdoc/>
 
         public override ObjType ObjType { get; } = ObjType.Поверхность;
+        /// <inheritdoc/>
+        public override string ToString()
+        {
+            var strArr = surfaces.Select(x => x.Number.ToString()).ToArray();
 
-/// <inheritdoc/>
+            var str = string.Join(" ", strArr);
+
+            return $"{base.ToString()} : {str}";
+        }
+
+        /// <inheritdoc/>
 
         public double CalcSquare()
         {

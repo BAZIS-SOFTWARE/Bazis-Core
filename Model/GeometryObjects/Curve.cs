@@ -59,5 +59,15 @@ namespace Model.GeometryObjects
                 yield return point;
             }
         }
+
+        /// <inheritdoc/>
+        public override string ToString()
+        {
+            var strArr = points.Select(x => x.Number.ToString()).ToArray();
+
+            var str = string.Join(" ", strArr);
+
+            return $"{base.ToString()} : {str}";
+        }
     }
 }

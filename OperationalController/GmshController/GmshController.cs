@@ -11,6 +11,7 @@ using GmshApi;
 using System.Drawing;
 using Model.ObjectsCollections;
 using Model.Interfaces.ObjectsCollections;
+using System.Reflection;
 
 namespace OperationalController.GmshController
 {
@@ -41,6 +42,10 @@ namespace OperationalController.GmshController
             var tags = data.Item1;
             var coords = data.Item2;
             var nodes = new List<Node>();
+
+            if (tags.Length == 0)
+                throw new Exception("Геометрическая модель не содержит узлов сетки");
+
             for (var i = 0; i < tags.Length; ++i)
             {
                 var point = new Point3D((float)coords[i * 3], (float)coords[i * 3 + 1], (float)coords[i * 3 + 2]);
@@ -209,7 +214,13 @@ namespace OperationalController.GmshController
                     var data = Gmsh.Model.GetAdjacencies(dim, tag);
                     var upward = data.Item1;
                     var downward = data.Item2;
-                    var set = new ObjectsSet<SurfaceFigure>(tag.ToString());
+                    var name = Gmsh.Model.GetEntityName(dim, tag);
+                    if (name == "" | name == null)
+                        name = tag.ToString();
+                    else
+                        name = name.Replace("Shapes/", "");
+
+                    var set = new ObjectsSet<SurfaceFigure>(name);
                     set.SetColor(color);
                     for (var j = 0; j < downward.Length; ++j)
                     {
@@ -218,7 +229,7 @@ namespace OperationalController.GmshController
                             throw new Exception($"Поверхность с номером {surfaceFigures} не найдена");
                         else
                         {
-                            set.Add(numb, surfaceFigures[numb]);
+                            set.Add(numb, freeSurfaces[numb]);
                             freeSurfaces.Remove(numb);
                         }
                     }
@@ -239,6 +250,7 @@ namespace OperationalController.GmshController
         public List<SurfaceFigure> CreateSurfaceFigures()
         {
             var points = GetNodes(2, -1, false).Select(v => new GeometryPoint(v.Number, v.Position)).ToList();
+
             var surfaceFigures = new List<SurfaceFigure>();
             if (points.Count > 0)
             {
