@@ -43,8 +43,8 @@ namespace OperationalController.GmshController
             var coords = data.Item2;
             var nodes = new List<Node>();
 
-            if (tags.Length == 0)
-                throw new Exception("Геометрическая модель не содержит узлов сетки");
+            //if (tags.Length == 0)
+            //    throw new Exception("Геометрическая модель не содержит узлов сетки");
 
             for (var i = 0; i < tags.Length; ++i)
             {
