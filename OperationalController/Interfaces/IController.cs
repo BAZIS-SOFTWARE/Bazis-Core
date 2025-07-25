@@ -14,7 +14,7 @@ namespace OperationalController
     /// <summary>
     /// IModelController
     /// </summary>
-    public interface IController
+    public partial interface IController
     {
         /// <summary>
         /// FunctionsDB
