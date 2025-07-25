@@ -1,6 +1,4 @@
-﻿using Model;
-using Model.Interfaces;
-using OperationalController;
+﻿using Model.Interfaces;
 using OperationalController.MeshObjsUtility;
 using OperationalController.ModelScenePresentator;
 using System.Linq;
@@ -33,13 +31,10 @@ namespace OperationalController
                     pre = presentersCreator.CreatePointObjectsPresenter(ModelData.ObjectData.NodesSet.Values);
                     break;
                 case ObjType.Кривая:
-                    pre = presentersCreator?.CreateLineObjectsPresenter(ModelData.ObjectData.CurveCollection.GetObjects());
+                    pre = presentersCreator?.CreateLineObjectsPresenter(ModelData.ObjectData.CurveSet.Values);
                     break;
                 case ObjType.Поверхность:
                     pre = presentersCreator.CreateSurfaceObjectsPresenter(ModelData.ObjectData.SurfaceCollection.GetObjects());
-                    break;
-                case ObjType.Объем:
-                    pre = presentersCreator.CreateSurfaceObjectsPresenter(ModelData.ObjectData.VolumeCollection.GetObjects());
                     break;
                 case ObjType.Элемент1D:
                     pre = presentersCreator.CreateLineObjectsPresenter(ModelData.ObjectData.E1DCollection.GetObjects());

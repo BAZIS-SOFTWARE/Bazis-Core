@@ -136,23 +136,25 @@ namespace Model.GroupsData
         }
 /// <inheritdoc/>
 
-        public IGroup Create(string name, ObjType objType)
+        public void Create(string name, ObjType objType)
         {
-            return new Group(name, objType);
+            var group = new Group(name, objType);
+            groups.Add(group);
         }
 /// <inheritdoc/>
 
-        public IGroup Create(IEnumerable<IModelObject> modelObjects)
+        public void Create(IEnumerable<IModelObject> modelObjects)
         {
             var objType = modelObjects.First().ObjType;
 
             if (!modelObjects.All(x => x.ObjType == objType))
                 throw new System.Exception("Все объекты должны быть одного типа!");
 
+
             var grps = FindMany(objType);
 
             var counter = 1;
-            var name = $"{objType}_{grps.Count() + counter}";
+            var name = $"{objType}_{grps.Count() + counter}";        
 
             while (true)
             {
@@ -164,10 +166,11 @@ namespace Model.GroupsData
                 else break;
             }
 
-            var group = Create(name, objType);
+
+            var group = new Group(name, objType);
 
             group.AddRange(modelObjects);
-            return group;
+            groups.Add(group);
         }
     }
 }

@@ -27,7 +27,7 @@ namespace TestModel
             var fig2D = new SurfaceFigure(0, new GeometrySurface[] { surface });
 
             var model = new ModelData();
-            model.ObjectData.SurfaceCollection.Add(ObjType.Поверхность.ToString(), fig2D);
+            model.ObjectData.SurfaceCollection.Add("newSet", fig2D);
 
             //act
             var creator = new PresentersCreator();
@@ -76,7 +76,7 @@ namespace TestModel
 
             };
             var model = new ModelData();
-            model.ObjectData.SurfaceCollection.Add(ObjType.Поверхность.ToString(), new SurfaceFigure(0,surfaces.ToArray()));
+            model.ObjectData.SurfaceCollection.Add("newSet", new SurfaceFigure(0,surfaces.ToArray()));
 
             //act
             var creator = new PresentersCreator();

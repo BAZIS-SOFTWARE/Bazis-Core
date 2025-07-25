@@ -3,6 +3,7 @@ using Model.GeometryObjects;
 using Model.Interfaces;
 using Model.Interfaces.MeshObjects;
 using Model.MeshObjects;
+using Model.ObjectsCollections;
 using System;
 using System.Collections.Generic;
 
@@ -69,7 +70,15 @@ namespace OperationalController.GmshController
         /// </summary>
         /// <param name="curveTag">[In]Идентификатор кривой</param>
         /// <returns>Длина кривой</returns>
-        double GetCurveLength(int curveTag);
+        double CalcCurveLength(int curveTag);
+
+        /// <summary>
+        /// Возвращает величину объема для заданного идентификатора
+        /// </summary>
+        /// <param name="volTag"></param>
+        /// <returns></returns>
+        double CalcVolume(int volTag);
+
         /// <summary>
         /// Удалить элементы сетки
         /// </summary>
@@ -83,14 +92,21 @@ namespace OperationalController.GmshController
         /// <param name="curveAngle">[In]Пороговый угол разбиения кривых</param>
         void CreateGeometry(double surfAngle = Math.PI / 2, double curveAngle = Math.PI);
         /// <summary>
-        /// Вытянуть триангулированные геметрические объемы, если они имеются
+        /// Вытянуть триангулированные геометрические объемы, если они имеются
         /// </summary>
         /// <returns>Список VolumeFigure</returns>
-        List<VolumeFigure> GetVolumeFigures();
+        List<VolumeFigure> CreateVolumeFigures();
         /// <summary>
-        /// Вытянуть триангулированные геметрические поверхности, если они имеются
+        /// Вытянуть триангулированные геометрические поверхности, если они имеются
         /// </summary>
         /// <returns>Список SurfaceFigure</returns>
-        List<SurfaceFigure> GetSurfaceFigures();
+        List<SurfaceFigure> CreateSurfaceFigures();
+        /// <summary>
+        /// Возвращает поверхности рассортированные по наборам.
+        /// Каждый набор представляет конкретный объем. 
+        /// Если объемов нет, то остается набор "FreeSurfaces"
+        /// </summary>
+        /// <returns></returns>
+        List<ObjectsSet<SurfaceFigure>> CreateSurfaceSets();
     }
 }

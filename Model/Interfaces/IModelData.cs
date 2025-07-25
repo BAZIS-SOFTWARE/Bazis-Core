@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Model.GeometryObjects;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,6 @@ namespace Model.Interfaces
     {
         IObjectsData ObjectData { get; }
         IGroupData GroupData { get; }
-
         /// <summary>
         /// Clear all objects and groups
         /// </summary>

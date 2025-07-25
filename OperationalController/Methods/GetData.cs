@@ -22,6 +22,11 @@ namespace OperationalController
             return ModelData.ObjectData.GetObjects(objType);
         }
         /// <inheritdoc/>
+        public IModelObject GetModelObject(ObjType objType, int setNumber)
+        {
+            return ModelData.ObjectData.Find(objType, setNumber);
+        }
+        /// <inheritdoc/>
 
         public ISetInfo GetModelSetInfo(ObjType objType, string setName)
         {

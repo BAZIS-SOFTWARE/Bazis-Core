@@ -25,10 +25,6 @@ namespace Model.Interfaces
         /// </summary>
         Поверхность,
         /// <summary>
-        /// Объем
-        /// </summary>
-        Объем,
-        /// <summary>
         /// Узел
         /// </summary>
         Узел,

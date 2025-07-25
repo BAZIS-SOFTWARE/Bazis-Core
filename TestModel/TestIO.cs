@@ -129,8 +129,6 @@ namespace TestModel
                     break;
                 case ObjType.Поверхность:
                     break;
-                case ObjType.Объем:
-                    break;
                 case ObjType.Узел:
                     Assert.AreEqual(model.ObjectData.NodesSet.Count(), sets);
                     break;

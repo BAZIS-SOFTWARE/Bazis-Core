@@ -56,15 +56,11 @@ namespace Model.Interfaces
         /// <summary>
         /// LineCollection
         /// </summary>
-        IObjectsCollection<Curve> CurveCollection { get; }
+        IObjectsSet<Curve> CurveSet { get; }
         /// <summary>
         /// Fig2DCollection
         /// </summary>
-        IObjectsCollection<SurfaceFigure> SurfaceCollection { get; }
-        /// <summary>
-        /// Fig3DCollection
-        /// </summary>
-        IObjectsCollection<VolumeFigure> VolumeCollection { get; }
+        IObjectsCollection<SurfaceFigure> SurfaceCollection{ get; }
         /// <summary>
         /// Count
         /// </summary>

@@ -11,7 +11,7 @@ using OperationalController.GmshController;
 namespace TestModel.GmshTests
 {
     [TestClass]
-    public class ControllerGeometryTests
+    public class GeometryTests
     {
         private GmshController controller = new GmshController();
         private static string modelFolder = @"..\..\..\Examples";
@@ -343,7 +343,7 @@ namespace TestModel.GmshTests
                     var point1 = new Point3D((float)coords[1][0], (float)coords[1][1], (float)coords[1][2]);
                     var radius = Vector.GetVectorLenght(point0.Sub(point1)) / 2;
                     var expectedLength = Math.PI * radius;
-                    var actualLength = controller.GetCurveLength(curvesId[i]);
+                    var actualLength = controller.CalcCurveLength(curvesId[i]);
                     Assert.AreEqual(expectedLength, actualLength, 1e-4);
                 }
             }

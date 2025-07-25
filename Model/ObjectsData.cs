@@ -33,9 +33,9 @@ namespace Model
             NodesSet.SetColor(Color.FromArgb(0, 0, 255));
             PointsSet = new ObjectsSet<GeometryPoint>(ObjType.Точка.ToString());
             PointsSet.SetColor(Color.FromArgb(255, 207, 64));
-            CurveCollection = new ObjectsCollection<Curve>();
+            CurveSet = new ObjectsSet<Curve>(ObjType.Кривая.ToString());
             SurfaceCollection = new ObjectsCollection<SurfaceFigure>();
-            VolumeCollection = new ObjectsCollection<VolumeFigure>();
+            //VolumeSet = new ObjectsSet<VolumeFigure>(ObjType.Объем.ToString());
         }
 
         /// <inheritdoc/>
@@ -55,13 +55,13 @@ namespace Model
         public IObjectsSet<GeometryPoint> PointsSet { get; }
         /// <inheritdoc/>
 
-        public IObjectsCollection<Curve> CurveCollection { get; }
+        public IObjectsSet<Curve> CurveSet { get; }
         /// <inheritdoc/>
 
         public IObjectsCollection<SurfaceFigure> SurfaceCollection { get; }
         /// <inheritdoc/>
 
-        public IObjectsCollection<VolumeFigure> VolumeCollection { get; }
+        //public IObjectsSet<VolumeFigure> VolumeSet { get; }
 
         /// <inheritdoc/>
 
@@ -71,9 +71,8 @@ namespace Model
         public void ClearAll()
         {
             PointsSet.Clear();
-            CurveCollection.Clear();
+            CurveSet.Clear();
             SurfaceCollection.Clear();
-            VolumeCollection.Clear();
             NodesSet.Clear();
             E1DCollection.Clear();
             E2DCollection.Clear();
@@ -89,11 +88,9 @@ namespace Model
                 case ObjType.Точка:
                     return PointsSet.ContainsKey(objNumbr) ? PointsSet[objNumbr] : null;
                 case ObjType.Кривая:
-                    return CurveCollection.Find(objNumbr);
+                    return CurveSet.ContainsKey(objNumbr) ? CurveSet[objNumbr] : null;
                 case ObjType.Поверхность:
                     return SurfaceCollection.Find(objNumbr);
-                case ObjType.Объем:
-                    return VolumeCollection.Find(objNumbr);
                 case ObjType.Узел:
                     return NodesSet.ContainsKey(objNumbr) ? NodesSet[objNumbr] : null;
                 case ObjType.Элемент1D:
@@ -113,13 +110,10 @@ namespace Model
             modelObject = PointsSet.ContainsKey(objNumbr) ? PointsSet[objNumbr] : null;
             if (modelObject != null)
                 yield return modelObject;
-            modelObject = CurveCollection.Find(objNumbr);
+            modelObject = CurveSet.ContainsKey(objNumbr) ? CurveSet[objNumbr] : null;
             if (modelObject != null)
                 yield return modelObject;
             modelObject = SurfaceCollection.Find(objNumbr);
-            if (modelObject != null)
-                yield return modelObject;
-            modelObject = VolumeCollection.Find(objNumbr);
             if (modelObject != null)
                 yield return modelObject;
             modelObject = NodesSet.ContainsKey(objNumbr) ? NodesSet[objNumbr] : null;
@@ -132,9 +126,6 @@ namespace Model
             if (modelObject != null)
                 yield return modelObject;
             modelObject = E3DCollection.Find(objNumbr);
-            if (modelObject != null)
-                yield return modelObject;
-            modelObject = CurveCollection.Find(objNumbr);
             if (modelObject != null)
                 yield return modelObject;
         }
@@ -177,7 +168,6 @@ namespace Model
             {
                 var count = 0;
                 count += SurfaceCollection.Count;
-                count += VolumeCollection.Count;
                 return count;
             }
         }
@@ -190,7 +180,7 @@ namespace Model
                 count += NumberOfElements;
                 count += PointsSet.Count;
                 count += NumberOfFigures;
-                count += CurveCollection.Count;
+                count += CurveSet.Count;
                 return count;
             }
         }
@@ -200,9 +190,6 @@ namespace Model
 
         public void ClearEmptySet()
         {
-            CurveCollection.ClearEmptySets();
-            SurfaceCollection.ClearEmptySets();
-            VolumeCollection.ClearEmptySets();
             E1DCollection.ClearEmptySets();
             E2DCollection.ClearEmptySets();
             E3DCollection.ClearEmptySets();
@@ -214,11 +201,9 @@ namespace Model
         {
             foreach (var item in PointsSet.Values)
                 yield return item;
-            foreach (var item in CurveCollection.GetObjects())
+            foreach (var item in CurveSet.Values)
                 yield return item;
             foreach (var item in SurfaceCollection.GetObjects())
-                yield return item;
-            foreach (var item in VolumeCollection.GetObjects())
                 yield return item;
             foreach (var item in NodesSet.Values)
                 yield return item;
@@ -246,8 +231,6 @@ namespace Model
 
             foreach (var item in SurfaceCollection.GetObjects())
                 yield return item;
-            foreach (var item in VolumeCollection.GetObjects())
-                yield return item;
         }
 
 /// <inheritdoc/>
@@ -255,9 +238,8 @@ namespace Model
         public void ClearNotExisted()
         {
             PointsSet.ClearNotExisted();
-            CurveCollection.RemoveNotExistedObjects();
+            CurveSet.ClearNotExisted();
             SurfaceCollection.RemoveNotExistedObjects();
-            VolumeCollection.RemoveNotExistedObjects();
             NodesSet.ClearNotExisted();
             E1DCollection.RemoveNotExistedObjects();
             E2DCollection.RemoveNotExistedObjects();
@@ -276,21 +258,15 @@ namespace Model
             {
                 case ObjType.Точка:
                     PointsSet.Clear();
-                    CurveCollection.RemoveNotExistedObjects();
+                    CurveSet.Clear();
                     SurfaceCollection.RemoveNotExistedObjects();
-                    VolumeCollection.RemoveNotExistedObjects();
                     break;
                 case ObjType.Кривая:
-                    CurveCollection.Clear();
+                    CurveSet.Clear();
                     SurfaceCollection.RemoveNotExistedObjects();
-                    VolumeCollection.RemoveNotExistedObjects();
                     break;
                 case ObjType.Поверхность:
                     SurfaceCollection.Clear();
-                    VolumeCollection.RemoveNotExistedObjects();
-                    break;
-                case ObjType.Объем:
-                    VolumeCollection.Clear();
                     break;
                 case ObjType.Узел:
                     NodesSet.Clear();
@@ -321,11 +297,9 @@ namespace Model
                 case ObjType.Точка:
                     return PointsSet.Values;
                 case ObjType.Кривая:
-                    return CurveCollection.GetObjects();
+                    return CurveSet.Values;
                 case ObjType.Поверхность:
                     return SurfaceCollection.GetObjects();
-                case ObjType.Объем:
-                    return VolumeCollection.GetObjects();
                 case ObjType.Узел:
                     return NodesSet.Values;
                 case ObjType.Элемент1D:
@@ -347,11 +321,9 @@ namespace Model
                 case ObjType.Точка:
                     return PointsSet.Count;
                 case ObjType.Кривая:
-                    return CurveCollection.Count;
+                    return CurveSet.Count;
                 case ObjType.Поверхность:
                     return SurfaceCollection.Count;
-                case ObjType.Объем:
-                    return VolumeCollection.Count;
                 case ObjType.Узел:
                     return NodesSet.Count;
                 case ObjType.Элемент1D:
@@ -373,11 +345,9 @@ namespace Model
                 case ObjType.Точка:
                     return PointsSet.Max(x => x.Key);
                 case ObjType.Кривая:
-                    return CurveCollection.GetMaxNumber();
+                    return CurveSet.Max(x => x.Key);
                 case ObjType.Поверхность:
                     return SurfaceCollection.GetMaxNumber();
-                case ObjType.Объем:
-                    return VolumeCollection.GetMaxNumber();
                 case ObjType.Узел:
                     return NodesSet.Max(x => x.Key);
                 case ObjType.Элемент1D:
@@ -437,18 +407,6 @@ namespace Model
             //Find(objType, objNumber).ExistState = false;
             switch (objType)
             {
-                case ObjType.Кривая:
-                    CurveCollection.Remove(objSet);
-                    SurfaceCollection.RemoveNotExistedObjects();
-                    VolumeCollection.RemoveNotExistedObjects();
-                    break;
-                case ObjType.Поверхность:
-                    SurfaceCollection.Remove(objSet);
-                    VolumeCollection.RemoveNotExistedObjects();
-                    break;
-                case ObjType.Объем:
-                    VolumeCollection.Remove(objSet);
-                    break;
                 case ObjType.Элемент1D:
                     E1DCollection.Remove(objSet);
                     break;
@@ -472,21 +430,17 @@ namespace Model
                 case ObjType.Точка:
                     PointsSet[objNumber].ExistState = false;
                     PointsSet.Remove(objNumber);
-                    CurveCollection.RemoveNotExistedObjects();
+                    CurveSet.ClearNotExisted();
                     SurfaceCollection.RemoveNotExistedObjects();
-                    VolumeCollection.RemoveNotExistedObjects();
                     break;
                 case ObjType.Кривая:
-                    CurveCollection.Remove(objNumber);
+                    CurveSet[objNumber].ExistState = false;
+                    CurveSet.Remove(objNumber);
                     SurfaceCollection.RemoveNotExistedObjects();
-                    VolumeCollection.RemoveNotExistedObjects();
                     break;
                 case ObjType.Поверхность:
                     SurfaceCollection.Remove(objNumber);
-                    VolumeCollection.RemoveNotExistedObjects();
-                    break;
-                case ObjType.Объем:
-                    VolumeCollection.Remove(objNumber);
+                    SurfaceCollection.RemoveNotExistedObjects();
                     break;
                 case ObjType.Узел:
                     NodesSet[objNumber].ExistState = false;
@@ -497,6 +451,7 @@ namespace Model
                     break;
                 case ObjType.Элемент1D:
                     E1DCollection.Remove(objNumber);
+                    E1DCollection.RemoveNotExistedObjects();
                     break;
                 case ObjType.Элемент2D:
                     E2DCollection.Remove(objNumber);
@@ -517,11 +472,9 @@ namespace Model
                 case ObjType.Точка:
                     return PointsSet.Values;
                 case ObjType.Кривая:
-                    return CurveCollection[setName].Values;
+                    return CurveSet.Values;
                 case ObjType.Поверхность:
                     return SurfaceCollection[setName].Values;
-                case ObjType.Объем:
-                    return VolumeCollection[setName].Values;
                 case ObjType.Узел:
                     return NodesSet.Values;
                 case ObjType.Элемент1D:
@@ -544,15 +497,10 @@ namespace Model
                     PointsSet.SetBackColor();
                     break;
                 case ObjType.Кривая:
-                    foreach (var item in CurveCollection)
-                        item.Value.SetBackColor();
+                    CurveSet.SetBackColor();
                     break;
                 case ObjType.Поверхность:
                     foreach (var item in SurfaceCollection)
-                        item.Value.SetBackColor();
-                    break;
-                case ObjType.Объем:
-                    foreach (var item in VolumeCollection)
                         item.Value.SetBackColor();
                     break;
                 case ObjType.Узел:
@@ -581,22 +529,12 @@ namespace Model
                 case ObjType.Точка:
                     return PointsSet;
                 case ObjType.Кривая:
-                    {
-                        return 
-                            CurveCollection.ContainsName(setName) ?
-                            CurveCollection[setName] : null;
-                    }
+                    return CurveSet;
                 case ObjType.Поверхность:
                     {
                         return
-                        SurfaceCollection.ContainsName(setName) ?
-                        SurfaceCollection[setName] : null;
-                    }
-                case ObjType.Объем:
-                    {
-                        return
-VolumeCollection.ContainsName(setName) ?
-VolumeCollection[setName] : null;
+    SurfaceCollection.ContainsName(setName) ?
+    SurfaceCollection[setName] : null;
                     }
                 case ObjType.Узел:
                     return NodesSet;
@@ -631,11 +569,9 @@ E3DCollection[setName] : null;
                 case ObjType.Точка:
                     return new ISetInfo[] { PointsSet };
                 case ObjType.Кривая:
-                    return CurveCollection.Objects;
+                    return new ISetInfo[] { CurveSet };
                 case ObjType.Поверхность:
                     return SurfaceCollection.Objects;
-                case ObjType.Объем:
-                    return VolumeCollection.Objects;
                 case ObjType.Узел:
                     return new ISetInfo[] { NodesSet };
                 case ObjType.Элемент1D:

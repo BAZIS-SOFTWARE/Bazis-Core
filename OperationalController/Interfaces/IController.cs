@@ -14,7 +14,7 @@ namespace OperationalController
     /// <summary>
     /// IModelController
     /// </summary>
-    public interface IController
+    public partial interface IController
     {
         /// <summary>
         /// FunctionsDB
@@ -66,6 +66,14 @@ namespace OperationalController
         /// </summary>
         /// <param name="projectFile"></param>
         void Create(string projectFile);
+
+        /// <summary>
+        /// GetModelObject
+        /// </summary>
+        /// <param name="objType"></param>
+        /// <param name="setNumber"></param>
+        /// <returns></returns>
+        IModelObject GetModelObject(ObjType objType, int setNumber);
         /// <summary>
         /// GetModelObjects
         /// </summary>
@@ -237,6 +245,13 @@ namespace OperationalController
         /// <param name="setName"></param>
         /// <returns></returns>
         ISetInfo GetModelSetInfo(ObjType objType, string setName);
+        /// <summary>
+        /// ChangeMeshSetName
+        /// </summary>
+        /// <param name="elemDim"></param>
+        /// <param name="oldName"></param>
+        /// <param name="newName"></param>
+        void ChangeMeshSetName(int elemDim, string oldName, string newName);
         /// <summary>
         /// SetModelObjectsBackColor
         /// </summary>

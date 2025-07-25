@@ -216,15 +216,15 @@ namespace Project.Tasks
             if (kind == DataKind.Материал)
             {
                 if (info.Split(' ').Length < 4)
-                    throw new Exception("Строка данных имеет неверный формат!");
+                    throw new Exception($"{info} - Строка данных имеет неверный формат!");
 
                 float start;
                 if (!float.TryParse(infoAr[2], out start))
-                    throw new Exception("Время старта задано неверно!");
+                    throw new Exception($"{info} - Время старта задано неверно!");
 
                 float stop;
                 if (!float.TryParse(infoAr[3], out stop))
-                    throw new Exception("Время окончания задано неверно!");
+                    throw new Exception($"{info} - Время окончания задано неверно!");
 
                 var matData = new MatData(groupData.Find(infoAr[0]), start, stop);
                 matData.MatName = infoAr[1];
@@ -235,15 +235,15 @@ namespace Project.Tasks
             else if (kind == DataKind.Среда)
             {
                 if (infoAr.Length < 6)
-                    throw new Exception("Строка данных имеет неверный формат.");
+                    throw new Exception($"{info} - Строка данных имеет неверный формат.");
 
                 float start;
                 if (!float.TryParse(infoAr[3], out start))
-                    throw new Exception("Время старта задано неверно!");
+                    throw new Exception($"{info} - Время старта задано неверно!");
 
                 float stop;
                 if (!float.TryParse(infoAr[4], out stop))
-                    throw new Exception("Время окончания задано неверно!");
+                    throw new Exception($"{info} - Время окончания задано неверно!");
 
                 var mediaData = new MediaData(groupData.Find(infoAr[0]), start, stop);
 
@@ -256,15 +256,15 @@ namespace Project.Tasks
             else if (kind == DataKind.Нагрузка)
             {
                 if (infoAr.Length < 7)
-                    throw new Exception("Строка данных имеет неверный формат!");
+                    throw new Exception($"{info} - Строка данных имеет неверный формат!");
 
                 float start;
                 if (!float.TryParse(infoAr[5], out start))
-                    throw new Exception("Время старта задано неверно!");
+                    throw new Exception($"{info} - Время старта задано неверно!");
 
                 float stop;
                 if (!float.TryParse(infoAr[6], out stop))
-                    throw new Exception("Время окончания задано неверно!");
+                    throw new Exception($"{info} - Время окончания задано неверно!");
 
                 var loadData = new LoadData(groupData.Find(infoAr[0]), start, stop);
 
@@ -280,15 +280,15 @@ namespace Project.Tasks
             {
 
                 if (infoAr.Length < 5)
-                    throw new Exception("Строка данных имеет неверный формат!");
+                    throw new Exception($"{info} - Строка данных имеет неверный формат!");
 
                 float start;
                 if (!float.TryParse(infoAr[4], out start))
-                    throw new Exception("Время старта задано неверно!");
+                    throw new Exception($"{info} - Время старта задано неверно!");
 
                 float stop;
                 if (!float.TryParse(infoAr[5], out stop))
-                    throw new Exception("Время окончания задано неверно!");
+                    throw new Exception($"{info} - Время окончания задано неверно!");
 
                 //dataInfo = dataInfo.Replace("*", "0");
                 var heatData =  new HeatData(groupData.Find(infoAr[3]), start, stop);
@@ -303,15 +303,15 @@ namespace Project.Tasks
             else
             {
                 if (infoAr.Length < 6)
-                    throw new Exception("Строка данных имеет неверный формат!");
+                    throw new Exception($"{info} - Строка данных имеет неверный формат!");
 
                 float start;
                 if (!float.TryParse(infoAr[5], out start))
-                    throw new Exception("Время старта задано неверно!");
+                    throw new Exception($"{info} - Время старта задано неверно!");
 
                 float stop;
                 if (!float.TryParse(infoAr[6], out stop))
-                    throw new Exception("Время окончания задано неверно!");
+                    throw new Exception($"{info} - Время окончания задано неверно!");
 
                 var clampData = new ClampData(groupData.Find(infoAr[0]), start, stop);
 

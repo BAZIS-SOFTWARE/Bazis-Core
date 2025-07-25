@@ -31,14 +31,14 @@ namespace Project.Tasks
                 if (FrameFunction?.LocalFrame != null)
                     mff = FrameFunction.LocalFrame.ToString();
 
-                return $"{Group.Name} {ClampKind} {Direction} {Value} {ValueFunction} " +
+                return $"{Group.Name} {ClampKind} {Direction} {Value} {TimeFunction} " +
                     $"{StartTime} {StopTime} {mff}"; 
             }
         }
         /// <summary>
         /// Function of one argument
         /// </summary>
-        public string ValueFunction { get; private set; } = "*";
+        public string TimeFunction { get; private set; } = "*";
 
         /// <summary>
         /// PowerValue
@@ -71,7 +71,7 @@ namespace Project.Tasks
         public void TrySetTimeFunction(string v)
         {
             if (v != "*")
-                ValueFunction = v;
+                TimeFunction = v;
         }
     }
 }

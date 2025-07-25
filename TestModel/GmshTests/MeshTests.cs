@@ -12,7 +12,7 @@ using OperationalController.GmshController;
 namespace TestModel.GmshTests
 {
     [TestClass]
-    public class ControllerMeshTests
+    public class MeshTests
     {
         private IGmshController controller = new GmshController();
         private static string modelFolder = @"..\..\..\Examples";
@@ -543,26 +543,29 @@ namespace TestModel.GmshTests
         [DataRow(@"\CAD\assembly_1.step")]
         [DataRow(@"\CAD\assembly_2.stp")]
         [DataRow(@"\CAD\nasos.step")]
+        [DataRow(@"\CAD\model_with_free_surfaces.stp")]
         [DataRow(@"\CAD\block.igs")]
-        [DataRow(@"\GMSHAPI\cubes.geo")]//Для geo ядра презентация STL не работает (как и в gmsh)
+
+        //[DataRow(@"\GMSHAPI\cubes.geo")]
+        //Для geo ядра презентация STL не работает (как и в gmsh)
         public void StlRepresentationTest(string fileName)
         {
             controller.Gmsh.Open(modelFolder + fileName);
             controller.Gmsh.Model.Mesh.ImportStl();
 
             var ext = Path.GetExtension(fileName);
-            var volumes = controller.GetVolumeFigures();
+            var surfSets = controller.CreateSurfaceSets();
             if (ext.Contains("step") || ext.Contains("stp"))
             {
-                Assert.AreNotEqual(0, volumes.Count);
+                Assert.AreNotEqual(0, surfSets.Count);
             }
             else if (ext.Contains("igs"))
             {
-                var surfaces = controller.GetSurfaceFigures();
+                var surfaces = controller.CreateSurfaceFigures();
                 Assert.AreNotEqual(0, surfaces.Count);
             }
             else
-                Assert.AreEqual(0, volumes.Count);
+                Assert.AreEqual(0, surfSets.Count);
         }
 
         [DataTestMethod]

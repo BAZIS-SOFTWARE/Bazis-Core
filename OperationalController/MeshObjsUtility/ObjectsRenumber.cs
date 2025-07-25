@@ -32,7 +32,6 @@ namespace OperationalController.MeshObjsUtility
 
 
                 case ObjType.Поверхность:
-                case ObjType.Объем:
                 case ObjType.Точка:
                     throw new Exception("Данный метод не предназначени для работы с геометрией");
 
