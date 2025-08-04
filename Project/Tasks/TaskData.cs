@@ -347,7 +347,9 @@ namespace Project.Tasks
                     var refLine = groupData.Find(refLineGrName);
                     var vel = float.Parse(mrfAr[1]);
 
-                    return new MovedFrame(baseLine, refLine, vel);
+                    var mrf = new MovedFrame(baseLine, refLine, vel);
+                    mrf.SetShiftingAndRotation(mrfAr[2]);
+                    return mrf;
                 }
                 else throw new Exception("Неправильный ввод данных");
             }
@@ -360,7 +362,9 @@ namespace Project.Tasks
                 var srfAr = srfStr.Split(';');
 
                 var frameGr = groupData.Find(srfAr[0]);
-                return new StaticFrame(frameGr);
+                var srf = new StaticFrame(frameGr);
+                srf.SetShiftingAndRotation(srfAr[1]);
+                return srf;
             }
         }
 

@@ -19,6 +19,7 @@ using Project.Tasks.Functions;
 using Project.TaskParameters;
 using Project.Tasks.FrameCreators;
 using System.Runtime.InteropServices.ComTypes;
+using Model.IO;
 
 namespace TestProject
 {
@@ -89,13 +90,16 @@ namespace TestProject
         [DataRow(@"..\..\..\Examples\proj_traj.bpf", DisplayName = "proj_traj")]
         //[DataRow(@"..\..\..\Examples\proj_traj_baseLine_not_sorted.bpf", DisplayName = "proj_traj_baseLine_not_sorted")]
 
-        //[DataRow(@"c:\projs\testProj\TubeToTubeTJoint\proj_v1.bpf")]
+        //[DataRow(@"c:\projs\Roman\Proba\777.bpf2")]
         //[DataRow(@"c:\projs\kamaz\4.bpf")]
         public void TestFrameFunctionInTime(string relativeProjPath)
         {
             //assign
             var proj = new ProjectData();
+            var ext = Path.GetExtension(relativeProjPath);
 
+            if (ext == ".bpf2")
+                proj.ModelData.Loader = new LoadModelFromBPF2TextFile();
             //act
             proj.Load(relativeProjPath);
 

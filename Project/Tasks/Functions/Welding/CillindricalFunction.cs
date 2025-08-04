@@ -31,7 +31,11 @@ namespace Project.Tasks.Functions.Welding
             r1 = 0f;
             r2 = 0f;
             var frame = LocalFrame.Frame;
-            var hsPlane = new Plane(frame.Dir_X, frame.Centre, frame.Dir_Y);
+
+            var p_x = frame.Centre.Sum(frame.Dir_X);
+            var p_y = frame.Centre.Sum(frame.Dir_Y);
+            var hsPlane = new Plane(p_x, frame.Centre, p_y);
+
             var res = hsPlane.PointPosition(elementCenter);
 
             if (res < 0 | res > Length)
