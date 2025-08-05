@@ -63,6 +63,7 @@ namespace TestProject
                 var energy = new float[gr.Count];
                 var mf = heatData.FrameFunction.LocalFrame as MovedFrame;
                 mf.Time = 1;
+                mf.CalcPosition();
                 var counter = 0;
                 foreach (var obj in gr)
                 {
