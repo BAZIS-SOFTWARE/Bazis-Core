@@ -1,0 +1,54 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
+using System.Net.NetworkInformation;
+using System.Text;
+using System.Threading.Tasks;
+using Geometry;
+using Project.Tasks.FrameCreators;
+
+namespace Project.Tasks.Functions.Welding
+{
+    public class CillindricalBuilder
+    {
+        CillindricalFunction cil;
+
+        public CillindricalBuilder()
+        {
+            cil = new CillindricalFunction();
+            cil.Name = "CIL";
+            cil.LocalFrame = new StaticFrame();
+        }
+   
+        public CillindricalBuilder SetBottomDiam(string diam)
+        {
+            cil.BottomDiam = float.Parse(diam, NumberStyles.Float, CultureInfo.InvariantCulture);
+            return this;
+        }
+
+        public CillindricalBuilder SetUpperDiam(string diam)
+        {
+            cil.UpperDiam = float.Parse(diam, NumberStyles.Float, CultureInfo.InvariantCulture);
+            return this;
+        }
+
+        public CillindricalBuilder SetLength(string length)
+        {
+            cil.Length = float.Parse(length, NumberStyles.Float, CultureInfo.InvariantCulture);
+            return this;
+        }
+
+        public CillindricalBuilder SetFrame(Frame frame)
+        {
+            cil.LocalFrame = new StaticFrame(frame);
+            return this;
+        }
+
+        public static implicit operator CillindricalFunction(CillindricalBuilder builder)
+        {
+            return builder.cil;
+        }
+    }
+}

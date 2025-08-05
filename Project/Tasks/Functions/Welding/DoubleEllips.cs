@@ -13,7 +13,7 @@ using Model.IO.STL;
 
 namespace Project.Tasks.Functions.Welding
 {
-    public abstract class DoubleEllips : FrameFunction
+    public class DoubleEllips : FrameFunction
     {
         public string Name { get; set; }
 

@@ -1,14 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Geometry;
 using Model.Interfaces;
 using Project.Interfaces.Tasks;
 
 namespace Project.Tasks.Functions.Welding
 {
-    public abstract class SphereFunction : FrameFunction
+    public class SphereFunction : FrameFunction
     {
         /// <inheritdoc/>
         public float Width { get; set; }
+/// <inheritdoc/>
+
+        public override string ToString()
+        {
+            return $"{Name};{Width};{LocalFrame}";
+        }
 
         /// <summary>
         /// 
@@ -42,6 +49,23 @@ namespace Project.Tasks.Functions.Welding
         public override bool IsOverlappingSelf(float velocity)
         {
             return velocity <= Width / 2;
+        }
+/// <inheritdoc/>
+
+        public override float CalcValue(Point3D elementCenter)
+        {
+            float rad, halfBead;
+
+            if (IsPointInside(elementCenter, out rad, out halfBead))
+            {
+                // мощность берется за единицу
+                var power = 1;
+                var vol = halfBead * halfBead * halfBead;
+                var powerDensity = power / vol;
+
+                return powerDensity * (float)Math.Exp(-1 * (rad * rad / (halfBead * halfBead)));
+            }
+            return 0;
         }
     }
 }

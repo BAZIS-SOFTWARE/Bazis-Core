@@ -53,10 +53,10 @@ namespace TestProject
                 var heatData = lazerData[i];
                 var gr = heatData.Group;
 
-                if (heatData.FrameFunction is FSWPin fswPin)
-                    fswPin.GetParameters().ElementAt(0).Value = 200;
-                if (heatData.FrameFunction is FSWShoulder fswShoulder)
-                    fswShoulder.GetParameters().ElementAt(0).Value = 0.001f;
+                //if (heatData.FrameFunction is CillindricalFunction fswPin)
+                //    fswPin.GetParameters().ElementAt(0).Value = 200;
+                //if (heatData.FrameFunction is FSWShoulder fswShoulder)
+                //    fswShoulder.GetParameters().ElementAt(0).Value = 0.001f;
 
                 var powerFunc = heatData.FrameFunction;
                 //assert
@@ -158,39 +158,39 @@ namespace TestProject
             FrameFunction pFunction;
             if (fName == "arc")
             {
-                var arc = new ArcSBuilder();
+                var arc = new SphereBuilder();
                 arc.SetWidth("20");
 
                 arc.SetFrame(frame);
-                pFunction = (ArcS)arc;
+                pFunction = (SphereFunction)arc;
             }
-            else if (fName == "lz")
+            else
             {
-                var lazer = new LazerBuilder();
+                var lazer = new CillindricalBuilder();
                 lazer.SetLength("10");
                 lazer.SetBottomDiam("10");
                 lazer.SetUpperDiam("20");
                 lazer.SetFrame(frame);
-                pFunction = (Lazer)lazer;
+                pFunction = (CillindricalFunction)lazer;
             }
-            else if (fName == "FSWShoulder")
-            {
-                var fswShoulder = new FSWShoulderBuilder();
-                fswShoulder.SetLength("10");
-                fswShoulder.SetBottomDiam("20");
-                fswShoulder.SetUpperDiam("20");
-                fswShoulder.SetFrame(frame);
-                pFunction = (FSWShoulder)fswShoulder;
-            }
-            else
-            {
-                var fswPin = new FSWPinBuilder();
-                fswPin.SetLength("10");
-                fswPin.SetBottomDiam("10");
-                fswPin.SetUpperDiam("20");
-                fswPin.SetFrame(frame);
-                pFunction = (FSWPin)fswPin;
-            }
+            //else if (fName == "FSWShoulder")
+            //{
+            //    var fswShoulder = new FSWShoulderBuilder();
+            //    fswShoulder.SetLength("10");
+            //    fswShoulder.SetBottomDiam("20");
+            //    fswShoulder.SetUpperDiam("20");
+            //    fswShoulder.SetFrame(frame);
+            //    pFunction = (FSWShoulder)fswShoulder;
+            //}
+            //else
+            //{
+            //    var fswPin = new FSWPinBuilder();
+            //    fswPin.SetLength("10");
+            //    fswPin.SetBottomDiam("10");
+            //    fswPin.SetUpperDiam("20");
+            //    fswPin.SetFrame(frame);
+            //    pFunction = (FSWPin)fswPin;
+            //}
 
             var point = new Point3D(checkPoint[0], checkPoint[1], checkPoint[2]);
             //pFunction.
@@ -411,7 +411,7 @@ namespace TestProject
                 refLine.Add(new Node(i + 5000, new Point3D(0f, -1f, i)));
             }
 
-            heatData.TrySetFrameFunction("ARC;10;100;25");
+            heatData.TrySetFrameFunction("SPH;10");
             heatData.FrameFunction.LocalFrame = new MovedFrame(baseLine, refLine, 5);
 
             var expectedElements = new List<IElement>();
@@ -463,7 +463,7 @@ namespace TestProject
         [TestMethod]
         public void IsOverlappingSelfSphere_ShouldPass_WhenOverlap(float velocity, float width)
         {
-            ArcS mff = new ArcSBuilder().SetWidth(width.ToString());
+            SphereFunction mff = new SphereBuilder().SetWidth(width.ToString());
             Assert.IsTrue(mff.IsOverlappingSelf(velocity));
         }
 
@@ -475,7 +475,7 @@ namespace TestProject
         [TestMethod]
         public void IsOverlappingSelfCillinder_ShouldPass_WhenOverlap(float velocity, float upper, float bottom)
         {
-            Lazer mff = new LazerBuilder().SetBottomDiam(bottom.ToString()).SetUpperDiam(upper.ToString());
+            CillindricalFunction mff = new CillindricalBuilder().SetBottomDiam(bottom.ToString()).SetUpperDiam(upper.ToString());
             Assert.IsTrue(mff.IsOverlappingSelf(velocity));
         }
 
@@ -491,7 +491,7 @@ namespace TestProject
         [DataRow(new[] { 10f, 4f, 5f }, "outside", DisplayName = "point in back ellipse, outside")]
         public void DoubleEllipsIsPointInside_FrameParallelGlobalAxes(float[] checkPoint, string location)
         {
-            var doubleEllips = (ArcD)new ArcDBuilder().
+            var doubleEllips = (DoubleEllips)new EllipsBuilder().
                 SetWidth(14).
                 SetDepth(5).
                 SetFrontPart(5).
@@ -520,7 +520,7 @@ namespace TestProject
         [DataRow(new[] { 13f, 20f, 20f }, "outside", DisplayName = "13f, 20f, 20f")]
         public void DoubleEllipsIsPointInside_FrameXYRotated30DegreesGlobalAxes(float[] checkPoint, string location)
         {
-            var doubleEllips = (ArcD)new ArcDBuilder().SetWidth(14).SetDepth(5).
+            var doubleEllips = (DoubleEllips)new EllipsBuilder().SetWidth(14).SetDepth(5).
                 SetFrontPart(5).
                 SetBackPart(15).
                 SetFrame(new Frame(new Point3D(20f, 20f, 20f), 
@@ -545,7 +545,7 @@ namespace TestProject
         [DataRow(7.5f, 5, 10)]
         public void IsOverlappingSelfEllips_ShouldPass_WhenOverlap(float velocity, float frontPart, float backPart)
         {
-            var doubleEllips = (ArcD)new ArcDBuilder().
+            var doubleEllips = (DoubleEllips)new EllipsBuilder().
     SetFrontPart(frontPart).
     SetBackPart(backPart);
 
@@ -565,7 +565,7 @@ namespace TestProject
     })]
         public void DetermineInverseMatrixTest(float[] pointsArr, float[] resultArr)
         {
-            var doubleEllips = (ArcD)new ArcDBuilder().
+            var doubleEllips = (DoubleEllips)new EllipsBuilder().
                 SetFrame(new Frame(
                 new Point3D(0f, 0f, 0f),
                  new Point3D(pointsArr[0], pointsArr[1], pointsArr[2]),
