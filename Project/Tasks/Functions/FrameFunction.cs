@@ -12,7 +12,7 @@ namespace Project.Tasks.Functions
     {
         protected List<FunctionParameter> parameters = new List<FunctionParameter>();
         /// <inheritdoc/>
-        public LocalFrame LocalFrame { get; set; }
+        public LocalFrame LocalFrame { get; set; } = new StaticFrame();
         /// <inheritdoc/>
         public string Name { get; set; }
 /// <inheritdoc/>

@@ -12,6 +12,7 @@ namespace Project.Tasks.FrameCreators
     public class MovedFrame : LocalFrame
     {
         public MovedFrame(IGroup baseLine, IGroup refLine, float _velocity)
+            : this()
         {
             if (baseLine.Count == 0 || refLine.Count == 0)
                 throw new Exception("Линия должна собержать точки!");
@@ -38,23 +39,36 @@ namespace Project.Tasks.FrameCreators
             //SortTrajNodes(startPoints, baseLine);
             //SortTrajNodes(startPoints, refLine);
         }
+        /// <summary>
+        /// MovedFrame
+        /// </summary>
+        public MovedFrame()
+        {
+            Name = "MRF";
+        }
 
         /// <inheritdoc/>
         public override string ToString()
         {
+            var bls = "*";
+            var rls = "*";
+            if (BaseLine != null)
+                bls = BaseLine.Name;
+            if (RefLine != null)
+                rls = BaseLine.Name;
             return
-                $"MRF;{BaseLine.Name}|{RefLine.Name};{Velocity};{Shifting}|{Rotation}";
+                $"{Name};{bls}|{rls};{Velocity};{Shifting}|{Rotation}";
         }
         /// <inheritdoc/>
         public IModelObject StartPoint
         {
-            get { return BaseLine.First(); }
+            get { return BaseLine?.First(); }
         }
         /// <inheritdoc/>
 
         public IModelObject StopPoint
         {
-            get { return BaseLine.Last(); }
+            get { return BaseLine?.Last(); }
         }
 
         float PathPassed
@@ -99,10 +113,10 @@ namespace Project.Tasks.FrameCreators
         }
         /// <inheritdoc/>
 
-        public IGroup BaseLine { get; }
+        public IGroup BaseLine { get; set; }
         /// <inheritdoc/>
 
-        public IGroup RefLine { get; }
+        public IGroup RefLine { get; set; }
 
         /// <inheritdoc/>
 
@@ -119,6 +133,9 @@ namespace Project.Tasks.FrameCreators
 
         public float CalcMotionTime()
         {
+            if (BaseLine == null)
+                return 0;
+
             var path = 0.0f;
             for (var i = 1; i < BaseLine.Count; i++)
                 path = path + new Segment3D(BaseLine[i].CalcCentr(), BaseLine[i - 1].CalcCentr()).GetLength();
@@ -131,33 +148,39 @@ namespace Project.Tasks.FrameCreators
 
         public override void CalcPosition()
         {
-            var posit = new Point3D();
-            var path = 0.0f;
-
-            var dirY = new Point3D();
-            var dirX = new Point3D();
-
-            for (var i = 0; i < BaseLine.Count - 1; i++)
+            if (BaseLine == null | RefLine == null)
+                frame = new Frame();
+            else
             {
-                var line = new Segment3D(BaseLine[i].CalcCentr(), BaseLine[i + 1].CalcCentr());
-                path = path + line.GetLength();
-                dirY = BaseLine[i + 1].CalcCentr().Sub(BaseLine[i].CalcCentr());
-                dirX = BaseLine[i].CalcCentr().Sub(RefLine[i].CalcCentr());
-                if (path >= PathPassed)
+                var posit = new Point3D();
+
+
+                var path = 0.0f;
+
+                var dirY = new Point3D();
+                var dirX = new Point3D();
+
+                for (var i = 0; i < BaseLine.Count - 1; i++)
                 {
-                    var delta = path - PathPassed;
-                    var p = line.GetPointOnLine(line.GetLength() - delta);
+                    var line = new Segment3D(BaseLine[i].CalcCentr(), BaseLine[i + 1].CalcCentr());
+                    path = path + line.GetLength();
+                    dirY = BaseLine[i + 1].CalcCentr().Sub(BaseLine[i].CalcCentr());
+                    dirX = BaseLine[i].CalcCentr().Sub(RefLine[i].CalcCentr());
+                    if (path >= PathPassed)
+                    {
+                        var delta = path - PathPassed;
+                        var p = line.GetPointOnLine(line.GetLength() - delta);
 
-                    posit = BaseLine[i].CalcCentr().Sum(p);
+                        posit = BaseLine[i].CalcCentr().Sum(p);
 
-                    break;
+                        break;
+                    }
+
+                    posit = BaseLine[i].CalcCentr();
+
                 }
-
-                posit = BaseLine[i].CalcCentr();
-
+                frame = new Frame(posit, posit.Sum(dirY), posit.Sum(dirX));
             }
-
-            frame = new Frame(posit, posit.Sum(dirY), posit.Sum(dirX));
 
             frame.Rotate(frame.Dir_X, Rotation);
             frame.Shift(Shifting);

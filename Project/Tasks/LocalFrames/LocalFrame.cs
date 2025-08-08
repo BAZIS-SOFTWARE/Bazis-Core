@@ -11,6 +11,10 @@ namespace Project.Tasks.FrameCreators
     /// </summary>
     public abstract class LocalFrame
     {
+        /// <summary>
+        /// Name
+        /// </summary>
+        public string Name { get; internal set; }
         /// <inheritdoc/>
         public Point3D Shifting { get; set; } = new Point3D();
         /// <inheritdoc/>
