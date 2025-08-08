@@ -23,9 +23,9 @@ namespace Project.Tasks.FrameCreators
         /// Frame
         /// </summary>
         internal Frame frame;
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
-        public abstract Frame Frame { get;}
+        public abstract Frame Frame { get; }
         /// <summary>
         /// CalcPosition
         /// </summary>

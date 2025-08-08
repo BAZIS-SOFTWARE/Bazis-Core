@@ -324,18 +324,18 @@ namespace Project.Tasks
             }
 
             if(physicalData.FrameFunction != null)
-                physicalData.FrameFunction.LocalFrame = GetLocalFrame(infoAr,groupData);
+                physicalData.FrameFunction.LocalFrame = GetLocalFrame(infoAr[2], groupData);
 
             return physicalData;
         }
 
-        private LocalFrame GetLocalFrame(string [] dataAr, IGroupData groupData)
+        private LocalFrame GetLocalFrame(string data, IGroupData groupData)
         {
-            if (dataAr.Any(x => x.Contains("MRF")))
+            if (data.Contains("MRF"))
             {
-                var mrfStr = dataAr.First(x => x.Contains("MRF"));
-                var stopInd = mrfStr.IndexOf("MRF") + 4;
-                mrfStr = mrfStr.Remove(0, stopInd);
+                //var mrfStr = dataAr.First(x => x.Contains("MRF"));
+                var stopInd = data.IndexOf("MRF") + 4;
+                var mrfStr = data.Remove(0, stopInd);
 
                 var mrfAr = mrfStr.Split(';');
                 if (mrfAr.Length == 3)
@@ -349,15 +349,16 @@ namespace Project.Tasks
 
                     var mrf = new MovedFrame(baseLine, refLine, vel);
                     mrf.SetShiftingAndRotation(mrfAr[2]);
+
                     return mrf;
                 }
                 else throw new Exception("Неправильный ввод данных");
             }
             else
             {
-                var srfStr = dataAr.First(x => x.Contains("SRF"));
-                var stopInd = srfStr.IndexOf("SRF") + 4;
-                srfStr = srfStr.Remove(0, stopInd);
+                //var srfStr = dataAr.First(x => x.Contains("SRF"));
+                var stopInd = data.IndexOf("SRF") + 4;
+                var srfStr = data.Remove(0, stopInd);
 
                 var srfAr = srfStr.Split(';');
 

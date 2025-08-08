@@ -413,7 +413,7 @@ namespace TestProject
 
             heatData.TrySetFrameFunction("SPH;10");
             heatData.FrameFunction.LocalFrame = new MovedFrame(baseLine, refLine, 5);
-
+            heatData.FrameFunction.LocalFrame.CalcPosition();
             var expectedElements = new List<IElement>();
             var inputElements = new List<IElement>();
 

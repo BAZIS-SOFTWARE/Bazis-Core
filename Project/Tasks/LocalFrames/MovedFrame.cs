@@ -31,7 +31,7 @@ namespace Project.Tasks.FrameCreators
             BaseLine = baseLine;
             RefLine = refLine;
 
-            CalcPosition();
+            //CalcPosition();
 
             //CheckStartPoints(startPoints, baseLine);
             //CheckStartPoints(startPoints, refLine);
@@ -45,6 +45,7 @@ namespace Project.Tasks.FrameCreators
         public MovedFrame()
         {
             Name = "MRF";
+            frame = new Frame();
         }
 
         /// <inheritdoc/>
@@ -55,7 +56,7 @@ namespace Project.Tasks.FrameCreators
             if (BaseLine != null)
                 bls = BaseLine.Name;
             if (RefLine != null)
-                rls = BaseLine.Name;
+                rls = RefLine.Name;
             return
                 $"{Name};{bls}|{rls};{Velocity};{Shifting}|{Rotation}";
         }
