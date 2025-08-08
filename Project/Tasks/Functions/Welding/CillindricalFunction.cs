@@ -15,6 +15,11 @@ namespace Project.Tasks.Functions.Welding
         /// <inheritdoc/>
         public float Length { get; set; }
 
+        public CillindricalFunction()
+        {
+            Name = "CIL";
+        }
+
         /// <inheritdoc/>
 
         public override string ToString()

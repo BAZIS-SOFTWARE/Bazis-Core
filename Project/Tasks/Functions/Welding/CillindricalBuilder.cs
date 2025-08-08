@@ -17,9 +17,7 @@ namespace Project.Tasks.Functions.Welding
 
         public CillindricalBuilder()
         {
-            cil = new CillindricalFunction();
-            cil.Name = "CIL";
-            cil.LocalFrame = new StaticFrame();
+            cil = new CillindricalFunction();         
         }
    
         public CillindricalBuilder SetBottomDiam(string diam)

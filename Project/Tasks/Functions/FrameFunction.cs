@@ -14,7 +14,7 @@ namespace Project.Tasks.Functions
         /// <inheritdoc/>
         public LocalFrame LocalFrame { get; set; } = new StaticFrame();
         /// <inheritdoc/>
-        public string Name { get; set; }
+        public string Name { get; internal set; }
 /// <inheritdoc/>
 
         public abstract float CalcValue(Point3D elementCenter);

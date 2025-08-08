@@ -11,8 +11,6 @@ namespace Project.Tasks.Functions.Welding
         public SphereBuilder()
         {
             sph = new SphereFunction();
-            sph.Name = "SPH";
-            sph.LocalFrame = new StaticFrame();
         }
 
         public SphereBuilder SetFrame(Frame frame)

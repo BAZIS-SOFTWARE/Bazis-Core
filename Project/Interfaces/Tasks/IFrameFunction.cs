@@ -21,7 +21,7 @@ namespace Project.Interfaces.Tasks
         /// <summary>
         /// Name
         /// </summary>
-        string Name { get; set; }
+        string Name { get; }
         /// <summary>
         /// GetIntersectedElements
         /// </summary>

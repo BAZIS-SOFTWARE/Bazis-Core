@@ -8,6 +8,10 @@ namespace Project.Tasks.Functions.Welding
 {
     public class SphereFunction : FrameFunction
     {
+        public SphereFunction()
+        {
+            Name = "SPH";
+        }
         /// <inheritdoc/>
         public float Width { get; set; }
 /// <inheritdoc/>
