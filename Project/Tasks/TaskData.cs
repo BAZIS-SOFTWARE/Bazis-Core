@@ -226,8 +226,7 @@ namespace Project.Tasks
                 if (!float.TryParse(infoAr[3], out stop))
                     throw new Exception($"{info} - Время окончания задано неверно!");
 
-                var matData = new MatData(groupData.Find(infoAr[0]), start, stop);
-                matData.MatName = infoAr[1];
+                var matData = new MatData(infoAr[1],groupData.Find(infoAr[0]), start, stop);
 
                 physicalData = matData;
             }
@@ -324,18 +323,18 @@ namespace Project.Tasks
             }
 
             if(physicalData.FrameFunction != null)
-                physicalData.FrameFunction.LocalFrame = GetLocalFrame(infoAr,groupData);
+                physicalData.FrameFunction.LocalFrame = GetLocalFrame(infoAr[2], groupData);
 
             return physicalData;
         }
 
-        private LocalFrame GetLocalFrame(string [] dataAr, IGroupData groupData)
+        private LocalFrame GetLocalFrame(string data, IGroupData groupData)
         {
-            if (dataAr.Any(x => x.Contains("MRF")))
+            if (data.Contains("MRF"))
             {
-                var mrfStr = dataAr.First(x => x.Contains("MRF"));
-                var stopInd = mrfStr.IndexOf("MRF") + 4;
-                mrfStr = mrfStr.Remove(0, stopInd);
+                //var mrfStr = dataAr.First(x => x.Contains("MRF"));
+                var stopInd = data.IndexOf("MRF") + 4;
+                var mrfStr = data.Remove(0, stopInd);
 
                 var mrfAr = mrfStr.Split(';');
                 if (mrfAr.Length == 3)
@@ -347,20 +346,25 @@ namespace Project.Tasks
                     var refLine = groupData.Find(refLineGrName);
                     var vel = float.Parse(mrfAr[1]);
 
-                    return new MovedFrame(baseLine, refLine, vel);
+                    var mrf = new MovedFrame(baseLine, refLine, vel);
+                    mrf.SetShiftingAndRotation(mrfAr[2]);
+
+                    return mrf;
                 }
                 else throw new Exception("Неправильный ввод данных");
             }
             else
             {
-                var srfStr = dataAr.First(x => x.Contains("SRF"));
-                var stopInd = srfStr.IndexOf("SRF") + 4;
-                srfStr = srfStr.Remove(0, stopInd);
+                //var srfStr = dataAr.First(x => x.Contains("SRF"));
+                var stopInd = data.IndexOf("SRF") + 4;
+                var srfStr = data.Remove(0, stopInd);
 
                 var srfAr = srfStr.Split(';');
 
                 var frameGr = groupData.Find(srfAr[0]);
-                return new StaticFrame(frameGr);
+                var srf = new StaticFrame(frameGr);
+                srf.SetShiftingAndRotation(srfAr[1]);
+                return srf;
             }
         }
 

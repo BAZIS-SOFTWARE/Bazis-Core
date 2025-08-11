@@ -10,7 +10,20 @@ namespace Project.Tasks.FrameCreators
 {
     public class StaticFrame : LocalFrame
     {
-        public IGroup BaseGroup { get; }
+        private IGroup baseGr;
+        public IGroup BaseGroup 
+        { 
+            get { return baseGr; }
+            set
+            {
+                if (value.ObjType != ObjType.Узел)
+                    throw new System.Exception("Группа должна состоять из узлов");
+                else if (value.Count() != 3)
+                    throw new System.Exception("Должно быть три узла");
+
+                baseGr = value;
+            }
+        }
 
         internal StaticFrame(Point3D a, Point3D b, Point3D c)
         {
@@ -22,12 +35,13 @@ namespace Project.Tasks.FrameCreators
             frame = _frame;
         }
 
-        internal StaticFrame()
+        public StaticFrame()
         {
+            Name = "SRF";
             frame = new Frame();
         }
 
-        public StaticFrame(IGroup baseGr)
+        public StaticFrame(IGroup baseGr) : this()
         {
             if (baseGr.ObjType != ObjType.Узел)
                 throw new System.Exception("Группа должна состоять из узлов");
@@ -50,18 +64,27 @@ namespace Project.Tasks.FrameCreators
         /// <inheritdoc/>
         public override string ToString()
         {
-            return $"SRF;{BaseGroup.Name};{Shifting}|{Rotation}";
+            if(BaseGroup == null)
+                return $"{Name};*;{Shifting}|{Rotation}";
+            else
+                return $"{Name};{BaseGroup.Name};{Shifting}|{Rotation}";
         }
 /// <inheritdoc/>
 
         public override void CalcPosition()
         {
-            var points = BaseGroup.Select(x => x.CalcCentr()).ToArray();
+            if(BaseGroup != null)
+            {
+                var points = BaseGroup.Select(x => x.CalcCentr()).ToArray();
 
-            if (points.Length != 3)
-                throw new System.Exception("Должно быть три узла");
+                if (points.Length != 3)
+                    throw new System.Exception("Должно быть три узла");
 
-            frame = new Frame(points[0], points[1], points[2]);
+                frame = new Frame(points[0], points[1], points[2]);
+            }
+            else
+                frame = new Frame();
+
             frame.Rotate(frame.Dir_X, Rotation);
             frame.Shift(Shifting);
         }

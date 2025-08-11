@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Project.Tasks.Functions.Welding
 {
-    public abstract class CillindricalFunction : FrameFunction
+    public class CillindricalFunction : FrameFunction
     {
         /// <inheritdoc/>
         public float BottomDiam { get; set; }
@@ -14,6 +14,18 @@ namespace Project.Tasks.Functions.Welding
         public float UpperDiam { get; set; }
         /// <inheritdoc/>
         public float Length { get; set; }
+
+        public CillindricalFunction()
+        {
+            Name = HeatSources.CIL;
+        }
+
+        /// <inheritdoc/>
+
+        public override string ToString()
+        {
+            return $"{Name};{Length};{UpperDiam};{BottomDiam};{LocalFrame}";
+        }
 
         /// <summary>
         /// IsPointInside
@@ -31,7 +43,11 @@ namespace Project.Tasks.Functions.Welding
             r1 = 0f;
             r2 = 0f;
             var frame = LocalFrame.Frame;
-            var hsPlane = new Plane(frame.Dir_X, frame.Centre, frame.Dir_Y);
+
+            var p_x = frame.Centre.Sum(frame.Dir_X);
+            var p_y = frame.Centre.Sum(frame.Dir_Y);
+            var hsPlane = new Plane(p_x, frame.Centre, p_y);
+
             var res = hsPlane.PointPosition(elementCenter);
 
             if (res < 0 | res > Length)
@@ -70,6 +86,22 @@ namespace Project.Tasks.Functions.Welding
         public override bool IsOverlappingSelf(float velocity)
         {
             return velocity <= BottomDiam / 2 && velocity <= UpperDiam / 2;
+        }
+
+        public override float CalcValue(Point3D elementCenter)
+        {
+            float r, r0, r1, r2;
+
+            if (IsPointInside(elementCenter, out r, out r0, out r1, out r2))
+            {
+                var power = 1;
+                var vol = 1.0f / 3 * 3.14f * Length * (r1 * r1 + r1 * r2 + r2 * r2); // объем усеченного конуса
+                var powerDensity = power / vol;
+
+                var relPowerDensity = powerDensity * (float)Math.Exp(-1 * (r * r / (r0 * r0)));
+                return relPowerDensity;
+            }
+            return 0;
         }
     }
 }

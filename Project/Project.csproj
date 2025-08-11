@@ -4,7 +4,7 @@
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
 	  <SignAssembly>True</SignAssembly>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>4.6.93</Version>
+    <Version>4.7.7</Version>
     <Title>Project</Title>
     <Authors>Bilenko Georgy</Authors>
     <Company>BAZIS SOFTWARE</Company>
@@ -59,8 +59,7 @@
     <Compile Include="Interfaces\Tasks\ITimeDependentData.cs" />
     <Compile Include="Interfaces\Tasks\ITrajectory.cs" />
     <Compile Include="Interfaces\Tasks\ICondData.cs" />
-    <Compile Include="Tasks\Functions\Welding\ArcD.cs" />
-    <Compile Include="Tasks\Functions\Welding\ArcDBuilder.cs" />
+    <Compile Include="Tasks\Functions\Welding\EllipsBuilder.cs" />
     <Compile Include="Tasks\Functions\Welding\DoubleEllips.cs" />
     <Compile Include="Tasks\Functions\FrameFunction.cs" />
     <Compile Include="Tasks\Functions\FrameFunctionBuilder.cs" />
@@ -93,15 +92,9 @@
     <Compile Include="TaskParameters\TermalParameters.cs" />
     <Compile Include="TaskParameters\TimeSettings.cs" />
     <Compile Include="Tasks\ClampData.cs" />
-    <Compile Include="Tasks\Functions\Welding\ArcS.cs" />
-    <Compile Include="Tasks\Functions\Welding\ArcSBuilder.cs" />
+    <Compile Include="Tasks\Functions\Welding\SphereBuilder.cs" />
     <Compile Include="Tasks\Functions\Welding\CillindricalFunction.cs" />
-    <Compile Include="Tasks\Functions\Welding\FSWPin.cs" />
-    <Compile Include="Tasks\Functions\Welding\FSWPinBuilder.cs" />
-    <Compile Include="Tasks\Functions\Welding\FSWShoulder.cs" />
-    <Compile Include="Tasks\Functions\Welding\FSWShoulderBuilder.cs" />
-    <Compile Include="Tasks\Functions\Welding\Lazer.cs" />
-    <Compile Include="Tasks\Functions\Welding\LazerBuilder.cs" />
+    <Compile Include="Tasks\Functions\Welding\CillindricalBuilder.cs" />
     <Compile Include="Tasks\LocalFrames\MovedFrame.cs" />
     <Compile Include="Tasks\LocalFrames\MovedFrameBuilder.cs" />
     <Compile Include="Tasks\Functions\Welding\SphereFunction.cs" />

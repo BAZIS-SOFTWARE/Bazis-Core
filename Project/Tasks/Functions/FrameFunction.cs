@@ -12,9 +12,9 @@ namespace Project.Tasks.Functions
     {
         protected List<FunctionParameter> parameters = new List<FunctionParameter>();
         /// <inheritdoc/>
-        public LocalFrame LocalFrame { get; set; }
+        public LocalFrame LocalFrame { get; set; } = new StaticFrame();
         /// <inheritdoc/>
-        public string Name { get; set; }
+        public HeatSources Name { get; internal set; }
 /// <inheritdoc/>
 
         public abstract float CalcValue(Point3D elementCenter);

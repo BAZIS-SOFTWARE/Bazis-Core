@@ -12,7 +12,7 @@ namespace Project.Interfaces.Tasks
         /// <summary>
         /// 1D case
         /// </summary>
-        Linear = 1,
+        Linear = 0,
         /// <summary>
         /// 2D case
         /// </summary>
@@ -24,7 +24,7 @@ namespace Project.Interfaces.Tasks
         /// <summary>
         /// 3d case
         /// </summary>
-        Volume = 6
+        Volume = 8
     }
     /// <summary>
     /// Задачи для препроцессора для создания пользовательских задач
@@ -35,7 +35,7 @@ namespace Project.Interfaces.Tasks
         /// ХИМИЧЕСКАЯ задача с одиночным процессом.
         /// Один тип файлов задач
         /// </summary>
-        химическая = 1,
+        химическая = 0,
         /// <summary>
         /// ТЕРМИЧЕСКАЯ задача с одиночным процессом.
         /// Один тип файлов задач

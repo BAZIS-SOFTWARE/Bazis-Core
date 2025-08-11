@@ -9,10 +9,8 @@ namespace Project.Tasks
 {
     public enum HeatSources
     {
-        ARC,
-        FSWPin,
-        FSWShoulder,
-        LW
+        SPH,
+        CIL
     }
     /// <summary>
     /// HeatData

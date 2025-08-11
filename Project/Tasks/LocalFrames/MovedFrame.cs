@@ -11,26 +11,21 @@ namespace Project.Tasks.FrameCreators
 {
     public class MovedFrame : LocalFrame
     {
+        private IGroup baseLine;
+
+        private IGroup refLine;
+
         public MovedFrame(IGroup baseLine, IGroup refLine, float _velocity)
+            : this()
         {
-            if (baseLine.Count == 0 || refLine.Count == 0)
-                throw new Exception("Линия должна собержать точки!");
             if (_velocity == 0)
                 throw new Exception("Скорость не может равняться нулю!");
-            velocity = _velocity;
-
-
-            if (baseLine.Count != refLine.Count)
-                throw new Exception($"Траектории {baseLine.Name} {refLine.Name} должны содержать одинаковое кол-во точек!");
-
-            var res = baseLine.Intersect(refLine, new EqualityComparerByNumber<IModelObject>());
-            if (res.Count() != 0)
-                throw new Exception("Траектории пересекаются!");
+            Velocity = _velocity;
 
             BaseLine = baseLine;
             RefLine = refLine;
 
-            CalcPosition();
+            //CalcPosition();
 
             //CheckStartPoints(startPoints, baseLine);
             //CheckStartPoints(startPoints, refLine);
@@ -38,23 +33,37 @@ namespace Project.Tasks.FrameCreators
             //SortTrajNodes(startPoints, baseLine);
             //SortTrajNodes(startPoints, refLine);
         }
+        /// <summary>
+        /// MovedFrame
+        /// </summary>
+        public MovedFrame()
+        {
+            Name = "MRF";
+            frame = new Frame();
+        }
 
         /// <inheritdoc/>
         public override string ToString()
         {
+            var bls = "*";
+            var rls = "*";
+            if (baseLine != null)
+                bls = baseLine.Name;
+            if (refLine != null)
+                rls = refLine.Name;
             return
-                $"MRF;{BaseLine.Name}|{RefLine.Name};{Velocity};{Shifting}|{Rotation}";
+                $"{Name};{bls}|{rls};{Velocity};{Shifting}|{Rotation}";
         }
         /// <inheritdoc/>
         public IModelObject StartPoint
         {
-            get { return BaseLine.First(); }
+            get { return baseLine?.First(); }
         }
         /// <inheritdoc/>
 
         public IModelObject StopPoint
         {
-            get { return BaseLine.Last(); }
+            get { return baseLine?.Last(); }
         }
 
         float PathPassed
@@ -99,32 +108,40 @@ namespace Project.Tasks.FrameCreators
         }
         /// <inheritdoc/>
 
-        public IGroup BaseLine { get; }
-        /// <inheritdoc/>
-
-        public IGroup RefLine { get; }
-
-        /// <inheritdoc/>
-
-        public void SetShiftingAndRotation(string shiftingData)
+        public IGroup BaseLine      
         {
-            var shifftingData = shiftingData.Split('|');
-
-            if (shifftingData.Length == 4)
+            get { return baseLine; } 
+            set
             {
-                if (!float.TryParse(shifftingData[0], out var x))
-                    throw new Exception("Смещение по X задано неверно!");
-                if (!float.TryParse(shifftingData[1], out var y))
-                    throw new Exception("Смещение по Y задано неверно!");
-                if (!float.TryParse(shifftingData[2], out var z))
-                    throw new Exception("Смещение по Z задано неверно!");
-                if (!float.TryParse(shifftingData[3], out var angle))
-                    throw new Exception("Угол задан неверно!");
-
-                Shifting = new Point3D(x, y, z);
-                Rotation = angle;
+                if (value.Count == 0)
+                    throw new Exception("Линия должна собержать точки!");
+                baseLine = value;
             }
         }
+        /// <inheritdoc/>
+
+        public IGroup RefLine
+        {
+            get { return refLine; }
+            set
+            {
+                if (value.Count == 0)
+                    throw new Exception("Линия должна собержать точки!");
+
+                if(baseLine == null)
+                    throw new Exception("Сначала задайте траекторию!");
+
+                if (baseLine.Count != value.Count)
+                    throw new Exception($"Траектории {baseLine.Name} {value.Name} должны содержать одинаковое кол-во точек!");
+
+                var res = baseLine.Intersect(value, new EqualityComparerByNumber<IModelObject>());
+                if (res.Count() != 0)
+                    throw new Exception("Траектории пересекаются!");
+
+                refLine = value;
+            }
+        }
+
         /// <inheritdoc/>
 
 
@@ -140,9 +157,12 @@ namespace Project.Tasks.FrameCreators
 
         public float CalcMotionTime()
         {
+            if (baseLine == null)
+                return 0;
+
             var path = 0.0f;
-            for (var i = 1; i < BaseLine.Count; i++)
-                path = path + new Segment3D(BaseLine[i].CalcCentr(), BaseLine[i - 1].CalcCentr()).GetLength();
+            for (var i = 1; i < baseLine.Count; i++)
+                path = path + new Segment3D(baseLine[i].CalcCentr(), baseLine[i - 1].CalcCentr()).GetLength();
 
             var stopTime = path / velocity;
 
@@ -152,33 +172,39 @@ namespace Project.Tasks.FrameCreators
 
         public override void CalcPosition()
         {
-            var posit = new Point3D();
-            var path = 0.0f;
-
-            var dirY = new Point3D();
-            var dirX = new Point3D();
-
-            for (var i = 0; i < BaseLine.Count - 1; i++)
+            if (baseLine == null | refLine == null)
+                frame = new Frame();
+            else
             {
-                var line = new Segment3D(BaseLine[i].CalcCentr(), BaseLine[i + 1].CalcCentr());
-                path = path + line.GetLength();
-                dirY = BaseLine[i + 1].CalcCentr().Sub(BaseLine[i].CalcCentr());
-                dirX = BaseLine[i].CalcCentr().Sub(RefLine[i].CalcCentr());
-                if (path >= PathPassed)
+                var posit = new Point3D();
+
+
+                var path = 0.0f;
+
+                var dirY = new Point3D();
+                var dirX = new Point3D();
+
+                for (var i = 0; i < baseLine.Count - 1; i++)
                 {
-                    var delta = path - PathPassed;
-                    var p = line.GetPointOnLine(line.GetLength() - delta);
+                    var line = new Segment3D(baseLine[i].CalcCentr(), baseLine[i + 1].CalcCentr());
+                    path = path + line.GetLength();
+                    dirY = baseLine[i + 1].CalcCentr().Sub(baseLine[i].CalcCentr());
+                    dirX = baseLine[i].CalcCentr().Sub(refLine[i].CalcCentr());
+                    if (path >= PathPassed)
+                    {
+                        var delta = path - PathPassed;
+                        var p = line.GetPointOnLine(line.GetLength() - delta);
 
-                    posit = BaseLine[i].CalcCentr().Sum(p);
+                        posit = baseLine[i].CalcCentr().Sum(p);
 
-                    break;
+                        break;
+                    }
+
+                    posit = baseLine[i].CalcCentr();
+
                 }
-
-                posit = BaseLine[i].CalcCentr();
-
+                frame = new Frame(posit, posit.Sum(dirY), posit.Sum(dirX));
             }
-
-            frame = new Frame(posit, posit.Sum(dirY), posit.Sum(dirX));
 
             frame.Rotate(frame.Dir_X, Rotation);
             frame.Shift(Shifting);
