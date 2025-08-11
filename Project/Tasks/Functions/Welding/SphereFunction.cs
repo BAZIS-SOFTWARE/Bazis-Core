@@ -10,7 +10,7 @@ namespace Project.Tasks.Functions.Welding
     {
         public SphereFunction()
         {
-            Name = "SPH";
+            Name = HeatSources.SPH;
         }
         /// <inheritdoc/>
         public float Width { get; set; }

@@ -6,9 +6,10 @@ namespace Project.Tasks
 {
     public class MatData : CondData
     {
-        public MatData(IGroup group, float start, float stop) : base(group, start, stop)
+        public MatData(string matName, IGroup group, float start, float stop) : base(group, start, stop)
         {
             Kind = DataKind.Материал;
+            MatName = matName;
         }
         /// <summary>
         /// MatName

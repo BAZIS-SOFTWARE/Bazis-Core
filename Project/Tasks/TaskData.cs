@@ -226,8 +226,7 @@ namespace Project.Tasks
                 if (!float.TryParse(infoAr[3], out stop))
                     throw new Exception($"{info} - Время окончания задано неверно!");
 
-                var matData = new MatData(groupData.Find(infoAr[0]), start, stop);
-                matData.MatName = infoAr[1];
+                var matData = new MatData(infoAr[1],groupData.Find(infoAr[0]), start, stop);
 
                 physicalData = matData;
             }

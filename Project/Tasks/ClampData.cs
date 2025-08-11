@@ -43,7 +43,7 @@ namespace Project.Tasks
         /// <summary>
         /// PowerValue
         /// </summary>
-        public float Value { get; private set; } = 1;
+        public float Value { get; private set; } = 0;
 
         public void TrySetKind(string v)
         {

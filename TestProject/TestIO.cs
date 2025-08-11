@@ -1,15 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Windows.Forms;
 using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
+using OperationalController;
 using PostProc.IO;
 using PostProc.ScenePresenter;
 using Project;
 using Project.Tasks;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace TestProject
 {
@@ -39,6 +43,20 @@ namespace TestProject
 
             //assert
             Assert.AreNotEqual(project.TaskData.Find<CondData>().First(),null);
+        }
+
+        [DataTestMethod]
+        [DataRow("newProj.bpf")]
+        [DataRow("newProj.bpf2")]
+        public void CreateProjectFiletextFormat(string name)
+        {
+            //assing
+            //c:\projs\testProj\Tempering\
+            var project = new Controller();
+            project.Create($"{testDir}\\{name}");
+
+            //assert
+            Assert.AreEqual(Path.GetFileName(name), project.Name);
         }
 
         [TestMethod]

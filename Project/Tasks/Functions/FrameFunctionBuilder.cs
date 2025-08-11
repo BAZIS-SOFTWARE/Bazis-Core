@@ -32,21 +32,6 @@ namespace Project.Tasks.Functions
                 frameFunction = (CillindricalFunction)builder;
             }
         }
-        public FrameFunctionBuilder SetFrame(Frame frame)
-        {
-            frameFunction.LocalFrame.frame = frame;
-            return this;
-        }
-
-        private static Point3D NewMethod(string[] ar)
-        {
-            var x = float.Parse(ar[0]);
-            var y = float.Parse(ar[1]);
-            var z = float.Parse(ar[2]);
-
-            var centr = new Geometry.Point3D(x, y, z);
-            return centr;
-        }
 
         public static implicit operator FrameFunction(FrameFunctionBuilder builder)
         {

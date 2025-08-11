@@ -1,5 +1,6 @@
 ﻿using Geometry;
 using Model.Interfaces;
+using Project.Tasks;
 using Project.Tasks.FrameCreators;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,7 @@ namespace Project.Interfaces.Tasks
         /// <summary>
         /// Name
         /// </summary>
-        string Name { get; }
+        HeatSources Name { get; }
         /// <summary>
         /// GetIntersectedElements
         /// </summary>
