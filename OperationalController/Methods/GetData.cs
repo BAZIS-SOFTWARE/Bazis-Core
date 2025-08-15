@@ -55,15 +55,15 @@ namespace OperationalController
         /// <inheritdoc/>
         public string MaterialsDB
         {
-            get { return project.GeneralData.Materials; }
-            set { GeneralData.Materials = value; }
+            get { return project.TaskData.Materials; }
+            set { TaskData.Materials = value; }
         }
         /// <inheritdoc/>
 
         public string FunctionsDB
         {
-            get { return project.GeneralData.Functions; }
-            set { GeneralData.Functions = value; }
+            get { return project.TaskData.Functions; }
+            set { TaskData.Functions = value; }
         }
 
         /// <inheritdoc/>
@@ -71,12 +71,12 @@ namespace OperationalController
         {
             get 
             {
-                return GeneralData.TaskKind;
+                return TaskData.TaskKind;
             }
             set
             {
                 TaskData.Clear();
-                GeneralData.TaskKind = value;
+                TaskData.TaskKind = value;
             }         
         }
         /// <inheritdoc/>
@@ -84,12 +84,12 @@ namespace OperationalController
         {
             get
             {               
-                return GeneralData.TaskType;
+                return TaskData.TaskType;
             }
             set
             {
                 TaskData.Clear();
-                GeneralData.TaskType = value;
+                TaskData.TaskType = value;
             }
         }
     }
