@@ -10,6 +10,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using OperationalController;
 using PostProc.IO;
+using PostProc.IO.GridExport;
 using PostProc.ScenePresenter;
 using Project;
 using Project.Tasks;

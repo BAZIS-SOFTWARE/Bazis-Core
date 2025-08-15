@@ -24,21 +24,5 @@ namespace Project.Interfaces
         /// Comments
         /// </summary>
         string Comments { get; set; }
-        /// <summary>
-        /// Materials
-        /// </summary>
-        string Materials { get; set; }
-        /// <summary>
-        /// Functions
-        /// </summary>
-        string Functions { get; set; }
-        /// <summary>
-        /// TaskType
-        /// </summary>
-        TaskType TaskType { get; set; }
-        /// <summary>
-        /// TaskKind
-        /// </summary>
-        TaskKind TaskKind { get; set; }
     }
 }

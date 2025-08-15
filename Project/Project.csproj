@@ -4,7 +4,7 @@
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
 	  <SignAssembly>True</SignAssembly>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>4.7.7</Version>
+    <Version>4.8.0</Version>
     <Title>Project</Title>
     <Authors>Bilenko Georgy</Authors>
     <Company>BAZIS SOFTWARE</Company>
@@ -28,7 +28,11 @@
  </Target>-->
 
 	<ItemGroup>
+    <EmbeddedResource Remove="Interfaces\Results\**" />
+    <EmbeddedResource Remove="Results\**" />
     <EmbeddedResource Remove="TasksData\**" />
+    <None Remove="Interfaces\Results\**" />
+    <None Remove="Results\**" />
     <None Remove="TasksData\**" />
   </ItemGroup>
   <ItemGroup>
@@ -40,14 +44,10 @@
     <Compile Include="Interfaces\IO\ILoadEventArgs.cs" />
     <Compile Include="Interfaces\IO\IProjectLoader.cs" />
     <Compile Include="Interfaces\IO\IProjectSaver.cs" />
-    <Compile Include="Interfaces\IO\IResultsLoader.cs" />
-    <Compile Include="Interfaces\IO\IResultsSaver.cs" />
     <Compile Include="Interfaces\IO\ISaveEventArgs.cs" />
     <Compile Include="Interfaces\IO\ITaskDataLoader.cs" />
     <Compile Include="Interfaces\IO\ITaskDataSaver.cs" />
     <Compile Include="Interfaces\IProjectData.cs" />
-    <Compile Include="Interfaces\Results\IResultsExporter.cs" />
-    <Compile Include="Interfaces\Results\IResultsExportSaver.cs" />
     <Compile Include="Interfaces\Tasks\FunctionParameter.cs" />
     <Compile Include="Interfaces\Tasks\ICillindricalFunction.cs" />
     <Compile Include="Interfaces\Tasks\IData.cs" />
@@ -70,15 +70,6 @@
     <Compile Include="IO\SaveProjectFileTextFormat.cs" />
     <Compile Include="IO\SaveEventArgs.cs" />
     <Compile Include="ProjectData.cs" />
-    <Compile Include="Results\DataTableEx.cs" />
-    <Compile Include="Results\IO\CSVToDataTableConverter.cs" />
-    <Compile Include="Results\IO\LoadEventArgs.cs" />
-    <Compile Include="Results\IO\LoadResultsFileDB.cs" />
-    <Compile Include="Results\IO\SaveEventArgs.cs" />
-    <Compile Include="Results\IO\SaveResultsFileDb.cs" />
-    <Compile Include="Results\Result.cs" />
-    <Compile Include="Results\ResultDataBase.cs" />
-    <Compile Include="Results\ResultsComparer.cs" />
     <Compile Include="TaskParameters\ChemicalConvergence.cs" />
     <Compile Include="TaskParameters\ChemicalParameters.cs" />
     <Compile Include="TaskParameters\GeneralParameters.cs" />
@@ -121,10 +112,6 @@
       <PackagePath>\</PackagePath>
       <Pack>True</Pack>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="CsvHelper" Version="33.0.1" />
-    <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Model\Model.csproj" />

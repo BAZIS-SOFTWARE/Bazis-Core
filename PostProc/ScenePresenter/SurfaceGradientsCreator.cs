@@ -1,9 +1,7 @@
 ﻿using Geometry;
-using System.Drawing;
 using System.Collections.Generic;
 using System.Linq;
 using System;
-using Project.Interfaces.Results;
 using Geometry.Exteisions;
 using Model.Extensions;
 

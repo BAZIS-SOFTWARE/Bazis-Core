@@ -9,7 +9,7 @@ namespace OperationalController
         /// <inheritdoc/>
         public void ChangeTaskType(TaskType taskType)
         {
-            GeneralData.TaskType = taskType;
+            TaskData.TaskType = taskType;
             TaskData.Clear();
         }
     }

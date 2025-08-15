@@ -1,9 +1,5 @@
 ﻿using Geometry;
 using Model.Interfaces;
-using Project.Interfaces.Tasks;
-using System.Buffers.Text;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 
 namespace Project.Tasks.FrameCreators

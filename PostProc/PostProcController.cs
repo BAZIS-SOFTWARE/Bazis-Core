@@ -1,8 +1,6 @@
-﻿using PostProc.IO;
+﻿using PostProc.IO.GridExport;
+using PostProc.IO.ResultExport;
 using PostProc.ScenePresenter;
-using PostProc.ScenePresenter.Interfaces;
-using Project.Interfaces.Results;
-using Project.Results.IO;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

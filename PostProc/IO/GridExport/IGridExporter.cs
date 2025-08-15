@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PostProc.IO
+namespace PostProc.IO.GridExport
 {
     public interface IGridExporter
     {

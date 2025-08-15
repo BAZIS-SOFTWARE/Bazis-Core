@@ -1,15 +1,6 @@
 ﻿using Geometry;
-using Model.Interfaces;
-using Project.Interfaces.Tasks;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using MathNet.Numerics;
-using MathNet.Numerics.LinearAlgebra.Complex;
-using MathNet.Numerics.LinearAlgebra;
-using Model.IO;
-using CsvHelper;
-using Model.IO.STL;
 
 namespace Project.Tasks.Functions.Welding
 {

@@ -7,10 +7,9 @@ namespace OperationalController
     public partial class Controller
     {
         /// <inheritdoc/>
-        /// <inheritdoc/>
         public void ChangeTaskKind(TaskKind taskKind)
         {
-            GeneralData.TaskKind = taskKind;
+            TaskData.TaskKind = taskKind;
             TaskData.Clear();
         }
     }

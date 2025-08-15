@@ -70,15 +70,20 @@ namespace Project.IO
                 if (dataName == "Сведения")
                     project.GeneralData.Comments = splitLine[1].Split(' ')[1];
                 if (dataName == "БазаМатериалов")
-                    project.GeneralData.Materials = splitLine[1].Split(' ')[1];
+                    project.TaskData.Materials = splitLine[1].Split(' ')[1];
                 if (dataName == "БазаФункций")
-                    project.GeneralData.Functions = splitLine[1].Split(' ')[1];
+                    project.TaskData.Functions = splitLine[1].Split(' ')[1];
+                if (dataName == "Тип")
+                {
+                    if (Enum.TryParse(splitLine[1].Split(' ')[1], out TaskKind taskKind))
+                        project.TaskData.TaskKind = taskKind;
+                }    
                 if (dataName == "Вид")
                     if (splitLine[1].Split(' ')[1] == "Plain")
-                        project.GeneralData.TaskType = TaskType.Plain;
+                        project.TaskData.TaskType = TaskType.Plain;
                     else if (splitLine[1].Split(' ')[1] == "AxiPlain")
-                        project.GeneralData.TaskType = TaskType.AxiPlain;
-                    else { project.GeneralData.TaskType = TaskType.Volume; }
+                        project.TaskData.TaskType = TaskType.AxiPlain;
+                    else { project.TaskData.TaskType = TaskType.Volume; }
 
                 line = sr.ReadLine();
             }

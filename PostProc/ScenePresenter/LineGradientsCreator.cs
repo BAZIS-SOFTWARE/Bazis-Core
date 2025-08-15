@@ -1,6 +1,5 @@
 ﻿using Geometry;
 using Model.Interfaces;
-using Project.Interfaces.Results;
 using PostProc.ScenePresenter.Interfaces;
 using System;
 using System.Collections.Generic;

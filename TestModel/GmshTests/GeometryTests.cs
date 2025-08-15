@@ -249,7 +249,7 @@ namespace TestModel.GmshTests
         public void AttributeTest(string fileName, string modelName)
         {
             controller.Gmsh.Open(modelFolder + fileName);
-            controller.Gmsh.Model.Mesh.SetTransfiniteCurve(4, 20);
+            //controller.Gmsh.Model.Mesh.SetTransfiniteCurve(4, 20);
             var expected = new string[] { "4", "5" };
             controller.Gmsh.Model.SetAttribute("Progression", expected);
             var attributes = controller.Gmsh.Model.GetAttribute("Progression");

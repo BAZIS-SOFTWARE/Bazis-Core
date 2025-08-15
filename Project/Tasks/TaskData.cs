@@ -18,6 +18,16 @@ namespace Project.Tasks
 
     public class TaskData :  ITaskData
     {
+        /// <inheritdoc/>
+        public string Materials { get; set; }
+        /// <inheritdoc/>
+        public string Functions { get; set; }
+        /// <inheritdoc/>
+        public TaskType TaskType { get; set; }
+        /// <inheritdoc/>
+
+        public TaskKind TaskKind { get; set; }
+
         List<ICondData> taskData;
 
         public int Count { get { return taskData.Count; } }

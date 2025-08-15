@@ -262,5 +262,17 @@ namespace OperationalController
         /// </summary>
         /// <param name="state"></param>
         void ChangeInsideSurfacesState(bool state);
+
+        /// <summary>
+        /// ChangeTaskType
+        /// </summary>
+        /// <param name="taskType"></param>
+        void ChangeTaskType(TaskType taskType);
+
+        /// <summary>
+        /// ChangeTaskKind
+        /// </summary>
+        /// <param name="taskKind"></param>
+        void ChangeTaskKind(TaskKind taskKind);
     }
 }

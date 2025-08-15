@@ -1,5 +1,4 @@
 ﻿using Geometry;
-using Project.Interfaces.Results;
 using System.Collections.Generic;
 using System.Drawing;
 

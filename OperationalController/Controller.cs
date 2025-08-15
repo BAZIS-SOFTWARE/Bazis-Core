@@ -33,7 +33,7 @@ namespace OperationalController
                 throw new Exception("Проект не создан");
             project.Load();
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void Save()
         {
@@ -42,9 +42,9 @@ namespace OperationalController
             project.Save();
         }
 
-      
 
-/// <inheritdoc/>
+
+        /// <inheritdoc/>
 
         IBoundaryEdgesFinder boundaryEdgesFinder { get; set; } = new FindBoundaryEdges();
         /// <inheritdoc/>
@@ -184,9 +184,6 @@ namespace OperationalController
         {
             return TaskData;
         }
-
-
-
 
         /// <inheritdoc/>
         public ITaskData TaskData => project?.TaskData;

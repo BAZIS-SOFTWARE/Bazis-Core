@@ -1,10 +1,6 @@
 ﻿using PostProc.ScenePresenter;
-using Project.Interfaces.IO;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PostProc.IO.GridExport
 {
@@ -13,7 +9,7 @@ namespace PostProc.IO.GridExport
         /// <summary>
         /// SaveEvent
         /// </summary>
-        event Action<object, ISaveEventArgs> SaveEvent;
+        event Action<object, string> SaveEvent;
         /// <summary>
         /// SaveResults
         /// </summary>

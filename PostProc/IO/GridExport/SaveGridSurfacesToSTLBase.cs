@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using Geometry;
 using PostProc.ScenePresenter;
-using Project.Interfaces.IO;
-using Project.Interfaces.Results;
 
 namespace PostProc.IO.GridExport
 {
     public abstract class SaveGridSurfacesToSTLBase : IGridSurfacesSaver
     {
-        public virtual event Action<object, ISaveEventArgs> SaveEvent;
+        public virtual event Action<object, string> SaveEvent;
 
         /// <summary>
         /// триангуляция выпуклого односвязного многоугольника
