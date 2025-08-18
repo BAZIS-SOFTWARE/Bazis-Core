@@ -185,7 +185,7 @@ namespace Model
             }
         }
 
-        public VolumeData VolumeData { get; }
+        public VolumeData VolumeData { get; } = new VolumeData();
 
 
         /// <inheritdoc/>

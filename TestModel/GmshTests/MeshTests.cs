@@ -8,6 +8,7 @@ using Model.Interfaces.ObjectsFinders;
 using GmshApi;
 using System.IO;
 using OperationalController.GmshController;
+using OperationalController;
 
 namespace TestModel.GmshTests
 {
@@ -566,6 +567,22 @@ namespace TestModel.GmshTests
             }
             else
                 Assert.AreEqual(0, surfSets.Count);
+        }
+
+        [DataTestMethod]
+        [DataRow(@"\CAD\screw.step")]
+        [DataRow(@"\CAD\assembly_1.step")]
+        [DataRow(@"\CAD\assembly_2.stp")]
+        [DataRow(@"\CAD\nasos.step")]
+        [DataRow(@"\CAD\model_with_free_surfaces.stp")]
+        [DataRow(@"\CAD\block.igs")]
+
+        //[DataRow(@"\GMSHAPI\cubes.geo")]
+        //Для geo ядра презентация STL не работает (как и в gmsh)
+        public void ImportCAD(string fileName)
+        {
+            var project = new Controller();
+            project.ImportCAD(modelFolder + fileName, controller);
         }
 
         [DataTestMethod]

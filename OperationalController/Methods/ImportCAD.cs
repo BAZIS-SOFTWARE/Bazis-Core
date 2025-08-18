@@ -68,6 +68,7 @@ x => project.ModelData.ObjectData.SurfaceCollection.Add(x));
                     }
 
                     var vol = new VolumeFigure(tag, surfs);
+                    vol.Name = name;
                     project.ModelData.ObjectData.VolumeData.Add(vol);
                 }
             }

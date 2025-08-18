@@ -49,7 +49,13 @@ namespace Model.GeometryObjects
             surfaceFigure = surfaceFigures;
 
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
+        public override string ToString()
+        {
+            var strArr = surfaceFigure.Select(x => x.Number.ToString()).ToArray();
+            return Name + " " + string.Join(" ", strArr);
+        }
+        /// <inheritdoc/>
 
         public int NumberOfSides => surfaceFigure.Length;
 /// <inheritdoc/>
