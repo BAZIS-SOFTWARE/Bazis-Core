@@ -430,7 +430,7 @@ namespace TestModel
         public void TestSeparators(string fileName, bool isVolume)
         {
             var controller = new Controller();
-            controller.Create(fileName);
+            controller.CreateProject(fileName);
             controller.ModelData.Loader = new LoadModelFromBPFTextFile();
 
             controller.Load();
@@ -453,7 +453,7 @@ namespace TestModel
         public void TestSeparatorsAfterHideElementsByColor(string fileName, int hideElemsBySet, ObjType objType)
         {
             var controller = new Controller();
-            controller.Create(fileName);
+            controller.CreateProject(fileName);
             controller.ModelData.Loader = new LoadModelFromINPTextFile();
             controller.Load();
 

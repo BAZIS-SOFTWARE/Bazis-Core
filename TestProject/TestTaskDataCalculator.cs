@@ -23,10 +23,10 @@ namespace TestProject
 
         private ProjectData StartUpProjForTests(string path)
         {
-            var proj = new ProjectData();
+            var proj = new ProjectData(path);
 
             proj.Loader.LoadEvent += (ar1, ar2) => { };
-            proj.Load(path);
+            proj.Load();
 
             return proj;
         }
@@ -35,11 +35,11 @@ namespace TestProject
         {
             //assign
 
-            var proj = new ProjectData();
+            var proj = new ProjectData(@"..\..\..\Examples\proj_traj.bpf");
 
             proj.Loader.LoadEvent += (ar1, ar2) => { };
             //act
-            proj.Load(@"..\..\..\Examples\proj_traj.bpf");
+            proj.Load();
 
             var heat = proj.TaskData.Find<HeatData>().First();
             
@@ -56,11 +56,11 @@ namespace TestProject
         {
             //assign
 
-            var proj = new ProjectData();
+            var proj = new ProjectData(@"..\..\..\Examples\proj_traj.bpf");
 
             proj.Loader.LoadEvent += (ar1, ar2) => { };
             //act
-            proj.Load(@"..\..\..\Examples\proj_traj.bpf");
+            proj.Load();
 
             var baseLineGr = proj.ModelData.GroupData.Find("baseLine");
             var refLineGr = proj.ModelData.GroupData.Find("refLine");
@@ -77,11 +77,11 @@ namespace TestProject
         {
             //assign
 
-            var proj = new ProjectData();
+            var proj = new ProjectData(@"..\..\..\Examples\proj_traj_baseLine_not_sorted.bpf");
 
             proj.Loader.LoadEvent += (ar1, ar2) => { };
             //act
-            proj.Load(@"..\..\..\Examples\proj_traj_baseLine_not_sorted.bpf");
+            proj.Load();
 
             var baseLineGr = proj.ModelData.GroupData.Find("baseLine");
             var refLineGr = proj.ModelData.GroupData.Find("refLine");
@@ -96,10 +96,10 @@ namespace TestProject
         public static MovedFrame SetUpGroupData
             (string baseLineGroupName, string refLineGroupName, string startGroupName, string endGroupName)
         {
-            var proj = new ProjectData();
+            var proj = new ProjectData(@"..\..\..\Examples\TrajTest.bpf");
 
             proj.Loader.LoadEvent += (ar1, ar2) => { };
-            proj.Load(@"..\..\..\Examples\TrajTest.bpf");
+            proj.Load();
 
             var baseLine = proj.ModelData.GroupData.Find(baseLineGroupName);
             var refLine = proj.ModelData.GroupData.Find(refLineGroupName);

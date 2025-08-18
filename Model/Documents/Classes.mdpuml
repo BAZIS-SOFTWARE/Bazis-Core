@@ -1,0 +1,7 @@
+@startuml
+class ModelObject
+class ModelData
+class ObjectData
+class GroupData
+interface IModelObject
+@enduml

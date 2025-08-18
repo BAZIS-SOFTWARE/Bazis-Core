@@ -15,6 +15,7 @@ using System.Linq;
 using System.Drawing;
 using System;
 using Model.IO;
+using Project.Tasks;
 
 namespace OperationalController
 {
@@ -184,6 +185,7 @@ namespace OperationalController
         {
             return TaskData;
         }
+
 
         /// <inheritdoc/>
         public ITaskData TaskData => project?.TaskData;

@@ -37,10 +37,10 @@ namespace TestProject
         {
             //assign
 
-            var proj = new ProjectData();
+            var proj = new ProjectData($@"{testDir}\proj_traj.bpf");
 
             //act
-            proj.Load($@"{testDir}\proj_traj.bpf");
+            proj.Load();
 
             var dic = proj.TaskData.Find(DataKind.Закрепление).ToArray();
 
@@ -56,9 +56,9 @@ namespace TestProject
         {
             //assign
 
-            var proj = new ProjectData();
+            var proj = new ProjectData($@"{testDir}\proj_traj.bpf");
             //act
-            proj.Load($@"{testDir}\proj_traj.bpf");
+            proj.Load();
 
             proj.ModelData.GroupData.RemoveAt(5);
 
@@ -74,10 +74,10 @@ namespace TestProject
         {
             //assign
 
-            var proj = new ProjectData();
+            var proj = new ProjectData(@"..\..\..\Examples\proj_traj.bpf");
 
             //act
-            proj.Load(@"..\..\..\Examples\proj_traj.bpf");
+            proj.Load();
 
             var res = proj.TaskData.Find<ICondData>();
             //assert
@@ -95,13 +95,11 @@ namespace TestProject
         public void TestFrameFunctionInTime(string relativeProjPath)
         {
             //assign
-            var proj = new ProjectData();
+            var proj = new ProjectData(relativeProjPath);
             var ext = Path.GetExtension(relativeProjPath);
 
-            if (ext == ".bpf2")
-                proj.ModelData.Loader = new LoadModelFromBPF2TextFile();
             //act
-            proj.Load(relativeProjPath);
+            proj.Load();
 
             var selectedData = proj.TaskData.Find(DataKind.Нагрев).Select(x => (ICondData)x).ToArray();
             foreach (var preFrame in selectedData)
@@ -132,10 +130,10 @@ namespace TestProject
         public void TestFrameFunctionSortingTrajectory()
         {
             //assign
-            var proj = new ProjectData();
+            var proj = new ProjectData(@"..\..\..\Examples\proj_traj.bpf");
 
             //act
-            proj.Load(@"..\..\..\Examples\proj_traj.bpf");
+            proj.Load();
 
             var selectedData = proj.TaskData.Find(DataKind.Нагрев).Select(x => (ICondData)x).ToArray();
 
@@ -162,10 +160,10 @@ namespace TestProject
         public void TestFrameFunctionTransformation(float rotation,float x,float y,float z)
         {
             //assign
-            var proj = new ProjectData();
+            var proj = new ProjectData(@"..\..\..\Examples\proj_traj.bpf");
 
             //act
-            proj.Load(@"..\..\..\Examples\proj_traj.bpf");
+            proj.Load();
 
             var heatData = proj.TaskData.Find(DataKind.Нагрев).Select(h => (HeatData)h).First();
             heatData.FrameFunction.LocalFrame.Rotation = rotation;
@@ -183,10 +181,10 @@ namespace TestProject
         public void TestFindTaskData(DataKind datakind)
         {
             //assign
-            var project = new ProjectData();
+            var project = new ProjectData(@"..\..\..\Examples\proj_traj.bpf");
 
             //act
-            project.Load(@"..\..\..\Examples\proj_traj.bpf");
+            project.Load();
  
             //assert
 

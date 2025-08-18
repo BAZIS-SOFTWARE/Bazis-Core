@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using Model.Interfaces.ObjectsCollections;
 using Model.Interfaces.MeshObjects;
+using OperationalController.GmshController;
 
 namespace OperationalController
 {
@@ -65,7 +66,7 @@ namespace OperationalController
         /// Create
         /// </summary>
         /// <param name="projectFile"></param>
-        void Create(string projectFile);
+        void CreateProject(string projectFile);
 
         /// <summary>
         /// GetModelObject
@@ -274,5 +275,11 @@ namespace OperationalController
         /// </summary>
         /// <param name="taskKind"></param>
         void ChangeTaskKind(TaskKind taskKind);
+        /// <summary>
+        /// Import
+        /// </summary>
+        /// <param name="projectFile"></param>
+        /// <param name="gmshController"></param>
+        void ImportCAD(string projectFile, IGmshController gmshController);
     }
 }

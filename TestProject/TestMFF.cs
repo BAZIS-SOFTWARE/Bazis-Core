@@ -42,10 +42,10 @@ namespace TestProject
         public void MFF_EnergyCalculated(string path)
         {
             //assign
-            var proj = new ProjectData();
+            var proj = new ProjectData($@"{testDir}\{path}");
 
             //act
-            proj.Load($@"{testDir}\{path}");
+            proj.Load();
 
             var lazerData = proj.TaskData.Find(DataKind.Нагрев).Select(x => (HeatData)x).ToArray();
             for (var i = 0; i < lazerData.Count(); i++)

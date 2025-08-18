@@ -33,7 +33,6 @@
     <None Remove="Interfaces\GeometryObjects\**" />
   </ItemGroup> 
   <ItemGroup>
-    <Compile Remove="GeometryObjects\VolumeData.cs" />
     <Compile Remove="Interfaces\MeshObjects\IElementSurface.cs" />
     <Compile Remove="Interfaces\MeshObjects\INode.cs" />
     <Compile Remove="ObjectsCollections\Element1DCollection.cs" />

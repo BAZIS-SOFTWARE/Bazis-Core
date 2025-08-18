@@ -1,6 +1,8 @@
-﻿using Project.Interfaces;
+﻿using Model;
+using Project.Interfaces;
 using Project.Interfaces.IO;
 using Project.Interfaces.Tasks;
+using Project.Tasks;
 using System;
 using System.IO;
 using System.Threading;
@@ -18,6 +20,15 @@ namespace Project.IO
 
         public void Load(IProjectData project, string path)
         {
+            Thread.Sleep(100);
+            //modelData loading
+
+            project.ModelData.Loader.LoadEvent += (ar1, ar2) =>
+            { LoadEvent?.Invoke(this, new LoadEventArgs(ar2.Message)); };
+
+            project.ModelData.Load(path);
+            
+
             using (var sr = new StreamReader(path))
             {
                 while (!sr.EndOfStream)
@@ -33,25 +44,13 @@ namespace Project.IO
                 }
             }
 
-
-            Thread.Sleep(100);
-            //modelData loading
-            if (project.ModelData != null)
-            {
-                project.ModelData.Loader.LoadEvent += (ar1, ar2) =>
-                { LoadEvent?.Invoke(this, new LoadEventArgs(ar2.Message)); };
-
-                project.ModelData.Load(path);
-            }
-
             //taskData loading
-            if(project.TaskData != null)
-            {
-                project.TaskData.Loader.LoadEvent += (ar1, ar2) =>
-                { LoadEvent?.Invoke(this, new LoadEventArgs(ar2.Message)); };
+            project.TaskData = new TaskData();
+            project.TaskData.Loader.LoadEvent += (ar1, ar2) =>
+            { LoadEvent?.Invoke(this, new LoadEventArgs(ar2.Message)); };
                 
-                project.TaskData.Load(path, project.ModelData.GroupData);
-            }
+            project.TaskData.Load(path, project.ModelData.GroupData);
+            
         }
 
 
@@ -65,10 +64,10 @@ namespace Project.IO
                 var splitLine = line.Split(':');
 
                 var dataName = splitLine[0].Replace(" ", "");
-                if (dataName == "Название")
-                    project.GeneralData.Name = splitLine[1].Split(' ')[1];
-                if (dataName == "Сведения")
-                    project.GeneralData.Comments = splitLine[1].Split(' ')[1];
+                //if (dataName == "Название")
+                //    project.GeneralData.Name = splitLine[1].Split(' ')[1];
+                //if (dataName == "Сведения")
+                //    project.GeneralData.Comments = splitLine[1].Split(' ')[1];
                 if (dataName == "БазаМатериалов")
                     project.TaskData.Materials = splitLine[1].Split(' ')[1];
                 if (dataName == "БазаФункций")

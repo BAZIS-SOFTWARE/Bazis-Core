@@ -33,7 +33,7 @@ namespace TestProject
             //assing
             var control = new Controller();
 
-            control.Create(path);
+            control.CreateProject(path);
             control.ModelData.Loader = new LoadModelFromBPF2TextFile();
             control.Load();
             var grName = resStr.Split(' ')[0];
@@ -54,7 +54,7 @@ namespace TestProject
         {
             //assing
             var control = new Controller();
-            control.Create(path);
+            control.CreateProject(path);
             control.ModelData.Loader = new LoadModelFromBPF2TextFile();
             control.Load();
             var grName = resStr.Split(' ')[0];
@@ -76,7 +76,7 @@ namespace TestProject
             //assing
             var control = new Controller();
 
-            control.Create(path);
+            control.CreateProject(path);
             control.ModelData.Loader = new LoadModelFromBPF2TextFile();
             control.Load();
 
@@ -99,10 +99,10 @@ namespace TestProject
         public void CreateTaskData(string relativeProjPath)
         {
             //assign
-            var proj = new ProjectData();
+            var proj = new ProjectData(relativeProjPath);
 
             //act
-            proj.Load(relativeProjPath);
+            proj.Load();
         }
     }
 }

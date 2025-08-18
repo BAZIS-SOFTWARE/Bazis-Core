@@ -185,6 +185,8 @@ namespace Model
             }
         }
 
+        public VolumeData VolumeData { get; }
+
 
         /// <inheritdoc/>
 

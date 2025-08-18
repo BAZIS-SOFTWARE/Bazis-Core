@@ -9,7 +9,7 @@ namespace Model.Interfaces
 {
     public interface IModelData
     {
-        IObjectsData ObjectData { get; }
+        IObjectsData ObjectData { get;}
         IGroupData GroupData { get; }
         /// <summary>
         /// Clear all objects and groups
