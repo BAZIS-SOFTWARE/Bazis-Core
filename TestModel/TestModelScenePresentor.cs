@@ -453,9 +453,7 @@ namespace TestModel
         public void TestSeparatorsAfterHideElementsByColor(string fileName, int hideElemsBySet, ObjType objType)
         {
             var controller = new Controller();
-            controller.CreateProject(fileName);
-            controller.ModelData.Loader = new LoadModelFromINPTextFile();
-            controller.Load();
+            controller.ImportMesh(fileName);
 
             var elemCounter = 0;
 

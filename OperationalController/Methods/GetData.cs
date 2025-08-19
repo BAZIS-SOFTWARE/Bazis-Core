@@ -3,6 +3,7 @@ using Model.Interfaces;
 using System.Collections.Generic;
 using Model.Interfaces.MeshObjects;
 using Project.Interfaces.Tasks;
+using Model.GeometryObjects;
 
 namespace OperationalController
 {
@@ -45,6 +46,13 @@ namespace OperationalController
         public IEnumerable<IElement> GetModelElements()
         {
             return ModelData.ObjectData.GetAllElements();
+        }
+
+        /// <inheritdoc/>
+
+        public IEnumerable<VolumeFigure> GetModelVolumes()
+        {
+            return ModelData.ObjectData.VolumeData;
         }
         /// <inheritdoc/>
         public IGroup GetModelGroup(int grIndex)

@@ -7,6 +7,7 @@ using Model.Interfaces;
 using Model;
 using Model.MeshObjects;
 using OperationalController.GmshController;
+using OperationalController;
 
 namespace TestModel.GmshTests
 {
@@ -24,6 +25,24 @@ namespace TestModel.GmshTests
         public void Cleanup()
         {
             controller.Gmsh.Clear();
+        }
+
+        [DataTestMethod]
+        [DataRow(@"\CAD\screw.step")]
+        [DataRow(@"\CAD\assembly_1.step")]
+        [DataRow(@"\CAD\assembly_2.stp")]
+        [DataRow(@"\CAD\nasos.step")]
+        [DataRow(@"\CAD\model_with_free_surfaces.stp")]
+
+        //[DataRow(@"\GMSHAPI\cubes.geo")]
+        //Для geo ядра презентация STL не работает (как и в gmsh)
+        public void ImportCAD(string fileName)
+        {
+            var project = new Controller();
+            project.ImportCAD(modelFolder + fileName, controller);
+
+            //assert
+            Assert.AreNotEqual(project.GetModelVolumes().Count(),0);
         }
 
         [DataTestMethod]

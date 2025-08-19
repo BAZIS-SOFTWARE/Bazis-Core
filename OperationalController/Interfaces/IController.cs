@@ -240,6 +240,11 @@ namespace OperationalController
         /// <returns></returns>
         IEnumerable<ISetInfo> GetModelSetsInfo(ObjType objType);
         /// <summary>
+        /// GetModelVolumes
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<VolumeFigure> GetModelVolumes();
+        /// <summary>
         /// GetModelSetInfo
         /// </summary>
         /// <param name="objType"></param>

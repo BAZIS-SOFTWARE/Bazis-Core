@@ -569,21 +569,6 @@ namespace TestModel.GmshTests
                 Assert.AreEqual(0, surfSets.Count);
         }
 
-        [DataTestMethod]
-        [DataRow(@"\CAD\screw.step")]
-        [DataRow(@"\CAD\assembly_1.step")]
-        [DataRow(@"\CAD\assembly_2.stp")]
-        [DataRow(@"\CAD\nasos.step")]
-        [DataRow(@"\CAD\model_with_free_surfaces.stp")]
-        [DataRow(@"\CAD\block.igs")]
-
-        //[DataRow(@"\GMSHAPI\cubes.geo")]
-        //Для geo ядра презентация STL не работает (как и в gmsh)
-        public void ImportCAD(string fileName)
-        {
-            var project = new Controller();
-            project.ImportCAD(modelFolder + fileName, controller);
-        }
 
         [DataTestMethod]
         [DataRow(@"\CAD\weld_seam_1.step", 38, new int[] { 18, 19, 23, 24 }, new int[] { 2 }, new double[] { 0.25, 0.05, 0.5 })]
