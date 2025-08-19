@@ -9,6 +9,7 @@ using GmshApi;
 using System.IO;
 using OperationalController.GmshController;
 using OperationalController;
+using MathNet.Numerics;
 
 namespace TestModel.GmshTests
 {
@@ -654,6 +655,52 @@ namespace TestModel.GmshTests
                 Assert.IsTrue(element.ElementKind == ElementKind.Пента || element.ElementKind == ElementKind.Гекса);
 
             //controller.Gmsh.Write($@"D:\{volumeType}{genMethod}.inp");//Для визуального теста
+        }
+
+        [DataTestMethod]
+        [DataRow("geo")]
+        [DataRow("occ")]
+        public void GetStringSettingsTest(string expected)
+        {
+            controller.Gmsh.Option.SetString("General.ScriptingLanguages", expected);
+            var actual = controller.Gmsh.Option.GetString("General.ScriptingLanguages");
+            Assert.IsTrue(expected == actual);
+        }
+
+        [DataTestMethod]
+        [DataRow(@"\CAD\Tavr.step", 0.5, 10, 1, MeshAlgorithm.Delaunay, MeshAlgorithm3D.Delaunay)]
+        [DataRow(@"\CAD\Tavr.step", 0.3, 2, 3, MeshAlgorithm.FrontalDelaunay, MeshAlgorithm3D.Frontal)]
+        public void MeshGeneralSettingsTest(string fileName, double minSize, double maxSize, double elemSizeFactor,
+                                            MeshAlgorithm algo2d, MeshAlgorithm3D algo3d)
+        {
+            controller.Gmsh.Open(modelFolder + fileName);
+
+            controller.Gmsh.Option.SetNumber("Mesh.MeshSizeMin", minSize);
+            controller.Gmsh.Option.SetNumber("Mesh.MeshSizeMax", maxSize);
+            controller.Gmsh.Option.SetNumber("Mesh.MeshSizeFactor", elemSizeFactor);
+
+            controller.Gmsh.Option.SetNumber("Mesh.Algorithm", (int)algo2d);
+            controller.Gmsh.Option.SetNumber("Mesh.Algorithm3D", (int)algo3d);
+
+            controller.Gmsh.Model.Mesh.Generate(3);
+
+            var error = controller.Gmsh.Logger.GetLastError();//Проверяем не возникла ли ошибка
+
+            var actMinSize = controller.Gmsh.Option.GetNumber("Mesh.MeshSizeMin");
+            var actMaxSize = controller.Gmsh.Option.GetNumber("Mesh.MeshSizeMax");
+            var actElemSizeFactor = controller.Gmsh.Option.GetNumber("Mesh.MeshSizeFactor");
+            var actAlgo2D = controller.Gmsh.Option.GetNumber("Mesh.Algorithm");
+            var actAlgo3D = controller.Gmsh.Option.GetNumber("Mesh.Algorithm3D");
+
+            Assert.IsTrue(string.IsNullOrEmpty(error));
+            Assert.IsTrue(minSize == actMinSize);
+            Assert.IsTrue(maxSize == actMaxSize);
+            Assert.IsTrue(elemSizeFactor == actElemSizeFactor);
+            Assert.IsTrue((int)algo2d == actAlgo2D);
+            Assert.IsTrue((int)algo3d == actAlgo3D);
+
+            //var file = Path.GetFileNameWithoutExtension(modelFolder + fileName);
+            //controller.Gmsh.Write($@"C:\Mesh\{file + algo2d.ToString()}.inp");//Для визуального теста
         }
 
 

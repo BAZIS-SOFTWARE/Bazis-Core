@@ -26,4 +26,21 @@ namespace GmshApi
         /// <inheritdoc/>
         QuasiStructuredQuad = 11
     }
+
+    /// <inheritdoc/>
+    public enum MeshAlgorithm3D
+    {
+        /// <inheritdoc/>
+        Delaunay = 1,
+        /// <inheritdoc/>
+        InitialMeshOnly = 3,
+        /// <inheritdoc/>
+        Frontal = 4,
+        /// <inheritdoc/>
+        MMG3D = 7,
+        /// <inheritdoc/>
+        RTree = 9,
+        /// <inheritdoc/>
+        HXT = 10
+    }
 }
