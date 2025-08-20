@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Xml.Linq;
 
 namespace Model.GeometryObjects
 {
@@ -52,8 +53,10 @@ namespace Model.GeometryObjects
         /// <inheritdoc/>
         public override string ToString()
         {
+            
             var strArr = surfaceFigure.Select(x => x.Number.ToString()).ToArray();
-            return Name + " " + string.Join(" ", strArr);
+            var strSurfsNumbers = string.Join(" ", strArr);
+            return $"{Number} {Name}: {strSurfsNumbers}";
         }
         /// <inheritdoc/>
 
