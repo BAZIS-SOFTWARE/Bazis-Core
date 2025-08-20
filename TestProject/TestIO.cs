@@ -13,6 +13,7 @@ using PostProc.IO;
 using PostProc.IO.GridExport;
 using PostProc.ScenePresenter;
 using Project;
+using Project.Interfaces.Tasks;
 using Project.Tasks;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
@@ -30,10 +31,10 @@ namespace TestProject
 
         [DataTestMethod]
         //[DataRow("c:\\projs\\testProj\\Tempering", "proj.bpf")]
-        [DataRow("proj_traj.bpf")]
+        [DataRow("proj_traj.bpf",TaskType.Volume,TaskKind.термическая_механическая)]
         //[DataRow("c:\\BazisSolver\\TestTaskSolutionMSTest\\ExampleProj\\Mech\\3D\\ConstLoadAndTemp500\\", "proj.bpf")]
         //[DataRow("c:\\projs\\ifm", "proj_v1.bpf")]
-        public void LoadProjectFiletextFormat(string name)
+        public void LoadProjectFiletextFormat(string name,TaskType taskType,TaskKind taskKind)
         {
             //assing
             //c:\projs\testProj\Tempering\
@@ -43,6 +44,8 @@ namespace TestProject
             project.Load();
 
             //assert
+            Assert.AreEqual(project.TaskData.TaskKind, taskKind);
+            Assert.AreEqual(project.TaskData.TaskType, taskType);
             Assert.AreNotEqual(project.TaskData.Find<CondData>().First(),null);
         }
 

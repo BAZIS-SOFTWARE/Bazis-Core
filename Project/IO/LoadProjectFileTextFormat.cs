@@ -45,7 +45,7 @@ namespace Project.IO
             }
 
             //taskData loading
-            project.TaskData = new TaskData();
+
             project.TaskData.Loader.LoadEvent += (ar1, ar2) =>
             { LoadEvent?.Invoke(this, new LoadEventArgs(ar2.Message)); };
                 

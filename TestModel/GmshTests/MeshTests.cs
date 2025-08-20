@@ -669,23 +669,31 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow(@"\CAD\Tavr.step", 0.58, 3.5)]
-        [DataRow(@"\CAD\cilindr.step", 0.33, 1.8)]
-        [DataRow(@"\CAD\screw.step", 0.7, 1.7)]
-        [DataRow(@"\CAD\nasos.step", 10, 16)]
-        public void SizeMeshTest(string fileName, double expMinSize, double expMaxSize)
+        [DataRow(@"\CAD\Tavr.step", 0.58, 3.5, MeshAlgorithm3D.Delaunay,1)]
+        [DataRow(@"\CAD\cilindr.step", 0.33, 1.8, MeshAlgorithm3D.Frontal,1.2)]
+        [DataRow(@"\CAD\screw.step", 0.7, 1.7, MeshAlgorithm3D.HXT,0.85)]
+        [DataRow(@"\CAD\nasos.step", 10, 16, MeshAlgorithm3D.RTree,1.8)]
+        public void GenerateMesh3D(string fileName, double expMinSize, double expMaxSize, MeshAlgorithm3D expAlgo3d, double sizeFactor)
         {
             controller.Gmsh.Open(modelFolder + fileName);
             controller.Gmsh.Option.SetNumber("Mesh.MeshSizeMin", expMinSize);
             controller.Gmsh.Option.SetNumber("Mesh.MeshSizeMax", expMaxSize);
+            controller.Gmsh.Option.SetNumber("Mesh.Algorithm3D", (int)expAlgo3d);
+            controller.Gmsh.Option.SetNumber("Mesh.MeshSizeFactor", sizeFactor);
+            
             controller.Gmsh.Model.Mesh.Generate(3);
 
             var error = controller.Gmsh.Logger.GetLastError();
             var actMinSize = controller.Gmsh.Option.GetNumber("Mesh.MeshSizeMin");
             var actMaxSize = controller.Gmsh.Option.GetNumber("Mesh.MeshSizeMax");
+            var actAlgo3d = controller.Gmsh.Option.GetNumber("Mesh.Algorithm3D");
+            var actSizeFactor = controller.Gmsh.Option.GetNumber("Mesh.MeshSizeFactor");
+
             Assert.IsTrue(string.IsNullOrEmpty(error));
             Assert.IsTrue(expMinSize == actMinSize);
             Assert.IsTrue(expMaxSize == actMaxSize);
+            Assert.IsTrue((int)expAlgo3d == actAlgo3d);
+            Assert.IsTrue(sizeFactor == actSizeFactor);
             //var file = Path.GetFileNameWithoutExtension(modelFolder + fileName);
             //controller.Gmsh.Write($@"C:\Mesh\INP\{file + "MinSize"}.inp");//Для визуального теста
         }
@@ -713,52 +721,6 @@ namespace TestModel.GmshTests
 
             //var file = Path.GetFileNameWithoutExtension(modelFolder + fileName);
             //controller.Gmsh.Write($@"C:\Mesh\INP\{file + "MeshAlgorithm" + expAlgo2d.ToString()}.inp");//Для визуального теста
-        }
-
-        [DataTestMethod]
-        [DataRow(@"\CAD\Tavr.step", MeshAlgorithm3D.Delaunay)]
-        [DataRow(@"\CAD\cilindr.step", MeshAlgorithm3D.Frontal)]
-        [DataRow(@"\CAD\screw.step", MeshAlgorithm3D.HXT)]
-        [DataRow(@"\CAD\nasos.step", MeshAlgorithm3D.RTree)]
-        public void MeshAlgorithm3DTest(string fileName, MeshAlgorithm3D expAlgo3d)
-        {
-            controller.Gmsh.Open(modelFolder + fileName);
-
-            controller.Gmsh.Option.SetNumber("Mesh.Algorithm3D", (int)expAlgo3d);
-
-            controller.Gmsh.Model.Mesh.Generate(3);
-
-            var error = controller.Gmsh.Logger.GetLastError();
-            var actAlgo3d = controller.Gmsh.Option.GetNumber("Mesh.Algorithm3D");
-
-            Assert.IsTrue(string.IsNullOrEmpty(error));
-            Assert.IsTrue((int)expAlgo3d == actAlgo3d);
-
-            //var file = Path.GetFileNameWithoutExtension(modelFolder + fileName);
-            //controller.Gmsh.Write($@"C:\Mesh\INP\{file + "MeshAlgorithm3D" + expAlgo3d.ToString()}.inp");//Для визуального теста
-        }
-
-        [DataTestMethod]
-        [DataRow(@"\CAD\Tavr.step", 1)]
-        [DataRow(@"\CAD\cilindr.step", 0.7)]
-        [DataRow(@"\CAD\screw.step", 0.5)]
-        [DataRow(@"\CAD\nasos.step", 3.5)]
-        public void MeshElementSizeFactorTest(string fileName, double expElemSizeFactor)
-        {
-            controller.Gmsh.Open(modelFolder + fileName);
-
-            controller.Gmsh.Option.SetNumber("Mesh.MeshSizeFactor", expElemSizeFactor);
-
-            controller.Gmsh.Model.Mesh.Generate(3);
-
-            var error = controller.Gmsh.Logger.GetLastError();
-            var actElemSizeFactor = controller.Gmsh.Option.GetNumber("Mesh.MeshSizeFactor");
-
-            Assert.IsTrue(string.IsNullOrEmpty(error));
-            Assert.IsTrue(expElemSizeFactor == actElemSizeFactor);
-
-            //var file = Path.GetFileNameWithoutExtension(modelFolder + fileName);
-            //controller.Gmsh.Write($@"C:\Mesh\INP\{file + "MeshSizeFactor"}.inp");//Для визуального теста
         }
 
         private void MakeTranfinite(int seamPointCurves, int[] seamCurves, int[] seamVolumes)
