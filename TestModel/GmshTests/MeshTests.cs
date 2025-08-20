@@ -669,55 +669,35 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow(@"\CAD\Tavr.step", 0.58)]
-        [DataRow(@"\CAD\cilindr.step", 0.33)]
-        [DataRow(@"\CAD\screw.step", 1.7)]
-        [DataRow(@"\CAD\nasos.step", 10)]
-        public void MinSizeMeshTest(string fileName, double expMinSize)
+        [DataRow(@"\CAD\Tavr.step", 0.58, 3.5)]
+        [DataRow(@"\CAD\cilindr.step", 0.33, 1.8)]
+        [DataRow(@"\CAD\screw.step", 0.7, 1.7)]
+        [DataRow(@"\CAD\nasos.step", 10, 16)]
+        public void SizeMeshTest(string fileName, double expMinSize, double expMaxSize)
         {
             controller.Gmsh.Open(modelFolder + fileName);
             controller.Gmsh.Option.SetNumber("Mesh.MeshSizeMin", expMinSize);
-
+            controller.Gmsh.Option.SetNumber("Mesh.MeshSizeMax", expMaxSize);
             controller.Gmsh.Model.Mesh.Generate(3);
 
             var error = controller.Gmsh.Logger.GetLastError();
             var actMinSize = controller.Gmsh.Option.GetNumber("Mesh.MeshSizeMin");
-
+            var actMaxSize = controller.Gmsh.Option.GetNumber("Mesh.MeshSizeMax");
             Assert.IsTrue(string.IsNullOrEmpty(error));
             Assert.IsTrue(expMinSize == actMinSize);
-
+            Assert.IsTrue(expMaxSize == actMaxSize);
             //var file = Path.GetFileNameWithoutExtension(modelFolder + fileName);
             //controller.Gmsh.Write($@"C:\Mesh\INP\{file + "MinSize"}.inp");//Для визуального теста
         }
 
-        [DataTestMethod]
-        [DataRow(@"\CAD\Tavr.step", 3.5)]
-        [DataRow(@"\CAD\cilindr.step", 1.8)]
-        [DataRow(@"\CAD\screw.step", 0.7)]
-        [DataRow(@"\CAD\nasos.step", 16)]
-        public void MaxSizeMeshTest(string fileName, double expMinSize)
-        {
-            controller.Gmsh.Open(modelFolder + fileName);
-            controller.Gmsh.Option.SetNumber("Mesh.MeshSizeMax", expMinSize);
-
-            controller.Gmsh.Model.Mesh.Generate(3);
-
-            var error = controller.Gmsh.Logger.GetLastError();
-            var actMaxSize = controller.Gmsh.Option.GetNumber("Mesh.MeshSizeMax");
-
-            Assert.IsTrue(string.IsNullOrEmpty(error));
-            Assert.IsTrue(expMinSize == actMaxSize);
-
-            //var file = Path.GetFileNameWithoutExtension(modelFolder + fileName);
-            //controller.Gmsh.Write($@"C:\Mesh\INP\{file + "MaxSize"}.inp");//Для визуального теста
-        }
+        
 
         [DataTestMethod]
-        [DataRow(@"\CAD\Tavr.step", MeshAlgorithm.FrontalDelaunay)]
-        [DataRow(@"\CAD\cilindr.step", MeshAlgorithm.Delaunay)]
-        [DataRow(@"\CAD\screw.step", MeshAlgorithm.BAMG)]
-        [DataRow(@"\CAD\nasos.step", MeshAlgorithm.Delaunay)]
-        public void MeshAlgorithm2DTest(string fileName, MeshAlgorithm expAlgo2d)
+        [DataRow(@"\CAD\Tavr.step", MeshAlgorithm2D.FrontalDelaunay)]
+        [DataRow(@"\CAD\cilindr.step", MeshAlgorithm2D.Delaunay)]
+        [DataRow(@"\CAD\screw.step", MeshAlgorithm2D.BAMG)]
+        [DataRow(@"\CAD\nasos.step", MeshAlgorithm2D.Delaunay)]
+        public void MeshAlgorithm2DTest(string fileName, MeshAlgorithm2D expAlgo2d)
         {
             controller.Gmsh.Open(modelFolder + fileName);
 

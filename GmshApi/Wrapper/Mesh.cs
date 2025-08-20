@@ -420,7 +420,7 @@ namespace GmshApi
         /// <param name="dim">0 - геометрические точки, 1 - кривые, 2 - поверхности, 3 - объемы</param>
         /// <param name="tag">Идентификатор</param>
         /// <param name="val">Алгоритм</param>
-        public void SetAlgorithm(int dim, int tag, MeshAlgorithm val = MeshAlgorithm.Automatic)
+        public void SetAlgorithm(int dim, int tag, MeshAlgorithm2D val = MeshAlgorithm2D.Automatic)
         {
             var ierr = 0;
             gmshModelMeshSetAlgorithm(dim, tag, (int)val, ref ierr);

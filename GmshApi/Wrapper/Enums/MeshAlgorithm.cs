@@ -5,7 +5,7 @@ using System.Text;
 namespace GmshApi
 {
     /// <inheritdoc/>
-    public enum MeshAlgorithm
+    public enum MeshAlgorithm2D
     {
         /// <inheritdoc/>
         MeshAdapt = 1,
@@ -14,11 +14,11 @@ namespace GmshApi
         /// <inheritdoc/>
         InitialMeshOnly = 3,
         /// <inheritdoc/>
-        Delaunay = 5,
+        Delaunay = 4,
         /// <inheritdoc/>
-        FrontalDelaunay = 6,
+        FrontalDelaunay = 5,
         /// <inheritdoc/>
-        BAMG = 7,
+        BAMG = 6,
         /// <inheritdoc/>
         FrontalDelaunayQuads = 8,
         /// <inheritdoc/>
