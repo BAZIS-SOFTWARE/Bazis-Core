@@ -281,6 +281,13 @@ namespace OperationalController
         /// <param name="taskKind"></param>
         void ChangeTaskKind(TaskKind taskKind);
         /// <summary>
+        /// ChangeMeshSetOrder
+        /// </summary>
+        /// <param name="elemDim"></param>
+        /// <param name="name"></param>
+        /// <param name="order"></param>
+        void ChangeMeshSetOrder(int elemDim, string name, int order);
+        /// <summary>
         /// Import
         /// </summary>
         /// <param name="projectFile"></param>
