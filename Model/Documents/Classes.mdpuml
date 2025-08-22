@@ -3,5 +3,26 @@ class ModelObject
 class ModelData
 class ObjectData
 class GroupData
+class Group
+class ObjectsSet
+class ObjectsCollection
+class GeometryObjects
+class MeshObjects
+class IO
+class VolumeData
+class VolumeFigure
 interface IModelObject
+
+IModelObject <|.. ModelObject
+ModelObject <|-- GeometryObjects
+ModelObject <|-- MeshObjects
+ModelData *-- ObjectData
+ObjectsCollection *-- ObjectsSet
+ObjectData *-- ObjectsCollection
+ObjectsSet *-- IModelObject
+GroupData *-- Group
+ModelData *-- GroupData
+ModelData *-- IO
+VolumeData *-- VolumeFigure
+ObjectData *-- VolumeData
 @enduml
