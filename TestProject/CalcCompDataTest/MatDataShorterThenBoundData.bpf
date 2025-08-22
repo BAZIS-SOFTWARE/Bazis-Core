@@ -2,6 +2,8 @@
 Название : MatDataShorterThenBoundData.bpf
 Сведения : newComments
 Вид : Volume
+БазаМатериалов : materials.jsf
+БазаФункций : functions.jsf
 Материал : test Сталь_20ХМ 0 149 *
 Среда : test Коэф.теплоотдачи.воздух 20 0 150 *
 Закрепление : test Жесткое X 0 * 0 150 *

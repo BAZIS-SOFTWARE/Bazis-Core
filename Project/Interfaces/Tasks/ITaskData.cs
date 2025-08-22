@@ -1,5 +1,7 @@
 ﻿using Model.Interfaces;
 using Project.Interfaces.IO;
+using PropertiesCalculator.FunctionData;
+using PropertiesCalculator.MaterialData;
 using System;
 using System.Collections.Generic;
 
@@ -67,11 +69,11 @@ namespace Project.Interfaces.Tasks
         /// <summary>
         /// Materials
         /// </summary>
-        string Materials { get; set; }
+        MaterialDBData Materials { get; set; }
         /// <summary>
         /// Functions
         /// </summary>
-        string Functions { get; set; }
+        FunctionDBData Functions { get; set; }
         /// <summary>
         /// TaskType
         /// </summary>

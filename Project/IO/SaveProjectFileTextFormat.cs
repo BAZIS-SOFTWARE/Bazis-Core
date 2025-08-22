@@ -29,8 +29,8 @@ namespace Project.IO
                 sw.WriteLine("Сведения : {0}", project.GeneralData.Comments);
                 sw.WriteLine("Вид : {0}", project.TaskData.TaskType);
                 sw.WriteLine("Тип : {0}", project.TaskData.TaskKind);
-                sw.WriteLine("БазаМатериалов : {0}", project.TaskData.Materials);
-                sw.WriteLine("БазаФункций : {0}", project.TaskData.Functions);
+                sw.WriteLine("БазаМатериалов : {0}", project.TaskData.Materials.Name);
+                sw.WriteLine("БазаФункций : {0}", project.TaskData.Functions.Name);
 
                     //сохранение данных задачи
                     if (project.TaskData != null)

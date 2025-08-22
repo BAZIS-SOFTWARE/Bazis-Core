@@ -50,6 +50,9 @@
     <Reference Include="Octree">
       <HintPath>..\..\..\NetOctree\Octree\bin\Release\netstandard2.0\Octree.dll</HintPath>
     </Reference>
+    <Reference Include="PropertiesCalculator">
+      <HintPath>..\..\..\BazisSolver\TaskSolverCore\bin\Release\net8.0\PropertiesCalculator.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

@@ -9,6 +9,8 @@ using System.Drawing;
 using Model.Interfaces.ObjectsCollections;
 using Model.Interfaces.MeshObjects;
 using OperationalController.GmshController;
+using PropertiesCalculator.MaterialData;
+using PropertiesCalculator.FunctionData;
 
 namespace OperationalController
 {
@@ -20,11 +22,11 @@ namespace OperationalController
         /// <summary>
         /// FunctionsDB
         /// </summary>
-        string FunctionsDB { get; set; }
+        FunctionDBData FunctionsDB { get; set; }
         /// <summary>
         /// MaterialsDB
         /// </summary>
-        string MaterialsDB { get; set; }
+        MaterialDBData MaterialsDB { get; set; }
         /// <summary>
         /// ProjectKind
         /// </summary>

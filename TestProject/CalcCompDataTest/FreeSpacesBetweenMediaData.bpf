@@ -2,6 +2,8 @@
 Название : FreeSpacesBetweenMediaData.bpf
 Сведения : newComments
 Вид : Volume
+БазаМатериалов : materials.jsf
+БазаФункций : functions.jsf
 Материал : test Сталь_20ХМ 0 150 *
 Среда : test Коэф.теплоотдачи.воздух 20 30 150 *
 Среда : test Коэф.теплоотдачи.воздух 20 0 20 *

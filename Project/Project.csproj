@@ -114,7 +114,15 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Model\Model.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="PropertiesCalculator">
+      <HintPath>..\..\..\BazisSolver\TaskSolverCore\bin\Release\net8.0\PropertiesCalculator.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <None Update="Icon.png">

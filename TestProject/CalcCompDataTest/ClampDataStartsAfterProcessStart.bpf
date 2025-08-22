@@ -2,6 +2,8 @@
 Название : ClampDataStartsAfterProcessStart.bpf
 Сведения : newComments
 Вид : Volume
+БазаМатериалов : materials.jsf
+БазаФункций : functions.jsf
 Материал : test Сталь_20ХМ 0 150 *
 Среда : test Коэф.теплоотдачи.воздух 20 0 150 *
 Материал : test Сталь_20ХМ 0 150 *

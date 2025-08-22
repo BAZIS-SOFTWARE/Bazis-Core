@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using Model.Interfaces.MeshObjects;
 using Project.Interfaces.Tasks;
 using Model.GeometryObjects;
+using PropertiesCalculator.MaterialData;
+using PropertiesCalculator.FunctionData;
 
 namespace OperationalController
 {
@@ -61,14 +63,14 @@ namespace OperationalController
         }
 
         /// <inheritdoc/>
-        public string MaterialsDB
+        public MaterialDBData MaterialsDB
         {
             get { return project.TaskData.Materials; }
             set { TaskData.Materials = value; }
         }
         /// <inheritdoc/>
 
-        public string FunctionsDB
+        public FunctionDBData FunctionsDB
         {
             get { return project.TaskData.Functions; }
             set { TaskData.Functions = value; }
