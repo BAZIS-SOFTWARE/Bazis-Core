@@ -10,8 +10,10 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using OperationalController;
 using PostProc.IO;
+using PostProc.IO.GridExport;
 using PostProc.ScenePresenter;
 using Project;
+using Project.Interfaces.Tasks;
 using Project.Tasks;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
@@ -29,19 +31,21 @@ namespace TestProject
 
         [DataTestMethod]
         //[DataRow("c:\\projs\\testProj\\Tempering", "proj.bpf")]
-        [DataRow("proj_traj.bpf")]
+        [DataRow("proj_traj.bpf",TaskType.Volume,TaskKind.термическая_механическая)]
         //[DataRow("c:\\BazisSolver\\TestTaskSolutionMSTest\\ExampleProj\\Mech\\3D\\ConstLoadAndTemp500\\", "proj.bpf")]
         //[DataRow("c:\\projs\\ifm", "proj_v1.bpf")]
-        public void LoadProjectFiletextFormat(string name)
+        public void LoadProjectFiletextFormat(string name,TaskType taskType,TaskKind taskKind)
         {
             //assing
             //c:\projs\testProj\Tempering\
-            var project = new ProjectData();
+            var project = new ProjectData($@"{testDir}\{name}");
 
             project.Loader.LoadEvent += (ar1, ar2) => { };
-            project.Load($@"{testDir}\{name}");
+            project.Load();
 
             //assert
+            Assert.AreEqual(project.TaskData.TaskKind, taskKind);
+            Assert.AreEqual(project.TaskData.TaskType, taskType);
             Assert.AreNotEqual(project.TaskData.Find<CondData>().First(),null);
         }
 
@@ -53,7 +57,7 @@ namespace TestProject
             //assing
             //c:\projs\testProj\Tempering\
             var project = new Controller();
-            project.Create($"{testDir}\\{name}");
+            project.CreateProject($"{testDir}\\{name}");
 
             //assert
             Assert.AreEqual(Path.GetFileName(name), project.Name);
@@ -63,7 +67,7 @@ namespace TestProject
         public void SaveProjectFiletextFormat()
         {
             //assing
-            var project = new ProjectData("someName", testDir);
+            var project = new ProjectData($@"{testDir}\proj_traj.bpf");
  
             project.ModelData.Loader.LoadEvent += (ar1, ar2) => { };
             project.ModelData.Saver.SaveEvent += (ar1, ar2) => { };
@@ -71,7 +75,7 @@ namespace TestProject
             project.Loader.LoadEvent += (ar1, ar2) => { };
 
             //act
-            project.Load($@"{testDir}\proj_traj.bpf");
+            project.Load();
 
             project.Saver.SaveEvent += (ar1,ar2) => { };
             project.GeneralData.Name = "proj_traj_save.bpf";
@@ -80,7 +84,7 @@ namespace TestProject
 
             //Assert
 
-            project.Load($@"{testDir}\proj_traj_save.bpf");
+            project.Load();
         }
 
 

@@ -24,11 +24,11 @@ namespace Project.Interfaces
         /// <summary>
         /// Model
         /// </summary>
-        IModelData ModelData { get;}
+        IModelData ModelData { get; set; }
         /// <summary>
         /// TaskData
         /// </summary>
-        ITaskData TaskData { get; }
+        ITaskData TaskData { get; set; }
         /// <summary>
         /// GeneralData
         /// </summary>
@@ -45,6 +45,6 @@ namespace Project.Interfaces
         /// Load
         /// </summary>
         /// <param name="projectFile"></param>
-        void Load(string projectFile);
+        //void Load(string projectFile);
     }
 }

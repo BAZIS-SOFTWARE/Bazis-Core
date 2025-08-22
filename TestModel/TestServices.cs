@@ -100,7 +100,7 @@ namespace TestModel
         {
             var controller = new OperationalController.Controller();
             //controller.ModelData.Loader = new LoadModelFromBPFTextFile();
-            controller.Create(@"..\..\..\Examples\3D\cub_unsorted.bpf");
+            controller.CreateProject(@"..\..\..\Examples\3D\cub_unsorted.bpf");
             controller.Load();
             var linesNodes = controller.FindBoundaryEdges();
             var bounds = controller.CreateBoundaryEdges(linesNodes);
@@ -119,7 +119,7 @@ namespace TestModel
             var controller = new OperationalController.Controller();
             //controller.ModelData.Loader = new LoadModelFromBPFTextFile();
             
-            controller.Create(@"..\..\..\Examples\3D\cub_unsorted.bpf");
+            controller.CreateProject(@"..\..\..\Examples\3D\cub_unsorted.bpf");
             controller.Load();
             var normals = controller.CalcElemsNormals(3); 
 

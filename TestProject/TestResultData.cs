@@ -11,16 +11,16 @@ using Project.Interfaces.Tasks;
 using Model.Interfaces.MeshObjects;
 using System.Data;
 using System.IO;
-using Project.Results.IO;
 using PostProc.ScenePresenter;
 using PostProc;
-using Project.Results;
 using Results.ScenePresenter;
 using PostProc.IO.GridExport;
 using PostProc.IO.ResultExport;
 using Model.IO;
 using OperationalController.MeshObjsUtility;
 using OperationalController.ModelScenePresentator;
+using ResultDB.IO;
+using ResultDB;
 
 
 namespace TestProject
@@ -40,7 +40,7 @@ namespace TestProject
         {
             var loaderDB = new LoadResultsFileDB();
             loaderDB.LoadEvent += (ar1,ar2) => { };
-            var project = new ProjectData("", path);
+            var project = new ProjectData($"{path}\\newProj.bpf2");
 
             var results = loaderDB.GetResult(project.GeneralData.Path + $@"\{resName}",
                 new List<string>() { "nodes" }, time) ; 
@@ -56,7 +56,7 @@ namespace TestProject
         {
             var loaderDB = new LoadResultsFileDB();
             loaderDB.LoadEvent += (ar1, ar2) => { };
-            var project = new ProjectData("", path);
+            var project = new ProjectData($"{path}\\newProj.bpf2");
 
             var shemes = loaderDB.GetTablesSchemes(project.GeneralData.Path + $@"\{resName}").ToList();
 
@@ -71,7 +71,7 @@ namespace TestProject
             var loaderDB = new LoadResultsFileDB();
             loaderDB.LoadEvent += (ar1, ar2) => { };
 
-            var project = new ProjectData("", path);
+            var project = new ProjectData($"{path}\\newProj.bpf2");
 
             var times = loaderDB.GetValues(project.GeneralData.Path + $@"\{dbName}", "nodes", "Time");
 
@@ -85,7 +85,7 @@ namespace TestProject
 
             var kind = dbName.Split('_')[0];
 
-            var search = results.Where(x => x.TaskKind.ToString() == kind &&
+            var search = results.Where(x => x.Name.ToString() == kind &&
 
 x.Time.CompareTo(0) >= 0
 & x.Time.CompareTo(0.25f) <= 0);
@@ -103,7 +103,7 @@ var loaderDB = new LoadResultsFileDB();
             var dir = Path.GetDirectoryName(path);
             var file = Path.GetFileName(path);
 
-            var project = new ProjectData(file, dir);
+            var project = new ProjectData($"{dir}\\{file}");
             project.Load();
 
             var times = loaderDB.GetValues(project.GeneralData.Path + $@"\{resName}", "nodes", "Time");
@@ -141,9 +141,9 @@ var loaderDB = new LoadResultsFileDB();
         [DataRow(@"..\..\..\Examples\ProjAndResults\термическая_0_0_0.5.db")]
         public void TestMergeResults(string dbName)
         {
-            var proj = new ProjectData();
+            var proj = new ProjectData(@"..\..\..\Examples\ProjAndResults\two_tetra_term_cycle_multiStep.bpf");
 
-            proj.Load(@"..\..\..\Examples\ProjAndResults\two_tetra_term_cycle_multiStep.bpf");
+            proj.Load();
 
             var loaderDB = new LoadResultsFileDB();
             loaderDB.LoadEvent += (ar1, ar2) => { };
@@ -152,7 +152,7 @@ var loaderDB = new LoadResultsFileDB();
             var res = loaderDB.GetResults(dbName, new List<string>() { "nodes", "elements" }).ToArray();
 
             IEnumerable<IElement> elements;
-            if (proj.GeneralData.TaskType == TaskType.Volume)
+            if (proj.TaskData.TaskType == TaskType.Volume)
             {
                 elements = proj.ModelData.ObjectData.E3DCollection.GetObjects();
             }
@@ -180,7 +180,7 @@ var loaderDB = new LoadResultsFileDB();
 
             var dataSet = new DataSet();
             dataSet.Tables.Add(dataTable);
-            var result = new Result(dataSet, 0.87051f,TaskKind.термическая);
+            var result = new Result(dataSet, 0.87051f, "термическая");
 
             var dbPath = $@"{csvPath}\results.db";
 
@@ -193,7 +193,7 @@ var loaderDB = new LoadResultsFileDB();
 
             var resultTOLoad = loaderDB.GetResult(dbPath, new List<string>() { "nodes"}, times.First());
 
-            Assert.AreEqual(resultTOLoad.TaskKind, TaskKind.механическая);
+            Assert.AreEqual(resultTOLoad.Name, "results");
         }   
 
         [DataTestMethod]
@@ -278,15 +278,10 @@ var loaderDB = new LoadResultsFileDB();
             @"..\..\..\Examples\ProjAndResults")]
         public void Test_Scene_Result_Presenter(string projName,string resName,string resKind,float min,float max,string resDesc,string resPath )
         {
-            var proj = new ProjectData();
-
-            var ext = Path.GetExtension(projName);
-            if (ext == ".bpf2")
-                proj.ModelData.Loader = new LoadModelFromBPF2TextFile();
-
+            var proj = new ProjectData($@"{resPath}\{projName}");
             proj.Loader.LoadEvent += (ar1, ar2) => { };
 
-            proj.Load($@"{resPath}\{projName}");
+            proj.Load();
 
             var dbExtension = System.IO.Path.GetExtension($@"{resPath}\{resName}");
             //var dbExtension = System.IO.Path.GetExtension(@"C:\Bazis_newGUI\PROJ\Test_3D\Term\Termal_0_0,5.db");
@@ -296,7 +291,7 @@ var loaderDB = new LoadResultsFileDB();
             var results = loaderDB.GetResults($@"{resPath}\{resName}",new List<string>() { "nodes","elements"});
 
             IEnumerable<ISurfaceElement> elements;
-            if(proj.GeneralData.TaskType == TaskType.Volume)
+            if(proj.TaskData.TaskType == TaskType.Volume)
                 elements = proj.ModelData.ObjectData.E3DCollection.GetObjects();
             else
                 elements = proj.ModelData.ObjectData.E2DCollection.GetObjects();

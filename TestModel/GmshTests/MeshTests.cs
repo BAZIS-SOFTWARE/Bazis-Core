@@ -8,6 +8,8 @@ using Model.Interfaces.ObjectsFinders;
 using GmshApi;
 using System.IO;
 using OperationalController.GmshController;
+using OperationalController;
+using MathNet.Numerics;
 
 namespace TestModel.GmshTests
 {
@@ -568,6 +570,7 @@ namespace TestModel.GmshTests
                 Assert.AreEqual(0, surfSets.Count);
         }
 
+
         [DataTestMethod]
         [DataRow(@"\CAD\weld_seam_1.step", 38, new int[] { 18, 19, 23, 24 }, new int[] { 2 }, new double[] { 0.25, 0.05, 0.5 })]
         [DataRow(@"\CAD\weld_seam_2.step", 38, new int[] { 18, 19, 23, 24 }, new int[] { 2 }, new double[] { 0.25, 0.05, 0.5 })]
@@ -654,6 +657,71 @@ namespace TestModel.GmshTests
             //controller.Gmsh.Write($@"D:\{volumeType}{genMethod}.inp");//Для визуального теста
         }
 
+        [DataTestMethod]
+        [DataRow("geo")]
+        [DataRow("occ")]
+        public void GetStringSettingsTest(string expected)
+        {
+            controller.Gmsh.Option.SetString("General.ScriptingLanguages", expected);
+
+            var actual = controller.Gmsh.Option.GetString("General.ScriptingLanguages");
+            Assert.IsTrue(expected == actual);
+        }
+
+        [DataTestMethod]
+        [DataRow(@"\CAD\Tavr.step", 0.58, 3.5, MeshAlgorithm3D.Delaunay,1)]
+        [DataRow(@"\CAD\cilindr.step", 0.33, 1.8, MeshAlgorithm3D.Frontal,1.2)]
+        [DataRow(@"\CAD\screw.step", 0.7, 1.7, MeshAlgorithm3D.HXT,0.85)]
+        [DataRow(@"\CAD\nasos.step", 10, 16, MeshAlgorithm3D.RTree,1.8)]
+        public void GenerateMesh3D(string fileName, double expMinSize, double expMaxSize, MeshAlgorithm3D expAlgo3d, double sizeFactor)
+        {
+            controller.Gmsh.Open(modelFolder + fileName);
+            controller.Gmsh.Option.SetNumber("Mesh.MeshSizeMin", expMinSize);
+            controller.Gmsh.Option.SetNumber("Mesh.MeshSizeMax", expMaxSize);
+            controller.Gmsh.Option.SetNumber("Mesh.Algorithm3D", (int)expAlgo3d);
+            controller.Gmsh.Option.SetNumber("Mesh.MeshSizeFactor", sizeFactor);
+            
+            controller.Gmsh.Model.Mesh.Generate(3);
+
+            var error = controller.Gmsh.Logger.GetLastError();
+            var actMinSize = controller.Gmsh.Option.GetNumber("Mesh.MeshSizeMin");
+            var actMaxSize = controller.Gmsh.Option.GetNumber("Mesh.MeshSizeMax");
+            var actAlgo3d = controller.Gmsh.Option.GetNumber("Mesh.Algorithm3D");
+            var actSizeFactor = controller.Gmsh.Option.GetNumber("Mesh.MeshSizeFactor");
+
+            Assert.IsTrue(string.IsNullOrEmpty(error));
+            Assert.IsTrue(expMinSize == actMinSize);
+            Assert.IsTrue(expMaxSize == actMaxSize);
+            Assert.IsTrue((int)expAlgo3d == actAlgo3d);
+            Assert.IsTrue(sizeFactor == actSizeFactor);
+            //var file = Path.GetFileNameWithoutExtension(modelFolder + fileName);
+            //controller.Gmsh.Write($@"C:\Mesh\INP\{file + "MinSize"}.inp");//Для визуального теста
+        }
+
+        
+
+        [DataTestMethod]
+        [DataRow(@"\CAD\Tavr.step", MeshAlgorithm2D.FrontalDelaunay)]
+        [DataRow(@"\CAD\cilindr.step", MeshAlgorithm2D.Delaunay)]
+        [DataRow(@"\CAD\screw.step", MeshAlgorithm2D.BAMG)]
+        [DataRow(@"\CAD\nasos.step", MeshAlgorithm2D.Delaunay)]
+        public void MeshAlgorithm2DTest(string fileName, MeshAlgorithm2D expAlgo2d)
+        {
+            controller.Gmsh.Open(modelFolder + fileName);
+
+            controller.Gmsh.Option.SetNumber("Mesh.Algorithm", (int)expAlgo2d);
+
+            controller.Gmsh.Model.Mesh.Generate(2);
+
+            var error = controller.Gmsh.Logger.GetLastError();
+            var actAlgo2d = controller.Gmsh.Option.GetNumber("Mesh.Algorithm");
+
+            Assert.IsTrue(string.IsNullOrEmpty(error));
+            Assert.IsTrue((int)expAlgo2d == actAlgo2d);
+
+            //var file = Path.GetFileNameWithoutExtension(modelFolder + fileName);
+            //controller.Gmsh.Write($@"C:\Mesh\INP\{file + "MeshAlgorithm" + expAlgo2d.ToString()}.inp");//Для визуального теста
+        }
 
         private void MakeTranfinite(int seamPointCurves, int[] seamCurves, int[] seamVolumes)
         {

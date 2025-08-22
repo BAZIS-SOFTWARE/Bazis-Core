@@ -8,7 +8,7 @@
     <AssemblyOriginatorKeyFile>ModelKey.snk</AssemblyOriginatorKeyFile>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>Model</Title>
-    <Version>4.2.63.410</Version>
+    <Version>4.3.9</Version>
     <Company>BAZIS SOFTWARE</Company>
     <Product>BAZIS</Product>
     <Description>Contains basic mesh oblects and geometry classes</Description>
@@ -33,7 +33,6 @@
     <None Remove="Interfaces\GeometryObjects\**" />
   </ItemGroup> 
   <ItemGroup>
-    <Compile Remove="GeometryObjects\VolumeData.cs" />
     <Compile Remove="Interfaces\MeshObjects\IElementSurface.cs" />
     <Compile Remove="Interfaces\MeshObjects\INode.cs" />
     <Compile Remove="ObjectsCollections\Element1DCollection.cs" />

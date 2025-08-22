@@ -1,5 +1,8 @@
 ﻿using Model.Interfaces;
 using Project.Interfaces.IO;
+using PropertiesCalculator.FunctionData;
+using PropertiesCalculator.MaterialData;
+using System;
 using System.Collections.Generic;
 
 namespace Project.Interfaces.Tasks
@@ -26,41 +29,59 @@ namespace Project.Interfaces.Tasks
         /// </summary>
         Volume = 8
     }
+
     /// <summary>
     /// Задачи для препроцессора для создания пользовательских задач
     /// </summary>
+    [Flags]
     public enum TaskKind : int
     {
         /// <summary>
         /// ХИМИЧЕСКАЯ задача с одиночным процессом.
         /// Один тип файлов задач
         /// </summary>
-        химическая = 0,
+        химическая = 2,
         /// <summary>
         /// ТЕРМИЧЕСКАЯ задача с одиночным процессом.
         /// Один тип файлов задач
         /// </summary>
-        термическая = 2,
+        термическая = 4,
         /// <summary>
         /// МЕХАНИЧЕСКАЯ задача с одиночным процессом.
         /// Один тип файлов задач
         /// </summary>
-        механическая = 4,
+        механическая = 8,
         /// <summary>
         /// ТЕРМИЧЕСКО_ХИМИЧЕСКАЯ задача с комплексным процессом из термической и химической.
         /// Два тип файлов задач.
         /// Главный - термическая
         /// </summary>
-        термическая_химическая = термическая & химическая,
+        термическая_химическая = термическая | химическая,
         /// <summary>
         /// ТЕРМИЧЕСКО_МЕХАНИЧЕСКАЯ задача с комплексным процессом состоящим из термической и механической.
         /// Два тип файлов задач.
         /// Главный - термическая
         /// </summary>
-        термическая_механическая = термическая & механическая
+        термическая_механическая = термическая | механическая
     };
     public interface ITaskData : IList<ICondData>
     {
+        /// <summary>
+        /// Materials
+        /// </summary>
+        MaterialDBData Materials { get; set; }
+        /// <summary>
+        /// Functions
+        /// </summary>
+        FunctionDBData Functions { get; set; }
+        /// <summary>
+        /// TaskType
+        /// </summary>
+        TaskType TaskType { get; set; }
+        /// <summary>
+        /// TaskKind
+        /// </summary>
+        TaskKind TaskKind { get; set; }
         /// <summary>
         /// Find by group name
         /// </summary>

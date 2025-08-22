@@ -11,6 +11,8 @@ using Model;
 using Project.Tasks.FrameCreators;
 using Project.Tasks.Functions;
 using System.Runtime.InteropServices.ComTypes;
+using PropertiesCalculator.FunctionData;
+using PropertiesCalculator.MaterialData;
 
 
 namespace Project.Tasks
@@ -18,6 +20,16 @@ namespace Project.Tasks
 
     public class TaskData :  ITaskData
     {
+        /// <inheritdoc/>
+        public MaterialDBData Materials { get; set; }
+        /// <inheritdoc/>
+        public FunctionDBData Functions { get; set; }
+        /// <inheritdoc/>
+        public TaskType TaskType { get; set; }
+        /// <inheritdoc/>
+
+        public TaskKind TaskKind { get; set; }
+
         List<ICondData> taskData;
 
         public int Count { get { return taskData.Count; } }
@@ -180,6 +192,12 @@ namespace Project.Tasks
 
             this.taskData.Clear();
             this.taskData.AddRange(taskData);
+
+            Materials = taskData.Materials;
+            Functions = taskData.Functions;
+
+            TaskType = taskData.TaskType;
+            TaskKind = taskData.TaskKind;
         }
         /// <inheritdoc/>
         public void ClearNotExisted(IGroup group)
@@ -215,6 +233,9 @@ namespace Project.Tasks
 
             if (kind == DataKind.Материал)
             {
+                if (!Materials.ContainsKey(infoAr[1]))
+                    throw new Exception($"материал {info} не содержится в базе данных!");
+
                 if (info.Split(' ').Length < 4)
                     throw new Exception($"{info} - Строка данных имеет неверный формат!");
 

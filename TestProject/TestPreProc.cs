@@ -312,9 +312,9 @@ namespace TestProject
         //[DataRow(@".\..\..\CalcCompDataTest\6.bpf", ProcessType.Welding)]
         public void PreProc_GenerateTSF_ShouldPass(string file, ProcessType pt)
         {
-            var project = new ProjectData();
+            var project = new ProjectData(projPath + file);
 
-            project.Load(projPath + file);
+            project.Load();
 
             var resData = new List<ICondData>();
 

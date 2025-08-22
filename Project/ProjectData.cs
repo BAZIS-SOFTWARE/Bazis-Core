@@ -13,6 +13,8 @@ using System.Drawing;
 using System;
 using Project.Tasks.Functions;
 using Model.GroupsData;
+using Model.IO.STL;
+using Model.IO;
 
 namespace Project
 {
@@ -21,28 +23,27 @@ namespace Project
     /// </summary>
     public class ProjectData : IProjectData
     {
-        IModelData modelData = new ModelData();
-        ITaskData taskData = new TaskData();
-        IGeneralData generalData = new GeneralData();
-        /// <inheritdoc/>
-        public IModelData ModelData { get { return modelData; } } 
-        /// <inheritdoc/>
-
-        public ITaskData TaskData { get { return taskData; } } 
 
         /// <inheritdoc/>
+        public IModelData ModelData { get; set; } = new ModelData();
+        /// <inheritdoc/>
 
-        
-/// <inheritdoc/>
+        public ITaskData TaskData { get; set; } = new TaskData();
 
-        public void Load(string projectFile)
-        {
-            GeneralData.Name = System.IO.Path.GetFileName(projectFile);
-            GeneralData.Path = System.IO.Path.GetDirectoryName(projectFile); 
+        /// <inheritdoc/>
+        public IGeneralData GeneralData { get; set; } = new GeneralData();
 
-            Loader.Load(this,projectFile);
-        }
-/// <inheritdoc/>
+
+        /// <inheritdoc/>
+
+        //public void Load(string projectFile)
+        //{
+        //    GeneralData.Name = System.IO.Path.GetFileName(projectFile);
+        //    GeneralData.Path = System.IO.Path.GetDirectoryName(projectFile); 
+
+        //    Loader.Load(this,projectFile);
+        //}
+        /// <inheritdoc/>
 
         public void Save()
         {
@@ -61,26 +62,32 @@ namespace Project
         /// <inheritdoc/>
 
         public IProjectLoader Loader { get; set; } = new LoadProjectFromTextFormat();
-        /// <inheritdoc/>
-        public IGeneralData GeneralData 
-        {
-            get { return generalData; }
-            
-        } 
+
+
 
         /// <summary>
         /// ProjectData
         /// </summary>
-        /// <param name="_name"></param>
-        /// <param name="_path"></param>
-        public ProjectData(string _name, string _path)
+        public ProjectData(string projectFile) 
         {
-            generalData.Name = _name;
-            generalData.Path = _path;
+            GeneralData.Name = System.IO.Path.GetFileName(projectFile);
+            GeneralData.Path = System.IO.Path.GetDirectoryName(projectFile);
+
+            var ext = System.IO.Path.GetExtension(projectFile);
+
+            if (ext == ".bpf2")
+            {
+                ModelData.Saver = new SaveModelToBPF2TextFile();
+                ModelData.Loader = new LoadModelFromBPF2TextFile();
+            }
+
+            else if (ext == ".bpf")
+            {
+                ModelData.Saver = new SaveModelToBPFTextFile();
+                ModelData.Loader = new LoadModelFromBPFTextFile();
+            }
+            else
+                throw new Exception("неправильно задано расширение файла");
         }
-        /// <summary>
-        /// ProjectData
-        /// </summary>
-        public ProjectData() {}
     }
 }

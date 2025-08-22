@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Xml.Linq;
 
 namespace Model.GeometryObjects
 {
@@ -12,6 +13,23 @@ namespace Model.GeometryObjects
     /// </summary>
     public class VolumeFigure : IVolume
     {
+        /// <summary>
+        /// SurfaceMeshSize
+        /// </summary>
+        public double SurfaceMeshSize { get; set; }
+        /// <summary>
+        /// GradientMeshPower
+        /// </summary>
+        public double GradientMeshPower { get; set; }
+        /// <summary>
+        /// LayerThickness
+        /// </summary>
+        public double LayerThickness { get; set; }
+        /// <summary>
+        /// CoreMeshSize
+        /// </summary>
+        public double CoreMeshSize { get; set; }
+
         SurfaceFigure[] surfaceFigure;
         /// <summary>
         /// Number
@@ -32,7 +50,15 @@ namespace Model.GeometryObjects
             surfaceFigure = surfaceFigures;
 
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
+        public override string ToString()
+        {
+            
+            var strArr = surfaceFigure.Select(x => x.Number.ToString()).ToArray();
+            var strSurfsNumbers = string.Join(" ", strArr);
+            return $"{Number} {Name}: {strSurfsNumbers}";
+        }
+        /// <inheritdoc/>
 
         public int NumberOfSides => surfaceFigure.Length;
 /// <inheritdoc/>
@@ -69,7 +95,10 @@ namespace Model.GeometryObjects
         public double CalcVolume()
         {
             // TO DO
-            // Реализовать Метод Монте-Карло
+            // Реализовать метод дифференциала
+            // строим набор сечений фигуры
+            // вычисляем площадь каждой
+            // складываем все, умножая на шаг между ними
             return 0;
         }
 /// <inheritdoc/>

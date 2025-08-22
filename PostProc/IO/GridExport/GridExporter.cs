@@ -1,9 +1,8 @@
-﻿using PostProc.IO.GridExport;
-using PostProc.ScenePresenter;
+﻿using PostProc.ScenePresenter;
 using System;
 using System.Collections.Generic;
 
-namespace PostProc.IO
+namespace PostProc.IO.GridExport
 {
     /// <summary>
     /// 

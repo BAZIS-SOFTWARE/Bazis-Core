@@ -62,6 +62,10 @@ namespace Model.Interfaces
         /// </summary>
         IObjectsCollection<SurfaceFigure> SurfaceCollection{ get; }
         /// <summary>
+        /// VolumeData
+        /// </summary>
+        VolumeData VolumeData { get; }
+        /// <summary>
         /// Count
         /// </summary>
         /// <param name="objType"></param>

@@ -1,16 +1,11 @@
-﻿using Project.Interfaces;
-using Project.Interfaces.IO;
-using Project.Interfaces.Results;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using Geometry;
 using PostProc.ScenePresenter;
-using Project.IO;
 
 namespace PostProc.IO.GridExport
 {
@@ -20,7 +15,7 @@ namespace PostProc.IO.GridExport
     /// </summary>
     public class SaveGridSurfacesToBinSTL : SaveGridSurfacesToSTLBase
     {
-        public virtual event Action<object, ISaveEventArgs> SaveEvent;
+        public virtual event Action<object, string> SaveEvent;
         public override void SaveGrid(IEnumerable<ResultFigure> figures, string savePath)
         {
             ushort attrib = 0;
@@ -67,7 +62,7 @@ namespace PostProc.IO.GridExport
                 }
             }
 
-            SaveEvent?.Invoke(this, new SaveEventArgs($"Данные сохранены в файле {savePath}"));
+            SaveEvent?.Invoke(this, $"Данные сохранены в файле {savePath}");
         }
     }
 }

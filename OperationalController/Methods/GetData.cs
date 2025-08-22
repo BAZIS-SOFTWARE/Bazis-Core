@@ -3,6 +3,9 @@ using Model.Interfaces;
 using System.Collections.Generic;
 using Model.Interfaces.MeshObjects;
 using Project.Interfaces.Tasks;
+using Model.GeometryObjects;
+using PropertiesCalculator.MaterialData;
+using PropertiesCalculator.FunctionData;
 
 namespace OperationalController
 {
@@ -46,6 +49,13 @@ namespace OperationalController
         {
             return ModelData.ObjectData.GetAllElements();
         }
+
+        /// <inheritdoc/>
+
+        public IEnumerable<VolumeFigure> GetModelVolumes()
+        {
+            return ModelData.ObjectData.VolumeData;
+        }
         /// <inheritdoc/>
         public IGroup GetModelGroup(int grIndex)
         {
@@ -53,17 +63,17 @@ namespace OperationalController
         }
 
         /// <inheritdoc/>
-        public string MaterialsDB
+        public MaterialDBData MaterialsDB
         {
-            get { return project.GeneralData.Materials; }
-            set { GeneralData.Materials = value; }
+            get { return project.TaskData.Materials; }
+            set { TaskData.Materials = value; }
         }
         /// <inheritdoc/>
 
-        public string FunctionsDB
+        public FunctionDBData FunctionsDB
         {
-            get { return project.GeneralData.Functions; }
-            set { GeneralData.Functions = value; }
+            get { return project.TaskData.Functions; }
+            set { TaskData.Functions = value; }
         }
 
         /// <inheritdoc/>
@@ -71,12 +81,12 @@ namespace OperationalController
         {
             get 
             {
-                return GeneralData.TaskKind;
+                return TaskData.TaskKind;
             }
             set
             {
                 TaskData.Clear();
-                GeneralData.TaskKind = value;
+                TaskData.TaskKind = value;
             }         
         }
         /// <inheritdoc/>
@@ -84,12 +94,12 @@ namespace OperationalController
         {
             get
             {               
-                return GeneralData.TaskType;
+                return TaskData.TaskType;
             }
             set
             {
                 TaskData.Clear();
-                GeneralData.TaskType = value;
+                TaskData.TaskType = value;
             }
         }
     }

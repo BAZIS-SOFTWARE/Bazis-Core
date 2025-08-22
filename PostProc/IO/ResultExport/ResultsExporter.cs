@@ -1,19 +1,16 @@
 ﻿using Model.Interfaces;
-using Project.Interfaces.Results;
-using Project.Interfaces;
 using System;
 using System.Collections.Generic;
-using PostProc.IO.ResultExport;
-using Project.Results;
+using ResultDB;
 
-namespace PostProc.IO
+namespace PostProc.IO.ResultExport
 {
     /// <summary>
     /// ResultExporter
     /// </summary>
     public class ResultsExporter : IResultsExporter
     {
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void ExportObjectsResults(IEnumerable<IModelObject> objs, Result result, string resDesc, string savePath, string format)
         {
@@ -23,9 +20,9 @@ namespace PostProc.IO
             else if (format.Equals("csv"))
                 saver = new SaveObjectsResultsToCSV();
             else throw new Exception($"Выбранный формат {format} не реализовн, либо допущена ошибка при вводе");
-            
-            
-            
+
+
+
             saver.SaveResults(objs, result, resDesc, savePath);
         }
 

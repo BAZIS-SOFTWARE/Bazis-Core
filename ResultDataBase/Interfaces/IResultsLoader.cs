@@ -1,9 +1,8 @@
-﻿using Project.Results;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 
-namespace Project.Interfaces.IO
+namespace ResultDB.Interfaces
 {
     /// <summary>
     /// IResultsLoader
@@ -13,7 +12,7 @@ namespace Project.Interfaces.IO
         /// <summary>
         /// LoadEvent
         /// </summary>
-        event Action<object, ILoadEventArgs> LoadEvent;
+        event Action<object, string> LoadEvent;
 
         /// <summary>
         /// GetResultsFromDb

@@ -1,6 +1,4 @@
-﻿using Project.Interfaces;
-using Project.Results;
-using System;
+﻿using ResultDB;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;

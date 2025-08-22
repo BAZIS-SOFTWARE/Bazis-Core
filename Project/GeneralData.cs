@@ -14,14 +14,5 @@ namespace Project
         public string Path { get; set; }
         /// <inheritdoc/>
         public string Comments { get; set; }
-        /// <inheritdoc/>
-        public string Materials { get; set; }
-        /// <inheritdoc/>
-        public string Functions { get; set; }
-        /// <inheritdoc/>
-        public TaskType TaskType { get ; set; }
-/// <inheritdoc/>
-
-        public TaskKind TaskKind { get; set; }
     }
 }

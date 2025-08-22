@@ -1,10 +1,7 @@
 ﻿using Model.Interfaces;
 using Model.Interfaces.MeshObjects;
 using Model.MeshObjects;
-using Project.Interfaces;
-using Project.Interfaces.IO;
-using Project.Interfaces.Results;
-using Project.Results;
+using ResultDB;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -18,7 +15,6 @@ namespace PostProc.IO.ResultExport
 {
     public class SaveObjectsResultsToTXT : IResultsExportSaver
     {
-        public event Action<object, ISaveEventArgs> SaveEvent;
 
         public void SaveResults(IEnumerable<IModelObject> objs, Result result, string resDescr, string savePath)
         {

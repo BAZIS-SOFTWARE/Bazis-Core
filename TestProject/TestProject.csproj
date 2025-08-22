@@ -213,6 +213,10 @@
       <Project>{8f33f5f1-239d-466c-8761-dc7b3dd528aa}</Project>
       <Name>Project</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ResultDataBase\ResultDB.csproj">
+      <Project>{32353ea7-2eb7-4df0-900c-26b327f01a79}</Project>
+      <Name>ResultDB</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="CalcCompDataTest\TsfFolder\" />

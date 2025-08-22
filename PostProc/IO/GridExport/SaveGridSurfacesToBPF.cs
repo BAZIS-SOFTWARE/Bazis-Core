@@ -1,23 +1,17 @@
 ﻿using Geometry;
 using PostProc.ScenePresenter;
-using Project.Interfaces;
-using Project.Interfaces.IO;
-using Project.Interfaces.Results;
-using Results.ResultsData;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace PostProc.IO.GridExport
 {
     public class SaveGridSurfacesToBPF : IGridSurfacesSaver
     {
         /// <inheritdoc/>
-        public event Action<object, ISaveEventArgs> SaveEvent;
+        public event Action<object, string> SaveEvent;
 
         /// <inheritdoc/>
         public void SaveGrid(IEnumerable<ResultFigure> figures, string savePath)

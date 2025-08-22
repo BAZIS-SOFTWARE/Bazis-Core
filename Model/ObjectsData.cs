@@ -61,7 +61,7 @@ namespace Model
         public IObjectsCollection<SurfaceFigure> SurfaceCollection { get; }
         /// <inheritdoc/>
 
-        //public IObjectsSet<VolumeFigure> VolumeSet { get; }
+        public VolumeData VolumeData { get; } = new VolumeData();
 
         /// <inheritdoc/>
 
@@ -184,6 +184,8 @@ namespace Model
                 return count;
             }
         }
+
+        
 
 
         /// <inheritdoc/>

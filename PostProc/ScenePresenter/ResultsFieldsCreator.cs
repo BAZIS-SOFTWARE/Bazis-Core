@@ -2,8 +2,7 @@
 using Model.Interfaces;
 using Model.Interfaces.MeshObjects;
 using Model.MeshObjects;
-using Project.Interfaces.Tasks;
-using Project.Results;
+using ResultDB;
 using System;
 using System.Collections.Generic;
 
@@ -87,7 +86,7 @@ namespace PostProc.ScenePresenter
 
         private Point3D GetNodeDispls(string nodeRes, int nodeNumber, Result result,string table)
         {
-            if(result.TaskKind == TaskKind.механическая)
+            if(result.ContainsTable(table))
             {
                 if (nodeRes == "X")
                 {

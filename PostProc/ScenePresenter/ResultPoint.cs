@@ -1,6 +1,5 @@
 ﻿using Geometry;
 using Model.Interfaces;
-using Project.Interfaces.Results;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

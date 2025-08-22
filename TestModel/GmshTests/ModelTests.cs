@@ -6,7 +6,7 @@ using OperationalController.GmshController;
 namespace TestModel.GmshTests
 {
     [TestClass]
-    public class ControllerModelTests
+    public class ModelTests
     {
         private IGmshController controller = new GmshController();
         private static string modelFolder = @"..\..\..\Examples\GMSHAPI\";

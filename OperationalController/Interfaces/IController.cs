@@ -8,6 +8,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using Model.Interfaces.ObjectsCollections;
 using Model.Interfaces.MeshObjects;
+using OperationalController.GmshController;
+using PropertiesCalculator.MaterialData;
+using PropertiesCalculator.FunctionData;
 
 namespace OperationalController
 {
@@ -19,11 +22,11 @@ namespace OperationalController
         /// <summary>
         /// FunctionsDB
         /// </summary>
-        string FunctionsDB { get; set; }
+        FunctionDBData FunctionsDB { get; set; }
         /// <summary>
         /// MaterialsDB
         /// </summary>
-        string MaterialsDB { get; set; }
+        MaterialDBData MaterialsDB { get; set; }
         /// <summary>
         /// ProjectKind
         /// </summary>
@@ -65,7 +68,7 @@ namespace OperationalController
         /// Create
         /// </summary>
         /// <param name="projectFile"></param>
-        void Create(string projectFile);
+        void CreateProject(string projectFile);
 
         /// <summary>
         /// GetModelObject
@@ -239,6 +242,11 @@ namespace OperationalController
         /// <returns></returns>
         IEnumerable<ISetInfo> GetModelSetsInfo(ObjType objType);
         /// <summary>
+        /// GetModelVolumes
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<VolumeFigure> GetModelVolumes();
+        /// <summary>
         /// GetModelSetInfo
         /// </summary>
         /// <param name="objType"></param>
@@ -262,5 +270,30 @@ namespace OperationalController
         /// </summary>
         /// <param name="state"></param>
         void ChangeInsideSurfacesState(bool state);
+
+        /// <summary>
+        /// ChangeTaskType
+        /// </summary>
+        /// <param name="taskType"></param>
+        void ChangeTaskType(TaskType taskType);
+
+        /// <summary>
+        /// ChangeTaskKind
+        /// </summary>
+        /// <param name="taskKind"></param>
+        void ChangeTaskKind(TaskKind taskKind);
+        /// <summary>
+        /// ChangeMeshSetOrder
+        /// </summary>
+        /// <param name="elemDim"></param>
+        /// <param name="name"></param>
+        /// <param name="order"></param>
+        void ChangeMeshSetOrder(int elemDim, string name, int order);
+        /// <summary>
+        /// Import
+        /// </summary>
+        /// <param name="projectFile"></param>
+        /// <param name="gmshController"></param>
+        void ImportCAD(string projectFile, IGmshController gmshController);
     }
 }
