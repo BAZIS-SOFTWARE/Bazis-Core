@@ -247,7 +247,7 @@ namespace Project.Tasks
                 if (!float.TryParse(infoAr[3], out stop))
                     throw new Exception($"{info} - Время окончания задано неверно!");
 
-                var matData = new MatData(infoAr[1],groupData.Find(infoAr[0]), start, stop);
+                var matData = new MatData(Materials[infoAr[1]],groupData.Find(infoAr[0]), start, stop);
 
                 physicalData = matData;
             }
@@ -267,15 +267,28 @@ namespace Project.Tasks
 
                 var mediaData = new MediaData(groupData.Find(infoAr[0]), start, stop);
 
-                mediaData.TrySetHeatExchange(infoAr[1]);
-                mediaData.TrySetTemp(infoAr[2]);
+                if(float.TryParse(infoAr[1], out float heatExch))
+                    mediaData.HeatExchangeValue = heatExch;
+                else if (infoAr[1] != "*")
+                    if (!Functions.ContainsKey(infoAr[1]))
+                        throw new Exception($"функция {infoAr[1]} не содержится в базе данных!");
+                    else
+                        mediaData.HeatExchangeFunc = Functions[infoAr[1]];
+
+                if (float.TryParse(infoAr[2], out float temp))
+                    mediaData.TemperatureValue = temp;
+                else if (infoAr[2] != "*")
+                    if (!Functions.ContainsKey(infoAr[2]))
+                        throw new Exception($"функция {infoAr[2]} не содержится в базе данных!");
+                    else
+                        mediaData.TemperatureFunc = Functions[infoAr[2]];
 
                 physicalData = mediaData;
             }
 
             else if (kind == DataKind.Нагрузка)
             {
-                if (infoAr.Length < 7)
+                if (infoAr.Length < 8)
                     throw new Exception($"{info} - Строка данных имеет неверный формат!");
 
                 float start;
@@ -291,14 +304,19 @@ namespace Project.Tasks
                 loadData.TrySetKind(infoAr[1]);
                 loadData.TrySetDirection(infoAr[2]);
                 loadData.TrySetValue(infoAr[3]);
-                loadData.TrySetTimeFunction(infoAr[4]);
+
+
+                if (infoAr[4] != "*")
+                    if(!Functions.ContainsKey(infoAr[4]))
+                        throw new Exception($"функция {infoAr[4]} не содержится в базе данных!");
+                    else
+                        loadData.TimeFunction = Functions[infoAr[4]];
                 
                 physicalData = loadData;
             }
 
             else if (kind == DataKind.Нагрев)
             {
-
                 if (infoAr.Length < 5)
                     throw new Exception($"{info} - Строка данных имеет неверный формат!");
 
@@ -315,7 +333,12 @@ namespace Project.Tasks
 
                 heatData.TrySetFrameFunction(infoAr[2]);
                 heatData.TrySetValue(infoAr[0]);
-                heatData.TrySetTimeFunction(infoAr[1]);
+                
+                if (infoAr[1] != "*")
+                    if (!Functions.ContainsKey(infoAr[1]))
+                        throw new Exception($"функция {infoAr[1]} не содержится в базе данных!");
+                    else
+                        heatData.TimeFunction = Functions[infoAr[1]];
 
                 physicalData = heatData;
             }
@@ -338,7 +361,12 @@ namespace Project.Tasks
                 clampData.TrySetKind(infoAr[1]);
                 clampData.TrySetDirection(infoAr[2]);
                 clampData.TrySetValue(infoAr[3]);
-                clampData.TrySetTimeFunction(infoAr[4]);
+                
+                if (infoAr[4] != "*")
+                    if (!Functions.ContainsKey(infoAr[4]))
+                        throw new Exception($"функция {infoAr[4]} не содержится в базе данных!");
+                    else
+                        clampData.TimeFunction = Functions[infoAr[4]];
 
                 physicalData = clampData;
             }

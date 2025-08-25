@@ -65,14 +65,14 @@ namespace OperationalController
         /// <inheritdoc/>
         public MaterialDBData MaterialsDB
         {
-            get { return project.TaskData.Materials; }
+            get { return TaskData.Materials; }
             set { TaskData.Materials = value; }
         }
         /// <inheritdoc/>
 
         public FunctionDBData FunctionsDB
         {
-            get { return project.TaskData.Functions; }
+            get { return TaskData.Functions; }
             set { TaskData.Functions = value; }
         }
 

@@ -2,6 +2,8 @@
 Название : NoMaterialData.bpf
 Сведения : newComments
 Вид : Volume
+БазаМатериалов : materials.jsf
+БазаФункций : functions.jsf
 Среда : test Коэф.теплоотдачи.воздух 20 0 150 *
 Закрепление : test Жесткое X 0 * 0 150 *
 #Проект
