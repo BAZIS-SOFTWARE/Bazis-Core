@@ -29,7 +29,7 @@ namespace OperationalController.GmshController
         /// </summary>
         void Unload();
         /// <summary>
-        /// Возвращает список отсортированных узлов сетки.
+        /// Возвращает список отсортированных узлов сетки принадлежащих геометрической сущности.
         /// Если запрашивается точки для dim <=0, флаг includeBoundary установить в false, иначе будут дубликаты
         /// </summary>
         /// <param name="dim">Размерность dim</param>
@@ -47,11 +47,20 @@ namespace OperationalController.GmshController
         /// </summary>
         /// <returns>Список кривых</returns>
         List<Curve> CreateLines();
+
+        /// <summary>
+        /// GetMeshSets
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        List<ObjectsSet<T>> GetMeshSets<T>() 
+           where T : class,IElement;
+
         /// <summary>
         /// Возвращает список элементов сетки принадлежащих геометрической сущности
         /// </summary>
         /// <param name="dim">Размерность</param>
-        /// <param name="tag">Идентификатор</param>
+        /// <param name="tag">Идентификатор (номер) сущности</param>
         /// <param name="nodes">Отсортированные узлы</param>
         /// <returns>Список элементов сетки</returns>
         List<IElement> GetMeshEntities(int dim, int tag, List<Node> nodes);

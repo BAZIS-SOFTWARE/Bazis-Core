@@ -10,6 +10,7 @@ using System.IO;
 using OperationalController.GmshController;
 using OperationalController;
 using MathNet.Numerics;
+using Model.MeshObjects;
 
 namespace TestModel.GmshTests
 {
@@ -66,6 +67,20 @@ namespace TestModel.GmshTests
             Assert.AreEqual(expE1d, result.Item2.Count());
             Assert.AreEqual(expE2d, result.Item3.Count());
             Assert.AreEqual(expE3d, result.Item4.Count());
+        }
+
+        [DataTestMethod]
+        [DataRow(@"\CAD\assembly_2.stp", 14)]
+        [DataRow(@"\CAD\assembly_1.step", 29)]
+        [DataRow(@"\CAD\weld_seam_1.step", 3)]
+        public void GetMeshSets(string fileName, int exp3DSets)
+        {
+            controller.Gmsh.Open(modelFolder + fileName);
+            controller.Gmsh.Model.Mesh.Generate(3);
+            var e3Ds = controller.GetMeshSets<Element3D>();
+            var e2Ds = controller.GetMeshSets<Element2D>();
+            var quads = controller.GetMeshSets<Quad>();
+            Assert.AreEqual(exp3DSets, e3Ds.Count);
         }
 
         [DataTestMethod]
@@ -675,7 +690,7 @@ namespace TestModel.GmshTests
         [DataRow(@"\CAD\cilindr.step", 0.33, 1.8, MeshAlgorithm3D.Frontal,1.2)]
         [DataRow(@"\CAD\screw.step", 0.7, 1.7, MeshAlgorithm3D.HXT,0.85)]
         [DataRow(@"\CAD\nasos.step", 10, 16, MeshAlgorithm3D.RTree,1.8)]
-        public void GenerateMesh3D(string fileName, double expMinSize, double expMaxSize, MeshAlgorithm3D expAlgo3d, double sizeFactor)
+        public void ChechMesh3DParameters(string fileName, double expMinSize, double expMaxSize, MeshAlgorithm3D expAlgo3d, double sizeFactor)
         {
             controller.Gmsh.Open(modelFolder + fileName);
             controller.Gmsh.Option.SetNumber("Mesh.MeshSizeMin", expMinSize);
