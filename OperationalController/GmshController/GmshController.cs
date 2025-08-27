@@ -128,7 +128,7 @@ namespace OperationalController.GmshController
             return list;
         }
 
-        public List<ObjectsSet<T>> GetMeshSets<T>() 
+        public IEnumerable<ObjectsSet<T>> GetMeshSets<T>() 
             where T : class,IElement
         {
             var dim = 1;
@@ -138,7 +138,7 @@ namespace OperationalController.GmshController
                 dim = 3;
 
             var dimTags = Gmsh.Model.GetEntities(3);
-            var list = new List<ObjectsSet<T>>();
+            //var list = new List<ObjectsSet<T>>();
             var rnd = new Random();
             for (var i = 0; i < dimTags.Length; i += 2)
             {
@@ -157,11 +157,11 @@ namespace OperationalController.GmshController
                 var color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
                 set.SetColor(color);
 
-                if(set.Count != 0)
-                    list.Add(set);
+                if (set.Count != 0)
+                    yield return set;
             }
                 
-            return list;
+            //return list;
         }
         /// <inheritdoc/>
         public (List<Node>, List<ILineObject<Node>>, List<Element2D>, List<Element3D>) GetMeshObjects()

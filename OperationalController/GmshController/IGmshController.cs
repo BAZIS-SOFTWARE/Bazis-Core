@@ -53,9 +53,9 @@ namespace OperationalController.GmshController
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        List<ObjectsSet<T>> GetMeshSets<T>() 
-           where T : class,IElement;
-
+        IEnumerable<ObjectsSet<T>> GetMeshSets<T>()
+                   where T : class, IElement;
+       
         /// <summary>
         /// Возвращает список элементов сетки принадлежащих геометрической сущности
         /// </summary>

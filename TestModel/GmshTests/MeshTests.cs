@@ -80,7 +80,7 @@ namespace TestModel.GmshTests
             var e3Ds = controller.GetMeshSets<Element3D>();
             var e2Ds = controller.GetMeshSets<Element2D>();
             var quads = controller.GetMeshSets<Quad>();
-            Assert.AreEqual(exp3DSets, e3Ds.Count);
+            Assert.AreEqual(exp3DSets, e3Ds.Count());
         }
 
         [DataTestMethod]
