@@ -614,7 +614,9 @@ namespace TestModel.GmshTests
             var baseField = controller.Gmsh.Model.Mesh.Field.Add(FieldType.Min);
             controller.Gmsh.Model.Mesh.Field.SetNumbers(baseField, "FieldsList", list);
             controller.Gmsh.Model.Mesh.Field.SetAsBackgroundMesh(baseField);
+            
             MakeTranfinite(seamPointCurves, seamCurves, seamVolumes);
+            
             controller.Gmsh.Model.Mesh.Generate(3);
             var error = controller.Gmsh.Logger.GetLastError();
             Assert.IsTrue(string.IsNullOrEmpty(error));

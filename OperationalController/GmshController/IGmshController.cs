@@ -48,7 +48,7 @@ namespace OperationalController.GmshController
         /// <returns>Список кривых</returns>
         List<Curve> CreateLines();
         /// <summary>
-        /// Возвращает список элементов сетки
+        /// Возвращает список элементов сетки принадлежащих геометрической сущности
         /// </summary>
         /// <param name="dim">Размерность</param>
         /// <param name="tag">Идентификатор</param>
