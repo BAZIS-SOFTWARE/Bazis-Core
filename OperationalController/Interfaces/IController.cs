@@ -295,5 +295,11 @@ namespace OperationalController
         /// <param name="projectFile"></param>
         /// <param name="gmshController"></param>
         void ImportCAD(string projectFile, IGmshController gmshController);
+        /// <summary>
+        /// GenerateMesh
+        /// </summary>
+        /// <param name="elemDim"></param>
+        /// <param name="controller"></param>
+        void GenerateMesh(int elemDim, IGmshController controller);
     }
 }

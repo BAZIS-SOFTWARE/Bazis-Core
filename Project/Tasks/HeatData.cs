@@ -1,6 +1,7 @@
 ﻿using Model.Interfaces;
 using Project.Interfaces.Tasks;
 using Project.Tasks.Functions;
+using PropertiesCalculator.MaterialData;
 using System;
 using System.Globalization;
 using System.Runtime.InteropServices.ComTypes;
@@ -25,7 +26,7 @@ namespace Project.Tasks
         /// <summary>
         /// PowerFunction
         /// </summary>
-        public string TimeFunction { get; set; } = "*";
+        public Property TimeFunction { get; set; }
 
         /// <inheritdoc/>
         protected override string GetInfo
@@ -36,8 +37,12 @@ namespace Project.Tasks
                 if (FrameFunction != null)
                     ffInfo = FrameFunction.ToString();
 
+                var tfInfo = "*";
+                if (TimeFunction != null)
+                    tfInfo = TimeFunction.Name;
+
                 return
-                  $"{Heat} {TimeFunction} {ffInfo} {Group.Name} {StartTime} {StopTime}";
+                  $"{Heat} {tfInfo} {ffInfo} {Group.Name} {StartTime} {StopTime}";
             }
         }
 
@@ -62,9 +67,9 @@ namespace Project.Tasks
 
         }
 
-        public void TrySetTimeFunction(string v)
+        public void TrySetTimeFunction(Property v)
         {
-            if (v != "*")
+            if (v != null)
                 TimeFunction = v;
         }
     }

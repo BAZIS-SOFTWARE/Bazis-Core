@@ -1,5 +1,6 @@
 ﻿using Model.Interfaces;
 using Project.Interfaces.Tasks;
+using PropertiesCalculator.MaterialData;
 using System;
 using System.Globalization;
 
@@ -31,14 +32,18 @@ namespace Project.Tasks
                 if (FrameFunction?.LocalFrame != null)
                     mff = FrameFunction.LocalFrame.ToString();
 
-                return $"{Group.Name} {ClampKind} {Direction} {Value} {TimeFunction} " +
+                var tfInfo = "*";
+                if (TimeFunction != null)
+                    tfInfo = TimeFunction.Name;
+
+                return $"{Group.Name} {ClampKind} {Direction} {Value} {tfInfo} " +
                     $"{StartTime} {StopTime} {mff}"; 
             }
         }
         /// <summary>
         /// Function of one argument
         /// </summary>
-        public string TimeFunction { get; private set; } = "*";
+        public Property TimeFunction { get; set; }
 
         /// <summary>
         /// PowerValue
@@ -66,12 +71,6 @@ namespace Project.Tasks
                 throw new Exception("Величина закрепления задана неверно!");
 
             Value = clampValue;
-        }
-
-        public void TrySetTimeFunction(string v)
-        {
-            if (v != "*")
-                TimeFunction = v;
         }
     }
 }

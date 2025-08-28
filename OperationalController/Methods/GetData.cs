@@ -6,6 +6,9 @@ using Project.Interfaces.Tasks;
 using Model.GeometryObjects;
 using PropertiesCalculator.MaterialData;
 using PropertiesCalculator.FunctionData;
+using Model.ObjectsCollections;
+using Model.MeshObjects;
+using OperationalController.GmshController;
 
 namespace OperationalController
 {
@@ -19,6 +22,9 @@ namespace OperationalController
                 yield return item;
 
         }
+
+        
+
         /// <inheritdoc/>
         public IEnumerable<IModelObject> GetModelObjects(ObjType objType)
         {
@@ -65,14 +71,14 @@ namespace OperationalController
         /// <inheritdoc/>
         public MaterialDBData MaterialsDB
         {
-            get { return project.TaskData.Materials; }
+            get { return TaskData.Materials; }
             set { TaskData.Materials = value; }
         }
         /// <inheritdoc/>
 
         public FunctionDBData FunctionsDB
         {
-            get { return project.TaskData.Functions; }
+            get { return TaskData.Functions; }
             set { TaskData.Functions = value; }
         }
 

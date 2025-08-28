@@ -12,6 +12,7 @@ using System.Drawing;
 using Model.ObjectsCollections;
 using Model.Interfaces.ObjectsCollections;
 using System.Reflection;
+using Model.Utilities;
 
 namespace OperationalController.GmshController
 {
@@ -41,7 +42,7 @@ namespace OperationalController.GmshController
             var data = Gmsh.Model.Mesh.GetNodes(dim, tag, includeBoundary, false);
             var tags = data.Item1;
             var coords = data.Item2;
-            var nodes = new List<Node>();
+            var nodes = new Node[tags.Length];
 
             //if (tags.Length == 0)
             //    throw new Exception("Геометрическая модель не содержит узлов сетки");
@@ -49,9 +50,11 @@ namespace OperationalController.GmshController
             for (var i = 0; i < tags.Length; ++i)
             {
                 var point = new Point3D((float)coords[i * 3], (float)coords[i * 3 + 1], (float)coords[i * 3 + 2]);
-                nodes.Add(new Node((int)tags[i], point));
+                nodes[i] = new Node((int)tags[i], point);
             }
-            return nodes.OrderBy(x => x.Number).ToList();
+
+            return nodes.OrderBy(x => x.Number).
+                Distinct(new DefaultModelObjsComparer<Node>()).ToList();
         }
         /// <inheritdoc/>
         public List<GeometryPoint> CreateControlPoints()
@@ -126,6 +129,42 @@ namespace OperationalController.GmshController
                 }
             }
             return list;
+        }
+
+        public IEnumerable<ObjectsSet<T>> GetMeshSets<T>(List<Node>nodes) 
+            where T : class,IElement
+        {
+            var dim = 1;
+            if (typeof(Element2D) == typeof(T))
+                dim = 2;
+            else if (typeof(Element3D) == typeof(T))
+                dim = 3;
+
+            var dimTags = Gmsh.Model.GetEntities(3);
+            //var list = new List<ObjectsSet<T>>();
+            var rnd = new Random();
+
+            for (var i = 0; i < dimTags.Length; i += 2)
+            {
+                var tag = dimTags[i + 1];
+                var set = new ObjectsSet<T>($"e{dim}D_{tag}");
+               
+                var elements = GetMeshEntities(dim, tag, nodes);
+
+                foreach (var item in elements)
+                {
+                    if(item is T obj)
+                        set.Add(item.Number, obj);
+                }
+               
+                var color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
+                set.SetColor(color);
+
+                if (set.Count != 0)
+                    yield return set;
+            }
+                
+            //return list;
         }
         /// <inheritdoc/>
         public (List<Node>, List<ILineObject<Node>>, List<Element2D>, List<Element3D>) GetMeshObjects()
@@ -315,11 +354,11 @@ namespace OperationalController.GmshController
             else if (elementName.Contains("Line"))
                 return new Beam((int)elementId, nodes);
             else if (elementName.Contains("Triangle"))
-                return new Triangle((int)elementId, nodes);
+                return new Triangle_c((int)elementId, nodes);
             else if (elementName.Contains("Quadrilateral"))
                 return new Quad((int)elementId, nodes);
             else if (elementName.Contains("Tetrahedron"))
-                return new Tetra((int)elementId, nodes);
+                return new Tetra_c((int)elementId, nodes);
             else if (elementName.Contains("Hexahedron"))
                 return new Hexa((int)elementId, nodes);
             else

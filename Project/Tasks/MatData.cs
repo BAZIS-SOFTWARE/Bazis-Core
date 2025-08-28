@@ -1,20 +1,21 @@
 ﻿using Model.Interfaces;
 using Project.Interfaces.Tasks;
+using PropertiesCalculator.MaterialData;
 using System;
 
 namespace Project.Tasks
 {
     public class MatData : CondData
     {
-        public MatData(string matName, IGroup group, float start, float stop) : base(group, start, stop)
+        public MatData(MaterialDBItem material, IGroup group, float start, float stop) : base(group, start, stop)
         {
             Kind = DataKind.Материал;
-            MatName = matName;
+            Material = material;
         }
         /// <summary>
         /// MatName
         /// </summary>
-        public string MatName { get; set; }
+        public MaterialDBItem Material { get; set; }
 /// <inheritdoc/>
 
         protected override string GetInfo
@@ -24,7 +25,7 @@ namespace Project.Tasks
                 var mfInfo = "*";
                 if (FrameFunction?.LocalFrame != null)
                     mfInfo = FrameFunction.LocalFrame.ToString();
-                return string.Format("{0} {1} {2} {3} {4}", Group.Name, MatName, StartTime, StopTime, mfInfo);
+                return string.Format("{0} {1} {2} {3} {4}", Group.Name, Material.Name, StartTime, StopTime, mfInfo);
             }
         }
     }

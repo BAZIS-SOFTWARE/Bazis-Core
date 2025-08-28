@@ -115,10 +115,12 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        [DataRow(@"\CAD\Cilindr.step", "1", new int[] { 4, 6, 4, 1 })]
-        [DataRow(@"\CAD\nasos.step", "2", new int[] { 376, 684, 291, 1 })]
-        [DataRow(@"\CAD\block.igs", "3", new int[] { 136, 138, 28 })]
-        public void GetEntitiesGetAllDimensionTest(string fileName, string modelID, int[] expTags)
+        [DataRow(@"\CAD\Cilindr.step", new int[] { 4, 6, 4, 1 })]
+        [DataRow(@"\CAD\nasos.step",  new int[] { 376, 684, 291, 1 })]
+        [DataRow(@"\CAD\block.igs",  new int[] { 136, 138, 28 })]
+        //[DataRow(@"\CAD\assembly_2.stp",  new int[] { 136, 138, 28 })]
+        
+        public void GetEntitiesGetAllDimensionTest(string fileName, int[] expTags)
         {
             controller.Gmsh.Open(modelFolder + fileName);
             var dim = controller.Gmsh.Model.GetDimension();

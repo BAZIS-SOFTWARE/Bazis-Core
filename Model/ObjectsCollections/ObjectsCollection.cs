@@ -26,7 +26,12 @@ namespace Model.ObjectsCollections
             get { return objects[key]; }
         }
 
-/// <inheritdoc/>
+        public ObjectsSet<T> this[int key]
+        {
+            get { return objects.ElementAt(key).Value; }
+        }
+
+        /// <inheritdoc/>
 
         public ICollection<string> Names => objects.Keys;
 /// <inheritdoc/>

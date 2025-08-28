@@ -1,5 +1,6 @@
 ﻿using Model.Interfaces;
 using Project.Interfaces.Tasks;
+using PropertiesCalculator.MaterialData;
 using System;
 using System.Globalization;
 
@@ -34,14 +35,20 @@ namespace Project.Tasks
                 var mfInfo = "*";
                 if (FrameFunction?.LocalFrame != null)
                     mfInfo = FrameFunction.LocalFrame.ToString();
+                
+                var tfInfo = "*";
+                if (TimeFunction != null)
+                    tfInfo = TimeFunction.Name;
+
+
                 return string.Format("{0} {1} {2} {3} {4} {5} {6} {7}",
-                    Group.Name, LoadKind, Direction, Value, TimeFunction, StartTime, StopTime, mfInfo);
+                    Group.Name, LoadKind, Direction, Value, tfInfo, StartTime, StopTime, mfInfo);
             }
         }
         /// <summary>
         /// LoadFunction
         /// </summary>
-        public string TimeFunction { get; set; } = "*";
+        public Property TimeFunction { get; set; }
 
         public void TrySetKind(string v)
         {
@@ -64,12 +71,6 @@ namespace Project.Tasks
                 Value = value;
             else
                 throw new Exception("Значение усилия должно быть числом!");
-        }
-
-        public void TrySetTimeFunction(string v)
-        {
-            if (v != "*")
-                TimeFunction = v;
         }
     }
 }

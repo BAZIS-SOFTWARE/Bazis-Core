@@ -20,6 +20,10 @@ using Project.TaskParameters;
 using Project.Tasks.FrameCreators;
 using System.Runtime.InteropServices.ComTypes;
 using Model.IO;
+using PropertiesCalculator.MaterialData;
+using PropertiesCalculator.FunctionData;
+using System.Security.Cryptography;
+using System.Xml.Linq;
 
 namespace TestProject
 {
@@ -27,10 +31,24 @@ namespace TestProject
     public class TestTaskData
     {
         string testDir = @"..\..\..\Examples";
+        MaterialDBData materials;
+        FunctionDBData functions;
+
         [TestInitialize]
         public void Init()
         {
-            Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture; 
+            Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+
+            var settingsSerializer = new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.Auto,
+                Formatting = Formatting.Indented
+            };
+
+            materials = JsonConvert.DeserializeObject<MaterialDBData>
+                (File.ReadAllText($@"{testDir}\materials.jsf"), settingsSerializer);
+            functions = JsonConvert.DeserializeObject<FunctionDBData>
+    (File.ReadAllText($@"{testDir}\functions.jsf"), settingsSerializer);
         }
         [TestMethod]
         public void RemoveTaskDataByInfoString()
@@ -287,99 +305,41 @@ namespace TestProject
         //    SetUpTestLoadBoundTaskDataException(dataKind, dataString);
 
         [DataTestMethod]
-        [DataRow("1 PowerCycle * Load 0 49.99998")]
-        [DataRow("0.001 * * Load 0 49.99998")]
-        [DataRow("1 timeFunc * Load 0.0001 49")]
-        
+        [DataRow("1 Heating * Load 0 49.99998", DataKind.Нагрев)]
+        [DataRow("0.001 * * Load 0 49.99998", DataKind.Нагрев)]
+        [DataRow("1 Heating * Load 0.0001 49", DataKind.Нагрев)]
+        [DataRow("Load Жесткое X 0.255 * 0 1500 *", DataKind.Закрепление)]
+        [DataRow("Load Жесткое None 0.255 * 0 1500 *", DataKind.Закрепление)]
+        [DataRow("Load Жесткое X 1 Heating 0 1500 *", DataKind.Закрепление)]
+        [DataRow("Load Жесткое Y 0 * 0 1500 *", DataKind.Закрепление)]
+        [DataRow("Load Жесткое Z 0 * 0 1500 *", DataKind.Закрепление)]
+        [DataRow("Load Сила None 0 * 0 1500 *", DataKind.Нагрузка)]
+        [DataRow("Load Сила Z 0 * 0 1500 *", DataKind.Нагрузка)]
+        [DataRow("Load Сила X 0.0001 Heating 0 1500 *", DataKind.Нагрузка)]
+        [DataRow("Load Коэф.теплоотдачи.воздух 20.005 0 1500 *", DataKind.Среда)]
+        [DataRow("Load * Термоцикл 0 1500 *", DataKind.Среда)]
+        [DataRow("Load Коэф.теплоотдачи.воздух 20 0 1500 *", DataKind.Среда)]
+        [DataRow("Load 0.002 Heating 0 1500 *", DataKind.Среда)]
+        [DataRow("Load Коэф.теплоотдачи.воздух 20 0 1500.001 *", DataKind.Среда)]
+        [DataRow("Load 1E-05 19.9999 0 1500.001 *", DataKind.Среда)]
+        [DataRow("Load * 19.9999 0 1500.001 *", DataKind.Среда)]
 
-        public void CheckHeatData(string dataString)
+
+        public void CheckTaskData(string dataString, DataKind dataKind)
         {
             //assign
-            var strAr = dataString.Split(' ');
-            var startTime = float.Parse(strAr[4]);
-            var stopTime = float.Parse(strAr[5]);
+            var taskData = new TaskData();
+            taskData.Materials = materials;
+            taskData.Functions = functions;
 
-            var heatData = new HeatData(new Group(strAr[3], ObjType.Узел), startTime, stopTime);
-            
-            heatData.TrySetFrameFunction(strAr[2]);
-            heatData.TrySetValue(strAr[0]);
-            heatData.TrySetTimeFunction(strAr[1]);
+            var grData = new GroupData();
 
-            //assert
-            Assert.AreEqual($"{DataKind.Нагрев} : {dataString}", heatData.ToString());
-
-        }
-
-        [DataRow("Узлы_7 Жесткое X 0.255 * 0 1500 *")]
-        [DataRow("Узлы_7 Жесткое None 0.255 * 0 1500 *")]
-        [DataRow("Узлы_7 Жесткое X 1 Функция 0 1500 *")]
-        [DataRow("Узлы_7 Жесткое Y 0 * 0 1500 *")]
-        [DataRow("Узлы_7 Жесткое Z 0 * 0 1500 *")]
-
-        public void CheckClampData(string dataString)
-        {
-            //assign
-            var strAr = dataString.Split(' ');
-            var startTime = float.Parse(strAr[5]);
-            var stopTime = float.Parse(strAr[6]);
-
-            var clampData = new ClampData(new Group(strAr[0], ObjType.Узел), startTime, stopTime);
-            clampData.TrySetKind(strAr[1]);
-            clampData.TrySetDirection(strAr[2]);
-            clampData.TrySetValue(strAr[3]);
-            clampData.TrySetTimeFunction(strAr[4]);
+            grData.Add(new Group("Load", ObjType.Узел));
+            var condData = taskData.Create(dataKind, dataString, grData);
 
             //assert
-            Assert.AreEqual($"{DataKind.Закрепление} : {dataString}", clampData.ToString());
+            Assert.AreEqual($"{dataKind} : {dataString}", condData.ToString());
 
-        }
-
-        [DataRow("Узлы_7 Сила None 0 * 0 1500 *")]
-        [DataRow("Узлы_7 Сила Z 0 * 0 1500 *")]
-        [DataRow("Узлы_7 Сила X 0.0001 loadCycle 0 1500 *")]
-        public void CheckLoadData(string dataString)
-        {
-            //assign
-            var strAr = dataString.Split(' ');
-            var startTime = float.Parse(strAr[5]);
-            var stopTime = float.Parse(strAr[6]);
-
-            var loadData = new LoadData(new Group(strAr[0], ObjType.Узел), startTime,stopTime);
-            loadData.TrySetKind(strAr[1]);
-            loadData.TrySetDirection(strAr[2]);
-            loadData.TrySetValue(strAr[3]);
-            loadData.TrySetTimeFunction(strAr[4]);
-
-            //assert
-            Assert.AreEqual($"{DataKind.Нагрузка} : {dataString}", loadData.ToString());
-
-        }
-
-        [DataTestMethod]
-        [DataRow("air Коэф.теплоотдачи.воздух 20.005 0 1500 *", MediaType.HeatFlux, "20.005")]
-        [DataRow("air * Термоцикл 0 1500 *", MediaType.ConstantTemp, "Термоцикл")]
-        [DataRow("air Коэф.теплоотдачи.воздух 20 0 1500 *", MediaType.HeatFlux, "20")]
-        [DataRow("air 0.002 Термоцикл 0 1500 *", MediaType.HeatFlux, "Термоцикл")]
-        [DataRow("air Коэф.теплоотдачи.воздух 20 0 1500.001 *", MediaType.HeatFlux, "20")]
-        [DataRow("air 1E-05 19.9999 0 1500.001 *", MediaType.HeatFlux, "19.9999")]
-        [DataRow("air * 19.9999 0 1500.001 *", MediaType.ConstantTemp, "19.9999")]
-
-        public void CheckMediaData(string dataString, MediaType mediaType, string tempVal)
-        {
-            //assign
-            var strAr = dataString.Split(' ');
-            var startTime = float.Parse(strAr[3]);
-            var stopTime = float.Parse(strAr[4]);
-
-            var data = new MediaData(new Group("air", ObjType.Элемент2D), startTime,stopTime);
-
-            data.TrySetTemp(strAr[2]);
-            data.TrySetHeatExchange(strAr[1]);
-            
-            //assert
-            Assert.AreEqual($"{DataKind.Среда} : {dataString}", data.ToString());
-            Assert.AreEqual(data.MediaType, mediaType);
-            Assert.AreEqual(data.Direction, Direction.None);
         }
 
 
