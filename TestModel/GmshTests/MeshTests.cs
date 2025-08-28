@@ -11,6 +11,7 @@ using OperationalController.GmshController;
 using OperationalController;
 using MathNet.Numerics;
 using Model.MeshObjects;
+using Model.Utilities;
 
 namespace TestModel.GmshTests
 {
@@ -77,9 +78,10 @@ namespace TestModel.GmshTests
         {
             controller.Gmsh.Open(modelFolder + fileName);
             controller.Gmsh.Model.Mesh.Generate(3);
-            var e3Ds = controller.GetMeshSets<Element3D>();
-            var e2Ds = controller.GetMeshSets<Element2D>();
-            var quads = controller.GetMeshSets<Quad>();
+            var nds = controller.GetNodes();
+            var e3Ds = controller.GetMeshSets<Element3D>(nds);
+            var e2Ds = controller.GetMeshSets<Element2D>(nds);
+            var quads = controller.GetMeshSets<Quad>(nds);
             Assert.AreEqual(exp3DSets, e3Ds.Count());
         }
 

@@ -12,6 +12,7 @@ using System.Drawing;
 using Model.ObjectsCollections;
 using Model.Interfaces.ObjectsCollections;
 using System.Reflection;
+using Model.Utilities;
 
 namespace OperationalController.GmshController
 {
@@ -41,7 +42,7 @@ namespace OperationalController.GmshController
             var data = Gmsh.Model.Mesh.GetNodes(dim, tag, includeBoundary, false);
             var tags = data.Item1;
             var coords = data.Item2;
-            var nodes = new List<Node>();
+            var nodes = new Node[tags.Length];
 
             //if (tags.Length == 0)
             //    throw new Exception("Геометрическая модель не содержит узлов сетки");
@@ -49,9 +50,11 @@ namespace OperationalController.GmshController
             for (var i = 0; i < tags.Length; ++i)
             {
                 var point = new Point3D((float)coords[i * 3], (float)coords[i * 3 + 1], (float)coords[i * 3 + 2]);
-                nodes.Add(new Node((int)tags[i], point));
+                nodes[i] = new Node((int)tags[i], point);
             }
-            return nodes.OrderBy(x => x.Number).ToList();
+
+            return nodes.OrderBy(x => x.Number).
+                Distinct(new DefaultModelObjsComparer<Node>()).ToList();
         }
         /// <inheritdoc/>
         public List<GeometryPoint> CreateControlPoints()
@@ -128,7 +131,7 @@ namespace OperationalController.GmshController
             return list;
         }
 
-        public IEnumerable<ObjectsSet<T>> GetMeshSets<T>() 
+        public IEnumerable<ObjectsSet<T>> GetMeshSets<T>(List<Node>nodes) 
             where T : class,IElement
         {
             var dim = 1;
@@ -140,12 +143,12 @@ namespace OperationalController.GmshController
             var dimTags = Gmsh.Model.GetEntities(3);
             //var list = new List<ObjectsSet<T>>();
             var rnd = new Random();
+
             for (var i = 0; i < dimTags.Length; i += 2)
             {
                 var tag = dimTags[i + 1];
                 var set = new ObjectsSet<T>($"e{dim}D_{tag}");
-                var nodes = GetNodes(dim, tag);
-
+               
                 var elements = GetMeshEntities(dim, tag, nodes);
 
                 foreach (var item in elements)

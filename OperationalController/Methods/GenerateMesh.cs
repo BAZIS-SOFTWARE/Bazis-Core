@@ -6,6 +6,7 @@ using Project;
 using Project.Tasks;
 using System;
 using System.IO;
+using System.Linq;
 
 namespace OperationalController
 {
@@ -24,15 +25,15 @@ namespace OperationalController
             {
 
                 controller.Gmsh.Model.Mesh.Generate(1);
-                foreach (var item in controller.GetMeshSets<Beam>())
+                foreach (var item in controller.GetMeshSets<Beam>(nodes))
                     ModelData.ObjectData.E1DCollection.Add(item);
             }
             else if (elemDim == 2)
             {
                 controller.Gmsh.Model.Mesh.Generate(2);
-                foreach (var item in controller.GetMeshSets<Beam>())
+                foreach (var item in controller.GetMeshSets<Beam>(nodes))
                     ModelData.ObjectData.E1DCollection.Add(item);
-                foreach (var item in controller.GetMeshSets<Element2D>())
+                foreach (var item in controller.GetMeshSets<Element2D>(nodes))
                     ModelData.ObjectData.E2DCollection.Add(item);
 
             }
@@ -40,11 +41,11 @@ namespace OperationalController
             else
             {
                 controller.Gmsh.Model.Mesh.Generate(3);
-                foreach (var item in controller.GetMeshSets<Beam>())
+                foreach (var item in controller.GetMeshSets<Beam>(nodes))
                     ModelData.ObjectData.E1DCollection.Add(item);
-                foreach (var item in controller.GetMeshSets<Element2D>())
+                foreach (var item in controller.GetMeshSets<Element2D>(nodes))
                     ModelData.ObjectData.E2DCollection.Add(item);
-                foreach (var item in controller.GetMeshSets<Element3D>())
+                foreach (var item in controller.GetMeshSets<Element3D>(nodes))
                     ModelData.ObjectData.E3DCollection.Add(item);
             }
         }

@@ -53,7 +53,7 @@ namespace OperationalController.GmshController
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        IEnumerable<ObjectsSet<T>> GetMeshSets<T>()
+        IEnumerable<ObjectsSet<T>> GetMeshSets<T>(List<Node> nodes)
                    where T : class, IElement;
        
         /// <summary>
