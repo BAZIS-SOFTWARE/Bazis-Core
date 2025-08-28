@@ -16,21 +16,28 @@ namespace OperationalController
 
         public void GenerateMesh(int elemDim, IGmshController controller)
         {
-            var nodes = controller.GetNodes();
-
-            foreach (var item in nodes)
-                ModelData.ObjectData.NodesSet.Add(item.Number, item);
-
             if (elemDim == 1)
             {
 
                 controller.Gmsh.Model.Mesh.Generate(1);
+
+                var nodes = controller.GetNodes();
+
+                foreach (var item in nodes)
+                    ModelData.ObjectData.NodesSet.Add(item.Number, item);
+
                 foreach (var item in controller.GetMeshSets<Beam>(nodes))
                     ModelData.ObjectData.E1DCollection.Add(item);
             }
             else if (elemDim == 2)
             {
                 controller.Gmsh.Model.Mesh.Generate(2);
+
+                var nodes = controller.GetNodes();
+
+                foreach (var item in nodes)
+                    ModelData.ObjectData.NodesSet.Add(item.Number, item);
+
                 foreach (var item in controller.GetMeshSets<Beam>(nodes))
                     ModelData.ObjectData.E1DCollection.Add(item);
                 foreach (var item in controller.GetMeshSets<Element2D>(nodes))
@@ -41,6 +48,12 @@ namespace OperationalController
             else
             {
                 controller.Gmsh.Model.Mesh.Generate(3);
+
+                var nodes = controller.GetNodes();
+
+                foreach (var item in nodes)
+                    ModelData.ObjectData.NodesSet.Add(item.Number, item);
+
                 foreach (var item in controller.GetMeshSets<Beam>(nodes))
                     ModelData.ObjectData.E1DCollection.Add(item);
                 foreach (var item in controller.GetMeshSets<Element2D>(nodes))
