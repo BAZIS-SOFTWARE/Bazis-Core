@@ -23,35 +23,7 @@ namespace OperationalController
 
         }
 
-        public void GenerateMesh(int elemDim, IGmshController controller) 
-        {
-            if(elemDim == 1)
-            {
-                controller.Gmsh.Model.Mesh.Generate(1);
-                foreach (var item in controller.GetMeshSets<Beam>())
-                    ModelData.ObjectData.E1DCollection.Add(item);
-            }
-            else if (elemDim == 2)
-            {
-                controller.Gmsh.Model.Mesh.Generate(2);
-                foreach (var item in controller.GetMeshSets<Beam>())
-                    ModelData.ObjectData.E1DCollection.Add(item);
-                foreach (var item in controller.GetMeshSets<Element2D>())
-                    ModelData.ObjectData.E2DCollection.Add(item);
-
-            }
-
-            else
-            {
-                controller.Gmsh.Model.Mesh.Generate(3);
-                foreach (var item in controller.GetMeshSets<Beam>())
-                    ModelData.ObjectData.E1DCollection.Add(item);
-                foreach (var item in controller.GetMeshSets<Element2D>())
-                    ModelData.ObjectData.E2DCollection.Add(item);
-                foreach (var item in controller.GetMeshSets<Element3D>())
-                    ModelData.ObjectData.E3DCollection.Add(item);
-            }
-        }
+        
 
         /// <inheritdoc/>
         public IEnumerable<IModelObject> GetModelObjects(ObjType objType)
