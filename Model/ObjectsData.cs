@@ -560,8 +560,51 @@ E3DCollection[setName] : null;
                     }
             }
         }
+/// <inheritdoc/>
 
-   
+
+        public ISetInfo GetSetInfo(ObjType objType, int objNumber)
+        {
+            switch (objType)
+            {
+                case ObjType.Точка:
+                    return PointsSet;
+                case ObjType.Кривая:
+                    return CurveSet;
+                case ObjType.Поверхность:
+                    {
+                        return
+                SurfaceCollection.
+                Select(x => x.Value).
+                FirstOrDefault(x => x.ContainsKey(objNumber));
+                    }
+                case ObjType.Узел:
+                    return NodesSet;
+                case ObjType.Элемент1D:
+                    {
+                        return
+                        E1DCollection.
+                        Select(x => x.Value).
+                        FirstOrDefault(x => x.ContainsKey(objNumber));
+                    }
+                case ObjType.Элемент2D:
+                    {
+                        return
+                        E2DCollection.
+                        Select(x => x.Value).
+                        FirstOrDefault(x => x.ContainsKey(objNumber));
+                    }
+                default:
+                    {
+                        return
+                        E3DCollection.
+                        Select(x => x.Value).
+                        FirstOrDefault(x => x.ContainsKey(objNumber));
+                    }
+            }
+        }
+
+
         /// <inheritdoc/>
 
         public IEnumerable<ISetInfo> GetSetsInfo(ObjType objType)

@@ -1,4 +1,5 @@
 ﻿using Model.Interfaces;
+using Model.Interfaces.ObjectsCollections;
 using OperationalController.MeshObjsUtility;
 using OperationalController.ModelScenePresentator;
 using System.Linq;
@@ -54,6 +55,42 @@ namespace OperationalController
             if (setInfo != null)
                 pre.ViewMode = setInfo.ViewMode;
             pre.Name = objType.ToString();
+            return pre;
+        }
+
+        public IObjsPresenter CreateModelObjectsPresentor(ISetInfo setInfo)
+        {
+            IObjsPresenter pre;
+            //var objType = ;
+            switch (setInfo.ObjType)
+            {
+                case ObjType.Узел:
+                    pre = presentersCreator.CreatePointObjectsPresenter(ModelData.ObjectData.NodesSet.Values);
+                    break;
+                case ObjType.Кривая:
+                    pre = presentersCreator?.CreateLineObjectsPresenter(ModelData.ObjectData.CurveSet.Values);
+                    break;
+                case ObjType.Поверхность:
+                    pre = presentersCreator.CreateSurfaceObjectsPresenter(ModelData.ObjectData.SurfaceCollection[setInfo.Name].Values);
+                    break;
+                case ObjType.Элемент1D:
+                    pre = presentersCreator.CreateLineObjectsPresenter(ModelData.ObjectData.E1DCollection[setInfo.Name].Values);
+                    break;
+                case ObjType.Элемент2D:
+                    pre = presentersCreator.CreateSurfaceObjectsPresenter(ModelData.ObjectData.E2DCollection[setInfo.Name].Values);
+                    break;
+                case ObjType.Элемент3D:
+                    pre = presentersCreator.CreateSurfaceObjectsPresenter(ModelData.ObjectData.E3DCollection[setInfo.Name].Values);
+                    break;
+                default:
+                    pre = presentersCreator.CreatePointObjectsPresenter(ModelData.ObjectData.PointsSet.Values);
+                    break;
+            }
+            // изменить в будущем на массив viewMode
+            //var setInfo = ModelData.ObjectData.GetSetsInfo(objType).FirstOrDefault();
+            //if (setInfo != null)
+            pre.ViewMode = setInfo.ViewMode;
+            pre.Name = setInfo.Name;
             return pre;
         }
     }

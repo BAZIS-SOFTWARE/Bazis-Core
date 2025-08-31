@@ -71,6 +71,16 @@ namespace Model.ObjectsCollections
 /// <inheritdoc/>
 
         public int NumberOfObjects => objectsSet.Count;
+/// <inheritdoc/>
+
+        public bool ViewState
+        {
+            get 
+            { 
+                return objectsSet.Values.Any(x => x.ViewState == true) 
+                    ? true : false; 
+            }
+        }
 
         /// <inheritdoc/>
 
