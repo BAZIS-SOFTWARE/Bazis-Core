@@ -1,0 +1,11 @@
+@startuml
+class GeneralData
+class ProjectData
+class TaskData
+class MedData
+class MatData
+class LoadData
+class ClampData
+class HeatData
+class CondData
+@enduml

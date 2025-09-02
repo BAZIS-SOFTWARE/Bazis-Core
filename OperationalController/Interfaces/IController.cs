@@ -214,6 +214,12 @@ namespace OperationalController
         /// <param name="objNumbs"></param>
         void DeleteModelObjects(ObjType objType, IEnumerable<int> objNumbs);
         /// <summary>
+        /// DeleteCond
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        bool DeleteCond(int index);
+        /// <summary>
         /// DeleteMeshGroup
         /// </summary>
         /// <param name="grName"></param>
@@ -324,5 +330,7 @@ namespace OperationalController
         /// <param name="elemDim"></param>
         /// <param name="controller"></param>
         void GenerateMesh(int elemDim, IGmshController controller);
+
+
     }
 }
