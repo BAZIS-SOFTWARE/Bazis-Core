@@ -384,6 +384,21 @@ namespace TestModel.GmshTests
             var expected = data.Item2.Length / 3;
             Assert.AreEqual(expected, actual);
         }
+        [DataTestMethod]
+        [DataRow(@"\CAD\Cilindr.step")]
+        public void RemoveTest(string fileName)
+        {
+            controller.Gmsh.Open(modelFolder + fileName);
+
+            var delDimTags = new int[] { 3, 1, 2, 4 };
+            controller.Gmsh.Model.Occ.Remove(delDimTags);
+            controller.Gmsh.Model.Occ.Synchronize();
+
+            var dimTags = controller.Gmsh.Model.GetEntities(3);
+            
+            Assert.IsTrue(dimTags.Length == 0);
+            //controller.Gmsh.Write(@"D:\ModifiedCylinder.step");
+        }
 
         private void RemoveNameTest(ref string entName, int dim, int delId, int maxId)
         {
