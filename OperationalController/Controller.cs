@@ -185,12 +185,6 @@ namespace OperationalController
         {
             return TaskData;
         }
-        /// <inheritdoc/>
-        public bool DeleteCond(int index)
-        {
-            var data = TaskData[index];
-            return TaskData.Remove(data);
-        }
 
 
         /// <inheritdoc/>

@@ -34,6 +34,13 @@ namespace OperationalController
             }
 
         }
+
+        /// <inheritdoc/>
+        public bool DeleteCond(int index)
+        {
+            var data = TaskData[index];
+            return TaskData.Remove(data);
+        }
         /// <inheritdoc/>
 
         public void DeleteModelSet(ObjType objType, string name)

@@ -8,7 +8,6 @@ namespace Geometry
     public class Polygon
     {
         private readonly List<Point2D> points;
-        private const float epsilon = 1e-4f;
 
         public Polygon(List<Point2D> points)
         {
@@ -30,7 +29,7 @@ namespace Geometry
             return 0.5f * Math.Abs(sum);
         }
 
-        public bool IsPointInsidePolygon(Point2D point)
+        public bool IsPointInsidePolygon(Point2D point, float epsilon = 0.01f)
         {
             var sourceArea = GetPolygonArea();
             var integratedArea = 0d;

@@ -83,38 +83,105 @@ namespace PrTests
             Assert.IsTrue(actual);
         }
 
-        [TestMethod]
-        [DataRow(0.8f, 0.8f, false)]
-        [DataRow(0, -0.5f, false)]
-        [DataRow(0.51f, 0.51f, false)]
-        public void IsPointInsidePolygon_ShouldBeFalse_WhenPointOutside(float x, float y, bool expected)
+        public static IEnumerable<object[]> AdditionData
         {
-            var polygon = new Polygon(new List<Point2D>
+            get
             {
-                new Point2D(0, 0),
-                new Point2D(0, 1),
-                new Point2D(1, 0),
-            });
+                return new[] 
+                { 
+                    new object[] 
+                    {
+                        new Polygon(new List<Point2D>
+                        {
+                            new Point2D(0, 0),
+                            new Point2D(0, 1),
+                            new Point2D(1, 0),
+                        }),
+                        new Point2D(0.3f, 0.3f),
+                        true
+                    },
+                    new object[]
+                    {
+                        new Polygon(new List<Point2D>
+                        {
+                            new Point2D(0, 0),
+                            new Point2D(0, 1),
+                            new Point2D(1, 0),
+                        }),
+                        new Point2D(0.4f, 0),
+                        true
+                    },
+                    new object[]
+                    {
+                        new Polygon(new List<Point2D>
+                        {
+                            new Point2D(0, 0),
+                            new Point2D(0, 1),
+                            new Point2D(1, 0),
+                        }),
+                        new Point2D(0, 0),
+                        true
+                    },
 
-            var actual = polygon.IsPointInsidePolygon(new Point2D(x, y));
-            Assert.AreEqual(expected, actual);
+                    new object[]
+                    {
+                        new Polygon(new List<Point2D>
+                        {
+                            new Point2D(0, 0),
+                            new Point2D(0, 1),
+                            new Point2D(1, 0),
+                        }),
+                        new Point2D(0.8f, 0.8f),
+                        false
+                    },
+                    new object[]
+                    {
+                        new Polygon(new List<Point2D>
+                        {
+                            new Point2D(0, 0),
+                            new Point2D(0, 1),
+                            new Point2D(1, 0),
+                        }),
+                        new Point2D(0, -0.5f),
+                        false
+                    },
+                    new object[]
+                    {
+                        new Polygon(new List<Point2D>
+                        {
+                            new Point2D(0, 0),
+                            new Point2D(0, 1),
+                            new Point2D(1, 0),
+                        }),
+                        new Point2D(0.51f, 0.51f),
+                        false
+                    },
+                    new object[]
+                    {
+                        new Polygon(new List<Point2D>
+                        {
+                            new Point2D(-341.5122f, -77.0802f),
+                            new Point2D(-377.1383f, 277.8025f),
+                            new Point2D(-526.7075f, -166.2407f),
+                            new Point2D(-82.39f, -97.79f),
+                        }),
+                        new Point2D(-377, 8),
+                        true
+                    },
+
+                };
+            }
         }
 
         [TestMethod]
-        [DataRow(0.3f, 0.3f, true)]
-        [DataRow(0.4f, 0, true)]
-        [DataRow(0, 0, true)]
-        public void IsPointInsidePolygon_ShouldBeTrue_WhenPointInside(float x, float y, bool expected)
+        [DynamicData(nameof(AdditionData))]
+        public void IsPointInsidePolygon(Polygon poly,Point2D point, bool expected)
         {
-            var polygon = new Polygon(new List<Point2D>
-            {
-                new Point2D(0, 0),
-                new Point2D(0, 1),
-                new Point2D(1, 0),
-            });
-            var actual = polygon.IsPointInsidePolygon(new Point2D(x, y));
+            var actual = poly.IsPointInsidePolygon(point);
             Assert.AreEqual(expected, actual);
         }
+
+
 
         [TestMethod]
         [DataRow(1, 3, 2, 3, false, new[] { 0, 0 }, new[] { 1, 1 }, new[] { 1, 0 }, new[] { 0, 1 })]
