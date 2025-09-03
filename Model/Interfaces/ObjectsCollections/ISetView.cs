@@ -42,6 +42,10 @@ namespace Model.Interfaces.ObjectsCollections
         /// </summary>
         ViewMode ViewMode { get; }
         /// <summary>
+        /// ViewState
+        /// </summary>
+        bool ViewState { get; }
+        /// <summary>
         /// SetColor
         /// </summary>
         /// <param name="color"></param>

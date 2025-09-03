@@ -1,10 +1,9 @@
 @startuml
 [oper controller] --> [project]
-[oper controller] --> [preProc]
+[oper controller] --> [prop Calculator]
 [oper controller] --> [GMSH Api]
-[preProc] --> [project]
-[postProc] --> [project]
 [project] --> [model]
+[project] --> [prop Calculator]
 [project] --> [Geometry]
 [model] --> [Geometry]
 @enduml

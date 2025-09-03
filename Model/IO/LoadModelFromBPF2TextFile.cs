@@ -34,6 +34,7 @@ namespace Model.IO
                 string[] token = new string[1];
                 while (!sr.EndOfStream)
                 {
+                    token = sr.ReadLine().Split(' ');
                     if (token[0] == "Узел")
                     {
                         LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка узлов..."));
@@ -71,7 +72,6 @@ namespace Model.IO
                         Thread.Sleep(100);
                         LoadGroup(sr, newModel);
                     }
-                    token = sr.ReadLine().Split(' ');
                 }
 
                 LoadEvent?.Invoke(this, new LoaderEventArgs("Модель загружена"));

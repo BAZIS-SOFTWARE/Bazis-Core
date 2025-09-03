@@ -11,6 +11,8 @@ using Model.Interfaces.MeshObjects;
 using OperationalController.GmshController;
 using PropertiesCalculator.MaterialData;
 using PropertiesCalculator.FunctionData;
+using System;
+using System.Diagnostics;
 
 namespace OperationalController
 {
@@ -212,6 +214,12 @@ namespace OperationalController
         /// <param name="objNumbs"></param>
         void DeleteModelObjects(ObjType objType, IEnumerable<int> objNumbs);
         /// <summary>
+        /// DeleteCond
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        bool DeleteCond(int index);
+        /// <summary>
         /// DeleteMeshGroup
         /// </summary>
         /// <param name="grName"></param>
@@ -228,12 +236,21 @@ namespace OperationalController
         /// </summary>
         /// <param name="objType"></param>
         void ClearModelCollection(ObjType objType);
+
         /// <summary>
         /// CreateModelObjectsPresentor
         /// </summary>
         /// <param name="objType"></param>
-        /// <returns></returns>
+        /// <returns></returns>   
+        [Obsolete("По возможности не использовать")]
         IObjsPresenter CreateModelObjectsPresentor(ObjType objType);
+
+        /// <summary>
+        /// CreateModelObjectsPresentor.Предпочтительнее использовать его
+        /// </summary>
+        /// <param name="setInfo"></param>
+        /// <returns></returns>
+        IObjsPresenter CreateModelObjectsPresentor(ISetInfo setInfo);
 
         /// <summary>
         /// GetModelSetsInfo
@@ -241,6 +258,11 @@ namespace OperationalController
         /// <param name="objType"></param>
         /// <returns></returns>
         IEnumerable<ISetInfo> GetModelSetsInfo(ObjType objType);
+        /// <summary>
+        /// GetAllModelSetsInfo
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<ISetInfo> GetAllModelSetsInfo();
         /// <summary>
         /// GetModelVolumes
         /// </summary>
@@ -253,6 +275,13 @@ namespace OperationalController
         /// <param name="setName"></param>
         /// <returns></returns>
         ISetInfo GetModelSetInfo(ObjType objType, string setName);
+        /// <summary>
+        /// GetModelSetInfo
+        /// </summary>
+        /// <param name="objType"></param>
+        /// <param name="objNumber"></param>
+        /// <returns></returns>
+        ISetInfo GetModelSetInfo(ObjType objType, int objNumber);
         /// <summary>
         /// ChangeMeshSetName
         /// </summary>
@@ -301,5 +330,7 @@ namespace OperationalController
         /// <param name="elemDim"></param>
         /// <param name="controller"></param>
         void GenerateMesh(int elemDim, IGmshController controller);
+
+
     }
 }

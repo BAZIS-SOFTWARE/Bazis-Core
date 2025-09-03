@@ -162,5 +162,12 @@ namespace Model.Interfaces
         /// <param name="setName"></param>
         /// <returns></returns>
         ISetInfo GetSetInfo(ObjType objType, string setName);
+        /// <summary>
+        /// GetSetInfo
+        /// </summary>
+        /// <param name="objType"></param>
+        /// <param name="objNumber"></param>
+        /// <returns></returns>
+        ISetInfo GetSetInfo(ObjType objType, int objNumber);
     }
 }

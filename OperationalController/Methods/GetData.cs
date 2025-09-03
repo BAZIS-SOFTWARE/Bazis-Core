@@ -9,6 +9,8 @@ using PropertiesCalculator.FunctionData;
 using Model.ObjectsCollections;
 using Model.MeshObjects;
 using OperationalController.GmshController;
+using System;
+using System.Data;
 
 namespace OperationalController
 {
@@ -23,7 +25,17 @@ namespace OperationalController
 
         }
 
-        
+        /// <inheritdoc/>
+        public IEnumerable<ISetInfo> GetAllModelSetsInfo()
+        {
+            foreach (ObjType item in Enum.GetValues(typeof(ObjType)))
+            {
+                foreach (var set in ModelData.ObjectData.GetSetsInfo(item))
+                    yield return set;
+            }
+        }
+
+
 
         /// <inheritdoc/>
         public IEnumerable<IModelObject> GetModelObjects(ObjType objType)
@@ -40,6 +52,11 @@ namespace OperationalController
         public ISetInfo GetModelSetInfo(ObjType objType, string setName)
         {
             return ModelData.ObjectData.GetSetInfo(objType, setName);
+        }
+
+        public ISetInfo GetModelSetInfo(ObjType objType, int objNumber)
+        {
+            return ModelData.ObjectData.GetSetInfo(objType, objNumber);
         }
 
         /// <inheritdoc/>

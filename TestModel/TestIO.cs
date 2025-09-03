@@ -103,7 +103,7 @@ namespace TestModel
         [DataRow(@"..\..\..\Examples\BPF2TXT\cub_unsorted.bpf2", 8, ObjType.Узел, DisplayName = "Objects Узел = 1")]
         [DataRow(@"..\..\..\Examples\BPF2TXT\cub_unsorted_oneSet.bpf2", 1, ObjType.Элемент3D, DisplayName = "Sets Элемент3D = 1")]
         [DataRow(@"..\..\..\Examples\BPF2TXT\cub_mix_numbers.bpf2", 2, ObjType.Элемент3D, DisplayName = "Sets mix numbers Элемент3D = 2")]
-        //[DataRow(@"c:\projs\AdditiveTest\sliceMeshes\Append21.bpf2", 79, ObjType.Элемент3D, DisplayName = "Sets Элемент3D > 100")]
+        //[DataRow(@"c:\projs\AdditiveTest\sliceMeshes\лопатка-2D-3D.bpf2", 385, ObjType.Элемент3D, DisplayName = "Sets Элемент3D > 100")]
         //[DataRow(@"c:\projs\AdditiveTest\sliceMeshes\rotatedBlock-1.bpf2", 171, ObjType.Элемент3D, DisplayName = "Sets Элемент3D > 1000")]
         
         public void LoadModelFromBpf2TextFormat(string path, int sets, ObjType objType)
