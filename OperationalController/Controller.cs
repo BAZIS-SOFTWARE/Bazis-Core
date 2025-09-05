@@ -57,9 +57,11 @@ namespace OperationalController
         /// <inheritdoc/>
         public List<string> FindBoundaryEdges()
         {
+            if (ModelData.ObjectData.GetAllElements().Count() == 0)
+                throw new Exception("Модель не содержит элементов");
+
             return boundaryEdgesFinder.Find(ModelData.ObjectData.GetAllElements().
-                Select(x => (ISurfaceElement)x));
-            
+                Select(x => (ISurfaceElement)x));       
         }
 
         ISelectionHelper selectionHelper { get; set; } = new SelectionHelper();
@@ -143,17 +145,6 @@ namespace OperationalController
 
         IVolumeMeshCreator volumeMeshCreator { get; set; }
 
-/// <inheritdoc/>
-
-        IExtractor1DFrom2D extractor1DFrom2D { get; set; } = new Extract1DFrom2D();
-/// <inheritdoc/>
-
-        public void Create1DFrom2D(string setName)
-        {
-            var number = ModelData.ObjectData.E1DCollection.GetMaxNumber() + 1;
-            var e1d = extractor1DFrom2D.Create(number, ModelData.ObjectData.E2DCollection.GetObjects().ToArray());
-            ModelData.ObjectData.E1DCollection.AddRange("", e1d);
-        }
         
 /// <inheritdoc/>
 

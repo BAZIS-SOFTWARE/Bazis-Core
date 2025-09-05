@@ -132,11 +132,15 @@ namespace OperationalController
         /// <returns></returns>
         Dictionary<int, List<int>> FindInterfacedNodes(int elemDim);
         /// <summary>
+        /// Create1DFrom2D
+        /// </summary>
+        /// <returns></returns>
+        bool Create1DFrom2D();
+        /// <summary>
         /// Create2DForm3D
         /// </summary>
-        /// <param name="setName"></param>
         /// <returns></returns>
-        void Create2DForm3D(string setName);
+        bool Create2DForm3D();
         /// <summary>
         /// CreateBoundaryEdges
         /// </summary>
@@ -201,12 +205,6 @@ namespace OperationalController
         /// <param name="elemDim"></param>
         /// <returns></returns>
         IEnumerable<Curve> CalcElemsNormals(int elemDim);
-        /// <summary>
-        /// Create1DFrom2D
-        /// </summary>
-        /// <param name="setName"></param>
-        /// <returns></returns>
-        void Create1DFrom2D(string setName);
         /// <summary>
         /// DeleteGroup
         /// </summary>

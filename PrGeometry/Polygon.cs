@@ -15,7 +15,7 @@ namespace Geometry
             this.points = hullCreator.GetHullGraham().ToList();
         }
 
-        //Gauss's area formula
+        //Gauss's area formula (фор-ла шнурования или землемера)
         //Seems legit because the hull creator traverse on points in a defined direction
         public float GetPolygonArea()
         {
@@ -57,6 +57,7 @@ namespace Geometry
             var rectanglePoints = rectangle.GetPoints();
             if (rectanglePoints.Any(p => IsPointInsidePolygon(p)))
                 return true;
+            // Вопрос, насколько нужен этот цикл проверки?
             foreach (var rectangleSegment in rectanglePoints.Bigrams(true).Select(p => new Segment2D(p.Item1, p.Item2)))
             {
                 foreach (var contourSegment in points.Bigrams(true).Select(p => new Segment2D(p.Item1, p.Item2)))
