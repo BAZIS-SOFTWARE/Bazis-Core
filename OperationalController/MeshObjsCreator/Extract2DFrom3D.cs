@@ -30,7 +30,7 @@ namespace OperationalController.MeshObjsCreator
                     var n1 = new Node(surface[1].Number, surface[1].Position);
                     var n2 = new Node(surface[2].Number, surface[2].Position);
 
-                    yield return new Triangle(StartNumber, new Node[] { n0,n1,n2 });
+                    yield return new Triangle_c(StartNumber, new Node[] { n0,n1,n2 });
                 }
                 else
                 {

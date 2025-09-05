@@ -57,9 +57,11 @@ namespace OperationalController
         /// <inheritdoc/>
         public List<string> FindBoundaryEdges()
         {
+            if (ModelData.ObjectData.GetAllElements().Count() == 0)
+                throw new Exception("Модель не содержит элементов");
+
             return boundaryEdgesFinder.Find(ModelData.ObjectData.GetAllElements().
-                Select(x => (ISurfaceElement)x));
-            
+                Select(x => (ISurfaceElement)x));       
         }
 
         ISelectionHelper selectionHelper { get; set; } = new SelectionHelper();
@@ -148,11 +150,21 @@ namespace OperationalController
         IExtractor1DFrom2D extractor1DFrom2D { get; set; } = new Extract1DFrom2D();
 /// <inheritdoc/>
 
-        public void Create1DFrom2D(string setName)
+        public bool Create1DFrom2D()
         {
-            var number = ModelData.ObjectData.E1DCollection.GetMaxNumber() + 1;
+            if (ModelData.ObjectData.E2DCollection.Count == 0)
+                return false;
+            //return extractor2DFrom3D.Create(StartNumber, ModelData.ObjectData.E3DCollection.GetObjects());
+            var coll = ModelData.ObjectData.E1DCollection;
+
+            var number = coll.Count != 0 ? coll.GetMaxNumber() + 1 : 0;
+
+            var name = $"boundary1DSet_{number}";
+
             var e1d = extractor1DFrom2D.Create(number, ModelData.ObjectData.E2DCollection.GetObjects().ToArray());
-            ModelData.ObjectData.E1DCollection.AddRange("", e1d);
+            ModelData.ObjectData.E1DCollection.AddRange(name, e1d);
+
+            return true;
         }
         
 /// <inheritdoc/>
