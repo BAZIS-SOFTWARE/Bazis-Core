@@ -504,5 +504,32 @@ namespace TestModel
             Assert.AreEqual(expectedShown, actualShown);
             Assert.AreEqual(inds.Item1, maxSeparator * 3);
         }
+
+        [DataTestMethod]
+        [DataRow(@"..\..\..\Examples\3D\Lazer.inp", 155)]
+        public void ChangeElement1DColorTest(string fileName, int alpha)
+        {
+            var alphaExp = alpha / 255f;
+
+            var controller = new Controller();
+            controller.ImportMesh(fileName);
+
+            var e1d = controller.ModelData.ObjectData.E1DCollection;
+
+            foreach(var set in e1d.Objects)
+            {
+                set.SetColor(Color.FromArgb(alpha, set.Color));
+                Assert.IsTrue(set.Color.A == alpha);
+            }
+
+            var pres = controller.CreateModelObjectsPresentor(ObjType.Элемент1D);
+
+            var indices = pres.CreateIndexes();
+            var colors = pres.CreateVertexes(indices.Item3, "цвет");
+
+            //Сделал исправление в ColorLineObjsCreator.cs стр 14, т.к набор не подхватывал альфа-канал
+            for (var i = 0; i < colors.Length; i+=4)
+                Assert.AreEqual(alphaExp, colors[i + 3], 1e-4);
+        }
     }
 }
