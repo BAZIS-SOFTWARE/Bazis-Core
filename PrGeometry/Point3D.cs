@@ -70,7 +70,7 @@ namespace Geometry
         }
 /// <inheritdoc/>
 
-        public float GetSquareSumCoords()
+        public double GetSquareSumCoords()
         {
             return _x * _x + _y * _y + _z * _z;
         }

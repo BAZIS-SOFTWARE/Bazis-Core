@@ -11,10 +11,10 @@ namespace Geometry.Interfaces
         /// <summary>
         /// X coord
         /// </summary>
-        float _x { get; set; }
+        double _x { get; set; }
         /// <summary>
         /// Y coord
         /// </summary>
-        float _y { get; set; }
+        double _y { get; set; }
     }
 }

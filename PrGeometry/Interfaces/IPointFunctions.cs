@@ -16,6 +16,6 @@ namespace Geometry.Interfaces
         /// Вычислить сумму квадрата координат
         /// </summary>
         /// <returns></returns>
-        float GetSquareSumCoords();
+        double GetSquareSumCoords();
     }
 }
