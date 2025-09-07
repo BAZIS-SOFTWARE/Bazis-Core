@@ -14,6 +14,7 @@ using PostProc.IO.GridExport;
 using PostProc.ScenePresenter;
 using Project;
 using Project.Interfaces.Tasks;
+using Project.IO;
 using Project.Tasks;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
@@ -38,15 +39,16 @@ namespace TestProject
         {
             //assing
             //c:\projs\testProj\Tempering\
-            var project = new ProjectData($@"{testDir}\{name}");
+            var controller = new OperationalController.Controller();
+            controller.Load($@"{testDir}\{name}");
 
-            project.Loader.LoadEvent += (ar1, ar2) => { };
-            project.Load();
+            //project.Loader.LoadEvent += (ar1, ar2) => { };
+      
 
             //assert
-            Assert.AreEqual(project.TaskData.TaskKind, taskKind);
-            Assert.AreEqual(project.TaskData.TaskType, taskType);
-            Assert.AreNotEqual(project.TaskData.Find<CondData>().First(),null);
+            Assert.AreEqual(controller.ProjectKind, taskKind);
+            Assert.AreEqual(controller.ProjectType, taskType);
+            Assert.AreNotEqual(controller.GetAllCondData().First(), null);
         }
 
         [DataTestMethod]
@@ -67,24 +69,19 @@ namespace TestProject
         public void SaveProjectFiletextFormat()
         {
             //assing
-            var project = new ProjectData($@"{testDir}\proj_traj.bpf");
- 
-            project.ModelData.Loader.LoadEvent += (ar1, ar2) => { };
-            project.ModelData.Saver.SaveEvent += (ar1, ar2) => { };
-
-            project.Loader.LoadEvent += (ar1, ar2) => { };
-
+            var loader = new LoadProjectFromTextFormat();
+            var saver = new SaveProjectTextFormat();
+            loader.LoadEvent += (ar1, ar2) => { };
+            saver.SaveEvent += (ar1, ar2) => { };
             //act
-            project.Load();
-
-            project.Saver.SaveEvent += (ar1,ar2) => { };
-            project.GeneralData.Name = "proj_traj_save.bpf";
-
-            project.Save();
+            var proj = loader.Load($@"{testDir}\proj_traj.bpf");
+            saver.Save(proj, $@"{testDir}\proj_traj.bpf");
 
             //Assert
 
-            project.Load();
+            var proj_1 = loader.Load($@"{testDir}\proj_traj.bpf");
+
+            Assert.AreEqual(proj.GeneralData.Name, proj_1.GeneralData.Name);
         }
 
 

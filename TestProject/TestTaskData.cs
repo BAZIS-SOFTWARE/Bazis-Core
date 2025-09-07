@@ -24,6 +24,7 @@ using PropertiesCalculator.MaterialData;
 using PropertiesCalculator.FunctionData;
 using System.Security.Cryptography;
 using System.Xml.Linq;
+using Project.IO;
 
 namespace TestProject
 {
@@ -54,11 +55,10 @@ namespace TestProject
         public void RemoveTaskDataByInfoString()
         {
             //assign
-
-            var proj = new ProjectData($@"{testDir}\proj_traj.bpf");
+            var loader = new LoadProjectFromTextFormat();
 
             //act
-            proj.Load();
+            var proj = loader.Load($@"{testDir}\proj_traj.bpf");
 
             var dic = proj.TaskData.Find(DataKind.Закрепление).ToArray();
 
@@ -73,13 +73,11 @@ namespace TestProject
         public void RemoveTaskDataByExistState()
         {
             //assign
-
-            var proj = new ProjectData($@"{testDir}\proj_traj.bpf");
+            var loader = new LoadProjectFromTextFormat();
+            var proj = loader.Load($@"{testDir}\proj_traj.bpf");
             //act
-            proj.Load();
 
             proj.ModelData.GroupData.RemoveAt(5);
-
             proj.TaskData.ClearNotExisted(proj.ModelData.GroupData);
 
             //assert
@@ -91,12 +89,10 @@ namespace TestProject
         public void FindTaskDataByType()
         {
             //assign
-
-            var proj = new ProjectData(@"..\..\..\Examples\proj_traj.bpf");
+            var loader = new LoadProjectFromTextFormat();
+            var proj = loader.Load(@"..\..\..\Examples\proj_traj.bpf");
 
             //act
-            proj.Load();
-
             var res = proj.TaskData.Find<ICondData>();
             //assert
 
@@ -113,12 +109,11 @@ namespace TestProject
         public void TestFrameFunctionInTime(string relativeProjPath)
         {
             //assign
-            var proj = new ProjectData(relativeProjPath);
+            var loader = new LoadProjectFromTextFormat();
+            var proj = loader.Load(relativeProjPath);
             var ext = Path.GetExtension(relativeProjPath);
 
             //act
-            proj.Load();
-
             var selectedData = proj.TaskData.Find(DataKind.Нагрев).Select(x => (ICondData)x).ToArray();
             foreach (var preFrame in selectedData)
             {
@@ -148,11 +143,10 @@ namespace TestProject
         public void TestFrameFunctionSortingTrajectory()
         {
             //assign
-            var proj = new ProjectData(@"..\..\..\Examples\proj_traj.bpf");
+            var loader = new LoadProjectFromTextFormat();
+            var proj = loader.Load(@"..\..\..\Examples\proj_traj.bpf");
 
             //act
-            proj.Load();
-
             var selectedData = proj.TaskData.Find(DataKind.Нагрев).Select(x => (ICondData)x).ToArray();
 
             
@@ -178,11 +172,10 @@ namespace TestProject
         public void TestFrameFunctionTransformation(float rotation,float x,float y,float z)
         {
             //assign
-            var proj = new ProjectData(@"..\..\..\Examples\proj_traj.bpf");
+            var loader = new LoadProjectFromTextFormat();
+            var proj = loader.Load(@"..\..\..\Examples\proj_traj.bpf");
 
             //act
-            proj.Load();
-
             var heatData = proj.TaskData.Find(DataKind.Нагрев).Select(h => (HeatData)h).First();
             heatData.FrameFunction.LocalFrame.Rotation = rotation;
             heatData.FrameFunction.LocalFrame.Shifting = new Point3D(x,y,z);
@@ -199,11 +192,11 @@ namespace TestProject
         public void TestFindTaskData(DataKind datakind)
         {
             //assign
-            var project = new ProjectData(@"..\..\..\Examples\proj_traj.bpf");
+            var loader = new LoadProjectFromTextFormat();
 
             //act
-            project.Load();
- 
+            var project = loader.Load(@"..\..\..\Examples\proj_traj.bpf");
+
             //assert
 
             var nodeInfo = project.ModelData.GroupData.Find("Узлы");

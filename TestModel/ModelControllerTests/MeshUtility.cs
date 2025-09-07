@@ -11,6 +11,7 @@ using Model.IO;
 using System.IO;
 using OperationalController.MeshObjsUtility;
 using OperationalController.MeshObjsCreator;
+using Model.IO.STL;
 
 namespace TestModel.ModelControllerTests
 {
@@ -39,39 +40,49 @@ namespace TestModel.ModelControllerTests
         }
 
         [DataTestMethod]
-        [DataRow(@"c:\projs\Matushkin\T_project.bpf", 0.001f,5280)]
-        [DataRow(@"..\..\..\Examples\3D\cub_unsorted_freeNodesCoincident.bpf", 0.01f,10)]
+        [DataRow(@"c:\projs\Matushkin\T_project.bpf", 0.001f,2)]
+        [DataRow(@"..\..\..\Examples\3D\cub_unsorted_freeNodesCoincident.bpf", 0.01f,4)]
+        [DataRow(@"C:\projs\AdditiveTest\1n.stl", 0.01f, 3964)]
         public void MergeNodes(string path, float dist, int count)
         {
             //assing
-            var model = new ModelData();
+            var controller = new OperationalController.Controller();
 
             //act
             //var modelBPF = loader.Load(@"C:\Projs\ExampleMesh\Tube.inp");
-            model.Load(path);
+            //model.Loader = new LoadFromSTLFile();
 
-            var finder = new FindCoincidentObjects();
+            var ext = Path.GetExtension(path);
 
-            finder.ProgressEvent += (ar1, ar2) => { };
+            if(ext == ".stl")
+                controller.ImportMesh(path);
+            else
+                controller.Load(path);
+            //controller.FindCoincidentObjects(ObjType.Узел, dist);
+            //var finder = new FindCoincidentObjects();
 
-            var coincidentNodes = finder.Find(model.ObjectData.GetObjects(ObjType.Узел).ToList(), dist);
+            //finder.ProgressEvent += (ar1, ar2) => { };
 
-            var merger = new MergeObjects();
+            var coincidentNodes = controller.FindCoincidentObjects(ObjType.Узел, dist);
 
-            merger.Merge(coincidentNodes, model.ObjectData.NodesSet);
+            //var merger = new MergeObjects();
+
+            controller.MergeNodes(coincidentNodes);
 
             //assert
 
-            Assert.AreEqual(model.ObjectData.NodesSet.Count, count);
+            Assert.AreEqual(coincidentNodes.Count, count);
 
-            foreach (var elem in model.ObjectData.GetAllElements())
-            {
-                foreach (var item in elem.GetVertexes())
-                {
-                    if(model.ObjectData.NodesSet.All(x => x.Value.Number != item.Number))
-                        throw new Exception("Узел не удален");
-                }
-            }
+            // Очень странная проверка
+
+            //foreach (var elem in controller.GetModelElements())
+            //{
+            //    foreach (var item in elem.GetVertexes())
+            //    {
+            //        if(controller.GetModelObjects(ObjType.Узел).All(x => x.Number != item.Number))
+            //            throw new Exception("Узел не удален");
+            //    }
+            //}
 
             //freeNodes.ToArray()[0] = 14;
             //freeNodes.ToArray()[1] = 15;

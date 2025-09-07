@@ -1,5 +1,8 @@
 ﻿using System;
 using System.IO;
+using Model.Interfaces;
+using Model.IO.STL;
+using Model.IO;
 using Project.Interfaces;
 using Project.Interfaces.IO;
 
@@ -14,18 +17,35 @@ namespace Project.IO
         public event Action<object, ISaveEventArgs> SaveEvent;
 /// <inheritdoc/>
 
-        public void Save(IProjectData project)
+        public void Save(IProjectData project, string fullPath)
         {
-            var fullName = $@"{project.GeneralData.Path}\{project.GeneralData.Name}";
+            //var fullPath = $@"{project.GeneralData.Path}\{project.GeneralData.Name}";
+
+            var name = System.IO.Path.GetFileNameWithoutExtension(fullPath);
+            project.GeneralData.Name = name;
+
+            var ext = System.IO.Path.GetExtension(fullPath);
+
+            IModelSaver saver;
+
+            if (ext == ".bpf")
+                saver = new SaveModelToBPFTextFile();
+            else if (ext == ".bpf2")
+                saver = new SaveModelToBPF2TextFile();
+            //else if (ext == ".asc" | ext == ".ASC")
+            //    saver = new SaveModelToASCIITextFile();
+            else
+                throw new System.Exception("Неизвестный формат сохранения проекта");
+
 
             //сохранение сетки
-            project.ModelData.Save(fullName);
+            saver.Save(project.ModelData,fullPath);
 
-            using (var sw = new StreamWriter(fullName, true, System.Text.Encoding.Unicode) { AutoFlush = true })
+            using (var sw = new StreamWriter(fullPath, true, System.Text.Encoding.Unicode) { AutoFlush = true })
             {
                 sw.WriteLine("");
                 sw.WriteLine("Проект");
-                sw.WriteLine("Название : {0}", project.GeneralData.Name);
+                //sw.WriteLine("Название : {0}", project.GeneralData.Name);
                 sw.WriteLine("Сведения : {0}", project.GeneralData.Comments);
                 sw.WriteLine("Вид : {0}", project.TaskData.TaskType);
                 sw.WriteLine("Тип : {0}", project.TaskData.TaskKind);

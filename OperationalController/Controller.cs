@@ -16,6 +16,8 @@ using System.Drawing;
 using System;
 using Model.IO;
 using Project.Tasks;
+using Project.IO;
+using System.IO;
 
 namespace OperationalController
 {
@@ -24,26 +26,7 @@ namespace OperationalController
     /// </summary>
     public partial class Controller : IController
     {
-        ProjectData project;
-
-/// <inheritdoc/>
-
-        public void Load()
-        {
-            if (project == null)
-                throw new Exception("Проект не создан");
-            project.Load();
-        }
-        /// <inheritdoc/>
-
-        public void Save()
-        {
-            if (project == null)
-                throw new Exception("Проект не создан");
-            project.Save();
-        }
-
-
+        IProjectData project;
 
         /// <inheritdoc/>
 
@@ -105,6 +88,7 @@ namespace OperationalController
         public List<List<int>> FindCoincidentObjects(ObjType objType, float distance)
         {
             var objs = ModelData.ObjectData.GetObjects(objType).ToList();
+            coincidentObjectsFinder.ProgressEvent += (ar1, ar2) => { Message = ar2.ToString(); };
             return coincidentObjectsFinder.Find(objs, distance);
         }
 
@@ -152,20 +136,7 @@ namespace OperationalController
         {
             ModelData?.ObjectData?.SetBackColor(objType);
         }
-        /// <inheritdoc/>
-        public void SaveAs(string projectFile)
-        {
-            var ext = System.IO.Path.GetExtension(projectFile);
 
-            if (ext == ".bpf2")
-                ModelData.Saver = new SaveModelToBPF2TextFile();
-            else if (ext == ".bpf")
-                ModelData.Saver = new SaveModelToBPFTextFile();
-            else
-                throw new Exception("неизвестное расширение файла");
-
-            Save();
-        }
         /// <inheritdoc/>
         public IEnumerable<IGroup> GetAllModelGroups()
         {

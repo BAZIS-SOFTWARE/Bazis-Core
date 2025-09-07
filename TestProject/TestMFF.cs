@@ -18,6 +18,7 @@ using Project.Tasks.FrameCreators;
 using Project.Interfaces.Tasks;
 using MathNet.Numerics.LinearAlgebra;
 using Project.Tasks.Functions.Welding;
+using Project.IO;
 
 namespace TestProject
 {
@@ -41,12 +42,12 @@ namespace TestProject
 
         public void MFF_EnergyCalculated(string path)
         {
-            //assign
-            var proj = new ProjectData($@"{testDir}\{path}");
+            //assing
+            var loader = new LoadProjectFromTextFormat();
+            loader.LoadEvent += (ar1, ar2) => { };
+            var proj = loader.Load($@"{testDir}\{path}");
 
             //act
-            proj.Load();
-
             var lazerData = proj.TaskData.Find(DataKind.Нагрев).Select(x => (HeatData)x).ToArray();
             for (var i = 0; i < lazerData.Count(); i++)
             {

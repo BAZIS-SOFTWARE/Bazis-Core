@@ -318,19 +318,20 @@ namespace TestModel
         public void TestObjectsPresentorsFromFile(ObjType objType,string path,string[] array)
         {
             //assing
-            var model = new ModelData();
+            IModelLoader modelLoader;
 
             var ext = Path.GetExtension(path);
 
-            if(ext == ".stl")
-                model.Loader = new LoadFromSTLFile();
-            else if(ext == ".ASC")
-                model.Loader = new LoadModelFromASCIITextFile();
+            if (ext == ".stl")
+                modelLoader = new LoadFromSTLFile();
+            else if (ext == ".ASC")
+                modelLoader = new LoadModelFromASCIITextFile();
             else if (ext == ".cdb")
-                model.Loader = new LoadModelFromCDBTextFile();
+                modelLoader = new LoadModelFromCDBTextFile();
+            else throw new Exception("Неизвестный формат");
 
-            model.Loader.LoadEvent += (ar1, ar2) => { };
-            model.Load(path);
+            modelLoader.LoadEvent += (ar1, ar2) => { };
+            var model = modelLoader.Load(path);
 
             //act
 
@@ -430,10 +431,8 @@ namespace TestModel
         public void TestSeparators(string fileName, bool isVolume)
         {
             var controller = new Controller();
-            controller.CreateProject(fileName);
-            controller.ModelData.Loader = new LoadModelFromBPFTextFile();
+            controller.Load(fileName);
 
-            controller.Load();
             controller.ChangeInsideSurfacesState(isVolume);
 
             var presenter = controller.CreateModelObjectsPresentor(ObjType.Элемент2D);

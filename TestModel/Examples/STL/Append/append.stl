@@ -1,90 +1,4 @@
-solid newSolid_0
-   facet normal -400 0 0
-      outer loop
-         vertex 0 20 20
-         vertex 0 20 0
-         vertex 0 0 20
-      endloop
-   endfacet
-   facet normal -400 0 0
-      outer loop
-         vertex 0 0 20
-         vertex 0 20 0
-         vertex 0 0 0
-      endloop
-   endfacet
-   facet normal 0 400 0
-      outer loop
-         vertex 20 20 20
-         vertex 20 20 0
-         vertex 0 20 20
-      endloop
-   endfacet
-   facet normal 0 400 0
-      outer loop
-         vertex 0 20 20
-         vertex 20 20 0
-         vertex 0 20 0
-      endloop
-   endfacet
-   facet normal 0 0 400
-      outer loop
-         vertex 20 20 20
-         vertex 0 20 20
-         vertex 20 0 20
-      endloop
-   endfacet
-   facet normal 0 0 400
-      outer loop
-         vertex 20 0 20
-         vertex 0 20 20
-         vertex 0 0 20
-      endloop
-   endfacet
-   facet normal 0 -400 0
-      outer loop
-         vertex 0 0 20
-         vertex 0 0 0
-         vertex 20 0 20
-      endloop
-   endfacet
-   facet normal 0 -400 0
-      outer loop
-         vertex 20 0 20
-         vertex 0 0 0
-         vertex 20 0 0
-      endloop
-   endfacet
-   facet normal 0 0 -400
-      outer loop
-         vertex 0 20 0
-         vertex 20 20 0
-         vertex 0 0 0
-      endloop
-   endfacet
-   facet normal 0 0 -400
-      outer loop
-         vertex 0 0 0
-         vertex 20 20 0
-         vertex 20 0 0
-      endloop
-   endfacet
-   facet normal 400 0 0
-      outer loop
-         vertex 20 0 20
-         vertex 20 0 0
-         vertex 20 20 20
-      endloop
-   endfacet
-   facet normal 400 0 0
-      outer loop
-         vertex 20 20 20
-         vertex 20 0 0
-         vertex 20 20 0
-      endloop
-   endfacet
-endsolid
-solid append_1
+solid append_0
    facet normal 502.845764 -534.2807 0
       outer loop
          vertex 14.797967 -31.9020386 -35
@@ -170,7 +84,7 @@ solid append_1
       endloop
    endfacet
 endsolid
-solid append_2
+solid append_1
    facet normal -0.004917051 -0.00462772232 0
       outer loop
          vertex -11.01786 -4.472364 16.7398949

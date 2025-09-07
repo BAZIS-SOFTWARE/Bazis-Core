@@ -21,6 +21,7 @@ using OperationalController.MeshObjsUtility;
 using OperationalController.ModelScenePresentator;
 using ResultDB.IO;
 using ResultDB;
+using Project.IO;
 
 
 namespace TestProject
@@ -42,7 +43,7 @@ namespace TestProject
             loaderDB.LoadEvent += (ar1,ar2) => { };
             var project = new ProjectData($"{path}\\newProj.bpf2");
 
-            var results = loaderDB.GetResult(project.GeneralData.Path + $@"\{resName}",
+            var results = loaderDB.GetResult(path + $@"\{resName}",
                 new List<string>() { "nodes" }, time) ; 
             
             Assert.AreNotEqual(results, null);
@@ -56,9 +57,9 @@ namespace TestProject
         {
             var loaderDB = new LoadResultsFileDB();
             loaderDB.LoadEvent += (ar1, ar2) => { };
-            var project = new ProjectData($"{path}\\newProj.bpf2");
+            //var project = new ProjectData($"{path}\\newProj.bpf2");
 
-            var shemes = loaderDB.GetTablesSchemes(project.GeneralData.Path + $@"\{resName}").ToList();
+            var shemes = loaderDB.GetTablesSchemes(path + $@"\{resName}").ToList();
 
             Assert.AreNotEqual(shemes, null);
             //Assert.AreNotEqual(results.Data.Tables["nodes"].Rows.Count, 0);
@@ -71,15 +72,15 @@ namespace TestProject
             var loaderDB = new LoadResultsFileDB();
             loaderDB.LoadEvent += (ar1, ar2) => { };
 
-            var project = new ProjectData($"{path}\\newProj.bpf2");
+            //var project = new ProjectData($"{path}\\newProj.bpf2");
 
-            var times = loaderDB.GetValues(project.GeneralData.Path + $@"\{dbName}", "nodes", "Time");
+            var times = loaderDB.GetValues(path + $@"\{dbName}", "nodes", "Time");
 
             var results = new List<Result>();
 
             foreach (var item in times)
             {
-                results.Add(loaderDB.GetResult(project.GeneralData.Path + $@"\{dbName}",
+                results.Add(loaderDB.GetResult(path + $@"\{dbName}",
                     new List<string> { "nodes", "elements" }, item));
             }
 
@@ -97,18 +98,18 @@ x.Time.CompareTo(0) >= 0
         [DataRow(@"c:\projs\ElenaLu\Bulk\1.bpf", "термическая_0.db", 12.71871f)]
         public void TestCreateSurfResFromFile(string path, string resName, float time)
         {
-var loaderDB = new LoadResultsFileDB();
+            var loaderDB = new LoadResultsFileDB();
             loaderDB.LoadEvent += (ar1, ar2) => { };
 
             var dir = Path.GetDirectoryName(path);
             var file = Path.GetFileName(path);
+            
+            var loader = new LoadProjectFromTextFormat();
+            var project = loader.Load($"{dir}\\{file}");
 
-            var project = new ProjectData($"{dir}\\{file}");
-            project.Load();
+            var times = loaderDB.GetValues(dir + $@"\{resName}", "nodes", "Time");
 
-            var times = loaderDB.GetValues(project.GeneralData.Path + $@"\{resName}", "nodes", "Time");
-
-            var results = loaderDB.GetResults(project.GeneralData.Path + $@"\{resName}",
+            var results = loaderDB.GetResults(dir + $@"\{resName}",
                     new List<string> { "nodes", "elements" });
 
             var els3D = project.ModelData.ObjectData.E3DCollection;
@@ -141,9 +142,8 @@ var loaderDB = new LoadResultsFileDB();
         [DataRow(@"..\..\..\Examples\ProjAndResults\термическая_0_0_0.5.db")]
         public void TestMergeResults(string dbName)
         {
-            var proj = new ProjectData(@"..\..\..\Examples\ProjAndResults\two_tetra_term_cycle_multiStep.bpf");
-
-            proj.Load();
+            var loader = new LoadProjectFromTextFormat();
+            var proj = loader.Load(@"..\..\..\Examples\ProjAndResults\two_tetra_term_cycle_multiStep.bpf");
 
             var loaderDB = new LoadResultsFileDB();
             loaderDB.LoadEvent += (ar1, ar2) => { };
@@ -278,10 +278,8 @@ var loaderDB = new LoadResultsFileDB();
             @"..\..\..\Examples\ProjAndResults")]
         public void Test_Scene_Result_Presenter(string projName,string resName,string resKind,float min,float max,string resDesc,string resPath )
         {
-            var proj = new ProjectData($@"{resPath}\{projName}");
-            proj.Loader.LoadEvent += (ar1, ar2) => { };
-
-            proj.Load();
+            var loader = new LoadProjectFromTextFormat();
+            var proj = loader.Load($@"{resPath}\{projName}");
 
             var dbExtension = System.IO.Path.GetExtension($@"{resPath}\{resName}");
             //var dbExtension = System.IO.Path.GetExtension(@"C:\Bazis_newGUI\PROJ\Test_3D\Term\Termal_0_0,5.db");

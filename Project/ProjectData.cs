@@ -45,15 +45,15 @@ namespace Project
         //}
         /// <inheritdoc/>
 
-        public void Save()
+        public void Save(string fullPath)
         {
-            Saver.Save(this);
+            Saver.Save(this,fullPath);
         }
 /// <inheritdoc/>
 
-        public void Load()
+        public void Load(string fullPath)
         {
-            Loader.Load(this, $@"{GeneralData.Path}\{GeneralData.Name}");
+            Loader.Load(fullPath);
         }
 
         /// <inheritdoc/>
@@ -71,22 +71,22 @@ namespace Project
         public ProjectData(string projectFile) 
         {
             GeneralData.Name = System.IO.Path.GetFileName(projectFile);
-            GeneralData.Path = System.IO.Path.GetDirectoryName(projectFile);
+            //GeneralData.Path = System.IO.Path.GetDirectoryName(projectFile);
 
             var ext = System.IO.Path.GetExtension(projectFile);
 
-            if (ext == ".bpf2")
-            {
-                ModelData.Saver = new SaveModelToBPF2TextFile();
-                ModelData.Loader = new LoadModelFromBPF2TextFile();
-            }
+            if (ext != ".bpf2" & ext != ".bpf")
+            //{
+            //    ModelData.Saver = new SaveModelToBPF2TextFile();
+            //    ModelData.Loader = new LoadModelFromBPF2TextFile();
+            //}
 
-            else if (ext == ".bpf")
-            {
-                ModelData.Saver = new SaveModelToBPFTextFile();
-                ModelData.Loader = new LoadModelFromBPFTextFile();
-            }
-            else
+            //else if (ext == ".bpf")
+            //{
+            //    ModelData.Saver = new SaveModelToBPFTextFile();
+            //    ModelData.Loader = new LoadModelFromBPFTextFile();
+            //}
+            //else
                 throw new Exception("неправильно задано расширение файла");
         }
     }

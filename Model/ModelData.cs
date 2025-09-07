@@ -8,6 +8,9 @@ using System.IO;
 using System.Linq;
 using Model.Interfaces.ObjectsCollections;
 using Model.GeometryObjects;
+using Model.IO.STL;
+using System;
+using Model.Interfaces.Attributes;
 
 namespace Model
 {
@@ -52,9 +55,28 @@ namespace Model
         }
 
         /// <inheritdoc/>
-
+        [Warning("По возможности не использовать. Использовать метод load,Import контроллера")]
         public void Load(string path)
         {
+            //var ext = System.IO.Path.GetExtension(path);
+
+            //IModelLoader loader = new LoadModelFromBPF2TextFile();
+
+            //if (ext == ".bpf")
+            //    loader = new LoadModelFromBPFTextFile();
+            //else if (ext == ".stl" | ext == ".STL")
+            //    loader = new LoadFromSTLFile();
+            //else if (ext == ".inp")
+            //    loader = new LoadModelFromINPTextFile_v2();
+            //else if (ext == ".asc" | ext == ".ASC")
+            //    loader = new LoadModelFromASCIITextFile_v2();
+            //else if (ext == ".cdb")
+            //    loader = new LoadModelFromCDBTextFile();
+            //else if (ext == ".dat")
+            //    loader = new LoadModelFromSalomeFile();
+            //else
+            //    throw new System.Exception("Неизвестный формат загрузки модели");
+
             var modelData = Loader.Load(path);
 
             ObjectData = modelData.ObjectData;
@@ -66,7 +88,20 @@ namespace Model
 
         public void Save(string path)
         {
-            Saver.Save(this, path);
+            var ext = System.IO.Path.GetExtension(path);
+
+            IModelSaver saver = new SaveModelToBPF2TextFile();
+
+            if (ext == ".bpf")
+                saver = new SaveModelToBPFTextFile();
+            else if (ext == ".stl" | ext == ".STL")
+                saver = new SaveToTxtSTLFile();
+            else if (ext == ".asc" | ext == ".ASC")
+                saver = new SaveModelToASCIITextFile();
+            else
+                throw new System.Exception("Неизвестный формат сохранения модели");
+
+            saver.Save(this, path);
         }
 /// <inheritdoc/>
 
