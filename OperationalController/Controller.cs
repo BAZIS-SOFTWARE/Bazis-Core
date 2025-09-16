@@ -18,6 +18,8 @@ using Model.IO;
 using Project.Tasks;
 using Project.IO;
 using System.IO;
+using Geometry.Attribute;
+using Model.Interfaces.Attributes;
 
 namespace OperationalController
 {
@@ -156,6 +158,7 @@ namespace OperationalController
         public IModelData ModelData => project?.ModelData;
 
         IGeneralData GeneralData => project?.GeneralData;
+
         /// <inheritdoc/>
         public string Path 
         { 
