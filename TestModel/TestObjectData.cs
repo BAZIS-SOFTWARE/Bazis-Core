@@ -399,10 +399,10 @@ namespace TestModel
         public void RemoveNodesByNumber(int objNumber)
         {
             //assing
-            var model = new ModelData();
-            model.Loader = new LoadModelFromASCIITextFile();
+            //var model = new ModelData();
+            var loader = new LoadModelFromASCIITextFile();
 
-            model.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
+            var model = loader.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
 
             //act
             model.ObjectData.Remove(ObjType.Узел, objNumber);
@@ -563,13 +563,13 @@ namespace TestModel
         [DataRow(@"..\..\..\Examples\STL\block.stl", new float[] { -5, 10, 5 })]
         public void MoveModelTest(string filePath, float[] translate)
         {
-            var modelData = new ModelData();
-            modelData.Loader = new LoadFromSTLFile();
-            modelData.Load(filePath);
+            //var modelData = new ModelData();
+            var loader = new LoadFromSTLFile();
+            var modelData = loader.Load(filePath);
 
-            var keepOld = new ModelData();
-            keepOld.Loader = new LoadFromSTLFile();
-            keepOld.Load(filePath);
+            //var keepOld = new ModelData();
+            loader = new LoadFromSTLFile();
+            var keepOld = loader.Load(filePath);
 
             var translateVec = new Point3D(translate[0], translate[1], translate[2]);
             modelData.ObjectData.Move(ObjType.Узел, translateVec);

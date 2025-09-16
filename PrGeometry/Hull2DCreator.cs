@@ -6,13 +6,13 @@ namespace Geometry
 {
     public class Hull2DCreator
     {
-        private readonly List<Point2D> points;
+        private readonly IEnumerable<Point2D> points;
 
-        public Hull2DCreator(List<Point2D> points)
+        public Hull2DCreator(IEnumerable<Point2D> points)
         {
-            if (points.Count < 3)
+            if (points.Count() < 3)
                 throw new ArgumentException("Unable to build a convex hull. Number of points must be 3 or more.");
-            var segment = new Segment2D(points.Last(), points[0]);
+            var segment = new Segment2D(points.Last(), points.First());
             if (points.All(x => segment.IsPointBelongSegment(x)))
                 throw new ArgumentException("Unable to build a convex hull. All points belongs one line.");
             this.points = points;

@@ -26,6 +26,7 @@ namespace TestModel
             var model = new ModelData();
 
             //act
+            model.Loader = new LoadModelFromBPFTextFile();
             model.Load(@"..\..\..\Examples\3D\cub_unsorted_freeNodes.bpf");
 
             var freeNodesFinder = new FreeNodesFinder();
@@ -86,6 +87,7 @@ namespace TestModel
             var model = new ModelData();
 
             //act
+            model.Loader = new LoadModelFromBPFTextFile();
             model.Load(path);
 
             var selector = new SelectionHelper();
@@ -100,8 +102,8 @@ namespace TestModel
         {
             var controller = new OperationalController.Controller();
             //controller.ModelData.Loader = new LoadModelFromBPFTextFile();
-            controller.CreateProject(@"..\..\..\Examples\3D\cub_unsorted.bpf");
-            controller.Load();
+            //controller.CreateProject(@"..\..\..\Examples\3D\cub_unsorted.bpf");
+            controller.Load(@"..\..\..\Examples\3D\cub_unsorted.bpf");
             var linesNodes = controller.FindBoundaryEdges();
             var bounds = controller.CreateBoundaryEdges(linesNodes);
             
@@ -119,8 +121,8 @@ namespace TestModel
             var controller = new OperationalController.Controller();
             //controller.ModelData.Loader = new LoadModelFromBPFTextFile();
             
-            controller.CreateProject(@"..\..\..\Examples\3D\cub_unsorted.bpf");
-            controller.Load();
+            //controller.CreateProject(@"..\..\..\Examples\3D\cub_unsorted.bpf");
+            controller.Load(@"..\..\..\Examples\3D\cub_unsorted.bpf");
             var normals = controller.CalcElemsNormals(3); 
 
             Assert.AreNotEqual(0, normals.Count());
@@ -135,16 +137,16 @@ namespace TestModel
         public void FindElementNodes()
         {
             //assing
-            var model = new ModelData();
+            var controller = new OperationalController.Controller();
 
             //act
-            model.Load(@"..\..\..\Examples\3D\task_1.bpf");
+            controller.Load(@"..\..\..\Examples\3D\task_1.bpf");
 
-            var els3D = model.ObjectData.E3DCollection;
+            var els3D = controller.GetModelObjects(ObjType.Элемент3D);
 
             var interNodesEls3DFinder = new InterfacedNodesFinder();
 
-            var interfacedNodesEls3D = interNodesEls3DFinder.Find(new List<int>() { 3, 48, 71 }, els3D.GetObjects());
+            var interfacedNodesEls3D = interNodesEls3DFinder.Find(new List<int>() { 3, 48, 71 }, els3D.Select(x => (IElement)x));
 
             var elsForNode = new List<int>() { 1565,2048,2050, 2051 };
             //assert

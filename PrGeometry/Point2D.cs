@@ -16,11 +16,11 @@ namespace Geometry
         private const int FACTOR = 1000;
         private const float INV_FACTOR = 1e-4f;
 
-        public float _x { get; set; }
+        public double _x { get; set; }
 
-        public float _y { get; set; }
+        public double _y { get; set; }
 
-        public Point2D(float x, float y)
+        public Point2D(double x, double y)
         {           
             _x = x; 
             _y = y;
@@ -74,7 +74,7 @@ namespace Geometry
         }
 /// <inheritdoc/>
 
-        public float GetSquareSumCoords()
+        public double GetSquareSumCoords()
         {
             return _x * _x + _y * _y;
         }

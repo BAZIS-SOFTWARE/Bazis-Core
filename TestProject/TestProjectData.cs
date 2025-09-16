@@ -7,6 +7,7 @@ using Project;
 using System.Globalization;
 using System.Threading;
 using OperationalController;
+using Project.IO;
 
 namespace TestProject
 {
@@ -33,9 +34,9 @@ namespace TestProject
             //assing
             var control = new Controller();
 
-            control.CreateProject(path);
-            control.ModelData.Loader = new LoadModelFromBPF2TextFile();
-            control.Load();
+            //control.CreateProject(path);
+            //control.ModelData.Loader = new LoadModelFromBPF2TextFile();
+            control.Load(path);
             var grName = resStr.Split(' ')[0];
             var res = bool.Parse(resStr.Split(' ')[1]);
             //act
@@ -54,9 +55,9 @@ namespace TestProject
         {
             //assing
             var control = new Controller();
-            control.CreateProject(path);
-            control.ModelData.Loader = new LoadModelFromBPF2TextFile();
-            control.Load();
+            //control.CreateProject(path);
+            //control.ModelData.Loader = new LoadModelFromBPF2TextFile();
+            control.Load(path);
             var grName = resStr.Split(' ')[0];
             var res = bool.Parse(resStr.Split(' ')[1]);
             //act
@@ -76,9 +77,9 @@ namespace TestProject
             //assing
             var control = new Controller();
 
-            control.CreateProject(path);
-            control.ModelData.Loader = new LoadModelFromBPF2TextFile();
-            control.Load();
+            //control.CreateProject(path);
+            //control.ModelData.Loader = new LoadModelFromBPF2TextFile();
+            control.Load(path);
 
             var grName = resStr.Split(' ')[0];
             var res = bool.Parse(resStr.Split(' ')[1]);
@@ -99,10 +100,13 @@ namespace TestProject
         public void CreateTaskData(string relativeProjPath)
         {
             //assign
-            var proj = new ProjectData(relativeProjPath);
+
+            var loader = new LoadProjectFromTextFormat();
 
             //act
-            proj.Load();
+            var project = loader.Load(relativeProjPath);
+
+            //assert ???
         }
     }
 }

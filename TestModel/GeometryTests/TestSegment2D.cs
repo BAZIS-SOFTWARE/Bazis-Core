@@ -1,41 +1,96 @@
 ﻿using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
 
 namespace PrTests
 {
     [TestClass]
     public class TestSegment2D
     {
-        [TestMethod]
-        [DataRow(
-            new float[] { 1.125f, 0.625f, 1.125f, -0.625f },
-            new float[] { -0.625f, 0, 2.625f, 0 })]
-        [DataRow(
-            new float[] { -1, -1, 1, 1 },
-            new float[] { -1, 1, 1, -1 })]
-        public void IsIntersectWith_ReturnsTrue_WhenIntersectPerpendicular(float[] segOne, float[] segTwo)
+        public static IEnumerable<object[]> AdditionData
         {
-            var segmentOne = new Segment2D(new Point2D(segOne[0], segOne[1]), new Point2D(segOne[2], segOne[3]));
-            var segmentTwo = new Segment2D(new Point2D(segTwo[0], segTwo[1]), new Point2D(segTwo[2], segTwo[3]));
-            Assert.IsTrue(segmentOne.IsIntersectWith(segmentTwo));
+            get
+            {
+                return new[]
+                {
+                    // перпендикулярные
+                    new object[]
+                    {
+                        new Segment2D(new Point2D(1.125f, 0.625f),new Point2D(1.125f, -0.625f)),
+                        new Segment2D(new Point2D(-0.625f, 0),new Point2D(2.625f, 0)),
+                        true
+                    },
+                    new object[]
+                    {
+                        new Segment2D(new Point2D(-1, -1),new Point2D(1, 1)),
+                        new Segment2D(new Point2D(-1, 1),new Point2D(1, -1)),
+                        true
+                    },
+                    new object[]
+                    {
+                        new Segment2D(new Point2D(1.125f, 0.625f),new Point2D(1.125f, -0.625f)),
+                        new Segment2D(new Point2D(2.625f, 0),new Point2D(0.625f, 0)),
+                        true
+                    },
+                    // под углом
+                    new object[]
+                    {
+                        new Segment2D(new Point2D(-2.5f, -1.25f),new Point2D(0, 0)),
+                        new Segment2D(new Point2D(1.25f, -0.625f),new Point2D(-3.775f, 0.225f)),
+                        true
+                    },
+                    new object[]
+                    {
+                        new Segment2D(new Point2D(-0.55f, -1.1f),new Point2D(0.55f, 1.1f)),
+                        new Segment2D(new Point2D(0.55f, -1.1f),new Point2D(-0.55f, 1.1f)),
+                        true
+                    },
+                    new object[]
+                    {
+                        new Segment2D(new Point2D(-0.55f, -1.1f),new Point2D(0.55f, 1.1f)),
+                        new Segment2D(new Point2D(-0.55f, -1.1f),new Point2D(-0.55f, 1.1f)),
+                        true
+                    },
+                    // параллельные и пересекаются
+                    new object[]
+                    {
+                        new Segment2D(new Point2D(0, 5),new Point2D(1, 5)),
+                        new Segment2D(new Point2D(0.5f, 5),new Point2D(-1, 5)),
+                        false
+                    },
+
+                    new object[]
+                    {
+                        new Segment2D(new Point2D(0, 5),new Point2D(1, 5)),
+                        new Segment2D(new Point2D(1, 5),new Point2D(3, 5)),
+                        false
+                    },
+                    // параллельные и совпадают
+                    new object[]
+                    {
+                        new Segment2D(new Point2D(-1, 0),new Point2D(1, 0)),
+                        new Segment2D(new Point2D(-1, 0),new Point2D(1, 0)),
+                        false
+                    },
+                    new object[]
+                    {
+                        new Segment2D(new Point2D(1.175f, 0.995f),new Point2D(11.125f, -99.675f)),
+                        new Segment2D(new Point2D(1.175f, 0.995f),new Point2D(11.125f, -99.675f)),
+                        false
+                    },
+                };
+            }
         }
 
+
         [TestMethod]
-        [DataRow(
-            new float[] { 1.125f, 0.625f, 1.125f, -0.625f },
-            new float[] { 2.625f, 0, 0.625f, 0 })]
-        [DataRow(
-            new float[] { -2.5f, -1.25f, 0, 0 },
-            new float[] { 1.25f, -0.625f, -3.775f, 0.225f })]
-        [DataRow(
-            new float[] { -0.55f, -1.1f, 0.55f, 1.1f },
-            new float[] { 0.55f, -1.1f, -0.55f, 1.1f })]
-        public void IsIntersectWith_ReturnsTrue_WhenIntersectUnderAngle(float[] segOne, float[] segTwo)
+        [DynamicData(nameof(AdditionData))]
+        public void IsIntersectWith(Segment2D segOne, Segment2D segTwo,bool res)
         {
-            var segmentOne = new Segment2D(new Point2D(segOne[0], segOne[1]), new Point2D(segOne[2], segOne[3]));
-            var segmentTwo = new Segment2D(new Point2D(segTwo[0], segTwo[1]), new Point2D(segTwo[2], segTwo[3]));
-            Assert.IsTrue(segmentOne.IsIntersectWith(segmentTwo));
+            //assert
+            Assert.AreEqual(res,segOne.HasIntersectedPoint(segTwo));
         }
+
 
         [TestMethod]
         [DataRow(
@@ -51,41 +106,31 @@ namespace PrTests
         {
             var segmentOne = new Segment2D(new Point2D(segOne[0], segOne[1]), new Point2D(segOne[2], segOne[3]));
             var segmentTwo = new Segment2D(new Point2D(segTwo[0], segTwo[1]), new Point2D(segTwo[2], segTwo[3]));
-            Assert.IsFalse(segmentOne.IsIntersectWith(segmentTwo));
+            Assert.IsFalse(segmentOne.HasIntersectedPoint(segmentTwo));
         }
 
         [TestMethod]
         [DataRow(
             new float[] { -3.745f, 0, 1.125f, 0 },
-            new float[] { -7.325f, 0, 1.775f, 0 })]
+            new float[] { -7.325f, 0, 1.775f, 0 },
+            false)]
         [DataRow(
             new float[] { -11.555f, 12.765f, -11.555f, -12.995f },
-            new float[] { -11.556f, -12.995f, -11.556f, -14.785f })]
+            new float[] { -11.556f, -12.995f, -11.556f, -14.785f },
+            false)]
         [DataRow(
             new float[] { -14, -7, 14, 7},
-            new float[] { -7, -3.5f, 7, 3.5f })]
+            new float[] { -7, -3.5f, 7, 3.5f },
+            false)]
         [DataRow(
             new float[] { -14, 7, 14, -7 },
-            new float[] { -7, 3.5f, 7, -3.5f })]
-        public void IsIntersectWith_ReturnsFalse_WhenParallel(float[] segOne, float[] segTwo)
+            new float[] { -7, 3.5f, 7, -3.5f },
+            false)]
+        public void IsIntersectWith_ReturnsFalse_WhenParallel(float[] segOne, float[] segTwo,bool res)
         {
             var segmentOne = new Segment2D(new Point2D(segOne[0], segOne[1]), new Point2D(segOne[2], segOne[3]));
             var segmentTwo = new Segment2D(new Point2D(segTwo[0], segTwo[1]), new Point2D(segTwo[2], segTwo[3]));
-            Assert.IsFalse(segmentOne.IsIntersectWith(segmentTwo));
-        }
-
-        [TestMethod]
-        [DataRow(
-            new float[] { -1, 0, 1, 0 },
-            new float[] { -1, 0, 1, 0 })]
-        [DataRow(
-            new float[] { 1.175f, 0.995f, 11.125f, -99.675f },
-            new float[] { 1.175f, 0.995f, 11.125f, -99.675f })]
-        public void IsIntersectWith_ReturnsFalse_WhenOneCoverOther(float[] segOne, float[] segTwo)
-        {
-            var segmentOne = new Segment2D(new Point2D(segOne[0], segOne[1]), new Point2D(segOne[2], segOne[3]));
-            var segmentTwo = new Segment2D(new Point2D(segTwo[0], segTwo[1]), new Point2D(segTwo[2], segTwo[3]));
-            Assert.IsFalse(segmentOne.IsIntersectWith(segmentTwo));
+            Assert.AreEqual(res,segmentOne.HasIntersectedPoint(segmentTwo));
         }
 
         [TestMethod]
@@ -99,7 +144,7 @@ namespace PrTests
         {
             var segmentOne = new Segment2D(new Point2D(segOne[0], segOne[1]), new Point2D(segOne[2], segOne[3]));
             var segmentTwo = new Segment2D(new Point2D(segTwo[0], segTwo[1]), new Point2D(segTwo[2], segTwo[3]));
-            Assert.IsTrue(segmentOne.IsIntersectWith(segmentTwo));
+            Assert.IsTrue(segmentOne.HasIntersectedPoint(segmentTwo));
         }
 
         [TestMethod]

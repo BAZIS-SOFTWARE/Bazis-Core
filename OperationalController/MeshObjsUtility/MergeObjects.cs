@@ -22,11 +22,14 @@ namespace OperationalController.MeshObjsUtility
             {
                 var masterNumber = numbers[i][0];
                 //найти индкс мастер объекта
+                if (!nodes.ContainsKey(masterNumber))
+                    continue;
                 var masterNode = nodes[masterNumber];
                 for (int j = 1; j < numbers[i].Count; j++)
                 {
                     var slaveNumber = numbers[i][j];
-
+                    if (!nodes.ContainsKey(slaveNumber))
+                        continue;
                     var slaveNode = nodes[slaveNumber];
                     slaveNode.SetNumber(masterNode.Number);
                     slaveNode.Position = masterNode.Position;

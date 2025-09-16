@@ -17,16 +17,16 @@ namespace Geometry
 
         //Gauss's area formula (фор-ла шнурования или землемера)
         //Seems legit because the hull creator traverse on points in a defined direction
-        public float GetPolygonArea()
+        public double GetPolygonArea()
         {
-            var sum = 0f;
+            var sum = 0.0;
             var n = points.Count;
             for (var i = 0; i < n - 1; i++)
             {
                 sum += (points[i]._x * points[i + 1]._y - points[i + 1]._x * points[i]._y);
             }
             sum += (points[n - 1]._x * points[0]._y - points[0]._x * points[n - 1]._y);
-            return 0.5f * Math.Abs(sum);
+            return 0.5 * Math.Abs(sum);
         }
 
         public bool IsPointInsidePolygon(Point2D point, float epsilon = 0.01f)
@@ -62,7 +62,7 @@ namespace Geometry
             {
                 foreach (var contourSegment in points.Bigrams(true).Select(p => new Segment2D(p.Item1, p.Item2)))
                 {
-                    if (contourSegment.IsIntersectWith(rectangleSegment))
+                    if (contourSegment.HasIntersectedPoint(rectangleSegment))
                         return true;
                 }
             }

@@ -9,6 +9,7 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
+using Project.Interfaces;
 
 namespace TestProject
 {
@@ -21,12 +22,10 @@ namespace TestProject
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
         }
 
-        private ProjectData StartUpProjForTests(string path)
+        private IProjectData StartUpProjForTests(string path)
         {
-            var proj = new ProjectData(path);
-
-            proj.Loader.LoadEvent += (ar1, ar2) => { };
-            proj.Load();
+            var loader = new LoadProjectFromTextFormat();
+            var proj = loader.Load(path);
 
             return proj;
         }
@@ -34,13 +33,10 @@ namespace TestProject
         public void CalcStopTime()
         {
             //assign
+            var loader = new LoadProjectFromTextFormat();
+            var proj = loader.Load(@"..\..\..\Examples\proj_traj.bpf");
 
-            var proj = new ProjectData(@"..\..\..\Examples\proj_traj.bpf");
-
-            proj.Loader.LoadEvent += (ar1, ar2) => { };
             //act
-            proj.Load();
-
             var heat = proj.TaskData.Find<HeatData>().First();
             
             var motionTime = (heat.FrameFunction.LocalFrame as MovedFrame).CalcMotionTime();
@@ -55,13 +51,10 @@ namespace TestProject
         public void CheckTrajNodes()
         {
             //assign
+            var loader = new LoadProjectFromTextFormat();
+            var proj = loader.Load(@"..\..\..\Examples\proj_traj.bpf");
 
-            var proj = new ProjectData(@"..\..\..\Examples\proj_traj.bpf");
-
-            proj.Loader.LoadEvent += (ar1, ar2) => { };
             //act
-            proj.Load();
-
             var baseLineGr = proj.ModelData.GroupData.Find("baseLine");
             var refLineGr = proj.ModelData.GroupData.Find("refLine");
             var stNodesGr = proj.ModelData.GroupData.Find("startNodes");
@@ -76,13 +69,10 @@ namespace TestProject
         public void SortTrajNodes()
         {
             //assign
+            var loader = new LoadProjectFromTextFormat();
+            var proj = loader.Load(@"..\..\..\Examples\proj_traj_baseLine_not_sorted.bpf");
 
-            var proj = new ProjectData(@"..\..\..\Examples\proj_traj_baseLine_not_sorted.bpf");
-
-            proj.Loader.LoadEvent += (ar1, ar2) => { };
             //act
-            proj.Load();
-
             var baseLineGr = proj.ModelData.GroupData.Find("baseLine");
             var refLineGr = proj.ModelData.GroupData.Find("refLine");
             var stNodesGr = proj.ModelData.GroupData.Find("startNodes");
@@ -96,10 +86,8 @@ namespace TestProject
         public static MovedFrame SetUpGroupData
             (string baseLineGroupName, string refLineGroupName, string startGroupName, string endGroupName)
         {
-            var proj = new ProjectData(@"..\..\..\Examples\TrajTest.bpf");
-
-            proj.Loader.LoadEvent += (ar1, ar2) => { };
-            proj.Load();
+            var loader = new LoadProjectFromTextFormat();
+            var proj = loader.Load(@"..\..\..\Examples\TrajTest.bpf");
 
             var baseLine = proj.ModelData.GroupData.Find(baseLineGroupName);
             var refLine = proj.ModelData.GroupData.Find(refLineGroupName);

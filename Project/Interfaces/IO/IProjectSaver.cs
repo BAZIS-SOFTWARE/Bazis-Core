@@ -7,7 +7,7 @@ namespace Project.Interfaces.IO
     {
 
         event Action<object, ISaveEventArgs> SaveEvent;
-        void Save(IProjectData project);
+        void Save(IProjectData project, string fullPath);
 
     }
 }

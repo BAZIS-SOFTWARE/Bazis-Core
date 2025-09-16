@@ -10,8 +10,10 @@ using System.Linq;
 
 namespace Model.IO
 {
-    public class SaveModelToASCIITextFile
+    public class SaveModelToASCIITextFile : IModelSaver
     {
+        public event Action<object, ISaverEventArgs> SaveEvent;
+
         public void Save(IModelData modelData, string fileName)
         {
             var nodes = modelData.ObjectData.NodesSet;

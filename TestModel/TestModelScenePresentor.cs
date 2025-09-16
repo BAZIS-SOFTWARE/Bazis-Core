@@ -318,19 +318,20 @@ namespace TestModel
         public void TestObjectsPresentorsFromFile(ObjType objType,string path,string[] array)
         {
             //assing
-            var model = new ModelData();
+            IModelLoader modelLoader;
 
             var ext = Path.GetExtension(path);
 
-            if(ext == ".stl")
-                model.Loader = new LoadFromSTLFile();
-            else if(ext == ".ASC")
-                model.Loader = new LoadModelFromASCIITextFile();
+            if (ext == ".stl")
+                modelLoader = new LoadFromSTLFile();
+            else if (ext == ".ASC")
+                modelLoader = new LoadModelFromASCIITextFile();
             else if (ext == ".cdb")
-                model.Loader = new LoadModelFromCDBTextFile();
+                modelLoader = new LoadModelFromCDBTextFile();
+            else throw new Exception("Неизвестный формат");
 
-            model.Loader.LoadEvent += (ar1, ar2) => { };
-            model.Load(path);
+            modelLoader.LoadEvent += (ar1, ar2) => { };
+            var model = modelLoader.Load(path);
 
             //act
 
@@ -430,10 +431,8 @@ namespace TestModel
         public void TestSeparators(string fileName, bool isVolume)
         {
             var controller = new Controller();
-            controller.CreateProject(fileName);
-            controller.ModelData.Loader = new LoadModelFromBPFTextFile();
+            controller.Load(fileName);
 
-            controller.Load();
             controller.ChangeInsideSurfacesState(isVolume);
 
             var presenter = controller.CreateModelObjectsPresentor(ObjType.Элемент2D);
@@ -503,6 +502,33 @@ namespace TestModel
 
             Assert.AreEqual(expectedShown, actualShown);
             Assert.AreEqual(inds.Item1, maxSeparator * 3);
+        }
+
+        [DataTestMethod]
+        [DataRow(@"..\..\..\Examples\3D\Lazer.inp", 155)]
+        public void ChangeElement1DColorTest(string fileName, int alpha)
+        {
+            var alphaExp = alpha / 255f;
+
+            var controller = new Controller();
+            controller.ImportMesh(fileName);
+
+            var e1d = controller.ModelData.ObjectData.E1DCollection;
+
+            foreach(var set in e1d.Objects)
+            {
+                set.SetColor(Color.FromArgb(alpha, set.Color));
+                Assert.IsTrue(set.Color.A == alpha);
+            }
+
+            var pres = controller.CreateModelObjectsPresentor(ObjType.Элемент1D);
+
+            var indices = pres.CreateIndexes();
+            var colors = pres.CreateVertexes(indices.Item3, "цвет");
+
+            //Сделал исправление в ColorLineObjsCreator.cs стр 14, т.к набор не подхватывал альфа-канал
+            for (var i = 0; i < colors.Length; i+=4)
+                Assert.AreEqual(alphaExp, colors[i + 3], 1e-4);
         }
     }
 }

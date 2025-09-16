@@ -12,11 +12,11 @@ namespace OperationalController
 {
     public partial class Controller
     {
+        public string Message { get; private set; }
         /// <inheritdoc/>
 
         public void ImportMesh(string filePath)
         {
-
             var path = System.IO.Path.GetDirectoryName(filePath);
             var name = "новый_проект.bpf2";
             project = new ProjectData($"{path}//{name}");
@@ -29,7 +29,7 @@ namespace OperationalController
                 loader = new LoadModelFromINPTextFile();
             else if (ext == ".inp_v2")
                 loader = new LoadModelFromINPTextFile_v2();
-            else if (ext == ".ASC")
+            else if (ext == ".ASC" | ext == ".asc")
                 loader = new LoadModelFromASCIITextFile_v2();
             else if (ext == ".dat")
                 loader = new LoadModelFromSalomeFile();
@@ -41,10 +41,12 @@ namespace OperationalController
             else
                 throw new Exception("неправильно задано расширение файла");
 
+            loader.LoadEvent += (ar1, ar2) => { Message = ar2.Message; };
             var modelData = loader.Load(filePath);
 
             project.ModelData.SetObjectData(modelData.ObjectData);
             project.ModelData.SetGroupData(modelData.GroupData);
         }
+
     }
 }

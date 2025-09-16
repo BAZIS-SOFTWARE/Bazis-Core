@@ -18,7 +18,7 @@ namespace Project.Interfaces
         string Name { get; set; }
         /// <summary>
         /// Path
-        /// </summary>
+        /// </summary>    
         string Path { get; set; }
         /// <summary>
         /// Comments

@@ -10,9 +10,9 @@ namespace Project.Interfaces.IO
         /// <summary>
         /// Load
         /// </summary>
-        /// <param name="path"></param>
+        /// <param name="fullPath"></param>
         /// <returns></returns>
-        void Load(IProjectData projectData, string path);
+        IProjectData Load(string fullPath);
         /// <summary>
         /// LoadEvent
         /// </summary>

@@ -27,7 +27,7 @@ namespace PrTests
             Assert.AreEqual(expected, polygon.IsSelectedByRectangle(rectangleBox));
         }
 
-        private float GetPolygonAreaByPoints(int[][] pointValues)
+        private double GetPolygonAreaByPoints(int[][] pointValues)
         {
             var polygon = new Polygon(pointValues.Select(x => new Point2D(x[0], x[1])).ToList());
             return polygon.GetPolygonArea();

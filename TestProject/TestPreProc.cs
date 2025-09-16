@@ -17,6 +17,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Windows.Forms;
 using Model.MeshObjects;
+using Project.IO;
 
 namespace TestProject
 {
@@ -312,9 +313,9 @@ namespace TestProject
         //[DataRow(@".\..\..\CalcCompDataTest\6.bpf", ProcessType.Welding)]
         public void PreProc_GenerateTSF_ShouldPass(string file, ProcessType pt)
         {
-            var project = new ProjectData(projPath + file);
-
-            project.Load();
+            var loader = new LoadProjectFromTextFormat();
+            loader.LoadEvent += (ar1, ar2) => { };
+            var project = loader.Load(projPath + file);
 
             var resData = new List<ICondData>();
 

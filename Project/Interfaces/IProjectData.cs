@@ -36,11 +36,13 @@ namespace Project.Interfaces
         /// <summary>
         /// Save
         /// </summary>
-        void Save();
+        /// <param name="fullPath"></param>
+        void Save(string fullPath);
         /// <summary>
         /// Load
         /// </summary>
-        void Load();
+        /// <param name="fullPath"></param>
+        void Load(string fullPath);
         /// <summary>
         /// Load
         /// </summary>
