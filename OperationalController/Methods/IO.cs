@@ -13,21 +13,23 @@ using System;
 using System.Data;
 using Model.IO;
 using Project.IO;
+using Project.Interfaces.IO;
 
 namespace OperationalController
 {
     public partial class Controller
     {
-        /// <inheritdoc/>
+        public event Action<string> MessageEvent;
 
         /// <inheritdoc/>
 
         public void Load(string path)
         {
             var loader = new LoadProjectFromTextFormat();
-            loader.LoadEvent += (ar1, ar2) => { Message = ar2.Message; };
+            loader.LoadEvent += (ar1, ar2) => { MessageEvent?.Invoke(ar2.Message); };
             project = loader.Load(path);
         }
+       
         /// <inheritdoc/>
 
         public void Save(string path)
