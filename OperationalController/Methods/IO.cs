@@ -20,12 +20,13 @@ namespace OperationalController
     {
         /// <inheritdoc/>
 
-        /// <inheritdoc/>
-
         public void Load(string path)
         {
             var loader = new LoadProjectFromTextFormat();
-            loader.LoadEvent += (ar1, ar2) => { Message = ar2.Message; };
+            loader.LoadEvent += (ar1, ar2) => 
+            { 
+                Message = ar2.Message; 
+            };
             project = loader.Load(path);
         }
         /// <inheritdoc/>
