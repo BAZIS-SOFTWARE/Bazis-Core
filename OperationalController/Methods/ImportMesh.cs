@@ -12,7 +12,7 @@ namespace OperationalController
 {
     public partial class Controller
     {
-        public string Message { get; private set; }
+        //public string Message { get; private set; }
         /// <inheritdoc/>
 
         public void ImportMesh(string filePath)
@@ -41,7 +41,10 @@ namespace OperationalController
             else
                 throw new Exception("неправильно задано расширение файла");
 
-            loader.LoadEvent += (ar1, ar2) => { Message = ar2.Message; };
+            loader.LoadEvent += (ar1, ar2) => 
+            {
+                MessageEvent?.Invoke(ar2.Message);
+            };
             var modelData = loader.Load(filePath);
 
             project.ModelData.SetObjectData(modelData.ObjectData);

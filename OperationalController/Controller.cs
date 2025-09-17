@@ -90,7 +90,10 @@ namespace OperationalController
         public List<List<int>> FindCoincidentObjects(ObjType objType, float distance)
         {
             var objs = ModelData.ObjectData.GetObjects(objType).ToList();
-            coincidentObjectsFinder.ProgressEvent += (ar1, ar2) => { Message = ar2.ToString(); };
+            coincidentObjectsFinder.ProgressEvent += (ar1, ar2) => 
+            { 
+                MessageEvent?.Invoke(ar2.ToString()); 
+            };
             return coincidentObjectsFinder.Find(objs, distance);
         }
 
