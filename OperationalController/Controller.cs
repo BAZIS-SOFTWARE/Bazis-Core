@@ -163,12 +163,6 @@ namespace OperationalController
         IGeneralData GeneralData => project?.GeneralData;
 
         /// <inheritdoc/>
-        public string Path 
-        { 
-            get => GeneralData.Path;
-            set => GeneralData.Path = value;
-        }
-        /// <inheritdoc/>
         public string Name 
         {
             get => GeneralData.Name;

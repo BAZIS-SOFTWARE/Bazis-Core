@@ -48,10 +48,6 @@ namespace OperationalController
         /// <summary>
         /// Path
         /// </summary>
-        string Path { get; set; }
-        /// <summary>
-        /// Path
-        /// </summary>
         string Name { get; set; }
         /// <summary>
         /// Save
@@ -73,6 +69,11 @@ namespace OperationalController
         /// </summary>
         /// <param name="projectFile"></param>
         void CreateProject(string projectFile);
+
+        /// <summary>
+        /// CreateTask
+        /// </summary>
+        void CreateTask();
 
         /// <summary>
         /// GetModelObject

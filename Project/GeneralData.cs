@@ -12,7 +12,7 @@ namespace Project
         /// <inheritdoc/>
         public string Name { get; set; }
         /// <inheritdoc/>
-        public string Path { get; set; }
+        //public string Path { get; set; }
         /// <inheritdoc/>
         public string Comments { get; set; }
     }

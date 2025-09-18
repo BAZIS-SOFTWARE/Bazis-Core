@@ -95,7 +95,6 @@
     <Compile Include="Tasks\IO\LoadEventArgs.cs" />
     <Compile Include="Tasks\IO\LoadTaskDataTextFormat.cs" />
     <Compile Include="Tasks\IO\SaveEventArgs.cs" />
-    <Compile Include="Tasks\IO\SaveTaskDataTextFormat.cs" />
     <Compile Include="Tasks\LoadData.cs" />
     <Compile Include="Tasks\MatData.cs" />
     <Compile Include="Tasks\MediaData.cs" />

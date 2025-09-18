@@ -67,6 +67,7 @@ namespace Project.IO
 
             //taskData loading
 
+
             var taskLoader = new LoadTaskDataTextFormat();
 
             taskLoader.LoadEvent += (ar1, ar2) =>
