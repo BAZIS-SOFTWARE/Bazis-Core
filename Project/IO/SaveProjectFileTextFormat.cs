@@ -48,22 +48,19 @@ namespace Project.IO
                 sw.WriteLine("");
                 sw.WriteLine("Проект");
 
-                if (project.TaskData != null)
+                sw.WriteLine("Сведения : {0}", project.GeneralData.Comments);
+                sw.WriteLine("Вид : {0}", project.TaskData.TaskType);
+                sw.WriteLine("Тип : {0}", project.TaskData.TaskKind);
+
+                //при создании задачи материалы и функции обязаны быть загружены!!!
+                if (project.TaskData.Materials != null & project.TaskData.Functions != null)
                 {
-                    sw.WriteLine("Сведения : {0}", project.GeneralData.Comments);
-                    sw.WriteLine("Вид : {0}", project.TaskData.TaskType);
-                    sw.WriteLine("Тип : {0}", project.TaskData.TaskKind);
+                    sw.WriteLine("БазаМатериалов : {0}", project.TaskData.Materials.Name);
+                    sw.WriteLine("БазаФункций : {0}", project.TaskData.Functions.Name);
 
-                    //при создании задачи материалы и функции обязаны быть загружены!!!
-                    if(project.TaskData.Materials != null & project.TaskData.Functions != null)
-                    {
-                        sw.WriteLine("БазаМатериалов : {0}", project.TaskData.Materials.Name);
-                        sw.WriteLine("БазаФункций : {0}", project.TaskData.Functions.Name);
-
-                        //сохранение данных задачи
-                        foreach (var item in project.TaskData)
-                            sw.WriteLine(item.ToString());
-                    }
+                    //сохранение данных задачи
+                    foreach (var item in project.TaskData)
+                        sw.WriteLine(item.ToString());
                 }
 
                 sw.WriteLine("#Проект");

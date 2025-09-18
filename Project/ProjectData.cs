@@ -28,7 +28,7 @@ namespace Project
         public IModelData ModelData { get; set; } = new ModelData();
         /// <inheritdoc/>
 
-        public ITaskData TaskData { get; set; }
+        public ITaskData TaskData { get; set; } = new TaskData();
 
         /// <inheritdoc/>
         public IGeneralData GeneralData { get; set; } = new GeneralData();
