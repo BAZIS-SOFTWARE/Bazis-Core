@@ -11,6 +11,7 @@ using Model.Interfaces.ObjectsCollections;
 using Model.MeshObjects;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
+using System.Security.Cryptography;
 
 namespace Model.ObjectsCollections
 {
@@ -228,8 +229,8 @@ public bool ContainsName(string collName)
 
             if (objects.Count != 0)
             {
-                var max = GetMaxNumber();
-                var min = collection.GetMinNumber();
+                var max = Count != 0 ? GetMaxNumber() : 0;
+                var min = collection.Count != 0 ? collection.GetMinNumber() : 0;
                 if (min <= max)
                     shifting = max + 1;
             }
