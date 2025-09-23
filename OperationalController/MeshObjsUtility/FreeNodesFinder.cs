@@ -18,8 +18,10 @@ namespace OperationalController.MeshObjsUtility
             var interfaceNodes = finder.Find(elements);
 
             var nodesNumbersAll = objsData.NodesSet.Values.Select(x => x.Number);
-            var nodesNumbersElements = interfaceNodes.Keys;
-            var distNodesNumbersElements = nodesNumbersElements.Distinct();
+            var nodesNumbers = interfaceNodes.Keys;
+
+            // А зачем проверять на дублирование номеров? Это обеспечивает ObjectData
+            var distNodesNumbersElements = nodesNumbers.Distinct();
             var freeNodesNumbers = nodesNumbersAll.Except(distNodesNumbersElements);
 
             return freeNodesNumbers;

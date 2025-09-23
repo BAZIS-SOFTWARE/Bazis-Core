@@ -21,6 +21,11 @@ namespace OperationalController
     public partial class Controller
     {
         public event Action<string> MessageEvent;
+      
+        public void UnsubMessasge()
+        {
+            MessageEvent = null;
+        }
 
         /// <inheritdoc/>
 
