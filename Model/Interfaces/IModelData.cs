@@ -28,8 +28,8 @@ namespace Model.Interfaces
         /// <summary>
         /// Append
         /// </summary>
-        /// <param name="path"></param>
-        void Append(string path);
+        /// <param name="modelData"></param>
+        void Append(IModelData modelData);
         /// <summary>
         /// SetObjectData
         /// </summary>

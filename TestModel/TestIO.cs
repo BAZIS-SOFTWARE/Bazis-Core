@@ -121,6 +121,7 @@ namespace TestModel
             }
         }
         [TestMethod]
+        //[DataRow(new string[] { "c:\\projs\\AdditiveTest\\MeshWithBounds\\новый_проект.bpf2", "Box_2.stl" }, DisplayName = "Mix")]
         [DataRow(new string[] { "Box_1.stl", "Box_2.stl" },DisplayName = "Box_1_Box_2")]
         [DataRow(new string[] { "Box.stl", "Large_Box3.stl", "Sticks.stl" }, DisplayName = "Box_Large_Box3_Sticks")]
         public void AppendAndSaveToSTLTextFormat(string [] files)
@@ -128,27 +129,31 @@ namespace TestModel
             string dir = @"..\..\..\Examples\STL\Append";
 
             //assing
-            var model = new ModelData();
+            var controller = new OperationalController.Controller();
 
-            model.Loader = new LoadFromSTLFile();
+            var ext = Path.GetExtension(files[0]);
+            //model.Loader = new LoadFromSTLFile();
 
             //act
-            model.Load(Path.Combine(dir, files[0]));
 
+            if(ext == ".bpf2")
+                controller.Load(files[0]);
+            else
+                controller.ImportMesh(Path.Combine(dir, files[0]));
+            
             foreach (var item in files.Skip(1))
-                model.Append(Path.Combine(dir, item));
+                controller.Append(Path.Combine(dir, item));
 
 
             //assert
-            Assert.AreNotEqual(model.ObjectData.Count(ObjType.Элемент2D), 0);
+            Assert.AreNotEqual(controller.GetModelObjects(ObjType.Элемент2D).Count(), 0);
 
-            model.Saver = new SaveToTxtSTLFile();
-            model.Save(Path.Combine(dir, "append.stl"));
-            model.Load(Path.Combine(dir, "append.stl"));
+            controller.ExportMesh(Path.Combine(dir, "append.stl"));
+            controller.ImportMesh(Path.Combine(dir, "append.stl"));
 
-            Assert.AreNotEqual(model.ObjectData.Count(ObjType.Элемент2D), 0);
+            Assert.AreNotEqual(controller.GetModelObjects(ObjType.Элемент2D).Count(), 0);
 
-        }
+        }   
 
 
         [TestMethod]

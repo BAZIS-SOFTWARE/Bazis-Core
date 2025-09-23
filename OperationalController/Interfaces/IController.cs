@@ -16,10 +16,10 @@ using System.Diagnostics;
 
 namespace OperationalController
 {
-    /// <summary>
-    /// IModelController
-    /// </summary>
-    public partial interface IController
+        /// <summary>
+        /// IModelController
+        /// </summary>
+        public partial interface IController
     {
         /// <summary>
         /// FunctionsDB
@@ -48,10 +48,6 @@ namespace OperationalController
         /// <summary>
         /// Path
         /// </summary>
-        string Path { get; set; }
-        /// <summary>
-        /// Path
-        /// </summary>
         string Name { get; set; }
         /// <summary>
         /// Save
@@ -64,15 +60,15 @@ namespace OperationalController
         /// <param name="path"></param>
         void Load(string path);
         /// <summary>
-        /// ExportMesh
-        /// </summary>
-        /// <param name="v"></param>
-        void ExportMesh(string v);
-        /// <summary>
         /// Create
         /// </summary>
         /// <param name="projectFile"></param>
         void CreateProject(string projectFile);
+
+        /// <summary>
+        /// CreateTask
+        /// </summary>
+        void CreateTask();
 
         /// <summary>
         /// GetModelObject

@@ -24,20 +24,32 @@ namespace Project.Tasks
         public MaterialDBData Materials { get; set; }
         /// <inheritdoc/>
         public FunctionDBData Functions { get; set; }
+
+        /// <summary>
+        /// TaskData
+        /// </summary>
+        /// <param name="materials"></param>
+        /// <param name="functions"></param>
+        public TaskData(MaterialDBData materials,FunctionDBData functions) : this()
+        {
+            Materials = materials;
+            Functions = functions;
+        }
+
         /// <inheritdoc/>
-        public TaskType TaskType { get; set; }
+        public TaskType TaskType { get; set; } = TaskType.Linear;
         /// <inheritdoc/>
 
-        public TaskKind TaskKind { get; set; }
+        public TaskKind TaskKind { get; set; } = TaskKind.химическая;
 
         List<ICondData> taskData;
 
         public int Count { get { return taskData.Count; } }
 
         public bool IsReadOnly => throw new System.NotImplementedException();
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
-        public ITaskDataSaver Saver { get; set; } = new SaveTaskDataTextFormat();
+        public ITaskDataSaver Saver { get; set; }
         /// <inheritdoc/>
         public ITaskDataLoader Loader { get; set; } = new LoadTaskDataTextFormat();
 

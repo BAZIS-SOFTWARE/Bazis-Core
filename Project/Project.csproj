@@ -4,7 +4,7 @@
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
 	  <SignAssembly>True</SignAssembly>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>4.9.7</Version>
+    <Version>5.0.1</Version>
     <Title>Project</Title>
     <Authors>Bilenko Georgy</Authors>
     <Company>BAZIS SOFTWARE</Company>
@@ -95,7 +95,6 @@
     <Compile Include="Tasks\IO\LoadEventArgs.cs" />
     <Compile Include="Tasks\IO\LoadTaskDataTextFormat.cs" />
     <Compile Include="Tasks\IO\SaveEventArgs.cs" />
-    <Compile Include="Tasks\IO\SaveTaskDataTextFormat.cs" />
     <Compile Include="Tasks\LoadData.cs" />
     <Compile Include="Tasks\MatData.cs" />
     <Compile Include="Tasks\MediaData.cs" />

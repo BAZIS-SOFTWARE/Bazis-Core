@@ -25,10 +25,8 @@ namespace Model
 
         /// <inheritdoc/>
 
-        public void Append(string path)
+        public void Append(IModelData modelData)
         {
-            var modelData = Loader.Load(path);
-
             ObjectData.NodesSet.Append(modelData.ObjectData.NodesSet);
 
             ObjectData.E1DCollection.Append(modelData.ObjectData.E1DCollection);

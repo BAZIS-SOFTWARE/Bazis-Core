@@ -19,7 +19,7 @@ namespace Project.Interfaces
         /// <summary>
         /// Path
         /// </summary>    
-        string Path { get; set; }
+        //string Path { get; set; }
         /// <summary>
         /// Comments
         /// </summary>
