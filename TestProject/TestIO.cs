@@ -31,16 +31,14 @@ namespace TestProject
         }
 
         [DataTestMethod]
-        //[DataRow("c:\\projs\\testProj\\Tempering", "proj.bpf")]
-        [DataRow("proj_traj.bpf",TaskType.Volume,TaskKind.термическая_механическая)]
-        //[DataRow("c:\\BazisSolver\\TestTaskSolutionMSTest\\ExampleProj\\Mech\\3D\\ConstLoadAndTemp500\\", "proj.bpf")]
-        //[DataRow("c:\\projs\\ifm", "proj_v1.bpf")]
+        [DataRow(@"..\..\..\Examples\proj_traj.bpf", TaskType.Volume, TaskKind.термическая_механическая)]
+        [DataRow(@"c:\projs\AdditiveTest\MeshWithBounds\новый_проект.bpf2", TaskType.Volume, TaskKind.термическая_механическая)]
         public void LoadProjectFiletextFormat(string name,TaskType taskType,TaskKind taskKind)
         {
             //assing
             //c:\projs\testProj\Tempering\
             var controller = new OperationalController.Controller();
-            controller.Load($@"{testDir}\{name}");
+            controller.Load(name);
 
             //project.Loader.LoadEvent += (ar1, ar2) => { };
       

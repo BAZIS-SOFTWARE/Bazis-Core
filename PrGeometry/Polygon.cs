@@ -1,5 +1,6 @@
 ﻿using Geometry.Exteisions;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,15 +9,31 @@ namespace Geometry
     public class Polygon
     {
         private readonly List<Point2D> points;
-
+        /// <summary>
+        /// Poligon
+        /// </summary>
+        /// <param name="points">
+        /// Отсортированные по или против часовой стрелки точки</param>
+        /// <exception cref="ArgumentException"></exception>
         public Polygon(List<Point2D> points)
         {
-            var hullCreator = new Hull2DCreator(points);
-            this.points = hullCreator.GetHullGraham().ToList();
+            //if (points.Count < 3)
+                //throw new ArgumentException("При создании полигона требуется более 3-х точек");
+            var hullCreator = new Hull2DCreator();
+            this.points = hullCreator.GetHullGraham(points).ToList();
+        }
+
+        public IEnumerable<Point2D> GetPoints()
+        {
+            foreach (var item in points)
+            {
+                yield return item;
+            }
+
         }
 
         //Gauss's area formula (фор-ла шнурования или землемера)
-        //Seems legit because the hull creator traverse on points in a defined direction
+        //Ф-ла подходит как для выпуклово так и для вогнутого многоугольника
         public double GetPolygonArea()
         {
             var sum = 0.0;
@@ -41,32 +58,6 @@ namespace Geometry
                 integratedArea += triangleArea;
             }
             return Math.Abs(integratedArea - sourceArea) < epsilon;
-        }
-
-        public bool IsSelectedByRectangle(RectangleBox rectangle)
-        {
-            var maxX = (int)points.Select(p => p._x).Max();
-            var maxY = (int)points.Select(p => p._y).Max();
-            var minX = (int)points.Select(p => p._x).Min();
-            var minY = (int)points.Select(p => p._y).Min();
-            var figureBox = new RectangleBox(minX, maxX, minY, maxY);
-            if (!figureBox.IsIntersectWithOther(rectangle))
-                return false;
-            if (figureBox.IsInnerOther(rectangle))
-                return true;
-            var rectanglePoints = rectangle.GetPoints();
-            if (rectanglePoints.Any(p => IsPointInsidePolygon(p)))
-                return true;
-            // Вопрос, насколько нужен этот цикл проверки?
-            foreach (var rectangleSegment in rectanglePoints.Bigrams(true).Select(p => new Segment2D(p.Item1, p.Item2)))
-            {
-                foreach (var contourSegment in points.Bigrams(true).Select(p => new Segment2D(p.Item1, p.Item2)))
-                {
-                    if (contourSegment.HasIntersectedPoint(rectangleSegment))
-                        return true;
-                }
-            }
-            return false;
         }
     }
 }

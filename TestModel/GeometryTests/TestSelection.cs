@@ -1,4 +1,5 @@
 ﻿using Geometry;
+using Geometry.Exteisions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -23,8 +24,50 @@ namespace PrTests
         public void TestIsSelectedByRectangleBase(int left, int right, int bottom, int top, bool expected, params int[][] pointValues)
         {
             var polygon = new Polygon(pointValues.Select(x => new Point2D(x[0], x[1])).ToList());
+
+            var points = polygon.GetPoints();
+
+            var maxX = (int)points.Select(p => p._x).Max();
+            var maxY = (int)points.Select(p => p._y).Max();
+            var minX = (int)points.Select(p => p._x).Min();
+            var minY = (int)points.Select(p => p._y).Min();
+            
+            var polygonBox = new RectangleBox(minX, maxX, minY, maxY);
             var rectangleBox = new RectangleBox(left, right, bottom, top);
-            Assert.AreEqual(expected, polygon.IsSelectedByRectangle(rectangleBox));
+
+
+            Assert.AreEqual(expected, IsSelectedByRectangle(polygonBox, rectangleBox));
+            //Assert.AreEqual(expected, IsSelectedByCrossing(polygon, rectangleBox));
+        }
+
+        public bool IsSelectedByRectangle(RectangleBox polygonBox, RectangleBox rectangle)
+        {
+
+            if (polygonBox.IsIntersectWithOther(rectangle))
+                return true;
+            if (polygonBox.IsInnerOther(rectangle))
+                return true;
+
+            return false;
+        }
+
+        public bool IsSelectedByCrossing(Polygon polygon, RectangleBox rectangle)
+        {
+
+            var rectanglePoints = rectangle.GetPoints();
+
+            if (rectanglePoints.Any(p => polygon.IsPointInsidePolygon(p)))
+                return true;
+            // Вопрос, насколько нужен этот цикл проверки?
+            //foreach (var rectangleSegment in rectanglePoints.Bigrams(true).Select(p => new Segment2D(p.Item1, p.Item2)))
+            //{
+            //    foreach (var contourSegment in points.Bigrams(true).Select(p => new Segment2D(p.Item1, p.Item2)))
+            //    {
+            //        if (contourSegment.HasIntersectedPoint(rectangleSegment))
+            //            return true;
+            //    }
+            //}
+            return false;
         }
 
         private double GetPolygonAreaByPoints(int[][] pointValues)
