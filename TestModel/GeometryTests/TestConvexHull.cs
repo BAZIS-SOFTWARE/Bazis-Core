@@ -51,7 +51,7 @@ namespace PrTests
             {
                 new Point2D(1, 2), new Point2D(2, 3),
             };
-            Assert.ThrowsException<ArgumentException>(() => new Hull2DCreator().GetHullGraham(points));
+            Assert.ThrowsException<ArgumentException>(() => new Hull2DCreator().CreateHullGraham(points));
         }
 
         [TestMethod]
@@ -60,7 +60,7 @@ namespace PrTests
         [DataRow(new[] { 2, 2 }, new[] { 2, 2 }, new[] { 2, 2 }, new[] { 2, 2 })]
         public void ConvexHull_ShouldFail_WhenLessThenThreeRealPointsInSequenceAndSomePointsInOnePlace(params int[][] pointsValues)
         {
-            Assert.ThrowsException<ArgumentException>(() => new Hull2DCreator().GetHullGraham(CreateListOfPoints(pointsValues)));
+            Assert.ThrowsException<ArgumentException>(() => new Hull2DCreator().CreateHullGraham(CreateListOfPoints(pointsValues)));
         }
 
         [TestMethod]
@@ -69,7 +69,7 @@ namespace PrTests
         [DataRow(new[] { -10, -10 }, new[] { -9, -9 }, new[] { -8, -8 },new[] {-7, -7}, new[] {-6, -6}, new[] {-5, -5})]
         public void ConvexHull_ShouldFail_WhenAllPointsInSequenceBelongOneLine(params int[][] pointsValues)
         {
-            Assert.ThrowsException<ArgumentException>(() => new Hull2DCreator().GetHullGraham(CreateListOfPoints(pointsValues)));
+            Assert.ThrowsException<ArgumentException>(() => new Hull2DCreator().CreateHullGraham(CreateListOfPoints(pointsValues)));
         }
 
         [TestMethod]

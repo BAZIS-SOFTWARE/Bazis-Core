@@ -15,12 +15,9 @@ namespace Geometry
         /// <param name="points">
         /// Отсортированные по или против часовой стрелки точки</param>
         /// <exception cref="ArgumentException"></exception>
-        public Polygon(List<Point2D> points)
+        internal Polygon(List<Point2D> points)
         {
-            //if (points.Count < 3)
-                //throw new ArgumentException("При создании полигона требуется более 3-х точек");
-            var hullCreator = new Hull2DCreator();
-            this.points = hullCreator.GetHullGraham(points).ToList();
+            this.points = points;
         }
 
         public IEnumerable<Point2D> GetPoints()

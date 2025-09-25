@@ -7,6 +7,44 @@ namespace Geometry
     public class Hull2DCreator
     {
         /// <summary>
+        /// TryCreateHullGraham
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="output"></param>
+        /// <returns></returns>
+        public bool TryCreateHullGraham(IEnumerable<Point2D> input, out Polygon  output)
+        {
+            output = null;
+
+            if (input.Count() < 3)
+                return false;
+            var segment = new Segment2D(input.Last(), input.First());
+            if (input.All(x => segment.IsPointBelongSegment(x)))
+                return false;
+
+            var hull = GetHullGraham(input).ToList();
+            output = new Polygon(hull);
+            
+            return true;
+        }
+        /// <summary>
+        /// CreateHullGraham
+        /// </summary>
+        /// <param name="points"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        public Polygon CreateHullGraham(IEnumerable<Point2D> points)
+        {
+            if (points.Count() < 3)
+                throw new ArgumentException("Unable to build a convex hull. Number of points must be 3 or more.");
+            var segment = new Segment2D(points.Last(), points.First());
+            if (points.All(x => segment.IsPointBelongSegment(x)))
+                throw new ArgumentException("Unable to build a convex hull. All points belongs one line.");
+            
+            var hull = GetHullGraham(points).ToList();
+            return new Polygon(hull);
+        }
+        /// <summary>
         /// Создание выпуклой оболочки по алгоритму Грэхэма.
         /// Из набора точек создается замыкающаяся выпуклая оболочка
         /// https://neerc.ifmo.ru/wiki/index.php?title=%D0%A1%D1%82%D0%B0%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5_%D0%B2%D1%8B%D0%BF%D1%83%D0%BA%D0%BB%D1%8B%D0%B5_%D0%BE%D0%B1%D0%BE%D0%BB%D0%BE%D1%87%D0%BA%D0%B8:_%D0%94%D0%B6%D0%B0%D1%80%D0%B2%D0%B8%D1%81,_%D0%93%D1%80%D1%8D%D1%85%D0%B5%D0%BC,_%D0%AD%D0%BD%D0%B4%D1%80%D1%8E,_%D0%A7%D0%B5%D0%BD,_QuickHull#.D0.90.D0.BB.D0.B3.D0.BE.D1.80.D0.B8.D1.82.D0.BC_.D0.93.D1.80.D1.8D.D1.85.D0.B5.D0.BC.D0.B0
@@ -14,12 +52,6 @@ namespace Geometry
         /// <returns>Коллекцию точек оболочки по порядку против часовой стрелки от самой нижней левой точки</returns>
         public IEnumerable<Point2D> GetHullGraham(IEnumerable<Point2D> points)
         {
-            if (points.Count() < 3)
-                throw new ArgumentException("Unable to build a convex hull. Number of points must be 3 or more.");
-            var segment = new Segment2D(points.Last(), points.First());
-            if (points.All(x => segment.IsPointBelongSegment(x)))
-                throw new ArgumentException("Unable to build a convex hull. All points belongs one line.");
-
             var startPoint = points
                 .OrderBy(p => p._y)
                 .ThenBy(p => p._x)

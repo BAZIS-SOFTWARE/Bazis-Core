@@ -23,16 +23,12 @@ namespace PrTests
         /// array of arrays to create the points of polygon
         public void TestIsSelectedByRectangleBase(int left, int right, int bottom, int top, bool expected, params int[][] pointValues)
         {
-            var polygon = new Polygon(pointValues.Select(x => new Point2D(x[0], x[1])).ToList());
+            var creator = new Hull2DCreator();
+            var polygon = creator.CreateHullGraham(pointValues.Select(x => new Point2D(x[0], x[1])));
 
             var points = polygon.GetPoints();
-
-            var maxX = (int)points.Select(p => p._x).Max();
-            var maxY = (int)points.Select(p => p._y).Max();
-            var minX = (int)points.Select(p => p._x).Min();
-            var minY = (int)points.Select(p => p._y).Min();
             
-            var polygonBox = new RectangleBox(minX, maxX, minY, maxY);
+            var polygonBox = new RectangleBox(points);
             var rectangleBox = new RectangleBox(left, right, bottom, top);
 
 
@@ -72,7 +68,8 @@ namespace PrTests
 
         private double GetPolygonAreaByPoints(int[][] pointValues)
         {
-            var polygon = new Polygon(pointValues.Select(x => new Point2D(x[0], x[1])).ToList());
+            var creator = new Hull2DCreator();
+            var polygon = creator.CreateHullGraham(pointValues.Select(x => new Point2D(x[0], x[1])));
             return polygon.GetPolygonArea();
         }
 
@@ -130,11 +127,12 @@ namespace PrTests
         {
             get
             {
+                var creator = new Hull2DCreator();
                 return new[] 
                 { 
                     new object[] 
                     {
-                        new Polygon(new List<Point2D>
+                        creator.CreateHullGraham(new List<Point2D>
                         {
                             new Point2D(0, 0),
                             new Point2D(0, 1),
@@ -145,7 +143,7 @@ namespace PrTests
                     },
                     new object[]
                     {
-                        new Polygon(new List<Point2D>
+                        creator.CreateHullGraham(new List<Point2D>
                         {
                             new Point2D(0, 0),
                             new Point2D(0, 1),
@@ -156,7 +154,7 @@ namespace PrTests
                     },
                     new object[]
                     {
-                        new Polygon(new List<Point2D>
+                        creator.CreateHullGraham(new List<Point2D>
                         {
                             new Point2D(0, 0),
                             new Point2D(0, 1),
@@ -168,7 +166,7 @@ namespace PrTests
 
                     new object[]
                     {
-                        new Polygon(new List<Point2D>
+                        creator.CreateHullGraham(new List<Point2D>
                         {
                             new Point2D(0, 0),
                             new Point2D(0, 1),
@@ -179,7 +177,7 @@ namespace PrTests
                     },
                     new object[]
                     {
-                        new Polygon(new List<Point2D>
+                        creator.CreateHullGraham(new List<Point2D>
                         {
                             new Point2D(0, 0),
                             new Point2D(0, 1),
@@ -190,7 +188,7 @@ namespace PrTests
                     },
                     new object[]
                     {
-                        new Polygon(new List<Point2D>
+                        creator.CreateHullGraham(new List<Point2D>
                         {
                             new Point2D(0, 0),
                             new Point2D(0, 1),
@@ -201,7 +199,7 @@ namespace PrTests
                     },
                     new object[]
                     {
-                        new Polygon(new List<Point2D>
+                        creator.CreateHullGraham(new List<Point2D>
                         {
                             new Point2D(-341.5122f, -77.0802f),
                             new Point2D(-377.1383f, 277.8025f),
