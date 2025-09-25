@@ -238,7 +238,8 @@ namespace OperationalController
         /// </summary>
         /// <param name="objType"></param>
         /// <returns></returns>   
-        [Obsolete("По возможности не использовать")]
+        [Obsolete("По возможности не использовать. " +
+            "Предпочтительнее использовать с атрибутом ISetInfo")]
         IObjsPresenter CreateModelObjectsPresentor(ObjType objType);
 
         /// <summary>

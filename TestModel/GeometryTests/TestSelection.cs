@@ -1,4 +1,5 @@
 ﻿using Geometry;
+using Geometry.Exteisions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -22,14 +23,53 @@ namespace PrTests
         /// array of arrays to create the points of polygon
         public void TestIsSelectedByRectangleBase(int left, int right, int bottom, int top, bool expected, params int[][] pointValues)
         {
-            var polygon = new Polygon(pointValues.Select(x => new Point2D(x[0], x[1])).ToList());
+            var creator = new Hull2DCreator();
+            var polygon = creator.CreateHullGraham(pointValues.Select(x => new Point2D(x[0], x[1])));
+
+            var points = polygon.GetPoints();
+            
+            var polygonBox = new RectangleBox(points);
             var rectangleBox = new RectangleBox(left, right, bottom, top);
-            Assert.AreEqual(expected, polygon.IsSelectedByRectangle(rectangleBox));
+
+
+            Assert.AreEqual(expected, IsSelectedByRectangle(polygonBox, rectangleBox));
+            //Assert.AreEqual(expected, IsSelectedByCrossing(polygon, rectangleBox));
+        }
+
+        public bool IsSelectedByRectangle(RectangleBox polygonBox, RectangleBox rectangle)
+        {
+
+            if (polygonBox.IsIntersectWithOther(rectangle))
+                return true;
+            if (polygonBox.IsInnerOther(rectangle))
+                return true;
+
+            return false;
+        }
+
+        public bool IsSelectedByCrossing(Polygon polygon, RectangleBox rectangle)
+        {
+
+            var rectanglePoints = rectangle.GetPoints();
+
+            if (rectanglePoints.Any(p => polygon.IsPointInsidePolygon(p)))
+                return true;
+            // Вопрос, насколько нужен этот цикл проверки?
+            //foreach (var rectangleSegment in rectanglePoints.Bigrams(true).Select(p => new Segment2D(p.Item1, p.Item2)))
+            //{
+            //    foreach (var contourSegment in points.Bigrams(true).Select(p => new Segment2D(p.Item1, p.Item2)))
+            //    {
+            //        if (contourSegment.HasIntersectedPoint(rectangleSegment))
+            //            return true;
+            //    }
+            //}
+            return false;
         }
 
         private double GetPolygonAreaByPoints(int[][] pointValues)
         {
-            var polygon = new Polygon(pointValues.Select(x => new Point2D(x[0], x[1])).ToList());
+            var creator = new Hull2DCreator();
+            var polygon = creator.CreateHullGraham(pointValues.Select(x => new Point2D(x[0], x[1])));
             return polygon.GetPolygonArea();
         }
 
@@ -87,11 +127,12 @@ namespace PrTests
         {
             get
             {
+                var creator = new Hull2DCreator();
                 return new[] 
                 { 
                     new object[] 
                     {
-                        new Polygon(new List<Point2D>
+                        creator.CreateHullGraham(new List<Point2D>
                         {
                             new Point2D(0, 0),
                             new Point2D(0, 1),
@@ -102,7 +143,7 @@ namespace PrTests
                     },
                     new object[]
                     {
-                        new Polygon(new List<Point2D>
+                        creator.CreateHullGraham(new List<Point2D>
                         {
                             new Point2D(0, 0),
                             new Point2D(0, 1),
@@ -113,7 +154,7 @@ namespace PrTests
                     },
                     new object[]
                     {
-                        new Polygon(new List<Point2D>
+                        creator.CreateHullGraham(new List<Point2D>
                         {
                             new Point2D(0, 0),
                             new Point2D(0, 1),
@@ -125,7 +166,7 @@ namespace PrTests
 
                     new object[]
                     {
-                        new Polygon(new List<Point2D>
+                        creator.CreateHullGraham(new List<Point2D>
                         {
                             new Point2D(0, 0),
                             new Point2D(0, 1),
@@ -136,7 +177,7 @@ namespace PrTests
                     },
                     new object[]
                     {
-                        new Polygon(new List<Point2D>
+                        creator.CreateHullGraham(new List<Point2D>
                         {
                             new Point2D(0, 0),
                             new Point2D(0, 1),
@@ -147,7 +188,7 @@ namespace PrTests
                     },
                     new object[]
                     {
-                        new Polygon(new List<Point2D>
+                        creator.CreateHullGraham(new List<Point2D>
                         {
                             new Point2D(0, 0),
                             new Point2D(0, 1),
@@ -158,7 +199,7 @@ namespace PrTests
                     },
                     new object[]
                     {
-                        new Polygon(new List<Point2D>
+                        creator.CreateHullGraham(new List<Point2D>
                         {
                             new Point2D(-341.5122f, -77.0802f),
                             new Point2D(-377.1383f, 277.8025f),

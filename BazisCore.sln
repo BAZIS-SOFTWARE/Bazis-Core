@@ -19,13 +19,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestModel", "TestModel\Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject", "TestProject\TestProject.csproj", "{CF7463D4-69A0-43D4-8AEE-1EAC08E30038}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Элементы решения", "Элементы решения", "{2AB3C118-1783-48EE-AAE6-A39B3D64635A}"
-	ProjectSection(SolutionItems) = preProject
-		ChangeObjsCollectionsColor_ActDiag.mdpuml = ChangeObjsCollectionsColor_ActDiag.mdpuml
-		GetSurfaceFigures_ActDiag.mdpuml = GetSurfaceFigures_ActDiag.mdpuml
-		GetVolumeFigures_ActDiag.mdpuml = GetVolumeFigures_ActDiag.mdpuml
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8F452548-69C6-4B04-AA4C-358C15F0FB83}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OperationalController", "OperationalController\OperationalController.csproj", "{283F3C11-AE5D-48A8-AF96-C5F44501DF24}"

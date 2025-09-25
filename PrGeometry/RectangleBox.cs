@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Geometry
 {
@@ -12,6 +10,18 @@ namespace Geometry
         public int Right { get; set; }
         public int Top { get; set; }
         public int Bottom { get; set; }
+
+        public RectangleBox(IEnumerable<Point2D> points)
+        {
+            if (points.Count() < 2)
+                throw new ArgumentException("Для построения прямоугольника " +
+                    "нужно минимум 2 точки");
+            Right = (int)points.Select(p => p._x).Max();
+            Left = (int)points.Select(p => p._x).Min();
+
+            Top = (int)points.Select(p => p._y).Max();
+            Bottom = (int)points.Select(p => p._y).Min();
+        }
 
         public RectangleBox(int left, int right, int bottom, int top)
         {

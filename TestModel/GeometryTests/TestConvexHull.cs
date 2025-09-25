@@ -30,9 +30,9 @@ namespace PrTests
                 new Point2D(0, 1)
             };
 
-            var hullCreator = new Hull2DCreator(points);
+            var hullCreator = new Hull2DCreator();
 
-            var convexHull = hullCreator.GetHullGraham();
+            var convexHull = hullCreator.GetHullGraham(points);
 
             var expected = new List<Point2D>
             {
@@ -51,7 +51,7 @@ namespace PrTests
             {
                 new Point2D(1, 2), new Point2D(2, 3),
             };
-            Assert.ThrowsException<ArgumentException>(() => new Hull2DCreator(points).GetHullGraham());
+            Assert.ThrowsException<ArgumentException>(() => new Hull2DCreator().CreateHullGraham(points));
         }
 
         [TestMethod]
@@ -60,7 +60,7 @@ namespace PrTests
         [DataRow(new[] { 2, 2 }, new[] { 2, 2 }, new[] { 2, 2 }, new[] { 2, 2 })]
         public void ConvexHull_ShouldFail_WhenLessThenThreeRealPointsInSequenceAndSomePointsInOnePlace(params int[][] pointsValues)
         {
-            Assert.ThrowsException<ArgumentException>(() => new Hull2DCreator(CreateListOfPoints(pointsValues)).GetHullGraham());
+            Assert.ThrowsException<ArgumentException>(() => new Hull2DCreator().CreateHullGraham(CreateListOfPoints(pointsValues)));
         }
 
         [TestMethod]
@@ -69,7 +69,7 @@ namespace PrTests
         [DataRow(new[] { -10, -10 }, new[] { -9, -9 }, new[] { -8, -8 },new[] {-7, -7}, new[] {-6, -6}, new[] {-5, -5})]
         public void ConvexHull_ShouldFail_WhenAllPointsInSequenceBelongOneLine(params int[][] pointsValues)
         {
-            Assert.ThrowsException<ArgumentException>(() => new Hull2DCreator(CreateListOfPoints(pointsValues)).GetHullGraham());
+            Assert.ThrowsException<ArgumentException>(() => new Hull2DCreator().CreateHullGraham(CreateListOfPoints(pointsValues)));
         }
 
         [TestMethod]
@@ -89,8 +89,8 @@ namespace PrTests
                 new Point2D(0, 2),  new Point2D(-2, 0)
             };
 
-            var hullCreator = new Hull2DCreator(checkPoints);
-            var convexHull = hullCreator.GetHullGraham();
+            var hullCreator = new Hull2DCreator();
+            var convexHull = hullCreator.GetHullGraham(checkPoints);
 
             Assert.IsTrue(expectedPoints.SequenceEqual(convexHull));
         }
@@ -112,8 +112,8 @@ namespace PrTests
                 new Point2D(1, 3), new Point2D(-1, 3), new Point2D(-3, 0)
             };
 
-            var hullCreator = new Hull2DCreator(checkPoints);
-            var convexHull = hullCreator.GetHullGraham();
+            var hullCreator = new Hull2DCreator();
+            var convexHull = hullCreator.GetHullGraham(checkPoints);
 
             Assert.IsTrue(expectedPoints.SequenceEqual(convexHull));
         }
@@ -141,8 +141,8 @@ namespace PrTests
                 new Point2D(0, 3), new Point2D(0, 1)
             };
 
-            var hullCreator = new Hull2DCreator(checkPoints);
-            var convexHull = hullCreator.GetHullGraham();
+            var hullCreator = new Hull2DCreator();
+            var convexHull = hullCreator.GetHullGraham(checkPoints);
 
             Assert.IsTrue(expectedPoints.SequenceEqual(convexHull));
         }

@@ -1,0 +1,33 @@
+@startuml
+:Открыть модель(путь до файла);
+#green :Вызов через API презентации STL;
+floating note right: Генерация треугольников для геометрических поверхностей step\igs
+group GetVolumeFigures()
+:Создать список VolumeFigure;
+#green :Получить SurfaceFigures();
+if (Количество SurfaceFigures > 0 ?) then (да)
+    :Отсортировать SurfaceFigures по номеру;
+    :Получить идентификаторы объемов;
+    while (Рассмотрены все идентификаторы объемов?) is (нет)
+        :Получить идентификаторы поверхностей для текущего объема;
+        floating note right:Вернуть всех соседей нижнего уровня(Поверхности)
+        :Создать массив ссылок SurfaceFigure для текущего объема;
+        while (Рассмотрены все поверхности) is (нет)
+            :Найти нужный SurfaceFigure по идентификатору поверхности;
+            if (Нулевая ссылка SurfaceFigure) then (да)
+                #red :Вызвать исключение;
+                kill
+            else (нет)
+                :Записать ссылку по текущей позиции массива;
+            endif
+            backward :Следующая поверхность;
+        endwhile(да)
+            :Создать новый VolumeFigure(идентификатор текущего объема, массив ссылок SurfaceFigure);
+        :Добавить в список новый VolumeFigure;
+        backward :Следующий объем;
+    endwhile(да)
+endif
+:Возврат списка VolumeFigure;
+end group
+stop
+@enduml
