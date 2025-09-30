@@ -9,6 +9,7 @@ using Model.Interfaces.MeshObjects;
 
 namespace Model.MeshObjects
 {
+    [Obsolete("Рекомендуется использовать класс Triangle_c")]
     public class Triangle : Element2D
     {
         /// <inheritdoc/>
