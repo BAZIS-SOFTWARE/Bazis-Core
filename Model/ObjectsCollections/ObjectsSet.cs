@@ -16,9 +16,8 @@ namespace Model.ObjectsCollections
 {
     public class ObjectsSet<T>: IObjectsSet<T> where T : IModelObject
     {
-        /// <summary>
-        /// Имя набора
-        /// </summary>
+/// <inheritdoc/>
+
         public string Name { get; set; }
 
         /// <summary>
@@ -81,6 +80,9 @@ namespace Model.ObjectsCollections
                     ? true : false; 
             }
         }
+/// <inheritdoc/>
+
+        public int Number { get; set; }
 
         /// <inheritdoc/>
 

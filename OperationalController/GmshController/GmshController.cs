@@ -253,13 +253,18 @@ namespace OperationalController.GmshController
                     var upward = data.Item1;
                     var downward = data.Item2;
                     var name = Gmsh.Model.GetEntityName(dim, tag);
+
+                    // сделаем имя для импорта уникальным во избежания коллизий
+                    name = $@"SurfaceSet_{tag}";
+                    /*
                     if (name == "" | name == null)
                         name = tag.ToString();
                     else
                         name = name.Replace("Shapes/", "");
+                    */
 
                     var set = new ObjectsSet<SurfaceFigure>(name);
-                    
+                    set.Number = tag;
                     for (var j = 0; j < downward.Length; ++j)
                     {
                         var numb = downward[j];

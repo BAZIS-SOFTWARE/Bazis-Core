@@ -28,6 +28,22 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
+        [DataRow(@"c:\projs\aviaDvigProj\GeoMesh\obr3.stp")]
+        [DataRow(@"c:\projs\aviaDvigProj\GeoMesh\obr3.igs")]
+        [DataRow(@"c:\projs\aviaDvigProj\GeoMesh\cube.igs")]
+
+        //[DataRow(@"\GMSHAPI\cubes.geo")]
+        //Для geo ядра презентация STL не работает (как и в gmsh)
+        public void ImportCADoutside(string fileName)
+        {
+            var project = new Controller();
+            project.ImportCAD(fileName, controller);
+
+            //assert
+            Assert.AreNotEqual(project.GetAllModelObjects().Count(),0);
+        }
+
+        [DataTestMethod]
         [DataRow(@"\CAD\screw.step")]
         [DataRow(@"\CAD\assembly_1.step")]
         [DataRow(@"\CAD\assembly_2.stp")]
@@ -42,7 +58,7 @@ namespace TestModel.GmshTests
             project.ImportCAD(modelFolder + fileName, controller);
 
             //assert
-            Assert.AreNotEqual(project.GetModelVolumes().Count(),0);
+            Assert.AreNotEqual(project.GetModelVolumes().Count(), 0);
         }
 
         [DataTestMethod]

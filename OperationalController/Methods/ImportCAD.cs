@@ -1,4 +1,5 @@
-﻿using Model.GeometryObjects;
+﻿using GmshApi;
+using Model.GeometryObjects;
 using Model.Interfaces;
 using Model.IO;
 using Model.IO.STL;
@@ -8,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Xml.Linq;
 
 namespace OperationalController
 {
@@ -28,6 +30,9 @@ namespace OperationalController
 
             gmshController.Gmsh.Model.Mesh.ImportStl(); //обязательно для представления stl
 
+            // TO DO спросить у Николая что думает по этой функции
+            //var surfs = gmshController.Gmsh.Model.Occ.ImportShapes(projectFile);
+
             gmshController.CreateControlPoints().ForEach(
         x => project.ModelData.ObjectData.PointsSet.Add(x.Number, x));
             gmshController.CreateLines().ForEach(
@@ -35,7 +40,7 @@ namespace OperationalController
             gmshController.CreateSurfaceSets().ForEach(
 x => project.ModelData.ObjectData.SurfaceCollection.Add(x));
 
-            PresentVolumeInfo(gmshController);
+            PresentVolumeInfo();
         }
 
         private void PresentVolumeInfo(IGmshController gmshController)
@@ -52,6 +57,7 @@ x => project.ModelData.ObjectData.SurfaceCollection.Add(x));
                     var downward = data.Item2;
 
                     var surfNumbers = string.Join(" ", downward);
+
 
                     var name = gmshController.Gmsh.Model.GetEntityName(dim, tag);
                     if (name == "" | name == null)
@@ -72,6 +78,22 @@ x => project.ModelData.ObjectData.SurfaceCollection.Add(x));
                     project.ModelData.ObjectData.VolumeData.Add(vol);
                 }
             }
+        }
+
+        private void PresentVolumeInfo()
+        {
+            foreach (var item in project.ModelData.ObjectData.SurfaceCollection)
+            {
+                // кодовое слово SurfaceSet
+                if (item.Key.Contains("SurfaceSet"))
+                {
+                    var set = item.Value;
+                    var vol = new VolumeFigure(set.Number, set.Values.ToArray());
+                    vol.Name = $"Объем_{set.Number}";
+                    project.ModelData.ObjectData.VolumeData.Add(vol);
+                }
+
+            }        
         }
     }
 }
