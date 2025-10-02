@@ -16,6 +16,10 @@ namespace Model.Interfaces.ObjectsCollections
         /// </summary>
         string Name { get; set; }
         /// <summary>
+        /// Number
+        /// </summary>
+        int Number { get; set; }
+        /// <summary>
         /// ObjType
         /// </summary>
         ObjType ObjType { get; }
