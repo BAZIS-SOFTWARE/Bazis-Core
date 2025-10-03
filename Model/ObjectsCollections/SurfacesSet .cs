@@ -32,5 +32,12 @@ namespace Model.ObjectsCollections
             else
                 surf.Color = Color;
         }
+/// <inheritdoc/>
+
+        public override void SetBackColor()
+        {
+            foreach (var item in objectsSet)
+                SetBackColor(item.Key);
+        }
     }
 }

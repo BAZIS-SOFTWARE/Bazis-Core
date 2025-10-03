@@ -185,15 +185,8 @@ namespace Model.ObjectsCollections
         {
             throw new NotImplementedException();
         }
-        /// <inheritdoc/>
 
-/// <inheritdoc/>
 
-        public void SetBackColor()
-        {
-            foreach (var item in objectsSet)
-                item.Value.Color = Color;
-        }
         /// <inheritdoc/>
         public void SetViewMode(ViewMode viewMode)
         {
@@ -268,6 +261,14 @@ namespace Model.ObjectsCollections
         public virtual void SetBackColor(int number)
         {
             objectsSet[number].Color = Color;
+        }
+
+        /// <inheritdoc/>
+
+        public virtual void SetBackColor()
+        {
+            foreach (var item in objectsSet)
+                item.Value.Color = Color;
         }
         /// <inheritdoc/>
 
