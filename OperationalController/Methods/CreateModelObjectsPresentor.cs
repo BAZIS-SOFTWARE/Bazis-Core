@@ -35,7 +35,7 @@ namespace OperationalController
                     pre = presentersCreator?.CreateLineObjectsPresenter(ModelData.ObjectData.CurveSet.Values);
                     break;
                 case ObjType.Поверхность:
-                    pre = presentersCreator.CreateSurfaceObjectsPresenter(ModelData.ObjectData.SurfaceCollection.GetObjects());
+                    pre = presentersCreator.CreateSurfaceObjectsPresenter(ModelData.ObjectData.SurfaceSet.Values);
                     break;
                 case ObjType.Элемент1D:
                     pre = presentersCreator.CreateLineObjectsPresenter(ModelData.ObjectData.E1DCollection.GetObjects());
@@ -57,6 +57,7 @@ namespace OperationalController
             pre.Name = objType.ToString();
             return pre;
         }
+/// <inheritdoc/>
 
         public IObjsPresenter CreateModelObjectsPresentor(ISetInfo setInfo)
         {
@@ -71,7 +72,7 @@ namespace OperationalController
                     pre = presentersCreator?.CreateLineObjectsPresenter(ModelData.ObjectData.CurveSet.Values);
                     break;
                 case ObjType.Поверхность:
-                    pre = presentersCreator.CreateSurfaceObjectsPresenter(ModelData.ObjectData.SurfaceCollection[setInfo.Name].Values);
+                    pre = presentersCreator.CreateSurfaceObjectsPresenter(ModelData.ObjectData.SurfaceSet.Values);
                     break;
                 case ObjType.Элемент1D:
                     pre = presentersCreator.CreateLineObjectsPresenter(ModelData.ObjectData.E1DCollection[setInfo.Name].Values);

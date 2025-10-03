@@ -1,5 +1,7 @@
 ﻿using Geometry;
 using Model.Interfaces;
+using Model.Interfaces.ObjectsCollections;
+using Model.ObjectsCollections;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -31,6 +33,10 @@ namespace Model.GeometryObjects
         public double CoreMeshSize { get; set; }
 
         SurfaceFigure[] surfaceFigure;
+        /// <summary>
+        /// Color
+        /// </summary>
+        public Color Color { get; private set; }
         /// <summary>
         /// Number
         /// </summary>
@@ -112,6 +118,33 @@ namespace Model.GeometryObjects
                     yield return point;
                 }
             }
+        }
+        /// <summary>
+        /// SetColor
+        /// </summary>
+        /// <param name="color"></param>
+        /// <param name="number"></param>
+        public void SetColor(Color color, int number)
+        {
+            surfaceFigure[number].Color = color;
+        }
+        /// <summary>
+        /// SetColor
+        /// </summary>
+        /// <param name="color"></param>
+        public void SetColor(Color color)
+        {
+            Color = color;
+            foreach (var item in surfaceFigure)
+                item.Color = color;
+        }
+        /// <summary>
+        /// SetBackColor
+        /// </summary>
+        public void SetBackColor()
+        {
+            foreach (var item in surfaceFigure)
+                item.Color = Color;
         }
     }
 }

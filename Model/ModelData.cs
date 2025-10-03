@@ -36,7 +36,7 @@ namespace Model
             ObjectData.PointsSet.Append(modelData.ObjectData.PointsSet);
 
             ObjectData.CurveSet.Append(modelData.ObjectData.CurveSet);
-            ObjectData.SurfaceCollection.Append(modelData.ObjectData.SurfaceCollection);
+            ObjectData.SurfaceSet.Append(modelData.ObjectData.SurfaceSet);
 
             foreach (var item in modelData.GroupData)
                 GroupData.Add(item);

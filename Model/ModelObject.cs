@@ -36,7 +36,7 @@ namespace Model
         /// <summary>
         /// MasterColor
         /// </summary>
-        public Color Color { get ; set; }
+        public Color Color { get; set; } = Color.FromArgb(255, 0, 0, 0);
 
         bool viewState;
         bool existState;

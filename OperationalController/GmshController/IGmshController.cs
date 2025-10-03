@@ -2,6 +2,7 @@
 using Model.GeometryObjects;
 using Model.Interfaces;
 using Model.Interfaces.MeshObjects;
+using Model.Interfaces.ObjectsCollections;
 using Model.MeshObjects;
 using Model.ObjectsCollections;
 using System;
@@ -116,6 +117,6 @@ namespace OperationalController.GmshController
         /// Если объемов нет, то остается набор "FreeSurfaces"
         /// </summary>
         /// <returns></returns>
-        List<ObjectsSet<SurfaceFigure>> CreateSurfaceSets();
+        Tuple<IObjectsSet<SurfaceFigure>, VolumeData> CreateSurfaceData();
     }
 }

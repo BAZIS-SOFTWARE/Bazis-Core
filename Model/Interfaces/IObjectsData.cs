@@ -60,7 +60,7 @@ namespace Model.Interfaces
         /// <summary>
         /// Fig2DCollection
         /// </summary>
-        IObjectsCollection<SurfaceFigure> SurfaceCollection{ get; }
+        IObjectsSet<SurfaceFigure> SurfaceSet{ get; }
         /// <summary>
         /// VolumeData
         /// </summary>
