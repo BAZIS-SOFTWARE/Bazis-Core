@@ -45,7 +45,7 @@ namespace Model.ObjectsCollections
 
         }
 
-        Dictionary<int,T> objectsSet = new Dictionary<int, T>();
+        internal Dictionary<int,T> objectsSet = new Dictionary<int, T>();
 
         public T this[int key] { get => objectsSet[key]; set => objectsSet[key] = value; }
 /// <inheritdoc/>
@@ -265,7 +265,7 @@ namespace Model.ObjectsCollections
         }
 /// <inheritdoc/>
 
-        public void SetBackColor(int number)
+        public virtual void SetBackColor(int number)
         {
             objectsSet[number].Color = Color;
         }

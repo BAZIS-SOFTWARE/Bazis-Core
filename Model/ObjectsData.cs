@@ -34,7 +34,7 @@ namespace Model
             PointsSet = new ObjectsSet<GeometryPoint>(ObjType.Точка.ToString());
             PointsSet.SetColor(Color.FromArgb(255, 207, 64));
             CurveSet = new ObjectsSet<Curve>(ObjType.Кривая.ToString());
-            SurfaceSet = new ObjectsSet<SurfaceFigure>(ObjType.Поверхность.ToString());
+            SurfaceSet = new SurfacesSet(ObjType.Поверхность.ToString());
             //VolumeSet = new ObjectsSet<VolumeFigure>(ObjType.Объем.ToString());
         }
 

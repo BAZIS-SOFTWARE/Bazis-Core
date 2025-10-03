@@ -55,6 +55,10 @@ namespace Model.GeometryObjects
             Number = number;
             surfaceFigure = surfaceFigures;
 
+            // Устанавливаем связь с объемом
+            foreach (var item in surfaceFigures)
+                item.Volume = this;
+
         }
         /// <inheritdoc/>
         public override string ToString()
