@@ -4,7 +4,7 @@ using System.Text;
 
 namespace OperationalController
 {
-    public partial interface IController
+    public partial interface IProjectController
     {
         /// <summary>
         /// ExportMesh

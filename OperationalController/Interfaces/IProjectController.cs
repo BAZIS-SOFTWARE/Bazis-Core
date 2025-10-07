@@ -19,7 +19,7 @@ namespace OperationalController
         /// <summary>
         /// IModelController
         /// </summary>
-        public partial interface IController
+        public partial interface IProjectController
     {
         /// <summary>
         /// FunctionsDB
@@ -315,12 +315,7 @@ namespace OperationalController
         /// <param name="name"></param>
         /// <param name="order"></param>
         void ChangeMeshSetOrder(int elemDim, string name, int order);
-        /// <summary>
-        /// Import
-        /// </summary>
-        /// <param name="projectFile"></param>
-        /// <param name="gmshController"></param>
-        void ImportCAD(string projectFile, IGmshController gmshController);
+
         /// <summary>
         /// GenerateMesh
         /// </summary>

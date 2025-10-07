@@ -26,7 +26,7 @@ namespace OperationalController
     /// <summary>
     /// ProjectController
     /// </summary>
-    public partial class Controller : IController
+    public partial class Controller : IProjectController
     {
         IProjectData project;
 
