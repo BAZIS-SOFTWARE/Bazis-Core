@@ -16,9 +16,15 @@ namespace Model.Interfaces.ObjectsCollections
         /// <summary>
         /// this
         /// </summary>
-        /// <param name="key"></param>
+        /// <param name="index"></param>
         /// <returns></returns>
-        ObjectsSet<T> this[string key] { get; }
+        ObjectsSet<T> this[int index] { get; }
+        /// <summary>
+        /// this
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        ObjectsSet<T> this[string name] { get; }
         /// <summary>
         /// Remove
         /// </summary>

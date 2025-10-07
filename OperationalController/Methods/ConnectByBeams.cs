@@ -1,5 +1,8 @@
-﻿using Model.IO;
+﻿using Model;
+using Model.IO;
 using Model.IO.STL;
+using Model.MeshObjects;
+using Model.ObjectsCollections;
 using OperationalController.MeshObjsCreator;
 using OperationalController.ObjsCreator;
 using Project;
@@ -17,11 +20,20 @@ namespace OperationalController
         public void ConnectByBeams(string masterGroup, string slaveGroup, double radius, int maxBeams)
         {
             var masterGr = ModelData.GroupData.Find(masterGroup);
+
+            if (masterGr == null)
+                throw new Exception($"группа {masterGr.Name} не найдена");
+
             var slaveGr = ModelData.GroupData.Find(slaveGroup);
+
+            if (slaveGr == null)
+                throw new Exception($"группа {slaveGr.Name} не найдена");
 
             var beams = beamGroupConnection.Create(masterGr, slaveGr, radius, maxBeams);
 
-            ModelData.ObjectData.E1DCollection.AddRange("",beams);
+            var name = $"connect_{ModelData.ObjectData.E1DCollection.GetMaxNumber() + 1}";
+
+            ModelData.ObjectData.E1DCollection.AddRange(name, beams);
         }
     }
 }

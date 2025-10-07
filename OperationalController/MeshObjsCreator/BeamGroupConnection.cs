@@ -19,6 +19,9 @@ namespace OperationalController.MeshObjsCreator
         {
             if (master.Count == 0 || slave.Count == 0)
                 throw new Exception("Одна из групп пустая");
+            if (radius <= 0)
+                throw new Exception("Радиус поиска должен быть больше нуля");
+
             searchRadius = radius;
             var k = 1d * master.Count / slave.Count;
             if(beamsCount == 0)
