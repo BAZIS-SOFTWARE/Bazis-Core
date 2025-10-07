@@ -31,8 +31,16 @@ namespace OperationalController.MeshObjsUtility
                     if (!nodes.ContainsKey(slaveNumber))
                         continue;
                     var slaveNode = nodes[slaveNumber];
-                    slaveNode.SetNumber(masterNode.Number);
-                    slaveNode.Position = masterNode.Position;
+
+                    // пробуем вариант перестановки ссылки в памяти
+                    // вместо замены номера и координат
+
+                    foreach (var elem in slaveNode.GetElements())
+                    {
+                        var index = elem.GetNodeIndex(slaveNode);
+                        masterNode.AddElement(elem);
+                        elem[index] = masterNode;
+                    }
 
                     nodes.Remove(slaveNumber);
                     //установить ссылку на мастер объект вместо номера мастер объекта

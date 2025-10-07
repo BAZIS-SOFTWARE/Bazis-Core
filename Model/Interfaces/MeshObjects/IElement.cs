@@ -40,6 +40,7 @@ namespace Model.Interfaces.MeshObjects
     /// </summary>
     public interface IElement : IVertexObject<Node>, IIntegralObject
     {
+        int GetNodeIndex(Node node);
         /// <summary>
         /// Уровень точности (расчетов) интегрирования внутри элемента.
         /// 1 - одна точка интегрирования. Этот уровень лучше использовать для расчетов граничных условиий.
@@ -65,7 +66,7 @@ namespace Model.Interfaces.MeshObjects
         /// </summary>
         /// <param name="nodeInd"></param>
         /// <returns></returns>
-        Node this[int nodeInd] { get; }
+        Node this[int nodeInd] { get; set; }
         /// <summary>
         /// GetDerivativesFormFunctions
         /// </summary>

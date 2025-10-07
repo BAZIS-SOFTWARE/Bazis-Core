@@ -180,14 +180,14 @@ namespace OperationalController.GmshController
             Action<string, int, Node[]> filler2D = (s, i, n) =>
             {
                 if (s.Contains("Triangle"))
-                    e2D.Add(new Triangle(i, n));
+                    e2D.Add(new Triangle_c(i, n));
                 else
                     e2D.Add(new Quad(i, n));
             };
             Action<string, int, Node[]> filler3D = (s, i, n) =>
             {
                 if (s.Contains("Tetrahedron"))
-                    e3D.Add(new Tetra(i, n));
+                    e3D.Add(new Tetra_c(i, n));
                 else if (s.Contains("Hexahedron"))
                     e3D.Add(new Hexa(i, n));
                 else
