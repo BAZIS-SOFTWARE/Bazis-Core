@@ -49,6 +49,7 @@ namespace TestModel.GmshTests
         [DataRow(@"\CAD\assembly_2.stp")]
         [DataRow(@"\CAD\nasos.step")]
         [DataRow(@"\CAD\model_with_free_surfaces.stp")]
+        [DataRow(@"\CAD\block.igs")]
 
         //[DataRow(@"\GMSHAPI\cubes.geo")]
         //Для geo ядра презентация STL не работает (как и в gmsh)
@@ -58,7 +59,7 @@ namespace TestModel.GmshTests
             project.ImportCAD(modelFolder + fileName, controller);
 
             //assert
-            Assert.AreNotEqual(project.GetModelVolumes().Count(), 0);
+            Assert.AreNotEqual(project.GetAllModelObjects().Count(), 0);
         }
 
         [DataTestMethod]

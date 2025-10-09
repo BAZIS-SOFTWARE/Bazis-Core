@@ -1,5 +1,6 @@
 ﻿using Geometry;
 using Model.GroupsData;
+using Model.Interfaces;
 using Model.MeshObjects;
 using Octree;
 using System;
@@ -14,10 +15,13 @@ namespace OperationalController.MeshObjsCreator
         protected double searchRadius;
         protected int maxIncidentBeams;
 
-        public IEnumerable<Beam> Create(Group master, Group slave, double radius, int beamsCount = 0)
+        public IEnumerable<Beam> Create(IGroup master, IGroup slave, double radius, int beamsCount = 0)
         {
             if (master.Count == 0 || slave.Count == 0)
-                return Enumerable.Empty<Beam>();
+                throw new Exception("Одна из групп пустая");
+            if (radius <= 0)
+                throw new Exception("Радиус поиска должен быть больше нуля");
+
             searchRadius = radius;
             var k = 1d * master.Count / slave.Count;
             if(beamsCount == 0)
@@ -45,6 +49,6 @@ namespace OperationalController.MeshObjsCreator
             return vector.GetSquareSumCoords();
         }
 
-        protected abstract IEnumerable<Beam> ConnectGroups(Group smaller, Group larger);
+        protected abstract IEnumerable<Beam> ConnectGroups(IGroup smaller, IGroup larger);
     }
 }

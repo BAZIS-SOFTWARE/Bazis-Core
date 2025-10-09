@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Geometry;
+using Geometry.Attribute;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Single;
 using Model.Interfaces.IntegralObject;
@@ -9,6 +10,10 @@ using Model.Interfaces.MeshObjects;
 
 namespace Model.MeshObjects
 {
+    /// <summary>
+    /// Triangle. Треугольник в L координатах
+    /// </summary>
+    [Warning("Вместо этого класса лучше использовать Triangle_c")]
     public class Triangle : Element2D
     {
         /// <inheritdoc/>
@@ -111,9 +116,7 @@ namespace Model.MeshObjects
             intPoint.AddCoordinate("l2", l2);
             intPoint.AddCoordinate("l3", l3);
             intPoint.Weigt = w;
-
-            CalcJacobi(intPoint);
-
+            intPoint.Jacobi = CalcJacobi(intPoint);
             return intPoint;
         }
 /// <inheritdoc/>

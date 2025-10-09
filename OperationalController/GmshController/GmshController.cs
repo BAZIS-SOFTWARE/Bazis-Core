@@ -180,14 +180,14 @@ namespace OperationalController.GmshController
             Action<string, int, Node[]> filler2D = (s, i, n) =>
             {
                 if (s.Contains("Triangle"))
-                    e2D.Add(new Triangle(i, n));
+                    e2D.Add(new Triangle_c(i, n));
                 else
                     e2D.Add(new Quad(i, n));
             };
             Action<string, int, Node[]> filler3D = (s, i, n) =>
             {
                 if (s.Contains("Tetrahedron"))
-                    e3D.Add(new Tetra(i, n));
+                    e3D.Add(new Tetra_c(i, n));
                 else if (s.Contains("Hexahedron"))
                     e3D.Add(new Hexa(i, n));
                 else
@@ -228,18 +228,18 @@ namespace OperationalController.GmshController
         }
 
         /// <inheritdoc/>
-        public List<ObjectsSet<SurfaceFigure>> CreateSurfaceSets()
+        public Tuple<IObjectsSet<SurfaceFigure>,VolumeData> CreateSurfaceData()
         {
-            var volumes = new List<ObjectsSet<SurfaceFigure>>();
+            var volumes = new VolumeData();
             var rnd = new Random();
 
             var surfaceFigures = CreateSurfaceFigures();
+            var allSurfaces = new ObjectsSet<SurfaceFigure>("FreeSurfaces");
+            surfaceFigures.ForEach(x => allSurfaces.Add(x.Number, x));
+            allSurfaces.SetColor(Color.FromArgb(255, 125, 0));
 
-            var freeSurfaces = new ObjectsSet<SurfaceFigure>("FreeSurfaces");
-            surfaceFigures.ForEach(x => freeSurfaces.Add(x.Number, x));
-            freeSurfaces.SetColor(Color.FromArgb(255, 125, 0));
             if (Gmsh.Model.GetDimension() > 2)
-            {    
+            {
                 //surfaceFigures = surfaceFigures.OrderBy(v => v.Number).ToList();
                 var dimTags = Gmsh.Model.GetEntities(3);
 
@@ -255,39 +255,32 @@ namespace OperationalController.GmshController
                     var name = Gmsh.Model.GetEntityName(dim, tag);
 
                     // сделаем имя для импорта уникальным во избежания коллизий
-                    name = $@"SurfaceSet_{tag}";
-                    /*
+                    // 03.10.25 возврат к неуникальным именам. В сборке 
+                    //name = $@"SurfaceSet_{tag}";
+
                     if (name == "" | name == null)
                         name = tag.ToString();
                     else
                         name = name.Replace("Shapes/", "");
-                    */
 
-                    var set = new ObjectsSet<SurfaceFigure>(name);
-                    set.Number = tag;
+                    var volSurfaces = new SurfaceFigure[downward.Length];
+                    //set.Number = tag;
                     for (var j = 0; j < downward.Length; ++j)
                     {
                         var numb = downward[j];
-                        if (!freeSurfaces.ContainsKey(numb))
+                        if (!allSurfaces.ContainsKey(numb))
                             throw new Exception($"Поверхность с номером {surfaceFigures} не найдена");
                         else
-                        {
-                            set.Add(numb, freeSurfaces[numb]);
-                            freeSurfaces.Remove(numb);
-                        }
+                            volSurfaces[j] = allSurfaces[numb];
                     }
-                    set.SetColor(color);
-                    volumes.Add(set);
-                }
 
-                if (freeSurfaces.Count > 0)
-                    volumes.Add(freeSurfaces);
-                return volumes;
+                    var volume = new VolumeFigure(tag, volSurfaces);
+                    volume.Name = name;
+                    volume.SetColor(color);
+                    volumes.Add(volume);
+                }
             }
-            else
-            {
-                return new List<ObjectsSet<SurfaceFigure>>() { freeSurfaces };
-            }
+            return Tuple.Create<IObjectsSet<SurfaceFigure>, VolumeData>(allSurfaces, volumes);
         }
 
         /// <inheritdoc/>

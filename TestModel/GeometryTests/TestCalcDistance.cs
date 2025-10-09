@@ -3,7 +3,7 @@ using Geometry;
 using System;
 using Model.MeshObjects;
 
-namespace TestModel
+namespace PrTests
 {
     [TestClass]
     public class TestCalcDistance

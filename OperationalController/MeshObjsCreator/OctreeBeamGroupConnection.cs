@@ -1,4 +1,5 @@
 ﻿using Model.GroupsData;
+using Model.Interfaces;
 using Model.MeshObjects;
 using Octree;
 using System;
@@ -14,7 +15,7 @@ namespace OperationalController.MeshObjsCreator
         private Dictionary<Node, int> incidentEdgesCount;
         private PointOctree<Node> octree;
 
-        protected override IEnumerable<Beam> ConnectGroups(Group smaller, Group larger)
+        protected override IEnumerable<Beam> ConnectGroups(IGroup smaller, IGroup larger)
         {
             octree = CreateOctree(larger.Cast<Node>());
             incidentEdgesCount = larger.Cast<Node>().ToDictionary(n => n, _ => 0);
@@ -52,7 +53,7 @@ namespace OperationalController.MeshObjsCreator
             return octree;
         }
 
-        private IEnumerable<Beam> ConnectOneToMany(Node node, Group group, int startIndex)
+        private IEnumerable<Beam> ConnectOneToMany(Node node, IGroup group, int startIndex)
         {
             return octree.GetNearby(new Vector3(node._x, node._y, node._z), (float)searchRadius)
                          .OrderBy(n => GetSquaredDistance(n, node))

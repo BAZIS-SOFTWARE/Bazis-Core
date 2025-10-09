@@ -1,4 +1,5 @@
 ﻿using Model.GroupsData;
+using Model.Interfaces;
 using Model.MeshObjects;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace OperationalController.MeshObjsCreator
     {
         private Dictionary<Node, int> incidentEdgesCount;
 
-        protected override IEnumerable<Beam> ConnectGroups(Group smaller, Group larger)
+        protected override IEnumerable<Beam> ConnectGroups(IGroup smaller, IGroup larger)
         {
             var startIndex = 0;
             incidentEdgesCount = larger.Cast<Node>().ToDictionary(n => n, _ => 0);
@@ -25,7 +26,7 @@ namespace OperationalController.MeshObjsCreator
             }
         }
 
-        private IEnumerable<Beam> ConnectOneToMany(Node node, Group group, int startIndex)
+        private IEnumerable<Beam> ConnectOneToMany(Node node, IGroup group, int startIndex)
         {
             var binded = 0;
             foreach (var other in group.Cast<Node>()

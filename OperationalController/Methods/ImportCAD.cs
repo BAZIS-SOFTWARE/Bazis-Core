@@ -16,6 +16,7 @@ namespace OperationalController
     public partial class Controller
     {
         /// <inheritdoc/>
+        
 
         public void ImportCAD(string projectFile, IGmshController gmshController)
         {
@@ -37,63 +38,70 @@ namespace OperationalController
         x => project.ModelData.ObjectData.PointsSet.Add(x.Number, x));
             gmshController.CreateLines().ForEach(
                 x => project.ModelData.ObjectData.CurveSet.Add(x.Number, x));
-            gmshController.CreateSurfaceSets().ForEach(
-x => project.ModelData.ObjectData.SurfaceCollection.Add(x));
+            var surfData = gmshController.CreateSurfaceData();
 
-            PresentVolumeInfo();
+            foreach (var item in surfData.Item1)
+                project.ModelData.ObjectData.SurfaceSet.Add(item.Key,item.Value);
+
+            foreach (var item in surfData.Item2)
+                project.ModelData.ObjectData.VolumeData.Add(item);
+            //.ForEach(
+            //x => project.ModelData.ObjectData.SurfaceSet.Add(x));
+
+            //PresentVolumeInfo();
         }
 
-        private void PresentVolumeInfo(IGmshController gmshController)
-        {
-            if (gmshController.Gmsh?.Model?.GetDimension() > 2)
-            {
-                var dimTags = gmshController.Gmsh.Model.GetEntities(3);
+        //private void PresentVolumeInfo(IGmshController gmshController)
+        //{
+        //    if (gmshController.Gmsh?.Model?.GetDimension() > 2)
+        //    {
+        //        var dimTags = gmshController.Gmsh.Model.GetEntities(3);
 
-                for (var i = 0; i < dimTags.Length; i += 2)
-                {
-                    var dim = dimTags[i];
-                    var tag = dimTags[i + 1];
-                    var data = gmshController.Gmsh.Model.GetAdjacencies(dim, tag);
-                    var downward = data.Item2;
+        //        for (var i = 0; i < dimTags.Length; i += 2)
+        //        {
+        //            var dim = dimTags[i];
+        //            var tag = dimTags[i + 1];
+        //            var data = gmshController.Gmsh.Model.GetAdjacencies(dim, tag);
+        //            var downward = data.Item2;
 
-                    var surfNumbers = string.Join(" ", downward);
+        //            var surfNumbers = string.Join(" ", downward);
 
 
-                    var name = gmshController.Gmsh.Model.GetEntityName(dim, tag);
-                    if (name == "" | name == null)
-                        name = $"Объем_{tag}";
-                    else
-                        name = name.Replace("Shapes/", "");
+        //            var name = gmshController.Gmsh.Model.GetEntityName(dim, tag);
+        //            if (name == "" | name == null)
+        //                name = $"Объем_{tag}";
+        //            else
+        //                name = name.Replace("Shapes/", "");
 
-                    var surfs = new SurfaceFigure[downward.Length];
-                    for (int j = 0; j < downward.Length; j++)
-                    {
-                        var numb = downward[j];
-                        var surf = project.ModelData.ObjectData.SurfaceCollection.Find(numb);
-                        surfs[j] = surf;
-                    }
+        //            var surfs = new SurfaceFigure[downward.Length];
+        //            for (int j = 0; j < downward.Length; j++)
+        //            {
+        //                var numb = downward[j];
+        //                var surf = project.ModelData.ObjectData.SurfaceCollection.Find(numb);
+        //                surfs[j] = surf;
+        //            }
 
-                    var vol = new VolumeFigure(tag, surfs);
-                    vol.Name = name;
-                    project.ModelData.ObjectData.VolumeData.Add(vol);
-                }
-            }
-        }
+        //            var vol = new VolumeFigure(tag, surfs);
+        //            vol.Name = name;
+        //            project.ModelData.ObjectData.VolumeData.Add(vol);
+        //        }
+        //    }
+        //}
 
-        private void PresentVolumeInfo()
-        {
-            foreach (var item in project.ModelData.ObjectData.SurfaceCollection)
-            {
-                // кодовое слово SurfaceSet
-                if (item.Key.Contains("SurfaceSet"))
-                {
-                    var set = item.Value;
-                    var vol = new VolumeFigure(set.Number, set.Values.ToArray());
-                    vol.Name = $"Объем_{set.Number}";
-                    project.ModelData.ObjectData.VolumeData.Add(vol);
-                }
+        //private void PresentVolumeInfo()
+        //{
+        //    foreach (var item in project.ModelData.ObjectData.SurfaceSet)
+        //    {
+        //        // кодовое слово SurfaceSet
+        //        if (item.Key.Contains("SurfaceSet"))
+        //        {
+        //            var set = item.Value;
+        //            var vol = new VolumeFigure(set.Number, set.Values.ToArray());
+        //            vol.Name = $"Объем_{set.Number}";
+        //            project.ModelData.ObjectData.VolumeData.Add(vol);
+        //        }
 
-            }        
-        }
+        //    }        
+        //}
     }
 }

@@ -1,5 +1,7 @@
 ﻿using Geometry;
 using Model.Interfaces;
+using Model.Interfaces.ObjectsCollections;
+using Model.ObjectsCollections;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -13,6 +15,10 @@ namespace Model.GeometryObjects
     /// </summary>
     public class VolumeFigure : IVolume
     {
+        /// <summary>
+        /// IsFieldUsed
+        /// </summary>
+        public bool IsFieldUsed { get; set; }
         /// <summary>
         /// SurfaceMeshSize
         /// </summary>
@@ -32,6 +38,10 @@ namespace Model.GeometryObjects
 
         SurfaceFigure[] surfaceFigure;
         /// <summary>
+        /// Color
+        /// </summary>
+        public Color Color { get; private set; }
+        /// <summary>
         /// Number
         /// </summary>
         public int Number { get; }
@@ -48,6 +58,10 @@ namespace Model.GeometryObjects
         {
             Number = number;
             surfaceFigure = surfaceFigures;
+
+            // Устанавливаем связь с объемом
+            foreach (var item in surfaceFigures)
+                item.Volume = this;
 
         }
         /// <inheritdoc/>
@@ -112,6 +126,33 @@ namespace Model.GeometryObjects
                     yield return point;
                 }
             }
+        }
+        /// <summary>
+        /// SetColor
+        /// </summary>
+        /// <param name="color"></param>
+        /// <param name="number"></param>
+        public void SetColor(Color color, int number)
+        {
+            surfaceFigure[number].Color = color;
+        }
+        /// <summary>
+        /// SetColor
+        /// </summary>
+        /// <param name="color"></param>
+        public void SetColor(Color color)
+        {
+            Color = color;
+            foreach (var item in surfaceFigure)
+                item.Color = color;
+        }
+        /// <summary>
+        /// SetBackColor
+        /// </summary>
+        public void SetBackColor()
+        {
+            foreach (var item in surfaceFigure)
+                item.Color = Color;
         }
     }
 }

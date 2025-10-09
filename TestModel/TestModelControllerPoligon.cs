@@ -27,11 +27,11 @@ namespace TestModel
             var fig2D = new SurfaceFigure(0, new GeometrySurface[] { surface });
 
             var model = new ModelData();
-            model.ObjectData.SurfaceCollection.Add("newSet", fig2D);
+            model.ObjectData.SurfaceSet.Add(0, fig2D);
 
             //act
             var creator = new PresentersCreator();
-            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.SurfaceCollection.GetObjects());
+            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.SurfaceSet.Values);
             var inds = presentator.CreateIndexes();
             var ptrs = presentator.CreatePointers(inds.Item1);
             var coords = presentator.CreateVertexes(inds.Item2, "координаты");
@@ -76,11 +76,11 @@ namespace TestModel
 
             };
             var model = new ModelData();
-            model.ObjectData.SurfaceCollection.Add("newSet", new SurfaceFigure(0,surfaces.ToArray()));
+            model.ObjectData.SurfaceSet.Add(0, new SurfaceFigure(0,surfaces.ToArray()));
 
             //act
             var creator = new PresentersCreator();
-            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.SurfaceCollection.GetObjects());
+            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.SurfaceSet.Values);
             var inds = presentator.CreateIndexes();
             var ptrs = presentator.CreatePointers(inds.Item1);
             var coords = presentator.CreateVertexes(inds.Item2, "координаты");

@@ -35,6 +35,11 @@ namespace Model.MeshObjects
                 this.nodes.Add(node);
             }
         }
+
+        public int GetNodeIndex(Node node)
+        {
+            return nodes.IndexOf(node);
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -53,7 +58,11 @@ namespace Model.MeshObjects
         /// </summary>
         /// <param name="nodeInd"></param>
         /// <returns></returns>
-        public Node this[int nodeInd] => nodes[nodeInd];
+        public Node this[int nodeInd]
+        {
+            get { return nodes[nodeInd]; }
+            set { nodes[nodeInd] = value; }
+        }
 
         /// <inheritdoc/>
 

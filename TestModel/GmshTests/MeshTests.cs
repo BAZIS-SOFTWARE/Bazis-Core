@@ -573,18 +573,17 @@ namespace TestModel.GmshTests
             controller.Gmsh.Model.Mesh.ImportStl();
 
             var ext = Path.GetExtension(fileName);
-            var surfSets = controller.CreateSurfaceSets();
+            var surfSets = controller.CreateSurfaceData();
             if (ext.Contains("step") || ext.Contains("stp"))
             {
-                Assert.AreNotEqual(0, surfSets.Count);
+                Assert.AreNotEqual(0, surfSets.Item1.Count);
             }
             else if (ext.Contains("igs"))
             {
-                var surfaces = controller.CreateSurfaceFigures();
-                Assert.AreNotEqual(0, surfaces.Count);
+                Assert.AreNotEqual(0, surfSets.Item1.Count);
             }
             else
-                Assert.AreEqual(0, surfSets.Count);
+                Assert.AreEqual(0, surfSets.Item1.Count);
         }
 
 

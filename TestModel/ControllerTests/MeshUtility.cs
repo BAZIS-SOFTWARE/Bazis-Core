@@ -13,7 +13,7 @@ using OperationalController.MeshObjsUtility;
 using OperationalController.MeshObjsCreator;
 using Model.IO.STL;
 
-namespace TestModel.ModelControllerTests
+namespace TestModel.ControllerTests
 {
     [TestClass]
     public class MeshUtility
@@ -49,8 +49,6 @@ namespace TestModel.ModelControllerTests
             var controller = new OperationalController.Controller();
 
             //act
-            //var modelBPF = loader.Load(@"C:\Projs\ExampleMesh\Tube.inp");
-            //model.Loader = new LoadFromSTLFile();
 
             var ext = Path.GetExtension(path);
 
@@ -58,14 +56,8 @@ namespace TestModel.ModelControllerTests
                 controller.ImportMesh(path);
             else
                 controller.Load(path);
-            //controller.FindCoincidentObjects(ObjType.Узел, dist);
-            //var finder = new FindCoincidentObjects();
-
-            //finder.ProgressEvent += (ar1, ar2) => { };
 
             var coincidentNodes = controller.FindCoincidentObjects(ObjType.Узел, dist);
-
-            //var merger = new MergeObjects();
 
             controller.MergeNodes(coincidentNodes);
 
@@ -73,51 +65,20 @@ namespace TestModel.ModelControllerTests
 
             Assert.AreEqual(coincidentNodes.Count, count);
 
-            // Очень странная проверка
-
-            //foreach (var elem in controller.GetModelElements())
-            //{
-            //    foreach (var item in elem.GetVertexes())
-            //    {
-            //        if(controller.GetModelObjects(ObjType.Узел).All(x => x.Number != item.Number))
-            //            throw new Exception("Узел не удален");
-            //    }
-            //}
+            // Очень странная проверка ее нужно ускорить
+            
+            foreach (var elem in controller.GetModelElements())
+            {
+                foreach (var item in elem.GetVertexes())
+                {
+                    if (!controller.ContainsModelObject(ObjType.Узел, item.Number))
+                        throw new Exception($"Узел {item.Number} в элементе {elem.Number} не удален");
+                }
+            }
 
             //freeNodes.ToArray()[0] = 14;
             //freeNodes.ToArray()[1] = 15;
-        }
-
-
-        [DataTestMethod]
-        //[DataRow(@"c:\projs\Matushkin\T_project.bpf", 0.001f, 5280)]
-        [DataRow(@"..\..\..\Examples\3D\cub_unsorted_freeNodesCoincident.bpf", 0.01f, 4,3)]
-        public void DeleteNodeAfterMergeNodes(string path, float dist, int index,int elemCount)
-        {
-            //assing
-            var model = new ModelData();
-
-            //act
-            //var modelBPF = loader.Load(@"C:\Projs\ExampleMesh\Tube.inp");
-            model.Load(path);
-
-            var finder = new FindCoincidentObjects();
-
-            finder.ProgressEvent += (ar1, ar2) => { };
-
-            var coincidentNodes = finder.Find(model.ObjectData.GetObjects(ObjType.Узел).ToList(), dist);
-
-            var merger = new MergeObjects();
-
-            merger.Merge(coincidentNodes, model.ObjectData.NodesSet);
-
-            //assert
-
-            model.ObjectData.Remove(ObjType.Узел, index);
-            Assert.AreEqual(model.ObjectData.GetAllElements().Count(), elemCount);
-            //freeNodes.ToArray()[0] = 14;
-            //freeNodes.ToArray()[1] = 15;
-        }
+        }    
 
 
         [TestMethod]

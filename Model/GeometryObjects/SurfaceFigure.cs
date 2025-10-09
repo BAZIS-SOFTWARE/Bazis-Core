@@ -37,6 +37,11 @@ namespace Model.GeometryObjects
 /// <inheritdoc/>
 
         public override ObjType ObjType { get; } = ObjType.Поверхность;
+        /// <summary>
+        /// Volume
+        /// </summary>
+        public VolumeFigure Volume { get; internal set; }
+
         /// <inheritdoc/>
         public override string ToString()
         {
