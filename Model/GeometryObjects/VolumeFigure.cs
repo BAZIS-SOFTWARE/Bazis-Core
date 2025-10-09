@@ -16,6 +16,10 @@ namespace Model.GeometryObjects
     public class VolumeFigure : IVolume
     {
         /// <summary>
+        /// IsFieldUsed
+        /// </summary>
+        public bool IsFieldUsed { get; set; }
+        /// <summary>
         /// SurfaceMeshSize
         /// </summary>
         public double SurfaceMeshSize { get; set; }

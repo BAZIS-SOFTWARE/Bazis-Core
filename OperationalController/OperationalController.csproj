@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <Title>OperationalController</Title>
-    <Version>3.5.5</Version>
+    <Version>3.5.8</Version>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>ControllerKey.snk</AssemblyOriginatorKeyFile>

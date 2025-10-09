@@ -275,9 +275,9 @@ namespace Model
                     break;
                 case ObjType.Узел:
                     NodesSet.Clear();
-                    E1DCollection.RemoveNotExistedObjects();
-                    E2DCollection.RemoveNotExistedObjects();
-                    E3DCollection.RemoveNotExistedObjects();
+                    E1DCollection.Clear();
+                    E2DCollection.Clear();
+                    E3DCollection.Clear();
                     break;
                 case ObjType.Элемент1D:
                     E1DCollection.Clear();
