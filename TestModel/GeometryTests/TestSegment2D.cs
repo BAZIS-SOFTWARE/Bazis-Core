@@ -182,10 +182,15 @@ namespace PrTests
                 new float[] { 1, -1 },
                 new float[] { 0, 0 },
                 true)]
+        [DataRow(
+                new float[] { -486.2834f, 104.7089f },
+                new float[] { -493.2167f, 43.6507f },
+                new float[] { -486.29f, 74 },
+                true)]
         public void IsPointBelongsSegment_ReturnsTrue_WhenPointInsideDiagonalSegment(float[] segStart, float[] segEnd, float[] testPoint, bool expected)
         {
             var segment = new Segment2D(new Point2D(segStart[0], segStart[1]), new Point2D(segEnd[0], segEnd[1]));
-            Assert.AreEqual(expected, segment.IsPointBelongSegment(new Point2D(testPoint[0], testPoint[1])));
+            Assert.AreEqual(expected, segment.IsPointBelongSegment(new Point2D(testPoint[0], testPoint[1]),5));
         }
 
         [TestMethod]
