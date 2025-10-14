@@ -8,4 +8,21 @@ class LoadData
 class ClampData
 class HeatData
 class CondData
+class BeamMatData
+class PlateMatData
+class VolMatData
+interface ICondData
+
+ICondData <|.. CondData
+CondData <|.. MedData
+CondData <|.. HeatData
+CondData <|.. MatData
+CondData <|.. ClampData
+CondData <|.. LoadData
+MatData <|-- BeamMatData
+MatData <|-- PlateMatData
+MatData <|-- VolMatData
+TaskData *-- ICondData
+ProjectData *-- GeneralData
+ProjectData *-- TaskData
 @enduml

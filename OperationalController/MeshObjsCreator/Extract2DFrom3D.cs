@@ -26,18 +26,18 @@ namespace OperationalController.MeshObjsCreator
             {
                 if (surface.GetVertexes().Count() == 3)
                 {
-                    var n0 = new Node(surface[0].Number, surface[0].Position);
-                    var n1 = new Node(surface[1].Number, surface[1].Position);
-                    var n2 = new Node(surface[2].Number, surface[2].Position);
+                    var n0 = surface[0];// new Node(surface[0].Number, surface[0].Position);
+                    var n1 = surface[1];// new Node(surface[1].Number, surface[1].Position);
+                    var n2 = surface[2];//new Node(surface[2].Number, surface[2].Position);
 
                     yield return new Triangle_c(StartNumber, new Node[] { n0,n1,n2 });
                 }
                 else
                 {
-                    var n0 = new Node(surface[0].Number, surface[0].Position);
-                    var n1 = new Node(surface[1].Number, surface[1].Position);
-                    var n2 = new Node(surface[2].Number, surface[2].Position);
-                    var n3 = new Node(surface[3].Number, surface[3].Position);
+                    var n0 = surface[0]; //new Node(surface[0].Number, surface[0].Position);
+                    var n1 = surface[1]; //new Node(surface[1].Number, surface[1].Position);
+                    var n2 = surface[2]; //new Node(surface[2].Number, surface[2].Position);
+                    var n3 = surface[3]; //new Node(surface[3].Number, surface[3].Position);
 
                     yield return new Quad(StartNumber, new Node[] { n0, n1, n2,n3 });
                 }

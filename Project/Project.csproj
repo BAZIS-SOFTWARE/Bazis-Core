@@ -4,7 +4,7 @@
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
 	  <SignAssembly>True</SignAssembly>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>5.1.4</Version>
+    <Version>5.1.5</Version>
     <Title>Project</Title>
     <Authors>Bilenko Georgy</Authors>
     <Company>BAZIS SOFTWARE</Company>
@@ -59,6 +59,7 @@
     <Compile Include="Interfaces\Tasks\ITimeDependentData.cs" />
     <Compile Include="Interfaces\Tasks\ITrajectory.cs" />
     <Compile Include="Interfaces\Tasks\ICondData.cs" />
+    <Compile Include="Tasks\Materials\BeamMatData.cs" />
     <Compile Include="Tasks\Functions\Welding\EllipsBuilder.cs" />
     <Compile Include="Tasks\Functions\Welding\DoubleEllips.cs" />
     <Compile Include="Tasks\Functions\FrameFunction.cs" />
@@ -97,6 +98,7 @@
     <Compile Include="Tasks\IO\SaveEventArgs.cs" />
     <Compile Include="Tasks\LoadData.cs" />
     <Compile Include="Tasks\MatData.cs" />
+    <Compile Include="Tasks\Materials\PlateMatData.cs" />
     <Compile Include="Tasks\MediaData.cs" />
     <Compile Include="Tasks\TaskData.cs" />
     <Compile Include="Tasks\Utilities\Interpolation.cs" />
