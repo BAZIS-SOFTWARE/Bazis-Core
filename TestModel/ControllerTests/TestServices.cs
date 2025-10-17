@@ -13,12 +13,19 @@ using System.Data;
 using OperationalController.MeshObjsUtility;
 using OperationalController.ModelScenePresentator;
 using OperationalController;
+using System.Globalization;
+using System.Threading;
 
 namespace TestModel
 {
     [TestClass]
     public class TestServices
     {
+        [TestInitialize]
+        public void Init()
+        {
+            Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+        }
         [TestMethod]
         public void FindFreeNodes()
         {
@@ -80,7 +87,7 @@ namespace TestModel
         [DataRow(0, 62528, @"..\..\..\Examples\2D\curvedStrip.bpf")]
         [DataRow(15, 62528, @"..\..\..\Examples\2D\curvedStrip.bpf")]
         [DataRow(5, 62528, @"..\..\..\Examples\2D\curvedStrip.bpf")]
-
+        [DataRow(5, 62528, @"..\..\..\Examples\2D\curvedStrip.bpf")]
         public void SelectionHelper_OutSideModel_WhenAngleGiven(float angle, int first, string path)
         {
             //assing
@@ -94,6 +101,28 @@ namespace TestModel
             var selectedElementNumbers = selector.SelectE2DInPlane(model.ObjectData, angle, first, Color.Green);
 
             Assert.AreEqual(selectedElementNumbers.Count, model.ObjectData.E2DCollection.Count);
+
+        }
+
+        [DataTestMethod]
+        [DataRow(5, 169, @"c:\projs\Roman\Project\Project\proj_e.bpf2")]
+
+        public void SelectionHelper_GenerateOnOutSideModel(float angle, int first, string path)
+        {
+            //assing
+
+            var controller = new OperationalController.Controller();
+
+            //act
+            controller.Load(path);
+
+            controller.Create2DForm3D();
+
+            var objs = controller.SelectE2DInPlane(angle, first, Color.Green);
+
+            
+
+            Assert.AreNotEqual(objs.Count, 1);
 
         }
 

@@ -405,6 +405,8 @@ namespace TestModel
             var model = loader.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
 
             //act
+            //model.ObjectData.NodesSet.Remove(objNumber);
+            //model.ObjectData.E3DCollection.RemoveNotExistedObjects();
             model.ObjectData.Remove(ObjType.Узел, objNumber);
 
             //assert
