@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Xml.Linq;
 
 namespace Model.MeshObjects
 {
@@ -45,8 +46,16 @@ namespace Model.MeshObjects
                 base.ExistState = value;
                 if (!value)
                 {
-                    foreach (var element in elements)
-                        element.ExistState = false;
+                    // Важное изменение. Теперь используем цикл с индексом,
+                    // чтобы предоотвратить Exception, так как коллекция изменяется методом
+                    // RemoveElement
+                    var count = elements.Count;
+                    for (int i = count - 1; i >= 0; i--)
+                    {
+                        elements[i].ExistState = false;
+                    }
+                    //foreach (var element in elements)
+                       // element.ExistState = false;
                 }
             }
         }
@@ -57,6 +66,15 @@ namespace Model.MeshObjects
         {
             elements.Add(element);
         }
+        /// <summary>
+        /// RemoveElement
+        /// </summary>
+        /// <param name="element"></param>
+        public void RemoveElement(IElement element)
+        {
+            elements.Remove(element);
+        }
+
         /// <inheritdoc/>
 
         public IEnumerable<IElement> GetElements()

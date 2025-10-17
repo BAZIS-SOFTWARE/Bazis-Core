@@ -26,6 +26,7 @@ namespace TestModel
         }
 
         [TestMethod]
+        [ExpectedException(typeof(Exception))]
         [DataRow(0, 0, DisplayName = "radius is zero")]
         [DataRow(1, 0, DisplayName = "radius is cube edge")]
         [DataRow(0.5, 0, DisplayName = "radius is less than cube edge")]
@@ -79,7 +80,7 @@ namespace TestModel
         }
 
         [TestMethod]
-        [DataRow(0, 0, DisplayName = "zero radius, default incidence")]
+        // не будем разрешать нулевой радиус [DataRow(0, 0, DisplayName = "zero radius, default incidence")]
         [DataRow(1, 1, DisplayName = "radius is cube edge")]
         [DataRow(0.5, 0, DisplayName = "radius is less than cube edge")]
         [DataRow(1.42, 3, DisplayName = "radius is the smallest cube diagonal")]

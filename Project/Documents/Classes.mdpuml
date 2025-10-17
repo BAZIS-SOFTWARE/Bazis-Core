@@ -10,7 +10,6 @@ class HeatData
 class CondData
 class BeamMatData
 class PlateMatData
-class VolMatData
 interface ICondData
 
 ICondData <|.. CondData
@@ -21,7 +20,6 @@ CondData <|.. ClampData
 CondData <|.. LoadData
 MatData <|-- BeamMatData
 MatData <|-- PlateMatData
-MatData <|-- VolMatData
 TaskData *-- ICondData
 ProjectData *-- GeneralData
 ProjectData *-- TaskData
