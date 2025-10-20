@@ -1,6 +1,7 @@
 @startuml
 class GeneralData
 class ProjectData
+class ModelData
 class TaskData
 class MedData
 class MatData
@@ -23,4 +24,5 @@ MatData <|-- PlateMatData
 TaskData *-- ICondData
 ProjectData *-- GeneralData
 ProjectData *-- TaskData
+ProjectData *-- ModelData
 @enduml

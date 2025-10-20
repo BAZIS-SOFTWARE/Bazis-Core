@@ -21,6 +21,11 @@ namespace Model.GeometryObjects
         /// <inheritdoc/>
 
         public override int NumberOfPoints { get; }
+        /// <summary>
+        /// NodeNumbers
+        /// </summary>
+        public int[] PointsNumbers { get; set; }
+
         /// <inheritdoc/>
 
         public override Point3D CalcCentr()
@@ -63,9 +68,9 @@ namespace Model.GeometryObjects
         /// <inheritdoc/>
         public override string ToString()
         {
-            var strArr = points.Select(x => x.Number.ToString()).ToArray();
+            //var strArr = points.Select(x => x.Number.ToString()).ToArray();
 
-            var str = string.Join(" ", strArr);
+            var str = string.Join(" ", PointsNumbers);
 
             return $"{base.ToString()} : {str}";
         }

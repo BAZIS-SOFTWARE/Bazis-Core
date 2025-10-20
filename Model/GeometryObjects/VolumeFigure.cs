@@ -16,6 +16,21 @@ namespace Model.GeometryObjects
     public class VolumeFigure : IVolume
     {
         /// <summary>
+        /// MakeTransfinite
+        /// </summary>
+        public void MakeTransfinite()
+        {
+            transfiniteFlag = true;
+        }
+        bool transfiniteFlag;
+        /// <summary>
+        /// IsTransfinited
+        /// </summary>
+        public bool IsTransfinited
+        {
+            get { return transfiniteFlag; }
+        }
+        /// <summary>
         /// IsFieldUsed
         /// </summary>
         public bool IsFieldUsed { get; set; }
