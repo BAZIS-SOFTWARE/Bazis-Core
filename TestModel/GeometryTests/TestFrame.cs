@@ -219,13 +219,22 @@ namespace PrTests
             new Frame(cen, axisX,axisY);
         }
         [TestMethod]
-        [DataRow( new[] { 0.0f, 0.0f, 0.0f })]
-        [DataRow(new[] { 1.0f, 0.0f, 0.0f })]
-        public void FrameCreation_ShouldPass_WhenShifting(float[] points)
+        [DataRow(
+            90,
+            new[] { 5.0f, 0.0f, 0.0f }, 
+            new[] { 0.0f, 5.0f, 0.0f })]
+        [DataRow(
+            180,
+            new[] { 5.0f, 0.0f, 0.0f },
+            new[] { -5.0f, 0.0f, 0.0f })]
+        public void FrameCreation_ShouldPass_WhenShifting(float angle,float[] shifting, float[] resu)
         {
-            var shifting = new Point3D(points[0], points[1], points[2]);
-            var frame = new Frame(new Point3D(),new Point3D(1, 0, 0), new Point3D(0, 1, 0));
-            frame.Shift(shifting);
+            var shiftingP = new Point3D(shifting[0], shifting[1], shifting[2]);
+            var frame = new Frame();
+            frame.Rotate(new Point3D(0,0,1), angle);
+            frame.Shift(shiftingP);
+
+            Assert.AreEqual(frame.Centre, new Point3D(resu[0], resu[1], resu[2]));
         }
 
         [TestMethod]
