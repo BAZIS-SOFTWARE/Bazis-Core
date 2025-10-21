@@ -97,7 +97,11 @@ namespace OperationalController.GmshController
                     }
                     last = current;
                 }
-                lines.Add(new Curve(curves[i], points.ToArray()));
+
+                var adjData = Gmsh.Model.GetAdjacencies(1, curves[i]);
+                var curve = new Curve(curves[i], points.ToArray());
+                curve.PointsNumbers = adjData.Item2;
+                lines.Add(curve);
             }
             return lines;
         }
@@ -269,7 +273,7 @@ namespace OperationalController.GmshController
                     {
                         var numb = downward[j];
                         if (!allSurfaces.ContainsKey(numb))
-                            throw new Exception($"Поверхность с номером {surfaceFigures} не найдена");
+                            throw new Exception($"Поверхность с номером {numb} не найдена");
                         else
                             volSurfaces[j] = allSurfaces[numb];
                     }
@@ -329,6 +333,8 @@ namespace OperationalController.GmshController
                 }
             }
             var sFigure = new SurfaceFigure(surfaceTag, geometrySurfaces.ToArray());
+            var adjData = Gmsh.Model.GetAdjacencies(2, surfaceTag);
+            sFigure.CurveNumbers = adjData.Item2; // номера кривых;
             return sFigure;
         }
         /// <inheritdoc/>

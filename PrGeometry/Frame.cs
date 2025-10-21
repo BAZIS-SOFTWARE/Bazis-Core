@@ -124,7 +124,7 @@ namespace Geometry
             //var dirX = Dir_X.Sub(Centre);
             //var lenX = Vector.GetVectorLenght(Dir_X);
             //var sclX = shifting._x / lenX;
-            //var hsCentrX = new Point3D(Centre._x + sclX * Dir_X._x, Centre._y + sclX * Dir_X._y, Centre._z + sclX * Dir_X._z);
+            // new Point3D(Centre._x + shifting._x * Dir_X._x, Centre._y + sclX * Dir_X._y, Centre._z + sclX * Dir_X._z);
             //var deltaX = hsCentrX.Sub(Centre);
 
             //var dirY = Dir_Y.Sub(Centre);
@@ -139,13 +139,16 @@ namespace Geometry
             //var hsCentrZ = new Point3D(Centre._x + sclZ * Dir_Z._x, Centre._y + sclZ * Dir_Z._y, Centre._z + sclZ * Dir_Z._z);
             //var deltaZ = hsCentrZ.Sub(Centre);
 
-
             //var delta = deltaX.Sum(deltaY).Sum(deltaZ);
             //var sCentr = Centre.Sum(delta);
-            //var sX = Dir_X.Sum(delta);
-            //var sY = Dir_Y.Sum(delta);
-            //var sZ = Dir_Z.Sum(delta);
-            Centre = Centre.Sum(shifting);
+
+            var deltaX = Dir_X.Mult(shifting._x);
+            var deltaY = Dir_Y.Mult(shifting._y);
+            var deltaZ = Dir_Z.Mult(shifting._z);
+
+            var delta = deltaX.Sum(deltaY).Sum(deltaZ);
+
+            Centre = Centre.Sum(delta);
             //return new Frame(sCentr, Dir_X,Dir_Y);
         }
 

@@ -63,6 +63,7 @@ namespace OperationalController
             }
 
             ModelData.ObjectData.ClearNotExisted();
+            ModelData.ObjectData.ClearEmptySet();
             ModelData.GroupData.ClearNotExisted();
             TaskData.ClearNotExisted(ModelData.GroupData);
         }

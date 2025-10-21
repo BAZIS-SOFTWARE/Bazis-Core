@@ -36,6 +36,20 @@ namespace Model.MeshObjects
             }
         }
 
+        public override bool ExistState
+        {
+            get => base.ExistState;
+            set
+            {
+                base.ExistState = value;
+                if (!value)
+                {
+                    foreach (var node in nodes)
+                        node.RemoveElement(this);
+                }
+            }
+        }
+
         public int GetNodeIndex(Node node)
         {
             return nodes.IndexOf(node);

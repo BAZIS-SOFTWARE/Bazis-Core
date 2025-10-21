@@ -24,6 +24,8 @@ namespace OperationalController.MeshObjsCreator
             {
                 foreach (var result in ConnectOneToMany(node, larger, startIndex))
                 {
+                    if (result.CalcLength() < 1e-4f)
+                        continue;
                     yield return result;
                     startIndex++;
                 }

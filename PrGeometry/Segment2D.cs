@@ -85,21 +85,24 @@ namespace Geometry
         /// IsPointBelongSegment
         /// </summary>
         /// <param name="point"></param>
+        /// <param name="delta"></param>
         /// <returns></returns>
-        public bool IsPointBelongSegment(Point2D point)
+        public bool IsPointBelongSegment(Point2D point, double delta = 0.0001)
         {
-            //
+            // Проверяем расстояние до сегмента
+            // изменено 12.10.2025
+            // var value = coefficients[0] * point._x + coefficients[1] * point._y + coefficients[2];
+            var a = (P2._x - P1._x) * (P1._y - point._y);
+            var b = (P1._x - point._x) * (P2._y - P1._y);
+            var length = Math.Sqrt(Math.Pow(P2._x - P1._x, 2) +
+                Math.Pow(P2._y - P1._y, 2));
 
-            //if (Math.Abs(P1._x - P2._x) < epsilon)
-            //{
-            //    var segment = new Segment2D(new Point2D(P1._y, P1._x), new Point2D(P2._y, P2._x));
-            //    return segment.IsPointBelongSegment(new Point2D(point._y, point._x));
-            //}
-            //var coefficients = GetLineEquationCoefficients();
-            var value = coefficients[0] * point._x + coefficients[1] * point._y + coefficients[2];
+            var value = Math.Abs(a - b) / length;
 
-            if (Math.Abs(value) > epsilon)
+            if (Math.Abs(value) > delta)
                 return false;
+
+            var temp = Math.Min(P1._x, P2._x);
 
             if (point._x < Math.Min(P1._x, P2._x)
                    || point._x > Math.Max(P1._x, P2._x))
