@@ -65,16 +65,6 @@ namespace Project.Tasks
                 return HeatExchangeFunc == null & HeatExchangeValue == 0 ?
                     MediaType.ConstantTemp : MediaType.HeatFlux;
             }
-            set 
-            {
-                // тут место для потенциальной ошибки. При смене условий необходимо 
-                // поменять тип группы с узловой на группу элементов и обратно соответственно
-                if(value == MediaType.ConstantTemp)
-                {
-                    HeatExchangeFunc = null;
-                    HeatExchangeValue = 0;
-                }
-            }
         }
 
 /// <inheritdoc/>
