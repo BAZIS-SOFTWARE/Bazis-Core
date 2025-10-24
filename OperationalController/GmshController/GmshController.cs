@@ -13,6 +13,9 @@ using Model.ObjectsCollections;
 using Model.Interfaces.ObjectsCollections;
 using System.Reflection;
 using Model.Utilities;
+using System.IO;
+using System.Runtime.InteropServices.ComTypes;
+using System.Text;
 
 namespace OperationalController.GmshController
 {
@@ -144,7 +147,7 @@ namespace OperationalController.GmshController
             else if (typeof(Element3D) == typeof(T))
                 dim = 3;
 
-            var dimTags = Gmsh.Model.GetEntities(3);
+            var dimTags = Gmsh.Model.GetEntities(dim);
             //var list = new List<ObjectsSet<T>>();
             var rnd = new Random();
 
