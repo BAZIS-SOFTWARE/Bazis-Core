@@ -111,7 +111,7 @@ namespace TestModel
         {
             //assing
 
-            var controller = new OperationalController.Controller();
+            var controller = new OperationalController.ProjectController();
 
             //act
             controller.Load(path);
@@ -129,7 +129,7 @@ namespace TestModel
         [TestMethod]
         public void FindBoundaryEdges_ShouldWork_OnModelWithDifferentElements()
         {
-            var controller = new OperationalController.Controller();
+            var controller = new OperationalController.ProjectController();
             //controller.ModelData.Loader = new LoadModelFromBPFTextFile();
             //controller.CreateProject(@"..\..\..\Examples\3D\cub_unsorted.bpf");
             controller.Load(@"..\..\..\Examples\3D\cub_unsorted.bpf");
@@ -147,7 +147,7 @@ namespace TestModel
         [TestMethod]
         public void GetElementsNormals()
         {
-            var controller = new OperationalController.Controller();
+            var controller = new OperationalController.ProjectController();
             //controller.ModelData.Loader = new LoadModelFromBPFTextFile();
             
             //controller.CreateProject(@"..\..\..\Examples\3D\cub_unsorted.bpf");
@@ -166,7 +166,7 @@ namespace TestModel
         public void FindElementNodes()
         {
             //assing
-            var controller = new OperationalController.Controller();
+            var controller = new OperationalController.ProjectController();
 
             //act
             controller.Load(@"..\..\..\Examples\3D\task_1.bpf");

@@ -13,12 +13,12 @@ using System.Xml.Linq;
 
 namespace OperationalController
 {
-    public partial class Controller
+    public partial class ProjectController
     {
         /// <inheritdoc/>
         
 
-        public void ImportCAD(string projectFile, IGmshController gmshController)
+        public void ImportCAD(string projectFile)
         {
 
             var path = System.IO.Path.GetDirectoryName(projectFile);
@@ -26,19 +26,19 @@ namespace OperationalController
             project = new ProjectData($"{path}//{name}");
 
 
-            gmshController.Gmsh.Clear();
-            gmshController.Gmsh.Open(projectFile);
+            GmshController.Gmsh.Clear();
+            GmshController.Gmsh.Open(projectFile);
 
-            gmshController.Gmsh.Model.Mesh.ImportStl(); //обязательно для представления stl
+            GmshController.Gmsh.Model.Mesh.ImportStl(); //обязательно для представления stl
 
             // TO DO спросить у Николая что думает по этой функции
             //var surfs = gmshController.Gmsh.Model.Occ.ImportShapes(projectFile);
 
-            gmshController.CreateControlPoints().ForEach(
+            GmshController.CreateControlPoints().ForEach(
         x => project.ModelData.ObjectData.PointsSet.Add(x.Number, x));
-            gmshController.CreateLines().ForEach(
+            GmshController.CreateLines().ForEach(
                 x => project.ModelData.ObjectData.CurveSet.Add(x.Number, x));
-            var surfData = gmshController.CreateSurfaceData();
+            var surfData = GmshController.CreateSurfaceData();
 
             foreach (var item in surfData.Item1)
                 project.ModelData.ObjectData.SurfaceSet.Add(item.Key,item.Value);

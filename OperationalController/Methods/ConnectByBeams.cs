@@ -12,7 +12,7 @@ using System.IO;
 
 namespace OperationalController
 {
-    public partial class Controller
+    public partial class ProjectController
     {
         OctreeBeamGroupConnection beamGroupConnection { get; } = new OctreeBeamGroupConnection();
         /// <inheritdoc/>

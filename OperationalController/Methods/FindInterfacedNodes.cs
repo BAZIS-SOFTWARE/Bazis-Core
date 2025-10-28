@@ -6,7 +6,7 @@ using System.Text;
 
 namespace OperationalController
 {
-    public partial class Controller
+    public partial class ProjectController
     {
         IInterfacedNodesFinder interfacedNodesFinder { get; } = new InterfacedNodesFinder();
         /// <inheritdoc/>

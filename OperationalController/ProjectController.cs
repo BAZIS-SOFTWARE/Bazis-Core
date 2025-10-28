@@ -30,8 +30,12 @@ namespace OperationalController
     /// <summary>
     /// ProjectController
     /// </summary>
-    public partial class Controller : IProjectController
+    public partial class ProjectController : IProjectController
     {
+/// <inheritdoc/>
+
+        public IGmshController GmshController { get; } = new GmshController.GmshController();
+
         IProjectData project;
 
         /// <inheritdoc/>
@@ -172,60 +176,5 @@ namespace OperationalController
             get => GeneralData.Name;
             set => GeneralData.Name = value;
         }
-
-        public void SaveSMF(Gmsh gmsh, string path)
-        {
-            //TODO реализовать сохранение настроек построения сетки языком geo
-            var actMinSize = gmsh.Option.GetNumber("Mesh.MeshSizeMin");
-            var actMaxSize = gmsh.Option.GetNumber("Mesh.MeshSizeMax");
-            var actAlgo2d = gmsh.Option.GetNumber("Mesh.Algorithm");
-
-            var actAlgo3d = gmsh.Option.GetNumber("Mesh.Algorithm3D");
-
-            var actSizeFactor = gmsh.Option.GetNumber("Mesh.MeshSizeFactor");
-
-            using (var sw = new StreamWriter(path, false, Encoding.Unicode))
-            {
-
-                foreach (var vol in ModelData.ObjectData.VolumeData)
-                {
-                    foreach (var surface in vol.GetSurfaceFigures())
-                    {
-                        foreach (var curvNumber in surface.CurveNumbers)
-                        {
-                            foreach (var pointNumber in ModelData.ObjectData.CurveSet[curvNumber].PointsNumbers)
-                            {
-                                var dimTags = new int[] { 0, pointNumber };
-                                var meshSize = gmsh.Model.Mesh.GetSizes(dimTags);
-
-                                sw.WriteLine($"{ObjType.Точка} {pointNumber} {meshSize}");
-                            }
-                            var attributes = gmsh.Model.GetAttribute($"transfinite curve {curvNumber}");
-                          
-                            sw.WriteLine(attributes);
-
-                        }
-                    }
-                }
-            }
-
-            /*
-             * Глобальные настройки
-             * макс размер
-             * мин размер
-             * алгоритм2д
-             * алгоритм3д
-             * масштабный коэф.
-             * 
-             * - объем (трансфиниция, фильтр (степень гр, толщина слоя, раз-р на пов-ти, размер в центре))
-             *  - пов - ти (трансфиниция, квадратизация)
-             *      - кривые (кол-во точек, алгоритм, Коэффициент)
-             *          - узлы (размер элементов)
-             */
-
-            throw new NotImplementedException();
-        }
-
-
     }
 }

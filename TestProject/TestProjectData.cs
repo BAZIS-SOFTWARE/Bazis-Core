@@ -32,7 +32,7 @@ namespace TestProject
         public void RemoveObjsByNumber(string path, int[] objNumbers, ObjType type, string resStr)
         {
             //assing
-            var control = new Controller();
+            var control = new ProjectController();
 
             //control.CreateProject(path);
             //control.ModelData.Loader = new LoadModelFromBPF2TextFile();
@@ -54,7 +54,7 @@ namespace TestProject
         public void RemoveSetByNameAndType(string path, string setName, ObjType type, string resStr)
         {
             //assing
-            var control = new Controller();
+            var control = new ProjectController();
             //control.CreateProject(path);
             //control.ModelData.Loader = new LoadModelFromBPF2TextFile();
             control.Load(path);
@@ -75,7 +75,7 @@ namespace TestProject
         public void ClearMeshCollection(string path, ObjType type, string resStr)
         {
             //assing
-            var control = new Controller();
+            var control = new ProjectController();
 
             //control.CreateProject(path);
             //control.ModelData.Loader = new LoadModelFromBPF2TextFile();

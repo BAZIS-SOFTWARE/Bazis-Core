@@ -3,7 +3,7 @@ using System.IO;
 
 namespace OperationalController
 {
-    public partial class Controller
+    public partial class ProjectController
     {
         /// <inheritdoc/>
         public void ChangeMeshSetOrder(int elemDim, string name, int order)

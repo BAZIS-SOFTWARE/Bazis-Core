@@ -46,7 +46,7 @@ namespace TestModel.ControllerTests
         public void MergeNodes(string path, float dist, int count)
         {
             //assing
-            var controller = new OperationalController.Controller();
+            var controller = new OperationalController.ProjectController();
 
             //act
 
@@ -67,7 +67,7 @@ namespace TestModel.ControllerTests
 
             // Очень странная проверка ее нужно ускорить
             
-            foreach (var elem in controller.GetModelElements())
+            foreach (var elem in controller.GetAllModelElements())
             {
                 foreach (var item in elem.GetVertexes())
                 {

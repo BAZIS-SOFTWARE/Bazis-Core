@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace OperationalController
 {
-    public partial class Controller
+    public partial class ProjectController
     {
         PresentersCreator presentersCreator = new PresentersCreator();
         ChangeInsideSurface changeInsideSurface => new ChangeInsideSurface();

@@ -30,6 +30,66 @@ namespace OperationalController.GmshController
         /// </summary>
         void Unload();
         /// <summary>
+        /// SetGradientVolume
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <param name="power"></param>
+        /// <param name="distMax"></param>
+        /// <param name="surfSize"></param>
+        /// <param name="coreSize"></param>
+        void SetGradientVolume(int tag, double power, double distMax, double surfSize, double coreSize);
+        /// <summary>
+        /// SetTransfiniteVolume
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <param name="cornerTags"></param>
+        void SetTransfiniteVolume(int tag, int[] cornerTags = null);
+        /// <summary>
+        /// GetTransfiniteVolume
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <returns></returns>
+        string[] GetTransfiniteVolume(int tag);
+        /// <summary>
+        /// SetTransfiniteSurface
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <param name="arrangement"></param>
+        /// <param name="cornerTags"></param>
+        void SetTransfiniteSurface(int tag, Arrangement arrangement = Arrangement.Left,int[] cornerTags = null);
+        /// <summary>
+        /// SetTransfiniteCurve
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <param name="numNodes"></param>
+        /// <param name="meshType"></param>
+        /// <param name="coef"></param>
+        void SetTransfiniteCurve(int tag, int numNodes, MeshType meshType = MeshType.Progression, double coef = 1.0);
+        /// <summary>
+        /// GetTransfiniteCurve
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <returns></returns>
+        string[] GetTransfiniteCurve(int tag);
+        /// <summary>
+        /// GetTransfiniteSurface
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <returns></returns>
+        string[] GetTransfiniteSurface(int tag);
+        /// <summary>
+        /// GetSize
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <returns>Размер элемента</returns>
+        double GetSize(int tag);
+        /// <summary>
+        /// SetSize
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <param name="meshDize"></param>
+        void SetSize(int tag, double meshDize);
+        /// <summary>
         /// Возвращает список отсортированных узлов сетки принадлежащих геометрической сущности.
         /// Если запрашивается точки для dim <=0, флаг includeBoundary установить в false, иначе будут дубликаты
         /// </summary>

@@ -430,7 +430,7 @@ namespace TestModel
         [DataRow(@"..\..\..\Examples\3D\mixElements.bpf", true)]
         public void TestSeparators(string fileName, bool isVolume)
         {
-            var controller = new Controller();
+            var controller = new ProjectController();
             controller.Load(fileName);
 
             controller.ChangeInsideSurfacesState(isVolume);
@@ -451,7 +451,7 @@ namespace TestModel
         [DataRow(@"..\..\..\Examples\3D\untitled.inp", 6, ObjType.Элемент2D)]
         public void TestSeparatorsAfterHideElementsByColor(string fileName, int hideElemsBySet, ObjType objType)
         {
-            var controller = new Controller();
+            var controller = new ProjectController();
             controller.ImportMesh(fileName);
 
             var elemCounter = 0;
@@ -510,7 +510,7 @@ namespace TestModel
         {
             var alphaExp = alpha / 255f;
 
-            var controller = new Controller();
+            var controller = new ProjectController();
             controller.ImportMesh(fileName);
 
             var e1d = controller.ModelData.ObjectData.E1DCollection;

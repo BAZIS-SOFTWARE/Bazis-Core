@@ -18,7 +18,7 @@ using Model.IO.STL;
 
 namespace OperationalController
 {
-    public partial class Controller
+    public partial class ProjectController
     {
         public void ExportMesh(string v)
         {

@@ -14,46 +14,10 @@ namespace Model.GeometryObjects
     /// </summary>
     public class SurfaceFigure : ModelObject, ISurfaceObject<GeometrySurface, GeometryPoint>, ISquare
     {
-        bool transfiniteFlag;
-        bool recombineFlag;
-        /// <summary>
-        /// IsRecombined
-        /// </summary>
-        public bool IsRecombined 
-        {
-            get { return recombineFlag; }
-        }
-
-        public bool IsTransfinited
-        {
-            get { return transfiniteFlag; }
-        }
-        /// <summary>
-        /// MakeRecombine
-        /// </summary>
-        public void MakeRecombine()
-        {
-            recombineFlag = true;
-        }
-
-        /// <summary>
-        /// MakeTransfinite
-        /// </summary>
-        public void MakeTransfinite()
-        {
-            transfiniteFlag = true;
-        }
         /// <summary>
         /// Surface
         /// </summary>
         protected GeometrySurface[] surfaces;
-
-
-        /// <summary>
-        /// Номера образующих кривых. Временное решение.
-        /// Сделано для быстрого поиска связанных с поверхностью кривых 
-        /// </summary>
-        public int[] CurveNumbers { get; set; }
         /// <summary>
         /// Figure2D
         /// </summary>
@@ -82,12 +46,7 @@ namespace Model.GeometryObjects
         /// <inheritdoc/>
         public override string ToString()
         {
-            //var strArr = surfaces.Select(x => x.Number.ToString()).ToArray();
-            
-            // Выводим номера кривых по которым построена поверхность
-            var str = string.Join(" ", CurveNumbers);
-
-            return $"{base.ToString()} : {str}";
+            return base.ToString();
         }
 
         /// <inheritdoc/>

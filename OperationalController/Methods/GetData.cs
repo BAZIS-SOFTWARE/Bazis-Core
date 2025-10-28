@@ -14,7 +14,7 @@ using System.Data;
 
 namespace OperationalController
 {
-    public partial class Controller
+    public partial class ProjectController
     {
         /// <inheritdoc/>
 
@@ -43,9 +43,9 @@ namespace OperationalController
             return ModelData.ObjectData.GetObjects(objType);
         }
         /// <inheritdoc/>
-        public IModelObject GetModelObject(ObjType objType, int setNumber)
+        public IModelObject GetModelObject(ObjType objType, int objNumber)
         {
-            return ModelData.ObjectData.Find(objType, setNumber);
+            return ModelData.ObjectData.Find(objType, objNumber);
         }
         /// <inheritdoc/>
 
@@ -68,9 +68,42 @@ namespace OperationalController
 
         /// <inheritdoc/>
 
-        public IEnumerable<IElement> GetModelElements()
+        public IEnumerable<IElement> GetAllModelElements()
         {
             return ModelData.ObjectData.GetAllElements();
+        }
+
+        /// <inheritdoc/>
+
+        public IEnumerable<IElement> GetModelElements(int dim, string setName)
+        {
+            if (dim < 1 | dim > 3)
+                throw new Exception("Неправильно указана размерность элементов");
+
+            if (dim == 1)
+                return ModelData.ObjectData.E1DCollection[setName].Values;
+            else if(dim == 2)
+                return ModelData.ObjectData.E2DCollection[setName].Values;
+            else
+                return ModelData.ObjectData.E3DCollection[setName].Values;
+        }
+
+        /// <inheritdoc/>
+        public GeometryPoint GetModelPoint(int objNumber)
+        {
+            return ModelData.ObjectData.PointsSet[objNumber];
+        }
+
+        /// <inheritdoc/>
+        public Curve GetModelCurve(int objNumber)
+        {
+            return ModelData.ObjectData.CurveSet[objNumber];
+        }
+
+        /// <inheritdoc/>
+        public SurfaceFigure GetModelSurface(int objNumber)
+        {
+            return ModelData.ObjectData.SurfaceSet[objNumber];
         }
 
         /// <inheritdoc/>

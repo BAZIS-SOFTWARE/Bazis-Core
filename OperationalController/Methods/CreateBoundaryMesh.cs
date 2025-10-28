@@ -9,7 +9,7 @@ using System.Text;
 
 namespace OperationalController
 {
-    public partial class Controller
+    public partial class ProjectController
     {
         /// <inheritdoc/>
 

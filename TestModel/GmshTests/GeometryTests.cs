@@ -14,17 +14,17 @@ namespace TestModel.GmshTests
     [TestClass]
     public class GeometryTests
     {
-        private GmshController controller = new GmshController();
+        private GmshController gmshController = new GmshController();
         private static string modelFolder = @"..\..\..\Examples";
         [TestInitialize]
         public void Init()
         {
-            controller.Load(@"..\..\..\..\GmshApi\gmsh.dll");
+            gmshController.Load(@"..\..\..\..\GmshApi\gmsh.dll");
         }
         [TestCleanup]
         public void Cleanup()
         {
-            controller.Gmsh.Clear();
+            gmshController.Gmsh.Clear();
         }
 
         [DataTestMethod]
@@ -36,8 +36,9 @@ namespace TestModel.GmshTests
         //Для geo ядра презентация STL не работает (как и в gmsh)
         public void ImportCADoutside(string fileName)
         {
-            var project = new Controller();
-            project.ImportCAD(fileName, controller);
+            var project = new ProjectController();
+            project.GmshController.Load(@"..\..\..\..\GmshApi\gmsh.dll");
+            project.ImportCAD(fileName);
 
             //assert
             Assert.AreNotEqual(project.GetAllModelObjects().Count(),0);
@@ -55,8 +56,9 @@ namespace TestModel.GmshTests
         //Для geo ядра презентация STL не работает (как и в gmsh)
         public void ImportCAD(string fileName)
         {
-            var project = new Controller();
-            project.ImportCAD(modelFolder + fileName, controller);
+            var project = new ProjectController();
+            project.GmshController.Load(@"..\..\..\..\GmshApi\gmsh.dll");
+            project.ImportCAD(modelFolder + fileName);
 
             //assert
             Assert.AreNotEqual(project.GetAllModelObjects().Count(), 0);
@@ -67,13 +69,13 @@ namespace TestModel.GmshTests
         [DataRow(@"\CAD\Cilindr.step", 4, ObjType.Точка)]
         public void GetGeometryObjectsTest(string fileName, int numbOfObjs, ObjType objType)
         {
-            controller.Gmsh.Open(modelFolder + fileName);
+            gmshController.Gmsh.Open(modelFolder + fileName);
 
             IEnumerable<IModelObject> objects;
             if (objType == ObjType.Кривая)
-                objects = controller.CreateLines();
+                objects = gmshController.CreateLines();
             else
-                objects = controller.CreateControlPoints();
+                objects = gmshController.CreateControlPoints();
 
             Assert.AreEqual(numbOfObjs, objects.Count());
             foreach (var obj in objects)
@@ -84,11 +86,11 @@ namespace TestModel.GmshTests
         [DataRow(@"\GMSHAPI\test.geo")]
         public void TestCurveSteps(string fileName)
         {
-            controller.Gmsh.Open(modelFolder + fileName);
+            gmshController.Gmsh.Open(modelFolder + fileName);
 
-            var curveUntil = controller.CreateLines().First();
-            controller.Gmsh.Option.SetNumber("Geometry.NumSubEdges", 15);
-            var curveAfter = controller.CreateLines().First();
+            var curveUntil = gmshController.CreateLines().First();
+            gmshController.Gmsh.Option.SetNumber("Geometry.NumSubEdges", 15);
+            var curveAfter = gmshController.CreateLines().First();
             Assert.IsTrue(curveAfter.NumberOfPoints < curveUntil.NumberOfPoints);
         }
 
@@ -98,12 +100,12 @@ namespace TestModel.GmshTests
         public void RemoveAllData(string stlPath, ObjType objType, int nNumb, int eNumb)
         {
             var modelData = new ModelData();
-            controller.Gmsh.Merge(stlPath);
+            gmshController.Gmsh.Merge(stlPath);
 
-            var nodes = controller.GetNodes();
+            var nodes = gmshController.GetNodes();
             Assert.AreEqual(4, nodes.Count);
 
-            var elements = controller.GetMeshEntities(2, -1, nodes);
+            var elements = gmshController.GetMeshEntities(2, -1, nodes);
             Assert.AreEqual(2, elements.Count);
 
             nodes.ForEach(x =>  modelData.ObjectData.NodesSet.Add(x.Number, x));
@@ -119,13 +121,13 @@ namespace TestModel.GmshTests
         [DataRow(@"\CAD\Cilindr.step", new int[] { 1 })]
         public void RemoveEntityTest(string fileName, int[] dimArray)
         {
-            controller.Gmsh.Open(modelFolder + fileName);
+            gmshController.Gmsh.Open(modelFolder + fileName);
             for (var i = 0; i < dimArray.Length; ++i)
             {
-                var dimTags = controller.Gmsh.Model.GetEntities(-1);
+                var dimTags = gmshController.Gmsh.Model.GetEntities(-1);
                 var lengthBefore = dimTags.Length;
-                controller.RemoveGeometryObjects(new int[] { dimArray[i], dimTags[1] });
-                dimTags = controller.Gmsh.Model.GetEntities();
+                gmshController.RemoveGeometryObjects(new int[] { dimArray[i], dimTags[1] });
+                dimTags = gmshController.Gmsh.Model.GetEntities();
                 var lengthAfter = dimTags.Length;
                 Assert.IsTrue(lengthBefore > lengthAfter);
             }
@@ -139,14 +141,14 @@ namespace TestModel.GmshTests
         
         public void GetEntitiesGetAllDimensionTest(string fileName, int[] expTags)
         {
-            controller.Gmsh.Open(modelFolder + fileName);
-            var dim = controller.Gmsh.Model.GetDimension();
+            gmshController.Gmsh.Open(modelFolder + fileName);
+            var dim = gmshController.Gmsh.Model.GetDimension();
             Assert.AreNotEqual(0, dim);
             var tagDims = new int[expTags.Length][];
             for (var i = 0; i < tagDims.GetLength(0); ++i)
                 tagDims[i] = Enumerable.Range(1, expTags[i]).ToArray();
             var expectedTags = tagDims.SelectMany(v => v).ToArray();
-            var dimTags = controller.Gmsh.Model.GetEntities();
+            var dimTags = gmshController.Gmsh.Model.GetEntities();
             var actualTags = dimTags.Where((v, i) => (i & 1) == 1).ToArray();
             CollectionAssert.AreEqual(expectedTags, actualTags);
         }
@@ -159,15 +161,15 @@ namespace TestModel.GmshTests
         [DataRow(@"\CAD\model.igs", "3", new int[] { 136, 138, 28 }, new string[] { "Point", "Curve", "Surface" })]
         public void SetGetRemoveEntityNameTest(string fileName, string modelID, int[] entCount, string[] entName)
         {
-            controller.Gmsh.Open(modelFolder + fileName);
-            var dimTags = controller.Gmsh.Model.GetEntities();
+            gmshController.Gmsh.Open(modelFolder + fileName);
+            var dimTags = gmshController.Gmsh.Model.GetEntities();
             for (var i = 1; i < dimTags.Length; i += 2)
             {
                 var dim = dimTags[i - 1];
                 var tag = dimTags[i];
                 var expectedName = entName[dim] + tag.ToString();
-                controller.Gmsh.Model.SetEntityName(dim, tag, expectedName);
-                var actual = controller.Gmsh.Model.GetEntityName(dim, tag);
+                gmshController.Gmsh.Model.SetEntityName(dim, tag, expectedName);
+                var actual = gmshController.Gmsh.Model.GetEntityName(dim, tag);
                 Assert.AreEqual(expectedName, actual);
             }
             //Remove Test: 1) Remove exists name 2) Remove not exists name
@@ -186,8 +188,8 @@ namespace TestModel.GmshTests
                                     new double[] { 1, 1, 1 })]
         public void ModelBoundingBoxTest(string fileName, string modelID, double[] minExp, double[] maxExp)
         {
-            controller.Gmsh.Open(modelFolder + fileName);
-            var data = controller.Gmsh.Model.GetBoundingBox(-1, -1);
+            gmshController.Gmsh.Open(modelFolder + fileName);
+            var data = gmshController.Gmsh.Model.GetBoundingBox(-1, -1);
             var min = new double[3] { data.Item1, data.Item2, data.Item3 };
             var max = new double[3] { data.Item4, data.Item5, data.Item6 };
             for (var i = 0; i < 3; ++i)
@@ -229,8 +231,8 @@ namespace TestModel.GmshTests
         [DataRow(@"\GMSHAPI\sphere.geo", "2", 1, new int[0], new int[0], 3)]//Not Found Test
         public void GetAdjacenciesTest(string fileName, string modelId, int tag, int[] downExp, int[] upExp, int dim)
         {
-            controller.Gmsh.Open(modelFolder + fileName);
-            var data = controller.Gmsh.Model.GetAdjacencies(dim, tag);
+            gmshController.Gmsh.Open(modelFolder + fileName);
+            var data = gmshController.Gmsh.Model.GetAdjacencies(dim, tag);
             CollectionAssert.AreEqual(downExp, data.Item2);
             CollectionAssert.AreEqual(upExp, data.Item1);
         }
@@ -245,8 +247,8 @@ namespace TestModel.GmshTests
         public void GetLocalCoordsByParametricTest(string fileName, string modelID, int tag,
                                                    double[] parametric, double[] expected)
         {
-            controller.Gmsh.Open(modelFolder + fileName);
-            var coord = controller.Gmsh.Model.GetValue(0, tag, parametric);
+            gmshController.Gmsh.Open(modelFolder + fileName);
+            var coord = gmshController.Gmsh.Model.GetValue(0, tag, parametric);
             for (var i = 0; i < expected.Length; ++i)
                 Assert.AreEqual(expected[i], coord[i], 1e-08);
         }
@@ -256,13 +258,13 @@ namespace TestModel.GmshTests
         [DataRow(@"\GMSHAPI\sphere.geo", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 })]
         public void ParametrizationCurvesTest(string fileName, int[] tags)
         {
-            controller.Gmsh.Open(modelFolder + fileName);
+            gmshController.Gmsh.Open(modelFolder + fileName);
             for (var i = 0; i < tags.Length; ++i)
             {
-                var data = controller.Gmsh.Model.GetParametrizationBounds(1, tags[i]);
-                var numInsideCount = controller.Gmsh.Model.IsInside(1, tags[i], data.Item1, true);
+                var data = gmshController.Gmsh.Model.GetParametrizationBounds(1, tags[i]);
+                var numInsideCount = gmshController.Gmsh.Model.IsInside(1, tags[i], data.Item1, true);
                 Assert.AreNotEqual(0, numInsideCount);
-                numInsideCount = controller.Gmsh.Model.IsInside(1, tags[i], data.Item2, true);
+                numInsideCount = gmshController.Gmsh.Model.IsInside(1, tags[i], data.Item2, true);
                 Assert.AreNotEqual(0, numInsideCount);
             }
         }
@@ -271,13 +273,13 @@ namespace TestModel.GmshTests
         [DataRow(@"\CAD\Cilindr.step", new int[] { 1 })]
         public void ParametrizationSurfacesTest(string fileName, int[] tags)
         {
-            controller.Gmsh.Open(modelFolder + fileName);
+            gmshController.Gmsh.Open(modelFolder + fileName);
             for (var i = 0; i < tags.Length; ++i)
             {
-                var data = controller.Gmsh.Model.GetParametrizationBounds(2, tags[i]);
-                var numInsideCount = controller.Gmsh.Model.IsInside(1, tags[i], data.Item1, true);
+                var data = gmshController.Gmsh.Model.GetParametrizationBounds(2, tags[i]);
+                var numInsideCount = gmshController.Gmsh.Model.IsInside(1, tags[i], data.Item1, true);
                 Assert.AreNotEqual(0, numInsideCount);
-                numInsideCount = controller.Gmsh.Model.IsInside(2, tags[i], data.Item2, true);
+                numInsideCount = gmshController.Gmsh.Model.IsInside(2, tags[i], data.Item2, true);
                 Assert.AreNotEqual(0, numInsideCount);
             }
         }
@@ -286,18 +288,18 @@ namespace TestModel.GmshTests
         [DataRow("Cilindr.step", "1")]
         public void AttributeTest(string fileName, string modelName)
         {
-            controller.Gmsh.Open(modelFolder + fileName);
+            gmshController.Gmsh.Open(modelFolder + fileName);
             //controller.Gmsh.Model.Mesh.SetTransfiniteCurve(4, 20);
             var expected = new string[] { "4", "5" };
-            controller.Gmsh.Model.SetAttribute("Progression", expected);
-            var attributes = controller.Gmsh.Model.GetAttribute("Progression");
+            gmshController.Gmsh.Model.SetAttribute("Progression", expected);
+            var attributes = gmshController.Gmsh.Model.GetAttribute("Progression");
             CollectionAssert.AreEqual(expected, attributes);
             var transValues = new string[] { "1", "2" };
-            controller.Gmsh.Model.SetAttribute("Transfinite", transValues);
-            var names = controller.Gmsh.Model.GetAttributeNames();
+            gmshController.Gmsh.Model.SetAttribute("Transfinite", transValues);
+            var names = gmshController.Gmsh.Model.GetAttributeNames();
             CollectionAssert.AreEqual(new string[] { "Progression", "Transfinite" }, names);
-            controller.Gmsh.Model.RemoveAttribute("Progression");
-            names = controller.Gmsh.Model.GetAttributeNames();
+            gmshController.Gmsh.Model.RemoveAttribute("Progression");
+            names = gmshController.Gmsh.Model.GetAttributeNames();
             CollectionAssert.AreEqual(new string[] { "Transfinite" }, names);
         }
         ///Тест, гарантирующий загрузку 3д элементов для STL
@@ -305,22 +307,22 @@ namespace TestModel.GmshTests
         [DataRow("sphere.stl")]
         public void AddElements3DForStlTest(string fileName)
         {
-            controller.Gmsh.Open(@"..\..\..\Examples\STL\" + fileName);
-            controller.Gmsh.Model.Mesh.Generate(3);
-            var nodes = controller.GetNodes(3, -1);
-            var elements = controller.GetMeshEntities(3, -1, nodes);
+            gmshController.Gmsh.Open(@"..\..\..\Examples\STL\" + fileName);
+            gmshController.Gmsh.Model.Mesh.Generate(3);
+            var nodes = gmshController.GetNodes(3, -1);
+            var elements = gmshController.GetMeshEntities(3, -1, nodes);
             Assert.AreEqual(0, elements.Count);
-            var dimTags = controller.Gmsh.Model.GetEntities(2);
+            var dimTags = gmshController.Gmsh.Model.GetEntities(2);
             dimTags = dimTags.Where((v,i) => (i & 1) == 1).ToArray();
-            var shell = controller.Gmsh.Model.Geo.AddSurfaceLoop(dimTags);
+            var shell = gmshController.Gmsh.Model.Geo.AddSurfaceLoop(dimTags);
             var shellTags = new int[] { shell };
-            var volume = controller.Gmsh.Model.Geo.AddVolume(shellTags);
-            controller.Gmsh.Model.Geo.Synchronize();//Обязательный вызов Synchronize, после добавления объемов
-            controller.Gmsh.Model.Mesh.Generate(3);
-            var error = controller.Gmsh.Logger.GetLastError();
+            var volume = gmshController.Gmsh.Model.Geo.AddVolume(shellTags);
+            gmshController.Gmsh.Model.Geo.Synchronize();//Обязательный вызов Synchronize, после добавления объемов
+            gmshController.Gmsh.Model.Mesh.Generate(3);
+            var error = gmshController.Gmsh.Logger.GetLastError();
             Assert.IsTrue(string.IsNullOrEmpty(error));
-            nodes = controller.GetNodes(3, -1);
-            elements = controller.GetMeshEntities(3, -1, nodes);
+            nodes = gmshController.GetNodes(3, -1);
+            elements = gmshController.GetMeshEntities(3, -1, nodes);
             Assert.AreNotEqual(0, elements.Count);
         }
         //Тест проверки 4 координаты контрольной точки в файле
@@ -328,9 +330,9 @@ namespace TestModel.GmshTests
         [DataRow(@"..\..\..\Examples\GMSHAPI\simple.geo", new double[] { 0.1, 0.1, 0.1, 0.01 })]
         public void CheckMeshSizesInFileTest(string path, double[] expected)
         {
-            controller.Gmsh.Open(path);
-            var dimTags = controller.Gmsh.Model.GetEntities(0);
-            var coords = controller.Gmsh.Model.Mesh.GetSizes(dimTags);
+            gmshController.Gmsh.Open(path);
+            var dimTags = gmshController.Gmsh.Model.GetEntities(0);
+            var coords = gmshController.Gmsh.Model.Mesh.GetSizes(dimTags);
             CollectionAssert.AreEqual(expected, coords);
         }
         //Тест - устанавливаем плотность в точке, затем проверям(берем разные файлы моделей!)
@@ -339,15 +341,15 @@ namespace TestModel.GmshTests
         [DataRow(@"..\..\..\Examples\GMSHAPI\simple.geo", new double[] { 0.5, 0.9, 0.01, 0.7 })]
         public void SetAndGetMeshSizesTest(string path, double[] expected)
         {
-            controller.Gmsh.Open(path);
-            var dimTags = controller.Gmsh.Model.GetEntities(0);
+            gmshController.Gmsh.Open(path);
+            var dimTags = gmshController.Gmsh.Model.GetEntities(0);
             for (int i = 1, j = 0; i < dimTags.Length; i += 2, ++j)
             {
                 var dim = dimTags[i - 1];
                 var tag = dimTags[i];
-                controller.Gmsh.Model.Mesh.SetSize(new int[] { dim, tag }, expected[j]);
+                gmshController.Gmsh.Model.Mesh.SetSize(new int[] { dim, tag }, expected[j]);
             }
-            var coords = controller.Gmsh.Model.Mesh.GetSizes(dimTags);
+            var coords = gmshController.Gmsh.Model.Mesh.GetSizes(dimTags);
             CollectionAssert.AreEqual(expected, coords);
         }
 
@@ -355,10 +357,10 @@ namespace TestModel.GmshTests
         [DataRow(@"..\..\..\Examples\GMSHAPI\simple.geo", new string[] { "18", "bump","1.8"})]
         public void SetAndGetCurveTransfinite(string path, string[] expected)
         {
-            controller.Gmsh.Open(path);
-            controller.Gmsh.Model.Mesh.SetTransfiniteCurve(1, 15, GmshApi.MeshType.Bump, 1.8);
-            controller.Gmsh.Model.SetAttribute("transfinite", expected);
-            var attributes = controller.Gmsh.Model.GetAttribute("transfinite");
+            gmshController.Gmsh.Open(path);
+            gmshController.Gmsh.Model.Mesh.SetTransfiniteCurve(1, 15, GmshApi.MeshType.Bump, 1.8);
+            gmshController.Gmsh.Model.SetAttribute("transfinite", expected);
+            var attributes = gmshController.Gmsh.Model.GetAttribute("transfinite");
             CollectionAssert.AreEqual(expected, attributes);
         }
 
@@ -366,22 +368,22 @@ namespace TestModel.GmshTests
         [DataRow(@"\CAD\Cilindr.step", new int[] { 2, 4, 5, 6 })]
         public void GetCurveLengthTest(string fileName, int[] curvesId)
         {
-            controller.Gmsh.Open(modelFolder + fileName);
+            gmshController.Gmsh.Open(modelFolder + fileName);
             for (var i = 0; i < curvesId.Length; ++i)
             {
                 int[] down, up;
                 var coords = new double[2][];
-                var data = controller.Gmsh.Model.GetAdjacencies(1, curvesId[i]);
+                var data = gmshController.Gmsh.Model.GetAdjacencies(1, curvesId[i]);
                 Assert.AreEqual(2, data.Item2.Length);
                 if (data.Item2.Length == 2)
                 {
                     for (var j = 0; j < data.Item2.Length; ++j)
-                        coords[j] = controller.Gmsh.Model.GetValue(0, data.Item2[j], new double[0]);
+                        coords[j] = gmshController.Gmsh.Model.GetValue(0, data.Item2[j], new double[0]);
                     var point0 = new Point3D((float)coords[0][0], (float)coords[0][1], (float)coords[0][2]);
                     var point1 = new Point3D((float)coords[1][0], (float)coords[1][1], (float)coords[1][2]);
                     var radius = Vector.GetVectorLenght(point0.Sub(point1)) / 2;
                     var expectedLength = Math.PI * radius;
-                    var actualLength = controller.CalcCurveLength(curvesId[i]);
+                    var actualLength = gmshController.CalcCurveLength(curvesId[i]);
                     Assert.AreEqual(expectedLength, actualLength, 1e-4);
                 }
             }
@@ -392,12 +394,12 @@ namespace TestModel.GmshTests
         [DataRow(@"\CAD\Cilindr.step", 4, 4.2f)]
         public void GetPointsCountByElementSizeTest(string fileName, int curveId, float elemSize)
         {
-            controller.Gmsh.Open(modelFolder + fileName);
-            var actual = controller.GetPointsCountByElementSize(curveId, elemSize);
+            gmshController.Gmsh.Open(modelFolder + fileName);
+            var actual = gmshController.GetPointsCountByElementSize(curveId, elemSize);
 
-            controller.Gmsh.Model.Mesh.SetTransfiniteCurve(curveId, actual);
-            controller.Gmsh.Model.Mesh.Generate(2);
-            var data = controller.Gmsh.Model.Mesh.GetNodes(1, curveId, true, false);
+            gmshController.Gmsh.Model.Mesh.SetTransfiniteCurve(curveId, actual);
+            gmshController.Gmsh.Model.Mesh.Generate(2);
+            var data = gmshController.Gmsh.Model.Mesh.GetNodes(1, curveId, true, false);
             var expected = data.Item2.Length / 3;
             Assert.AreEqual(expected, actual);
         }
@@ -405,13 +407,13 @@ namespace TestModel.GmshTests
         [DataRow(@"\CAD\Cilindr.step")]
         public void RemoveTest(string fileName)
         {
-            controller.Gmsh.Open(modelFolder + fileName);
+            gmshController.Gmsh.Open(modelFolder + fileName);
 
             var delDimTags = new int[] { 3, 1, 2, 4 };
-            controller.Gmsh.Model.Occ.Remove(delDimTags);
-            controller.Gmsh.Model.Occ.Synchronize();
+            gmshController.Gmsh.Model.Occ.Remove(delDimTags);
+            gmshController.Gmsh.Model.Occ.Synchronize();
 
-            var dimTags = controller.Gmsh.Model.GetEntities(3);
+            var dimTags = gmshController.Gmsh.Model.GetEntities(3);
             
             Assert.IsTrue(dimTags.Length == 0);
             //controller.Gmsh.Write(@"D:\ModifiedCylinder.step");
@@ -421,7 +423,7 @@ namespace TestModel.GmshTests
         {
             var status = maxId >= delId;
             var delName = entName + delId.ToString();
-            controller.Gmsh.Model.RemoveEntityName(delName);
+            gmshController.Gmsh.Model.RemoveEntityName(delName);
         }
     }
 }

@@ -21,10 +21,6 @@ namespace Model.GeometryObjects
         /// <inheritdoc/>
 
         public override int NumberOfPoints { get; }
-        /// <summary>
-        /// NodeNumbers
-        /// </summary>
-        public int[] PointsNumbers { get; set; }
 
         /// <inheritdoc/>
 
@@ -68,11 +64,7 @@ namespace Model.GeometryObjects
         /// <inheritdoc/>
         public override string ToString()
         {
-            //var strArr = points.Select(x => x.Number.ToString()).ToArray();
-
-            var str = string.Join(" ", PointsNumbers);
-
-            return $"{base.ToString()} : {str}";
+            return base.ToString();
         }
     }
 }
