@@ -26,8 +26,10 @@ namespace OperationalController.MeshObjsCreator
                 {
                     if (result.CalcLength() < 1e-4f)
                         continue;
+
+                    startIndex = result.Number + 1;
                     yield return result;
-                    startIndex++;
+                    
                 }
             }
         }
@@ -57,15 +59,24 @@ namespace OperationalController.MeshObjsCreator
 
         private IEnumerable<Beam> ConnectOneToMany(Node node, IGroup group, int startIndex)
         {
-            return octree.GetNearby(new Vector3(node._x, node._y, node._z), (float)searchRadius)
+            var res = octree.GetNearby(new Vector3(node._x, node._y, node._z), (float)searchRadius)
                          .OrderBy(n => GetSquaredDistance(n, node))
-                         .ThenBy(n => incidentEdgesCount[n])
-                         .Take(maxIncidentBeams)
-                         .Select((other, i) =>
-                         {
-                             incidentEdgesCount[other]++;
-                             return new Beam(startIndex + i, new Node[] { node, other });
-                         });
+                         //.ThenBy(n => incidentEdgesCount[n]) 
+                         // здесь используется для балансировки, если много с одинаковым радиусом
+                         // пока не используем
+                         .Take(maxIncidentBeams);
+
+            foreach (var item in res)
+            {
+                yield return new Beam(startIndex, new Node[] { node, item });
+                startIndex++;
+            }
+            // предыдущая форма окончания
+                         //.Select((other, i) =>
+                         //{
+                         //    incidentEdgesCount[other]++;
+                         //    return 
+                         //});
         }
     }
 }

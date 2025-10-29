@@ -87,13 +87,13 @@ namespace Model.GeometryObjects
 
         public IEnumerable<GeometryPoint> GetVertexes()
         {
-            var points = new List<GeometryPoint>();
+            var points = new HashSet<GeometryPoint>();
 
             foreach (var surface in surfaces)
             {
                 foreach (var point in surface.GetVertexes())
                 {
-                    if (!points.Contains(point))
+                    //if (!points.Contains(point))
                         points.Add(point);
                 }
             }

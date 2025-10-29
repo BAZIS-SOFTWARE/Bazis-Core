@@ -34,7 +34,7 @@ namespace OperationalController
     {
 /// <inheritdoc/>
 
-        public IGmshController GmshController { get; } = new GmshController.GmshController();
+        public IGmshController GmshController { get; set; } = new GmshController.GmshController();
 
         IProjectData project;
 

@@ -541,7 +541,7 @@ namespace OperationalController.GmshController
             }
             var distinct = pointsNumbs.Distinct(); // номера узлов;
 
-            if (distinct.Count() > 4)
+            if (distinct.Count() != 4)
                 if (cornerTags == null)
                     throw new Exception("Укажите угловые узлы");
                 else

@@ -36,6 +36,7 @@ namespace TestModel.ControllerTests
             project.GmshController.SetTransfiniteCurve(2, 11);
             project.GmshController.SetTransfiniteSurface(2, GmshApi.Arrangement.Right, new[] {5,6,3,1} );
             project.GmshController.SetTransfiniteSurface(3);
+            project.GmshController.SetTransfiniteSurface(17, GmshApi.Arrangement.Left, new[] { 17,18,21 });
 
             project.GmshController.SetTransfiniteVolume(1);
             project.GmshController.SetGradientVolume(2,1,1,1,5);
