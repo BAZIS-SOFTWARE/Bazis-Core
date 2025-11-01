@@ -529,29 +529,16 @@ namespace OperationalController.GmshController
         /// <inheritdoc/>
         public void SetTransfiniteSurface(int tag, Arrangement arrangement = Arrangement.Left, int[] cornerTags = null)
         {
-            var adjCurvs = Gmsh.Model.GetAdjacencies(2, tag);
-            var pointsNumbs = new List<int>();
-            foreach (var item in adjCurvs.Item2)
-            {
-                var adjNodes = Gmsh.Model.GetAdjacencies(1, item);
-                foreach (var pointNumb in adjNodes.Item2)
-                {
-                    pointsNumbs.Add(pointNumb);
-                }
-            }
-            var distinct = pointsNumbs.Distinct(); // номера узлов;
+            if (cornerTags == null)
+                throw new Exception("Укажите угловые узлы");
 
-            if (distinct.Count() != 4)
-                if (cornerTags == null)
-                    throw new Exception("Укажите угловые узлы");
-                else
-                    Gmsh.Model.Mesh.SetTransfiniteSurface(tag, arrangement, cornerTags);
+            if (cornerTags.Length != 4)
+                Gmsh.Model.Mesh.SetTransfiniteSurface(tag, arrangement, cornerTags);
             else
                 Gmsh.Model.Mesh.SetTransfiniteSurface(tag, arrangement);
 
 
-            var pointsStr = string.Join(",", 
-                cornerTags == null ? distinct.ToArray() : cornerTags);
+            var pointsStr = string.Join(",",cornerTags);
             var attributes = new string[] { pointsStr, Arrangement.Left.ToString() };
             
             Gmsh.Model.
@@ -602,6 +589,22 @@ namespace OperationalController.GmshController
         {
             var dimTags = new int[] { 0, tag };
             Gmsh.Model.Mesh.SetSize(dimTags, meshDize);
+        }
+/// <inheritdoc/>
+
+        public int[] GetSurfaceNodes(int tag)
+        {
+            var adjCurvs = Gmsh.Model.GetAdjacencies(2, tag);
+            var pointsNumbs = new List<int>();
+            foreach (var item in adjCurvs.Item2)
+            {
+                var adjNodes = Gmsh.Model.GetAdjacencies(1, item);
+                foreach (var pointNumb in adjNodes.Item2)
+                {
+                    pointsNumbs.Add(pointNumb);
+                }
+            }
+            return pointsNumbs.Distinct().ToArray(); // номера узлов;
         }
     }
 }

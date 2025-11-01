@@ -2,6 +2,7 @@
 Merge "Tavr.STEP";
 
 //Первый сварной шов
+
 Recombine Surface {13,14,15,16,17};
 
 Transfinite Curve {25,29,32} = 3;
@@ -10,7 +11,8 @@ Transfinite Curve {27,31,33} = 3;
 Transfinite Surface {13,14,15};
 
 //Треугольные поверхности, важна первая точка куда gmsh будет вырождать элементы (переход с квада на треугольник\ или с гексы на призму)
-Transfinite Surface {17} = {17,18,21};
+Transfinite Surface {17};
+Transfinite Surface {17};
 Transfinite Surface {16} = {19,20,22};
 
 Transfinite Volume {3};

@@ -45,6 +45,9 @@ namespace OperationalController
 
             foreach (var item in surfData.Item2)
                 project.ModelData.ObjectData.VolumeData.Add(item);
+
+
+            GmshController.Gmsh.Model.Mesh.Clear();
             //.ForEach(
             //x => project.ModelData.ObjectData.SurfaceSet.Add(x));
 

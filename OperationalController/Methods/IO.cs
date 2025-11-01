@@ -57,53 +57,70 @@ namespace OperationalController
         {
             using (var sw = new StreamReader(path, Encoding.Unicode))
             {
-                var line = sw.ReadLine().Split(' ');
-                var gmsh = GmshController.Gmsh;
-                if (line[0] == "Мин.размер")
-                    gmsh.Option.SetNumber("Mesh.MeshSizeMin", double.Parse(line[1]));
-                else if (line[0] == "Макс.размер")
-                    gmsh.Option.SetNumber("Mesh.MeshSizeMax", double.Parse(line[1]));
-                else if (line[0] == "Алгоритм2D")
-                    gmsh.Option.SetNumber("Mesh.Algorithm", double.Parse(line[1]));
-                else if (line[0] == "Алгоритм3D")
-                    gmsh.Option.SetNumber("Mesh.Algorithm3D", double.Parse(line[1]));
-                else if (line[0] == "Масш.фактор")
-                    gmsh.Option.SetNumber("Mesh.MeshSizeFactor", double.Parse(line[1]));
-                else if (line[0] == ObjType.Точка.ToString())
+                while (!sw.EndOfStream)
                 {
-                    var dimTags = new int[] { 0, int.Parse(line[1]) };
-                    var meshSize = gmsh.Model.Mesh.GetSizes(dimTags);
-                    gmsh.Model.Mesh.SetSize(dimTags, meshSize[0]);
-                }
-                else if (line[0] == ObjType.Кривая.ToString())
-                {
-                    var points = int.Parse(line[2]);
-                    var meshType = ToEnum<MeshType>(line[3]);
-                    var coeff = double.Parse(line[4]);
-                    GmshController.SetTransfiniteCurve(int.Parse(line[1]), points, meshType,coeff);
-                }
-                    
-                else if (line[0] == ObjType.Поверхность.ToString())
-                {
-                    var points = line[2].Split(',').
-                        Select(x=>  int.Parse(x));
-                    var arrange = ToEnum<Arrangement>(line[3]);
-                    GmshController.SetTransfiniteSurface(int.Parse(line[1]), arrange, points.ToArray());
-                }
-                else if (line[0] == "Объем")
-                {
-                    if (line[2] == "регулярная")
-                        GmshController.SetTransfiniteVolume(int.Parse(line[1]));
-                    else
+                    var line = sw.ReadLine().Split(' ');
+                    var gmsh = GmshController.Gmsh;
+                    if (line[0] == "Мин.размер")
+                        gmsh.Option.SetNumber("Mesh.MeshSizeMin", double.Parse(line[1]));
+                    else if (line[0] == "Макс.размер")
+                        gmsh.Option.SetNumber("Mesh.MeshSizeMax", 100);
+                    else if (line[0] == "Алгоритм2D")
+                        gmsh.Option.SetNumber("Mesh.Algorithm", double.Parse(line[1]));
+                    else if (line[0] == "Алгоритм3D")
+                        gmsh.Option.SetNumber("Mesh.Algorithm3D", double.Parse(line[1]));
+                    else if (line[0] == "Масш.фактор")
+                        gmsh.Option.SetNumber("Mesh.MeshSizeFactor", double.Parse(line[1]));
+
+                    else if (line[0] == "Загрузить")
                     {
-                        var power = double.Parse(line[3]);
-                        var distMax = double.Parse(line[4]);
-                        var surfSize = double.Parse(line[5]);
-                        var coreSize = double.Parse(line[6]);
-                        GmshController.SetGradientVolume(int.Parse(line[1]), power, distMax, surfSize, coreSize);
+                        if (line[1] == "модель")
+                        {
+                            gmsh.Clear();
+                            gmsh.Merge(line[2]);
+                            //gmsh.Open(line[2]);
+                        }
                     }
-                    
-                    
+
+                    else if (line[0] == ObjType.Точка.ToString())
+                    {
+                        var dimTags = new int[] { 0, int.Parse(line[1]) };
+                        //var meshSize = gmsh.Model.Mesh.GetSizes(dimTags);
+                        gmsh.Model.Mesh.SetSize(dimTags, double.Parse(line[2]));
+                    }
+                    else if (line[0] == ObjType.Кривая.ToString())
+                    {
+                        var points = int.Parse(line[2]);
+                        var meshType = ToEnum<MeshType>(line[3]);
+                        var coeff = double.Parse(line[4]);
+                        GmshController.SetTransfiniteCurve(int.Parse(line[1]), points, meshType, coeff);
+                    }
+
+                    else if (line[0] == ObjType.Поверхность.ToString())
+                    {
+                        var points = line[2].Split(',').
+                            Select(x => int.Parse(x));
+                        var arrange = ToEnum<Arrangement>(line[3]);
+                        GmshController.SetTransfiniteSurface(int.Parse(line[1]), arrange, points.ToArray());
+                    }
+                    else if (line[0] == "Объем")
+                    {
+                        if (line[2] == "регулярная")
+                            GmshController.SetTransfiniteVolume(int.Parse(line[1]));
+                        else
+                        {
+                            var power = double.Parse(line[3]);
+                            var distMax = double.Parse(line[4]);
+                            var surfSize = double.Parse(line[5]);
+                            var coreSize = double.Parse(line[6]);
+                            GmshController.SetGradientVolume(int.Parse(line[1]), power, distMax, surfSize, coreSize);
+                        }
+
+
+                    }
+
+
+
                 }
             }
         }
@@ -136,6 +153,9 @@ namespace OperationalController
 
             using (var sw = new StreamWriter(path, false, Encoding.Unicode))
             {
+                var file = gmsh.Model.GetFileName();
+                sw.WriteLine($"Загрузить модель {file}");
+
                 var actMinSize = gmsh.Option.GetNumber("Mesh.MeshSizeMin");
                 sw.WriteLine($"Мин.размер {actMinSize}");
 

@@ -51,6 +51,12 @@ namespace OperationalController.GmshController
         /// <returns></returns>
         string[] GetTransfiniteVolume(int tag);
         /// <summary>
+        /// GetSurfaceNodes
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <returns></returns>
+        int[] GetSurfaceNodes(int tag);
+        /// <summary>
         /// SetTransfiniteSurface
         /// </summary>
         /// <param name="tag"></param>
