@@ -35,5 +35,9 @@ namespace Model.Interfaces
         /// ClearRemoved
         /// </summary>
         void ClearRemoved();
+        /// <summary>
+        /// Reverse
+        /// </summary>
+        void Reverse();
     }
 }

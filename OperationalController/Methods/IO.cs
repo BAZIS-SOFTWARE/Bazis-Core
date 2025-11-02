@@ -62,9 +62,17 @@ namespace OperationalController
                     var line = sw.ReadLine().Split(' ');
                     var gmsh = GmshController.Gmsh;
                     if (line[0] == "Мин.размер")
-                        gmsh.Option.SetNumber("Mesh.MeshSizeMin", double.Parse(line[1]));
+                    {
+                        var min = double.Parse(line[1]);
+                        gmsh.Option.SetNumber("Mesh.MeshSizeMin", min);
+                    }
+                        
                     else if (line[0] == "Макс.размер")
-                        gmsh.Option.SetNumber("Mesh.MeshSizeMax", 100);
+                    {
+                        var max = double.Parse(line[1]);
+                        gmsh.Option.SetNumber("Mesh.MeshSizeMax", max);
+                    }
+                        
                     else if (line[0] == "Алгоритм2D")
                         gmsh.Option.SetNumber("Mesh.Algorithm", double.Parse(line[1]));
                     else if (line[0] == "Алгоритм3D")

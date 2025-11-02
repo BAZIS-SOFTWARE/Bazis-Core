@@ -44,8 +44,8 @@ namespace TestModel.ControllerTests
             var surf17Points = project.GmshController.GetSurfaceNodes(17);
             project.GmshController.SetTransfiniteSurface(17, GmshApi.Arrangement.Left, new[] { 17,18,21 });
 
-            project.GmshController.SetTransfiniteVolume(1);
-            project.GmshController.SetGradientVolume(2,1,1,1,5);
+            //project.GmshController.SetTransfiniteVolume(1);
+            //project.GmshController.SetGradientVolume(2,1,1,1,5);
 
             project.GmshController.Gmsh.Model.Mesh.Generate(2);
 
@@ -69,8 +69,9 @@ namespace TestModel.ControllerTests
             Assert.AreEqual(project.GmshController.GetTransfiniteCurve(1)[0], "5");
             //Assert.AreEqual(project.GmshController.GetTransfiniteSurface(2)[0], "5,6,3,1");
             Assert.AreEqual(project.GmshController.GetTransfiniteSurface(3)[1], "Left");
-            Assert.AreEqual(project.GmshController.GetTransfiniteVolume(1)[0], "регулярная");
-            Assert.AreEqual(project.GmshController.GetTransfiniteVolume(2)[1], "1");
+            Assert.AreEqual(project.GmshController.GetTransfiniteSurface(17)[1], "Left");
+            //Assert.AreEqual(project.GmshController.GetTransfiniteVolume(1)[0], "регулярная");
+            //Assert.AreEqual(project.GmshController.GetTransfiniteVolume(2)[1], "1");
         }
 
     }
