@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <Title>OperationalController</Title>
-    <Version>3.7.4</Version>
+    <Version>3.7.5</Version>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>ControllerKey.snk</AssemblyOriginatorKeyFile>
@@ -47,14 +47,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GmshApi\GmshApi.csproj" />
-    <ProjectReference Include="..\Project\Project.csproj" />
+    <PackageReference Include="NetOctree" Version="2.1.11" />
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="Octree">
-      <HintPath>..\..\..\NetOctree\Octree\bin\Release\netstandard2.0\Octree.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\GmshApi\GmshApi.csproj" />
+    <ProjectReference Include="..\Project\Project.csproj" />
   </ItemGroup>
 
 </Project>
