@@ -12,6 +12,7 @@ using System.IO;
 using OperationalController.MeshObjsUtility;
 using OperationalController.MeshObjsCreator;
 using Model.IO.STL;
+using OperationalController;
 
 namespace TestModel.ControllerTests
 {
@@ -40,13 +41,30 @@ namespace TestModel.ControllerTests
         }
 
         [DataTestMethod]
+        [DataRow(@"c:\projs\testProj\Sew\proj.bpf2", "Узел_1", "Узел_2",6,15)]
+        public void BoundaryConnection(string path, string first, string second, double rad, int maxBeams)
+        {
+            //assing
+            var controller = new ProjectController();
+
+            controller.Load(path);
+
+            controller.ConnectByBeams(first, second,rad,maxBeams);
+
+
+            //assert
+
+            Assert.AreNotEqual(controller.GetModelSetsInfo(ObjType.Элемент1D).Count(), 0);
+        }
+
+        [DataTestMethod]
         [DataRow(@"c:\projs\Matushkin\T_project.bpf", 0.001f,2)]
         [DataRow(@"..\..\..\Examples\3D\cub_unsorted_freeNodesCoincident.bpf", 0.01f,4)]
         [DataRow(@"C:\projs\AdditiveTest\1n.stl", 0.01f, 3964)]
         public void MergeNodes(string path, float dist, int count)
         {
             //assing
-            var controller = new OperationalController.Controller();
+            var controller = new OperationalController.ProjectController();
 
             //act
 
@@ -67,7 +85,7 @@ namespace TestModel.ControllerTests
 
             // Очень странная проверка ее нужно ускорить
             
-            foreach (var elem in controller.GetModelElements())
+            foreach (var elem in controller.GetAllModelElements())
             {
                 foreach (var item in elem.GetVertexes())
                 {

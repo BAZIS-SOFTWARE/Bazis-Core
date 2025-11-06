@@ -37,7 +37,7 @@ namespace TestProject
         {
             //assing
             //c:\projs\testProj\Tempering\
-            var controller = new OperationalController.Controller();
+            var controller = new OperationalController.ProjectController();
             controller.Load(name);
 
             //project.Loader.LoadEvent += (ar1, ar2) => { };
@@ -56,7 +56,7 @@ namespace TestProject
         {
             //assing
             //c:\projs\testProj\Tempering\
-            var project = new Controller();
+            var project = new ProjectController();
             project.CreateProject($"{testDir}\\{name}");
 
             //assert

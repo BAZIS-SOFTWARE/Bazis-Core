@@ -394,7 +394,7 @@ namespace GmshApi
         /// <summary>
         /// Установить автоматическую трансфиницию для dim:tags
         /// </summary>
-        /// <param name="dimTags">Массив dim:tag</param>
+        /// <param name="dimTags">Массив dim:tag поверхностей</param>
         /// <param name="cornerAngle">Пороговый угол</param>
         /// <param name="recombine">Флаг, указывающий, нужна ли сетка из четырехугольников</param>
         public void SetTransfiniteAutomatic(int[] dimTags, double cornerAngle = 2.35, bool recombine = true)

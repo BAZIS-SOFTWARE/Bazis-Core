@@ -14,7 +14,7 @@ using System.Data;
 
 namespace OperationalController
 {
-    public partial class Controller
+    public partial class ProjectController
     {
         /// <inheritdoc/>
         public bool ContainsModelObject(ObjType objType, int objNumb)

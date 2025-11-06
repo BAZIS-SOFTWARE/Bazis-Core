@@ -20,14 +20,22 @@ using Project.IO;
 using System.IO;
 using Geometry.Attribute;
 using Model.Interfaces.Attributes;
+using GmshApi;
+using System.Runtime.InteropServices.ComTypes;
+using System.Text;
+using OperationalController.GmshController;
 
 namespace OperationalController
 {
     /// <summary>
     /// ProjectController
     /// </summary>
-    public partial class Controller : IProjectController
+    public partial class ProjectController : IProjectController
     {
+/// <inheritdoc/>
+
+        public IGmshController GmshController { get; set; } = new GmshController.GmshController();
+
         IProjectData project;
 
         /// <inheritdoc/>
@@ -168,7 +176,5 @@ namespace OperationalController
             get => GeneralData.Name;
             set => GeneralData.Name = value;
         }
-
-
     }
 }

@@ -95,6 +95,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ControllerTests\BeamGroupConnection_should.cs" />
+    <Compile Include="ControllerTests\ScriptTests.cs" />
     <Compile Include="GeometryTests\TestConvexHull.cs" />
     <Compile Include="GeometryTests\TestExtensions.cs" />
     <Compile Include="GeometryTests\TestFrame.cs" />

@@ -3,6 +3,7 @@ DefineConstant[ N = {4, Name "Number of elements per edge"} ];
 // example of a purely hexahedral mesh using transfinite constraints and/or
 // extrusion
 
+/*
 Point(1) = {-2,0,0};
 Point(2) = {-1,0,0};
 Point(3) = {-1,1,0};
@@ -37,6 +38,7 @@ Curve Loop(24) = {6,-12,3,10};
 Plane Surface(25) = {24};
 Surface Loop(1) = {17,-25,-23,-21,19,15};
 Volume(1) = {1};
+*/
 /*
 By hand:
 Transfinite Curve{1:4,6:13} = N+1;
@@ -50,10 +52,12 @@ Transfinite Volume{1} = {1,2,3,4,5,6,7,8};
 
 Or automatically:
 */
+/*
 Transfinite Curve {:} = N+1;
 Transfinite Surface {:};
 Transfinite Volume {:};
 Recombine Surface {:};
+*/
 
 // the same by extruding a transfinite surface mesh
 
@@ -69,13 +73,13 @@ Curve Loop(55) = {52,53,54,51};
 Plane Surface(56) = {55};
 Transfinite Curve{51:54} = N+1;
 Transfinite Surface{56} = {51,52,53,54};
-Recombine Surface{56};
+// Recombine Surface{56};
 Extrude {0,0,1} {
-  Surface{56}; Layers{N}; Recombine;
+  Surface{56}; Layers{N}; //Recombine;
 }
 
 // and the same by using only extrusions
-
+/*
 Point(100) = {2,0,0};
 l[] = Extrude {1,0,0}{
   Point{100}; Layers{N};
@@ -95,3 +99,4 @@ View "Mesh Info" {
   T3(2.5,1.5,0.5,66574){ "Pure Extruded" };
 };
 EndIf
+*/

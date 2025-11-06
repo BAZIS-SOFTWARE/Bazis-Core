@@ -13,6 +13,11 @@ using Model.ObjectsCollections;
 using Model.Interfaces.ObjectsCollections;
 using System.Reflection;
 using Model.Utilities;
+using System.IO;
+using System.Runtime.InteropServices.ComTypes;
+using System.Text;
+using System.Xml.Linq;
+using MathNet.Numerics;
 
 namespace OperationalController.GmshController
 {
@@ -98,9 +103,13 @@ namespace OperationalController.GmshController
                     last = current;
                 }
 
-                var adjData = Gmsh.Model.GetAdjacencies(1, curves[i]);
+
+                // Интегрируем gmshController в projectController. 
+                // функцию Gmsh.Model.GetAdjacencies будем использовать явно для
+                // улучшения синхронизации
+                //var adjData = Gmsh.Model.GetAdjacencies(1, curves[i]);
                 var curve = new Curve(curves[i], points.ToArray());
-                curve.PointsNumbers = adjData.Item2;
+                //curve.PointsNumbers = adjData.Item2;
                 lines.Add(curve);
             }
             return lines;
@@ -144,7 +153,7 @@ namespace OperationalController.GmshController
             else if (typeof(Element3D) == typeof(T))
                 dim = 3;
 
-            var dimTags = Gmsh.Model.GetEntities(3);
+            var dimTags = Gmsh.Model.GetEntities(dim);
             //var list = new List<ObjectsSet<T>>();
             var rnd = new Random();
 
@@ -333,8 +342,8 @@ namespace OperationalController.GmshController
                 }
             }
             var sFigure = new SurfaceFigure(surfaceTag, geometrySurfaces.ToArray());
-            var adjData = Gmsh.Model.GetAdjacencies(2, surfaceTag);
-            sFigure.CurveNumbers = adjData.Item2; // номера кривых;
+            //var adjData = Gmsh.Model.GetAdjacencies(2, surfaceTag);
+            //sFigure.CurveNumbers = adjData.Item2; // номера кривых;
             return sFigure;
         }
         /// <inheritdoc/>
@@ -458,6 +467,144 @@ namespace OperationalController.GmshController
                 }
             }
             return volumeFigures;
+        }
+        /// <inheritdoc/>
+        public string[] GetTransfiniteVolume(int tag)
+        {
+            var attrs = Gmsh.Model.GetAttribute($"transfinite vol {tag}");
+            return attrs;
+        }
+        /// <inheritdoc/>
+
+        public void SetTransfiniteVolume(int tag, int[] cornerTags = null)
+        {
+            Gmsh.Model.SetAttribute($"transfinite vol {tag}",
+                new string[] { "регулярная" });
+
+            Gmsh.Model.Mesh.SetTransfiniteVolume(tag, cornerTags);
+        }
+
+        /// <inheritdoc/>
+
+        public void SetGradientVolume(int tag, double power, double distMax,double surfSize,double coreSize)
+        {
+            var curvesTags = new List<double>();
+            var surfTags = Gmsh.Model.GetAdjacencies(3, tag).Item2;
+
+            foreach (var item in surfTags)
+            {
+                foreach (var crvNumb in Gmsh.Model.GetAdjacencies(2, item).Item2)
+                {
+                    var pointsTags = Gmsh.Model.GetAdjacencies(1, crvNumb).Item2;
+                    foreach (var pointNumb in pointsTags)
+                    {
+                        SetSize(pointNumb, surfSize);
+                    }
+                    curvesTags.Add(crvNumb);
+                }
+                
+            }
+            var curveNumbers = curvesTags.Distinct().ToArray();
+            var surfNumbers = surfTags.Select(x => (double)x).ToArray();
+
+            var attributes = new string[] 
+            { 
+                "градиентная", 
+                power.ToString(),
+                distMax.ToString(),
+                surfSize.ToString(),
+                coreSize.ToString()
+            };
+            Gmsh.Model.
+                SetAttribute($"transfinite vol {tag}", attributes);
+
+            Gmsh.Model.Mesh.Field.SetNumbers(tag, ExtendOptions.CurvesList.ToString(), curveNumbers);
+            Gmsh.Model.Mesh.Field.SetNumbers(tag, ExtendOptions.SurfacesList.ToString(), surfNumbers);
+            Gmsh.Model.Mesh.Field.SetNumber(tag, ExtendOptions.Power.ToString(), power);
+            Gmsh.Model.Mesh.Field.SetNumber(tag, ExtendOptions.DistMax.ToString(), distMax);
+            Gmsh.Model.Mesh.Field.SetNumber(tag, ExtendOptions.SizeMax.ToString(), coreSize);
+            Gmsh.Model.Mesh.Field.SetAsBackgroundMesh(tag);
+            Gmsh.Option.SetNumber("Mesh.MeshSizeExtendFromBoundary", -2);
+        }
+        /// <inheritdoc/>
+        public void SetTransfiniteSurface(int tag, Arrangement arrangement = Arrangement.Left, int[] cornerTags = null)
+        {
+            if (cornerTags == null)
+                throw new Exception("Укажите угловые узлы");
+
+            if (cornerTags.Length != 4)
+                Gmsh.Model.Mesh.SetTransfiniteSurface(tag, arrangement, cornerTags);
+            else
+                Gmsh.Model.Mesh.SetTransfiniteSurface(tag, arrangement);
+
+
+            var pointsStr = string.Join(",",cornerTags);
+            var attributes = new string[] { pointsStr, Arrangement.Left.ToString() };
+            
+            Gmsh.Model.
+                SetAttribute($"transfinite surface {tag}", attributes);
+                
+
+            Gmsh.Model.Mesh.SetRecombine(2, tag);
+        }
+/// <inheritdoc/>
+
+        public string[] GetTransfiniteSurface(int tag)
+        {
+            return Gmsh.Model.GetAttribute($"transfinite surface {tag}");
+        }
+
+
+        /// <inheritdoc/>
+        public void SetTransfiniteCurve(int tag, int numNodes, MeshType meshType = MeshType.Progression, double coef = 1)
+        {
+            var attributes = new string[] 
+            { 
+                numNodes.ToString(), 
+                MeshType.Progression.ToString(), 
+                coef.ToString() 
+            };
+
+            Gmsh.Model.SetAttribute($"transfinite curve {tag}", attributes);
+            Gmsh.Model.Mesh.SetTransfiniteCurve(tag, numNodes, meshType, coef);
+        }
+        /// <inheritdoc/>
+
+        public string[] GetTransfiniteCurve(int tag)
+        {
+            var attributes = Gmsh.Model.GetAttribute($"transfinite curve {tag}");
+
+            if (attributes.Length == 0)
+                attributes = new string[] { "0", MeshType.Progression.ToString(), "1" };
+            return attributes;
+        }
+        /// <inheritdoc/>
+        public double GetSize(int tag)
+        {
+            var dimTags = new int[] { 0, tag };
+            return Gmsh.Model.Mesh.GetSizes(dimTags)[0];
+        }
+        /// <inheritdoc/>
+        public void SetSize(int tag, double meshDize)
+        {
+            var dimTags = new int[] { 0, tag };
+            Gmsh.Model.Mesh.SetSize(dimTags, meshDize);
+        }
+/// <inheritdoc/>
+
+        public int[] GetSurfaceNodes(int tag)
+        {
+            var adjCurvs = Gmsh.Model.GetAdjacencies(2, tag);
+            var pointsNumbs = new List<int>();
+            foreach (var item in adjCurvs.Item2)
+            {
+                var adjNodes = Gmsh.Model.GetAdjacencies(1, item);
+                foreach (var pointNumb in adjNodes.Item2)
+                {
+                    pointsNumbs.Add(pointNumb);
+                }
+            }
+            return pointsNumbs.Distinct().ToArray(); // номера узлов;
         }
     }
 }

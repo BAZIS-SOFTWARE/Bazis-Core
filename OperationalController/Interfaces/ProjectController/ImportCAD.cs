@@ -11,7 +11,6 @@ namespace OperationalController
         /// Import
         /// </summary>
         /// <param name="projectFile"></param>
-        /// <param name="gmshController"></param>
-        void ImportCAD(string projectFile, IGmshController gmshController);
+        void ImportCAD(string projectFile);
     }
 }

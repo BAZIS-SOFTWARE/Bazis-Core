@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace OperationalController
 {
-    public partial class Controller
+    public partial class ProjectController
     {
         /// <inheritdoc/>
 

@@ -31,6 +31,7 @@ namespace TestModel
             var figure = new SurfaceFigure(0, new GeometrySurface[] { surface0, surface1, surface2 });
 
             Assert.AreEqual(figure.GetVertexes().Count(), 5);
+            Assert.AreEqual(figure.CalcCentr(),new Point3D(0.2f,0.6f,0));
         }
     }
 }

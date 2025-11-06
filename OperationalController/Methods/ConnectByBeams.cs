@@ -12,7 +12,7 @@ using System.IO;
 
 namespace OperationalController
 {
-    public partial class Controller
+    public partial class ProjectController
     {
         OctreeBeamGroupConnection beamGroupConnection { get; } = new OctreeBeamGroupConnection();
         /// <inheritdoc/>
@@ -31,7 +31,11 @@ namespace OperationalController
 
             var beams = beamGroupConnection.Create(masterGr, slaveGr, radius, maxBeams);
 
-            var name = $"connect_{ModelData.ObjectData.E1DCollection.GetMaxNumber() + 1}";
+            var number = 0;
+            if (ModelData.ObjectData.E1DCollection.Count != 0)
+                number = ModelData.ObjectData.E1DCollection.GetMaxNumber() + 1;
+            
+            var name = $"connect_{number}";
 
             ModelData.ObjectData.E1DCollection.AddRange(name, beams);
         }

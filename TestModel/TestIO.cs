@@ -23,13 +23,13 @@ namespace TestModel
         public void LoadModelFromBpfTextFormat(string path, int elCount)
         {
             //assing
-            var controller = new OperationalController.Controller();
+            var controller = new OperationalController.ProjectController();
 
             //act
             controller.Load(path);
 
             //assert
-            Assert.AreEqual(controller.GetModelElements().Count(), elCount);
+            Assert.AreEqual(controller.GetAllModelElements().Count(), elCount);
         }
 
         [TestMethod]
@@ -53,7 +53,7 @@ namespace TestModel
         public void SaveModelToBpf2FromInp(string loadPath, string savePath)
         {
             //assing
-            var controller = new OperationalController.Controller();
+            var controller = new OperationalController.ProjectController();
 
             //act
             controller.ImportMesh(loadPath);
@@ -90,7 +90,7 @@ namespace TestModel
         public void LoadModelFromBpf2TextFormat(string path, int sets, ObjType objType)
         {
             //assing
-            var controller = new OperationalController.Controller();
+            var controller = new OperationalController.ProjectController();
 
             //act
             controller.Load(path);
@@ -129,7 +129,7 @@ namespace TestModel
             string dir = @"..\..\..\Examples\STL\Append";
 
             //assing
-            var controller = new OperationalController.Controller();
+            var controller = new OperationalController.ProjectController();
 
             var ext = Path.GetExtension(files[0]);
             //model.Loader = new LoadFromSTLFile();
@@ -173,7 +173,7 @@ namespace TestModel
         {
             string dir = @"..\..\..\Examples\STL";
             //string dir = @"..\..\..\..\Тестовые заготовки деталей\";
-            var controller = new OperationalController.Controller();
+            var controller = new OperationalController.ProjectController();
 
             var path = Path.Combine(dir, file);
             //assing
@@ -210,12 +210,12 @@ namespace TestModel
         [DataRow(1000, 5454, 0, @"..\..\..\Examples\3D\box2.inp", DisplayName = "box2.inp")]
         public void ImportModelFromINPTextFormat(int nodeCount, int elemCount, int grCount,string path)
         {
-            var controller = new OperationalController.Controller();
+            var controller = new OperationalController.ProjectController();
 
             controller.ImportMesh(path);
 
             Assert.AreEqual(nodeCount, controller.GetModelObjects(ObjType.Узел).Count());
-            Assert.AreEqual(elemCount, controller.GetModelElements().Count());
+            Assert.AreEqual(elemCount, controller.GetAllModelElements().Count());
         }
 
         [DataTestMethod]

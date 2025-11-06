@@ -13,6 +13,7 @@ using PropertiesCalculator.MaterialData;
 using PropertiesCalculator.FunctionData;
 using System;
 using System.Diagnostics;
+using GmshApi;
 
 namespace OperationalController
 {
@@ -21,6 +22,10 @@ namespace OperationalController
         /// </summary>
         public partial interface IProjectController
     {
+        /// <summary>
+        /// GmshController
+        /// </summary>
+        IGmshController GmshController { get; }
         /// <summary>
         /// FunctionsDB
         /// </summary>
@@ -109,7 +114,7 @@ namespace OperationalController
         /// GetModelElements
         /// </summary>
         /// <returns></returns>
-        IEnumerable<IElement> GetModelElements();
+        IEnumerable<IElement> GetAllModelElements();
         /// <summary>
         /// FindBoundaryEdges
         /// </summary>
@@ -260,11 +265,6 @@ namespace OperationalController
         /// </summary>
         /// <returns></returns>
         IEnumerable<ISetInfo> GetAllModelSetsInfo();
-        /// <summary>
-        /// GetModelVolumes
-        /// </summary>
-        /// <returns></returns>
-        IEnumerable<VolumeFigure> GetModelVolumes();
         /// <summary>
         /// GetModelSetInfo
         /// </summary>

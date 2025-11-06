@@ -10,7 +10,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace OperationalController
 {
-    public partial class Controller
+    public partial class ProjectController
     {
         //public string Message { get; private set; }
         /// <inheritdoc/>

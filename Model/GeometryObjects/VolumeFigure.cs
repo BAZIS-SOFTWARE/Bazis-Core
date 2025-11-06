@@ -15,42 +15,6 @@ namespace Model.GeometryObjects
     /// </summary>
     public class VolumeFigure : IVolume
     {
-        /// <summary>
-        /// MakeTransfinite
-        /// </summary>
-        public void MakeTransfinite()
-        {
-            transfiniteFlag = true;
-        }
-        bool transfiniteFlag;
-        /// <summary>
-        /// IsTransfinited
-        /// </summary>
-        public bool IsTransfinited
-        {
-            get { return transfiniteFlag; }
-        }
-        /// <summary>
-        /// IsFieldUsed
-        /// </summary>
-        public bool IsFieldUsed { get; set; }
-        /// <summary>
-        /// SurfaceMeshSize
-        /// </summary>
-        public double SurfaceMeshSize { get; set; }
-        /// <summary>
-        /// GradientMeshPower
-        /// </summary>
-        public double GradientMeshPower { get; set; }
-        /// <summary>
-        /// LayerThickness
-        /// </summary>
-        public double LayerThickness { get; set; }
-        /// <summary>
-        /// CoreMeshSize
-        /// </summary>
-        public double CoreMeshSize { get; set; }
-
         SurfaceFigure[] surfaceFigure;
         /// <summary>
         /// Color

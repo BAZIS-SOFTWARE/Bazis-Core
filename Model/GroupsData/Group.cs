@@ -151,5 +151,11 @@ namespace Model.GroupsData
             var existObjects = objects.Except(removedObjs, new EqualityComparerByExistState()).ToList();
             objects = existObjects;
         }
+/// <inheritdoc/>
+
+        public void Reverse()
+        {
+            objects.Reverse();
+        }
     }
 }
