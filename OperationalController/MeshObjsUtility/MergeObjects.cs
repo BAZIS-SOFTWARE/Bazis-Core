@@ -5,6 +5,8 @@ using OperationalController;
 using Model.MeshObjects;
 using Model.Utilities;
 using Model.Interfaces.ObjectsCollections;
+using Model.Interfaces.MeshObjects;
+using System;
 
 namespace OperationalController.MeshObjsUtility
 {
@@ -16,6 +18,8 @@ namespace OperationalController.MeshObjsUtility
         /// <inheritdoc/>
         public void Merge(List<List<int>>numbers,IObjectsSet<Node> nodes)
         {
+            var el2DToUpdate = new HashSet<Element2D>();
+            var el3DToUpdate = new HashSet<Element3D>();
             //var masterNumbers = modelObjects.Select(x => x.Number).ToList();
             //masterNumbers.Sort();
             for (int i = 0; i < numbers.Count; i++)
@@ -37,6 +41,11 @@ namespace OperationalController.MeshObjsUtility
 
                     foreach (var elem in slaveNode.GetElements())
                     {
+                        if (elem is Element2D el2d)
+                            el2DToUpdate.Add(el2d);
+                        else if (elem is Element3D el3d)
+                            el3DToUpdate.Add(el3d);
+
                         var index = elem.GetNodeIndex(slaveNode);
                         masterNode.AddElement(elem);
                         elem[index] = masterNode;
@@ -48,6 +57,11 @@ namespace OperationalController.MeshObjsUtility
                     //modelObjects[slaveNode].Position = modelObjects[masterNode].Position;
                 }
             }
+            foreach (var el2d in el2DToUpdate)
+                el2d.UpdateSurface();
+
+            foreach (var el3d in el3DToUpdate)
+                el3d.UpdateSurface();
             //return modelObjects.Distinct(new ModelObjectsComparer());
         }
     }
