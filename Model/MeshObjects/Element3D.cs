@@ -20,7 +20,7 @@ namespace Model.MeshObjects
             //surfaces = SurfacesCreator.CreateSurfacesFromSetOfNodes(number, nodes);
         }
 
-        internal abstract void UpdateSurfaceAfterCoincidentNodesMerge();
+        public virtual void UpdateSurface() { throw new System.NotImplementedException(); }
 
         /// <inheritdoc/>
 

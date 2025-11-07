@@ -14,5 +14,7 @@ namespace Model.Interfaces.MeshObjects
         /// Lazy collections of vector normals
         /// </returns>
         IEnumerable<Point3D> GetSurfacesNormals();
+
+        void UpdateSurface();
     }
 }

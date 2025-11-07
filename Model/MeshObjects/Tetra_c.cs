@@ -77,7 +77,7 @@ namespace Model.MeshObjects
             Level = level;
         }
 
-        internal override void UpdateSurfaceAfterCoincidentNodesMerge()
+        public override void UpdateSurface()
         {
             surfaces = new List<ElementSurface>
             {

@@ -61,7 +61,7 @@ namespace Model.MeshObjects
 
         }
 
-        internal void UpdateSurfaceAfterCoincidentNodesMerge()
+        public void UpdateSurface()
         {
             surface = new ElementSurface(Number, 0, nodes.ToArray());
         }
