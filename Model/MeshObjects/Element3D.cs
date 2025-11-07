@@ -19,6 +19,9 @@ namespace Model.MeshObjects
 
             //surfaces = SurfacesCreator.CreateSurfacesFromSetOfNodes(number, nodes);
         }
+
+        internal abstract void UpdateSurfaceAfterCoincidentNodesMerge();
+
         /// <inheritdoc/>
 
 

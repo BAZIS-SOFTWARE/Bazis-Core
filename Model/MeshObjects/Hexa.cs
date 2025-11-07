@@ -86,6 +86,19 @@ namespace Model.MeshObjects
             Level = level;
         }
 
+        internal override void UpdateSurfaceAfterCoincidentNodesMerge()
+        {
+            surfaces = new List<ElementSurface>
+            {
+                new ElementSurface(Number, 0, new Node[] { nodes[3], nodes[2], nodes[1], nodes[0] }),
+                new ElementSurface(Number, 1, new Node[] { nodes[5], nodes[6], nodes[7], nodes[4] }),
+                new ElementSurface(Number, 2, new Node[] { nodes[1], nodes[5], nodes[4], nodes[0] }),
+                new ElementSurface(Number, 3, new Node[] { nodes[6], nodes[2], nodes[3], nodes[7] }),
+                new ElementSurface(Number, 4, new Node[] { nodes[2], nodes[6], nodes[5], nodes[1] }),
+                new ElementSurface(Number, 5, new Node[] { nodes[3], nodes[0], nodes[4], nodes[7] })
+            };
+        }
+
         /// <inheritdoc/>
 
         public override double CalcVolume()

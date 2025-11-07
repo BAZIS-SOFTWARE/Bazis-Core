@@ -65,6 +65,18 @@ namespace Model.MeshObjects
         {
             Level = level;
         }
+
+        internal override void UpdateSurfaceAfterCoincidentNodesMerge()
+        {
+            surfaces = new List<ElementSurface>
+            {
+                new ElementSurface(Number, 0, new Node[] { nodes[2], nodes[1], nodes[0] }),
+                new ElementSurface(Number, 1, new Node[] { nodes[1], nodes[3], nodes[0] }),
+                new ElementSurface(Number, 1, new Node[] { nodes[2], nodes[3], nodes[1] }),
+                new ElementSurface(Number, 1, new Node[] { nodes[3], nodes[2], nodes[0] })
+            };
+        }
+
         /// <inheritdoc/>
 
         public override ElementKind ElementKind { get; } = ElementKind.Тетра;

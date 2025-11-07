@@ -59,6 +59,18 @@ namespace Model.MeshObjects
             Level = level;
         }
 
+        internal override void UpdateSurfaceAfterCoincidentNodesMerge()
+        {
+            surfaces = new List<ElementSurface>
+            {
+                new ElementSurface(Number, 0, new Node[] { nodes[2], nodes[1], nodes[0] }),
+                new ElementSurface(Number, 1, new Node[] { nodes[4], nodes[5], nodes[3] }),
+                new ElementSurface(Number, 2, new Node[] { nodes[3], nodes[5], nodes[2], nodes[0] }),
+                new ElementSurface(Number, 3, new Node[] { nodes[1], nodes[4], nodes[3], nodes[0] }),
+                new ElementSurface(Number, 4, new Node[] { nodes[2], nodes[5], nodes[4], nodes[1] })
+            };
+        }
+
         /// <inheritdoc/>
 
         public override Matrix<double> CalcJacobi(IIntegralPoint intPoint)

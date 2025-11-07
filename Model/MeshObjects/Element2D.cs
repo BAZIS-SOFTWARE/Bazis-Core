@@ -60,6 +60,12 @@ namespace Model.MeshObjects
         {
 
         }
+
+        internal void UpdateSurfaceAfterCoincidentNodesMerge()
+        {
+            surface = new ElementSurface(Number, 0, nodes.ToArray());
+        }
+
         /// <inheritdoc/>
 
         public override ObjType ObjType { get; } = ObjType.Элемент2D;
