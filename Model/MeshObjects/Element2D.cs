@@ -27,7 +27,24 @@ namespace Model.MeshObjects
 
             TransitionMatrix = Matrix<double>.Build.DenseOfArray(basis).Inverse();
         }
-/// <inheritdoc/>
+
+        public override Node this[int nodeInd] 
+        { 
+            get => base[nodeInd]; 
+            set 
+            {
+                var temp = base[nodeInd];
+                
+                base[nodeInd] = value;
+
+                var index = surface.GetVertexIndex(temp);
+
+                if(index != -1)
+                    surface[index] = value;
+            } 
+        }
+
+        /// <inheritdoc/>
 
         public double[,] CalcTransitionMatrix( IPoint3D[] points )
         {

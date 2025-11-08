@@ -41,6 +41,7 @@ namespace Model.MeshObjects
         public Node this[int ind]
         {
             get { return nodes[ind]; }
+            set { nodes[ind] = value; }
         }
         /// <inheritdoc/>
 
@@ -100,7 +101,7 @@ namespace Model.MeshObjects
         }
         /// <inheritdoc/>
 
-        public bool Equals(Node other)
+        public bool Equals(ElementSurface other)
         {
             var points = other.GetCoordinates().ToArray();
             if (points.Contains(nodes[0].Position, new Point3DEqualityComparer()) &&
@@ -162,6 +163,12 @@ points.Contains(nodes[2].Position, new Point3DEqualityComparer()))
         public void ReverseVertexes()
         {
             nodes = nodes.Reverse().ToArray();
+        }
+/// <inheritdoc/>
+
+        public int GetVertexIndex(Node vertex)
+        {
+            return Array.IndexOf(nodes, vertex);
         }
     }
 }

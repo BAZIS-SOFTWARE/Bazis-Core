@@ -40,6 +40,11 @@ namespace Model.Interfaces.MeshObjects
     /// </summary>
     public interface IElement : IVertexObject<Node>, IIntegralObject
     {
+        /// <summary>
+        /// GetNodeIndex
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
         int GetNodeIndex(Node node);
         /// <summary>
         /// Уровень точности (расчетов) интегрирования внутри элемента.
@@ -67,6 +72,7 @@ namespace Model.Interfaces.MeshObjects
         /// <param name="nodeInd"></param>
         /// <returns></returns>
         Node this[int nodeInd] { get; set; }
+
         /// <summary>
         /// GetDerivativesFormFunctions
         /// </summary>

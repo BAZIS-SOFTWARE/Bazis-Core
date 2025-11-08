@@ -49,6 +49,7 @@ namespace Model.MeshObjects
                 }
             }
         }
+/// <inheritdoc/>
 
         public int GetNodeIndex(Node node)
         {
@@ -72,11 +73,13 @@ namespace Model.MeshObjects
         /// </summary>
         /// <param name="nodeInd"></param>
         /// <returns></returns>
-        public Node this[int nodeInd]
+        public virtual Node this[int nodeInd]
         {
             get { return nodes[nodeInd]; }
             set { nodes[nodeInd] = value; }
         }
+
+
 
         /// <inheritdoc/>
 

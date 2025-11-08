@@ -27,7 +27,13 @@ namespace Model.GeometryObjects
             Number = number;
 
             //Color = Color.FromArgb(224, 0, 177);
-        }       
+        }
+        /// <inheritdoc/>
+
+        public int GetVertexIndex(GeometryPoint vertex)
+        {
+            return Array.IndexOf(points, vertex);
+        }
         /// <summary>
         /// this
         /// </summary>
@@ -36,6 +42,7 @@ namespace Model.GeometryObjects
         public GeometryPoint this[int ind]
         {
             get { return points[ind]; }
+            set { points[ind] = value; }
         }
         /// <inheritdoc/>
 

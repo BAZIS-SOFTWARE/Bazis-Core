@@ -29,6 +29,12 @@ namespace Model.Interfaces
         /// </summary>
         bool ViewState { get; set; }
         /// <summary>
+        /// GetVertexIndex
+        /// </summary>
+        /// <param name="vertex"></param>
+        /// <returns></returns>
+        int GetVertexIndex(T vertex);
+        /// <summary>
         /// GetVertexes
         /// </summary>
         /// <returns></returns>
@@ -53,6 +59,6 @@ namespace Model.Interfaces
         /// </summary>
         /// <param name="ind"></param>
         /// <returns></returns>
-        T this[int ind] { get; }
+        T this[int ind] { get; set; }
     }
 }

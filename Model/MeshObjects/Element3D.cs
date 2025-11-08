@@ -19,6 +19,26 @@ namespace Model.MeshObjects
 
             //surfaces = SurfacesCreator.CreateSurfacesFromSetOfNodes(number, nodes);
         }
+
+
+        public override Node this[int nodeInd] 
+        { 
+            get => base[nodeInd];
+            set 
+            {
+                var temp = base[nodeInd];
+                base[nodeInd] = value;
+                
+                //обновляем узлы образующих поверхностей
+                foreach (var item in surfaces)
+                {
+                    var index = item.GetVertexIndex(temp);
+
+                    if (index != -1)
+                        item[index] = value;
+                }
+            }
+        }
         /// <inheritdoc/>
 
 
