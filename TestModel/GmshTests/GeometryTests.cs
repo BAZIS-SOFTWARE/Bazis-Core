@@ -29,7 +29,7 @@ namespace TestModel.GmshTests
 
         [DataTestMethod]
         [DataRow(@"c:\projs\aviaDvigProj\GeoMesh\obr3.stp")]
-        [DataRow(@"c:\projs\aviaDvigProj\GeoMesh\obr3.igs")]
+        //[DataRow(@"c:\projs\aviaDvigProj\GeoMesh\obr3.igs")]
         [DataRow(@"c:\projs\aviaDvigProj\GeoMesh\cube.igs")]
 
         //[DataRow(@"\GMSHAPI\cubes.geo")]

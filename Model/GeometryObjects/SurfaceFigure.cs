@@ -60,15 +60,30 @@ namespace Model.GeometryObjects
             }
             return square;
         }
+/// <inheritdoc/>
+
+        public override Point3D CalcCentr()
+        {
+            var center = new Point3D();
+
+            foreach (var vert in GetVertexes())
+            {
+                center = center.Sum(vert.Position);
+            }
+            return center.Div(NumberOfPoints);
+        }
 
         /// <inheritdoc/>
 
         public override IEnumerable<Point3D> GetCoordinates()
         {
-            var points = GetVertexes();
-            foreach (var point in points)
+            foreach (var surface in surfaces)
             {
-                yield return point.Position;
+                foreach (var point in surface.GetCoordinates())
+                {
+                    //if (!points.Contains(point))
+                    yield return point;
+                }
             }
         }
 

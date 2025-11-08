@@ -97,6 +97,7 @@ namespace OperationalController.GmshController
                     var current = new GeometryPoint(j, new Point3D((float)coords[0], (float)coords[1], (float)coords[2]));
                     if (j != 0)
                     {
+                        // тут дублирование, так как это требуется для визуализации
                         points.Add(last);
                         points.Add(current);
                     }

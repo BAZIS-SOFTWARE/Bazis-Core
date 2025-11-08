@@ -93,9 +93,6 @@ namespace TestModel.ControllerTests
                         throw new Exception($"Узел {item.Number} в элементе {elem.Number} не удален");
                 }
             }
-
-            //freeNodes.ToArray()[0] = 14;
-            //freeNodes.ToArray()[1] = 15;
         }    
 
 
