@@ -9,6 +9,8 @@ namespace Geometry
     public class Polygon
     {
         private readonly List<Point2D> points;
+
+        double area { get; }
         /// <summary>
         /// Poligon
         /// </summary>
@@ -18,6 +20,8 @@ namespace Geometry
         internal Polygon(List<Point2D> points)
         {
             this.points = points;
+
+            area = GetPolygonArea();
         }
 
         public IEnumerable<Point2D> GetPoints()
@@ -28,10 +32,14 @@ namespace Geometry
             }
 
         }
+        /// <summary>
+        /// Polygon area
+        /// </summary>
+        public double Area { get => area; }
 
         //Gauss's area formula (фор-ла шнурования или землемера)
         //Ф-ла подходит как для выпуклово так и для вогнутого многоугольника
-        public double GetPolygonArea()
+        double GetPolygonArea()
         {
             var sum = 0.0;
             var n = points.Count;
@@ -45,7 +53,7 @@ namespace Geometry
 
         public bool IsPointInsidePolygon(Point2D point, float epsilon = 0.01f)
         {
-            var sourceArea = GetPolygonArea();
+            //var sourceArea = GetPolygonArea();
             var integratedArea = 0d;
             foreach (var segment in points.Bigrams(true))
             {
@@ -54,7 +62,7 @@ namespace Geometry
                 var triangleArea = 0.5 * Math.Abs(a._x * b._y - a._y * b._x);
                 integratedArea += triangleArea;
             }
-            return Math.Abs(integratedArea - sourceArea) < epsilon;
+            return Math.Abs(integratedArea - area) < epsilon;
         }
     }
 }

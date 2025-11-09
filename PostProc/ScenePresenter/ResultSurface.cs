@@ -31,7 +31,13 @@ namespace PostProc.ScenePresenter
             get { return points[ind]; } 
         }
 
-    public int Number => throw new NotImplementedException();
+        ResultPoint ISurface<ResultPoint>.this[int ind] 
+        { 
+            get => throw new NotImplementedException(); 
+            set => throw new NotImplementedException(); 
+        }
+
+        public int Number => throw new NotImplementedException();
 
         public Color Color { get ; set ; }
         public Color SlaveColor { get ; set ; }
@@ -112,7 +118,13 @@ namespace PostProc.ScenePresenter
                 yield return item;
             }
         }
-/// <inheritdoc/>
+
+        public int GetVertexIndex(ResultPoint vertex)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
 
         public void ReverseVertexes()
         {

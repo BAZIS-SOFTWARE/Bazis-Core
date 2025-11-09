@@ -70,7 +70,7 @@ namespace PrTests
         {
             var creator = new Hull2DCreator();
             var polygon = creator.CreateHullGraham(pointValues.Select(x => new Point2D(x[0], x[1])));
-            return polygon.GetPolygonArea();
+            return polygon.Area;
         }
 
         [DataTestMethod]
