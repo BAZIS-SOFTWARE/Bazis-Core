@@ -28,13 +28,8 @@ namespace PostProc.ScenePresenter
         /// <returns></returns>
         public ResultPoint this[int ind] 
         {
-            get { return points[ind]; } 
-        }
-
-        ResultPoint ISurface<ResultPoint>.this[int ind] 
-        { 
-            get => throw new NotImplementedException(); 
-            set => throw new NotImplementedException(); 
+            get { return points[ind]; }
+            set { points[ind] = value; }
         }
 
         public int Number => throw new NotImplementedException();
