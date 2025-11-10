@@ -58,8 +58,8 @@ namespace Project.Tasks.Functions.Welding
         public bool IsPointInside(Point3D elementCenter)
         {
             var frame = LocalFrame.Frame;
-            var displayPoint = elementCenter.Sub(frame.Centre);
-            var vectorLength = Geometry.Vector.GetVectorLenght(displayPoint);
+            var elementVector = elementCenter.Sub(frame.Centre);
+            var vectorLength = Geometry.Vector.GetVectorLenght(elementVector);
             if (vectorLength <= MinSemiaxis) return true;
             else if (vectorLength > MaxSemiaxis) return false;
 

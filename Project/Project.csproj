@@ -59,6 +59,7 @@
     <Compile Include="Interfaces\Tasks\ITimeDependentData.cs" />
     <Compile Include="Interfaces\Tasks\ITrajectory.cs" />
     <Compile Include="Interfaces\Tasks\ICondData.cs" />
+    <Compile Include="Tasks\Functions\CustomFunction.cs" />
     <Compile Include="Tasks\Materials\BeamMatData.cs" />
     <Compile Include="Tasks\Functions\Welding\EllipsBuilder.cs" />
     <Compile Include="Tasks\Functions\Welding\DoubleEllips.cs" />
