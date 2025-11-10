@@ -8,6 +8,12 @@ namespace Project.Tasks.Functions
 {
     internal class CustomFunction : FrameFunction
     {
+        public string Path { get; }
+        public CustomFunction(string path)
+        {
+            Path = path;
+
+        }
         public override float CalcValue(Point3D elementCenter)
         {
             var localCoords = LocalFrame.Frame.GetCoordsInFrame(elementCenter);
