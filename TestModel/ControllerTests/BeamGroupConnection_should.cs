@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TestModel
+namespace TestModel.ControllerTests
 {
     [TestClass]
     public class BeamGroupConnection_should

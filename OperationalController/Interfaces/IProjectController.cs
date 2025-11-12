@@ -73,48 +73,7 @@ namespace OperationalController
         /// <summary>
         /// CreateTask
         /// </summary>
-        void CreateTask();
-
-        /// <summary>
-        /// GetModelObject
-        /// </summary>
-        /// <param name="objType"></param>
-        /// <param name="setNumber"></param>
-        /// <returns></returns>
-        IModelObject GetModelObject(ObjType objType, int setNumber);
-        /// <summary>
-        /// GetModelObjects
-        /// </summary>
-        /// <param name="objType"></param>
-        /// <returns></returns>
-        IEnumerable<IModelObject> GetModelObjects(ObjType objType);
-        /// <summary>
-        /// GetAllModelObjects
-        /// </summary>
-        /// <returns></returns>
-        IEnumerable<IModelObject> GetAllModelObjects();
-        /// <summary>
-        /// GetModelGroup
-        /// </summary>
-        /// <returns>
-        /// Возвращает группу объектов
-        /// </returns>
-        IGroup GetModelGroup(int grIndex);
-        /// <summary>
-        /// GetAllModelGroups
-        /// </summary>
-        /// <returns></returns>
-        IEnumerable<IGroup> GetAllModelGroups();
-        /// <summary>
-        /// GetAllCondData
-        /// </summary>
-        /// <returns></returns>
-        IEnumerable<ICondData> GetAllCondData();
-        /// <summary>
-        /// GetModelElements
-        /// </summary>
-        /// <returns></returns>
-        IEnumerable<IElement> GetAllModelElements();
+        void CreateTask();  
         /// <summary>
         /// FindBoundaryEdges
         /// </summary>

@@ -16,7 +16,7 @@ using OperationalController;
 using System.Globalization;
 using System.Threading;
 
-namespace TestModel
+namespace TestModel.ControllerTests
 {
     [TestClass]
     public class TestServices

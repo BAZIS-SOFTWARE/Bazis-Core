@@ -9,6 +9,7 @@ using Project;
 using Project.Tasks;
 using System;
 using System.IO;
+using System.Linq;
 
 namespace OperationalController
 {
@@ -37,7 +38,16 @@ namespace OperationalController
             
             var name = $"connect_{number}";
 
-            ModelData.ObjectData.E1DCollection.AddRange(name, beams);
+            var set = new ObjectsSet<Beam>(name);
+
+            foreach (var item in beams)
+            {
+                item.SetNumber(number);
+                set.Add(item.Number, item);
+                number++;
+            }
+
+            ModelData.ObjectData.E1DCollection.Add(set);
         }
     }
 }

@@ -8,7 +8,7 @@ using System.Data;
 using Model.IO.STL;
 using static System.Net.WebRequestMethods;
 
-namespace TestModel
+namespace TestModel.ModelTests
 {
     [TestClass]
     public class TestIO

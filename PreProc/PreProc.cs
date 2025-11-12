@@ -37,7 +37,7 @@ namespace PreProc
         public void CalcCompDataV1(List<ICondData> data, ProcessType processType, string path)
         {
             SetUpTimeSeparators(data);
-            processProp = new ProcessProperty { CommonTaskType = processType, TaskKind = TaskKind.термическая_механическая };
+            processProp = new ProcessProperty { CommonTaskType = processType, TaskKind = TaskKind.термическая | TaskKind.механическая };
             _path = path;
 
             CreateFilesForComplexProcess(
@@ -72,7 +72,7 @@ namespace PreProc
                 //        GetParameters<HeatData, MediaData, TermalParameters>(data));
                 //    break;
 
-                case TaskKind.термическая_механическая:
+                case TaskKind.термическая | TaskKind.механическая:
                     CreateFilesForComplexProcess(
                         GetParameters<HeatData, MediaData, TermalParameters>(data),
                         GetParameters<LoadData, ClampData, MechanicalParameters>(data));

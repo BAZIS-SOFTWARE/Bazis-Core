@@ -16,12 +16,11 @@ using Project;
 using Project.Interfaces.Tasks;
 using Project.IO;
 using Project.Tasks;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace TestProject
 {
     [TestClass]
-    public class TestIO
+    public class Basic
     {
         string testDir = @"..\..\..\Examples";
         [TestInitialize]
@@ -31,7 +30,7 @@ namespace TestProject
         }
 
         [DataTestMethod]
-        [DataRow(@"..\..\..\Examples\proj_traj.bpf", TaskType.Volume, TaskKind.термическая_механическая)]
+        [DataRow(@"..\..\..\Examples\proj_traj.bpf", TaskType.Volume, TaskKind.термическая | TaskKind.механическая)]
         //[DataRow(@"c:\projs\AdditiveTest\MeshWithBounds\новый_проект.bpf2", TaskType.Volume, TaskKind.термическая_механическая)]
         public void LoadProjectFiletextFormat(string name,TaskType taskType,TaskKind taskKind)
         {
@@ -50,6 +49,20 @@ namespace TestProject
         }
 
         [DataTestMethod]
+        [DataRow(TaskType.Plain)]
+        [DataRow(TaskType.Volume)]
+        [DataRow(TaskType.Volume_mixed)]
+        public void ChangeTaskType(string name)
+        {
+            //assing
+            //c:\projs\testProj\Tempering\
+            var project = new ProjectController();
+            project.CreateProject($"{testDir}\\{name}");
+            //assert
+            Assert.AreEqual(Path.GetFileName(name), project.Name);
+        }
+
+        [DataTestMethod]
         [DataRow("newProj.bpf")]
         [DataRow("newProj.bpf2")]
         public void CreateProjectFiletextFormat(string name)
@@ -57,8 +70,7 @@ namespace TestProject
             //assing
             //c:\projs\testProj\Tempering\
             var project = new ProjectController();
-            project.CreateProject($"{testDir}\\{name}");
-
+            project.CreateProject($"{testDir}\\{name}"); 
             //assert
             Assert.AreEqual(Path.GetFileName(name), project.Name);
         }
@@ -80,24 +92,6 @@ namespace TestProject
             var proj_1 = loader.Load($@"{testDir}\proj_traj.bpf");
 
             Assert.AreEqual(proj.GeneralData.Name, proj_1.GeneralData.Name);
-        }
-
-
-        [TestMethod]
-        [DataRow(".bpf")]
-        [DataRow(".STL-BIN")]
-        [DataRow(".stl-bin")]
-        [DataRow(".stl-text")]
-        public void IResultExporter_ShouldPass_WhenExportGridFileCreated(string format)
-        {
-            var points = new List<Point3D>() { new Point3D(-1f, -1f, 0f), new Point3D(1f, 1f, 0f), new Point3D(-1f, 1f, 0f) };
-            var figures = new List<ResultFigure> 
-            { 
-                new ResultFigure(points, Color.Black)
-            };
-
-            var exporter = new GridExporter();
-            exporter.ExportGridSurfaces(figures, $@"{testDir}\export" + format.ToLower().Split('-')[0], format);
         }
     }
 }

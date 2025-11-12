@@ -37,13 +37,42 @@ namespace ResultDB
         {
             return $"{Name} {Time}";
         }
-
+        /// <summary>
+        /// ContainsTable
+        /// </summary>
+        /// <param name="tableName"></param>
+        /// <returns></returns>
         public bool ContainsTable(string tableName)
         {
             return Data.Tables[tableName] != null ? true : false;
         }
 
-/// <inheritdoc/>
+        /// <summary>
+        /// TryGetValue
+        /// </summary>
+        /// <param name="tableName"></param>
+        /// <param name="objNumber"></param>
+        /// <param name="resDescr"></param>
+        /// <param name="resu"></param>
+        /// <returns></returns>
+        public bool TryGetValue<T>(string tableName, int objNumber, string resDescr, out T resu)
+        {
+            var table = Data.Tables[tableName];
+            var row = table.Rows.Find(objNumber);
+            if (row != null && table.Columns.Contains(resDescr))
+            {
+                resu = (T)row[resDescr];
+                return true;
+            }
+            else
+            {
+                resu = default(T);
+                return false;
+            }
+
+        }
+
+        /// <inheritdoc/>
 
         public float GetValue(string tableName,int objNumber, string resDescr)
         {

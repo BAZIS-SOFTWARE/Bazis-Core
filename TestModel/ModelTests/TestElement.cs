@@ -5,7 +5,7 @@ using Model.MeshObjects;
 using Model.Utilities;
 using MathNet.Numerics.LinearAlgebra;
 
-namespace TestModel
+namespace TestModel.ModelTests
 {
     [TestClass]
     public class TestElement

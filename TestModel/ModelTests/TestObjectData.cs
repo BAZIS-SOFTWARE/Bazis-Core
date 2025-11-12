@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
-namespace TestModel
+namespace TestModel.ModelTests
 {
     [TestClass]
     public class TestObjectData

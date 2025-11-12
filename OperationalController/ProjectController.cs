@@ -150,17 +150,6 @@ namespace OperationalController
             ModelData?.ObjectData?.SetBackColor(objType);
         }
 
-        /// <inheritdoc/>
-        public IEnumerable<IGroup> GetAllModelGroups()
-        {
-            return ModelData.GroupData;
-        }
-        /// <inheritdoc/>
-        public IEnumerable<ICondData> GetAllCondData()
-        {
-            return TaskData;
-        }
-
 
         /// <inheritdoc/>
         public ITaskData TaskData => project?.TaskData;

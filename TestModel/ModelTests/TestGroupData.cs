@@ -12,7 +12,7 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TestModel
+namespace TestModel.ModelTests
 {
     [TestClass]
     public class TestGroupData

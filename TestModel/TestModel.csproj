@@ -95,6 +95,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ControllerTests\BeamGroupConnection_should.cs" />
+    <Compile Include="ControllerTests\CreateObjects.cs" />
     <Compile Include="ControllerTests\ScriptTests.cs" />
     <Compile Include="GeometryTests\TestConvexHull.cs" />
     <Compile Include="GeometryTests\TestExtensions.cs" />
@@ -114,19 +115,19 @@
     <Compile Include="GmshTests\ModelTests.cs" />
     <Compile Include="ControllerTests\MeshUtility.cs" />
     <Compile Include="GeometryTests\TestCalcDistance.cs" />
-    <Compile Include="TestElement.cs" />
-    <Compile Include="TestGeometryObjects.cs" />
-    <Compile Include="TestGroupData.cs" />
-    <Compile Include="TestIO.cs" />
+    <Compile Include="ModelTests\TestElement.cs" />
+    <Compile Include="ModelTests\TestGeometryObjects.cs" />
+    <Compile Include="ModelTests\TestGroupData.cs" />
+    <Compile Include="ModelTests\TestIO.cs" />
     <Compile Include="TestModelControllerPoligon.cs" />
     <Compile Include="ControllerTests\TestObjectsRenumber.cs" />
     <Compile Include="ControllerTests\TestsCrossSection.cs" />
     <Compile Include="ControllerTests\TestServices.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestSorter.cs" />
-    <Compile Include="TestModelScenePresentor.cs" />
+    <Compile Include="ControllerTests\TestModelScenePresentor.cs" />
     <Compile Include="TestSurfaceFinder.cs" />
-    <Compile Include="TestObjectData.cs" />
+    <Compile Include="ModelTests\TestObjectData.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

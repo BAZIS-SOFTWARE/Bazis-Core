@@ -63,9 +63,13 @@ namespace OperationalController.MeshObjsUtility
             var nodes = objectsData.NodesSet;
             foreach (var node in nodes.Values)
             {
-                var dist = plane.PointPosition(node.Position);
-                if (Math.Abs(dist) < 1e-2)
-                    node.Color = color;
+                if(node.ViewState)
+                {
+                    var dist = plane.PointPosition(node.Position);
+                    if (Math.Abs(dist) < 1e-2)
+                        node.Color = color;
+                }
+
             }
         }
 /// <inheritdoc/>

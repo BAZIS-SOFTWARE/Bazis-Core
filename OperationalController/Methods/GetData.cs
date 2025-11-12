@@ -133,6 +133,23 @@ namespace OperationalController
         }
 
         /// <inheritdoc/>
+        public IEnumerable<IGroup> GetAllModelGroups()
+        {
+            return ModelData.GroupData;
+        }
+        /// <inheritdoc/>
+        public IEnumerable<ICondData> GetAllCondData()
+        {
+            return TaskData;
+        }
+
+        /// <inheritdoc/>
+        public ICondData GetCondData(int grIndex)
+        {
+            return TaskData[grIndex];
+        }
+
+        /// <inheritdoc/>
         public TaskKind ProjectKind
         {
             get 

@@ -10,24 +10,29 @@ namespace Project.Interfaces.Tasks
     /// <summary>
     /// TaskType
     /// </summary>
+    //[Flags]
     public enum TaskType
     {
         /// <summary>
         /// 1D case
         /// </summary>
-        Linear = 0,
+        Linear = 2,
         /// <summary>
         /// 2D case
         /// </summary>
-        Plain = 2,
+        Plain = 4,
         /// <summary>
         /// 2d axi simmetry case
         /// </summary>
-        AxiPlain = 4,
+        AxiPlain = 8,
         /// <summary>
         /// 3d case
         /// </summary>
-        Volume = 8
+        Volume = 16,
+        /// <summary>
+        /// 3d case with plates and beams
+        /// </summary>
+        Volume_mixed = 32,
     }
 
     /// <summary>
@@ -50,19 +55,7 @@ namespace Project.Interfaces.Tasks
         /// МЕХАНИЧЕСКАЯ задача с одиночным процессом.
         /// Один тип файлов задач
         /// </summary>
-        механическая = 8,
-        /// <summary>
-        /// ТЕРМИЧЕСКО_ХИМИЧЕСКАЯ задача с комплексным процессом из термической и химической.
-        /// Два тип файлов задач.
-        /// Главный - термическая
-        /// </summary>
-        термическая_химическая = термическая | химическая,
-        /// <summary>
-        /// ТЕРМИЧЕСКО_МЕХАНИЧЕСКАЯ задача с комплексным процессом состоящим из термической и механической.
-        /// Два тип файлов задач.
-        /// Главный - термическая
-        /// </summary>
-        термическая_механическая = термическая | механическая
+        механическая = 8
     };
     public interface ITaskData : IList<ICondData>
     {

@@ -6,7 +6,7 @@ using Model.Interfaces;
 using System;
 using OperationalController.MeshObjsUtility;
 
-namespace TestModel
+namespace TestModel.ControllerTests
 {
     /// <summary>
     /// Сводное описание для TestObjectsRenumber

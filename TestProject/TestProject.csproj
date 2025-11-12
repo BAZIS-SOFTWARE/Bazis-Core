@@ -135,7 +135,7 @@
     <None Include="CalcCompDataTest\MedDataStartsAfterProcessStart.bpf" />
     <None Include="CalcCompDataTest\NoBoundData.bpf" />
     <None Include="CalcCompDataTest\NoMaterialData.bpf" />
-    <Compile Include="TestIO.cs" />
+    <Compile Include="Basic.cs" />
     <Compile Include="TestMFF.cs" />
     <Compile Include="TestPreProc.cs" />
     <Compile Include="TestProjectData.cs" />

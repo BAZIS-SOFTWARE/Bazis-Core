@@ -34,6 +34,25 @@ namespace TestProject
         {
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
         }
+
+        [TestMethod]
+        [DataRow(".bpf")]
+        [DataRow(".STL-BIN")]
+        [DataRow(".stl-bin")]
+        [DataRow(".stl-text")]
+        public void IResultExporter_ShouldPass_WhenExportGridFileCreated(string format)
+        {
+            var points = new List<Point3D>() { new Point3D(-1f, -1f, 0f), new Point3D(1f, 1f, 0f), new Point3D(-1f, 1f, 0f) };
+            var figures = new List<ResultFigure>
+            {
+                new ResultFigure(points, Color.Black)
+            };
+
+            var exporter = new GridExporter();
+            string testDir = @"..\..\..\Examples";
+            exporter.ExportGridSurfaces(figures, $@"{testDir}\export" + format.ToLower().Split('-')[0], format);
+        }
+
         [DataTestMethod]
         [DataRow(@"..\..\..\Examples\ProjAndResults", "термическая_0_0_0.5.db", 0.5f)]
         [DataRow(@"..\..\..\Examples\ProjAndResults", "термическая_0_0_1500.db", 200.8569f)]
@@ -129,8 +148,12 @@ x.Time.CompareTo(0) >= 0
             controller.ResultsFieldsCreator.ScaleFactor = 1;
 
             var search = results.FirstOrDefault(x => x.Time.Equals(time));
-       
-            var elsResults = controller.ResultsFieldsCreator.CreateSurfaceObjects(search, "nodes", "T", els3D.GetObjects());
+            int res;
+
+            // фильтрация элементов. Применять если используются элементы разных видов : объемы, пластины или стержни
+            var selected = els3D.GetObjects().Where(x => search.TryGetValue("elements", x.Number, "Индекс", out res));
+            
+            var elsResults = controller.ResultsFieldsCreator.CreateSurfaceObjects(search, "nodes", "T", selected);
 
             Assert.AreNotEqual(elsResults, null);
             Assert.AreNotEqual(elsResults.Count(), 0);

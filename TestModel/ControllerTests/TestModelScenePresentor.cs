@@ -17,7 +17,7 @@ using OperationalController.GmshController;
 using System;
 using System.Drawing;
 
-namespace TestModel
+namespace TestModel.ControllerTests
 {
     [TestClass]
     public class TestModelScenePresentor
