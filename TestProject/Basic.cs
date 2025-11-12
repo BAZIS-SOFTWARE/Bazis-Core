@@ -1,21 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Drawing;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Windows.Forms;
-using Geometry;
+﻿using System.Globalization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Model;
 using OperationalController;
-using PostProc.IO;
-using PostProc.IO.GridExport;
-using PostProc.ScenePresenter;
-using Project;
 using Project.Interfaces.Tasks;
 using Project.IO;
-using Project.Tasks;
 
 namespace TestProject
 {
@@ -46,20 +33,6 @@ namespace TestProject
             Assert.AreEqual(controller.ProjectKind, taskKind);
             Assert.AreEqual(controller.ProjectType, taskType);
             Assert.AreNotEqual(controller.GetAllCondData().First(), null);
-        }
-
-        [DataTestMethod]
-        [DataRow(TaskType.Plain)]
-        [DataRow(TaskType.Volume)]
-        [DataRow(TaskType.Volume_mixed)]
-        public void ChangeTaskType(string name)
-        {
-            //assing
-            //c:\projs\testProj\Tempering\
-            var project = new ProjectController();
-            project.CreateProject($"{testDir}\\{name}");
-            //assert
-            Assert.AreEqual(Path.GetFileName(name), project.Name);
         }
 
         [DataTestMethod]

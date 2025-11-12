@@ -22,7 +22,7 @@ namespace Project.Interfaces.Tasks
         /// <summary>
         /// Name
         /// </summary>
-        HeatSources Name { get; }
+        FunctionType Name { get; }
         /// <summary>
         /// GetIntersectedElements
         /// </summary>

@@ -17,7 +17,7 @@ namespace Project.Tasks.Functions.Welding
 
         public CillindricalFunction()
         {
-            Name = HeatSources.CIL;
+            Name = FunctionType.CIL;
         }
 
         /// <inheritdoc/>

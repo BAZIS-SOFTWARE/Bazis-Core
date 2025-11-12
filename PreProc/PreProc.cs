@@ -378,7 +378,7 @@ namespace PreProc
         {
             // 0 - main
             // 1 - minor
-            var names = processProp.TaskKind.ToString().Split('_');
+            var names = processProp.TaskKind.ToString().Replace(" ","").Split(',');
             CreateFilesForSingleProcess(names[0], mainParameters);
 
             minorParameters[0].ThermalFile = $"{names[0]}_{1}_{minorParameters[0].TimeSettings.StartTime}_{minorParameters[0].TimeSettings.StopTime}.db";

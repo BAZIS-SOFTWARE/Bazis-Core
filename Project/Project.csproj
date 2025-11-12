@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net8.0</TargetFrameworks>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
 	  <SignAssembly>True</SignAssembly>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>5.2.7</Version>
+    <Version>5.2.9</Version>
     <Title>Project</Title>
     <Authors>Bilenko Georgy</Authors>
     <Company>BAZIS SOFTWARE</Company>
@@ -116,6 +116,8 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="DynamicLanguageRuntime" Version="1.3.5" />
+    <PackageReference Include="IronPython.StdLib" Version="3.4.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="PropertiesCalculator" Version="1.0.6" />
   </ItemGroup>

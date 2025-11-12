@@ -14,7 +14,7 @@ namespace Project.Tasks.Functions.Welding
         public EllipsBuilder()
         {
             elp = new DoubleEllips();
-            elp.Name = "ELP";
+            elp.Name = FunctionType.DEL;
             elp.LocalFrame = new StaticFrame();
         }
 

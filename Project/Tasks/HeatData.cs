@@ -8,10 +8,12 @@ using System.Runtime.InteropServices.ComTypes;
 
 namespace Project.Tasks
 {
-    public enum HeatSources
+    public enum FunctionType
     {
         SPH,
-        CIL
+        CIL,
+        DEL,
+        Custom
     }
     /// <summary>
     /// HeatData

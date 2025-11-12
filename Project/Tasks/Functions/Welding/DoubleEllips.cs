@@ -6,7 +6,7 @@ namespace Project.Tasks.Functions.Welding
 {
     public class DoubleEllips : FrameFunction
     {
-        public string Name { get; set; }
+        //public string Name { get; set; }
 
         /// <summary>
         /// Ширина сварочной ванны, мм

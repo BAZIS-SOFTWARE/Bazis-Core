@@ -1,21 +1,12 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
-using System.Threading;
 using PreProc;
 using Model.GroupsData;
-using Project;
-using Model;
 using Project.Interfaces.Tasks;
 using Project.Tasks.IO;
 using Project.Tasks;
 using Model.Interfaces;
 using PreProc.Interfaces;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Windows.Forms;
 using Model.MeshObjects;
 using Project.IO;
 

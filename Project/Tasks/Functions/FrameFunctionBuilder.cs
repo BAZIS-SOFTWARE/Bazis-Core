@@ -13,11 +13,11 @@ namespace Project.Tasks.Functions
 
         public FrameFunctionBuilder(string[] heatSourceAr)
         {
-            HeatSources processType;
+            FunctionType processType;
             if (!Enum.TryParse(heatSourceAr[0], out processType))
                 throw new Exception("Источник задан неверно!");
 
-            if (processType == HeatSources.SPH)
+            if (processType == FunctionType.SPH)
             {
                 var builder = new SphereBuilder().SetWidth(heatSourceAr[1]);
                 frameFunction = (SphereFunction)builder;

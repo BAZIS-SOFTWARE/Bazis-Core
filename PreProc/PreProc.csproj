@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>1.8.9</Version>
+    <Version>1.9.0</Version>
     <Authors>Bilenko Georgy, Ustinov Nikita</Authors>
     <Company>BazisSoftware</Company>
     <Product>BAZIS</Product>
