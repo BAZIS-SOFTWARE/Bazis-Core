@@ -41,26 +41,45 @@ namespace TestModel.ControllerTests
         }
 
         [DataTestMethod]
-        [DataRow(@"c:\projs\testProj\Sew\proj.bpf2", "Узел_1", "Узел_2",6,15)]
-        public void BoundaryConnection(string path, string first, string second, double rad, int maxBeams)
+        [DataRow(10, 2, 10, 2)]
+        [DataRow(10, 2, 20, 2)]
+        [DataRow(10, 2, 10, 4)]
+        [DataRow(10, 2, 20, 4)]
+        public void ConnectByBeams_ShouldIncrement1DSetsCount_WhenInvokedConsequently(double radiusOne, int maxBeamsOne, double radiusTwo, int maxBeamsTwo)
         {
-            //assing
+            var filepath = @"..\..\Examples\3D\tavr.bpf";
             var controller = new ProjectController();
+            controller.Load(filepath);
+            var beamSets = controller.GetModelSetsInfo(ObjType.Элемент1D).Count();
 
-            controller.Load(path);
+            controller.ConnectByBeams("Узлы_8", "Узлы_9", radiusOne, maxBeamsOne);
+            controller.ConnectByBeams("Узлы_8", "Узлы_9", radiusTwo, maxBeamsOne);
 
-            controller.ConnectByBeams(first, second,rad,maxBeams);
-
-
-            //assert
-
-            Assert.AreNotEqual(controller.GetModelSetsInfo(ObjType.Элемент1D).Count(), 0);
+            Assert.AreEqual(controller.GetModelSetsInfo(ObjType.Элемент1D).Count(), beamSets + 2);
         }
 
         [DataTestMethod]
-        [DataRow(@"c:\projs\Matushkin\T_project.bpf", 0.001f,2)]
-        [DataRow(@"..\..\..\Examples\3D\cub_unsorted_freeNodesCoincident.bpf", 0.01f,4)]
-        [DataRow(@"C:\projs\AdditiveTest\1n.stl", 0.01f, 3964)]
+        [DataRow(10, 2, 20, 4)]
+        public void ConnectByBeams_ShouldReset1DSetsCounter_WhenInvokedConsequently(double radiusOne, int maxBeamsOne, double radiusTwo, int maxBeamsTwo)
+        {
+            var filepath = @"..\..\Examples\3D\tavr.bpf";
+            var controller = new ProjectController();
+            controller.Load(filepath);
+
+            controller.ConnectByBeams("Узлы_8", "Узлы_9", radiusOne, maxBeamsOne);
+            controller.ConnectByBeams("Узлы_8", "Узлы_9", radiusTwo, maxBeamsOne);
+            var lastRecentlyCreatedSet = controller.GetModelSetsInfo(ObjType.Элемент1D).Select(x => x.Name).Last();
+            controller.DeleteModelSet(ObjType.Элемент1D, lastRecentlyCreatedSet);
+            controller.ConnectByBeams("Узлы_8", "Узлы_9", radiusTwo, maxBeamsOne);
+            lastRecentlyCreatedSet = controller.GetModelSetsInfo(ObjType.Элемент1D).Select(x => x.Name).Last();
+
+            Assert.AreEqual(lastRecentlyCreatedSet, "connect_1");
+        }
+
+        [DataTestMethod]
+        //[DataRow(@"c:\projs\Matushkin\T_project.bpf", 0.001f,2)]
+        [DataRow(@"..\..\Examples\3D\cub_unsorted_freeNodesCoincident.bpf", 0.01f,4)]
+        //[DataRow(@"C:\projs\AdditiveTest\1n.stl", 0.01f, 3964)]
         public void MergeNodes(string path, float dist, int count)
         {
             //assing
