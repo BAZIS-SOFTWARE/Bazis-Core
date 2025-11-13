@@ -41,6 +41,23 @@ namespace TestModel.ControllerTests
         }
 
         [DataTestMethod]
+        [DataRow(@"c:\projs\testProj\Sew\proj.bpf2", "Узел_1", "Узел_2", 6, 15)]
+        public void BoundaryConnection(string path, string first, string second, double rad, int maxBeams)
+        {
+            //assing
+            var controller = new ProjectController();
+
+            controller.Load(path);
+
+            controller.ConnectByBeams(first, second, rad, maxBeams);
+
+
+            //assert
+
+            Assert.AreNotEqual(controller.GetModelSetsInfo(ObjType.Элемент1D).Count(), 0);
+        }
+
+        [DataTestMethod]
         [DataRow(10, 2, 10, 2)]
         [DataRow(10, 2, 20, 2)]
         [DataRow(10, 2, 10, 4)]
