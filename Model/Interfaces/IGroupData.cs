@@ -11,6 +11,11 @@ namespace Model.Interfaces
     public interface IGroupData: IList<IGroup>
     {
         /// <summary>
+        /// GetMaxNumber
+        /// </summary>
+        /// <returns></returns>
+        int GetMaxNumber();
+        /// <summary>
         /// ClearNotExisted
         /// </summary>
         void ClearNotExisted();

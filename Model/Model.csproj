@@ -31,6 +31,8 @@
     <Compile Remove="Interfaces\GeometryObjects\**" />
     <EmbeddedResource Remove="Interfaces\GeometryObjects\**" />
     <None Remove="Interfaces\GeometryObjects\**" />
+    <PackageReference Include="MathNet.Numerics.Signed" Version="5.0.0" />
+    <PackageReference Include="System.Numerics.Vectors" Version="4.6.1" />
   </ItemGroup> 
   <ItemGroup>
     <Compile Remove="Interfaces\MeshObjects\IElementSurface.cs" />
@@ -52,10 +54,6 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </EmbeddedResource>
-  </ItemGroup> 
-  <ItemGroup>
-    <PackageReference Include="MathNet.Numerics.Signed" Version="5.0.0" />
-    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
   </ItemGroup> 
   <ItemGroup>
     <ProjectReference Include="..\PrGeometry\Geometry.csproj" />

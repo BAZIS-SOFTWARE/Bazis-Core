@@ -1,191 +1,31 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\MSTest.TestAdapter.3.1.1\build\net462\MSTest.TestAdapter.props" Condition="Exists('..\packages\MSTest.TestAdapter.3.1.1\build\net462\MSTest.TestAdapter.props')" />
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{1D2684FE-D316-4C1F-80DE-5C5DF400EEEF}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TestModel</RootNamespace>
-    <AssemblyName>TestModel</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">15.0</VisualStudioVersion>
-    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
-    <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
-    <IsCodedUITest>False</IsCodedUITest>
-    <TestProjectType>UnitTest</TestProjectType>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>false</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>
-    </AssemblyOriginatorKeyFile>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <Platforms>AnyCPU;x86</Platforms>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MathNet.Numerics, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cd8b63ad3d691a37, processorArchitecture=MSIL">
-      <HintPath>..\packages\MathNet.Numerics.Signed.5.0.0\lib\net48\MathNet.Numerics.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\MSTest.TestFramework.3.1.1\lib\net462\Microsoft.VisualStudio.TestPlatform.TestFramework.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\MSTest.TestFramework.3.1.1\lib\net462\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll</HintPath>
-    </Reference>
-    <Reference Include="Octree, Version=2.1.11.0, Culture=neutral, PublicKeyToken=2f43c75143b659d5, processorArchitecture=MSIL">
-      <HintPath>..\packages\NetOctree.2.1.11\lib\netstandard2.0\Octree.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Numerics.Vectors, Version=4.1.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Numerics.Vectors.4.6.1\lib\net462\System.Numerics.Vectors.dll</HintPath>
-    </Reference>
-    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="ControllerTests\BeamGroupConnection_should.cs" />
-    <Compile Include="ControllerTests\CreateObjects.cs" />
-    <Compile Include="ControllerTests\ScriptTests.cs" />
-    <Compile Include="GeometryTests\TestConvexHull.cs" />
-    <Compile Include="GeometryTests\TestExtensions.cs" />
-    <Compile Include="GeometryTests\TestFrame.cs" />
-    <Compile Include="GeometryTests\TestPlain.cs" />
-    <Compile Include="GeometryTests\TestPoint2D.cs" />
-    <Compile Include="GeometryTests\TestPoint3D.cs" />
-    <Compile Include="GeometryTests\TestPointsSorter.cs" />
-    <Compile Include="GeometryTests\TestRectangleBox.cs" />
-    <Compile Include="GeometryTests\TestSegment2D.cs" />
-    <Compile Include="GeometryTests\TestSegment3D.cs" />
-    <Compile Include="GeometryTests\TestSelection.cs" />
-    <Compile Include="GeometryTests\TestVector.cs" />
-    <Compile Include="GmshTests\GeometryTests.cs" />
-    <Compile Include="GmshTests\MeshTests.cs" />
-    <Compile Include="GmshTests\ConnectionTests.cs" />
-    <Compile Include="GmshTests\ModelTests.cs" />
-    <Compile Include="ControllerTests\MeshUtility.cs" />
-    <Compile Include="GeometryTests\TestCalcDistance.cs" />
-    <Compile Include="ModelTests\TestElement.cs" />
-    <Compile Include="ModelTests\TestGeometryObjects.cs" />
-    <Compile Include="ModelTests\TestGroupData.cs" />
-    <Compile Include="ModelTests\TestIO.cs" />
-    <Compile Include="TestModelControllerPoligon.cs" />
-    <Compile Include="ControllerTests\TestObjectsRenumber.cs" />
-    <Compile Include="ControllerTests\TestsCrossSection.cs" />
-    <Compile Include="ControllerTests\TestServices.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestSorter.cs" />
-    <Compile Include="ControllerTests\TestModelScenePresentor.cs" />
-    <Compile Include="TestSurfaceFinder.cs" />
-    <Compile Include="ModelTests\TestObjectData.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="Examples\2D_axi\2Dval.inp" />
-    <None Include="Examples\2D_axi\cil.inp" />
-    <None Include="Examples\2D_axi\tube.inp" />
-    <None Include="Examples\3D\box2.inp" />
-    <None Include="Examples\3D\Korpus.inp" />
-    <None Include="Examples\3D\Lazer.inp" />
     <None Include="Examples\3D\Physical_groups_mesh.inp" />
-    <None Include="Examples\3D\untitled.inp" />
-    <None Include="Examples\STL\ACII.stl" />
-    <None Include="Examples\VIsual-Mesh\big_cubeDATA1.ASC" />
-    <None Include="Examples\VIsual-Mesh\cilinder3DATA1.ASC" />
-    <None Include="Examples\VIsual-Mesh\freeNodes_DATA3.ASC" />
-    <None Include="Examples\VIsual-Mesh\freeNodes_DATA3.ASC.bak_fp" />
-    <None Include="Examples\VIsual-Mesh\piramide31DATA1.ASC" />
-    <None Include="Examples\VIsual-Mesh\piramide3DATA1.ASC" />
-    <None Include="Examples\VIsual-Mesh\piramide3DATA1.ASC.bak_fp" />
-    <None Include="Examples\VIsual-Mesh\rhombDATA1.ASC" />
-    <None Include="Examples\VIsual-Mesh\Test2D_DATA1.ASC" />
-    <None Include="Examples\VIsual-Mesh\Test_cube_tetra.vdb" />
-    <None Include="Examples\VIsual-Mesh\Test_cube_tetraDATA1.ASC" />
-    <None Include="Examples\VIsual-Mesh\Test_cube_tetraDATA1.ASC.bak_fp" />
-    <None Include="Examples\VIsual-Mesh\Test_DATA1.ASC" />
-    <None Include="Examples\VIsual-Mesh\Test_DATA1.ASC.bak_fp" />
-    <None Include="packages.config" />
+    <PackageReference Include="MathNet.Numerics.Signed" Version="5.0.0" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.1.1" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.1.1" />
+    <PackageReference Include="NetOctree" Version="2.1.11" />
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Examples\CDB\" />
     <Folder Include="Examples\GMSHAPI\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GmshApi\GmshApi.csproj">
-      <Project>{1fe044a5-fe40-4f59-b05e-5cdb5bb25282}</Project>
-      <Name>GmshApi</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Model\Model.csproj">
-      <Project>{a6b0cebb-8f7c-467e-90bb-924103dae30b}</Project>
-      <Name>Model</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\OperationalController\OperationalController.csproj">
-      <Project>{283F3C11-AE5D-48A8-AF96-C5F44501DF24}</Project>
-      <Name>OperationalController</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PrGeometry\Geometry.csproj">
-      <Project>{95ed498b-f3e1-4d57-8039-960ac9d790f5}</Project>
-      <Name>Geometry</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\GmshApi\GmshApi.csproj" />
+    <ProjectReference Include="..\Model\Model.csproj" />
+    <ProjectReference Include="..\OperationalController\OperationalController.csproj" />
+    <ProjectReference Include="..\PrGeometry\Geometry.csproj" />
   </ItemGroup>
-  <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>Данный проект ссылается на пакеты NuGet, отсутствующие на этом компьютере. Используйте восстановление пакетов NuGet, чтобы скачать их.  Дополнительную информацию см. по адресу: http://go.microsoft.com/fwlink/?LinkID=322105. Отсутствует следующий файл: {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\MSTest.TestAdapter.3.1.1\build\net462\MSTest.TestAdapter.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSTest.TestAdapter.3.1.1\build\net462\MSTest.TestAdapter.props'))" />
-    <Error Condition="!Exists('..\packages\MSTest.TestAdapter.3.1.1\build\net462\MSTest.TestAdapter.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSTest.TestAdapter.3.1.1\build\net462\MSTest.TestAdapter.targets'))" />
-  </Target>
-  <Import Project="..\packages\MSTest.TestAdapter.3.1.1\build\net462\MSTest.TestAdapter.targets" Condition="Exists('..\packages\MSTest.TestAdapter.3.1.1\build\net462\MSTest.TestAdapter.targets')" />
 </Project>

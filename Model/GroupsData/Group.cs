@@ -33,6 +33,8 @@ namespace Model.GroupsData
 /// <inheritdoc/>
 
         public bool IsReadOnly => false;
+        /// <inheritdoc/>
+        public int Number { get; internal set; }
 
         /// <summary>
         /// this

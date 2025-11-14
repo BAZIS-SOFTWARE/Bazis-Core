@@ -33,7 +33,8 @@ namespace Model.GroupsData
 
         public void Add(IGroup item)
         {
-            groups.Add(item);
+            if(!Contains(item))
+                groups.Add(item);
         }
 /// <inheritdoc/>
 
@@ -45,7 +46,7 @@ namespace Model.GroupsData
 
         public bool Contains(IGroup item)
         {
-            return groups.Contains(item, new NameAndTypeGroupComparer());
+            return groups.Contains(item, new NumberGroupComparer());
         }
 /// <inheritdoc/>
 
@@ -150,27 +151,19 @@ namespace Model.GroupsData
             if (!modelObjects.All(x => x.ObjType == objType))
                 throw new System.Exception("Все объекты должны быть одного типа!");
 
-
-            var grps = FindMany(objType);
-
-            var counter = 1;
-            var name = $"{objType}_{grps.Count() + counter}";        
-
-            while (true)
-            {
-                if (Find(name) != null)
-                {
-                    counter++;
-                    name = $"{objType}_{grps.Count() + counter}";
-                }
-                else break;
-            }
-
+            var number = groups.Count == 0 ? 0 : GetMaxNumber() + 1;
+            var name = $"newGroup_{objType}_{number}";        
 
             var group = new Group(name, objType);
 
             group.AddRange(modelObjects);
             groups.Add(group);
+        }
+/// <inheritdoc/>
+
+        public int GetMaxNumber()
+        {
+            return groups.Max(x => x.Number);
         }
     }
 }
