@@ -502,7 +502,7 @@ namespace TestProject
     new Point3D(15, 16, 15)));
 
             doubleEllips.MaxAndMinSemiaxis();
-       
+
             var point = new Point3D(checkPoint[0], checkPoint[1], checkPoint[2]);
 
             if (location == "inside")
@@ -524,14 +524,14 @@ namespace TestProject
             var doubleEllips = (DoubleEllips)new EllipsBuilder().SetWidth(14).SetDepth(5).
                 SetFrontPart(5).
                 SetBackPart(15).
-                SetFrame(new Frame(new Point3D(20f, 20f, 20f), 
-                new Point3D(20.866f, 20.5f, 20f), 
+                SetFrame(new Frame(new Point3D(20f, 20f, 20f),
+                new Point3D(20.866f, 20.5f, 20f),
                 new Point3D(19.5f, 20.866f, 20f)));
 
             doubleEllips.MaxAndMinSemiaxis();
 
             //doubleEllips.DetermineInverseMatrix();
-  
+
             var point = new Point3D(checkPoint[0], checkPoint[1], checkPoint[2]);
 
             if (location == "inside")
@@ -557,7 +557,7 @@ namespace TestProject
         [DataRow(
     new float[]
     { 1f, 1f, 0f,
-       0f, 0f, 1f       
+       0f, 0f, 1f
     },
     new float[]
     { 0.707107f, 0.707107f,  0f,
@@ -572,7 +572,7 @@ namespace TestProject
                  new Point3D(pointsArr[0], pointsArr[1], pointsArr[2]),
                  new Point3D(pointsArr[3], pointsArr[4], pointsArr[5])
                 ));
-            
+
 
             //doubleEllips.DetermineInverseMatrix();
             var matrix = doubleEllips.LocalFrame.Frame.InverseTransitionMatrix;
@@ -585,10 +585,28 @@ namespace TestProject
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    Assert.AreEqual(result[i,j], matrix[i, j], 1e-6);
+                    Assert.AreEqual(result[i, j], matrix[i, j], 1e-6);
                 }
-                
+
             }
+        }
+
+        [TestMethod]
+        [DataRow(1, 0, 0, 0.75f)]
+        [DataRow(4, 4, 4, 0)]
+        [DataRow(1, 4, 0.4f, 0)]
+        [DataRow(3, 1, 0.8f, 0.75f)]
+        public void LazerCalcPowerTest(float x, float y, float z, float power)
+        {
+            //assing            
+            var function = new CustomFunction();
+            function.CreateEngine(@"..\..\..\Examples\PythonScript\LaserSourcePython.py");
+
+            //act
+            var result = function.CalcValue(new Point3D(x, y, z));
+
+            //assert
+            Assert.AreEqual(power, result);
         }
 
     }

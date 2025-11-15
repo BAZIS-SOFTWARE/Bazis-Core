@@ -49,10 +49,11 @@ namespace Project.Tasks.Functions
             if (scope == null)
                 throw new Exception($"Файл {file} не скомпилирована");
 
-            var localCoords = LocalFrame.Frame.GetCoordsInFrame(elementCenter);
+            //var localCoords = LocalFrame.Frame.GetCoordsInFrame(elementCenter);
+            var localCoords = elementCenter;
 
-            var powerFunc = scope.GetVariable("CalcPower");
-            return powerFunc(localCoords._x, localCoords._y, localCoords._z);
+            var powerFunc = scope.GetVariable("CalcPower");           
+            return (float) powerFunc(localCoords._x, localCoords._y, localCoords._z);
 
             //TODO питон программа
 
