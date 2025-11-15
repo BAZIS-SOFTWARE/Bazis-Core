@@ -57,7 +57,7 @@ namespace Project.Tasks.IO
 
                     if (dataName == "Тип")
                     {
-                        if (Enum.TryParse(splitLine[1].Split(' ')[1], out TaskKind taskKind))
+                        if (Enum.TryParse(splitLine[1].Replace(" ",""), out TaskKind taskKind))
                             taskData.TaskKind = taskKind;
                     }
                     if (dataName == "Вид")

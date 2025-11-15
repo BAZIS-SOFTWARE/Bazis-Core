@@ -127,23 +127,14 @@ namespace Model.IO
                     objsType = allElements[numbers.First()].ObjType;
                 else objsType = ObjType.Узел;
 
-                var group = new GroupsData.Group(groupName, objsType);
+                IEnumerable<IModelObject> objs;
 
-                foreach (var number in numbers)
-                {
-                    if (objsType == ObjType.Узел)
-                    {
-                        var obj = allNodes[number];
-                        group.Add(obj);
-                    }
-                    else
-                    {
-                        var obj = allElements[number];
-                        group.Add(obj);
-                    }
-                }
+                if (objsType == ObjType.Узел)
+                    objs = numbers.Select(x => allNodes[x]);
+                else
+                    objs = numbers.Select(x => allElements[x]);
 
-                model.GroupData.Add(group);
+                model.GroupData.Create(groupName, objs);
             }
         }
 

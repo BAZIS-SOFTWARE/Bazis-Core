@@ -10,6 +10,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Reflection;
 
 namespace Model.IO
 {
@@ -154,16 +155,13 @@ namespace Model.IO
                 if (splitLine[0] == "Группа узлов ")
                 {
                     var name = splitLine[1].Split(' ')[1];
-                    var nodeGroup = new Group(name,ObjType.Узел);
+                    //var nodeGroup = new Group(name,ObjType.Узел);
                     var indexLine = splitLine[1].Remove(0, name.Length + 2);
                     var indexes = indexLine.Split(' ').Select(x => int.Parse(x)).ToList();
 
-                    foreach (var index in indexes)
-                    {
-                        var obj = newMesh.ObjectData.Find(ObjType.Узел,index);
-                        nodeGroup.Add(obj);
-                    }
-                    newMesh.GroupData.Add(nodeGroup);
+                    var objs = indexes.Select(x => newMesh.ObjectData.Find(ObjType.Узел, x));
+                    newMesh.GroupData.Create(name, objs);
+
                 }
                 if (splitLine[0] == "Группа элементов 3D ")
                 {
@@ -185,21 +183,16 @@ namespace Model.IO
         {
             var splitLine = line.Split(':');
             var name = splitLine[1].Split(' ')[1];
-            var newGroup = new Group(name, objType);
+            //var newGroup = new Group(name, objType);
             var indexLine = splitLine[1].Remove(0, name.Length + 2);
             if (indexLine != "")
             {
-                var elements = newMesh.ObjectData.GetObjects(objType).ToList();
+                //var elements = newMesh.ObjectData.GetObjects(objType).ToList();
                 var indexes = indexLine.Split(' ').Select(x => int.Parse(x)).ToList();
                 indexes.Sort();
 
-                foreach (var index in indexes)
-                {
-                    var obj = ByNumberFinder.Find(elements,index);
-                    newGroup.Add(obj);
-                }
-
-                newMesh.GroupData.Add(newGroup);
+                var objs = indexes.Select(x => newMesh.ObjectData.Find(objType, x));
+                newMesh.GroupData.Create(name, objs);            
             }
         }
     }

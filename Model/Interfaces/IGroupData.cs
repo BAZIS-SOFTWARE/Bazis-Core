@@ -48,12 +48,17 @@ namespace Model.Interfaces
         /// <param name="objType"></param>
         /// <returns></returns>
         void  Create(string name, ObjType objType);
-
         /// <summary>
         /// Create
         /// </summary>
         /// <param name="modelObjects"></param>
         /// <returns></returns>
         void Create(IEnumerable<IModelObject> modelObjects);
+        /// <summary>
+        /// Create
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="modelObjects"></param>
+        void Create(string name, IEnumerable<IModelObject> modelObjects);
     }
 }

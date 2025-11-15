@@ -213,25 +213,18 @@ namespace Model.IO
         //    }
         //}
 
-        private void CreateGroup(ModelData model, string setName, IEnumerable<int> numbers, ObjType objsType)
+        private void CreateGroup(ModelData model, string groupName, IEnumerable<int> numbers, ObjType objsType)
         {
-            var group = new GroupsData.Group(setName, objsType);
+           // var group = new GroupsData.Group(groupName, objsType);
 
-            foreach (var number in numbers)
-            {
-                if (objsType == ObjType.Узел)
-                {
-                    var obj = allNodes[number];
-                    group.Add(obj);
-                }
-                else
-                {
-                    var obj = allElements[number];
-                    group.Add(obj);
-                }
-            }
+            IEnumerable<IModelObject> objs;
 
-            model.GroupData.Add(group);
+            if (objsType == ObjType.Узел)
+                objs = numbers.Select(x => allNodes[x]);
+            else
+                objs = numbers.Select(x => allElements[x]);
+
+            model.GroupData.Create(groupName, objs);
         }
 
         private string GetCollectionType(string source)

@@ -15,6 +15,7 @@ using System.Drawing;
 using System.Data;
 using Model.Interfaces.MeshObjects;
 using System.Xml.Linq;
+using System.Reflection;
 
 namespace Model.IO
 {
@@ -170,12 +171,14 @@ namespace Model.IO
                     var indexLine = splitLine[1].Remove(0, name.Length + 2);
                     var indexes = indexLine.Split(' ').Select(x => int.Parse(x)).ToList();
 
-                    foreach (var index in indexes)
-                    {
-                        var obj = newMesh.ObjectData.Find(ObjType.Узел, index);
-                        nodeGroup.Add(obj);
-                    }
-                    newMesh.GroupData.Add(nodeGroup);
+                    var objs = indexes.Select(x => newMesh.ObjectData.Find(ObjType.Узел, x));
+                    newMesh.GroupData.Create(name, objs);
+                    //foreach (var index in indexes)
+                    //{
+                    //    var obj = newMesh.ObjectData.Find(ObjType.Узел, index);
+                    //    nodeGroup.Add(obj);
+                    //}
+                    //newMesh.GroupData.Add(nodeGroup);
                 }
                 if (splitLine[0] == "Группа элементов 3D ")
                 {
@@ -204,13 +207,15 @@ namespace Model.IO
                 var indexes = indexLine.Split(' ').Select(x => int.Parse(x)).ToList();
                 indexes.Sort();
 
-                foreach (var index in indexes)
-                {
-                    var obj = newMesh.ObjectData.Find(objType, index);
-                    newGroup.Add(obj);
-                }
+                var objs = indexes.Select(x => newMesh.ObjectData.Find(objType, x));
+                newMesh.GroupData.Create(name, objs);
+                //foreach (var index in indexes)
+                //{
+                //    var obj = newMesh.ObjectData.Find(objType, index);
+                //    newGroup.Add(obj);
+                //}
 
-                newMesh.GroupData.Add(newGroup);
+                //newMesh.GroupData.Add(newGroup);
             }
         }
     }

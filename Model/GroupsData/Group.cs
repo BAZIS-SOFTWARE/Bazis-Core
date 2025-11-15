@@ -132,6 +132,12 @@ namespace Model.GroupsData
             Name = groupName;
             ObjType = objType;
         }
+
+        public Group(int number, string groupName, ObjType objType) : 
+            this(groupName, objType)
+        {
+            Number = number;
+        }
         /// <inheritdoc/>
 
         public bool Swap(int fInd, int sInd)

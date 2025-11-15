@@ -1,4 +1,5 @@
 ﻿using Model.Interfaces;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,8 +34,9 @@ namespace Model.GroupsData
 
         public void Add(IGroup item)
         {
-            if(!Contains(item))
+            if (!Contains(item))
                 groups.Add(item);
+            else throw new System.Exception($"Группа с номером {item.Number} уже существует");
         }
 /// <inheritdoc/>
 
@@ -121,7 +123,7 @@ namespace Model.GroupsData
 
                 if (existObjects.Count() > 0)
                 {
-                    var gr = new Group(item.Name, item.ObjType);
+                    var gr = new Group(item.Number,item.Name, item.ObjType);
                     gr.AddRange(existObjects);
                     temp.Add(gr);
                 }
@@ -135,8 +137,8 @@ namespace Model.GroupsData
         {
             groups = groups.OrderBy(x => x, new StringNumberGroupComparer()).ToList();
         }
-/// <inheritdoc/>
-
+        /// <inheritdoc/>
+        [Obsolete("Не использовать, так как он дублирует метод 'Add'")]
         public void Create(string name, ObjType objType)
         {
             var group = new Group(name, objType);
@@ -154,12 +156,29 @@ namespace Model.GroupsData
             var number = groups.Count == 0 ? 0 : GetMaxNumber() + 1;
             var name = $"newGroup_{objType}_{number}";        
 
-            var group = new Group(name, objType);
+            var group = new Group(number,name, objType);
 
             group.AddRange(modelObjects);
             groups.Add(group);
         }
 /// <inheritdoc/>
+
+        public void Create(string name, IEnumerable<IModelObject> modelObjects)
+        {
+            var objType = modelObjects.First().ObjType;
+
+            if (!modelObjects.All(x => x.ObjType == objType))
+                throw new System.Exception("Все объекты должны быть одного типа!");
+
+            var number = groups.Count == 0 ? 0 : GetMaxNumber() + 1;
+            //var name = $"newGroup_{objType}_{number}";
+
+            var group = new Group(number,name, objType);
+
+            group.AddRange(modelObjects);
+            groups.Add(group);
+        }
+        /// <inheritdoc/>
 
         public int GetMaxNumber()
         {
