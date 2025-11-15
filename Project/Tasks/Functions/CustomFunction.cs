@@ -52,8 +52,8 @@ namespace Project.Tasks.Functions
             //var localCoords = LocalFrame.Frame.GetCoordsInFrame(elementCenter);
             var localCoords = elementCenter;
 
-            var powerFunc = scope.GetVariable("CalcPower");           
-            return (float) powerFunc(localCoords._x, localCoords._y, localCoords._z);
+            var powerFunc = scope.GetVariable("CalcPower");
+            return (float)powerFunc(localCoords._x.ToString(), localCoords._y.ToString(), localCoords._z.ToString());
 
             //TODO питон программа
 
