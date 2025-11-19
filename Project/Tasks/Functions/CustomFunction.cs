@@ -53,8 +53,11 @@ namespace Project.Tasks.Functions
             var localCoords = elementCenter;
 
             var powerFunc = scope.GetVariable("CalcPower");
-            var result = powerFunc(localCoords._x, localCoords._y, localCoords._z);
-            return (float)result;
+            //var result = powerFunc(localCoords._x, localCoords._y, localCoords._z);
+            //return (float)result;
+
+            return (float)powerFunc(localCoords._x, localCoords._y, localCoords._z);
+
 
             //TODO питон программа
 
