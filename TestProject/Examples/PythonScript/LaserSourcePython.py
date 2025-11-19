@@ -5,7 +5,7 @@ def CalcPower(x, y, z, power = 6):
     c = 0.8 # глубина источника
     q = power * n / (a * b * c) # Вт/мм**3
         
-    #debug_info = f"x={x}({type(x)}), y={y}, z={z}, a={a}, b={b}, c={c}"
+    # debug_info = f"x={x}({type(x)}), y={y}, z={z}, a={a}, b={b}, c={c}"
 
     # Округляем до 6 знаков после запятой
     precision = 6
@@ -18,4 +18,4 @@ def CalcPower(x, y, z, power = 6):
 
 
     # Это заставит VS показать сообщение
-    #raise Exception(f"Point outside bounds: {debug_info}")
+    # raise Exception(f"Point outside bounds: {debug_info}")

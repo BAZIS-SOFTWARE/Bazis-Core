@@ -48,8 +48,6 @@
     <Content Include="Examples\3D\TestProjTerm\tjoint\materials.txt" />
     <Content Include="Examples\3D\TestProjTernMech\tjoint\functions.txt" />
     <Content Include="Examples\3D\TestProjTernMech\tjoint\materials.txt" />
-    <Content Include="Examples\ProjAndResults\functions.txt" />
-    <Content Include="Examples\ProjAndResults\materials.txt" />
     <Content Include="Examples\ProjAndResults\watcher.txt" />
     <Content Include="Examples\ProjAndResults\watcher_1.txt" />
   </ItemGroup>

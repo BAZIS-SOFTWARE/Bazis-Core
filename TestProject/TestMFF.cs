@@ -600,6 +600,7 @@ namespace TestProject
         {
             //assing            
             var function = new CustomFunction();
+            
             function.CreateEngine(@"..\..\..\Examples\PythonScript\LaserSourcePython.py");
 
             //act

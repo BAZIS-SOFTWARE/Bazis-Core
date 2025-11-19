@@ -87,6 +87,8 @@ namespace Geometry
             Dir_Y = new Point3D(0,1,0);
             Dir_X = new Point3D(1,0,0);
             Centre = new Point3D();
+
+            DetermineInverseMatrix();
         }
         /// <summary>
         /// 1 - центр ск

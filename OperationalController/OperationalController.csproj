@@ -11,7 +11,7 @@
     <Product>BAZIS</Product>
     <Description>Contains basic mesh oblects and geometry classes</Description>
     <Copyright>Bilenko Georgy</Copyright>
-    <Authors>Bilenko Georgy, Kapkaev Victor, Kochuk Nicolay, Kishun Kirill, Aleksey Konteev</Authors>
+    <Authors>Bilenko Georgy, Kapkaev Victor, Kochuk Nicolay, Kishun Kirill, Aleksey Konteev,Máté Cserép</Authors>
     <PackageIcon>Icon.png</PackageIcon>
     <PackageLicenseExpression> MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
@@ -42,14 +42,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GmshApi\GmshApi.csproj" />
-    <ProjectReference Include="..\Project\Project.csproj" />
+    <PackageReference Include="NetOctree" Version="2.1.11" />
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="Octree">
-      <HintPath>\\192.168.10.49\Plm-Ural\OrgUnits\developers\Packages\Libs\Octree.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\GmshApi\GmshApi.csproj" />
+    <ProjectReference Include="..\Project\Project.csproj" />
   </ItemGroup>
 
 </Project>
