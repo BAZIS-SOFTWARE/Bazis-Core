@@ -48,7 +48,7 @@
 
   <ItemGroup>
     <Reference Include="Octree">
-      <HintPath>..\..\..\NetOctree\Octree\bin\Release\netstandard2.0\Octree.dll</HintPath>
+      <HintPath>\\192.168.10.49\Plm-Ural\OrgUnits\developers\Packages\Libs\Octree.dll</HintPath>
     </Reference>
   </ItemGroup>
 
