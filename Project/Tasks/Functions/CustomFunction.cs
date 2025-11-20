@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
+using static IronPython.Modules._ast;
 
 namespace Project.Tasks.Functions
 {
@@ -43,6 +44,12 @@ namespace Project.Tasks.Functions
             engine.Execute(pythonCode, scope);
         }
 /// <inheritdoc/>
+
+        public override string ToString()
+        {
+            return $"{Name};{ExecutedFile};{LocalFrame}";
+        }
+        /// <inheritdoc/>
 
         public override float CalcValue(Point3D elementCenter)
         {

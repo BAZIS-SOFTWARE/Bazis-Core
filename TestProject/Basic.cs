@@ -18,7 +18,7 @@ namespace TestProject
 
         [DataTestMethod]
         [DataRow(@"..\..\..\Examples\proj_traj.bpf", TaskType.Volume, TaskKind.термическая | TaskKind.механическая)]
-        //[DataRow(@"c:\projs\AdditiveTest\MeshWithBounds\новый_проект.bpf2", TaskType.Volume, TaskKind.термическая_механическая)]
+        [DataRow(@"c:\projs\Roman\Proba\777.bpf2", TaskType.Volume, TaskKind.термическая | TaskKind.механическая)]
         public void LoadProjectFiletextFormat(string name,TaskType taskType,TaskKind taskKind)
         {
             //assing
