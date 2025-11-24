@@ -13,7 +13,7 @@ namespace OperationalController.MeshObjsUtility
 
             foreach (var normal in normals)
             {
-                if (Vector.GetVectorLenght(normal.Value) > 1e-4)
+                if (Vector.GetVectorLength(normal.Value) > 1e-4)
                     yield return normal.Key;
             }
         }

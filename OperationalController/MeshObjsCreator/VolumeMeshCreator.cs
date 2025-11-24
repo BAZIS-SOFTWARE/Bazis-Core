@@ -13,6 +13,7 @@ namespace OperationalController.MeshObjsCreator
         /// <inheritdoc/>
         public List<IElement3D> Sew3Dfrom2D(List<IElement2D> firstSet, List<IElement2D> secSet)
         {
+            // TODO
             throw new NotImplementedException();
         }
     }

@@ -57,7 +57,7 @@ namespace Project.Tasks.Functions.Welding
             r = elementCenter.GetDistanceToLine(hsAxis);
 
             var elDist = elementCenter.Sub(frame.Centre);
-            var rad = Vector.GetVectorLenght(elDist);
+            var rad = Vector.GetVectorLength(elDist);
 
             var zc = 0.0f;
             if (rad - r > 0)

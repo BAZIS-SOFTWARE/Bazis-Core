@@ -92,7 +92,7 @@ namespace Geometry
                 var svectors = p2.Sub(p0); //new Point3D(p2._x - p0._x, p2._y - p0._y, p2._z - p0._z);
 
                 var normal = Vector.CrossProd(fvectors, svectors);
-                if (Vector.GetVectorLenght(normal) > 1e-6)
+                if (Vector.GetVectorLength(normal) > 1e-6)
                 {
                     var plane = new Plane(p0, normal);
                     plane.Shifting = 0;
@@ -117,7 +117,7 @@ namespace Geometry
                 var svectors = p2.Sub(p0); //new Point3D(p2._x - p0._x, p2._y - p0._y, p2._z - p0._z);
 
                 var normal = Vector.CrossProd(fvectors, svectors);
-                if (Vector.GetVectorLenght(normal) > 1e-6)
+                if (Vector.GetVectorLength(normal) > 1e-6)
                 {
                     var plane = new Plane(p0, normal);
                     plane.Shifting = 0;
@@ -248,7 +248,7 @@ namespace Geometry
                     var dy = points[fistPoint]._y - points[j]._y;
                     var dz = points[fistPoint]._z - points[j]._z;
 
-                    var dist = Vector.GetVectorLenght(new Point3D(dx,dy,dz));
+                    var dist = Vector.GetVectorLength(new Point3D(dx,dy,dz));
                     dists.Add(dist);
                 }              
 

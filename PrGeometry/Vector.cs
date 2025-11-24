@@ -54,7 +54,7 @@ namespace Geometry
         /// </summary>
         /// <param name="p"></param>
         /// <returns></returns>
-        public static float GetVectorLenght(Point3D p)
+        public static float GetVectorLength(Point3D p)
         {
             return (float)Math.Sqrt(Math.Pow(p._x, 2) + Math.Pow(p._y, 2) + Math.Pow(p._z, 2));
         }
@@ -65,7 +65,7 @@ namespace Geometry
         /// <returns></returns>
         public static Point3D GetVectorNorm(Point3D p)
         {
-            var length = GetVectorLenght(p);
+            var length = GetVectorLength(p);
             var invLength = 1 / length;
 
             return p.Mult(invLength);
@@ -173,8 +173,8 @@ namespace Geometry
         {
             var prod1 = DotProd(n1,n2);
 
-            var n1_lenght = GetVectorLenght(n1);
-            var n2_lenght = GetVectorLenght(n2);
+            var n1_lenght = GetVectorLength(n1);
+            var n2_lenght = GetVectorLength(n2);
             return prod1 / (n1_lenght * n2_lenght);
         }
 

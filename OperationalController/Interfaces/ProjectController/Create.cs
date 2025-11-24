@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Geometry;
+using Model.Interfaces.MeshObjects;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,6 +8,13 @@ namespace OperationalController
 {
     public partial interface IProjectController
     {
+        /// <summary>
+        /// Extrude3DForm2D
+        /// </summary>
+        /// <param name="vector"></param>
+        /// <param name="layers"></param>
+        /// <param name="elements"></param>
+        void Extrude3DForm2D(Point3D vector, int layers, IEnumerable<IElement2D> elements);
         /// <summary>
         /// CreateElementsSet
         /// </summary>

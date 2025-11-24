@@ -580,12 +580,12 @@ namespace TestModel.ModelTests
             var newNodes = modelData.ObjectData.NodesSet.Select(v => v.Value).ToArray();
 
             var srcPoint = newNodes[0].Position.Sub(oldNodes[0].Position);
-            var srcDelta = Vector.GetVectorLenght(srcPoint);
+            var srcDelta = Vector.GetVectorLength(srcPoint);
 
             for (var i = 1; i < newNodes.Length; ++i)
             {
                 var curPoint = newNodes[i].Position.Sub(oldNodes[i].Position);
-                var curDelta = Vector.GetVectorLenght(curPoint);
+                var curDelta = Vector.GetVectorLength(curPoint);
                 Assert.AreEqual(srcDelta, curDelta, 1e-4);
             }
         }

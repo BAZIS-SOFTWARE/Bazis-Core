@@ -59,7 +59,7 @@ namespace Project.Tasks.Functions.Welding
         {
             var frame = LocalFrame.Frame;
             var elementVector = elementCenter.Sub(frame.Centre);
-            var vectorLength = Geometry.Vector.GetVectorLenght(elementVector);
+            var vectorLength = Geometry.Vector.GetVectorLength(elementVector);
             if (vectorLength <= MinSemiaxis) return true;
             else if (vectorLength > MaxSemiaxis) return false;
 

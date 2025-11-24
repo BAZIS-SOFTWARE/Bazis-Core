@@ -83,7 +83,7 @@ namespace Model.MeshObjects
 
         public float CalcLength()
         {
-            return Vector.GetVectorLenght(nodes[1].Position.Sub(nodes[0].Position));
+            return Vector.GetVectorLength(nodes[1].Position.Sub(nodes[0].Position));
         }
         /// <inheritdoc/>
 

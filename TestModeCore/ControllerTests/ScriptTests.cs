@@ -23,7 +23,7 @@ namespace TestModel.ControllerTests
         }
 
         [DataTestMethod]
-        [DataRow(@"..\..\..\Examples\CAD\Tavr.step", @"..\..\..\Examples\Scripts\write.gscript")]
+        [DataRow(@"..\..\..\Examples\CAD\Tavr.step", @"c:\BazisComponents\BazisCore\TestModel\Examples\Scripts\write.gscript")]
 
         public void CompareSaveAndLoad(string cadFile,string scriptFile)
         {
@@ -38,9 +38,15 @@ namespace TestModel.ControllerTests
 
             //var surf2Points = project.GmshController.GetSurfaceNodes(2);
             //project.GmshController.SetTransfiniteSurface(2, GmshApi.Arrangement.Left, surf2Points);
-            
+
+            //var surf0Points = project.GmshController.GetSurfaceNodes(1);
+            //project.GmshController.SetTransfiniteSurface(1, GmshApi.Arrangement.Left);
+            //project.GmshController.SetRecombineSurface(1);
+
             var surf3Points = project.GmshController.GetSurfaceNodes(3);
             project.GmshController.SetTransfiniteSurface(3, GmshApi.Arrangement.Left,surf3Points);
+            project.GmshController.SetRecombineSurface(3);
+
             var surf17Points = project.GmshController.GetSurfaceNodes(17);
             project.GmshController.SetTransfiniteSurface(17, GmshApi.Arrangement.Left, new[] { 17,18,21 });
 
@@ -70,8 +76,8 @@ namespace TestModel.ControllerTests
             //Assert.AreEqual(project.GmshController.GetTransfiniteSurface(2)[0], "5,6,3,1");
             Assert.AreEqual(project.GmshController.GetTransfiniteSurface(3)[1], "Left");
             Assert.AreEqual(project.GmshController.GetTransfiniteSurface(17)[1], "Left");
-            //Assert.AreEqual(project.GmshController.GetTransfiniteVolume(1)[0], "регулярная");
-            //Assert.AreEqual(project.GmshController.GetTransfiniteVolume(2)[1], "1");
+            Assert.AreEqual(project.GmshController.GetRecombineSurface(0), false);
+            Assert.AreEqual(project.GmshController.GetRecombineSurface(3), true);
         }
 
     }

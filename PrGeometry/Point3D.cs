@@ -113,7 +113,7 @@ namespace Geometry
 
             var vecProd = Vector.CrossProd(tempVec, directVec);
 
-            var distance = Vector.GetVectorLenght(vecProd) / Vector.GetVectorLenght(directVec);
+            var distance = Vector.GetVectorLength(vecProd) / Vector.GetVectorLength(directVec);
 
             return distance;
         }

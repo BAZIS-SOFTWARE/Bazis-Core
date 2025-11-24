@@ -32,7 +32,7 @@ namespace Project.Tasks.Functions.Welding
         {
             halfBead = Width / 2;
             var frame = LocalFrame.Frame;
-            rad = Vector.GetVectorLenght(elementCenter.Sub(frame.Centre));
+            rad = Vector.GetVectorLength(elementCenter.Sub(frame.Centre));
             return rad <= halfBead;
         }
 

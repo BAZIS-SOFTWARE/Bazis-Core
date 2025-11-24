@@ -18,6 +18,7 @@ using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Xml.Linq;
 using MathNet.Numerics;
+//using static IronPython.Modules._ast;
 
 namespace OperationalController.GmshController
 {
@@ -543,17 +544,33 @@ namespace OperationalController.GmshController
             var attributes = new string[] { pointsStr, Arrangement.Left.ToString() };
             
             Gmsh.Model.
-                SetAttribute($"transfinite surface {tag}", attributes);
-                
-
-            Gmsh.Model.Mesh.SetRecombine(2, tag);
+                SetAttribute($"transfinite surface {tag}", attributes);              
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
+        public void SetRecombineSurface(int tag)
+        {
+            Gmsh.Model.Mesh.SetRecombine(2, tag);
+            Gmsh.Model.
+    SetAttribute($"recombine surface {tag}", new string[] { "quad" });
+        }
+
+        /// <inheritdoc/>
+
+        public bool GetRecombineSurface(int tag)
+        {
+            var attributes = Gmsh.Model.GetAttribute($"recombine surface {tag}");
+
+            return attributes.Length != 0;
+        }
+
+
+        /// <inheritdoc/>
 
         public string[] GetTransfiniteSurface(int tag)
         {
             return Gmsh.Model.GetAttribute($"transfinite surface {tag}");
         }
+
 
 
         /// <inheritdoc/>
@@ -569,6 +586,7 @@ namespace OperationalController.GmshController
             Gmsh.Model.SetAttribute($"transfinite curve {tag}", attributes);
             Gmsh.Model.Mesh.SetTransfiniteCurve(tag, numNodes, meshType, coef);
         }
+
         /// <inheritdoc/>
 
         public string[] GetTransfiniteCurve(int tag)

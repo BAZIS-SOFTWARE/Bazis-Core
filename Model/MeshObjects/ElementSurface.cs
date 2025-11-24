@@ -84,7 +84,7 @@ namespace Model.MeshObjects
                 var v2 = this[i + 2].Position.Sub(this[0].Position);
 
                 var vProd = Vector.CrossProd(v1, v2);
-                square += Math.Abs(Vector.GetVectorLenght(vProd) / 2);
+                square += Math.Abs(Vector.GetVectorLength(vProd) / 2);
             }
 
 

@@ -83,7 +83,7 @@ namespace Model.MeshObjects
 
         /// <inheritdoc/>
 
-        public override int NumberOfPoints { get { return nodes.Count(); } }
+        public override int NumberOfPoints { get { return nodes.Count; } }
 /// <inheritdoc/>
 
         public abstract ElementKind ElementKind { get; }

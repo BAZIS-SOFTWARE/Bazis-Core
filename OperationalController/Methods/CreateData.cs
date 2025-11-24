@@ -1,17 +1,25 @@
-﻿using Model;
+﻿using Geometry;
+using Model;
 using Model.Interfaces;
+using Model.Interfaces.MeshObjects;
 using Model.IO;
 using Model.IO.STL;
 using Model.MeshObjects;
 using Project;
 using Project.Tasks;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace OperationalController
 {
     public partial class ProjectController
     {
+        /// <inheritdoc/>
+        public void Extrude3DForm2D(Point3D vector, int layers, IEnumerable<IElement2D> elements)
+        {
+            throw new NotImplementedException();
+        }
         /// <inheritdoc/>
 
         public void CreateElementsSet(string setName, int dim)

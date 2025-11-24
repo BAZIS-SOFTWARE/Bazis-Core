@@ -35,7 +35,7 @@ namespace Geometry
             var svectors = p2.Sub(p0); //new Point3D(p2._x - p0._x, p2._y - p0._y, p2._z - p0._z);
 
             Normal = Vector.CrossProd(fvectors, svectors);
-            if (Vector.GetVectorLenght(Normal) < INV_FACTOR)
+            if (Vector.GetVectorLength(Normal) < INV_FACTOR)
                 throw new Exception("Вектор нормали плоскости равен нулю");
             Shifting =  -(Normal._x * p0._x + Normal._y * p0._y + Normal._z * p0._z);
         }
@@ -46,7 +46,7 @@ namespace Geometry
         /// <param name="normal"></param>
         public Plane(Point3D p0, Point3D normal)
         {
-            if (Vector.GetVectorLenght(normal) < INV_FACTOR)
+            if (Vector.GetVectorLength(normal) < INV_FACTOR)
                 throw new Exception("Вектор нормали плоскости равен нулю");
             Normal = normal;
             Shifting = -(Normal._x * p0._x + Normal._y * p0._y + Normal._z * p0._z);
@@ -58,7 +58,7 @@ namespace Geometry
         /// <param name="shifting"></param>
         public Plane(Point3D normal, float shifting)
         {
-            if (Vector.GetVectorLenght(normal) < INV_FACTOR)
+            if (Vector.GetVectorLength(normal) < INV_FACTOR)
                 throw new Exception("Вектор нормали плоскости равен нулю");
             Normal = normal;
             Shifting = shifting;
@@ -68,7 +68,7 @@ namespace Geometry
 
         public float PointPosition(Point3D point)
         {
-            var lenght = Vector.GetVectorLenght(Normal);
+            var lenght = Vector.GetVectorLength(Normal);
 
             return (Normal._x * point._x + Normal._y * point._y + Normal._z * point._z + Shifting) / lenght;
         }
@@ -76,7 +76,7 @@ namespace Geometry
 
         public float PlanePosition(Plane plane)
         {      
-            return (plane.Shifting - Shifting) / Vector.GetVectorLenght(Normal);
+            return (plane.Shifting - Shifting) / Vector.GetVectorLength(Normal);
         }
     }
 }

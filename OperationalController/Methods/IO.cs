@@ -110,6 +110,10 @@ namespace OperationalController
                             Select(x => int.Parse(x));
                         var arrange = ToEnum<Arrangement>(line[3]);
                         GmshController.SetTransfiniteSurface(int.Parse(line[1]), arrange, points.ToArray());
+                        
+                        // квадратизируем
+                        if (line[4] == "quad")
+                            GmshController.SetRecombineSurface(int.Parse(line[1]));
                     }
                     else if (line[0] == "Объем")
                     {
@@ -201,6 +205,14 @@ namespace OperationalController
                     if (atrs.Length != 0)
                     {
                         var joinStr = string.Join(" ", atrs);
+
+                        // проверка квадратизации
+
+                        if (GmshController.GetRecombineSurface(item.Value.Number))
+                            joinStr += " quad";
+                        else
+                            joinStr += " tria";
+
                         sw.WriteLine($"{ObjType.Поверхность} {item.Value.Number} {joinStr}");
                     }
                 }

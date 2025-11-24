@@ -381,7 +381,7 @@ namespace TestModel.GmshTests
                         coords[j] = gmshController.Gmsh.Model.GetValue(0, data.Item2[j], new double[0]);
                     var point0 = new Point3D((float)coords[0][0], (float)coords[0][1], (float)coords[0][2]);
                     var point1 = new Point3D((float)coords[1][0], (float)coords[1][1], (float)coords[1][2]);
-                    var radius = Vector.GetVectorLenght(point0.Sub(point1)) / 2;
+                    var radius = Vector.GetVectorLength(point0.Sub(point1)) / 2;
                     var expectedLength = Math.PI * radius;
                     var actualLength = gmshController.CalcCurveLength(curvesId[i]);
                     Assert.AreEqual(expectedLength, actualLength, 1e-4);

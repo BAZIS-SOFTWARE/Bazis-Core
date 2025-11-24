@@ -57,6 +57,16 @@ namespace OperationalController.GmshController
         /// <returns></returns>
         int[] GetSurfaceNodes(int tag);
         /// <summary>
+        /// SetRecombineSurface
+        /// </summary>
+        /// <param name="tag"></param>
+        void SetRecombineSurface(int tag);
+        /// <summary>
+        /// GetRecombineSurface
+        /// </summary>
+        /// <param name="tag"></param>
+        bool GetRecombineSurface(int tag);
+        /// <summary>
         /// SetTransfiniteSurface
         /// </summary>
         /// <param name="tag"></param>

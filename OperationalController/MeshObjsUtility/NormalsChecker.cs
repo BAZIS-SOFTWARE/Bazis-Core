@@ -153,7 +153,7 @@ namespace OperationalController.MeshObjsUtility
             {
                 var edge = Vector.GetVectorNorm(elData.surfaceEdges[i]);
                 var normal = Vector.GetVectorNorm(elData.surfaceNormals[i]);
-                var length = Vector.GetVectorLenght(normal);
+                var length = Vector.GetVectorLength(normal);
 
                 var reference = elData.surfacePoints[i].Sub(elData.center);
                 reference = Vector.GetVectorNorm(reference);

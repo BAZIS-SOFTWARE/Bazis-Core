@@ -76,8 +76,8 @@ namespace Geometry
             if (state) return new Point3D();
             else
             {
-                var l0 = Vector.GetVectorLenght(v0);
-                var l1 = Vector.GetVectorLenght(v1);
+                var l0 = Vector.GetVectorLength(v0);
+                var l1 = Vector.GetVectorLength(v1);
 
                 var lenSub0 = (1 - (l0 / (l0 + l1)));
                 var lenSub1 = (l0 / (l0 + l1));
