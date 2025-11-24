@@ -23,13 +23,19 @@ namespace Project.Tasks.Functions
                 frameFunction = (SphereFunction)builder;
             }
 
-            
-            else
+
+            else if (processType == FunctionType.CIL)
             {
                 var builder = new CillindricalBuilder().SetLength(heatSourceAr[1]).
                     SetUpperDiam(heatSourceAr[2]).SetBottomDiam(heatSourceAr[3]);
 
                 frameFunction = (CillindricalFunction)builder;
+            }
+            else
+            {
+                var cs = new CustomFunction();
+                cs.CreateEngine(heatSourceAr[1]);
+                frameFunction = cs;
             }
         }
 

@@ -36,6 +36,8 @@ namespace Project.Tasks.IO
 
                 if (splitLine.Length > 1)
                 {
+                    if (splitLine.Length > 2)
+                        splitLine[1] = string.Join(":", splitLine.Skip(1));
                     var dataName = splitLine[0].Replace(" ", "");
                     var dataAr = splitLine[1].Remove(0, 1);
 
