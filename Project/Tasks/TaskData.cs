@@ -11,8 +11,8 @@ using Model;
 using Project.Tasks.FrameCreators;
 using Project.Tasks.Functions;
 using System.Runtime.InteropServices.ComTypes;
-using PropertiesCalculator.FunctionData;
-using PropertiesCalculator.MaterialData;
+using MaterialDB.FunctionData;
+using MaterialDB.MaterialData;
 
 
 namespace Project.Tasks

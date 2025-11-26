@@ -1,7 +1,7 @@
 ﻿using System;
 using Model.Interfaces;
 using Project.Interfaces.Tasks;
-using PropertiesCalculator.MaterialData;
+using MaterialDB.MaterialData;
 
 namespace Project.Tasks
 {

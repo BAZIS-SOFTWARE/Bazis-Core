@@ -1,7 +1,7 @@
 ﻿using Model.Interfaces;
 using Project.Interfaces.IO;
-using PropertiesCalculator.FunctionData;
-using PropertiesCalculator.MaterialData;
+using MaterialDB.FunctionData;
+using MaterialDB.MaterialData;
 using System;
 using System.Collections.Generic;
 

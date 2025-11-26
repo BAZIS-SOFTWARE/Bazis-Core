@@ -1,6 +1,6 @@
 ﻿using Model.Interfaces;
 using Project.Interfaces.Tasks;
-using PropertiesCalculator.MaterialData;
+using MaterialDB.MaterialData;
 using System;
 
 namespace Project.Tasks

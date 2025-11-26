@@ -7,8 +7,8 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text;
-using PropertiesCalculator.FunctionData;
-using PropertiesCalculator.MaterialData;
+using MaterialDB.FunctionData;
+using MaterialDB.MaterialData;
 using Newtonsoft.Json;
 
 namespace Project.Tasks.IO

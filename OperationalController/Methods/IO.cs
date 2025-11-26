@@ -1,24 +1,12 @@
-﻿using Model.Interfaces.ObjectsCollections;
-using Model.Interfaces;
-using System.Collections.Generic;
-using Model.Interfaces.MeshObjects;
-using Project.Interfaces.Tasks;
-using Model.GeometryObjects;
-using PropertiesCalculator.MaterialData;
-using PropertiesCalculator.FunctionData;
-using Model.ObjectsCollections;
-using Model.MeshObjects;
-using OperationalController.GmshController;
+﻿using Model.Interfaces;
 using System;
 using System.Data;
 using Model.IO;
 using Project.IO;
-using Project.Interfaces.IO;
 using Model.IO.STL;
 using GmshApi;
 using System.IO;
 using System.Text;
-using System.Xml.Linq;
 using System.Linq;
 
 namespace OperationalController

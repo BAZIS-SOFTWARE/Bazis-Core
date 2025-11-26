@@ -31,9 +31,11 @@
     <EmbeddedResource Remove="Interfaces\Results\**" />
     <EmbeddedResource Remove="Results\**" />
     <EmbeddedResource Remove="TasksData\**" />
+    <EmbeddedResource Remove="Tasks\Utilities\**" />
     <None Remove="Interfaces\Results\**" />
     <None Remove="Results\**" />
     <None Remove="TasksData\**" />
+    <None Remove="Tasks\Utilities\**" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Interfaces\Icon.png" />
@@ -91,7 +93,6 @@
     <Compile Include="Tasks\LocalFrames\MovedFrame.cs" />
     <Compile Include="Tasks\LocalFrames\MovedFrameBuilder.cs" />
     <Compile Include="Tasks\Functions\Welding\SphereFunction.cs" />
-    <Compile Include="Tasks\Functions\TableFunction.cs" />
     <Compile Include="Tasks\Functions\Trajectory.cs" />
     <Compile Include="Tasks\HeatData.cs" />
     <Compile Include="Tasks\IO\LoadEventArgs.cs" />
@@ -102,7 +103,6 @@
     <Compile Include="Tasks\Materials\PlateMatData.cs" />
     <Compile Include="Tasks\MediaData.cs" />
     <Compile Include="Tasks\TaskData.cs" />
-    <Compile Include="Tasks\Utilities\Interpolation.cs" />
     <Compile Include="Tasks\CondData.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -119,9 +119,9 @@
     <PackageReference Include="DynamicLanguageRuntime" Version="1.3.5" />
     <PackageReference Include="IronPython.StdLib" Version="3.4.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="PropertiesCalculator" Version="1.0.7" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MaterialDB\MaterialDB.csproj" />
     <ProjectReference Include="..\Model\Model.csproj" />
   </ItemGroup>
   <ItemGroup>
