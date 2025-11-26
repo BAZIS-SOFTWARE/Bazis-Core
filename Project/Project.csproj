@@ -4,7 +4,7 @@
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
 	  <SignAssembly>True</SignAssembly>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>5.3.5</Version>
+    <Version>5.3.6</Version>
     <Title>Project</Title>
     <Authors>Bilenko Georgy</Authors>
     <Company>BAZIS SOFTWARE</Company>
@@ -119,7 +119,7 @@
     <PackageReference Include="DynamicLanguageRuntime" Version="1.3.5" />
     <PackageReference Include="IronPython.StdLib" Version="3.4.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="PropertiesCalculator" Version="1.0.6" />
+    <PackageReference Include="PropertiesCalculator" Version="1.0.7" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Model\Model.csproj" />
