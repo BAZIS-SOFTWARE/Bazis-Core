@@ -10,5 +10,9 @@ namespace Project.TaskParameters
 
         public MechanicalConvergence MechanicalConvergence { get; set; } = new MechanicalConvergence();
 
+        public MechanicalParameters()
+        {
+            TaskKind = Interfaces.Tasks.TaskKind.механическая;
+        }
     }
 }

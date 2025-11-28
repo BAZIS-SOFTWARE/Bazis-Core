@@ -10,5 +10,10 @@ namespace Project.TaskParameters
         public float InitConcentration { get; set; }
 
         public ChemicalConvergence ChemicalConvergence { get; set; } = new ChemicalConvergence();
+
+        public ChemicalParameters()
+        {
+            TaskKind = Interfaces.Tasks.TaskKind.химическая;
+        }
     }
 }
