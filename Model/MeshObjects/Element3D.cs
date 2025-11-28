@@ -44,7 +44,10 @@ namespace Model.MeshObjects
 
         public override bool ViewState
         {
-            get => base.ViewState;
+            get
+            {
+                return surfaces.Any(x => x.ViewState == true);
+            }
             set
             {
                 base.ViewState = value;

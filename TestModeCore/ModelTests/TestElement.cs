@@ -379,6 +379,33 @@ namespace TestModel.ModelTests
 
             Assert.AreEqual(penta.CalcVolume(), vol, 0.25f);
         }
+        [TestMethod]
+        public void CheckViewState()
+        {
+            //assing
+            var nodes = new Node[8]
+{
+                new Node(0,new Point3D(0,0,0)),
+                new Node(1,new Point3D(10,0,0)),
+                new Node(2,new Point3D(0,10,0)),
+                new Node(3,new Point3D(0,0,10)),
+                new Node(4,new Point3D(0,10,10)),
+                new Node(5,new Point3D(10,10,10)),
+                new Node(6,new Point3D(10,0,10)),
+                new Node(7,new Point3D(10,10,0)),
+};
+
+            var elem = new Hexa(0, nodes);
+
+            //act
+
+            foreach (var item in elem.GetSurfaces())
+                item.ViewState = false;
+            //assert
+            Assert.AreEqual(elem.ViewState, false);
+            elem.GetSurfaces().First().ViewState = true;
+            Assert.AreEqual(elem.ViewState, true);
+        }
 
 
         [TestMethod]
