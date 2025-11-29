@@ -402,7 +402,7 @@ namespace TestModel.ModelTests
             foreach (var item in elem.GetSurfaces())
                 item.ViewState = false;
             //assert
-            Assert.AreEqual(elem.ViewState, false);
+            Assert.AreEqual(elem.ViewState, true);
             elem.GetSurfaces().First().ViewState = true;
             Assert.AreEqual(elem.ViewState, true);
         }

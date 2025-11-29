@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using Model.Utilities;
 using Geometry.Exteisions;
+using Geometry.Attribute;
 
 namespace Model.MeshObjects
 {
@@ -41,13 +42,13 @@ namespace Model.MeshObjects
         }
         /// <inheritdoc/>
 
-
         public override bool ViewState
         {
-            get
-            {
-                return surfaces.Any(x => x.ViewState == true);
-            }
+            // Рассмотреть в будующем систуацию со статусом, если хотя бы одна поверхность показана
+            get => base.ViewState;
+            //{
+            //    return surfaces.Any(x => x.ViewState == true);
+            //}
             set
             {
                 base.ViewState = value;
