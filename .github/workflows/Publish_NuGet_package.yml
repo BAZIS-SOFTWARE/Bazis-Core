@@ -27,4 +27,4 @@ jobs:
       run: dotnet pack --configuration Release
 
     - name: Push to NuGet
-      run: dotnet nuget push c:\BazisComponents\IntPackages_v2\Release\Geometry.2.2.1.nupkg --source "https://nuget.pkg.github.com/ONEGOCH/index.json" --api-key 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
+      run: dotnet nuget push c:\BazisComponents\IntPackages_v2\Release\Geometry.2.2.1.nupkg --source "https://nuget.pkg.github.com/ONEGOCH/index.json" --api-key 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

@@ -36,11 +36,6 @@ namespace OperationalController.MeshObjsUtility
             }
         }
 
-        public IEnumerable<ILineObject<Node>> CreateBoundaryEdges(List<string> linesNodes)
-        {
-            throw new NotImplementedException();
-        }
-
         /// <inheritdoc/>
 
 
