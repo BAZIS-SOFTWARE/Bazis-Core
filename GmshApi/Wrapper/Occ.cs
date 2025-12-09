@@ -7,6 +7,9 @@ namespace GmshApi
     /// <inheritdoc/>
     public class Occ
     {
+        private delegate int gmshModelOccAddRectangleFun(double x, double y, double z, double dx, double dy, int tag, double roundedRadius, ref int ierr);
+        private gmshModelOccAddRectangleFun gmshModelOccAddRectangle = GetFunction<gmshModelOccAddRectangleFun>("gmshModelOccAddRectangle");
+
         private delegate int gmshModelOccAddBoxFun(double x, double y, double z, double dx, double dy, double dz, int tag, ref int ierr);
         private gmshModelOccAddBoxFun gmshModelOccAddBox = GetFunction<gmshModelOccAddBoxFun>("gmshModelOccAddBox");
 
@@ -45,6 +48,24 @@ namespace GmshApi
         private delegate void gmshModelOccSynchronizeFun(ref int ierr);
         private gmshModelOccSynchronizeFun gmshModelOccSynchronize = GetFunction<gmshModelOccSynchronizeFun>("gmshModelOccSynchronize");
 
+        /// <summary>
+        /// Добавляет прямоугольник в OCC ядро с левым нижним углом (x,y,z) и верхним правым углом(x + dx, y + dy, z),
+        /// если tag положительный, назначает указанный идентификатор поверхности, иначе идентификатор генерируется автоматически,
+        /// roundedRadius определяет радиус скругления углов
+        /// </summary>
+        /// <param name="x">Координата X левого нижнего угла</param>
+        /// <param name="y">Координата Y левого нижнего угла</param>
+        /// <param name="z">Координата Z левого нижнего угла</param>
+        /// <param name="dx">Смещение X правого верхнего угла</param>
+        /// <param name="dy">Смещение Y правого верхнего угла</param>
+        /// <param name="tag">Желаемый идентификатор (положительный) или -1 (будет сгенерирован автоматически)</param>
+        /// <param name="roundedRadius">Радиус скругления</param>
+        /// <returns></returns>
+        public int AddRectangle(double x, double y, double z, double dx, double dy, int tag = -1, double roundedRadius = 0)
+        {
+            var ierr = 0;
+            return gmshModelOccAddRectangle(x, y, z, dx, dy, tag, roundedRadius, ref ierr);
+        }
         /// <summary>
         /// Создает параллелепипед в геометрическом ядре OCC
         /// </summary>

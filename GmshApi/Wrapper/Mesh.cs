@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using static GmshApi.GmshKernel;
 using static GmshApi.Memory;
 
@@ -101,6 +102,15 @@ namespace GmshApi
 
         private delegate void gmshModelMeshRemoveConstraintsFun(int[] dimTags, IntPtr dimTags_n, ref int ierr);
         private gmshModelMeshRemoveConstraintsFun gmshModelMeshRemoveConstraints = GetFunction<gmshModelMeshRemoveConstraintsFun>("gmshModelMeshRemoveConstraints");
+
+        private delegate void gmshModelMeshEmbedFun(int dim, int[] tags, IntPtr tags_n, int inDim, int inTag, ref int ierr);
+        private gmshModelMeshEmbedFun gmshModelMeshEmbed = GetFunction<gmshModelMeshEmbedFun>("gmshModelMeshEmbed");
+
+        private delegate void gmshModelMeshRemoveEmbeddedFun(int[] dimTags, IntPtr dimTags_n, int dim, ref int ierr);
+        private gmshModelMeshRemoveEmbeddedFun gmshModelMeshRemoveEmbedded = GetFunction<gmshModelMeshRemoveEmbeddedFun>("gmshModelMeshRemoveEmbedded");
+
+        private delegate void gmshModelMeshGetEmbeddedFun(int dim, int tag, ref IntPtr dimTags, ref IntPtr dimTags_n, ref int ierr);
+        private gmshModelMeshGetEmbeddedFun gmshModelMeshGetEmbedded = GetFunction<gmshModelMeshGetEmbeddedFun>("gmshModelMeshGetEmbedded");
 
         private delegate void gmshModelMeshImportStlFun(ref int ierr);
         private gmshModelMeshImportStlFun gmshModelMeshImportStl = GetFunction<gmshModelMeshImportStlFun>("gmshModelMeshImportStl");
@@ -434,6 +444,44 @@ namespace GmshApi
             var ierr = 0;
             dimTags = dimTags ?? new int[0];
             gmshModelMeshRemoveConstraints(dimTags, (IntPtr)dimTags.Length, ref ierr);
+        }
+        /// <summary>
+        /// Встраивает элементы размерности dim и его идентификаторы tags в размерность inDim и его идентификатор inTag,
+        /// размерность dim должна быть строго меньше (0,1,2), чем inDim (2,3). Встроенные элементы не должны пересекать друг друга 
+        /// или быть частью границы сущности inTag, сетка которой будет соответствовать сетке встроенных сущностей.
+        /// </summary>
+        /// <param name="dim"></param>
+        /// <param name="tags"></param>
+        /// <param name="inDim"></param>
+        /// <param name="inTag"></param>
+        public void Embed(int dim, int[] tags, int inDim, int inTag)
+        {
+            var ierr = 0;
+            gmshModelMeshEmbed(dim, tags, (IntPtr)tags.Length, inDim, inTag, ref ierr);
+        }
+        /// <summary>
+        /// Удаляет встроенные элементы' из указанных сущностей dimTags, если параметр dim >=0 удаляет только указанный dim (т.е 0-только точки и т.д)
+        /// </summary>
+        /// <param name="dimTags">Массив dimTags, у которых нужно удалить встроенные элементы</param>
+        /// <param name="dim">Конкретная размерность которая должна рассматриваться при удалении или -1 удаление всех</param>
+        public void RemoveEmbedded(int[] dimTags, int dim = -1)
+        {
+            var ierr = 0;
+            gmshModelMeshRemoveEmbedded(dimTags, (IntPtr)dimTags.Length, dim, ref ierr);
+        }
+        /// <summary>
+        /// Возвращает dimTags встроенные в указанные dim:tag (если имеются)
+        /// </summary>
+        /// <param name="dim">Опрашиваемая размерность</param>
+        /// <param name="tag">Опрашиваемый идентификатор</param>
+        /// <returns>Массив dimTags встроенных в dim:tag или пустой массив, если нет встраивания</returns>
+        public int[] GetEmbedded(int dim, int tag)
+        {
+            var ierr = 0;
+            var intValue = IntPtr.Zero;
+            var intValue_n = IntPtr.Zero;
+            gmshModelMeshGetEmbedded(dim, tag, ref intValue, ref intValue_n, ref ierr);
+            return GetObjectsData<int>(intValue, intValue_n);
         }
         /// <summary>
         /// Генерирует сетку для геометрии (поддерживаются только форматы OCC)
