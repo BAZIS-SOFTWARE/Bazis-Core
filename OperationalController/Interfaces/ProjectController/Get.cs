@@ -1,6 +1,7 @@
 ﻿using Model.GeometryObjects;
 using Model.Interfaces;
 using Model.Interfaces.MeshObjects;
+using Model.MeshObjects;
 using Project.Interfaces.Tasks;
 using System;
 using System.Collections.Generic;
@@ -45,6 +46,11 @@ namespace OperationalController
         /// </summary>
         /// <returns></returns>
         IEnumerable<ICondData> GetAllCondData();
+        /// <summary>
+        /// GetModelElements
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<Node> GetAllModelNodes();
         /// <summary>
         /// GetModelElements
         /// </summary>

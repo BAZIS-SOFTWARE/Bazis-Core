@@ -17,6 +17,11 @@ namespace OperationalController
     public partial class ProjectController
     {
         /// <inheritdoc/>
+        public IEnumerable<Node> GetAllModelNodes()
+        {
+            return ModelData.ObjectData.NodesSet.Values;
+        }
+        /// <inheritdoc/>
 
         public IEnumerable<ISetInfo> GetModelSetsInfo(ObjType objType)
         {
