@@ -445,6 +445,25 @@ namespace TestModel.GmshTests
             //gmshController.Gmsh.Write(@"D:\ModifiedCylinder.step");
         }
 
+        //Вариант разбиения объема плоскостью на два подобъема (общая поверхность)
+        [DataTestMethod]
+        public void OccSplitVolumeTest()
+        {
+            var volume = gmshController.Gmsh.Model.Occ.AddBox(0,0,0,1,1,1);
+            var rect = gmshController.Gmsh.Model.Occ.AddRectangle(-0.5, -0.5, 0.5, 2, 2);
+            gmshController.Gmsh.Model.Occ.Fragment([2, rect], [3, volume]);
+            gmshController.Gmsh.Model.Occ.Synchronize();
+
+            var surfaces = gmshController.Gmsh.Model.GetEntities(2);
+            gmshController.Gmsh.Model.Occ.Remove(surfaces, true);
+            gmshController.Gmsh.Model.Occ.Synchronize();
+
+            var afterSplit = gmshController.Gmsh.Model.GetEntities(3).Length / 2;
+            Assert.AreEqual(2, afterSplit);
+
+            //gmshController.Gmsh.Write(@"D:\ModifiedBox.step");
+        }
+
         private void RemoveNameTest(ref string entName, int dim, int delId, int maxId)
         {
             var status = maxId >= delId;
