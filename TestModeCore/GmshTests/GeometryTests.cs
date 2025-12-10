@@ -464,6 +464,28 @@ namespace TestModel.GmshTests
             //gmshController.Gmsh.Write(@"D:\ModifiedBox.step");
         }
 
+        //Разбиение плоскости кривой, работает очень плохо, генерируются дубликаты поверхностей или ребер
+        [DataTestMethod]
+        public void OccSplitSurfaceTest()
+        {
+            gmshController.Gmsh.Model.Add("Box");
+            var volume = gmshController.Gmsh.Model.Occ.AddBox(0, 0, 0, 1, 1, 1);
+            gmshController.Gmsh.Model.Occ.Synchronize();
+
+            var rect = gmshController.Gmsh.Model.Occ.AddRectangle(-0.5, -0.5, 0.5, 2, 2);
+            gmshController.Gmsh.Model.Occ.Synchronize();
+
+            var data = gmshController.Gmsh.Model.Occ.Fragment([2, 4], [2, rect]);
+            gmshController.Gmsh.Model.Occ.Synchronize();
+
+            gmshController.Gmsh.Model.Occ.Remove([2, rect]);
+
+            gmshController.Gmsh.Model.Occ.RemoveAllDuplicates();
+            gmshController.Gmsh.Model.Occ.Synchronize();
+
+            //gmshController.Gmsh.Write(@"D:\ModifiedBox.step");
+        }
+
         private void RemoveNameTest(ref string entName, int dim, int delId, int maxId)
         {
             var status = maxId >= delId;
