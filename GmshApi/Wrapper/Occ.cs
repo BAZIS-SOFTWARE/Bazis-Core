@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Drawing;
+using System.Reflection;
 using static GmshApi.GmshKernel;
 using static GmshApi.Memory;
 
@@ -7,6 +9,9 @@ namespace GmshApi
     /// <inheritdoc/>
     public class Occ
     {
+        private delegate int gmshModelOccAddPointFun(double x, double y, double z, double meshSize, int tag, ref int ierr);
+        private gmshModelOccAddPointFun gmshModelOccAddPoint = GetFunction<gmshModelOccAddPointFun>("gmshModelOccAddPoint");
+
         private delegate int gmshModelOccAddRectangleFun(double x, double y, double z, double dx, double dy, int tag, double roundedRadius, ref int ierr);
         private gmshModelOccAddRectangleFun gmshModelOccAddRectangle = GetFunction<gmshModelOccAddRectangleFun>("gmshModelOccAddRectangle");
 
@@ -16,6 +21,13 @@ namespace GmshApi
         private delegate int gmshModelOccAddWedgeFun(double x, double y, double z, double dx, double dy, double dz, 
                                                       int tag, double ltx, double[] zAxis, IntPtr zAxis_n, ref int ierr);
         private gmshModelOccAddWedgeFun gmshModelOccAddWedge = GetFunction<gmshModelOccAddWedgeFun>("gmshModelOccAddWedge");
+
+        private delegate void gmshModelOccFragmentFun(int[] objectDimTags, IntPtr objectDimTags_n,
+                                                      int[] toolDimTags, IntPtr toolDimTags_n,
+                                                      ref IntPtr outDimTags, ref IntPtr outDimTags_n,
+                                                      ref IntPtr outDimTagsMap, ref IntPtr outDimTagsMap_n, ref IntPtr outDimTagsMap_nn,
+                                                      int tag, int removeObject, int removeTool, ref int ierr);
+        private gmshModelOccFragmentFun gmshModelOccFragment = GetFunction<gmshModelOccFragmentFun>("gmshModelOccFragment");
 
         private delegate void gmshModelOccRemoveFun(int[] dimTags, IntPtr dimTags_n, int recursive, ref int ierr);
         private gmshModelOccRemoveFun gmshModelOccRemove = GetFunction<gmshModelOccRemoveFun>("gmshModelOccRemove");
@@ -47,6 +59,21 @@ namespace GmshApi
 
         private delegate void gmshModelOccSynchronizeFun(ref int ierr);
         private gmshModelOccSynchronizeFun gmshModelOccSynchronize = GetFunction<gmshModelOccSynchronizeFun>("gmshModelOccSynchronize");
+
+        /// <summary>
+        /// Добавляет геометрическую точку в ядро OCC
+        /// </summary>
+        /// <param name="x">Координата X</param>
+        /// <param name="y">Координата Y</param>
+        /// <param name="z">Координата Z</param>
+        /// <param name="meshSize">Размер в точке для уплотнения сетки</param>
+        /// <param name="tag">Желаемый идентификатор или -1 для автоназначения</param>
+        /// <returns>Идентификатор геометрической точки</returns>
+        public int AddPoint(double x, double y, double z, double meshSize = 0, int tag = -1)
+        {
+            var ierr = 0;
+            return gmshModelOccAddPoint(x, y, z, meshSize, tag, ref ierr);
+        }
 
         /// <summary>
         /// Добавляет прямоугольник в OCC ядро с левым нижним углом (x,y,z) и верхним правым углом(x + dx, y + dy, z),
@@ -102,6 +129,33 @@ namespace GmshApi
             zAxis = zAxis ?? new double[0];
             return gmshModelOccAddWedge(x, y, z, dx, dy, dz, tag, ltx, zAxis, (IntPtr)zAxis.Length, ref ierr);
         }
+        /// <summary>
+        /// Вычисляет булеву операцию взятие фрагментов в результате пересечения множеств objectDimTags и toolDimTags,
+        /// если операция выполняется для разных размерностей, нижняя размерность автоматически поглащается верхней,
+        /// возвращает результирующие сущности dimTags и ассоциированных с ней карты относительно старой нумерации (отслеживание где произошли изменения)
+        /// </summary>
+        /// <param name="objectDimTags">Множество 1 для взятия пересечения</param>
+        /// <param name="toolDimTags">Множество 2 для взятия пересечения</param>
+        /// <param name="tag">Желаемый идентификатор, валиден если применяется операция относительно одной сущности, или -1 для автоназначения</param>
+        /// <param name="removeObject">Удалить исходное множество 1 после выполнении операции</param>
+        /// <param name="removeTool">Удалить исходное множество 2 после выполнении операции</param>
+        /// <returns>Результирующее множестов dim:tag и карта ассоциаций со старыми множествами</returns>
+        public Tuple<int[],int[][]> Fragment(int[] objectDimTags, int[] toolDimTags, int tag = -1, bool removeObject = true, bool removeTool = true)
+        {
+            var ierr = 0;
+            var outDimTags = IntPtr.Zero;
+            var outDimTags_n = IntPtr.Zero;
+            var outDimTagsMap = IntPtr.Zero;
+            var outDimTagsMap_n = IntPtr.Zero;
+            var outDimTagsMap_nn = IntPtr.Zero;
+            gmshModelOccFragment(objectDimTags, (IntPtr)objectDimTags.Length, toolDimTags, (IntPtr)toolDimTags.Length,
+                                 ref outDimTags, ref outDimTags_n, ref outDimTagsMap, ref outDimTagsMap_n, ref outDimTagsMap_nn,
+                                 tag, Convert.ToInt32(removeObject), Convert.ToInt32(removeTool), ref ierr);
+            var dimTags = GetObjectsData<int>(outDimTags, outDimTags_n);
+            var dimTagsMap = GetArrayOfObjectsData<int>(outDimTagsMap, outDimTagsMap_nn, outDimTagsMap_n);
+            return Tuple.Create(dimTags, dimTagsMap);
+        }
+
         /// <summary>
         /// Удалить пары dim:tag заданные массивом. Если пара dim:tag опирается на соcедей верхнего уровня, то удаление невозможно.
         /// </summary>

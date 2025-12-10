@@ -419,6 +419,32 @@ namespace TestModel.GmshTests
             //controller.Gmsh.Write(@"D:\ModifiedCylinder.step");
         }
 
+        //Пример разбиения кривой на две части(пополам):
+        //1)Необходимо получить точку через параметризацию
+        //2)Создать точку в ядре OCC
+        //3)Выполнить булеву операцию фрагмент
+        [DataTestMethod]
+        [DataRow(@"\CAD\Cilindr.step")]
+        public void OccSplitCurveTest(string fileName)
+        {
+            gmshController.Gmsh.Open(modelFolder + fileName);
+            var curvesCount = gmshController.Gmsh.Model.GetEntities(1).Length / 2;
+
+            var bounds = gmshController.Gmsh.Model.GetParametrizationBounds(1, 2);
+            var t = bounds.Item1[0] + 0.5 * (bounds.Item2[0] - bounds.Item1[0]);
+
+            var coords = gmshController.Gmsh.Model.GetValue(1, 2, [t]);
+            var pointId = gmshController.Gmsh.Model.Occ.AddPoint(coords[0], coords[1], coords[2]);
+
+            gmshController.Gmsh.Model.Occ.Fragment([3,1], [ 0, pointId ]);
+            gmshController.Gmsh.Model.Occ.Synchronize();
+
+            var afterSplit = gmshController.Gmsh.Model.GetEntities(1).Length / 2;
+            Assert.AreEqual(curvesCount + 1, afterSplit);
+
+            //gmshController.Gmsh.Write(@"D:\ModifiedCylinder.step");
+        }
+
         private void RemoveNameTest(ref string entName, int dim, int delId, int maxId)
         {
             var status = maxId >= delId;
