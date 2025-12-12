@@ -741,6 +741,28 @@ namespace TestModel.GmshTests
             //controller.Gmsh.Write($@"C:\Mesh\INP\{file + "MeshAlgorithm" + expAlgo2d.ToString()}.inp");//Для визуального теста
         }
 
+        [DataTestMethod]
+        public void EmbedTest()
+        {
+            controller.Gmsh.Model.Occ.AddRectangle(0, 0, 0, 2, 2, -1, 0);
+            controller.Gmsh.Model.Occ.AddRectangle(0.5, 0.5, 0, 1, 1, -1, 0);
+            controller.Gmsh.Model.Occ.Synchronize();
+
+            var expected = new int[] { 5, 6, 7, 8 };
+            controller.Gmsh.Model.Mesh.Embed(1, expected, 2, 1);
+            var actual = controller.Gmsh.Model.Mesh.GetEmbedded(2, 1).Where((v,i) => (i & 1) == 1).ToArray();
+            CollectionAssert.AreEquivalent(expected, actual);
+
+            //Если удалили, то должен показать пустой массив
+            controller.Gmsh.Model.Mesh.RemoveEmbedded([2, 1]);
+            var arr = controller.Gmsh.Model.Mesh.GetEmbedded(2, 1);
+            Assert.AreEqual(0, arr.Length);
+
+            controller.Gmsh.Model.Mesh.Embed(1, expected, 2, 1);
+            controller.Gmsh.Model.Mesh.Generate(2);
+            //controller.Gmsh.Write(@"D:\mixed.msh");//Для визуализации
+        }
+
         private void MakeTranfinite(int seamPointCurves, int[] seamCurves, int[] seamVolumes)
         {
             //Трансфиниция кривых
