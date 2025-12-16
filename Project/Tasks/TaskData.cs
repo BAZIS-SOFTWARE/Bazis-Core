@@ -13,6 +13,8 @@ using Project.Tasks.Functions;
 using System.Runtime.InteropServices.ComTypes;
 using MaterialDB.FunctionData;
 using MaterialDB.MaterialData;
+using Project.Tasks.Materials;
+using System.Runtime.InteropServices;
 
 
 namespace Project.Tasks
@@ -235,9 +237,7 @@ namespace Project.Tasks
         public ICondData Create(DataKind kind, string info,IGroupData groupData)
         {
             if (groupData == null)
-            {
                 throw new ArgumentNullException(nameof(groupData));
-            }
 
             CondData physicalData;
 
@@ -245,23 +245,50 @@ namespace Project.Tasks
 
             if (kind == DataKind.Материал)
             {
-                if (!Materials.ContainsKey(infoAr[1]))
-                    throw new Exception($"материал {info} не содержится в базе данных!");
-
-                if (info.Split(' ').Length < 4)
+                if (infoAr.Length < 4)
                     throw new Exception($"{info} - Строка данных имеет неверный формат!");
 
-                float start;
-                if (!float.TryParse(infoAr[2], out start))
+                var group = groupData.Find(infoAr[0]);
+
+                var isBeamOrPlate = infoAr[1] == "стержни" || infoAr[1] == "пластины"; //что бы не дублировать проверки ниже
+                var matIndex = isBeamOrPlate ? 3 : 1;
+                var startIndex = isBeamOrPlate ? 4 : 2;
+                var stopIndex = isBeamOrPlate ? 5 : 3;
+
+                if (!Materials.ContainsKey(infoAr[matIndex]))
+                    throw new Exception($"Материал {info} не содержится в базе данных!");
+
+                if (!float.TryParse(infoAr[startIndex], out float start))
                     throw new Exception($"{info} - Время старта задано неверно!");
 
-                float stop;
-                if (!float.TryParse(infoAr[3], out stop))
+                if (!float.TryParse(infoAr[stopIndex], out float stop))
                     throw new Exception($"{info} - Время окончания задано неверно!");
 
-                var matData = new MatData(Materials[infoAr[1]],groupData.Find(infoAr[0]), start, stop);
+                if (infoAr[1] == "стержни")
+                {
+                    var beamMatData = new BeamMatData(Materials[infoAr[matIndex]], group, start, stop);
 
-                physicalData = matData;
+                    if (!float.TryParse(infoAr[2], out float diameter))
+                        throw new Exception($"{info} - Диаметр задан неверно!");
+                    beamMatData.Diameter = diameter;
+                    
+                    physicalData = beamMatData;
+                }
+                else if(infoAr[1] == "пластины")
+                {
+                    var plateMatData = new PlateMatData(Materials[infoAr[matIndex]], group, start, stop);
+
+                    if (!float.TryParse(infoAr[2], out float thickness))
+                        throw new Exception($"{info} - Tолщина задан неверно!");
+                    plateMatData.Thickness = thickness;
+
+                    physicalData = plateMatData;
+                }
+                else
+                {
+                    var matData = new MatData(Materials[infoAr[matIndex]], group, start, stop);
+                    physicalData = matData;
+                }
             }
 
             else if (kind == DataKind.Среда)
