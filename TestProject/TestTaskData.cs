@@ -185,6 +185,30 @@ namespace TestProject
         }
 
         [DataTestMethod]
+        [DataRow("newGroupЭлемент1D стержни 10 Сталь_W_S420 0 1 *")]
+        [DataRow("newGroupЭлемент1D пластины 0.5 Сталь_Р18 0 1 *")]
+        [DataRow("newGroupЭлемент1D пластины 15 Сталь_W_S420 0 1 *")]
+        [DataRow("newGroupЭлемент3D Сталь_Р18 0 1 *")]
+        [DataRow("newGroupЭлемент3D Сталь_20ХМ 3 5 *")]
+
+        //[DataRow("newGroupЭлемент3D Сталь_20ХМ 5 1 *")]
+        //[DataRow("newGroupЭлемент3D Сталь_20ХМ  1500 *")]
+        //[DataRow("newGroupЭлемент3D Сталь_10 * * *")]
+        //[DataRow("newGroupЭлемент3D Сталь_20ХМ 3 5 ISORAPID.277.HM")]
+
+        public void TestMaterialDataCreator(string info)
+        {
+            //assign
+            var loader = new LoadProjectFromTextFormat();
+            var proj = loader.Load(@"..\..\..\Examples\MixedMesh\createMat.bpf");
+            //act
+            var dataKind = DataKind.Материал;
+            var material = proj.TaskData.Create(dataKind, info, proj.ModelData.GroupData);
+            //assert
+            Assert.AreEqual($"{dataKind} : {info}", material.ToString());
+        }
+
+        [DataTestMethod]
         [DataRow(DataKind.Нагрев)]
         [DataRow(DataKind.Среда)]
         [DataRow(DataKind.Закрепление)]

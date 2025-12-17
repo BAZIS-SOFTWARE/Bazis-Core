@@ -1,15 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Model.GeometryObjects;
-using Model.Interfaces;
-using OperationalController;
+﻿using OperationalController;
 using OperationalController.GmshController;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace TestModel.ControllerTests
 {
@@ -80,5 +71,29 @@ namespace TestModel.ControllerTests
             Assert.AreEqual(project.GmshController.GetRecombineSurface(3), true);
         }
 
+        [DataTestMethod]
+        [DataRow(@"..\..\..\Examples\CAD\modelEmbedded.stp", @"..\..\..\Examples\Scripts\embedded.gscript")]
+        public void TestSaveAndLoadAddToSurface(string cadFile, string scriptFile)
+        {
+            var project = new ProjectController();
+            project.GmshController.Load(@"..\..\..\..\GmshApi\gmsh.dll");
+            project.ImportCAD(cadFile);
+
+            var curvesNumber = new int[] { 21, 22 };
+            var numberSurface = 1;
+            project.GmshController.Gmsh.Model.Mesh.Embed(1, curvesNumber, 2, numberSurface);
+
+            var beforeLoad = project.GmshController.Gmsh.Logger.GetLastError();
+
+            Assert.AreEqual(beforeLoad, "");
+
+            project.SaveSMF(scriptFile);
+            project.LoadSMF(scriptFile);
+
+            var embedded = project.GmshController.Gmsh.Model.Mesh.GetEmbedded(2, numberSurface).Where((v, i) => (i & 1) == 1).ToArray();
+            var joinStr = string.Join(",", embedded);
+            //assert
+            Assert.AreEqual(joinStr, "21,22");
+        }
     }
 }

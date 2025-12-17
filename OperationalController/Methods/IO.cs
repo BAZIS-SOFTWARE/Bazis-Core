@@ -1,13 +1,14 @@
-﻿using Model.Interfaces;
+﻿using GmshApi;
+using Model.Interfaces;
+using Model.IO;
+using Model.IO.STL;
+using Project.IO;
 using System;
 using System.Data;
-using Model.IO;
-using Project.IO;
-using Model.IO.STL;
-using GmshApi;
 using System.IO;
-using System.Text;
 using System.Linq;
+using System.Text;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace OperationalController
 {
@@ -94,14 +95,22 @@ namespace OperationalController
 
                     else if (line[0] == ObjType.Поверхность.ToString())
                     {
-                        var points = line[2].Split(',').
-                            Select(x => int.Parse(x));
-                        var arrange = ToEnum<Arrangement>(line[3]);
-                        GmshController.SetTransfiniteSurface(int.Parse(line[1]), arrange, points.ToArray());
-                        
-                        // квадратизируем
-                        if (line[4] == "quad")
-                            GmshController.SetRecombineSurface(int.Parse(line[1]));
+                        if(line[2] == "embeded")
+                        {
+                            var numbers = GetArray(line[3]);
+                            var numberSurface = int.Parse(line[1]);
+                            GmshController.Gmsh.Model.Mesh.Embed(1, numbers, 2, numberSurface);
+                        }
+                        else
+                        {
+                            var points = line[2].Split(',').Select(x => int.Parse(x));
+                            var arrange = ToEnum<Arrangement>(line[3]);
+                            GmshController.SetTransfiniteSurface(int.Parse(line[1]), arrange, points.ToArray());
+
+                            // квадратизируем
+                            if (line[4] == "quad")
+                                GmshController.SetRecombineSurface(int.Parse(line[1]));
+                        }
                     }
                     else if (line[0] == "Объем")
                     {
@@ -203,6 +212,13 @@ namespace OperationalController
 
                         sw.WriteLine($"{ObjType.Поверхность} {item.Value.Number} {joinStr}");
                     }
+
+                    var embedded = GmshController.Gmsh.Model.Mesh.GetEmbedded(2, item.Value.Number).Where((v, i) => (i & 1) == 1).ToArray();
+                    if(embedded.Length != 0)
+                    {
+                        var joinStr = string.Join(",", embedded);
+                        sw.WriteLine($"{ObjType.Поверхность} {item.Value.Number} embeded {joinStr}");
+                    }
                 }
 
                 foreach (var vol in ModelData.ObjectData.VolumeData)
@@ -249,6 +265,14 @@ namespace OperationalController
             var modelData = loader.Load(path);
 
             project.ModelData.Append(modelData);
+        }
+
+
+        private int[] GetArray(string data)
+        {
+            var arrayStr = data.Split(',');
+            int[] tags = arrayStr.Where(s => int.TryParse(s, out _)).Select(int.Parse).ToArray();
+            return tags;
         }
     }
 }
