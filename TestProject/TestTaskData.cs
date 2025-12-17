@@ -201,7 +201,6 @@ namespace TestProject
             //assign
             var loader = new LoadProjectFromTextFormat();
             var proj = loader.Load(@"..\..\..\Examples\MixedMesh\createMat.bpf");
-
             //act
             var dataKind = DataKind.Материал;
             var material = proj.TaskData.Create(dataKind, info, proj.ModelData.GroupData);
