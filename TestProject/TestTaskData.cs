@@ -185,8 +185,9 @@ namespace TestProject
         }
 
         [DataTestMethod]
-        [DataRow("newGroupЭлемент1D стержни 1 Сталь_Р18 0 1 *")]
         [DataRow("newGroupЭлемент1D стержни 10 Сталь_W_S420 0 1 *")]
+        [DataRow("newGroupЭлемент1D пластины 0.5 Сталь_Р18 0 1 *")]
+        [DataRow("newGroupЭлемент1D пластины 15 Сталь_W_S420 0 1 *")]
         [DataRow("newGroupЭлемент3D Сталь_Р18 0 1 *")]
         [DataRow("newGroupЭлемент3D Сталь_20ХМ 3 5 *")]
 
@@ -199,7 +200,7 @@ namespace TestProject
         {
             //assign
             var loader = new LoadProjectFromTextFormat();
-            var proj = loader.Load(@"..\..\..\Examples\createMat.bpf");
+            var proj = loader.Load(@"..\..\..\Examples\MixedMesh\createMat.bpf");
 
             //act
             var dataKind = DataKind.Материал;
