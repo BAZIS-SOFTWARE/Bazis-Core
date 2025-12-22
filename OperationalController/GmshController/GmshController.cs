@@ -520,6 +520,9 @@ namespace OperationalController.GmshController
             Gmsh.Model.
                 SetAttribute($"transfinite vol {tag}", attributes);
 
+            // кажется необходимая опция
+            Gmsh.Model.Mesh.Field.Add(FieldType.Extend, tag);
+
             Gmsh.Model.Mesh.Field.SetNumbers(tag, ExtendOptions.CurvesList.ToString(), curveNumbers);
             Gmsh.Model.Mesh.Field.SetNumbers(tag, ExtendOptions.SurfacesList.ToString(), surfNumbers);
             Gmsh.Model.Mesh.Field.SetNumber(tag, ExtendOptions.Power.ToString(), power);

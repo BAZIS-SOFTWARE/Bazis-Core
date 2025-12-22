@@ -73,7 +73,7 @@ namespace TestModel.ControllerTests
 
         [DataTestMethod]
         [DataRow(@"..\..\..\Examples\CAD\modelEmbedded.stp", @"..\..\..\Examples\Scripts\embedded.gscript")]
-        public void TestSaveAndLoadAddToSurface(string cadFile, string scriptFile)
+        public void EmbedToSurface(string cadFile, string scriptFile)
         {
             var project = new ProjectController();
             project.GmshController.Load(@"..\..\..\..\GmshApi\gmsh.dll");
