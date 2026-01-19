@@ -51,7 +51,17 @@ namespace Model.MeshObjects
             surfaces.Add(new ElementSurface(number, 3, new Node[] { nodes[1], nodes[4], nodes[3], nodes[0] }));
             surfaces.Add(new ElementSurface(number, 4, new Node[] { nodes[2], nodes[5], nodes[4], nodes[1] }));
 
-            CreateIntegrationPoint(1, 0.3333, 0.3333, 0);
+            Level = 1;
+            //CreateIntegrationPoint(1, 0.3333, 0.3333, 0);
+
+            IncidentMatrix = new int[6][];
+
+            IncidentMatrix[0] = [1, 2, 3];
+            IncidentMatrix[1] = [0, 2, 4];
+            IncidentMatrix[2] = [0, 1, 5];
+            IncidentMatrix[3] = [0, 4, 5];
+            IncidentMatrix[4] = [1, 3, 5];
+            IncidentMatrix[5] = [2, 3, 4];
         }
 
         public Penta(int number, Node[] nodes, int level) : this(number, nodes)

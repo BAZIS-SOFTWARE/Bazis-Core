@@ -276,5 +276,11 @@ namespace Model.ObjectsCollections
         {
             return objectsSet[number].CalcCentr();
         }
+/// <inheritdoc/>
+
+        public string GetObjectInfo(int number)
+        {
+            return objectsSet[number].ToString();
+        }
     }
 }

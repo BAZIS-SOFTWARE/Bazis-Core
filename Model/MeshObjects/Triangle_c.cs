@@ -51,6 +51,12 @@ namespace Model.MeshObjects
                 throw new Exception($"Коллличество узлов в элементе {ElementKind} {number} должно быть не меньше 3");
 
             Level = 1;
+
+            IncidentMatrix = new int[3][];
+
+            IncidentMatrix[0] = [1, 2];
+            IncidentMatrix[1] = [0, 2];
+            IncidentMatrix[2] = [0, 1];
         }
         /// <summary>
         /// Triangle_c

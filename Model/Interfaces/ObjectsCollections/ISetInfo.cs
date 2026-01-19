@@ -28,6 +28,12 @@ namespace Model.Interfaces.ObjectsCollections
         /// </summary>
         int NumberOfObjects { get; }
         /// <summary>
+        /// GetObjectInfo
+        /// </summary>
+        /// <param name="number"></param>
+        /// <returns></returns>
+        string GetObjectInfo(int number);
+        /// <summary>
         /// GetObjectsInfo
         /// </summary>
         /// <returns></returns>

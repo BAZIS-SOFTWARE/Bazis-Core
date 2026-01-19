@@ -55,6 +55,13 @@ namespace Model.MeshObjects
                 throw new Exception($"Коллличество узлов в элементе {ElementKind} {number} должно быть не меньше 4");
 
             Level = 1;
+
+            IncidentMatrix = new int[4][];
+
+            IncidentMatrix[0] = [1, 3];
+            IncidentMatrix[1] = [0, 2];
+            IncidentMatrix[2] = [1, 3];
+            IncidentMatrix[3] = [0, 2];
         }
 
 

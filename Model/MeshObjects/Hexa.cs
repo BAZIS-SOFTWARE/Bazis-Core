@@ -63,11 +63,7 @@ namespace Model.MeshObjects
         {
             if (nodes.Length < 8)
                 throw new Exception($"Коллличество узлов в элементе {ElementKind} {number} должно быть не меньше 8");
-            //var masterSurface = GetMasterSurface(4, surfaces);
 
-            //if(masterSurface == null)
-            //    masterSurface = GetMasterSurface(3, surfaces);
-            //this.nodes = SortNodes(masterSurface.Number, surfaces);
             //Точки те же, но перечислены в обратном направлениии
             surfaces.Add(new ElementSurface(number, 0, new Node[] { nodes[3], nodes[2], nodes[1], nodes[0] }));
             surfaces.Add(new ElementSurface(number, 1, new Node[] { nodes[5], nodes[6], nodes[7], nodes[4] }));
@@ -77,6 +73,17 @@ namespace Model.MeshObjects
             surfaces.Add(new ElementSurface(number, 5, new Node[] { nodes[3], nodes[0], nodes[4], nodes[7] }));
 
             Level = 1;
+
+            IncidentMatrix = new int[8][];
+
+            IncidentMatrix[0] = [1, 3, 4];
+            IncidentMatrix[1] = [0, 2, 5];
+            IncidentMatrix[2] = [1, 3, 6];
+            IncidentMatrix[3] = [0, 2, 7];
+            IncidentMatrix[4] = [0, 5, 7];
+            IncidentMatrix[5] = [1, 4, 6];
+            IncidentMatrix[6] = [2, 5, 7];
+            IncidentMatrix[7] = [3, 4, 6];
         }
 
 

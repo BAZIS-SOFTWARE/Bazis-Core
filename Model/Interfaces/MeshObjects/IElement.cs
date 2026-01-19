@@ -41,6 +41,10 @@ namespace Model.Interfaces.MeshObjects
     public interface IElement : IVertexObject<Node>, IIntegralObject
     {
         /// <summary>
+        /// Матрица инциденций. Содержит сведения о соседних узлах любового узла элемента
+        /// </summary>
+        int[][] IncidentMatrix { get; }
+        /// <summary>
         /// GetNodeIndex
         /// </summary>
         /// <param name="node"></param>

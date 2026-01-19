@@ -11,6 +11,9 @@ namespace Model.MeshObjects
 {
     public abstract class Element : ModelObject, IElement
     {
+        /// <inheritdoc/>
+        public int[][] IncidentMatrix { get; protected set; }
+
         protected List<Node> nodes = new List<Node>();
 
         protected List<IIntegralPoint> intPoints = new List<IIntegralPoint>();

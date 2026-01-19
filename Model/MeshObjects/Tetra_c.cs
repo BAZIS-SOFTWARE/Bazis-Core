@@ -64,6 +64,13 @@ namespace Model.MeshObjects
             surfaces.Add(new ElementSurface(number, 1, new Node[] { nodes[0], nodes[2], nodes[3] }));
 
             Level = 1;
+
+            IncidentMatrix = new int[4][];
+
+            IncidentMatrix[0] = [1, 2, 3];
+            IncidentMatrix[1] = [0, 2, 3];
+            IncidentMatrix[2] = [0, 1, 3];
+            IncidentMatrix[3] = [0, 1, 2];
         }
         /// <summary>
         /// Tetra_c
