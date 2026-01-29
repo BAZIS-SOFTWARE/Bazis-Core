@@ -52,6 +52,7 @@
     <Compile Include="MergeResults.cs" />
     <Compile Include="PostProcController.cs" />
     <Compile Include="ItemRange.cs" />
+    <Compile Include="ScenePresenter\ResultFigure.cs" />
     <Compile Include="ScenePresenter\ResultItem.cs" />
     <Compile Include="ScenePresenter\ResultsFieldsCreator.cs" />
     <Compile Include="ScenePresenter\Interfaces\IGradientsCreator.cs" />
@@ -59,7 +60,6 @@
     <Compile Include="ScenePresenter\ResultPoint.cs" />
     <Compile Include="ScenePresenter\ResultSurface.cs" />
     <Compile Include="ScenePresenter\SwapValues.cs" />
-    <Compile Include="ScenePresenter\ResultFigure.cs" />
     <Compile Include="ScenePresenter\SurfaceGradientsCreator.cs" />
   </ItemGroup>
 

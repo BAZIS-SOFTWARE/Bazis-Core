@@ -8,17 +8,18 @@ namespace PostProc.ScenePresenter
 {
     public class ResultFigure : ISurfaceObject<ResultSurface, ResultPoint>
     {
-        List<ResultPoint> points = new List<ResultPoint>();
+        //List<ResultPoint> points = new List<ResultPoint>();
         protected ResultSurface surface;
 
         public ResultFigure(IEnumerable<Point3D> points, Color color)
         {
             Color = color;
 
+            var resultPoints = new List<ResultPoint>();
             foreach (var point in points)
-                this.points.Add(new ResultPoint(point));
+                resultPoints.Add(new ResultPoint(point));
 
-            surface = new ResultSurface(this.points, color);
+            surface = new ResultSurface(resultPoints, color);
         }
         /// <summary>
         /// this
@@ -27,7 +28,7 @@ namespace PostProc.ScenePresenter
         /// <returns></returns>
         public IPoint this[int ind]
         {
-            get { return points[ind]; }
+            get { return surface[ind]; }
         }
 /// <inheritdoc/>
 
@@ -50,14 +51,14 @@ namespace PostProc.ScenePresenter
         public ObjType ObjType { get; } = ObjType.Поверхность;
 /// <inheritdoc/>
 
-        public int NumberOfPoints { get { return points.Count; } }
+        public int NumberOfPoints { get { return surface.NumberOfPoints; } }
 
         public float _x
         {
             get
             {
                 var sum_x = 0.0f;
-                foreach (var point in points)
+                foreach (var point in surface.GetCoordinates())
                 {
                     sum_x += point._x;
                 }
@@ -69,7 +70,7 @@ namespace PostProc.ScenePresenter
             get
             {
                 var sum_y = 0.0f;
-                foreach (var point in points)
+                foreach (var point in surface.GetCoordinates())
                 {
                     sum_y += point._y;
                 }
@@ -81,7 +82,7 @@ namespace PostProc.ScenePresenter
             get
             {
                 var sum_z = 0.0f;
-                foreach (var point in points)
+                foreach (var point in surface.GetCoordinates())
                 {
                     sum_z += point._z;
                 }
@@ -90,17 +91,15 @@ namespace PostProc.ScenePresenter
         }
 /// <inheritdoc/>
 
+        public int Dim => 2;
+
+        /// <inheritdoc/>
+
 
 
         public Point3D CalcCentr()
         {
-            var center = new Point3D();
-
-            foreach (var point in GetCoordinates())
-            {
-                center = center.Sum(point);
-            }
-            return center.Div(points.Count);
+            return surface.CalcCentr();
         }
         /// <summary>
         /// CalcNormal
@@ -108,15 +107,9 @@ namespace PostProc.ScenePresenter
         /// <returns></returns>
         public Point3D CalcNormal()
         {
-            var fvectors = points[1].Position.Sub(points[0].Position);
-            var svectors = points[2].Position.Sub(points[0].Position);
-            return Vector.CrossProd(fvectors, svectors);
+            return surface.CalcNormal();
         }
 
-        public float CalcSquare()
-        {
-            throw new System.NotImplementedException();
-        }
 /// <inheritdoc/>
 
         public int CompareTo(IModelObject other)
@@ -139,10 +132,7 @@ namespace PostProc.ScenePresenter
 
         public IEnumerable<Point3D> GetCoordinates()
         {
-            foreach (var point in points)
-            {
-                yield return point.Position;
-            }
+            return surface.GetCoordinates();
         }
 
 /// <inheritdoc/>
@@ -163,14 +153,13 @@ namespace PostProc.ScenePresenter
 
         public void SetNumber(int number)
         {
-            Number = number;
+            surface.SetNumber(number);
         }
 /// <inheritdoc/>
 
         public IEnumerable<ResultPoint> GetVertexes()
         {
-            foreach (var node in points)
-                yield return node;
+            return surface.GetVertexes();
         }
     }
 }

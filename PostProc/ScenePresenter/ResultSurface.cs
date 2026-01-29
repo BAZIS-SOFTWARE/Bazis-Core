@@ -31,28 +31,30 @@ namespace PostProc.ScenePresenter
             get { return points[ind]; }
             set { points[ind] = value; }
         }
+/// <inheritdoc/>
 
-        public int Number => throw new NotImplementedException();
+        public int Number => 0;
 
         public Color Color { get ; set ; }
-        public Color SlaveColor { get ; set ; }
-        public Color InitialColor { get; set ; }
+
         public bool ViewState { get; set; } = true;
         public bool ExistState { get; set; } = true;
-
-        public ObjType ObjType { get; } = ObjType.Поверхность;
+/// <inheritdoc/>
 
         public int NumberOfPoints { get { return points.Count; } }
-
-        public float _x => throw new NotImplementedException();
-
-        public float _y => throw new NotImplementedException();
-
-        public float _z => throw new NotImplementedException();
-
+        /// <summary>
+        /// CalcCentr
+        /// </summary>
+        /// <returns></returns>
         public Point3D CalcCentr()
         {
-            throw new NotImplementedException();
+            var center = new Point3D();
+
+            foreach (var point in GetCoordinates())
+            {
+                center = center.Sum(point);
+            }
+            return center.Div(NumberOfPoints);
         }
 /// <inheritdoc/>
 

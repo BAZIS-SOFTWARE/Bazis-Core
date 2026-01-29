@@ -63,6 +63,10 @@ namespace Results.ScenePresenter
         public float _z { get { return Position._z; } }
 /// <inheritdoc/>
 
+        public int Dim => 0;
+
+        /// <inheritdoc/>
+
         public Point3D CalcCentr()
         {
             return new Point3D(_x, _y, _z);
