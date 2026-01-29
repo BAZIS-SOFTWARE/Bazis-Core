@@ -16,6 +16,7 @@ namespace Model.MeshObjects
         protected List<ElementSurface> surfaces = new List<ElementSurface>();
         public Element3D(int number, Node[] nodes) : base(number, nodes)
         {
+            Dim = 3;
             Color = Color.FromArgb(255, 125, 0);
 
             //surfaces = SurfacesCreator.CreateSurfacesFromSetOfNodes(number, nodes);

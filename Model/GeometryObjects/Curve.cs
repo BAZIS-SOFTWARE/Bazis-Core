@@ -12,6 +12,7 @@ namespace Model.GeometryObjects
 
         public Curve(int number, GeometryPoint[] points) : base(number)
         {
+            Dim = 1;
             NumberOfPoints = points.Length;
             this.points = points;
         }

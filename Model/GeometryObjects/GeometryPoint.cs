@@ -18,7 +18,6 @@ namespace Model.GeometryObjects
         /// <param name="position"></param>
         public GeometryPoint(int number, Point3D position) : base(number)
         {
- 
             Position = position;
             Color = Color.FromArgb(255, 207, 64);
         }

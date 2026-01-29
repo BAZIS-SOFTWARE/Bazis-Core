@@ -25,6 +25,7 @@ namespace Model.GeometryObjects
         /// <param name="surfaces"></param>
         public SurfaceFigure(int number, GeometrySurface[] surfaces) : base(number)
         {
+            Dim = 2;
             this.surfaces = surfaces;
 
             Color = Color.FromArgb(255, 125, 0);

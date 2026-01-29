@@ -46,6 +46,10 @@ namespace Model.Interfaces
     /// </summary>
     public interface IModelObject : IComparable<IModelObject>, IEqualityComparer<IModelObject>, IEquatable<IModelObject>, IPosition3D
     {
+        /// <summary>
+        /// Dim
+        /// </summary>
+        int Dim { get; }
         //Position3D Position
         /// <summary>
         /// Number

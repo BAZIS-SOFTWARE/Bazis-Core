@@ -15,6 +15,7 @@ namespace Model.MeshObjects
     {
         public Beam(int number, Node[] nodes) : base(number, nodes)
         {
+            Dim = 1;
             if (nodes.Length < 2)
                 throw new Exception($"Коллличество узлов в элементе {number} должно быть не меньше 2");
             else if (nodes.Length > 2)

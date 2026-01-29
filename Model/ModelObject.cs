@@ -112,7 +112,11 @@ namespace Model
                 return sum_z / NumberOfPoints;
             }
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
+
+        public int Dim { get; internal set; } = 0;
+
+        /// <inheritdoc/>
 
 
         public abstract IEnumerable<Point3D> GetCoordinates();
