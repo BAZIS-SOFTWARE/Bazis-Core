@@ -67,7 +67,9 @@ namespace Project.Tasks.IO
                             taskData.TaskType = TaskType.Plain;
                         else if (splitLine[1].Split(' ')[1] == "AxiPlain")
                             taskData.TaskType = TaskType.AxiPlain;
-                        else { taskData.TaskType = TaskType.Volume; }
+                        else if (splitLine[1].Split(' ')[1] == "Volume")
+                            taskData.TaskType = TaskType.Volume;
+                        else { taskData.TaskType = TaskType.Volume_mixed; }
 
                     DataKind kind;
                     if(Enum.TryParse(dataName, out kind))

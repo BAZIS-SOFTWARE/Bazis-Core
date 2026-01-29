@@ -27,8 +27,8 @@ jobs:
       run: dotnet pack --configuration Release
 
     - name: Push to NuGet Geometry
-      run: dotnet nuget push c:\BazisComponents\IntPackages_v2\Release\Geometry.2.2.1.nupkg --source "https://nuget.pkg.github.com/ONEGOCH/index.json" --api-key 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
+      run: dotnet nuget push c:\BazisComponents\IntPackages_v2\Release\Geometry.2.2.1.nupkg --source "https://nuget.pkg.github.com/ONEGOCH/index.json" --api-key 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
     
 	- name: Push to NuGet Geometry
-      run: dotnet nuget push c:\BazisComponents\IntPackages_v2\Release\OperationalController.3.9.6.nupkg --source "https://nuget.pkg.github.com/ONEGOCH/index.json" --api-key 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
+      run: dotnet nuget push c:\BazisComponents\IntPackages_v2\Release\OperationalController.3.9.6.nupkg --source "https://nuget.pkg.github.com/ONEGOCH/index.json" --api-key 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
 $(PackageId).$(PackageVersion)

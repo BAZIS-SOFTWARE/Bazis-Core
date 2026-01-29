@@ -1,28 +1,14 @@
-﻿using OperationalController.MeshObjsCreator;
-using OperationalController.MeshObjsUtility;
+﻿using OperationalController.MeshObjsUtility;
 using OperationalController.SurfaceMeshCreator;
-using OperationalController.ObjsCreator;
 using Model.Interfaces;
-using Project;
 using Project.Interfaces.Tasks;
 using Project.Interfaces;
-using Model.MeshObjects;
-using Model.Interfaces.MeshObjects;
 using Geometry;
 using Model.GeometryObjects;
 using System.Collections.Generic;
 using System.Linq;
 using System.Drawing;
 using System;
-using Model.IO;
-using Project.Tasks;
-using Project.IO;
-using System.IO;
-using Geometry.Attribute;
-using Model.Interfaces.Attributes;
-using GmshApi;
-using System.Runtime.InteropServices.ComTypes;
-using System.Text;
 using OperationalController.GmshController;
 
 namespace OperationalController
@@ -37,25 +23,6 @@ namespace OperationalController
         public IGmshController GmshController { get; set; } = new GmshController.GmshController();
 
         IProjectData project;
-
-        /// <inheritdoc/>
-
-        IBoundaryEdgesFinder boundaryEdgesFinder { get; set; } = new FindBoundaryEdges();
-        /// <inheritdoc/>
-
-        public IEnumerable<ILineObject<Node>> CreateBoundaryEdges(List<string> linesNodes)
-        {
-            return boundaryEdgesFinder.CreateBoundaryEdges(linesNodes, ModelData);
-        }
-        /// <inheritdoc/>
-        public List<string> FindBoundaryEdges()
-        {
-            if (ModelData.ObjectData.GetAllElements().Count() == 0)
-                throw new Exception("Модель не содержит элементов");
-
-            return boundaryEdgesFinder.Find(ModelData.ObjectData.GetAllElements().
-                Select(x => (ISurfaceElement)x));       
-        }
 
         ISelectionHelper selectionHelper { get; set; } = new SelectionHelper();
 /// <inheritdoc/>
