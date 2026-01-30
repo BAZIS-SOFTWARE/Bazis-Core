@@ -51,7 +51,7 @@ namespace Model.MeshObjects
             surfaces.Add(new ElementSurface(number, 3, new Node[] { nodes[1], nodes[4], nodes[3], nodes[0] }));
             surfaces.Add(new ElementSurface(number, 4, new Node[] { nodes[2], nodes[5], nodes[4], nodes[1] }));
 
-            Level = 1;
+            Level = 2;
             //CreateIntegrationPoint(1, 0.3333, 0.3333, 0);
 
             IncidentMatrix = new int[6][];

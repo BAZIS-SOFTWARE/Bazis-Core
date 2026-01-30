@@ -1,11 +1,16 @@
-﻿using System.IO;
-using System.Linq;
+﻿using GmshApi;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
-using Model.IO;
 using Model.Interfaces;
-using System.Data;
+using Model.IO;
 using Model.IO.STL;
+using OperationalController.GmshController;
+using Project.IO;
+using System.Data;
+using System.IO;
+using System.Linq;
+using static Community.CsharpSqlite.Sqlite3;
+using static IronPython.Modules.PythonIterTools;
 using static System.Net.WebRequestMethods;
 
 namespace TestModel.ModelTests
@@ -14,7 +19,7 @@ namespace TestModel.ModelTests
     public class TestIO
     {
         [DataTestMethod]
-        [DataRow(@"..\..\..\Examples\3D\cub_unsorted.bpf",6)]
+        [DataRow(@"..\..\..\Examples\3D\cub_unsorted.bpf", 6)]
         [DataRow(@"..\..\..\Examples\3D\hexa.bpf", 3)]
         //[DataRow(@"c:\projs\AdditiveTest\nozzle.stlout_penta.bpf", 65606)]
         //[DataRow(@"c:\projs\AdditiveTest\nozzle.stlout_penta_beam.bpf", 67245)]
@@ -86,7 +91,7 @@ namespace TestModel.ModelTests
         [DataRow(@"..\..\..\Examples\BPF2TXT\cub_mix_numbers.bpf2", 2, ObjType.Элемент3D, DisplayName = "Sets mix numbers Элемент3D = 2")]
         //[DataRow(@"c:\projs\AdditiveTest\sliceMeshes\лопатка-2D-3D.bpf2", 385, ObjType.Элемент3D, DisplayName = "Sets Элемент3D > 100")]
         //[DataRow(@"c:\projs\AdditiveTest\sliceMeshes\rotatedBlock-1.bpf2", 171, ObjType.Элемент3D, DisplayName = "Sets Элемент3D > 1000")]
-        
+
         public void LoadModelFromBpf2TextFormat(string path, int sets, ObjType objType)
         {
             //assing
@@ -122,9 +127,9 @@ namespace TestModel.ModelTests
         }
         [TestMethod]
         //[DataRow(new string[] { "c:\\projs\\AdditiveTest\\MeshWithBounds\\новый_проект.bpf2", "Box_2.stl" }, DisplayName = "Mix")]
-        [DataRow(new string[] { "Box_1.stl", "Box_2.stl" },DisplayName = "Box_1_Box_2")]
+        [DataRow(new string[] { "Box_1.stl", "Box_2.stl" }, DisplayName = "Box_1_Box_2")]
         [DataRow(new string[] { "Box.stl", "Large_Box3.stl", "Sticks.stl" }, DisplayName = "Box_Large_Box3_Sticks")]
-        public void AppendAndSaveToSTLTextFormat(string [] files)
+        public void AppendAndSaveToSTLTextFormat(string[] files)
         {
             string dir = @"..\..\..\Examples\STL\Append";
 
@@ -136,11 +141,11 @@ namespace TestModel.ModelTests
 
             //act
 
-            if(ext == ".bpf2")
+            if (ext == ".bpf2")
                 controller.Load(files[0]);
             else
                 controller.ImportMesh(Path.Combine(dir, files[0]));
-            
+
             foreach (var item in files.Skip(1))
                 controller.Append(Path.Combine(dir, item));
 
@@ -153,7 +158,7 @@ namespace TestModel.ModelTests
 
             Assert.AreNotEqual(controller.GetModelObjects(ObjType.Элемент2D).Count(), 0);
 
-        }   
+        }
 
 
         [TestMethod]
@@ -202,13 +207,13 @@ namespace TestModel.ModelTests
             //model3.Loader = new LoadModelFromSTLFile();
             //model3.Load(dir + $"\\{file}.txt.stl");
 
-        } 
+        }
 
         [DataTestMethod]
-        [DataRow(8448, 17964,0, @"..\..\..\Examples\3D\Korpus.inp", DisplayName = "Korpus.inp")]
-        [DataRow(4, 1,0, @"..\..\..\Examples\3D\abacus.inp", DisplayName = "abacus.inp")]
+        [DataRow(8448, 17964, 0, @"..\..\..\Examples\3D\Korpus.inp", DisplayName = "Korpus.inp")]
+        [DataRow(4, 1, 0, @"..\..\..\Examples\3D\abacus.inp", DisplayName = "abacus.inp")]
         [DataRow(1000, 5454, 0, @"..\..\..\Examples\3D\box2.inp", DisplayName = "box2.inp")]
-        public void ImportModelFromINPTextFormat(int nodeCount, int elemCount, int grCount,string path)
+        public void ImportModelFromINPTextFormat(int nodeCount, int elemCount, int grCount, string path)
         {
             var controller = new OperationalController.ProjectController();
 
@@ -219,7 +224,7 @@ namespace TestModel.ModelTests
         }
 
         [DataTestMethod]
-        [DataRow(7,8,0, @"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC", DisplayName = "rhombDATA1.ASC")]
+        [DataRow(7, 8, 0, @"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC", DisplayName = "rhombDATA1.ASC")]
         [DataRow(44, 113, 3, @"..\..\..\Examples\VIsual-Mesh\DATA3.ASC", DisplayName = "DATA3.ASC")]
         [DataRow(104, 337, 0, @"..\..\..\Examples\VIsual-Mesh\cilinder3DATA1.ASC", DisplayName = "cilinder3DATA1.ASC")]
         [DataRow(104, 337, 0, @"..\..\..\Examples\VIsual-Mesh\cilinder3DATA1.ASC", DisplayName = "cilinder3DATA1.ASC")]
@@ -248,7 +253,7 @@ namespace TestModel.ModelTests
             var saver = new SaveModelToASCIITextFile();
             saver.Save(modelBeforeSaving, @"..\..\..\Examples\VIsual-Mesh\result.ASC");
             var modelAfterSaving = loader.Load(@"..\..\..\Examples\VIsual-Mesh\result.ASC");
-            Assert.IsTrue(modelBeforeSaving.ObjectData.GetAllObjects().Count() == 
+            Assert.IsTrue(modelBeforeSaving.ObjectData.GetAllObjects().Count() ==
                 modelAfterSaving.ObjectData.GetAllObjects().Count());
         }
 
@@ -304,8 +309,8 @@ namespace TestModel.ModelTests
         }
 
         [DataTestMethod]
-        [DataRow(@"..\..\..\Examples\Salome\Gear_V1.dat",3000,976, 4832,9600)]
-        [DataRow(@"..\..\..\Examples\Salome\Gear_V2.dat",3161, 992, 3641, 5255)]
+        [DataRow(@"..\..\..\Examples\Salome\Gear_V1.dat", 3000, 976, 4832, 9600)]
+        [DataRow(@"..\..\..\Examples\Salome\Gear_V2.dat", 3161, 992, 3641, 5255)]
         public void LoadMeshFromSalomeFileCorrectly(string filePath, int nodes, int lineElms, int surfElms, int volElems)
         {
             var import = new LoadModelFromSalomeFile();
@@ -327,7 +332,7 @@ namespace TestModel.ModelTests
             loader.LoadEvent += (ar1, ar2) => { };
 
             //act
-            var model = loader.Load(path);            
+            var model = loader.Load(path);
 
             //assert
             Assert.AreEqual(nodeCount, model.ObjectData.Count(ObjType.Узел));
@@ -335,6 +340,32 @@ namespace TestModel.ModelTests
             Assert.AreEqual(elem2D, model.ObjectData.E2DCollection.Count());
             Assert.AreEqual(elem3D, model.ObjectData.E3DCollection.Count());
             Assert.AreEqual(countGroup, model.GroupData.Count());
+        }
+
+        [DataTestMethod]
+        [DataRow(@"..\..\..\Examples\CAD\block.igs")]
+        [DataRow(@"..\..\..\Examples\CAD\Tavr.step")]
+        public void ConvertGeometryToGrid_ElementsHaveDefaultLevelTwo(string path)
+        {
+            //assing
+            var fullPatch = Path.GetFullPath(path);
+            IGmshController controller = new GmshController();
+            controller.Load(@"..\..\..\..\GmshApi\gmsh.dll");
+            var projectController = new OperationalController.ProjectController();
+            projectController.GmshController = controller;
+            projectController.ImportCAD(fullPatch);
+
+            //act
+            controller.Gmsh.Model.Mesh.Clear(new int[0]);
+            projectController.ModelData.ObjectData.Clear(ObjType.Узел);
+            projectController.ModelData.GroupData.ClearNotExisted();
+            projectController.TaskData.ClearNotExisted(projectController.ModelData.GroupData);
+
+            projectController.GenerateMesh(3, controller);
+
+            //assert
+            foreach(var element in projectController.GetAllModelElements())
+                Assert.AreEqual(element.Level, 2);
         }
     }
 }

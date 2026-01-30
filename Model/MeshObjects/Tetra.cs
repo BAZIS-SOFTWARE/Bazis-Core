@@ -56,7 +56,7 @@ namespace Model.MeshObjects
             surfaces.Add(new ElementSurface(number, 1, new Node[] { nodes[2], nodes[3], nodes[1] }));
             surfaces.Add(new ElementSurface(number, 1, new Node[] { nodes[3], nodes[2], nodes[0] }));
 
-            Level = 1;
+            Level = 2;
         }
 
 

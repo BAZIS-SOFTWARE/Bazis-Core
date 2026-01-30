@@ -50,7 +50,7 @@ namespace Model.MeshObjects
             if (nodes.Length < 3)
                 throw new Exception($"Коллличество узлов в элементе {ElementKind} {number} должно быть не меньше 3");
 
-            Level = 1;
+            Level = 2;
 
             IncidentMatrix = new int[3][];
 

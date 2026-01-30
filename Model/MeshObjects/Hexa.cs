@@ -72,7 +72,7 @@ namespace Model.MeshObjects
             surfaces.Add(new ElementSurface(number, 4, new Node[] { nodes[2], nodes[6], nodes[5], nodes[1] }));
             surfaces.Add(new ElementSurface(number, 5, new Node[] { nodes[3], nodes[0], nodes[4], nodes[7] }));
 
-            Level = 1;
+            Level = 2;
 
             IncidentMatrix = new int[8][];
 

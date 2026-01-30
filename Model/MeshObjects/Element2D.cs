@@ -19,6 +19,8 @@ namespace Model.MeshObjects
         {
             Color = Color.FromArgb(0, 0, 255);
 
+            Level = 2;
+
             surface = new ElementSurface(number, 0, nodes);
 
             //this.nodes = surface.GetVertexes().ToList();

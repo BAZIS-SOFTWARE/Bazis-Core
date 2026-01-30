@@ -21,8 +21,8 @@ namespace Model.MeshObjects
                     throw new Exception($"Коллличество узлов в элементе {number} должно быть не больше 2");
             
             Color = Color.FromArgb(255, 192, 203);
-            
-            Level = 1;
+
+            Level = 2;
 
             IncidentMatrix = new int[2][];
 
