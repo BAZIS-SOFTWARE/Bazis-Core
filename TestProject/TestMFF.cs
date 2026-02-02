@@ -610,5 +610,24 @@ namespace TestProject
             Assert.AreEqual(power, result);
         }
 
+        [TestMethod]
+        [DataRow(1, 0, 0, 882.4969f)]
+        [DataRow(4, 4, 4, 0)]
+        [DataRow(-1, -1, 0.4f, 763.3795f)]
+        [DataRow(0, 0, 0, 1000)]
+        public void LazerNormalCircularDistributionTest(float x, float y, float z, float power)
+        {
+            //assing            
+            var function = new CustomFunction();
+
+            function.CreateEngine(@"..\..\..\Examples\PythonScript\NormalCircularDistribution.py");
+
+            //act
+            var result = function.CalcValue(new Point3D(x, y, z));
+
+            //assert
+            Assert.AreEqual(power, result);
+        }
+
     }
 }
