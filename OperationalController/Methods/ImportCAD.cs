@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
 namespace OperationalController
@@ -20,6 +21,8 @@ namespace OperationalController
 
         public void ImportCAD(string projectFile)
         {
+            if (Regex.IsMatch(projectFile, "(([а-яА-Я])|([ ]))"))
+                throw new ArgumentException("В пути файла присутствуют символы кириллицы или пробелы. Выберите другой файл или переименуйте этот!");
 
             var path = System.IO.Path.GetDirectoryName(projectFile);
             var name = "новый_проект.bpf2";
