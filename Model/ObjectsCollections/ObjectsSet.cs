@@ -18,7 +18,7 @@ namespace Model.ObjectsCollections
     {
 /// <inheritdoc/>
 
-        public string Name { get; set; }
+        public string Name { get; internal set; }
 
         /// <summary>
         /// ObjectsSet
