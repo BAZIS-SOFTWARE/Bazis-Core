@@ -123,6 +123,8 @@ namespace OperationalController
             TaskData?.Add(cond);
         }
 
+
+
         /// <inheritdoc/>
         ITaskData TaskData => project?.TaskData;
 /// <inheritdoc/>

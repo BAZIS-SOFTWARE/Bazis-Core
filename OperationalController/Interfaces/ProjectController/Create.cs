@@ -1,6 +1,7 @@
 ﻿using Geometry;
 using Model.Interfaces;
 using Model.Interfaces.MeshObjects;
+using Project.Interfaces.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -45,5 +46,12 @@ namespace OperationalController
         /// <param name="grName"></param>
         /// <param name="objs"></param>
         void CreateGroup(string grName, IEnumerable<IModelObject> objs);
+        /// <summary>
+        /// Create
+        /// </summary>
+        /// <param name="kind"></param>
+        /// <param name="info"></param>
+        /// <returns></returns>
+        ICondData Create(DataKind kind, string info);
     }
 }

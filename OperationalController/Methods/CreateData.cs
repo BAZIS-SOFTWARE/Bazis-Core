@@ -6,6 +6,7 @@ using Model.IO;
 using Model.IO.STL;
 using Model.MeshObjects;
 using Project;
+using Project.Interfaces.Tasks;
 using Project.Tasks;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,11 @@ namespace OperationalController
 {
     public partial class ProjectController
     {
+        /// <inheritdoc/>
+        public ICondData Create(DataKind kind, string info)
+        {
+            return TaskData?.Create(kind, info, ModelData?.GroupData);
+        }
         /// <inheritdoc/>
         public void CreateGroup(string grName, IEnumerable<IModelObject> objs)
         {
