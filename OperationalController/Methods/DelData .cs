@@ -7,35 +7,39 @@ namespace OperationalController
 {
     public partial class ProjectController
     {
+        /// <inheritdoc/>
+        public void ClearGroupData()
+        {
+            ModelData?.GroupData?.Clear();
+        }
         /// <summary>
         /// ClearNotExistedTaskData
         /// </summary>
         /// <param name="group"></param>
-        public void ClearNotExistedTaskData(IGroup group)
+        public void DeleteCond(IGroup group)
         {
             TaskData?.ClearNotExisted(group);
         }
         /// <inheritdoc/>
-        public void ClearNotExistedTaskData(IEnumerable<IGroup> groups)
+        public void ClearNotExistedCondData()
         {
-            foreach (var item in groups)
-                TaskData?.ClearNotExisted(item);
+                TaskData?.ClearNotExisted(ModelData.GroupData);
         }
         /// <inheritdoc/>
         public void ClearNotExistedModelData()
         {
-            ModelData?.ObjectData.ClearNotExisted();
+            ModelData?.ObjectData?.ClearNotExisted();
         }
         /// <inheritdoc/>
         public void ClearNotExistedGroupData()
         {
-            ModelData?.GroupData.ClearNotExisted();
+            ModelData?.GroupData?.ClearNotExisted();
         }
 /// <inheritdoc/>
 
         public void ClearEmptySet()
         {
-            ModelData?.ObjectData.ClearEmptySet();
+            ModelData?.ObjectData?.ClearEmptySet();
         }
         /// <inheritdoc/>
 

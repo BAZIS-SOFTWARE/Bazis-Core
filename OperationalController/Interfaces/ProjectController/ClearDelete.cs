@@ -8,6 +8,10 @@ namespace OperationalController
     public partial interface IProjectController
     {
         /// <summary>
+        /// ClearGroupData
+        /// </summary>
+        void ClearGroupData();
+        /// <summary>
         /// ClearTaskData
         /// </summary>
         void ClearTaskData();
@@ -19,12 +23,11 @@ namespace OperationalController
         /// ClearNotExistedTaskData
         /// </summary>
         /// <param name="group"></param>
-        void ClearNotExistedTaskData(IGroup group);
+        void DeleteCond(IGroup group);
         /// <summary>
         /// ClearNotExistedTaskData
         /// </summary>
-        /// <param name="groups"></param>
-        void ClearNotExistedTaskData(IEnumerable<IGroup> groups);
+        void ClearNotExistedCondData();
         /// <summary>
         /// ClearNotExistedModelData
         /// </summary>

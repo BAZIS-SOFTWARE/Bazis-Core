@@ -216,9 +216,9 @@ namespace Project.Tasks
         /// <inheritdoc/>
         public void ClearNotExisted(IGroup group)
         {
-            var existData = taskData.Where(x => x.Group == group).ToList();
+            var delData = taskData.Where(x => x.Group == group).ToList();
 
-            foreach (var item in existData)
+            foreach (var item in delData)
                 taskData.Remove(item);
         }
         /// <inheritdoc/>
