@@ -85,6 +85,7 @@ namespace TestModel.ControllerTests
 
             var beforeLoad = project.GmshController.Gmsh.Logger.GetLastError();
 
+            // TODO проверить в чем дело?
             Assert.AreEqual(beforeLoad, "");
 
             project.SaveSMF(scriptFile);

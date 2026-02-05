@@ -16,6 +16,12 @@ namespace OperationalController
         /// <param name="objType"></param>
         /// <param name="objNumb"></param>
         /// <returns></returns>
-        bool ContainsModelObject(ObjType objType, int objNumb);   
+        bool ContainsModelObject(ObjType objType, int objNumb);
+        /// <summary>
+        /// ContainsConditions
+        /// </summary>
+        /// <param name="grName"></param>
+        /// <returns></returns>
+        bool ContainsConditions(string grName);
     }
 }

@@ -45,11 +45,11 @@ namespace OperationalController
         /// <summary>
         /// TaskData
         /// </summary>
-        ITaskData TaskData {get;}
+        //ITaskData TaskData {get;}
         /// <summary>
         /// ModelData
         /// </summary>
-        IModelData ModelData { get; }
+        //IModelData ModelData { get; }
         /// <summary>
         /// Path
         /// </summary>

@@ -62,10 +62,6 @@ namespace Model.Interfaces
         /// </summary>
         IObjectsSet<SurfaceFigure> SurfaceSet{ get; }
         /// <summary>
-        /// VolumeData
-        /// </summary>
-        VolumeData VolumeData { get; }
-        /// <summary>
         /// Count
         /// </summary>
         /// <param name="objType"></param>

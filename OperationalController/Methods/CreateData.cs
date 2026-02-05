@@ -16,6 +16,11 @@ namespace OperationalController
     public partial class ProjectController
     {
         /// <inheritdoc/>
+        public void CreateGroup(string grName, IEnumerable<IModelObject> objs)
+        {
+            ModelData.GroupData.Create(grName, objs);
+        }
+        /// <inheritdoc/>
         public void Extrude3DForm2D(Point3D vector, int layers, IEnumerable<IElement2D> elements)
         {
             throw new NotImplementedException();

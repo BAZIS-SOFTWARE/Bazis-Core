@@ -23,6 +23,7 @@ namespace Model
         /// <inheritdoc/>
         public IModelLoader Loader { get; set; } = new LoadModelFromBPFTextFile();
 
+        public VolumeData VolumeData { get; } = new VolumeData();
         /// <inheritdoc/>
 
         public void Append(IModelData modelData)
