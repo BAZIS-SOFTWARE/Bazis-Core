@@ -34,7 +34,7 @@ namespace PreProc
         private string _path;
 
         /// <inheritdoc/>
-        public void CalcCompDataV1(List<ICondData> data, ProcessType processType, string path)
+        public void CalcCompDataV1(IEnumerable<ICondData> data, ProcessType processType, string path)
         {
             SetUpTimeSeparators(data);
             processProp = new ProcessProperty { CommonTaskType = processType, TaskKind = TaskKind.термическая | TaskKind.механическая };
@@ -46,7 +46,7 @@ namespace PreProc
         }
 
         /// <inheritdoc/>
-        public void CalcCompDataV2(List<ICondData> data, ProcessProperty property, string path)
+        public void CalcCompDataV2(IEnumerable<ICondData> data, ProcessProperty property, string path)
         {
             SetUpTimeSeparators(data);
             processProp = property;
@@ -83,7 +83,7 @@ namespace PreProc
             }
         }
 
-        private void SetUpTimeSeparators(List<ICondData> valuableData)
+        private void SetUpTimeSeparators(IEnumerable<ICondData> valuableData)
         {
             var separators = new List<float>();
 
@@ -110,7 +110,7 @@ namespace PreProc
         /// <typeparam name="ResultParam">Параметризованные данные, в которых указано время начала и конца конкретного LoadData или BoundData</typeparam>
         /// <param name="data">Список ValuableData, хранящий данные разных процессов</param>
         /// <returns>список с параметризованными данными</returns>
-        public List<ResultParam> GetParameters<LoadData, BoundData, ResultParam>(List<ICondData> data)
+        public List<ResultParam> GetParameters<LoadData, BoundData, ResultParam>(IEnumerable<ICondData> data)
             where ResultParam : GeneralParameters, new()
             where LoadData : CondData
             where BoundData : CondData

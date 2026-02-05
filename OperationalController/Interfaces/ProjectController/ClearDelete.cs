@@ -18,8 +18,13 @@ namespace OperationalController
         /// <summary>
         /// ClearNotExistedTaskData
         /// </summary>
-        /// <param name="groupData"></param>
-        void ClearNotExistedTaskData(IGroupData groupData);
+        /// <param name="group"></param>
+        void ClearNotExistedTaskData(IGroup group);
+        /// <summary>
+        /// ClearNotExistedTaskData
+        /// </summary>
+        /// <param name="groups"></param>
+        void ClearNotExistedTaskData(IEnumerable<IGroup> groups);
         /// <summary>
         /// ClearNotExistedModelData
         /// </summary>

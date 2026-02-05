@@ -1,4 +1,5 @@
-﻿using Model.Interfaces;
+﻿using Model.GroupsData;
+using Model.Interfaces;
 using System;
 using System.Collections.Generic;
 
@@ -6,10 +7,19 @@ namespace OperationalController
 {
     public partial class ProjectController
     {
-        /// <inheritdoc/>
-        public void ClearNotExistedTaskData(IGroupData groupData)
+        /// <summary>
+        /// ClearNotExistedTaskData
+        /// </summary>
+        /// <param name="group"></param>
+        public void ClearNotExistedTaskData(IGroup group)
         {
-            TaskData?.ClearNotExisted(groupData);
+            TaskData?.ClearNotExisted(group);
+        }
+        /// <inheritdoc/>
+        public void ClearNotExistedTaskData(IEnumerable<IGroup> groups)
+        {
+            foreach (var item in groups)
+                TaskData?.ClearNotExisted(item);
         }
         /// <inheritdoc/>
         public void ClearNotExistedModelData()
