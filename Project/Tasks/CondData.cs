@@ -1,7 +1,9 @@
 ﻿using Model.Interfaces;
 using Model.Interfaces.Attributes;
 using Project.Interfaces.Tasks;
+using Project.Tasks.FrameCreators;
 using System;
+using static IronPython.Runtime.Profiler;
 
 namespace Project.Tasks
 {
@@ -62,9 +64,22 @@ namespace Project.Tasks
 
         public IGroup Group { get; set; }
 
+        IFrameFunction frameFunction;
 
         /// <inheritdoc/>
-        public IFrameFunction FrameFunction { get; set; }
+        public IFrameFunction FrameFunction 
+        {
+            get { return frameFunction; }
+            set
+            {
+                frameFunction = value;
+
+                // вводим синхронизацию времени окончания и скорости движения
+                if(frameFunction.LocalFrame is MovedFrame mf)
+                    StopTime = StartTime + (float)Math.Round(mf.CalcMotionTime(), 4);
+            }
+        }
+
         /// <inheritdoc/>
   
         public string PythonS { get; set; } // путь к питон функции
