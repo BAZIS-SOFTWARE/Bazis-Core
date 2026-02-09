@@ -18,6 +18,7 @@ using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Xml.Linq;
 using MathNet.Numerics;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 //using static IronPython.Modules._ast;
 
 namespace OperationalController.GmshController
@@ -492,7 +493,8 @@ namespace OperationalController.GmshController
 
             foreach (var item in surfTags)
             {
-                SetTransfiniteSurface(item);
+                var surfPoints = GetSurfaceNodes(item);
+                SetTransfiniteSurface(item,Arrangement.Left,surfPoints);
                 SetRecombineSurface(item);
             }
                 
