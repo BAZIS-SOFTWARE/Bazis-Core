@@ -484,6 +484,18 @@ namespace OperationalController.GmshController
                 new string[] { "регулярная" });
 
             Gmsh.Model.Mesh.SetTransfiniteVolume(tag, cornerTags);
+
+
+            // Посмотрим как это будет работать на практике.
+            // При установке регулярной сетки по объему обрабатываем и все его поверхности
+            var surfTags = Gmsh.Model.GetAdjacencies(3, tag).Item2;
+
+            foreach (var item in surfTags)
+            {
+                SetTransfiniteSurface(item);
+                SetRecombineSurface(item);
+            }
+                
         }
 
         /// <inheritdoc/>

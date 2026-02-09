@@ -10,7 +10,8 @@ namespace OperationalController
         /// <inheritdoc/>
         public void ClearGroupData()
         {
-            ModelData?.GroupData?.Clear();
+            ModelData.GroupData?.Clear();
+            TaskData.Clear();
         }
         /// <summary>
         /// ClearNotExistedTaskData
@@ -18,41 +19,50 @@ namespace OperationalController
         /// <param name="group"></param>
         public void DeleteCond(IGroup group)
         {
-            TaskData?.ClearNotExisted(group);
+            TaskData.ClearNotExisted(group);
         }
         /// <inheritdoc/>
         public void ClearNotExistedCondData()
         {
-                TaskData?.ClearNotExisted(ModelData.GroupData);
+                TaskData.ClearNotExisted(ModelData.GroupData);
         }
         /// <inheritdoc/>
         public void ClearNotExistedModelData()
         {
-            ModelData?.ObjectData?.ClearNotExisted();
+            ModelData.ObjectData?.ClearNotExisted();
+            ModelData.ObjectData?.ClearEmptySet();
+            ModelData.GroupData?.ClearNotExisted();
+            TaskData.ClearNotExisted(ModelData.GroupData);
+
+            //project.ClearEmptySet();
+            //project.ClearNotExistedGroupData();
+            //project.ClearNotExistedCondData();
+
         }
         /// <inheritdoc/>
         public void ClearNotExistedGroupData()
         {
-            ModelData?.GroupData?.ClearNotExisted();
+            ModelData.GroupData?.ClearNotExisted();
+            TaskData.ClearNotExisted(ModelData.GroupData);
         }
 /// <inheritdoc/>
 
         public void ClearEmptySet()
         {
-            ModelData?.ObjectData?.ClearEmptySet();
+            ModelData.ObjectData?.ClearEmptySet();
         }
         /// <inheritdoc/>
 
         public void ClearTaskData()
         {
-            TaskData?.Clear();
+            TaskData.Clear();
         }
         /// <inheritdoc/>
 
         public void ClearAllData()
         {
-            TaskData?.Clear();
-            ModelData?.ClearAll();
+            TaskData.Clear();
+            ModelData.ClearAll();
         }
 
         /// <inheritdoc/>
@@ -104,10 +114,7 @@ namespace OperationalController
                     obj.ExistState = false;
             }
 
-            ModelData.ObjectData.ClearNotExisted();
-            ModelData.ObjectData.ClearEmptySet();
-            ModelData.GroupData.ClearNotExisted();
-            TaskData.ClearNotExisted(ModelData.GroupData);
+            ClearNotExistedModelData();
         }
     }
 }
