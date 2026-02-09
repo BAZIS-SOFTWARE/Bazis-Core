@@ -73,10 +73,6 @@ namespace Project.Tasks
             set
             {
                 frameFunction = value;
-
-                // вводим синхронизацию времени окончания и скорости движения
-                if(frameFunction.LocalFrame is MovedFrame mf)
-                    StopTime = StartTime + (float)Math.Round(mf.CalcMotionTime(), 4);
             }
         }
 

@@ -411,7 +411,14 @@ namespace Project.Tasks
             }
 
             if(physicalData.FrameFunction != null)
+            {
                 physicalData.FrameFunction.LocalFrame = GetLocalFrame(infoAr[2], groupData);
+
+                // вводим синхронизацию времени окончания и скорости движения
+                if (physicalData.FrameFunction.LocalFrame is MovedFrame mf)
+                    physicalData.StopTime = physicalData.StartTime + (float)Math.Round(mf.CalcMotionTime(), 4);
+            }
+
 
             return physicalData;
         }
