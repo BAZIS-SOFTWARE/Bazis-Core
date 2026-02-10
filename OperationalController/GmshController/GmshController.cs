@@ -156,6 +156,7 @@ namespace OperationalController.GmshController
             else if (typeof(Element3D) == typeof(T))
                 dim = 3;
 
+            // номера геометрических сущностей
             var dimTags = Gmsh.Model.GetEntities(dim);
             //var list = new List<ObjectsSet<T>>();
             var rnd = new Random();
