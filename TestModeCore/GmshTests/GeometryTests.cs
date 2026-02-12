@@ -48,6 +48,19 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
+        [DataRow(@"D:\source\repos\вбс\part 1.step")]
+        [DataRow(@"D:\source\repos\путь\part1.step")]
+        [DataRow(@"D:\ source\repos\CAD\part1.step")]
+        public void ImportCAD_ShouldFaill_WhenPathContainsForbiddenSymbols(string path)
+        {
+            var project = new ProjectController();
+            project.GmshController = gmshController;
+            Assert.ThrowsException<ArgumentException>(() =>
+            project.ImportCAD(path), 
+            "В пути файла присутствуют символы кириллицы или пробелы. Выберите другой файл или переименуйте этот!");
+        }
+
+        [DataTestMethod]
         [DataRow(@"\CAD\screw.step")]
         [DataRow(@"\CAD\assembly_1.step")]
         [DataRow(@"\CAD\assembly_2.stp")]

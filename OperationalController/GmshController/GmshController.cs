@@ -18,6 +18,7 @@ using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Xml.Linq;
 using MathNet.Numerics;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 //using static IronPython.Modules._ast;
 
 namespace OperationalController.GmshController
@@ -155,6 +156,7 @@ namespace OperationalController.GmshController
             else if (typeof(Element3D) == typeof(T))
                 dim = 3;
 
+            // номера геометрических сущностей
             var dimTags = Gmsh.Model.GetEntities(dim);
             //var list = new List<ObjectsSet<T>>();
             var rnd = new Random();
@@ -484,6 +486,19 @@ namespace OperationalController.GmshController
                 new string[] { "регулярная" });
 
             Gmsh.Model.Mesh.SetTransfiniteVolume(tag, cornerTags);
+
+
+            // Посмотрим как это будет работать на практике.
+            // При установке регулярной сетки по объему обрабатываем и все его поверхности
+            var surfTags = Gmsh.Model.GetAdjacencies(3, tag).Item2;
+
+            foreach (var item in surfTags)
+            {
+                var surfPoints = GetSurfaceNodes(item);
+                SetTransfiniteSurface(item,Arrangement.Left,surfPoints);
+                SetRecombineSurface(item);
+            }
+                
         }
 
         /// <inheritdoc/>

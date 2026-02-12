@@ -43,8 +43,9 @@ namespace TestProject
             control.DeleteModelObjects(type, objNumbers);
 
             //assert
-            Assert.AreEqual(res, control.ModelData.GroupData.Find(grName) != null);
-            Assert.AreEqual(res, control.TaskData.Contains(grName));
+
+            Assert.AreEqual(res, control.GetModelGroup(grName) != null);
+            Assert.AreEqual(res, control.ContainsConditions(grName));
         }
 
         [DataTestMethod]
@@ -64,8 +65,8 @@ namespace TestProject
             control.DeleteModelSet(type, setName);
 
             //assert
-            Assert.AreEqual(res, control.ModelData.GroupData.Find(grName) != null);
-            Assert.AreEqual(res, control.TaskData.Contains(grName));
+            Assert.AreEqual(res, control.GetModelGroup(grName) != null);
+            Assert.AreEqual(res, control.ContainsConditions(grName));
         }
 
         [DataTestMethod]
@@ -87,8 +88,8 @@ namespace TestProject
             control.ClearModelCollection(type);
 
             //assert
-            Assert.AreEqual(res, control.ModelData.GroupData.Find(grName) != null);
-            Assert.AreEqual(res, control.TaskData.Contains(grName));
+            Assert.AreEqual(res, control.GetModelGroup(grName) != null);
+            Assert.AreEqual(res, control.ContainsConditions(grName));
         }
 
         [TestMethod]

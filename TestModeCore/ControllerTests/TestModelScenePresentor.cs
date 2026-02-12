@@ -456,7 +456,7 @@ namespace TestModel.ControllerTests
 
             var elemCounter = 0;
 
-            var sets = controller.ModelData.ObjectData.GetSetsInfo(objType);
+            var sets = controller.GetModelSetsInfo(objType);
 
             //Перебираем каждый набор и назначаем первым hideElemsBySet элементам цвет зеленый
             foreach (var set in sets)
@@ -473,7 +473,7 @@ namespace TestModel.ControllerTests
 
             var expectedShown = sets.Sum(x => x.NumberOfObjects) - elemCounter;
             var actualShown = 0;
-            foreach (var set in controller.ModelData.ObjectData.GetSetsInfo(objType))
+            foreach (var set in controller.GetModelSetsInfo(objType))
             {
                 foreach (var item in set.GetNumbers())
                 {
@@ -513,9 +513,9 @@ namespace TestModel.ControllerTests
             var controller = new ProjectController();
             controller.ImportMesh(fileName);
 
-            var e1d = controller.ModelData.ObjectData.E1DCollection;
+            var sets = controller.GetModelSetsInfo(ObjType.Элемент1D);
 
-            foreach(var set in e1d.Objects)
+            foreach(var set in sets)
             {
                 set.SetColor(Color.FromArgb(alpha, set.Color));
                 Assert.IsTrue(set.Color.A == alpha);

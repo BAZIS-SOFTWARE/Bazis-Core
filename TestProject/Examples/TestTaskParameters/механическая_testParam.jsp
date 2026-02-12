@@ -10,6 +10,7 @@
     "SiStm": 0.0,
     "MaterialPlasticityCoeff": 0.0
   },
+  "TaskKind": 8,
   "TermalProcesses": [],
   "InitTemp": 20.0,
   "SaveRate": 0,

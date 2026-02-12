@@ -221,7 +221,7 @@ namespace OperationalController
                     }
                 }
 
-                foreach (var vol in ModelData.ObjectData.VolumeData)
+                foreach (var vol in ModelData.VolumeData)
                 {
                     var atrs = GmshController.GetTransfiniteVolume(vol.Number);
                     if (atrs.Length != 0)

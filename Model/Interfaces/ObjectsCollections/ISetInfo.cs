@@ -14,7 +14,7 @@ namespace Model.Interfaces.ObjectsCollections
         /// <summary>
         /// Name
         /// </summary>
-        string Name { get; set; }
+        string Name { get; }
         /// <summary>
         /// Number
         /// </summary>

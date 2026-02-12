@@ -53,7 +53,6 @@ namespace OperationalController
 
                 foreach (var item in nodes)
                     ModelData.ObjectData.NodesSet.Add(item.Number, item);
-
                 foreach (var item in controller.GetMeshSets<Beam>(nodes))
                     ModelData.ObjectData.E1DCollection.Add(item);
                 foreach (var item in controller.GetMeshSets<Element2D>(nodes))

@@ -61,7 +61,7 @@ namespace Model
         public IObjectsSet<SurfaceFigure> SurfaceSet { get; }
         /// <inheritdoc/>
 
-        public VolumeData VolumeData { get; } = new VolumeData();
+        //public VolumeData VolumeData { get; } = new VolumeData();
 
         /// <inheritdoc/>
 
@@ -262,16 +262,16 @@ namespace Model
                     PointsSet.Clear();
                     CurveSet.Clear();
                     SurfaceSet.Clear();
-                    VolumeData.Clear();
+                    //VolumeData.Clear();
                     break;
                 case ObjType.Кривая:
                     CurveSet.Clear();
                     SurfaceSet.Clear();
-                    VolumeData.Clear();
+                    //VolumeData.Clear();
                     break;
                 case ObjType.Поверхность:
                     SurfaceSet.Clear();
-                    VolumeData.Clear();
+                    //VolumeData.Clear();
                     break;
                 case ObjType.Узел:
                     NodesSet.Clear();
@@ -437,17 +437,17 @@ namespace Model
                     PointsSet.Remove(objNumber);
                     CurveSet.ClearNotExisted();
                     SurfaceSet.ClearNotExisted();
-                    VolumeData.ClearNotExisted();
+                    //VolumeData.ClearNotExisted();
                     break;
                 case ObjType.Кривая:
                     CurveSet[objNumber].ExistState = false;
                     CurveSet.Remove(objNumber);
                     SurfaceSet.ClearNotExisted();
-                    VolumeData.ClearNotExisted();
+                    //VolumeData.ClearNotExisted();
                     break;
                 case ObjType.Поверхность:
                     SurfaceSet.Remove(objNumber);
-                    VolumeData.ClearNotExisted();
+                    //VolumeData.ClearNotExisted();
                     break;
                 case ObjType.Узел:
                     NodesSet[objNumber].ExistState = false;
@@ -508,7 +508,7 @@ namespace Model
                     break;
                 case ObjType.Поверхность:
                     SurfaceSet.SetBackColor();
-                    VolumeData.SetBackColor();
+                    //VolumeData.SetBackColor();
                     break;
                 case ObjType.Узел:
                     NodesSet.SetBackColor();

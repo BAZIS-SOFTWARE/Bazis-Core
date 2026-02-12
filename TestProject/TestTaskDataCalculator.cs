@@ -30,11 +30,14 @@ namespace TestProject
             return proj;
         }
         [TestMethod]
-        public void CalcStopTime()
+        [DataRow(@"..\..\..\Examples\proj_traj.bpf",50)]
+        [DataRow(@"c:\projs\Roman\LazerWelding\Proj.bpf2", 5)]
+        
+        public void CalcStopTime(string path, float stopTimeRes)
         {
             //assign
             var loader = new LoadProjectFromTextFormat();
-            var proj = loader.Load(@"..\..\..\Examples\proj_traj.bpf");
+            var proj = loader.Load(path);
 
             //act
             var heat = proj.TaskData.Find<HeatData>().First();
@@ -43,7 +46,7 @@ namespace TestProject
             var stopTime = heat.StartTime + motionTime;
 
             //assert
-            Assert.AreEqual(50, stopTime);
+            Assert.AreEqual(stopTimeRes, stopTime);
 
         }
 

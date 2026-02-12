@@ -10,6 +10,7 @@ using System.Linq;
 using System.Drawing;
 using System;
 using OperationalController.GmshController;
+using System.Numerics;
 
 namespace OperationalController
 {
@@ -117,12 +118,18 @@ namespace OperationalController
             ModelData?.ObjectData?.SetBackColor(objType);
         }
 
+        public void AddTaskData(ICondData cond)
+        {
+            TaskData?.Add(cond);
+        }
+
+
 
         /// <inheritdoc/>
-        public ITaskData TaskData => project?.TaskData;
+        ITaskData TaskData => project?.TaskData;
 /// <inheritdoc/>
 
-        public IModelData ModelData => project?.ModelData;
+        IModelData ModelData => project?.ModelData;
 
         IGeneralData GeneralData => project?.GeneralData;
 
