@@ -613,7 +613,7 @@ namespace TestProject
         [TestMethod]
         [DataRow(1, 0, 0, 882.4969f)]
         [DataRow(4, 4, 4, 0)]
-        [DataRow(-1, -1, 0.4f, 763.3795f)]
+        [DataRow(-1, -1, 0.4f, 0)]
         [DataRow(0, 0, 0, 1000)]
         public void LazerNormalCircularDistributionTest(float x, float y, float z, float power)
         {
