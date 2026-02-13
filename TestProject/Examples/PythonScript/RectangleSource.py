@@ -1,4 +1,4 @@
-def CalcPower(x, y, z, power = 6):
+def CalcPower(x, y, z, power = 600):
     n = 0.3 # КПД
     a = 3.0 # длина источника
     b = 1.0 # ширина источника
@@ -11,6 +11,7 @@ def CalcPower(x, y, z, power = 6):
     precision = 6
 
     if round(float(x), precision) <= round(a, precision) and \
+	   round(float(x), precision) >= round(-a, precision) and \
        round(float(y), precision) <= round(b, precision) and \
        round(float(z), precision) <= round(c, precision):
        return float(q)

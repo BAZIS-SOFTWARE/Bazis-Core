@@ -49,6 +49,10 @@ namespace GmshApi
                                                           int dim, int tag, ref int ierr);
         private gmshModelMeshGetElementsFun gmshModelMeshGetElements = GetFunction<gmshModelMeshGetElementsFun>("gmshModelMeshGetElements");
 
+        private delegate void gmshModelMeshGetElementFun(IntPtr elementTag, ref int elementType, ref IntPtr nodeTags, ref IntPtr nodeTags_n,
+                                                         ref int dim, ref int tag, ref int ierr);
+        private gmshModelMeshGetElementFun gmshModelMeshGetElement = GetFunction<gmshModelMeshGetElementFun>("gmshModelMeshGetElement");
+
         private delegate void gmshModelMeshGetElementsByCoordinatesFun(double x, double y, double z,
                                                                        ref IntPtr elementTags, ref IntPtr elementTags_n,
                                                                        int dim, int strict, ref int ierr);
@@ -261,6 +265,23 @@ namespace GmshApi
             var eTags = GetArrayOfObjectsData<IntPtr>(elemTags, elemTags_nn, elemTags_n);
             var nTags = GetArrayOfObjectsData<IntPtr>(nodeTags, nodeTags_nn, nodeTags_n);
             return Tuple.Create(eTypes, eTags, nTags);
+        }
+        /// <summary>
+        /// По идентификатору элемента elementTag возвращает тип элемента, идентификаторы узлов, размерность и идентификатор геометрической сущности
+        /// </summary>
+        /// <param name="elementTag">Идентификатор элемента</param>
+        /// <returns>Кортеж(тип элемента, идентификаторы узлов, геом. размерность, геом. идентификатор)</returns>
+        public Tuple<int, IntPtr[], int, int> GetElement(IntPtr elementTag)
+        {
+            var ierr = 0;
+            var elementType = 0;
+            var dim = 0;
+            var tag = 0;
+            var nodeTags = IntPtr.Zero;
+            var nodeTags_n = IntPtr.Zero;
+            gmshModelMeshGetElement(elementTag, ref elementType, ref nodeTags, ref nodeTags_n, ref dim, ref tag, ref ierr);
+            var nodesId = GetObjectsData<IntPtr>(nodeTags, nodeTags_n);
+            return Tuple.Create(elementType, nodesId, dim, tag);
         }
         /// <summary>
         /// Возвращает идентификаторы элементов по указанной координате
