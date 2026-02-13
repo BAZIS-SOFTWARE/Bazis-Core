@@ -763,6 +763,90 @@ namespace TestModel.GmshTests
             //controller.Gmsh.Write(@"D:\mixed.msh");//Для визуализации
         }
 
+        [DataTestMethod]
+        [DataRow(@"\CAD\cilindr.step")]
+        public void Hide3DTest(string path)
+        {
+            var proj = new ProjectController();
+            proj.GmshController.Load(@"..\..\..\..\GmshApi\gmsh.dll");
+            proj.ImportCAD(modelFolder + @"\" + path);
+
+            proj.GenerateMesh(3, proj.GmshController);
+
+            //Скрытие\показ 3д элементов сопряженных с объемом и проверка элементов 
+            for (var i = 0; i < 2; ++i)
+            {
+                var expState = Convert.ToBoolean(i);
+                proj.GetModelVolumes().First().ViewState = expState;
+                proj.HideMesh(3, proj.GmshController);
+
+                foreach (var elems in proj.GetModelObjects(ObjType.Элемент3D))
+                    Assert.AreEqual(expState, elems.ViewState);
+            }
+        }
+
+        [DataTestMethod]
+        [DataRow(@"\CAD\cilindr.step")]
+        public void Hide2DTest(string path)
+        {
+            var proj = new ProjectController();
+            proj.GmshController.Load(@"..\..\..\..\GmshApi\gmsh.dll");
+            proj.ImportCAD(modelFolder + @"\" + path);
+
+            proj.GenerateMesh(3, proj.GmshController);
+
+            //Скрытие\показ 2д элементов сопряженных с поверхностью и проверка элементов
+            var elemTags = proj.GmshController.Gmsh.Model.Mesh.GetElements(2, 1).Item2
+                                                              .SelectMany(v => v)
+                                                              .Select(v => (int)v)
+                                                              .ToHashSet();
+            for (var i = 0; i < 2; ++i)
+            {
+                var expState = Convert.ToBoolean(i);
+                proj.GetModelSurface(1).ViewState = expState;
+                proj.HideMesh(2, proj.GmshController);
+
+                foreach (var elems in proj.GetModelObjects(ObjType.Элемент2D))
+                {
+                    if (elemTags.Contains(elems.Number))
+                        Assert.AreEqual(expState, elems.ViewState);
+                    else
+                        Assert.AreEqual(true, elems.ViewState);//Элементы не сопряженные с поверхность 1 должны быть показаны
+                }
+            }
+        }
+
+        [DataTestMethod]
+        [DataRow(@"\CAD\cilindr.step")]
+        public void Hide1DTest(string path)
+        {
+            var proj = new ProjectController();
+            proj.GmshController.Load(@"..\..\..\..\GmshApi\gmsh.dll");
+            proj.ImportCAD(modelFolder + @"\" + path);
+
+            proj.GenerateMesh(3, proj.GmshController);
+
+            //Скрытие\показ 1д элементов сопряженных с кривой и проверка элементов
+            var elemTags = proj.GmshController.Gmsh.Model.Mesh.GetElements(1, 1).Item2
+                                                              .SelectMany(v => v)
+                                                              .Select(v => (int)v)
+                                                              .ToHashSet();
+            for (var i = 0; i < 2; ++i)
+            {
+                var expState = Convert.ToBoolean(i);
+                proj.GetModelCurve(1).ViewState = expState;
+                proj.HideMesh(1, proj.GmshController);
+
+                foreach (var elems in proj.GetModelObjects(ObjType.Элемент1D))
+                {
+                    if (elemTags.Contains(elems.Number))
+                        Assert.AreEqual(expState, elems.ViewState);
+                    else
+                        Assert.AreEqual(true, elems.ViewState);//Элементы не сопряженные с кривой 1 должны быть показаны
+                }
+            }
+        }
+
         private void MakeTranfinite(int seamPointCurves, int[] seamCurves, int[] seamVolumes)
         {
             //Трансфиниция кривых
