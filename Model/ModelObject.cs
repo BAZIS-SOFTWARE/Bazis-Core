@@ -19,7 +19,7 @@ namespace Model
             if (number < 0)
                 throw new Exception("Номер не может быть меньше нуля");
             Number = number;
-            ExistState = true;
+            //ExistState = true;
         }
         /// <summary>
         /// Number
@@ -38,8 +38,8 @@ namespace Model
         /// </summary>
         public Color Color { get; set; } = Color.FromArgb(255, 0, 0, 0);
 
-        bool viewState;
-        bool existState;
+        bool viewState = true;
+        bool existState = true;
         /// <summary>
         /// View state flag
         /// </summary>

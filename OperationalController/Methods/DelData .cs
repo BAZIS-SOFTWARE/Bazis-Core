@@ -106,6 +106,7 @@ namespace OperationalController
 
         public void DeleteModelObjects(ObjType objType, IEnumerable<int> objNumbs)
         {
+            // TODO если геометрия, то удалить по типу и номеру объекта
 
             foreach (var numb in objNumbs)
             {
@@ -113,7 +114,7 @@ namespace OperationalController
                 if (obj != null)
                     obj.ExistState = false;
             }
-
+ 
             ClearNotExistedModelData();
         }
     }

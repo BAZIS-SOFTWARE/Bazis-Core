@@ -279,8 +279,7 @@ namespace OperationalController
         /// GenerateMesh
         /// </summary>
         /// <param name="elemDim"></param>
-        /// <param name="controller"></param>
-        void GenerateMesh(int elemDim, IGmshController controller);
+        void GenerateMesh(int elemDim);
 
 
     }
