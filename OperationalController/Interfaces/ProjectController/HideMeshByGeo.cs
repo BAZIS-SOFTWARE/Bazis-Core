@@ -10,7 +10,6 @@ namespace OperationalController
         /// HideMesh
         /// </summary>
         /// <param name="elemDim"></param>
-        /// <param name="controller"></param>
-        void HideMesh(int elemDim, IGmshController controller);
+        void HideMesh(int elemDim);
     }
 }

@@ -778,7 +778,7 @@ namespace GmshTests
             {
                 var expState = Convert.ToBoolean(i);
                 proj.GetModelVolumes().First().ViewState = expState;
-                proj.HideMesh(3, proj.GmshController);
+                proj.HideMesh(3);
 
                 foreach (var elems in proj.GetModelObjects(ObjType.Элемент3D))
                     Assert.AreEqual(expState, elems.ViewState);
@@ -804,7 +804,7 @@ namespace GmshTests
             {
                 var expState = Convert.ToBoolean(i);
                 proj.GetModelSurface(1).ViewState = expState;
-                proj.HideMesh(2, proj.GmshController);
+                proj.HideMesh(2);
 
                 foreach (var elems in proj.GetModelObjects(ObjType.Элемент2D))
                 {
@@ -835,7 +835,7 @@ namespace GmshTests
             {
                 var expState = Convert.ToBoolean(i);
                 proj.GetModelCurve(1).ViewState = expState;
-                proj.HideMesh(1, proj.GmshController);
+                proj.HideMesh(1);
 
                 foreach (var elems in proj.GetModelObjects(ObjType.Элемент1D))
                 {

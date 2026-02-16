@@ -16,7 +16,7 @@ namespace OperationalController
     {
 /// <inheritdoc/>
 
-        public void HideMesh(int elemDim, IGmshController controller)
+        public void HideMesh(int elemDim)
         {
             if (elemDim == 1)
             {
@@ -24,7 +24,7 @@ namespace OperationalController
                 {
                     foreach (var element in item)
                     {
-                        var curveTag = controller.Gmsh.Model.Mesh.GetElement(element.Value.Number).Item4;
+                        var curveTag = GmshController.Gmsh.Model.Mesh.GetElement(element.Value.Number).Item4;
                         var viewState = ModelData.ObjectData.CurveSet[curveTag].ViewState;
                         element.Value.ViewState = viewState;
                     }
@@ -37,7 +37,7 @@ namespace OperationalController
                 {
                     foreach (var element in item)
                     {
-                        var surfaceTag = controller.Gmsh.Model.Mesh.GetElement(element.Value.Number).Item4;
+                        var surfaceTag = GmshController.Gmsh.Model.Mesh.GetElement(element.Value.Number).Item4;
                         var viewState = ModelData.ObjectData.SurfaceSet[surfaceTag].ViewState;
                         element.Value.ViewState = viewState;
                     }
@@ -51,7 +51,7 @@ namespace OperationalController
                 {
                     foreach (var element in item)
                     {
-                        var volumeTag = controller.Gmsh.Model.Mesh.GetElement(element.Value.Number).Item4;
+                        var volumeTag = GmshController.Gmsh.Model.Mesh.GetElement(element.Value.Number).Item4;
                         element.Value.ViewState = volumes[volumeTag];
                     }
                 }
