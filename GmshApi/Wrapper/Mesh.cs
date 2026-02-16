@@ -516,7 +516,7 @@ namespace GmshApi
         /// Установить флаг видимости для массива идентификаторов элементов (например для последующего удаления)
         /// </summary>
         /// <param name="elementTags">Массив идентификаторов элементов</param>
-        /// <param name="value">Флаг видимости</param>
+        /// <param name="value">Флаг видимости true - 1,false - 0</param>
         public void SetVisibility(IntPtr[] elementTags, int value)
         {
             var ierr = 0;

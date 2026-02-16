@@ -47,6 +47,11 @@ namespace OperationalController
         /// <param name="objs"></param>
         void CreateGroup(string grName, IEnumerable<IModelObject> objs);
         /// <summary>
+        /// CreateGroup
+        /// </summary>
+        /// <param name="objs"></param>
+        void CreateGroup(IEnumerable<IModelObject> objs);
+        /// <summary>
         /// Create
         /// </summary>
         /// <param name="kind"></param>
