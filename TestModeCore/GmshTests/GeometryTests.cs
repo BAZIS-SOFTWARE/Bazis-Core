@@ -527,19 +527,20 @@ namespace TestModel.GmshTests
         [DataTestMethod]
         public void GeneratePlaneSurfaceTest()
         {
+            //Правило хорошего тона - именовать модель, ту что строим самостоятельно без загрузки из файла.
             gmshController.Gmsh.Model.Add("surface");
-
+            //Добавление точек в ядро OCC, просто передаем желаемые координаты
             var start = gmshController.Gmsh.Model.Occ.AddPoint(0, 0, 0);
             var middle = gmshController.Gmsh.Model.Occ.AddPoint(1, 0, 0);
             var end = gmshController.Gmsh.Model.Occ.AddPoint(0, 1, 0);
-
+            //Добавляем линии по созданным точкам
             var lineA = gmshController.Gmsh.Model.Occ.AddLine(start, middle);
             var lineB = gmshController.Gmsh.Model.Occ.AddLine(middle, end);
             var lineC = gmshController.Gmsh.Model.Occ.AddLine(end, start);
-
+            //В OCC нужно построить контур, чтобы построить поверхность по нему. Контур - геометрическая сущность набора линий
             var wire = gmshController.Gmsh.Model.Occ.AddWire([lineA, lineB, lineC]);
             var surface = gmshController.Gmsh.Model.Occ.AddPlaneSurface([wire]);
-
+            //После построения обязательна синхронизация с OCC, чтобы можно было проводить операции над геометрией или записать в файл
             gmshController.Gmsh.Model.Occ.Synchronize();
 
             var pointCounts = gmshController.Gmsh.Model.Occ.GetEntities(0).Length / 2;
@@ -637,7 +638,8 @@ namespace TestModel.GmshTests
 
             var baseWire = gmshController.Gmsh.Model.Occ.AddCurveLoop([tags[1]]);
             var holeWire = gmshController.Gmsh.Model.Occ.AddCurveLoop([tags[3]]);
-
+            //В поверхность можно передать несколько контуров, первый всегда внешний по которому будет натягиваться поверхность, второй и следующий контур
+            //в массиве обозначает набор отверстий на поверхности.
             var surf = gmshController.Gmsh.Model.Occ.AddPlaneSurface([baseWire, holeWire]);
             gmshController.Gmsh.Model.Occ.Synchronize();
 
@@ -670,19 +672,22 @@ namespace TestModel.GmshTests
             var wire = gmshController.Gmsh.Model.Occ.AddWire([curve]);
 
             gmshController.Gmsh.Model.Occ.Synchronize();
-
+            //Для кривой можно взять параметризацию - по сути это распрямление кривой в линию, после этой операции обычно берется произвольная точка на кривой
+            //путем взятия параметра в диапазоне из полученой параметризации
             var p = gmshController.Gmsh.Model.GetParametrizationBounds(1, curve);
-
+            //Команда для взятия трехмерной точки на значении параметра кривой
             var origin = gmshController.Gmsh.Model.GetValue(1, curve, p.Item1);
+            //На значении параметра кривой мы можем получить касательный вектор и вектор нормали(сонаправлен со второй производной)
             var tangent = gmshController.Gmsh.Model.GetDerivative(1, curve, p.Item1);
             var normal = gmshController.Gmsh.Model.GetSecondDerivative(1, curve, p.Item1);
-
+            //И создать базис в произвольной точке кривой используя векторное произведение по двум известным векторам
             var t = new Vector3D(tangent[0], tangent[1], tangent[2]).Normalize();
             var n = new Vector3D(normal[0], normal[1], normal[2]).Normalize();
             var bn = t.CrossProduct(n);
-
+            //И здесь создаем окружность в точке с указаным наклоном
             var circle = gmshController.Gmsh.Model.Occ.AddCircle(origin[0], origin[1], origin[2], radius, -1, 0, 2 * Math.PI,
                                                              [t.X, t.Y, t.Z], [bn.X, bn.Y, bn.Z]);
+            //Командой AddPipe мы делаем экструзию сечения вдоль кривой, если сечением является поверхность то получается объем, если контур то получается поверхность
             if (type == "volume")
             {
                 var wireCircle = gmshController.Gmsh.Model.Occ.AddWire([circle]);
@@ -692,7 +697,7 @@ namespace TestModel.GmshTests
             }
             else
                 gmshController.Gmsh.Model.Occ.AddPipe([1, circle], wire);
-
+            //Удаление всех временных объектов
             gmshController.Gmsh.Model.Occ.Remove([1, circle], true);
             gmshController.Gmsh.Model.Occ.Remove([1, curve], true);
             gmshController.Gmsh.Model.Occ.Remove([0, a, 0, b, 0, c, 0, d, 0, e]);
@@ -747,6 +752,7 @@ namespace TestModel.GmshTests
 
             //Генерируем окружности вдоль кривой, на любой точки кривой мы можем получить базис для построения окружности
             var index = 0;
+            //Пример похож на предыдущий с тем отличием, что создаются множество сечений различного размера, команда AddThruSections создает объем по нескольким сечениям
             for (double i = p.Item1[0]; i <= p.Item2[0]; i += step, ++index)
             {
                 var origin = gmshController.Gmsh.Model.GetValue(1, curve, [i]);
@@ -783,7 +789,7 @@ namespace TestModel.GmshTests
         }
         
         [DataTestMethod]
-        public void PointProjectionTest()
+        public void PointProjectionOnPlaneTest()
         {
             gmshController.Gmsh.Model.Add("Projection");
 
@@ -813,7 +819,7 @@ namespace TestModel.GmshTests
         }
 
         [DataTestMethod]
-        public void LineProjectionTest()
+        public void PointProjectionOnLineTest()
         {
             gmshController.Gmsh.Model.Add("Projection");
 
