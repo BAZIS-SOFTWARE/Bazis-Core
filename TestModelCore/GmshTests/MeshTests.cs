@@ -12,6 +12,8 @@ using OperationalController;
 using MathNet.Numerics;
 using Model.MeshObjects;
 using Model.Utilities;
+using Geometry;
+using Model.IO;
 
 namespace GmshTests
 {
@@ -845,6 +847,37 @@ namespace GmshTests
                         Assert.AreEqual(true, elems.ViewState);//Элементы не сопряженные с кривой 1 должны быть показаны
                 }
             }
+        }
+
+        [DataTestMethod]
+        [DataRow(5, 0.25f, "rhombus")]
+        public void ExtrudeStepTest(int layersCount, float size, string fileName)
+        {
+            var proj = new ProjectController();
+            proj.GmshController.Load(@"..\..\..\..\GmshApi\gmsh.dll");
+
+            var ctr = proj.GmshController;
+            ctr.Gmsh.Open($@"C:\Mesh\STEP\{fileName}.step");
+
+
+            ctr.Gmsh.Model.Mesh.Generate(2);
+            var objs = ctr.GetMeshObjects();
+
+            var dir = new Point3D(0f, 0f, 1f);
+            var tetras = proj.ExtrudeAlongVector(objs.Item3, dir, layersCount, size);
+
+            foreach (var layer in tetras)
+                Assert.AreEqual(objs.Item3.Count * 3, layer.Count);
+
+            var md = new ModelData();
+            md.ObjectData.E3DCollection.AddRange("Extruded", tetras.SelectMany(v => v));
+
+            var nodes = tetras.SelectMany(v => v).SelectMany(v => v.GetVertexes()).Distinct().OrderBy(v => v.Number);
+            foreach (var node in nodes)
+                md.ObjectData.NodesSet.Add(node.Number, node);
+
+            var saver = new SaveModelToBPF2TextFile();
+            saver.Save(md, $@"C:\Mesh\BPF2\Extruded{fileName}.bpf2");
         }
 
         private void MakeTranfinite(int seamPointCurves, int[] seamCurves, int[] seamVolumes)
