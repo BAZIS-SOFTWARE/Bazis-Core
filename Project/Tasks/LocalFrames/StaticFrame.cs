@@ -45,6 +45,8 @@ namespace Project.Tasks.FrameCreators
                 throw new System.Exception("Должно быть три узла");
 
             BaseGroup = baseGr;
+
+            CalcPosition();
         }
 /// <inheritdoc/>
 
@@ -78,8 +80,9 @@ namespace Project.Tasks.FrameCreators
 
                 frame = new Frame(points[0], points[1], points[2]);
             }
-            else
-                frame = new Frame();
+            // вроде это лишнее
+            //else
+                //frame = new Frame();
 
             frame.Rotate(frame.Dir_X, Rotation);
             frame.Shift(Shifting);

@@ -592,16 +592,16 @@ namespace TestProject
         }
 
         [TestMethod]
-        [DataRow(1, 0, 0, 0.75f)]
+        [DataRow(1, 0, 0, 75f)]
         [DataRow(4, 4, 4, 0)]
         [DataRow(1, 4, 0.4f, 0)]
-        [DataRow(3, 1, 0.8f, 0.75f)]
+        [DataRow(3, 1, 0.8f, 75f)]
         public void LazerCalcPowerTest(float x, float y, float z, float power)
         {
             //assing            
             var function = new CustomFunction();
             
-            function.CreateEngine(@"..\..\..\Examples\PythonScript\LaserSourcePython.py");
+            function.CreateEngine(@"..\..\..\Examples\PythonScript\RectangleSource.py");
 
             //act
             var result = function.CalcValue(new Point3D(x, y, z));

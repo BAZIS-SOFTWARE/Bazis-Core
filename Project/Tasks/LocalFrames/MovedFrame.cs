@@ -16,8 +16,8 @@ namespace Project.Tasks.FrameCreators
         private IGroup refLine;
 
         public MovedFrame(IGroup baseLine, IGroup refLine, float _velocity)
-            : this()
         {
+            Name = "MRF";
             if (_velocity == 0)
                 throw new Exception("Скорость не может равняться нулю!");
             Velocity = _velocity;
@@ -25,21 +25,15 @@ namespace Project.Tasks.FrameCreators
             BaseLine = baseLine;
             RefLine = refLine;
 
-            //CalcPosition();
+
+            // вычисление позиции после создания объекта
+            CalcPosition();
 
             //CheckStartPoints(startPoints, baseLine);
             //CheckStartPoints(startPoints, refLine);
 
             //SortTrajNodes(startPoints, baseLine);
             //SortTrajNodes(startPoints, refLine);
-        }
-        /// <summary>
-        /// MovedFrame
-        /// </summary>
-        public MovedFrame()
-        {
-            Name = "MRF";
-            frame = new Frame();
         }
 
         /// <inheritdoc/>
@@ -172,10 +166,10 @@ namespace Project.Tasks.FrameCreators
 
         public override void CalcPosition()
         {
-            if (baseLine == null | refLine == null)
-                frame = new Frame();
-            else
-            {
+            //if (baseLine == null | refLine == null)
+            //    frame = new Frame();
+            //else
+            //{
                 var posit = new Point3D();
 
 
@@ -204,7 +198,7 @@ namespace Project.Tasks.FrameCreators
 
                 }
                 frame = new Frame(posit, posit.Sum(dirY), posit.Sum(dirX));
-            }
+            //}
 
             frame.Rotate(frame.Dir_X, Rotation);
             frame.Shift(Shifting);
