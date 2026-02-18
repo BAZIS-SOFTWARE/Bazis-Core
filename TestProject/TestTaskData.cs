@@ -166,10 +166,12 @@ namespace TestProject
         }
 
         [DataTestMethod]
-        [DataRow(10.1f,1,0.5f,0)]
-        [DataRow(0,0,0,0)]
-        [DataRow(0, 0, 0, 0)]
-        public void TestFrameFunctionTransformation(float rotation,float x,float y,float z)
+        [DataRow(10.1f, 10.2f, 10.3f,1,0.5f,0)]
+        [DataRow(0, 0, 0 ,0 ,0, 0)]
+        [DataRow(-1f, -1f, -1f, -1f, -1f, -1f)]
+        [DataRow(1f, 1f, 1f, 1f, 1f, 1f)]
+        [DataRow(0.001f, 0.001f, 0.001f, 0.001f, 0.001f, 0.001f)]
+        public void TestFrameFunctionTransformation(float rotX, float rotY, float rotZ, float x,float y,float z)
         {
             //assign
             var loader = new LoadProjectFromTextFormat();
@@ -177,11 +179,72 @@ namespace TestProject
 
             //act
             var heatData = proj.TaskData.Find(DataKind.Нагрев).Select(h => (HeatData)h).First();
-            heatData.FrameFunction.LocalFrame.Rotation_X = rotation;
+            heatData.FrameFunction.LocalFrame.Rotation_X = rotX;
+            heatData.FrameFunction.LocalFrame.Rotation_Y = rotY;
+            heatData.FrameFunction.LocalFrame.Rotation_Z = rotZ;
             heatData.FrameFunction.LocalFrame.Shifting = new Point3D(x,y,z);
             //assert
-            Assert.AreEqual(heatData.FrameFunction.LocalFrame.Rotation_X, rotation);
+            Assert.AreEqual(heatData.FrameFunction.LocalFrame.Rotation_X, rotX);
+            Assert.AreEqual(heatData.FrameFunction.LocalFrame.Rotation_Y, rotY);
+            Assert.AreEqual(heatData.FrameFunction.LocalFrame.Rotation_Z, rotZ);
             Assert.AreEqual(heatData.FrameFunction.LocalFrame.Shifting, new Point3D(x,y,z));
+        }
+
+        [DataTestMethod]
+        [DataRow(10.1f, 10.2f, 10.3f, 1, 0.5f, 0)]
+        [DataRow(0, 0, 0, 0, 0, 0)]
+        [DataRow(-1f, -1f, -1f, -1f, -1f, -1f)]
+        [DataRow(1f, 1f, 1f, 1f, 1f, 1f)]
+        [DataRow(0.001f, 0.001f, 0.001f, 0.001f, 0.001f, 0.001f)]
+        [DataRow(-0.001f, 0.001f, -0.001f, 0.001f, -0.001f, 0.001f)]
+        [DataRow(10000000, 10000000, 10000000, 10000000, 10000000, 10000000)]
+        public void TestFrameFunctionStringTransformation(float rotX, float rotY, float rotZ, float x, float y, float z)
+        {
+            var str = $"{x}|{y}|{z}|{rotX}|{rotY}|{rotZ}";
+            var loader = new LoadProjectFromTextFormat();
+            var proj = loader.Load(@"..\..\..\Examples\proj_traj.bpf");
+
+            //act
+            var heatData = proj.TaskData.Find(DataKind.Нагрев).Select(h => (HeatData)h).First();
+            heatData.FrameFunction.LocalFrame.SetShiftingAndRotationV2(str);
+
+            Assert.AreEqual(heatData.FrameFunction.LocalFrame.Rotation_X, rotX);
+            Assert.AreEqual(heatData.FrameFunction.LocalFrame.Rotation_Y, rotY);
+            Assert.AreEqual(heatData.FrameFunction.LocalFrame.Rotation_Z, rotZ);
+            Assert.AreEqual(heatData.FrameFunction.LocalFrame.Shifting, new Point3D(x, y, z));
+        }
+
+        [DataTestMethod]
+        [DataRow("--1|2|3|4|5|6")]
+        [DataRow("@|#|%|=|+|_")]
+        [DataRow("11f|22f|33f|44f|55f|66f")]
+        [DataRow("a|b|c|d|e|f")]
+        public void TestFrameFunctionOnInvalidString(string fail)
+        {
+            var loader = new LoadProjectFromTextFormat();
+            var proj = loader.Load(@"..\..\..\Examples\proj_traj.bpf");
+
+            //act
+            var heatData = proj.TaskData.Find(DataKind.Нагрев).Select(h => (HeatData)h).First();
+            Assert.ThrowsException<Exception>(() => heatData.FrameFunction.LocalFrame.SetShiftingAndRotationV2(fail));
+        }
+
+        [DataTestMethod]
+        [DataRow(10.3f, 1, 0.5f, 0.1f)]
+        [DataRow(1, 1, 1, 1)]
+        [DataRow(-1f, -1f, -1f, -1f)]
+        public void TestFrameFunctionOnOldStringFormat(float x, float y, float z, float angle)
+        {
+            var str = $"{x}|{y}|{z}|{angle}";
+            var loader = new LoadProjectFromTextFormat();
+            var proj = loader.Load(@"..\..\..\Examples\proj_traj.bpf");
+
+            //act
+            var heatData = proj.TaskData.Find(DataKind.Нагрев).Select(h => (HeatData)h).First();
+            heatData.FrameFunction.LocalFrame.SetShiftingAndRotationV2(str);
+
+            Assert.AreNotEqual(heatData.FrameFunction.LocalFrame.Rotation_X, angle);
+            Assert.AreNotEqual(heatData.FrameFunction.LocalFrame.Shifting, new Point3D(x, y, z));
         }
 
         [DataTestMethod]
