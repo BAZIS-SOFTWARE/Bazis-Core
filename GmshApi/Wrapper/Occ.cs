@@ -13,11 +13,35 @@ namespace GmshApi
         private delegate int gmshModelOccAddPointFun(double x, double y, double z, double meshSize, int tag, ref int ierr);
         private gmshModelOccAddPointFun gmshModelOccAddPoint = GetFunction<gmshModelOccAddPointFun>("gmshModelOccAddPoint");
 
+        private delegate int gmshModelOccAddLineFun(int startTag, int endTag, int tag, ref int ierr);
+        private gmshModelOccAddLineFun gmshModelOccAddLine = GetFunction<gmshModelOccAddLineFun>("gmshModelOccAddLine");
+
+        private delegate int gmshModelOccAddCircleArcFun(int startTag, int centerTag, int endTag, int tag, ref int ierr);
+        private gmshModelOccAddCircleArcFun gmshModelOccAddCircleArc = GetFunction<gmshModelOccAddCircleArcFun>("gmshModelOccAddCircleArc");
+
+        private delegate int gmshModelOccAddCircleFun(double x, double y, double z, double r, int tag, double angle1, double angle2, 
+                                                      double[] zAxis, IntPtr zAxis_n, double[] xAxis, IntPtr xAxis_n, ref int ierr);
+        private gmshModelOccAddCircleFun gmshModelOccAddCircle = GetFunction<gmshModelOccAddCircleFun>("gmshModelOccAddCircle");
+
+        private delegate int gmshModelOccAddBezierFun(int[] pointTags, IntPtr pointTags_n, int tag, ref int ierr);
+        private gmshModelOccAddBezierFun gmshModelOccAddBezier = GetFunction<gmshModelOccAddBezierFun>("gmshModelOccAddBezier");
+
+        private delegate int gmshModelOccAddWireFun(int[] curveTags, IntPtr curveTags_n, int tag, int checkClosed, ref int ierr);
+        private gmshModelOccAddWireFun gmshModelOccAddWire = GetFunction<gmshModelOccAddWireFun>("gmshModelOccAddWire");
+
+        private delegate int gmshModelOccAddCurveLoopFun(int[] curveTags, IntPtr curveTags_n, int tag, ref int ierr);
+        private gmshModelOccAddCurveLoopFun gmshModelOccAddCurveLoop = GetFunction<gmshModelOccAddCurveLoopFun>("gmshModelOccAddCurveLoop");
+
         private delegate int gmshModelOccAddRectangleFun(double x, double y, double z, double dx, double dy, int tag, double roundedRadius, ref int ierr);
         private gmshModelOccAddRectangleFun gmshModelOccAddRectangle = GetFunction<gmshModelOccAddRectangleFun>("gmshModelOccAddRectangle");
 
         private delegate int gmshModelOccAddPlaneSurfaceFun(int[] wireTags, IntPtr wireTags_n, int tag, ref int ierr);
         private gmshModelOccAddPlaneSurfaceFun gmshModelOccAddPlaneSurface = GetFunction<gmshModelOccAddPlaneSurfaceFun>("gmshModelOccAddPlaneSurface");
+
+        private delegate int gmshModelOccAddSurfaceFillingFun(int wireTag, int tag, int[] pointTags, IntPtr pointTags_n, int degree, int numPointsOnCurves,
+                                                              int numIter, int anisotropic, double tol2d, double tol3d, double tolAng, double tolCurv,
+                                                              int maxDegree, int maxSegments, ref int ierr);
+        private gmshModelOccAddSurfaceFillingFun gmshModelOccAddSurfaceFilling = GetFunction<gmshModelOccAddSurfaceFillingFun>("gmshModelOccAddSurfaceFilling");
 
         private delegate int gmshModelOccAddBoxFun(double x, double y, double z, double dx, double dy, double dz, int tag, ref int ierr);
         private gmshModelOccAddBoxFun gmshModelOccAddBox = GetFunction<gmshModelOccAddBoxFun>("gmshModelOccAddBox");
@@ -25,6 +49,15 @@ namespace GmshApi
         private delegate int gmshModelOccAddWedgeFun(double x, double y, double z, double dx, double dy, double dz, 
                                                       int tag, double ltx, double[] zAxis, IntPtr zAxis_n, ref int ierr);
         private gmshModelOccAddWedgeFun gmshModelOccAddWedge = GetFunction<gmshModelOccAddWedgeFun>("gmshModelOccAddWedge");
+
+        private delegate void gmshModelOccAddThruSectionsFun(int[] wireTags, IntPtr wireTags_n, ref IntPtr outDimTags, ref IntPtr outDimTags_n,
+                                                             int tag, int makeSolid, int makeRuled, int maxDegree, string continuity, string parametrization,
+                                                             int smoothing, ref int ierr);
+        private gmshModelOccAddThruSectionsFun gmshModelOccAddThruSections = GetFunction<gmshModelOccAddThruSectionsFun>("gmshModelOccAddThruSections");
+
+        private delegate void gmshModelOccAddPipeFun(int[] dimTags, IntPtr dimTags_n, int wireTag,
+                                                    ref IntPtr outDimTags, ref IntPtr outDimTags_n, string trihedron, ref int ierr);
+        private gmshModelOccAddPipeFun gmshModelOccAddPipe = GetFunction<gmshModelOccAddPipeFun>("gmshModelOccAddPipe");
 
         private delegate void gmshModelOccIntersectFun(int[] objectDimTags, IntPtr objectDimTags_n,
                                                       int[] toolDimTags, IntPtr toolDimTags_n,
@@ -90,6 +123,94 @@ namespace GmshApi
         }
 
         /// <summary>
+        /// Добавляет геометрическую линию в ядро OCC
+        /// </summary>
+        /// <param name="startTag">Идентификатор точки начала</param>
+        /// <param name="endTag">Идентификатор точки конца</param>
+        /// <param name="tag">Желаемый идентификатор или -1 для автоназначения</param>
+        /// <returns>Идентификатор геометрической линии</returns>
+        public int AddLine(int startTag, int endTag, int tag = -1)
+        {
+            var ierr = 0;
+            return gmshModelOccAddLine(startTag, endTag, tag, ref ierr);
+        }
+
+        /// <summary>
+        /// Создает дугу окружности с центром centerTag, началом startTag и концом endTag в ядре OCC
+        /// </summary>
+        /// <param name="startTag">Идентификатор начальной точки</param>
+        /// <param name="centerTag">Идентификатор центра точки</param>
+        /// <param name="endTag">Идентификатор конечной точки</param>
+        /// <param name="tag">Желаемый идентификатор или -1 для автоназначения</param>
+        /// <returns>Идентификатор дуги</returns>
+        public int AddCircleArc(int startTag, int centerTag, int endTag, int tag = -1)
+        {
+            var ierr = 0;
+            return gmshModelOccAddCircleArc(startTag, centerTag, endTag, tag, ref ierr);
+        }
+
+        /// <summary>
+        /// Добавляет окружность в ядро OCC с центром x,y,z и радиусом r
+        /// </summary>
+        /// <param name="x">Координата x центра окружности</param>
+        /// <param name="y">Координата y центра окружности</param>
+        /// <param name="z">Координата z центра окружности</param>
+        /// <param name="r">Радиус окружности</param>
+        /// <param name="tag">Желаемый идентификатор или -1 для автоназначения</param>
+        /// <param name="angle1">Начальный угол (для генерации полуокружности)</param>
+        /// <param name="angle2">Конечный угол (для генерации полуокружности)</param>
+        /// <param name="zAxis">Желаемая орта оси Z(x,y,z) или null(если не требуется)</param>
+        /// <param name="xAxis">Желаемая орта оси X(x,y,z) или null(если не требуется)</param>
+        /// <returns>Идентификатор окружности</returns>
+        public int AddCircle(double x, double y, double z, double r, int tag = -1, double angle1 = 0, double angle2 = 2 * Math.PI,
+                             double[] zAxis = null, double[] xAxis = null)
+        {
+            var ierr = 0;
+            zAxis = zAxis ?? new double[0];
+            xAxis = xAxis ?? new double[0];
+            return gmshModelOccAddCircle(x, y, z, r, tag, angle1, angle2, zAxis, (IntPtr)zAxis.Length, xAxis, (IntPtr)xAxis.Length, ref ierr);
+        }
+
+        /// <summary>
+        /// Создает кривую безье по указанным pointTags в ядре OCC
+        /// </summary>
+        /// <param name="pointTags">Массив идентификаторов точек</param>
+        /// <param name="tag">Желаемый идентификатор или -1 для автоназначения</param>
+        /// <returns>Идентификатор кривой</returns>
+        public int AddBezier(int[] pointTags, int tag = -1)
+        {
+            var ierr = 0;
+            return gmshModelOccAddBezier(pointTags, (IntPtr)pointTags.Length, tag, ref ierr);
+        }
+
+        /// <summary>
+        /// Добавляет в ядро OCC контур(замкнутый или открытый), контур может содержать геометрически одинаковые точки кривых, но топологически разные кривые
+        /// </summary>
+        /// <param name="curveTags">Массив идентификаторов кривых, которые формируют контур</param>
+        /// <param name="tag">Желаемый идентификатор или -1 для автоназначения</param>
+        /// <param name="checkClosed">Проверять замкнутость контура перед созданием?</param>
+        /// <returns>Идентификатор контура</returns>
+        public int AddWire(int[] curveTags, int tag = -1, bool checkClosed = false)
+        {
+            var ierr = 0;
+            return gmshModelOccAddWire(curveTags, (IntPtr)curveTags.Length, tag, Convert.ToInt32(checkClosed), ref ierr);
+        }
+
+        /// <summary>
+        ///  Добавляет в ядро OCC контур(замкнутый), контур может содержать геометрически одинаковые точки кривых, но топологически разные кривые, идентификаторы
+        ///  со знаком минус рассматриваются рассматривается как инвертированное отображение кривой, где начальная точка кривой - рассматривается как конечная,
+        ///  а конечная - рассматривается как начальная
+        /// </summary>
+        /// <param name="curveTags">Массив идентификаторов кривых, которые формируют контур</param>
+        /// <param name="tag">Желаемый идентификатор или -1 для автоназначения</param>
+        /// <returns>Идентификатор контура</returns>
+        public int AddCurveLoop(int[] curveTags, int tag = -1)
+        {
+            var ierr = 0;
+            return gmshModelOccAddCurveLoop(curveTags, (IntPtr)curveTags.Length, tag, ref ierr);
+        }
+
+        /// <summary>
         /// Добавляет прямоугольник в OCC ядро с левым нижним углом (x,y,z) и верхним правым углом(x + dx, y + dy, z),
         /// если tag положительный, назначает указанный идентификатор поверхности, иначе идентификатор генерируется автоматически,
         /// roundedRadius определяет радиус скругления углов
@@ -117,6 +238,32 @@ namespace GmshApi
         {
             var ierr = 0;
             return gmshModelOccAddPlaneSurface(wireTags, (IntPtr)wireTags.Length, tag, ref ierr);
+        }
+        /// <summary>
+        /// Создает криволинейную поверхность по указанному контуру и параметрам в ядре OCC
+        /// </summary>
+        /// <param name="wireTag">Идентификатор контура</param>
+        /// <param name="tag">Желаемый идентификатор, или -1 для автоназначения</param>
+        /// <param name="pointTags">Идентификаторы точек, через которые должна пройти поверхность</param>
+        /// <param name="degree">Минимальная степень, которую необходимо вычислить для формирования деформации поверхности</param>
+        /// <param name="numPointsOnCurves">Число точек на кривой</param>
+        /// <param name="numIter">Максимальное количество итераций для процесса оптимизации</param>
+        /// <param name="anisotropic">Внутренний флаг для повышения производительности</param>
+        /// <param name="tol2d">Допуски для ограничителей в параметрической плоскости</param>
+        /// <param name="tol3d">Максимальная допускаемая длина между поддержками поверхности и ограничителями</param>
+        /// <param name="tolAng">Максимально допустимый угол между нормалью поверхности и ограничителями</param>
+        /// <param name="tolCurv">Максимально допустимая разница кривизны между поверхностью и ограничителем</param>
+        /// <param name="maxDegree">Наивысшая степень, который может иметь многочлен, определяющий заполнение поверхности</param>
+        /// <param name="maxSegments">Наибольшее количество сегментов, которую может иметь поверхность заполнения</param>
+        /// <returns>Возврщает идентификатор криволинейной поверхности</returns>
+        public int AddSurfaceFilling(int wireTag, int tag = -1, int[] pointTags = null, int degree = 3, int numPointsOnCurves = 15,
+                                     int numIter = 2, bool anisotropic = false, double tol2d = 0.00001, double tol3d = 0.0001, double tolAng = 0.01,
+                                     double tolCurv = 0.1, int maxDegree = 8, int maxSegments = 9)
+        {
+            var ierr = 0;
+            pointTags = pointTags ?? new int[0];
+            return gmshModelOccAddSurfaceFilling(wireTag, tag, pointTags, (IntPtr)pointTags.Length, degree, numPointsOnCurves, numIter,
+                                                Convert.ToInt32(anisotropic), tol2d, tol3d, tolAng, tolCurv, maxDegree, maxSegments, ref ierr);
         }
 
         /// <summary>
@@ -154,6 +301,45 @@ namespace GmshApi
             var ierr = 0;
             zAxis = zAxis ?? new double[0];
             return gmshModelOccAddWedge(x, y, z, dx, dy, dz, tag, ltx, zAxis, (IntPtr)zAxis.Length, ref ierr);
+        }
+        /// <summary>
+        /// Добавляет объем или поверхность по указанным сечениям wireTags в пространстве в ядро OCC
+        /// </summary>
+        /// <param name="wireTags">Массив контуров сечений</param>
+        /// <param name="tag">Желаемый идентификатор объема или поверхности</param>
+        /// <param name="makeSolid">Превратить в объем если true или поверхность</param>
+        /// <param name="makeRuled">Линейчатая поверхность если true</param>
+        /// <param name="maxDegree">Если положительна - назначить степень как максимальную для результирующей поверхности</param>
+        /// <param name="continuity">Опциональный параметр - возможные значения "C0", "G1", "C1", "G2", "C2", "C3","CN" или "" если не требуется</param>
+        /// <param name="parametrization">Опциональный параметр - возможные значения "ChordLength", "Centripetal", "IsoParametric" или "" если не требуется</param>
+        /// <param name="smoothing">Опциональный параметр гладкости</param>
+        /// <returns>Возвращает созданные результирующие сущности в формате размерность:идентификатор</returns>
+        public int[] AddThruSections(int[] wireTags, int tag = -1, bool makeSolid = true, bool makeRuled = false, int maxDegree = -1, 
+                                    string continuity = "", string parametrization = "", bool smoothing = false)
+        {
+            var ierr = 0;
+            var outDimTags = IntPtr.Zero;
+            var outDimTags_n = IntPtr.Zero;
+            gmshModelOccAddThruSections(wireTags, (IntPtr)wireTags.Length, ref outDimTags, ref outDimTags_n, tag, Convert.ToInt32(makeSolid),
+                                        Convert.ToInt32(makeRuled), maxDegree, continuity, parametrization, Convert.ToInt32(smoothing), ref ierr);
+            return GetObjectsData<int>(outDimTags, outDimTags_n);
+        }
+
+        /// <summary>
+        /// Экструдирует dimTags вдоль кривой wireTag в ядре OCC
+        /// </summary>
+        /// <param name="dimTags">Массив сущностей для экструзии</param>
+        /// <param name="wireTag">Кривая вдоль которой осуществляеется экструзия</param>
+        /// <param name="trihedron">Параметры создания</param>
+        /// <returns>Новые образованные геометрические сущности</returns>
+        public int[] AddPipe(int[] dimTags, int wireTag, string trihedron = "")
+        {
+            var ierr = 0;
+            var outDimTags = IntPtr.Zero;
+            var outDimTags_n = IntPtr.Zero;
+            gmshModelOccAddPipe(dimTags, (IntPtr)dimTags.Length, wireTag, ref outDimTags, ref outDimTags_n, trihedron, ref ierr);
+            var resDimTags = GetObjectsData<int>(outDimTags, outDimTags_n);
+            return resDimTags;
         }
 
         /// <summary>
