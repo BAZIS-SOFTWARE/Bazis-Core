@@ -45,8 +45,6 @@ namespace Project.Tasks.FrameCreators
                 throw new System.Exception("Должно быть три узла");
 
             BaseGroup = baseGr;
-
-            CalcPosition();
         }
 /// <inheritdoc/>
 
@@ -62,10 +60,11 @@ namespace Project.Tasks.FrameCreators
         /// <inheritdoc/>
         public override string ToString()
         {
+
             if(BaseGroup == null)
-                return $"{Name};*;{Shifting}|{Rotation}";
+                return $"{Name};*;{Shifting}|{Rotation_X}|{Rotation_Y}|{Rotation_Z}";
             else
-                return $"{Name};{BaseGroup.Name};{Shifting}|{Rotation}";
+                return $"{Name};{BaseGroup.Name};{Shifting}|{Rotation_X}|{Rotation_Y}|{Rotation_Z}";
         }
 /// <inheritdoc/>
 
@@ -80,11 +79,13 @@ namespace Project.Tasks.FrameCreators
 
                 frame = new Frame(points[0], points[1], points[2]);
             }
-            // вроде это лишнее
-            //else
-                //frame = new Frame();
+            // Это не лишнее.
+            // Без этого обновление положения будут применяться
+            // к уже измененому положению!!!
+            else
+                frame = new Frame();
 
-            frame.Rotate(frame.Dir_X, Rotation);
+            frame.Rotate(frame.Dir_X, Rotation_X);
             frame.Shift(Shifting);
         }
     }
