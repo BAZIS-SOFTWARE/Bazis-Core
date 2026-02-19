@@ -14,6 +14,8 @@ using Model.MeshObjects;
 using Model.Utilities;
 using Geometry;
 using Model.IO;
+using OperationalController.MeshObjsCreator;
+using System.Numerics;
 
 namespace GmshTests
 {
@@ -850,8 +852,8 @@ namespace GmshTests
         }
 
         [DataTestMethod]
-        [DataRow(5, 0.25f, "rhombus")]
-        public void ExtrudeStepTest(int layersCount, float size, string fileName)
+        [DataRow(1, 0.25f, "rhombus")]
+        public void ExtrudeTranslateTest(int layersCount, float size, string fileName)
         {
             var proj = new ProjectController();
             proj.GmshController.Load(@"..\..\..\..\GmshApi\gmsh.dll");
@@ -859,25 +861,129 @@ namespace GmshTests
             var ctr = proj.GmshController;
             ctr.Gmsh.Open($@"C:\Mesh\STEP\{fileName}.step");
 
-
             ctr.Gmsh.Model.Mesh.Generate(2);
+            ctr.Gmsh.Model.Mesh.Recombine();
+            ctr.Gmsh.Write($@"C:\Mesh\MSH\{fileName}.msh");
             var objs = ctr.GetMeshObjects();
 
             var dir = new Point3D(0f, 0f, 1f);
-            var tetras = proj.ExtrudeAlongVector(objs.Item3, dir, layersCount, size);
 
-            foreach (var layer in tetras)
-                Assert.AreEqual(objs.Item3.Count * 3, layer.Count);
+            var extruder = new TranslateExtruder();
+            var tetras = extruder.Extrude(objs.Item3, dir, layersCount, size);
 
             var md = new ModelData();
             md.ObjectData.E3DCollection.AddRange("Extruded", tetras.SelectMany(v => v));
 
-            var nodes = tetras.SelectMany(v => v).SelectMany(v => v.GetVertexes()).Distinct().OrderBy(v => v.Number);
-            foreach (var node in nodes)
+            foreach (var node in extruder.Nodes.Values)
                 md.ObjectData.NodesSet.Add(node.Number, node);
+
+            Assert.AreEqual(0, extruder.MissedTetras);
 
             var saver = new SaveModelToBPF2TextFile();
             saver.Save(md, $@"C:\Mesh\BPF2\Extruded{fileName}.bpf2");
+        }
+
+        [DataTestMethod]
+        [DataRow(8, "jug", false, false)]
+        [DataRow(11, "jug", true, false)]
+        [DataRow(32, "jug", false, true)]
+        [DataRow(13, "jug", true, true)]
+        public void ExtrudeRotationTest(int segments, string fileName, bool recombine, bool transfinite)
+        {
+            var proj = new ProjectController();
+            proj.GmshController.Load(@"..\..\..\..\GmshApi\gmsh.dll");
+
+            var ctr = proj.GmshController;
+            ctr.Gmsh.Open($@"D:\{fileName}.step");
+
+            ctr.Gmsh.Model.Mesh.Generate(2);
+            if (recombine)
+                ctr.Gmsh.Model.Mesh.Recombine();
+            //ctr.Gmsh.Write($@"D:\{fileName}Recombine{recombine.ToString()}Transfinite{transfinite.ToString()}.msh");
+            var objs = ctr.GetMeshObjects();
+
+            List<List<Element3D>> tetras = null;
+            Dictionary<int, Node> nodes = null;
+            int missed = 0;
+
+            if (transfinite)
+            {
+                var extruder = new TransfiniteRotateExtruder();
+                tetras = extruder.Extrude(objs.Item3, Vector3.Zero, Vector3.UnitY, segments);
+                nodes = extruder.Nodes;
+                missed = extruder.MissedTetras;
+            }
+            else
+            {
+                var extruder = new RotateExtruder();
+                tetras = extruder.Extrude(objs.Item3, Vector3.Zero, Vector3.UnitY, segments);
+                nodes = extruder.Nodes;
+                missed = extruder.MissedTetras;
+            }
+
+            var md = new ModelData();
+            md.ObjectData.E3DCollection.AddRange("Extruded", tetras.SelectMany(v => v));
+
+            foreach (var node in nodes.Values)
+                md.ObjectData.NodesSet.Add(node.Number, node);
+
+            Assert.AreEqual(0, missed);
+
+            //var saver = new SaveModelToBPF2TextFile();
+            //saver.Save(md, $@"D:\{fileName}Recombine{recombine.ToString()}Transfinite{transfinite.ToString()}.bpf2");
+        }
+
+
+        private void CreateGearSurface(IGmshController controller, double radius, double teethRadius, int teeths, double teethAngle = 15)
+        {
+            if (teeths < 3)
+                throw new ArgumentException("Число зубьев шестерни меньше 3");
+            if (teethRadius <= radius)
+                throw new ArgumentException("Радиус зубьев не должен быть меньше или равен радиусу основания");
+
+            var contour = controller.Gmsh.Model.Occ.AddCircle(0, 0, 0, radius);
+            var circleHole = controller.Gmsh.Model.Occ.AddCircle(0, 0, 0, radius * 0.7);
+
+            var teethRadAngle = Math.PI / 180 * teethAngle;
+            var offset = 2 * Math.PI / teeths;
+            var teethLength = (offset - 2 * teethRadAngle) / 2;
+
+            var curAngle = 0.0;
+
+            var rectList = new List<int>();
+            for (var i = 0; i < teeths; ++i)
+            {
+                var aPoint = new Vector3D(radius * Math.Cos(curAngle), radius * Math.Sin(curAngle), 0);
+                var bPoint = new Vector3D(teethRadius * Math.Cos(curAngle + teethRadAngle), teethRadius * Math.Sin(curAngle + teethRadAngle), 0);
+                var cPoint = new Vector3D(teethRadius * Math.Cos(curAngle + teethRadAngle + teethLength),
+                                          teethRadius * Math.Sin(curAngle + teethRadAngle + teethLength), 0);
+                var dPoint = new Vector3D(radius * Math.Cos(curAngle + 2 * teethRadAngle + teethLength),
+                                          radius * Math.Sin(curAngle + 2 * teethRadAngle + teethLength), 0);
+
+                var a = controller.Gmsh.Model.Occ.AddPoint(aPoint.X, aPoint.Y, aPoint.Z);
+                var b = controller.Gmsh.Model.Occ.AddPoint(bPoint.X, bPoint.Y, bPoint.Z);
+                var c = controller.Gmsh.Model.Occ.AddPoint(cPoint.X, cPoint.Y, cPoint.Z);
+                var d = controller.Gmsh.Model.Occ.AddPoint(dPoint.X, dPoint.Y, dPoint.Z);
+
+                var aLine = controller.Gmsh.Model.Occ.AddLine(a, b);
+                var bLine = controller.Gmsh.Model.Occ.AddLine(b, c);
+                var cLine = controller.Gmsh.Model.Occ.AddLine(c, d);
+                var dLine = controller.Gmsh.Model.Occ.AddLine(d, a);
+
+                var wire = controller.Gmsh.Model.Occ.AddWire([aLine, bLine, cLine, dLine]);
+                var surf = controller.Gmsh.Model.Occ.AddPlaneSurface([wire]);
+
+                rectList.Add(2);
+                rectList.Add(surf);
+                curAngle += offset;
+            }
+
+            var circleHoleWire = controller.Gmsh.Model.Occ.AddWire([circleHole]);
+            var circelWire = controller.Gmsh.Model.Occ.AddWire([contour]);
+            var surface = controller.Gmsh.Model.Occ.AddPlaneSurface([circelWire, circleHoleWire]);
+
+            controller.Gmsh.Model.Occ.Fuse([2, surface], rectList.ToArray());
+            controller.Gmsh.Model.Occ.Synchronize();
         }
 
         private void MakeTranfinite(int seamPointCurves, int[] seamCurves, int[] seamVolumes)

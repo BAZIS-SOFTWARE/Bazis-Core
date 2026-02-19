@@ -26,6 +26,13 @@ namespace GmshApi
                                                       int tag, double ltx, double[] zAxis, IntPtr zAxis_n, ref int ierr);
         private gmshModelOccAddWedgeFun gmshModelOccAddWedge = GetFunction<gmshModelOccAddWedgeFun>("gmshModelOccAddWedge");
 
+        private delegate void gmshModelOccFuseFun(int[] objectDimTags, IntPtr objectDimTags_n,
+                                                      int[] toolDimTags, IntPtr toolDimTags_n,
+                                                      ref IntPtr outDimTags, ref IntPtr outDimTags_n,
+                                                      ref IntPtr outDimTagsMap, ref IntPtr outDimTagsMap_n, ref IntPtr outDimTagsMap_nn,
+                                                      int tag, int removeObject, int removeTool, ref int ierr);
+        private gmshModelOccFuseFun gmshModelOccFuse = GetFunction<gmshModelOccFuseFun>("gmshModelOccFuse");
+
         private delegate void gmshModelOccIntersectFun(int[] objectDimTags, IntPtr objectDimTags_n,
                                                       int[] toolDimTags, IntPtr toolDimTags_n,
                                                       ref IntPtr outDimTags, ref IntPtr outDimTags_n,
@@ -154,6 +161,33 @@ namespace GmshApi
             var ierr = 0;
             zAxis = zAxis ?? new double[0];
             return gmshModelOccAddWedge(x, y, z, dx, dy, dz, tag, ltx, zAxis, (IntPtr)zAxis.Length, ref ierr);
+        }
+
+        /// <summary>
+        /// Вычисляет булеву операцию объединения множеств objectDimTags и toolDimTags,
+        /// если операция выполняется для разных размерностей, нижняя размерность автоматически поглащается верхней,
+        /// возвращает результирующие сущности dimTags и ассоциированных с ней карты относительно старой нумерации (отслеживание где произошли изменения)
+        /// </summary>
+        /// <param name="objectDimTags">Множество 1 для взятия объединения</param>
+        /// <param name="toolDimTags">Множество 2 для взятия объединения</param>
+        /// <param name="tag">Желаемый идентификатор, валиден если применяется операция относительно одной сущности, или -1 для автоназначения</param>
+        /// <param name="removeObject">Удалить исходное множество 1 после выполнении операции</param>
+        /// <param name="removeTool">Удалить исходное множество 2 после выполнении операции</param>
+        /// <returns>Результирующее множестов dim:tag и карта ассоциаций со старыми множествами</returns>
+        public Tuple<int[], int[][]> Fuse(int[] objectDimTags, int[] toolDimTags, int tag = -1, bool removeObject = true, bool removeTool = true)
+        {
+            var ierr = 0;
+            var outDimTags = IntPtr.Zero;
+            var outDimTags_n = IntPtr.Zero;
+            var outDimTagsMap = IntPtr.Zero;
+            var outDimTagsMap_n = IntPtr.Zero;
+            var outDimTagsMap_nn = IntPtr.Zero;
+            gmshModelOccFuse(objectDimTags, (IntPtr)objectDimTags.Length, toolDimTags, (IntPtr)toolDimTags.Length,
+                                 ref outDimTags, ref outDimTags_n, ref outDimTagsMap, ref outDimTagsMap_n, ref outDimTagsMap_nn,
+                                 tag, Convert.ToInt32(removeObject), Convert.ToInt32(removeTool), ref ierr);
+            var dimTags = GetObjectsData<int>(outDimTags, outDimTags_n);
+            var dimTagsMap = GetArrayOfObjectsData<int>(outDimTagsMap, outDimTagsMap_nn, outDimTagsMap_n);
+            return Tuple.Create(dimTags, dimTagsMap);
         }
 
         /// <summary>
