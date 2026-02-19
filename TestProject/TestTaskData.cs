@@ -248,6 +248,23 @@ namespace TestProject
         }
 
         [DataTestMethod]
+        public void TestFrameFunctionOnOldFileStringFormat()
+        {
+            var loader = new LoadProjectFromTextFormat();
+            var proj = loader.Load(@"..\..\..\Examples\proj_traj_old_LocalFrame.bpf");
+
+            //act
+            var heatData = proj.TaskData.Find(DataKind.Нагрев).Select(h => (HeatData)h).First();
+            var str = heatData.FrameFunction.LocalFrame.ToString().Split(";").Last();
+            var parts = str.Split('|');
+
+            Assert.AreEqual(heatData.FrameFunction.LocalFrame.Shifting, new Point3D(float.Parse(parts[0]), float.Parse(parts[1]), float.Parse(parts[2])));
+            Assert.AreEqual(heatData.FrameFunction.LocalFrame.Rotation_X, float.Parse(parts[3]));
+            Assert.AreEqual(heatData.FrameFunction.LocalFrame.Rotation_Y, float.Parse(parts[4]));
+            Assert.AreEqual(heatData.FrameFunction.LocalFrame.Rotation_Z, float.Parse(parts[5]));
+        }
+
+        [DataTestMethod]
         [DataRow("newGroupЭлемент1D стержни 10 Сталь_W_S420 0 1 *")]
         [DataRow("newGroupЭлемент1D пластины 0.5 Сталь_Р18 0 1 *")]
         [DataRow("newGroupЭлемент1D пластины 15 Сталь_W_S420 0 1 *")]

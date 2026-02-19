@@ -1,4 +1,5 @@
 ﻿using Geometry;
+using Model.Interfaces.Attributes;
 using Project.Interfaces.Tasks;
 using System;
 using System.Collections.Generic;
@@ -70,10 +71,12 @@ namespace Project.Tasks.FrameCreators
         }
 
         /// <summary>
-        /// SetShiftingAndRotation
+        /// Установка смещения и поворота локальной системы координат.
+        /// В случае недостачи аргументов, параметры не будут заданы.
         /// </summary>
         /// <param name="shiftingData"></param>
         /// <exception cref="Exception"></exception>
+        [Warning("Использование старых строк с 4-мя параметрами не будет приводить к изменению Shifting и Rotation. Отсутствует обратная совместимость")]
         public void SetShiftingAndRotationV2(string shiftingData)
         {
             var shifftingData = shiftingData.Split('|');
