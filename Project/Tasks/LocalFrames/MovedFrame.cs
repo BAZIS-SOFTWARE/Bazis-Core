@@ -168,6 +168,9 @@ namespace Project.Tasks.FrameCreators
 
         public override void CalcPosition()
         {
+            // Это не лишнее.
+            // Без этого обновление положения будут применяться
+            // к уже измененому положению!!!
             if (baseLine == null | refLine == null)
                 frame = new Frame();
             else

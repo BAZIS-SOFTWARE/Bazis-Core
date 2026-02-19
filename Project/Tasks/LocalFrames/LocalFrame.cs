@@ -51,8 +51,8 @@ namespace Project.Tasks.FrameCreators
         {
             var shifftingData = shiftingData.Split('|');
 
-            if (shifftingData.Length == 4)
-            {
+            //if (shifftingData.Length == 4)
+            //{
                 if (!float.TryParse(shifftingData[0], out var x))
                     throw new Exception("Смещение по X задано неверно!");
                 if (!float.TryParse(shifftingData[1], out var y))
@@ -66,7 +66,7 @@ namespace Project.Tasks.FrameCreators
 
                 Shifting = new Point3D(x, y, z);
                 Rotation_X = angle_x;
-            }
+            //}
         }
     }
 }

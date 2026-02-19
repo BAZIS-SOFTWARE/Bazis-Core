@@ -86,6 +86,8 @@ namespace Project.Tasks.FrameCreators
                 frame = new Frame();
 
             frame.Rotate(frame.Dir_X, Rotation_X);
+            frame.Rotate(frame.Dir_Y, Rotation_Y);
+            frame.Rotate(frame.Dir_Z, Rotation_Z);
             frame.Shift(Shifting);
         }
     }

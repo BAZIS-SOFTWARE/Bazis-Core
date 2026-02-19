@@ -19,6 +19,7 @@ using Project.Interfaces.Tasks;
 using MathNet.Numerics.LinearAlgebra;
 using Project.Tasks.Functions.Welding;
 using Project.IO;
+using static IronPython.Runtime.Profiler;
 
 namespace TestProject
 {
@@ -596,7 +597,7 @@ namespace TestProject
         [DataRow(4, 4, 4, 0)]
         [DataRow(1, 4, 0.4f, 0)]
         [DataRow(3, 1, 0.8f, 75f)]
-        public void LazerCalcPowerTest(float x, float y, float z, float power)
+        public void RectangleCalcPowerTest(float x, float y, float z, float power)
         {
             //assing            
             var function = new CustomFunction();
@@ -608,6 +609,29 @@ namespace TestProject
 
             //assert
             Assert.AreEqual(power, result);
+        }
+
+        [TestMethod]
+        public void LazerCalcPowerTest()
+        {
+            //assing            
+            var controller = new OperationalController.ProjectController();
+            controller.Load("c:\\projs\\Roman\\WebinarLazerWelding\\123.bpf2");
+
+            //act
+            var heatData = (HeatData)controller.GetCondData(5);
+            
+            heatData.FrameFunction.LocalFrame.CalcPosition();
+
+            var pow = new List<float>();
+
+            foreach (var item in heatData.Group)
+            {
+                pow.Add(heatData.FrameFunction.CalcValue(item.CalcCentr()));
+            }
+ 
+            //assert
+            Assert.AreNotEqual(0, pow.Max());
         }
 
     }
