@@ -76,31 +76,27 @@ namespace Project.Tasks.FrameCreators
         /// </summary>
         /// <param name="shiftingData"></param>
         /// <exception cref="Exception"></exception>
-        [Warning("Использование старых строк с 4-мя параметрами не будет приводить к изменению Shifting и Rotation. Отсутствует обратная совместимость")]
         public void SetShiftingAndRotationV2(string shiftingData)
         {
             var shifftingData = shiftingData.Split('|');
 
-            if (shifftingData.Length == 6)
-            {
-                if (!float.TryParse(shifftingData[0], out var x))
-                    throw new Exception("Смещение по X задано неверно!");
-                if (!float.TryParse(shifftingData[1], out var y))
-                    throw new Exception("Смещение по Y задано неверно!");
-                if (!float.TryParse(shifftingData[2], out var z))
-                    throw new Exception("Смещение по Z задано неверно!");
-                if (!float.TryParse(shifftingData[3], out var angle_x))
-                    throw new Exception("Угол задан неверно!");
-                if (!float.TryParse(shifftingData[4], out var angle_y))
-                    throw new Exception("Угол задан неверно!");
-                if (!float.TryParse(shifftingData[5], out var angle_z))
-                    throw new Exception("Угол задан неверно!");
+            if (!float.TryParse(shifftingData[0], out var x))
+                throw new Exception("Смещение по X задано неверно!");
+            if (!float.TryParse(shifftingData[1], out var y))
+                throw new Exception("Смещение по Y задано неверно!");
+            if (!float.TryParse(shifftingData[2], out var z))
+                throw new Exception("Смещение по Z задано неверно!");
+            if (!float.TryParse(shifftingData[3], out var angle_x))
+                throw new Exception("Угол задан неверно!");
+            if (!float.TryParse(shifftingData[4], out var angle_y))
+                throw new Exception("Угол задан неверно!");
+            if (!float.TryParse(shifftingData[5], out var angle_z))
+                throw new Exception("Угол задан неверно!");
 
-                Shifting = new Point3D(x, y, z);
-                Rotation_X = angle_x;
-                Rotation_Y = angle_y;
-                Rotation_Z = angle_z;
-            }
+            Shifting = new Point3D(x, y, z);
+            Rotation_X = angle_x;
+            Rotation_Y = angle_y;
+            Rotation_Z = angle_z;
         }
     }
 }
