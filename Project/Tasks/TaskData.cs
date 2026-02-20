@@ -456,8 +456,12 @@ namespace Project.Tasks
 
                 var srfAr = srfStr.Split(';');
 
-                var frameGr = groupData.Find(srfAr[0]);
-                var srf = new StaticFrame(frameGr);
+                StaticFrame srf;
+                var frameGr = groupData.FirstOrDefault(x => x.Name == srfAr[0]);
+                if (frameGr != null)
+                    srf = new StaticFrame(frameGr);
+                else
+                    srf = new StaticFrame();
                 srf.SetShiftingAndRotation(srfAr[1]);
                 return srf;
             }
