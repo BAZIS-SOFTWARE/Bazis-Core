@@ -44,30 +44,33 @@ namespace Project.Tasks.Functions.Welding
             r2 = 0f;
             var frame = LocalFrame.Frame;
 
-            var p_x = frame.Centre.Sum(frame.Dir_X);
-            var p_y = frame.Centre.Sum(frame.Dir_Y);
-            var hsPlane = new Plane(p_x, frame.Centre, p_y);
+            // получаем плоскость верхней повер-ти фигуры
+            var hsPlane = new Plane(frame.Centre, frame.Dir_Z);
 
             var res = hsPlane.PointPosition(elementCenter);
 
-            if (res < 0 | res > Length)
+            if (res > 0 | res < -Length)
                 return false;
 
-            var hsAxis = new Segment3D(frame.Centre, frame.Dir_Z);
-            r = elementCenter.GetDistanceToLine(hsAxis);
+            var elPlane = new Plane(elementCenter, frame.Dir_Z);
 
-            var elDist = elementCenter.Sub(frame.Centre);
-            var rad = Vector.GetVectorLength(elDist);
+            var elP = frame.Centre.GetPointProectionOnPlane(elPlane);
 
-            var zc = 0.0f;
-            if (rad - r > 0)
-                zc = (float)Math.Sqrt(rad * rad - r * r);
+            var elAxis = new Segment3D(frame.Centre, elP);
 
             r1 = UpperDiam / 2;
             r2 = BottomDiam / 2;
-            r0 = r1 + zc * (r2 - r1) / Length; // pin rad
 
-            return r - r0 <= 1e-4;
+            var l = elAxis.GetLength();
+            r0 = r2 + (Length - l) * (r1 - r2) / Length;
+
+            var elSeg = new Segment3D(elP, elementCenter);
+            r = elSeg.GetLength();
+
+            if (r - r0 > 1e-4)
+                return false;
+
+            return true;
         }
         /// <inheritdoc/>
 

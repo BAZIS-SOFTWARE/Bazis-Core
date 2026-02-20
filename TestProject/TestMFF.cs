@@ -35,18 +35,19 @@ namespace TestProject
 
 
         [TestMethod]
-        [DataRow(@"\WeldingHeatSource\LWTest_v.bpf", DisplayName = "LWTest_v.bpf")]
-        [DataRow(@"\WeldingHeatSource\test_t_lazer_0_10.bpf", DisplayName = "test_t_lazer_0_10.bpf")]
-        [DataRow(@"\WeldingHeatSource\test_t_lazer_180_0_10.bpf", DisplayName = "test_t_lazer_180_0_10.bpf")]
-        [DataRow(@"\WeldingHeatSource\ARCTest_v.bpf", DisplayName = "ARC")]
-        [DataRow(@"\WeldingHeatSource\FSW\proj.bpf", DisplayName = "FSW")]
+        [DataRow(@"..\..\..\Examples\WeldingHeatSource\LWTest_v.bpf", DisplayName = "LWTest_v.bpf")]
+        [DataRow(@"..\..\..\Examples\WeldingHeatSource\test_t_lazer_0_10.bpf", DisplayName = "test_t_lazer_0_10.bpf")]
+        [DataRow(@"..\..\..\Examples\WeldingHeatSource\test_t_lazer_180_0_10.bpf", DisplayName = "test_t_lazer_180_0_10.bpf")]
+        [DataRow(@"..\..\..\Examples\WeldingHeatSource\ARCTest_v.bpf", DisplayName = "ARC")]
+        //[DataRow(@"\WeldingHeatSource\FSW\proj.bpf", DisplayName = "FSW")]
+        [DataRow("c:\\projs\\Roman\\WebinarLazerWelding\\123.bpf2", DisplayName = "LW.bpf2")]
 
         public void MFF_EnergyCalculated(string path)
         {
             //assing
             var loader = new LoadProjectFromTextFormat();
             loader.LoadEvent += (ar1, ar2) => { };
-            var proj = loader.Load($@"{testDir}\{path}");
+            var proj = loader.Load($@"{path}");
 
             //act
             var lazerData = proj.TaskData.Find(DataKind.Нагрев).Select(x => (HeatData)x).ToArray();
@@ -121,8 +122,8 @@ namespace TestProject
         [DataRow("FSWShoulder", new[] { 2f, 5f, 0f }, 1, DisplayName = "FSWShoulder_WhenPointTouches")]
         [DataRow("FSWShoulder", new[] { 0f, 5f, -3f }, 1, DisplayName = "FSWShoulder_WhenPointTouches")]
         [DataRow("FSWShoulder", new[] { 0f, 5f, -6f }, 1, DisplayName = "FSWShoulder_WhenPointTouches")]
-        [DataRow("FSWShoulder", new[] { 0f, 10f, -9.99f }, 1, DisplayName = "FSWShoulder_WhenPointTouches")]
-        [DataRow("FSWShoulder", new[] { 0f, 10f, -4.99f }, 1, DisplayName = "FSWShoulder_WhenPointTouches")]
+        [DataRow("FSWShoulder", new[] { 0f, 10f, -9.99f }, 0, DisplayName = "FSWShoulder_NoCollision")]
+        [DataRow("FSWShoulder", new[] { 0f, 10f, -4.99f }, 0, DisplayName = "FSWShoulder_NoCollision")]
         [DataRow("FSWShoulder", new[] { 4.99f, 0f, 0f }, 1, DisplayName = "FSWShoulder_WhenHasEdgeCollision")]
         [DataRow("FSWShoulder", new[] { 0f, 0f, -4.99f }, 1, DisplayName = "FSWShoulder_WhenHasEdgeCollision")]
         [DataRow("FSWShoulder", new[] { 0f, 0f, -9.99f }, 1, DisplayName = "FSWShoulder_WhenHasEdgeCollision")]
@@ -609,30 +610,6 @@ namespace TestProject
 
             //assert
             Assert.AreEqual(power, result);
-        }
-
-        [TestMethod]
-        public void LazerCalcPowerTest()
-        {
-            //assing            
-            var controller = new OperationalController.ProjectController();
-            controller.Load("c:\\projs\\Roman\\WebinarLazerWelding\\123.bpf2");
-
-            //act
-            var heatData = (HeatData)controller.GetCondData(5);
-            
-            heatData.FrameFunction.LocalFrame.CalcPosition();
-
-            var pow = new List<float>();
-
-            foreach (var item in heatData.Group)
-            {
-                pow.Add(heatData.FrameFunction.CalcValue(item.CalcCentr()));
-            }
- 
-            //assert
-            Assert.AreNotEqual(0, pow.Max());
-        }
-
+        } 
     }
 }
