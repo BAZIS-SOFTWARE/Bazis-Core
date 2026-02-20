@@ -243,8 +243,10 @@ namespace TestProject
             var heatData = proj.TaskData.Find(DataKind.Нагрев).Select(h => (HeatData)h).First();
             heatData.FrameFunction.LocalFrame.SetShiftingAndRotationV2(str);
 
-            Assert.AreNotEqual(heatData.FrameFunction.LocalFrame.Rotation_X, angle);
-            Assert.AreNotEqual(heatData.FrameFunction.LocalFrame.Shifting, new Point3D(x, y, z));
+            Assert.AreEqual(heatData.FrameFunction.LocalFrame.Rotation_X, angle);
+            Assert.AreEqual(heatData.FrameFunction.LocalFrame.Rotation_Y, 0);
+            Assert.AreEqual(heatData.FrameFunction.LocalFrame.Rotation_Z, 0);
+            Assert.AreEqual(heatData.FrameFunction.LocalFrame.Shifting, new Point3D(x, y, z));
         }
 
         [DataTestMethod]

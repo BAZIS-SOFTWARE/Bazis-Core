@@ -88,10 +88,16 @@ namespace Project.Tasks.FrameCreators
                 throw new Exception("Смещение по Z задано неверно!");
             if (!float.TryParse(shifftingData[3], out var angle_x))
                 throw new Exception("Угол задан неверно!");
-            if (!float.TryParse(shifftingData[4], out var angle_y))
-                throw new Exception("Угол задан неверно!");
-            if (!float.TryParse(shifftingData[5], out var angle_z))
-                throw new Exception("Угол задан неверно!");
+
+            float angle_y = 0f, angle_z = 0f;
+            if (shifftingData.Length == 6)
+            {
+                if (!float.TryParse(shifftingData[4], out angle_y))
+                    throw new Exception("Угол задан неверно!");
+                if (!float.TryParse(shifftingData[5], out angle_z))
+                    throw new Exception("Угол задан неверно!");
+            }
+            
 
             Shifting = new Point3D(x, y, z);
             Rotation_X = angle_x;
