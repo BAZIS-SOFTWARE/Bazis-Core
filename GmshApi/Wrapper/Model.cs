@@ -94,6 +94,10 @@ namespace GmshApi
         private delegate int gmshModelIsInsideFun(int dim, int tag, double[] coord, IntPtr coord_n, int parametric, ref int ierr);
         private gmshModelIsInsideFun gmshModelIsInside = GetFunction<gmshModelIsInsideFun>("gmshModelIsInside");
 
+        private delegate void gmshModelGetClosestPointFun(int dim, int tag, double[] coord, IntPtr coord_n, ref IntPtr closestCoord,
+                                                          ref IntPtr closestCoord_n, ref IntPtr parametricCoord, ref IntPtr parametricCoord_n, ref int ierr);
+        private gmshModelGetClosestPointFun gmshModelGetClosestPoint = GetFunction<gmshModelGetClosestPointFun>("gmshModelGetClosestPoint");
+
         private delegate void gmshModelReparametrizeOnSurfaceFun(int dim, int tag, double[] parametricCoord, IntPtr parametricCoord_n, int surfaceTag,
                                                              ref IntPtr surfaceParametricCoord, ref IntPtr surfaceParametricCoord_n,
                                                              int which, ref int ierr);
@@ -446,6 +450,32 @@ namespace GmshApi
             var ierr = 0;
             return gmshModelIsInside(dim, tag, coord, (IntPtr)coord.Length, Convert.ToInt32(parametric), ref ierr);
         }
+
+        /// <summary>
+        /// Ищет ближайшую координату к заданной coord, используется ортогональное проецирование на сущность dim:tag
+        /// </summary>
+        /// <param name="dim">0 - геометрические точки, 1 - кривые, 2 - поверхности, 3 - объемы</param>
+        /// <param name="tag">Идентификатор геометрической сущности</param>
+        /// <param name="coord">Координата точки</param>
+        /// <returns>Кортеж(трехмерная координата ближайшая к coord, параметрическая координата локальной координаты)</returns>
+        public Tuple<double[], double[]> GetClosestPoint(int dim, int tag, double[] coord)
+        {
+            var ierr = 0;
+
+            IntPtr closestCoord = IntPtr.Zero;
+            IntPtr closestCoord_n = IntPtr.Zero;
+            IntPtr parametricCoord = IntPtr.Zero;
+            IntPtr parametricCoord_n = IntPtr.Zero;
+
+            gmshModelGetClosestPoint(dim, tag, coord, (IntPtr)coord.Length, ref closestCoord, ref closestCoord_n,
+                                     ref parametricCoord, ref parametricCoord_n, ref ierr);
+
+            var localCoords = GetObjectsData<double>(closestCoord, closestCoord_n);
+            var parametricCoords = GetObjectsData<double>(parametricCoord, parametricCoord_n);
+
+            return Tuple.Create(localCoords, parametricCoords);
+        }
+
         /// <summary>
         /// Выполняет перепараметризацию сущностей dim : tag (точки и кривые) с исходной параметризацией для surfaceTag
         /// </summary>

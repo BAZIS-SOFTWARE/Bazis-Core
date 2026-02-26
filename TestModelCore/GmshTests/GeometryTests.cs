@@ -8,6 +8,9 @@ using Model;
 using Model.MeshObjects;
 using OperationalController.GmshController;
 using OperationalController;
+using MathNet.Spatial.Euclidean;
+using Point3D = Geometry.Point3D;
+using static IronPython.Modules.PythonIterTools;
 
 namespace GmshTests
 {
@@ -497,6 +500,346 @@ namespace GmshTests
             gmshController.Gmsh.Model.Occ.Synchronize();
 
             //gmshController.Gmsh.Write(@"D:\ModifiedBox.step");
+        }
+        
+        //Проверка создания точек и линии по ним и сохранение в step
+        [DataTestMethod]
+        public void GeneratePointsAndLineTest()
+        {
+            gmshController.Gmsh.Model.Add("line");
+
+            var start = gmshController.Gmsh.Model.Occ.AddPoint(0, 0, 0);
+            var end = gmshController.Gmsh.Model.Occ.AddPoint(0, 0, 1);
+            var line = gmshController.Gmsh.Model.Occ.AddLine(start, end);
+
+            gmshController.Gmsh.Model.Occ.Synchronize();
+
+            var pointCounts = gmshController.Gmsh.Model.Occ.GetEntities(0).Length / 2;
+            var lineCounts = gmshController.Gmsh.Model.Occ.GetEntities(1).Length / 2;
+
+            Assert.AreEqual(2, pointCounts);
+            Assert.AreEqual(1, lineCounts);
+
+            //gmshController.Gmsh.Write(modelFolder + @"\CAD\line.step");
+        }
+
+        //Проверка создания плоскости по 3 линиям и сохранение в step
+        [DataTestMethod]
+        public void GeneratePlaneSurfaceTest()
+        {
+            //Правило хорошего тона - именовать модель, ту что строим самостоятельно без загрузки из файла.
+            gmshController.Gmsh.Model.Add("surface");
+            //Добавление точек в ядро OCC, просто передаем желаемые координаты
+            var start = gmshController.Gmsh.Model.Occ.AddPoint(0, 0, 0);
+            var middle = gmshController.Gmsh.Model.Occ.AddPoint(1, 0, 0);
+            var end = gmshController.Gmsh.Model.Occ.AddPoint(0, 1, 0);
+            //Добавляем линии по созданным точкам
+            var lineA = gmshController.Gmsh.Model.Occ.AddLine(start, middle);
+            var lineB = gmshController.Gmsh.Model.Occ.AddLine(middle, end);
+            var lineC = gmshController.Gmsh.Model.Occ.AddLine(end, start);
+            //В OCC нужно построить контур, чтобы построить поверхность по нему. Контур - геометрическая сущность набора линий
+            var wire = gmshController.Gmsh.Model.Occ.AddWire([lineA, lineB, lineC]);
+            var surface = gmshController.Gmsh.Model.Occ.AddPlaneSurface([wire]);
+            //После построения обязательна синхронизация с OCC, чтобы можно было проводить операции над геометрией или записать в файл
+            gmshController.Gmsh.Model.Occ.Synchronize();
+
+            var pointCounts = gmshController.Gmsh.Model.Occ.GetEntities(0).Length / 2;
+            var lineCounts = gmshController.Gmsh.Model.Occ.GetEntities(1).Length / 2;
+            var surfaceCounts = gmshController.Gmsh.Model.Occ.GetEntities(2).Length / 2;
+
+            Assert.AreEqual(3, pointCounts);
+            Assert.AreEqual(3, lineCounts);
+            Assert.AreEqual(1, surfaceCounts);
+
+            //gmshController.Gmsh.Write(modelFolder + @"\CAD\plane_surface.step");
+        }
+
+        //Проверка создания криволинейной плоскости по 4 линиям и сохранение в step
+        [DataTestMethod]
+        public void GenerateCurvedPlaneSurfaceTest()
+        {
+            gmshController.Gmsh.Model.Add("Curved surface");
+
+            var start = gmshController.Gmsh.Model.Occ.AddPoint(0, 0, 0.5);
+            var middle = gmshController.Gmsh.Model.Occ.AddPoint(1, 0, -0.5);
+            var middle2 = gmshController.Gmsh.Model.Occ.AddPoint(1, 1, 0.5);
+            var end = gmshController.Gmsh.Model.Occ.AddPoint(0, 1, -0.5);
+            
+
+            var lineA = gmshController.Gmsh.Model.Occ.AddLine(start, middle);
+            var lineB = gmshController.Gmsh.Model.Occ.AddLine(middle, middle2);
+            var lineC = gmshController.Gmsh.Model.Occ.AddLine(middle2, end);
+            var lineD = gmshController.Gmsh.Model.Occ.AddLine(end, start);
+
+            var wire = gmshController.Gmsh.Model.Occ.AddCurveLoop([lineA, lineB, lineC, lineD]);
+            var surface = gmshController.Gmsh.Model.Occ.AddSurfaceFilling(wire);
+
+            gmshController.Gmsh.Model.Occ.Synchronize();
+
+            var pointCounts = gmshController.Gmsh.Model.Occ.GetEntities(0).Length / 2;
+            var lineCounts = gmshController.Gmsh.Model.Occ.GetEntities(1).Length / 2;
+            var surfaceCounts = gmshController.Gmsh.Model.Occ.GetEntities(2).Length / 2;
+
+            Assert.AreEqual(4, pointCounts);
+            Assert.AreEqual(4, lineCounts);
+            Assert.AreEqual(1, surfaceCounts);
+
+            //gmshController.Gmsh.Write(modelFolder + @"\CAD\curved_surface.step");
+        }
+
+        //Проверка создания криволинейной выпуклой\вогнутой плоскости по 4 линиям и сохранение в step
+        [DataTestMethod]
+        [DataRow("convex")]
+        [DataRow("concave")]
+        public void GenerateConvexCurvedPlaneSurfaceTest(string surfType)
+        {
+            gmshController.Gmsh.Model.Add($"curved_{surfType}_surface");
+
+            var start = gmshController.Gmsh.Model.Occ.AddPoint(0, 0, 0);
+            var middle = gmshController.Gmsh.Model.Occ.AddPoint(1, 0, 0);
+            var middle2 = gmshController.Gmsh.Model.Occ.AddPoint(1, 1, 0);
+            var end = gmshController.Gmsh.Model.Occ.AddPoint(0, 1, 0);
+
+            //Точка для управления кривизной поверхности (будет принадлежать плоскости)
+            var convCtrlPoint = surfType == "convex" ? gmshController.Gmsh.Model.Occ.AddPoint(0.5, 0.5, 0.5)
+                                                     : gmshController.Gmsh.Model.Occ.AddPoint(0.5, 0.5, -0.5);
+
+            var lineA = gmshController.Gmsh.Model.Occ.AddLine(start, middle);
+            var lineB = gmshController.Gmsh.Model.Occ.AddLine(middle, middle2);
+            var lineC = gmshController.Gmsh.Model.Occ.AddLine(middle2, end);
+            var lineD = gmshController.Gmsh.Model.Occ.AddLine(end, start);
+
+            var wire = gmshController.Gmsh.Model.Occ.AddCurveLoop([lineA, lineB, lineC, lineD]);
+            var surface = gmshController.Gmsh.Model.Occ.AddSurfaceFilling(wire, -1, [convCtrlPoint]);
+
+            gmshController.Gmsh.Model.Occ.Synchronize();
+
+            var pointCounts = gmshController.Gmsh.Model.Occ.GetEntities(0).Length / 2;
+            var lineCounts = gmshController.Gmsh.Model.Occ.GetEntities(1).Length / 2;
+            var surfaceCounts = gmshController.Gmsh.Model.Occ.GetEntities(2).Length / 2;
+
+            Assert.AreEqual(5, pointCounts);
+            Assert.AreEqual(4, lineCounts);
+            Assert.AreEqual(1, surfaceCounts);
+
+            //gmshController.Gmsh.Write(modelFolder + $@"\CAD\{surfType}_surface.step");
+        }
+        
+        //Проверка создания отверстия на поверхности окружности
+        [DataTestMethod]
+        public void CreateHoleOnPlaneSurfaceTest()
+        {
+            gmshController.Gmsh.Model.Add($"hole_on_surface");
+
+            var baseSurf = gmshController.Gmsh.Model.Occ.AddCircle(0, 0, 0, 1);
+            var holeSurf = gmshController.Gmsh.Model.Occ.AddCircle(0, 0, 0, 0.2);
+
+            var tags = gmshController.Gmsh.Model.Occ.GetEntities(1);
+
+            var baseWire = gmshController.Gmsh.Model.Occ.AddCurveLoop([tags[1]]);
+            var holeWire = gmshController.Gmsh.Model.Occ.AddCurveLoop([tags[3]]);
+            //В поверхность можно передать несколько контуров, первый всегда внешний по которому будет натягиваться поверхность, второй и следующий контур
+            //в массиве обозначает набор отверстий на поверхности.
+            var surf = gmshController.Gmsh.Model.Occ.AddPlaneSurface([baseWire, holeWire]);
+            gmshController.Gmsh.Model.Occ.Synchronize();
+
+            var pointCounts = gmshController.Gmsh.Model.Occ.GetEntities(0).Length / 2;
+            var lineCounts = gmshController.Gmsh.Model.Occ.GetEntities(1).Length / 2;
+            var surfaceCounts = gmshController.Gmsh.Model.Occ.GetEntities(2).Length / 2;
+
+            Assert.AreEqual(2, pointCounts);
+            Assert.AreEqual(2, lineCounts);
+            Assert.AreEqual(1, surfaceCounts);
+
+            //gmshController.Gmsh.Write(modelFolder + @"\CAD\hole_on_surface.step");
+        }
+
+        //Проверка создания объема\поверхности с указанным контуром вдоль указанной кривой
+        [DataTestMethod]
+        [DataRow("volume", 2)]
+        [DataRow("surface", 2)]
+        public void CreatePipeTest(string type, double radius)
+        {
+            gmshController.Gmsh.Model.Add("pipe");
+
+            var a = gmshController.Gmsh.Model.Occ.AddPoint(0, 0, 0);
+            var b = gmshController.Gmsh.Model.Occ.AddPoint(5, 0, -5);
+            var c = gmshController.Gmsh.Model.Occ.AddPoint(-5, 0, -10);
+            var d = gmshController.Gmsh.Model.Occ.AddPoint(0, 0, -15);
+            var e = gmshController.Gmsh.Model.Occ.AddPoint(5, 0, -20);
+
+            var curve = gmshController.Gmsh.Model.Occ.AddBezier([a,b,c,d,e]);
+            var wire = gmshController.Gmsh.Model.Occ.AddWire([curve]);
+
+            gmshController.Gmsh.Model.Occ.Synchronize();
+            //Для кривой можно взять параметризацию - по сути это распрямление кривой в линию, после этой операции обычно берется произвольная точка на кривой
+            //путем взятия параметра в диапазоне из полученой параметризации
+            var p = gmshController.Gmsh.Model.GetParametrizationBounds(1, curve);
+            //Команда для взятия трехмерной точки на значении параметра кривой
+            var origin = gmshController.Gmsh.Model.GetValue(1, curve, p.Item1);
+            //На значении параметра кривой мы можем получить касательный вектор и вектор нормали(сонаправлен со второй производной)
+            var tangent = gmshController.Gmsh.Model.GetDerivative(1, curve, p.Item1);
+            var normal = gmshController.Gmsh.Model.GetSecondDerivative(1, curve, p.Item1);
+            //И создать базис в произвольной точке кривой используя векторное произведение по двум известным векторам
+            var t = new Vector3D(tangent[0], tangent[1], tangent[2]).Normalize();
+            var n = new Vector3D(normal[0], normal[1], normal[2]).Normalize();
+            var bn = t.CrossProduct(n);
+            //И здесь создаем окружность в точке с указаным наклоном
+            var circle = gmshController.Gmsh.Model.Occ.AddCircle(origin[0], origin[1], origin[2], radius, -1, 0, 2 * Math.PI,
+                                                             [t.X, t.Y, t.Z], [bn.X, bn.Y, bn.Z]);
+            //Командой AddPipe мы делаем экструзию сечения вдоль кривой, если сечением является поверхность то получается объем, если контур то получается поверхность
+            if (type == "volume")
+            {
+                var wireCircle = gmshController.Gmsh.Model.Occ.AddWire([circle]);
+                var circleSurf = gmshController.Gmsh.Model.Occ.AddPlaneSurface([wireCircle]);
+                gmshController.Gmsh.Model.Occ.AddPipe([2, circleSurf], wire);
+                gmshController.Gmsh.Model.Occ.Remove([2, circleSurf], true);
+            }
+            else
+                gmshController.Gmsh.Model.Occ.AddPipe([1, circle], wire);
+            //Удаление всех временных объектов
+            gmshController.Gmsh.Model.Occ.Remove([1, circle], true);
+            gmshController.Gmsh.Model.Occ.Remove([1, curve], true);
+            gmshController.Gmsh.Model.Occ.Remove([0, a, 0, b, 0, c, 0, d, 0, e]);
+            
+            gmshController.Gmsh.Model.Occ.Synchronize();
+
+            var pointCounts = gmshController.Gmsh.Model.Occ.GetEntities(0).Length / 2;
+            var lineCounts = gmshController.Gmsh.Model.Occ.GetEntities(1).Length / 2;
+            var surfaceCounts = gmshController.Gmsh.Model.Occ.GetEntities(2).Length / 2;
+
+            if (type == "volume")
+            {
+                var volumeCounts = gmshController.Gmsh.Model.Occ.GetEntities(3).Length / 2;
+                Assert.AreEqual(2, pointCounts);
+                Assert.AreEqual(3, lineCounts);
+                Assert.AreEqual(3, surfaceCounts);
+                Assert.AreEqual(1, volumeCounts);
+            }
+            else
+            {
+                Assert.AreEqual(2, pointCounts);
+                Assert.AreEqual(3, lineCounts);
+                Assert.AreEqual(1, surfaceCounts);
+            }    
+
+            //gmshController.Gmsh.Write(modelFolder + $@"\CAD\{type}_pipe.step");
+        }
+
+        // Создать поверхность\объем с произвольными сечениями(разным диаметром) в пространстве
+        [DataTestMethod]
+        [DataRow(8, 0.7)]
+        public void CreateThruSectionsTest(int segments, double radius)
+        {
+            gmshController.Gmsh.Model.Add("ThruSections");
+
+            var a = gmshController.Gmsh.Model.Occ.AddPoint(0, 0, 0);
+            var b = gmshController.Gmsh.Model.Occ.AddPoint(0, 7.5, 0);
+            var c = gmshController.Gmsh.Model.Occ.AddPoint(5, 12, 0);
+            var d = gmshController.Gmsh.Model.Occ.AddPoint(10, 7.5, 0);
+            var e = gmshController.Gmsh.Model.Occ.AddPoint(10, 0, 0);
+
+            var curve = gmshController.Gmsh.Model.Occ.AddBezier([a, b, c, d, e]);
+            gmshController.Gmsh.Model.Occ.Remove([0, a, 0, b, 0, c, 0, d, 0, e]);
+
+
+            gmshController.Gmsh.Model.Occ.Synchronize();
+            var p = gmshController.Gmsh.Model.GetParametrizationBounds(1, curve);
+            var step = (p.Item2[0] - p.Item1[0]) / segments;
+
+            var cList = new List<int>();
+            var wireList = new List<int>();
+
+            //Генерируем окружности вдоль кривой, на любой точки кривой мы можем получить базис для построения окружности
+            var index = 0;
+            //Пример похож на предыдущий с тем отличием, что создаются множество сечений различного размера, команда AddThruSections создает объем по нескольким сечениям
+            for (double i = p.Item1[0]; i <= p.Item2[0]; i += step, ++index)
+            {
+                var origin = gmshController.Gmsh.Model.GetValue(1, curve, [i]);
+                var tangent = gmshController.Gmsh.Model.GetDerivative(1, curve, [i]);
+                var normal = gmshController.Gmsh.Model.GetSecondDerivative(1, curve, [i]);
+
+                var t = new Vector3D(tangent[0], tangent[1], tangent[2]).Normalize();
+                var n = new Vector3D(normal[0], normal[1], normal[2]).Normalize();
+                var bn = t.CrossProduct(n);
+
+                var id = gmshController.Gmsh.Model.Occ.AddCircle(origin[0], origin[1], origin[2], radius - (index & 1) * 0.2 , -1, 0, 2 * Math.PI,
+                                                                 [t.X, t.Y, t.Z], [bn.X, bn.Y, bn.Z]);
+                cList.AddRange([1, id]);
+                wireList.Add(gmshController.Gmsh.Model.Occ.AddWire([id]));
+            }
+
+            gmshController.Gmsh.Model.Occ.Remove([1, curve], true);
+            gmshController.Gmsh.Model.Occ.AddThruSections(wireList.ToArray(), -1, true, false, 2, "", "", false);
+            gmshController.Gmsh.Model.Occ.Remove(cList.ToArray(), true);
+
+            gmshController.Gmsh.Model.Occ.Synchronize();
+
+            var pointCounts = gmshController.Gmsh.Model.Occ.GetEntities(0).Length / 2;
+            var lineCounts = gmshController.Gmsh.Model.Occ.GetEntities(1).Length / 2;
+            var surfaceCounts = gmshController.Gmsh.Model.Occ.GetEntities(2).Length / 2;
+            var volumeCounts = gmshController.Gmsh.Model.Occ.GetEntities(3).Length / 2;
+
+            Assert.AreEqual(2, pointCounts);
+            Assert.AreEqual(3, lineCounts);
+            Assert.AreEqual(3, surfaceCounts);
+            Assert.AreEqual(1, volumeCounts);
+
+            //gmshController.Gmsh.Write(@"D:\thru_sections.step");
+        }
+        
+        [DataTestMethod]
+        public void PointProjectionOnPlaneTest()
+        {
+            gmshController.Gmsh.Model.Add("Projection");
+
+            var start = gmshController.Gmsh.Model.Occ.AddPoint(0, 0, 0);
+            var middle = gmshController.Gmsh.Model.Occ.AddPoint(1, 0, 0);
+            var end = gmshController.Gmsh.Model.Occ.AddPoint(0, 1, 0);
+
+            var lineA = gmshController.Gmsh.Model.Occ.AddLine(start, middle);
+            var lineB = gmshController.Gmsh.Model.Occ.AddLine(middle, end);
+            var lineC = gmshController.Gmsh.Model.Occ.AddLine(end, start);
+
+            var wire = gmshController.Gmsh.Model.Occ.AddWire([lineA, lineB, lineC]);
+            var surface = gmshController.Gmsh.Model.Occ.AddPlaneSurface([wire]);
+            gmshController.Gmsh.Model.Occ.Synchronize();
+
+            var coord = new double[] { 1.0 / 3.0, 1.0 / 3.0, 1 };
+            var expected = new double[] { 1.0 / 3.0 * 1, 1.0 / 3.0 * 1, 1.0 / 3.0 * 0 };//Центр ищем через равные барицентрические координаты для треугольника
+
+            var data = gmshController.Gmsh.Model.GetClosestPoint(2, surface, coord);
+
+            Assert.AreEqual(expected[0], data.Item1[0], 1e-4);
+            Assert.AreEqual(expected[1], data.Item1[1], 1e-4);
+            Assert.AreEqual(expected[2], data.Item1[2], 1e-4);
+
+            var insideStatus = gmshController.Gmsh.Model.IsInside(2, 1, data.Item1);
+            Assert.IsTrue(insideStatus == 1);
+        }
+
+        [DataTestMethod]
+        public void PointProjectionOnLineTest()
+        {
+            gmshController.Gmsh.Model.Add("Projection");
+
+            var start = gmshController.Gmsh.Model.Occ.AddPoint(0, 0, 0);
+            var end = gmshController.Gmsh.Model.Occ.AddPoint(1, 0, 0);
+
+            var line = gmshController.Gmsh.Model.Occ.AddLine(start, end);
+            gmshController.Gmsh.Model.Occ.Synchronize();
+
+            var coord = new double[] { -1, 0, 0 };
+            var expected = new double[] { 0, 0, 0 };
+
+            var data = gmshController.Gmsh.Model.GetClosestPoint(1, line, coord);
+
+            Assert.AreEqual(expected[0], data.Item1[0], 1e-4);
+            Assert.AreEqual(expected[1], data.Item1[1], 1e-4);
+            Assert.AreEqual(expected[2], data.Item1[2], 1e-4);
+
+            var insideStatus = gmshController.Gmsh.Model.IsInside(1, 1, data.Item1);
+            Assert.IsTrue(insideStatus == 1);
         }
 
         private void RemoveNameTest(ref string entName, int dim, int delId, int maxId)

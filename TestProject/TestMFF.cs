@@ -19,6 +19,7 @@ using Project.Interfaces.Tasks;
 using MathNet.Numerics.LinearAlgebra;
 using Project.Tasks.Functions.Welding;
 using Project.IO;
+using static IronPython.Runtime.Profiler;
 
 namespace TestProject
 {
@@ -34,18 +35,19 @@ namespace TestProject
 
 
         [TestMethod]
-        [DataRow(@"\WeldingHeatSource\LWTest_v.bpf", DisplayName = "LWTest_v.bpf")]
-        [DataRow(@"\WeldingHeatSource\test_t_lazer_0_10.bpf", DisplayName = "test_t_lazer_0_10.bpf")]
-        [DataRow(@"\WeldingHeatSource\test_t_lazer_180_0_10.bpf", DisplayName = "test_t_lazer_180_0_10.bpf")]
-        [DataRow(@"\WeldingHeatSource\ARCTest_v.bpf", DisplayName = "ARC")]
-        [DataRow(@"\WeldingHeatSource\FSW\proj.bpf", DisplayName = "FSW")]
+        [DataRow(@"..\..\..\Examples\WeldingHeatSource\LWTest_v.bpf", DisplayName = "LWTest_v.bpf")]
+        [DataRow(@"..\..\..\Examples\WeldingHeatSource\test_t_lazer_0_10.bpf", DisplayName = "test_t_lazer_0_10.bpf")]
+        [DataRow(@"..\..\..\Examples\WeldingHeatSource\test_t_lazer_180_0_10.bpf", DisplayName = "test_t_lazer_180_0_10.bpf")]
+        [DataRow(@"..\..\..\Examples\WeldingHeatSource\ARCTest_v.bpf", DisplayName = "ARC")]
+        //[DataRow(@"\WeldingHeatSource\FSW\proj.bpf", DisplayName = "FSW")]
+        [DataRow("c:\\projs\\Roman\\WebinarLazerWelding\\123.bpf2", DisplayName = "LW.bpf2")]
 
         public void MFF_EnergyCalculated(string path)
         {
             //assing
             var loader = new LoadProjectFromTextFormat();
             loader.LoadEvent += (ar1, ar2) => { };
-            var proj = loader.Load($@"{testDir}\{path}");
+            var proj = loader.Load($@"{path}");
 
             //act
             var lazerData = proj.TaskData.Find(DataKind.Нагрев).Select(x => (HeatData)x).ToArray();
@@ -120,8 +122,8 @@ namespace TestProject
         [DataRow("FSWShoulder", new[] { 2f, 5f, 0f }, 1, DisplayName = "FSWShoulder_WhenPointTouches")]
         [DataRow("FSWShoulder", new[] { 0f, 5f, -3f }, 1, DisplayName = "FSWShoulder_WhenPointTouches")]
         [DataRow("FSWShoulder", new[] { 0f, 5f, -6f }, 1, DisplayName = "FSWShoulder_WhenPointTouches")]
-        [DataRow("FSWShoulder", new[] { 0f, 10f, -9.99f }, 1, DisplayName = "FSWShoulder_WhenPointTouches")]
-        [DataRow("FSWShoulder", new[] { 0f, 10f, -4.99f }, 1, DisplayName = "FSWShoulder_WhenPointTouches")]
+        [DataRow("FSWShoulder", new[] { 0f, 10f, -9.99f }, 0, DisplayName = "FSWShoulder_NoCollision")]
+        [DataRow("FSWShoulder", new[] { 0f, 10f, -4.99f }, 0, DisplayName = "FSWShoulder_NoCollision")]
         [DataRow("FSWShoulder", new[] { 4.99f, 0f, 0f }, 1, DisplayName = "FSWShoulder_WhenHasEdgeCollision")]
         [DataRow("FSWShoulder", new[] { 0f, 0f, -4.99f }, 1, DisplayName = "FSWShoulder_WhenHasEdgeCollision")]
         [DataRow("FSWShoulder", new[] { 0f, 0f, -9.99f }, 1, DisplayName = "FSWShoulder_WhenHasEdgeCollision")]
@@ -592,23 +594,22 @@ namespace TestProject
         }
 
         [TestMethod]
-        [DataRow(1, 0, 0, 0.75f)]
+        [DataRow(1, 0, 0, 75f)]
         [DataRow(4, 4, 4, 0)]
         [DataRow(1, 4, 0.4f, 0)]
-        [DataRow(3, 1, 0.8f, 0.75f)]
-        public void LazerCalcPowerTest(float x, float y, float z, float power)
+        [DataRow(3, 1, 0.8f, 75f)]
+        public void RectangleCalcPowerTest(float x, float y, float z, float power)
         {
             //assing            
             var function = new CustomFunction();
             
-            function.CreateEngine(@"..\..\..\Examples\PythonScript\LaserSourcePython.py");
+            function.CreateEngine(@"..\..\..\Examples\PythonScript\RectangleSource.py");
 
             //act
             var result = function.CalcValue(new Point3D(x, y, z));
 
             //assert
             Assert.AreEqual(power, result);
-        }
-
+        } 
     }
 }

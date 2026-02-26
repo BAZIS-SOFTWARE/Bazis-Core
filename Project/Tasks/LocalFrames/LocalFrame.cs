@@ -17,8 +17,18 @@ namespace Project.Tasks.FrameCreators
         public string Name { get; internal set; }
         /// <inheritdoc/>
         public Point3D Shifting { get; set; } = new Point3D();
-        /// <inheritdoc/>
-        public float Rotation { get; set; }
+        /// <summary>
+        /// Rotation_X
+        /// </summary>
+        public float Rotation_X { get; set; }
+        /// <summary>
+        /// Rotation_Y
+        /// </summary>
+        public float Rotation_Y { get; set; }
+        /// <summary>
+        /// Rotation_Z
+        /// </summary>
+        public float Rotation_Z { get; set; }
         /// <summary>
         /// Frame
         /// </summary>
@@ -41,20 +51,22 @@ namespace Project.Tasks.FrameCreators
         {
             var shifftingData = shiftingData.Split('|');
 
-            if (shifftingData.Length == 4)
-            {
+            //if (shifftingData.Length == 4)
+            //{
                 if (!float.TryParse(shifftingData[0], out var x))
                     throw new Exception("Смещение по X задано неверно!");
                 if (!float.TryParse(shifftingData[1], out var y))
                     throw new Exception("Смещение по Y задано неверно!");
                 if (!float.TryParse(shifftingData[2], out var z))
                     throw new Exception("Смещение по Z задано неверно!");
-                if (!float.TryParse(shifftingData[3], out var angle))
+                if (!float.TryParse(shifftingData[3], out var angle_x))
                     throw new Exception("Угол задан неверно!");
 
+                // TODO дописать парсинг для углов y и z
+
                 Shifting = new Point3D(x, y, z);
-                Rotation = angle;
-            }
+                Rotation_X = angle_x;
+            //}
         }
     }
 }

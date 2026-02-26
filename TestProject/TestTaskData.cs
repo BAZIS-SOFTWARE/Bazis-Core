@@ -177,10 +177,10 @@ namespace TestProject
 
             //act
             var heatData = proj.TaskData.Find(DataKind.Нагрев).Select(h => (HeatData)h).First();
-            heatData.FrameFunction.LocalFrame.Rotation = rotation;
+            heatData.FrameFunction.LocalFrame.Rotation_X = rotation;
             heatData.FrameFunction.LocalFrame.Shifting = new Point3D(x,y,z);
             //assert
-            Assert.AreEqual(heatData.FrameFunction.LocalFrame.Rotation, rotation);
+            Assert.AreEqual(heatData.FrameFunction.LocalFrame.Rotation_X, rotation);
             Assert.AreEqual(heatData.FrameFunction.LocalFrame.Shifting, new Point3D(x,y,z));
         }
 

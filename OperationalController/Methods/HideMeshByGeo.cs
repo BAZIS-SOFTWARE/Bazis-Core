@@ -27,6 +27,10 @@ namespace OperationalController
                         var curveTag = GmshController.Gmsh.Model.Mesh.GetElement(element.Value.Number).Item4;
                         var viewState = ModelData.ObjectData.CurveSet[curveTag].ViewState;
                         element.Value.ViewState = viewState;
+
+                        foreach (var node in element.Value.GetVertexes())
+                            node.ViewState = viewState;
+
                     }
                 }
 
@@ -40,6 +44,9 @@ namespace OperationalController
                         var surfaceTag = GmshController.Gmsh.Model.Mesh.GetElement(element.Value.Number).Item4;
                         var viewState = ModelData.ObjectData.SurfaceSet[surfaceTag].ViewState;
                         element.Value.ViewState = viewState;
+
+                        foreach (var node in element.Value.GetVertexes())
+                            node.ViewState = viewState;
                     }
                 }
             }
@@ -53,6 +60,9 @@ namespace OperationalController
                     {
                         var volumeTag = GmshController.Gmsh.Model.Mesh.GetElement(element.Value.Number).Item4;
                         element.Value.ViewState = volumes[volumeTag];
+
+                        foreach (var node in element.Value.GetVertexes())
+                            node.ViewState = volumes[volumeTag];
                     }
                 }
             }

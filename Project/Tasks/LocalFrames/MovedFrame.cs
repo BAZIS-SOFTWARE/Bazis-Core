@@ -15,9 +15,9 @@ namespace Project.Tasks.FrameCreators
 
         private IGroup refLine;
 
-        public MovedFrame(IGroup baseLine, IGroup refLine, float _velocity)
+        public MovedFrame(IGroup baseLine, IGroup refLine, float _velocity) 
             : this()
-        {
+        {        
             if (_velocity == 0)
                 throw new Exception("Скорость не может равняться нулю!");
             Velocity = _velocity;
@@ -25,17 +25,13 @@ namespace Project.Tasks.FrameCreators
             BaseLine = baseLine;
             RefLine = refLine;
 
-            //CalcPosition();
-
             //CheckStartPoints(startPoints, baseLine);
             //CheckStartPoints(startPoints, refLine);
 
             //SortTrajNodes(startPoints, baseLine);
             //SortTrajNodes(startPoints, refLine);
         }
-        /// <summary>
-        /// MovedFrame
-        /// </summary>
+
         public MovedFrame()
         {
             Name = "MRF";
@@ -52,7 +48,7 @@ namespace Project.Tasks.FrameCreators
             if (refLine != null)
                 rls = refLine.Name;
             return
-                $"{Name};{bls}|{rls};{Velocity};{Shifting}|{Rotation}";
+                $"{Name};{bls}|{rls};{Velocity};{Shifting}|{Rotation_X}|{Rotation_Y}|{Rotation_Z}";
         }
         /// <inheritdoc/>
         public IModelObject StartPoint
@@ -172,13 +168,14 @@ namespace Project.Tasks.FrameCreators
 
         public override void CalcPosition()
         {
+            // Это не лишнее.
+            // Без этого обновление положения будут применяться
+            // к уже измененому положению!!!
             if (baseLine == null | refLine == null)
                 frame = new Frame();
             else
             {
                 var posit = new Point3D();
-
-
                 var path = 0.0f;
 
                 var dirY = new Point3D();
@@ -206,7 +203,9 @@ namespace Project.Tasks.FrameCreators
                 frame = new Frame(posit, posit.Sum(dirY), posit.Sum(dirX));
             }
 
-            frame.Rotate(frame.Dir_X, Rotation);
+            frame.Rotate(frame.Dir_X, Rotation_X);
+            frame.Rotate(frame.Dir_Y, Rotation_Y);
+            frame.Rotate(frame.Dir_Z, Rotation_Z);
             frame.Shift(Shifting);
         }
     }
