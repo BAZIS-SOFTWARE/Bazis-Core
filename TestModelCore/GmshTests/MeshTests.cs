@@ -914,7 +914,7 @@ namespace GmshTests
             proj.GmshController.Load(@"..\..\..\..\GmshApi\gmsh.dll");
 
             var ctr = proj.GmshController;
-            ctr.Gmsh.Open($@"D:\{fileName}.step");
+            ctr.Gmsh.Open(modelFolder + $@"\CAD\{fileName}.step");
 
             ctr.Gmsh.Model.Mesh.Generate(2);
             if (recombine)
