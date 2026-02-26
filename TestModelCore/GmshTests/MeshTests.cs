@@ -16,6 +16,7 @@ using Geometry;
 using Model.IO;
 using OperationalController.MeshObjsCreator;
 using System.Numerics;
+using MathNet.Spatial.Euclidean;
 
 namespace GmshTests
 {
@@ -850,37 +851,56 @@ namespace GmshTests
                 }
             }
         }
-
         [DataTestMethod]
-        [DataRow(1, 0.25f, "rhombus")]
-        public void ExtrudeTranslateTest(int layersCount, float size, string fileName)
+        [DataRow(4, 0.25f, false, false)]
+        [DataRow(2, 0.15f, true, false)]
+        [DataRow(7, 0.55f, false, true)]
+        [DataRow(2, 0.38f, true, true)]
+        public void ExtrudeTranslateTest(int layersCount, float size, bool recombine, bool transfinite)
         {
             var proj = new ProjectController();
             proj.GmshController.Load(@"..\..\..\..\GmshApi\gmsh.dll");
 
             var ctr = proj.GmshController;
-            ctr.Gmsh.Open($@"C:\Mesh\STEP\{fileName}.step");
+
+            CreateGearSurface(ctr, 5, 6, 8);
 
             ctr.Gmsh.Model.Mesh.Generate(2);
-            ctr.Gmsh.Model.Mesh.Recombine();
-            ctr.Gmsh.Write($@"C:\Mesh\MSH\{fileName}.msh");
+            if (recombine)
+                ctr.Gmsh.Model.Mesh.Recombine();
+            //ctr.Gmsh.Write($@"D:\gearRecombine{recombine.ToString()}Transfinite{transfinite.ToString()}.msh");
             var objs = ctr.GetMeshObjects();
 
-            var dir = new Point3D(0f, 0f, 1f);
+            var dir = new Geometry.Point3D(0f, 0f, 1f);
+            List<List<Element3D>> tetras = null;
+            Dictionary<int, Node> nodes = null;
+            int missed = 0;
 
-            var extruder = new TranslateExtruder();
-            var tetras = extruder.Extrude(objs.Item3, dir, layersCount, size);
+            if (transfinite)
+            {
+                var extruder = new TransfiniteTranslateExtruder();
+                tetras = extruder.Extrude(objs.Item3, dir, layersCount, size);
+                nodes = extruder.Nodes;
+                missed = extruder.MissedTetras;
+            }
+            else
+            {
+                var extruder = new TranslateExtruder();
+                tetras = extruder.Extrude(objs.Item3, dir, layersCount, size);
+                nodes = extruder.Nodes;
+                missed = extruder.MissedTetras;
+            }
 
             var md = new ModelData();
             md.ObjectData.E3DCollection.AddRange("Extruded", tetras.SelectMany(v => v));
 
-            foreach (var node in extruder.Nodes.Values)
+            foreach (var node in nodes.Values)
                 md.ObjectData.NodesSet.Add(node.Number, node);
 
-            Assert.AreEqual(0, extruder.MissedTetras);
+            Assert.AreEqual(0, missed);
 
-            var saver = new SaveModelToBPF2TextFile();
-            saver.Save(md, $@"C:\Mesh\BPF2\Extruded{fileName}.bpf2");
+            //var saver = new SaveModelToBPF2TextFile();
+            //saver.Save(md, $@"D:\gearRecombine{recombine.ToString()}Transfinite{transfinite.ToString()}.bpf2");
         }
 
         [DataTestMethod]
