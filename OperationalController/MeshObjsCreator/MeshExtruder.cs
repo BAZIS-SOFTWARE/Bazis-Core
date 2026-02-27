@@ -67,9 +67,9 @@ namespace OperationalController.MeshObjsCreator
         /// </summary>
         public Dictionary<int, Node> Nodes { get; private set; } = new Dictionary<int, Node>();
         /// <summary>
-        /// Пропущенные тетраэдры в результате плохой конфигурации ребер
+        /// Пропущенные 3д-элементы в результате плохой конфигурации ребер
         /// </summary>
-        public int MissedTetras { get; private set; }
+        public int MissedElements { get; private set; }
         /// <summary>
         /// Сортирует 2д элементы слоя по возрастанию расстоянию от центра слоя
         /// </summary>
@@ -101,7 +101,7 @@ namespace OperationalController.MeshObjsCreator
         /// </summary>
         /// <param name="src">Слой источник 2д элементов</param>
         /// <returns>Копия 2д элементов</returns>
-        protected List<Element2D> CreateFirstSurface(IEnumerable<Element2D> src)
+        protected virtual List<Element2D> CreateFirstSurface(IEnumerable<Element2D> src)
         {
             var layer = new List<Element2D>();
             var visited = new Dictionary<int, Node>();
@@ -139,10 +139,6 @@ namespace OperationalController.MeshObjsCreator
 
             foreach (var element in curLayer)
             {
-                if(elementTag > 1046)
-                {
-
-                }
                 var nodes = element.GetVertexes();
                 var upNodes = nextLayer[index++].GetVertexes();
                 var e3dNodes = nodes.Concat(upNodes).ToArray();
@@ -233,7 +229,7 @@ namespace OperationalController.MeshObjsCreator
             var result = new List<Tetra>();
             if (indices.Length == 0)
             {
-                MissedTetras += 6;
+                MissedElements += 6;
                 return result;
             }
 
@@ -244,7 +240,7 @@ namespace OperationalController.MeshObjsCreator
             var second = new Penta(0, [nodes[b[0]], nodes[b[1]], nodes[b[2]], nodes[b[3]], nodes[b[4]], nodes[b[5]]]);
 
             var firstTetras = SplitPenta(first);
-            if(firstTetras.Count != 0)
+            if (firstTetras.Count != 0)
                 result.AddRange(firstTetras);
 
             var secondTetras = SplitPenta(second);
@@ -303,7 +299,7 @@ namespace OperationalController.MeshObjsCreator
         /// <param name="slave">Список подчиненного приоритета</param>
         /// <param name="emptyConfigs">Список пустых конфигураций по граням</param>
         private void GetPentaConfigurationFromLateralEdges(Node[] nodes, Dictionary<int, int> converter,
-                                                           List<int[][]> primary, List<int[][]> slave, 
+                                                           List<int[][]> primary, List<int[][]> slave,
                                                            List<int> emptyConfigs)
         {
             var indices = GetExistingLateralEdges(nodes, converter, 4);
@@ -388,7 +384,7 @@ namespace OperationalController.MeshObjsCreator
         /// <returns>Индексы тетра элементов</returns>
         private int[][] CreateTetraConfigFromEmptyEdges(int faceIndex)
         {
-            if(faceIndex == 2)
+            if (faceIndex == 2)
             {
                 var config = new int[][]
                 {
@@ -397,7 +393,7 @@ namespace OperationalController.MeshObjsCreator
                 };
                 return config;
             }
-            else if(faceIndex == 1)
+            else if (faceIndex == 1)
             {
                 var config = new int[][]
                 {
@@ -548,7 +544,7 @@ namespace OperationalController.MeshObjsCreator
         private List<Tetra> DoPentaDefaultSplitting(Node[] nodes)
         {
             var result = DoPyramidSplitting([nodes[2], nodes[4], nodes[3]], [nodes[1], nodes[5]]);
-            var tetra = GetSingleTetraFromSplitting([nodes[0], nodes[1], nodes[2], nodes[3]], 
+            var tetra = GetSingleTetraFromSplitting([nodes[0], nodes[1], nodes[2], nodes[3]],
                                                     [nodes[1], nodes[3], nodes[2], nodes[3]]);
 
             result.Add(tetra);
@@ -634,7 +630,7 @@ namespace OperationalController.MeshObjsCreator
                 Swap(indices, 0, 2);
                 return DoSplittingWithCommonUpPoint(nodes, indices);
             }
-            MissedTetras += 3;//Плохая конфигурация ребер
+            MissedElements += 3;//Плохая конфигурация ребер
             return new List<Tetra>();
             //return DoSplittingWithCommonVerticalEdge(edgesMap, nodes, indices);
         }

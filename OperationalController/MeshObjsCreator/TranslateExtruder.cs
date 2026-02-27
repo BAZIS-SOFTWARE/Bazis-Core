@@ -21,7 +21,7 @@ namespace OperationalController.MeshObjsCreator
         /// <param name="layers">Количество слоев</param>
         /// <param name="layerSize">Высота слоя</param>
         /// <returns>Список 3д элементов</returns>
-        public virtual List<List<Element3D>> Extrude(IEnumerable<Element2D> curLayer, Point3D dir, int layers = 1, float layerSize = 1)
+        public List<List<Element3D>> Extrude(IEnumerable<Element2D> curLayer, Point3D dir, int layers = 1, float layerSize = 1)
         {
             dir = Vector.GetVectorNorm(dir);
             var layerDir = dir.Mult(layerSize);
@@ -41,12 +41,39 @@ namespace OperationalController.MeshObjsCreator
             return tetLayers;
         }
         /// <summary>
+        /// Создает трансфинитную экструзию 3д элементов по указанному слою 2д элементов
+        /// </summary>
+        /// <param name="curLayer">Текущий слой 2д элементов</param>
+        /// <param name="dir">Вектор направления экструзии</param>
+        /// <param name="layers">Количество слоев</param>
+        /// <param name="layerSize">Высота слоя</param>
+        /// <returns>Список 3д элементов</returns>
+        public List<List<Element3D>> ExtrudeTransfinite(IEnumerable<Element2D> curLayer, Point3D dir, int layers = 1, float layerSize = 1)
+        {
+            dir = Vector.GetVectorNorm(dir);
+            var layerDir = dir.Mult(layerSize);
+
+            var tetLayers = new List<List<Element3D>>();
+
+            var sortedLayer = SortFirstLayer(curLayer);
+            curLayer = CreateFirstSurface(sortedLayer);
+
+            for (var i = 0; i < layers; ++i)
+            {
+                var nextLayer = CreateNextLayer(curLayer, layerDir);
+                var layer = CreateTransfiniteLayer(curLayer, nextLayer);
+                tetLayers.Add(layer);
+                curLayer = nextLayer;
+            }
+            return tetLayers;
+        }
+        /// <summary>
         /// Строит следующий слой 2д элементов на основе текущего используя вектор направления layerDir
         /// </summary>
         /// <param name="curLayer">Текущий слой 2д элементов</param>
         /// <param name="layerDir">Вектор направления выращивания</param>
         /// <returns>Список 2д элементов</returns>
-        protected List<Element2D> CreateNextLayer(IEnumerable<Element2D> curLayer, Point3D layerDir)
+        private List<Element2D> CreateNextLayer(IEnumerable<Element2D> curLayer, Point3D layerDir)
         {
             var nextLayer = new List<Element2D>();
             var visited = new Dictionary<int, Node>();

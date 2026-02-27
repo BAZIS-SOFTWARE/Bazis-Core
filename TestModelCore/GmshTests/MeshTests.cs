@@ -17,6 +17,8 @@ using Model.IO;
 using OperationalController.MeshObjsCreator;
 using System.Numerics;
 using MathNet.Spatial.Euclidean;
+using System.Diagnostics;
+using Point3D = Geometry.Point3D;
 
 namespace GmshTests
 {
@@ -868,39 +870,24 @@ namespace GmshTests
             ctr.Gmsh.Model.Mesh.Generate(2);
             if (recombine)
                 ctr.Gmsh.Model.Mesh.Recombine();
-            //ctr.Gmsh.Write($@"D:\gearRecombine{recombine.ToString()}Transfinite{transfinite.ToString()}.msh");
             var objs = ctr.GetMeshObjects();
 
-            var dir = new Geometry.Point3D(0f, 0f, 1f);
-            List<List<Element3D>> tetras = null;
-            Dictionary<int, Node> nodes = null;
-            int missed = 0;
+            var dir = new Point3D(0f, 0f, 1f);
+            var extruder = new TranslateExtruder();
 
-            if (transfinite)
-            {
-                var extruder = new TransfiniteTranslateExtruder();
-                tetras = extruder.Extrude(objs.Item3, dir, layersCount, size);
-                nodes = extruder.Nodes;
-                missed = extruder.MissedTetras;
-            }
-            else
-            {
-                var extruder = new TranslateExtruder();
-                tetras = extruder.Extrude(objs.Item3, dir, layersCount, size);
-                nodes = extruder.Nodes;
-                missed = extruder.MissedTetras;
-            }
+            var e3d = transfinite ? extruder.ExtrudeTransfinite(objs.Item3, dir, layersCount, size)
+                                  : extruder.Extrude(objs.Item3, dir, layersCount, size);
 
             var md = new ModelData();
-            md.ObjectData.E3DCollection.AddRange("Extruded", tetras.SelectMany(v => v));
+            md.ObjectData.E3DCollection.AddRange("Extruded", e3d.SelectMany(v => v));
 
-            foreach (var node in nodes.Values)
+            foreach (var node in extruder.Nodes.Values)
                 md.ObjectData.NodesSet.Add(node.Number, node);
 
-            Assert.AreEqual(0, missed);
+            Assert.AreEqual(0, extruder.MissedElements);
 
-            //var saver = new SaveModelToBPF2TextFile();
-            //saver.Save(md, $@"D:\gearRecombine{recombine.ToString()}Transfinite{transfinite.ToString()}.bpf2");
+            var saver = new SaveModelToBPF2TextFile();
+            saver.Save(md, $@"D:\gearRecombine{recombine.ToString()}Transfinite{transfinite.ToString()}.bpf2");
         }
 
         [DataTestMethod]
@@ -919,38 +906,143 @@ namespace GmshTests
             ctr.Gmsh.Model.Mesh.Generate(2);
             if (recombine)
                 ctr.Gmsh.Model.Mesh.Recombine();
-            //ctr.Gmsh.Write($@"D:\{fileName}Recombine{recombine.ToString()}Transfinite{transfinite.ToString()}.msh");
             var objs = ctr.GetMeshObjects();
 
-            List<List<Element3D>> tetras = null;
-            Dictionary<int, Node> nodes = null;
-            int missed = 0;
+            var extruder = new RotateExtruder();
+            var e3d = transfinite ? extruder.ExtrudeTransfinite(objs.Item3, Vector3.Zero, Vector3.UnitY, segments)
+                                  : extruder.Extrude(objs.Item3, Vector3.Zero, Vector3.UnitY, segments);
 
-            if (transfinite)
-            {
-                var extruder = new TransfiniteRotateExtruder();
-                tetras = extruder.Extrude(objs.Item3, Vector3.Zero, Vector3.UnitY, segments);
-                nodes = extruder.Nodes;
-                missed = extruder.MissedTetras;
-            }
-            else
-            {
-                var extruder = new RotateExtruder();
-                tetras = extruder.Extrude(objs.Item3, Vector3.Zero, Vector3.UnitY, segments);
-                nodes = extruder.Nodes;
-                missed = extruder.MissedTetras;
-            }
 
             var md = new ModelData();
-            md.ObjectData.E3DCollection.AddRange("Extruded", tetras.SelectMany(v => v));
+            md.ObjectData.E3DCollection.AddRange("Extruded", e3d.SelectMany(v => v));
 
-            foreach (var node in nodes.Values)
+            foreach (var node in extruder.Nodes.Values)
                 md.ObjectData.NodesSet.Add(node.Number, node);
 
-            Assert.AreEqual(0, missed);
+            Assert.AreEqual(0, extruder.MissedElements);
 
-            //var saver = new SaveModelToBPF2TextFile();
-            //saver.Save(md, $@"D:\{fileName}Recombine{recombine.ToString()}Transfinite{transfinite.ToString()}.bpf2");
+            var saver = new SaveModelToBPF2TextFile();
+            saver.Save(md, $@"D:\{fileName}Recombine{recombine.ToString()}Transfinite{transfinite.ToString()}.bpf2");
+        }
+
+        [DataTestMethod]
+        [DataRow(32, false, false)]
+        [DataRow(13, true, false)]
+        [DataRow(24, false, true)]
+        [DataRow(17, true, true)]
+        public void ExtrudeAlongCurveTest(int layers, bool recombine, bool transfinite)
+        {
+            var proj = new ProjectController();
+            proj.GmshController.Load(@"..\..\..\..\GmshApi\gmsh.dll");
+
+            var ctr = proj.GmshController;
+
+            var circleCurve = ctr.Gmsh.Model.Occ.AddCircle(0, 0, 0, 1);
+            var circleWire = ctr.Gmsh.Model.Occ.AddWire([circleCurve]);
+
+            ctr.Gmsh.Model.Occ.AddPlaneSurface([circleWire]);
+            ctr.Gmsh.Model.Occ.Synchronize();
+
+            ctr.Gmsh.Model.Mesh.Generate(2);
+            if (recombine)
+                ctr.Gmsh.Model.Mesh.Recombine();
+
+            var pointA = ctr.Gmsh.Model.Occ.AddPoint(1, 15, 1);
+            var pointB = ctr.Gmsh.Model.Occ.AddPoint(10, 5, 10);
+            var pointC = ctr.Gmsh.Model.Occ.AddPoint(6, 9, 20);
+
+            //var curvedLine = ctr.Gmsh.Model.Occ.AddBezier([pointA, pointB, pointC]);
+            var curvedLine = ctr.Gmsh.Model.Occ.AddSpline([pointA, pointB, pointC]);
+            //var curvedLine = ctr.Gmsh.Model.Occ.AddCircle(5, 5, 5, 5);
+
+            ctr.Gmsh.Model.Occ.Synchronize();
+
+            var objs = ctr.GetMeshObjects();
+
+            var extruder = new CurveExtruder(ctr, curvedLine);
+            var e3d = transfinite ? extruder.ExtrudeTransfinite(objs.Item3, layers)
+                                  : extruder.Extrude(objs.Item3, layers);
+
+            var md = new ModelData();
+            md.ObjectData.E3DCollection.AddRange("Extruded", e3d.SelectMany(v => v));
+
+            foreach (var node in extruder.Nodes.Values)
+                md.ObjectData.NodesSet.Add(node.Number, node);
+
+            Assert.AreEqual(0, extruder.MissedElements);
+
+            var saver = new SaveModelToBPF2TextFile();
+            saver.Save(md, $@"D:\curveExtrudeRecombine{recombine.ToString()}Transfinite{transfinite.ToString()}.bpf2");
+        }
+
+        [DataTestMethod]
+        [DataRow(90, false, false)]
+        [DataRow(77, true, false)]
+        [DataRow(51, false, true)]
+        [DataRow(86, true, true)]
+        public void ExtrudeSpiralTest(int layers, bool recombine, bool transfinite)
+        {
+            var proj = new ProjectController();
+            proj.GmshController.Load(@"..\..\..\..\GmshApi\gmsh.dll");
+
+            var ctr = proj.GmshController;
+            var curve = CreateSpiral(ctr, 1, 0.5, 5);
+
+            var circleCurve = ctr.Gmsh.Model.Occ.AddCircle(0, 0, 0, 0.15);
+            var circleWire = ctr.Gmsh.Model.Occ.AddWire([circleCurve]);
+
+            ctr.Gmsh.Model.Occ.AddPlaneSurface([circleWire]);
+            ctr.Gmsh.Model.Occ.Synchronize();
+
+            ctr.Gmsh.Model.Mesh.Generate(2);
+            if (recombine)
+                ctr.Gmsh.Model.Mesh.Recombine();
+
+            var objs = ctr.GetMeshObjects();
+
+            var extruder = new CurveExtruder(ctr, curve);
+            var e3d = transfinite ? extruder.ExtrudeTransfinite(objs.Item3, layers)
+                                  : extruder.Extrude(objs.Item3, layers);
+
+            var md = new ModelData();
+            md.ObjectData.E3DCollection.AddRange("Extruded", e3d.SelectMany(v => v));
+
+            foreach (var node in extruder.Nodes.Values)
+                md.ObjectData.NodesSet.Add(node.Number, node);
+
+            Assert.AreEqual(0, extruder.MissedElements);
+
+            var saver = new SaveModelToBPF2TextFile();
+            saver.Save(md, $@"D:\spiralExtrudeRecombine{recombine.ToString()}Transfinite{transfinite.ToString()}.bpf2");
+        }
+
+        private int CreateSpiral(IGmshController controller, double radius, double height, int turns)
+        {
+            if(turns < 1)
+                throw new ArgumentException("Число витков меньше 1");
+
+            var first = new double[] { radius, 0, 0 };
+            var cosCache = new double[] { 0, -radius, 0 };
+            var sinCache = new double[] { -radius, 0, radius };
+
+            var pointData = new List<int>();
+            var p0 = controller.Gmsh.Model.Occ.AddPoint(first[0], first[1], first[2]);
+            pointData.Add(p0);
+
+            for (var i = 0; i < turns; ++i)
+            {
+                var p1 = controller.Gmsh.Model.Occ.AddPoint(cosCache[0], first[1] + 0.25 * height, sinCache[0]);
+                var p2 = controller.Gmsh.Model.Occ.AddPoint(cosCache[1], first[1] + 0.5 * height, sinCache[1]);
+                var p3 = controller.Gmsh.Model.Occ.AddPoint(cosCache[2], first[1] + 0.75 * height, sinCache[2]);
+                var p4 = controller.Gmsh.Model.Occ.AddPoint(first[0], first[1] + height, first[2]);
+
+                pointData.AddRange([p1, p2, p3, p4]);
+                first[1] += height;
+            }
+
+            var curve = controller.Gmsh.Model.Occ.AddSpline(pointData.ToArray());
+            controller.Gmsh.Model.Occ.Synchronize();
+            return curve;
         }
 
 

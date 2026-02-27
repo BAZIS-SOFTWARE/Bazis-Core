@@ -23,6 +23,9 @@ namespace GmshApi
                                                       double[] zAxis, IntPtr zAxis_n, double[] xAxis, IntPtr xAxis_n, ref int ierr);
         private gmshModelOccAddCircleFun gmshModelOccAddCircle = GetFunction<gmshModelOccAddCircleFun>("gmshModelOccAddCircle");
 
+        private delegate int gmshModelOccAddSplineFun(int[] pointTags, IntPtr pointTags_n, int tag, double[] tangents, IntPtr tangents_n, ref int ierr);
+        private gmshModelOccAddSplineFun gmshModelOccAddSpline = GetFunction<gmshModelOccAddSplineFun>("gmshModelOccAddSpline");
+
         private delegate int gmshModelOccAddBezierFun(int[] pointTags, IntPtr pointTags_n, int tag, ref int ierr);
         private gmshModelOccAddBezierFun gmshModelOccAddBezier = GetFunction<gmshModelOccAddBezierFun>("gmshModelOccAddBezier");
 
@@ -176,6 +179,21 @@ namespace GmshApi
             zAxis = zAxis ?? new double[0];
             xAxis = xAxis ?? new double[0];
             return gmshModelOccAddCircle(x, y, z, r, tag, angle1, angle2, zAxis, (IntPtr)zAxis.Length, xAxis, (IntPtr)xAxis.Length, ref ierr);
+        }
+
+        /// <summary>
+        /// Добавляет сплайн в ядро OCC с идентификаторами точек pointTags и касательными(опционально) векторами tangents 
+        /// </summary>
+        /// <param name="pointTags">Массив идентификаторов точек</param>
+        /// <param name="tag">Желаемый идентификатор или -1 для автоназначения</param>
+        /// <param name="tangents">Если передано 6 компонентов касательного вектора(x,y,z) - использовать вектора только для первой и последней точки, 
+        /// если кол-во компонентов вектора (x,y,z) в 3 раза мревышает кол-во точек pointTags - использовать направляющие вектора для каждой точки</param>
+        /// <returns>Идентификатор кривой</returns>
+        public int AddSpline(int[] pointTags, int tag = -1, double[] tangents = null)
+        {
+            var ierr = 0;
+            tangents = tangents ?? new double[0];
+            return gmshModelOccAddSpline(pointTags, (IntPtr)pointTags.Length, tag, tangents, (IntPtr)tangents.Length, ref ierr);
         }
 
         /// <summary>
