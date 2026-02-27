@@ -1,29 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Data;
 using System.Globalization;
-using System.Linq;
-using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Model;
 using Newtonsoft.Json;
-using System.IO;
-using Project;
 using Project.Interfaces.Tasks;
 using Model.GroupsData;
 using Model.Interfaces;
 using Geometry;
-using System.Runtime.InteropServices;
 using Project.Tasks;
-using Project.Tasks.Functions;
 using Project.TaskParameters;
 using Project.Tasks.FrameCreators;
-using System.Runtime.InteropServices.ComTypes;
-using Model.IO;
 using MaterialDB.MaterialData;
 using MaterialDB.FunctionData;
-using System.Security.Cryptography;
-using System.Xml.Linq;
 using Project.IO;
 
 namespace TestProject
@@ -114,7 +101,7 @@ namespace TestProject
             var ext = Path.GetExtension(relativeProjPath);
 
             //act
-            var selectedData = proj.TaskData.Find(DataKind.Нагрев).Select(x => (ICondData)x).ToArray();
+            var selectedData = proj.TaskData.Find(DataKind.Нагрев).Select(x => (HeatData)x).ToArray();
             foreach (var preFrame in selectedData)
             {
                 var stepTime = (preFrame.StopTime - preFrame.StartTime) / 10;
@@ -147,7 +134,7 @@ namespace TestProject
             var proj = loader.Load(@"..\..\..\Examples\proj_traj.bpf");
 
             //act
-            var selectedData = proj.TaskData.Find(DataKind.Нагрев).Select(x => (ICondData)x).ToArray();
+            var selectedData = proj.TaskData.Find(DataKind.Нагрев).Select(x => (HeatData)x).ToArray();
 
             
 

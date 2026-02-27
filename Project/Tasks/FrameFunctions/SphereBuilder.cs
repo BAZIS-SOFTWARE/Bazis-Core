@@ -2,7 +2,7 @@
 using Project.Tasks.FrameCreators;
 using System.Globalization;
 
-namespace Project.Tasks.Functions.Welding
+namespace Project.Tasks.FrameFunctions
 {
     public class SphereBuilder
     {

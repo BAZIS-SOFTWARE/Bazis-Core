@@ -31,6 +31,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="SceneBrightnessController\ApplyDim.cs" />
+    <Compile Remove="SceneBrightnessController\ApplyExample.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Icon.png" />
     <None Remove="Interfaces\Icon.png" />
   </ItemGroup>

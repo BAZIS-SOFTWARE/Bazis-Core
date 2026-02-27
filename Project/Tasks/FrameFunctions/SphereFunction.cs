@@ -4,22 +4,23 @@ using Geometry;
 using Model.Interfaces;
 using Project.Interfaces.Tasks;
 
-namespace Project.Tasks.Functions.Welding
+namespace Project.Tasks.FrameFunctions
 {
     public class SphereFunction : FrameFunction
     {
         public SphereFunction()
         {
-            Name = FunctionType.SPH;
+            Name = FrameFunctionName.SPH.ToString();
         }
-        /// <inheritdoc/>
-        public float Width { get; set; }
-/// <inheritdoc/>
 
         public override string ToString()
         {
-            return $"{Name};{Width};{LocalFrame}";
+            return $"{base.ToString()};{Width}";
         }
+        /// <summary>
+        /// Width
+        /// </summary>
+        public double Width { get; set; }
 
         /// <summary>
         /// 
@@ -28,7 +29,7 @@ namespace Project.Tasks.Functions.Welding
         /// <param name="rad"></param>
         /// <param name="halfBead"></param>
         /// <returns></returns>
-        public bool IsPointInside(Point3D elementCenter, out float rad, out float halfBead)
+        public bool IsPointInside(Point3D elementCenter, out double rad, out double halfBead)
         {
             halfBead = Width / 2;
             var frame = LocalFrame.Frame;
@@ -54,11 +55,11 @@ namespace Project.Tasks.Functions.Welding
         {
             return velocity <= Width / 2;
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
-        public override float CalcValue(Point3D elementCenter)
+        public override double CalcValue(Point3D elementCenter)
         {
-            float rad, halfBead;
+            double rad, halfBead;
 
             if (IsPointInside(elementCenter, out rad, out halfBead))
             {
@@ -67,7 +68,7 @@ namespace Project.Tasks.Functions.Welding
                 var vol = halfBead * halfBead * halfBead;
                 var powerDensity = power / vol;
 
-                return powerDensity * (float)Math.Exp(-1 * (rad * rad / (halfBead * halfBead)));
+                return powerDensity * Math.Exp(-1 * (rad * rad / (halfBead * halfBead)));
             }
             return 0;
         }

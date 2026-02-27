@@ -1,14 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Model;
-using Project;
 using Project.IO;
 using Project.Tasks;
-using Project.Tasks.Functions;
 using Project.Tasks.FrameCreators;
-using System;
 using System.Globalization;
-using System.Linq;
-using System.Threading;
 using Project.Interfaces;
 
 namespace TestProject

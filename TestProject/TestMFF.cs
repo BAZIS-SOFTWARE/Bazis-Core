@@ -13,13 +13,12 @@ using Model.GroupsData;
 using Model.Interfaces.MeshObjects;
 using Project.Tasks;
 using Model.Interfaces;
-using Project.Tasks.Functions;
 using Project.Tasks.FrameCreators;
 using Project.Interfaces.Tasks;
 using MathNet.Numerics.LinearAlgebra;
-using Project.Tasks.Functions.Welding;
 using Project.IO;
 using static IronPython.Runtime.Profiler;
+using Project.Tasks.FrameFunctions;
 
 namespace TestProject
 {
@@ -38,7 +37,7 @@ namespace TestProject
         [DataRow(@"..\..\..\Examples\WeldingHeatSource\LWTest_v.bpf", DisplayName = "LWTest_v.bpf")]
         [DataRow(@"..\..\..\Examples\WeldingHeatSource\test_t_lazer_0_10.bpf", DisplayName = "test_t_lazer_0_10.bpf")]
         [DataRow(@"..\..\..\Examples\WeldingHeatSource\test_t_lazer_180_0_10.bpf", DisplayName = "test_t_lazer_180_0_10.bpf")]
-        [DataRow(@"..\..\..\Examples\WeldingHeatSource\ARCTest_v.bpf", DisplayName = "ARC")]
+        [DataRow(@"..\..\..\Examples\WeldingHeatSource\ARCTest_v.bpf", DisplayName = "ARCTest_v")]
         //[DataRow(@"\WeldingHeatSource\FSW\proj.bpf", DisplayName = "FSW")]
         [DataRow("c:\\projs\\Roman\\WebinarLazerWelding\\123.bpf2", DisplayName = "LW.bpf2")]
 
@@ -63,7 +62,7 @@ namespace TestProject
 
                 var powerFunc = heatData.FrameFunction;
                 //assert
-                var energy = new float[gr.Count];
+                var energy = new double[gr.Count];
                 var mf = heatData.FrameFunction.LocalFrame as MovedFrame;
                 mf.Time = 1;
                 mf.CalcPosition();
@@ -165,7 +164,7 @@ namespace TestProject
                 arc.SetWidth("20");
 
                 arc.SetFrame(frame);
-                pFunction = (SphereFunction)arc;
+                pFunction = arc;
             }
             else
             {
@@ -174,7 +173,7 @@ namespace TestProject
                 lazer.SetBottomDiam("10");
                 lazer.SetUpperDiam("20");
                 lazer.SetFrame(frame);
-                pFunction = (CillindricalFunction)lazer;
+                pFunction = lazer;
             }
             //else if (fName == "FSWShoulder")
             //{
@@ -601,7 +600,7 @@ namespace TestProject
         public void RectangleCalcPowerTest(float x, float y, float z, float power)
         {
             //assing            
-            var function = new CustomFunction();
+            var function = new CustomFrameFunction();
             
             function.CreateEngine(@"..\..\..\Examples\PythonScript\RectangleSource.py");
 
@@ -609,7 +608,7 @@ namespace TestProject
             var result = function.CalcValue(new Point3D(x, y, z));
 
             //assert
-            Assert.AreEqual(power, result);
+            Assert.AreEqual(power, result,0.01);
         } 
     }
 }

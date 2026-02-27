@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
-namespace Project.Tasks.Functions.Welding
+namespace Project.Tasks.FrameFunctions
 {
     public class EllipsBuilder
     {
@@ -14,7 +14,7 @@ namespace Project.Tasks.Functions.Welding
         public EllipsBuilder()
         {
             elp = new DoubleEllips();
-            elp.Name = FunctionType.DEL;
+            elp.Name = FrameFunctionName.DEL.ToString();
             elp.LocalFrame = new StaticFrame();
         }
 
@@ -46,7 +46,7 @@ namespace Project.Tasks.Functions.Welding
         {
             elp.LocalFrame = new StaticFrame(frame);
             return this;
-        }      
+        }
 
         public static implicit operator DoubleEllips(EllipsBuilder builder)
         {

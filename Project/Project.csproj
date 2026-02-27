@@ -50,7 +50,8 @@
     <Compile Include="Interfaces\IO\ITaskDataLoader.cs" />
     <Compile Include="Interfaces\IO\ITaskDataSaver.cs" />
     <Compile Include="Interfaces\IProjectData.cs" />
-    <Compile Include="Interfaces\Tasks\FunctionParameter.cs" />
+    <Compile Include="Tasks\ParametersFunctions\CustomParametersFunction.cs" />
+    <Compile Include="Tasks\ParametersFunctions\Parameter.cs" />
     <Compile Include="Interfaces\Tasks\ICillindricalFunction.cs" />
     <Compile Include="Interfaces\Tasks\IData.cs" />
     <Compile Include="Interfaces\Tasks\IFrameFunction.cs" />
@@ -61,12 +62,12 @@
     <Compile Include="Interfaces\Tasks\ITimeDependentData.cs" />
     <Compile Include="Interfaces\Tasks\ITrajectory.cs" />
     <Compile Include="Interfaces\Tasks\ICondData.cs" />
-    <Compile Include="Tasks\Functions\CustomFunction.cs" />
+    <Compile Include="Tasks\FrameFunctions\CustomFrameFunction.cs" />
     <Compile Include="Tasks\Materials\BeamMatData.cs" />
-    <Compile Include="Tasks\Functions\Welding\EllipsBuilder.cs" />
-    <Compile Include="Tasks\Functions\Welding\DoubleEllips.cs" />
-    <Compile Include="Tasks\Functions\FrameFunction.cs" />
-    <Compile Include="Tasks\Functions\FrameFunctionBuilder.cs" />
+    <Compile Include="Tasks\FrameFunctions\EllipsBuilder.cs" />
+    <Compile Include="Tasks\FrameFunctions\DoubleEllips.cs" />
+    <Compile Include="Tasks\FrameFunctions\FrameFunction.cs" />
+    <Compile Include="Tasks\FrameFunctions\FrameFunctionBuilder.cs" />
     <Compile Include="Tasks\LocalFrames\LocalFrame.cs" />
     <Compile Include="Tasks\LocalFrames\StaticFrame.cs" />
     <Compile Include="IO\LoadEventArgs.cs" />
@@ -87,13 +88,12 @@
     <Compile Include="TaskParameters\TermalParameters.cs" />
     <Compile Include="TaskParameters\TimeSettings.cs" />
     <Compile Include="Tasks\ClampData.cs" />
-    <Compile Include="Tasks\Functions\Welding\SphereBuilder.cs" />
-    <Compile Include="Tasks\Functions\Welding\CillindricalFunction.cs" />
-    <Compile Include="Tasks\Functions\Welding\CillindricalBuilder.cs" />
+    <Compile Include="Tasks\FrameFunctions\SphereBuilder.cs" />
+    <Compile Include="Tasks\FrameFunctions\CillindricalFunction.cs" />
+    <Compile Include="Tasks\FrameFunctions\CillindricalBuilder.cs" />
     <Compile Include="Tasks\LocalFrames\MovedFrame.cs" />
     <Compile Include="Tasks\LocalFrames\MovedFrameBuilder.cs" />
-    <Compile Include="Tasks\Functions\Welding\SphereFunction.cs" />
-    <Compile Include="Tasks\Functions\Trajectory.cs" />
+    <Compile Include="Tasks\FrameFunctions\SphereFunction.cs" />
     <Compile Include="Tasks\HeatData.cs" />
     <Compile Include="Tasks\IO\LoadEventArgs.cs" />
     <Compile Include="Tasks\IO\LoadTaskDataTextFormat.cs" />
@@ -102,6 +102,7 @@
     <Compile Include="Tasks\MatData.cs" />
     <Compile Include="Tasks\Materials\PlateMatData.cs" />
     <Compile Include="Tasks\MediaData.cs" />
+    <Compile Include="Tasks\ParametersFunctions\ParametersFunction.cs" />
     <Compile Include="Tasks\TaskData.cs" />
     <Compile Include="Tasks\CondData.cs" />
   </ItemGroup>

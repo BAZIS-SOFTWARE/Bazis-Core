@@ -3,6 +3,7 @@ using Project.Interfaces.Tasks;
 using MaterialDB.MaterialData;
 using System;
 using System.Globalization;
+using Project.Tasks.FrameFunctions;
 
 namespace Project.Tasks
 {
@@ -22,6 +23,11 @@ namespace Project.Tasks
         }
 
         public ClampKind ClampKind { get; private set; }
+
+        /// <summary>
+        /// FrameFunction
+        /// </summary>
+        public FrameFunction FrameFunction { get; set; }
 
         /// <inheritdoc/>
 

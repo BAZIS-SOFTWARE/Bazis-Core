@@ -1,19 +1,16 @@
 ﻿using Model.Interfaces;
 using Project.Interfaces.Tasks;
-using Project.Tasks.Functions;
 using MaterialDB.MaterialData;
-using System;
-using System.Globalization;
-using System.Runtime.InteropServices.ComTypes;
+using Project.Tasks.FrameFunctions;
 
 namespace Project.Tasks
 {
-    public enum FunctionType
+    public enum FrameFunctionName
     {
         SPH,
         CIL,
         DEL,
-        Custom
+        CFF
     }
     /// <summary>
     /// HeatData
@@ -26,9 +23,14 @@ namespace Project.Tasks
         public float Heat { get; set; } = 1;
 
         /// <summary>
-        /// PowerFunction
+        /// ChangePowerInTime
         /// </summary>
         public Property TimeFunction { get; set; }
+
+        /// <summary>
+        /// FrameFunction
+        /// </summary>
+        public FrameFunction FrameFunction { get; set; }
 
         /// <inheritdoc/>
         protected override string GetInfo

@@ -7,26 +7,27 @@ using System.IO;
 using System.Runtime.InteropServices;
 using static IronPython.Modules._ast;
 
-namespace Project.Tasks.Functions
+namespace Project.Tasks.FrameFunctions
 {
-    public class CustomFunction : FrameFunction
+    public class CustomFrameFunction : FrameFunction
     {
         ScriptEngine engine;
         ScriptScope scope;
+
         string file;
         /// <summary>
         /// ExecutedFile
         /// </summary>
-        public string ExecutedFile 
-        { 
-            get { return file; } 
+        public string ExecutedFile
+        {
+            get { return file; }
         }
         /// <summary>
         /// CustomFunction
         /// </summary>
-        public CustomFunction()
+        public CustomFrameFunction()
         {
-            Name = FunctionType.Custom;
+            Name = FrameFunctionName.CFF.ToString();
         }
 
 
@@ -43,7 +44,7 @@ namespace Project.Tasks.Functions
             scope = engine.CreateScope();
             engine.Execute(pythonCode, scope);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public override string ToString()
         {
@@ -51,7 +52,7 @@ namespace Project.Tasks.Functions
         }
         /// <inheritdoc/>
 
-        public override float CalcValue(Point3D elementCenter)
+        public override double CalcValue(Point3D elementCenter)
         {
             if (scope == null)
                 throw new Exception($"Файл {file} не скомпилирована");
@@ -59,7 +60,7 @@ namespace Project.Tasks.Functions
             var localCoords = LocalFrame.Frame.GetCoordsInFrame(elementCenter);
 
             var powerFunc = scope.GetVariable("CalcPower");
-            return (float)powerFunc(localCoords._x, localCoords._y, localCoords._z);
+            return (double)powerFunc(localCoords._x, localCoords._y, localCoords._z);
 
 
             //TODO питон программа

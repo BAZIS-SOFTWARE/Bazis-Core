@@ -16,6 +16,6 @@
         /// <summary>
         /// FrameFunction
         /// </summary>
-        IFrameFunction FrameFunction { get; set; }
+        //IFrameFunction FrameFunction { get; set; }
     }
 }

@@ -63,22 +63,7 @@ namespace Project.Tasks
         /// <inheritdoc/>
 
         public IGroup Group { get; set; }
-
-        IFrameFunction frameFunction;
-
-        /// <inheritdoc/>
-        public IFrameFunction FrameFunction 
-        {
-            get { return frameFunction; }
-            set
-            {
-                frameFunction = value;
-            }
-        }
-
-        /// <inheritdoc/>
-  
-        public string PythonS { get; set; } // путь к питон функции
+/// <inheritdoc/>
 
 
         public override string ToString()
@@ -88,7 +73,7 @@ namespace Project.Tasks
 
         /// <inheritdoc/>
 
-        public Direction Direction { get; set; }
+        public Direction Direction { get; set; } = Direction.None;
 
     }
 }

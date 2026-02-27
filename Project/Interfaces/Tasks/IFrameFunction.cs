@@ -20,10 +20,6 @@ namespace Project.Interfaces.Tasks
         /// </summary>
         LocalFrame LocalFrame { get; set; }
         /// <summary>
-        /// Name
-        /// </summary>
-        FunctionType Name { get; }
-        /// <summary>
         /// GetIntersectedElements
         /// </summary>
         /// <param name="elements"></param>
@@ -38,25 +34,7 @@ namespace Project.Interfaces.Tasks
         /// <summary>
         /// CalcPower
         /// </summary>
-        /// <param name="elementCenter"></param>
         /// <returns></returns>
-        float CalcValue(Point3D elementCenter);
-
-        /// <summary>
-        /// CreateParameter
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="value"></param>
-        void CreateParameter(string name, float value);
-        /// <summary>
-        /// CreateParameter
-        /// </summary>
-        /// <param name="name"></param>
-        void CreateParameter(string name);
-        /// <summary>
-        /// GetParameters
-        /// </summary>
-        /// <returns></returns>
-        IEnumerable<FunctionParameter> GetParameters();
+        double CalcValue(Point3D elementCenter);
     }
 }

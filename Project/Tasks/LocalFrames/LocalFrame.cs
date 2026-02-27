@@ -51,21 +51,29 @@ namespace Project.Tasks.FrameCreators
         {
             var shifftingData = shiftingData.Split('|');
 
-            //if (shifftingData.Length == 4)
+            if (shifftingData.Length != 6)
+                throw new Exception("Проверьте вектор смещения и углы поворота");
+
             //{
-                if (!float.TryParse(shifftingData[0], out var x))
-                    throw new Exception("Смещение по X задано неверно!");
-                if (!float.TryParse(shifftingData[1], out var y))
-                    throw new Exception("Смещение по Y задано неверно!");
-                if (!float.TryParse(shifftingData[2], out var z))
-                    throw new Exception("Смещение по Z задано неверно!");
-                if (!float.TryParse(shifftingData[3], out var angle_x))
-                    throw new Exception("Угол задан неверно!");
+            if (!float.TryParse(shifftingData[0], out var x))
+                throw new Exception("Смещение по X задано неверно!");
+            if (!float.TryParse(shifftingData[1], out var y))
+                throw new Exception("Смещение по Y задано неверно!");
+            if (!float.TryParse(shifftingData[2], out var z))
+                throw new Exception("Смещение по Z задано неверно!");
+            if (!float.TryParse(shifftingData[3], out var angle_x))
+                throw new Exception("Угол задан неверно!");
+            if (!float.TryParse(shifftingData[4], out var angle_y))
+                throw new Exception("Угол задан неверно!");
+            if (!float.TryParse(shifftingData[5], out var angle_z))
+                throw new Exception("Угол задан неверно!");
 
-                // TODO дописать парсинг для углов y и z
+            // TODO дописать парсинг для углов y и z
 
-                Shifting = new Point3D(x, y, z);
-                Rotation_X = angle_x;
+            Shifting = new Point3D(x, y, z);
+            Rotation_X = angle_x;
+            Rotation_Y = angle_y;
+            Rotation_Z = angle_z;
             //}
         }
     }

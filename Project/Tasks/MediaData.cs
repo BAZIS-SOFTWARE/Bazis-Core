@@ -2,6 +2,8 @@
 using Model.Interfaces;
 using Project.Interfaces.Tasks;
 using MaterialDB.MaterialData;
+using Project.Tasks.FrameFunctions;
+using Project.Tasks.ParametersFunctions;
 
 namespace Project.Tasks
 {
@@ -35,11 +37,16 @@ namespace Project.Tasks
         /// <summary>
         /// HeatExchangeValue
         /// </summary>
-        public float HeatExchangeValue { get; set; } = 0;
+        public float HexValue { get; set; } = 0;
         /// <summary>
-        /// HeatExchangeFunc
+        /// ChanheHeatExchangeInTemperature
         /// </summary>
-        public Property HeatExchangeFunc { get; set; }
+        public Property HexTempFunc { get; set; }
+
+        /// <summary>
+        /// FrameFunction
+        /// </summary>
+        public ParametersFunction HexParsFunc { get; set; }
 
         //private float heatExchangeValue = 0;
         //private string heatExchangeFunc = "*";
@@ -49,11 +56,11 @@ namespace Project.Tasks
         /// <summary>
         /// HeatExchangeValue
         /// </summary>
-        public float TemperatureValue { get; set; } = 1;
+        public float TempValue { get; set; } = 1;
         /// <summary>
         /// Temperature of media or body
         /// </summary>
-        public Property TemperatureFunc { get; set; }
+        public Property TempTimeFunc { get; set; }
 
         /// <summary>
         /// MediaType
@@ -62,7 +69,7 @@ namespace Project.Tasks
         { 
             get
             {
-                return HeatExchangeFunc == null & HeatExchangeValue == 0 ?
+                return HexTempFunc == null & HexValue == 0 ?
                     MediaType.ConstantTemp : MediaType.HeatFlux;
             }
         }
@@ -72,37 +79,33 @@ namespace Project.Tasks
         protected override string GetInfo
         {
             get
-            {
-                var mfInfo = "*";
-                if (FrameFunction?.LocalFrame != null)
-                    mfInfo = FrameFunction.LocalFrame.ToString();
+            {               
+                var hexParInfo = "*";
+                if (HexParsFunc != null)
+                    hexParInfo = HexParsFunc.ToString();
 
-                if (MediaType == MediaType.ConstantTemp)
-                {
-                    if (TemperatureFunc == null)
-                        return string.Format("{0} {1} {2} {3} {4} {5}",
-                      Group.Name, "*", TemperatureValue, StartTime, StopTime, mfInfo);
-                    else
-                        return string.Format("{0} {1} {2} {3} {4} {5}",
-Group.Name, "*", TemperatureFunc.Name, StartTime, StopTime, mfInfo);
-                }
-                else
-                {
-                    if (HeatExchangeFunc == null & TemperatureFunc == null)
-                        return string.Format("{0} {1} {2} {3} {4} {5}",
-                      Group.Name, HeatExchangeValue, TemperatureValue, StartTime, StopTime, mfInfo);
-                    else if (HeatExchangeFunc == null & TemperatureFunc != null)
-                        return string.Format("{0} {1} {2} {3} {4} {5}",
-                      Group.Name, HeatExchangeValue, TemperatureFunc.Name, StartTime, StopTime, mfInfo);
-                    else if (HeatExchangeFunc != null & TemperatureFunc == null)
-                        return string.Format("{0} {1} {2} {3} {4} {5}",
-                      Group.Name, HeatExchangeFunc.Name, TemperatureValue, StartTime, StopTime, mfInfo);
-                    else
-                        return string.Format("{0} {1} {2} {3} {4} {5}",
-                      Group.Name, HeatExchangeFunc.Name, TemperatureFunc.Name, StartTime, StopTime, mfInfo);
-                }
+                var hexTempInfo = "*";
+                if (HexTempFunc != null)
+                    hexTempInfo = HexTempFunc.ToString();
+
+                var hexInfo = $"{HexValue};{hexTempInfo};{hexParInfo}";
+
+                var tempTimeInfo = "*";
+                if (TempTimeFunc != null)
+                    tempTimeInfo = TempTimeFunc.ToString();
+
+                var tempInfo = $"{TempValue};{tempTimeInfo}";
+
+                return
+                  $"{Group.Name} {hexInfo} {tempInfo} {StartTime} {StopTime}";
             }
         }
+
+        internal void TrySetParamFunction(string v)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// TrySetTemp
         /// </summary>
@@ -110,22 +113,22 @@ Group.Name, "*", TemperatureFunc.Name, StartTime, StopTime, mfInfo);
         /// <exception cref="NotImplementedException"></exception>
         //public void SetTemp(float v)
         //{
-            //if (v == "*")
-            //    throw new Exception("Граничное условие тепловой задачи должно содержать сведения о температуре.");
+        //if (v == "*")
+        //    throw new Exception("Граничное условие тепловой задачи должно содержать сведения о температуре.");
 
-            //var res = 0.0f;
-            //if (float.TryParse(v, out res))
-            //{
-                //TemperatureValue = v;
-                //TemperatureFunc = null;
-            //}
-  
-            //else
-            //{
-            //    temperatureValue = 1;
-            //    temperatureFunc = v;
-            //}
-    
+        //var res = 0.0f;
+        //if (float.TryParse(v, out res))
+        //{
+        //TemperatureValue = v;
+        //TemperatureFunc = null;
+        //}
+
+        //else
+        //{
+        //    temperatureValue = 1;
+        //    temperatureFunc = v;
+        //}
+
         //}
         /// <summary>
         /// TrySetHeatExchange
@@ -133,20 +136,20 @@ Group.Name, "*", TemperatureFunc.Name, StartTime, StopTime, mfInfo);
         /// <param name="v"></param>
         //public void SetHeatExchange(float v)
         //{
-            //if (float.TryParse(v, out var media))
-            //{
-               //HeatExchangeValue = v;
-               //HeatExchangeFunc = null;
-            //}
-               
-            //else 
-            //{
-            //    if (v != "*")
-            //        heatExchangeValue = 1;
-            //    else
-            //        heatExchangeValue = 0;
-            //    heatExchangeFunc = v;
-            //}
+        //if (float.TryParse(v, out var media))
+        //{
+        //HeatExchangeValue = v;
+        //HeatExchangeFunc = null;
+        //}
+
+        //else 
+        //{
+        //    if (v != "*")
+        //        heatExchangeValue = 1;
+        //    else
+        //        heatExchangeValue = 0;
+        //    heatExchangeFunc = v;
+        //}
 
         //}
     }

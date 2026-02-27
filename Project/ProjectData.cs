@@ -4,17 +4,8 @@ using Project.IO;
 using Project.Interfaces.IO;
 using Project.Interfaces.Tasks;
 using Model;
-using Model.Interfaces.ObjectsCollections;
-using System.Collections.Generic;
 using Project.Tasks;
-using System.Data.SqlTypes;
-using Project.Tasks.FrameCreators;
-using System.Drawing;
 using System;
-using Project.Tasks.Functions;
-using Model.GroupsData;
-using Model.IO.STL;
-using Model.IO;
 
 namespace Project
 {

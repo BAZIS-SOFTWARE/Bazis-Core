@@ -11,9 +11,13 @@ class HeatData
 class CondData
 class BeamMatData
 class PlateMatData
+class Param
 interface ICondData
+interface IParam
 
 ICondData <|.. CondData
+ICondData *-- IParam
+IParam <|.. Param
 CondData <|.. MedData
 CondData <|.. HeatData
 CondData <|.. MatData

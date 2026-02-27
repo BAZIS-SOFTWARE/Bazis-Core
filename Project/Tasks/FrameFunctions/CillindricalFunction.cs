@@ -4,28 +4,28 @@ using Project.Interfaces.Tasks;
 using System;
 using System.Collections.Generic;
 
-namespace Project.Tasks.Functions.Welding
+namespace Project.Tasks.FrameFunctions
 {
     public class CillindricalFunction : FrameFunction
     {
         /// <inheritdoc/>
-        public float BottomDiam { get; set; }
+        public double BottomDiam { get; set; }
         /// <inheritdoc/>
-        public float UpperDiam { get; set; }
+        public double UpperDiam { get; set; }
         /// <inheritdoc/>
-        public float Length { get; set; }
+        public double Length { get; set; }
 
         public CillindricalFunction()
         {
-            Name = FunctionType.CIL;
+            Name = FrameFunctionName.CIL.ToString();
         }
-
-        /// <inheritdoc/>
+/// <inheritdoc/>
 
         public override string ToString()
         {
-            return $"{Name};{Length};{UpperDiam};{BottomDiam};{LocalFrame}";
+            return $"{base.ToString()};{Length};{UpperDiam};{BottomDiam}";
         }
+
 
         /// <summary>
         /// IsPointInside
@@ -36,7 +36,7 @@ namespace Project.Tasks.Functions.Welding
         /// <param name="r1"></param>
         /// <param name="r2"></param>
         /// <returns></returns>
-        public bool IsPointInside(Point3D elementCenter, out float r, out float r0, out float r1, out float r2)
+        public bool IsPointInside(Point3D elementCenter, out double r, out double r0, out double r1, out double r2)
         {
             r = 0f;
             r0 = 0f;
@@ -90,10 +90,11 @@ namespace Project.Tasks.Functions.Welding
         {
             return velocity <= BottomDiam / 2 && velocity <= UpperDiam / 2;
         }
+/// <inheritdoc/>
 
-        public override float CalcValue(Point3D elementCenter)
+        public override double CalcValue(Point3D elementCenter)
         {
-            float r, r0, r1, r2;
+            double r, r0, r1, r2;
 
             if (IsPointInside(elementCenter, out r, out r0, out r1, out r2))
             {
@@ -101,7 +102,7 @@ namespace Project.Tasks.Functions.Welding
                 var vol = 1.0f / 3 * 3.14f * Length * (r1 * r1 + r1 * r2 + r2 * r2); // объем усеченного конуса
                 var powerDensity = power / vol;
 
-                var relPowerDensity = powerDensity * (float)Math.Exp(-1 * (r * r / (r0 * r0)));
+                var relPowerDensity = powerDensity * Math.Exp(-1 * (r * r / (r0 * r0)));
                 return relPowerDensity;
             }
             return 0;

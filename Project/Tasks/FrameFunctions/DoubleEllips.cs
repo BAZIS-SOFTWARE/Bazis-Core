@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Project.Tasks.Functions.Welding
+namespace Project.Tasks.FrameFunctions
 {
     public class DoubleEllips : FrameFunction
     {
@@ -59,7 +59,7 @@ namespace Project.Tasks.Functions.Welding
         {
             var frame = LocalFrame.Frame;
             var elementVector = elementCenter.Sub(frame.Centre);
-            var vectorLength = Geometry.Vector.GetVectorLength(elementVector);
+            var vectorLength = Vector.GetVectorLength(elementVector);
             if (vectorLength <= MinSemiaxis) return true;
             else if (vectorLength > MaxSemiaxis) return false;
 
@@ -83,7 +83,7 @@ namespace Project.Tasks.Functions.Welding
             return velocity <= (FrontPart + BackPart) / 2;
         }
 
-        public override float CalcValue(Point3D elementCenter)
+        public override double CalcValue(Point3D elementCenter)
         {
             throw new NotImplementedException();
         }

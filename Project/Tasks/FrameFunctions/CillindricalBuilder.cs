@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Geometry;
 using Project.Tasks.FrameCreators;
 
-namespace Project.Tasks.Functions.Welding
+namespace Project.Tasks.FrameFunctions
 {
     public class CillindricalBuilder
     {
@@ -17,9 +17,9 @@ namespace Project.Tasks.Functions.Welding
 
         public CillindricalBuilder()
         {
-            cil = new CillindricalFunction();         
+            cil = new CillindricalFunction();
         }
-   
+
         public CillindricalBuilder SetBottomDiam(string diam)
         {
             cil.BottomDiam = float.Parse(diam, NumberStyles.Float, CultureInfo.InvariantCulture);
