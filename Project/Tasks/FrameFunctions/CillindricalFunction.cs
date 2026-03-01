@@ -107,5 +107,28 @@ namespace Project.Tasks.FrameFunctions
             }
             return 0;
         }
+/// <inheritdoc/>
+
+        public override double CalcValue()
+        {
+            double r, r0, r1, r2;
+
+            var x = (float)parameters[0].Value;
+            var y = (float)parameters[1].Value;
+            var z = (float)parameters[2].Value;
+
+            var elementCenter = new Point3D(x,y,z);
+
+            if (IsPointInside(elementCenter, out r, out r0, out r1, out r2))
+            {
+                var power = 1;
+                var vol = 1.0f / 3 * 3.14f * Length * (r1 * r1 + r1 * r2 + r2 * r2); // объем усеченного конуса
+                var powerDensity = power / vol;
+
+                var relPowerDensity = powerDensity * Math.Exp(-1 * (r * r / (r0 * r0)));
+                return relPowerDensity;
+            }
+            return 0;
+        }
     }
 }

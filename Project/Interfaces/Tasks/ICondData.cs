@@ -1,4 +1,7 @@
-﻿namespace Project.Interfaces.Tasks
+﻿using Project.Tasks.Functions;
+using System.Collections.Generic;
+
+namespace Project.Interfaces.Tasks
 {
     /// <summary>
     /// Direction
@@ -16,6 +19,11 @@
         /// <summary>
         /// FrameFunction
         /// </summary>
-        //IFrameFunction FrameFunction { get; set; }
+        Function Function { get; set; }
+        
+        /// <summary>
+        /// Value
+        /// </summary>
+        double Value { get; set; }
     }
 }

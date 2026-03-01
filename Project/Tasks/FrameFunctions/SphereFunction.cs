@@ -72,5 +72,27 @@ namespace Project.Tasks.FrameFunctions
             }
             return 0;
         }
+
+        public override double CalcValue()
+        {
+            double rad, halfBead;
+
+            var x = (float)parameters[0].Value;
+            var y = (float)parameters[1].Value;
+            var z = (float)parameters[2].Value;
+
+            var elementCenter = new Point3D(x, y, z);
+
+            if (IsPointInside(elementCenter, out rad, out halfBead))
+            {
+                // мощность берется за единицу
+                var power = 1;
+                var vol = halfBead * halfBead * halfBead;
+                var powerDensity = power / vol;
+
+                return powerDensity * Math.Exp(-1 * (rad * rad / (halfBead * halfBead)));
+            }
+            return 0;
+        }
     }
 }

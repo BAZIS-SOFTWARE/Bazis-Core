@@ -2,6 +2,7 @@
 using Model.Interfaces.Attributes;
 using Project.Interfaces.Tasks;
 using Project.Tasks.FrameCreators;
+using Project.Tasks.Functions;
 using System;
 using static IronPython.Runtime.Profiler;
 
@@ -74,6 +75,6 @@ namespace Project.Tasks
         /// <inheritdoc/>
 
         public Direction Direction { get; set; } = Direction.None;
-
+        public Function Function { get; set; }
     }
 }

@@ -83,5 +83,22 @@ namespace Project.Tasks.FrameFunctions
         {
             throw new NotImplementedException();
         }
+
+        public override double CalcValue()
+        {
+            if (scope == null)
+                throw new Exception($"Файл {file} не скомпилирована");
+
+            var x = (float)parameters[0].Value;
+            var y = (float)parameters[1].Value;
+            var z = (float)parameters[2].Value;
+
+            var elementCenter = new Point3D(x, y, z);
+
+            var localCoords = LocalFrame.Frame.GetCoordsInFrame(elementCenter);
+
+            var powerFunc = scope.GetVariable("CalcPower");
+            return (double)powerFunc(localCoords._x, localCoords._y, localCoords._z);
+        }
     }
 }

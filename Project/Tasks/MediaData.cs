@@ -3,7 +3,7 @@ using Model.Interfaces;
 using Project.Interfaces.Tasks;
 using MaterialDB.MaterialData;
 using Project.Tasks.FrameFunctions;
-using Project.Tasks.ParametersFunctions;
+using Project.Tasks.Functions;
 
 namespace Project.Tasks
 {
@@ -37,16 +37,11 @@ namespace Project.Tasks
         /// <summary>
         /// HeatExchangeValue
         /// </summary>
-        public float HexValue { get; set; } = 0;
+        public float Value { get; set; } = 0;
         /// <summary>
         /// ChanheHeatExchangeInTemperature
         /// </summary>
         public Property HexTempFunc { get; set; }
-
-        /// <summary>
-        /// FrameFunction
-        /// </summary>
-        public ParametersFunction HexParsFunc { get; set; }
 
         //private float heatExchangeValue = 0;
         //private string heatExchangeFunc = "*";
@@ -97,15 +92,9 @@ namespace Project.Tasks
                 var tempInfo = $"{TempValue};{tempTimeInfo}";
 
                 return
-                  $"{Group.Name} {hexInfo} {tempInfo} {StartTime} {StopTime}";
+                  $"{hexInfo} {tempInfo} {StartTime} {StopTime}";
             }
         }
-
-        internal void TrySetParamFunction(string v)
-        {
-            throw new NotImplementedException();
-        }
-
         /// <summary>
         /// TrySetTemp
         /// </summary>
@@ -113,22 +102,22 @@ namespace Project.Tasks
         /// <exception cref="NotImplementedException"></exception>
         //public void SetTemp(float v)
         //{
-        //if (v == "*")
-        //    throw new Exception("Граничное условие тепловой задачи должно содержать сведения о температуре.");
+            //if (v == "*")
+            //    throw new Exception("Граничное условие тепловой задачи должно содержать сведения о температуре.");
 
-        //var res = 0.0f;
-        //if (float.TryParse(v, out res))
-        //{
-        //TemperatureValue = v;
-        //TemperatureFunc = null;
-        //}
-
-        //else
-        //{
-        //    temperatureValue = 1;
-        //    temperatureFunc = v;
-        //}
-
+            //var res = 0.0f;
+            //if (float.TryParse(v, out res))
+            //{
+                //TemperatureValue = v;
+                //TemperatureFunc = null;
+            //}
+  
+            //else
+            //{
+            //    temperatureValue = 1;
+            //    temperatureFunc = v;
+            //}
+    
         //}
         /// <summary>
         /// TrySetHeatExchange
@@ -136,20 +125,20 @@ namespace Project.Tasks
         /// <param name="v"></param>
         //public void SetHeatExchange(float v)
         //{
-        //if (float.TryParse(v, out var media))
-        //{
-        //HeatExchangeValue = v;
-        //HeatExchangeFunc = null;
-        //}
-
-        //else 
-        //{
-        //    if (v != "*")
-        //        heatExchangeValue = 1;
-        //    else
-        //        heatExchangeValue = 0;
-        //    heatExchangeFunc = v;
-        //}
+            //if (float.TryParse(v, out var media))
+            //{
+               //HeatExchangeValue = v;
+               //HeatExchangeFunc = null;
+            //}
+               
+            //else 
+            //{
+            //    if (v != "*")
+            //        heatExchangeValue = 1;
+            //    else
+            //        heatExchangeValue = 0;
+            //    heatExchangeFunc = v;
+            //}
 
         //}
     }

@@ -9,9 +9,9 @@ using System.Text;
 using System.Threading.Tasks;
 using static IronPython.Modules._ast;
 
-namespace Project.Tasks.ParametersFunctions
+namespace Project.Tasks.Functions
 {
-    internal class CustomParametersFunction : ParametersFunction
+    internal class CustomFunction : Function
     {
         ScriptEngine engine;
         ScriptScope scope;
@@ -25,6 +25,11 @@ namespace Project.Tasks.ParametersFunctions
             get { return file; }
         }
 
+        public override double CalcValue()
+        {
+            throw new NotImplementedException();
+        }
+
 
         /// <summary>
         /// CreateEngine
@@ -33,17 +38,14 @@ namespace Project.Tasks.ParametersFunctions
         public void CreateEngine(string file)
         {
             this.file = file;
+            Name = file;
+
             string pythonCode = File.ReadAllText(file);
 
             engine = Python.CreateEngine();
             scope = engine.CreateScope();
             engine.Execute(pythonCode, scope);
         }
-        /// <inheritdoc/>
 
-        public override string ToString()
-        {
-            return $"{Name};{ExecutedFile}";
-        }
     }
 }

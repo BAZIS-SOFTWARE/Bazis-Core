@@ -303,22 +303,22 @@ namespace Project.Tasks
 
                 var mediaData = new MediaData(groupData.Find(infoAr[0]), start, stop);
 
-                var medInfAr = infoAr[1].Split(";");
+                var medFuncAr = infoAr[1].Split(",");
 
-                if (float.TryParse(medInfAr[0], out float heatExch))
+                if (float.TryParse(medFuncAr[0], out float heatExch))
                     mediaData.HexValue = heatExch;
 
-                if (medInfAr[1] != "*")
-                    if (!Functions.ContainsKey(medInfAr[1]))
-                        throw new Exception($"функция {medInfAr[1]} не содержится в базе данных!");
+                if (medFuncAr[1] != "*")
+                    if (!Functions.ContainsKey(medFuncAr[1]))
+                        throw new Exception($"функция {medFuncAr[1]} не содержится в базе данных!");
                     else
-                        mediaData.HexTempFunc = Functions[medInfAr[1]];
-                else if (medInfAr[2] != "*")
+                        mediaData.HexTempFunc = Functions[medFuncAr[1]];
+                else if (medFuncAr[2] != "*")
                 {
-                    if (medInfAr[2].Contains("HEX"))
-                        mediaData.TrySetParamFunction(medInfAr[2]);
-                    if (medInfAr[2].Contains("MRF"))
-                        mediaData.HexParsFunc = GetMRF(medInfAr[2], groupData);
+                    if (medFuncAr[2].Contains("HEX"))
+                        mediaData.TrySetParamFunction(medFuncAr[2]);
+                    if (medFuncAr[2].Contains("MRF"))
+                        mediaData.HexParsFunc = GetMRF(medFuncAr[2], groupData);
 
                 }
 

@@ -87,5 +87,10 @@ namespace Project.Tasks.FrameFunctions
         {
             throw new NotImplementedException();
         }
+
+        public override double CalcValue()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

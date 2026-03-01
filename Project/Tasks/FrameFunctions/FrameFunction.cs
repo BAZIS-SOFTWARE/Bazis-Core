@@ -2,14 +2,12 @@
 using Model.Interfaces;
 using Project.Interfaces.Tasks;
 using Project.Tasks.FrameCreators;
-using Project.Tasks.ParametersFunctions;
-using System;
+using Project.Tasks.Functions;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Project.Tasks.FrameFunctions
 {
-    public abstract class FrameFunction : ParametersFunction, IFrameFunction
+    public abstract class FrameFunction : Function, IFrameFunction
     {
         /// <inheritdoc/>
         public LocalFrame LocalFrame { get; set; } = new StaticFrame();
@@ -17,7 +15,7 @@ namespace Project.Tasks.FrameFunctions
 
         public override string ToString()
         {
-            return $"{base.ToString()};{LocalFrame}";
+            return $"{base.ToString()},{LocalFrame}";
         }
 
 
