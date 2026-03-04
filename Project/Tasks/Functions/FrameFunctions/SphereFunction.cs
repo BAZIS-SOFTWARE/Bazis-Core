@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Geometry;
+using IronPython.Runtime.Types;
 using Model.Interfaces;
 using Project.Interfaces.Tasks;
 using Project.Tasks.Functions;
@@ -12,6 +13,8 @@ namespace Project.Tasks.Functions.FrameFunctions
         public SphereFunction()
         {
             Name = FuncName.SPH.ToString();
+            FunctionType = FuncType.CPF;
+            AddParameter(new Parameter("Width", ParameterType.Constant, 0));
         }
         /// <summary>
         /// Width

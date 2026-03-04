@@ -18,10 +18,6 @@ namespace Project.Tasks.Functions.FrameFunctions
         public CillindricalBuilder()
         {
             cil = new CillindricalFunction();
-            cil.Name = FuncName.CIL.ToString();
-            cil.AddParameter(new Parameter("Length", ParameterType.Constant, 0));
-            cil.AddParameter(new Parameter("UpperDiam", ParameterType.Constant, 0));
-            cil.AddParameter(new Parameter("BottomDiam", ParameterType.Constant, 0));
         }
 
         public CillindricalBuilder SetBottomDiam(string diam)

@@ -12,8 +12,6 @@ namespace Project.Tasks.Functions.FrameFunctions
         public SphereBuilder()
         {
             sph = new SphereFunction();
-            sph.Name = FuncName.SPH.ToString();
-            sph.AddParameter(new Parameter("Width", ParameterType.Constant, 0));
         }
 
         public SphereBuilder SetWidth(string width)

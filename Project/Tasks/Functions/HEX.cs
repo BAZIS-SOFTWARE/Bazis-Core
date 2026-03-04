@@ -14,9 +14,11 @@ namespace Project.Tasks.Functions
         {
             Name = FuncName.HEX.ToString();
             FunctionType = FuncType.PF;
-            //AddParameter(new Parameter("CONV", ParameterType.Constant));
-            //AddParameter(new Parameter("TEMPS", ParameterType.Variable));
+            AddParameter(new Parameter("CONV",ParameterType.Constant,1));
+            AddParameter(new Parameter("TEMPS"));
+            AddParameter(new Parameter("TEMPM",ParameterType.Constant,20));
         }
+/// <inheritdoc/>
 
         public override double CalcValue()
         {

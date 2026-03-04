@@ -33,7 +33,7 @@ namespace TestProject
         [DataRow(@"..\..\..\Examples\WeldingHeatSource\test_t_lazer_180_0_10.bpf", DisplayName = "test_t_lazer_180_0_10.bpf")]
         [DataRow(@"..\..\..\Examples\WeldingHeatSource\ARCTest_v.bpf", DisplayName = "ARCTest_v")]
         //[DataRow(@"\WeldingHeatSource\FSW\proj.bpf", DisplayName = "FSW")]
-        [DataRow("c:\\projs\\Roman\\WebinarLazerWelding\\123.bpf2", DisplayName = "LW.bpf2")]
+        [DataRow("c:\\projs\\Roman\\WebinarLazerWelding\\123.bpf2", DisplayName = "c:\\projs\\Roman\\WebinarLazerWelding\\123.bpf2")]
 
         public void MFF_EnergyCalculated(string path)
         {
@@ -49,14 +49,16 @@ namespace TestProject
                 var heatData = lazerData[i];
                 var gr = heatData.Group;
 
-                heatData.Function["TIME"].SetValue(1);
+                //heatData.Function["TIME"].SetValue(1);
                 var energy = new double[gr.Count];
                 //assert
+                (heatData.LocalFrame as MovedFrame).Time = 1;
                 heatData.LocalFrame.CalcPosition();
                 var counter = 0;
                 foreach (var obj in gr)
                 {
-                    var frameCoords = heatData.LocalFrame.Frame.GetCoordsInFrame(obj.CalcCentr());
+                    var centr = obj.CalcCentr();
+                    var frameCoords = heatData.LocalFrame.Frame.GetCoordsInFrame(centr);
 
                     heatData.Function["X"].SetValue(frameCoords._x);
                     heatData.Function["Y"].SetValue(frameCoords._y);

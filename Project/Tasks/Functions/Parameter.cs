@@ -74,7 +74,6 @@ namespace Project.Tasks.Functions
         /// <returns></returns>
         public void SetValue(double value)
         {
-            if(ParameterType == ParameterType.Variable)
                 Value = value;
         }
 

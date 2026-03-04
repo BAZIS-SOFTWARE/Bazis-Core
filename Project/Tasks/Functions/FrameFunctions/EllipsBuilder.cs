@@ -14,7 +14,6 @@ namespace Project.Tasks.Functions.FrameFunctions
         public EllipsBuilder()
         {
             elp = new DoubleEllips();
-            elp.Name = FuncName.DEL.ToString();
         }
 
         public EllipsBuilder SetWidth(float width)

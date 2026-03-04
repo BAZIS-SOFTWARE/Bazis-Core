@@ -38,7 +38,7 @@ namespace Project.Tasks.Functions
 
         public override string ToString()
         {
-            return $"{Name}=T({Table.Name},{Parameter.Name})";
+            return $"{Name}=Table({Table.Name};{Parameter.Name})";
         }
     }
 }

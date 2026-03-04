@@ -48,7 +48,7 @@ namespace Project.Tasks.FrameCreators
             if (refLine != null)
                 rls = refLine.Name;
             return
-                $"{Name};{bls}|{rls};{Velocity};{Shifting}|{Rotation_X}|{Rotation_Y}|{Rotation_Z}";
+                $"{Name}({bls}|{rls},{Velocity},{Shifting}|{Rotation_X}|{Rotation_Y}|{Rotation_Z})";
         }
         /// <inheritdoc/>
         public IModelObject StartPoint

@@ -247,27 +247,27 @@ namespace Project.Tasks
 
             var infoAr = info.Split(' ');
 
+            var group = groupData.Find(infoAr[4]);
+
+            if (!float.TryParse(infoAr[5], out float start))
+                throw new Exception($"{info} - Время старта задано неверно!");
+
+            if (!float.TryParse(infoAr[6], out float stop))
+                throw new Exception($"{info} - Время окончания задано неверно!");
+
             if (kind == DataKind.Материал)
             {
                 if (infoAr.Length < 4)
                     throw new Exception($"{info} - Строка данных имеет неверный формат!");
 
-                var group = groupData.Find(infoAr[3]);
-
-                if (!Materials.ContainsKey(infoAr[6]))
+                if (!Materials.ContainsKey(infoAr[7]))
                     throw new Exception($"Материал {info} не содержится в базе данных!");
-
-                if (!float.TryParse(infoAr[4], out float start))
-                    throw new Exception($"{info} - Время старта задано неверно!");
-
-                if (!float.TryParse(infoAr[5], out float stop))
-                    throw new Exception($"{info} - Время окончания задано неверно!");
-                
+                var mat = Materials[infoAr[7]];
                 if (info.Contains("стержни"))
                 {
-                    var beamMatData = new BeamMatData(Materials[infoAr[6]], group, start, stop);
+                    var beamMatData = new BeamMatData(mat, group, start, stop);
 
-                    if (!float.TryParse(infoAr[8], out float diameter))
+                    if (!float.TryParse(infoAr[9], out float diameter))
                         throw new Exception($"{info} - Диаметр задан неверно!");
                     beamMatData.Diameter = diameter;
 
@@ -275,9 +275,9 @@ namespace Project.Tasks
                 }
                 else if (info.Contains("пластины"))
                 {
-                    var plateMatData = new PlateMatData(Materials[infoAr[6]], group, start, stop);
+                    var plateMatData = new PlateMatData(mat, group, start, stop);
 
-                    if (!float.TryParse(infoAr[8], out float thickness))
+                    if (!float.TryParse(infoAr[9], out float thickness))
                         throw new Exception($"{info} - Tолщина задан неверно!");
                     plateMatData.Thickness = thickness;
 
@@ -285,7 +285,7 @@ namespace Project.Tasks
                 }
                 else
                 {
-                    var matData = new MatData(Materials[infoAr[6]], group, start, stop);
+                    var matData = new MatData(mat, group, start, stop);
                     physicalData = matData;
                 }
             }
@@ -295,16 +295,7 @@ namespace Project.Tasks
                 if (infoAr.Length < 6)
                     throw new Exception($"{info} - Строка данных имеет неверный формат.");
 
-                float start;
-                if (!float.TryParse(infoAr[4], out start))
-                    throw new Exception($"{info} - Время старта задано неверно!");
-
-                float stop;
-                if (!float.TryParse(infoAr[5], out stop))
-                    throw new Exception($"{info} - Время окончания задано неверно!");
-
-                var mediaData = new MediaData(groupData.Find(infoAr[3]), start, stop);
-
+                var mediaData = new MediaData(group, start, stop);
                 physicalData = mediaData;
             }
 
@@ -313,18 +304,9 @@ namespace Project.Tasks
                 if (infoAr.Length < 8)
                     throw new Exception($"{info} - Строка данных имеет неверный формат!");
 
-                float start;
-                if (!float.TryParse(infoAr[4], out start))
-                    throw new Exception($"{info} - Время старта задано неверно!");
+                var loadData = new LoadData(group, start, stop);
 
-                float stop;
-                if (!float.TryParse(infoAr[5], out stop))
-                    throw new Exception($"{info} - Время окончания задано неверно!");
-
-                var loadData = new LoadData(groupData.Find(infoAr[3]), start, stop);
-
-                loadData.TrySetKind(infoAr[6]);
-
+                loadData.TrySetKind(infoAr[7]);
                 physicalData = loadData;
             }
 
@@ -333,17 +315,7 @@ namespace Project.Tasks
                 if (infoAr.Length < 5)
                     throw new Exception($"{info} - Строка данных имеет неверный формат!");
 
-                float start;
-                if (!float.TryParse(infoAr[4], out start))
-                    throw new Exception($"{info} - Время старта задано неверно!");
-
-                float stop;
-                if (!float.TryParse(infoAr[5], out stop))
-                    throw new Exception($"{info} - Время окончания задано неверно!");
-
-                //dataInfo = dataInfo.Replace("*", "0");
-                var heatData = new HeatData(groupData.Find(infoAr[3]), start, stop);
-
+                var heatData = new HeatData(group, start, stop);
                 physicalData = heatData;
             }
 
@@ -352,35 +324,29 @@ namespace Project.Tasks
                 if (infoAr.Length < 6)
                     throw new Exception($"{info} - Строка данных имеет неверный формат!");
 
-                float start;
-                if (!float.TryParse(infoAr[4], out start))
-                    throw new Exception($"{info} - Время старта задано неверно!");
+                var clampData = new ClampData(group, start, stop);
 
-                float stop;
-                if (!float.TryParse(infoAr[5], out stop))
-                    throw new Exception($"{info} - Время окончания задано неверно!");
-
-                var clampData = new ClampData(groupData.Find(infoAr[3]), start, stop);
-
-                clampData.TrySetKind(infoAr[6]);
+                clampData.TrySetKind(infoAr[7]);
 
                 physicalData = clampData;
             }
 
+            // задаем значение
             if (float.TryParse(infoAr[0], out float value))
                 physicalData.Value = value;
 
-            physicalData.TrySetDirection(infoAr[2]);
+            // задаем направление
+            physicalData.TrySetDirection(infoAr[3]);
 
+            // задаем функцию
             if (infoAr[1] != "*")
-            {
-                var funcAr = infoAr[1].Split(",");
-                physicalData.Function = TryCreateFunction(funcAr[0], groupData);
-                TrySetParams(funcAr, physicalData.Function);
-            }
+                physicalData.Function = TryCreateFunction(infoAr[1]);
 
             if (infoAr[2].Contains("MRF"))
+            {
                 physicalData.LocalFrame = GetMRF(infoAr[2], groupData);
+                physicalData.Function.AddParameter(new Parameter("TIME"));
+            }
 
             if (infoAr[2].Contains("SRF"))
                 physicalData.LocalFrame = GetSRF(infoAr[2], groupData);
@@ -388,38 +354,35 @@ namespace Project.Tasks
             return physicalData;
         }
 
-        private Function TryCreateFunction(string v,IGroupData groupData)
+        private Function TryCreateFunction(string v)
         {
             Function function;
-            FuncName funName;
-            if (Enum.TryParse(v, out funName))
-            {
-                if (funName == FuncName.SPH)
-                {
-                    var sphf = new SphereFunction();
-                    function = sphf;
-                }
-                else if (funName == FuncName.CIL)
-                {
-                    var cilf = new CillindricalFunction();
-                    function = cilf;
-                }
-                else
-                    function = new HEX();
-            }
+
+            string[] parsInfo = v.Split(',');
+
+            if (v.Contains("SPH"))
+                function = new SphereFunction();
+
+            else if (v.Contains("CIL"))
+                function = new CillindricalFunction();
+
+            else if (v.Contains("HEX"))
+                function = new HEX();
 
             else if (v.Contains(".py"))
             {
                 var cf = new CustomFrameFunction();
-                cf.CreateEngine(v);
+                cf.CreateEngine(parsInfo[0]);
                 function = cf;
             }
-
 
             else
                 throw new Exception($"Неизвестная функция {v}");
 
+            TrySetParams(parsInfo,function);
+
             return function;
+            
         }
 
         private void TrySetParams(string[] funInfo, Function function)
@@ -427,6 +390,8 @@ namespace Project.Tasks
             foreach (var item in funInfo.Skip(1))
             {
                 var parInfo = item.Split("=");
+                if(parInfo.Length != 2)
+                    throw new Exception($"Параметр {item} задан неверно");
 
                 Parameter funcParam;
 
@@ -449,14 +414,18 @@ namespace Project.Tasks
                     else
                         funcParam = new Parameter(parInfo[0]);
                 }
-                function.AddParameter(funcParam);
+
+                if (function.ContainsParameter(funcParam.Name))
+                    function[funcParam.Name] = funcParam;
+                else
+                    function.AddParameter(funcParam);
             }
         }
 
         private MovedFrame GetMRF(string data, IGroupData groupData)
         {
             string pattern = "[\\(\\)]|MRF";
-            var mrfAr = Regex.Replace(data, pattern, "", RegexOptions.IgnoreCase).Split(';');
+            var mrfAr = Regex.Replace(data, pattern, "", RegexOptions.IgnoreCase).Split(',');
             
             //var mrfAr = Regex.Replace(data, @"^MRF\(.*\)$", "").Split(";");
 
@@ -483,7 +452,7 @@ namespace Project.Tasks
         private StaticFrame GetSRF(string data, IGroupData groupData)
         {
             string pattern = "[\\(\\)]|SRF";
-            var srfAr = Regex.Replace(data, pattern, "", RegexOptions.IgnoreCase).Split(';');
+            var srfAr = Regex.Replace(data, pattern, "", RegexOptions.IgnoreCase).Split(',');
 
             var frameGr = groupData.Find(srfAr[0]);
             var lf = new StaticFrame(frameGr);

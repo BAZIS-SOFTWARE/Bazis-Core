@@ -67,7 +67,8 @@ namespace Project.Tasks
         public override string ToString()
         {
             var funcInfo = Function == null ? "*" : Function.ToString();
-            return $"{Kind} : {Value} {funcInfo} {Direction} {Group.Name} {StartTime} {StopTime}";
+            var frameInfo = LocalFrame == null ? "*" : LocalFrame.ToString();
+            return $"{Kind} : {Value} {funcInfo} {frameInfo} {Direction} {Group.Name} {StartTime} {StopTime}";
         }
 
         /// <inheritdoc/>

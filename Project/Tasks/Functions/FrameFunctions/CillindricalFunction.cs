@@ -1,4 +1,5 @@
 ﻿using Geometry;
+using IronPython.Runtime.Types;
 using Model.Interfaces;
 using Project.Interfaces.Tasks;
 using Project.Tasks.FrameCreators;
@@ -32,6 +33,10 @@ namespace Project.Tasks.Functions.FrameFunctions
         public CillindricalFunction()
         {
             Name = FuncName.CIL.ToString();
+            FunctionType = FuncType.CPF;
+            AddParameter(new Parameter("Length", ParameterType.Constant, 0));
+            AddParameter(new Parameter("UpperDiam", ParameterType.Constant, 0));
+            AddParameter(new Parameter("BottomDiam", ParameterType.Constant, 0));
         }
 /// <inheritdoc/>
 

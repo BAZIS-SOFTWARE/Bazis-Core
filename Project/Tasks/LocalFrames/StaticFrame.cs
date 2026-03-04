@@ -61,9 +61,9 @@ namespace Project.Tasks.FrameCreators
         public override string ToString()
         {
             if(BaseGroup == null)
-                return $"{Name};*;{Shifting}|{Rotation_X}|{Rotation_Y}|{Rotation_Z}";
+                return $"{Name}(*,{Shifting}|{Rotation_X}|{Rotation_Y}|{Rotation_Z})";
             else
-                return $"{Name};{BaseGroup.Name};{Shifting}|{Rotation_X}|{Rotation_Y}|{Rotation_Z}";
+                return $"{Name}({BaseGroup.Name},{Shifting}|{Rotation_X}|{Rotation_Y}|{Rotation_Z})";
         }
 /// <inheritdoc/>
 

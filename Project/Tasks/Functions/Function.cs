@@ -37,7 +37,7 @@ namespace Project.Tasks.Functions
         public string Name
         {
             get;
-            set;
+            protected set;
         }
         /// <summary>
         /// this
@@ -59,6 +59,16 @@ namespace Project.Tasks.Functions
                 parameters.Add(parameter.Name, parameter);
         }
         /// <summary>
+        /// ContainsParameter
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public bool ContainsParameter(string name)
+        {
+            return parameters.ContainsKey(name);
+        }
+
+        /// <summary>
         /// GetParameters
         /// </summary>
         /// <returns></returns>
@@ -78,6 +88,7 @@ namespace Project.Tasks.Functions
         public override string ToString()
         {
             var par = string.Join(",", parameters.Values);
+
             return $"{Name},{par}";
         }
     }
