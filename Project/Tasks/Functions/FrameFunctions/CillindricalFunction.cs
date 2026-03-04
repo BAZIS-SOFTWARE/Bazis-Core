@@ -1,30 +1,44 @@
 ﻿using Geometry;
 using Model.Interfaces;
 using Project.Interfaces.Tasks;
+using Project.Tasks.FrameCreators;
+using Project.Tasks.Functions;
 using System;
 using System.Collections.Generic;
 
-namespace Project.Tasks.FrameFunctions
+namespace Project.Tasks.Functions.FrameFunctions
 {
     public class CillindricalFunction : FrameFunction
     {
         /// <inheritdoc/>
-        public double BottomDiam { get; set; }
+        public double BottomDiam
+        {
+            get { return this["BottomDiam"].GetValue(); }
+            set { this["BottomDiam"].SetValue(value); }
+        }
         /// <inheritdoc/>
-        public double UpperDiam { get; set; }
+        public double UpperDiam
+        {
+            get { return this["UpperDiam"].GetValue(); }
+            set { this["UpperDiam"].SetValue(value); }
+        }
         /// <inheritdoc/>
-        public double Length { get; set; }
+        public double Length
+        {
+            get { return this["Length"].GetValue(); }
+            set { this["Length"].SetValue(value); }
+        }
 
         public CillindricalFunction()
         {
-            Name = FrameFunctionName.CIL.ToString();
+            Name = FuncName.CIL.ToString();
         }
 /// <inheritdoc/>
 
-        public override string ToString()
-        {
-            return $"{base.ToString()};{Length};{UpperDiam};{BottomDiam}";
-        }
+        //public override string ToString()
+        //{
+        //    return $"{base.ToString()};{Length};{UpperDiam};{BottomDiam}";
+        //}
 
 
         /// <summary>
@@ -42,7 +56,10 @@ namespace Project.Tasks.FrameFunctions
             r0 = 0f;
             r1 = 0f;
             r2 = 0f;
-            var frame = LocalFrame.Frame;
+
+            //var frame = LocalFrame.Frame;
+            // вместо этого используем начальный базис
+            var frame = new Frame();
 
             // получаем плоскость верхней повер-ти фигуры
             var hsPlane = new Plane(frame.Centre, frame.Dir_Z);
@@ -113,9 +130,9 @@ namespace Project.Tasks.FrameFunctions
         {
             double r, r0, r1, r2;
 
-            var x = (float)parameters[0].Value;
-            var y = (float)parameters[1].Value;
-            var z = (float)parameters[2].Value;
+            var x = (float)this["X"].GetValue();
+            var y = (float)this["Y"].GetValue();
+            var z = (float)this["Z"].GetValue();
 
             var elementCenter = new Point3D(x,y,z);
 

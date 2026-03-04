@@ -1,9 +1,5 @@
-﻿using System;
-using Model.Interfaces;
+﻿using Model.Interfaces;
 using Project.Interfaces.Tasks;
-using MaterialDB.MaterialData;
-using Project.Tasks.FrameFunctions;
-using Project.Tasks.Functions;
 
 namespace Project.Tasks
 {
@@ -33,113 +29,17 @@ namespace Project.Tasks
             Kind = DataKind.Среда;
         }
 
-
-        /// <summary>
-        /// HeatExchangeValue
-        /// </summary>
-        public float Value { get; set; } = 0;
-        /// <summary>
-        /// ChanheHeatExchangeInTemperature
-        /// </summary>
-        public Property HexTempFunc { get; set; }
-
-        //private float heatExchangeValue = 0;
-        //private string heatExchangeFunc = "*";
-        //private Property temperatureFunc;
-        //private float temperatureValue = 1;
-
-        /// <summary>
-        /// HeatExchangeValue
-        /// </summary>
-        public float TempValue { get; set; } = 1;
-        /// <summary>
-        /// Temperature of media or body
-        /// </summary>
-        public Property TempTimeFunc { get; set; }
-
         /// <summary>
         /// MediaType
         /// </summary>
-        public MediaType MediaType 
-        { 
-            get
-            {
-                return HexTempFunc == null & HexValue == 0 ?
-                    MediaType.ConstantTemp : MediaType.HeatFlux;
-            }
-        }
-
+        public MediaType MediaType { get; set; }
 /// <inheritdoc/>
 
-        protected override string GetInfo
+        public override string ToString()
         {
-            get
-            {               
-                var hexParInfo = "*";
-                if (HexParsFunc != null)
-                    hexParInfo = HexParsFunc.ToString();
-
-                var hexTempInfo = "*";
-                if (HexTempFunc != null)
-                    hexTempInfo = HexTempFunc.ToString();
-
-                var hexInfo = $"{HexValue};{hexTempInfo};{hexParInfo}";
-
-                var tempTimeInfo = "*";
-                if (TempTimeFunc != null)
-                    tempTimeInfo = TempTimeFunc.ToString();
-
-                var tempInfo = $"{TempValue};{tempTimeInfo}";
-
-                return
-                  $"{hexInfo} {tempInfo} {StartTime} {StopTime}";
-            }
+            return base.ToString() + $" {MediaType}";
         }
-        /// <summary>
-        /// TrySetTemp
-        /// </summary>
-        /// <param name="v"></param>
-        /// <exception cref="NotImplementedException"></exception>
-        //public void SetTemp(float v)
-        //{
-            //if (v == "*")
-            //    throw new Exception("Граничное условие тепловой задачи должно содержать сведения о температуре.");
 
-            //var res = 0.0f;
-            //if (float.TryParse(v, out res))
-            //{
-                //TemperatureValue = v;
-                //TemperatureFunc = null;
-            //}
-  
-            //else
-            //{
-            //    temperatureValue = 1;
-            //    temperatureFunc = v;
-            //}
-    
-        //}
-        /// <summary>
-        /// TrySetHeatExchange
-        /// </summary>
-        /// <param name="v"></param>
-        //public void SetHeatExchange(float v)
-        //{
-            //if (float.TryParse(v, out var media))
-            //{
-               //HeatExchangeValue = v;
-               //HeatExchangeFunc = null;
-            //}
-               
-            //else 
-            //{
-            //    if (v != "*")
-            //        heatExchangeValue = 1;
-            //    else
-            //        heatExchangeValue = 0;
-            //    heatExchangeFunc = v;
-            //}
 
-        //}
     }
 }

@@ -16,10 +16,6 @@ namespace Project.Interfaces.Tasks
     public interface IFrameFunction
     {
         /// <summary>
-        /// Frame
-        /// </summary>
-        LocalFrame LocalFrame { get; set; }
-        /// <summary>
         /// GetIntersectedElements
         /// </summary>
         /// <param name="elements"></param>

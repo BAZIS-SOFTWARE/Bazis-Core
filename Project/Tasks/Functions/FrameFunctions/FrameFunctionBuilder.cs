@@ -1,12 +1,13 @@
 ﻿using Geometry;
 using Model.Interfaces;
 using Project.Tasks.FrameCreators;
+using Project.Tasks.Functions;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 
-namespace Project.Tasks.FrameFunctions
+namespace Project.Tasks.Functions.FrameFunctions
 {
     public class FrameFunctionBuilder
     {
@@ -14,18 +15,18 @@ namespace Project.Tasks.FrameFunctions
 
         public FrameFunctionBuilder(string[] heatSourceAr)
         {
-            FrameFunctionName processType;
+            FuncName processType;
             if (!Enum.TryParse(heatSourceAr[0], out processType))
                 throw new Exception("Источник задан неверно!");
 
-            if (processType == FrameFunctionName.SPH)
+            if (processType == FuncName.SPH)
             {
                 var builder = new SphereBuilder().SetWidth(heatSourceAr[1]);
                 frameFunction = (SphereFunction)builder;
             }
 
 
-            else if (processType == FrameFunctionName.CIL)
+            else if (processType == FuncName.CIL)
             {
                 var builder = new CillindricalBuilder().SetLength(heatSourceAr[1]).
                     SetUpperDiam(heatSourceAr[2]).SetBottomDiam(heatSourceAr[3]);

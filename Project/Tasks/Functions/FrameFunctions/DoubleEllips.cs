@@ -1,8 +1,9 @@
 ﻿using Geometry;
+using Project.Tasks.Functions;
 using System;
 using System.Collections.Generic;
 
-namespace Project.Tasks.FrameFunctions
+namespace Project.Tasks.Functions.FrameFunctions
 {
     public class DoubleEllips : FrameFunction
     {
@@ -57,22 +58,18 @@ namespace Project.Tasks.FrameFunctions
 
         public bool IsPointInside(Point3D elementCenter)
         {
-            var frame = LocalFrame.Frame;
-            var elementVector = elementCenter.Sub(frame.Centre);
-            var vectorLength = Vector.GetVectorLength(elementVector);
+            var vectorLength = Vector.GetVectorLength(elementCenter);
             if (vectorLength <= MinSemiaxis) return true;
             else if (vectorLength > MaxSemiaxis) return false;
 
-            var pointInEllipsCoordinate = frame.GetCoordsInFrame(elementCenter);
-
             float semiEllipsoid;
-            if (pointInEllipsCoordinate._y < 0)
+            if (elementCenter._y < 0)
                 semiEllipsoid = BackPart;
             else semiEllipsoid = FrontPart;
 
-            var result = Math.Pow(pointInEllipsCoordinate._x / (Width / 2), 2) +
-                Math.Pow(pointInEllipsCoordinate._y / semiEllipsoid, 2) +
-                Math.Pow(pointInEllipsCoordinate._z / Depth, 2) - 1;
+            var result = Math.Pow(elementCenter._x / (Width / 2), 2) +
+                Math.Pow(elementCenter._y / semiEllipsoid, 2) +
+                Math.Pow(elementCenter._z / Depth, 2) - 1;
 
             return result <= 0;
 

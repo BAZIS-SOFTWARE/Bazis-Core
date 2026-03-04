@@ -13,11 +13,6 @@ namespace Project.Tasks
     }
     public class LoadData : CondData
     {
-        /// <summary>
-        /// Value
-        /// </summary>
-        public double Value { get; set; }
-
         public LoadData(IGroup group, float start, float stop) : base(group, start, stop)
         {
             Kind = DataKind.Нагрузка;
@@ -26,51 +21,17 @@ namespace Project.Tasks
 
         public LoadKind LoadKind { get; set; }
 
-/// <inheritdoc/>
-
-        protected override string GetInfo
+        /// <inheritdoc/>
+        public override string ToString()
         {
-            get
-            {
-                var mfInfo = "*";
-                if (FrameFunction?.LocalFrame != null)
-                    mfInfo = FrameFunction.LocalFrame.ToString();
-                
-                var tfInfo = "*";
-                if (TimeFunction != null)
-                    tfInfo = TimeFunction.Name;
-
-
-                return string.Format("{0} {1} {2} {3} {4} {5} {6} {7}",
-                    Group.Name, LoadKind, Direction, Value, tfInfo, StartTime, StopTime, mfInfo);
-            }
+            return base.ToString() + $" {LoadKind}";
         }
-        /// <summary>
-        /// LoadFunction
-        /// </summary>
-        public Property TimeFunction { get; set; }
 
         public void TrySetKind(string v)
         {
             LoadKind loadKind;
             if(Enum.TryParse(v, out loadKind))
                 LoadKind = loadKind;
-        }
-
-        public void TrySetDirection(string v)
-        {
-            Direction direction;
-            if (Enum.TryParse(v, out direction))
-                Direction = direction;
-        }
-
-        public void TrySetValue(string v)
-        {
-
-            if (double.TryParse(v, out var value))
-                Value = value;
-            else
-                throw new Exception("Значение усилия должно быть числом!");
         }
     }
 }

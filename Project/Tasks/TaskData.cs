@@ -12,6 +12,13 @@ using MaterialDB.MaterialData;
 using Project.Tasks.Materials;
 using Model.GroupsData;
 using static IronPython.Runtime.Profiler;
+using Project.Tasks.Functions;
+using System.Data;
+using Project.Tasks.Functions.FrameFunctions;
+using static System.Net.Mime.MediaTypeNames;
+using System.Text.RegularExpressions;
+using Microsoft.Scripting.Utils;
+
 
 
 namespace Project.Tasks
@@ -245,37 +252,32 @@ namespace Project.Tasks
                 if (infoAr.Length < 4)
                     throw new Exception($"{info} - Строка данных имеет неверный формат!");
 
-                var group = groupData.Find(infoAr[0]);
+                var group = groupData.Find(infoAr[3]);
 
-                var isBeamOrPlate = infoAr[1] == "стержни" || infoAr[1] == "пластины"; //что бы не дублировать проверки ниже
-                var matIndex = isBeamOrPlate ? 3 : 1;
-                var startIndex = isBeamOrPlate ? 4 : 2;
-                var stopIndex = isBeamOrPlate ? 5 : 3;
-
-                if (!Materials.ContainsKey(infoAr[matIndex]))
+                if (!Materials.ContainsKey(infoAr[6]))
                     throw new Exception($"Материал {info} не содержится в базе данных!");
 
-                if (!float.TryParse(infoAr[startIndex], out float start))
+                if (!float.TryParse(infoAr[4], out float start))
                     throw new Exception($"{info} - Время старта задано неверно!");
 
-                if (!float.TryParse(infoAr[stopIndex], out float stop))
+                if (!float.TryParse(infoAr[5], out float stop))
                     throw new Exception($"{info} - Время окончания задано неверно!");
-
-                if (infoAr[1] == "стержни")
+                
+                if (info.Contains("стержни"))
                 {
-                    var beamMatData = new BeamMatData(Materials[infoAr[matIndex]], group, start, stop);
+                    var beamMatData = new BeamMatData(Materials[infoAr[6]], group, start, stop);
 
-                    if (!float.TryParse(infoAr[2], out float diameter))
+                    if (!float.TryParse(infoAr[8], out float diameter))
                         throw new Exception($"{info} - Диаметр задан неверно!");
                     beamMatData.Diameter = diameter;
 
                     physicalData = beamMatData;
                 }
-                else if (infoAr[1] == "пластины")
+                else if (info.Contains("пластины"))
                 {
-                    var plateMatData = new PlateMatData(Materials[infoAr[matIndex]], group, start, stop);
+                    var plateMatData = new PlateMatData(Materials[infoAr[6]], group, start, stop);
 
-                    if (!float.TryParse(infoAr[2], out float thickness))
+                    if (!float.TryParse(infoAr[8], out float thickness))
                         throw new Exception($"{info} - Tолщина задан неверно!");
                     plateMatData.Thickness = thickness;
 
@@ -283,7 +285,7 @@ namespace Project.Tasks
                 }
                 else
                 {
-                    var matData = new MatData(Materials[infoAr[matIndex]], group, start, stop);
+                    var matData = new MatData(Materials[infoAr[6]], group, start, stop);
                     physicalData = matData;
                 }
             }
@@ -294,47 +296,14 @@ namespace Project.Tasks
                     throw new Exception($"{info} - Строка данных имеет неверный формат.");
 
                 float start;
-                if (!float.TryParse(infoAr[3], out start))
+                if (!float.TryParse(infoAr[4], out start))
                     throw new Exception($"{info} - Время старта задано неверно!");
 
                 float stop;
-                if (!float.TryParse(infoAr[4], out stop))
+                if (!float.TryParse(infoAr[5], out stop))
                     throw new Exception($"{info} - Время окончания задано неверно!");
 
-                var mediaData = new MediaData(groupData.Find(infoAr[0]), start, stop);
-
-                var medFuncAr = infoAr[1].Split(",");
-
-                if (float.TryParse(medFuncAr[0], out float heatExch))
-                    mediaData.HexValue = heatExch;
-
-                if (medFuncAr[1] != "*")
-                    if (!Functions.ContainsKey(medFuncAr[1]))
-                        throw new Exception($"функция {medFuncAr[1]} не содержится в базе данных!");
-                    else
-                        mediaData.HexTempFunc = Functions[medFuncAr[1]];
-                else if (medFuncAr[2] != "*")
-                {
-                    if (medFuncAr[2].Contains("HEX"))
-                        mediaData.TrySetParamFunction(medFuncAr[2]);
-                    if (medFuncAr[2].Contains("MRF"))
-                        mediaData.HexParsFunc = GetMRF(medFuncAr[2], groupData);
-
-                }
-
-
-                mediaData.
-
-                var tempInfAr = infoAr[2].Split(";");
-
-                if (float.TryParse(tempInfAr[0], out float temp))
-                    mediaData.TempValue = temp;
-
-                if (tempInfAr[1] != "*")
-                    if (!Functions.ContainsKey(tempInfAr[1]))
-                        throw new Exception($"функция {tempInfAr[1]} не содержится в базе данных!");
-                    else
-                        mediaData.TempTimeFunc = Functions[tempInfAr[1]];
+                var mediaData = new MediaData(groupData.Find(infoAr[3]), start, stop);
 
                 physicalData = mediaData;
             }
@@ -345,25 +314,16 @@ namespace Project.Tasks
                     throw new Exception($"{info} - Строка данных имеет неверный формат!");
 
                 float start;
-                if (!float.TryParse(infoAr[5], out start))
+                if (!float.TryParse(infoAr[4], out start))
                     throw new Exception($"{info} - Время старта задано неверно!");
 
                 float stop;
-                if (!float.TryParse(infoAr[6], out stop))
+                if (!float.TryParse(infoAr[5], out stop))
                     throw new Exception($"{info} - Время окончания задано неверно!");
 
-                var loadData = new LoadData(groupData.Find(infoAr[0]), start, stop);
+                var loadData = new LoadData(groupData.Find(infoAr[3]), start, stop);
 
-                loadData.TrySetKind(infoAr[1]);
-                loadData.TrySetDirection(infoAr[2]);
-                loadData.TrySetValue(infoAr[3]);
-
-
-                if (infoAr[4] != "*")
-                    if (!Functions.ContainsKey(infoAr[4]))
-                        throw new Exception($"функция {infoAr[4]} не содержится в базе данных!");
-                    else
-                        loadData.TimeFunction = Functions[infoAr[4]];
+                loadData.TrySetKind(infoAr[6]);
 
                 physicalData = loadData;
             }
@@ -384,15 +344,6 @@ namespace Project.Tasks
                 //dataInfo = dataInfo.Replace("*", "0");
                 var heatData = new HeatData(groupData.Find(infoAr[3]), start, stop);
 
-                heatData.TrySetFrameFunction(infoAr[2]);
-                heatData.TrySetValue(infoAr[0]);
-
-                if (infoAr[1] != "*")
-                    if (!Functions.ContainsKey(infoAr[1]))
-                        throw new Exception($"функция {infoAr[1]} не содержится в базе данных!");
-                    else
-                        heatData.TimeFunction = Functions[infoAr[1]];
-
                 physicalData = heatData;
             }
 
@@ -402,50 +353,113 @@ namespace Project.Tasks
                     throw new Exception($"{info} - Строка данных имеет неверный формат!");
 
                 float start;
-                if (!float.TryParse(infoAr[5], out start))
+                if (!float.TryParse(infoAr[4], out start))
                     throw new Exception($"{info} - Время старта задано неверно!");
 
                 float stop;
-                if (!float.TryParse(infoAr[6], out stop))
+                if (!float.TryParse(infoAr[5], out stop))
                     throw new Exception($"{info} - Время окончания задано неверно!");
 
-                var clampData = new ClampData(groupData.Find(infoAr[0]), start, stop);
+                var clampData = new ClampData(groupData.Find(infoAr[3]), start, stop);
 
-                clampData.TrySetKind(infoAr[1]);
-                clampData.TrySetDirection(infoAr[2]);
-                clampData.TrySetValue(infoAr[3]);
-
-                if (infoAr[4] != "*")
-                    if (!Functions.ContainsKey(infoAr[4]))
-                        throw new Exception($"функция {infoAr[4]} не содержится в базе данных!");
-                    else
-                        clampData.TimeFunction = Functions[infoAr[4]];
+                clampData.TrySetKind(infoAr[6]);
 
                 physicalData = clampData;
             }
 
-            // TODO Провести для каждого ГУ
+            if (float.TryParse(infoAr[0], out float value))
+                physicalData.Value = value;
 
-            //if(physicalData.FrameFunction != null)
-            //{
-            //    physicalData.FrameFunction.LocalFrame = GetLocalFrame(infoAr[2], groupData);
+            physicalData.TrySetDirection(infoAr[2]);
 
-            //    // вводим синхронизацию времени окончания и скорости движения
-            //    if (physicalData.FrameFunction.LocalFrame is MovedFrame mf)
-            //        physicalData.StopTime = physicalData.StartTime + (float)Math.Round(mf.CalcMotionTime(), 4);
-            //}
+            if (infoAr[1] != "*")
+            {
+                var funcAr = infoAr[1].Split(",");
+                physicalData.Function = TryCreateFunction(funcAr[0], groupData);
+                TrySetParams(funcAr, physicalData.Function);
+            }
 
+            if (infoAr[2].Contains("MRF"))
+                physicalData.LocalFrame = GetMRF(infoAr[2], groupData);
+
+            if (infoAr[2].Contains("SRF"))
+                physicalData.LocalFrame = GetSRF(infoAr[2], groupData);
 
             return physicalData;
         }
 
-        private LocalFrame GetMRF(string data, IGroupData groupData)
+        private Function TryCreateFunction(string v,IGroupData groupData)
         {
-            //var mrfStr = dataAr.First(x => x.Contains("MRF"));
-            var stopInd = data.IndexOf("MRF") + 4;
-            var mrfStr = data.Remove(0, stopInd);
+            Function function;
+            FuncName funName;
+            if (Enum.TryParse(v, out funName))
+            {
+                if (funName == FuncName.SPH)
+                {
+                    var sphf = new SphereFunction();
+                    function = sphf;
+                }
+                else if (funName == FuncName.CIL)
+                {
+                    var cilf = new CillindricalFunction();
+                    function = cilf;
+                }
+                else
+                    function = new HEX();
+            }
 
-            var mrfAr = mrfStr.Split(';');
+            else if (v.Contains(".py"))
+            {
+                var cf = new CustomFrameFunction();
+                cf.CreateEngine(v);
+                function = cf;
+            }
+
+
+            else
+                throw new Exception($"Неизвестная функция {v}");
+
+            return function;
+        }
+
+        private void TrySetParams(string[] funInfo, Function function)
+        {
+            foreach (var item in funInfo.Skip(1))
+            {
+                var parInfo = item.Split("=");
+
+                Parameter funcParam;
+
+                double digit;
+                if (Double.TryParse(parInfo[1], out digit))
+                    funcParam = new Parameter(parInfo[0], ParameterType.Constant, digit);
+
+                else
+                {
+                    // использовать шаблон string pattern = @"^T\(.*\)$"; // @ - буквальная строка
+                    if (parInfo[1].Contains("Table"))
+                    {
+                        string pattern = "[\\)]|Table[\\(]";
+                        var results = Regex.Replace(parInfo[1], pattern, "", RegexOptions.IgnoreCase).Split(';');
+                        var table = Functions[results[0]];
+                        var param = function[results[1]];
+                        funcParam = new TableParameter(table, parInfo[0], param);
+ 
+                    }
+                    else
+                        funcParam = new Parameter(parInfo[0]);
+                }
+                function.AddParameter(funcParam);
+            }
+        }
+
+        private MovedFrame GetMRF(string data, IGroupData groupData)
+        {
+            string pattern = "[\\(\\)]|MRF";
+            var mrfAr = Regex.Replace(data, pattern, "", RegexOptions.IgnoreCase).Split(';');
+            
+            //var mrfAr = Regex.Replace(data, @"^MRF\(.*\)$", "").Split(";");
+
             if (mrfAr.Length == 3)
             {
                 var baseLineGrName = mrfAr[0].Split('|')[0];
@@ -466,13 +480,10 @@ namespace Project.Tasks
             }
         }
 
-        private LocalFrame GetSRF(string data, IGroupData groupData)
+        private StaticFrame GetSRF(string data, IGroupData groupData)
         {
-            //var srfStr = dataAr.First(x => x.Contains("SRF"));
-            var stopInd = data.IndexOf("SRF") + 4;
-            var srfStr = data.Remove(0, stopInd);
-
-            var srfAr = srfStr.Split(';');
+            string pattern = "[\\(\\)]|SRF";
+            var srfAr = Regex.Replace(data, pattern, "", RegexOptions.IgnoreCase).Split(';');
 
             var frameGr = groupData.Find(srfAr[0]);
             var lf = new StaticFrame(frameGr);

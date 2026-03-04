@@ -1,10 +1,8 @@
 ﻿using Model.Interfaces;
-using Model.Interfaces.Attributes;
 using Project.Interfaces.Tasks;
 using Project.Tasks.FrameCreators;
 using Project.Tasks.Functions;
 using System;
-using static IronPython.Runtime.Profiler;
 
 namespace Project.Tasks
 {
@@ -17,7 +15,7 @@ namespace Project.Tasks
         public DataKind Kind { get; internal set; }
         /// <inheritdoc/>
 
-        protected abstract string GetInfo { get; }
+        //protected abstract string GetInfo { get; }
         /// <summary>
         /// PhysicalData
         /// </summary>
@@ -54,7 +52,6 @@ namespace Project.Tasks
             StopTime = stopTime;
         }
 
-        //public string GroupName { get; internal set; }
         /// <inheritdoc/>
 
         public float StartTime { get; set; }
@@ -69,12 +66,37 @@ namespace Project.Tasks
 
         public override string ToString()
         {
-            return $"{Kind} : {GetInfo}";
+            var funcInfo = Function == null ? "*" : Function.ToString();
+            return $"{Kind} : {Value} {funcInfo} {Direction} {Group.Name} {StartTime} {StopTime}";
         }
 
         /// <inheritdoc/>
 
         public Direction Direction { get; set; } = Direction.None;
+        /// <inheritdoc/>
         public Function Function { get; set; }
+        /// <inheritdoc/>
+        public double Value { get; set; } = 1;
+        /// <inheritdoc/>
+        public LocalFrame LocalFrame { get; set; }
+
+        /// <inheritdoc/>
+
+        public void TrySetDirection(string v)
+        {
+            Direction direction;
+            if (Enum.TryParse(v, out direction))
+                Direction = direction;
+        }
+/// <inheritdoc/>
+
+        public void TrySetValue(string v)
+        {
+
+            if (double.TryParse(v, out var value))
+                Value = value;
+            else
+                throw new Exception($"Для условия {Kind} значение {v} должно быть числом!");
+        }
     }
 }

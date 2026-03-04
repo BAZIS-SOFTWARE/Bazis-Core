@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Geometry;
 using Project.Tasks.FrameCreators;
 
-namespace Project.Tasks.FrameFunctions
+namespace Project.Tasks.Functions.FrameFunctions
 {
     public class CillindricalBuilder
     {
@@ -18,6 +18,10 @@ namespace Project.Tasks.FrameFunctions
         public CillindricalBuilder()
         {
             cil = new CillindricalFunction();
+            cil.Name = FuncName.CIL.ToString();
+            cil.AddParameter(new Parameter("Length", ParameterType.Constant, 0));
+            cil.AddParameter(new Parameter("UpperDiam", ParameterType.Constant, 0));
+            cil.AddParameter(new Parameter("BottomDiam", ParameterType.Constant, 0));
         }
 
         public CillindricalBuilder SetBottomDiam(string diam)
@@ -35,12 +39,6 @@ namespace Project.Tasks.FrameFunctions
         public CillindricalBuilder SetLength(string length)
         {
             cil.Length = float.Parse(length, NumberStyles.Float, CultureInfo.InvariantCulture);
-            return this;
-        }
-
-        public CillindricalBuilder SetFrame(Frame frame)
-        {
-            cil.LocalFrame = new StaticFrame(frame);
             return this;
         }
 

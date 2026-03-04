@@ -1,4 +1,5 @@
-﻿using Project.Tasks.Functions;
+﻿using Project.Tasks.FrameCreators;
+using Project.Tasks.Functions;
 using System.Collections.Generic;
 
 namespace Project.Interfaces.Tasks
@@ -13,6 +14,10 @@ namespace Project.Interfaces.Tasks
     public interface ICondData : IData, IGroupDependent, ITimeDependentData
     {
         /// <summary>
+        /// LocalFrame
+        /// </summary>
+        LocalFrame LocalFrame { get; set; }
+        /// <summary>
         /// Direction
         /// </summary>
         Direction Direction { get; }
@@ -25,5 +30,15 @@ namespace Project.Interfaces.Tasks
         /// Value
         /// </summary>
         double Value { get; set; }
+        /// <summary>
+        /// TrySetDirection
+        /// </summary>
+        /// <param name="v"></param>
+        void TrySetDirection(string v);
+        /// <summary>
+        /// TrySetValue
+        /// </summary>
+        /// <param name="v"></param>
+        void TrySetValue(string v);
     }
 }

@@ -10,16 +10,23 @@ namespace Project.Tasks.Functions
 {
     public enum FuncType
     {
-        TF,
         PF,
         CPF
+    }
+
+    public enum FuncName
+    {
+        SPH,
+        CIL,
+        DEL,
+        HEX
     }
     /// <summary>
     /// Function
     /// </summary>
     public abstract class Function
     {
-        public List<Parameter> parameters = new List<Parameter>();
+        Dictionary<string,Parameter> parameters = new Dictionary<string, Parameter>();
         /// <summary>
         /// FunctionType
         /// </summary>
@@ -33,6 +40,35 @@ namespace Project.Tasks.Functions
             set;
         }
         /// <summary>
+        /// this
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public Parameter this[string key]
+        {
+            get { return parameters[key]; }
+            set { parameters[key] = value; }
+        }
+        /// <summary>
+        /// AddParameter
+        /// </summary>
+        /// <param name="parameter"></param>
+        public void AddParameter(Parameter parameter)
+        {
+            if(!parameters.ContainsKey(parameter.Name))
+                parameters.Add(parameter.Name, parameter);
+        }
+        /// <summary>
+        /// GetParameters
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<Parameter> GetParameters()
+        {
+            foreach (var item in parameters)
+                yield return item.Value;
+        }
+
+        /// <summary>
         /// CalcValue
         /// </summary>
         /// <returns></returns>
@@ -41,11 +77,8 @@ namespace Project.Tasks.Functions
 
         public override string ToString()
         {
-            var name = Name.Contains("py") ? $"Custom={Name}" : Name;
-
-            //var par = $"Par({string.Join(",", parameters)})";
-            var par = string.Join(",", parameters);
-            return $"{FunctionType},{name},{par}";
+            var par = string.Join(",", parameters.Values);
+            return $"{Name},{par}";
         }
     }
 }

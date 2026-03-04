@@ -12,6 +12,7 @@ using Project.Tasks.FrameCreators;
 using MaterialDB.MaterialData;
 using MaterialDB.FunctionData;
 using Project.IO;
+using Project.Tasks.Functions;
 
 namespace TestProject
 {
@@ -107,9 +108,10 @@ namespace TestProject
                 var stepTime = (preFrame.StopTime - preFrame.StartTime) / 10;
                 for (float i = preFrame.StartTime; i < preFrame.StopTime; i+= stepTime)
                 {
-                    var mf = preFrame.FrameFunction.LocalFrame as MovedFrame;
-                    mf.Time = i;
-                    var frame = mf.Frame;
+                    var ff = preFrame.Function as FrameFunction;
+                    ff["TIME"].SetValue(i);
+  
+                    var frame = preFrame.LocalFrame.Frame;
 
                     if (frame.Centre._x is float.NaN || frame.Centre._y is float.NaN || frame.Centre._z is float.NaN)
                         throw new Exception($"СК определена неверно!: одна из координат центра не определена. frame: {preFrame}");
@@ -136,9 +138,7 @@ namespace TestProject
             //act
             var selectedData = proj.TaskData.Find(DataKind.Нагрев).Select(x => (HeatData)x).ToArray();
 
-            
-
-            var baseLine = (selectedData[0].FrameFunction.LocalFrame as MovedFrame).BaseLine;
+            var baseLine = (selectedData[0].LocalFrame as MovedFrame).BaseLine;
             //assert
             var first = baseLine[0];
             var secd = baseLine[1];
@@ -164,11 +164,12 @@ namespace TestProject
 
             //act
             var heatData = proj.TaskData.Find(DataKind.Нагрев).Select(h => (HeatData)h).First();
-            heatData.FrameFunction.LocalFrame.Rotation_X = rotation;
-            heatData.FrameFunction.LocalFrame.Shifting = new Point3D(x,y,z);
+
+            heatData.LocalFrame.Rotation_X = rotation;
+            heatData.LocalFrame.Shifting = new Point3D(x,y,z);
             //assert
-            Assert.AreEqual(heatData.FrameFunction.LocalFrame.Rotation_X, rotation);
-            Assert.AreEqual(heatData.FrameFunction.LocalFrame.Shifting, new Point3D(x,y,z));
+            Assert.AreEqual(heatData.LocalFrame.Rotation_X, rotation);
+            Assert.AreEqual(heatData.LocalFrame.Shifting, new Point3D(x,y,z));
         }
 
         [DataTestMethod]

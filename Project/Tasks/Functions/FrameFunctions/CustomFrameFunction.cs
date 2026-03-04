@@ -1,13 +1,14 @@
 ﻿using Geometry;
 using IronPython.Hosting;
 using Microsoft.Scripting.Hosting;
+using Project.Tasks.Functions;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using static IronPython.Modules._ast;
 
-namespace Project.Tasks.FrameFunctions
+namespace Project.Tasks.Functions.FrameFunctions
 {
     public class CustomFrameFunction : FrameFunction
     {
@@ -22,34 +23,21 @@ namespace Project.Tasks.FrameFunctions
         {
             get { return file; }
         }
-        /// <summary>
-        /// CustomFunction
-        /// </summary>
-        public CustomFrameFunction()
-        {
-            Name = FrameFunctionName.CFF.ToString();
-        }
-
 
         /// <summary>
         /// CreateEngine
         /// </summary>
-        /// <param name="file">Полный путь до исполняемого файла</param>
+
         public void CreateEngine(string file)
         {
-            this.file = file;
+            Name = file;
             string pythonCode = File.ReadAllText(file);
 
             engine = Python.CreateEngine();
             scope = engine.CreateScope();
             engine.Execute(pythonCode, scope);
         }
-        /// <inheritdoc/>
 
-        public override string ToString()
-        {
-            return $"{Name};{ExecutedFile};{LocalFrame}";
-        }
         /// <inheritdoc/>
 
         public override double CalcValue(Point3D elementCenter)
@@ -57,10 +45,8 @@ namespace Project.Tasks.FrameFunctions
             if (scope == null)
                 throw new Exception($"Файл {file} не скомпилирована");
 
-            var localCoords = LocalFrame.Frame.GetCoordsInFrame(elementCenter);
-
             var powerFunc = scope.GetVariable("CalcPower");
-            return (double)powerFunc(localCoords._x, localCoords._y, localCoords._z);
+            return (double)powerFunc(elementCenter._x, elementCenter._y, elementCenter._z);
 
 
             //TODO питон программа
@@ -83,22 +69,19 @@ namespace Project.Tasks.FrameFunctions
         {
             throw new NotImplementedException();
         }
+/// <inheritdoc/>
 
         public override double CalcValue()
         {
             if (scope == null)
                 throw new Exception($"Файл {file} не скомпилирована");
 
-            var x = (float)parameters[0].Value;
-            var y = (float)parameters[1].Value;
-            var z = (float)parameters[2].Value;
-
-            var elementCenter = new Point3D(x, y, z);
-
-            var localCoords = LocalFrame.Frame.GetCoordsInFrame(elementCenter);
+            var x = (float)this["X"].GetValue();
+            var y = (float)this["Y"].GetValue();
+            var z = (float)this["Z"].GetValue();
 
             var powerFunc = scope.GetVariable("CalcPower");
-            return (double)powerFunc(localCoords._x, localCoords._y, localCoords._z);
+            return (double)powerFunc(x, y, z);
         }
     }
 }

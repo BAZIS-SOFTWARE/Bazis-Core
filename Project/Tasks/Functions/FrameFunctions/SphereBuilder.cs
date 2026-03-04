@@ -1,8 +1,9 @@
 ﻿using Geometry;
 using Project.Tasks.FrameCreators;
 using System.Globalization;
+using static IronPython.Modules._ast;
 
-namespace Project.Tasks.FrameFunctions
+namespace Project.Tasks.Functions.FrameFunctions
 {
     public class SphereBuilder
     {
@@ -11,12 +12,8 @@ namespace Project.Tasks.FrameFunctions
         public SphereBuilder()
         {
             sph = new SphereFunction();
-        }
-
-        public SphereBuilder SetFrame(Frame frame)
-        {
-            sph.LocalFrame = new StaticFrame(frame);
-            return this;
+            sph.Name = FuncName.SPH.ToString();
+            sph.AddParameter(new Parameter("Width", ParameterType.Constant, 0));
         }
 
         public SphereBuilder SetWidth(string width)

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
-namespace Project.Tasks.FrameFunctions
+namespace Project.Tasks.Functions.FrameFunctions
 {
     public class EllipsBuilder
     {
@@ -14,8 +14,7 @@ namespace Project.Tasks.FrameFunctions
         public EllipsBuilder()
         {
             elp = new DoubleEllips();
-            elp.Name = FrameFunctionName.DEL.ToString();
-            elp.LocalFrame = new StaticFrame();
+            elp.Name = FuncName.DEL.ToString();
         }
 
         public EllipsBuilder SetWidth(float width)
@@ -39,12 +38,6 @@ namespace Project.Tasks.FrameFunctions
         public EllipsBuilder SetBackPart(float backPart)
         {
             elp.BackPart = backPart;
-            return this;
-        }
-
-        public EllipsBuilder SetFrame(Frame frame)
-        {
-            elp.LocalFrame = new StaticFrame(frame);
             return this;
         }
 

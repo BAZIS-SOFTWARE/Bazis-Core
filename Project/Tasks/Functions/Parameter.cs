@@ -1,4 +1,5 @@
-﻿using MaterialDB.MaterialData;
+﻿using IronPython.Compiler.Ast;
+using MaterialDB.MaterialData;
 using Project.Tasks.Functions;
 using System.Numerics;
 
@@ -6,49 +7,82 @@ namespace Project.Tasks.Functions
 {
     public enum ParameterType
     {
-        Constant,
-        Variable
-    }
-
-    public enum ValueType
-    {
-        Digit,
-        Table
+        Variable,
+        Constant
     }
 
     
     /// <summary>
     /// Parameter
     /// </summary>
-    public abstract class Parameter
+    public class Parameter
     {
         /// <summary>
         /// ParameterType
         /// </summary>
         public ParameterType ParameterType { get; set; }
         /// <summary>
-        /// ValueType
-        /// </summary>
-        public ValueType ValueType { get; set; }
-        /// <summary>
         /// Name
         /// </summary>
         public string Name 
         { 
             get; 
-            private set; 
+            set; 
         }
+        /// <summary>
+        /// Parameter
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="type"></param>
+        /// <param name="value"></param>
+        public Parameter(string name, ParameterType type,double value) : 
+            this(name)
+        {
+            Value = value;
+            ParameterType = type;
+        }
+
+        /// <summary>
+        /// Parameter
+        /// </summary>
+        /// <param name="name"></param>
+
+        public Parameter(string name)
+        {
+            Name = name;
+        }
+
+
 
         /// <summary>
         /// Value
         /// </summary>
-        public object Value { get; set; }
+        protected double Value;
+
+        /// <summary>
+        /// GetValue
+        /// </summary>
+        /// <returns></returns>
+        public virtual double GetValue()
+        {
+            return Value;
+        }
+
+        /// <summary>
+        /// SetValue
+        /// </summary>
+        /// <returns></returns>
+        public void SetValue(double value)
+        {
+            if(ParameterType == ParameterType.Variable)
+                Value = value;
+        }
 
         /// <inheritdoc/>
 
         public override string ToString()
         {
-            var val = ParameterType == ParameterType.Variable ? "VAR" : Value;
+            var val = ParameterType == ParameterType.Variable ? "VAR" : Value.ToString();
             return $"{Name}={val}";
         }
     }

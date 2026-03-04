@@ -1,4 +1,5 @@
-﻿using Project.Tasks.Functions;
+﻿using Project.TaskParameters;
+using Project.Tasks.Functions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,18 +8,22 @@ using System.Threading.Tasks;
 
 namespace Project.Tasks.Functions
 {
-    internal class HEX : Function
+    public class HEX : Function
     {
+        public HEX()
+        {
+            Name = FuncName.HEX.ToString();
+            FunctionType = FuncType.PF;
+            //AddParameter(new Parameter("CONV", ParameterType.Constant));
+            //AddParameter(new Parameter("TEMPS", ParameterType.Variable));
+        }
+
         public override double CalcValue()
         {
-            var conv = (double)parameters[0].Value;
-            var temps = (double)parameters[1].Value;
+            var conv = this["CONV"].GetValue();
+            var temps = this["TEMPS"].GetValue();
 
-            double tempm = 0.0;
-            if (parameters[1].Value is TableFunction tf)
-                tempm = tf.CalcValue();
-            else
-                tempm = (double)parameters[1].Value;
+            var tempm = this["TEMPM"].GetValue();
 
             // пока для проверки работоспособности
             return conv * temps * tempm;
