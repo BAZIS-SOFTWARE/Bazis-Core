@@ -9,11 +9,11 @@ namespace Project.Tasks.Functions.FrameFunctions
 {
     public class EllipsBuilder
     {
-        DoubleEllips elp;
+        DEL elp;
 
         public EllipsBuilder()
         {
-            elp = new DoubleEllips();
+            elp = new DEL();
         }
 
         public EllipsBuilder SetWidth(float width)
@@ -40,7 +40,7 @@ namespace Project.Tasks.Functions.FrameFunctions
             return this;
         }
 
-        public static implicit operator DoubleEllips(EllipsBuilder builder)
+        public static implicit operator DEL(EllipsBuilder builder)
         {
             return builder.elp;
         }

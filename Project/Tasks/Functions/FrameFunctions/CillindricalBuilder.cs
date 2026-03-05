@@ -13,11 +13,11 @@ namespace Project.Tasks.Functions.FrameFunctions
 {
     public class CillindricalBuilder
     {
-        CillindricalFunction cil;
+        CIL cil;
 
         public CillindricalBuilder()
         {
-            cil = new CillindricalFunction();
+            cil = new CIL();
         }
 
         public CillindricalBuilder SetBottomDiam(string diam)
@@ -38,7 +38,7 @@ namespace Project.Tasks.Functions.FrameFunctions
             return this;
         }
 
-        public static implicit operator CillindricalFunction(CillindricalBuilder builder)
+        public static implicit operator CIL(CillindricalBuilder builder)
         {
             return builder.cil;
         }

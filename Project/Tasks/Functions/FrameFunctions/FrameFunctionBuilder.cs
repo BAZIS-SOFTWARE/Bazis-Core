@@ -22,7 +22,7 @@ namespace Project.Tasks.Functions.FrameFunctions
             if (processType == FuncName.SPH)
             {
                 var builder = new SphereBuilder().SetWidth(heatSourceAr[1]);
-                frameFunction = (SphereFunction)builder;
+                frameFunction = (SPH)builder;
             }
 
 
@@ -31,7 +31,7 @@ namespace Project.Tasks.Functions.FrameFunctions
                 var builder = new CillindricalBuilder().SetLength(heatSourceAr[1]).
                     SetUpperDiam(heatSourceAr[2]).SetBottomDiam(heatSourceAr[3]);
 
-                frameFunction = (CillindricalFunction)builder;
+                frameFunction = (CIL)builder;
             }
             else
             {

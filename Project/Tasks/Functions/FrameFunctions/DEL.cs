@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Project.Tasks.Functions.FrameFunctions
 {
-    public class DoubleEllips : FrameFunction
+    public class DEL : FrameFunction
     {
         //public string Name { get; set; }
 

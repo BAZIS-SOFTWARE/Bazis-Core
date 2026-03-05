@@ -7,11 +7,11 @@ namespace Project.Tasks.Functions.FrameFunctions
 {
     public class SphereBuilder
     {
-        SphereFunction sph;
+        SPH sph;
 
         public SphereBuilder()
         {
-            sph = new SphereFunction();
+            sph = new SPH();
         }
 
         public SphereBuilder SetWidth(string width)
@@ -20,7 +20,7 @@ namespace Project.Tasks.Functions.FrameFunctions
             return this;
         }
 
-        public static implicit operator SphereFunction(SphereBuilder builder)
+        public static implicit operator SPH(SphereBuilder builder)
         {
             return builder.sph;
         }

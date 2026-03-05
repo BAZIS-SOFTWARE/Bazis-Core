@@ -19,7 +19,9 @@ namespace Project.Tasks.Functions
         SPH,
         CIL,
         DEL,
-        HEX
+        DHEX,
+        FHEX,
+        BT
     }
     /// <summary>
     /// Function

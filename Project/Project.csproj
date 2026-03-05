@@ -4,7 +4,7 @@
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
 	  <SignAssembly>True</SignAssembly>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>5.5.6</Version>
+    <Version>5.6.1</Version>
     <Title>Project</Title>
     <Authors>Bilenko Georgy</Authors>
     <Company>BAZIS SOFTWARE</Company>
@@ -50,8 +50,10 @@
     <Compile Include="Interfaces\IO\ITaskDataLoader.cs" />
     <Compile Include="Interfaces\IO\ITaskDataSaver.cs" />
     <Compile Include="Interfaces\IProjectData.cs" />
+    <Compile Include="Tasks\Functions\BT.cs" />
+    <Compile Include="Tasks\Functions\FHEX.cs" />
     <Compile Include="Tasks\Functions\FrameFunction.cs" />
-    <Compile Include="Tasks\Functions\HEX.cs" />
+    <Compile Include="Tasks\Functions\DHEX.cs" />
     <Compile Include="Tasks\Functions\Parameter.cs" />
     <Compile Include="Interfaces\Tasks\ICillindricalFunction.cs" />
     <Compile Include="Interfaces\Tasks\IData.cs" />
@@ -67,7 +69,7 @@
     <Compile Include="Tasks\Functions\TableParameter.cs" />
     <Compile Include="Tasks\Materials\BeamMatData.cs" />
     <Compile Include="Tasks\Functions\FrameFunctions\EllipsBuilder.cs" />
-    <Compile Include="Tasks\Functions\FrameFunctions\DoubleEllips.cs" />
+    <Compile Include="Tasks\Functions\FrameFunctions\DEL.cs" />
     <Compile Include="Tasks\Functions\FrameFunctions\FrameFunctionBuilder.cs" />
     <Compile Include="Tasks\LocalFrames\LocalFrame.cs" />
     <Compile Include="Tasks\LocalFrames\StaticFrame.cs" />
@@ -90,11 +92,11 @@
     <Compile Include="TaskParameters\TimeSettings.cs" />
     <Compile Include="Tasks\ClampData.cs" />
     <Compile Include="Tasks\Functions\FrameFunctions\SphereBuilder.cs" />
-    <Compile Include="Tasks\Functions\FrameFunctions\CillindricalFunction.cs" />
+    <Compile Include="Tasks\Functions\FrameFunctions\CIL.cs" />
     <Compile Include="Tasks\Functions\FrameFunctions\CillindricalBuilder.cs" />
     <Compile Include="Tasks\LocalFrames\MovedFrame.cs" />
     <Compile Include="Tasks\LocalFrames\MovedFrameBuilder.cs" />
-    <Compile Include="Tasks\Functions\FrameFunctions\SphereFunction.cs" />
+    <Compile Include="Tasks\Functions\FrameFunctions\SPH.cs" />
     <Compile Include="Tasks\HeatData.cs" />
     <Compile Include="Tasks\IO\LoadEventArgs.cs" />
     <Compile Include="Tasks\IO\LoadTaskDataTextFormat.cs" />

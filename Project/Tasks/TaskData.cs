@@ -345,7 +345,8 @@ namespace Project.Tasks
             if (infoAr[2].Contains("MRF"))
             {
                 physicalData.LocalFrame = GetMRF(infoAr[2], groupData);
-                physicalData.Function.AddParameter(new Parameter("TIME"));
+                // это не обязательное условие
+                //physicalData.Function.AddParameter(new Parameter("TIME"));
             }
 
             if (infoAr[2].Contains("SRF"))
@@ -360,15 +361,16 @@ namespace Project.Tasks
 
             string[] parsInfo = v.Split(',');
 
-            if (v.Contains("SPH"))
-                function = new SphereFunction();
-
-            else if (v.Contains("CIL"))
-                function = new CillindricalFunction();
-
-            else if (v.Contains("HEX"))
-                function = new HEX();
-
+            if (v.Contains(FuncName.SPH.ToString()))
+                function = new SPH();
+            else if (v.Contains(FuncName.CIL.ToString()))
+                function = new CIL();
+            else if (v.Contains(FuncName.DHEX.ToString()))
+                function = new DHEX();
+            else if (v.Contains(FuncName.FHEX.ToString()))
+                function = new FHEX();
+            else if (v.Contains(FuncName.BT.ToString()))
+                function = new BT();
             else if (v.Contains(".py"))
             {
                 var cf = new CustomFrameFunction();
@@ -391,7 +393,7 @@ namespace Project.Tasks
             {
                 var parInfo = item.Split("=");
                 if(parInfo.Length != 2)
-                    throw new Exception($"Параметр {item} задан неверно");
+                    throw new Exception($"Параметр {item} в функции {funInfo[0]} задан неверно");
 
                 Parameter funcParam;
 
@@ -415,10 +417,13 @@ namespace Project.Tasks
                         funcParam = new Parameter(parInfo[0]);
                 }
 
-                if (function.ContainsParameter(funcParam.Name))
-                    function[funcParam.Name] = funcParam;
+                if (function.ContainsParameter(funcParam.Name) &&
+                    function[funcParam.Name].ParameterType == funcParam.ParameterType)
+                        function[funcParam.Name] = funcParam;
                 else
-                    function.AddParameter(funcParam);
+                    // попробуем строго ограничить прием параметров
+                    throw new Exception($"Параметр {funcParam.Name} задан неверно или не существует");
+                    //function.AddParameter(funcParam);
             }
         }
 

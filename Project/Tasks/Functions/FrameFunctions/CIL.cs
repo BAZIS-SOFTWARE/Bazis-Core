@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace Project.Tasks.Functions.FrameFunctions
 {
-    public class CillindricalFunction : FrameFunction
+    public class CIL : FrameFunction
     {
         /// <inheritdoc/>
         public double BottomDiam
@@ -30,7 +30,7 @@ namespace Project.Tasks.Functions.FrameFunctions
             set { this["Length"].SetValue(value); }
         }
 
-        public CillindricalFunction()
+        public CIL()
         {
             Name = FuncName.CIL.ToString();
             FunctionType = FuncType.CPF;

@@ -8,9 +8,9 @@ using Project.Tasks.Functions;
 
 namespace Project.Tasks.Functions.FrameFunctions
 {
-    public class SphereFunction : FrameFunction
+    public class SPH : FrameFunction
     {
-        public SphereFunction()
+        public SPH()
         {
             Name = FuncName.SPH.ToString();
             FunctionType = FuncType.CPF;

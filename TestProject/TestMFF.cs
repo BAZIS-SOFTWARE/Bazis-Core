@@ -389,7 +389,7 @@ namespace TestProject
                 refLine.Add(new Node(i + 5000, new Point3D(0f, -1f, i)));
             }
 
-            var func = (SphereFunction)new SphereBuilder().SetWidth("10");
+            var func = (SPH)new SphereBuilder().SetWidth("10");
             var localFrame = new MovedFrame(baseLine, refLine, 5);
             localFrame.CalcPosition();
             var expectedElements = new List<IElement>();
@@ -441,7 +441,7 @@ namespace TestProject
         [TestMethod]
         public void IsOverlappingSelfSphere_ShouldPass_WhenOverlap(float velocity, float width)
         {
-            SphereFunction mff = new SphereBuilder().SetWidth(width.ToString());
+            SPH mff = new SphereBuilder().SetWidth(width.ToString());
             Assert.IsTrue(mff.IsOverlappingSelf(velocity));
         }
 
@@ -453,7 +453,7 @@ namespace TestProject
         [TestMethod]
         public void IsOverlappingSelfCillinder_ShouldPass_WhenOverlap(float velocity, float upper, float bottom)
         {
-            CillindricalFunction mff = new CillindricalBuilder().SetBottomDiam(bottom.ToString()).SetUpperDiam(upper.ToString());
+            CIL mff = new CillindricalBuilder().SetBottomDiam(bottom.ToString()).SetUpperDiam(upper.ToString());
             Assert.IsTrue(mff.IsOverlappingSelf(velocity));
         }
 
@@ -469,7 +469,7 @@ namespace TestProject
         [DataRow(new[] { 10f, 4f, 5f }, "outside", DisplayName = "point in back ellipse, outside")]
         public void DoubleEllipsIsPointInside_FrameParallelGlobalAxes(float[] checkPoint, string location)
         {
-            var doubleEllips = (DoubleEllips)new EllipsBuilder().
+            var doubleEllips = (DEL)new EllipsBuilder().
                 SetWidth(14).
                 SetDepth(5).
                 SetFrontPart(5).
@@ -501,7 +501,7 @@ new Point3D(15, 16, 15));
         [DataRow(new[] { 13f, 20f, 20f }, "outside", DisplayName = "13f, 20f, 20f")]
         public void DoubleEllipsIsPointInside_FrameXYRotated30DegreesGlobalAxes(float[] checkPoint, string location)
         {
-            var doubleEllips = (DoubleEllips)new EllipsBuilder().
+            var doubleEllips = (DEL)new EllipsBuilder().
                 SetWidth(14).
                 SetDepth(5).
                 SetFrontPart(5).
@@ -529,7 +529,7 @@ new Point3D(15, 16, 15));
         [DataRow(7.5f, 5, 10)]
         public void IsOverlappingSelfEllips_ShouldPass_WhenOverlap(float velocity, float frontPart, float backPart)
         {
-            var doubleEllips = (DoubleEllips)new EllipsBuilder().
+            var doubleEllips = (DEL)new EllipsBuilder().
     SetFrontPart(frontPart).
     SetBackPart(backPart);
 
