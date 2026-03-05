@@ -11,7 +11,13 @@ namespace Project.Tasks.Functions
         Constant
     }
 
-    
+    public enum ParameterKind
+    {
+        Digit,
+        Table
+    }
+
+
     /// <summary>
     /// Parameter
     /// </summary>
@@ -21,6 +27,10 @@ namespace Project.Tasks.Functions
         /// ParameterType
         /// </summary>
         public ParameterType ParameterType { get; set; }
+        /// <summary>
+        /// ParameterType
+        /// </summary>
+        public ParameterKind ParameterKind { get; set; }
         /// <summary>
         /// Name
         /// </summary>

@@ -19,11 +19,17 @@ namespace Project.Tasks.Functions
 
         Parameter Parameter;
 
+        public void SetParameter(Parameter parameter)
+        {
+            Parameter = parameter;
+        }
+
         public TableParameter(Property table, string name,Parameter parameter) : base(name)
         {
             Table = table;
             Parameter = parameter;
             ParameterType = ParameterType.Constant;
+            ParameterKind = ParameterKind.Table;
         }
 
 
