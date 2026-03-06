@@ -16,12 +16,12 @@ namespace Project.Tasks.Functions
             Name = FuncName.BT.ToString();
             FunctionType = FuncType.PF;
             AddParameter(new Parameter("TIME"));
-            AddParameter(new Parameter("TEMPB", ParameterType.Constant, 0.000025));
+            AddParameter(new Parameter("TEMPM", ParameterType.Constant, 20));
         }
         public override double CalcValue()
         {
             // температура тела
-            return this["TEMPB"].GetValue();
+            return this["TEMPM"].GetValue();
         }
     }
 }

@@ -81,6 +81,17 @@ namespace Project.Tasks.Functions
         }
 
         /// <summary>
+        /// GetParameters
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<TableParameter> GetTableParameters()
+        {
+            foreach (var item in parameters)
+                if (item.Value.ParameterKind == ParameterKind.Table)
+                    yield return (TableParameter)item.Value;
+        }
+
+        /// <summary>
         /// CalcValue
         /// </summary>
         /// <returns></returns>

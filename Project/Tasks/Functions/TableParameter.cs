@@ -17,12 +17,7 @@ namespace Project.Tasks.Functions
     {
         public Property Table { get; }
 
-        Parameter Parameter;
-
-        public void SetParameter(Parameter parameter)
-        {
-            Parameter = parameter;
-        }
+        public Parameter Parameter { get; set; }
 
         public TableParameter(Property table, string name,Parameter parameter) : base(name)
         {

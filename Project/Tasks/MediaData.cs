@@ -32,7 +32,16 @@ namespace Project.Tasks
         /// <summary>
         /// MediaType
         /// </summary>
-        public MediaType MediaType { get; set; }
+        public MediaType MediaType 
+        {
+            get
+            {
+                if (Group.ObjType == ObjType.Узел)
+                    return MediaType.ConstantTemp;
+                else
+                    return MediaType.HeatFlux;
+            }
+        }
 /// <inheritdoc/>
 
         public override string ToString()
