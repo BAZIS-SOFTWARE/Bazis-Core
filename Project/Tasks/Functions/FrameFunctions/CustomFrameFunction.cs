@@ -12,6 +12,10 @@ namespace Project.Tasks.Functions.FrameFunctions
 {
     public class CustomFrameFunction : FrameFunction
     {
+        public CustomFrameFunction()
+        {
+            Name = FuncName.Custom.ToString();
+        }
         ScriptEngine engine;
         ScriptScope scope;
 
@@ -30,7 +34,9 @@ namespace Project.Tasks.Functions.FrameFunctions
 
         public void CreateEngine(string file)
         {
+            // потестировать!!!
             Name = file;
+
             string pythonCode = File.ReadAllText(file);
 
             engine = Python.CreateEngine();

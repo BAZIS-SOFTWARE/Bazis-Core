@@ -22,7 +22,8 @@ namespace Project.Tasks.Functions
         DHEX,
         FHEX,
         TT,
-        PT
+        PT,
+        Custom
     }
     /// <summary>
     /// Function
