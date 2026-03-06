@@ -6,22 +6,22 @@ using System.Threading.Tasks;
 
 namespace Project.Tasks.Functions
 {
-    internal class BT : Function
+    public class PT : Function
     {
         /// <summary>
-        /// BT
+        /// PT
         /// </summary>
-        public BT()
+        public PT()
         {
-            Name = FuncName.BT.ToString();
+            Name = FuncName.PT.ToString();
             FunctionType = FuncType.PF;
             AddParameter(new Parameter("TIME"));
-            AddParameter(new Parameter("TEMPM", ParameterType.Constant, 20));
+            AddParameter(new Parameter("POW", ParameterType.Constant, 20));
         }
         public override double CalcValue()
         {
             // температура тела
-            return this["TEMPM"].GetValue();
+            return this["POW"].GetValue();
         }
     }
 }

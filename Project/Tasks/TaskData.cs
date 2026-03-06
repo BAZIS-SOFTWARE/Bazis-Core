@@ -369,8 +369,10 @@ namespace Project.Tasks
                 function = new DHEX();
             else if (v.Contains(FuncName.FHEX.ToString()))
                 function = new FHEX();
-            else if (v.Contains(FuncName.BT.ToString()))
-                function = new BT();
+            else if (v.Contains(FuncName.TT.ToString()))
+                function = new TT();
+            else if (v.Contains(FuncName.PT.ToString()))
+                function = new PT();
             else if (v.Contains(".py"))
             {
                 var cf = new CustomFrameFunction();

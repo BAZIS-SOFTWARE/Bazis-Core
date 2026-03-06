@@ -21,7 +21,8 @@ namespace Project.Tasks.Functions
         DEL,
         DHEX,
         FHEX,
-        BT
+        TT,
+        PT
     }
     /// <summary>
     /// Function

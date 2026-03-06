@@ -15,6 +15,7 @@ namespace Project.Tasks.Functions
         {
             Name = FuncName.FHEX.ToString();
             FunctionType = FuncType.PF;
+            AddParameter(new Parameter("TIME")); // неизвестная, вычисляется во время расчета
             AddParameter(new Parameter("TEMPM", ParameterType.Constant, 20));
             AddParameter(new Parameter("TEMPS"));
             AddParameter(new Parameter("HEX", ParameterType.Constant, 0.000025)); // w/mm^2 * temp
