@@ -7,7 +7,7 @@ using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 using Geometry;
-using Project.Tasks.FrameCreators;
+using Project.Tasks.LocalFrames;
 
 namespace Project.Tasks.Functions.FrameFunctions
 {

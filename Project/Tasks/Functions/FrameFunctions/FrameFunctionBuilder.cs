@@ -1,6 +1,6 @@
 ﻿using Geometry;
 using Model.Interfaces;
-using Project.Tasks.FrameCreators;
+using Project.Tasks.LocalFrames;
 using Project.Tasks.Functions;
 using System;
 using System.Collections.Generic;

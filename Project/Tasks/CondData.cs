@@ -1,6 +1,6 @@
 ﻿using Model.Interfaces;
 using Project.Interfaces.Tasks;
-using Project.Tasks.FrameCreators;
+using Project.Tasks.LocalFrames;
 using Project.Tasks.Functions;
 using System;
 

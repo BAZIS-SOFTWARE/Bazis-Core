@@ -7,7 +7,7 @@ using Model.GroupsData;
 using Model.Interfaces.MeshObjects;
 using Project.Tasks;
 using Model.Interfaces;
-using Project.Tasks.FrameCreators;
+using Project.Tasks.LocalFrames;
 using Project.Interfaces.Tasks;
 using MathNet.Numerics.LinearAlgebra;
 using Project.IO;
@@ -33,7 +33,7 @@ namespace TestProject
         [DataRow(@"..\..\..\Examples\WeldingHeatSource\test_t_lazer_180_0_10.bpf", DisplayName = "test_t_lazer_180_0_10.bpf")]
         [DataRow(@"..\..\..\Examples\WeldingHeatSource\ARCTest_v.bpf", DisplayName = "ARCTest_v")]
         //[DataRow(@"\WeldingHeatSource\FSW\proj.bpf", DisplayName = "FSW")]
-        [DataRow("c:\\projs\\Roman\\WebinarLazerWelding\\123.bpf2", DisplayName = "c:\\projs\\Roman\\WebinarLazerWelding\\123.bpf2")]
+        [DataRow("c:\\projs\\testProj\\HeatingByWelding_Tjoint\\proj.bpf2", DisplayName = "c:\\projs\\testProj\\HeatingByWelding_Tjoint\\proj.bpf2")]
 
         public void MFF_EnergyCalculated(string path)
         {
@@ -55,16 +55,21 @@ namespace TestProject
                 (heatData.LocalFrame as MovedFrame).Time = 1;
                 heatData.LocalFrame.CalcPosition();
                 var counter = 0;
+
+                //var heat = heatData.Value;
+
                 foreach (var obj in gr)
                 {
+                    var heat = heatData.Value;
                     var centr = obj.CalcCentr();
                     var frameCoords = heatData.LocalFrame.Frame.GetCoordsInFrame(centr);
 
                     heatData.Function["X"].SetValue(frameCoords._x);
                     heatData.Function["Y"].SetValue(frameCoords._y);
                     heatData.Function["Z"].SetValue(frameCoords._z);
-
-                    energy[counter] = heatData.Function.CalcValue();
+                    
+                    heat *= heatData.Function.CalcValue();
+                    energy[counter] = heat;
                     counter++;
                 }
                 var max = energy.Max();

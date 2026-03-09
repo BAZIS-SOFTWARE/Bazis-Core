@@ -1,7 +1,7 @@
 ﻿using Geometry;
 using Model.Interfaces;
 using Project.Tasks;
-using Project.Tasks.FrameCreators;
+using Project.Tasks.LocalFrames;
 using System;
 using System.Collections.Generic;
 using System.Linq;

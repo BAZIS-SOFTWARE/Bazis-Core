@@ -4,13 +4,22 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Project.Tasks.FrameCreators
+namespace Project.Tasks.LocalFrames
 {
+    public enum FrameType
+    {
+        MovedFrame,
+        StaticFrame
+    }
     /// <summary>
     /// LocalFrame
     /// </summary>
     public abstract class LocalFrame
     {
+        /// <summary>
+        /// FrameType
+        /// </summary>
+        public FrameType FrameType { get; internal set; }
         /// <summary>
         /// Name
         /// </summary>
