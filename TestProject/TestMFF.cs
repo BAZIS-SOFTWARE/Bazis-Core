@@ -576,11 +576,15 @@ new Point3D(15, 16, 15));
         }
 
         [TestMethod]
-        [DataRow(1, 0, 0, 75f)]
-        [DataRow(4, 4, 4, 0)]
-        [DataRow(1, 4, 0.4f, 0)]
-        [DataRow(3, 1, 0.8f, 75f)]
-        public void RectangleCalcPowerTest(float x, float y, float z, float power)
+        [DataRow(1, 0, 0, 75f,@"..\..\..\Examples\PythonScript\RectangleSource.py")]
+        [DataRow(4, 4, 4, 0,@"..\..\..\Examples\PythonScript\RectangleSource.py")]
+        [DataRow(1, 4, 0.4f, 0,@"..\..\..\Examples\PythonScript\RectangleSource.py")]
+        [DataRow(3, 1, 0.8f, 75f,@"..\..\..\Examples\PythonScript\RectangleSource.py")]
+        [DataRow(1, 0, 0, 882.4969f,@"..\..\..\Examples\PythonScript\NormalCircularDistribution.py")]
+        [DataRow(4, 4, 4, 0,@"..\..\..\Examples\PythonScript\NormalCircularDistribution.py")]
+        [DataRow(-1, -1, 0.4f, 0,@"..\..\..\Examples\PythonScript\NormalCircularDistribution.py")]
+        [DataRow(0, 0, 0, 1000,@"..\..\..\Examples\PythonScript\NormalCircularDistribution.py")]
+        public void PyFunctionTests(float x, float y, float z, float power, string path)
         {
             //assing            
             var function = new CustomFrameFunction();
@@ -591,7 +595,7 @@ new Point3D(15, 16, 15));
             var result = function.CalcValue(new Point3D(x, y, z));
 
             //assert
-            Assert.AreEqual(power, result,0.01);
-        } 
+            Assert.AreEqual(power, result);
+        }
     }
 }
