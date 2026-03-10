@@ -19,6 +19,21 @@ namespace Model.GeometryObjects
         /// <summary>
         /// Color
         /// </summary>
+        public bool ViewState 
+        {
+            get
+            {
+                return surfaceFigure.All(x => x.ViewState == true);
+            }
+            set
+            {
+                foreach (var item in surfaceFigure)
+                    item.ViewState = value;
+            }
+        }
+        /// <summary>
+        /// Color
+        /// </summary>
         public Color Color { get; private set; }
         /// <summary>
         /// Number

@@ -4,6 +4,7 @@
     "Is_Switched_Tm": true,
     "Tm": 1500.0
   },
+  "TaskKind": 4,
   "TermalProcesses": [],
   "InitTemp": 20.0,
   "SaveRate": 0,

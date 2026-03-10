@@ -1,7 +1,6 @@
 ﻿using Model.Interfaces;
 using Project.Interfaces.Tasks;
 using MaterialDB.MaterialData;
-using System;
 
 namespace Project.Tasks
 {
@@ -27,17 +26,11 @@ namespace Project.Tasks
         /// MatName
         /// </summary>
         public MaterialDBItem Material { get; set; }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
-        protected override string GetInfo
+        public override string ToString()
         {
-            get
-            {
-                var mfInfo = "*";
-                if (FrameFunction?.LocalFrame != null)
-                    mfInfo = FrameFunction.LocalFrame.ToString();
-                return string.Format("{0} {1} {2} {3} {4}", Group.Name, Material.Name, StartTime, StopTime, mfInfo);
-            }
+            return base.ToString() + $" {Material.Name}";
         }
     }
 }

@@ -4,21 +4,40 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Project.Tasks.FrameCreators
+namespace Project.Tasks.LocalFrames
 {
+    public enum FrameType
+    {
+        MovedFrame,
+        StaticFrame
+    }
     /// <summary>
     /// LocalFrame
     /// </summary>
     public abstract class LocalFrame
     {
         /// <summary>
+        /// FrameType
+        /// </summary>
+        public FrameType FrameType { get; internal set; }
+        /// <summary>
         /// Name
         /// </summary>
         public string Name { get; internal set; }
         /// <inheritdoc/>
         public Point3D Shifting { get; set; } = new Point3D();
-        /// <inheritdoc/>
-        public float Rotation { get; set; }
+        /// <summary>
+        /// Rotation_X
+        /// </summary>
+        public float Rotation_X { get; set; }
+        /// <summary>
+        /// Rotation_Y
+        /// </summary>
+        public float Rotation_Y { get; set; }
+        /// <summary>
+        /// Rotation_Z
+        /// </summary>
+        public float Rotation_Z { get; set; }
         /// <summary>
         /// Frame
         /// </summary>
@@ -41,20 +60,30 @@ namespace Project.Tasks.FrameCreators
         {
             var shifftingData = shiftingData.Split('|');
 
-            if (shifftingData.Length == 4)
-            {
-                if (!float.TryParse(shifftingData[0], out var x))
-                    throw new Exception("Смещение по X задано неверно!");
-                if (!float.TryParse(shifftingData[1], out var y))
-                    throw new Exception("Смещение по Y задано неверно!");
-                if (!float.TryParse(shifftingData[2], out var z))
-                    throw new Exception("Смещение по Z задано неверно!");
-                if (!float.TryParse(shifftingData[3], out var angle))
-                    throw new Exception("Угол задан неверно!");
+            if (shifftingData.Length != 6)
+                throw new Exception("Проверьте вектор смещения и углы поворота");
 
-                Shifting = new Point3D(x, y, z);
-                Rotation = angle;
-            }
+            //{
+            if (!float.TryParse(shifftingData[0], out var x))
+                throw new Exception("Смещение по X задано неверно!");
+            if (!float.TryParse(shifftingData[1], out var y))
+                throw new Exception("Смещение по Y задано неверно!");
+            if (!float.TryParse(shifftingData[2], out var z))
+                throw new Exception("Смещение по Z задано неверно!");
+            if (!float.TryParse(shifftingData[3], out var angle_x))
+                throw new Exception("Угол задан неверно!");
+            if (!float.TryParse(shifftingData[4], out var angle_y))
+                throw new Exception("Угол задан неверно!");
+            if (!float.TryParse(shifftingData[5], out var angle_z))
+                throw new Exception("Угол задан неверно!");
+
+            // TODO дописать парсинг для углов y и z
+
+            Shifting = new Point3D(x, y, z);
+            Rotation_X = angle_x;
+            Rotation_Y = angle_y;
+            Rotation_Z = angle_z;
+            //}
         }
     }
 }

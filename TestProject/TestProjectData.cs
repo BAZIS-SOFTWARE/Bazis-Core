@@ -43,8 +43,9 @@ namespace TestProject
             control.DeleteModelObjects(type, objNumbers);
 
             //assert
-            Assert.AreEqual(res, control.ModelData.GroupData.Find(grName) != null);
-            Assert.AreEqual(res, control.TaskData.Contains(grName));
+
+            Assert.AreEqual(res, control.GetModelGroup(grName) != null);
+            Assert.AreEqual(res, control.ContainsConditions(grName));
         }
 
         [DataTestMethod]
@@ -64,8 +65,8 @@ namespace TestProject
             control.DeleteModelSet(type, setName);
 
             //assert
-            Assert.AreEqual(res, control.ModelData.GroupData.Find(grName) != null);
-            Assert.AreEqual(res, control.TaskData.Contains(grName));
+            Assert.AreEqual(res, control.GetModelGroup(grName) != null);
+            Assert.AreEqual(res, control.ContainsConditions(grName));
         }
 
         [DataTestMethod]
@@ -87,26 +88,8 @@ namespace TestProject
             control.ClearModelCollection(type);
 
             //assert
-            Assert.AreEqual(res, control.ModelData.GroupData.Find(grName) != null);
-            Assert.AreEqual(res, control.TaskData.Contains(grName));
-        }
-
-        [TestMethod]
-        [DataRow(@"..\..\..\Examples\proj_traj.bpf", DisplayName = "proj_traj")]
-        //[DataRow(@"..\..\..\Examples\proj_traj_baseLine_not_sorted.bpf", DisplayName = "proj_traj_baseLine_not_sorted")]
-
-        //[DataRow(@"c:\projs\testProj\TubeToTubeTJoint\proj_v1.bpf")]
-        //[DataRow(@"c:\projs\kamaz\4.bpf")]
-        public void CreateTaskData(string relativeProjPath)
-        {
-            //assign
-
-            var loader = new LoadProjectFromTextFormat();
-
-            //act
-            var project = loader.Load(relativeProjPath);
-
-            //assert ???
+            Assert.AreEqual(res, control.GetModelGroup(grName) != null);
+            Assert.AreEqual(res, control.ContainsConditions(grName));
         }
     }
 }

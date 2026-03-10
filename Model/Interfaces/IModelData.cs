@@ -9,6 +9,10 @@ namespace Model.Interfaces
 {
     public interface IModelData
     {
+        /// <summary>
+        /// VolumeData
+        /// </summary>
+        VolumeData VolumeData { get; }
         IObjectsData ObjectData { get;}
         IGroupData GroupData { get; }
         /// <summary>

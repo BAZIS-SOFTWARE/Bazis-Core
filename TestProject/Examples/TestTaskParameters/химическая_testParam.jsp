@@ -5,6 +5,7 @@
     "Is_Switched_Cm": false,
     "Cm": 0.0
   },
+  "TaskKind": 2,
   "TermalProcesses": [],
   "InitTemp": 20.0,
   "SaveRate": 0,

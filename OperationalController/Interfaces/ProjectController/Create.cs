@@ -1,8 +1,11 @@
 ﻿using Geometry;
+using Model.Interfaces;
 using Model.Interfaces.MeshObjects;
+using Project.Interfaces.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using static IronPython.Modules._ast;
 
 namespace OperationalController
 {
@@ -37,5 +40,23 @@ namespace OperationalController
         /// <param name="y"></param>
         /// <param name="z"></param>
         void CreateNode(int number, float x, float y, float z);
+        /// <summary>
+        /// CreateGroup
+        /// </summary>
+        /// <param name="grName"></param>
+        /// <param name="objs"></param>
+        void CreateGroup(string grName, IEnumerable<IModelObject> objs);
+        /// <summary>
+        /// CreateGroup
+        /// </summary>
+        /// <param name="objs"></param>
+        void CreateGroup(IEnumerable<IModelObject> objs);
+        /// <summary>
+        /// Create
+        /// </summary>
+        /// <param name="kind"></param>
+        /// <param name="info"></param>
+        /// <returns></returns>
+        ICondData Create(DataKind kind, string info);
     }
 }

@@ -63,8 +63,8 @@ namespace Geometry
             if (Vector.DotProd(vectorDirection, plane.Normal) == 0)
                 throw new Exception("Прямая параллельна плоскости");
 
-            if (Segment3D.PointOnPlane(plane, P0) == 0) return P0;
-            else if(Segment3D.PointOnPlane(plane, P1) == 0) return P1;
+            if (PointOnPlane(plane, P0) == 0) return P0;
+            else if(PointOnPlane(plane, P1) == 0) return P1;
 
             var p0Pr = P0.GetPointProectionOnPlane(plane);
             var p1Pr = P1.GetPointProectionOnPlane(plane);
@@ -90,7 +90,7 @@ namespace Geometry
 
         }
 
-        static float PointOnPlane (Plane plane, Point3D point)
+        float PointOnPlane (Plane plane, Point3D point)
         {
             return plane.Normal._x * point._x + plane.Normal._y * point._y + plane.Normal._z * point._z + plane.Shifting;
         }

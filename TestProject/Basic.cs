@@ -59,11 +59,11 @@ namespace TestProject
             saver.SaveEvent += (ar1, ar2) => { };
             //act
             var proj = loader.Load($@"{testDir}\proj_traj.bpf");
-            saver.Save(proj, $@"{testDir}\proj_traj.bpf");
+            saver.Save(proj, $@"{testDir}\proj_traj_save.bpf");
 
             //Assert
 
-            var proj_1 = loader.Load($@"{testDir}\proj_traj.bpf");
+            var proj_1 = loader.Load($@"{testDir}\proj_traj_save.bpf");
 
             Assert.AreEqual(proj.GeneralData.Name, proj_1.GeneralData.Name);
         }

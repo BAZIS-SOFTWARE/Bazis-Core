@@ -1,7 +1,7 @@
 ﻿using Geometry;
 using Model.Interfaces;
 using Project.Tasks;
-using Project.Tasks.FrameCreators;
+using Project.Tasks.LocalFrames;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,14 +15,6 @@ namespace Project.Interfaces.Tasks
     /// </summary>
     public interface IFrameFunction
     {
-        /// <summary>
-        /// Frame
-        /// </summary>
-        LocalFrame LocalFrame { get; set; }
-        /// <summary>
-        /// Name
-        /// </summary>
-        FunctionType Name { get; }
         /// <summary>
         /// GetIntersectedElements
         /// </summary>
@@ -38,25 +30,7 @@ namespace Project.Interfaces.Tasks
         /// <summary>
         /// CalcPower
         /// </summary>
-        /// <param name="elementCenter"></param>
         /// <returns></returns>
-        float CalcValue(Point3D elementCenter);
-
-        /// <summary>
-        /// CreateParameter
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="value"></param>
-        void CreateParameter(string name, float value);
-        /// <summary>
-        /// CreateParameter
-        /// </summary>
-        /// <param name="name"></param>
-        void CreateParameter(string name);
-        /// <summary>
-        /// GetParameters
-        /// </summary>
-        /// <returns></returns>
-        IEnumerable<FunctionParameter> GetParameters();
+        double CalcValue(Point3D elementCenter);
     }
 }

@@ -1,4 +1,6 @@
-﻿using Model.Interfaces;
+﻿using Model.GroupsData;
+using Model.Interfaces;
+using System;
 using System.Collections.Generic;
 
 namespace OperationalController
@@ -6,11 +8,61 @@ namespace OperationalController
     public partial class ProjectController
     {
         /// <inheritdoc/>
+        public void ClearGroupData()
+        {
+            ModelData.GroupData?.Clear();
+            TaskData.Clear();
+        }
+        /// <summary>
+        /// ClearNotExistedTaskData
+        /// </summary>
+        /// <param name="group"></param>
+        public void DeleteCond(IGroup group)
+        {
+            TaskData.ClearNotExisted(group);
+        }
+        /// <inheritdoc/>
+        public void ClearNotExistedCondData()
+        {
+                TaskData.ClearNotExisted(ModelData.GroupData);
+        }
+        /// <inheritdoc/>
+        public void ClearNotExistedModelData()
+        {
+            ModelData.ObjectData?.ClearNotExisted();
+            ModelData.ObjectData?.ClearEmptySet();
+            ModelData.GroupData?.ClearNotExisted();
+            TaskData.ClearNotExisted(ModelData.GroupData);
+
+            //project.ClearEmptySet();
+            //project.ClearNotExistedGroupData();
+            //project.ClearNotExistedCondData();
+
+        }
+        /// <inheritdoc/>
+        public void ClearNotExistedGroupData()
+        {
+            ModelData.GroupData?.ClearNotExisted();
+            TaskData.ClearNotExisted(ModelData.GroupData);
+        }
+/// <inheritdoc/>
+
+        public void ClearEmptySet()
+        {
+            ModelData.ObjectData?.ClearEmptySet();
+        }
+        /// <inheritdoc/>
+
+        public void ClearTaskData()
+        {
+            TaskData.Clear();
+        }
+        /// <inheritdoc/>
 
         public void ClearAllData()
         {
-            TaskData?.Clear();
-            ModelData?.ClearAll();
+            TaskData.Clear();
+            ModelData.ClearAll();
         }
 
         /// <inheritdoc/>
@@ -54,6 +106,7 @@ namespace OperationalController
 
         public void DeleteModelObjects(ObjType objType, IEnumerable<int> objNumbs)
         {
+            // TODO если геометрия, то удалить по типу и номеру объекта
 
             foreach (var numb in objNumbs)
             {
@@ -61,11 +114,8 @@ namespace OperationalController
                 if (obj != null)
                     obj.ExistState = false;
             }
-
-            ModelData.ObjectData.ClearNotExisted();
-            ModelData.ObjectData.ClearEmptySet();
-            ModelData.GroupData.ClearNotExisted();
-            TaskData.ClearNotExisted(ModelData.GroupData);
+ 
+            ClearNotExistedModelData();
         }
     }
 }

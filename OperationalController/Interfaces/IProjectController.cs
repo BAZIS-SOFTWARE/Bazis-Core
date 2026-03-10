@@ -45,11 +45,11 @@ namespace OperationalController
         /// <summary>
         /// TaskData
         /// </summary>
-        ITaskData TaskData {get;}
+        //ITaskData TaskData {get;}
         /// <summary>
         /// ModelData
         /// </summary>
-        IModelData ModelData { get; }
+        //IModelData ModelData { get; }
         /// <summary>
         /// Path
         /// </summary>
@@ -279,8 +279,7 @@ namespace OperationalController
         /// GenerateMesh
         /// </summary>
         /// <param name="elemDim"></param>
-        /// <param name="controller"></param>
-        void GenerateMesh(int elemDim, IGmshController controller);
+        void GenerateMesh(int elemDim);
 
 
     }

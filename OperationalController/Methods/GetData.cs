@@ -11,11 +11,63 @@ using Model.MeshObjects;
 using OperationalController.GmshController;
 using System;
 using System.Data;
+using System.Linq;
+using Model;
 
 namespace OperationalController
 {
     public partial class ProjectController
     {
+        /// <inheritdoc/>
+        public IEnumerable<IModelObject> GetAdjacentGeometryObjects(IModelObject obj, int direction)
+        {
+            var dim = obj.Dim;
+            int[] numbers;
+            var (upperLevel, lowerLevel) = GmshController.Gmsh.Model.GetAdjacencies(dim, obj.Number);
+
+            int dimDir;
+            if (direction == 2)
+            {
+                dimDir = dim + 1;
+                numbers = upperLevel;
+            }
+
+            else
+            {
+                dimDir = dim - 1;
+                numbers = lowerLevel;
+            }
+
+            if (dimDir == -1)
+                yield break; // очень интересное решение для возврата пустой последовательности
+
+            else if (dimDir == 3)
+                foreach (var number in numbers)
+                {
+                    var vol = GetModelVolumes().FirstOrDefault(x => x.Number == number);
+
+                    foreach (var surf in vol.GetSurfaceFigures())
+                        yield return surf;
+                }
+            else
+            {
+                var adgObjType = GetObjType(dimDir);
+
+                foreach (var item in numbers)
+                    yield return GetModelObject(adgObjType, item);
+            }
+        }
+
+        private ObjType GetObjType(int dim)
+        {
+            if (dim == 0)
+                return ObjType.Точка;
+            else if (dim == 1)
+                return ObjType.Кривая;
+            else
+                return ObjType.Поверхность;
+        }
+
         /// <inheritdoc/>
         public IEnumerable<Node> GetAllModelNodes()
         {
@@ -58,6 +110,7 @@ namespace OperationalController
         {
             return ModelData.ObjectData.GetSetInfo(objType, setName);
         }
+/// <inheritdoc/>
 
         public ISetInfo GetModelSetInfo(ObjType objType, int objNumber)
         {
@@ -93,6 +146,18 @@ namespace OperationalController
                 return ModelData.ObjectData.E3DCollection[setName].Values;
         }
 
+        public IEnumerable<ISurfaceElement> GetModelSurfaceElements(int dim)
+        {
+            if (dim < 2 | dim > 3)
+                throw new Exception("Неправильно указана размерность элементов");
+
+
+            if (dim == 2)
+                return ModelData.ObjectData.E2DCollection.GetObjects();
+            else
+                return ModelData.ObjectData.E3DCollection.GetObjects();
+        }
+
         /// <inheritdoc/>
         public GeometryPoint GetModelPoint(int objNumber)
         {
@@ -115,12 +180,7 @@ namespace OperationalController
 
         public IEnumerable<VolumeFigure> GetModelVolumes()
         {
-            return ModelData.ObjectData.VolumeData;
-        }
-        /// <inheritdoc/>
-        public IGroup GetModelGroup(int grIndex)
-        {
-            return ModelData.GroupData[grIndex];
+            return ModelData.VolumeData;
         }
 
         /// <inheritdoc/>
@@ -149,9 +209,20 @@ namespace OperationalController
         }
 
         /// <inheritdoc/>
-        public ICondData GetCondData(int grIndex)
+        public ICondData GetCondData(int condIndex)
         {
-            return TaskData[grIndex];
+            return TaskData[condIndex];
+        }
+/// <inheritdoc/>
+
+        public IGroup GetModelGroup(string grName)
+        {
+            return ModelData.GroupData.Find(grName);
+        }
+        /// <inheritdoc/>
+        public IGroup GetModelGroup(int grIndex)
+        {
+            return ModelData.GroupData[grIndex];
         }
 
         /// <inheritdoc/>

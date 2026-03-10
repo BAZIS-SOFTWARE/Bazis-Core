@@ -1,24 +1,18 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Model;
-using Project;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Data;
 using System.Globalization;
-using System.Threading;
 using Geometry;
 using Model.MeshObjects;
 using Model.GroupsData;
 using Model.Interfaces.MeshObjects;
 using Project.Tasks;
 using Model.Interfaces;
-using Project.Tasks.Functions;
-using Project.Tasks.FrameCreators;
+using Project.Tasks.LocalFrames;
 using Project.Interfaces.Tasks;
 using MathNet.Numerics.LinearAlgebra;
-using Project.Tasks.Functions.Welding;
 using Project.IO;
+using Project.Tasks.Functions;
+using Project.Tasks.Functions.FrameFunctions;
 
 namespace TestProject
 {
@@ -34,18 +28,19 @@ namespace TestProject
 
 
         [TestMethod]
-        [DataRow(@"\WeldingHeatSource\LWTest_v.bpf", DisplayName = "LWTest_v.bpf")]
-        [DataRow(@"\WeldingHeatSource\test_t_lazer_0_10.bpf", DisplayName = "test_t_lazer_0_10.bpf")]
-        [DataRow(@"\WeldingHeatSource\test_t_lazer_180_0_10.bpf", DisplayName = "test_t_lazer_180_0_10.bpf")]
-        [DataRow(@"\WeldingHeatSource\ARCTest_v.bpf", DisplayName = "ARC")]
-        [DataRow(@"\WeldingHeatSource\FSW\proj.bpf", DisplayName = "FSW")]
+        [DataRow(@"..\..\..\Examples\WeldingHeatSource\LWTest_v.bpf", DisplayName = "LWTest_v.bpf")]
+        [DataRow(@"..\..\..\Examples\WeldingHeatSource\test_t_lazer_0_10.bpf", DisplayName = "test_t_lazer_0_10.bpf")]
+        [DataRow(@"..\..\..\Examples\WeldingHeatSource\test_t_lazer_180_0_10.bpf", DisplayName = "test_t_lazer_180_0_10.bpf")]
+        [DataRow(@"..\..\..\Examples\WeldingHeatSource\ARCTest_v.bpf", DisplayName = "ARCTest_v")]
+        //[DataRow(@"\WeldingHeatSource\FSW\proj.bpf", DisplayName = "FSW")]
+        [DataRow("c:\\projs\\testProj\\HeatingByWelding_Tjoint\\proj.bpf2", DisplayName = "c:\\projs\\testProj\\HeatingByWelding_Tjoint\\proj.bpf2")]
 
         public void MFF_EnergyCalculated(string path)
         {
             //assing
             var loader = new LoadProjectFromTextFormat();
             loader.LoadEvent += (ar1, ar2) => { };
-            var proj = loader.Load($@"{testDir}\{path}");
+            var proj = loader.Load($@"{path}");
 
             //act
             var lazerData = proj.TaskData.Find(DataKind.Нагрев).Select(x => (HeatData)x).ToArray();
@@ -54,21 +49,27 @@ namespace TestProject
                 var heatData = lazerData[i];
                 var gr = heatData.Group;
 
-                //if (heatData.FrameFunction is CillindricalFunction fswPin)
-                //    fswPin.GetParameters().ElementAt(0).Value = 200;
-                //if (heatData.FrameFunction is FSWShoulder fswShoulder)
-                //    fswShoulder.GetParameters().ElementAt(0).Value = 0.001f;
-
-                var powerFunc = heatData.FrameFunction;
+                //heatData.Function["TIME"].SetValue(1);
+                var energy = new double[gr.Count];
                 //assert
-                var energy = new float[gr.Count];
-                var mf = heatData.FrameFunction.LocalFrame as MovedFrame;
-                mf.Time = 1;
-                mf.CalcPosition();
+                (heatData.LocalFrame as MovedFrame).Time = 1;
+                heatData.LocalFrame.CalcPosition();
                 var counter = 0;
+
+                //var heat = heatData.Value;
+
                 foreach (var obj in gr)
                 {
-                    energy[counter] = powerFunc.CalcValue(obj.CalcCentr());
+                    var heat = heatData.Value;
+                    var centr = obj.CalcCentr();
+                    var frameCoords = heatData.LocalFrame.Frame.GetCoordsInFrame(centr);
+
+                    heatData.Function["X"].SetValue(frameCoords._x);
+                    heatData.Function["Y"].SetValue(frameCoords._y);
+                    heatData.Function["Z"].SetValue(frameCoords._z);
+                    
+                    heat *= heatData.Function.CalcValue();
+                    energy[counter] = heat;
                     counter++;
                 }
                 var max = energy.Max();
@@ -120,8 +121,8 @@ namespace TestProject
         [DataRow("FSWShoulder", new[] { 2f, 5f, 0f }, 1, DisplayName = "FSWShoulder_WhenPointTouches")]
         [DataRow("FSWShoulder", new[] { 0f, 5f, -3f }, 1, DisplayName = "FSWShoulder_WhenPointTouches")]
         [DataRow("FSWShoulder", new[] { 0f, 5f, -6f }, 1, DisplayName = "FSWShoulder_WhenPointTouches")]
-        [DataRow("FSWShoulder", new[] { 0f, 10f, -9.99f }, 1, DisplayName = "FSWShoulder_WhenPointTouches")]
-        [DataRow("FSWShoulder", new[] { 0f, 10f, -4.99f }, 1, DisplayName = "FSWShoulder_WhenPointTouches")]
+        [DataRow("FSWShoulder", new[] { 0f, 10f, -9.99f }, 0, DisplayName = "FSWShoulder_NoCollision")]
+        [DataRow("FSWShoulder", new[] { 0f, 10f, -4.99f }, 0, DisplayName = "FSWShoulder_NoCollision")]
         [DataRow("FSWShoulder", new[] { 4.99f, 0f, 0f }, 1, DisplayName = "FSWShoulder_WhenHasEdgeCollision")]
         [DataRow("FSWShoulder", new[] { 0f, 0f, -4.99f }, 1, DisplayName = "FSWShoulder_WhenHasEdgeCollision")]
         [DataRow("FSWShoulder", new[] { 0f, 0f, -9.99f }, 1, DisplayName = "FSWShoulder_WhenHasEdgeCollision")]
@@ -155,15 +156,12 @@ namespace TestProject
         [TestMethod]
         public void FrameFunction_GetIntersectedObjects(string fName, float[] checkPoint, int res)
         {
-            var frame = new Frame();
             FrameFunction pFunction;
             if (fName == "arc")
             {
                 var arc = new SphereBuilder();
                 arc.SetWidth("20");
-
-                arc.SetFrame(frame);
-                pFunction = (SphereFunction)arc;
+                pFunction = arc;
             }
             else
             {
@@ -171,26 +169,10 @@ namespace TestProject
                 lazer.SetLength("10");
                 lazer.SetBottomDiam("10");
                 lazer.SetUpperDiam("20");
-                lazer.SetFrame(frame);
-                pFunction = (CillindricalFunction)lazer;
+
+                pFunction = lazer;
             }
-            //else if (fName == "FSWShoulder")
-            //{
-            //    var fswShoulder = new FSWShoulderBuilder();
-            //    fswShoulder.SetLength("10");
-            //    fswShoulder.SetBottomDiam("20");
-            //    fswShoulder.SetUpperDiam("20");
-            //    fswShoulder.SetFrame(frame);
-            //    pFunction = (FSWShoulder)fswShoulder;
-            //}
-            //else
-            //{
-            //    var fswPin = new FSWPinBuilder();
-            //    fswPin.SetLength("10");
-            //    fswPin.SetBottomDiam("10");
-            //    fswPin.SetUpperDiam("20");
-            //    fswPin.SetFrame(frame);
-            //    pFunction = (FSWPin)fswPin;
+
             //}
 
             var point = new Point3D(checkPoint[0], checkPoint[1], checkPoint[2]);
@@ -412,9 +394,9 @@ namespace TestProject
                 refLine.Add(new Node(i + 5000, new Point3D(0f, -1f, i)));
             }
 
-            heatData.TrySetFrameFunction("SPH;10");
-            heatData.FrameFunction.LocalFrame = new MovedFrame(baseLine, refLine, 5);
-            heatData.FrameFunction.LocalFrame.CalcPosition();
+            var func = (SPH)new SphereBuilder().SetWidth("10");
+            var localFrame = new MovedFrame(baseLine, refLine, 5);
+            localFrame.CalcPosition();
             var expectedElements = new List<IElement>();
             var inputElements = new List<IElement>();
 
@@ -423,13 +405,13 @@ namespace TestProject
             if (input.Count() >= 12)
                 inputElements = GetTetraElements(input);
             var resultList = new List<IElement>();
-            var mf = heatData.FrameFunction.LocalFrame as MovedFrame;
-            var end = mf.CalcMotionTime();
+            
+            var end = localFrame.CalcMotionTime();
 
-            for (var time = 0.0f; time < end; time += mf.Velocity)
+            for (var time = 0.0f; time < end; time += localFrame.Velocity)
             {
-                mf.Time = time;
-                resultList.AddRange(heatData.FrameFunction.GetIntersectedObjects(inputElements));
+                localFrame.Time = time;
+                resultList.AddRange(func.GetIntersectedObjects(inputElements));
             }
 
             return (expectedElements, resultList);
@@ -464,7 +446,7 @@ namespace TestProject
         [TestMethod]
         public void IsOverlappingSelfSphere_ShouldPass_WhenOverlap(float velocity, float width)
         {
-            SphereFunction mff = new SphereBuilder().SetWidth(width.ToString());
+            SPH mff = new SphereBuilder().SetWidth(width.ToString());
             Assert.IsTrue(mff.IsOverlappingSelf(velocity));
         }
 
@@ -476,7 +458,7 @@ namespace TestProject
         [TestMethod]
         public void IsOverlappingSelfCillinder_ShouldPass_WhenOverlap(float velocity, float upper, float bottom)
         {
-            CillindricalFunction mff = new CillindricalBuilder().SetBottomDiam(bottom.ToString()).SetUpperDiam(upper.ToString());
+            CIL mff = new CillindricalBuilder().SetBottomDiam(bottom.ToString()).SetUpperDiam(upper.ToString());
             Assert.IsTrue(mff.IsOverlappingSelf(velocity));
         }
 
@@ -492,23 +474,26 @@ namespace TestProject
         [DataRow(new[] { 10f, 4f, 5f }, "outside", DisplayName = "point in back ellipse, outside")]
         public void DoubleEllipsIsPointInside_FrameParallelGlobalAxes(float[] checkPoint, string location)
         {
-            var doubleEllips = (DoubleEllips)new EllipsBuilder().
+            var doubleEllips = (DEL)new EllipsBuilder().
                 SetWidth(14).
                 SetDepth(5).
                 SetFrontPart(5).
-                SetBackPart(15).
-    SetFrame(new Frame(new Point3D(15, 15, 15),
-    new Point3D(16, 15, 15),
-    new Point3D(15, 16, 15)));
+                SetBackPart(15);
 
             doubleEllips.MaxAndMinSemiaxis();
 
+            var frame = new Frame(new Point3D(15, 15, 15),
+new Point3D(16, 15, 15),
+new Point3D(15, 16, 15));
+
             var point = new Point3D(checkPoint[0], checkPoint[1], checkPoint[2]);
 
+            var pointInFrame = frame.GetCoordsInFrame(point);
+
             if (location == "inside")
-                Assert.IsTrue(doubleEllips.IsPointInside(point));
+                Assert.IsTrue(doubleEllips.IsPointInside(pointInFrame));
             else
-                Assert.IsFalse(doubleEllips.IsPointInside(point));
+                Assert.IsFalse(doubleEllips.IsPointInside(pointInFrame));
 
         }
 
@@ -521,23 +506,26 @@ namespace TestProject
         [DataRow(new[] { 13f, 20f, 20f }, "outside", DisplayName = "13f, 20f, 20f")]
         public void DoubleEllipsIsPointInside_FrameXYRotated30DegreesGlobalAxes(float[] checkPoint, string location)
         {
-            var doubleEllips = (DoubleEllips)new EllipsBuilder().SetWidth(14).SetDepth(5).
+            var doubleEllips = (DEL)new EllipsBuilder().
+                SetWidth(14).
+                SetDepth(5).
                 SetFrontPart(5).
-                SetBackPart(15).
-                SetFrame(new Frame(new Point3D(20f, 20f, 20f),
-                new Point3D(20.866f, 20.5f, 20f),
-                new Point3D(19.5f, 20.866f, 20f)));
+                SetBackPart(15);
 
             doubleEllips.MaxAndMinSemiaxis();
 
-            //doubleEllips.DetermineInverseMatrix();
+            var frame = new Frame(new Point3D(20f, 20f, 20f),
+                new Point3D(20.866f, 20.5f, 20f),
+                new Point3D(19.5f, 20.866f, 20f));
 
             var point = new Point3D(checkPoint[0], checkPoint[1], checkPoint[2]);
 
+            var pointInFrame = frame.GetCoordsInFrame(point);
+
             if (location == "inside")
-                Assert.IsTrue(doubleEllips.IsPointInside(point));
+                Assert.IsTrue(doubleEllips.IsPointInside(pointInFrame));
             else
-                Assert.IsFalse(doubleEllips.IsPointInside(point));
+                Assert.IsFalse(doubleEllips.IsPointInside(pointInFrame));
         }
 
 
@@ -546,7 +534,7 @@ namespace TestProject
         [DataRow(7.5f, 5, 10)]
         public void IsOverlappingSelfEllips_ShouldPass_WhenOverlap(float velocity, float frontPart, float backPart)
         {
-            var doubleEllips = (DoubleEllips)new EllipsBuilder().
+            var doubleEllips = (DEL)new EllipsBuilder().
     SetFrontPart(frontPart).
     SetBackPart(backPart);
 
@@ -566,16 +554,13 @@ namespace TestProject
     })]
         public void DetermineInverseMatrixTest(float[] pointsArr, float[] resultArr)
         {
-            var doubleEllips = (DoubleEllips)new EllipsBuilder().
-                SetFrame(new Frame(
+            var frame = new Frame(
                 new Point3D(0f, 0f, 0f),
                  new Point3D(pointsArr[0], pointsArr[1], pointsArr[2]),
-                 new Point3D(pointsArr[3], pointsArr[4], pointsArr[5])
-                ));
-
+                 new Point3D(pointsArr[3], pointsArr[4], pointsArr[5]));
 
             //doubleEllips.DetermineInverseMatrix();
-            var matrix = doubleEllips.LocalFrame.Frame.InverseTransitionMatrix;
+            var matrix = frame.InverseTransitionMatrix;
             var result = Matrix<float>.Build.DenseOfArray(new float[3, 3] {
                                                {resultArr[0], resultArr[1], resultArr[2]},
                                                {resultArr[3], resultArr[4], resultArr[5]},
@@ -587,21 +572,24 @@ namespace TestProject
                 {
                     Assert.AreEqual(result[i, j], matrix[i, j], 1e-6);
                 }
-
             }
         }
 
         [TestMethod]
-        [DataRow(1, 0, 0, 0.75f)]
-        [DataRow(4, 4, 4, 0)]
-        [DataRow(1, 4, 0.4f, 0)]
-        [DataRow(3, 1, 0.8f, 0.75f)]
-        public void LazerCalcPowerTest(float x, float y, float z, float power)
+        [DataRow(1, 0, 0, 75f,@"..\..\..\Examples\PythonScript\RectangleSource.py")]
+        [DataRow(4, 4, 4, 0,@"..\..\..\Examples\PythonScript\RectangleSource.py")]
+        [DataRow(1, 4, 0.4f, 0,@"..\..\..\Examples\PythonScript\RectangleSource.py")]
+        [DataRow(3, 1, 0.8f, 75f,@"..\..\..\Examples\PythonScript\RectangleSource.py")]
+        [DataRow(1, 0, 0, 882.4969f,@"..\..\..\Examples\PythonScript\NormalCircularDistribution.py")]
+        [DataRow(4, 4, 4, 0,@"..\..\..\Examples\PythonScript\NormalCircularDistribution.py")]
+        [DataRow(-1, -1, 0.4f, 0,@"..\..\..\Examples\PythonScript\NormalCircularDistribution.py")]
+        [DataRow(0, 0, 0, 1000,@"..\..\..\Examples\PythonScript\NormalCircularDistribution.py")]
+        public void PyFunctionTests(float x, float y, float z, float power, string path)
         {
             //assing            
-            var function = new CustomFunction();
+            var function = new CustomFrameFunction();
             
-            function.CreateEngine(@"..\..\..\Examples\PythonScript\LaserSourcePython.py");
+            function.CreateEngine(@"..\..\..\Examples\PythonScript\RectangleSource.py");
 
             //act
             var result = function.CalcValue(new Point3D(x, y, z));
@@ -609,25 +597,5 @@ namespace TestProject
             //assert
             Assert.AreEqual(power, result);
         }
-
-        [TestMethod]
-        [DataRow(1, 0, 0, 882.4969f)]
-        [DataRow(4, 4, 4, 0)]
-        [DataRow(-1, -1, 0.4f, 0)]
-        [DataRow(0, 0, 0, 1000)]
-        public void LazerNormalCircularDistributionTest(float x, float y, float z, float power)
-        {
-            //assing            
-            var function = new CustomFunction();
-
-            function.CreateEngine(@"..\..\..\Examples\PythonScript\NormalCircularDistribution.py");
-
-            //act
-            var result = function.CalcValue(new Point3D(x, y, z));
-
-            //assert
-            Assert.AreEqual(power, result);
-        }
-
     }
 }

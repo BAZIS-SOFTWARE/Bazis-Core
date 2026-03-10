@@ -17,6 +17,11 @@ namespace OperationalController
     public partial class ProjectController
     {
         /// <inheritdoc/>
+        public bool ContainsConditions(string grName)
+        {
+            return TaskData.Contains(grName);
+        }
+        /// <inheritdoc/>
         public bool ContainsModelObject(ObjType objType, int objNumb)
         {
             switch (objType)

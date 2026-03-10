@@ -1,12 +1,9 @@
 ﻿using Model.Interfaces;
 using Project.Interfaces.IO;
 using Project.Interfaces.Tasks;
-using Project.Tasks.Functions;
-using Project.Tasks.FrameCreators;
 using System;
 using System.IO;
 using System.Linq;
-using System.Text;
 using MaterialDB.FunctionData;
 using MaterialDB.MaterialData;
 using Newtonsoft.Json;
