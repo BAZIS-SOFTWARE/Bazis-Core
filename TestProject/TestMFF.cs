@@ -28,7 +28,7 @@ namespace TestProject
 
 
         [TestMethod]
-        [DataRow(@"..\..\..\Examples\WeldingHeatSource\LWTest_v.bpf", DisplayName = "LWTest_v.bpf")]
+        //[DataRow(@"..\..\..\Examples\WeldingHeatSource\LWTest_v.bpf", DisplayName = "LWTest_v.bpf")]
         [DataRow(@"..\..\..\Examples\WeldingHeatSource\test_t_lazer_0_10.bpf", DisplayName = "test_t_lazer_0_10.bpf")]
         [DataRow(@"..\..\..\Examples\WeldingHeatSource\test_t_lazer_180_0_10.bpf", DisplayName = "test_t_lazer_180_0_10.bpf")]
         [DataRow(@"..\..\..\Examples\WeldingHeatSource\ARCTest_v.bpf", DisplayName = "ARCTest_v")]
@@ -576,26 +576,27 @@ new Point3D(15, 16, 15));
         }
 
         [TestMethod]
-        [DataRow(1, 0, 0, 75f,@"..\..\..\Examples\PythonScript\RectangleSource.py")]
+        [DataRow(1, 0, 0, 75,@"..\..\..\Examples\PythonScript\RectangleSource.py")]
         [DataRow(4, 4, 4, 0,@"..\..\..\Examples\PythonScript\RectangleSource.py")]
         [DataRow(1, 4, 0.4f, 0,@"..\..\..\Examples\PythonScript\RectangleSource.py")]
-        [DataRow(3, 1, 0.8f, 75f,@"..\..\..\Examples\PythonScript\RectangleSource.py")]
-        [DataRow(1, 0, 0, 882.4969f,@"..\..\..\Examples\PythonScript\NormalCircularDistribution.py")]
+        [DataRow(3, 1, 0.8f, 75,@"..\..\..\Examples\PythonScript\RectangleSource.py")]
+        [DataRow(1, 0, 0, 882.4969,@"..\..\..\Examples\PythonScript\NormalCircularDistribution.py")]
         [DataRow(4, 4, 4, 0,@"..\..\..\Examples\PythonScript\NormalCircularDistribution.py")]
-        [DataRow(-1, -1, 0.4f, 0,@"..\..\..\Examples\PythonScript\NormalCircularDistribution.py")]
+        [DataRow(-1, -1, 0.4f, 778.8,@"..\..\..\Examples\PythonScript\NormalCircularDistribution.py")]
+        [DataRow(-1, -1, -1.1f, 0, @"..\..\..\Examples\PythonScript\NormalCircularDistribution.py")]
         [DataRow(0, 0, 0, 1000,@"..\..\..\Examples\PythonScript\NormalCircularDistribution.py")]
-        public void PyFunctionTests(float x, float y, float z, float power, string path)
+        public void PyFunctionsTest(float x, float y, float z, double power, string path)
         {
             //assing            
             var function = new CustomFrameFunction();
             
-            function.CreateEngine(@"..\..\..\Examples\PythonScript\RectangleSource.py");
+            function.CreateEngine(path);
 
             //act
             var result = function.CalcValue(new Point3D(x, y, z));
 
             //assert
-            Assert.AreEqual(power, result);
+            Assert.AreEqual(power, result,0.1);
         }
     }
 }

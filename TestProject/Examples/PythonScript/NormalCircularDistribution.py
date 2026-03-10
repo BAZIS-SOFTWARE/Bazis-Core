@@ -1,7 +1,9 @@
 ﻿import math
 def CalcPower(x, y, z, power = 1000):    
-    
-    if z != 0 :
+   
+    # здесь необходимо задать глубину действия источника тепла
+    # Внимание!Ось z направлена всегла вверх.
+    if z <= -1 :
         return 0.0
 
     diameter = 6.0 # laser spot diameter
@@ -16,7 +18,7 @@ def CalcPower(x, y, z, power = 1000):
    
     q = math.exp(-pow(distance,2)/(2*pow(deviation, 2))) * power # W/mm**3     
    
-    #debug_info = f"x={x}({type(x)}), y={y}, z={z}"    
+    # debug_info = f"x={x}({type(x)}), y={y}, z={z}"    
 
     return round(q, precision)  
 
