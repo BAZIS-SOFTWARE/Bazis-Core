@@ -44,8 +44,7 @@ namespace Project.Tasks.Functions.FrameFunctions
             engine.Execute(pythonCode, scope);
         }
 
-        /// <inheritdoc/>
-
+        /// <inheritdoc/>       
         public override double CalcValue(Point3D elementCenter)
         {
             if (scope == null)
