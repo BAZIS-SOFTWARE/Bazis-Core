@@ -12,9 +12,9 @@ namespace Project.Tasks.LocalFrames
             get { return baseGr; }
             set
             {
-                if (value.ObjType != ObjType.Узел)
+                if (value?.ObjType != ObjType.Узел)
                     throw new System.Exception("Группа должна состоять из узлов");
-                else if (value.Count() != 3)
+                else if (value?.Count() != 3)
                     throw new System.Exception("Должно быть три узла");
 
                 baseGr = value;

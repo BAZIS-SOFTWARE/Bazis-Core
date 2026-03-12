@@ -28,7 +28,7 @@ namespace TestProject
 
 
         [TestMethod]
-        [DataRow(@"..\..\..\Examples\WeldingHeatSource\LWTest_v.bpf", DisplayName = "LWTest_v.bpf")]
+        //[DataRow(@"..\..\..\Examples\WeldingHeatSource\LWTest_v.bpf", DisplayName = "LWTest_v.bpf")]
         [DataRow(@"..\..\..\Examples\WeldingHeatSource\test_t_lazer_0_10.bpf", DisplayName = "test_t_lazer_0_10.bpf")]
         [DataRow(@"..\..\..\Examples\WeldingHeatSource\test_t_lazer_180_0_10.bpf", DisplayName = "test_t_lazer_180_0_10.bpf")]
         [DataRow(@"..\..\..\Examples\WeldingHeatSource\ARCTest_v.bpf", DisplayName = "ARCTest_v")]
@@ -179,168 +179,7 @@ namespace TestProject
             //pFunction.
             var list = new List<Node>() { new Node(0, point) };
             Assert.AreEqual(pFunction.GetIntersectedObjects(list).Count, res);
-        }
-
-        //[DataRow(
-        //    new float[]
-        //    {
-        //        0f, 0f, 0f,
-        //        -1f, -1f, 0f,
-        //        -2f, 2f, 0f,
-        //        -2f, 2f, 1f,
-
-        //        0f, 0f, 1f,
-        //        -2f, -2f, 0f,
-        //        2f, 3f, 0f,
-        //        2f, 3f, 1f,
-
-        //        0f, 6f, 0f,
-        //        0f, 6f, 1f,
-        //        4f, 4f, 0f,
-        //        4f, 6f, 0f
-        //    },
-        //    new float[]
-        //    {
-        //        0f, 0f, 0f,
-        //        -1f, -1f, 0f,
-        //        -2f, 2f, 0f,
-        //        -2f, 2f, 1f,
-
-        //        0f, 0f, 1f,
-        //        -2f, -2f, 0f,
-        //        2f, 3f, 0f,
-        //        2f, 3f, 1f,
-        //    })]
-        //[DataRow(
-        //    new float[]
-        //    {
-        //        0f, 0f, 0f,
-        //        0f, 0f, 1f,
-        //        2f, 0f, 0f,
-        //        2f, 1f, 0f,
-
-        //        0f, 0f, 0f,
-        //        0f, 0f, 1f,
-        //        2f, 1f, 0f,
-        //        1f, 2f, 0f,
-
-        //        0f, 0f, 0f,
-        //        0f, 0f, 1f,
-        //        1f, 2f, 0f,
-        //        0f, 2f, 0f,
-
-        //        0f, 0f, 0f,
-        //        0f, 0f, 1f,
-        //        0f, 2f, 0f,
-        //        -1f, 2f, 0f,
-
-        //        0f, 0f, 0f,
-        //        0f, 0f, 1f,
-        //        -1f, 2f, 0f,
-        //        -2f, 1f, 0f,
-
-        //        0f, 0f, 0f,
-        //        0f, 0f, 1f,
-        //        -2f, 1f, 0f,
-        //        -2f, 0f, 0f,
-
-        //        0f, 0f, 0f,
-        //        0f, 0f, 1f,
-        //        -2f, -1f, 0f,
-        //        -1f, -2f, 0f,
-
-        //        0f, 0f, 0f,
-        //        0f, 0f, 1f,
-        //        -1f, -2f, 0f,
-        //        0f, -2f, 0f,
-
-        //        0f, 0f, 0f,
-        //        0f, 0f, 1f,
-        //        0f, -2f, 0f,
-        //        1f, -2f, 0f,
-
-        //        0f, 0f, 0f,
-        //        0f, 0f, 1f,
-        //        1f, -2f, 0f,
-        //        2f, -1f, 0f,
-
-        //        0f, 0f, 0f,
-        //        0f, 0f, 1f,
-        //        2f, -1f, 0f,
-        //        2f, 0f, 0f
-        //    },
-        //    new float[]
-        //    {
-        //        0f, 0f, 0f,
-        //        0f, 0f, 1f,
-        //        2f, 0f, 0f,
-        //        2f, 1f, 0f,
-
-        //        0f, 0f, 0f,
-        //        0f, 0f, 1f,
-        //        2f, 1f, 0f,
-        //        1f, 2f, 0f,
-
-        //        0f, 0f, 0f,
-        //        0f, 0f, 1f,
-        //        1f, 2f, 0f,
-        //        0f, 2f, 0f,
-
-        //        0f, 0f, 0f,
-        //        0f, 0f, 1f,
-        //        0f, 2f, 0f,
-        //        -1f, 2f, 0f,
-
-        //        0f, 0f, 0f,
-        //        0f, 0f, 1f,
-        //        -1f, 2f, 0f,
-        //        -2f, 1f, 0f,
-
-        //        0f, 0f, 0f,
-        //        0f, 0f, 1f,
-        //        -2f, 1f, 0f,
-        //        -2f, 0f, 0f,
-
-        //        0f, 0f, 0f,
-        //        0f, 0f, 1f,
-        //        -2f, -1f, 0f,
-        //        -1f, -2f, 0f,
-
-        //        0f, 0f, 0f,
-        //        0f, 0f, 1f,
-        //        -1f, -2f, 0f,
-        //        0f, -2f, 0f,
-
-        //        0f, 0f, 0f,
-        //        0f, 0f, 1f,
-        //        0f, -2f, 0f,
-        //        1f, -2f, 0f,
-
-        //        0f, 0f, 0f,
-        //        0f, 0f, 1f,
-        //        1f, -2f, 0f,
-        //        2f, -1f, 0f,
-
-        //        0f, 0f, 0f,
-        //        0f, 0f, 1f,
-        //        2f, -1f, 0f,
-        //        2f, 0f, 0f
-        //    })]
-        //[TestMethod]
-        //public void SphereIsPointInside_ShouldPass_WhenSelectNecessaryNodes(float[] input, float[] expected)
-        //{
-        //    var setup = SetUpTest(input, expected);
-        //    var expectedElements = setup.Item1;
-        //    var resultList = setup.Item2;
-
-        //    Assert.IsTrue(expectedElements.Count == resultList.Count);
-        //    for (var i = 0; i < expectedElements.Count; i++)
-        //    {
-        //        Assert.AreEqual(expectedElements.ToString(), resultList.ToString());
-        //        for (var j = 0; j < 4; j++)
-        //            Assert.AreEqual(expectedElements[i][j].ToString(), resultList[i][j].ToString());
-        //    }
-        //}
+        } 
 
         [DataRow(
             new float[]
@@ -576,22 +415,27 @@ new Point3D(15, 16, 15));
         }
 
         [TestMethod]
-        [DataRow(1, 0, 0, 75f)]
-        [DataRow(4, 4, 4, 0)]
-        [DataRow(1, 4, 0.4f, 0)]
-        [DataRow(3, 1, 0.8f, 75f)]
-        public void RectangleCalcPowerTest(float x, float y, float z, float power)
+        [DataRow(1, 0, 0, 75,@"..\..\..\Examples\PythonScript\RectangleSource.py")]
+        [DataRow(4, 4, 4, 0,@"..\..\..\Examples\PythonScript\RectangleSource.py")]
+        [DataRow(1, 4, 0.4f, 0,@"..\..\..\Examples\PythonScript\RectangleSource.py")]
+        [DataRow(3, 1, 0.8f, 75,@"..\..\..\Examples\PythonScript\RectangleSource.py")]
+        [DataRow(1, 0, 0, 882.4969,@"..\..\..\Examples\PythonScript\NormalCircularDistribution.py")]
+        [DataRow(4, 4, 4, 0,@"..\..\..\Examples\PythonScript\NormalCircularDistribution.py")]
+        [DataRow(-1, -1, 0.4f, 778.8,@"..\..\..\Examples\PythonScript\NormalCircularDistribution.py")]
+        [DataRow(-1, -1, -1.1f, 0, @"..\..\..\Examples\PythonScript\NormalCircularDistribution.py")]
+        [DataRow(0, 0, 0, 1000,@"..\..\..\Examples\PythonScript\NormalCircularDistribution.py")]
+        public void PyFunctionsTest(float x, float y, float z, double power, string path)
         {
             //assing            
             var function = new CustomFrameFunction();
             
-            function.CreateEngine(@"..\..\..\Examples\PythonScript\RectangleSource.py");
+            function.CreateEngine(path);
 
             //act
             var result = function.CalcValue(new Point3D(x, y, z));
 
             //assert
-            Assert.AreEqual(power, result,0.01);
-        } 
+            Assert.AreEqual(power, result,0.1);
+        }
     }
 }

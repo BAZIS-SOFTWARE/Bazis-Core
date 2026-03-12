@@ -33,8 +33,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Examples\ProjAndResults\term_iterative.bsf" />
-    <None Include="Examples\test_t_lazer_0_10.bpf" />
-    <None Include="Examples\test_t_lazer_180_0_10.bpf" />
     <None Include="TestTaskParameters\механическая_testParam.jsp" />
     <None Include="TestTaskParameters\тепловая_testParam.jsp" />
     <None Include="TestTaskParameters\химическая_testParam.jsp" />

@@ -462,7 +462,13 @@ namespace Project.Tasks
             var srfAr = Regex.Replace(data, pattern, "", RegexOptions.IgnoreCase).Split(',');
 
             var frameGr = groupData.Find(srfAr[0]);
-            var lf = new StaticFrame(frameGr);
+
+            StaticFrame lf;
+            if(frameGr != null)
+                lf = new StaticFrame(frameGr);
+            else
+                lf = new StaticFrame();
+
             lf.SetShiftingAndRotation(srfAr[1]);
             return lf;
         }
