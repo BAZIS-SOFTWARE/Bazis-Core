@@ -122,11 +122,12 @@ namespace ModelTests
         }
         [TestMethod]
         //[DataRow(new string[] { "c:\\projs\\AdditiveTest\\MeshWithBounds\\новый_проект.bpf2", "Box_2.stl" }, DisplayName = "Mix")]
-        [DataRow(new string[] { "Box_1.stl", "Box_2.stl" },DisplayName = "Box_1_Box_2")]
-        [DataRow(new string[] { "Box.stl", "Large_Box3.stl", "Sticks.stl" }, DisplayName = "Box_Large_Box3_Sticks")]
+        [DataRow(new string[] { "Box_1.stl", "Box_2.stl", @"..\..\..\Examples\STL\Append" },DisplayName = "Box_1_Box_2")]
+        [DataRow(new string[] { "Box.stl", "Large_Box3.stl", "Sticks.stl", @"..\..\..\Examples\STL\Append" }, DisplayName = "Box_Large_Box3_Sticks")]
+        [DataRow(new string[] { "out_m3.bpf2", "cube_2d_and_3d_support.bpf2", @"c:\projs\AdditiveTest\TestNewMeshGen" }, DisplayName = "Merge_two_bpf2")]
         public void AppendAndSaveToSTLTextFormat(string [] files)
         {
-            string dir = @"..\..\..\Examples\STL\Append";
+            string dir = files.Last();
 
             //assing
             var controller = new OperationalController.ProjectController();
@@ -137,11 +138,11 @@ namespace ModelTests
             //act
 
             if(ext == ".bpf2")
-                controller.Load(files[0]);
+                controller.Load(Path.Combine(dir, files[0]));
             else
                 controller.ImportMesh(Path.Combine(dir, files[0]));
             
-            foreach (var item in files.Skip(1))
+            foreach (var item in files.Skip(1).SkipLast(1))
                 controller.Append(Path.Combine(dir, item));
 
 
