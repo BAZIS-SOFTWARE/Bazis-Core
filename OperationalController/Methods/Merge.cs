@@ -3,10 +3,13 @@ using Model.Interfaces;
 using Model.Interfaces.ObjectsCollections;
 using Model.IO;
 using Model.IO.STL;
+using Model.MeshObjects;
+using Model.ObjectsCollections;
 using OperationalController.GmshController;
 using Project;
 using System;
 using System.IO;
+using System.Linq;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace OperationalController
@@ -20,20 +23,36 @@ namespace OperationalController
         {
             if (objType == ObjType.Элемент1D)
             {
-                var slave = ModelData.ObjectData.E1DCollection[setSlave];
+                var slave = ModelData.ObjectData.E1DCollection[setSlave]; 
+
                 ModelData.ObjectData.E1DCollection[setMaster].Append(slave);
+
+                slave.Clear();
+
                 ModelData.ObjectData.E1DCollection.Remove(setSlave);
             }
             else if (objType == ObjType.Элемент2D)
             {
                 var slave = ModelData.ObjectData.E2DCollection[setSlave];
                 ModelData.ObjectData.E2DCollection[setMaster].Append(slave);
+
+                // подумать, может можно как-то более технологично удалять
+                var numbers = slave.Keys.ToArray();
+                foreach (var number in numbers)
+                    slave.Remove(number);
+
                 ModelData.ObjectData.E2DCollection.Remove(setSlave);
             }
             else if (objType == ObjType.Элемент3D)
             {
                 var slave = ModelData.ObjectData.E3DCollection[setSlave];
                 ModelData.ObjectData.E3DCollection[setMaster].Append(slave);
+
+                // подумать, может можно как-то более технологично удалять
+                var numbers = slave.Keys.ToArray();
+                foreach (var number in numbers)
+                    slave.Remove(number);
+
                 ModelData.ObjectData.E3DCollection.Remove(setSlave);
             }
             else

@@ -15,6 +15,7 @@ namespace Project.Tasks.Functions.FrameFunctions
             Name = FuncName.SPH.ToString();
             FunctionType = FuncType.CPF;
             AddParameter(new Parameter("Width", ParameterType.Constant, 0));
+            AddParameter(new Parameter("Pulse", ParameterType.Constant, 1));
         }
         /// <summary>
         /// Width
@@ -76,6 +77,7 @@ namespace Project.Tasks.Functions.FrameFunctions
             }
             return 0;
         }
+/// <inheritdoc/>
 
         public override double CalcValue()
         {
@@ -90,11 +92,19 @@ namespace Project.Tasks.Functions.FrameFunctions
             if (IsPointInside(elementCenter, out rad, out halfBead))
             {
                 // мощность берется за единицу
+
                 var power = 1;
                 var vol = halfBead * halfBead * halfBead;
                 var powerDensity = power / vol;
 
-                return powerDensity * Math.Exp(-1 * (rad * rad / (halfBead * halfBead)));
+                return this["Pulse"].GetValue() * powerDensity * Math.Exp(-1 * (rad * rad / (halfBead * halfBead)));
+
+                // если есть зависимость от времени, то расчитать корректировку энергии
+                // this["ENERG"].GetValue();
+                //
+                // Пример: var pulse = this["PULSE"].GetValue(); // так запись в строке  ...PULSE=Table(Термоцикл,TIME)...
+                // return powerDensity * pulse;
+
             }
             return 0;
         }

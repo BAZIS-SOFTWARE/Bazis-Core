@@ -1,4 +1,5 @@
 ﻿using Geometry;
+using MathNet.Numerics.LinearAlgebra.Factorization;
 using Model;
 using Model.Interfaces;
 using Model.Interfaces.MeshObjects;
@@ -61,6 +62,7 @@ namespace OperationalController
                     ModelData.ObjectData.NodesSet[number].Position);
             }
 
+
             if (dim == 1)
             {
                 var max = 0;
@@ -69,6 +71,22 @@ namespace OperationalController
 
                 var e1d = new Beam(max, nodes);
                 ModelData.ObjectData.E1DCollection.Add(setName, e1d);
+            }
+            else if (dim == 2)
+            {
+                var max = 0;
+                if (ModelData.ObjectData.Count(ObjType.Элемент2D) != 0)
+                    max = ModelData.ObjectData.GetMaxNumber(ObjType.Элемент2D) + 1;
+
+                Element2D e2d;
+
+                if(nodeNumbers.Length == 4)
+                    e2d = new Quad(max, nodes);
+                else
+                    e2d = new Triangle_c(max, nodes);
+
+                ModelData.ObjectData.E2DCollection.Add(setName, e2d);
+
             }
 
         }
