@@ -110,7 +110,7 @@ namespace Model.ObjectsCollections
         public void Clear()
         {
             foreach (var item in objects)
-                item.Value.Clear();
+                item.Value.ClearWithExistState();
             objects.Clear();
         }
 /// <inheritdoc/>

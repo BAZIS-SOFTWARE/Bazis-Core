@@ -129,12 +129,19 @@ namespace Model.ObjectsCollections
 
         public void Clear()
         {
+            objectsSet.Clear();
+        }
+
+        /// <inheritdoc/>
+
+        public void ClearWithExistState()
+        {
             foreach (var item in objectsSet)
                 item.Value.ExistState = false;
 
             objectsSet.Clear();
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public bool Contains(KeyValuePair<int, T> item)
         {
@@ -160,7 +167,7 @@ namespace Model.ObjectsCollections
             {
                 yield return item;
             }
-        }
+        }       
 
 /// <inheritdoc/>
 
@@ -174,7 +181,7 @@ namespace Model.ObjectsCollections
         {
             return objectsSet.Remove(item.Key);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public bool TryGetValue(int key, out T value)
         {
@@ -281,6 +288,18 @@ namespace Model.ObjectsCollections
         public string GetObjectInfo(int number)
         {
             return objectsSet[number].ToString();
+        }
+
+        public void Renumber(ref int v)
+        {
+            var arr = objectsSet.ToArray();
+            foreach (var item in arr)
+            {
+                objectsSet.Remove(item.Key);
+                var temp = item.Value;
+                temp.SetNumber(v++);
+                objectsSet.Add(temp.Number,temp);
+            }
         }
     }
 }

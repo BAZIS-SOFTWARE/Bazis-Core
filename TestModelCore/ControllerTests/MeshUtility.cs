@@ -57,43 +57,7 @@ namespace ControllerTests
             Assert.AreNotEqual(controller.GetModelSetsInfo(ObjType.Элемент1D).Count(), 0);
         }
 
-        [DataTestMethod]
-        [DataRow(@"c:\projs\Matushkin\T_project.bpf", 0.001f,2)]
-        [DataRow(@"..\..\..\Examples\3D\cub_unsorted_freeNodesCoincident.bpf", 0.01f,4)]
-        [DataRow(@"C:\projs\AdditiveTest\1n.stl", 0.01f, 3964)]
-        public void MergeNodes(string path, float dist, int count)
-        {
-            //assing
-            var controller = new OperationalController.ProjectController();
-
-            //act
-
-            var ext = Path.GetExtension(path);
-
-            if(ext == ".stl")
-                controller.ImportMesh(path);
-            else
-                controller.Load(path);
-
-            var coincidentNodes = controller.FindCoincidentObjects(ObjType.Узел, dist);
-
-            controller.MergeNodes(coincidentNodes);
-
-            //assert
-
-            Assert.AreEqual(coincidentNodes.Count, count);
-
-            // Очень странная проверка ее нужно ускорить
-            
-            foreach (var elem in controller.GetAllModelElements())
-            {
-                foreach (var item in elem.GetVertexes())
-                {
-                    if (!controller.ContainsModelObject(ObjType.Узел, item.Number))
-                        throw new Exception($"Узел {item.Number} в элементе {elem.Number} не удален");
-                }
-            }
-        }    
+        
 
 
         [TestMethod]

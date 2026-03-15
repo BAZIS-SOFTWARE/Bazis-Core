@@ -27,10 +27,7 @@ namespace OperationalController
 
                 ModelData.ObjectData.E1DCollection[setMaster].Append(slave);
 
-                // подумать, может можно как-то более технологично удалять
-                var numbers = slave.Keys.ToArray();
-                foreach (var number in numbers)
-                    slave.Remove(number);
+                slave.Clear();
 
                 ModelData.ObjectData.E1DCollection.Remove(setSlave);
             }
