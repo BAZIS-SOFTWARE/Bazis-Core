@@ -1,23 +1,24 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using Project.Interfaces.Tasks;
-using Project.Interfaces.IO;
+﻿using MaterialDB.FunctionData;
+using MaterialDB.MaterialData;
+using Microsoft.Scripting.Utils;
+using Model.GroupsData;
 using Model.Interfaces;
-using System;
+using Project.Interfaces.IO;
+using Project.Interfaces.Tasks;
+using Project.Tasks.Functions;
+using Project.Tasks.Functions.FrameFunctions;
 using Project.Tasks.IO;
 using Project.Tasks.LocalFrames;
-using MaterialDB.FunctionData;
-using MaterialDB.MaterialData;
 using Project.Tasks.Materials;
-using Model.GroupsData;
-using static IronPython.Runtime.Profiler;
-using Project.Tasks.Functions;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Data;
-using Project.Tasks.Functions.FrameFunctions;
-using static System.Net.Mime.MediaTypeNames;
+using System.Linq;
 using System.Text.RegularExpressions;
-using Microsoft.Scripting.Utils;
+using static IronPython.Modules.PythonRegex;
+using static IronPython.Runtime.Profiler;
+using static System.Net.Mime.MediaTypeNames;
 
 
 
@@ -408,12 +409,13 @@ namespace Project.Tasks
                     // использовать шаблон string pattern = @"^T\(.*\)$"; // @ - буквальная строка
                     if (parInfo[1].Contains("Table"))
                     {
-                        string pattern = "[\\)]|Table[\\(]";
-                        var results = Regex.Replace(parInfo[1], pattern, "", RegexOptions.IgnoreCase).Split(';');
+                        var match = Regex.Match(parInfo[1], @"Table\((.*)\)");
+                        var results = match.Groups[1].Value.Split(';');
+
                         var table = Functions[results[0]];
                         var param = function[results[1]];
+
                         funcParam = new TableParameter(table, parInfo[0], param);
- 
                     }
                     else
                         funcParam = new Parameter(parInfo[0]);
