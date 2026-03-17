@@ -17,8 +17,9 @@ namespace TestProject
         }
 
         [DataTestMethod]
+        [DataRow(@"c:\projs\AdditiveTest\TestNewMeshGen\out_m4.bpf2", TaskType.Volume, TaskKind.термическая | TaskKind.механическая)]
         [DataRow(@"..\..\..\Examples\proj_traj.bpf", TaskType.Volume, TaskKind.термическая | TaskKind.механическая)]
-        //[DataRow(@"c:\projs\Roman\Proba\777.bpf2", TaskType.Volume, TaskKind.термическая | TaskKind.механическая)]
+        [DataRow(@"c:\projs\testProj\HeatingByWelding_Tjoint\proj_SRF.bpf2", TaskType.Volume, TaskKind.термическая | TaskKind.механическая)]
         [DataRow(@"c:\projs\mashining\proj.bpf2", TaskType.Volume, TaskKind.термическая)]
         public void LoadProjectFiletextFormat(string name,TaskType taskType,TaskKind taskKind)
         {
@@ -59,11 +60,11 @@ namespace TestProject
             saver.SaveEvent += (ar1, ar2) => { };
             //act
             var proj = loader.Load($@"{testDir}\proj_traj.bpf");
-            saver.Save(proj, $@"{testDir}\proj_traj.bpf");
+            saver.Save(proj, $@"{testDir}\proj_traj_save.bpf");
 
             //Assert
 
-            var proj_1 = loader.Load($@"{testDir}\proj_traj.bpf");
+            var proj_1 = loader.Load($@"{testDir}\proj_traj_save.bpf");
 
             Assert.AreEqual(proj.GeneralData.Name, proj_1.GeneralData.Name);
         }

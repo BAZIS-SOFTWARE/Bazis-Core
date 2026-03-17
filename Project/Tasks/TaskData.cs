@@ -1,26 +1,31 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using Project.Interfaces.Tasks;
-using Project.Interfaces.IO;
-using Model.Interfaces;
-using System;
-using Project.Tasks.IO;
-using Model.GroupsData;
-using Model;
-using Project.Tasks.FrameCreators;
-using Project.Tasks.Functions;
-using System.Runtime.InteropServices.ComTypes;
-using MaterialDB.FunctionData;
+﻿using MaterialDB.FunctionData;
 using MaterialDB.MaterialData;
+using Microsoft.Scripting.Utils;
+using Model.GroupsData;
+using Model.Interfaces;
+using Project.Interfaces.IO;
+using Project.Interfaces.Tasks;
+using Project.Tasks.Functions;
+using Project.Tasks.Functions.FrameFunctions;
+using Project.Tasks.IO;
+using Project.Tasks.LocalFrames;
 using Project.Tasks.Materials;
-using System.Runtime.InteropServices;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text.RegularExpressions;
+using static IronPython.Modules.PythonRegex;
+using static IronPython.Runtime.Profiler;
+using static System.Net.Mime.MediaTypeNames;
+
 
 
 namespace Project.Tasks
 {
 
-    public class TaskData :  ITaskData
+    public class TaskData : ITaskData
     {
         /// <inheritdoc/>
         public MaterialDBData Materials { get; set; }
@@ -32,7 +37,7 @@ namespace Project.Tasks
         /// </summary>
         /// <param name="materials"></param>
         /// <param name="functions"></param>
-        public TaskData(MaterialDBData materials,FunctionDBData functions) : this()
+        public TaskData(MaterialDBData materials, FunctionDBData functions) : this()
         {
             Materials = materials;
             Functions = functions;
@@ -73,7 +78,7 @@ namespace Project.Tasks
         {
             taskData = new List<ICondData>();
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public IEnumerable<T> Find<T>() where T : ICondData
         {
@@ -83,7 +88,7 @@ namespace Project.Tasks
                     yield return (T)data;
             }
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public IEnumerable<ICondData> Find(DataKind kind)
         {
@@ -93,7 +98,7 @@ namespace Project.Tasks
                     yield return data;
             }
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public IEnumerable<ICondData> Find(string grName)
         {
@@ -109,7 +114,7 @@ namespace Project.Tasks
         {
             taskData.Add(data);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void RemoveRange(IEnumerable<string> dataInfo)
         {
@@ -119,43 +124,43 @@ namespace Project.Tasks
                 taskData.RemoveAt(ind);
             }
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public int IndexOf(ICondData item)
         {
             return taskData.IndexOf(item);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void Insert(int index, ICondData item)
         {
             throw new System.NotImplementedException();
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void RemoveAt(int index)
         {
             taskData.RemoveAt(index);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void Clear()
         {
             taskData.Clear();
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public bool Contains(ICondData item)
         {
             return taskData.Find(x => x.Kind == item.Kind & x.ToString().Equals(item.ToString())) == null ? false : true;
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void CopyTo(ICondData[] array, int arrayIndex)
         {
             taskData.CopyTo(array, arrayIndex);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public bool Remove(ICondData item)
         {
@@ -179,26 +184,26 @@ namespace Project.Tasks
         {
             return GetEnumerator();
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void Load(ITaskData taskData)
         {
             this.taskData.Clear();
             this.taskData.AddRange(taskData);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void AddRange(IEnumerable<ICondData> datas)
         {
             taskData.AddRange(datas);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void Save(string projectFile)
         {
-            Saver.Save(this,projectFile);
+            Saver.Save(this, projectFile);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
         public void Load(string projectFile, IGroupData gropData)
         {
@@ -232,53 +237,48 @@ namespace Project.Tasks
             taskData.Clear();
             taskData.AddRange(existData);
         }
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
-        public ICondData Create(DataKind kind, string info,IGroupData groupData)
+        public ICondData Create(DataKind kind, string info, IGroupData groupData)
         {
             if (groupData == null)
                 throw new ArgumentNullException(nameof(groupData));
 
             CondData physicalData;
 
-            var infoAr = info.Split(' ');  
+            var infoAr = info.Split(' ');
+
+            var group = groupData.Find(infoAr[4]);
+
+            if (!float.TryParse(infoAr[5], out float start))
+                throw new Exception($"{info} - Время старта задано неверно!");
+
+            if (!float.TryParse(infoAr[6], out float stop))
+                throw new Exception($"{info} - Время окончания задано неверно!");
 
             if (kind == DataKind.Материал)
             {
                 if (infoAr.Length < 4)
                     throw new Exception($"{info} - Строка данных имеет неверный формат!");
 
-                var group = groupData.Find(infoAr[0]);
-
-                var isBeamOrPlate = infoAr[1] == "стержни" || infoAr[1] == "пластины"; //что бы не дублировать проверки ниже
-                var matIndex = isBeamOrPlate ? 3 : 1;
-                var startIndex = isBeamOrPlate ? 4 : 2;
-                var stopIndex = isBeamOrPlate ? 5 : 3;
-
-                if (!Materials.ContainsKey(infoAr[matIndex]))
+                if (!Materials.ContainsKey(infoAr[7]))
                     throw new Exception($"Материал {info} не содержится в базе данных!");
-
-                if (!float.TryParse(infoAr[startIndex], out float start))
-                    throw new Exception($"{info} - Время старта задано неверно!");
-
-                if (!float.TryParse(infoAr[stopIndex], out float stop))
-                    throw new Exception($"{info} - Время окончания задано неверно!");
-
-                if (infoAr[1] == "стержни")
+                var mat = Materials[infoAr[7]];
+                if (info.Contains("стержни"))
                 {
-                    var beamMatData = new BeamMatData(Materials[infoAr[matIndex]], group, start, stop);
+                    var beamMatData = new BeamMatData(mat, group, start, stop);
 
-                    if (!float.TryParse(infoAr[2], out float diameter))
+                    if (!float.TryParse(infoAr[9], out float diameter))
                         throw new Exception($"{info} - Диаметр задан неверно!");
                     beamMatData.Diameter = diameter;
-                    
+
                     physicalData = beamMatData;
                 }
-                else if(infoAr[1] == "пластины")
+                else if (info.Contains("пластины"))
                 {
-                    var plateMatData = new PlateMatData(Materials[infoAr[matIndex]], group, start, stop);
+                    var plateMatData = new PlateMatData(mat, group, start, stop);
 
-                    if (!float.TryParse(infoAr[2], out float thickness))
+                    if (!float.TryParse(infoAr[9], out float thickness))
                         throw new Exception($"{info} - Tолщина задан неверно!");
                     plateMatData.Thickness = thickness;
 
@@ -286,7 +286,7 @@ namespace Project.Tasks
                 }
                 else
                 {
-                    var matData = new MatData(Materials[infoAr[matIndex]], group, start, stop);
+                    var matData = new MatData(mat, group, start, stop);
                     physicalData = matData;
                 }
             }
@@ -296,32 +296,7 @@ namespace Project.Tasks
                 if (infoAr.Length < 6)
                     throw new Exception($"{info} - Строка данных имеет неверный формат.");
 
-                float start;
-                if (!float.TryParse(infoAr[3], out start))
-                    throw new Exception($"{info} - Время старта задано неверно!");
-
-                float stop;
-                if (!float.TryParse(infoAr[4], out stop))
-                    throw new Exception($"{info} - Время окончания задано неверно!");
-
-                var mediaData = new MediaData(groupData.Find(infoAr[0]), start, stop);
-
-                if(float.TryParse(infoAr[1], out float heatExch))
-                    mediaData.HeatExchangeValue = heatExch;
-                else if (infoAr[1] != "*")
-                    if (!Functions.ContainsKey(infoAr[1]))
-                        throw new Exception($"функция {infoAr[1]} не содержится в базе данных!");
-                    else
-                        mediaData.HeatExchangeFunc = Functions[infoAr[1]];
-
-                if (float.TryParse(infoAr[2], out float temp))
-                    mediaData.TemperatureValue = temp;
-                else if (infoAr[2] != "*")
-                    if (!Functions.ContainsKey(infoAr[2]))
-                        throw new Exception($"функция {infoAr[2]} не содержится в базе данных!");
-                    else
-                        mediaData.TemperatureFunc = Functions[infoAr[2]];
-
+                var mediaData = new MediaData(group, start, stop);
                 physicalData = mediaData;
             }
 
@@ -330,27 +305,9 @@ namespace Project.Tasks
                 if (infoAr.Length < 8)
                     throw new Exception($"{info} - Строка данных имеет неверный формат!");
 
-                float start;
-                if (!float.TryParse(infoAr[5], out start))
-                    throw new Exception($"{info} - Время старта задано неверно!");
+                var loadData = new LoadData(group, start, stop);
 
-                float stop;
-                if (!float.TryParse(infoAr[6], out stop))
-                    throw new Exception($"{info} - Время окончания задано неверно!");
-
-                var loadData = new LoadData(groupData.Find(infoAr[0]), start, stop);
-
-                loadData.TrySetKind(infoAr[1]);
-                loadData.TrySetDirection(infoAr[2]);
-                loadData.TrySetValue(infoAr[3]);
-
-
-                if (infoAr[4] != "*")
-                    if(!Functions.ContainsKey(infoAr[4]))
-                        throw new Exception($"функция {infoAr[4]} не содержится в базе данных!");
-                    else
-                        loadData.TimeFunction = Functions[infoAr[4]];
-                
+                loadData.TrySetKind(infoAr[7]);
                 physicalData = loadData;
             }
 
@@ -359,26 +316,7 @@ namespace Project.Tasks
                 if (infoAr.Length < 5)
                     throw new Exception($"{info} - Строка данных имеет неверный формат!");
 
-                float start;
-                if (!float.TryParse(infoAr[4], out start))
-                    throw new Exception($"{info} - Время старта задано неверно!");
-
-                float stop;
-                if (!float.TryParse(infoAr[5], out stop))
-                    throw new Exception($"{info} - Время окончания задано неверно!");
-
-                //dataInfo = dataInfo.Replace("*", "0");
-                var heatData =  new HeatData(groupData.Find(infoAr[3]), start, stop);
-
-                heatData.TrySetFrameFunction(infoAr[2]);
-                heatData.TrySetValue(infoAr[0]);
-                
-                if (infoAr[1] != "*")
-                    if (!Functions.ContainsKey(infoAr[1]))
-                        throw new Exception($"функция {infoAr[1]} не содержится в базе данных!");
-                    else
-                        heatData.TimeFunction = Functions[infoAr[1]];
-
+                var heatData = new HeatData(group, start, stop);
                 physicalData = heatData;
             }
 
@@ -387,81 +325,154 @@ namespace Project.Tasks
                 if (infoAr.Length < 6)
                     throw new Exception($"{info} - Строка данных имеет неверный формат!");
 
-                float start;
-                if (!float.TryParse(infoAr[5], out start))
-                    throw new Exception($"{info} - Время старта задано неверно!");
+                var clampData = new ClampData(group, start, stop);
 
-                float stop;
-                if (!float.TryParse(infoAr[6], out stop))
-                    throw new Exception($"{info} - Время окончания задано неверно!");
-
-                var clampData = new ClampData(groupData.Find(infoAr[0]), start, stop);
-
-                clampData.TrySetKind(infoAr[1]);
-                clampData.TrySetDirection(infoAr[2]);
-                clampData.TrySetValue(infoAr[3]);
-                
-                if (infoAr[4] != "*")
-                    if (!Functions.ContainsKey(infoAr[4]))
-                        throw new Exception($"функция {infoAr[4]} не содержится в базе данных!");
-                    else
-                        clampData.TimeFunction = Functions[infoAr[4]];
+                clampData.TrySetKind(infoAr[7]);
 
                 physicalData = clampData;
             }
 
-            if(physicalData.FrameFunction != null)
-            {
-                physicalData.FrameFunction.LocalFrame = GetLocalFrame(infoAr[2], groupData);
+            // задаем значение
+            if (float.TryParse(infoAr[0], out float value))
+                physicalData.Value = value;
 
-                // вводим синхронизацию времени окончания и скорости движения
-                if (physicalData.FrameFunction.LocalFrame is MovedFrame mf)
-                    physicalData.StopTime = physicalData.StartTime + (float)Math.Round(mf.CalcMotionTime(), 4);
+            // задаем направление
+            physicalData.TrySetDirection(infoAr[3]);
+
+            // задаем функцию
+            if (infoAr[1] != "*")
+                physicalData.Function = TryCreateFunction(infoAr[1]);
+
+            if (infoAr[2].Contains("MRF"))
+            {
+                physicalData.LocalFrame = GetMRF(infoAr[2], groupData);
+                // это не обязательное условие
+                //physicalData.Function.AddParameter(new Parameter("TIME"));
             }
 
+            if (infoAr[2].Contains("SRF"))
+                physicalData.LocalFrame = GetSRF(infoAr[2], groupData);
 
             return physicalData;
         }
 
-        private LocalFrame GetLocalFrame(string data, IGroupData groupData)
+        private Function TryCreateFunction(string v)
         {
-            if (data.Contains("MRF"))
+            Function function;
+
+            string[] parsInfo = v.Split(',');
+
+            if (v.Contains(FuncName.SPH.ToString()))
+                function = new SPH();
+            else if (v.Contains(FuncName.CIL.ToString()))
+                function = new CIL();
+            else if (v.Contains(FuncName.DHEX.ToString()))
+                function = new DHEX();
+            else if (v.Contains(FuncName.FHEX.ToString()))
+                function = new FHEX();
+            else if (v.Contains(FuncName.TT.ToString()))
+                function = new TT();
+            else if (v.Contains(FuncName.PT.ToString()))
+                function = new PT();
+            else if (v.Contains(".py"))
             {
-                //var mrfStr = dataAr.First(x => x.Contains("MRF"));
-                var stopInd = data.IndexOf("MRF") + 4;
-                var mrfStr = data.Remove(0, stopInd);
+                var cf = new CustomFrameFunction();
+                cf.CreateEngine(parsInfo[0]);
+                function = cf;
+            }
 
-                var mrfAr = mrfStr.Split(';');
-                if (mrfAr.Length == 3)
+            else
+                throw new Exception($"Неизвестная функция {v}");
+
+            TrySetParams(parsInfo,function);
+
+            return function;
+            
+        }
+
+        private void TrySetParams(string[] funInfo, Function function)
+        {
+            foreach (var item in funInfo.Skip(1))
+            {
+                var parInfo = item.Split("=");
+                if(parInfo.Length != 2)
+                    throw new Exception($"Параметр {item} в функции {funInfo[0]} задан неверно");
+
+                Parameter funcParam;
+
+                double digit;
+                if (Double.TryParse(parInfo[1], out digit))
+                    funcParam = new Parameter(parInfo[0], ParameterType.Constant, digit);
+
+                else
                 {
-                    var baseLineGrName = mrfAr[0].Split('|')[0];
-                    var refLineGrName = mrfAr[0].Split('|')[1];
+                    // использовать шаблон string pattern = @"^T\(.*\)$"; // @ - буквальная строка
+                    if (parInfo[1].Contains("Table"))
+                    {
+                        var match = Regex.Match(parInfo[1], @"Table\((.*)\)");
+                        var results = match.Groups[1].Value.Split(';');
 
-                    var baseLine = groupData.Find(baseLineGrName);
-                    var refLine = groupData.Find(refLineGrName);
-                    var vel = float.Parse(mrfAr[1]);
+                        var table = Functions[results[0]];
+                        var param = function[results[1]];
 
-                    var mrf = new MovedFrame(baseLine, refLine, vel);
-                    mrf.SetShiftingAndRotation(mrfAr[2]);
-
-                    return mrf;
+                        funcParam = new TableParameter(table, parInfo[0], param);
+                    }
+                    else
+                        funcParam = new Parameter(parInfo[0]);
                 }
-                else throw new Exception("Неправильный ввод данных");
+
+                if (function.ContainsParameter(funcParam.Name) &&
+                    function[funcParam.Name].ParameterType == funcParam.ParameterType)
+                        function[funcParam.Name] = funcParam;
+                else
+                    // попробуем строго ограничить прием параметров
+                    throw new Exception($"Параметр {funcParam.Name} задан неверно или не существует");
+                    //function.AddParameter(funcParam);
+            }
+        }
+
+        private MovedFrame GetMRF(string data, IGroupData groupData)
+        {
+            string pattern = "[\\(\\)]|MRF";
+            var mrfAr = Regex.Replace(data, pattern, "", RegexOptions.IgnoreCase).Split(',');
+            
+            //var mrfAr = Regex.Replace(data, @"^MRF\(.*\)$", "").Split(";");
+
+            if (mrfAr.Length == 3)
+            {
+                var baseLineGrName = mrfAr[0].Split('|')[0];
+                var refLineGrName = mrfAr[0].Split('|')[1];
+
+                var baseLine = groupData.Find(baseLineGrName);
+                var refLine = groupData.Find(refLineGrName);
+                var vel = float.Parse(mrfAr[1]);
+
+                var lf = new MovedFrame(baseLine, refLine, vel);
+                lf.SetShiftingAndRotation(mrfAr[2]);
+
+                return lf;
             }
             else
             {
-                //var srfStr = dataAr.First(x => x.Contains("SRF"));
-                var stopInd = data.IndexOf("SRF") + 4;
-                var srfStr = data.Remove(0, stopInd);
-
-                var srfAr = srfStr.Split(';');
-
-                var frameGr = groupData.FirstOrDefault(x => x.Name == srfAr[0]);
-                var srf = frameGr != null ? new StaticFrame(frameGr) : new StaticFrame();
-                srf.SetShiftingAndRotation(srfAr[1]);
-
-                return srf;
+                throw new Exception("Неправильный ввод данных");
             }
+        }
+
+        private StaticFrame GetSRF(string data, IGroupData groupData)
+        {
+            string pattern = "[\\(\\)]|SRF";
+            var srfAr = Regex.Replace(data, pattern, "", RegexOptions.IgnoreCase).Split(',');
+
+            var frameGr = groupData.Find(srfAr[0]);
+
+            StaticFrame lf;
+            if(frameGr != null)
+                lf = new StaticFrame(frameGr);
+            else
+                lf = new StaticFrame();
+
+            lf.SetShiftingAndRotation(srfAr[1]);
+            return lf;
         }
 
         /// <inheritdoc/>

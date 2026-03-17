@@ -91,23 +91,5 @@ namespace TestProject
             Assert.AreEqual(res, control.GetModelGroup(grName) != null);
             Assert.AreEqual(res, control.ContainsConditions(grName));
         }
-
-        [TestMethod]
-        [DataRow(@"..\..\..\Examples\proj_traj.bpf", DisplayName = "proj_traj")]
-        //[DataRow(@"..\..\..\Examples\proj_traj_baseLine_not_sorted.bpf", DisplayName = "proj_traj_baseLine_not_sorted")]
-
-        //[DataRow(@"c:\projs\testProj\TubeToTubeTJoint\proj_v1.bpf")]
-        //[DataRow(@"c:\projs\kamaz\4.bpf")]
-        public void CreateTaskData(string relativeProjPath)
-        {
-            //assign
-
-            var loader = new LoadProjectFromTextFormat();
-
-            //act
-            var project = loader.Load(relativeProjPath);
-
-            //assert ???
-        }
     }
 }

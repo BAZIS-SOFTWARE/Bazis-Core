@@ -1,22 +1,17 @@
 ﻿using Geometry;
-using Project.Tasks.FrameCreators;
+using Project.Tasks.LocalFrames;
 using System.Globalization;
+using static IronPython.Modules._ast;
 
-namespace Project.Tasks.Functions.Welding
+namespace Project.Tasks.Functions.FrameFunctions
 {
     public class SphereBuilder
     {
-        SphereFunction sph;
+        SPH sph;
 
         public SphereBuilder()
         {
-            sph = new SphereFunction();
-        }
-
-        public SphereBuilder SetFrame(Frame frame)
-        {
-            sph.LocalFrame = new StaticFrame(frame);
-            return this;
+            sph = new SPH();
         }
 
         public SphereBuilder SetWidth(string width)
@@ -25,7 +20,7 @@ namespace Project.Tasks.Functions.Welding
             return this;
         }
 
-        public static implicit operator SphereFunction(SphereBuilder builder)
+        public static implicit operator SPH(SphereBuilder builder)
         {
             return builder.sph;
         }

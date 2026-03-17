@@ -21,6 +21,9 @@ namespace Model.Interfaces.ObjectsCollections
         /// </summary>
         /// <param name="appSet"></param>
         void Append(IObjectsSet<T> appSet);
-
+        /// <summary>
+        /// ClearWithExistState
+        /// </summary>
+        void ClearWithExistState();
     }
 }

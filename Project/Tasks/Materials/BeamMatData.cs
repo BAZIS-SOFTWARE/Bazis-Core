@@ -17,16 +17,11 @@ namespace Project.Tasks.Materials
         {
 
         }
+/// <inheritdoc/>
 
-        protected override string GetInfo
+        public override string ToString()
         {
-            get
-            {
-                var mfInfo = "*";
-                if (FrameFunction?.LocalFrame != null)
-                    mfInfo = FrameFunction.LocalFrame.ToString();
-                return $"{Group.Name} стержни {Diameter} {Material.Name} {StartTime} {StopTime} {mfInfo}";
-            }
+            return base.ToString() + $" стержни {Diameter}";
         }
     }
 }

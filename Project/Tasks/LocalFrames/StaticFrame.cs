@@ -2,7 +2,7 @@
 using Model.Interfaces;
 using System.Linq;
 
-namespace Project.Tasks.FrameCreators
+namespace Project.Tasks.LocalFrames
 {
     public class StaticFrame : LocalFrame
     {
@@ -12,9 +12,9 @@ namespace Project.Tasks.FrameCreators
             get { return baseGr; }
             set
             {
-                if (value.ObjType != ObjType.Узел)
+                if (value?.ObjType != ObjType.Узел)
                     throw new System.Exception("Группа должна состоять из узлов");
-                else if (value.Count() != 3)
+                else if (value?.Count() != 3)
                     throw new System.Exception("Должно быть три узла");
 
                 baseGr = value;
@@ -22,17 +22,14 @@ namespace Project.Tasks.FrameCreators
         }
 
         internal StaticFrame(Point3D a, Point3D b, Point3D c)
+            : this()
         {
             frame = new Frame(a,b,c);
         }
 
-        internal StaticFrame(Frame _frame)
-        {
-            frame = _frame;
-        }
-
         public StaticFrame()
         {
+            FrameType = FrameType.StaticFrame;
             Name = "SRF";
             frame = new Frame();
         }
@@ -60,11 +57,10 @@ namespace Project.Tasks.FrameCreators
         /// <inheritdoc/>
         public override string ToString()
         {
-
             if(BaseGroup == null)
-                return $"{Name};*;{Shifting}|{Rotation_X}|{Rotation_Y}|{Rotation_Z}";
+                return $"{Name}(*,{Shifting}|{Rotation_X}|{Rotation_Y}|{Rotation_Z})";
             else
-                return $"{Name};{BaseGroup.Name};{Shifting}|{Rotation_X}|{Rotation_Y}|{Rotation_Z}";
+                return $"{Name}({BaseGroup.Name},{Shifting}|{Rotation_X}|{Rotation_Y}|{Rotation_Z})";
         }
 /// <inheritdoc/>
 

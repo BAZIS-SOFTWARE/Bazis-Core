@@ -254,7 +254,9 @@ namespace OperationalController
                 loader = new LoadFromSTLFile();
             else if (ext == ".cdb")
                 loader = new LoadModelFromCDBTextFile();
-
+            // попробуем сливать еще и сетки в формате bpf2
+            else if (ext == ".bpf2")
+                loader = new LoadModelFromBPF2TextFile();
             else
                 throw new Exception("неправильно задано расширение файла");
 

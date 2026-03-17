@@ -1,21 +1,19 @@
 ﻿using Geometry;
-using Project.Tasks.FrameCreators;
+using Project.Tasks.LocalFrames;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
-namespace Project.Tasks.Functions.Welding
+namespace Project.Tasks.Functions.FrameFunctions
 {
     public class EllipsBuilder
     {
-        DoubleEllips elp;
+        DEL elp;
 
         public EllipsBuilder()
         {
-            elp = new DoubleEllips();
-            elp.Name = FunctionType.DEL;
-            elp.LocalFrame = new StaticFrame();
+            elp = new DEL();
         }
 
         public EllipsBuilder SetWidth(float width)
@@ -42,13 +40,7 @@ namespace Project.Tasks.Functions.Welding
             return this;
         }
 
-        public EllipsBuilder SetFrame(Frame frame)
-        {
-            elp.LocalFrame = new StaticFrame(frame);
-            return this;
-        }      
-
-        public static implicit operator DoubleEllips(EllipsBuilder builder)
+        public static implicit operator DEL(EllipsBuilder builder)
         {
             return builder.elp;
         }

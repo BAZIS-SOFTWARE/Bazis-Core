@@ -110,7 +110,7 @@ namespace Model.ObjectsCollections
         public void Clear()
         {
             foreach (var item in objects)
-                item.Value.Clear();
+                item.Value.ClearWithExistState();
             objects.Clear();
         }
 /// <inheritdoc/>
@@ -171,7 +171,7 @@ public bool ContainsName(string collName)
         /// <returns></returns>
         public int GetMaxNumber()
         {
-            return objects.Max(x => x.Value.Max(y => y.Key));
+            return objects.Max(x => x.Value.DefaultIfEmpty().Max(y => y.Key));
         }
         /// <summary>
         /// GetMinNumber
@@ -179,7 +179,7 @@ public bool ContainsName(string collName)
         /// <returns></returns>
         public int GetMinNumber()
         {
-            return objects.Min(x => x.Value.Min(y => y.Key));
+            return objects.Min(x => x.Value.DefaultIfEmpty().Min(y => y.Key));
         }
 /// <inheritdoc/>
 

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
     <Title>OperationalController</Title>
-    <Version>4.2.4</Version>
+    <Version>4.4.0</Version>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>ControllerKey.snk</AssemblyOriginatorKeyFile>
@@ -28,6 +28,11 @@
     <Compile Remove="MeshObjsCreator\Delone2D\**" />
     <EmbeddedResource Remove="MeshObjsCreator\Delone2D\**" />
     <None Remove="MeshObjsCreator\Delone2D\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="SceneBrightnessController\ApplyDim.cs" />
+    <Compile Remove="SceneBrightnessController\ApplyExample.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -7,7 +7,7 @@ using System.Linq;
 using Model.Interfaces.ObjectsComparers;
 using System.Collections.Generic;
 
-namespace Project.Tasks.FrameCreators
+namespace Project.Tasks.LocalFrames
 {
     public class MovedFrame : LocalFrame
     {
@@ -34,6 +34,7 @@ namespace Project.Tasks.FrameCreators
 
         public MovedFrame()
         {
+            FrameType = FrameType.MovedFrame;
             Name = "MRF";
             frame = new Frame();
         }
@@ -48,7 +49,7 @@ namespace Project.Tasks.FrameCreators
             if (refLine != null)
                 rls = refLine.Name;
             return
-                $"{Name};{bls}|{rls};{Velocity};{Shifting}|{Rotation_X}|{Rotation_Y}|{Rotation_Z}";
+                $"{Name}({bls}|{rls},{Velocity},{Shifting}|{Rotation_X}|{Rotation_Y}|{Rotation_Z})";
         }
         /// <inheritdoc/>
         public IModelObject StartPoint

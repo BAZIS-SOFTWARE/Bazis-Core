@@ -4,7 +4,7 @@
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
 	  <SignAssembly>True</SignAssembly>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>5.5.6</Version>
+    <Version>5.7.4</Version>
     <Title>Project</Title>
     <Authors>Bilenko Georgy</Authors>
     <Company>BAZIS SOFTWARE</Company>
@@ -50,23 +50,28 @@
     <Compile Include="Interfaces\IO\ITaskDataLoader.cs" />
     <Compile Include="Interfaces\IO\ITaskDataSaver.cs" />
     <Compile Include="Interfaces\IProjectData.cs" />
-    <Compile Include="Interfaces\Tasks\FunctionParameter.cs" />
+    <Compile Include="Tasks\Functions\PT.cs" />
+    <Compile Include="Tasks\Functions\TT.cs" />
+    <Compile Include="Tasks\Functions\FHEX.cs" />
+    <Compile Include="Tasks\Functions\FrameFunction.cs" />
+    <Compile Include="Tasks\Functions\DHEX.cs" />
+    <Compile Include="Tasks\Functions\Parameter.cs" />
     <Compile Include="Interfaces\Tasks\ICillindricalFunction.cs" />
     <Compile Include="Interfaces\Tasks\IData.cs" />
     <Compile Include="Interfaces\Tasks\IFrameFunction.cs" />
     <Compile Include="Interfaces\Tasks\IGroupDependent.cs" />
     <Compile Include="Interfaces\Tasks\ISphereFunction.cs" />
-    <Compile Include="Interfaces\Tasks\ITableFunction.cs" />
     <Compile Include="Interfaces\Tasks\ITaskData.cs" />
     <Compile Include="Interfaces\Tasks\ITimeDependentData.cs" />
     <Compile Include="Interfaces\Tasks\ITrajectory.cs" />
     <Compile Include="Interfaces\Tasks\ICondData.cs" />
-    <Compile Include="Tasks\Functions\CustomFunction.cs" />
+    <Compile Include="Tasks\Functions\FrameFunctions\CustomFrameFunction.cs" />
+    <Compile Include="Tasks\Functions\Function.cs" />
+    <Compile Include="Tasks\Functions\TableParameter.cs" />
     <Compile Include="Tasks\Materials\BeamMatData.cs" />
-    <Compile Include="Tasks\Functions\Welding\EllipsBuilder.cs" />
-    <Compile Include="Tasks\Functions\Welding\DoubleEllips.cs" />
-    <Compile Include="Tasks\Functions\FrameFunction.cs" />
-    <Compile Include="Tasks\Functions\FrameFunctionBuilder.cs" />
+    <Compile Include="Tasks\Functions\FrameFunctions\EllipsBuilder.cs" />
+    <Compile Include="Tasks\Functions\FrameFunctions\DEL.cs" />
+    <Compile Include="Tasks\Functions\FrameFunctions\FrameFunctionBuilder.cs" />
     <Compile Include="Tasks\LocalFrames\LocalFrame.cs" />
     <Compile Include="Tasks\LocalFrames\StaticFrame.cs" />
     <Compile Include="IO\LoadEventArgs.cs" />
@@ -87,13 +92,12 @@
     <Compile Include="TaskParameters\TermalParameters.cs" />
     <Compile Include="TaskParameters\TimeSettings.cs" />
     <Compile Include="Tasks\ClampData.cs" />
-    <Compile Include="Tasks\Functions\Welding\SphereBuilder.cs" />
-    <Compile Include="Tasks\Functions\Welding\CillindricalFunction.cs" />
-    <Compile Include="Tasks\Functions\Welding\CillindricalBuilder.cs" />
+    <Compile Include="Tasks\Functions\FrameFunctions\SphereBuilder.cs" />
+    <Compile Include="Tasks\Functions\FrameFunctions\CIL.cs" />
+    <Compile Include="Tasks\Functions\FrameFunctions\CillindricalBuilder.cs" />
     <Compile Include="Tasks\LocalFrames\MovedFrame.cs" />
     <Compile Include="Tasks\LocalFrames\MovedFrameBuilder.cs" />
-    <Compile Include="Tasks\Functions\Welding\SphereFunction.cs" />
-    <Compile Include="Tasks\Functions\Trajectory.cs" />
+    <Compile Include="Tasks\Functions\FrameFunctions\SPH.cs" />
     <Compile Include="Tasks\HeatData.cs" />
     <Compile Include="Tasks\IO\LoadEventArgs.cs" />
     <Compile Include="Tasks\IO\LoadTaskDataTextFormat.cs" />

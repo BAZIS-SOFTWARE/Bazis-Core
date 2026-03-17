@@ -1,31 +1,50 @@
 ﻿using Geometry;
+using IronPython.Runtime.Types;
 using Model.Interfaces;
 using Project.Interfaces.Tasks;
+using Project.Tasks.LocalFrames;
+using Project.Tasks.Functions;
 using System;
 using System.Collections.Generic;
 
-namespace Project.Tasks.Functions.Welding
+namespace Project.Tasks.Functions.FrameFunctions
 {
-    public class CillindricalFunction : FrameFunction
+    public class CIL : FrameFunction
     {
         /// <inheritdoc/>
-        public float BottomDiam { get; set; }
-        /// <inheritdoc/>
-        public float UpperDiam { get; set; }
-        /// <inheritdoc/>
-        public float Length { get; set; }
-
-        public CillindricalFunction()
+        public double BottomDiam
         {
-            Name = FunctionType.CIL;
+            get { return this["BottomDiam"].GetValue(); }
+            set { this["BottomDiam"].SetValue(value); }
+        }
+        /// <inheritdoc/>
+        public double UpperDiam
+        {
+            get { return this["UpperDiam"].GetValue(); }
+            set { this["UpperDiam"].SetValue(value); }
+        }
+        /// <inheritdoc/>
+        public double Length
+        {
+            get { return this["Length"].GetValue(); }
+            set { this["Length"].SetValue(value); }
         }
 
-        /// <inheritdoc/>
-
-        public override string ToString()
+        public CIL()
         {
-            return $"{Name};{Length};{UpperDiam};{BottomDiam};{LocalFrame}";
+            Name = FuncName.CIL.ToString();
+            FunctionType = FuncType.CPF;
+            AddParameter(new Parameter("Length", ParameterType.Constant, 0));
+            AddParameter(new Parameter("UpperDiam", ParameterType.Constant, 0));
+            AddParameter(new Parameter("BottomDiam", ParameterType.Constant, 0));
         }
+/// <inheritdoc/>
+
+        //public override string ToString()
+        //{
+        //    return $"{base.ToString()};{Length};{UpperDiam};{BottomDiam}";
+        //}
+
 
         /// <summary>
         /// IsPointInside
@@ -36,13 +55,16 @@ namespace Project.Tasks.Functions.Welding
         /// <param name="r1"></param>
         /// <param name="r2"></param>
         /// <returns></returns>
-        public bool IsPointInside(Point3D elementCenter, out float r, out float r0, out float r1, out float r2)
+        public bool IsPointInside(Point3D elementCenter, out double r, out double r0, out double r1, out double r2)
         {
             r = 0f;
             r0 = 0f;
             r1 = 0f;
             r2 = 0f;
-            var frame = LocalFrame.Frame;
+
+            //var frame = LocalFrame.Frame;
+            // вместо этого используем начальный базис
+            var frame = new Frame();
 
             // получаем плоскость верхней повер-ти фигуры
             var hsPlane = new Plane(frame.Centre, frame.Dir_Z);
@@ -90,10 +112,11 @@ namespace Project.Tasks.Functions.Welding
         {
             return velocity <= BottomDiam / 2 && velocity <= UpperDiam / 2;
         }
+/// <inheritdoc/>
 
-        public override float CalcValue(Point3D elementCenter)
+        public override double CalcValue(Point3D elementCenter)
         {
-            float r, r0, r1, r2;
+            double r, r0, r1, r2;
 
             if (IsPointInside(elementCenter, out r, out r0, out r1, out r2))
             {
@@ -101,7 +124,30 @@ namespace Project.Tasks.Functions.Welding
                 var vol = 1.0f / 3 * 3.14f * Length * (r1 * r1 + r1 * r2 + r2 * r2); // объем усеченного конуса
                 var powerDensity = power / vol;
 
-                var relPowerDensity = powerDensity * (float)Math.Exp(-1 * (r * r / (r0 * r0)));
+                var relPowerDensity = powerDensity * Math.Exp(-1 * (r * r / (r0 * r0)));
+                return relPowerDensity;
+            }
+            return 0;
+        }
+/// <inheritdoc/>
+
+        public override double CalcValue()
+        {
+            double r, r0, r1, r2;
+
+            var x = (float)this["X"].GetValue();
+            var y = (float)this["Y"].GetValue();
+            var z = (float)this["Z"].GetValue();
+
+            var elementCenter = new Point3D(x,y,z);
+
+            if (IsPointInside(elementCenter, out r, out r0, out r1, out r2))
+            {
+                var power = 1;
+                var vol = 1.0f / 3 * 3.14f * Length * (r1 * r1 + r1 * r2 + r2 * r2); // объем усеченного конуса
+                var powerDensity = power / vol;
+
+                var relPowerDensity = powerDensity * Math.Exp(-1 * (r * r / (r0 * r0)));
                 return relPowerDensity;
             }
             return 0;

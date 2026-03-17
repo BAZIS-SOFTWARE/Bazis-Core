@@ -7,19 +7,19 @@ using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 using Geometry;
-using Project.Tasks.FrameCreators;
+using Project.Tasks.LocalFrames;
 
-namespace Project.Tasks.Functions.Welding
+namespace Project.Tasks.Functions.FrameFunctions
 {
     public class CillindricalBuilder
     {
-        CillindricalFunction cil;
+        CIL cil;
 
         public CillindricalBuilder()
         {
-            cil = new CillindricalFunction();         
+            cil = new CIL();
         }
-   
+
         public CillindricalBuilder SetBottomDiam(string diam)
         {
             cil.BottomDiam = float.Parse(diam, NumberStyles.Float, CultureInfo.InvariantCulture);
@@ -38,13 +38,7 @@ namespace Project.Tasks.Functions.Welding
             return this;
         }
 
-        public CillindricalBuilder SetFrame(Frame frame)
-        {
-            cil.LocalFrame = new StaticFrame(frame);
-            return this;
-        }
-
-        public static implicit operator CillindricalFunction(CillindricalBuilder builder)
+        public static implicit operator CIL(CillindricalBuilder builder)
         {
             return builder.cil;
         }

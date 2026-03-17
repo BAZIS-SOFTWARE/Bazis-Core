@@ -1,52 +1,58 @@
 ﻿using Geometry;
 using Model.Interfaces;
 using Project.Interfaces.Tasks;
-using Project.Tasks.FrameCreators;
-using System;
+using Project.Tasks.LocalFrames;
+using Project.Tasks.Functions;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Project.Tasks.Functions
 {
-    public abstract class FrameFunction : IFrameFunction
+    public abstract class FrameFunction : Function, IFrameFunction
     {
-        protected List<FunctionParameter> parameters = new List<FunctionParameter>();
-        /// <inheritdoc/>
-        public LocalFrame LocalFrame { get; set; } = new StaticFrame();
-        /// <inheritdoc/>
-        public FunctionType Name { get; internal set; }
-/// <inheritdoc/>
-
-        public abstract float CalcValue(Point3D elementCenter);
-
-        /// <inheritdoc/>
-        public void CreateParameter(string name, float value)
+        /// <summary>
+        /// FrameFunction
+        /// </summary>
+        public FrameFunction()
         {
-            var fParam = new FunctionParameter() { Name = name, Value = value };
-            parameters.Add(fParam);
+            AddParameter(new Parameter("X"));
+            AddParameter(new Parameter("Y"));
+            AddParameter(new Parameter("Z"));
         }
+        /// <summary>
+        /// X
+        /// </summary>
+        public double X
+        {
+            get { return this["X"].GetValue(); }
+            set { this["X"].SetValue(value); }
+        }
+        /// <summary>
+        /// Y
+        /// </summary>
+        public double Y
+        {
+            get { return this["Y"].GetValue(); }
+            set { this["Y"].SetValue(value); }
+        }
+        /// <summary>
+        /// Z
+        /// </summary>
+        public double Z
+        {
+            get { return this["Z"].GetValue(); }
+            set { this["Z"].SetValue(value); }
+        }
+
+
         /// <inheritdoc/>
 
-        public void CreateParameter(string name)
-        {
-            var fParam = new FunctionParameter() { Name = name };
-            parameters.Add(fParam);
-        }
+        public abstract double CalcValue(Point3D elementCenter);
+
+ 
         /// <inheritdoc/>
-
-        public IEnumerable<FunctionParameter> GetParameters()
-        {
-            foreach (var item in parameters)
-            {
-                yield return item;
-            }
-        }
-/// <inheritdoc/>
-
-
 
         public abstract List<T> GetIntersectedObjects<T>(List<T> elements) where T : IModelObject;
-/// <inheritdoc/>
+        /// <inheritdoc/>
 
 
         public abstract bool IsOverlappingSelf(float velocity);

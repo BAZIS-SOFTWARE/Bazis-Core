@@ -70,10 +70,10 @@ namespace Model
 
         public void ClearAll()
         {
-            PointsSet.Clear();
-            CurveSet.Clear();
-            SurfaceSet.Clear();
-            NodesSet.Clear();
+            PointsSet.ClearWithExistState();
+            CurveSet.ClearWithExistState();
+            SurfaceSet.ClearWithExistState();
+            NodesSet.ClearWithExistState();
             E1DCollection.Clear();
             E2DCollection.Clear();
             E3DCollection.Clear();
@@ -259,22 +259,22 @@ namespace Model
             switch (objType)
             {
                 case ObjType.Точка:
-                    PointsSet.Clear();
-                    CurveSet.Clear();
-                    SurfaceSet.Clear();
+                    PointsSet.ClearWithExistState();
+                    CurveSet.ClearWithExistState();
+                    SurfaceSet.ClearWithExistState();
                     //VolumeData.Clear();
                     break;
                 case ObjType.Кривая:
-                    CurveSet.Clear();
-                    SurfaceSet.Clear();
+                    CurveSet.ClearWithExistState();
+                    SurfaceSet.ClearWithExistState();
                     //VolumeData.Clear();
                     break;
                 case ObjType.Поверхность:
-                    SurfaceSet.Clear();
+                    SurfaceSet.ClearWithExistState();
                     //VolumeData.Clear();
                     break;
                 case ObjType.Узел:
-                    NodesSet.Clear();
+                    NodesSet.ClearWithExistState();
                     E1DCollection.Clear();
                     E2DCollection.Clear();
                     E3DCollection.Clear();

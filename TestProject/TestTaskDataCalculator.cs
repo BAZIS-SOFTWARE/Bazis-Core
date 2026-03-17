@@ -1,15 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Model;
-using Project;
 using Project.IO;
 using Project.Tasks;
-using Project.Tasks.Functions;
-using Project.Tasks.FrameCreators;
-using System;
+using Project.Tasks.LocalFrames;
 using System.Globalization;
-using System.Linq;
-using System.Threading;
 using Project.Interfaces;
+using Project.Tasks.Functions;
 
 namespace TestProject
 {
@@ -41,8 +36,8 @@ namespace TestProject
 
             //act
             var heat = proj.TaskData.Find<HeatData>().First();
-            
-            var motionTime = (heat.FrameFunction.LocalFrame as MovedFrame).CalcMotionTime();
+
+            var motionTime = (heat.LocalFrame as MovedFrame).CalcMotionTime();
             var stopTime = heat.StartTime + motionTime;
 
             //assert
