@@ -250,6 +250,9 @@ namespace Project.Tasks
 
             var group = groupData.Find(infoAr[4]);
 
+            if(group == null)
+                throw new NullReferenceException($"Группа {infoAr[4]} не найдена.");
+
             if (!float.TryParse(infoAr[5], out float start))
                 throw new Exception($"{info} - Время старта задано неверно!");
 
@@ -279,7 +282,7 @@ namespace Project.Tasks
                     var plateMatData = new PlateMatData(mat, group, start, stop);
 
                     if (!float.TryParse(infoAr[9], out float thickness))
-                        throw new Exception($"{info} - Tолщина задан неверно!");
+                        throw new Exception($"{info} - Tолщина задана неверно!");
                     plateMatData.Thickness = thickness;
 
                     physicalData = plateMatData;

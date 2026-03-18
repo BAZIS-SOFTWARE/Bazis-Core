@@ -66,8 +66,10 @@ namespace MaterialDB.MaterialData
             var yn = 0.0f;
             for (int j = 1; j < DataTable.Columns.Count; j++)
             {
-                var yAr = DataTable.Rows.Cast<DataRow>().Select(r => Convert.ToSingle(r[j])).ToArray();
-                var yv = InterpolationSearch.InterpolatedValue(xAr, yAr, temp);
+                var yAr = DataTable.Rows.Cast<DataRow>().Select(r => Convert.ToSingle(r[j])).ToArray();              
+                var yv = yAr.Length == 1 ? 
+                    yAr[0] : 
+                    InterpolationSearch.InterpolatedValue(xAr, yAr, temp);
                 yn = yn + yv * phaseData[j - 1].Value;
             }
             return yn;
