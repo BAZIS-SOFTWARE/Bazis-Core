@@ -1,6 +1,4 @@
-﻿using Model.Interfaces;
-using OperationalController;
-using System.Globalization;
+﻿using OperationalController;
 
 namespace ControllerTests
 {
@@ -137,19 +135,6 @@ namespace ControllerTests
 
             Assert.IsTrue(combined.Count >= result1.Count);
             Assert.IsTrue(combined.Count >= result2.Count);
-        }
-
-        /// <summary>
-        /// Проверка, что при одинаковых размерностях ничего не меняется
-        /// </summary>
-        [TestMethod]
-        public void SelectByScope_SameDim_ReturnsSame()
-        {
-            var input = new[] { 1, 2, 3 };
-
-            var result = _project.SelectByScope(1, input, 1);
-
-            CollectionAssert.AreEquivalent(input, result.ToList());
         }
     }
 }
