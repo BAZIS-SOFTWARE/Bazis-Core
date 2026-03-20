@@ -15,6 +15,7 @@ namespace Project.Tasks.Functions.FrameFunctions
         public CustomFrameFunction()
         {
             Name = FuncName.Custom.ToString();
+            FunctionType = FuncType.CPF;
         }
         ScriptEngine engine;
         ScriptScope scope;
