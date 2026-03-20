@@ -58,6 +58,101 @@ namespace OperationalController
             }
         }
 
+        /// <summary>
+        /// Расширяет/отбирает набор сущностей в пределах топологического "scope".
+        /// Если <paramref name="startDim"/> и <paramref name="targetDim"/> совпадают, метод возвращает исходный набор.
+        /// В противном случае сначала поднимает исходные сущности по смежностям до уровня <paramref name="targetDim"/> (см. <see cref="ClimbUp"/>),
+        /// затем спускается с этого уровня обратно, чтобы собрать все сущности исходной размерности, связанные через найденные верхние элементы
+        /// (см. <see cref="DescendDown"/>). В результате возвращается множество уникальных номеров сущностей размерности <paramref name="startDim"/>,
+        /// которые принадлежат одному топологическому объёму при расширении до <paramref name="targetDim"/>.
+        /// </summary>
+        public HashSet<int> SelectByScope(int startDim, IEnumerable<int> selectedNumbers, int targetDim)
+        {
+            if (startDim == targetDim)
+                return new HashSet<int>(selectedNumbers);
+
+            var topLevel = ClimbUp(startDim, selectedNumbers, targetDim);
+            var result = DescendDown(targetDim, topLevel, startDim);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Поднимает набор сущностей по иерархии размерностей Gmsh от <paramref name="startDim"/> до <paramref name="targetDim"/>.
+        /// Для каждой текущей размерности метод запрашивает верхние смежные элементы через
+        /// <c>GmshController.Gmsh.Model.GetAdjacencies</c> и собирает их в множество, исключая дубликаты.
+        /// В результате возвращается множество номеров сущностей размерности <paramref name="targetDim"/>,
+        /// достижимых из начичных номеров.
+        /// </summary>
+        /// <param name="startDim">
+        /// Исходная размерность сущностей (например: 0 — точки, 1 — кривые, 2 — поверхности, 3 — объемы).
+        /// </param>
+        /// <param name="startNumbers">Перечисление номеров сущностей на исходной размерности.</param>
+        /// <param name="targetDim">Целевая размерность, до которой нужно подняться. Ожидается, что <paramref name="targetDim"/> >= <paramref name="startDim"/>.</param>
+        /// <returns>
+        /// Множество уникальных номеров сущностей размерности <paramref name="targetDim"/>,
+        /// которые находятся "выше" заданных начальных сущностей по топологическим смежностям.
+        /// </returns>
+        private HashSet<int> ClimbUp(int startDim, IEnumerable<int> startNumbers, int targetDim)
+        {
+            var currentLevel = new HashSet<int>(startNumbers);
+            int currentDim = startDim;
+
+            while (currentDim < targetDim)
+            {
+                var nextLevel = new HashSet<int>();
+
+                foreach (var number in currentLevel)
+                {
+                    var (upper, _) = GmshController.Gmsh.Model.GetAdjacencies(currentDim, number);
+
+                    foreach (var up in upper)
+                        nextLevel.Add(up);
+                }
+
+                currentLevel = nextLevel;
+                currentDim++;
+            }
+
+            return currentLevel;
+        }
+
+        /// <summary>
+        /// Спускает набор сущностей по иерархии размерностей Gmsh от <paramref name="startDim"/> до <paramref name="targetDim"/>.
+        /// Для каждой текущей размерности метод запрашивает нижние смежные элементы через
+        /// <c>GmshController.Gmsh.Model.GetAdjacencies</c> и собирает их в множество, исключая дубликаты.
+        /// В результате возвращается множество номеров сущностей размерности <paramref name="targetDim"/>,
+        /// достижимых из начальных номеров.
+        /// </summary>
+        /// <param name="startDim">
+        /// Исходная размерность сущностей (например: 0 — точки, 1 — кривые, 2 — поверхности, 3 — объемы).
+        /// </param>
+        /// <param name="startNumbers">Перечисление номеров сущностей на исходной размерности.</param>
+        /// <param name="targetDim">Целевая размерность, до которой нужно спуститься. Ожидается, что <paramref name="targetDim"/> <= <paramref name="startDim"/>.</param>
+        private HashSet<int> DescendDown(int startDim, IEnumerable<int> startNumbers, int targetDim)
+        {
+            var currentLevel = new HashSet<int>(startNumbers);
+            int currentDim = startDim;
+
+            while (currentDim > targetDim)
+            {
+                var nextLevel = new HashSet<int>();
+
+                foreach (var number in currentLevel)
+                {
+                    var (_, lower) = GmshController.Gmsh.Model.GetAdjacencies(currentDim, number);
+
+                    foreach (var low in lower)
+                        nextLevel.Add(low);
+                }
+
+                currentLevel = nextLevel;
+                currentDim--;
+            }
+
+            return currentLevel;
+        }
+
         private ObjType GetObjType(int dim)
         {
             if (dim == 0)
