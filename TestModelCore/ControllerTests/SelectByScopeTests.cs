@@ -15,126 +15,54 @@ namespace ControllerTests
             _project.ImportCAD(@"..\..\..\Examples\CAD\Tavr.step");
         }
 
-        /// <summary>
-        /// Если размерности совпадают — возвращается исходный набор
-        /// Проверка раннего выхода при одинаковых размерностях
-        /// </summary>
-        [TestMethod]
-        public void SelectByScope_SameDimension_ReturnsSameSet()
+        [DataTestMethod]
+        [DataRow(2, new int[] { 1, 2, 3 }, 2)]     // одинаковые размерности: поверхности → поверхности
+        [DataRow(1, new int[] { 1 }, 2)]           // кривые → поверхность
+        [DataRow(0, new int[] { 1 }, 2)]           // точка → поверхность
+        [DataRow(1, new int[] { 1, 2 }, 2)]        // несколько кривых → поверхность
+        [DataRow(0, new int[] { 1, 2, 3 }, 1)]     // несколько точек → кривые
+        [DataRow(2, new int[] { 1 }, 1)]           // поверхность → кривые
+        [DataRow(1, new int[] { 5, 6, 7 }, 1)]     // кривые → кривые (проверка с другими числами)
+        [DataRow(0, new int[] { 4, 5 }, 2)]        // несколько точек → поверхность (расширяем область)
+        [DataRow(1, new int[] { 3, 4 }, 2)]        // несколько кривых → поверхность (объединение областей)
+        [DataRow(2, new int[] { 10 }, 0)]          // поверхность → точка (редкий обратный кейс)
+        public void SelectByScope_CombinedTests(int startDim, int[] input, int targetDim)
         {
-            var input = new[] { 1, 2, 3 };
-
-            var result = _project.SelectByScope(2, input, 2);
-
-            CollectionAssert.AreEquivalent(input, result.ToList());
-        }
-
-        /// <summary>
-        /// Подъём с кривых до поверхностей и обратно
-        /// </summary>
-        [TestMethod]
-        public void SelectByScope_CurveToSurface_BackToCurve()
-        {
-            var input = new[] { 1 };
-
-            var result = _project.SelectByScope(1, input, 2);
-
-            Assert.IsTrue(result.Count > 0);
-            Assert.IsTrue(result.Contains(1)); // исходная должна остаться
-        }
-
-        /// <summary>
-        /// Подъём с точек до поверхностей и обратно
-        /// Проверяем что область расширяется
-        /// </summary>
-        [TestMethod]
-        public void SelectByScope_PointToSurface_ExpandsScope()
-        {
-            var input = new[] { 1 };
-
-            var result = _project.SelectByScope(0, input, 2);
-
-            Assert.IsTrue(result.Count >= 1);
-        }
-
-        /// <summary>
-        /// Несколько входных элементов объединяют область
-        /// </summary>
-        [TestMethod]
-        public void SelectByScope_MultipleInputs_MergesScope()
-        {
-            var input = new[] { 1, 2 };
-
-            var result = _project.SelectByScope(1, input, 2);
-
-            Assert.IsTrue(result.Count >= input.Length);
-        }
-
-        /// <summary>
-        /// Проверка отсутствия дубликатов
-        /// </summary>
-        [TestMethod]
-        public void SelectByScope_NoDuplicates()
-        {
-            var input = new[] { 1 };
-
-            var result = _project.SelectByScope(1, input, 2);
-
-            Assert.AreEqual(result.Count, result.Distinct().Count());
-        }
-
-        /// <summary>
-        /// Проверяем, что SelectByScope расширяет область до всех связанных сущностей
-        /// через верхний уровень (поверхности)
-        /// </summary>
-        [TestMethod]
-        public void SelectByScope_CurveScope_ShouldMatchAdjacencyExpansion()
-        {
-            int startDim = 1; // кривые
-            int targetDim = 2; // поверхности
-            int startNumber = 1;
-
             // act
-            var result = _project.SelectByScope(startDim, new[] { startNumber }, targetDim);
+            var result = _project.SelectByScope(startDim, input, targetDim);
 
-            // assert
+            // базовые проверки
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Count > 0);
 
-            // 🔹 дополнительная проверка:
-            // каждая кривая из результата должна иметь общую поверхность
-            foreach (var curve in result)
+            // 1. если размерности совпадают — возвращается исходный набор
+            if (startDim == targetDim)
             {
-                var up = _project.GetAdjacentGeometryObjects(
-                    _project.GetModelObject(Model.Interfaces.ObjType.Кривая, curve), 2);
-
-                Assert.IsTrue(up.Any(), $"Кривая {curve} не имеет связанных поверхностей");
+                CollectionAssert.AreEquivalent(input, result.ToList());
+                return; 
             }
-        }
 
-        /// <summary>
-        /// Проверяем, что исходный элемент всегда входит в результат
-        /// </summary>
-        [TestMethod]
-        public void SelectByScope_ResultContainsSource()
-        {
-            var result = _project.SelectByScope(1, new[] { 1 }, 2);
+            // 2. результат всегда содержит исходные элементы
+            foreach (var item in input)
+                Assert.IsTrue(result.Contains(item), $"Нет исходного элемента {item}");
 
-            Assert.IsTrue(result.Contains(1));
-        }
+            // 3. нет дубликатов
+            Assert.AreEqual(result.Count, result.Distinct().Count(), "Есть дубликаты");
 
-        /// <summary>
-        /// Проверка объединения областей
-        /// </summary>
-        [TestMethod]
-        public void SelectByScope_MultipleCurves_ShouldExpandUnion()
-        {
-            var result1 = _project.SelectByScope(1, new[] { 1 }, 2);
-            var result2 = _project.SelectByScope(1, new[] { 2 }, 2);
-            var combined = _project.SelectByScope(1, new[] { 1, 2 }, 2);
+            // 4. при множественном вводе результат не меньше входа
+            Assert.IsTrue(result.Count >= input.Length);
 
-            Assert.IsTrue(combined.Count >= result1.Count);
-            Assert.IsTrue(combined.Count >= result2.Count);
+            // 5. каждая кривая должна иметь связанные поверхности (если старт — кривые)
+            if (startDim == 1 && targetDim == 2)
+            {
+                foreach (var curve in result)
+                {
+                    var up = _project.GetAdjacentGeometryObjects(
+                        _project.GetModelObject(Model.Interfaces.ObjType.Кривая, curve), 2);
+
+                    Assert.IsTrue(up.Any(), $"Кривая {curve} не имеет связанных поверхностей");
+                }
+            }
         }
     }
 }
