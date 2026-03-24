@@ -11,6 +11,9 @@ using OperationalController;
 using MathNet.Spatial.Euclidean;
 using Point3D = Geometry.Point3D;
 using static IronPython.Modules.PythonIterTools;
+using static Community.CsharpSqlite.Sqlite3;
+using OperationalController.MeshObjsCreator;
+using Model.GeometryObjects;
 
 namespace GmshTests
 {
@@ -840,6 +843,18 @@ namespace GmshTests
 
             var insideStatus = gmshController.Gmsh.Model.IsInside(1, 1, data.Item1);
             Assert.IsTrue(insideStatus == 1);
+        }
+
+        [DataTestMethod]
+        [DataRow(@"\CAD\scobe.step")]
+        public void MiddleSurfaceTestFromCurves(string fileName)
+        {
+            gmshController.Gmsh.Open(modelFolder + fileName);
+
+            var ms = new MidSurfaceBuilder(gmshController, 15);
+            ms.Build([10, 1, 4, 2, 9, 7]);
+
+            gmshController.Gmsh.Write($@"D:\midScobe.step");
         }
 
         private void RemoveNameTest(ref string entName, int dim, int delId, int maxId)

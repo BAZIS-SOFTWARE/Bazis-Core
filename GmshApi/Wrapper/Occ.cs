@@ -23,6 +23,9 @@ namespace GmshApi
                                                       double[] zAxis, IntPtr zAxis_n, double[] xAxis, IntPtr xAxis_n, ref int ierr);
         private gmshModelOccAddCircleFun gmshModelOccAddCircle = GetFunction<gmshModelOccAddCircleFun>("gmshModelOccAddCircle");
 
+        private delegate int gmshModelOccAddSplineFun(int[] pointTags, IntPtr pointTags_n, int tag, double[] tangents, IntPtr tangents_n, ref int ierr);
+        private gmshModelOccAddSplineFun gmshModelOccAddSpline = GetFunction<gmshModelOccAddSplineFun>("gmshModelOccAddSpline");
+
         private delegate int gmshModelOccAddBezierFun(int[] pointTags, IntPtr pointTags_n, int tag, ref int ierr);
         private gmshModelOccAddBezierFun gmshModelOccAddBezier = GetFunction<gmshModelOccAddBezierFun>("gmshModelOccAddBezier");
 
@@ -42,6 +45,13 @@ namespace GmshApi
                                                               int numIter, int anisotropic, double tol2d, double tol3d, double tolAng, double tolCurv,
                                                               int maxDegree, int maxSegments, ref int ierr);
         private gmshModelOccAddSurfaceFillingFun gmshModelOccAddSurfaceFilling = GetFunction<gmshModelOccAddSurfaceFillingFun>("gmshModelOccAddSurfaceFilling");
+
+        private delegate int gmshModelOccAddBSplineSurfaceFun(int[] pointTags, IntPtr pointTags_n, int numPointsU, int tag, int degreeU, int degreeV,
+                                                              double[] weights, IntPtr weights_n, double[] knotsU, IntPtr knotsU_n,
+                                                              double[] knotsV, IntPtr knotsV_n, int[] multiplicitiesU, IntPtr multiplicitiesU_n,
+                                                              int[] multiplicitiesV, IntPtr multiplicitiesV_n, int[] wireTags, IntPtr wireTags_n,
+                                                              int wire3D, ref int ierr);
+        private gmshModelOccAddBSplineSurfaceFun gmshModelOccAddBSplineSurface = GetFunction<gmshModelOccAddBSplineSurfaceFun>("gmshModelOccAddBSplineSurface");
 
         private delegate int gmshModelOccAddBoxFun(double x, double y, double z, double dx, double dy, double dz, int tag, ref int ierr);
         private gmshModelOccAddBoxFun gmshModelOccAddBox = GetFunction<gmshModelOccAddBoxFun>("gmshModelOccAddBox");
@@ -172,6 +182,21 @@ namespace GmshApi
         }
 
         /// <summary>
+        /// Добавляет сплайн в ядро OCC с идентификаторами точек pointTags и касательными(опционально) векторами tangents 
+        /// </summary>
+        /// <param name="pointTags">Массив идентификаторов точек</param>
+        /// <param name="tag">Желаемый идентификатор или -1 для автоназначения</param>
+        /// <param name="tangents">Если передано 6 компонентов касательного вектора(x,y,z) - использовать вектора только для первой и последней точки, 
+        /// если кол-во компонентов вектора (x,y,z) в 3 раза мревышает кол-во точек pointTags - использовать направляющие вектора для каждой точки</param>
+        /// <returns>Идентификатор кривой</returns>
+        public int AddSpline(int[] pointTags, int tag = -1, double[] tangents = null)
+        {
+            var ierr = 0;
+            tangents = tangents ?? new double[0];
+            return gmshModelOccAddSpline(pointTags, (IntPtr)pointTags.Length, tag, tangents, (IntPtr)tangents.Length, ref ierr);
+        }
+
+        /// <summary>
         /// Создает кривую безье по указанным pointTags в ядре OCC
         /// </summary>
         /// <param name="pointTags">Массив идентификаторов точек</param>
@@ -265,7 +290,33 @@ namespace GmshApi
             return gmshModelOccAddSurfaceFilling(wireTag, tag, pointTags, (IntPtr)pointTags.Length, degree, numPointsOnCurves, numIter,
                                                 Convert.ToInt32(anisotropic), tol2d, tol3d, tolAng, tolCurv, maxDegree, maxSegments, ref ierr);
         }
-
+        /// <summary>
+        /// Добавляет б-сплайн поверхность со степенью degreeU x degreeV в ядро OCC
+        /// </summary>
+        /// <param name="pointTags">Массив идентификаторов точек вида [Pu1v1, ... Pu`numPointsU'v1, Pu1v2, ...]</param>
+        /// <param name="numPointsU">Число компонентов U</param>
+        /// <param name="tag">Желаемый идентификатор, или -1 для автоназначения</param>
+        /// <param name="degreeU">Степень U, по умолчанию = 3</param>
+        /// <param name="degreeV">Степень V, по умолчанию = 3</param>
+        /// <param name="weights">Таблица весов</param>
+        /// <param name="knotsU">Узлы U</param>
+        /// <param name="knotsV">Узлы V</param>
+        /// <param name="multiplicitiesU">Множители U</param>
+        /// <param name="multiplicitiesV">Множители V</param>
+        /// <param name="wireTags">Массив контуров, первый элемент указывает на внешний контур, второй на контур отверстия</param>
+        /// <param name="wire3D">Если задан - считает кривые в wireTags как 3D и проецирует их на поверхность, 
+        /// иначе рассматривает их в параметрическом пространстве</param>
+        /// <returns>Возвращает идентификатор поверхности</returns>
+        public int AddBSplineSurface(int[] pointTags, int numPointsU, int tag = -1, int degreeU = 3, int degreeV = 3, double[] weights = null,
+                                     double[] knotsU = null, double[] knotsV = null, int[] multiplicitiesU = null, int[] multiplicitiesV = null,
+                                     int[] wireTags = null, bool wire3D = false)
+        {
+            var ierr = 0;
+            return gmshModelOccAddBSplineSurface(pointTags, (IntPtr)pointTags.Length, numPointsU, tag, degreeU, degreeV, weights,
+                                                 (IntPtr)weights.Length, knotsU, (IntPtr)knotsU.Length, knotsV, (IntPtr)knotsV.Length,
+                                                 multiplicitiesU, (IntPtr)multiplicitiesU.Length, multiplicitiesV, (IntPtr)multiplicitiesV.Length,
+                                                 wireTags, (IntPtr)wireTags.Length, Convert.ToInt32(wire3D), ref ierr);
+        }
         /// <summary>
         /// Создает параллелепипед в геометрическом ядре OCC
         /// </summary>
@@ -456,7 +507,7 @@ namespace GmshApi
             var curveTags = IntPtr.Zero;
             var curveTags_n = IntPtr.Zero;
             var curveTags_nn = IntPtr.Zero;
-            gmshModelOccGetSurfaceLoops(surfaceTag, ref curveLoopTags, ref curveLoopTags_n, ref curveTags, ref curveTags_n, ref curveTags_nn, ref ierr);
+            gmshModelOccGetCurveLoops(surfaceTag, ref curveLoopTags, ref curveLoopTags_n, ref curveTags, ref curveTags_n, ref curveTags_nn, ref ierr);
             var loopTags = GetObjectsData<int>(curveLoopTags, curveLoopTags_n);
             var curTags = GetArrayOfObjectsData<int>(curveTags, curveTags_nn, curveTags_n);
             return Tuple.Create(loopTags, curTags);
