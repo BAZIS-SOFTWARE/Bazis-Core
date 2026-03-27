@@ -75,7 +75,7 @@ namespace OperationalController.MeshObjsCreator
         /// </summary>
         /// <param name="layer">Слой 2д элементов</param>
         /// <returns>Слой 2д элементов</returns>
-        protected IEnumerable<Element2D> SortFirstLayer(IEnumerable<Element2D> layer)
+        protected List<Element2D> SortFirstLayer(IEnumerable<Element2D> layer)
         {
             var xSum = 0.0;
             var ySum = 0.0;
@@ -94,7 +94,7 @@ namespace OperationalController.MeshObjsCreator
             }
             Element2DSorter.Center = new Point3D((float)xSum / index, (float)ySum / index, (float)zSum / index);
             var comparer = new Element2DSorter();
-            return layer.OrderBy(v => v, comparer);
+            return layer.OrderBy(v => v, comparer).ToList();
         }
         /// <summary>
         /// Создает копию слоя переданную для операции экструзии

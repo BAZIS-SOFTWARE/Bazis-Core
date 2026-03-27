@@ -891,11 +891,11 @@ namespace GmshTests
         }
 
         [DataTestMethod]
-        [DataRow(8, "jug", false, false)]
-        [DataRow(11, "jug", true, false)]
-        [DataRow(32, "jug", false, true)]
-        [DataRow(13, "jug", true, true)]
-        public void ExtrudeRotationTest(int segments, string fileName, bool recombine, bool transfinite)
+        [DataRow(8, "jug", MathF.PI / 2, false, false)]
+        [DataRow(11, "jug", MathF.PI / 8 ,true, false)]
+        [DataRow(32, "jug", 2 * MathF.PI, false, true)]
+        [DataRow(13, "jug", 5 * MathF.PI / 3, true, true)]
+        public void ExtrudeRotationTest(int segments, string fileName, float angle, bool recombine, bool transfinite)
         {
             var proj = new ProjectController();
             proj.GmshController.Load(@"..\..\..\..\GmshApi\gmsh.dll");
@@ -909,9 +909,8 @@ namespace GmshTests
             var objs = ctr.GetMeshObjects();
 
             var extruder = new RotateExtruder();
-            var e3d = transfinite ? extruder.ExtrudeTransfinite(objs.Item3, Vector3.Zero, Vector3.UnitY, segments)
-                                  : extruder.Extrude(objs.Item3, Vector3.Zero, Vector3.UnitY, segments);
-
+            var e3d = transfinite ? extruder.ExtrudeTransfinite(objs.Item3, angle, Vector3.Zero, Vector3.UnitY, segments)
+                                  : extruder.Extrude(objs.Item3, angle, Vector3.Zero, Vector3.UnitY, segments);
 
             var md = new ModelData();
             md.ObjectData.E3DCollection.AddRange("Extruded", e3d.SelectMany(v => v));

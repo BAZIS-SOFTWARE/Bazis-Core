@@ -15,15 +15,16 @@ namespace OperationalController.MeshObjsCreator
         /// Создает экструзию 3д элементов методом поворота вдоль указанного локального вектора и точке начала координат 
         /// </summary>
         /// <param name="curLayer">Текущий слой для экструзии</param>
+        /// <param name="radAngle">Угол вращения в радианах</param>">
         /// <param name="origin">Точка начала координат</param>
         /// <param name="rotAxis">Локальная ось поворота</param>
         /// <param name="segments">Число сегментов</param>
         /// <returns>Список 3д элементов</returns>
-        /// <exception cref="ArgumentException">Число сегментов не должно быть меньше 3</exception>
-        public List<List<Element3D>> Extrude(IEnumerable<Element2D> curLayer, Vector3 origin, Vector3 rotAxis, int segments = 8)
+        /// <exception cref="ArgumentException">Число сегментов не должно быть меньше 1</exception>
+        public List<List<Element3D>> Extrude(IEnumerable<Element2D> curLayer, float radAngle, Vector3 origin, Vector3 rotAxis, int segments = 8)
         {
-            if (segments < 3)
-                throw new ArgumentException("Количество сегментов не должно быть меньше 3");
+            if (segments < 1)
+                throw new ArgumentException("Количество сегментов не должно быть меньше 1");
 
             rotAxis = Vector3.Normalize(rotAxis);
             var tetLayers = new List<List<Element3D>>();
@@ -31,37 +32,39 @@ namespace OperationalController.MeshObjsCreator
             var firstLayer = CreateFirstSurface(curLayer);
             curLayer = firstLayer;
 
-            var offset = 2 * MathF.PI / segments;
+            radAngle = float.Clamp(radAngle, 0, 2 * MathF.PI);
+            var offset = radAngle / segments;
             var rotMatrix = Matrix4x4.CreateTranslation(origin) 
-                              * Matrix4x4.CreateFromAxisAngle(rotAxis, offset) 
-                              * Matrix4x4.CreateTranslation(-origin);
+                          * Matrix4x4.CreateFromAxisAngle(rotAxis, offset) 
+                          * Matrix4x4.CreateTranslation(-origin);
             rotMatrix = Matrix4x4.Transpose(rotMatrix);
 
             List<Element2D> nextLayer = null;
-            for (var i = 0; i < segments - 1; ++i)
+            for (var i = 0; i < segments; ++i)
             {
-                nextLayer = CreateNextLayer(curLayer, rotMatrix);
+                nextLayer = i == segments - 1 && MathF.Abs(2 * MathF.PI - radAngle) < 1e-2 ? firstLayer 
+                                                                                           : CreateNextLayer(curLayer, rotMatrix);
                 var layer = CreateLayerTetrahedrons(curLayer, nextLayer);
                 tetLayers.Add(layer);
                 curLayer = nextLayer;
             }
-            var lastLayer = CreateLayerTetrahedrons(nextLayer, firstLayer);
-            tetLayers.Add(lastLayer);
+            
             return tetLayers;
         }
         /// <summary>
         /// Создает трансфинитную экструзию 3д элементов методом поворота вдоль указанного локального вектора и точке начала координат 
         /// </summary>
         /// <param name="curLayer">Текущий слой для экструзии</param>
+        /// <param name="radAngle">Угол вращения в радианах</param>
         /// <param name="origin">Точка начала координат</param>
         /// <param name="rotAxis">Локальная ось поворота</param>
         /// <param name="segments">Число сегментов</param>
         /// <returns>Список 3д элементов</returns>
         /// <exception cref="ArgumentException">Число сегментов не должно быть меньше 3</exception>
-        public List<List<Element3D>> ExtrudeTransfinite(IEnumerable<Element2D> curLayer, Vector3 origin, Vector3 rotAxis, int segments = 8)
+        public List<List<Element3D>> ExtrudeTransfinite(IEnumerable<Element2D> curLayer, float radAngle, Vector3 origin, Vector3 rotAxis, int segments = 8)
         {
-            if (segments < 3)
-                throw new ArgumentException("Количество сегментов не должно быть меньше 3");
+            if (segments < 1)
+                throw new ArgumentException("Количество сегментов не должно быть меньше 1");
 
             rotAxis = Vector3.Normalize(rotAxis);
             var tetLayers = new List<List<Element3D>>();
@@ -69,22 +72,22 @@ namespace OperationalController.MeshObjsCreator
             var firstLayer = CreateFirstSurface(curLayer);
             curLayer = firstLayer;
 
-            var offset = 2 * MathF.PI / segments;
+            var offset = radAngle / segments;
             var rotMatrix = Matrix4x4.CreateTranslation(origin)
-                              * Matrix4x4.CreateFromAxisAngle(rotAxis, offset)
-                              * Matrix4x4.CreateTranslation(-origin);
+                          * Matrix4x4.CreateFromAxisAngle(rotAxis, offset)
+                          * Matrix4x4.CreateTranslation(-origin);
             rotMatrix = Matrix4x4.Transpose(rotMatrix);
 
             List<Element2D> nextLayer = null;
-            for (var i = 0; i < segments - 1; ++i)
+            for (var i = 0; i < segments; ++i)
             {
-                nextLayer = CreateNextLayer(curLayer, rotMatrix);
+                nextLayer = i == segments - 1 && MathF.Abs(2 * MathF.PI - radAngle) < 1e-2 ? firstLayer
+                                                                                           : CreateNextLayer(curLayer, rotMatrix);
                 var layer = CreateTransfiniteLayer(curLayer, nextLayer);
                 tetLayers.Add(layer);
                 curLayer = nextLayer;
             }
-            var lastLayer = CreateTransfiniteLayer(nextLayer, firstLayer);
-            tetLayers.Add(lastLayer);
+
             return tetLayers;
         }
         /// <summary>
