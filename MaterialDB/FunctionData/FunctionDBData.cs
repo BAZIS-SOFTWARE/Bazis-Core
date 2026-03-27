@@ -1,4 +1,5 @@
 ﻿using MaterialDB.MaterialData;
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -86,6 +87,48 @@ namespace MaterialDB.FunctionData
         IEnumerator IEnumerable.GetEnumerator()
         {
             return dic.GetEnumerator();
+        }
+
+        public FunctionDBData(string dbName, string dbPath) : this()
+        {
+
+            var filePath = FindFileByPath(dbPath, dbName);
+            if (filePath == null)
+            {
+                throw new Exception($"Не найдена база {dbName} в папке {dbPath}");
+            }
+
+            else
+            {
+                var settingsSerializer = new JsonSerializerSettings
+                {
+                    TypeNameHandling = TypeNameHandling.Auto,
+                    Formatting = Formatting.Indented,
+                };
+
+                var db = JsonConvert.DeserializeObject<FunctionDBData>
+   (File.ReadAllText($@"{dbPath}\{dbName}"), settingsSerializer);
+
+                Name = dbName;
+                dic = db.dic;
+            }
+
+        }
+
+        public FunctionDBData()
+        {
+            Name = "newFunctionsDb";
+        }
+
+        private string? FindFileByPath(string path, string fileName)
+        {
+            var projFiles = Directory.GetFiles(path, fileName, SearchOption.AllDirectories);
+            if (projFiles.Count() > 0)
+            {
+                return Path.GetDirectoryName(projFiles[0]);
+            }
+
+            return null;
         }
     }
 }

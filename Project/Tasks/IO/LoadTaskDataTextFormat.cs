@@ -7,6 +7,7 @@ using System.Linq;
 using MaterialDB.FunctionData;
 using MaterialDB.MaterialData;
 using Newtonsoft.Json;
+using Project.Tasks.Functions;
 
 namespace Project.Tasks.IO
 {
@@ -41,17 +42,20 @@ namespace Project.Tasks.IO
                     if (dataName == "БазаМатериалов")
                     {
                         var matDBName = splitLine[1].Split(' ')[1];
-                        taskData.Materials =
-        GetDataBase<MaterialDBData>(matDBName, path);
-                        taskData.Materials.Name = matDBName;
+        //                taskData.Materials =
+        //GetDataBase<MaterialDBData>(matDBName, path);
+        //                taskData.Materials.Name = matDBName;
+                        taskData.Materials = new MaterialDBData(matDBName, path);
                     }
 
                     if (dataName == "БазаФункций")
                     {
                         var funDBName = splitLine[1].Split(' ')[1];
-                        taskData.Functions =
-         GetDataBase<FunctionDBData>(funDBName, path);
-                        taskData.Functions.Name = funDBName;
+         //               taskData.Functions =
+         //GetDataBase<FunctionDBData>(funDBName, path);
+         //               taskData.Functions.Name = funDBName;
+
+                        taskData.Functions = new FunctionDBData(funDBName, path);
                     }
 
                     if (dataName == "Тип")
