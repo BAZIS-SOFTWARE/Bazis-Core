@@ -104,7 +104,7 @@ namespace Project.Tasks.IO
 
         private string FindFileByPath(string path, string fileName)
         {
-            var projFiles = Directory.GetFiles(path, fileName, SearchOption.AllDirectories);
+            var projFiles = Directory.GetFiles(path, fileName, SearchOption.TopDirectoryOnly);
             if (projFiles.Count() > 0)
             {
                 return Path.GetDirectoryName(projFiles[0]);
