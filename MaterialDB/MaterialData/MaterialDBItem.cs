@@ -10,6 +10,16 @@ namespace MaterialDB.MaterialData
     [Serializable]
     public class MaterialDBItem
     {
+        /// <summary>
+        /// Словарь категорий
+        /// </summary>
+        public Dictionary<CategoryEnum, string> CategoryDic = new Dictionary<CategoryEnum, string>()
+        {
+            { CategoryEnum.General,"Общие сведения"},
+            { CategoryEnum.Thermal,"Тепловые свойства"},
+            { CategoryEnum.Mechanical,"Механические свойства"},
+            { CategoryEnum.Metallurgical,"Металлургия"}
+        };
         /// <inheritdoc/>
         public override int GetHashCode()
         {
@@ -23,6 +33,12 @@ namespace MaterialDB.MaterialData
         {
             get { return CategoryData[key]; }
             set { CategoryData[key] = value; }
+        }
+
+        public Category this[CategoryEnum key]
+        {
+            get { return CategoryData[CategoryDic[key]]; }
+            set { CategoryData[CategoryDic[key]] = value; }
         }
         /// <summary>
         /// Copy
