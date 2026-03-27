@@ -14,6 +14,7 @@ using static IronPython.Modules.PythonIterTools;
 using static Community.CsharpSqlite.Sqlite3;
 using OperationalController.MeshObjsCreator;
 using Model.GeometryObjects;
+using static OperationalController.MeshObjsCreator.CurveLoop.Curve;
 
 namespace GmshTests
 {
@@ -845,7 +846,7 @@ namespace GmshTests
             Assert.IsTrue(insideStatus == 1);
         }
 
-        [DataTestMethod]
+        /*[DataTestMethod]
         [DataRow(@"\CAD\scobe.step")]
         public void MiddleSurfaceTestFromCurves(string fileName)
         {
@@ -855,6 +856,93 @@ namespace GmshTests
             ms.Build([10, 1, 4, 2, 9, 7]);
 
             gmshController.Gmsh.Write($@"D:\midScobe.step");
+        }*/
+
+        [DataTestMethod]
+        [DataRow(@"\CAD\scobe.step")]
+        public void MiddleSurface(string fileName)
+        {
+            /*gmshController.Gmsh.Open(modelFolder + fileName);
+
+            var builder = new MiddleSurfaceBuilder(gmshController);
+            builder.Build([12, 1, 9, 2, 11, 4]);
+
+            gmshController.Gmsh.Write($@"D:\midScobe.step");*/
+        }
+
+        [DataTestMethod]
+        [DataRow(@"\CAD\scobe.step")]
+        //[DataRow(@"\CAD\scobe1.step")]
+        //[DataRow(@"\CAD\scobe2.step")]
+        public void MiddleSurface2(string fileName)
+        {
+            gmshController.Gmsh.Open(modelFolder + fileName);
+
+            var cl0 = new CurveLoop(gmshController, 4);
+            var cl1 = new CurveLoop(gmshController, 11);
+
+            var cl2 = cl0.GetAdjacentCurveLoop();
+            var cl3 = cl0 + cl1;
+            //TODO пересмотерть проверку циклов - плохо проверяется окружности
+            //var message = string.Empty;
+            //cl0.IsOk(ref message);
+            //Assert.IsTrue(string.IsNullOrEmpty(message));
+            gmshController.Gmsh.Model.Add("MiddleSurface");
+            cl3.BuildCurveLoop();
+            //cl1.BuildCurveLoop();
+            //cl2.BuildCurveLoop();
+            gmshController.Gmsh.Model.Occ.Synchronize();
+
+            gmshController.Gmsh.Write($@"D:\midScobe.step");
+
+        }
+
+        [DataTestMethod]
+        [DataRow(@"\CAD\scobe.step")]
+        public void TestPoint(string fileName)
+        {
+            gmshController.Gmsh.Open(modelFolder + fileName);
+
+            var cl0 = new CurveLoop(gmshController, 4);
+            var cl1 = new CurveLoop(gmshController, 11);
+
+            cl0.MakeSimilar(cl1);
+
+            var curve00 =  cl0.Loop.Where(v => Math.Abs(v.Tag) == 16).FirstOrDefault();
+            var curve01 = cl0.Loop.Where(v => Math.Abs(v.Tag) == 12).FirstOrDefault();
+
+            var c0 = CurveLoop.GetCenterOfMass(cl0.Loop);
+            var q00 = CurveLoop.GetPointOrientation(curve00, c0, true);
+            var q01 = CurveLoop.GetPointOrientation(curve01, c0, true);
+
+            var curve10 = cl1.Loop.Where(v => Math.Abs(v.Tag) == 23).FirstOrDefault();
+            var curve11 = cl1.Loop.Where(v => Math.Abs(v.Tag) == 14).FirstOrDefault();
+
+            var c1 = CurveLoop.GetCenterOfMass(cl1.Loop);
+            var q10 = CurveLoop.GetPointOrientation(curve10, c1, true);
+            var q11 = CurveLoop.GetPointOrientation(curve11, c1, true);
+
+            /*
+            var p = gmshController.Gmsh.Model.GetParametrizationBounds(2, 11);
+            var n = gmshController.Gmsh.Model.GetNormal(11, [(p.Item1[0] + p.Item2[0]) * 0.5, (p.Item1[1] + p.Item2[1]) * 0.5]);
+
+            var p1 = gmshController.Gmsh.Model.GetParametrizationBounds(2, 4);
+            var n1 = gmshController.Gmsh.Model.GetNormal(4, [(p1.Item1[0] + p1.Item2[0]) * 0.5, (p1.Item1[1] + p1.Item2[1]) * 0.5]);
+            var vec = new Vector3D(x, y, z);
+            var data = GetPointOrientation(vec);
+            */
+        }
+
+        
+        private static (double, double) GetPointOrientation(Vector3D vec)
+        {
+            var vecLen = vec.Length;
+            var cos = UnitVector3D.XAxis.DotProduct(vec) / vecLen;
+
+            var cp = UnitVector3D.XAxis.CrossProduct(vec);
+            var sin = cp.Length / vecLen;
+
+            return (cos, sin);
         }
 
         private void RemoveNameTest(ref string entName, int dim, int delId, int maxId)

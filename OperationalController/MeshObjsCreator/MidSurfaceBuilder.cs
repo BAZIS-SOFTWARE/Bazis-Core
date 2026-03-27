@@ -1,5 +1,6 @@
 ﻿using MathNet.Numerics.RootFinding;
 using MathNet.Spatial.Euclidean;
+using Microsoft.Scripting.Utils;
 using Model.GeometryObjects;
 using Mono.Unix.Native;
 using OperationalController.GmshController;
@@ -22,8 +23,8 @@ namespace OperationalController.MeshObjsCreator
         private struct SurfaceData
         {
             public int SurfaceTag { get; private set; }
-
             public Dictionary<int, double[]> CurvePointMap {  get; private set; }
+            public double[][] HolePoints { get; private set; }
             public int[] CurveTags { get; private set; }
             public SurfaceData(IGmshController controller, int surfaceTag, int points)
             {
@@ -74,10 +75,20 @@ namespace OperationalController.MeshObjsCreator
                 var curves = controller.Gmsh.Model.GetBoundary([2, SurfaceTag]).Where((v, i) => (i & 1) == 1).ToArray();
                 if (curves.Length != 4)
                     throw new ArgumentException("В настоящее время поддерживается только поверхности, построенные на 4 кривых");
-                var result = new Dictionary<CurveBound, int>();
 
                 var bounds = curves.ToDictionary(v => Math.Abs(v), k => k);
-                var loop = controller.Gmsh.Model.Occ.GetCurveLoops(SurfaceTag).Item2[0].Select(v => bounds[v]).ToArray();
+                var contours = controller.Gmsh.Model.Occ.GetCurveLoops(SurfaceTag).Item2;
+                var external = contours[0].Select(v => bounds[v]).ToArray();
+
+                var boundData = ProcessExternalContour(controller, external);
+                ProcessHolesContour(controller, contours.Skip(1).ToArray());
+                
+                return boundData;
+            }
+
+            private Dictionary<CurveBound, int> ProcessExternalContour(IGmshController controller, int[] loop)
+            {
+                var result = new Dictionary<CurveBound, int>();
 
                 for (var i = 0; i < loop.Length; ++i)
                 {
@@ -99,8 +110,12 @@ namespace OperationalController.MeshObjsCreator
                         throw new Exception($"Неизвестный тип границы кривой {curveTag}");
                     result.Add(bound, loop[i]);
                 }
-
                 return result;
+            }
+
+            private void ProcessHolesContour(IGmshController controller, int[][] holes)
+            {
+                
             }
 
             private int[] CreateReorderedCurveBounds(Dictionary<CurveBound, int> map)
@@ -140,6 +155,11 @@ namespace OperationalController.MeshObjsCreator
 
         public void Build(IEnumerable<int> surfaces)
         {
+            //TODO: обработка отверстий
+            //1: Узнать есть ли они, если есть то (получить параметризацию отверстия (кривых относительно поверхности))
+            //2: Есть ли отверстия на другой поверхности (получить параметризацию отверстия (кривых относительно поверхности), если нет ничего не делаем
+            //3: Если есть, проверим, что отверстие сквозное (кривая опирается на поверхность кроме той в которой сейчас находится, а эта
+            // поверхность принадлежит другой кривой с противоположного контура), если нет ничего не делаем
             controller.Gmsh.Model.Add("MiddleSurface");
 
             var surfs = surfaces.ToList();

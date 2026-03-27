@@ -56,6 +56,10 @@ namespace GmshApi
         private delegate int gmshModelOccAddBoxFun(double x, double y, double z, double dx, double dy, double dz, int tag, ref int ierr);
         private gmshModelOccAddBoxFun gmshModelOccAddBox = GetFunction<gmshModelOccAddBoxFun>("gmshModelOccAddBox");
 
+
+        private delegate int gmshModelOccAddTrimmedSurfaceFun(int surfaceTag, int[] wireTags, IntPtr wireTags_n, int wire3D, int tag, ref int ierr);
+        private gmshModelOccAddTrimmedSurfaceFun gmshModelOccAddTrimmedSurface = GetFunction<gmshModelOccAddTrimmedSurfaceFun>("gmshModelOccAddTrimmedSurface");
+
         private delegate int gmshModelOccAddWedgeFun(double x, double y, double z, double dx, double dy, double dz, 
                                                       int tag, double ltx, double[] zAxis, IntPtr zAxis_n, ref int ierr);
         private gmshModelOccAddWedgeFun gmshModelOccAddWedge = GetFunction<gmshModelOccAddWedgeFun>("gmshModelOccAddWedge");
@@ -194,6 +198,21 @@ namespace GmshApi
             var ierr = 0;
             tangents = tangents ?? new double[0];
             return gmshModelOccAddSpline(pointTags, (IntPtr)pointTags.Length, tag, tangents, (IntPtr)tangents.Length, ref ierr);
+        }
+
+        /// <summary>
+        /// Обрезает поверхность surfaceTag заданными wireTags, заменяя любые существующие контуры обрезки и возвращает поверхность в ядре OCC.
+        /// </summary>
+        /// <param name="surfaceTag">Исходная поверхность</param>
+        /// <param name="wireTags">Массив контуров, первый элемент указывает на внешний контур, второй на контур отверстия</param>
+        /// <param name="wire3D">Если true использовать проекцию wireTags на поверхность, иначе использовать параметрическое пространство</param>
+        /// <param name="tag">Желаемый идентификатор, или -1 для автоназначения</param>
+        /// <returns>Возвращает идентификатор подрезанной поверхности</returns>
+        public int AddTrimmedSurface(int surfaceTag, int[] wireTags = null, bool wire3D = false, int tag = -1)
+        {
+            var ierr = 0;
+            wireTags = wireTags ?? new int[0];
+            return gmshModelOccAddTrimmedSurface(surfaceTag, wireTags, (IntPtr)wireTags.Length, Convert.ToInt32(wire3D), tag, ref ierr);
         }
 
         /// <summary>
