@@ -9,6 +9,12 @@
     <IsTestProject>true</IsTestProject>
     <Platforms>AnyCPU;x86</Platforms>
   </PropertyGroup>
+  
+  <ItemGroup>
+    <Compile Remove="TestTaskParameters\**" />
+    <EmbeddedResource Remove="TestTaskParameters\**" />
+    <None Remove="TestTaskParameters\**" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="EntityFramework" Version="6.5.1" />
     <PackageReference Include="MathNet.Numerics.Signed" Version="5.0.0" />
@@ -33,9 +39,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Examples\ProjAndResults\term_iterative.bsf" />
-    <None Include="TestTaskParameters\механическая_testParam.jsp" />
-    <None Include="TestTaskParameters\тепловая_testParam.jsp" />
-    <None Include="TestTaskParameters\химическая_testParam.jsp" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Examples\3D\TestProjTerm\multiPass\Cycles\functions.txt" />

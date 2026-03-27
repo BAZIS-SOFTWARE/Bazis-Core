@@ -1,11 +1,11 @@
 ﻿using Geometry;
+using MaterialDB.FunctionData;
+using MaterialDB.MaterialData;
 using Model.Interfaces;
 using Model.Interfaces.MeshObjects;
+using Model.MeshObjects;
 using Project.Interfaces.Tasks;
-using System;
 using System.Collections.Generic;
-using System.Text;
-using static IronPython.Modules._ast;
 
 namespace OperationalController
 {
@@ -58,5 +58,37 @@ namespace OperationalController
         /// <param name="info"></param>
         /// <returns></returns>
         ICondData Create(DataKind kind, string info);
+        /// <summary>
+        /// Create
+        /// </summary>
+        /// <param name="projectFile"></param>
+        void CreateProject(string projectFile);
+
+        /// <summary>
+        /// CreateTask
+        /// </summary>
+        void CreateTask();
+        /// <summary>
+        /// CreateTask
+        /// </summary>
+        /// <param name="materials"></param>
+        /// <param name="functions"></param>
+        void CreateTask(MaterialDBData materials, FunctionDBData functions);
+        /// <summary>
+        /// Create1DFrom2D
+        /// </summary>
+        /// <returns></returns>
+        bool Create1DFrom2D();
+        /// <summary>
+        /// Create2DForm3D
+        /// </summary>
+        /// <returns></returns>
+        bool Create2DForm3D();
+        /// <summary>
+        /// CreateBoundaryEdges
+        /// </summary>
+        /// <param name="linesNodes"></param>
+        /// <returns></returns>
+        IEnumerable<ILineObject<Node>> CreateBoundaryEdges(List<string> linesNodes);
     }
 }

@@ -58,6 +58,50 @@ namespace OperationalController
             }
         }
 
+        /// <summary>
+        /// Отбирает набор сущностей в пределах топологического "scope".
+        /// Если <paramref name="startDim"/> и <paramref name="targetDim"/> совпадают, метод возвращает исходный набор.
+        /// В противном случае сначала поднимает исходные сущности по смежностям до уровня <paramref name="targetDim"/> (см. <see cref="ClimbUp"/>),
+        /// затем спускается с этого уровня обратно, чтобы собрать все сущности исходной размерности, связанные через найденные верхние элементы
+        /// (см. <see cref="DescendDown"/>). В результате возвращается множество уникальных номеров сущностей размерности <paramref name="startDim"/>,
+        /// которые принадлежат одному топологическому объёму при расширении до <paramref name="targetDim"/>.
+        /// </summary>
+        public HashSet<int> SelectByScope(int startDim, IEnumerable<int> selectedNumbers, int targetDim)
+        {
+            if (startDim == targetDim)
+                return new HashSet<int>(selectedNumbers);
+
+            var topLevel = TraverseAdjacenciesRecursive(startDim, selectedNumbers, targetDim);
+            var result = TraverseAdjacenciesRecursive(targetDim, topLevel, startDim);
+
+            return result;
+        }
+        /// <summary>
+        /// Рекурсивно обходит смежности топологических сущностей, переходя от текущей размерности
+        /// <paramref name="currentDim"/> к целевой <paramref name="targetDim"/>, и собирает множество
+        /// уникальных номеров сущностей на целевой размерности.
+        /// </summary>
+        private HashSet<int> TraverseAdjacenciesRecursive(int currentDim,IEnumerable<int> currentLevel,int targetDim)
+        {
+            if (currentDim == targetDim)
+                return new HashSet<int>(currentLevel);
+
+            var nextLevel = new HashSet<int>();
+            int step = targetDim > currentDim ? 1 : -1;
+
+            foreach (var number in currentLevel)
+            {
+                var (upper, lower) = GmshController.Gmsh.Model.GetAdjacencies(currentDim, number);
+
+                var neighbors = step > 0 ? upper : lower;
+
+                foreach (var n in neighbors)
+                    nextLevel.Add(n);
+            }
+
+            return TraverseAdjacenciesRecursive(currentDim + step, nextLevel, targetDim);
+        }
+
         private ObjType GetObjType(int dim)
         {
             if (dim == 0)
