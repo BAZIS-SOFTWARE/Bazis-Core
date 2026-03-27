@@ -45,13 +45,7 @@ namespace TestProject
         [DataRow("Сталь_20", "Тепловые свойства", "Теплопроводность", "0,0,0,0,1", 500.0f, 0.021f)]
         public void TestMaterialsLoadingFromJson(string mat, string cat, string prop, string phases, float temp, float res)
         {
-            var settingsSerializer = new JsonSerializerSettings
-            {
-                TypeNameHandling = TypeNameHandling.Auto,
-                Formatting = Formatting.Indented,
-            };
-            var materials = JsonConvert.DeserializeObject<MaterialDBData>
-                (File.ReadAllText($@"..\..\..\Materials\materials_v7.jsf"), settingsSerializer);
+            var materials = new MaterialDBData("materials_v7.jsf", $@"..\..\..\Materials");
 
             var phaseValues = phases.Split(',').Select(x => float.Parse(x));
 
@@ -79,13 +73,7 @@ namespace TestProject
     DisplayName = "Титан_Фиктивный")]
         public void TestMaterialsChecking(string mat)
         {
-            var settingsSerializer = new JsonSerializerSettings
-            {
-                TypeNameHandling = TypeNameHandling.Auto,
-                Formatting = Formatting.Indented,
-            };
-            var materials = JsonConvert.DeserializeObject<MaterialDBData>
-                (File.ReadAllText($@"..\..\..\Materials\materials_v7.jsf"), settingsSerializer);
+            var materials = new MaterialDBData("materials_v7.jsf", $@"..\..\..\Materials");
 
             Assert.AreEqual(true, materials[mat].CheckThermalProps());
             Assert.AreEqual(true, materials[mat].CheckMechanicalProps());
@@ -105,14 +93,7 @@ DisplayName = "Сталь_20 и Титан_Вт6 и Титан_Фиктивны�
 
         public void TestMaterialsGetSummaryPhases(string[] mats, int phaseCount)
         {
-            var settingsSerializer = new JsonSerializerSettings
-            {
-                TypeNameHandling = TypeNameHandling.Auto,
-                Formatting = Formatting.Indented,
-            };
-            var materials = JsonConvert.DeserializeObject<MaterialDBData>
-                (File.ReadAllText($@"..\..\..\Materials\materials_v7.jsf"), settingsSerializer);
-
+            var materials = new MaterialDBData("materials_v7.jsf", $@"..\..\..\Materials");
             Assert.AreEqual(phaseCount, materials.GetPhases(mats.ToList()).Count);
         }
 
@@ -122,15 +103,7 @@ DisplayName = "Сталь_20 и Титан_Вт6 и Титан_Фиктивны�
         [DataRow("ISORAPID.277.HM", 500.0f, 0.004f)]
         public void TestFunctions(string fun, float variable, float res)
         {
-
-            var settingsSerializer = new JsonSerializerSettings
-            {
-                TypeNameHandling = TypeNameHandling.Auto,
-                Formatting = Formatting.Indented,
-            };
-            var functions = JsonConvert.DeserializeObject<FunctionDBData>
-                 (File.ReadAllText(@"..\..\..\Functions\functions.jsf"), settingsSerializer);
-
+            var functions = new FunctionDBData("functions.jsf", @"..\..\..\Functions");
             var value = functions[fun].CalcProp(variable);
 
             Assert.AreEqual(value, res, 0.000001);
@@ -140,13 +113,7 @@ DisplayName = "Сталь_20 и Титан_Вт6 и Титан_Фиктивны�
         [DataRow("Сталь_20ХМ")]
         public void TestMaterialsCopy(string materialName)
         {
-            var settingsSerializer = new JsonSerializerSettings
-            {
-                TypeNameHandling = TypeNameHandling.Auto,
-                Formatting = Formatting.Indented,
-            };
-            var materials = JsonConvert.DeserializeObject<MaterialDBData>
-                (File.ReadAllText($@"..\..\..\Materials\materials_v7.jsf"), settingsSerializer);
+            var materials = new MaterialDBData("materials_v7.jsf", $@"..\..\..\Materials");
 
             var oldMaterial = materials[materialName];
             var newMaterial = materials[materialName].Copy(materialName + "_копия");
@@ -163,14 +130,7 @@ DisplayName = "Сталь_20 и Титан_Вт6 и Титан_Фиктивны�
         [DataRow("Коэф.теплоотдачи.воздух")]
         public void TestFunctionsCopy(string functionName)
         {
-
-            var settingsSerializer = new JsonSerializerSettings
-            {
-                TypeNameHandling = TypeNameHandling.Auto,
-                Formatting = Formatting.Indented,
-            };
-            var functions = JsonConvert.DeserializeObject<FunctionDBData>
-                 (File.ReadAllText(@"..\..\..\Functions\functions.jsf"), settingsSerializer);
+            var functions = new FunctionDBData("functions.jsf", @"..\..\..\Functions");
 
             var oldFunction = functions[functionName];
             var newFunction = functions[functionName].Copy(functionName + "_копия");

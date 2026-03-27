@@ -89,13 +89,13 @@ namespace MaterialDB.FunctionData
             return dic.GetEnumerator();
         }
 
-        public FunctionDBData(string dbName, string dbPath) : this()
+        public FunctionDBData(string dbName, string dbFolder) : this()
         {
 
-            var filePath = FindFileByPath(dbPath, dbName);
+            var filePath = FindFileByPath(dbFolder, dbName);
             if (filePath == null)
             {
-                throw new Exception($"Не найдена база {dbName} в папке {dbPath}");
+                throw new Exception($"Не найдена база {dbName} в папке {dbFolder}");
             }
 
             else
@@ -107,7 +107,7 @@ namespace MaterialDB.FunctionData
                 };
 
                 var db = JsonConvert.DeserializeObject<FunctionDBData>
-   (File.ReadAllText($@"{dbPath}\{dbName}"), settingsSerializer);
+   (File.ReadAllText($@"{dbFolder}\{dbName}"), settingsSerializer);
 
                 Name = dbName;
                 dic = db.dic;
@@ -120,9 +120,9 @@ namespace MaterialDB.FunctionData
             Name = "newFunctionsDb";
         }
 
-        private string? FindFileByPath(string path, string fileName)
+        private string? FindFileByPath(string folder, string fileName)
         {
-            var projFiles = Directory.GetFiles(path, fileName, SearchOption.AllDirectories);
+            var projFiles = Directory.GetFiles(folder, fileName, SearchOption.TopDirectoryOnly);
             if (projFiles.Count() > 0)
             {
                 return Path.GetDirectoryName(projFiles[0]);

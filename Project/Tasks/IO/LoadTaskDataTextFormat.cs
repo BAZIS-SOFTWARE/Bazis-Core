@@ -85,36 +85,36 @@ namespace Project.Tasks.IO
             return taskData;
         }
 
-        public T GetDataBase<T>(string dbName, string dbPath)
-        {
-            var filePath = FindFileByPath(dbPath, dbName);
-            if (filePath == null)
-            {
-                throw new Exception($"Не найдена база {dbName} в папке {dbPath}");
-            }
+    //    public T GetDataBase<T>(string dbName, string dbPath)
+    //    {
+    //        var filePath = FindFileByPath(dbPath, dbName);
+    //        if (filePath == null)
+    //        {
+    //            throw new Exception($"Не найдена база {dbName} в папке {dbPath}");
+    //        }
 
-            else
-            {
-                var settingsSerializer = new JsonSerializerSettings
-                {
-                    TypeNameHandling = TypeNameHandling.Auto,
-                    Formatting = Formatting.Indented,
-                };
+    //        else
+    //        {
+    //            var settingsSerializer = new JsonSerializerSettings
+    //            {
+    //                TypeNameHandling = TypeNameHandling.Auto,
+    //                Formatting = Formatting.Indented,
+    //            };
 
-                return JsonConvert.DeserializeObject<T>
-    (File.ReadAllText($@"{dbPath}\{dbName}"), settingsSerializer);
-            }
-        }
+    //            return JsonConvert.DeserializeObject<T>
+    //(File.ReadAllText($@"{dbPath}\{dbName}"), settingsSerializer);
+    //        }
+    //    }
 
-        private string FindFileByPath(string path, string fileName)
-        {
-            var projFiles = Directory.GetFiles(path, fileName, SearchOption.AllDirectories);
-            if (projFiles.Count() > 0)
-            {
-                return Path.GetDirectoryName(projFiles[0]);
-            }
+    //    private string FindFileByPath(string path, string fileName)
+    //    {
+    //        var projFiles = Directory.GetFiles(path, fileName, SearchOption.AllDirectories);
+    //        if (projFiles.Count() > 0)
+    //        {
+    //            return Path.GetDirectoryName(projFiles[0]);
+    //        }
 
-            return null;
-        }
+    //        return null;
+    //    }
     }
 }

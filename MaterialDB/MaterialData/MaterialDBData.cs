@@ -180,13 +180,13 @@ namespace MaterialDB.MaterialData
             Name = "newMaterialsDb";
         }
 
-        public MaterialDBData(string dbName, string dbPath) : this()
+        public MaterialDBData(string dbName, string dbFolder) : this()
         {
 
-            var filePath = FindFileByPath(dbPath, dbName);
+            var filePath = FindFileByPath(dbFolder, dbName);
             if (filePath == null)
             {
-                throw new Exception($"Не найдена база {dbName} в папке {dbPath}");
+                throw new Exception($"Не найдена база {dbName} в папке {dbFolder}");
             }
 
             else
@@ -198,7 +198,7 @@ namespace MaterialDB.MaterialData
                 };
 
                 var db = JsonConvert.DeserializeObject<MaterialDBData>
-   (File.ReadAllText($@"{dbPath}\{dbName}"), settingsSerializer);
+   (File.ReadAllText($@"{dbFolder}\{dbName}"), settingsSerializer);
 
                 Name = dbName;
                 materials = db.materials;
@@ -206,9 +206,9 @@ namespace MaterialDB.MaterialData
 
         }
 
-        private string? FindFileByPath(string path, string fileName)
+        private string? FindFileByPath(string folder, string fileName)
         {
-            var projFiles = Directory.GetFiles(path, fileName, SearchOption.AllDirectories);
+            var projFiles = Directory.GetFiles(folder, fileName, SearchOption.TopDirectoryOnly);
             if (projFiles.Count() > 0)
             {
                 return Path.GetDirectoryName(projFiles[0]);
