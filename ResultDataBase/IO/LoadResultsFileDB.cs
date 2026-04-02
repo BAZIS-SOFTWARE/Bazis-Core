@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace ResultDB.IO
 {
@@ -169,6 +170,69 @@ namespace ResultDB.IO
             }
 
             db.CloseConnection();
+        }
+
+        public void Merge(string dbPath1, string dbPath2)
+        {
+            var type1 = GetDbType(dbPath1);
+            var type2 = GetDbType(dbPath2);
+
+            //if (type1 != type2)
+            //    throw new InvalidOperationException("Нельзя объединять БД разных типов");
+
+            var times1 = GetValues(dbPath1, GetTablesNames(dbPath1).First(), "Time").ToList();
+            var times2 = GetValues(dbPath2, GetTablesNames(dbPath2).First(), "Time").ToList();
+
+            //ValidateTimeIntersection(times1, times2);
+
+            var directory = Path.GetDirectoryName(dbPath1);
+            float minTime = Math.Min(times1.Min(), times2.Min());
+            float maxTime = Math.Max(times1.Max(), times2.Max());
+
+            var resultDBPath = Path.Combine(directory, $"{type1}_0_{minTime}_{maxTime}.db");
+
+            var db1 = new ResultDataBase(dbPath1);
+            var db2 = new ResultDataBase(dbPath2);
+            var resultDB = new ResultDataBase(resultDBPath);
+
+            db1.OpenConnection();
+            db2.OpenConnection();
+            resultDB.OpenConnection();
+        }
+
+
+        private TaskKind GetDbType(string path)
+        {
+            var name = Path.GetFileNameWithoutExtension(path).Split('_')[0];
+
+            switch (name)
+            {
+                case "термическая":
+                    return TaskKind.термическая;
+                 case "механическая":
+                    return TaskKind.механическая;
+                 default:
+                    throw new Exception("Неизвестный тип БД");
+            }
+
+        }
+
+        private void ValidateTimeIntersection(List<float> t1, List<float> t2)
+        {
+            float min1 = t1.Min();
+            float max1 = t1.Max();
+
+            float min2 = t2.Min();
+            float max2 = t2.Max();
+
+            bool valid =
+                max1 == min2 ||
+                max2 == min1 ||
+                max1 < min2 ||
+                max2 < min1;
+
+            if (!valid)
+                throw new InvalidOperationException("Некорректное пересечение временных шагов");
         }
     }
 }
