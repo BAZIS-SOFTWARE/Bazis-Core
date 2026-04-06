@@ -29,7 +29,7 @@ namespace OperationalController.MeshObjsCreator
             rotAxis = Vector3.Normalize(rotAxis);
             var tetLayers = new List<List<Element3D>>();
             curLayer = SortFirstLayer(curLayer);
-            var firstLayer = CreateFirstSurface(curLayer);
+            var firstLayer = CreateCopy(curLayer);
             curLayer = firstLayer;
 
             radAngle = float.Clamp(radAngle, 0, 2 * MathF.PI);
@@ -69,7 +69,7 @@ namespace OperationalController.MeshObjsCreator
             rotAxis = Vector3.Normalize(rotAxis);
             var tetLayers = new List<List<Element3D>>();
             curLayer = SortFirstLayer(curLayer);
-            var firstLayer = CreateFirstSurface(curLayer);
+            var firstLayer = CreateCopy(curLayer);
             curLayer = firstLayer;
 
             var offset = radAngle / segments;

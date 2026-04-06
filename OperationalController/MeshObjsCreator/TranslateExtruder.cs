@@ -29,7 +29,7 @@ namespace OperationalController.MeshObjsCreator
             var tetLayers = new List<List<Element3D>>();
 
             var sortedLayer = SortFirstLayer(curLayer);
-            curLayer = CreateFirstSurface(sortedLayer);
+            curLayer = CreateCopy(sortedLayer);
 
             for (var i = 0; i < layers; ++i)
             {
@@ -56,7 +56,7 @@ namespace OperationalController.MeshObjsCreator
             var tetLayers = new List<List<Element3D>>();
 
             var sortedLayer = SortFirstLayer(curLayer);
-            curLayer = CreateFirstSurface(sortedLayer);
+            curLayer = CreateCopy(sortedLayer);
 
             for (var i = 0; i < layers; ++i)
             {

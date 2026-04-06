@@ -48,7 +48,7 @@ namespace OperationalController.MeshObjsCreator
             init = basisList[0];
 
             firstLayer = SortFirstLayer(firstLayer);
-            var curLayer = CreateFirstSurface(firstLayer);
+            var curLayer = CreateCopy(firstLayer);
 
             for (var i = 0; i < layers; ++i)
             {
@@ -76,7 +76,7 @@ namespace OperationalController.MeshObjsCreator
             init = basisList[0];
 
             firstLayer = SortFirstLayer(firstLayer);
-            var curLayer = CreateFirstSurface(firstLayer);
+            var curLayer = CreateCopy(firstLayer);
 
             for (var i = 0; i < layers; ++i)
             {
@@ -126,7 +126,7 @@ namespace OperationalController.MeshObjsCreator
         /// </summary>
         /// <param name="src">Слой источник 2д элементов</param>
         /// <returns>Копия 2д элементов</returns>
-        protected override List<Element2D> CreateFirstSurface(IEnumerable<Element2D> src)
+        protected override List<Element2D> CreateCopy(IEnumerable<Element2D> src)
         {
             var layer = new List<Element2D>();
             var visited = new Dictionary<int, Node>();

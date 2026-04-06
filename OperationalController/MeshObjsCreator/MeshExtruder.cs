@@ -101,7 +101,7 @@ namespace OperationalController.MeshObjsCreator
         /// </summary>
         /// <param name="src">Слой источник 2д элементов</param>
         /// <returns>Копия 2д элементов</returns>
-        protected virtual List<Element2D> CreateFirstSurface(IEnumerable<Element2D> src)
+        protected virtual List<Element2D> CreateCopy(IEnumerable<Element2D> src)
         {
             var layer = new List<Element2D>();
             var visited = new Dictionary<int, Node>();
