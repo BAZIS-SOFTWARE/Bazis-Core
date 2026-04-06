@@ -193,13 +193,71 @@ namespace ResultDB.IO
 
             var db1 = new ResultDataBase(dbPath1);
             var db2 = new ResultDataBase(dbPath2);
-            var resultDB = new ResultDataBase(resultDBPath);
+            var resultDb = new ResultDataBase(resultDBPath);
 
             db1.OpenConnection();
             db2.OpenConnection();
-            resultDB.OpenConnection();
+            resultDb.OpenConnection();
+
+            var tables = GetTablesNames(dbPath1).ToList();
+
+            
+            foreach (var table in tables)
+            {
+                var columns = db1.GetTableShema(table)
+                    .Select(c => $"{c} REAL") 
+                    .ToArray();
+
+                resultDb.CreateTables(table, columns);
+            }
+            foreach (var table in tables)
+            {
+                CopyTable(db1, resultDb, table);
+                CopyTable(db2, resultDb, table);
+            }
+
+            db1.CloseConnection();
+            db2.CloseConnection();
+            resultDb.CloseConnection();
+
         }
 
+        private void CopyTable(ResultDataBase source, ResultDataBase target, string table)
+        {
+            var data = source.GetResults(table, "*", "");
+
+            if (data.Rows.Count == 0)
+                return;
+
+            var columns = string.Join(",", data.Columns.Cast<DataColumn>().Select(c => c.ColumnName));
+
+            var sb = new System.Text.StringBuilder();
+
+            foreach (DataRow row in data.Rows)
+            {
+                var values = string.Join(",", row.ItemArray.Select(v => FormatValue(v)));
+                sb.AppendLine(target.CreateAddCommand(table, columns, values));
+            }
+
+            target.AddData(sb.ToString());
+        }
+
+        private string FormatValue(object value)
+        {
+            if (value == null || value == DBNull.Value)
+                return "NULL";
+
+            if (value is string || value is DateTime)
+                return "'" + value.ToString() + "'";
+
+            if (value is float || value is double || value is decimal)
+                return Convert.ToString(value, System.Globalization.CultureInfo.InvariantCulture);
+
+            if (value is bool)
+                return ((bool)value) ? "1" : "0";
+
+            return value.ToString();
+        }
 
         private TaskKind GetDbType(string path)
         {
