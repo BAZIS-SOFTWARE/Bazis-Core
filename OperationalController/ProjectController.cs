@@ -11,6 +11,7 @@ using System.Drawing;
 using System;
 using OperationalController.GmshController;
 using System.Numerics;
+using Model.MeshObjects;
 
 namespace OperationalController
 {

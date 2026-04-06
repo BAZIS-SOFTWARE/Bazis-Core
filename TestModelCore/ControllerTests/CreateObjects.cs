@@ -57,5 +57,26 @@ namespace ControllerTests
             //assert
             Assert.AreNotEqual(contr.GetModelElements(dim, "newSet").Count(), 0);
         }
+        [TestMethod]
+        public void Create2DMeshOnPoligon()
+        {
+            //act
+            var contr = new ProjectController();
+
+            var points = new List<Point2D>()
+            {
+                new Point2D(0,0),
+                new Point2D(0,10),
+                new Point2D(10,10),
+                new Point2D(10,0)
+            };
+
+            contr.CreateProject(@"newProj.bpf2");
+            contr.CreateQuadMeshOnPoligon(points, 2);
+
+
+            //assert
+            Assert.AreNotEqual(contr.GetModelElements(2, "append_0").Count(), 0);
+        }
     }
 }
