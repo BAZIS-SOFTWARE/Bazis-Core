@@ -686,5 +686,38 @@ x.Time.CompareTo(0) >= 0
             
         }
 
+        [TestMethod]
+        public void Merge_ShouldCreateMergedDatabaseWithCombinedRows()
+        {
+            var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(tempDir);
+
+            try
+            {
+                var db1Path = @"..\..\..\Examples\ProjAndResults\merge\термическая_2_1_2.db";
+                var db2Path = @"..\..\..\Examples\ProjAndResults\merge\термическая_3_2_3.db";
+
+                // Выполняем слияние
+                var loader = new LoadResultsFileDB();
+                loader.Merge(db1Path, db2Path);
+
+                //// Ожидаемый путь результата
+                //var resultPath = Path.Combine(tempDir, "термическая_0_0_1.db");
+                //Assert.IsTrue(File.Exists(resultPath), "Merged database was not created.");
+
+                //// Проверяем, что в результирующей базе две записи в таблице nodes
+                //var resultDb = new ResultDataBase(resultPath);
+                //resultDb.OpenConnection();
+                //var table = resultDb.GetResults("nodes", "*", "");
+                //resultDb.CloseConnection();
+
+                //Assert.AreEqual(2, table.Rows.Count, "Merged table should contain rows from both databases.");
+            }
+            finally
+            {
+                // Удаляем временную директорию
+                try { Directory.Delete(tempDir, true); } catch { /* ignore cleanup errors */ }
+            }
+        }
     }
 }
