@@ -2,9 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
+using System.Data.SQLite;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
+using System.Transactions;
 
 namespace ResultDB.IO
 {
@@ -172,18 +175,29 @@ namespace ResultDB.IO
             db.CloseConnection();
         }
 
+        /// <summary>
+        /// Объединяет две базы данных результатов в одну новую базу.
+        /// </summary>
+        /// <param name="dbPath1">Файловый путь к первой (первичной) базе данных.</param>
+        /// <param name="dbPath2">Файловый путь ко второй (вторичной) базе данных.</param>
+        /// <exception cref="InvalidOperationException">
+        /// Выбрасывается, если типы БД различаются (например, термическая и механическая),
+        /// либо если временные шаги пересекаются некорректным образом.
+        /// </exception>
+        /// <exception cref="Exception">Выбрасывается при ошибке определения типа БД или при ошибках работы с SQLite.</exception>
         public void Merge(string dbPath1, string dbPath2)
         {
             var type1 = GetDbType(dbPath1);
             var type2 = GetDbType(dbPath2);
 
-            //if (type1 != type2)
-            //    throw new InvalidOperationException("Нельзя объединять БД разных типов");
+            if (type1 != type2)
+                throw new InvalidOperationException("Нельзя объединять БД разных типов");
 
-            var times1 = GetValues(dbPath1, GetTablesNames(dbPath1).First(), "Time").ToList();
+            var tables = GetTablesNames(dbPath1).ToList();
+            var times1 = GetValues(dbPath1, tables.First(), "Time").ToList();
             var times2 = GetValues(dbPath2, GetTablesNames(dbPath2).First(), "Time").ToList();
 
-            //ValidateTimeIntersection(times1, times2);
+            ValidateTimeIntersection(times1, times2);
 
             var directory = Path.GetDirectoryName(dbPath1);
             float minTime = Math.Min(times1.Min(), times2.Min());
@@ -191,72 +205,41 @@ namespace ResultDB.IO
 
             var resultDBPath = Path.Combine(directory, $"{type1}_0_{minTime}_{maxTime}.db");
 
-            var db1 = new ResultDataBase(dbPath1);
-            var db2 = new ResultDataBase(dbPath2);
-            var resultDb = new ResultDataBase(resultDBPath);
-
-            db1.OpenConnection();
-            db2.OpenConnection();
-            resultDb.OpenConnection();
-
-            var tables = GetTablesNames(dbPath1).ToList();
-
-            
-            foreach (var table in tables)
+            using (var connection = new SQLiteConnection("Data Source=" + resultDBPath + ";Version=3;Synchronous=OFF;Journal Mode=DELETE;", true))
             {
-                var columns = db1.GetTableShema(table)
-                    .Select(c => $"{c} REAL") 
-                    .ToArray();
+                connection.Open();
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText =
+                        $"ATTACH DATABASE '{dbPath1}' AS db1; " +
+                        $"ATTACH DATABASE '{dbPath2}' AS db2; ";
+                    command.ExecuteNonQuery();
 
-                resultDb.CreateTables(table, columns);
+                    try
+                    {
+                        foreach (var table in tables)
+                        {
+                            command.CommandText =
+                                $"CREATE TABLE {table} AS SELECT * FROM db1.{table} WHERE 0;";
+                            command.ExecuteNonQuery();
+                            command.CommandText =
+                                $"INSERT INTO main.{table} SELECT * FROM db1.{table};";
+                            command.ExecuteNonQuery();
+                            command.CommandText = 
+                                $"INSERT INTO main.{table} SELECT * FROM db2.{table} " +
+                                $"WHERE time > (SELECT MAX(time) FROM db1.{table});";
+                            command.ExecuteNonQuery();
+                        }
+                    }
+                    finally
+                    {
+                        command.CommandText =
+                            "DETACH DATABASE db1;" +
+                            "DETACH DATABASE db2;";
+                        command.ExecuteNonQuery();
+                    }
+                }
             }
-            foreach (var table in tables)
-            {
-                CopyTable(db1, resultDb, table);
-                CopyTable(db2, resultDb, table);
-            }
-
-            db1.CloseConnection();
-            db2.CloseConnection();
-            resultDb.CloseConnection();
-
-        }
-
-        private void CopyTable(ResultDataBase source, ResultDataBase target, string table)
-        {
-            var data = source.GetResults(table, "*", "");
-
-            if (data.Rows.Count == 0)
-                return;
-
-            var columns = string.Join(",", data.Columns.Cast<DataColumn>().Select(c => c.ColumnName));
-
-            var sb = new System.Text.StringBuilder();
-
-            foreach (DataRow row in data.Rows)
-            {
-                var values = string.Join(",", row.ItemArray.Select(v => FormatValue(v)));
-                sb.AppendLine(target.CreateAddCommand(table, columns, values));
-            }
-
-            target.AddData(sb.ToString());
-        }
-
-        private string FormatValue(object value)
-        {
-            if (value == null || value == DBNull.Value)
-                return "NULL";
-
-            if (value is string || value is DateTime)
-                return "'" + value.ToString() + "'";
-
-            if (value is float || value is double || value is decimal)
-                return Convert.ToString(value, System.Globalization.CultureInfo.InvariantCulture);
-
-            if (value is bool)
-                return ((bool)value) ? "1" : "0";
-
-            return value.ToString();
         }
 
         private TaskKind GetDbType(string path)
@@ -272,7 +255,6 @@ namespace ResultDB.IO
                  default:
                     throw new Exception("Неизвестный тип БД");
             }
-
         }
 
         private void ValidateTimeIntersection(List<float> t1, List<float> t2)
