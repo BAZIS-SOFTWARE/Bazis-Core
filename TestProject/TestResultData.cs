@@ -1,27 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using Geometry;
+﻿using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Project;
-using System.Globalization;
-using System.Threading;
-using Project.Interfaces.Tasks;
 using Model.Interfaces.MeshObjects;
-using System.Data;
-using System.IO;
-using PostProc.ScenePresenter;
-using PostProc;
-using Results.ScenePresenter;
-using PostProc.IO.GridExport;
-using PostProc.IO.ResultExport;
 using Model.IO;
 using OperationalController.MeshObjsUtility;
 using OperationalController.ModelScenePresentator;
-using ResultDB.IO;
-using ResultDB;
+using PostProc;
+using PostProc.IO.GridExport;
+using PostProc.IO.ResultExport;
+using PostProc.ScenePresenter;
+using Project;
+using Project.Interfaces.Tasks;
 using Project.IO;
+using ResultDB;
+using ResultDB.IO;
+using Results.ScenePresenter;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Drawing;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using static Community.CsharpSqlite.Sqlite3;
 
 
 namespace TestProject
@@ -690,6 +691,9 @@ x.Time.CompareTo(0) >= 0
         [DataRow(@"..\..\..\Examples\ProjAndResults\merge\термическая_2_1_2.db", 
                  @"..\..\..\Examples\ProjAndResults\merge\термическая_3_2_3.db", 
                  @"..\..\..\Examples\ProjAndResults\merge\термическая_0_1_3.db")]
+        [DataRow(@"..\..\..\Examples\ProjAndResults\merge\термическая_2_1_2.db",
+                 @"..\..\..\Examples\ProjAndResults\merge\термическая_2_1_2.db",
+                 @"..\..\..\Examples\ProjAndResults\merge\термическая_0_1_2.db")]
         public void MergeDataBase(string path1, string path2, string resultPath)
         {
             var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
@@ -702,21 +706,62 @@ x.Time.CompareTo(0) >= 0
                 var loader = new LoadResultsFileDB();
                 loader.Merge(db1Path, db2Path);
 
-                // Ожидаемый путь результата
                 Assert.IsTrue(File.Exists(resultPath), "Merged database was not created.");
 
-                //// Проверяем, что в результирующей базе две записи в таблице nodes
-                //var resultDb = new ResultDataBase(resultPath);
-                //resultDb.OpenConnection();
-                //var table = resultDb.GetResults("nodes", "*", "");
-                //resultDb.CloseConnection();
+                var tableName = loader.GetTablesNames(path1).First();
+                var expectedRows = GetExpectedRows(path1, path2, tableName);
+                var actualRows = GetTotalRows(resultPath, tableName);
 
-                //Assert.AreEqual(2, table.Rows.Count, "Merged table should contain rows from both databases.");
-            }
-            finally
-            {
-                // Удаляем временную директорию
-                try { Directory.Delete(tempDir, true); } catch { /* ignore cleanup errors */ }
+                Assert.AreEqual(expectedRows, actualRows, "Merged row count is incorrect.");
+                int GetTotalRows(string dbPath, string tableName)
+                {
+                    var db = new ResultDataBase(dbPath);
+                    db.OpenConnection();
+                    try
+                    {
+                        var data = db.GetResults(tableName, "*", "");
+                        return data?.Rows.Count ?? 0;
+                    }
+                    finally
+                    {
+                        db.CloseConnection();
+                    }
+                }
+
+                int GetExpectedRows(string path1, string path2, string tableName)
+                {
+                    var db1 = new ResultDataBase(path1);
+                    var db2 = new ResultDataBase(path2);
+
+                    db1.OpenConnection();
+                    db2.OpenConnection();
+
+                    try
+                    {
+                        var table1 = db1.GetResults(tableName, "*", "");
+                        var table2 = db2.GetResults(tableName, "*", "");
+
+                        if (table1 == null || table2 == null)
+                            return 0;
+
+                        var rowsDb1 = table1.Rows.Count;
+
+                        var maxTimeDb1 = table1.AsEnumerable()
+                            .Where(r => r["time"] != DBNull.Value)
+                            .Max(r => Convert.ToInt64(r["time"]));
+
+                        var rowsDb2Filtered = table2.AsEnumerable()
+                            .Count(r => r["time"] != DBNull.Value &&
+                                        Convert.ToInt64(r["time"]) > maxTimeDb1);
+
+                        return rowsDb1 + rowsDb2Filtered;
+                    }
+                    finally
+                    {
+                        db1.CloseConnection();
+                        db2.CloseConnection();
+                    }
+                }
             }
         }
     }
