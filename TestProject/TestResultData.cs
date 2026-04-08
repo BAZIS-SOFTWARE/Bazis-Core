@@ -763,6 +763,7 @@ x.Time.CompareTo(0) >= 0
                     }
                 }
             }
+            catch (Exception ex) { }
         }
     }
 }
