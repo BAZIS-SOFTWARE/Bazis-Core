@@ -1,4 +1,5 @@
 ﻿using Geometry;
+using MathNet.Numerics.Distributions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model.Interfaces.MeshObjects;
 using Model.IO;
@@ -688,8 +689,8 @@ x.Time.CompareTo(0) >= 0
         }
 
         [TestMethod]
-        [DataRow(@"..\..\..\Examples\ProjAndResults\merge\термическая_2_1_2.db", 
-                 @"..\..\..\Examples\ProjAndResults\merge\термическая_3_2_3.db", 
+        [DataRow(@"..\..\..\Examples\ProjAndResults\merge\термическая_2_1_2.db",
+                 @"..\..\..\Examples\ProjAndResults\merge\термическая_3_2_3.db",
                  @"..\..\..\Examples\ProjAndResults\merge\термическая_0_1_3.db")]
         [DataRow(@"..\..\..\Examples\ProjAndResults\merge\термическая_3_2_3.db",
                  @"..\..\..\Examples\ProjAndResults\merge\термическая_2_1_2.db",
@@ -716,6 +717,7 @@ x.Time.CompareTo(0) >= 0
                 var actualRows = GetTotalRows(resultPath, tableName);
 
                 Assert.AreEqual(expectedRows, actualRows, "Merged row count is incorrect.");
+                
                 int GetTotalRows(string dbPath, string tableName)
                 {
                     var db = new ResultDataBase(dbPath);
@@ -733,9 +735,16 @@ x.Time.CompareTo(0) >= 0
 
                 int GetExpectedRows(string path1, string path2, string tableName)
                 {
-                    var db1 = new ResultDataBase(path1);
-                    var db2 = new ResultDataBase(path2);
+                    var t1 = loader.GetValues(path1, loader.GetTablesNames(path1).First(), "Time").ToList();
+                    var t2 = loader.GetValues(path2, loader.GetTablesNames(path2).First(), "Time").ToList();
+                    var db1Path = path1;
+                    var db2Path = path2;
 
+                    if (t1.Last() > t2.Last())
+                        (db1Path, db2Path) = (db2Path, db1Path);
+
+                    var db1 = new ResultDataBase(db1Path);
+                    var db2 = new ResultDataBase(db2Path);
                     db1.OpenConnection();
                     db2.OpenConnection();
 
@@ -766,7 +775,16 @@ x.Time.CompareTo(0) >= 0
                     }
                 }
             }
-            catch (Exception ex) { }
+            catch (Exception ex) 
+            {
+                Assert.Fail($"An exception occurred during merging: {ex.Message}");
+            }
+            finally
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                File.Delete(resultPath);
+            }
         }
     }
 }
