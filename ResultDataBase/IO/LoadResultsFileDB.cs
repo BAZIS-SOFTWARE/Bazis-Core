@@ -185,7 +185,7 @@ namespace ResultDB.IO
         /// либо если временные шаги пересекаются некорректным образом.
         /// </exception>
         /// <exception cref="Exception">Выбрасывается при ошибке определения типа БД или при ошибках работы с SQLite.</exception>
-        public void Merge(string dbPath1, string dbPath2)
+        public string Merge(string dbPath1, string dbPath2)
         {
             var type1 = GetDbType(dbPath1);
             var type2 = GetDbType(dbPath2);
@@ -246,6 +246,7 @@ namespace ResultDB.IO
                     }
                 }
             }
+            return resultDBPath;
         }
 
         private TaskKind GetDbType(string path)
