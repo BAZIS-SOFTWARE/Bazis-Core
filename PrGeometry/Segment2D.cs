@@ -30,6 +30,32 @@ namespace Geometry
             coefficients = GetLineEquationCoefficients();
         }
         /// <summary>
+        /// GetIntersection
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public Point2D GetIntersection(Segment2D other)
+        {
+            double x1 = P1._x, y1 = P1._y;
+            double x2 = P2._x, y2 = P2._y;
+            double x3 = other.P1._x, y3 = other.P1._y;
+            double x4 = other.P2._x, y4 = other.P2._y;
+
+            var denom = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
+            if (denom == 0) return null; // Параллельны
+
+            var ua = Math.Round(((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / denom,3);
+            var ub = Math.Round(((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / denom,3);
+
+            // Если ua и ub между 0 и 1, пересечение на отрезках
+            if (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1)
+            {
+                return new Point2D(x1 + ua * (x2 - x1), y1 + ua * (y2 - y1));
+            }
+            return null; // Нет пересечения
+        }
+
+        /// <summary>
         /// IsIntersectWith
         /// </summary>
         /// <param name="other"></param>
@@ -134,6 +160,7 @@ namespace Geometry
             var crossProduct = Math.Round(a._x * b._y - a._y * b._x, 3);
             return Math.Sign(crossProduct);
         }
+/// <inheritdoc/>
 
         public override string ToString()
         {
@@ -144,6 +171,34 @@ namespace Geometry
         private double[] GetLineEquationCoefficients()
         {
             return new[] { (P1._y - P2._y), (P2._x - P1._x), (P1._x * P2._y - P1._y * P2._x) };
+        }
+        /// <summary>
+        /// GetPointOnLine
+        /// </summary>
+        /// <param name="subLineLength"></param>
+        /// <returns></returns>
+        public Point2D GetPointOnLine(float subLineLength)
+        {
+            var point = new Point2D();
+
+
+            if (GetLength() == 0) return new Point2D();
+
+            point._x = P1._x + subLineLength * ((P2._x - P1._x) / GetLength());
+            point._y = P1._y + subLineLength * ((P2._y - P1._y) / GetLength());
+
+
+
+            return point;
+        }
+
+        /// <summary>
+        /// GetLength
+        /// </summary>
+        /// <returns></returns>
+        public float GetLength()
+        {
+            return (float)Math.Sqrt(Math.Pow((P2._x - P1._x), 2) + Math.Pow((P2._y - P1._y), 2));
         }
     }
 }

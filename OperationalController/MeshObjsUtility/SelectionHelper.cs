@@ -57,9 +57,10 @@ namespace OperationalController.MeshObjsUtility
         }
 /// <inheritdoc/>
 
-        public void SelectNodeInPlane(IObjectsData objectsData, Plane plane, Color color)
+        public List<int> SelectNodeInPlane(IObjectsData objectsData, Plane plane, Color color)
                     
         {
+            var used = new HashSet<int>();
             var nodes = objectsData.NodesSet;
             foreach (var node in nodes.Values)
             {
@@ -67,10 +68,14 @@ namespace OperationalController.MeshObjsUtility
                 {
                     var dist = plane.PointPosition(node.Position);
                     if (Math.Abs(dist) < 1e-2)
+                    {
                         node.Color = color;
-                }
+                        used.Add(node.Number);
+                    }
 
+                }
             }
+            return used.ToList();
         }
 /// <inheritdoc/>
 

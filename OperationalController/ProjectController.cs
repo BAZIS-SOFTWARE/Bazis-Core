@@ -11,6 +11,7 @@ using System.Drawing;
 using System;
 using OperationalController.GmshController;
 using System.Numerics;
+using Model.MeshObjects;
 
 namespace OperationalController
 {
@@ -33,9 +34,9 @@ namespace OperationalController
             return selectionHelper.SelectNodeInDirection(ModelData.ObjectData, angleInGradus, numbFirst, numbSecond, color);
         }
         /// <inheritdoc/>
-        public void SelectNodeInPlane(Geometry.Plane plane, Color color)
+        public List<int> SelectNodeInPlane(Geometry.Plane plane, Color color)
         {
-            selectionHelper.SelectNodeInPlane(ModelData.ObjectData, plane, color);
+            return selectionHelper.SelectNodeInPlane(ModelData.ObjectData, plane, color);
         }
         /// <inheritdoc/>
         public List<int> SelectE2DInPlane(float angleInGradus, int startNumber, Color color)
