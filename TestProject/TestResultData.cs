@@ -691,6 +691,9 @@ x.Time.CompareTo(0) >= 0
         [DataRow(@"..\..\..\Examples\ProjAndResults\merge\термическая_2_1_2.db", 
                  @"..\..\..\Examples\ProjAndResults\merge\термическая_3_2_3.db", 
                  @"..\..\..\Examples\ProjAndResults\merge\термическая_0_1_3.db")]
+        [DataRow(@"..\..\..\Examples\ProjAndResults\merge\термическая_3_2_3.db",
+                 @"..\..\..\Examples\ProjAndResults\merge\термическая_2_1_2.db",
+                 @"..\..\..\Examples\ProjAndResults\merge\термическая_0_1_3.db")]
         [DataRow(@"..\..\..\Examples\ProjAndResults\merge\термическая_2_1_2.db",
                  @"..\..\..\Examples\ProjAndResults\merge\термическая_2_1_2.db",
                  @"..\..\..\Examples\ProjAndResults\merge\термическая_0_1_2.db")]

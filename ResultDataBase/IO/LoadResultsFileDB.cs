@@ -210,9 +210,15 @@ namespace ResultDB.IO
                 connection.Open();
                 using (var command = connection.CreateCommand())
                 {
+                    var db1Path = dbPath1;
+                    var db2Path = dbPath2;
+
+                    if (times1.Last() > times2.Last())
+                        (db1Path, db2Path) = (db2Path, db1Path);
+
                     command.CommandText =
-                        $"ATTACH DATABASE '{dbPath1}' AS db1; " +
-                        $"ATTACH DATABASE '{dbPath2}' AS db2; ";
+                        $"ATTACH DATABASE '{db1Path}' AS db1; " +
+                        $"ATTACH DATABASE '{db2Path}' AS db2;";
                     command.ExecuteNonQuery();
 
                     try
