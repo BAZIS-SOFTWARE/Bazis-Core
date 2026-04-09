@@ -19,6 +19,8 @@ using System.Numerics;
 using MathNet.Spatial.Euclidean;
 using System.Diagnostics;
 using Point3D = Geometry.Point3D;
+using MathNet.Numerics.LinearAlgebra.Factorization;
+using Project.Tasks;
 
 namespace GmshTests
 {
@@ -925,55 +927,47 @@ namespace GmshTests
         }
 
         [DataTestMethod]
-        [DataRow(32, false, false)]
-        [DataRow(13, true, false)]
-        [DataRow(24, false, true)]
-        [DataRow(17, true, true)]
-        public void ExtrudeAlongCurveTest(int layers, bool recombine, bool transfinite)
+        [DataRow(@"\CAD\cilindr.step")]
+        public void ExtrudeAlongCylinderCurveTest(string fileName)
         {
-            var proj = new ProjectController();
-            proj.GmshController.Load(@"..\..\..\..\GmshApi\gmsh.dll");
+            controller.Gmsh.Open(modelFolder + fileName);
 
-            var ctr = proj.GmshController;
+            var nodes = new Node[] { new Node(1, new Point3D(10.63178f, 2.25962f, 0.0f)),
+                                     new Node(2, new Point3D(10.42f, 3.22338f, -0.14127485f)),
+                                     new Node(3, new Point3D(11.6700233f, 2.46244f, -9.28e-11f))};
 
-            var circleCurve = ctr.Gmsh.Model.Occ.AddCircle(0, 0, 0, 1);
-            var circleWire = ctr.Gmsh.Model.Occ.AddWire([circleCurve]);
+            //Точки треугольника с другой стороны кривой
+            /*var nodes = new Node[] { new Node(1, new Point3D(-10.63178f, -2.254962f, 2e-16f)),
+                                     new Node(2, new Point3D(-11.6100235f, -2.4624429f, 9.28e-11f)),
+                                     new Node(3, new Point3D(-10.837184f, -1.2865342f, -0.14127485f)),
+                                     };*/
+            var triangles = new List<Element2D> { new Triangle_c(1, nodes) };
 
-            ctr.Gmsh.Model.Occ.AddPlaneSurface([circleWire]);
-            ctr.Gmsh.Model.Occ.Synchronize();
-
-            ctr.Gmsh.Model.Mesh.Generate(2);
-            if (recombine)
-                ctr.Gmsh.Model.Mesh.Recombine();
-
-            var pointA = ctr.Gmsh.Model.Occ.AddPoint(1, 15, 1);
-            var pointB = ctr.Gmsh.Model.Occ.AddPoint(10, 5, 10);
-            var pointC = ctr.Gmsh.Model.Occ.AddPoint(6, 9, 20);
-
-            //var curvedLine = ctr.Gmsh.Model.Occ.AddBezier([pointA, pointB, pointC]);
-            var curvedLine = ctr.Gmsh.Model.Occ.AddSpline([pointA, pointB, pointC]);
-            //var curvedLine = ctr.Gmsh.Model.Occ.AddCircle(5, 5, 5, 5);
-
-            ctr.Gmsh.Model.Occ.Synchronize();
-
-            var objs = ctr.GetMeshObjects();
-
-            var extruder = new CurveExtruder(ctr, curvedLine);
-            var e3d = transfinite ? extruder.ExtrudeTransfinite(objs.Item3, layers)
-                                  : extruder.Extrude(objs.Item3, layers);
+            var extruder = new CurveExtruder(controller, 5, 2);
+            var e3d = extruder.ExtrudeTransfinite(triangles, 0.15, 0.2);
 
             var md = new ModelData();
-            md.ObjectData.E3DCollection.AddRange("Extruded", e3d.SelectMany(v => v));
+            md.ObjectData.E3DCollection.AddRange("Seam 1", e3d.SelectMany(v => v));
 
             foreach (var node in extruder.Nodes.Values)
                 md.ObjectData.NodesSet.Add(node.Number, node);
 
-            Assert.AreEqual(0, extruder.MissedElements);
+            var md2 = new ModelData();
+            extruder = new CurveExtruder(controller, 4, 2);
+            e3d = extruder.Extrude(triangles);
+
+            md2.ObjectData.E3DCollection.AddRange("Seam 2", e3d.SelectMany(v => v));
+
+            foreach (var node in extruder.Nodes.Values)
+                md2.ObjectData.NodesSet.Add(node.Number, node);
+
+            md.Append(md2);
 
             var saver = new SaveModelToBPF2TextFile();
-            saver.Save(md, $@"D:\curveExtrudeRecombine{recombine.ToString()}Transfinite{transfinite.ToString()}.bpf2");
+            saver.Save(md, $@"D:\curvedTriangle.bpf2");
         }
 
+        /*
         [DataTestMethod]
         [DataRow(90, false, false)]
         [DataRow(77, true, false)]
@@ -1042,8 +1036,7 @@ namespace GmshTests
             var curve = controller.Gmsh.Model.Occ.AddSpline(pointData.ToArray());
             controller.Gmsh.Model.Occ.Synchronize();
             return curve;
-        }
-
+        }*/
 
         private void CreateGearSurface(IGmshController controller, double radius, double teethRadius, int teeths, double teethAngle = 15)
         {

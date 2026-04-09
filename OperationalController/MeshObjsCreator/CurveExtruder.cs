@@ -3,11 +3,9 @@ using Model.MeshObjects;
 using OperationalController.GmshController;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace OperationalController.MeshObjsCreator
 {
@@ -18,6 +16,8 @@ namespace OperationalController.MeshObjsCreator
     {
         private IGmshController controller;
         private int curveTag;
+        private double maxCurvature;
+        private bool isDirect;
 
         private Matrix4x4 init;
 
@@ -26,31 +26,35 @@ namespace OperationalController.MeshObjsCreator
         /// </summary>
         /// <param name="controller">Контролле GMSH</param>
         /// <param name="curveTag">Идентификатор кривой вдоль которой будет производится протягивание слоя</param>
-        public CurveExtruder(IGmshController controller, int curveTag)
+        /// <param name="pointTag">Выбранный идентифкатор геометрической точки начала сечения</param>
+        public CurveExtruder(IGmshController controller, int curveTag, int pointTag)
         {
             this.controller = controller;
             this.curveTag = curveTag;
+
+            maxCurvature = GetMaxCurvature();
+            DetectDirection(pointTag);
         }
         /// <summary>
         /// Создает экструзию 3д элементов методом протягивания вдоль кривой
         /// </summary>
         /// <param name="firstLayer"></param>
-        /// <param name="layers">Число слоев на кривой</param>
+        /// <param name="min">Минимальный шаг для резкой кривизны</param>
+        /// <param name="max">Максимальный шаг для пологой кривизны</param>
         /// <returns>Список 3д элементов</returns>
         /// <exception cref="ArgumentException"></exception>
-        public List<List<Element3D>> Extrude(IEnumerable<Element2D> firstLayer, int layers = 8)
+        public List<List<Element3D>> Extrude(IEnumerable<Element2D> firstLayer, double min = 0.05, double max = 0.3)
         {
-            if(layers < 1)
-                throw new ArgumentException("Число слоев не может быть меньше 1");
+            CheckSteps(min, max);
 
             var tetLayers = new List<List<Element3D>>();
-            var basisList = GetBasisOfLayers(layers);
+            var basisList = GetBasisOfLayers(firstLayer, min, max);
             init = basisList[0];
 
             firstLayer = SortFirstLayer(firstLayer);
             var curLayer = CreateCopy(firstLayer);
 
-            for (var i = 0; i < layers; ++i)
+            for (var i = 0; i < basisList.Count - 1; ++i)
             {
                 var nextLayer = CreateNextLayer(firstLayer, basisList[i + 1]);
                 var layer = CreateLayerTetrahedrons(curLayer, nextLayer);
@@ -63,22 +67,22 @@ namespace OperationalController.MeshObjsCreator
         /// Создает трансфинитную экструзию 3д элементов методом протягивания вдоль кривой
         /// </summary>
         /// <param name="firstLayer"></param>
-        /// <param name="layers">Число слоев на кривой</param>
+        /// <param name="min">Минимальный шаг для резкой кривизны</param>
+        /// <param name="max">Максимальный шаг для пологой кривизны</param>
         /// <returns>Список 3д элементов</returns>
         /// <exception cref="ArgumentException"></exception>
-        public List<List<Element3D>> ExtrudeTransfinite(IEnumerable<Element2D> firstLayer, int layers = 8)
+        public List<List<Element3D>> ExtrudeTransfinite(IEnumerable<Element2D> firstLayer, double min = 0.05, double max = 0.3)
         {
-            if (layers < 1)
-                throw new ArgumentException("Число слоев не может быть меньше 1");
+            CheckSteps(min, max);
 
             var tetLayers = new List<List<Element3D>>();
-            var basisList = GetBasisOfLayers(layers);
+            var basisList = GetBasisOfLayers(firstLayer, min, max);
             init = basisList[0];
 
             firstLayer = SortFirstLayer(firstLayer);
             var curLayer = CreateCopy(firstLayer);
 
-            for (var i = 0; i < layers; ++i)
+            for (var i = 0; i < basisList.Count - 1; ++i)
             {
                 var nextLayer = CreateNextLayer(firstLayer, basisList[i + 1]);
                 var layer = CreateTransfiniteLayer(curLayer, nextLayer);
@@ -155,55 +159,186 @@ namespace OperationalController.MeshObjsCreator
             return layer;
         }
 
-        private List<Matrix4x4> GetBasisOfLayers(int layers)
+        private void DetectDirection(int pointTag)
+        {
+            var point = controller.Gmsh.Model.GetAdjacencies(1, curveTag).Item2
+                                             .Select((v, i) => new { V = v, I = i })
+                                             .Where((v, i) => v.V == pointTag)
+                                             .FirstOrDefault();
+            if (point == null)
+                throw new Exception($"Точка с идентификатором {pointTag} не принадлежит кривой {curveTag}");
+            isDirect = point.I == 0;
+        }
+
+
+        private double GetCurrentStep(double curvature, double minT, double maxT)
+        {
+            var value = curvature / (maxCurvature + 1e-4);
+            return (1 - value) * maxT + value * minT;
+        }
+
+        private double GetMaxCurvature(int points = 100)
         {
             var p = controller.Gmsh.Model.GetParametrizationBounds(1, curveTag);
-            var step = (p.Item2[0] - p.Item1[0]) / layers;
-            var curT = p.Item1[0];
+            var step = (p.Item2[0] - p.Item1[0]) / (points - 1);
 
-            var result = new List<Matrix4x4>();
-            for (var i = 0; i <= layers; ++i)
+            var cList = new List<double>();
+            for (var i = 0; i < points; ++i)
             {
-                curT = p.Item1[0] + step * i;
-                curT = Math.Min(curT, p.Item2[0]);
+                var t = p.Item1[0] + step * i;
+                var curvature = controller.Gmsh.Model.GetCurvature(1, curveTag, [t])[0];
+                cList.Add(curvature);
+            }
 
-                var o = controller.Gmsh.Model.GetValue(1, curveTag, [curT]);
-                var t = controller.Gmsh.Model.GetDerivative(1, curveTag, [curT]);
-                var a = controller.Gmsh.Model.GetSecondDerivative(1, curveTag, [curT]);
+            var max = cList.Max();
+            return max;
+        }
 
-                var tangent = new Vector3((float)t[0], (float)t[1], (float)t[2]);
-                var nVec = new Vector3((float)a[0], (float)a[1], (float)a[2]);
-                //Формула получения нормали: dot(t,t) * a - dot(t,a) * t;
-                var normal = Vector3.Dot(tangent, tangent) * nVec - Vector3.Dot(tangent, nVec) * tangent;
+        private void CheckSteps(double min, double max)
+        {
+            if (min > max)
+                throw new ArgumentException("Минимальный шаг не должен быть больше максимального");
+            if (min <= 0)
+                throw new ArgumentException("Минимальный шаг должен быть положителен");
+        }
 
-                var basis = new Vector3((float)o[0], (float)o[1], (float)o[2]);
+        private double GetNextStep(double t, double min, double max)
+        {
+            var curCurv = controller.Gmsh.Model.GetCurvature(1, curveTag, [t]);
+            if (curCurv.Length > 0)
+            {
+                var charCurv = curCurv[0] / (maxCurvature + 1e-4);
+                var modT = (1 - charCurv) * max + charCurv * min;
+                return modT;
+            }
+            return 0;
+        }
 
-                tangent = Vector3.Normalize(tangent);
-                normal = Vector3.Normalize(normal);
+        private List<Matrix4x4> GetBasisOfLayers(IEnumerable<Element2D> elements, double min, double max)
+        {
+            if (isDirect)
+                return ProcessDirectParameterization(elements, min, max);
+            return ProcessInvertParameterization(elements, min, max);
+        }
 
-                var bn = Vector3.Cross(tangent, normal);
-                bn = Vector3.Normalize(bn);
+        private List<Matrix4x4> ProcessDirectParameterization(IEnumerable<Element2D> elements, double min, double max)
+        {
+            var result = new List<Matrix4x4>();
+            var p = controller.Gmsh.Model.GetParametrizationBounds(1, curveTag);
+            var t = p.Item1[0];
+            var dir = Math.Abs(p.Item2[0] - p.Item1[0]);
 
-                var matrix = CreateMatrix(basis, tangent, normal, bn);
-                result.Add(matrix);
+            var initComps = GetBaseComponents(t, 1);
+            var initM = CreateLocalMatrix(initComps.Item2, initComps.Item3, initComps.Item4);
+            initM = Matrix4x4.Transpose(initM);
+
+            var lastNormal = initComps.Item2;
+            var step = 0.0;
+
+            while (p.Item2[0] - t > 1e-4)
+            {
+                t = t + step >= p.Item2[0] ? t = p.Item2[0] : t + step;
+
+                var components = GetCorrectComponents(t, 1, ref lastNormal);
+                var current = CreateLocalMatrix(components.Item2, components.Item3, components.Item4);
+                var convert = GetConvertMatrix(current, components.Item1, initM, initComps.Item1);
+                result.Add(convert);
+
+                step = GetNextStep(t, min, max) * dir;
             }
 
             return result;
         }
 
-        private Matrix4x4 CreateMatrix(Vector3 origin, Vector3 tangent, Vector3 normal, Vector3 binormal)
+        private List<Matrix4x4> ProcessInvertParameterization(IEnumerable<Element2D> elements, double min, double max)
+        {
+            var result = new List<Matrix4x4>();
+            var p = controller.Gmsh.Model.GetParametrizationBounds(1, curveTag);
+            Swap(ref p.Item1[0], ref p.Item2[0]);
+            var t = p.Item1[0];
+            var dir = Math.Abs(p.Item2[0] - p.Item1[0]);
+
+            var initComps = GetBaseComponents(t, -1);
+            var initM = CreateLocalMatrix(initComps.Item2, initComps.Item3, initComps.Item4);
+            initM = Matrix4x4.Transpose(initM);
+
+            var lastNormal = initComps.Item2;
+            var step = 0.0;
+
+            while (t - p.Item2[0] > 1e-4)
+            {
+                t = t - step >= p.Item2[0] ? t - step : p.Item2[0];
+
+                var components = GetCorrectComponents(t, -1, ref lastNormal);
+                var current = CreateLocalMatrix(components.Item2, components.Item3, components.Item4);
+                var convert = GetConvertMatrix(current, components.Item1, initM, initComps.Item1);
+                result.Add(convert);
+
+                step = GetNextStep(t, min, max) * dir;
+            }
+
+            return result;
+        }
+
+        private (Vector3, Vector3, Vector3, Vector3) GetCorrectComponents(double t, int mul, ref Vector3 lastNormal)
+        {
+            var components = GetBaseComponents(t, mul);
+            var dp = Vector3.Dot(components.Item2, lastNormal);
+            if (dp < 0)
+            {
+                components.Item2 = -components.Item2;
+                components.Item3 = -components.Item3;
+            }
+            lastNormal = components.Item2;
+
+            return components;
+        }
+
+        private (Vector3, Vector3, Vector3, Vector3) GetBaseComponents(double t, int mul)
+        {
+            var rawOrigin = controller.Gmsh.Model.GetValue(1, curveTag, [t]);
+            var rawTangent = controller.Gmsh.Model.GetDerivative(1, curveTag, [t]);
+            var sDer = controller.Gmsh.Model.GetSecondDerivative(1, curveTag, [t]);
+
+            var origin = new Vector3((float)rawOrigin[0], (float)rawOrigin[1], (float)rawOrigin[2]);
+            var normal = new Vector3(mul * (float)sDer[0], mul * (float)sDer[1], mul * (float)sDer[2]);
+            if (Vector3.Dot(normal, normal) < 1e-4)
+                return (origin, Vector3.UnitX, Vector3.UnitY, Vector3.UnitZ);
+
+            var tangent = new Vector3(mul * (float)rawTangent[0], mul * (float)rawTangent[1], mul * (float)rawTangent[2]);
+            tangent = Vector3.Normalize(tangent);
+
+            normal = Vector3.Normalize(normal);
+            normal = Vector3.Dot(tangent, tangent) * normal - Vector3.Dot(tangent, normal) * tangent;
+            normal = Vector3.Normalize(normal);
+
+            var binormal = Vector3.Cross(tangent, normal);
+            binormal = Vector3.Normalize(binormal);
+
+            return (origin, normal, binormal, tangent);
+        }
+
+        private Matrix4x4 GetConvertMatrix(Matrix4x4 local, Vector3 localOrigin, Matrix4x4 init, Vector3 initOrigin)
+        {
+            var convert = init * local;
+
+            var origin = Vector3.Transform(initOrigin, convert);
+            convert.Translation = localOrigin - origin;
+
+            return convert;
+        }
+
+        private Matrix4x4 CreateLocalMatrix(Vector3 normal, Vector3 binormal, Vector3 tangent)
         {
             var matrix = Matrix4x4.Identity;
 
-            matrix.Translation = origin;
+            matrix.M11 = normal.X;
+            matrix.M12 = normal.Y;
+            matrix.M13 = normal.Z;
 
-            matrix.M11 = binormal.X;
-            matrix.M12 = binormal.Y;
-            matrix.M13 = binormal.Z;
-
-            matrix.M21 = normal.X;
-            matrix.M22 = normal.Y;
-            matrix.M23 = normal.Z;
+            matrix.M21 = binormal.X;
+            matrix.M22 = binormal.Y;
+            matrix.M23 = binormal.Z;
 
             matrix.M31 = tangent.X;
             matrix.M32 = tangent.Y;
@@ -211,6 +346,15 @@ namespace OperationalController.MeshObjsCreator
 
             return matrix;
         }
+
+        private void Swap<T>(ref T a, ref T b)
+        {
+            var temp = a;
+            a = b;
+            b = temp;
+        }
+
+
         /// <summary>
         /// Запретить создание экземпляра по умолчанию
         /// </summary>
