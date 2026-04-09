@@ -718,21 +718,20 @@ x.Time.CompareTo(0) >= 0
 
                 Assert.AreEqual(expectedRows, actualRows, "Merged row count is incorrect.");
                 
+                // Локальная вспомогательная функция: возвращает общее количество строк в таблице указанной БД.
                 int GetTotalRows(string dbPath, string tableName)
                 {
                     var db = new ResultDataBase(dbPath);
                     db.OpenConnection();
-                    try
-                    {
-                        var data = db.GetResults(tableName, "*", "");
-                        return data?.Rows.Count ?? 0;
-                    }
-                    finally
-                    {
-                        db.CloseConnection();
-                    }
+                    try{ return db.GetResults(tableName, "*", "").Rows.Count;}
+                    finally{ db.CloseConnection();}
                 }
 
+                // Локальная вспомогательная функция: вычисляет ожидаемое количество строк после слияния двух баз.
+                // Логика:
+                // - Получаем набор времен (Time) из обеих БД.
+                // - Определяем, какая БД содержит меньший максимальный Time — это будет "db1" (ранняя).
+                // - Количество ожидаемых строк = все строки из db1 + строки из db2, у которых time > maxTimeDb1.
                 int GetExpectedRows(string path1, string path2, string tableName)
                 {
                     var t1 = loader.GetValues(path1, loader.GetTablesNames(path1).First(), "Time").ToList();
@@ -740,8 +739,14 @@ x.Time.CompareTo(0) >= 0
                     var db1Path = path1;
                     var db2Path = path2;
 
-                    if (t1.Last() > t2.Last())
+                    var maxTimeDb1 = t1.Last();
+                    // Обмениваем пути, чтобы db1 всегда была с меньшим последним временем
+                    if (t1.Last() > t2.Last()) 
+                    {
                         (db1Path, db2Path) = (db2Path, db1Path);
+                        maxTimeDb1 = t2.Last();
+                    }
+                        
 
                     var db1 = new ResultDataBase(db1Path);
                     var db2 = new ResultDataBase(db2Path);
@@ -755,13 +760,9 @@ x.Time.CompareTo(0) >= 0
 
                         if (table1 == null || table2 == null)
                             return 0;
-
                         var rowsDb1 = table1.Rows.Count;
 
-                        var maxTimeDb1 = table1.AsEnumerable()
-                            .Where(r => r["time"] != DBNull.Value)
-                            .Max(r => Convert.ToInt64(r["time"]));
-
+                        // Считаем строки во второй таблице с time > maxTimeDb1
                         var rowsDb2Filtered = table2.AsEnumerable()
                             .Count(r => r["time"] != DBNull.Value &&
                                         Convert.ToInt64(r["time"]) > maxTimeDb1);
@@ -775,10 +776,7 @@ x.Time.CompareTo(0) >= 0
                     }
                 }
             }
-            catch (Exception ex) 
-            {
-                Assert.Fail($"An exception occurred during merging: {ex.Message}");
-            }
+            catch (Exception ex) {Assert.Fail($"An exception occurred during merging: {ex.Message}");}
             finally
             {
                 GC.Collect();
