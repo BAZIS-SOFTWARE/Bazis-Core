@@ -99,7 +99,8 @@ namespace OperationalController
         /// </summary>
         /// <param name="plane"></param>
         /// <param name="color"></param>
-        void SelectNodeInPlane(Geometry.Plane plane, Color color);
+        /// <returns></returns>
+        List<int> SelectNodeInPlane(Geometry.Plane plane, Color color);
         /// <summary>
         /// SelectE2DInPlane
         /// </summary>
