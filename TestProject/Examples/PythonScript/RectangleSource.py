@@ -15,7 +15,8 @@ def CalcPower(x, y, z, power = 600):
 	   round(float(x), precision) >= round(-a, precision) and \
        round(float(y), precision) <= round(b, precision) and \
 	   round(float(y), precision) >= round(-b, precision) and \
-       round(float(z), precision) <= round(c, precision):
+       round(float(z), precision) <= round(c, precision) and \
+       round(float(z), precision) >= round(-c, precision):
        return float(q)
     else: return 0.0
 

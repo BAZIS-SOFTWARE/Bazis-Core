@@ -49,17 +49,19 @@ namespace OperationalController
             {
                 for (int j = 1; j < vert.Count; j++)
                 {
+
                     var p0 = hor[i - 1].GetIntersection(vert[j - 1]);
                     var p1 = hor[i].GetIntersection(vert[j - 1]);
                     var p2 = hor[i].GetIntersection(vert[j]);
                     var p3 = hor[i - 1].GetIntersection(vert[j]);
                     var elem = CreateElem(ref numbE, ref numbN, p0, p1, p2, p3);
+
                     elems.Add("create", elem);
-                    
-                    foreach (var item in elem.GetVertexes())
-                        ModelData.ObjectData.NodesSet.Add(item.Number, item);
                 }
             }
+            foreach (var item in elems.GetObjects())
+                foreach (var node in item.GetVertexes())
+                    ModelData.ObjectData.NodesSet.Add(node.Number, node);
 
             ModelData.ObjectData.E2DCollection.Append(elems);
         }
@@ -83,10 +85,10 @@ namespace OperationalController
             var temp = new Segment2D(fPoint, sPoint);
 
             var elmSize = temp.GetLength() / numberOfElem;
-
+            var length = 0.0f;
             border.Add(fPoint);
             for (int i = 0; i < numberOfElem - 1; i++)
-                border.Add(temp.GetPointOnLine(elmSize++));
+                border.Add(temp.GetPointOnLine(length += elmSize));
 
             border.Add(sPoint);
 

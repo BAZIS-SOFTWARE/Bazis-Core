@@ -15,7 +15,7 @@ namespace ControllerTests
         }
 
 
-        public static IEnumerable<object[]> AdditionData
+        public static IEnumerable<object[]> Create1DAdditionData
         {
             get
             {
@@ -35,7 +35,7 @@ namespace ControllerTests
         }
 
         [TestMethod]
-        [DynamicData(nameof(AdditionData))]
+        [DynamicData(nameof(Create1DAdditionData))]
         public void Create1D(List<Point3D> points, int dim)
         {
             var contr = new ProjectController();
@@ -57,22 +57,60 @@ namespace ControllerTests
             //assert
             Assert.AreNotEqual(contr.GetModelElements(dim, "newSet").Count(), 0);
         }
+
+        public static IEnumerable<object[]> Create2DMeshOnPoligonAdditionData
+        {
+            get
+            {
+                return new[]
+                {
+                    new object[]
+                    {
+                        new List<Point2D>
+                        {
+                            new Point2D(0, 0),
+                            new Point2D(0, 10),
+                            new Point2D(10, 10),
+                            new Point2D(10, 0)
+                        },
+                        5
+                    },
+                    new object[]
+                    {
+                        new List<Point2D>
+                        {
+                            new Point2D(0, 0),
+                            new Point2D(0, 10),
+                            new Point2D(15, 15),
+                            new Point2D(10, 0)
+                        },
+                        5
+                    },
+                    new object[]
+                    {
+                        new List<Point2D>
+                        {
+                            new Point2D(0, 0),
+                            new Point2D(0, 10),
+                            new Point2D(15, 15),
+                            new Point2D(15, 0)
+                        },
+                        5
+                    }
+                };
+            }
+        }
+
+
         [TestMethod]
-        public void Create2DMeshOnPoligon()
+        [DynamicData(nameof(Create2DMeshOnPoligonAdditionData))]
+        public void Create2DMeshOnPoligon(List<Point2D> points, int num)
         {
             //act
             var contr = new ProjectController();
 
-            var points = new List<Point2D>()
-            {
-                new Point2D(0,0),
-                new Point2D(0,10),
-                new Point2D(10,10),
-                new Point2D(10,0)
-            };
-
             contr.CreateProject(@"newProj.bpf2");
-            contr.CreateQuadMeshOnPoligon(points, 2);
+            contr.CreateQuadMeshOnPoligon(points, num);
 
 
             //assert

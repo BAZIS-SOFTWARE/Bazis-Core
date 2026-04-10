@@ -29,7 +29,11 @@ namespace Geometry
 
             coefficients = GetLineEquationCoefficients();
         }
-
+        /// <summary>
+        /// GetIntersection
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
         public Point2D GetIntersection(Segment2D other)
         {
             double x1 = P1._x, y1 = P1._y;
@@ -40,8 +44,8 @@ namespace Geometry
             var denom = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
             if (denom == 0) return null; // Параллельны
 
-            var ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / denom;
-            var ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / denom;
+            var ua = Math.Round(((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / denom,3);
+            var ub = Math.Round(((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / denom,3);
 
             // Если ua и ub между 0 и 1, пересечение на отрезках
             if (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1)
