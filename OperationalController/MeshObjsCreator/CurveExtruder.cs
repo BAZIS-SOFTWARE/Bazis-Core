@@ -1,10 +1,14 @@
 ﻿using Geometry;
+using MathNet.Numerics.Distributions;
+using Microsoft.Scripting.Ast;
 using Model.MeshObjects;
 using OperationalController.GmshController;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 
 
 namespace OperationalController.MeshObjsCreator
@@ -16,7 +20,6 @@ namespace OperationalController.MeshObjsCreator
     {
         private IGmshController controller;
         private int curveTag;
-        private double maxCurvature;
         private bool isDirect;
 
         private Matrix4x4 init;
@@ -32,23 +35,18 @@ namespace OperationalController.MeshObjsCreator
             this.controller = controller;
             this.curveTag = curveTag;
 
-            maxCurvature = GetMaxCurvature();
             DetectDirection(pointTag);
         }
         /// <summary>
         /// Создает экструзию 3д элементов методом протягивания вдоль кривой
         /// </summary>
         /// <param name="firstLayer"></param>
-        /// <param name="min">Минимальный шаг для резкой кривизны</param>
-        /// <param name="max">Максимальный шаг для пологой кривизны</param>
+        /// <param name="step">Минимальный шаг от длины кривой</param>
         /// <returns>Список 3д элементов</returns>
-        /// <exception cref="ArgumentException"></exception>
-        public List<List<Element3D>> Extrude(IEnumerable<Element2D> firstLayer, double min = 0.05, double max = 0.3)
+        public List<List<Element3D>> Extrude(IEnumerable<Element2D> firstLayer, double step)
         {
-            CheckSteps(min, max);
-
             var tetLayers = new List<List<Element3D>>();
-            var basisList = GetBasisOfLayers(firstLayer, min, max);
+            var basisList = GetBasisOfLayers(firstLayer, step);
             init = basisList[0];
 
             firstLayer = SortFirstLayer(firstLayer);
@@ -67,16 +65,12 @@ namespace OperationalController.MeshObjsCreator
         /// Создает трансфинитную экструзию 3д элементов методом протягивания вдоль кривой
         /// </summary>
         /// <param name="firstLayer"></param>
-        /// <param name="min">Минимальный шаг для резкой кривизны</param>
-        /// <param name="max">Максимальный шаг для пологой кривизны</param>
+        /// <param name="step">Минимальный шаг от длины кривой</param>
         /// <returns>Список 3д элементов</returns>
-        /// <exception cref="ArgumentException"></exception>
-        public List<List<Element3D>> ExtrudeTransfinite(IEnumerable<Element2D> firstLayer, double min = 0.05, double max = 0.3)
+        public List<List<Element3D>> ExtrudeTransfinite(IEnumerable<Element2D> firstLayer, double step)
         {
-            CheckSteps(min, max);
-
             var tetLayers = new List<List<Element3D>>();
-            var basisList = GetBasisOfLayers(firstLayer, min, max);
+            var basisList = GetBasisOfLayers(firstLayer, step);
             init = basisList[0];
 
             firstLayer = SortFirstLayer(firstLayer);
@@ -170,13 +164,14 @@ namespace OperationalController.MeshObjsCreator
             isDirect = point.I == 0;
         }
 
-
+        //Взятие шага в зависимости от кривизны
+        /*
         private double GetCurrentStep(double curvature, double minT, double maxT)
         {
             var value = curvature / (maxCurvature + 1e-4);
             return (1 - value) * maxT + value * minT;
         }
-
+        //Определение максимальной кривизнвы кривой
         private double GetMaxCurvature(int points = 100)
         {
             var p = controller.Gmsh.Model.GetParametrizationBounds(1, curveTag);
@@ -192,8 +187,9 @@ namespace OperationalController.MeshObjsCreator
 
             var max = cList.Max();
             return max;
-        }
-
+        }*/
+        //Проверки шагов в случае использования адаптивного шага
+        /*
         private void CheckSteps(double min, double max)
         {
             if (min > max)
@@ -212,16 +208,153 @@ namespace OperationalController.MeshObjsCreator
                 return modT;
             }
             return 0;
-        }
+        }*/
 
-        private List<Matrix4x4> GetBasisOfLayers(IEnumerable<Element2D> elements, double min, double max)
+        private List<Matrix4x4> GetBasisOfLayers(IEnumerable<Element2D> elements, double step)
         {
             if (isDirect)
-                return ProcessDirectParameterization(elements, min, max);
-            return ProcessInvertParameterization(elements, min, max);
+                return ProcessDirectParameterization(step);
+            return ProcessInvertParameterization(step);
         }
 
-        private List<Matrix4x4> ProcessDirectParameterization(IEnumerable<Element2D> elements, double min, double max)
+        private List<Matrix4x4> ProcessDirectParameterization(double step)
+        {
+            var result = new List<Matrix4x4>();
+            var p = controller.Gmsh.Model.GetParametrizationBounds(1, curveTag);
+            var dir = p.Item2[0] - p.Item1[0];
+
+            var l0 = p.Item1[0];
+            var offset = 0.0;
+
+            var components = new List<(Vector3, Vector3, Vector3, Vector3)>();
+            while (p.Item2[0] - l0 > 1e-4)
+            {
+                l0 = Math.Min(l0 + offset, p.Item2[0]);
+                WriteComponentsInPoint(components, l0, l0 + 0.2);
+                offset = step * dir;
+            }
+            return CreateLocalSystemSet(components);
+        }
+
+        /// <summary>
+        /// Вариант реализации получения базиса в точке по расчетам Екатерины
+        /// </summary>
+        /// <param name="step">Минимальный шаг от длины кривой</param>
+        /// <returns></returns>
+        private List<Matrix4x4> ProcessInvertParameterization(double step)
+        {
+            var p = controller.Gmsh.Model.GetParametrizationBounds(1, curveTag);
+            Swap(ref p.Item1[0], ref p.Item2[0]);
+            var dir = p.Item2[0] - p.Item1[0];
+
+            var l0 = p.Item1[0];
+            var offset = 0.0;
+
+            var components = new List<(Vector3, Vector3, Vector3, Vector3)>();
+            while (l0 - p.Item2[0] > 1e-4)
+            {
+                l0 = Math.Max(l0 + offset, p.Item2[0]);
+                WriteComponentsInPoint(components, l0, l0 - 0.2);
+                offset = step * dir;
+            }
+            return CreateLocalSystemSet(components);
+        }
+
+        private List<Matrix4x4> CreateLocalSystemSet(List<(Vector3, Vector3, Vector3, Vector3)> components)
+        {
+            var init = CreateLocalMatrix(components[0].Item1, components[0].Item2, components[0].Item3);
+            init = Matrix4x4.Transpose(init);
+            var initOrigin = components[0].Item4;
+
+            var ls = new List<Matrix4x4>();
+            for(var i = 0; i < components.Count; ++i)
+            {
+                var local = CreateLocalMatrix(components[i].Item1, components[i].Item2, components[i].Item3);
+                var globalTransform = GetConvertMatrix(local, components[i].Item4, init, initOrigin);
+                ls.Add(globalTransform);
+            }
+            return ls;
+        }
+
+
+        private void WriteComponentsInPoint(List<(Vector3, Vector3, Vector3, Vector3)> result, double l0, double l2)
+        {
+            var l1 = l0 + 0.5 * (l2 - l0);
+
+            var coords = controller.Gmsh.Model.GetValue(1, curveTag, [l0, l1, l2]);
+
+            var p0 = new Vector3((float)coords[0], (float)coords[1], (float)coords[2]);
+            var p1 = new Vector3((float)coords[3], (float)coords[4], (float)coords[5]);
+            var p2 = new Vector3((float)coords[6], (float)coords[7], (float)coords[8]);
+
+            var t0 = p2 - p0;
+            var a0 = (p2 - p1) - (p1 - p0);
+            var n0 = Vector3.Dot(t0, t0) * a0 - Vector3.Dot(t0, a0) * t0;
+
+            var last = result.Count - 1;
+            (Vector3, Vector3, Vector3, Vector3) components;
+
+            if (Vector3.Dot(n0, n0) < 1e-8)
+                components = result.Count == 0 ? (Vector3.UnitX, Vector3.UnitY, Vector3.UnitZ, p0)
+                                               : (GetComponent(result[last], 1), GetComponent(result[last], 2), GetComponent(result[last], 3), p0);
+            else
+            {
+                t0 = Vector3.Normalize(t0);
+                n0 = Vector3.Normalize(n0);
+
+                var b0 = Vector3.Cross(t0, n0);
+                if (result.Count > 0 && Vector3.Dot(b0, GetComponent(result[last], 2)) < 1e-4)
+                {
+                    n0 = -n0;
+                    b0 = Vector3.Cross(t0, n0);
+                }
+                components = (n0, b0, t0, p0);
+            }
+            result.Add(components);
+        }
+
+        /*
+        /// <summary>
+        /// Определяет является ли смещение шага последним
+        /// </summary>
+        /// <param name="l">Текущий шаг</param>
+        /// <param name="lMax">Максимальная величина шага</param>
+        /// <returns>true - если шаг последний</returns>
+        private bool IsLastStep(double l, double lMax)
+        {
+            var a = Math.Sign(l);
+            var b = Math.Sign(lMax - l);
+            return a != b;
+        }
+        
+        /// <summary>
+        /// Усредняет нормаль, полезен при грубом шаге
+        /// </summary>
+        /// <param name="last">Предыдущие компоненты</param>
+        /// <param name="current">Текущие компоненты</param>
+        /// <returns>Возвращает усредненные компоненты</returns>
+        private (Vector3, Vector3, Vector3, Vector3) AverageComponents((Vector3, Vector3, Vector3, Vector3) last, (Vector3, Vector3, Vector3, Vector3) current)
+        {
+            var n0 = Vector3.Normalize(current.Item1 + last.Item1);
+            var b0 = Vector3.Cross(current.Item3, n0);
+
+            return (n0, b0, current.Item3, current.Item4);
+        }*/
+
+        private Vector3 GetComponent((Vector3, Vector3, Vector3, Vector3) components, int item)
+        {
+            if (item == 1)
+                return components.Item1;
+            if (item == 2)
+                return components.Item2;
+            if (item == 3)
+                return components.Item3;
+            return components.Item4;
+        }
+
+        //Вариант построения через gmsh
+        /*
+        private List<Matrix4x4> ProcessDirectParameterization(double min, double max)
         {
             var result = new List<Matrix4x4>();
             var p = controller.Gmsh.Model.GetParametrizationBounds(1, curveTag);
@@ -249,8 +382,8 @@ namespace OperationalController.MeshObjsCreator
 
             return result;
         }
-
-        private List<Matrix4x4> ProcessInvertParameterization(IEnumerable<Element2D> elements, double min, double max)
+        //Вариант построения через gmsh
+        private List<Matrix4x4> ProcessInvertParameterization(double min, double max)
         {
             var result = new List<Matrix4x4>();
             var p = controller.Gmsh.Model.GetParametrizationBounds(1, curveTag);
@@ -316,7 +449,7 @@ namespace OperationalController.MeshObjsCreator
             binormal = Vector3.Normalize(binormal);
 
             return (origin, normal, binormal, tangent);
-        }
+        }*/
 
         private Matrix4x4 GetConvertMatrix(Matrix4x4 local, Vector3 localOrigin, Matrix4x4 init, Vector3 initOrigin)
         {

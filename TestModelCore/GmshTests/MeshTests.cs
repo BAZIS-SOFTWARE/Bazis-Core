@@ -21,6 +21,7 @@ using System.Diagnostics;
 using Point3D = Geometry.Point3D;
 using MathNet.Numerics.LinearAlgebra.Factorization;
 using Project.Tasks;
+using System.Security.Cryptography;
 
 namespace GmshTests
 {
@@ -380,9 +381,9 @@ namespace GmshTests
 
             results.Item1.ForEach(x => modelData.ObjectData.NodesSet.Add(x.Number, x));
             modelData.ObjectData.E2DCollection.AddRange(ObjType.Элемент2D.ToString(), results.Item3);
-            
+
             //act
-            modelData.ObjectData.Remove(ObjType.Узел, delNodeNumber);   
+            modelData.ObjectData.Remove(ObjType.Узел, delNodeNumber);
             modelData.ObjectData.E2DCollection.RemoveNotExistedObjects();
 
             //assert
@@ -418,7 +419,7 @@ namespace GmshTests
             var afterTransfNodeCount = controller.GetNodes(1, curveTag).Count;
             Assert.AreEqual(20, afterTransfNodeCount);
             controller.Gmsh.Model.Mesh.Clear();
-            controller.Gmsh.Model.Mesh.RemoveConstraints(new int[] { 1 , curveTag });
+            controller.Gmsh.Model.Mesh.RemoveConstraints(new int[] { 1, curveTag });
             controller.Gmsh.Model.Mesh.Generate(1);
             var afterResetNodeCount = controller.GetNodes(1, curveTag).Count;
             Assert.AreEqual(defaultNodeCount, afterResetNodeCount);
@@ -460,8 +461,8 @@ namespace GmshTests
             var boundElemTags = controller.Gmsh.Model.Mesh.GetElementsByCoordinates(boundCoords.Item1, boundCoords.Item2, boundCoords.Item3, 3, false);
             Assert.AreNotEqual(null, centerElemTags);
             Assert.AreNotEqual(null, boundElemTags);
-            var centrElement =  ByNumberFinder.Find(list.Item4,(int)centerElemTags[0]);
-            var boundElement = ByNumberFinder.Find(list.Item4,(int)boundElemTags[0]);
+            var centrElement = ByNumberFinder.Find(list.Item4, (int)centerElemTags[0]);
+            var boundElement = ByNumberFinder.Find(list.Item4, (int)boundElemTags[0]);
             Assert.AreNotEqual(null, centrElement);
             Assert.AreNotEqual(null, boundElement);
             var cVolume = centrElement.CalcVolume();
@@ -484,7 +485,7 @@ namespace GmshTests
             var dimTags = controller.Gmsh.Model.GetEntities(2);
             dimTags = dimTags.Where((v, i) => (i & 1) == 1).ToArray();
             var tag = controller.Gmsh.Model.Geo.AddSurfaceLoop(dimTags);
-            
+
             // если нужно замешивать объем
             controller.Gmsh.Model.Geo.AddVolume(new int[] { tag });
 
@@ -545,7 +546,7 @@ namespace GmshTests
             dimTags = controller.Gmsh.Model.GetEntities(2);
             Assert.AreEqual(2, dimTags.Length);
             controller.Gmsh.Model.Mesh.AddNodes(2, 1, nodeTags, localPoints);
-            for(var i = 0; i < 4; ++i)
+            for (var i = 0; i < 4; ++i)
             {
                 controller.Gmsh.Model.Mesh.AddElementsByType(i + 1, 15, new IntPtr[0], new IntPtr[] { nodeTags[i] });
                 controller.Gmsh.Model.Mesh.AddElementsByType(i + 1, 1, new IntPtr[0], new IntPtr[] { linesTags[i], linesTags[i + 1] });
@@ -605,7 +606,7 @@ namespace GmshTests
             controller.Gmsh.Open(modelFolder + fileName);
             var volumes = controller.Gmsh.Model.GetEntities(3);
             //Вариант 1 - использование плотностей в точках, сначало генерируем плотности в точках, затем проводим трансфиницию (порядок важен!)
-            for(int i = 0, j = 0; i < volumes.Length; i += 2, ++j)
+            for (int i = 0, j = 0; i < volumes.Length; i += 2, ++j)
             {
                 var dimTags = new int[] { volumes[i], volumes[i + 1] };
                 var points = controller.Gmsh.Model.GetBoundary(dimTags, true, true, true);
@@ -639,9 +640,9 @@ namespace GmshTests
             var baseField = controller.Gmsh.Model.Mesh.Field.Add(FieldType.Min);
             controller.Gmsh.Model.Mesh.Field.SetNumbers(baseField, "FieldsList", list);
             controller.Gmsh.Model.Mesh.Field.SetAsBackgroundMesh(baseField);
-            
+
             MakeTranfinite(seamPointCurves, seamCurves, seamVolumes);
-            
+
             controller.Gmsh.Model.Mesh.Generate(3);
             var error = controller.Gmsh.Logger.GetLastError();
             Assert.IsTrue(string.IsNullOrEmpty(error));
@@ -653,7 +654,7 @@ namespace GmshTests
         //[DataRow("Prism", "Automatic")]//Для призм автоматическая трансфиниция не работает
         [DataRow("Prism", "Manual")]
         [DataRow("Hexa", "Automatic")]
-        [DataRow("Hexa","Manual")]
+        [DataRow("Hexa", "Manual")]
         public void GenHexaPentaElementsForPrismAndBoxTest(string volumeType, string genMethod)
         {
             var volume = volumeType == "Prism" ? controller.Gmsh.Model.Occ.AddWedge(0, 0, 0, 1, 1, 1)
@@ -678,7 +679,7 @@ namespace GmshTests
             Assert.IsTrue(string.IsNullOrEmpty(error));
 
             var elements = controller.GetMeshObjects();
-            foreach (var element in elements.Item4) 
+            foreach (var element in elements.Item4)
                 Assert.IsTrue(element.ElementKind == ElementKind.Пента || element.ElementKind == ElementKind.Гекса);
 
             //controller.Gmsh.Write($@"D:\{volumeType}{genMethod}.inp");//Для визуального теста
@@ -696,10 +697,10 @@ namespace GmshTests
         }
 
         [DataTestMethod]
-        [DataRow(@"\CAD\Tavr.step", 0.58, 3.5, MeshAlgorithm3D.Delaunay,1)]
-        [DataRow(@"\CAD\cilindr.step", 0.33, 1.8, MeshAlgorithm3D.Frontal,1.2)]
-        [DataRow(@"\CAD\screw.step", 0.7, 1.7, MeshAlgorithm3D.HXT,0.85)]
-        [DataRow(@"\CAD\nasos.step", 10, 16, MeshAlgorithm3D.RTree,1.8)]
+        [DataRow(@"\CAD\Tavr.step", 0.58, 3.5, MeshAlgorithm3D.Delaunay, 1)]
+        [DataRow(@"\CAD\cilindr.step", 0.33, 1.8, MeshAlgorithm3D.Frontal, 1.2)]
+        [DataRow(@"\CAD\screw.step", 0.7, 1.7, MeshAlgorithm3D.HXT, 0.85)]
+        [DataRow(@"\CAD\nasos.step", 10, 16, MeshAlgorithm3D.RTree, 1.8)]
         public void ChechMesh3DParameters(string fileName, double expMinSize, double expMaxSize, MeshAlgorithm3D expAlgo3d, double sizeFactor)
         {
             controller.Gmsh.Open(modelFolder + fileName);
@@ -707,7 +708,7 @@ namespace GmshTests
             controller.Gmsh.Option.SetNumber("Mesh.MeshSizeMax", expMaxSize);
             controller.Gmsh.Option.SetNumber("Mesh.Algorithm3D", (int)expAlgo3d);
             controller.Gmsh.Option.SetNumber("Mesh.MeshSizeFactor", sizeFactor);
-            
+
             controller.Gmsh.Model.Mesh.Generate(3);
 
             var error = controller.Gmsh.Logger.GetLastError();
@@ -725,7 +726,7 @@ namespace GmshTests
             //controller.Gmsh.Write($@"C:\Mesh\INP\{file + "MinSize"}.inp");//Для визуального теста
         }
 
-        
+
 
         [DataTestMethod]
         [DataRow(@"\CAD\Tavr.step", MeshAlgorithm2D.FrontalDelaunay)]
@@ -759,7 +760,7 @@ namespace GmshTests
 
             var expected = new int[] { 5, 6, 7, 8 };
             controller.Gmsh.Model.Mesh.Embed(1, expected, 2, 1);
-            var actual = controller.Gmsh.Model.Mesh.GetEmbedded(2, 1).Where((v,i) => (i & 1) == 1).ToArray();
+            var actual = controller.Gmsh.Model.Mesh.GetEmbedded(2, 1).Where((v, i) => (i & 1) == 1).ToArray();
             CollectionAssert.AreEquivalent(expected, actual);
 
             //Если удалили, то должен показать пустой массив
@@ -894,7 +895,7 @@ namespace GmshTests
 
         [DataTestMethod]
         [DataRow(8, "jug", MathF.PI / 2, false, false)]
-        [DataRow(11, "jug", MathF.PI / 8 ,true, false)]
+        [DataRow(11, "jug", MathF.PI / 8, true, false)]
         [DataRow(32, "jug", 2 * MathF.PI, false, true)]
         [DataRow(13, "jug", 5 * MathF.PI / 3, true, true)]
         public void ExtrudeRotationTest(int segments, string fileName, float angle, bool recombine, bool transfinite)
@@ -926,45 +927,104 @@ namespace GmshTests
             saver.Save(md, $@"D:\{fileName}Recombine{recombine.ToString()}Transfinite{transfinite.ToString()}.bpf2");
         }
 
+        /// <summary>
+        /// Экструзия по кривой
+        /// /// <summary>
+        /// Путь до файла, [кривая_1, базовая точка кривой_1...], [параметры шага эструзии (мин,макс)], [координаты точек сечения треугольника в глобальном пространстве]
+        /// </summary>
+        /// </summary>
+        /// <param name="fileName">Путь до файла</param>
+        /// <param name="curveData">Массив данных кривой [номер кривой_1, точка кривой_1, номер кривой_2, точка кривой_2...]</param>
+        /// <param name="extrusionData">Данные экструзии [минимальный шаг_1, минимальный шаг_2...]</param>
+        /// <param name="transfinite">true - для трансифинитного построения 3д элементов</param>
+        /// <param name="recombine">Используется при генерации окружности если true</param>
+        /// <param name="coords">Координаты сечения треугольника, null - специальный случай используем окружность</param>
         [DataTestMethod]
-        [DataRow(@"\CAD\cilindr.step")]
-        public void ExtrudeAlongCylinderCurveTest(string fileName)
+        [DataRow(@"\CAD\cilindr.step", new int[] { 5, 2, 4, 2}, new double[] { 0.15, 0.25 }, true, false, new float[] {10.63178f, 2.25962f, 0.0f, 
+                                                                                                                       10.42f, 3.22338f, -0.14127485f, 
+                                                                                                                       11.6700233f, 2.46244f, -9.28e-11f})]//Тест на двух кривых
+        [DataRow(@"\CAD\cilindr.step", new int[] { 1, 2 }, new double[] { 0.25 }, false, false, new float[] {10.63178f, 2.25962f, 0.0f,
+                                                                                                             11.67f, 3.22338f, 0.5f,
+                                                                                                             11.67f, 3.22338f, -0.5f})]//Тест по прямой
+        [DataRow(@"\CAD\curve.step", new int[] { 1, 2 }, new double[] { 0.1 }, true, true, null)]//Тест по кривой с разной кривизной
+        [DataRow(@"\CAD\curve2.step", new int[] { 1, 1 }, new double[] { 0.025 }, true, false, null)]//Тест по кривой с разной кривизной
+        public void ExtrudeAlongCurveTest(string fileName, int[] curveData, double[] extrusionData , bool transfinite, bool recombine, float[] coords)
         {
             controller.Gmsh.Open(modelFolder + fileName);
 
-            var nodes = new Node[] { new Node(1, new Point3D(10.63178f, 2.25962f, 0.0f)),
-                                     new Node(2, new Point3D(10.42f, 3.22338f, -0.14127485f)),
-                                     new Node(3, new Point3D(11.6700233f, 2.46244f, -9.28e-11f))};
+            var mdArray = new List<ModelData>();
 
-            //Точки треугольника с другой стороны кривой
-            /*var nodes = new Node[] { new Node(1, new Point3D(-10.63178f, -2.254962f, 2e-16f)),
-                                     new Node(2, new Point3D(-11.6100235f, -2.4624429f, 9.28e-11f)),
-                                     new Node(3, new Point3D(-10.837184f, -1.2865342f, -0.14127485f)),
-                                     };*/
-            var triangles = new List<Element2D> { new Triangle_c(1, nodes) };
+            var crossSection = coords != null ? GenTriangle(coords) : GenCircle(controller, curveData[0], curveData[1], recombine);
+            for (var i = 0; i < curveData.Length; i += 2)
+            {
+                var md = new ModelData();
 
-            var extruder = new CurveExtruder(controller, 5, 2);
-            var e3d = extruder.ExtrudeTransfinite(triangles, 0.15, 0.2);
+                var extruder = new CurveExtruder(controller, curveData[i], curveData[i + 1]);
+                var e3d = transfinite ? extruder.ExtrudeTransfinite(crossSection, extrusionData[i >> 1]) 
+                                      : extruder.Extrude(crossSection, extrusionData[i >> 1]);
 
-            var md = new ModelData();
-            md.ObjectData.E3DCollection.AddRange("Seam 1", e3d.SelectMany(v => v));
+                Assert.IsTrue(extruder.MissedElements == 0);
 
-            foreach (var node in extruder.Nodes.Values)
-                md.ObjectData.NodesSet.Add(node.Number, node);
+                foreach (var node in extruder.Nodes.Values)
+                    md.ObjectData.NodesSet.Add(node.Number, node);
 
-            var md2 = new ModelData();
-            extruder = new CurveExtruder(controller, 4, 2);
-            e3d = extruder.Extrude(triangles);
+                md.ObjectData.E3DCollection.AddRange($"Seam {i >> 1}", e3d.SelectMany(v => v));
 
-            md2.ObjectData.E3DCollection.AddRange("Seam 2", e3d.SelectMany(v => v));
+                mdArray.Add(md);
+            }
 
-            foreach (var node in extruder.Nodes.Values)
-                md2.ObjectData.NodesSet.Add(node.Number, node);
+            for(var i = 1; i < mdArray.Count; ++i)
+                mdArray[0].Append(mdArray[i]);
 
-            md.Append(md2);
+            var fName = Path.GetFileNameWithoutExtension(fileName);
+
+            var curves = curveData.Where((v, i) => (i & 1) == 1).Select(v => v.ToString()).ToArray();
+            var stringKey = string.Join(" ", curves);
+            var stringTransfinite = transfinite ? "Transfinite" : string.Empty;
+            var stringRecombine = recombine ? "Recombine" : string.Empty;
 
             var saver = new SaveModelToBPF2TextFile();
-            saver.Save(md, $@"D:\curvedTriangle.bpf2");
+            saver.Save(mdArray[0], $@"D:\{fName}Curves{stringKey}{stringTransfinite}{stringRecombine}.bpf2");
+        }
+
+        private List<Element2D> GenTriangle(float[] coords)
+        {
+            var nodes = new List<Node>() { new Node(1, new Point3D(coords[0], coords[1], coords[2])),
+                                           new Node(2, new Point3D(coords[3], coords[4], coords[5])),
+                                           new Node(3, new Point3D(coords[6], coords[7], coords[8]))};
+
+            var crossSection = new List<Element2D> { new Triangle_c(1, nodes.ToArray()) };
+            return crossSection;
+        }
+
+        private List<Element2D> GenCircle(IGmshController controller, int curveTag, int curvePoint, bool recombine, double radius = 0.05)
+        {
+            var bounds = controller.Gmsh.Model.GetParametrizationBounds(1, curveTag);
+            var points = controller.Gmsh.Model.GetAdjacencies(1, curveTag).Item2;
+            var mul = 1;
+            if(curvePoint != points[0])
+            {
+                var temp = bounds.Item1[0];
+                bounds.Item1[0] = bounds.Item2[0];
+                bounds.Item2[0] = temp;
+                mul = -1;
+            }
+            var center = controller.Gmsh.Model.GetValue(1, curveTag, [bounds.Item1[0]]);
+            var tangent = controller.Gmsh.Model.GetDerivative(1, curveTag, [bounds.Item1[0]])
+                                               .Select(v => v * mul)
+                                               .ToArray();
+
+            var circle = controller.Gmsh.Model.Occ.AddCircle(center[0], center[1], center[2], radius, -1,  0, 2 * Math.PI, tangent);
+            var wire = controller.Gmsh.Model.Occ.AddWire([circle]);
+            var surface = controller.Gmsh.Model.Occ.AddPlaneSurface([wire]);
+
+            controller.Gmsh.Model.Occ.Synchronize();
+            controller.Gmsh.Model.Mesh.Generate(2);
+            if (recombine)
+                controller.Gmsh.Model.Mesh.Recombine();
+
+            var data = controller.GetMeshObjects();
+            return data.Item3;
         }
 
         /*
