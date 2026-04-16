@@ -14,6 +14,8 @@ using System.Collections.Generic;
 using Geometry.Exteisions;
 using Model.Interfaces.ObjectsCollections;
 using Model.ObjectsCollections;
+using Microsoft.Scripting.Utils;
+using System.Linq;
 
 namespace OperationalController
 {
@@ -124,6 +126,17 @@ namespace OperationalController
 
             if (dim == 1)
                 ModelData.ObjectData.E1DCollection.Add(setName);
+        }
+
+        public void CreateGeometryObject(int dim, int number) 
+        {
+            if (dim < 1 | dim > 3)
+                throw new Exception("Неправильно указана размерность элементов");
+            if (dim == 1)
+            {
+                var geoPoint = GmshController.CreateControlPoints().Where(x => x.Number == number).FirstOrDefault();
+                ModelData.ObjectData.PointsSet.Add(geoPoint.Number, geoPoint);
+            }
         }
         /// <inheritdoc/>
         public void CreateElement(string setName, int dim, int[] nodeNumbers)
