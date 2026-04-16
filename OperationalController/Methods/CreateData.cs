@@ -127,15 +127,33 @@ namespace OperationalController
             if (dim == 1)
                 ModelData.ObjectData.E1DCollection.Add(setName);
         }
-
+        /// <summary>
+        /// Добавляет геометрический объект заданной размерности в <c>ModelData.ObjectData</c>.
+        /// </summary>
+        /// <param name="dim">0- точка, 1 - линия, 2 - поверхность</param>
+        /// <param name="number">Идентификатор геометрического объекта</param>
+        /// <exception cref="Exception"></exception>
         public void CreateGeometryObject(int dim, int number) 
         {
-            if (dim < 1 | dim > 3)
+            if (dim < 0 | dim > 2)
                 throw new Exception("Неправильно указана размерность элементов");
-            if (dim == 1)
+
+            if (dim == 0)
             {
                 var geoPoint = GmshController.CreateControlPoints().Where(x => x.Number == number).FirstOrDefault();
                 ModelData.ObjectData.PointsSet.Add(geoPoint.Number, geoPoint);
+            }
+            else if (dim == 1)
+            {
+                var geoLine = GmshController.CreateLines().Where(x => x.Number == number).FirstOrDefault();
+                ModelData.ObjectData.CurveSet.Add(geoLine.Number, geoLine);
+            }
+            else
+            {
+                var s = GmshController.CreateSurfaceFigures();
+                var surfData = GmshController.CreateSurfaceData();
+                var geoSurface = surfData.Item1.Where(x => x.Key == number).FirstOrDefault();
+                ModelData.ObjectData.SurfaceSet.Add(geoSurface.Key, geoSurface.Value);
             }
         }
         /// <inheritdoc/>

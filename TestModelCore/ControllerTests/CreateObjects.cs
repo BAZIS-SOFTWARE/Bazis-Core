@@ -1,6 +1,9 @@
 ﻿using Geometry;
+using Model;
 using OperationalController;
+using OperationalController.GmshController;
 using System.Globalization;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
 namespace ControllerTests
@@ -40,7 +43,7 @@ namespace ControllerTests
         {
             var contr = new ProjectController();
             contr.CreateProject(@"..\..\..\Examples\createObj.bpf2");
-            
+
             var numb = 0;
             var numbs = new int[points.Count];
 
@@ -49,7 +52,7 @@ namespace ControllerTests
                 numbs[i] = numb;
                 contr.CreateNode(numb++, points[i]._x, points[i]._y, points[i]._z);
             }
-                
+
 
             contr.CreateElementsSet("newSet", dim);
             contr.CreateElement("newSet", dim, numbs);
@@ -115,6 +118,48 @@ namespace ControllerTests
 
             //assert
             Assert.AreNotEqual(contr.GetModelElements(2, "append_0").Count(), 0);
+        }
+
+        [TestMethod]
+        public void CreateGeometryObjectsTest()
+        {
+            var project = new ProjectController();
+            project.CreateProject(@"newProj.bpf2");
+            project.GmshController.Load(@"..\..\..\..\GmshApi\gmsh.dll");
+
+            project.GmshController.Gmsh.Model.Add("line");
+
+            var start = project.GmshController.Gmsh.Model.Occ.AddPoint(0, 0, 0);
+            var middle = project.GmshController.Gmsh.Model.Occ.AddPoint(1, 0, 0);
+            var end = project.GmshController.Gmsh.Model.Occ.AddPoint(0, 1, 0);
+            //Добавляем линии по созданным точкам
+            var lineA = project.GmshController.Gmsh.Model.Occ.AddLine(start, middle);
+            var lineB = project.GmshController.Gmsh.Model.Occ.AddLine(middle, end);
+            var lineC = project.GmshController.Gmsh.Model.Occ.AddLine(end, start);
+            project.GmshController.Gmsh.Model.Occ.Synchronize();
+            var contur = project.GmshController.Gmsh.Model.Occ.AddWire([lineA, lineB, lineC]);
+            project.GmshController.Gmsh.Model.Occ.Synchronize();
+            var surf = project.GmshController.Gmsh.Model.Occ.AddPlaneSurface([contur]);
+
+            var w = project.GmshController.Gmsh.Model.Occ.AddThruSections([contur]);
+            project.GmshController.Gmsh.Model.Occ.Synchronize();
+
+            project.CreateGeometryObject(0, start);
+            project.CreateGeometryObject(0, middle);
+            project.CreateGeometryObject(0, end);
+            project.CreateGeometryObject(1, lineA);
+            project.CreateGeometryObject(1, lineB);
+            project.CreateGeometryObject(1, lineC);
+            project.CreateGeometryObject(2, surf);
+
+
+            var s = project.GetModelPoint(start);
+            var c = project.GetModelCurve(lineB);
+
+            var surfData = project.GmshController.CreateSurfaceData();
+            var geoSurface = surfData.Item1.Where(x => x.Key == surf).FirstOrDefault();
+            var p = project.GetModelSurface(surf);
+            Assert.IsTrue(project.GmshController.Gmsh.Model.GetEntities(2).Length > 0);
         }
     }
 }
