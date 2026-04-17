@@ -18,6 +18,7 @@ using Project.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace OperationalController
 {
@@ -129,43 +130,51 @@ namespace OperationalController
             if (dim == 1)
                 ModelData.ObjectData.E1DCollection.Add(setName);
         }
-        /// <summary>
-        /// Добавляет геометрический объект заданной размерности в <c>ModelData.ObjectData</c>.
-        /// </summary>
-        /// <param name="dim">0- точка, 1 - линия, 2 - поверхность</param>
-        /// <param name="number">Идентификатор геометрического объекта</param>
-        /// <exception cref="Exception"></exception>
-        public void CreateGeometryObject(int dim, int number) 
+
+        public int CreatePoint(double x, double y, double z, double meshSize = 0)
         {
-            if (dim < 0 | dim > 2)
-                throw new Exception("Неправильно указана размерность элементов");
-
-            if (dim == 0)
-            {
-                var geoPoint = GmshController.CreateControlPoints().Where(x => x.Number == number).FirstOrDefault();
-                ModelData.ObjectData.PointsSet.Add(geoPoint.Number, geoPoint);
-            }
-            else if (dim == 1)
-            {
-                var geoLine = GmshController.CreateLines().Where(x => x.Number == number).FirstOrDefault();
-                ModelData.ObjectData.CurveSet.Add(geoLine.Number, geoLine);
-            }
-            else
-            {
-                var (upper, lower) = GmshController.Gmsh.Model.GetAdjacencies(2, number);
-                var points = new HashSet<int>();
-                foreach (var lineNumber in lower)
-                {
-                    var (upperL, lowerL) = GmshController.Gmsh.Model.GetAdjacencies(1, lineNumber);
-                    foreach (var point in lowerL)
-                        points.Add(point);
-                }
-                var allPoints = GmshController.CreateControlPoints();
-                var geoPoints = allPoints.Where(x => points.Contains(x.Number)).ToArray();
-
-                ModelData.ObjectData.SurfaceSet.Add(number, new SurfaceFigure(number, [new GeometrySurface(number, geoPoints)]));
-            }
+            var pointNumber = GmshController.Gmsh.Model.Occ.AddPoint(x, y, z);
+            if(pointNumber == 0)
+                throw new Exception("При создании точки произошла ошибка");
+            GmshController.Gmsh.Model.Occ.Synchronize();
+            var geoPoint = GmshController.CreateControlPoints().Where(x => x.Number == pointNumber).FirstOrDefault();
+            ModelData.ObjectData.PointsSet.Add(geoPoint.Number, geoPoint);
+            return pointNumber;
         }
+
+        public int CreateLine(int startPointNumber, int endPointNumber)
+        {
+            var lineNumber = GmshController.Gmsh.Model.Occ.AddLine(startPointNumber, endPointNumber);
+            if (lineNumber == 0)
+                throw new Exception("При создании линии произошла ошибка");
+            GmshController.Gmsh.Model.Occ.Synchronize();
+            var geoLine = GmshController.CreateLines().Where(x => x.Number == lineNumber).FirstOrDefault();
+            ModelData.ObjectData.CurveSet.Add(geoLine.Number, geoLine);
+            return lineNumber;
+        }
+
+        public int CreateSurface(int[] lineNumbers)
+        {
+            var contur = GmshController.Gmsh.Model.Occ.AddWire(lineNumbers);
+            var surf = GmshController.Gmsh.Model.Occ.AddPlaneSurface([contur]);
+            if (surf == 0)
+                throw new Exception("При создании поверхности произошла ошибка");
+            GmshController.Gmsh.Model.Occ.Synchronize();
+            var (upper, lower) = GmshController.Gmsh.Model.GetAdjacencies(2, surf);
+            var points = new HashSet<int>();
+            foreach (var lineNumber in lower)
+            {
+                var (upperL, lowerL) = GmshController.Gmsh.Model.GetAdjacencies(1, lineNumber);
+                foreach (var point in lowerL)
+                    points.Add(point);
+            }
+            var allPoints = GmshController.CreateControlPoints();
+            var geoPoints = allPoints.Where(x => points.Contains(x.Number)).ToArray();
+
+            ModelData.ObjectData.SurfaceSet.Add(surf, new SurfaceFigure(surf, [new GeometrySurface(surf, geoPoints)]));
+            return surf;
+        }
+        
         /// <inheritdoc/>
         public void CreateElement(string setName, int dim, int[] nodeNumbers)
         {

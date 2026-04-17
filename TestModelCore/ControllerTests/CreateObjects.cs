@@ -129,33 +129,21 @@ namespace ControllerTests
 
             project.GmshController.Gmsh.Model.Add("line");
 
-            var start = project.GmshController.Gmsh.Model.Occ.AddPoint(0, 0, 0);
-            var middle = project.GmshController.Gmsh.Model.Occ.AddPoint(1, 0, 0);
-            var end = project.GmshController.Gmsh.Model.Occ.AddPoint(0, 1, 0);
-            //Добавляем линии по созданным точкам
-            var lineA = project.GmshController.Gmsh.Model.Occ.AddLine(start, middle);
-            var lineB = project.GmshController.Gmsh.Model.Occ.AddLine(middle, end);
-            var lineC = project.GmshController.Gmsh.Model.Occ.AddLine(end, start);
-            project.GmshController.Gmsh.Model.Occ.Synchronize();
-            var contur = project.GmshController.Gmsh.Model.Occ.AddWire([lineA, lineB, lineC]);
-            project.GmshController.Gmsh.Model.Occ.Synchronize();
-            var surf = project.GmshController.Gmsh.Model.Occ.AddPlaneSurface([contur]);
 
-            var w = project.GmshController.Gmsh.Model.Occ.AddThruSections([contur]);
-            project.GmshController.Gmsh.Model.Occ.Synchronize();
 
-            project.CreateGeometryObject(0, start);
-            project.CreateGeometryObject(0, middle);
-            project.CreateGeometryObject(0, end);
-            project.CreateGeometryObject(1, lineA);
-            project.CreateGeometryObject(1, lineB);
-            project.CreateGeometryObject(1, lineC);
-            project.CreateGeometryObject(2, surf);
+            var start = project.CreatePoint(0, 0, 0);
+            var middle = project.CreatePoint(2, 2, 0);
+            var end = project.CreatePoint(2, 0, 0);
 
+            var line1 = project.CreateLine(start, middle);
+            var line2 = project.CreateLine(middle, end);
+            var line3 = project.CreateLine(end, start);
+
+            var plane = project.CreateSurface(new int[] { line1, line2, line3 });
 
             var s = project.GetModelPoint(start);
-            var c = project.GetModelCurve(lineB);
-            var p = project.GetModelSurface(surf);
+            var c = project.GetModelCurve(line2);
+            var p = project.GetModelSurface(plane);
         }
     }
 }
