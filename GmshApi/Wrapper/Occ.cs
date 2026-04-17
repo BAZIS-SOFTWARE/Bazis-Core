@@ -376,11 +376,9 @@ namespace GmshApi
         /// Добавляет фаску в ядро OCC на переданных объемах volumeTags, кривых curveTags, поверхностях surfaceTags. 
         /// </summary>
         /// <param name="volumeTags">Идентификаторы объемов</param>
-        /// <param name="curveTags">Идентификаторы кривых</param>
-        /// <param name="surfaceTags">Идентификаторы поверхностей</param>
-        /// <param name="distances">В массиве указывать либо одно расстояние выборки (одинаковое для всех поверхностей и кривых) либо для каждой пары curveTag_distance,
-        /// surfaceTag_distance, либо удвоенное значение для каждой пары curveTag_distance_11, surfaceTag_distance_12, curveTag_distance_13, surfaceTag_distance_14,
-        /// в этом случае вторая указанная пара будет рассмотрена для смежных кривых и смежных поверхностей</param>
+        /// <param name="curveTags">Идентификаторы кривых (число идентификаторов кривых должно совпадать с числом идентификаторов поверхностей)</param>
+        /// <param name="surfaceTags">Идентификаторы поверхностей (число идентификаторов поверхностей должно совпадать с числом идентификаторов кривых)</param>
+        /// <param name="distances">В массиве нужно указать расстояние выборки от кривой, указывается для пары кривая-поверхность</param>
         /// <param name="removeVolume"></param>
         /// <returns>Возвращает новые геометрические сущности образованные фаской</returns>
         public int[] AddChamfer(int[] volumeTags, int[] curveTags, int[] surfaceTags, double[] distances, bool removeVolume = true)
