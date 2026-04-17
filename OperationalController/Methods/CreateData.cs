@@ -131,6 +131,15 @@ namespace OperationalController
                 ModelData.ObjectData.E1DCollection.Add(setName);
         }
 
+        /// <summary>
+        /// Создаёт точку в модели Gmsh и регистрирует соответствующий геометрический объект в ModelData.
+        /// </summary>
+        /// <param name="x">Координата X создаваемой точки (в глобальной системе координат).</param>
+        /// <param name="y">Координата Y создаваемой точки (в глобальной системе координат).</param>
+        /// <param name="z">Координата Z создаваемой точки (в глобальной системе координат).</param>
+        /// <param name="meshSize">Желаемый параметр размера конечного элемента (mesh size). Параметр необязательный и в текущей реализации не используется при создании точки.</param>
+        /// <returns>Номер (идентификатор) созданной точки в Gmsh.</returns>
+        /// <exception cref="Exception">Бросается, если Gmsh вернул 0 при попытке создать точку или при отсутствии созданного геометрического объекта в списке контрольных точек.</exception>
         public int CreatePoint(double x, double y, double z, double meshSize = 0)
         {
             var pointNumber = GmshController.Gmsh.Model.Occ.AddPoint(x, y, z);
@@ -142,6 +151,16 @@ namespace OperationalController
             return pointNumber;
         }
 
+        /// <summary>
+        /// Создаёт отрезок (линию) в модели Gmsh между двумя контрольными точками и регистрирует соответствующий геометрический объект в ModelData.
+        /// </summary>
+        /// <param name="startPointNumber">Номер (идентификатор) начальной точки в модели Gmsh.</param>
+        /// <param name="endPointNumber">Номер (идентификатор) конечной точки в модели Gmsh.</param>
+        /// <returns>Номер (идентификатор) созданной линии в Gmsh.</returns>
+        /// <exception cref="Exception">
+        /// Бросается, если Gmsh вернул 0 при попытке создать линию (создание не удалось).
+        /// Также возможна ошибка при отсутствии найденного геометрического объекта линии в списке возвращаемых объектов (тогда произойдёт <c>NullReferenceException</c> при попытке доступа к свойствам).
+        /// </exception>
         public int CreateLine(int startPointNumber, int endPointNumber)
         {
             var lineNumber = GmshController.Gmsh.Model.Occ.AddLine(startPointNumber, endPointNumber);
@@ -153,6 +172,20 @@ namespace OperationalController
             return lineNumber;
         }
 
+        /// <summary>
+        /// Создаёт плоскую поверхность в модели Gmsh по набору кривых (линий) и регистрирует
+        /// соответствующий геометрический объект в ModelData.
+        /// </summary>
+        /// <param name="lineNumbers">
+        /// Массив номеров (тегов) кривых в Gmsh, составляющих замкнутый контур поверхности.
+        /// Порядок и ориентация кривых должны соответствовать требуемому контуру поверхности.
+        /// </param>
+        /// <returns>Тег (номер) созданной поверхности в Gmsh.</returns>
+        /// <exception cref="Exception">
+        /// Бросается, если Gmsh вернул 0 при попытке создать поверхность (создание не удалось),
+        /// либо при других ошибках взаимодействия с Gmsh (например, если дальнейшие вызовы
+        /// вернут некорректные данные).
+        /// </exception>
         public int CreateSurface(int[] lineNumbers)
         {
             var contur = GmshController.Gmsh.Model.Occ.AddWire(lineNumbers);
