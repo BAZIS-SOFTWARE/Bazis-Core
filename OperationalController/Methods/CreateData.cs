@@ -1,20 +1,22 @@
 ﻿using Geometry;
+using Geometry.Exteisions;
+using GmshApi;
 using MathNet.Numerics.LinearAlgebra.Factorization;
+using Microsoft.Scripting.Utils;
 using Model;
+using Model.GeometryObjects;
 using Model.Interfaces;
 using Model.Interfaces.MeshObjects;
+using Model.Interfaces.ObjectsCollections;
 using Model.IO;
 using Model.IO.STL;
 using Model.MeshObjects;
+using Model.ObjectsCollections;
 using Project;
 using Project.Interfaces.Tasks;
 using Project.Tasks;
 using System;
 using System.Collections.Generic;
-using Geometry.Exteisions;
-using Model.Interfaces.ObjectsCollections;
-using Model.ObjectsCollections;
-using Microsoft.Scripting.Utils;
 using System.Linq;
 
 namespace OperationalController
@@ -150,10 +152,18 @@ namespace OperationalController
             }
             else
             {
-                var s = GmshController.CreateSurfaceFigures();
-                var surfData = GmshController.CreateSurfaceData();
-                var geoSurface = surfData.Item1.Where(x => x.Key == number).FirstOrDefault();
-                ModelData.ObjectData.SurfaceSet.Add(geoSurface.Key, geoSurface.Value);
+                var (upper, lower) = GmshController.Gmsh.Model.GetAdjacencies(2, number);
+                var points = new HashSet<int>();
+                foreach (var lineNumber in lower)
+                {
+                    var (upperL, lowerL) = GmshController.Gmsh.Model.GetAdjacencies(1, lineNumber);
+                    foreach (var point in lowerL)
+                        points.Add(point);
+                }
+                var allPoints = GmshController.CreateControlPoints();
+                var geoPoints = allPoints.Where(x => points.Contains(x.Number)).ToArray();
+
+                ModelData.ObjectData.SurfaceSet.Add(number, new SurfaceFigure(number, [new GeometrySurface(number, geoPoints)]));
             }
         }
         /// <inheritdoc/>

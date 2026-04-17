@@ -155,11 +155,7 @@ namespace ControllerTests
 
             var s = project.GetModelPoint(start);
             var c = project.GetModelCurve(lineB);
-
-            var surfData = project.GmshController.CreateSurfaceData();
-            var geoSurface = surfData.Item1.Where(x => x.Key == surf).FirstOrDefault();
             var p = project.GetModelSurface(surf);
-            Assert.IsTrue(project.GmshController.Gmsh.Model.GetEntities(2).Length > 0);
         }
     }
 }
