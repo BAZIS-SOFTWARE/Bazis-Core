@@ -14,6 +14,9 @@ using System.Collections.Generic;
 using Geometry.Exteisions;
 using Model.Interfaces.ObjectsCollections;
 using Model.ObjectsCollections;
+using OperationalController.MeshObjsCreator;
+using OperationalController.GmshController;
+using System.Numerics;
 
 namespace OperationalController
 {
@@ -125,6 +128,29 @@ namespace OperationalController
             if (dim == 1)
                 ModelData.ObjectData.E1DCollection.Add(setName);
         }
+
+        public void ExtrudeElement3DAlongCurve(int sTag,int cTag,int pTag, bool tranf)
+        {
+            // находим номера 2д эл-ов по номеру sTag
+            // формируем список этих элементов из ModelData
+            // создаешь экструдер по кривой
+            // передаешь параметры и запускаешь его
+            // создаешь новый набор элементов и через метод append добавляешь его в коллекцию 3d ModelData
+            // сформировать новый набор узлов экстр.элементов и через метод append тоже добавить в набор узлов ModelData          
+        }
+
+        public void ExtrudeElement3DRotate(int sTag, float angle, Vector3 sP, Vector3 eP)
+        {
+            // находим номера 2д эл-ов по номеру sTag
+            // формируем список этих элементов из ModelData
+            // создаешь экструдер поворота
+            // перевести угол из градусов в радианы
+            // передаешь параметры и запускаешь его
+            // создаешь новый набор элементов и через метод append добавляешь его в коллекцию 3d ModelData
+            // сформировать новый набор узлов экстр.элементов и через метод append тоже добавить в набор узлов ModelData          
+        }
+
+
         /// <inheritdoc/>
         public void CreateElement(string setName, int dim, int[] nodeNumbers)
         {
