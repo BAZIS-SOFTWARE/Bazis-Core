@@ -160,14 +160,10 @@ namespace OperationalController
             if (surf == 0)
                 throw new Exception("При создании поверхности произошла ошибка");
             GmshController.Gmsh.Model.Occ.Synchronize();
-            var (upper, lower) = GmshController.Gmsh.Model.GetAdjacencies(2, surf);
-            var points = new HashSet<int>();
-            foreach (var lineNumber in lower)
-            {
-                var (upperL, lowerL) = GmshController.Gmsh.Model.GetAdjacencies(1, lineNumber);
-                foreach (var point in lowerL)
-                    points.Add(point);
-            }
+
+            var points = GmshController.Gmsh.Model.GetBoundary([2, surf], true, true, true)
+                .Where((value, index) => index % 2 == 1)
+                .ToArray(); 
             var allPoints = GmshController.CreateControlPoints();
             var geoPoints = allPoints.Where(x => points.Contains(x.Number)).ToArray();
 
