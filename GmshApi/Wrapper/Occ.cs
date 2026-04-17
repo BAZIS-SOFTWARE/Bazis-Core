@@ -62,6 +62,11 @@ namespace GmshApi
                                                     ref IntPtr outDimTags, ref IntPtr outDimTags_n, string trihedron, ref int ierr);
         private gmshModelOccAddPipeFun gmshModelOccAddPipe = GetFunction<gmshModelOccAddPipeFun>("gmshModelOccAddPipe");
 
+        private delegate void gmshModelOccChamferFun(int[] volumeTags, IntPtr volumeTags_n, int[] curveTags, IntPtr curveTags_n,
+                                             int[] surfaceTags, IntPtr surfaceTags_n, double[] distances, IntPtr distances_n,
+                                             ref IntPtr outDimTags, ref IntPtr outDimTags_n, int removeVolume, ref int ierr);
+        private gmshModelOccChamferFun gmshModelOccChamfer = GetFunction<gmshModelOccChamferFun>("gmshModelOccChamfer");
+
         private delegate void gmshModelOccFuseFun(int[] objectDimTags, IntPtr objectDimTags_n,
                                                       int[] toolDimTags, IntPtr toolDimTags_n,
                                                       ref IntPtr outDimTags, ref IntPtr outDimTags_n,
@@ -366,6 +371,29 @@ namespace GmshApi
             var resDimTags = GetObjectsData<int>(outDimTags, outDimTags_n);
             return resDimTags;
         }
+
+        /// <summary>
+        /// Добавляет фаску в ядро OCC на переданных объемах volumeTags, кривых curveTags, поверхностях surfaceTags. 
+        /// </summary>
+        /// <param name="volumeTags">Идентификаторы объемов</param>
+        /// <param name="curveTags">Идентификаторы кривых</param>
+        /// <param name="surfaceTags">Идентификаторы поверхностей</param>
+        /// <param name="distances">В массиве указывать либо одно расстояние выборки (одинаковое для всех поверхностей и кривых) либо для каждой пары curveTag_distance,
+        /// surfaceTag_distance, либо удвоенное значение для каждой пары curveTag_distance_11, surfaceTag_distance_12, curveTag_distance_13, surfaceTag_distance_14,
+        /// в этом случае вторая указанная пара будет рассмотрена для смежных кривых и смежных поверхностей</param>
+        /// <param name="removeVolume"></param>
+        /// <returns>Возвращает новые геометрические сущности образованные фаской</returns>
+        public int[] AddChamfer(int[] volumeTags, int[] curveTags, int[] surfaceTags, double[] distances, bool removeVolume = true)
+        {
+            var ierr = 0;
+            var outDimTags = IntPtr.Zero;
+            var outDimTags_n = IntPtr.Zero;
+            gmshModelOccChamfer(volumeTags, (IntPtr)volumeTags.Length, curveTags, (IntPtr)curveTags.Length, surfaceTags, (IntPtr)surfaceTags.Length,
+                                distances, (IntPtr)distances.Length, ref outDimTags, ref outDimTags_n, Convert.ToInt32(removeVolume), ref ierr);
+            var resDimTags = GetObjectsData<int>(outDimTags, outDimTags_n);
+            return resDimTags;
+        }
+
 
         /// <summary>
         /// Вычисляет булеву операцию объединения множеств objectDimTags и toolDimTags,
