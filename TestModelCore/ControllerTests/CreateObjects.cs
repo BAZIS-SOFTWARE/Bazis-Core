@@ -129,8 +129,6 @@ namespace ControllerTests
 
             project.GmshController.Gmsh.Model.Add("line");
 
-
-
             var start = project.CreatePoint(0, 0, 0);
             var middle = project.CreatePoint(2, 2, 0);
             var end = project.CreatePoint(2, 0, 0);
@@ -141,9 +139,28 @@ namespace ControllerTests
 
             var plane = project.CreateSurface(new int[] { line1, line2, line3 });
 
+            // ===== ASSERT POINTS =====
             var s = project.GetModelPoint(start);
+            Assert.IsNotNull(s);
+            Assert.AreEqual(start, s.Number);
+
+            var m = project.GetModelPoint(middle);
+            Assert.IsNotNull(m);
+            Assert.AreEqual(middle, m.Number);
+
+            var e = project.GetModelPoint(end);
+            Assert.IsNotNull(e);
+            Assert.AreEqual(end, e.Number);
+
+            // ===== ASSERT CURVES =====
             var c = project.GetModelCurve(line2);
+            Assert.IsNotNull(c);
+            Assert.AreEqual(line2, c.Number);
+
+            // ===== ASSERT SURFACE =====
             var p = project.GetModelSurface(plane);
+            Assert.IsNotNull(p);
+            Assert.AreEqual(plane, p.Number);
         }
     }
 }
