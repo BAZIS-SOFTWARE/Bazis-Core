@@ -24,7 +24,7 @@ namespace OperationalController
         /// <param name="objectsData">
         /// <param name="plane"></param>
         /// <param name="color"></param>
-        void SelectNodeInPlane(IObjectsData objectsData, Plane plane, Color color);
+        List<int> SelectNodeInPlane(IObjectsData objectsData, Plane plane, Color color);
 
         /// <summary>
         /// Выбор последовательности узлов по заданному напрвлению. Направление задаётся номерами двух смежных узлов.

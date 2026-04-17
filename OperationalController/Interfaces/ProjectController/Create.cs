@@ -90,5 +90,13 @@ namespace OperationalController
         /// <param name="linesNodes"></param>
         /// <returns></returns>
         IEnumerable<ILineObject<Node>> CreateBoundaryEdges(List<string> linesNodes);
+
+        /// <summary>
+        /// CreateQuadMeshOnPoligon
+        /// </summary>
+        /// <param name="points"></param>
+        /// <param name="numberOfElem"></param>
+        /// <returns></returns>
+        void CreateQuadMeshOnPoligon(List<Point2D> points, int numberOfElem);
     }
 }
