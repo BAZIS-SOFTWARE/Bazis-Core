@@ -1,30 +1,16 @@
 ﻿using Geometry;
-using Geometry.Exteisions;
-using GmshApi;
-using MathNet.Numerics.LinearAlgebra.Factorization;
-using Microsoft.Scripting.Utils;
-using Model;
 using Model.GeometryObjects;
 using Model.Interfaces;
 using Model.Interfaces.MeshObjects;
-using Model.Interfaces.ObjectsCollections;
-using Model.IO;
-using Model.IO.STL;
 using Model.MeshObjects;
 using Model.ObjectsCollections;
-using Project;
+using OperationalController.MeshObjsCreator;
 using Project.Interfaces.Tasks;
-using Project.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using Geometry.Exteisions;
-using Model.Interfaces.ObjectsCollections;
-using Model.ObjectsCollections;
-using OperationalController.MeshObjsCreator;
-using OperationalController.GmshController;
 using System.Numerics;
+
 
 namespace OperationalController
 {
@@ -209,16 +195,36 @@ namespace OperationalController
             ModelData.ObjectData.SurfaceSet.Add(surf, new SurfaceFigure(surf, [new GeometrySurface(surf, geoPoints)]));
             return surf;
         }
-        
 
-        public void ExtrudeElement3DAlongCurve(int sTag,int cTag,int pTag, bool tranf)
+        public void ExtrudeElement3DAlongCurve(int numberSurface, int numberCurve, int numberStartPoint, double step, bool transfinite)        
         {
-            // находим номера 2д эл-ов по номеру sTag
-            // формируем список этих элементов из ModelData
-            // создаешь экструдер по кривой
-            // передаешь параметры и запускаешь его
-            // создаешь новый набор элементов и через метод append добавляешь его в коллекцию 3d ModelData
-            // сформировать новый набор узлов экстр.элементов и через метод append тоже добавить в набор узлов ModelData          
+            var set = ModelData.ObjectData.GetSetInfo(ObjType.Элемент2D, numberSurface);
+            var numbers = set.GetNumbers();
+            var elements2D = new List<Element2D>();
+            foreach (var pair in ModelData.ObjectData.E2DCollection)
+                foreach (var element in pair.Value)
+                    if (numbers.Contains(element.Key))
+                        elements2D.Add(element.Value);
+
+            var extruder = new CurveExtruder(GmshController, numberCurve, numberStartPoint);
+            extruder.Extrude(elements2D, step);
+            var e3d = transfinite ? extruder.ExtrudeTransfinite(elements2D, step)
+                      : extruder.Extrude(elements2D, step);
+
+            var collection = e3d.SelectMany(v => v);
+            var objSet = new ObjectsSet<Element3D>("Extrude");
+            foreach (var element in collection)
+                objSet.Add(element.Number, element);
+
+            var objCollection = new ObjectsCollection<Element3D>();
+            objCollection.Add(objSet);
+            ModelData.ObjectData.E3DCollection.Append(objCollection);
+
+            var nodesSet = new ObjectsSet<Model.MeshObjects.Node>("Extrude");
+            foreach(var node in extruder.Nodes.Values)
+                nodesSet.Add(node.Number, node);
+
+            ModelData.ObjectData.NodesSet.Append(nodesSet);
         }
 
         public void ExtrudeElement3DRotate(int sTag, float angle, Vector3 sP, Vector3 eP)

@@ -1,5 +1,6 @@
 ﻿using Geometry;
 using Model;
+using Model.Interfaces;
 using OperationalController;
 using OperationalController.GmshController;
 using System.Globalization;
@@ -161,6 +162,33 @@ namespace ControllerTests
             var p = project.GetModelSurface(plane);
             Assert.IsNotNull(p);
             Assert.AreEqual(plane, p.Number);
+        }
+
+
+        [TestMethod]
+        public void ExtrudeGeometry()
+        {
+            var project = new ProjectController();
+            project.GmshController.Load(@"..\..\..\..\GmshApi\gmsh.dll");
+            //project.CreateProject(@"newProj.bpf2");
+            var s = @"..\..\..\Examples\CAD\model1.stp";
+            
+            project.ImportCAD(s);
+
+            var start = project.CreatePoint(0, -85, 5);
+
+            var line2 = project.CreateLine(1, start);
+            var line3 = project.CreateLine(start, 7);
+
+            var plane = project.CreateSurface(new int[] { 11, line2, line3 });
+
+            project.GmshController.Gmsh.Model.Mesh.Clear();
+            project.ClearModelCollection(ObjType.Узел);
+            project.GenerateMesh(3);
+
+            var error = project.GmshController.Gmsh.Logger.GetLastError();
+
+            project.ExtrudeElement3DAlongCurve(366,1,1,1,false);
         }
     }
 }
