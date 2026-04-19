@@ -196,9 +196,9 @@ namespace OperationalController
             return surf;
         }
 
-        public void ExtrudeElement3DAlongCurve(int numberSurface, int numberCurve, int numberStartPoint, double step, bool transfinite)        
+        public void ExtrudeElement3DAlongCurve(int surfaceTag, int curveTag, int startPointTag, double step, bool transfinite)        
         {
-            var set = ModelData.ObjectData.GetSetInfo(ObjType.Элемент2D, numberSurface);
+            var set = ModelData.ObjectData.GetSetInfo(ObjType.Элемент2D, surfaceTag);
             var numbers = set.GetNumbers();
             var elements2D = new List<Element2D>();
             foreach (var pair in ModelData.ObjectData.E2DCollection)
@@ -206,7 +206,7 @@ namespace OperationalController
                     if (numbers.Contains(element.Key))
                         elements2D.Add(element.Value);
 
-            var extruder = new CurveExtruder(GmshController, numberCurve, numberStartPoint);
+            var extruder = new CurveExtruder(GmshController, curveTag, startPointTag);
             extruder.Extrude(elements2D, step);
             var e3d = transfinite ? extruder.ExtrudeTransfinite(elements2D, step)
                       : extruder.Extrude(elements2D, step);
@@ -227,8 +227,14 @@ namespace OperationalController
             ModelData.ObjectData.NodesSet.Append(nodesSet);
         }
 
-        public void ExtrudeElement3DRotate(int sTag, float angle, Vector3 sP, Vector3 eP)
+        public void ExtrudeElement3DRotate(int surfaceTag, float angle, Vector3 originPoint, Vector3 rotAxis)
         {
+            var radian = angle * Math.PI / 180;
+
+
+            //var extruder = new RotateExtruder();
+            //var e3d = transfinite ? extruder.ExtrudeTransfinite(objs.Item3, angle, Vector3.Zero, Vector3.UnitY, segments)
+            //                      : extruder.Extrude(objs.Item3, angle, Vector3.Zero, Vector3.UnitY, segments);
             // находим номера 2д эл-ов по номеру sTag
             // формируем список этих элементов из ModelData
             // создаешь экструдер поворота
