@@ -215,8 +215,8 @@ namespace OperationalController
             var elements2D = GetElements2D(surfaceTag);
 
             var extruder = new RotateExtruder();
-            var e3d = transfinite ? extruder.ExtrudeTransfinite(elements2D, radian, Vector3.Zero, Vector3.UnitY)
-                                  : extruder.Extrude(elements2D, radian, Vector3.Zero, Vector3.UnitY);
+            var e3d = transfinite ? extruder.ExtrudeTransfinite(elements2D, radian, originPoint, rotAxis)
+                                  : extruder.Extrude(elements2D, radian, originPoint, rotAxis);
             
             var collection = e3d.SelectMany(v => v);
             UpdateModelData(extruder, collection);
