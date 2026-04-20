@@ -34,10 +34,9 @@ namespace OperationalController.MeshObjsCreator
 
             radAngle = float.Clamp(radAngle, 0, 2 * MathF.PI);
             var offset = radAngle / segments;
-            var rotMatrix = Matrix4x4.CreateTranslation(origin) 
+            var rotMatrix = Matrix4x4.CreateTranslation(-origin) 
                           * Matrix4x4.CreateFromAxisAngle(rotAxis, offset) 
-                          * Matrix4x4.CreateTranslation(-origin);
-            rotMatrix = Matrix4x4.Transpose(rotMatrix);
+                          * Matrix4x4.CreateTranslation(origin);
 
             List<Element2D> nextLayer = null;
             for (var i = 0; i < segments; ++i)
@@ -73,10 +72,9 @@ namespace OperationalController.MeshObjsCreator
             curLayer = firstLayer;
 
             var offset = radAngle / segments;
-            var rotMatrix = Matrix4x4.CreateTranslation(origin)
+            var rotMatrix = Matrix4x4.CreateTranslation(-origin)
                           * Matrix4x4.CreateFromAxisAngle(rotAxis, offset)
-                          * Matrix4x4.CreateTranslation(-origin);
-            rotMatrix = Matrix4x4.Transpose(rotMatrix);
+                          * Matrix4x4.CreateTranslation(origin);
 
             List<Element2D> nextLayer = null;
             for (var i = 0; i < segments; ++i)

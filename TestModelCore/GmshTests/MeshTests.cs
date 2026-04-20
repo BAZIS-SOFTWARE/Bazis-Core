@@ -22,6 +22,7 @@ using Point3D = Geometry.Point3D;
 using MathNet.Numerics.LinearAlgebra.Factorization;
 using Project.Tasks;
 using System.Security.Cryptography;
+using static Community.CsharpSqlite.Sqlite3;
 
 namespace GmshTests
 {
@@ -926,6 +927,38 @@ namespace GmshTests
             var saver = new SaveModelToBPF2TextFile();
             saver.Save(md, $@"D:\{fileName}Recombine{recombine.ToString()}Transfinite{transfinite.ToString()}.bpf2");
         }
+
+        //Тест на вращение вокруг произвольной точки
+        [DataTestMethod]
+        [DataRow(8, MathF.PI, false, false, new float[] { 0f, -75f, 5f, 5f, -85f, 0f, 0f, -75f, 2.0212862E-13f })]
+        public void TriangleRotationTest(int segments, float angle, bool recombine, bool transfinite, float[] coords)
+        {
+            var proj = new ProjectController();
+            var ctr = proj.GmshController;
+
+            var triangle = new List<Triangle_c>() { 
+                                                        new Triangle_c(1, new Node[] { new Node(1, new Point3D(coords[0], coords[1], coords[2])),
+                                                                                       new Node(2, new Point3D(coords[3], coords[4], coords[5])),
+                                                                                       new Node(3, new Point3D(coords[6], coords[7], coords[8])) }
+                                                                                     )
+                                                  };
+
+            var extruder = new RotateExtruder();
+            var e3d = transfinite ? extruder.ExtrudeTransfinite(triangle, angle, new Vector3(0, -75, 0), Vector3.UnitZ, segments)
+                                  : extruder.Extrude(triangle, angle, new Vector3(0, -75, 0), Vector3.UnitZ, segments);
+
+            var md = new ModelData();
+            md.ObjectData.E3DCollection.AddRange("Extruded", e3d.SelectMany(v => v));
+
+            foreach (var node in extruder.Nodes.Values)
+                md.ObjectData.NodesSet.Add(node.Number, node);
+
+            Assert.AreEqual(0, extruder.MissedElements);
+
+            var saver = new SaveModelToBPF2TextFile();
+            saver.Save(md, $@"D:\RotatedTriangle.bpf2");
+        }
+
 
         /// <summary>
         /// Экструзия по кривой
