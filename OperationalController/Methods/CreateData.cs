@@ -1,4 +1,5 @@
 ﻿using Geometry;
+using MathNet.Numerics.LinearAlgebra.Factorization;
 using Model.GeometryObjects;
 using Model.Interfaces;
 using Model.Interfaces.MeshObjects;
@@ -36,7 +37,7 @@ namespace OperationalController
 
             for (int i = 0; i <= numberOfElem; i++)
                 vert.Add(new Segment2D(b_1[i], b_3[i]));
-            
+
             var numbE = 0;
             var numbN = 0;
 
@@ -135,7 +136,7 @@ namespace OperationalController
         public int CreatePoint(double x, double y, double z, double meshSize = 0)
         {
             var pointNumber = GmshController.Gmsh.Model.Occ.AddPoint(x, y, z);
-            if(pointNumber == 0)
+            if (pointNumber == 0)
                 throw new Exception("При создании точки произошла ошибка");
             GmshController.Gmsh.Model.Occ.Synchronize();
             var geoPoint = GmshController.CreateControlPoints().Where(x => x.Number == pointNumber).FirstOrDefault();
@@ -188,7 +189,7 @@ namespace OperationalController
 
             var points = GmshController.Gmsh.Model.GetBoundary([2, surf], true, true, true)
                 .Where((value, index) => index % 2 == 1)
-                .ToArray(); 
+                .ToArray();
             var allPoints = GmshController.CreateControlPoints();
             var geoPoints = allPoints.Where(x => points.Contains(x.Number)).ToArray();
 
@@ -196,52 +197,29 @@ namespace OperationalController
             return surf;
         }
 
-        public void ExtrudeElement3DAlongCurve(int surfaceTag, int curveTag, int startPointTag, double step, bool transfinite)        
+        public void ExtrudeElement3DAlongCurve(int surfaceTag, int curveTag, int startPointTag, double step, bool transfinite)
         {
-            var set = ModelData.ObjectData.GetSetInfo(ObjType.Элемент2D, surfaceTag);
-            var numbers = set.GetNumbers();
-            var elements2D = new List<Element2D>();
-            foreach (var pair in ModelData.ObjectData.E2DCollection)
-                foreach (var element in pair.Value)
-                    if (numbers.Contains(element.Key))
-                        elements2D.Add(element.Value);
-
+            var elements2D = GetElements2D(surfaceTag);
             var extruder = new CurveExtruder(GmshController, curveTag, startPointTag);
             extruder.Extrude(elements2D, step);
             var e3d = transfinite ? extruder.ExtrudeTransfinite(elements2D, step)
                       : extruder.Extrude(elements2D, step);
-
+            
             var collection = e3d.SelectMany(v => v);
-            var objSet = new ObjectsSet<Element3D>("Extrude");
-            foreach (var element in collection)
-                objSet.Add(element.Number, element);
-
-            var objCollection = new ObjectsCollection<Element3D>();
-            objCollection.Add(objSet);
-            ModelData.ObjectData.E3DCollection.Append(objCollection);
-
-            var nodesSet = new ObjectsSet<Model.MeshObjects.Node>("Extrude");
-            foreach(var node in extruder.Nodes.Values)
-                nodesSet.Add(node.Number, node);
-
-            ModelData.ObjectData.NodesSet.Append(nodesSet);
+            UpdateModelData(extruder, collection);
         }
 
-        public void ExtrudeElement3DRotate(int surfaceTag, float angle, Vector3 originPoint, Vector3 rotAxis)
+        public void ExtrudeElement3DRotate(int surfaceTag, float angle, Vector3 originPoint, Vector3 rotAxis, bool transfinite)
         {
-            var radian = angle * Math.PI / 180;
+            var radian = (float)(angle * Math.PI / 180);
+            var elements2D = GetElements2D(surfaceTag);
 
-
-            //var extruder = new RotateExtruder();
-            //var e3d = transfinite ? extruder.ExtrudeTransfinite(objs.Item3, angle, Vector3.Zero, Vector3.UnitY, segments)
-            //                      : extruder.Extrude(objs.Item3, angle, Vector3.Zero, Vector3.UnitY, segments);
-            // находим номера 2д эл-ов по номеру sTag
-            // формируем список этих элементов из ModelData
-            // создаешь экструдер поворота
-            // перевести угол из градусов в радианы
-            // передаешь параметры и запускаешь его
-            // создаешь новый набор элементов и через метод append добавляешь его в коллекцию 3d ModelData
-            // сформировать новый набор узлов экстр.элементов и через метод append тоже добавить в набор узлов ModelData          
+            var extruder = new RotateExtruder();
+            var e3d = transfinite ? extruder.ExtrudeTransfinite(elements2D, radian, Vector3.Zero, Vector3.UnitY)
+                                  : extruder.Extrude(elements2D, radian, Vector3.Zero, Vector3.UnitY);
+            
+            var collection = e3d.SelectMany(v => v);
+            UpdateModelData(extruder, collection);
         }
 
 
@@ -264,7 +242,7 @@ namespace OperationalController
             if (dim == 1)
             {
                 var max = 0;
-                if(ModelData.ObjectData.Count(ObjType.Элемент1D) != 0)
+                if (ModelData.ObjectData.Count(ObjType.Элемент1D) != 0)
                     max = ModelData.ObjectData.GetMaxNumber(ObjType.Элемент1D) + 1;
 
                 var e1d = new Beam(max, nodes);
@@ -278,7 +256,7 @@ namespace OperationalController
 
                 Element2D e2d;
 
-                if(nodeNumbers.Length == 4)
+                if (nodeNumbers.Length == 4)
                     e2d = new Quad(max, nodes);
                 else
                     e2d = new Triangle_c(max, nodes);
@@ -295,10 +273,40 @@ namespace OperationalController
         {
             if (ModelData.ObjectData.NodesSet.ContainsKey(number))
                 throw new Exception("Обект с таким номером уже добавлен в набор");
-            
+
             ModelData.ObjectData.NodesSet.
-                Add(number, new Node(number, 
-                new Geometry.Point3D(x,y,z)));
+                Add(number, new Node(number,
+                new Geometry.Point3D(x, y, z)));
+        }
+
+        private void UpdateModelData(MeshExtruder extruder, IEnumerable<Element3D> collection)
+        {
+            var objSet = new ObjectsSet<Element3D>("Extrude");
+            foreach (var element in collection)
+                objSet.Add(element.Number, element);
+
+            var objCollection = new ObjectsCollection<Element3D>();
+            objCollection.Add(objSet);
+            ModelData.ObjectData.E3DCollection.Append(objCollection);
+
+            var nodesSet = new ObjectsSet<Model.MeshObjects.Node>("Extrude");
+            foreach (var node in extruder.Nodes.Values)
+                nodesSet.Add(node.Number, node);
+
+            ModelData.ObjectData.NodesSet.Append(nodesSet);
+        }
+
+        private List<Element2D> GetElements2D(int surfaceTag)
+        {
+            var set = ModelData.ObjectData.GetSetInfo(ObjType.Элемент2D, surfaceTag);
+            var numbers = set.GetNumbers();
+            var elements2D = new List<Element2D>();
+            foreach (var pair in ModelData.ObjectData.E2DCollection)
+                foreach (var element in pair.Value)
+                    if (numbers.Contains(element.Key))
+                        elements2D.Add(element.Value);
+
+            return elements2D;
         }
     }
 }
