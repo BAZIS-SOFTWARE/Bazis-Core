@@ -2,8 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
+using System.Data.SQLite;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
+using System.Transactions;
 
 namespace ResultDB.IO
 {
@@ -169,6 +173,113 @@ namespace ResultDB.IO
             }
 
             db.CloseConnection();
+        }
+
+        /// <summary>
+        /// Объединяет две базы данных результатов в одну новую базу.
+        /// </summary>
+        /// <param name="dbPath1">Файловый путь к первой (первичной) базе данных.</param>
+        /// <param name="dbPath2">Файловый путь ко второй (вторичной) базе данных.</param>
+        /// <exception cref="InvalidOperationException">
+        /// Выбрасывается, если типы БД различаются (например, термическая и механическая),
+        /// либо если временные шаги пересекаются некорректным образом.
+        /// </exception>
+        /// <exception cref="Exception">Выбрасывается при ошибке определения типа БД или при ошибках работы с SQLite.</exception>
+        public string Merge(string dbPath1, string dbPath2)
+        {
+            var type1 = GetDbType(dbPath1);
+            var type2 = GetDbType(dbPath2);
+
+            if (type1 != type2)
+                throw new InvalidOperationException("Нельзя объединять БД разных типов");
+
+            var tables = GetTablesNames(dbPath1).ToList();
+            var times1 = GetValues(dbPath1, tables.First(), "Time").ToList();
+            var times2 = GetValues(dbPath2, GetTablesNames(dbPath2).First(), "Time").ToList();
+
+            ValidateTimeIntersection(times1, times2);
+
+            var directory = Path.GetDirectoryName(dbPath1);
+            float minTime = Math.Min(times1.Min(), times2.Min());
+            float maxTime = Math.Max(times1.Max(), times2.Max());
+
+            var resultDBPath = Path.Combine(directory, $"{type1}_0_{minTime}_{maxTime}.db");
+
+            using (var connection = new SQLiteConnection("Data Source=" + resultDBPath + ";Version=3;Synchronous=OFF;Journal Mode=DELETE;", true))
+            {
+                connection.Open();
+                using (var command = connection.CreateCommand())
+                {
+                    var db1Path = dbPath1;
+                    var db2Path = dbPath2;
+
+                    if (times1.Last() > times2.Last())
+                        (db1Path, db2Path) = (db2Path, db1Path);
+
+                    command.CommandText =
+                        $"ATTACH DATABASE '{db1Path}' AS db1; " +
+                        $"ATTACH DATABASE '{db2Path}' AS db2;";
+                    command.ExecuteNonQuery();
+
+                    try
+                    {
+                        foreach (var table in tables)
+                        {
+                            command.CommandText =
+                                $"CREATE TABLE {table} AS SELECT * FROM db1.{table} WHERE 0;";
+                            command.ExecuteNonQuery();
+                            command.CommandText =
+                                $"INSERT INTO main.{table} SELECT * FROM db1.{table};";
+                            command.ExecuteNonQuery();
+                            command.CommandText = 
+                                $"INSERT INTO main.{table} SELECT * FROM db2.{table} " +
+                                $"WHERE time > (SELECT MAX(time) FROM db1.{table});";
+                            command.ExecuteNonQuery();
+                        }
+                    }
+                    finally
+                    {
+                        command.CommandText =
+                            "DETACH DATABASE db1;" +
+                            "DETACH DATABASE db2;";
+                        command.ExecuteNonQuery();
+                    }
+                }
+            }
+            return resultDBPath;
+        }
+
+        private TaskKind GetDbType(string path)
+        {
+            var name = Path.GetFileNameWithoutExtension(path).Split('_')[0];
+
+            switch (name)
+            {
+                case "термическая":
+                    return TaskKind.термическая;
+                 case "механическая":
+                    return TaskKind.механическая;
+                 default:
+                    throw new Exception("Неизвестный тип БД");
+            }
+        }
+
+        private void ValidateTimeIntersection(List<float> t1, List<float> t2)
+        {
+            float min1 = t1.Min();
+            float max1 = t1.Max();
+
+            float min2 = t2.Min();
+            float max2 = t2.Max();
+
+            bool valid =
+                max1 == min2 ||
+                max2 == min1 ||
+                max1 < min2 ||
+                max2 < min1;
+
+            if (!valid)
+                throw new InvalidOperationException("Некорректное пересечение временных шагов");
         }
     }
 }

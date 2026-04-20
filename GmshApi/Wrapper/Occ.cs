@@ -23,6 +23,9 @@ namespace GmshApi
                                                       double[] zAxis, IntPtr zAxis_n, double[] xAxis, IntPtr xAxis_n, ref int ierr);
         private gmshModelOccAddCircleFun gmshModelOccAddCircle = GetFunction<gmshModelOccAddCircleFun>("gmshModelOccAddCircle");
 
+        private delegate int gmshModelOccAddSplineFun(int[] pointTags, IntPtr pointTags_n, int tag, double[] tangents, IntPtr tangents_n, ref int ierr);
+        private gmshModelOccAddSplineFun gmshModelOccAddSpline = GetFunction<gmshModelOccAddSplineFun>("gmshModelOccAddSpline");
+
         private delegate int gmshModelOccAddBezierFun(int[] pointTags, IntPtr pointTags_n, int tag, ref int ierr);
         private gmshModelOccAddBezierFun gmshModelOccAddBezier = GetFunction<gmshModelOccAddBezierFun>("gmshModelOccAddBezier");
 
@@ -58,6 +61,13 @@ namespace GmshApi
         private delegate void gmshModelOccAddPipeFun(int[] dimTags, IntPtr dimTags_n, int wireTag,
                                                     ref IntPtr outDimTags, ref IntPtr outDimTags_n, string trihedron, ref int ierr);
         private gmshModelOccAddPipeFun gmshModelOccAddPipe = GetFunction<gmshModelOccAddPipeFun>("gmshModelOccAddPipe");
+
+        private delegate void gmshModelOccFuseFun(int[] objectDimTags, IntPtr objectDimTags_n,
+                                                      int[] toolDimTags, IntPtr toolDimTags_n,
+                                                      ref IntPtr outDimTags, ref IntPtr outDimTags_n,
+                                                      ref IntPtr outDimTagsMap, ref IntPtr outDimTagsMap_n, ref IntPtr outDimTagsMap_nn,
+                                                      int tag, int removeObject, int removeTool, ref int ierr);
+        private gmshModelOccFuseFun gmshModelOccFuse = GetFunction<gmshModelOccFuseFun>("gmshModelOccFuse");
 
         private delegate void gmshModelOccIntersectFun(int[] objectDimTags, IntPtr objectDimTags_n,
                                                       int[] toolDimTags, IntPtr toolDimTags_n,
@@ -169,6 +179,21 @@ namespace GmshApi
             zAxis = zAxis ?? new double[0];
             xAxis = xAxis ?? new double[0];
             return gmshModelOccAddCircle(x, y, z, r, tag, angle1, angle2, zAxis, (IntPtr)zAxis.Length, xAxis, (IntPtr)xAxis.Length, ref ierr);
+        }
+
+        /// <summary>
+        /// Добавляет сплайн в ядро OCC с идентификаторами точек pointTags и касательными(опционально) векторами tangents 
+        /// </summary>
+        /// <param name="pointTags">Массив идентификаторов точек</param>
+        /// <param name="tag">Желаемый идентификатор или -1 для автоназначения</param>
+        /// <param name="tangents">Если передано 6 компонентов касательного вектора(x,y,z) - использовать вектора только для первой и последней точки, 
+        /// если кол-во компонентов вектора (x,y,z) в 3 раза мревышает кол-во точек pointTags - использовать направляющие вектора для каждой точки</param>
+        /// <returns>Идентификатор кривой</returns>
+        public int AddSpline(int[] pointTags, int tag = -1, double[] tangents = null)
+        {
+            var ierr = 0;
+            tangents = tangents ?? new double[0];
+            return gmshModelOccAddSpline(pointTags, (IntPtr)pointTags.Length, tag, tangents, (IntPtr)tangents.Length, ref ierr);
         }
 
         /// <summary>
@@ -340,6 +365,33 @@ namespace GmshApi
             gmshModelOccAddPipe(dimTags, (IntPtr)dimTags.Length, wireTag, ref outDimTags, ref outDimTags_n, trihedron, ref ierr);
             var resDimTags = GetObjectsData<int>(outDimTags, outDimTags_n);
             return resDimTags;
+        }
+
+        /// <summary>
+        /// Вычисляет булеву операцию объединения множеств objectDimTags и toolDimTags,
+        /// если операция выполняется для разных размерностей, нижняя размерность автоматически поглащается верхней,
+        /// возвращает результирующие сущности dimTags и ассоциированных с ней карты относительно старой нумерации (отслеживание где произошли изменения)
+        /// </summary>
+        /// <param name="objectDimTags">Множество 1 для взятия объединения</param>
+        /// <param name="toolDimTags">Множество 2 для взятия объединения</param>
+        /// <param name="tag">Желаемый идентификатор, валиден если применяется операция относительно одной сущности, или -1 для автоназначения</param>
+        /// <param name="removeObject">Удалить исходное множество 1 после выполнении операции</param>
+        /// <param name="removeTool">Удалить исходное множество 2 после выполнении операции</param>
+        /// <returns>Результирующее множестов dim:tag и карта ассоциаций со старыми множествами</returns>
+        public Tuple<int[], int[][]> Fuse(int[] objectDimTags, int[] toolDimTags, int tag = -1, bool removeObject = true, bool removeTool = true)
+        {
+            var ierr = 0;
+            var outDimTags = IntPtr.Zero;
+            var outDimTags_n = IntPtr.Zero;
+            var outDimTagsMap = IntPtr.Zero;
+            var outDimTagsMap_n = IntPtr.Zero;
+            var outDimTagsMap_nn = IntPtr.Zero;
+            gmshModelOccFuse(objectDimTags, (IntPtr)objectDimTags.Length, toolDimTags, (IntPtr)toolDimTags.Length,
+                                 ref outDimTags, ref outDimTags_n, ref outDimTagsMap, ref outDimTagsMap_n, ref outDimTagsMap_nn,
+                                 tag, Convert.ToInt32(removeObject), Convert.ToInt32(removeTool), ref ierr);
+            var dimTags = GetObjectsData<int>(outDimTags, outDimTags_n);
+            var dimTagsMap = GetArrayOfObjectsData<int>(outDimTagsMap, outDimTagsMap_nn, outDimTagsMap_n);
+            return Tuple.Create(dimTags, dimTagsMap);
         }
 
         /// <summary>

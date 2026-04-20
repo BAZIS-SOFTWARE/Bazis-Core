@@ -83,6 +83,9 @@ namespace GmshApi
                                                        ref IntPtr curvatures, ref IntPtr curvatures_n, ref int ierr);
         private gmshModelGetCurvatureFun gmshModelGetCurvature = GetFunction<gmshModelGetCurvatureFun>("gmshModelGetCurvature");
 
+        private delegate void gmshModelGetNormalFun(int tag, double[] pametricCoord, IntPtr parametricCoord_n, ref IntPtr normals, ref IntPtr normals_n, ref int ierr);
+        private gmshModelGetNormalFun gmshModelGetNormal = GetFunction<gmshModelGetNormalFun>("gmshModelGetNormal");
+
         private delegate void gmshModelGetParametrizationFun(int dim, int tag, double[] coord, IntPtr coord_n,
                                                              ref IntPtr parametricCoord, ref IntPtr parametricCoord_n, ref int ierr);
         private gmshModelGetParametrizationFun gmshModelGetParametrization = GetFunction<gmshModelGetParametrizationFun>("gmshModelGetParametrization");
@@ -403,6 +406,20 @@ namespace GmshApi
             var intValue_n = IntPtr.Zero;
             gmshModelGetCurvature(dim, tag, parametricCoord, (IntPtr)parametricCoord.Length, ref intValue, ref intValue_n, ref ierr);
             return GetObjectsData<double>(intValue, intValue_n);
+        }
+        /// <summary>
+        /// Возвращает нормаль по параметрическим координатам у указанной сущности tag
+        /// </summary>
+        /// <param name="tag">Идентификатор сущности</param>
+        /// <param name="parametricCoord">Параметрические координаты u-для кривой и u,v для поверхности</param>
+        /// <returns></returns>
+        public double[] GetNormal(int tag, double[] parametricCoord)
+        {
+            var ierr = 0;
+            var normal = IntPtr.Zero;
+            var normals_n = IntPtr.Zero;
+            gmshModelGetNormal(tag, parametricCoord, (IntPtr)parametricCoord.Length, ref normal, ref normals_n, ref ierr);
+            return GetObjectsData<double>(normal, normals_n);
         }
         /// <summary>
         /// Возвращает параметризацию сущности заданной парой dim:tag

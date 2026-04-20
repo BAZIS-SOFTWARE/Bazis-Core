@@ -1,27 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using Geometry;
+﻿using Geometry;
+using MathNet.Numerics.Distributions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Project;
-using System.Globalization;
-using System.Threading;
-using Project.Interfaces.Tasks;
 using Model.Interfaces.MeshObjects;
-using System.Data;
-using System.IO;
-using PostProc.ScenePresenter;
-using PostProc;
-using Results.ScenePresenter;
-using PostProc.IO.GridExport;
-using PostProc.IO.ResultExport;
 using Model.IO;
 using OperationalController.MeshObjsUtility;
 using OperationalController.ModelScenePresentator;
-using ResultDB.IO;
-using ResultDB;
+using PostProc;
+using PostProc.IO.GridExport;
+using PostProc.IO.ResultExport;
+using PostProc.ScenePresenter;
+using Project;
+using Project.Interfaces.Tasks;
 using Project.IO;
+using ResultDB;
+using ResultDB.IO;
+using Results.ScenePresenter;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Drawing;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using static Community.CsharpSqlite.Sqlite3;
 
 
 namespace TestProject
@@ -686,5 +688,101 @@ x.Time.CompareTo(0) >= 0
             
         }
 
+        [TestMethod]
+        [DataRow(@"..\..\..\Examples\ProjAndResults\merge\термическая_2_1_2.db",
+                 @"..\..\..\Examples\ProjAndResults\merge\термическая_3_2_3.db",
+                 @"..\..\..\Examples\ProjAndResults\merge\термическая_0_1_3.db")]
+        [DataRow(@"..\..\..\Examples\ProjAndResults\merge\термическая_3_2_3.db",
+                 @"..\..\..\Examples\ProjAndResults\merge\термическая_2_1_2.db",
+                 @"..\..\..\Examples\ProjAndResults\merge\термическая_0_1_3.db")]
+        [DataRow(@"..\..\..\Examples\ProjAndResults\merge\термическая_2_1_2.db",
+                 @"..\..\..\Examples\ProjAndResults\merge\термическая_2_1_2.db",
+                 @"..\..\..\Examples\ProjAndResults\merge\термическая_0_1_2.db")]
+        public void MergeDataBase(string path1, string path2, string resultPath)
+        {
+            var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(tempDir);
+            try
+            {
+                var db1Path = path1;
+                var db2Path = path2;
+
+                var loader = new LoadResultsFileDB();
+                loader.Merge(db1Path, db2Path);
+
+                Assert.IsTrue(File.Exists(resultPath), "Merged database was not created.");
+
+                var tableName = loader.GetTablesNames(path1).First();
+                var expectedRows = GetExpectedRows(path1, path2, tableName);
+                var actualRows = GetTotalRows(resultPath, tableName);
+
+                Assert.AreEqual(expectedRows, actualRows, "Merged row count is incorrect.");
+                
+                // Локальная вспомогательная функция: возвращает общее количество строк в таблице указанной БД.
+                int GetTotalRows(string dbPath, string tableName)
+                {
+                    var db = new ResultDataBase(dbPath);
+                    db.OpenConnection();
+                    try{ return db.GetResults(tableName, "*", "").Rows.Count;}
+                    finally{ db.CloseConnection();}
+                }
+
+                // Локальная вспомогательная функция: вычисляет ожидаемое количество строк после слияния двух баз.
+                // Логика:
+                // - Получаем набор времен (Time) из обеих БД.
+                // - Определяем, какая БД содержит меньший максимальный Time — это будет "db1" (ранняя).
+                // - Количество ожидаемых строк = все строки из db1 + строки из db2, у которых time > maxTimeDb1.
+                int GetExpectedRows(string path1, string path2, string tableName)
+                {
+                    var t1 = loader.GetValues(path1, loader.GetTablesNames(path1).First(), "Time").ToList();
+                    var t2 = loader.GetValues(path2, loader.GetTablesNames(path2).First(), "Time").ToList();
+                    var db1Path = path1;
+                    var db2Path = path2;
+
+                    var maxTimeDb1 = t1.Last();
+                    // Обмениваем пути, чтобы db1 всегда была с меньшим последним временем
+                    if (t1.Last() > t2.Last()) 
+                    {
+                        (db1Path, db2Path) = (db2Path, db1Path);
+                        maxTimeDb1 = t2.Last();
+                    }
+                        
+
+                    var db1 = new ResultDataBase(db1Path);
+                    var db2 = new ResultDataBase(db2Path);
+                    db1.OpenConnection();
+                    db2.OpenConnection();
+
+                    try
+                    {
+                        var table1 = db1.GetResults(tableName, "*", "");
+                        var table2 = db2.GetResults(tableName, "*", "");
+
+                        if (table1 == null || table2 == null)
+                            return 0;
+                        var rowsDb1 = table1.Rows.Count;
+
+                        // Считаем строки во второй таблице с time > maxTimeDb1
+                        var rowsDb2Filtered = table2.AsEnumerable()
+                            .Count(r => r["time"] != DBNull.Value &&
+                                        Convert.ToInt64(r["time"]) > maxTimeDb1);
+
+                        return rowsDb1 + rowsDb2Filtered;
+                    }
+                    finally
+                    {
+                        db1.CloseConnection();
+                        db2.CloseConnection();
+                    }
+                }
+            }
+            catch (Exception ex) {Assert.Fail($"An exception occurred during merging: {ex.Message}");}
+            finally
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                File.Delete(resultPath);
+            }
+        }
     }
 }
