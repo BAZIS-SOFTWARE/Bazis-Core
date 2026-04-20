@@ -1,6 +1,10 @@
 ﻿using Geometry;
+using Model;
+using Model.Interfaces;
 using OperationalController;
+using OperationalController.GmshController;
 using System.Globalization;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
 namespace ControllerTests
@@ -40,7 +44,7 @@ namespace ControllerTests
         {
             var contr = new ProjectController();
             contr.CreateProject(@"..\..\..\Examples\createObj.bpf2");
-            
+
             var numb = 0;
             var numbs = new int[points.Count];
 
@@ -49,7 +53,7 @@ namespace ControllerTests
                 numbs[i] = numb;
                 contr.CreateNode(numb++, points[i]._x, points[i]._y, points[i]._z);
             }
-                
+
 
             contr.CreateElementsSet("newSet", dim);
             contr.CreateElement("newSet", dim, numbs);
@@ -115,6 +119,76 @@ namespace ControllerTests
 
             //assert
             Assert.AreNotEqual(contr.GetModelElements(2, "append_0").Count(), 0);
+        }
+
+        [TestMethod]
+        public void CreateGeometryObjectsTest()
+        {
+            var project = new ProjectController();
+            project.CreateProject(@"newProj.bpf2");
+            project.GmshController.Load(@"..\..\..\..\GmshApi\gmsh.dll");
+
+            project.GmshController.Gmsh.Model.Add("line");
+
+            var start = project.CreatePoint(0, 0, 0);
+            var middle = project.CreatePoint(2, 2, 0);
+            var end = project.CreatePoint(2, 0, 0);
+
+            var line1 = project.CreateLine(start, middle);
+            var line2 = project.CreateLine(middle, end);
+            var line3 = project.CreateLine(end, start);
+
+            var plane = project.CreateSurface(new int[] { line1, line2, line3 });
+
+            // ===== ASSERT POINTS =====
+            var s = project.GetModelPoint(start);
+            Assert.IsNotNull(s);
+            Assert.AreEqual(start, s.Number);
+
+            var m = project.GetModelPoint(middle);
+            Assert.IsNotNull(m);
+            Assert.AreEqual(middle, m.Number);
+
+            var e = project.GetModelPoint(end);
+            Assert.IsNotNull(e);
+            Assert.AreEqual(end, e.Number);
+
+            // ===== ASSERT CURVES =====
+            var c = project.GetModelCurve(line2);
+            Assert.IsNotNull(c);
+            Assert.AreEqual(line2, c.Number);
+
+            // ===== ASSERT SURFACE =====
+            var p = project.GetModelSurface(plane);
+            Assert.IsNotNull(p);
+            Assert.AreEqual(plane, p.Number);
+        }
+
+
+        [TestMethod]
+        public void ExtrudeGeometry()
+        {
+            var project = new ProjectController();
+            project.GmshController.Load(@"..\..\..\..\GmshApi\gmsh.dll");
+            //project.CreateProject(@"newProj.bpf2");
+            var s = @"..\..\..\Examples\CAD\model1.stp";
+            
+            project.ImportCAD(s);
+
+            var start = project.CreatePoint(0, -85, 5);
+
+            var line2 = project.CreateLine(1, start);
+            var line3 = project.CreateLine(start, 7);
+
+            var plane = project.CreateSurface(new int[] { 11, line2, line3 });
+
+            project.GmshController.Gmsh.Model.Mesh.Clear();
+            project.ClearModelCollection(ObjType.Узел);
+            project.GenerateMesh(3);
+
+            var error = project.GmshController.Gmsh.Logger.GetLastError();
+
+            project.ExtrudeElement3DAlongCurve(366,1,1,1,false);
         }
     }
 }

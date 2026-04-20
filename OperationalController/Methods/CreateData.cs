@@ -1,22 +1,17 @@
 ﻿using Geometry;
 using MathNet.Numerics.LinearAlgebra.Factorization;
-using Model;
+using Model.GeometryObjects;
 using Model.Interfaces;
 using Model.Interfaces.MeshObjects;
-using Model.IO;
-using Model.IO.STL;
 using Model.MeshObjects;
-using Project;
-using Project.Interfaces.Tasks;
-using Project.Tasks;
-using System;
-using System.Collections.Generic;
-using Geometry.Exteisions;
-using Model.Interfaces.ObjectsCollections;
 using Model.ObjectsCollections;
 using OperationalController.MeshObjsCreator;
-using OperationalController.GmshController;
+using Project.Interfaces.Tasks;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
+
 
 namespace OperationalController
 {
@@ -42,7 +37,7 @@ namespace OperationalController
 
             for (int i = 0; i <= numberOfElem; i++)
                 vert.Add(new Segment2D(b_1[i], b_3[i]));
-            
+
             var numbE = 0;
             var numbN = 0;
 
@@ -129,25 +124,102 @@ namespace OperationalController
                 ModelData.ObjectData.E1DCollection.Add(setName);
         }
 
-        public void ExtrudeElement3DAlongCurve(int sTag,int cTag,int pTag, bool tranf)
+        /// <summary>
+        /// Создаёт точку в модели Gmsh и регистрирует соответствующий геометрический объект в ModelData.
+        /// </summary>
+        /// <param name="x">Координата X создаваемой точки (в глобальной системе координат).</param>
+        /// <param name="y">Координата Y создаваемой точки (в глобальной системе координат).</param>
+        /// <param name="z">Координата Z создаваемой точки (в глобальной системе координат).</param>
+        /// <param name="meshSize">Желаемый параметр размера конечного элемента (mesh size). Параметр необязательный и в текущей реализации не используется при создании точки.</param>
+        /// <returns>Номер (идентификатор) созданной точки в Gmsh.</returns>
+        /// <exception cref="Exception">Бросается, если Gmsh вернул 0 при попытке создать точку или при отсутствии созданного геометрического объекта в списке контрольных точек.</exception>
+        public int CreatePoint(double x, double y, double z, double meshSize = 0)
         {
-            // находим номера 2д эл-ов по номеру sTag
-            // формируем список этих элементов из ModelData
-            // создаешь экструдер по кривой
-            // передаешь параметры и запускаешь его
-            // создаешь новый набор элементов и через метод append добавляешь его в коллекцию 3d ModelData
-            // сформировать новый набор узлов экстр.элементов и через метод append тоже добавить в набор узлов ModelData          
+            var pointNumber = GmshController.Gmsh.Model.Occ.AddPoint(x, y, z);
+            if (pointNumber == 0)
+                throw new Exception("При создании точки произошла ошибка");
+            GmshController.Gmsh.Model.Occ.Synchronize();
+            var geoPoint = GmshController.CreateControlPoints().Where(x => x.Number == pointNumber).FirstOrDefault();
+            ModelData.ObjectData.PointsSet.Add(geoPoint.Number, geoPoint);
+            return pointNumber;
         }
 
-        public void ExtrudeElement3DRotate(int sTag, float angle, Vector3 sP, Vector3 eP)
+        /// <summary>
+        /// Создаёт отрезок (линию) в модели Gmsh между двумя контрольными точками и регистрирует соответствующий геометрический объект в ModelData.
+        /// </summary>
+        /// <param name="startPointNumber">Номер (идентификатор) начальной точки в модели Gmsh.</param>
+        /// <param name="endPointNumber">Номер (идентификатор) конечной точки в модели Gmsh.</param>
+        /// <returns>Номер (идентификатор) созданной линии в Gmsh.</returns>
+        /// <exception cref="Exception">
+        /// Бросается, если Gmsh вернул 0 при попытке создать линию (создание не удалось).
+        /// Также возможна ошибка при отсутствии найденного геометрического объекта линии в списке возвращаемых объектов (тогда произойдёт <c>NullReferenceException</c> при попытке доступа к свойствам).
+        /// </exception>
+        public int CreateLine(int startPointNumber, int endPointNumber)
         {
-            // находим номера 2д эл-ов по номеру sTag
-            // формируем список этих элементов из ModelData
-            // создаешь экструдер поворота
-            // перевести угол из градусов в радианы
-            // передаешь параметры и запускаешь его
-            // создаешь новый набор элементов и через метод append добавляешь его в коллекцию 3d ModelData
-            // сформировать новый набор узлов экстр.элементов и через метод append тоже добавить в набор узлов ModelData          
+            var lineNumber = GmshController.Gmsh.Model.Occ.AddLine(startPointNumber, endPointNumber);
+            if (lineNumber == 0)
+                throw new Exception("При создании линии произошла ошибка");
+            GmshController.Gmsh.Model.Occ.Synchronize();
+            var geoLine = GmshController.CreateLines().Where(x => x.Number == lineNumber).FirstOrDefault();
+            ModelData.ObjectData.CurveSet.Add(geoLine.Number, geoLine);
+            return lineNumber;
+        }
+
+        /// <summary>
+        /// Создаёт плоскую поверхность в модели Gmsh по набору кривых (линий) и регистрирует
+        /// соответствующий геометрический объект в ModelData.
+        /// </summary>
+        /// <param name="lineNumbers">
+        /// Массив номеров (тегов) кривых в Gmsh, составляющих замкнутый контур поверхности.
+        /// Порядок и ориентация кривых должны соответствовать требуемому контуру поверхности.
+        /// </param>
+        /// <returns>Тег (номер) созданной поверхности в Gmsh.</returns>
+        /// <exception cref="Exception">
+        /// Бросается, если Gmsh вернул 0 при попытке создать поверхность (создание не удалось),
+        /// либо при других ошибках взаимодействия с Gmsh (например, если дальнейшие вызовы
+        /// вернут некорректные данные).
+        /// </exception>
+        public int CreateSurface(int[] lineNumbers)
+        {
+            var contur = GmshController.Gmsh.Model.Occ.AddWire(lineNumbers);
+            var surf = GmshController.Gmsh.Model.Occ.AddPlaneSurface([contur]);
+            if (surf == 0)
+                throw new Exception("При создании поверхности произошла ошибка");
+            GmshController.Gmsh.Model.Occ.Synchronize();
+
+            var points = GmshController.Gmsh.Model.GetBoundary([2, surf], true, true, true)
+                .Where((value, index) => index % 2 == 1)
+                .ToArray();
+            var allPoints = GmshController.CreateControlPoints();
+            var geoPoints = allPoints.Where(x => points.Contains(x.Number)).ToArray();
+
+            ModelData.ObjectData.SurfaceSet.Add(surf, new SurfaceFigure(surf, [new GeometrySurface(surf, geoPoints)]));
+            return surf;
+        }
+
+        public void ExtrudeElement3DAlongCurve(int surfaceTag, int curveTag, int startPointTag, double step, bool transfinite)
+        {
+            var elements2D = GetElements2D(surfaceTag);
+            var extruder = new CurveExtruder(GmshController, curveTag, startPointTag);
+            extruder.Extrude(elements2D, step);
+            var e3d = transfinite ? extruder.ExtrudeTransfinite(elements2D, step)
+                      : extruder.Extrude(elements2D, step);
+            
+            var collection = e3d.SelectMany(v => v);
+            UpdateModelData(extruder, collection);
+        }
+
+        public void ExtrudeElement3DRotate(int surfaceTag, float angle, Vector3 originPoint, Vector3 rotAxis, bool transfinite)
+        {
+            var radian = (float)(angle * Math.PI / 180);
+            var elements2D = GetElements2D(surfaceTag);
+
+            var extruder = new RotateExtruder();
+            var e3d = transfinite ? extruder.ExtrudeTransfinite(elements2D, radian, originPoint, rotAxis)
+                                  : extruder.Extrude(elements2D, radian, originPoint, rotAxis);
+            
+            var collection = e3d.SelectMany(v => v);
+            UpdateModelData(extruder, collection);
         }
 
 
@@ -170,7 +242,7 @@ namespace OperationalController
             if (dim == 1)
             {
                 var max = 0;
-                if(ModelData.ObjectData.Count(ObjType.Элемент1D) != 0)
+                if (ModelData.ObjectData.Count(ObjType.Элемент1D) != 0)
                     max = ModelData.ObjectData.GetMaxNumber(ObjType.Элемент1D) + 1;
 
                 var e1d = new Beam(max, nodes);
@@ -184,7 +256,7 @@ namespace OperationalController
 
                 Element2D e2d;
 
-                if(nodeNumbers.Length == 4)
+                if (nodeNumbers.Length == 4)
                     e2d = new Quad(max, nodes);
                 else
                     e2d = new Triangle_c(max, nodes);
@@ -201,10 +273,40 @@ namespace OperationalController
         {
             if (ModelData.ObjectData.NodesSet.ContainsKey(number))
                 throw new Exception("Обект с таким номером уже добавлен в набор");
-            
+
             ModelData.ObjectData.NodesSet.
-                Add(number, new Node(number, 
-                new Geometry.Point3D(x,y,z)));
+                Add(number, new Node(number,
+                new Geometry.Point3D(x, y, z)));
+        }
+
+        private void UpdateModelData(MeshExtruder extruder, IEnumerable<Element3D> collection)
+        {
+            var objSet = new ObjectsSet<Element3D>("Extrude");
+            foreach (var element in collection)
+                objSet.Add(element.Number, element);
+
+            var objCollection = new ObjectsCollection<Element3D>();
+            objCollection.Add(objSet);
+            ModelData.ObjectData.E3DCollection.Append(objCollection);
+
+            var nodesSet = new ObjectsSet<Model.MeshObjects.Node>("Extrude");
+            foreach (var node in extruder.Nodes.Values)
+                nodesSet.Add(node.Number, node);
+
+            ModelData.ObjectData.NodesSet.Append(nodesSet);
+        }
+
+        private List<Element2D> GetElements2D(int surfaceTag)
+        {
+            var set = ModelData.ObjectData.GetSetInfo(ObjType.Элемент2D, surfaceTag);
+            var numbers = set.GetNumbers();
+            var elements2D = new List<Element2D>();
+            foreach (var pair in ModelData.ObjectData.E2DCollection)
+                foreach (var element in pair.Value)
+                    if (numbers.Contains(element.Key))
+                        elements2D.Add(element.Value);
+
+            return elements2D;
         }
     }
 }
