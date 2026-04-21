@@ -23,6 +23,7 @@ using MathNet.Numerics.LinearAlgebra.Factorization;
 using Project.Tasks;
 using System.Security.Cryptography;
 using static Community.CsharpSqlite.Sqlite3;
+using OperationalController.MeshObjsUtility;
 
 namespace GmshTests
 {
@@ -957,6 +958,39 @@ namespace GmshTests
 
             var saver = new SaveModelToBPF2TextFile();
             saver.Save(md, $@"D:\RotatedTriangle.bpf2");
+        }
+
+        //TODO: Import Cad
+        [DataTestMethod]
+        //[DataRow(@"\CAD\multiCurves.step", new int[] {1, 2, 3 }, 1, new float[] { -1, 0, 0, -1.1f, -0.1f, 0, -1, 0, 0.1f}, false, 0.05)]
+        [DataRow(@"\CAD\multiCurves2.step", new int[] { 2, 4, 3, 1 }, 2, new float[] { 0, -1, 0, 0f, -1.25f, 0, 0, -1, 0.25f }, false, 0.05)]
+        public void ExtrudeMultiCurvesTest(string fileName, int[] curves, int point, float[] coords, bool transfinite, double step)
+        {
+            controller.Gmsh.Open(modelFolder + fileName);
+
+            var lines = controller.Gmsh.Model.Occ.GetEntities(1);
+
+            controller.Gmsh.Model.Occ.Fragment(lines, []);
+            controller.Gmsh.Model.Occ.Synchronize();
+            
+            var elements = GenTriangle(coords);
+
+            var md = new ModelData();
+
+            var extruder = new CurveExtruder(controller, curves, point);
+            var e3d = transfinite ? extruder.ExtrudeTransfinite(elements, step)
+                                  : extruder.Extrude(elements, step);
+
+            Assert.IsTrue(extruder.MissedElements == 0);
+
+            foreach (var node in extruder.Nodes.Values)
+                md.ObjectData.NodesSet.Add(node.Number, node);
+
+            md.ObjectData.E3DCollection.AddRange($"Mulpiple Seams", e3d.SelectMany(v => v));
+
+            var saver = new SaveModelToBPF2TextFile();
+            saver.Save(md, $@"D:\MultipleSeams.bpf2");
+            
         }
 
 
