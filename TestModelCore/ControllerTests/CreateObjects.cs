@@ -188,7 +188,7 @@ namespace ControllerTests
 
             var error = project.GmshController.Gmsh.Logger.GetLastError();
 
-            project.ExtrudeElement3DAlongCurve(366,1,1,1,false);
+            project.ExtrudeElement3DAlongCurve(plane, 1,1,1,false);
         }
     }
 }
