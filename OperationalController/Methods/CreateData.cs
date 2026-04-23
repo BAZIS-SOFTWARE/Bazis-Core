@@ -325,8 +325,8 @@ namespace OperationalController
             objCollection.Add(objSet);
             ModelData.ObjectData.E3DCollection.Append(objCollection);
             var name = ModelData.ObjectData.E3DCollection.Where(col => col.Key.StartsWith("append_")).Select(col => col.Value).Last();
-            var counterr = name.Name.Split('_').Last();
-            ModelData.ObjectData.E3DCollection.ChangeName(name.Name, $"extrude_{counterr}");
+            var counter = name.Name.Split('_').Last();
+            ModelData.ObjectData.E3DCollection.ChangeName(name.Name, $"extrude_{counter}");
 
             var nodesSet = new ObjectsSet<Model.MeshObjects.Node>("Extrude");
             foreach (var node in extruder.Nodes.Values)
