@@ -345,25 +345,5 @@ namespace OperationalController
 
             return elements2D;
         }
-
-        private Dictionary<int, int[]> GetNumbersData(int surfaceTag)
-        {
-            var result = new Dictionary<int, int[]>();
-            var (_, curves) = GmshController.Gmsh.Model.GetAdjacencies(2, surfaceTag);
-
-            if (curves == null || curves.Length == 0)
-                return result;
-
-            foreach (var curve in curves.Distinct())
-            {
-                var (_, points) = GmshController.Gmsh.Model.GetAdjacencies(1, curve);
-
-                result[curve] = points?
-                    .Distinct()
-                    .ToArray()
-                    ?? Array.Empty<int>();
-            }
-            return result;
-        }
     }
 }
