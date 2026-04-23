@@ -321,9 +321,9 @@ namespace OperationalController
             foreach (var element in collection)
                 objSet.Add(element.Number, element);
 
-            var objCollection = new ObjectsCollection<Element3D>();
-            objCollection.Add(objSet);
+            var objCollection = new ObjectsCollection<Element3D>{ objSet };
             ModelData.ObjectData.E3DCollection.Append(objCollection);
+
             var name = ModelData.ObjectData.E3DCollection.Where(col => col.Key.StartsWith("append_")).Select(col => col.Value).Last();
             var counter = name.Name.Split('_').Last();
             ModelData.ObjectData.E3DCollection.ChangeName(name.Name, $"extrude_{counter}");
@@ -337,12 +337,12 @@ namespace OperationalController
         private List<Element2D> GetElements2DBelongingToSurface(int surfaceTag)
         {
             var result = GmshController.Gmsh.Model.Mesh.GetElements(2, surfaceTag);
-            var elements = result.Item2.SelectMany(x => x).Select(x => x.ToInt32()).ToList();
+            var elementNumbers = result.Item2.SelectMany(x => x).Select(x => x.ToInt32()).ToList();
 
             var elements2D = new List<Element2D>();
             foreach (var pair in ModelData.ObjectData.E2DCollection)
                 foreach (var element in pair.Value)
-                    if (elements.Contains(element.Key))
+                    if (elementNumbers.Contains(element.Key))
                         elements2D.Add(element.Value);
 
             return elements2D;
