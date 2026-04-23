@@ -176,17 +176,79 @@ namespace OperationalController.MeshObjsCreator
                 var upNodes = nextLayer[index++].GetVertexes();
                 var e3dNodes = nodes.Concat(upNodes).ToArray();
 
-                Element3D newElement = null;
+                //Element3D newElement = null;
                 if (e3dNodes.Length == 6)
-                    newElement = new Penta(elementTag++, e3dNodes);
+                    AddTransfinitePentaElement(layer, e3dNodes);//newElement = new Penta(elementTag++, e3dNodes);
                 else if (e3dNodes.Length == 8)
-                    newElement = new Hexa(elementTag++, e3dNodes);
-                else
-                    continue;//Тетра не поддерживается
-                layer.Add(newElement);
+                    AddTransfiniteHexaElement(layer, e3dNodes);//newElement = new Hexa(elementTag++, e3dNodes);
+                //layer.Add(newElement);
             }
             return layer;
         }
+
+        private void AddTransfinitePentaElement(List<Element3D> layer, Node[] nodes)
+        {
+            var set = new HashSet<int>() { 0, 1, 2 };
+            var indices = new List<int>();
+            for (var i = 0; i < 3; ++i)
+                if (nodes[i] == nodes[i + 3])
+                    indices.Add(i);
+            if (indices.Count == 0)
+                layer.Add(new Penta(elementTag++, nodes));
+            else if (indices.Count == 2)
+            {
+                var unical = set.Except(indices).First();
+                var tetra = new Tetra(elementTag++, [nodes[indices[0]], nodes[unical + 3], nodes[unical], nodes[indices[1]]]);
+                layer.Add(tetra);
+            }
+            else if (indices.Count == 1)
+            {
+                var unicals = set.Except(indices).ToArray();
+
+                var tetra0 = new Tetra(elementTag++, [nodes[unicals[0]], nodes[unicals[1]], nodes[unicals[1] + 3], nodes[indices[0]]]);
+                var tetra1 = new Tetra(elementTag++, [nodes[unicals[0]], nodes[unicals[1] + 3], nodes[unicals[0] + 3], nodes[indices[0]]]);
+
+                layer.Add(tetra0);
+                layer.Add(tetra1);
+            }
+        }
+
+        private void AddTransfiniteHexaElement(List<Element3D> layer, Node[] nodes)
+        {
+            var set = new HashSet<int>() { 0, 1, 2, 3 };
+            var indices = new List<int>();
+            for (var i = 0; i < 4; ++i)
+                if (nodes[i] == nodes[i + 4])
+                    indices.Add(i);
+            if (indices.Count == 0)
+                layer.Add(new Hexa(elementTag++, nodes));
+            else if (indices.Count == 2)
+            {
+                var edgeMap = new Dictionary<string, int[]>() { { "01", [3, 2] }, { "03", [1, 2] }, { "12", [0, 3] }, { "23", [1, 0] } };
+                var key = $"{indices[0]}{indices[1]}";
+                var oppos = edgeMap[key];
+
+                var penta = new Penta(elementTag++, [nodes[indices[0]], nodes[oppos[0]], nodes[oppos[0] + 4],
+                                                     nodes[indices[1]], nodes[oppos[1]], nodes[oppos[1] + 4]]);
+                layer.Add(penta);
+            }
+            else if (indices.Count == 1)
+            {
+                var pointMap = new Dictionary<int, int[]>() { { 0, [1, 3, 2] }, { 1, [0, 2, 3] }, { 2, [1, 3, 0] }, { 3, [0, 2, 1] } };
+                var data = pointMap[indices[0]];
+
+                var tetra0 = new Tetra(elementTag++, [nodes[data[0]], nodes[data[1]], nodes[data[1] + 4], nodes[indices[0]]]);
+                var tetra1 = new Tetra(elementTag++, [nodes[data[0]], nodes[data[1] + 4], nodes[data[0] + 4], nodes[indices[0]]]);
+
+                var penta = new Penta(elementTag++, [nodes[data[0]], nodes[data[1]], nodes[data[2]],
+                                                     nodes[data[0] + 4], nodes[data[1] + 4], nodes[data[2] + 4]]);
+
+                layer.Add(tetra0);
+                layer.Add(tetra1);
+                layer.Add(penta);
+            }
+        }
+
         /// <summary>
         /// Разбивает пента элемент на 3 тетраэдра
         /// </summary>

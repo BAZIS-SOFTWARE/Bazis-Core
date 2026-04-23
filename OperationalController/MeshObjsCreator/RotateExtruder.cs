@@ -12,6 +12,16 @@ namespace OperationalController.MeshObjsCreator
     public class RotateExtruder : MeshExtruder
     {
         /// <summary>
+        /// Используется для изменения текущей нумерации узлов внутри класса CurveExtruder
+        /// </summary>
+        public ref int NodeTag { get => ref nodeTag; }
+
+        /// <summary>
+        /// Используется для изменения текущей нумерации элементов внутри класса CurveExtruder
+        /// </summary>
+        public ref int ElementTag { get => ref elementTag; }
+
+        /// <summary>
         /// Создает экструзию 3д элементов методом поворота вдоль указанного локального вектора и точке начала координат 
         /// </summary>
         /// <param name="curLayer">Текущий слой для экструзии</param>
@@ -34,20 +44,20 @@ namespace OperationalController.MeshObjsCreator
 
             radAngle = float.Clamp(radAngle, 0, 2 * MathF.PI);
             var offset = radAngle / segments;
-            var rotMatrix = Matrix4x4.CreateTranslation(-origin) 
-                          * Matrix4x4.CreateFromAxisAngle(rotAxis, offset) 
+            var rotMatrix = Matrix4x4.CreateTranslation(-origin)
+                          * Matrix4x4.CreateFromAxisAngle(rotAxis, offset)
                           * Matrix4x4.CreateTranslation(origin);
 
             List<Element2D> nextLayer = null;
             for (var i = 0; i < segments; ++i)
             {
-                nextLayer = i == segments - 1 && MathF.Abs(2 * MathF.PI - radAngle) < 1e-2 ? firstLayer 
+                nextLayer = i == segments - 1 && MathF.Abs(2 * MathF.PI - radAngle) < 1e-2 ? firstLayer
                                                                                            : CreateNextLayer(curLayer, rotMatrix);
                 var layer = CreateLayerTetrahedrons(curLayer, nextLayer);
                 tetLayers.Add(layer);
                 curLayer = nextLayer;
             }
-            
+
             return tetLayers;
         }
         /// <summary>
@@ -88,6 +98,7 @@ namespace OperationalController.MeshObjsCreator
 
             return tetLayers;
         }
+
         /// <summary>
         /// Строит следующий слой 2д элементов на основе текущего используя матрицу прирощения угла
         /// </summary>

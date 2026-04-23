@@ -1,12 +1,15 @@
 ﻿using Geometry;
 using MathNet.Numerics.Distributions;
+using MathNet.Numerics.LinearAlgebra.Factorization;
 using Microsoft.Scripting.Ast;
+using Microsoft.Scripting.Utils;
 using Model.MeshObjects;
 using OperationalController.GmshController;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
@@ -20,56 +23,81 @@ namespace OperationalController.MeshObjsCreator
     {
         private IGmshController controller;
         private int[] curveTags;
-
-        private Matrix4x4 init;
-        private Vector3 initOrigin;
-        private bool initIsSet;
+        private double[] steps;
+        private float maxAngle;
+        /// <summary>
+        /// Число сегментов в поворотной экструзии внешнего шва
+        /// </summary>
+        public int JointSegments { get; private set; } = 1;
 
         /// <summary>
         /// Создает экземляр класса CurveExtruder
         /// </summary>
-        /// <param name="controller">Контролле GMSH</param>
+        /// <param name="controller">Контроллер GMSH</param>
         /// <param name="curveTag">Идентификатор кривой вдоль которой будет производится протягивание слоя</param>
+        /// <param name="step">Шаг (доля) от длины кривой</param>
         /// <param name="pointTag">Выбранный идентифкатор геометрической точки начала сечения</param>
-        public CurveExtruder(IGmshController controller, int curveTag, int pointTag)
+        public CurveExtruder(IGmshController controller, int curveTag, double step, int pointTag)
         {
             this.controller = controller;
             curveTags = [curveTag];
 
+            steps = [step];
             DetectDirection(pointTag);
         }
 
-        public CurveExtruder(IGmshController controller, int[] curveTags, int pointTag)
+        /// <summary>
+        /// Создает экземляр класса CurveExtruder с множеством кривых
+        /// </summary>
+        /// <param name="controller">Контроллер GMSH</param>
+        /// <param name="curveTags">Кривые соединенные в контур, первой кривой должен принадлежать pointTag</param>
+        /// <param name="steps">Шаг для каждой кривой (доля) от длины кривой</param>
+        /// <param name="pointTag">Выбранный идентифкатор геометрической точки начала сечения</param>
+        /// <param name="maxAngle">Максимальный угол при котором будет рассматриваться поворотная экструзия между кривыми</param>
+        public CurveExtruder(IGmshController controller, int[] curveTags, double[] steps, int pointTag, float maxAngle = 0.0f)
         {
             this.controller = controller;
+            this.maxAngle = maxAngle;
 
-            //Почему-то точки дублируются в тех же координатах
+            if (steps.Length != curveTags.Length)
+                throw new ArgumentException("Число кривых и число заданных шагов должно быть одинаковым");
 
+            this.steps = steps;
             this.curveTags = DetectCurveLoop(curveTags, pointTag);
         }
 
         /// <summary>
         /// Создает экструзию 3д элементов методом протягивания вдоль кривой
         /// </summary>
-        /// <param name="firstLayer"></param>
-        /// <param name="step">Минимальный шаг от длины кривой</param>
+        /// <param name="firstLayer">Элементы 2D сечения</param>
         /// <returns>Список 3д элементов</returns>
-        public List<List<Element3D>> Extrude(IEnumerable<Element2D> firstLayer, double step)
+        public List<List<Element3D>> Extrude(IEnumerable<Element2D> firstLayer)
         {
             var tetLayers = new List<List<Element3D>>();
             firstLayer = SortFirstLayer(firstLayer);
 
-            (Vector3, Vector3, Vector3, Vector3) lastComponents = (Vector3.Zero, Vector3.Zero, Vector3.Zero, Vector3.Zero);
+            (Vector3, Vector3, Vector3, Vector3, Vector3) lastComponents = (Vector3.Zero, Vector3.Zero, Vector3.Zero, Vector3.Zero, Vector3.Zero);
+            (Vector3, Vector3, Vector3, Vector3, Vector3) firstComponents = (Vector3.Zero, Vector3.Zero, Vector3.Zero, Vector3.Zero, Vector3.Zero);
+
             List<Element2D> curLayer = null;
-            Matrix4x4 last = Matrix4x4.Identity;
             for (var i = 0; i < curveTags.Length; ++i)
             {
-                var compList = GetCurveComponents(step, i);
+                var compList = GetCurveComponents(steps[i], i);
                 var matrixList = CreateLocalSystemSet(compList, compList[0]);
 
-                firstLayer = i == 0 ? firstLayer : curLayer;
-                curLayer = CreateNextLayer(firstLayer, i == 0 ? matrixList[0] : GetCorrectionMatrix(lastComponents, compList[0]) );
-                
+                if (i != 0)
+                {
+                    AddRotarySection(tetLayers, curLayer, lastComponents, compList[0], false);
+                    var corrMat = GetCorrectionMatrix(lastComponents.Item5, compList[0].Item5, compList[0].Item4);
+                    curLayer = CreateNextLayer(curLayer, corrMat);
+                }
+                else
+                {
+                    curLayer = CreateNextLayer(firstLayer, matrixList[0]);
+                    firstComponents = compList[0];
+                }
+                firstLayer = curLayer;
+
                 for (var j = 1; j < matrixList.Count; ++j)
                 {
                     var nextLayer = CreateNextLayer(firstLayer, matrixList[j]);
@@ -78,8 +106,9 @@ namespace OperationalController.MeshObjsCreator
                     curLayer = nextLayer;
                 }
                 lastComponents = compList[compList.Count - 1];
-                last = matrixList[compList.Count - 1];
             }
+
+            AddRotarySection(tetLayers, curLayer, lastComponents, firstComponents, false);
             return tetLayers;
         }
         /// <summary>
@@ -88,37 +117,112 @@ namespace OperationalController.MeshObjsCreator
         /// <param name="firstLayer"></param>
         /// <param name="step">Минимальный шаг от длины кривой</param>
         /// <returns>Список 3д элементов</returns>
-        public List<List<Element3D>> ExtrudeTransfinite(IEnumerable<Element2D> firstLayer, double step)
+        public List<List<Element3D>> ExtrudeTransfinite(IEnumerable<Element2D> firstLayer)
         {
             var tetLayers = new List<List<Element3D>>();
             firstLayer = SortFirstLayer(firstLayer);
-            List<Element2D> curLayer = null;
 
+            (Vector3, Vector3, Vector3, Vector3, Vector3) lastComponents = (Vector3.Zero, Vector3.Zero, Vector3.Zero, Vector3.Zero, Vector3.Zero);
+            (Vector3, Vector3, Vector3, Vector3, Vector3) firstComponents = (Vector3.Zero, Vector3.Zero, Vector3.Zero, Vector3.Zero, Vector3.Zero);
+
+            List<Element2D> curLayer = null;
             for (var i = 0; i < curveTags.Length; ++i)
             {
-                var compList = GetCurveComponents(step, i);
-
+                var compList = GetCurveComponents(steps[i], i);
                 var matrixList = CreateLocalSystemSet(compList, compList[0]);
 
-                firstLayer = i == 0 ? firstLayer : curLayer;
-                curLayer = CreateCopy(firstLayer, matrixList[0]);
-
-                for (var j = 0; j < matrixList.Count - 1; ++j)
+                if (i != 0)
                 {
-                    var nextLayer = CreateNextLayer(firstLayer, matrixList[j + 1]);
+                    AddRotarySection(tetLayers, curLayer, lastComponents, compList[0], true);
+                    var corrMat = GetCorrectionMatrix(lastComponents.Item5, compList[0].Item5, compList[0].Item4);
+                    curLayer = CreateNextLayer(curLayer, corrMat);
+                }
+                else
+                {
+                    curLayer = CreateNextLayer(firstLayer, matrixList[0]);
+                    firstComponents = compList[0];
+                }
+                firstLayer = curLayer;
+
+                for (var j = 1; j < matrixList.Count; ++j)
+                {
+                    var nextLayer = CreateNextLayer(firstLayer, matrixList[j]);
                     var layer = CreateTransfiniteLayer(curLayer, nextLayer);
                     tetLayers.Add(layer);
                     curLayer = nextLayer;
                 }
+                lastComponents = compList[compList.Count - 1];
             }
+
+            AddRotarySection(tetLayers, curLayer, lastComponents, firstComponents, true);
             return tetLayers;
         }
 
-        private Matrix4x4 GetCorrectionMatrix((Vector3, Vector3, Vector3, Vector3) compLast, (Vector3, Vector3, Vector3, Vector3) compCurrent)
+        private void AddRotarySection(List<List<Element3D>> e3dData, List<Element2D> elements, (Vector3, Vector3, Vector3, Vector3, Vector3) lastComponents,
+                                      (Vector3, Vector3, Vector3, Vector3, Vector3) curComponents, bool transfinite)
         {
-            var c = CreateLocalMatrix(compCurrent.Item1, compCurrent.Item2, compCurrent.Item3);
-            var l = CreateLocalMatrix(compLast.Item1, compLast.Item2, compLast.Item3);
-            var result = Matrix4x4.Transpose(l) * c;
+            var rotData = InsertRotarySection(elements, lastComponents, curComponents, transfinite);
+            if (rotData != null)
+            {
+                foreach (var layer in rotData.Item1)
+                    e3dData.Add(layer);
+                foreach (var node in rotData.Item2)
+                    Nodes.Add(node.Number, node);
+            }
+        }
+
+        private Tuple<List<List<Element3D>>, List<Node>> InsertRotarySection(List<Element2D> elements, (Vector3, Vector3, Vector3, Vector3, Vector3) lastComponents,
+                                                          (Vector3, Vector3, Vector3, Vector3, Vector3) curComponents, bool transfinite)
+        {
+            var data = GetRotationDataBetweenComponents(lastComponents.Item5, curComponents.Item5);
+            if (data.Item3 > 1e-4 && data.Item2 <= maxAngle && data.Item2 > 1e-4)
+            {
+                var lastOrigin = lastComponents.Item4;
+                var curOrigin = curComponents.Item4;
+                var len = (curOrigin - lastOrigin).Length();
+                if (len < 1e-4)
+                {
+                    var extruder = new RotateExtruder();
+                    extruder.NodeTag = nodeTag;
+                    extruder.ElementTag = elementTag;
+
+                    var newElements = transfinite ? extruder.ExtrudeTransfinite(elements, data.Item2, curOrigin, data.Item1, JointSegments)
+                                                  : extruder.Extrude(elements, data.Item2, curOrigin, data.Item1, JointSegments);
+
+                    nodeTag = extruder.NodeTag;
+                    elementTag = extruder.ElementTag;
+
+                    return Tuple.Create(newElements, extruder.Nodes.Values.ToList());
+                }
+            }
+            return null;
+        }
+
+        private (Vector3, float, float) GetRotationDataBetweenComponents(Vector3 lastTangent, Vector3 curTangent)
+        {
+            lastTangent = Vector3.Normalize(lastTangent);
+            curTangent = Vector3.Normalize(curTangent);
+
+            var cos = Vector3.Dot(lastTangent, curTangent);
+            var angle = MathF.Acos(cos);
+
+            var axis = Vector3.Cross(lastTangent, curTangent);
+            axis = Vector3.Normalize(axis);
+
+            var sign = Vector3.Dot(axis, Vector3.UnitZ);
+
+            return (axis, angle, sign);
+        }
+
+        private Matrix4x4 GetCorrectionMatrix(Vector3 lastTangent, Vector3 curTangent, Vector3 curOrigin)
+        {
+            var data = GetRotationDataBetweenComponents(lastTangent, curTangent);
+
+            var negOrigin = Matrix4x4.CreateTranslation(-curOrigin);
+            var origin = Matrix4x4.CreateTranslation(curOrigin);
+            var rotate = Matrix4x4.CreateFromAxisAngle(data.Item1, data.Item2);
+
+            var result = negOrigin * rotate * origin;
 
             return result;
         }
@@ -140,7 +244,7 @@ namespace OperationalController.MeshObjsCreator
             while (set.Count != 0)
             {
                 var points = controller.Gmsh.Model.GetBoundary([1, current], false, false)
-                                                  .Where((v,i) => (i & 1) == 1)
+                                                  .Where((v, i) => (i & 1) == 1)
                                                   .ToArray();
                 if (pointTag != points[0] && pointTag != points[1])
                     throw new Exception($"Точка {pointTag} не принадлежит кривой {current}");
@@ -301,14 +405,14 @@ namespace OperationalController.MeshObjsCreator
             return 0;
         }*/
 
-        private List<(Vector3, Vector3, Vector3, Vector3)> GetCurveComponents(double step, int index)
+        private List<(Vector3, Vector3, Vector3, Vector3, Vector3)> GetCurveComponents(double step, int index)
         {
             if (Math.Sign(curveTags[index]) > 0)
                 return ProcessDirectParameterization(step, index);
             return ProcessInvertParameterization(step, index);
         }
 
-        private List<(Vector3, Vector3, Vector3, Vector3)> ProcessDirectParameterization(double step, int index)
+        private List<(Vector3, Vector3, Vector3, Vector3, Vector3)> ProcessDirectParameterization(double step, int index)
         {
             var p = controller.Gmsh.Model.GetParametrizationBounds(1, curveTags[index]);
             var dir = p.Item2[0] - p.Item1[0];
@@ -316,7 +420,7 @@ namespace OperationalController.MeshObjsCreator
             var l0 = p.Item1[0];
             var offset = 0.0;
 
-            var components = new List<(Vector3, Vector3, Vector3, Vector3)>();
+            var components = new List<(Vector3, Vector3, Vector3, Vector3, Vector3)>();
             while (p.Item2[0] - l0 > 1e-4)
             {
                 l0 = Math.Min(l0 + offset, p.Item2[0]);
@@ -326,7 +430,7 @@ namespace OperationalController.MeshObjsCreator
             return components;
         }
 
-        private List<(Vector3, Vector3, Vector3, Vector3)> ProcessInvertParameterization(double step, int index)
+        private List<(Vector3, Vector3, Vector3, Vector3, Vector3)> ProcessInvertParameterization(double step, int index)
         {
             var p = controller.Gmsh.Model.GetParametrizationBounds(1, Math.Abs(curveTags[index]));
             Swap(ref p.Item1[0], ref p.Item2[0]);
@@ -335,7 +439,7 @@ namespace OperationalController.MeshObjsCreator
             var l0 = p.Item1[0];
             var offset = 0.0;
 
-            var components = new List<(Vector3, Vector3, Vector3, Vector3)>();
+            var components = new List<(Vector3, Vector3, Vector3, Vector3, Vector3)>();
             while (l0 - p.Item2[0] > 1e-4)
             {
                 l0 = Math.Max(l0 + offset, p.Item2[0]);
@@ -345,14 +449,15 @@ namespace OperationalController.MeshObjsCreator
             return components;
         }
 
-        private List<Matrix4x4> CreateLocalSystemSet(List<(Vector3, Vector3, Vector3, Vector3)> components, (Vector3, Vector3, Vector3, Vector3) firstComponent)
+        private List<Matrix4x4> CreateLocalSystemSet(List<(Vector3, Vector3, Vector3, Vector3, Vector3)> components,
+                                                    (Vector3, Vector3, Vector3, Vector3, Vector3) firstComponent)
         {
             var init = CreateLocalMatrix(firstComponent.Item1, firstComponent.Item2, firstComponent.Item3);
             init = Matrix4x4.Transpose(init);
             var initOrigin = firstComponent.Item4;
 
             var ls = new List<Matrix4x4>();
-            for(var i = 0; i < components.Count; ++i)
+            for (var i = 0; i < components.Count; ++i)
             {
                 var local = CreateLocalMatrix(components[i].Item1, components[i].Item2, components[i].Item3);
                 var globalTransform = GetConvertMatrix(local, components[i].Item4, init, initOrigin);
@@ -363,7 +468,7 @@ namespace OperationalController.MeshObjsCreator
         }
 
 
-        private void WriteComponentsInPoint(List<(Vector3, Vector3, Vector3, Vector3)> result, int index, double l0, double l2)
+        private void WriteComponentsInPoint(List<(Vector3, Vector3, Vector3, Vector3, Vector3)> result, int index, double l0, double l2)
         {
             var l1 = l0 + 0.5 * (l2 - l0);
 
@@ -378,11 +483,11 @@ namespace OperationalController.MeshObjsCreator
             var n0 = Vector3.Dot(t0, t0) * a0 - Vector3.Dot(t0, a0) * t0;
 
             var last = result.Count - 1;
-            (Vector3, Vector3, Vector3, Vector3) components;
+            (Vector3, Vector3, Vector3, Vector3, Vector3) components;
 
             if (Vector3.Dot(n0, n0) < 1e-8)
-                components = result.Count == 0 ? (Vector3.UnitX, Vector3.UnitY, Vector3.UnitZ, p0)
-                                               : (GetComponent(result[last], 1), GetComponent(result[last], 2), GetComponent(result[last], 3), p0);
+                components = result.Count == 0 ? (Vector3.UnitX, Vector3.UnitY, Vector3.UnitZ, p0, t0)
+                                               : (GetComponent(result[last], 1), GetComponent(result[last], 2), GetComponent(result[last], 3), p0, t0);
             else
             {
                 t0 = Vector3.Normalize(t0);
@@ -394,7 +499,7 @@ namespace OperationalController.MeshObjsCreator
                     n0 = -n0;
                     b0 = Vector3.Cross(t0, n0);
                 }
-                components = (n0, b0, t0, p0);
+                components = (n0, b0, t0, p0, t0);
             }
             result.Add(components);
         }
@@ -427,7 +532,7 @@ namespace OperationalController.MeshObjsCreator
             return (n0, b0, current.Item3, current.Item4);
         }*/
 
-        private Vector3 GetComponent((Vector3, Vector3, Vector3, Vector3) components, int item)
+        private Vector3 GetComponent((Vector3, Vector3, Vector3, Vector3, Vector3) components, int item)
         {
             if (item == 1)
                 return components.Item1;
@@ -435,7 +540,9 @@ namespace OperationalController.MeshObjsCreator
                 return components.Item2;
             if (item == 3)
                 return components.Item3;
-            return components.Item4;
+            if (item == 4)
+                return components.Item4;
+            return components.Item5;
         }
 
         //Вариант построения через gmsh
@@ -577,8 +684,8 @@ namespace OperationalController.MeshObjsCreator
         /// <summary>
         /// Запретить создание экземпляра по умолчанию
         /// </summary>
-        private CurveExtruder() 
-        { 
+        private CurveExtruder()
+        {
         }
     }
 }

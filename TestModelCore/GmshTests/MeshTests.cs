@@ -960,26 +960,22 @@ namespace GmshTests
             saver.Save(md, $@"D:\RotatedTriangle.bpf2");
         }
 
-        //TODO: Import Cad
         [DataTestMethod]
-        //[DataRow(@"\CAD\multiCurves.step", new int[] {1, 2, 3 }, 1, new float[] { -1, 0, 0, -1.1f, -0.1f, 0, -1, 0, 0.1f}, false, 0.05)]
-        [DataRow(@"\CAD\multiCurves2.step", new int[] { 2, 4, 3, 1 }, 2, new float[] { 0, -1, 0, 0f, -1.25f, 0, 0, -1, 0.25f }, false, 0.05)]
-        public void ExtrudeMultiCurvesTest(string fileName, int[] curves, int point, float[] coords, bool transfinite, double step)
+        [DataRow(@"\CAD\multiCurves.step", new int[] { 1, 2, 3 }, 1, new double[] { 0.1, 0.2, 0.25 }, new float[] { -1, 0, 0, -1.1f, -0.1f, 0, -1, 0, 0.1f }, true)]
+        [DataRow(@"\CAD\multiCurves2.step", new int[] { 2, 4, 3, 1 }, 2, new double[] { 0.05, 0.13, 0.3, 0.35 }, new float[] { 0, -1, 0, 0f, -1.25f, 0, 0, -1, 0.25f }, true)]
+        [DataRow(@"\CAD\closeWire.step", new int[] { 1, 2, 3, 4, 5, 6 }, 1, new double[] { 0.1, 0.3, 0.22, 0.05, 0.2, 0.4 }, new float[] { -1, 0, 0, -1f, -0.1f, 0f, -1, 0, 0.1f }, false)]
+        public void ExtrudeMultiCurvesTest(string fileName, int[] curves, int point, double[] steps, float[] coords, bool transfinite)
         {
             controller.Gmsh.Open(modelFolder + fileName);
+            controller.MergeGeometry();
 
-            var lines = controller.Gmsh.Model.Occ.GetEntities(1);
-
-            controller.Gmsh.Model.Occ.Fragment(lines, []);
-            controller.Gmsh.Model.Occ.Synchronize();
-            
             var elements = GenTriangle(coords);
 
             var md = new ModelData();
 
-            var extruder = new CurveExtruder(controller, curves, point);
-            var e3d = transfinite ? extruder.ExtrudeTransfinite(elements, step)
-                                  : extruder.Extrude(elements, step);
+            var extruder = new CurveExtruder(controller, curves, steps, point, MathF.PI / 1.5f);
+            var e3d = transfinite ? extruder.ExtrudeTransfinite(elements)
+                                  : extruder.Extrude(elements);
 
             Assert.IsTrue(extruder.MissedElements == 0);
 
@@ -988,9 +984,10 @@ namespace GmshTests
 
             md.ObjectData.E3DCollection.AddRange($"Mulpiple Seams", e3d.SelectMany(v => v));
 
+            var fName = Path.GetFileNameWithoutExtension(fileName);
+
             var saver = new SaveModelToBPF2TextFile();
-            saver.Save(md, $@"D:\MultipleSeams.bpf2");
-            
+            saver.Save(md, $@"D:\{fName}.bpf2");
         }
 
 
@@ -1007,15 +1004,15 @@ namespace GmshTests
         /// <param name="recombine">Используется при генерации окружности если true</param>
         /// <param name="coords">Координаты сечения треугольника, null - специальный случай используем окружность</param>
         [DataTestMethod]
-        [DataRow(@"\CAD\cilindr.step", new int[] { 5, 2, 4, 2}, new double[] { 0.15, 0.25 }, true, false, new float[] {10.63178f, 2.25962f, 0.0f, 
-                                                                                                                       10.42f, 3.22338f, -0.14127485f, 
+        [DataRow(@"\CAD\cilindr.step", new int[] { 5, 2, 4, 2 }, new double[] { 0.15, 0.25 }, true, false, new float[] {10.63178f, 2.25962f, 0.0f,
+                                                                                                                       10.42f, 3.22338f, -0.14127485f,
                                                                                                                        11.6700233f, 2.46244f, -9.28e-11f})]//Тест на двух кривых
         [DataRow(@"\CAD\cilindr.step", new int[] { 1, 2 }, new double[] { 0.25 }, false, false, new float[] {10.63178f, 2.25962f, 0.0f,
                                                                                                              11.67f, 3.22338f, 0.5f,
                                                                                                              11.67f, 3.22338f, -0.5f})]//Тест по прямой
         [DataRow(@"\CAD\curve.step", new int[] { 1, 2 }, new double[] { 0.1 }, true, true, null)]//Тест по кривой с разной кривизной
         [DataRow(@"\CAD\curve2.step", new int[] { 1, 1 }, new double[] { 0.025 }, true, false, null)]//Тест по кривой с разной кривизной
-        public void ExtrudeAlongCurveTest(string fileName, int[] curveData, double[] extrusionData , bool transfinite, bool recombine, float[] coords)
+        public void ExtrudeAlongCurveTest(string fileName, int[] curveData, double[] extrusionData, bool transfinite, bool recombine, float[] coords)
         {
             controller.Gmsh.Open(modelFolder + fileName);
 
@@ -1026,9 +1023,9 @@ namespace GmshTests
             {
                 var md = new ModelData();
 
-                var extruder = new CurveExtruder(controller, curveData[i], curveData[i + 1]);
-                var e3d = transfinite ? extruder.ExtrudeTransfinite(crossSection, extrusionData[i >> 1]) 
-                                      : extruder.Extrude(crossSection, extrusionData[i >> 1]);
+                var extruder = new CurveExtruder(controller, curveData[i], extrusionData[i >> 1], curveData[i + 1]);
+                var e3d = transfinite ? extruder.ExtrudeTransfinite(crossSection)
+                                      : extruder.Extrude(crossSection);
 
                 Assert.IsTrue(extruder.MissedElements == 0);
 
@@ -1040,7 +1037,7 @@ namespace GmshTests
                 mdArray.Add(md);
             }
 
-            for(var i = 1; i < mdArray.Count; ++i)
+            for (var i = 1; i < mdArray.Count; ++i)
                 mdArray[0].Append(mdArray[i]);
 
             var fName = Path.GetFileNameWithoutExtension(fileName);

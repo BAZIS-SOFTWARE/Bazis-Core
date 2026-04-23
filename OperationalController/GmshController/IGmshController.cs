@@ -194,5 +194,10 @@ namespace OperationalController.GmshController
         /// </summary>
         /// <returns></returns>
         Tuple<IObjectsSet<SurfaceFigure>, VolumeData> CreateSurfaceData();
+
+        /// <summary>
+        /// Объединяет геометрические сущности, например делает слияние общих точек. После загрузки step применять обязательно.
+        /// </summary>
+        void MergeGeometry();
     }
 }
