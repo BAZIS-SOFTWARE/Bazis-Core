@@ -203,7 +203,8 @@ namespace OperationalController.MeshObjsCreator
             lastTangent = Vector3.Normalize(lastTangent);
             curTangent = Vector3.Normalize(curTangent);
 
-            var cos = Vector3.Dot(lastTangent, curTangent);
+            var cos = Math.Min(Vector3.Dot(lastTangent, curTangent), 1.0f);
+            cos = Math.Max(cos, -1.0f);
             var angle = MathF.Acos(cos);
 
             var axis = Vector3.Cross(lastTangent, curTangent);

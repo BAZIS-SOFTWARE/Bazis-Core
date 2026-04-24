@@ -24,6 +24,7 @@ using Project.Tasks;
 using System.Security.Cryptography;
 using static Community.CsharpSqlite.Sqlite3;
 using OperationalController.MeshObjsUtility;
+using System.Drawing;
 
 namespace GmshTests
 {
@@ -973,7 +974,7 @@ namespace GmshTests
 
             var md = new ModelData();
 
-            var extruder = new CurveExtruder(controller, curves, steps, point, MathF.PI / 1.5f);
+            var extruder = new CurveExtruder(controller, curves, steps, point, 0);
             var e3d = transfinite ? extruder.ExtrudeTransfinite(elements)
                                   : extruder.Extrude(elements);
 
@@ -983,6 +984,55 @@ namespace GmshTests
                 md.ObjectData.NodesSet.Add(node.Number, node);
 
             md.ObjectData.E3DCollection.AddRange($"Mulpiple Seams", e3d.SelectMany(v => v));
+
+            var fName = Path.GetFileNameWithoutExtension(fileName);
+
+            var saver = new SaveModelToBPF2TextFile();
+            saver.Save(md, $@"D:\{fName}.bpf2");
+        }
+
+        [DataTestMethod]
+        [DataRow(@"\CAD\PART_3.stp", new int[] { 47, 44, 41, 40, 35, 32, 29, 26 }, 33, new double[] { 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1 }
+                                   ,new float[] { 77, -197.08f, -2.0f, 77, -197.08f, -7.0f, 82, -197.08f, -2.0f }, true,
+                                    new int[] { 1, 7, 8, 11, 14, 19, 20 }, 2, new double[] { 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1 }
+                                   ,new float[] { 77, -197.08f, 8.0f, 77, -197.08f, 13.0f, 82, -197.08f, 8.0f }, true
+                                    )]
+        public void ExtrudeMultiCurvesTest2(string fileName, int[] curves, int point, double[] steps, float[] coords, bool transfinite,
+                                            int[] curves2, int point2, double[] steps2, float[] coords2, bool transfinite2)
+        {
+            controller.Gmsh.Open(modelFolder + fileName);
+            controller.MergeGeometry();
+
+            var elements = GenSurfaceTriangle(controller, coords);
+            var elements2 = GenSurfaceTriangle(controller, coords2);
+
+            var md = new ModelData();
+
+            var extruder = new CurveExtruder(controller, curves, steps, point, 0);
+            var e3d = transfinite ? extruder.ExtrudeTransfinite(elements)
+                                  : extruder.Extrude(elements);
+
+            Assert.IsTrue(extruder.MissedElements == 0);
+
+            foreach (var node in extruder.Nodes.Values)
+                md.ObjectData.NodesSet.Add(node.Number, node);
+
+            md.ObjectData.E3DCollection.AddRange($"Mulpiple Seams", e3d.SelectMany(v => v));
+            
+            var md2 = new ModelData();
+
+            var extruder2 = new CurveExtruder(controller, curves2, steps2, point2, 0);
+            var e3d2 = transfinite ? extruder2.ExtrudeTransfinite(elements2)
+                                  : extruder2.Extrude(elements2);
+
+            Assert.IsTrue(extruder2.MissedElements == 0);
+
+            foreach (var node in extruder2.Nodes.Values)
+                md2.ObjectData.NodesSet.Add(node.Number, node);
+
+            md2.ObjectData.E3DCollection.AddRange($"Mulpiple Seams 2", e3d2.SelectMany(v => v));
+
+            md.Append(md2);
 
             var fName = Path.GetFileNameWithoutExtension(fileName);
 
@@ -1059,6 +1109,42 @@ namespace GmshTests
 
             var crossSection = new List<Element2D> { new Triangle_c(1, nodes.ToArray()) };
             return crossSection;
+        }
+
+        private List<Element2D> GenSurfaceTriangle(IGmshController controller, float[] coords, double meshSize = 10)
+        {
+            controller.Gmsh.Model.Add("Section");
+
+            var pList = new List<int>();
+            var lList = new List<int>();
+            for (var i = 0; i < 3; ++i)
+            {
+                var point = controller.Gmsh.Model.Occ.AddPoint(coords[i * 3], coords[i * 3 + 1], coords[i * 3 + 2]);
+                if (point == 0)
+                    throw new Exception(controller.Gmsh.Logger.GetLastError());
+                pList.Add(point);
+            }
+
+            for(var i = 0; i < 3; ++i)
+            {
+                var line = controller.Gmsh.Model.Occ.AddLine(pList[i], i == 2 ? pList[0] : pList[i + 1]);
+                if (line == 0)
+                    throw new Exception(controller.Gmsh.Logger.GetLastError());
+                lList.Add(line);
+            }
+
+            var wire = controller.Gmsh.Model.Occ.AddWire([lList[0], lList[1], lList[2]]);
+            var surface = controller.Gmsh.Model.Occ.AddPlaneSurface([wire]);
+
+            controller.Gmsh.Model.Occ.Synchronize();
+
+            controller.Gmsh.Option.SetNumber("Mesh.MeshSizeMax", meshSize);
+            controller.Gmsh.Model.Mesh.Generate(2);
+            var data = controller.GetMeshObjects();
+
+            controller.Gmsh.Model.Remove();
+
+            return data.Item3;
         }
 
         private List<Element2D> GenCircle(IGmshController controller, int curveTag, int curvePoint, bool recombine, double radius = 0.05)
