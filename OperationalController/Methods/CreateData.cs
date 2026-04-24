@@ -1,20 +1,15 @@
 ﻿using Geometry;
-using MathNet.Numerics.LinearAlgebra.Factorization;
-using Model;
 using Model.GeometryObjects;
 using Model.Interfaces;
 using Model.Interfaces.MeshObjects;
 using Model.MeshObjects;
 using Model.ObjectsCollections;
-using OperationalController.GmshController;
 using OperationalController.MeshObjsCreator;
 using Project.Interfaces.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using static IronPython.Modules._ast;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
 namespace OperationalController
@@ -126,6 +121,51 @@ namespace OperationalController
 
             if (dim == 1)
                 ModelData.ObjectData.E1DCollection.Add(setName);
+        }
+
+        /// <summary>
+        /// Создаёт новую точку, расположенную на указанном смещении от точки с тегом <paramref name="basePointTag"/>
+        /// в направлении от этой точки к точке с тегом <paramref name="directionPointTag"/>.
+        /// Метод берёт контрольные точки из контроллера Gmsh, нормализует вектор направления и вызывает <see cref="CreatePoint(double,double,double,double)"/>.
+        /// </summary>
+        /// <param name="basePointTag">Тег (идентификатор) базовой контрольной точки в Gmsh — начало вектора.</param>
+        /// <param name="directionPointTag">Тег (идентификатор) контрольной точки в Gmsh, определяющей направление (вектор от базовой точки).</param>
+        /// <param name="offset">Смещение вдоль направления в тех же единицах, что и координаты модели. Отрицательное значение допустимо (смещение в обратную сторону).</param>
+        /// <returns>Тег (идентификатор) созданной в Gmsh точки.</returns>
+        public int CreatePointByVector(int basePointTag, int directionPointTag, double offset)
+        {
+            var points = GmshController.CreateControlPoints();
+            var basePoint = points.Where(x => x.Number == basePointTag).FirstOrDefault();
+            var directionPoint = points.Where(x=>x.Number == directionPointTag).FirstOrDefault();
+
+            double dx = directionPoint.Position._x - basePoint.Position._x;
+            double dy = directionPoint.Position._y - basePoint.Position._y;
+            double dz = directionPoint.Position._z - basePoint.Position._z;
+
+            var length = Math.Sqrt(dx * dx + dy * dy + dz * dz);
+
+            double nx = dx / length;
+            double ny = dy / length;
+            double nz = dz / length;
+
+            return CreatePoint(basePoint.Position._x + nx * offset, basePoint.Position._y + ny * offset, basePoint.Position._z + nz * offset);
+        }
+
+        /// <summary>
+        /// Проецирует контрольную точку с тегом <paramref name="basePointTag"/> на указанную геометрию в Gmsh
+        /// и создаёт новую точку в модели в полученной позиции.
+        /// </summary>
+        /// <param name="basePointTag">Тег (идентификатор) существующей контрольной точки в Gmsh, которая будет проецироваться.</param>
+        /// <param name="dim">Размерность целевой геометрии в Gmsh (0 — точка, 1 — кривая, 2 — поверхность и т.д.).</param>
+        /// <param name="geometryTag">Тег (идентификатор) геометрического объекта в Gmsh, на который выполняется проекция.</param>
+        public int CreatePointProjectionOntoGeometry(int basePointTag, int dim, int geometryTag)
+        {
+            var controlPoints = GmshController.CreateControlPoints();
+            var sourcePoint = controlPoints.FirstOrDefault(p => p.Number == basePointTag);
+
+            var coord = new double[] { sourcePoint.Position._x, sourcePoint.Position._y, sourcePoint.Position._z };
+            var (pointCoord, _)= GmshController.Gmsh.Model.GetClosestPoint(dim, geometryTag, coord);
+            return CreatePoint(pointCoord[0], pointCoord[1], pointCoord[2]);
         }
 
         /// <summary>
