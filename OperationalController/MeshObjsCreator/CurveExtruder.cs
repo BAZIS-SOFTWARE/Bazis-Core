@@ -54,7 +54,7 @@ namespace OperationalController.MeshObjsCreator
         /// <param name="steps">Шаг для каждой кривой (доля) от длины кривой</param>
         /// <param name="pointTag">Выбранный идентифкатор геометрической точки начала сечения</param>
         /// <param name="maxAngle">Максимальный угол при котором будет рассматриваться поворотная экструзия между кривыми</param>
-        public CurveExtruder(IGmshController controller, int[] curveTags, double[] steps, int pointTag, float maxAngle = 0.0f)
+        public CurveExtruder(IGmshController controller, int[] curveTags, double[] steps, int pointTag, float maxAngle = MathF.PI)
         {
             this.controller = controller;
             this.maxAngle = maxAngle;
