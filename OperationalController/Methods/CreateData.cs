@@ -134,9 +134,8 @@ namespace OperationalController
         /// <returns>Тег (идентификатор) созданной в Gmsh точки.</returns>
         public int CreatePointByVector(int basePointTag, int directionPointTag, double offset)
         {
-            var points = GmshController.CreateControlPoints();
-            var basePoint = points.Where(x => x.Number == basePointTag).FirstOrDefault();
-            var directionPoint = points.Where(x=>x.Number == directionPointTag).FirstOrDefault();
+            var basePoint = ModelData.ObjectData.PointsSet[basePointTag];
+            var directionPoint = ModelData.ObjectData.PointsSet[directionPointTag];
 
             double dx = directionPoint.Position._x - basePoint.Position._x;
             double dy = directionPoint.Position._y - basePoint.Position._y;
@@ -160,8 +159,7 @@ namespace OperationalController
         /// <param name="geometryTag">Тег (идентификатор) геометрического объекта в Gmsh, на который выполняется проекция.</param>
         public int CreatePointProjectionOntoGeometry(int basePointTag, int dim, int geometryTag)
         {
-            var controlPoints = GmshController.CreateControlPoints();
-            var sourcePoint = controlPoints.FirstOrDefault(p => p.Number == basePointTag);
+            var sourcePoint = ModelData.ObjectData.PointsSet[basePointTag];
 
             var coord = new double[] { sourcePoint.Position._x, sourcePoint.Position._y, sourcePoint.Position._z };
             var (pointCoord, _)= GmshController.Gmsh.Model.GetClosestPoint(dim, geometryTag, coord);
