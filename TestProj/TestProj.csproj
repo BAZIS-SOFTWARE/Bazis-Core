@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SurfaceMesherInterfaces\SurfaceMesherInterfaces.csproj" />
     <ProjectReference Include="..\SurfaceMesher\SurfaceMesher.csproj" />
   </ItemGroup>
 

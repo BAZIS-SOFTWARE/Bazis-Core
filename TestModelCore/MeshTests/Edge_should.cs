@@ -1,6 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SurfaceMesher;
-using System;
+﻿using SurfaceMesher;
 
 namespace Tests
 {
