@@ -134,6 +134,8 @@ namespace ControllerTests
             var middle = project.CreatePoint(2, 2, 0);
             var end = project.CreatePoint(2, 0, 0);
 
+            var pointByVector = project.CreatePointByVector(start, middle, 1);
+
             var line1 = project.CreateLine(start, middle);
             var line2 = project.CreateLine(middle, end);
             var line3 = project.CreateLine(end, start);
@@ -142,8 +144,11 @@ namespace ControllerTests
 
             // ===== ASSERT POINTS =====
             var s = project.GetModelPoint(start);
+            var pbv = project.GetModelPoint(pointByVector);
             Assert.IsNotNull(s);
             Assert.AreEqual(start, s.Number);
+            Assert.IsNotNull(pbv);
+            Assert.AreEqual(pointByVector, pbv.Number);
 
             var m = project.GetModelPoint(middle);
             Assert.IsNotNull(m);
