@@ -176,30 +176,36 @@ namespace OperationalController.MeshObjsCreator
                 var upNodes = nextLayer[index++].GetVertexes();
                 var e3dNodes = nodes.Concat(upNodes).ToArray();
 
-                //Element3D newElement = null;
                 if (e3dNodes.Length == 6)
-                    AddTransfinitePentaElement(layer, e3dNodes);//newElement = new Penta(elementTag++, e3dNodes);
+                {
+                    var elements = CreateElementsBy6Points(e3dNodes);
+                    layer.AddRange(elements);
+                }
                 else if (e3dNodes.Length == 8)
-                    AddTransfiniteHexaElement(layer, e3dNodes);//newElement = new Hexa(elementTag++, e3dNodes);
-                //layer.Add(newElement);
+                {
+                    var elements = CreateElementsBy8Points(e3dNodes);
+                    layer.AddRange(elements);
+                }
             }
             return layer;
         }
 
-        private void AddTransfinitePentaElement(List<Element3D> layer, Node[] nodes)
+        private List<Element3D> CreateElementsBy6Points(Node[] nodes)
         {
+            var elements = new List<Element3D>();
+
             var set = new HashSet<int>() { 0, 1, 2 };
             var indices = new List<int>();
             for (var i = 0; i < 3; ++i)
                 if (nodes[i] == nodes[i + 3])
                     indices.Add(i);
             if (indices.Count == 0)
-                layer.Add(new Penta(elementTag++, nodes));
+                elements.Add(new Penta(elementTag++, nodes));
             else if (indices.Count == 2)
             {
                 var unical = set.Except(indices).First();
                 var tetra = new Tetra(elementTag++, [nodes[indices[0]], nodes[unical + 3], nodes[unical], nodes[indices[1]]]);
-                layer.Add(tetra);
+                elements.Add(tetra);
             }
             else if (indices.Count == 1)
             {
@@ -208,20 +214,23 @@ namespace OperationalController.MeshObjsCreator
                 var tetra0 = new Tetra(elementTag++, [nodes[unicals[0]], nodes[unicals[1]], nodes[unicals[1] + 3], nodes[indices[0]]]);
                 var tetra1 = new Tetra(elementTag++, [nodes[unicals[0]], nodes[unicals[1] + 3], nodes[unicals[0] + 3], nodes[indices[0]]]);
 
-                layer.Add(tetra0);
-                layer.Add(tetra1);
+                elements.Add(tetra0);
+                elements.Add(tetra1);
             }
+            return elements;
         }
 
-        private void AddTransfiniteHexaElement(List<Element3D> layer, Node[] nodes)
+        private List<Element3D> CreateElementsBy8Points(Node[] nodes)
         {
+            var elements = new List<Element3D>();
+
             var set = new HashSet<int>() { 0, 1, 2, 3 };
             var indices = new List<int>();
             for (var i = 0; i < 4; ++i)
                 if (nodes[i] == nodes[i + 4])
                     indices.Add(i);
             if (indices.Count == 0)
-                layer.Add(new Hexa(elementTag++, nodes));
+                elements.Add(new Hexa(elementTag++, nodes));
             else if (indices.Count == 2)
             {
                 var edgeMap = new Dictionary<string, int[]>() { { "01", [3, 2] }, { "03", [1, 2] }, { "12", [0, 3] }, { "23", [1, 0] } };
@@ -230,7 +239,7 @@ namespace OperationalController.MeshObjsCreator
 
                 var penta = new Penta(elementTag++, [nodes[indices[0]], nodes[oppos[0]], nodes[oppos[0] + 4],
                                                      nodes[indices[1]], nodes[oppos[1]], nodes[oppos[1] + 4]]);
-                layer.Add(penta);
+                elements.Add(penta);
             }
             else if (indices.Count == 1)
             {
@@ -243,10 +252,11 @@ namespace OperationalController.MeshObjsCreator
                 var penta = new Penta(elementTag++, [nodes[data[0]], nodes[data[1]], nodes[data[2]],
                                                      nodes[data[0] + 4], nodes[data[1] + 4], nodes[data[2] + 4]]);
 
-                layer.Add(tetra0);
-                layer.Add(tetra1);
-                layer.Add(penta);
+                elements.Add(tetra0);
+                elements.Add(tetra1);
+                elements.Add(penta);
             }
+            return elements;
         }
 
         /// <summary>

@@ -964,7 +964,7 @@ namespace GmshTests
         [DataTestMethod]
         [DataRow(@"\CAD\multiCurves.step", new int[] { 1, 2, 3 }, 1, new double[] { 0.1, 0.2, 0.25 }, new float[] { -1, 0, 0, -1.1f, -0.1f, 0, -1, 0, 0.1f }, true)]
         [DataRow(@"\CAD\multiCurves2.step", new int[] { 2, 4, 3, 1 }, 2, new double[] { 0.05, 0.13, 0.3, 0.35 }, new float[] { 0, -1, 0, 0f, -1.25f, 0, 0, -1, 0.25f }, true)]
-        [DataRow(@"\CAD\closeWire.step", new int[] { 1, 2, 3, 4, 5, 6 }, 1, new double[] { 0.1, 0.3, 0.22, 0.05, 0.2, 0.4 }, new float[] { -1, 0, 0, -1f, -0.1f, 0f, -1, 0, 0.1f }, false)]
+        [DataRow(@"\CAD\closeWire.step", new int[] { 1, 2, 3, 4, 5, 6 }, 1, new double[] { 0.1, 0.3, 0.22, 0.05, 0.2, 0.4 }, new float[] { -1, 0, 0, -1f, -0.1f, 0f, -1, 0, 0.1f }, true)]
         public void ExtrudeMultiCurvesTest(string fileName, int[] curves, int point, double[] steps, float[] coords, bool transfinite)
         {
             controller.Gmsh.Open(modelFolder + fileName);
@@ -974,7 +974,7 @@ namespace GmshTests
 
             var md = new ModelData();
 
-            var extruder = new CurveExtruder(controller, curves, steps, point, 0);
+            var extruder = new CurveExtruder(controller, curves, steps, point);
             var e3d = transfinite ? extruder.ExtrudeTransfinite(elements)
                                   : extruder.Extrude(elements);
 
@@ -995,8 +995,7 @@ namespace GmshTests
         [DataRow(@"\CAD\PART_3.stp", new int[] { 47, 44, 41, 40, 35, 32, 29, 26 }, 33, new double[] { 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1 }
                                    ,new float[] { 77, -197.08f, -2.0f, 77, -197.08f, -7.0f, 82, -197.08f, -2.0f }, true,
                                     new int[] { 1, 7, 8, 11, 14, 19, 20 }, 2, new double[] { 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1 }
-                                   ,new float[] { 77, -197.08f, 8.0f, 77, -197.08f, 13.0f, 82, -197.08f, 8.0f }, true
-                                    )]
+                                   ,new float[] { 77, -197.08f, 8.0f, 77, -197.08f, 13.0f, 82, -197.08f, 8.0f }, true)]
         public void ExtrudeMultiCurvesTest2(string fileName, int[] curves, int point, double[] steps, float[] coords, bool transfinite,
                                             int[] curves2, int point2, double[] steps2, float[] coords2, bool transfinite2)
         {
@@ -1008,7 +1007,7 @@ namespace GmshTests
 
             var md = new ModelData();
 
-            var extruder = new CurveExtruder(controller, curves, steps, point, 0);
+            var extruder = new CurveExtruder(controller, curves, steps, point);
             var e3d = transfinite ? extruder.ExtrudeTransfinite(elements)
                                   : extruder.Extrude(elements);
 
@@ -1021,7 +1020,7 @@ namespace GmshTests
             
             var md2 = new ModelData();
 
-            var extruder2 = new CurveExtruder(controller, curves2, steps2, point2, 0);
+            var extruder2 = new CurveExtruder(controller, curves2, steps2, point2);
             var e3d2 = transfinite ? extruder2.ExtrudeTransfinite(elements2)
                                   : extruder2.Extrude(elements2);
 

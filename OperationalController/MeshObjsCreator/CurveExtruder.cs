@@ -12,6 +12,7 @@ using System.Numerics;
 using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
+using static IronPython.Modules._ast;
 
 
 namespace OperationalController.MeshObjsCreator
@@ -54,7 +55,7 @@ namespace OperationalController.MeshObjsCreator
         /// <param name="steps">Шаг для каждой кривой (доля) от длины кривой</param>
         /// <param name="pointTag">Выбранный идентифкатор геометрической точки начала сечения</param>
         /// <param name="maxAngle">Максимальный угол при котором будет рассматриваться поворотная экструзия между кривыми</param>
-        public CurveExtruder(IGmshController controller, int[] curveTags, double[] steps, int pointTag, float maxAngle = MathF.PI)
+        public CurveExtruder(IGmshController controller, int[] curveTags, double[] steps, int pointTag, float maxAngle = MathF.PI / 2)
         {
             this.controller = controller;
             this.maxAngle = maxAngle;
@@ -67,11 +68,105 @@ namespace OperationalController.MeshObjsCreator
         }
 
         /// <summary>
-        /// Создает экструзию 3д элементов методом протягивания вдоль кривой
+        /// Создает экструзию 3д элементов методом протягивания вдоль кривой (Версия Merge по углу)
         /// </summary>
         /// <param name="firstLayer">Элементы 2D сечения</param>
         /// <returns>Список 3д элементов</returns>
         public List<List<Element3D>> Extrude(IEnumerable<Element2D> firstLayer)
+        {
+            var tetLayers = new List<List<Element3D>>();
+            firstLayer = SortFirstLayer(firstLayer);
+
+            List<Element2D> curLayer = null;
+            var lastCorrect = Matrix4x4.Identity;
+
+            for (var i = 0; i < curveTags.Length; ++i)
+            {
+                var compList = GetCurveComponents(steps[i], i);
+                var matrixList = CreateLocalSystemSet(compList, compList[0]);
+
+                curLayer = CreateNextLayer(firstLayer, matrixList[0]);
+                var rotateStatus = false;
+
+                for (var j = 1; j < matrixList.Count; ++j)
+                {
+                    var currentCorrect = Matrix4x4.Identity;
+                    if (j == matrixList.Count - 1 && IsExistsCommonPoint(i))
+                    {
+                        var next = GetNextTangent(i);
+                        var data = GetRotationDataBetweenComponents(compList[j].Item5, next);
+                        lastCorrect = GetCorrectionMatrix(data.Item1, data.Item2, compList[j].Item4);
+                        if (data.Item2 <= maxAngle)
+                        {
+                            rotateStatus = true;
+                            currentCorrect = lastCorrect;
+                        }
+                    }
+
+                    var nextLayer = CreateNextLayer(firstLayer, matrixList[j] * currentCorrect);
+                    var layer = CreateLayerTetrahedrons(curLayer, nextLayer);
+                    tetLayers.Add(layer);
+                    curLayer = nextLayer;
+                }
+                firstLayer = rotateStatus || i == curveTags.Length - 1 ? curLayer 
+                                                                       : CreateNextLayer(firstLayer, matrixList[matrixList.Count - 1] * lastCorrect);
+            }
+            return tetLayers;
+        }
+
+        /// <summary>
+        /// Создает трансфинитную экструзию 3д элементов методом протягивания вдоль кривой (Версия Merge по углу )
+        /// </summary>
+        /// <param name="firstLayer"></param>
+        /// <returns>Список 3д элементов</returns>
+        public List<List<Element3D>> ExtrudeTransfinite(IEnumerable<Element2D> firstLayer)
+        {
+            var tetLayers = new List<List<Element3D>>();
+            firstLayer = SortFirstLayer(firstLayer);
+
+            List<Element2D> curLayer = null;
+            var lastCorrect = Matrix4x4.Identity;
+
+            for (var i = 0; i < curveTags.Length; ++i)
+            {
+                var compList = GetCurveComponents(steps[i], i);
+                var matrixList = CreateLocalSystemSet(compList, compList[0]);
+
+                curLayer = CreateNextLayer(firstLayer, matrixList[0]);
+                var rotateStatus = false;
+
+                for (var j = 1; j < matrixList.Count; ++j)
+                {
+                    var currentCorrect = Matrix4x4.Identity;
+                    if (j == matrixList.Count - 1 && IsExistsCommonPoint(i))
+                    {
+                        var next = GetNextTangent(i);
+                        var data = GetRotationDataBetweenComponents(compList[j].Item5, next);
+                        lastCorrect = GetCorrectionMatrix(data.Item1, data.Item2, compList[j].Item4);
+                        if (data.Item2 <= maxAngle)
+                        {
+                            rotateStatus = true;
+                            currentCorrect = lastCorrect;
+                        }
+                    }
+
+                    var nextLayer = CreateNextLayer(firstLayer, matrixList[j] * currentCorrect);
+                    var layer = CreateTransfiniteLayer(curLayer, nextLayer);
+                    tetLayers.Add(layer);
+                    curLayer = nextLayer;
+                }
+                firstLayer = rotateStatus || i == curveTags.Length  - 1 ? curLayer 
+                                                                        : CreateNextLayer(firstLayer, matrixList[matrixList.Count - 1] * lastCorrect);
+            }
+            return tetLayers;
+        }
+        /*
+        /// <summary>
+        /// Создает экструзию 3д элементов методом протягивания вдоль кривой (Версия с поворотной экструзий)
+        /// </summary>
+        /// <param name="firstLayer">Элементы 2D сечения</param>
+        /// <returns>Список 3д элементов</returns>
+        public List<List<Element3D>> Extrude2(IEnumerable<Element2D> firstLayer)
         {
             var tetLayers = new List<List<Element3D>>();
             firstLayer = SortFirstLayer(firstLayer);
@@ -110,14 +205,14 @@ namespace OperationalController.MeshObjsCreator
 
             AddRotarySection(tetLayers, curLayer, lastComponents, firstComponents, false);
             return tetLayers;
-        }
-        /// <summary>
-        /// Создает трансфинитную экструзию 3д элементов методом протягивания вдоль кривой
+        }*/
+        /*/// <summary>
+        /// Создает трансфинитную экструзию 3д элементов методом протягивания вдоль кривой (Версия с поворотной экструзий)
         /// </summary>
         /// <param name="firstLayer"></param>
         /// <param name="step">Минимальный шаг от длины кривой</param>
         /// <returns>Список 3д элементов</returns>
-        public List<List<Element3D>> ExtrudeTransfinite(IEnumerable<Element2D> firstLayer)
+        public List<List<Element3D>> ExtrudeTransfinite2(IEnumerable<Element2D> firstLayer)
         {
             var tetLayers = new List<List<Element3D>>();
             firstLayer = SortFirstLayer(firstLayer);
@@ -156,8 +251,46 @@ namespace OperationalController.MeshObjsCreator
 
             AddRotarySection(tetLayers, curLayer, lastComponents, firstComponents, true);
             return tetLayers;
+        }*/
+
+
+        private bool IsExistsCommonPoint(int index)
+        {
+            var nextIndex = curveTags.Length - 1 == index ? 0 : index + 1;
+            var bounds0 = controller.Gmsh.Model.GetBoundary([1, curveTags[index]], false);
+            var bounds1 = controller.Gmsh.Model.GetBoundary([1, curveTags[nextIndex]], false);
+
+            return bounds0[3] == bounds1[1];
         }
 
+        private Vector3 GetNextTangent(int index)
+        {
+            var nextIndex = curveTags.Length - 1 == index ? 0 : index + 1;
+            var tag = curveTags[nextIndex];
+            var absTag = Math.Abs(tag);
+
+            var p = controller.Gmsh.Model.GetParametrizationBounds(1, absTag);
+
+            var l0 = p.Item1[0];
+            var l1 = p.Item1[0] + 0.2;
+            if (tag < 0)
+            {
+                Swap(ref p.Item1[0], ref p.Item2[0]);
+                l0 = p.Item1[0];
+                l1 = p.Item1[0] - 0.2;
+            }
+
+            var coords = controller.Gmsh.Model.GetValue(1, absTag, [l0, l1]);
+
+            var p0 = new Vector3((float)coords[0], (float)coords[1], (float)coords[2]);
+            var p1 = new Vector3((float)coords[3], (float)coords[4], (float)coords[5]);
+
+            var t0 = p1 - p0;
+
+            return t0;
+        }
+
+        /*
         private void AddRotarySection(List<List<Element3D>> e3dData, List<Element2D> elements, (Vector3, Vector3, Vector3, Vector3, Vector3) lastComponents,
                                       (Vector3, Vector3, Vector3, Vector3, Vector3) curComponents, bool transfinite)
         {
@@ -171,6 +304,7 @@ namespace OperationalController.MeshObjsCreator
             }
         }
 
+        
         private Tuple<List<List<Element3D>>, List<Node>> InsertRotarySection(List<Element2D> elements, (Vector3, Vector3, Vector3, Vector3, Vector3) lastComponents,
                                                           (Vector3, Vector3, Vector3, Vector3, Vector3) curComponents, bool transfinite)
         {
@@ -196,7 +330,7 @@ namespace OperationalController.MeshObjsCreator
                 }
             }
             return null;
-        }
+        }*/
 
         private (Vector3, float, float) GetRotationDataBetweenComponents(Vector3 lastTangent, Vector3 curTangent)
         {
@@ -215,7 +349,18 @@ namespace OperationalController.MeshObjsCreator
             return (axis, angle, sign);
         }
 
-        private Matrix4x4 GetCorrectionMatrix(Vector3 lastTangent, Vector3 curTangent, Vector3 curOrigin)
+        private Matrix4x4 GetCorrectionMatrix(Vector3 axis, float angle, Vector3 curOrigin)
+        {
+            var negOrigin = Matrix4x4.CreateTranslation(-curOrigin);
+            var origin = Matrix4x4.CreateTranslation(curOrigin);
+            var rotate = Matrix4x4.CreateFromAxisAngle(axis, angle);
+
+            var result = negOrigin * rotate * origin;
+
+            return result;
+        }
+
+        /*private Matrix4x4 GetCorrectionMatrix(Vector3 lastTangent, Vector3 curTangent, Vector3 curOrigin)
         {
             var data = GetRotationDataBetweenComponents(lastTangent, curTangent);
 
@@ -226,7 +371,7 @@ namespace OperationalController.MeshObjsCreator
             var result = negOrigin * rotate * origin;
 
             return result;
-        }
+        }*/
 
         /// <summary>
         /// По неупорядоченному набору кривых, образующих контур строит ориентированный контур
@@ -314,39 +459,6 @@ namespace OperationalController.MeshObjsCreator
                 nextLayer.Add(elem);
             }
             return nextLayer;
-        }
-        /// <summary>
-        /// Создает копию слоя переданную для операции экструзии
-        /// </summary>
-        /// <param name="src">Слой источник 2д элементов</param>
-        /// <returns>Копия 2д элементов</returns>
-        protected List<Element2D> CreateCopy(IEnumerable<Element2D> src, Matrix4x4 m)
-        {
-            var layer = new List<Element2D>();
-            var visited = new Dictionary<int, Node>();
-
-            foreach (var element in src)
-            {
-                var points = new List<Node>();
-                foreach (var node in element.GetVertexes())
-                {
-                    if (!visited.ContainsKey(node.Number))
-                    {
-                        var coords = new Vector4(node._x, node._y, node._z, 1);
-                        coords = Vector4.Transform(coords, m);
-                        var point = new Node(nodeTag++, new Point3D(coords.X, coords.Y, coords.Z));
-                        visited.Add(node.Number, point);
-                        points.Add(point);
-                        Nodes.Add(point.Number, point);
-                    }
-                    else
-                        points.Add(visited[node.Number]);
-                }
-                var pArray = points.ToArray();
-                Element2D elem = pArray.Length == 3 ? new Triangle_c(element.Number, pArray) : new Quad(element.Number, pArray);
-                layer.Add(elem);
-            }
-            return layer;
         }
 
         private void DetectDirection(int pointTag)
