@@ -1,7 +1,9 @@
-﻿using Model.GroupsData;
+﻿using Model;
+using Model.GroupsData;
 using Model.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 
 namespace OperationalController
 {
@@ -116,6 +118,32 @@ namespace OperationalController
             }
  
             ClearNotExistedModelData();
+        }
+
+        public void DeleteGeometryObject(int dim, int number, bool recursive = false)
+        {
+            var (upper, lower) = GmshController.Gmsh.Model.GetAdjacencies(dim, number);
+            if (upper != null && upper.Length > 0)
+                throw new InvalidOperationException("Удаление геометрии невозможно, так как существуют связанные элементы верхнего уровня.");
+
+            GmshController.Gmsh.Model.Occ.Remove([dim, number], recursive);
+            GmshController.Gmsh.Model.Occ.Synchronize();
+
+            switch (dim)
+            {
+                case 0:
+                    ModelData.ObjectData.Remove(ObjType.Точка, number);
+                    //ModelData.ObjectData.PointsSet.Remove(number);
+                    break;
+                case 1:
+                    ModelData.ObjectData.Remove(ObjType.Кривая, number);
+                    //ModelData.ObjectData.CurveSet.Remove(number);
+                    break;
+                case 2:
+                    ModelData.ObjectData.Remove(ObjType.Поверхность, number);
+                    //ModelData.ObjectData.SurfaceSet.Remove(number);
+                    break; 
+            }
         }
     }
 }
