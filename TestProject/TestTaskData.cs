@@ -173,11 +173,11 @@ namespace TestProject
         }
 
         [DataTestMethod]
-        [DataRow("newGroupЭлемент1D стержни 10 Сталь_W_S420 0 1 *")]
-        [DataRow("newGroupЭлемент1D пластины 0.5 Сталь_Р18 0 1 *")]
-        [DataRow("newGroupЭлемент1D пластины 15 Сталь_W_S420 0 1 *")]
-        [DataRow("newGroupЭлемент3D Сталь_Р18 0 1 *")]
-        [DataRow("newGroupЭлемент3D Сталь_20ХМ 3 5 *")]
+        [DataRow("1 * * None newGroupЭлемент1D 0 1 Сталь_W_S420 стержни 10")]
+        [DataRow("1 * * None newGroupЭлемент1D 0 1 Сталь_Р18 пластины 0.5")]
+        [DataRow("1 * * None newGroupЭлемент1D 0 1 Сталь_W_S420 пластины 15")]
+        [DataRow("1 * * None newGroupЭлемент3D 0 1 Сталь_Р18")]
+        [DataRow("1 * * None newGroupЭлемент3D 3 5 Сталь_20ХМ")]
 
         //[DataRow("newGroupЭлемент3D Сталь_20ХМ 5 1 *")]
         //[DataRow("newGroupЭлемент3D Сталь_20ХМ  1500 *")]

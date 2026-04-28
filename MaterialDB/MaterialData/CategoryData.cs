@@ -12,7 +12,17 @@ namespace MaterialDB.MaterialData
     {
         Dictionary<string, Category> dic = new Dictionary<string, Category>();
         /// <inheritdoc/>
-        public Category this[string key] { get { return dic[key]; } set { dic[key] = value; } }
+        public Category this[string key] 
+        { 
+            get { return dic[key]; } 
+            set { dic[key] = value; } 
+        }
+
+        public Category this[PropertyEnum key]
+        {
+            get { return dic[key.ToString()]; }
+            set { dic[key.ToString()] = value; }
+        }
         /// <inheritdoc/>
 
         public ICollection<string> Keys { get { return dic.Keys; } }

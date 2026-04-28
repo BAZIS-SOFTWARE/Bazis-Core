@@ -9,6 +9,12 @@
     <IsTestProject>true</IsTestProject>
     <Platforms>AnyCPU;x86</Platforms>
   </PropertyGroup>
+  
+  <ItemGroup>
+    <Compile Remove="TestTaskParameters\**" />
+    <EmbeddedResource Remove="TestTaskParameters\**" />
+    <None Remove="TestTaskParameters\**" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="EntityFramework" Version="6.5.1" />
     <PackageReference Include="MathNet.Numerics.Signed" Version="5.0.0" />
@@ -17,6 +23,7 @@
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
+    <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="MSTest.TestAdapter" Version="3.1.1" />
     <PackageReference Include="MSTest.TestFramework" Version="3.1.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
@@ -33,9 +40,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Examples\ProjAndResults\term_iterative.bsf" />
-    <None Include="TestTaskParameters\механическая_testParam.jsp" />
-    <None Include="TestTaskParameters\тепловая_testParam.jsp" />
-    <None Include="TestTaskParameters\химическая_testParam.jsp" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Examples\3D\TestProjTerm\multiPass\Cycles\functions.txt" />

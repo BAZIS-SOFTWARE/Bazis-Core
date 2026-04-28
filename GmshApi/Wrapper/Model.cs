@@ -86,7 +86,6 @@ namespace GmshApi
         private delegate void gmshModelGetNormalFun(int tag, double[] pametricCoord, IntPtr parametricCoord_n, ref IntPtr normals, ref IntPtr normals_n, ref int ierr);
         private gmshModelGetNormalFun gmshModelGetNormal = GetFunction<gmshModelGetNormalFun>("gmshModelGetNormal");
 
-
         private delegate void gmshModelGetParametrizationFun(int dim, int tag, double[] coord, IntPtr coord_n,
                                                              ref IntPtr parametricCoord, ref IntPtr parametricCoord_n, ref int ierr);
         private gmshModelGetParametrizationFun gmshModelGetParametrization = GetFunction<gmshModelGetParametrizationFun>("gmshModelGetParametrization");

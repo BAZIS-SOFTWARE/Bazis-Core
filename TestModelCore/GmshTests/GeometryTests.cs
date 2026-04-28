@@ -845,6 +845,22 @@ namespace GmshTests
             Assert.IsTrue(insideStatus == 1);
         }
 
+        [DataTestMethod]
+        public void ChamferTest()
+        {
+            var volume = gmshController.Gmsh.Model.Occ.AddBox(0, 0, 0, 1, 1, 1);
+            var before = gmshController.Gmsh.Model.Occ.GetEntities(2);
+            var outTags = gmshController.Gmsh.Model.Occ.AddChamfer([1], [12, 3, 11, 7], [4, 4, 4, 4], [0.1, 0.1, 0.1, 0.1]);
+            gmshController.Gmsh.Model.Occ.Synchronize();
+
+            var after = gmshController.Gmsh.Model.Occ.GetEntities(2);
+
+            ///Равномерно стесали 4 угла у куба, должно добавиться 4 новых поверхностей
+            Assert.IsTrue(before.Length + 4 * 2 == after.Length);
+
+            gmshController.Gmsh.Write(@"D:\chamfer.step");
+        }
+
         private void RemoveNameTest(ref string entName, int dim, int delId, int maxId)
         {
             var status = maxId >= delId;

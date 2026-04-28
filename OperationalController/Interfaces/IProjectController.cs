@@ -64,16 +64,7 @@ namespace OperationalController
         /// </summary>
         /// <param name="path"></param>
         void Load(string path);
-        /// <summary>
-        /// Create
-        /// </summary>
-        /// <param name="projectFile"></param>
-        void CreateProject(string projectFile);
-
-        /// <summary>
-        /// CreateTask
-        /// </summary>
-        void CreateTask();  
+        
         /// <summary>
         /// FindBoundaryEdges
         /// </summary>
@@ -93,22 +84,7 @@ namespace OperationalController
         /// <param name="elemDim"></param>
         /// <returns></returns>
         Dictionary<int, List<int>> FindInterfacedNodes(int elemDim);
-        /// <summary>
-        /// Create1DFrom2D
-        /// </summary>
-        /// <returns></returns>
-        bool Create1DFrom2D();
-        /// <summary>
-        /// Create2DForm3D
-        /// </summary>
-        /// <returns></returns>
-        bool Create2DForm3D();
-        /// <summary>
-        /// CreateBoundaryEdges
-        /// </summary>
-        /// <param name="linesNodes"></param>
-        /// <returns></returns>
-        IEnumerable<ILineObject<Node>> CreateBoundaryEdges(List<string> linesNodes);
+        
         /// <summary>
         /// SelectNodeInDirection
         /// </summary>
@@ -123,7 +99,8 @@ namespace OperationalController
         /// </summary>
         /// <param name="plane"></param>
         /// <param name="color"></param>
-        void SelectNodeInPlane(Geometry.Plane plane, Color color);
+        /// <returns></returns>
+        List<int> SelectNodeInPlane(Geometry.Plane plane, Color color);
         /// <summary>
         /// SelectE2DInPlane
         /// </summary>

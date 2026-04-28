@@ -73,6 +73,18 @@ namespace GmshApi
                                                     ref IntPtr outDimTags, ref IntPtr outDimTags_n, string trihedron, ref int ierr);
         private gmshModelOccAddPipeFun gmshModelOccAddPipe = GetFunction<gmshModelOccAddPipeFun>("gmshModelOccAddPipe");
 
+        private delegate void gmshModelOccChamferFun(int[] volumeTags, IntPtr volumeTags_n, int[] curveTags, IntPtr curveTags_n,
+                                             int[] surfaceTags, IntPtr surfaceTags_n, double[] distances, IntPtr distances_n,
+                                             ref IntPtr outDimTags, ref IntPtr outDimTags_n, int removeVolume, ref int ierr);
+        private gmshModelOccChamferFun gmshModelOccChamfer = GetFunction<gmshModelOccChamferFun>("gmshModelOccChamfer");
+
+        private delegate void gmshModelOccFuseFun(int[] objectDimTags, IntPtr objectDimTags_n,
+                                                      int[] toolDimTags, IntPtr toolDimTags_n,
+                                                      ref IntPtr outDimTags, ref IntPtr outDimTags_n,
+                                                      ref IntPtr outDimTagsMap, ref IntPtr outDimTagsMap_n, ref IntPtr outDimTagsMap_nn,
+                                                      int tag, int removeObject, int removeTool, ref int ierr);
+        private gmshModelOccFuseFun gmshModelOccFuse = GetFunction<gmshModelOccFuseFun>("gmshModelOccFuse");
+
         private delegate void gmshModelOccIntersectFun(int[] objectDimTags, IntPtr objectDimTags_n,
                                                       int[] toolDimTags, IntPtr toolDimTags_n,
                                                       ref IntPtr outDimTags, ref IntPtr outDimTags_n,
@@ -198,21 +210,6 @@ namespace GmshApi
             var ierr = 0;
             tangents = tangents ?? new double[0];
             return gmshModelOccAddSpline(pointTags, (IntPtr)pointTags.Length, tag, tangents, (IntPtr)tangents.Length, ref ierr);
-        }
-
-        /// <summary>
-        /// Обрезает поверхность surfaceTag заданными wireTags, заменяя любые существующие контуры обрезки и возвращает поверхность в ядре OCC.
-        /// </summary>
-        /// <param name="surfaceTag">Исходная поверхность</param>
-        /// <param name="wireTags">Массив контуров, первый элемент указывает на внешний контур, второй на контур отверстия</param>
-        /// <param name="wire3D">Если true использовать проекцию wireTags на поверхность, иначе использовать параметрическое пространство</param>
-        /// <param name="tag">Желаемый идентификатор, или -1 для автоназначения</param>
-        /// <returns>Возвращает идентификатор подрезанной поверхности</returns>
-        public int AddTrimmedSurface(int surfaceTag, int[] wireTags = null, bool wire3D = false, int tag = -1)
-        {
-            var ierr = 0;
-            wireTags = wireTags ?? new int[0];
-            return gmshModelOccAddTrimmedSurface(surfaceTag, wireTags, (IntPtr)wireTags.Length, Convert.ToInt32(wire3D), tag, ref ierr);
         }
 
         /// <summary>
@@ -410,6 +407,54 @@ namespace GmshApi
             gmshModelOccAddPipe(dimTags, (IntPtr)dimTags.Length, wireTag, ref outDimTags, ref outDimTags_n, trihedron, ref ierr);
             var resDimTags = GetObjectsData<int>(outDimTags, outDimTags_n);
             return resDimTags;
+        }
+
+        /// <summary>
+        /// Добавляет фаску в ядро OCC на переданных объемах volumeTags, кривых curveTags, поверхностях surfaceTags. 
+        /// </summary>
+        /// <param name="volumeTags">Идентификаторы объемов</param>
+        /// <param name="curveTags">Идентификаторы кривых (число идентификаторов кривых должно совпадать с числом идентификаторов поверхностей)</param>
+        /// <param name="surfaceTags">Идентификаторы поверхностей (число идентификаторов поверхностей должно совпадать с числом идентификаторов кривых)</param>
+        /// <param name="distances">В массиве нужно указать расстояние выборки от кривой, указывается для пары кривая-поверхность</param>
+        /// <param name="removeVolume"></param>
+        /// <returns>Возвращает новые геометрические сущности образованные фаской</returns>
+        public int[] AddChamfer(int[] volumeTags, int[] curveTags, int[] surfaceTags, double[] distances, bool removeVolume = true)
+        {
+            var ierr = 0;
+            var outDimTags = IntPtr.Zero;
+            var outDimTags_n = IntPtr.Zero;
+            gmshModelOccChamfer(volumeTags, (IntPtr)volumeTags.Length, curveTags, (IntPtr)curveTags.Length, surfaceTags, (IntPtr)surfaceTags.Length,
+                                distances, (IntPtr)distances.Length, ref outDimTags, ref outDimTags_n, Convert.ToInt32(removeVolume), ref ierr);
+            var resDimTags = GetObjectsData<int>(outDimTags, outDimTags_n);
+            return resDimTags;
+        }
+
+
+        /// <summary>
+        /// Вычисляет булеву операцию объединения множеств objectDimTags и toolDimTags,
+        /// если операция выполняется для разных размерностей, нижняя размерность автоматически поглащается верхней,
+        /// возвращает результирующие сущности dimTags и ассоциированных с ней карты относительно старой нумерации (отслеживание где произошли изменения)
+        /// </summary>
+        /// <param name="objectDimTags">Множество 1 для взятия объединения</param>
+        /// <param name="toolDimTags">Множество 2 для взятия объединения</param>
+        /// <param name="tag">Желаемый идентификатор, валиден если применяется операция относительно одной сущности, или -1 для автоназначения</param>
+        /// <param name="removeObject">Удалить исходное множество 1 после выполнении операции</param>
+        /// <param name="removeTool">Удалить исходное множество 2 после выполнении операции</param>
+        /// <returns>Результирующее множестов dim:tag и карта ассоциаций со старыми множествами</returns>
+        public Tuple<int[], int[][]> Fuse(int[] objectDimTags, int[] toolDimTags, int tag = -1, bool removeObject = true, bool removeTool = true)
+        {
+            var ierr = 0;
+            var outDimTags = IntPtr.Zero;
+            var outDimTags_n = IntPtr.Zero;
+            var outDimTagsMap = IntPtr.Zero;
+            var outDimTagsMap_n = IntPtr.Zero;
+            var outDimTagsMap_nn = IntPtr.Zero;
+            gmshModelOccFuse(objectDimTags, (IntPtr)objectDimTags.Length, toolDimTags, (IntPtr)toolDimTags.Length,
+                                 ref outDimTags, ref outDimTags_n, ref outDimTagsMap, ref outDimTagsMap_n, ref outDimTagsMap_nn,
+                                 tag, Convert.ToInt32(removeObject), Convert.ToInt32(removeTool), ref ierr);
+            var dimTags = GetObjectsData<int>(outDimTags, outDimTags_n);
+            var dimTagsMap = GetArrayOfObjectsData<int>(outDimTagsMap, outDimTagsMap_nn, outDimTagsMap_n);
+            return Tuple.Create(dimTags, dimTagsMap);
         }
 
         /// <summary>

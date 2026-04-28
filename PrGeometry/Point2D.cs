@@ -20,6 +20,12 @@ namespace Geometry
 
         public double _y { get; set; }
 
+        /// <summary>
+        /// Point3D
+        /// </summary>
+        public Point2D()
+        { _x = 0; _y = 0; }
+
         public Point2D(double x, double y)
         {           
             _x = x; 

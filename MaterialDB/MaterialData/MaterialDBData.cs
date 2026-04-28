@@ -1,5 +1,7 @@
 ﻿using MaterialDB.Interfaces;
+using Newtonsoft.Json;
 using System.Collections;
+//using System.Xml;
 
 namespace MaterialDB.MaterialData
 {
@@ -79,35 +81,14 @@ namespace MaterialDB.MaterialData
     {
         /// <inheritdoc/>
         public string Name { get; set; }
-        /// <summary>
-        /// Словарь категорий
-        /// </summary>
-        public static Dictionary<CategoryEnum, string> CategoryDic = new Dictionary<CategoryEnum, string>()
-        {
-            { CategoryEnum.General,"Общие сведения"},
-            { CategoryEnum.Thermal,"Тепловые свойства"},
-            { CategoryEnum.Mechanical,"Механические свойства"},
-            { CategoryEnum.Metallurgical,"Металлургия"}
-        };
-        /// <summary>
-        /// Словарь свойств
-        /// </summary>
-        public static Dictionary<PropertyEnum, string> PropertyDic = new Dictionary<PropertyEnum, string>()
-        {
-            { PropertyEnum.Capacity,"Общие сведения"},
-            { PropertyEnum.Density,"Плотность"},
-            { PropertyEnum.HardeningFactor,"Коэффициент упрочнения"},
-            { PropertyEnum.PoissonRatio,"Коэффициент Пуассона"},
-            { PropertyEnum.Structure,"Структура"},
-            { PropertyEnum.TensileStrength,"Предел прочности"},
-            { PropertyEnum.ThermalConductivity,"Теплопроводность"},
-            { PropertyEnum.ThermalExpansion,"ТКЛР"},
-            { PropertyEnum.YieldStrength,"Предел текучести"},
-            { PropertyEnum.YoungModule,"Модуль Юнга"},
-        };
+
         Dictionary<string, MaterialDBItem> materials { get; } = new Dictionary<string, MaterialDBItem>();
         /// <inheritdoc/>
-        public MaterialDBItem this[string key] { get { return materials[key]; } set { materials[key] = value; } }
+        public MaterialDBItem this[string key] 
+        { 
+            get { return materials[key]; } 
+            set { materials[key] = value; } 
+        }
         /// <inheritdoc/>
 
         public ICollection<string> Keys { get { return materials.Keys; } }
@@ -176,8 +157,8 @@ namespace MaterialDB.MaterialData
             return materials.GetEnumerator();
         }
 
-        
-/// <inheritdoc/>
+
+        /// <inheritdoc/>
 
         public HashSet<string> GetPhases(List<string> materialsNames)
         {
@@ -192,6 +173,48 @@ namespace MaterialDB.MaterialData
                 }
             }
             return phaseList;
+        }
+        // для поддержки сериализации 
+        public MaterialDBData() 
+        {
+            Name = "newMaterialsDb";
+        }
+
+        public MaterialDBData(string dbName, string dbFolder) : this()
+        {
+
+            var filePath = FindFileByPath(dbFolder, dbName);
+            if (filePath == null)
+            {
+                throw new Exception($"Не найдена база {dbName} в папке {dbFolder}");
+            }
+
+            else
+            {
+                var settingsSerializer = new JsonSerializerSettings
+                {
+                    TypeNameHandling = TypeNameHandling.Auto,
+                    Formatting = Formatting.Indented,
+                };
+
+                var db = JsonConvert.DeserializeObject<MaterialDBData>
+   (File.ReadAllText($@"{dbFolder}\{dbName}"), settingsSerializer);
+
+                Name = dbName;
+                materials = db.materials;
+            }
+
+        }
+
+        private string? FindFileByPath(string folder, string fileName)
+        {
+            var projFiles = Directory.GetFiles(folder, fileName, SearchOption.TopDirectoryOnly);
+            if (projFiles.Count() > 0)
+            {
+                return Path.GetDirectoryName(projFiles[0]);
+            }
+
+            return null;
         }
 
     }
