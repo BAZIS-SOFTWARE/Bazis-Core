@@ -861,6 +861,18 @@ namespace GmshTests
             gmshController.Gmsh.Write(@"D:\chamfer.step");
         }
 
+        [DataTestMethod]
+        [DataRow(@"\CAD\2Layers.step")]
+        public void MiddleSurfaceTest(string fileName)
+        {
+            gmshController.Gmsh.Open(modelFolder + fileName);
+
+            var builder = new MiddleSurfaceBuilder(gmshController);
+            builder.Build([1, 2]);
+
+
+        }
+
         private void RemoveNameTest(ref string entName, int dim, int delId, int maxId)
         {
             var status = maxId >= delId;

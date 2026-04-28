@@ -33,7 +33,6 @@
   <ItemGroup>
     <Compile Remove="MeshObjsCreator\CurveLoop.cs" />
     <Compile Remove="MeshObjsCreator\Hole.cs" />
-    <Compile Remove="MeshObjsCreator\MiddleSurfaceBuilder.cs" />
     <Compile Remove="MeshObjsCreator\MidSurfaceBuilder.cs" />
     <Compile Remove="SceneBrightnessController\ApplyDim.cs" />
     <Compile Remove="SceneBrightnessController\ApplyExample.cs" />
