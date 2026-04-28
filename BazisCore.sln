@@ -27,6 +27,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MaterialDB", "MaterialDB\Ma
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestModeCore", "TestModelCore\TestModeCore.csproj", "{71359FF3-CC45-4BB7-BB02-F62DC068011B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SurfaceMesher", "SurfaceMesher\SurfaceMesher.csproj", "{38591BBC-00FA-D74B-0943-9E7546BA702A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -121,6 +123,14 @@ Global
 		{71359FF3-CC45-4BB7-BB02-F62DC068011B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{71359FF3-CC45-4BB7-BB02-F62DC068011B}.Release|x64.ActiveCfg = Release|Any CPU
 		{71359FF3-CC45-4BB7-BB02-F62DC068011B}.Release|x64.Build.0 = Release|Any CPU
+		{38591BBC-00FA-D74B-0943-9E7546BA702A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38591BBC-00FA-D74B-0943-9E7546BA702A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38591BBC-00FA-D74B-0943-9E7546BA702A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{38591BBC-00FA-D74B-0943-9E7546BA702A}.Debug|x64.Build.0 = Debug|Any CPU
+		{38591BBC-00FA-D74B-0943-9E7546BA702A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38591BBC-00FA-D74B-0943-9E7546BA702A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38591BBC-00FA-D74B-0943-9E7546BA702A}.Release|x64.ActiveCfg = Release|Any CPU
+		{38591BBC-00FA-D74B-0943-9E7546BA702A}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
