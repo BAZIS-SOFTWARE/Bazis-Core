@@ -143,7 +143,7 @@ namespace OperationalController.MeshObjsCreator
                 var upNodes = nextLayer[index++].GetVertexes();
                 var e3dNodes = nodes.Concat(upNodes).ToArray();
 
-                List<Tetra> tetras = null;
+                List<Tetra_c> tetras = null;
                 if (e3dNodes.Length == 6)
                 {
                     var penta = new Penta(0, e3dNodes);
@@ -204,15 +204,15 @@ namespace OperationalController.MeshObjsCreator
             else if (indices.Count == 2)
             {
                 var unical = set.Except(indices).First();
-                var tetra = new Tetra(elementTag++, [nodes[indices[0]], nodes[unical + 3], nodes[unical], nodes[indices[1]]]);
+                var tetra = new Tetra_c(elementTag++, [nodes[indices[0]], nodes[unical + 3], nodes[unical], nodes[indices[1]]]);
                 elements.Add(tetra);
             }
             else if (indices.Count == 1)
             {
                 var unicals = set.Except(indices).ToArray();
 
-                var tetra0 = new Tetra(elementTag++, [nodes[unicals[0]], nodes[unicals[1]], nodes[unicals[1] + 3], nodes[indices[0]]]);
-                var tetra1 = new Tetra(elementTag++, [nodes[unicals[0]], nodes[unicals[1] + 3], nodes[unicals[0] + 3], nodes[indices[0]]]);
+                var tetra0 = new Tetra_c(elementTag++, [nodes[unicals[0]], nodes[unicals[1]], nodes[unicals[1] + 3], nodes[indices[0]]]);
+                var tetra1 = new Tetra_c(elementTag++, [nodes[unicals[0]], nodes[unicals[1] + 3], nodes[unicals[0] + 3], nodes[indices[0]]]);
 
                 elements.Add(tetra0);
                 elements.Add(tetra1);
@@ -246,8 +246,8 @@ namespace OperationalController.MeshObjsCreator
                 var pointMap = new Dictionary<int, int[]>() { { 0, [1, 3, 2] }, { 1, [0, 2, 3] }, { 2, [1, 3, 0] }, { 3, [0, 2, 1] } };
                 var data = pointMap[indices[0]];
 
-                var tetra0 = new Tetra(elementTag++, [nodes[data[0]], nodes[data[1]], nodes[data[1] + 4], nodes[indices[0]]]);
-                var tetra1 = new Tetra(elementTag++, [nodes[data[0]], nodes[data[1] + 4], nodes[data[0] + 4], nodes[indices[0]]]);
+                var tetra0 = new Tetra_c(elementTag++, [nodes[data[0]], nodes[data[1]], nodes[data[1] + 4], nodes[indices[0]]]);
+                var tetra1 = new Tetra_c(elementTag++, [nodes[data[0]], nodes[data[1] + 4], nodes[data[0] + 4], nodes[indices[0]]]);
 
                 var penta = new Penta(elementTag++, [nodes[data[0]], nodes[data[1]], nodes[data[2]],
                                                      nodes[data[0] + 4], nodes[data[1] + 4], nodes[data[2] + 4]]);
@@ -264,7 +264,7 @@ namespace OperationalController.MeshObjsCreator
         /// </summary>
         /// <param name="penta">Пента элемент</param>
         /// <returns>Список тетраэдров</returns>
-        private List<Tetra> SplitPenta(Penta penta)
+        private List<Tetra_c> SplitPenta(Penta penta)
         {
             var nodes = penta.GetVertexes().ToArray();
 
@@ -288,7 +288,7 @@ namespace OperationalController.MeshObjsCreator
         /// </summary>
         /// <param name="hexa">Гекса элемент</param>
         /// <returns>Список тетраэдров</returns>
-        private List<Tetra> SplitHexa(Hexa hexa)
+        private List<Tetra_c> SplitHexa(Hexa hexa)
         {
             var nodes = hexa.GetVertexes().ToArray();
 
@@ -298,7 +298,7 @@ namespace OperationalController.MeshObjsCreator
                 return DoDegeneratedHexaSplitting(nodes, converter, coincidents);
 
             var indices = GetPentaSplittingIndices(nodes, converter);
-            var result = new List<Tetra>();
+            var result = new List<Tetra_c>();
             if (indices.Length == 0)
             {
                 MissedElements += 6;
@@ -558,7 +558,7 @@ namespace OperationalController.MeshObjsCreator
         /// <param name="converter">Словарь преобразования номер-индекс</param>
         /// <param name="coincidents">Список коинцидентных индексов вершин</param>
         /// <returns>Список тетраэдров</returns>
-        private List<Tetra> DoDegeneratedHexaSplitting(Node[] nodes, Dictionary<int, int> converter, List<int> coincidents)
+        private List<Tetra_c> DoDegeneratedHexaSplitting(Node[] nodes, Dictionary<int, int> converter, List<int> coincidents)
         {
             var set = new HashSet<int>() { 0, 1, 2, 3 };
 
@@ -591,14 +591,14 @@ namespace OperationalController.MeshObjsCreator
         /// <param name="converter">Словарь преобразования номер-индекс</param>
         /// <param name="coincidents">Список коинцидентных индексов вершин</param>
         /// <returns>Список тераэдров</returns>
-        private List<Tetra> DoDegeneratedPentaSplitting(Node[] nodes, Dictionary<int, int> converter, List<int> coincidents)
+        private List<Tetra_c> DoDegeneratedPentaSplitting(Node[] nodes, Dictionary<int, int> converter, List<int> coincidents)
         {
             var set = new HashSet<int>() { 0, 1, 2 };
             if (coincidents.Count == 2)
             {
                 var unical = set.Except([coincidents[0] - 3, coincidents[1] - 3]).First();
 
-                var result = new List<Tetra>();
+                var result = new List<Tetra_c>();
                 var tetra = GetSingleTetraFromSplitting([nodes[unical], nodes[unical + 3], nodes[coincidents[0]], nodes[coincidents[1]]], []);
                 result.Add(tetra);
                 return result;
@@ -613,7 +613,7 @@ namespace OperationalController.MeshObjsCreator
         /// </summary>
         /// <param name="nodes">Узлы 3д элемента</param>
         /// <returns>Список тетраэдров</returns>
-        private List<Tetra> DoPentaDefaultSplitting(Node[] nodes)
+        private List<Tetra_c> DoPentaDefaultSplitting(Node[] nodes)
         {
             var result = DoPyramidSplitting([nodes[2], nodes[4], nodes[3]], [nodes[1], nodes[5]]);
             var tetra = GetSingleTetraFromSplitting([nodes[0], nodes[1], nodes[2], nodes[3]],
@@ -628,7 +628,7 @@ namespace OperationalController.MeshObjsCreator
         /// <param name="nodes">Узлы 3д элемента</param>
         /// <param name="indices">Индексы ребер</param>
         /// <returns>Список тетраэдров</returns>
-        private List<Tetra> DoPentaOneEdgeSplitting(Node[] nodes, int[] indices)
+        private List<Tetra_c> DoPentaOneEdgeSplitting(Node[] nodes, int[] indices)
         {
             var pyrEdgeA = indices[0];
             var pyrEdgeB = indices[1];
@@ -658,7 +658,7 @@ namespace OperationalController.MeshObjsCreator
         /// <param name="nodes">Узлы 3д элемента</param>
         /// <param name="indices">Индексы ребер</param>
         /// <returns>Список тетраэдров</returns>
-        private List<Tetra> DoPentaTwooEdgeSplitting(Node[] nodes, int[][] indices)
+        private List<Tetra_c> DoPentaTwooEdgeSplitting(Node[] nodes, int[][] indices)
         {
             SortIndices(indices);
 
@@ -674,7 +674,7 @@ namespace OperationalController.MeshObjsCreator
         /// <param name="nodes">Узлы 3д элемента</param>
         /// <param name="indices">Индексы ребер</param>
         /// <returns>Список тетраэдров</returns>
-        private List<Tetra> DoPentaThreeEdgeSplitting(Node[] nodes, int[][] indices)
+        private List<Tetra_c> DoPentaThreeEdgeSplitting(Node[] nodes, int[][] indices)
         {
             SortIndices(indices);
 
@@ -703,7 +703,7 @@ namespace OperationalController.MeshObjsCreator
                 return DoSplittingWithCommonUpPoint(nodes, indices);
             }
             MissedElements += 3;//Плохая конфигурация ребер
-            return new List<Tetra>();
+            return new List<Tetra_c>();
             //return DoSplittingWithCommonVerticalEdge(edgesMap, nodes, indices);
         }
         /// <summary>
@@ -712,7 +712,7 @@ namespace OperationalController.MeshObjsCreator
         /// <param name="nodes">Узлы 3д элемента</param>
         /// <param name="indices">Индексы ребер</param>
         /// <returns>Список тетраэдров</returns>
-        private List<Tetra> DoSplittingWithCommonUpPoint(Node[] nodes, int[][] indices)
+        private List<Tetra_c> DoSplittingWithCommonUpPoint(Node[] nodes, int[][] indices)
         {
             var tetraTop = indices[0][1];
             var set = new HashSet<int>() { 0, 1, 2 };
@@ -737,7 +737,7 @@ namespace OperationalController.MeshObjsCreator
         /// <param name="nodes">Узлы 3д элемента</param>
         /// <param name="indices">Индексы ребер</param>
         /// <returns>Список тетраэдров</returns>
-        private List<Tetra> DoSplittingWithCommonDownPoint(Node[] nodes, int[][] indices)
+        private List<Tetra_c> DoSplittingWithCommonDownPoint(Node[] nodes, int[][] indices)
         {
             var tetraTop = indices[0][0];
             var set = new HashSet<int>() { 3, 4, 5 };
@@ -762,7 +762,7 @@ namespace OperationalController.MeshObjsCreator
         /// <param name="nodes">Узлы 3д элемента</param>
         /// <param name="indices">Индексы ребер</param>
         /// <returns>Список тетраэдров</returns>
-        private List<Tetra> DoSplittingWithCommonVerticalEdge(Node[] nodes, int[][] indices)
+        private List<Tetra_c> DoSplittingWithCommonVerticalEdge(Node[] nodes, int[][] indices)
         {
             if (indices[0][1] - 3 == indices[1][0])
             {
@@ -820,9 +820,9 @@ namespace OperationalController.MeshObjsCreator
         /// <param name="nodes">Точки в формате [точка_основания_0, точка_основания_1, точка_основания_2, вершина]</param>
         /// <param name="edges"></param>
         /// <returns>Тетра элемент</returns>
-        private Tetra GetSingleTetraFromSplitting(Node[] nodes, Node[] edges)
+        private Tetra_c GetSingleTetraFromSplitting(Node[] nodes, Node[] edges)
         {
-            var tetra = new Tetra(elementTag++, nodes);
+            var tetra = new Tetra_c(elementTag++, nodes);
 
             for (var i = 1; i < edges.Length; i += 2)
             {
@@ -839,9 +839,9 @@ namespace OperationalController.MeshObjsCreator
         /// точка 2 основания пирамиды не лежащая на edge, вершина пирамиды)</param>
         /// <param name="edge">Ребро основания пирамиды</param>
         /// <returns>Список тетраэдров</returns>
-        private List<Tetra> DoPyramidSplitting(Node[] nodes, Node[] edge)
+        private List<Tetra_c> DoPyramidSplitting(Node[] nodes, Node[] edge)
         {
-            var result = new List<Tetra>();
+            var result = new List<Tetra_c>();
 
             var tetra_0 = GetSingleTetraFromSplitting([edge[0], edge[1], nodes[0], nodes[2]], []);
             var tetra_1 = GetSingleTetraFromSplitting([edge[0], edge[1], nodes[1], nodes[2]], []);
