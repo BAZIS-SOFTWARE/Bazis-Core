@@ -284,7 +284,6 @@ namespace OperationalController
                 var stepNormalized = step / length;
                 stepNormalizedArray.Add(stepNormalized);
             }
-
             var extruder = new CurveExtruder(GmshController, curveTags, stepNormalizedArray.ToArray(), startPointTag);
             var e3d = transfinite ? extruder.ExtrudeTransfinite(elements2D)
                       : extruder.Extrude(elements2D);
