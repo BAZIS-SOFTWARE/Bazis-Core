@@ -32,6 +32,7 @@ namespace OperationalController
             GmshController.Gmsh.Clear();
             GmshController.Gmsh.Open(projectFile);
 
+            GmshController.MergeGeometry();
             GmshController.Gmsh.Model.Mesh.ImportStl(); //обязательно для представления stl
 
             // TO DO спросить у Николая что думает по этой функции

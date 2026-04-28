@@ -43,6 +43,27 @@ namespace OperationalController.GmshController
         {
             Gmsh.finalize();
         }
+
+        /// <summary>
+        /// Объединяет геометрические сущности, например делает слияние общих точек. После загрузки step применять обязательно.
+        /// </summary>
+        public void MergeGeometry()
+        {
+            var fn = Gmsh.Model.GetFileName();
+            var ext = Path.GetExtension(fn);
+
+            if (ext.Contains(".stp") || ext.Contains(".step"))
+            {
+                var dim = Gmsh.Model.GetDimension();
+
+                var ent = Gmsh.Model.Occ.GetEntities(dim);
+                Gmsh.Model.Occ.Fragment(ent, []);
+
+                Gmsh.Model.Occ.Synchronize();
+            }
+        }
+
+
         /// <inheritdoc/>
         public List<Node> GetNodes(int dim = -1, int tag = -1, bool includeBoundary = true)
         {

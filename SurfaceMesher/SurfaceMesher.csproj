@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>library</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Version>0.9.2</Version>
+	<SignAssembly>False</SignAssembly>
+	<Title>$(AssemblyName)</Title>
+	<AssemblyOriginatorKeyFile>..\SurfaceMeshingKey.snk</AssemblyOriginatorKeyFile>
+    <PackageOutputPath>$(OutputPath)</PackageOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NetTopologySuite" Version="2.6.0" />
+  </ItemGroup>
+
+</Project>

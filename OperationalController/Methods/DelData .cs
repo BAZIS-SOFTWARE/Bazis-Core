@@ -1,7 +1,9 @@
-﻿using Model.GroupsData;
+﻿using Model;
+using Model.GroupsData;
 using Model.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 
 namespace OperationalController
 {
@@ -84,7 +86,6 @@ namespace OperationalController
                 ModelData.GroupData.Remove(gr);
                 TaskData.ClearNotExisted(gr);
             }
-
         }
 
         /// <inheritdoc/>

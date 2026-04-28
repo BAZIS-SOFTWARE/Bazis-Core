@@ -129,6 +129,49 @@ namespace OperationalController
         }
 
         /// <summary>
+        /// Создаёт новую точку, расположенную на указанном смещении от точки с тегом <paramref name="basePointTag"/>
+        /// в направлении от этой точки к точке с тегом <paramref name="directionPointTag"/>.
+        /// Метод берёт контрольные точки из контроллера Gmsh, нормализует вектор направления и вызывает <see cref="CreatePoint(double,double,double,double)"/>.
+        /// </summary>
+        /// <param name="basePointTag">Тег (идентификатор) базовой контрольной точки в Gmsh — начало вектора.</param>
+        /// <param name="directionPointTag">Тег (идентификатор) контрольной точки в Gmsh, определяющей направление (вектор от базовой точки).</param>
+        /// <param name="offset">Смещение вдоль направления в тех же единицах, что и координаты модели. Отрицательное значение допустимо (смещение в обратную сторону).</param>
+        /// <returns>Тег (идентификатор) созданной в Gmsh точки.</returns>
+        public int CreatePointByVector(int basePointTag, int directionPointTag, double offset)
+        {
+            var basePoint = ModelData.ObjectData.PointsSet[basePointTag];
+            var directionPoint = ModelData.ObjectData.PointsSet[directionPointTag];
+
+            double dx = directionPoint.Position._x - basePoint.Position._x;
+            double dy = directionPoint.Position._y - basePoint.Position._y;
+            double dz = directionPoint.Position._z - basePoint.Position._z;
+
+            var length = Math.Sqrt(dx * dx + dy * dy + dz * dz);
+
+            double nx = dx / length;
+            double ny = dy / length;
+            double nz = dz / length;
+
+            return CreatePoint(basePoint.Position._x + nx * offset, basePoint.Position._y + ny * offset, basePoint.Position._z + nz * offset);
+        }
+
+        /// <summary>
+        /// Проецирует контрольную точку с тегом <paramref name="basePointTag"/> на указанную геометрию в Gmsh
+        /// и создаёт новую точку в модели в полученной позиции.
+        /// </summary>
+        /// <param name="basePointTag">Тег (идентификатор) существующей контрольной точки в Gmsh, которая будет проецироваться.</param>
+        /// <param name="dim">Размерность целевой геометрии в Gmsh (0 — точка, 1 — кривая, 2 — поверхность и т.д.).</param>
+        /// <param name="geometryTag">Тег (идентификатор) геометрического объекта в Gmsh, на который выполняется проекция.</param>
+        public int CreatePointProjectionOntoGeometry(int basePointTag, int dim, int geometryTag)
+        {
+            var sourcePoint = ModelData.ObjectData.PointsSet[basePointTag];
+
+            var coord = new double[] { sourcePoint.Position._x, sourcePoint.Position._y, sourcePoint.Position._z };
+            var (pointCoord, _)= GmshController.Gmsh.Model.GetClosestPoint(dim, geometryTag, coord);
+            return CreatePoint(pointCoord[0], pointCoord[1], pointCoord[2]);
+        }
+
+        /// <summary>
         /// Создаёт точку в модели Gmsh и регистрирует соответствующий геометрический объект в ModelData.
         /// </summary>
         /// <param name="x">Координата X создаваемой точки (в глобальной системе координат).</param>
