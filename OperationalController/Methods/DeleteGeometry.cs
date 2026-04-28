@@ -1,6 +1,7 @@
 ﻿using Model.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OperationalController
 {
@@ -79,7 +80,9 @@ namespace OperationalController
                         ModelData.ObjectData.Remove(ObjType.Поверхность, tag);
                         break;
                     case 3:
-                        break; // объемы не храним
+                        var volume = ModelData.VolumeData.First(vol=>vol.Number == tag);
+                        ModelData.VolumeData.Remove(volume);
+                        break; 
                     default:
                         throw new ArgumentOutOfRangeException(nameof(dim));
                 }
