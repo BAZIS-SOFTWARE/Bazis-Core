@@ -134,6 +134,8 @@ namespace ControllerTests
             var middle = project.CreatePoint(2, 2, 0);
             var end = project.CreatePoint(2, 0, 0);
 
+            var pointByVector = project.CreatePointByVector(start, middle, 1);
+
             var line1 = project.CreateLine(start, middle);
             var line2 = project.CreateLine(middle, end);
             var line3 = project.CreateLine(end, start);
@@ -142,8 +144,11 @@ namespace ControllerTests
 
             // ===== ASSERT POINTS =====
             var s = project.GetModelPoint(start);
+            var pbv = project.GetModelPoint(pointByVector);
             Assert.IsNotNull(s);
             Assert.AreEqual(start, s.Number);
+            Assert.IsNotNull(pbv);
+            Assert.AreEqual(pointByVector, pbv.Number);
 
             var m = project.GetModelPoint(middle);
             Assert.IsNotNull(m);
@@ -188,7 +193,39 @@ namespace ControllerTests
 
             var error = project.GmshController.Gmsh.Logger.GetLastError();
 
-            project.ExtrudeElement3DAlongCurve(366,1,1,1,false);
+            project.ExtrudeElement3DAlongCurve(plane, [1],1,1,false);
+
+            var set = project.GetModelSetsInfo(ObjType.Элемент3D).Where(x => x.Name.Contains("extrude")).Last();
+        }
+
+
+        [TestMethod]
+        public void ExtrudeGeometry2()
+        {
+            var project = new ProjectController();
+            project.GmshController.Load(@"..\..\..\..\GmshApi\gmsh.dll");
+            //project.CreateProject(@"newProj.bpf2");
+            var s = @"..\..\..\Examples\CAD\PART_3.stp";
+
+            project.ImportCAD(s);
+
+            var pointOne = project.CreatePointByVector(15, 17, -10);
+            var pointTwo = project.CreatePointByVector(15, 16, 10);
+            var line1 = project.CreateLine(15, pointOne);
+            var line2 = project.CreateLine(pointOne, pointTwo);
+            var line3 = project.CreateLine(pointTwo, 15);
+
+            var plane = project.CreateSurface(new int[] { line1, line2, line3 });
+
+            project.GmshController.Gmsh.Model.Mesh.Clear();
+            project.ClearModelCollection(ObjType.Узел);
+            project.GenerateMesh(3);
+
+            var error = project.GmshController.Gmsh.Logger.GetLastError();
+
+            project.ExtrudeElement3DAlongCurve(plane, [20,19,14,11,8], 15, 3, false);
+
+            var set = project.GetModelSetsInfo(ObjType.Элемент3D).Where(x => x.Name.Contains("extrude")).Last();
         }
     }
 }

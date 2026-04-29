@@ -1,16 +1,21 @@
 ﻿using Geometry;
+using GmshApi;
 using MathNet.Numerics.LinearAlgebra.Factorization;
+using Model;
 using Model.GeometryObjects;
 using Model.Interfaces;
 using Model.Interfaces.MeshObjects;
 using Model.MeshObjects;
 using Model.ObjectsCollections;
+using OperationalController.GmshController;
 using OperationalController.MeshObjsCreator;
 using Project.Interfaces.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using static IronPython.Modules._ast;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
 namespace OperationalController
@@ -125,6 +130,49 @@ namespace OperationalController
         }
 
         /// <summary>
+        /// Создаёт новую точку, расположенную на указанном смещении от точки с тегом <paramref name="basePointTag"/>
+        /// в направлении от этой точки к точке с тегом <paramref name="directionPointTag"/>.
+        /// Метод берёт контрольные точки из контроллера Gmsh, нормализует вектор направления и вызывает <see cref="CreatePoint(double,double,double,double)"/>.
+        /// </summary>
+        /// <param name="basePointTag">Тег (идентификатор) базовой контрольной точки в Gmsh — начало вектора.</param>
+        /// <param name="directionPointTag">Тег (идентификатор) контрольной точки в Gmsh, определяющей направление (вектор от базовой точки).</param>
+        /// <param name="offset">Смещение вдоль направления в тех же единицах, что и координаты модели. Отрицательное значение допустимо (смещение в обратную сторону).</param>
+        /// <returns>Тег (идентификатор) созданной в Gmsh точки.</returns>
+        public int CreatePointByVector(int basePointTag, int directionPointTag, double offset)
+        {
+            var basePoint = ModelData.ObjectData.PointsSet[basePointTag];
+            var directionPoint = ModelData.ObjectData.PointsSet[directionPointTag];
+
+            double dx = directionPoint.Position._x - basePoint.Position._x;
+            double dy = directionPoint.Position._y - basePoint.Position._y;
+            double dz = directionPoint.Position._z - basePoint.Position._z;
+
+            var length = Math.Sqrt(dx * dx + dy * dy + dz * dz);
+
+            double nx = dx / length;
+            double ny = dy / length;
+            double nz = dz / length;
+
+            return CreatePoint(basePoint.Position._x + nx * offset, basePoint.Position._y + ny * offset, basePoint.Position._z + nz * offset);
+        }
+
+        /// <summary>
+        /// Проецирует контрольную точку с тегом <paramref name="basePointTag"/> на указанную геометрию в Gmsh
+        /// и создаёт новую точку в модели в полученной позиции.
+        /// </summary>
+        /// <param name="basePointTag">Тег (идентификатор) существующей контрольной точки в Gmsh, которая будет проецироваться.</param>
+        /// <param name="dim">Размерность целевой геометрии в Gmsh (0 — точка, 1 — кривая, 2 — поверхность и т.д.).</param>
+        /// <param name="geometryTag">Тег (идентификатор) геометрического объекта в Gmsh, на который выполняется проекция.</param>
+        public int CreatePointProjectionOntoGeometry(int basePointTag, int dim, int geometryTag)
+        {
+            var sourcePoint = ModelData.ObjectData.PointsSet[basePointTag];
+
+            var coord = new double[] { sourcePoint.Position._x, sourcePoint.Position._y, sourcePoint.Position._z };
+            var (pointCoord, _)= GmshController.Gmsh.Model.GetClosestPoint(dim, geometryTag, coord);
+            return CreatePoint(pointCoord[0], pointCoord[1], pointCoord[2]);
+        }
+
+        /// <summary>
         /// Создаёт точку в модели Gmsh и регистрирует соответствующий геометрический объект в ModelData.
         /// </summary>
         /// <param name="x">Координата X создаваемой точки (в глобальной системе координат).</param>
@@ -197,22 +245,70 @@ namespace OperationalController
             return surf;
         }
 
-        public void ExtrudeElement3DAlongCurve(int surfaceTag, int curveTag, int startPointTag, double step, bool transfinite)
+        /// <summary>
+        /// Выполняет экструзию 2D-элементов, принадлежащих поверхности с указанным тегом в Gmsh,
+        /// вдоль кривой с заданным тегом, начиная с указанной точки кривой.
+        /// Полученные в результате 3D-элементы и узлы добавляются в <c>ModelData</c>.
+        /// </summary>
+        /// <param name="surfaceTag">
+        /// Тег (идентификатор) плоской поверхности в Gmsh, элементы которой будут экструдированы.
+        /// </param>
+        /// <param name="curveTags">
+        /// Тег (идентификатор) кривых (curve) в Gmsh, вдоль которых выполняется экструзия.
+        /// </param>
+        /// <param name="startPointTag">
+        /// Тег (идентификатор) точки на кривой, от которой начинается экструзия.
+        /// </param>
+        /// <param name="step">
+        /// Шаг экструзии вдоль кривой в у.е.
+        /// </param>
+        /// <param name="transfinite">
+        /// Если <c>true</c>, используется транзитивный/«transfinite» режим экструзии
+        /// (<c>ExtrudeTransfinite</c>), в противном случае — обычный режим (<c>Extrude</c>).
+        /// </param>
+        public void ExtrudeElement3DAlongCurve(int surfaceTag, int[] curveTags, int startPointTag, double step, bool transfinite)
         {
-            var elements2D = GetElements2D(surfaceTag);
-            var extruder = new CurveExtruder(GmshController, curveTag, startPointTag);
-            extruder.Extrude(elements2D, step);
-            var e3d = transfinite ? extruder.ExtrudeTransfinite(elements2D, step)
-                      : extruder.Extrude(elements2D, step);
+            var elements2D = GetElements2DBelongingToSurface(surfaceTag);
+            var stepNormalizedArray = new List<double>();
+            foreach (var curveTag in curveTags)
+            {
+                var type = GmshController.Gmsh.Model.GetType(1, curveTag);
+                var length = 0d;
+                if (type == "Circle")
+                    length = GmshController.CalcCurveLength(curveTag);
+                else
+                {
+                    var (min, max) = GmshController.Gmsh.Model.GetParametrizationBounds(1, curveTag);
+                    length = Math.Abs(max[0] - min[0]);
+                }
+                var stepNormalized = step / length;
+                stepNormalizedArray.Add(stepNormalized);
+            }
+            var extruder = new CurveExtruder(GmshController, curveTags, stepNormalizedArray.ToArray(), startPointTag);
+            var e3d = transfinite ? extruder.ExtrudeTransfinite(elements2D)
+                      : extruder.Extrude(elements2D);
             
             var collection = e3d.SelectMany(v => v);
             UpdateModelData(extruder, collection);
         }
 
+        /// <summary>
+        /// Выполняет вращательную (роторную) экструзию 2D-элементов, принадлежащих поверхности с указанным тегом,
+        /// вокруг заданной оси и с центром в указанной точке.
+        /// Результирующие 3D-элементы и узлы добавляются в <c>ModelData</c>.
+        /// </summary>
+        /// <param name="surfaceTag">Тег (идентификатор) плоской поверхности в Gmsh, элементы которой будут экструдированы.</param>
+        /// <param name="angle">Угол поворота в градусах. Внутри метода выполняется преобразование в радианы.</param>
+        /// <param name="originPoint">Точка центра вращения (в глобальной системе координат).</param>
+        /// <param name="rotAxis">Вектор оси вращения. Ожидается, что направление определяет ось вращения.</param>
+        /// <param name="transfinite">
+        /// Если <c>true</c>, используется «transfinite» режим экструзии
+        /// (<c>ExtrudeTransfinite</c>), в противном случае — обычный режим (<c>Extrude</c>).
+        /// </param>
         public void ExtrudeElement3DRotate(int surfaceTag, float angle, Vector3 originPoint, Vector3 rotAxis, bool transfinite)
         {
             var radian = (float)(angle * Math.PI / 180);
-            var elements2D = GetElements2D(surfaceTag);
+            var elements2D = GetElements2DBelongingToSurface(surfaceTag);
 
             var extruder = new RotateExtruder();
             var e3d = transfinite ? extruder.ExtrudeTransfinite(elements2D, radian, originPoint, rotAxis)
@@ -238,7 +334,6 @@ namespace OperationalController
                     ModelData.ObjectData.NodesSet[number].Position);
             }
 
-
             if (dim == 1)
             {
                 var max = 0;
@@ -262,9 +357,7 @@ namespace OperationalController
                     e2d = new Triangle_c(max, nodes);
 
                 ModelData.ObjectData.E2DCollection.Add(setName, e2d);
-
             }
-
         }
 
         /// <inheritdoc/>
@@ -285,25 +378,29 @@ namespace OperationalController
             foreach (var element in collection)
                 objSet.Add(element.Number, element);
 
-            var objCollection = new ObjectsCollection<Element3D>();
-            objCollection.Add(objSet);
+            var objCollection = new ObjectsCollection<Element3D>{ objSet };
             ModelData.ObjectData.E3DCollection.Append(objCollection);
+
+            var name = ModelData.ObjectData.E3DCollection.Where(col => col.Key.StartsWith("append_")).Select(col => col.Value).Last();
+            var counter = name.Name.Split('_').Last();
+
+            ModelData.ObjectData.E3DCollection.ChangeName(name.Name, $"extrude_{counter}");
 
             var nodesSet = new ObjectsSet<Model.MeshObjects.Node>("Extrude");
             foreach (var node in extruder.Nodes.Values)
                 nodesSet.Add(node.Number, node);
-
             ModelData.ObjectData.NodesSet.Append(nodesSet);
         }
 
-        private List<Element2D> GetElements2D(int surfaceTag)
+        private List<Element2D> GetElements2DBelongingToSurface(int surfaceTag)
         {
-            var set = ModelData.ObjectData.GetSetInfo(ObjType.Элемент2D, surfaceTag);
-            var numbers = set.GetNumbers();
+            var result = GmshController.Gmsh.Model.Mesh.GetElements(2, surfaceTag);
+            var elementNumbers = result.Item2.SelectMany(x => x).Select(x => x.ToInt32()).ToList();
+
             var elements2D = new List<Element2D>();
             foreach (var pair in ModelData.ObjectData.E2DCollection)
                 foreach (var element in pair.Value)
-                    if (numbers.Contains(element.Key))
+                    if (elementNumbers.Contains(element.Key))
                         elements2D.Add(element.Value);
 
             return elements2D;
