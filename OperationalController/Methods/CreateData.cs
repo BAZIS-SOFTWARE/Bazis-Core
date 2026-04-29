@@ -262,7 +262,7 @@ namespace OperationalController
         /// </param>
         public void ExtrudeElement3DAlongCurve(int surfaceTag, int curveTag, int startPointTag, double step, bool transfinite)
         {
-            var elements2D = GetElements2DBelongingToSurface(surfaceTag);
+            /*var elements2D = GetElements2DBelongingToSurface(surfaceTag);
 
             var extruder = new CurveExtruder(GmshController, curveTag, startPointTag);
             extruder.Extrude(elements2D, step);
@@ -270,7 +270,7 @@ namespace OperationalController
                       : extruder.Extrude(elements2D, step);
             
             var collection = e3d.SelectMany(v => v);
-            UpdateModelData(extruder, collection);
+            UpdateModelData(extruder, collection);*/
         }
 
         /// <summary>
