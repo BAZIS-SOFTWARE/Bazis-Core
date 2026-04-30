@@ -289,7 +289,7 @@ namespace OperationalController
                       : extruder.Extrude(elements2D);
             
             var collection = e3d.SelectMany(v => v);
-            UpdateModelData(extruder, collection);*/
+            UpdateModelData(extruder, collection);
         }
 
         /// <summary>
