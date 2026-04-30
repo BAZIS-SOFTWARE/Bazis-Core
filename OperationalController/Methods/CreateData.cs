@@ -1,15 +1,21 @@
 ﻿using Geometry;
+using GmshApi;
+using MathNet.Numerics.LinearAlgebra.Factorization;
+using Model;
 using Model.GeometryObjects;
 using Model.Interfaces;
 using Model.Interfaces.MeshObjects;
 using Model.MeshObjects;
 using Model.ObjectsCollections;
+using OperationalController.GmshController;
 using OperationalController.MeshObjsCreator;
 using Project.Interfaces.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using static IronPython.Modules._ast;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
 namespace OperationalController
@@ -247,27 +253,40 @@ namespace OperationalController
         /// <param name="surfaceTag">
         /// Тег (идентификатор) плоской поверхности в Gmsh, элементы которой будут экструдированы.
         /// </param>
-        /// <param name="curveTag">
-        /// Тег (идентификатор) кривой (curve) в Gmsh, вдоль которой выполняется экструзия.
+        /// <param name="curveTags">
+        /// Тег (идентификатор) кривых (curve) в Gmsh, вдоль которых выполняется экструзия.
         /// </param>
         /// <param name="startPointTag">
         /// Тег (идентификатор) точки на кривой, от которой начинается экструзия.
         /// </param>
         /// <param name="step">
-        /// Шаг экструзии вдоль кривой. Диапазон значений от 0 до 1.
+        /// Шаг экструзии вдоль кривой в у.е.
         /// </param>
         /// <param name="transfinite">
         /// Если <c>true</c>, используется транзитивный/«transfinite» режим экструзии
         /// (<c>ExtrudeTransfinite</c>), в противном случае — обычный режим (<c>Extrude</c>).
         /// </param>
-        public void ExtrudeElement3DAlongCurve(int surfaceTag, int curveTag, int startPointTag, double step, bool transfinite)
+        public void ExtrudeElement3DAlongCurve(int surfaceTag, int[] curveTags, int startPointTag, double step, bool transfinite)
         {
-            /*var elements2D = GetElements2DBelongingToSurface(surfaceTag);
-
-            var extruder = new CurveExtruder(GmshController, curveTag, startPointTag);
-            extruder.Extrude(elements2D, step);
-            var e3d = transfinite ? extruder.ExtrudeTransfinite(elements2D, step)
-                      : extruder.Extrude(elements2D, step);
+            var elements2D = GetElements2DBelongingToSurface(surfaceTag);
+            var stepNormalizedArray = new List<double>();
+            foreach (var curveTag in curveTags)
+            {
+                var type = GmshController.Gmsh.Model.GetType(1, curveTag);
+                var length = 0d;
+                if (type == "Circle")
+                    length = GmshController.CalcCurveLength(curveTag);
+                else
+                {
+                    var (min, max) = GmshController.Gmsh.Model.GetParametrizationBounds(1, curveTag);
+                    length = Math.Abs(max[0] - min[0]);
+                }
+                var stepNormalized = step / length;
+                stepNormalizedArray.Add(stepNormalized);
+            }
+            var extruder = new CurveExtruder(GmshController, curveTags, stepNormalizedArray.ToArray(), startPointTag);
+            var e3d = transfinite ? extruder.ExtrudeTransfinite(elements2D)
+                      : extruder.Extrude(elements2D);
             
             var collection = e3d.SelectMany(v => v);
             UpdateModelData(extruder, collection);*/
@@ -364,6 +383,7 @@ namespace OperationalController
 
             var name = ModelData.ObjectData.E3DCollection.Where(col => col.Key.StartsWith("append_")).Select(col => col.Value).Last();
             var counter = name.Name.Split('_').Last();
+
             ModelData.ObjectData.E3DCollection.ChangeName(name.Name, $"extrude_{counter}");
 
             var nodesSet = new ObjectsSet<Model.MeshObjects.Node>("Extrude");
