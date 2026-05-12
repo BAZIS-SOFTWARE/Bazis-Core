@@ -10,21 +10,90 @@ using MathNet.Spatial.Euclidean;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra.Single;
 using MathNet.Numerics.LinearAlgebra;
-using Model.Interfaces;
-using System.Diagnostics.Metrics;
+
 
 namespace OperationalController.MeshObjsCreator
 {
+    /// <summary>
+    /// Класс построения серединных поврехностей
+    /// </summary>
     public class MiddleSurfaceBuilder
     {
         private IGmshController controller;
         private int pointsPerCurve;
 
+        /// <summary>
+        /// Ориентация петли кривых
+        /// </summary>
         public enum Orientation
         {
+            /// <summary>
+            /// По часовой стрелки
+            /// </summary>
             CW = -1,
+            /// <summary>
+            /// Против часовой стрелки
+            /// </summary>
             CCW = 1
         }
+
+        /// <summary>
+        /// Данные кривой в петле ассоциированные с исходной кривой
+        /// </summary>
+        public struct CurveData
+        {
+            /// <summary>
+            /// Идентификатор кривой со знаком ассоциированные с исходной кривой
+            /// </summary>
+            public int tag;
+            /// <summary>
+            /// Идентификаторы начальной и конечной точки ассоциированные с исходной кривой
+            /// </summary>
+            public int[] points;
+            /// <summary>
+            /// Координаты pointsPerCurve точек на кривой серединного смещения относительно двух кривых (master поверхности и slave поверхности)
+            /// </summary>
+            public double[] coords;
+            /// <summary>
+            /// Конструктор построения данных кривой в петле
+            /// </summary>
+            /// <param name="tag">Идентификатор кривой со знаком</param>
+            /// <param name="points">Идентификаторы начальной и конечной точки</param>
+            /// <param name="coords">Координаты pointsPerCurve точек на кривой</param>
+            public CurveData(int tag, int[] points, double[] coords)
+            {
+                this.tag = tag;
+                this.points = points;
+                this.coords = coords;
+            }
+        }
+
+        /// <summary>
+        /// Данные поверхности ассоциированные с исходной master поверхностью
+        /// </summary>
+        public struct SurfaceData
+        {
+            /// <summary>
+            /// Идентификатор исходной master поверхности
+            /// </summary>
+            public int tag;
+            /// <summary>
+            /// Петля кривых ассоциированная с master поверхностью
+            /// </summary>
+            public CurveData[][] loops;
+
+            /// <summary>
+            /// Конструктор данных поверхности ассоциированных с исходной master поверхностью
+            /// </summary>
+            /// <param name="tag">Идентификатор исходной master поверхности</param>
+            /// <param name="loops">Петля кривых ассоциированная с master поверхностью</param>
+            public SurfaceData(int tag, CurveData[][] loops)
+            {
+                this.tag = tag;
+                this.loops = loops;
+            }
+        }
+
 
         /// <summary>
         /// Конструктор построения серединной поверхности
@@ -49,24 +118,23 @@ namespace OperationalController.MeshObjsCreator
         {
             CheckArguments(surfTags);
             var simData = MakeSimilar(surfTags);
-            AverageLoops(simData);
-
-
+            var surfData = AverageLoops(simData);
+            BuildGeometry(surfData);
         }
 
-        private void AverageLoops(List<((int, int[][]), (int, int[][]))> simData)
+        private List<(int, (int, double[])[][])> AverageLoops(List<((int, int[][]), (int, int[][]))> simData)
         {
-            var loopsData = new List<double[][]>();
+            var surfsData = new List<(int,(int,double[])[][])>();
             foreach(var data in simData)
             {
                 var master = data.Item1;
                 var slave = data.Item2;
                 var loopsLength = master.Item2.Length;
 
-                var loopData = new double[loopsLength][];
+                var loopData = new(int, double[])[loopsLength][];
                 for(var i = 0; i < loopsLength; ++i)
                 {
-                    double[] average = default;
+                    loopData[i] = new (int, double[])[master.Item2[i].Length];
                     for (var j = 0; j < master.Item2[i].Length; ++j)
                     {
                         var mCurve = Math.Abs(master.Item2[i][j]);
@@ -80,13 +148,32 @@ namespace OperationalController.MeshObjsCreator
                         var mBounds = GetCurveParametrization(master.Item2[i][j]);
                         var sBounds = GetCurveParametrization(slave.Item2[i][j]);
 
-                        average = is3dCase ? GetAverageCurveCoordinates(mCurve, mBounds, sCurve, sBounds)
-                                           : GetAverageCurveCoordinates(mCurve, mBounds, sCurve, sBounds, mSlaveSurf[0]);
+                        var averageCoords = is3dCase ? GetAverageCurveCoordinates(mCurve, mBounds, sCurve, sBounds)
+                                                     : GetAverageCurveCoordinates(mCurve, mBounds, sCurve, sBounds, mSlaveSurf[0]);
+                        loopData[i][j] = (master.Item2[i][j], averageCoords);
                     }
-                    loopData[i] = average;
                 }
-                loopsData.Add(loopData);
+                surfsData.Add((master.Item1, loopData));
             }
+            //TODO: желательно получить набор точек
+            return surfsData;
+        }
+
+        private void BuildGeometry(List<(int, (int, double[])[][])> surfData)
+        {
+            var tempPointTags = 1000;
+            var pointSet = new Dictionary<int, int>();//Ключ - идентификатор точки в исходной геометрии, созданная точка в новой модели
+            var curveSet = new Dictionary<int, int>();
+            
+
+            foreach (var surface in surfData)
+            {
+                foreach(var loops in surface.Item2)
+                {
+
+                }
+            }
+
         }
 
         private double[] GetAverageCurveCoordinates(int mCurve, double[] mBounds, int sCurve, double[] sBounds, int surface)
