@@ -23,14 +23,17 @@ namespace OperationalController
             var masterGr = ModelData.GroupData.Find(masterGroup);
 
             if (masterGr == null)
-                throw new Exception($"группа {masterGr.Name} не найдена");
+                throw new NullReferenceException($"группа {masterGr.Name} не найдена");
 
             var slaveGr = ModelData.GroupData.Find(slaveGroup);
 
             if (slaveGr == null)
-                throw new Exception($"группа {slaveGr.Name} не найдена");
+                throw new NullReferenceException($"группа {slaveGr.Name} не найдена");
 
-            var beams = beamGroupConnection.Create(masterGr, slaveGr, radius, maxBeams);
+            var masterNodes = masterGr.Select(x => ModelData.ObjectData.NodesSet[x.Number]);
+            var slaveNodes = slaveGr.Select(x => ModelData.ObjectData.NodesSet[x.Number]);
+
+            var beams = beamGroupConnection.Create(masterNodes, slaveNodes, radius, maxBeams);
 
             var number = 0;
             if (ModelData.ObjectData.E1DCollection.Count != 0)

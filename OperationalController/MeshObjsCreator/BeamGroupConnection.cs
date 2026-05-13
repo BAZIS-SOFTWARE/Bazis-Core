@@ -15,32 +15,32 @@ namespace OperationalController.MeshObjsCreator
         protected double searchRadius;
         protected int maxIncidentBeams;
 
-        public IEnumerable<Beam> Create(IGroup master, IGroup slave, double radius, int beamsCount = 0)
+        public IEnumerable<Beam> Create(IEnumerable<Node> master, IEnumerable<Node> slave, double radius, int beamsCount = 0)
         {
-            if (master.Count == 0 || slave.Count == 0)
-                throw new Exception("Одна из групп пустая");
+            if (master.Count() == 0 || slave.Count() == 0)
+                throw new CollectionEmptyArgumentException("Одна из коллекций пустая");
             if (radius <= 0)
-                throw new Exception("Радиус поиска должен быть больше нуля");
+                throw new NegativeRadiusArgumentException("Радиус поиска должен быть больше нуля");
 
             searchRadius = radius;
-            var k = 1d * master.Count / slave.Count;
+            var k = 1d * master.Count() / slave.Count();
             if(beamsCount == 0)
             {
                 if (k <= 1)
                 {
                     maxIncidentBeams = (int)Math.Ceiling(1 / k);
-                    return ConnectGroups(master, slave);
+                    return Connect(master, slave);
                 }
                 else
                 {
                     maxIncidentBeams = (int)Math.Ceiling(k);
-                    return ConnectGroups(slave, master);
+                    return Connect(slave, master);
                 }
             }
             maxIncidentBeams = beamsCount;
             if (k <= 1)
-                return ConnectGroups(master, slave);
-            return ConnectGroups(slave, master);
+                return Connect(master, slave);
+            return Connect(slave, master);
         }
 
         protected double GetSquaredDistance(Node one, Node two)
@@ -48,7 +48,12 @@ namespace OperationalController.MeshObjsCreator
             var vector = two.Position.Sub(one.Position);
             return vector.GetSquareSumCoords();
         }
-
-        protected abstract IEnumerable<Beam> ConnectGroups(IGroup smaller, IGroup larger);
+        /// <summary>
+        /// Connect
+        /// </summary>
+        /// <param name="smaller"></param>
+        /// <param name="larger"></param>
+        /// <returns></returns>
+        protected abstract IEnumerable<Beam> Connect(IEnumerable<Node> smaller, IEnumerable<Node> larger);
     }
 }

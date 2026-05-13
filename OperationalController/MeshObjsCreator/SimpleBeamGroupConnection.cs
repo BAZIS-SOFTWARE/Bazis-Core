@@ -12,11 +12,11 @@ namespace OperationalController.MeshObjsCreator
     {
         private Dictionary<Node, int> incidentEdgesCount;
 
-        protected override IEnumerable<Beam> ConnectGroups(IGroup smaller, IGroup larger)
+        protected override IEnumerable<Beam> Connect(IEnumerable<Node> smaller, IEnumerable<Node> larger)
         {
             var startIndex = 0;
-            incidentEdgesCount = larger.Cast<Node>().ToDictionary(n => n, _ => 0);
-            foreach (var node in smaller.Cast<Node>())
+            incidentEdgesCount = larger.ToDictionary(n => n, _ => 0);
+            foreach (var node in smaller)
             {
                 foreach (var result in ConnectOneToMany(node, larger, startIndex))
                 {
@@ -26,10 +26,10 @@ namespace OperationalController.MeshObjsCreator
             }
         }
 
-        private IEnumerable<Beam> ConnectOneToMany(Node node, IGroup group, int startIndex)
+        private IEnumerable<Beam> ConnectOneToMany(Node node, IEnumerable<Node> slave, int startIndex)
         {
             var binded = 0;
-            foreach (var other in group.Cast<Node>()
+            foreach (var other in slave
                                        .Where(n => GetSquaredDistance(node, n) <= searchRadius * searchRadius)
                                        .OrderBy(n => GetSquaredDistance(node, n))
                                        .ThenBy(n => incidentEdgesCount[n])
