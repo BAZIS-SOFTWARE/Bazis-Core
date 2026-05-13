@@ -26,7 +26,7 @@ namespace ControllerTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(Exception))]
+        [ExpectedException(typeof(CollectionEmptyArgumentException))]
         [DataRow(0, 0, DisplayName = "radius is zero")]
         [DataRow(1, 0, DisplayName = "radius is cube edge")]
         [DataRow(0.5, 0, DisplayName = "radius is less than cube edge")]
@@ -41,7 +41,7 @@ namespace ControllerTests
 
                 var slave = new Group("slave", ObjType.Узел) { };
 
-                var beams = instance.Create(master, slave, searchRadius).ToList();
+                var beams = instance.Create(master.Cast<Node>(), slave.Cast<Node>(), searchRadius).ToList();
 
                 Assert.AreEqual(expected, beams.Count);
             }
@@ -73,7 +73,7 @@ namespace ControllerTests
                     new Node(7, new Point3D(0, 1, 1))
                 };
 
-                var beams = instance.Create(master, slave, searchRadius).ToList();
+                var beams = instance.Create(master.Cast<Node>(), slave.Cast<Node>(), searchRadius).ToList();
 
                 Assert.AreEqual(expected, beams.Count);
             }
@@ -104,7 +104,7 @@ namespace ControllerTests
                     new Node(7, new Point3D(0, 1, 1))
                 };
 
-                var beams = instance.Create(master, slave, searchRadius).ToList();
+                var beams = instance.Create(master.Cast<Node>(), slave.Cast<Node>(), searchRadius).ToList();
 
                 Assert.AreEqual(expected, beams.Count);
             }
@@ -140,7 +140,7 @@ namespace ControllerTests
                     new Node(7, new Point3D(0, 1, 1))
                 };
 
-                var beams = instance.Create(master, slave, searchRadius, beamsCount).ToList();
+                var beams = instance.Create(master.Cast<Node>(), slave.Cast<Node>(), searchRadius, beamsCount).ToList();
 
                 Assert.AreEqual(expected, beams.Count);
             }

@@ -1039,6 +1039,37 @@ namespace GmshTests
             saver.Save(md, $@"D:\{fName}.bpf2");
         }
 
+        [DataTestMethod]
+        [DataRow(@"\CAD\PART_3.stp", new int[] { 20, 19, 14, 11, 8, 7, 1, 50, 47, 44, 41, 40, 35, 32, 29, 26, 23 }, 15, 3.0,
+                                                 new float[] { 77, -24.08f, 8.0f, 77, -24.08f, 13.0f, 82, -24.08f, 8.0f }, true)]
+        [DataRow(@"\CAD\PART_3.stp", new int[] { 20, 14, 19, 8, 11, 7, 1, 50, 47, 44, 40, 41, 35, 23, 29, 26, 32 }, 15, 3.0,
+                                                 new float[] { 77, -24.08f, 8.0f, 77, -24.08f, 13.0f, 82, -24.08f, 8.0f }, true)]//Тест на сортировку петли
+        public void ExtrudeMultiCurvesTest3(string fileName, int[] curves, int point, double step, float[] coords, bool transfinite)
+        {
+            controller.Gmsh.Open(modelFolder + fileName);
+            controller.MergeGeometry();
+
+            var elements = GenSurfaceTriangle(controller, coords);
+            var lenList = new List<double>();
+
+            var md = new ModelData();
+            var extruder = new CurveExtruder(controller, curves, step, point);
+            var e3d = transfinite ? extruder.ExtrudeTransfinite(elements)
+                                  : extruder.Extrude(elements);
+
+            Assert.IsTrue(extruder.MissedElements == 0);
+
+            foreach (var node in extruder.Nodes.Values)
+                md.ObjectData.NodesSet.Add(node.Number, node);
+
+            md.ObjectData.E3DCollection.AddRange($"Mulpiple Seams", e3d.SelectMany(v => v));
+
+            var fName = Path.GetFileNameWithoutExtension(fileName);
+
+            var saver = new SaveModelToBPF2TextFile();
+            saver.Save(md, $@"D:\{fName}.bpf2");
+        }
+
 
         /// <summary>
         /// Экструзия по кривой

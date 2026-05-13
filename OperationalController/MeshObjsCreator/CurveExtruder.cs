@@ -3,6 +3,7 @@ using MathNet.Numerics.Distributions;
 using MathNet.Numerics.LinearAlgebra.Factorization;
 using Microsoft.Scripting.Ast;
 using Microsoft.Scripting.Utils;
+using Model.GeometryObjects;
 using Model.MeshObjects;
 using OperationalController.GmshController;
 using System;
@@ -26,10 +27,10 @@ namespace OperationalController.MeshObjsCreator
         private int[] curveTags;
         private double[] steps;
         private float maxAngle;
-        /// <summary>
+        /*/// <summary>
         /// Число сегментов в поворотной экструзии внешнего шва
         /// </summary>
-        public int JointSegments { get; private set; } = 1;
+        public int JointSegments { get; private set; } = 1;*/
 
         /// <summary>
         /// Создает экземляр класса CurveExtruder
@@ -52,7 +53,7 @@ namespace OperationalController.MeshObjsCreator
         /// </summary>
         /// <param name="controller">Контроллер GMSH</param>
         /// <param name="curveTags">Кривые соединенные в контур, первой кривой должен принадлежать pointTag</param>
-        /// <param name="steps">Шаг для каждой кривой (доля) от длины кривой</param>
+        /// <param name="steps">Шаг для каждой кривой (доля) от параметризации кривой</param>
         /// <param name="pointTag">Выбранный идентифкатор геометрической точки начала сечения</param>
         /// <param name="maxAngle">Максимальный угол при котором будет рассматриваться поворотная экструзия между кривыми</param>
         public CurveExtruder(IGmshController controller, int[] curveTags, double[] steps, int pointTag, float maxAngle = MathF.PI / 2)
@@ -65,6 +66,23 @@ namespace OperationalController.MeshObjsCreator
 
             this.steps = steps;
             this.curveTags = DetectCurveLoop(curveTags, pointTag);
+        }
+
+        /// <summary>
+        /// Создает экземляр класса CurveExtruder с множеством кривых
+        /// </summary>
+        /// <param name="controller">Контроллер GMSH</param>
+        /// <param name="curveTags">Кривые соединенные в контур, первой кривой должен принадлежать pointTag</param>
+        /// <param name="step">Желаемый шаг</param>
+        /// <param name="pointTag">Выбранный идентифкатор геометрической точки начала сечения</param>
+        /// <param name="maxAngle">Максимальный угол при котором будет рассматриваться поворотная экструзия между кривыми</param>
+        public CurveExtruder(IGmshController controller, int[] curveTags, double step, int pointTag, float maxAngle = MathF.PI / 2)
+        {
+            this.controller = controller;
+            this.maxAngle = maxAngle;
+
+            this.curveTags = DetectCurveLoop(curveTags, pointTag);
+            steps = ConvertSteps(step);
         }
 
         /// <summary>
@@ -527,40 +545,82 @@ namespace OperationalController.MeshObjsCreator
 
         private List<(Vector3, Vector3, Vector3, Vector3, Vector3)> ProcessDirectParameterization(double step, int index)
         {
+            var steps = GenSteps(step);
             var p = controller.Gmsh.Model.GetParametrizationBounds(1, curveTags[index]);
             var dir = p.Item2[0] - p.Item1[0];
 
-            var l0 = p.Item1[0];
             var offset = 0.0;
-
             var components = new List<(Vector3, Vector3, Vector3, Vector3, Vector3)>();
-            while (p.Item2[0] - l0 > 1e-4)
+            for (var i = 0; i < steps.Length; ++i)
             {
-                l0 = Math.Min(l0 + offset, p.Item2[0]);
+                offset += steps[i];
+                var l0 = p.Item1[0] + offset * dir;
                 WriteComponentsInPoint(components, index, l0, l0 + 0.2);
-                offset = step * dir;
             }
+
             return components;
         }
 
         private List<(Vector3, Vector3, Vector3, Vector3, Vector3)> ProcessInvertParameterization(double step, int index)
         {
+            var steps = GenSteps(step);
             var p = controller.Gmsh.Model.GetParametrizationBounds(1, Math.Abs(curveTags[index]));
             Swap(ref p.Item1[0], ref p.Item2[0]);
             var dir = p.Item2[0] - p.Item1[0];
 
-            var l0 = p.Item1[0];
             var offset = 0.0;
-
             var components = new List<(Vector3, Vector3, Vector3, Vector3, Vector3)>();
-            while (l0 - p.Item2[0] > 1e-4)
+            for (var i = 0; i < steps.Length; ++i)
             {
-                l0 = Math.Max(l0 + offset, p.Item2[0]);
+                offset += steps[i];
+                var l0 = p.Item1[0] + offset * dir;
                 WriteComponentsInPoint(components, index, l0, l0 - 0.2);
-                offset = step * dir;
             }
             return components;
         }
+
+        private double[] ConvertSteps(double step)
+        {
+            var lenList = new List<double>();
+            foreach (var curve in curveTags)
+            {
+                var absCurve = Math.Abs(curve);
+                double length;
+                if (controller.Gmsh.Model.GetType(1, absCurve).Contains("Circle"))
+                    length = controller.CalcCurveLength(absCurve);
+                else
+                {
+                    var bounds = controller.Gmsh.Model.GetParametrizationBounds(1, curve);
+                    length = bounds.Item2[0] - bounds.Item1[0];
+                }
+                lenList.Add(step / length);
+            }
+            return lenList.ToArray();
+        }
+
+        private double[] GenSteps(double step)
+        {
+            step = Math.Min(1, step);
+            step = Math.Max(1e-8, step);
+
+            var steps = new List<double>() { 0.0 };
+            var length = 1 / step;
+
+            var last = (length - (int)length) * step;
+            var count = (int)length;
+
+            for (var i = 0; i < count; ++i)
+                steps.Add(step);
+
+            if(last > 1e-4)
+            {
+                steps[1] = last;
+                steps.Add(step);
+            }
+
+            return steps.ToArray();
+        }
+
 
         private List<Matrix4x4> CreateLocalSystemSet(List<(Vector3, Vector3, Vector3, Vector3, Vector3)> components,
                                                     (Vector3, Vector3, Vector3, Vector3, Vector3) firstComponent)

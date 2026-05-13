@@ -15,12 +15,12 @@ namespace OperationalController.MeshObjsCreator
         private Dictionary<Node, int> incidentEdgesCount;
         private PointOctree<Node> octree;
 
-        protected override IEnumerable<Beam> ConnectGroups(IGroup smaller, IGroup larger)
+        protected override IEnumerable<Beam> Connect(IEnumerable<Node> smaller, IEnumerable<Node> larger)
         {
-            octree = CreateOctree(larger.Cast<Node>());
-            incidentEdgesCount = larger.Cast<Node>().ToDictionary(n => n, _ => 0);
+            octree = CreateOctree(larger);
+            incidentEdgesCount = larger.ToDictionary(n => n, _ => 0);
             var startIndex = 0;
-            foreach (var node in smaller.Cast<Node>())
+            foreach (var node in smaller)
             {
                 foreach (var result in ConnectOneToMany(node, larger, startIndex))
                 {
@@ -57,7 +57,7 @@ namespace OperationalController.MeshObjsCreator
             return octree;
         }
 
-        private IEnumerable<Beam> ConnectOneToMany(Node node, IGroup group, int startIndex)
+        private IEnumerable<Beam> ConnectOneToMany(Node node, IEnumerable<Node> slave, int startIndex)
         {
             var res = octree.GetNearby(new Vector3(node._x, node._y, node._z), (float)searchRadius)
                          .OrderBy(n => GetSquaredDistance(n, node))
