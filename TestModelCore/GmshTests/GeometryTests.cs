@@ -869,6 +869,7 @@ namespace GmshTests
 
             var builder = new MiddleSurfaceBuilder(gmshController);
             builder.Build([1, 2]);
+            gmshController.Gmsh.Write(@"D:\2Layers.step");
         }
 
         private void RemoveNameTest(ref string entName, int dim, int delId, int maxId)

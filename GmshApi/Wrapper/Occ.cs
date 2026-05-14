@@ -334,6 +334,21 @@ namespace GmshApi
                                                  wireTags, (IntPtr)wireTags.Length, Convert.ToInt32(wire3D), ref ierr);
         }
         /// <summary>
+        /// Обрезает поверхность surfaceTag заданными wireTags, заменяя любые существующие контуры обрезки и возвращает поверхность в ядре OCC.
+        /// </summary>
+        /// <param name="surfaceTag">Исходная поверхность</param>
+        /// <param name="wiretTags">Массив контуров, первый элемент указывает на внешний контур, второй и последующие на контуры отверстия</param>
+        /// <param name="wire3D">Если true использовать проекцию wireTags на поверхность, иначе использовать параметрическое пространство</param>
+        /// <param name="tag">Желаемый идентификатор, или -1 для автоназначения</param>
+        /// <returns>Возвращает идентификатор подрезанной поверхности</returns>
+        public int AddTrimmedSurface(int surfaceTag, int[] wiretTags = null, bool wire3D = false, int tag = -1)
+        {
+            var ierr = 0;
+            wiretTags = wiretTags ?? new int[0];
+            return gmshModelOccAddTrimmedSurface(surfaceTag, wiretTags, (IntPtr)wiretTags.Length, Convert.ToInt32(wire3D), tag, ref ierr);
+        }
+
+        /// <summary>
         /// Создает параллелепипед в геометрическом ядре OCC
         /// </summary>
         /// <param name="x">Координата x начала координат угла основания параллелепипеда</param>
