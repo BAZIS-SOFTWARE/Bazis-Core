@@ -13,6 +13,13 @@ namespace MaterialDB.MaterialData
     [Serializable]
     public class Property : IProperty
     {
+        public double this[int row,int col]
+        {
+            get { return Convert.ToDouble(DataTable.Rows[row][col]); }
+            set { DataTable.Rows[row][col] = value; }
+        }
+
+
         /// <inheritdoc/>
         public string Name 
         {
@@ -102,6 +109,12 @@ namespace MaterialDB.MaterialData
                 yn = yn + yv * Convert.ToSingle(phaseData.Rows[j - 1]);
             }
             return yn;
+        }
+
+        public void AddRow()
+        {
+            var row = DataTable.NewRow();
+            DataTable.Rows.Add(row);
         }
     }
 }

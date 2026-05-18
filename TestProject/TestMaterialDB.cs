@@ -146,15 +146,14 @@ DisplayName = "Сталь_20 и Титан_Вт6 и Титан_Фиктивны�
             material.AddMaterialModel(1);
             material.AddHardeningModel(2);
 
-            var row = material[CategoryEnum.Thermal][PropertyEnum.ThermalConductivity].DataTable.NewRow();
-            row[0] = 20;
-            row[1] = 0.001;
-            material[CategoryEnum.Thermal][PropertyEnum.ThermalConductivity].DataTable.Rows.Add(row);
+            material[CategoryEnum.Thermal][PropertyEnum.ThermalConductivity].AddRow();
 
+            material[CategoryEnum.Thermal][PropertyEnum.ThermalConductivity][0,0] = 20;
+            material[CategoryEnum.Thermal][PropertyEnum.ThermalConductivity][0,1] = 0.001;
 
             Assert.AreEqual(material.GetPhases().Count(), phaseData.Count);
-            Assert.AreEqual((int)material[CategoryEnum.General][PropertyEnum.HardeningModel].DataTable.Rows[0][0], hardMode);
-            Assert.AreEqual((int)material[CategoryEnum.General][PropertyEnum.MaterialModel].DataTable.Rows[0][0], matMode);
+            Assert.AreEqual((int)material[CategoryEnum.General][PropertyEnum.HardeningModel][0,0], hardMode);
+            Assert.AreEqual((int)material[CategoryEnum.General][PropertyEnum.MaterialModel][0,0], matMode);
         }
 
         [DataTestMethod]
