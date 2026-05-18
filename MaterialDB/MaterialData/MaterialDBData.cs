@@ -72,8 +72,15 @@ namespace MaterialDB.MaterialData
         /// <summary>
         /// ТКЛР
         /// </summary>
-        ThermalExpansion
-
+        ThermalExpansion,
+        /// <summary>
+        /// Модель упрочнения
+        /// </summary>
+        HardeningModel,
+        /// <summary>
+        /// Модель материала
+        /// </summary>
+        MaterialModel
     }
 
     [Serializable]
