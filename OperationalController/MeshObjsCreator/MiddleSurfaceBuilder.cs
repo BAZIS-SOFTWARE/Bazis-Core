@@ -1,301 +1,185 @@
-﻿using System;
+﻿using Model.GeometryObjects;
+using OperationalController.GmshController;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GmshApi;
-using OperationalController.GmshController;
-using MathNet.Spatial.Euclidean;
-using MathNet.Numerics.LinearAlgebra;
-using System.Diagnostics.Metrics;
-using System.Security.Cryptography;
-
+using static IronPython.Modules._ast;
 
 namespace OperationalController.MeshObjsCreator
 {
     /// <summary>
-    /// Класс построения серединных поврехностей
+    /// Класс построения серединных поверхностей
     /// </summary>
     public class MiddleSurfaceBuilder
     {
+        private int pointsPerCurve = 16;
         private IGmshController controller;
-        private int pointsPerCurve;
 
         /// <summary>
-        /// Ориентация петли кривых
+        /// Конструктор серединных поверхностей
         /// </summary>
-        public enum Orientation
-        {
-            /// <summary>
-            /// По часовой стрелки
-            /// </summary>
-            CW = -1,
-            /// <summary>
-            /// Против часовой стрелки
-            /// </summary>
-            CCW = 1
-        }
-
-        /// <summary>
-        /// Данные кривой в петле ассоциированные с исходной кривой
-        /// </summary>
-        public struct CurveData
-        {
-            /// <summary>
-            /// Идентификатор кривой со знаком ассоциированные с исходной кривой
-            /// </summary>
-            public int tag;
-            /// <summary>
-            /// Идентификаторы начальной и конечной точки ассоциированные с исходной кривой
-            /// </summary>
-            public int[] points;
-            /// <summary>
-            /// Координаты pointsPerCurve точек на кривой серединного смещения относительно двух кривых (master поверхности и slave поверхности)
-            /// </summary>
-            public double[] coords;
-
-            /// <summary>
-            /// Конструктор построения данных кривой в петле
-            /// </summary>
-            /// <param name="tag">Идентификатор кривой со знаком</param>
-            /// <param name="points">Идентификаторы начальной и конечной точки</param>
-            /// <param name="coords">Координаты pointsPerCurve точек на кривой</param>
-            public CurveData(int tag, int[] points, double[] coords = null)
-            {
-                this.tag = tag;
-                this.points = points;
-                this.coords = coords;
-            }
-        }
-
-        /// <summary>
-        /// Данные поверхности ассоциированные с исходной master поверхностью
-        /// </summary>
-        public struct SurfaceData
-        {
-            /// <summary>
-            /// Идентификатор исходной master поверхности
-            /// </summary>
-            public int tag;
-            /// <summary>
-            /// Петля кривых ассоциированная с master поверхностью
-            /// </summary>
-            public CurveData[][] loops;
-
-            /// <summary>
-            /// Конструктор данных поверхности ассоциированных с исходной master поверхностью
-            /// </summary>
-            /// <param name="tag">Идентификатор исходной master поверхности</param>
-            /// <param name="loops">Петля кривых ассоциированная с master поверхностью</param>
-            public SurfaceData(int tag, CurveData[][] loops)
-            {
-                this.tag = tag;
-                this.loops = loops;
-            }
-        }
-
-
-        /// <summary>
-        /// Конструктор построения серединной поверхности
-        /// </summary>
-        /// <param name="controller">Контроллер IGmshController</param>
-        /// <param name="pointsPerCurve">Число точек на кривой</param>
-        /// <exception cref="ArgumentException">Исключение возникает в случае когда число переданных точек разбиения кривой меньше 2</exception>
-        public MiddleSurfaceBuilder(IGmshController controller, int pointsPerCurve = 16)
+        /// <param name="controller">Контроллер gmsh</param>
+        public MiddleSurfaceBuilder(IGmshController controller)
         {
             this.controller = controller;
-            if (pointsPerCurve < 2)
-                throw new ArgumentException("Число точек разбиения кривой не может быть меньше 2");
-            this.pointsPerCurve = pointsPerCurve;
         }
 
         /// <summary>
-        /// Строит серединные поверхности по наборам исходных поверхностей surfTags
+        /// Строит серединные поверхности между парами поверхностей из surfaces
         /// </summary>
-        /// <param name="surfTags">Идентификаторы поверхностей в формате (главная_поверхность_0, второстепенная_поверхность_0,...
-        ///                                                               главная_поверхность_n, второстепенная_поверхность_n)</param>
-        public void Build(int[] surfTags)
+        /// <param name="surfaces">Парные перечисления поверхностей, между которыми нужно построить поверхности</param>
+        public void Build(IEnumerable<int> surfaces)
         {
-            CheckArguments(surfTags);
-            var simData = MakeSimilar(surfTags);
-            var surfData = AverageLoops(simData);
-            BuildGeometry(surfData);
-        }
+            var surfs = surfaces.ToList();
+            if ((surfs.Count & 1) == 1)
+                throw new ArgumentException("Число поверхностей должно быть четным");
 
-        private List<SurfaceData> AverageLoops(List<(SurfaceData, SurfaceData)> simData)
-        {
-            var result = new List<SurfaceData>();
-            foreach (var data in simData)
+            var averageLoops = new List<List<CurveLoop>>();
+            for (var i = 0; i < surfs.Count; i += 2)
             {
-                var mCurveLoop = data.Item1.loops;
-                var sCurveLoop = data.Item2.loops;
+                var master = GetCurveLoops(surfs[i]);
+                var slave = GetCurveLoops(surfs[i + 1]);
 
-                for (var i = 0; i < mCurveLoop.Length; ++i)
-                {
-                    for (var j = 0; j < mCurveLoop[i].Length; ++j)
-                    {
-                        var mCurve = mCurveLoop[i][j].tag;
-                        var sCurve = sCurveLoop[i][j].tag;
+                var data = MakeSimilar(master, slave);
+                master = data.Item1;
+                slave = data.Item2;
 
-                        var mAbsCurve = Math.Abs(mCurve);
-                        var sAbsCurve = Math.Abs(sCurve);
+                for (var j = 0; j < master.Count; ++j)
+                    AverageLoops(master[j], slave[j]);
+                //master[0].AverageSurfaces(slave[0]);
 
-                        var mSlaveSurf = controller.Gmsh.Model.GetAdjacencies(1, mAbsCurve).Item1
-                                                                                           .Where(v => v != data.Item1.tag)
-                                                                                           .ToList();
-                        var sSlaveSurf = controller.Gmsh.Model.GetAdjacencies(1, sAbsCurve).Item1
-                                                                                           .Where(v => v != data.Item2.tag)
-                                                                                           .ToList();
-                        //TODO: ПЕРЕСМОТРЕТЬ КОНЦЕПЦИЮ - КАК БЫЛА СОЗДАНА, КАК ВЫГЛЯДИТ В ЦИКЛЕ, И КАК ВЫГЛЯДЕТ ПОСЛЕ СОРТИРОВКИ
-                        //НАПРИМЕР ПОСЛЕ ИЗМЕНЕНИЯ НАПРАВЛЕНИЯ С CW на CCW и если кривая в цикле была отрицательной, ТО ПОСЛЕ 
-                        //СОРТИРОВКИ ОНА СТАНЕТ ПОЛОЖИТЕЛЬНОЙ И БУДУТ ПРОБЛЕМЫ С НАЧАЛЬНОЙ ТОЧКОЙ ОБХОДА В ПАРАМЕТРИЗАЦИИ
-                        var mBounds = GetCurveParametrization(mCurve);
-                        var sBounds = GetCurveParametrization(sCurve);
-
-                        var is3dCase = mSlaveSurf.Count == 0 || sSlaveSurf.Count == 0 || mSlaveSurf[0] != sSlaveSurf[0];
-
-                        mCurveLoop[i][j].coords = is3dCase ? GetAverageCurveCoordinates(mAbsCurve, mBounds, sAbsCurve, sBounds)
-                                                           : GetAverageCurveCoordinates(mAbsCurve, mBounds, sAbsCurve, sBounds, mSlaveSurf[0]);
-                    }
-                }
-                result.Add(data.Item1);
+                averageLoops.Add(master);
             }
-            return result;
+            BuildGeometry(averageLoops);
         }
 
-        private void BuildGeometry(List<SurfaceData> surfData)
+        private List<CurveLoop> GetCurveLoops(int surface)
         {
-            var boundPointSet = new Dictionary<int, int>();
-            var curveSet = new Dictionary<int, int>();
-            var initCurveSet = new Dictionary<int, CurveData>();
+            var loops = controller.Gmsh.Model.Occ.GetCurveLoops(surface).Item2;
+            var loopsList = new List<CurveLoop>();
 
-            var lastStride = (pointsPerCurve - 1) * 3;
-            var surfWires = new (int, int[])[surfData.Count];
-
-            //controller.Gmsh.Model.Add("Middle surface");
-
-            for (var i = 0; i < surfData.Count; ++i)
+            for (var i = 0; i < loops.Length; ++i)
             {
-                var loops = surfData[i].loops;
-                var wires = new int[loops.Length];
-                for (var j = 0; j < loops.Length; ++j)
-                {
-                    var curveArray = new int[loops.Length];
-                    for(var k = 0; k < loops.Length; ++k)
-                    {
-                        var pointArray = new int[pointsPerCurve];
-                        var curve = loops[j][k];
-                        var absCurve = Math.Abs(curve.tag);
-
-                        if (curveSet.ContainsKey(absCurve))
-                        {
-                            var oldCurve = initCurveSet[absCurve];
-                            curveArray[j] = j == 0 || oldCurve.tag == curve.tag ? curveSet[absCurve] 
-                                                                                : -curveSet[absCurve];
-                            continue;
-                        }
-
-                        pointArray[0] = CreateGeometryPoint(boundPointSet, curve.points[0], curve.coords, 0);
-                        AddGeometryPoints(pointArray, lastStride, curve.coords);
-                        pointArray[pointsPerCurve - 1] = CreateGeometryPoint(boundPointSet, curve.points[1], curve.coords, lastStride);
-
-                        curveArray[j] = CreateCurve(pointArray);
-                        curveSet.Add(absCurve, curveArray[k]);
-                        initCurveSet.Add(absCurve, curve);
-
-                        RemoveInsidePoints(pointArray);
-                    }
-                    //AddWire(curveArray, wires, j);
-                }
-                //var surface = CreateSurface(wires);
-                //surfWires[i] = (surface, wires);
+                var loop = new CurveLoop(controller, surface, i, pointsPerCurve);
+                loopsList.Add(loop);
             }
-            //TrimSurfaces(surfWires);
-            controller.Gmsh.Model.Occ.Synchronize();
+
+            return loopsList;
         }
 
-        private void TrimSurfaces((int, int[])[] surfaces)
+        private (List<CurveLoop>, List<CurveLoop>) MakeSimilar(List<CurveLoop> master, List<CurveLoop> slave)
         {
-            foreach(var surface in surfaces)
+            var masterDict = MakeHoleKeys(master);
+            var slaveDict = MakeHoleKeys(slave);
+
+            slave[0].MakeSimilar(master[0]);
+
+            var masterList = new List<CurveLoop>() { master[0] };
+            var slaveList = new List<CurveLoop>() { slave[0] };
+
+            foreach (var kvp in masterDict)
             {
-                if(surface.Item2.Length > 1)
+                if (slaveDict.ContainsKey(kvp.Key))
                 {
-                    var newSurface = controller.Gmsh.Model.Occ.AddTrimmedSurface(surface.Item1, surface.Item2, true);
-                    controller.Gmsh.Model.Occ.Remove([2, surface.Item1], true);
+                    var slaveIndex = slaveDict[kvp.Key];
+
+                    var m = master[kvp.Value];
+                    var s = slave[slaveIndex];
+
+                    s.MakeSimilar(m);
+
+                    masterList.Add(m);
+                    slaveList.Add(s);
                 }
             }
+            return (masterList, slaveList);
         }
 
-        private void RemoveInsidePoints(int[] pointArray)
+        private Dictionary<string, int> MakeHoleKeys(List<CurveLoop> loops)
         {
-            var dimTags = new int[(pointArray.Length - 2) * 2];
-            for(var i = 0; i < dimTags.Length; i+=2)
+            var dict = new Dictionary<string, int>();
+
+            for (var i = 1; i < loops.Count; ++i)
             {
-                var stride = i >> 1;
-                dimTags[i] = 0;
-                dimTags[i + 1] = pointArray[stride];
+                var surfList = new List<int>();
+                var surface = loops[i].Surface;
+                var current = loops[i].Loop.First;
+                while (current != null)
+                {
+                    var surf = controller.Gmsh.Model.GetAdjacencies(1, Math.Abs(current.Value.Tag))
+                                                    .Item1
+                                                    .Where(v => v != surface)
+                                                    .First();
+                    surfList.Add(surf);
+                    current = current.Next;
+                }
+                var surfKeys = surfList.OrderBy(v => v).Select(v => v.ToString());
+                var key = string.Join(" ", surfKeys);
+                dict.Add(key, i);
             }
-            controller.Gmsh.Model.Occ.Remove(dimTags);
-        }
-        /*
-        private void RemoveUnusedPoints()
-        {
-            var points = controller.Gmsh.Model.Occ.GetEntities(0);
-            controller.Gmsh.Model.Occ.Remove(points);
-        }*/
 
-        private int CreateSurface(int[] wires)
-        {
-            var surface = controller.Gmsh.Model.Occ.AddSurfaceFilling(wires[0]);
-            if (surface == 0)
-                throw new Exception(controller.Gmsh.Logger.GetLastError());
-
-            return surface;
+            return dict;
         }
 
-        private void AddWire(int[] curveArray, int[] wires, int index)
+        /// <summary>
+        /// Усредняет координаты двух контуров и записывает эти координаты в master
+        /// </summary>
+        /// <param name="master">Master контур</param>
+        /// <param name="slave">Slave контур</param>
+        private void AverageLoops(CurveLoop master, CurveLoop slave)
         {
-            var wire = controller.Gmsh.Model.Occ.AddWire(curveArray);
-            if (wire == 0)
-                throw new Exception(controller.Gmsh.Logger.GetLastError());
+            var mIter = master.Loop.First;
+            var sIter = slave.Loop.First;
 
-            wires[index] = wire;
-        }
-
-        private int CreateCurve(int[] pointArray)
-        {
-            var newCurve = controller.Gmsh.Model.Occ.AddSpline(pointArray);
-
-            if (newCurve == 0)
-                throw new Exception(controller.Gmsh.Logger.GetLastError());
-
-            return newCurve;
-        }
-
-        private void AddGeometryPoints(int[] pointArray, int lastStride, double[] coords)
-        {
-            var index = 1;
-            var insideTag = 999;
-            for (var i = 3; i < lastStride; i += 3)
+            while (mIter != null)
             {
-                var newPoint = controller.Gmsh.Model.Occ.AddPoint(coords[i], coords[i + 1], coords[i + 2], 0, insideTag + index);
-                if (newPoint == 0)
-                    throw new Exception(controller.Gmsh.Logger.GetLastError());
-                pointArray[index++] = newPoint;
+                var mCurve = mIter.Value;
+                var sCurve = sIter.Value;
+
+                var mParams = mCurve.GetParametrization(controller, pointsPerCurve);
+                var sParams = sCurve.GetParametrization(controller, pointsPerCurve);
+
+                var mAbsTag = Math.Abs(mCurve.Tag);
+                var sAbsTag = Math.Abs(sCurve.Tag);
+
+                var mSlaveSurf = controller.Gmsh.Model.GetAdjacencies(1, mAbsTag).Item1
+                                                                                 .Where(v => v != master.Surface)
+                                                                                 .ToList();
+                var sSlaveSurf = controller.Gmsh.Model.GetAdjacencies(1, sAbsTag).Item1
+                                                                                 .Where(v => v != slave.Surface)
+                                                                                 .ToList();
+
+                var is3dCase = mSlaveSurf.Count == 0 || sSlaveSurf.Count == 0 || mSlaveSurf[0] != sSlaveSurf[0];
+
+                var average = is3dCase ? GetAverageCurveCoordinates(mAbsTag, mParams, sAbsTag, sParams)
+                                       : GetAverageCurveCoordinates(mAbsTag, mParams, sAbsTag, sParams, mSlaveSurf[0]);
+
+                mCurve.SetAverageCoords(average);
+
+                mIter = mIter.Next;
+                sIter = sIter.Next;
             }
         }
 
-        private int CreateGeometryPoint(Dictionary<int, int> boundPointSet, int point, double[] coords, int stride)
+        private void ProjectPointsToSurface(double[] average, int surface)
         {
-            if (boundPointSet.ContainsKey(point))
-                return boundPointSet[point];
+            var projPoint = new double[3];
+            for (int i = 0; i < average.Length; i += 3)
+            {
+                for (var j = 0; j < 3; ++j)
+                    projPoint[j] = average[i + j];
 
-            var newPoint = controller.Gmsh.Model.Occ.AddPoint(coords[stride], coords[stride + 1], coords[stride + 2]);
-            if (newPoint == 0)
-                throw new Exception(controller.Gmsh.Logger.GetLastError());
-            boundPointSet.Add(point, newPoint);
+                var coords = controller.Gmsh.Model.GetClosestPoint(2, surface, projPoint).Item1;
+                for (var j = 0; j < 3; ++j)
+                    average[i + j] = coords[j];
+            }
+        }
 
-            return newPoint;
+        private bool IsCloseParametrization(double[] curveParams)
+        {
+            var preLast = curveParams[curveParams.Length - 2];
+            var last = curveParams[curveParams.Length - 1];
+            return Math.Abs(curveParams[0] - preLast) < 1e-4 && Math.Abs(curveParams[1] - last) < 1e-4;
         }
 
         private double[] GetAverageCurveCoordinates(int mCurve, double[] mBounds, int sCurve, double[] sBounds, int surface)
@@ -305,6 +189,13 @@ namespace OperationalController.MeshObjsCreator
 
             if (mReparams.Length != sReparams.Length)
                 throw new Exception($"Массивы репараметризированных кривых на поверхность {surface} имеют разную длинну");
+
+            if (IsCloseParametrization(mReparams) && IsCloseParametrization(sReparams))
+            {
+                var coords = GetAverageCurveCoordinates(mCurve, mBounds, sCurve, sBounds);
+                ProjectPointsToSurface(coords, surface);
+                return coords;
+            }
 
             var averageUv = new double[mReparams.Length];
             for (var i = 0; i < mReparams.Length; i += 2)
@@ -333,225 +224,149 @@ namespace OperationalController.MeshObjsCreator
             return average;
         }
 
-        private double[] GetCurveParametrization(int curve)
+        private void BuildGeometry(List<List<CurveLoop>> averageData)
         {
-            var mCurve = Math.Abs(curve);
-            var bounds = controller.Gmsh.Model.GetParametrizationBounds(1, mCurve);
-            if (curve < 0)
-                Swap(ref bounds.Item1[0], ref bounds.Item2[0]);
+            var boundPointSet = new Dictionary<int, int>();
+            var curveSet = new Dictionary<int, int>();
+            var initCurveSet = new Dictionary<int, CurveLoop.CurveLoopNode>();
 
-            var result = new double[pointsPerCurve];
-            var step = (bounds.Item2[0] - bounds.Item1[0]) / (pointsPerCurve - 1);
+            var lastStride = (pointsPerCurve - 1) * 3;
+            var surfWires = new (int, int[])[averageData.Count];
 
-            for (var i = 0; i < result.Length; ++i)
-                result[i] = bounds.Item1[0] + step * i;
+            controller.Gmsh.Model.Add("Middle surface");
 
-            return result;
-        }
-
-        private void CheckArguments(int[] surfTags)
-        {
-            for(var i = 0; i < surfTags.Length; i += 2)
+            for (var i = 0; i < averageData.Count; ++i)
             {
-                var mBounds = controller.Gmsh.Model.GetBoundary([2, surfTags[i]]);
-                var sBounds = controller.Gmsh.Model.GetBoundary([2, surfTags[i + 1]]);
+                var loops = averageData[i];
+                var wires = new int[loops.Count];
 
-                if (mBounds.Length != sBounds.Length)
-                    throw new Exception($"У поверхности {surfTags[i]} количество точек не совпадает с количеством точек у поверхности {surfTags[i + 1]}");
-            }
-        }
-
-        private List<(SurfaceData, SurfaceData)> MakeSimilar(int[] surfTags)
-        {
-            var loopsData = new List<(SurfaceData, SurfaceData)>();
-
-            for (var i = 0; i < surfTags.Length; i +=2)
-            {
-                var mLoop = GetOrientedCurveLoop(surfTags[i]);
-                var sLoop = GetOrientedCurveLoop(surfTags[i + 1]);
-
-                var mOrients = GetSurfaceOrientation(mLoop, surfTags[i]);
-                var sOrients = GetSurfaceOrientation(sLoop, surfTags[i + 1]);
-
-                mLoop = SortCurveLoop(mLoop, surfTags[i], mOrients);
-                sLoop = SortCurveLoop(sLoop, surfTags[i + 1], sOrients);
-
-                var simData = MakeSimilar(surfTags[i], mLoop, surfTags[i + 1], sLoop);
-
-                var masterSurf = CreateSurfaceData(surfTags[i], simData.Item1);
-                var slaveSurf = CreateSurfaceData(surfTags[i + 1], simData.Item2);
-
-                loopsData.Add((masterSurf, slaveSurf));
-            }
-
-            return loopsData;
-        }
-
-        private SurfaceData CreateSurfaceData(int surface, int[][] loops)
-        {
-            var curveData = new CurveData[loops.Length][];
-            for(var i = 0; i < loops.Length; ++i)
-            {
-                var inLength = loops[i].Length;
-                curveData[i] = new CurveData[inLength];
-                for(var j = 0; j < inLength; ++j)
+                for (var j = 0; j < loops.Count; ++j)
                 {
-                    var points = controller.Gmsh.Model.GetBoundary([1, loops[i][j]], false, true)
-                                                      .Where((v,i) => (i & 1) == 1)
-                                                      .ToArray();
+                    var loop = loops[j].Loop;
+                    var current = loop.First;
+                    var curveArray = new int[loop.Count];
+                    var index = 0;
 
-                    curveData[i][j] = new CurveData(loops[i][j], points);
+                    while (current != null)
+                    {
+                        var pointArray = new int[pointsPerCurve];
+                        var absCurve = Math.Abs(current.Value.Tag);
+
+                        if (curveSet.ContainsKey(absCurve))
+                        {
+                            var oldCurve = initCurveSet[absCurve];
+                            curveArray[index] = oldCurve.Tag == current.Value.Tag ? curveSet[absCurve]
+                                                                                  : -curveSet[absCurve];
+                            ++index;
+                            current = current.Next;
+                            continue;
+                        }
+
+                        pointArray[0] = CreateGeometryPoint(boundPointSet, current.Value.Begin, current.Value.AverageCoords, 0);
+                        AddGeometryPoints(pointArray, lastStride, current.Value.AverageCoords);
+                        pointArray[pointsPerCurve - 1] = CreateGeometryPoint(boundPointSet, current.Value.End, current.Value.AverageCoords, lastStride);
+
+                        curveArray[index] = CreateCurve(pointArray);
+                        curveSet.Add(absCurve, curveArray[index]);
+                        initCurveSet.Add(absCurve, current.Value);
+
+                        RemoveInsidePoints(pointArray);
+
+                        ++index;
+                        current = current.Next;
+                    }
+                    AddWire(curveArray, wires, j);
+                }
+                var surface = CreateSurface(wires/*, loops[0].AverageCoords*/);
+                surfWires[i] = (surface, wires);
+            }
+            TrimSurfaces(surfWires);
+            controller.Gmsh.Model.Occ.Synchronize();
+        }
+
+        private int CreateSurface(int[] wires/*, double[] gridCoords*/)
+        {
+            /*var grid = new List<int>();
+            if(gridCoords != null)
+                for(var i = 0; i < gridCoords.Length; i+=3)
+                    grid.Add(controller.Gmsh.Model.Occ.AddPoint(gridCoords[i], gridCoords[i + 1], gridCoords[i + 2]));
+
+            int[] points = gridCoords != null ? grid.ToArray() : null;*/
+            var surface = controller.Gmsh.Model.Occ.AddSurfaceFilling(wires[0]/*, -1, points*/);
+            if (surface == 0)
+                throw new Exception(controller.Gmsh.Logger.GetLastError());
+
+            //RemoveInsidePoints(points, 0, 0, 0);
+
+            return surface;
+        }
+
+        private int CreateCurve(int[] pointArray)
+        {
+            var newCurve = controller.Gmsh.Model.Occ.AddSpline(pointArray);
+
+            if (newCurve == 0)
+                throw new Exception(controller.Gmsh.Logger.GetLastError());
+
+            return newCurve;
+        }
+
+        private void AddGeometryPoints(int[] pointArray, int lastStride, double[] coords)
+        {
+            var index = 1;
+            for (var i = 3; i < lastStride; i += 3)
+            {
+                var newPoint = controller.Gmsh.Model.Occ.AddPoint(coords[i], coords[i + 1], coords[i + 2], 0);
+                if (newPoint == 0)
+                    throw new Exception(controller.Gmsh.Logger.GetLastError());
+                pointArray[index++] = newPoint;
+            }
+        }
+
+        private int CreateGeometryPoint(Dictionary<int, int> boundPointSet, int point, double[] coords, int stride)
+        {
+            if (boundPointSet.ContainsKey(point))
+                return boundPointSet[point];
+
+            var newPoint = controller.Gmsh.Model.Occ.AddPoint(coords[stride], coords[stride + 1], coords[stride + 2]);
+            if (newPoint == 0)
+                throw new Exception(controller.Gmsh.Logger.GetLastError());
+            boundPointSet.Add(point, newPoint);
+
+            return newPoint;
+        }
+
+        private void RemoveInsidePoints(int[] pointArray, int ignorePoints = 2, int beginIgnore = 1, int endIgnore = 1)
+        {
+            var dimTags = new int[(pointArray.Length - ignorePoints) * 2];
+            for (var i = beginIgnore; i < pointArray.Length - endIgnore; ++i)
+            {
+                var stride = (i - 1) << 1;
+                dimTags[stride] = 0;
+                dimTags[stride + 1] = pointArray[i];
+            }
+            controller.Gmsh.Model.Occ.Remove(dimTags);
+        }
+
+        private void AddWire(int[] curveArray, int[] wires, int index)
+        {
+            var wire = controller.Gmsh.Model.Occ.AddWire(curveArray);
+            if (wire == 0)
+                throw new Exception(controller.Gmsh.Logger.GetLastError());
+
+            wires[index] = wire;
+        }
+
+        private void TrimSurfaces((int, int[])[] surfaces)
+        {
+            foreach (var surface in surfaces)
+            {
+                if (surface.Item2.Length > 1)
+                {
+                    var newSurface = controller.Gmsh.Model.Occ.AddTrimmedSurface(surface.Item1, surface.Item2, true);
+                    controller.Gmsh.Model.Occ.Remove([2, surface.Item1], true);
                 }
             }
-            var surfaceData = new SurfaceData(surface, curveData);
-            return surfaceData;
-        }
-
-        private (int[][], int[][]) MakeSimilar(int masterSurface, int[][] mLoops, int slaveSurface, int[][] sLoops)
-        {
-            var masterDict = MakeHoleKeys(masterSurface, mLoops);
-            var slaveDict = MakeHoleKeys(slaveSurface, sLoops);
-
-            var masterList = new List<int[]>() { mLoops[0] };
-            var slaveList = new List<int[]>() { sLoops[0] };
-
-            foreach (var kvp in masterDict)
-            {
-                if(slaveDict.ContainsKey(kvp.Key))
-                {
-                    var slaveIndex = slaveDict[kvp.Key];
-                    masterList.Add(mLoops[kvp.Value]);
-                    slaveList.Add(sLoops[slaveIndex]);
-                }
-                
-            }
-            return (masterList.ToArray(), slaveList.ToArray());
-        }
-
-        private Dictionary<string, int> MakeHoleKeys(int surface, int[][] loops)
-        {
-            var dict = new Dictionary<string, int>();
-
-            for (var i = 1; i < loops.Length; ++i)
-            {
-                var surfList = new List<int>();
-                for (var j = 0; j < loops[i].Length; ++j)
-                {
-                    var surf = controller.Gmsh.Model.GetAdjacencies(1, Math.Abs(loops[i][j]))
-                                                    .Item1
-                                                    .Where(v => v != surface)
-                                                    .First();
-                    surfList.Add(surf);
-                }
-                var surfKeys = surfList.OrderBy(v => v).Select(v => ToString());
-                var key = string.Join(" ", surfKeys);
-                dict.Add(key, i);
-            }
-
-            return dict;
-        }
-
-        private Orientation[] GetSurfaceOrientation(int[][] orCurveLoop, int surface)
-        {
-            var orientations = new List<Orientation>();
-            for(var i = 0; i < orCurveLoop.Length; ++i)
-            {
-                if (orCurveLoop[i].Length == 1)
-                    orientations.Add(DetectCircleOrientation(orCurveLoop[i][0]));
-                if (orCurveLoop[i].Length == 2)
-                    throw new NotImplementedException("Поверхности построенные на двух кривых пока не рассматриваются (hard case)");
-                else
-                    orientations.Add(DetectThreePointsCase(orCurveLoop[i], surface));
-            }
-
-            return orientations.ToArray();
-        }
-
-        private Orientation DetectThreePointsCase(int[] loop, int surface)
-        {
-            var vecList = new List<Vector3D>();
-
-            for (var i = 0; i < 3; ++i)
-            {
-                var bounds = controller.Gmsh.Model.GetBoundary([1, loop[i]]);
-                var coords = controller.Gmsh.Model.GetValue(bounds[0], bounds[1], []);
-
-                var vec = new Vector3D(coords[0], coords[1], coords[2]);
-                vecList.Add(vec);
-            }
-
-            var first = (vecList[1] - vecList[0]).Normalize();
-            var second = (vecList[2] - vecList[1]).Normalize();
-            var cross = first.CrossProduct(second);
-
-            var dp = cross.DotProduct(UnitVector3D.ZAxis);
-
-
-            return dp < 0 ? Orientation.CW : Orientation.CCW;
-        }
-
-        private Orientation DetectCircleOrientation(int curveTag) => curveTag > 0 ? Orientation.CCW : Orientation.CW;
-
-
-        private int[][] SortCurveLoop(int[][] loops, int surface, Orientation[] orientations)
-        {
-            var sortedLoops = new List<List<int>>();
-
-            for (var i = 0; i < loops.Length; ++i)
-            {
-                var refVec = Vector<double>.Build.Dense([1, 0]);
-                var currentLoop = new List<(int, double)>();
-                for (var j = 0; j < loops[i].Length; ++j)
-                {
-                    var bounds = controller.Gmsh.Model.GetBoundary([1, loops[i][j]], false);
-                    var idPoint = bounds[1];
-                    //var idPoint = j == loops[i].Length - 1 ? bounds[3] : bounds[1];
-                    var coords = controller.Gmsh.Model.ReparametrizeOnSurface(0, idPoint, [], surface);
-
-                    var vec = Vector<double>.Build.Dense(coords);
-                    vec = vec.Normalize(2);
-                    vec = Vector<double>.Build.Dense([vec[0] * (int)orientations[i], vec[1]]);
-
-                    var m = Matrix<double>.Build.Dense(2, 2);
-                    m.SetRow(0, refVec);
-                    m.SetRow(1, vec);
-
-                    var det = m.Determinant();
-                    var dot = refVec.DotProduct(vec);
-
-                    var angle = Math.Acos(dot);
-                    angle = det < 0  ? 2 * Math.PI - angle : angle;
-
-                    currentLoop.Add((loops[i][j] * (int)orientations[i], angle));
-                }
-                var sortedLoop = currentLoop.OrderBy(v => v.Item2).Select(v => v.Item1).ToList();
-                sortedLoops.Add(sortedLoop);
-            }
-            return sortedLoops.Select(v => v.ToArray()).ToArray();
-        }
-
-        private int[][] GetOrientedCurveLoop(int surface)
-        {
-            var loops = controller.Gmsh.Model.Occ.GetCurveLoops(surface).Item2;
-            var bounds = controller.Gmsh.Model.GetBoundary([2, surface]).Where((v,i) => (i & 1) == 1)
-                                                                        .ToDictionary(k => Math.Abs(k), v => v);
-            var oriented = new int[loops.Length][];
-
-            for (var i = 0; i < loops.Length; ++i)
-            {
-                oriented[i] = new int[loops[i].Length];
-                for (var j = 0; j < loops[i].Length; ++j)
-                    oriented[i][j] = bounds[loops[i][j]];
-            }
-
-            return oriented;
-        }
-
-        private void Swap<T>(ref T a, ref T b)
-        {
-            var temp = a;
-            a = b;
-            b = temp;
         }
 
         private MiddleSurfaceBuilder()

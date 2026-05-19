@@ -862,15 +862,21 @@ namespace GmshTests
         }
 
         [DataTestMethod]
-        [DataRow(@"\CAD\2Layers.step")]
-        public void MiddleSurfaceTest(string fileName)
+        [DataRow(@"\CAD\scobe1.step", new int[] { 1, 12, 2, 9, 4, 11 })]//Цилиндрические отверстия
+        [DataRow(@"\CAD\scobe2.step", new int[] { 1, 18, 4, 17, 2, 15 })]//Отверстия в виде последовательно соединенных граней
+        [DataRow(@"\CAD\scobe3.step", new int[] { 1, 12, 2, 9, 4, 11 })]//Отверстия в виде сфер
+        [DataRow(@"\CAD\PART_3.stp", new int[] { 7, 9, 6, 11, 5, 12, 4, 13, 3, 14, 2, 15, 1, 16, 21, 23 /*24, 25*/ })]//Тест на двух не связанных объемах
+        public void MiddleSurfaceTest(string fileName, int[] surfs)
         {
             gmshController.Gmsh.Open(modelFolder + fileName);
 
             var builder = new MiddleSurfaceBuilder(gmshController);
-            builder.Build([1, 2]);
-            gmshController.Gmsh.Write(@"D:\2Layers.step");
+            builder.Build(surfs);
+
+            var fName = Path.GetFileNameWithoutExtension(fileName);
+            gmshController.Gmsh.Write($@"D:\{fName}.step");
         }
+
 
         private void RemoveNameTest(ref string entName, int dim, int delId, int maxId)
         {
