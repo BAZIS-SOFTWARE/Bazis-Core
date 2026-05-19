@@ -7,6 +7,7 @@ using Model.Interfaces;
 using System.Data;
 using Model.IO.STL;
 using static System.Net.WebRequestMethods;
+using OperationalController;
 
 namespace ModelTests
 {
@@ -154,8 +155,33 @@ namespace ModelTests
 
             Assert.AreNotEqual(controller.GetModelObjects(ObjType.Элемент2D).Count(), 0);
 
-        }   
+        }
 
+        [DataRow(@"..\..\..\Examples\3D\mixElements.bpf", @"..\..\..\Examples\STL\box.stl")]
+        [TestMethod]
+        public void Append2DMeshTo2D3DComplexMesh(string bpfPath, string stlPath)
+        {
+            var testPath = Path.Combine(Path.GetFullPath(@"..\..\..\Examples\3D"), "test_2D3D_Mesh_with_2D_mesh_append.bpf2");
+            try
+            {
+                var project = new ProjectController();
+                project.Load(Path.GetFullPath(bpfPath));
+
+                project.Append(Path.GetFullPath(stlPath));
+
+                project.Save(testPath);
+
+                project.Load(testPath);
+            }
+            catch (Exception ex) 
+            {
+                Assert.Fail();
+            }
+            finally
+            {
+                System.IO.File.Delete(testPath);
+            }
+        }
 
         [TestMethod]
         [DataRow(@"block_allElements3D_25538.stl", DisplayName = "block_allElements3D_25538.stl")]
