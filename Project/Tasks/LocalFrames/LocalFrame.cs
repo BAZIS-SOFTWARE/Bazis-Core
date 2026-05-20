@@ -87,13 +87,6 @@ namespace Project.Tasks.LocalFrames
         }
 
         /// <summary>
-        /// Получение локальной точки в локальных координатах для текущего Frame
-        /// </summary>
-        /// <param name="point">Точка в локальной системе координат</param>
-        /// <returns>Координаты точки в локальной системе координат относительно центра Frame</returns>
-        public Point3D GetLocalCoordsInLocalFrame(Point3D point) => frame.GetCoordsInFrame(point);
-
-        /// <summary>
         /// Получение глобальной точки в локальных координатах для текущего Frame
         /// </summary>
         /// <param name="point">Точка в глобальной системе координат</param>
