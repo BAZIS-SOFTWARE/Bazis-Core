@@ -1,9 +1,10 @@
-﻿using Model.GeometryObjects;
+﻿using GmshApi;
+using Model.GeometryObjects;
+using Model.Interfaces;
 using OperationalController.GmshController;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static IronPython.Modules._ast;
 
 namespace OperationalController.MeshObjsCreator
 {
@@ -14,6 +15,15 @@ namespace OperationalController.MeshObjsCreator
     {
         private int pointsPerCurve = 16;
         private IGmshController controller;
+
+        /// <summary>
+        /// Удалить дубликаты
+        /// </summary>
+        public bool RemoveDuplicates { get; set; }
+        /// <summary>
+        /// Использовать раздельную модель для извлечения серединных поврехностей
+        /// </summary>
+        public bool UseSeparateModel { get; set; }
 
         /// <summary>
         /// Конструктор серединных поверхностей
@@ -136,9 +146,6 @@ namespace OperationalController.MeshObjsCreator
                 var mCurve = mIter.Value;
                 var sCurve = sIter.Value;
 
-                var mParams = mCurve.GetParametrization(controller, pointsPerCurve);
-                var sParams = sCurve.GetParametrization(controller, pointsPerCurve);
-
                 var mAbsTag = Math.Abs(mCurve.Tag);
                 var sAbsTag = Math.Abs(sCurve.Tag);
 
@@ -151,14 +158,158 @@ namespace OperationalController.MeshObjsCreator
 
                 var is3dCase = mSlaveSurf.Count == 0 || sSlaveSurf.Count == 0 || mSlaveSurf[0] != sSlaveSurf[0];
 
-                var average = is3dCase ? GetAverageCurveCoordinates(mAbsTag, mParams, sAbsTag, sParams)
-                                       : GetAverageCurveCoordinates(mAbsTag, mParams, sAbsTag, sParams, mSlaveSurf[0]);
+                var average = is3dCase ? GetAverageCurveCoordinates(mCurve, sCurve)
+                                       : GetAverageCurveCoordinates(mCurve, sCurve, mSlaveSurf[0]);
 
                 mCurve.SetAverageCoords(average);
 
                 mIter = mIter.Next;
                 sIter = sIter.Next;
             }
+        }
+
+        private bool IsCloseParametrization(double[] curveParams)
+        {
+            var preLast = curveParams[curveParams.Length - 2];
+            var last = curveParams[curveParams.Length - 1];
+            return Math.Abs(curveParams[0] - preLast) < 1e-4 && Math.Abs(curveParams[1] - last) < 1e-4;
+        }
+
+        private double[] GetAverageCurveCoordinates(CurveLoop.CurveLoopNode mCurve, CurveLoop.CurveLoopNode sCurve, int surface)
+        {
+            var mAbsCurve = Math.Abs(mCurve.Tag);
+            var sAbsCurve = Math.Abs(sCurve.Tag);
+
+            var mParams = mCurve.GetParametrization(controller, pointsPerCurve);
+            var sParams = sCurve.GetParametrization(controller, pointsPerCurve);
+
+            mParams = controller.Gmsh.Model.ReparametrizeOnSurface(1, mAbsCurve, mParams, surface);
+            sParams = controller.Gmsh.Model.ReparametrizeOnSurface(1, sAbsCurve, sParams, surface);
+
+            if (IsCloseParametrization(mParams) && IsCloseParametrization(sParams))
+            {
+                var crds = GetAverageCurveCoordinates(mCurve, sCurve);
+                ProjectPointsToSurface(crds, surface);
+                return crds;
+            }
+
+            var mAdjCurve = GetAdjacentCurve(mAbsCurve, sAbsCurve, mCurve.Begin, sCurve.Begin, surface);
+            var sAdjCurve = GetAdjacentCurve(mAbsCurve, sAbsCurve, mCurve.End, sCurve.End, surface);
+
+            var mAdjUv = GetAdjacentCurveUV(mAdjCurve, surface);
+            var sAdjUv = GetAdjacentCurveUV(sAdjCurve, surface);
+
+            var offset = GetUVOffset(mCurve, sCurve, mAdjUv, sAdjUv, surface);
+
+            var average = new double[mParams.Length];
+            for (int i = 0; i < average.Length; i += 2)
+            {
+                average[i] = (mParams[i] + sParams[i]) * 0.5 + offset[0];
+                average[i + 1] = (mParams[i + 1] + sParams[i + 1]) * 0.5 + offset[1];
+            }
+
+            if (mAdjUv != null)
+            {
+                average[0] = mAdjUv[0];
+                average[1] = mAdjUv[1];
+            }
+            if (sAdjUv != null)
+            {
+                var last = average.Length - 2;
+                average[last] = sAdjUv[0];
+                average[last + 1] = sAdjUv[1];
+            }
+            var coords = controller.Gmsh.Model.GetValue(2, surface, average);
+
+            return coords;
+        }
+
+        private double[] GetUVOffset(CurveLoop.CurveLoopNode mCurve, CurveLoop.CurveLoopNode sCurve, double[] mAdjUv, double[] sAdjUv, int surface)
+        {
+            if (mAdjUv == null && sAdjUv == null)
+                return new double[2];
+
+            var mBegin = controller.Gmsh.Model.ReparametrizeOnSurface(0, mCurve.Begin, [], surface);
+            var mEnd = controller.Gmsh.Model.ReparametrizeOnSurface(0, mCurve.End, [], surface);
+
+            var sBegin = controller.Gmsh.Model.ReparametrizeOnSurface(0, sCurve.Begin, [], surface);
+            var sEnd = controller.Gmsh.Model.ReparametrizeOnSurface(0, sCurve.End, [], surface);
+
+            var mUv = new double[] { (mBegin[0] + sBegin[0]) * 0.5, (mBegin[1] + sBegin[1]) * 0.5 };
+            var sUv = new double[] { (mEnd[0] + sEnd[0]) * 0.5, (mEnd[1] + sEnd[1]) * 0.5 };
+
+            var offset = new double[2];
+
+            if (mAdjUv != null && sAdjUv != null)
+            {
+                var scaleU = 1.0;
+                var scaleV = 1.0;
+
+                var difU = sUv[0] - mUv[0];
+                var difV = sUv[1] - mUv[1];
+
+                if (Math.Abs(difU) > 1e-4)
+                {
+                    scaleU = (sAdjUv[0] - mAdjUv[0]) / difU;
+                    offset[0] = mAdjUv[0] - mUv[0] * scaleU;
+                }
+                if (Math.Abs(difV) > 1e-4)
+                {
+                    scaleV = (sAdjUv[1] - mAdjUv[1]) / difV;
+                    offset[1] = mAdjUv[1] - mUv[1] * scaleV;
+                }
+
+                return offset;
+            }
+
+            if (mAdjUv != null)
+            {
+                offset[0] = mAdjUv[0] - mUv[0];
+                offset[1] = mAdjUv[1] - mUv[1];
+
+                return offset;
+            }
+
+            offset[0] = sAdjUv[0] - sUv[0];
+            offset[1] = sAdjUv[1] - sUv[1];
+
+            return offset;
+        }
+
+        private double[] GetAdjacentCurveUV(int mAdjCurve, int surface)
+        {
+            if (mAdjCurve != 0)
+            {
+                var bounds = controller.Gmsh.Model.GetParametrizationBounds(1, mAdjCurve);
+                var center = (bounds.Item2[0] + bounds.Item1[0]) * 0.5;
+
+                var uv = controller.Gmsh.Model.ReparametrizeOnSurface(1, mAdjCurve, [center], surface);
+                return uv;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Возвращает общую смежную кривую у mCurve и sCurve если она существует или возвращает 0, если ее нет
+        /// </summary>
+        /// <param name="mCurve">Кривая основной петли</param>
+        /// <param name="sCurve">Кривая подчиненной петли</param>
+        /// <param name="mPoint">Начальная точка основной петли</param>
+        /// <param name="sPoint">Начальная точка подчиненной петли</param>
+        /// <param name="surface">Общая поверхность для mCurve и sCurve</param>
+        /// <returns>Идентификатор общей кривой или 0, если кривая не найдена</returns>
+        private int GetAdjacentCurve(int mCurve, int sCurve, int mPoint, int sPoint, int surface)
+        {
+            var set = new HashSet<int>() { mPoint, sPoint };
+            var curves = controller.Gmsh.Model.GetAdjacencies(2, surface).Item2.Where(v => v != mCurve && v != sCurve).ToArray();
+
+            for (var i = 0; i < curves.Length; ++i)
+            {
+                var points = controller.Gmsh.Model.GetAdjacencies(1, curves[i]).Item2.ToArray();
+                if (set.Contains(points[0]) && set.Contains(points[1]))
+                    return curves[i];
+            }
+            return 0;
         }
 
         private void ProjectPointsToSurface(double[] average, int surface)
@@ -175,13 +326,7 @@ namespace OperationalController.MeshObjsCreator
             }
         }
 
-        private bool IsCloseParametrization(double[] curveParams)
-        {
-            var preLast = curveParams[curveParams.Length - 2];
-            var last = curveParams[curveParams.Length - 1];
-            return Math.Abs(curveParams[0] - preLast) < 1e-4 && Math.Abs(curveParams[1] - last) < 1e-4;
-        }
-
+        /*
         private double[] GetAverageCurveCoordinates(int mCurve, double[] mBounds, int sCurve, double[] sBounds, int surface)
         {
             var mReparams = controller.Gmsh.Model.ReparametrizeOnSurface(1, mCurve, mBounds, surface);
@@ -207,12 +352,18 @@ namespace OperationalController.MeshObjsCreator
             var average = controller.Gmsh.Model.GetValue(2, surface, averageUv);
 
             return average;
-        }
+        }*/
 
-        private double[] GetAverageCurveCoordinates(int mCurve, double[] mBounds, int sCurve, double[] sBounds)
+        private double[] GetAverageCurveCoordinates(CurveLoop.CurveLoopNode mCurve, CurveLoop.CurveLoopNode sCurve)
         {
-            var mCoords = controller.Gmsh.Model.GetValue(1, mCurve, mBounds);
-            var sCoords = controller.Gmsh.Model.GetValue(1, sCurve, sBounds);
+            var mBounds = mCurve.GetParametrization(controller, pointsPerCurve);
+            var sBounds = sCurve.GetParametrization(controller, pointsPerCurve);
+
+            var mAbsTag = Math.Abs(mCurve.Tag);
+            var sAbsTag = Math.Abs(sCurve.Tag);
+
+            var mCoords = controller.Gmsh.Model.GetValue(1, mAbsTag, mBounds);
+            var sCoords = controller.Gmsh.Model.GetValue(1, sAbsTag, sBounds);
 
             if (mCoords.Length != sCoords.Length)
                 throw new Exception($"Массивы координат кривых {mCurve} и {sCurve} имеют разную длинну");
@@ -233,7 +384,8 @@ namespace OperationalController.MeshObjsCreator
             var lastStride = (pointsPerCurve - 1) * 3;
             var surfWires = new (int, int[])[averageData.Count];
 
-            controller.Gmsh.Model.Add("Middle surface");
+            if(UseSeparateModel)
+                controller.Gmsh.Model.Add("Middle surface");
 
             for (var i = 0; i < averageData.Count; ++i)
             {
@@ -282,6 +434,15 @@ namespace OperationalController.MeshObjsCreator
             }
             TrimSurfaces(surfWires);
             controller.Gmsh.Model.Occ.Synchronize();
+
+            if (RemoveDuplicates)
+            {
+                var lines = controller.Gmsh.Model.GetEntities(1);
+                var surfs = controller.Gmsh.Model.GetEntities(2);
+                controller.Gmsh.Model.Occ.Fragment(surfs, lines);
+
+                controller.Gmsh.Model.Occ.Synchronize();
+            }
         }
 
         private int CreateSurface(int[] wires/*, double[] gridCoords*/)

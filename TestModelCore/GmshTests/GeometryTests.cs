@@ -14,6 +14,7 @@ using static IronPython.Modules.PythonIterTools;
 using static Community.CsharpSqlite.Sqlite3;
 using OperationalController.MeshObjsCreator;
 using Model.GeometryObjects;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace GmshTests
 {
@@ -866,17 +867,25 @@ namespace GmshTests
         [DataRow(@"\CAD\scobe2.step", new int[] { 1, 18, 4, 17, 2, 15 })]//Отверстия в виде последовательно соединенных граней
         [DataRow(@"\CAD\scobe3.step", new int[] { 1, 12, 2, 9, 4, 11 })]//Отверстия в виде сфер
         [DataRow(@"\CAD\PART_3.stp", new int[] { 7, 9, 6, 11, 5, 12, 4, 13, 3, 14, 2, 15, 1, 16, 21, 23 /*24, 25*/ })]//Тест на двух не связанных объемах
+        [DataRow(@"\CAD\curvedPipe.step", new int[] { 1, 4 })]//Изогнутая труба
+        [DataRow(@"\CAD\detail.step", new int[] { 1, 5 })]//Поверхность построенная на сплайнах
+        [DataRow(@"\CAD\cilindr.step", new int[] { 3, 4 })]
         public void MiddleSurfaceTest(string fileName, int[] surfs)
         {
             gmshController.Gmsh.Open(modelFolder + fileName);
 
+            var before = gmshController.Gmsh.Model.Occ.GetEntities(2);
+
             var builder = new MiddleSurfaceBuilder(gmshController);
             builder.Build(surfs);
+
+            var after = gmshController.Gmsh.Model.Occ.GetEntities(2);
+
+            Assert.IsTrue(after.Length > before.Length);
 
             var fName = Path.GetFileNameWithoutExtension(fileName);
             gmshController.Gmsh.Write($@"D:\{fName}.step");
         }
-
 
         private void RemoveNameTest(ref string entName, int dim, int delId, int maxId)
         {

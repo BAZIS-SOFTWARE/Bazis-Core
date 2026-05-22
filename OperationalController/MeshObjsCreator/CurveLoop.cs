@@ -2,6 +2,7 @@
 using OperationalController.GmshController;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 
 namespace OperationalController.MeshObjsCreator
@@ -236,7 +237,7 @@ namespace OperationalController.MeshObjsCreator
             }
             Loop = newLoop;
         }
-
+        /*
         private double[] GetGridCoords(List<double[]> mCurves, int surface)
         {
             var last = pointsPerCurve - 1;
@@ -277,7 +278,7 @@ namespace OperationalController.MeshObjsCreator
 
             var coords = controller.Gmsh.Model.GetValue(2, surface, averageUv.ToArray());
             return coords;
-        }
+        }*/
 
         private LinkedListNode<CurveLoopNode> GetClosestNode(double[] coords, bool bindEnd = true)
         {
@@ -311,7 +312,45 @@ namespace OperationalController.MeshObjsCreator
                 return DetectCircleOrientation(Loop.First.Value.Tag);
             else if (Loop.Count > 2)
                 return DetectOrientationByThreeCurves();
-            throw new NotImplementedException("Петля построенная на двух кривых пока не поддерживается");
+            return DetectOrientationByTwooCurves();
+            //throw new NotImplementedException("Петля построенная на двух кривых пока не поддерживается");
+        }
+
+        private Orient DetectOrientationByTwooCurves()
+        {
+            var curves = Loop.Take(2).ToList();
+
+            var aPoints = GetThreePointsOfCurve(curves[0]);
+            var aOrient = DetectOrientationByThreeVectors(aPoints.Item1, aPoints.Item2, aPoints.Item3);
+
+            var bPoints = GetThreePointsOfCurve(curves[1]);
+            var bOrient = DetectOrientationByThreeVectors(bPoints.Item1, bPoints.Item2, bPoints.Item3);
+
+            if (aOrient != bOrient)
+                throw new Exception($"Ориентация кривой {Math.Abs(curves[0].Tag)} и кривой {Math.Abs(curves[1].Tag)} не совпадает");
+
+            return aOrient;
+        }
+
+        private (Vector3D, Vector3D, Vector3D) GetThreePointsOfCurve(CurveLoopNode curve)
+        {
+            var begin = controller.Gmsh.Model.GetValue(0, curve.Begin, []);
+            var bVec = new Vector3D(begin[0], begin[1], begin[2]);
+            var absTag = Math.Abs(curve.Tag);
+
+            var pBounds = controller.Gmsh.Model.GetParametrizationBounds(1, absTag);
+            if (curve.Tag < 0)
+                Swap(ref pBounds.Item1[0], ref pBounds.Item2[0]);
+
+            var dir = pBounds.Item2[0] - pBounds.Item1[0];
+            var middleT = pBounds.Item1[0] + dir * 0.1;
+            var endT = pBounds.Item1[0] + dir * 0.5;
+
+            var coords = controller.Gmsh.Model.GetValue(1, absTag, [middleT, endT]);
+            var mVec = new Vector3D(coords[0], coords[1], coords[2]);
+            var eVec = new Vector3D(coords[3], coords[4], coords[5]);
+
+            return (bVec, mVec, eVec);
         }
 
         private Orient DetectOrientationByThreeCurves()
@@ -326,6 +365,20 @@ namespace OperationalController.MeshObjsCreator
             var mVec = new Vector3D(middle[0], middle[1], middle[2]);
             var eVec = new Vector3D(end[0], end[1], end[2]);
 
+            var orient = DetectOrientationByThreeVectors(bVec, mVec, eVec);
+
+            return orient;
+        }
+
+        /// <summary>
+        /// Определение ориентации по трем последовательным точкам (например взятых с кривой)
+        /// </summary>
+        /// <param name="bVec">Начальная точка</param>
+        /// <param name="mVec">Серединная точка</param>
+        /// <param name="eVec">Конечная точка</param>
+        /// <returns>Ориентация по часовой или против часовой стрелки</returns>
+        private Orient DetectOrientationByThreeVectors(Vector3D bVec, Vector3D mVec, Vector3D eVec)
+        {
             var first = (mVec - bVec).Normalize();
             var second = (eVec - mVec).Normalize();
             var cross = first.CrossProduct(second);
@@ -334,12 +387,13 @@ namespace OperationalController.MeshObjsCreator
             if (Math.Abs(dp) < 1e-4)
             {
                 dp = cross.DotProduct(UnitVector3D.XAxis);
-                if(Math.Abs(dp) < 1e-4)
+                if (Math.Abs(dp) < 1e-4)
                     dp = cross.DotProduct(UnitVector3D.YAxis);
             }
 
             return dp < 0 ? Orient.CW : Orient.CCW;
         }
+
 
         private void BuildLoop(int index)
         {
@@ -364,6 +418,13 @@ namespace OperationalController.MeshObjsCreator
                 var node = new CurveLoopNode(points[0], points[1], curves[i]);
                 Loop.AddLast(node);
             }
+        }
+
+        private void Swap<T>(ref T a, ref T b)
+        {
+            var temp = a;
+            a = b;
+            b = temp;
         }
 
         private CurveLoop()
