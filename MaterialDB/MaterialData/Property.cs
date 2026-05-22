@@ -13,6 +13,13 @@ namespace MaterialDB.MaterialData
     [Serializable]
     public class Property : IProperty
     {
+        public double this[int row,int col]
+        {
+            get { return Convert.ToDouble(DataTable.Rows[row][col]); }
+            set { DataTable.Rows[row][col] = value; }
+        }
+
+
         /// <inheritdoc/>
         public string Name 
         {
@@ -42,17 +49,21 @@ namespace MaterialDB.MaterialData
         {
             return $"{Name},{Units}";
         }
-/// <inheritdoc/>
+
+        public Property(string name, string x_unit, string y_unit, string units, DataTable dataTable)
+        {
+            Name = name;
+            X_unit = x_unit;
+            Y_unit = y_unit;
+            Units = units;
+            DataTable = dataTable;
+        }
+
+        /// <inheritdoc/>
         public Property Copy(string copyName)
         {
-            var newProperty = new Property
-            {
-                Name = copyName,
-                Units = Units,
-                X_unit = X_unit,
-                Y_unit = Y_unit,
-                DataTable = DataTable.Copy(),
-            };
+            var newProperty = new Property(copyName, X_unit, Y_unit, Units, DataTable.Copy());
+
             return newProperty;
         }
 /// <inheritdoc/>
@@ -98,6 +109,12 @@ namespace MaterialDB.MaterialData
                 yn = yn + yv * Convert.ToSingle(phaseData.Rows[j - 1]);
             }
             return yn;
+        }
+
+        public void AddRow()
+        {
+            var row = DataTable.NewRow();
+            DataTable.Rows.Add(row);
         }
     }
 }

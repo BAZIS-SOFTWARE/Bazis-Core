@@ -1,0 +1,143 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="SurfaceMesher.Contour" BaseTypeListCollapsed="true">
+    <Position X="8" Y="0.5" Width="1.5" />
+    <Members>
+      <Field Name="data" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AIAAAACAAAAAAAAAAAAAAAAAEAAAAAAAAAAQAAAAIAA=</HashCode>
+      <FileName>Contour.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SurfaceMesher.DeloneTriangulation" BaseTypeListCollapsed="true">
+    <Position X="2.75" Y="4" Width="1.5" />
+    <Members>
+      <Method Name="AddPointIntoTriangle" Hidden="true" />
+      <Method Name="AddSuperTriangle" Hidden="true" />
+      <Field Name="adjacency" Hidden="true" />
+      <Method Name="CheckDeloneCondition" Hidden="true" />
+      <Field Name="contour" Hidden="true" />
+      <Field Name="epsilon" Hidden="true" />
+      <Field Name="fixedEdges" Hidden="true" />
+      <Method Name="GetBoundaryEdges" Hidden="true" />
+      <Method Name="GetContourId" Hidden="true" />
+      <Method Name="GetInitialTriangle" Hidden="true" />
+      <Method Name="GetIntersectedEdges" Hidden="true" />
+      <Method Name="GetLocalizationPath" Hidden="true" />
+      <Method Name="GetOppositeVertexInTriangle" Hidden="true" />
+      <Method Name="GetSortedNodesIndeces" Hidden="true" />
+      <Method Name="GetSwappedEdges" Hidden="true" />
+      <Method Name="InsertPointIntoTriangulation" Hidden="true" />
+      <Method Name="IsEdgeConstrained" Hidden="true" />
+      <Method Name="IsNodeOnEdge" Hidden="true" />
+      <Method Name="IsQuadConvex" Hidden="true" />
+      <Method Name="IsSatisfyDeloneCondition" Hidden="true" />
+      <Method Name="IsTriangleInsideContour" Hidden="true" />
+      <Field Name="largestDimension" Hidden="true" />
+      <Field Name="lastRecentylyUsedTriangle" Hidden="true" />
+      <Method Name="MakePointFirstInTriangle" Hidden="true" />
+      <Method Name="MoveTowardPoint" Hidden="true" />
+      <Field Name="nodes" Hidden="true" />
+      <Method Name="SwapEdge" Hidden="true" />
+      <Field Name="trianglesNumber" Hidden="true" />
+      <Field Name="vertices" Hidden="true" />
+      <Field Name="xMax" Hidden="true" />
+      <Field Name="xMin" Hidden="true" />
+      <Field Name="yMax" Hidden="true" />
+      <Field Name="yMin" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AQDAAQQAQAggQQACAAAaADBgEAgSEAgUAAARAIMAoDI=</HashCode>
+      <FileName>DeloneTriangulation.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SurfaceMesher.Edge" BaseTypeListCollapsed="true">
+    <Position X="6.25" Y="0.5" Width="1.5" />
+    <Members>
+      <Field Name="epsilon" Hidden="true" />
+      <Method Name="GetSquaredLength" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAQAAAAEgAAAABAAAAAAAIIAAAAAIAEAAAA=</HashCode>
+      <FileName>Edge.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SurfaceMesher.Node2D" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAkgAAAAAAAAAAAAIAAAAEAAAAAYAA=</HashCode>
+      <FileName>Node2D.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SurfaceMesher.Point2D" BaseTypeListCollapsed="true">
+    <Position X="2.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAABAEBAAAAAAAAAAAAAAAAAAAAAAAYAQ=</HashCode>
+      <FileName>Point2D.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.35" Collapsed="true" />
+  </Class>
+  <Class Name="SurfaceMesher.SaveToBPF">
+    <Position X="10" Y="3" Width="1.5" />
+    <Members>
+      <Method Name="GetNodes" Hidden="true" />
+      <Method Name="WriteBlock" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAgAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAA=</HashCode>
+      <FileName>SaveToBPF.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SurfaceMesher.SaveToSTL">
+    <Position X="10" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SaveToSTL.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SurfaceMesher.Triangle2D" BaseTypeListCollapsed="true">
+    <Position X="4.25" Y="0.5" Width="1.5" />
+    <Members>
+      <Method Name="CheckCounterClockwiseOrder" Hidden="true" />
+      <Field Name="epsilon" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAAAAAEAEAAABAAAAAgAAACAAEAsAEAAAA=</HashCode>
+      <FileName>Triangle2D.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SurfaceMesher.Vector">
+    <Position X="10" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAAAAAAAAAAAAAAAAAAAAAAQCAAAAAAAEAAAAA=</HashCode>
+      <FileName>Vector.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SurfaceMesher.TriangleFilter" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="4" Width="1.5" />
+    <Members>
+      <Field Name="geometryFactory" Hidden="true" />
+      <Method Name="GetCircumdiameter" Hidden="true" />
+      <Method Name="GetDistanceToPolygon" Hidden="true" />
+      <Method Name="GetInflictedNodes" Hidden="true" />
+      <Method Name="GetLinearRing" Hidden="true" />
+      <Method Name="GetMinDistanceToPolygon" Hidden="true" />
+      <Method Name="GetPolygon" Hidden="true" />
+      <Field Name="inflictedNodes" Hidden="true" />
+      <Method Name="IsTriangleInsidePolygon" Hidden="true" />
+      <Field Name="triangulationInstance" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAACBEgACAAAgAAAAAAAQAAAgAAQAACAABAAAAAA=</HashCode>
+      <FileName>TriangleFilter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

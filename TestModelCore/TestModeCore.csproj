@@ -21,6 +21,7 @@
     <ProjectReference Include="..\Model\Model.csproj" />
     <ProjectReference Include="..\OperationalController\OperationalController.csproj" />
     <ProjectReference Include="..\PrGeometry\Geometry.csproj" />
+    <ProjectReference Include="..\SurfaceMesher\SurfaceMesher.csproj" />
   </ItemGroup>
 
   <ItemGroup>

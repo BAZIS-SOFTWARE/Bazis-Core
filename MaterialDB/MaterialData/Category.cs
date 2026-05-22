@@ -23,6 +23,8 @@ namespace MaterialDB.MaterialData
             { PropertyEnum.ThermalExpansion,"ТКЛР"},
             { PropertyEnum.YieldStrength,"Предел текучести"},
             { PropertyEnum.YoungModule,"Модуль Юнга"},
+            { PropertyEnum.HardeningModel,"Модель упрочнения"},
+            { PropertyEnum.MaterialModel,"Модель материала"}
         };
         /// <inheritdoc/>
         public string Name { get; set; }

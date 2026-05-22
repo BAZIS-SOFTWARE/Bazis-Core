@@ -14,6 +14,8 @@ namespace Project.TaskParameters
         public float InitTemp { get; set; } = 20.0f;
         public int SaveRate { get; set; }
         public string RestartFile { get; set; } = "";
+
+        public int UpdMatrixIteration { get; set; } = 1;
         public int Iterations { get; set; }
         public SolverSettings SolverSettings { get; set; } = new SolverSettings();
         public TimeSettings TimeSettings { get; set; } = new TimeSettings();

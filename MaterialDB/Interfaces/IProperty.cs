@@ -11,6 +11,13 @@ namespace MaterialDB.Interfaces
     public interface IProperty
     {
         /// <summary>
+        /// this
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="col"></param>
+        /// <returns></returns>
+        double this[int row, int col] {  get; set; }
+        /// <summary>
         /// Name
         /// </summary>
         string Name
@@ -73,5 +80,7 @@ namespace MaterialDB.Interfaces
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
         float CalcProp(float variable);
+
+        void AddRow();
     }
 }
