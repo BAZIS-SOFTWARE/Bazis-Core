@@ -142,6 +142,7 @@ DisplayName = "Сталь_20 и Титан_Вт6 и Титан_Фиктивны�
             material.AddPhaseData(phaseData);
             material.AddThermalProps();
             material.AddMechProps();
+            material.AddMetallurgicalProps();
 
             material.AddMaterialModel(1);
             material.AddHardeningModel(2);

@@ -158,6 +158,12 @@ namespace MaterialDB.MaterialData
                 CategoryData.Add("Общие сведения", new Category());
         }
 
+        public void AddMetallurgicalProps()
+        {
+            if (!CategoryData.ContainsKey("Металлургия"))
+                CategoryData.Add("Металлургия", new Category());
+        }
+
         public void AddPhaseData(PhaseData phases)
         {
             if (!CategoryData.ContainsKey("Общие сведения"))
