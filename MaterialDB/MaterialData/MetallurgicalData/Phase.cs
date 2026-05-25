@@ -6,7 +6,7 @@ namespace MaterialDB.MaterialData.MetallurgicalData
     /// Phase
     /// </summary>
     [Serializable]
-    public class Phase<T> where T : IConvertible
+    public class Phase
     {
         /// <summary>
         /// Name
@@ -15,7 +15,7 @@ namespace MaterialDB.MaterialData.MetallurgicalData
         /// <summary>
         /// Value
         /// </summary>
-        public T Value { get; set; }
+        public float Value { get; set; }
 
 /// <inheritdoc/>
 

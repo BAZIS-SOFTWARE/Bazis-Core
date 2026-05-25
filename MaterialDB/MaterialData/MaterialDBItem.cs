@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MaterialDB.MaterialData.MetallurgicalData;
+using System;
 using System.Collections.Generic;
 using System.Data;
 
@@ -10,6 +11,15 @@ namespace MaterialDB.MaterialData
     [Serializable]
     public class MaterialDBItem
     {
+        public MaterialDBItem(string name)
+        {
+            Name = name;
+        }
+
+        internal MaterialDBItem()
+        {
+        }
+
         /// <summary>
         /// Словарь категорий
         /// </summary>
@@ -47,7 +57,7 @@ namespace MaterialDB.MaterialData
         /// <returns></returns>
         public MaterialDBItem Copy(string copyName)
         {
-            var newMaterial = new MaterialDBItem { Name = copyName };
+            var newMaterial = new MaterialDBItem() { Name = copyName };
 
             foreach (var category in CategoryData.Values)
             {
@@ -142,5 +152,171 @@ namespace MaterialDB.MaterialData
             }
         }
 
+        public void AddGeneralProps()
+        {
+            if (!CategoryData.ContainsKey("Общие сведения"))
+                CategoryData.Add("Общие сведения", new Category());
+        }
+
+        public void AddMetallurgicalProps()
+        {
+            if (!CategoryData.ContainsKey("Металлургия"))
+                CategoryData.Add("Металлургия", new Category());
+        }
+
+        public void AddPhaseData(PhaseData phases)
+        {
+            if (!CategoryData.ContainsKey("Общие сведения"))
+                throw new GeneralAbsentException();
+
+            var table = new DataTable();
+            table.Columns.Add("Фаза", typeof(string));
+            table.Columns.Add("Масс.доли", typeof(double));
+
+            foreach (var item in phases)
+            {
+                var row = table.NewRow();
+                row[0] = item.Name;
+                row[1] = item.Value;
+                table.Rows.Add(row);
+            }
+
+            this[CategoryEnum.General].PropertyData.Add("Структура",
+new Property("Структура", "", "", "", table));
+        }
+
+        public void AddCrystallization(double ts, double tl)
+        {
+            if (!CategoryData.ContainsKey("Общие сведения"))
+                throw new GeneralAbsentException();
+
+            var table = new DataTable();
+            table.Columns.Add("Точка", typeof(string));
+            table.Columns.Add("Температура", typeof(double));
+
+            var row = table.NewRow();
+            row[0] = "TS";
+            row[1] = ts;
+            table.Rows.Add(row);
+
+            row = table.NewRow();
+            row[0] = "TL";
+            row[1] = tl;
+            table.Rows.Add(row);
+
+            this[CategoryEnum.General].PropertyData.Add("Кристаллизация",
+new Property("Кристаллизация", "", "", "", table));
+        }
+
+        public void AddMaterialModel(int mode)
+        {
+            if (!CategoryData.ContainsKey("Общие сведения"))
+                throw new GeneralAbsentException();
+
+            var table = new DataTable();
+            table.Columns.Add("Модель материала", typeof(int));
+
+            var row = table.NewRow();
+            row[0] = mode;
+            table.Rows.Add(row);
+
+            this[CategoryEnum.General].PropertyData.Add("Модель материала",
+new Property("Модель материала", "", "", "", table));
+        }
+
+        public void AddHardeningModel(int mode)
+        {
+            if (!CategoryData.ContainsKey("Общие сведения"))
+                throw new GeneralAbsentException();
+
+            var table = new DataTable();
+            table.Columns.Add("Модель упрочнения", typeof(int));
+
+            var row = table.NewRow();
+            row[0] = mode;
+            table.Rows.Add(row);
+
+            this[CategoryEnum.General].PropertyData.Add("Модель упрочнения",
+new Property("Модель упрочнения", "", "", "", table));
+        }
+
+        public void AddThermalProps()
+        {
+            if (!CategoryData.ContainsKey("Тепловые свойства"))
+                CategoryData.Add("Тепловые свойства", new Category());
+
+            if (!this["Тепловые свойства"].PropertyData.ContainsKey("Теплопроводность"))
+            {
+                var table = CreateTable();
+                this[CategoryEnum.Thermal].PropertyData.Add("Теплопроводность",
+    new Property("Теплопроводность", "", "", "", table));
+            }
+
+            if (!this["Тепловые свойства"].PropertyData.ContainsKey("Теплоемкость"))
+            {
+                var table = CreateTable();
+                this[CategoryEnum.Thermal].PropertyData.Add("Теплоемкость",
+    new Property("Теплоемкость", "", "", "", table));
+            }
+
+            if (!this["Тепловые свойства"].PropertyData.ContainsKey("Плотность"))
+            {
+                var table = CreateTable();
+                this[CategoryEnum.Thermal].PropertyData.Add("Плотность",
+    new Property("Плотность", "", "", "", table));
+            }
+        }
+
+        public void AddMechProps()
+        {
+            if (!CategoryData.ContainsKey("Механические свойства"))
+                CategoryData.Add("Механические свойства", new Category());
+
+            if (!this[CategoryEnum.Mechanical].PropertyData.ContainsKey("Предел текучести"))
+            {
+                var table = CreateTable();
+                this[CategoryEnum.Mechanical].PropertyData.Add("Предел текучести",
+    new Property("Предел текучести", "", "", "", table));
+            }
+
+            if (!this[CategoryEnum.Mechanical].PropertyData.ContainsKey("Предел прочности"))
+            {
+                var table = CreateTable();
+                this[CategoryEnum.Mechanical].PropertyData.Add("Предел прочности",
+    new Property("Предел прочности", "", "", "", table));
+            }
+
+            if (!this[CategoryEnum.Mechanical].PropertyData.ContainsKey("Коэффициент упрочнения"))
+            {
+                var table = CreateTable();
+                this[CategoryEnum.Mechanical].PropertyData.Add("Коэффициент упрочнения",
+    new Property("Коэффициент упрочнения", "", "", "", table));
+            }
+
+            if (!this[CategoryEnum.Mechanical].PropertyData.ContainsKey("Модуль Юнга"))
+            {
+                var table = CreateTable();
+                this[CategoryEnum.Mechanical].PropertyData.Add("Модуль Юнга",
+    new Property("Модуль Юнга", "", "", "", table));
+            }
+
+            if (!this[CategoryEnum.Mechanical].PropertyData.ContainsKey("ТКЛР"))
+            {
+                var table = CreateTable();
+                this[CategoryEnum.Mechanical].PropertyData.Add("ТКЛР",
+    new Property("ТКЛР", "", "", "", table));
+            }
+        }
+
+        private DataTable CreateTable()
+        {
+            var table = new DataTable();
+            table.Columns.Add("Температура", typeof(double));
+
+            foreach (var item in GetPhases())
+                table.Columns.Add(item, typeof(double));
+
+            return table;
+        }
     }
 }

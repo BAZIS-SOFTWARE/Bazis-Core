@@ -9,11 +9,11 @@ namespace MaterialDB.MaterialData.MetallurgicalData
     /// PhaseData
     /// </summary>
     [Serializable]
-    public class PhaseData : IList<Phase<float>>
+    public class PhaseData : IList<Phase>
     {
-        List<Phase<float>> phases = new List<Phase<float>>();
+        List<Phase> phases = new List<Phase>();
 
-        public Phase<float> this[int index] { get { return phases[index]; } set { phases[index] = value; } }
+        public Phase this[int index] { get { return phases[index]; } set { phases[index] = value; } }
 /// <inheritdoc/>
 
         public int Count { get { return phases.Count; } }
@@ -31,7 +31,7 @@ namespace MaterialDB.MaterialData.MetallurgicalData
         {
             for (int i = 0; i < phaseTable.Rows.Count; i++)
             {
-                var phase = new Phase<float>();
+                var phase = new Phase();
                 phase.Name = phaseTable.Rows[i][0].ToString();
                 phase.Value = Convert.ToSingle(phaseTable.Rows[i][1]);
 
@@ -46,7 +46,7 @@ namespace MaterialDB.MaterialData.MetallurgicalData
 
         }
 
-        public PhaseData(List<Phase<float>> phases)
+        public PhaseData(List<Phase> phases)
         {
             this.phases = phases;
         }
@@ -56,9 +56,9 @@ namespace MaterialDB.MaterialData.MetallurgicalData
             return string.Join(";", phases);
         }
 
-        public Phase<float> Find(string phaseName)
+        public Phase Find(string phaseName)
         {
-            foreach (Phase<float> phase in phases)
+            foreach (Phase phase in phases)
             {
                 if (phase.Name == phaseName)
                 {
@@ -69,11 +69,11 @@ namespace MaterialDB.MaterialData.MetallurgicalData
             return null;
         }
 
-        public void Add(Phase<float> item)
+        public void Add(Phase item)
         {
             phases.Add(item);
         }
-        public void AddRange(IEnumerable<Phase<float>> items)
+        public void AddRange(IEnumerable<Phase> items)
         {
             phases.AddRange(items);
         }
@@ -83,17 +83,17 @@ namespace MaterialDB.MaterialData.MetallurgicalData
             phases.Clear();
         }
 
-        public bool Contains(Phase<float> item)
+        public bool Contains(Phase item)
         {
             return phases.Contains(item);
         }
 
-        public void CopyTo(Phase<float>[] array, int arrayIndex)
+        public void CopyTo(Phase[] array, int arrayIndex)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerator<Phase<float>> GetEnumerator()
+        public IEnumerator<Phase> GetEnumerator()
         {
             foreach (var phase in phases)
             {
@@ -101,17 +101,17 @@ namespace MaterialDB.MaterialData.MetallurgicalData
             }
         }
 
-        public int IndexOf(Phase<float> item)
+        public int IndexOf(Phase item)
         {
             throw new NotImplementedException();
         }
 
-        public void Insert(int index, Phase<float> item)
+        public void Insert(int index, Phase item)
         {
             throw new NotImplementedException();
         }
 
-        public bool Remove(Phase<float> item)
+        public bool Remove(Phase item)
         {
             throw new NotImplementedException();
         }

@@ -51,7 +51,7 @@ namespace TestProject
 
             var phaseData = new PhaseData();
             foreach (var phaseValue in phaseValues)
-                phaseData.Add(new Phase<float>() { Name = "", Value = phaseValue });
+                phaseData.Add(new Phase() { Name = "", Value = phaseValue });
 
             var value = materials[mat][cat][prop].CalcProp(phaseData, temp);
 
@@ -124,6 +124,37 @@ DisplayName = "Сталь_20 и Титан_Вт6 и Титан_Фиктивны�
             Assert.AreNotEqual(oldMaterial["Тепловые свойства"]["Теплопроводность"].DataTable.Rows[0][1], newMaterial["Тепловые свойства"]["Теплопроводность"].DataTable.Rows[0][1]);
             Assert.AreNotEqual(oldMaterial["Тепловые свойства"]["Теплопроводность"].DataTable.Rows.Count, newMaterial["Тепловые свойства"]["Теплопроводность"].DataTable.Rows.Count);
             Assert.AreEqual(oldMaterial.CategoryData.Values.Count, newMaterial.CategoryData.Values.Count);
+        }
+
+        [DataTestMethod]
+        [DataRow("Сталь_20ХМ",2,1)]
+        public void TestMaterialsCreation(string materialName,int hardMode,int matMode)
+        {
+            var material = new MaterialDBItem(materialName);
+
+            material.AddGeneralProps();
+
+            var phaseData = new PhaseData(new List<Phase>()
+            {
+                new Phase(){Name = "F",Value = 1}
+            });
+
+            material.AddPhaseData(phaseData);
+            material.AddThermalProps();
+            material.AddMechProps();
+            material.AddMetallurgicalProps();
+
+            material.AddMaterialModel(1);
+            material.AddHardeningModel(2);
+
+            material[CategoryEnum.Thermal][PropertyEnum.ThermalConductivity].AddRow();
+
+            material[CategoryEnum.Thermal][PropertyEnum.ThermalConductivity][0,0] = 20;
+            material[CategoryEnum.Thermal][PropertyEnum.ThermalConductivity][0,1] = 0.001;
+
+            Assert.AreEqual(material.GetPhases().Count(), phaseData.Count);
+            Assert.AreEqual((int)material[CategoryEnum.General][PropertyEnum.HardeningModel][0,0], hardMode);
+            Assert.AreEqual((int)material[CategoryEnum.General][PropertyEnum.MaterialModel][0,0], matMode);
         }
 
         [DataTestMethod]
