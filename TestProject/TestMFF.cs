@@ -13,6 +13,7 @@ using MathNet.Numerics.LinearAlgebra;
 using Project.IO;
 using Project.Tasks.Functions;
 using Project.Tasks.Functions.FrameFunctions;
+using MathNet.Numerics.Statistics;
 
 namespace TestProject
 {
@@ -436,6 +437,84 @@ new Point3D(15, 16, 15));
 
             //assert
             Assert.AreEqual(power, result,0.1);
+        }
+
+        [DataRow(20, 20, 20,
+            15, 15, 15,
+            -5, -5, -5)]
+        [DataRow(0, 0, 0,
+            11, 11, 11,
+            11, 11, 11)]
+        [DataRow(10, 10, 10,
+            0, 0, 0,
+            -10, -10, -10)]
+        [DataRow(-12, -13, -14,
+            14, 13, 12,
+            26, 26, 26)]
+        [DataRow(12, 13, 14,
+            -14, -13, -12,
+            -26, -26, -26)]
+        [TestMethod]
+        public void StaticFrame_GetCoordsInFrame_ShouldPass_WhenPositionIncludeShifting(float shiftX, float shiftY, float shiftZ, float x, float y, float z, float assertX, float assertY, float assertZ)
+        {
+            var staticFrame = new StaticFrame();
+            staticFrame.SetShiftingAndRotation($"{shiftX}|{shiftY}|{shiftZ}|0|0|0");
+            var res = staticFrame.GetGlobalCoordsInLocalFrame(new Point3D(x, y, z));
+
+            Assert.AreEqual(assertX, res._x, 1e-4f);
+            Assert.AreEqual(assertY, res._y, 1e-4f);
+            Assert.AreEqual(assertZ, res._z, 1e-4f);
+        }
+
+        [DataRow(90, 0, 0,
+            1, 2, 3,
+            1, 3, -2)]
+        [DataRow(0, 90, 0,
+            1, 2, 3,
+            -3, 2, 1)]
+        [DataRow(0, 0, 90,
+            1, 2, 3,
+            2, -1, 3)]
+        [DataRow(180, 0, 0,
+            1, 2, 3,
+            1, -2, -3)]
+        [DataRow(0, 180, 0,
+            1, 2, 3,
+            -1, 2, -3)]
+        [DataRow(0, 0, 180,
+            1, 2, 3,
+            -1, -2, 3)]
+        [TestMethod]
+        public void StaticFrame_GetCoordsInFrame_ShouldPass_WhenPositionIncludeRotation(float rotX, float rotY, float rotZ, float x, float y, float z, float assertX, float assertY, float assertZ)
+        {
+            var staticFrame = new StaticFrame();
+            staticFrame.SetShiftingAndRotation($"0|0|0|{rotX}|{rotY}|{rotZ}");
+            var res = staticFrame.GetGlobalCoordsInLocalFrame(new Point3D(x, y, z));
+
+            Assert.AreEqual(assertX, res._x, 1e-4f);
+            Assert.AreEqual(assertY, res._y, 1e-4f);
+            Assert.AreEqual(assertZ, res._z, 1e-4f);
+        }
+
+        [DataRow(10, 20, 30, 45, 0, 0,
+            1, 0, 0,
+            -9, -20, -30)]
+        [DataRow(10, 20, 30, 0, 45, 0,
+            0, 2, 0,
+            -10, -18, -30)]
+        [DataRow(10, 20, 30, 0, 0, 45,
+            0, 0, 3,
+            -10, -20, -27)]
+        [TestMethod]
+        public void StaticFrame_GetCoordsInFrame_ShouldPass_WhenPositionIncludeShiftingAndRotation(float shiftX, float shiftY, float shiftZ, float rotX, float rotY, float rotZ, float x, float y, float z, float assertX, float assertY, float assertZ)
+        {
+            var staticFrame = new StaticFrame();
+            staticFrame.SetShiftingAndRotation($"{shiftX}|{shiftY}|{shiftZ}|{rotX}|{rotY}|{rotZ}");
+            var res = staticFrame.GetGlobalCoordsInLocalFrame(new Point3D(x, y, z));
+
+            Assert.AreEqual(assertX, res._x, 1e-4f);
+            Assert.AreEqual(assertY, res._y, 1e-4f);
+            Assert.AreEqual(assertZ, res._z, 1e-4f);
         }
     }
 }

@@ -85,5 +85,22 @@ namespace Project.Tasks.LocalFrames
             Rotation_Z = angle_z;
             //}
         }
+
+        /// <summary>
+        /// Получение глобальной точки в локальных координатах для текущего Frame
+        /// </summary>
+        /// <param name="point">Точка в глобальной системе координат</param>
+        /// <returns>Координаты точки в локальной системе координат относительно центра Frame</returns>
+        public Point3D GetGlobalCoordsInLocalFrame(Point3D point)
+        {
+            var tempFrame = new Frame();
+
+            tempFrame.Rotate(frame.Dir_X, Rotation_X);
+            tempFrame.Rotate(frame.Dir_Y, Rotation_Y);
+            tempFrame.Rotate(frame.Dir_Z, Rotation_Z);
+            tempFrame.Shift(Shifting);
+
+            return tempFrame.GetCoordsInFrame(point);
+        }
     }
 }
