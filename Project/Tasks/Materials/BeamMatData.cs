@@ -12,10 +12,10 @@ namespace Project.Tasks.Materials
         /// Diameter
         /// </summary>
         public double Diameter { get; set; } = 1;
-        public BeamMatData(MaterialDBItem material, IGroup group, float start, float stop) : 
+        public BeamMatData(float diam,MaterialDBItem material, IGroup group, float start, float stop) : 
             base(material, group, start, stop)
         {
-
+            Diameter = diam;
         }
 /// <inheritdoc/>
 

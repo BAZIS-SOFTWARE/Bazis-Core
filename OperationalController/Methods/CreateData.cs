@@ -103,16 +103,7 @@ namespace OperationalController
         {
             return TaskData?.Create(kind, info, ModelData?.GroupData);
         }
-        /// <inheritdoc/>
-        public void CreateGroup(IEnumerable<IModelObject> objs)
-        {
-            ModelData.GroupData.Create(objs);
-        }
-        /// <inheritdoc/>
-        public void CreateGroup(string grName, IEnumerable<IModelObject> objs)
-        {
-            ModelData.GroupData.Create(grName, objs);
-        }
+
         /// <inheritdoc/>
         public void Extrude3DForm2D(Point3D vector, int layers, IEnumerable<IElement2D> elements)
         {
