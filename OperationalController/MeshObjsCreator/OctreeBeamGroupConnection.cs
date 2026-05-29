@@ -12,17 +12,19 @@ namespace OperationalController.MeshObjsCreator
 {
     public class OctreeBeamGroupConnection : BeamGroupConnection
     {
-        private Dictionary<Node, int> incidentEdgesCount;
+        //private Dictionary<Node, int> incidentEdgesCount;
         private PointOctree<Node> octree;
 
-        protected override IEnumerable<Beam> Connect(IEnumerable<Node> smaller, IEnumerable<Node> larger)
+        /// <inheritdoc/>
+        protected override IEnumerable<Beam> Connect(IEnumerable<Node> master, IEnumerable<Node> slave)
         {
-            octree = CreateOctree(larger);
-            incidentEdgesCount = larger.ToDictionary(n => n, _ => 0);
+            octree = CreateOctree(slave);
+            //incidentEdgesCount = larger.ToDictionary(n => n, _ => 0);
             var startIndex = 0;
-            foreach (var node in smaller)
+            foreach (var node in master)
             {
-                foreach (var result in ConnectOneToMany(node, larger, startIndex))
+                // larger - slave (могут быть все узлы кроме master узлов)
+                foreach (var result in ConnectOneToMany(node, slave, startIndex))
                 {
                     if (result.CalcLength() < 1e-4f)
                         continue;

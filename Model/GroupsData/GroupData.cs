@@ -146,7 +146,7 @@ namespace Model.GroupsData
         }
 /// <inheritdoc/>
 
-        public void Create(IEnumerable<IModelObject> modelObjects)
+        public string Create(IEnumerable<IModelObject> modelObjects)
         {
             var objType = modelObjects.First().ObjType;
 
@@ -160,6 +160,8 @@ namespace Model.GroupsData
 
             group.AddRange(modelObjects);
             groups.Add(group);
+
+            return name;
         }
 /// <inheritdoc/>
 

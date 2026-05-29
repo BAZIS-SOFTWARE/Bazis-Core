@@ -43,6 +43,7 @@ namespace OperationalController.MeshObjsCreator
             return Connect(slave, master);
         }
 
+
         protected double GetSquaredDistance(Node one, Node two)
         {
             var vector = two.Position.Sub(one.Position);

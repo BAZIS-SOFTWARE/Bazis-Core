@@ -53,7 +53,7 @@ namespace Model.Interfaces
         /// </summary>
         /// <param name="modelObjects"></param>
         /// <returns></returns>
-        void Create(IEnumerable<IModelObject> modelObjects);
+        string Create(IEnumerable<IModelObject> modelObjects);
         /// <summary>
         /// Create
         /// </summary>

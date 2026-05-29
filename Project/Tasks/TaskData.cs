@@ -269,12 +269,10 @@ namespace Project.Tasks
                 var mat = Materials[infoAr[7]];
                 if (info.Contains("стержни"))
                 {
-                    var beamMatData = new BeamMatData(mat, group, start, stop);
-
                     if (!float.TryParse(infoAr[9], out float diameter))
                         throw new Exception($"{info} - Диаметр задан неверно!");
-                    beamMatData.Diameter = diameter;
 
+                    var beamMatData = new BeamMatData(diameter,mat, group, start, stop);
                     physicalData = beamMatData;
                 }
                 else if (info.Contains("пластины"))
