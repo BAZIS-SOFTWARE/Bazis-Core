@@ -1,30 +1,31 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq;
-using System;
+﻿using Geometry;
+using GmshApi;
+using MathNet.Numerics;
+using MathNet.Numerics.LinearAlgebra.Factorization;
+using MathNet.Spatial.Euclidean;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using Model.Interfaces;
 using Model.Interfaces.MeshObjects;
 using Model.Interfaces.ObjectsFinders;
-using GmshApi;
-using System.IO;
-using OperationalController.GmshController;
-using OperationalController;
-using MathNet.Numerics;
+using Model.IO;
 using Model.MeshObjects;
 using Model.Utilities;
-using Geometry;
-using Model.IO;
+using OperationalController;
+using OperationalController.GmshController;
 using OperationalController.MeshObjsCreator;
-using System.Numerics;
-using MathNet.Spatial.Euclidean;
-using System.Diagnostics;
-using Point3D = Geometry.Point3D;
-using MathNet.Numerics.LinearAlgebra.Factorization;
+using OperationalController.MeshObjsUtility;
 using Project.Tasks;
+using System;
+using System.Diagnostics;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Net.NetworkInformation;
+using System.Numerics;
 using System.Security.Cryptography;
 using static Community.CsharpSqlite.Sqlite3;
-using OperationalController.MeshObjsUtility;
-using System.Drawing;
+using Point3D = Geometry.Point3D;
 
 namespace GmshTests
 {
@@ -796,6 +797,25 @@ namespace GmshTests
                 foreach (var elems in proj.GetModelObjects(ObjType.Элемент3D))
                     Assert.AreEqual(expState, elems.ViewState);
             }
+        }
+
+        [DataTestMethod]
+        [DataRow(@"\CAD\cilindr.step", 3, 3, 1)]
+        [DataRow(@"\CAD\cilindr.step", 2, 2, 1)]
+        [DataRow(@"\CAD\cilindr.step", 0, 2, 1)]
+        [DataRow(@"\CAD\cilindr.step", 0, 3, 1)]
+        public void CreateGroupByGeoId(string path,int meshDim,int geoDim,int tag)
+        {
+            var proj = new ProjectController();
+            proj.GmshController.Load(@"..\..\..\..\GmshApi\gmsh.dll");
+            proj.ImportCAD(modelFolder + @"\" + path);
+
+            proj.GenerateMesh(3);
+
+            var gr = proj.CreateGroupByGeoObjs(meshDim, geoDim, tag);
+
+            //Скрытие\показ 3д элементов сопряженных с объемом и проверка элементов 
+            Assert.AreNotEqual(gr.Count(), 0);
         }
 
         [DataTestMethod]
