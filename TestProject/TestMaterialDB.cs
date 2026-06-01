@@ -1,8 +1,11 @@
 ﻿using MaterialDB.FunctionData;
+using MaterialDB.FunctionData.Exceptions;
 using MaterialDB.MaterialData;
+using MaterialDB.MaterialData.Exceptions;
 using MaterialDB.MaterialData.MetallurgicalData;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
+using System.Security.Policy;
 
 namespace TestProject
 {
@@ -171,6 +174,48 @@ DisplayName = "Сталь_20 и Титан_Вт6 и Титан_Фиктивны�
             Assert.AreNotEqual(oldFunction.Name, newFunction.Name);
             Assert.AreNotEqual(oldFunction.DataTable.Rows[0][1], newFunction.DataTable.Rows[0][1]);
             Assert.AreNotEqual(oldFunction.DataTable.Rows.Count, newFunction.DataTable.Rows.Count);
+        }
+
+        [TestMethod]
+        [DataRow(@"..\..\..\Materials\singleItemDBCheck.jsf")]
+        public void CheckMaterialDBFileLength_ShouldPass_WhenFileHasSingleMaterialItem(string matDBPath)
+        {
+            var fullPath = Path.GetFullPath(matDBPath);
+            var fileInfo = new FileInfo(fullPath);
+            Assert.IsTrue(fileInfo.Length >= 10794);
+
+            var matDB = new MaterialDBData(Path.GetFileName(fullPath), Path.GetDirectoryName(fullPath));
+            Assert.IsNotNull(matDB);
+        }
+
+        [TestMethod]
+        [DataRow(@"..\..\..\Materials\emptyDBCheck.jsf")]
+        public void CheckMaterialDBFileLength_ShoulFail_WhetFileAlmostEmpty(string matDBPath)
+        {
+            var fullPath = Path.GetFullPath(matDBPath);
+            var fileInfo = new FileInfo(fullPath);
+            Assert.ThrowsException<MaterialDBEmptyFileException>(() => new MaterialDBData(Path.GetFileName(fullPath), Path.GetDirectoryName(fullPath)));
+        }
+
+        [TestMethod]
+        [DataRow(@"..\..\..\Functions\singleItemFuncDBCheck.jsf")]
+        public void CheckFunctionDBFileLength_ShouldPass_WhenFileHasSingleFunctionItem(string funDBPath)
+        {
+            var fullPath = Path.GetFullPath(funDBPath);
+            var fileInfo = new FileInfo(fullPath);
+            Assert.IsTrue(fileInfo.Length >= 222);
+
+            var matDB = new FunctionDBData(Path.GetFileName(fullPath), Path.GetDirectoryName(fullPath));
+            Assert.IsNotNull(matDB);
+        }
+
+        [TestMethod]
+        [DataRow(@"..\..\..\Functions\emptyFuncDB.jsf")]
+        public void CheckFunctionDBFileLength_ShouldFail_WHenFileAlmostEmpty(string funDBPath)
+        {
+            var fullPath = Path.GetFullPath(funDBPath);
+            var fileInfo = new FileInfo(fullPath);
+            Assert.ThrowsException<FunctionDBEmptyFileException>(() => new FunctionDBData(Path.GetFileName(fullPath), Path.GetDirectoryName(fullPath)));
         }
     }
 }
