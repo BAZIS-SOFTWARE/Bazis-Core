@@ -257,7 +257,8 @@ namespace OperationalController
         /// Если <c>true</c>, используется транзитивный/«transfinite» режим экструзии
         /// (<c>ExtrudeTransfinite</c>), в противном случае — обычный режим (<c>Extrude</c>).
         /// </param>
-        public void ExtrudeElement3DAlongCurve(int surfaceTag, int[] curveTags, int startPointTag, double step, bool transfinite)
+        /// <returns>Имя набора созданных 3Д элементов.</returns>
+        public string ExtrudeElement3DAlongCurve(int surfaceTag, int[] curveTags, int startPointTag, double step, bool transfinite)
         {
             var elements2D = GetElements2DBelongingToSurface(surfaceTag);
             var stepNormalizedArray = new List<double>();
@@ -280,7 +281,7 @@ namespace OperationalController
                       : extruder.Extrude(elements2D);
             
             var collection = e3d.SelectMany(v => v);
-            UpdateModelData(extruder, collection);
+            return UpdateModelData(extruder, collection);
         }
 
         /// <summary>
@@ -296,7 +297,8 @@ namespace OperationalController
         /// Если <c>true</c>, используется «transfinite» режим экструзии
         /// (<c>ExtrudeTransfinite</c>), в противном случае — обычный режим (<c>Extrude</c>).
         /// </param>
-        public void ExtrudeElement3DRotate(int surfaceTag, float angle, Vector3 originPoint, Vector3 rotAxis, bool transfinite)
+        /// <returns>Имя набора созданных 3Д элементов.</returns>
+        public string ExtrudeElement3DRotate(int surfaceTag, float angle, Vector3 originPoint, Vector3 rotAxis, bool transfinite)
         {
             var radian = (float)(angle * Math.PI / 180);
             var elements2D = GetElements2DBelongingToSurface(surfaceTag);
@@ -306,7 +308,7 @@ namespace OperationalController
                                   : extruder.Extrude(elements2D, radian, originPoint, rotAxis);
             
             var collection = e3d.SelectMany(v => v);
-            UpdateModelData(extruder, collection);
+            return UpdateModelData(extruder, collection);
         }
 
 
@@ -363,7 +365,7 @@ namespace OperationalController
                 new Geometry.Point3D(x, y, z)));
         }
 
-        private void UpdateModelData(MeshExtruder extruder, IEnumerable<Element3D> collection)
+        private string UpdateModelData(MeshExtruder extruder, IEnumerable<Element3D> collection)
         {
             var objSet = new ObjectsSet<Element3D>("Extrude");
             foreach (var element in collection)
@@ -372,15 +374,17 @@ namespace OperationalController
             var objCollection = new ObjectsCollection<Element3D>{ objSet };
             ModelData.ObjectData.E3DCollection.Append(objCollection);
 
-            var name = ModelData.ObjectData.E3DCollection.Where(col => col.Key.StartsWith("append_")).Select(col => col.Value).Last();
-            var counter = name.Name.Split('_').Last();
-
-            ModelData.ObjectData.E3DCollection.ChangeName(name.Name, $"extrude_{counter}");
+            var objectSet = ModelData.ObjectData.E3DCollection.Where(col => col.Key.StartsWith("append_")).Select(col => col.Value).Last();
+            var counter = objectSet.Name.Split('_').Last();
+            var updateName = $"extrude_{counter}";
+            ModelData.ObjectData.E3DCollection.ChangeName(objectSet.Name, updateName);
 
             var nodesSet = new ObjectsSet<Model.MeshObjects.Node>("Extrude");
             foreach (var node in extruder.Nodes.Values)
                 nodesSet.Add(node.Number, node);
             ModelData.ObjectData.NodesSet.Append(nodesSet);
+
+            return updateName;
         }
 
         private List<Element2D> GetElements2DBelongingToSurface(int surfaceTag)
