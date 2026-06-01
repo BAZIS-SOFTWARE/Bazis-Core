@@ -195,8 +195,10 @@ namespace MaterialDB.MaterialData
             if (filePath == null)
                 throw new MaterialDBFileNotFoundException($"Не найдена база {dbName} в папке {dbFolder}");
 
-            // размер файла БД материалов с 1 материалом без дополнительных данных
-            else if (new FileInfo(filePath).Length < 10794)
+            // размер файла БД материалов с 1 материалом без дополнительных данных: 10794 байта
+            // решено поставить порог в 100 байт, чтобы гарантировано отсеить неподходящие файлы,
+            // снизить риск возникновения ошибок при изменении формата файла БД материалов
+            else if (new FileInfo(filePath).Length < 100)
                 throw new MaterialDBEmptyFileException($"File {filePath} contains no materialDB data");
 
             else

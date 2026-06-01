@@ -97,8 +97,10 @@ namespace MaterialDB.FunctionData
             if (filePath == null)
                 throw new FunctionDBFileNotFoundException($"Не найдена база {dbName} в папке {dbFolder}");
 
-            // размер файла БД функций с 1 функцией без дополнительных данных
-            else if (new FileInfo(filePath).Length < 222)
+            // размер файла БД функций с 1 материалом без дополнительных данных: 222 байта
+            // решено поставить порог в 100 байт, чтобы гарантировано отсеить неподходящие файлы,
+            // снизить риск возникновения ошибок при изменении формата файла БД функций
+            else if (new FileInfo(filePath).Length < 100)
                 throw new FunctionDBEmptyFileException($"File {filePath} contains no functionDB data");
 
             else
