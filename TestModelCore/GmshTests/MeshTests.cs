@@ -819,6 +819,22 @@ namespace GmshTests
         }
 
         [DataTestMethod]
+        [DataRow(@"\CAD\PART_3.stp")]
+        public void CreateOpenSurfaceNodesGroup(string path)
+        {
+            var proj = new ProjectController();
+            proj.GmshController.Load(@"..\..\..\..\GmshApi\gmsh.dll");
+            proj.ImportCAD(modelFolder + @"\" + path);
+
+            proj.GenerateMesh(3);
+            //e3D_1
+            var gr = proj.CreateOpenSurfaceNodesGroup("e3D_1");
+
+            //Скрытие\показ 3д элементов сопряженных с объемом и проверка элементов 
+            Assert.AreNotEqual(gr.Count(), 0);
+        }
+
+        [DataTestMethod]
         [DataRow(@"\CAD\cilindr.step")]
         public void Hide2DTest(string path)
         {
