@@ -326,34 +326,6 @@ namespace OperationalController.MeshObjsCreator
             }
         }
 
-        /*
-        private double[] GetAverageCurveCoordinates(int mCurve, double[] mBounds, int sCurve, double[] sBounds, int surface)
-        {
-            var mReparams = controller.Gmsh.Model.ReparametrizeOnSurface(1, mCurve, mBounds, surface);
-            var sReparams = controller.Gmsh.Model.ReparametrizeOnSurface(1, sCurve, sBounds, surface);
-
-            if (mReparams.Length != sReparams.Length)
-                throw new Exception($"Массивы репараметризированных кривых на поверхность {surface} имеют разную длинну");
-
-            if (IsCloseParametrization(mReparams) && IsCloseParametrization(sReparams))
-            {
-                var coords = GetAverageCurveCoordinates(mCurve, mBounds, sCurve, sBounds);
-                ProjectPointsToSurface(coords, surface);
-                return coords;
-            }
-
-            var averageUv = new double[mReparams.Length];
-            for (var i = 0; i < mReparams.Length; i += 2)
-            {
-                averageUv[i] = (mReparams[i] + sReparams[i]) * 0.5;
-                averageUv[i + 1] = (mReparams[i + 1] + sReparams[i + 1]) * 0.5;
-            }
-
-            var average = controller.Gmsh.Model.GetValue(2, surface, averageUv);
-
-            return average;
-        }*/
-
         private double[] GetAverageCurveCoordinates(CurveLoop.CurveLoopNode mCurve, CurveLoop.CurveLoopNode sCurve)
         {
             var mBounds = mCurve.GetParametrization(controller, pointsPerCurve);
@@ -429,7 +401,7 @@ namespace OperationalController.MeshObjsCreator
                     }
                     AddWire(curveArray, wires, j);
                 }
-                var surface = CreateSurface(wires/*, loops[0].AverageCoords*/);
+                var surface = CreateSurface(wires);
                 surfWires[i] = (surface, wires);
             }
             TrimSurfaces(surfWires);
@@ -445,19 +417,11 @@ namespace OperationalController.MeshObjsCreator
             }
         }
 
-        private int CreateSurface(int[] wires/*, double[] gridCoords*/)
+        private int CreateSurface(int[] wires)
         {
-            /*var grid = new List<int>();
-            if(gridCoords != null)
-                for(var i = 0; i < gridCoords.Length; i+=3)
-                    grid.Add(controller.Gmsh.Model.Occ.AddPoint(gridCoords[i], gridCoords[i + 1], gridCoords[i + 2]));
-
-            int[] points = gridCoords != null ? grid.ToArray() : null;*/
-            var surface = controller.Gmsh.Model.Occ.AddSurfaceFilling(wires[0]/*, -1, points*/);
+            var surface = controller.Gmsh.Model.Occ.AddSurfaceFilling(wires[0]);
             if (surface == 0)
                 throw new Exception(controller.Gmsh.Logger.GetLastError());
-
-            //RemoveInsidePoints(points, 0, 0, 0);
 
             return surface;
         }

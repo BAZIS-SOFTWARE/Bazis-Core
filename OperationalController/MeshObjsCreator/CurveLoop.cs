@@ -140,49 +140,6 @@ namespace OperationalController.MeshObjsCreator
             }
         }
 
-        /*
-        /// <summary>
-        /// Усредняем поврехности двух контуров, работает только на 4 кривых
-        /// </summary>
-        /// <param name="similarSlave">Починенный контур, должен быть приведен к подобному вызовом MakeSimilar</param>
-        public void AverageSurfaces(CurveLoop similarSlave)
-        {
-            if (Loop.Count != 4 || similarSlave.Loop.Count != 4)
-                return;
-
-            var master = Loop.First;
-            var slave = similarSlave.Loop.First;
-
-            var mCurves = new List<double[]>();
-            var sCurves = new List<double[]>();
-
-            while (master != null)
-            {
-                var mParams = master.Value.GetParametrization(controller, pointsPerCurve);
-                var sParams = slave.Value.GetParametrization(controller, pointsPerCurve);
-
-                mParams = controller.Gmsh.Model.ReparametrizeOnSurface(1, Math.Abs(master.Value.Tag), mParams, Surface);
-                sParams = controller.Gmsh.Model.ReparametrizeOnSurface(1, Math.Abs(slave.Value.Tag), mParams, similarSlave.Surface);
-
-                mCurves.Add(mParams);
-                sCurves.Add(sParams);
-
-                master = master.Next;
-                slave = slave.Next;
-            }
-
-            var mCoords = GetGridCoords(mCurves, Surface);
-            var sCoords = GetGridCoords(sCurves, similarSlave.Surface);
-
-            if (mCoords.Length != sCoords.Length)
-                throw new Exception($"У поверхности {Surface} и поверхности {similarSlave.Surface} получено разное число координат сетки");
-            
-            for(var i = 0; i < mCoords.Length; ++i)
-                mCoords[i] = (mCoords[i] + sCoords[i]) * 0.5;
-
-            AverageCoords = mCoords;
-        }*/
-
         /// <summary>
         /// Перестроение петли начиная с ближайшего к coords узла, сохраняя ориентацию петли
         /// </summary>
@@ -237,48 +194,6 @@ namespace OperationalController.MeshObjsCreator
             }
             Loop = newLoop;
         }
-        /*
-        private double[] GetGridCoords(List<double[]> mCurves, int surface)
-        {
-            var last = pointsPerCurve - 1;
-
-            var averageUv = new List<double>();
-            for (var i = 1; i < last; ++i)
-            {
-                var opIndex0 = last - i;
-                var mStride0 = i * 2;
-                var sStride0 = opIndex0 * 2;
-
-                var bounds0 = new double[] { mCurves[0][mStride0], mCurves[0][mStride0 + 1], mCurves[2][sStride0], mCurves[2][sStride0 + 1] };
-                var u0Step = (bounds0[2] - bounds0[0]) / (pointsPerCurve - 1);
-                var v0Step = (bounds0[3] - bounds0[1]) / (pointsPerCurve - 1);
-
-                for (var j = 1; j < last; ++j)
-                {
-                    var opIndex1 = last - j;
-                    var mStride1 = j * 2;
-                    var sStride1 = opIndex1 * 2;
-
-                    var bounds1 = new double[] { mCurves[1][mStride1], mCurves[1][mStride1 + 1], mCurves[3][sStride1], mCurves[3][sStride1 + 1] };
-                    var u1Step = (bounds1[2] - bounds1[0]) / (pointsPerCurve - 1);
-                    var v1Step = (bounds1[3] - bounds1[1]) / (pointsPerCurve - 1);
-
-                    var u0 = bounds0[0] + u0Step * j;
-                    var v0 = bounds0[1] + v0Step * j;
-                    var u1 = bounds1[0] + u1Step * j;
-                    var v1 = bounds1[1] + v1Step * j;
-
-                    var avU = (u0 + u1) * 0.5;
-                    var avV = (v0 + v1) * 0.5;
-
-                    averageUv.Add(avU);
-                    averageUv.Add(avV);
-                }
-            }
-
-            var coords = controller.Gmsh.Model.GetValue(2, surface, averageUv.ToArray());
-            return coords;
-        }*/
 
         private LinkedListNode<CurveLoopNode> GetClosestNode(double[] coords, bool bindEnd = true)
         {
@@ -313,7 +228,6 @@ namespace OperationalController.MeshObjsCreator
             else if (Loop.Count > 2)
                 return DetectOrientationByThreeCurves();
             return DetectOrientationByTwooCurves();
-            //throw new NotImplementedException("Петля построенная на двух кривых пока не поддерживается");
         }
 
         private Orient DetectOrientationByTwooCurves()
