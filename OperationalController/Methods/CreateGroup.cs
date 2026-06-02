@@ -76,7 +76,7 @@ namespace OperationalController
                 throw new EmptyCollectionException("Пустая коллекция");
 
             var finder = new FindOpenSurfaceNodes();
-            var surfaceNodes = finder.Find(ModelData.ObjectData.E3DCollection.GetObjects());
+            var surfaceNodes = finder.Find(ModelData.ObjectData.E3DCollection[setName].Values);
 
             var ndsList = surfaceNodes.Select(x => ModelData.ObjectData.NodesSet[x]);
 
