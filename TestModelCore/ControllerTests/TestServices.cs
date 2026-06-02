@@ -197,13 +197,21 @@ namespace ControllerTests
         }
 
         [TestMethod]
-        public void TestCalcFindOpenSurfaceNodes()
+        [DataRow(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC",0)]
+        [DataRow(@"..\..\..\Examples\BPF2TXT\surfNodesSample.bpf2", 2173)]
+        public void TestCalcFindOpenSurfaceNodes(string path,int excNumb)
         {
             //assing
             var model = new ModelData();
-            model.Loader = new LoadModelFromASCIITextFile();
 
-            model.Load(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC");
+            var ext = Path.GetExtension(path);
+
+            if(ext == "*.ASC")
+                model.Loader = new LoadModelFromASCIITextFile();
+            else
+                model.Loader = new LoadModelFromBPF2TextFile();
+
+            model.Load(path);
 
             //act
             var elements = model.ObjectData.E3DCollection;
@@ -214,7 +222,7 @@ namespace ControllerTests
             var finder = new FindOpenSurfaceNodes();
             var surfaceNodes = finder.Find(elements.GetObjects());
             var distinctNumbers = surfaceNodes.Distinct();
-            if (distinctNumbers.Contains(0))
+            if (distinctNumbers.Contains(excNumb))
                 throw new Exception("Последовательность содержит неверный узел!");
         }
 

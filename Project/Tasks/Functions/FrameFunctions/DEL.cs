@@ -7,7 +7,18 @@ namespace Project.Tasks.Functions.FrameFunctions
 {
     public class DEL : FrameFunction
     {
-        //public string Name { get; set; }
+        /// <summary>
+        /// DEL
+        /// </summary>
+        public DEL()
+        {
+            Name = FuncName.DEL.ToString();
+            FunctionType = FuncType.CPF;
+            AddParameter(new Parameter("Width", ParameterType.Constant, 0));
+            AddParameter(new Parameter("Depth", ParameterType.Constant, 0));
+            AddParameter(new Parameter("FrontPart", ParameterType.Constant, 0));
+            AddParameter(new Parameter("BackPart", ParameterType.Constant, 0));
+        }
 
         /// <summary>
         /// Ширина сварочной ванны, мм

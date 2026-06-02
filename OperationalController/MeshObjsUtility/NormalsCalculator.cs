@@ -21,15 +21,18 @@ namespace OperationalController.MeshObjsUtility
                 foreach (var surface in element.GetSurfaces())
                 {
                     var normal = surface.CalcNormal();
+                    /* Эти вычисления нормали верные, но избыточны. Пока закомментируем.
                     var plane = new Plane(surface[0].Position, normal);
                     var proj = centre.GetPointProectionOnPlane(plane);
                     var normalV = proj.Sub(centre);
+                    */
+                    var norm = Vector.GetVectorNorm(normal);
                     foreach (var node in surface.GetVertexes())
                     {
                         if (node.ViewState)
                             if (normals.ContainsKey(node.Number))
-                                normals[node.Number] = normals[node.Number].Sum(normalV);
-                            else normals.Add(node.Number, normalV);
+                                normals[node.Number] = normals[node.Number].Sum(norm);
+                            else normals.Add(node.Number, norm);
                     }
                 }
             }
