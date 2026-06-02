@@ -16,6 +16,10 @@ namespace Project.Tasks
 
     public class MatData : CondData
     {
+        /// <summary>
+        /// InitialTemp
+        /// </summary>
+        public double InitialTemp { get; set; } = 20.0;
         
         public MatData(MaterialDBItem material, IGroup group, float start, float stop) : base(group, start, stop)
         {
