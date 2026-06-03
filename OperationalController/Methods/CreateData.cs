@@ -9,6 +9,7 @@ using Model.MeshObjects;
 using Model.ObjectsCollections;
 using OperationalController.GmshController;
 using OperationalController.MeshObjsCreator;
+using OperationalController.MeshObjsCreator.Extrude;
 using Project.Interfaces.Tasks;
 using System;
 using System.Collections.Generic;

@@ -1,12 +1,8 @@
-﻿using Geometry;
-using Model.GroupsData;
-using Model.Interfaces;
-using Model.MeshObjects;
-using Octree;
+﻿using Model.MeshObjects;
+using OperationalController.MeshObjsCreator.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 
 namespace OperationalController.MeshObjsCreator
 {

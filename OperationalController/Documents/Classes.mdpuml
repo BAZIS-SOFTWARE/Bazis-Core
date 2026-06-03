@@ -1,0 +1,49 @@
+@startuml
+class ProjectController
+
+
+class PresentersCreator
+class GmshController
+interface IGmshController
+
+package Creator <<Rectangle>> {
+abstract class BeamGroupConnection
+abstract class MeshExtruder
+class CurveExtruder
+class RotateExtruder
+class TranslateExtruder
+}
+
+package Utility <<Rectangle>> {
+class CrossSection
+class FindBoundaryEdges
+class FindCoincidentObjects
+class FindOpenSurfaceNodes
+class FreeNodesFinder
+class InterfaceNodesFinder
+class MergeObjects
+class NormalsCalculator
+class ObjectsRenumber
+class SelectionHelper
+}
+FindOpenSurfaceNodes -- NormalsCalculator: использует >
+ProjectController *-- CrossSection: включает >
+ProjectController *-- PresentersCreator: использует >
+ProjectController *--> FindBoundaryEdges
+ProjectController *--> FindCoincidentObjects
+ProjectController *--> FindOpenSurfaceNodes
+ProjectController *--> FreeNodesFinder
+ProjectController *--> InterfaceNodesFinder
+ProjectController *--> MergeObjects
+ProjectController *--> NormalsCalculator
+ProjectController *--> ObjectsRenumber
+ProjectController *--> SelectionHelper
+ProjectController *--> GmshController
+ProjectController *--> MeshExtruder
+ProjectController *--> BeamGroupConnection
+
+MeshExtruder <|-- CurveExtruder
+MeshExtruder <|-- RotateExtruder
+MeshExtruder <|-- TranslateExtruder
+IGmshController <|.. GmshController
+@enduml

@@ -15,6 +15,7 @@ using Model.Utilities;
 using OperationalController;
 using OperationalController.GmshController;
 using OperationalController.MeshObjsCreator;
+using OperationalController.MeshObjsCreator.Extrude;
 using OperationalController.MeshObjsUtility;
 using Project.Tasks;
 using System;
