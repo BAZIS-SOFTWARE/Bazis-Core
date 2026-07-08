@@ -63,7 +63,7 @@ namespace OperationalController
         /// <summary>
         /// Возвращает перечисление геометрических объектов, смежных с заданным объектом <paramref name="obj"/>.
         /// </summary>
-        public Tuple<int[], int[]> SelectAdjacencies(int dim, int number)
+        public Tuple<int[], int[]> GetAdjacentGeometryObjects(int dim, int number)
         {
             return GmshController.Gmsh.Model.GetAdjacencies(dim, number);
         }
