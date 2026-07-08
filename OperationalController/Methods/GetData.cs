@@ -18,7 +18,9 @@ namespace OperationalController
 {
     public partial class ProjectController
     {
-        /// <inheritdoc/>
+        /// <summary>
+        /// Возвращает перечисление геометрических объектов, смежных с заданным объектом <paramref name="obj"/>.
+        /// </summary>
         public IEnumerable<IModelObject> GetAdjacentGeometryObjects(IModelObject obj, int direction)
         {
             var dim = obj.Dim;
@@ -56,6 +58,14 @@ namespace OperationalController
                 foreach (var item in numbers)
                     yield return GetModelObject(adgObjType, item);
             }
+        }
+
+        /// <summary>
+        /// Возвращает перечисление геометрических объектов, смежных с заданным объектом <paramref name="obj"/>.
+        /// </summary>
+        public Tuple<int[], int[]> SelectAdjacencies(int dim, int number)
+        {
+            return GmshController.Gmsh.Model.GetAdjacencies(dim, number);
         }
 
         /// <summary>
