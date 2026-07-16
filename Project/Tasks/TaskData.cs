@@ -455,7 +455,7 @@ namespace Project.Tasks
             }
             else
             {
-                throw new Exception("Неправильный ввод данных");
+                throw new Exception("Неправильный ввод данных подвижной системы координат");
             }
         }
 

@@ -98,7 +98,7 @@ namespace Project.Tasks.Functions.FrameFunctions
 
         public override double CalcValue()
         {
-            throw new NotImplementedException();
+            return 0;
         }
     }
 }

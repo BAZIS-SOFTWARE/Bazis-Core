@@ -115,14 +115,24 @@ namespace PreProc
             where LoadData : CondData
             where BoundData : CondData
         {
-            var matData = data.Where(md => md.Kind == DataKind.Материал).OrderBy(md => md.StartTime).ToList();
-            var loadData = data.Where(ld => ld is LoadData).OrderBy(ld => ld.StartTime).ToList();
-            var boundData = data.Where(bd => bd is BoundData).OrderBy(bd => bd.StartTime).ToList();
+            var matData = data.Where(md => md.Kind == DataKind.Материал).
+                OrderBy(md => md.StartTime).ToList();
+            var loadData = data.Where(ld => ld is LoadData).
+                OrderBy(ld => ld.StartTime).ToList();
+            var boundData = data.Where(bd => bd is BoundData).
+                OrderBy(bd => bd.StartTime).ToList();
 
             CheckLoadDataInsideBoundDataInterval<LoadData, MatData>(boundData, matData);
             CheckLoadDataInsideBoundDataInterval<LoadData, BoundData>(loadData, boundData);
 
-            return ParametrizeResultParameters<ResultParam>();
+            var pars = ParametrizeResultParameters<ResultParam>();
+
+            var iniTemps = matData.
+                Select((md, index) => new { Key = md.Group.Name,Value = 20.0})
+    .ToDictionary(x => x.Key, x => x.Value);
+            pars[0].InitTemp = iniTemps;
+
+            return pars;
         }
 
         /// <summary>
@@ -306,7 +316,7 @@ namespace PreProc
         /// <param name="loadData">Лист класса LoadData</param>
         /// <param name="boundData">Лист класса BoundData</param>
         /// <exception cref="Exception">Некоректно заданы данные</exception>
-        private static void CheckLoadDataInsideBoundDataInterval<LoadData, BoundData>
+        private void CheckLoadDataInsideBoundDataInterval<LoadData, BoundData>
             (List<ICondData> loadData, List<ICondData> boundData)
         {
             if (boundData.Count == 0)

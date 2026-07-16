@@ -11,7 +11,7 @@ namespace Project.TaskParameters
     {
         public TaskKind TaskKind { get; set; }
         public List<string> TermalProcesses { get; set; } = new List<string>();
-        public float InitTemp { get; set; } = 20.0f;
+        public Dictionary<string, double> InitTemp { get; set; } = new Dictionary<string, double>();
         public int SaveRate { get; set; }
         public string RestartFile { get; set; } = "";
 
