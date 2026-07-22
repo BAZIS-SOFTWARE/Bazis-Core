@@ -1170,6 +1170,12 @@ namespace GmshTests
             saver.Save(mdArray[0], $@"D:\{fName}Curves{stringKey}{stringTransfinite}{stringRecombine}.bpf2");
         }
 
+        
+        public void MultiPassSectionTest()
+        {
+
+        }
+
         private List<Element2D> GenTriangle(float[] coords)
         {
             var nodes = new List<Node>() { new Node(1, new Point3D(coords[0], coords[1], coords[2])),
