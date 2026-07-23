@@ -1170,9 +1170,85 @@ namespace GmshTests
             saver.Save(mdArray[0], $@"D:\{fName}Curves{stringKey}{stringTransfinite}{stringRecombine}.bpf2");
         }
 
-        
-        public void MultiPassSectionTest()
+        public static IEnumerable<object[]> GetVectorLists()
         {
+            yield return new object[]
+            {
+                new List<List<Vector2>>() { new List<Vector2>() { new Vector2(-1.2f, -1.0f), new Vector2(-0.6f, -1.0f) , new Vector2(-0.6f, -0.6f), new Vector2( -0.8f, -0.6f) },
+                                            new List<Vector2>() { new Vector2(-0.6f, -1.0f), new Vector2( 0.0f, -1.0f) , new Vector2( 0.0f, -0.6f), new Vector2(-0.3f, -0.6f),
+                                                                  new Vector2(-0.6f, -0.6f) },
+                                            new List<Vector2>() { new Vector2(0.0f, -1.0f), new Vector2(0.6f, -1.0f), new Vector2(0.6f, -0.6f), new Vector2( 0.3f, -0.6f),
+                                                                  new Vector2(0.0f, -0.6f) },
+                                            new List<Vector2>() { new Vector2(0.6f, -1.0f), new Vector2(1.2f, -1.0f), new Vector2(0.8f, -0.6f), new Vector2(0.6f, -0.6f) },
+
+                                            new List<Vector2>() { new Vector2(-0.8f, -0.6f), new Vector2(-0.6f, -0.6f), new Vector2(-0.3f, -0.6f), new Vector2(-0.3f, 0.0f),
+                                                                  new Vector2(-0.7f, 0.0f) },
+                                            new List<Vector2>() { new Vector2(-0.3f, -0.6f), new Vector2(0.0f, -0.6f), new Vector2(0.3f, -0.6f), new Vector2(0.3f, 0.0f),
+                                                                  new Vector2(0.0f, 0.0f), new Vector2(-0.3f, 0.0f) },
+                                            new List<Vector2>() { new Vector2(0.3f, -0.6f), new Vector2(0.6f, -0.6f), new Vector2(0.8f, -0.6f), new Vector2(0.7f, 0.0f),
+                                                                  new Vector2(0.3f, 0.0f)},
+
+                                            new List<Vector2>() { new Vector2(-0.7f, 0.0f), new Vector2(-0.3f, 0.0f), new Vector2(0.0f, 0.0f), new Vector2(0.0f, 0.6f),
+                                                                  new Vector2(-0.4f, 0.6f) },
+                                            new List<Vector2>() { new Vector2(0.0f, 0.0f), new Vector2(0.3f, 0.0f), new Vector2(0.7f, 0.0f), new Vector2(0.4f, 0.6f),
+                                                                  new Vector2(0.0f, 0.6f) },
+
+                                            new List<Vector2>() { new Vector2(-0.4f, 0.6f), new Vector2(0.0f, 0.6f), new Vector2(0.4f, 0.6f), new Vector2( 0.0f, 1.2f) }
+                                          },
+                "Triangle_0",
+                Vector3.Zero,
+                Vector3.UnitX,
+                Vector3.UnitY
+            };
+
+            yield return new object[]
+            {
+                new List<List<Vector2>>() { new List<Vector2>() { new Vector2(-0.8f, -0.6f), new Vector2( 0.8f, -0.6f), new Vector2( 0.0f, 0.0f) },
+                                            new List<Vector2>() { new Vector2(-1.2f, -1.0f), new Vector2( -0.8f, -1.0f), new Vector2( -0.8f, -0.6f) },
+                                            new List<Vector2>() { new Vector2(-0.8f, -1.0f), new Vector2( 0.8f, -1.0f), new Vector2( 0.8f, -0.6f), new Vector2( -0.8f, -0.6f) },
+                                            new List<Vector2>() { new Vector2(0.8f, -1.0f), new Vector2(1.2f, -1.0f), new Vector2(0.8f, -0.6f) },
+                                          },
+                "Triangle_1",
+                Vector3.Zero,
+                Vector3.UnitX,
+                Vector3.UnitY
+            };
+            //Тест поворотов осей и смещения
+            yield return new object[]
+           {
+                new List<List<Vector2>>() { new List<Vector2>() { new Vector2(-0.8f, -0.6f), new Vector2( 0.8f, -0.6f), new Vector2( 0.0f, 0.0f) },
+                                            new List<Vector2>() { new Vector2(-1.2f, -1.0f), new Vector2( -0.8f, -1.0f), new Vector2( -0.8f, -0.6f) },
+                                            new List<Vector2>() { new Vector2(-0.8f, -1.0f), new Vector2( 0.8f, -1.0f), new Vector2( 0.8f, -0.6f), new Vector2( -0.8f, -0.6f) },
+                                            new List<Vector2>() { new Vector2(0.8f, -1.0f), new Vector2(1.2f, -1.0f), new Vector2(0.8f, -0.6f) },
+                                          },
+                "Triangle_2",
+                Vector3.UnitX,
+                new Vector3(0.707f, 0.707f, 0),
+                new Vector3(-0.707f, 0.707f, 0)
+           };
+        }
+
+        [TestMethod]
+        [DynamicData(nameof(GetVectorLists), DynamicDataSourceType.Method)]
+        public void MultiPassSectionTest(List<List<Vector2>> list, string modelName, Vector3 origin, Vector3 axisX, Vector3 axisY)
+        {
+            var section = new MultiPassSection(controller);
+
+            section.Origin = origin;
+            section.AxisX = axisX;
+            section.AxisY = axisY;
+
+            var elements = section.Create(list);
+
+            var modelData = new ModelData();
+
+            foreach(var node in section.Nodes)
+                modelData.ObjectData.NodesSet.Add(node.Number, node);
+
+            foreach (var element in elements)
+                modelData.ObjectData.E2DCollection.Add(element);
+            var saver = new SaveModelToBPF2TextFile();
+            saver.Save(modelData, $@"D:\{modelName}.bpf2");
 
         }
 

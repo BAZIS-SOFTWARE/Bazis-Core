@@ -1,13 +1,18 @@
-﻿using QuickGraph;
+﻿using GmshApi;
+using Microsoft.Scripting.Utils;
+using Model.Interfaces.MeshObjects;
+using Model.Interfaces.ObjectsFinders;
+using Model.MeshObjects;
+using Model.ObjectsCollections;
+using OperationalController.GmshController;
+using QuickGraph;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Numerics;
-using OperationalController.GmshController;
-using Model.Interfaces.MeshObjects;
-using Model.ObjectsCollections;
-using Model.MeshObjects;
+using static IronPython.Modules._ast;
 
 namespace OperationalController.MeshObjsCreator
 {
@@ -23,6 +28,7 @@ namespace OperationalController.MeshObjsCreator
         public Vector3 Origin { get; set; }
         public Vector3 AxisX { get; set; }
         public Vector3 AxisY { get; set; }
+        public List<Node> Nodes { get; private set; }
 
         public int TransfinitePoints { get; set; } = 10;
         private class GmshPoint
@@ -60,7 +66,7 @@ namespace OperationalController.MeshObjsCreator
                                                                              : Target.Coords - Source.Coords;
         }
 
-        internal MultiPassSection(IGmshController controller)
+        public MultiPassSection(IGmshController controller)
         {
             MultiPassSection.controller = controller;
             graph = new UndirectedGraph<GmshPoint, GmshEdge>();
@@ -145,6 +151,7 @@ namespace OperationalController.MeshObjsCreator
                 throw new Exception("Задайте ось Y для свойства AxisY");
 
             controller.Gmsh.Model.Add("MultiPassSection");
+            cells = cells.Select(v => v.Distinct().ToList()).ToList();
             cells = SortCells(cells);
 
             for (var i = 0; i < cells.Count; ++i)
@@ -220,14 +227,76 @@ namespace OperationalController.MeshObjsCreator
             if (!string.IsNullOrEmpty(error))
                 throw new Exception(error);
 
-            var nodes = controller.GetNodes();
-            foreach (var node in nodes)
+            var sets = GetElementSets();
+            controller.Gmsh.Model.Remove();
+
+            return sets;
+        }
+
+        private List<ObjectsSet<Element2D>> GetElementSets()
+        {
+            var dimTags = controller.Gmsh.Model.GetEntities(2);
+            var rnd = new Random();
+            var result = new List<ObjectsSet<Element2D>>();
+
+            Nodes = controller.GetNodes();
+
+            foreach (var node in Nodes)
                 To3D(node);
 
-            var elements = controller.GetMeshSets<Element2D>(nodes);
 
-            controller.Gmsh.Model.Remove();
-            return elements;
+            for (var i = 0; i < dimTags.Length; i += 2)
+            {
+                var tag = dimTags[i + 1];
+                var set = new ObjectsSet<Element2D>($"MultiPassSection_{tag}");
+
+                var objects = GetMeshEntities(2, tag, Nodes);
+                
+                foreach (var item in objects)
+                    set.Add(item.Number, item);
+                
+                var color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
+                set.SetColor(color);
+
+                result.Add(set);
+            }
+
+            return result;
+        }
+
+
+        private List<Element2D> GetMeshEntities(int dim, int tag, List<Node> nodes)
+        {
+            var list = new List<Element2D>();
+            if (nodes.Count > 0)
+            {
+                var data = controller.Gmsh.Model.Mesh.GetElements(dim, tag);
+                for (var i = 0; i < data.Item1.Length; ++i)
+                {
+                    var properties = controller.Gmsh.Model.Mesh.GetElementProperties(data.Item1[i]);
+                    var nodesCount = properties.numNodes;
+                    var elements = data.Item2[i];
+
+                    for (var j = 0; j < elements.Length; ++j)
+                    {
+                        var nodesPerElems = new Node[nodesCount];
+                        for (int k = 0; k < nodesCount; ++k)
+                        {
+                            var tagStride = j * nodesCount + k;
+                            nodesPerElems[k] = ByNumberFinder.Find(nodes, (int)data.Item3[i][tagStride]);
+                            if (nodesPerElems[k] == null)
+                                throw new Exception($"Элемент с номером {data.Item3[i][tagStride]} не найден");
+                        }
+                        if (nodesPerElems.Length == 3)
+                            list.Add(new Triangle_c((int)elements[j], nodesPerElems));
+                        else if (nodesPerElems.Length == 4)
+                            list.Add(new Quad((int)elements[j], nodesPerElems));
+                        else
+                            throw new Exception($"Элемент с номером {(int)elements[j]} не поддерживается, так как содержит {nodesPerElems.Length} вершин");
+                    }
+                }
+            }
+            return list;
         }
 
         private void To3D(Node vec)
