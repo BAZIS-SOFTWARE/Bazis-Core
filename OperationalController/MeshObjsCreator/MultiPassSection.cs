@@ -143,6 +143,107 @@ namespace OperationalController.MeshObjsCreator
             return sorted;
         }
 
+        /// <summary>
+        /// Дополняет вершины каждой ячейки точками других ячеек, которые лежат на её рёбрах,
+        /// но отсутствуют в исходном наборе вершин. Форма ячеек не изменяется, только уточняется
+        /// контур: между соседними исходными вершинами ребра вставляются промежуточные точки.
+        /// Порядок обхода вершин (по часовой стрелке) сохраняется, исходная коллекция не модифицируется.
+        /// </summary>
+        /// <param name="cells">Список ячеек, каждая — список вершин (3 или 4), отсортированных по часовой стрелке.</param>
+        /// <param name="tolerance">Допуск для сравнения координат с плавающей точкой.</param>
+        /// <returns>Новый список ячеек с добавленными промежуточными вершинами на рёбрах.</returns>
+        /// <example>
+        /// <code>
+        /// var cells = new List&lt;List&lt;Vector2&gt;&gt;
+        /// {
+        ///     new List&lt;Vector2&gt; { new Vector2(-1f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0.6f), new Vector2(-0.4f, 0.6f) },
+        ///     new List&lt;Vector2&gt; { new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.4f, 0.6f), new Vector2(0f, 0.6f) },
+        ///     new List&lt;Vector2&gt; { new Vector2(-0.4f, 0.6f), new Vector2(0.4f, 0.6f), new Vector2(0f, 1f) }
+        /// };
+        ///
+        /// var refinedCells = MultiPassSection.InsertSharedEdgePoints(cells);
+        ///
+        /// // refinedCells[2] == [(-0.4, 0.6), (0, 0.6), (0.4, 0.6), (0, 1)]
+        /// // точка (0, 0.6) добавлена между (-0.4, 0.6) и (0.4, 0.6)
+        /// </code>
+        /// </example>
+        public static List<List<Vector2>> InsertSharedEdgePoints(List<List<Vector2>> cells, float tolerance = 1e-6f)
+        {
+            if (cells == null)
+                throw new ArgumentNullException(nameof(cells));
+
+            // Собираем все уникальные вершины всех ячеек — это кандидаты на вставку
+            // в рёбра чужих ячеек (дедуплицируем сразу с учётом погрешности).
+            var allVertices = new List<Vector2>();
+            foreach (var cell in cells)
+            {
+                foreach (var vertex in cell)
+                {
+                    if (!allVertices.Any(v => AreVectorsEqual(v, vertex, tolerance)))
+                        allVertices.Add(vertex);
+                }
+            }
+
+            var result = new List<List<Vector2>>(cells.Count);
+
+            foreach (var cell in cells)
+            {
+                var updatedCell = new List<Vector2>();
+                var vertexCount = cell.Count;
+
+                for (var i = 0; i < vertexCount; ++i)
+                {
+                    var edgeStart = cell[i];
+                    var edgeEnd = cell[(i + 1) % vertexCount]; // по модулю замыкает последнее ребро на первую вершину
+
+                    updatedCell.Add(edgeStart);
+
+                    // Точки других ячеек, которые лежат строго на этом ребре и ещё не
+                    // присутствуют среди исходных вершин текущей ячейки.
+                    var extraPoints = allVertices
+                        .Where(v => !cell.Any(cv => AreVectorsEqual(cv, v, tolerance)))
+                        .Where(v => IsPointOnSegment(v, edgeStart, edgeEnd, tolerance))
+                        .OrderBy(v => Vector2.DistanceSquared(edgeStart, v)) // упорядочиваем вдоль ребра от edgeStart к edgeEnd
+                        .ToList();
+
+                    updatedCell.AddRange(extraPoints);
+                }
+
+                result.Add(updatedCell);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Проверяет, лежит ли точка на отрезке [segmentStart, segmentEnd] с учётом погрешности вычислений.
+        /// </summary>
+        private static bool IsPointOnSegment(Vector2 point, Vector2 segmentStart, Vector2 segmentEnd, float tolerance)
+        {
+            var edgeVector = segmentEnd - segmentStart;
+            var pointVector = point - segmentStart;
+
+            var edgeLength = edgeVector.Length();
+            if (edgeLength < tolerance)
+                return AreVectorsEqual(point, segmentStart, tolerance);
+
+            // Расстояние от точки до прямой, на которой лежит отрезок (через векторное произведение).
+            var cross = edgeVector.X * pointVector.Y - edgeVector.Y * pointVector.X;
+            var distanceToLine = Math.Abs(cross) / edgeLength;
+            if (distanceToLine > tolerance)
+                return false;
+
+            // Проверяем, что проекция точки попадает внутрь отрезка, а не на его продолжение.
+            var projection = Vector2.Dot(pointVector, edgeVector) / edgeLength;
+            return projection >= -tolerance && projection <= edgeLength + tolerance;
+        }
+
+        /// <summary>
+        /// Сравнивает две точки с учётом допустимой погрешности вычислений с плавающей точкой.
+        /// </summary>
+        private static bool AreVectorsEqual(Vector2 a, Vector2 b, float tolerance) =>
+            Vector2.DistanceSquared(a, b) <= tolerance * tolerance;
+
         public IEnumerable<ObjectsSet<Element2D>> Create(List<List<Vector2>> cells)
         {
             if (AxisX == Vector3.Zero)
@@ -152,6 +253,7 @@ namespace OperationalController.MeshObjsCreator
 
             controller.Gmsh.Model.Add("MultiPassSection");
             cells = cells.Select(v => v.Distinct().ToList()).ToList();
+            cells = InsertSharedEdgePoints(cells);
             cells = SortCells(cells);
 
             for (var i = 0; i < cells.Count; ++i)
@@ -251,10 +353,10 @@ namespace OperationalController.MeshObjsCreator
                 var set = new ObjectsSet<Element2D>($"MultiPassSection_{tag}");
 
                 var objects = GetMeshEntities(2, tag, Nodes);
-                
+
                 foreach (var item in objects)
                     set.Add(item.Number, item);
-                
+
                 var color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
                 set.SetColor(color);
 

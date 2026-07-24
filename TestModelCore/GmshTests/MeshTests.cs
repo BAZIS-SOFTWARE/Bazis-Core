@@ -1175,32 +1175,25 @@ namespace GmshTests
             yield return new object[]
             {
                 new List<List<Vector2>>() { new List<Vector2>() { new Vector2(-1.2f, -1.0f), new Vector2(-0.6f, -1.0f) , new Vector2(-0.6f, -0.6f), new Vector2( -0.8f, -0.6f) },
-                                            new List<Vector2>() { new Vector2(-0.6f, -1.0f), new Vector2( 0.0f, -1.0f) , new Vector2( 0.0f, -0.6f), new Vector2(-0.3f, -0.6f),
-                                                                  new Vector2(-0.6f, -0.6f) },
-                                            new List<Vector2>() { new Vector2(0.0f, -1.0f), new Vector2(0.6f, -1.0f), new Vector2(0.6f, -0.6f), new Vector2( 0.3f, -0.6f),
-                                                                  new Vector2(0.0f, -0.6f) },
+                                            new List<Vector2>() { new Vector2(-0.6f, -1.0f), new Vector2( 0.0f, -1.0f) , new Vector2( 0.0f, -0.6f), new Vector2(-0.6f, -0.6f) },
+                                            new List<Vector2>() { new Vector2(0.0f, -1.0f), new Vector2(0.6f, -1.0f), new Vector2(0.6f, -0.6f), new Vector2(0.0f, -0.6f) },
                                             new List<Vector2>() { new Vector2(0.6f, -1.0f), new Vector2(1.2f, -1.0f), new Vector2(0.8f, -0.6f), new Vector2(0.6f, -0.6f) },
 
-                                            new List<Vector2>() { new Vector2(-0.8f, -0.6f), new Vector2(-0.6f, -0.6f), new Vector2(-0.3f, -0.6f), new Vector2(-0.3f, 0.0f),
-                                                                  new Vector2(-0.7f, 0.0f) },
-                                            new List<Vector2>() { new Vector2(-0.3f, -0.6f), new Vector2(0.0f, -0.6f), new Vector2(0.3f, -0.6f), new Vector2(0.3f, 0.0f),
-                                                                  new Vector2(0.0f, 0.0f), new Vector2(-0.3f, 0.0f) },
-                                            new List<Vector2>() { new Vector2(0.3f, -0.6f), new Vector2(0.6f, -0.6f), new Vector2(0.8f, -0.6f), new Vector2(0.7f, 0.0f),
-                                                                  new Vector2(0.3f, 0.0f)},
+                                            new List<Vector2>() { new Vector2(-0.8f, -0.6f), new Vector2(-0.3f, -0.6f), new Vector2(-0.3f, 0.0f), new Vector2(-0.7f, 0.0f) },
+                                            new List<Vector2>() { new Vector2(-0.3f, -0.6f), new Vector2(0.3f, -0.6f), new Vector2(0.3f, 0.0f), new Vector2(-0.3f, 0.0f) },
+                                            new List<Vector2>() { new Vector2(0.3f, -0.6f), new Vector2(0.8f, -0.6f), new Vector2(0.7f, 0.0f), new Vector2(0.3f, 0.0f)},
 
-                                            new List<Vector2>() { new Vector2(-0.7f, 0.0f), new Vector2(-0.3f, 0.0f), new Vector2(0.0f, 0.0f), new Vector2(0.0f, 0.6f),
-                                                                  new Vector2(-0.4f, 0.6f) },
-                                            new List<Vector2>() { new Vector2(0.0f, 0.0f), new Vector2(0.3f, 0.0f), new Vector2(0.7f, 0.0f), new Vector2(0.4f, 0.6f),
-                                                                  new Vector2(0.0f, 0.6f) },
+                                            new List<Vector2>() { new Vector2(-0.7f, 0.0f), new Vector2(0.0f, 0.0f), new Vector2(0.0f, 0.6f), new Vector2(-0.4f, 0.6f) },
+                                            new List<Vector2>() { new Vector2(0.0f, 0.0f), new Vector2(0.7f, 0.0f), new Vector2(0.4f, 0.6f), new Vector2(0.0f, 0.6f) },
 
-                                            new List<Vector2>() { new Vector2(-0.4f, 0.6f), new Vector2(0.0f, 0.6f), new Vector2(0.4f, 0.6f), new Vector2( 0.0f, 1.2f) }
+                                            new List<Vector2>() { new Vector2(-0.4f, 0.6f), new Vector2(0.4f, 0.6f), new Vector2( 0.0f, 1.2f) }
                                           },
                 "Triangle_0",
                 Vector3.Zero,
                 Vector3.UnitX,
                 Vector3.UnitY
             };
-
+            
             yield return new object[]
             {
                 new List<List<Vector2>>() { new List<Vector2>() { new Vector2(-0.8f, -0.6f), new Vector2( 0.8f, -0.6f), new Vector2( 0.0f, 0.0f) },
