@@ -313,6 +313,50 @@ namespace OperationalController
         }
 
 
+        public string[] CreateMultiPassSection(List<List<Vector2>> cells, Vector3 origin, Vector3 axisX, Vector3 axisY, int transfinitePoints = 10)
+        {
+            if (cells == null)
+                throw new ArgumentNullException(nameof(cells));
+            if (transfinitePoints < 2)
+                throw new ArgumentException("Количество точек трансфинитной кривой должно быть не меньше 2", nameof(transfinitePoints));
+
+            var section = new MultiPassSection(GmshController)
+            {
+                Origin = origin,
+                AxisX = axisX,
+                AxisY = axisY,
+                TransfinitePoints = transfinitePoints
+            };
+
+            var elementSets = section.Create(cells).ToList();
+            var elementCollection = new ObjectsCollection<Element2D>();
+            foreach (var set in elementSets)
+                elementCollection.Add(set);
+
+            var existedSetNames = new HashSet<string>(ModelData.ObjectData.E2DCollection.Names);
+            ModelData.ObjectData.E2DCollection.Append(elementCollection);
+
+            var createdSetNames = ModelData.ObjectData.E2DCollection.Names
+                .Where(name => !existedSetNames.Contains(name))
+                .ToList();
+
+            for (var i = 0; i < createdSetNames.Count; ++i)
+            {
+                var counter = createdSetNames[i].Split('_').Last();
+                var updateName = $"{elementSets[i].Name}_{counter}";
+                ModelData.ObjectData.E2DCollection.ChangeName(createdSetNames[i], updateName);
+                createdSetNames[i] = updateName;
+            }
+
+            var nodesSet = new ObjectsSet<Model.MeshObjects.Node>("MultiPassSection");
+            foreach (var node in section.Nodes)
+                nodesSet.Add(node.Number, node);
+
+            ModelData.ObjectData.NodesSet.Append(nodesSet);
+
+            return createdSetNames.ToArray();
+        }
+
         /// <inheritdoc/>
         public void CreateElement(string setName, int dim, int[] nodeNumbers)
         {

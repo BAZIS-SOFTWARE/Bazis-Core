@@ -6,6 +6,7 @@ using Model.Interfaces.MeshObjects;
 using Model.MeshObjects;
 using Project.Interfaces.Tasks;
 using System.Collections.Generic;
+using System.Numerics;
 
 namespace OperationalController
 {
@@ -98,5 +99,16 @@ namespace OperationalController
         /// <param name="numberOfElem"></param>
         /// <returns></returns>
         void CreateQuadMeshOnPoligon(List<Point2D> points, int numberOfElem);
+
+        /// <summary>
+        /// CreateMultiPassSection
+        /// </summary>
+        /// <param name="cells"></param>
+        /// <param name="origin"></param>
+        /// <param name="axisX"></param>
+        /// <param name="axisY"></param>
+        /// <param name="transfinitePoints"></param>
+        /// <returns></returns>
+        string[] CreateMultiPassSection(List<List<Vector2>> cells, Vector3 origin, Vector3 axisX, Vector3 axisY, int transfinitePoints = 10);
     }
 }
