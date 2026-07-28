@@ -1245,6 +1245,104 @@ namespace GmshTests
 
         }
 
+        [TestMethod]
+        public void MultiPassSection_DifferentPassCountsInAdjacentLayers_DoesNotRequireManualTransfiniteIncrease()
+        {
+            var cells = new List<List<Vector2>>
+            {
+                new()
+                {
+                    new Vector2(0, 0),
+                    new Vector2(10, 0),
+                    new Vector2(10, 1),
+                    new Vector2(0, 1)
+                },
+                new()
+                {
+                    new Vector2(0, 1),
+                    new Vector2(1, 1),
+                    new Vector2(1, 2),
+                    new Vector2(0, 2)
+                },
+                new()
+                {
+                    new Vector2(1, 1),
+                    new Vector2(2, 1),
+                    new Vector2(2, 2),
+                    new Vector2(1, 2)
+                },
+                new()
+                {
+                    new Vector2(2, 1),
+                    new Vector2(3, 1),
+                    new Vector2(3, 2),
+                    new Vector2(2, 2)
+                },
+                new()
+                {
+                    new Vector2(3, 1),
+                    new Vector2(4, 1),
+                    new Vector2(4, 2),
+                    new Vector2(3, 2)
+                },
+                new()
+                {
+                    new Vector2(4, 1),
+                    new Vector2(5, 1),
+                    new Vector2(5, 2),
+                    new Vector2(4, 2)
+                },
+                new()
+                {
+                    new Vector2(5, 1),
+                    new Vector2(6, 1),
+                    new Vector2(6, 2),
+                    new Vector2(5, 2)
+                },
+                new()
+                {
+                    new Vector2(6, 1),
+                    new Vector2(7, 1),
+                    new Vector2(7, 2),
+                    new Vector2(6, 2)
+                },
+                new()
+                {
+                    new Vector2(7, 1),
+                    new Vector2(8, 1),
+                    new Vector2(8, 2),
+                    new Vector2(7, 2)
+                },
+                new()
+                {
+                    new Vector2(8, 1),
+                    new Vector2(9, 1),
+                    new Vector2(9, 2),
+                    new Vector2(8, 2)
+                },
+                new()
+                {
+                    new Vector2(9, 1),
+                    new Vector2(10, 1),
+                    new Vector2(10, 2),
+                    new Vector2(9, 2)
+                }
+            };
+
+            var section = new MultiPassSection(controller)
+            {
+                Origin = Vector3.Zero,
+                AxisX = Vector3.UnitX,
+                AxisY = Vector3.UnitY,
+                TransfinitePoints = 10
+            };
+
+            var elements = section.Create(cells).ToList();
+
+            Assert.AreEqual(cells.Count, elements.Count);
+            Assert.IsTrue(elements.All(v => v.Count > 0));
+        }
+
         private List<Element2D> GenTriangle(float[] coords)
         {
             var nodes = new List<Node>() { new Node(1, new Point3D(coords[0], coords[1], coords[2])),

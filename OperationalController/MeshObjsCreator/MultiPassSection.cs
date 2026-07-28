@@ -434,62 +434,179 @@ namespace OperationalController.MeshObjsCreator
 
         private void TransfiniteCurves()
         {
+            if (segmentsLoop.Count == 3)
+            {
+                for (var i = 0; i < segmentsLoop.Count; ++i)
+                    DistributeTransfinitePoints(segmentsLoop[i], TransfinitePoints, i, -1);
+                return;
+            }
+
             for (var i = 0; i < segmentsLoop.Count; ++i)
             {
-                var empty = new List<GmshEdge>();
-                var filled = new List<GmshEdge>();
-                foreach (var item in segmentsLoop[i])
+                var opposite = GetOppositeSideIndex(i);
+                if (i > opposite)
+                    continue;
+
+                var target = GetTargetTransfinitePoints(segmentsLoop[i], segmentsLoop[opposite]);
+
+                DistributeTransfinitePoints(segmentsLoop[i], target, i, opposite);
+                DistributeTransfinitePoints(segmentsLoop[opposite], target, opposite, i);
+
+                ValidateOppositeTransfinitePoints(i, opposite, target);
+            }
+        }
+
+        private int GetTargetTransfinitePoints(IReadOnlyList<GmshEdge> firstSide, IReadOnlyList<GmshEdge> oppositeSide)
+        {
+            return Math.Max(
+                TransfinitePoints,
+                Math.Max(
+                    GetRequiredTransfinitePoints(firstSide),
+                    GetRequiredTransfinitePoints(oppositeSide)));
+        }
+
+        private static int GetRequiredTransfinitePoints(IReadOnlyList<GmshEdge> segments)
+        {
+            var filledPoints = 0;
+            foreach (var segment in segments)
+            {
+                if (segment.TransfinitePoints > 0)
+                    filledPoints += segment.TransfinitePoints - 2;
+            }
+
+            return segments.Count + 1 + filledPoints;
+        }
+
+        private void DistributeTransfinitePoints(IReadOnlyList<GmshEdge> segments, int target, int sideIndex, int oppositeSideIndex)
+        {
+            var empty = new List<GmshEdge>();
+            var filledPoints = 0;
+
+            foreach (var segment in segments)
+            {
+                if (segment.TransfinitePoints == 0)
+                    empty.Add(segment);
+                else
                 {
-                    if (item.TransfinitePoints == 0)
-                        empty.Add(item);
-                    else
-                        filled.Add(item);
-                }
-                if (empty.Count > 0)
-                {
-                    var pointsOnEdge = segmentsLoop[i].Count + 1;
+                    if (segment.TransfinitePoints < 2)
+                        throw CreateTransfiniteException(
+                            "Transfinite curve segment has fewer than two points.",
+                            sideIndex,
+                            oppositeSideIndex,
+                            segments,
+                            target);
 
-                    var filledPoints = 0;
-                    foreach (var data in filled)
-                        filledPoints += data.TransfinitePoints - 2;
-
-                    var transfinited = GetOppositeTransfinition(i);
-
-                    var dividend = transfinited - pointsOnEdge - filledPoints;
-                    if (dividend < 0)
-                        throw new Exception("The number of transfinition points is small, set a higher threshold");
-
-                    if (dividend > 0)
-                    {
-                        var divisor = empty.Count;
-
-                        int baseValue = dividend / divisor;
-                        int remainder = dividend % divisor;
-
-                        for (int j = 0; j < divisor; ++j)
-                        {
-                            empty[j].TransfinitePoints = baseValue + 2;
-                            controller.Gmsh.Model.Mesh.SetTransfiniteCurve(empty[j].Id, empty[j].TransfinitePoints);
-                        }
-
-                        for (int j = 0; j < remainder; ++j)
-                        {
-                            empty[j].TransfinitePoints++;
-                            controller.Gmsh.Model.Mesh.SetTransfiniteCurve(empty[j].Id, empty[j].TransfinitePoints);
-                        }
-                    }
+                    filledPoints += segment.TransfinitePoints - 2;
                 }
             }
+
+            var required = segments.Count + 1 + filledPoints;
+            var dividend = target - required;
+
+            if (dividend < 0)
+                throw CreateTransfiniteException(
+                    "Calculated target is smaller than the points already required by the side.",
+                    sideIndex,
+                    oppositeSideIndex,
+                    segments,
+                    target);
+
+            if (empty.Count == 0)
+            {
+                var current = GetLogicalTransfinitePoints(segments);
+                if (current > target)
+                    throw CreateTransfiniteException(
+                        "Side has more already assigned transfinite points than the calculated target.",
+                        sideIndex,
+                        oppositeSideIndex,
+                        segments,
+                        target);
+
+                DistributeAdditionalPoints(segments, target - current);
+                return;
+            }
+
+            var baseValue = dividend / empty.Count;
+            var remainder = dividend % empty.Count;
+
+            for (var i = 0; i < empty.Count; ++i)
+            {
+                empty[i].TransfinitePoints = baseValue + 2;
+                if (i < remainder)
+                    empty[i].TransfinitePoints++;
+
+                if (empty[i].TransfinitePoints < 2)
+                    throw CreateTransfiniteException(
+                        "Transfinite distribution assigned fewer than two points to a segment.",
+                        sideIndex,
+                        oppositeSideIndex,
+                        segments,
+                        target);
+
+                controller.Gmsh.Model.Mesh.SetTransfiniteCurve(empty[i].Id, empty[i].TransfinitePoints);
+            }
+
+            var distributed = GetLogicalTransfinitePoints(segments);
+            if (distributed != target)
+                throw CreateTransfiniteException(
+                    "Distributed transfinite point count does not match target.",
+                    sideIndex,
+                    oppositeSideIndex,
+                    segments,
+                    target);
+        }
+
+        private void DistributeAdditionalPoints(IReadOnlyList<GmshEdge> segments, int pointsToAdd)
+        {
+            if (pointsToAdd == 0)
+                return;
+
+            var baseValue = pointsToAdd / segments.Count;
+            var remainder = pointsToAdd % segments.Count;
+
+            for (var i = 0; i < segments.Count; ++i)
+            {
+                segments[i].TransfinitePoints += baseValue;
+                if (i < remainder)
+                    segments[i].TransfinitePoints++;
+
+                controller.Gmsh.Model.Mesh.SetTransfiniteCurve(segments[i].Id, segments[i].TransfinitePoints);
+            }
+        }
+
+        private void ValidateOppositeTransfinitePoints(int sideIndex, int oppositeSideIndex, int target)
+        {
+            var sidePoints = GetLogicalTransfinitePoints(segmentsLoop[sideIndex]);
+            var oppositePoints = GetLogicalTransfinitePoints(segmentsLoop[oppositeSideIndex]);
+
+            if (sidePoints != target || oppositePoints != target)
+                throw new Exception(
+                    "Opposite transfinite sides have incompatible point counts. " +
+                    $"Side index: {sideIndex}. Opposite side index: {oppositeSideIndex}. " +
+                    $"Configured TransfinitePoints: {TransfinitePoints}. Target points: {target}. " +
+                    $"Side points: {sidePoints}. Opposite side points: {oppositePoints}.");
+        }
+
+        private static int GetLogicalTransfinitePoints(IReadOnlyList<GmshEdge> segments)
+        {
+            var total = 0;
+            foreach (var segment in segments)
+                total += segment.TransfinitePoints;
+
+            return total - (segments.Count - 1);
+        }
+
+        private int GetOppositeSideIndex(int index)
+        {
+            if (index < 0 || index > 3)
+                throw new ArgumentException("Диапазон ввода index должен быть от 0 до 3");
+
+            return index ^ 2;
         }
 
         private int GetOppositeTransfinition(int index)
         {
-            if (segmentsLoop.Count == 3)
-                return TransfinitePoints;
-
-            if (index < 0 || index > 3)
-                throw new ArgumentException("Диапазон ввода index должен быть от 0 до 3");
-            var opp = index ^ 2;
+            var opp = GetOppositeSideIndex(index);
 
             var filled = 0;
             var total = 0;
@@ -502,6 +619,33 @@ namespace OperationalController.MeshObjsCreator
             if (segmentsLoop[opp].Count != filled)
                 return TransfinitePoints;
             return total - (filled - 1);
+        }
+
+        private Exception CreateTransfiniteException(
+            string message,
+            int sideIndex,
+            int oppositeSideIndex,
+            IReadOnlyList<GmshEdge> segments,
+            int target)
+        {
+            var filledPoints = 0;
+            var emptyCount = 0;
+            foreach (var segment in segments)
+            {
+                if (segment.TransfinitePoints == 0)
+                    emptyCount++;
+                else
+                    filledPoints += segment.TransfinitePoints - 2;
+            }
+
+            var required = segments.Count + 1 + filledPoints;
+
+            return new Exception(
+                $"{message} " +
+                $"Side index: {sideIndex}. Opposite side index: {oppositeSideIndex}. " +
+                $"Configured TransfinitePoints: {TransfinitePoints}. Required points: {required}. " +
+                $"Target points: {target}. Segment count: {segments.Count}. " +
+                $"Filled points: {filledPoints}. Empty segment count: {emptyCount}.");
         }
 
         private List<int> SortCorners()
