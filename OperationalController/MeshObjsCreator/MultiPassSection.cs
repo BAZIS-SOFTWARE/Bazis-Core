@@ -24,6 +24,7 @@ namespace OperationalController.MeshObjsCreator
         private List<int> curveLoop;
         private List<List<GmshEdge>> segmentsLoop;
         private List<(int, float)> corners;
+        private List<SurfaceTransfiniteData> transfiniteSurfaces;
 
         public Vector3 Origin { get; set; }
         public Vector3 AxisX { get; set; }
@@ -66,6 +67,20 @@ namespace OperationalController.MeshObjsCreator
                                                                              : Target.Coords - Source.Coords;
         }
 
+        private class SurfaceTransfiniteData
+        {
+            internal int Surface { get; }
+            internal List<int> Corners { get; }
+            internal List<List<GmshEdge>> SegmentsLoop { get; }
+
+            internal SurfaceTransfiniteData(int surface, List<int> corners, List<List<GmshEdge>> segmentsLoop)
+            {
+                Surface = surface;
+                Corners = corners;
+                SegmentsLoop = segmentsLoop;
+            }
+        }
+
         public MultiPassSection(IGmshController controller)
         {
             MultiPassSection.controller = controller;
@@ -74,6 +89,7 @@ namespace OperationalController.MeshObjsCreator
             curveLoop = new List<int>();
             segmentsLoop = new List<List<GmshEdge>>();
             corners = new List<(int, float)>();
+            transfiniteSurfaces = new List<SurfaceTransfiniteData>();
         }
 
         private static List<List<Vector2>> SortCells(List<List<Vector2>> cells)
@@ -167,20 +183,40 @@ namespace OperationalController.MeshObjsCreator
         /// // точка (0, 0.6) добавлена между (-0.4, 0.6) и (0.4, 0.6)
         /// </code>
         /// </example>
-        public static List<List<Vector2>> InsertSharedEdgePoints(List<List<Vector2>> cells, float tolerance = 1e-6f)
+        public static List<List<Vector2>> InsertSharedEdgePoints(List<List<Vector2>> cells, float tolerance = 1e-4f)
         {
             if (cells == null)
                 throw new ArgumentNullException(nameof(cells));
 
-            // Собираем все уникальные вершины всех ячеек — это кандидаты на вставку
-            // в рёбра чужих ячеек (дедуплицируем сразу с учётом погрешности).
-            var allVertices = new List<Vector2>();
+            // Собираем все уникальные граничные точки: исходные вершины и
+            // endpoints частично наложенных коллинеарных ребер. Произвольные
+            // пересечения ребер не вставляем, чтобы не менять форму ячеек.
+            var allBoundaryPoints = new List<Vector2>();
+            var allEdges = new List<(Vector2 Start, Vector2 End)>();
             foreach (var cell in cells)
             {
                 foreach (var vertex in cell)
                 {
-                    if (!allVertices.Any(v => AreVectorsEqual(v, vertex, tolerance)))
-                        allVertices.Add(vertex);
+                    AddUniquePoint(allBoundaryPoints, vertex, tolerance);
+                }
+
+                for (var i = 0; i < cell.Count; ++i)
+                    allEdges.Add((cell[i], cell[(i + 1) % cell.Count]));
+            }
+
+            for (var i = 0; i < allEdges.Count; ++i)
+            {
+                for (var j = i + 1; j < allEdges.Count; ++j)
+                {
+                    foreach (var point in GetSharedSegmentPoints(
+                        allEdges[i].Start,
+                        allEdges[i].End,
+                        allEdges[j].Start,
+                        allEdges[j].End,
+                        tolerance))
+                    {
+                        AddUniquePoint(allBoundaryPoints, point, tolerance);
+                    }
                 }
             }
 
@@ -200,7 +236,7 @@ namespace OperationalController.MeshObjsCreator
 
                     // Точки других ячеек, которые лежат строго на этом ребре и ещё не
                     // присутствуют среди исходных вершин текущей ячейки.
-                    var extraPoints = allVertices
+                    var extraPoints = allBoundaryPoints
                         .Where(v => !cell.Any(cv => AreVectorsEqual(cv, v, tolerance)))
                         .Where(v => IsPointOnSegment(v, edgeStart, edgeEnd, tolerance))
                         .OrderBy(v => Vector2.DistanceSquared(edgeStart, v)) // упорядочиваем вдоль ребра от edgeStart к edgeEnd
@@ -214,6 +250,51 @@ namespace OperationalController.MeshObjsCreator
 
             return result;
         }
+
+        private static void AddUniquePoint(List<Vector2> points, Vector2 point, float tolerance)
+        {
+            if (!points.Any(v => AreVectorsEqual(v, point, tolerance)))
+                points.Add(point);
+        }
+
+        private static List<Vector2> GetSharedSegmentPoints(
+            Vector2 firstStart,
+            Vector2 firstEnd,
+            Vector2 secondStart,
+            Vector2 secondEnd,
+            float tolerance)
+        {
+            var result = new List<Vector2>();
+            var firstVector = firstEnd - firstStart;
+            var secondVector = secondEnd - secondStart;
+            var startDelta = secondStart - firstStart;
+
+            if (Math.Abs(Cross(firstVector, secondVector)) > tolerance ||
+                Math.Abs(Cross(firstVector, startDelta)) > tolerance)
+            {
+                return result;
+            }
+
+            AddEndpointIfShared(result, firstStart, secondStart, secondEnd, tolerance);
+            AddEndpointIfShared(result, firstEnd, secondStart, secondEnd, tolerance);
+            AddEndpointIfShared(result, secondStart, firstStart, firstEnd, tolerance);
+            AddEndpointIfShared(result, secondEnd, firstStart, firstEnd, tolerance);
+            return result;
+        }
+
+        private static void AddEndpointIfShared(
+            List<Vector2> points,
+            Vector2 point,
+            Vector2 segmentStart,
+            Vector2 segmentEnd,
+            float tolerance)
+        {
+            if (IsPointOnSegment(point, segmentStart, segmentEnd, tolerance))
+                AddUniquePoint(points, point, tolerance);
+        }
+
+        private static float Cross(Vector2 first, Vector2 second) =>
+            first.X * second.Y - first.Y * second.X;
 
         /// <summary>
         /// Проверяет, лежит ли точка на отрезке [segmentStart, segmentEnd] с учётом погрешности вычислений.
@@ -252,13 +333,13 @@ namespace OperationalController.MeshObjsCreator
                 throw new Exception("Задайте ось Y для свойства AxisY");
 
             controller.Gmsh.Model.Add("MultiPassSection");
-            cells = cells.Select(v => v.Distinct().ToList()).ToList();
+            transfiniteSurfaces.Clear();
+            cells = cells.Select(v => SortByAngle(v.Distinct().ToList())).ToList();
             cells = InsertSharedEdgePoints(cells);
             cells = SortCells(cells);
 
             for (var i = 0; i < cells.Count; ++i)
             {
-                cells[i] = SortByAngle(cells[i]);
                 var last = cells[i][0];
                 segmentsLoop.Add(new List<GmshEdge>());
                 var sLoopIndex = 0;
@@ -323,6 +404,8 @@ namespace OperationalController.MeshObjsCreator
                 curveLoop.Clear();
             }
 
+            SetTransfiniteSurfaces();
+
             controller.Gmsh.Model.Mesh.Generate(2);
             var error = controller.Gmsh.Logger.GetLastError();
 
@@ -331,6 +414,7 @@ namespace OperationalController.MeshObjsCreator
 
             var sets = GetElementSets();
             controller.Gmsh.Model.Remove();
+            transfiniteSurfaces.Clear();
 
             return sets;
         }
@@ -426,18 +510,59 @@ namespace OperationalController.MeshObjsCreator
 
             TransfiniteCurves();
 
-            controller.Gmsh.Model.Mesh.SetTransfiniteSurface(surface, GmshApi.Arrangement.Left, newCorners.ToArray());
             controller.Gmsh.Model.Mesh.SetRecombine(2, surface);
+            transfiniteSurfaces.Add(new SurfaceTransfiniteData(
+                surface,
+                newCorners,
+                segmentsLoop.Select(v => v.ToList()).ToList()));
 
             return surface;
         }
 
+        private void SetTransfiniteSurfaces()
+        {
+            if (transfiniteSurfaces.Any(v => !CanSetTransfiniteSurface(v)))
+                return;
+
+            foreach (var surfaceData in transfiniteSurfaces)
+            {
+                controller.Gmsh.Model.Mesh.SetTransfiniteSurface(
+                    surfaceData.Surface,
+                    GmshApi.Arrangement.Left,
+                    surfaceData.Corners.ToArray());
+            }
+        }
+
+        private static bool CanSetTransfiniteSurface(SurfaceTransfiniteData surfaceData)
+        {
+            if (surfaceData.Corners.Count > 4)
+                return false;
+
+            if (surfaceData.Corners.Count != surfaceData.SegmentsLoop.Count)
+                return false;
+
+            if (surfaceData.SegmentsLoop.Count != 4)
+                return true;
+
+            var firstPairIsCompatible =
+                GetLogicalTransfinitePoints(surfaceData.SegmentsLoop[0]) ==
+                GetLogicalTransfinitePoints(surfaceData.SegmentsLoop[2]);
+            var secondPairIsCompatible =
+                GetLogicalTransfinitePoints(surfaceData.SegmentsLoop[1]) ==
+                GetLogicalTransfinitePoints(surfaceData.SegmentsLoop[3]);
+
+            return firstPairIsCompatible && secondPairIsCompatible;
+        }
+
         private void TransfiniteCurves()
         {
-            if (segmentsLoop.Count == 3)
+            if (segmentsLoop.Count != 4)
             {
                 for (var i = 0; i < segmentsLoop.Count; ++i)
-                    DistributeTransfinitePoints(segmentsLoop[i], TransfinitePoints, i, -1);
+                {
+                    var target = Math.Max(TransfinitePoints, GetRequiredTransfinitePoints(segmentsLoop[i]));
+                    DistributeTransfinitePoints(segmentsLoop[i], target, i, -1);
+                }
                 return;
             }
 

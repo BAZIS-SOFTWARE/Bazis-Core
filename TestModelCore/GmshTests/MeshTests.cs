@@ -1343,6 +1343,90 @@ namespace GmshTests
             Assert.IsTrue(elements.All(v => v.Count > 0));
         }
 
+        [TestMethod]
+        public void MultiPassSection_FiveCornerCell_DoesNotSetTransfiniteSurface()
+        {
+            var cells = new List<List<Vector2>>
+            {
+                new()
+                {
+                    new Vector2(0, 0),
+                    new Vector2(2, 0),
+                    new Vector2(2, 1),
+                    new Vector2(1, 2),
+                    new Vector2(0, 1)
+                }
+            };
+
+            var section = new MultiPassSection(controller)
+            {
+                Origin = Vector3.Zero,
+                AxisX = Vector3.UnitX,
+                AxisY = Vector3.UnitY,
+                TransfinitePoints = 10
+            };
+
+            var elements = section.Create(cells).ToList();
+
+            Assert.AreEqual(cells.Count, elements.Count);
+            Assert.IsTrue(elements.All(v => v.Count > 0));
+        }
+
+        [TestMethod]
+        public void MultiPassSection_InsertSharedEdgePoints_AddsCollinearOverlapEndpoints()
+        {
+            var cells = new List<List<Vector2>>
+            {
+                new()
+                {
+                    new Vector2(0, 0),
+                    new Vector2(4, 0),
+                    new Vector2(4, 1),
+                    new Vector2(0, 1)
+                },
+                new()
+                {
+                    new Vector2(1, 1),
+                    new Vector2(3, 1),
+                    new Vector2(3, 2),
+                    new Vector2(1, 2)
+                }
+            };
+
+            var refinedCells = MultiPassSection.InsertSharedEdgePoints(cells);
+
+            Assert.IsTrue(refinedCells[0].Any(v => Vector2.DistanceSquared(v, new Vector2(1, 1)) < 1e-10f));
+            Assert.IsTrue(refinedCells[0].Any(v => Vector2.DistanceSquared(v, new Vector2(3, 1)) < 1e-10f));
+            Assert.AreEqual(6, refinedCells[0].Count);
+        }
+
+        [TestMethod]
+        public void MultiPassSection_InsertSharedEdgePoints_DoesNotAddCrossingEdgeIntersections()
+        {
+            var cells = new List<List<Vector2>>
+            {
+                new()
+                {
+                    new Vector2(0, 0),
+                    new Vector2(4, 0),
+                    new Vector2(4, 4),
+                    new Vector2(0, 4)
+                },
+                new()
+                {
+                    new Vector2(-1, 2),
+                    new Vector2(2, 5),
+                    new Vector2(5, 2),
+                    new Vector2(2, -1)
+                }
+            };
+
+            var refinedCells = MultiPassSection.InsertSharedEdgePoints(cells);
+
+            Assert.AreEqual(4, refinedCells[0].Count);
+            Assert.AreEqual(4, refinedCells[1].Count);
+        }
+
         private List<Element2D> GenTriangle(float[] coords)
         {
             var nodes = new List<Node>() { new Node(1, new Point3D(coords[0], coords[1], coords[2])),
