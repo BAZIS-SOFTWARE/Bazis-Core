@@ -1193,7 +1193,29 @@ namespace GmshTests
                 Vector3.UnitX,
                 Vector3.UnitY
             };
-            
+
+            yield return new object[]
+            {
+                new List<List<Vector2>>() { new List<Vector2>() { new Vector2(-1.2f, -1.0f), new Vector2(-0.6f, -1.0f) , new Vector2(-0.6f, -0.6f), new Vector2( -0.8f, -0.6f) },
+                                            new List<Vector2>() { new Vector2(-0.6f, -1.0f), new Vector2( 0.0f, -1.0f) , new Vector2( 0.0f, -0.6f), new Vector2(-0.6f, -0.6f) },
+                                            new List<Vector2>() { new Vector2(0.0f, -1.0f), new Vector2(0.6f, -1.0f), new Vector2(0.6f, -0.6f), new Vector2(0.0f, -0.6f) },
+                                            new List<Vector2>() { new Vector2(0.6f, -1.0f), new Vector2(1.2f, -1.0f), new Vector2(0.8f, -0.6f), new Vector2(0.6f, -0.6f) },
+
+                                            new List<Vector2>() { new Vector2(-0.8f, -0.6f), new Vector2(-0.3f, -0.6f), new Vector2(-0.3f, 0.0f), new Vector2(-0.7f, 0.0f) },
+                                            new List<Vector2>() { new Vector2(-0.3f, -0.6f), new Vector2(0.3f, -0.6f), new Vector2(0.3f, 0.0f), new Vector2(-0.3f, 0.0f) },
+                                            new List<Vector2>() { new Vector2(0.3f, -0.6f), new Vector2(0.8f, -0.6f), new Vector2(0.7f, 0.0f), new Vector2(0.3f, 0.0f)},
+
+                                            new List<Vector2>() { new Vector2(-0.7f, 0.0f), new Vector2(0.0f, 0.0f), new Vector2(0.0f, 0.6f), new Vector2(-0.4f, 0.6f) },
+                                            new List<Vector2>() { new Vector2(0.0f, 0.0f), new Vector2(0.7f, 0.0f), new Vector2(0.4f, 0.6f), new Vector2(0.0f, 0.6f) },
+
+                                            new List<Vector2>() { new Vector2(-0.4f, 0.6f), new Vector2(0.4f, 0.6f), new Vector2( 0.0f, 1.2f) }
+                                          },
+                "Triangle_0_transfinite",
+                Vector3.Zero,
+                Vector3.UnitX,
+                Vector3.UnitY
+            };
+
             yield return new object[]
             {
                 new List<List<Vector2>>() { new List<Vector2>() { new Vector2(-0.8f, -0.6f), new Vector2( 0.8f, -0.6f), new Vector2( 0.0f, 0.0f) },
@@ -1206,292 +1228,155 @@ namespace GmshTests
                 Vector3.UnitX,
                 Vector3.UnitY
             };
-            //Тест поворотов осей и смещения
+
             yield return new object[]
-           {
+            {
                 new List<List<Vector2>>() { new List<Vector2>() { new Vector2(-0.8f, -0.6f), new Vector2( 0.8f, -0.6f), new Vector2( 0.0f, 0.0f) },
                                             new List<Vector2>() { new Vector2(-1.2f, -1.0f), new Vector2( -0.8f, -1.0f), new Vector2( -0.8f, -0.6f) },
                                             new List<Vector2>() { new Vector2(-0.8f, -1.0f), new Vector2( 0.8f, -1.0f), new Vector2( 0.8f, -0.6f), new Vector2( -0.8f, -0.6f) },
                                             new List<Vector2>() { new Vector2(0.8f, -1.0f), new Vector2(1.2f, -1.0f), new Vector2(0.8f, -0.6f) },
                                           },
-                "Triangle_2",
+                "Triangle_1_transfinite",
+                Vector3.Zero,
                 Vector3.UnitX,
-                new Vector3(0.707f, 0.707f, 0),
-                new Vector3(-0.707f, 0.707f, 0)
-           };
+                Vector3.UnitY
+            };
+
+            yield return new object[]
+            {
+                new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0f, 0f), new Vector2(-0.47140455f, 0.47140455f), new Vector2(0.23570228f, 0.82495797f),
+                                                                  new Vector2(1.0606602f,0f)},
+                                            new List<Vector2>() { new Vector2(-0.47140455f, 0.47140455f), new Vector2(-0.9428091f, 0.9428091f),
+                                                                  new Vector2(-0.5892557f, 1.6499159f), new Vector2(0.23570228f, 0.82495797f) },
+                                            new List<Vector2>() { new Vector2(-0.9428091f, 0.9428091f), new Vector2(-1.4142137f, 1.4142137f),
+                                                                  new Vector2(-1.4142137f, 2.4748738f), new Vector2(-0.5892557f,1.6499159f) },
+                                            new List<Vector2>() { new Vector2(1.0606602f, 0f), new Vector2(0.44194177f, 0.6187185f),
+                                                                  new Vector2(1.237437f, 0.88388354f), new Vector2(2.1213205f,0f) },
+
+                                            new List<Vector2>() { new Vector2(0.44194177f, 0.6187185f), new Vector2(-0.1767767f, 1.237437f),
+                                                                  new Vector2(0.3535534f, 1.7677671f), new Vector2(1.237437f,0.88388354f) },
+                                            new List<Vector2>() { new Vector2(-0.1767767f, 1.237437f), new Vector2(-0.7954952f, 1.8561554f),
+                                                                  new Vector2(-0.5303301f, 2.6516507f), new Vector2(0.3535534f,1.7677671f) },
+
+                                            new List<Vector2>() { new Vector2(-0.7954952f, 1.8561554f), new Vector2(-1.4142137f, 2.4748738f), new Vector2(-1.4142137f, 3.5355341f),
+                                                                  new Vector2(-0.5303301f, 2.6516507f)},
+
+                                            new List<Vector2>() { new Vector2(2.1213205f, 0f), new Vector2(1.4142137f, 0.7071068f), new Vector2(2.2627418f, 0.91923887f),
+                                                                  new Vector2(3.1819808f,0f)},
+                                            new List<Vector2>() { new Vector2(1.4142137f, 0.7071068f), new Vector2(0.7071068f, 1.4142137f), new Vector2(1.343503f, 1.8384777f),
+                                                                  new Vector2(2.2627418f,0.91923887f)},
+
+
+                                            new List<Vector2>() { new Vector2(0.7071068f, 1.4142137f), new Vector2(0f, 2.1213205f), new Vector2(0.4242641f, 2.7577167f),
+                                                                  new Vector2(1.343503f, 1.8384777f)},
+                                            new List<Vector2>() { new Vector2(0f, 2.1213205f), new Vector2(-0.7071068f, 2.8284273f), new Vector2(-0.4949748f, 3.6769555f),
+                                                                  new Vector2(0.4242641f,2.7577167f)},
+                                            new List<Vector2>() { new Vector2(-0.7071068f, 2.8284273f), new Vector2(-1.4142137f, 3.5355341f), new Vector2(-1.4142137f, 4.5961943f),
+                                                                  new Vector2(-0.4949748f, 3.6769555f)},
+                                            new List<Vector2>() { new Vector2(3.1819808f, 0f), new Vector2(2.5253816f, 0.6565992f), new Vector2(3.4345188f, 0.8081221f),
+                                                                  new Vector2(4.242641f, 0f) },
+
+
+                                            new List<Vector2>() { new Vector2(2.5253816f, 0.6565992f), new Vector2(1.8687823f, 1.3131984f), new Vector2(2.626397f, 1.6162442f),
+                                                                  new Vector2(3.4345188f,0.8081221f) },
+                                            new List<Vector2>() { new Vector2(1.8687823f, 1.3131984f), new Vector2(1.2121831f, 1.9697976f), new Vector2(1.8182747f, 2.4243662f),
+                                                                  new Vector2(2.626397f,1.6162442f)},
+                                            new List<Vector2>() { new Vector2(1.2121831f, 1.9697976f), new Vector2(0.55558395f, 2.626397f), new Vector2(1.0101526f, 3.2324884f),
+                                                                  new Vector2(1.8182747f, 2.4243662f) },
+
+                                            new List<Vector2>() { new Vector2(0.55558395f, 2.626397f), new Vector2(-0.10101526f, 3.282996f), new Vector2(0.20203052f, 4.0406103f),
+                                                                  new Vector2(1.0101526f,3.2324884f)},
+                                            new List<Vector2>() { new Vector2(-0.10101526f, 3.282996f), new Vector2(-0.75761443f, 3.9395952f), new Vector2(-0.60609156f, 4.8487325f),
+                                                                  new Vector2(0.20203052f, 4.0406103f)  },
+                                            new List<Vector2>() { new Vector2(-0.75761443f, 3.9395952f), new Vector2(-1.4142137f, 4.5961943f), new Vector2(-1.4142137f, 5.6568546f),
+                                                                  new Vector2(-0.60609156f, 4.8487325f)},
+                                          },
+                "Triangle_2_transfinite",
+                new Vector3(36,6,100),
+                new Vector3(-0.7071068f,0.7071068f,0f),
+                new Vector3(0.7071068f,0.7071068f,0f)
+            };
+
+            yield return new object[]
+            {
+                new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0f, 0f), new Vector2(-0.47140455f, 0.47140455f), new Vector2(0.23570228f, 0.82495797f),
+                                                                  new Vector2(1.0606602f,0f)},
+                                            new List<Vector2>() { new Vector2(-0.47140455f, 0.47140455f), new Vector2(-0.9428091f, 0.9428091f),
+                                                                  new Vector2(-0.5892557f, 1.6499159f), new Vector2(0.23570228f, 0.82495797f) },
+                                            new List<Vector2>() { new Vector2(-0.9428091f, 0.9428091f), new Vector2(-1.4142137f, 1.4142137f),
+                                                                  new Vector2(-1.4142137f, 2.4748738f), new Vector2(-0.5892557f,1.6499159f) },
+                                            new List<Vector2>() { new Vector2(1.0606602f, 0f), new Vector2(0.44194177f, 0.6187185f),
+                                                                  new Vector2(1.237437f, 0.88388354f), new Vector2(2.1213205f,0f) },
+
+                                            new List<Vector2>() { new Vector2(0.44194177f, 0.6187185f), new Vector2(-0.1767767f, 1.237437f),
+                                                                  new Vector2(0.3535534f, 1.7677671f), new Vector2(1.237437f,0.88388354f) },
+                                            new List<Vector2>() { new Vector2(-0.1767767f, 1.237437f), new Vector2(-0.7954952f, 1.8561554f),
+                                                                  new Vector2(-0.5303301f, 2.6516507f), new Vector2(0.3535534f,1.7677671f) },
+
+                                            new List<Vector2>() { new Vector2(-0.7954952f, 1.8561554f), new Vector2(-1.4142137f, 2.4748738f), new Vector2(-1.4142137f, 3.5355341f),
+                                                                  new Vector2(-0.5303301f, 2.6516507f)},
+
+                                            new List<Vector2>() { new Vector2(2.1213205f, 0f), new Vector2(1.4142137f, 0.7071068f), new Vector2(2.2627418f, 0.91923887f),
+                                                                  new Vector2(3.1819808f,0f)},
+                                            new List<Vector2>() { new Vector2(1.4142137f, 0.7071068f), new Vector2(0.7071068f, 1.4142137f), new Vector2(1.343503f, 1.8384777f),
+                                                                  new Vector2(2.2627418f,0.91923887f)},
+
+
+                                            new List<Vector2>() { new Vector2(0.7071068f, 1.4142137f), new Vector2(0f, 2.1213205f), new Vector2(0.4242641f, 2.7577167f),
+                                                                  new Vector2(1.343503f, 1.8384777f)},
+                                            new List<Vector2>() { new Vector2(0f, 2.1213205f), new Vector2(-0.7071068f, 2.8284273f), new Vector2(-0.4949748f, 3.6769555f),
+                                                                  new Vector2(0.4242641f,2.7577167f)},
+                                            new List<Vector2>() { new Vector2(-0.7071068f, 2.8284273f), new Vector2(-1.4142137f, 3.5355341f), new Vector2(-1.4142137f, 4.5961943f),
+                                                                  new Vector2(-0.4949748f, 3.6769555f)},
+                                            new List<Vector2>() { new Vector2(3.1819808f, 0f), new Vector2(2.5253816f, 0.6565992f), new Vector2(3.4345188f, 0.8081221f),
+                                                                  new Vector2(4.242641f, 0f) },
+
+
+                                            new List<Vector2>() { new Vector2(2.5253816f, 0.6565992f), new Vector2(1.8687823f, 1.3131984f), new Vector2(2.626397f, 1.6162442f),
+                                                                  new Vector2(3.4345188f,0.8081221f) },
+                                            new List<Vector2>() { new Vector2(1.8687823f, 1.3131984f), new Vector2(1.2121831f, 1.9697976f), new Vector2(1.8182747f, 2.4243662f),
+                                                                  new Vector2(2.626397f,1.6162442f)},
+                                            new List<Vector2>() { new Vector2(1.2121831f, 1.9697976f), new Vector2(0.55558395f, 2.626397f), new Vector2(1.0101526f, 3.2324884f),
+                                                                  new Vector2(1.8182747f, 2.4243662f) },
+
+                                            new List<Vector2>() { new Vector2(0.55558395f, 2.626397f), new Vector2(-0.10101526f, 3.282996f), new Vector2(0.20203052f, 4.0406103f),
+                                                                  new Vector2(1.0101526f,3.2324884f)},
+                                            new List<Vector2>() { new Vector2(-0.10101526f, 3.282996f), new Vector2(-0.75761443f, 3.9395952f), new Vector2(-0.60609156f, 4.8487325f),
+                                                                  new Vector2(0.20203052f, 4.0406103f)  },
+                                            new List<Vector2>() { new Vector2(-0.75761443f, 3.9395952f), new Vector2(-1.4142137f, 4.5961943f), new Vector2(-1.4142137f, 5.6568546f),
+                                                                  new Vector2(-0.60609156f, 4.8487325f)},
+                                          },
+                "Triangle_2",
+                new Vector3(36,6,100),
+                new Vector3(-0.7071068f,0.7071068f,0f),
+                new Vector3(0.7071068f,0.7071068f,0f)
+            };
         }
 
         [TestMethod]
         [DynamicData(nameof(GetVectorLists), DynamicDataSourceType.Method)]
         public void MultiPassSectionTest(List<List<Vector2>> list, string modelName, Vector3 origin, Vector3 axisX, Vector3 axisY)
         {
-            var section = new MultiPassSection(controller);
+            var section = new MultiPassSection2(controller);
 
             section.Origin = origin;
             section.AxisX = axisX;
             section.AxisY = axisY;
 
-            var elements = section.Create(list);
+            if (!modelName.Contains("transfinite"))
+                section.MeshSize = 0.1;
+
+            var elements = modelName.Contains("transfinite") ? section.CreateTransfinite(list) : section.Create(list);
 
             var modelData = new ModelData();
 
-            foreach(var node in section.Nodes)
+            foreach (var node in section.Nodes)
                 modelData.ObjectData.NodesSet.Add(node.Number, node);
 
             foreach (var element in elements)
                 modelData.ObjectData.E2DCollection.Add(element);
             var saver = new SaveModelToBPF2TextFile();
             saver.Save(modelData, $@"D:\{modelName}.bpf2");
-
-        }
-
-        [TestMethod]
-        public void MultiPassSection_DifferentPassCountsInAdjacentLayers_DoesNotRequireManualTransfiniteIncrease()
-        {
-            var cells = new List<List<Vector2>>
-            {
-                new()
-                {
-                    new Vector2(0, 0),
-                    new Vector2(10, 0),
-                    new Vector2(10, 1),
-                    new Vector2(0, 1)
-                },
-                new()
-                {
-                    new Vector2(0, 1),
-                    new Vector2(1, 1),
-                    new Vector2(1, 2),
-                    new Vector2(0, 2)
-                },
-                new()
-                {
-                    new Vector2(1, 1),
-                    new Vector2(2, 1),
-                    new Vector2(2, 2),
-                    new Vector2(1, 2)
-                },
-                new()
-                {
-                    new Vector2(2, 1),
-                    new Vector2(3, 1),
-                    new Vector2(3, 2),
-                    new Vector2(2, 2)
-                },
-                new()
-                {
-                    new Vector2(3, 1),
-                    new Vector2(4, 1),
-                    new Vector2(4, 2),
-                    new Vector2(3, 2)
-                },
-                new()
-                {
-                    new Vector2(4, 1),
-                    new Vector2(5, 1),
-                    new Vector2(5, 2),
-                    new Vector2(4, 2)
-                },
-                new()
-                {
-                    new Vector2(5, 1),
-                    new Vector2(6, 1),
-                    new Vector2(6, 2),
-                    new Vector2(5, 2)
-                },
-                new()
-                {
-                    new Vector2(6, 1),
-                    new Vector2(7, 1),
-                    new Vector2(7, 2),
-                    new Vector2(6, 2)
-                },
-                new()
-                {
-                    new Vector2(7, 1),
-                    new Vector2(8, 1),
-                    new Vector2(8, 2),
-                    new Vector2(7, 2)
-                },
-                new()
-                {
-                    new Vector2(8, 1),
-                    new Vector2(9, 1),
-                    new Vector2(9, 2),
-                    new Vector2(8, 2)
-                },
-                new()
-                {
-                    new Vector2(9, 1),
-                    new Vector2(10, 1),
-                    new Vector2(10, 2),
-                    new Vector2(9, 2)
-                }
-            };
-
-            var section = new MultiPassSection(controller)
-            {
-                Origin = Vector3.Zero,
-                AxisX = Vector3.UnitX,
-                AxisY = Vector3.UnitY,
-                TransfinitePoints = 10
-            };
-
-            var elements = section.Create(cells).ToList();
-
-            Assert.AreEqual(cells.Count, elements.Count);
-            Assert.IsTrue(elements.All(v => v.Count > 0));
-        }
-
-        [TestMethod]
-        public void MultiPassSection_FiveCornerCell_DoesNotSetTransfiniteSurface()
-        {
-            var cells = new List<List<Vector2>>
-            {
-                new()
-                {
-                    new Vector2(0, 0),
-                    new Vector2(2, 0),
-                    new Vector2(2, 1),
-                    new Vector2(1, 2),
-                    new Vector2(0, 1)
-                }
-            };
-
-            var section = new MultiPassSection(controller)
-            {
-                Origin = Vector3.Zero,
-                AxisX = Vector3.UnitX,
-                AxisY = Vector3.UnitY,
-                TransfinitePoints = 10
-            };
-
-            var elements = section.Create(cells).ToList();
-
-            Assert.AreEqual(cells.Count, elements.Count);
-            Assert.IsTrue(elements.All(v => v.Count > 0));
-        }
-
-        [TestMethod]
-        public void MultiPassSection_InsertSharedEdgePoints_AddsCollinearOverlapEndpoints()
-        {
-            var cells = new List<List<Vector2>>
-            {
-                new()
-                {
-                    new Vector2(0, 0),
-                    new Vector2(4, 0),
-                    new Vector2(4, 1),
-                    new Vector2(0, 1)
-                },
-                new()
-                {
-                    new Vector2(1, 1),
-                    new Vector2(3, 1),
-                    new Vector2(3, 2),
-                    new Vector2(1, 2)
-                }
-            };
-
-            var refinedCells = MultiPassSection.InsertSharedEdgePoints(cells);
-
-            Assert.IsTrue(refinedCells[0].Any(v => Vector2.DistanceSquared(v, new Vector2(1, 1)) < 1e-10f));
-            Assert.IsTrue(refinedCells[0].Any(v => Vector2.DistanceSquared(v, new Vector2(3, 1)) < 1e-10f));
-            Assert.AreEqual(6, refinedCells[0].Count);
-        }
-
-        [TestMethod]
-        public void MultiPassSection_InsertSharedEdgePoints_DoesNotAddCrossingEdgeIntersections()
-        {
-            var cells = new List<List<Vector2>>
-            {
-                new()
-                {
-                    new Vector2(0, 0),
-                    new Vector2(4, 0),
-                    new Vector2(4, 4),
-                    new Vector2(0, 4)
-                },
-                new()
-                {
-                    new Vector2(-1, 2),
-                    new Vector2(2, 5),
-                    new Vector2(5, 2),
-                    new Vector2(2, -1)
-                }
-            };
-
-            var refinedCells = MultiPassSection.InsertSharedEdgePoints(cells);
-
-            Assert.AreEqual(4, refinedCells[0].Count);
-            Assert.AreEqual(4, refinedCells[1].Count);
-        }
-
-        [TestMethod]
-        public void MultiPassSection_Create_RestoresMeshSizeMax()
-        {
-            const double expectedMeshSizeMax = 123.0;
-            controller.Gmsh.Option.SetNumber("Mesh.MeshSizeMax", expectedMeshSizeMax);
-
-            var cells = new List<List<Vector2>>
-            {
-                new()
-                {
-                    new Vector2(0, 0),
-                    new Vector2(4, 0),
-                    new Vector2(4, 1),
-                    new Vector2(0, 1)
-                }
-            };
-
-            var section = new MultiPassSection(controller)
-            {
-                Origin = Vector3.Zero,
-                AxisX = Vector3.UnitX,
-                AxisY = Vector3.UnitY,
-                TransfinitePoints = 10
-            };
-
-            section.Create(cells).ToList();
-
-            Assert.AreEqual(expectedMeshSizeMax, controller.Gmsh.Option.GetNumber("Mesh.MeshSizeMax"));
-        }
-
-        [TestMethod]
-        public void MultiPassSection_Create_InteriorRefineIncreasesElementCount()
-        {
-            var cells = new List<List<Vector2>>
-            {
-                new()
-                {
-                    new Vector2(0, 0),
-                    new Vector2(4, 0),
-                    new Vector2(4, 1),
-                    new Vector2(0, 1)
-                }
-            };
-
-            var coarseSection = new MultiPassSection(controller)
-            {
-                Origin = Vector3.Zero,
-                AxisX = Vector3.UnitX,
-                AxisY = Vector3.UnitY,
-                TransfinitePoints = 5,
-                InteriorRefineSteps = 0
-            };
-            var coarseElementsCount = coarseSection.Create(cells).Sum(v => v.Count);
-
-            var refinedSection = new MultiPassSection(controller)
-            {
-                Origin = Vector3.Zero,
-                AxisX = Vector3.UnitX,
-                AxisY = Vector3.UnitY,
-                TransfinitePoints = 5,
-                InteriorRefineSteps = 1
-            };
-            var refinedElementsCount = refinedSection.Create(cells).Sum(v => v.Count);
-
-            Assert.IsTrue(refinedElementsCount > coarseElementsCount);
         }
 
         private List<Element2D> GenTriangle(float[] coords)
