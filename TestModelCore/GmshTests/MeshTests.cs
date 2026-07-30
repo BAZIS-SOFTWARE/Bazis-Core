@@ -1427,6 +1427,73 @@ namespace GmshTests
             Assert.AreEqual(4, refinedCells[1].Count);
         }
 
+        [TestMethod]
+        public void MultiPassSection_Create_RestoresMeshSizeMax()
+        {
+            const double expectedMeshSizeMax = 123.0;
+            controller.Gmsh.Option.SetNumber("Mesh.MeshSizeMax", expectedMeshSizeMax);
+
+            var cells = new List<List<Vector2>>
+            {
+                new()
+                {
+                    new Vector2(0, 0),
+                    new Vector2(4, 0),
+                    new Vector2(4, 1),
+                    new Vector2(0, 1)
+                }
+            };
+
+            var section = new MultiPassSection(controller)
+            {
+                Origin = Vector3.Zero,
+                AxisX = Vector3.UnitX,
+                AxisY = Vector3.UnitY,
+                TransfinitePoints = 10
+            };
+
+            section.Create(cells).ToList();
+
+            Assert.AreEqual(expectedMeshSizeMax, controller.Gmsh.Option.GetNumber("Mesh.MeshSizeMax"));
+        }
+
+        [TestMethod]
+        public void MultiPassSection_Create_InteriorRefineIncreasesElementCount()
+        {
+            var cells = new List<List<Vector2>>
+            {
+                new()
+                {
+                    new Vector2(0, 0),
+                    new Vector2(4, 0),
+                    new Vector2(4, 1),
+                    new Vector2(0, 1)
+                }
+            };
+
+            var coarseSection = new MultiPassSection(controller)
+            {
+                Origin = Vector3.Zero,
+                AxisX = Vector3.UnitX,
+                AxisY = Vector3.UnitY,
+                TransfinitePoints = 5,
+                InteriorRefineSteps = 0
+            };
+            var coarseElementsCount = coarseSection.Create(cells).Sum(v => v.Count);
+
+            var refinedSection = new MultiPassSection(controller)
+            {
+                Origin = Vector3.Zero,
+                AxisX = Vector3.UnitX,
+                AxisY = Vector3.UnitY,
+                TransfinitePoints = 5,
+                InteriorRefineSteps = 1
+            };
+            var refinedElementsCount = refinedSection.Create(cells).Sum(v => v.Count);
+
+            Assert.IsTrue(refinedElementsCount > coarseElementsCount);
+        }
+
         private List<Element2D> GenTriangle(float[] coords)
         {
             var nodes = new List<Node>() { new Node(1, new Point3D(coords[0], coords[1], coords[2])),

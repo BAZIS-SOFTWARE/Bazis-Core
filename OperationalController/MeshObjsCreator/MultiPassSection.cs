@@ -31,7 +31,19 @@ namespace OperationalController.MeshObjsCreator
         public Vector3 AxisY { get; set; }
         public List<Node> Nodes { get; private set; }
 
+        // Базовое желаемое число точек на логическую сторону прохода. Это не жесткий
+        // максимум: общие стороны могут получить больше точек, если соседняя ячейка
+        // уже разбила эту границу на несколько участков.
         public int TransfinitePoints { get; set; } = 10;
+
+        // Мягкое ограничение размера внутренних элементов для свободных/recombine
+        // поверхностей. Значение считается от среднего шага transfinite-кривых и
+        // временно применяется только на время генерации этой секции.
+        public double InteriorMeshSizeFactor { get; set; } = 1.5;
+
+        // Дополнительное равномерное дробление после генерации. По умолчанию
+        // отключено, чтобы не делать проходы плотнее заданных TransfinitePoints.
+        public int InteriorRefineSteps { get; set; } = 0;
         private class GmshPoint
         {
             internal Vector2 Coords { get; private set; }
@@ -404,9 +416,22 @@ namespace OperationalController.MeshObjsCreator
                 curveLoop.Clear();
             }
 
+            // Поверхности помечаем transfinite только после создания всех ячеек:
+            // поздние соседние ячейки могут добавить точки на общие ребра и тем
+            // самым изменить совместимость противоположных сторон.
             SetTransfiniteSurfaces();
 
-            controller.Gmsh.Model.Mesh.Generate(2);
+            var previousMeshSizeMax = ApplyInteriorMeshSizeLimit();
+            try
+            {
+                controller.Gmsh.Model.Mesh.Generate(2);
+                RefineInteriorMesh();
+            }
+            finally
+            {
+                RestoreMeshSizeMax(previousMeshSizeMax);
+            }
+
             var error = controller.Gmsh.Logger.GetLastError();
 
             if (!string.IsNullOrEmpty(error))
@@ -511,6 +536,8 @@ namespace OperationalController.MeshObjsCreator
             TransfiniteCurves();
 
             controller.Gmsh.Model.Mesh.SetRecombine(2, surface);
+            // Данные поверхности сохраняем для отложенного SetTransfiniteSurface:
+            // применять его сразу опасно, пока не обработаны все соседние проходы.
             transfiniteSurfaces.Add(new SurfaceTransfiniteData(
                 surface,
                 newCorners,
@@ -519,8 +546,63 @@ namespace OperationalController.MeshObjsCreator
             return surface;
         }
 
+        private void RefineInteriorMesh()
+        {
+            for (var i = 0; i < InteriorRefineSteps; ++i)
+                controller.Gmsh.Model.Mesh.Refine();
+        }
+
+        private double? ApplyInteriorMeshSizeLimit()
+        {
+            if (InteriorMeshSizeFactor <= 0)
+                return null;
+
+            var targetSize = GetInteriorMeshSizeLimit();
+            if (targetSize <= 0)
+                return null;
+
+            var previousMeshSizeMax = controller.Gmsh.Option.GetNumber("Mesh.MeshSizeMax");
+            var meshSizeMax = previousMeshSizeMax > 0
+                ? Math.Min(previousMeshSizeMax, targetSize)
+                : targetSize;
+
+            // Gmsh options глобальны для текущей модели, поэтому старое значение
+            // обязательно возвращается в finally после генерации.
+            controller.Gmsh.Option.SetNumber("Mesh.MeshSizeMax", meshSizeMax);
+            return previousMeshSizeMax;
+        }
+
+        private static void RestoreMeshSizeMax(double? previousMeshSizeMax)
+        {
+            if (previousMeshSizeMax.HasValue)
+                controller.Gmsh.Option.SetNumber("Mesh.MeshSizeMax", previousMeshSizeMax.Value);
+        }
+
+        private double GetInteriorMeshSizeLimit()
+        {
+            var totalLength = 0.0;
+            var totalIntervals = 0;
+
+            foreach (var edge in graph.Edges)
+            {
+                if (edge.TransfinitePoints <= 1)
+                    continue;
+
+                totalLength += edge.ToVector().Length();
+                totalIntervals += edge.TransfinitePoints - 1;
+            }
+
+            if (totalIntervals == 0)
+                return 0;
+
+            return totalLength / totalIntervals * InteriorMeshSizeFactor;
+        }
+
         private void SetTransfiniteSurfaces()
         {
+            // Не смешиваем transfinite и free/recombine surfaces внутри одной
+            // секции: на общих границах это давало несогласованную сетку. Если
+            // хоть одна поверхность не подходит, вся секция остается free/recombine.
             if (transfiniteSurfaces.Any(v => !CanSetTransfiniteSurface(v)))
                 return;
 
@@ -558,6 +640,9 @@ namespace OperationalController.MeshObjsCreator
         {
             if (segmentsLoop.Count != 4)
             {
+                // Нечетырехугольные контуры не могут быть обычной transfinite
+                // surface, но их граничные кривые все равно нужно дискретизировать
+                // согласованно с уже созданными соседями.
                 for (var i = 0; i < segmentsLoop.Count; ++i)
                 {
                     var target = Math.Max(TransfinitePoints, GetRequiredTransfinitePoints(segmentsLoop[i]));
