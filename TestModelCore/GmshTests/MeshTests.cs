@@ -1052,6 +1052,9 @@ namespace GmshTests
 
             Assert.IsTrue(extruder.MissedElements == 0);
 
+            var beams_0 = extruder.CreateReferenceLine(elements);
+            md.ObjectData.E1DCollection.AddRange("Reference_Line_0",beams_0);
+
             foreach (var node in extruder.Nodes.Values)
                 md.ObjectData.NodesSet.Add(node.Number, node);
 
@@ -1061,9 +1064,12 @@ namespace GmshTests
 
             var extruder2 = new CurveExtruder(controller, curves2, steps2, point2);
             var e3d2 = transfinite ? extruder2.ExtrudeTransfinite(elements2)
-                                  : extruder2.Extrude(elements2);
+                                   : extruder2.Extrude(elements2);
 
             Assert.IsTrue(extruder2.MissedElements == 0);
+
+            var beams_1 = extruder2.CreateReferenceLine(elements2);
+            md2.ObjectData.E1DCollection.AddRange("Reference_Line_1", beams_1);
 
             foreach (var node in extruder2.Nodes.Values)
                 md2.ObjectData.NodesSet.Add(node.Number, node);
@@ -1076,6 +1082,9 @@ namespace GmshTests
 
             var saver = new SaveModelToBPF2TextFile();
             saver.Save(md, $@"D:\{fName}.bpf2");
+
+            var loader = new LoadModelFromBPF2TextFile();
+            loader.Load($@"D:\{fName}.bpf2");
         }
 
         [DataTestMethod]
@@ -1172,7 +1181,7 @@ namespace GmshTests
 
         public static IEnumerable<object[]> GetVectorLists()
         {
-            yield return new object[]
+            /*yield return new object[]
             {
                 new List<List<Vector2>>() { new List<Vector2>() { new Vector2(-1.2f, -1.0f), new Vector2(-0.6f, -1.0f) , new Vector2(-0.6f, -0.6f), new Vector2( -0.8f, -0.6f) },
                                             new List<Vector2>() { new Vector2(-0.6f, -1.0f), new Vector2( 0.0f, -1.0f) , new Vector2( 0.0f, -0.6f), new Vector2(-0.6f, -0.6f) },
@@ -1351,6 +1360,63 @@ namespace GmshTests
                 new Vector3(-0.7071068f,0.7071068f,0f),
                 new Vector3(0.7071068f,0.7071068f,0f)
             };
+
+            yield return new object[]
+            {
+                new List<List<Vector2>>() { new List<Vector2>() { new Vector2(0f, 0f), new Vector2(-1.4142f,1.4142f), new Vector2(-1.4142f,3.5355f),
+                                                                  new Vector2(2.1213f,0f)},
+                                            new List<Vector2>() { new Vector2(2.1213f,0), new Vector2(0.3536f, 1.7678f), new Vector2(1.4142f,2.8284f),
+                                                                  new Vector2(4.2426f,0)},
+                                            new List<Vector2>() { new Vector2(0.3536f,1.7678f), new Vector2(-1.4142f,3.5355f), new Vector2(-1.4142f,5.6569f),
+                                                                  new Vector2(1.4142f,2.8284f)},
+                                          },
+                "Triangle_3_transfinite",
+                new Vector3(36,6,100),
+                new Vector3(-0.7071068f,0.7071068f,0f),
+                new Vector3(0.7071068f,0.7071068f,0f)
+            };*/
+
+            yield return new object[]
+            {
+                    new List<List<Vector2>> {
+                    new List<Vector2> { new Vector2(0, 0), new Vector2(-0.3536f, 0.3536f), new Vector2(0.2828f, 0.5657f), new Vector2(0.8485f, 0) },
+                    new List<Vector2> { new Vector2(-0.3536f, 0.3536f), new Vector2(-0.7071f, 0.7071f), new Vector2(-0.2828f, 1.1314f), new Vector2(0.2828f, 0.5657f) },
+                    new List<Vector2> { new Vector2(-0.7071f, 0.7071f), new Vector2(-1.0607f, 1.0607f), new Vector2(-0.8485f, 1.6971f), new Vector2(-0.2828f, 1.1314f) },
+                    new List<Vector2> { new Vector2(-1.0607f, 1.0607f), new Vector2(-1.4142f, 1.4142f), new Vector2(-1.4142f, 2.2627f), new Vector2(-0.8485f, 1.6971f) },
+                    new List<Vector2> { new Vector2(0.8485f, 0), new Vector2(0.396f, 0.4525f), new Vector2(1.0748f, 0.6223f), new Vector2(1.6971f, 0) },
+                    new List<Vector2> { new Vector2(0.396f, 0.4525f), new Vector2(-0.0566f, 0.9051f), new Vector2(0.4525f, 1.2445f), new Vector2(1.0748f, 0.6223f) },
+                    new List<Vector2> { new Vector2(-0.0566f, 0.9051f), new Vector2(-0.5091f, 1.3576f), new Vector2(-0.1697f, 1.8668f), new Vector2(0.4525f, 1.2445f) },
+                    new List<Vector2> { new Vector2(-0.5091f, 1.3576f), new Vector2(-0.9617f, 1.8102f), new Vector2(-0.792f, 2.489f), new Vector2(-0.1697f, 1.8668f) },
+                    new List<Vector2> { new Vector2(-0.9617f, 1.8102f), new Vector2(-1.4142f, 2.2627f), new Vector2(-1.4142f, 3.1113f), new Vector2(-0.792f, 2.489f) },
+                    new List<Vector2> { new Vector2(1.6971f, 0), new Vector2(1.1785f, 0.5185f), new Vector2(1.8856f, 0.66f), new Vector2(2.5456f, 0) },
+                    new List<Vector2> { new Vector2(1.1785f, 0.5185f), new Vector2(0.66f, 1.0371f), new Vector2(1.2257f, 1.3199f), new Vector2(1.8856f, 0.66f) },
+                    new List<Vector2> { new Vector2(0.66f, 1.0371f), new Vector2(0.1414f, 1.5556f), new Vector2(0.5657f, 1.9799f), new Vector2(1.2257f, 1.3199f) },
+                    new List<Vector2> { new Vector2(0.1414f, 1.5556f), new Vector2(-0.3771f, 2.0742f), new Vector2(-0.0943f, 2.6399f), new Vector2(0.5657f, 1.9799f) },
+                    new List<Vector2> { new Vector2(-0.3771f, 2.0742f), new Vector2(-0.8957f, 2.5927f), new Vector2(-0.7542f, 3.2998f), new Vector2(-0.0943f, 2.6399f) },
+                    new List<Vector2> { new Vector2(-0.8957f, 2.5927f), new Vector2(-1.4142f, 3.1113f), new Vector2(-1.4142f, 3.9598f), new Vector2(-0.7542f, 3.2998f) },
+                    new List<Vector2> { new Vector2(2.5456f, 0), new Vector2(2.0506f, 0.495f), new Vector2(2.7931f, 0.601f), new Vector2(3.3941f, 0) },
+                    new List<Vector2> { new Vector2(2.0506f, 0.495f), new Vector2(1.5556f, 0.9899f), new Vector2(2.192f, 1.2021f), new Vector2(2.7931f, 0.601f) },
+                    new List<Vector2> { new Vector2(1.5556f, 0.9899f), new Vector2(1.0607f, 1.4849f), new Vector2(1.591f, 1.8031f), new Vector2(2.192f, 1.2021f) },
+                    new List<Vector2> { new Vector2(1.0607f, 1.4849f), new Vector2(0.5657f, 1.9799f), new Vector2(0.9899f, 2.4042f), new Vector2(1.591f, 1.8031f) },
+                    new List<Vector2> { new Vector2(0.5657f, 1.9799f), new Vector2(0.0707f, 2.4749f), new Vector2(0.3889f, 3.0052f), new Vector2(0.9899f, 2.4042f) },
+                    new List<Vector2> { new Vector2(0.0707f, 2.4749f), new Vector2(-0.4243f, 2.9698f), new Vector2(-0.2121f, 3.6062f), new Vector2(0.3889f, 3.0052f) },
+                    new List<Vector2> { new Vector2(-0.4243f, 2.9698f), new Vector2(-0.9192f, 3.4648f), new Vector2(-0.8132f, 4.2073f), new Vector2(-0.2121f, 3.6062f) },
+                    new List<Vector2> { new Vector2(-0.9192f, 3.4648f), new Vector2(-1.4142f, 3.9598f), new Vector2(-1.4142f, 4.8083f), new Vector2(-0.8132f, 4.2073f) },
+                    new List<Vector2> { new Vector2(3.3941f, 0), new Vector2(2.8599f, 0.5343f), new Vector2(3.6141f, 0.6285f), new Vector2(4.2426f, 0) },
+                    new List<Vector2> { new Vector2(2.8599f, 0.5343f), new Vector2(2.3256f, 1.0685f), new Vector2(2.9856f, 1.2571f), new Vector2(3.6141f, 0.6285f) },
+                    new List<Vector2> { new Vector2(2.3256f, 1.0685f), new Vector2(1.7913f, 1.6028f), new Vector2(2.357f, 1.8856f), new Vector2(2.9856f, 1.2571f) },
+                    new List<Vector2> { new Vector2(1.7913f, 1.6028f), new Vector2(1.2571f, 2.137f), new Vector2(1.7285f, 2.5142f), new Vector2(2.357f, 1.8856f) },
+                    new List<Vector2> { new Vector2(1.2571f, 2.137f), new Vector2(0.7228f, 2.6713f), new Vector2(1.0999f, 3.1427f), new Vector2(1.7285f, 2.5142f) },
+                    new List<Vector2> { new Vector2(0.7228f, 2.6713f), new Vector2(0.1886f, 3.2056f), new Vector2(0.4714f, 3.7712f), new Vector2(1.0999f, 3.1427f) },
+                    new List<Vector2> { new Vector2(0.1886f, 3.2056f), new Vector2(-0.3457f, 3.7398f), new Vector2(-0.1571f, 4.3998f), new Vector2(0.4714f, 3.7712f) },
+                    new List<Vector2> { new Vector2(-0.3457f, 3.7398f), new Vector2(-0.88f, 4.2741f), new Vector2(-0.7857f, 5.0283f), new Vector2(-0.1571f, 4.3998f) },
+                    new List<Vector2> { new Vector2(-0.88f, 4.2741f), new Vector2(-1.4142f, 4.8083f), new Vector2(-1.4142f, 5.6569f), new Vector2(-0.7857f, 5.0283f) }
+                    },
+                    "Triangle_3_transfinite",
+                    new Vector3(36, 6, 100),
+                    new Vector3(-0.7071068f, 0.7071068f, 0f),
+                    new Vector3(0.7071068f, 0.7071068f, 0f)
+            };
         }
 
         [TestMethod]
@@ -1362,6 +1428,7 @@ namespace GmshTests
             section.Origin = origin;
             section.AxisX = axisX;
             section.AxisY = axisY;
+            section.TransfinitePoints = 20;
 
             if (!modelName.Contains("transfinite"))
                 section.MeshSize = 0.1;
@@ -1377,6 +1444,25 @@ namespace GmshTests
                 modelData.ObjectData.E2DCollection.Add(element);
             var saver = new SaveModelToBPF2TextFile();
             saver.Save(modelData, $@"D:\{modelName}.bpf2");
+        }
+
+        [TestMethod]
+        [DataRow(new int[] { 2,1,4,3})]
+        public void BoundaryCornersTest(int[] expected)
+        {
+            var surface = controller.Gmsh.Model.Occ.AddRectangle(0, 0, 0, 1, 1);
+            controller.Gmsh.Model.Occ.Synchronize();
+            controller.Gmsh.Model.Mesh.Generate(2);
+
+            var data = controller.GetMeshObjects();
+
+            var angleFinder = new FindCornerNodes();
+            var corners = angleFinder.Find(data.Item3);
+
+            var set = expected.ToHashSet();
+
+            foreach (var corner in corners)
+                Assert.IsTrue(set.Contains(corner.Number));
         }
 
         private List<Element2D> GenTriangle(float[] coords)

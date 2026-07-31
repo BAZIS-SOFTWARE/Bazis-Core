@@ -50,14 +50,15 @@ namespace OperationalController.MeshObjsCreator.Extrude
         /// Словарь ребер боковых граней
         /// </summary>
         protected HashSet<string> lateralEdges = new HashSet<string>();
-        /// <summary>
-        /// Индексы для создания новых вершин
-        /// </summary>
-        protected int nodeTag;
+        
         /// <summary>
         /// Индексы для создания новых 3д элементов
         /// </summary>
         protected int elementTag;
+        /// <summary>
+        /// Индексы для создания новых вершин
+        /// </summary>
+        public int NodeTag { get; protected set; }
         /// <summary>
         /// Узлы образованных 3д элементов
         /// </summary>
@@ -108,7 +109,7 @@ namespace OperationalController.MeshObjsCreator.Extrude
                 {
                     if (!visited.ContainsKey(node.Number))
                     {
-                        var point = new Node(nodeTag++, new Point3D(node.Position._x, node.Position._y, node.Position._z));
+                        var point = new Node(NodeTag++, new Point3D(node.Position._x, node.Position._y, node.Position._z));
                         visited.Add(node.Number, point);
                         points.Add(point);
                         Nodes.Add(point.Number, point);

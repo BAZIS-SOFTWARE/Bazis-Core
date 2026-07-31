@@ -3,11 +3,15 @@ using MathNet.Numerics.Distributions;
 using MathNet.Numerics.LinearAlgebra.Factorization;
 using Microsoft.Scripting.Ast;
 using Microsoft.Scripting.Utils;
+using Model;
 using Model.GeometryObjects;
+using Model.Interfaces.MeshObjects;
 using Model.MeshObjects;
 using OperationalController.GmshController;
+using OperationalController.MeshObjsUtility;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Reflection.Metadata;
@@ -83,6 +87,58 @@ namespace OperationalController.MeshObjsCreator.Extrude
 
             this.curveTags = DetectCurveLoop(curveTags, pointTag);
             steps = ConvertSteps(step);
+        }
+
+        public List<Beam> CreateReferenceLine(IEnumerable<Element2D> firstLayer)
+        {
+            var beamList = new List<Beam>();
+            var lastCorrect = Matrix4x4.Identity;
+            var beamId = 0;
+            var centerEdge = new Vector4();
+
+            for (var i = 0; i < curveTags.Length; ++i)
+            {
+                var compList = GetCurveComponents(steps[i], i);
+                var matrixList = CreateLocalSystemSet(compList, compList[0]);
+                
+                if(i == 0)
+                {
+                    var angleFinder = new FindCornerNodes();
+                    var corners = angleFinder.Find(firstLayer);
+                    var axisY = new Vector3(matrixList[0].M21, matrixList[0].M22, matrixList[0].M23);
+                    centerEdge = GetCenterEdgePoint(corners, axisY, compList[0].Item4);
+                }
+                var curCenter = Vector4.Zero;
+                var rotateStatus = false;
+                Node lastNode = null;
+
+                for (var j = 0; j < matrixList.Count; ++j)
+                {
+                    var currentCorrect = Matrix4x4.Identity;
+                    if (j == matrixList.Count - 1 && IsExistsCommonPoint(i))
+                    {
+                        var next = GetNextTangent(i);
+                        var data = GetRotationDataBetweenComponents(compList[j].Item5, next);
+                        lastCorrect = GetCorrectionMatrix(data.Item1, data.Item2, compList[j].Item4);
+                        if (data.Item2 <= maxAngle)
+                        {
+                            rotateStatus = true;
+                            currentCorrect = lastCorrect;
+                        }
+                    }
+                    var matrix = matrixList[j] * currentCorrect;
+                    curCenter = GetTransformedVector(centerEdge, matrix);
+                    var node = CreateNode(curCenter);
+                    Nodes.Add(node.Number, node);
+
+                    if (lastNode != null)
+                        beamList.Add(CreateBeam(lastNode, node, ref beamId));
+                    lastNode = node;
+                }
+                centerEdge = rotateStatus || i == curveTags.Length - 1 ? curCenter
+                                                                       : GetTransformedVector(centerEdge, matrixList[matrixList.Count - 1] * lastCorrect);
+            }
+            return beamList;
         }
 
         /// <summary>
@@ -270,6 +326,22 @@ namespace OperationalController.MeshObjsCreator.Extrude
             AddRotarySection(tetLayers, curLayer, lastComponents, firstComponents, true);
             return tetLayers;
         }*/
+
+        private Vector4 GetCenterEdgePoint(List<Node> corners, Vector3 axis, Vector3 origin)
+        {
+            var vecs = corners.Select(v => new Vector3(v._x, v._y, v._z));
+            var nAxis = Vector3.Normalize(axis);
+            var orderPoints = vecs.OrderByDescending(v => Vector3.Dot((v - origin), nAxis)).ToList();
+            var center = orderPoints[0] + (orderPoints[1] - orderPoints[0]) * 0.5f;
+
+            return new Vector4(center,1);
+        }
+
+        private Beam CreateBeam(Node lastNode, Node curNode, ref int beamId) => new Beam(beamId++, [lastNode, curNode]);
+
+        private Node CreateNode(Vector4 curCenter) => new Node(NodeTag++, new Point3D(curCenter.X, curCenter.Y, curCenter.Z));
+
+        private Vector4 GetTransformedVector(Vector4 centerEdge, Matrix4x4 matrix) => Vector4.Transform(centerEdge, matrix);
 
 
         private bool IsExistsCommonPoint(int index)
@@ -464,8 +536,8 @@ namespace OperationalController.MeshObjsCreator.Extrude
                     {
                         var coords = new Vector4(node._x, node._y, node._z, 1);
                         coords = Vector4.Transform(coords, curBasis);
-                        var point = new Node(nodeTag, new Point3D(coords.X, coords.Y, coords.Z));
-                        Nodes.Add(nodeTag++, point);
+                        var point = new Node(NodeTag, new Point3D(coords.X, coords.Y, coords.Z));
+                        Nodes.Add(NodeTag++, point);
                         points.Add(point);
                         visited.Add(node.Number, point);
                     }

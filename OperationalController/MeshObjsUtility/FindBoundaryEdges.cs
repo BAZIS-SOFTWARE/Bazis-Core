@@ -1,15 +1,15 @@
 ﻿using Geometry;
 using Model;
-using Model.Interfaces.ObjectsFinders;
+using Model.GeometryObjects;
 using Model.Interfaces;
+using Model.Interfaces.MeshObjects;
+using Model.Interfaces.ObjectsFinders;
+using Model.MeshObjects;
+using OperationalController;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Model.Interfaces.MeshObjects;
-using OperationalController;
-using Model.MeshObjects;
 using System.Drawing;
-using Model.GeometryObjects;
+using System.Linq;
 
 namespace OperationalController.MeshObjsUtility
 {
@@ -34,6 +34,89 @@ namespace OperationalController.MeshObjsUtility
                 yield return beam;
                 counter++;
             }
+        }
+
+        /// <summary>
+        /// Ищет на сетке ограниченным контуром граничные ребра, возвращая в виде сортированных узлов ребра.
+        /// </summary>
+        /// <param name="surfaceElements">Элементы</param>
+        /// <returns>Список граничных сортированных узлов</returns>
+        public List<Node> GetSortedBoundaryEdges(IEnumerable<ISurfaceElement> surfaceElements)
+        {
+            var nodes = new Dictionary<int, Node>();
+            var edges = new Dictionary<string, List<(int,int)>>();
+
+            Action<int, int> registerEdge = (f, l) => 
+            {
+                var min = Math.Min(f, l);
+                var max = Math.Max(f, l);
+                var key = $"{min} {max}";
+                if (!edges.ContainsKey(key))
+                    edges.Add(key, new List<(int, int)>());
+                edges[key].Add((min, max));
+            };
+
+            foreach (var surf in surfaceElements)
+                foreach (var surface in surf.GetSurfaces())
+                {
+                    var vertices = surface.GetVertexes().ToList();
+                    var first = vertices[0];
+                    if (!nodes.ContainsKey(first.Number))
+                        nodes.Add(first.Number, first);
+                    for (var i = 1; i < vertices.Count; ++i)
+                    {
+                        if (!nodes.ContainsKey(vertices[i].Number))
+                            nodes.Add(vertices[i].Number, vertices[i]);
+                        registerEdge(first.Number, vertices[i].Number);
+                        first = vertices[i];
+                    }
+                    registerEdge(first.Number, vertices[0].Number);
+                }
+
+            var adjNodes = new Dictionary<int, List<int>>();
+            var orderedEdges = edges.OrderBy(v => v.Value.Count).Where(v => v.Value.Count == 1).ToList();
+            foreach (var item in orderedEdges)
+            {
+                var value = item.Value[0];
+                var first = value.Item1;
+                var second = value.Item2;
+
+                if (!adjNodes.ContainsKey(first))
+                    adjNodes.Add(first, new List<int>());
+                adjNodes[first].Add(second);
+
+                if (!adjNodes.ContainsKey(second))
+                    adjNodes.Add(second, new List<int>());
+                adjNodes[second].Add(first);
+            }
+
+            var result = new List<Node>();
+            if (orderedEdges.Count > 0)
+            {
+                var visited = new HashSet<int>();
+                var key = orderedEdges[0].Value[0].Item1;
+                for (var i = 0; i < adjNodes.Count; ++i)
+                {
+                    var adj = adjNodes[key];
+                    if (adj.Count > 2)
+                        throw new Exception($"У узла с номером {key} {adj.Count} соседей, узел не является граничным");
+                    if (!visited.Contains(adj[0]))
+                    {
+                        visited.Add(adj[0]);
+                        key = adj[0];
+                        result.Add(nodes[adj[0]]);
+                    }
+                    else if (!visited.Contains(adj[1]))
+                    {
+                        visited.Add(adj[1]);
+                        key = adj[1];
+                        result.Add(nodes[adj[1]]);
+                    }
+                    else
+                        throw new Exception($"Найден цикл, узел {adj[0]} и {adj[1]} уже были посещены");
+                }
+            }
+            return result;
         }
 
         /// <inheritdoc/>

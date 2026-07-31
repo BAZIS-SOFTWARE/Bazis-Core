@@ -252,11 +252,12 @@ namespace OperationalController
         /// Если <c>true</c>, используется транзитивный/«transfinite» режим экструзии
         /// (<c>ExtrudeTransfinite</c>), в противном случае — обычный режим (<c>Extrude</c>).
         /// </param>
+        /// <param name="addReferenceLine">Добаить линию опоры вдоль вытигиваемых слоев?</param>
         /// <returns>Имя набора созданных 3Д элементов.</returns>
-        public string ExtrudeElement3DAlongCurve(int surfaceTag, int[] curveTags, int startPointTag, double step, bool transfinite)
+        public string ExtrudeElement3DAlongCurve(int surfaceTag, int[] curveTags, int startPointTag, double step, bool transfinite, bool addReferenceLine = false)
         {
             var elements2D = GetElements2DBelongingToSurface(surfaceTag);
-            return ExtrudeAlongCurve(elements2D, curveTags, startPointTag, step, transfinite);
+            return ExtrudeAlongCurve(elements2D, curveTags, startPointTag, step, transfinite, addReferenceLine);
         }
 
         /// <summary>
@@ -281,10 +282,10 @@ namespace OperationalController
         /// (<c>ExtrudeTransfinite</c>), в противном случае — обычный режим (<c>Extrude</c>).
         /// </param>
         /// <returns>Имя набора созданных 3Д элементов.</returns>
-        public string ExtrudeElement3DAlongCurve(string setName, int[] curveTags, int startPointTag, double step, bool transfinite)
+        public string ExtrudeElement3DAlongCurve(string setName, int[] curveTags, int startPointTag, double step, bool transfinite, bool addReferenceLine = false)
         {
             var set = project.ModelData.ObjectData.E2DCollection[setName].Values.ToList();
-            return ExtrudeAlongCurve(set, curveTags, startPointTag, step, transfinite);
+            return ExtrudeAlongCurve(set, curveTags, startPointTag, step, transfinite, addReferenceLine);
         }
 
         /// <summary>
@@ -311,7 +312,7 @@ namespace OperationalController
                                   : extruder.Extrude(elements2D, radian, originPoint, rotAxis);
 
             var collection = e3d.SelectMany(v => v);
-            return UpdateModelData(extruder, collection);
+            return UpdateModelData(extruder, collection, new List<Beam>());
         }
 
         public string[] CreateMultiPassSection(List<List<Vector2>> cells, Vector3 origin, Vector3 axisX, Vector3 axisY, int transfinitePoints = 10)
@@ -457,7 +458,7 @@ namespace OperationalController
                 new Geometry.Point3D(x, y, z)));
         }
 
-        private string ExtrudeAlongCurve(List<Element2D> elements, int[] curveTags, int startPointTag, double step, bool transfinite)
+        private string ExtrudeAlongCurve(List<Element2D> elements, int[] curveTags, int startPointTag, double step, bool transfinite, bool addReferenceLine = false)
         {
             var stepNormalizedArray = new List<double>();
             foreach (var curveTag in curveTags)
@@ -478,11 +479,13 @@ namespace OperationalController
             var e3d = transfinite ? extruder.ExtrudeTransfinite(elements)
                       : extruder.Extrude(elements);
 
+            var beams = addReferenceLine ? extruder.CreateReferenceLine(elements) : new List<Beam>();
+
             var collection = e3d.SelectMany(v => v);
-            return UpdateModelData(extruder, collection);
+            return UpdateModelData(extruder, collection, beams);
         }
 
-        private string UpdateModelData(MeshExtruder extruder, IEnumerable<Element3D> collection)
+        private string UpdateModelData(MeshExtruder extruder, IEnumerable<Element3D> collection, List<Beam> beams)
         {
             var objSet = new ObjectsSet<Element3D>("Extrude");
             foreach (var element in collection)
@@ -500,6 +503,17 @@ namespace OperationalController
             foreach (var node in extruder.Nodes.Values)
                 nodesSet.Add(node.Number, node);
             ModelData.ObjectData.NodesSet.Append(nodesSet);
+
+            if(beams.Count != 0)
+            {
+                var set = new ObjectsCollection<Beam>();
+                var lineSet = new ObjectsSet<Beam>("Reference_Line");
+                foreach (var beam in beams)
+                    lineSet.Add(beam.Number, beam);
+                set.Add(lineSet);
+
+                ModelData.ObjectData.E1DCollection.Append(set);
+            }
 
             return updateName;
         }

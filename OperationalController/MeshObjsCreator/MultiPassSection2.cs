@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
+using System.Threading.Tasks.Sources;
 
 namespace OperationalController.MeshObjsCreator
 {
@@ -82,6 +83,7 @@ namespace OperationalController.MeshObjsCreator
             cellSegments.Clear();
 
             cells = cells.Select(v => v.Distinct().ToList()).ToList();
+            cells = SortCells(cells);
             var cellPoints = BuildOctree(cells);
 
             foreach (var points in cellPoints)
@@ -125,6 +127,7 @@ namespace OperationalController.MeshObjsCreator
             cellSegments.Clear();
 
             cells = cells.Select(v => v.Distinct().ToList()).ToList();
+            cells = SortCells(cells);
             var cellPoints = BuildOctree(cells);
 
             foreach (var points in cellPoints)
@@ -158,6 +161,34 @@ namespace OperationalController.MeshObjsCreator
             controller.Gmsh.Model.Remove();
 
             return sets;
+        }
+
+        private List<List<Vector2>> SortCells(List<List<Vector2>> cells)
+        {
+            var firstArea = cells[0].Count == 3 ? GetArea(cells[0][0], cells[0][1], cells[0][2], Vector2.Zero) 
+                                                : GetArea(cells[0][0], cells[0][1], cells[0][2], cells[0][3]);
+
+            var last = cells[cells.Count - 1];
+            var secondArea = last.Count == 3 ? GetArea(last[0], last[1], last[2], Vector2.Zero)
+                                             : GetArea(last[0], last[1], last[2], last[3]);
+            if (secondArea > firstArea)
+                cells.Reverse();
+            return cells;
+        }
+
+        private float GetArea(Vector2 a, Vector2 b, Vector2 c, Vector2 d)
+        {
+            var baseLine = b - a;
+            var baseLength = (b - a).Length();
+            var baseLineNorm = Vector2.Normalize(baseLine);
+            var sideLine = c - b;
+            
+            var basePoint = a + baseLineNorm * Vector2.Dot(sideLine, baseLineNorm);
+            var height = (c - basePoint).Length();
+            if (d == Vector2.Zero)
+                return 0.5f * baseLength * height;
+            var secondLength = (d - c).Length();
+            return (baseLength + secondLength) * 0.5f * height;
         }
 
         private List<int> CreateSurfaces()
@@ -307,9 +338,9 @@ namespace OperationalController.MeshObjsCreator
                     var opIndex = i ^ 2;
                     var sum = segments[i].Sum(v => v.Item1.TransfinitePoints) - segments[i].Count + 1;
                     var opSum = segments[opIndex].Sum(v => v.Item1.TransfinitePoints) - segments[opIndex].Count + 1;
-                    if (sum > opSum)
+                    if (sum < opSum)
                         DistributeTransfinition(segments[opIndex], sum);
-                    else if (opSum > sum)
+                    else if (opSum < sum)
                         DistributeTransfinition(segments[i], opSum);
                 }
             }
