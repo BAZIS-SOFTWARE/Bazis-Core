@@ -109,6 +109,6 @@ namespace OperationalController
         /// <param name="axisY"></param>
         /// <param name="transfinitePoints"></param>
         /// <returns></returns>
-        string[] CreateMultiPassSection(List<List<Vector2>> cells, Vector3 origin, Vector3 axisX, Vector3 axisY, int transfinitePoints = 10);
+        string[] CreateMultiPassSection(List<List<Vector2>> cells, Vector3 origin, Vector3 axisX, Vector3 axisY, int transfinitePoints = 4);
     }
 }

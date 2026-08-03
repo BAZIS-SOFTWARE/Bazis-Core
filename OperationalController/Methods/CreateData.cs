@@ -314,7 +314,7 @@ namespace OperationalController
             return UpdateModelData(extruder, collection);
         }
 
-        public string[] CreateMultiPassSection(List<List<Vector2>> cells, Vector3 origin, Vector3 axisX, Vector3 axisY, int transfinitePoints = 10)
+        public string[] CreateMultiPassSection(List<List<Vector2>> cells, Vector3 origin, Vector3 axisX, Vector3 axisY, int transfinitePoints = 4)
         {
             if (cells == null)
                 throw new ArgumentNullException(nameof(cells));

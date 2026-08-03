@@ -34,7 +34,7 @@ namespace OperationalController.MeshObjsCreator
         // Базовое желаемое число точек на логическую сторону прохода. Это не жесткий
         // максимум: общие стороны могут получить больше точек, если соседняя ячейка
         // уже разбила эту границу на несколько участков.
-        public int TransfinitePoints { get; set; } = 10;
+        public int TransfinitePoints { get; set; } = 4;
 
         // Мягкое ограничение размера внутренних элементов для свободных/recombine
         // поверхностей. Значение считается от среднего шага transfinite-кривых и
@@ -624,7 +624,7 @@ namespace OperationalController.MeshObjsCreator
                 return false;
 
             if (surfaceData.SegmentsLoop.Count != 4)
-                return true;
+                return false;
 
             var firstPairIsCompatible =
                 GetLogicalTransfinitePoints(surfaceData.SegmentsLoop[0]) ==
