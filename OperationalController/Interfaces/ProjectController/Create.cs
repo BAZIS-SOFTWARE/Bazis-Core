@@ -110,5 +110,19 @@ namespace OperationalController
         /// <param name="transfinitePoints"></param>
         /// <returns></returns>
         string[] CreateMultiPassSection(List<List<Vector2>> cells, Vector3 origin, Vector3 axisX, Vector3 axisY, int transfinitePoints = 4);
+        string[] CreateMultiPassSection(List<List<Vector2>> cells, Vector3 origin, Vector3 axisX, Vector3 axisY, int transfinitePoints = 10);
+        /// <summary>
+        /// CreateMultiPassSection2
+        /// </summary>
+        /// <param name="cells"></param>
+        /// <param name="origin"></param>
+        /// <param name="axisX"></param>
+        /// <param name="axisY"></param>
+        /// <param name="transfinite"></param>
+        /// <param name="meshSize"></param>
+        /// <param name="transfinitePoints"></param>
+        /// <returns></returns>
+        public string[] CreateMultiPassSection2(List<List<Vector2>> cells, Vector3 origin, Vector3 axisX, Vector3 axisY,
+                                                bool transfinite = true, double meshSize = 0, int transfinitePoints = 10);
     }
 }

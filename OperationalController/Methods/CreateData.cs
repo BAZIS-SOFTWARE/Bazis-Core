@@ -154,7 +154,7 @@ namespace OperationalController
             var sourcePoint = ModelData.ObjectData.PointsSet[basePointTag];
 
             var coord = new double[] { sourcePoint.Position._x, sourcePoint.Position._y, sourcePoint.Position._z };
-            var (pointCoord, _)= GmshController.Gmsh.Model.GetClosestPoint(dim, geometryTag, coord);
+            var (pointCoord, _) = GmshController.Gmsh.Model.GetClosestPoint(dim, geometryTag, coord);
             return CreatePoint(pointCoord[0], pointCoord[1], pointCoord[2]);
         }
 
@@ -309,7 +309,7 @@ namespace OperationalController
             var extruder = new RotateExtruder();
             var e3d = transfinite ? extruder.ExtrudeTransfinite(elements2D, radian, originPoint, rotAxis)
                                   : extruder.Extrude(elements2D, radian, originPoint, rotAxis);
-            
+
             var collection = e3d.SelectMany(v => v);
             return UpdateModelData(extruder, collection);
         }
@@ -330,6 +330,52 @@ namespace OperationalController
             };
 
             var elementSets = section.Create(cells).ToList();
+            var elementCollection = new ObjectsCollection<Element2D>();
+            foreach (var set in elementSets)
+                elementCollection.Add(set);
+
+            var existedSetNames = new HashSet<string>(ModelData.ObjectData.E2DCollection.Names);
+            ModelData.ObjectData.E2DCollection.Append(elementCollection);
+
+            var createdSetNames = ModelData.ObjectData.E2DCollection.Names
+                .Where(name => !existedSetNames.Contains(name))
+                .ToList();
+
+            for (var i = 0; i < createdSetNames.Count; ++i)
+            {
+                var counter = createdSetNames[i].Split('_').Last();
+                var updateName = $"{elementSets[i].Name}_{counter}";
+                ModelData.ObjectData.E2DCollection.ChangeName(createdSetNames[i], updateName);
+                createdSetNames[i] = updateName;
+            }
+
+            var nodesSet = new ObjectsSet<Model.MeshObjects.Node>("MultiPassSection");
+            foreach (var node in section.Nodes)
+                nodesSet.Add(node.Number, node);
+
+            ModelData.ObjectData.NodesSet.Append(nodesSet);
+
+            return createdSetNames.ToArray();
+        }
+
+        public string[] CreateMultiPassSection2(List<List<Vector2>> cells, Vector3 origin, Vector3 axisX, Vector3 axisY,
+                                                bool transfinite = true, double meshSize = 0, int transfinitePoints = 10)
+        {
+            if (cells == null)
+                throw new ArgumentNullException(nameof(cells));
+            if (transfinitePoints < 2)
+                throw new ArgumentException("Количество точек трансфинитной кривой должно быть не меньше 2", nameof(transfinitePoints));
+
+            var section = new MultiPassSection2(GmshController)
+            {
+                Origin = origin,
+                AxisX = axisX,
+                AxisY = axisY,
+                TransfinitePoints = transfinitePoints,
+                MeshSize = meshSize
+            };
+
+            var elementSets = transfinite ? section.CreateTransfinite(cells).ToList() : section.Create(cells).ToList();
             var elementCollection = new ObjectsCollection<Element2D>();
             foreach (var set in elementSets)
                 elementCollection.Add(set);
@@ -442,7 +488,7 @@ namespace OperationalController
             foreach (var element in collection)
                 objSet.Add(element.Number, element);
 
-            var objCollection = new ObjectsCollection<Element3D>{ objSet };
+            var objCollection = new ObjectsCollection<Element3D> { objSet };
             ModelData.ObjectData.E3DCollection.Append(objCollection);
 
             var objectSet = ModelData.ObjectData.E3DCollection.Where(col => col.Key.StartsWith("append_")).Select(col => col.Value).Last();
