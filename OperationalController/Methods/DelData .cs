@@ -1,8 +1,11 @@
 ﻿using Model;
 using Model.GroupsData;
 using Model.Interfaces;
+using Model.MeshObjects;
+using Model.ObjectsCollections;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 
 namespace OperationalController
@@ -117,6 +120,38 @@ namespace OperationalController
             }
  
             ClearNotExistedModelData();
+        }
+
+        public void RemoveMultiPassSection()
+        {
+            var oldItemsToRemove = ModelData.ObjectData.E2DCollection.Objects.Where(item => item.Name.Contains("MultiPassSection")).ToList();
+            if (oldItemsToRemove.Count != 0)
+            {
+                var nodes = new HashSet<Node>();
+                foreach (var item in oldItemsToRemove)
+                {
+                    GetNodes(item);
+                    ModelData.ObjectData.E2DCollection.Remove(item.Name);
+                }
+
+                var extrudeSet = ModelData.ObjectData.E3DCollection.Objects.Where(item => item.Name.Contains("extrude")).ToList();
+                foreach (var extruder in extrudeSet)
+                {
+                    GetNodes(extruder);
+                    ModelData.ObjectData.E3DCollection.Remove(extruder.Name);
+                }
+
+                foreach (var node in nodes)
+                    ModelData.ObjectData.NodesSet.Remove(node.Number);
+                ModelData.ObjectData.NodesSet.ClearNotExisted();
+
+                void GetNodes<TElement>(ObjectsSet<TElement> elments) where TElement : Element
+                {
+                    foreach (var value in elments.Values)
+                        foreach (var node in value)
+                            nodes.Add(node);
+                }
+            }
         }
     }
 }
