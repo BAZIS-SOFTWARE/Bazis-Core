@@ -130,6 +130,7 @@ namespace PreProc
             var iniTemps = matData.
                 Select((md, index) => new { Key = md.Group.Name,Value = 20.0})
     .ToDictionary(x => x.Key, x => x.Value);
+
             pars[0].InitTemp = iniTemps;
 
             return pars;

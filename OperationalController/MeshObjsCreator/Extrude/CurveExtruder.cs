@@ -8,6 +8,7 @@ using Model.MeshObjects;
 using OperationalController.GmshController;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Numerics;
 using System.Reflection.Metadata;
@@ -130,6 +131,16 @@ namespace OperationalController.MeshObjsCreator.Extrude
                                                                        : CreateNextLayer(firstLayer, matrixList[matrixList.Count - 1] * lastCorrect);
             }
             return tetLayers;
+        }
+
+        /// <summary>
+        /// Создает трансфинитную экструзию 1д элементов
+        /// </summary>
+        /// <param name="firstNode"></param>
+        /// <returns>Список 3д элементов</returns>
+        public List<Beam> ExtrudeTransfinite(Node firstNode)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
