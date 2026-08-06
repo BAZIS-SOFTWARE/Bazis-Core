@@ -1,18 +1,18 @@
 ﻿using SurfaceMesher;
 
-namespace Tests
+namespace MeshTests
 {
     [TestClass]
     public class TriangleFilter_should
     {
         private TriangleFilter filterInstance;
-        private DeloneTriangulation triangulationInstance;
+        private DeloneTriangulation_m2 triangulationInstance;
 
         [TestInitialize]
         public void Setup()
         {
             filterInstance = new TriangleFilter();
-            triangulationInstance = new DeloneTriangulation();
+            triangulationInstance = new DeloneTriangulation_m2();
         }
 
         [DataTestMethod]

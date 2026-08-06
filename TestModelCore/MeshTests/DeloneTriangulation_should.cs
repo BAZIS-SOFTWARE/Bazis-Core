@@ -1,6 +1,6 @@
 ﻿using SurfaceMesher;
 
-namespace Tests
+namespace MeshTests
 {
     [TestClass]
     public class DeloneTriangulationTests
