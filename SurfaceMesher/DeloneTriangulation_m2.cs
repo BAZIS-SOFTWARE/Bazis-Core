@@ -112,7 +112,7 @@ namespace SurfaceMesher
         /// <param name="qualityThreshold">
         /// Минимально допустимое качество четырёхугольника от 0 (вырожденный) до 1 (все углы 90°)
         /// </param>
-        public IEnumerable<object> GetQuadsTriangles(double qualityThreshold = defaultQuadQualityThreshold)
+        public IEnumerable<Element> GetQuadsTriangles(double qualityThreshold = defaultQuadQualityThreshold)
         {
             var merged = new bool[trianglesNumber];
             var candidates = new List<QuadCandidate>();

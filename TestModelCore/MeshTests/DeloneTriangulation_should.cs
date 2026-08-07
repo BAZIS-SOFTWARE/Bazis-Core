@@ -5,14 +5,14 @@ namespace MeshTests
     [TestClass]
     public class DeloneTriangulationTests
     {
-        private DeloneTriangulation instance;
+        private DeloneTriangulation_m2 instance;
         private List<Node2D> nodes;
         private List<List<Node2D>> contour;
 
         [TestInitialize]
         public void SetUp()
         {
-            instance = new DeloneTriangulation();
+            instance = new DeloneTriangulation_m2();
             nodes = new List<Node2D>
             {
                 new Node2D(0, 0, 7),

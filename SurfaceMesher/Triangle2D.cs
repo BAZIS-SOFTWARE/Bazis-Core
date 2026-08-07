@@ -6,23 +6,24 @@ namespace SurfaceMesher
     /// <summary>
     /// Треугольник на плоскости
     /// </summary>
-    public class Triangle2D
+    public class Triangle2D : Element
     {
         private const double epsilon = 1e-4;
 
-        public Node2D A { get; }
+        public Node2D A { get { return nodes[0]; } }
 
-        public Node2D B { get; }
+        public Node2D B { get { return nodes[1]; } }
 
-        public Node2D C { get; }
+        public Node2D C { get { return nodes[2]; } }
 
         public int Index { get; }
 
         public Triangle2D(int index, Node2D a, Node2D b, Node2D c)
         {
-            A = a;
-            B = b;
-            C = c;
+            nodes = new Node2D[3];
+
+            nodes[0] = a; nodes[1] = b; nodes[2] = c;
+
             Index = index;
             CheckCounterClockwiseOrder();
         }
