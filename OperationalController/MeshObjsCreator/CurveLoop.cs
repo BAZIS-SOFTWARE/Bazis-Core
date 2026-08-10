@@ -78,7 +78,9 @@ namespace OperationalController.MeshObjsCreator
         /// </summary>
         public enum Orient
         {
+            // clock wise
             CW = -1,
+            // counter clock wise
             CCW = 1
         }
         //public double[] AverageCoords { get; private set; }
