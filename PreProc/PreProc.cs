@@ -442,8 +442,9 @@ namespace PreProc
             {
                 var file = Path.GetFileName(line);
                 if (!Regex.IsMatch(file, pattern))
-                    throw new Exception("Имя полученного файла не соответствует шаблону: " +
-                    "<тип процесса>_<номер задачи>_<время начала>_<время окончания>.tsf");
+                    //"Имя полученного файла не соответствует шаблону: " +
+                    //"<тип процесса>_<номер задачи>_<время начала>_<время окончания>.tsf"
+                    throw new DraftException(line);
 
                 var taskType = file.Split('_')[0];
                 sortedLines.Add(string.Join(" ", new string[] { taskType, line, TaskStatus.выполнить.ToString() }));
