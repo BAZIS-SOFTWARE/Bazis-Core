@@ -396,6 +396,7 @@ namespace PreProc
 
             for (var i = 0; i < minorParameters.Count; i++)
             {
+                minorParameters[i].ThermalLoadIsFile = true;
                 if (i > 0)
                 {
                     minorParameters[i].RestartFile = $"{names[1]}_{i}_{minorParameters[i - 1].TimeSettings.StartTime}_{minorParameters[i - 1].TimeSettings.StopTime}.db";
