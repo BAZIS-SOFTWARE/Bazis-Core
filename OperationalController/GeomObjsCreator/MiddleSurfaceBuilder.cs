@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace OperationalController.MeshObjsCreator
+namespace OperationalController.GeomObjsCreator
 {
     /// <summary>
     /// Класс построения серединных поверхностей
@@ -202,7 +202,7 @@ namespace OperationalController.MeshObjsCreator
             var offset = GetUVOffset(mCurve, sCurve, mAdjUv, sAdjUv, surface);
 
             var average = new double[mParams.Length];
-            for (int i = 0; i < average.Length; i += 2)
+            for (var i = 0; i < average.Length; i += 2)
             {
                 average[i] = (mParams[i] + sParams[i]) * 0.5 + offset[0];
                 average[i + 1] = (mParams[i + 1] + sParams[i + 1]) * 0.5 + offset[1];
@@ -315,7 +315,7 @@ namespace OperationalController.MeshObjsCreator
         private void ProjectPointsToSurface(double[] average, int surface)
         {
             var projPoint = new double[3];
-            for (int i = 0; i < average.Length; i += 3)
+            for (var i = 0; i < average.Length; i += 3)
             {
                 for (var j = 0; j < 3; ++j)
                     projPoint[j] = average[i + j];
@@ -466,7 +466,7 @@ namespace OperationalController.MeshObjsCreator
             var dimTags = new int[(pointArray.Length - ignorePoints) * 2];
             for (var i = beginIgnore; i < pointArray.Length - endIgnore; ++i)
             {
-                var stride = (i - 1) << 1;
+                var stride = i - 1 << 1;
                 dimTags[stride] = 0;
                 dimTags[stride + 1] = pointArray[i];
             }

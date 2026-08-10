@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
-namespace OperationalController.MeshObjsCreator
+namespace OperationalController.GeomObjsCreator
 {
     /// <summary>
     /// Класс петля кривых поверхности, используется для пересортировки кривых и смены направлений, используется в основном для 

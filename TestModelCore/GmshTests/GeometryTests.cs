@@ -1,8 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq;
-using System;
-using System.Collections.Generic;
-using Geometry;
+﻿using Geometry;
 using Model.Interfaces;
 using Model;
 using Model.MeshObjects;
@@ -10,11 +6,7 @@ using OperationalController.GmshController;
 using OperationalController;
 using MathNet.Spatial.Euclidean;
 using Point3D = Geometry.Point3D;
-using static IronPython.Modules.PythonIterTools;
-using static Community.CsharpSqlite.Sqlite3;
-using OperationalController.MeshObjsCreator;
-using Model.GeometryObjects;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using OperationalController.GeomObjsCreator;
 
 namespace GmshTests
 {
