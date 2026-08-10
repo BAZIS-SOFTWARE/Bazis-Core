@@ -450,8 +450,15 @@ namespace PreProc
                 sortedLines.Add(string.Join(" ", new string[] { taskType, line, TaskStatus.выполнить.ToString() }));
             }
 
-            return sortedLines.OrderBy(x => int.Parse(Path.GetFileName(x.Split(' ')[1]).Split('_')[1]))
-                .ThenByDescending(x => x).ToList();
+            return sortedLines.OrderBy(x => int.Parse(string.Join(" ", x
+                        .Split(' ')
+                        .Skip(1)
+                        .SkipLast(1))
+                    .Split('_')
+                    .TakeLast(3)
+                    .ToList()[0]))
+                .ThenByDescending(x => x)
+                .ToList();
         }
     }
 }
