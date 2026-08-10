@@ -11,6 +11,10 @@ using OperationalController;
 using MathNet.Spatial.Euclidean;
 using Point3D = Geometry.Point3D;
 using static IronPython.Modules.PythonIterTools;
+using static Community.CsharpSqlite.Sqlite3;
+using OperationalController.MeshObjsCreator;
+using Model.GeometryObjects;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace GmshTests
 {
@@ -856,6 +860,35 @@ namespace GmshTests
             Assert.IsTrue(before.Length + 4 * 2 == after.Length);
 
             gmshController.Gmsh.Write(@"D:\chamfer.step");
+        }
+
+        [DataTestMethod]
+        [DataRow(@"\CAD\scobe1.step", new int[] { 1, 12, 2, 9, 4, 11 })]//Цилиндрические отверстия
+        [DataRow(@"\CAD\scobe2.step", new int[] { 1, 18, 4, 17, 2, 15 })]//Отверстия в виде последовательно соединенных граней
+        [DataRow(@"\CAD\scobe3.step", new int[] { 1, 12, 2, 9, 4, 11 })]//Отверстия в виде сфер
+        [DataRow(@"\CAD\PART_3.stp", new int[] { 7, 9, 6, 11, 5, 12, 4, 13, 3, 14, 2, 15, 1, 16, 21, 23 /*24, 25*/ })]//Тест на двух не связанных объемах
+        [DataRow(@"\CAD\curvedPipe.step", new int[] { 1, 4 })]//Изогнутая труба
+        [DataRow(@"\CAD\detail.step", new int[] { 1, 5 })]//Поверхность построенная на сплайнах
+        [DataRow(@"\CAD\cilindr.step", new int[] { 3, 4 })]
+        [DataRow(@"\CAD\assembly_1.step", new int[] { 152, 154, 146, 148, 33, 35, 22, 24, 167, 168, 31, 32, 161, 162, 11, 12, 17, 18,
+                                                      75, 73, 81, 79, 100, 98, 39, 41, 7, 8, 5, 6, 110, 112, 181, 183, 133, 135, 175, 177, 
+                                                      118, 116, 91, 93, 48, 46, 85, 87, 110, 112, 169, 171, 139, 141, 189, 105, 106, 104 })]
+        public void MiddleSurfaceTest(string fileName, int[] surfs)
+        {
+            gmshController.Gmsh.Open(modelFolder + fileName);
+
+            var before = gmshController.Gmsh.Model.Occ.GetEntities(2);
+
+            var builder = new MiddleSurfaceBuilder(gmshController);
+            builder.UseSeparateModel = true;
+            builder.Build(surfs);
+
+            var after = gmshController.Gmsh.Model.Occ.GetEntities(2);
+
+            //Assert.IsTrue(after.Length > before.Length);
+
+            var fName = Path.GetFileNameWithoutExtension(fileName);
+            gmshController.Gmsh.Write($@"D:\{fName}.step");
         }
 
         private void RemoveNameTest(ref string entName, int dim, int delId, int maxId)

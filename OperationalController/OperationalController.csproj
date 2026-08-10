@@ -31,6 +31,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="MeshObjsCreator\Hole.cs" />
+    <Compile Remove="MeshObjsCreator\MidSurfaceBuilder.cs" />
     <Compile Remove="SceneBrightnessController\ApplyDim.cs" />
     <Compile Remove="SceneBrightnessController\ApplyExample.cs" />
   </ItemGroup>
@@ -52,6 +54,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="MathNet.Spatial" Version="0.6.0" />
     <PackageReference Include="NetOctree" Version="2.1.11" />
   </ItemGroup>
 
