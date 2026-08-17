@@ -23,20 +23,6 @@ namespace OperationalController.GeomObjsCreator
         }
 
         /// <summary>
-        /// Строит фаску по двум размерам либо по размеру и углу.
-        /// </summary>
-        /// <param name="curveTag">Тег кривой.</param>
-        /// <param name="firstLength">Размер фаски на первой соседней поверхности.</param>
-        /// <param name="secondLengthOrAngle">Размер на второй поверхности либо угол фаски в градусах.</param>
-        /// <param name="isAngle"><c>true</c>, если <paramref name="secondLengthOrAngle"/> задаёт угол; иначе задаёт второй размер.</param>
-        /// <param name="reflected"><c>true</c>, чтобы использовать вторую соседнюю поверхность как опорную.</param>
-        /// <returns>Массив пар размерность-тег результирующих сущностей.</returns>
-        public int[] Build(int curveTag, double firstLength, double secondLengthOrAngle, bool isAngle, bool reflected = false)
-        {
-            return Build(new[] { curveTag }, firstLength, secondLengthOrAngle, isAngle, reflected);
-        }
-
-        /// <summary>
         /// Строит фаски на нескольких кривых за одну OCC-операцию.
         /// </summary>
         /// <param name="curveTags">Теги кривых.</param>
@@ -65,20 +51,6 @@ namespace OperationalController.GeomObjsCreator
         }
 
         /// <summary>
-        /// Рассчитывает четыре линии предпросмотра фаски без изменения OCC-модели.
-        /// </summary>
-        /// <param name="curveTag">Тег прямолинейной кривой.</param>
-        /// <param name="firstLength">Размер фаски на опорной соседней поверхности.</param>
-        /// <param name="secondLengthOrAngle">Размер на второй поверхности либо угол фаски в градусах.</param>
-        /// <param name="isAngle"><c>true</c>, если <paramref name="secondLengthOrAngle"/> задаёт угол.</param>
-        /// <param name="reflected"><c>true</c>, чтобы перенести первый размер на вторую соседнюю поверхность.</param>
-        /// <returns>Концы выбранного ребра и два вектора смещения контура.</returns>
-        public ChamferPreviewData PreviewChamfer(int curveTag, double firstLength, double secondLengthOrAngle, bool isAngle, bool reflected)
-        {
-            return PreviewChamfer(new[] { curveTag }, firstLength, secondLengthOrAngle, isAngle, reflected)[0];
-        }
-
-        /// <summary>
         /// Рассчитывает линии предпросмотра нескольких фасок без изменения OCC-модели.
         /// </summary>
         /// <param name="curveTags">Теги прямолинейных кривых.</param>
@@ -87,12 +59,7 @@ namespace OperationalController.GeomObjsCreator
         /// <param name="isAngle"><c>true</c>, если <paramref name="secondLengthOrAngle"/> задаёт угол.</param>
         /// <param name="reflected"><c>true</c>, чтобы перенести первый размер на вторую соседнюю поверхность.</param>
         /// <returns>Данные предпросмотра для каждой выбранной кривой в исходном порядке.</returns>
-        public ChamferPreviewData[] PreviewChamfer(
-            IEnumerable<int> curveTags,
-            double firstLength,
-            double secondLengthOrAngle,
-            bool isAngle,
-            bool reflected)
+        public ChamferPreviewData[] PreviewChamfer(IEnumerable<int> curveTags, double firstLength, double secondLengthOrAngle, bool isAngle, bool reflected)
         {
             ValidateLength(firstLength, nameof(firstLength));
             var validatedCurveTags = ValidateCurveTags(curveTags);
@@ -163,7 +130,7 @@ namespace OperationalController.GeomObjsCreator
             return direction;
         }
 
-        private static Point3D ToPoint3D(double[] coordinates)
+        private Point3D ToPoint3D(double[] coordinates)
         {
             if (coordinates == null || coordinates.Length != 3)
                 throw new InvalidOperationException("Gmsh вернул некорректные координаты точки кривой.");
@@ -171,7 +138,7 @@ namespace OperationalController.GeomObjsCreator
             return new Point3D((float)coordinates[0], (float)coordinates[1], (float)coordinates[2]);
         }
 
-        private static Point3D Normalize(Point3D vector, string errorMessage)
+        private Point3D Normalize(Point3D vector, string errorMessage)
         {
             var length = Vector.GetVectorLength(vector);
             if (!float.IsFinite(length) || length == 0)
@@ -180,6 +147,10 @@ namespace OperationalController.GeomObjsCreator
             return vector.Mult(1.0f / length);
         }
 
+        /// <summary>
+        /// Получает контекст, необходимый для построения фаски для указанной кривой.
+        /// Метод возвращает теги двух соседних поверхностей, которым принадлежит кривая, и теги общих объёмов этих поверхностей.
+        /// </summary>
         private (int[] Surfaces, int[] Volumes) GetChamferContext(int curveTag)
         {
             if (controller.Gmsh == null)
@@ -236,7 +207,7 @@ namespace OperationalController.GeomObjsCreator
             return numbers;
         }
 
-        private static int[] ValidateCurveTags(IEnumerable<int> curveTags)
+        private int[] ValidateCurveTags(IEnumerable<int> curveTags)
         {
             if (curveTags == null)
                 throw new ArgumentNullException(nameof(curveTags));
@@ -337,19 +308,19 @@ namespace OperationalController.GeomObjsCreator
             return false;
         }
 
-        private static void ValidateLength(double length, string parameterName)
+        private void ValidateLength(double length, string parameterName)
         {
             if (double.IsNaN(length) || double.IsInfinity(length) || length <= 0)
                 throw new ArgumentOutOfRangeException(parameterName, "Длина фаски должна быть конечным положительным числом.");
         }
 
-        private static double ValidateAndReturnLength(double length, string parameterName)
+        private double ValidateAndReturnLength(double length, string parameterName)
         {
             ValidateLength(length, parameterName);
             return length;
         }
 
-        private static void ValidateAngle(double angleInDegrees, string parameterName)
+        private void ValidateAngle(double angleInDegrees, string parameterName)
         {
             if (!double.IsFinite(angleInDegrees) || angleInDegrees <= 0 || angleInDegrees >= 180)
                 throw new ArgumentOutOfRangeException(parameterName, "Угол фаски должен находиться в диапазоне от 0° до 180°.");

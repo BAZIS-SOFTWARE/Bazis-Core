@@ -101,17 +101,6 @@ namespace OperationalController
         void CreateQuadMeshOnPoligon(List<Point2D> points, int numberOfElem);
 
         /// <summary>
-        /// Создаёт фаску по двум размерам либо по размеру и углу.
-        /// </summary>
-        /// <param name="curveTag">Тег кривой.</param>
-        /// <param name="firstLength">Размер фаски на первой соседней поверхности.</param>
-        /// <param name="secondLengthOrAngle">Размер на второй поверхности либо угол фаски в градусах.</param>
-        /// <param name="isAngle"><c>true</c>, если <paramref name="secondLengthOrAngle"/> задаёт угол; иначе задаёт второй размер.</param>
-        /// <param name="reflected"><c>true</c>, чтобы использовать вторую соседнюю поверхность как опорную.</param>
-        /// <returns>Массив пар размерность-тег созданных геометрических сущностей.</returns>
-        int[] CreateChamfer(int curveTag, double firstLength, double secondLengthOrAngle, bool isAngle, bool reflected);
-
-        /// <summary>
         /// Создаёт фаски на нескольких кривых за одну операцию.
         /// </summary>
         /// <param name="curveTags">Теги кривых.</param>
@@ -121,17 +110,6 @@ namespace OperationalController
         /// <param name="reflected"><c>true</c>, чтобы использовать вторую соседнюю поверхность как опорную.</param>
         /// <returns>Массив пар размерность-тег созданных геометрических сущностей.</returns>
         int[] CreateChamfer(IEnumerable<int> curveTags, double firstLength, double secondLengthOrAngle, bool isAngle, bool reflected);
-
-        /// <summary>
-        /// Рассчитывает линии предпросмотра фаски без изменения геометрии.
-        /// </summary>
-        /// <param name="curveTag">Тег кривой.</param>
-        /// <param name="firstLength">Размер фаски на первой соседней поверхности.</param>
-        /// <param name="secondLengthOrAngle">Размер на второй поверхности либо угол фаски в градусах.</param>
-        /// <param name="isAngle"><c>true</c>, если <paramref name="secondLengthOrAngle"/> задаёт угол.</param>
-        /// <param name="reflected"><c>true</c>, чтобы перенести первый размер на вторую соседнюю поверхность.</param>
-        /// <returns>Геометрические данные предпросмотра фаски.</returns>
-        ChamferPreviewData PreviewChamfer(int curveTag, double firstLength, double secondLengthOrAngle, bool isAngle, bool reflected);
 
         /// <summary>
         /// Рассчитывает линии предпросмотра фасок для нескольких кривых.

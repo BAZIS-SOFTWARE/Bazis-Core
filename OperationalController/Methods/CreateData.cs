@@ -315,25 +315,12 @@ namespace OperationalController
         }
 
         /// <inheritdoc/>
-        public int[] CreateChamfer(int curveTag, double firstLength, double secondLengthOrAngle, bool isAngle, bool reflected)
-        {
-            return CreateChamfer(new[] { curveTag }, firstLength, secondLengthOrAngle, isAngle, reflected);
-        }
-
-        /// <inheritdoc/>
         public int[] CreateChamfer(IEnumerable<int> curveTags, double firstLength, double secondLengthOrAngle, bool isAngle, bool reflected)
         {
             var builder = new ChamferGeometryBuilder(GmshController);
             var result = builder.Build(curveTags, firstLength, secondLengthOrAngle, isAngle, reflected);
             RefreshGeometryData();
             return result;
-        }
-
-        /// <inheritdoc/>
-        public ChamferPreviewData PreviewChamfer(int curveTag, double firstLength, double secondLengthOrAngle, bool isAngle, bool reflected)
-        {
-            var builder = new ChamferGeometryBuilder(GmshController);
-            return builder.PreviewChamfer(curveTag, firstLength, secondLengthOrAngle, isAngle, reflected);
         }
 
         /// <inheritdoc/>
