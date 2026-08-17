@@ -28,6 +28,7 @@ namespace OperationalController.MeshObjsCreator.Extrude
         private int[] curveTags;
         private double[] steps;
         private float maxAngle;
+        private int beamId;
         /*/// <summary>
         /// Число сегментов в поворотной экструзии внешнего шва
         /// </summary>
@@ -134,14 +135,58 @@ namespace OperationalController.MeshObjsCreator.Extrude
         }
 
         /// <summary>
-        /// Создает трансфинитную экструзию 1д элементов
+        /// Создает экструзию 1д элементов из точки
         /// </summary>
-        /// <param name="firstNode"></param>
-        /// <returns>Список 3д элементов</returns>
-        public List<Beam> ExtrudeTransfinite(Node firstNode)
+        /// <param name="firstNode">Начальная точка экструзии</param>
+        /// <returns>Список 1д элементов</returns>
+        public List<Beam> ExtrudeFromPoint(Node firstNode)
         {
-            throw new NotImplementedException();
+            var beamList = new List<Beam>();
+            var lastCorrect = Matrix4x4.Identity;
+            var centerEdge = new Vector4(firstNode._x, firstNode._y, firstNode._z, 1);
+
+            for (var i = 0; i < curveTags.Length; ++i)
+            {
+                var compList = GetCurveComponents(steps[i], i);
+                var matrixList = CreateLocalSystemSet(compList, compList[0]);
+
+                var curCenter = Vector4.Zero;
+                var rotateStatus = false;
+
+                for (var j = 0; j < matrixList.Count; ++j)
+                {
+                    var currentCorrect = Matrix4x4.Identity;
+                    if (j == matrixList.Count - 1 && IsExistsCommonPoint(i))
+                    {
+                        var next = GetNextTangent(i);
+                        var data = GetRotationDataBetweenComponents(compList[j].Item5, next);
+                        lastCorrect = GetCorrectionMatrix(data.Item1, data.Item2, compList[j].Item4);
+                        if (data.Item2 <= maxAngle)
+                        {
+                            rotateStatus = true;
+                            currentCorrect = lastCorrect;
+                        }
+                    }
+                    var matrix = matrixList[j] * currentCorrect;
+                    curCenter = GetTransformedVector(centerEdge, matrix);
+                    var node = CreateNode(curCenter);
+                    Nodes.Add(node.Number, node);
+
+                    if (j > 0)
+                        beamList.Add(CreateBeam(firstNode, node));
+                    firstNode = node;
+                }
+                centerEdge = rotateStatus || i == curveTags.Length - 1 ? curCenter
+                                                                       : GetTransformedVector(centerEdge, matrixList[matrixList.Count - 1] * lastCorrect);
+            }
+            return beamList;
         }
+
+        private Beam CreateBeam(Node lastNode, Node curNode) => new Beam(beamId++, [lastNode, curNode]);
+
+        private Node CreateNode(Vector4 curCenter) => new Node(NodeTag++, new Point3D(curCenter.X, curCenter.Y, curCenter.Z));
+
+        private Vector4 GetTransformedVector(Vector4 centerEdge, Matrix4x4 matrix) => Vector4.Transform(centerEdge, matrix);
 
         /// <summary>
         /// Создает трансфинитную экструзию 3д элементов методом протягивания вдоль кривой (Версия Merge по углу )
@@ -475,8 +520,8 @@ namespace OperationalController.MeshObjsCreator.Extrude
                     {
                         var coords = new Vector4(node._x, node._y, node._z, 1);
                         coords = Vector4.Transform(coords, curBasis);
-                        var point = new Node(nodeTag, new Point3D(coords.X, coords.Y, coords.Z));
-                        Nodes.Add(nodeTag++, point);
+                        var point = new Node(NodeTag, new Point3D(coords.X, coords.Y, coords.Z));
+                        Nodes.Add(NodeTag++, point);
                         points.Add(point);
                         visited.Add(node.Number, point);
                     }

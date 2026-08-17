@@ -53,7 +53,7 @@ namespace OperationalController.MeshObjsCreator.Extrude
         /// <summary>
         /// Индексы для создания новых вершин
         /// </summary>
-        protected int nodeTag;
+        protected int NodeTag { get; set; }
         /// <summary>
         /// Индексы для создания новых 3д элементов
         /// </summary>
@@ -108,7 +108,7 @@ namespace OperationalController.MeshObjsCreator.Extrude
                 {
                     if (!visited.ContainsKey(node.Number))
                     {
-                        var point = new Node(nodeTag++, new Point3D(node.Position._x, node.Position._y, node.Position._z));
+                        var point = new Node(NodeTag++, new Point3D(node.Position._x, node.Position._y, node.Position._z));
                         visited.Add(node.Number, point);
                         points.Add(point);
                         Nodes.Add(point.Number, point);

@@ -86,8 +86,8 @@ namespace OperationalController.MeshObjsCreator.Extrude
                     if (!visited.ContainsKey(node.Number))
                     {
                         var coords = node.Position.Sum(layerDir);
-                        var point = new Node(nodeTag, coords);
-                        Nodes.Add(nodeTag++, point);
+                        var point = new Node(NodeTag, coords);
+                        Nodes.Add(NodeTag++, point);
                         points.Add(point);
                         visited.Add(node.Number, point);
                     }

@@ -12,11 +12,6 @@ namespace OperationalController.MeshObjsCreator.Extrude
     public class RotateExtruder : MeshExtruder
     {
         /// <summary>
-        /// Используется для изменения текущей нумерации узлов внутри класса CurveExtruder
-        /// </summary>
-        public ref int NodeTag { get => ref nodeTag; }
-
-        /// <summary>
         /// Используется для изменения текущей нумерации элементов внутри класса CurveExtruder
         /// </summary>
         public ref int ElementTag { get => ref elementTag; }
@@ -119,7 +114,7 @@ namespace OperationalController.MeshObjsCreator.Extrude
                     {
                         var vec = new Vector4(node.Position._x, node.Position._y, node.Position._z, 1);
                         var coords = Vector4.Transform(vec, transform);
-                        var point = new Node(nodeTag++, new Point3D(coords.X, coords.Y, coords.Z));
+                        var point = new Node(NodeTag++, new Point3D(coords.X, coords.Y, coords.Z));
                         Nodes.Add(point.Number, point);
                         if (IsPointCoincident(node, coords))
                         {
