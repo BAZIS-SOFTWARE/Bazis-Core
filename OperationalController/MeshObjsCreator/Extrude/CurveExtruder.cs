@@ -15,6 +15,7 @@ using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using static IronPython.Modules._ast;
+using static IronPython.Modules.xxsubtype;
 
 
 namespace OperationalController.MeshObjsCreator.Extrude
@@ -86,7 +87,7 @@ namespace OperationalController.MeshObjsCreator.Extrude
             this.curveTags = DetectCurveLoop(curveTags, pointTag);
             steps = ConvertSteps(step);
         }
-
+        /*
         /// <summary>
         /// Создает экструзию 3д элементов методом протягивания вдоль кривой (Версия Merge по углу)
         /// </summary>
@@ -132,8 +133,8 @@ namespace OperationalController.MeshObjsCreator.Extrude
                                                                        : CreateNextLayer(firstLayer, matrixList[matrixList.Count - 1] * lastCorrect);
             }
             return tetLayers;
-        }
-
+        }*/
+        /*
         /// <summary>
         /// Создает экструзию 1д элементов из точки
         /// </summary>
@@ -180,6 +181,129 @@ namespace OperationalController.MeshObjsCreator.Extrude
                                                                        : GetTransformedVector(centerEdge, matrixList[matrixList.Count - 1] * lastCorrect);
             }
             return beamList;
+        }*/
+
+        /// <summary>
+        /// Создает экструзию 3д элементов методом протягивания вдоль кривой (Версия Merge по углу)
+        /// </summary>
+        /// <param name="firstLayer">Элементы 2D сечения</param>
+        /// <returns>Список 3д элементов</returns>
+        public List<List<Element3D>> Extrude(IEnumerable<Element2D> firstLayer)
+        {
+            var data = IterateAlongCurves(1, firstLayer) ;
+            return  data != null ? data as List<List<Element3D>> : [];
+        }
+
+        /// <summary>
+        /// Создает экструзию 1д элементов из точки
+        /// </summary>
+        /// <param name="firstNode">Начальная точка экструзии</param>
+        /// <returns>Список 1д элементов</returns>
+        public List<Beam> ExtrudeFromPoint(Node firstNode)
+        {
+            var data = IterateAlongCurves(0, firstNode);
+            return data != null ? data as List<Beam> : [];
+        }
+
+        /// <summary>
+        /// Выполняет экструзию итерируясь вдоль набора кривых, выдавливает либо точку (offset = 0), либо элементы 3д (offset = 1)
+        /// </summary>
+        /// <param name="offset">Смещение для внутреннего цикла обхода кривых (offset = 0 точка, offset = 1 элементы 3д)</param>
+        /// <param name="extrudeElements">Точка или элементы 2д</param>
+        /// <returns>Список BeamElements если задан offset = 0, или </returns>
+        private object IterateAlongCurves(int offset, object extrudeElements)
+        {
+            if (offset != 0 && offset != 1)
+                return null;
+            var lastCorrect = Matrix4x4.Identity;
+
+            var tetLayers = new List<List<Element3D>>();
+            var beamList = new List<Beam>();
+
+            IEnumerable<Element2D> first = null;
+            List<Element2D> current = null;
+            Node firstNode = null;
+
+            Vector4 startNode = Vector4.Zero;
+            Vector4 curCenter = Vector4.Zero;
+
+            Action<Matrix4x4, int>[] addElements = { 
+                (correct, i) =>
+                {
+                    curCenter = GetTransformedVector(startNode, correct);
+                    var node = CreateNode(curCenter);
+                    Nodes.Add(node.Number, node);
+
+                    if (i > 0)
+                        beamList.Add(CreateBeam(firstNode, node));
+                    firstNode = node;
+                },
+                (correct, i) =>
+                {
+                    var nextLayer = CreateNextLayer(first, correct);
+                    var layer = CreateLayerTetrahedrons(current, nextLayer);
+                    tetLayers.Add(layer);
+                    current = nextLayer;
+                }
+            };
+
+            Action<object>[] initData = { 
+                                          (v)=> 
+                                          {
+                                              firstNode = extrudeElements as Node;
+                                              startNode = new Vector4(firstNode._x, firstNode._y, firstNode._z, 1);
+                                          },
+                                          (v) => first = SortFirstLayer(extrudeElements as IEnumerable<Element2D>),
+                                        };
+        
+
+            Action<Matrix4x4>[] loopPreProcess = { 
+                                                   (m) => curCenter = Vector4.Zero,
+                                                   (m) => current = CreateNextLayer(first, m)
+                                                 };
+
+            Action<bool, int, Matrix4x4>[] loopPostProcess = { 
+                                                                (rStatus, i, lastMatrix) => startNode = rStatus || i == curveTags.Length - 1 
+                                                                                    ? curCenter
+                                                                                    : GetTransformedVector(startNode, lastMatrix * lastCorrect),
+                                                                (rStatus, i, lastMatrix) => first = rStatus || i == curveTags.Length - 1
+                                                                                    ? current
+                                                                                    : CreateNextLayer(first, lastMatrix * lastCorrect),
+                                                             };
+
+            Func<object>[] retData = { () => beamList, () => tetLayers };
+
+            initData[offset]?.Invoke(extrudeElements);
+
+            for (var i = 0; i < curveTags.Length; ++i)
+            {
+                var compList = GetCurveComponents(steps[i], i);
+                var matrixList = CreateLocalSystemSet(compList, compList[0]);
+
+                loopPreProcess[offset]?.Invoke(matrixList[0]);
+                var rotateStatus = false;
+
+                for (var j = offset; j < matrixList.Count; ++j)
+                {
+                    var currentCorrect = Matrix4x4.Identity;
+                    if (j == matrixList.Count - 1 && IsExistsCommonPoint(i))
+                    {
+                        var next = GetNextTangent(i);
+                        var data = GetRotationDataBetweenComponents(compList[j].Item5, next);
+                        lastCorrect = GetCorrectionMatrix(data.Item1, data.Item2, compList[j].Item4);
+                        if (data.Item2 <= maxAngle)
+                        {
+                            rotateStatus = true;
+                            currentCorrect = lastCorrect;
+                        }
+                    }
+                    var correct = matrixList[j] * currentCorrect;
+                    addElements[offset]?.Invoke(correct, j);
+                }
+                loopPostProcess[offset]?.Invoke(rotateStatus, i, matrixList[matrixList.Count - 1]);
+            }
+
+            return retData[offset]?.Invoke();
         }
 
         private Beam CreateBeam(Node lastNode, Node curNode) => new Beam(beamId++, [lastNode, curNode]);
