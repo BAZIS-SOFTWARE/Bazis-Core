@@ -323,13 +323,6 @@ namespace OperationalController
             return result;
         }
 
-        /// <inheritdoc/>
-        public ChamferPreviewData[] PreviewChamfer(IEnumerable<int> curveTags, double firstLength, double secondLengthOrAngle, bool isAngle, bool reflected)
-        {
-            var builder = new ChamferGeometryBuilder(GmshController);
-            return builder.PreviewChamfer(curveTags, firstLength, secondLengthOrAngle, isAngle, reflected);
-        }
-
         private void RefreshGeometryData()
         {
             // OCC-операции изменяют топологию и делают прежнюю поверхностную сетку

@@ -46,26 +46,6 @@ namespace GmshTests
             Assert.AreEqual(surfacesBefore + curveTags.Length, surfacesAfter);
         }
 
-        [TestMethod]
-        public void PreviewChamfer_ReturnsFourLinesPerCurveWithoutChangingGeometry()
-        {
-            gmshController.Gmsh.Model.Occ.AddBox(0, 0, 0, 1, 1, 1);
-            gmshController.Gmsh.Model.Occ.Synchronize();
-
-            var curveTags = new[] { 12, 3 };
-            var entitiesBefore = gmshController.Gmsh.Model.GetEntities();
-            var projectController = CreateProjectController();
-
-            var previews = projectController.PreviewChamfer(curveTags, 0.1, 0.2, false, false);
-
-            Assert.AreEqual(curveTags.Length, previews.Length);
-            Assert.IsTrue(previews.All(preview => preview.CreateSegments().Length == 4));
-            Assert.IsTrue(previews
-                .SelectMany(preview => preview.CreateSegments())
-                .All(segment => segment.GetLength() > 0));
-            CollectionAssert.AreEqual(entitiesBefore, gmshController.Gmsh.Model.GetEntities());
-        }
-
         private ProjectController CreateProjectController()
         {
             var projectController = new ProjectController

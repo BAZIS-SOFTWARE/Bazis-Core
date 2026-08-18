@@ -4,7 +4,6 @@ using MaterialDB.MaterialData;
 using Model.Interfaces;
 using Model.Interfaces.MeshObjects;
 using Model.MeshObjects;
-using OperationalController.GeomObjsCreator;
 using Project.Interfaces.Tasks;
 using System.Collections.Generic;
 
@@ -111,15 +110,5 @@ namespace OperationalController
         /// <returns>Массив пар размерность-тег созданных геометрических сущностей.</returns>
         int[] CreateChamfer(IEnumerable<int> curveTags, double firstLength, double secondLengthOrAngle, bool isAngle, bool reflected);
 
-        /// <summary>
-        /// Рассчитывает линии предпросмотра фасок для нескольких кривых.
-        /// </summary>
-        /// <param name="curveTags">Теги кривых.</param>
-        /// <param name="firstLength">Размер фаски на первой соседней поверхности.</param>
-        /// <param name="secondLengthOrAngle">Размер на второй поверхности либо угол фаски в градусах.</param>
-        /// <param name="isAngle"><c>true</c>, если <paramref name="secondLengthOrAngle"/> задаёт угол.</param>
-        /// <param name="reflected"><c>true</c>, чтобы перенести первый размер на вторую соседнюю поверхность.</param>
-        /// <returns>Данные предпросмотра для каждой кривой в исходном порядке.</returns>
-        ChamferPreviewData[] PreviewChamfer(IEnumerable<int> curveTags, double firstLength, double secondLengthOrAngle, bool isAngle, bool reflected);
     }
 }
