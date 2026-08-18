@@ -43,7 +43,9 @@ namespace OperationalController.GeomObjsCreator
                 secondLengthOrAngle,
                 isAngle);
 
-            var referenceSurfaces = contexts.Select(context => context.Surfaces[reflected ? 1 : 0]).ToArray();
+            var surfaceIndex = reflected ? 1 : 0;
+            
+            var referenceSurfaces = contexts.Select(context => context.Surfaces[surfaceIndex]).ToArray();
             var volumeTags = contexts.SelectMany(context => context.Volumes).Distinct().ToArray();
             var distances = Enumerable.Repeat(firstLength, validatedCurveTags.Length).Concat(secondLengths).ToArray();
 
