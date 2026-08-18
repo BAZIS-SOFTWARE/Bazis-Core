@@ -107,7 +107,7 @@ namespace OperationalController
         /// <param name="secondLengthOrAngle">Размер на второй поверхности либо угол фаски в градусах.</param>
         /// <param name="isAngle"><c>true</c>, если <paramref name="secondLengthOrAngle"/> задаёт угол.</param>
         /// <param name="reflected"><c>true</c>, чтобы использовать вторую соседнюю поверхность как опорную.</param>
-        /// <returns>Массив пар размерность-тег созданных геометрических сущностей.</returns>
+        /// <returns>Массив пар "размерность-тег" созданных геометрических сущностей.</returns>
         int[] CreateChamfer(IEnumerable<int> curveTags, double firstLength, double secondLengthOrAngle, bool isAngle, bool reflected);
 
     }
