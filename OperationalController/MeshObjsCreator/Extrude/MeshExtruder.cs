@@ -71,7 +71,7 @@ namespace OperationalController.MeshObjsCreator.Extrude
         /// </summary>
         /// <param name="layer">Слой 2д элементов</param>
         /// <returns>Слой 2д элементов</returns>
-        protected List<Element2D> SortFirstLayer(IEnumerable<Element2D> layer)
+        public List<Element2D> SortFirstLayer(IEnumerable<Element2D> layer)
         {
             var xSum = 0.0;
             var ySum = 0.0;
@@ -128,7 +128,7 @@ namespace OperationalController.MeshObjsCreator.Extrude
         /// <param name="curLayer">Нижний слой 2д элементов</param>
         /// <param name="nextLayer">Верхний слой 2д элементов</param>
         /// <returns>Список тетраэдров</returns>
-        protected List<Element3D> CreateLayerTetrahedrons(IEnumerable<Element2D> curLayer, List<Element2D> nextLayer)
+        public List<Element3D> CreateLayerTetrahedrons(IEnumerable<Element2D> curLayer, List<Element2D> nextLayer)
         {
             var index = 0;
             var layer = new List<Element3D>();

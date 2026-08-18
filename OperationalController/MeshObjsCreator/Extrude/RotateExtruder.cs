@@ -100,7 +100,7 @@ namespace OperationalController.MeshObjsCreator.Extrude
         /// <param name="curLayer">Текущий слой 2д элементов</param>
         /// <param name="transform">Матрица прирощения угла</param>
         /// <returns>Список 2д элементов</returns>
-        private List<Element2D> CreateNextLayer(IEnumerable<Element2D> curLayer, Matrix4x4 transform)
+        public List<Element2D> CreateNextLayer(IEnumerable<Element2D> curLayer, Matrix4x4 transform)
         {
             var nextLayer = new List<Element2D>();
 
