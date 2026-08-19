@@ -110,5 +110,30 @@ namespace OperationalController
         /// </summary>
         /// <returns></returns>
         GeometryPoint GetModelPoint(int objNumb);
+
+        /// <summary>
+        /// Возвращает координаты точек геометрического объекта для заданных параметрических координат.
+        /// </summary>
+        double[] GetGeoObjPoints(int dim, int tag, double[] parametricCoord);
+
+        /// <summary>
+        /// Возвращает границы параметризации геометрического объекта.
+        /// </summary>
+        Tuple<double[], double[]> GetParametrizationBounds(int dim, int tag);
+
+        /// <summary>
+        /// Возвращает тип геометрического объекта.
+        /// </summary>
+        string GetType(int dim, int tag);
+
+        /// <summary>
+        /// Возвращает центр масс геометрического объекта.
+        /// </summary>
+        Tuple<double, double, double> GetCenterOfMass(int dim, int tag);
+
+        /// <summary>
+        /// Возвращает границу заданных геометрических объектов.
+        /// </summary>
+        int[] GetBoundary(int[] dimTags, bool combined = true, bool oriented = true, bool recursive = false);
     }
 }
