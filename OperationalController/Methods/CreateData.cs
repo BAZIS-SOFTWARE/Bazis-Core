@@ -7,12 +7,14 @@ using Model.Interfaces;
 using Model.Interfaces.MeshObjects;
 using Model.MeshObjects;
 using Model.ObjectsCollections;
+using OperationalController.GeomObjsCreator;
 using OperationalController.GmshController;
 using OperationalController.MeshObjsCreator;
 using OperationalController.MeshObjsCreator.Extrude;
 using Project.Interfaces.Tasks;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using static IronPython.Modules._ast;
@@ -312,6 +314,113 @@ namespace OperationalController
             return UpdateModelData(extruder, collection);
         }
 
+        /// <inheritdoc/>
+        public int[] CreateChamfer(IEnumerable<int> curveTags, double firstLength, double secondLengthOrAngle, bool isAngle, bool reflected)
+        {
+            var builder = new ChamferGeometryBuilder(GmshController);
+            var result = builder.Build(curveTags, firstLength, secondLengthOrAngle, isAngle, reflected);
+            RefreshGeometryData();
+            return result;
+        }
+
+        private void RefreshGeometryData()
+        {
+            // OCC-операции изменяют топологию и делают прежнюю поверхностную сетку
+            // непригодной для построения SurfaceFigure. Перестраиваем её до чтения
+            // геометрии, иначе объём может ссылаться на отсутствующую поверхность.
+            GmshController.Gmsh.Model.Mesh.Clear();
+            GmshController.Gmsh.Model.Mesh.Generate(2);
+
+            var points = GmshController.CreateControlPoints();
+            var curves = GmshController.CreateLines();
+            var surfaceData = CreateChamferSurfaceData();
+
+            ModelData.ObjectData.Clear(ObjType.Точка);
+            ModelData.ObjectData.Clear(ObjType.Узел);
+            ModelData.VolumeData.Clear();
+
+            points.ForEach(point =>
+                ModelData.ObjectData.PointsSet.Add(point.Number, point));
+
+            curves.ForEach(curve =>
+                ModelData.ObjectData.CurveSet.Add(curve.Number, curve));
+
+            foreach (var surface in surfaceData.Item1)
+                ModelData.ObjectData.SurfaceSet.Add(surface.Key, surface.Value);
+
+            foreach (var volume in surfaceData.Item2)
+                ModelData.VolumeData.Add(volume);
+        }
+
+        private Tuple<ObjectsSet<SurfaceFigure>, VolumeData> CreateChamferSurfaceData()
+        {
+            var meshPoints = GmshController.GetNodes(2, -1, true)
+                .ToDictionary(
+                    node => node.Number,
+                    node => new GeometryPoint(node.Number, node.Position));
+            var surfaces = new ObjectsSet<SurfaceFigure>("FreeSurfaces");
+            var surfaceEntities = GmshController.Gmsh.Model.GetEntities(2);
+
+            for (var index = 1; index < surfaceEntities.Length; index += 2)
+            {
+                var surfaceTag = surfaceEntities[index];
+                surfaces.Add(surfaceTag, CreateChamferSurfaceFigure(meshPoints, surfaceTag));
+            }
+
+            surfaces.SetColor(Color.FromArgb(255, 125, 0));
+
+            var volumes = new VolumeData();
+            var volumeEntities = GmshController.Gmsh.Model.GetEntities(3);
+            var random = new Random();
+
+            for (var index = 1; index < volumeEntities.Length; index += 2)
+            {
+                var volumeTag = volumeEntities[index];
+                var (_, surfaceTags) = GmshController.Gmsh.Model.GetAdjacencies(3, volumeTag);
+                var volumeSurfaces = surfaceTags.Select(surfaceTag => surfaces[surfaceTag]).ToArray();
+                var volume = new VolumeFigure(volumeTag, volumeSurfaces);
+                var name = GmshController.Gmsh.Model.GetEntityName(3, volumeTag);
+                volume.Name = string.IsNullOrEmpty(name)
+                    ? volumeTag.ToString()
+                    : name.Replace("Shapes/", "");
+                volume.SetColor(Color.FromArgb(random.Next(256), random.Next(256), random.Next(256)));
+                volumes.Add(volume);
+            }
+
+            return System.Tuple.Create(surfaces, volumes);
+        }
+
+        private SurfaceFigure CreateChamferSurfaceFigure(
+            IReadOnlyDictionary<int, GeometryPoint> points,
+            int surfaceTag)
+        {
+            var elementData = GmshController.Gmsh.Model.Mesh.GetElements(2, surfaceTag);
+            var geometrySurfaces = new List<GeometrySurface>();
+
+            for (var typeIndex = 0; typeIndex < elementData.Item1.Length; typeIndex++)
+            {
+                var properties = GmshController.Gmsh.Model.Mesh.GetElementProperties(elementData.Item1[typeIndex]);
+                var elements = elementData.Item2[typeIndex];
+                var nodeTags = elementData.Item3[typeIndex];
+
+                for (var elementIndex = 0; elementIndex < elements.Length; elementIndex++)
+                {
+                    var elementPoints = new GeometryPoint[properties.numNodes];
+                    for (var nodeIndex = 0; nodeIndex < properties.numNodes; nodeIndex++)
+                    {
+                        var nodeTag = (int)nodeTags[elementIndex * properties.numNodes + nodeIndex];
+                        if (!points.TryGetValue(nodeTag, out var point))
+                            throw new InvalidOperationException($"Узел {nodeTag} поверхности {surfaceTag} не найден.");
+
+                        elementPoints[nodeIndex] = point;
+                    }
+
+                    geometrySurfaces.Add(new GeometrySurface((int)elements[elementIndex], elementPoints));
+                }
+            }
+
+            return new SurfaceFigure(surfaceTag, geometrySurfaces.ToArray());
+        }
 
         /// <inheritdoc/>
         public void CreateElement(string setName, int dim, int[] nodeNumbers)

@@ -98,5 +98,17 @@ namespace OperationalController
         /// <param name="numberOfElem"></param>
         /// <returns></returns>
         void CreateQuadMeshOnPoligon(List<Point2D> points, int numberOfElem);
+
+        /// <summary>
+        /// Создаёт фаски на нескольких кривых за одну операцию.
+        /// </summary>
+        /// <param name="curveTags">Теги кривых.</param>
+        /// <param name="firstLength">Размер фаски на первой соседней поверхности.</param>
+        /// <param name="secondLengthOrAngle">Размер на второй поверхности либо угол фаски в градусах.</param>
+        /// <param name="isAngle"><c>true</c>, если <paramref name="secondLengthOrAngle"/> задаёт угол.</param>
+        /// <param name="reflected"><c>true</c>, чтобы использовать вторую соседнюю поверхность как опорную.</param>
+        /// <returns>Массив пар "размерность-тег" созданных геометрических сущностей.</returns>
+        int[] CreateChamfer(IEnumerable<int> curveTags, double firstLength, double secondLengthOrAngle, bool isAngle, bool reflected);
+
     }
 }

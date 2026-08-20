@@ -1,26 +1,46 @@
-﻿using Model.Interfaces.ObjectsCollections;
-using Model.Interfaces;
-using System.Collections.Generic;
-using Model.Interfaces.MeshObjects;
-using Project.Interfaces.Tasks;
-using Model.GeometryObjects;
+﻿using MaterialDB.FunctionData;
 using MaterialDB.MaterialData;
-using MaterialDB.FunctionData;
-using Model.ObjectsCollections;
+using Model.GeometryObjects;
+using Model.Interfaces;
+using Model.Interfaces.MeshObjects;
+using Model.Interfaces.ObjectsCollections;
 using Model.MeshObjects;
-using OperationalController.GmshController;
+using Project.Interfaces.Tasks;
 using System;
-using System.Data;
+using System.Collections.Generic;
 using System.Linq;
-using Model;
 
 namespace OperationalController
 {
     public partial class ProjectController
     {
-        /// <summary>
-        /// Возвращает перечисление геометрических объектов, смежных с заданным объектом <paramref name="obj"/>.
-        /// </summary>
+        /// <inheritdoc/>
+        public MaterialDBData MaterialsDB
+        {
+            get { return TaskData.Materials; }
+            set { TaskData.Materials = value; }
+        }
+        /// <inheritdoc/>
+
+        public FunctionDBData FunctionsDB
+        {
+            get { return TaskData.Functions; }
+            set { TaskData.Functions = value; }
+        }
+
+        /// <inheritdoc/>
+        public TaskKind ProjectKind
+        {
+            get { return TaskData.TaskKind; }
+            set { TaskData.Clear(); TaskData.TaskKind = value; }
+        }
+        /// <inheritdoc/>
+        public TaskType ProjectType
+        {
+            get { return TaskData.TaskType; }
+            set { TaskData.Clear(); TaskData.TaskType = value; }
+        }
+
         public IEnumerable<IModelObject> GetAdjacentGeometryObjects(IModelObject obj, int direction)
         {
             var dim = obj.Dim;
@@ -61,19 +81,11 @@ namespace OperationalController
         }
 
         /// <summary>
-        /// Возвращает перечисление геометрических объектов, смежных с заданным объектом <paramref name="obj"/>.
-        /// </summary>
-        public Tuple<int[], int[]> GetAdjacentGeometryObjects(int dim, int number)
-        {
-            return GmshController.Gmsh.Model.GetAdjacencies(dim, number);
-        }
-
-        /// <summary>
         /// Отбирает набор сущностей в пределах топологического "scope".
         /// Если <paramref name="startDim"/> и <paramref name="targetDim"/> совпадают, метод возвращает исходный набор.
-        /// В противном случае сначала поднимает исходные сущности по смежностям до уровня <paramref name="targetDim"/> (см. <see cref="ClimbUp"/>),
+        /// В противном случае сначала поднимает исходные сущности по смежностям до уровня <paramref name="targetDim"/>
         /// затем спускается с этого уровня обратно, чтобы собрать все сущности исходной размерности, связанные через найденные верхние элементы
-        /// (см. <see cref="DescendDown"/>). В результате возвращается множество уникальных номеров сущностей размерности <paramref name="startDim"/>,
+        /// В результате возвращается множество уникальных номеров сущностей размерности <paramref name="startDim"/>,
         /// которые принадлежат одному топологическому объёму при расширении до <paramref name="targetDim"/>.
         /// </summary>
         public HashSet<int> SelectByScope(int startDim, IEnumerable<int> selectedNumbers, int targetDim)
@@ -86,6 +98,7 @@ namespace OperationalController
 
             return result;
         }
+
         /// <summary>
         /// Рекурсивно обходит смежности топологических сущностей, переходя от текущей размерности
         /// <paramref name="currentDim"/> к целевой <paramref name="targetDim"/>, и собирает множество
@@ -102,13 +115,10 @@ namespace OperationalController
             foreach (var number in currentLevel)
             {
                 var (upper, lower) = GmshController.Gmsh.Model.GetAdjacencies(currentDim, number);
-
                 var neighbors = step > 0 ? upper : lower;
-
                 foreach (var n in neighbors)
                     nextLevel.Add(n);
             }
-
             return TraverseAdjacenciesRecursive(currentDim + step, nextLevel, targetDim);
         }
 
@@ -123,70 +133,21 @@ namespace OperationalController
         }
 
         /// <inheritdoc/>
-        public IEnumerable<Node> GetAllModelNodes()
-        {
-            return ModelData.ObjectData.NodesSet.Values;
-        }
-        /// <inheritdoc/>
-
         public IEnumerable<ISetInfo> GetModelSetsInfo(ObjType objType)
         {
             foreach (var item in ModelData.ObjectData.GetSetsInfo(objType))
                 yield return item;
-
         }
 
         /// <inheritdoc/>
         public IEnumerable<ISetInfo> GetAllModelSetsInfo()
         {
             foreach (ObjType item in Enum.GetValues(typeof(ObjType)))
-            {
                 foreach (var set in ModelData.ObjectData.GetSetsInfo(item))
                     yield return set;
-            }
-        }
-
-
-
-        /// <inheritdoc/>
-        public IEnumerable<IModelObject> GetModelObjects(ObjType objType)
-        {
-            return ModelData.ObjectData.GetObjects(objType);
-        }
-        /// <inheritdoc/>
-        public IModelObject GetModelObject(ObjType objType, int objNumber)
-        {
-            return ModelData.ObjectData.Find(objType, objNumber);
-        }
-        /// <inheritdoc/>
-
-        public ISetInfo GetModelSetInfo(ObjType objType, string setName)
-        {
-            return ModelData.ObjectData.GetSetInfo(objType, setName);
-        }
-/// <inheritdoc/>
-
-        public ISetInfo GetModelSetInfo(ObjType objType, int objNumber)
-        {
-            return ModelData.ObjectData.GetSetInfo(objType, objNumber);
         }
 
         /// <inheritdoc/>
-
-        public IEnumerable<IModelObject> GetAllModelObjects()
-        {
-            return ModelData.ObjectData.GetAllObjects();
-        }
-
-        /// <inheritdoc/>
-
-        public IEnumerable<IElement> GetAllModelElements()
-        {
-            return ModelData.ObjectData.GetAllElements();
-        }
-
-        /// <inheritdoc/>
-
         public IEnumerable<IElement> GetModelElements(int dim, string setName)
         {
             if (dim < 1 | dim > 3)
@@ -205,7 +166,6 @@ namespace OperationalController
             if (dim < 2 | dim > 3)
                 throw new Exception("Неправильно указана размерность элементов");
 
-
             if (dim == 2)
                 return ModelData.ObjectData.E2DCollection.GetObjects();
             else
@@ -213,97 +173,56 @@ namespace OperationalController
         }
 
         /// <inheritdoc/>
-        public GeometryPoint GetModelPoint(int objNumber)
+        public (double X, double Y, double Z) GetCenterOfMass(int dim, int tag)
         {
-            return ModelData.ObjectData.PointsSet[objNumber];
+            var center = GmshController.Gmsh.Model.Occ.GetCenterOfMass(dim, tag);
+
+            return (center.Item1, center.Item2, center.Item3);
         }
 
-        /// <inheritdoc/>
-        public Curve GetModelCurve(int objNumber)
-        {
-            return ModelData.ObjectData.CurveSet[objNumber];
-        }
+        /// <summary>
+        /// Возвращает кортеж массивов номеров геометрических объектов, смежных с указанным объектом.
+        /// Первый элемент кортежа содержит номера смежных объектов более высокой размерности (upper),
+        /// второй — номера смежных объектов более низкой размерности (lower).
+        /// </summary>
+        /// <param name="dim">Размерность исходного объекта (0 — точка, 1 — кривая, 2 — поверхность и т.д.).</param>
+        /// <param name="number">Топологический номер (tag) исходного объекта в модели.</param>
+        /// <returns>
+        /// Кортеж из двух массивов: (upper[], lower[]). Массивы могут быть пустыми, если смежностей нет.
+        /// </returns>
+        public Tuple<int[], int[]> GetAdjacentGeometryObjects(int dim, int number) => GmshController.Gmsh.Model.GetAdjacencies(dim, number);
 
-        /// <inheritdoc/>
-        public SurfaceFigure GetModelSurface(int objNumber)
-        {
-            return ModelData.ObjectData.SurfaceSet[objNumber];
-        }
-
-        /// <inheritdoc/>
-
-        public IEnumerable<VolumeFigure> GetModelVolumes()
-        {
-            return ModelData.VolumeData;
-        }
-
-        /// <inheritdoc/>
-        public MaterialDBData MaterialsDB
-        {
-            get { return TaskData.Materials; }
-            set { TaskData.Materials = value; }
-        }
-        /// <inheritdoc/>
-
-        public FunctionDBData FunctionsDB
-        {
-            get { return TaskData.Functions; }
-            set { TaskData.Functions = value; }
-        }
-
-        /// <inheritdoc/>
-        public IEnumerable<IGroup> GetAllModelGroups()
-        {
-            return ModelData.GroupData;
-        }
-        /// <inheritdoc/>
-        public IEnumerable<ICondData> GetAllCondData()
-        {
-            return TaskData;
-        }
-
-        /// <inheritdoc/>
-        public ICondData GetCondData(int condIndex)
-        {
-            return TaskData[condIndex];
-        }
-/// <inheritdoc/>
-
-        public IGroup GetModelGroup(string grName)
-        {
-            return ModelData.GroupData.Find(grName);
-        }
-        /// <inheritdoc/>
-        public IGroup GetModelGroup(int grIndex)
-        {
-            return ModelData.GroupData[grIndex];
-        }
-
-        /// <inheritdoc/>
-        public TaskKind ProjectKind
-        {
-            get 
-            {
-                return TaskData.TaskKind;
-            }
-            set
-            {
-                TaskData.Clear();
-                TaskData.TaskKind = value;
-            }         
-        }
-        /// <inheritdoc/>
-        public TaskType ProjectType
-        {
-            get
-            {               
-                return TaskData.TaskType;
-            }
-            set
-            {
-                TaskData.Clear();
-                TaskData.TaskType = value;
-            }
-        }
+        public IEnumerable<Node> GetAllModelNodes() => ModelData.ObjectData.NodesSet.Values;
+        public GeometryPoint GetModelPoint(int objNumber) => ModelData.ObjectData.PointsSet[objNumber];
+        public Curve GetModelCurve(int objNumber) => ModelData.ObjectData.CurveSet[objNumber];
+        public SurfaceFigure GetModelSurface(int objNumber) => ModelData.ObjectData.SurfaceSet[objNumber];
+        public IEnumerable<VolumeFigure> GetModelVolumes() => ModelData.VolumeData;
+        public IEnumerable<IGroup> GetAllModelGroups() => ModelData.GroupData;
+        public IEnumerable<ICondData> GetAllCondData() => TaskData;
+        public ICondData GetCondData(int condIndex) => TaskData[condIndex];
+        public IGroup GetModelGroup(string grName) => ModelData.GroupData.Find(grName);
+        public IGroup GetModelGroup(int grIndex) => ModelData.GroupData[grIndex];
+        public IEnumerable<IModelObject> GetModelObjects(ObjType objType) => ModelData.ObjectData.GetObjects(objType);
+        public IModelObject GetModelObject(ObjType objType, int objNumber) => ModelData.ObjectData.Find(objType, objNumber);
+        /// <summary>
+        /// Возвращает информацию о множестве (set) объектов указанного типа по имени множества.
+        /// </summary>
+        /// <param name="objType">Тип объектов множества.</param>
+        /// <param name="setName">Имя множества.</param>
+        /// <returns>Информация о множестве в виде <see cref="ISetInfo"/>.</returns>
+        public ISetInfo GetModelSetInfo(ObjType objType, string setName) => ModelData.ObjectData.GetSetInfo(objType, setName);
+        /// <summary>
+        /// Возвращает информацию о множестве, содержащем конкретный объект (по номеру).
+        /// </summary>
+        /// <param name="objType">Тип объекта.</param>
+        /// <param name="objNumber">Номер (tag) объекта.</param>
+        /// <returns>Информация о множестве (<see cref="ISetInfo"/>), которому принадлежит объект.</returns>
+        public ISetInfo GetModelSetInfo(ObjType objType, int objNumber) => ModelData.ObjectData.GetSetInfo(objType, objNumber);
+        public IEnumerable<IModelObject> GetAllModelObjects() => ModelData.ObjectData.GetAllObjects();
+        public IEnumerable<IElement> GetAllModelElements() => ModelData.ObjectData.GetAllElements();
+        public double[] GetGeoObjPoints(int dim, int tag, double[] parametricCoord) => GmshController.Gmsh.Model.GetValue(dim, tag, parametricCoord);
+        public Tuple<double[], double[]> GetParametrizationBounds(int dim, int tag) => GmshController.Gmsh.Model.GetParametrizationBounds(dim, tag);
+        public string GetType(int dim, int tag) => GmshController.Gmsh.Model.GetType(dim, tag);
+        public int[] GetBoundary(int[] dimTags, bool combined = true, bool oriented = true, bool recursive = false) => GmshController.Gmsh.Model.GetBoundary(dimTags, combined, oriented, recursive);
     }
 }
