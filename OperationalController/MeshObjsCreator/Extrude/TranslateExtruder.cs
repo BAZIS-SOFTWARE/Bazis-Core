@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OperationalController.MeshObjsCreator
+namespace OperationalController.MeshObjsCreator.Extrude
 {
     /// <summary>
     /// Класс экструзии сетки из 2д поверхности методом переноса

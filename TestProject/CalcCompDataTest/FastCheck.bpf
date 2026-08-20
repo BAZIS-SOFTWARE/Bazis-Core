@@ -8380,10 +8380,11 @@
 Название : MNOGOPROHOD.bpf
 Сведения : newComments
 Вид : Volume
+Тип : термическая, механическая
 БазаМатериалов : materials.jsf
 БазаФункций : functions.jsf
-Среда : 2D Коэф.теплоотдачи.воздух 20 0 1500 *
-Нагрев : 25000 * SPH;6;MRF;OSN_1|REF_1;2;0|0|0|0|0|0 ZTV 0 95.08694
-Закрепление : XYZ Жесткое X 0 * 0 1500 *
-Материал : SHOV_2 Сталь_20ХМ 0 1500 *
+Среда : 1 FHEX,TIME=VAR,TEMPM=20,TEMPS=VAR,HEX=Table(Коэф.теплоотдачи.воздух;TIME) * None 2D 0 1500 HeatFlux
+Нагрев : 25000 SPH,X=VAR,Y=VAR,Z=VAR,Width=6,Pulse=1 MRF(OSN_1|REF_1,2,0|0|0|0|0|0) None ZTV 0 95.08694
+Закрепление : 0 * * X XYZ 0 1500 Жесткое
+Материал : 1 * * None SHOV_2 0 1500 Сталь_20ХМ
 #Проект

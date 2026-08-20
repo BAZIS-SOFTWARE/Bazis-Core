@@ -4,6 +4,6 @@
 Вид : Volume
 БазаМатериалов : materials.jsf
 БазаФункций : functions.jsf
-Среда : test Коэф.теплоотдачи.воздух 20 0 150 *
-Закрепление : test Жесткое X 0 * 0 150 *
+Среда : 1 FHEX,TIME=VAR,TEMPM=20,TEMPS=VAR,HEX=Table(Коэф.теплоотдачи.воздух;TEMPS) * None test 0 150 HeatFlux
+Закрепление : 0 * * X test 0 150 Жесткое
 #Проект

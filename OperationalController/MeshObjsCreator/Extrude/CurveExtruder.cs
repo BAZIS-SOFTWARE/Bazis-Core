@@ -8,6 +8,7 @@ using Model.MeshObjects;
 using OperationalController.GmshController;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Numerics;
 using System.Reflection.Metadata;
@@ -16,7 +17,7 @@ using System.Security.Cryptography;
 using static IronPython.Modules._ast;
 
 
-namespace OperationalController.MeshObjsCreator
+namespace OperationalController.MeshObjsCreator.Extrude
 {
     /// <summary>
     /// Класс экструзии сетки из 2д поверхности методом протягивания вдоль кривой
@@ -130,6 +131,16 @@ namespace OperationalController.MeshObjsCreator
                                                                        : CreateNextLayer(firstLayer, matrixList[matrixList.Count - 1] * lastCorrect);
             }
             return tetLayers;
+        }
+
+        /// <summary>
+        /// Создает трансфинитную экструзию 1д элементов
+        /// </summary>
+        /// <param name="firstNode"></param>
+        /// <returns>Список 3д элементов</returns>
+        public List<Beam> ExtrudeTransfinite(Node firstNode)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -652,7 +663,7 @@ namespace OperationalController.MeshObjsCreator
             var p2 = new Vector3((float)coords[6], (float)coords[7], (float)coords[8]);
 
             var t0 = p2 - p0;
-            var a0 = (p2 - p1) - (p1 - p0);
+            var a0 = p2 - p1 - (p1 - p0);
             var n0 = Vector3.Dot(t0, t0) * a0 - Vector3.Dot(t0, a0) * t0;
 
             var last = result.Count - 1;

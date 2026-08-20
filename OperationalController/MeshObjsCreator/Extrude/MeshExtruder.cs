@@ -1,14 +1,10 @@
 ﻿using Geometry;
-using MathNet.Numerics.Distributions;
 using Model.MeshObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Text;
 
-namespace OperationalController.MeshObjsCreator
+namespace OperationalController.MeshObjsCreator.Extrude
 {
     /// <summary>
     /// Обобщенный класс экструзии сетки из 2д поверхности

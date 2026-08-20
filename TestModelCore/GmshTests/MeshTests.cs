@@ -1,5 +1,6 @@
 ﻿using Geometry;
 using GmshApi;
+using IronPython.Runtime;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra.Factorization;
 using MathNet.Spatial.Euclidean;
@@ -14,6 +15,7 @@ using Model.Utilities;
 using OperationalController;
 using OperationalController.GmshController;
 using OperationalController.MeshObjsCreator;
+using OperationalController.MeshObjsCreator.Extrude;
 using OperationalController.MeshObjsUtility;
 using Project.Tasks;
 using System;
@@ -825,13 +827,14 @@ namespace GmshTests
             var proj = new ProjectController();
             proj.GmshController.Load(@"..\..\..\..\GmshApi\gmsh.dll");
             proj.ImportCAD(modelFolder + @"\" + path);
+            proj.GmshController.Gmsh.Option.SetNumber("Mesh.MeshSizeMax", 10);
 
             proj.GenerateMesh(3);
             //e3D_1
-            var gr = proj.CreateOpenSurfaceNodesGroup("e3D_1");
+            var grSurfNodes = proj.CreateOpenSurfaceNodesGroup("e3D_2");
 
             //Скрытие\показ 3д элементов сопряженных с объемом и проверка элементов 
-            Assert.AreNotEqual(gr.Count(), 0);
+            Assert.AreNotEqual(proj.GetModelGroup(grSurfNodes).Count(), 0);
         }
 
         [DataTestMethod]

@@ -7,7 +7,19 @@ namespace Project.Tasks.Functions.FrameFunctions
 {
     public class DEL : FrameFunction
     {
-        //public string Name { get; set; }
+        /// <summary>
+        /// DEL
+        /// </summary>
+        public DEL()
+        {
+            Name = FuncName.DEL.ToString();
+            FunctionType = FuncType.CPF;
+            AddParameter(new Parameter("Width", ParameterType.Constant, 0));
+            AddParameter(new Parameter("Depth", ParameterType.Constant, 0));
+            AddParameter(new Parameter("FrontPart", ParameterType.Constant, 0));
+            AddParameter(new Parameter("BackPart", ParameterType.Constant, 0));
+            AddParameter(new Parameter("Pulse", ParameterType.Constant, 1));
+        }
 
         /// <summary>
         /// Ширина сварочной ванны, мм
@@ -62,10 +74,7 @@ namespace Project.Tasks.Functions.FrameFunctions
             if (vectorLength <= MinSemiaxis) return true;
             else if (vectorLength > MaxSemiaxis) return false;
 
-            float semiEllipsoid;
-            if (elementCenter._y < 0)
-                semiEllipsoid = BackPart;
-            else semiEllipsoid = FrontPart;
+            var semiEllipsoid = GetPart(elementCenter);
 
             var result = Math.Pow(elementCenter._x / (Width / 2), 2) +
                 Math.Pow(elementCenter._y / semiEllipsoid, 2) +
@@ -73,6 +82,15 @@ namespace Project.Tasks.Functions.FrameFunctions
 
             return result <= 0;
 
+        }
+
+        private float GetPart(Point3D elementCenter)
+        {
+            float semiEllipsoid;
+            if (elementCenter._y < 0)
+                semiEllipsoid = BackPart;
+            else semiEllipsoid = FrontPart;
+            return semiEllipsoid;
         }
 
         public override bool IsOverlappingSelf(float velocity)
@@ -85,9 +103,46 @@ namespace Project.Tasks.Functions.FrameFunctions
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc/>
         public override double CalcValue()
         {
-            throw new NotImplementedException();
+            double rad, halfBead;
+
+            var x = (float)this["X"].GetValue();
+            var y = (float)this["Y"].GetValue();
+            var z = (float)this["Z"].GetValue();
+
+            var elementCenter = new Point3D(x, y, z);
+
+            if (IsPointInside(elementCenter))
+            {
+                // мощность берется за единицу
+
+                var power = 1;
+                var xx = elementCenter._x * elementCenter._x;
+                var yy = elementCenter._y * elementCenter._y;
+                var zz = elementCenter._z * elementCenter._z;
+
+                var se = GetPart(elementCenter);
+
+                var hw = Width / 2;
+
+                var exp = Math.Exp(-(3 * xx / (hw * hw))) *
+    Math.Exp(-(3 * yy / (se * se))) *
+    Math.Exp(-(3 * zz / (Depth * Depth)));
+
+                var powerDensity = 6 * Math.Sqrt(3) * 0.5 / hw / se/ Depth / (Math.PI * Math.Sqrt(Math.PI));
+
+                return this["Pulse"].GetValue() * powerDensity * exp;
+
+                // если есть зависимость от времени, то расчитать корректировку энергии
+                // this["ENERG"].GetValue();
+                //
+                // Пример: var pulse = this["PULSE"].GetValue(); // так запись в строке  ...PULSE=Table(Термоцикл,TIME)...
+                // return powerDensity * pulse;
+
+            }
+            return 0;
         }
     }
 }

@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 
-namespace OperationalController.MeshObjsCreator
+namespace OperationalController.MeshObjsCreator.Extrude
 {
     /// <summary>
     /// Класс экструзии сетки из 2д поверхности методом вращения

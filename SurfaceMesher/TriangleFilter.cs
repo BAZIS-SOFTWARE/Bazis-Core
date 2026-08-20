@@ -9,13 +9,13 @@ namespace SurfaceMesher
     [Obsolete]
     public class TriangleFilter
     {
-        private DeloneTriangulation triangulationInstance;
+        private DeloneTriangulation_m2 triangulationInstance;
         private HashSet<Node2D> inflictedNodes;
         private GeometryFactory geometryFactory;
 
         public TriangleFilter()
         {
-            triangulationInstance = new DeloneTriangulation();
+            triangulationInstance = new DeloneTriangulation_m2();
             geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(4326);
         }
 

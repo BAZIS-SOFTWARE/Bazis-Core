@@ -6,9 +6,10 @@
   },
   "TaskKind": 4,
   "TermalProcesses": [],
-  "InitTemp": 20.0,
+  "InitTemp": {},
   "SaveRate": 0,
   "RestartFile": "",
+  "UpdMatrixIteration": 1,
   "Iterations": 0,
   "SolverSettings": {
     "MaxIter": 0,

@@ -5,7 +5,7 @@
 БазаМатериалов : materials.jsf
 БазаФункций : functions.jsf
 Материал : 1 * * None test 0 150 Сталь_20ХМ
-Среда : 1 HEX,CONV=20 * None test 0 150
+Среда : 1 FHEX,TIME=VAR,TEMPM=20,TEMPS=VAR,HEX=Table(Коэф.теплоотдачи.воздух;TEMPS) * None test 0 150 HeatFlux
 Нагрев : 25000 SPH,Width=6 SRF(test,0|0|0|0|0|0) None test 0 10
 Закрепление : 0 * * X test 20 150 Жесткое
 Закрепление : 0 * * X test 0 10 Жесткое

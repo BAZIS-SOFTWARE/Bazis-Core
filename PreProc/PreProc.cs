@@ -115,14 +115,25 @@ namespace PreProc
             where LoadData : CondData
             where BoundData : CondData
         {
-            var matData = data.Where(md => md.Kind == DataKind.Материал).OrderBy(md => md.StartTime).ToList();
-            var loadData = data.Where(ld => ld is LoadData).OrderBy(ld => ld.StartTime).ToList();
-            var boundData = data.Where(bd => bd is BoundData).OrderBy(bd => bd.StartTime).ToList();
+            var matData = data.Where(md => md.Kind == DataKind.Материал).
+                OrderBy(md => md.StartTime).ToList();
+            var loadData = data.Where(ld => ld is LoadData).
+                OrderBy(ld => ld.StartTime).ToList();
+            var boundData = data.Where(bd => bd is BoundData).
+                OrderBy(bd => bd.StartTime).ToList();
 
             CheckLoadDataInsideBoundDataInterval<LoadData, MatData>(boundData, matData);
             CheckLoadDataInsideBoundDataInterval<LoadData, BoundData>(loadData, boundData);
 
-            return ParametrizeResultParameters<ResultParam>();
+            var pars = ParametrizeResultParameters<ResultParam>();
+
+            var iniTemps = matData.
+                Select((md, index) => new { Key = md.Group.Name,Value = 20.0})
+    .ToDictionary(x => x.Key, x => x.Value);
+
+            pars[0].InitTemp = iniTemps;
+
+            return pars;
         }
 
         /// <summary>
@@ -306,7 +317,7 @@ namespace PreProc
         /// <param name="loadData">Лист класса LoadData</param>
         /// <param name="boundData">Лист класса BoundData</param>
         /// <exception cref="Exception">Некоректно заданы данные</exception>
-        private static void CheckLoadDataInsideBoundDataInterval<LoadData, BoundData>
+        private void CheckLoadDataInsideBoundDataInterval<LoadData, BoundData>
             (List<ICondData> loadData, List<ICondData> boundData)
         {
             if (boundData.Count == 0)
@@ -385,6 +396,7 @@ namespace PreProc
 
             for (var i = 0; i < minorParameters.Count; i++)
             {
+                minorParameters[i].ThermalLoadIsFile = true;
                 if (i > 0)
                 {
                     minorParameters[i].RestartFile = $"{names[1]}_{i}_{minorParameters[i - 1].TimeSettings.StartTime}_{minorParameters[i - 1].TimeSettings.StopTime}.db";
@@ -430,15 +442,23 @@ namespace PreProc
             {
                 var file = Path.GetFileName(line);
                 if (!Regex.IsMatch(file, pattern))
-                    throw new Exception("Имя полученного файла не соответствует шаблону: " +
-                    "<тип процесса>_<номер задачи>_<время начала>_<время окончания>.tsf");
+                    //"Имя полученного файла не соответствует шаблону: " +
+                    //"<тип процесса>_<номер задачи>_<время начала>_<время окончания>.tsf"
+                    throw new DraftException(line);
 
                 var taskType = file.Split('_')[0];
                 sortedLines.Add(string.Join(" ", new string[] { taskType, line, TaskStatus.выполнить.ToString() }));
             }
 
-            return sortedLines.OrderBy(x => int.Parse(Path.GetFileName(x.Split(' ')[1]).Split('_')[1]))
-                .ThenByDescending(x => x).ToList();
+            return sortedLines.OrderBy(x => int.Parse(string.Join(" ", x
+                        .Split(' ')
+                        .Skip(1)
+                        .SkipLast(1))
+                    .Split('_')
+                    .TakeLast(3)
+                    .ToList()[0]))
+                .ThenByDescending(x => x)
+                .ToList();
         }
     }
 }

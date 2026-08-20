@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OperationalController.MeshObjsCreator
+namespace OperationalController.MeshObjsCreator.Exceptions
 {
     [Serializable]
     public class CollectionEmptyArgumentException : Exception

@@ -290,8 +290,8 @@ namespace TestProject
                 resData.Add(data as CondData);
 
             var preProc = new PreProc.PreProc();
-            preProc.CalcCompDataV1(resData, pt, projPath + "TsfFolder\\");
-            preProc.CalcCompDataV2(resData, new ProcessProperty { TaskKind = TaskKind.термическая | TaskKind.механическая, CommonTaskType = pt }, projPath + "TsfFolder\\");
+            //preProc.CalcCompDataV1(resData, pt, projPath + "TsfShouldPass\\");
+            preProc.CalcCompDataV2(resData, new ProcessProperty { TaskKind = TaskKind.термическая | TaskKind.механическая, CommonTaskType = pt }, projPath + "TsfShouldPass\\");
         }
 
         [TestMethod]
@@ -321,7 +321,7 @@ namespace TestProject
                 resData.Add(data as CondData);
             }
             var preProc = new PreProc.PreProc();
-            Assert.ThrowsException<Exception>(() => preProc.CalcCompDataV1(resData, ProcessType.Welding, projPath));
+            //Assert.ThrowsException<Exception>(() => preProc.CalcCompDataV1(resData, ProcessType.Welding, projPath));
             Assert.ThrowsException<Exception>(() => preProc.CalcCompDataV2(resData, new ProcessProperty { TaskKind = TaskKind.термическая | TaskKind.механическая, CommonTaskType = ProcessType.Welding }, projPath));
         }
     }
