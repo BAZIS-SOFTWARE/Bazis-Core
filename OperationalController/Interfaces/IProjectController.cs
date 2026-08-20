@@ -257,7 +257,5 @@ namespace OperationalController
         /// </summary>
         /// <param name="elemDim"></param>
         void GenerateMesh(int elemDim);
-
-
     }
 }
