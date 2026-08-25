@@ -95,6 +95,9 @@ namespace Model.ObjectsCollections
 
         public void Append(IObjectsSet<T> appSet)
         {
+            if (appSet is null || appSet.Count == 0)
+                return;
+
             var shifting = 0;
             if (objectsSet.Count != 0)
             {
