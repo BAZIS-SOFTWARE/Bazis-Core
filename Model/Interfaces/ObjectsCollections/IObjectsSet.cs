@@ -19,7 +19,11 @@ namespace Model.Interfaces.ObjectsCollections
         /// <summary>
         /// Append
         /// </summary>
-        /// <param name="appSet"></param>
+        /// <param name="appSet">Добавляемый набор объектов</param>
+        /// <remarks>
+        /// Номера добавляемых объектов сдвигаются, если пересекаются с номерами объектов набора-приемника.
+        /// Пустой набор <paramref name="appSet"/> (как и <c>null</c>) набор-приемник не изменяет.
+        /// </remarks>
         void Append(IObjectsSet<T> appSet);
         /// <summary>
         /// ClearWithExistState

@@ -275,6 +275,111 @@ namespace ModelTests
         }
 
         [TestMethod]
+        public void AppendEmptySetToFilledSet()
+        {
+            //assign
+            var nodes = CreateTriangleNodes();
+
+            var set1 = new ObjectsSet<Element2D>("e2D_1");
+            set1.Add(0, new Triangle_c(0, nodes));
+            set1.Add(1, new Triangle_c(1, nodes));
+
+            var set2 = new ObjectsSet<Element2D>("e2D_2");
+
+            //act
+            set1.Append(set2);
+
+            //assert
+            Assert.AreEqual(2, set1.Count);
+            Assert.AreEqual(0, set1[0].Number);
+            Assert.AreEqual(1, set1[1].Number);
+        }
+
+        [TestMethod]
+        public void AppendFilledSetToEmptySet()
+        {
+            //assign
+            var nodes = CreateTriangleNodes();
+
+            var set1 = new ObjectsSet<Element2D>("e2D_1");
+
+            var set2 = new ObjectsSet<Element2D>("e2D_2");
+            set2.Add(5, new Triangle_c(5, nodes));
+            set2.Add(6, new Triangle_c(6, nodes));
+
+            //act
+            set1.Append(set2);
+
+            //assert
+            Assert.AreEqual(2, set1.Count);
+            Assert.AreEqual(5, set1[5].Number);
+            Assert.AreEqual(6, set1[6].Number);
+        }
+
+        [TestMethod]
+        public void AppendEmptySetToEmptySet()
+        {
+            //assign
+            var set1 = new ObjectsSet<Element2D>("e2D_1");
+            var set2 = new ObjectsSet<Element2D>("e2D_2");
+
+            //act
+            set1.Append(set2);
+
+            //assert
+            Assert.AreEqual(0, set1.Count);
+        }
+
+        [TestMethod]
+        public void AppendModelWithoutGeometryToModelWithGeometry()
+        {
+            //assign
+            var model = new ModelData();
+
+            var point = new GeometryPoint(0, new Geometry.Point3D(5, 5, 5));
+            model.ObjectData.PointsSet.Add(point.Number, point);
+
+            var modelNodes = CreateTriangleNodes();
+            foreach (var node in modelNodes)
+                model.ObjectData.NodesSet.Add(node.Number, node);
+
+            var modelSet = new ObjectsSet<Element2D>("mesh");
+            modelSet.Add(0, new Triangle_c(0, modelNodes));
+            model.ObjectData.E2DCollection.Add(modelSet);
+
+            // добавляемая модель содержит только сетку: точек, кривых и поверхностей в ней нет
+            var appendedModel = new ModelData();
+
+            var appendedNodes = CreateTriangleNodes();
+            foreach (var node in appendedNodes)
+                appendedModel.ObjectData.NodesSet.Add(node.Number, node);
+
+            var appendedSet = new ObjectsSet<Element2D>("appended_mesh");
+            appendedSet.Add(0, new Triangle_c(0, appendedNodes));
+            appendedModel.ObjectData.E2DCollection.Add(appendedSet);
+
+            //act
+            model.Append(appendedModel);
+
+            //assert
+            Assert.AreEqual(6, model.ObjectData.NodesSet.Count);
+            Assert.AreEqual(2, model.ObjectData.E2DCollection.Count);
+            Assert.AreEqual(1, model.ObjectData.PointsSet.Count);
+            Assert.AreEqual(0, model.ObjectData.CurveSet.Count);
+            Assert.AreEqual(point.Number, model.ObjectData.PointsSet.First().Value.Number);
+        }
+
+        /// <summary>
+        /// Создает узлы треугольного элемента
+        /// </summary>
+        private static Node[] CreateTriangleNodes() => new[]
+        {
+            new Node(0, new Geometry.Point3D(0, 0, 0)),
+            new Node(1, new Geometry.Point3D(1, 0, 0)),
+            new Node(2, new Geometry.Point3D(0, 1, 0))
+        };
+
+        [TestMethod]
         [DataRow(new int[] { 0, 10, 1, 2 }, new int[] { 0, 10, 12, 13 })]
         public void ChangeName(int[] iniNumb, int[] resNumb)
         {
