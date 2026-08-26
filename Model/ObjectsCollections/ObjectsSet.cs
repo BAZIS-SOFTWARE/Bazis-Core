@@ -95,7 +95,13 @@ namespace Model.ObjectsCollections
 
         public void Append(IObjectsSet<T> appSet)
         {
-            if (appSet is null || appSet.Count == 0)
+            if (appSet == null)
+            {
+                throw new ArgumentNullException(nameof(appSet));
+            }
+
+            // Стоит подумать о правильном применении тихом выходе. Возможно это отложенная ошибка
+            if (appSet.Count == 0)
                 return;
 
             var shifting = 0;
