@@ -261,10 +261,11 @@ namespace OperationalController
         /// (<c>ExtrudeTransfinite</c>), в противном случае — обычный режим (<c>Extrude</c>).
         /// </param>
         /// <returns>Имя набора созданных 3Д элементов.</returns>
-        public string ExtrudeElement3DAlongCurve(int surfaceTag, int[] curveTags, int startPointTag, double step, bool transfinite)
+        public string ExtrudeElement3DAlongCurve(int surfaceTag, int[] curveTags, int startPointTag, double step, bool transfinite, int? startNodeTag = null)
         {
             var elements2D = GetElements2DBelongingToSurface(surfaceTag);
-            return ExtrudeAlongCurve(elements2D, curveTags, startPointTag, step, transfinite);
+            var startNode = startNodeTag is int nodeTag ? ModelData.ObjectData.NodesSet[nodeTag] : null;
+            return ExtrudeAlongCurve(elements2D, curveTags, startPointTag, step, transfinite, startNode);
         }
 
         /// <summary>
@@ -289,10 +290,11 @@ namespace OperationalController
         /// (<c>ExtrudeTransfinite</c>), в противном случае — обычный режим (<c>Extrude</c>).
         /// </param>
         /// <returns>Имя набора созданных 3Д элементов.</returns>
-        public string ExtrudeElement3DAlongCurve(string setName, int[] curveTags, int startPointTag, double step, bool transfinite)
+        public string ExtrudeElement3DAlongCurve(string setName, int[] curveTags, int startPointTag, double step, bool transfinite, int? startNodeTag = null)
         {
             var set = project.ModelData.ObjectData.E2DCollection[setName].Values.ToList();
-            return ExtrudeAlongCurve(set, curveTags, startPointTag, step, transfinite);
+            var startNode = startNodeTag is int nodeTag ? ModelData.ObjectData.NodesSet[nodeTag] : null;
+            return ExtrudeAlongCurve(set, curveTags, startPointTag, step, transfinite, startNode);
         }
 
 
