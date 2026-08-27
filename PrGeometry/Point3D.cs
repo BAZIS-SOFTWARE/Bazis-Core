@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
 using Geometry.Attribute;
 using Geometry.Interfaces;
 
@@ -42,7 +40,7 @@ namespace Geometry
 
         public override string ToString()
         {
-            return string.Format(CultureInfo.InvariantCulture, "{0}|{1}|{2}", _x, _y, _z);
+            return string.Format("{0}|{1}|{2}", _x, _y, _z);
         }
 /// <inheritdoc/>
 
