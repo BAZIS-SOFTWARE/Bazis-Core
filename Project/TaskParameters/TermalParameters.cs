@@ -8,6 +8,8 @@ namespace Project.TaskParameters
     {             
         public string ChemicalFile { get; set; } = "";
 
+        public ConvectionParameters ConvectionParameters { get; set; } = new();
+
         public TermalConvergence TermalConvergence { get; set; } = new TermalConvergence();
 
         public TermalParameters()

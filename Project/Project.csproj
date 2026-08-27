@@ -4,7 +4,7 @@
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
 	  <SignAssembly>True</SignAssembly>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>5.9.3</Version>
+    <Version>5.9.5</Version>
     <Title>Project</Title>
     <Authors>Bilenko Georgy</Authors>
     <Company>BAZIS SOFTWARE</Company>
@@ -81,6 +81,7 @@
     <Compile Include="ProjectData.cs" />
     <Compile Include="TaskParameters\ChemicalConvergence.cs" />
     <Compile Include="TaskParameters\ChemicalParameters.cs" />
+    <Compile Include="TaskParameters\ConvectionParameters.cs" />
     <Compile Include="TaskParameters\GeneralParameters.cs" />
     <Compile Include="TaskParameters\IChemicalDependent.cs" />
     <Compile Include="TaskParameters\IThermalDependent.cs" />
