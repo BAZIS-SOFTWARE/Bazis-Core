@@ -53,7 +53,7 @@ namespace OperationalController.MeshObjsCreator.Extrude
         /// <summary>
         /// Индексы для создания новых вершин
         /// </summary>
-        protected int nodeTag;
+        protected int NodeTag { get; set; }
         /// <summary>
         /// Индексы для создания новых 3д элементов
         /// </summary>
@@ -71,7 +71,7 @@ namespace OperationalController.MeshObjsCreator.Extrude
         /// </summary>
         /// <param name="layer">Слой 2д элементов</param>
         /// <returns>Слой 2д элементов</returns>
-        protected List<Element2D> SortFirstLayer(IEnumerable<Element2D> layer)
+        public List<Element2D> SortFirstLayer(IEnumerable<Element2D> layer)
         {
             var xSum = 0.0;
             var ySum = 0.0;
@@ -108,7 +108,7 @@ namespace OperationalController.MeshObjsCreator.Extrude
                 {
                     if (!visited.ContainsKey(node.Number))
                     {
-                        var point = new Node(nodeTag++, new Point3D(node.Position._x, node.Position._y, node.Position._z));
+                        var point = new Node(NodeTag++, new Point3D(node.Position._x, node.Position._y, node.Position._z));
                         visited.Add(node.Number, point);
                         points.Add(point);
                         Nodes.Add(point.Number, point);
@@ -128,7 +128,7 @@ namespace OperationalController.MeshObjsCreator.Extrude
         /// <param name="curLayer">Нижний слой 2д элементов</param>
         /// <param name="nextLayer">Верхний слой 2д элементов</param>
         /// <returns>Список тетраэдров</returns>
-        protected List<Element3D> CreateLayerTetrahedrons(IEnumerable<Element2D> curLayer, List<Element2D> nextLayer)
+        public List<Element3D> CreateLayerTetrahedrons(IEnumerable<Element2D> curLayer, List<Element2D> nextLayer)
         {
             var index = 0;
             var layer = new List<Element3D>();
@@ -161,7 +161,7 @@ namespace OperationalController.MeshObjsCreator.Extrude
         /// <param name="curLayer">Нижний слой 2д элементов</param>
         /// <param name="nextLayer">Верхний слой 2д элементов</param>
         /// <returns>Список 3д элементов (гекса, призмы)</returns>
-        protected List<Element3D> CreateTransfiniteLayer(IEnumerable<Element2D> curLayer, List<Element2D> nextLayer)
+        public List<Element3D> CreateTransfiniteLayer(IEnumerable<Element2D> curLayer, List<Element2D> nextLayer)
         {
             var index = 0;
             var layer = new List<Element3D>();

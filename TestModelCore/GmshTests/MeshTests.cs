@@ -1170,6 +1170,52 @@ namespace GmshTests
             saver.Save(mdArray[0], $@"D:\{fName}Curves{stringKey}{stringTransfinite}{stringRecombine}.bpf2");
         }
 
+        //Тест, генерируем 5 линий с рандомным смещением (выбираем произвольный существующий узел внутри стартового сечения) и экструдируем 3д элементы
+        [DataTestMethod]
+        [DataRow(@"\CAD\PART_3.stp", new int[] { 20, 19, 14, 11, 8, 7, 1, 50, 47, 44, 41, 40, 35, 32, 29, 26, 23 }, 15, 3.0,
+                                     new float[] { 77, -24.08f, 8.0f, 77, -24.08f, 13.0f, 82, -24.08f, 8.0f }, 5)]
+        public void ExtrudeFromPointTest(string fileName, int[] curves, int point, double step, float[] coords, int elems)
+        {
+            controller.Gmsh.Open(modelFolder + fileName);
+            controller.MergeGeometry();
+
+            var elements = GenSurfaceTriangle(controller, coords);
+            var lenList = new List<double>();
+
+            var md = new ModelData();
+            var extruder = new CurveExtruder(controller, curves, step, point);
+
+            var rnd = new Random();
+
+            var beamData = new List<List<Beam>>();
+            for(var i = 0; i < elems; ++i)
+            {
+                var index = rnd.Next(elements.Count);
+
+                var elem = elements[index];
+                var elemVerts = elem.GetVertexes().ToList();
+                index = rnd.Next(elemVerts.Count);
+                var pick = elem[index];
+
+                var e1d = extruder.ExtrudeFromPoint(pick);
+                Assert.IsTrue(extruder.MissedElements == 0);
+
+                md.ObjectData.E1DCollection.AddRange($"Reference_Line_{i}", e1d);
+            }
+
+            var e3d = extruder.ExtrudeTransfinite(elements);
+
+            md.ObjectData.E3DCollection.AddRange($"Seam", e3d.SelectMany(v => v));
+
+            foreach (var node in extruder.Nodes.Values)
+                md.ObjectData.NodesSet.Add(node.Number, node);
+
+            var fName = Path.GetFileNameWithoutExtension(fileName);
+
+            var saver = new SaveModelToBPF2TextFile();
+            saver.Save(md, $@"D:\{fName}_Ref_Line.bpf2");
+        }
+
         private List<Element2D> GenTriangle(float[] coords)
         {
             var nodes = new List<Node>() { new Node(1, new Point3D(coords[0], coords[1], coords[2])),
