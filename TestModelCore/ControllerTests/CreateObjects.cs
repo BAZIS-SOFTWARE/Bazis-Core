@@ -198,6 +198,33 @@ namespace ControllerTests
             var set = project.GetModelSetsInfo(ObjType.Элемент3D).Where(x => x.Name.Contains("extrude")).Last();
         }
 
+        [TestMethod]
+        public void ExtrudeGeometry2DThen1D()
+        {
+            var project = new ProjectController();
+            project.GmshController.Load(@"..\..\..\..\GmshApi\gmsh.dll");
+            project.ImportCAD(@"..\..\..\Examples\CAD\model1.stp");
+
+            var start = project.CreatePoint(0, -85, 5);
+            var line2 = project.CreateLine(1, start);
+            var line3 = project.CreateLine(start, 7);
+            var plane = project.CreateSurface(new int[] { 11, line2, line3 });
+
+            project.GmshController.Gmsh.Model.Mesh.Clear();
+            project.ClearModelCollection(ObjType.Узел);
+            project.GenerateMesh(3);
+
+            var startNodeTag = project.GetAllModelNodes().First().Number;
+            var elements3DBefore = project.GetModelSetsInfo(ObjType.Элемент3D).Count();
+            var elements1DBefore = project.GetModelSetsInfo(ObjType.Элемент1D).Count();
+
+            project.ExtrudeElement3DAlongCurve(plane, [1], 1, 1, false);
+            project.ExtrudeElement1DAlongCurve([1], 1, startNodeTag, 1);
+
+            Assert.IsTrue(project.GetModelSetsInfo(ObjType.Элемент3D).Count() > elements3DBefore);
+            Assert.IsTrue(project.GetModelSetsInfo(ObjType.Элемент1D).Count() > elements1DBefore);
+        }
+
 
         [TestMethod]
         public void ExtrudeGeometry2()
