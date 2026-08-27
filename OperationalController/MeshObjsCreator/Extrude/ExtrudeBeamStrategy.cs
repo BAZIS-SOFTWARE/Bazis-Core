@@ -44,19 +44,25 @@ namespace OperationalController.MeshObjsCreator.Extrude
         /// </summary>
         /// <param name="extruder">Класс экструзии</param>
         /// <param name="correctMatrix">Корректирующая матрица (используется при переходе между двумя кривыми, чтобы сгладить переходы медлу слоями)</param>
-        /// <param name="index">Индекс обхода по внутреннему циклу</param>
-        public void AddElement(CurveExtruder extruder, Matrix4x4 correctMatrix, int index)
+        /// <param name="outIndex">Индекс обхода по внешнему циклу</param>
+        /// <param name="inIndex">Индекс обхода по внутреннему циклу</param>
+        public void AddElement(CurveExtruder extruder, Matrix4x4 correctMatrix, int outIndex, int inIndex)
         {
-            _curCenter = extruder.GetTransformedVector(_startNode, correctMatrix);
-            var node = extruder.CreateNode(_curCenter);
-            extruder.Nodes.Add(node.Number, node);
-
-            if (index > 0)
+            if (outIndex > 0 && inIndex == 0)
+                _firstNode = _result[_result.Count - 1][1];
+            else
             {
-                var beam = extruder.CreateBeam(_firstNode, node);
-                _result.Add(beam);
+                _curCenter = extruder.GetTransformedVector(_startNode, correctMatrix);
+                var node = extruder.CreateNode(_curCenter);
+                extruder.Nodes.Add(node.Number, node);
+
+                if (inIndex > 0)
+                {
+                    var beam = extruder.CreateBeam(_firstNode, node);
+                    _result.Add(beam);
+                }
+                _firstNode = node;
             }
-            _firstNode = node;
         }
         /// <summary>
         /// Постпроцессинг, вызывается как корректировка на переходах между кривыми

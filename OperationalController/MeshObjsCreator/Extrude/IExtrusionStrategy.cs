@@ -30,8 +30,9 @@ namespace OperationalController.MeshObjsCreator.Extrude
         /// </summary>
         /// <param name="extruder">Класс экструзии</param>
         /// <param name="correctMatrix">Корректирующая матрица (используется при переходе между двумя кривыми, чтобы сгладить переходы медлу слоями)</param>
-        /// <param name="index">Индекс обхода по внутреннему циклу</param>
-        void AddElement(CurveExtruder extruder, Matrix4x4 correctMatrix, int index);
+        /// <param name="outIndex">Индекс обхода по внешнему циклу</param>
+        /// <param name="inIndex">Индекс обхода по внутреннему циклу</param>
+        void AddElement(CurveExtruder extruder, Matrix4x4 correctMatrix, int outIndex, int inIndex);
         /// <summary>
         /// Постпроцессинг, вызывается как корректировка на переходах между кривыми
         /// </summary>

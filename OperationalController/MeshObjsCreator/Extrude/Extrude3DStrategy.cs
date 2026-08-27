@@ -43,11 +43,15 @@ namespace OperationalController.MeshObjsCreator.Extrude
         /// </summary>
         /// <param name="extruder">Класс экструзии</param>
         /// <param name="correctMatrix">Корректирующая матрица (используется при переходе между двумя кривыми, чтобы сгладить переходы медлу слоями)</param>
-        /// <param name="index">Индекс обхода по внутреннему циклу</param>
-        public void AddElement(CurveExtruder extruder, Matrix4x4 correctMatrix, int index)
+        /// <param name="outIndex">Индекс обхода по внешнему циклу</param>
+        /// <param name="inIndex">Индекс обхода по внутреннему циклу</param>
+        public void AddElement(CurveExtruder extruder, Matrix4x4 correctMatrix, int outIndex, int inIndex)
         {
             var nextLayer = extruder.CreateNextLayer(_first, correctMatrix);
-            _result.Add(extruder.CreateLayerTetrahedrons(_current, nextLayer));
+            if (Transfinite)
+                _result.Add(extruder.CreateTransfiniteLayer(_current, nextLayer));
+            else
+                _result.Add(extruder.CreateLayerTetrahedrons(_current, nextLayer));
             _current = nextLayer;
         }
         /// <summary>

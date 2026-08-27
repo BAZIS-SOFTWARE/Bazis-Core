@@ -161,7 +161,7 @@ namespace OperationalController.MeshObjsCreator.Extrude
         /// <param name="curLayer">Нижний слой 2д элементов</param>
         /// <param name="nextLayer">Верхний слой 2д элементов</param>
         /// <returns>Список 3д элементов (гекса, призмы)</returns>
-        protected List<Element3D> CreateTransfiniteLayer(IEnumerable<Element2D> curLayer, List<Element2D> nextLayer)
+        public List<Element3D> CreateTransfiniteLayer(IEnumerable<Element2D> curLayer, List<Element2D> nextLayer)
         {
             var index = 0;
             var layer = new List<Element3D>();

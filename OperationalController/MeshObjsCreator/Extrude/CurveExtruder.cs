@@ -146,7 +146,7 @@ namespace OperationalController.MeshObjsCreator.Extrude
                             currentCorrect = lastCorrect;
                         }
                     }
-                    strategy.AddElement(this, matrixList[j] * currentCorrect, j);
+                    strategy.AddElement(this, matrixList[j] * currentCorrect, i, j);
                 }
                 strategy.PostProcess(this, rotateStatus, i, curveTags.Length - 1, matrixList[matrixList.Count - 1] * lastCorrect);
             }
