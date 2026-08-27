@@ -261,11 +261,10 @@ namespace OperationalController
         /// (<c>ExtrudeTransfinite</c>), в противном случае — обычный режим (<c>Extrude</c>).
         /// </param>
         /// <returns>Имя набора созданных 3Д элементов.</returns>
-        public string ExtrudeElement3DAlongCurve(int surfaceTag, int[] curveTags, int startPointTag, double step, bool transfinite, int? startNodeTag = null)
+        public string ExtrudeElement3DAlongCurve(int surfaceTag, int[] curveTags, int startPointTag, double step, bool transfinite)
         {
             var elements2D = GetElements2DBelongingToSurface(surfaceTag);
-            var startNode = startNodeTag is int nodeTag ? ModelData.ObjectData.NodesSet[nodeTag] : null;
-            return ExtrudeAlongCurve(elements2D, curveTags, startPointTag, step, transfinite, startNode);
+            return ExtrudeAlongCurve(elements2D, curveTags, startPointTag, step, transfinite);
         }
 
         /// <summary>
@@ -290,11 +289,25 @@ namespace OperationalController
         /// (<c>ExtrudeTransfinite</c>), в противном случае — обычный режим (<c>Extrude</c>).
         /// </param>
         /// <returns>Имя набора созданных 3Д элементов.</returns>
-        public string ExtrudeElement3DAlongCurve(string setName, int[] curveTags, int startPointTag, double step, bool transfinite, int? startNodeTag = null)
+        public string ExtrudeElement3DAlongCurve(string setName, int[] curveTags, int startPointTag, double step, bool transfinite)
         {
             var set = project.ModelData.ObjectData.E2DCollection[setName].Values.ToList();
-            var startNode = startNodeTag is int nodeTag ? ModelData.ObjectData.NodesSet[nodeTag] : null;
-            return ExtrudeAlongCurve(set, curveTags, startPointTag, step, transfinite, startNode);
+            return ExtrudeAlongCurve(set, curveTags, startPointTag, step, transfinite);
+        }
+
+        /// <summary>
+        /// Выполняет экструзию исходного узла вдоль кривой с созданием 1D-элементов Beam.
+        /// </summary>
+        /// <param name="curveTags">Теги кривых, вдоль которых выполняется экструзия.</param>
+        /// <param name="startPointTag">Тег геометрической точки, от которой начинается экструзия.</param>
+        /// <param name="startNodeTag">Тег исходного узла в модели.</param>
+        /// <param name="step">Шаг экструзии вдоль кривой в у.е.</param>
+        /// <returns>Имя набора созданных 1D-элементов.</returns>
+        public string ExtrudeElement1DAlongCurve(int[] curveTags, int startPointTag, int startNodeTag, double step)
+        {
+            var startNode = ModelData.ObjectData.NodesSet[startNodeTag];
+            var beams = ExtrudePointAlongCurve(startNode, curveTags, startPointTag, step);
+            return UpdateBeamModelData(beams);
         }
 
 
@@ -499,9 +512,26 @@ namespace OperationalController
 
             return elements2D;
         }
-        private string ExtrudeAlongCurve(List<Element2D> elements, int[] curveTags, int startPointTag, double step, bool transfinite, Node startPoint = null)
+        private string ExtrudeAlongCurve(List<Element2D> elements, int[] curveTags, int startPointTag, double step, bool transfinite)
         {
-            var stepNormalizedArray = new List<double>();
+            var extruder = new CurveExtruder(GmshController, curveTags, GetNormalizedSteps(curveTags, step), startPointTag);
+            var e3d = transfinite ? extruder.ExtrudeTransfinite(elements)
+                      : extruder.Extrude(elements);
+            var collection = e3d.SelectMany(v => v);
+            return UpdateModelData(extruder, collection);
+        }
+
+        private List<Beam> ExtrudePointAlongCurve(Node startNode, int[] curveTags, int startPointTag, double step)
+        {
+            var extruder = new CurveExtruder(GmshController, curveTags, GetNormalizedSteps(curveTags, step), startPointTag);
+            var beams = extruder.ExtrudeFromPoint(startNode);
+            AppendNodes(extruder);
+            return beams;
+        }
+
+        private double[] GetNormalizedSteps(int[] curveTags, double step)
+        {
+            var normalizedSteps = new List<double>();
             foreach (var curveTag in curveTags)
             {
                 var type = GmshController.Gmsh.Model.GetType(1, curveTag);
@@ -513,20 +543,12 @@ namespace OperationalController
                     var (min, max) = GmshController.Gmsh.Model.GetParametrizationBounds(1, curveTag);
                     length = Math.Abs(max[0] - min[0]);
                 }
-                var stepNormalized = step / length;
-                stepNormalizedArray.Add(stepNormalized);
+                normalizedSteps.Add(step / length);
             }
-            var extruder = new CurveExtruder(GmshController, curveTags, stepNormalizedArray.ToArray(), startPointTag);
-            var e3d = transfinite ? extruder.ExtrudeTransfinite(elements)
-                      : extruder.Extrude(elements);
-            var beams = startPoint is not null
-                ? extruder.ExtrudeFromPoint(startPoint)
-                : Enumerable.Empty<Beam>();
-            var collection = e3d.SelectMany(v => v);
-            return UpdateModelData(extruder, collection, beams);
+            return normalizedSteps.ToArray();
         }
 
-        private string UpdateModelData(MeshExtruder extruder, IEnumerable<Element3D> collection, IEnumerable<Beam> beams = null)
+        private string UpdateModelData(MeshExtruder extruder, IEnumerable<Element3D> collection)
         {
             var objSet = new ObjectsSet<Element3D>("Extrude");
             foreach (var element in collection)
@@ -540,20 +562,30 @@ namespace OperationalController
             var updateName = $"extrude_{counter}";
             ModelData.ObjectData.E3DCollection.ChangeName(objectSet.Name, updateName);
 
+            AppendNodes(extruder);
+            return updateName;
+        }
+
+        private string UpdateBeamModelData(IEnumerable<Beam> beams)
+        {
+            var beamsSet = new ObjectsSet<Beam>("Extrude");
+            foreach (var beam in beams)
+                beamsSet.Add(beam.Number, beam);
+
+            ModelData.ObjectData.E1DCollection.Append(new ObjectsCollection<Beam> { beamsSet });
+            var objectSet = ModelData.ObjectData.E1DCollection.Where(col => col.Key.StartsWith("append_")).Select(col => col.Value).Last();
+            var counter = objectSet.Name.Split('_').Last();
+            var updateName = $"extrude_{counter}";
+            ModelData.ObjectData.E1DCollection.ChangeName(objectSet.Name, updateName);
+            return updateName;
+        }
+
+        private void AppendNodes(MeshExtruder extruder)
+        {
             var nodesSet = new ObjectsSet<Model.MeshObjects.Node>("Extrude");
             foreach (var node in extruder.Nodes.Values)
                 nodesSet.Add(node.Number, node);
             ModelData.ObjectData.NodesSet.Append(nodesSet);
-
-            if(beams?.Any() == true)
-            {
-                var beamsSet = new ObjectsSet<Beam>("Extrude");
-                foreach (var element in beams)
-                    beamsSet.Add(element.Number, element);
-
-                ModelData.ObjectData.E1DCollection.Append(new ObjectsCollection<Beam> { beamsSet });
-            }
-            return updateName;
         }
     }
 }
