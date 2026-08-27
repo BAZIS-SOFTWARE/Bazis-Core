@@ -497,7 +497,7 @@ namespace OperationalController
 
             return elements2D;
         }
-        private string ExtrudeAlongCurve(List<Element2D> elements, int[] curveTags, int startPointTag, double step, bool transfinite)
+        private string ExtrudeAlongCurve(List<Element2D> elements, int[] curveTags, int startPointTag, double step, bool transfinite, Node startPoint = null)
         {
             var stepNormalizedArray = new List<double>();
             foreach (var curveTag in curveTags)
@@ -517,12 +517,14 @@ namespace OperationalController
             var extruder = new CurveExtruder(GmshController, curveTags, stepNormalizedArray.ToArray(), startPointTag);
             var e3d = transfinite ? extruder.ExtrudeTransfinite(elements)
                       : extruder.Extrude(elements);
-
+            var beams = startPoint is not null
+                ? extruder.ExtrudeFromPoint(startPoint)
+                : Enumerable.Empty<Beam>();
             var collection = e3d.SelectMany(v => v);
-            return UpdateModelData(extruder, collection);
+            return UpdateModelData(extruder, collection, beams);
         }
 
-        private string UpdateModelData(MeshExtruder extruder, IEnumerable<Element3D> collection)
+        private string UpdateModelData(MeshExtruder extruder, IEnumerable<Element3D> collection, IEnumerable<Beam> beams = null)
         {
             var objSet = new ObjectsSet<Element3D>("Extrude");
             foreach (var element in collection)
@@ -541,6 +543,14 @@ namespace OperationalController
                 nodesSet.Add(node.Number, node);
             ModelData.ObjectData.NodesSet.Append(nodesSet);
 
+            if(beams?.Any() == true)
+            {
+                var beamsSet = new ObjectsSet<Beam>("Extrude");
+                foreach (var element in beams)
+                    beamsSet.Add(element.Number, element);
+
+                ModelData.ObjectData.E1DCollection.Append(new ObjectsCollection<Beam> { beamsSet });
+            }
             return updateName;
         }
     }
