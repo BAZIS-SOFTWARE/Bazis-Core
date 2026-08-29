@@ -1,12 +1,19 @@
 {
-  "ThermalFile": "",
+  "ThermalLoad": 20.0,
+  "ThermalFile": {
+    "FileName": "",
+    "StartStep": 0,
+    "StepsCount": 0
+  },
   "InitConcentration": 0.0,
   "ChemicalConvergence": {
     "Is_Switched_Cm": false,
     "Cm": 0.0
   },
+  "ThermalLoadIsFile": false,
   "TaskKind": 2,
-  "TermalProcesses": [],
+  "CalculationMode": "Transient",
+  "ActiveConditions": null,
   "InitTemp": {},
   "SaveRate": 0,
   "RestartFile": "",
@@ -26,9 +33,5 @@
     "StartTime": 0.0,
     "StopTime": 0.0,
     "InitTimeStep": 0.0
-  },
-  "MetallurgicalProcesses": [
-    "Охлаждение",
-    "Нагрев"
-  ]
+  }
 }

@@ -1,11 +1,22 @@
 {
   "ChemicalFile": "",
+  "ConvectionParameters": {
+    "ConvectionIsFile": false,
+    "ConvectionFile": "",
+    "ConvectionlLoad": [],
+    "Convection": false
+  },
   "TermalConvergence": {
     "Is_Switched_Tm": true,
     "Tm": 1500.0
   },
+  "MetallurgicalProcesses": [
+    "Охлаждение",
+    "Нагрев"
+  ],
   "TaskKind": 4,
-  "TermalProcesses": [],
+  "CalculationMode": "Transient",
+  "ActiveConditions": null,
   "InitTemp": {},
   "SaveRate": 0,
   "RestartFile": "",
@@ -25,9 +36,5 @@
     "StartTime": 0.0,
     "StopTime": 0.0,
     "InitTimeStep": 0.0
-  },
-  "MetallurgicalProcesses": [
-    "Охлаждение",
-    "Нагрев"
-  ]
+  }
 }
