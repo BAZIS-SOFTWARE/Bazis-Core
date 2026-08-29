@@ -6,7 +6,7 @@ namespace Project.TaskParameters
     public class ChemicalParameters : GeneralParameters, IThermalDependent
     {
         public double ThermalLoad { get; set; } = 20;
-        public string ThermalFile { get; set; } = "";
+        public ThermalFile ThermalFile { get; set; } = new();
         public float InitConcentration { get; set; }
 
         public ChemicalConvergence ChemicalConvergence { get; set; } = new ChemicalConvergence();

@@ -7,7 +7,7 @@ namespace Project.TaskParameters
     {
         public string ChemicalFile { get; set; } = "";
         public double ThermalLoad { get; set; } =  20;
-        public string ThermalFile { get; set; } = "";
+        public ThermalFile ThermalFile { get; set; } = new();
 
         // Дополнительный флаг
         public bool ThermalLoadIsFile { get; set; } = false;
@@ -17,6 +17,7 @@ namespace Project.TaskParameters
         public MechanicalParameters()
         {
             TaskKind = Interfaces.Tasks.TaskKind.механическая;
+            CalculationMode = CalculationMode.Stationary;
         }
     }
 }

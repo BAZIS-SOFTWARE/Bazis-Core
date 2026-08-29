@@ -299,7 +299,8 @@ namespace TestProject
                 Formatting = Formatting.Indented
             };
 
-            parameters.MetallurgicalProcesses = new List<string>() {"Охлаждение", "Нагрев"}; 
+            if (parameters is TermalParameters termalParameters)
+                termalParameters.MetallurgicalProcesses = new() { "Охлаждение", "Нагрев" };
 
             var serParams = string.Empty;
             if (ar[0] == "тепловая")
@@ -326,6 +327,80 @@ namespace TestProject
                 var desParams = JsonConvert.DeserializeObject<ChemicalParameters>
 (File.ReadAllText($@"{testDir}\TestTaskParameters\{ar[0]}_testParam.jsp"), settingsSerializer);
             }
+        }
+
+        [TestMethod]
+        public void MechanicalParameters_ReadLegacyThermalFile()
+        {
+            var parameters = JsonConvert.DeserializeObject<MechanicalParameters>("{\"ThermalFile\":\"термическая.db\"}");
+
+            Assert.IsNotNull(parameters);
+            Assert.AreEqual("термическая.db", parameters.ThermalFile.FileName);
+            Assert.AreEqual(0, parameters.ThermalFile.StartStep);
+            Assert.AreEqual(0, parameters.ThermalFile.StepsCount);
+            Assert.AreEqual(CalculationMode.Transient, parameters.CalculationMode);
+        }
+
+        [TestMethod]
+        public void MechanicalParameters_WriteStructuredThermalFile()
+        {
+            var source = new MechanicalParameters
+            {
+                CalculationMode = CalculationMode.Stationary,
+                ThermalFile = new ThermalFile { FileName = "термическая.db", StartStep = 3, StepsCount = 5 }
+            };
+
+            var json = JsonConvert.SerializeObject(source);
+            var parameters = JsonConvert.DeserializeObject<MechanicalParameters>(json);
+
+            Assert.IsNotNull(parameters);
+            StringAssert.Contains(json, "\"CalculationMode\":\"Stationary\"");
+            StringAssert.Contains(json, "\"ThermalFile\":{");
+            Assert.AreEqual(CalculationMode.Stationary, parameters.CalculationMode);
+            Assert.AreEqual(source.ThermalFile.FileName, parameters.ThermalFile.FileName);
+            Assert.AreEqual(source.ThermalFile.StartStep, parameters.ThermalFile.StartStep);
+            Assert.AreEqual(source.ThermalFile.StepsCount, parameters.ThermalFile.StepsCount);
+        }
+
+        [TestMethod]
+        public void GeneralParameters_WriteConditionReferencesAsStrings()
+        {
+            var source = new TermalParameters
+            {
+                ActiveConditions = new List<ConditionReference>
+                {
+                    new ConditionReference(0, DataKind.Материал, "body"),
+                    new ConditionReference(3, DataKind.Нагрев, "weld seam")
+                }
+            };
+
+            var json = JsonConvert.SerializeObject(source);
+            var parameters = JsonConvert.DeserializeObject<TermalParameters>(json);
+
+            Assert.IsNotNull(parameters);
+            StringAssert.Contains(json, "\"0 Материал body\"");
+            StringAssert.Contains(json, "\"3 Нагрев weld seam\"");
+            Assert.AreEqual(2, parameters.ActiveConditions.Count);
+            Assert.AreEqual(3, parameters.ActiveConditions[1].Index);
+            Assert.AreEqual(DataKind.Нагрев, parameters.ActiveConditions[1].Kind);
+            Assert.AreEqual("weld seam", parameters.ActiveConditions[1].GroupName);
+        }
+
+        [TestMethod]
+        public void MetallurgicalProcesses_BelongOnlyToThermalParameters()
+        {
+            var thermalParameters = new TermalParameters
+            {
+                MetallurgicalProcesses = new List<string> { "Охлаждение", "Нагрев" }
+            };
+
+            var thermalJson = JsonConvert.SerializeObject(thermalParameters);
+            var mechanicalJson = JsonConvert.SerializeObject(new MechanicalParameters());
+
+            StringAssert.Contains(thermalJson, "\"MetallurgicalProcesses\"");
+            Assert.IsFalse(thermalJson.Contains("TermalProcesses"));
+            Assert.IsFalse(mechanicalJson.Contains("MetallurgicalProcesses"));
+            Assert.IsNull(typeof(GeneralParameters).GetProperty(nameof(TermalParameters.MetallurgicalProcesses)));
         }
     }
 }

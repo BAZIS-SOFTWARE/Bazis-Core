@@ -9,6 +9,8 @@ using Model.Interfaces;
 using PreProc.Interfaces;
 using Model.MeshObjects;
 using Project.IO;
+using Newtonsoft.Json;
+using Project.TaskParameters;
 
 namespace TestProject
 {
@@ -292,6 +294,43 @@ namespace TestProject
             var preProc = new PreProc.PreProc();
             //preProc.CalcCompDataV1(resData, pt, projPath + "TsfShouldPass\\");
             preProc.CalcCompDataV2(resData, new ProcessProperty { TaskKind = TaskKind.термическая | TaskKind.механическая, CommonTaskType = pt }, projPath + "TsfShouldPass\\");
+        }
+
+        [TestMethod]
+        public void PreProc_WritesActiveConditionReferences()
+        {
+            var loader = new LoadProjectFromTextFormat();
+            var project = loader.Load(projPath + "FastCheck.bpf");
+            var outputDirectory = Path.Combine(Path.GetTempPath(), $"BazisPreProc_{Guid.NewGuid():N}");
+            Directory.CreateDirectory(outputDirectory);
+
+            try
+            {
+                var preProc = new PreProc.PreProc();
+                preProc.CalcCompDataV2(project.TaskData, new ProcessProperty { TaskKind = TaskKind.термическая, CommonTaskType = ProcessType.Welding }, outputDirectory);
+
+                var files = Directory.GetFiles(outputDirectory, "*.tsf");
+                Assert.IsTrue(files.Length > 0);
+                foreach (var file in files)
+                {
+                    var parameters = JsonConvert.DeserializeObject<TermalParameters>(File.ReadAllText(file));
+                    Assert.IsNotNull(parameters);
+                    Assert.IsNotNull(parameters.ActiveConditions);
+
+                    foreach (var reference in parameters.ActiveConditions)
+                    {
+                        var condition = project.TaskData[reference.Index];
+                        Assert.AreEqual(condition.Kind, reference.Kind);
+                        Assert.AreEqual(condition.Group.Name, reference.GroupName);
+                        Assert.IsTrue(condition.StartTime <= parameters.TimeSettings.StartTime);
+                        Assert.IsTrue(condition.StopTime >= parameters.TimeSettings.StopTime);
+                    }
+                }
+            }
+            finally
+            {
+                Directory.Delete(outputDirectory, true);
+            }
         }
 
         [TestMethod]

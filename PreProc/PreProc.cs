@@ -36,13 +36,14 @@ namespace PreProc
         /// <inheritdoc/>
         public void CalcCompDataV1(IEnumerable<ICondData> data, ProcessType processType, string path)
         {
-            SetUpTimeSeparators(data);
+            var taskData = data.ToList();
+            SetUpTimeSeparators(taskData);
             processProp = new ProcessProperty { CommonTaskType = processType, TaskKind = TaskKind.термическая | TaskKind.механическая };
             _path = path;
 
             CreateFilesForComplexProcess(
-                GetParameters<HeatData, MediaData, TermalParameters>(data),
-                GetParameters<LoadData, ClampData, MechanicalParameters>(data));
+                GetParameters<HeatData, MediaData, TermalParameters>(taskData),
+                GetParameters<LoadData, ClampData, MechanicalParameters>(taskData));
         }
 
         /// <inheritdoc/>
@@ -86,6 +87,7 @@ namespace PreProc
         private void SetUpTimeSeparators(IEnumerable<ICondData> valuableData)
         {
             var separators = new List<float>();
+            TimeSeparators.Clear();
 
             foreach (var data in valuableData)
             {
@@ -125,7 +127,7 @@ namespace PreProc
             CheckLoadDataInsideBoundDataInterval<LoadData, MatData>(boundData, matData);
             CheckLoadDataInsideBoundDataInterval<LoadData, BoundData>(loadData, boundData);
 
-            var pars = ParametrizeResultParameters<ResultParam>();
+            var pars = ParametrizeResultParameters<LoadData, BoundData, ResultParam>(data);
 
             var iniTemps = matData.
                 Select((md, index) => new { Key = md.Group.Name,Value = 20.0})
@@ -140,22 +142,35 @@ namespace PreProc
         /// Параметризирует временные свойства созданного по dataItem ResultParam
         /// Задает значения ResultParam по шаблону
         /// </summary>
+        /// <typeparam name="LoadData">Тип нагрузки задачи.</typeparam>
+        /// <typeparam name="BoundData">Тип граничного условия задачи.</typeparam>
         /// <typeparam name="ResultParam">Параметр, созданный с помощью dataItem</typeparam>
+        /// <param name="data">Полный упорядоченный список условий TaskData.</param>
         /// <returns>Список параметров по шаблону с указанным временем действия</returns>
-        private List<ResultParam> ParametrizeResultParameters<ResultParam>()
+        private List<ResultParam> ParametrizeResultParameters<LoadData, BoundData, ResultParam>(IEnumerable<ICondData> data)
             where ResultParam : GeneralParameters, new()
+            where LoadData : CondData
+            where BoundData : CondData
         {
             var result = new List<ResultParam>();
             for (var i = 0; i < AllTimeSeparators.Length - 1; i++)
             {
-                var startStop = Tuple.Create(AllTimeSeparators[i], AllTimeSeparators[i + 1]);
+                var start = AllTimeSeparators[i];
+                var stop = AllTimeSeparators[i + 1];
+
                 var parameter = new ResultParam();
                 SetDraftParameters(parameter);
-                parameter.TimeSettings.StartTime = startStop.Item1;
-                parameter.TimeSettings.StopTime = startStop.Item2;
+                parameter.TimeSettings.StartTime = start;
+                parameter.TimeSettings.StopTime = stop;
+                parameter.ActiveConditions = data
+                    .Select((item, index) => new { Item = item, Index = index })
+                    .Where(item =>
+                        item.Item.StartTime <= start && item.Item.StopTime >= stop)
+                    .Select(item => new ConditionReference(item.Index, item.Item.Kind, item.Item.Group.Name))
+                    .ToList();
 
                 if (TimeSeparators.ContainsKey(DataKind.Нагрев))
-                    if (!TimeSeparators[DataKind.Нагрев].Any(x => x.Item1 == startStop.Item1 && x.Item2 == startStop.Item2))
+                    if (!TimeSeparators[DataKind.Нагрев].Any(x => x.Item1 == start && x.Item2 == stop))
                     {
                         parameter.TimeSettings.InitTimeStep = 0.5f;
                         parameter.TimeSettings.MaxTimeStep = 100f;
@@ -392,7 +407,7 @@ namespace PreProc
             var names = processProp.TaskKind.ToString().Replace(" ","").Split(',');
             CreateFilesForSingleProcess(names[0], mainParameters);
 
-            minorParameters[0].ThermalFile = $"{names[0]}_{1}_{minorParameters[0].TimeSettings.StartTime}_{minorParameters[0].TimeSettings.StopTime}.db";
+            minorParameters[0].ThermalFile.FileName = $"{names[0]}_{1}_{minorParameters[0].TimeSettings.StartTime}_{minorParameters[0].TimeSettings.StopTime}.db";
 
             for (var i = 0; i < minorParameters.Count; i++)
             {
@@ -400,7 +415,7 @@ namespace PreProc
                 if (i > 0)
                 {
                     minorParameters[i].RestartFile = $"{names[1]}_{i}_{minorParameters[i - 1].TimeSettings.StartTime}_{minorParameters[i - 1].TimeSettings.StopTime}.db";
-                    minorParameters[i].ThermalFile = $"{names[0]}_{i + 1}_{minorParameters[i].TimeSettings.StartTime}_{minorParameters[i].TimeSettings.StopTime}.db";
+                    minorParameters[i].ThermalFile.FileName = $"{names[0]}_{i + 1}_{minorParameters[i].TimeSettings.StartTime}_{minorParameters[i].TimeSettings.StopTime}.db";
                 }
                 var serializedData = JsonConvert.SerializeObject(minorParameters[i], settingsSerializer);
                 var fileName = $"{names[1]}_{i + 1}_{minorParameters[i].TimeSettings.StartTime}_{minorParameters[i].TimeSettings.StopTime}.tsf";

@@ -4,7 +4,7 @@ namespace Project.TaskParameters
 {
     public interface IThermalDependent
     {
-        string ThermalFile { get; set; }
+        ThermalFile ThermalFile { get; set; }
 
         double ThermalLoad { get; set; }
 
