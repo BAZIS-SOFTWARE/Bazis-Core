@@ -230,7 +230,6 @@ public bool ContainsName(string collName)
                 if (min <= max)
                     shifting = max + 1;
             }
-            var counter = objects.Count;
 
             foreach (var set in collection)
             {

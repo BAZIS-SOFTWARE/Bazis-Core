@@ -53,7 +53,6 @@ namespace Model.Interfaces.ObjectsCollections
         /// Append
         /// </summary>
         /// <param name="collection"></param>
-        /// <param name="preserveSetNames"></param>
         IReadOnlyList<string> Append(IObjectsCollection<T> collection);
 
         /// <summary>
