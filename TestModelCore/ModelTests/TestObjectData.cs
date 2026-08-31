@@ -265,13 +265,153 @@ namespace ModelTests
             var col2 = new ObjectsCollection<Element2D>();
             col2.Add(set2);
 
-            col1.Append(col2);
+            var addedNames = col1.Append(col2);
 
             //assert
             Assert.AreEqual(col1.Count, 4);
 
             Assert.AreEqual(col1.GetMaxNumber(), resNumb.Last());
             Assert.AreEqual(col1.GetMinNumber(), resNumb.First());
+
+            CollectionAssert.AreEquivalent(new[] { "e2D_2" }, addedNames.ToArray());
+            CollectionAssert.AreEquivalent(new[] { "e2D_1", "e2D_2" }, col1.Names.ToArray());
+        }
+
+        private static ObjectsSet<Element2D> CreateElement2DSet(string name, params int[] numbers)
+        {
+            var nodes = CreateTriangleNodes();
+            var set = new ObjectsSet<Element2D>(name);
+
+            foreach (var number in numbers)
+                set.Add(number, new Triangle_c(number, nodes));
+
+            return set;
+        }
+
+        private static ObjectsCollection<Element2D> CreateElement2DCollection(params ObjectsSet<Element2D>[] sets)
+        {
+            var collection = new ObjectsCollection<Element2D>();
+
+            foreach (var set in sets)
+                collection.Add(set);
+
+            return collection;
+        }
+
+        [TestMethod]
+        public void AppendKeepsOriginalSetNames()
+        {
+            //assign
+            var target = new ObjectsCollection<Element2D>();
+            var source = CreateElement2DCollection(
+                CreateElement2DSet("beams", 0, 1),
+                CreateElement2DSet("shells", 2, 3));
+
+            //act
+            var addedNames = target.Append(source);
+
+            //assert
+            CollectionAssert.AreEquivalent(new[] { "beams", "shells" }, addedNames.ToArray());
+            CollectionAssert.AreEquivalent(new[] { "beams", "shells" }, target.Names.ToArray());
+            Assert.AreEqual(4, target.Count);
+        }
+
+        [TestMethod]
+        public void AppendAddsSuffixWhenSetNameIsBusy()
+        {
+            //assign
+            var target = CreateElement2DCollection(CreateElement2DSet("extrude", 0, 1));
+            var source = CreateElement2DCollection(CreateElement2DSet("extrude", 0, 1));
+
+            //act
+            var addedNames = target.Append(source);
+
+            //assert
+            Assert.AreEqual(1, addedNames.Count);
+            Assert.AreEqual("extrude_1", addedNames[0]);
+            CollectionAssert.AreEquivalent(new[] { "extrude", "extrude_1" }, target.Names.ToArray());
+
+            // исходный набор не тронут, добавленные элементы перенумерованы со сдвигом
+            Assert.AreEqual(2, target["extrude"].Count);
+            Assert.AreEqual(4, target.Count);
+        }
+
+        [TestMethod]
+        public void AppendIncrementsSuffixOnRepeatedCollisions()
+        {
+            //assign
+            var target = CreateElement2DCollection(CreateElement2DSet("extrude", 0, 1));
+
+            //act
+            var firstNames = target.Append(CreateElement2DCollection(CreateElement2DSet("extrude", 0, 1)));
+            var secondNames = target.Append(CreateElement2DCollection(CreateElement2DSet("extrude", 0, 1)));
+
+            //assert
+            Assert.AreEqual("extrude_1", firstNames.Single());
+            Assert.AreEqual("extrude_2", secondNames.Single());
+            CollectionAssert.AreEquivalent(new[] { "extrude", "extrude_1", "extrude_2" }, target.Names.ToArray());
+            Assert.AreEqual(6, target.Count);
+        }
+
+        [TestMethod]
+        public void AppendReusesFreedSetName()
+        {
+            //assign
+            var target = CreateElement2DCollection(CreateElement2DSet("extrude", 0, 1));
+            target.Append(CreateElement2DCollection(CreateElement2DSet("extrude", 0, 1)));
+            target.Remove("extrude");
+
+            //act
+            var addedNames = target.Append(CreateElement2DCollection(CreateElement2DSet("extrude", 0, 1)));
+
+            //assert
+            Assert.AreEqual("extrude", addedNames.Single());
+            CollectionAssert.AreEquivalent(new[] { "extrude", "extrude_1" }, target.Names.ToArray());
+        }
+
+        [TestMethod]
+        public void AppendedSetNameMatchesKey()
+        {
+            //assign
+            var target = CreateElement2DCollection(CreateElement2DSet("extrude", 0, 1));
+            var source = CreateElement2DCollection(CreateElement2DSet("extrude", 0, 1));
+
+            //act
+            var addedName = target.Append(source).Single();
+
+            //assert
+            Assert.AreEqual(addedName, target[addedName].Name);
+        }
+
+        [TestMethod]
+        public void AppendCopiesSetColor()
+        {
+            //assign
+            var coloredSet = CreateElement2DSet("colored", 0);
+            coloredSet.SetColor(Color.Red);
+
+            var target = new ObjectsCollection<Element2D>();
+
+            //act
+            var addedName = target.Append(CreateElement2DCollection(coloredSet)).Single();
+
+            //assert
+            Assert.AreEqual(Color.Red.ToArgb(), target[addedName].Color.ToArgb());
+        }
+
+        [TestMethod]
+        public void AppendEmptyCollectionReturnsNoNames()
+        {
+            //assign
+            var target = CreateElement2DCollection(CreateElement2DSet("extrude", 0, 1));
+
+            //act
+            var addedNames = target.Append(new ObjectsCollection<Element2D>());
+
+            //assert
+            Assert.AreEqual(0, addedNames.Count);
+            Assert.AreEqual(2, target.Count);
+            CollectionAssert.AreEquivalent(new[] { "extrude" }, target.Names.ToArray());
         }
 
         [TestMethod]

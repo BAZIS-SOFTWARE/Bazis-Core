@@ -212,19 +212,21 @@ public bool ContainsName(string collName)
 
             return objects.Remove(name);
         }
-/// <inheritdoc/>
 
-        public void Append(IObjectsCollection<T> collection)
+        /// <summary>
+        /// Добавляет (склеивает) наборы из другой коллекции в текущую коллекцию.
+        /// Имена наборов сохраняются; при совпадении с уже существующим именем
+        /// к нему добавляется суффикс вида _1, _2 и т.д.
+        /// </summary>
+        /// <param name="collection">Коллекция наборов, которые будут добавлены. Не должна быть <c>null</c>.</param>
+        /// <returns>Имена добавленных наборов в порядке их следования в <paramref name="collection"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="collection"/> равен <c>null</c>.</exception>
+        public IReadOnlyList<string> Append(IObjectsCollection<T> collection)
         {
-            //string newSetName;
-            //var appendMatching = objects.Where(x => Regex.IsMatch(x.name, "append_\\d+"));
-            //if (appendMatching is null || appendMatching.Count() < 1)
-            //    newSetName = "append_1";
-            //else
-            //{
-            //    var lastUsedNumber = appendMatching.Max(y => int.Parse(y.Split('_')[1]));
-            //    newSetName = $"append_{++lastUsedNumber}";
-            //}
+            if (collection is null)
+                throw new ArgumentNullException(nameof(collection));
+
+            var addedNames = new List<string>();
             var shifting = 0;
 
             if (objects.Count != 0)
@@ -234,11 +236,10 @@ public bool ContainsName(string collName)
                 if (min <= max)
                     shifting = max + 1;
             }
-            var counter = objects.Count;
 
             foreach (var set in collection)
             {
-                var newSetName = $"append_{counter++}";
+                var newSetName = GetUniqueSetName(set.Key);
                 Add(newSetName);
                 objects[newSetName].SetColor(set.Value.Color);
 
@@ -246,12 +247,18 @@ public bool ContainsName(string collName)
                 {
                     var number = item.Value.Number + shifting;
                     item.Value.SetNumber(number);
-                    objects[newSetName].Add(number,item.Value);
+                    objects[newSetName].Add(number, item.Value);
                 }
+                addedNames.Add(newSetName);
             }
+            return addedNames;
         }
-/// <inheritdoc/>
 
+        /// <summary>
+        /// Переименовывает набор объектов в коллекции.
+        /// </summary>
+        /// <param name="oldName">Текущее имя набора. Если набор с таким именем отсутствует — метод ничего не делает.</param>
+        /// <param name="newName">Новое имя набора. Имя присваивается и самому объекту `ObjectsSet&lt;T&gt;`.</param>
         public void ChangeName(string oldName, string newName)
         {
             ObjectsSet<T> temp = new ObjectsSet<T>(newName);
@@ -263,6 +270,16 @@ public bool ContainsName(string collName)
                 objects.Remove(oldName);
                 objects.Add(newName, temp);
             }
+        }
+
+        private string GetUniqueSetName(string baseName)
+        {
+            if (!objects.ContainsKey(baseName))
+                return baseName;
+            var index = 1;
+            while (objects.ContainsKey($"{baseName}_{index}"))
+                index++;
+            return $"{baseName}_{index}";
         }
     }
 }
