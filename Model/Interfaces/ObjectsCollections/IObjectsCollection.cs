@@ -54,7 +54,7 @@ namespace Model.Interfaces.ObjectsCollections
         /// </summary>
         /// <param name="collection"></param>
         /// <param name="preserveSetNames"></param>
-        void Append(IObjectsCollection<T> collection, bool preserveSetNames = false);
+        void Append(IObjectsCollection<T> collection);
 
         /// <summary>
         /// Add set as object

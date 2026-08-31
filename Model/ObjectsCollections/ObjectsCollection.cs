@@ -217,9 +217,7 @@ public bool ContainsName(string collName)
         /// Добавляет (склеивает) наборы из другой коллекции в текущую коллекцию.
         /// </summary>
         /// <param name="collection">Коллекция наборов, которые будут добавлены. Не должна быть <c>null</c>.</param>
-        /// <param name="preserveOriginalSetNames">Указывает, нужно ли сохранить оригинальные имена наборов. 
-        /// Если <c>true</c>, то имена наборов будут сохранены. В противном случае, будут сгенерированы новые имена.</param>
-        public void Append(IObjectsCollection<T> collection, bool preserveOriginalSetNames = false)
+        public void Append(IObjectsCollection<T> collection)
         {
             var shifting = 0;
 
@@ -234,7 +232,7 @@ public bool ContainsName(string collName)
 
             foreach (var set in collection)
             {
-                var newSetName = preserveOriginalSetNames ? GetUniqueSetName(set.Key) : GetUniqueSetName($"append_{counter++}");
+                var newSetName = GetUniqueSetName(set.Key);
                 Add(newSetName);
                 objects[newSetName].SetColor(set.Value.Color);
 
