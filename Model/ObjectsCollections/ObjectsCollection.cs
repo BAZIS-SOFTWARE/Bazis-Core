@@ -234,7 +234,7 @@ public bool ContainsName(string collName)
 
             foreach (var set in collection)
             {
-                var newSetName = preserveOriginalSetNames ? GetUniqueSetName(set.Key) : $"append_{counter++}";
+                var newSetName = preserveOriginalSetNames ? GetUniqueSetName(set.Key) : GetUniqueSetName($"append_{counter++}");
                 Add(newSetName);
                 objects[newSetName].SetColor(set.Value.Color);
 
