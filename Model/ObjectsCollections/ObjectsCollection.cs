@@ -215,11 +215,17 @@ public bool ContainsName(string collName)
 
         /// <summary>
         /// Добавляет (склеивает) наборы из другой коллекции в текущую коллекцию.
+        /// Имена наборов сохраняются; при совпадении с уже существующим именем
+        /// к нему добавляется суффикс вида _1, _2 и т.д.
         /// </summary>
         /// <param name="collection">Коллекция наборов, которые будут добавлены. Не должна быть <c>null</c>.</param>
-        /// <returns>Список имен добавленных наборов.</returns>
+        /// <returns>Имена добавленных наборов в порядке их следования в <paramref name="collection"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="collection"/> равен <c>null</c>.</exception>
         public IReadOnlyList<string> Append(IObjectsCollection<T> collection)
         {
+            if (collection is null)
+                throw new ArgumentNullException(nameof(collection));
+
             var addedNames = new List<string>();
             var shifting = 0;
 

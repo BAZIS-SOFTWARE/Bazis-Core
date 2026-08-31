@@ -556,10 +556,10 @@ namespace OperationalController
 
             var objCollection = new ObjectsCollection<Element3D> { objSet };
 
-            var addedNames = ModelData.ObjectData.E3DCollection.Append(objCollection).Single();
+            var addedName = ModelData.ObjectData.E3DCollection.Append(objCollection).Single();
 
             AppendNodes(extruder);
-            return addedNames;
+            return addedName;
         }
 
         private string UpdateBeamModelData(IEnumerable<Beam> beams)
@@ -575,7 +575,7 @@ namespace OperationalController
 
         private void AppendNodes(MeshExtruder extruder)
         {
-            var nodesSet = new ObjectsSet<Model.MeshObjects.Node>("Extrude");
+            var nodesSet = new ObjectsSet<Model.MeshObjects.Node>("extrude");
             foreach (var node in extruder.Nodes.Values)
                 nodesSet.Add(node.Number, node);
             ModelData.ObjectData.NodesSet.Append(nodesSet);

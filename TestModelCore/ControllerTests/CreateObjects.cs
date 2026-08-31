@@ -118,7 +118,8 @@ namespace ControllerTests
 
 
             //assert
-            Assert.AreNotEqual(contr.GetModelElements(2, "append_0").Count(), 0);
+            // Append сохраняет исходное имя набора ("create"), а не переименовывает его в append_N
+            Assert.AreNotEqual(contr.GetModelElements(2, "create").Count(), 0);
         }
 
         [TestMethod]
@@ -193,9 +194,13 @@ namespace ControllerTests
 
             var error = project.GmshController.Gmsh.Logger.GetLastError();
 
-            project.ExtrudeElement3DAlongCurve(plane, [1],1,1,false);
+            var setName = project.ExtrudeElement3DAlongCurve(plane, [1],1,1,false);
 
-            var set = project.GetModelSetsInfo(ObjType.Элемент3D).Where(x => x.Name.Contains("extrude")).Last();
+            //assert
+            // Append возвращает имя созданного набора, дополнительное переименование больше не требуется
+            Assert.IsTrue(setName.StartsWith("extrude"), $"Неожиданное имя набора: {setName}");
+            Assert.IsTrue(project.GetModelSetsInfo(ObjType.Элемент3D).Any(x => x.Name == setName));
+            Assert.AreNotEqual(0, project.GetModelElements(3, setName).Count());
         }
 
         [TestMethod]

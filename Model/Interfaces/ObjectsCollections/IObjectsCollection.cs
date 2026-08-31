@@ -50,9 +50,12 @@ namespace Model.Interfaces.ObjectsCollections
         /// <returns></returns>
         int GetMinNumber();
         /// <summary>
-        /// Append
+        /// Добавляет (склеивает) наборы из другой коллекции в текущую.
+        /// Имена наборов сохраняются; при совпадении с уже существующим именем
+        /// к нему добавляется суффикс вида _1, _2 и т.д.
         /// </summary>
-        /// <param name="collection"></param>
+        /// <param name="collection">Коллекция наборов, которые будут добавлены.</param>
+        /// <returns>Имена добавленных наборов в порядке их следования в <paramref name="collection"/>.</returns>
         IReadOnlyList<string> Append(IObjectsCollection<T> collection);
 
         /// <summary>
