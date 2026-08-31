@@ -217,8 +217,10 @@ public bool ContainsName(string collName)
         /// Добавляет (склеивает) наборы из другой коллекции в текущую коллекцию.
         /// </summary>
         /// <param name="collection">Коллекция наборов, которые будут добавлены. Не должна быть <c>null</c>.</param>
-        public void Append(IObjectsCollection<T> collection)
+        /// <returns>Список имен добавленных наборов.</returns>
+        public IReadOnlyList<string> Append(IObjectsCollection<T> collection)
         {
+            var addedNames = new List<string>();
             var shifting = 0;
 
             if (objects.Count != 0)
@@ -242,7 +244,9 @@ public bool ContainsName(string collName)
                     item.Value.SetNumber(number);
                     objects[newSetName].Add(number, item.Value);
                 }
+                addedNames.Add(newSetName);
             }
+            return addedNames;
         }
 
         /// <summary>

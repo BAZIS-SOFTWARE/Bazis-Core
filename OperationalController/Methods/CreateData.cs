@@ -550,34 +550,27 @@ namespace OperationalController
 
         private string UpdateModelData(MeshExtruder extruder, IEnumerable<Element3D> collection)
         {
-            var objSet = new ObjectsSet<Element3D>("Extrude");
+            var objSet = new ObjectsSet<Element3D>("extrude");
             foreach (var element in collection)
                 objSet.Add(element.Number, element);
 
             var objCollection = new ObjectsCollection<Element3D> { objSet };
-            ModelData.ObjectData.E3DCollection.Append(objCollection);
 
-            var objectSet = ModelData.ObjectData.E3DCollection.Where(col => col.Key.StartsWith("append_")).Select(col => col.Value).Last();
-            var counter = objectSet.Name.Split('_').Last();
-            var updateName = $"extrude_{counter}";
-            ModelData.ObjectData.E3DCollection.ChangeName(objectSet.Name, updateName);
+            var addedNames = ModelData.ObjectData.E3DCollection.Append(objCollection).Single();
 
             AppendNodes(extruder);
-            return updateName;
+            return addedNames;
         }
 
         private string UpdateBeamModelData(IEnumerable<Beam> beams)
         {
-            var beamsSet = new ObjectsSet<Beam>("Extrude");
+            var beamsSet = new ObjectsSet<Beam>("extrude");
             foreach (var beam in beams)
                 beamsSet.Add(beam.Number, beam);
 
-            ModelData.ObjectData.E1DCollection.Append(new ObjectsCollection<Beam> { beamsSet });
-            var objectSet = ModelData.ObjectData.E1DCollection.Where(col => col.Key.StartsWith("append_")).Select(col => col.Value).Last();
-            var counter = objectSet.Name.Split('_').Last();
-            var updateName = $"extrude_{counter}";
-            ModelData.ObjectData.E1DCollection.ChangeName(objectSet.Name, updateName);
-            return updateName;
+            var addedName = ModelData.ObjectData.E1DCollection.Append(new ObjectsCollection<Beam> { beamsSet }).Single();
+
+            return addedName;
         }
 
         private void AppendNodes(MeshExtruder extruder)
