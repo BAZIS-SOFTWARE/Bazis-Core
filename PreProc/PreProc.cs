@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using Project.Interfaces.Tasks;
 using Project.Tasks;
 using System;
@@ -129,11 +129,16 @@ namespace PreProc
 
             var pars = ParametrizeResultParameters<LoadData, BoundData, ResultParam>(data);
 
-            var iniTemps = matData.
-                Select((md, index) => new { Key = md.Group.Name,Value = 20.0})
-    .ToDictionary(x => x.Key, x => x.Value);
+            var initialTemperature = new InitialCondition
+            {
+                Field = PhysicalField.Temperature,
+                Values = matData
+                    .Select(md => md.Group.Name)
+                    .Distinct()
+                    .ToDictionary(groupName => groupName, _ => new[] { 20.0 })
+            };
 
-            pars[0].InitTemp = iniTemps;
+            pars[0].InitialState.Conditions.Add(initialTemperature);
 
             return pars;
         }
@@ -220,7 +225,7 @@ namespace PreProc
             mech.MechanicalConvergence.DUm = 0.0005f;
             mech.MechanicalConvergence.SiStm = 1.5f;
             mech.MechanicalConvergence.PlasticityCriterion = 1.25f;
-            mech.SolverSettings.Solver = "SOR_iterative";
+            mech.SolverSettings = new SolverSettings(LinearSolverKind.ConjugateGradient, MatrixStorageKind.SymmetricCsr);
             mech.SolverSettings.MaxIter = 100;
             mech.SolverSettings.Precision = 0.0001f;
             mech.SolverSettings.Relaxation = 1.25f;
@@ -237,7 +242,7 @@ namespace PreProc
             term.SaveRate = 1;
             term.TermalConvergence.Is_Switched_Tm = true;
             term.TermalConvergence.Tm = 1500;
-            term.SolverSettings.Solver = "SOR_iterative";
+            term.SolverSettings = new SolverSettings(LinearSolverKind.ConjugateGradient, MatrixStorageKind.SymmetricCsr);
             term.SolverSettings.MaxIter = 100;
             term.SolverSettings.Precision = 0.01f;
             term.SolverSettings.Relaxation = 1.05f;
@@ -254,7 +259,7 @@ namespace PreProc
             term.SaveRate = 1;
             term.TermalConvergence.Is_Switched_Tm = true;
             term.TermalConvergence.Tm = 1500;
-            term.SolverSettings.Solver = "SOR_iterative";
+            term.SolverSettings = new SolverSettings(LinearSolverKind.ConjugateGradient, MatrixStorageKind.SymmetricCsr);
             term.SolverSettings.MaxIter = 100;
             term.SolverSettings.Precision = 0.01f;
             term.SolverSettings.Relaxation = 1.05f;
@@ -271,7 +276,7 @@ namespace PreProc
             term.SaveRate = 1;
             term.TermalConvergence.Is_Switched_Tm = true;
             term.TermalConvergence.Tm = 1500;
-            term.SolverSettings.Solver = "SOR_iterative";
+            term.SolverSettings = new SolverSettings(LinearSolverKind.ConjugateGradient, MatrixStorageKind.SymmetricCsr);
             term.SolverSettings.MaxIter = 100;
             term.SolverSettings.Precision = 0.01f;
             term.SolverSettings.Relaxation = 1.05f;
@@ -288,7 +293,7 @@ namespace PreProc
             term.SaveRate = 1;
             term.TermalConvergence.Is_Switched_Tm = true;
             term.TermalConvergence.Tm = 1500;
-            term.SolverSettings.Solver = "SOR_iterative";
+            term.SolverSettings = new SolverSettings(LinearSolverKind.ConjugateGradient, MatrixStorageKind.SymmetricCsr);
             term.SolverSettings.MaxIter = 500;
             term.SolverSettings.Precision = 0.01f;
             term.SolverSettings.Relaxation = 1.05f;
@@ -309,7 +314,7 @@ namespace PreProc
             mech.MechanicalConvergence.DUm = 0.0005f;
             mech.MechanicalConvergence.SiStm = 1.5f;
             mech.MechanicalConvergence.PlasticityCriterion = 1.25f;
-            mech.SolverSettings.Solver = "SOR_iterative";
+            mech.SolverSettings = new SolverSettings(LinearSolverKind.ConjugateGradient, MatrixStorageKind.SymmetricCsr);
             mech.SolverSettings.MaxIter = 1000;
             mech.SolverSettings.Precision = 0.0001f;
             mech.SolverSettings.Relaxation = 1.25f;
@@ -383,7 +388,7 @@ namespace PreProc
             for (var i = 0; i < parametrizedParams.Count; i++)
             {
                 if (i > 0)
-                    parametrizedParams[i].RestartFile = $"{taskKind}_{i}_{parametrizedParams[i - 1].TimeSettings.StartTime}_{parametrizedParams[i - 1].TimeSettings.StopTime}.db";
+                    SetResultInitialState(parametrizedParams[i], $"{taskKind}_{i}_{parametrizedParams[i - 1].TimeSettings.StartTime}_{parametrizedParams[i - 1].TimeSettings.StopTime}.db");
 
                 var serializedData = JsonConvert.SerializeObject(parametrizedParams[i], settingsSerializer);
                 var fileName = $"{taskKind}_{i + 1}_{parametrizedParams[i].TimeSettings.StartTime}_{parametrizedParams[i].TimeSettings.StopTime}.tsf";
@@ -400,28 +405,51 @@ namespace PreProc
         /// <returns>Список строк для создания CompData</returns>
         private void CreateFilesForComplexProcess<MainParameter, MinorParameter>(List<MainParameter> mainParameters, List<MinorParameter> minorParameters)
             where MainParameter : GeneralParameters
-            where MinorParameter : GeneralParameters, IThermalDependent
+            where MinorParameter : GeneralParameters
         {
             // 0 - main
             // 1 - minor
             var names = processProp.TaskKind.ToString().Replace(" ","").Split(',');
             CreateFilesForSingleProcess(names[0], mainParameters);
 
-            minorParameters[0].ThermalFile.FileName = $"{names[0]}_{1}_{minorParameters[0].TimeSettings.StartTime}_{minorParameters[0].TimeSettings.StopTime}.db";
+            SetInputField(minorParameters[0], PhysicalField.Temperature, $"{names[0]}_{1}_{minorParameters[0].TimeSettings.StartTime}_{minorParameters[0].TimeSettings.StopTime}.db");
 
             for (var i = 0; i < minorParameters.Count; i++)
             {
-                minorParameters[i].ThermalLoadIsFile = true;
                 if (i > 0)
                 {
-                    minorParameters[i].RestartFile = $"{names[1]}_{i}_{minorParameters[i - 1].TimeSettings.StartTime}_{minorParameters[i - 1].TimeSettings.StopTime}.db";
-                    minorParameters[i].ThermalFile.FileName = $"{names[0]}_{i + 1}_{minorParameters[i].TimeSettings.StartTime}_{minorParameters[i].TimeSettings.StopTime}.db";
+                    SetResultInitialState(minorParameters[i], $"{names[1]}_{i}_{minorParameters[i - 1].TimeSettings.StartTime}_{minorParameters[i - 1].TimeSettings.StopTime}.db");
+                    SetInputField(minorParameters[i], PhysicalField.Temperature, $"{names[0]}_{i + 1}_{minorParameters[i].TimeSettings.StartTime}_{minorParameters[i].TimeSettings.StopTime}.db");
                 }
                 var serializedData = JsonConvert.SerializeObject(minorParameters[i], settingsSerializer);
                 var fileName = $"{names[1]}_{i + 1}_{minorParameters[i].TimeSettings.StartTime}_{minorParameters[i].TimeSettings.StopTime}.tsf";
 
                 File.WriteAllBytes($"{_path}\\{fileName}", Encoding.UTF8.GetBytes(serializedData));
             }
+        }
+
+        private static void SetResultInitialState(GeneralParameters parameters, string fileName)
+        {
+            parameters.InitialState = new InitialState
+            {
+                Source = InitialStateSource.Result,
+                Result = new ResultReference { FileName = fileName }
+            };
+        }
+
+        private static void SetInputField(GeneralParameters parameters, PhysicalField field, string fileName)
+        {
+            parameters.InputFields ??= new List<InputField>();
+            var inputField = parameters.GetInputField(field);
+            if (inputField == null)
+            {
+                inputField = new InputField { Field = field };
+                parameters.InputFields.Add(inputField);
+            }
+
+            inputField.Source = InputFieldSource.ResultFile;
+            inputField.ConstantValues = Array.Empty<double>();
+            inputField.FileName = fileName;
         }
 
         /// <inheritdoc/>

@@ -3,18 +3,19 @@
 namespace Project.TaskParameters
 {
     [Serializable]
-    public class ChemicalParameters : GeneralParameters, IThermalDependent
+    public class ChemicalParameters : GeneralParameters
     {
-        public double ThermalLoad { get; set; } = 20;
-        public ThermalFile ThermalFile { get; set; } = new();
-        public float InitConcentration { get; set; }
-
         public ChemicalConvergence ChemicalConvergence { get; set; } = new ChemicalConvergence();
-        public bool ThermalLoadIsFile { get; set; } = false;
 
         public ChemicalParameters()
         {
             TaskKind = Interfaces.Tasks.TaskKind.химическая;
+            InputFields.Add(new InputField
+            {
+                Field = PhysicalField.Temperature,
+                Source = InputFieldSource.Constant,
+                ConstantValues = new[] { 20.0 }
+            });
         }
     }
 }

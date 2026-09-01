@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>2.5.8</Version>
+    <Version>2.5.9</Version>
     <Authors>Bilenko Georgy, Ustinov Nikita</Authors>
     <Company>BazisSoftware</Company>
     <Product>BAZIS</Product>
@@ -18,10 +18,8 @@
   </PropertyGroup>
 
 	<ItemGroup>
-    <Compile Remove="Interfaces\IChemicalDependent.cs" />
     <Compile Remove="Interfaces\IGeneralParameters.cs" />
     <Compile Remove="Interfaces\ISolverSettings.cs" />
-    <Compile Remove="Interfaces\IThermalDependent.cs" />
     <Compile Remove="Interfaces\ITimeSettings.cs" />
   </ItemGroup>
 

@@ -5,12 +5,8 @@ using System.Collections.Generic;
 namespace Project.TaskParameters
 {
     [Serializable]
-    public class TermalParameters : GeneralParameters, IChemicalDependent 
-    {             
-        public string ChemicalFile { get; set; } = "";
-
-        public ConvectionParameters ConvectionParameters { get; set; } = new();
-
+    public class TermalParameters : GeneralParameters
+    {
         public TermalConvergence TermalConvergence { get; set; } = new TermalConvergence();
 
         /// <summary>

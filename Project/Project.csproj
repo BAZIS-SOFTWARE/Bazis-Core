@@ -4,7 +4,7 @@
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
 	  <SignAssembly>True</SignAssembly>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>6.0.0</Version>
+    <Version>6.0.7</Version>
     <Title>Project</Title>
     <Authors>Bilenko Georgy</Authors>
     <Company>BAZIS SOFTWARE</Company>
@@ -77,17 +77,17 @@
     <Compile Include="TaskParameters\ChemicalConvergence.cs" />
     <Compile Include="TaskParameters\ChemicalParameters.cs" />
     <Compile Include="TaskParameters\ConditionReference.cs" />
-    <Compile Include="TaskParameters\ConvectionParameters.cs" />
     <Compile Include="TaskParameters\GeneralParameters.cs" />
-    <Compile Include="TaskParameters\IChemicalDependent.cs" />
-    <Compile Include="TaskParameters\IThermalDependent.cs" />
+    <Compile Include="TaskParameters\InputField.cs" />
+    <Compile Include="TaskParameters\InitialCondition.cs" />
+    <Compile Include="TaskParameters\InitialState.cs" />
     <Compile Include="TaskParameters\MechanicalConvergence.cs" />
     <Compile Include="TaskParameters\MechanicalParameters.cs" />
+    <Compile Include="TaskParameters\ResultReference.cs" />
     <Compile Include="TaskParameters\SolverSettings.cs" />
     <Compile Include="TaskParameters\SolverSettingsIO.cs" />
     <Compile Include="TaskParameters\TermalConvergence.cs" />
     <Compile Include="TaskParameters\TermalParameters.cs" />
-    <Compile Include="TaskParameters\ThermalFile.cs" />
     <Compile Include="TaskParameters\TimeSettings.cs" />
     <Compile Include="Tasks\ClampData.cs" />
     <Compile Include="Tasks\Functions\FrameFunctions\SphereBuilder.cs" />

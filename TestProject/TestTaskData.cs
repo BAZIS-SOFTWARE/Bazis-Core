@@ -293,6 +293,8 @@ namespace TestProject
             else
                 parameters = new ChemicalParameters();
 
+            parameters.SolverSettings = CreateSymmetricSolverSettings();
+
             var settingsSerializer = new JsonSerializerSettings
             {
                 TypeNameHandling = TypeNameHandling.Auto,
@@ -330,36 +332,140 @@ namespace TestProject
         }
 
         [TestMethod]
-        public void MechanicalParameters_ReadLegacyThermalFile()
+        public void MechanicalParameters_ContainConstantTemperatureByDefault()
         {
-            var parameters = JsonConvert.DeserializeObject<MechanicalParameters>("{\"ThermalFile\":\"термическая.db\"}");
+            var parameters = new MechanicalParameters();
+            var inputField = parameters.InputFields.Single();
 
-            Assert.IsNotNull(parameters);
-            Assert.AreEqual("термическая.db", parameters.ThermalFile.FileName);
-            Assert.AreEqual(0, parameters.ThermalFile.StartStep);
-            Assert.AreEqual(0, parameters.ThermalFile.StepsCount);
-            Assert.AreEqual(CalculationMode.Transient, parameters.CalculationMode);
+            Assert.AreEqual(PhysicalField.Temperature, inputField.Field);
+            Assert.AreEqual(InputFieldSource.Constant, inputField.Source);
+            Assert.AreEqual(20.0, inputField.ConstantValues.Single());
+            Assert.AreEqual(CalculationMode.Stationary, parameters.CalculationMode);
         }
 
         [TestMethod]
-        public void MechanicalParameters_WriteStructuredThermalFile()
+        public void ChemicalParameters_ContainConstantTemperatureByDefault()
+        {
+            var parameters = new ChemicalParameters();
+            var inputField = parameters.InputFields.Single();
+
+            Assert.AreEqual(PhysicalField.Temperature, inputField.Field);
+            Assert.AreEqual(InputFieldSource.Constant, inputField.Source);
+            Assert.AreEqual(20.0, inputField.ConstantValues.Single());
+        }
+
+        [TestMethod]
+        public void GeneralParameters_WriteInputFields()
         {
             var source = new MechanicalParameters
             {
-                CalculationMode = CalculationMode.Stationary,
-                ThermalFile = new ThermalFile { FileName = "термическая.db", StartStep = 3, StepsCount = 5 }
+                SolverSettings = CreateSymmetricSolverSettings(),
+                InputFields = new List<InputField>
+                {
+                    new InputField
+                    {
+                        Field = PhysicalField.Temperature,
+                        Source = InputFieldSource.ResultFile,
+                        FileName = "термическая.db",
+                        StartStep = 3,
+                        StepsCount = 5
+                    }
+                }
             };
 
             var json = JsonConvert.SerializeObject(source);
             var parameters = JsonConvert.DeserializeObject<MechanicalParameters>(json);
 
             Assert.IsNotNull(parameters);
-            StringAssert.Contains(json, "\"CalculationMode\":\"Stationary\"");
-            StringAssert.Contains(json, "\"ThermalFile\":{");
-            Assert.AreEqual(CalculationMode.Stationary, parameters.CalculationMode);
-            Assert.AreEqual(source.ThermalFile.FileName, parameters.ThermalFile.FileName);
-            Assert.AreEqual(source.ThermalFile.StartStep, parameters.ThermalFile.StartStep);
-            Assert.AreEqual(source.ThermalFile.StepsCount, parameters.ThermalFile.StepsCount);
+            StringAssert.Contains(json, "\"InputFields\"");
+            var inputField = parameters.InputFields.Single();
+            Assert.AreEqual(PhysicalField.Temperature, inputField.Field);
+            Assert.AreEqual(InputFieldSource.ResultFile, inputField.Source);
+            Assert.AreEqual("термическая.db", inputField.FileName);
+            Assert.AreEqual(3, inputField.StartStep);
+            Assert.AreEqual(5, inputField.StepsCount);
+        }
+
+        [TestMethod]
+        public void GeneralParameters_WriteInitialConditionsByGroup()
+        {
+            var source = new TermalParameters
+            {
+                SolverSettings = CreateSymmetricSolverSettings(),
+                InitialState = new InitialState
+                {
+                    Conditions = new List<InitialCondition>
+                    {
+                        new InitialCondition
+                        {
+                            Field = PhysicalField.Temperature,
+                            Values = new Dictionary<string, double[]>
+                            {
+                                ["body"] = new[] { 20.0 },
+                                ["weld"] = new[] { 500.0 }
+                            }
+                        }
+                    }
+                }
+            };
+
+            var json = JsonConvert.SerializeObject(source);
+            var parameters = JsonConvert.DeserializeObject<TermalParameters>(json);
+
+            Assert.IsNotNull(parameters);
+            Assert.AreEqual(InitialStateSource.Values, parameters.InitialState.Source);
+            var condition = parameters.InitialState.Conditions.Single();
+            Assert.AreEqual(PhysicalField.Temperature, condition.Field);
+            Assert.AreEqual(20.0, condition.Values["body"].Single());
+            Assert.AreEqual(500.0, condition.Values["weld"].Single());
+        }
+
+        [TestMethod]
+        public void GeneralParameters_WriteResultInitialState()
+        {
+            var source = new TermalParameters
+            {
+                SolverSettings = CreateSymmetricSolverSettings(),
+                InitialState = new InitialState
+                {
+                    Source = InitialStateSource.Result,
+                    Result = new ResultReference
+                    {
+                        FileName = "термическая_1_0_3.db",
+                        Step = 4
+                    }
+                }
+            };
+
+            var json = JsonConvert.SerializeObject(source);
+            var parameters = JsonConvert.DeserializeObject<TermalParameters>(json);
+
+            Assert.IsNotNull(parameters);
+            Assert.AreEqual(InitialStateSource.Result, parameters.InitialState.Source);
+            Assert.AreEqual("термическая_1_0_3.db", parameters.GetInitialResult().FileName);
+            Assert.AreEqual(4, parameters.GetInitialResult().Step);
+            Assert.AreEqual(0, parameters.InitialState.Conditions.Count);
+        }
+
+        [TestMethod]
+        public void GeneralParameters_RejectsMixedInitialStateSources()
+        {
+            var parameters = new TermalParameters
+            {
+                InitialState = new InitialState
+                {
+                    Source = InitialStateSource.Result,
+                    Conditions = new List<InitialCondition>
+                    {
+                        new InitialCondition { Field = PhysicalField.Temperature }
+                    },
+                    Result = new ResultReference { FileName = "термическая.db" }
+                }
+            };
+
+            var exception = Assert.ThrowsException<InvalidOperationException>(() => parameters.GetInitialResult());
+
+            StringAssert.Contains(exception.Message, "не должны быть заданы значения");
         }
 
         [TestMethod]
@@ -367,6 +473,7 @@ namespace TestProject
         {
             var source = new TermalParameters
             {
+                SolverSettings = CreateSymmetricSolverSettings(),
                 ActiveConditions = new List<ConditionReference>
                 {
                     new ConditionReference(0, DataKind.Материал, "body"),
@@ -401,6 +508,46 @@ namespace TestProject
             Assert.IsFalse(thermalJson.Contains("TermalProcesses"));
             Assert.IsFalse(mechanicalJson.Contains("MetallurgicalProcesses"));
             Assert.IsNull(typeof(GeneralParameters).GetProperty(nameof(TermalParameters.MetallurgicalProcesses)));
+            Assert.IsNull(typeof(TermalParameters).GetProperty("ChemicalFile"));
+            Assert.IsNull(typeof(MechanicalParameters).GetProperty("ChemicalFile"));
+            Assert.IsNull(typeof(GeneralParameters).GetProperty("InitTemp"));
+            Assert.IsNull(typeof(GeneralParameters).GetProperty("InitialConditions"));
+            Assert.IsNull(typeof(GeneralParameters).GetProperty("RestartFile"));
+            Assert.IsNull(typeof(ChemicalParameters).GetProperty("InitConcentration"));
         }
+
+        [TestMethod]
+        public void SolverSettings_WriteConcreteSolverAndMatrixStorage()
+        {
+            var source = new TermalParameters { SolverSettings = CreateSymmetricSolverSettings() };
+
+            var json = JsonConvert.SerializeObject(source);
+            var parameters = JsonConvert.DeserializeObject<TermalParameters>(json);
+
+            Assert.IsNotNull(parameters);
+            Assert.AreEqual(LinearSolverKind.ConjugateGradient, parameters.SolverSettings.Solver);
+            Assert.AreEqual(MatrixStorageKind.SymmetricCsr, parameters.SolverSettings.MatrixStorage);
+            Assert.IsFalse(json.Contains("Auto"));
+        }
+
+        [TestMethod]
+        public void SolverSettings_AreRequired()
+        {
+            var exception = Assert.ThrowsException<JsonSerializationException>(() => JsonConvert.DeserializeObject<TermalParameters>("{}"));
+
+            StringAssert.Contains(exception.Message, "SolverSettings");
+        }
+
+        [TestMethod]
+        public void SolverAndMatrixStorage_AreRequired()
+        {
+            var solverException = Assert.ThrowsException<JsonSerializationException>(() => JsonConvert.DeserializeObject<TermalParameters>("{\"SolverSettings\":{\"MatrixStorage\":\"SymmetricCsr\"}}"));
+            var storageException = Assert.ThrowsException<JsonSerializationException>(() => JsonConvert.DeserializeObject<TermalParameters>("{\"SolverSettings\":{\"Solver\":\"ConjugateGradient\"}}"));
+
+            StringAssert.Contains(solverException.Message, "Solver");
+            StringAssert.Contains(storageException.Message, "MatrixStorage");
+        }
+
+        private static SolverSettings CreateSymmetricSolverSettings() => new(LinearSolverKind.ConjugateGradient, MatrixStorageKind.SymmetricCsr);
     }
 }

@@ -334,6 +334,52 @@ namespace TestProject
         }
 
         [TestMethod]
+        public void PreProc_WritesTemperatureInputForMechanicalTask()
+        {
+            var loader = new LoadProjectFromTextFormat();
+            var project = loader.Load(projPath + "FastCheck.bpf");
+            var outputDirectory = Path.Combine(Path.GetTempPath(), $"BazisPreProc_{Guid.NewGuid():N}");
+            Directory.CreateDirectory(outputDirectory);
+
+            try
+            {
+                var preProc = new PreProc.PreProc();
+                preProc.CalcCompDataV2(project.TaskData, new ProcessProperty { TaskKind = TaskKind.термическая | TaskKind.механическая, CommonTaskType = ProcessType.Welding }, outputDirectory);
+
+                var files = Directory.GetFiles(outputDirectory, "механическая_*.tsf");
+                Assert.IsTrue(files.Length > 0);
+                foreach (var file in files)
+                {
+                    var json = File.ReadAllText(file);
+                    var parameters = JsonConvert.DeserializeObject<MechanicalParameters>(json);
+                    Assert.IsNotNull(parameters);
+                    var inputField = parameters.InputFields.Single(input => input.Field == PhysicalField.Temperature);
+                    Assert.AreEqual(InputFieldSource.ResultFile, inputField.Source);
+                    Assert.AreEqual(0, inputField.ConstantValues.Length);
+                    StringAssert.StartsWith(inputField.FileName, "термическая_");
+                    if (parameters.InitialState.Source == InitialStateSource.Values)
+                    {
+                        var initialCondition = parameters.InitialState.Conditions.SingleOrDefault(condition => condition.Field == PhysicalField.Temperature);
+                        Assert.IsNotNull(initialCondition);
+                        Assert.IsTrue(initialCondition.Values.Count > 0);
+                        Assert.IsTrue(initialCondition.Values.Values.All(values => values.Length == 1 && values[0] == 20.0));
+                    }
+                    else
+                    {
+                        Assert.IsNotNull(parameters.GetInitialResult());
+                        StringAssert.StartsWith(parameters.GetInitialResult().FileName, "механическая_");
+                    }
+                    Assert.IsFalse(json.Contains("\"ThermalFile\""));
+                    Assert.IsFalse(json.Contains("\"ThermalLoadIsFile\""));
+                }
+            }
+            finally
+            {
+                Directory.Delete(outputDirectory, true);
+            }
+        }
+
+        [TestMethod]
         [DataRow(@"MatDataShorterThenBoundData.bpf", DisplayName = "MatData_Shorter_Then_BoundData")]
         [DataRow(@"NoMaterialData.bpf", DisplayName = "No_MaterialData")]
         [DataRow(@"NoBoundData.bpf", DisplayName = "No_BoundData")]
