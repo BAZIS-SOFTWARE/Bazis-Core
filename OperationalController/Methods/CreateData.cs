@@ -353,14 +353,17 @@ namespace OperationalController
             // непригодной для построения SurfaceFigure. Перестраиваем её до чтения
             // геометрии, иначе объём может ссылаться на отсутствующую поверхность.
             GmshController.Gmsh.Model.Mesh.Clear();
-            GmshController.Gmsh.Model.Mesh.Generate(2);
+            //GmshController.Gmsh.Model.Mesh.Generate(2);
+            GmshController.Gmsh.Model.Mesh.ImportStl();
 
             var points = GmshController.CreateControlPoints();
             var curves = GmshController.CreateLines();
             var surfaceData = CreateChamferSurfaceData();
 
             ModelData.ObjectData.Clear(ObjType.Точка);
-            ModelData.ObjectData.Clear(ObjType.Узел);
+            //ModelData.ObjectData.Clear(ObjType.Узел);
+            ModelData.ObjectData.Clear(ObjType.Кривая);
+            ModelData.ObjectData.Clear(ObjType.Поверхность);
             ModelData.VolumeData.Clear();
 
             points.ForEach(point =>

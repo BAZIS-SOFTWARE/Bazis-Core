@@ -21,6 +21,7 @@ using Project.Tasks;
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Formats.Tar;
 using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
@@ -1214,6 +1215,48 @@ namespace GmshTests
 
             var saver = new SaveModelToBPF2TextFile();
             saver.Save(md, $@"D:\{fName}_Ref_Line.bpf2");
+        }
+
+        [DataTestMethod]
+        [DataRow(@"\CAD\simple.stp")]
+        public void StlRepresentationTest2(string fileName)
+        {
+            var project = new ProjectController();
+            project.GmshController.Load(@"..\..\..\..\GmshApi\gmsh.dll");
+            project.ImportCAD(modelFolder + fileName);
+
+            var md = ConvertGeometryToMesh(project);
+
+            var saver = new SaveModelToBPF2TextFile();
+            saver.Save(md, $@"D:\simple_before_chamfer.bpf2");
+
+            project.CreateChamfer([39], 5, 45, true, false);
+
+            var md2 = ConvertGeometryToMesh(project);
+
+            var saver2 = new SaveModelToBPF2TextFile();
+            saver2.Save(md2, $@"D:\simple_after_chamfer.bpf2");
+        }
+
+        private ModelData ConvertGeometryToMesh(ProjectController project)
+        {
+            var md = new ModelData();
+            var elemIndex = 1;
+
+            foreach (var vol in project.GetModelVolumes())
+                foreach (var gf in vol.GetSurfaceFigures())
+                    foreach (var gs in gf.GetSurfaces())
+                    {
+                        var elemNodes = new List<Node>();
+                        foreach (var g in gs.GetVertexes())
+                        {
+                            if (!md.ObjectData.NodesSet.ContainsKey(g.Number))
+                                md.ObjectData.NodesSet.Add(g.Number, new Node(g.Number, g.GetCoordinates().First()));
+                            elemNodes.Add(md.ObjectData.NodesSet[g.Number]);
+                        }
+                        md.ObjectData.E2DCollection.Add("e2d", new Triangle_c(elemIndex++, elemNodes.ToArray()));
+                    }
+            return md;
         }
 
         private List<Element2D> GenTriangle(float[] coords)
