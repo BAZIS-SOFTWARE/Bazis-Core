@@ -332,26 +332,26 @@ namespace TestProject
         }
 
         [TestMethod]
-        public void MechanicalParameters_ContainConstantTemperatureByDefault()
+        public void MechanicalParameters_ContainThermalFieldByDefault()
         {
             var parameters = new MechanicalParameters();
             var inputField = parameters.InputFields.Single();
 
-            Assert.AreEqual(PhysicalField.Temperature, inputField.Field);
-            Assert.AreEqual(InputFieldSource.Constant, inputField.Source);
-            Assert.AreEqual(20.0, inputField.ConstantValues.Single());
+            Assert.AreEqual(PhysicalFieldSet.Thermal, inputField.FieldSet);
+            Assert.AreEqual(PhysicalFieldSource.Values, inputField.Source);
+            Assert.AreEqual(0, inputField.Values.Count);
             Assert.AreEqual(CalculationMode.Stationary, parameters.CalculationMode);
         }
 
         [TestMethod]
-        public void ChemicalParameters_ContainConstantTemperatureByDefault()
+        public void ChemicalParameters_ContainThermalFieldByDefault()
         {
             var parameters = new ChemicalParameters();
             var inputField = parameters.InputFields.Single();
 
-            Assert.AreEqual(PhysicalField.Temperature, inputField.Field);
-            Assert.AreEqual(InputFieldSource.Constant, inputField.Source);
-            Assert.AreEqual(20.0, inputField.ConstantValues.Single());
+            Assert.AreEqual(PhysicalFieldSet.Thermal, inputField.FieldSet);
+            Assert.AreEqual(PhysicalFieldSource.Values, inputField.Source);
+            Assert.AreEqual(0, inputField.Values.Count);
         }
 
         [TestMethod]
@@ -360,15 +360,13 @@ namespace TestProject
             var source = new MechanicalParameters
             {
                 SolverSettings = CreateSymmetricSolverSettings(),
-                InputFields = new List<InputField>
+                InputFields = new List<PhysicalField>
                 {
-                    new InputField
+                    new PhysicalField
                     {
-                        Field = PhysicalField.Temperature,
-                        Source = InputFieldSource.ResultFile,
-                        FileName = "термическая.db",
-                        StartStep = 3,
-                        StepsCount = 5
+                        FieldSet = PhysicalFieldSet.Thermal,
+                        Source = PhysicalFieldSource.ResultFile,
+                        FileName = "термическая.db"
                     }
                 }
             };
@@ -379,30 +377,33 @@ namespace TestProject
             Assert.IsNotNull(parameters);
             StringAssert.Contains(json, "\"InputFields\"");
             var inputField = parameters.InputFields.Single();
-            Assert.AreEqual(PhysicalField.Temperature, inputField.Field);
-            Assert.AreEqual(InputFieldSource.ResultFile, inputField.Source);
+            Assert.AreEqual(PhysicalFieldSet.Thermal, inputField.FieldSet);
+            Assert.AreEqual(PhysicalFieldSource.ResultFile, inputField.Source);
             Assert.AreEqual("термическая.db", inputField.FileName);
-            Assert.AreEqual(3, inputField.StartStep);
-            Assert.AreEqual(5, inputField.StepsCount);
+            Assert.AreEqual(0, inputField.Values.Count);
         }
 
         [TestMethod]
-        public void GeneralParameters_WriteInitialConditionsByGroup()
+        public void GeneralParameters_WriteInitialFieldsByGroup()
         {
             var source = new TermalParameters
             {
                 SolverSettings = CreateSymmetricSolverSettings(),
-                InitialState = new InitialState
+                InitialFields = new List<PhysicalField>
                 {
-                    Conditions = new List<InitialCondition>
+                    new PhysicalField
                     {
-                        new InitialCondition
+                        FieldSet = PhysicalFieldSet.Thermal,
+                        Source = PhysicalFieldSource.Values,
+                        Values = new Dictionary<string, List<PhysicalFieldValue>>
                         {
-                            Field = PhysicalField.Temperature,
-                            Values = new Dictionary<string, double[]>
+                            ["body"] = new List<PhysicalFieldValue>
                             {
-                                ["body"] = new[] { 20.0 },
-                                ["weld"] = new[] { 500.0 }
+                                new PhysicalFieldValue { Quantity = PhysicalQuantity.Temperature, Components = new[] { 20.0 } }
+                            },
+                            ["weld"] = new List<PhysicalFieldValue>
+                            {
+                                new PhysicalFieldValue { Quantity = PhysicalQuantity.Temperature, Components = new[] { 500.0 } }
                             }
                         }
                     }
@@ -413,26 +414,26 @@ namespace TestProject
             var parameters = JsonConvert.DeserializeObject<TermalParameters>(json);
 
             Assert.IsNotNull(parameters);
-            Assert.AreEqual(InitialStateSource.Values, parameters.InitialState.Source);
-            var condition = parameters.InitialState.Conditions.Single();
-            Assert.AreEqual(PhysicalField.Temperature, condition.Field);
-            Assert.AreEqual(20.0, condition.Values["body"].Single());
-            Assert.AreEqual(500.0, condition.Values["weld"].Single());
+            var field = parameters.InitialFields.Single(field => field.FieldSet == PhysicalFieldSet.Thermal);
+            Assert.IsNotNull(field);
+            Assert.AreEqual(PhysicalFieldSource.Values, field.Source);
+            Assert.AreEqual(20.0, field.Values["body"].Single().Components.Single());
+            Assert.AreEqual(500.0, field.Values["weld"].Single().Components.Single());
         }
 
         [TestMethod]
-        public void GeneralParameters_WriteResultInitialState()
+        public void GeneralParameters_WriteInitialResultField()
         {
             var source = new TermalParameters
             {
                 SolverSettings = CreateSymmetricSolverSettings(),
-                InitialState = new InitialState
+                InitialFields = new List<PhysicalField>
                 {
-                    Source = InitialStateSource.Result,
-                    Result = new ResultReference
+                    new PhysicalField
                     {
-                        FileName = "термическая_1_0_3.db",
-                        Step = 4
+                        FieldSet = PhysicalFieldSet.Thermal,
+                        Source = PhysicalFieldSource.ResultFile,
+                        FileName = "термическая_1_0_3.db"
                     }
                 }
             };
@@ -441,31 +442,11 @@ namespace TestProject
             var parameters = JsonConvert.DeserializeObject<TermalParameters>(json);
 
             Assert.IsNotNull(parameters);
-            Assert.AreEqual(InitialStateSource.Result, parameters.InitialState.Source);
-            Assert.AreEqual("термическая_1_0_3.db", parameters.GetInitialResult().FileName);
-            Assert.AreEqual(4, parameters.GetInitialResult().Step);
-            Assert.AreEqual(0, parameters.InitialState.Conditions.Count);
-        }
-
-        [TestMethod]
-        public void GeneralParameters_RejectsMixedInitialStateSources()
-        {
-            var parameters = new TermalParameters
-            {
-                InitialState = new InitialState
-                {
-                    Source = InitialStateSource.Result,
-                    Conditions = new List<InitialCondition>
-                    {
-                        new InitialCondition { Field = PhysicalField.Temperature }
-                    },
-                    Result = new ResultReference { FileName = "термическая.db" }
-                }
-            };
-
-            var exception = Assert.ThrowsException<InvalidOperationException>(() => parameters.GetInitialResult());
-
-            StringAssert.Contains(exception.Message, "не должны быть заданы значения");
+            var field = parameters.InitialFields.Single(field => field.FieldSet == PhysicalFieldSet.Thermal);
+            Assert.IsNotNull(field);
+            Assert.AreEqual(PhysicalFieldSource.ResultFile, field.Source);
+            Assert.AreEqual("термическая_1_0_3.db", field.FileName);
+            Assert.AreEqual(0, field.Values.Count);
         }
 
         [TestMethod]

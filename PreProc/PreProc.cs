@@ -129,16 +129,24 @@ namespace PreProc
 
             var pars = ParametrizeResultParameters<LoadData, BoundData, ResultParam>(data);
 
-            var initialTemperature = new InitialCondition
+            var initialField = new PhysicalField
             {
-                Field = PhysicalField.Temperature,
+                FieldSet = GetNativeFieldSet(pars[0].TaskKind),
+                Source = PhysicalFieldSource.Values,
                 Values = matData
                     .Select(md => md.Group.Name)
                     .Distinct()
-                    .ToDictionary(groupName => groupName, _ => new[] { 20.0 })
+                    .ToDictionary(groupName => groupName, _ => new List<PhysicalFieldValue>
+                    {
+                        new PhysicalFieldValue
+                        {
+                            Quantity = PhysicalQuantity.Temperature,
+                            Components = new[] { 20.0 }
+                        }
+                    })
             };
 
-            pars[0].InitialState.Conditions.Add(initialTemperature);
+            pars[0].InitialFields.Add(initialField);
 
             return pars;
         }
@@ -388,7 +396,7 @@ namespace PreProc
             for (var i = 0; i < parametrizedParams.Count; i++)
             {
                 if (i > 0)
-                    SetResultInitialState(parametrizedParams[i], $"{taskKind}_{i}_{parametrizedParams[i - 1].TimeSettings.StartTime}_{parametrizedParams[i - 1].TimeSettings.StopTime}.db");
+                    SetInitialFieldFromFile(parametrizedParams[i], $"{taskKind}_{i}_{parametrizedParams[i - 1].TimeSettings.StartTime}_{parametrizedParams[i - 1].TimeSettings.StopTime}.db");
 
                 var serializedData = JsonConvert.SerializeObject(parametrizedParams[i], settingsSerializer);
                 var fileName = $"{taskKind}_{i + 1}_{parametrizedParams[i].TimeSettings.StartTime}_{parametrizedParams[i].TimeSettings.StopTime}.tsf";
@@ -398,58 +406,94 @@ namespace PreProc
         }
 
         /// <summary>
-        /// Создает файлы для термического процесса
+        /// Создает файлы связанных физических задач.
         /// </summary>
-        /// <param name="mainParameters">Набор термических параметров</param>
-        /// <param name="minorParameters">Набор механических параметров</param>
-        /// <returns>Список строк для создания CompData</returns>
-        private void CreateFilesForComplexProcess<MainParameter, MinorParameter>(List<MainParameter> mainParameters, List<MinorParameter> minorParameters)
-            where MainParameter : GeneralParameters
-            where MinorParameter : GeneralParameters
+        /// <param name="sourceParameters">Параметры задачи-источника.</param>
+        /// <param name="targetParameters">Параметры задачи-потребителя.</param>
+        private void CreateFilesForComplexProcess<SourceParameter, TargetParameter>(List<SourceParameter> sourceParameters, List<TargetParameter> targetParameters)
+            where SourceParameter : GeneralParameters
+            where TargetParameter : GeneralParameters
         {
-            // 0 - main
-            // 1 - minor
-            var names = processProp.TaskKind.ToString().Replace(" ","").Split(',');
-            CreateFilesForSingleProcess(names[0], mainParameters);
+            if (sourceParameters.Count != targetParameters.Count)
+                throw new InvalidOperationException("Linked tasks must have the same number of time intervals.");
+            if (sourceParameters.Count == 0)
+                throw new InvalidOperationException("Linked tasks must contain at least one time interval.");
 
-            SetInputField(minorParameters[0], PhysicalField.Temperature, $"{names[0]}_{1}_{minorParameters[0].TimeSettings.StartTime}_{minorParameters[0].TimeSettings.StopTime}.db");
+            var sourceTaskName = sourceParameters[0].TaskKind.ToString();
+            var targetTaskName = targetParameters[0].TaskKind.ToString();
+            var sourceFieldSet = GetNativeFieldSet(sourceParameters[0].TaskKind);
 
-            for (var i = 0; i < minorParameters.Count; i++)
+            CreateFilesForSingleProcess(sourceTaskName, sourceParameters);
+
+            for (var i = 0; i < targetParameters.Count; i++)
             {
+                var sourceParameter = sourceParameters[i];
+                var targetParameter = targetParameters[i];
+                var sourceResultFile = $"{sourceTaskName}_{i + 1}_{sourceParameter.TimeSettings.StartTime}_{sourceParameter.TimeSettings.StopTime}.db";
+                SetInputField(targetParameter, sourceFieldSet, sourceResultFile);
+
                 if (i > 0)
                 {
-                    SetResultInitialState(minorParameters[i], $"{names[1]}_{i}_{minorParameters[i - 1].TimeSettings.StartTime}_{minorParameters[i - 1].TimeSettings.StopTime}.db");
-                    SetInputField(minorParameters[i], PhysicalField.Temperature, $"{names[0]}_{i + 1}_{minorParameters[i].TimeSettings.StartTime}_{minorParameters[i].TimeSettings.StopTime}.db");
+                    var previousParameter = targetParameters[i - 1];
+                    var previousResultFile = $"{targetTaskName}_{i}_{previousParameter.TimeSettings.StartTime}_{previousParameter.TimeSettings.StopTime}.db";
+                    SetInitialFieldFromFile(targetParameter, previousResultFile);
                 }
-                var serializedData = JsonConvert.SerializeObject(minorParameters[i], settingsSerializer);
-                var fileName = $"{names[1]}_{i + 1}_{minorParameters[i].TimeSettings.StartTime}_{minorParameters[i].TimeSettings.StopTime}.tsf";
+
+                var serializedData = JsonConvert.SerializeObject(targetParameter, settingsSerializer);
+                var fileName = $"{targetTaskName}_{i + 1}_{targetParameter.TimeSettings.StartTime}_{targetParameter.TimeSettings.StopTime}.tsf";
 
                 File.WriteAllBytes($"{_path}\\{fileName}", Encoding.UTF8.GetBytes(serializedData));
             }
         }
 
-        private static void SetResultInitialState(GeneralParameters parameters, string fileName)
+        /// <summary>
+        /// Задает родной набор полей из результата предыдущей задачи.
+        /// </summary>
+        private void SetInitialFieldFromFile(GeneralParameters parameters, string fileName)
         {
-            parameters.InitialState = new InitialState
+            var fieldSet = GetNativeFieldSet(parameters.TaskKind);
+            var field = parameters.InitialFields.SingleOrDefault(field => field.FieldSet == fieldSet);
+            if (field == null)
             {
-                Source = InitialStateSource.Result,
-                Result = new ResultReference { FileName = fileName }
-            };
-        }
-
-        private static void SetInputField(GeneralParameters parameters, PhysicalField field, string fileName)
-        {
-            parameters.InputFields ??= new List<InputField>();
-            var inputField = parameters.GetInputField(field);
-            if (inputField == null)
-            {
-                inputField = new InputField { Field = field };
-                parameters.InputFields.Add(inputField);
+                field = new PhysicalField { FieldSet = fieldSet };
+                parameters.InitialFields.Add(field);
             }
 
-            inputField.Source = InputFieldSource.ResultFile;
-            inputField.ConstantValues = Array.Empty<double>();
-            inputField.FileName = fileName;
+            field.Source = PhysicalFieldSource.ResultFile;
+            field.Values.Clear();
+            field.FileName = fileName;
+        }
+
+        /// <summary>
+        /// Задает внешний набор полей из результата другой задачи.
+        /// </summary>
+        private void SetInputField(GeneralParameters parameters, PhysicalFieldSet fieldSet, string fileName)
+        {
+            parameters.InputFields ??= new List<PhysicalField>();
+            var field = parameters.GetInputField(fieldSet);
+            if (field == null)
+            {
+                field = new PhysicalField { FieldSet = fieldSet };
+                parameters.InputFields.Add(field);
+            }
+
+            field.Source = PhysicalFieldSource.ResultFile;
+            field.Values.Clear();
+            field.FileName = fileName;
+        }
+
+        /// <summary>
+        /// Возвращает родной набор полей для физической задачи.
+        /// </summary>
+        private PhysicalFieldSet GetNativeFieldSet(TaskKind taskKind)
+        {
+            return taskKind switch
+            {
+                TaskKind.термическая => PhysicalFieldSet.Thermal,
+                TaskKind.механическая => PhysicalFieldSet.Mechanical,
+                TaskKind.химическая => PhysicalFieldSet.Chemical,
+                _ => throw new ArgumentOutOfRangeException(nameof(taskKind), taskKind, "The task kind does not have a native field set.")
+            };
         }
 
         /// <inheritdoc/>

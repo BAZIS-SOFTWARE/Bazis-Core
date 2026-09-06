@@ -4,9 +4,9 @@
 Вид : Volume
 БазаМатериалов : materials.jsf
 БазаФункций : functions.jsf
-Материал : test Сталь_20ХМ 0 20 *
-Материал : test Сталь_20ХМ 30 150 *
-Среда : test Коэф.теплоотдачи.воздух 20 0 150 *
-Нагрев : 25000 * SPH;6;SRF;test;0|0|0|0|0|0 test 0 10
-Закрепление : test Жесткое X 0 * 0 150 *
+Материал : 1 * * None test 0 20 Сталь_20ХМ
+Материал : 1 * * None test 30 150 Сталь_20ХМ
+Среда : 1 FHEX,TIME=VAR,TEMPM=20,TEMPS=VAR,HEX=Table(Коэф.теплоотдачи.воздух;TEMPS) * None test 0 150 HeatFlux
+Нагрев : 25000 SPH,Width=6 SRF(test,0|0|0|0|0|0) None test 0 10
+Закрепление : 0 * * X test 0 150 Жесткое
 #Проект

@@ -4,13 +4,13 @@
 Вид : Volume
 БазаМатериалов : materials.jsf
 БазаФункций : functions.jsf
-Материал : test Сталь_20ХМ 0 150 *
-Среда : test Коэф.теплоотдачи.воздух 20 1 150 *
-Материал : test Сталь_20ХМ 0 150 *
-Нагрев : 25000 * SPH;6;SRF;test;0|0|0|0|0|0 test 0 10
-Нагрев : 25000 * SPH;6;SRF;test;0|0|0|0|0|0 test 11 21
-Нагрев : 25000 * SPH;6;SRF;test;0|0|0|0|0|0 test 22 32
-Нагрев : 25000 * SPH;7;SRF;test;0|0|0|0|0|0 test 33 43
-Нагрев : 25000 * SPH;7;SRF;test;0|0|0|0|0|0 test 44 54
-Закрепление : test Жесткое X 0 * 0 150 *
+Материал : 1 * * None test 0 150 Сталь_20ХМ
+Среда : 1 FHEX,TIME=VAR,TEMPM=20,TEMPS=VAR,HEX=Table(Коэф.теплоотдачи.воздух;TEMPS) * None test 1 150 HeatFlux
+Материал : 1 * * None test 0 150 Сталь_20ХМ
+Нагрев : 25000 SPH,Width=6 SRF(test,0|0|0|0|0|0) None test 0 10
+Нагрев : 25000 SPH,Width=6 SRF(test,0|0|0|0|0|0) None test 11 21
+Нагрев : 25000 SPH,Width=6 SRF(test,0|0|0|0|0|0) None test 22 32
+Нагрев : 25000 SPH,Width=7 SRF(test,0|0|0|0|0|0) None test 33 43
+Нагрев : 25000 SPH,Width=7 SRF(test,0|0|0|0|0|0) None test 44 54
+Закрепление : 0 * * X test 0 150 Жесткое
 #Проект

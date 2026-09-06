@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>2.6.0</Version>
+    <Version>2.6.1</Version>
     <Authors>Bilenko Georgy, Ustinov Nikita</Authors>
     <Company>BazisSoftware</Company>
     <Product>BAZIS</Product>

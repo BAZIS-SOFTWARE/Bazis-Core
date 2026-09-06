@@ -353,21 +353,24 @@ namespace TestProject
                     var json = File.ReadAllText(file);
                     var parameters = JsonConvert.DeserializeObject<MechanicalParameters>(json);
                     Assert.IsNotNull(parameters);
-                    var inputField = parameters.InputFields.Single(input => input.Field == PhysicalField.Temperature);
-                    Assert.AreEqual(InputFieldSource.ResultFile, inputField.Source);
-                    Assert.AreEqual(0, inputField.ConstantValues.Length);
+                    var inputField = parameters.InputFields.Single(input => input.FieldSet == PhysicalFieldSet.Thermal);
+                    Assert.AreEqual(PhysicalFieldSource.ResultFile, inputField.Source);
+                    Assert.AreEqual(0, inputField.Values.Count);
                     StringAssert.StartsWith(inputField.FileName, "термическая_");
-                    if (parameters.InitialState.Source == InitialStateSource.Values)
+                    var initialField = parameters.InitialFields.Single(field => field.FieldSet == PhysicalFieldSet.Mechanical);
+                    Assert.IsNotNull(initialField);
+                    if (initialField.Source == PhysicalFieldSource.Values)
                     {
-                        var initialCondition = parameters.InitialState.Conditions.SingleOrDefault(condition => condition.Field == PhysicalField.Temperature);
-                        Assert.IsNotNull(initialCondition);
-                        Assert.IsTrue(initialCondition.Values.Count > 0);
-                        Assert.IsTrue(initialCondition.Values.Values.All(values => values.Length == 1 && values[0] == 20.0));
+                        Assert.IsTrue(initialField.Values.Count > 0);
+                        Assert.IsTrue(initialField.Values.Values.All(values => values.Count == 1
+                            && values[0].Quantity == PhysicalQuantity.Temperature
+                            && values[0].Components.Length == 1
+                            && values[0].Components[0] == 20.0));
                     }
                     else
                     {
-                        Assert.IsNotNull(parameters.GetInitialResult());
-                        StringAssert.StartsWith(parameters.GetInitialResult().FileName, "механическая_");
+                        Assert.AreEqual(PhysicalFieldSource.ResultFile, initialField.Source);
+                        StringAssert.StartsWith(initialField.FileName, "механическая_");
                     }
                     Assert.IsFalse(json.Contains("\"ThermalFile\""));
                     Assert.IsFalse(json.Contains("\"ThermalLoadIsFile\""));

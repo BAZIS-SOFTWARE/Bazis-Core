@@ -10,11 +10,10 @@ namespace Project.TaskParameters
         public ChemicalParameters()
         {
             TaskKind = Interfaces.Tasks.TaskKind.химическая;
-            InputFields.Add(new InputField
+            InputFields.Add(new PhysicalField
             {
-                Field = PhysicalField.Temperature,
-                Source = InputFieldSource.Constant,
-                ConstantValues = new[] { 20.0 }
+                FieldSet = PhysicalFieldSet.Thermal,
+                Source = PhysicalFieldSource.Values
             });
         }
     }

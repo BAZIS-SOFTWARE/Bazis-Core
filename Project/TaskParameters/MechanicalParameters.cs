@@ -11,11 +11,10 @@ namespace Project.TaskParameters
         {
             TaskKind = Interfaces.Tasks.TaskKind.механическая;
             CalculationMode = CalculationMode.Stationary;
-            InputFields.Add(new InputField
+            InputFields.Add(new PhysicalField
             {
-                Field = PhysicalField.Temperature,
-                Source = InputFieldSource.Constant,
-                ConstantValues = new[] { 20.0 }
+                FieldSet = PhysicalFieldSet.Thermal,
+                Source = PhysicalFieldSource.Values
             });
         }
     }
