@@ -64,10 +64,6 @@
     <Compile Include="Tasks\Functions\FrameFunctions\DEL.cs" />
     <Compile Include="Tasks\Functions\FrameFunctions\EllipsBuilder.cs" />
     <Compile Include="Tasks\Functions\FrameFunctions\FrameFunctionBuilder.cs" />
-    <Compile Include="Tasks\Functions\FrameFunctions\FSWPin.cs" />
-    <Compile Include="Tasks\Functions\FrameFunctions\FSWPinBuilder.cs" />
-    <Compile Include="Tasks\Functions\FrameFunctions\FSWShoulder.cs" />
-    <Compile Include="Tasks\Functions\FrameFunctions\FSWShoulderBuilder.cs" />
     <Compile Include="Tasks\Functions\FrameFunctions\SPH.cs" />
     <Compile Include="Tasks\Functions\FrameFunctions\SphereBuilder.cs" />
     <Compile Include="Tasks\Functions\Function.cs" />

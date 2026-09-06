@@ -170,7 +170,7 @@ namespace TestProject
         public void SortingByTimeAndTypeCheck_ShouldFail_WhenContainsIlligalSymbol(string[] strsIn)
         {
             var preProc = new PreProc.PreProc();
-            Assert.ThrowsException<Exception>( () => preProc.SortCompDataByTimeAndType(strsIn));
+            Assert.ThrowsException<DraftException>( () => preProc.SortCompDataByTimeAndType(strsIn));
         }
 
 
