@@ -1,11 +1,4 @@
 {
-  "ChemicalFile": "",
-  "ConvectionParameters": {
-    "ConvectionIsFile": false,
-    "ConvectionFile": "",
-    "ConvectionlLoad": [],
-    "Convection": false
-  },
   "TermalConvergence": {
     "Is_Switched_Tm": true,
     "Tm": 1500.0
@@ -17,14 +10,15 @@
   "TaskKind": 4,
   "CalculationMode": "Transient",
   "ActiveConditions": null,
-  "InitTemp": {},
+  "InputSets": [],
+  "InitialSet": null,
   "SaveRate": 0,
-  "RestartFile": "",
   "UpdMatrixIteration": 1,
   "Iterations": 0,
   "SolverSettings": {
     "MaxIter": 0,
-    "Solver": "Gauss_direct",
+    "Solver": "ConjugateGradient",
+    "MatrixStorage": "SymmetricCsr",
     "MaxRelaxation": 1.5,
     "Relaxation": 0.0,
     "Precision": 0.0,

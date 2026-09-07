@@ -9,7 +9,7 @@ namespace Project.TaskParameters
     /// Набор физических полей.
     /// </summary>
     [JsonConverter(typeof(StringEnumConverter))]
-    public enum PhysicalFieldSet
+    public enum PhysicalSetName
     {
         /// <summary>Термический набор.</summary>
         Thermal,
@@ -25,7 +25,7 @@ namespace Project.TaskParameters
     /// Физическая величина в наборе полей.
     /// </summary>
     [JsonConverter(typeof(StringEnumConverter))]
-    public enum PhysicalQuantity
+    public enum PhysicalFieldName
     {
         /// <summary>Температура.</summary>
         Temperature,
@@ -49,7 +49,7 @@ namespace Project.TaskParameters
     /// Источник набора физических полей.
     /// </summary>
     [JsonConverter(typeof(StringEnumConverter))]
-    public enum PhysicalFieldSource
+    public enum PhysicalSetSource
     {
         /// <summary>Значения заданы для элементных групп.</summary>
         Values,
@@ -61,10 +61,10 @@ namespace Project.TaskParameters
     /// Значение физической величины.
     /// </summary>
     [Serializable]
-    public sealed class PhysicalFieldValue
+    public sealed class PhysicalField
     {
         /// <summary>Физическая величина.</summary>
-        public PhysicalQuantity Quantity { get; set; }
+        public PhysicalFieldName Name { get; set; }
 
         /// <summary>Компоненты физической величины.</summary>
         public double[] Components { get; set; } = Array.Empty<double>();
@@ -74,17 +74,17 @@ namespace Project.TaskParameters
     /// Физический набор с единым источником.
     /// </summary>
     [Serializable]
-    public sealed class PhysicalField
+    public sealed class PhysicalSet
     {
         /// <summary>Набор физических полей.</summary>
-        public PhysicalFieldSet FieldSet { get; set; }
+        public PhysicalSetName FieldSet { get; set; }
 
         /// <summary>Источник значений набора.</summary>
-        public PhysicalFieldSource Source { get; set; }
+        public PhysicalSetSource Source { get; set; }
 
         /// <summary>Значения величин по именам элементных групп MatData.</summary>
         [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
-        public Dictionary<string, List<PhysicalFieldValue>> Values { get; set; } = new Dictionary<string, List<PhysicalFieldValue>>();
+        public Dictionary<string, List<PhysicalField>> Values { get; set; } = new Dictionary<string, List<PhysicalField>>();
 
         /// <summary>Имя файла базы результатов или шаблон поиска.</summary>
         public string FileName { get; set; } = "";

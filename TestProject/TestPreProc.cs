@@ -353,23 +353,24 @@ namespace TestProject
                     var json = File.ReadAllText(file);
                     var parameters = JsonConvert.DeserializeObject<MechanicalParameters>(json);
                     Assert.IsNotNull(parameters);
-                    var inputField = parameters.InputFields.Single(input => input.FieldSet == PhysicalFieldSet.Thermal);
-                    Assert.AreEqual(PhysicalFieldSource.ResultFile, inputField.Source);
+                    var inputField = parameters.InputSets.Single(input => input.FieldSet == PhysicalSetName.Thermal);
+                    Assert.AreEqual(PhysicalSetSource.ResultFile, inputField.Source);
                     Assert.AreEqual(0, inputField.Values.Count);
                     StringAssert.StartsWith(inputField.FileName, "термическая_");
-                    var initialField = parameters.InitialFields.Single(field => field.FieldSet == PhysicalFieldSet.Mechanical);
+                    var initialField = parameters.InitialSet;
                     Assert.IsNotNull(initialField);
-                    if (initialField.Source == PhysicalFieldSource.Values)
+                    Assert.AreEqual(PhysicalSetName.Mechanical, initialField.FieldSet);
+                    if (initialField.Source == PhysicalSetSource.Values)
                     {
                         Assert.IsTrue(initialField.Values.Count > 0);
                         Assert.IsTrue(initialField.Values.Values.All(values => values.Count == 1
-                            && values[0].Quantity == PhysicalQuantity.Temperature
+                            && values[0].Name == PhysicalFieldName.Temperature
                             && values[0].Components.Length == 1
                             && values[0].Components[0] == 20.0));
                     }
                     else
                     {
-                        Assert.AreEqual(PhysicalFieldSource.ResultFile, initialField.Source);
+                        Assert.AreEqual(PhysicalSetSource.ResultFile, initialField.Source);
                         StringAssert.StartsWith(initialField.FileName, "механическая_");
                     }
                     Assert.IsFalse(json.Contains("\"ThermalFile\""));
