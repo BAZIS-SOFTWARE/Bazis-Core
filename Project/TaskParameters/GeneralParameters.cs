@@ -44,12 +44,12 @@ namespace Project.TaskParameters
         /// Внешние физические поля.
         /// </summary>
         [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
-        public List<PhysicalField> InputFields { get; set; } = new List<PhysicalField>();
+        public List<PhysicalSet> InputSets { get; set; } = new List<PhysicalSet>();
         /// <summary>
-        /// Родные физические поля, задающие подтвержденное начальное состояние.
+        /// Родной набор физических полей, задающий подтвержденное начальное состояние.
         /// </summary>
         [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
-        public List<PhysicalField> InitialFields { get; set; } = new List<PhysicalField>();
+        public PhysicalSet? InitialSet { get; set; }
         public int SaveRate { get; set; }
 
         public int UpdMatrixIteration { get; set; } = 1;
@@ -61,9 +61,9 @@ namespace Project.TaskParameters
         /// <summary>
         /// Возвращает внешний набор физических полей.
         /// </summary>
-        public PhysicalField GetInputField(PhysicalFieldSet fieldSet)
+        public PhysicalSet GetInputField(PhysicalSetName fieldSet)
         {
-            var fields = (InputFields ?? new List<PhysicalField>()).Where(field => field.FieldSet == fieldSet).ToList();
+            var fields = (InputSets ?? new List<PhysicalSet>()).Where(field => field.FieldSet == fieldSet).ToList();
             if (fields.Count > 1)
                 throw new InvalidOperationException($"Several external sources are configured for field set {fieldSet}.");
 

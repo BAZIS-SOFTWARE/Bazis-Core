@@ -88,7 +88,7 @@
     <Compile Include="TaskParameters\ChemicalParameters.cs" />
     <Compile Include="TaskParameters\ConditionReference.cs" />
     <Compile Include="TaskParameters\GeneralParameters.cs" />
-    <Compile Include="TaskParameters\PhysicalField.cs" />
+    <Compile Include="TaskParameters\PhysicalSet.cs" />
     <Compile Include="TaskParameters\MechanicalConvergence.cs" />
     <Compile Include="TaskParameters\MechanicalParameters.cs" />
     <Compile Include="TaskParameters\SolverSettings.cs" />

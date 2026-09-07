@@ -129,24 +129,24 @@ namespace PreProc
 
             var pars = ParametrizeResultParameters<LoadData, BoundData, ResultParam>(data);
 
-            var initialField = new PhysicalField
+            var initialField = new PhysicalSet
             {
                 FieldSet = GetNativeFieldSet(pars[0].TaskKind),
-                Source = PhysicalFieldSource.Values,
+                Source = PhysicalSetSource.Values,
                 Values = matData
                     .Select(md => md.Group.Name)
                     .Distinct()
-                    .ToDictionary(groupName => groupName, _ => new List<PhysicalFieldValue>
+                    .ToDictionary(groupName => groupName, _ => new List<PhysicalField>
                     {
-                        new PhysicalFieldValue
+                        new PhysicalField
                         {
-                            Quantity = PhysicalQuantity.Temperature,
+                            Name = PhysicalFieldName.Temperature,
                             Components = new[] { 20.0 }
                         }
                     })
             };
 
-            pars[0].InitialFields.Add(initialField);
+            pars[0].InitialSet = initialField;
 
             return pars;
         }
@@ -452,14 +452,16 @@ namespace PreProc
         private void SetInitialFieldFromFile(GeneralParameters parameters, string fileName)
         {
             var fieldSet = GetNativeFieldSet(parameters.TaskKind);
-            var field = parameters.InitialFields.SingleOrDefault(field => field.FieldSet == fieldSet);
+            var field = parameters.InitialSet;
             if (field == null)
             {
-                field = new PhysicalField { FieldSet = fieldSet };
-                parameters.InitialFields.Add(field);
+                field = new PhysicalSet { FieldSet = fieldSet };
+                parameters.InitialSet = field;
             }
+            else if (field.FieldSet != fieldSet)
+                throw new InvalidOperationException($"The initial field set {field.FieldSet} does not match the task field set {fieldSet}.");
 
-            field.Source = PhysicalFieldSource.ResultFile;
+            field.Source = PhysicalSetSource.ResultFile;
             field.Values.Clear();
             field.FileName = fileName;
         }
@@ -467,17 +469,17 @@ namespace PreProc
         /// <summary>
         /// Задает внешний набор полей из результата другой задачи.
         /// </summary>
-        private void SetInputField(GeneralParameters parameters, PhysicalFieldSet fieldSet, string fileName)
+        private void SetInputField(GeneralParameters parameters, PhysicalSetName fieldSet, string fileName)
         {
-            parameters.InputFields ??= new List<PhysicalField>();
+            parameters.InputSets ??= new List<PhysicalSet>();
             var field = parameters.GetInputField(fieldSet);
             if (field == null)
             {
-                field = new PhysicalField { FieldSet = fieldSet };
-                parameters.InputFields.Add(field);
+                field = new PhysicalSet { FieldSet = fieldSet };
+                parameters.InputSets.Add(field);
             }
 
-            field.Source = PhysicalFieldSource.ResultFile;
+            field.Source = PhysicalSetSource.ResultFile;
             field.Values.Clear();
             field.FileName = fileName;
         }
@@ -485,13 +487,13 @@ namespace PreProc
         /// <summary>
         /// Возвращает родной набор полей для физической задачи.
         /// </summary>
-        private PhysicalFieldSet GetNativeFieldSet(TaskKind taskKind)
+        private PhysicalSetName GetNativeFieldSet(TaskKind taskKind)
         {
             return taskKind switch
             {
-                TaskKind.термическая => PhysicalFieldSet.Thermal,
-                TaskKind.механическая => PhysicalFieldSet.Mechanical,
-                TaskKind.химическая => PhysicalFieldSet.Chemical,
+                TaskKind.термическая => PhysicalSetName.Thermal,
+                TaskKind.механическая => PhysicalSetName.Mechanical,
+                TaskKind.химическая => PhysicalSetName.Chemical,
                 _ => throw new ArgumentOutOfRangeException(nameof(taskKind), taskKind, "The task kind does not have a native field set.")
             };
         }
