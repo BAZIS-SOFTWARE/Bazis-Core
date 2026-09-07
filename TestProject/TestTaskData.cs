@@ -338,7 +338,7 @@ namespace TestProject
             var parameters = new MechanicalParameters();
             var inputField = parameters.InputSets.Single();
 
-            Assert.AreEqual(PhysicalSetName.Thermal, inputField.FieldSet);
+            Assert.AreEqual(PhysicalSetName.Thermal, inputField.Name);
             Assert.AreEqual(PhysicalSetSource.Values, inputField.Source);
             Assert.AreEqual(0, inputField.Values.Count);
             Assert.AreEqual(CalculationMode.Stationary, parameters.CalculationMode);
@@ -350,7 +350,7 @@ namespace TestProject
             var parameters = new ChemicalParameters();
             var inputField = parameters.InputSets.Single();
 
-            Assert.AreEqual(PhysicalSetName.Thermal, inputField.FieldSet);
+            Assert.AreEqual(PhysicalSetName.Thermal, inputField.Name);
             Assert.AreEqual(PhysicalSetSource.Values, inputField.Source);
             Assert.AreEqual(0, inputField.Values.Count);
         }
@@ -365,9 +365,9 @@ namespace TestProject
                 {
                     new PhysicalSet
                     {
-                        FieldSet = PhysicalSetName.Thermal,
+                        Name = PhysicalSetName.Thermal,
                         Source = PhysicalSetSource.ResultFile,
-                        FileName = "термическая.db"
+                        File = "термическая.db"
                     }
                 }
             };
@@ -378,9 +378,9 @@ namespace TestProject
             Assert.IsNotNull(parameters);
             StringAssert.Contains(json, "\"InputSets\"");
             var inputField = parameters.InputSets.Single();
-            Assert.AreEqual(PhysicalSetName.Thermal, inputField.FieldSet);
+            Assert.AreEqual(PhysicalSetName.Thermal, inputField.Name);
             Assert.AreEqual(PhysicalSetSource.ResultFile, inputField.Source);
-            Assert.AreEqual("термическая.db", inputField.FileName);
+            Assert.AreEqual("термическая.db", inputField.File);
             Assert.AreEqual(0, inputField.Values.Count);
         }
 
@@ -392,7 +392,7 @@ namespace TestProject
                 SolverSettings = CreateSymmetricSolverSettings(),
                 InitialSet = new PhysicalSet
                 {
-                    FieldSet = PhysicalSetName.Thermal,
+                    Name = PhysicalSetName.Thermal,
                     Source = PhysicalSetSource.Values,
                     Values = new Dictionary<string, List<PhysicalField>>
                     {
@@ -415,7 +415,7 @@ namespace TestProject
             StringAssert.Contains(json, "\"InitialSet\"");
             var field = parameters.InitialSet;
             Assert.IsNotNull(field);
-            Assert.AreEqual(PhysicalSetName.Thermal, field.FieldSet);
+            Assert.AreEqual(PhysicalSetName.Thermal, field.Name);
             Assert.AreEqual(PhysicalSetSource.Values, field.Source);
             Assert.AreEqual(20.0, field.Values["body"].Single().Components.Single());
             Assert.AreEqual(500.0, field.Values["weld"].Single().Components.Single());
@@ -429,9 +429,9 @@ namespace TestProject
                 SolverSettings = CreateSymmetricSolverSettings(),
                 InitialSet = new PhysicalSet
                 {
-                    FieldSet = PhysicalSetName.Thermal,
+                    Name = PhysicalSetName.Thermal,
                     Source = PhysicalSetSource.ResultFile,
-                    FileName = "термическая_1_0_3.db"
+                    File = "термическая_1_0_3.db"
                 }
             };
 
@@ -441,9 +441,9 @@ namespace TestProject
             Assert.IsNotNull(parameters);
             var field = parameters.InitialSet;
             Assert.IsNotNull(field);
-            Assert.AreEqual(PhysicalSetName.Thermal, field.FieldSet);
+            Assert.AreEqual(PhysicalSetName.Thermal, field.Name);
             Assert.AreEqual(PhysicalSetSource.ResultFile, field.Source);
-            Assert.AreEqual("термическая_1_0_3.db", field.FileName);
+            Assert.AreEqual("термическая_1_0_3.db", field.File);
             Assert.AreEqual(0, field.Values.Count);
         }
 

@@ -131,7 +131,7 @@ namespace PreProc
 
             var initialField = new PhysicalSet
             {
-                FieldSet = GetNativeFieldSet(pars[0].TaskKind),
+                Name = GetNativeFieldSet(pars[0].TaskKind),
                 Source = PhysicalSetSource.Values,
                 Values = matData
                     .Select(md => md.Group.Name)
@@ -455,15 +455,15 @@ namespace PreProc
             var field = parameters.InitialSet;
             if (field == null)
             {
-                field = new PhysicalSet { FieldSet = fieldSet };
+                field = new PhysicalSet { Name = fieldSet };
                 parameters.InitialSet = field;
             }
-            else if (field.FieldSet != fieldSet)
-                throw new InvalidOperationException($"The initial field set {field.FieldSet} does not match the task field set {fieldSet}.");
+            else if (field.Name != fieldSet)
+                throw new InvalidOperationException($"The initial field set {field.Name} does not match the task field set {fieldSet}.");
 
             field.Source = PhysicalSetSource.ResultFile;
             field.Values.Clear();
-            field.FileName = fileName;
+            field.File = fileName;
         }
 
         /// <summary>
@@ -475,13 +475,13 @@ namespace PreProc
             var field = parameters.GetInputField(fieldSet);
             if (field == null)
             {
-                field = new PhysicalSet { FieldSet = fieldSet };
+                field = new PhysicalSet { Name = fieldSet };
                 parameters.InputSets.Add(field);
             }
 
             field.Source = PhysicalSetSource.ResultFile;
             field.Values.Clear();
-            field.FileName = fileName;
+            field.File = fileName;
         }
 
         /// <summary>

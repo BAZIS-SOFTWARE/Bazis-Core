@@ -77,7 +77,7 @@ namespace Project.TaskParameters
     public sealed class PhysicalSet
     {
         /// <summary>Набор физических полей.</summary>
-        public PhysicalSetName FieldSet { get; set; }
+        public PhysicalSetName Name { get; set; }
 
         /// <summary>Источник значений набора.</summary>
         public PhysicalSetSource Source { get; set; }
@@ -87,10 +87,10 @@ namespace Project.TaskParameters
         public Dictionary<string, List<PhysicalField>> Values { get; set; } = new Dictionary<string, List<PhysicalField>>();
 
         /// <summary>Имя файла базы результатов или шаблон поиска.</summary>
-        public string FileName { get; set; } = "";
+        public string File { get; set; } = "";
 
         /// <summary>Признак отсутствия файла результатов.</summary>
         [JsonIgnore]
-        public bool IsFileEmpty => string.IsNullOrWhiteSpace(FileName);
+        public bool IsFileEmpty => string.IsNullOrWhiteSpace(File);
     }
 }
