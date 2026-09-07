@@ -12,7 +12,7 @@ namespace Project.TaskParameters
             TaskKind = Interfaces.Tasks.TaskKind.химическая;
             InputSets.Add(new PhysicalSet
             {
-                FieldSet = PhysicalSetName.Thermal,
+                Name = PhysicalSetName.Thermal,
                 Source = PhysicalSetSource.Values
             });
         }

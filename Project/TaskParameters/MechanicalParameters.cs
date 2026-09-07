@@ -13,7 +13,7 @@ namespace Project.TaskParameters
             CalculationMode = CalculationMode.Stationary;
             InputSets.Add(new PhysicalSet
             {
-                FieldSet = PhysicalSetName.Thermal,
+                Name = PhysicalSetName.Thermal,
                 Source = PhysicalSetSource.Values
             });
         }

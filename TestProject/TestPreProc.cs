@@ -353,13 +353,13 @@ namespace TestProject
                     var json = File.ReadAllText(file);
                     var parameters = JsonConvert.DeserializeObject<MechanicalParameters>(json);
                     Assert.IsNotNull(parameters);
-                    var inputField = parameters.InputSets.Single(input => input.FieldSet == PhysicalSetName.Thermal);
+                    var inputField = parameters.InputSets.Single(input => input.Name == PhysicalSetName.Thermal);
                     Assert.AreEqual(PhysicalSetSource.ResultFile, inputField.Source);
                     Assert.AreEqual(0, inputField.Values.Count);
-                    StringAssert.StartsWith(inputField.FileName, "термическая_");
+                    StringAssert.StartsWith(inputField.File, "термическая_");
                     var initialField = parameters.InitialSet;
                     Assert.IsNotNull(initialField);
-                    Assert.AreEqual(PhysicalSetName.Mechanical, initialField.FieldSet);
+                    Assert.AreEqual(PhysicalSetName.Mechanical, initialField.Name);
                     if (initialField.Source == PhysicalSetSource.Values)
                     {
                         Assert.IsTrue(initialField.Values.Count > 0);
@@ -371,7 +371,7 @@ namespace TestProject
                     else
                     {
                         Assert.AreEqual(PhysicalSetSource.ResultFile, initialField.Source);
-                        StringAssert.StartsWith(initialField.FileName, "механическая_");
+                        StringAssert.StartsWith(initialField.File, "механическая_");
                     }
                     Assert.IsFalse(json.Contains("\"ThermalFile\""));
                     Assert.IsFalse(json.Contains("\"ThermalLoadIsFile\""));

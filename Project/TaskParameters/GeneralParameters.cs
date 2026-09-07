@@ -63,7 +63,7 @@ namespace Project.TaskParameters
         /// </summary>
         public PhysicalSet GetInputField(PhysicalSetName fieldSet)
         {
-            var fields = (InputSets ?? new List<PhysicalSet>()).Where(field => field.FieldSet == fieldSet).ToList();
+            var fields = (InputSets ?? new List<PhysicalSet>()).Where(field => field.Name == fieldSet).ToList();
             if (fields.Count > 1)
                 throw new InvalidOperationException($"Several external sources are configured for field set {fieldSet}.");
 
