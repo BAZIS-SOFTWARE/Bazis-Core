@@ -33,27 +33,35 @@ namespace Model.MeshObjects
                 else
                 {
                     var int0 = CreateIntegrationPoint(1, 0.5774, 0.5774, 0.5774);
+                    int0.Index = 0;
                     intPoints.Add(int0);
 
                     var int1 = CreateIntegrationPoint(1, 0.5774, 0.5774, -0.5774);
+                    int1.Index = 1;
                     intPoints.Add(int1);
 
                     var int2 = CreateIntegrationPoint(1, 0.5774, -0.5774, 0.5774);
+                    int2.Index = 2;
                     intPoints.Add(int2);
 
                     var int3 = CreateIntegrationPoint(1, 0.5774, -0.5774, -0.5774);
+                    int3.Index = 3;
                     intPoints.Add(int3);
 
                     var int4 = CreateIntegrationPoint(1, -0.5774, 0.5774, 0.5774);
+                    int4.Index = 4;
                     intPoints.Add(int4);
 
                     var int5 = CreateIntegrationPoint(1, -0.5774, 0.5774, -0.5774);
+                    int5.Index = 5;
                     intPoints.Add(int5);
 
                     var int6 = CreateIntegrationPoint(1, -0.5774, -0.5774, 0.5774);
+                    int6.Index = 6;
                     intPoints.Add(int6);
 
                     var int7 = CreateIntegrationPoint(1, -0.5774, -0.5774, -0.5774);
+                    int7.Index = 7;
                     intPoints.Add(int7);
                 }
             }

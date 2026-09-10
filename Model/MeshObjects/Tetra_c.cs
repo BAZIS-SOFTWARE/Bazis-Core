@@ -35,15 +35,19 @@ namespace Model.MeshObjects
                     var a = 0.58541020;
                     var b = 0.13819660;
                     var int0 = CreateIntegrationPoint(1.0 / 24, a, b, b);
+                    int0.Index = 0;
                     intPoints.Add(int0);
 
                     var int1 = CreateIntegrationPoint(1.0 / 24, b, a, b);
+                    int1.Index = 1;
                     intPoints.Add(int1);
 
                     var int2 = CreateIntegrationPoint(1.0 / 24, b, b, a);
+                    int2.Index = 2;         
                     intPoints.Add(int2);
 
                     var int3 = CreateIntegrationPoint(1.0 / 24, b, b, b);
+                    int3.Index = 3; 
                     intPoints.Add(int3);
                 }
             }

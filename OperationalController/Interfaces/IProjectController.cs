@@ -37,11 +37,11 @@ namespace OperationalController
         /// <summary>
         /// ProjectKind
         /// </summary>
-        TaskKind ProjectKind { get; set; }
+        TaskKind TaskKind { get; }
         /// <summary>
         /// GetProjectType
         /// </summary>
-        TaskType ProjectType { get; set; }
+        TaskType TaskType { get; }
         /// <summary>
         /// TaskData
         /// </summary>

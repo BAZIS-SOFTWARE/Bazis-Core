@@ -40,8 +40,8 @@ namespace TestProject
 
 
             //assert
-            Assert.AreEqual(controller.ProjectKind, taskKind);
-            Assert.AreEqual(controller.ProjectType, taskType);
+            Assert.AreEqual(controller.TaskKind, taskKind);
+            Assert.AreEqual(controller.TaskType, taskType);
             Assert.AreNotEqual(controller.GetAllCondData().First(), null);
         }
 
