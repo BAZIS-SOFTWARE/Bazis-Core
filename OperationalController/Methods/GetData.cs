@@ -224,5 +224,6 @@ namespace OperationalController
         public Tuple<double[], double[]> GetParametrizationBounds(int dim, int tag) => GmshController.Gmsh.Model.GetParametrizationBounds(dim, tag);
         public string GetType(int dim, int tag) => GmshController.Gmsh.Model.GetType(dim, tag);
         public int[] GetBoundary(int[] dimTags, bool combined = true, bool oriented = true, bool recursive = false) => GmshController.Gmsh.Model.GetBoundary(dimTags, combined, oriented, recursive);
+        public double GetCurveLength(int curveTag) => GmshController.CalcCurveLength(curveTag);
     }
 }
