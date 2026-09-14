@@ -79,8 +79,8 @@ XX - 1д случай
 Если в поле значение написано ноль - это является ошибкой.
 То есть одиночный 0 недопустим, а T 0 и v 0,0,0 допустимы.
 
-Например для механики: T value,ph value,value,value,value,value
-Например для гидродинамики: v value,value,value,p value
+Например для механики - Группа : T value,ph value,value,value,value,value
+Например для гидродинамики - Группа : v value,value,value,p value
 
 ## Источники истины
 

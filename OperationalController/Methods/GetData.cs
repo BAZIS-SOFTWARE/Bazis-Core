@@ -29,16 +29,16 @@ namespace OperationalController
         }
 
         /// <inheritdoc/>
-        public TaskKind ProjectKind
+        public TaskKind TaskKind
         {
             get { return TaskData.TaskKind; }
-            set { TaskData.Clear(); TaskData.TaskKind = value; }
+            //set { TaskData.Clear(); TaskData.TaskKind = value; }
         }
         /// <inheritdoc/>
-        public TaskType ProjectType
+        public TaskType TaskType
         {
             get { return TaskData.TaskType; }
-            set { TaskData.Clear(); TaskData.TaskType = value; }
+            //set { TaskData.Clear(); TaskData.TaskType = value; }
         }
 
         public IEnumerable<IModelObject> GetAdjacentGeometryObjects(IModelObject obj, int direction)
