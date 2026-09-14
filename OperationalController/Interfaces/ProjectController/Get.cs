@@ -158,5 +158,12 @@ namespace OperationalController
         /// <param name="recursive">Если <c>true</c>, обрабатывать границу рекурсивно.</param>
         /// <returns>Массив номеров сущностей, составляющих границу.</returns>
         int[] GetBoundary(int[] dimTags, bool combined = true, bool oriented = true, bool recursive = false);
+
+        /// <summary>
+        /// Возвращает длину кривой по её тегу.
+        /// </summary>
+        /// <param name="curveTag">Тег (номер) кривой в модели.</param>
+        /// <returns>Длина кривой в единицах модели (double). При ошибке реализация может выбросить исключение.</returns>
+        double GetCurveLength(int curveTag);
     }
 }
