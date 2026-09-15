@@ -4,6 +4,7 @@ using Model.IO;
 using Model.IO.STL;
 using Project.IO;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
@@ -234,7 +235,7 @@ namespace OperationalController
         }
         /// <inheritdoc/>
 
-        public void Append(string path)
+        public IReadOnlyList<string> Append(string path)
         {
             if (project == null)
                 throw new Exception("Проект не создан");
@@ -266,7 +267,7 @@ namespace OperationalController
             };
             var modelData = loader.Load(path);
 
-            project.ModelData.Append(modelData);
+            return project.ModelData.Append(modelData);
         }
 
 

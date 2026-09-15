@@ -26,21 +26,24 @@ namespace Model
         public VolumeData VolumeData { get; } = new VolumeData();
         /// <inheritdoc/>
 
-        public void Append(IModelData modelData)
+        public IReadOnlyList<string> Append(IModelData modelData)
         {
-            ObjectData.NodesSet.Append(modelData.ObjectData.NodesSet);
+            var appendedNames = new List<string>();
+            appendedNames.Add(ObjectData.NodesSet.Append(modelData.ObjectData.NodesSet));
 
-            ObjectData.E1DCollection.Append(modelData.ObjectData.E1DCollection);
-            ObjectData.E2DCollection.Append(modelData.ObjectData.E2DCollection);
-            ObjectData.E3DCollection.Append(modelData.ObjectData.E3DCollection);
+            appendedNames.AddRange(ObjectData.E1DCollection.Append(modelData.ObjectData.E1DCollection));
+            appendedNames.AddRange(ObjectData.E2DCollection.Append(modelData.ObjectData.E2DCollection));
+            appendedNames.AddRange(ObjectData.E3DCollection.Append(modelData.ObjectData.E3DCollection));
 
-            ObjectData.PointsSet.Append(modelData.ObjectData.PointsSet);
+            appendedNames.Add(ObjectData.PointsSet.Append(modelData.ObjectData.PointsSet));
 
-            ObjectData.CurveSet.Append(modelData.ObjectData.CurveSet);
-            ObjectData.SurfaceSet.Append(modelData.ObjectData.SurfaceSet);
+            appendedNames.Add(ObjectData.CurveSet.Append(modelData.ObjectData.CurveSet));
+            appendedNames.Add(ObjectData.SurfaceSet.Append(modelData.ObjectData.SurfaceSet));
 
             foreach (var item in modelData.GroupData)
                 GroupData.Add(item);
+
+            return appendedNames;
         }
 
 

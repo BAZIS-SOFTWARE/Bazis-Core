@@ -224,8 +224,9 @@ namespace ModelTests
             set1.Add(ini_fNumber, new Triangle_c(ini_fNumber, new[] { node0, node1, node2 }));
             var set2 = new ObjectsSet<Element2D>("e2D");
             set2.Add(ini_sNumber, new Triangle_c(ini_sNumber, new[] { node0, node1, node2 }));
-            set1.Append(set2);
+            var appendedName = set1.Append(set2);
             //assert
+            Assert.AreEqual(set1.Name, appendedName);
             Assert.AreEqual(set1.Count, 2);
             Assert.AreEqual(set1[res_fNumber].Number, res_fNumber);
             Assert.AreEqual(set1[res_sNumber].Number, res_sNumber);
@@ -427,9 +428,10 @@ namespace ModelTests
             var set2 = new ObjectsSet<Element2D>("e2D_2");
 
             //act
-            set1.Append(set2);
+            var appendedName = set1.Append(set2);
 
             //assert
+            Assert.AreEqual(set1.Name, appendedName);
             Assert.AreEqual(2, set1.Count);
             Assert.AreEqual(0, set1[0].Number);
             Assert.AreEqual(1, set1[1].Number);
@@ -448,9 +450,10 @@ namespace ModelTests
             set2.Add(6, new Triangle_c(6, nodes));
 
             //act
-            set1.Append(set2);
+            var appendedName = set1.Append(set2);
 
             //assert
+            Assert.AreEqual(set1.Name, appendedName);
             Assert.AreEqual(2, set1.Count);
             Assert.AreEqual(5, set1[5].Number);
             Assert.AreEqual(6, set1[6].Number);
@@ -464,9 +467,10 @@ namespace ModelTests
             var set2 = new ObjectsSet<Element2D>("e2D_2");
 
             //act
-            set1.Append(set2);
+            var appendedName = set1.Append(set2);
 
             //assert
+            Assert.AreEqual(set1.Name, appendedName);
             Assert.AreEqual(0, set1.Count);
         }
 
@@ -494,14 +498,18 @@ namespace ModelTests
             foreach (var node in appendedNodes)
                 appendedModel.ObjectData.NodesSet.Add(node.Number, node);
 
-            var appendedSet = new ObjectsSet<Element2D>("appended_mesh");
+            var appendedSet = new ObjectsSet<Element2D>("mesh");
             appendedSet.Add(0, new Triangle_c(0, appendedNodes));
             appendedModel.ObjectData.E2DCollection.Add(appendedSet);
 
             //act
-            model.Append(appendedModel);
+            var appendedNames = ((IModelData)model).Append(appendedModel);
 
             //assert
+            CollectionAssert.AreEqual(
+                new[] { "Узел", "mesh_1", "Точка", "Кривая", "Поверхность" },
+                appendedNames.ToArray());
+            Assert.AreSame(appendedSet[0], model.ObjectData.E2DCollection["mesh_1"].Values.Single());
             Assert.AreEqual(6, model.ObjectData.NodesSet.Count);
             Assert.AreEqual(2, model.ObjectData.E2DCollection.Count);
             Assert.AreEqual(1, model.ObjectData.PointsSet.Count);
