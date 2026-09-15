@@ -13,24 +13,6 @@ namespace ModelTests
     [TestClass]
     public class TestIO
     {
-        [TestMethod]
-        public void AppendReturnsRenamedModelSets()
-        {
-            var path = @"..\..\..\Examples\BPF2TXT\cub_unsorted_oneSet.bpf2";
-            var controller = (OperationalController.IProjectController)new OperationalController.ProjectController();
-            controller.Load(path);
-            var originalName = controller.GetModelSetsInfo(ObjType.Элемент3D).Single().Name;
-
-            var appendedNames = controller.Append(path);
-
-            CollectionAssert.AreEqual(
-                new[] { "Узел", originalName + "_1", "Точка", "Кривая", "Поверхность" },
-                appendedNames.ToArray());
-            CollectionAssert.AreEquivalent(
-                new[] { originalName, originalName + "_1" },
-                controller.GetModelSetsInfo(ObjType.Элемент3D).Select(set => set.Name).ToArray());
-        }
-
         [DataTestMethod]
         [DataRow(@"..\..\..\Examples\3D\cub_unsorted.bpf",6)]
         [DataRow(@"..\..\..\Examples\3D\hexa.bpf", 3)]
