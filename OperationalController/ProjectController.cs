@@ -22,7 +22,7 @@ namespace OperationalController
     {
 /// <inheritdoc/>
 
-        private readonly IGmshController gmshController = new GmshController.GmshController();
+        public readonly IGmshController gmshController = new GmshController.GmshController();
 
         private IGmshController GmshController => gmshController.IsInitialized
             ? gmshController
