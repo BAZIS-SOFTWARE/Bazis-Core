@@ -32,6 +32,10 @@ namespace OperationalController
         /// <param name="gmshDllPath">Путь к библиотеке Gmsh.</param>
         void InitializeGeometry(string gmshDllPath);
         /// <summary>
+        /// Завершает работу контроллера геометрии.
+        /// </summary>
+        void UnloadGeometry();
+        /// <summary>
         /// FunctionsDB
         /// </summary>
         FunctionDBData FunctionsDB { get; set; }
@@ -257,6 +261,44 @@ namespace OperationalController
         /// <param name="order"></param>
         void ChangeMeshSetOrder(int elemDim, string name, int order);
 
+        /// <summary>
+        /// Устанавливает минимальный размер элемента сетки.
+        /// </summary>
+        void SetMeshMinimumSize(double size);
+        /// <summary>
+        /// Устанавливает максимальный размер элемента сетки.
+        /// </summary>
+        void SetMeshMaximumSize(double size);
+        /// <summary>
+        /// Устанавливает алгоритм построения двумерной сетки.
+        /// </summary>
+        void SetMeshAlgorithm2D(MeshAlgorithm2D algorithm);
+        /// <summary>
+        /// Устанавливает алгоритм построения трёхмерной сетки.
+        /// </summary>
+        void SetMeshAlgorithm3D(MeshAlgorithm3D algorithm);
+        /// <summary>
+        /// Устанавливает масштабный коэффициент размера элементов сетки.
+        /// </summary>
+        void SetMeshSizeFactor(double factor);
+        /// <summary>
+        /// Экспортирует геометрическую модель.
+        /// </summary>
+        /// <param name="filePath">Путь к экспортируемому файлу.</param>
+        void ExportGeometry(string filePath);
+        /// <summary>
+        /// Очищает сетку геометрического контроллера.
+        /// </summary>
+        void ClearGeometryMesh();
+        /// <summary>
+        /// Очищает сетку геометрических сущностей заданной размерности.
+        /// </summary>
+        /// <param name="dimension">Размерность геометрических сущностей.</param>
+        void ClearGeometryMesh(int dimension);
+        /// <summary>
+        /// Возвращает последнюю ошибку геометрического контроллера.
+        /// </summary>
+        string GetGeometryLastError();
         /// <summary>
         /// GenerateMesh
         /// </summary>

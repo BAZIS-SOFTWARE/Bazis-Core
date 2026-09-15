@@ -60,6 +60,17 @@ namespace OperationalController
                 throw new InvalidOperationException("Gmsh initialization failed.");
         }
 
+        /// <summary>
+        /// Завершает работу контроллера геометрии.
+        /// </summary>
+        public void UnloadGeometry()
+        {
+            if (!GmshController.IsInitialized)
+                return;
+
+            GmshController.Unload();
+        }
+
         IProjectData project;
 
         ISelectionHelper selectionHelper { get; set; } = new SelectionHelper();
