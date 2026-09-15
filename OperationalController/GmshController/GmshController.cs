@@ -32,6 +32,9 @@ namespace OperationalController.GmshController
         public Gmsh Gmsh { get; private set; }
 
         /// <inheritdoc/>
+        public bool IsInitialized => Gmsh != null && Gmsh.IsInitialized() == 1;
+
+        /// <inheritdoc/>
         public void Load(string dllToLoad)
         {
             GmshKernel.DLL = GmshKernel.LoadLibrary(dllToLoad);

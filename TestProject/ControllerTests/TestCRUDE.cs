@@ -142,8 +142,7 @@ namespace TestProject
             // arrange
             var control = new ProjectController();
             control.CreateProject(@"newProj.bpf2");
-            control.GmshController.Load(@"..\..\..\..\GmshApi\gmsh.dll");
-            control.GmshController.Gmsh.Model.Add("Test");
+            control.InitializeGeometry(@"..\..\..\..\GmshApi\gmsh.dll");
 
             // подготовка тестовой геометрии:
             // point(1), curve(1), surface(1)

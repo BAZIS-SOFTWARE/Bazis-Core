@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.1.1" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GmshApi\GmshApi.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\GmshApi\gmsh.dll" Link="gmsh.dll" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\TestModelCore\Examples\CAD\block.igs" Link="Examples\CAD\block.igs" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\TestModelCore\Examples\CAD\cilindr.step" Link="Examples\CAD\cilindr.step" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\TestModelCore\Examples\CAD\nasos.step" Link="Examples\CAD\nasos.step" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\TestModelCore\Examples\CAD\screw.step" Link="Examples\CAD\screw.step" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\TestModelCore\Examples\CAD\Tavr.step" Link="Examples\CAD\Tavr.step" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\TestModelCore\Examples\CAD\weld_seam_1.step" Link="Examples\CAD\weld_seam_1.step" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\TestModelCore\Examples\CAD\weld_seam_2.step" Link="Examples\CAD\weld_seam_2.step" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\TestModelCore\Examples\GMSHAPI\sphere.geo" Link="Examples\GMSHAPI\sphere.geo" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

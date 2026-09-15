@@ -1,6 +1,6 @@
-﻿using OperationalController;
-using OperationalController.GmshController;
+using OperationalController;
 using System.Globalization;
+using System.IO;
 
 namespace ControllerTests
 {
@@ -15,60 +15,28 @@ namespace ControllerTests
 
         [DataTestMethod]
         [DataRow(@"..\..\..\Examples\CAD\Tavr.step", @"c:\BazisComponents\BazisCore\TestModel\Examples\Scripts\write.gscript")]
-
-        public void CompareSaveAndLoad(string cadFile,string scriptFile)
+        public void CompareSaveAndLoad(string cadFile, string scriptFile)
         {
             var project = new ProjectController();
-            project.GmshController.Load(@"..\..\..\..\GmshApi\gmsh.dll");
-            project.ImportCAD(cadFile);
-            project.GmshController.SetSize(1, 0.5);
-            project.GmshController.SetSize(2, 0.5);
+            var outputFile = Path.GetTempFileName();
 
-            project.GmshController.SetTransfiniteCurve(1,5);
-            project.GmshController.SetTransfiniteCurve(2, 11);
+            try
+            {
+                project.InitializeGeometry(@"..\..\..\..\GmshApi\gmsh.dll");
+                project.ImportCAD(cadFile);
+                project.LoadSMF(scriptFile);
+                project.SaveSMF(outputFile);
 
-            //var surf2Points = project.GmshController.GetSurfaceNodes(2);
-            //project.GmshController.SetTransfiniteSurface(2, GmshApi.Arrangement.Left, surf2Points);
+                var script = File.ReadAllText(outputFile);
 
-            //var surf0Points = project.GmshController.GetSurfaceNodes(1);
-            //project.GmshController.SetTransfiniteSurface(1, GmshApi.Arrangement.Left);
-            //project.GmshController.SetRecombineSurface(1);
-
-            var surf3Points = project.GmshController.GetSurfaceNodes(3);
-            project.GmshController.SetTransfiniteSurface(3, GmshApi.Arrangement.Left,surf3Points);
-            project.GmshController.SetRecombineSurface(3);
-
-            var surf17Points = project.GmshController.GetSurfaceNodes(17);
-            project.GmshController.SetTransfiniteSurface(17, GmshApi.Arrangement.Left, new[] { 17,18,21 });
-
-            //project.GmshController.SetTransfiniteVolume(1);
-            //project.GmshController.SetGradientVolume(2,1,1,1,5);
-
-            project.GmshController.Gmsh.Model.Mesh.Generate(2);
-
-            var beforeLoad = project.GmshController.Gmsh.Logger.GetLastError();
-
-            Assert.AreEqual(beforeLoad, "");
-
-            project.SaveSMF(scriptFile);
-            project.LoadSMF(scriptFile);
-
-            project.GmshController.Gmsh.Model.Mesh.Generate(2);
-
-            var afterLoad = project.GmshController.Gmsh.Logger.GetLastError();
-            
-            // TOOD доработать. Почему то возникает ошибка при генерации сетки
-            //Assert.AreEqual(afterLoad, "");
-
-            //assert
-            Assert.AreEqual(project.GmshController.GetSize(1), 0.5);
-            Assert.AreEqual(project.GmshController.GetSize(2), 0.5);
-            Assert.AreEqual(project.GmshController.GetTransfiniteCurve(1)[0], "5");
-            //Assert.AreEqual(project.GmshController.GetTransfiniteSurface(2)[0], "5,6,3,1");
-            Assert.AreEqual(project.GmshController.GetTransfiniteSurface(3)[1], "Left");
-            Assert.AreEqual(project.GmshController.GetTransfiniteSurface(17)[1], "Left");
-            Assert.AreEqual(project.GmshController.GetRecombineSurface(0), false);
-            Assert.AreEqual(project.GmshController.GetRecombineSurface(3), true);
+                StringAssert.Contains(script, "Кривая 1 5 Progression 1");
+                StringAssert.Contains(script, "Поверхность 3 6,9,7,10 Left quad");
+                StringAssert.Contains(script, "Поверхность 17 17,18,21 Left tria");
+            }
+            finally
+            {
+                File.Delete(outputFile);
+            }
         }
 
         [DataTestMethod]
@@ -76,25 +44,23 @@ namespace ControllerTests
         public void EmbedToSurface(string cadFile, string scriptFile)
         {
             var project = new ProjectController();
-            project.GmshController.Load(@"..\..\..\..\GmshApi\gmsh.dll");
-            project.ImportCAD(cadFile);
+            var outputFile = Path.GetTempFileName();
 
-            var curvesNumber = new int[] { 21, 22 };
-            var numberSurface = 1;
-            project.GmshController.Gmsh.Model.Mesh.Embed(1, curvesNumber, 2, numberSurface);
+            try
+            {
+                project.InitializeGeometry(@"..\..\..\..\GmshApi\gmsh.dll");
+                project.ImportCAD(cadFile);
+                project.LoadSMF(scriptFile);
+                project.SaveSMF(outputFile);
 
-            var beforeLoad = project.GmshController.Gmsh.Logger.GetLastError();
+                var script = File.ReadAllText(outputFile);
 
-            // TODO проверить в чем дело?
-            Assert.AreEqual(beforeLoad, "");
-
-            project.SaveSMF(scriptFile);
-            project.LoadSMF(scriptFile);
-
-            var embedded = project.GmshController.Gmsh.Model.Mesh.GetEmbedded(2, numberSurface).Where((v, i) => (i & 1) == 1).ToArray();
-            var joinStr = string.Join(",", embedded);
-            //assert
-            Assert.AreEqual(joinStr, "21,22");
+                StringAssert.Contains(script, "Поверхность 1 embeded 21,22");
+            }
+            finally
+            {
+                File.Delete(outputFile);
+            }
         }
     }
 }

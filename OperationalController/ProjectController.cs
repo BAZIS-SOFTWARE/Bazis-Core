@@ -22,7 +22,29 @@ namespace OperationalController
     {
 /// <inheritdoc/>
 
-        public IGmshController GmshController { get; set; } = new GmshController.GmshController();
+        private readonly IGmshController gmshController = new GmshController.GmshController();
+
+        private IGmshController GmshController => gmshController.IsInitialized
+            ? gmshController
+            : throw new InvalidOperationException("Geometry controller is not initialized.");
+
+        /// <summary>
+        /// Инициализирует контроллер геометрии для текущего проекта.
+        /// </summary>
+        /// <param name="gmshDllPath">Путь к библиотеке Gmsh.</param>
+        public void InitializeGeometry(string gmshDllPath)
+        {
+            if (string.IsNullOrWhiteSpace(gmshDllPath))
+                throw new ArgumentException("Gmsh DLL path is not specified.", nameof(gmshDllPath));
+
+            if (gmshController.IsInitialized)
+                throw new InvalidOperationException("Geometry controller is already initialized.");
+
+            gmshController.Load(gmshDllPath);
+
+            if (!gmshController.IsInitialized)
+                throw new InvalidOperationException("Gmsh initialization failed.");
+        }
 
         IProjectData project;
 

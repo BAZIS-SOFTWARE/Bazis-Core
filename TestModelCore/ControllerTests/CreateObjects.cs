@@ -127,9 +127,7 @@ namespace ControllerTests
         {
             var project = new ProjectController();
             project.CreateProject(@"newProj.bpf2");
-            project.GmshController.Load(@"..\..\..\..\GmshApi\gmsh.dll");
-
-            project.GmshController.Gmsh.Model.Add("line");
+            project.InitializeGeometry(@"..\..\..\..\GmshApi\gmsh.dll");
 
             var start = project.CreatePoint(0, 0, 0);
             var middle = project.CreatePoint(2, 2, 0);
@@ -170,12 +168,21 @@ namespace ControllerTests
             Assert.AreEqual(plane, p.Number);
         }
 
+        [TestMethod]
+        public void CreatePoint_ShouldThrow_WhenGeometryIsNotInitialized()
+        {
+            var project = new ProjectController();
+            project.CreateProject(@"newProj.bpf2");
+
+            Assert.ThrowsException<InvalidOperationException>(() => project.CreatePoint(0, 0, 0));
+        }
+
 
         [TestMethod]
         public void ExtrudeGeometry()
         {
             var project = new ProjectController();
-            project.GmshController.Load(@"..\..\..\..\GmshApi\gmsh.dll");
+            project.InitializeGeometry(@"..\..\..\..\GmshApi\gmsh.dll");
             //project.CreateProject(@"newProj.bpf2");
             var s = @"..\..\..\Examples\CAD\model1.stp";
             
@@ -188,11 +195,8 @@ namespace ControllerTests
 
             var plane = project.CreateSurface(new int[] { 11, line2, line3 });
 
-            project.GmshController.Gmsh.Model.Mesh.Clear();
             project.ClearModelCollection(ObjType.Узел);
             project.GenerateMesh(3);
-
-            var error = project.GmshController.Gmsh.Logger.GetLastError();
 
             var setName = project.ExtrudeElement3DAlongCurve(plane, [1],1,1,false);
 
@@ -207,7 +211,7 @@ namespace ControllerTests
         public void ExtrudeGeometry2DThen1D()
         {
             var project = new ProjectController();
-            project.GmshController.Load(@"..\..\..\..\GmshApi\gmsh.dll");
+            project.InitializeGeometry(@"..\..\..\..\GmshApi\gmsh.dll");
             project.ImportCAD(@"..\..\..\Examples\CAD\model1.stp");
 
             var start = project.CreatePoint(0, -85, 5);
@@ -215,7 +219,6 @@ namespace ControllerTests
             var line3 = project.CreateLine(start, 7);
             var plane = project.CreateSurface(new int[] { 11, line2, line3 });
 
-            project.GmshController.Gmsh.Model.Mesh.Clear();
             project.ClearModelCollection(ObjType.Узел);
             project.GenerateMesh(3);
 
@@ -235,7 +238,7 @@ namespace ControllerTests
         public void ExtrudeGeometry2()
         {
             var project = new ProjectController();
-            project.GmshController.Load(@"..\..\..\..\GmshApi\gmsh.dll");
+            project.InitializeGeometry(@"..\..\..\..\GmshApi\gmsh.dll");
             //project.CreateProject(@"newProj.bpf2");
             var s = @"..\..\..\Examples\CAD\PART_3.stp";
 
@@ -249,11 +252,8 @@ namespace ControllerTests
 
             var plane = project.CreateSurface(new int[] { line1, line2, line3 });
 
-            project.GmshController.Gmsh.Model.Mesh.Clear();
             project.ClearModelCollection(ObjType.Узел);
             project.GenerateMesh(3);
-
-            var error = project.GmshController.Gmsh.Logger.GetLastError();
 
             project.ExtrudeElement3DAlongCurve(plane, [20,19,14,11,8], 15, 3, false);
 

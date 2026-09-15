@@ -48,10 +48,8 @@ namespace GmshTests
 
         private ProjectController CreateProjectController()
         {
-            var projectController = new ProjectController
-            {
-                GmshController = gmshController
-            };
+            var projectController = new ProjectController();
+            projectController.InitializeGeometry(@"..\..\..\..\GmshApi\gmsh.dll");
             projectController.CreateProject("ChamferTests.bpf2");
             return projectController;
         }

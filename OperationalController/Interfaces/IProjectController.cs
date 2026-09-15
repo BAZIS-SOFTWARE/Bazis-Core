@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using Model.Interfaces.ObjectsCollections;
 using Model.Interfaces.MeshObjects;
-using OperationalController.GmshController;
 using MaterialDB.MaterialData;
 using MaterialDB.FunctionData;
 using System;
@@ -23,9 +22,10 @@ namespace OperationalController
         public partial interface IProjectController
     {
         /// <summary>
-        /// GmshController
+        /// Инициализирует контроллер геометрии для текущего проекта.
         /// </summary>
-        IGmshController GmshController { get; }
+        /// <param name="gmshDllPath">Путь к библиотеке Gmsh.</param>
+        void InitializeGeometry(string gmshDllPath);
         /// <summary>
         /// FunctionsDB
         /// </summary>

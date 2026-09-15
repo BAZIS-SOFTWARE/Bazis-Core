@@ -21,6 +21,10 @@ namespace OperationalController.GmshController
         /// </summary>
         Gmsh Gmsh { get;}
         /// <summary>
+        /// Возвращает признак готовности контроллера к работе с геометрией.
+        /// </summary>
+        bool IsInitialized { get; }
+        /// <summary>
         /// Загрузка gmsh.dll
         /// </summary>
         /// <param name="dllToLoad">Путь до DLL</param>
