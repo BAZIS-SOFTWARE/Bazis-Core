@@ -19,8 +19,13 @@ namespace OperationalController
         /// <summary>
         /// IModelController
         /// </summary>
-        public partial interface IProjectController
+    public partial interface IProjectController
     {
+        /// <summary>
+        /// Возвращает признак готовности геометрического контроллера.
+        /// </summary>
+        bool IsGeometryInitialized { get; }
+
         /// <summary>
         /// Инициализирует контроллер геометрии для текущего проекта.
         /// </summary>

@@ -1,17 +1,18 @@
-﻿using OperationalController.MeshObjsUtility;
-using OperationalController.SurfaceMeshCreator;
-using Model.Interfaces;
-using Project.Interfaces.Tasks;
-using Project.Interfaces;
-using Geometry;
+﻿using Geometry;
+using GmshApi;
 using Model.GeometryObjects;
-using System.Collections.Generic;
-using System.Linq;
-using System.Drawing;
-using System;
-using OperationalController.GmshController;
-using System.Numerics;
+using Model.Interfaces;
 using Model.MeshObjects;
+using OperationalController.GmshController;
+using OperationalController.MeshObjsUtility;
+using OperationalController.SurfaceMeshCreator;
+using Project.Interfaces;
+using Project.Interfaces.Tasks;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Numerics;
 
 namespace OperationalController
 {
@@ -22,11 +23,12 @@ namespace OperationalController
     {
 /// <inheritdoc/>
 
-        public readonly IGmshController gmshController = new GmshController.GmshController();
+        public readonly IGmshController GmshController = new GmshController.GmshController();
 
-        private IGmshController GmshController => gmshController.IsInitialized
-            ? gmshController
-            : throw new InvalidOperationException("Geometry controller is not initialized.");
+        /// <summary>
+        /// Возвращает признак готовности геометрического контроллера.
+        /// </summary>
+        public bool IsGeometryInitialized => GmshController.IsInitialized;
 
         /// <summary>
         /// Инициализирует контроллер геометрии для текущего проекта.
@@ -37,12 +39,24 @@ namespace OperationalController
             if (string.IsNullOrWhiteSpace(gmshDllPath))
                 throw new ArgumentException("Gmsh DLL path is not specified.", nameof(gmshDllPath));
 
-            if (gmshController.IsInitialized)
+            if (GmshController.IsInitialized)
                 throw new InvalidOperationException("Geometry controller is already initialized.");
 
-            gmshController.Load(gmshDllPath);
+            GmshController.Load(gmshDllPath);
 
-            if (!gmshController.IsInitialized)
+
+            // спросить Николая насколько это корректно?
+            // глобальная опция поведения Gmsh при ошибках
+            /*
+            0 — не прерывать выполнение;
+            1 — прервать построение сетки;
+            2 — выбросить исключение вне интерактивного режима;
+            3 — всегда выбросить исключение;
+            4 — завершить процесс.
+             */
+            GmshController.Gmsh.Option.SetNumber("General.AbortOnError", 0);
+
+            if (!GmshController.IsInitialized)
                 throw new InvalidOperationException("Gmsh initialization failed.");
         }
 
