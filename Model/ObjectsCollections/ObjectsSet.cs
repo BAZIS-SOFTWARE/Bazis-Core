@@ -93,16 +93,15 @@ namespace Model.ObjectsCollections
 
 /// <inheritdoc/>
 
-        public void Append(IObjectsSet<T> appSet)
+        public string Append(IObjectsSet<T> appSet)
         {
             if (appSet == null)
             {
                 throw new ArgumentNullException(nameof(appSet));
             }
 
-            // Стоит подумать о правильном применении тихом выходе. Возможно это отложенная ошибка
             if (appSet.Count == 0)
-                return;
+                return Name;
 
             var shifting = 0;
             if (objectsSet.Count != 0)
@@ -120,6 +119,7 @@ namespace Model.ObjectsCollections
                 value.Value.SetNumber(number);
                 objectsSet.Add(number, value.Value);
             }
+            return Name;
         }
 
         /// <inheritdoc/>

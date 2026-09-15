@@ -30,10 +30,15 @@ namespace Model.Interfaces
         /// <param name="path"></param>
         void Load(string path);
         /// <summary>
-        /// Append
+        /// Добавляет объекты и группы другой модели в текущую.
         /// </summary>
         /// <param name="modelData"></param>
-        void Append(IModelData modelData);
+        /// <returns>
+        /// Имена наборов в порядке: узлы, добавленные наборы элементов 1D, 2D, 3D,
+        /// точки, кривые, поверхности. Для коллекций возвращаются имена с учётом переименования.
+        /// Имена наборов узлов, точек, кривых и поверхностей включаются даже при пустом источнике.
+        /// </returns>
+        IReadOnlyList<string> Append(IModelData modelData);
         /// <summary>
         /// SetObjectData
         /// </summary>

@@ -7,10 +7,13 @@ namespace OperationalController
     public partial interface IProjectController
     {
         /// <summary>
-        /// Append
+        /// Загружает модель из файла и добавляет её объекты и группы в текущую модель.
         /// </summary>
         /// <param name="path"></param>
-        void Append(string path);
+        /// <returns>
+        /// Имена наборов, возвращённые <see cref="Model.Interfaces.IModelData.Append"/>.
+        /// </returns>
+        IReadOnlyList<string> Append(string path);
 
 
     }

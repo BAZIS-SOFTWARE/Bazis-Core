@@ -17,14 +17,16 @@ namespace Model.Interfaces.ObjectsCollections
         /// </summary>
         void ClearNotExisted();
         /// <summary>
-        /// Append
+        /// Добавляет объекты из другого набора в текущий.
         /// </summary>
         /// <param name="appSet">Добавляемый набор объектов</param>
+        /// <returns>Имя набора-приёмника, в том числе при добавлении пустого набора.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="appSet"/> равен <c>null</c>.</exception>
         /// <remarks>
         /// Номера добавляемых объектов сдвигаются, если пересекаются с номерами объектов набора-приемника.
-        /// Пустой набор <paramref name="appSet"/> (как и <c>null</c>) набор-приемник не изменяет.
+        /// Пустой набор <paramref name="appSet"/> набор-приемник не изменяет.
         /// </remarks>
-        void Append(IObjectsSet<T> appSet);
+        string Append(IObjectsSet<T> appSet);
         /// <summary>
         /// ClearWithExistState
         /// </summary>
