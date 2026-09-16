@@ -149,6 +149,12 @@ namespace OperationalController
         (double X, double Y, double Z) GetCenterOfMass(int dim, int tag);
 
         /// <summary>
+        /// Возвращает путь к загруженной геометрической модели.
+        /// </summary>
+        /// <returns>Путь к файлу геометрической модели.</returns>
+        string GetGeometryFilePath();
+
+        /// <summary>
         /// Возвращает границу (boundary) для набора топологических сущностей.
         /// Делегирует вызов в Gmsh API.
         /// </summary>

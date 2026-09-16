@@ -583,7 +583,7 @@ namespace OperationalController.GmshController
 
 
             var pointsStr = string.Join(",",cornerTags);
-            var attributes = new string[] { pointsStr, Arrangement.Left.ToString() };
+            var attributes = new string[] { pointsStr, arrangement.ToString() };
             
             Gmsh.Model.
                 SetAttribute($"transfinite surface {tag}", attributes);              
@@ -621,7 +621,7 @@ namespace OperationalController.GmshController
             var attributes = new string[] 
             { 
                 numNodes.ToString(), 
-                MeshType.Progression.ToString(), 
+                meshType.ToString(),
                 coef.ToString() 
             };
 

@@ -282,10 +282,86 @@ namespace OperationalController
         /// </summary>
         void SetMeshSizeFactor(double factor);
         /// <summary>
+        /// Возвращает параметры построения сетки.
+        /// </summary>
+        MeshSettings GetMeshSettings();
+        /// <summary>
+        /// Строит сетку заданной размерности и возвращает узлы геометрических сущностей.
+        /// </summary>
+        /// <param name="dimension">Размерность геометрических сущностей.</param>
+        /// <param name="entityNumbers">Номера геометрических сущностей.</param>
+        /// <param name="includeBoundary">Включать граничные узлы.</param>
+        /// <returns>Узлы сетки геометрических сущностей.</returns>
+        IEnumerable<Node> GetGeometryMeshNodes(int dimension, IEnumerable<int> entityNumbers, bool includeBoundary = false);
+        /// <summary>
+        /// Возвращает параметры разбиения кривой.
+        /// </summary>
+        /// <param name="curveNumber">Номер кривой.</param>
+        /// <returns>Параметры разбиения кривой.</returns>
+        CurveMeshingSettings GetCurveMeshingSettings(int curveNumber);
+        /// <summary>
+        /// Устанавливает параметры разбиения кривой.
+        /// </summary>
+        /// <param name="curveNumber">Номер кривой.</param>
+        /// <param name="settings">Параметры разбиения кривой.</param>
+        void SetCurveMeshingSettings(int curveNumber, CurveMeshingSettings settings);
+        /// <summary>
+        /// Возвращает параметры разбиения поверхности.
+        /// </summary>
+        /// <param name="surfaceNumber">Номер поверхности.</param>
+        /// <returns>Параметры разбиения поверхности.</returns>
+        SurfaceMeshingSettings GetSurfaceMeshingSettings(int surfaceNumber);
+        /// <summary>
+        /// Устанавливает параметры разбиения поверхности.
+        /// </summary>
+        /// <param name="surfaceNumber">Номер поверхности.</param>
+        /// <param name="settings">Параметры разбиения поверхности.</param>
+        void SetSurfaceMeshingSettings(int surfaceNumber, SurfaceMeshingSettings settings);
+        /// <summary>
+        /// Возвращает параметры разбиения объёма.
+        /// </summary>
+        /// <param name="volumeNumber">Номер объёма.</param>
+        /// <returns>Параметры разбиения объёма.</returns>
+        VolumeMeshingSettings GetVolumeMeshingSettings(int volumeNumber);
+        /// <summary>
+        /// Устанавливает параметры разбиения объёма.
+        /// </summary>
+        /// <param name="volumeNumber">Номер объёма.</param>
+        /// <param name="settings">Параметры разбиения объёма.</param>
+        void SetVolumeMeshingSettings(int volumeNumber, VolumeMeshingSettings settings);
+        /// <summary>
+        /// Возвращает размер элемента сетки в геометрической точке.
+        /// </summary>
+        /// <param name="pointNumber">Номер геометрической точки.</param>
+        /// <returns>Размер элемента сетки.</returns>
+        double GetMeshPointSize(int pointNumber);
+        /// <summary>
+        /// Устанавливает размер элемента сетки в геометрической точке.
+        /// </summary>
+        /// <param name="pointNumber">Номер геометрической точки.</param>
+        /// <param name="size">Размер элемента сетки.</param>
+        void SetMeshPointSize(int pointNumber, double size);
+        /// <summary>
+        /// Устанавливает встроенные геометрические сущности.
+        /// </summary>
+        /// <param name="hostDimension">Размерность принимающей сущности.</param>
+        /// <param name="hostNumber">Номер принимающей сущности.</param>
+        /// <param name="embeddedDimension">Размерность встраиваемых сущностей.</param>
+        /// <param name="embeddedNumbers">Номера встраиваемых сущностей.</param>
+        void SetEmbeddedGeometryEntities(int hostDimension, int hostNumber, int embeddedDimension, IEnumerable<int> embeddedNumbers);
+        /// <summary>
         /// Экспортирует геометрическую модель.
         /// </summary>
         /// <param name="filePath">Путь к экспортируемому файлу.</param>
         void ExportGeometry(string filePath);
+        /// <summary>
+        /// Рекомбинирует элементы сетки и синхронизирует данные модели.
+        /// </summary>
+        void RecombineMesh();
+        /// <summary>
+        /// Уплотняет элементы сетки и синхронизирует данные модели.
+        /// </summary>
+        void RefineMesh();
         /// <summary>
         /// Очищает сетку геометрического контроллера.
         /// </summary>
