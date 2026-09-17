@@ -23,7 +23,7 @@ namespace OperationalController
     {
 /// <inheritdoc/>
 
-        public readonly IGmshController GmshController = new GmshController.GmshController();
+        IGmshController GmshController = new GmshController.GmshController();
 
         /// <summary>
         /// Возвращает признак готовности геометрического контроллера.

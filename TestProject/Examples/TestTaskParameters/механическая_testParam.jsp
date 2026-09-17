@@ -13,10 +13,10 @@
   "ActiveConditions": null,
   "InputSets": [
     {
-      "FieldSet": "Thermal",
+      "Name": "Thermal",
       "Source": "Values",
       "Values": {},
-      "FileName": ""
+      "File": ""
     }
   ],
   "InitialSet": null,
