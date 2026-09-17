@@ -1,7 +1,6 @@
 ﻿using Geometry;
 using Model.Interfaces;
 using System.Collections.Generic;
-using System.Drawing;
 
 namespace OperationalController
 {
@@ -17,14 +16,13 @@ namespace OperationalController
         /// <returns>
         /// Список номеров выбранных элементов
         /// </returns>
-        List<int> SelectE2DInPlane(IObjectsData objectsData, float angleInGradus, int startNumber, Color color);
+        List<int> SelectE2DInPlane(IObjectsData objectsData, float angleInGradus, int startNumber);
         /// <summary>
         /// SelectNodeInPlane
         /// </summary>
         /// <param name="objectsData">
         /// <param name="plane"></param>
-        /// <param name="color"></param>
-        List<int> SelectNodeInPlane(IObjectsData objectsData, Plane plane, Color color);
+        List<int> SelectNodeInPlane(IObjectsData objectsData, Plane plane);
 
         /// <summary>
         /// Выбор последовательности узлов по заданному напрвлению. Направление задаётся номерами двух смежных узлов.
@@ -33,10 +31,9 @@ namespace OperationalController
         /// <param name="angleInGradus">Максимальный угол в градусах, под которым будет выделение</param>
         /// <param name="numbFirst">Номер первого узла</param>
         /// <param name="numbSecond">Номер второго узла</param>
-        /// <param name="color">Цвет выделения</param>
         /// <returns>
         /// Номера выделенных узлов
         /// </returns>
-        List<int> SelectNodeInDirection(IObjectsData objectsData, float angleInGradus, int numbFirst, int numbSecond, Color color);
+        List<int> SelectNodeInDirection(IObjectsData objectsData, float angleInGradus, int numbFirst, int numbSecond);
     }
 }

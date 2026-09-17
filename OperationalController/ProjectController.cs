@@ -2,6 +2,7 @@
 using GmshApi;
 using Model.GeometryObjects;
 using Model.Interfaces;
+using Model.Interfaces.ObjectsCollections;
 using Model.MeshObjects;
 using OperationalController.GmshController;
 using OperationalController.MeshObjsUtility;
@@ -78,17 +79,53 @@ namespace OperationalController
 
         public List<int> SelectNodeInDirection(float angleInGradus, int numbFirst, int numbSecond, Color color)
         {
-            return selectionHelper.SelectNodeInDirection(ModelData.ObjectData, angleInGradus, numbFirst, numbSecond, color);
+            var numbers = selectionHelper.SelectNodeInDirection(ModelData.ObjectData, angleInGradus, numbFirst, numbSecond);
+            Highlight(ObjType.Узел, numbers, color);
+            return numbers;
         }
         /// <inheritdoc/>
         public List<int> SelectNodeInPlane(Geometry.Plane plane, Color color)
         {
-            return selectionHelper.SelectNodeInPlane(ModelData.ObjectData, plane, color);
+            var numbers = selectionHelper.SelectNodeInPlane(ModelData.ObjectData, plane);
+            Highlight(ObjType.Узел, numbers, color);
+            return numbers;
         }
         /// <inheritdoc/>
         public List<int> SelectE2DInPlane(float angleInGradus, int startNumber, Color color)
         {
-            return selectionHelper.SelectE2DInPlane(ModelData.ObjectData,angleInGradus, startNumber, color);
+            var numbers = selectionHelper.SelectE2DInPlane(ModelData.ObjectData, angleInGradus, startNumber);
+            Highlight(ObjType.Элемент2D, numbers, color);
+            return numbers;
+        }
+
+        /// <summary>
+        /// Подсвечивает объекты модели заданным цветом.
+        /// Цвет хранится в наборе объектов, поэтому подсветка выполняется через ISetInfo,
+        /// а не записью в сами объекты модели.
+        /// </summary>
+        /// <param name="objType">Тип подсвечиваемых объектов.</param>
+        /// <param name="numbers">Номера подсвечиваемых объектов.</param>
+        /// <param name="color">Цвет подсветки.</param>
+        private void Highlight(ObjType objType, IEnumerable<int> numbers, Color color)
+        {
+            var objectsData = ModelData?.ObjectData;
+
+            if (objectsData == null || numbers == null)
+                return;
+
+            var wanted = new HashSet<int>(numbers);
+
+            if (wanted.Count == 0)
+                return;
+
+            // Один проход по наборам вместо поиска набора для каждого объекта.
+            foreach (var setInfo in objectsData.GetSetsInfo(objType))
+            {
+                var matched = setInfo.GetNumbers().Where(wanted.Contains).ToList();
+
+                foreach (var number in matched)
+                    setInfo.SetColor(color, number);
+            }
         }
 /// <inheritdoc/>
 
