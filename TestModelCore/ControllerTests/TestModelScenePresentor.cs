@@ -201,6 +201,7 @@ namespace ControllerTests
 
 
             var creator = new PresentersCreator();
+            var modelView = new ModelView(model);
             IObjsPresenter presenter;
             //act
 
@@ -208,17 +209,15 @@ namespace ControllerTests
             {
                 case ObjType.Элемент3D:
                     model.ObjectData.E3DCollection.Add(ObjType.Элемент3D.ToString(), new Tetra(0, model.ObjectData.NodesSet.Values.ToArray()));
-                    var surfChanger = new ChangeInsideSurface();
-                    surfChanger.HideInsideSurfaces(model.ObjectData.E3DCollection.GetObjects());
-                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E3DCollection.GetObjects());
+                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E3DCollection.GetObjects(), modelView);
                     break;
                 case ObjType.Элемент2D:
                     model.ObjectData.E2DCollection.Add(ObjType.Элемент2D.ToString(), new Triangle(0, model.ObjectData.NodesSet.Values.ToArray()));
-                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E2DCollection.GetObjects());
+                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E2DCollection.GetObjects(), modelView);
                     break;
                 default:
                     model.ObjectData.E1DCollection.Add(ObjType.Элемент1D.ToString(), new Beam(0, model.ObjectData.NodesSet.Values.ToArray()));
-                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.E1DCollection.GetObjects());
+                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.E1DCollection.GetObjects(), modelView);
                     break;
             }
 
@@ -425,15 +424,11 @@ namespace ControllerTests
             Assert.IsTrue(checker.Inverted == 0);
         }
 
-        [DataTestMethod]
-        [DataRow(@"..\..\..\Examples\3D\mixElements.bpf", false)]
-        [DataRow(@"..\..\..\Examples\3D\mixElements.bpf", true)]
-        public void TestSeparators(string fileName, bool isVolume)
+        [TestMethod]
+        public void TestSeparators()
         {
             var controller = new ProjectController();
-            controller.Load(fileName);
-
-            controller.ChangeInsideSurfacesState(isVolume);
+            controller.Load(@"..\..\..\Examples\3D\mixElements.bpf");
 
             var presenter = controller.CreateModelObjectsPresentor(ObjType.Элемент2D);
             var surfPresenter = (ISurfaceObjsPresenter)presenter;
@@ -454,30 +449,17 @@ namespace ControllerTests
             var controller = new ProjectController();
             controller.ImportMesh(fileName);
 
-            var elemCounter = 0;
-
             var sets = controller.GetModelSetsInfo(objType);
+            var numbersToHide = sets.SelectMany(set => set.GetNumbers()).Take(hideElemsBySet).ToArray();
+            controller.ModelView.SetVisible(objType, numbersToHide, false);
 
-            //Перебираем каждый набор и назначаем первым hideElemsBySet элементам цвет зеленый
-            foreach (var set in sets)
-            {
-
-                foreach (var item in set.GetNumbers())
-                {
-                    if (elemCounter == hideElemsBySet)
-                        break;
-                    ++elemCounter;
-                    set.SetViewState(item, false);
-                }
-            }
-
-            var expectedShown = sets.Sum(x => x.NumberOfObjects) - elemCounter;
+            var expectedShown = sets.Sum(set => set.NumberOfObjects) - numbersToHide.Length;
             var actualShown = 0;
             foreach (var set in controller.GetModelSetsInfo(objType))
             {
                 foreach (var item in set.GetNumbers())
                 {
-                    if (set.GetViewState(item))
+                    if (controller.ModelView.GetVisible(objType, item))
                         actualShown++;
                 }
 

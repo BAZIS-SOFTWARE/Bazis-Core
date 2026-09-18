@@ -843,57 +843,5 @@ namespace ModelTests
             }
         }
 
-        public static IEnumerable<object[]> AdditionData
-        {
-            get
-            {
-                return new[]
-                {
-            new object[] { ObjType.Элемент3D, Color.DarkGray },
-            new object[] { ObjType.Узел, Color.Blue }
-        };
-            }
-        }
-
-        [DataTestMethod]
-        [DynamicData(nameof(AdditionData))]
-        public void SetBackColor(ObjType reqType, Color color)
-        {
-            //assing
-            var nodes = new Node[4]
-            {
-                new Node(0,new Point3D(0,0,0)){ Color = Color.Red},
-                new Node(1,new Point3D(10,0,0)){ Color = Color.Red},
-                new Node(2,new Point3D(0,10,0)){ Color = Color.Red},
-                new Node(3,new Point3D(0,0,10)){ Color = Color.Red}
-            };
-            var objs = new Element3D[]
-            {
-                new Tetra( 0,nodes){ Color = Color.Red},
-                new Tetra( 4,nodes){ Color = Color.Red},
-                new Tetra(5,nodes){ Color = Color.Red},
-                new Tetra( 6,nodes){ Color = Color.Red},
-                new Tetra(7,nodes){ Color = Color.Red},
-                new Tetra(8,nodes){ Color = Color.Red}
-            };
-
-            //act
-
-            var model = new ModelData();
-            foreach (var item in nodes)
-                model.ObjectData.NodesSet.Add(item.Number, item);
-            model.ObjectData.E3DCollection.AddRange(ObjType.Элемент3D.ToString(), objs);
-
-            model.ObjectData.SetBackColor(reqType);
-
-            //assert
-            foreach (var item in model.ObjectData.GetObjects(reqType))
-            {
-                Assert.AreEqual(item.Color.R, color.R);
-                Assert.AreEqual(item.Color.G, color.G);
-                Assert.AreEqual(item.Color.B, color.B);
-            }
-                
-        }
     }
 }

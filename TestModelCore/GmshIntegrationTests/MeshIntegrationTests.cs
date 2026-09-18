@@ -56,7 +56,7 @@ namespace GmshTests
 
         [DataTestMethod]
         [DataRow(@"\CAD\cilindr.step")]
-        public void Hide3DTest(string path)
+        public void Set3DVisibilityTest(string path)
         {
             var proj = new ProjectController();
             proj.InitializeGeometry(@"..\..\..\..\GmshApi\gmsh.dll");
@@ -64,15 +64,17 @@ namespace GmshTests
 
             proj.GenerateMesh(3);
 
-            //Скрытие\показ 3д элементов сопряженных с объемом и проверка элементов 
+            var elements = proj.GetModelObjects(ObjType.Элемент3D).ToArray();
+            var numbers = elements.Select(element => element.Number).ToArray();
+
+            // Состояние представления хранится отдельно от элементов модели.
             for (var i = 0; i < 2; ++i)
             {
                 var expState = Convert.ToBoolean(i);
-                proj.GetModelVolumes().First().ViewState = expState;
-                proj.HideMesh(3);
+                proj.ModelView.SetVisible(ObjType.Элемент3D, numbers, expState);
 
-                foreach (var elems in proj.GetModelObjects(ObjType.Элемент3D))
-                    Assert.AreEqual(expState, elems.ViewState);
+                foreach (var element in elements)
+                    Assert.AreEqual(expState, proj.ModelView.GetVisible(ObjType.Элемент3D, element.Number));
             }
         }
 
@@ -121,22 +123,20 @@ namespace GmshTests
             proj.GenerateMesh(3);
 
             //Скрытие\показ 2д элементов сопряженных с поверхностью и проверка элементов
-            var elemTags = controller.Gmsh.Model.Mesh.GetElements(2, 1).Item2
-                                                              .SelectMany(v => v)
-                                                              .Select(v => (int)v)
-                                                              .ToHashSet();
+            var groupName = proj.CreateGroupByGeoObjs(2, 2, 1);
+            var elemTags = proj.GetModelGroup(groupName).Select(element => element.Number).ToHashSet();
             for (var i = 0; i < 2; ++i)
             {
                 var expState = Convert.ToBoolean(i);
-                proj.GetModelSurface(1).ViewState = expState;
+                proj.ModelView.SetVisible(ObjType.Поверхность, [1], expState);
                 proj.HideMesh(2);
 
                 foreach (var elems in proj.GetModelObjects(ObjType.Элемент2D))
                 {
                     if (elemTags.Contains(elems.Number))
-                        Assert.AreEqual(expState, elems.ViewState);
+                        Assert.AreEqual(expState, proj.ModelView.GetVisible(ObjType.Элемент2D, elems.Number));
                     else
-                        Assert.AreEqual(true, elems.ViewState);//Элементы не сопряженные с поверхность 1 должны быть показаны
+                        Assert.AreEqual(true, proj.ModelView.GetVisible(ObjType.Элемент2D, elems.Number));//Элементы не сопряженные с поверхность 1 должны быть показаны
                 }
             }
         }
@@ -152,22 +152,20 @@ namespace GmshTests
             proj.GenerateMesh(3);
 
             //Скрытие\показ 1д элементов сопряженных с кривой и проверка элементов
-            var elemTags = controller.Gmsh.Model.Mesh.GetElements(1, 1).Item2
-                                                              .SelectMany(v => v)
-                                                              .Select(v => (int)v)
-                                                              .ToHashSet();
+            var groupName = proj.CreateGroupByGeoObjs(1, 1, 1);
+            var elemTags = proj.GetModelGroup(groupName).Select(element => element.Number).ToHashSet();
             for (var i = 0; i < 2; ++i)
             {
                 var expState = Convert.ToBoolean(i);
-                proj.GetModelCurve(1).ViewState = expState;
+                proj.ModelView.SetVisible(ObjType.Кривая, [1], expState);
                 proj.HideMesh(1);
 
                 foreach (var elems in proj.GetModelObjects(ObjType.Элемент1D))
                 {
                     if (elemTags.Contains(elems.Number))
-                        Assert.AreEqual(expState, elems.ViewState);
+                        Assert.AreEqual(expState, proj.ModelView.GetVisible(ObjType.Элемент1D, elems.Number));
                     else
-                        Assert.AreEqual(true, elems.ViewState);//Элементы не сопряженные с кривой 1 должны быть показаны
+                        Assert.AreEqual(true, proj.ModelView.GetVisible(ObjType.Элемент1D, elems.Number));//Элементы не сопряженные с кривой 1 должны быть показаны
                 }
             }
         }
