@@ -7,6 +7,17 @@ title Разделение модели и представления: ICoordina
 ' В тексте заметок не должно быть угловых скобок, кроме <b>:
 ' просмотрщик принимает их за неизвестный тег и не открывает файл.
 
+' ======================= сборка Geometry =======================
+package "Geometry (PrGeometry)" #F7F0FF {
+
+    interface ICoordinated
+    {
+        +int NumberOfPoints;
+        --
+        +IEnumerable<Point3D> GetCoordinates();
+    }
+}
+
 ' ======================= сборка Model =======================
 package "Model (расчёт, файлы)" #F5F5F5 {
 
@@ -22,13 +33,6 @@ package "Model (расчёт, файлы)" #F5F5F5 {
     }
 
     interface IObjectsData
-
-    interface ICoordinated
-    {
-        +int NumberOfPoints;
-        --
-        +IEnumerable<Point3D> GetCoordinates();
-    }
 
     interface IModelObject
     {
@@ -189,6 +193,17 @@ PickHandler ..> IModelView : GetVisible,\nкоманда
 SceneWindow ..> ProjectController : операции
 
 ' ======================= заметки =======================
+
+note bottom of ICoordinated
+  Чистая геометрия: сколько точек и какие.
+  Живёт в Geometry, а не в Model - Model уже
+  ссылается на Geometry, цикла нет.
+
+  Но PostProc от Model это НЕ освобождает:
+  там ещё IPoint, ISurfaceElement, ILineObject
+  и Node - поля результатов строятся по сетке.
+  Разбор в ModelView.md.
+end note
 
 note bottom of ModelObject
   Наследники получают ICoordinated даром:
