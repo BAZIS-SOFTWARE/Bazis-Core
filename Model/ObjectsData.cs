@@ -496,39 +496,6 @@ namespace Model
         }
 /// <inheritdoc/>
 
-        public void SetBackColor(ObjType objType)
-        {
-            switch (objType)
-            {
-                case ObjType.Точка:
-                    PointsSet.SetBackColor();
-                    break;
-                case ObjType.Кривая:
-                    CurveSet.SetBackColor();
-                    break;
-                case ObjType.Поверхность:
-                    SurfaceSet.SetBackColor();
-                    //VolumeData.SetBackColor();
-                    break;
-                case ObjType.Узел:
-                    NodesSet.SetBackColor();
-                    break;
-                case ObjType.Элемент1D:
-                    foreach (var item in E1DCollection)
-                        item.Value.SetBackColor();
-                    break;
-                case ObjType.Элемент2D:
-                    foreach (var item in E2DCollection)
-                        item.Value.SetBackColor();
-                    break;
-                case ObjType.Элемент3D:
-                    foreach (var item in E3DCollection)
-                        item.Value.SetBackColor();
-                    break;
-            }
-        }
-        /// <inheritdoc/>
-
         public ISetInfo GetSetInfo(ObjType objType, string setName)
         {
             switch (objType)

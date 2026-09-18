@@ -72,14 +72,6 @@ namespace Model.ObjectsCollections
         public int NumberOfObjects => objectsSet.Count;
 /// <inheritdoc/>
 
-        public bool ViewState
-        {
-            get 
-            { 
-                return objectsSet.Values.Any(x => x.ViewState == true) 
-                    ? true : false; 
-            }
-        }
 /// <inheritdoc/>
 
         public int Number { get; set; }
@@ -235,13 +227,6 @@ namespace Model.ObjectsCollections
         public void SetColor(Color color)
         {
             Color = color;
-            foreach (var item in objectsSet)
-                item.Value.Color = color;
-        }
-        /// <inheritdoc/>
-        public void SetColor(Color color, int number)
-        {
-            objectsSet[number].Color = color;
         }
         /// <inheritdoc/>
         public IEnumerable<Point3D> GetCoords(int number)
@@ -255,36 +240,6 @@ namespace Model.ObjectsCollections
             return objectsSet.Keys;
         }
         /// <inheritdoc/>
-        public void SetViewState(int number,bool viewState)
-        {
-            objectsSet[number].ViewState = viewState;
-        }
-        /// <inheritdoc/>
-        public void SetViewState(bool viewState)
-        {
-            foreach (var item in objectsSet)
-                item.Value.ViewState = viewState;
-        }
-        /// <inheritdoc/>
-
-        public bool GetViewState(int number)
-        {
-            return objectsSet[number].ViewState;
-        }
-/// <inheritdoc/>
-
-        public virtual void SetBackColor(int number)
-        {
-            objectsSet[number].Color = Color;
-        }
-
-        /// <inheritdoc/>
-
-        public virtual void SetBackColor()
-        {
-            foreach (var item in objectsSet)
-                item.Value.Color = Color;
-        }
         /// <inheritdoc/>
 
         public Point3D GetCentr(int number)

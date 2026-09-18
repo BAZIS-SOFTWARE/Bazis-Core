@@ -42,50 +42,14 @@ namespace Model.Interfaces.ObjectsCollections
         /// </summary>
         ViewMode ViewMode { get; }
         /// <summary>
-        /// ViewState
-        /// </summary>
-        bool ViewState { get; }
-        /// <summary>
         /// SetColor
         /// </summary>
         /// <param name="color"></param>
         void SetColor(Color color);
         /// <summary>
-        /// SetColor
-        /// </summary>
-        /// <param name="color"></param>
-        /// <param name="number"></param>
-        void SetColor(Color color, int number);
-        /// <summary>
-        /// SetBackColor
-        /// </summary>
-        /// <param name="number"></param>
-        void SetBackColor(int number);
-        /// <summary>
-        /// SetBackColor
-        /// </summary>
-        void SetBackColor();
-        /// <summary>
         /// SetViewMode
         /// </summary>
         /// <param name="viewMode"></param>
         void SetViewMode(ViewMode viewMode);
-        /// <summary>
-        /// GetViewState
-        /// </summary>
-        /// <param name="number"></param>
-        /// <returns></returns>
-        bool GetViewState(int number);
-        /// <summary>
-        /// SetViewState
-        /// </summary>
-        /// <param name="number"></param>
-        /// <param name="viewState"></param>
-        void SetViewState(int number, bool viewState);
-        /// <summary>
-        /// SetViewState
-        /// </summary>
-        /// <param name="viewState"></param>
-        void SetViewState(bool viewState);
     }
 }

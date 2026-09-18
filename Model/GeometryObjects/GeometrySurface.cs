@@ -3,7 +3,6 @@ using Model.MeshObjects;
 using Model.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 
 namespace Model.GeometryObjects
@@ -61,9 +60,6 @@ namespace Model.GeometryObjects
         /// <inheritdoc/>
 
         public int NumberOfPoints { get { return points.Length; } }
-/// <inheritdoc/>
-
-        public bool ViewState { get; set; } = true;
 /// <inheritdoc/>
 
         public int Number { get; }

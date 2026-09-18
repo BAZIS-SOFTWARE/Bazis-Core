@@ -1,6 +1,7 @@
 ﻿using OperationalController.ModelScenePresentator.GlObjsVertexCreators;
 using OperationalController.ModelScenePresentator.Interfaces;
 using OperationalController;
+using Geometry.Interfaces;
 using Model.Interfaces;
 using System;
 using System.Collections;
@@ -19,6 +20,20 @@ namespace OperationalController.ModelScenePresentator.GlObjsPresenters
         public string Name { get; set; }
 
         List<IModelObject> pointObjects = new List<IModelObject>();
+        readonly IModelView modelView;
+
+        /// <summary>
+        /// Создаёт presenter без состояния представления.
+        /// </summary>
+        public PointObjsPresenter() : this(new NullModelView(null)) { }
+
+        /// <summary>
+        /// Создаёт presenter с заданным состоянием представления.
+        /// </summary>
+        public PointObjsPresenter(IModelView modelView)
+        {
+            this.modelView = modelView ?? throw new ArgumentNullException(nameof(modelView));
+        }
 /// <inheritdoc/>
         public bool IsVolumeObjs { get; } = false;
         /// <inheritdoc/>
@@ -39,7 +54,7 @@ namespace OperationalController.ModelScenePresentator.GlObjsPresenters
             foreach (var pointObject in pointObjects)
             {
                 //Закоментировано т.к вызывает exception
-                if (pointObject.ViewState)
+                if (modelView.GetVisible(pointObject.ObjType, pointObject.Number))
                 {
                     coords += 3;
                     indexes++;
@@ -60,7 +75,7 @@ namespace OperationalController.ModelScenePresentator.GlObjsPresenters
 
             foreach (var pointObject in pointObjects)
             {
-                if (pointObject.ViewState)
+                if (modelView.GetVisible(pointObject.ObjType, pointObject.Number))
                 {
                     ptr[stride] = stride;
                     stride++;
@@ -87,7 +102,8 @@ namespace OperationalController.ModelScenePresentator.GlObjsPresenters
 
             foreach (var pointObject in pointObjects)
             {
-                vertexCreator.Create(ref stride, vertexArray, pointObject);
+                if (modelView.GetVisible(pointObject.ObjType, pointObject.Number))
+                    vertexCreator.Create(ref stride, vertexArray, pointObject, modelView);
             }
 
             return vertexArray;
@@ -108,7 +124,7 @@ namespace OperationalController.ModelScenePresentator.GlObjsPresenters
 
 /// <inheritdoc/>
 
-        public IEnumerator<IModelObject> GetEnumerator()
+        public IEnumerator<ICoordinated> GetEnumerator()
         {
             foreach (var pointObject in pointObjects)
             {

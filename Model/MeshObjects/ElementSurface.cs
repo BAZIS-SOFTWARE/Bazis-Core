@@ -3,7 +3,6 @@ using Model.Interfaces;
 using Model.Interfaces.MeshObjects;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 
 namespace Model.MeshObjects
@@ -61,8 +60,6 @@ namespace Model.MeshObjects
 /// <inheritdoc/>
 
         public int ElementNumber { get; }
-        public bool ViewState { get; set; } = true;
-
         public int Number { get; }
 
         /// <inheritdoc/>

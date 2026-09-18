@@ -18,8 +18,6 @@ namespace OperationalController
         void DeleteModelSet(ObjType objType, string name);
         void ClearModelCollection(ObjType objType);
         void ChangeMeshSetName(int elemDim, string oldName, string newName);
-        void SetModelObjectsBackColor(ObjType objType);
-        void ChangeInsideSurfacesState(bool state);
         void ChangeMeshSetOrder(int elemDim, string name, int order);
         void SetMeshMinimumSize(double size);
         void SetMeshMaximumSize(double size);

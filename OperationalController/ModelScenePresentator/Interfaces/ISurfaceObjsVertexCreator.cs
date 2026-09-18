@@ -15,6 +15,6 @@ namespace OperationalController.ModelScenePresentator.Interfaces
         /// <param name="stride"></param>
         /// <param name="vertexAtributes"></param>
         /// <param name="surfaceElement"></param>
-        void Create(ref int stride, float[] vertexAtributes, ISurfaceObject<T,U> surfaceElement);
+        void Create(ref int stride, float[] vertexAtributes, ISurfaceObject<T,U> surfaceElement, IModelView modelView);
     }
 }

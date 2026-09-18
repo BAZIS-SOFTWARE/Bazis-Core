@@ -12,7 +12,7 @@ namespace Model.Interfaces
     /// ISurface
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface ISurface<T> : INormal,ISquare
+    public interface ISurface<T> : ICoordinated, INormal,ISquare
         where T : IPoint
     {
         //Position3D Position
@@ -20,14 +20,6 @@ namespace Model.Interfaces
         /// Number
         /// </summary>
         int Number { get; }
-        /// <summary>
-        /// NumberOfPoints
-        /// </summary>
-        int NumberOfPoints { get; }
-        /// <summary>
-        /// View state flag
-        /// </summary>
-        bool ViewState { get; set; }
         /// <summary>
         /// GetVertexIndex
         /// </summary>

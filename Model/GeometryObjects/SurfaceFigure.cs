@@ -3,7 +3,6 @@ using Geometry.Attribute;
 using Model.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Reflection;
 
@@ -28,7 +27,6 @@ namespace Model.GeometryObjects
             Dim = 2;
             this.surfaces = surfaces;
 
-            Color = Color.FromArgb(255, 125, 0);
         }
 /// <inheritdoc/>
 

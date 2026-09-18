@@ -1,140 +1,133 @@
-﻿using Model.Interfaces;
+using Model.Interfaces;
 using Model.Interfaces.ObjectsCollections;
+using Geometry.Interfaces;
 using OperationalController.ModelScenePresentator.GlObjsVertexCreators;
 using OperationalController.ModelScenePresentator.Interfaces;
-using OperationalController;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace OperationalController.ModelScenePresentator.GlObjsPresenters
 {
     /// <summary>
-    /// SurfaceObjsPresenter
+    /// Собирает буферы поверхностных объектов с учётом состояния представления.
     /// </summary>
-    public class SurfaceObjsPresenter<T,U> : ISurfaceObjsPresenter
+    public class SurfaceObjsPresenter<T, U> : ISurfaceObjsPresenter
         where T : ISurface<U> where U : IPoint
     {
-        List<ISurfaceObject<T,U>> surfaceObjects = new List<ISurfaceObject<T, U>>();
-/// <inheritdoc/>
+        readonly List<ISurfaceObject<T, U>> surfaceObjects = new List<ISurfaceObject<T, U>>();
+        readonly IModelView modelView;
 
+        /// <summary>
+        /// Создаёт presenter без состояния представления.
+        /// </summary>
+        public SurfaceObjsPresenter() : this(new NullModelView(null)) { }
+
+        /// <summary>
+        /// Создаёт presenter с заданным состоянием представления.
+        /// </summary>
+        public SurfaceObjsPresenter(IModelView modelView)
+        {
+            this.modelView = modelView ?? throw new ArgumentNullException(nameof(modelView));
+        }
+
+        /// <inheritdoc/>
         public PresenterType PresenterType { get; } = PresenterType.Surface;
-/// <inheritdoc/>
 
-        //public bool IsVolumeObjs { get; } = false;
         /// <inheritdoc/>
         public ViewMode ViewMode { get; set; } = ViewMode.LineSurface;
+
         /// <inheritdoc/>
         public string Name { get; set; }
 
-
         /// <inheritdoc/>
-
-        public Tuple<int, int, int,int> CreateIndexes()
+        public Tuple<int, int, int, int> CreateIndexes()
         {
             var pointers = 0;
             var vertexes = 0;
             var edges = 0;
             var colors = 0;
 
-            foreach (var surfaceObj in surfaceObjects)
+            foreach (var surfaceObject in surfaceObjects)
             {
-                if(surfaceObj.ViewState)
-                    foreach (var surface in surfaceObj.GetSurfaces())
-                    {
-                        if (surface.ViewState)
-                        {
-                            vertexes = vertexes + (surface.NumberOfPoints - 2) * 3 * 3;
-                            pointers = pointers + (surface.NumberOfPoints - 2) * 3;
-                            edges = edges + (surface.NumberOfPoints - 2) * 3;
-                            colors = colors + (surface.NumberOfPoints - 2) * 3 * 4;
-                        }
-                    }
-            }
+                if (!modelView.GetVisible(surfaceObject.ObjType, surfaceObject.Number))
+                    continue;
 
-
-            return new Tuple<int, int, int,int>(pointers, vertexes, colors, edges);
-        }
-/// <inheritdoc/>
-
-        public int[] CreatePointers(int indexLength)
-        {
-            var ptr = new int[indexLength];
-            var stride = 0;
-
-            foreach (var surfaceObj in surfaceObjects)
-            {
-                if (surfaceObj.ViewState)
+                foreach (var surface in surfaceObject.GetSurfaces())
                 {
-                    foreach (var surface in surfaceObj.GetSurfaces())
-                    {
-                        if (surface.ViewState)
-                        {
-                            var length = (surface.NumberOfPoints - 2) * 3;
-                            for (int m = 0; m < length; m++)
-                            {
-                                ptr[stride + m] = stride + m;
-                            }
-                            stride = stride + length;
-                        }
-                    }
+                    vertexes += (surface.NumberOfPoints - 2) * 3 * 3;
+                    pointers += (surface.NumberOfPoints - 2) * 3;
+                    edges += (surface.NumberOfPoints - 2) * 3;
+                    colors += (surface.NumberOfPoints - 2) * 3 * 4;
                 }
             }
 
-            return ptr;
+            return new Tuple<int, int, int, int>(pointers, vertexes, colors, edges);
         }
-/// <inheritdoc/>
 
-        public float[] CreateVertexes(int vertexLength,string vertexType)
+        /// <inheritdoc/>
+        public int[] CreatePointers(int indexLength)
+        {
+            var pointers = new int[indexLength];
+            var stride = 0;
+            foreach (var surfaceObject in surfaceObjects)
+            {
+                if (!modelView.GetVisible(surfaceObject.ObjType, surfaceObject.Number))
+                    continue;
+
+                foreach (var surface in surfaceObject.GetSurfaces())
+                {
+                    var length = (surface.NumberOfPoints - 2) * 3;
+                    for (var index = 0; index < length; index++)
+                        pointers[stride + index] = stride + index;
+                    stride += length;
+                }
+            }
+
+            return pointers;
+        }
+
+        /// <inheritdoc/>
+        public float[] CreateVertexes(int vertexLength, string vertexType)
         {
             var vertexArray = new float[vertexLength];
             var stride = 0;
-
-            ISurfaceObjsVertexCreator<T,U> vertexCreator;
-
+            ISurfaceObjsVertexCreator<T, U> vertexCreator;
             if (vertexType == "цвет")
                 vertexCreator = new ColorSurfaceObjsCreator<T, U>();
             else if (vertexType == "координаты")
                 vertexCreator = new CoordsSurfaceObjsCreator<T, U>();
-            else vertexCreator = new NormalsSurfaceObjsCreator<T, U>();
+            else
+                vertexCreator = new NormalsSurfaceObjsCreator<T, U>();
 
-            foreach (var surfaceElement in surfaceObjects)
-            {
-                if (surfaceElement.ViewState)
-                {
-                    vertexCreator.Create(ref stride, vertexArray, surfaceElement);
-                }
-            }
+            foreach (var surfaceObject in surfaceObjects)
+                if (modelView.GetVisible(surfaceObject.ObjType, surfaceObject.Number))
+                    vertexCreator.Create(ref stride, vertexArray, surfaceObject, modelView);
 
             return vertexArray;
         }
-/// <inheritdoc/>
 
+        /// <inheritdoc/>
         public bool[] CreateEdgeFlags(int edgesLength)
         {
-            var edgesArray = new bool[edgesLength];
+            var edges = new bool[edgesLength];
             var stride = 0;
-
             var vertexCreator = new EdgesSurfaceObjsCreator<T, U>();
-            vertexCreator.Create(ref stride, edgesArray, surfaceObjects);  
-            return edgesArray;
+            vertexCreator.Create(ref stride, edges, surfaceObjects, modelView);
+            return edges;
         }
 
-/// <inheritdoc/>
-
+        /// <inheritdoc/>
         public int Count()
         {
             return surfaceObjects.Count;
-        }    
-/// <inheritdoc/>
+        }
 
-        public IEnumerator<IModelObject> GetEnumerator()
+        /// <inheritdoc/>
+        public IEnumerator<ICoordinated> GetEnumerator()
         {
-            foreach (var surfaceElement in surfaceObjects)
-            {
-                yield return surfaceElement;
-            }
+            foreach (var surfaceObject in surfaceObjects)
+                yield return surfaceObject;
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -142,38 +135,32 @@ namespace OperationalController.ModelScenePresentator.GlObjsPresenters
             throw new NotImplementedException();
         }
 
-
         /// <summary>
-        /// Add
+        /// Добавляет поверхностные объекты.
         /// </summary>
-        /// <param name="objs"></param>
-        public void Add(IEnumerable<ISurfaceObject<T, U>> objs)
+        public void Add(IEnumerable<ISurfaceObject<T, U>> objects)
         {
-                surfaceObjects.AddRange(objs);
+            surfaceObjects.AddRange(objects);
         }
-/// <inheritdoc/>
 
+        /// <inheritdoc/>
         public int[] CreateSeparators()
         {
             if (surfaceObjects.Count == 0)
-                return new int[0];
+                return Array.Empty<int>();
 
-            var surfObjs = surfaceObjects.ToArray();
-            var separators = new int[surfObjs.Length + 1];
+            var separators = new int[surfaceObjects.Count + 1];
             var stride = 0;
-
-            var i = 0;
+            var index = 0;
             foreach (var element in surfaceObjects)
             {
-                separators[i] = stride;
-                if(element.ViewState)
+                separators[index] = stride;
+                if (modelView.GetVisible(element.ObjType, element.Number))
                     foreach (var surface in element.GetSurfaces())
-                        if (surface.ViewState)
-                            stride += surface.NumberOfPoints - 2;
-                ++i;
+                        stride += surface.NumberOfPoints - 2;
+                index++;
             }
-            separators[i] = stride;
-
+            separators[index] = stride;
             return separators;
         }
     }

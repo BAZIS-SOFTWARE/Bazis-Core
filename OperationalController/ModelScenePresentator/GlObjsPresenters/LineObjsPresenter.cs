@@ -1,5 +1,6 @@
 ﻿using Model.Interfaces;
 using Model.Interfaces.ObjectsCollections;
+using Geometry.Interfaces;
 using OperationalController.ModelScenePresentator.GlObjsVertexCreators;
 using OperationalController.ModelScenePresentator.Interfaces;
 using OperationalController;
@@ -21,6 +22,20 @@ namespace OperationalController.ModelScenePresentator.GlObjsPresenters
         public string Name { get; set; }
 
         List<ILineObject<T>> lineObjects = new List<ILineObject<T>>();
+        readonly IModelView modelView;
+
+        /// <summary>
+        /// Создаёт presenter без состояния представления.
+        /// </summary>
+        public LineObjsPresenter() : this(new NullModelView(null)) { }
+
+        /// <summary>
+        /// Создаёт presenter с заданным состоянием представления.
+        /// </summary>
+        public LineObjsPresenter(IModelView modelView)
+        {
+            this.modelView = modelView ?? throw new ArgumentNullException(nameof(modelView));
+        }
 
         /// <inheritdoc/>
 
@@ -41,7 +56,7 @@ namespace OperationalController.ModelScenePresentator.GlObjsPresenters
             var edges = 0;
             foreach (var lineObj in lineObjects)
             {
-                if (lineObj.ViewState)
+                if (modelView.GetVisible(lineObj.ObjType, lineObj.Number))
                 {
                     coords = coords + lineObj.NumberOfPoints * 3;
                     indexes = indexes + lineObj.NumberOfPoints;
@@ -63,7 +78,7 @@ namespace OperationalController.ModelScenePresentator.GlObjsPresenters
 
             foreach (var lineObject in lineObjects)
             {
-                if (lineObject.ViewState)
+                if (modelView.GetVisible(lineObject.ObjType, lineObject.Number))
                 {
                     for (int m = 0; m < lineObject.NumberOfPoints; m++)
                     {
@@ -91,8 +106,8 @@ namespace OperationalController.ModelScenePresentator.GlObjsPresenters
 
             foreach (var lineObject in lineObjects)
             {
-                if(lineObject.ViewState)
-                    vertexCreator.Create(ref stride, vertexArray, lineObject);
+                if (modelView.GetVisible(lineObject.ObjType, lineObject.Number))
+                    vertexCreator.Create(ref stride, vertexArray, lineObject, modelView);
             }
 
             return vertexArray;
@@ -115,7 +130,7 @@ namespace OperationalController.ModelScenePresentator.GlObjsPresenters
             return edgesArray;
         }
 
-        public IEnumerator<IModelObject> GetEnumerator()
+        public IEnumerator<ICoordinated> GetEnumerator()
         {
             foreach (var lineObject in lineObjects)
             {

@@ -30,45 +30,35 @@ namespace PostProc.ScenePresenter
             var surfacetObjects = new List<ResultFigure>();
             foreach (var surfaceObject in surfaceObjects)
             {
-                if(surfaceObject.ViewState)
+                foreach (var surface in surfaceObject.GetSurfaces())
                 {
-                    foreach (var surface in surfaceObject.GetSurfaces())
+                    //var nodeCoords = new List<Point3D>();
+                    //var nodeRes = new List<float>();
+                    var resItems = new List<ResultItem>();
+
+                    foreach (var node in surface.GetVertexes())
                     {
-                        if (surface.ViewState)
-                        {
-                            //var nodeCoords = new List<Point3D>();
-                            //var nodeRes = new List<float>();
-                            var resItems = new List<ResultItem>(); 
+                        var nodeDispl = GetNodeDispls(resDescr, node.Number, result,table);
+                        var resItem = new ResultItem();
+                        resItem.Coord = node.Position.Sum(nodeDispl);
+                        resItem.Value = result.GetValue(table, node.Number, resDescr);
+                        resItems.Add(resItem);
+                    }
 
-                            foreach (var node in surface.GetVertexes())
-                            {
-                                var nodeDispl = GetNodeDispls(resDescr, node.Number, result,table);
-                                //nodeCoords.Add(node.Position.Sum(nodeDispl));
-                                var resItem = new ResultItem();
-                                resItem.Coord = node.Position.Sum(nodeDispl);
-
-                                resItem.Value = result.GetValue(table, node.Number, resDescr);
-
-                                resItems.Add(resItem);
-                            }
-
-                            IEnumerable<ResultFigure> surfaces;
-                            if (resItems.Count > 3)
-                            {
-                                surfaces = gradsCreator.CreateGradientObjects(itemRanges, 
-                                    new List<ResultItem>() { resItems[0], resItems[1], resItems[2] });
-                                surfacetObjects.AddRange(surfaces);
-                                surfaces = gradsCreator.CreateGradientObjects(itemRanges, 
-                                    new List<ResultItem>() { resItems[0], resItems[2], resItems[3] });
-                                surfacetObjects.AddRange(surfaces);
-                            }
-                            else
-                            {
-                                surfaces = gradsCreator.CreateGradientObjects(itemRanges, resItems);
-                                surfacetObjects.AddRange(surfaces);
-                            }    
-
-                        }
+                    IEnumerable<ResultFigure> surfaces;
+                    if (resItems.Count > 3)
+                    {
+                        surfaces = gradsCreator.CreateGradientObjects(itemRanges,
+                            new List<ResultItem>() { resItems[0], resItems[1], resItems[2] });
+                        surfacetObjects.AddRange(surfaces);
+                        surfaces = gradsCreator.CreateGradientObjects(itemRanges,
+                            new List<ResultItem>() { resItems[0], resItems[2], resItems[3] });
+                        surfacetObjects.AddRange(surfaces);
+                    }
+                    else
+                    {
+                        surfaces = gradsCreator.CreateGradientObjects(itemRanges, resItems);
+                        surfacetObjects.AddRange(surfaces);
                     }
                 }
             }    

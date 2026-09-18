@@ -34,7 +34,6 @@ namespace Model.MeshObjects
         {
             Position = position;
 
-            Color = Color.FromArgb(0, 0, 255);
         }
         /// <inheritdoc/>
 

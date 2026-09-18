@@ -410,7 +410,6 @@ namespace OperationalController
                 volume.Name = string.IsNullOrEmpty(name)
                     ? volumeTag.ToString()
                     : name.Replace("Shapes/", "");
-                volume.SetColor(Color.FromArgb(random.Next(256), random.Next(256), random.Next(256)));
                 volumes.Add(volume);
             }
 
