@@ -1,4 +1,5 @@
 ﻿using Model.Interfaces;
+using Geometry.Interfaces;
 using Model.Interfaces.ObjectsCollections;
 using System;
 using System.Collections.Generic;
@@ -26,7 +27,7 @@ namespace OperationalController
     /// <summary>
     /// IObjsPresenter
     /// </summary>
-    public interface IObjsPresenter : IEnumerable<IModelObject>
+    public interface IObjsPresenter : IEnumerable<ICoordinated>
     {
         /// <summary>
         /// Name

@@ -29,8 +29,7 @@ namespace OperationalController.MeshObjsUtility
                 var p1 = Convert.ToInt32(numbers[1]);
                 var node0 = modelData.ObjectData.NodesSet[po];
                 var node1 = modelData.ObjectData.NodesSet[p1];
-                var beam = new Beam(counter, new Node[] { node0, node1 })
-                { Color = Color.Red };
+                var beam = new Beam(counter, new Node[] { node0, node1 });
                 yield return beam;
                 counter++;
             }
@@ -58,8 +57,6 @@ namespace OperationalController.MeshObjsUtility
 
                     foreach (var surface in element.GetSurfaces())
                     {
-                        if (surface.ViewState)
-                        {
                             var numberOfNodes = surface.NumberOfPoints;
                             for (int j = 0; j < numberOfNodes; j++)
                             {
@@ -97,7 +94,6 @@ namespace OperationalController.MeshObjsUtility
                                 }
                             }
 
-                        }
                     }
                 }
             }

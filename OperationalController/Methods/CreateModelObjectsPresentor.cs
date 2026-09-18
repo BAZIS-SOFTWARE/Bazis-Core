@@ -9,45 +9,31 @@ namespace OperationalController
     public partial class ProjectController
     {
         PresentersCreator presentersCreator = new PresentersCreator();
-        ChangeInsideSurface changeInsideSurface => new ChangeInsideSurface();
-/// <inheritdoc/>
-
-        public void ChangeInsideSurfacesState(bool state)
-        {
-            var e3D = ModelData.ObjectData.E3DCollection.GetObjects();
-            
-            if(state)
-                changeInsideSurface.ShowInsideSurfaces(e3D);
-            else
-                changeInsideSurface.HideInsideSurfaces(e3D);
-        }
-/// <inheritdoc/>
-
         public IObjsPresenter CreateModelObjectsPresentor(ObjType objType)
         {
             IObjsPresenter pre;
             switch (objType)
             {
                 case ObjType.Узел:
-                    pre = presentersCreator.CreatePointObjectsPresenter(ModelData.ObjectData.NodesSet.Values);
+                    pre = presentersCreator.CreatePointObjectsPresenter(ModelData.ObjectData.NodesSet.Values, ModelView);
                     break;
                 case ObjType.Кривая:
-                    pre = presentersCreator?.CreateLineObjectsPresenter(ModelData.ObjectData.CurveSet.Values);
+                    pre = presentersCreator?.CreateLineObjectsPresenter(ModelData.ObjectData.CurveSet.Values, ModelView);
                     break;
                 case ObjType.Поверхность:
-                    pre = presentersCreator.CreateSurfaceObjectsPresenter(ModelData.ObjectData.SurfaceSet.Values);
+                    pre = presentersCreator.CreateSurfaceObjectsPresenter(ModelData.ObjectData.SurfaceSet.Values, ModelView);
                     break;
                 case ObjType.Элемент1D:
-                    pre = presentersCreator.CreateLineObjectsPresenter(ModelData.ObjectData.E1DCollection.GetObjects());
+                    pre = presentersCreator.CreateLineObjectsPresenter(ModelData.ObjectData.E1DCollection.GetObjects(), ModelView);
                     break;
                 case ObjType.Элемент2D:
-                    pre = presentersCreator.CreateSurfaceObjectsPresenter(ModelData.ObjectData.E2DCollection.GetObjects());
+                    pre = presentersCreator.CreateSurfaceObjectsPresenter(ModelData.ObjectData.E2DCollection.GetObjects(), ModelView);
                     break;
                 case ObjType.Элемент3D:
-                    pre = presentersCreator.CreateSurfaceObjectsPresenter(ModelData.ObjectData.E3DCollection.GetObjects());
+                    pre = presentersCreator.CreateSurfaceObjectsPresenter(ModelData.ObjectData.E3DCollection.GetObjects(), ModelView);
                     break;
                 default:
-                    pre = presentersCreator.CreatePointObjectsPresenter(ModelData.ObjectData.PointsSet.Values);
+                    pre = presentersCreator.CreatePointObjectsPresenter(ModelData.ObjectData.PointsSet.Values, ModelView);
                     break;
             }
             // изменить в будущем на массив viewMode
@@ -66,25 +52,25 @@ namespace OperationalController
             switch (setInfo.ObjType)
             {
                 case ObjType.Узел:
-                    pre = presentersCreator.CreatePointObjectsPresenter(ModelData.ObjectData.NodesSet.Values);
+                    pre = presentersCreator.CreatePointObjectsPresenter(ModelData.ObjectData.NodesSet.Values, ModelView);
                     break;
                 case ObjType.Кривая:
-                    pre = presentersCreator?.CreateLineObjectsPresenter(ModelData.ObjectData.CurveSet.Values);
+                    pre = presentersCreator?.CreateLineObjectsPresenter(ModelData.ObjectData.CurveSet.Values, ModelView);
                     break;
                 case ObjType.Поверхность:
-                    pre = presentersCreator.CreateSurfaceObjectsPresenter(ModelData.ObjectData.SurfaceSet.Values);
+                    pre = presentersCreator.CreateSurfaceObjectsPresenter(ModelData.ObjectData.SurfaceSet.Values, ModelView);
                     break;
                 case ObjType.Элемент1D:
-                    pre = presentersCreator.CreateLineObjectsPresenter(ModelData.ObjectData.E1DCollection[setInfo.Name].Values);
+                    pre = presentersCreator.CreateLineObjectsPresenter(ModelData.ObjectData.E1DCollection[setInfo.Name].Values, ModelView);
                     break;
                 case ObjType.Элемент2D:
-                    pre = presentersCreator.CreateSurfaceObjectsPresenter(ModelData.ObjectData.E2DCollection[setInfo.Name].Values);
+                    pre = presentersCreator.CreateSurfaceObjectsPresenter(ModelData.ObjectData.E2DCollection[setInfo.Name].Values, ModelView);
                     break;
                 case ObjType.Элемент3D:
-                    pre = presentersCreator.CreateSurfaceObjectsPresenter(ModelData.ObjectData.E3DCollection[setInfo.Name].Values);
+                    pre = presentersCreator.CreateSurfaceObjectsPresenter(ModelData.ObjectData.E3DCollection[setInfo.Name].Values, ModelView);
                     break;
                 default:
-                    pre = presentersCreator.CreatePointObjectsPresenter(ModelData.ObjectData.PointsSet.Values);
+                    pre = presentersCreator.CreatePointObjectsPresenter(ModelData.ObjectData.PointsSet.Values, ModelView);
                     break;
             }
             // изменить в будущем на массив viewMode

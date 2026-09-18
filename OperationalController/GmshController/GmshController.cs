@@ -317,7 +317,6 @@ namespace OperationalController.GmshController
 
                     var volume = new VolumeFigure(tag, volSurfaces);
                     volume.Name = name;
-                    volume.SetColor(color);
                     volumes.Add(volume);
                 }
             }

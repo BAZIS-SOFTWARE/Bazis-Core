@@ -73,6 +73,25 @@ namespace OperationalController
         }
 
         IProjectData project;
+        IModelView modelView;
+
+        /// <summary>
+        /// Возвращает состояние представления текущей модели.
+        /// </summary>
+        public IModelView ModelView
+        {
+            get
+            {
+                var model = ModelData;
+                if (model == null)
+                    return new NullModelView(null);
+
+                if (modelView == null || modelView.Model != model)
+                    modelView = new ModelView(model);
+
+                return modelView;
+            }
+        }
 
         ISelectionHelper selectionHelper { get; set; } = new SelectionHelper();
 /// <inheritdoc/>
@@ -108,24 +127,10 @@ namespace OperationalController
         /// <param name="color">Цвет подсветки.</param>
         private void Highlight(ObjType objType, IEnumerable<int> numbers, Color color)
         {
-            var objectsData = ModelData?.ObjectData;
-
-            if (objectsData == null || numbers == null)
+            if (numbers == null)
                 return;
 
-            var wanted = new HashSet<int>(numbers);
-
-            if (wanted.Count == 0)
-                return;
-
-            // Один проход по наборам вместо поиска набора для каждого объекта.
-            foreach (var setInfo in objectsData.GetSetsInfo(objType))
-            {
-                var matched = setInfo.GetNumbers().Where(wanted.Contains).ToList();
-
-                foreach (var number in matched)
-                    setInfo.SetColor(color, number);
-            }
+            ModelView.SetSelection(objType, numbers);
         }
 /// <inheritdoc/>
 
@@ -197,11 +202,6 @@ namespace OperationalController
 
         
 /// <inheritdoc/>
-
-        public void SetModelObjectsBackColor(ObjType objType)
-        {
-            ModelData?.ObjectData?.SetBackColor(objType);
-        }
 
         public void AddTaskData(ICondData cond)
         {

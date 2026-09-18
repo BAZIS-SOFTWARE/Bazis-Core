@@ -1,4 +1,5 @@
 ﻿using Model.GeometryObjects;
+using Model.Interfaces;
 using Model.IO;
 using Model.IO.STL;
 using Model.MeshObjects;
@@ -25,11 +26,11 @@ namespace OperationalController
                     foreach (var element in item)
                     {
                         var curveTag = GmshController.Gmsh.Model.Mesh.GetElement(element.Value.Number).Item4;
-                        var viewState = ModelData.ObjectData.CurveSet[curveTag].ViewState;
-                        element.Value.ViewState = viewState;
+                        var visible = ModelView.GetVisible(ObjType.Кривая, curveTag);
+                        ModelView.SetVisible(ObjType.Элемент1D, [element.Value.Number], visible);
 
                         foreach (var node in element.Value.GetVertexes())
-                            node.ViewState = viewState;
+                            ModelView.SetVisible(ObjType.Узел, [node.Number], visible);
 
                     }
                 }
@@ -42,29 +43,18 @@ namespace OperationalController
                     foreach (var element in item)
                     {
                         var surfaceTag = GmshController.Gmsh.Model.Mesh.GetElement(element.Value.Number).Item4;
-                        var viewState = ModelData.ObjectData.SurfaceSet[surfaceTag].ViewState;
-                        element.Value.ViewState = viewState;
+                        var visible = ModelView.GetVisible(ObjType.Поверхность, surfaceTag);
+                        ModelView.SetVisible(ObjType.Элемент2D, [element.Value.Number], visible);
 
                         foreach (var node in element.Value.GetVertexes())
-                            node.ViewState = viewState;
+                            ModelView.SetVisible(ObjType.Узел, [node.Number], visible);
                     }
                 }
             }
 
             else
             {
-                var volumes = ModelData.VolumeData.ToDictionary(v => v.Number, k => k.ViewState);
-                foreach (var item in ModelData.ObjectData.E3DCollection.Objects)
-                {
-                    foreach (var element in item)
-                    {
-                        var volumeTag = GmshController.Gmsh.Model.Mesh.GetElement(element.Value.Number).Item4;
-                        element.Value.ViewState = volumes[volumeTag];
-
-                        foreach (var node in element.Value.GetVertexes())
-                            node.ViewState = volumes[volumeTag];
-                    }
-                }
+                ModelView.ShowAll();
             }
         }
     }

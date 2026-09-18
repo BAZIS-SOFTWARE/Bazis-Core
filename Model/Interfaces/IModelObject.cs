@@ -2,7 +2,6 @@
 using Geometry.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 
 namespace Model.Interfaces
 {
@@ -44,7 +43,7 @@ namespace Model.Interfaces
     /// <summary>
     /// Model object interface
     /// </summary>
-    public interface IModelObject : IComparable<IModelObject>, IEqualityComparer<IModelObject>, IEquatable<IModelObject>, IPosition3D
+    public interface IModelObject : IComparable<IModelObject>, IEqualityComparer<IModelObject>, IEquatable<IModelObject>, IPosition3D, ICoordinated
     {
         /// <summary>
         /// Dim
@@ -56,14 +55,6 @@ namespace Model.Interfaces
         /// </summary>
         int Number { get; }
         /// <summary>
-        /// MasterColor
-        /// </summary>
-        Color Color { get; set; }
-        /// <summary>
-        /// View state flag
-        /// </summary>
-        bool ViewState { get; set; }
-        /// <summary>
         /// Exist state flag
         /// </summary>
         bool ExistState { get; set; }
@@ -71,14 +62,6 @@ namespace Model.Interfaces
         /// ObjType
         /// </summary>
         ObjType ObjType { get; }
-        /// <summary>
-        /// NumberOfPoints
-        /// </summary>
-        int NumberOfPoints { get; }
-        /// <summary>
-        /// GetCoordinates
-        /// </summary>
-        IEnumerable<Point3D> GetCoordinates();
         /// <summary>
         /// CalcCentralPoint
         /// </summary>

@@ -354,7 +354,7 @@ x.Time.CompareTo(0) >= 0
             CSVSaver.SaveResults(proj.ModelData.ObjectData.GetAllElements(), results.First(), resDesc, resultElementsCSVPath);
 
             var modelPresenter = new PresentersCreator();
-            var presenter = modelPresenter.CreateSurfaceObjectsPresenter(resultObjects);
+            var presenter = modelPresenter.CreateSurfaceObjectsPresenter(resultObjects, resultObject => resultObject.Color);
 
             if (resultObjects.Count() == 0)
                 throw new Exception();

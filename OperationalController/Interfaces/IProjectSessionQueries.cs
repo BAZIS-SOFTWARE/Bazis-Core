@@ -9,6 +9,7 @@ namespace OperationalController
     /// </summary>
     public interface IProjectSessionQueries
     {
+        IModelView ModelView { get; }
         bool IsGeometryInitialized { get; }
         FunctionDBData FunctionsDB { get; set; }
         MaterialDBData MaterialsDB { get; set; }

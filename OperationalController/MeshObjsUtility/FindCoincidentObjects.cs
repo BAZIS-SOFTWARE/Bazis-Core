@@ -20,18 +20,17 @@ namespace OperationalController.MeshObjsUtility
             where T : IModelObject
         {
             var tree = BuildTree(modelObjects);
-            modelObjects.ForEach(obj => obj.ViewState = false);
             var result = new List<List<int>>();
-
-            var spec = new List<int>();
+            var processed = new HashSet<int>();
 
             foreach (var obj in modelObjects)
             {
-                if (!obj.ViewState)
+                if (processed.Add(obj.Number))
                 {
                     var point = obj.CalcCentr();
                     var neighbourElements = RadialSearch(point, distance, tree);
-                    neighbourElements.ForEach(x => x.ViewState = true);
+                    foreach (var neighbourElement in neighbourElements)
+                        processed.Add(neighbourElement.Number);
                     if(neighbourElements.Count > 1)
                         result.Add(neighbourElements.Select(x => x.Number).ToList());
                 }

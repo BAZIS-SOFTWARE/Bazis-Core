@@ -17,25 +17,6 @@ namespace Model.GeometryObjects
     {
         SurfaceFigure[] surfaceFigure;
         /// <summary>
-        /// Color
-        /// </summary>
-        public bool ViewState 
-        {
-            get
-            {
-                return surfaceFigure.All(x => x.ViewState == true);
-            }
-            set
-            {
-                foreach (var item in surfaceFigure)
-                    item.ViewState = value;
-            }
-        }
-        /// <summary>
-        /// Color
-        /// </summary>
-        public Color Color { get; private set; }
-        /// <summary>
         /// Number
         /// </summary>
         public int Number { get; }
@@ -120,33 +101,6 @@ namespace Model.GeometryObjects
                     yield return point;
                 }
             }
-        }
-        /// <summary>
-        /// SetColor
-        /// </summary>
-        /// <param name="color"></param>
-        /// <param name="number"></param>
-        public void SetColor(Color color, int number)
-        {
-            surfaceFigure[number].Color = color;
-        }
-        /// <summary>
-        /// SetColor
-        /// </summary>
-        /// <param name="color"></param>
-        public void SetColor(Color color)
-        {
-            Color = color;
-            foreach (var item in surfaceFigure)
-                item.Color = color;
-        }
-        /// <summary>
-        /// SetBackColor
-        /// </summary>
-        public void SetBackColor()
-        {
-            foreach (var item in surfaceFigure)
-                item.Color = Color;
         }
     }
 }

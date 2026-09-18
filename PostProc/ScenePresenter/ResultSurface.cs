@@ -1,142 +1,93 @@
-﻿using Geometry;
-using Model.Interfaces;
+using Geometry;
+using Geometry.Interfaces;
 using Results.ScenePresenter;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 
 namespace PostProc.ScenePresenter
 {
-    public class ResultSurface : ISurface<ResultPoint>
+    /// <summary>
+    /// Представляет поверхность результата, заданную точками результата.
+    /// </summary>
+    public class ResultSurface : ICoordinated
     {
-        List<ResultPoint> points = new List<ResultPoint>();
-        public ResultSurface(List<ResultPoint> points, Color color)
+        private readonly List<ResultPoint> points;
+
+        /// <summary>
+        /// Создаёт поверхность результата.
+        /// </summary>
+        /// <param name="points">Точки поверхности.</param>
+        /// <exception cref="Exception">Возникает, когда точек меньше трёх.</exception>
+        public ResultSurface(List<ResultPoint> points)
         {
             if (points.Count < 3)
-                throw new Exception("Для создания поверхности требуется не меньше 3-х узлов!");
-
-            //points.RoundSort(); //Anticlockwise(nodes);
+                throw new Exception("A surface requires at least three points.");
 
             this.points = points;
-
-            Color = color;
         }
+
         /// <summary>
-        /// this
+        /// Возвращает точку поверхности по индексу.
         /// </summary>
-        /// <param name="ind"></param>
-        /// <returns></returns>
-        public ResultPoint this[int ind] 
+        /// <param name="index">Индекс точки.</param>
+        /// <returns>Точка результата.</returns>
+        public ResultPoint this[int index]
         {
-            get { return points[ind]; }
-            set { points[ind] = value; }
+            get { return points[index]; }
+            set { points[index] = value; }
         }
-/// <inheritdoc/>
 
-        public int Number => 0;
+        /// <inheritdoc/>
+        public int NumberOfPoints => points.Count;
 
-        public Color Color { get ; set ; }
-
-        public bool ViewState { get; set; } = true;
-        public bool ExistState { get; set; } = true;
-/// <inheritdoc/>
-
-        public int NumberOfPoints { get { return points.Count; } }
         /// <summary>
-        /// CalcCentr
+        /// Вычисляет центр поверхности.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Координаты центра поверхности.</returns>
         public Point3D CalcCentr()
         {
             var center = new Point3D();
 
             foreach (var point in GetCoordinates())
-            {
                 center = center.Sum(point);
-            }
+
             return center.Div(NumberOfPoints);
         }
-/// <inheritdoc/>
 
+        /// <summary>
+        /// Вычисляет нормаль поверхности.
+        /// </summary>
+        /// <returns>Вектор нормали.</returns>
         public Point3D CalcNormal()
         {
-            var fvectors = points[1].Position.Sub(points[0].Position);
-            var svectors = points[2].Position.Sub(points[0].Position);
-            return Vector.CrossProd(fvectors, svectors);
-        }
-/// <inheritdoc/>
-
-        public double CalcSquare()
-        {
-            throw new NotImplementedException();
+            var firstVector = points[1].Position.Sub(points[0].Position);
+            var secondVector = points[2].Position.Sub(points[0].Position);
+            return Vector.CrossProd(firstVector, secondVector);
         }
 
-        public int CompareTo(IModelObject other)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Equals(IModelObject x, IModelObject y)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Equals(IModelObject other)
-        {
-            throw new NotImplementedException();
-        }
-
+        /// <inheritdoc/>
         public IEnumerable<Point3D> GetCoordinates()
         {
             foreach (var point in points)
                 yield return point.Position;
         }
 
-        public float GetDistance(Point3D point3D)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int GetHashCode(IModelObject obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Segment3D[] GetLinesFromSurface()
-        {
-            throw new NotImplementedException();
-        }
-/// <inheritdoc/>
-
+        /// <summary>
+        /// Возвращает точки поверхности.
+        /// </summary>
+        /// <returns>Последовательность точек результата.</returns>
         public IEnumerable<ResultPoint> GetVertexes()
         {
-            foreach (var item in points)
-            {
-                yield return item;
-            }
+            foreach (var point in points)
+                yield return point;
         }
 
-        public int GetVertexIndex(ResultPoint vertex)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <inheritdoc/>
-
+        /// <summary>
+        /// Меняет направление обхода точек поверхности.
+        /// </summary>
         public void ReverseVertexes()
         {
             points.Reverse();
-        }
-/// <inheritdoc/>
-
-        public void SetBackColor()
-        {
-            throw new NotImplementedException();
-        }
-        /// <inheritdoc/>
-        public void SetNumber(int number)
-        {
-            throw new NotImplementedException();
         }
     }
 }
