@@ -1,6 +1,11 @@
 @startuml
 
-title Разделение модели и представления: IModelView / ISelectionSet / IRenderable
+title Разделение модели и представления: ICoordinated / IModelView
+
+' Обоснование решений, сценарии Gerbera, порядок операций
+' и отклонённые варианты - в ModelView.md рядом с этим файлом.
+' В тексте заметок не должно быть угловых скобок, кроме <b>:
+' просмотрщик принимает их за неизвестный тег и не открывает файл.
 
 ' ======================= сборка Model =======================
 package "Model (расчёт, файлы)" #F5F5F5 {
@@ -16,31 +21,30 @@ package "Model (расчёт, файлы)" #F5F5F5 {
         +Load(...);
     }
 
+    interface IObjectsData
+
+    interface ICoordinated
+    {
+        +int NumberOfPoints;
+        --
+        +IEnumerable<Point3D> GetCoordinates();
+    }
+
     interface IModelObject
     {
         +int Number;
-        +int Dim;
         +ObjType ObjType;
         +bool ExistState;
         --
-        +GetCoordinates();
         +CalcCentr();
         .. удалено ..
         -- Color --
         -- ViewState --
     }
 
-    interface IRenderable
-    {
-        +ObjType ObjType;
-        +int Number;
-        +int NumberOfPoints;
-        --
-        +IEnumerable<Point3D> GetCoordinates();
-    }
-
-    abstract class ModelObject
+    interface ISurface<T>
     interface ISetInfo
+    abstract class ModelObject
     class ObjectsSet<T>
     class VolumeFigure
 }
@@ -51,56 +55,86 @@ package "OperationalController (представление)" #EEF5FF {
     interface IModelView
     {
         +IModelData Model;
-        +ISelectionSet Selection;
         +Color SelectionColor;
         +byte Transparency;
-        --
+        .. цвет ..
         +Color GetColor(ObjType, int);
         +Color GetColor(ISetInfo, int);
-        +SetColor(ObjType, IEnumerable<int>, Color);
-        +ResetColor(...);
-        --
+        .. видимость ..
         +bool GetVisible(ObjType, int);
         +SetVisible(ObjType, IEnumerable<int>, bool);
-        --
-        +IDisposable BeginUpdate();
-        +event Changed;
-    }
-
-    interface ISelectionSet
-    {
-        +IReadOnlyCollection<int> this[ObjType];
-        +bool Contains(ObjType, int);
-        --
-        +Add / Remove / Toggle / Set;
-        +Clear(...);
-        --
+        +HideSelected();
+        +ShowAll();
+        .. выделение: чтение ..
+        +bool IsSelected(ObjType, int);
+        +IEnumerable<int> GetSelected(ObjType);
+        +IEnumerable<IModelObject> GetSelection();
+        +IEnumerable<ObjType> SelectedTypes;
+        +int SelectedCount;
+        +bool TryGetSingleSelectedType(out ObjType);
+        .. выделение: изменение ..
+        +Select(ObjType, IEnumerable<int>);
+        +Deselect(ObjType, IEnumerable<int>);
+        +ToggleSelection(ObjType, IEnumerable<int>);
+        +SetSelection(ObjType, IEnumerable<int>);
+        +ClearSelection(ObjType);
+        +ClearSelection();
+        .. синхронизация с моделью ..
+        +Reset();
+        +Prune();
+        .. пакет и уведомления ..
         +IDisposable BeginUpdate();
         +event Changed;
     }
 
     class ModelView
     {
-        -Dictionary<ObjType, Dictionary<int, Color>> colorOverrides;
-        -Dictionary<ObjType, HashSet<int>> hidden;
-        -SelectionSet selection;
+        -IModelData model;
+        -Dictionary<ObjType, IObjectsView> views;
         --
         +ModelView(IModelData model);
+        -IObjectsView GetOrCreateView(ObjType);
+        -IObjectsView CreateView();
+        -Raise(bool changed);
+    }
+
+    interface IObjectsView
+    {
+        +bool IsEmpty;
+        +int SelectedCount;
+        +int HiddenCount;
+        .. чтение ..
+        +bool IsSelected(int);
+        +bool IsHidden(int);
+        +IEnumerable<int> GetSelected();
+        .. выделение ..
+        +bool Select(IEnumerable<int>);
+        +bool Deselect(IEnumerable<int>);
+        +bool ToggleSelection(IEnumerable<int>);
+        +bool SetSelection(IEnumerable<int>);
+        +bool ClearSelection();
+        .. видимость ..
+        +bool SetHidden(IEnumerable<int>, bool);
+        +bool ShowAll();
+        .. синхронизация с моделью ..
+        +bool Prune(Predicate<int> exists);
+    }
+
+    class ObjectsView
+    {
+        -HashSet<int> hidden;
+        -HashSet<int> selected;
     }
 
     class NullModelView
-    class SelectionSet
 
-    interface IColorProvider
-    {
-        +Color GetColor(IRenderable obj);
-    }
-
-    class ModelViewColorProvider
-    class ConstantColorProvider
+    class ProjectController
 
     interface IObjsPresenter
     interface IPointObjsVertexCreator
+    {
+        +Create(ref stride, float[] buffer, ICoordinated obj, Color color);
+    }
     interface ILineObjsVertexCreator
     interface ISurfaceObjsVertexCreator
 }
@@ -109,48 +143,115 @@ package "OperationalController (представление)" #EEF5FF {
 package "PostProc (результаты)" #FFF7E8 {
     class ResultFigure
     class ResultSurface
-    class ScaleColorProvider
+    class ItemRange
 }
 
 ' ======================= клиент =======================
-package "BazisGUI (клиент)" #F3FFF3 {
+package "Gerbera (клиент)" #F3FFF3 {
     class SceneWindow
+    class PickHandler
 }
 
-' ---------- реализация IRenderable ----------
-IRenderable <|.. ModelObject
-IRenderable <|.. VolumeFigure
-IRenderable <|.. ResultFigure
-IRenderable <|.. ResultSurface
+' ---------- геометрический супертип ----------
+ICoordinated <|-- IModelObject
+ICoordinated <|-- ISurface
+ICoordinated <|.. ResultFigure
+ICoordinated <|.. ResultSurface
 
 IModelObject <|.. ModelObject
-note right of ModelObject
-  ModelObject реализует ОБА интерфейса независимо:
-  члены Number / ObjType / NumberOfPoints /
-  GetCoordinates() у них общие.
-  Ни один интерфейс не зависит от другого.
+IModelObject <|.. VolumeFigure
 
-  Наследники (все получают IRenderable даром):
-  Node, Beam, Element2D (Triangle, Triangle_c, Quad),
-  Element3D (Tetra, Tetra_c, Hexa, Penta),
-  ElementSurface, GeometryPoint, Curve,
-  SurfaceFigure, GeometrySurface
-end note
-
-note right of ResultFigure
-  Больше НЕ IModelObject.
-  Это объект сцены, а не модели:
-  цвет задаётся шкалой результатов,
-  Number отсутствует (всегда 0).
-end note
+IModelData --> IObjectsData
 
 ' ---------- реализация вида ----------
-IModelView    <|.. ModelView
-IModelView    <|.. NullModelView
-ISelectionSet <|.. SelectionSet
+IModelView <|.. ModelView
+IModelView <|.. NullModelView
 
-ModelView  *-- SelectionSet
-ModelView --> IModelData : читает наборы\nи их цвета
+IObjectsView <|.. ObjectsView
+ModelView *-- IObjectsView : один на ObjType
+ModelView ..> IObjectsData : Find для Prune\nи GetSelection
+
+ProjectController ..> IModelView : GetSelection,\nPrune, Reset
+ProjectController ..> IObjectsData : Remove\nпо номеру
+
+' ---------- сборка буферов ----------
+IObjsPresenter --> ICoordinated : обходит объекты
+IObjsPresenter --> IModelView : GetColor / GetVisible
+IObjsPresenter --> IPointObjsVertexCreator
+IObjsPresenter --> ILineObjsVertexCreator
+IObjsPresenter --> ISurfaceObjsVertexCreator
+
+ItemRange ..> IObjsPresenter : цвет градиентных\nфигур PostProc
+
+' ---------- клиент ----------
+SceneWindow *-- ModelView : один экземпляр\nна окно
+PickHandler ..> IModelView : GetVisible,\nкоманда
+SceneWindow ..> ProjectController : операции
+
+' ======================= заметки =======================
+
+note bottom of ModelObject
+  Наследники получают ICoordinated даром:
+  Node, Beam, Element2D, Element3D,
+  ElementSurface, GeometryPoint, Curve,
+  SurfaceFigure, GeometrySurface.
+
+  ResultFigure/ResultSurface больше НЕ IModelObject:
+  это объекты сцены, цвет задаётся шкалой ItemRange.
+end note
+
+note right of ModelView
+  Один словарь views вместо hidden и selected.
+  Состояние объектов хранит IObjectsView,
+  ModelView маршрутизирует по ObjType и
+  агрегирует общемодельное.
+
+  Новый признак вида - поле внутри ObjectsView,
+  а не новый словарь здесь.
+
+  Reset - это views.Clear плюс одно Changed.
+end note
+
+note bottom of ObjectsView
+  Состояние вида объектов ОДНОГО типа.
+
+  Команды - операции над множеством:
+  Select - объединение, Deselect - вычитание,
+  ToggleSelection - симметрическая разность,
+  SetSelection - замена, ClearSelection - опустошить.
+
+  bool у каждой команды = "состояние изменилось":
+  по нему ModelView поднимает Changed и
+  проверяет IsEmpty.
+
+  Prune получает предикат "номер ещё существует":
+  вид проверяет только свои номера и о модели
+  по-прежнему не знает. Предикат опирается на
+  ObjectsData.Find, это словарь, O(1).
+
+  IModelView.Prune идёт по всем типам, а не по
+  удалённым: ObjectsData.Remove каскадно зовёт
+  ClearNotExisted у зависимых наборов, и удаление
+  точки уносит кривые с поверхностями.
+end note
+
+note left of IObjectsView
+  <b>Два правила для вызывающего</b>
+  Многотиповая операция - это цикл по типам
+  внутри BeginUpdate, отдельного носителя
+  набора нет.
+
+  1. Замена начинается с ClearSelection.
+     SetSelection(type, ids) заменяет выделение
+     целиком, поэтому в цикле каждый вызов
+     стирал бы предыдущий: сначала
+     ClearSelection, потом Select по типам.
+  2. Перед изменением - материализовать.
+     GetSelection, GetSelected и SelectedTypes
+     ленивы; удаление во время обхода рвёт
+     перечисление. Снимок делает вызывающий,
+     одним ToList.
+end note
 
 note bottom of NullModelView
   Вырожденная реализация для расчёта,
@@ -159,45 +260,32 @@ note bottom of NullModelView
   игнорируются. Убирает null-проверки.
 end note
 
-' ---------- источник цвета ----------
-IColorProvider <|.. ModelViewColorProvider
-IColorProvider <|.. ConstantColorProvider
-IColorProvider <|.. ScaleColorProvider
+note bottom of ProjectController
+  <b>Перенумерация пока сбрасывает вид</b>
+  ObjectsRenumber не отдаёт карту старый - новый,
+  поэтому вместо переноса состояния контроллер
+  зовёт Reset. Выделение и скрытость теряются,
+  но явно, а не подменяются чужими объектами.
 
-ModelViewColorProvider --> IModelView
-ScaleColorProvider ..> ResultFigure : цвет по значению\nфизического поля
+  Поэтому Remap в IModelView нет: вводить метод
+  без вызывающего смысла нет. Вернётся вместе
+  с картой, тогда же уйдёт и Reset.
 
-' ---------- потребители ----------
-IObjsPresenter --> IRenderable : обходит
-IObjsPresenter --> IColorProvider : спрашивает цвет
-
-IPointObjsVertexCreator   ..> IRenderable
-ILineObjsVertexCreator    ..> IRenderable
-ISurfaceObjsVertexCreator ..> IRenderable
-
-SceneWindow *-- ModelView : один экземпляр\nна окно
-SceneWindow --> IObjsPresenter
-
-note as N1
-  <b>Порядок разрешения цвета в ModelView.GetColor</b>
-  1. объект в Selection      -> SelectionColor
-  2. есть colorOverride      -> он
-  3. иначе                   -> цвет набора (ISetInfo.Color)
-  4. к результату применяется Transparency (альфа)
-
-  Пункт 1 убирает нынешнее "выделение == цвет равен
-  SelectObjectColor" и попутно чинит потерю выделения
-  при смене прозрачности.
+  ObjectsRenumber на этой диаграмме отсутствует:
+  без Remap он никак не связан с представлением
+  и остаётся обычной операцией над моделью.
 end note
 
-note as N2
-  <b>Направление зависимостей</b>
-  Geometry <- Model <- Project <- OperationalController
-                   <- PostProc
-  Модель НЕ знает о представлении.
-  Представление знает о модели.
-  PostProc ссылается только на Model,
-  поэтому IRenderable живёт в Model.
+note left of IModelView
+  <b>Ключ - (ObjType, Number)</b>
+  Номера не уникальны между типами.
+  Режим "Объект" - понятие Gerbera, в ObjType
+  его нет: PickHandler отдаёт фактический тип
+  попадания, в вид приходит только он.
+
+  <b>GetColor</b>
+  выделен -> SelectionColor,
+  иначе цвет набора, затем Transparency.
 end note
 
 @enduml
