@@ -1,4 +1,5 @@
 ﻿using MaterialDB.Interfaces;
+using MaterialDB.MaterialData.Exceptions;
 using Newtonsoft.Json;
 using System.Collections;
 //using System.Xml;
@@ -192,9 +193,13 @@ namespace MaterialDB.MaterialData
 
             var filePath = FindFileByPath(dbFolder, dbName);
             if (filePath == null)
-            {
-                throw new Exception($"Не найдена база {dbName} в папке {dbFolder}");
-            }
+                throw new MaterialDBFileNotFoundException($"Не найдена база {dbName} в папке {dbFolder}");
+
+            // размер файла БД материалов с 1 материалом без дополнительных данных: 10794 байта
+            // решено поставить порог в 100 байт, чтобы гарантировано отсеить неподходящие файлы,
+            // снизить риск возникновения ошибок при изменении формата файла БД материалов
+            else if (new FileInfo(filePath).Length < 100)
+                throw new MaterialDBEmptyFileException($"File {filePath} contains no materialDB data");
 
             else
             {
@@ -204,8 +209,7 @@ namespace MaterialDB.MaterialData
                     Formatting = Formatting.Indented,
                 };
 
-                var db = JsonConvert.DeserializeObject<MaterialDBData>
-   (File.ReadAllText($@"{dbFolder}\{dbName}"), settingsSerializer);
+                var db = JsonConvert.DeserializeObject<MaterialDBData>(File.ReadAllText(filePath), settingsSerializer);
 
                 Name = dbName;
                 materials = db.materials;
@@ -216,13 +220,7 @@ namespace MaterialDB.MaterialData
         private string? FindFileByPath(string folder, string fileName)
         {
             var projFiles = Directory.GetFiles(folder, fileName, SearchOption.TopDirectoryOnly);
-            if (projFiles.Count() > 0)
-            {
-                return Path.GetDirectoryName(projFiles[0]);
-            }
-
-            return null;
+            return projFiles.Count() > 0 ? projFiles[0] : null;
         }
-
     }
 }

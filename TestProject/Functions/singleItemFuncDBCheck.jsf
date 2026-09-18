@@ -1,0 +1,14 @@
+{
+  "New_function_1": {
+    "Name": "New_function_1",
+    "X_unit": "\" \"",
+    "Y_unit": "\" \"",
+    "Units": "\" \"-\" \"",
+    "DataTable": [
+      {
+        "X": 0.0,
+        "Y": 0.0
+      }
+    ]
+  }
+}

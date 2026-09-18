@@ -1,4 +1,5 @@
-﻿using MaterialDB.MaterialData;
+﻿using MaterialDB.FunctionData.Exceptions;
+using MaterialDB.MaterialData;
 using Newtonsoft.Json;
 using System;
 using System.Collections;
@@ -91,12 +92,16 @@ namespace MaterialDB.FunctionData
 
         public FunctionDBData(string dbName, string dbFolder) : this()
         {
-
             var filePath = FindFileByPath(dbFolder, dbName);
+
             if (filePath == null)
-            {
-                throw new Exception($"Не найдена база {dbName} в папке {dbFolder}");
-            }
+                throw new FunctionDBFileNotFoundException($"Не найдена база {dbName} в папке {dbFolder}");
+
+            // размер файла БД функций с 1 материалом без дополнительных данных: 222 байта
+            // решено поставить порог в 100 байт, чтобы гарантировано отсеить неподходящие файлы,
+            // снизить риск возникновения ошибок при изменении формата файла БД функций
+            else if (new FileInfo(filePath).Length < 100)
+                throw new FunctionDBEmptyFileException($"File {filePath} contains no functionDB data");
 
             else
             {
@@ -106,13 +111,11 @@ namespace MaterialDB.FunctionData
                     Formatting = Formatting.Indented,
                 };
 
-                var db = JsonConvert.DeserializeObject<FunctionDBData>
-   (File.ReadAllText($@"{dbFolder}\{dbName}"), settingsSerializer);
+                var db = JsonConvert.DeserializeObject<FunctionDBData>(File.ReadAllText(filePath), settingsSerializer);
 
                 Name = dbName;
                 dic = db.dic;
             }
-
         }
 
         public FunctionDBData()
@@ -123,12 +126,7 @@ namespace MaterialDB.FunctionData
         private string? FindFileByPath(string folder, string fileName)
         {
             var projFiles = Directory.GetFiles(folder, fileName, SearchOption.TopDirectoryOnly);
-            if (projFiles.Count() > 0)
-            {
-                return Path.GetDirectoryName(projFiles[0]);
-            }
-
-            return null;
+            return projFiles.Count() > 0 ? projFiles[0] : null;
         }
     }
 }
