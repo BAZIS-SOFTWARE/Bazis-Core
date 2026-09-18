@@ -53,7 +53,7 @@ namespace ControllerTests
         {
             var objectsData = InitializeSampleModelWithAscendingNumbers();
             var selector = new SelectionHelper();
-            var actual = selector.SelectNodeInDirection(objectsData,angle, first, second, Color.Green);
+            var actual = selector.SelectNodeInDirection(objectsData, angle, first, second);
             Assert.IsTrue(actual.SequenceEqual(expected)); 
         }
 
@@ -67,7 +67,7 @@ namespace ControllerTests
             //objectsData.E2DCollection.
 
             var selector = new SelectionHelper();
-            var selectedElementNumbers = selector.SelectE2DInPlane(objectsData, angle, first, Color.Green);
+            var selectedElementNumbers = selector.SelectE2DInPlane(objectsData, angle, first);
             Assert.IsTrue(selectedElementNumbers.SequenceEqual(expected));
         }
 
@@ -78,7 +78,7 @@ namespace ControllerTests
         {
             var objectsData = InitializeSampleModelWithAscendingNumbers();
             var selector = new SelectionHelper();
-            var selectedElementNumbers = selector.SelectE2DInPlane(objectsData, angle, first, Color.Green);
+            var selectedElementNumbers = selector.SelectE2DInPlane(objectsData, angle, first);
             Assert.IsTrue(selectedElementNumbers.SequenceEqual(expected));
         }
 
@@ -98,7 +98,7 @@ namespace ControllerTests
             model.Load(path);
 
             var selector = new SelectionHelper();
-            var selectedElementNumbers = selector.SelectE2DInPlane(model.ObjectData, angle, first, Color.Green);
+            var selectedElementNumbers = selector.SelectE2DInPlane(model.ObjectData, angle, first);
 
             Assert.AreEqual(selectedElementNumbers.Count, model.ObjectData.E2DCollection.Count);
 
