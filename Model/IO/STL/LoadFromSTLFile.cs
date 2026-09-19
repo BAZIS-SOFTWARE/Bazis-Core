@@ -10,7 +10,6 @@ using System.Numerics;
 using Model.MeshObjects;
 using Model.ObjectsCollections;
 using Model.Interfaces.ObjectsCollections;
-using System.Drawing;
 
 namespace Model.IO.STL
 {
@@ -50,7 +49,6 @@ namespace Model.IO.STL
                 LoadEvent?.Invoke(this, new LoaderEventArgs("Начало импорта STL модели"));
 
                 var solidCounter = 0;
-                var rnd = new Random();
 
                 while (!reader.EndOfStream)
                 {
@@ -79,8 +77,6 @@ namespace Model.IO.STL
                         }
                         str = reader.ReadLine();
                     }
-                    var color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
-                    set.SetColor(color);
                     str = reader.ReadLine();
 
                     modelData.ObjectData.E2DCollection.Add(set);

@@ -89,18 +89,98 @@ namespace TestProject.ControllerTests
         {
             var model = new ModelData();
             model.ObjectData.NodesSet.Add(3, new Node(3, new Point3D()));
-            model.ObjectData.NodesSet.SetColor(Color.Blue);
             var view = new ModelView(model)
             {
                 SelectionColor = Color.Red,
                 Transparency = 128
             };
+            var setInfo = model.ObjectData.GetSetInfo(ObjType.Узел, 3);
+            view.SetSetColor(setInfo, Color.Blue);
 
             view.Select(ObjType.Узел, new[] { 3 });
 
             var color = view.GetColor(ObjType.Узел, 3);
 
             Assert.AreEqual(Color.FromArgb(128, Color.Red), color);
+        }
+
+        /// <summary>
+        /// Проверяет сохранение альфа-канала стиля при полной прозрачности представления.
+        /// </summary>
+        [TestMethod]
+        public void GetColor_KeepsSetColorAlphaAtFullTransparency()
+        {
+            var model = new ModelData();
+            model.ObjectData.NodesSet.Add(4, new Node(4, new Point3D()));
+            var setInfo = model.ObjectData.GetSetInfo(ObjType.Узел, 4);
+            var view = new ModelView(model);
+            var expectedColor = Color.FromArgb(155, Color.SteelBlue);
+            view.SetSetColor(setInfo, expectedColor);
+
+            var color = view.GetColor(ObjType.Узел, 4);
+
+            Assert.AreEqual(expectedColor, color);
+        }
+
+        /// <summary>
+        /// Проверяет сохранение стиля набора после его переименования.
+        /// </summary>
+        [TestMethod]
+        public void SetStyle_IsKeptWhenSetIsRenamed()
+        {
+            var model = new ModelData();
+            var collection = model.ObjectData.E2DCollection;
+            collection.Add("initial");
+            var setInfo = collection["initial"];
+            var view = new ModelView(model);
+
+            view.SetSetColor(setInfo, Color.MediumPurple);
+            view.SetViewMode(setInfo, ViewMode.Surface);
+            collection.ChangeName("initial", "renamed");
+            var renamedSet = collection["renamed"];
+
+            Assert.AreEqual(Color.MediumPurple, view.GetSetColor(renamedSet));
+            Assert.AreEqual(ViewMode.Surface, view.GetViewMode(renamedSet));
+        }
+
+        /// <summary>
+        /// Проверяет, что сброс номеров не сбрасывает стиль набора.
+        /// </summary>
+        [TestMethod]
+        public void Reset_ClearsObjectStateAndKeepsSetStyle()
+        {
+            var model = new ModelData();
+            model.ObjectData.NodesSet.Add(5, new Node(5, new Point3D()));
+            var setInfo = model.ObjectData.GetSetInfo(ObjType.Узел, 5);
+            var view = new ModelView(model);
+            view.SetSetColor(setInfo, Color.Green);
+            view.Select(ObjType.Узел, new[] { 5 });
+            view.SetVisible(ObjType.Узел, new[] { 5 }, false);
+
+            view.Reset();
+
+            Assert.IsFalse(view.IsSelected(ObjType.Узел, 5));
+            Assert.IsTrue(view.GetVisible(ObjType.Узел, 5));
+            Assert.AreEqual(Color.Green, view.GetSetColor(setInfo));
+        }
+
+        /// <summary>
+        /// Проверяет очистку стиля удалённого набора.
+        /// </summary>
+        [TestMethod]
+        public void Prune_RemovesStyleOfDeletedSet()
+        {
+            var model = new ModelData();
+            var collection = model.ObjectData.E2DCollection;
+            collection.Add("deleted");
+            var setInfo = collection["deleted"];
+            var view = new ModelView(model);
+            view.SetSetColor(setInfo, Color.Fuchsia);
+            collection.Remove("deleted");
+
+            view.Prune();
+
+            Assert.AreNotEqual(Color.Fuchsia, view.GetSetColor(setInfo));
         }
     }
 }

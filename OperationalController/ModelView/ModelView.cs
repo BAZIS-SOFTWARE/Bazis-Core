@@ -57,17 +57,52 @@ namespace OperationalController
         public Color GetColor(ObjType objType, int number)
         {
             var setInfo = model.ObjectData.GetSetInfo(objType, number);
-            return GetColor(setInfo, number);
+            if (setInfo == null)
+                throw new ArgumentException("The object does not belong to a model set.", nameof(number));
+
+            var color = IsSelected(objType, number) ? SelectionColor : GetSetColor(setInfo);
+            var alpha = color.A * Transparency / byte.MaxValue;
+            return Color.FromArgb(alpha, color);
         }
 
         /// <inheritdoc/>
-        public Color GetColor(ISetInfo setInfo, int number)
+        public Color GetSetColor(ISetInfo setInfo)
         {
             if (setInfo == null)
                 throw new ArgumentNullException(nameof(setInfo));
 
-            var color = IsSelected(setInfo.ObjType, number) ? SelectionColor : setInfo.Color;
-            return Color.FromArgb(Transparency, color);
+            var view = GetOrCreateView(setInfo.ObjType);
+            return view.GetSetColor(setInfo);
+        }
+
+        /// <inheritdoc/>
+        public void SetSetColor(ISetInfo setInfo, Color color)
+        {
+            if (setInfo == null)
+                throw new ArgumentNullException(nameof(setInfo));
+
+            var view = GetOrCreateView(setInfo.ObjType);
+            Raise(view.SetSetColor(setInfo, color));
+        }
+
+        /// <inheritdoc/>
+        public ViewMode GetViewMode(ISetInfo setInfo)
+        {
+            if (setInfo == null)
+                throw new ArgumentNullException(nameof(setInfo));
+
+            var view = GetOrCreateView(setInfo.ObjType);
+            return view.GetViewMode(setInfo);
+        }
+
+        /// <inheritdoc/>
+        public void SetViewMode(ISetInfo setInfo, ViewMode viewMode)
+        {
+            if (setInfo == null)
+                throw new ArgumentNullException(nameof(setInfo));
+
+            var view = GetOrCreateView(setInfo.ObjType);
+            Raise(view.SetViewMode(setInfo, viewMode));
         }
 
         /// <inheritdoc/>
@@ -243,6 +278,7 @@ namespace OperationalController
                 {
                     var objType = pair.Key;
                     Raise(pair.Value.Prune(number => model.ObjectData.Find(objType, number) != null));
+                    Raise(pair.Value.PruneSetStyles(model.ObjectData.GetSetsInfo(objType)));
                 }
 
                 RemoveEmptyViews();
@@ -255,8 +291,13 @@ namespace OperationalController
             if (views.Count == 0)
                 return;
 
-            views.Clear();
-            Raise(true);
+            using (BeginUpdate())
+            {
+                foreach (var view in views.Values)
+                    Raise(view.ClearSelectionAndHidden());
+
+                RemoveEmptyViews();
+            }
         }
 
         /// <inheritdoc/>

@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using Model.Interfaces.ObjectsCollections;
 
 namespace OperationalController
 {
@@ -74,8 +76,38 @@ namespace OperationalController
         bool ShowAll();
 
         /// <summary>
+        /// Возвращает цвет заданного набора.
+        /// </summary>
+        Color GetSetColor(ISetInfo setInfo);
+
+        /// <summary>
+        /// Устанавливает цвет заданного набора.
+        /// </summary>
+        bool SetSetColor(ISetInfo setInfo, Color color);
+
+        /// <summary>
+        /// Возвращает режим отображения заданного набора.
+        /// </summary>
+        ViewMode GetViewMode(ISetInfo setInfo);
+
+        /// <summary>
+        /// Устанавливает режим отображения заданного набора.
+        /// </summary>
+        bool SetViewMode(ISetInfo setInfo, ViewMode viewMode);
+
+        /// <summary>
+        /// Очищает выделение и скрытость, сохраняя стили наборов.
+        /// </summary>
+        bool ClearSelectionAndHidden();
+
+        /// <summary>
         /// Удаляет номера, для которых предикат существования возвращает <c>false</c>.
         /// </summary>
         bool Prune(Predicate<int> exists);
+
+        /// <summary>
+        /// Удаляет стили наборов, отсутствующих в модели.
+        /// </summary>
+        bool PruneSetStyles(IEnumerable<ISetInfo> existingSets);
     }
 }

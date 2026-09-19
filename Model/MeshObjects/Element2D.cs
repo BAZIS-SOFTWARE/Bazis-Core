@@ -3,7 +3,6 @@ using MathNet.Numerics.LinearAlgebra;
 using Model.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using MathNet.Numerics.LinearAlgebra.Single;
 using Model.Interfaces.MeshObjects;

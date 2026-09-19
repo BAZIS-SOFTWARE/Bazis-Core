@@ -39,7 +39,7 @@ namespace OperationalController
             // изменить в будущем на массив viewMode
             var setInfo = ModelData.ObjectData.GetSetsInfo(objType).FirstOrDefault();
             if (setInfo != null)
-                pre.ViewMode = setInfo.ViewMode;
+                pre.ViewMode = ModelView.GetViewMode(setInfo);
             pre.Name = objType.ToString();
             return pre;
         }
@@ -76,7 +76,7 @@ namespace OperationalController
             // изменить в будущем на массив viewMode
             //var setInfo = ModelData.ObjectData.GetSetsInfo(objType).FirstOrDefault();
             //if (setInfo != null)
-            pre.ViewMode = setInfo.ViewMode;
+            pre.ViewMode = ModelView.GetViewMode(setInfo);
             pre.Name = setInfo.Name;
             return pre;
         }

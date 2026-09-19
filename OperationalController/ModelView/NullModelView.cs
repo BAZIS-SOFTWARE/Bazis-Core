@@ -47,14 +47,43 @@ namespace OperationalController
         public Color GetColor(ObjType objType, int number)
         {
             var setInfo = Model?.ObjectData.GetSetInfo(objType, number);
-            return GetColor(setInfo, number);
+            if (setInfo == null)
+                return Color.Empty;
+
+            var color = GetSetColor(setInfo);
+            var alpha = color.A * Transparency / byte.MaxValue;
+            return Color.FromArgb(alpha, color);
         }
 
         /// <inheritdoc/>
-        public Color GetColor(ISetInfo setInfo, int number)
+        public Color GetSetColor(ISetInfo setInfo)
         {
-            return setInfo == null ? Color.Empty : Color.FromArgb(Transparency, setInfo.Color);
+            if (setInfo == null)
+                throw new ArgumentNullException(nameof(setInfo));
+
+            return setInfo.ObjType == ObjType.Узел ? Color.Blue : Color.DarkGray;
         }
+
+        /// <inheritdoc/>
+        public void SetSetColor(ISetInfo setInfo, Color color) { }
+
+        /// <inheritdoc/>
+        public ViewMode GetViewMode(ISetInfo setInfo)
+        {
+            if (setInfo == null)
+                throw new ArgumentNullException(nameof(setInfo));
+
+            if (setInfo.ObjType == ObjType.Узел || setInfo.ObjType == ObjType.Точка)
+                return ViewMode.Point;
+
+            if (setInfo.ObjType == ObjType.Кривая || setInfo.ObjType == ObjType.Элемент1D)
+                return ViewMode.Line;
+
+            return ViewMode.LineSurface;
+        }
+
+        /// <inheritdoc/>
+        public void SetViewMode(ISetInfo setInfo, ViewMode viewMode) { }
 
         /// <inheritdoc/>
         public bool GetVisible(ObjType objType, int number)

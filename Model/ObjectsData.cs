@@ -11,7 +11,6 @@ using Geometry;
 using System.Reflection;
 using Model.Interfaces.ObjectsCollections;
 using System.Security.Cryptography;
-using System.Drawing;
 
 namespace Model
 {
@@ -30,9 +29,7 @@ namespace Model
             E2DCollection = new ObjectsCollection<Element2D>();
             E3DCollection = new ObjectsCollection<Element3D>();
             NodesSet = new ObjectsSet<Node>(ObjType.Узел.ToString());
-            NodesSet.SetColor(Color.FromArgb(0, 0, 255));
             PointsSet = new ObjectsSet<GeometryPoint>(ObjType.Точка.ToString());
-            PointsSet.SetColor(Color.FromArgb(255, 207, 64));
             CurveSet = new ObjectsSet<Curve>(ObjType.Кривая.ToString());
             SurfaceSet = new SurfacesSet(ObjType.Поверхность.ToString());
             //VolumeSet = new ObjectsSet<VolumeFigure>(ObjType.Объем.ToString());

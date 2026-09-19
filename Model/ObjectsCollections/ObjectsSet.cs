@@ -7,7 +7,6 @@ using Model.MeshObjects;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
@@ -63,12 +62,6 @@ namespace Model.ObjectsCollections
 /// <inheritdoc/>
 
         public ObjType ObjType { get; }
-        /// <inheritdoc/>
-        public Color Color { get; private set; } = Color.DarkGray;
-        /// <inheritdoc/>
-        public ViewMode ViewMode { get; private set; } = ViewMode.Point;
-/// <inheritdoc/>
-
         public int NumberOfObjects => objectsSet.Count;
 /// <inheritdoc/>
 
@@ -80,7 +73,7 @@ namespace Model.ObjectsCollections
 
         public override string ToString()
         {
-            return $@"{Name} {Color} {ViewMode} {objectsSet.Count}";
+            return $@"{Name} {objectsSet.Count}";
         }
 
 /// <inheritdoc/>
@@ -194,14 +187,6 @@ namespace Model.ObjectsCollections
         }
 
 
-        /// <inheritdoc/>
-        public void SetViewMode(ViewMode viewMode)
-        {
-            if (ObjType != ObjType.Узел | ObjType != ObjType.Точка)
-                ViewMode = viewMode;
-        }
-/// <inheritdoc/>
-
         public void ClearNotExisted()
         {
             var temp = new Dictionary<int, T>();
@@ -223,12 +208,6 @@ namespace Model.ObjectsCollections
                 yield return item.Value.ToString();
             }
         }
-        /// <inheritdoc/>
-        public void SetColor(Color color)
-        {
-            Color = color;
-        }
-        /// <inheritdoc/>
         public IEnumerable<Point3D> GetCoords(int number)
         {
             return objectsSet[number].GetCoordinates();

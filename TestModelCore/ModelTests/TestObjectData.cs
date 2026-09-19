@@ -10,7 +10,6 @@ using Model.MeshObjects;
 using Model.ObjectsCollections;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 
 namespace ModelTests
@@ -382,22 +381,6 @@ namespace ModelTests
 
             //assert
             Assert.AreEqual(addedName, target[addedName].Name);
-        }
-
-        [TestMethod]
-        public void AppendCopiesSetColor()
-        {
-            //assign
-            var coloredSet = CreateElement2DSet("colored", 0);
-            coloredSet.SetColor(Color.Red);
-
-            var target = new ObjectsCollection<Element2D>();
-
-            //act
-            var addedName = target.Append(CreateElement2DCollection(coloredSet)).Single();
-
-            //assert
-            Assert.AreEqual(Color.Red.ToArgb(), target[addedName].Color.ToArgb());
         }
 
         [TestMethod]

@@ -32,9 +32,24 @@ namespace OperationalController
         Color GetColor(ObjType objType, int number);
 
         /// <summary>
-        /// Возвращает итоговый цвет объекта из заданного набора.
+        /// Возвращает цвет заданного набора.
         /// </summary>
-        Color GetColor(ISetInfo setInfo, int number);
+        Color GetSetColor(ISetInfo setInfo);
+
+        /// <summary>
+        /// Устанавливает цвет заданного набора.
+        /// </summary>
+        void SetSetColor(ISetInfo setInfo, Color color);
+
+        /// <summary>
+        /// Возвращает режим отображения заданного набора.
+        /// </summary>
+        ViewMode GetViewMode(ISetInfo setInfo);
+
+        /// <summary>
+        /// Устанавливает режим отображения заданного набора.
+        /// </summary>
+        void SetViewMode(ISetInfo setInfo, ViewMode viewMode);
 
         /// <summary>
         /// Возвращает признак видимости объекта.

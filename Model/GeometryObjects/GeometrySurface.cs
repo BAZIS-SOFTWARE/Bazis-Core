@@ -25,7 +25,6 @@ namespace Model.GeometryObjects
 
             Number = number;
 
-            //Color = Color.FromArgb(224, 0, 177);
         }
         /// <inheritdoc/>
 

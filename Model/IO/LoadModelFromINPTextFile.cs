@@ -11,7 +11,6 @@ using System.Text.RegularExpressions;
 using Group = Model.GroupsData.Group;
 using Model.ObjectsCollections;
 using Model.Interfaces.ObjectsCollections;
-using System.Drawing;
 
 
 namespace Model.IO
@@ -104,7 +103,6 @@ namespace Model.IO
         {
             var elementType = string.Empty;
             var setName = string.Empty;
-            var rnd = new Random();
 
             offset = 0;
             for(var i = start; i < lines.Length; i++)
@@ -113,11 +111,6 @@ namespace Model.IO
                     break;
                 else if (lines[i].StartsWith("*ELEMENT", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (setName != string.Empty)
-                    {
-                        var color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
-                        SetColor(setName, elementType, modelData, color);
-                    }
                     elementType = Regex.Match(lines[i], extractElementTypePattern, RegexOptions.IgnoreCase).Value;
                     setName = GetGroupName(lines[i]);
                 }
@@ -132,27 +125,6 @@ namespace Model.IO
                     }
                 }
                 offset++;
-            }
-        }
-
-        private void SetColor(string setName, string elementType, ModelData modelData, Color color)
-        {
-            switch (elementType)
-            {
-                case "T3D2": 
-                    modelData.ObjectData.E1DCollection[setName].SetColor(color);
-                    break;
-                case "CPS3":
-                case "CPS4":
-                    modelData.ObjectData.E2DCollection[setName].SetColor(color);
-                    break;
-
-                case "C3D4": 
-                case "C3D6": 
-                case "C3D8":
-                    modelData.ObjectData.E3DCollection[setName].SetColor(color);
-                    break;
-                default: throw new ArgumentException($"Неизвестный формат элемента: {elementType}");
             }
         }
 

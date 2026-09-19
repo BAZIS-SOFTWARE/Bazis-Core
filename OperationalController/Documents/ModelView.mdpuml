@@ -144,6 +144,7 @@ package "OperationalController (представление)" #EEF5FF {
         +bool ClearSelectionAndHidden();
         .. синхронизация с моделью ..
         +bool Prune(Predicate<int> exists);
+        +bool PruneSetStyles(IEnumerable<ISetInfo> existingSets);
     }
 
     class ObjectsView

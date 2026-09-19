@@ -1,7 +1,6 @@
 ﻿using Geometry;
 using Model.Interfaces;
 using System.Collections.Generic;
-using System.Drawing;
 
 namespace Model.GeometryObjects
 {
