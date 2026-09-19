@@ -6,7 +6,6 @@ using Model.Interfaces.IntegralObject;
 using Model.Interfaces.MeshObjects;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Net;
 
 namespace Model.MeshObjects

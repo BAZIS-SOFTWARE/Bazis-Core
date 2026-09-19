@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using Model.Interfaces;
+using Model.Interfaces.ObjectsCollections;
 
 namespace OperationalController
 {
@@ -10,9 +13,12 @@ namespace OperationalController
     {
         readonly HashSet<int> hidden = new HashSet<int>();
         readonly HashSet<int> selected = new HashSet<int>();
+        readonly Dictionary<ISetInfo, SetStyle> setStyles = new Dictionary<ISetInfo, SetStyle>(ReferenceEqualityComparer.Instance);
+        readonly Color[] setColors = [Color.SteelBlue, Color.Orange, Color.MediumSeaGreen, Color.MediumOrchid, Color.Goldenrod, Color.IndianRed];
+        int nextSetColor;
 
         /// <inheritdoc/>
-        public bool IsEmpty => hidden.Count == 0 && selected.Count == 0;
+        public bool IsEmpty => hidden.Count == 0 && selected.Count == 0 && setStyles.Count == 0;
 
         /// <inheritdoc/>
         public int SelectedCount => selected.Count;
@@ -112,6 +118,47 @@ namespace OperationalController
         }
 
         /// <inheritdoc/>
+        public Color GetSetColor(ISetInfo setInfo)
+        {
+            return GetOrCreateSetStyle(setInfo).Color;
+        }
+
+        /// <inheritdoc/>
+        public bool SetSetColor(ISetInfo setInfo, Color color)
+        {
+            var style = GetOrCreateSetStyle(setInfo);
+            if (style.Color == color)
+                return false;
+
+            style.Color = color;
+            return true;
+        }
+
+        /// <inheritdoc/>
+        public ViewMode GetViewMode(ISetInfo setInfo)
+        {
+            return GetOrCreateSetStyle(setInfo).ViewMode;
+        }
+
+        /// <inheritdoc/>
+        public bool SetViewMode(ISetInfo setInfo, ViewMode viewMode)
+        {
+            var style = GetOrCreateSetStyle(setInfo);
+            if (style.ViewMode == viewMode)
+                return false;
+
+            style.ViewMode = viewMode;
+            return true;
+        }
+
+        /// <inheritdoc/>
+        public bool ClearSelectionAndHidden()
+        {
+            var changed = ClearSelection();
+            return ShowAll() || changed;
+        }
+
+        /// <inheritdoc/>
         public bool Prune(Predicate<int> exists)
         {
             if (exists == null)
@@ -119,6 +166,70 @@ namespace OperationalController
 
             var changed = RemoveMissing(selected, exists);
             return RemoveMissing(hidden, exists) || changed;
+        }
+
+        /// <inheritdoc/>
+        public bool PruneSetStyles(IEnumerable<ISetInfo> existingSets)
+        {
+            if (existingSets == null)
+                throw new ArgumentNullException(nameof(existingSets));
+
+            var existing = new HashSet<ISetInfo>(existingSets, ReferenceEqualityComparer.Instance);
+            var removed = new List<ISetInfo>();
+            foreach (var setInfo in setStyles.Keys)
+                if (!existing.Contains(setInfo))
+                    removed.Add(setInfo);
+
+            foreach (var setInfo in removed)
+                setStyles.Remove(setInfo);
+
+            return removed.Count > 0;
+        }
+
+        /// <summary>
+        /// Возвращает существующий или создаёт начальный стиль набора.
+        /// </summary>
+        private SetStyle GetOrCreateSetStyle(ISetInfo setInfo)
+        {
+            if (setInfo == null)
+                throw new ArgumentNullException(nameof(setInfo));
+
+            if (setStyles.TryGetValue(setInfo, out var style))
+                return style;
+
+            style = new SetStyle(GetDefaultColor(setInfo.ObjType), GetDefaultViewMode(setInfo.ObjType));
+            setStyles.Add(setInfo, style);
+            return style;
+        }
+
+        /// <summary>
+        /// Возвращает начальный цвет набора объектов.
+        /// </summary>
+        private Color GetDefaultColor(ObjType objType)
+        {
+            if (objType == ObjType.Узел)
+                return Color.Blue;
+
+            if (objType == ObjType.Точка)
+                return Color.FromArgb(255, 207, 64);
+
+            var color = setColors[nextSetColor % setColors.Length];
+            nextSetColor++;
+            return color;
+        }
+
+        /// <summary>
+        /// Возвращает начальный режим отображения набора объектов.
+        /// </summary>
+        private ViewMode GetDefaultViewMode(ObjType objType)
+        {
+            if (objType == ObjType.Узел || objType == ObjType.Точка)
+                return ViewMode.Point;
+
+            if (objType == ObjType.Кривая || objType == ObjType.Элемент1D)
+                return ViewMode.Line;
+
+            return ViewMode.LineSurface;
         }
 
         /// <summary>

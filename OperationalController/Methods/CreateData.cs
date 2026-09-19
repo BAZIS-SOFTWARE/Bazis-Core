@@ -14,7 +14,6 @@ using OperationalController.MeshObjsCreator.Extrude;
 using Project.Interfaces.Tasks;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using static IronPython.Modules._ast;
@@ -393,8 +392,6 @@ namespace OperationalController
                 var surfaceTag = surfaceEntities[index];
                 surfaces.Add(surfaceTag, CreateChamferSurfaceFigure(meshPoints, surfaceTag));
             }
-
-            surfaces.SetColor(Color.FromArgb(255, 125, 0));
 
             var volumes = new VolumeData();
             var volumeEntities = GmshController.Gmsh.Model.GetEntities(3);

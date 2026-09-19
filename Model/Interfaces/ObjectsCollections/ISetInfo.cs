@@ -1,15 +1,13 @@
 ﻿using Geometry;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
 
 namespace Model.Interfaces.ObjectsCollections
 {
     /// <summary>
     /// ISetInfo
     /// </summary>
-    public interface ISetInfo : ISetView
+    public interface ISetInfo
     {
         /// <summary>
         /// Name

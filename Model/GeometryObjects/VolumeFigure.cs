@@ -4,7 +4,6 @@ using Model.Interfaces.ObjectsCollections;
 using Model.ObjectsCollections;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Xml.Linq;
 

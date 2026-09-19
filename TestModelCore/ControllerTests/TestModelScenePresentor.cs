@@ -488,7 +488,7 @@ namespace ControllerTests
 
         [DataTestMethod]
         [DataRow(@"..\..\..\Examples\3D\Lazer.inp", 155)]
-        public void ChangeElement1DColorTest(string fileName, int alpha)
+        public void ChangeElement1DSetColorTest(string fileName, int alpha)
         {
             var alphaExp = alpha / 255f;
 
@@ -497,10 +497,11 @@ namespace ControllerTests
 
             var sets = controller.GetModelSetsInfo(ObjType.Элемент1D);
 
-            foreach(var set in sets)
+            foreach (var set in sets)
             {
-                set.SetColor(Color.FromArgb(alpha, set.Color));
-                Assert.IsTrue(set.Color.A == alpha);
+                var color = controller.ModelView.GetSetColor(set);
+                controller.ModelView.SetSetColor(set, Color.FromArgb(alpha, color));
+                Assert.AreEqual(alpha, controller.ModelView.GetSetColor(set).A);
             }
 
             var pres = controller.CreateModelObjectsPresentor(ObjType.Элемент1D);

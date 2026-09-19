@@ -9,8 +9,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Drawing;
-using Model.Interfaces.ObjectsCollections;
 using Model.ObjectsCollections;
 
 namespace Model.IO
@@ -23,7 +21,6 @@ namespace Model.IO
         public event Action<object, ILoaderEventArgs> LoadEvent;
         private Dictionary<int, IElement> allElements = new Dictionary<int, IElement>();
         private ModelData modelData;
-        private Random rnd = new Random();
         private string line;
 
         /// <summary>
@@ -99,20 +96,20 @@ namespace Model.IO
             {
                 modelData.ObjectData.E1DCollection.Add(setName);
                 var set1D = modelData.ObjectData.E1DCollection[setName];
-                FillSet(set1D, ViewMode.Line, reader, elementType);
+                FillSet(set1D, reader, elementType);
             }
 
             else if (objsType == ObjType.Элемент2D)
             {
                 modelData.ObjectData.E2DCollection.Add(setName);
                 var set2D = modelData.ObjectData.E2DCollection[setName];
-                FillSet(set2D, ViewMode.LineSurface, reader, elementType);
+                FillSet(set2D, reader, elementType);
             }
             else
             {
                 modelData.ObjectData.E3DCollection.Add(setName);
                 var set3D = modelData.ObjectData.E3DCollection[setName];
-                FillSet(set3D, ViewMode.LineSurface, reader, elementType);
+                FillSet(set3D, reader, elementType);
             }
         }
 
@@ -136,13 +133,9 @@ namespace Model.IO
             }
         }
 
-        private void FillSet<T>(ObjectsSet<T> set, ViewMode mode, StreamReader reader, ElementKind elementKind)
+        private void FillSet<T>(ObjectsSet<T> set, StreamReader reader, ElementKind elementKind)
     where T : IElement
         {
-            var color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
-            set.SetViewMode(mode);
-            set.SetColor(color);
-
             while (!reader.EndOfStream)
             {
                 line = reader.ReadLine();

@@ -3,7 +3,6 @@ using Model.Interfaces;
 using Model.Interfaces.MeshObjects;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Xml.Linq;
 

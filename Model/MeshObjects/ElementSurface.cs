@@ -29,7 +29,6 @@ namespace Model.MeshObjects
 
             ElementNumber = elementNumber;
             Number = surfaceNumber;
-            //Color = Color.FromArgb(224, 0, 177);
         }
         
         /// <summary>

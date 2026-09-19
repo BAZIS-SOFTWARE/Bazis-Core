@@ -8,7 +8,6 @@ using Model.GeometryObjects;
 using Model.Interfaces.MeshObjects;
 using Model.Interfaces.ObjectsFinders;
 using GmshApi;
-using System.Drawing;
 using Model.ObjectsCollections;
 using Model.Interfaces.ObjectsCollections;
 using System.Reflection;
@@ -183,8 +182,6 @@ namespace OperationalController.GmshController
             // номера геометрических сущностей
             var dimTags = Gmsh.Model.GetEntities(dim);
             //var list = new List<ObjectsSet<T>>();
-            var rnd = new Random();
-
             for (var i = 0; i < dimTags.Length; i += 2)
             {
                 var tag = dimTags[i + 1];
@@ -198,9 +195,6 @@ namespace OperationalController.GmshController
                         set.Add(item.Number, obj);
                 }
                
-                var color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
-                set.SetColor(color);
-
                 if (set.Count != 0)
                     yield return set;
             }
@@ -272,12 +266,9 @@ namespace OperationalController.GmshController
         public Tuple<IObjectsSet<SurfaceFigure>,VolumeData> CreateSurfaceData()
         {
             var volumes = new VolumeData();
-            var rnd = new Random();
-
             var surfaceFigures = CreateSurfaceFigures();
             var allSurfaces = new ObjectsSet<SurfaceFigure>("FreeSurfaces");
             surfaceFigures.ForEach(x => allSurfaces.Add(x.Number, x));
-            allSurfaces.SetColor(Color.FromArgb(255, 125, 0));
 
             if (Gmsh.Model.GetDimension() > 2)
             {
@@ -286,8 +277,6 @@ namespace OperationalController.GmshController
 
                 for (var i = 0; i < dimTags.Length; i += 2)
                 {
-                    var color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
-
                     var dim = dimTags[i];
                     var tag = dimTags[i + 1];
                     var data = Gmsh.Model.GetAdjacencies(dim, tag);

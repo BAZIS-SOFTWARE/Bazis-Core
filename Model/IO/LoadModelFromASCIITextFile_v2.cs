@@ -10,9 +10,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Model.Interfaces.MeshObjects;
 using System.Xml.Linq;
-using System.Drawing;
 using Model.ObjectsCollections;
-using Model.Interfaces.ObjectsCollections;
 using System.Reflection;
 
 namespace Model.IO
@@ -117,7 +115,6 @@ namespace Model.IO
         {
             LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка группы объектов "));
             string[] tokens;
-            var rnd = new Random();
 
             for (var i = 0; i < count; i++)
             {
@@ -140,23 +137,18 @@ namespace Model.IO
                     CreateGroup(model, name, numbers, objsType);
                 else
                 {
-                    var color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
-                    CreateSet(model, name, objsType,color, numbers);
-                    //set.SetColor(color);
-                    //FillSet(set, numbers);
+                    CreateSet(model, name, objsType, numbers);
                 }
 
             }
         }
 
-        private void CreateSet(ModelData model, string setName,  ObjType objsType, Color color, IEnumerable<int> numbers)
+        private void CreateSet(ModelData model, string setName, ObjType objsType, IEnumerable<int> numbers)
         {
             if (objsType == ObjType.Элемент1D)
             {
                 var set1D = new ObjectsSet<Beam>(setName);
                 FillSet_v2(set1D, numbers);
-                set1D.SetViewMode(ViewMode.Line);
-                set1D.SetColor(color);
                 model.ObjectData.E1DCollection.Add(set1D);
             }
 
@@ -165,8 +157,6 @@ namespace Model.IO
                 model.ObjectData.E2DCollection.Add(setName);
                 var set2D = model.ObjectData.E2DCollection[setName];
                 FillSet_v2(set2D, numbers);
-                set2D.SetViewMode(ViewMode.LineSurface);
-                set2D.SetColor(color);
             }
     
             else
@@ -174,8 +164,6 @@ namespace Model.IO
                 model.ObjectData.E3DCollection.Add(setName);
                 var set3D = model.ObjectData.E3DCollection[setName];
                 FillSet_v2(set3D, numbers);
-                set3D.SetViewMode(ViewMode.LineSurface);
-                set3D.SetColor(color);
             }
         }
 
