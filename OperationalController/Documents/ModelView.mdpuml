@@ -36,18 +36,30 @@ package "Model (расчёт, файлы)" #F5F5F5 {
 
     interface IModelObject
     {
+        +int Dim;
         +int Number;
         +ObjType ObjType;
         +bool ExistState;
         --
-        +CalcCentr();
-        .. удалено ..
-        -- Color --
-        -- ViewState --
+        +Point3D CalcCentr();
+        +SetNumber(int);
+    }
+
+    interface ISetInfo
+    {
+        +string Name;
+        +int Number;
+        +ObjType ObjType;
+        +int NumberOfObjects;
+        --
+        +IEnumerable<int> GetNumbers();
+        +Point3D GetCentr(int);
+        .. переезжает в IModelView ..
+        -- Color / SetColor --
+        -- ViewMode / SetViewMode --
     }
 
     interface ISurface<T>
-    interface ISetInfo
     abstract class ModelObject
     class ObjectsSet<T>
     class VolumeFigure
@@ -63,7 +75,11 @@ package "OperationalController (представление)" #EEF5FF {
         +byte Transparency;
         .. цвет ..
         +Color GetColor(ObjType, int);
-        +Color GetColor(ISetInfo, int);
+        .. наборы: цвет и режим ..
+        +Color GetSetColor(ISetInfo);
+        +SetSetColor(ISetInfo, Color);
+        +ViewMode GetViewMode(ISetInfo);
+        +SetViewMode(ISetInfo, ViewMode);
         .. видимость ..
         +bool GetVisible(ObjType, int);
         +SetVisible(ObjType, IEnumerable<int>, bool);
@@ -120,6 +136,12 @@ package "OperationalController (представление)" #EEF5FF {
         .. видимость ..
         +bool SetHidden(IEnumerable<int>, bool);
         +bool ShowAll();
+        .. наборы этого типа ..
+        +Color GetSetColor(ISetInfo);
+        +bool SetSetColor(ISetInfo, Color);
+        +ViewMode GetViewMode(ISetInfo);
+        +bool SetViewMode(ISetInfo, ViewMode);
+        +bool ClearSelectionAndHidden();
         .. синхронизация с моделью ..
         +bool Prune(Predicate<int> exists);
     }
@@ -128,6 +150,13 @@ package "OperationalController (представление)" #EEF5FF {
     {
         -HashSet<int> hidden;
         -HashSet<int> selected;
+        -Dictionary<ISetInfo, SetStyle> setStyles;
+    }
+
+    class SetStyle
+    {
+        +Color Color;
+        +ViewMode ViewMode;
     }
 
     class NullModelView
@@ -172,15 +201,16 @@ IModelView <|.. ModelView
 IModelView <|.. NullModelView
 
 IObjectsView <|.. ObjectsView
+ObjectsView *-- SetStyle : один на набор
 ModelView *-- IObjectsView : один на ObjType
-ModelView ..> IObjectsData : Find для Prune\nи GetSelection
+ModelView ..> IObjectsData : Find, GetSetInfo,\nGetSetsInfo
 
 ProjectController ..> IModelView : GetSelection,\nPrune, Reset
 ProjectController ..> IObjectsData : Remove\nпо номеру
 
 ' ---------- сборка буферов ----------
 IObjsPresenter --> ICoordinated : обходит объекты
-IObjsPresenter --> IModelView : GetColor / GetVisible
+IObjsPresenter --> IModelView : на набор GetSetColor,\nна объект GetVisible,\nIsSelected
 IObjsPresenter --> IPointObjsVertexCreator
 IObjsPresenter --> ILineObjsVertexCreator
 IObjsPresenter --> ISurfaceObjsVertexCreator
@@ -221,10 +251,19 @@ note right of ModelView
   ModelView маршрутизирует по ObjType и
   агрегирует общемодельное.
 
-  Новый признак вида - поле внутри ObjectsView,
-  а не новый словарь здесь.
+  Любое новое состояние вида - поле внутри
+  ObjectsView, второго словаря здесь нет.
+  Стили наборов тоже: набор принадлежит ровно
+  одному ObjType.
 
-  Reset - это views.Clear плюс одно Changed.
+  Ключ стиля - сам ISetInfo по ссылке, а не имя:
+  Name у ObjectsSet меняется сеттером internal,
+  то есть переименование правит тот же экземпляр,
+  и стиль переживает его без единой строчки кода.
+
+  Reset НЕ чистит словарь: перенумерация меняет
+  номера, а не состав и цвета наборов. Это обход
+  видов с ClearSelectionAndHidden, стили остаются.
 end note
 
 note bottom of ObjectsView
@@ -238,6 +277,11 @@ note bottom of ObjectsView
   bool у каждой команды = "состояние изменилось":
   по нему ModelView поднимает Changed и
   проверяет IsEmpty.
+
+  IsEmpty учитывает и стили наборов: вид с
+  раскрашенным набором, но без выделения и
+  скрытости, выбрасывать из словаря нельзя -
+  потеряется цвет.
 
   Prune получает предикат "номер ещё существует":
   вид проверяет только свои номера и о модели
@@ -266,6 +310,24 @@ note left of IObjectsView
      ленивы; удаление во время обхода рвёт
      перечисление. Снимок делает вызывающий,
      одним ToList.
+end note
+
+note bottom of IObjsPresenter
+  <b>Сборка идёт по наборам, а не по объектам</b>
+  Принадлежность объекта набору знает модель,
+  а не вид: ObjectsData.GetSetInfo. Для элементов
+  это линейный перебор наборов с LINQ на каждый
+  вызов, поэтому спрашивать его на каждый объект
+  нельзя.
+
+  Цикл: взять наборы типа через GetSetsInfo,
+  на набор один раз спросить GetSetColor и
+  GetViewMode, дальше по номерам набора только
+  GetVisible и IsSelected - оба по хешу числа.
+
+  GetColor(ObjType, int) остаётся для точечных
+  запросов: панель свойств, подсказка под
+  курсором. В цикле сборки его звать не надо.
 end note
 
 note bottom of NullModelView
