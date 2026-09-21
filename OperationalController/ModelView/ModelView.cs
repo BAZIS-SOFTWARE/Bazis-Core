@@ -13,6 +13,8 @@ namespace OperationalController
     {
         readonly IModelData model;
         readonly Dictionary<ObjType, IObjectsView> views = new Dictionary<ObjType, IObjectsView>();
+        Color selectionColor;
+        byte transparency;
         int updateDepth;
         bool hasChanges;
 
@@ -22,18 +24,40 @@ namespace OperationalController
         public ModelView(IModelData model)
         {
             this.model = model ?? throw new ArgumentNullException(nameof(model));
-            SelectionColor = Color.Red;
-            Transparency = byte.MaxValue;
+            selectionColor = Color.Red;
+            transparency = byte.MaxValue;
         }
 
         /// <inheritdoc/>
         public IModelData Model => model;
 
         /// <inheritdoc/>
-        public Color SelectionColor { get; set; }
+        public Color SelectionColor
+        {
+            get => selectionColor;
+            set
+            {
+                if (selectionColor == value)
+                    return;
+
+                selectionColor = value;
+                Raise(true);
+            }
+        }
 
         /// <inheritdoc/>
-        public byte Transparency { get; set; }
+        public byte Transparency
+        {
+            get => transparency;
+            set
+            {
+                if (transparency == value)
+                    return;
+
+                transparency = value;
+                Raise(true);
+            }
+        }
 
         /// <inheritdoc/>
         public int SelectedCount
@@ -61,6 +85,12 @@ namespace OperationalController
                 throw new ArgumentException("The object does not belong to a model set.", nameof(number));
 
             var color = IsSelected(objType, number) ? SelectionColor : GetSetColor(setInfo);
+            return GetDisplayColor(color);
+        }
+
+        /// <inheritdoc/>
+        public Color GetDisplayColor(Color color)
+        {
             var alpha = color.A * Transparency / byte.MaxValue;
             return Color.FromArgb(alpha, color);
         }

@@ -6,6 +6,7 @@ using Model.Interfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using Model.Interfaces.ObjectsCollections;
 
@@ -16,35 +17,29 @@ namespace OperationalController.ModelScenePresentator.GlObjsPresenters
     /// </summary>
     public class PointObjsPresenter : IObjsPresenter
     {
+        List<IModelObject> pointObjects = new List<IModelObject>();
+        readonly IModelView modelView;
+        readonly ISetInfo setInfo;
+
+        /// <summary>
+        /// Создаёт presenter объектов заданного набора.
+        /// </summary>
+        public PointObjsPresenter(IModelView modelView, ISetInfo setInfo)
+        {
+            this.modelView = modelView ?? throw new ArgumentNullException(nameof(modelView));
+            this.setInfo = setInfo ?? throw new ArgumentNullException(nameof(setInfo));
+        }
+
         /// <inheritdoc/>
         public string Name { get; set; }
 
-        List<IModelObject> pointObjects = new List<IModelObject>();
-        readonly IModelView modelView;
-
-        /// <summary>
-        /// Создаёт presenter без состояния представления.
-        /// </summary>
-        public PointObjsPresenter() : this(new NullModelView(null)) { }
-
-        /// <summary>
-        /// Создаёт presenter с заданным состоянием представления.
-        /// </summary>
-        public PointObjsPresenter(IModelView modelView)
-        {
-            this.modelView = modelView ?? throw new ArgumentNullException(nameof(modelView));
-        }
-/// <inheritdoc/>
-        public bool IsVolumeObjs { get; } = false;
         /// <inheritdoc/>
-
         public PresenterType PresenterType { get; } = PresenterType.Point;
+
         /// <inheritdoc/>
         public ViewMode ViewMode { get; set; } = ViewMode.Point;
 
         /// <inheritdoc/>
-
-
         public Tuple<int, int, int,int> CreateIndexes()
         {
             var indexes = 0;
@@ -100,13 +95,25 @@ namespace OperationalController.ModelScenePresentator.GlObjsPresenters
             else vertexCreator = new NormalsPointObjsCreator();
 
 
+            var setColor = GetSetColor(vertexType);
             foreach (var pointObject in pointObjects)
             {
                 if (modelView.GetVisible(pointObject.ObjType, pointObject.Number))
-                    vertexCreator.Create(ref stride, vertexArray, pointObject, modelView);
+                    vertexCreator.Create(ref stride, vertexArray, pointObject, modelView, setColor);
             }
 
             return vertexArray;
+        }
+
+        /// <summary>
+        /// Возвращает цвет стиля набора для текущего построения буфера.
+        /// </summary>
+        private Color? GetSetColor(string vertexType)
+        {
+            if (vertexType != "цвет")
+                return null;
+
+            return modelView.GetSetColor(setInfo);
         }
 /// <inheritdoc/>
 

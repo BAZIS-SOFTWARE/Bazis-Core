@@ -6,7 +6,7 @@ namespace OperationalController.ModelScenePresentator.GlObjsVertexCreators
     public class NormalsSurfaceObjsCreator<T, U> : ISurfaceObjsVertexCreator<T, U>
         where T : ISurface<U> where U : IPoint
     {
-        public void Create(ref int stride, float[] vertexAtributes, ISurfaceObject<T, U> surfaceElement, IModelView modelView)
+        public void Create(ref int stride, float[] vertexAtributes, ISurfaceObject<T, U> surfaceElement, IModelView modelView, System.Drawing.Color? setColor)
         {
             foreach (var surface in surfaceElement.GetSurfaces())
             {

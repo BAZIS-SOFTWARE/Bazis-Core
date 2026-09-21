@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using Model.GeometryObjects;
 using Model.Interfaces;
+using OperationalController;
 using OperationalController.ModelScenePresentator;
 
 namespace ModelTests
@@ -31,7 +32,9 @@ namespace ModelTests
 
             //act
             var creator = new PresentersCreator();
-            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.SurfaceSet.Values);
+            var modelView = new ModelView(model);
+            var setInfo = model.ObjectData.GetSetInfo(ObjType.Поверхность, 0);
+            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.SurfaceSet.Values, modelView, setInfo);
             var inds = presentator.CreateIndexes();
             var ptrs = presentator.CreatePointers(inds.Item1);
             var coords = presentator.CreateVertexes(inds.Item2, "координаты");
@@ -80,7 +83,9 @@ namespace ModelTests
 
             //act
             var creator = new PresentersCreator();
-            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.SurfaceSet.Values);
+            var modelView = new ModelView(model);
+            var setInfo = model.ObjectData.GetSetInfo(ObjType.Поверхность, 0);
+            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.SurfaceSet.Values, modelView, setInfo);
             var inds = presentator.CreateIndexes();
             var ptrs = presentator.CreatePointers(inds.Item1);
             var coords = presentator.CreateVertexes(inds.Item2, "координаты");

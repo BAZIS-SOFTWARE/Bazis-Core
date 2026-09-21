@@ -54,9 +54,7 @@ package "Model (расчёт, файлы)" #F5F5F5 {
         --
         +IEnumerable<int> GetNumbers();
         +Point3D GetCentr(int);
-        .. переезжает в IModelView ..
-        -- Color / SetColor --
-        -- ViewMode / SetViewMode --
+        +IEnumerable<Point3D> GetCoords(int);
     }
 
     interface ISurface<T>
@@ -75,11 +73,13 @@ package "OperationalController (представление)" #EEF5FF {
         +byte Transparency;
         .. цвет ..
         +Color GetColor(ObjType, int);
+        +Color GetDisplayColor(Color);
         .. наборы: цвет и режим ..
         +Color GetSetColor(ISetInfo);
         +SetSetColor(ISetInfo, Color);
         +ViewMode GetViewMode(ISetInfo);
         +SetViewMode(ISetInfo, ViewMode);
+        +ISetDisplay CreateDisplay(ISetInfo);
         .. видимость ..
         +bool GetVisible(ObjType, int);
         +SetVisible(ObjType, IEnumerable<int>, bool);
@@ -144,7 +144,7 @@ package "OperationalController (представление)" #EEF5FF {
         +bool ClearSelectionAndHidden();
         .. синхронизация с моделью ..
         +bool Prune(Predicate<int> exists);
-        +bool PruneSetStyles(IEnumerable<ISetInfo> existingSets);
+        +bool PruneSetStyles(IEnumerable<ISetInfo>);
     }
 
     class ObjectsView
@@ -160,17 +160,60 @@ package "OperationalController (представление)" #EEF5FF {
         +ViewMode ViewMode;
     }
 
-    class NullModelView
+    interface ISetDisplay
+    {
+        +ViewMode ViewMode;
+        --
+        +bool IsVisible(int number);
+        +Color GetColor(int number);
+    }
+
+    class SetDisplay
+    {
+        -ModelView owner;
+        -IObjectsView view;
+        -Color setColor;
+        -ViewMode viewMode;
+    }
 
     class ProjectController
 
-    interface IObjsPresenter
-    interface IPointObjsVertexCreator
-    {
-        +Create(ref stride, float[] buffer, ICoordinated obj, Color color);
+    package "ModelScenePresentator" #E4EEFF {
+
+        interface IObjsPresenter
+        {
+            +string Name;
+            +ViewMode ViewMode;
+            +PresenterType PresenterType;
+            --
+            +CreateIndexes();
+            +int[] CreatePointers(int);
+            +float[] CreateVertexes(int, string);
+            +bool[] CreateEdgeFlags(int);
+            +int Count();
+        }
+
+        interface ISurfaceObjsPresenter
+
+        class PointObjsPresenter
+        {
+            -ISetDisplay display;
+            -List<IModelObject> pointObjects;
+        }
+
+        class LineObjsPresenter<T>
+        class SurfaceObjsPresenter<T,U>
+
+        interface IPresentersCreator
+        class PresentersCreator
+
+        interface IPointObjsVertexCreator
+        {
+            +Create(ref stride, float[] buffer, obj, Color color);
+        }
+        interface ILineObjsVertexCreator
+        interface ISurfaceObjsVertexCreator
     }
-    interface ILineObjsVertexCreator
-    interface ISurfaceObjsVertexCreator
 }
 
 ' ======================= сборка PostProc =======================
@@ -199,22 +242,37 @@ IModelData --> IObjectsData
 
 ' ---------- реализация вида ----------
 IModelView <|.. ModelView
-IModelView <|.. NullModelView
 
 IObjectsView <|.. ObjectsView
 ObjectsView *-- SetStyle : один на набор
 ModelView *-- IObjectsView : один на ObjType
 ModelView ..> IObjectsData : Find, GetSetInfo,\nGetSetsInfo
 
-ProjectController ..> IModelView : GetSelection,\nPrune, Reset
+ProjectController ..> IModelView : GetSelection, Prune,\nReset; null без модели
 ProjectController ..> IObjectsData : Remove\nпо номеру
 
 ' ---------- сборка буферов ----------
+IObjsPresenter <|-- ISurfaceObjsPresenter
+IObjsPresenter <|.. PointObjsPresenter
+IObjsPresenter <|.. LineObjsPresenter
+ISurfaceObjsPresenter <|.. SurfaceObjsPresenter
+IPresentersCreator <|.. PresentersCreator
+
+ISetDisplay <|.. SetDisplay
+ModelView *-- SetDisplay : создаёт на сборку,\nчитает SelectionColor\nи Transparency
+SetDisplay --> IObjectsView : IsHidden, IsSelected
+
+PointObjsPresenter --> ISetDisplay : IsVisible,\nGetColor
+LineObjsPresenter --> ISetDisplay
+SurfaceObjsPresenter --> ISetDisplay
+
+PresentersCreator ..> ISetDisplay : отдаёт презентеру
+PresentersCreator ..> IObjsPresenter : создаёт
+
 IObjsPresenter --> ICoordinated : обходит объекты
-IObjsPresenter --> IModelView : на набор GetSetColor,\nна объект GetVisible,\nIsSelected
-IObjsPresenter --> IPointObjsVertexCreator
-IObjsPresenter --> ILineObjsVertexCreator
-IObjsPresenter --> ISurfaceObjsVertexCreator
+PointObjsPresenter --> IPointObjsVertexCreator : передаёт\nготовый цвет
+LineObjsPresenter --> ILineObjsVertexCreator
+SurfaceObjsPresenter --> ISurfaceObjsVertexCreator
 
 ItemRange ..> IObjsPresenter : цвет градиентных\nфигур PostProc
 
@@ -227,13 +285,12 @@ SceneWindow ..> ProjectController : операции
 
 note bottom of ICoordinated
   Чистая геометрия: сколько точек и какие.
-  Живёт в Geometry, а не в Model - Model уже
-  ссылается на Geometry, цикла нет.
+  Живёт в Geometry, а не в Model -
+  Model уже ссылается на Geometry.
 
-  Но PostProc от Model это НЕ освобождает:
-  там ещё IPoint, ISurfaceElement, ILineObject
-  и Node - поля результатов строятся по сетке.
-  Разбор в ModelView.md.
+  PostProc от Model это НЕ освобождает:
+  там ещё IPoint, ISurfaceElement,
+  ILineObject и Node. Разбор в ModelView.md.
 end note
 
 note bottom of ModelObject
@@ -242,8 +299,9 @@ note bottom of ModelObject
   ElementSurface, GeometryPoint, Curve,
   SurfaceFigure, GeometrySurface.
 
-  ResultFigure/ResultSurface больше НЕ IModelObject:
-  это объекты сцены, цвет задаётся шкалой ItemRange.
+  ResultFigure и ResultSurface больше
+  НЕ IModelObject: это объекты сцены,
+  цвет задаёт шкала ItemRange.
 end note
 
 note right of ModelView
@@ -262,9 +320,35 @@ note right of ModelView
   то есть переименование правит тот же экземпляр,
   и стиль переживает его без единой строчки кода.
 
+  ProjectController отдаёт ModelView как null,
+  пока модель не загружена; презентеры null
+  не принимают - это контракт, а не обход.
+
   Reset НЕ чистит словарь: перенумерация меняет
   номера, а не состав и цвета наборов. Это обход
   видов с ClearSelectionAndHidden, стили остаются.
+end note
+
+note bottom of PointObjsPresenter
+  <b>Ответы, а не состояние</b>
+  Вместо IModelView - ISetDisplay: только
+  чтение, видимость и готовый цвет.
+  Ни команд, ни Reset посреди сборки.
+
+  Сборщик вершин получает готовый Color,
+  поэтому правило цвета живёт в одном месте.
+
+  Line и Surface устроены так же.
+end note
+
+note bottom of SetDisplay
+  Цвет набора и ViewMode разрешены
+  в конструкторе - чтобы не искать
+  набор на каждый объект.
+  SelectionColor и Transparency
+  читаются у owner, поэтому их смена
+  снимок не портит.
+  Живёт одну сборку буфера.
 end note
 
 note bottom of ObjectsView
@@ -329,29 +413,6 @@ note bottom of IObjsPresenter
   GetColor(ObjType, int) остаётся для точечных
   запросов: панель свойств, подсказка под
   курсором. В цикле сборки его звать не надо.
-end note
-
-note bottom of NullModelView
-  Вырожденная реализация для расчёта,
-  экспорта и тестов: геттеры отдают
-  значения по умолчанию, сеттеры
-  игнорируются. Убирает null-проверки.
-end note
-
-note bottom of ProjectController
-  <b>Перенумерация пока сбрасывает вид</b>
-  ObjectsRenumber не отдаёт карту старый - новый,
-  поэтому вместо переноса состояния контроллер
-  зовёт Reset. Выделение и скрытость теряются,
-  но явно, а не подменяются чужими объектами.
-
-  Поэтому Remap в IModelView нет: вводить метод
-  без вызывающего смысла нет. Вернётся вместе
-  с картой, тогда же уйдёт и Reset.
-
-  ObjectsRenumber на этой диаграмме отсутствует:
-  без Remap он никак не связан с представлением
-  и остаётся обычной операцией над моделью.
 end note
 
 note left of IModelView

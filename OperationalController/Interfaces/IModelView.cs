@@ -32,6 +32,11 @@ namespace OperationalController
         Color GetColor(ObjType objType, int number);
 
         /// <summary>
+        /// Применяет прозрачность представления к исходному цвету.
+        /// </summary>
+        Color GetDisplayColor(Color color);
+
+        /// <summary>
         /// Возвращает цвет заданного набора.
         /// </summary>
         Color GetSetColor(ISetInfo setInfo);

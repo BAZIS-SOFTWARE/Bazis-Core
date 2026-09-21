@@ -14,56 +14,33 @@ namespace OperationalController.ModelScenePresentator
     public class PresentersCreator : IPresentersCreator
     {
         /// <summary>
-        /// Создаёт presenter точечных объектов без состояния представления.
+        /// Создаёт presenter точечных объектов заданного набора.
         /// </summary>
-        public IObjsPresenter CreatePointObjectsPresenter(IEnumerable<IModelObject> modelObjects)
+        public IObjsPresenter CreatePointObjectsPresenter(IEnumerable<IModelObject> modelObjects, IModelView modelView, Model.Interfaces.ObjectsCollections.ISetInfo setInfo)
         {
-            return CreatePointObjectsPresenter(modelObjects, new NullModelView(null));
-        }
-
-        /// <inheritdoc/>
-        public IObjsPresenter CreatePointObjectsPresenter(IEnumerable<IModelObject> modelObjects, IModelView modelView)
-        {
-            var pointsPresentor = new PointObjsPresenter(modelView);
+            var pointsPresentor = new PointObjsPresenter(modelView, setInfo);
             pointsPresentor.Add(modelObjects);
             return pointsPresentor;
         }
 
         /// <summary>
-        /// Создаёт presenter линейных объектов без состояния представления.
+        /// Создаёт presenter линейных объектов заданного набора.
         /// </summary>
-        public IObjsPresenter CreateLineObjectsPresenter<T>(IEnumerable<ILineObject<T>> lineObjs)
+        public IObjsPresenter CreateLineObjectsPresenter<T>(IEnumerable<ILineObject<T>> lineObjs, IModelView modelView, Model.Interfaces.ObjectsCollections.ISetInfo setInfo)
             where T : IPoint
         {
-            return CreateLineObjectsPresenter(lineObjs, new NullModelView(null));
-        }
-
-/// <inheritdoc/>
-
-        public IObjsPresenter CreateLineObjectsPresenter<T>(IEnumerable<ILineObject<T>> lineObjs, IModelView modelView)
-            where T : IPoint
-        {
-            var linePres = new LineObjsPresenter<T>(modelView);
+            var linePres = new LineObjsPresenter<T>(modelView, setInfo);
             linePres.Add(lineObjs);
             return linePres;
         }
 
         /// <summary>
-        /// Создаёт presenter поверхностных объектов без состояния представления.
+        /// Создаёт presenter поверхностных объектов заданного набора.
         /// </summary>
-        public ISurfaceObjsPresenter CreateSurfaceObjectsPresenter<T, U>(IEnumerable<ISurfaceObject<T, U>> surfaceGeom)
-            where T : ISurface<U> where U : IPoint
-        {
-            return CreateSurfaceObjectsPresenter(surfaceGeom, new NullModelView(null));
-        }
-
-/// <inheritdoc/>
-
-        public ISurfaceObjsPresenter CreateSurfaceObjectsPresenter<T,U>(IEnumerable<ISurfaceObject<T, U>> surfaceGeom, IModelView modelView)
+        public ISurfaceObjsPresenter CreateSurfaceObjectsPresenter<T,U>(IEnumerable<ISurfaceObject<T, U>> surfaceGeom, IModelView modelView, Model.Interfaces.ObjectsCollections.ISetInfo setInfo)
                     where T : ISurface<U> where U : IPoint
         {
-
-            var presentor = new SurfaceObjsPresenter<T, U>(modelView);
+            var presentor = new SurfaceObjsPresenter<T, U>(modelView, setInfo);
             presentor.Add(surfaceGeom);
             return presentor;
         }
@@ -73,6 +50,20 @@ namespace OperationalController.ModelScenePresentator
             where T : ICoordinated
         {
             return new CoordinatedSurfaceObjsPresenter<T>(surfaceObjects, getColor);
+        }
+
+        /// <inheritdoc/>
+        public IObjsPresenter CreateIndependentPointObjectsPresenter<T>(IEnumerable<T> pointObjects, Color color)
+            where T : ICoordinated
+        {
+            return new CoordinatedPointObjsPresenter<T>(pointObjects, color);
+        }
+
+        /// <inheritdoc/>
+        public IObjsPresenter CreateIndependentLineObjectsPresenter<T>(IEnumerable<T> lineObjects, Color color)
+            where T : ICoordinated
+        {
+            return new CoordinatedLineObjsPresenter<T>(lineObjects, color);
         }
     }
 }

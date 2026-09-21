@@ -17,18 +17,15 @@ namespace OperationalController.ModelScenePresentator.GlObjsPresenters
     {
         readonly List<ISurfaceObject<T, U>> surfaceObjects = new List<ISurfaceObject<T, U>>();
         readonly IModelView modelView;
+        readonly ISetInfo setInfo;
 
         /// <summary>
-        /// Создаёт presenter без состояния представления.
+        /// Создаёт presenter объектов заданного набора.
         /// </summary>
-        public SurfaceObjsPresenter() : this(new NullModelView(null)) { }
-
-        /// <summary>
-        /// Создаёт presenter с заданным состоянием представления.
-        /// </summary>
-        public SurfaceObjsPresenter(IModelView modelView)
+        public SurfaceObjsPresenter(IModelView modelView, ISetInfo setInfo)
         {
             this.modelView = modelView ?? throw new ArgumentNullException(nameof(modelView));
+            this.setInfo = setInfo ?? throw new ArgumentNullException(nameof(setInfo));
         }
 
         /// <inheritdoc/>
@@ -100,11 +97,23 @@ namespace OperationalController.ModelScenePresentator.GlObjsPresenters
             else
                 vertexCreator = new NormalsSurfaceObjsCreator<T, U>();
 
+            var setColor = GetSetColor(vertexType);
             foreach (var surfaceObject in surfaceObjects)
                 if (modelView.GetVisible(surfaceObject.ObjType, surfaceObject.Number))
-                    vertexCreator.Create(ref stride, vertexArray, surfaceObject, modelView);
+                    vertexCreator.Create(ref stride, vertexArray, surfaceObject, modelView, setColor);
 
             return vertexArray;
+        }
+
+        /// <summary>
+        /// Возвращает цвет стиля набора для текущего построения буфера.
+        /// </summary>
+        private System.Drawing.Color? GetSetColor(string vertexType)
+        {
+            if (vertexType != "цвет")
+                return null;
+
+            return modelView.GetSetColor(setInfo);
         }
 
         /// <inheritdoc/>
