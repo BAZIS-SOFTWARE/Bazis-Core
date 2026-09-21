@@ -7,7 +7,7 @@ namespace OperationalController.ModelScenePresentator.GlObjsVertexCreators
     public class CoordsLineObjsCreator<T> : ILineObjsVertexCreator<T>
         where T : IPoint
     {
-        public void Create(ref int stride, float[] vertexAtributes, IVertexObject<T> nodeObject, IModelView modelView)
+        public void Create(ref int stride, float[] vertexAtributes, IVertexObject<T> nodeObject, IModelView modelView, System.Drawing.Color? setColor)
         {
             var points = nodeObject.GetCoordinates().ToArray();
             for (int k = 0; k < points.Length; k++)

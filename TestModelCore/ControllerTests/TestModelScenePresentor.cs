@@ -26,7 +26,11 @@ namespace ControllerTests
         public void TestPointObjsPresenter()
         {
             var nodes = new Node[] { new Node(0, new Point3D(0.5f, 1.0f, -1.0f)) };
-            var presenter = new PointObjsPresenter() { nodes };
+            var model = new ModelData();
+            model.ObjectData.NodesSet.Add(0, nodes[0]);
+            var modelView = new ModelView(model);
+            var setInfo = model.ObjectData.GetSetInfo(ObjType.Узел, nodes[0].Number);
+            var presenter = new PointObjsPresenter(modelView, setInfo) { nodes };
             var indices = presenter.CreateIndexes();
             var pointers = presenter.CreatePointers(indices.Item1);
             var colors = presenter.CreateVertexes(indices.Item3, "цвет");
@@ -44,7 +48,12 @@ namespace ControllerTests
                                      new GeometryPoint(1, new Point3D(1.0f, 1.0f, -1.0f))
                                    };
             var lines = new Curve[] { new Curve(0, nodes) };
-            var presenter = new LineObjsPresenter<GeometryPoint>();
+            var model = new ModelData();
+            model.ObjectData.CurveSet.Add(0, lines[0]);
+            var modelView = new ModelView(model);
+            var setInfo = model.ObjectData.GetSetInfo(ObjType.Кривая, lines[0].Number) ?? throw new AssertFailedException();
+            modelView.SetSetColor(setInfo, Color.Black);
+            var presenter = new LineObjsPresenter<GeometryPoint>(modelView, setInfo);
             presenter.Add(lines);
             var indices = presenter.CreateIndexes();
             var pointers = presenter.CreatePointers(indices.Item1);
@@ -66,7 +75,12 @@ namespace ControllerTests
                                      new Node(2, new Point3D(0.0f, 0.5f, 0.0f))
                                    };
             var triangle = new Element2D[] { new Triangle(0, nodes) };
-            var presenter = new SurfaceObjsPresenter<ElementSurface, Node>() { triangle };
+            var model = new ModelData();
+            model.ObjectData.E2DCollection.Add(ObjType.Элемент2D.ToString(), triangle[0]);
+            var modelView = new ModelView(model);
+            var setInfo = model.ObjectData.GetSetInfo(ObjType.Элемент2D, triangle[0].Number) ?? throw new AssertFailedException();
+            modelView.SetSetColor(setInfo, Color.Blue);
+            var presenter = new SurfaceObjsPresenter<ElementSurface, Node>(modelView, setInfo) { triangle };
             var indices = presenter.CreateIndexes();
             var pointers = presenter.CreatePointers(indices.Item1);
             var colors = presenter.CreateVertexes(indices.Item3, "цвет");
@@ -93,8 +107,9 @@ namespace ControllerTests
             model.ObjectData.E2DCollection.Add(ObjType.Элемент2D.ToString(), el2D);
 
             var creator = new PresentersCreator();
-
-            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E2DCollection.GetObjects());
+            var modelView = new ModelView(model);
+            var setInfo = model.ObjectData.GetSetInfo(ObjType.Элемент2D, el2D.Number);
+            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E2DCollection.GetObjects(), modelView, setInfo);
 
             var values = presentator.CreateIndexes();
             var edges = presentator.CreateEdgeFlags(values.Item4);
@@ -118,8 +133,9 @@ namespace ControllerTests
             model.ObjectData.E2DCollection.Add(ObjType.Элемент2D.ToString(), el2D);
 
             var creator = new PresentersCreator();
-
-            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E2DCollection.GetObjects());
+            var modelView = new ModelView(model);
+            var setInfo = model.ObjectData.GetSetInfo(ObjType.Элемент2D, el2D.Number);
+            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E2DCollection.GetObjects(), modelView, setInfo);
             var values = presentator.CreateIndexes();
             var edges = presentator.CreateEdgeFlags(values.Item4);
             Assert.AreEqual(6, edges.Length);
@@ -146,8 +162,9 @@ namespace ControllerTests
 
             model.ObjectData.SurfaceSet.Add(0, poligon);
             var creator = new PresentersCreator();
-
-            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.SurfaceSet.Values);
+            var modelView = new ModelView(model);
+            var setInfo = model.ObjectData.GetSetInfo(ObjType.Поверхность, poligon.Number);
+            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.SurfaceSet.Values, modelView, setInfo);
 
             var values = presentator.CreateIndexes();
             var edges = presentator.CreateEdgeFlags(values.Item4);
@@ -209,15 +226,18 @@ namespace ControllerTests
             {
                 case ObjType.Элемент3D:
                     model.ObjectData.E3DCollection.Add(ObjType.Элемент3D.ToString(), new Tetra(0, model.ObjectData.NodesSet.Values.ToArray()));
-                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E3DCollection.GetObjects(), modelView);
+                    var elements3DSet = model.ObjectData.GetSetInfo(ObjType.Элемент3D, 0);
+                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E3DCollection.GetObjects(), modelView, elements3DSet);
                     break;
                 case ObjType.Элемент2D:
                     model.ObjectData.E2DCollection.Add(ObjType.Элемент2D.ToString(), new Triangle(0, model.ObjectData.NodesSet.Values.ToArray()));
-                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E2DCollection.GetObjects(), modelView);
+                    var elements2DSet = model.ObjectData.GetSetInfo(ObjType.Элемент2D, 0);
+                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E2DCollection.GetObjects(), modelView, elements2DSet);
                     break;
                 default:
                     model.ObjectData.E1DCollection.Add(ObjType.Элемент1D.ToString(), new Beam(0, model.ObjectData.NodesSet.Values.ToArray()));
-                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.E1DCollection.GetObjects(), modelView);
+                    var elements1DSet = model.ObjectData.GetSetInfo(ObjType.Элемент1D, 0);
+                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.E1DCollection.GetObjects(), modelView, elements1DSet);
                     break;
             }
 
@@ -261,18 +281,21 @@ namespace ControllerTests
 
             var model = new ModelData();
             var creator = new PresentersCreator();
+            var modelView = new ModelView(model);
             IObjsPresenter presenter;
 
             switch (objType)
             {
                 case ObjType.Кривая:
                     model.ObjectData.CurveSet.Add(0, new Curve(0, points.ToArray()));
-                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.CurveSet.Values);
+                    var curveSet = model.ObjectData.GetSetInfo(ObjType.Кривая, 0);
+                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.CurveSet.Values, modelView, curveSet);
                     break;
                 default:
                     var surface = new GeometrySurface(0, points.ToArray());
                     model.ObjectData.SurfaceSet.Add(0, new SurfaceFigure(0,new GeometrySurface[] { surface } ));
-                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.SurfaceSet.Values);
+                    var surfaceSet = model.ObjectData.GetSetInfo(ObjType.Поверхность, 0);
+                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.SurfaceSet.Values, modelView, surfaceSet);
                     break;
             }
 
@@ -335,30 +358,32 @@ namespace ControllerTests
             //act
 
             var creator = new PresentersCreator();
+            var modelView = new ModelView(model);
+            var setInfo = model.ObjectData.GetSetsInfo(objType).First();
             IObjsPresenter presenter;
 
             switch (objType)
             {
                 case ObjType.Узел:
-                    presenter = creator.CreatePointObjectsPresenter(model.ObjectData.NodesSet.Values);
+                    presenter = creator.CreatePointObjectsPresenter(model.ObjectData.NodesSet.Values, modelView, setInfo);
                     break;
                 case ObjType.Кривая:
-                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.CurveSet.Values);
+                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.CurveSet.Values, modelView, setInfo);
                     break;
                 case ObjType.Поверхность:
-                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.SurfaceSet.Values);
+                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.SurfaceSet.Values, modelView, setInfo);
                     break;;
                 case ObjType.Элемент1D:
-                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.E1DCollection.GetObjects());
+                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.E1DCollection.GetObjects(), modelView, setInfo);
                     break;
                 case ObjType.Элемент2D:
-                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E2DCollection.GetObjects());
+                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E2DCollection.GetObjects(), modelView, setInfo);
                     break;
                 case ObjType.Элемент3D:
-                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E3DCollection.GetObjects());
+                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E3DCollection.GetObjects(), modelView, setInfo);
                     break;
                 default:
-                    presenter = creator.CreatePointObjectsPresenter(model.ObjectData.PointsSet.Values);
+                    presenter = creator.CreatePointObjectsPresenter(model.ObjectData.PointsSet.Values, modelView, setInfo);
                     break;
             }
 
@@ -406,7 +431,9 @@ namespace ControllerTests
                 model.Load(path);
             }
 
-            var presenter = new SurfaceObjsPresenter<ElementSurface, Node>();
+            var modelView = new ModelView(model);
+            var setInfo = model.ObjectData.GetSetsInfo(ObjType.Элемент3D).First();
+            var presenter = new SurfaceObjsPresenter<ElementSurface, Node>(modelView, setInfo);
             var elems = model.ObjectData.E3DCollection.GetObjects();
             presenter.Add(elems);
 
@@ -430,7 +457,8 @@ namespace ControllerTests
             var controller = new ProjectController();
             controller.Load(@"..\..\..\Examples\3D\mixElements.bpf");
 
-            var presenter = controller.CreateModelObjectsPresentor(ObjType.Элемент2D);
+            var setInfo = controller.GetModelSetsInfo(ObjType.Элемент2D).First();
+            var presenter = controller.CreateModelObjectsPresentor(setInfo);
             var surfPresenter = (ISurfaceObjsPresenter)presenter;
             var inds = surfPresenter.CreateIndexes();
             var coords = surfPresenter.CreateVertexes(inds.Item2, "координаты");
@@ -467,7 +495,8 @@ namespace ControllerTests
 
             Assert.AreEqual(expectedShown, actualShown);
 
-            var surfPresenter = (ISurfaceObjsPresenter)controller.CreateModelObjectsPresentor(objType);
+            var setInfo = sets.First();
+            var surfPresenter = (ISurfaceObjsPresenter)controller.CreateModelObjectsPresentor(setInfo);
             
             var inds = surfPresenter.CreateIndexes();
             var coords = surfPresenter.CreateVertexes(inds.Item2, "координаты");
@@ -504,7 +533,8 @@ namespace ControllerTests
                 Assert.AreEqual(alpha, controller.ModelView.GetSetColor(set).A);
             }
 
-            var pres = controller.CreateModelObjectsPresentor(ObjType.Элемент1D);
+            var setInfo = sets.First();
+            var pres = controller.CreateModelObjectsPresentor(setInfo);
 
             var indices = pres.CreateIndexes();
             var colors = pres.CreateVertexes(indices.Item3, "цвет");

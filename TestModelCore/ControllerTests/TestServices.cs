@@ -139,7 +139,7 @@ namespace ControllerTests
             Assert.AreEqual(19, bounds.Count());
 
             var presentersCreator  = new PresentersCreator();
-            var presentor = presentersCreator.CreateLineObjectsPresenter(bounds);
+            var presentor = presentersCreator.CreateIndependentLineObjectsPresenter(bounds, Color.DarkGray);
             Assert.AreEqual(19, presentor.Count());
             
         }
@@ -157,7 +157,7 @@ namespace ControllerTests
             Assert.AreNotEqual(0, normals.Count());
 
             var presentersCreator = new PresentersCreator();
-            var presentor = presentersCreator.CreateLineObjectsPresenter(normals);
+            var presentor = presentersCreator.CreateIndependentLineObjectsPresenter(normals, Color.DarkGray);
             Assert.AreNotEqual(0, presentor.Count());
 
         }

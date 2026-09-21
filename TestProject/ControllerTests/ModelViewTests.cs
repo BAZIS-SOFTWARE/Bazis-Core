@@ -4,6 +4,7 @@ using Model;
 using Model.Interfaces;
 using Model.MeshObjects;
 using OperationalController;
+using OperationalController.ModelScenePresentator.GlObjsPresenters;
 using System.Drawing;
 using System.Linq;
 
@@ -54,6 +55,25 @@ namespace TestProject.ControllerTests
             {
                 view.Select(ObjType.Узел, new[] { 1 });
                 view.Select(ObjType.Элемент2D, new[] { 2 });
+            }
+
+            Assert.AreEqual(1, changesCount);
+        }
+
+        /// <summary>
+        /// Проверяет уведомление при пакетном изменении настроек представления.
+        /// </summary>
+        [TestMethod]
+        public void DisplaySettings_RaiseOneChangedEventInUpdate()
+        {
+            var view = new ModelView(new ModelData());
+            var changesCount = 0;
+            view.Changed += (sender, args) => changesCount++;
+
+            using (view.BeginUpdate())
+            {
+                view.SelectionColor = Color.Green;
+                view.Transparency = 128;
             }
 
             Assert.AreEqual(1, changesCount);
@@ -120,6 +140,41 @@ namespace TestProject.ControllerTests
             var color = view.GetColor(ObjType.Узел, 4);
 
             Assert.AreEqual(expectedColor, color);
+        }
+
+        /// <summary>
+        /// Проверяет формирование цвета presenter без поиска набора для каждого объекта.
+        /// </summary>
+        [TestMethod]
+        public void PointPresenter_UsesSetStyleAndSelectionColor()
+        {
+            var model = new ModelData();
+            var node = new Node(12, new Point3D());
+            model.ObjectData.NodesSet.Add(node.Number, node);
+            var setInfo = model.ObjectData.GetSetInfo(ObjType.Узел, node.Number);
+            var view = new ModelView(model)
+            {
+                SelectionColor = Color.Red,
+                Transparency = 128
+            };
+            view.SetSetColor(setInfo, Color.Blue);
+            var presenter = new PointObjsPresenter(view, setInfo);
+            presenter.Add(new[] { node });
+
+            var colors = presenter.CreateVertexes(4, "цвет");
+
+            Assert.AreEqual(0.0f, colors[0]);
+            Assert.AreEqual(0.0f, colors[1]);
+            Assert.AreEqual(1.0f, colors[2]);
+            Assert.AreEqual(128.0f / 255.0f, colors[3]);
+
+            view.Select(ObjType.Узел, new[] { node.Number });
+            colors = presenter.CreateVertexes(4, "цвет");
+
+            Assert.AreEqual(1.0f, colors[0]);
+            Assert.AreEqual(0.0f, colors[1]);
+            Assert.AreEqual(0.0f, colors[2]);
+            Assert.AreEqual(128.0f / 255.0f, colors[3]);
         }
 
         /// <summary>

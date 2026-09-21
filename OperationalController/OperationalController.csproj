@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
     <Title>OperationalController</Title>
-    <Version>4.9.2</Version>
+    <Version>4.9.5</Version>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>ControllerKey.snk</AssemblyOriginatorKeyFile>

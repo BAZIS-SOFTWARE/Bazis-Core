@@ -23,18 +23,15 @@ namespace OperationalController.ModelScenePresentator.GlObjsPresenters
 
         List<ILineObject<T>> lineObjects = new List<ILineObject<T>>();
         readonly IModelView modelView;
+        readonly ISetInfo setInfo;
 
         /// <summary>
-        /// Создаёт presenter без состояния представления.
+        /// Создаёт presenter объектов заданного набора.
         /// </summary>
-        public LineObjsPresenter() : this(new NullModelView(null)) { }
-
-        /// <summary>
-        /// Создаёт presenter с заданным состоянием представления.
-        /// </summary>
-        public LineObjsPresenter(IModelView modelView)
+        public LineObjsPresenter(IModelView modelView, ISetInfo setInfo)
         {
             this.modelView = modelView ?? throw new ArgumentNullException(nameof(modelView));
+            this.setInfo = setInfo ?? throw new ArgumentNullException(nameof(setInfo));
         }
 
         /// <inheritdoc/>
@@ -104,13 +101,25 @@ namespace OperationalController.ModelScenePresentator.GlObjsPresenters
                 vertexCreator = new CoordsLineObjsCreator<T>();
             else vertexCreator = new NormalsLineObjsCreator<T>();
 
+            var setColor = GetSetColor(vertexType);
             foreach (var lineObject in lineObjects)
             {
                 if (modelView.GetVisible(lineObject.ObjType, lineObject.Number))
-                    vertexCreator.Create(ref stride, vertexArray, lineObject, modelView);
+                    vertexCreator.Create(ref stride, vertexArray, lineObject, modelView, setColor);
             }
 
             return vertexArray;
+        }
+
+        /// <summary>
+        /// Возвращает цвет стиля набора для текущего построения буфера.
+        /// </summary>
+        private System.Drawing.Color? GetSetColor(string vertexType)
+        {
+            if (vertexType != "цвет")
+                return null;
+
+            return modelView.GetSetColor(setInfo);
         }
 /// <inheritdoc/>
 

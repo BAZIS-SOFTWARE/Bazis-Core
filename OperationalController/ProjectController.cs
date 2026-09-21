@@ -84,7 +84,7 @@ namespace OperationalController
             {
                 var model = ModelData;
                 if (model == null)
-                    return new NullModelView(null);
+                    return null;
 
                 if (modelView == null || modelView.Model != model)
                     modelView = new ModelView(model);
@@ -130,7 +130,11 @@ namespace OperationalController
             if (numbers == null)
                 return;
 
-            ModelView.SetSelection(objType, numbers);
+            var view = ModelView;
+            if (view == null)
+                return;
+
+            view.SetSelection(objType, numbers);
         }
 /// <inheritdoc/>
 
