@@ -221,7 +221,15 @@ namespace OperationalController
         public IEnumerable<IModelObject> GetAllModelObjects() => ModelData.ObjectData.GetAllObjects();
         public IEnumerable<IElement> GetAllModelElements() => ModelData.ObjectData.GetAllElements();
         public double[] GetGeoObjPoints(int dim, int tag, double[] parametricCoord) => GmshController.Gmsh.Model.GetValue(dim, tag, parametricCoord);
+        /// <summary>
+        /// Возвращает параметрические координаты геометрического объекта для заданной точки.
+        /// </summary>
+        public double[] GetParametrization(int dim, int tag, double[] coordinates) => GmshController.Gmsh.Model.GetParametrization(dim, tag, coordinates);
         public Tuple<double[], double[]> GetParametrizationBounds(int dim, int tag) => GmshController.Gmsh.Model.GetParametrizationBounds(dim, tag);
+        /// <summary>
+        /// Возвращает нормаль поверхности в заданных параметрических координатах.
+        /// </summary>
+        public double[] GetSurfaceNormal(int surfaceTag, double[] parametricCoordinates) => GmshController.Gmsh.Model.GetNormal(surfaceTag, parametricCoordinates);
         public string GetType(int dim, int tag) => GmshController.Gmsh.Model.GetType(dim, tag);
         public int[] GetBoundary(int[] dimTags, bool combined = true, bool oriented = true, bool recursive = false) => GmshController.Gmsh.Model.GetBoundary(dimTags, combined, oriented, recursive);
         public double GetCurveLength(int curveTag) => GmshController.CalcCurveLength(curveTag);

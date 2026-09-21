@@ -1,17 +1,19 @@
-﻿using OperationalController.MeshObjsUtility;
-using OperationalController.SurfaceMeshCreator;
-using Model.Interfaces;
-using Project.Interfaces.Tasks;
-using Project.Interfaces;
-using Geometry;
+﻿using Geometry;
+using GmshApi;
 using Model.GeometryObjects;
-using System.Collections.Generic;
-using System.Linq;
-using System.Drawing;
-using System;
-using OperationalController.GmshController;
-using System.Numerics;
+using Model.Interfaces;
+using Model.Interfaces.ObjectsCollections;
 using Model.MeshObjects;
+using OperationalController.GmshController;
+using OperationalController.MeshObjsUtility;
+using OperationalController.SurfaceMeshCreator;
+using Project.Interfaces;
+using Project.Interfaces.Tasks;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Numerics;
 
 namespace OperationalController
 {
@@ -22,7 +24,53 @@ namespace OperationalController
     {
 /// <inheritdoc/>
 
-        public IGmshController GmshController { get; set; } = new GmshController.GmshController();
+        IGmshController GmshController = new GmshController.GmshController();
+
+        /// <summary>
+        /// Возвращает признак готовности геометрического контроллера.
+        /// </summary>
+        public bool IsGeometryInitialized => GmshController.IsInitialized;
+
+        /// <summary>
+        /// Инициализирует контроллер геометрии для текущего проекта.
+        /// </summary>
+        /// <param name="gmshDllPath">Путь к библиотеке Gmsh.</param>
+        public void InitializeGeometry(string gmshDllPath)
+        {
+            if (string.IsNullOrWhiteSpace(gmshDllPath))
+                throw new ArgumentException("Gmsh DLL path is not specified.", nameof(gmshDllPath));
+
+            if (GmshController.IsInitialized)
+                throw new InvalidOperationException("Geometry controller is already initialized.");
+
+            GmshController.Load(gmshDllPath);
+
+
+            // спросить Николая насколько это корректно?
+            // глобальная опция поведения Gmsh при ошибках
+            /*
+            0 — не прерывать выполнение;
+            1 — прервать построение сетки;
+            2 — выбросить исключение вне интерактивного режима;
+            3 — всегда выбросить исключение;
+            4 — завершить процесс.
+             */
+            GmshController.Gmsh.Option.SetNumber("General.AbortOnError", 0);
+
+            if (!GmshController.IsInitialized)
+                throw new InvalidOperationException("Gmsh initialization failed.");
+        }
+
+        /// <summary>
+        /// Завершает работу контроллера геометрии.
+        /// </summary>
+        public void UnloadGeometry()
+        {
+            if (!GmshController.IsInitialized)
+                return;
+
+            GmshController.Unload();
+        }
 
         IProjectData project;
 
@@ -31,17 +79,53 @@ namespace OperationalController
 
         public List<int> SelectNodeInDirection(float angleInGradus, int numbFirst, int numbSecond, Color color)
         {
-            return selectionHelper.SelectNodeInDirection(ModelData.ObjectData, angleInGradus, numbFirst, numbSecond, color);
+            var numbers = selectionHelper.SelectNodeInDirection(ModelData.ObjectData, angleInGradus, numbFirst, numbSecond);
+            Highlight(ObjType.Узел, numbers, color);
+            return numbers;
         }
         /// <inheritdoc/>
         public List<int> SelectNodeInPlane(Geometry.Plane plane, Color color)
         {
-            return selectionHelper.SelectNodeInPlane(ModelData.ObjectData, plane, color);
+            var numbers = selectionHelper.SelectNodeInPlane(ModelData.ObjectData, plane);
+            Highlight(ObjType.Узел, numbers, color);
+            return numbers;
         }
         /// <inheritdoc/>
         public List<int> SelectE2DInPlane(float angleInGradus, int startNumber, Color color)
         {
-            return selectionHelper.SelectE2DInPlane(ModelData.ObjectData,angleInGradus, startNumber, color);
+            var numbers = selectionHelper.SelectE2DInPlane(ModelData.ObjectData, angleInGradus, startNumber);
+            Highlight(ObjType.Элемент2D, numbers, color);
+            return numbers;
+        }
+
+        /// <summary>
+        /// Подсвечивает объекты модели заданным цветом.
+        /// Цвет хранится в наборе объектов, поэтому подсветка выполняется через ISetInfo,
+        /// а не записью в сами объекты модели.
+        /// </summary>
+        /// <param name="objType">Тип подсвечиваемых объектов.</param>
+        /// <param name="numbers">Номера подсвечиваемых объектов.</param>
+        /// <param name="color">Цвет подсветки.</param>
+        private void Highlight(ObjType objType, IEnumerable<int> numbers, Color color)
+        {
+            var objectsData = ModelData?.ObjectData;
+
+            if (objectsData == null || numbers == null)
+                return;
+
+            var wanted = new HashSet<int>(numbers);
+
+            if (wanted.Count == 0)
+                return;
+
+            // Один проход по наборам вместо поиска набора для каждого объекта.
+            foreach (var setInfo in objectsData.GetSetsInfo(objType))
+            {
+                var matched = setInfo.GetNumbers().Where(wanted.Contains).ToList();
+
+                foreach (var number in matched)
+                    setInfo.SetColor(color, number);
+            }
         }
 /// <inheritdoc/>
 

@@ -3,7 +3,6 @@ using Model.Interfaces.ObjectsFinders;
 using Model.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using Model.MeshObjects;
 using Model.Interfaces.MeshObjects;
@@ -18,9 +17,8 @@ namespace OperationalController.MeshObjsUtility
     public class SelectionHelper : ISelectionHelper
     {
         /// <inheritdoc/>
-        public List<int> SelectNodeInDirection(IObjectsData objectsData, float angleInGradus, int numbFirst, int numbSecond, Color color)
+        public List<int> SelectNodeInDirection(IObjectsData objectsData, float angleInGradus, int numbFirst, int numbSecond)
         {
-            var elements = objectsData.GetAllElements().OrderBy(x => x.Number).ToList();
             var nodes = objectsData.NodesSet;
             var nodeOne = nodes[numbFirst];
             var nodeTwo = nodes[numbSecond];
@@ -43,7 +41,6 @@ namespace OperationalController.MeshObjsUtility
                             {
                                 currentNode = node;
                                 previousDirection = currentDirection;
-                                node.Color = color;
                                 result.Add(node.Number);
                                 isMoveNext = true;
                                 break;
@@ -57,7 +54,7 @@ namespace OperationalController.MeshObjsUtility
         }
 /// <inheritdoc/>
 
-        public List<int> SelectNodeInPlane(IObjectsData objectsData, Plane plane, Color color)
+        public List<int> SelectNodeInPlane(IObjectsData objectsData, Plane plane)
                     
         {
             var used = new HashSet<int>();
@@ -69,7 +66,6 @@ namespace OperationalController.MeshObjsUtility
                     var dist = plane.PointPosition(node.Position);
                     if (Math.Abs(dist) < 1e-2)
                     {
-                        node.Color = color;
                         used.Add(node.Number);
                     }
 
@@ -80,7 +76,7 @@ namespace OperationalController.MeshObjsUtility
 /// <inheritdoc/>
 
 
-        public List<int> SelectE2DInPlane(IObjectsData objectsData, float angleInGradus, int startNumber, Color color)         
+        public List<int> SelectE2DInPlane(IObjectsData objectsData, float angleInGradus, int startNumber)
         {
             var maxAngleRadians = ConvertGradusToRadian(angleInGradus);
             var elements = objectsData.E2DCollection;
@@ -102,8 +98,7 @@ namespace OperationalController.MeshObjsUtility
                         if (angleRadian <= maxAngleRadians)
                         {
                             used.Add(neighbourNumber);
-                            queue.Enqueue(neighbourNumber);                            
-                            neighbourElement.Color = color;
+                            queue.Enqueue(neighbourNumber);
                         }
                     }
                 }

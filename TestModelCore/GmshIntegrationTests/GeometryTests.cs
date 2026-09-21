@@ -36,7 +36,7 @@ namespace GmshTests
         public void ImportCADoutside(string fileName)
         {
             var project = new ProjectController();
-            project.GmshController.Load(@"..\..\..\..\GmshApi\gmsh.dll");
+            project.InitializeGeometry(@"..\..\..\..\GmshApi\gmsh.dll");
             project.ImportCAD(fileName);
 
             //assert
@@ -50,7 +50,6 @@ namespace GmshTests
         public void ImportCAD_ShouldFaill_WhenPathContainsForbiddenSymbols(string path)
         {
             var project = new ProjectController();
-            project.GmshController = gmshController;
             Assert.ThrowsException<ArgumentException>(() =>
             project.ImportCAD(path), 
             "В пути файла присутствуют символы кириллицы или пробелы. Выберите другой файл или переименуйте этот!");
@@ -69,7 +68,7 @@ namespace GmshTests
         public void ImportCAD(string fileName)
         {
             var project = new ProjectController();
-            project.GmshController.Load(@"..\..\..\..\GmshApi\gmsh.dll");
+            project.InitializeGeometry(@"..\..\..\..\GmshApi\gmsh.dll");
             project.ImportCAD(modelFolder + fileName);
 
             //assert

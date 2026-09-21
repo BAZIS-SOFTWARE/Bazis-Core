@@ -37,7 +37,7 @@ namespace TestModel.GmshTests
         public void ImportCADoutside(string fileName)
         {
             var project = new ProjectController();
-            project.GmshController.Load(@"..\..\..\..\GmshApi\gmsh.dll");
+            project.InitializeGeometry(@"..\..\..\..\GmshApi\gmsh.dll");
             project.ImportCAD(fileName);
 
             //assert
@@ -57,7 +57,7 @@ namespace TestModel.GmshTests
         public void ImportCAD(string fileName)
         {
             var project = new ProjectController();
-            project.GmshController.Load(@"..\..\..\..\GmshApi\gmsh.dll");
+            project.InitializeGeometry(@"..\..\..\..\GmshApi\gmsh.dll");
             project.ImportCAD(modelFolder + fileName);
 
             //assert

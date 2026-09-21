@@ -11,7 +11,7 @@ namespace ControllerTests
         public void Init()
         {
             _project = new ProjectController();
-            _project.GmshController.Load(@"..\..\..\..\GmshApi\gmsh.dll");
+            _project.InitializeGeometry(@"..\..\..\..\GmshApi\gmsh.dll");
             _project.ImportCAD(@"..\..\..\Examples\CAD\Tavr.step");
         }
 
