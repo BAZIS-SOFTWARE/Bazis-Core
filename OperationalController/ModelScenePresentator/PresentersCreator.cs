@@ -1,69 +1,41 @@
-﻿using Model.Interfaces;
-using OperationalController.ModelScenePresentator.GlObjsPresenters;
-using Geometry.Interfaces;
-using OperationalController;
-using System;
 using System.Collections.Generic;
 using System.Drawing;
+using Geometry.Interfaces;
+using Model.Interfaces;
+using OperationalController.ModelScenePresentator.GlObjsPresenters;
 
 namespace OperationalController.ModelScenePresentator
 {
     /// <summary>
-    /// ModelScenePresentator
+    /// Создает презентаторы объектов.
     /// </summary>
     public class PresentersCreator : IPresentersCreator
     {
-        /// <summary>
-        /// Создаёт presenter точечных объектов заданного набора.
-        /// </summary>
-        public IObjsPresenter CreatePointObjectsPresenter(IEnumerable<IModelObject> modelObjects, IModelView modelView, Model.Interfaces.ObjectsCollections.ISetInfo setInfo)
-        {
-            var pointsPresentor = new PointObjsPresenter(modelView, setInfo);
-            pointsPresentor.Add(modelObjects);
-            return pointsPresentor;
-        }
+        /// <inheritdoc />
+        public IObjsPresenter CreatePointObjectsPresenter(IReadOnlyList<IModelObject> pointObjects, IReadOnlyList<Color> colors) => new PointObjsPresenter(pointObjects, colors);
 
-        /// <summary>
-        /// Создаёт presenter линейных объектов заданного набора.
-        /// </summary>
-        public IObjsPresenter CreateLineObjectsPresenter<T>(IEnumerable<ILineObject<T>> lineObjs, IModelView modelView, Model.Interfaces.ObjectsCollections.ISetInfo setInfo)
-            where T : IPoint
-        {
-            var linePres = new LineObjsPresenter<T>(modelView, setInfo);
-            linePres.Add(lineObjs);
-            return linePres;
-        }
+        /// <inheritdoc />
+        public IObjsPresenter CreatePointObjectsPresenter(IReadOnlyList<IModelObject> pointObjects, Color color) => new PointObjsPresenter(pointObjects, color);
 
-        /// <summary>
-        /// Создаёт presenter поверхностных объектов заданного набора.
-        /// </summary>
-        public ISurfaceObjsPresenter CreateSurfaceObjectsPresenter<T,U>(IEnumerable<ISurfaceObject<T, U>> surfaceGeom, IModelView modelView, Model.Interfaces.ObjectsCollections.ISetInfo setInfo)
-                    where T : ISurface<U> where U : IPoint
-        {
-            var presentor = new SurfaceObjsPresenter<T, U>(modelView, setInfo);
-            presentor.Add(surfaceGeom);
-            return presentor;
-        }
+        /// <inheritdoc />
+        public IObjsPresenter CreateLineObjectsPresenter<T>(IReadOnlyList<T> lineObjects, IReadOnlyList<Color> colors) where T : ICoordinated => new LineObjsPresenter<T>(lineObjects, colors);
 
-        /// <inheritdoc/>
-        public ISurfaceObjsPresenter CreateSurfaceObjectsPresenter<T>(IEnumerable<T> surfaceObjects, Func<T, Color> getColor)
-            where T : ICoordinated
-        {
-            return new CoordinatedSurfaceObjsPresenter<T>(surfaceObjects, getColor);
-        }
+        /// <inheritdoc />
+        public IObjsPresenter CreateLineObjectsPresenter<T>(IReadOnlyList<T> lineObjects, Color color) where T : ICoordinated => new LineObjsPresenter<T>(lineObjects, color);
 
-        /// <inheritdoc/>
-        public IObjsPresenter CreateIndependentPointObjectsPresenter<T>(IEnumerable<T> pointObjects, Color color)
-            where T : ICoordinated
-        {
-            return new CoordinatedPointObjsPresenter<T>(pointObjects, color);
-        }
+        /// <inheritdoc />
+        public ISurfaceObjsPresenter CreateSurfaceObjectsPresenter<T, U>(IReadOnlyList<ISurfaceObject<T, U>> surfaceObjects, IReadOnlyList<Color> colors) where T : ISurface<U> where U : IPoint => new SurfaceObjsPresenter<T, U>(surfaceObjects, colors);
 
-        /// <inheritdoc/>
-        public IObjsPresenter CreateIndependentLineObjectsPresenter<T>(IEnumerable<T> lineObjects, Color color)
-            where T : ICoordinated
-        {
-            return new CoordinatedLineObjsPresenter<T>(lineObjects, color);
-        }
+        /// <inheritdoc />
+        public ISurfaceObjsPresenter CreateSurfaceObjectsPresenter<T, U>(IReadOnlyList<ISurfaceObject<T, U>> surfaceObjects, Color color) where T : ISurface<U> where U : IPoint => new SurfaceObjsPresenter<T, U>(surfaceObjects, color);
+
+        /// <inheritdoc />
+        public ISurfaceObjsPresenter CreateSurfaceObjectsPresenter<T>(IReadOnlyList<T> surfaceObjects, IReadOnlyList<Color> colors) where T : ICoordinated => new SurfaceObjsPresenter<T>(surfaceObjects, colors);
+
+        /// <inheritdoc />
+        public ISurfaceObjsPresenter CreateSurfaceObjectsPresenter<T>(IReadOnlyList<T> surfaceObjects, Color color) where T : ICoordinated => new SurfaceObjsPresenter<T>(surfaceObjects, color);
+
+        /// <inheritdoc />
+        public IObjsPresenter CreatePointObjectsPresenter<T>(IReadOnlyList<T> pointObjects, Color color) where T : ICoordinated => new PointObjsPresenter<T>(pointObjects, color);
     }
 }

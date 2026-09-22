@@ -158,8 +158,9 @@ namespace TestProject.ControllerTests
                 Transparency = 128
             };
             view.SetSetColor(setInfo, Color.Blue);
-            var presenter = new PointObjsPresenter(view, setInfo);
-            presenter.Add(new[] { node });
+            var pointObjects = new IModelObject[] { node };
+            var colorsByPoint = new[] { view.GetColor(setInfo, node.Number) };
+            var presenter = new PointObjsPresenter(pointObjects, colorsByPoint);
 
             var colors = presenter.CreateVertexes(4, "цвет");
 
@@ -169,6 +170,8 @@ namespace TestProject.ControllerTests
             Assert.AreEqual(128.0f / 255.0f, colors[3]);
 
             view.Select(ObjType.Узел, new[] { node.Number });
+            colorsByPoint = new[] { view.GetColor(setInfo, node.Number) };
+            presenter = new PointObjsPresenter(pointObjects, colorsByPoint);
             colors = presenter.CreateVertexes(4, "цвет");
 
             Assert.AreEqual(1.0f, colors[0]);

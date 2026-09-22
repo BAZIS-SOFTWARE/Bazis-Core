@@ -353,8 +353,10 @@ x.Time.CompareTo(0) >= 0
             CSVSaver.SaveResults(proj.ModelData.ObjectData.NodesSet.Values, results.First(), resDesc, resultNodesCSVPath);
             CSVSaver.SaveResults(proj.ModelData.ObjectData.GetAllElements(), results.First(), resDesc, resultElementsCSVPath);
 
+            var figures = resultObjects.ToList();
             var modelPresenter = new PresentersCreator();
-            var presenter = modelPresenter.CreateSurfaceObjectsPresenter(resultObjects, resultObject => resultObject.Color);
+            var colorsByFigure = figures.Select(figure => figure.Color).ToList();
+            var presenter = modelPresenter.CreateSurfaceObjectsPresenter(figures, colorsByFigure);
 
             if (resultObjects.Count() == 0)
                 throw new Exception();

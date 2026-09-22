@@ -1,5 +1,6 @@
 using Model.Interfaces;
 using Model.Interfaces.ObjectsCollections;
+using OperationalController.ModelScenePresentator;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -84,12 +85,25 @@ namespace OperationalController
             if (setInfo == null)
                 throw new ArgumentException("The object does not belong to a model set.", nameof(number));
 
-            var color = IsSelected(objType, number) ? SelectionColor : GetSetColor(setInfo);
-            return GetDisplayColor(color);
+            return GetColor(setInfo, number);
         }
 
         /// <inheritdoc/>
-        public Color GetDisplayColor(Color color)
+        public Color GetColor(ISetInfo setInfo, int number)
+        {
+            if (setInfo == null)
+                throw new ArgumentNullException(nameof(setInfo));
+
+            var view = GetOrCreateView(setInfo.ObjType);
+            var setColor = view.GetSetColor(setInfo);
+            var color = view.IsSelected(number) ? SelectionColor : setColor;
+            return GetDisplayColor(color);
+        }
+
+        /// <summary>
+        /// Применяет прозрачность представления к исходному цвету.
+        /// </summary>
+        private Color GetDisplayColor(Color color)
         {
             var alpha = color.A * Transparency / byte.MaxValue;
             return Color.FromArgb(alpha, color);

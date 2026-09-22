@@ -50,7 +50,9 @@ namespace TestProject.ControllerTests
                 new Point3D(0, 1, 0)
             }, Color.Red);
             var creator = new PresentersCreator();
-            var presenter = creator.CreateSurfaceObjectsPresenter(new[] { figure }, resultObject => resultObject.Color);
+            var figures = new[] { figure };
+            var colorsByFigure = figures.Select(item => item.Color).ToList();
+            var presenter = creator.CreateSurfaceObjectsPresenter(figures, colorsByFigure);
 
             var indexes = presenter.CreateIndexes();
             var coordinates = presenter.CreateVertexes(indexes.Item2, "координаты");

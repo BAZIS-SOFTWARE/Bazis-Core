@@ -6,6 +6,7 @@ using Model.GeometryObjects;
 using Model.Interfaces;
 using OperationalController;
 using OperationalController.ModelScenePresentator;
+using System.Linq;
 
 namespace ModelTests
 {
@@ -34,7 +35,10 @@ namespace ModelTests
             var creator = new PresentersCreator();
             var modelView = new ModelView(model);
             var setInfo = model.ObjectData.GetSetInfo(ObjType.Поверхность, 0);
-            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.SurfaceSet.Values, modelView, setInfo);
+            var figures = model.ObjectData.SurfaceSet.Values.ToList();
+            var colorsByFigure = figures.Select(figure => modelView.GetColor(setInfo, figure.Number)).ToList();
+            var surfaceObjects = figures.Cast<ISurfaceObject<GeometrySurface, GeometryPoint>>().ToList();
+            var presentator = creator.CreateSurfaceObjectsPresenter<GeometrySurface, GeometryPoint>(surfaceObjects, colorsByFigure);
             var inds = presentator.CreateIndexes();
             var ptrs = presentator.CreatePointers(inds.Item1);
             var coords = presentator.CreateVertexes(inds.Item2, "координаты");
@@ -85,7 +89,10 @@ namespace ModelTests
             var creator = new PresentersCreator();
             var modelView = new ModelView(model);
             var setInfo = model.ObjectData.GetSetInfo(ObjType.Поверхность, 0);
-            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.SurfaceSet.Values, modelView, setInfo);
+            var figures = model.ObjectData.SurfaceSet.Values.ToList();
+            var colorsByFigure = figures.Select(figure => modelView.GetColor(setInfo, figure.Number)).ToList();
+            var surfaceObjects = figures.Cast<ISurfaceObject<GeometrySurface, GeometryPoint>>().ToList();
+            var presentator = creator.CreateSurfaceObjectsPresenter<GeometrySurface, GeometryPoint>(surfaceObjects, colorsByFigure);
             var inds = presentator.CreateIndexes();
             var ptrs = presentator.CreatePointers(inds.Item1);
             var coords = presentator.CreateVertexes(inds.Item2, "координаты");

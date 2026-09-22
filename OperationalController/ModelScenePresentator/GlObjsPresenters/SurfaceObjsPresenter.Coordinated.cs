@@ -1,6 +1,5 @@
 using Geometry;
 using Geometry.Interfaces;
-using Model.Interfaces.ObjectsCollections;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,24 +9,35 @@ using System.Linq;
 namespace OperationalController.ModelScenePresentator.GlObjsPresenters
 {
     /// <summary>
-    /// Собирает буферы поверхностей, не принадлежащих модели.
+    /// Собирает буферы координатных поверхностей с готовыми цветами.
     /// </summary>
-    /// <typeparam name="T">Тип координатного объекта.</typeparam>
-    public class CoordinatedSurfaceObjsPresenter<T> : ISurfaceObjsPresenter
+    public class SurfaceObjsPresenter<T> : ISurfaceObjsPresenter
         where T : ICoordinated
     {
-        private readonly List<T> surfaceObjects;
-        private readonly Func<T, Color> getColor;
+        readonly IReadOnlyList<T> surfaceObjects;
+        readonly IReadOnlyList<Color> colors;
+        readonly Color color;
+        readonly bool hasSingleColor;
 
         /// <summary>
-        /// Создаёт presenter координатных поверхностей.
+        /// Создаёт presenter координатных поверхностей с индивидуальными цветами.
         /// </summary>
-        /// <param name="surfaceObjects">Поверхности для отображения.</param>
-        /// <param name="getColor">Функция получения цвета поверхности.</param>
-        public CoordinatedSurfaceObjsPresenter(IEnumerable<T> surfaceObjects, Func<T, Color> getColor)
+        public SurfaceObjsPresenter(IReadOnlyList<T> surfaceObjects, IReadOnlyList<Color> colors)
         {
-            this.surfaceObjects = surfaceObjects.ToList();
-            this.getColor = getColor ?? throw new ArgumentNullException(nameof(getColor));
+            this.surfaceObjects = surfaceObjects ?? throw new ArgumentNullException(nameof(surfaceObjects));
+            this.colors = colors ?? throw new ArgumentNullException(nameof(colors));
+            if (surfaceObjects.Count != colors.Count)
+                throw new ArgumentException("The number of colors must match the number of objects.", nameof(colors));
+        }
+
+        /// <summary>
+        /// Создаёт presenter координатных поверхностей с одним цветом.
+        /// </summary>
+        public SurfaceObjsPresenter(IReadOnlyList<T> surfaceObjects, Color color)
+        {
+            this.surfaceObjects = surfaceObjects ?? throw new ArgumentNullException(nameof(surfaceObjects));
+            this.color = color;
+            hasSingleColor = true;
         }
 
         /// <inheritdoc/>
@@ -44,7 +54,7 @@ namespace OperationalController.ModelScenePresentator.GlObjsPresenters
         {
             var pointers = 0;
             var vertexes = 0;
-            var colors = 0;
+            var colorsCount = 0;
             var edges = 0;
 
             foreach (var surfaceObject in surfaceObjects)
@@ -52,27 +62,19 @@ namespace OperationalController.ModelScenePresentator.GlObjsPresenters
                 var triangles = surfaceObject.NumberOfPoints - 2;
                 pointers += triangles * 3;
                 vertexes += triangles * 9;
-                colors += triangles * 12;
+                colorsCount += triangles * 12;
                 edges += triangles * 3;
             }
 
-            return new Tuple<int, int, int, int>(pointers, vertexes, colors, edges);
+            return new Tuple<int, int, int, int>(pointers, vertexes, colorsCount, edges);
         }
 
         /// <inheritdoc/>
         public int[] CreatePointers(int indexLength)
         {
             var pointers = new int[indexLength];
-            var stride = 0;
-
-            foreach (var surfaceObject in surfaceObjects)
-            {
-                var length = (surfaceObject.NumberOfPoints - 2) * 3;
-                for (var index = 0; index < length; index++)
-                    pointers[stride + index] = stride + index;
-
-                stride += length;
-            }
+            for (var index = 0; index < indexLength; index++)
+                pointers[index] = index;
 
             return pointers;
         }
@@ -83,11 +85,11 @@ namespace OperationalController.ModelScenePresentator.GlObjsPresenters
             var vertexes = new float[vertexLength];
             var stride = 0;
 
-            foreach (var surfaceObject in surfaceObjects)
+            for (var index = 0; index < surfaceObjects.Count; index++)
             {
-                var coordinates = surfaceObject.GetCoordinates().ToArray();
+                var coordinates = surfaceObjects[index].GetCoordinates().ToArray();
                 if (vertexType == "цвет")
-                    CreateColors(ref stride, vertexes, coordinates, getColor(surfaceObject));
+                    CreateColors(ref stride, vertexes, coordinates, GetColor(index));
                 else if (vertexType == "координаты")
                     CreateCoordinates(ref stride, vertexes, coordinates);
                 else
@@ -152,7 +154,6 @@ namespace OperationalController.ModelScenePresentator.GlObjsPresenters
         {
             var separators = new int[surfaceObjects.Count + 1];
             var stride = 0;
-
             for (var index = 0; index < surfaceObjects.Count; index++)
             {
                 separators[index] = stride;
@@ -164,7 +165,7 @@ namespace OperationalController.ModelScenePresentator.GlObjsPresenters
         }
 
         /// <summary>
-        /// Записывает координаты триангулированных поверхностей.
+        /// Записывает координаты триангулированной поверхности.
         /// </summary>
         private void CreateCoordinates(ref int stride, float[] vertexes, Point3D[] coordinates)
         {
@@ -178,7 +179,7 @@ namespace OperationalController.ModelScenePresentator.GlObjsPresenters
         }
 
         /// <summary>
-        /// Записывает цвета триангулированных поверхностей.
+        /// Записывает цвета триангулированной поверхности.
         /// </summary>
         private void CreateColors(ref int stride, float[] vertexes, Point3D[] coordinates, Color color)
         {
@@ -192,7 +193,7 @@ namespace OperationalController.ModelScenePresentator.GlObjsPresenters
         }
 
         /// <summary>
-        /// Записывает нормали триангулированных поверхностей.
+        /// Записывает нормали триангулированной поверхности.
         /// </summary>
         private void CreateNormals(ref int stride, float[] vertexes, Point3D[] coordinates)
         {
@@ -228,6 +229,14 @@ namespace OperationalController.ModelScenePresentator.GlObjsPresenters
             vertexes[index + 1] = color.G / 255.0f;
             vertexes[index + 2] = color.B / 255.0f;
             vertexes[index + 3] = color.A / 255.0f;
+        }
+
+        /// <summary>
+        /// Возвращает цвет объекта по его позиции в списке.
+        /// </summary>
+        private Color GetColor(int index)
+        {
+            return hasSingleColor ? color : colors[index];
         }
     }
 }

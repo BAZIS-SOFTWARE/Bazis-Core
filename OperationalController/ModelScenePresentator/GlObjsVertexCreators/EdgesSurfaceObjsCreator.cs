@@ -6,13 +6,10 @@ namespace OperationalController.ModelScenePresentator.GlObjsVertexCreators
     public class EdgesSurfaceObjsCreator<T, U>
         where T : ISurface<U> where U : IPoint
     {
-        public void Create(ref int stride, bool[] vertexAtributes, IEnumerable<ISurfaceObject<T, U>> surfaceElements, IModelView modelView)
+        public void Create(ref int stride, bool[] vertexAtributes, IEnumerable<ISurfaceObject<T, U>> surfaceElements)
         {
             foreach (var surfaceElement in surfaceElements)
             {
-                if (!modelView.GetVisible(surfaceElement.ObjType, surfaceElement.Number))
-                    continue;
-
                 foreach (var surface in surfaceElement.GetSurfaces())
                 {
                     for (int i = 0; i < surface.NumberOfPoints - 2; i++)

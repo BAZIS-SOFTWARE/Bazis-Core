@@ -6,7 +6,7 @@ namespace OperationalController.ModelScenePresentator.GlObjsVertexCreators
     public class CoordsSurfaceObjsCreator<T, U> : ISurfaceObjsVertexCreator<T, U>
         where T : ISurface<U> where U : IPoint
     {
-        public void Create(ref int stride, float[] vertexAtributes, ISurfaceObject<T, U> surfaceElement, IModelView modelView, System.Drawing.Color? setColor)
+        public void Create(ref int stride, float[] vertexAtributes, ISurfaceObject<T, U> surfaceElement, System.Drawing.Color color)
         {
             foreach (var surface in surfaceElement.GetSurfaces())
             {

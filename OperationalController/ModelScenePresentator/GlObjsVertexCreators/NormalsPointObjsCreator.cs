@@ -5,7 +5,7 @@ namespace OperationalController.ModelScenePresentator.GlObjsVertexCreators
 {
     public class NormalsPointObjsCreator : IPointObjsVertexCreator
     {
-        public void Create(ref int stride, float[] vertexAtributes, IModelObject pointObject, IModelView modelView, System.Drawing.Color? setColor)
+        public void Create(ref int stride, float[] vertexAtributes, IModelObject pointObject, System.Drawing.Color color)
         {
             vertexAtributes[stride + 0] = 0;
             vertexAtributes[stride + 1] = 0;

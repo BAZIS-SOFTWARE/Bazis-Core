@@ -5,7 +5,7 @@ namespace OperationalController.ModelScenePresentator.GlObjsVertexCreators
 {
     public class CoordsPointObjsCreator : IPointObjsVertexCreator
     {
-        public void Create(ref int stride, float[] vertexAtributes, IModelObject pointObject, IModelView modelView, System.Drawing.Color? setColor)
+        public void Create(ref int stride, float[] vertexAtributes, IModelObject pointObject, System.Drawing.Color color)
         {
             foreach (var point in pointObject.GetCoordinates())
             {

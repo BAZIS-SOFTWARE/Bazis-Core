@@ -60,7 +60,7 @@ namespace OperationalController.MeshObjsUtility
         /// <param name="presenter">SurfaceObjsPresenter</param>
         public NormalsChecker(SurfaceObjsPresenter<ElementSurface, Node> presenter)
         {
-            Presenter = presenter;
+            Presenter = presenter ?? throw new ArgumentNullException(nameof(presenter));
         }
         /// <summary>
         /// Запустить проверку нормалей
