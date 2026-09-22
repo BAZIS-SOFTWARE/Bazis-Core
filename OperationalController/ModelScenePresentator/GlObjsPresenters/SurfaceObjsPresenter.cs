@@ -1,31 +1,45 @@
-using Model.Interfaces;
-using Model.Interfaces.ObjectsCollections;
 using Geometry.Interfaces;
+using Model.Interfaces;
 using OperationalController.ModelScenePresentator.GlObjsVertexCreators;
 using OperationalController.ModelScenePresentator.Interfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace OperationalController.ModelScenePresentator.GlObjsPresenters
 {
     /// <summary>
-    /// Собирает буферы поверхностных объектов с учётом состояния представления.
+    /// Собирает буферы поверхностных объектов с готовыми цветами.
     /// </summary>
     public class SurfaceObjsPresenter<T, U> : ISurfaceObjsPresenter
-        where T : ISurface<U> where U : IPoint
+        where T : ISurface<U>
+        where U : IPoint
     {
-        readonly List<ISurfaceObject<T, U>> surfaceObjects = new List<ISurfaceObject<T, U>>();
-        readonly IModelView modelView;
-        readonly ISetInfo setInfo;
+        readonly IReadOnlyList<ISurfaceObject<T, U>> surfaceObjects;
+        readonly IReadOnlyList<Color> colors;
+        readonly Color color;
+        readonly bool hasSingleColor;
 
         /// <summary>
-        /// Создаёт presenter объектов заданного набора.
+        /// Создаёт presenter поверхностных объектов с индивидуальными цветами.
         /// </summary>
-        public SurfaceObjsPresenter(IModelView modelView, ISetInfo setInfo)
+        public SurfaceObjsPresenter(IReadOnlyList<ISurfaceObject<T, U>> surfaceObjects, IReadOnlyList<Color> colors)
         {
-            this.modelView = modelView ?? throw new ArgumentNullException(nameof(modelView));
-            this.setInfo = setInfo ?? throw new ArgumentNullException(nameof(setInfo));
+            this.surfaceObjects = surfaceObjects ?? throw new ArgumentNullException(nameof(surfaceObjects));
+            this.colors = colors ?? throw new ArgumentNullException(nameof(colors));
+            if (surfaceObjects.Count != colors.Count)
+                throw new ArgumentException("The number of colors must match the number of objects.", nameof(colors));
+        }
+
+        /// <summary>
+        /// Создаёт presenter поверхностных объектов с одним цветом.
+        /// </summary>
+        public SurfaceObjsPresenter(IReadOnlyList<ISurfaceObject<T, U>> surfaceObjects, Color color)
+        {
+            this.surfaceObjects = surfaceObjects ?? throw new ArgumentNullException(nameof(surfaceObjects));
+            this.color = color;
+            hasSingleColor = true;
         }
 
         /// <inheritdoc/>
@@ -43,43 +57,29 @@ namespace OperationalController.ModelScenePresentator.GlObjsPresenters
             var pointers = 0;
             var vertexes = 0;
             var edges = 0;
-            var colors = 0;
+            var colorsCount = 0;
 
             foreach (var surfaceObject in surfaceObjects)
             {
-                if (!modelView.GetVisible(surfaceObject.ObjType, surfaceObject.Number))
-                    continue;
-
                 foreach (var surface in surfaceObject.GetSurfaces())
                 {
-                    vertexes += (surface.NumberOfPoints - 2) * 3 * 3;
-                    pointers += (surface.NumberOfPoints - 2) * 3;
-                    edges += (surface.NumberOfPoints - 2) * 3;
-                    colors += (surface.NumberOfPoints - 2) * 3 * 4;
+                    var triangles = surface.NumberOfPoints - 2;
+                    vertexes += triangles * 9;
+                    pointers += triangles * 3;
+                    edges += triangles * 3;
+                    colorsCount += triangles * 12;
                 }
             }
 
-            return new Tuple<int, int, int, int>(pointers, vertexes, colors, edges);
+            return new Tuple<int, int, int, int>(pointers, vertexes, colorsCount, edges);
         }
 
         /// <inheritdoc/>
         public int[] CreatePointers(int indexLength)
         {
             var pointers = new int[indexLength];
-            var stride = 0;
-            foreach (var surfaceObject in surfaceObjects)
-            {
-                if (!modelView.GetVisible(surfaceObject.ObjType, surfaceObject.Number))
-                    continue;
-
-                foreach (var surface in surfaceObject.GetSurfaces())
-                {
-                    var length = (surface.NumberOfPoints - 2) * 3;
-                    for (var index = 0; index < length; index++)
-                        pointers[stride + index] = stride + index;
-                    stride += length;
-                }
-            }
+            for (var index = 0; index < indexLength; index++)
+                pointers[index] = index;
 
             return pointers;
         }
@@ -87,9 +87,10 @@ namespace OperationalController.ModelScenePresentator.GlObjsPresenters
         /// <inheritdoc/>
         public float[] CreateVertexes(int vertexLength, string vertexType)
         {
-            var vertexArray = new float[vertexLength];
+            var vertexes = new float[vertexLength];
             var stride = 0;
             ISurfaceObjsVertexCreator<T, U> vertexCreator;
+
             if (vertexType == "цвет")
                 vertexCreator = new ColorSurfaceObjsCreator<T, U>();
             else if (vertexType == "координаты")
@@ -97,23 +98,10 @@ namespace OperationalController.ModelScenePresentator.GlObjsPresenters
             else
                 vertexCreator = new NormalsSurfaceObjsCreator<T, U>();
 
-            var setColor = GetSetColor(vertexType);
-            foreach (var surfaceObject in surfaceObjects)
-                if (modelView.GetVisible(surfaceObject.ObjType, surfaceObject.Number))
-                    vertexCreator.Create(ref stride, vertexArray, surfaceObject, modelView, setColor);
+            for (var index = 0; index < surfaceObjects.Count; index++)
+                vertexCreator.Create(ref stride, vertexes, surfaceObjects[index], GetColor(index));
 
-            return vertexArray;
-        }
-
-        /// <summary>
-        /// Возвращает цвет стиля набора для текущего построения буфера.
-        /// </summary>
-        private System.Drawing.Color? GetSetColor(string vertexType)
-        {
-            if (vertexType != "цвет")
-                return null;
-
-            return modelView.GetSetColor(setInfo);
+            return vertexes;
         }
 
         /// <inheritdoc/>
@@ -121,8 +109,8 @@ namespace OperationalController.ModelScenePresentator.GlObjsPresenters
         {
             var edges = new bool[edgesLength];
             var stride = 0;
-            var vertexCreator = new EdgesSurfaceObjsCreator<T, U>();
-            vertexCreator.Create(ref stride, edges, surfaceObjects, modelView);
+            var creator = new EdgesSurfaceObjsCreator<T, U>();
+            creator.Create(ref stride, edges, surfaceObjects);
             return edges;
         }
 
@@ -141,36 +129,32 @@ namespace OperationalController.ModelScenePresentator.GlObjsPresenters
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Добавляет поверхностные объекты.
-        /// </summary>
-        public void Add(IEnumerable<ISurfaceObject<T, U>> objects)
-        {
-            surfaceObjects.AddRange(objects);
+            return GetEnumerator();
         }
 
         /// <inheritdoc/>
         public int[] CreateSeparators()
         {
-            if (surfaceObjects.Count == 0)
-                return Array.Empty<int>();
-
             var separators = new int[surfaceObjects.Count + 1];
             var stride = 0;
-            var index = 0;
-            foreach (var element in surfaceObjects)
+
+            for (var index = 0; index < surfaceObjects.Count; index++)
             {
                 separators[index] = stride;
-                if (modelView.GetVisible(element.ObjType, element.Number))
-                    foreach (var surface in element.GetSurfaces())
-                        stride += surface.NumberOfPoints - 2;
-                index++;
+                foreach (var surface in surfaceObjects[index].GetSurfaces())
+                    stride += surface.NumberOfPoints - 2;
             }
-            separators[index] = stride;
+
+            separators[surfaceObjects.Count] = stride;
             return separators;
+        }
+
+        /// <summary>
+        /// Возвращает цвет объекта по его позиции в списке.
+        /// </summary>
+        private Color GetColor(int index)
+        {
+            return hasSingleColor ? color : colors[index];
         }
     }
 }

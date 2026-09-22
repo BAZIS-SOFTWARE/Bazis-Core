@@ -1,5 +1,6 @@
 ﻿using Model.Interfaces;
 using OperationalController.ModelScenePresentator.Interfaces;
+using System;
 using System.Drawing;
 
 namespace OperationalController.ModelScenePresentator.GlObjsVertexCreators
@@ -8,9 +9,8 @@ namespace OperationalController.ModelScenePresentator.GlObjsVertexCreators
     public class ColorSurfaceObjsCreator<T,U> : ISurfaceObjsVertexCreator<T,U> 
         where T : ISurface<U> where U : IPoint
     {
-        public void Create(ref int stride, float[] vertexAtributes, ISurfaceObject<T,U> surfObject, IModelView modelView, Color? setColor)
+        public void Create(ref int stride, float[] vertexAtributes, ISurfaceObject<T,U> surfObject, Color color)
         {
-            var color = GetColor(surfObject, modelView, setColor);
             foreach (var surface in surfObject.GetSurfaces())
             {
                 for (int k = 0; k < surface.NumberOfPoints - 2; k++)
@@ -37,18 +37,5 @@ namespace OperationalController.ModelScenePresentator.GlObjsVertexCreators
             }
          }
 
-        /// <summary>
-        /// Возвращает цвет объекта без поиска набора в горячем цикле.
-        /// </summary>
-        private Color GetColor(ISurfaceObject<T, U> surfaceObject, IModelView modelView, Color? setColor)
-        {
-            if (!setColor.HasValue)
-                return modelView.GetColor(surfaceObject.ObjType, surfaceObject.Number);
-
-            var color = modelView.IsSelected(surfaceObject.ObjType, surfaceObject.Number)
-                ? modelView.SelectionColor
-                : setColor.Value;
-            return modelView.GetDisplayColor(color);
-        }
     }
 }

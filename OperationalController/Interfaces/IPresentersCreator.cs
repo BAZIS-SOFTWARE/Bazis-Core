@@ -1,63 +1,58 @@
-﻿using Model.Interfaces;
-using Geometry.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Drawing;
+using Geometry.Interfaces;
+using Model.Interfaces;
 
 namespace OperationalController
 {
     /// <summary>
-    /// IModelPresenter
+    /// Создает презентаторы объектов.
     /// </summary>
     public interface IPresentersCreator
     {
-        ///// <summary>
-        ///// SetColor
-        ///// </summary>
-        ///// <param name="objsType"></param>
-        ///// <param name="objsColor"></param>
-        //void SetColor(ObjType objsType, Color objsColor);
-        ///// <summary>
-        ///// GetColor
-        ///// </summary>
-        ///// <param name="objType"></param>
-        ///// <returns></returns>
-        //Color GetColor(ObjType objType);
         /// <summary>
-        /// Создаёт presenter точечных объектов набора модели.
+        /// Создает презентатор точечных объектов с индивидуальными цветами.
         /// </summary>
-        IObjsPresenter CreatePointObjectsPresenter(IEnumerable<IModelObject> modelObjects, IModelView modelView, Model.Interfaces.ObjectsCollections.ISetInfo setInfo);
+        IObjsPresenter CreatePointObjectsPresenter(IReadOnlyList<IModelObject> pointObjects, IReadOnlyList<Color> colors);
 
         /// <summary>
-        /// Создаёт presenter линейных объектов набора модели.
+        /// Создает презентатор точечных объектов с единым цветом.
         /// </summary>
-        IObjsPresenter CreateLineObjectsPresenter<T>(IEnumerable<ILineObject<T>> lineObjs, IModelView modelView, Model.Interfaces.ObjectsCollections.ISetInfo setInfo)
-            where T : IPoint;
+        IObjsPresenter CreatePointObjectsPresenter(IReadOnlyList<IModelObject> pointObjects, Color color);
 
         /// <summary>
-        /// Создаёт presenter поверхностных объектов набора модели.
+        /// Создает презентатор линейных объектов с индивидуальными цветами.
         /// </summary>
-        ISurfaceObjsPresenter CreateSurfaceObjectsPresenter<T, U>(IEnumerable<ISurfaceObject<T, U>> surfaceGeom, IModelView modelView, Model.Interfaces.ObjectsCollections.ISetInfo setInfo)
-                    where T : ISurface<U> where U : IPoint;
-        /// <summary>
-        /// Создаёт presenter поверхностей, не принадлежащих модели.
-        /// </summary>
-        /// <param name="surfaceObjects">Поверхности с координатами.</param>
-        /// <param name="getColor">Функция получения цвета поверхности.</param>
-        /// <returns>Presenter поверхностей.</returns>
-        ISurfaceObjsPresenter CreateSurfaceObjectsPresenter<T>(IEnumerable<T> surfaceObjects, Func<T, Color> getColor)
-            where T : ICoordinated;
+        IObjsPresenter CreateLineObjectsPresenter<T>(IReadOnlyList<T> lineObjects, IReadOnlyList<Color> colors) where T : ICoordinated;
 
         /// <summary>
-        /// Создаёт presenter независимых точек.
+        /// Создает презентатор линейных объектов с единым цветом.
         /// </summary>
-        IObjsPresenter CreateIndependentPointObjectsPresenter<T>(IEnumerable<T> pointObjects, Color color)
-            where T : ICoordinated;
+        IObjsPresenter CreateLineObjectsPresenter<T>(IReadOnlyList<T> lineObjects, Color color) where T : ICoordinated;
 
         /// <summary>
-        /// Создаёт presenter независимых линий.
+        /// Создает презентатор поверхностных объектов с индивидуальными цветами.
         /// </summary>
-        IObjsPresenter CreateIndependentLineObjectsPresenter<T>(IEnumerable<T> lineObjects, Color color)
-            where T : ICoordinated;
+        ISurfaceObjsPresenter CreateSurfaceObjectsPresenter<T, U>(IReadOnlyList<ISurfaceObject<T, U>> surfaceObjects, IReadOnlyList<Color> colors) where T : ISurface<U> where U : IPoint;
+
+        /// <summary>
+        /// Создает презентатор поверхностных объектов с единым цветом.
+        /// </summary>
+        ISurfaceObjsPresenter CreateSurfaceObjectsPresenter<T, U>(IReadOnlyList<ISurfaceObject<T, U>> surfaceObjects, Color color) where T : ISurface<U> where U : IPoint;
+
+        /// <summary>
+        /// Создает презентатор поверхностей с координатами и индивидуальными цветами.
+        /// </summary>
+        ISurfaceObjsPresenter CreateSurfaceObjectsPresenter<T>(IReadOnlyList<T> surfaceObjects, IReadOnlyList<Color> colors) where T : ICoordinated;
+
+        /// <summary>
+        /// Создает презентатор поверхностей с координатами и единым цветом.
+        /// </summary>
+        ISurfaceObjsPresenter CreateSurfaceObjectsPresenter<T>(IReadOnlyList<T> surfaceObjects, Color color) where T : ICoordinated;
+
+        /// <summary>
+        /// Создает презентатор независимых точек с единым цветом.
+        /// </summary>
+        IObjsPresenter CreatePointObjectsPresenter<T>(IReadOnlyList<T> pointObjects, Color color) where T : ICoordinated;
     }
 }

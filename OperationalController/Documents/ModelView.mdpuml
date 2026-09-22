@@ -73,13 +73,12 @@ package "OperationalController (представление)" #EEF5FF {
         +byte Transparency;
         .. цвет ..
         +Color GetColor(ObjType, int);
-        +Color GetDisplayColor(Color);
+        +Color GetColor(ISetInfo, int);
         .. наборы: цвет и режим ..
         +Color GetSetColor(ISetInfo);
         +SetSetColor(ISetInfo, Color);
         +ViewMode GetViewMode(ISetInfo);
         +SetViewMode(ISetInfo, ViewMode);
-        +ISetDisplay CreateDisplay(ISetInfo);
         .. видимость ..
         +bool GetVisible(ObjType, int);
         +SetVisible(ObjType, IEnumerable<int>, bool);
@@ -160,23 +159,13 @@ package "OperationalController (представление)" #EEF5FF {
         +ViewMode ViewMode;
     }
 
-    interface ISetDisplay
-    {
-        +ViewMode ViewMode;
-        --
-        +bool IsVisible(int number);
-        +Color GetColor(int number);
-    }
-
-    class SetDisplay
-    {
-        -ModelView owner;
-        -IObjectsView view;
-        -Color setColor;
-        -ViewMode viewMode;
-    }
-
     class ProjectController
+    {
+        +IModelView ModelView;
+        .. сборка сцены ..
+        +IEnumerable<IObjsPresenter> CreateModelPresenters(ObjType);
+        +IObjsPresenter CreateSetPresenter(ISetInfo);
+    }
 
     package "ModelScenePresentator" #E4EEFF {
 
@@ -197,8 +186,11 @@ package "OperationalController (представление)" #EEF5FF {
 
         class PointObjsPresenter
         {
-            -ISetDisplay display;
-            -List<IModelObject> pointObjects;
+            -IReadOnlyList<IModelObject> objects;
+            -IReadOnlyList<Color> colors;
+            --
+            +PointObjsPresenter(objects, IReadOnlyList<Color>);
+            +PointObjsPresenter(objects, Color);
         }
 
         class LineObjsPresenter<T>
@@ -248,7 +240,7 @@ ObjectsView *-- SetStyle : один на набор
 ModelView *-- IObjectsView : один на ObjType
 ModelView ..> IObjectsData : Find, GetSetInfo,\nGetSetsInfo
 
-ProjectController ..> IModelView : GetSelection, Prune,\nReset; null без модели
+ProjectController ..> IModelView : GetVisible, GetColor;\nGetSelection, Prune, Reset
 ProjectController ..> IObjectsData : Remove\nпо номеру
 
 ' ---------- сборка буферов ----------
@@ -258,16 +250,8 @@ IObjsPresenter <|.. LineObjsPresenter
 ISurfaceObjsPresenter <|.. SurfaceObjsPresenter
 IPresentersCreator <|.. PresentersCreator
 
-ISetDisplay <|.. SetDisplay
-ModelView *-- SetDisplay : создаёт на сборку,\nчитает SelectionColor\nи Transparency
-SetDisplay --> IObjectsView : IsHidden, IsSelected
-
-PointObjsPresenter --> ISetDisplay : IsVisible,\nGetColor
-LineObjsPresenter --> ISetDisplay
-SurfaceObjsPresenter --> ISetDisplay
-
-PresentersCreator ..> ISetDisplay : отдаёт презентеру
-PresentersCreator ..> IObjsPresenter : создаёт
+PresentersCreator ..> IObjsPresenter : создаёт по объектам\nи цветам
+ProjectController ..> PresentersCreator : два списка\nна набор
 
 IObjsPresenter --> ICoordinated : обходит объекты
 PointObjsPresenter --> IPointObjsVertexCreator : передаёт\nготовый цвет
@@ -284,13 +268,11 @@ SceneWindow ..> ProjectController : операции
 ' ======================= заметки =======================
 
 note bottom of ICoordinated
-  Чистая геометрия: сколько точек и какие.
-  Живёт в Geometry, а не в Model -
-  Model уже ссылается на Geometry.
-
-  PostProc от Model это НЕ освобождает:
-  там ещё IPoint, ISurfaceElement,
-  ILineObject и Node. Разбор в ModelView.md.
+  Чистая геометрия.
+  Живёт в Geometry.
+  PostProc от Model
+  это не освобождает,
+  см. ModelView.md.
 end note
 
 note bottom of ModelObject
@@ -305,78 +287,93 @@ note bottom of ModelObject
 end note
 
 note right of ModelView
-  Один словарь views вместо hidden и selected.
-  Состояние объектов хранит IObjectsView,
-  ModelView маршрутизирует по ObjType и
-  агрегирует общемодельное.
+  Один словарь views вместо
+  hidden и selected.
 
-  Любое новое состояние вида - поле внутри
-  ObjectsView, второго словаря здесь нет.
-  Стили наборов тоже: набор принадлежит ровно
-  одному ObjType.
+  Любое новое состояние вида -
+  поле внутри ObjectsView.
+  Стили наборов тоже: набор
+  принадлежит одному ObjType,
+  ключ - сам ISetInfo по ссылке,
+  поэтому переименование его
+  не теряет.
 
-  Ключ стиля - сам ISetInfo по ссылке, а не имя:
-  Name у ObjectsSet меняется сеттером internal,
-  то есть переименование правит тот же экземпляр,
-  и стиль переживает его без единой строчки кода.
+  ProjectController отдаёт
+  ModelView как null, пока модель
+  не загружена; презентеры null
+  не принимают.
 
-  ProjectController отдаёт ModelView как null,
-  пока модель не загружена; презентеры null
-  не принимают - это контракт, а не обход.
-
-  Reset НЕ чистит словарь: перенумерация меняет
-  номера, а не состав и цвета наборов. Это обход
-  видов с ClearSelectionAndHidden, стили остаются.
+  Reset не чистит словарь: это
+  обход видов с
+  ClearSelectionAndHidden,
+  стили остаются.
 end note
 
 note bottom of PointObjsPresenter
-  <b>Ответы, а не состояние</b>
-  Вместо IModelView - ISetDisplay: только
-  чтение, видимость и готовый цвет.
-  Ни команд, ни Reset посреди сборки.
+  <b>Презентер о виде не знает вообще</b>
+  На входе два списка: объекты и цвета,
+  по позициям. Длины сверяются в конструкторе.
+  Только видимые - фильтрация снаружи,
+  поэтому проверок видимости внутри нет.
 
-  Сборщик вершин получает готовый Color,
-  поэтому правило цвета живёт в одном месте.
+  Второй конструктор берёт один Color -
+  для нормалей и предпросмотра, где массив
+  одинаковых цветов не нужен.
 
   Line и Surface устроены так же.
 end note
 
-note bottom of SetDisplay
-  Цвет набора и ViewMode разрешены
-  в конструкторе - чтобы не искать
-  набор на каждый объект.
-  SelectionColor и Transparency
-  читаются у owner, поэтому их смена
-  снимок не портит.
-  Живёт одну сборку буфера.
+note bottom of PresentersCreator
+  <b>Кто собирает цвета</b>
+  Набор модели - ProjectController:
+  GetVisible отсеивает, GetColor(ISetInfo, int)
+  красит.
+  Результаты - Gerbera по шкале ItemRange,
+  PostProc про презентеры не знает.
+  Нормали, предпросмотр - один Color на месте.
+
+  Вида в сигнатурах создателя нет, поэтому
+  перегрузки "с видом" и "без вида" исчезают,
+  а с ними и CoordinatedSurfaceObjsPresenter.
+end note
+
+note right of ProjectController
+  <b>Цикл отбора живёт только здесь</b>
+  CreateSetPresenter - единственное место,
+  где объекты набора делятся на видимые
+  и скрытые, а видимым подбираются цвета.
+  Правило цвета остаётся в ModelView:
+  контроллер его спрашивает, не считает.
+
+  Один метод, а не код места вызова:
+  забытый GetVisible отрисовал бы скрытое
+  молча, а защищать некому - презентер
+  видимости не знает.
+
+  Диспетчер по ObjType переезжает сюда же
+  из Gerbera, иначе "одно место" станет
+  тремя. RefreshModelSetBuffer тогда
+  только раздаёт презентеры в VBO.
 end note
 
 note bottom of ObjectsView
   Состояние вида объектов ОДНОГО типа.
 
   Команды - операции над множеством:
-  Select - объединение, Deselect - вычитание,
-  ToggleSelection - симметрическая разность,
-  SetSelection - замена, ClearSelection - опустошить.
+  Select - объединение,
+  Deselect - вычитание,
+  ToggleSelection - разность,
+  SetSelection - замена.
 
-  bool у каждой команды = "состояние изменилось":
-  по нему ModelView поднимает Changed и
-  проверяет IsEmpty.
+  bool у каждой = "изменилось":
+  по нему ModelView поднимает
+  Changed и проверяет IsEmpty.
+  IsEmpty учитывает и стили наборов.
 
-  IsEmpty учитывает и стили наборов: вид с
-  раскрашенным набором, но без выделения и
-  скрытости, выбрасывать из словаря нельзя -
-  потеряется цвет.
-
-  Prune получает предикат "номер ещё существует":
-  вид проверяет только свои номера и о модели
-  по-прежнему не знает. Предикат опирается на
-  ObjectsData.Find, это словарь, O(1).
-
-  IModelView.Prune идёт по всем типам, а не по
-  удалённым: ObjectsData.Remove каскадно зовёт
-  ClearNotExisted у зависимых наборов, и удаление
-  точки уносит кривые с поверхностями.
+  Prune берёт предикат и идёт по
+  всем типам: ObjectsData.Remove
+  каскадный, удаление точки уносит
+  кривые с поверхностями.
 end note
 
 note left of IObjectsView
@@ -398,21 +395,13 @@ note left of IObjectsView
 end note
 
 note bottom of IObjsPresenter
-  <b>Сборка идёт по наборам, а не по объектам</b>
-  Принадлежность объекта набору знает модель,
-  а не вид: ObjectsData.GetSetInfo. Для элементов
-  это линейный перебор наборов с LINQ на каждый
-  вызов, поэтому спрашивать его на каждый объект
-  нельзя.
+  Сборка идёт по наборам, а не по объектам:
+  GetSetsInfo, на набор один цвет из стиля,
+  дальше по номерам GetVisible и GetColor.
 
-  Цикл: взять наборы типа через GetSetsInfo,
-  на набор один раз спросить GetSetColor и
-  GetViewMode, дальше по номерам набора только
-  GetVisible и IsSelected - оба по хешу числа.
-
-  GetColor(ObjType, int) остаётся для точечных
-  запросов: панель свойств, подсказка под
-  курсором. В цикле сборки его звать не надо.
+  Разрешать набор по номеру нельзя -
+  ObjectsData.GetSetInfo перебирает наборы
+  линейно и аллоцирует LINQ на каждый вызов.
 end note
 
 note left of IModelView
