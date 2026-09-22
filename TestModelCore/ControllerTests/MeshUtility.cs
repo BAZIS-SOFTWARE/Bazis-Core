@@ -117,7 +117,7 @@ namespace ControllerTests
 
             var element2D = creators.Create(currentNumber, model.ObjectData.E3DCollection.GetObjects());
 
-            var inside = new ElementSurface(currentNumber, 0, new Node[] { nodes[3], nodes[2], nodes[1] });
+            var inside = new ElementSurface(el0, 0, new Node[] { nodes[3], nodes[2], nodes[1] });
             foreach (var item in element2D)
             {
                 foreach (var surface in item.GetSurfaces())

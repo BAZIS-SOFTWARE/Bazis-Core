@@ -920,6 +920,394 @@ public IEnumerable<IObjsPresenter> CreateModelPresenters(ObjType objType)
 
 Здесь вызывающий назван — `CreateSetPresenter`. Член остаётся.
 
+## Внутренние грани объёмных элементов
+
+Раздел написан по следам регрессии: при переходе на `ModelView` (коммит
+`18f74ce`, 18.09.2026) пропала возможность не рисовать грани 3D-элементов,
+закрытые соседними элементами. Одновременно исчезли `ChangeInsideSurfacesState`
+из `IMeshCommands` и `ProjectController`, алгоритм `MeshObjsUtility/ChangeInsideSurface`
+и учёт `ViewState` отдельных граней в презентерах.
+
+### Это не украшение, а обязательный шаг
+
+Для сетки из гексаэдров N×N×N всего граней 6N³, на поверхности 6N² — отношение
+ровно N. Для 50×50×50 (125 тыс. элементов) это 750 тыс. граней против 15 тыс.
+
+По текущему коду `CreateIndexes` на треугольник отводит 9 float координат и
+12 float цвета, то есть 42 float на четырёхугольную грань — 168 байт.
+
+| | граней | координаты и цвет |
+|---|---|---|
+| все грани | 750 000 | ~126 МБ |
+| только внешние | 15 000 | ~2,5 МБ |
+
+Это видеопамять, и она пересобирается на каждый `Changed`. Без отсечения
+объёмная сетка рабочего размера неотображаема.
+
+В других пакетах это называется free faces (Femap, HyperMesh), skin (Abaqus),
+surface extraction (VTK — `vtkDataSetSurfaceFilter`, через него ParaView строит
+представление Surface). Алгоритм везде один: грань с двумя владельцами
+внутренняя. То есть удалённый код реализовывал канонический подход.
+
+Важно, что другие уровни отсечения его не заменяют. Z-буфер даёт верную картинку
+только в непрозрачном режиме и платит за всю геометрию. Backface culling убирает
+половину оставшегося, но внутренние грани не трогает. Occlusion culling решает
+другую задачу — деталь за деталью в сборке — и платит за это каждый кадр, тогда
+как внутренняя грань скрыта всегда и убирается один раз.
+
+Отсюда же следствие для текущего состояния: в полупрозрачном режиме внутренние
+грани сейчас проступают сеткой внутри детали, а совпадающие грани соседних
+элементов дают z-fighting при вращении.
+
+### Почему нельзя вернуть старый метод
+
+`ChangeInsideSurfacesState` совмещал три вещи: вычисление совпадающих граней,
+хранение результата в `surface.ViewState` и чтение этого поля презентером.
+Второе мы убрали намеренно — и правильно: грань не имеет собственного номера,
+ключ `(ObjType, Number)` её не адресует, а хранимая производная величина
+немедленно потребовала бы синхронизации с `Prune`, `Reset` и перенумерацией.
+
+Первое и третье восстанавливаются по отдельности.
+
+### Принято: грань знает своих хозяев
+
+Признак не хранится вовсе — хранится **связь**, а `IsInner` считается на ходу.
+
+Устройство взято у `Node`, где это уже сделано: узел держит `List<IElement>` с
+`AddElement`, `RemoveElement` и `GetElements()`, и его `ExistState` каскадно
+гасит владеющие элементы. То есть владение в этой модели — не справка, а
+поддерживаемая связь.
+
+Грань отличается тем, что одного владельца знает с рождения: её строит
+собственный элемент. Поэтому нового поля нужно ровно одно — сосед.
+
+```csharp
+public class ElementSurface : ISurface<Node>
+{
+    Node[] nodes;
+    readonly IElement owner;
+    IElement neighbour;
+
+    public ElementSurface(IElement owner, int surfaceNumber, Node[] nodes)
+    {
+        if (nodes.Length < 3)
+            throw new Exception("Для создания поверхности требуется не меньше 3-х узлов!");
+
+        this.owner = owner ?? throw new ArgumentNullException(nameof(owner));
+        this.nodes = nodes;
+        Number = surfaceNumber;
+    }
+
+    public int Number { get; }
+
+    public int ElementNumber => owner.Number;
+
+    public bool IsInner => neighbour != null && neighbour.ExistState;
+
+    public IEnumerable<IElement> GetElements()
+    {
+        yield return owner;
+
+        if (neighbour != null)
+            yield return neighbour;
+    }
+
+    public int[] CreateNodesKey()
+    {
+        var key = new int[nodes.Length];
+        for (var index = 0; index < nodes.Length; index++)
+            key[index] = nodes[index].Number;
+
+        Array.Sort(key);
+        return key;
+    }
+
+    internal void SetNeighbour(IElement element)
+    {
+        neighbour = element;
+    }
+}
+```
+
+Конструктор принимает элемент, а не его номер: номер тогда не дублируется, а
+ссылка переживает перенумерацию — `ObjectsRenumber` уже был источником тихих
+ошибок, и повторять это на новом поле не стоит.
+
+Список хозяев по образцу `Node` был бы буквальнее, но дороже: 750 тыс. граней —
+это 750 тыс. объектов `List` с их массивами, порядка 50 МБ и полтора миллиона
+объектов для GC. Снаружи `GetElements()` выглядит как у узла, внутри это две
+ссылки без единой аллокации.
+
+**Бонус от `ExistState` в `IsInner`.** Удаление элементов само обнажает грани
+соседей — без разлинковки и без единого вызова. А удаление в GUI и есть самая
+частая правка сетки. Поэтому `Mark` нужен только после **добавления** элементов,
+а не после любой правки. Хранимый `bool` здесь соврал бы и показал полость
+сплошной.
+
+### Признак объявляется на `ISurface<T>`
+
+Не на `ElementSurface` и не на `IElementSurface`, хотя по смыслу место там.
+Причина в типах: `ISurfaceElement : ISurfaceObject<ElementSurface, Node>`
+подставляет конкретный класс, а презентер обобщён как
+`SurfaceObjsPresenter<T, U> where T : ISurface<U>`. Член, объявленный ниже
+`ISurface<T>`, презентеру не виден без приведения вниз.
+
+У `GeometrySurface` и `SurfaceFigure` ответ всегда отрицательный — три строки.
+`ResultSurface` в реализацию не попал: он `ICoordinated`, а не `ISurface<T>`,
+и идёт через `SurfaceObjsPresenter<T>` — ту перегрузку, которая про грани
+ничего не знает.
+
+### Связывание
+
+```csharp
+public class MarkSurfaces
+{
+    public IReadOnlyList<ElementSurface> Mark(IEnumerable<ISurfaceElement> elements)
+    {
+        if (elements == null) throw new ArgumentNullException(nameof(elements));
+
+        var found = new Dictionary<int[], ElementSurface>(new SurfaceNodesComparer());
+        var defects = new List<ElementSurface>();
+
+        foreach (var element in elements)
+        {
+            if (!element.ExistState)
+                continue;
+
+            foreach (var surface in element.GetSurfaces())
+                Link(surface, found, defects);
+        }
+
+        return defects;
+    }
+
+    private void Link(ElementSurface surface, Dictionary<int[], ElementSurface> found, List<ElementSurface> defects)
+    {
+        surface.SetNeighbour(null);
+
+        var key = surface.CreateNodesKey();
+        var opposite = default(ElementSurface);
+
+        if (!found.TryGetValue(key, out opposite))
+        {
+            found[key] = surface;
+            return;
+        }
+
+        if (opposite == null)
+        {
+            defects.Add(surface);
+            return;
+        }
+
+        opposite.SetNeighbour(surface.Owner);
+        surface.SetNeighbour(opposite.Owner);
+
+        // Пара закрыта. Пустая запись отличает "встретилась дважды"
+        // от "встретилась один раз" и ловит третьего владельца.
+        found[key] = null;
+    }
+}
+```
+
+Один проход, а не два: со ссылкой соседа можно проставить сразу при встрече
+пары, счётчик не нужен.
+
+`SetNeighbour(null)` делается для каждой грани до поиска в словаре — повторный
+`Mark` после добавления элементов должен рвать старые связи, иначе грань,
+ставшая внешней, останется помеченной внутренней.
+
+Третья одинаковая грань — дефект сетки: пара уже связана, и молча затереть
+соседа нельзя. Закрытую пару отмечает пустая запись в словаре, а не `IsInner`
+первой грани: `IsInner` ложен, когда сосед погашен, и третий владелец тогда
+прошёл бы как обычная пара. Дефектные грани возвращаются вызывающему —
+`MarkSurfaces` живёт в `Model` и об отчётах ничего не знает; сообщение
+собирает `ProjectController`.
+
+**Ключ строит сама грань, но не запоминает.** `CreateNodesKey` живёт в
+`ElementSurface`: ключ — функция её узлов, и знать о них должна она. Внутри
+класса есть прямой доступ к `nodes`, поэтому одна аллокация вместо четырёх —
+ни `List`, ни `ToArray`, ни итератора `GetVertexes()`.
+
+Сохранять результат мы отказались. `IModelObject.SetNumber` делает номера узлов
+изменяемыми, и после перенумерации сохранённый ключ молча неверен — не только по
+значениям, но и по порядку сортировки. Это та же ловушка, из-за которой соседом
+хранится ссылка, а не номер. Публичный сеттер `this[int ind]` добавляет второй
+путь к устареванию. При этом ключ нужен только внутри `Mark`, а массивы живут
+и умирают в нулевом поколении — самый дешёвый сценарий; кэш перевёл бы 750 тыс.
+массивов во второе поколение навсегда, около 30 МБ. Инвалидация обошлась бы
+в полный обход граней, то есть в тот самый проход, ради которого кэш заводился.
+
+**Компаратор нужен свой.** Существующий `ElementSurfaceEqualityComparer`
+делегирует в `s.GetHashCode()`, а `ElementSurface` его не переопределяет —
+возвращается хеш по ссылке, и в `Dictionary` равные грани получают разные хеши.
+
+```csharp
+public class SurfaceNodesComparer : IEqualityComparer<int[]>
+{
+    public bool Equals(int[] first, int[] second)
+    {
+        if (first.Length != second.Length)
+            return false;
+
+        for (var index = 0; index < first.Length; index++)
+        {
+            if (first[index] != second[index])
+                return false;
+        }
+
+        return true;
+    }
+
+    public int GetHashCode(int[] nodeNumbers)
+    {
+        var hash = 17;
+        foreach (var number in nodeNumbers)
+            hash = hash * 31 + number;
+
+        return hash;
+    }
+}
+```
+
+Ключ переменной длины, поэтому квадратичные элементы (`Tetra_c`, `Triangle_c`)
+проходят без оговорок.
+
+### Откуда зовётся
+
+`ProjectController.MarkModelSurfaces()` проходит `E3DCollection.GetObjects()` —
+все наборы сразу, потому что грань может быть общей для элементов из разных
+наборов, и понаборный проход оставил бы такую грань внешней. Двумерные элементы
+в обход не входят: их единственная грань совпала бы с гранью объёмного соседа и
+исчезла бы вместе с ней.
+
+Точки вызова — только те, где элементы **появляются**:
+
+| Место | Что происходит |
+|---|---|
+| `Load` | загрузка проекта |
+| `ImportMesh` | импорт сетки в новый проект |
+| `Append` | слияние модели из файла |
+| `GenerateMesh(3)` | построение объёмной сетки |
+| `SynchronizeGeometryMesh` | `RefineMesh`, `RecombineMesh` |
+| `MergeNodes` | склейка узлов переставляет ссылки в элементах, и грани разъединённых сеток становятся совпадающими |
+
+Удаления в списке нет намеренно: `IsInner` проверяет `ExistState` соседа.
+`MergeElements` тоже нет — он переносит элементы между наборами, топологию не
+меняя, а обход и так идёт по всем наборам.
+
+### Что получает презентер
+
+Один `bool`. Не маска, не список, не делегат.
+
+```csharp
+public SurfaceObjsPresenter(IReadOnlyList<ISurfaceObject<T, U>> surfaceObjects, IReadOnlyList<Color> colors, bool drawInnerSurfaces)
+```
+
+```csharp
+private IEnumerable<T> GetDrawnSurfaces(int index)
+{
+    foreach (var surface in surfaceObjects[index].GetSurfaces())
+    {
+        if (drawInnerSurfaces || !surface.IsInner)
+            yield return surface;
+    }
+}
+```
+
+Через этот метод идут все шесть обходов граней: `CreateIndexes`,
+`CreateSeparators`, `CreateEdgeFlags` и три вершинных сборщика. У сборщиков
+меняется сигнатура — вместо объекта они принимают отобранные грани:
+
+```csharp
+void Create(ref int stride, float[] vertexAtributes, IEnumerable<T> surfaces, Color color);
+```
+
+Это улучшение и само по себе: сборщик вершин перестаёт знать про объект и
+работает с тем, что рисует.
+
+Флаг приходит из `IModelView.HideInsideSurfaces` через `CreateSetPresenter`.
+Контракт «презентер о виде не знает» не нарушается: `bool` — такой же
+стандартный тип, как `Color`.
+
+`HideInsideSurfaces` общемодельный, а не пер-сетовый: грань может быть общей для
+элементов из разных наборов, и пер-сетовый флаг дал бы для одного куска
+геометрии два противоречивых ответа.
+
+### Это не повторение ошибки с ViewState
+
+`ViewState` был решением пользователя — что показать. Владение гранью — топология
+сетки, того же рода, что связность или `ExistState`. Модель имеет право знать
+собственную топологию; вид решает только, рисовать ли внутренние грани.
+
+Побочная выгода: та же связь нужна `NormalsCalculator`, `FindOpenSurfaceNodes` и
+`FindBoundaryEdges` — все они по сути спрашивают про внешнюю оболочку.
+
+### Отклонённые варианты
+
+**Вернуть `ViewState` на грань.** Хранимая производная величина со всеми
+проблемами синхронизации, ради которых затевалось разделение.
+
+**Маска граней третьим параллельным списком.** `IReadOnlyList<bool[]>` рядом с
+цветами. Работало бы, но маски пришлось бы пересобирать при каждой пересборке
+буфера, а признак на самой грани не требует ничего.
+
+**Расплющить список до граней.** Единицей презентера стала бы грань. Чинит
+отрисовку и ломает выбор: `CreateSeparators()` и `Count()` дают одну запись на
+объект, и по ним Gerbera отображает диапазоны VBO обратно на элементы модели.
+
+**Декоратор элемента**, чей `GetSurfaces()` отдаёт только внешние грани.
+Презентер не меняется вовсе, но `IModelObject` тянет `IEquatable`, `IComparable`
+и `IEqualityComparer`, а `GetEnumerator()` презентера отдаёт объекты наружу:
+обёртка уехала бы в Gerbera и перестала быть равной исходному элементу. Ошибка
+тихая и всплыла бы в выборе, а не в картинке.
+
+**Отдельный объект-результат с кэшем в `ProjectController`.** Нужен был, пока
+признак не жил на грани. С хозяевами на грани кэшировать нечего.
+
+### Дефекты, найденные попутно
+
+- `IElementSurface` лежал неиспользуемым: `ElementSurface` его не реализовывала,
+  а весь остальной код работает через `ISurface<Node>`. Интерфейс удалён,
+  `ElementNumber` остался обычным членом класса. Заодно удалён `INode` —
+  единственная ссылка на него была в `MeshObjsCreator\Delone2D\**`, а эта папка
+  исключена из компиляции.
+- `ElementSurfaceEqualityComparer` непригоден как компаратор словаря, см. выше.
+- `ElementSurface.Equals(ElementSurface)` не переопределяет `object.Equals`,
+  поэтому `Contains`/`Distinct` по `ISurface<Node>` его не позовут. Сравнивает
+  координаты с допуском и только по трём узлам.
+- `SurfacesCreator.CreateSurfacesFromSetOfNodes` статический, перебирает тройки
+  узлов за O(n³) и вызывается из закомментированной строки в `Element3D` —
+  конкретные элементы строят грани сами. Похоже на мёртвый код.
+
+### Тесты
+
+Регрессия прошла молча, потому что теста не было. Минимум:
+
+- два гексаэдра с общей гранью: 12 граней, 10 внешних, у каждого элемента ровно
+  одна грань с `IsInner`;
+- одиночный гексаэдр: 6 внешних, ни одной внутренней;
+- те же два гексаэдра, затем `ExistState = false` у одного: у второго все грани
+  снова внешние, без повторного `Mark`;
+- повторный `Mark` после добавления третьего элемента не оставляет старых
+  связей.
+
+Написаны: `TestProject/ModelTests/MarkSurfacesTests.cs` (связывание) и
+`TestProject/ControllerTests/InnerSurfacesPresenterTests.cs` (отбор граней в
+буферах). Второй проверяет то, чего не поймает первый: размеры всех буферов
+должны сходиться с `CreateIndexes`, а сепараторы — считать те же грани, иначе
+сборщик вершин выйдет за границы массива или диапазоны VBO разъедутся с
+элементами. Признак на `ModelView` — в `ModelViewTests`.
+
+### Не проверено
+
+- Передача `this` из конструктора `Hexa` в `ElementSurface` даёт ссылку на ещё
+  не достроенный объект. Сейчас безопасно — грань обращается к `owner` только
+  после конструктора, — но это ограничение стоит помнить.
+- Есть ли в Gerbera режим сечения. Если да, при отсечении плоскостью внутренние
+  грани обязаны проступить, иначе деталь выглядит полой; тот же вопрос к
+  разнесённому виду.
+
 ## Открытый вопрос
 
 В режиме «Объект» при клике по точке, где узел лежит на элементе, приоритет типа

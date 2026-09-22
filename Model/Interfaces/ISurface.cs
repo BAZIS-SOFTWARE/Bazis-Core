@@ -21,6 +21,11 @@ namespace Model.Interfaces
         /// </summary>
         int Number { get; }
         /// <summary>
+        /// Признак того, что поверхность лежит внутри тела и не видна снаружи.
+        /// Для самостоятельных поверхностей всегда ложь.
+        /// </summary>
+        bool IsInner { get; }
+        /// <summary>
         /// GetVertexIndex
         /// </summary>
         /// <param name="vertex"></param>

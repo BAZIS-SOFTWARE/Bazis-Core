@@ -58,6 +58,41 @@ package "Model (расчёт, файлы)" #F5F5F5 {
     }
 
     interface ISurface<T>
+    {
+        +int Number;
+        +bool IsInner;
+        --
+        +IEnumerable<T> GetVertexes();
+    }
+
+    class ElementSurface
+    {
+        -IElement owner;
+        -IElement neighbour;
+        --
+        +int Number;
+        +int ElementNumber;
+        +bool IsInner;
+        --
+        +IEnumerable<IElement> GetElements();
+        +int[] CreateNodesKey();
+        +SetNeighbour(IElement);
+    }
+
+    class Node
+    {
+        -List<IElement> elements;
+        --
+        +AddElement(IElement);
+        +RemoveElement(IElement);
+        +IEnumerable<IElement> GetElements();
+    }
+
+    class MarkSurfaces
+    {
+        +IReadOnlyList<ElementSurface> Mark(IEnumerable<ISurfaceElement>);
+    }
+
     abstract class ModelObject
     class ObjectsSet<T>
     class VolumeFigure
@@ -71,6 +106,7 @@ package "OperationalController (представление)" #EEF5FF {
         +IModelData Model;
         +Color SelectionColor;
         +byte Transparency;
+        +bool HideInsideSurfaces;
         .. цвет ..
         +Color GetColor(ObjType, int);
         +Color GetColor(ISetInfo, int);
@@ -194,7 +230,15 @@ package "OperationalController (представление)" #EEF5FF {
         }
 
         class LineObjsPresenter<T>
+
         class SurfaceObjsPresenter<T,U>
+        {
+            -IReadOnlyList<Color> colors;
+            -bool drawInnerSurfaces;
+            --
+            +SurfaceObjsPresenter(objects, colors, bool);
+            -IEnumerable<T> GetDrawnSurfaces(int);
+        }
 
         interface IPresentersCreator
         class PresentersCreator
@@ -232,6 +276,10 @@ IModelObject <|.. VolumeFigure
 
 IModelData --> IObjectsData
 
+ISurface <|.. ElementSurface
+MarkSurfaces ..> ElementSurface : связывает\nсовпадающие грани
+ElementSurface .. Node : одинаковое\nустройство хозяев
+
 ' ---------- реализация вида ----------
 IModelView <|.. ModelView
 
@@ -252,6 +300,8 @@ IPresentersCreator <|.. PresentersCreator
 
 PresentersCreator ..> IObjsPresenter : создаёт по объектам\nи цветам
 ProjectController ..> PresentersCreator : два списка\nна набор
+ProjectController ..> MarkSurfaces : Mark после\nдобавления элементов
+SurfaceObjsPresenter ..> ISurface : IsInner при\nобходе граней
 
 IObjsPresenter --> ICoordinated : обходит объекты
 PointObjsPresenter --> IPointObjsVertexCreator : передаёт\nготовый цвет
@@ -354,6 +404,39 @@ note right of ProjectController
   из Gerbera, иначе "одно место" станет
   тремя. RefreshModelSetBuffer тогда
   только раздаёт презентеры в VBO.
+end note
+
+note bottom of MarkSurfaces
+  <b>Внутренние грани: топология, не вид</b>
+  Грань с двумя хозяевами не видна никогда.
+  Это факт о сетке, как связность, поэтому
+  он живёт в Model, а не в ModelView -
+  в отличие от удалённого ViewState, который
+  был решением пользователя.
+
+  <b>Хранится хозяин, а не признак</b>
+  IsInner ничего не хранит и считается на ходу:
+  сосед есть и он жив. Устаревать нечему.
+  Устройство то же, что у Node с его элементами,
+  но грань знает своего владельца с рождения,
+  поэтому нового поля нужно одно - сосед.
+
+  Ссылка, а не номер: переживает перенумерацию,
+  а проверка ExistState соседа сама обнажает
+  грани при удалении элементов, без разлинковки.
+  Поэтому Mark нужен только после ДОБАВЛЕНИЯ.
+
+  Связывание - один проход. Ключ строит сама
+  грань: CreateNodesKey отдаёт отсортированные
+  номера её узлов. Не кэшируется - SetNumber
+  узла делал бы его молча неверным, а нужен он
+  только внутри Mark.
+
+  Компаратор ключа свой:
+  ElementSurfaceEqualityComparer непригоден,
+  у ElementSurface не переопределён GetHashCode.
+  Грань, встреченная больше двух раз, - дефект
+  сетки, о ней Mark сообщает.
 end note
 
 note bottom of ObjectsView

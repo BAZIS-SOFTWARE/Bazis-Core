@@ -1,7 +1,6 @@
 using Geometry;
 using Geometry.Interfaces;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -11,53 +10,48 @@ namespace OperationalController.ModelScenePresentator.GlObjsPresenters
     /// <summary>
     /// Собирает буферы координатных поверхностей с готовыми цветами.
     /// </summary>
-    public class SurfaceObjsPresenter<T> : ISurfaceObjsPresenter
+    public class SurfaceObjsPresenter<T> : ObjsPresenter<T>, ISurfaceObjsPresenter
         where T : ICoordinated
     {
-        readonly IReadOnlyList<T> surfaceObjects;
-        readonly IReadOnlyList<Color> colors;
-        readonly Color color;
-        readonly bool hasSingleColor;
-
         /// <summary>
         /// Создаёт presenter координатных поверхностей с индивидуальными цветами.
         /// </summary>
         public SurfaceObjsPresenter(IReadOnlyList<T> surfaceObjects, IReadOnlyList<Color> colors)
+            : this(surfaceObjects, new ManyColorsObjsColors(colors))
         {
-            this.surfaceObjects = surfaceObjects ?? throw new ArgumentNullException(nameof(surfaceObjects));
-            this.colors = colors ?? throw new ArgumentNullException(nameof(colors));
-            if (surfaceObjects.Count != colors.Count)
-                throw new ArgumentException("The number of colors must match the number of objects.", nameof(colors));
         }
 
         /// <summary>
         /// Создаёт presenter координатных поверхностей с одним цветом.
         /// </summary>
         public SurfaceObjsPresenter(IReadOnlyList<T> surfaceObjects, Color color)
+            : this(surfaceObjects, new SingleColorObjsColors(color))
         {
-            this.surfaceObjects = surfaceObjects ?? throw new ArgumentNullException(nameof(surfaceObjects));
-            this.color = color;
-            hasSingleColor = true;
+        }
+
+        /// <summary>
+        /// Создаёт presenter координатных поверхностей с заданным источником цветов.
+        /// </summary>
+        public SurfaceObjsPresenter(IReadOnlyList<T> surfaceObjects, IObjsColors colors)
+            : base(surfaceObjects, colors)
+        {
         }
 
         /// <inheritdoc/>
-        public string Name { get; set; }
+        public override ViewMode ViewMode { get; set; } = ViewMode.LineSurface;
 
         /// <inheritdoc/>
-        public ViewMode ViewMode { get; set; } = ViewMode.LineSurface;
+        public override PresenterType PresenterType => PresenterType.Surface;
 
         /// <inheritdoc/>
-        public PresenterType PresenterType => PresenterType.Surface;
-
-        /// <inheritdoc/>
-        public Tuple<int, int, int, int> CreateIndexes()
+        public override Tuple<int, int, int, int> CreateIndexes()
         {
             var pointers = 0;
             var vertexes = 0;
             var colorsCount = 0;
             var edges = 0;
 
-            foreach (var surfaceObject in surfaceObjects)
+            foreach (var surfaceObject in Objects)
             {
                 var triangles = surfaceObject.NumberOfPoints - 2;
                 pointers += triangles * 3;
@@ -70,44 +64,47 @@ namespace OperationalController.ModelScenePresentator.GlObjsPresenters
         }
 
         /// <inheritdoc/>
-        public int[] CreatePointers(int indexLength)
-        {
-            var pointers = new int[indexLength];
-            for (var index = 0; index < indexLength; index++)
-                pointers[index] = index;
-
-            return pointers;
-        }
-
-        /// <inheritdoc/>
-        public float[] CreateVertexes(int vertexLength, string vertexType)
+        public override float[] CreateVertexes(int vertexLength, string vertexType)
         {
             var vertexes = new float[vertexLength];
             var stride = 0;
 
-            for (var index = 0; index < surfaceObjects.Count; index++)
+            var objectIndex = 0;
+
+            foreach (var color in CreateColors())
             {
-                var coordinates = surfaceObjects[index].GetCoordinates().ToArray();
+                if (objectIndex == Objects.Count)
+                    throw new InvalidOperationException("More colors were provided than objects.");
+
+                var surfaceObject = Objects[objectIndex];
+                var coordinates = surfaceObject.GetCoordinates().ToArray();
+
                 if (vertexType == "цвет")
-                    CreateColors(ref stride, vertexes, coordinates, GetColor(index));
+                    CreateColors(ref stride, vertexes, coordinates, color);
                 else if (vertexType == "координаты")
                     CreateCoordinates(ref stride, vertexes, coordinates);
                 else
                     CreateNormals(ref stride, vertexes, coordinates);
+
+                objectIndex++;
             }
+
+            if (objectIndex != Objects.Count)
+                throw new InvalidOperationException("A color was not provided for every object.");
 
             return vertexes;
         }
 
         /// <inheritdoc/>
-        public bool[] CreateEdgeFlags(int edgesLength)
+        public override bool[] CreateEdgeFlags(int edgesLength)
         {
             var edges = new bool[edgesLength];
             var stride = 0;
 
-            foreach (var surfaceObject in surfaceObjects)
+            foreach (var surfaceObject in Objects)
             {
                 var triangles = surfaceObject.NumberOfPoints - 2;
+
                 for (var index = 0; index < triangles; index++)
                 {
                     if (index == 0)
@@ -132,35 +129,18 @@ namespace OperationalController.ModelScenePresentator.GlObjsPresenters
         }
 
         /// <inheritdoc/>
-        public int Count()
-        {
-            return surfaceObjects.Count;
-        }
-
-        /// <inheritdoc/>
-        public IEnumerator<ICoordinated> GetEnumerator()
-        {
-            foreach (var surfaceObject in surfaceObjects)
-                yield return surfaceObject;
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        /// <inheritdoc/>
         public int[] CreateSeparators()
         {
-            var separators = new int[surfaceObjects.Count + 1];
+            var separators = new int[Objects.Count + 1];
             var stride = 0;
-            for (var index = 0; index < surfaceObjects.Count; index++)
+
+            for (var index = 0; index < Objects.Count; index++)
             {
                 separators[index] = stride;
-                stride += surfaceObjects[index].NumberOfPoints - 2;
+                stride += Objects[index].NumberOfPoints - 2;
             }
 
-            separators[surfaceObjects.Count] = stride;
+            separators[Objects.Count] = stride;
             return separators;
         }
 
@@ -229,14 +209,6 @@ namespace OperationalController.ModelScenePresentator.GlObjsPresenters
             vertexes[index + 1] = color.G / 255.0f;
             vertexes[index + 2] = color.B / 255.0f;
             vertexes[index + 3] = color.A / 255.0f;
-        }
-
-        /// <summary>
-        /// Возвращает цвет объекта по его позиции в списке.
-        /// </summary>
-        private Color GetColor(int index)
-        {
-            return hasSingleColor ? color : colors[index];
         }
     }
 }

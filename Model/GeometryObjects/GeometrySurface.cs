@@ -28,6 +28,10 @@ namespace Model.GeometryObjects
         }
         /// <inheritdoc/>
 
+        public bool IsInner => false;
+
+        /// <inheritdoc/>
+
         public int GetVertexIndex(GeometryPoint vertex)
         {
             return Array.IndexOf(points, vertex);

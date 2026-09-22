@@ -49,6 +49,8 @@ namespace OperationalController
 
             project.ModelData.SetObjectData(modelData.ObjectData);
             project.ModelData.SetGroupData(modelData.GroupData);
+
+            MarkModelSurfaces();
         }
 
     }

@@ -1,93 +1,95 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Drawing;
 using Geometry;
 using Geometry.Interfaces;
-using OperationalController.ModelScenePresentator.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
 
 namespace OperationalController.ModelScenePresentator.GlObjsPresenters
 {
     /// <summary>
     /// Презентатор независимых точек.
     /// </summary>
-    public class PointObjsPresenter<T> : IObjsPresenter where T : ICoordinated
+    public class PointObjsPresenter<T> : ObjsPresenter<T>
+        where T : ICoordinated
     {
-        private readonly IReadOnlyList<T> pointObjects;
-        private readonly Color color;
-
         /// <summary>
-        /// Создает презентатор с единым цветом для всех объектов.
+        /// Создаёт презентатор с единым цветом для всех объектов.
         /// </summary>
         public PointObjsPresenter(IReadOnlyList<T> pointObjects, Color color)
+            : this(pointObjects, new SingleColorObjsColors(color))
         {
-            this.pointObjects = pointObjects ?? throw new ArgumentNullException(nameof(pointObjects));
-            this.color = color;
+        }
+
+        /// <summary>
+        /// Создаёт презентатор с индивидуальными цветами объектов.
+        /// </summary>
+        public PointObjsPresenter(IReadOnlyList<T> pointObjects, IReadOnlyList<Color> colors)
+            : this(pointObjects, new ManyColorsObjsColors(colors))
+        {
+        }
+
+        /// <summary>
+        /// Создаёт презентатор с заданным источником цветов.
+        /// </summary>
+        public PointObjsPresenter(IReadOnlyList<T> pointObjects, IObjsColors colors)
+            : base(pointObjects, colors)
+        {
         }
 
         /// <inheritdoc />
-        public string Name { get; set; }
+        public override PresenterType PresenterType { get; } = PresenterType.Point;
 
         /// <inheritdoc />
-        public PresenterType PresenterType { get; } = PresenterType.Point;
+        public override ViewMode ViewMode { get; set; } = ViewMode.Point;
 
         /// <inheritdoc />
-        public ViewMode ViewMode { get; set; } = ViewMode.Point;
-
-        /// <inheritdoc />
-        public Tuple<int, int, int, int> CreateIndexes()
+        public override Tuple<int, int, int, int> CreateIndexes()
         {
             var count = 0;
 
-            foreach (var pointObject in pointObjects)
+            foreach (var pointObject in Objects)
                 count += pointObject.NumberOfPoints;
 
             return new Tuple<int, int, int, int>(count, count * 3, count * 4, 0);
         }
 
         /// <inheritdoc />
-        public int[] CreatePointers(int indexLength)
-        {
-            var pointers = new int[indexLength];
-            for (var index = 0; index < indexLength; index++)
-                pointers[index] = index;
-
-            return pointers;
-        }
-
-        /// <inheritdoc />
-        public float[] CreateVertexes(int vertexLength, string vertexType)
+        public override float[] CreateVertexes(int vertexLength, string vertexType)
         {
             var vertexes = new float[vertexLength];
             var stride = 0;
 
-            foreach (var pointObject in pointObjects)
-            {
-                var coordinates = pointObject.GetCoordinates();
+            var objectIndex = 0;
 
-                foreach (var coordinate in coordinates)
-                    AddVertex(ref stride, vertexes, vertexType, coordinate);
+            foreach (var color in CreateColors())
+            {
+                if (objectIndex == Objects.Count)
+                    throw new InvalidOperationException("More colors were provided than objects.");
+
+                var pointObject = Objects[objectIndex];
+
+                foreach (var coordinate in pointObject.GetCoordinates())
+                    AddVertex(ref stride, vertexes, vertexType, coordinate, color);
+
+                objectIndex++;
             }
+
+            if (objectIndex != Objects.Count)
+                throw new InvalidOperationException("A color was not provided for every object.");
 
             return vertexes;
         }
 
         /// <inheritdoc />
-        public bool[] CreateEdgeFlags(int edgesLength) => Array.Empty<bool>();
-
-        /// <inheritdoc />
-        public int Count() => pointObjects.Count;
-
-        /// <inheritdoc />
-        public IEnumerator<ICoordinated> GetEnumerator()
+        public override bool[] CreateEdgeFlags(int edgesLength)
         {
-            foreach (var pointObject in pointObjects)
-                yield return pointObject;
+            return Array.Empty<bool>();
         }
 
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-        private void AddVertex(ref int stride, float[] vertexes, string vertexType, Point3D coordinate)
+        /// <summary>
+        /// Записывает данные вершины в буфер.
+        /// </summary>
+        private void AddVertex(ref int stride, float[] vertexes, string vertexType, Point3D coordinate, Color color)
         {
             if (vertexType == "координаты")
             {

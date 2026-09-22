@@ -452,7 +452,7 @@ namespace ModelTests
                 new Node(8, new Point3D(1, 0, 1)),
             };
 
-            var surfaces = SurfacesCreator.CreateSurfacesFromSetOfNodes(0, nodes);
+            var surfaces = SurfacesCreator.CreateSurfacesFromSetOfNodes(new SurfaceOwnerStub(0, nodes), nodes);
 
             var sortedNodes = Element3D.SortNodes(mainSurfaceIndex, surfaces);
 
@@ -477,7 +477,7 @@ namespace ModelTests
                 new Node(6, new Point3D(1, 0, 1)),
 };
 
-            var surfaces = SurfacesCreator.CreateSurfacesFromSetOfNodes(0, nodes);
+            var surfaces = SurfacesCreator.CreateSurfacesFromSetOfNodes(new SurfaceOwnerStub(0, nodes), nodes);
 
             var sortedNodes = Element3D.SortNodes(mainSurfaceIndex, surfaces);
 

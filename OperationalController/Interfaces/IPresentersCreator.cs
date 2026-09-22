@@ -33,12 +33,12 @@ namespace OperationalController
         /// <summary>
         /// Создает презентатор поверхностных объектов с индивидуальными цветами.
         /// </summary>
-        ISurfaceObjsPresenter CreateSurfaceObjectsPresenter<T, U>(IReadOnlyList<ISurfaceObject<T, U>> surfaceObjects, IReadOnlyList<Color> colors) where T : ISurface<U> where U : IPoint;
+        ISurfaceObjsPresenter CreateSurfaceObjectsPresenter<T, U>(IReadOnlyList<ISurfaceObject<T, U>> surfaceObjects, IReadOnlyList<Color> colors, bool drawInnerSurfaces = true) where T : ISurface<U> where U : IPoint;
 
         /// <summary>
         /// Создает презентатор поверхностных объектов с единым цветом.
         /// </summary>
-        ISurfaceObjsPresenter CreateSurfaceObjectsPresenter<T, U>(IReadOnlyList<ISurfaceObject<T, U>> surfaceObjects, Color color) where T : ISurface<U> where U : IPoint;
+        ISurfaceObjsPresenter CreateSurfaceObjectsPresenter<T, U>(IReadOnlyList<ISurfaceObject<T, U>> surfaceObjects, Color color, bool drawInnerSurfaces = true) where T : ISurface<U> where U : IPoint;
 
         /// <summary>
         /// Создает презентатор поверхностей с координатами и индивидуальными цветами.

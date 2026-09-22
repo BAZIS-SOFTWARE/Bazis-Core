@@ -29,6 +29,8 @@ namespace OperationalController
             var loader = new LoadProjectFromTextFormat();
             loader.LoadEvent += (ar1, ar2) => { MessageEvent?.Invoke(ar2.Message); };
             project = loader.Load(path);
+
+            MarkModelSurfaces();
         }
        
         /// <inheritdoc/>
@@ -267,7 +269,11 @@ namespace OperationalController
             };
             var modelData = loader.Load(path);
 
-            return project.ModelData.Append(modelData);
+            var addedSets = project.ModelData.Append(modelData);
+
+            MarkModelSurfaces();
+
+            return addedSets;
         }
 
 
