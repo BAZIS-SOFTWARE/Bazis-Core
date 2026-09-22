@@ -1,6 +1,7 @@
 ﻿using Model.Interfaces;
 using OperationalController.ModelScenePresentator.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace OperationalController.ModelScenePresentator.GlObjsVertexCreators
@@ -9,9 +10,9 @@ namespace OperationalController.ModelScenePresentator.GlObjsVertexCreators
     public class ColorSurfaceObjsCreator<T,U> : ISurfaceObjsVertexCreator<T,U> 
         where T : ISurface<U> where U : IPoint
     {
-        public void Create(ref int stride, float[] vertexAtributes, ISurfaceObject<T,U> surfObject, Color color)
+        public void Create(ref int stride, float[] vertexAtributes, IEnumerable<T> surfaces, Color color)
         {
-            foreach (var surface in surfObject.GetSurfaces())
+            foreach (var surface in surfaces)
             {
                 for (int k = 0; k < surface.NumberOfPoints - 2; k++)
                 {

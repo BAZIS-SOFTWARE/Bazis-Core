@@ -240,5 +240,26 @@ namespace TestProject.ControllerTests
 
             Assert.AreNotEqual(Color.Fuchsia, view.GetSetColor(setInfo));
         }
+
+        /// <summary>
+        /// Проверяет общемодельный признак отрисовки внутренних граней:
+        /// по умолчанию они рисуются, смена значения уведомляет вид,
+        /// а повторная запись того же значения - нет.
+        /// </summary>
+        [TestMethod]
+        public void HideInsideSurfaces_RaisesChangedOnlyWhenValueDiffers()
+        {
+            var view = new ModelView(new ModelData());
+            var changesCount = 0;
+            view.Changed += (sender, args) => changesCount++;
+
+            Assert.IsFalse(view.HideInsideSurfaces);
+
+            view.HideInsideSurfaces = true;
+            view.HideInsideSurfaces = true;
+
+            Assert.IsTrue(view.HideInsideSurfaces);
+            Assert.AreEqual(1, changesCount);
+        }
     }
 }

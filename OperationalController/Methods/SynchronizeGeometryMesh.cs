@@ -24,6 +24,8 @@ namespace OperationalController
 
             foreach (var item in GmshController.GetMeshSets<Element3D>(nodes))
                 ModelData.ObjectData.E3DCollection.Add(item);
+
+            MarkModelSurfaces();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Model.Interfaces;
+using Model.Interfaces;
+using System.Collections.Generic;
 
 namespace OperationalController.ModelScenePresentator.Interfaces
 {
@@ -14,7 +15,8 @@ namespace OperationalController.ModelScenePresentator.Interfaces
         /// </summary>
         /// <param name="stride"></param>
         /// <param name="vertexAtributes"></param>
-        /// <param name="surfaceElement"></param>
-        void Create(ref int stride, float[] vertexAtributes, ISurfaceObject<T,U> surfaceElement, System.Drawing.Color color);
+        /// <param name="surfaces">Отобранные к отрисовке грани одного объекта</param>
+        /// <param name="color"></param>
+        void Create(ref int stride, float[] vertexAtributes, IEnumerable<T> surfaces, System.Drawing.Color color);
     }
 }

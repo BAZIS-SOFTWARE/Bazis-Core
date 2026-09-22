@@ -27,6 +27,13 @@ namespace OperationalController
         byte Transparency { get; set; }
 
         /// <summary>
+        /// Скрывать ли грани объёмных элементов, закрытые соседними элементами.
+        /// Признак общемодельный: грань может быть общей для элементов из разных наборов,
+        /// и пер-сетовый флаг дал бы для одного куска геометрии два противоречивых ответа.
+        /// </summary>
+        bool HideInsideSurfaces { get; set; }
+
+        /// <summary>
         /// Возвращает итоговый цвет объекта.
         /// </summary>
         Color GetColor(ObjType objType, int number);

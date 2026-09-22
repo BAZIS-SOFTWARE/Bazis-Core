@@ -1,14 +1,15 @@
 using Model.Interfaces;
 using OperationalController.ModelScenePresentator.Interfaces;
+using System.Collections.Generic;
 
 namespace OperationalController.ModelScenePresentator.GlObjsVertexCreators
 {
     public class NormalsSurfaceObjsCreator<T, U> : ISurfaceObjsVertexCreator<T, U>
         where T : ISurface<U> where U : IPoint
     {
-        public void Create(ref int stride, float[] vertexAtributes, ISurfaceObject<T, U> surfaceElement, System.Drawing.Color color)
+        public void Create(ref int stride, float[] vertexAtributes, IEnumerable<T> surfaces, System.Drawing.Color color)
         {
-            foreach (var surface in surfaceElement.GetSurfaces())
+            foreach (var surface in surfaces)
             {
                 var normal = surface.CalcNormal();
                 for (int k = 0; k < surface.NumberOfPoints - 2; k++)

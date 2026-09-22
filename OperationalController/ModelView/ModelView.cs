@@ -16,6 +16,7 @@ namespace OperationalController
         readonly Dictionary<ObjType, IObjectsView> views = new Dictionary<ObjType, IObjectsView>();
         Color selectionColor;
         byte transparency;
+        bool hideInsideSurfaces;
         int updateDepth;
         bool hasChanges;
 
@@ -56,6 +57,20 @@ namespace OperationalController
                     return;
 
                 transparency = value;
+                Raise(true);
+            }
+        }
+
+        /// <inheritdoc/>
+        public bool HideInsideSurfaces
+        {
+            get => hideInsideSurfaces;
+            set
+            {
+                if (hideInsideSurfaces == value)
+                    return;
+
+                hideInsideSurfaces = value;
                 Raise(true);
             }
         }

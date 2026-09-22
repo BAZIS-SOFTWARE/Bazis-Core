@@ -173,6 +173,10 @@ namespace OperationalController
         public void MergeNodes(List<List<int>> numbers)
         {
             objectsMerger.Merge(numbers, ModelData.ObjectData.NodesSet);
+
+            // Слияние узлов переставляет ссылки в элементах, поэтому грани
+            // до сих пор разъединённых сеток становятся совпадающими.
+            MarkModelSurfaces();
         }
 
         ISurfaceMeshCreator surfaceMeshCreator { get; set; }

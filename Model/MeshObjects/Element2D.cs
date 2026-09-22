@@ -17,7 +17,7 @@ namespace Model.MeshObjects
         public Element2D(int number, Node[] nodes) : base(number, nodes)
         {
             Dim = 2;
-            surface = new ElementSurface(number, 0, nodes);
+            surface = new ElementSurface(this, 0, nodes);
 
             //this.nodes = surface.GetVertexes().ToList();
 

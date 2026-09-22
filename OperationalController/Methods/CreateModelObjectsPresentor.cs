@@ -81,7 +81,7 @@ namespace OperationalController
             var surfaceObjects = CreateVisibleObjects(objects, setInfo);
             var colors = CreateColors(surfaceObjects, setInfo);
             var modelSurfaceObjects = surfaceObjects.Cast<ISurfaceObject<ElementSurface, Node>>().ToList();
-            return presentersCreator.CreateSurfaceObjectsPresenter<ElementSurface, Node>(modelSurfaceObjects, colors);
+            return presentersCreator.CreateSurfaceObjectsPresenter<ElementSurface, Node>(modelSurfaceObjects, colors, !ModelView.HideInsideSurfaces);
         }
 
         private List<T> CreateVisibleObjects<T>(IEnumerable<T> objects, ISetInfo setInfo) where T : IModelObject
