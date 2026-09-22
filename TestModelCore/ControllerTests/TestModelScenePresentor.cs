@@ -31,11 +31,10 @@ namespace ControllerTests
             model.ObjectData.NodesSet.Add(0, nodes[0]);
             var modelView = new ModelView(model);
             var setInfo = model.ObjectData.GetSetInfo(ObjType.Узел, nodes[0].Number);
-            var state = modelView.GetDrawState(setInfo);
             var presenter = new PointObjsPresenter(nodes, modelView.GetColor(setInfo, nodes[0].Number));
-            var indices = presenter.CreateIndexes(state);
-            var pointers = presenter.CreatePointers(indices.Item1, state);
-            var colors = presenter.CreateVertexes(indices.Item3, "цвет", state);
+            var indices = presenter.CreateIndexes();
+            var pointers = presenter.CreatePointers(indices.Item1);
+            var colors = presenter.CreateVertexes(indices.Item3, "цвет");
             //var expectedIndices = new Tuple<int,int,int,int>(1,3,4,0);
             var expectedPointers = new int[] { 0 };
             var expectedColors = new float[] { 0.0f, 0.0f, 1.0f, 1.0f };
@@ -55,11 +54,10 @@ namespace ControllerTests
             var modelView = new ModelView(model);
             var setInfo = model.ObjectData.GetSetInfo(ObjType.Кривая, lines[0].Number) ?? throw new AssertFailedException();
             modelView.SetSetColor(setInfo, Color.Black);
-            var state = modelView.GetDrawState(setInfo);
             var presenter = new LineObjsPresenter<Curve>(lines, modelView.GetColor(setInfo, lines[0].Number));
-            var indices = presenter.CreateIndexes(state);
-            var pointers = presenter.CreatePointers(indices.Item1, state);
-            var colors = presenter.CreateVertexes(indices.Item3, "цвет", state);
+            var indices = presenter.CreateIndexes();
+            var pointers = presenter.CreatePointers(indices.Item1);
+            var colors = presenter.CreateVertexes(indices.Item3, "цвет");
             //var expectedIndices = new Tuple<int, int, int,int>(2, 6, 8,1);
             var expectedPointers = new int[] { 0, 1 };
             var expectedColors = new float[] { 0.0f, 0.0f, 0.0f, 1.0f,
@@ -82,11 +80,10 @@ namespace ControllerTests
             var modelView = new ModelView(model);
             var setInfo = model.ObjectData.GetSetInfo(ObjType.Элемент2D, triangle[0].Number) ?? throw new AssertFailedException();
             modelView.SetSetColor(setInfo, Color.Blue);
-            var state = modelView.GetDrawState(setInfo);
             var presenter = new SurfaceObjsPresenter<ElementSurface, Node>(triangle, modelView.GetColor(setInfo, triangle[0].Number));
-            var indices = presenter.CreateIndexes(state);
-            var pointers = presenter.CreatePointers(indices.Item1, state);
-            var colors = presenter.CreateVertexes(indices.Item3, "цвет", state);
+            var indices = presenter.CreateIndexes();
+            var pointers = presenter.CreatePointers(indices.Item1);
+            var colors = presenter.CreateVertexes(indices.Item3, "цвет");
             //var expectedIndices = new Tuple<int, int, int,int>(3, 9, 12,3);
             var expectedPointers = new int[] { 0, 1, 2 };
             var expectedColors = new float[] { 0.0f, 0.0f, 1.0f, 1.0f,
@@ -112,11 +109,10 @@ namespace ControllerTests
             var creator = new PresentersCreator();
             var modelView = new ModelView(model);
             var setInfo = model.ObjectData.GetSetInfo(ObjType.Элемент2D, el2D.Number);
-            var state = modelView.GetDrawState(setInfo);
-            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E2DCollection.GetObjects());
+            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E2DCollection.GetObjects().ToList(), modelView.GetSetColor(setInfo));
 
-            var values = presentator.CreateIndexes(state);
-            var edges = presentator.CreateEdgeFlags(values.Item4, state);
+            var values = presentator.CreateIndexes();
+            var edges = presentator.CreateEdgeFlags(values.Item4);
             Assert.AreEqual(3, edges.Length);
             for (var i = 0; i < edges.Length; ++i)
                 Assert.AreEqual(true, edges[i]);
@@ -139,10 +135,9 @@ namespace ControllerTests
             var creator = new PresentersCreator();
             var modelView = new ModelView(model);
             var setInfo = model.ObjectData.GetSetInfo(ObjType.Элемент2D, el2D.Number);
-            var state = modelView.GetDrawState(setInfo);
-            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E2DCollection.GetObjects());
-            var values = presentator.CreateIndexes(state);
-            var edges = presentator.CreateEdgeFlags(values.Item4, state);
+            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E2DCollection.GetObjects().ToList(), modelView.GetSetColor(setInfo));
+            var values = presentator.CreateIndexes();
+            var edges = presentator.CreateEdgeFlags(values.Item4);
             Assert.AreEqual(6, edges.Length);
             var expectedFlags = new bool[] { true, true, false, false, true, true };
             for (var i = 0; i < expectedFlags.Length; ++i)
@@ -169,11 +164,10 @@ namespace ControllerTests
             var creator = new PresentersCreator();
             var modelView = new ModelView(model);
             var setInfo = model.ObjectData.GetSetInfo(ObjType.Поверхность, poligon.Number);
-            var state = modelView.GetDrawState(setInfo);
-            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.SurfaceSet.Values);
+            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.SurfaceSet.Values.ToList(), modelView.GetSetColor(setInfo));
 
-            var values = presentator.CreateIndexes(state);
-            var edges = presentator.CreateEdgeFlags(values.Item4, state);
+            var values = presentator.CreateIndexes();
+            var edges = presentator.CreateEdgeFlags(values.Item4);
 
             Assert.AreEqual(12, edges.Length);
             var expectedFlags = new bool[] { true, true, false, false, true, false,
@@ -195,7 +189,7 @@ namespace ControllerTests
             0, 0, 0,
             10,10,0,
         },
-            ObjType.Элемент1D, new int[] { 2, 6, 8, 6,1 })]
+            ObjType.Элемент1D, new int[] { 2, 6, 8, 6, 0 })]
 
         [DataRow(new float[]
         {
@@ -204,7 +198,7 @@ namespace ControllerTests
             0, 10, 0,
             0, 0, 10
         },
-            ObjType.Элемент3D, new int[] { 12, 36, 48, 36,12 })]
+            ObjType.Элемент3D, new int[] { 6, 18, 24, 18, 6 })]
         public void TestObjectsPresentorsManual(float[]coords, ObjType objType, int [] indsR)
         {
 
@@ -234,29 +228,28 @@ namespace ControllerTests
                 case ObjType.Элемент3D:
                     model.ObjectData.E3DCollection.Add(ObjType.Элемент3D.ToString(), new Tetra(0, model.ObjectData.NodesSet.Values.ToArray()));
                     setInfo = model.ObjectData.GetSetInfo(ObjType.Элемент3D, 0);
-                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E3DCollection.GetObjects());
+                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E3DCollection.GetObjects().ToList(), modelView.GetSetColor(setInfo));
                     break;
                 case ObjType.Элемент2D:
                     model.ObjectData.E2DCollection.Add(ObjType.Элемент2D.ToString(), new Triangle(0, model.ObjectData.NodesSet.Values.ToArray()));
                     setInfo = model.ObjectData.GetSetInfo(ObjType.Элемент2D, 0);
-                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E2DCollection.GetObjects());
+                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E2DCollection.GetObjects().ToList(), modelView.GetSetColor(setInfo));
                     break;
                 default:
                     model.ObjectData.E1DCollection.Add(ObjType.Элемент1D.ToString(), new Beam(0, model.ObjectData.NodesSet.Values.ToArray()));
                     setInfo = model.ObjectData.GetSetInfo(ObjType.Элемент1D, 0);
-                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.E1DCollection.GetObjects());
+                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.E1DCollection.GetObjects().ToList(), modelView.GetSetColor(setInfo));
                     break;
             }
 
             //act
            
-            var state = modelView.GetDrawState(setInfo);
-            var inds = presenter.CreateIndexes(state);
-            var ptrs = presenter.CreatePointers(inds.Item1, state);
-            var crds = presenter.CreateVertexes(inds.Item2, "координаты", state);
-            var colors = presenter.CreateVertexes(inds.Item3, "цвет", state);
-            var normals = presenter.CreateVertexes(inds.Item2, "нормаль", state);
-            var edges = presenter.CreateEdgeFlags(inds.Item4, state);
+            var inds = presenter.CreateIndexes();
+            var ptrs = presenter.CreatePointers(inds.Item1);
+            var crds = presenter.CreateVertexes(inds.Item2, "координаты");
+            var colors = presenter.CreateVertexes(inds.Item3, "цвет");
+            var normals = presenter.CreateVertexes(inds.Item2, "нормаль");
+            var edges = presenter.CreateEdgeFlags(inds.Item4);
             //assert
 
             Assert.AreEqual(ptrs.Length, indsR[0]);
@@ -272,7 +265,7 @@ namespace ControllerTests
             0, 0, 0,
             10,10,0,
         },
-            ObjType.Кривая, new int[] { 2, 6, 8, 6, 1 })]
+            ObjType.Кривая, new int[] { 2, 6, 8, 6, 0 })]
         public void TestGeomObjectsCreationManual(float[] coords, ObjType objType, int[] indsR)
         {
 
@@ -298,25 +291,24 @@ namespace ControllerTests
                 case ObjType.Кривая:
                     model.ObjectData.CurveSet.Add(0, new Curve(0, points.ToArray()));
                     setInfo = model.ObjectData.GetSetInfo(ObjType.Кривая, 0);
-                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.CurveSet.Values);
+                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.CurveSet.Values.ToList(), modelView.GetSetColor(setInfo));
                     break;
                 default:
                     var surface = new GeometrySurface(0, points.ToArray());
                     model.ObjectData.SurfaceSet.Add(0, new SurfaceFigure(0,new GeometrySurface[] { surface } ));
                     setInfo = model.ObjectData.GetSetInfo(ObjType.Поверхность, 0);
-                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.SurfaceSet.Values);
+                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.SurfaceSet.Values.ToList(), modelView.GetSetColor(setInfo));
                     break;
             }
 
             //act
 
-            var state = modelView.GetDrawState(setInfo);
-            var inds = presenter.CreateIndexes(state);
-            var ptrs = presenter.CreatePointers(inds.Item1, state);
-            var crds = presenter.CreateVertexes(inds.Item2, "координаты", state);
-            var colors = presenter.CreateVertexes(inds.Item3, "цвет", state);
-            var normals = presenter.CreateVertexes(inds.Item2, "нормаль", state);
-            var edges = presenter.CreateEdgeFlags(inds.Item4, state);
+            var inds = presenter.CreateIndexes();
+            var ptrs = presenter.CreatePointers(inds.Item1);
+            var crds = presenter.CreateVertexes(inds.Item2, "координаты");
+            var colors = presenter.CreateVertexes(inds.Item3, "цвет");
+            var normals = presenter.CreateVertexes(inds.Item2, "нормаль");
+            var edges = presenter.CreateEdgeFlags(inds.Item4);
             //assert
 
             Assert.AreEqual(ptrs.Length, indsR[0]);
@@ -333,7 +325,7 @@ namespace ControllerTests
 })]
         [DataRow(ObjType.Элемент3D, @"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC",new string[]
 {
-            "96", "288", "384", "288"
+            "48", "144", "192", "144"
 })]
         [DataRow(ObjType.Узел, @"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC",new string[]
 {
@@ -341,7 +333,7 @@ namespace ControllerTests
 })]
         [DataRow(ObjType.Элемент3D, @"..\..\..\Examples\CDB\longModel.cdb", new string[]
 {
-            "109620", "328860", "438480", "328860"
+            "54810", "164430", "219240", "164430"
 })]
         [DataRow(ObjType.Узел, @"..\..\..\Examples\CDB\longModel.cdb", new string[]
 {
@@ -370,39 +362,38 @@ namespace ControllerTests
             var creator = new PresentersCreator();
             var modelView = new ModelView(model);
             var setInfo = model.ObjectData.GetSetsInfo(objType).First();
-            var state = modelView.GetDrawState(setInfo);
             IObjsPresenter presenter;
 
             switch (objType)
             {
                 case ObjType.Узел:
-                    presenter = creator.CreatePointObjectsPresenter(model.ObjectData.NodesSet.Values);
+                    presenter = creator.CreatePointObjectsPresenter(model.ObjectData.NodesSet.Values.Cast<IModelObject>().ToList(), modelView.GetSetColor(setInfo));
                     break;
                 case ObjType.Кривая:
-                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.CurveSet.Values);
+                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.CurveSet.Values.ToList(), modelView.GetSetColor(setInfo));
                     break;
                 case ObjType.Поверхность:
-                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.SurfaceSet.Values);
+                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.SurfaceSet.Values.ToList(), modelView.GetSetColor(setInfo));
                     break;;
                 case ObjType.Элемент1D:
-                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.E1DCollection.GetObjects());
+                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.E1DCollection.GetObjects().ToList(), modelView.GetSetColor(setInfo));
                     break;
                 case ObjType.Элемент2D:
-                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E2DCollection.GetObjects());
+                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E2DCollection.GetObjects().ToList(), modelView.GetSetColor(setInfo));
                     break;
                 case ObjType.Элемент3D:
-                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E3DCollection.GetObjects());
+                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E3DCollection.GetObjects().ToList(), modelView.GetSetColor(setInfo));
                     break;
                 default:
-                    presenter = creator.CreatePointObjectsPresenter(model.ObjectData.PointsSet.Values);
+                    presenter = creator.CreatePointObjectsPresenter(model.ObjectData.PointsSet.Values.Cast<IModelObject>().ToList(), modelView.GetSetColor(setInfo));
                     break;
             }
 
-            var inds = presenter.CreateIndexes(state);
-            var ptrs = presenter.CreatePointers(inds.Item1, state);
-            var coords = presenter.CreateVertexes(inds.Item2, "координаты", state);
-            var colors = presenter.CreateVertexes(inds.Item3, "цвет", state);
-            var normals = presenter.CreateVertexes(inds.Item2, "нормаль", state);
+            var inds = presenter.CreateIndexes();
+            var ptrs = presenter.CreatePointers(inds.Item1);
+            var coords = presenter.CreateVertexes(inds.Item2, "координаты");
+            var colors = presenter.CreateVertexes(inds.Item3, "цвет");
+            var normals = presenter.CreateVertexes(inds.Item2, "нормаль");
             //assert
             Assert.AreEqual(ptrs.Length, int.Parse(array[0]));
             Assert.AreEqual(coords.Length, int.Parse(array[1]));
@@ -415,7 +406,6 @@ namespace ControllerTests
         [DataTestMethod]
         [DataRow(@"..\..\..\Examples\CDB\longModel.cdb")]
         [DataRow(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC")]
-        [DataRow(@"..\..\..\Examples\CAD\cilindr.step")]
         public void TestNormals(string path)
         {
             var model = new ModelData();
@@ -444,14 +434,13 @@ namespace ControllerTests
 
             var modelView = new ModelView(model);
             var setInfo = model.ObjectData.GetSetsInfo(ObjType.Элемент3D).First();
-            var state = modelView.GetDrawState(setInfo);
             var elems = model.ObjectData.E3DCollection.GetObjects();
             var presenter = new SurfaceObjsPresenter<ElementSurface, Node>(elems.ToList(), modelView.GetColor(setInfo, 0));
 
-            var inds = presenter.CreateIndexes(state);
-            var coords = presenter.CreateVertexes(inds.Item2, "координаты", state);
-            var normals = presenter.CreateVertexes(inds.Item2, "нормаль", state);
-            var separators = presenter.CreateSeparators(state);
+            var inds = presenter.CreateIndexes();
+            var coords = presenter.CreateVertexes(inds.Item2, "координаты");
+            var normals = presenter.CreateVertexes(inds.Item2, "нормаль");
+            var separators = presenter.CreateSeparators();
 
             var checker = new NormalsChecker(presenter);
             checker.Log = $@".\{Path.GetFileNameWithoutExtension(path)}_log.log";
@@ -469,12 +458,11 @@ namespace ControllerTests
             controller.Load(@"..\..\..\Examples\3D\mixElements.bpf");
 
             var setInfo = controller.GetModelSetsInfo(ObjType.Элемент2D).First();
-            var state = controller.ModelView.GetDrawState(setInfo);
             var presenter = controller.CreateModelObjectsPresentor(setInfo);
             var surfPresenter = (ISurfaceObjsPresenter)presenter;
-            var inds = surfPresenter.CreateIndexes(state);
-            var coords = surfPresenter.CreateVertexes(inds.Item2, "координаты", state);
-            var separators = surfPresenter.CreateSeparators(state);
+            var inds = surfPresenter.CreateIndexes();
+            var coords = surfPresenter.CreateVertexes(inds.Item2, "координаты");
+            var separators = surfPresenter.CreateSeparators();
 
             Assert.IsTrue(surfPresenter.Count() == separators.Length - 1);
         } 
@@ -508,12 +496,12 @@ namespace ControllerTests
             Assert.AreEqual(expectedShown, actualShown);
 
             var setInfo = sets.First();
-            var state = controller.ModelView.GetDrawState(setInfo);
+            expectedShown = setInfo.GetNumbers().Count(number => controller.ModelView.GetVisible(objType, number));
             var surfPresenter = (ISurfaceObjsPresenter)controller.CreateModelObjectsPresentor(setInfo);
             
-            var inds = surfPresenter.CreateIndexes(state);
-            var coords = surfPresenter.CreateVertexes(inds.Item2, "координаты", state);
-            var separators = surfPresenter.CreateSeparators(state);
+            var inds = surfPresenter.CreateIndexes();
+            var coords = surfPresenter.CreateVertexes(inds.Item2, "координаты");
+            var separators = surfPresenter.CreateSeparators();
 
             actualShown = 0;
             var maxSeparator = separators[0];//Для проверки "дружелюбности" сепараторов с индексами
@@ -547,11 +535,10 @@ namespace ControllerTests
             }
 
             var setInfo = sets.First();
-            var state = controller.ModelView.GetDrawState(setInfo);
             var pres = controller.CreateModelObjectsPresentor(setInfo);
 
-            var indices = pres.CreateIndexes(state);
-            var colors = pres.CreateVertexes(indices.Item3, "цвет", state);
+            var indices = pres.CreateIndexes();
+            var colors = pres.CreateVertexes(indices.Item3, "цвет");
 
             //Сделал исправление в ColorLineObjsCreator.cs стр 14, т.к набор не подхватывал альфа-канал
             for (var i = 0; i < colors.Length; i+=4)

@@ -7,7 +7,7 @@
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>GeometryKey.snk</AssemblyOriginatorKeyFile>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>2.2.51</Version>
+    <Version>2.2.6</Version>
     <Authors>Bilenko Georgy, Kapkaev Victor, Khaybrakhmanov Radik, Ustinov Nikita</Authors>
     <Company>BAZIS SOFTWARE</Company>
     <Product>BAZIS</Product>
