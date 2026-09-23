@@ -434,6 +434,40 @@ namespace GmshTests
             saver.Save(mdArray[0], $@"D:\{fName}Curves{stringKey}{stringTransfinite}{stringRecombine}.bpf2");
         }
 
+        [TestMethod]
+        public void ExtrudeAlongCurveMeshNodesTest()
+        {
+            controller.Gmsh.Open(modelFolder + @"\CAD\curve.step");
+            controller.Gmsh.Model.Mesh.SetTransfiniteCurve(1, 7);
+            controller.Gmsh.Model.Mesh.Generate(1);
+
+            var data = controller.Gmsh.Model.Mesh.GetNodes(1, 1, true, true);
+            var meshPoints = new List<(double Parameter, Point3D Point)>();
+            for (var index = 0; index < data.Item1.Length; index++)
+            {
+                var coordinate = index * 3;
+                meshPoints.Add((data.Item3[index], new Point3D(
+                    (float)data.Item2[coordinate], (float)data.Item2[coordinate + 1], (float)data.Item2[coordinate + 2])));
+            }
+            meshPoints.Sort((left, right) => left.Parameter.CompareTo(right.Parameter));
+            var boundary = controller.Gmsh.Model.GetBoundary([1, 1], false, false);
+            if (boundary[3] == 2)
+                meshPoints.Reverse();
+
+            var extruder = new CurveExtruder(controller, [1], 2, useMeshNodes: true);
+            var beams = extruder.ExtrudeFromPoint(new Node(1, meshPoints[0].Point));
+            var generatedPoints = extruder.Nodes.Values.OrderBy(node => node.Number).ToArray();
+
+            Assert.AreEqual(meshPoints.Count - 1, beams.Count);
+            Assert.AreEqual(meshPoints.Count, generatedPoints.Length);
+            for (var index = 0; index < meshPoints.Count; index++)
+            {
+                Assert.AreEqual(meshPoints[index].Point._x, generatedPoints[index]._x, 1e-5);
+                Assert.AreEqual(meshPoints[index].Point._y, generatedPoints[index]._y, 1e-5);
+                Assert.AreEqual(meshPoints[index].Point._z, generatedPoints[index]._z, 1e-5);
+            }
+        }
+
         //Тест, генерируем 5 линий с рандомным смещением (выбираем произвольный существующий узел внутри стартового сечения) и экструдируем 3д элементы
         [DataTestMethod]
         [DataRow(@"\CAD\PART_3.stp", new int[] { 20, 19, 14, 11, 8, 7, 1, 50, 47, 44, 41, 40, 35, 32, 29, 26, 23 }, 15, 3.0,
