@@ -159,8 +159,13 @@ namespace OperationalController
         IDisposable BeginUpdate();
 
         /// <summary>
-        /// Возникает после изменения состояния представления.
+        /// Возникает после изменения состояния представления. Аргументы сообщают,
+        /// что изменилось (<see cref="ModelViewChange"/>) и у каких наборов: общее
+        /// изменение (прозрачность, внутренние грани), изменение по типу объектов
+        /// (выделение, видимость, цвет выделения) или изменение конкретного набора
+        /// (цвет, режим отображения). Итоговое изменение набора — объединение всех
+        /// трёх уровней, см. <see cref="ModelViewChangedEventArgs.GetChanges"/>.
         /// </summary>
-        event EventHandler Changed;
+        event EventHandler<ModelViewChangedEventArgs> Changed;
     }
 }
