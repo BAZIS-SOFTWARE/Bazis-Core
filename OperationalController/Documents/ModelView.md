@@ -801,7 +801,8 @@ public interface IObjsPresenter
 - Презентер — законченный объект: после конструктора он умеет всё, что обещает
   интерфейс. Это и было главное возражение против варианта с параметром.
 - Устаревать нечему: цвета посчитаны на момент создания, а презентер набора
-  пересоздаётся на `Changed` — как и сегодня.
+  пересоздаётся или перекрашивается на `Changed` — в зависимости от вида
+  изменения, см. «Аргументы события `Changed`».
 - Ни одного нового типа: ни `ISetDisplay`, ни `IDrawState`, ни `Colored<T>`.
   `Colored<T>` в BCL нет — `Tuple`/`ValueTuple` пришлось бы либо заворачивать в
   свой тип (снова новый тип, да ещё в спорной сборке), либо тащить кортежи в
@@ -1307,6 +1308,75 @@ void Create(ref int stride, float[] vertexAtributes, IEnumerable<T> surfaces, Co
 - Есть ли в Gerbera режим сечения. Если да, при отсечении плоскостью внутренние
   грани обязаны проступить, иначе деталь выглядит полой; тот же вопрос к
   разнесённому виду.
+
+## Аргументы события `Changed`
+
+`Changed` до этого шага поднимался с `EventArgs.Empty`: любой подписчик знал
+только «что-то изменилось», а Gerbera на каждое событие пересобирала VBO всех
+наборов всех типов — выделение одного узла заново строило индексы, координаты
+и нормали всех элементов.
+
+`ModelViewChangedEventArgs` сообщает, **что изменилось и у каких наборов** —
+не что делать с буферами: про VBO `OperationalController` не знает и знать не
+должен, это дело Gerbera (см. `ModelViewOperations.cs` в разделе 5 задачи
+`ModelViewChanged.md`).
+
+Изменения хранятся на трёх уровнях, и итоговое изменение набора — их
+объединение (`GetChanges`, `HasAny`):
+
+- **общие** (`ModelViewChange` без адресата) — касаются всех наборов:
+  `Transparency`, `InsideSurfaces`;
+- **по типу объектов** (`ObjType -> ModelViewChange`) — `Selection`,
+  `Visibility`, `SelectionColor`;
+- **по набору** (`ISetInfo -> ModelViewChange`, ключ по ссылке, как
+  `ObjectsView.setStyles`) — `SetColor`, `ViewMode`.
+
+Раскладка на три уровня, а не один общий флаг, точнее отражает пакет
+изменений: в `BeginUpdate` с `Select(узлы)` и `SetVisible(элементы, false)`
+узлы получат только `Selection`, а элементы — только `Visibility`, и
+подписчик перекрасит первые, не трогая буфер, и пересоберёт вторые.
+
+### Кто что сообщает
+
+| Член `ModelView` | Изменение | Уровень |
+| --- | --- | --- |
+| `Select`, `Deselect`, `ToggleSelection`, `ClearSelection(objType)` | `Selection` | тип |
+| `SetSelection` | `Selection` | каждый тип, у которого вид изменился (включая очищенные) |
+| `ClearSelection()` | `Selection` | каждый тип, у которого вид изменился |
+| `SetVisible` | `Visibility` | тип |
+| `ShowAll` | `Visibility` | каждый изменённый тип |
+| `HideSelected` | `Visibility \| Selection` | каждый изменённый тип |
+| `SetSetColor` | `SetColor` | набор |
+| `SetViewMode` | `ViewMode` | набор |
+| `SelectionColor` (set) | `SelectionColor` | каждый тип из `SelectedTypes` |
+| `Transparency` (set) | `Transparency` | общий |
+| `HideInsideSurfaces` (set) | `InsideSurfaces` | общий |
+| `Prune` → `ObjectsView.Prune` | `Visibility \| Selection` | каждый изменённый тип |
+| `Prune` → `PruneSetStyles` | `Visibility` | тип (консервативно: пересборка) |
+| `Reset` | `Visibility \| Selection` | каждый изменённый тип |
+
+`SelectionColor` поднимает событие, только если есть выделение: без него
+накопитель остаётся пустым и `Changed` не поднимается — перекрашивать нечего.
+
+### Накопитель вместо флага
+
+Внутри `ModelView` изменения копятся в закрытом `PendingChanges` (по образцу
+`UpdateScope`) до конца пакета: `Raise`/`RaiseCommon` добавляют изменение и, при
+`updateDepth == 0`, зовут `Flush()`. `Flush()` при пустом накопителе не делает
+ничего, иначе создаёт аргументы, **сначала очищает накопитель и только потом**
+поднимает `Changed` — обработчик может изменить вид повторно внутри самого
+события, и это изменение обязано попасть в накопитель заново, а не потеряться
+и не попасть в уже поднятое событие.
+
+### Совместимость
+
+`IModelView.Changed` сменил тип с `EventHandler` на
+`EventHandler<ModelViewChangedEventArgs>`. Существующий обработчик вида
+`ModelView_Changed(object sender, EventArgs e)` продолжает подписываться и
+без изменений в Gerbera: C# допускает контравариантность параметров при
+преобразовании группы методов. Значит этот шаг не ломает Gerbera сам по себе —
+только новая версия пакета делает доступными типы `ModelViewChange` и
+`ModelViewChangedEventArgs`, которыми Gerbera воспользуется отдельным шагом.
 
 ## Открытый вопрос
 
