@@ -454,25 +454,7 @@ namespace OperationalController.MeshObjsCreator.Extrude
                 tangent = -tangent;
             var acceleration = new Vector3((float)secondDerivative[0], (float)secondDerivative[1], (float)secondDerivative[2]);
             var normal = Vector3.Dot(tangent, tangent) * acceleration - Vector3.Dot(tangent, acceleration) * tangent;
-            var last = result.Count - 1;
-            (Vector3, Vector3, Vector3, Vector3, Vector3) components;
-
-            if (Vector3.Dot(normal, normal) < 1e-8)
-                components = result.Count == 0 ? (Vector3.UnitX, Vector3.UnitY, Vector3.UnitZ, point, tangent)
-                                               : (GetComponent(result[last], 1), GetComponent(result[last], 2), GetComponent(result[last], 3), point, tangent);
-            else
-            {
-                tangent = Vector3.Normalize(tangent);
-                normal = Vector3.Normalize(normal);
-                var binormal = Vector3.Cross(tangent, normal);
-                if (result.Count > 0 && Vector3.Dot(binormal, GetComponent(result[last], 2)) < 1e-4)
-                {
-                    normal = -normal;
-                    binormal = Vector3.Cross(tangent, normal);
-                }
-                components = (normal, binormal, tangent, point, tangent);
-            }
-            result.Add(components);
+            AddLocalSystemComponents(result, point, tangent, normal);
         }
 
         private List<(Vector3, Vector3, Vector3, Vector3, Vector3)> ProcessDirectParameterization(double step, int index)
@@ -587,24 +569,30 @@ namespace OperationalController.MeshObjsCreator.Extrude
             var a0 = p2 - p1 - (p1 - p0);
             var n0 = Vector3.Dot(t0, t0) * a0 - Vector3.Dot(t0, a0) * t0;
 
+            AddLocalSystemComponents(result, p0, t0, n0);
+        }
+
+        private void AddLocalSystemComponents(List<(Vector3, Vector3, Vector3, Vector3, Vector3)> result,
+                                              Vector3 point, Vector3 tangent, Vector3 normal)
+        {
             var last = result.Count - 1;
             (Vector3, Vector3, Vector3, Vector3, Vector3) components;
 
-            if (Vector3.Dot(n0, n0) < 1e-8)
-                components = result.Count == 0 ? (Vector3.UnitX, Vector3.UnitY, Vector3.UnitZ, p0, t0)
-                                               : (GetComponent(result[last], 1), GetComponent(result[last], 2), GetComponent(result[last], 3), p0, t0);
+            if (Vector3.Dot(normal, normal) < 1e-8)
+                components = result.Count == 0 ? (Vector3.UnitX, Vector3.UnitY, Vector3.UnitZ, point, tangent)
+                                               : (GetComponent(result[last], 1), GetComponent(result[last], 2), GetComponent(result[last], 3), point, tangent);
             else
             {
-                t0 = Vector3.Normalize(t0);
-                n0 = Vector3.Normalize(n0);
+                tangent = Vector3.Normalize(tangent);
+                normal = Vector3.Normalize(normal);
 
-                var b0 = Vector3.Cross(t0, n0);
-                if (result.Count > 0 && Vector3.Dot(b0, GetComponent(result[last], 2)) < 1e-4)
+                var binormal = Vector3.Cross(tangent, normal);
+                if (result.Count > 0 && Vector3.Dot(binormal, GetComponent(result[last], 2)) < 1e-4)
                 {
-                    n0 = -n0;
-                    b0 = Vector3.Cross(t0, n0);
+                    normal = -normal;
+                    binormal = Vector3.Cross(tangent, normal);
                 }
-                components = (n0, b0, t0, p0, t0);
+                components = (normal, binormal, tangent, point, tangent);
             }
             result.Add(components);
         }
