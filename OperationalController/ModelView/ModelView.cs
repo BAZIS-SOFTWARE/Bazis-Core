@@ -1,4 +1,4 @@
-using Model.Interfaces;
+﻿using Model.Interfaces;
 using Model.Interfaces.ObjectsCollections;
 using OperationalController.ModelScenePresentator;
 using System;
@@ -14,11 +14,11 @@ namespace OperationalController
     {
         readonly IModelData model;
         readonly Dictionary<ObjType, IObjectsView> views = new Dictionary<ObjType, IObjectsView>();
-        readonly PendingChanges pendingChanges = new PendingChanges();
+        readonly ChangedSets changedSets = new ChangedSets();
         Color selectionColor;
         byte transparency;
         bool hideInsideSurfaces;
-        int updateDepth;
+        int updateDepth; // глубина вложенности событий. 0 - можно отправлять
 
         /// <summary>
         /// Создаёт представление заданной модели.
@@ -46,7 +46,11 @@ namespace OperationalController
                 using (BeginUpdate())
                 {
                     foreach (var objType in SelectedTypes)
-                        Raise(true, ModelViewChange.SelectionColor, objType);
+                    {
+                        var selectedNumbers = GetSelected(objType);
+                        var selected = new List<int>(selectedNumbers);
+                        Raise(ModelViewChange.SelectionColor, objType, selected);
+                    }
                 }
             }
         }
@@ -61,7 +65,7 @@ namespace OperationalController
                     return;
 
                 transparency = value;
-                RaiseCommon(true, ModelViewChange.Transparency);
+                Raise(ModelViewChange.Transparency);
             }
         }
 
@@ -75,7 +79,7 @@ namespace OperationalController
                     return;
 
                 hideInsideSurfaces = value;
-                RaiseCommon(true, ModelViewChange.InsideSurfaces);
+                Raise(ModelViewChange.InsideSurfaces);
             }
         }
 
@@ -145,7 +149,9 @@ namespace OperationalController
                 throw new ArgumentNullException(nameof(setInfo));
 
             var view = GetOrCreateView(setInfo.ObjType);
-            Raise(view.SetSetColor(setInfo, color), ModelViewChange.SetColor, setInfo);
+            var changed = view.SetSetColor(setInfo, color);
+            if (changed)
+                Raise(ModelViewChange.SetColor, setInfo);
         }
 
         /// <inheritdoc/>
@@ -165,7 +171,9 @@ namespace OperationalController
                 throw new ArgumentNullException(nameof(setInfo));
 
             var view = GetOrCreateView(setInfo.ObjType);
-            Raise(view.SetViewMode(setInfo, viewMode), ModelViewChange.ViewMode, setInfo);
+            var changed = view.SetViewMode(setInfo, viewMode);
+            if (changed)
+                Raise(ModelViewChange.ViewMode, setInfo);
         }
 
         /// <inheritdoc/>
@@ -191,7 +199,11 @@ namespace OperationalController
                 view = GetOrCreateView(objType);
             }
 
-            Raise(view.SetHidden(numbers, !visible), ModelViewChange.Visibility, objType);
+            var changedNumbers = new List<int>(numbers);
+            var changed = view.SetHidden(changedNumbers, !visible);
+            if (changed)
+                Raise(ModelViewChange.Visibility, objType, changedNumbers);
+
             RemoveEmptyView(objType, view);
         }
 
@@ -204,9 +216,11 @@ namespace OperationalController
                 {
                     var objType = pair.Key;
                     var view = pair.Value;
-                    var hiddenChanged = view.SetHidden(view.GetSelected(), true);
+                    var selected = new List<int>(view.GetSelected());
+                    var hiddenChanged = view.SetHidden(selected, true);
                     var selectionChanged = view.ClearSelection();
-                    Raise(hiddenChanged || selectionChanged, ModelViewChange.Visibility | ModelViewChange.Selection, objType);
+                    if (hiddenChanged || selectionChanged)
+                        Raise(ModelViewChange.Visibility | ModelViewChange.Selection, objType, selected);
                 }
 
                 RemoveEmptyViews();
@@ -219,7 +233,11 @@ namespace OperationalController
             using (BeginUpdate())
             {
                 foreach (var pair in views)
-                    Raise(pair.Value.ShowAll(), ModelViewChange.Visibility, pair.Key);
+                {
+                    var changed = pair.Value.ShowAll();
+                    if (changed)
+                        Raise(ModelViewChange.Visibility, pair.Key);
+                }
 
                 RemoveEmptyViews();
             }
@@ -275,40 +293,74 @@ namespace OperationalController
         /// <inheritdoc/>
         public void Select(ObjType objType, IEnumerable<int> numbers)
         {
+            if (numbers == null)
+                throw new ArgumentNullException(nameof(numbers));
+
+            var changedNumbers = new List<int>(numbers);
             var view = GetOrCreateView(objType);
-            Raise(view.Select(numbers), ModelViewChange.Selection, objType);
+            var changed = view.Select(changedNumbers);
+            if (changed)
+                Raise(ModelViewChange.Selection, objType, changedNumbers);
+
             RemoveEmptyView(objType, view);
         }
 
         /// <inheritdoc/>
         public void Deselect(ObjType objType, IEnumerable<int> numbers)
         {
+            if (numbers == null)
+                throw new ArgumentNullException(nameof(numbers));
+
             if (!TryGetView(objType, out var view))
                 return;
 
-            Raise(view.Deselect(numbers), ModelViewChange.Selection, objType);
+            var changedNumbers = new List<int>(numbers);
+            var changed = view.Deselect(changedNumbers);
+            if (changed)
+                Raise(ModelViewChange.Selection, objType, changedNumbers);
+
             RemoveEmptyView(objType, view);
         }
 
         /// <inheritdoc/>
         public void ToggleSelection(ObjType objType, IEnumerable<int> numbers)
         {
+            if (numbers == null)
+                throw new ArgumentNullException(nameof(numbers));
+
+            var changedNumbers = new List<int>(numbers);
             var view = GetOrCreateView(objType);
-            Raise(view.ToggleSelection(numbers), ModelViewChange.Selection, objType);
+            var changed = view.ToggleSelection(changedNumbers);
+            if (changed)
+                Raise(ModelViewChange.Selection, objType, changedNumbers);
+
             RemoveEmptyView(objType, view);
         }
 
         /// <inheritdoc/>
         public void SetSelection(ObjType objType, IEnumerable<int> numbers)
         {
+            if (numbers == null)
+                throw new ArgumentNullException(nameof(numbers));
+
             using (BeginUpdate())
             {
                 foreach (var pair in views)
-                    if (pair.Key != objType)
-                        Raise(pair.Value.ClearSelection(), ModelViewChange.Selection, pair.Key);
+                {
+                    if (pair.Key == objType)
+                        continue;
 
+                    var cleared = pair.Value.ClearSelection();
+                    if (cleared)
+                        Raise(ModelViewChange.Selection, pair.Key);
+                }
+
+                var changedNumbers = new List<int>(numbers);
                 var view = GetOrCreateView(objType);
-                Raise(view.SetSelection(numbers), ModelViewChange.Selection, objType);
+                var changed = view.SetSelection(changedNumbers);
+                if (changed)
+                    Raise(ModelViewChange.Selection, objType, changedNumbers);
+
                 RemoveEmptyViews();
             }
         }
@@ -319,7 +371,10 @@ namespace OperationalController
             if (!TryGetView(objType, out var view))
                 return;
 
-            Raise(view.ClearSelection(), ModelViewChange.Selection, objType);
+            var changed = view.ClearSelection();
+            if (changed)
+                Raise(ModelViewChange.Selection, objType);
+
             RemoveEmptyView(objType, view);
         }
 
@@ -329,7 +384,11 @@ namespace OperationalController
             using (BeginUpdate())
             {
                 foreach (var pair in views)
-                    Raise(pair.Value.ClearSelection(), ModelViewChange.Selection, pair.Key);
+                {
+                    var changed = pair.Value.ClearSelection();
+                    if (changed)
+                        Raise(ModelViewChange.Selection, pair.Key);
+                }
 
                 RemoveEmptyViews();
             }
@@ -343,8 +402,14 @@ namespace OperationalController
                 foreach (var pair in views)
                 {
                     var objType = pair.Key;
-                    Raise(pair.Value.Prune(number => model.ObjectData.Find(objType, number) != null), ModelViewChange.Visibility | ModelViewChange.Selection, objType);
-                    Raise(pair.Value.PruneSetStyles(model.ObjectData.GetSetsInfo(objType)), ModelViewChange.Visibility, objType);
+                    var prunedObjects = pair.Value.Prune(number => model.ObjectData.Find(objType, number) != null);
+                    if (prunedObjects)
+                        Raise(ModelViewChange.Visibility | ModelViewChange.Selection, objType);
+
+                    var setsOfType = model.ObjectData.GetSetsInfo(objType);
+                    var prunedStyles = pair.Value.PruneSetStyles(setsOfType);
+                    if (prunedStyles)
+                        Raise(ModelViewChange.Visibility, objType);
                 }
 
                 RemoveEmptyViews();
@@ -360,7 +425,11 @@ namespace OperationalController
             using (BeginUpdate())
             {
                 foreach (var pair in views)
-                    Raise(pair.Value.ClearSelectionAndHidden(), ModelViewChange.Visibility | ModelViewChange.Selection, pair.Key);
+                {
+                    var changed = pair.Value.ClearSelectionAndHidden();
+                    if (changed)
+                        Raise(ModelViewChange.Visibility | ModelViewChange.Selection, pair.Key);
+                }
 
                 RemoveEmptyViews();
             }
@@ -436,151 +505,100 @@ namespace OperationalController
         }
 
         /// <summary>
-        /// Уведомляет подписчиков об изменении состояния, затрагивающем один тип объектов.
+        /// Помечает изменённым заданный набор.
         /// </summary>
-        private void Raise(bool changed, ModelViewChange change, ObjType objType)
+        private void Raise(ModelViewChange change, ISetInfo setInfo)
         {
-            if (!changed)
-                return;
-
-            pendingChanges.Add(change, objType);
-            if (updateDepth == 0)
-                Flush();
+            changedSets.Add(setInfo, change);
+            Flush();
         }
 
         /// <summary>
-        /// Уведомляет подписчиков об изменении состояния, затрагивающем один набор.
+        /// Помечает изменёнными все наборы заданного типа.
+        /// Применяется к операциям над типом целиком: снятие выделения, показ всех,
+        /// подрезка и сброс — там затронутые номера отдельно не выделяются.
         /// </summary>
-        private void Raise(bool changed, ModelViewChange change, ISetInfo setInfo)
+        private void Raise(ModelViewChange change, ObjType objType)
         {
-            if (!changed)
-                return;
+            foreach (var setInfo in model.ObjectData.GetSetsInfo(objType))
+            {
+                if (setInfo != null)
+                    changedSets.Add(setInfo, change);
+            }
 
-            pendingChanges.Add(change, setInfo);
-            if (updateDepth == 0)
-                Flush();
+            Flush();
         }
 
         /// <summary>
-        /// Уведомляет подписчиков об изменении состояния, общем для всех наборов.
+        /// Помечает изменёнными наборы, которым принадлежат заданные номера.
+        /// Разрешение номера в набор идёт по словарю набора, поэтому стоит столько же,
+        /// сколько наборов у типа. Обход прекращается, как только помечены все они.
         /// </summary>
-        private void RaiseCommon(bool changed, ModelViewChange change)
+        private void Raise(ModelViewChange change, ObjType objType, IReadOnlyList<int> numbers)
         {
-            if (!changed)
+            var setsOfType = new List<ISetInfo>(model.ObjectData.GetSetsInfo(objType));
+            if (setsOfType.Count == 0)
                 return;
 
-            pendingChanges.AddCommon(change);
-            if (updateDepth == 0)
-                Flush();
+            if (setsOfType.Count == 1)
+            {
+                changedSets.Add(setsOfType[0], change);
+            }
+            else
+            {
+                var marked = new HashSet<ISetInfo>(ReferenceEqualityComparer.Instance);
+                foreach (var number in numbers)
+                {
+                    var setInfo = model.ObjectData.GetSetInfo(objType, number);
+                    if (setInfo == null)
+                        continue;
+
+                    changedSets.Add(setInfo, change);
+                    marked.Add(setInfo);
+
+                    if (marked.Count == setsOfType.Count)
+                        break;
+                }
+            }
+
+            Flush();
         }
 
         /// <summary>
-        /// Поднимает <see cref="Changed"/>, если в накопителе есть изменения, и очищает его.
+        /// Помечает изменёнными все наборы модели. Для изменений, общих для всего вида:
+        /// прозрачность, цвет выделения, скрытие внутренних граней.
+        /// </summary>
+        private void Raise(ModelViewChange change)
+        {
+            using (BeginUpdate())
+            {
+                foreach (ObjType objType in Enum.GetValues(typeof(ObjType)))
+                    Raise(change, objType);
+            }
+        }
+
+        /// <summary>
+        /// Поднимает <see cref="Changed"/> и очищает накопитель.
+        /// Ничего не делает, пока открыт пакет изменений или накопитель пуст.
         /// </summary>
         private void Flush()
         {
-            if (pendingChanges.IsEmpty)
+            if (updateDepth != 0 || changedSets.IsEmpty)
                 return;
 
-            var args = pendingChanges.CreateEventArgs();
-            pendingChanges.Clear();
+            var args = changedSets.CreateEventArgs();
+            changedSets.Clear();
             Changed?.Invoke(this, args);
         }
 
         /// <summary>
-        /// Завершает пакет изменений представления.
+        /// Завершает пакет изменений представления. Зовётся из <see cref="UpdateScope"/>,
+        /// поэтому internal, а не private.
         /// </summary>
-        private void EndUpdate()
+        internal void EndUpdate()
         {
             updateDepth--;
-            if (updateDepth == 0)
-                Flush();
-        }
-
-        /// <summary>
-        /// Накапливает изменения представления до конца пакета обновлений.
-        /// </summary>
-        private sealed class PendingChanges
-        {
-            ModelViewChange common;
-            readonly Dictionary<ObjType, ModelViewChange> byType = new Dictionary<ObjType, ModelViewChange>();
-            readonly Dictionary<ISetInfo, ModelViewChange> bySet = new Dictionary<ISetInfo, ModelViewChange>(ReferenceEqualityComparer.Instance);
-
-            /// <summary>
-            /// Есть ли накопленные изменения.
-            /// </summary>
-            public bool IsEmpty => common == ModelViewChange.None && byType.Count == 0 && bySet.Count == 0;
-
-            /// <summary>
-            /// Добавляет изменение, общее для всех наборов.
-            /// </summary>
-            public void AddCommon(ModelViewChange change)
-            {
-                common |= change;
-            }
-
-            /// <summary>
-            /// Добавляет изменение для всех наборов заданного типа.
-            /// </summary>
-            public void Add(ModelViewChange change, ObjType objType)
-            {
-                byType.TryGetValue(objType, out var existing);
-                byType[objType] = existing | change;
-            }
-
-            /// <summary>
-            /// Добавляет изменение для заданного набора.
-            /// </summary>
-            public void Add(ModelViewChange change, ISetInfo setInfo)
-            {
-                bySet.TryGetValue(setInfo, out var existing);
-                bySet[setInfo] = existing | change;
-            }
-
-            /// <summary>
-            /// Создаёт неизменяемые аргументы события из накопленных изменений.
-            /// </summary>
-            public ModelViewChangedEventArgs CreateEventArgs()
-            {
-                return new ModelViewChangedEventArgs(common, byType, bySet);
-            }
-
-            /// <summary>
-            /// Очищает накопитель.
-            /// </summary>
-            public void Clear()
-            {
-                common = ModelViewChange.None;
-                byType.Clear();
-                bySet.Clear();
-            }
-        }
-
-        /// <summary>
-        /// Ограничивает время жизни пакета изменений.
-        /// </summary>
-        private sealed class UpdateScope : IDisposable
-        {
-            readonly ModelView view;
-            bool isDisposed;
-
-            /// <summary>
-            /// Создаёт ограничитель пакета изменений.
-            /// </summary>
-            public UpdateScope(ModelView view)
-            {
-                this.view = view;
-            }
-
-            /// <inheritdoc/>
-            public void Dispose()
-            {
-                if (isDisposed)
-                    return;
-
-                isDisposed = true;
-                view.EndUpdate();
-            }
+            Flush();
         }
     }
 }
