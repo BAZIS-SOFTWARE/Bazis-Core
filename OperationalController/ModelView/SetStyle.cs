@@ -8,22 +8,13 @@ namespace OperationalController
     public class SetStyle
     {
         /// <summary>
-        /// Создаёт стиль с заданными цветом и режимом отображения.
+        /// Возвращает явно установленный цвет набора.
         /// </summary>
-        public SetStyle(Color color, ViewMode viewMode)
-        {
-            Color = color;
-            ViewMode = viewMode;
-        }
+        public Color? Color { get; set; }
 
         /// <summary>
-        /// Возвращает цвет набора.
+        /// Возвращает явно установленный режим отображения набора.
         /// </summary>
-        public Color Color { get; set; }
-
-        /// <summary>
-        /// Возвращает режим отображения набора.
-        /// </summary>
-        public ViewMode ViewMode { get; set; }
+        public ViewMode? ViewMode { get; set; }
     }
 }

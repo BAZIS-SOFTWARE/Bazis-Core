@@ -15,6 +15,7 @@ namespace OperationalController
         readonly IModelData model;
         readonly Dictionary<ObjType, IObjectsView> views = new Dictionary<ObjType, IObjectsView>();
         readonly ChangedSets changedSets = new ChangedSets();
+        readonly Color[] setColors = [Color.SteelBlue, Color.Orange, Color.MediumSeaGreen, Color.MediumOrchid, Color.Goldenrod, Color.IndianRed];
         Color selectionColor;
         byte transparency;
         bool hideInsideSurfaces;
@@ -26,6 +27,9 @@ namespace OperationalController
         public ModelView(IModelData model)
         {
             this.model = model ?? throw new ArgumentNullException(nameof(model));
+            foreach (ObjType objType in Enum.GetValues(typeof(ObjType)))
+                views.Add(objType, new ObjectsView());
+
             selectionColor = Color.Red;
             transparency = byte.MaxValue;
         }
@@ -117,10 +121,15 @@ namespace OperationalController
             if (setInfo == null)
                 throw new ArgumentNullException(nameof(setInfo));
 
-            var view = GetOrCreateView(setInfo.ObjType);
-            var setColor = view.GetSetColor(setInfo);
-            var color = view.IsSelected(number) ? SelectionColor : setColor;
-            return GetDisplayColor(color);
+            var view = GetView(setInfo.ObjType);
+            if (view.IsSelected(number))
+                return GetDisplayColor(SelectionColor);
+
+            if (view.TryGetObjectColor(number, out var objectColor))
+                return GetDisplayColor(objectColor);
+
+            var setColor = GetSetColor(setInfo);
+            return GetDisplayColor(setColor);
         }
 
         /// <summary>
@@ -132,26 +141,99 @@ namespace OperationalController
             return Color.FromArgb(alpha, color);
         }
 
-        /// <inheritdoc/>
-        public Color GetSetColor(ISetInfo setInfo)
+        /// <summary>
+        /// Возвращает явно установленный или стандартный цвет набора.
+        /// </summary>
+        private Color GetSetColor(ISetInfo setInfo)
         {
-            if (setInfo == null)
-                throw new ArgumentNullException(nameof(setInfo));
+            var view = GetView(setInfo.ObjType);
+            if (view.TryGetSetColor(setInfo, out var color))
+                return color;
 
-            var view = GetOrCreateView(setInfo.ObjType);
-            return view.GetSetColor(setInfo);
+            return GetDefaultSetColor(setInfo);
+        }
+
+        /// <summary>
+        /// Возвращает стандартный цвет набора, определяемый его стабильным номером.
+        /// </summary>
+        private Color GetDefaultSetColor(ISetInfo setInfo)
+        {
+            if (setInfo.ObjType == ObjType.Узел)
+                return Color.Blue;
+
+            if (setInfo.ObjType == ObjType.Точка)
+                return Color.FromArgb(255, 207, 64);
+
+            if (setInfo.Number < 0)
+                throw new ArgumentException("The set is not attached to the model.", nameof(setInfo));
+
+            var colorIndex = setInfo.Number % setColors.Length;
+            return setColors[colorIndex];
+        }
+
+        /// <summary>
+        /// Возвращает стандартный режим отображения объектов заданного типа.
+        /// </summary>
+        private ViewMode GetDefaultViewMode(ObjType objType)
+        {
+            if (objType == ObjType.Узел || objType == ObjType.Точка)
+                return ViewMode.Point;
+
+            if (objType == ObjType.Кривая || objType == ObjType.Элемент1D)
+                return ViewMode.Line;
+
+            return ViewMode.LineSurface;
         }
 
         /// <inheritdoc/>
-        public void SetSetColor(ISetInfo setInfo, Color color)
+        public Color GetColor(ISetInfo setInfo)
         {
             if (setInfo == null)
                 throw new ArgumentNullException(nameof(setInfo));
 
-            var view = GetOrCreateView(setInfo.ObjType);
+            return GetSetColor(setInfo);
+        }
+
+        /// <inheritdoc/>
+        public void SetColor(ISetInfo setInfo, Color color)
+        {
+            if (setInfo == null)
+                throw new ArgumentNullException(nameof(setInfo));
+
+            var currentColor = GetSetColor(setInfo);
+            if (currentColor.ToArgb() == color.ToArgb())
+                return;
+
+            var view = GetView(setInfo.ObjType);
             var changed = view.SetSetColor(setInfo, color);
             if (changed)
                 Raise(ModelViewChange.SetColor, setInfo);
+        }
+
+        /// <inheritdoc/>
+        public void SetColor(ObjType objType, IEnumerable<int> numbers, Color color)
+        {
+            if (numbers == null)
+                throw new ArgumentNullException(nameof(numbers));
+
+            var changedNumbers = new List<int>(numbers);
+            var view = GetView(objType);
+            var changed = view.SetObjectColor(changedNumbers, color);
+            if (changed)
+                Raise(ModelViewChange.ObjectColor, objType, changedNumbers);
+        }
+
+        /// <inheritdoc/>
+        public void ClearColor(ObjType objType, IEnumerable<int> numbers)
+        {
+            if (numbers == null)
+                throw new ArgumentNullException(nameof(numbers));
+
+            var changedNumbers = new List<int>(numbers);
+            var view = GetView(objType);
+            var changed = view.ClearObjectColor(changedNumbers);
+            if (changed)
+                Raise(ModelViewChange.ObjectColor, objType, changedNumbers);
         }
 
         /// <inheritdoc/>
@@ -160,8 +242,11 @@ namespace OperationalController
             if (setInfo == null)
                 throw new ArgumentNullException(nameof(setInfo));
 
-            var view = GetOrCreateView(setInfo.ObjType);
-            return view.GetViewMode(setInfo);
+            var view = GetView(setInfo.ObjType);
+            if (view.TryGetViewMode(setInfo, out var viewMode))
+                return viewMode;
+
+            return GetDefaultViewMode(setInfo.ObjType);
         }
 
         /// <inheritdoc/>
@@ -170,7 +255,10 @@ namespace OperationalController
             if (setInfo == null)
                 throw new ArgumentNullException(nameof(setInfo));
 
-            var view = GetOrCreateView(setInfo.ObjType);
+            if (GetViewMode(setInfo) == viewMode)
+                return;
+
+            var view = GetView(setInfo.ObjType);
             var changed = view.SetViewMode(setInfo, viewMode);
             if (changed)
                 Raise(ModelViewChange.ViewMode, setInfo);
@@ -179,7 +267,7 @@ namespace OperationalController
         /// <inheritdoc/>
         public bool GetVisible(ObjType objType, int number)
         {
-            return !TryGetView(objType, out var view) || !view.IsHidden(number);
+            return !GetView(objType).IsHidden(number);
         }
 
         /// <inheritdoc/>
@@ -188,23 +276,11 @@ namespace OperationalController
             if (numbers == null)
                 throw new ArgumentNullException(nameof(numbers));
 
-            IObjectsView view;
-            if (visible)
-            {
-                if (!TryGetView(objType, out view))
-                    return;
-            }
-            else
-            {
-                view = GetOrCreateView(objType);
-            }
-
             var changedNumbers = new List<int>(numbers);
+            var view = GetView(objType);
             var changed = view.SetHidden(changedNumbers, !visible);
             if (changed)
                 Raise(ModelViewChange.Visibility, objType, changedNumbers);
-
-            RemoveEmptyView(objType, view);
         }
 
         /// <inheritdoc/>
@@ -222,8 +298,6 @@ namespace OperationalController
                     if (hiddenChanged || selectionChanged)
                         Raise(ModelViewChange.Visibility | ModelViewChange.Selection, objType, selected);
                 }
-
-                RemoveEmptyViews();
             }
         }
 
@@ -238,24 +312,19 @@ namespace OperationalController
                     if (changed)
                         Raise(ModelViewChange.Visibility, pair.Key);
                 }
-
-                RemoveEmptyViews();
             }
         }
 
         /// <inheritdoc/>
         public bool IsSelected(ObjType objType, int number)
         {
-            return TryGetView(objType, out var view) && view.IsSelected(number);
+            return GetView(objType).IsSelected(number);
         }
 
         /// <inheritdoc/>
         public IEnumerable<int> GetSelected(ObjType objType)
         {
-            if (!TryGetView(objType, out var view))
-                yield break;
-
-            foreach (var number in view.GetSelected())
+            foreach (var number in GetView(objType).GetSelected())
                 yield return number;
         }
 
@@ -297,12 +366,10 @@ namespace OperationalController
                 throw new ArgumentNullException(nameof(numbers));
 
             var changedNumbers = new List<int>(numbers);
-            var view = GetOrCreateView(objType);
+            var view = GetView(objType);
             var changed = view.Select(changedNumbers);
             if (changed)
                 Raise(ModelViewChange.Selection, objType, changedNumbers);
-
-            RemoveEmptyView(objType, view);
         }
 
         /// <inheritdoc/>
@@ -311,15 +378,11 @@ namespace OperationalController
             if (numbers == null)
                 throw new ArgumentNullException(nameof(numbers));
 
-            if (!TryGetView(objType, out var view))
-                return;
-
             var changedNumbers = new List<int>(numbers);
+            var view = GetView(objType);
             var changed = view.Deselect(changedNumbers);
             if (changed)
                 Raise(ModelViewChange.Selection, objType, changedNumbers);
-
-            RemoveEmptyView(objType, view);
         }
 
         /// <inheritdoc/>
@@ -329,12 +392,10 @@ namespace OperationalController
                 throw new ArgumentNullException(nameof(numbers));
 
             var changedNumbers = new List<int>(numbers);
-            var view = GetOrCreateView(objType);
+            var view = GetView(objType);
             var changed = view.ToggleSelection(changedNumbers);
             if (changed)
                 Raise(ModelViewChange.Selection, objType, changedNumbers);
-
-            RemoveEmptyView(objType, view);
         }
 
         /// <inheritdoc/>
@@ -356,26 +417,20 @@ namespace OperationalController
                 }
 
                 var changedNumbers = new List<int>(numbers);
-                var view = GetOrCreateView(objType);
+                var view = GetView(objType);
                 var changed = view.SetSelection(changedNumbers);
                 if (changed)
-                    Raise(ModelViewChange.Selection, objType, changedNumbers);
-
-                RemoveEmptyViews();
+                    Raise(ModelViewChange.Selection, objType);
             }
         }
 
         /// <inheritdoc/>
         public void ClearSelection(ObjType objType)
         {
-            if (!TryGetView(objType, out var view))
-                return;
-
+            var view = GetView(objType);
             var changed = view.ClearSelection();
             if (changed)
                 Raise(ModelViewChange.Selection, objType);
-
-            RemoveEmptyView(objType, view);
         }
 
         /// <inheritdoc/>
@@ -389,8 +444,6 @@ namespace OperationalController
                     if (changed)
                         Raise(ModelViewChange.Selection, pair.Key);
                 }
-
-                RemoveEmptyViews();
             }
         }
 
@@ -404,34 +457,35 @@ namespace OperationalController
                     var objType = pair.Key;
                     var prunedObjects = pair.Value.Prune(number => model.ObjectData.Find(objType, number) != null);
                     if (prunedObjects)
-                        Raise(ModelViewChange.Visibility | ModelViewChange.Selection, objType);
+                        Raise(ModelViewChange.Visibility | ModelViewChange.Selection | ModelViewChange.ObjectColor, objType);
 
                     var setsOfType = model.ObjectData.GetSetsInfo(objType);
                     var prunedStyles = pair.Value.PruneSetStyles(setsOfType);
                     if (prunedStyles)
                         Raise(ModelViewChange.Visibility, objType);
                 }
-
-                RemoveEmptyViews();
             }
         }
 
         /// <inheritdoc/>
         public void Reset()
         {
-            if (views.Count == 0)
-                return;
-
             using (BeginUpdate())
             {
                 foreach (var pair in views)
                 {
-                    var changed = pair.Value.ClearSelectionAndHidden();
-                    if (changed)
-                        Raise(ModelViewChange.Visibility | ModelViewChange.Selection, pair.Key);
-                }
+                    var changes = ModelViewChange.None;
+                    var clearedSelectionAndHidden = pair.Value.ClearSelectionAndHidden();
+                    if (clearedSelectionAndHidden)
+                        changes |= ModelViewChange.Visibility | ModelViewChange.Selection;
 
-                RemoveEmptyViews();
+                    var clearedObjectColors = pair.Value.ClearObjectColors();
+                    if (clearedObjectColors)
+                        changes |= ModelViewChange.ObjectColor;
+
+                    if (changes != ModelViewChange.None)
+                        Raise(changes, pair.Key);
+                }
             }
         }
 
@@ -443,55 +497,14 @@ namespace OperationalController
         }
 
         /// <summary>
-        /// Возвращает или создаёт состояние представления объектов указанного типа.
+        /// Возвращает состояние представления объектов указанного типа.
         /// </summary>
-        private IObjectsView GetOrCreateView(ObjType objType)
+        private IObjectsView GetView(ObjType objType)
         {
-            if (TryGetView(objType, out var view))
+            if (views.TryGetValue(objType, out var view))
                 return view;
 
-            view = CreateView();
-            views.Add(objType, view);
-            return view;
-        }
-
-        /// <summary>
-        /// Создаёт состояние представления одного типа объектов.
-        /// </summary>
-        private IObjectsView CreateView()
-        {
-            return new ObjectsView();
-        }
-
-        /// <summary>
-        /// Возвращает состояние представления указанного типа.
-        /// </summary>
-        private bool TryGetView(ObjType objType, out IObjectsView view)
-        {
-            return views.TryGetValue(objType, out view);
-        }
-
-        /// <summary>
-        /// Удаляет пустое состояние представления.
-        /// </summary>
-        private void RemoveEmptyView(ObjType objType, IObjectsView view)
-        {
-            if (view.IsEmpty)
-                views.Remove(objType);
-        }
-
-        /// <summary>
-        /// Удаляет все пустые состояния представления.
-        /// </summary>
-        private void RemoveEmptyViews()
-        {
-            var emptyTypes = new List<ObjType>();
-            foreach (var pair in views)
-                if (pair.Value.IsEmpty)
-                    emptyTypes.Add(pair.Key);
-
-            foreach (var objType in emptyTypes)
-                views.Remove(objType);
+            throw new ArgumentOutOfRangeException(nameof(objType), objType, "Unsupported object type.");
         }
 
         /// <summary>

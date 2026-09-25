@@ -53,7 +53,7 @@ namespace ControllerTests
             model.ObjectData.CurveSet.Add(0, lines[0]);
             var modelView = new ModelView(model);
             var setInfo = model.ObjectData.GetSetInfo(ObjType.Кривая, lines[0].Number) ?? throw new AssertFailedException();
-            modelView.SetSetColor(setInfo, Color.Black);
+            modelView.SetColor(setInfo, Color.Black);
             var presenter = new LineObjsPresenter<Curve>(lines, modelView.GetColor(setInfo, lines[0].Number));
             var indices = presenter.CreateIndexes();
             var pointers = presenter.CreatePointers(indices.Item1);
@@ -79,7 +79,7 @@ namespace ControllerTests
             model.ObjectData.E2DCollection.Add(ObjType.Элемент2D.ToString(), triangle[0]);
             var modelView = new ModelView(model);
             var setInfo = model.ObjectData.GetSetInfo(ObjType.Элемент2D, triangle[0].Number) ?? throw new AssertFailedException();
-            modelView.SetSetColor(setInfo, Color.Blue);
+            modelView.SetColor(setInfo, Color.Blue);
             var presenter = new SurfaceObjsPresenter<ElementSurface, Node>(triangle, modelView.GetColor(setInfo, triangle[0].Number));
             var indices = presenter.CreateIndexes();
             var pointers = presenter.CreatePointers(indices.Item1);
@@ -109,7 +109,7 @@ namespace ControllerTests
             var creator = new PresentersCreator();
             var modelView = new ModelView(model);
             var setInfo = model.ObjectData.GetSetInfo(ObjType.Элемент2D, el2D.Number);
-            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E2DCollection.GetObjects().ToList(), modelView.GetSetColor(setInfo));
+            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E2DCollection.GetObjects().ToList(), modelView.GetColor(setInfo));
 
             var values = presentator.CreateIndexes();
             var edges = presentator.CreateEdgeFlags(values.Item4);
@@ -135,7 +135,7 @@ namespace ControllerTests
             var creator = new PresentersCreator();
             var modelView = new ModelView(model);
             var setInfo = model.ObjectData.GetSetInfo(ObjType.Элемент2D, el2D.Number);
-            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E2DCollection.GetObjects().ToList(), modelView.GetSetColor(setInfo));
+            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E2DCollection.GetObjects().ToList(), modelView.GetColor(setInfo));
             var values = presentator.CreateIndexes();
             var edges = presentator.CreateEdgeFlags(values.Item4);
             Assert.AreEqual(6, edges.Length);
@@ -164,7 +164,7 @@ namespace ControllerTests
             var creator = new PresentersCreator();
             var modelView = new ModelView(model);
             var setInfo = model.ObjectData.GetSetInfo(ObjType.Поверхность, poligon.Number);
-            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.SurfaceSet.Values.ToList(), modelView.GetSetColor(setInfo));
+            var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.SurfaceSet.Values.ToList(), modelView.GetColor(setInfo));
 
             var values = presentator.CreateIndexes();
             var edges = presentator.CreateEdgeFlags(values.Item4);
@@ -228,17 +228,17 @@ namespace ControllerTests
                 case ObjType.Элемент3D:
                     model.ObjectData.E3DCollection.Add(ObjType.Элемент3D.ToString(), new Tetra(0, model.ObjectData.NodesSet.Values.ToArray()));
                     setInfo = model.ObjectData.GetSetInfo(ObjType.Элемент3D, 0);
-                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E3DCollection.GetObjects().ToList(), modelView.GetSetColor(setInfo));
+                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E3DCollection.GetObjects().ToList(), modelView.GetColor(setInfo));
                     break;
                 case ObjType.Элемент2D:
                     model.ObjectData.E2DCollection.Add(ObjType.Элемент2D.ToString(), new Triangle(0, model.ObjectData.NodesSet.Values.ToArray()));
                     setInfo = model.ObjectData.GetSetInfo(ObjType.Элемент2D, 0);
-                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E2DCollection.GetObjects().ToList(), modelView.GetSetColor(setInfo));
+                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E2DCollection.GetObjects().ToList(), modelView.GetColor(setInfo));
                     break;
                 default:
                     model.ObjectData.E1DCollection.Add(ObjType.Элемент1D.ToString(), new Beam(0, model.ObjectData.NodesSet.Values.ToArray()));
                     setInfo = model.ObjectData.GetSetInfo(ObjType.Элемент1D, 0);
-                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.E1DCollection.GetObjects().ToList(), modelView.GetSetColor(setInfo));
+                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.E1DCollection.GetObjects().ToList(), modelView.GetColor(setInfo));
                     break;
             }
 
@@ -291,13 +291,13 @@ namespace ControllerTests
                 case ObjType.Кривая:
                     model.ObjectData.CurveSet.Add(0, new Curve(0, points.ToArray()));
                     setInfo = model.ObjectData.GetSetInfo(ObjType.Кривая, 0);
-                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.CurveSet.Values.ToList(), modelView.GetSetColor(setInfo));
+                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.CurveSet.Values.ToList(), modelView.GetColor(setInfo));
                     break;
                 default:
                     var surface = new GeometrySurface(0, points.ToArray());
                     model.ObjectData.SurfaceSet.Add(0, new SurfaceFigure(0,new GeometrySurface[] { surface } ));
                     setInfo = model.ObjectData.GetSetInfo(ObjType.Поверхность, 0);
-                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.SurfaceSet.Values.ToList(), modelView.GetSetColor(setInfo));
+                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.SurfaceSet.Values.ToList(), modelView.GetColor(setInfo));
                     break;
             }
 
@@ -367,25 +367,25 @@ namespace ControllerTests
             switch (objType)
             {
                 case ObjType.Узел:
-                    presenter = creator.CreatePointObjectsPresenter(model.ObjectData.NodesSet.Values.Cast<IModelObject>().ToList(), modelView.GetSetColor(setInfo));
+                    presenter = creator.CreatePointObjectsPresenter(model.ObjectData.NodesSet.Values.Cast<IModelObject>().ToList(), modelView.GetColor(setInfo));
                     break;
                 case ObjType.Кривая:
-                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.CurveSet.Values.ToList(), modelView.GetSetColor(setInfo));
+                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.CurveSet.Values.ToList(), modelView.GetColor(setInfo));
                     break;
                 case ObjType.Поверхность:
-                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.SurfaceSet.Values.ToList(), modelView.GetSetColor(setInfo));
+                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.SurfaceSet.Values.ToList(), modelView.GetColor(setInfo));
                     break;;
                 case ObjType.Элемент1D:
-                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.E1DCollection.GetObjects().ToList(), modelView.GetSetColor(setInfo));
+                    presenter = creator.CreateLineObjectsPresenter(model.ObjectData.E1DCollection.GetObjects().ToList(), modelView.GetColor(setInfo));
                     break;
                 case ObjType.Элемент2D:
-                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E2DCollection.GetObjects().ToList(), modelView.GetSetColor(setInfo));
+                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E2DCollection.GetObjects().ToList(), modelView.GetColor(setInfo));
                     break;
                 case ObjType.Элемент3D:
-                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E3DCollection.GetObjects().ToList(), modelView.GetSetColor(setInfo));
+                    presenter = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E3DCollection.GetObjects().ToList(), modelView.GetColor(setInfo));
                     break;
                 default:
-                    presenter = creator.CreatePointObjectsPresenter(model.ObjectData.PointsSet.Values.Cast<IModelObject>().ToList(), modelView.GetSetColor(setInfo));
+                    presenter = creator.CreatePointObjectsPresenter(model.ObjectData.PointsSet.Values.Cast<IModelObject>().ToList(), modelView.GetColor(setInfo));
                     break;
             }
 
@@ -529,9 +529,9 @@ namespace ControllerTests
 
             foreach (var set in sets)
             {
-                var color = controller.ModelView.GetSetColor(set);
-                controller.ModelView.SetSetColor(set, Color.FromArgb(alpha, color));
-                Assert.AreEqual(alpha, controller.ModelView.GetSetColor(set).A);
+                var color = controller.ModelView.GetColor(set);
+                controller.ModelView.SetColor(set, Color.FromArgb(alpha, color));
+                Assert.AreEqual(alpha, controller.ModelView.GetColor(set).A);
             }
 
             var setInfo = sets.First();

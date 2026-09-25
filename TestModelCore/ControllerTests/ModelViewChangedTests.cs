@@ -68,10 +68,38 @@ namespace ControllerTests
         {
             var model = CreateModel(out _, out var setA, out var setB);
             var view = new ModelView(model);
-            var args = RaiseOnce(view, () => view.SetSetColor(setA, Color.Aquamarine));
+            var args = RaiseOnce(view, () => view.SetColor(setA, Color.Aquamarine));
 
             Assert.AreEqual(ModelViewChange.SetColor, args.GetChanges(setA));
             Assert.AreEqual(ModelViewChange.None, args.GetChanges(setB));
+        }
+
+        [TestMethod]
+        public void SetObjectColor_GivesObjectColorOnlyForThatSet()
+        {
+            var model = CreateModel(out var nodes, out var setA, out var setB);
+            var view = new ModelView(model);
+            var args = RaiseOnce(view, () => view.SetColor(ObjType.Узел, new[] { nodes[0].Number }, Color.Aquamarine));
+
+            Assert.AreEqual(ModelViewChange.ObjectColor, args.GetChanges(model.ObjectData.NodesSet));
+            Assert.AreEqual(ModelViewChange.None, args.GetChanges(setA));
+            Assert.AreEqual(ModelViewChange.None, args.GetChanges(setB));
+        }
+
+        /// <summary>
+        /// Проверяет обновление прежнего и нового наборов при замене выделения объектов одного типа.
+        /// </summary>
+        [TestMethod]
+        public void SetSelection_GivesSelectionForPreviousAndNewSetsOfSameType()
+        {
+            var model = CreateModel(out _, out var setA, out var setB);
+            var view = new ModelView(model);
+            view.SetSelection(ObjType.Элемент2D, setA.GetNumbers());
+
+            var args = RaiseOnce(view, () => view.SetSelection(ObjType.Элемент2D, setB.GetNumbers()));
+
+            Assert.AreEqual(ModelViewChange.Selection, args.GetChanges(setA));
+            Assert.AreEqual(ModelViewChange.Selection, args.GetChanges(setB));
         }
 
         [TestMethod]

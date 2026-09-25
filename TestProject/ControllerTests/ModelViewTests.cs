@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using Model.Interfaces;
 using Model.MeshObjects;
+using Model.ObjectsCollections;
 using OperationalController;
 using OperationalController.ModelScenePresentator.GlObjsPresenters;
 using System.Drawing;
@@ -115,13 +116,44 @@ namespace TestProject.ControllerTests
                 Transparency = 128
             };
             var setInfo = model.ObjectData.GetSetInfo(ObjType.Узел, 3);
-            view.SetSetColor(setInfo, Color.Blue);
+            view.SetColor(setInfo, Color.Blue);
 
             view.Select(ObjType.Узел, new[] { 3 });
 
             var color = view.GetColor(ObjType.Узел, 3);
 
             Assert.AreEqual(Color.FromArgb(128, Color.Red), color);
+        }
+
+        /// <summary>
+        /// Проверяет приоритет выделения над индивидуальной окраской и её сохранение после снятия выделения.
+        /// </summary>
+        [TestMethod]
+        public void GetColor_UsesSelectionColorBeforeObjectColor()
+        {
+            var model = new ModelData();
+            model.ObjectData.NodesSet.Add(8, new Node(8, new Point3D()));
+            var setInfo = model.ObjectData.GetSetInfo(ObjType.Узел, 8);
+            var view = new ModelView(model)
+            {
+                SelectionColor = Color.Red
+            };
+            view.SetColor(setInfo, Color.Blue);
+            view.SetColor(ObjType.Узел, new[] { 8 }, Color.Green);
+
+            Assert.AreEqual(Color.Green.ToArgb(), view.GetColor(ObjType.Узел, 8).ToArgb());
+
+            view.Select(ObjType.Узел, new[] { 8 });
+
+            Assert.AreEqual(Color.Red.ToArgb(), view.GetColor(ObjType.Узел, 8).ToArgb());
+
+            view.Deselect(ObjType.Узел, new[] { 8 });
+
+            Assert.AreEqual(Color.Green.ToArgb(), view.GetColor(ObjType.Узел, 8).ToArgb());
+
+            view.ClearColor(ObjType.Узел, new[] { 8 });
+
+            Assert.AreEqual(Color.Blue.ToArgb(), view.GetColor(ObjType.Узел, 8).ToArgb());
         }
 
         /// <summary>
@@ -135,7 +167,7 @@ namespace TestProject.ControllerTests
             var setInfo = model.ObjectData.GetSetInfo(ObjType.Узел, 4);
             var view = new ModelView(model);
             var expectedColor = Color.FromArgb(155, Color.SteelBlue);
-            view.SetSetColor(setInfo, expectedColor);
+            view.SetColor(setInfo, expectedColor);
 
             var color = view.GetColor(ObjType.Узел, 4);
 
@@ -157,7 +189,7 @@ namespace TestProject.ControllerTests
                 SelectionColor = Color.Red,
                 Transparency = 128
             };
-            view.SetSetColor(setInfo, Color.Blue);
+            view.SetColor(setInfo, Color.Blue);
             var pointObjects = new IModelObject[] { node };
             var colorsByPoint = new[] { view.GetColor(setInfo, node.Number) };
             var presenter = new PointObjsPresenter(pointObjects, colorsByPoint);
@@ -192,13 +224,156 @@ namespace TestProject.ControllerTests
             var setInfo = collection["initial"];
             var view = new ModelView(model);
 
-            view.SetSetColor(setInfo, Color.MediumPurple);
+            view.SetColor(setInfo, Color.MediumPurple);
             view.SetViewMode(setInfo, ViewMode.Surface);
             collection.ChangeName("initial", "renamed");
             var renamedSet = collection["renamed"];
 
-            Assert.AreEqual(Color.MediumPurple, view.GetSetColor(renamedSet));
+            Assert.AreEqual(Color.MediumPurple, view.GetColor(renamedSet));
             Assert.AreEqual(ViewMode.Surface, view.GetViewMode(renamedSet));
+        }
+
+        /// <summary>
+        /// Проверяет, что стандартные цвета определяются порядком наборов в модели,
+        /// а не порядком первого запроса их состояния.
+        /// </summary>
+        [TestMethod]
+        public void DefaultSetColors_DoNotDependOnReadOrder()
+        {
+            var model = new ModelData();
+            var collection = model.ObjectData.E2DCollection;
+            collection.Add("first");
+            collection.Add("second");
+            var first = collection["first"];
+            var second = collection["second"];
+            var view = new ModelView(model);
+
+            view.SetViewMode(second, ViewMode.Surface);
+            var secondColor = view.GetColor(second);
+            var firstColor = view.GetColor(first);
+
+            Assert.AreEqual(Color.Orange, secondColor);
+            Assert.AreEqual(Color.SteelBlue, firstColor);
+            Assert.AreEqual(ViewMode.LineSurface, view.GetViewMode(first));
+        }
+
+        /// <summary>
+        /// Проверяет назначение стабильных номеров наборам одного типа.
+        /// </summary>
+        [TestMethod]
+        public void SetNumbers_AreNotChangedAfterNeighborSetRemoval()
+        {
+            var model = new ModelData();
+            var collection = model.ObjectData.E2DCollection;
+            collection.Add("first");
+            collection.Add("second");
+            collection.Add("third");
+
+            collection.Remove("second");
+            collection.Add("fourth");
+
+            Assert.AreEqual(0, collection["first"].Number);
+            Assert.AreEqual(2, collection["third"].Number);
+            Assert.AreEqual(3, collection["fourth"].Number);
+        }
+
+        /// <summary>
+        /// Проверяет назначение номера при разных способах создания набора.
+        /// </summary>
+        [DataTestMethod]
+        [DataRow("EmptySet")]
+        [DataRow("PreparedSet")]
+        [DataRow("SingleObject")]
+        [DataRow("ObjectRange")]
+        public void Add_AssignsSetNumber(string addMode)
+        {
+            var collection = new ObjectsCollection<Node>();
+            if (addMode == "EmptySet")
+                collection.Add("first");
+            else if (addMode == "PreparedSet")
+                collection.Add(new ObjectsSet<Node>("first"));
+            else if (addMode == "SingleObject")
+                collection.Add("first", new Node(1, new Point3D()));
+            else
+                collection.AddRange("first", new[] { new Node(1, new Point3D()) });
+
+            collection.Add("second");
+
+            Assert.AreEqual(0, collection["first"].Number);
+            Assert.AreEqual(1, collection["second"].Number);
+        }
+
+        /// <summary>
+        /// Проверяет сохранение стандартного цвета после удаления соседнего набора.
+        /// </summary>
+        [TestMethod]
+        public void DefaultSetColor_IsNotChangedAfterNeighborSetRemoval()
+        {
+            var model = new ModelData();
+            var collection = model.ObjectData.E2DCollection;
+            collection.Add("first");
+            collection.Add("second");
+            var second = collection["second"];
+            var view = new ModelView(model);
+
+            collection.Remove("first");
+
+            Assert.AreEqual(1, second.Number);
+            Assert.AreEqual(Color.Orange, view.GetColor(second));
+        }
+
+        /// <summary>
+        /// Проверяет начало нумерации наборов заново после полной очистки коллекции.
+        /// </summary>
+        [TestMethod]
+        public void Clear_ResetsSetNumbering()
+        {
+            var model = new ModelData();
+            var collection = model.ObjectData.E2DCollection;
+            collection.Add("beforeClear");
+
+            collection.Clear();
+            collection.Add("afterClear");
+
+            Assert.AreEqual(0, collection["afterClear"].Number);
+        }
+
+        /// <summary>
+        /// Проверяет номера одиночных наборов модели.
+        /// </summary>
+        [DataTestMethod]
+        [DataRow(ObjType.Точка)]
+        [DataRow(ObjType.Кривая)]
+        [DataRow(ObjType.Поверхность)]
+        [DataRow(ObjType.Узел)]
+        public void SingleSet_NumberIsZero(ObjType objType)
+        {
+            var model = new ModelData();
+            var setInfo = model.ObjectData.GetSetsInfo(objType).Single();
+
+            Assert.AreEqual(0, setInfo.Number);
+        }
+
+        /// <summary>
+        /// Проверяет независимое хранение переопределений цвета и режима набора.
+        /// </summary>
+        [TestMethod]
+        public void ObjectsView_SetStylePropertiesAreIndependent()
+        {
+            var model = new ModelData();
+            var setInfo = model.ObjectData.NodesSet;
+            var view = new ObjectsView();
+
+            view.SetSetColor(setInfo, Color.Green);
+
+            Assert.IsTrue(view.TryGetSetColor(setInfo, out var color));
+            Assert.AreEqual(Color.Green, color);
+            Assert.IsFalse(view.TryGetViewMode(setInfo, out _));
+
+            view.SetViewMode(setInfo, ViewMode.Surface);
+
+            Assert.IsTrue(view.TryGetViewMode(setInfo, out var viewMode));
+            Assert.AreEqual(ViewMode.Surface, viewMode);
         }
 
         /// <summary>
@@ -211,15 +386,37 @@ namespace TestProject.ControllerTests
             model.ObjectData.NodesSet.Add(5, new Node(5, new Point3D()));
             var setInfo = model.ObjectData.GetSetInfo(ObjType.Узел, 5);
             var view = new ModelView(model);
-            view.SetSetColor(setInfo, Color.Green);
+            view.SetColor(setInfo, Color.Green);
             view.Select(ObjType.Узел, new[] { 5 });
             view.SetVisible(ObjType.Узел, new[] { 5 }, false);
+            view.SetColor(ObjType.Узел, new[] { 5 }, Color.Red);
 
             view.Reset();
 
             Assert.IsFalse(view.IsSelected(ObjType.Узел, 5));
             Assert.IsTrue(view.GetVisible(ObjType.Узел, 5));
-            Assert.AreEqual(Color.Green, view.GetSetColor(setInfo));
+            Assert.AreEqual(Color.Green, view.GetColor(setInfo));
+            Assert.AreEqual(Color.Green.ToArgb(), view.GetColor(ObjType.Узел, 5).ToArgb());
+        }
+
+        /// <summary>
+        /// Проверяет, что удалённый номер не передаёт индивидуальный цвет новому объекту.
+        /// </summary>
+        [TestMethod]
+        public void Prune_RemovesObjectColorOfDeletedObject()
+        {
+            var model = new ModelData();
+            model.ObjectData.NodesSet.Add(6, new Node(6, new Point3D()));
+            var setInfo = model.ObjectData.GetSetInfo(ObjType.Узел, 6);
+            var view = new ModelView(model);
+            view.SetColor(setInfo, Color.Blue);
+            view.SetColor(ObjType.Узел, new[] { 6 }, Color.Red);
+
+            model.ObjectData.Remove(ObjType.Узел, 6);
+            view.Prune();
+            model.ObjectData.NodesSet.Add(6, new Node(6, new Point3D()));
+
+            Assert.AreEqual(Color.Blue.ToArgb(), view.GetColor(ObjType.Узел, 6).ToArgb());
         }
 
         /// <summary>
@@ -233,12 +430,12 @@ namespace TestProject.ControllerTests
             collection.Add("deleted");
             var setInfo = collection["deleted"];
             var view = new ModelView(model);
-            view.SetSetColor(setInfo, Color.Fuchsia);
+            view.SetColor(setInfo, Color.Fuchsia);
             collection.Remove("deleted");
 
             view.Prune();
 
-            Assert.AreNotEqual(Color.Fuchsia, view.GetSetColor(setInfo));
+            Assert.AreNotEqual(Color.Fuchsia, view.GetColor(setInfo));
         }
 
         /// <summary>
