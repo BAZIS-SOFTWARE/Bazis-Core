@@ -67,7 +67,7 @@ namespace Model.ObjectsCollections
 
 /// <inheritdoc/>
 
-        public int Number { get; set; }
+        public int Number { get; set; } = -1;
 
         /// <inheritdoc/>
 

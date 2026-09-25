@@ -11,11 +11,6 @@ namespace OperationalController
     public interface IObjectsView
     {
         /// <summary>
-        /// Возвращает признак отсутствия сохранённого состояния.
-        /// </summary>
-        bool IsEmpty { get; }
-
-        /// <summary>
         /// Возвращает число выделенных объектов.
         /// </summary>
         int SelectedCount { get; }
@@ -76,9 +71,29 @@ namespace OperationalController
         bool ShowAll();
 
         /// <summary>
-        /// Возвращает цвет заданного набора.
+        /// Пытается получить индивидуальный цвет объекта.
         /// </summary>
-        Color GetSetColor(ISetInfo setInfo);
+        bool TryGetObjectColor(int number, out Color color);
+
+        /// <summary>
+        /// Устанавливает индивидуальный цвет объектов.
+        /// </summary>
+        bool SetObjectColor(IEnumerable<int> numbers, Color color);
+
+        /// <summary>
+        /// Снимает индивидуальную окраску объектов.
+        /// </summary>
+        bool ClearObjectColor(IEnumerable<int> numbers);
+
+        /// <summary>
+        /// Снимает индивидуальную окраску всех объектов.
+        /// </summary>
+        bool ClearObjectColors();
+
+        /// <summary>
+        /// Пытается получить явно установленный цвет заданного набора.
+        /// </summary>
+        bool TryGetSetColor(ISetInfo setInfo, out Color color);
 
         /// <summary>
         /// Устанавливает цвет заданного набора.
@@ -86,9 +101,9 @@ namespace OperationalController
         bool SetSetColor(ISetInfo setInfo, Color color);
 
         /// <summary>
-        /// Возвращает режим отображения заданного набора.
+        /// Пытается получить явно установленный режим отображения заданного набора.
         /// </summary>
-        ViewMode GetViewMode(ISetInfo setInfo);
+        bool TryGetViewMode(ISetInfo setInfo, out ViewMode viewMode);
 
         /// <summary>
         /// Устанавливает режим отображения заданного набора.

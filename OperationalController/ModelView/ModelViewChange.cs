@@ -30,6 +30,9 @@ namespace OperationalController
         Transparency = 32,
 
         /// <summary>Изменился признак скрытия внутренних граней.</summary>
-        InsideSurfaces = 64
+        InsideSurfaces = 64,
+
+        /// <summary>Изменился индивидуальный цвет объекта.</summary>
+        ObjectColor = 128
     }
 }

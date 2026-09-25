@@ -45,11 +45,13 @@ namespace Model.ObjectsCollections
         /// <inheritdoc/> 
 
         Dictionary<string, ObjectsSet<T>> objects = new Dictionary<string, ObjectsSet<T>>();
+        int nextSetNumber;
         /// <inheritdoc/>
 
         public void Add(string setName)
         {
-            objects.Add(setName, new ObjectsSet<T>(setName));
+            var set = new ObjectsSet<T>(setName);
+            AddSet(set);
         }
 /// <inheritdoc/>
 
@@ -68,7 +70,7 @@ namespace Model.ObjectsCollections
                 }
             }
 
-            objects.Add(set.Name, set);
+            AddSet(set);
         }
 
         /// <inheritdoc/>
@@ -76,7 +78,10 @@ namespace Model.ObjectsCollections
         public void Add(string setName, T addObj)
         {
             if (!objects.ContainsKey(setName))
-                objects.Add(setName, new ObjectsSet<T>(setName) { });
+            {
+                var set = new ObjectsSet<T>(setName);
+                AddSet(set);
+            }
             
             
             if (!ContainsNumber(addObj.Number))
@@ -88,7 +93,10 @@ namespace Model.ObjectsCollections
         public void AddRange(string setName, IEnumerable<T> addObjs)
         {
             if (!objects.ContainsKey(setName))
-                objects.Add(setName, new ObjectsSet<T>(setName));
+            {
+                var set = new ObjectsSet<T>(setName);
+                AddSet(set);
+            }
 
             foreach (var addObj in addObjs)
             {
@@ -112,6 +120,7 @@ namespace Model.ObjectsCollections
             foreach (var item in objects)
                 item.Value.ClearWithExistState();
             objects.Clear();
+            nextSetNumber = 0;
         }
 /// <inheritdoc/>
 
@@ -278,6 +287,16 @@ public bool ContainsName(string collName)
             while (objects.ContainsKey($"{baseName}_{index}"))
                 index++;
             return $"{baseName}_{index}";
+        }
+
+        /// <summary>
+        /// Добавляет набор и назначает ему уникальный номер внутри коллекции.
+        /// </summary>
+        private void AddSet(ObjectsSet<T> set)
+        {
+            objects.Add(set.Name, set);
+            set.Number = nextSetNumber;
+            nextSetNumber++;
         }
     }
 }

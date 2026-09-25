@@ -46,12 +46,22 @@ namespace OperationalController
         /// <summary>
         /// Возвращает цвет заданного набора.
         /// </summary>
-        Color GetSetColor(ISetInfo setInfo);
+        Color GetColor(ISetInfo setInfo);
 
         /// <summary>
         /// Устанавливает цвет заданного набора.
         /// </summary>
-        void SetSetColor(ISetInfo setInfo, Color color);
+        void SetColor(ISetInfo setInfo, Color color);
+
+        /// <summary>
+        /// Устанавливает индивидуальный цвет объектов.
+        /// </summary>
+        void SetColor(ObjType objType, IEnumerable<int> numbers, Color color);
+
+        /// <summary>
+        /// Снимает индивидуальную окраску объектов.
+        /// </summary>
+        void ClearColor(ObjType objType, IEnumerable<int> numbers);
 
         /// <summary>
         /// Возвращает режим отображения заданного набора.

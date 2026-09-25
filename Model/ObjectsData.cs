@@ -28,10 +28,10 @@ namespace Model
             E1DCollection = new ObjectsCollection<Beam>();
             E2DCollection = new ObjectsCollection<Element2D>();
             E3DCollection = new ObjectsCollection<Element3D>();
-            NodesSet = new ObjectsSet<Node>(ObjType.Узел.ToString());
-            PointsSet = new ObjectsSet<GeometryPoint>(ObjType.Точка.ToString());
-            CurveSet = new ObjectsSet<Curve>(ObjType.Кривая.ToString());
-            SurfaceSet = new SurfacesSet(ObjType.Поверхность.ToString());
+            NodesSet = new ObjectsSet<Node>(ObjType.Узел.ToString()) { Number = 0 };
+            PointsSet = new ObjectsSet<GeometryPoint>(ObjType.Точка.ToString()) { Number = 0 };
+            CurveSet = new ObjectsSet<Curve>(ObjType.Кривая.ToString()) { Number = 0 };
+            SurfaceSet = new SurfacesSet(ObjType.Поверхность.ToString()) { Number = 0 };
             //VolumeSet = new ObjectsSet<VolumeFigure>(ObjType.Объем.ToString());
         }
 
