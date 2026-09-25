@@ -801,8 +801,7 @@ public interface IObjsPresenter
 - Презентер — законченный объект: после конструктора он умеет всё, что обещает
   интерфейс. Это и было главное возражение против варианта с параметром.
 - Устаревать нечему: цвета посчитаны на момент создания, а презентер набора
-  пересоздаётся или перекрашивается на `Changed` — в зависимости от вида
-  изменения, см. «Аргументы события `Changed`».
+  пересоздаётся на `Changed` — как и сегодня.
 - Ни одного нового типа: ни `ISetDisplay`, ни `IDrawState`, ни `Colored<T>`.
   `Colored<T>` в BCL нет — `Tuple`/`ValueTuple` пришлось бы либо заворачивать в
   свой тип (снова новый тип, да ещё в спорной сборке), либо тащить кортежи в
@@ -1053,17 +1052,15 @@ public class ElementSurface : ISurface<Node>
 `SurfaceObjsPresenter<T, U> where T : ISurface<U>`. Член, объявленный ниже
 `ISurface<T>`, презентеру не виден без приведения вниз.
 
-У `GeometrySurface` и `SurfaceFigure` ответ всегда отрицательный — три строки.
-`ResultSurface` в реализацию не попал: он `ICoordinated`, а не `ISurface<T>`,
-и идёт через `SurfaceObjsPresenter<T>` — ту перегрузку, которая про грани
-ничего не знает.
+У `GeometrySurface`, `SurfaceFigure` и `ResultSurface` ответ всегда
+отрицательный — три строки.
 
 ### Связывание
 
 ```csharp
 public class MarkSurfaces
 {
-    public IReadOnlyList<ElementSurface> Mark(IEnumerable<ISurfaceElement> elements)
+    public void Mark(IEnumerable<ISurfaceElement> elements)
     {
         if (elements == null) throw new ArgumentNullException(nameof(elements));
 
@@ -1072,41 +1069,32 @@ public class MarkSurfaces
 
         foreach (var element in elements)
         {
-            if (!element.ExistState)
-                continue;
-
             foreach (var surface in element.GetSurfaces())
-                Link(surface, found, defects);
+            {
+                var key = surface.CreateNodesKey();
+                var opposite = default(ElementSurface);
+
+                if (!found.TryGetValue(key, out opposite))
+                {
+                    surface.SetNeighbour(null);
+                    found[key] = surface;
+                    continue;
+                }
+
+                if (opposite.IsInner)
+                {
+                    defects.Add(surface);
+                    continue;
+                }
+
+                var oppositeOwner = GetOwner(opposite);
+                var ownerOfSurface = GetOwner(surface);
+                opposite.SetNeighbour(ownerOfSurface);
+                surface.SetNeighbour(oppositeOwner);
+            }
         }
 
-        return defects;
-    }
-
-    private void Link(ElementSurface surface, Dictionary<int[], ElementSurface> found, List<ElementSurface> defects)
-    {
-        surface.SetNeighbour(null);
-
-        var key = surface.CreateNodesKey();
-        var opposite = default(ElementSurface);
-
-        if (!found.TryGetValue(key, out opposite))
-        {
-            found[key] = surface;
-            return;
-        }
-
-        if (opposite == null)
-        {
-            defects.Add(surface);
-            return;
-        }
-
-        opposite.SetNeighbour(surface.Owner);
-        surface.SetNeighbour(opposite.Owner);
-
-        // Пара закрыта. Пустая запись отличает "встретилась дважды"
-        // от "встретилась один раз" и ловит третьего владельца.
-        found[key] = null;
+        ReportDefects(defects);
     }
 }
 ```
@@ -1114,16 +1102,13 @@ public class MarkSurfaces
 Один проход, а не два: со ссылкой соседа можно проставить сразу при встрече
 пары, счётчик не нужен.
 
-`SetNeighbour(null)` делается для каждой грани до поиска в словаре — повторный
-`Mark` после добавления элементов должен рвать старые связи, иначе грань,
-ставшая внешней, останется помеченной внутренней.
+`SetNeighbour(null)` на первой встрече обязателен — повторный `Mark` после
+добавления элементов должен рвать старые связи, иначе грань, ставшая внешней,
+останется помеченной внутренней.
 
-Третья одинаковая грань — дефект сетки: пара уже связана, и молча затереть
-соседа нельзя. Закрытую пару отмечает пустая запись в словаре, а не `IsInner`
-первой грани: `IsInner` ложен, когда сосед погашен, и третий владелец тогда
-прошёл бы как обычная пара. Дефектные грани возвращаются вызывающему —
-`MarkSurfaces` живёт в `Model` и об отчётах ничего не знает; сообщение
-собирает `ProjectController`.
+Третья одинаковая грань — дефект сетки: пара уже связана, у неё `IsInner`
+истинен, и молча затереть соседа нельзя. Такие грани попадают в отчёт, а не
+теряются.
 
 **Ключ строит сама грань, но не запоминает.** `CreateNodesKey` живёт в
 `ElementSurface`: ключ — функция её узлов, и знать о них должна она. Внутри
@@ -1173,29 +1158,6 @@ public class SurfaceNodesComparer : IEqualityComparer<int[]>
 
 Ключ переменной длины, поэтому квадратичные элементы (`Tetra_c`, `Triangle_c`)
 проходят без оговорок.
-
-### Откуда зовётся
-
-`ProjectController.MarkModelSurfaces()` проходит `E3DCollection.GetObjects()` —
-все наборы сразу, потому что грань может быть общей для элементов из разных
-наборов, и понаборный проход оставил бы такую грань внешней. Двумерные элементы
-в обход не входят: их единственная грань совпала бы с гранью объёмного соседа и
-исчезла бы вместе с ней.
-
-Точки вызова — только те, где элементы **появляются**:
-
-| Место | Что происходит |
-|---|---|
-| `Load` | загрузка проекта |
-| `ImportMesh` | импорт сетки в новый проект |
-| `Append` | слияние модели из файла |
-| `GenerateMesh(3)` | построение объёмной сетки |
-| `SynchronizeGeometryMesh` | `RefineMesh`, `RecombineMesh` |
-| `MergeNodes` | склейка узлов переставляет ссылки в элементах, и грани разъединённых сеток становятся совпадающими |
-
-Удаления в списке нет намеренно: `IsInner` проверяет `ExistState` соседа.
-`MergeElements` тоже нет — он переносит элементы между наборами, топологию не
-меняя, а обход и так идёт по всем наборам.
 
 ### Что получает презентер
 
@@ -1268,11 +1230,8 @@ void Create(ref int stride, float[] vertexAtributes, IEnumerable<T> surfaces, Co
 
 ### Дефекты, найденные попутно
 
-- `IElementSurface` лежал неиспользуемым: `ElementSurface` его не реализовывала,
-  а весь остальной код работает через `ISurface<Node>`. Интерфейс удалён,
-  `ElementNumber` остался обычным членом класса. Заодно удалён `INode` —
-  единственная ссылка на него была в `MeshObjsCreator\Delone2D\**`, а эта папка
-  исключена из компиляции.
+- `ElementSurface` не реализует `IElementSurface`, хотя интерфейс существует и
+  содержит ровно её `ElementNumber`. Интерфейс лежит неиспользуемым.
 - `ElementSurfaceEqualityComparer` непригоден как компаратор словаря, см. выше.
 - `ElementSurface.Equals(ElementSurface)` не переопределяет `object.Equals`,
   поэтому `Contains`/`Distinct` по `ISurface<Node>` его не позовут. Сравнивает
@@ -1293,90 +1252,16 @@ void Create(ref int stride, float[] vertexAtributes, IEnumerable<T> surfaces, Co
 - повторный `Mark` после добавления третьего элемента не оставляет старых
   связей.
 
-Написаны: `TestProject/ModelTests/MarkSurfacesTests.cs` (связывание) и
-`TestProject/ControllerTests/InnerSurfacesPresenterTests.cs` (отбор граней в
-буферах). Второй проверяет то, чего не поймает первый: размеры всех буферов
-должны сходиться с `CreateIndexes`, а сепараторы — считать те же грани, иначе
-сборщик вершин выйдет за границы массива или диапазоны VBO разъедутся с
-элементами. Признак на `ModelView` — в `ModelViewTests`.
-
 ### Не проверено
 
+- Объявлен ли `GetSurfaces()` в `ISurfaceElement` и стабилен ли порядок граней.
+  Для признака на грани порядок некритичен, в отличие от варианта с маской.
 - Передача `this` из конструктора `Hexa` в `ElementSurface` даёт ссылку на ещё
   не достроенный объект. Сейчас безопасно — грань обращается к `owner` только
   после конструктора, — но это ограничение стоит помнить.
 - Есть ли в Gerbera режим сечения. Если да, при отсечении плоскостью внутренние
   грани обязаны проступить, иначе деталь выглядит полой; тот же вопрос к
   разнесённому виду.
-
-## Аргументы события `Changed`
-
-`Changed` до этого шага поднимался с `EventArgs.Empty`: любой подписчик знал
-только «что-то изменилось», а Gerbera на каждое событие пересобирала VBO всех
-наборов всех типов — выделение одного узла заново строило индексы, координаты
-и нормали всех элементов.
-
-`ModelViewChangedEventArgs` сообщает, **что изменилось и у каких наборов** —
-не что делать с буферами: про VBO `OperationalController` не знает и знать не
-должен, это дело Gerbera (см. `ModelViewOperations.cs` в разделе 5 задачи
-`ModelViewChanged.md`).
-
-Изменения хранятся на трёх уровнях, и итоговое изменение набора — их
-объединение (`GetChanges`, `HasAny`):
-
-- **общие** (`ModelViewChange` без адресата) — касаются всех наборов:
-  `Transparency`, `InsideSurfaces`;
-- **по типу объектов** (`ObjType -> ModelViewChange`) — `Selection`,
-  `Visibility`, `SelectionColor`;
-- **по набору** (`ISetInfo -> ModelViewChange`, ключ по ссылке, как
-  `ObjectsView.setStyles`) — `SetColor`, `ViewMode`.
-
-Раскладка на три уровня, а не один общий флаг, точнее отражает пакет
-изменений: в `BeginUpdate` с `Select(узлы)` и `SetVisible(элементы, false)`
-узлы получат только `Selection`, а элементы — только `Visibility`, и
-подписчик перекрасит первые, не трогая буфер, и пересоберёт вторые.
-
-### Кто что сообщает
-
-| Член `ModelView` | Изменение | Уровень |
-| --- | --- | --- |
-| `Select`, `Deselect`, `ToggleSelection`, `ClearSelection(objType)` | `Selection` | тип |
-| `SetSelection` | `Selection` | каждый тип, у которого вид изменился (включая очищенные) |
-| `ClearSelection()` | `Selection` | каждый тип, у которого вид изменился |
-| `SetVisible` | `Visibility` | тип |
-| `ShowAll` | `Visibility` | каждый изменённый тип |
-| `HideSelected` | `Visibility \| Selection` | каждый изменённый тип |
-| `SetSetColor` | `SetColor` | набор |
-| `SetViewMode` | `ViewMode` | набор |
-| `SelectionColor` (set) | `SelectionColor` | каждый тип из `SelectedTypes` |
-| `Transparency` (set) | `Transparency` | общий |
-| `HideInsideSurfaces` (set) | `InsideSurfaces` | общий |
-| `Prune` → `ObjectsView.Prune` | `Visibility \| Selection` | каждый изменённый тип |
-| `Prune` → `PruneSetStyles` | `Visibility` | тип (консервативно: пересборка) |
-| `Reset` | `Visibility \| Selection` | каждый изменённый тип |
-
-`SelectionColor` поднимает событие, только если есть выделение: без него
-накопитель остаётся пустым и `Changed` не поднимается — перекрашивать нечего.
-
-### Накопитель вместо флага
-
-Внутри `ModelView` изменения копятся в закрытом `PendingChanges` (по образцу
-`UpdateScope`) до конца пакета: `Raise`/`RaiseCommon` добавляют изменение и, при
-`updateDepth == 0`, зовут `Flush()`. `Flush()` при пустом накопителе не делает
-ничего, иначе создаёт аргументы, **сначала очищает накопитель и только потом**
-поднимает `Changed` — обработчик может изменить вид повторно внутри самого
-события, и это изменение обязано попасть в накопитель заново, а не потеряться
-и не попасть в уже поднятое событие.
-
-### Совместимость
-
-`IModelView.Changed` сменил тип с `EventHandler` на
-`EventHandler<ModelViewChangedEventArgs>`. Существующий обработчик вида
-`ModelView_Changed(object sender, EventArgs e)` продолжает подписываться и
-без изменений в Gerbera: C# допускает контравариантность параметров при
-преобразовании группы методов. Значит этот шаг не ломает Gerbera сам по себе —
-только новая версия пакета делает доступными типы `ModelViewChange` и
-`ModelViewChangedEventArgs`, которыми Gerbera воспользуется отдельным шагом.
 
 ## Открытый вопрос
 

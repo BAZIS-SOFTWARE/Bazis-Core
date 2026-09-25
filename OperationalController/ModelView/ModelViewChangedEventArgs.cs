@@ -1,4 +1,3 @@
-using Model.Interfaces;
 using Model.Interfaces.ObjectsCollections;
 using System;
 using System.Collections.Generic;
@@ -6,33 +5,56 @@ using System.Collections.Generic;
 namespace OperationalController
 {
     /// <summary>
-    /// Описывает изменение состояния представления: что изменилось и у каких наборов.
+    /// Описывает изменение состояния представления: какие наборы затронуты и что в них изменилось.
     /// </summary>
+    /// <remarks>
+    /// Разворачивание изменения в наборы делает <see cref="ModelView"/>, поэтому подписчику
+    /// не нужно обходить всю модель: он идёт только по <see cref="GetChangedSets"/>.
+    /// </remarks>
     public class ModelViewChangedEventArgs : EventArgs
     {
-        readonly ModelViewChange common;
-        readonly Dictionary<ObjType, ModelViewChange> byType;
-        readonly Dictionary<ISetInfo, ModelViewChange> bySet;
+        readonly Dictionary<ISetInfo, ModelViewChange> sets;
 
         /// <summary>
         /// Создаёт аргументы события, копируя переданные изменения.
         /// </summary>
-        public ModelViewChangedEventArgs(ModelViewChange common, IReadOnlyDictionary<ObjType, ModelViewChange> byType, IReadOnlyDictionary<ISetInfo, ModelViewChange> bySet)
+        public ModelViewChangedEventArgs(IReadOnlyDictionary<ISetInfo, ModelViewChange> sets)
         {
-            this.common = common;
-            this.byType = new Dictionary<ObjType, ModelViewChange>(byType);
-            this.bySet = new Dictionary<ISetInfo, ModelViewChange>(bySet, ReferenceEqualityComparer.Instance);
+            if (sets == null)
+                throw new ArgumentNullException(nameof(sets));
+
+            this.sets = new Dictionary<ISetInfo, ModelViewChange>(sets, ReferenceEqualityComparer.Instance);
         }
 
-        /// <summary>Возвращает все изменения, затрагивающие заданный набор.</summary>
+        /// <summary>
+        /// Число затронутых наборов.
+        /// </summary>
+        public int Count => sets.Count;
+
+        /// <summary>
+        /// Перечисляет наборы, которые нужно перерисовать.
+        /// </summary>
+        public IEnumerable<ISetInfo> GetChangedSets()
+        {
+            foreach (var pair in sets)
+                yield return pair.Key;
+        }
+
+        /// <summary>
+        /// Возвращает изменения заданного набора.
+        /// </summary>
         public ModelViewChange GetChanges(ISetInfo setInfo)
         {
-            byType.TryGetValue(setInfo.ObjType, out var typeChanges);
-            bySet.TryGetValue(setInfo, out var setChanges);
-            return common | typeChanges | setChanges;
+            if (setInfo == null)
+                throw new ArgumentNullException(nameof(setInfo));
+
+            sets.TryGetValue(setInfo, out var changes);
+            return changes;
         }
 
-        /// <summary>Есть ли у набора хотя бы одно из указанных изменений.</summary>
+        /// <summary>
+        /// Есть ли у набора хотя бы одно из указанных изменений.
+        /// </summary>
         public bool HasAny(ISetInfo setInfo, ModelViewChange changes)
         {
             var setChanges = GetChanges(setInfo);
