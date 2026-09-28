@@ -102,6 +102,7 @@ namespace OperationalController
             ModelData.GroupData.ClearNotExisted();
 
             TaskData.ClearNotExisted(ModelData.GroupData);
+            ModelView.Prune();
         }
         /// <inheritdoc/>
 
@@ -117,6 +118,7 @@ namespace OperationalController
             }
  
             ClearNotExistedModelData();
+            ModelView.Prune();
         }
     }
 }

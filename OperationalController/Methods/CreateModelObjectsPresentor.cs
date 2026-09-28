@@ -7,6 +7,7 @@ using Model.Interfaces.ObjectsCollections;
 using Model.GeometryObjects;
 using Model.MeshObjects;
 using OperationalController.ModelScenePresentator;
+using OperationalController.ModelScenePresentator.GlObjsPresenters;
 
 namespace OperationalController
 {
@@ -42,7 +43,7 @@ namespace OperationalController
                     presenter = CreateElementSurfacePresenter(ModelData.ObjectData.E2DCollection[setInfo.Name].Values, setInfo);
                     break;
                 case ObjType.Элемент3D:
-                    presenter = CreateElementSurfacePresenter(ModelData.ObjectData.E3DCollection[setInfo.Name].Values, setInfo);
+                    presenter = CreateVolumeSurfacePresenter(ModelData.ObjectData.E3DCollection[setInfo.Name].Values, setInfo);
                     break;
                 default:
                     presenter = CreatePointPresenter(ModelData.ObjectData.PointsSet.Values, setInfo);
@@ -82,6 +83,17 @@ namespace OperationalController
             var colors = CreateColors(surfaceObjects, setInfo);
             var modelSurfaceObjects = surfaceObjects.Cast<ISurfaceObject<ElementSurface, Node>>().ToList();
             return presentersCreator.CreateSurfaceObjectsPresenter<ElementSurface, Node>(modelSurfaceObjects, colors, !ModelView.HideInsideSurfaces);
+        }
+
+        /// <summary>
+        /// Создаёт презентатор видимых объёмных элементов с учётом видимости соседей.
+        /// </summary>
+        private IObjsPresenter CreateVolumeSurfacePresenter(IEnumerable<Element3D> objects, ISetInfo setInfo)
+        {
+            var visibleObjects = CreateVisibleObjects(objects, setInfo);
+            var colors = CreateColors(visibleObjects, setInfo);
+            var surfaceObjects = visibleObjects.Cast<ISurfaceObject<ElementSurface, Node>>().ToList();
+            return new ElementSurfaceObjsPresenter(surfaceObjects, colors, ModelView);
         }
 
         private List<T> CreateVisibleObjects<T>(IEnumerable<T> objects, ISetInfo setInfo) where T : IModelObject

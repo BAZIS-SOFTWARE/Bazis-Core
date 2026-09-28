@@ -237,6 +237,20 @@ namespace OperationalController
         }
 
         /// <inheritdoc/>
+        public void ClearColor()
+        {
+            using (BeginUpdate())
+            {
+                foreach (var pair in views)
+                {
+                    var changed = pair.Value.ClearObjectColors();
+                    if (changed)
+                        Raise(ModelViewChange.ObjectColor, pair.Key);
+                }
+            }
+        }
+
+        /// <inheritdoc/>
         public ViewMode GetViewMode(ISetInfo setInfo)
         {
             if (setInfo == null)
@@ -296,7 +310,14 @@ namespace OperationalController
                     var hiddenChanged = view.SetHidden(selected, true);
                     var selectionChanged = view.ClearSelection();
                     if (hiddenChanged || selectionChanged)
-                        Raise(ModelViewChange.Visibility | ModelViewChange.Selection, objType, selected);
+                    {
+                        var changes = ModelViewChange.None;
+                        if (hiddenChanged)
+                            changes |= ModelViewChange.Visibility;
+                        if (selectionChanged)
+                            changes |= ModelViewChange.Selection;
+                        Raise(changes, objType, selected);
+                    }
                 }
             }
         }
@@ -464,6 +485,9 @@ namespace OperationalController
                     if (prunedStyles)
                         Raise(ModelViewChange.Visibility, objType);
                 }
+
+                // Удаление соседа может открыть грань любого оставшегося объёмного набора.
+                Raise(ModelViewChange.Visibility, ObjType.Элемент3D);
             }
         }
 
@@ -549,6 +573,12 @@ namespace OperationalController
         /// </summary>
         private void Raise(ModelViewChange change, ObjType objType, IReadOnlyList<int> numbers)
         {
+            if (hideInsideSurfaces && objType == ObjType.Элемент3D && (change & ModelViewChange.Visibility) != 0)
+            {
+                Raise(change, objType);
+                return;
+            }
+
             var setsOfType = new List<ISetInfo>(model.ObjectData.GetSetsInfo(objType));
             if (setsOfType.Count == 0)
                 return;
