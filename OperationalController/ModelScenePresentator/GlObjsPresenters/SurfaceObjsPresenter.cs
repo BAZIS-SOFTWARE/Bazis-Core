@@ -15,7 +15,7 @@ namespace OperationalController.ModelScenePresentator.GlObjsPresenters
         where T : ISurface<U>
         where U : IPoint
     {
-        private readonly bool drawInnerSurfaces;
+        protected readonly bool drawInnerSurfaces;
 
         /// <summary>
         /// Создаёт presenter поверхностных объектов с индивидуальными цветами.
@@ -136,7 +136,7 @@ namespace OperationalController.ModelScenePresentator.GlObjsPresenters
         /// <summary>
         /// Отбирает грани объекта, которые попадают в буфер.
         /// </summary>
-        private IEnumerable<T> GetDrawnSurfaces(int index)
+        protected virtual IEnumerable<T> GetDrawnSurfaces(int index)
         {
             foreach (var surface in Objects[index].GetSurfaces())
             {

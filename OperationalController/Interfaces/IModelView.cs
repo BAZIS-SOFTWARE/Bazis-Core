@@ -64,6 +64,12 @@ namespace OperationalController
         void ClearColor(ObjType objType, IEnumerable<int> numbers);
 
         /// <summary>
+        /// Снимает индивидуальную окраску всех объектов, сохраняя цвета наборов,
+        /// выделение и видимость.
+        /// </summary>
+        void ClearColor();
+
+        /// <summary>
         /// Возвращает режим отображения заданного набора.
         /// </summary>
         ViewMode GetViewMode(ISetInfo setInfo);

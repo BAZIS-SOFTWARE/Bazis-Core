@@ -157,6 +157,97 @@ namespace TestProject.ControllerTests
         }
 
         /// <summary>
+        /// Проверяет сохранение стиля набора, выделения и видимости при очистке цветов.
+        /// </summary>
+        [DataTestMethod]
+        [DataRow(false, false)]
+        [DataRow(false, true)]
+        [DataRow(true, false)]
+        [DataRow(true, true)]
+        public void ClearColor_KeepsSetStyleSelectionAndVisibility(bool selected, bool visible)
+        {
+            var model = new ModelData();
+            model.ObjectData.NodesSet.Add(1, new Node(1, new Point3D()));
+            model.ObjectData.NodesSet.Add(2, new Node(2, new Point3D()));
+            var setInfo = model.ObjectData.NodesSet;
+            var view = new ModelView(model);
+            var numbers = new[] { 1, 2 };
+            view.SetColor(setInfo, Color.Blue);
+            view.SetViewMode(setInfo, ViewMode.Surface);
+            view.SetColor(ObjType.Узел, numbers, Color.Green);
+            view.SetVisible(ObjType.Узел, numbers, visible);
+            if (selected)
+                view.Select(ObjType.Узел, numbers);
+
+            view.ClearColor();
+
+            Assert.AreEqual(Color.Blue, view.GetColor(setInfo));
+            Assert.AreEqual(ViewMode.Surface, view.GetViewMode(setInfo));
+            foreach (var number in numbers)
+            {
+                Assert.AreEqual(selected, view.IsSelected(ObjType.Узел, number));
+                Assert.AreEqual(visible, view.GetVisible(ObjType.Узел, number));
+            }
+
+            view.ClearSelection();
+            foreach (var number in numbers)
+                Assert.AreEqual(Color.Blue.ToArgb(), view.GetColor(ObjType.Узел, number).ToArgb());
+        }
+
+        /// <summary>
+        /// Проверяет уведомления при очистке цветов и последующей покраске в пакете.
+        /// </summary>
+        [DataTestMethod]
+        [DataRow(false)]
+        [DataRow(true)]
+        public void ClearColor_RaisesOneEventAndSupportsRecoloringInUpdate(bool recolor)
+        {
+            var model = new ModelData();
+            var nodes = new[] { new Node(1, new Point3D()), new Node(2, new Point3D(1, 0, 0)), new Node(3, new Point3D(0, 1, 0)) };
+            foreach (var node in nodes)
+                model.ObjectData.NodesSet.Add(node.Number, node);
+            var elements = new[] { new Triangle(1, nodes) };
+            model.ObjectData.E2DCollection.AddRange("colored", elements);
+            var view = new ModelView(model);
+            var numbers = new[] { 1 };
+            view.SetColor(ObjType.Узел, numbers, Color.Green);
+            view.SetColor(ObjType.Элемент2D, numbers, Color.Green);
+            var elementSet = model.ObjectData.GetSetsInfo(ObjType.Элемент2D).Single();
+            var changesCount = 0;
+            view.Changed += (sender, args) =>
+            {
+                changesCount++;
+                Assert.AreEqual(2, args.Count);
+                Assert.AreEqual(ModelViewChange.ObjectColor, args.GetChanges(model.ObjectData.NodesSet));
+                Assert.AreEqual(ModelViewChange.ObjectColor, args.GetChanges(elementSet));
+            };
+
+            if (recolor)
+            {
+                using (view.BeginUpdate())
+                {
+                    view.ClearColor();
+                    Assert.AreEqual(0, changesCount);
+                    view.SetColor(ObjType.Узел, numbers, Color.Orange);
+                    Assert.AreEqual(0, changesCount);
+                }
+
+                Assert.AreEqual(Color.Orange.ToArgb(), view.GetColor(ObjType.Узел, 1).ToArgb());
+                Assert.AreEqual(1, changesCount);
+            }
+            else
+            {
+                view.ClearColor();
+                Assert.AreEqual(1, changesCount);
+                view.ClearColor();
+                Assert.AreEqual(1, changesCount);
+            }
+
+            var expectedElementColor = view.GetColor(elementSet);
+            Assert.AreEqual(expectedElementColor.ToArgb(), view.GetColor(ObjType.Элемент2D, 1).ToArgb());
+        }
+
+        /// <summary>
         /// Проверяет сохранение альфа-канала стиля при полной прозрачности представления.
         /// </summary>
         [TestMethod]

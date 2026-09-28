@@ -94,7 +94,26 @@ package "Model (расчёт, файлы)" #F5F5F5 {
     }
 
     abstract class ModelObject
+
     class ObjectsSet<T>
+    {
+        +int Number = -1;
+    }
+
+    class ObjectsCollection<T>
+    {
+        -Dictionary<string, ObjectsSet<T>> objects;
+        -int nextSetNumber;
+        --
+        +Add(string);
+        +Add(ObjectsSet<T>);
+        +Add(string, T);
+        +AddRange(string, IEnumerable<T>);
+        +Clear();
+        +Remove(string);
+        -AddSet(ObjectsSet<T>);
+    }
+
     class VolumeFigure
 }
 
@@ -110,9 +129,12 @@ package "OperationalController (представление)" #EEF5FF {
         .. цвет ..
         +Color GetColor(ObjType, int);
         +Color GetColor(ISetInfo, int);
-        .. наборы: цвет и режим ..
-        +Color GetSetColor(ISetInfo);
-        +SetSetColor(ISetInfo, Color);
+        +Color GetColor(ISetInfo);
+        +SetColor(ISetInfo, Color);
+        +SetColor(ObjType, IEnumerable<int>, Color);
+        +ClearColor(ObjType, IEnumerable<int>);
+        +ClearColor();
+        .. режим набора ..
         +ViewMode GetViewMode(ISetInfo);
         +SetViewMode(ISetInfo, ViewMode);
         .. видимость ..
@@ -146,16 +168,19 @@ package "OperationalController (представление)" #EEF5FF {
     {
         -IModelData model;
         -Dictionary<ObjType, IObjectsView> views;
+        -ChangedSets changedSets;
+        -Color[] setColors;
         --
         +ModelView(IModelData model);
-        -IObjectsView GetOrCreateView(ObjType);
-        -IObjectsView CreateView();
-        -Raise(bool changed);
+        -IObjectsView GetView(ObjType);
+        -Color GetSetColor(ISetInfo);
+        -Color GetDefaultSetColor(ISetInfo);
+        -ViewMode GetDefaultViewMode(ObjType);
+        -Raise(ModelViewChange, ...);
     }
 
     interface IObjectsView
     {
-        +bool IsEmpty;
         +int SelectedCount;
         +int HiddenCount;
         .. чтение ..
@@ -171,10 +196,15 @@ package "OperationalController (представление)" #EEF5FF {
         .. видимость ..
         +bool SetHidden(IEnumerable<int>, bool);
         +bool ShowAll();
+        .. индивидуальные цвета ..
+        +bool TryGetObjectColor(int, out Color);
+        +bool SetObjectColor(IEnumerable<int>, Color);
+        +bool ClearObjectColor(IEnumerable<int>);
+        +bool ClearObjectColors();
         .. наборы этого типа ..
-        +Color GetSetColor(ISetInfo);
+        +bool TryGetSetColor(ISetInfo, out Color);
         +bool SetSetColor(ISetInfo, Color);
-        +ViewMode GetViewMode(ISetInfo);
+        +bool TryGetViewMode(ISetInfo, out ViewMode);
         +bool SetViewMode(ISetInfo, ViewMode);
         +bool ClearSelectionAndHidden();
         .. синхронизация с моделью ..
@@ -186,21 +216,25 @@ package "OperationalController (представление)" #EEF5FF {
     {
         -HashSet<int> hidden;
         -HashSet<int> selected;
+        -Dictionary<int, Color> objectColors;
         -Dictionary<ISetInfo, SetStyle> setStyles;
     }
 
     class SetStyle
     {
-        +Color Color;
-        +ViewMode ViewMode;
+        +Color? Color;
+        +ViewMode? ViewMode;
     }
+
+    class ChangedSets
+    class ModelViewChangedEventArgs
+    enum ModelViewChange
 
     class ProjectController
     {
         +IModelView ModelView;
         .. сборка сцены ..
-        +IEnumerable<IObjsPresenter> CreateModelPresenters(ObjType);
-        +IObjsPresenter CreateSetPresenter(ISetInfo);
+        +IObjsPresenter CreateModelObjectsPresentor(ISetInfo);
     }
 
     package "ModelScenePresentator" #E4EEFF {
@@ -273,8 +307,11 @@ ICoordinated <|.. ResultSurface
 
 IModelObject <|.. ModelObject
 IModelObject <|.. VolumeFigure
+ISetInfo <|.. ObjectsSet
 
 IModelData --> IObjectsData
+IObjectsData *-- ObjectsCollection : наборы элементов
+ObjectsCollection *-- ObjectsSet : назначает Number
 
 ISurface <|.. ElementSurface
 MarkSurfaces ..> ElementSurface : связывает\nсовпадающие грани
@@ -286,6 +323,8 @@ IModelView <|.. ModelView
 IObjectsView <|.. ObjectsView
 ObjectsView *-- SetStyle : один на набор
 ModelView *-- IObjectsView : один на ObjType
+ModelView *-- ChangedSets : накапливает пакет
+ModelViewChangedEventArgs --> ModelViewChange
 ModelView ..> IObjectsData : Find, GetSetInfo,\nGetSetsInfo
 
 ProjectController ..> IModelView : GetVisible, GetColor;\nGetSelection, Prune, Reset
@@ -337,8 +376,10 @@ note bottom of ModelObject
 end note
 
 note right of ModelView
-  Один словарь views вместо
-  hidden и selected.
+  В конструкторе создаётся по одному
+  ObjectsView для каждого ObjType.
+  GetView только возвращает состояние
+  и ничего не создаёт.
 
   Любое новое состояние вида -
   поле внутри ObjectsView.
@@ -354,9 +395,20 @@ note right of ModelView
   не принимают.
 
   Reset не чистит словарь: это
-  обход видов с
-  ClearSelectionAndHidden,
-  стили остаются.
+  обход видов с очисткой выделения,
+  скрытости и индивидуальных цветов;
+  стили наборов остаются.
+end note
+
+note bottom of ObjectsCollection
+  Number уникален среди наборов
+  одного типа и назначается в AddSet.
+  После успешного Add счётчик растёт.
+  Remove номера не сдвигает,
+  Clear сбрасывает счётчик.
+
+  Номер не сохраняется: после загрузки
+  назначается заново в порядке чтения.
 end note
 
 note bottom of PointObjsPresenter
@@ -389,7 +441,7 @@ end note
 
 note right of ProjectController
   <b>Цикл отбора живёт только здесь</b>
-  CreateSetPresenter - единственное место,
+  CreateModelObjectsPresentor - точка входа,
   где объекты набора делятся на видимые
   и скрытые, а видимым подбираются цвета.
   Правило цвета остаётся в ModelView:
@@ -400,10 +452,10 @@ note right of ProjectController
   молча, а защищать некому - презентер
   видимости не знает.
 
-  Диспетчер по ObjType переезжает сюда же
-  из Gerbera, иначе "одно место" станет
-  тремя. RefreshModelSetBuffer тогда
-  только раздаёт презентеры в VBO.
+  Диспетчер по ObjType находится здесь,
+  поэтому правило отбора не размножается.
+  RefreshModelSetBuffer только раздаёт
+  готовые презентеры в VBO.
 end note
 
 note bottom of MarkSurfaces
@@ -442,16 +494,20 @@ end note
 note bottom of ObjectsView
   Состояние вида объектов ОДНОГО типа.
 
+  hidden и selected - множества номеров,
+  objectColors - индивидуальная окраска,
+  setStyles - только явные переопределения.
+
   Команды - операции над множеством:
   Select - объединение,
   Deselect - вычитание,
   ToggleSelection - разность,
   SetSelection - замена.
 
-  bool у каждой = "изменилось":
-  по нему ModelView поднимает
-  Changed и проверяет IsEmpty.
-  IsEmpty учитывает и стили наборов.
+  bool у каждой команды = "изменилось":
+  по нему ModelView поднимает Changed.
+  Состояние типа существует всегда
+  и не удаляется при опустошении.
 
   Prune берёт предикат и идёт по
   всем типам: ObjectsData.Remove
@@ -477,10 +533,22 @@ note left of IObjectsView
      одним ToList.
 end note
 
+note right of IModelView
+  ClearColor() снимает индивидуальную окраску
+  всех объектов. Цвета наборов, выделение
+  и видимость сохраняются.
+
+  Очистка даёт одно событие Changed,
+  если есть изменения. Очистку и покраску
+  можно объединить внешним BeginUpdate:
+  уведомление придёт при закрытии пакета.
+end note
+
 note bottom of IObjsPresenter
   Сборка идёт по наборам, а не по объектам:
-  GetSetsInfo, на набор один цвет из стиля,
-  дальше по номерам GetVisible и GetColor.
+  GetSetsInfo, дальше по номерам
+  GetVisible и GetColor. Цвет может быть
+  индивидуальным для каждого объекта.
 
   Разрешать набор по номеру нельзя -
   ObjectsData.GetSetInfo перебирает наборы
@@ -496,7 +564,9 @@ note left of IModelView
 
   <b>GetColor</b>
   выделен -> SelectionColor,
-  иначе цвет набора, затем Transparency.
+  иначе индивидуальный цвет,
+  иначе явный или стандартный цвет набора,
+  затем Transparency.
 end note
 
 @enduml
