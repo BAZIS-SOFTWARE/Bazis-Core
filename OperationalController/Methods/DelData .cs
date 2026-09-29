@@ -35,6 +35,7 @@ namespace OperationalController
             ModelData.ObjectData?.ClearEmptySet();
             ModelData.GroupData?.ClearNotExisted();
             TaskData.ClearNotExisted(ModelData.GroupData);
+            ModelView.Prune();
 
             //project.ClearEmptySet();
             //project.ClearNotExistedGroupData();
@@ -118,7 +119,6 @@ namespace OperationalController
             }
  
             ClearNotExistedModelData();
-            ModelView.Prune();
         }
     }
 }

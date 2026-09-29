@@ -103,6 +103,25 @@ namespace TestProject.ControllerTests
         }
 
         /// <summary>
+        /// Общая очистка модели удаляет из представления состояние удалённых объектов.
+        /// </summary>
+        [TestMethod]
+        public void ClearNotExistedModelData_PrunesModelView()
+        {
+            var controller = new ProjectController();
+            controller.CreateProject("model-view-cleanup.bpf2");
+            var node = new Node(7, new Point3D());
+            controller.ModelView.Model.ObjectData.NodesSet.Add(node.Number, node);
+            controller.ModelView.SetVisible(ObjType.Узел, new[] { node.Number }, false);
+
+            node.ExistState = false;
+            controller.ClearNotExistedModelData();
+
+            Assert.IsNull(controller.ModelView.Model.ObjectData.Find(ObjType.Узел, node.Number));
+            Assert.IsTrue(controller.ModelView.GetVisible(ObjType.Узел, node.Number));
+        }
+
+        /// <summary>
         /// Проверяет приоритет цвета выделения и альфа-канал представления.
         /// </summary>
         [TestMethod]
