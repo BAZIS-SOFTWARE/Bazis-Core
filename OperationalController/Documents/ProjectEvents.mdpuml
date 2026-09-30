@@ -1,0 +1,208 @@
+@startuml
+
+title События изменений ProjectController\nПотребители подписываются напрямую на Message контроллера.\nСобытия публикуются после согласованного шага операции, без BeginUpdate.
+
+hide empty members
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+skinparam nodesep 30
+skinparam ranksep 50
+set namespaceSeparator none
+
+legend top left
+  <<current>>  — существует, меняется мало
+  <<changed>>  — существует, меняется заметно
+  <<new>>      — создать
+  <<drop>>     — удалить
+  <<internal>> — не входит в публичный контракт
+  <<boundary>> — потребитель, показан свёрнуто
+end legend
+
+package "Потребители (BazisGUI / BazisAvaloniaGUI)" {
+  class Navigator <<boundary>>
+  class PropertiesPanel <<boundary>>
+  class SceneView <<boundary>>
+  class MainMenu <<boundary>>
+  class DataBasesAndMasters <<boundary>>
+}
+
+package "OperationalController. События проекта" {
+  interface IProjectEvents <<new>> {
+    + {event} Message : EventHandler<ProjectMessageEventArgs>
+  }
+
+  interface IProjectController <<changed>> {
+    запросы и команды проекта, как сейчас
+  }
+
+  class ModelView <<internal>> {
+    + {event} Changed : EventHandler<ModelViewChangedEventArgs>
+    + выделение, видимость, цвета, режимы текущей модели
+  }
+
+  class ProjectController <<changed>> {
+    - modelView : ModelView
+    + {event} Message : EventHandler<ProjectMessageEventArgs>
+    ~ MessageEvent : Action<string> <<drop>>
+    ~ UnsubMessasge() <<drop>>
+    - OnViewChanged(sender : object, e : ModelViewChangedEventArgs) : void
+  }
+
+  class ProjectMessageEventArgs <<new>> {
+    + Change : ChangeMessage
+  }
+
+  abstract class ChangeMessage <<new>>
+
+  class GeoChange <<new>> {
+    + Counts : IReadOnlyList<GeometryCount>
+  }
+  class GeometryCount <<new>> {
+    + ObjectType : ObjType
+    + Count : int
+  }
+
+  class MeshChange <<new>> {
+    + DataKind : MeshDataKind
+    + Action : ChangeAction
+    + ObjectType : ObjType
+    + EntityId : int
+  }
+  enum MeshDataKind <<new>> {
+    Set
+    Group
+  }
+
+  class CondChange <<new>> {
+    + DataKind : DataKind
+    + Action : ChangeAction
+    + Id : int
+  }
+  enum ChangeAction <<new>> {
+    Created
+    Updated
+    Deleted
+  }
+
+  class ViewChange <<new>> {
+    + ChangeKind : ModelViewChange
+    + AffectedSets : IEnumerable<ISetInfo>
+    + GetChangeKind(setInfo : ISetInfo) : ModelViewChange
+  }
+
+  class ProjectChange <<new>> {
+    + ChangeKind : ProjectChangeKind
+    + Property : ProjectProperty?
+  }
+  enum ProjectChangeKind <<new>> {
+    Loaded
+    Created
+    Closed
+    PropertyChanged
+  }
+  enum ProjectProperty <<new>> {
+    Name
+    FilePath
+    TaskKind
+    TaskType
+    MaterialsDB
+    FunctionsDB
+  }
+}
+
+Navigator ..> IProjectEvents : GeoChange, MeshChange, CondChange, ProjectChange
+PropertiesPanel ..> IProjectEvents : изменение выбранных данных, ProjectChange
+SceneView ..> IProjectEvents : GeoChange, MeshChange, ViewChange, ProjectChange
+MainMenu ..> IProjectEvents : ProjectChange
+DataBasesAndMasters ..> IProjectEvents : MeshChange, CondChange, ProjectChange
+
+IProjectController -up-|> IProjectEvents
+IProjectController <|.. ProjectController
+ProjectController *-- ModelView
+ProjectController --> ModelView : подписка на Changed
+ProjectController ..> ProjectMessageEventArgs : все виды изменений
+ProjectMessageEventArgs --|> EventArgs
+ProjectMessageEventArgs *-- ChangeMessage : ровно один вариант
+ChangeMessage <|-- GeoChange
+ChangeMessage <|-- MeshChange
+ChangeMessage <|-- CondChange
+ChangeMessage <|-- ViewChange
+ChangeMessage <|-- ProjectChange
+GeoChange *-- GeometryCount
+MeshChange --> MeshDataKind
+MeshChange --> ChangeAction
+CondChange --> ChangeAction
+ProjectChange --> ProjectChangeKind
+ProjectChange --> ProjectProperty
+
+note right of ProjectController
+  Потребители подписываются на Message один раз.
+  ModelView не входит в публичный контракт.
+  Контроллер преобразует ModelView.Changed в ViewChange.
+  При замене ModelView переподписывается на Changed.
+end note
+
+note right of GeoChange
+  После каждого изменения геометрии — снимок количеств
+  точек, кривых, поверхностей и объёмов, включая нули.
+  Событие публикуется и при неизменных количествах.
+  Подсчёт относится к CAD-модели после синхронизации
+  с геометрическими данными, доступными через контроллер.
+  Потребитель перечитывает объекты и обновляет сцену.
+end note
+
+note right of MeshChange
+  EntityId = Number набора или группы.
+  Ключ объекта — DataKind + ObjectType + EntityId
+  в пределах текущего проекта. При Loaded он сменяется.
+  При изменении отдельного узла/элемента сообщается
+  Updated для содержащего его набора.
+  Каскадное удаление групп и условий даёт отдельные
+  MeshChange и CondChange после соответствующих шагов.
+end note
+
+note right of CondChange
+  DataKind: нагрузка, закрепление, нагрев,
+  среда или материал.
+  Id — индекс условия в списке непосредственно
+  перед Deleted; для Created/Updated — актуальный индекс.
+  После удаления последующие индексы могут сдвинуться.
+  Если GUI обрабатывает событие отложенно, перечитывает
+  весь список, а не применяет прежний индекс к новому.
+end note
+
+note right of ViewChange
+  AffectedSets и ChangeKind передаются из
+  ModelViewChangedEventArgs. ChangeKind — объединение
+  изменений; точное изменение каждого набора доступно
+  через GetChangeKind(setInfo).
+end note
+
+note right of ProjectChange
+  Property заполняется только для PropertyChanged.
+  Loaded/Created/Closed требуют полного обновления GUI;
+  при загрузке не публикуются события для каждого объекта.
+  Смена TaskKind или TaskType, очищающая TaskData,
+  сопровождается отдельным CondChange после очистки.
+end note
+
+note bottom of ProjectController
+  События публикуются по мере выполнения сложной операции,
+  сразу после завершения каждого согласованного шага.
+  Обработчик может прочитать изменённые данные контроллера.
+  Каскадные изменения передаются последовательными Message.
+  Накопителя и BeginUpdate у событий проекта нет.
+  Статус и занятость операции показывает оболочка
+  по контексту запущенной команды. Процент прочитанных
+  строк поддерживаемые загрузчики передают через
+  IProgress<int>; Message содержит изменения данных.
+end note
+
+note bottom of IProjectEvents
+  Message — уведомление об изменении состояния,
+  а не строка для консоли. Подписчики GUI обновляют
+  представление по Change и при необходимости
+  перечитывают актуальные данные из контроллера.
+end note
+
+@enduml
