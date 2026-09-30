@@ -7,7 +7,7 @@ namespace OperationalController
     /// <summary>
     /// Предоставляет сведения о текущем сеансе проекта и управляет его состоянием.
     /// </summary>
-    public interface IProjectSessionQueries
+    public interface IProjectSession
     {
         IModelView ModelView { get; }
         bool IsGeometryInitialized { get; }

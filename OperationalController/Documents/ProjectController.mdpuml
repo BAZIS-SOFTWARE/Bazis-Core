@@ -1,0 +1,126 @@
+@startuml
+
+title ProjectController: публичный контракт и внутренняя реализация
+
+top to bottom direction
+scale max 1600 width
+hide empty members
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+skinparam nodesep 16
+skinparam ranksep 24
+set namespaceSeparator none
+
+class "BazisGUI / BazisAvaloniaGUI / IronPython" as Clients <<клиенты>>
+
+package "OperationalController · публичный контракт" {
+  interface IProjectController
+
+  interface IProjectSession <<changed>> {
+    + HasProject, FilePath, IsModified, Name
+    + TaskKind, TaskType, MaterialsDB, FunctionsDB
+    + ReadProject(path, progress?) : PreparedProject
+    + ReadModel(path, progress?) : PreparedModel
+    + Open(prepared), OpenMesh(prepared), Append(prepared)
+    + ImportGeometry(path), Create(path), Save(path), Close()
+    + CreateTask(), ChangeTaskKind(), ChangeTaskType(), ClearAllData()
+  }
+
+  interface IProjectEvents <<new>> {
+    + {event} Message : EventHandler<ProjectMessageEventArgs>
+  }
+
+  interface IProjectStorage <<changed>> {
+    + LoadSMF(), SaveSMF(), CopyFile()
+    + ExportMesh(), ExportGeometry()
+  }
+
+  interface IProjectView <<new>> {
+    + запросы и изменение вида, цветов, видимости и выделения
+    + BeginViewUpdate() : IDisposable
+  }
+
+  interface "Контракты модели" as ModelContracts <<current>> {
+    IMeshQueries / IMeshCommands
+    IGeometryQueries / IGeometryCommands
+    IGroupQueries / IGroupCommands
+    IConditionQueries / IConditionCommands
+  }
+
+  class PreparedProject <<new>> {
+    + FilePath, Name
+  }
+
+  class PreparedModel <<new>> {
+    + FilePath
+  }
+
+  class ProjectMessageEventArgs <<new>> {
+    + Change : ChangeMessage
+  }
+}
+
+package "OperationalController · внутренняя реализация" {
+  class ProjectController <<changed>> {
+    - project : IProjectData
+    - modelView : ModelView
+    - Replace(data, changeKind) : void
+    - Publish(change) : void
+    - OnViewChanged(sender, e) : void
+  }
+
+  class ModelView <<internal>> {
+    + {event} Changed : EventHandler<ModelViewChangedEventArgs>
+  }
+
+  class ModelLoaderFactory <<new>> {
+    + Create(extension) : IModelLoader
+  }
+
+  class GmshController <<current>>
+
+  class "Внутренние операции" as InternalOperations <<current>> {
+    MarkSurfaces, PresentersCreator
+    MeshObjsUtility, MeshObjsCreator, GeomObjsCreator
+  }
+}
+
+package "Данные и CAD" {
+  interface IProjectData <<boundary>>
+  interface IModelData <<boundary>>
+  class Gmsh <<boundary>>
+}
+
+Clients ..> IProjectController
+
+IProjectController -up-|> IProjectSession
+IProjectController -up-|> IProjectEvents
+IProjectController -up-|> IProjectStorage
+IProjectController -up-|> IProjectView
+IProjectController -up-|> ModelContracts
+IProjectController <|.. ProjectController
+
+IProjectSession ..> PreparedProject
+IProjectSession ..> PreparedModel
+IProjectEvents ..> ProjectMessageEventArgs
+
+ProjectController o-- IProjectData : текущий проект
+ProjectController *-- ModelView : заменяется с проектом
+ProjectController *-- ModelLoaderFactory
+ProjectController *-- GmshController
+ProjectController *-- InternalOperations
+ModelView --> IModelData : текущая модель
+GmshController --> Gmsh
+
+note bottom of IProjectController
+  Один контроллер на процесс. ModelView не публичен.
+  Подробности Message — ProjectEvents.mdpuml.
+end note
+
+note bottom of IProjectSession
+  progress: необязательный IProgress<int> при чтении.
+  Текст — доля строк; бинарный файл — доля байт.
+  Open / Append фиксируют результат в потоке владельца.
+end note
+
+@enduml
