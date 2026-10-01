@@ -74,6 +74,8 @@ end note
 note right of ModelView
   Вид и события:
   OperationalController-1.mdpuml
+  Доступ к internal для подписанных тестовых сборок:
+  TestProject, TestModeCore (InternalsVisibleTo)
 end note
 note right of PresentersCreator
   Операции сетки и презентаторы:
