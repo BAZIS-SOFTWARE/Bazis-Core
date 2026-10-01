@@ -21,6 +21,7 @@ namespace OperationalController
 
         public void MergeElements(ObjType objType, string setMaster, string setSlave)
         {
+            var before = CaptureData();
             if (objType == ObjType.Элемент1D)
             {
                 var slave = ModelData.ObjectData.E1DCollection[setSlave]; 
@@ -57,6 +58,7 @@ namespace OperationalController
             }
             else
                 throw new Exception($"Операция не поддерживается для объектов {objType}");           
+            PublishDataDifference(before);
         }
 
     }

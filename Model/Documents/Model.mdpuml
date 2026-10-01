@@ -1,0 +1,50 @@
+@startuml
+title Model — данные сетки, геометрии и групп
+top to bottom direction
+scale max 1500 width
+skinparam classAttributeIconSize 0
+skinparam nodesep 16
+skinparam ranksep 20
+hide empty members
+
+interface IModelData
+interface IObjectsData
+interface IGroupData
+interface IGroup
+interface "IObjectsSet<T>" as IObjectsSet
+interface "IObjectsCollection<T>" as IObjectsCollection
+class ModelData {
+  + Append(modelData)
+  + Load(path)
+  + Save(path)
+}
+class ObjectsData
+class GroupData
+class VolumeData
+class "ObjectsSet<T>" as ObjectsSet
+class "ObjectsCollection<T>" as ObjectsCollection
+class Group
+
+IModelData <|.. ModelData
+IObjectsData <|.. ObjectsData
+IGroupData <|.. GroupData
+IGroup <|.. Group
+IObjectsSet <|.. ObjectsSet
+IObjectsCollection <|.. ObjectsCollection
+ModelData *-- ObjectsData
+ModelData *-- GroupData
+ModelData *-- VolumeData
+ObjectsData *-- ObjectsSet
+ObjectsData *-- ObjectsCollection
+ObjectsCollection *-- ObjectsSet
+GroupData o-- IGroup
+
+note right of ObjectsData
+  Иерархии геометрических и сеточных объектов:
+  Model-1.mdpuml
+end note
+note right of ModelData
+  Загрузка, сохранение и прогресс чтения:
+  Model-2.mdpuml
+end note
+@enduml

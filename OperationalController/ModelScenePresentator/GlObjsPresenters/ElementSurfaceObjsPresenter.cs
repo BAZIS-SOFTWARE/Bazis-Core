@@ -16,7 +16,7 @@ namespace OperationalController.ModelScenePresentator.GlObjsPresenters
         /// <summary>
         /// Создаёт презентатор граней объёмных элементов.
         /// </summary>
-        public ElementSurfaceObjsPresenter(IReadOnlyList<ISurfaceObject<ElementSurface, Node>> elements, IReadOnlyList<Color> colors, IModelView modelView)
+        internal ElementSurfaceObjsPresenter(IReadOnlyList<ISurfaceObject<ElementSurface, Node>> elements, IReadOnlyList<Color> colors, IModelView modelView)
             : base(elements, colors, !(modelView ?? throw new ArgumentNullException(nameof(modelView))).HideInsideSurfaces)
         {
             this.modelView = modelView;

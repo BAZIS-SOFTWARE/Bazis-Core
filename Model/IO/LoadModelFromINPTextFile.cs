@@ -28,11 +28,15 @@ namespace Model.IO
         private static string extractElementTypePattern = @"(?<=TYPE=)\w+";
         private static string extractGroupNamePattern = @"(?<=(EL|N)SET=)\w*";
 
-        public IModelData Load(string path)
+        public IModelData Load(string path, IProgress<int> progress = null)
         {
             var modelData = new ModelData();
             var indexToElement = new Dictionary<int, Element>();
             lines = File.ReadAllLines(path);
+            progress?.Report(0);
+            if (lines.Length == 0)
+                progress?.Report(100);
+            var lastPercent = 0;
             var i = 0;
             var offset = 0;
             while(i < lines.Length)
@@ -46,6 +50,12 @@ namespace Model.IO
                 else if (Regex.Match(lines[i], @"\*(EL|N)SET", RegexOptions.IgnoreCase).Success)
                     ReadGroups(i, out offset, indexToElement, modelData);
                 i += (offset > 0) ? offset : 1;
+                var percent = 100 * Math.Min(i, lines.Length) / Math.Max(lines.Length, 1);
+                if (percent != lastPercent)
+                {
+                    progress?.Report(percent);
+                    lastPercent = percent;
+                }
                 offset = 0;
             }
             return modelData;

@@ -1,5 +1,7 @@
 using Model.Utilities;
 using System.Linq;
+using Model.Interfaces;
+using System.IO;
 
 namespace OperationalController
 {
@@ -18,9 +20,8 @@ namespace OperationalController
         /// Обход идёт по всем наборам сразу: грань может быть общей для элементов
         /// из разных наборов, и понабортный проход оставил бы такую грань внешней.
         /// </remarks>
-        private void MarkModelSurfaces()
+        private void MarkModelSurfaces(IModelData model)
         {
-            var model = ModelData;
             if (model == null)
                 return;
 
@@ -30,7 +31,7 @@ namespace OperationalController
                 return;
 
             var elements = string.Join(", ", defects.Select(surface => surface.ElementNumber).Distinct());
-            MessageEvent?.Invoke($"Дефект сетки: грань принадлежит более чем двум элементам. Элементы: {elements}");
+            throw new InvalidDataException($"Mesh face belongs to more than two elements. Elements: {elements}.");
         }
     }
 }

@@ -9,7 +9,7 @@ namespace OperationalController
     /// <summary>
     /// Предоставляет состояние представления объектов расчётной модели.
     /// </summary>
-    public interface IModelView
+    internal interface IModelView
     {
         /// <summary>
         /// Модель, для объектов которой хранится состояние представления.

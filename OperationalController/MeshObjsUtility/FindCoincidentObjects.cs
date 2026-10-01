@@ -11,11 +11,9 @@ namespace OperationalController.MeshObjsUtility
 {
     public class FindCoincidentObjects : ICoincidentObjectsFinder
     {
-        /// <inheritdoc/>
-        public event Action<object, float> ProgressEvent;
-/// <inheritdoc/>
-
-
+        /// <summary>
+        /// Находит группы объектов, центры которых близки в пределах заданного расстояния.
+        /// </summary>
         public List<List<int>> Find<T>(List<T> modelObjects, float distance)
             where T : IModelObject
         {

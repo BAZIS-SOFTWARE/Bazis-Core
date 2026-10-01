@@ -17,11 +17,11 @@ package "OperationalController · публичный контракт" {
   interface IProjectController
 
   interface IProjectSession <<changed>> {
-    + HasProject, FilePath, IsModified, Name
+    + HasProject, FilePath, IsModified, Name : только чтение
+    + ChangeProjectName(name) : void
     + TaskKind, TaskType, MaterialsDB, FunctionsDB
-    + ReadProject(path, progress?) : PreparedProject
-    + ReadModel(path, progress?) : PreparedModel
-    + Open(prepared), OpenMesh(prepared), Append(prepared)
+    + Open(path, progress?)
+    + Append(path, progress?) : void
     + ImportGeometry(path), Create(path), Save(path), Close()
     + CreateTask(), ChangeTaskKind(), ChangeTaskType(), ClearAllData()
   }
@@ -45,14 +45,6 @@ package "OperationalController · публичный контракт" {
     IGeometryQueries / IGeometryCommands
     IGroupQueries / IGroupCommands
     IConditionQueries / IConditionCommands
-  }
-
-  class PreparedProject <<new>> {
-    + FilePath, Name
-  }
-
-  class PreparedModel <<new>> {
-    + FilePath
   }
 
   class ProjectMessageEventArgs <<new>> {
@@ -100,8 +92,6 @@ IProjectController -up-|> IProjectView
 IProjectController -up-|> ModelContracts
 IProjectController <|.. ProjectController
 
-IProjectSession ..> PreparedProject
-IProjectSession ..> PreparedModel
 IProjectEvents ..> ProjectMessageEventArgs
 
 ProjectController o-- IProjectData : текущий проект
@@ -118,9 +108,10 @@ note bottom of IProjectController
 end note
 
 note bottom of IProjectSession
-  progress: необязательный IProgress<int> при чтении.
+  progress: необязательный IProgress<int> при загрузке.
   Текст — доля строк; бинарный файл — доля байт.
-  Open / Append фиксируют результат в потоке владельца.
+  Open выбирает проект или сетку по расширению.
+  Проект заменяется после успешного чтения.
 end note
 
 @enduml

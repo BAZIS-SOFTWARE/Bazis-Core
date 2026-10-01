@@ -10,7 +10,10 @@ namespace OperationalController
         /// </summary>
         private void SynchronizeGeometryMesh()
         {
-            ClearModelCollection(ObjType.Узел);
+            var before = CaptureData();
+            ModelData.ObjectData.Clear(ObjType.Узел);
+            ModelData.GroupData.ClearNotExisted();
+            TaskData.ClearNotExisted(ModelData.GroupData);
 
             var nodes = GmshController.GetNodes();
             nodes.ForEach(node =>
@@ -25,7 +28,15 @@ namespace OperationalController
             foreach (var item in GmshController.GetMeshSets<Element3D>(nodes))
                 ModelData.ObjectData.E3DCollection.Add(item);
 
-            MarkModelSurfaces();
+            try
+            {
+                MarkModelSurfaces(ModelData);
+            }
+            finally
+            {
+                PublishDataDifference(before, true);
+                ModelView.Prune();
+            }
         }
     }
 }

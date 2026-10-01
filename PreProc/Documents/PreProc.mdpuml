@@ -1,0 +1,32 @@
+@startuml
+title PreProc — подготовка расчётных инструкций
+left to right direction
+scale max 1500 width
+skinparam classAttributeIconSize 0
+hide empty members
+
+interface IPreProc {
+  + CalcCompDataV1(data, processType, path)
+  + CalcCompDataV2(data, property, path)
+  + SortCompDataByTimeAndType(files)
+  + SetDraftParameters(parameter)
+}
+class PreProc
+class ProcessProperty <<struct>> {
+  + TaskKind
+  + CommonTaskType
+}
+enum ProcessType
+enum TaskStatus
+class DraftException
+interface "ICondData" as ICondData <<Project>>
+class "GeneralParameters" as GeneralParameters <<Project>>
+
+IPreProc <|.. PreProc
+PreProc ..> ICondData : читает условия
+PreProc ..> ProcessProperty : тип задачи
+PreProc ..> GeneralParameters : параметры
+ProcessProperty --> ProcessType
+PreProc ..> TaskStatus : запись последовательности задач
+
+@enduml

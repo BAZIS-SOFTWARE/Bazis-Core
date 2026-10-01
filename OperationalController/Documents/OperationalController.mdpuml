@@ -1,0 +1,82 @@
+@startuml
+title OperationalController — публичный контракт и службы
+top to bottom direction
+scale max 1500 width
+hide empty members
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+skinparam nodesep 16
+skinparam ranksep 20
+
+package "OperationalController. Контракт проекта" {
+  interface IProjectController
+  interface IProjectSession {
+    + Name : string
+    + ChangeProjectName(name) : void
+    + Open(path, progress?) : void
+    + Append(path, progress?) : void
+    + Create(path) : void
+    + Save(path) : void
+    + Close() : void
+  }
+  interface IProjectEvents {
+    + Message : EventHandler<ProjectMessageEventArgs>
+  }
+  interface IProjectView {
+    + BeginViewUpdate() : IDisposable
+    + SetSelectionColor(color) : void
+    + SetTransparency(value) : void
+    + SetHideInsideSurfaces(hide) : void
+  }
+  interface IGeometryQueries {
+    + GetAdjacentGeometryObjects(dim, number)
+  }
+  class "IMeshQueries / IMeshCommands" as MeshContracts <<contracts>>
+  class "IGeometryCommands" as GeometryCommands <<contracts>>
+  class "IGroupQueries / IGroupCommands" as GroupContracts <<contracts>>
+  class "IConditionQueries / IConditionCommands" as ConditionContracts <<contracts>>
+  class ProjectMessageEventArgs {
+    + Change : ChangeMessage
+  }
+}
+
+package "OperationalController. Реализация" {
+  class ProjectController
+  class ModelView <<internal>>
+  class ModelLoaderFactory <<internal>>
+  class GmshController
+  class PresentersCreator
+}
+
+class "BazisGUI (Gerbera)" as Gerbera
+interface "IProjectData" as IProjectData <<Project>>
+
+IProjectController -|> IProjectSession
+IProjectController -|> IProjectEvents
+IProjectController -|> IProjectView
+IProjectController -|> IGeometryQueries
+IProjectController ..> MeshContracts
+IProjectController ..> GeometryCommands
+IProjectController ..> GroupContracts
+IProjectController ..> ConditionContracts
+ProjectController ..|> IProjectController
+ProjectController *-- ModelView
+ProjectController *-- ModelLoaderFactory
+ProjectController *-- GmshController
+ProjectController *-- PresentersCreator
+ProjectController o-- IProjectData
+IProjectEvents ..> ProjectMessageEventArgs
+Gerbera --> IProjectController
+
+note bottom of ProjectController
+  Подробный контракт: ProjectController.mdpuml
+end note
+note right of ModelView
+  Вид и события:
+  OperationalController-1.mdpuml
+end note
+note right of PresentersCreator
+  Операции сетки и презентаторы:
+  OperationalController-2.mdpuml
+end note
+@enduml

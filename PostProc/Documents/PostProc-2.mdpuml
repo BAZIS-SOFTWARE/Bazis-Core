@@ -1,0 +1,33 @@
+@startuml
+title PostProc-2 — представление полей результатов
+top to bottom direction
+scale max 1500 width
+skinparam classAttributeIconSize 0
+skinparam nodesep 14
+skinparam ranksep 18
+hide empty members
+
+class ResultsFieldsCreator {
+  + CreateSurfaceObjects(result, table, descriptor, surfaces)
+  + SetScaleItems(ranges)
+}
+class SurfaceGradientsCreator
+class LineGradientsCreator
+interface "IGradientsCreator<T>" as IGradientsCreator
+class ResultItem
+class ResultFigure
+class ResultPoint
+class ResultSurface
+class ItemRange
+class "Result" as Result <<ResultDB>>
+
+ResultsFieldsCreator ..> SurfaceGradientsCreator
+ResultsFieldsCreator ..> LineGradientsCreator
+ResultsFieldsCreator ..> Result
+ResultsFieldsCreator o-- ItemRange
+IGradientsCreator <|.. LineGradientsCreator
+SurfaceGradientsCreator ..> ResultItem
+SurfaceGradientsCreator ..> ResultFigure : создаёт
+ResultFigure *-- ResultSurface
+ResultSurface o-- ResultPoint
+@enduml

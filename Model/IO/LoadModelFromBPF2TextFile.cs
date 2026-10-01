@@ -25,9 +25,9 @@ namespace Model.IO
     {
         public event Action<object, ILoaderEventArgs> LoadEvent;
 
-        public IModelData Load(string path)
+        public IModelData Load(string path, IProgress<int> progress = null)
         {
-            using (var sr = new StreamReader(path))
+            using (var sr = new ProgressTextReader(path, progress))
             {
                 var newModel = new ModelData();
                 string[] token = new string[1];

@@ -1,0 +1,46 @@
+@startuml
+title Project — состав проекта и расчётной задачи
+top to bottom direction
+scale max 1500 width
+skinparam classAttributeIconSize 0
+skinparam nodesep 16
+skinparam ranksep 20
+hide empty members
+
+interface IProjectData
+interface IGeneralData
+interface ITaskData
+interface IModelData <<Model>>
+interface ICondData
+class ProjectData
+class GeneralData
+class TaskData
+class "ModelData" as ModelData <<Model>>
+abstract class CondData
+class GeneralParameters
+class PhysicalSet
+
+IProjectData <|.. ProjectData
+IGeneralData <|.. GeneralData
+ITaskData <|.. TaskData
+ICondData <|.. CondData
+IModelData <|.. ModelData
+ProjectData *-- GeneralData
+ProjectData *-- TaskData
+ProjectData *-- ModelData
+TaskData o-- CondData : условия
+GeneralParameters o-- PhysicalSet : физические поля
+
+note right of TaskData
+  Условия и материалы:
+  Project-1.mdpuml
+end note
+note right of GeneralParameters
+  Параметры и физические поля:
+  Project-2.mdpuml
+end note
+note right of ProjectData
+  Функции и ввод/вывод:
+  Project-3.mdpuml
+end note
+@enduml

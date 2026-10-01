@@ -21,10 +21,10 @@ namespace Model.IO
         private Dictionary<int, Node> allNodes = new Dictionary<int, Node>();
         private Dictionary<int, IElement> allElements = new Dictionary<int, IElement>();
 
-        public IModelData Load(string path)
+        public IModelData Load(string path, IProgress<int> progress = null)
         {
             ModelData model = new ModelData();
-            using (var reader = new StreamReader(path))
+            using (var reader = new ProgressTextReader(path, progress))
             {
                 while(!reader.EndOfStream)
                 {

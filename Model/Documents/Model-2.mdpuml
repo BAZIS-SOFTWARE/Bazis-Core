@@ -1,0 +1,51 @@
+@startuml
+title Model-2 — ввод, вывод и прогресс чтения
+top to bottom direction
+scale max 1500 width
+skinparam classAttributeIconSize 0
+skinparam nodesep 13
+skinparam ranksep 18
+hide empty members
+
+interface IModelLoader {
+  + Load(path, progress?) : IModelData
+}
+interface IModelSaver {
+  + Save(model, path)
+}
+class ModelData
+class ProgressTextReader
+
+package "Model.IO — загрузчики" {
+  class LoadModelFromBPFTextFile
+  class LoadModelFromBPF2TextFile
+  class LoadModelFromINPTextFile_v2
+  class LoadModelFromASCIITextFile_v2
+  class LoadModelFromCDBTextFile
+  class LoadModelFromSalomeFile
+  class LoadFromSTLFile
+}
+package "Model.IO — сохранение" {
+  class SaveModelToBPFTextFile
+  class SaveModelToBPF2TextFile
+  class SaveModelToASCIITextFile
+  class SaveToTxtSTLFile
+  class SaveModelToBinarySTLFile
+}
+
+ModelData o-- IModelLoader
+ModelData o-- IModelSaver
+IModelLoader <|.. LoadModelFromBPFTextFile
+IModelLoader <|.. LoadModelFromBPF2TextFile
+IModelLoader <|.. LoadModelFromINPTextFile_v2
+IModelLoader <|.. LoadModelFromASCIITextFile_v2
+IModelLoader <|.. LoadModelFromCDBTextFile
+IModelLoader <|.. LoadModelFromSalomeFile
+IModelLoader <|.. LoadFromSTLFile
+IModelSaver <|.. SaveModelToBPFTextFile
+IModelSaver <|.. SaveModelToBPF2TextFile
+IModelSaver <|.. SaveModelToASCIITextFile
+IModelSaver <|.. SaveToTxtSTLFile
+IModelSaver <|.. SaveModelToBinarySTLFile
+LoadModelFromBPF2TextFile ..> ProgressTextReader
+@enduml

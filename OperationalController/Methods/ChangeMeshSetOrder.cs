@@ -21,6 +21,10 @@ namespace OperationalController
             else
                 foreach (var item in ModelData.ObjectData.E3DCollection[name].Values)
                     item.Level = order;
+
+            var objType = elemDim == 1 ? Model.Interfaces.ObjType.Элемент1D : elemDim == 2 ? Model.Interfaces.ObjType.Элемент2D : Model.Interfaces.ObjType.Элемент3D;
+            var setInfo = ModelData.ObjectData.GetSetInfo(objType, name);
+            PublishSetChange(setInfo, ChangeAction.Updated);
         }
     }
 }

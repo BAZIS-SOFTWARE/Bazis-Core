@@ -1,0 +1,32 @@
+@startuml
+title Geometry-2 — сегменты, кривые и выпуклая оболочка
+left to right direction
+scale max 1500 width
+skinparam classAttributeIconSize 0
+hide empty members
+
+class Point2D
+class Point3D
+class Segment2D
+class Segment3D
+class Curve2D
+class Curve3D
+class RectangleBox
+class Polygon {
+  + Area : double
+  + IsPointInsidePolygon(point) : bool
+}
+class Hull2DCreator {
+  + CreateHullGraham(points) : Polygon
+  + GetHullAndrew(points) : IEnumerable<Point2D>
+}
+
+Segment2D o-- Point2D
+Segment3D o-- Point3D
+Curve2D o-- Point2D
+Curve3D o-- Point3D
+RectangleBox ..> Point2D : границы
+Polygon o-- Point2D : вершины
+Hull2DCreator ..> Segment2D
+Hull2DCreator ..> Polygon : создаёт
+@enduml

@@ -1,0 +1,52 @@
+@startuml
+title Model-1 — объекты геометрии и сетки
+top to bottom direction
+scale max 1500 width
+skinparam classAttributeIconSize 0
+skinparam nodesep 13
+skinparam ranksep 18
+hide empty members
+
+interface IModelObject
+abstract class ModelObject
+package "Model.GeometryObjects" {
+  class GeometryPoint
+  class Curve
+  class SurfaceFigure
+  class GeometrySurface
+  class VolumeFigure
+}
+package "Model.MeshObjects" {
+  class Node
+  abstract class Element
+  abstract class Element2D
+  abstract class Element3D
+  class Beam
+  class Triangle
+  class Quad
+  class Tetra
+  class Hexa
+  class ElementSurface
+}
+
+IModelObject <|.. ModelObject
+ModelObject <|-- GeometryPoint
+ModelObject <|-- Curve
+ModelObject <|-- SurfaceFigure
+ModelObject <|-- Node
+ModelObject <|-- Element
+Element <|-- Beam
+Element <|-- Element2D
+Element <|-- Element3D
+Element2D <|-- Triangle
+Element2D <|-- Quad
+Element3D <|-- Tetra
+Element3D <|-- Hexa
+Curve o-- GeometryPoint
+SurfaceFigure o-- GeometrySurface
+GeometrySurface o-- GeometryPoint
+VolumeFigure o-- SurfaceFigure
+Element o-- Node
+Element2D o-- ElementSurface
+Element3D o-- ElementSurface
+@enduml
