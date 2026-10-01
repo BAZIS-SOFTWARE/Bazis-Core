@@ -10,7 +10,7 @@ namespace OperationalController
     /// <summary>
     /// Хранит состояние представления отдельно от расчётной модели.
     /// </summary>
-    public class ModelView : IModelView
+    internal class ModelView : IModelView
     {
         readonly IModelData model;
         readonly Dictionary<ObjType, IObjectsView> views = new Dictionary<ObjType, IObjectsView>();
@@ -20,6 +20,7 @@ namespace OperationalController
         byte transparency;
         bool hideInsideSurfaces;
         int updateDepth; // глубина вложенности событий. 0 - можно отправлять
+        internal bool HasOpenUpdate => updateDepth != 0;
 
         /// <summary>
         /// Создаёт представление заданной модели.

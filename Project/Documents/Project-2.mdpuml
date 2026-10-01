@@ -1,0 +1,47 @@
+@startuml
+title Project-2 — параметры задачи и физические поля
+top to bottom direction
+scale max 1500 width
+skinparam classAttributeIconSize 0
+skinparam nodesep 14
+skinparam ranksep 18
+hide empty members
+
+class GeneralParameters {
+  + TaskKind
+  + CalculationMode
+  + InputSets : List<PhysicalSet>
+  + InitialSet : PhysicalSet
+}
+class TermalParameters
+class MechanicalParameters
+class ChemicalParameters
+class TimeSettings
+class SolverSettings
+class ConditionReference
+class PhysicalSet {
+  + Name : PhysicalSetName
+  + Source : PhysicalSetSource
+  + Values : Dictionary<string, List<PhysicalField>>
+  + File : string
+}
+class PhysicalField {
+  + Name : PhysicalFieldName
+  + Components : double[]
+}
+enum PhysicalSetName
+enum PhysicalSetSource
+enum PhysicalFieldName
+
+GeneralParameters <|-- TermalParameters
+GeneralParameters <|-- MechanicalParameters
+GeneralParameters <|-- ChemicalParameters
+GeneralParameters *-- TimeSettings
+GeneralParameters *-- SolverSettings
+GeneralParameters o-- ConditionReference
+GeneralParameters o-- PhysicalSet
+PhysicalSet o-- PhysicalField
+PhysicalSet --> PhysicalSetName
+PhysicalSet --> PhysicalSetSource
+PhysicalField --> PhysicalFieldName
+@enduml

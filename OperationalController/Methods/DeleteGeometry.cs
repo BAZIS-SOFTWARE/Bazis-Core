@@ -37,6 +37,7 @@ namespace OperationalController
 
             foreach (var item in removedObjects)
                 RemoveFromModelData(item.dim, item.number);
+            PublishGeometryChange();
 
             HashSet<(int dim, int tag)> CollectDeleteTree(int dim, int tag)
             {

@@ -1,0 +1,36 @@
+@startuml
+title Geometry-1 — точки и локальные координаты
+left to right direction
+scale max 1500 width
+skinparam classAttributeIconSize 0
+hide empty members
+
+interface IPosition2D
+interface IPosition3D
+interface IPoint2D
+interface IPoint3D
+interface "IPointFunctions<T>" as IPointFunctions
+interface IPlane
+class Point2D
+class Point3D
+class Frame {
+  + GetCoordsInFrame(point) : Point3D
+}
+class Frame2D {
+  + MapToLocalPlaneCoordinates(point) : Point2D
+  + UnmapToGlobalCoordinates(point) : Point3D
+}
+class Plane
+
+IPosition2D <|-- IPoint2D
+IPosition3D <|-- IPoint3D
+IPoint2D <|.. Point2D
+IPoint3D <|.. Point3D
+IPointFunctions <|.. Point2D
+IPointFunctions <|.. Point3D
+IPlane <|.. Plane
+Frame o-- Point3D
+Frame2D o-- Point3D
+Frame2D ..> Point2D
+Plane o-- Point3D
+@enduml

@@ -21,11 +21,11 @@ namespace Model.IO.STL
         private int nodes_counter = 0;
         private int elems_counter = 0;
 
-        public IModelData Load(string path)
+        public IModelData Load(string path, IProgress<int> progress = null)
         {
             try
             {
-                return IsBinary(path) ? LoadBinary(path) : LoadTxt(path);
+                return IsBinary(path) ? LoadBinary(path, progress) : LoadTxt(path, progress);
             }
             catch (Exception e)
             {
@@ -38,11 +38,11 @@ namespace Model.IO.STL
             }
         }
 
-        private IModelData LoadTxt(string path)
+        private IModelData LoadTxt(string path, IProgress<int> progress)
         {
             var modelData = new ModelData();
             
-            using (var reader = new StreamReader(path))
+            using (var reader = new ProgressTextReader(path, progress))
             {
                 var str = string.Empty;
 
@@ -116,7 +116,7 @@ namespace Model.IO.STL
             return points;
         }
 
-        private IModelData LoadBinary(string path)
+        private IModelData LoadBinary(string path, IProgress<int> progress)
         {
             var modelData = new ModelData();
 
@@ -125,9 +125,14 @@ namespace Model.IO.STL
             using (BinaryReader reader = new BinaryReader(File.OpenRead(path)))
             {
                 int prevAtrib = -1;
+                var lastPercent = 0;
+                progress?.Report(0);
 
                 reader.BaseStream.Position += 80;
                 var count = reader.ReadUInt32();
+                lastPercent = (int)(100 * reader.BaseStream.Position / reader.BaseStream.Length);
+                if (lastPercent > 0)
+                    progress?.Report(lastPercent);
 
                 for (int i = 0; i < count; i++)
                 {
@@ -164,6 +169,12 @@ namespace Model.IO.STL
                     else
                     {
                         reader.BaseStream.Position += 2;
+                    }
+                    var percent = (int)(100 * reader.BaseStream.Position / reader.BaseStream.Length);
+                    if (percent != lastPercent)
+                    {
+                        progress?.Report(percent);
+                        lastPercent = percent;
                     }
                 }
             }

@@ -1,0 +1,46 @@
+@startuml
+title OperationalController-1 — вид и типизированные изменения
+top to bottom direction
+scale max 1500 width
+skinparam classAttributeIconSize 0
+skinparam nodesep 14
+skinparam ranksep 18
+hide empty members
+
+interface IProjectEvents
+interface IProjectView
+interface IProjectController
+class ProjectController
+class ModelView <<internal>>
+class ObjectsView
+class SetStyle
+class ChangedSets <<internal>>
+class UpdateScope <<internal>>
+class ModelViewChangedEventArgs
+class ProjectMessageEventArgs
+abstract class ChangeMessage
+class ViewChange
+class MeshChange
+class GeoChange
+class CondChange
+class ProjectChange
+
+IProjectController -|> IProjectEvents
+IProjectController -|> IProjectView
+ProjectController ..|> IProjectController
+ProjectController *-- ModelView
+ModelView o-- ObjectsView
+ObjectsView o-- SetStyle
+ModelView *-- ChangedSets
+ModelView ..> UpdateScope : BeginUpdate
+ModelView ..> ModelViewChangedEventArgs : Changed
+ProjectController ..> ModelViewChangedEventArgs : преобразует
+IProjectEvents ..> ProjectMessageEventArgs : Message
+ProjectMessageEventArgs o-- ChangeMessage
+ChangeMessage <|-- ViewChange
+ChangeMessage <|-- MeshChange
+ChangeMessage <|-- GeoChange
+ChangeMessage <|-- CondChange
+ChangeMessage <|-- ProjectChange
+
+@enduml

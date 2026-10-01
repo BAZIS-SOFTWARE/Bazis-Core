@@ -31,6 +31,10 @@ namespace OperationalController
             foreach (var item in ModelData.ObjectData.E3DCollection)
                 item.Value.Renumber(ref number);
 
+            foreach (var objType in new[] { ObjType.Элемент1D, ObjType.Элемент2D, ObjType.Элемент3D })
+                foreach (var setInfo in ModelData.ObjectData.GetSetsInfo(objType))
+                    PublishSetChange(setInfo, ChangeAction.Updated);
+
         }
     }
 }

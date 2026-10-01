@@ -110,15 +110,15 @@ namespace TestProject.ControllerTests
         {
             var controller = new ProjectController();
             controller.CreateProject("model-view-cleanup.bpf2");
-            var node = new Node(7, new Point3D());
-            controller.ModelView.Model.ObjectData.NodesSet.Add(node.Number, node);
-            controller.ModelView.SetVisible(ObjType.Узел, new[] { node.Number }, false);
+            controller.CreateNode(7, 0, 0, 0);
+            var node = controller.GetModelObject(ObjType.Узел, 7);
+            controller.SetVisible(ObjType.Узел, new[] { node.Number }, false);
 
             node.ExistState = false;
             controller.ClearNotExistedModelData();
 
-            Assert.IsNull(controller.ModelView.Model.ObjectData.Find(ObjType.Узел, node.Number));
-            Assert.IsTrue(controller.ModelView.GetVisible(ObjType.Узел, node.Number));
+            Assert.IsNull(controller.GetModelObject(ObjType.Узел, node.Number));
+            Assert.IsTrue(controller.GetVisible(ObjType.Узел, node.Number));
         }
 
         /// <summary>

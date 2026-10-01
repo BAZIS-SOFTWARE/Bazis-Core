@@ -1,0 +1,40 @@
+@startuml
+title Project-1 — условия задачи и группы
+top to bottom direction
+scale max 1500 width
+skinparam classAttributeIconSize 0
+skinparam nodesep 14
+skinparam ranksep 18
+hide empty members
+
+interface ITaskData
+interface ICondData
+interface "IGroup" as IGroup <<Model>>
+class TaskData
+abstract class CondData {
+  + StartTime : float
+  + StopTime : float
+  + Group : IGroup
+}
+class MatData
+class PlateMatData
+class BeamMatData
+class MediaData
+class HeatData
+class ClampData
+class LoadData
+class "MaterialDBItem" as MaterialDBItem <<MaterialDB>>
+
+ITaskData <|.. TaskData
+ICondData <|.. CondData
+TaskData o-- ICondData
+CondData --> IGroup
+CondData <|-- MatData
+CondData <|-- MediaData
+CondData <|-- HeatData
+CondData <|-- ClampData
+CondData <|-- LoadData
+MatData <|-- PlateMatData
+MatData <|-- BeamMatData
+MatData --> MaterialDBItem
+@enduml

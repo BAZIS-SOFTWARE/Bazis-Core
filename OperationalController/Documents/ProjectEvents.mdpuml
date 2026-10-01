@@ -55,11 +55,13 @@ package "OperationalController. События проекта" {
   abstract class ChangeMessage <<new>>
 
   class GeoChange <<new>> {
-    + Counts : IReadOnlyList<GeometryCount>
+    + Counts : IReadOnlyDictionary<GeometryEntityKind, int>
   }
-  class GeometryCount <<new>> {
-    + ObjectType : ObjType
-    + Count : int
+  enum GeometryEntityKind <<new>> {
+    Point
+    Curve
+    Surface
+    Volume
   }
 
   class MeshChange <<new>> {
@@ -128,7 +130,7 @@ ChangeMessage <|-- MeshChange
 ChangeMessage <|-- CondChange
 ChangeMessage <|-- ViewChange
 ChangeMessage <|-- ProjectChange
-GeoChange *-- GeometryCount
+GeoChange --> GeometryEntityKind
 MeshChange --> MeshDataKind
 MeshChange --> ChangeAction
 CondChange --> ChangeAction
@@ -194,7 +196,7 @@ note bottom of ProjectController
   Накопителя и BeginUpdate у событий проекта нет.
   Статус и занятость операции показывает оболочка
   по контексту запущенной команды. Процент прочитанных
-  строк поддерживаемые загрузчики передают через
+  строк или байт поддерживаемые загрузчики передают через
   IProgress<int>; Message содержит изменения данных.
 end note
 

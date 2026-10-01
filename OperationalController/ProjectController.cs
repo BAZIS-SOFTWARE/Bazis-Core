@@ -9,6 +9,7 @@ using OperationalController.MeshObjsUtility;
 using OperationalController.SurfaceMeshCreator;
 using Project.Interfaces;
 using Project.Interfaces.Tasks;
+using Project;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -18,7 +19,7 @@ using System.Numerics;
 namespace OperationalController
 {
     /// <summary>
-    /// ProjectController
+    /// Управляет текущим проектом, представлением и уведомлениями об изменениях.
     /// </summary>
     public partial class ProjectController : IProjectController
     {
@@ -73,25 +74,25 @@ namespace OperationalController
         }
 
         IProjectData project;
-        IModelView modelView;
+        ModelView modelView;
+        string filePath;
+        bool hasProject;
+        bool isModified;
+
+        /// <summary>
+        /// Создаёт контроллер с пустыми данными проекта.
+        /// </summary>
+        public ProjectController()
+        {
+            project = new ProjectData("untitled.bpf2");
+            modelView = new ModelView(project.ModelData);
+            modelView.Changed += OnViewChanged;
+        }
 
         /// <summary>
         /// Возвращает состояние представления текущей модели.
         /// </summary>
-        public IModelView ModelView
-        {
-            get
-            {
-                var model = ModelData;
-                if (model == null)
-                    return null;
-
-                if (modelView == null || modelView.Model != model)
-                    modelView = new ModelView(model);
-
-                return modelView;
-            }
-        }
+        private IModelView ModelView => modelView;
 
         ISelectionHelper selectionHelper { get; set; } = new SelectionHelper();
 /// <inheritdoc/>
@@ -160,10 +161,6 @@ namespace OperationalController
         public List<List<int>> FindCoincidentObjects(ObjType objType, float distance)
         {
             var objs = ModelData.ObjectData.GetObjects(objType).ToList();
-            coincidentObjectsFinder.ProgressEvent += (ar1, ar2) => 
-            { 
-                MessageEvent?.Invoke(ar2.ToString()); 
-            };
             return coincidentObjectsFinder.Find(objs, distance);
         }
 
@@ -172,11 +169,19 @@ namespace OperationalController
         /// <inheritdoc/>
         public void MergeNodes(List<List<int>> numbers)
         {
+            var before = CaptureData();
             objectsMerger.Merge(numbers, ModelData.ObjectData.NodesSet);
 
             // Слияние узлов переставляет ссылки в элементах, поэтому грани
             // до сих пор разъединённых сеток становятся совпадающими.
-            MarkModelSurfaces();
+            try
+            {
+                MarkModelSurfaces(ModelData);
+            }
+            finally
+            {
+                PublishDataDifference(before, true);
+            }
         }
 
         ISurfaceMeshCreator surfaceMeshCreator { get; set; }
@@ -213,7 +218,10 @@ namespace OperationalController
 
         public void AddTaskData(ICondData cond)
         {
-            TaskData?.Add(cond);
+            if (cond == null)
+                throw new ArgumentNullException(nameof(cond));
+            TaskData.Add(cond);
+            PublishConditionChange(cond.Kind, ChangeAction.Created, TaskData.Count - 1);
         }
 
 
@@ -227,10 +235,17 @@ namespace OperationalController
         IGeneralData GeneralData => project?.GeneralData;
 
         /// <inheritdoc/>
-        public string Name 
+        public string Name => GeneralData.Name;
+
+        /// <summary>
+        /// Изменяет имя текущего проекта и уведомляет подписчиков.
+        /// </summary>
+        public void ChangeProjectName(string name)
         {
-            get => GeneralData.Name;
-            set => GeneralData.Name = value;
+            if (GeneralData.Name == name)
+                return;
+            GeneralData.Name = name;
+            Publish(new ProjectChange(ProjectChangeKind.PropertyChanged, ProjectProperty.Name));
         }
     }
 }

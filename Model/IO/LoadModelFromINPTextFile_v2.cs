@@ -26,10 +26,10 @@ namespace Model.IO
         /// <summary>
         /// Load a model in the .inp format from the specified path
         /// </summary>
-        public IModelData Load(string path)
+        public IModelData Load(string path, IProgress<int> progress = null)
         {
             modelData = new ModelData();
-            using (var reader = new StreamReader(path))
+            using (var reader = new ProgressTextReader(path, progress))
             {
                 LoadEvent?.Invoke(this, new LoaderEventArgs("Начало загрузки модели"));
                 line = reader.ReadLine();

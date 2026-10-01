@@ -27,6 +27,7 @@ namespace OperationalController
         /// <inheritdoc/>
         public void CreateQuadMeshOnPoligon(List<Point2D> points, int numberOfElem)
         {
+            var before = CaptureData();
             if (points.Count != 4)
                 throw new Exception("Колличество узлов не равно 4");
 
@@ -69,6 +70,7 @@ namespace OperationalController
                     ModelData.ObjectData.NodesSet.Add(node.Number, node);
 
             ModelData.ObjectData.E2DCollection.Append(elems);
+            PublishDataDifference(before);
         }
 
         private Quad CreateElem(ref int numbE, ref int numbN, Point2D p0, Point2D p1, Point2D p2, Point2D p3)
@@ -103,7 +105,10 @@ namespace OperationalController
         /// <inheritdoc/>
         public ICondData Create(DataKind kind, string info)
         {
-            return TaskData?.Create(kind, info, ModelData?.GroupData);
+            var before = CaptureData();
+            var condition = TaskData.Create(kind, info, ModelData.GroupData);
+            PublishDataDifference(before);
+            return condition;
         }
 
         /// <inheritdoc/>
@@ -115,11 +120,13 @@ namespace OperationalController
 
         public void CreateElementsSet(string setName, int dim)
         {
+            var before = CaptureData();
             if (dim < 1 | dim > 3)
                 throw new Exception("Неправильно указана размерность элементов");
 
             if (dim == 1)
                 ModelData.ObjectData.E1DCollection.Add(setName);
+            PublishDataDifference(before);
         }
 
         /// <summary>
@@ -182,6 +189,7 @@ namespace OperationalController
             GmshController.Gmsh.Model.Occ.Synchronize();
             var geoPoint = GmshController.CreateControlPoints().Where(x => x.Number == pointNumber).FirstOrDefault();
             ModelData.ObjectData.PointsSet.Add(geoPoint.Number, geoPoint);
+            PublishGeometryChange();
             return pointNumber;
         }
 
@@ -203,6 +211,7 @@ namespace OperationalController
             GmshController.Gmsh.Model.Occ.Synchronize();
             var geoLine = GmshController.CreateLines().Where(x => x.Number == lineNumber).FirstOrDefault();
             ModelData.ObjectData.CurveSet.Add(geoLine.Number, geoLine);
+            PublishGeometryChange();
             return lineNumber;
         }
 
@@ -235,6 +244,7 @@ namespace OperationalController
             var geoPoints = allPoints.Where(x => points.Contains(x.Number)).ToArray();
 
             ModelData.ObjectData.SurfaceSet.Add(surf, new SurfaceFigure(surf, [new GeometrySurface(surf, geoPoints)]));
+            PublishGeometryChange();
             return surf;
         }
 
@@ -304,9 +314,12 @@ namespace OperationalController
         /// <returns>Имя набора созданных 1D-элементов.</returns>
         public string ExtrudeElement1DAlongCurve(int[] curveTags, int startPointTag, int startNodeTag, double step)
         {
+            var before = CaptureData();
             var startNode = ModelData.ObjectData.NodesSet[startNodeTag];
             var beams = ExtrudePointAlongCurve(startNode, curveTags, startPointTag, step);
-            return UpdateBeamModelData(beams);
+            var name = UpdateBeamModelData(beams);
+            PublishDataDifference(before);
+            return name;
         }
 
 
@@ -343,6 +356,7 @@ namespace OperationalController
             var builder = new ChamferGeometryBuilder(GmshController);
             var result = builder.Build(curveTags, firstLength, secondLengthOrAngle, isAngle, reflected);
             RefreshGeometryData();
+            PublishGeometryChange();
             return result;
         }
 
@@ -448,6 +462,7 @@ namespace OperationalController
         /// <inheritdoc/>
         public void CreateElement(string setName, int dim, int[] nodeNumbers)
         {
+            var before = CaptureData();
             if (dim < 1 | dim > 3)
                 throw new Exception("Неправильно указана размерность элементов");
 
@@ -484,18 +499,21 @@ namespace OperationalController
 
                 ModelData.ObjectData.E2DCollection.Add(setName, e2d);
             }
+            PublishDataDifference(before);
         }
 
         /// <inheritdoc/>
 
         public void CreateNode(int number, float x, float y, float z)
         {
+            var before = CaptureData();
             if (ModelData.ObjectData.NodesSet.ContainsKey(number))
                 throw new Exception("Обект с таким номером уже добавлен в набор");
 
             ModelData.ObjectData.NodesSet.
                 Add(number, new Node(number,
                 new Geometry.Point3D(x, y, z)));
+            PublishDataDifference(before);
         }
 
         private List<Element2D> GetElements2DBelongingToSurface(int surfaceTag)
@@ -549,6 +567,7 @@ namespace OperationalController
 
         private string UpdateModelData(MeshExtruder extruder, IEnumerable<Element3D> collection)
         {
+            var before = CaptureData();
             var objSet = new ObjectsSet<Element3D>("extrude");
             foreach (var element in collection)
                 objSet.Add(element.Number, element);
@@ -558,6 +577,7 @@ namespace OperationalController
             var addedName = ModelData.ObjectData.E3DCollection.Append(objCollection).Single();
 
             AppendNodes(extruder);
+            PublishDataDifference(before);
             return addedName;
         }
 

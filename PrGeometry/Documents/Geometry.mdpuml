@@ -1,0 +1,44 @@
+@startuml
+title Geometry — основные группы классов
+top to bottom direction
+scale max 1500 width
+skinparam classAttributeIconSize 0
+skinparam nodesep 18
+skinparam ranksep 22
+hide empty members
+
+package "Geometry. Координаты и системы отсчёта" {
+  class Point2D
+  class Point3D
+  class Frame
+  class Frame2D
+  class Plane
+}
+package "Geometry. Плоские построения" {
+  class Segment2D
+  class Polygon
+  class Hull2DCreator
+}
+package "Geometry. Пространственные построения" {
+  class Segment3D
+  class Curve3D
+}
+
+Frame o-- Point3D : центр и оси
+Frame2D o-- Point3D : начало и оси
+Plane o-- Point3D : нормаль
+Segment2D o-- Point2D
+Polygon o-- Point2D
+Hull2DCreator ..> Polygon : создаёт
+Segment3D o-- Point3D
+Curve3D o-- Point3D
+
+note right of Frame
+  Координаты и локальные системы:
+  Geometry-1.mdpuml
+end note
+note right of Polygon
+  Сегменты, кривые и оболочка:
+  Geometry-2.mdpuml
+end note
+@enduml

@@ -1,0 +1,38 @@
+@startuml
+title PostProc — сборка результатов, поле и экспорт
+top to bottom direction
+scale max 1500 width
+skinparam classAttributeIconSize 0
+skinparam nodesep 16
+skinparam ranksep 20
+hide empty members
+
+interface IPostProcController
+class PostProcController {
+  + FillRange(min, max, intervals, precision)
+  + GetItems() : IEnumerable<ItemRange>
+}
+class ItemRange
+class MergeResults
+class ResultsFieldsCreator
+class ResultsExporter
+class GridExporter
+class "Result" as Result <<ResultDB>>
+
+PostProcController *-- ItemRange : шкала цветов
+PostProcController *-- MergeResults
+PostProcController *-- ResultsFieldsCreator
+PostProcController *-- ResultsExporter
+PostProcController *-- GridExporter
+MergeResults ..> Result
+ResultsFieldsCreator ..> Result
+
+note right of ResultsExporter
+  Форматы экспорта:
+  PostProc-1.mdpuml
+end note
+note right of ResultsFieldsCreator
+  Построение цветных поверхностей:
+  PostProc-2.mdpuml
+end note
+@enduml

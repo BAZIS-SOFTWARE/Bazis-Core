@@ -24,11 +24,11 @@ namespace Model.IO
         /// <summary>
         /// Загрузить модель из файла формата .cdb по указанному пути
         /// </summary>
-        public IModelData Load(string path)
+        public IModelData Load(string path, IProgress<int> progress = null)
         {
             allNodes = new Dictionary<int, Node>();
             model = new ModelData();
-            using (var reader = new StreamReader(path))
+            using (var reader = new ProgressTextReader(path, progress))
             {
                 LoadEvent?.Invoke(this, new LoaderEventArgs("Начало загрузки модели"));
                 while (!reader.EndOfStream)

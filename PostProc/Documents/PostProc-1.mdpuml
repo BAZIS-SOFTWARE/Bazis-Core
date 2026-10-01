@@ -1,0 +1,33 @@
+@startuml
+title PostProc-1 — экспорт результатов и сетки
+top to bottom direction
+scale max 1500 width
+skinparam classAttributeIconSize 0
+skinparam nodesep 14
+skinparam ranksep 18
+hide empty members
+
+interface IResultsExporter
+interface IResultsExportSaver
+interface IGridExporter
+interface IGridSurfacesSaver
+class ResultsExporter
+class SaveObjectsResultsToTXT
+class SaveObjectsResultsToCSV
+class GridExporter
+class SaveGridSurfacesToBPF
+abstract class SaveGridSurfacesToSTLBase
+class SaveGridSurfacesToBinSTL
+class SaveGridSurfacesToTxtSTL
+
+IResultsExporter <|.. ResultsExporter
+IResultsExportSaver <|.. SaveObjectsResultsToTXT
+IResultsExportSaver <|.. SaveObjectsResultsToCSV
+ResultsExporter ..> IResultsExportSaver : выбирает по формату
+IGridExporter <|.. GridExporter
+IGridSurfacesSaver <|.. SaveGridSurfacesToBPF
+IGridSurfacesSaver <|.. SaveGridSurfacesToSTLBase
+SaveGridSurfacesToSTLBase <|-- SaveGridSurfacesToBinSTL
+SaveGridSurfacesToSTLBase <|-- SaveGridSurfacesToTxtSTL
+GridExporter ..> IGridSurfacesSaver : выбирает по формату
+@enduml

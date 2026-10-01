@@ -23,9 +23,5 @@ namespace OperationalController
         List<List<int>> Find<T>(List<T> modelObjects, float distance)
             where T : IModelObject;
 
-        /// <summary>
-        /// ProgressEvent
-        /// </summary>
-        event Action<object, float> ProgressEvent;
     }
 }

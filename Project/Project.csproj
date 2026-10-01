@@ -81,6 +81,7 @@
     <Compile Include="Tasks\LocalFrames\StaticFrame.cs" />
     <Compile Include="IO\LoadEventArgs.cs" />
     <Compile Include="IO\LoadProjectFileTextFormat.cs" />
+    <Compile Include="IO\ProgressRange.cs" />
     <Compile Include="IO\SaveProjectFileTextFormat.cs" />
     <Compile Include="IO\SaveEventArgs.cs" />
     <Compile Include="ProjectData.cs" />

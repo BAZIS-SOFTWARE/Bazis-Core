@@ -18,6 +18,10 @@ namespace OperationalController
                 ModelData.ObjectData.E2DCollection.ChangeName(oldName, newName);
             else
                 ModelData.ObjectData.E3DCollection.ChangeName(oldName, newName);
+
+            var objType = elemDim == 1 ? Model.Interfaces.ObjType.Элемент1D : elemDim == 2 ? Model.Interfaces.ObjType.Элемент2D : Model.Interfaces.ObjType.Элемент3D;
+            var setInfo = ModelData.ObjectData.GetSetInfo(objType, newName);
+            PublishSetChange(setInfo, ChangeAction.Updated);
         }
     }
 }

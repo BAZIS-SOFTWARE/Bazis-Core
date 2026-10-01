@@ -1,0 +1,43 @@
+@startuml
+title OperationalController-2 — операции сетки и представление объектов
+top to bottom direction
+scale max 1500 width
+skinparam classAttributeIconSize 0
+skinparam nodesep 14
+skinparam ranksep 18
+hide empty members
+
+class ProjectController
+interface IPresentersCreator
+class PresentersCreator
+interface IObjsPresenter
+abstract class "ObjsPresenter<T>" as ObjsPresenter
+class PointObjsPresenter
+class "LineObjsPresenter<T>" as LineObjsPresenter
+class "SurfaceObjsPresenter<T,U>" as SurfaceObjsPresenter
+class ElementSurfaceObjsPresenter
+interface IExtractor1DFrom2D
+interface IExtractor2DFrom3D
+class Extract1DFrom2D
+class Extract2DFrom3D
+abstract class MeshExtruder
+class TranslateExtruder
+class RotateExtruder
+class CurveExtruder
+
+ProjectController *-- PresentersCreator
+ProjectController ..> IExtractor1DFrom2D
+ProjectController ..> IExtractor2DFrom3D
+IPresentersCreator <|.. PresentersCreator
+PresentersCreator ..> IObjsPresenter : создаёт
+IObjsPresenter <|.. ObjsPresenter
+ObjsPresenter <|-- PointObjsPresenter
+ObjsPresenter <|-- LineObjsPresenter
+ObjsPresenter <|-- SurfaceObjsPresenter
+SurfaceObjsPresenter <|-- ElementSurfaceObjsPresenter
+IExtractor1DFrom2D <|.. Extract1DFrom2D
+IExtractor2DFrom3D <|.. Extract2DFrom3D
+MeshExtruder <|-- TranslateExtruder
+MeshExtruder <|-- RotateExtruder
+MeshExtruder <|-- CurveExtruder
+@enduml

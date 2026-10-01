@@ -1,11 +1,8 @@
 ﻿using MaterialDB.FunctionData;
 using MaterialDB.MaterialData;
-using Model.IO;
-using Model.IO.STL;
-using Project;
+using Project.Interfaces.Tasks;
 using Project.Tasks;
 using System;
-using System.IO;
 
 namespace OperationalController
 {
@@ -15,17 +12,42 @@ namespace OperationalController
 
         public void CreateTask()
         {
-            if (project == null)
-                throw new Exception("Создайте проект");
-            project.TaskData = new TaskData();
+            var data = new TaskData();
+            ReplaceTaskData(data);
         }
 
+        /// <summary>
+        /// Создаёт данные задачи с заданными базами материалов и функций.
+        /// </summary>
         public void CreateTask(MaterialDBData materials, FunctionDBData functions)
         {
-            if (project == null)
-                throw new Exception("Создайте проект");           
+            var data = new TaskData(materials, functions);
+            ReplaceTaskData(data);
+        }
 
-            project.TaskData = new TaskData(materials, functions);
+        /// <summary>
+        /// Заменяет данные задачи и публикует изменения условий и свойств.
+        /// </summary>
+        private void ReplaceTaskData(ITaskData data)
+        {
+            if (!hasProject)
+                throw new InvalidOperationException("Project is not open.");
+            var before = CaptureData();
+            var oldKind = TaskData.TaskKind;
+            var oldType = TaskData.TaskType;
+            var oldMaterials = TaskData.Materials;
+            var oldFunctions = TaskData.Functions;
+
+            project.TaskData = data;
+            PublishDataDifference(before);
+            if (oldKind != TaskData.TaskKind)
+                Publish(new ProjectChange(ProjectChangeKind.PropertyChanged, ProjectProperty.TaskKind));
+            if (oldType != TaskData.TaskType)
+                Publish(new ProjectChange(ProjectChangeKind.PropertyChanged, ProjectProperty.TaskType));
+            if (!ReferenceEquals(oldMaterials, TaskData.Materials))
+                Publish(new ProjectChange(ProjectChangeKind.PropertyChanged, ProjectProperty.MaterialsDB));
+            if (!ReferenceEquals(oldFunctions, TaskData.Functions))
+                Publish(new ProjectChange(ProjectChangeKind.PropertyChanged, ProjectProperty.FunctionsDB));
         }
     }
 }

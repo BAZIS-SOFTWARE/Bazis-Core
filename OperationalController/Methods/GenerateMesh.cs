@@ -98,8 +98,9 @@ namespace OperationalController
 
         public void GenerateMesh(int elemDim)
         {
+            var before = CaptureData();
             if (GmshController == null)
-                throw new Exception("Генератор сетки не загружен");
+                throw new InvalidOperationException("Mesh generator is not loaded.");
 
             if (elemDim == 1)
             {
@@ -145,7 +146,14 @@ namespace OperationalController
                 foreach (var item in GmshController.GetMeshSets<Element3D>(nodes))
                     ModelData.ObjectData.E3DCollection.Add(item);
 
-                MarkModelSurfaces();
+            }
+            try
+            {
+                MarkModelSurfaces(ModelData);
+            }
+            finally
+            {
+                PublishDataDifference(before, true);
             }
         }
     }

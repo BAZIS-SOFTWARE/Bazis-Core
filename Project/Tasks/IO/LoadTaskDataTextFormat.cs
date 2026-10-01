@@ -22,8 +22,16 @@ namespace Project.Tasks.IO
 
         public ITaskData Load(string fullPath, IGroupData groupData)
         {
+            return Load(fullPath, groupData, null);
+        }
 
-            var lines = File.ReadLines(fullPath).SkipWhile(line => !line.Contains("Проект"));  // пропустит строки по условию                                                                                       //.TakeWhile(line => line.Contains("#Проект")); // берет строки по условию
+        /// <summary>
+        /// Читает данные задачи и сообщает процент прочитанных строк файла.
+        /// </summary>
+        public ITaskData Load(string fullPath, IGroupData groupData, IProgress<int> progress)
+        {
+
+            var lines = ReadLines(fullPath, progress).SkipWhile(line => !line.Contains("Проект"));
             var path = Path.GetDirectoryName(fullPath);
             
             var taskData = new TaskData();
@@ -83,6 +91,18 @@ namespace Project.Tasks.IO
             }
 
             return taskData;
+        }
+
+        /// <summary>
+        /// Перечисляет строки файла с учётом прогресса чтения.
+        /// </summary>
+        private System.Collections.Generic.IEnumerable<string> ReadLines(string path, IProgress<int> progress)
+        {
+            using (var reader = new Model.IO.ProgressTextReader(path, progress))
+            {
+                while (!reader.EndOfStream)
+                    yield return reader.ReadLine();
+            }
         }
 
     //    public T GetDataBase<T>(string dbName, string dbPath)

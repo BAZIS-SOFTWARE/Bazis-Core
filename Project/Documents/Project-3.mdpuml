@@ -1,0 +1,43 @@
+@startuml
+title Project-3 — функции и сохранение проекта
+top to bottom direction
+scale max 1500 width
+skinparam classAttributeIconSize 0
+skinparam nodesep 13
+skinparam ranksep 18
+hide empty members
+
+class ProjectData
+interface IProjectLoader
+interface IProjectSaver
+class LoadProjectFromTextFormat
+class SaveProjectTextFormat
+class ProgressRange <<internal>>
+abstract class Function
+abstract class FrameFunction
+class SPH
+class CIL
+class DEL
+class DHEX
+class FHEX
+class PT
+class TT
+class Parameter
+class TableParameter
+
+ProjectData o-- IProjectLoader
+ProjectData o-- IProjectSaver
+IProjectLoader <|.. LoadProjectFromTextFormat
+IProjectSaver <|.. SaveProjectTextFormat
+LoadProjectFromTextFormat ..> ProgressRange
+Function <|-- FrameFunction
+Function <|-- DHEX
+Function <|-- FHEX
+Function <|-- PT
+Function <|-- TT
+FrameFunction <|-- SPH
+FrameFunction <|-- CIL
+FrameFunction <|-- DEL
+Function o-- Parameter
+Parameter <|-- TableParameter
+@enduml
