@@ -7,10 +7,12 @@
 
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\OperationalController\ControllerKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="ControllerTests\PresenterTestExtensions.cs" />
+    <Compile Remove="OperationalController\PresenterTestExtensions.cs" />
   </ItemGroup>
 
   <ItemGroup>
