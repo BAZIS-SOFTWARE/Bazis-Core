@@ -1,0 +1,56 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title PreProc-1 — Подготовка расчётных инструкций
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+interface "IPreProc" as T_PreProc_PreProc_Interfaces_IPreProc {
+  + CalcCompDataV1(data, processType, path) : void
+  + CalcCompDataV2(data, prop, path) : void
+  + SetDraftParameters<ResultParam>(parameter) : void
+  + SortCompDataByTimeAndType(dataStrs) : List<string>
+}
+class "DraftException" as T_PreProc_PreProc_DraftException {
+  + DraftException()
+  + DraftException(message)
+  + DraftException(message, innerException)
+}
+class "PreProc" as T_PreProc_PreProc_PreProc {
+  + GetParameters<LoadData, BoundData, ResultParam>(data) : List<ResultParam>
+}
+class "ProcessProperty" as T_PreProc_PreProc_ProcessProperty <<struct>> {
+  + CommonTaskType : ProcessType [field]
+  + TaskKind : TaskKind [field]
+}
+enum "TaskStatus" as T_PreProc_PreProc_TaskStatus {
+    выполнить
+    пропустить
+}
+enum "ProcessType" as T_PreProc_PreProc_Interfaces_ProcessType {
+    Heating
+    Quenching
+    Tempering
+    Welding
+}
+T_PreProc_PreProc_Interfaces_IPreProc -[hidden]down-> T_PreProc_PreProc_DraftException
+T_PreProc_PreProc_DraftException -[hidden]down-> T_PreProc_PreProc_PreProc
+T_PreProc_PreProc_PreProc -[hidden]down-> T_PreProc_PreProc_ProcessProperty
+T_PreProc_PreProc_ProcessProperty -[hidden]down-> T_PreProc_PreProc_TaskStatus
+T_PreProc_PreProc_TaskStatus -[hidden]down-> T_PreProc_PreProc_Interfaces_ProcessType
+T_PreProc_PreProc_PreProc --> T_PreProc_PreProc_ProcessProperty : использует
+T_PreProc_PreProc_PreProc ..|> T_PreProc_PreProc_Interfaces_IPreProc
+T_PreProc_PreProc_ProcessProperty --> T_PreProc_PreProc_Interfaces_ProcessType : использует
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

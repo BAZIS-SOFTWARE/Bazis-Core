@@ -1,4 +1,4 @@
-﻿using Model.Interfaces;
+using Model.Interfaces;
 using Model.MeshObjects;
 using OperationalController.MeshObjsUtility;
 using OperationalController.Methods.Exceptions;
@@ -14,27 +14,27 @@ namespace OperationalController
         /// <inheritdoc/>
         public void CreateGroup(IEnumerable<IModelObject> objs)
         {
-            var before = CaptureData();
-            ModelData.GroupData.Create(objs);
-            PublishDataDifference(before);
+            var name = ModelData.GroupData.Create(objs);
+            var group = ModelData.GroupData[ModelData.GroupData.Count - 1];
+            PublishGroupChange(group, ChangeAction.Created);
         }
         /// <inheritdoc/>
         public void CreateGroup(string grName, IEnumerable<IModelObject> objs)
         {
-            var before = CaptureData();
             ModelData.GroupData.Create(grName, objs);
-            PublishDataDifference(before);
+            var group = ModelData.GroupData[ModelData.GroupData.Count - 1];
+            PublishGroupChange(group, ChangeAction.Created);
         }
 
         /// <inheritdoc/>
         public string CreateGroupByMeshObjs(int dim, string setName)
         {  
-            var before = CaptureData();
             var objType = GetMeshObjType(dim);
 
             var objs = ModelData.ObjectData.GetObjects(objType, setName);
             var name = ModelData.GroupData.Create(objs);
-            PublishDataDifference(before);
+            var group = ModelData.GroupData[ModelData.GroupData.Count - 1];
+            PublishGroupChange(group, ChangeAction.Created);
             return name;
         }
 
@@ -58,7 +58,6 @@ namespace OperationalController
         /// <inheritdoc/>
         public string CreateGroupByGeoObjs(int meshDim, int geoDim, int tag)
         {
-            var before = CaptureData();
             var numbs = new List<nint>();
             if(meshDim == 0)
                 numbs = GmshController.Gmsh.Model.Mesh.GetNodes(geoDim, tag,true).Item1.ToList();
@@ -74,14 +73,14 @@ namespace OperationalController
                 objsList.Add(ModelData.ObjectData.Find(objType, (int)item));  
 
             var name = ModelData.GroupData.Create(objsList);
-            PublishDataDifference(before);
+            var group = ModelData.GroupData[ModelData.GroupData.Count - 1];
+            PublishGroupChange(group, ChangeAction.Created);
             return name;
         }
 
         /// <inheritdoc/>
         public string CreateOpenSurfaceNodesGroup(string setName)
         {
-            var before = CaptureData();
             if(ModelData.ObjectData.E3DCollection.Count == 0)
                 throw new EmptyCollectionException("Пустая коллекция");
 
@@ -91,7 +90,8 @@ namespace OperationalController
             var ndsList = surfaceNodes.Select(x => ModelData.ObjectData.NodesSet[x]);
 
             var name = ModelData.GroupData.Create(ndsList);
-            PublishDataDifference(before);
+            var group = ModelData.GroupData[ModelData.GroupData.Count - 1];
+            PublishGroupChange(group, ChangeAction.Created);
             return name;
         }
     }

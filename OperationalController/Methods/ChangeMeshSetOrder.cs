@@ -1,5 +1,7 @@
-﻿using System;
-using System.IO;
+using Model.Interfaces;
+using Model.Interfaces.MeshObjects;
+using Model.Interfaces.ObjectsCollections;
+using System;
 
 namespace OperationalController
 {
@@ -8,23 +10,34 @@ namespace OperationalController
         /// <inheritdoc/>
         public void ChangeMeshSetOrder(int elemDim, string name, int order)
         {
-            if (elemDim > 3 | elemDim < 1)
-                throw new Exception("Неправильная размерность элементов");
+            switch (elemDim)
+            {
+                case 1:
+                    ChangeElementOrder(ModelData.ObjectData.E1DCollection[name], order);
+                    break;
+                case 2:
+                    ChangeElementOrder(ModelData.ObjectData.E2DCollection[name], order);
+                    break;
+                case 3:
+                    ChangeElementOrder(ModelData.ObjectData.E3DCollection[name], order);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(elemDim), "Element dimension must be from 1 to 3.");
+            }
+        }
 
-            if (elemDim == 1)
-                foreach (var item in ModelData.ObjectData.E1DCollection[name].Values)
-                    item.Level = order;
-
-            else if (elemDim == 2)
-                foreach (var item in ModelData.ObjectData.E2DCollection[name].Values)
-                    item.Level = order;
-            else
-                foreach (var item in ModelData.ObjectData.E3DCollection[name].Values)
-                    item.Level = order;
-
-            var objType = elemDim == 1 ? Model.Interfaces.ObjType.Элемент1D : elemDim == 2 ? Model.Interfaces.ObjType.Элемент2D : Model.Interfaces.ObjType.Элемент3D;
-            var setInfo = ModelData.ObjectData.GetSetInfo(objType, name);
-            PublishSetChange(setInfo, ChangeAction.Updated);
+        /// <summary>Изменяет порядок всех элементов и сообщает об изменении набора один раз.</summary>
+        private void ChangeElementOrder<T>(IObjectsSet<T> set, int order) where T : IElement
+        {
+            var changed = false;
+            foreach (var element in set.Values)
+                if (element.Level != order)
+                {
+                    element.Level = order;
+                    changed = true;
+                }
+            if (changed)
+                PublishSetChange(set, ChangeAction.Updated);
         }
     }
 }

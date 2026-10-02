@@ -1,0 +1,66 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title Project-8 — Проект, задача и граничные условия
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+enum "LoadKind" as T_Project_Project_Tasks_LoadKind {
+    Давление
+    Сила
+}
+class "MatData" as T_Project_Project_Tasks_MatData {
+  + Material : MaterialDBItem [get, set]
+  + MatData(material, group, start, stop)
+  + ToString() : string
+}
+class "MediaData" as T_Project_Project_Tasks_MediaData {
+  + MediaType : MediaType [get]
+  + MediaData(group, start, stop)
+  + ToString() : string
+}
+enum "MediaType" as T_Project_Project_Tasks_MediaType {
+    ConstantTemp
+    HeatFlux
+}
+enum "ObjKind" as T_Project_Project_Tasks_ObjKind {
+    Объемы
+    Пластины
+    Стержни
+}
+abstract class "ObjectData" as T_Project_Project_Tasks_ObjectData {
+  # ObjectData(group, info)
+}
+abstract class "CondData\nProject-7" as T_Project_Project_Tasks_CondData <<reference>> [[Project-7.mdpuml Project-7]]
+abstract class "Data\nProject-7" as T_Project_Project_Tasks_Data <<reference>> [[Project-7.mdpuml Project-7]]
+interface "IGroupDependent\nProject-4" as T_Project_Project_Interfaces_Tasks_IGroupDependent <<reference>> [[Project-4.mdpuml Project-4]]
+interface "ITimeDependentData\nProject-5" as T_Project_Project_Interfaces_Tasks_ITimeDependentData <<reference>> [[Project-5.mdpuml Project-5]]
+T_Project_Project_Tasks_LoadKind -[hidden]down-> T_Project_Project_Tasks_MatData
+T_Project_Project_Tasks_MatData -[hidden]down-> T_Project_Project_Tasks_MediaData
+T_Project_Project_Tasks_MediaData -[hidden]down-> T_Project_Project_Tasks_MediaType
+T_Project_Project_Tasks_MediaType -[hidden]down-> T_Project_Project_Tasks_ObjKind
+T_Project_Project_Tasks_ObjKind -[hidden]down-> T_Project_Project_Tasks_ObjectData
+T_Project_Project_Tasks_ObjectData -[hidden]down-> T_Project_Project_Tasks_CondData
+T_Project_Project_Tasks_CondData -[hidden]down-> T_Project_Project_Tasks_Data
+T_Project_Project_Tasks_Data -[hidden]down-> T_Project_Project_Interfaces_Tasks_IGroupDependent
+T_Project_Project_Interfaces_Tasks_IGroupDependent -[hidden]down-> T_Project_Project_Interfaces_Tasks_ITimeDependentData
+T_Project_Project_Tasks_MatData --|> T_Project_Project_Tasks_CondData
+T_Project_Project_Tasks_MediaData --> T_Project_Project_Tasks_MediaType : использует
+T_Project_Project_Tasks_MediaData --|> T_Project_Project_Tasks_CondData
+T_Project_Project_Tasks_ObjectData --|> T_Project_Project_Tasks_Data
+T_Project_Project_Tasks_ObjectData ..|> T_Project_Project_Interfaces_Tasks_IGroupDependent
+T_Project_Project_Tasks_ObjectData ..|> T_Project_Project_Interfaces_Tasks_ITimeDependentData
+legend bottom
+  Обзор: [[Project.mdpuml Project]]; сигнатуры: [[Project-8.md Project-8.md]].
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

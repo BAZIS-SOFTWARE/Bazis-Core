@@ -36,7 +36,6 @@ namespace TestProject_test.OperationalController
             var controller = new global::OperationalController.ProjectController();
             controller.Load(name);
 
-            //project.Loader.LoadEvent += (ar1, ar2) => { };
 
 
             //assert

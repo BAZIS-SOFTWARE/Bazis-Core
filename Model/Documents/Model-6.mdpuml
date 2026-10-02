@@ -1,0 +1,94 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title Model-6 — Геометрические и сеточные сущности
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "VolumeData" as T_Model_Model_GeometryObjects_VolumeData {
+  + Count : int [get]
+  + IsReadOnly : bool [get]
+  + this[int index] : VolumeFigure [get, set]
+  + Add(item) : void
+  + Clear() : void
+  ~ ClearNotExisted() : void
+  + Contains(item) : bool
+  + CopyTo(array, arrayIndex) : void
+  + GetEnumerator() : IEnumerator<VolumeFigure>
+  + IndexOf(item) : int
+  + Insert(index, item) : void
+  + Remove(item) : bool
+  + RemoveAt(index) : void
+  + VolumeData()
+}
+class "VolumeFigure" as T_Model_Model_GeometryObjects_VolumeFigure {
+  + Name : string [get, set]
+  + Number : int [get]
+  + NumberOfPoints : int [get]
+  + NumberOfSides : int [get]
+  + GetCoordinates() : IEnumerable<Point3D>
+  + GetSurfaceFigures() : IEnumerable<SurfaceFigure>
+  + GetSurfaces() : IEnumerable<GeometrySurface>
+  + GetVertexes() : IEnumerable<GeometryPoint>
+  + ToString() : string
+  + VolumeFigure(number, surfaceFigures)
+}
+enum "ObjType" as T_Model_Model_Interfaces_ObjType {
+    Кривая
+    Поверхность
+    Точка
+    Узел
+    Элемент1D
+    Элемент2D
+    Элемент3D
+}
+enum "ElementKind" as T_Model_Model_Interfaces_MeshObjects_ElementKind {
+    Гекса
+    Квадрат
+    Пента
+    Стержень
+    Тетра
+    Треугольник
+}
+class "Beam" as T_Model_Model_MeshObjects_Beam {
+  + Beam(number, nodes)
+  + Beam(number, nodes, level)
+  + CreateIntegrationPoint(w, ksi) : void
+}
+interface "IVolume\nModel-16" as T_Model_Model_Interfaces_IVolume <<reference>> [[Model-16.mdpuml Model-16]]
+abstract class "Element\nModel-7" as T_Model_Model_MeshObjects_Element <<reference>> [[Model-7.mdpuml Model-7]]
+interface "ILineObject<T>\nModel-3" as T_Model_Model_Interfaces_ILineObject_1 <<reference>> [[Model-3.mdpuml Model-3]]
+T_Model_Model_GeometryObjects_VolumeData -[hidden]down-> T_Model_Model_GeometryObjects_VolumeFigure
+T_Model_Model_GeometryObjects_VolumeFigure -[hidden]down-> T_Model_Model_Interfaces_ObjType
+T_Model_Model_Interfaces_ObjType -[hidden]down-> T_Model_Model_Interfaces_MeshObjects_ElementKind
+T_Model_Model_Interfaces_MeshObjects_ElementKind -[hidden]down-> T_Model_Model_MeshObjects_Beam
+T_Model_Model_MeshObjects_Beam -[hidden]down-> T_Model_Model_Interfaces_IVolume
+T_Model_Model_Interfaces_IVolume -[hidden]down-> T_Model_Model_MeshObjects_Element
+T_Model_Model_MeshObjects_Element -[hidden]down-> T_Model_Model_Interfaces_ILineObject_1
+T_Model_Model_GeometryObjects_VolumeData --> T_Model_Model_GeometryObjects_VolumeFigure : использует
+T_Model_Model_GeometryObjects_VolumeFigure ..|> T_Model_Model_Interfaces_IVolume
+T_Model_Model_MeshObjects_Beam --> T_Model_Model_Interfaces_MeshObjects_ElementKind : использует
+T_Model_Model_MeshObjects_Beam --> T_Model_Model_Interfaces_ObjType : использует
+T_Model_Model_MeshObjects_Beam --|> T_Model_Model_MeshObjects_Element
+T_Model_Model_MeshObjects_Beam ..|> T_Model_Model_Interfaces_ILineObject_1
+legend bottom
+  Обзор: [[Model.mdpuml Model]]; сигнатуры: [[Model-6.md Model-6.md]].
+  reference — адрес подробностей указан в заголовке типа.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+  Связанные типы в контрактах и сигнатурах:
+  [[Model-3.mdpuml Model-3]]: ILineObject<T>.
+  [[Model-5.mdpuml Model-5]]: GeometryPoint, GeometrySurface, SurfaceFigure.
+  [[Model-7.mdpuml Model-7]]: Element.
+  [[Model-8.mdpuml Model-8]]: Node.
+  [[Model-16.mdpuml Model-16]]: IVolume.
+  [[../../PrGeometry/Documents/Geometry-4.mdpuml Geometry-4]]: Point3D.
+endlegend
+@enduml

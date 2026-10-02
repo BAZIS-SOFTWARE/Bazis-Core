@@ -1,5 +1,4 @@
 ﻿using Geometry;
-using Model.Events;
 using Model.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -17,7 +16,6 @@ namespace Model.IO.STL
     {
         private Dictionary<Vector3, Node> map = new Dictionary<Vector3, Node>();
 
-        public event Action<object, ILoaderEventArgs> LoadEvent;
         private int nodes_counter = 0;
         private int elems_counter = 0;
 
@@ -46,7 +44,6 @@ namespace Model.IO.STL
             {
                 var str = string.Empty;
 
-                LoadEvent?.Invoke(this, new LoaderEventArgs("Начало импорта STL модели"));
 
                 var solidCounter = 0;
 
@@ -81,7 +78,6 @@ namespace Model.IO.STL
 
                     modelData.ObjectData.E2DCollection.Add(set);
                 }
-                LoadEvent?.Invoke(this, new LoaderEventArgs("Модель загружена"));
             }
             return modelData;
         }
@@ -120,7 +116,6 @@ namespace Model.IO.STL
         {
             var modelData = new ModelData();
 
-            LoadEvent?.Invoke(this, new LoaderEventArgs("Начало импорта STL модели"));
 
             using (BinaryReader reader = new BinaryReader(File.OpenRead(path)))
             {
@@ -178,7 +173,6 @@ namespace Model.IO.STL
                     }
                 }
             }
-            LoadEvent?.Invoke(this, new LoaderEventArgs("Модель загружена"));
             return modelData;
         }
 

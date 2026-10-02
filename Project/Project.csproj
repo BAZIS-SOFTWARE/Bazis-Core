@@ -43,7 +43,6 @@
   <ItemGroup>
     <Compile Include="GeneralData.cs" />
     <Compile Include="Interfaces\IGeneralData.cs" />
-    <Compile Include="Interfaces\IO\ILoadEventArgs.cs" />
     <Compile Include="Interfaces\IO\IProjectLoader.cs" />
     <Compile Include="Interfaces\IO\IProjectSaver.cs" />
     <Compile Include="Interfaces\IO\ISaveEventArgs.cs" />
@@ -79,7 +78,6 @@
     <Compile Include="Tasks\Materials\BeamMatData.cs" />
     <Compile Include="Tasks\LocalFrames\LocalFrame.cs" />
     <Compile Include="Tasks\LocalFrames\StaticFrame.cs" />
-    <Compile Include="IO\LoadEventArgs.cs" />
     <Compile Include="IO\LoadProjectFileTextFormat.cs" />
     <Compile Include="IO\ProgressRange.cs" />
     <Compile Include="IO\SaveProjectFileTextFormat.cs" />
@@ -101,7 +99,6 @@
     <Compile Include="Tasks\LocalFrames\MovedFrame.cs" />
     <Compile Include="Tasks\LocalFrames\MovedFrameBuilder.cs" />
     <Compile Include="Tasks\HeatData.cs" />
-    <Compile Include="Tasks\IO\LoadEventArgs.cs" />
     <Compile Include="Tasks\IO\LoadTaskDataTextFormat.cs" />
     <Compile Include="Tasks\IO\SaveEventArgs.cs" />
     <Compile Include="Tasks\LoadData.cs" />

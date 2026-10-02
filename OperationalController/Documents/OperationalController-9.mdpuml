@@ -1,0 +1,58 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title OperationalController-9 — Создание объектов, операции и презентаторы
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "MiddleSurfaceBuilder" as T_OperationalController_OperationalController_GeomObjsCreator_MiddleSurfaceBuilder {
+  + RemoveDuplicates : bool [get, set]
+  + UseSeparateModel : bool [get, set]
+  + Build(surfaces) : void
+  + MiddleSurfaceBuilder(controller)
+}
+enum "Orient" as T_OperationalController_OperationalController_GeomObjsCreator_CurveLoop_Orient {
+    CCW
+    CW
+}
+class "GmshController" as T_OperationalController_OperationalController_GmshController_GmshController {
+  + CreateSurfaceFigure(points, surfaceTag) : SurfaceFigure
+  + GetPointsCountByElementSize(curveTag, elemSize) : int
+  + RemoveGeometryObjects(dimTags, delChild) : bool
+}
+abstract class "BeamGroupConnection" as T_OperationalController_OperationalController_MeshObjsCreator_BeamGroupConnection {
+  # Connect(smaller, larger) : IEnumerable<Beam>
+  + Create(master, slave, radius, beamsCount) : IEnumerable<Beam>
+  # GetSquaredDistance(one, two) : double
+}
+class "Extract1DFrom2D" as T_OperationalController_OperationalController_MeshObjsCreator_Extract1DFrom2D {
+}
+class "Extract2DFrom3D" as T_OperationalController_OperationalController_MeshObjsCreator_Extract2DFrom3D {
+}
+interface "IGmshController" as T_OperationalController_OperationalController_GmshController_IGmshController <<reference>>
+interface "IExtractor1DFrom2D" as T_OperationalController_OperationalController_ObjsCreator_IExtractor1DFrom2D <<reference>>
+interface "IExtractor2DFrom3D" as T_OperationalController_OperationalController_ObjsCreator_IExtractor2DFrom3D <<reference>>
+T_OperationalController_OperationalController_GeomObjsCreator_MiddleSurfaceBuilder -[hidden]down-> T_OperationalController_OperationalController_GeomObjsCreator_CurveLoop_Orient
+T_OperationalController_OperationalController_GeomObjsCreator_CurveLoop_Orient -[hidden]down-> T_OperationalController_OperationalController_GmshController_GmshController
+T_OperationalController_OperationalController_GmshController_GmshController -[hidden]down-> T_OperationalController_OperationalController_MeshObjsCreator_BeamGroupConnection
+T_OperationalController_OperationalController_MeshObjsCreator_BeamGroupConnection -[hidden]down-> T_OperationalController_OperationalController_MeshObjsCreator_Extract1DFrom2D
+T_OperationalController_OperationalController_MeshObjsCreator_Extract1DFrom2D -[hidden]down-> T_OperationalController_OperationalController_MeshObjsCreator_Extract2DFrom3D
+T_OperationalController_OperationalController_MeshObjsCreator_Extract2DFrom3D -[hidden]down-> T_OperationalController_OperationalController_GmshController_IGmshController
+T_OperationalController_OperationalController_GmshController_IGmshController -[hidden]down-> T_OperationalController_OperationalController_ObjsCreator_IExtractor1DFrom2D
+T_OperationalController_OperationalController_ObjsCreator_IExtractor1DFrom2D -[hidden]down-> T_OperationalController_OperationalController_ObjsCreator_IExtractor2DFrom3D
+T_OperationalController_OperationalController_GmshController_GmshController ..|> T_OperationalController_OperationalController_GmshController_IGmshController
+T_OperationalController_OperationalController_MeshObjsCreator_Extract1DFrom2D ..|> T_OperationalController_OperationalController_ObjsCreator_IExtractor1DFrom2D
+T_OperationalController_OperationalController_MeshObjsCreator_Extract2DFrom3D ..|> T_OperationalController_OperationalController_ObjsCreator_IExtractor2DFrom3D
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

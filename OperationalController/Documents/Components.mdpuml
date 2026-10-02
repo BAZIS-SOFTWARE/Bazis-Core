@@ -1,8 +1,35 @@
 @startuml
-[oper controller] --> [project]
-[oper controller] --> [GMSH Api]
-[project] --> [model]
-[project] --> [materialDB]
-[project] --> [Geometry]
-[model] --> [Geometry]
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam shadowing false
+skinparam nodesep 18
+skinparam ranksep 24
+hide empty members
+set namespaceSeparator none
+title Зависимости нетестовых проектов решения
+caption Прямые ProjectReference из .csproj; внешние пакеты опущены
+component Geometry
+component Model
+component Project
+component OperationalController
+component PreProc
+component PostProc
+component GmshApi
+component MaterialDB
+component ResultDB
+component SurfaceMesher
+Model --> Geometry
+Project --> MaterialDB
+Project --> Model
+OperationalController --> GmshApi
+OperationalController --> Project
+PreProc --> Project
+PostProc --> Model
+PostProc --> ResultDB
+note bottom of OperationalController
+  Единственный владелец событий: ProjectController.
+  Все нижние библиотеки в целевой архитектуре без событий.
+end note
 @enduml

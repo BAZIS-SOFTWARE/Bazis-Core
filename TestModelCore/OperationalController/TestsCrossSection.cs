@@ -91,7 +91,6 @@ namespace TestModeCore_test.OperationalController
         //public void GetSectionSurfaces_ShouldWork_OnLargeModel()
         //{
         //    var loader = new LoadModelFromProjectTextFile();
-        //    loader.LoadEvent += (arg1, arg2) => { };
         //    var modelData = loader.Load(@"..\..\Examples\3D\1.bpf");
 
         //    var A = modelData.ObjectData.GetObjects(ObjType.����).First(node => node.Number == 26180);

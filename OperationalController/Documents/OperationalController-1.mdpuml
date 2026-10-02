@@ -1,46 +1,58 @@
 @startuml
-title OperationalController-1 — вид и типизированные изменения
 top to bottom direction
-scale max 1500 width
 skinparam classAttributeIconSize 0
-skinparam nodesep 14
-skinparam ranksep 18
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
 hide empty members
+set namespaceSeparator none
 
-interface IProjectEvents
-interface IProjectView
-interface IProjectController
-class ProjectController
-class ModelView <<internal>>
-class ObjectsView
-class SetStyle
-class ChangedSets <<internal>>
-class UpdateScope <<internal>>
-class ModelViewChangedEventArgs
-class ProjectMessageEventArgs
-abstract class ChangeMessage
-class ViewChange
-class MeshChange
-class GeoChange
-class CondChange
-class ProjectChange
-
-IProjectController -|> IProjectEvents
-IProjectController -|> IProjectView
-ProjectController ..|> IProjectController
-ProjectController *-- ModelView
-ModelView o-- ObjectsView
-ObjectsView o-- SetStyle
-ModelView *-- ChangedSets
-ModelView ..> UpdateScope : BeginUpdate
-ModelView ..> ModelViewChangedEventArgs : Changed
-ProjectController ..> ModelViewChangedEventArgs : преобразует
-IProjectEvents ..> ProjectMessageEventArgs : Message
-ProjectMessageEventArgs o-- ChangeMessage
-ChangeMessage <|-- ViewChange
-ChangeMessage <|-- MeshChange
-ChangeMessage <|-- GeoChange
-ChangeMessage <|-- CondChange
-ChangeMessage <|-- ProjectChange
-
+title OperationalController-1 — Представление и сообщения об изменениях
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+enum "ChangeAction" as T_OperationalController_OperationalController_ChangeAction {
+    Created
+    Deleted
+    Updated
+}
+abstract class "ChangeMessage" as T_OperationalController_OperationalController_ChangeMessage {
+}
+class "ChangedSets" as T_OperationalController_OperationalController_ChangedSets <<internal>> {
+  + IsEmpty : bool [get]
+  + Add(setInfo, change) : void
+  + Clear() : void
+  + CreateEventArgs() : ModelViewChangedEventArgs
+}
+class "CondChange" as T_OperationalController_OperationalController_CondChange {
+  + Action : ChangeAction [get]
+  + DataKind : DataKind [get]
+  + Id : int [get]
+  + CondChange(dataKind, action, id)
+}
+class "GeoChange" as T_OperationalController_OperationalController_GeoChange {
+  + Counts : IReadOnlyDictionary<GeometryEntityKind, int> [get]
+  + GeoChange(counts)
+}
+enum "GeometryEntityKind" as T_OperationalController_OperationalController_GeometryEntityKind {
+    Curve
+    Point
+    Surface
+    Volume
+}
+T_OperationalController_OperationalController_ChangeAction -[hidden]down-> T_OperationalController_OperationalController_ChangeMessage
+T_OperationalController_OperationalController_ChangeMessage -[hidden]down-> T_OperationalController_OperationalController_ChangedSets
+T_OperationalController_OperationalController_ChangedSets -[hidden]down-> T_OperationalController_OperationalController_CondChange
+T_OperationalController_OperationalController_CondChange -[hidden]down-> T_OperationalController_OperationalController_GeoChange
+T_OperationalController_OperationalController_GeoChange -[hidden]down-> T_OperationalController_OperationalController_GeometryEntityKind
+T_OperationalController_OperationalController_CondChange --> T_OperationalController_OperationalController_ChangeAction : использует
+T_OperationalController_OperationalController_CondChange --|> T_OperationalController_OperationalController_ChangeMessage
+T_OperationalController_OperationalController_GeoChange --> T_OperationalController_OperationalController_GeometryEntityKind : использует
+T_OperationalController_OperationalController_GeoChange --|> T_OperationalController_OperationalController_ChangeMessage
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
 @enduml

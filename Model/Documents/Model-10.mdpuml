@@ -1,0 +1,47 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title Model-10 — Загрузка и сохранение
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "SaverEventArgs" as T_Model_Model_Events_SaverEventArgs {
+  + Message : string [get, private set]
+  + SaverEventArgs(message)
+}
+class "LoadModelFromASCIITextFile" as T_Model_Model_IO_LoadModelFromASCIITextFile {
+  - ReplaceQuotes(source) : string
+}
+class "LoadModelFromASCIITextFile_v2" as T_Model_Model_IO_LoadModelFromASCIITextFile_v2 {
+  - ReplaceQuotes(source) : string
+}
+class "LoadModelFromBPF2TextFile" as T_Model_Model_IO_LoadModelFromBPF2TextFile {
+}
+class "LoadModelFromBPFTextFile" as T_Model_Model_IO_LoadModelFromBPFTextFile {
+}
+interface "IModelLoader\nModel-2" as T_Model_Model_Interfaces_IModelLoader <<reference>> [[Model-2.mdpuml Model-2]]
+T_Model_Model_Events_SaverEventArgs -[hidden]down-> T_Model_Model_IO_LoadModelFromASCIITextFile
+T_Model_Model_IO_LoadModelFromASCIITextFile -[hidden]down-> T_Model_Model_IO_LoadModelFromASCIITextFile_v2
+T_Model_Model_IO_LoadModelFromASCIITextFile_v2 -[hidden]down-> T_Model_Model_IO_LoadModelFromBPF2TextFile
+T_Model_Model_IO_LoadModelFromBPF2TextFile -[hidden]down-> T_Model_Model_IO_LoadModelFromBPFTextFile
+T_Model_Model_IO_LoadModelFromBPFTextFile -[hidden]down-> T_Model_Model_Interfaces_IModelLoader
+T_Model_Model_IO_LoadModelFromASCIITextFile ..|> T_Model_Model_Interfaces_IModelLoader
+T_Model_Model_IO_LoadModelFromASCIITextFile_v2 ..|> T_Model_Model_Interfaces_IModelLoader
+T_Model_Model_IO_LoadModelFromBPF2TextFile ..|> T_Model_Model_Interfaces_IModelLoader
+T_Model_Model_IO_LoadModelFromBPFTextFile ..|> T_Model_Model_Interfaces_IModelLoader
+legend bottom
+  Обзор: [[Model.mdpuml Model]]; сигнатуры: [[Model-10.md Model-10.md]].
+  reference — адрес подробностей указан в заголовке типа.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+  Связанные типы в контрактах и сигнатурах:
+  [[Model-2.mdpuml Model-2]]: IModelLoader.
+endlegend
+@enduml

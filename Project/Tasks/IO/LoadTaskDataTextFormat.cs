@@ -16,19 +16,10 @@ namespace Project.Tasks.IO
     /// </summary>
     public class LoadTaskDataTextFormat : ITaskDataLoader
     {
-        /// <inheritdoc/>
-        public event Action<object, ILoadEventArgs> LoadEvent;
-/// <inheritdoc/>
-
-        public ITaskData Load(string fullPath, IGroupData groupData)
-        {
-            return Load(fullPath, groupData, null);
-        }
-
         /// <summary>
         /// Читает данные задачи и сообщает процент прочитанных строк файла.
         /// </summary>
-        public ITaskData Load(string fullPath, IGroupData groupData, IProgress<int> progress)
+        public ITaskData Load(string fullPath, IGroupData groupData, IProgress<int> progress = null)
         {
 
             var lines = ReadLines(fullPath, progress).SkipWhile(line => !line.Contains("Проект"));

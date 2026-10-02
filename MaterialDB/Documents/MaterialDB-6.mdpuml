@@ -1,0 +1,74 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title MaterialDB-6 — Свойства, фазовый состав и функции
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+enum "PropertyEnum" as T_MaterialDB_MaterialDB_MaterialData_PropertyEnum {
+    Capacity
+    Density
+    HardeningFactor
+    HardeningModel
+    MaterialModel
+    PoissonRatio
+    Structure
+    TensileStrength
+    ThermalConductivity
+    ThermalExpansion
+    YieldStrength
+    YoungModule
+}
+class "Phase" as T_MaterialDB_MaterialDB_MaterialData_MetallurgicalData_Phase {
+  + Name : string [get, set]
+  + Value : float [get, set]
+  + ToString() : string
+}
+class "PhaseData" as T_MaterialDB_MaterialDB_MaterialData_MetallurgicalData_PhaseData {
+  + Count : int [get]
+  + IsReadOnly : bool [get]
+  + this[int index] : Phase [get, set]
+  + Add(item) : void
+  + AddRange(items) : void
+  + Clear() : void
+  + Contains(item) : bool
+  + CopyTo(array, arrayIndex) : void
+  + Find(phaseName) : Phase
+  + GetEnumerator() : IEnumerator<Phase>
+  + IndexOf(item) : int
+  + Insert(index, item) : void
+  + PhaseData()
+  + PhaseData(phaseTable)
+  + PhaseData(phases)
+  + Remove(item) : bool
+  + RemoveAt(index) : void
+  + ToString() : string
+}
+class "Process<T>" as T_MaterialDB_MaterialDB_MaterialData_MetallurgicalData_Process_1 {
+  + DataTable : DataTable [get]
+  + Name : string [get]
+  + PhaseMax : T [get, internal set]
+  + PhaseMin : T [get, internal set]
+  + Reaction : Property [get, internal set]
+  + TempMax : T [get, internal set]
+  + TempMin : T [get, internal set]
+  + Process(reaction)
+  + ToString() : string
+}
+T_MaterialDB_MaterialDB_MaterialData_PropertyEnum -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_MetallurgicalData_Phase
+T_MaterialDB_MaterialDB_MaterialData_MetallurgicalData_Phase -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_MetallurgicalData_PhaseData
+T_MaterialDB_MaterialDB_MaterialData_MetallurgicalData_PhaseData -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_MetallurgicalData_Process_1
+T_MaterialDB_MaterialDB_MaterialData_MetallurgicalData_PhaseData --> T_MaterialDB_MaterialDB_MaterialData_MetallurgicalData_Phase : использует
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

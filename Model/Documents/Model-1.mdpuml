@@ -1,52 +1,93 @@
 @startuml
-title Model-1 — объекты геометрии и сетки
 top to bottom direction
-scale max 1500 width
 skinparam classAttributeIconSize 0
-skinparam nodesep 13
-skinparam ranksep 18
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
 hide empty members
+set namespaceSeparator none
 
-interface IModelObject
-abstract class ModelObject
-package "Model.GeometryObjects" {
-  class GeometryPoint
-  class Curve
-  class SurfaceFigure
-  class GeometrySurface
-  class VolumeFigure
+title Model-1 — Геометрические и сеточные сущности
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+interface "IModelObject" as T_Model_Model_Interfaces_IModelObject {
+  + Dim : int [get]
+  + ExistState : bool [get, set]
+  + Number : int [get]
+  + ObjType : ObjType [get]
+  + CalcCentr() : Point3D
+  + SetNumber(number) : void
 }
-package "Model.MeshObjects" {
-  class Node
-  abstract class Element
-  abstract class Element2D
-  abstract class Element3D
-  class Beam
-  class Triangle
-  class Quad
-  class Tetra
-  class Hexa
-  class ElementSurface
+interface "IIntegralObject" as T_Model_Model_Interfaces_IntegralObject_IIntegralObject {
+  + GetIntegralPoints() : IEnumerable<IIntegralPoint>
 }
-
-IModelObject <|.. ModelObject
-ModelObject <|-- GeometryPoint
-ModelObject <|-- Curve
-ModelObject <|-- SurfaceFigure
-ModelObject <|-- Node
-ModelObject <|-- Element
-Element <|-- Beam
-Element <|-- Element2D
-Element <|-- Element3D
-Element2D <|-- Triangle
-Element2D <|-- Quad
-Element3D <|-- Tetra
-Element3D <|-- Hexa
-Curve o-- GeometryPoint
-SurfaceFigure o-- GeometrySurface
-GeometrySurface o-- GeometryPoint
-VolumeFigure o-- SurfaceFigure
-Element o-- Node
-Element2D o-- ElementSurface
-Element3D o-- ElementSurface
+interface "IIntegralPoint" as T_Model_Model_Interfaces_IntegralObject_IIntegralPoint {
+  + Index : int [get, set]
+  + Jacobi : Matrix<double> [get]
+  + Weigt : double [get, set]
+  + this[string dirInd] : double [get]
+  + AddCoordinate(name, value) : void
+  + GetCoordinates() : IEnumerable<KeyValuePair<string, double>>
+}
+interface "IElement" as T_Model_Model_Interfaces_MeshObjects_IElement {
+  + ElementKind : ElementKind [get]
+  + IncidentMatrix : int[][] [get]
+  + Level : int [get, set]
+  + this[int nodeInd] : Node [get, set]
+  + CalcJacobi(integralPoint) : Matrix<double>
+  + CreateIntegrationPoints(level) : IEnumerable<IntegralPoint>
+  + GetDerivativesFormFunctions(intPoint) : double[,]
+  + GetFormFunctions(intPoint) : double[]
+  + GetNodeIndex(node) : int
+}
+interface "IElement1D" as T_Model_Model_Interfaces_MeshObjects_IElement1D {
+}
+interface "IElement2D" as T_Model_Model_Interfaces_MeshObjects_IElement2D {
+  + TransitionMatrix : Matrix<double> [get, set]
+  + CalcTransitionMatrix(points) : double[,]
+  + CreateIntegrationPoint(w, ksi, eta) : IntegralPoint
+}
+interface "IPosition3D\nGeometry-3" as T_Geometry_Geometry_Interfaces_IPosition3D <<reference>> [[../../PrGeometry/Documents/Geometry-3.mdpuml Geometry-3]]
+interface "ICoordinated\nGeometry-1" as T_Geometry_Geometry_Interfaces_ICoordinated <<reference>> [[../../PrGeometry/Documents/Geometry-1.mdpuml Geometry-1]]
+interface "IVertexObject<T>\nModel-15" as T_Model_Model_Interfaces_IVertexObject_1 <<reference>> [[Model-15.mdpuml Model-15]]
+interface "ILineObject<T>\nModel-3" as T_Model_Model_Interfaces_ILineObject_1 <<reference>> [[Model-3.mdpuml Model-3]]
+interface "ISurfaceElement\nModel-5" as T_Model_Model_Interfaces_MeshObjects_ISurfaceElement <<reference>> [[Model-5.mdpuml Model-5]]
+interface "ISquare\nModel-15" as T_Model_Model_Interfaces_ISquare <<reference>> [[Model-15.mdpuml Model-15]]
+T_Model_Model_Interfaces_IModelObject -[hidden]down-> T_Model_Model_Interfaces_IntegralObject_IIntegralObject
+T_Model_Model_Interfaces_IntegralObject_IIntegralObject -[hidden]down-> T_Model_Model_Interfaces_IntegralObject_IIntegralPoint
+T_Model_Model_Interfaces_IntegralObject_IIntegralPoint -[hidden]down-> T_Model_Model_Interfaces_MeshObjects_IElement
+T_Model_Model_Interfaces_MeshObjects_IElement -[hidden]down-> T_Model_Model_Interfaces_MeshObjects_IElement1D
+T_Model_Model_Interfaces_MeshObjects_IElement1D -[hidden]down-> T_Model_Model_Interfaces_MeshObjects_IElement2D
+T_Model_Model_Interfaces_MeshObjects_IElement2D -[hidden]down-> T_Geometry_Geometry_Interfaces_IPosition3D
+T_Geometry_Geometry_Interfaces_IPosition3D -[hidden]down-> T_Geometry_Geometry_Interfaces_ICoordinated
+T_Geometry_Geometry_Interfaces_ICoordinated -[hidden]down-> T_Model_Model_Interfaces_IVertexObject_1
+T_Model_Model_Interfaces_IVertexObject_1 -[hidden]down-> T_Model_Model_Interfaces_ILineObject_1
+T_Model_Model_Interfaces_ILineObject_1 -[hidden]down-> T_Model_Model_Interfaces_MeshObjects_ISurfaceElement
+T_Model_Model_Interfaces_MeshObjects_ISurfaceElement -[hidden]down-> T_Model_Model_Interfaces_ISquare
+T_Model_Model_Interfaces_IModelObject --|> T_Geometry_Geometry_Interfaces_ICoordinated
+T_Model_Model_Interfaces_IModelObject --|> T_Geometry_Geometry_Interfaces_IPosition3D
+T_Model_Model_Interfaces_MeshObjects_IElement --|> T_Model_Model_Interfaces_IVertexObject_1
+T_Model_Model_Interfaces_MeshObjects_IElement --|> T_Model_Model_Interfaces_IntegralObject_IIntegralObject
+T_Model_Model_Interfaces_MeshObjects_IElement1D --|> T_Model_Model_Interfaces_ILineObject_1
+T_Model_Model_Interfaces_MeshObjects_IElement1D --|> T_Model_Model_Interfaces_MeshObjects_IElement
+T_Model_Model_Interfaces_MeshObjects_IElement2D --|> T_Model_Model_Interfaces_ISquare
+T_Model_Model_Interfaces_MeshObjects_IElement2D --|> T_Model_Model_Interfaces_MeshObjects_ISurfaceElement
+legend bottom
+  Обзор: [[Model.mdpuml Model]]; сигнатуры: [[Model-1.md Model-1.md]].
+  reference — адрес подробностей указан в заголовке типа.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+  Связанные типы в контрактах и сигнатурах:
+  [[Model-3.mdpuml Model-3]]: ILineObject<T>.
+  [[Model-5.mdpuml Model-5]]: ISurfaceElement.
+  [[Model-6.mdpuml Model-6]]: ElementKind, ObjType.
+  [[Model-7.mdpuml Model-7]]: IntegralPoint.
+  [[Model-8.mdpuml Model-8]]: Node.
+  [[Model-15.mdpuml Model-15]]: ISquare, IVertexObject<T>.
+  [[../../PrGeometry/Documents/Geometry-1.mdpuml Geometry-1]]: ICoordinated, IPoint3D.
+  [[../../PrGeometry/Documents/Geometry-3.mdpuml Geometry-3]]: IPosition3D.
+  [[../../PrGeometry/Documents/Geometry-4.mdpuml Geometry-4]]: Point3D.
+endlegend
 @enduml

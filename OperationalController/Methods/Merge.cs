@@ -1,65 +1,47 @@
-﻿using Model;
 using Model.Interfaces;
 using Model.Interfaces.ObjectsCollections;
-using Model.IO;
-using Model.IO.STL;
-using Model.MeshObjects;
-using Model.ObjectsCollections;
-using OperationalController.GmshController;
-using Project;
 using System;
-using System.IO;
-using System.Linq;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace OperationalController
 {
     public partial class ProjectController
     {
-        //public string Message { get; private set; }
         /// <inheritdoc/>
-
         public void MergeElements(ObjType objType, string setMaster, string setSlave)
         {
-            var before = CaptureData();
-            if (objType == ObjType.Элемент1D)
+            if (setMaster == setSlave)
+                return;
+            var data = ModelData.ObjectData;
+            switch (objType)
             {
-                var slave = ModelData.ObjectData.E1DCollection[setSlave]; 
-
-                ModelData.ObjectData.E1DCollection[setMaster].Append(slave);
-
-                slave.Clear();
-
-                ModelData.ObjectData.E1DCollection.Remove(setSlave);
+                case ObjType.Элемент1D:
+                    MergeElementSets(data.E1DCollection, setMaster, setSlave);
+                    break;
+                case ObjType.Элемент2D:
+                    MergeElementSets(data.E2DCollection, setMaster, setSlave);
+                    break;
+                case ObjType.Элемент3D:
+                    MergeElementSets(data.E3DCollection, setMaster, setSlave);
+                    break;
+                default:
+                    throw new ArgumentException("Only element sets can be merged.", nameof(objType));
             }
-            else if (objType == ObjType.Элемент2D)
-            {
-                var slave = ModelData.ObjectData.E2DCollection[setSlave];
-                ModelData.ObjectData.E2DCollection[setMaster].Append(slave);
-
-                // подумать, может можно как-то более технологично удалять
-                var numbers = slave.Keys.ToArray();
-                foreach (var number in numbers)
-                    slave.Remove(number);
-
-                ModelData.ObjectData.E2DCollection.Remove(setSlave);
-            }
-            else if (objType == ObjType.Элемент3D)
-            {
-                var slave = ModelData.ObjectData.E3DCollection[setSlave];
-                ModelData.ObjectData.E3DCollection[setMaster].Append(slave);
-
-                // подумать, может можно как-то более технологично удалять
-                var numbers = slave.Keys.ToArray();
-                foreach (var number in numbers)
-                    slave.Remove(number);
-
-                ModelData.ObjectData.E3DCollection.Remove(setSlave);
-            }
-            else
-                throw new Exception($"Операция не поддерживается для объектов {objType}");           
-            PublishDataDifference(before);
         }
 
+        /// <summary>Объединяет наборы элементов с регистрацией выполненных изменений.</summary>
+        private void MergeElementSets<T>(IObjectsCollection<T> collection, string masterName, string slaveName) where T : IModelObject
+        {
+            var slave = collection[slaveName];
+            var master = collection[masterName];
+            var hasObjects = slave.Count != 0;
+            master.Append(slave);
+            if (hasObjects)
+                PublishSetChange(master, ChangeAction.Updated);
+            slave.Clear();
+            collection.Remove(slaveName);
+            PublishSetChange(slave, ChangeAction.Deleted);
+            ClearNotExistedGroupData();
+            ModelView.Prune();
+        }
     }
 }

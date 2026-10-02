@@ -1,33 +1,43 @@
 @startuml
-title PostProc-1 — экспорт результатов и сетки
 top to bottom direction
-scale max 1500 width
 skinparam classAttributeIconSize 0
-skinparam nodesep 14
-skinparam ranksep 18
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
 hide empty members
+set namespaceSeparator none
 
-interface IResultsExporter
-interface IResultsExportSaver
-interface IGridExporter
-interface IGridSurfacesSaver
-class ResultsExporter
-class SaveObjectsResultsToTXT
-class SaveObjectsResultsToCSV
-class GridExporter
-class SaveGridSurfacesToBPF
-abstract class SaveGridSurfacesToSTLBase
-class SaveGridSurfacesToBinSTL
-class SaveGridSurfacesToTxtSTL
-
-IResultsExporter <|.. ResultsExporter
-IResultsExportSaver <|.. SaveObjectsResultsToTXT
-IResultsExportSaver <|.. SaveObjectsResultsToCSV
-ResultsExporter ..> IResultsExportSaver : выбирает по формату
-IGridExporter <|.. GridExporter
-IGridSurfacesSaver <|.. SaveGridSurfacesToBPF
-IGridSurfacesSaver <|.. SaveGridSurfacesToSTLBase
-SaveGridSurfacesToSTLBase <|-- SaveGridSurfacesToBinSTL
-SaveGridSurfacesToSTLBase <|-- SaveGridSurfacesToTxtSTL
-GridExporter ..> IGridSurfacesSaver : выбирает по формату
+title PostProc-1 — Экспорт данных
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+interface "IGridExporter" as T_PostProc_PostProc_IO_GridExport_IGridExporter {
+  + ExportGridSurfaces(figures, savePath, format) : void
+}
+interface "IGridSurfacesSaver" as T_PostProc_PostProc_IO_GridExport_IGridSurfacesSaver {
+  + SaveGrid(figures, savePath) : void
+}
+interface "IResultsExportSaver" as T_PostProc_PostProc_IO_ResultExport_IResultsExportSaver {
+  + SaveResults(objects, result, resDescr, savePath) : void
+}
+interface "IResultsExporter" as T_PostProc_PostProc_IO_ResultExport_IResultsExporter {
+  + ExportObjectsResults(objects, result, resDesc, savePath, format) : void
+}
+class "GridExporter" as T_PostProc_PostProc_IO_GridExport_GridExporter {
+}
+class "SaveGridSurfacesToBPF" as T_PostProc_PostProc_IO_GridExport_SaveGridSurfacesToBPF {
+}
+T_PostProc_PostProc_IO_GridExport_IGridExporter -[hidden]down-> T_PostProc_PostProc_IO_GridExport_IGridSurfacesSaver
+T_PostProc_PostProc_IO_GridExport_IGridSurfacesSaver -[hidden]down-> T_PostProc_PostProc_IO_ResultExport_IResultsExportSaver
+T_PostProc_PostProc_IO_ResultExport_IResultsExportSaver -[hidden]down-> T_PostProc_PostProc_IO_ResultExport_IResultsExporter
+T_PostProc_PostProc_IO_ResultExport_IResultsExporter -[hidden]down-> T_PostProc_PostProc_IO_GridExport_GridExporter
+T_PostProc_PostProc_IO_GridExport_GridExporter -[hidden]down-> T_PostProc_PostProc_IO_GridExport_SaveGridSurfacesToBPF
+T_PostProc_PostProc_IO_GridExport_GridExporter ..|> T_PostProc_PostProc_IO_GridExport_IGridExporter
+T_PostProc_PostProc_IO_GridExport_SaveGridSurfacesToBPF ..|> T_PostProc_PostProc_IO_GridExport_IGridSurfacesSaver
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
 @enduml

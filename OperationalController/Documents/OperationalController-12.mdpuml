@@ -1,0 +1,57 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title OperationalController-12 — Создание объектов, операции и презентаторы
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "TranslateExtruder" as T_OperationalController_OperationalController_MeshObjsCreator_Extrude_TranslateExtruder {
+  + Extrude(curLayer, dir, layers, layerSize) : List<List<Element3D>>
+  + ExtrudeTransfinite(curLayer, dir, layers, layerSize) : List<List<Element3D>>
+}
+class "CrossSection" as T_OperationalController_OperationalController_MeshObjsUtility_CrossSection {
+}
+class "ElementData" as T_OperationalController_OperationalController_MeshObjsUtility_NormalsChecker_ElementData {
+  + center : Point3D [field]
+  + surfaceEdges : List<Point3D> [field]
+  + surfaceNormals : List<Point3D> [field]
+  + surfacePoints : List<Point3D> [field]
+  + ElementData()
+}
+class "FindBoundaryEdges" as T_OperationalController_OperationalController_MeshObjsUtility_FindBoundaryEdges {
+}
+class "FindCoincidentObjects" as T_OperationalController_OperationalController_MeshObjsUtility_FindCoincidentObjects {
+}
+class "FindOpenSurfaceNodes" as T_OperationalController_OperationalController_MeshObjsUtility_FindOpenSurfaceNodes {
+  + Find(elements) : IEnumerable<int>
+}
+abstract class "MeshExtruder" as T_OperationalController_OperationalController_MeshObjsCreator_Extrude_MeshExtruder <<reference>>
+interface "ICrossSectionMaker" as T_OperationalController_OperationalController_ICrossSectionMaker <<reference>>
+interface "IBoundaryEdgesFinder" as T_OperationalController_OperationalController_IBoundaryEdgesFinder <<reference>>
+interface "ICoincidentObjectsFinder" as T_OperationalController_OperationalController_ICoincidentObjectsFinder <<reference>>
+T_OperationalController_OperationalController_MeshObjsCreator_Extrude_TranslateExtruder -[hidden]down-> T_OperationalController_OperationalController_MeshObjsUtility_CrossSection
+T_OperationalController_OperationalController_MeshObjsUtility_CrossSection -[hidden]down-> T_OperationalController_OperationalController_MeshObjsUtility_NormalsChecker_ElementData
+T_OperationalController_OperationalController_MeshObjsUtility_NormalsChecker_ElementData -[hidden]down-> T_OperationalController_OperationalController_MeshObjsUtility_FindBoundaryEdges
+T_OperationalController_OperationalController_MeshObjsUtility_FindBoundaryEdges -[hidden]down-> T_OperationalController_OperationalController_MeshObjsUtility_FindCoincidentObjects
+T_OperationalController_OperationalController_MeshObjsUtility_FindCoincidentObjects -[hidden]down-> T_OperationalController_OperationalController_MeshObjsUtility_FindOpenSurfaceNodes
+T_OperationalController_OperationalController_MeshObjsUtility_FindOpenSurfaceNodes -[hidden]down-> T_OperationalController_OperationalController_MeshObjsCreator_Extrude_MeshExtruder
+T_OperationalController_OperationalController_MeshObjsCreator_Extrude_MeshExtruder -[hidden]down-> T_OperationalController_OperationalController_ICrossSectionMaker
+T_OperationalController_OperationalController_ICrossSectionMaker -[hidden]down-> T_OperationalController_OperationalController_IBoundaryEdgesFinder
+T_OperationalController_OperationalController_IBoundaryEdgesFinder -[hidden]down-> T_OperationalController_OperationalController_ICoincidentObjectsFinder
+T_OperationalController_OperationalController_MeshObjsCreator_Extrude_TranslateExtruder --|> T_OperationalController_OperationalController_MeshObjsCreator_Extrude_MeshExtruder
+T_OperationalController_OperationalController_MeshObjsUtility_CrossSection ..|> T_OperationalController_OperationalController_ICrossSectionMaker
+T_OperationalController_OperationalController_MeshObjsUtility_FindBoundaryEdges ..|> T_OperationalController_OperationalController_IBoundaryEdgesFinder
+T_OperationalController_OperationalController_MeshObjsUtility_FindCoincidentObjects ..|> T_OperationalController_OperationalController_ICoincidentObjectsFinder
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

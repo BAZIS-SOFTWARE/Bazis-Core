@@ -1,0 +1,72 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title MaterialDB-5 — Свойства, фазовый состав и функции
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "ChemicalData" as T_MaterialDB_MaterialDB_MaterialData_ChemicalData {
+  + Count : int [get]
+  + IsReadOnly : bool [get]
+  + Keys : ICollection<ChemElement> [get]
+  + Values : ICollection<float> [get]
+  + this[ChemElement key] : float [get, set]
+  + Add(key, value) : void
+  + Add(item) : void
+  + Clear() : void
+  + Contains(item) : bool
+  + ContainsKey(key) : bool
+  + CopyTo(array, arrayIndex) : void
+  + GetEnumerator() : IEnumerator<KeyValuePair<ChemElement, float>>
+  + Parce(el) : ChemElement
+  + Remove(key) : bool
+  + Remove(item) : bool
+  + TryGetValue(key, out value) : bool
+}
+class "GeneralAbsentException" as T_MaterialDB_MaterialDB_MaterialData_GeneralAbsentException <<internal>> {
+  + GeneralAbsentException()
+  + GeneralAbsentException(message)
+  + GeneralAbsentException(message, innerException)
+}
+class "Property" as T_MaterialDB_MaterialDB_MaterialData_Property {
+  + this[int row,int col] : double [get, set]
+  + Property(name, x_unit, y_unit, units, dataTable)
+  + ToString() : string
+}
+class "PropertyData" as T_MaterialDB_MaterialDB_MaterialData_PropertyData {
+  + Count : int [get]
+  + IsReadOnly : bool [get]
+  + Keys : ICollection<string> [get]
+  + Values : ICollection<Property> [get]
+  + this[string key] : Property [get, set]
+  + Add(item) : void
+  + Add(key, value) : void
+  + Clear() : void
+  + Contains(item) : bool
+  + ContainsKey(key) : bool
+  + CopyTo(array, arrayIndex) : void
+  + GetEnumerator() : IEnumerator<KeyValuePair<string, Property>>
+  + Remove(item) : bool
+  + Remove(key) : bool
+  + TryGetValue(key, out value) : bool
+}
+interface "IProperty" as T_MaterialDB_MaterialDB_Interfaces_IProperty <<reference>>
+T_MaterialDB_MaterialDB_MaterialData_ChemicalData -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_GeneralAbsentException
+T_MaterialDB_MaterialDB_MaterialData_GeneralAbsentException -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_Property
+T_MaterialDB_MaterialDB_MaterialData_Property -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_PropertyData
+T_MaterialDB_MaterialDB_MaterialData_PropertyData -[hidden]down-> T_MaterialDB_MaterialDB_Interfaces_IProperty
+T_MaterialDB_MaterialDB_MaterialData_Property ..|> T_MaterialDB_MaterialDB_Interfaces_IProperty
+T_MaterialDB_MaterialDB_MaterialData_PropertyData --> T_MaterialDB_MaterialDB_MaterialData_Property : использует
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

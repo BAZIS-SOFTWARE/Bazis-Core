@@ -1,4 +1,4 @@
-﻿using MaterialDB.FunctionData;
+using MaterialDB.FunctionData;
 using MaterialDB.MaterialData;
 using Project.Interfaces.Tasks;
 using Project.Tasks;
@@ -32,14 +32,13 @@ namespace OperationalController
         {
             if (!hasProject)
                 throw new InvalidOperationException("Project is not open.");
-            var before = CaptureData();
             var oldKind = TaskData.TaskKind;
             var oldType = TaskData.TaskType;
             var oldMaterials = TaskData.Materials;
             var oldFunctions = TaskData.Functions;
 
+            ClearTaskData();
             project.TaskData = data;
-            PublishDataDifference(before);
             if (oldKind != TaskData.TaskKind)
                 Publish(new ProjectChange(ProjectChangeKind.PropertyChanged, ProjectProperty.TaskKind));
             if (oldType != TaskData.TaskType)

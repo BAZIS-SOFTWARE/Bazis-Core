@@ -1,4 +1,5 @@
-﻿@startuml
+@startuml
+caption АРХИВ: прежняя схема; актуальные контракты — в Documents/Architecture.md
 
 interface IGmshController
 {

@@ -1,44 +1,57 @@
 @startuml
-title Geometry — основные группы классов
 top to bottom direction
-scale max 1500 width
 skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
 skinparam nodesep 18
-skinparam ranksep 22
+skinparam ranksep 24
+skinparam packageStyle rectangle
 hide empty members
+set namespaceSeparator none
 
-package "Geometry. Координаты и системы отсчёта" {
-  class Point2D
-  class Point3D
-  class Frame
-  class Frame2D
-  class Plane
-}
-package "Geometry. Плоские построения" {
-  class Segment2D
-  class Polygon
-  class Hull2DCreator
-}
-package "Geometry. Пространственные построения" {
-  class Segment3D
-  class Curve3D
-}
-
-Frame o-- Point3D : центр и оси
-Frame2D o-- Point3D : начало и оси
-Plane o-- Point3D : нормаль
-Segment2D o-- Point2D
-Polygon o-- Point2D
-Hull2DCreator ..> Polygon : создаёт
-Segment3D o-- Point3D
-Curve3D o-- Point3D
-
-note right of Frame
-  Координаты и локальные системы:
-  Geometry-1.mdpuml
+allowmixing
+title Geometry — обзор классов и расположение подробностей
+caption Обзор; полный состав членов — на нумерованных поддиаграммах
+class "Point3D" as T_Geometry_Geometry_Point3D <<details>>
+note right of T_Geometry_Geometry_Point3D
+  Geometry-4
 end note
-note right of Polygon
-  Сегменты, кривые и оболочка:
-  Geometry-2.mdpuml
+class "Frame" as T_Geometry_Geometry_Frame <<details>>
+note right of T_Geometry_Geometry_Frame
+  Geometry-3
 end note
+class "Plane" as T_Geometry_Geometry_Plane <<details>>
+note right of T_Geometry_Geometry_Plane
+  Geometry-3
+end note
+class "Segment2D" as T_Geometry_Geometry_Segment2D <<details>>
+note right of T_Geometry_Geometry_Segment2D
+  Geometry-5
+end note
+class "Polygon" as T_Geometry_Geometry_Polygon <<details>>
+note right of T_Geometry_Geometry_Polygon
+  Geometry-2
+end note
+class "Hull2DCreator" as T_Geometry_Geometry_Hull2DCreator <<details>>
+note right of T_Geometry_Geometry_Hull2DCreator
+  Geometry-2
+end note
+T_Geometry_Geometry_Frame --> T_Geometry_Geometry_Point3D : использует
+T_Geometry_Geometry_Plane --> T_Geometry_Geometry_Point3D : использует
+rectangle "Координаты и системы отсчёта" as Area_1 <<область>>
+note right of Area_1
+  Geometry-1.mdpuml, Geometry-3.mdpuml, Geometry-4.mdpuml
+end note
+rectangle "Геометрические построения и операции" as Area_2 <<область>>
+note right of Area_2
+  Geometry-2.mdpuml, Geometry-5.mdpuml
+end note
+T_Geometry_Geometry_Point3D -[hidden]down-> T_Geometry_Geometry_Frame
+T_Geometry_Geometry_Frame -[hidden]down-> T_Geometry_Geometry_Plane
+T_Geometry_Geometry_Plane -[hidden]down-> T_Geometry_Geometry_Segment2D
+T_Geometry_Geometry_Segment2D -[hidden]down-> T_Geometry_Geometry_Polygon
+T_Geometry_Geometry_Polygon -[hidden]down-> T_Geometry_Geometry_Hull2DCreator
+T_Geometry_Geometry_Hull2DCreator -[hidden]down-> Area_1
+Area_1 -[hidden]down-> Area_2
 @enduml

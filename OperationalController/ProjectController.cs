@@ -169,19 +169,26 @@ namespace OperationalController
         /// <inheritdoc/>
         public void MergeNodes(List<List<int>> numbers)
         {
-            var before = CaptureData();
-            objectsMerger.Merge(numbers, ModelData.ObjectData.NodesSet);
+            var nodes = ModelData.ObjectData.NodesSet;
+            objectsMerger.Merge(numbers, nodes, out var changedElements, out var nodesRemoved);
+            if (!nodesRemoved && changedElements.Count == 0)
+                return;
+            var changedSets = new HashSet<ISetInfo>(ReferenceEqualityComparer.Instance);
+            foreach (var element in changedElements)
+            {
+                var setInfo = ModelData.ObjectData.GetSetInfo(element.ObjType, element.Number);
+                if (setInfo != null)
+                    changedSets.Add(setInfo);
+            }
+            var surfaceChanges = MarkModelSurfaces(ModelData);
+            changedSets.UnionWith(surfaceChanges);
+            if (nodesRemoved)
+                changedSets.Add(nodes);
+            foreach (var set in changedSets)
+                PublishSetChange(set, ChangeAction.Updated);
 
-            // Слияние узлов переставляет ссылки в элементах, поэтому грани
-            // до сих пор разъединённых сеток становятся совпадающими.
-            try
-            {
-                MarkModelSurfaces(ModelData);
-            }
-            finally
-            {
-                PublishDataDifference(before, true);
-            }
+            ClearNotExistedGroupData();
+            ModelView.Prune();
         }
 
         ISurfaceMeshCreator surfaceMeshCreator { get; set; }

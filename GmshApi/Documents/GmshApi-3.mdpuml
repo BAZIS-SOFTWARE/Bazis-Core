@@ -1,0 +1,76 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title GmshApi-3 — Жизненный цикл и CAD API
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "Gmsh" as T_GmshApi_GmshApi_Gmsh {
+  + Logger : Logger [get, private set]
+  + Model : Model [get, private set]
+  + Option : Option [get, private set]
+  + Plugin : Plugin [get, private set]
+  + Clear() : void
+  + Gmsh()
+  + Initialize(argc, argv, readConfigFiles, run) : void
+  + IsInitialized() : int
+  + Merge(fileName) : void
+  + Open(fileName) : void
+  + Write(fileName) : void
+  + finalize() : void
+}
+class "GmshKernel" as T_GmshApi_GmshApi_GmshKernel <<static>> {
+  + DLL : IntPtr [get, set]
+  + GetFunction<T>(functionName) : T
+  + GetProcAddress(hModule, procedureName) : IntPtr
+  + LoadLibrary(dllToLoad) : IntPtr
+}
+enum "InvisibleOptions" as T_GmshApi_GmshApi_InvisibleOptions {
+    DeleteElements
+    ReverseElements
+    XMax
+    XMin
+    YMax
+    YMin
+    ZMax
+    ZMin
+}
+class "Logger" as T_GmshApi_GmshApi_Logger {
+  + Get() : string[]
+  + GetLastError() : string
+  + Start() : void
+  + Stop() : void
+  + Write(message, level) : void
+}
+enum "LoggerLevel" as T_GmshApi_GmshApi_LoggerLevel {
+    error
+    info
+    warning
+}
+class "Memory" as T_GmshApi_GmshApi_Memory <<internal, static>> {
+  + Free(p) : void
+  + GetArrayOfObjectsData<T>(outArray, outArrayLength, inArray) : T[][]
+  + GetArrayOfString(array, length) : string[]
+  + GetObjectsData<T>(src, eCount) : T[]
+  + GetString(ptr) : string
+  + Malloc(n) : IntPtr
+}
+T_GmshApi_GmshApi_Gmsh -[hidden]down-> T_GmshApi_GmshApi_GmshKernel
+T_GmshApi_GmshApi_GmshKernel -[hidden]down-> T_GmshApi_GmshApi_InvisibleOptions
+T_GmshApi_GmshApi_InvisibleOptions -[hidden]down-> T_GmshApi_GmshApi_Logger
+T_GmshApi_GmshApi_Logger -[hidden]down-> T_GmshApi_GmshApi_LoggerLevel
+T_GmshApi_GmshApi_LoggerLevel -[hidden]down-> T_GmshApi_GmshApi_Memory
+T_GmshApi_GmshApi_Gmsh --> T_GmshApi_GmshApi_Logger : использует
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

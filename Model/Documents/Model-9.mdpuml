@@ -1,0 +1,31 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title Model-9 — Геометрические и сеточные сущности
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "Triangle_c" as T_Model_Model_MeshObjects_Triangle_c {
+  + Triangle_c(number, nodes)
+  + Triangle_c(number, nodes, level)
+}
+abstract class "Element2D\nModel-7" as T_Model_Model_MeshObjects_Element2D <<reference>> [[Model-7.mdpuml Model-7]]
+T_Model_Model_MeshObjects_Triangle_c -[hidden]down-> T_Model_Model_MeshObjects_Element2D
+T_Model_Model_MeshObjects_Triangle_c --|> T_Model_Model_MeshObjects_Element2D
+legend bottom
+  Обзор: [[Model.mdpuml Model]]; сигнатуры: [[Model-9.md Model-9.md]].
+  reference — адрес подробностей указан в заголовке типа.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+  Связанные типы в контрактах и сигнатурах:
+  [[Model-7.mdpuml Model-7]]: Element2D.
+  [[Model-8.mdpuml Model-8]]: Node.
+endlegend
+@enduml

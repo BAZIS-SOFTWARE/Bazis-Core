@@ -1,0 +1,49 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title GmshApi-7 — Жизненный цикл и CAD API
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+enum "PluginName\nчасть 2/3" as T_GmshApi_GmshApi_PluginName {
+    HomologyComputation
+    HomologyPostProcessing
+    Integrate
+    Invisible
+    Isosurface
+    Lambda2
+    LongitudeLatitude
+    MakeSimplex
+    MathEval
+    MeshSizeFieldView
+    MeshSubEntities
+    MeshVolume
+    MinMax
+    ModifyComponents
+    ModulusPhase
+    NearToFarField
+    NearestNeighbor
+    NewView
+    Particles
+    Probe
+    Remove
+    Scal2Tens
+    Scal2Vec
+    ShowNeighborElements
+}
+note right of T_GmshApi_GmshApi_PluginName
+  Полный состав: GmshApi-6, GmshApi-7, GmshApi-8
+end note
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

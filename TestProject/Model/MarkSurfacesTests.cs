@@ -206,6 +206,30 @@ namespace TestProject_test.Model
             };
         }
 
+        /// <summary>Проверяет уникальность изменённых владельцев и пустой результат повторной разметки.</summary>
+        [DataTestMethod]
+        [DataRow(2)]
+        [DataRow(128)]
+        public void Mark_ReturnsEachChangedOwnerOnce(int count)
+        {
+            var elements = new List<ISurfaceElement>();
+            var bottom = CreateLayer(1, 0);
+            for (var index = 0; index < count; index++)
+            {
+                var top = CreateLayer((index + 1) * 4 + 1, index + 1);
+                var hexa = CreateHexa(index, bottom, top);
+                elements.Add(hexa);
+                bottom = top;
+            }
+            var marker = new MarkSurfaces();
+            var defects = marker.Mark(elements, out var changed);
+            Assert.AreEqual(0, defects.Count);
+            Assert.AreEqual(count, changed.Count);
+            var repeatedDefects = marker.Mark(elements, out var repeatedChanges);
+            Assert.AreEqual(0, repeatedDefects.Count);
+            Assert.AreEqual(0, repeatedChanges.Count);
+        }
+
         /// <summary>
         /// Собирает гексаэдр из нижнего и верхнего слоёв узлов.
         /// </summary>

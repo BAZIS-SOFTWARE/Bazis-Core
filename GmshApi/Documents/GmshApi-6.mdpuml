@@ -1,0 +1,74 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title GmshApi-6 — Жизненный цикл и CAD API
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "Occ\nчасть 2/2" as T_GmshApi_GmshApi_Occ {
+  + GetSurfaceLoops(volumeTag) : Tuple<int[], int[][]>
+  + ImportShapes(fileName, highestDimOnly, format) : int[]
+  + Intersect(objectDimTags, toolDimTags, tag, removeObject, removeTool) : Tuple<int[], int[][]>
+  + Remove(dimTags, recursive) : void
+  + RemoveAllDuplicates() : void
+  + Synchronize() : void
+}
+note right of T_GmshApi_GmshApi_Occ
+  Полный состав: GmshApi-5, GmshApi-6
+end note
+class "Option" as T_GmshApi_GmshApi_Option {
+  + GetNumber(name) : double
+  + GetString(name) : string
+  + SetNumber(name, value) : void
+  + SetString(name, value) : void
+}
+class "Plugin" as T_GmshApi_GmshApi_Plugin {
+  + Run(name) : int
+  + SetNumber(name, option, value) : void
+  + SetString(name, option, value) : void
+}
+enum "PluginName\nчасть 1/3" as T_GmshApi_GmshApi_PluginName {
+    AnalyseMeshQuality
+    Annotate
+    BoundaryAngles
+    Bubbles
+    Crack
+    Curl
+    CurvedBndDist
+    CutBox
+    CutGrid
+    CutMesh
+    CutParametric
+    CutPlane
+    CutSphere
+    DiscretizationError
+    Distance
+    Divergence
+    Eigenvalues
+    Eigenvectors
+    ExtractEdges
+    ExtractElements
+    FieldFromAmplitudePhase
+    GaussPoints
+    Gradient
+    HarmonicToTime
+}
+note right of T_GmshApi_GmshApi_PluginName
+  Полный состав: GmshApi-6, GmshApi-7, GmshApi-8
+end note
+T_GmshApi_GmshApi_Occ -[hidden]down-> T_GmshApi_GmshApi_Option
+T_GmshApi_GmshApi_Option -[hidden]down-> T_GmshApi_GmshApi_Plugin
+T_GmshApi_GmshApi_Plugin -[hidden]down-> T_GmshApi_GmshApi_PluginName
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

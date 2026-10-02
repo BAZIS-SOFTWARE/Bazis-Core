@@ -1,38 +1,84 @@
 @startuml
-title PostProc — сборка результатов, поле и экспорт
 top to bottom direction
-scale max 1500 width
 skinparam classAttributeIconSize 0
-skinparam nodesep 16
-skinparam ranksep 20
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
 hide empty members
+set namespaceSeparator none
 
-interface IPostProcController
-class PostProcController {
-  + FillRange(min, max, intervals, precision)
-  + GetItems() : IEnumerable<ItemRange>
-}
-class ItemRange
-class MergeResults
-class ResultsFieldsCreator
-class ResultsExporter
-class GridExporter
-class "Result" as Result <<ResultDB>>
-
-PostProcController *-- ItemRange : шкала цветов
-PostProcController *-- MergeResults
-PostProcController *-- ResultsFieldsCreator
-PostProcController *-- ResultsExporter
-PostProcController *-- GridExporter
-MergeResults ..> Result
-ResultsFieldsCreator ..> Result
-
-note right of ResultsExporter
-  Форматы экспорта:
-  PostProc-1.mdpuml
+allowmixing
+title PostProc — обзор классов и расположение подробностей
+caption Обзор; полный состав членов — на нумерованных поддиаграммах
+interface "IPostProcController" as T_PostProc_PostProc_IPostProcController <<details>>
+note right of T_PostProc_PostProc_IPostProcController
+  PostProc-2
 end note
-note right of ResultsFieldsCreator
-  Построение цветных поверхностей:
-  PostProc-2.mdpuml
+class "PostProcController" as T_PostProc_PostProc_PostProcController <<details>>
+note right of T_PostProc_PostProc_PostProcController
+  PostProc-4
 end note
+interface "IResultsMerger" as T_PostProc_PostProc_IResultsMerger <<details>>
+note right of T_PostProc_PostProc_IResultsMerger
+  PostProc-2
+end note
+class "MergeResults" as T_PostProc_PostProc_MergeResults <<details>>
+note right of T_PostProc_PostProc_MergeResults
+  PostProc-4
+end note
+interface "IResultsFieldsCreator" as T_PostProc_ProjectInterfaces_Results_IResultsFieldsCreator <<details>>
+note right of T_PostProc_ProjectInterfaces_Results_IResultsFieldsCreator
+  PostProc-2
+end note
+class "ResultsFieldsCreator" as T_PostProc_PostProc_ScenePresenter_ResultsFieldsCreator <<details>>
+note right of T_PostProc_PostProc_ScenePresenter_ResultsFieldsCreator
+  PostProc-5
+end note
+interface "IResultsExporter" as T_PostProc_PostProc_IO_ResultExport_IResultsExporter <<details>>
+note right of T_PostProc_PostProc_IO_ResultExport_IResultsExporter
+  PostProc-1
+end note
+class "ResultsExporter" as T_PostProc_PostProc_IO_ResultExport_ResultsExporter <<details>>
+note right of T_PostProc_PostProc_IO_ResultExport_ResultsExporter
+  PostProc-3
+end note
+interface "IGridExporter" as T_PostProc_PostProc_IO_GridExport_IGridExporter <<details>>
+note right of T_PostProc_PostProc_IO_GridExport_IGridExporter
+  PostProc-1
+end note
+class "GridExporter" as T_PostProc_PostProc_IO_GridExport_GridExporter <<details>>
+note right of T_PostProc_PostProc_IO_GridExport_GridExporter
+  PostProc-1
+end note
+T_PostProc_PostProc_IO_GridExport_GridExporter ..|> T_PostProc_PostProc_IO_GridExport_IGridExporter
+T_PostProc_PostProc_IO_ResultExport_ResultsExporter ..|> T_PostProc_PostProc_IO_ResultExport_IResultsExporter
+T_PostProc_PostProc_IPostProcController --> T_PostProc_PostProc_IO_GridExport_IGridExporter : использует
+T_PostProc_PostProc_IPostProcController --> T_PostProc_PostProc_IO_ResultExport_IResultsExporter : использует
+T_PostProc_PostProc_IPostProcController --> T_PostProc_PostProc_IResultsMerger : использует
+T_PostProc_PostProc_PostProcController --> T_PostProc_PostProc_IO_GridExport_IGridExporter : использует
+T_PostProc_PostProc_PostProcController --> T_PostProc_PostProc_IO_ResultExport_IResultsExporter : использует
+T_PostProc_PostProc_PostProcController --> T_PostProc_PostProc_MergeResults : использует
+T_PostProc_PostProc_PostProcController --> T_PostProc_PostProc_ScenePresenter_ResultsFieldsCreator : использует
+rectangle "Экспорт данных" as Area_1 <<область>>
+note right of Area_1
+  PostProc-1.mdpuml, PostProc-3.mdpuml
+end note
+rectangle "Построение полей и шкала результатов" as Area_2 <<область>>
+note right of Area_2
+  PostProc-2.mdpuml, PostProc-4.mdpuml, PostProc-5.mdpuml
+end note
+T_PostProc_PostProc_IPostProcController -[hidden]down-> T_PostProc_PostProc_PostProcController
+T_PostProc_PostProc_PostProcController -[hidden]down-> T_PostProc_PostProc_IResultsMerger
+T_PostProc_PostProc_IResultsMerger -[hidden]down-> T_PostProc_PostProc_MergeResults
+T_PostProc_PostProc_MergeResults -[hidden]down-> T_PostProc_ProjectInterfaces_Results_IResultsFieldsCreator
+T_PostProc_ProjectInterfaces_Results_IResultsFieldsCreator -[hidden]down-> T_PostProc_PostProc_ScenePresenter_ResultsFieldsCreator
+T_PostProc_PostProc_ScenePresenter_ResultsFieldsCreator -[hidden]down-> T_PostProc_PostProc_IO_ResultExport_IResultsExporter
+T_PostProc_PostProc_IO_ResultExport_IResultsExporter -[hidden]down-> T_PostProc_PostProc_IO_ResultExport_ResultsExporter
+T_PostProc_PostProc_IO_ResultExport_ResultsExporter -[hidden]down-> T_PostProc_PostProc_IO_GridExport_IGridExporter
+T_PostProc_PostProc_IO_GridExport_IGridExporter -[hidden]down-> T_PostProc_PostProc_IO_GridExport_GridExporter
+T_PostProc_PostProc_IO_GridExport_GridExporter -[hidden]down-> Area_1
+Area_1 -[hidden]down-> Area_2
 @enduml

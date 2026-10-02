@@ -1,5 +1,4 @@
 ﻿using Geometry;
-using Model.Events;
 using Model.GroupsData;
 using Model.MeshObjects;
 using Model.Interfaces;
@@ -18,7 +17,6 @@ namespace Model.IO
     /// </summary>
     public class LoadModelFromINPTextFile_v2 : IModelLoader
     {
-        public event Action<object, ILoaderEventArgs> LoadEvent;
         private Dictionary<int, IElement> allElements = new Dictionary<int, IElement>();
         private ModelData modelData;
         private string line;
@@ -31,7 +29,6 @@ namespace Model.IO
             modelData = new ModelData();
             using (var reader = new ProgressTextReader(path, progress))
             {
-                LoadEvent?.Invoke(this, new LoaderEventArgs("Начало загрузки модели"));
                 line = reader.ReadLine();
                 while (!reader.EndOfStream)
                 {
@@ -56,7 +53,6 @@ namespace Model.IO
         /// </summary>
         private IEnumerable<Node> ReadNodes(StreamReader reader)
         {
-            LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка узлов..."));
 
             while (!reader.EndOfStream)
             {
@@ -81,7 +77,6 @@ namespace Model.IO
         /// </summary>
         private void ReadElements(StreamReader reader)
         {
-            LoadEvent?.Invoke(this, new LoaderEventArgs("Начало загрузки элементов"));
             line = reader.ReadLine();            
             SetParametersElements(reader);
         }

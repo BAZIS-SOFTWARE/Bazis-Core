@@ -1,0 +1,72 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title Project-16 — Функции, материалы и ввод/вывод
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "DHEX" as T_Project_Project_Tasks_Functions_DHEX {
+  + CalcValue() : double
+  + DHEX()
+}
+class "FHEX" as T_Project_Project_Tasks_Functions_FHEX {
+  + CalcValue() : double
+  + FHEX()
+}
+abstract class "FrameFunction" as T_Project_Project_Tasks_Functions_FrameFunction {
+  + X : double [get, set]
+  + Y : double [get, set]
+  + Z : double [get, set]
+  + FrameFunction()
+}
+enum "FuncName" as T_Project_Project_Tasks_Functions_FuncName {
+    CIL
+    Custom
+    DEL
+    DHEX
+    FHEX
+    PT
+    SPH
+    TT
+}
+enum "FuncType" as T_Project_Project_Tasks_Functions_FuncType {
+    CPF
+    PF
+}
+abstract class "Function" as T_Project_Project_Tasks_Functions_Function {
+  + FunctionType : FuncType [get, set]
+  + Name : string [get, protected set]
+  + this[string key] : Parameter [get, set]
+  + AddParameter(parameter) : void
+  + CalcValue() : double
+  + ContainsParameter(name) : bool
+  + GetParameters() : IEnumerable<Parameter>
+  + GetTableParameters() : IEnumerable<TableParameter>
+  + ToString() : string
+}
+interface "IFrameFunction\nProject-4" as T_Project_Project_Interfaces_Tasks_IFrameFunction <<reference>> [[Project-4.mdpuml Project-4]]
+T_Project_Project_Tasks_Functions_DHEX -[hidden]down-> T_Project_Project_Tasks_Functions_FHEX
+T_Project_Project_Tasks_Functions_FHEX -[hidden]down-> T_Project_Project_Tasks_Functions_FrameFunction
+T_Project_Project_Tasks_Functions_FrameFunction -[hidden]down-> T_Project_Project_Tasks_Functions_FuncName
+T_Project_Project_Tasks_Functions_FuncName -[hidden]down-> T_Project_Project_Tasks_Functions_FuncType
+T_Project_Project_Tasks_Functions_FuncType -[hidden]down-> T_Project_Project_Tasks_Functions_Function
+T_Project_Project_Tasks_Functions_Function -[hidden]down-> T_Project_Project_Interfaces_Tasks_IFrameFunction
+T_Project_Project_Tasks_Functions_DHEX --|> T_Project_Project_Tasks_Functions_Function
+T_Project_Project_Tasks_Functions_FHEX --|> T_Project_Project_Tasks_Functions_Function
+T_Project_Project_Tasks_Functions_FrameFunction --|> T_Project_Project_Tasks_Functions_Function
+T_Project_Project_Tasks_Functions_FrameFunction ..|> T_Project_Project_Interfaces_Tasks_IFrameFunction
+T_Project_Project_Tasks_Functions_Function --> T_Project_Project_Tasks_Functions_FuncType : использует
+legend bottom
+  Обзор: [[Project.mdpuml Project]]; сигнатуры: [[Project-16.md Project-16.md]].
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

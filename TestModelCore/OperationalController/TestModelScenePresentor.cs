@@ -354,7 +354,6 @@ namespace TestModeCore_test.OperationalController
                 modelLoader = new LoadModelFromCDBTextFile();
             else throw new Exception("Неизвестный формат");
 
-            modelLoader.LoadEvent += (ar1, ar2) => { };
             var model = modelLoader.Load(path);
 
             //act

@@ -1,5 +1,4 @@
 ﻿using Geometry;
-using Model.Events;
 using Model.GroupsData;
 using Model.MeshObjects;
 using Model.Interfaces;
@@ -19,7 +18,6 @@ namespace Model.IO
     /// </summary>
     public class LoadModelFromBPFTextFile : IModelLoader
     {
-        public event Action<object, ILoaderEventArgs> LoadEvent;
 
         public IModelData Load(string path, IProgress<int> progress = null)
         {
@@ -32,7 +30,6 @@ namespace Model.IO
                 {
                     if (line == "Узлы")
                     {
-                        LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка узлов..."));
                         Thread.Sleep(100);
                         LoadNodes(sr, newModel);
                     }
@@ -42,21 +39,18 @@ namespace Model.IO
                         line == "Элемент1D" || line == "Элементы 3004" || line == "Элементы 3006" ||
                         line == "Элементы 3008")
                     {
-                        LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка элементов..."));
                         Thread.Sleep(100);
                         LoadElement(sr, line, newModel);
                     }
 
                     if (line == "Группы узлов и элементов")
                     {
-                        LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка групп..."));
                         Thread.Sleep(100);
                         LoadGroup(sr, newModel);
                     }
                     line = sr.ReadLine();
                 }
 
-                LoadEvent?.Invoke(this, new LoaderEventArgs("Модель загружена"));
                 Thread.Sleep(100);
                 return newModel;
             }

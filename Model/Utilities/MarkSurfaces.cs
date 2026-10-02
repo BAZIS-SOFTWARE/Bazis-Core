@@ -30,11 +30,21 @@ namespace Model.Utilities
         /// </remarks>
         public IReadOnlyList<ElementSurface> Mark(IEnumerable<ISurfaceElement> elements)
         {
+            return Mark(elements, out _);
+        }
+
+        /// <summary>
+        /// Связывает поверхности и возвращает уникальные элементы с изменёнными соседями.
+        /// </summary>
+        public IReadOnlyList<ElementSurface> Mark(IEnumerable<ISurfaceElement> elements, out IReadOnlyCollection<IElement> changedElements)
+        {
             if (elements == null)
                 throw new ArgumentNullException(nameof(elements));
 
             var found = new Dictionary<int[], ElementSurface>(new SurfaceNodesComparer());
             var defects = new List<ElementSurface>();
+            var changed = new HashSet<IElement>(ReferenceEqualityComparer.Instance);
+            changedElements = changed;
 
             foreach (var element in elements)
             {
@@ -42,8 +52,12 @@ namespace Model.Utilities
                     continue;
 
                 foreach (var surface in element.GetSurfaces())
-                    Link(surface, found, defects);
+                    Link(surface, found, defects, changed);
             }
+
+            foreach (var surface in found.Values)
+                if (surface != null && surface.SetNeighbour(null))
+                    changed.Add(surface.Owner);
 
             return defects;
         }
@@ -52,10 +66,8 @@ namespace Model.Utilities
         /// Обрабатывает одну поверхность: запоминает первую встреченную,
         /// связывает вторую с первой, третью считает дефектом.
         /// </summary>
-        private void Link(ElementSurface surface, Dictionary<int[], ElementSurface> found, List<ElementSurface> defects)
+        private void Link(ElementSurface surface, Dictionary<int[], ElementSurface> found, List<ElementSurface> defects, ISet<IElement> changed)
         {
-            surface.SetNeighbour(null);
-
             var key = surface.CreateNodesKey();
             var opposite = default(ElementSurface);
 
@@ -67,12 +79,16 @@ namespace Model.Utilities
 
             if (opposite == null)
             {
+                if (surface.SetNeighbour(null))
+                    changed.Add(surface.Owner);
                 defects.Add(surface);
                 return;
             }
 
-            opposite.SetNeighbour(surface.Owner);
-            surface.SetNeighbour(opposite.Owner);
+            if (opposite.SetNeighbour(surface.Owner))
+                changed.Add(opposite.Owner);
+            if (surface.SetNeighbour(opposite.Owner))
+                changed.Add(surface.Owner);
 
             // Пара закрыта. Пустая запись отличает "встретилась дважды"
             // от "встретилась один раз" и ловит третьего владельца.

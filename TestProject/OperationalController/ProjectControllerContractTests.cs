@@ -233,13 +233,20 @@ namespace TestProject_test.OperationalController
         }
 
         /// <summary>
-        /// Проверяет сохранение вида и уведомление при присоединении модели.
+        /// Проверяет сохранение вида и одно уведомление после добавления всех узлов модели.
         /// </summary>
-        [TestMethod]
-        public void Append_PreservesViewAndPublishesMeshChange()
+        [DataTestMethod]
+        [DataRow(0)]
+        [DataRow(1)]
+        [DataRow(128)]
+        public void Append_PreservesViewAndPublishesMeshChange(int objectCount)
         {
             var path = Path.Combine(Path.GetTempPath(), $"project-controller-{Guid.NewGuid():N}.bpf2");
-            File.WriteAllLines(path, new[] { "Узел", "7 0 0 0", "#Узел" });
+            var lines = new List<string> { "Узел" };
+            for (var number = 7; number < 7 + objectCount; number++)
+                lines.Add($"{number} 0 0 0");
+            lines.Add("#Узел");
+            File.WriteAllLines(path, lines);
             try
             {
                 var controller = new ProjectController();
@@ -250,14 +257,70 @@ namespace TestProject_test.OperationalController
                 controller.Message += (_, args) =>
                 {
                     if (args.Change is MeshChange change)
+                    {
+                        Assert.AreEqual(objectCount + 1, controller.GetAllModelNodes().Count());
                         changes.Add(change);
+                    }
                 };
 
                 controller.Append(path);
 
-                Assert.IsNotNull(controller.GetModelObject(ObjType.Узел, 7));
+                if (objectCount != 0)
+                    Assert.IsNotNull(controller.GetModelObject(ObjType.Узел, 7));
                 Assert.IsTrue(controller.IsSelected(ObjType.Узел, 1));
-                Assert.IsTrue(changes.Any(change => change.ObjectType == ObjType.Узел && change.Action == ChangeAction.Updated));
+                Assert.AreEqual(objectCount == 0 ? 0 : 1, changes.Count);
+                Assert.IsTrue(changes.All(change => change.ObjectType == ObjType.Узел && change.Action == ChangeAction.Updated));
+            }
+            finally
+            {
+                File.Delete(path);
+            }
+        }
+
+        /// <summary>Проверяет одно сообщение для каждого полностью добавленного набора, включая пустой и переименованный.</summary>
+        [DataTestMethod]
+        [DataRow(1)]
+        [DataRow(128)]
+        public void Append_CollectionsPublishOncePerCompletedSet(int objectCount)
+        {
+            var path = Path.Combine(Path.GetTempPath(), $"project-controller-{Guid.NewGuid():N}.bpf2");
+            var lines = new List<string> { "Узел", "10 0 0 0", "11 1 0 0", "12 0 1 0", "#Узел", "Элемент1D shared" };
+            for (var number = 0; number < objectCount; number++)
+                lines.Add($"{number} 0 10 11");
+            lines.Add("#Элемент1D");
+            lines.Add("Элемент1D empty");
+            lines.Add("#Элемент1D");
+            lines.Add("Элемент2D shared");
+            for (var number = 0; number < objectCount; number++)
+                lines.Add($"{number} 0 10 11 12");
+            lines.Add("#Элемент2D");
+            File.WriteAllLines(path, lines);
+            try
+            {
+                var controller = new ProjectController();
+                controller.Create("collections.bpf2");
+                controller.CreateNode(0, 0, 0, 0);
+                controller.CreateNode(1, 1, 0, 0);
+                controller.CreateElement("shared", 1, new[] { 0, 1 });
+                var changes = new List<MeshChange>();
+                controller.Message += (_, args) =>
+                {
+                    if (args.Change is MeshChange change)
+                    {
+                        Assert.AreEqual(objectCount, controller.GetModelSetInfo(ObjType.Элемент1D, "shared_1").NumberOfObjects);
+                        Assert.AreEqual(objectCount, controller.GetModelSetInfo(ObjType.Элемент2D, "shared").NumberOfObjects);
+                        Assert.AreEqual(0, controller.GetModelSetInfo(ObjType.Элемент1D, "empty").NumberOfObjects);
+                        changes.Add(change);
+                    }
+                };
+
+                controller.Append(path);
+
+                Assert.AreEqual(4, changes.Count);
+                Assert.AreEqual(1, changes.Count(change => change.Action == ChangeAction.Updated));
+                var createdChanges = changes.Where(change => change.Action == ChangeAction.Created).ToList();
+                Assert.AreEqual(3, createdChanges.Count);
+                Assert.AreEqual(3, createdChanges.Select(change => $"{change.ObjectType}:{change.EntityId}").Distinct().Count());
             }
             finally
             {

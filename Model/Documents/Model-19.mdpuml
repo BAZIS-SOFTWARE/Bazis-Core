@@ -1,0 +1,48 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title Model-19 — Грани и вспомогательные алгоритмы
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "ByNumberFinder" as T_Model_Model_Interfaces_ObjectsFinders_ByNumberFinder <<static>> {
+  + Find<T>(objs, objNumbr) : T
+  + Find<T>(objs, objNumbr) : T
+}
+class "DistanceSorter" as T_Model_Model_Interfaces_ObjectsSorters_DistanceSorter <<static>> {
+  + SortByDistance<T>(objs) : void
+}
+class "MergeSort<T>" as T_Model_Model_Sort_MergeSort_1 <<static>> {
+  + MergeSortFunction(array) : void
+}
+class "MergeSort" as T_Model_Model_Sort_MergeSort <<static>> {
+  + MergeSortFunction(array) : void
+}
+class "MergeSortWithComparer<T>" as T_Model_Model_Sort_MergeSortWithComparer_1 <<static>> {
+  + MergeSortFunction(array, comparer) : void
+}
+class "DefaultModelObjsComparer<T>" as T_Model_Model_Utilities_DefaultModelObjsComparer_1 {
+  + Equals(x, y) : bool
+  + GetHashCode(obj) : int
+}
+T_Model_Model_Interfaces_ObjectsFinders_ByNumberFinder -[hidden]down-> T_Model_Model_Interfaces_ObjectsSorters_DistanceSorter
+T_Model_Model_Interfaces_ObjectsSorters_DistanceSorter -[hidden]down-> T_Model_Model_Sort_MergeSort_1
+T_Model_Model_Sort_MergeSort_1 -[hidden]down-> T_Model_Model_Sort_MergeSort
+T_Model_Model_Sort_MergeSort -[hidden]down-> T_Model_Model_Sort_MergeSortWithComparer_1
+T_Model_Model_Sort_MergeSortWithComparer_1 -[hidden]down-> T_Model_Model_Utilities_DefaultModelObjsComparer_1
+legend bottom
+  Обзор: [[Model.mdpuml Model]]; сигнатуры: [[Model-19.md Model-19.md]].
+  reference — адрес подробностей указан в заголовке типа.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+  Связанные типы в контрактах и сигнатурах:
+  [[Model-1.mdpuml Model-1]]: IModelObject.
+endlegend
+@enduml

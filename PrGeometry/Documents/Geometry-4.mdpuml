@@ -1,0 +1,47 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title Geometry-4 — Координаты и системы отсчёта
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "Point3D" as T_Geometry_Geometry_Point3D {
+  + Equals(other) : bool
+  + Equals(obj) : bool
+  + GetHashCode() : int
+  + Point3D()
+  + Point3D(x, y, z)
+  + ToString() : string
+}
+class "Vector" as T_Geometry_Geometry_Vector <<static>> {
+  + CheckCollinearityVectors(vector1, vector2) : bool
+  + CrossProd(v1, v2) : Point3D
+  + DotProd(v1, v2) : float
+  + GetCosAngleVectors(n1, n2) : float
+  + GetVectorLength(p) : double
+  + GetVectorLength(p) : float
+  + GetVectorNorm(p) : Point3D
+  + GetVectorRotation(vec, axis, angle) : Point3D
+  + GetVectorsSumm(v1, v2) : Point3D
+  + IsVectorsCoDirectional(temp) : bool
+}
+interface "IPoint3D" as T_Geometry_Geometry_Interfaces_IPoint3D <<reference>>
+interface "IPointFunctions<T>" as T_Geometry_Geometry_Interfaces_IPointFunctions_1 <<reference>>
+T_Geometry_Geometry_Point3D -[hidden]down-> T_Geometry_Geometry_Vector
+T_Geometry_Geometry_Vector -[hidden]down-> T_Geometry_Geometry_Interfaces_IPoint3D
+T_Geometry_Geometry_Interfaces_IPoint3D -[hidden]down-> T_Geometry_Geometry_Interfaces_IPointFunctions_1
+T_Geometry_Geometry_Point3D ..|> T_Geometry_Geometry_Interfaces_IPoint3D
+T_Geometry_Geometry_Point3D ..|> T_Geometry_Geometry_Interfaces_IPointFunctions_1
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

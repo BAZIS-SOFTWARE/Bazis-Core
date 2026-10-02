@@ -1,0 +1,72 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title Project-19 — Функции, материалы и ввод/вывод
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "SPH" as T_Project_Project_Tasks_Functions_FrameFunctions_SPH {
+  + Width : double [get, set]
+  + CalcValue() : double
+  + IsPointInside(elementCenter, out rad, out halfBead) : bool
+  + SPH()
+}
+class "SphereBuilder" as T_Project_Project_Tasks_Functions_FrameFunctions_SphereBuilder {
+  + SetWidth(width) : SphereBuilder
+  + SphereBuilder()
+}
+class "FSWPin" as T_Project_Project_Tasks_Functions_Welding_FSWPin {
+  + RotSpeed : float [get, set]
+  + CalcValue(elementCenter) : float
+  + ToString() : string
+}
+class "FSWPinBuilder" as T_Project_Project_Tasks_Functions_Welding_FSWPinBuilder {
+  + FSWPinBuilder()
+  + SetBottomDiam(diam) : FSWPinBuilder
+  + SetFrame(frame) : FSWPinBuilder
+  + SetLength(length) : FSWPinBuilder
+  + SetRotSpeed(rotSpeed) : FSWPinBuilder
+  + SetUpperDiam(diam) : FSWPinBuilder
+  + SetYieldFunc(yieldFunc) : FSWPinBuilder
+}
+class "FSWShoulder" as T_Project_Project_Tasks_Functions_Welding_FSWShoulder {
+  + AxisForce : float [get, set]
+  + RotSpeed : float [get, set]
+  + CalcValue(elementCenter) : float
+  + ToString() : string
+}
+class "FSWShoulderBuilder" as T_Project_Project_Tasks_Functions_Welding_FSWShoulderBuilder {
+  + FSWShoulderBuilder()
+  + SetAxisForce(axisForce) : FSWShoulderBuilder
+  + SetBottomDiam(diam) : FSWShoulderBuilder
+  + SetFrame(frame) : FSWShoulderBuilder
+  + SetFricModuleFunc(fricModuleFunc) : FSWShoulderBuilder
+  + SetLength(length) : FSWShoulderBuilder
+  + SetRotSpeed(rotSpeed) : FSWShoulderBuilder
+  + SetUpperDiam(diam) : FSWShoulderBuilder
+}
+abstract class "FrameFunction\nProject-16" as T_Project_Project_Tasks_Functions_FrameFunction <<reference>> [[Project-16.mdpuml Project-16]]
+T_Project_Project_Tasks_Functions_FrameFunctions_SPH -[hidden]down-> T_Project_Project_Tasks_Functions_FrameFunctions_SphereBuilder
+T_Project_Project_Tasks_Functions_FrameFunctions_SphereBuilder -[hidden]down-> T_Project_Project_Tasks_Functions_Welding_FSWPin
+T_Project_Project_Tasks_Functions_Welding_FSWPin -[hidden]down-> T_Project_Project_Tasks_Functions_Welding_FSWPinBuilder
+T_Project_Project_Tasks_Functions_Welding_FSWPinBuilder -[hidden]down-> T_Project_Project_Tasks_Functions_Welding_FSWShoulder
+T_Project_Project_Tasks_Functions_Welding_FSWShoulder -[hidden]down-> T_Project_Project_Tasks_Functions_Welding_FSWShoulderBuilder
+T_Project_Project_Tasks_Functions_Welding_FSWShoulderBuilder -[hidden]down-> T_Project_Project_Tasks_Functions_FrameFunction
+T_Project_Project_Tasks_Functions_FrameFunctions_SPH --|> T_Project_Project_Tasks_Functions_FrameFunction
+T_Project_Project_Tasks_Functions_FrameFunctions_SphereBuilder --> T_Project_Project_Tasks_Functions_FrameFunctions_SPH : использует
+T_Project_Project_Tasks_Functions_Welding_FSWPinBuilder --> T_Project_Project_Tasks_Functions_Welding_FSWPin : использует
+T_Project_Project_Tasks_Functions_Welding_FSWShoulderBuilder --> T_Project_Project_Tasks_Functions_Welding_FSWShoulder : использует
+legend bottom
+  Обзор: [[Project.mdpuml Project]]; сигнатуры: [[Project-19.md Project-19.md]].
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

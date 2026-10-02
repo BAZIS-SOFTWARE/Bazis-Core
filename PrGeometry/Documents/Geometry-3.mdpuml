@@ -1,0 +1,76 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title Geometry-3 — Координаты и системы отсчёта
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+interface "IPosition3D" as T_Geometry_Geometry_Interfaces_IPosition3D {
+  + _x : float [get]
+  + _y : float [get]
+  + _z : float [get]
+}
+interface "IPositionFunctions<T>" as T_Geometry_Geometry_Interfaces_IPositionFunctions_1 {
+  + Div(divide) : T
+  + Mult(multiplier) : T
+  + Sub(SubstractValue) : T
+  + Sum(AddedValue) : T
+}
+class "Frame" as T_Geometry_Geometry_Frame {
+  + Centre : Point3D [get, private set]
+  + Dir_X : Point3D [get, private set]
+  + Dir_Y : Point3D [get, private set]
+  + Dir_Z : Point3D [get, private set]
+  + InverseTransitionMatrix : Matrix<float> [get, private set]
+  + DetermineInverseMatrix() : void
+  + Frame()
+  + Frame(p0, p1, p2)
+  + GetCoordsInFrame(point) : Point3D
+  + Rotate(axis, angle) : void
+  + Shift(shifting) : void
+  + ToString() : string
+}
+class "Frame2D" as T_Geometry_Geometry_Frame2D {
+  + Frame2D(p0, p1, p2)
+  + MapToLocalPlaneCoordinates(point) : Point2D
+  + UnmapToGlobalCoordinates(point) : Point3D
+}
+class "Plane" as T_Geometry_Geometry_Plane {
+  + Plane(normal, shifting)
+  + Plane(p0, normal)
+  + Plane(p0, p1, p2)
+}
+class "Point2D" as T_Geometry_Geometry_Point2D {
+  + Equals(other) : bool
+  + GetHashCode() : int
+  + Point2D()
+  + Point2D(x, y)
+  + ToString() : string
+}
+interface "IPlane" as T_Geometry_Geometry_Interfaces_IPlane <<reference>>
+interface "IPoint2D" as T_Geometry_Geometry_Interfaces_IPoint2D <<reference>>
+interface "IPointFunctions<T>" as T_Geometry_Geometry_Interfaces_IPointFunctions_1 <<reference>>
+T_Geometry_Geometry_Interfaces_IPosition3D -[hidden]down-> T_Geometry_Geometry_Interfaces_IPositionFunctions_1
+T_Geometry_Geometry_Interfaces_IPositionFunctions_1 -[hidden]down-> T_Geometry_Geometry_Frame
+T_Geometry_Geometry_Frame -[hidden]down-> T_Geometry_Geometry_Frame2D
+T_Geometry_Geometry_Frame2D -[hidden]down-> T_Geometry_Geometry_Plane
+T_Geometry_Geometry_Plane -[hidden]down-> T_Geometry_Geometry_Point2D
+T_Geometry_Geometry_Point2D -[hidden]down-> T_Geometry_Geometry_Interfaces_IPlane
+T_Geometry_Geometry_Interfaces_IPlane -[hidden]down-> T_Geometry_Geometry_Interfaces_IPoint2D
+T_Geometry_Geometry_Interfaces_IPoint2D -[hidden]down-> T_Geometry_Geometry_Interfaces_IPointFunctions_1
+T_Geometry_Geometry_Plane ..|> T_Geometry_Geometry_Interfaces_IPlane
+T_Geometry_Geometry_Point2D ..|> T_Geometry_Geometry_Interfaces_IPoint2D
+T_Geometry_Geometry_Point2D ..|> T_Geometry_Geometry_Interfaces_IPointFunctions_1
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

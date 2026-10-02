@@ -1,5 +1,4 @@
 ﻿using Geometry;
-using Model.Events;
 using Model.GroupsData;
 using Model.MeshObjects;
 using Model.Interfaces;
@@ -23,7 +22,6 @@ namespace Model.IO
     /// </summary>
     public class LoadModelFromBPF2TextFile : IModelLoader
     {
-        public event Action<object, ILoaderEventArgs> LoadEvent;
 
         public IModelData Load(string path, IProgress<int> progress = null)
         {
@@ -36,7 +34,6 @@ namespace Model.IO
                     token = sr.ReadLine().Split(' ');
                     if (token[0] == "Узел")
                     {
-                        LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка узлов..."));
                         Thread.Sleep(100);
                         LoadNodes(sr, newModel);
                     }
@@ -61,13 +58,11 @@ namespace Model.IO
 
                     if (token[0] == "Группы")
                     {
-                        LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка групп..."));
                         Thread.Sleep(100);
                         LoadGroup(sr, newModel);
                     }
                 }
 
-                LoadEvent?.Invoke(this, new LoaderEventArgs("Модель загружена"));
                 Thread.Sleep(100);
                 return newModel;
             }
@@ -100,7 +95,6 @@ namespace Model.IO
         private void FillSet<T>(StreamReader reader, ObjectsSet<T> set, ModelData newMesh)
             where T : IElement
         {
-            LoadEvent?.Invoke(this, new LoaderEventArgs($"Загрузка набора {set.Name}..."));
             Thread.Sleep(100);
 
             var line = reader.ReadLine();

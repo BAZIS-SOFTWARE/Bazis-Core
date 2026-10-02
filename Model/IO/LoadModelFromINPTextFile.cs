@@ -20,7 +20,6 @@ namespace Model.IO
     /// </summary>
     public class LoadModelFromINPTextFile : IModelLoader
     {
-        public event Action<object, ILoaderEventArgs> LoadEvent;
 
         private string[] lines;
 

@@ -109,9 +109,12 @@ namespace Model.MeshObjects
         /// <summary>
         /// Задаёт соседний элемент. Вызывается только связыванием поверхностей.
         /// </summary>
-        internal void SetNeighbour(IElement element)
+        internal bool SetNeighbour(IElement element)
         {
+            if (ReferenceEquals(neighbour, element))
+                return false;
             neighbour = element;
+            return true;
         }
 
         /// <inheritdoc/>

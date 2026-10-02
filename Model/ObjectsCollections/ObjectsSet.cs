@@ -232,16 +232,25 @@ namespace Model.ObjectsCollections
             return objectsSet[number].ToString();
         }
 
-        public void Renumber(ref int v)
+        /// <summary>Перенумеровывает объекты и возвращает признак изменения набора.</summary>
+        public bool Renumber(ref int v)
         {
             var arr = objectsSet.ToArray();
+            var changed = false;
             foreach (var item in arr)
             {
+                if (item.Key == v && item.Value.Number == v)
+                {
+                    v++;
+                    continue;
+                }
                 objectsSet.Remove(item.Key);
                 var temp = item.Value;
                 temp.SetNumber(v++);
                 objectsSet.Add(temp.Number,temp);
+                changed = true;
             }
+            return changed;
         }
     }
 }

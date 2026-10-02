@@ -1,0 +1,64 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title Project-4 — Проект, задача и граничные условия
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+interface "ICondData" as T_Project_Project_Interfaces_Tasks_ICondData {
+  + Direction : Direction [get]
+  + Function : Function [get, set]
+  + LocalFrame : LocalFrame [get, set]
+  + Value : double [get, set]
+  + TrySetDirection(v) : void
+  + TrySetValue(v) : void
+}
+interface "IData" as T_Project_Project_Interfaces_Tasks_IData {
+  + Kind : DataKind [get]
+}
+interface "IFrameData" as T_Project_Project_Interfaces_Tasks_IFrameData {
+  + FrameFunction : IFrameFunction [get]
+  + LocalFrame : ILocalFrame [get, set]
+}
+interface "IFrameFunction" as T_Project_Project_Interfaces_Tasks_IFrameFunction {
+  + CalcValue(elementCenter) : double
+  + GetIntersectedObjects<T>(elements) : List<T>
+  + IsOverlappingSelf(velocity) : bool
+}
+interface "IGroupDependent" as T_Project_Project_Interfaces_Tasks_IGroupDependent {
+  + Group : IGroup [get, set]
+}
+interface "ILocalFrame" as T_Project_Project_Interfaces_Tasks_ILocalFrame {
+  + Frame : Frame [get, set]
+  + Rotation : float [get, set]
+  + Shifting : Point3D [get, set]
+}
+interface "ITimeDependentData\nProject-5" as T_Project_Project_Interfaces_Tasks_ITimeDependentData <<reference>> [[Project-5.mdpuml Project-5]]
+T_Project_Project_Interfaces_Tasks_ICondData -[hidden]down-> T_Project_Project_Interfaces_Tasks_IData
+T_Project_Project_Interfaces_Tasks_IData -[hidden]down-> T_Project_Project_Interfaces_Tasks_IFrameData
+T_Project_Project_Interfaces_Tasks_IFrameData -[hidden]down-> T_Project_Project_Interfaces_Tasks_IFrameFunction
+T_Project_Project_Interfaces_Tasks_IFrameFunction -[hidden]down-> T_Project_Project_Interfaces_Tasks_IGroupDependent
+T_Project_Project_Interfaces_Tasks_IGroupDependent -[hidden]down-> T_Project_Project_Interfaces_Tasks_ILocalFrame
+T_Project_Project_Interfaces_Tasks_ILocalFrame -[hidden]down-> T_Project_Project_Interfaces_Tasks_ITimeDependentData
+T_Project_Project_Interfaces_Tasks_ICondData --|> T_Project_Project_Interfaces_Tasks_IData
+T_Project_Project_Interfaces_Tasks_ICondData --|> T_Project_Project_Interfaces_Tasks_IGroupDependent
+T_Project_Project_Interfaces_Tasks_ICondData --|> T_Project_Project_Interfaces_Tasks_ITimeDependentData
+T_Project_Project_Interfaces_Tasks_IFrameData --> T_Project_Project_Interfaces_Tasks_IFrameFunction : использует
+T_Project_Project_Interfaces_Tasks_IFrameData --> T_Project_Project_Interfaces_Tasks_ILocalFrame : использует
+T_Project_Project_Interfaces_Tasks_IFrameData --|> T_Project_Project_Interfaces_Tasks_IData
+T_Project_Project_Interfaces_Tasks_IFrameData --|> T_Project_Project_Interfaces_Tasks_IGroupDependent
+T_Project_Project_Interfaces_Tasks_IFrameData --|> T_Project_Project_Interfaces_Tasks_ITimeDependentData
+legend bottom
+  Обзор: [[Project.mdpuml Project]]; сигнатуры: [[Project-4.md Project-4.md]].
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

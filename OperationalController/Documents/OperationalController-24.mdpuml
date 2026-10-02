@@ -1,0 +1,31 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title OperationalController-24 — Специализированные контракты контроллера
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+interface "IPresentersCreator" as T_OperationalController_OperationalController_IPresentersCreator {
+  + CreateLineObjectsPresenter<T>(lineObjects, color) : IObjsPresenter
+  + CreateLineObjectsPresenter<T>(lineObjects, colors) : IObjsPresenter
+  + CreatePointObjectsPresenter(pointObjects, color) : IObjsPresenter
+  + CreatePointObjectsPresenter(pointObjects, colors) : IObjsPresenter
+  + CreatePointObjectsPresenter<T>(pointObjects, color) : IObjsPresenter
+  + CreateSurfaceObjectsPresenter<T, U>(surfaceObjects, color, drawInnerSurfaces) : ISurfaceObjsPresenter
+  + CreateSurfaceObjectsPresenter<T, U>(surfaceObjects, colors, drawInnerSurfaces) : ISurfaceObjsPresenter
+  + CreateSurfaceObjectsPresenter<T>(surfaceObjects, color) : ISurfaceObjsPresenter
+  + CreateSurfaceObjectsPresenter<T>(surfaceObjects, colors) : ISurfaceObjsPresenter
+}
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

@@ -1,0 +1,91 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title Model-17 — Модель, наборы и группы
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+abstract class "ModelObject" as T_Model_Model_ModelObject {
+  + CompareTo(other) : int
+  + Equals(other) : bool
+  + Equals(x, y) : bool
+  + GetHashCode(obj) : int
+  + ModelObject(number)
+  + ToString() : string
+}
+class "ObjectsData" as T_Model_Model_ObjectsData {
+  + IsReadOnly : bool [get]
+  + ObjectsData()
+}
+class "Group" as T_Model_Model_GroupsData_Group {
+  + Count : int [get]
+  + IsReadOnly : bool [get]
+  + this[int key] : IModelObject [get, set]
+  + Add(item) : void
+  + Clear() : void
+  + Contains(item) : bool
+  + CopyTo(array, arrayIndex) : void
+  + GetEnumerator() : IEnumerator<IModelObject>
+  + Group(number, groupName, objType)
+  + Group(groupName, objType)
+  + IndexOf(item) : int
+  + Insert(index, item) : void
+  + Remove(item) : bool
+  + RemoveAt(index) : void
+  + ToString() : string
+}
+class "GroupData" as T_Model_Model_GroupsData_GroupData {
+  + Count : int [get]
+  + IsReadOnly : bool [get]
+  + this[int index] : IGroup [get, set]
+  + Add(item) : void
+  + Clear() : void
+  + Contains(item) : bool
+  + CopyTo(array, arrayIndex) : void
+  + GetEnumerator() : IEnumerator<IGroup>
+  + GroupData()
+  + IndexOf(item) : int
+  + Insert(index, item) : void
+  + Remove(item) : bool
+  + RemoveAt(index) : void
+}
+class "NameAndTypeGroupComparer" as T_Model_Model_GroupsData_NameAndTypeGroupComparer {
+  + Equals(x, y) : bool
+  + GetHashCode(obj) : int
+}
+interface "IModelObject\nModel-1" as T_Model_Model_Interfaces_IModelObject <<reference>> [[Model-1.mdpuml Model-1]]
+interface "IObjectsData\nModel-14, Model-15" as T_Model_Model_Interfaces_IObjectsData <<reference>> [[Model-14.mdpuml Model-14]]
+interface "IGroup\nModel-3" as T_Model_Model_Interfaces_IGroup <<reference>> [[Model-3.mdpuml Model-3]]
+interface "IGroupData\nModel-3" as T_Model_Model_Interfaces_IGroupData <<reference>> [[Model-3.mdpuml Model-3]]
+T_Model_Model_ModelObject -[hidden]down-> T_Model_Model_ObjectsData
+T_Model_Model_ObjectsData -[hidden]down-> T_Model_Model_GroupsData_Group
+T_Model_Model_GroupsData_Group -[hidden]down-> T_Model_Model_GroupsData_GroupData
+T_Model_Model_GroupsData_GroupData -[hidden]down-> T_Model_Model_GroupsData_NameAndTypeGroupComparer
+T_Model_Model_GroupsData_NameAndTypeGroupComparer -[hidden]down-> T_Model_Model_Interfaces_IModelObject
+T_Model_Model_Interfaces_IModelObject -[hidden]down-> T_Model_Model_Interfaces_IObjectsData
+T_Model_Model_Interfaces_IObjectsData -[hidden]down-> T_Model_Model_Interfaces_IGroup
+T_Model_Model_Interfaces_IGroup -[hidden]down-> T_Model_Model_Interfaces_IGroupData
+T_Model_Model_GroupsData_Group ..|> T_Model_Model_Interfaces_IGroup
+T_Model_Model_GroupsData_GroupData ..|> T_Model_Model_Interfaces_IGroupData
+T_Model_Model_ModelObject ..|> T_Model_Model_Interfaces_IModelObject
+T_Model_Model_ObjectsData ..|> T_Model_Model_Interfaces_IObjectsData
+legend bottom
+  Обзор: [[Model.mdpuml Model]]; сигнатуры: [[Model-17.md Model-17.md]].
+  reference — адрес подробностей указан в заголовке типа.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+  Связанные типы в контрактах и сигнатурах:
+  [[Model-1.mdpuml Model-1]]: IModelObject.
+  [[Model-3.mdpuml Model-3]]: IGroup, IGroupData.
+  [[Model-6.mdpuml Model-6]]: ObjType.
+  [[Model-14.mdpuml Model-14]]: IObjectsData.
+  [[Model-15.mdpuml Model-15]]: IObjectsData.
+endlegend
+@enduml

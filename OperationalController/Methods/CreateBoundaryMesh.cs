@@ -1,4 +1,4 @@
-﻿using OperationalController;
+using OperationalController;
 using OperationalController.MeshObjsCreator;
 using OperationalController.MeshObjsUtility;
 using OperationalController.ObjsCreator;
@@ -20,7 +20,6 @@ namespace OperationalController
         {
             if (ModelData.ObjectData.E3DCollection.Count == 0)
                 return false;
-            var before = CaptureData();
             //return extractor2DFrom3D.Create(StartNumber, ModelData.ObjectData.E3DCollection.GetObjects());
             var coll = ModelData.ObjectData.E2DCollection;
 
@@ -30,8 +29,7 @@ namespace OperationalController
 
 
             var e2d = extractor2DFrom3D.Create(number, ModelData.ObjectData.E3DCollection.GetObjects().ToArray());
-            ModelData.ObjectData.E2DCollection.AddRange(name, e2d);
-            PublishDataDifference(before);
+            AddCollectionObjects(ModelData.ObjectData.E2DCollection, name, e2d);
 
             return true;
         }
@@ -45,7 +43,6 @@ namespace OperationalController
         {
             if (ModelData.ObjectData.E2DCollection.Count == 0)
                 return false;
-            var before = CaptureData();
             //return extractor2DFrom3D.Create(StartNumber, ModelData.ObjectData.E3DCollection.GetObjects());
             var coll = ModelData.ObjectData.E1DCollection;
 
@@ -54,8 +51,7 @@ namespace OperationalController
             var name = $"boundary1DSet_{number}";
 
             var e1d = extractor1DFrom2D.Create(number, ModelData.ObjectData.E2DCollection.GetObjects().ToArray());
-            ModelData.ObjectData.E1DCollection.AddRange(name, e1d);
-            PublishDataDifference(before);
+            AddCollectionObjects(ModelData.ObjectData.E1DCollection, name, e1d);
 
             return true;
         }

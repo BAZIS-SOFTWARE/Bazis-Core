@@ -49,16 +49,9 @@ namespace OperationalController
                 throw new InvalidOperationException("Project is not open.");
 
             var modelData = LoadModel(path, progress);
-            var before = CaptureData();
-            try
-            {
-                ModelData.Append(modelData);
-                MarkModelSurfaces(ModelData);
-            }
-            finally
-            {
-                PublishDataDifference(before);
-            }
+            var appendedNames = ModelData.Append(modelData);
+            var surfaceChanges = MarkModelSurfaces(ModelData);
+            PublishAppendedModel(modelData, appendedNames, surfaceChanges);
         }
 
         /// <summary>

@@ -1,0 +1,79 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title OperationalController-23 — Специализированные контракты контроллера
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+interface "IModelView\nчасть 2/2" as T_OperationalController_OperationalController_IModelView <<internal>> {
+  + SetColor(setInfo, color) : void
+  + SetColor(objType, numbers, color) : void
+  + SetSelection(objType, numbers) : void
+  + SetViewMode(setInfo, viewMode) : void
+  + SetVisible(objType, numbers, visible) : void
+  + ShowAll() : void
+  + ToggleSelection(objType, numbers) : void
+  + TryGetSingleSelectedType(out objType) : bool
+}
+note right of T_OperationalController_OperationalController_IModelView
+  Полный состав: OperationalController-22, OperationalController-23
+end note
+interface "IObjectsMerger" as T_OperationalController_OperationalController_IObjectsMerger {
+  + Merge(numbers, modelObjects) : void
+  + Merge(numbers, modelObjects, out changedElements, out nodesRemoved) : void
+}
+interface "IObjectsRenumber" as T_OperationalController_OperationalController_IObjectsRenumber {
+  + Renumber(objectsData, objType) : void
+}
+interface "IObjectsView" as T_OperationalController_OperationalController_IObjectsView {
+  + HiddenCount : int [get]
+  + SelectedCount : int [get]
+  + ClearObjectColor(numbers) : bool
+  + ClearObjectColors() : bool
+  + ClearSelection() : bool
+  + ClearSelectionAndHidden() : bool
+  + Deselect(numbers) : bool
+  + GetSelected() : IEnumerable<int>
+  + IsHidden(number) : bool
+  + IsSelected(number) : bool
+  + Prune(exists) : bool
+  + PruneSetStyles(existingSets) : bool
+  + Select(numbers) : bool
+  + SetHidden(numbers, hidden) : bool
+  + SetObjectColor(numbers, color) : bool
+  + SetSelection(numbers) : bool
+  + SetSetColor(setInfo, color) : bool
+  + SetViewMode(setInfo, viewMode) : bool
+  + ShowAll() : bool
+  + ToggleSelection(numbers) : bool
+  + TryGetObjectColor(number, out color) : bool
+  + TryGetSetColor(setInfo, out color) : bool
+  + TryGetViewMode(setInfo, out viewMode) : bool
+}
+interface "IObjsPresenter" as T_OperationalController_OperationalController_IObjsPresenter {
+  + Name : string [get, set]
+  + PresenterType : PresenterType [get]
+  + ViewMode : ViewMode [get, set]
+  + Count() : int
+  + CreateEdgeFlags(edgesLength) : bool[]
+  + CreateIndexes() : Tuple<int, int, int, int>
+  + CreatePointers(indexLength) : int[]
+  + CreateVertexes(vertexLength, vertexType) : float[]
+}
+T_OperationalController_OperationalController_IModelView -[hidden]down-> T_OperationalController_OperationalController_IObjectsMerger
+T_OperationalController_OperationalController_IObjectsMerger -[hidden]down-> T_OperationalController_OperationalController_IObjectsRenumber
+T_OperationalController_OperationalController_IObjectsRenumber -[hidden]down-> T_OperationalController_OperationalController_IObjectsView
+T_OperationalController_OperationalController_IObjectsView -[hidden]down-> T_OperationalController_OperationalController_IObjsPresenter
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

@@ -2,6 +2,9 @@ using Model.Utilities;
 using System.Linq;
 using Model.Interfaces;
 using System.IO;
+using System.Collections.Generic;
+using Model.Interfaces.ObjectsCollections;
+using System;
 
 namespace OperationalController
 {
@@ -20,18 +23,29 @@ namespace OperationalController
         /// Обход идёт по всем наборам сразу: грань может быть общей для элементов
         /// из разных наборов, и понабортный проход оставил бы такую грань внешней.
         /// </remarks>
-        private void MarkModelSurfaces(IModelData model)
+        private IReadOnlyCollection<ISetInfo> MarkModelSurfaces(IModelData model)
         {
             if (model == null)
-                return;
+                return Array.Empty<ISetInfo>();
 
-            var defects = surfacesMarker.Mark(model.ObjectData.E3DCollection.GetObjects());
+            var modelElements = model.ObjectData.E3DCollection.GetObjects();
+            var defects = surfacesMarker.Mark(modelElements, out var changedElements);
 
-            if (defects.Count == 0)
-                return;
+            if (defects.Count != 0)
+            {
+                var elements = string.Join(", ", defects.Select(surface => surface.ElementNumber).Distinct());
+                throw new InvalidDataException($"Mesh face belongs to more than two elements. Elements: {elements}.");
+            }
 
-            var elements = string.Join(", ", defects.Select(surface => surface.ElementNumber).Distinct());
-            throw new InvalidDataException($"Mesh face belongs to more than two elements. Elements: {elements}.");
+            var changedSets = new HashSet<ISetInfo>(ReferenceEqualityComparer.Instance);
+            if (ReferenceEquals(model, ModelData))
+                foreach (var element in changedElements)
+                {
+                    var setInfo = model.ObjectData.GetSetInfo(element.ObjType, element.Number);
+                    if (setInfo != null)
+                        changedSets.Add(setInfo);
+                }
+            return changedSets;
         }
     }
 }

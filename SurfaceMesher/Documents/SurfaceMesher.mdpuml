@@ -1,0 +1,75 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+allowmixing
+title SurfaceMesher — обзор классов и расположение подробностей
+caption Обзор; полный состав членов — на нумерованных поддиаграммах
+class "DeloneTriangulation_m2" as T_SurfaceMesher_SurfaceMesher_DeloneTriangulation_m2 <<details>>
+note right of T_SurfaceMesher_SurfaceMesher_DeloneTriangulation_m2
+  SurfaceMesher-2
+end note
+class "Contour" as T_SurfaceMesher_SurfaceMesher_Contour <<details>>
+note right of T_SurfaceMesher_SurfaceMesher_Contour
+  SurfaceMesher-1
+end note
+class "Edge" as T_SurfaceMesher_SurfaceMesher_Edge <<details>>
+note right of T_SurfaceMesher_SurfaceMesher_Edge
+  SurfaceMesher-1
+end note
+abstract class "Element" as T_SurfaceMesher_SurfaceMesher_Element <<details>>
+note right of T_SurfaceMesher_SurfaceMesher_Element
+  SurfaceMesher-1
+end note
+class "Node2D" as T_SurfaceMesher_SurfaceMesher_Node2D <<details>>
+note right of T_SurfaceMesher_SurfaceMesher_Node2D
+  SurfaceMesher-1
+end note
+class "Triangle2D" as T_SurfaceMesher_SurfaceMesher_Triangle2D <<details>>
+note right of T_SurfaceMesher_SurfaceMesher_Triangle2D
+  SurfaceMesher-3
+end note
+class "Quad2D" as T_SurfaceMesher_SurfaceMesher_Quad2D <<details>>
+note right of T_SurfaceMesher_SurfaceMesher_Quad2D
+  SurfaceMesher-3
+end note
+class "SaveToBPF" as T_SurfaceMesher_SurfaceMesher_SaveToBPF <<details>>
+note right of T_SurfaceMesher_SurfaceMesher_SaveToBPF
+  SurfaceMesher-2
+end note
+T_SurfaceMesher_SurfaceMesher_Contour --> T_SurfaceMesher_SurfaceMesher_Node2D : использует
+T_SurfaceMesher_SurfaceMesher_DeloneTriangulation_m2 --> T_SurfaceMesher_SurfaceMesher_Contour : использует
+T_SurfaceMesher_SurfaceMesher_DeloneTriangulation_m2 --> T_SurfaceMesher_SurfaceMesher_Edge : использует
+T_SurfaceMesher_SurfaceMesher_DeloneTriangulation_m2 --> T_SurfaceMesher_SurfaceMesher_Node2D : использует
+T_SurfaceMesher_SurfaceMesher_Edge --> T_SurfaceMesher_SurfaceMesher_Node2D : использует
+T_SurfaceMesher_SurfaceMesher_Element --> T_SurfaceMesher_SurfaceMesher_Node2D : использует
+T_SurfaceMesher_SurfaceMesher_Quad2D --> T_SurfaceMesher_SurfaceMesher_Node2D : использует
+T_SurfaceMesher_SurfaceMesher_Quad2D --|> T_SurfaceMesher_SurfaceMesher_Element
+T_SurfaceMesher_SurfaceMesher_Triangle2D --> T_SurfaceMesher_SurfaceMesher_Node2D : использует
+T_SurfaceMesher_SurfaceMesher_Triangle2D --|> T_SurfaceMesher_SurfaceMesher_Element
+rectangle "Сущности двумерной сетки" as Area_1 <<область>>
+note right of Area_1
+  SurfaceMesher-1.mdpuml, SurfaceMesher-3.mdpuml
+end note
+rectangle "Триангуляция и экспорт" as Area_2 <<область>>
+note right of Area_2
+  SurfaceMesher-2.mdpuml
+end note
+T_SurfaceMesher_SurfaceMesher_DeloneTriangulation_m2 -[hidden]down-> T_SurfaceMesher_SurfaceMesher_Contour
+T_SurfaceMesher_SurfaceMesher_Contour -[hidden]down-> T_SurfaceMesher_SurfaceMesher_Edge
+T_SurfaceMesher_SurfaceMesher_Edge -[hidden]down-> T_SurfaceMesher_SurfaceMesher_Element
+T_SurfaceMesher_SurfaceMesher_Element -[hidden]down-> T_SurfaceMesher_SurfaceMesher_Node2D
+T_SurfaceMesher_SurfaceMesher_Node2D -[hidden]down-> T_SurfaceMesher_SurfaceMesher_Triangle2D
+T_SurfaceMesher_SurfaceMesher_Triangle2D -[hidden]down-> T_SurfaceMesher_SurfaceMesher_Quad2D
+T_SurfaceMesher_SurfaceMesher_Quad2D -[hidden]down-> T_SurfaceMesher_SurfaceMesher_SaveToBPF
+T_SurfaceMesher_SurfaceMesher_SaveToBPF -[hidden]down-> Area_1
+Area_1 -[hidden]down-> Area_2
+@enduml
