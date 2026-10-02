@@ -1,5 +1,6 @@
 ﻿using Model.Interfaces;
 using System;
+using Model.Interfaces.ObjectsCollections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -35,8 +36,17 @@ namespace OperationalController
             GmshController.Gmsh.Model.Occ.Remove([dim, number], recursive);
             GmshController.Gmsh.Model.Occ.Synchronize();
 
+            var changedSets = new HashSet<ISetInfo>(ReferenceEqualityComparer.Instance);
             foreach (var item in removedObjects)
                 RemoveFromModelData(item.dim, item.number);
+            if (RemoveDeadObjects(ModelData.ObjectData.CurveSet))
+                changedSets.Add(ModelData.ObjectData.CurveSet);
+            if (RemoveDeadObjects(ModelData.ObjectData.SurfaceSet))
+                changedSets.Add(ModelData.ObjectData.SurfaceSet);
+            foreach (var set in changedSets)
+                PublishSetChange(set, ChangeAction.Updated);
+            ClearNotExistedGroupData();
+            ModelView.Prune();
             PublishGeometryChange();
 
             HashSet<(int dim, int tag)> CollectDeleteTree(int dim, int tag)
@@ -70,15 +80,18 @@ namespace OperationalController
                 switch (dim)
                 {
                     case 0:
-                        ModelData.ObjectData.Remove(ObjType.Точка, tag);
+                        if (RemoveGeometryEntry(ModelData.ObjectData.PointsSet, tag))
+                            changedSets.Add(ModelData.ObjectData.PointsSet);
                         break;
 
                     case 1:
-                        ModelData.ObjectData.Remove(ObjType.Кривая, tag);
+                        if (RemoveGeometryEntry(ModelData.ObjectData.CurveSet, tag))
+                            changedSets.Add(ModelData.ObjectData.CurveSet);
                         break;
 
                     case 2:
-                        ModelData.ObjectData.Remove(ObjType.Поверхность, tag);
+                        if (RemoveGeometryEntry(ModelData.ObjectData.SurfaceSet, tag))
+                            changedSets.Add(ModelData.ObjectData.SurfaceSet);
                         break;
                     case 3:
                         var volume = ModelData.VolumeData.First(vol=>vol.Number == tag);

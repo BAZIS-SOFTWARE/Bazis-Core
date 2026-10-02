@@ -1,0 +1,78 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title Model-15 — Модель, наборы и группы
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+interface "IObjectsData\nчасть 2/2" as T_Model_Model_Interfaces_IObjectsData {
+  + Remove(objType, objNumber) : void
+  + Remove(objType, objSet) : void
+  + Rotate(objType, axis, angle) : void
+}
+note right of T_Model_Model_Interfaces_IObjectsData
+  Полный состав: [[Model-14.mdpuml Model-14]], [[Model-15.mdpuml Model-15]]
+end note
+interface "IPoint" as T_Model_Model_Interfaces_IPoint {
+  + Normal : Point3D [get, set]
+  + Position : Point3D [get, set]
+}
+interface "ISquare" as T_Model_Model_Interfaces_ISquare {
+  + CalcSquare() : double
+}
+interface "ISurface<T>" as T_Model_Model_Interfaces_ISurface_1 {
+  + IsInner : bool [get]
+  + Number : int [get]
+  + this[int ind] : T [get, set]
+  + GetDistance(point3D) : float
+  + GetLinesFromSurface() : Segment3D[]
+  + GetVertexIndex(vertex) : int
+  + GetVertexes() : IEnumerable<T>
+  + ReverseVertexes() : void
+}
+interface "ISurfaceObject<T,U>" as T_Model_Model_Interfaces_ISurfaceObject_2 {
+  + NumberOfSides : int [get]
+  + GetSurfaces() : IEnumerable<T>
+}
+interface "IVertexObject<T>" as T_Model_Model_Interfaces_IVertexObject_1 {
+  + GetVertexes() : IEnumerable<T>
+}
+interface "IModelObject\nModel-1" as T_Model_Model_Interfaces_IModelObject <<reference>> [[Model-1.mdpuml Model-1]]
+interface "ICoordinated\nGeometry-1" as T_Geometry_Geometry_Interfaces_ICoordinated <<reference>> [[../../PrGeometry/Documents/Geometry-1.mdpuml Geometry-1]]
+interface "INormal\nModel-3" as T_Model_Model_Interfaces_INormal <<reference>> [[Model-3.mdpuml Model-3]]
+T_Model_Model_Interfaces_IObjectsData -[hidden]down-> T_Model_Model_Interfaces_IPoint
+T_Model_Model_Interfaces_IPoint -[hidden]down-> T_Model_Model_Interfaces_ISquare
+T_Model_Model_Interfaces_ISquare -[hidden]down-> T_Model_Model_Interfaces_ISurface_1
+T_Model_Model_Interfaces_ISurface_1 -[hidden]down-> T_Model_Model_Interfaces_ISurfaceObject_2
+T_Model_Model_Interfaces_ISurfaceObject_2 -[hidden]down-> T_Model_Model_Interfaces_IVertexObject_1
+T_Model_Model_Interfaces_IVertexObject_1 -[hidden]down-> T_Model_Model_Interfaces_IModelObject
+T_Model_Model_Interfaces_IModelObject -[hidden]down-> T_Geometry_Geometry_Interfaces_ICoordinated
+T_Geometry_Geometry_Interfaces_ICoordinated -[hidden]down-> T_Model_Model_Interfaces_INormal
+T_Model_Model_Interfaces_IPoint --|> T_Model_Model_Interfaces_IModelObject
+T_Model_Model_Interfaces_ISurfaceObject_2 --|> T_Model_Model_Interfaces_IModelObject
+T_Model_Model_Interfaces_ISurfaceObject_2 --|> T_Model_Model_Interfaces_IVertexObject_1
+T_Model_Model_Interfaces_ISurface_1 --|> T_Geometry_Geometry_Interfaces_ICoordinated
+T_Model_Model_Interfaces_ISurface_1 --|> T_Model_Model_Interfaces_INormal
+T_Model_Model_Interfaces_ISurface_1 --|> T_Model_Model_Interfaces_ISquare
+T_Model_Model_Interfaces_IVertexObject_1 --|> T_Model_Model_Interfaces_IModelObject
+legend bottom
+  Обзор: [[Model.mdpuml Model]]; сигнатуры: [[Model-15.md Model-15.md]].
+  reference — адрес подробностей указан в заголовке типа.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+  Связанные типы в контрактах и сигнатурах:
+  [[Model-1.mdpuml Model-1]]: IModelObject.
+  [[Model-3.mdpuml Model-3]]: INormal.
+  [[Model-6.mdpuml Model-6]]: ObjType.
+  [[../../PrGeometry/Documents/Geometry-1.mdpuml Geometry-1]]: ICoordinated.
+  [[../../PrGeometry/Documents/Geometry-4.mdpuml Geometry-4]]: Point3D.
+  [[../../PrGeometry/Documents/Geometry-5.mdpuml Geometry-5]]: Segment3D.
+endlegend
+@enduml

@@ -1,0 +1,76 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title GmshApi-10 — Сетка и настройки
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "Mesh\nчасть 2/2" as T_GmshApi_GmshApi_Mesh {
+  + RemoveEmbedded(dimTags, dim) : void
+  + SetAlgorithm(dim, tag, val) : void
+  + SetRecombine(dim, tag, angle) : void
+  + SetSize(dimTags, size) : void
+  + SetTransfiniteAutomatic(dimTags, cornerAngle, recombine) : void
+  + SetTransfiniteCurve(tag, numNodes, meshType, coef) : void
+  + SetTransfiniteSurface(tag, arrangement, cornerTags) : void
+  + SetTransfiniteVolume(tag, cornerTags) : void
+  + SetVisibility(elementTags, value) : void
+}
+note right of T_GmshApi_GmshApi_Mesh
+  Полный состав: GmshApi-9, GmshApi-10
+end note
+enum "MeshAlgorithm2D" as T_GmshApi_GmshApi_MeshAlgorithm2D {
+    Automatic
+    BAMG
+    Delaunay
+    FrontalDelaunay
+    FrontalDelaunayQuads
+    InitialMeshOnly
+    MeshAdapt
+    PackingOfParallelograms
+    QuasiStructuredQuad
+}
+enum "MeshAlgorithm3D" as T_GmshApi_GmshApi_MeshAlgorithm3D {
+    Delaunay
+    Frontal
+    HXT
+    InitialMeshOnly
+    MMG3D
+    RTree
+}
+enum "MeshType" as T_GmshApi_GmshApi_MeshType {
+    Beta
+    Bump
+    Progression
+}
+enum "QualityName" as T_GmshApi_GmshApi_QualityName {
+    angleShape
+    gamma
+    innerRadius
+    maxDetJac
+    maxEdge
+    minDetJac
+    minEdge
+    minIsotropy
+    minSICN
+    minSIGE
+    minSJ
+    outerRadius
+}
+T_GmshApi_GmshApi_Mesh -[hidden]down-> T_GmshApi_GmshApi_MeshAlgorithm2D
+T_GmshApi_GmshApi_MeshAlgorithm2D -[hidden]down-> T_GmshApi_GmshApi_MeshAlgorithm3D
+T_GmshApi_GmshApi_MeshAlgorithm3D -[hidden]down-> T_GmshApi_GmshApi_MeshType
+T_GmshApi_GmshApi_MeshType -[hidden]down-> T_GmshApi_GmshApi_QualityName
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

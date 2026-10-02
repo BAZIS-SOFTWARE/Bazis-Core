@@ -1,4 +1,4 @@
-﻿using Model;
+using Model;
 using Model.IO;
 using Model.IO.STL;
 using Model.MeshObjects;
@@ -20,7 +20,6 @@ namespace OperationalController
 
         public void ConnectByBeams(string masterGroup, string slaveGroup, double radius, int maxBeams)
         {
-            var before = CaptureData();
             var masterGr = ModelData.GroupData.Find(masterGroup);
 
             if (masterGr == null)
@@ -52,7 +51,7 @@ namespace OperationalController
             }
 
             ModelData.ObjectData.E1DCollection.Add(set);
-            PublishDataDifference(before);
+            PublishSetChange(set, ChangeAction.Created);
         } 
     }
 }

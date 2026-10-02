@@ -1,36 +1,56 @@
 @startuml
-title Geometry-1 — точки и локальные координаты
-left to right direction
-scale max 1500 width
+top to bottom direction
 skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
 hide empty members
+set namespaceSeparator none
 
-interface IPosition2D
-interface IPosition3D
-interface IPoint2D
-interface IPoint3D
-interface "IPointFunctions<T>" as IPointFunctions
-interface IPlane
-class Point2D
-class Point3D
-class Frame {
-  + GetCoordsInFrame(point) : Point3D
+title Geometry-1 — Координаты и системы отсчёта
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+interface "ICoordinated" as T_Geometry_Geometry_Interfaces_ICoordinated {
+  + NumberOfPoints : int [get]
+  + GetCoordinates() : IEnumerable<Point3D>
 }
-class Frame2D {
-  + MapToLocalPlaneCoordinates(point) : Point2D
-  + UnmapToGlobalCoordinates(point) : Point3D
+interface "IPlane" as T_Geometry_Geometry_Interfaces_IPlane {
+  + Normal : Point3D [get]
+  + Shifting : float [get, set]
+  + PlanePosition(plane) : float
+  + PointPosition(point) : float
 }
-class Plane
-
-IPosition2D <|-- IPoint2D
-IPosition3D <|-- IPoint3D
-IPoint2D <|.. Point2D
-IPoint3D <|.. Point3D
-IPointFunctions <|.. Point2D
-IPointFunctions <|.. Point3D
-IPlane <|.. Plane
-Frame o-- Point3D
-Frame2D o-- Point3D
-Frame2D ..> Point2D
-Plane o-- Point3D
+interface "IPoint2D" as T_Geometry_Geometry_Interfaces_IPoint2D {
+}
+interface "IPoint3D" as T_Geometry_Geometry_Interfaces_IPoint3D {
+  + GetDistanceToLine(line) : float
+  + GetPointProectionOnPlane(plane) : Point3D
+  + IsBelongTo(plane) : bool
+}
+interface "IPointFunctions<T>" as T_Geometry_Geometry_Interfaces_IPointFunctions_1 {
+  + GetSquareSumCoords() : double
+}
+interface "IPosition2D" as T_Geometry_Geometry_Interfaces_IPosition2D {
+  + _x : double [get, set]
+  + _y : double [get, set]
+}
+interface "IPosition3D" as T_Geometry_Geometry_Interfaces_IPosition3D <<reference>>
+interface "IPositionFunctions<T>" as T_Geometry_Geometry_Interfaces_IPositionFunctions_1 <<reference>>
+T_Geometry_Geometry_Interfaces_ICoordinated -[hidden]down-> T_Geometry_Geometry_Interfaces_IPlane
+T_Geometry_Geometry_Interfaces_IPlane -[hidden]down-> T_Geometry_Geometry_Interfaces_IPoint2D
+T_Geometry_Geometry_Interfaces_IPoint2D -[hidden]down-> T_Geometry_Geometry_Interfaces_IPoint3D
+T_Geometry_Geometry_Interfaces_IPoint3D -[hidden]down-> T_Geometry_Geometry_Interfaces_IPointFunctions_1
+T_Geometry_Geometry_Interfaces_IPointFunctions_1 -[hidden]down-> T_Geometry_Geometry_Interfaces_IPosition2D
+T_Geometry_Geometry_Interfaces_IPosition2D -[hidden]down-> T_Geometry_Geometry_Interfaces_IPosition3D
+T_Geometry_Geometry_Interfaces_IPosition3D -[hidden]down-> T_Geometry_Geometry_Interfaces_IPositionFunctions_1
+T_Geometry_Geometry_Interfaces_IPoint2D --|> T_Geometry_Geometry_Interfaces_IPosition2D
+T_Geometry_Geometry_Interfaces_IPoint3D --|> T_Geometry_Geometry_Interfaces_IPosition3D
+T_Geometry_Geometry_Interfaces_IPointFunctions_1 --|> T_Geometry_Geometry_Interfaces_IPositionFunctions_1
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
 @enduml

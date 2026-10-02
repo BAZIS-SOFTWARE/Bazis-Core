@@ -1,0 +1,63 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title OperationalController-8 — Создание объектов, операции и презентаторы
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "VolumeMeshingSettings" as T_OperationalController_OperationalController_VolumeMeshingSettings {
+  + GradientSettings : GradientVolumeMeshingSettings [get]
+  + Type : VolumeMeshingType [get]
+  + VolumeMeshingSettings(type, gradientSettings)
+}
+enum "VolumeMeshingType" as T_OperationalController_OperationalController_VolumeMeshingType {
+    Gradient
+    Regular
+    Undefined
+}
+class "ChamferGeometryBuilder" as T_OperationalController_OperationalController_GeomObjsCreator_ChamferGeometryBuilder {
+  + Build(curveTags, firstLength, secondLengthOrAngle, isAngle, reflected) : int[]
+  + ChamferGeometryBuilder(controller)
+}
+class "Convert2DMeshTo2DGeo" as T_OperationalController_OperationalController_GeomObjsCreator_Convert2DMeshTo2DGeo {
+}
+class "CurveLoop" as T_OperationalController_OperationalController_GeomObjsCreator_CurveLoop {
+  + Loop : LinkedList<CurveLoopNode> [get, private set]
+  + Orientation : Orient [get, private set]
+  + Surface : int [get, private set]
+  + CheckLoop() : void
+  + CurveLoop(controller, surface, index, pointsPerCurve)
+  + MakeSimilar(src) : void
+  + Rebuild(coords) : void
+  + Reverse(coords) : void
+}
+class "CurveLoopNode" as T_OperationalController_OperationalController_GeomObjsCreator_CurveLoop_CurveLoopNode {
+  + AverageCoords : double[] [get, private set]
+  + Begin : int [get, private set]
+  + End : int [get, private set]
+  + Tag : int [get, private set]
+  + CurveLoopNode(begin, end, tag)
+  + GetParametrization(controller, pointsPerCurve) : double[]
+  + Reverse() : void
+  + SetAverageCoords(coords) : void
+}
+T_OperationalController_OperationalController_VolumeMeshingSettings -[hidden]down-> T_OperationalController_OperationalController_VolumeMeshingType
+T_OperationalController_OperationalController_VolumeMeshingType -[hidden]down-> T_OperationalController_OperationalController_GeomObjsCreator_ChamferGeometryBuilder
+T_OperationalController_OperationalController_GeomObjsCreator_ChamferGeometryBuilder -[hidden]down-> T_OperationalController_OperationalController_GeomObjsCreator_Convert2DMeshTo2DGeo
+T_OperationalController_OperationalController_GeomObjsCreator_Convert2DMeshTo2DGeo -[hidden]down-> T_OperationalController_OperationalController_GeomObjsCreator_CurveLoop
+T_OperationalController_OperationalController_GeomObjsCreator_CurveLoop -[hidden]down-> T_OperationalController_OperationalController_GeomObjsCreator_CurveLoop_CurveLoopNode
+T_OperationalController_OperationalController_GeomObjsCreator_CurveLoop --> T_OperationalController_OperationalController_GeomObjsCreator_CurveLoop_CurveLoopNode : использует
+T_OperationalController_OperationalController_VolumeMeshingSettings --> T_OperationalController_OperationalController_VolumeMeshingType : использует
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

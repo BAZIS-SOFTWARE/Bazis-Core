@@ -1,0 +1,67 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title Project-17 — Функции, материалы и ввод/вывод
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "PT" as T_Project_Project_Tasks_Functions_PT {
+  + CalcValue() : double
+  + PT()
+}
+class "Parameter" as T_Project_Project_Tasks_Functions_Parameter {
+  + Name : string [get, set]
+  + ParameterKind : ParameterKind [get, set]
+  + ParameterType : ParameterType [get, set]
+  + GetValue() : double
+  + Parameter(name)
+  + Parameter(name, type, value)
+  + SetValue(value) : void
+  + ToString() : string
+}
+enum "ParameterKind" as T_Project_Project_Tasks_Functions_ParameterKind {
+    Digit
+    Table
+}
+enum "ParameterType" as T_Project_Project_Tasks_Functions_ParameterType {
+    Constant
+    Variable
+}
+class "TT" as T_Project_Project_Tasks_Functions_TT {
+  + CalcValue() : double
+  + TT()
+}
+class "TableParameter" as T_Project_Project_Tasks_Functions_TableParameter {
+  + Parameter : Parameter [get, set]
+  + Table : Property [get]
+  + GetValue() : double
+  + TableParameter(table, name, parameter)
+  + ToString() : string
+}
+abstract class "Function\nProject-16" as T_Project_Project_Tasks_Functions_Function <<reference>> [[Project-16.mdpuml Project-16]]
+T_Project_Project_Tasks_Functions_PT -[hidden]down-> T_Project_Project_Tasks_Functions_Parameter
+T_Project_Project_Tasks_Functions_Parameter -[hidden]down-> T_Project_Project_Tasks_Functions_ParameterKind
+T_Project_Project_Tasks_Functions_ParameterKind -[hidden]down-> T_Project_Project_Tasks_Functions_ParameterType
+T_Project_Project_Tasks_Functions_ParameterType -[hidden]down-> T_Project_Project_Tasks_Functions_TT
+T_Project_Project_Tasks_Functions_TT -[hidden]down-> T_Project_Project_Tasks_Functions_TableParameter
+T_Project_Project_Tasks_Functions_TableParameter -[hidden]down-> T_Project_Project_Tasks_Functions_Function
+T_Project_Project_Tasks_Functions_PT --|> T_Project_Project_Tasks_Functions_Function
+T_Project_Project_Tasks_Functions_Parameter --> T_Project_Project_Tasks_Functions_ParameterKind : использует
+T_Project_Project_Tasks_Functions_Parameter --> T_Project_Project_Tasks_Functions_ParameterType : использует
+T_Project_Project_Tasks_Functions_TT --|> T_Project_Project_Tasks_Functions_Function
+T_Project_Project_Tasks_Functions_TableParameter --> T_Project_Project_Tasks_Functions_Parameter : использует
+T_Project_Project_Tasks_Functions_TableParameter --|> T_Project_Project_Tasks_Functions_Parameter
+legend bottom
+  Обзор: [[Project.mdpuml Project]]; сигнатуры: [[Project-17.md Project-17.md]].
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

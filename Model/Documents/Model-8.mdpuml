@@ -1,0 +1,77 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title Model-8 — Геометрические и сеточные сущности
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "Node" as T_Model_Model_MeshObjects_Node {
+  + this[int elemInd] : IElement [get]
+  + AddElement(element) : void
+  + GetElements() : IEnumerable<IElement>
+  + Node(number, position)
+  + RemoveElement(element) : void
+  + ToString() : string
+}
+class "Penta" as T_Model_Model_MeshObjects_Penta {
+  + Penta(number, nodes)
+  + Penta(number, nodes, level)
+}
+class "Quad" as T_Model_Model_MeshObjects_Quad {
+  + Quad(number, nodes)
+  + Quad(number, nodes, level)
+}
+class "Tetra" as T_Model_Model_MeshObjects_Tetra {
+  + CreateIntegrationPoint(index, w, l1, l2, l3, l4) : IntegralPoint
+  + Tetra(number, nodes)
+  + Tetra(number, nodes, level)
+}
+class "Tetra_c" as T_Model_Model_MeshObjects_Tetra_c {
+  + Tetra_c(number, nodes)
+  + Tetra_c(number, nodes, level)
+}
+class "Triangle" as T_Model_Model_MeshObjects_Triangle {
+  + CreateIntegrationPoint(w, l1, l2, l3) : IntegralPoint
+  + Triangle(number, nodes)
+  + Triangle(number, nodes, level)
+}
+abstract class "ModelObject\nModel-17" as T_Model_Model_ModelObject <<reference>> [[Model-17.mdpuml Model-17]]
+interface "IPoint\nModel-15" as T_Model_Model_Interfaces_IPoint <<reference>> [[Model-15.mdpuml Model-15]]
+abstract class "Element3D\nModel-7" as T_Model_Model_MeshObjects_Element3D <<reference>> [[Model-7.mdpuml Model-7]]
+abstract class "Element2D\nModel-7" as T_Model_Model_MeshObjects_Element2D <<reference>> [[Model-7.mdpuml Model-7]]
+T_Model_Model_MeshObjects_Node -[hidden]down-> T_Model_Model_MeshObjects_Penta
+T_Model_Model_MeshObjects_Penta -[hidden]down-> T_Model_Model_MeshObjects_Quad
+T_Model_Model_MeshObjects_Quad -[hidden]down-> T_Model_Model_MeshObjects_Tetra
+T_Model_Model_MeshObjects_Tetra -[hidden]down-> T_Model_Model_MeshObjects_Tetra_c
+T_Model_Model_MeshObjects_Tetra_c -[hidden]down-> T_Model_Model_MeshObjects_Triangle
+T_Model_Model_MeshObjects_Triangle -[hidden]down-> T_Model_Model_ModelObject
+T_Model_Model_ModelObject -[hidden]down-> T_Model_Model_Interfaces_IPoint
+T_Model_Model_Interfaces_IPoint -[hidden]down-> T_Model_Model_MeshObjects_Element3D
+T_Model_Model_MeshObjects_Element3D -[hidden]down-> T_Model_Model_MeshObjects_Element2D
+T_Model_Model_MeshObjects_Node --|> T_Model_Model_ModelObject
+T_Model_Model_MeshObjects_Node ..|> T_Model_Model_Interfaces_IPoint
+T_Model_Model_MeshObjects_Penta --|> T_Model_Model_MeshObjects_Element3D
+T_Model_Model_MeshObjects_Quad --|> T_Model_Model_MeshObjects_Element2D
+T_Model_Model_MeshObjects_Tetra --|> T_Model_Model_MeshObjects_Element3D
+T_Model_Model_MeshObjects_Tetra_c --|> T_Model_Model_MeshObjects_Element3D
+T_Model_Model_MeshObjects_Triangle --|> T_Model_Model_MeshObjects_Element2D
+legend bottom
+  Обзор: [[Model.mdpuml Model]]; сигнатуры: [[Model-8.md Model-8.md]].
+  reference — адрес подробностей указан в заголовке типа.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+  Связанные типы в контрактах и сигнатурах:
+  [[Model-1.mdpuml Model-1]]: IElement.
+  [[Model-7.mdpuml Model-7]]: Element2D, Element3D, IntegralPoint.
+  [[Model-15.mdpuml Model-15]]: IPoint.
+  [[Model-17.mdpuml Model-17]]: ModelObject.
+  [[../../PrGeometry/Documents/Geometry-4.mdpuml Geometry-4]]: Point3D.
+endlegend
+@enduml

@@ -1,117 +1,72 @@
 @startuml
-
-title ProjectController: публичный контракт и внутренняя реализация
-
 top to bottom direction
-scale max 1600 width
-hide empty members
 skinparam classAttributeIconSize 0
-skinparam packageStyle rectangle
-skinparam nodesep 16
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam shadowing false
+skinparam nodesep 18
 skinparam ranksep 24
+hide empty members
 set namespaceSeparator none
-
-class "BazisGUI / BazisAvaloniaGUI / IronPython" as Clients <<клиенты>>
-
-package "OperationalController · публичный контракт" {
-  interface IProjectController
-
-  interface IProjectSession <<changed>> {
-    + HasProject, FilePath, IsModified, Name : только чтение
-    + ChangeProjectName(name) : void
-    + TaskKind, TaskType, MaterialsDB, FunctionsDB
-    + Open(path, progress?)
-    + Append(path, progress?) : void
-    + ImportGeometry(path), Create(path), Save(path), Close()
-    + CreateTask(), ChangeTaskKind(), ChangeTaskType(), ClearAllData()
-  }
-
-  interface IProjectEvents <<new>> {
-    + {event} Message : EventHandler<ProjectMessageEventArgs>
-  }
-
-  interface IProjectStorage <<changed>> {
-    + LoadSMF(), SaveSMF(), CopyFile()
-    + ExportMesh(), ExportGeometry()
-  }
-
-  interface IProjectView <<new>> {
-    + запросы и изменение вида, цветов, видимости и выделения
-    + BeginViewUpdate() : IDisposable
-  }
-
-  interface "Контракты модели" as ModelContracts <<current>> {
-    IMeshQueries / IMeshCommands
-    IGeometryQueries / IGeometryCommands
-    IGroupQueries / IGroupCommands
-    IConditionQueries / IConditionCommands
-  }
-
-  class ProjectMessageEventArgs <<new>> {
-    + Change : ChangeMessage
-  }
+title ProjectController — координация и единственный источник событий
+caption Целевая архитектура; полный API — на поддиаграммах OperationalController
+interface IProjectController <<reference>>
+interface IProjectEvents {
+  + {event} Message : EventHandler<ProjectMessageEventArgs>
 }
-
-package "OperationalController · внутренняя реализация" {
-  class ProjectController <<changed>> {
-    - project : IProjectData
-    - modelView : ModelView
-    - Replace(data, changeKind) : void
-    - Publish(change) : void
-    - OnViewChanged(sender, e) : void
-  }
-
-  class ModelView <<internal>> {
-    + {event} Changed : EventHandler<ModelViewChangedEventArgs>
-  }
-
-  class ModelLoaderFactory <<new>> {
-    + Create(extension) : IModelLoader
-  }
-
-  class GmshController <<current>>
-
-  class "Внутренние операции" as InternalOperations <<current>> {
-    MarkSurfaces, PresentersCreator
-    MeshObjsUtility, MeshObjsCreator, GeomObjsCreator
-  }
+interface IProjectView <<reference>>
+class ProjectController {
+  - MarkModelSurfaces(model) : IReadOnlyCollection<ISetInfo>
+  - Publish(change) : void
+  - PublishSetChange(setInfo, action) : void
+  - PublishGroupChange(group, action) : void
+  - PublishConditionChange(kind, action, index) : void
+  - PublishGeometryChange() : void
 }
-
-package "Данные и CAD" {
-  interface IProjectData <<boundary>>
-  interface IModelData <<boundary>>
-  class Gmsh <<boundary>>
-}
-
-Clients ..> IProjectController
-
-IProjectController -up-|> IProjectSession
-IProjectController -up-|> IProjectEvents
-IProjectController -up-|> IProjectStorage
-IProjectController -up-|> IProjectView
-IProjectController -up-|> ModelContracts
-IProjectController <|.. ProjectController
-
-IProjectEvents ..> ProjectMessageEventArgs
-
-ProjectController o-- IProjectData : текущий проект
-ProjectController *-- ModelView : заменяется с проектом
-ProjectController *-- ModelLoaderFactory
-ProjectController *-- GmshController
-ProjectController *-- InternalOperations
-ModelView --> IModelData : текущая модель
-GmshController --> Gmsh
-
-note bottom of IProjectController
-  Один контроллер на процесс. ModelView не публичен.
-  Подробности Message — ProjectEvents.mdpuml.
+class ModelView <<internal, reference>>
+interface IProjectData <<Project, reference>>
+interface IModelData <<Model, reference>>
+IProjectController --|> IProjectEvents
+IProjectController --|> IProjectView
+ProjectController ..|> IProjectController
+ProjectController --> IProjectData : текущие данные
+ProjectController --> ModelView : команды вида
+ModelView --> IModelData : читает модель
+IProjectData --> IModelData : содержит
+IProjectEvents -[hidden]down-> IProjectView
+IProjectView -[hidden]down-> IProjectController
+IProjectController -[hidden]down-> ProjectController
+ProjectController -[hidden]down-> ModelView
+ModelView -[hidden]down-> IProjectData
+IProjectData -[hidden]down-> IModelData
+note bottom of ProjectController
+  Только этот класс вызывает Message.
+  Объекты обрабатываются до публикации сообщений.
+  Один результат на набор; разметка возвращает сведения.
+  Команды и завершение пакета вида управляются контроллером.
+  ModelView и нижние библиотеки не объявляют событий.
+  Способ передачи результата вида ещё требует изменения API.
 end note
-
-note bottom of IProjectSession
-  progress: необязательный IProgress<int> при загрузке.
-  Текст — доля строк; бинарный файл — доля байт.
-  Open выбирает проект или сетку по расширению.
-  Проект заменяется после успешного чтения.
+note right of IProjectController
+  Полный состав:
+  OperationalController-25.mdpuml
 end note
-
+note right of IProjectView
+  Полный состав:
+  OperationalController-27.mdpuml
+  OperationalController-28.mdpuml
+end note
+note right of ModelView
+  Полный состав:
+  OperationalController-22.mdpuml
+  OperationalController-23.mdpuml
+end note
+note right of IProjectData
+  Полный состав:
+  ../../Project/Documents/Project-1.mdpuml
+end note
+note right of IModelData
+  Полный состав:
+  ../../Model/Documents/Model-3.mdpuml
+end note
 @enduml

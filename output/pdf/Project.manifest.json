@@ -1,0 +1,4029 @@
+{
+  "PDF": "C:\\BazisComponents\\BazisCore\\output\\pdf\\Project.pdf",
+  "Pages": 76,
+  "Diagrams": 24,
+  "Documents": 24,
+  "InternalLinks": 498,
+  "ExternalLinks": 0,
+  "Bytes": 493600,
+  "SHA256": "fbadeac2e9d9a0cdd9838fae6b2fe91a997e634b40846297ecc2385f4bafca97",
+  "PageIndex": [
+    {
+      "Page": 1,
+      "Title": "Обзор",
+      "Destination": "overview",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 2,
+      "Title": "Оглавление",
+      "Destination": "contents",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 3,
+      "Title": "Продолжение",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 4,
+      "Title": "Project",
+      "Destination": "diagram-636eb840c7f783489983",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 5,
+      "Title": "Project-1",
+      "Destination": "diagram-c04679acdf9d0255f774",
+      "Width": 595.28,
+      "Height": 972.5
+    },
+    {
+      "Page": 6,
+      "Title": "Project-2",
+      "Destination": "diagram-5c532ba24609da5a443f",
+      "Width": 595.28,
+      "Height": 901.6666666666667
+    },
+    {
+      "Page": 7,
+      "Title": "Project-3",
+      "Destination": "diagram-e3d6a81c334512648dff",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 8,
+      "Title": "Project-4",
+      "Destination": "diagram-a74adab0228e9697ff38",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 9,
+      "Title": "Project-5",
+      "Destination": "diagram-d4229544272149da6bb1",
+      "Width": 595.28,
+      "Height": 1010.0
+    },
+    {
+      "Page": 10,
+      "Title": "Project-6",
+      "Destination": "diagram-f7ac6b7f57743bbddc95",
+      "Width": 595.28,
+      "Height": 871.6666666666667
+    },
+    {
+      "Page": 11,
+      "Title": "Project-7",
+      "Destination": "diagram-c6764a4ca6466a5a0480",
+      "Width": 595.28,
+      "Height": 926.6666666666667
+    },
+    {
+      "Page": 12,
+      "Title": "Project-8",
+      "Destination": "diagram-35c8886d9c70b898eb8a",
+      "Width": 595.28,
+      "Height": 990.0
+    },
+    {
+      "Page": 13,
+      "Title": "Project-9",
+      "Destination": "diagram-3c18af3055457484a96f",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 14,
+      "Title": "Project-10",
+      "Destination": "diagram-7e573bd57f4f264e052e",
+      "Width": 595.28,
+      "Height": 920.8333333333334
+    },
+    {
+      "Page": 15,
+      "Title": "Project-11",
+      "Destination": "diagram-d05391d20dad74a3ab39",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 16,
+      "Title": "Project-12",
+      "Destination": "diagram-e81e4dcf68f110043234",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 17,
+      "Title": "Project-13",
+      "Destination": "diagram-34ed9badda2a4fedcb39",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 18,
+      "Title": "Project-14",
+      "Destination": "diagram-2cff5e50d50052a26d85",
+      "Width": 595.28,
+      "Height": 962.5
+    },
+    {
+      "Page": 19,
+      "Title": "Project-15",
+      "Destination": "diagram-038ba0c73a7b52c27ab6",
+      "Width": 595.28,
+      "Height": 923.3333333333334
+    },
+    {
+      "Page": 20,
+      "Title": "Project-16",
+      "Destination": "diagram-4c88907d6427dc2a85df",
+      "Width": 595.28,
+      "Height": 950.0
+    },
+    {
+      "Page": 21,
+      "Title": "Project-17",
+      "Destination": "diagram-371fe19027e8192894db",
+      "Width": 595.28,
+      "Height": 881.6666666666667
+    },
+    {
+      "Page": 22,
+      "Title": "Project-18",
+      "Destination": "diagram-d228b98d26d967e89edb",
+      "Width": 595.28,
+      "Height": 979.1666666666667
+    },
+    {
+      "Page": 23,
+      "Title": "Project-19",
+      "Destination": "diagram-82f6d8269b1a71713f9e",
+      "Width": 595.28,
+      "Height": 990.8333333333334
+    },
+    {
+      "Page": 24,
+      "Title": "Project-20",
+      "Destination": "diagram-4d0896afe68106a1da9a",
+      "Width": 595.28,
+      "Height": 861.6666666666667
+    },
+    {
+      "Page": 25,
+      "Title": "Project-21",
+      "Destination": "diagram-7afc2a5f13ed333a11e3",
+      "Width": 595.28,
+      "Height": 1066.6666666666667
+    },
+    {
+      "Page": 26,
+      "Title": "Project-22",
+      "Destination": "diagram-e29f85802c9f39a754c7",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 27,
+      "Title": "ResultDB-2",
+      "Destination": "diagram-414df299b153f7569a37",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 28,
+      "Title": "Project - описание",
+      "Destination": "document-f4647d72935901b54531",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 29,
+      "Title": "Project - продолжение таблицы",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 30,
+      "Title": "Project - продолжение таблицы",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 31,
+      "Title": "Project - продолжение таблицы",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 32,
+      "Title": "Project - продолжение таблицы",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 33,
+      "Title": "Project - продолжение таблицы",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 34,
+      "Title": "Project - продолжение таблицы",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 35,
+      "Title": "Project - продолжение таблицы",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 36,
+      "Title": "Project - продолжение таблицы",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 37,
+      "Title": "Project-1 - описание",
+      "Destination": "document-79811980faa9063ffce9",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 38,
+      "Title": "Продолжение",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 39,
+      "Title": "Project-2 - описание",
+      "Destination": "document-1c76ecf5381dd68fb896",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 40,
+      "Title": "Продолжение",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 41,
+      "Title": "Project-3 - описание",
+      "Destination": "document-5a396fcdbf1be8452e16",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 42,
+      "Title": "Продолжение",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 43,
+      "Title": "Project-4 - описание",
+      "Destination": "document-3d5275d002e81baefefb",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 44,
+      "Title": "Продолжение",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 45,
+      "Title": "Project-5 - описание",
+      "Destination": "document-9c70965a76c0b04bdbb7",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 46,
+      "Title": "Продолжение",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 47,
+      "Title": "Project-6 - описание",
+      "Destination": "document-67d5d72fee47f2a49a78",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 48,
+      "Title": "Продолжение",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 49,
+      "Title": "Project-7 - описание",
+      "Destination": "document-06f0582fb25ff7eeb47f",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 50,
+      "Title": "Продолжение",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 51,
+      "Title": "Project-8 - описание",
+      "Destination": "document-8a32f3c6f6223e5049a7",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 52,
+      "Title": "Project-8 - продолжение",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 53,
+      "Title": "Project-9 - описание",
+      "Destination": "document-c89d9835afb535c498d3",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 54,
+      "Title": "Project-10 - описание",
+      "Destination": "document-0508498f4f1459f0718c",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 55,
+      "Title": "Продолжение",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 56,
+      "Title": "Project-11 - описание",
+      "Destination": "document-6c7b68ca8a9b47008b60",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 57,
+      "Title": "Продолжение",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 58,
+      "Title": "Project-12 - описание",
+      "Destination": "document-ada9c0eb3078c732a2a1",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 59,
+      "Title": "Project-13 - описание",
+      "Destination": "document-43746384f73f7f82dc77",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 60,
+      "Title": "Продолжение",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 61,
+      "Title": "Project-14 - описание",
+      "Destination": "document-0745a859142b62c8ec2a",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 62,
+      "Title": "Project-14 - продолжение",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 63,
+      "Title": "Project-15 - описание",
+      "Destination": "document-c89ffff7e75cc4919ce4",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 64,
+      "Title": "Project-16 - описание",
+      "Destination": "document-3a48cf80af2b17bcc810",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 65,
+      "Title": "Продолжение",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 66,
+      "Title": "Project-17 - описание",
+      "Destination": "document-ad2c86c431b1d2ac7fc7",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 67,
+      "Title": "Продолжение",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 68,
+      "Title": "Project-18 - описание",
+      "Destination": "document-c28ece0ac94d4d858b7c",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 69,
+      "Title": "Project-18 - продолжение",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 70,
+      "Title": "Project-19 - описание",
+      "Destination": "document-09b1ec76694ce5d892e2",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 71,
+      "Title": "Продолжение",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 72,
+      "Title": "Project-20 - описание",
+      "Destination": "document-e847e3c542647df41e01",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 73,
+      "Title": "Project-21 - описание",
+      "Destination": "document-6895a8d879cc8e482145",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 74,
+      "Title": "Project-21 - продолжение",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 75,
+      "Title": "Project-22 - описание",
+      "Destination": "document-499086a73d48f0e67a37",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 76,
+      "Title": "ResultDB-2 - описание",
+      "Destination": "document-772e11a1f5946fd4421d",
+      "Width": 595.28,
+      "Height": 841.89
+    }
+  ],
+  "DestinationPages": {
+    "overview": 1,
+    "contents": 2,
+    "diagram-636eb840c7f783489983": 4,
+    "diagram-c04679acdf9d0255f774": 5,
+    "diagram-5c532ba24609da5a443f": 6,
+    "diagram-e3d6a81c334512648dff": 7,
+    "diagram-a74adab0228e9697ff38": 8,
+    "diagram-d4229544272149da6bb1": 9,
+    "diagram-f7ac6b7f57743bbddc95": 10,
+    "diagram-c6764a4ca6466a5a0480": 11,
+    "diagram-35c8886d9c70b898eb8a": 12,
+    "diagram-3c18af3055457484a96f": 13,
+    "diagram-7e573bd57f4f264e052e": 14,
+    "diagram-d05391d20dad74a3ab39": 15,
+    "diagram-e81e4dcf68f110043234": 16,
+    "diagram-34ed9badda2a4fedcb39": 17,
+    "diagram-2cff5e50d50052a26d85": 18,
+    "diagram-038ba0c73a7b52c27ab6": 19,
+    "diagram-4c88907d6427dc2a85df": 20,
+    "diagram-371fe19027e8192894db": 21,
+    "diagram-d228b98d26d967e89edb": 22,
+    "diagram-82f6d8269b1a71713f9e": 23,
+    "diagram-4d0896afe68106a1da9a": 24,
+    "diagram-7afc2a5f13ed333a11e3": 25,
+    "diagram-e29f85802c9f39a754c7": 26,
+    "diagram-414df299b153f7569a37": 27,
+    "document-f4647d72935901b54531": 28,
+    "document-f4647d72935901b54531-heading-0": 28,
+    "document-f4647d72935901b54531-heading-1": 28,
+    "document-f4647d72935901b54531-heading-2": 29,
+    "document-f4647d72935901b54531-heading-3": 36,
+    "document-f4647d72935901b54531-heading-4": 36,
+    "document-79811980faa9063ffce9": 37,
+    "document-79811980faa9063ffce9-heading-0": 37,
+    "document-79811980faa9063ffce9-heading-1": 37,
+    "document-79811980faa9063ffce9-heading-2": 37,
+    "document-79811980faa9063ffce9-heading-3": 37,
+    "document-79811980faa9063ffce9-heading-4": 37,
+    "document-79811980faa9063ffce9-heading-5": 37,
+    "document-79811980faa9063ffce9-heading-6": 38,
+    "document-1c76ecf5381dd68fb896": 39,
+    "document-1c76ecf5381dd68fb896-heading-0": 39,
+    "document-1c76ecf5381dd68fb896-heading-1": 39,
+    "document-1c76ecf5381dd68fb896-heading-2": 39,
+    "document-1c76ecf5381dd68fb896-heading-3": 39,
+    "document-1c76ecf5381dd68fb896-heading-4": 39,
+    "document-1c76ecf5381dd68fb896-heading-5": 39,
+    "document-1c76ecf5381dd68fb896-heading-6": 40,
+    "document-5a396fcdbf1be8452e16": 41,
+    "document-5a396fcdbf1be8452e16-heading-0": 41,
+    "document-5a396fcdbf1be8452e16-heading-1": 41,
+    "document-5a396fcdbf1be8452e16-heading-2": 41,
+    "document-5a396fcdbf1be8452e16-heading-3": 41,
+    "document-5a396fcdbf1be8452e16-heading-4": 41,
+    "document-5a396fcdbf1be8452e16-heading-5": 41,
+    "document-5a396fcdbf1be8452e16-heading-6": 42,
+    "document-3d5275d002e81baefefb": 43,
+    "document-3d5275d002e81baefefb-heading-0": 43,
+    "document-3d5275d002e81baefefb-heading-1": 43,
+    "document-3d5275d002e81baefefb-heading-2": 43,
+    "document-3d5275d002e81baefefb-heading-3": 43,
+    "document-3d5275d002e81baefefb-heading-4": 43,
+    "document-3d5275d002e81baefefb-heading-5": 43,
+    "document-3d5275d002e81baefefb-heading-6": 44,
+    "document-9c70965a76c0b04bdbb7": 45,
+    "document-9c70965a76c0b04bdbb7-heading-0": 45,
+    "document-9c70965a76c0b04bdbb7-heading-1": 45,
+    "document-9c70965a76c0b04bdbb7-heading-2": 45,
+    "document-9c70965a76c0b04bdbb7-heading-3": 45,
+    "document-9c70965a76c0b04bdbb7-heading-4": 46,
+    "document-9c70965a76c0b04bdbb7-heading-5": 46,
+    "document-9c70965a76c0b04bdbb7-heading-6": 46,
+    "document-67d5d72fee47f2a49a78": 47,
+    "document-67d5d72fee47f2a49a78-heading-0": 47,
+    "document-67d5d72fee47f2a49a78-heading-1": 47,
+    "document-67d5d72fee47f2a49a78-heading-2": 47,
+    "document-67d5d72fee47f2a49a78-heading-3": 47,
+    "document-67d5d72fee47f2a49a78-heading-4": 47,
+    "document-67d5d72fee47f2a49a78-heading-5": 47,
+    "document-67d5d72fee47f2a49a78-heading-6": 48,
+    "document-06f0582fb25ff7eeb47f": 49,
+    "document-06f0582fb25ff7eeb47f-heading-0": 49,
+    "document-06f0582fb25ff7eeb47f-heading-1": 49,
+    "document-06f0582fb25ff7eeb47f-heading-2": 49,
+    "document-06f0582fb25ff7eeb47f-heading-3": 49,
+    "document-06f0582fb25ff7eeb47f-heading-4": 49,
+    "document-06f0582fb25ff7eeb47f-heading-5": 50,
+    "document-06f0582fb25ff7eeb47f-heading-6": 50,
+    "document-8a32f3c6f6223e5049a7": 51,
+    "document-8a32f3c6f6223e5049a7-heading-0": 51,
+    "document-8a32f3c6f6223e5049a7-heading-1": 51,
+    "document-8a32f3c6f6223e5049a7-heading-2": 51,
+    "document-8a32f3c6f6223e5049a7-heading-3": 51,
+    "document-8a32f3c6f6223e5049a7-heading-4": 51,
+    "document-8a32f3c6f6223e5049a7-heading-5": 51,
+    "document-8a32f3c6f6223e5049a7-heading-6": 52,
+    "document-c89d9835afb535c498d3": 53,
+    "document-c89d9835afb535c498d3-heading-0": 53,
+    "document-c89d9835afb535c498d3-heading-1": 53,
+    "document-0508498f4f1459f0718c": 54,
+    "document-0508498f4f1459f0718c-heading-0": 54,
+    "document-0508498f4f1459f0718c-heading-1": 54,
+    "document-0508498f4f1459f0718c-heading-2": 54,
+    "document-0508498f4f1459f0718c-heading-3": 54,
+    "document-0508498f4f1459f0718c-heading-4": 54,
+    "document-0508498f4f1459f0718c-heading-5": 54,
+    "document-0508498f4f1459f0718c-heading-6": 55,
+    "document-6c7b68ca8a9b47008b60": 56,
+    "document-6c7b68ca8a9b47008b60-heading-0": 56,
+    "document-6c7b68ca8a9b47008b60-heading-1": 56,
+    "document-6c7b68ca8a9b47008b60-heading-2": 56,
+    "document-6c7b68ca8a9b47008b60-heading-3": 56,
+    "document-6c7b68ca8a9b47008b60-heading-4": 56,
+    "document-6c7b68ca8a9b47008b60-heading-5": 56,
+    "document-6c7b68ca8a9b47008b60-heading-6": 57,
+    "document-ada9c0eb3078c732a2a1": 58,
+    "document-ada9c0eb3078c732a2a1-heading-0": 58,
+    "document-ada9c0eb3078c732a2a1-heading-1": 58,
+    "document-ada9c0eb3078c732a2a1-heading-2": 58,
+    "document-43746384f73f7f82dc77": 59,
+    "document-43746384f73f7f82dc77-heading-0": 59,
+    "document-43746384f73f7f82dc77-heading-1": 59,
+    "document-43746384f73f7f82dc77-heading-2": 59,
+    "document-43746384f73f7f82dc77-heading-3": 59,
+    "document-43746384f73f7f82dc77-heading-4": 59,
+    "document-43746384f73f7f82dc77-heading-5": 59,
+    "document-0745a859142b62c8ec2a": 61,
+    "document-0745a859142b62c8ec2a-heading-0": 61,
+    "document-0745a859142b62c8ec2a-heading-1": 61,
+    "document-0745a859142b62c8ec2a-heading-2": 61,
+    "document-0745a859142b62c8ec2a-heading-3": 61,
+    "document-0745a859142b62c8ec2a-heading-4": 61,
+    "document-0745a859142b62c8ec2a-heading-5": 62,
+    "document-0745a859142b62c8ec2a-heading-6": 62,
+    "document-c89ffff7e75cc4919ce4": 63,
+    "document-c89ffff7e75cc4919ce4-heading-0": 63,
+    "document-c89ffff7e75cc4919ce4-heading-1": 63,
+    "document-c89ffff7e75cc4919ce4-heading-2": 63,
+    "document-c89ffff7e75cc4919ce4-heading-3": 63,
+    "document-c89ffff7e75cc4919ce4-heading-4": 63,
+    "document-c89ffff7e75cc4919ce4-heading-5": 63,
+    "document-c89ffff7e75cc4919ce4-heading-6": 63,
+    "document-3a48cf80af2b17bcc810": 64,
+    "document-3a48cf80af2b17bcc810-heading-0": 64,
+    "document-3a48cf80af2b17bcc810-heading-1": 64,
+    "document-3a48cf80af2b17bcc810-heading-2": 64,
+    "document-3a48cf80af2b17bcc810-heading-3": 64,
+    "document-3a48cf80af2b17bcc810-heading-4": 64,
+    "document-3a48cf80af2b17bcc810-heading-5": 65,
+    "document-3a48cf80af2b17bcc810-heading-6": 65,
+    "document-ad2c86c431b1d2ac7fc7": 66,
+    "document-ad2c86c431b1d2ac7fc7-heading-0": 66,
+    "document-ad2c86c431b1d2ac7fc7-heading-1": 66,
+    "document-ad2c86c431b1d2ac7fc7-heading-2": 66,
+    "document-ad2c86c431b1d2ac7fc7-heading-3": 66,
+    "document-ad2c86c431b1d2ac7fc7-heading-4": 66,
+    "document-ad2c86c431b1d2ac7fc7-heading-5": 66,
+    "document-ad2c86c431b1d2ac7fc7-heading-6": 67,
+    "document-c28ece0ac94d4d858b7c": 68,
+    "document-c28ece0ac94d4d858b7c-heading-0": 68,
+    "document-c28ece0ac94d4d858b7c-heading-1": 68,
+    "document-c28ece0ac94d4d858b7c-heading-2": 68,
+    "document-c28ece0ac94d4d858b7c-heading-3": 68,
+    "document-c28ece0ac94d4d858b7c-heading-4": 68,
+    "document-c28ece0ac94d4d858b7c-heading-5": 69,
+    "document-c28ece0ac94d4d858b7c-heading-6": 69,
+    "document-09b1ec76694ce5d892e2": 70,
+    "document-09b1ec76694ce5d892e2-heading-0": 70,
+    "document-09b1ec76694ce5d892e2-heading-1": 70,
+    "document-09b1ec76694ce5d892e2-heading-2": 70,
+    "document-09b1ec76694ce5d892e2-heading-3": 70,
+    "document-09b1ec76694ce5d892e2-heading-4": 70,
+    "document-09b1ec76694ce5d892e2-heading-5": 71,
+    "document-09b1ec76694ce5d892e2-heading-6": 71,
+    "document-e847e3c542647df41e01": 72,
+    "document-e847e3c542647df41e01-heading-0": 72,
+    "document-e847e3c542647df41e01-heading-1": 72,
+    "document-e847e3c542647df41e01-heading-2": 72,
+    "document-e847e3c542647df41e01-heading-3": 72,
+    "document-e847e3c542647df41e01-heading-4": 72,
+    "document-e847e3c542647df41e01-heading-5": 72,
+    "document-6895a8d879cc8e482145": 73,
+    "document-6895a8d879cc8e482145-heading-0": 73,
+    "document-6895a8d879cc8e482145-heading-1": 73,
+    "document-6895a8d879cc8e482145-heading-2": 73,
+    "document-6895a8d879cc8e482145-heading-3": 73,
+    "document-6895a8d879cc8e482145-heading-4": 73,
+    "document-6895a8d879cc8e482145-heading-5": 73,
+    "document-6895a8d879cc8e482145-heading-6": 74,
+    "document-499086a73d48f0e67a37": 75,
+    "document-499086a73d48f0e67a37-heading-0": 75,
+    "document-499086a73d48f0e67a37-heading-1": 75,
+    "document-499086a73d48f0e67a37-heading-2": 75,
+    "document-772e11a1f5946fd4421d": 76,
+    "document-772e11a1f5946fd4421d-heading-0": 76,
+    "document-772e11a1f5946fd4421d-heading-1": 76,
+    "document-772e11a1f5946fd4421d-heading-2": 76,
+    "document-772e11a1f5946fd4421d-heading-3": 76,
+    "document-772e11a1f5946fd4421d-heading-4": 76,
+    "document-772e11a1f5946fd4421d-heading-5": 76,
+    "document-772e11a1f5946fd4421d-heading-6": 76
+  },
+  "DiagramLinks": [
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project.mdpuml",
+      "Page": 4,
+      "URL": "Project-1.mdpuml",
+      "Rect": [
+        270.14,
+        719.7616666666665,
+        310.1546484375,
+        731.7616666666667
+      ],
+      "Destination": "diagram-c04679acdf9d0255f774"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project.mdpuml",
+      "Page": 4,
+      "URL": "Project-6.mdpuml",
+      "Rect": [
+        197.64,
+        667.2616666666665,
+        237.6546484375,
+        679.2616666666667
+      ],
+      "Destination": "diagram-f7ac6b7f57743bbddc95"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project.mdpuml",
+      "Page": 4,
+      "URL": "Project-5.mdpuml",
+      "Rect": [
+        274.3066666666666,
+        603.0949999999999,
+        314.3213151041666,
+        615.095
+      ],
+      "Destination": "diagram-d4229544272149da6bb1"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project.mdpuml",
+      "Page": 4,
+      "URL": "Project-9.mdpuml",
+      "Rect": [
+        272.64,
+        538.9283333333333,
+        312.6546484375,
+        550.9283333333333
+      ],
+      "Destination": "diagram-3c18af3055457484a96f"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project.mdpuml",
+      "Page": 4,
+      "URL": "Project-1.mdpuml",
+      "Rect": [
+        280.97333333333336,
+        486.42833333333334,
+        320.98798177083336,
+        498.42833333333334
+      ],
+      "Destination": "diagram-c04679acdf9d0255f774"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project.mdpuml",
+      "Page": 4,
+      "URL": "Project-6.mdpuml",
+      "Rect": [
+        280.14,
+        433.9283333333333,
+        320.1546484375,
+        445.92833333333334
+      ],
+      "Destination": "diagram-f7ac6b7f57743bbddc95"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project.mdpuml",
+      "Page": 4,
+      "URL": "Project-2.mdpuml",
+      "Rect": [
+        295.14,
+        381.4283333333333,
+        335.1546484375,
+        393.42833333333334
+      ],
+      "Destination": "diagram-5c532ba24609da5a443f"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project.mdpuml",
+      "Page": 4,
+      "URL": "Project-11.mdpuml",
+      "Rect": [
+        278.0566666666666,
+        317.26166666666654,
+        323.6328385416666,
+        329.2616666666666
+      ],
+      "Destination": "diagram-d05391d20dad74a3ab39"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project.mdpuml",
+      "Page": 4,
+      "URL": "Project-1.mdpuml",
+      "Rect": [
+        333.0566666666666,
+        270.5949999999999,
+        373.0713151041666,
+        282.5949999999999
+      ],
+      "Destination": "diagram-c04679acdf9d0255f774"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project.mdpuml",
+      "Page": 4,
+      "URL": "Project-4.mdpuml",
+      "Rect": [
+        378.62833333333333,
+        270.5949999999999,
+        418.64298177083333,
+        282.5949999999999
+      ],
+      "Destination": "diagram-a74adab0228e9697ff38"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project.mdpuml",
+      "Page": 4,
+      "URL": "Project-5.mdpuml",
+      "Rect": [
+        424.19916666666666,
+        270.5949999999999,
+        464.21381510416666,
+        282.5949999999999
+      ],
+      "Destination": "diagram-d4229544272149da6bb1"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project.mdpuml",
+      "Page": 4,
+      "URL": "Project-6.mdpuml",
+      "Rect": [
+        333.0566666666666,
+        259.0958333333333,
+        373.0713151041666,
+        271.0958333333333
+      ],
+      "Destination": "diagram-f7ac6b7f57743bbddc95"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project.mdpuml",
+      "Page": 4,
+      "URL": "Project-7.mdpuml",
+      "Rect": [
+        378.62833333333333,
+        259.0958333333333,
+        418.64298177083333,
+        271.0958333333333
+      ],
+      "Destination": "diagram-c6764a4ca6466a5a0480"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project.mdpuml",
+      "Page": 4,
+      "URL": "Project-8.mdpuml",
+      "Rect": [
+        424.19916666666666,
+        259.0958333333333,
+        464.21381510416666,
+        271.0958333333333
+      ],
+      "Destination": "diagram-35c8886d9c70b898eb8a"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project.mdpuml",
+      "Page": 4,
+      "URL": "Project-9.mdpuml",
+      "Rect": [
+        333.0566666666666,
+        247.5966666666666,
+        373.0713151041666,
+        259.59666666666664
+      ],
+      "Destination": "diagram-3c18af3055457484a96f"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project.mdpuml",
+      "Page": 4,
+      "URL": "Project-2.mdpuml",
+      "Rect": [
+        319.72333333333336,
+        203.0949999999999,
+        359.73798177083336,
+        215.0949999999999
+      ],
+      "Destination": "diagram-5c532ba24609da5a443f"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project.mdpuml",
+      "Page": 4,
+      "URL": "Project-10.mdpuml",
+      "Rect": [
+        365.29499999999996,
+        203.0949999999999,
+        410.87117187499996,
+        215.0949999999999
+      ],
+      "Destination": "diagram-7e573bd57f4f264e052e"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project.mdpuml",
+      "Page": 4,
+      "URL": "Project-11.mdpuml",
+      "Rect": [
+        416.4275,
+        203.0949999999999,
+        462.003671875,
+        215.0949999999999
+      ],
+      "Destination": "diagram-d05391d20dad74a3ab39"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project.mdpuml",
+      "Page": 4,
+      "URL": "Project-12.mdpuml",
+      "Rect": [
+        319.72333333333336,
+        191.59583333333325,
+        365.29950520833336,
+        203.59583333333333
+      ],
+      "Destination": "diagram-e81e4dcf68f110043234"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project.mdpuml",
+      "Page": 4,
+      "URL": "Project-3.mdpuml",
+      "Rect": [
+        328.89,
+        146.42833333333323,
+        368.9046484375,
+        158.4283333333333
+      ],
+      "Destination": "diagram-e3d6a81c334512648dff"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project.mdpuml",
+      "Page": 4,
+      "URL": "Project-13.mdpuml",
+      "Rect": [
+        374.4616666666667,
+        146.42833333333323,
+        420.0378385416667,
+        158.4283333333333
+      ],
+      "Destination": "diagram-34ed9badda2a4fedcb39"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project.mdpuml",
+      "Page": 4,
+      "URL": "Project-14.mdpuml",
+      "Rect": [
+        425.59416666666664,
+        146.42833333333323,
+        471.17033854166664,
+        158.4283333333333
+      ],
+      "Destination": "diagram-2cff5e50d50052a26d85"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project.mdpuml",
+      "Page": 4,
+      "URL": "Project-15.mdpuml",
+      "Rect": [
+        328.89,
+        134.9291666666666,
+        374.466171875,
+        146.92916666666667
+      ],
+      "Destination": "diagram-038ba0c73a7b52c27ab6"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project.mdpuml",
+      "Page": 4,
+      "URL": "Project-16.mdpuml",
+      "Rect": [
+        380.02250000000004,
+        134.9291666666666,
+        425.59867187500004,
+        146.92916666666667
+      ],
+      "Destination": "diagram-4c88907d6427dc2a85df"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project.mdpuml",
+      "Page": 4,
+      "URL": "Project-17.mdpuml",
+      "Rect": [
+        431.15583333333325,
+        134.9291666666666,
+        476.73200520833336,
+        146.92916666666667
+      ],
+      "Destination": "diagram-371fe19027e8192894db"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project.mdpuml",
+      "Page": 4,
+      "URL": "Project-18.mdpuml",
+      "Rect": [
+        328.89,
+        123.42999999999994,
+        374.466171875,
+        135.43
+      ],
+      "Destination": "diagram-d228b98d26d967e89edb"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project.mdpuml",
+      "Page": 4,
+      "URL": "Project-19.mdpuml",
+      "Rect": [
+        380.02250000000004,
+        123.42999999999994,
+        425.59867187500004,
+        135.43
+      ],
+      "Destination": "diagram-82f6d8269b1a71713f9e"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project.mdpuml",
+      "Page": 4,
+      "URL": "Project-20.mdpuml",
+      "Rect": [
+        431.15583333333325,
+        123.42999999999994,
+        476.73200520833336,
+        135.43
+      ],
+      "Destination": "diagram-4d0896afe68106a1da9a"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project.mdpuml",
+      "Page": 4,
+      "URL": "Project-21.mdpuml",
+      "Rect": [
+        328.89,
+        111.93083333333328,
+        374.466171875,
+        123.93083333333337
+      ],
+      "Destination": "diagram-7afc2a5f13ed333a11e3"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project.mdpuml",
+      "Page": 4,
+      "URL": "Project-22.mdpuml",
+      "Rect": [
+        380.02250000000004,
+        111.93083333333328,
+        425.59867187500004,
+        123.93083333333337
+      ],
+      "Destination": "diagram-e29f85802c9f39a754c7"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-1.mdpuml",
+      "Page": 5,
+      "URL": "Project-4.mdpuml",
+      "Rect": [
+        246.9133333333333,
+        155.58749999999998,
+        341.9375,
+        198.4175
+      ],
+      "Destination": "diagram-a74adab0228e9697ff38"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-1.mdpuml",
+      "Page": 5,
+      "URL": "Project.mdpuml",
+      "Rect": [
+        153.32166666666663,
+        121.47750000000002,
+        189.6318880208333,
+        135.47750000000005
+      ],
+      "Destination": "diagram-636eb840c7f783489983"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-1.mdpuml",
+      "Page": 5,
+      "URL": "Project-1.md",
+      "Rect": [
+        258.18499999999995,
+        121.47750000000002,
+        324.31699869791663,
+        135.47750000000005
+      ],
+      "Destination": "document-79811980faa9063ffce9"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-2.mdpuml",
+      "Page": 6,
+      "URL": "Project.mdpuml",
+      "Rect": [
+        153.4133333333333,
+        121.64500000000004,
+        189.72355468749998,
+        135.64499999999992
+      ],
+      "Destination": "diagram-636eb840c7f783489983"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-2.mdpuml",
+      "Page": 6,
+      "URL": "Project-2.md",
+      "Rect": [
+        258.27666666666664,
+        121.64500000000004,
+        324.4086653645833,
+        135.64499999999992
+      ],
+      "Destination": "document-1c76ecf5381dd68fb896"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-3.mdpuml",
+      "Page": 7,
+      "URL": "Project.mdpuml",
+      "Rect": [
+        127.78916666666665,
+        340.5325,
+        164.09938802083332,
+        354.5325
+      ],
+      "Destination": "diagram-636eb840c7f783489983"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-3.mdpuml",
+      "Page": 7,
+      "URL": "Project-3.md",
+      "Rect": [
+        232.65249999999997,
+        340.5325,
+        298.78449869791666,
+        354.5325
+      ],
+      "Destination": "document-5a396fcdbf1be8452e16"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-4.mdpuml",
+      "Page": 8,
+      "URL": "Project-5.mdpuml",
+      "Rect": [
+        188.80916666666664,
+        169.1441666666666,
+        308.86249999999995,
+        211.9741666666666
+      ],
+      "Destination": "diagram-d4229544272149da6bb1"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-4.mdpuml",
+      "Page": 8,
+      "URL": "Project.mdpuml",
+      "Rect": [
+        153.32166666666663,
+        135.03416666666664,
+        189.6318880208333,
+        149.03416666666666
+      ],
+      "Destination": "diagram-636eb840c7f783489983"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-4.mdpuml",
+      "Page": 8,
+      "URL": "Project-4.md",
+      "Rect": [
+        258.18499999999995,
+        135.03416666666664,
+        324.31699869791663,
+        149.03416666666666
+      ],
+      "Destination": "document-3d5275d002e81baefefb"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-5.mdpuml",
+      "Page": 9,
+      "URL": "Project-4.mdpuml",
+      "Rect": [
+        304.03166666666664,
+        155.58749999999998,
+        399.0558333333332,
+        198.4175
+      ],
+      "Destination": "diagram-a74adab0228e9697ff38"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-5.mdpuml",
+      "Page": 9,
+      "URL": "Project.mdpuml",
+      "Rect": [
+        153.32166666666663,
+        121.47750000000002,
+        189.6318880208333,
+        135.47750000000005
+      ],
+      "Destination": "diagram-636eb840c7f783489983"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-5.mdpuml",
+      "Page": 9,
+      "URL": "Project-5.md",
+      "Rect": [
+        258.18499999999995,
+        121.47750000000002,
+        324.31699869791663,
+        135.47750000000005
+      ],
+      "Destination": "document-9c70965a76c0b04bdbb7"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-6.mdpuml",
+      "Page": 10,
+      "URL": "Project-1.mdpuml",
+      "Rect": [
+        261.6483333333333,
+        218.08749999999998,
+        346.1258333333333,
+        260.9175
+      ],
+      "Destination": "diagram-c04679acdf9d0255f774"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-6.mdpuml",
+      "Page": 10,
+      "URL": "Project-1.mdpuml",
+      "Rect": [
+        230.3983333333333,
+        155.58749999999998,
+        310.4225,
+        198.4175
+      ],
+      "Destination": "diagram-c04679acdf9d0255f774"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-6.mdpuml",
+      "Page": 10,
+      "URL": "Project.mdpuml",
+      "Rect": [
+        153.32166666666663,
+        121.47750000000002,
+        189.6318880208333,
+        135.47750000000005
+      ],
+      "Destination": "diagram-636eb840c7f783489983"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-6.mdpuml",
+      "Page": 10,
+      "URL": "Project-6.md",
+      "Rect": [
+        258.18499999999995,
+        121.47750000000002,
+        324.31699869791663,
+        135.47750000000005
+      ],
+      "Destination": "document-67d5d72fee47f2a49a78"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-7.mdpuml",
+      "Page": 11,
+      "URL": "Project-4.mdpuml",
+      "Rect": [
+        225.8825,
+        218.9208333333333,
+        300.9183333333333,
+        261.75083333333333
+      ],
+      "Destination": "diagram-a74adab0228e9697ff38"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-7.mdpuml",
+      "Page": 11,
+      "URL": "Project-4.mdpuml",
+      "Rect": [
+        175.04916666666662,
+        155.58749999999998,
+        250.085,
+        198.4175
+      ],
+      "Destination": "diagram-a74adab0228e9697ff38"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-7.mdpuml",
+      "Page": 11,
+      "URL": "Project.mdpuml",
+      "Rect": [
+        153.32166666666663,
+        121.47750000000002,
+        189.6318880208333,
+        135.47750000000005
+      ],
+      "Destination": "diagram-636eb840c7f783489983"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-7.mdpuml",
+      "Page": 11,
+      "URL": "Project-7.md",
+      "Rect": [
+        258.18499999999995,
+        121.47750000000002,
+        324.31699869791663,
+        135.47750000000005
+      ],
+      "Destination": "document-06f0582fb25ff7eeb47f"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-8.mdpuml",
+      "Page": 12,
+      "URL": "Project-7.mdpuml",
+      "Rect": [
+        304.1583333333333,
+        345.5875,
+        379.19416666666666,
+        388.4175
+      ],
+      "Destination": "diagram-c6764a4ca6466a5a0480"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-8.mdpuml",
+      "Page": 12,
+      "URL": "Project-7.mdpuml",
+      "Rect": [
+        272.4916666666667,
+        282.2541666666666,
+        347.5275,
+        325.08416666666665
+      ],
+      "Destination": "diagram-c6764a4ca6466a5a0480"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-8.mdpuml",
+      "Page": 12,
+      "URL": "Project-4.mdpuml",
+      "Rect": [
+        241.24166666666665,
+        218.9208333333333,
+        345.74333333333334,
+        261.75083333333333
+      ],
+      "Destination": "diagram-a74adab0228e9697ff38"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-8.mdpuml",
+      "Page": 12,
+      "URL": "Project-5.mdpuml",
+      "Rect": [
+        167.49166666666665,
+        155.58749999999998,
+        287.54499999999996,
+        198.4175
+      ],
+      "Destination": "diagram-d4229544272149da6bb1"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-8.mdpuml",
+      "Page": 12,
+      "URL": "Project.mdpuml",
+      "Rect": [
+        153.32166666666663,
+        121.47750000000002,
+        189.6318880208333,
+        135.47750000000005
+      ],
+      "Destination": "diagram-636eb840c7f783489983"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-8.mdpuml",
+      "Page": 12,
+      "URL": "Project-8.md",
+      "Rect": [
+        258.18499999999995,
+        121.47750000000002,
+        324.31699869791663,
+        135.47750000000005
+      ],
+      "Destination": "document-8a32f3c6f6223e5049a7"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-9.mdpuml",
+      "Page": 13,
+      "URL": "Project-5.mdpuml",
+      "Rect": [
+        256.78,
+        455.8108333333333,
+        331.8158333333333,
+        498.64083333333326
+      ],
+      "Destination": "diagram-d4229544272149da6bb1"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-9.mdpuml",
+      "Page": 13,
+      "URL": "Project.mdpuml",
+      "Rect": [
+        153.32166666666663,
+        421.7008333333333,
+        189.6318880208333,
+        435.70083333333326
+      ],
+      "Destination": "diagram-636eb840c7f783489983"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-9.mdpuml",
+      "Page": 13,
+      "URL": "Project-9.md",
+      "Rect": [
+        258.18499999999995,
+        421.7008333333333,
+        324.31699869791663,
+        435.70083333333326
+      ],
+      "Destination": "document-c89d9835afb535c498d3"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-10.mdpuml",
+      "Page": 14,
+      "URL": "Project-2.mdpuml",
+      "Rect": [
+        253.41833333333332,
+        155.58749999999998,
+        365.6791666666667,
+        198.4175
+      ],
+      "Destination": "diagram-5c532ba24609da5a443f"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-10.mdpuml",
+      "Page": 14,
+      "URL": "Project.mdpuml",
+      "Rect": [
+        153.32166666666663,
+        121.47750000000002,
+        189.6318880208333,
+        135.47750000000005
+      ],
+      "Destination": "diagram-636eb840c7f783489983"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-10.mdpuml",
+      "Page": 14,
+      "URL": "Project-10.md",
+      "Rect": [
+        258.18499999999995,
+        121.47750000000002,
+        330.8054427083333,
+        135.47750000000005
+      ],
+      "Destination": "document-0508498f4f1459f0718c"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-11.mdpuml",
+      "Page": 15,
+      "URL": "Project.mdpuml",
+      "Rect": [
+        153.32166666666663,
+        123.19999999999995,
+        189.6318880208333,
+        137.2
+      ],
+      "Destination": "diagram-636eb840c7f783489983"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-11.mdpuml",
+      "Page": 15,
+      "URL": "Project-11.md",
+      "Rect": [
+        258.18499999999995,
+        123.19999999999995,
+        330.8054427083333,
+        137.2
+      ],
+      "Destination": "document-6c7b68ca8a9b47008b60"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-12.mdpuml",
+      "Page": 16,
+      "URL": "Project-2.mdpuml",
+      "Rect": [
+        238.30249999999998,
+        496.6441666666666,
+        350.5633333333333,
+        539.4741666666666
+      ],
+      "Destination": "diagram-5c532ba24609da5a443f"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-12.mdpuml",
+      "Page": 16,
+      "URL": "Project.mdpuml",
+      "Rect": [
+        153.32166666666663,
+        462.53416666666664,
+        189.6318880208333,
+        476.5341666666666
+      ],
+      "Destination": "diagram-636eb840c7f783489983"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-12.mdpuml",
+      "Page": 16,
+      "URL": "Project-12.md",
+      "Rect": [
+        258.18499999999995,
+        462.53416666666664,
+        330.8054427083333,
+        476.5341666666666
+      ],
+      "Destination": "document-ada9c0eb3078c732a2a1"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-13.mdpuml",
+      "Page": 17,
+      "URL": "Project-3.mdpuml",
+      "Rect": [
+        273.43583333333333,
+        382.47749999999996,
+        363.475,
+        425.3075
+      ],
+      "Destination": "diagram-e3d6a81c334512648dff"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-13.mdpuml",
+      "Page": 17,
+      "URL": "Project-3.mdpuml",
+      "Rect": [
+        235.9358333333333,
+        319.97749999999996,
+        332.64,
+        362.8075
+      ],
+      "Destination": "diagram-e3d6a81c334512648dff"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-13.mdpuml",
+      "Page": 17,
+      "URL": "Project.mdpuml",
+      "Rect": [
+        153.32166666666663,
+        285.86750000000006,
+        189.6318880208333,
+        299.86750000000006
+      ],
+      "Destination": "diagram-636eb840c7f783489983"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-13.mdpuml",
+      "Page": 17,
+      "URL": "Project-13.md",
+      "Rect": [
+        258.18499999999995,
+        285.86750000000006,
+        330.8054427083333,
+        299.86750000000006
+      ],
+      "Destination": "document-43746384f73f7f82dc77"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-14.mdpuml",
+      "Page": 18,
+      "URL": "Project-3.mdpuml",
+      "Rect": [
+        329.76,
+        232.25416666666663,
+        414.7841666666667,
+        275.08416666666665
+      ],
+      "Destination": "diagram-e3d6a81c334512648dff"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-14.mdpuml",
+      "Page": 18,
+      "URL": "Project-3.mdpuml",
+      "Rect": [
+        282.6766666666667,
+        169.75416666666663,
+        395.50583333333327,
+        212.58416666666668
+      ],
+      "Destination": "diagram-e3d6a81c334512648dff"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-14.mdpuml",
+      "Page": 18,
+      "URL": "Project.mdpuml",
+      "Rect": [
+        130.28916666666663,
+        135.6441666666667,
+        166.59938802083332,
+        149.6441666666667
+      ],
+      "Destination": "diagram-636eb840c7f783489983"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-14.mdpuml",
+      "Page": 18,
+      "URL": "Project-14.md",
+      "Rect": [
+        235.15249999999997,
+        135.6441666666667,
+        307.7729427083333,
+        149.6441666666667
+      ],
+      "Destination": "document-0745a859142b62c8ec2a"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-15.mdpuml",
+      "Page": 19,
+      "URL": "../../ResultDataBase/Documents/ResultDB-2.mdpuml",
+      "Rect": [
+        324.95666666666665,
+        343.0875,
+        417.2175,
+        385.9175
+      ],
+      "Destination": "diagram-414df299b153f7569a37"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-15.mdpuml",
+      "Page": 19,
+      "URL": "Project-3.mdpuml",
+      "Rect": [
+        292.87333333333333,
+        280.5875,
+        389.5775,
+        323.4175
+      ],
+      "Destination": "diagram-e3d6a81c334512648dff"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-15.mdpuml",
+      "Page": 19,
+      "URL": "../../ResultDataBase/Documents/ResultDB-2.mdpuml",
+      "Rect": [
+        220.79,
+        218.08749999999998,
+        308.03583333333336,
+        260.9175
+      ],
+      "Destination": "diagram-414df299b153f7569a37"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-15.mdpuml",
+      "Page": 19,
+      "URL": "Project-16.mdpuml",
+      "Rect": [
+        197.87333333333333,
+        155.58749999999998,
+        272.9091666666667,
+        198.4175
+      ],
+      "Destination": "diagram-4c88907d6427dc2a85df"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-15.mdpuml",
+      "Page": 19,
+      "URL": "Project.mdpuml",
+      "Rect": [
+        153.3483333333333,
+        121.47750000000002,
+        189.6585546875,
+        135.47750000000005
+      ],
+      "Destination": "diagram-636eb840c7f783489983"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-15.mdpuml",
+      "Page": 19,
+      "URL": "Project-15.md",
+      "Rect": [
+        258.21166666666664,
+        121.47750000000002,
+        330.832109375,
+        135.47750000000005
+      ],
+      "Destination": "document-c89ffff7e75cc4919ce4"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-16.mdpuml",
+      "Page": 20,
+      "URL": "Project-4.mdpuml",
+      "Rect": [
+        132.18749999999997,
+        155.58749999999998,
+        227.21166666666664,
+        198.4175
+      ],
+      "Destination": "diagram-a74adab0228e9697ff38"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-16.mdpuml",
+      "Page": 20,
+      "URL": "Project.mdpuml",
+      "Rect": [
+        153.32166666666663,
+        121.47750000000002,
+        189.6318880208333,
+        135.47750000000005
+      ],
+      "Destination": "diagram-636eb840c7f783489983"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-16.mdpuml",
+      "Page": 20,
+      "URL": "Project-16.md",
+      "Rect": [
+        258.18499999999995,
+        121.47750000000002,
+        330.8054427083333,
+        135.47750000000005
+      ],
+      "Destination": "document-3a48cf80af2b17bcc810"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-17.mdpuml",
+      "Page": 21,
+      "URL": "Project-16.mdpuml",
+      "Rect": [
+        217.54999999999995,
+        155.58749999999998,
+        292.5858333333333,
+        198.4175
+      ],
+      "Destination": "diagram-4c88907d6427dc2a85df"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-17.mdpuml",
+      "Page": 21,
+      "URL": "Project.mdpuml",
+      "Rect": [
+        153.32166666666663,
+        121.47750000000002,
+        189.6318880208333,
+        135.47750000000005
+      ],
+      "Destination": "diagram-636eb840c7f783489983"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-17.mdpuml",
+      "Page": 21,
+      "URL": "Project-17.md",
+      "Rect": [
+        258.18499999999995,
+        121.47750000000002,
+        330.8054427083333,
+        135.47750000000005
+      ],
+      "Destination": "document-ad2c86c431b1d2ac7fc7"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-18.mdpuml",
+      "Page": 22,
+      "URL": "Project-16.mdpuml",
+      "Rect": [
+        309.95,
+        155.58749999999998,
+        402.19583333333327,
+        198.4175
+      ],
+      "Destination": "diagram-4c88907d6427dc2a85df"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-18.mdpuml",
+      "Page": 22,
+      "URL": "Project.mdpuml",
+      "Rect": [
+        153.32166666666663,
+        121.47750000000002,
+        189.6318880208333,
+        135.47750000000005
+      ],
+      "Destination": "diagram-636eb840c7f783489983"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-18.mdpuml",
+      "Page": 22,
+      "URL": "Project-18.md",
+      "Rect": [
+        258.18499999999995,
+        121.47750000000002,
+        330.8054427083333,
+        135.47750000000005
+      ],
+      "Destination": "document-c28ece0ac94d4d858b7c"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-19.mdpuml",
+      "Page": 23,
+      "URL": "Project-16.mdpuml",
+      "Rect": [
+        288.14,
+        155.58749999999998,
+        380.38583333333327,
+        198.4175
+      ],
+      "Destination": "diagram-4c88907d6427dc2a85df"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-19.mdpuml",
+      "Page": 23,
+      "URL": "Project.mdpuml",
+      "Rect": [
+        153.32166666666663,
+        121.47750000000002,
+        189.6318880208333,
+        135.47750000000005
+      ],
+      "Destination": "diagram-636eb840c7f783489983"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-19.mdpuml",
+      "Page": 23,
+      "URL": "Project-19.md",
+      "Rect": [
+        258.18499999999995,
+        121.47750000000002,
+        330.8054427083333,
+        135.47750000000005
+      ],
+      "Destination": "document-09b1ec76694ce5d892e2"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-20.mdpuml",
+      "Page": 24,
+      "URL": "Project-3.mdpuml",
+      "Rect": [
+        280.97333333333336,
+        282.2541666666666,
+        382.6825,
+        325.08416666666665
+      ],
+      "Destination": "diagram-e3d6a81c334512648dff"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-20.mdpuml",
+      "Page": 24,
+      "URL": "Project-3.mdpuml",
+      "Rect": [
+        348.47333333333336,
+        218.9208333333333,
+        445.1775,
+        261.75083333333333
+      ],
+      "Destination": "diagram-e3d6a81c334512648dff"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-20.mdpuml",
+      "Page": 24,
+      "URL": "Project-3.mdpuml",
+      "Rect": [
+        384.3066666666666,
+        155.58749999999998,
+        481.0008333333334,
+        198.4175
+      ],
+      "Destination": "diagram-e3d6a81c334512648dff"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-20.mdpuml",
+      "Page": 24,
+      "URL": "Project.mdpuml",
+      "Rect": [
+        153.3683333333333,
+        121.47750000000002,
+        189.67855468749997,
+        135.47750000000005
+      ],
+      "Destination": "diagram-636eb840c7f783489983"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-20.mdpuml",
+      "Page": 24,
+      "URL": "Project-20.md",
+      "Rect": [
+        258.2308333333333,
+        121.47750000000002,
+        330.85127604166667,
+        135.47750000000005
+      ],
+      "Destination": "document-e847e3c542647df41e01"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-21.mdpuml",
+      "Page": 25,
+      "URL": "Project-20.mdpuml",
+      "Rect": [
+        362.5475,
+        218.9208333333333,
+        440.3449999999999,
+        261.75083333333333
+      ],
+      "Destination": "diagram-4d0896afe68106a1da9a"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-21.mdpuml",
+      "Page": 25,
+      "URL": "Project-8.mdpuml",
+      "Rect": [
+        109.6308333333333,
+        155.58749999999998,
+        184.66666666666663,
+        198.4175
+      ],
+      "Destination": "diagram-35c8886d9c70b898eb8a"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-21.mdpuml",
+      "Page": 25,
+      "URL": "Project.mdpuml",
+      "Rect": [
+        153.32166666666663,
+        121.47750000000002,
+        189.6318880208333,
+        135.47750000000005
+      ],
+      "Destination": "diagram-636eb840c7f783489983"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-21.mdpuml",
+      "Page": 25,
+      "URL": "Project-21.md",
+      "Rect": [
+        258.18499999999995,
+        121.47750000000002,
+        330.8054427083333,
+        135.47750000000005
+      ],
+      "Destination": "document-6895a8d879cc8e482145"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-22.mdpuml",
+      "Page": 26,
+      "URL": "Project-1.mdpuml",
+      "Rect": [
+        255.8108333333333,
+        369.1441666666666,
+        333.0566666666666,
+        411.97416666666663
+      ],
+      "Destination": "diagram-c04679acdf9d0255f774"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-22.mdpuml",
+      "Page": 26,
+      "URL": "Project.mdpuml",
+      "Rect": [
+        153.32166666666663,
+        335.0341666666667,
+        189.6318880208333,
+        349.0341666666667
+      ],
+      "Destination": "diagram-636eb840c7f783489983"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-22.mdpuml",
+      "Page": 26,
+      "URL": "Project-22.md",
+      "Rect": [
+        258.18499999999995,
+        335.0341666666667,
+        330.8054427083333,
+        349.0341666666667
+      ],
+      "Destination": "document-499086a73d48f0e67a37"
+    }
+  ],
+  "SignatureLines": [
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-1.md",
+      "Text": "Comments : string [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-1.md",
+      "Text": "Name : string [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-1.md",
+      "Text": "GeneralData : IGeneralData [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-1.md",
+      "Text": "Loader : IProjectLoader [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-1.md",
+      "Text": "ModelData : IModelData [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-1.md",
+      "Text": "Saver : IProjectSaver [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-1.md",
+      "Text": "TaskData : ITaskData [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-1.md",
+      "Text": "Load(string fullPath) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-1.md",
+      "Text": "Save(string fullPath) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-1.md",
+      "Text": "Data : DataTable [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-1.md",
+      "Text": "TaskKind : TaskKind [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-1.md",
+      "Text": "Time : float [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-1.md",
+      "Text": "AddData(DataTable dbDataTable) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-1.md",
+      "Text": "GetValue(int objNumber, string resDescr) : float"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-1.md",
+      "Text": "Loader : IResultsLoader [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-1.md",
+      "Text": "Saver : IResultsSaver [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-1.md",
+      "Text": "AddRange(IEnumerable<Result> results) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-1.md",
+      "Text": "AddRange(IEnumerable<Result> results, IEqualityComparer<Result> comparer) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-1.md",
+      "Text": "FindByTaskKind(TaskKind taskKind) : IEnumerable<Result>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-1.md",
+      "Text": "FindByTaskKind(string taskKind) : IEnumerable<Result>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-1.md",
+      "Text": "FindByTime(TaskKind taskKind, float time) : IEnumerable<Result>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-1.md",
+      "Text": "FindByTime(TaskKind taskKind, float time, float delta) : IEnumerable<Result>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-1.md",
+      "Text": "FindByTime(string taskKind, float time) : IEnumerable<Result>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-1.md",
+      "Text": "FindByTime(string taskKind, float time, float delta) : IEnumerable<Result>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-1.md",
+      "Text": "FindByTimeInterval(string taskKind, float firstTime, float lastTime) : IEnumerable<Result>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-1.md",
+      "Text": "GetResultKinds() : List<TaskKind>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-1.md",
+      "Text": "Load(string path) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-1.md",
+      "Text": "BottomDiam : float [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-1.md",
+      "Text": "Length : float [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-1.md",
+      "Text": "UpperDiam : float [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-2.md",
+      "Text": "Stationary"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-2.md",
+      "Text": "Transient"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-2.md",
+      "Text": "Cm : float [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-2.md",
+      "Text": "Is_Switched_Cm : bool [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-2.md",
+      "Text": "ChemicalConvergence : ChemicalConvergence [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-2.md",
+      "Text": "ChemicalParameters()"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-2.md",
+      "Text": "GroupName : string [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-2.md",
+      "Text": "Index : int [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-2.md",
+      "Text": "Kind : DataKind [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-2.md",
+      "Text": "ConditionReference(int index, DataKind kind, string groupName)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-2.md",
+      "Text": "Parse(string value) : ConditionReference"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-2.md",
+      "Text": "ToString() : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-2.md",
+      "Text": "ReadJson(JsonReader reader, Type objectType, ConditionReference existingValue, bool hasExistingValue, JsonSerializer serializer) : ConditionReference"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-2.md",
+      "Text": "WriteJson(JsonWriter writer, ConditionReference value, JsonSerializer serializer) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-2.md",
+      "Text": "ActiveConditions : List<ConditionReference> [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-2.md",
+      "Text": "CalculationMode : CalculationMode [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-2.md",
+      "Text": "InitialSet : PhysicalSet? [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-2.md",
+      "Text": "InputSets : List<PhysicalSet> [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-2.md",
+      "Text": "Iterations : int [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-2.md",
+      "Text": "SaveRate : int [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-2.md",
+      "Text": "SolverSettings : SolverSettings [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-2.md",
+      "Text": "TaskKind : TaskKind [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-2.md",
+      "Text": "TimeSettings : TimeSettings [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-2.md",
+      "Text": "UpdMatrixIteration : int [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-2.md",
+      "Text": "GetInputField(PhysicalSetName fieldSet) : PhysicalSet"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-2.md",
+      "Text": "ToString() : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-3.md",
+      "Text": "Message : string [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-3.md",
+      "Text": "Load(string fullPath, IProgress<int> progress = null) : IProjectData"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-3.md",
+      "Text": "Save(IProjectData project, string fullPath) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-3.md",
+      "Text": "Message : string [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-3.md",
+      "Text": "Load(string path, IGroupData groupData, IProgress<int> progress = null) : ITaskData"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-3.md",
+      "Text": "Save(ITaskData project, string path) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-4.md",
+      "Text": "Direction : Direction [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-4.md",
+      "Text": "Function : Function [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-4.md",
+      "Text": "LocalFrame : LocalFrame [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-4.md",
+      "Text": "Value : double [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-4.md",
+      "Text": "TrySetDirection(string v) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-4.md",
+      "Text": "TrySetValue(string v) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-4.md",
+      "Text": "Kind : DataKind [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-4.md",
+      "Text": "FrameFunction : IFrameFunction [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-4.md",
+      "Text": "LocalFrame : ILocalFrame [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-4.md",
+      "Text": "CalcValue(Point3D elementCenter) : double"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-4.md",
+      "Text": "GetIntersectedObjects<T>(List<T> elements) : List<T> where T : IModelObject"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-4.md",
+      "Text": "IsOverlappingSelf(float velocity) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-4.md",
+      "Text": "Group : IGroup [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-4.md",
+      "Text": "Frame : Frame [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-4.md",
+      "Text": "Rotation : float [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-4.md",
+      "Text": "Shifting : Point3D [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-5.md",
+      "Text": "Width : float [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-5.md",
+      "Text": "DataTable : DataTable [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-5.md",
+      "Text": "Name : string [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-5.md",
+      "Text": "Units : string [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-5.md",
+      "Text": "X_unit : string [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-5.md",
+      "Text": "Y_unit : string [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-5.md",
+      "Text": "CalcProp(float param) : float"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-5.md",
+      "Text": "Functions : FunctionDBData [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-5.md",
+      "Text": "Loader : ITaskDataLoader [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-5.md",
+      "Text": "Materials : MaterialDBData [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-5.md",
+      "Text": "Saver : ITaskDataSaver [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-5.md",
+      "Text": "TaskKind : TaskKind [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-5.md",
+      "Text": "TaskType : TaskType [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-5.md",
+      "Text": "AddRange(IEnumerable<ICondData> datas) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-5.md",
+      "Text": "ClearNotExisted(IGroup group) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-5.md",
+      "Text": "ClearNotExisted(IGroupData gropData) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-5.md",
+      "Text": "Contains(string grName) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-5.md",
+      "Text": "Create(DataKind kind, string dataInfo, IGroupData groupData) : ICondData"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-5.md",
+      "Text": "Find(DataKind kind) : IEnumerable<ICondData>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-5.md",
+      "Text": "Find(string grName) : IEnumerable<ICondData>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-5.md",
+      "Text": "Find<T>() : IEnumerable<T> where T : ICondData"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-5.md",
+      "Text": "Load(string projectFile, IGroupData groupData) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-5.md",
+      "Text": "RemoveRange(IEnumerable<string> dataInfo) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-5.md",
+      "Text": "Save(string projectFile) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-5.md",
+      "Text": "StartTime : float [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-5.md",
+      "Text": "StopTime : float [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-5.md",
+      "Text": "Name : string [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-5.md",
+      "Text": "NumberOfPoints : int [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-5.md",
+      "Text": "this[int ind] : Point3D [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-5.md",
+      "Text": "GetPoints() : IEnumerable<Point3D>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-5.md",
+      "Text": "SetPoints(IEnumerable<Point3D> points) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-5.md",
+      "Text": "GetParameter(string parameter) : float"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-5.md",
+      "Text": "SetParameter(string parameter, float val) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-6.md",
+      "Text": "ProjectData(string projectFile)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-6.md",
+      "Text": "Закрепление"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-6.md",
+      "Text": "Материал"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-6.md",
+      "Text": "Нагрев"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-6.md",
+      "Text": "Нагрузка"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-6.md",
+      "Text": "Среда"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-6.md",
+      "Text": "None"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-6.md",
+      "Text": "X"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-6.md",
+      "Text": "Y"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-6.md",
+      "Text": "Z"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-6.md",
+      "Text": "механическая"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-6.md",
+      "Text": "термическая"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-6.md",
+      "Text": "химическая"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-6.md",
+      "Text": "AxiPlain"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-6.md",
+      "Text": "Linear"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-6.md",
+      "Text": "Plain"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-6.md",
+      "Text": "Volume"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-6.md",
+      "Text": "Volume_mixed"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-7.md",
+      "Text": "ClampKind : ClampKind [get, private set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-7.md",
+      "Text": "ClampData(IGroup group, float start, float stop)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-7.md",
+      "Text": "ToString() : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-7.md",
+      "Text": "TrySetKind(string v) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-7.md",
+      "Text": "Жесткое"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-7.md",
+      "Text": "Контакт"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-7.md",
+      "Text": "Симметрия"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-7.md",
+      "Text": "Упругое"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-7.md",
+      "Text": "CondData(IGroup group, float startTime, float stopTime)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-7.md",
+      "Text": "CondData(IGroup group, string info)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-7.md",
+      "Text": "ToString() : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-7.md",
+      "Text": "GetInfo : string [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-7.md",
+      "Text": "Data(string info)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-7.md",
+      "Text": "SetInfo(string info) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-7.md",
+      "Text": "HeatData(IGroup group, float start, float stop)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-7.md",
+      "Text": "LoadKind : LoadKind [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-7.md",
+      "Text": "LoadData(IGroup group, float start, float stop)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-7.md",
+      "Text": "ToString() : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-7.md",
+      "Text": "TrySetKind(string v) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-8.md",
+      "Text": "Давление"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-8.md",
+      "Text": "Сила"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-8.md",
+      "Text": "Material : MaterialDBItem [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-8.md",
+      "Text": "MatData(MaterialDBItem material, IGroup group, float start, float stop)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-8.md",
+      "Text": "ToString() : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-8.md",
+      "Text": "MediaType : MediaType [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-8.md",
+      "Text": "MediaData(IGroup group, float start, float stop)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-8.md",
+      "Text": "ToString() : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-8.md",
+      "Text": "ConstantTemp"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-8.md",
+      "Text": "HeatFlux"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-8.md",
+      "Text": "Объемы"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-8.md",
+      "Text": "Пластины"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-8.md",
+      "Text": "Стержни"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-8.md",
+      "Text": "ObjectData(IGroup group, string info)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-9.md",
+      "Text": "Count : int [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-9.md",
+      "Text": "IsReadOnly : bool [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-9.md",
+      "Text": "this[int ind] : ICondData [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-9.md",
+      "Text": "Add(ICondData data) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-9.md",
+      "Text": "Clear() : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-9.md",
+      "Text": "Contains(ICondData item) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-9.md",
+      "Text": "CopyTo(ICondData[] array, int arrayIndex) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-9.md",
+      "Text": "GetEnumerator() : IEnumerator<ICondData>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-9.md",
+      "Text": "IndexOf(ICondData item) : int"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-9.md",
+      "Text": "Insert(int index, ICondData item) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-9.md",
+      "Text": "Load(ITaskData taskData) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-9.md",
+      "Text": "Remove(ICondData item) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-9.md",
+      "Text": "RemoveAll(DataKind kind) : int"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-9.md",
+      "Text": "RemoveAt(int index) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-9.md",
+      "Text": "TaskData()"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-9.md",
+      "Text": "TaskData(MaterialDBData materials, FunctionDBData functions)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-10.md",
+      "Text": "BiCGStab"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-10.md",
+      "Text": "ConjugateGradient"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-10.md",
+      "Text": "SymmetricUtdu"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-10.md",
+      "Text": "GeneralCsr"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-10.md",
+      "Text": "SymmetricCsr"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-10.md",
+      "Text": "DUm : float [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-10.md",
+      "Text": "Is_Physically_NonLinear : bool [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-10.md",
+      "Text": "Is_Switched_Um : bool [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-10.md",
+      "Text": "MaterialPlasticityCoeff : float [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-10.md",
+      "Text": "PlasticityCriterion : float [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-10.md",
+      "Text": "SiStm : float [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-10.md",
+      "Text": "Um : float [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-10.md",
+      "Text": "MechanicalConvergence : MechanicalConvergence [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-10.md",
+      "Text": "MechanicalParameters()"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-10.md",
+      "Text": "Components : double[] [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-10.md",
+      "Text": "Name : PhysicalFieldName [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-10.md",
+      "Text": "Concentration"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-10.md",
+      "Text": "Displacement"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-10.md",
+      "Text": "PhaseComposition"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-10.md",
+      "Text": "Pressure"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-10.md",
+      "Text": "Strain"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-10.md",
+      "Text": "Stress"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-10.md",
+      "Text": "Temperature"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-10.md",
+      "Text": "Velocity"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-11.md",
+      "Text": "File : string [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-11.md",
+      "Text": "IsFileEmpty : bool [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-11.md",
+      "Text": "Name : PhysicalSetName [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-11.md",
+      "Text": "Source : PhysicalSetSource [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-11.md",
+      "Text": "Values : Dictionary<string, List<PhysicalField>> [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-11.md",
+      "Text": "Chemical"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-11.md",
+      "Text": "Hydrodynamic"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-11.md",
+      "Text": "Mechanical"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-11.md",
+      "Text": "Thermal"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-11.md",
+      "Text": "ResultFile"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-11.md",
+      "Text": "Values"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-11.md",
+      "Text": "MatrixStorage : MatrixStorageKind [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-11.md",
+      "Text": "MaxIter : int [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-11.md",
+      "Text": "MaxRelaxation : float [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-11.md",
+      "Text": "Precision : float [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-11.md",
+      "Text": "Priority : string [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-11.md",
+      "Text": "Relaxation : float [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-11.md",
+      "Text": "Solver : LinearSolverKind [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-11.md",
+      "Text": "SolverSettings(LinearSolverKind solver, MatrixStorageKind matrixStorage)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-11.md",
+      "Text": "ReadFromFile(string path) : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-11.md",
+      "Text": "WriteToFile(string path, string settings) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-11.md",
+      "Text": "Is_Switched_Tm : bool [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-11.md",
+      "Text": "Tm : float [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-12.md",
+      "Text": "MetallurgicalProcesses : List<string> [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-12.md",
+      "Text": "TermalConvergence : TermalConvergence [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-12.md",
+      "Text": "TermalParameters()"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-12.md",
+      "Text": "InitTimeStep : float [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-12.md",
+      "Text": "MaxTimeStep : float [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-12.md",
+      "Text": "MinTimeStep : float [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-12.md",
+      "Text": "StartTime : float [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-12.md",
+      "Text": "StopTime : float [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-13.md",
+      "Text": "SaveResults(IEnumerable<IModelObject> objects, Result result, string resDescr, string savePath) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-13.md",
+      "Text": "ExportObjectsResults(IEnumerable<IModelObject> objects, Result result, string resDesc, string savePath, string format) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-13.md",
+      "Text": "Load(string fullPath, IProgress<int> progress = null) : IProjectData"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-13.md",
+      "Text": "ProgressRange(IProgress<int> progress, int start, int length)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-13.md",
+      "Text": "Report(int value) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-13.md",
+      "Text": "SaveEventArgs(string message)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-14.md",
+      "Text": "GetTableData(this DataTable table, int objNumber, string resDescr) : float"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-14.md",
+      "Text": "GetTableSchema(this DataTable table) : string[]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-14.md",
+      "Text": "Data : DataSet [get, private set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-14.md",
+      "Text": "TaskKind : TaskKind [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-14.md",
+      "Text": "Time : float [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-14.md",
+      "Text": "AddDataTable(DataTable dbDataTable) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-14.md",
+      "Text": "GetValue(int tableInd, int objNumber, string resDescr) : float"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-14.md",
+      "Text": "GetValue(string tableName, int objNumber, string resDescr) : float"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-14.md",
+      "Text": "Result(DataSet dataSet, float time, TaskKind taskKind)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-14.md",
+      "Text": "Result(float time, TaskKind taskKind)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-14.md",
+      "Text": "ToString() : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-14.md",
+      "Text": "AddData(string queStr) : int"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-14.md",
+      "Text": "ClearTable(string tableName) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-14.md",
+      "Text": "CloseConnection() : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-14.md",
+      "Text": "CreateAddCommand(string table, string columns, string values) : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-14.md",
+      "Text": "CreateTables(string tableName, string[] columnsName) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-14.md",
+      "Text": "DeleteTable(string tableName) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-14.md",
+      "Text": "GetResults(string table, string column, string filter) : DataTable"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-14.md",
+      "Text": "GetTableShema(string tableName) : IEnumerable<string>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-14.md",
+      "Text": "OpenConnection() : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-14.md",
+      "Text": "ResultDataBase(string fullName)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-14.md",
+      "Text": "ConvertCSVtoDataTable(string strFilePath) : DataTable"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-14.md",
+      "Text": "LoadEventArgs(string message)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-15.md",
+      "Text": "GetResultFromDb(string fullPath, string tableName, float time) : Result"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-15.md",
+      "Text": "GetResultsFromDb(string fullPath, string table) : IEnumerable<Result>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-15.md",
+      "Text": "GetValuesFromDb(string fullPath, string table, string column) : IEnumerable<float>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-15.md",
+      "Text": "Load(string path) : IEnumerable<Result>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-15.md",
+      "Text": "ReadResults(StreamReader sr) : List<Result>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-15.md",
+      "Text": "ReadResultsKind(StreamReader sr, TaskKind taskKind, Dictionary<string, Dictionary<TaskKind, string[]>> format) : List<Result>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-15.md",
+      "Text": "SaveEventArgs(string message)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-15.md",
+      "Text": "AddData(ResultDataBase db, DataTable table, float time) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-15.md",
+      "Text": "ExecutedFile : string [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-15.md",
+      "Text": "CalcValue() : double"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-15.md",
+      "Text": "CreateEngine(string file) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-16.md",
+      "Text": "CalcValue() : double"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-16.md",
+      "Text": "DHEX()"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-16.md",
+      "Text": "CalcValue() : double"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-16.md",
+      "Text": "FHEX()"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-16.md",
+      "Text": "X : double [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-16.md",
+      "Text": "Y : double [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-16.md",
+      "Text": "Z : double [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-16.md",
+      "Text": "FrameFunction()"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-16.md",
+      "Text": "CIL"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-16.md",
+      "Text": "Custom"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-16.md",
+      "Text": "DEL"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-16.md",
+      "Text": "DHEX"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-16.md",
+      "Text": "FHEX"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-16.md",
+      "Text": "PT"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-16.md",
+      "Text": "SPH"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-16.md",
+      "Text": "TT"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-16.md",
+      "Text": "CPF"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-16.md",
+      "Text": "PF"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-16.md",
+      "Text": "FunctionType : FuncType [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-16.md",
+      "Text": "Name : string [get, protected set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-16.md",
+      "Text": "this[string key] : Parameter [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-16.md",
+      "Text": "AddParameter(Parameter parameter) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-16.md",
+      "Text": "CalcValue() : double"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-16.md",
+      "Text": "ContainsParameter(string name) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-16.md",
+      "Text": "GetParameters() : IEnumerable<Parameter>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-16.md",
+      "Text": "GetTableParameters() : IEnumerable<TableParameter>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-16.md",
+      "Text": "ToString() : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-17.md",
+      "Text": "CalcValue() : double"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-17.md",
+      "Text": "PT()"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-17.md",
+      "Text": "Name : string [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-17.md",
+      "Text": "ParameterKind : ParameterKind [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-17.md",
+      "Text": "ParameterType : ParameterType [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-17.md",
+      "Text": "GetValue() : double"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-17.md",
+      "Text": "Parameter(string name)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-17.md",
+      "Text": "Parameter(string name, ParameterType type, double value)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-17.md",
+      "Text": "SetValue(double value) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-17.md",
+      "Text": "ToString() : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-17.md",
+      "Text": "Digit"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-17.md",
+      "Text": "Table"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-17.md",
+      "Text": "Constant"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-17.md",
+      "Text": "Variable"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-17.md",
+      "Text": "CalcValue() : double"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-17.md",
+      "Text": "TT()"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-17.md",
+      "Text": "Parameter : Parameter [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-17.md",
+      "Text": "Table : Property [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-17.md",
+      "Text": "GetValue() : double"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-17.md",
+      "Text": "TableParameter(Property table, string name, Parameter parameter)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-17.md",
+      "Text": "ToString() : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-18.md",
+      "Text": "BottomDiam : double [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-18.md",
+      "Text": "Length : double [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-18.md",
+      "Text": "UpperDiam : double [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-18.md",
+      "Text": "CIL()"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-18.md",
+      "Text": "CalcValue() : double"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-18.md",
+      "Text": "IsPointInside(Point3D elementCenter, out double r, out double r0, out double r1, out double r2) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-18.md",
+      "Text": "CillindricalBuilder()"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-18.md",
+      "Text": "SetBottomDiam(string diam) : CillindricalBuilder"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-18.md",
+      "Text": "SetLength(string length) : CillindricalBuilder"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-18.md",
+      "Text": "SetUpperDiam(string diam) : CillindricalBuilder"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-18.md",
+      "Text": "ExecutedFile : string [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-18.md",
+      "Text": "CalcValue() : double"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-18.md",
+      "Text": "CreateEngine(string file) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-18.md",
+      "Text": "CustomFrameFunction()"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-18.md",
+      "Text": "BackPart : float [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-18.md",
+      "Text": "Depth : float [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-18.md",
+      "Text": "FrontPart : float [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-18.md",
+      "Text": "Width : float [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-18.md",
+      "Text": "CalcValue() : double"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-18.md",
+      "Text": "DEL()"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-18.md",
+      "Text": "IsPointInside(Point3D elementCenter) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-18.md",
+      "Text": "MaxAndMinSemiaxis() : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-18.md",
+      "Text": "EllipsBuilder()"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-18.md",
+      "Text": "SetBackPart(float backPart) : EllipsBuilder"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-18.md",
+      "Text": "SetDepth(float depth) : EllipsBuilder"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-18.md",
+      "Text": "SetFrontPart(float frontPart) : EllipsBuilder"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-18.md",
+      "Text": "SetWidth(float width) : EllipsBuilder"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-18.md",
+      "Text": "FrameFunctionBuilder(string[] heatSourceAr)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-19.md",
+      "Text": "Width : double [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-19.md",
+      "Text": "CalcValue() : double"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-19.md",
+      "Text": "IsPointInside(Point3D elementCenter, out double rad, out double halfBead) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-19.md",
+      "Text": "SPH()"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-19.md",
+      "Text": "SetWidth(string width) : SphereBuilder"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-19.md",
+      "Text": "SphereBuilder()"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-19.md",
+      "Text": "RotSpeed : float [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-19.md",
+      "Text": "CalcValue(Point3D elementCenter) : float"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-19.md",
+      "Text": "ToString() : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-19.md",
+      "Text": "FSWPinBuilder()"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-19.md",
+      "Text": "SetBottomDiam(string diam) : FSWPinBuilder"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-19.md",
+      "Text": "SetFrame(Frame frame) : FSWPinBuilder"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-19.md",
+      "Text": "SetLength(string length) : FSWPinBuilder"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-19.md",
+      "Text": "SetRotSpeed(string rotSpeed) : FSWPinBuilder"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-19.md",
+      "Text": "SetUpperDiam(string diam) : FSWPinBuilder"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-19.md",
+      "Text": "SetYieldFunc(string yieldFunc) : FSWPinBuilder"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-19.md",
+      "Text": "AxisForce : float [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-19.md",
+      "Text": "RotSpeed : float [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-19.md",
+      "Text": "CalcValue(Point3D elementCenter) : float"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-19.md",
+      "Text": "ToString() : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-19.md",
+      "Text": "FSWShoulderBuilder()"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-19.md",
+      "Text": "SetAxisForce(string axisForce) : FSWShoulderBuilder"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-19.md",
+      "Text": "SetBottomDiam(string diam) : FSWShoulderBuilder"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-19.md",
+      "Text": "SetFrame(Frame frame) : FSWShoulderBuilder"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-19.md",
+      "Text": "SetFricModuleFunc(string fricModuleFunc) : FSWShoulderBuilder"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-19.md",
+      "Text": "SetLength(string length) : FSWShoulderBuilder"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-19.md",
+      "Text": "SetRotSpeed(string rotSpeed) : FSWShoulderBuilder"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-19.md",
+      "Text": "SetUpperDiam(string diam) : FSWShoulderBuilder"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-20.md",
+      "Text": "Load(string fullPath, IGroupData groupData, IProgress<int> progress = null) : ITaskData"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-20.md",
+      "Text": "private ReadLines(string path, IProgress<int> progress) : IEnumerable<string>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-20.md",
+      "Text": "SaveEventArgs(string message)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-20.md",
+      "Text": "MovedFrame"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-20.md",
+      "Text": "StaticFrame"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-20.md",
+      "Text": "Frame : Frame [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-20.md",
+      "Text": "FrameType : FrameType [get, internal set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-20.md",
+      "Text": "Name : string [get, internal set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-20.md",
+      "Text": "Rotation_X : float [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-20.md",
+      "Text": "Rotation_Y : float [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-20.md",
+      "Text": "Rotation_Z : float [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-20.md",
+      "Text": "Shifting : Point3D [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-20.md",
+      "Text": "CalcPosition() : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-20.md",
+      "Text": "GetGlobalCoordsInLocalFrame(Point3D point) : Point3D"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-20.md",
+      "Text": "SetShiftingAndRotation(string shiftingData) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-21.md",
+      "Text": "BaseLine : IGroup [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-21.md",
+      "Text": "Frame : Frame [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-21.md",
+      "Text": "RefLine : IGroup [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-21.md",
+      "Text": "StartPoint : IModelObject [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-21.md",
+      "Text": "StopPoint : IModelObject [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-21.md",
+      "Text": "Time : float [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-21.md",
+      "Text": "Velocity : float [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-21.md",
+      "Text": "CalcMotionTime() : float"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-21.md",
+      "Text": "CalcPosition() : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-21.md",
+      "Text": "MovedFrame()"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-21.md",
+      "Text": "MovedFrame(IGroup baseLine, IGroup refLine, float _velocity)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-21.md",
+      "Text": "ToString() : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-21.md",
+      "Text": "Build(IGroup startPoints, IGroup baseLine, IGroup refLine, float velocity) : MovedFrame"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-21.md",
+      "Text": "CheckStartPoints(IGroup startPoints, IGroup line) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-21.md",
+      "Text": "SortTrajNodes(IGroup startPoints, IGroup traj) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-21.md",
+      "Text": "BaseGroup : IGroup [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-21.md",
+      "Text": "Frame : Frame [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-21.md",
+      "Text": "CalcPosition() : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-21.md",
+      "Text": "StaticFrame()"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-21.md",
+      "Text": "StaticFrame(IGroup baseGr)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-21.md",
+      "Text": "StaticFrame(Point3D a, Point3D b, Point3D c)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-21.md",
+      "Text": "ToString() : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-21.md",
+      "Text": "Diameter : double [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-21.md",
+      "Text": "BeamMatData(float diam, MaterialDBItem material, IGroup group, float start, float stop)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-21.md",
+      "Text": "ToString() : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-21.md",
+      "Text": "Thickness : double [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-21.md",
+      "Text": "PlateMatData(MaterialDBItem material, IGroup group, float start, float stop)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-21.md",
+      "Text": "ToString() : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-21.md",
+      "Text": "InterpolatedValue(float[] xAr, float[] yAr, float xn) : float"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-21.md",
+      "Text": "InterpolatedValueTwoPoints(float x1, float x2, float y1, float y2, float xn) : float"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-22.md",
+      "Text": "Count : int [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-22.md",
+      "Text": "IsReadOnly : bool [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-22.md",
+      "Text": "this[int ind] : Result [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-22.md",
+      "Text": "Add(Result results) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-22.md",
+      "Text": "Clear() : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-22.md",
+      "Text": "Contains(Result item) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-22.md",
+      "Text": "CopyTo(Result[] array, int arrayIndex) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-22.md",
+      "Text": "GetEnumerator() : IEnumerator<Result>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-22.md",
+      "Text": "GetResults() : IEnumerable<Result>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-22.md",
+      "Text": "IndexOf(Result item) : int"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-22.md",
+      "Text": "Insert(int index, Result item) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-22.md",
+      "Text": "Remove(Result item) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-22.md",
+      "Text": "RemoveAt(int index) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-22.md",
+      "Text": "RemoveByTaskKind(TaskKind taskKind) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-22.md",
+      "Text": "RemoveRange(int startInd, int stopInd) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-22.md",
+      "Text": "RemoveRange(string taskKind, float firstTime, float secondTime) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-22.md",
+      "Text": "ResultData()"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-22.md",
+      "Text": "Equals(Result x, Result y) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-22.md",
+      "Text": "GetHashCode(Result obj) : int"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\ResultDataBase\\Documents\\ResultDB-2.md",
+      "Text": "GetResult(string fullPath, List<string> tables, float time) : Result"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\ResultDataBase\\Documents\\ResultDB-2.md",
+      "Text": "GetResults(string fullPath, List<string> tables) : IEnumerable<Result>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\ResultDataBase\\Documents\\ResultDB-2.md",
+      "Text": "GetTablesNames(string fullPath) : IEnumerable<string>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\ResultDataBase\\Documents\\ResultDB-2.md",
+      "Text": "GetTablesSchemes(string fullPath) : IEnumerable<KeyValuePair<string, List<string>>>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\ResultDataBase\\Documents\\ResultDB-2.md",
+      "Text": "GetValues(string fullPath, string tableName, string column) : IEnumerable<float>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\ResultDataBase\\Documents\\ResultDB-2.md",
+      "Text": "Save(List<Result> results, string path, bool append) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\ResultDataBase\\Documents\\ResultDB-2.md",
+      "Text": "ConvertCSVtoDataTable(string strFilePath) : DataTable"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\ResultDataBase\\Documents\\ResultDB-2.md",
+      "Text": "Message : string [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\ResultDataBase\\Documents\\ResultDB-2.md",
+      "Text": "LoadEventArgs(string message)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\ResultDataBase\\Documents\\ResultDB-2.md",
+      "Text": "Merge(string dbPath1, string dbPath2) : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\ResultDataBase\\Documents\\ResultDB-2.md",
+      "Text": "Message : string [get, private set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\ResultDataBase\\Documents\\ResultDB-2.md",
+      "Text": "SaveEventArgs(string message)"
+    }
+  ],
+  "Sources": [
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project.mdpuml",
+      "SHA256": "7d7c5e69d7e53b83247ef5564eb6c93a54c49bc9b82150567fa965f6aedfdb30"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-1.mdpuml",
+      "SHA256": "f6aebfc79fd1767bb96b0465a5e5070c1eea04df3ee6737d11d65ce92a918c49"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-2.mdpuml",
+      "SHA256": "b1086ae9a07adfd155beaf12f01f117f596a6e4905af8069ea944bf91579e2d8"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-3.mdpuml",
+      "SHA256": "cc8b5d9e1acfd778ea04edf1db980898867883c2033600273ded7e5e7b09ba4f"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-4.mdpuml",
+      "SHA256": "38dacc05c47f01b2b4e6cf7d119c4c85d3bed8a6d14a2d8edb97bd0458c16ebe"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-5.mdpuml",
+      "SHA256": "7d369c227dee9447adea4d2c7c1e89ce172269551eab6c4ca60924efc0ea2873"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-6.mdpuml",
+      "SHA256": "6921a24b7d8e0589bf1cb5bd3eed5513339a0e7bdda98980f766a1df7e05535c"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-7.mdpuml",
+      "SHA256": "f1837d361bddbbd776a0ee4330ef0bc4b692564f3aadb0072d3d7c5653d14241"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-8.mdpuml",
+      "SHA256": "09f1ef6724c07bfe1014958b0e86e09e66168ff27204043cd4a8d4d9f6c68b85"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-9.mdpuml",
+      "SHA256": "a8780692e4830a5f64e91e9bb5f147b34e8b1e7ffcd589bcc1c9e533eab2dc39"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-10.mdpuml",
+      "SHA256": "a12f6927a852bd1c66e38ad1ad53fadbf57d73278d91f5e12c05de994912ad0b"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-11.mdpuml",
+      "SHA256": "de6b8d6fd4e70cffe9f8975b5cccddb4621a8b0d0238f67ac75a7bd0a733ba63"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-12.mdpuml",
+      "SHA256": "2d096121a5b7655aaf5fff65a77bc71aeaaf210566f664b559f24b0fe0ac1fca"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-13.mdpuml",
+      "SHA256": "006802d1f6b354dd479df741d4e7e719a47a172f54e6aed6168da0a6badee8d6"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-14.mdpuml",
+      "SHA256": "cdfa84fc3db5f5f680ca95b1ecf187a82ca5acf7a41899c4e1424754f67a828b"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-15.mdpuml",
+      "SHA256": "7d2756dbb0589c90856f10a71ddb51ff88edf1e2524ce3bdd8763e4ff4b1f102"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-16.mdpuml",
+      "SHA256": "d35761e32e3ffd56ef2cd570d7f32d4322f333c3f3e34466f2c508eca6951113"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-17.mdpuml",
+      "SHA256": "5b5aa0dbbb0661a20bb8ce5bcbfc36da7220c89492bb6e8891e6744155bb490b"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-18.mdpuml",
+      "SHA256": "5de96e095cffbef9965d860565b5d6835eafdd5c5f882488ccc725bf3dc1b344"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-19.mdpuml",
+      "SHA256": "93a1206de73400566aa41093ec8015c27ab28f40ba22013e84e5d95bfd1b9037"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-20.mdpuml",
+      "SHA256": "1de6686648438ba1411cbcbd84d19257fe4bc0fea12697aea7cefde03bb8c5bd"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-21.mdpuml",
+      "SHA256": "dcc0ade6b6f687f1efc6e71878c552f6712e9bfee28e4ca432ac9b13e5d575d8"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-22.mdpuml",
+      "SHA256": "80486100db35d4008155926587195e8c6bf6d83ca26f529f3e663a4767b28caf"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\ResultDataBase\\Documents\\ResultDB-2.mdpuml",
+      "SHA256": "57f8a4572dd3ec7e0625cfe1d741757bc22afe48ffd95766647c64901ac70601"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project.md",
+      "SHA256": "ffb80105bbfddfb06614d6280dc5e0f6068d0aa23e76fe299e42f760f70b66fc"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-1.md",
+      "SHA256": "6ba0f6e7ef152e69238f52c291728a0a0d551d92bb54841c786967a538820c95"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-2.md",
+      "SHA256": "aef9639bd3ed065e9ffe0903567cdf2a566750cdf2a217b7b9cc348c7291ea8d"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-3.md",
+      "SHA256": "7a749a0e392fcac6541d29ad23a296011778be01ee26daa2db274bdbc85e4947"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-4.md",
+      "SHA256": "96a96daab7e90c96d21d33deab799c3b00237ecea60b02508386faaac66a4dbf"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-5.md",
+      "SHA256": "2c7a887ca9bbfc3cb361bb11f160799e0959e90873762769f5a3e3c1d936d8cd"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-6.md",
+      "SHA256": "22d278066b9c6dc2000b9eecaa86d38e7d96a403ef1936a83c438bd440c12fdf"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-7.md",
+      "SHA256": "5e7b40ceff711835aa106558cfe1c047c524ce7232a93839029696cccda39cd9"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-8.md",
+      "SHA256": "020cde694a47e60c007bdb9eacb2d09833ce548b2dbda9df63ad725b87dd738b"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-9.md",
+      "SHA256": "fe9edc6dfdcdbc96e83c62f8059ec13709fb192756c8ee807e502b76d2a4f02a"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-10.md",
+      "SHA256": "8f8573add972f138ae909172eabe08dce75b31fa884713ffeb84e10077c111ba"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-11.md",
+      "SHA256": "8da990ecb07d041e564cf39890d31f48a64750e7034bdf686a1a029aaf6734be"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-12.md",
+      "SHA256": "e10e22187bdcdfffd4200b9bac793f584a7d8dde83ac8254a9186bb92158d208"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-13.md",
+      "SHA256": "0293da98c294187057a2bd9772130f49e64c8f3e2b48fb470b03b47a31346add"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-14.md",
+      "SHA256": "59b3793c40b2115480ff85f0641d7d40dc0a5a25c7336719b795826829aa4ad0"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-15.md",
+      "SHA256": "acb1eaf236e251392c037e5cc01b69c20f4d8606af21e263cb216c9c64dfcc1c"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-16.md",
+      "SHA256": "02faed38fb7ed9311a22c6cbcc8dde229f2efcf62cd7adc0bf0abe272c2c6c2a"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-17.md",
+      "SHA256": "f7dd2ee49e86f0e5a96ec8ab6c7a7b8c4a928b7e6d00730defa59aa56ef4df8f"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-18.md",
+      "SHA256": "fce80160c08571ccf4b953f4a4f5621fefa35baaa9ae7be67dfb1556958a9db7"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-19.md",
+      "SHA256": "0cbc29d6e7994e91dfa896586ee9f2a827457f78f699b890fb120c36916ff1b0"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-20.md",
+      "SHA256": "68f346eee505eefd64a7bb0f0e5e83c9cc921403e0d94bd6607d03c76d9f6f13"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-21.md",
+      "SHA256": "82f81588710a84fb985fec71741d74de82f1e54cb1c414e141f02139b8b6bcd6"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Project\\Documents\\Project-22.md",
+      "SHA256": "9be322c7ad3a40a9c7b907767a90b3364fc7b881996dd723915279d3857e9f62"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\ResultDataBase\\Documents\\ResultDB-2.md",
+      "SHA256": "f16caf0246dd83561801a161db9dbb03ca4adb74895bf917059f3f66ed17f099"
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title Model-12 — Загрузка и сохранение
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "SaveModelToBPF2TextFile" as T_Model_Model_IO_SaveModelToBPF2TextFile {
+}
+class "SaveModelToBPFTextFile" as T_Model_Model_IO_SaveModelToBPFTextFile {
+}
+class "LoadFromSTLFile" as T_Model_Model_IO_STL_LoadFromSTLFile {
+}
+class "SaveModelToBinarySTLFile" as T_Model_Model_IO_STL_SaveModelToBinarySTLFile {
+}
+class "SaveToTxtSTLFile" as T_Model_Model_IO_STL_SaveToTxtSTLFile {
+  + SaveSurfaces<T>(writer, surfaces) : void
+}
+class "StlFileLoadExeption" as T_Model_Model_IO_STL_StlFileLoadExeption {
+  + StlFileLoadExeption(message, inner)
+}
+interface "IModelSaver\nModel-2" as T_Model_Model_Interfaces_IModelSaver <<reference>> [[Model-2.mdpuml Model-2]]
+interface "IModelLoader\nModel-2" as T_Model_Model_Interfaces_IModelLoader <<reference>> [[Model-2.mdpuml Model-2]]
+T_Model_Model_IO_SaveModelToBPF2TextFile -[hidden]down-> T_Model_Model_IO_SaveModelToBPFTextFile
+T_Model_Model_IO_SaveModelToBPFTextFile -[hidden]down-> T_Model_Model_IO_STL_LoadFromSTLFile
+T_Model_Model_IO_STL_LoadFromSTLFile -[hidden]down-> T_Model_Model_IO_STL_SaveModelToBinarySTLFile
+T_Model_Model_IO_STL_SaveModelToBinarySTLFile -[hidden]down-> T_Model_Model_IO_STL_SaveToTxtSTLFile
+T_Model_Model_IO_STL_SaveToTxtSTLFile -[hidden]down-> T_Model_Model_IO_STL_StlFileLoadExeption
+T_Model_Model_IO_STL_StlFileLoadExeption -[hidden]down-> T_Model_Model_Interfaces_IModelSaver
+T_Model_Model_Interfaces_IModelSaver -[hidden]down-> T_Model_Model_Interfaces_IModelLoader
+T_Model_Model_IO_STL_LoadFromSTLFile ..|> T_Model_Model_Interfaces_IModelLoader
+T_Model_Model_IO_STL_SaveModelToBinarySTLFile ..|> T_Model_Model_Interfaces_IModelSaver
+T_Model_Model_IO_STL_SaveToTxtSTLFile ..|> T_Model_Model_Interfaces_IModelSaver
+T_Model_Model_IO_SaveModelToBPF2TextFile ..|> T_Model_Model_Interfaces_IModelSaver
+T_Model_Model_IO_SaveModelToBPFTextFile ..|> T_Model_Model_Interfaces_IModelSaver
+legend bottom
+  Обзор: [[Model.mdpuml Model]]; сигнатуры: [[Model-12.md Model-12.md]].
+  reference — адрес подробностей указан в заголовке типа.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+  Связанные типы в контрактах и сигнатурах:
+  [[Model-2.mdpuml Model-2]]: IModelLoader, IModelSaver.
+  [[Model-15.mdpuml Model-15]]: IPoint, ISurface<T>.
+endlegend
+@enduml

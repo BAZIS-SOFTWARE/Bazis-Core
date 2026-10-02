@@ -1,0 +1,73 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title Project-18 — Функции, материалы и ввод/вывод
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "CIL" as T_Project_Project_Tasks_Functions_FrameFunctions_CIL {
+  + BottomDiam : double [get, set]
+  + Length : double [get, set]
+  + UpperDiam : double [get, set]
+  + CIL()
+  + CalcValue() : double
+  + IsPointInside(elementCenter, out r, out r0, out r1, out r2) : bool
+}
+class "CillindricalBuilder" as T_Project_Project_Tasks_Functions_FrameFunctions_CillindricalBuilder {
+  + CillindricalBuilder()
+  + SetBottomDiam(diam) : CillindricalBuilder
+  + SetLength(length) : CillindricalBuilder
+  + SetUpperDiam(diam) : CillindricalBuilder
+}
+class "CustomFrameFunction" as T_Project_Project_Tasks_Functions_FrameFunctions_CustomFrameFunction {
+  + ExecutedFile : string [get]
+  + CalcValue() : double
+  + CreateEngine(file) : void
+  + CustomFrameFunction()
+}
+class "DEL" as T_Project_Project_Tasks_Functions_FrameFunctions_DEL {
+  + BackPart : float [get, set]
+  + Depth : float [get, set]
+  + FrontPart : float [get, set]
+  + Width : float [get, set]
+  + CalcValue() : double
+  + DEL()
+  + IsPointInside(elementCenter) : bool
+  + MaxAndMinSemiaxis() : void
+}
+class "EllipsBuilder" as T_Project_Project_Tasks_Functions_FrameFunctions_EllipsBuilder {
+  + EllipsBuilder()
+  + SetBackPart(backPart) : EllipsBuilder
+  + SetDepth(depth) : EllipsBuilder
+  + SetFrontPart(frontPart) : EllipsBuilder
+  + SetWidth(width) : EllipsBuilder
+}
+class "FrameFunctionBuilder" as T_Project_Project_Tasks_Functions_FrameFunctions_FrameFunctionBuilder {
+  + FrameFunctionBuilder(heatSourceAr)
+}
+abstract class "FrameFunction\nProject-16" as T_Project_Project_Tasks_Functions_FrameFunction <<reference>> [[Project-16.mdpuml Project-16]]
+T_Project_Project_Tasks_Functions_FrameFunctions_CIL -[hidden]down-> T_Project_Project_Tasks_Functions_FrameFunctions_CillindricalBuilder
+T_Project_Project_Tasks_Functions_FrameFunctions_CillindricalBuilder -[hidden]down-> T_Project_Project_Tasks_Functions_FrameFunctions_CustomFrameFunction
+T_Project_Project_Tasks_Functions_FrameFunctions_CustomFrameFunction -[hidden]down-> T_Project_Project_Tasks_Functions_FrameFunctions_DEL
+T_Project_Project_Tasks_Functions_FrameFunctions_DEL -[hidden]down-> T_Project_Project_Tasks_Functions_FrameFunctions_EllipsBuilder
+T_Project_Project_Tasks_Functions_FrameFunctions_EllipsBuilder -[hidden]down-> T_Project_Project_Tasks_Functions_FrameFunctions_FrameFunctionBuilder
+T_Project_Project_Tasks_Functions_FrameFunctions_FrameFunctionBuilder -[hidden]down-> T_Project_Project_Tasks_Functions_FrameFunction
+T_Project_Project_Tasks_Functions_FrameFunctions_CIL --|> T_Project_Project_Tasks_Functions_FrameFunction
+T_Project_Project_Tasks_Functions_FrameFunctions_CillindricalBuilder --> T_Project_Project_Tasks_Functions_FrameFunctions_CIL : использует
+T_Project_Project_Tasks_Functions_FrameFunctions_CustomFrameFunction --|> T_Project_Project_Tasks_Functions_FrameFunction
+T_Project_Project_Tasks_Functions_FrameFunctions_DEL --|> T_Project_Project_Tasks_Functions_FrameFunction
+T_Project_Project_Tasks_Functions_FrameFunctions_EllipsBuilder --> T_Project_Project_Tasks_Functions_FrameFunctions_DEL : использует
+legend bottom
+  Обзор: [[Project.mdpuml Project]]; сигнатуры: [[Project-18.md Project-18.md]].
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

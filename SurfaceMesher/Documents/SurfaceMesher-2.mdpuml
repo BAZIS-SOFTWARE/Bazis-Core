@@ -1,0 +1,57 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title SurfaceMesher-2 — Триангуляция и экспорт
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "DeloneTriangulation_m2" as T_SurfaceMesher_SurfaceMesher_DeloneTriangulation_m2 {
+  + BuildTriangulation(sourceNodes, constraints, boundaries) : void
+  + GetQuadsTriangles(qualityThreshold) : IEnumerable<Element>
+  + GetTriangles() : IEnumerable<Triangle2D>
+  + IsNodeInsideContour(node) : bool
+  + RefineMesh(iterations) : IEnumerable<Node2D>
+}
+class "IEnumerableExtensions" as T_SurfaceMesher_SurfaceMesher_IEnumerableExtensions <<static>> {
+  + Bigrams<T>(source, isRing) : IEnumerable<Tuple<T, T>>
+}
+class "QuadCandidate" as T_SurfaceMesher_SurfaceMesher_QuadCandidate <<struct, internal>> {
+  + A : int [get]
+  + B : int [get]
+  + C : int [get]
+  + D : int [get]
+  + Quality : double [get]
+  + TriangleOne : int [get]
+  + TriangleTwo : int [get]
+  + QuadCandidate(quality, triangleOne, triangleTwo, a, b, c, d)
+}
+class "SaveToBPF" as T_SurfaceMesher_SurfaceMesher_SaveToBPF {
+  + Save(filepath, triangles) : void
+}
+class "SaveToSTL" as T_SurfaceMesher_SurfaceMesher_SaveToSTL {
+  + Save(filepath, triangles) : void
+}
+class "TriangleFilter" as T_SurfaceMesher_SurfaceMesher_TriangleFilter {
+  + GetInflictedTriangles(layerPreviousNodes, trianglesPreviousLayer, layerNextContour, layerNextNodes) : IEnumerable<Triangle2D>
+  + GetInflictedTriangles(triangles, outerContour, innerContours, specialSelection) : IEnumerable<Triangle2D>
+  + TriangleFilter()
+}
+T_SurfaceMesher_SurfaceMesher_DeloneTriangulation_m2 -[hidden]down-> T_SurfaceMesher_SurfaceMesher_IEnumerableExtensions
+T_SurfaceMesher_SurfaceMesher_IEnumerableExtensions -[hidden]down-> T_SurfaceMesher_SurfaceMesher_QuadCandidate
+T_SurfaceMesher_SurfaceMesher_QuadCandidate -[hidden]down-> T_SurfaceMesher_SurfaceMesher_SaveToBPF
+T_SurfaceMesher_SurfaceMesher_SaveToBPF -[hidden]down-> T_SurfaceMesher_SurfaceMesher_SaveToSTL
+T_SurfaceMesher_SurfaceMesher_SaveToSTL -[hidden]down-> T_SurfaceMesher_SurfaceMesher_TriangleFilter
+T_SurfaceMesher_SurfaceMesher_TriangleFilter --> T_SurfaceMesher_SurfaceMesher_DeloneTriangulation_m2 : использует
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

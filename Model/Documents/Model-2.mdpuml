@@ -1,51 +1,41 @@
 @startuml
-title Model-2 — ввод, вывод и прогресс чтения
 top to bottom direction
-scale max 1500 width
 skinparam classAttributeIconSize 0
-skinparam nodesep 13
-skinparam ranksep 18
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
 hide empty members
+set namespaceSeparator none
 
-interface IModelLoader {
-  + Load(path, progress?) : IModelData
+title Model-2 — Загрузка и сохранение
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+interface "ILoader" as T_Model_Model_Interfaces_ILoader {
+  + Load(path) : IModelData
 }
-interface IModelSaver {
-  + Save(model, path)
+interface "IModelLoader" as T_Model_Model_Interfaces_IModelLoader {
+  + Load(path, progress : IProgress<int> = null) : IModelData
 }
-class ModelData
-class ProgressTextReader
-
-package "Model.IO — загрузчики" {
-  class LoadModelFromBPFTextFile
-  class LoadModelFromBPF2TextFile
-  class LoadModelFromINPTextFile_v2
-  class LoadModelFromASCIITextFile_v2
-  class LoadModelFromCDBTextFile
-  class LoadModelFromSalomeFile
-  class LoadFromSTLFile
+interface "IModelSaver" as T_Model_Model_Interfaces_IModelSaver {
+  + Save(model, path) : void
 }
-package "Model.IO — сохранение" {
-  class SaveModelToBPFTextFile
-  class SaveModelToBPF2TextFile
-  class SaveModelToASCIITextFile
-  class SaveToTxtSTLFile
-  class SaveModelToBinarySTLFile
+interface "ISaver" as T_Model_Model_Interfaces_ISaver {
+  + Save(model, path) : void
 }
-
-ModelData o-- IModelLoader
-ModelData o-- IModelSaver
-IModelLoader <|.. LoadModelFromBPFTextFile
-IModelLoader <|.. LoadModelFromBPF2TextFile
-IModelLoader <|.. LoadModelFromINPTextFile_v2
-IModelLoader <|.. LoadModelFromASCIITextFile_v2
-IModelLoader <|.. LoadModelFromCDBTextFile
-IModelLoader <|.. LoadModelFromSalomeFile
-IModelLoader <|.. LoadFromSTLFile
-IModelSaver <|.. SaveModelToBPFTextFile
-IModelSaver <|.. SaveModelToBPF2TextFile
-IModelSaver <|.. SaveModelToASCIITextFile
-IModelSaver <|.. SaveToTxtSTLFile
-IModelSaver <|.. SaveModelToBinarySTLFile
-LoadModelFromBPF2TextFile ..> ProgressTextReader
+interface "ISaverEventArgs" as T_Model_Model_Interfaces_ISaverEventArgs {
+}
+T_Model_Model_Interfaces_ILoader -[hidden]down-> T_Model_Model_Interfaces_IModelLoader
+T_Model_Model_Interfaces_IModelLoader -[hidden]down-> T_Model_Model_Interfaces_IModelSaver
+T_Model_Model_Interfaces_IModelSaver -[hidden]down-> T_Model_Model_Interfaces_ISaver
+T_Model_Model_Interfaces_ISaver -[hidden]down-> T_Model_Model_Interfaces_ISaverEventArgs
+legend bottom
+  Обзор: [[Model.mdpuml Model]]; сигнатуры: [[Model-2.md Model-2.md]].
+  reference — адрес подробностей указан в заголовке типа.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+  Связанные типы в контрактах и сигнатурах:
+  [[Model-3.mdpuml Model-3]]: IModelData.
+endlegend
 @enduml

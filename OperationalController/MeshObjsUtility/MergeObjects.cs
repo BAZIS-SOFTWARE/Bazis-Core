@@ -5,6 +5,8 @@ using OperationalController;
 using Model.MeshObjects;
 using Model.Utilities;
 using Model.Interfaces.ObjectsCollections;
+using Model.Interfaces.MeshObjects;
+using System;
 
 namespace OperationalController.MeshObjsUtility
 {
@@ -16,39 +18,49 @@ namespace OperationalController.MeshObjsUtility
         /// <inheritdoc/>
         public void Merge(List<List<int>>numbers,IObjectsSet<Node> nodes)
         {
-            //var masterNumbers = modelObjects.Select(x => x.Number).ToList();
-            //masterNumbers.Sort();
-            for (int i = 0; i < numbers.Count; i++)
+            Merge(numbers, nodes, out _, out _);
+        }
+
+        /// <inheritdoc/>
+        public void Merge(List<List<int>> numbers, IObjectsSet<Node> nodes, out IReadOnlyCollection<IElement> changedElements, out bool nodesRemoved)
+        {
+            var changed = new HashSet<IElement>(ReferenceEqualityComparer.Instance);
+            changedElements = changed;
+            nodesRemoved = false;
+            foreach (var coincidentNumbers in numbers)
             {
-                var masterNumber = numbers[i][0];
-                //найти индкс мастер объекта
+                if (coincidentNumbers.Count == 0)
+                    continue;
+                var masterNumber = coincidentNumbers[0];
                 if (!nodes.ContainsKey(masterNumber))
                     continue;
                 var masterNode = nodes[masterNumber];
-                for (int j = 1; j < numbers[i].Count; j++)
+                for (var j = 1; j < coincidentNumbers.Count; j++)
                 {
-                    var slaveNumber = numbers[i][j];
-                    if (!nodes.ContainsKey(slaveNumber))
+                    var slaveNumber = coincidentNumbers[j];
+                    if (slaveNumber == masterNumber || !nodes.ContainsKey(slaveNumber))
                         continue;
                     var slaveNode = nodes[slaveNumber];
-
-                    // пробуем вариант перестановки ссылки в памяти
-                    // вместо замены номера и координат
-
-                    foreach (var elem in slaveNode.GetElements())
+                    var elements = slaveNode.GetElements().ToArray();
+                    foreach (var elem in elements)
                     {
                         var index = elem.GetNodeIndex(slaveNode);
-                        masterNode.AddElement(elem);
+                        slaveNode.RemoveElement(elem);
+                        if (index < 0)
+                            continue;
+                        var masterElements = masterNode.GetElements();
+                        if (!masterElements.Contains(elem))
+                            masterNode.AddElement(elem);
                         elem[index] = masterNode;
+                        changed.Add(elem);
                     }
-
-                    nodes.Remove(slaveNumber);
-                    //установить ссылку на мастер объект вместо номера мастер объекта
-                    //slaveNode.SetNumber(masterNode.Number);// = modelObjects[masterInd].Number;
-                    //modelObjects[slaveNode].Position = modelObjects[masterNode].Position;
+                    if (nodes.Remove(slaveNumber))
+                    {
+                        slaveNode.ExistState = false;
+                        nodesRemoved = true;
+                    }
                 }
             }
-            //return modelObjects.Distinct(new ModelObjectsComparer());
         }
     }
 }

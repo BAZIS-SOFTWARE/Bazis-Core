@@ -1,0 +1,79 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title Model-3 — Модель, наборы и группы
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+interface "IGroup" as T_Model_Model_Interfaces_IGroup {
+  + Name : string [get, set]
+  + Number : int [get]
+  + ObjType : ObjType [get]
+  + AddRange(items) : void
+  + ClearRemoved() : void
+  + Reverse() : void
+  + SortByDistance() : void
+  + Swap(fInd, sInd) : bool
+}
+interface "IGroupData" as T_Model_Model_Interfaces_IGroupData {
+  + ClearNotExisted() : void
+  + Create(modelObjects) : string
+  + Create(name, modelObjects) : void
+  + Create(name, objType) : void
+  + Find(index) : IGroup
+  + Find(grName) : IGroup
+  + FindMany(objType) : IEnumerable<IGroup>
+  + GetMaxNumber() : int
+  + Sort() : void
+}
+interface "ILineObject<T>" as T_Model_Model_Interfaces_ILineObject_1 {
+  + CalcLength() : float
+}
+interface "IModelData" as T_Model_Model_Interfaces_IModelData {
+  + GroupData : IGroupData [get]
+  + Loader : IModelLoader [get, set]
+  + ObjectData : IObjectsData [get]
+  + Saver : IModelSaver [get, set]
+  + VolumeData : VolumeData [get]
+  + Append(modelData) : IReadOnlyList<string>
+  + ClearAll() : void
+  + Load(path) : void
+  + Save(path) : void
+  + SetGroupData(objectData) : void
+  + SetObjectData(objectData) : void
+}
+interface "INormal" as T_Model_Model_Interfaces_INormal {
+  + CalcNormal() : Point3D
+}
+interface "IModelObject\nModel-1" as T_Model_Model_Interfaces_IModelObject <<reference>> [[Model-1.mdpuml Model-1]]
+interface "IVertexObject<T>\nModel-15" as T_Model_Model_Interfaces_IVertexObject_1 <<reference>> [[Model-15.mdpuml Model-15]]
+T_Model_Model_Interfaces_IGroup -[hidden]down-> T_Model_Model_Interfaces_IGroupData
+T_Model_Model_Interfaces_IGroupData -[hidden]down-> T_Model_Model_Interfaces_ILineObject_1
+T_Model_Model_Interfaces_ILineObject_1 -[hidden]down-> T_Model_Model_Interfaces_IModelData
+T_Model_Model_Interfaces_IModelData -[hidden]down-> T_Model_Model_Interfaces_INormal
+T_Model_Model_Interfaces_INormal -[hidden]down-> T_Model_Model_Interfaces_IModelObject
+T_Model_Model_Interfaces_IModelObject -[hidden]down-> T_Model_Model_Interfaces_IVertexObject_1
+T_Model_Model_Interfaces_ILineObject_1 --|> T_Model_Model_Interfaces_IModelObject
+T_Model_Model_Interfaces_ILineObject_1 --|> T_Model_Model_Interfaces_IVertexObject_1
+T_Model_Model_Interfaces_IModelData --> T_Model_Model_Interfaces_IGroupData : использует
+legend bottom
+  Обзор: [[Model.mdpuml Model]]; сигнатуры: [[Model-3.md Model-3.md]].
+  reference — адрес подробностей указан в заголовке типа.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+  Связанные типы в контрактах и сигнатурах:
+  [[Model-1.mdpuml Model-1]]: IModelObject.
+  [[Model-2.mdpuml Model-2]]: IModelLoader, IModelSaver.
+  [[Model-6.mdpuml Model-6]]: ObjType, VolumeData.
+  [[Model-14.mdpuml Model-14]]: IObjectsData.
+  [[Model-15.mdpuml Model-15]]: IObjectsData, IVertexObject<T>.
+  [[../../PrGeometry/Documents/Geometry-4.mdpuml Geometry-4]]: Point3D.
+endlegend
+@enduml

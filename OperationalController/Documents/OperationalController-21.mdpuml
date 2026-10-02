@@ -1,0 +1,71 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title OperationalController-21 — Специализированные контракты контроллера
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+interface "IMeshCommands\nчасть 2/2" as T_OperationalController_OperationalController_IMeshCommands {
+  + MergeElements(objType, setMaster, setSlave) : void
+  + MergeNodes(numbers) : void
+  + MoveMesh(objType, vector) : void
+  + RecombineMesh() : void
+  + RefineMesh() : void
+  + RenumberElements() : void
+  + RotateMesh(objType, axis, angle) : void
+  + SetCurveMeshingSettings(curveNumber, settings) : void
+  + SetMeshAlgorithm2D(algorithm) : void
+  + SetMeshAlgorithm3D(algorithm) : void
+  + SetMeshMaximumSize(size) : void
+  + SetMeshMinimumSize(size) : void
+  + SetMeshPointSize(pointNumber, size) : void
+  + SetMeshSizeFactor(factor) : void
+  + SetSurfaceMeshingSettings(surfaceNumber, settings) : void
+  + SetVolumeMeshingSettings(volumeNumber, settings) : void
+}
+note right of T_OperationalController_OperationalController_IMeshCommands
+  Полный состав: OperationalController-20, OperationalController-21
+end note
+interface "IMeshQueries\nчасть 1/2" as T_OperationalController_OperationalController_IMeshQueries {
+  + CalcElemsNormals(elemDim) : IEnumerable<Curve>
+  + CalcNodeNormals() : Dictionary<int, Point3D>
+  + ContainsModelObject(objType, objNumber) : bool
+  + CreateModelObjectsPresentor(setInfo) : IObjsPresenter
+  + FindBoundaryEdges() : List<string>
+  + FindCoincidentObjects(objType, distance) : List<List<int>>
+  + FindFreeNodes() : IEnumerable<int>
+  + FindInterfacedNodes(nodes, elemDim) : Dictionary<int, List<int>>
+  + FindInterfacedNodes(elemDim) : Dictionary<int, List<int>>
+  + GetAllModelElements() : IEnumerable<IElement>
+  + GetAllModelNodes() : IEnumerable<Node>
+  + GetAllModelObjects() : IEnumerable<IModelObject>
+  + GetAllModelSetsInfo() : IEnumerable<ISetInfo>
+  + GetCurveMeshingSettings(curveNumber) : CurveMeshingSettings
+  + GetGeometryMeshNodes(dimension, entityNumbers, includeBoundary) : IEnumerable<Node>
+  + GetMeshPointSize(pointNumber) : double
+  + GetMeshSettings() : MeshSettings
+  + GetModelElements(dim, setName) : IEnumerable<IElement>
+  + GetModelObject(objType, objNumber) : IModelObject
+  + GetModelObjects(objType) : IEnumerable<IModelObject>
+  + GetModelSetInfo(objType, objNumber) : ISetInfo
+  + GetModelSetInfo(objType, setName) : ISetInfo
+  + GetModelSetsInfo(objType) : IEnumerable<ISetInfo>
+  + GetModelSurfaceElements(dim) : IEnumerable<ISurfaceElement>
+}
+note right of T_OperationalController_OperationalController_IMeshQueries
+  Полный состав: OperationalController-21, OperationalController-22
+end note
+T_OperationalController_OperationalController_IMeshCommands -[hidden]down-> T_OperationalController_OperationalController_IMeshQueries
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

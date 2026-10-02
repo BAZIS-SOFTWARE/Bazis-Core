@@ -12,6 +12,11 @@ namespace OperationalController
             if (elemDim > 3 | elemDim < 1)
                 throw new Exception("Неправильная размерность элементов");
 
+            var objType = elemDim == 1 ? Model.Interfaces.ObjType.Элемент1D : elemDim == 2 ? Model.Interfaces.ObjType.Элемент2D : Model.Interfaces.ObjType.Элемент3D;
+            var setInfo = ModelData.ObjectData.GetSetInfo(objType, oldName);
+            if (setInfo == null || oldName == newName)
+                return;
+
             if (elemDim == 1)
                 ModelData.ObjectData.E1DCollection.ChangeName(oldName, newName);
             else if (elemDim == 2)
@@ -19,8 +24,6 @@ namespace OperationalController
             else
                 ModelData.ObjectData.E3DCollection.ChangeName(oldName, newName);
 
-            var objType = elemDim == 1 ? Model.Interfaces.ObjType.Элемент1D : elemDim == 2 ? Model.Interfaces.ObjType.Элемент2D : Model.Interfaces.ObjType.Элемент3D;
-            var setInfo = ModelData.ObjectData.GetSetInfo(objType, newName);
             PublishSetChange(setInfo, ChangeAction.Updated);
         }
     }

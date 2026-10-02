@@ -1,43 +1,46 @@
 @startuml
-title Project-3 — функции и сохранение проекта
 top to bottom direction
-scale max 1500 width
 skinparam classAttributeIconSize 0
-skinparam nodesep 13
-skinparam ranksep 18
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
 hide empty members
+set namespaceSeparator none
 
-class ProjectData
-interface IProjectLoader
-interface IProjectSaver
-class LoadProjectFromTextFormat
-class SaveProjectTextFormat
-class ProgressRange <<internal>>
-abstract class Function
-abstract class FrameFunction
-class SPH
-class CIL
-class DEL
-class DHEX
-class FHEX
-class PT
-class TT
-class Parameter
-class TableParameter
-
-ProjectData o-- IProjectLoader
-ProjectData o-- IProjectSaver
-IProjectLoader <|.. LoadProjectFromTextFormat
-IProjectSaver <|.. SaveProjectTextFormat
-LoadProjectFromTextFormat ..> ProgressRange
-Function <|-- FrameFunction
-Function <|-- DHEX
-Function <|-- FHEX
-Function <|-- PT
-Function <|-- TT
-FrameFunction <|-- SPH
-FrameFunction <|-- CIL
-FrameFunction <|-- DEL
-Function o-- Parameter
-Parameter <|-- TableParameter
+title Project-3 — Функции, материалы и ввод/вывод
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+interface "ILoadEventArgs" as T_Project_Project_Interfaces_IO_ILoadEventArgs <<archive>> {
+  + Message : string [get]
+}
+interface "IProjectLoader" as T_Project_Project_Interfaces_IO_IProjectLoader {
+  + Load(fullPath, progress : IProgress<int> = null) : IProjectData
+}
+interface "IProjectSaver" as T_Project_Project_Interfaces_IO_IProjectSaver {
+  + Save(project, fullPath) : void
+}
+interface "ISaveEventArgs" as T_Project_Project_Interfaces_IO_ISaveEventArgs {
+  + Message : string [get]
+}
+interface "ITaskDataLoader" as T_Project_Project_Interfaces_IO_ITaskDataLoader {
+  + Load(path, groupData, progress : IProgress<int> = null) : ITaskData
+}
+interface "ITaskDataSaver" as T_Project_Project_Interfaces_IO_ITaskDataSaver {
+  + Save(project, path) : void
+}
+T_Project_Project_Interfaces_IO_ILoadEventArgs -[hidden]down-> T_Project_Project_Interfaces_IO_IProjectLoader
+T_Project_Project_Interfaces_IO_IProjectLoader -[hidden]down-> T_Project_Project_Interfaces_IO_IProjectSaver
+T_Project_Project_Interfaces_IO_IProjectSaver -[hidden]down-> T_Project_Project_Interfaces_IO_ISaveEventArgs
+T_Project_Project_Interfaces_IO_ISaveEventArgs -[hidden]down-> T_Project_Project_Interfaces_IO_ITaskDataLoader
+T_Project_Project_Interfaces_IO_ITaskDataLoader -[hidden]down-> T_Project_Project_Interfaces_IO_ITaskDataSaver
+legend bottom
+  Обзор: [[Project.mdpuml Project]]; сигнатуры: [[Project-3.md Project-3.md]].
+  archive — исходник сохранён для Project/Results; в сборку Project не входит.
+  Загрузчики проекта и задачи сообщают только числовой прогресс.
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
 @enduml

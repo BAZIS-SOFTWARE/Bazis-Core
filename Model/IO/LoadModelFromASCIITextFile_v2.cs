@@ -1,6 +1,5 @@
 ﻿using Geometry;
 using Model.MeshObjects;
-using Model.Events;
 using Model.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -17,7 +16,6 @@ namespace Model.IO
 {
     public class LoadModelFromASCIITextFile_v2 : IModelLoader
     {
-        public event Action<object, ILoaderEventArgs> LoadEvent;
         private Dictionary<int, Node> allNodes = new Dictionary<int, Node>();
         private Dictionary<int, IElement> allElements = new Dictionary<int, IElement>();
 
@@ -52,7 +50,6 @@ namespace Model.IO
 
         private IEnumerable<Node> ReadNodes(StreamReader reader, int count)
         {
-            LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка узлов..."));
             for (var i = 0; i < count; i++)
             {
                 var line = reader.ReadLine();
@@ -69,7 +66,6 @@ namespace Model.IO
 
         private void ReadElements(StreamReader reader, int count, ModelData model)
         {
-            LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка элементов..."));
             var elLastNumber = 0;
             if (model.ObjectData.GetAllElements().Count() > 0)
                 elLastNumber = model.ObjectData.GetMaxElementNumber();
@@ -113,7 +109,6 @@ namespace Model.IO
 
         private void ReadGroup(StreamReader reader, int count, ModelData model)
         {
-            LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка группы объектов "));
             string[] tokens;
 
             for (var i = 0; i < count; i++)

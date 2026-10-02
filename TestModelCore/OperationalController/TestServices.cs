@@ -190,7 +190,6 @@ namespace TestModeCore_test.OperationalController
         public void FindManyCoincidentObjects() 
         {
             var loader = new LoadModelFromCDBTextFile();
-            loader.LoadEvent += (ar1, ar2) => { };
             var model = loader.Load(@"..\..\..\Examples\CDB\10e+5Nodes.cdb");
             var finder = new FindCoincidentObjects();
             var coincidentNodes = finder.Find(model.ObjectData.GetObjects(ObjType.Узел).ToList(), 1.0f);

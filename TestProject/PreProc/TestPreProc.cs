@@ -283,7 +283,6 @@ namespace TestProject_test.PreProc
         public void PreProc_GenerateTSF_ShouldPass(string file, ProcessType pt)
         {
             var loader = new LoadProjectFromTextFormat();
-            loader.LoadEvent += (ar1, ar2) => { };
             var project = loader.Load(projPath + file);
 
             var resData = new List<ICondData>();

@@ -1,0 +1,53 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title OperationalController-10 — Создание объектов, операции и презентаторы
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "OctreeBeamGroupConnection" as T_OperationalController_OperationalController_MeshObjsCreator_OctreeBeamGroupConnection {
+  # Connect(master, slave) : IEnumerable<Beam>
+}
+class "QuadMeshCreator" as T_OperationalController_OperationalController_MeshObjsCreator_QuadMeshCreator {
+  + CreateQuadMeshOnPoligon(points, numberOfElem) : ObjectsCollection<Element2D>
+}
+class "SimpleBeamGroupConnection" as T_OperationalController_OperationalController_MeshObjsCreator_SimpleBeamGroupConnection {
+  # Connect(smaller, larger) : IEnumerable<Beam>
+}
+class "VolumeMeshCreator" as T_OperationalController_OperationalController_MeshObjsCreator_VolumeMeshCreator {
+}
+class "CollectionEmptyArgumentException" as T_OperationalController_OperationalController_MeshObjsCreator_Exceptions_CollectionEmptyArgumentException {
+  + CollectionEmptyArgumentException()
+  + CollectionEmptyArgumentException(message)
+  + CollectionEmptyArgumentException(message, innerException)
+}
+class "NegativeRadiusArgumentException" as T_OperationalController_OperationalController_MeshObjsCreator_Exceptions_NegativeRadiusArgumentException <<internal>> {
+  + NegativeRadiusArgumentException()
+  + NegativeRadiusArgumentException(message)
+  + NegativeRadiusArgumentException(message, innerException)
+}
+abstract class "BeamGroupConnection" as T_OperationalController_OperationalController_MeshObjsCreator_BeamGroupConnection <<reference>>
+interface "IVolumeMeshCreator" as T_OperationalController_OperationalController_IVolumeMeshCreator <<reference>>
+T_OperationalController_OperationalController_MeshObjsCreator_OctreeBeamGroupConnection -[hidden]down-> T_OperationalController_OperationalController_MeshObjsCreator_QuadMeshCreator
+T_OperationalController_OperationalController_MeshObjsCreator_QuadMeshCreator -[hidden]down-> T_OperationalController_OperationalController_MeshObjsCreator_SimpleBeamGroupConnection
+T_OperationalController_OperationalController_MeshObjsCreator_SimpleBeamGroupConnection -[hidden]down-> T_OperationalController_OperationalController_MeshObjsCreator_VolumeMeshCreator
+T_OperationalController_OperationalController_MeshObjsCreator_VolumeMeshCreator -[hidden]down-> T_OperationalController_OperationalController_MeshObjsCreator_Exceptions_CollectionEmptyArgumentException
+T_OperationalController_OperationalController_MeshObjsCreator_Exceptions_CollectionEmptyArgumentException -[hidden]down-> T_OperationalController_OperationalController_MeshObjsCreator_Exceptions_NegativeRadiusArgumentException
+T_OperationalController_OperationalController_MeshObjsCreator_Exceptions_NegativeRadiusArgumentException -[hidden]down-> T_OperationalController_OperationalController_MeshObjsCreator_BeamGroupConnection
+T_OperationalController_OperationalController_MeshObjsCreator_BeamGroupConnection -[hidden]down-> T_OperationalController_OperationalController_IVolumeMeshCreator
+T_OperationalController_OperationalController_MeshObjsCreator_OctreeBeamGroupConnection --|> T_OperationalController_OperationalController_MeshObjsCreator_BeamGroupConnection
+T_OperationalController_OperationalController_MeshObjsCreator_SimpleBeamGroupConnection --|> T_OperationalController_OperationalController_MeshObjsCreator_BeamGroupConnection
+T_OperationalController_OperationalController_MeshObjsCreator_VolumeMeshCreator ..|> T_OperationalController_OperationalController_IVolumeMeshCreator
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

@@ -1,46 +1,84 @@
 @startuml
-title Project — состав проекта и расчётной задачи
 top to bottom direction
-scale max 1500 width
 skinparam classAttributeIconSize 0
-skinparam nodesep 16
-skinparam ranksep 20
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
 hide empty members
+set namespaceSeparator none
 
-interface IProjectData
-interface IGeneralData
-interface ITaskData
-interface IModelData <<Model>>
-interface ICondData
-class ProjectData
-class GeneralData
-class TaskData
-class "ModelData" as ModelData <<Model>>
-abstract class CondData
-class GeneralParameters
-class PhysicalSet
-
-IProjectData <|.. ProjectData
-IGeneralData <|.. GeneralData
-ITaskData <|.. TaskData
-ICondData <|.. CondData
-IModelData <|.. ModelData
-ProjectData *-- GeneralData
-ProjectData *-- TaskData
-ProjectData *-- ModelData
-TaskData o-- CondData : условия
-GeneralParameters o-- PhysicalSet : физические поля
-
-note right of TaskData
-  Условия и материалы:
-  Project-1.mdpuml
+allowmixing
+title Project — обзор классов и расположение подробностей
+caption Обзор; полный состав членов — на нумерованных поддиаграммах
+interface "IProjectData" as T_Project_Project_Interfaces_IProjectData <<details>>
+note right of T_Project_Project_Interfaces_IProjectData
+  [[Project-1.mdpuml Project-1]]
 end note
-note right of GeneralParameters
-  Параметры и физические поля:
-  Project-2.mdpuml
+class "ProjectData" as T_Project_Project_ProjectData <<details>>
+note right of T_Project_Project_ProjectData
+  [[Project-6.mdpuml Project-6]]
 end note
-note right of ProjectData
-  Функции и ввод/вывод:
-  Project-3.mdpuml
+interface "ITaskData" as T_Project_Project_Interfaces_Tasks_ITaskData <<details>>
+note right of T_Project_Project_Interfaces_Tasks_ITaskData
+  [[Project-5.mdpuml Project-5]]
 end note
+class "TaskData" as T_Project_Project_Tasks_TaskData <<details>>
+note right of T_Project_Project_Tasks_TaskData
+  [[Project-9.mdpuml Project-9]]
+end note
+interface "IGeneralData" as T_Project_Project_Interfaces_IGeneralData <<details>>
+note right of T_Project_Project_Interfaces_IGeneralData
+  [[Project-1.mdpuml Project-1]]
+end note
+class "GeneralData" as T_Project_Project_GeneralData <<details>>
+note right of T_Project_Project_GeneralData
+  [[Project-6.mdpuml Project-6]]
+end note
+class "GeneralParameters" as T_Project_Project_TaskParameters_GeneralParameters <<details>>
+note right of T_Project_Project_TaskParameters_GeneralParameters
+  [[Project-2.mdpuml Project-2]]
+end note
+class "PhysicalSet" as T_Project_Project_TaskParameters_PhysicalSet <<details>>
+note right of T_Project_Project_TaskParameters_PhysicalSet
+  [[Project-11.mdpuml Project-11]]
+end note
+T_Project_Project_GeneralData ..|> T_Project_Project_Interfaces_IGeneralData
+T_Project_Project_Interfaces_IProjectData --> T_Project_Project_Interfaces_IGeneralData : использует
+T_Project_Project_Interfaces_IProjectData --> T_Project_Project_Interfaces_Tasks_ITaskData : использует
+T_Project_Project_ProjectData --> T_Project_Project_Interfaces_IGeneralData : использует
+T_Project_Project_ProjectData --> T_Project_Project_Interfaces_Tasks_ITaskData : использует
+T_Project_Project_ProjectData ..|> T_Project_Project_Interfaces_IProjectData
+T_Project_Project_TaskParameters_GeneralParameters --> T_Project_Project_TaskParameters_PhysicalSet : использует
+T_Project_Project_Tasks_TaskData ..|> T_Project_Project_Interfaces_Tasks_ITaskData
+rectangle "Проект, задача и граничные условия" as Area_1 <<область>>
+note right of Area_1
+  [[Project-1.mdpuml Project-1]], [[Project-4.mdpuml Project-4]], [[Project-5.mdpuml Project-5]]
+  [[Project-6.mdpuml Project-6]], [[Project-7.mdpuml Project-7]], [[Project-8.mdpuml Project-8]]
+  [[Project-9.mdpuml Project-9]]
+end note
+rectangle "Параметры и физические поля" as Area_2 <<область>>
+note right of Area_2
+  [[Project-2.mdpuml Project-2]], [[Project-10.mdpuml Project-10]], [[Project-11.mdpuml Project-11]]
+  [[Project-12.mdpuml Project-12]]
+end note
+rectangle "Функции, материалы и ввод/вывод" as Area_3 <<область>>
+note right of Area_3
+  [[Project-3.mdpuml Project-3]], [[Project-13.mdpuml Project-13]], [[Project-14.mdpuml Project-14]]
+  [[Project-15.mdpuml Project-15]], [[Project-16.mdpuml Project-16]], [[Project-17.mdpuml Project-17]]
+  [[Project-18.mdpuml Project-18]], [[Project-19.mdpuml Project-19]], [[Project-20.mdpuml Project-20]]
+  [[Project-21.mdpuml Project-21]], [[Project-22.mdpuml Project-22]]
+end note
+T_Project_Project_Interfaces_IProjectData -[hidden]down-> T_Project_Project_ProjectData
+T_Project_Project_ProjectData -[hidden]down-> T_Project_Project_Interfaces_Tasks_ITaskData
+T_Project_Project_Interfaces_Tasks_ITaskData -[hidden]down-> T_Project_Project_Tasks_TaskData
+T_Project_Project_Tasks_TaskData -[hidden]down-> T_Project_Project_Interfaces_IGeneralData
+T_Project_Project_Interfaces_IGeneralData -[hidden]down-> T_Project_Project_GeneralData
+T_Project_Project_GeneralData -[hidden]down-> T_Project_Project_TaskParameters_GeneralParameters
+T_Project_Project_TaskParameters_GeneralParameters -[hidden]down-> T_Project_Project_TaskParameters_PhysicalSet
+T_Project_Project_TaskParameters_PhysicalSet -[hidden]down-> Area_1
+Area_1 -[hidden]down-> Area_2
+Area_2 -[hidden]down-> Area_3
 @enduml

@@ -1,0 +1,5171 @@
+{
+  "PDF": "C:\\BazisComponents\\BazisCore\\output\\pdf\\DiagramNavigation.pdf",
+  "Pages": 81,
+  "Diagrams": 25,
+  "Documents": 25,
+  "InternalLinks": 688,
+  "ExternalLinks": 0,
+  "Bytes": 508229,
+  "SHA256": "c83e48c6fd6854745f5c733c5bf15739377512f542f5046f7a25100be6886085",
+  "PageIndex": [
+    {
+      "Page": 1,
+      "Title": "Обзор",
+      "Destination": "overview",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 2,
+      "Title": "Оглавление",
+      "Destination": "contents",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 3,
+      "Title": "Продолжение",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 4,
+      "Title": "Model",
+      "Destination": "diagram-eb9d8a1a7124f74f06d7",
+      "Width": 694.5,
+      "Height": 1049.1666666666667
+    },
+    {
+      "Page": 5,
+      "Title": "Model-1",
+      "Destination": "diagram-16c950948abd5f04448c",
+      "Width": 631.1666666666667,
+      "Height": 1374.1666666666667
+    },
+    {
+      "Page": 6,
+      "Title": "Model-2",
+      "Destination": "diagram-edb92db734c76a8b3ee5",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 7,
+      "Title": "Model-3",
+      "Destination": "diagram-905fe25b9212072749c9",
+      "Width": 595.28,
+      "Height": 1085.0
+    },
+    {
+      "Page": 8,
+      "Title": "Model-4",
+      "Destination": "diagram-4af3158f10c7dc069ad0",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 9,
+      "Title": "Model-5",
+      "Destination": "diagram-07c57a657a044627efd5",
+      "Width": 712.8333333333334,
+      "Height": 1430.0
+    },
+    {
+      "Page": 10,
+      "Title": "Model-6",
+      "Destination": "diagram-12cc6b0f99f860664419",
+      "Width": 595.28,
+      "Height": 1289.1666666666667
+    },
+    {
+      "Page": 11,
+      "Title": "Model-7",
+      "Destination": "diagram-fc3c4550ad0630e080c3",
+      "Width": 657.8333333333334,
+      "Height": 1324.1666666666667
+    },
+    {
+      "Page": 12,
+      "Title": "Model-8",
+      "Destination": "diagram-12af652b2ffa0b9831b9",
+      "Width": 612.0,
+      "Height": 1098.3333333333335
+    },
+    {
+      "Page": 13,
+      "Title": "Model-9",
+      "Destination": "diagram-07cf14187d762820061b",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 14,
+      "Title": "Model-10",
+      "Destination": "diagram-b883721b2700f8760d4d",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 15,
+      "Title": "Model-11",
+      "Destination": "diagram-875e78720d36fd08567b",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 16,
+      "Title": "Model-12",
+      "Destination": "diagram-b6cf8c2fbb22a1d104af",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 17,
+      "Title": "Model-13",
+      "Destination": "diagram-3eaed899a016a16cd921",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 18,
+      "Title": "Model-14",
+      "Destination": "diagram-300e6859ba25b9f402ec",
+      "Width": 635.3333333333334,
+      "Height": 841.89
+    },
+    {
+      "Page": 19,
+      "Title": "Model-15",
+      "Destination": "diagram-c05a8518b6ac86a7431f",
+      "Width": 595.28,
+      "Height": 1050.0
+    },
+    {
+      "Page": 20,
+      "Title": "Model-16",
+      "Destination": "diagram-67ea32eb2d22f0843fe9",
+      "Width": 595.28,
+      "Height": 1041.6666666666667
+    },
+    {
+      "Page": 21,
+      "Title": "Model-17",
+      "Destination": "diagram-e0e241eee43046828a79",
+      "Width": 617.0,
+      "Height": 1292.5
+    },
+    {
+      "Page": 22,
+      "Title": "Model-18",
+      "Destination": "diagram-eb2e2ad238fb5633f25f",
+      "Width": 595.28,
+      "Height": 1080.0
+    },
+    {
+      "Page": 23,
+      "Title": "Model-19",
+      "Destination": "diagram-f34f6e5a1856ec4858bc",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 24,
+      "Title": "Model-20",
+      "Destination": "diagram-93c9ea7f733293198604",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 25,
+      "Title": "Geometry-1",
+      "Destination": "diagram-97dcca8f2806b0b734ca",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 26,
+      "Title": "Geometry-3",
+      "Destination": "diagram-685bb3bcf4247a072a0b",
+      "Width": 595.28,
+      "Height": 1045.0
+    },
+    {
+      "Page": 27,
+      "Title": "Geometry-4",
+      "Destination": "diagram-034e344289e1869eb640",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 28,
+      "Title": "Geometry-5",
+      "Destination": "diagram-8ed1301c20d664163896",
+      "Width": 595.28,
+      "Height": 889.1666666666667
+    },
+    {
+      "Page": 29,
+      "Title": "Model - описание",
+      "Destination": "document-cc9ef0e72b6545665f03",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 30,
+      "Title": "Model - продолжение таблицы",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 31,
+      "Title": "Model - продолжение таблицы",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 32,
+      "Title": "Model - продолжение таблицы",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 33,
+      "Title": "Model - продолжение таблицы",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 34,
+      "Title": "Model - продолжение таблицы",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 35,
+      "Title": "Model - продолжение таблицы",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 36,
+      "Title": "Model - продолжение таблицы",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 37,
+      "Title": "Model-1 - описание",
+      "Destination": "document-75e8b1e65f4d1b60966a",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 38,
+      "Title": "Model-1 - продолжение",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 39,
+      "Title": "Model-2 - описание",
+      "Destination": "document-a924bf38e1e7a2949dbc",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 40,
+      "Title": "Продолжение",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 41,
+      "Title": "Model-3 - описание",
+      "Destination": "document-d48d89da58de8c38aff2",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 42,
+      "Title": "Продолжение",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 43,
+      "Title": "Model-4 - описание",
+      "Destination": "document-0591da79d2c9c4218579",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 44,
+      "Title": "Продолжение",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 45,
+      "Title": "Model-5 - описание",
+      "Destination": "document-f8f6459f3017645c21d5",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 46,
+      "Title": "Продолжение",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 47,
+      "Title": "Model-6 - описание",
+      "Destination": "document-6d4d99095c2b5c8665d2",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 48,
+      "Title": "Model-6 - продолжение",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 49,
+      "Title": "Model-7 - описание",
+      "Destination": "document-5c3458ed696ef57b92e9",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 50,
+      "Title": "Model-7 - продолжение",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 51,
+      "Title": "Model-8 - описание",
+      "Destination": "document-1e781788006acf2e9da6",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 52,
+      "Title": "Продолжение",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 53,
+      "Title": "Model-9 - описание",
+      "Destination": "document-8fefe29a8513bac0b45f",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 54,
+      "Title": "Model-10 - описание",
+      "Destination": "document-44c1a640824c878e2711",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 55,
+      "Title": "Продолжение",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 56,
+      "Title": "Model-11 - описание",
+      "Destination": "document-7913f0564c4224d93a68",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 57,
+      "Title": "Model-11 - продолжение",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 58,
+      "Title": "Model-12 - описание",
+      "Destination": "document-b9a7e7b2663bdc955dba",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 59,
+      "Title": "Продолжение",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 60,
+      "Title": "Model-13 - описание",
+      "Destination": "document-5ea29e42d8c5159a20f4",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 61,
+      "Title": "Model-14 - описание",
+      "Destination": "document-e37ea26f6365d0183a71",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 62,
+      "Title": "Model-14 - продолжение таблицы",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 63,
+      "Title": "Model-15 - описание",
+      "Destination": "document-9998fbbc982f433542a5",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 64,
+      "Title": "Продолжение",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 65,
+      "Title": "Model-16 - описание",
+      "Destination": "document-d5df41557a138c0df9db",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 66,
+      "Title": "Model-16 - продолжение",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 67,
+      "Title": "Model-17 - описание",
+      "Destination": "document-a884b18634cbd8497976",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 68,
+      "Title": "Продолжение",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 69,
+      "Title": "Model-18 - описание",
+      "Destination": "document-a01dc0ebae61c9bf1d02",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 70,
+      "Title": "Продолжение",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 71,
+      "Title": "Model-19 - описание",
+      "Destination": "document-e83c592fc43389451079",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 72,
+      "Title": "Model-19 - продолжение",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 73,
+      "Title": "Model-20 - описание",
+      "Destination": "document-c70ebefac8b7f2f54577",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 74,
+      "Title": "Продолжение",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 75,
+      "Title": "Geometry-1 - описание",
+      "Destination": "document-3dad687925cee6c84da7",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 76,
+      "Title": "Продолжение",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 77,
+      "Title": "Geometry-3 - описание",
+      "Destination": "document-4deb93c8c0e0f950f734",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 78,
+      "Title": "Продолжение",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 79,
+      "Title": "Geometry-4 - описание",
+      "Destination": "document-5839c6876db7fa5e63bb",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 80,
+      "Title": "Geometry-5 - описание",
+      "Destination": "document-ad45a6311c7b585fa594",
+      "Width": 595.28,
+      "Height": 841.89
+    },
+    {
+      "Page": 81,
+      "Title": "Продолжение",
+      "Destination": null,
+      "Width": 595.28,
+      "Height": 841.89
+    }
+  ],
+  "DestinationPages": {
+    "overview": 1,
+    "contents": 2,
+    "diagram-eb9d8a1a7124f74f06d7": 4,
+    "diagram-16c950948abd5f04448c": 5,
+    "diagram-edb92db734c76a8b3ee5": 6,
+    "diagram-905fe25b9212072749c9": 7,
+    "diagram-4af3158f10c7dc069ad0": 8,
+    "diagram-07c57a657a044627efd5": 9,
+    "diagram-12cc6b0f99f860664419": 10,
+    "diagram-fc3c4550ad0630e080c3": 11,
+    "diagram-12af652b2ffa0b9831b9": 12,
+    "diagram-07cf14187d762820061b": 13,
+    "diagram-b883721b2700f8760d4d": 14,
+    "diagram-875e78720d36fd08567b": 15,
+    "diagram-b6cf8c2fbb22a1d104af": 16,
+    "diagram-3eaed899a016a16cd921": 17,
+    "diagram-300e6859ba25b9f402ec": 18,
+    "diagram-c05a8518b6ac86a7431f": 19,
+    "diagram-67ea32eb2d22f0843fe9": 20,
+    "diagram-e0e241eee43046828a79": 21,
+    "diagram-eb2e2ad238fb5633f25f": 22,
+    "diagram-f34f6e5a1856ec4858bc": 23,
+    "diagram-93c9ea7f733293198604": 24,
+    "diagram-97dcca8f2806b0b734ca": 25,
+    "diagram-685bb3bcf4247a072a0b": 26,
+    "diagram-034e344289e1869eb640": 27,
+    "diagram-8ed1301c20d664163896": 28,
+    "document-cc9ef0e72b6545665f03": 29,
+    "document-cc9ef0e72b6545665f03-heading-0": 29,
+    "document-cc9ef0e72b6545665f03-heading-1": 29,
+    "document-cc9ef0e72b6545665f03-heading-2": 30,
+    "document-cc9ef0e72b6545665f03-heading-3": 36,
+    "document-cc9ef0e72b6545665f03-heading-4": 36,
+    "document-75e8b1e65f4d1b60966a": 37,
+    "document-75e8b1e65f4d1b60966a-heading-0": 37,
+    "document-75e8b1e65f4d1b60966a-heading-1": 37,
+    "document-75e8b1e65f4d1b60966a-heading-2": 37,
+    "document-75e8b1e65f4d1b60966a-heading-3": 37,
+    "document-75e8b1e65f4d1b60966a-heading-4": 37,
+    "document-75e8b1e65f4d1b60966a-heading-5": 38,
+    "document-75e8b1e65f4d1b60966a-heading-6": 38,
+    "document-75e8b1e65f4d1b60966a-heading-7": 38,
+    "document-a924bf38e1e7a2949dbc": 39,
+    "document-a924bf38e1e7a2949dbc-heading-0": 39,
+    "document-a924bf38e1e7a2949dbc-heading-1": 39,
+    "document-a924bf38e1e7a2949dbc-heading-2": 39,
+    "document-a924bf38e1e7a2949dbc-heading-3": 39,
+    "document-a924bf38e1e7a2949dbc-heading-4": 39,
+    "document-a924bf38e1e7a2949dbc-heading-5": 39,
+    "document-a924bf38e1e7a2949dbc-heading-6": 39,
+    "document-a924bf38e1e7a2949dbc-heading-7": 40,
+    "document-d48d89da58de8c38aff2": 41,
+    "document-d48d89da58de8c38aff2-heading-0": 41,
+    "document-d48d89da58de8c38aff2-heading-1": 41,
+    "document-d48d89da58de8c38aff2-heading-2": 41,
+    "document-d48d89da58de8c38aff2-heading-3": 41,
+    "document-d48d89da58de8c38aff2-heading-4": 41,
+    "document-d48d89da58de8c38aff2-heading-5": 42,
+    "document-d48d89da58de8c38aff2-heading-6": 42,
+    "document-0591da79d2c9c4218579": 43,
+    "document-0591da79d2c9c4218579-heading-0": 43,
+    "document-0591da79d2c9c4218579-heading-1": 43,
+    "document-0591da79d2c9c4218579-heading-2": 43,
+    "document-0591da79d2c9c4218579-heading-3": 43,
+    "document-0591da79d2c9c4218579-heading-4": 43,
+    "document-0591da79d2c9c4218579-heading-5": 43,
+    "document-0591da79d2c9c4218579-heading-6": 44,
+    "document-0591da79d2c9c4218579-heading-7": 44,
+    "document-f8f6459f3017645c21d5": 45,
+    "document-f8f6459f3017645c21d5-heading-0": 45,
+    "document-f8f6459f3017645c21d5-heading-1": 45,
+    "document-f8f6459f3017645c21d5-heading-2": 45,
+    "document-f8f6459f3017645c21d5-heading-3": 45,
+    "document-f8f6459f3017645c21d5-heading-4": 45,
+    "document-f8f6459f3017645c21d5-heading-5": 45,
+    "document-f8f6459f3017645c21d5-heading-6": 46,
+    "document-f8f6459f3017645c21d5-heading-7": 46,
+    "document-6d4d99095c2b5c8665d2": 47,
+    "document-6d4d99095c2b5c8665d2-heading-0": 47,
+    "document-6d4d99095c2b5c8665d2-heading-1": 47,
+    "document-6d4d99095c2b5c8665d2-heading-2": 47,
+    "document-6d4d99095c2b5c8665d2-heading-3": 47,
+    "document-6d4d99095c2b5c8665d2-heading-4": 48,
+    "document-6d4d99095c2b5c8665d2-heading-5": 48,
+    "document-6d4d99095c2b5c8665d2-heading-6": 48,
+    "document-5c3458ed696ef57b92e9": 49,
+    "document-5c3458ed696ef57b92e9-heading-0": 49,
+    "document-5c3458ed696ef57b92e9-heading-1": 49,
+    "document-5c3458ed696ef57b92e9-heading-2": 49,
+    "document-5c3458ed696ef57b92e9-heading-3": 49,
+    "document-5c3458ed696ef57b92e9-heading-4": 49,
+    "document-5c3458ed696ef57b92e9-heading-5": 50,
+    "document-5c3458ed696ef57b92e9-heading-6": 50,
+    "document-5c3458ed696ef57b92e9-heading-7": 50,
+    "document-1e781788006acf2e9da6": 51,
+    "document-1e781788006acf2e9da6-heading-0": 51,
+    "document-1e781788006acf2e9da6-heading-1": 51,
+    "document-1e781788006acf2e9da6-heading-2": 51,
+    "document-1e781788006acf2e9da6-heading-3": 51,
+    "document-1e781788006acf2e9da6-heading-4": 51,
+    "document-1e781788006acf2e9da6-heading-5": 52,
+    "document-1e781788006acf2e9da6-heading-6": 52,
+    "document-1e781788006acf2e9da6-heading-7": 52,
+    "document-8fefe29a8513bac0b45f": 53,
+    "document-8fefe29a8513bac0b45f-heading-0": 53,
+    "document-8fefe29a8513bac0b45f-heading-1": 53,
+    "document-8fefe29a8513bac0b45f-heading-2": 53,
+    "document-44c1a640824c878e2711": 54,
+    "document-44c1a640824c878e2711-heading-0": 54,
+    "document-44c1a640824c878e2711-heading-1": 54,
+    "document-44c1a640824c878e2711-heading-2": 54,
+    "document-44c1a640824c878e2711-heading-3": 54,
+    "document-44c1a640824c878e2711-heading-4": 54,
+    "document-44c1a640824c878e2711-heading-5": 54,
+    "document-44c1a640824c878e2711-heading-6": 55,
+    "document-44c1a640824c878e2711-heading-7": 55,
+    "document-7913f0564c4224d93a68": 56,
+    "document-7913f0564c4224d93a68-heading-0": 56,
+    "document-7913f0564c4224d93a68-heading-1": 56,
+    "document-7913f0564c4224d93a68-heading-2": 56,
+    "document-7913f0564c4224d93a68-heading-3": 56,
+    "document-7913f0564c4224d93a68-heading-4": 56,
+    "document-7913f0564c4224d93a68-heading-5": 56,
+    "document-7913f0564c4224d93a68-heading-6": 57,
+    "document-7913f0564c4224d93a68-heading-7": 57,
+    "document-b9a7e7b2663bdc955dba": 58,
+    "document-b9a7e7b2663bdc955dba-heading-0": 58,
+    "document-b9a7e7b2663bdc955dba-heading-1": 58,
+    "document-b9a7e7b2663bdc955dba-heading-2": 58,
+    "document-b9a7e7b2663bdc955dba-heading-3": 58,
+    "document-b9a7e7b2663bdc955dba-heading-4": 58,
+    "document-b9a7e7b2663bdc955dba-heading-5": 58,
+    "document-b9a7e7b2663bdc955dba-heading-6": 59,
+    "document-b9a7e7b2663bdc955dba-heading-7": 59,
+    "document-5ea29e42d8c5159a20f4": 60,
+    "document-5ea29e42d8c5159a20f4-heading-0": 60,
+    "document-5ea29e42d8c5159a20f4-heading-1": 60,
+    "document-5ea29e42d8c5159a20f4-heading-2": 60,
+    "document-e37ea26f6365d0183a71": 61,
+    "document-e37ea26f6365d0183a71-heading-0": 61,
+    "document-e37ea26f6365d0183a71-heading-1": 61,
+    "document-e37ea26f6365d0183a71-heading-2": 61,
+    "document-9998fbbc982f433542a5": 63,
+    "document-9998fbbc982f433542a5-heading-0": 63,
+    "document-9998fbbc982f433542a5-heading-1": 63,
+    "document-9998fbbc982f433542a5-heading-2": 63,
+    "document-9998fbbc982f433542a5-heading-3": 63,
+    "document-9998fbbc982f433542a5-heading-4": 63,
+    "document-9998fbbc982f433542a5-heading-5": 64,
+    "document-9998fbbc982f433542a5-heading-6": 64,
+    "document-9998fbbc982f433542a5-heading-7": 64,
+    "document-d5df41557a138c0df9db": 65,
+    "document-d5df41557a138c0df9db-heading-0": 65,
+    "document-d5df41557a138c0df9db-heading-1": 65,
+    "document-d5df41557a138c0df9db-heading-2": 65,
+    "document-d5df41557a138c0df9db-heading-3": 65,
+    "document-d5df41557a138c0df9db-heading-4": 66,
+    "document-d5df41557a138c0df9db-heading-5": 66,
+    "document-d5df41557a138c0df9db-heading-6": 66,
+    "document-a884b18634cbd8497976": 67,
+    "document-a884b18634cbd8497976-heading-0": 67,
+    "document-a884b18634cbd8497976-heading-1": 67,
+    "document-a884b18634cbd8497976-heading-2": 67,
+    "document-a884b18634cbd8497976-heading-3": 67,
+    "document-a884b18634cbd8497976-heading-4": 68,
+    "document-a884b18634cbd8497976-heading-5": 68,
+    "document-a884b18634cbd8497976-heading-6": 68,
+    "document-a01dc0ebae61c9bf1d02": 69,
+    "document-a01dc0ebae61c9bf1d02-heading-0": 69,
+    "document-a01dc0ebae61c9bf1d02-heading-1": 69,
+    "document-a01dc0ebae61c9bf1d02-heading-2": 69,
+    "document-a01dc0ebae61c9bf1d02-heading-3": 69,
+    "document-a01dc0ebae61c9bf1d02-heading-4": 69,
+    "document-a01dc0ebae61c9bf1d02-heading-5": 69,
+    "document-a01dc0ebae61c9bf1d02-heading-6": 70,
+    "document-a01dc0ebae61c9bf1d02-heading-7": 70,
+    "document-e83c592fc43389451079": 71,
+    "document-e83c592fc43389451079-heading-0": 71,
+    "document-e83c592fc43389451079-heading-1": 71,
+    "document-e83c592fc43389451079-heading-2": 71,
+    "document-e83c592fc43389451079-heading-3": 71,
+    "document-e83c592fc43389451079-heading-4": 71,
+    "document-e83c592fc43389451079-heading-5": 71,
+    "document-e83c592fc43389451079-heading-6": 71,
+    "document-e83c592fc43389451079-heading-7": 72,
+    "document-c70ebefac8b7f2f54577": 73,
+    "document-c70ebefac8b7f2f54577-heading-0": 73,
+    "document-c70ebefac8b7f2f54577-heading-1": 73,
+    "document-c70ebefac8b7f2f54577-heading-2": 73,
+    "document-c70ebefac8b7f2f54577-heading-3": 73,
+    "document-c70ebefac8b7f2f54577-heading-4": 73,
+    "document-c70ebefac8b7f2f54577-heading-5": 73,
+    "document-c70ebefac8b7f2f54577-heading-6": 74,
+    "document-3dad687925cee6c84da7": 75,
+    "document-3dad687925cee6c84da7-heading-0": 75,
+    "document-3dad687925cee6c84da7-heading-1": 75,
+    "document-3dad687925cee6c84da7-heading-2": 75,
+    "document-3dad687925cee6c84da7-heading-3": 75,
+    "document-3dad687925cee6c84da7-heading-4": 75,
+    "document-3dad687925cee6c84da7-heading-5": 75,
+    "document-3dad687925cee6c84da7-heading-6": 76,
+    "document-4deb93c8c0e0f950f734": 77,
+    "document-4deb93c8c0e0f950f734-heading-0": 77,
+    "document-4deb93c8c0e0f950f734-heading-1": 77,
+    "document-4deb93c8c0e0f950f734-heading-2": 77,
+    "document-4deb93c8c0e0f950f734-heading-3": 77,
+    "document-4deb93c8c0e0f950f734-heading-4": 77,
+    "document-4deb93c8c0e0f950f734-heading-5": 78,
+    "document-4deb93c8c0e0f950f734-heading-6": 78,
+    "document-5839c6876db7fa5e63bb": 79,
+    "document-5839c6876db7fa5e63bb-heading-0": 79,
+    "document-5839c6876db7fa5e63bb-heading-1": 79,
+    "document-5839c6876db7fa5e63bb-heading-2": 79,
+    "document-ad45a6311c7b585fa594": 80,
+    "document-ad45a6311c7b585fa594-heading-0": 80,
+    "document-ad45a6311c7b585fa594-heading-1": 80,
+    "document-ad45a6311c7b585fa594-heading-2": 80,
+    "document-ad45a6311c7b585fa594-heading-3": 80,
+    "document-ad45a6311c7b585fa594-heading-4": 81,
+    "document-ad45a6311c7b585fa594-heading-5": 81
+  },
+  "DiagramLinks": [
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model.mdpuml",
+      "Page": 4,
+      "URL": "Model-3.mdpuml",
+      "Rect": [
+        187.65833333333336,
+        926.97875,
+        223.78626302083336,
+        938.9787500000001
+      ],
+      "Destination": "diagram-905fe25b9212072749c9"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model.mdpuml",
+      "Page": 4,
+      "URL": "Model-16.mdpuml",
+      "Rect": [
+        186.15,
+        874.5287500000001,
+        227.839453125,
+        886.5287500000001
+      ],
+      "Destination": "diagram-67ea32eb2d22f0843fe9"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model.mdpuml",
+      "Page": 4,
+      "URL": "Model-14.mdpuml",
+      "Rect": [
+        293.12500000000006,
+        810.4204166666667,
+        334.81445312500006,
+        822.4204166666667
+      ],
+      "Destination": "diagram-300e6859ba25b9f402ec"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model.mdpuml",
+      "Page": 4,
+      "URL": "Model-15.mdpuml",
+      "Rect": [
+        345.83983333333333,
+        810.4204166666667,
+        387.52928645833333,
+        822.4204166666667
+      ],
+      "Destination": "diagram-c05a8518b6ac86a7431f"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model.mdpuml",
+      "Page": 4,
+      "URL": "Model-17.mdpuml",
+      "Rect": [
+        273.65,
+        746.30375,
+        315.339453125,
+        758.3037499999999
+      ],
+      "Destination": "diagram-e0e241eee43046828a79"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model.mdpuml",
+      "Page": 4,
+      "URL": "Model-3.mdpuml",
+      "Rect": [
+        144.32500000000002,
+        693.8537500000001,
+        180.45292968750002,
+        705.85375
+      ],
+      "Destination": "diagram-905fe25b9212072749c9"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model.mdpuml",
+      "Page": 4,
+      "URL": "Model-17.mdpuml",
+      "Rect": [
+        142.81666666666666,
+        629.7370833333334,
+        184.50611979166666,
+        641.7370833333333
+      ],
+      "Destination": "diagram-e0e241eee43046828a79"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model.mdpuml",
+      "Page": 4,
+      "URL": "Model-16.mdpuml",
+      "Rect": [
+        284.48333333333335,
+        565.6287500000001,
+        326.17278645833335,
+        577.62875
+      ],
+      "Destination": "diagram-67ea32eb2d22f0843fe9"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model.mdpuml",
+      "Page": 4,
+      "URL": "Model-18.mdpuml",
+      "Rect": [
+        284.48333333333335,
+        513.17875,
+        326.17278645833335,
+        525.17875
+      ],
+      "Destination": "diagram-eb2e2ad238fb5633f25f"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model.mdpuml",
+      "Page": 4,
+      "URL": "Model-16.mdpuml",
+      "Rect": [
+        441.98333333333335,
+        449.0620833333333,
+        483.6727864583334,
+        461.0620833333333
+      ],
+      "Destination": "diagram-67ea32eb2d22f0843fe9"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model.mdpuml",
+      "Page": 4,
+      "URL": "Model-18.mdpuml",
+      "Rect": [
+        440.31666666666666,
+        396.6120833333334,
+        482.0061197916667,
+        408.6120833333333
+      ],
+      "Destination": "diagram-eb2e2ad238fb5633f25f"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model.mdpuml",
+      "Page": 4,
+      "URL": "Model-1.mdpuml",
+      "Rect": [
+        490.4750000000001,
+        345.82041666666674,
+        526.6029296875001,
+        357.8204166666667
+      ],
+      "Destination": "diagram-16c950948abd5f04448c"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model.mdpuml",
+      "Page": 4,
+      "URL": "Model-5.mdpuml",
+      "Rect": [
+        536.8275000000001,
+        345.82041666666674,
+        572.9554296875001,
+        357.8204166666667
+      ],
+      "Destination": "diagram-07c57a657a044627efd5"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model.mdpuml",
+      "Page": 4,
+      "URL": "Model-6.mdpuml",
+      "Rect": [
+        583.1800833333333,
+        345.82041666666674,
+        619.3080130208333,
+        357.8204166666667
+      ],
+      "Destination": "diagram-12cc6b0f99f860664419"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model.mdpuml",
+      "Page": 4,
+      "URL": "Model-7.mdpuml",
+      "Rect": [
+        490.4750000000001,
+        334.17974999999996,
+        526.6029296875001,
+        346.17975000000007
+      ],
+      "Destination": "diagram-fc3c4550ad0630e080c3"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model.mdpuml",
+      "Page": 4,
+      "URL": "Model-8.mdpuml",
+      "Rect": [
+        536.8275000000001,
+        334.17974999999996,
+        572.9554296875001,
+        346.17975000000007
+      ],
+      "Destination": "diagram-12af652b2ffa0b9831b9"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model.mdpuml",
+      "Page": 4,
+      "URL": "Model-9.mdpuml",
+      "Rect": [
+        583.1800833333333,
+        334.17974999999996,
+        619.3080130208333,
+        346.17975000000007
+      ],
+      "Destination": "diagram-07cf14187d762820061b"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model.mdpuml",
+      "Page": 4,
+      "URL": "Model-2.mdpuml",
+      "Rect": [
+        449.1166666666667,
+        285.0370833333334,
+        485.2445963541667,
+        297.0370833333334
+      ],
+      "Destination": "diagram-edb92db734c76a8b3ee5"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model.mdpuml",
+      "Page": 4,
+      "URL": "Model-10.mdpuml",
+      "Rect": [
+        495.46916666666675,
+        285.0370833333334,
+        537.1586197916668,
+        297.0370833333334
+      ],
+      "Destination": "diagram-b883721b2700f8760d4d"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model.mdpuml",
+      "Page": 4,
+      "URL": "Model-11.mdpuml",
+      "Rect": [
+        548.1840833333334,
+        285.0370833333334,
+        589.8735364583334,
+        297.0370833333334
+      ],
+      "Destination": "diagram-875e78720d36fd08567b"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model.mdpuml",
+      "Page": 4,
+      "URL": "Model-12.mdpuml",
+      "Rect": [
+        449.1166666666667,
+        273.3964166666667,
+        490.8061197916667,
+        285.3964166666667
+      ],
+      "Destination": "diagram-b6cf8c2fbb22a1d104af"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model.mdpuml",
+      "Page": 4,
+      "URL": "Model-13.mdpuml",
+      "Rect": [
+        501.83149999999995,
+        273.3964166666667,
+        543.520953125,
+        285.3964166666667
+      ],
+      "Destination": "diagram-3eaed899a016a16cd921"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model.mdpuml",
+      "Page": 4,
+      "URL": "Model-3.mdpuml",
+      "Rect": [
+        456.7666666666667,
+        224.26208333333335,
+        492.89459635416677,
+        236.2620833333333
+      ],
+      "Destination": "diagram-905fe25b9212072749c9"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model.mdpuml",
+      "Page": 4,
+      "URL": "Model-14.mdpuml",
+      "Rect": [
+        503.1191666666667,
+        224.26208333333335,
+        544.8086197916666,
+        236.2620833333333
+      ],
+      "Destination": "diagram-300e6859ba25b9f402ec"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model.mdpuml",
+      "Page": 4,
+      "URL": "Model-15.mdpuml",
+      "Rect": [
+        555.8340833333333,
+        224.26208333333335,
+        597.5235364583333,
+        236.2620833333333
+      ],
+      "Destination": "diagram-c05a8518b6ac86a7431f"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model.mdpuml",
+      "Page": 4,
+      "URL": "Model-16.mdpuml",
+      "Rect": [
+        456.7666666666667,
+        212.6214166666666,
+        498.45611979166677,
+        224.62141666666668
+      ],
+      "Destination": "diagram-67ea32eb2d22f0843fe9"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model.mdpuml",
+      "Page": 4,
+      "URL": "Model-17.mdpuml",
+      "Rect": [
+        509.4815000000001,
+        212.6214166666666,
+        551.1709531250001,
+        224.62141666666668
+      ],
+      "Destination": "diagram-e0e241eee43046828a79"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model.mdpuml",
+      "Page": 4,
+      "URL": "Model-18.mdpuml",
+      "Rect": [
+        562.1963333333334,
+        212.6214166666666,
+        603.8857864583334,
+        224.62141666666668
+      ],
+      "Destination": "diagram-eb2e2ad238fb5633f25f"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model.mdpuml",
+      "Page": 4,
+      "URL": "Model-4.mdpuml",
+      "Rect": [
+        488.28333333333336,
+        157.65375000000003,
+        524.4112630208333,
+        169.65374999999997
+      ],
+      "Destination": "diagram-4af3158f10c7dc069ad0"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model.mdpuml",
+      "Page": 4,
+      "URL": "Model-19.mdpuml",
+      "Rect": [
+        534.6358333333334,
+        157.65375000000003,
+        576.3252864583334,
+        169.65374999999997
+      ],
+      "Destination": "diagram-f34f6e5a1856ec4858bc"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model.mdpuml",
+      "Page": 4,
+      "URL": "Model-20.mdpuml",
+      "Rect": [
+        587.3507500000001,
+        157.65375000000003,
+        629.0402031250001,
+        169.65374999999997
+      ],
+      "Destination": "diagram-93c9ea7f733293198604"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model.mdpuml",
+      "Page": 4,
+      "URL": "Model.md",
+      "Rect": [
+        251.36325000000002,
+        81.98899999999996,
+        302.58720833333336,
+        95.98899999999998
+      ],
+      "Destination": "document-cc9ef0e72b6545665f03"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.mdpuml",
+      "Page": 5,
+      "URL": "../../PrGeometry/Documents/Geometry-3.mdpuml",
+      "Rect": [
+        429.8500000000001,
+        608.9806666666668,
+        514.684,
+        652.2359166666668
+      ],
+      "Destination": "diagram-685bb3bcf4247a072a0b"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.mdpuml",
+      "Page": 5,
+      "URL": "../../PrGeometry/Documents/Geometry-1.mdpuml",
+      "Rect": [
+        429.28333333333336,
+        545.7223333333334,
+        518.5753333333334,
+        588.9775833333333
+      ],
+      "Destination": "diagram-97dcca8f2806b0b734ca"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.mdpuml",
+      "Page": 5,
+      "URL": "Model-15.mdpuml",
+      "Rect": [
+        397.3583333333333,
+        482.464,
+        513.8378333333333,
+        525.7192500000001
+      ],
+      "Destination": "diagram-c05a8518b6ac86a7431f"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.mdpuml",
+      "Page": 5,
+      "URL": "Model-3.mdpuml",
+      "Rect": [
+        321.8166666666667,
+        419.21400000000006,
+        426.0403333333333,
+        462.46925
+      ],
+      "Destination": "diagram-905fe25b9212072749c9"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.mdpuml",
+      "Page": 5,
+      "URL": "Model-5.mdpuml",
+      "Rect": [
+        241.0416666666667,
+        355.9556666666667,
+        348.4879166666667,
+        399.21091666666666
+      ],
+      "Destination": "diagram-07c57a657a044627efd5"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.mdpuml",
+      "Page": 5,
+      "URL": "Model-15.mdpuml",
+      "Rect": [
+        215.38333333333333,
+        292.7056666666665,
+        297.4748333333333,
+        335.9609166666667
+      ],
+      "Destination": "diagram-c05a8518b6ac86a7431f"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.mdpuml",
+      "Page": 5,
+      "URL": "Model.mdpuml",
+      "Rect": [
+        151.11583333333334,
+        258.70983333333334,
+        182.89154947916668,
+        272.7098333333332
+      ],
+      "Destination": "diagram-eb9d8a1a7124f74f06d7"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.mdpuml",
+      "Page": 5,
+      "URL": "Model-1.md",
+      "Rect": [
+        266.6431666666667,
+        258.70983333333334,
+        328.24066015625,
+        272.7098333333332
+      ],
+      "Destination": "document-75e8b1e65f4d1b60966a"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.mdpuml",
+      "Page": 5,
+      "URL": "Model-3.mdpuml",
+      "Rect": [
+        106.35183333333335,
+        190.80616666666668,
+        148.5010846354167,
+        204.8061666666666
+      ],
+      "Destination": "diagram-905fe25b9212072749c9"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.mdpuml",
+      "Page": 5,
+      "URL": "Model-5.mdpuml",
+      "Rect": [
+        106.35183333333335,
+        177.22541666666672,
+        148.5010846354167,
+        191.22541666666675
+      ],
+      "Destination": "diagram-07c57a657a044627efd5"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.mdpuml",
+      "Page": 5,
+      "URL": "Model-6.mdpuml",
+      "Rect": [
+        106.35183333333335,
+        163.64466666666675,
+        148.5010846354167,
+        177.64466666666664
+      ],
+      "Destination": "diagram-12cc6b0f99f860664419"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.mdpuml",
+      "Page": 5,
+      "URL": "Model-7.mdpuml",
+      "Rect": [
+        106.35183333333335,
+        150.06400000000002,
+        148.5010846354167,
+        164.0639999999999
+      ],
+      "Destination": "diagram-fc3c4550ad0630e080c3"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.mdpuml",
+      "Page": 5,
+      "URL": "Model-8.mdpuml",
+      "Rect": [
+        106.35183333333335,
+        136.48325000000003,
+        148.5010846354167,
+        150.48324999999994
+      ],
+      "Destination": "diagram-12af652b2ffa0b9831b9"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.mdpuml",
+      "Page": 5,
+      "URL": "Model-15.mdpuml",
+      "Rect": [
+        106.35183333333335,
+        122.90250000000005,
+        154.98952864583333,
+        136.90249999999995
+      ],
+      "Destination": "diagram-c05a8518b6ac86a7431f"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.mdpuml",
+      "Page": 5,
+      "URL": "../../PrGeometry/Documents/Geometry-1.mdpuml",
+      "Rect": [
+        106.35183333333335,
+        109.32175000000007,
+        167.94363020833336,
+        123.32174999999997
+      ],
+      "Destination": "diagram-97dcca8f2806b0b734ca"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.mdpuml",
+      "Page": 5,
+      "URL": "../../PrGeometry/Documents/Geometry-3.mdpuml",
+      "Rect": [
+        106.35183333333335,
+        95.74108333333334,
+        167.94363020833336,
+        109.74108333333324
+      ],
+      "Destination": "diagram-685bb3bcf4247a072a0b"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.mdpuml",
+      "Page": 5,
+      "URL": "../../PrGeometry/Documents/Geometry-4.mdpuml",
+      "Rect": [
+        106.35183333333335,
+        82.16033333333336,
+        167.94363020833336,
+        96.16033333333326
+      ],
+      "Destination": "diagram-034e344289e1869eb640"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-2.mdpuml",
+      "Page": 6,
+      "URL": "Model.mdpuml",
+      "Rect": [
+        133.25441666666666,
+        364.61333333333334,
+        165.03013281249997,
+        378.61333333333334
+      ],
+      "Destination": "diagram-eb9d8a1a7124f74f06d7"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-2.mdpuml",
+      "Page": 6,
+      "URL": "Model-2.md",
+      "Rect": [
+        248.78175,
+        364.61333333333334,
+        310.3792434895833,
+        378.61333333333334
+      ],
+      "Destination": "document-a924bf38e1e7a2949dbc"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-2.mdpuml",
+      "Page": 6,
+      "URL": "Model-3.mdpuml",
+      "Rect": [
+        88.49041666666665,
+        296.70966666666675,
+        130.63966796874996,
+        310.70966666666664
+      ],
+      "Destination": "diagram-905fe25b9212072749c9"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.mdpuml",
+      "Page": 7,
+      "URL": "Model-1.mdpuml",
+      "Rect": [
+        192.37291666666664,
+        315.78066666666666,
+        282.91491666666667,
+        359.0359166666666
+      ],
+      "Destination": "diagram-16c950948abd5f04448c"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.mdpuml",
+      "Page": 7,
+      "URL": "Model-15.mdpuml",
+      "Rect": [
+        121.07291666666664,
+        251.69733333333338,
+        237.55241666666666,
+        294.95258333333334
+      ],
+      "Destination": "diagram-c05a8518b6ac86a7431f"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.mdpuml",
+      "Page": 7,
+      "URL": "Model.mdpuml",
+      "Rect": [
+        133.25441666666666,
+        217.7015000000001,
+        165.03013281249997,
+        231.7015
+      ],
+      "Destination": "diagram-eb9d8a1a7124f74f06d7"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.mdpuml",
+      "Page": 7,
+      "URL": "Model-3.md",
+      "Rect": [
+        248.78175,
+        217.7015000000001,
+        310.3792434895833,
+        231.7015
+      ],
+      "Destination": "document-d48d89da58de8c38aff2"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.mdpuml",
+      "Page": 7,
+      "URL": "Model-1.mdpuml",
+      "Rect": [
+        88.49041666666665,
+        149.79783333333347,
+        130.63966796874996,
+        163.79783333333347
+      ],
+      "Destination": "diagram-16c950948abd5f04448c"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.mdpuml",
+      "Page": 7,
+      "URL": "Model-2.mdpuml",
+      "Rect": [
+        88.49041666666665,
+        136.21708333333333,
+        130.63966796874996,
+        150.2170833333334
+      ],
+      "Destination": "diagram-edb92db734c76a8b3ee5"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.mdpuml",
+      "Page": 7,
+      "URL": "Model-6.mdpuml",
+      "Rect": [
+        88.49041666666665,
+        122.63633333333337,
+        130.63966796874996,
+        136.63633333333325
+      ],
+      "Destination": "diagram-12cc6b0f99f860664419"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.mdpuml",
+      "Page": 7,
+      "URL": "Model-14.mdpuml",
+      "Rect": [
+        88.49041666666665,
+        109.05566666666664,
+        137.12811197916665,
+        123.05566666666654
+      ],
+      "Destination": "diagram-300e6859ba25b9f402ec"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.mdpuml",
+      "Page": 7,
+      "URL": "Model-15.mdpuml",
+      "Rect": [
+        88.49041666666665,
+        95.47491666666679,
+        137.12811197916665,
+        109.47491666666681
+      ],
+      "Destination": "diagram-c05a8518b6ac86a7431f"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.mdpuml",
+      "Page": 7,
+      "URL": "../../PrGeometry/Documents/Geometry-4.mdpuml",
+      "Rect": [
+        88.49041666666665,
+        81.89416666666668,
+        150.08221354166665,
+        95.8941666666667
+      ],
+      "Destination": "diagram-034e344289e1869eb640"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-4.mdpuml",
+      "Page": 8,
+      "URL": "Model.mdpuml",
+      "Rect": [
+        133.25441666666666,
+        293.1237500000001,
+        165.03013281249997,
+        307.12375000000003
+      ],
+      "Destination": "diagram-eb9d8a1a7124f74f06d7"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-4.mdpuml",
+      "Page": 8,
+      "URL": "Model-4.md",
+      "Rect": [
+        248.78175,
+        293.1237500000001,
+        310.3792434895833,
+        307.12375000000003
+      ],
+      "Destination": "document-0591da79d2c9c4218579"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-4.mdpuml",
+      "Page": 8,
+      "URL": "Model-1.mdpuml",
+      "Rect": [
+        88.49041666666665,
+        225.22008333333335,
+        130.63966796874996,
+        239.22008333333332
+      ],
+      "Destination": "diagram-16c950948abd5f04448c"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-4.mdpuml",
+      "Page": 8,
+      "URL": "Model-15.mdpuml",
+      "Rect": [
+        88.49041666666665,
+        211.63941666666673,
+        137.12811197916665,
+        225.63941666666665
+      ],
+      "Destination": "diagram-c05a8518b6ac86a7431f"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-5.mdpuml",
+      "Page": 9,
+      "URL": "Model-16.mdpuml",
+      "Rect": [
+        303.2916666666667,
+        754.5556666666668,
+        385.3831666666666,
+        797.8109166666667
+      ],
+      "Destination": "diagram-67ea32eb2d22f0843fe9"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-5.mdpuml",
+      "Page": 9,
+      "URL": "Model-1.mdpuml",
+      "Rect": [
+        303.2916666666667,
+        690.464,
+        385.3831666666666,
+        733.71925
+      ],
+      "Destination": "diagram-16c950948abd5f04448c"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-5.mdpuml",
+      "Page": 9,
+      "URL": "Model-15.mdpuml",
+      "Rect": [
+        270.8416666666667,
+        626.3806666666668,
+        402.81916666666666,
+        669.6359166666667
+      ],
+      "Destination": "diagram-c05a8518b6ac86a7431f"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-5.mdpuml",
+      "Page": 9,
+      "URL": "Model-17.mdpuml",
+      "Rect": [
+        217.2,
+        562.289,
+        304.79275,
+        605.54425
+      ],
+      "Destination": "diagram-e0e241eee43046828a79"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-5.mdpuml",
+      "Page": 9,
+      "URL": "Model-3.mdpuml",
+      "Rect": [
+        217.225,
+        498.1973333333333,
+        321.4486666666667,
+        541.4525833333335
+      ],
+      "Destination": "diagram-905fe25b9212072749c9"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-5.mdpuml",
+      "Page": 9,
+      "URL": "Model-15.mdpuml",
+      "Rect": [
+        222.45833333333334,
+        434.114,
+        304.5498333333333,
+        477.36924999999997
+      ],
+      "Destination": "diagram-c05a8518b6ac86a7431f"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-5.mdpuml",
+      "Page": 9,
+      "URL": "Model-15.mdpuml",
+      "Rect": [
+        219.04166666666669,
+        370.0223333333332,
+        307.95283333333333,
+        413.27758333333327
+      ],
+      "Destination": "diagram-c05a8518b6ac86a7431f"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-5.mdpuml",
+      "Page": 9,
+      "URL": "Model-15.mdpuml",
+      "Rect": [
+        162.45833333333334,
+        305.9389999999999,
+        244.5498333333333,
+        349.1942500000001
+      ],
+      "Destination": "diagram-c05a8518b6ac86a7431f"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-5.mdpuml",
+      "Page": 9,
+      "URL": "Model.mdpuml",
+      "Rect": [
+        191.9465,
+        271.9431666666668,
+        223.72221614583333,
+        285.9431666666667
+      ],
+      "Destination": "diagram-eb9d8a1a7124f74f06d7"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-5.mdpuml",
+      "Page": 9,
+      "URL": "Model-5.md",
+      "Rect": [
+        307.47383333333335,
+        271.9431666666668,
+        369.0713268229167,
+        285.9431666666667
+      ],
+      "Destination": "document-f8f6459f3017645c21d5"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-5.mdpuml",
+      "Page": 9,
+      "URL": "Model-1.mdpuml",
+      "Rect": [
+        147.1825,
+        204.03950000000012,
+        189.33175130208335,
+        218.03950000000003
+      ],
+      "Destination": "diagram-16c950948abd5f04448c"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-5.mdpuml",
+      "Page": 9,
+      "URL": "Model-3.mdpuml",
+      "Rect": [
+        147.1825,
+        190.4587499999999,
+        189.33175130208335,
+        204.45875000000004
+      ],
+      "Destination": "diagram-905fe25b9212072749c9"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-5.mdpuml",
+      "Page": 9,
+      "URL": "Model-6.mdpuml",
+      "Rect": [
+        147.1825,
+        176.8779999999999,
+        189.33175130208335,
+        190.87799999999982
+      ],
+      "Destination": "diagram-12cc6b0f99f860664419"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-5.mdpuml",
+      "Page": 9,
+      "URL": "Model-7.mdpuml",
+      "Rect": [
+        147.1825,
+        163.29733333333343,
+        189.33175130208335,
+        177.29733333333334
+      ],
+      "Destination": "diagram-fc3c4550ad0630e080c3"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-5.mdpuml",
+      "Page": 9,
+      "URL": "Model-8.mdpuml",
+      "Rect": [
+        147.1825,
+        149.71658333333346,
+        189.33175130208335,
+        163.71658333333335
+      ],
+      "Destination": "diagram-12af652b2ffa0b9831b9"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-5.mdpuml",
+      "Page": 9,
+      "URL": "Model-15.mdpuml",
+      "Rect": [
+        147.1825,
+        136.1358333333332,
+        195.82019531250003,
+        150.13583333333338
+      ],
+      "Destination": "diagram-c05a8518b6ac86a7431f"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-5.mdpuml",
+      "Page": 9,
+      "URL": "Model-15.mdpuml",
+      "Rect": [
+        147.1825,
+        122.55508333333324,
+        195.82019531250003,
+        136.55508333333313
+      ],
+      "Destination": "diagram-c05a8518b6ac86a7431f"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-5.mdpuml",
+      "Page": 9,
+      "URL": "Model-16.mdpuml",
+      "Rect": [
+        147.1825,
+        108.97441666666677,
+        195.82019531250003,
+        122.97441666666666
+      ],
+      "Destination": "diagram-67ea32eb2d22f0843fe9"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-5.mdpuml",
+      "Page": 9,
+      "URL": "Model-17.mdpuml",
+      "Rect": [
+        147.1825,
+        95.39366666666677,
+        195.82019531250003,
+        109.39366666666669
+      ],
+      "Destination": "diagram-e0e241eee43046828a79"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-5.mdpuml",
+      "Page": 9,
+      "URL": "../../PrGeometry/Documents/Geometry-4.mdpuml",
+      "Rect": [
+        147.1825,
+        81.81291666666655,
+        208.77429687500003,
+        95.8129166666667
+      ],
+      "Destination": "diagram-034e344289e1869eb640"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.mdpuml",
+      "Page": 10,
+      "URL": "Model-16.mdpuml",
+      "Rect": [
+        264.46141666666665,
+        380.2056666666666,
+        346.55291666666665,
+        423.4609166666667
+      ],
+      "Destination": "diagram-67ea32eb2d22f0843fe9"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.mdpuml",
+      "Page": 10,
+      "URL": "Model-7.mdpuml",
+      "Rect": [
+        232.79475,
+        316.1139999999999,
+        314.88624999999996,
+        359.36925000000014
+      ],
+      "Destination": "diagram-fc3c4550ad0630e080c3"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.mdpuml",
+      "Page": 10,
+      "URL": "Model-3.mdpuml",
+      "Rect": [
+        167.56141666666662,
+        252.03066666666666,
+        271.7850833333333,
+        295.2859166666666
+      ],
+      "Destination": "diagram-905fe25b9212072749c9"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.mdpuml",
+      "Page": 10,
+      "URL": "Model.mdpuml",
+      "Rect": [
+        133.25441666666666,
+        218.03483333333338,
+        165.03013281249997,
+        232.0348333333334
+      ],
+      "Destination": "diagram-eb9d8a1a7124f74f06d7"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.mdpuml",
+      "Page": 10,
+      "URL": "Model-6.md",
+      "Rect": [
+        248.78175,
+        218.03483333333338,
+        310.3792434895833,
+        232.0348333333334
+      ],
+      "Destination": "document-6d4d99095c2b5c8665d2"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.mdpuml",
+      "Page": 10,
+      "URL": "Model-3.mdpuml",
+      "Rect": [
+        88.49041666666665,
+        150.13116666666662,
+        130.63966796874996,
+        164.13116666666664
+      ],
+      "Destination": "diagram-905fe25b9212072749c9"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.mdpuml",
+      "Page": 10,
+      "URL": "Model-5.mdpuml",
+      "Rect": [
+        88.49041666666665,
+        136.55041666666665,
+        130.63966796874996,
+        150.55041666666654
+      ],
+      "Destination": "diagram-07c57a657a044627efd5"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.mdpuml",
+      "Page": 10,
+      "URL": "Model-7.mdpuml",
+      "Rect": [
+        88.49041666666665,
+        122.96966666666678,
+        130.63966796874996,
+        136.9696666666668
+      ],
+      "Destination": "diagram-fc3c4550ad0630e080c3"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.mdpuml",
+      "Page": 10,
+      "URL": "Model-8.mdpuml",
+      "Rect": [
+        88.49041666666665,
+        109.38900000000005,
+        130.63966796874996,
+        123.38900000000008
+      ],
+      "Destination": "diagram-12af652b2ffa0b9831b9"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.mdpuml",
+      "Page": 10,
+      "URL": "Model-16.mdpuml",
+      "Rect": [
+        88.49041666666665,
+        95.80824999999994,
+        137.12811197916665,
+        109.80824999999997
+      ],
+      "Destination": "diagram-67ea32eb2d22f0843fe9"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.mdpuml",
+      "Page": 10,
+      "URL": "../../PrGeometry/Documents/Geometry-4.mdpuml",
+      "Rect": [
+        88.49041666666665,
+        82.22749999999996,
+        150.08221354166665,
+        96.22749999999986
+      ],
+      "Destination": "diagram-034e344289e1869eb640"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-7.mdpuml",
+      "Page": 11,
+      "URL": "Model-17.mdpuml",
+      "Rect": [
+        490.5333333333334,
+        572.264,
+        578.1260833333334,
+        615.51925
+      ],
+      "Destination": "diagram-e0e241eee43046828a79"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-7.mdpuml",
+      "Page": 11,
+      "URL": "Model-1.mdpuml",
+      "Rect": [
+        493.2916666666667,
+        508.17233333333337,
+        575.3831666666667,
+        551.4275833333334
+      ],
+      "Destination": "diagram-16c950948abd5f04448c"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-7.mdpuml",
+      "Page": 11,
+      "URL": "Model-1.mdpuml",
+      "Rect": [
+        322.625,
+        444.0806666666667,
+        406.0380833333333,
+        487.33591666666666
+      ],
+      "Destination": "diagram-16c950948abd5f04448c"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-7.mdpuml",
+      "Page": 11,
+      "URL": "Model-5.mdpuml",
+      "Rect": [
+        192.62499999999997,
+        379.99733333333313,
+        276.03808333333336,
+        423.25258333333335
+      ],
+      "Destination": "diagram-07c57a657a044627efd5"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-7.mdpuml",
+      "Page": 11,
+      "URL": "Model-15.mdpuml",
+      "Rect": [
+        254.875,
+        315.9056666666666,
+        343.78616666666665,
+        359.1609166666668
+      ],
+      "Destination": "diagram-c05a8518b6ac86a7431f"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-7.mdpuml",
+      "Page": 11,
+      "URL": "Model-1.mdpuml",
+      "Rect": [
+        318.40000000000003,
+        251.82233333333332,
+        410.26033333333334,
+        295.0775833333333
+      ],
+      "Destination": "diagram-16c950948abd5f04448c"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-7.mdpuml",
+      "Page": 11,
+      "URL": "Model.mdpuml",
+      "Rect": [
+        164.39558333333335,
+        217.82650000000007,
+        196.1712994791667,
+        231.8265000000001
+      ],
+      "Destination": "diagram-eb9d8a1a7124f74f06d7"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-7.mdpuml",
+      "Page": 11,
+      "URL": "Model-7.md",
+      "Rect": [
+        279.92291666666665,
+        217.82650000000007,
+        341.52041015625,
+        231.8265000000001
+      ],
+      "Destination": "document-5c3458ed696ef57b92e9"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-7.mdpuml",
+      "Page": 11,
+      "URL": "Model-1.mdpuml",
+      "Rect": [
+        119.63158333333334,
+        149.9228333333333,
+        161.78083463541668,
+        163.9228333333333
+      ],
+      "Destination": "diagram-16c950948abd5f04448c"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-7.mdpuml",
+      "Page": 11,
+      "URL": "Model-5.mdpuml",
+      "Rect": [
+        119.63158333333334,
+        136.3420833333333,
+        161.78083463541668,
+        150.34208333333322
+      ],
+      "Destination": "diagram-07c57a657a044627efd5"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-7.mdpuml",
+      "Page": 11,
+      "URL": "Model-8.mdpuml",
+      "Rect": [
+        119.63158333333334,
+        122.76133333333345,
+        161.78083463541668,
+        136.76133333333348
+      ],
+      "Destination": "diagram-12af652b2ffa0b9831b9"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-7.mdpuml",
+      "Page": 11,
+      "URL": "Model-15.mdpuml",
+      "Rect": [
+        119.63158333333334,
+        109.18066666666658,
+        168.26927864583334,
+        123.18066666666674
+      ],
+      "Destination": "diagram-c05a8518b6ac86a7431f"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-7.mdpuml",
+      "Page": 11,
+      "URL": "Model-17.mdpuml",
+      "Rect": [
+        119.63158333333334,
+        95.59991666666662,
+        168.26927864583334,
+        109.5999166666665
+      ],
+      "Destination": "diagram-e0e241eee43046828a79"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-7.mdpuml",
+      "Page": 11,
+      "URL": "../../PrGeometry/Documents/Geometry-4.mdpuml",
+      "Rect": [
+        119.63158333333334,
+        82.01916666666664,
+        181.22338020833334,
+        96.01916666666654
+      ],
+      "Destination": "diagram-034e344289e1869eb640"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-8.mdpuml",
+      "Page": 12,
+      "URL": "Model-17.mdpuml",
+      "Rect": [
+        207.10833333333335,
+        427.96400000000017,
+        294.7010833333334,
+        471.2192500000001
+      ],
+      "Destination": "diagram-e0e241eee43046828a79"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-8.mdpuml",
+      "Page": 12,
+      "URL": "Model-15.mdpuml",
+      "Rect": [
+        209.85833333333335,
+        364.71400000000017,
+        291.94983333333334,
+        407.96925000000016
+      ],
+      "Destination": "diagram-c05a8518b6ac86a7431f"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-8.mdpuml",
+      "Page": 12,
+      "URL": "Model-7.mdpuml",
+      "Rect": [
+        427.3583333333333,
+        301.45566666666673,
+        509.4498333333334,
+        344.71091666666683
+      ],
+      "Destination": "diagram-fc3c4550ad0630e080c3"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-8.mdpuml",
+      "Page": 12,
+      "URL": "Model-7.mdpuml",
+      "Rect": [
+        427.3583333333333,
+        238.2056666666668,
+        509.4498333333334,
+        281.4609166666668
+      ],
+      "Destination": "diagram-fc3c4550ad0630e080c3"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-8.mdpuml",
+      "Page": 12,
+      "URL": "Model.mdpuml",
+      "Rect": [
+        141.84558333333334,
+        204.2098333333335,
+        173.62129947916668,
+        218.2098333333334
+      ],
+      "Destination": "diagram-eb9d8a1a7124f74f06d7"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-8.mdpuml",
+      "Page": 12,
+      "URL": "Model-8.md",
+      "Rect": [
+        257.37291666666664,
+        204.2098333333335,
+        318.97041015624995,
+        218.2098333333334
+      ],
+      "Destination": "document-1e781788006acf2e9da6"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-8.mdpuml",
+      "Page": 12,
+      "URL": "Model-1.mdpuml",
+      "Rect": [
+        97.08158333333333,
+        136.30616666666685,
+        139.23083463541667,
+        150.30616666666674
+      ],
+      "Destination": "diagram-16c950948abd5f04448c"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-8.mdpuml",
+      "Page": 12,
+      "URL": "Model-7.mdpuml",
+      "Rect": [
+        97.08158333333333,
+        122.72541666666687,
+        139.23083463541667,
+        136.72541666666677
+      ],
+      "Destination": "diagram-fc3c4550ad0630e080c3"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-8.mdpuml",
+      "Page": 12,
+      "URL": "Model-15.mdpuml",
+      "Rect": [
+        97.08158333333333,
+        109.14466666666678,
+        145.71927864583333,
+        123.1446666666668
+      ],
+      "Destination": "diagram-c05a8518b6ac86a7431f"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-8.mdpuml",
+      "Page": 12,
+      "URL": "Model-17.mdpuml",
+      "Rect": [
+        97.08158333333333,
+        95.56400000000016,
+        145.71927864583333,
+        109.56400000000019
+      ],
+      "Destination": "diagram-e0e241eee43046828a79"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-8.mdpuml",
+      "Page": 12,
+      "URL": "../../PrGeometry/Documents/Geometry-4.mdpuml",
+      "Rect": [
+        97.08158333333333,
+        81.9832500000002,
+        158.67338020833333,
+        95.98325000000008
+      ],
+      "Destination": "diagram-034e344289e1869eb640"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-9.mdpuml",
+      "Page": 13,
+      "URL": "Model-7.mdpuml",
+      "Rect": [
+        253.39533333333333,
+        622.779,
+        335.4868333333334,
+        666.0342499999999
+      ],
+      "Destination": "diagram-fc3c4550ad0630e080c3"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-9.mdpuml",
+      "Page": 13,
+      "URL": "Model.mdpuml",
+      "Rect": [
+        133.25441666666666,
+        588.7831666666666,
+        165.03013281249997,
+        602.7831666666666
+      ],
+      "Destination": "diagram-eb9d8a1a7124f74f06d7"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-9.mdpuml",
+      "Page": 13,
+      "URL": "Model-9.md",
+      "Rect": [
+        248.78175,
+        588.7831666666666,
+        310.3792434895833,
+        602.7831666666666
+      ],
+      "Destination": "document-8fefe29a8513bac0b45f"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-9.mdpuml",
+      "Page": 13,
+      "URL": "Model-7.mdpuml",
+      "Rect": [
+        88.49041666666665,
+        520.8795,
+        130.63966796874996,
+        534.8795
+      ],
+      "Destination": "diagram-fc3c4550ad0630e080c3"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-9.mdpuml",
+      "Page": 13,
+      "URL": "Model-8.mdpuml",
+      "Rect": [
+        88.49041666666665,
+        507.29875,
+        130.63966796874996,
+        521.2987499999999
+      ],
+      "Destination": "diagram-12af652b2ffa0b9831b9"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-10.mdpuml",
+      "Page": 14,
+      "URL": "Model-2.mdpuml",
+      "Rect": [
+        269.75016666666664,
+        336.1789999999999,
+        383.28533333333337,
+        379.4342499999999
+      ],
+      "Destination": "diagram-edb92db734c76a8b3ee5"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-10.mdpuml",
+      "Page": 14,
+      "URL": "Model-2.mdpuml",
+      "Rect": [
+        168.65016666666665,
+        272.92899999999986,
+        261.0525,
+        316.1842499999999
+      ],
+      "Destination": "diagram-edb92db734c76a8b3ee5"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-10.mdpuml",
+      "Page": 14,
+      "URL": "Model.mdpuml",
+      "Rect": [
+        133.25441666666666,
+        238.93316666666664,
+        165.03013281249997,
+        252.93316666666658
+      ],
+      "Destination": "diagram-eb9d8a1a7124f74f06d7"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-10.mdpuml",
+      "Page": 14,
+      "URL": "Model-10.md",
+      "Rect": [
+        248.78175,
+        238.93316666666664,
+        316.8676875,
+        252.93316666666658
+      ],
+      "Destination": "document-44c1a640824c878e2711"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-10.mdpuml",
+      "Page": 14,
+      "URL": "Model-2.mdpuml",
+      "Rect": [
+        88.49041666666665,
+        171.02949999999998,
+        130.63966796874996,
+        185.02949999999998
+      ],
+      "Destination": "diagram-edb92db734c76a8b3ee5"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-11.mdpuml",
+      "Page": 15,
+      "URL": "Model-2.mdpuml",
+      "Rect": [
+        313.0176666666666,
+        397.7706666666666,
+        405.41999999999996,
+        441.0259166666666
+      ],
+      "Destination": "diagram-edb92db734c76a8b3ee5"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-11.mdpuml",
+      "Page": 15,
+      "URL": "Model-2.mdpuml",
+      "Rect": [
+        273.40099999999995,
+        334.52066666666656,
+        360.03183333333334,
+        377.77591666666655
+      ],
+      "Destination": "diagram-edb92db734c76a8b3ee5"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-11.mdpuml",
+      "Page": 15,
+      "URL": "Model.mdpuml",
+      "Rect": [
+        133.25441666666666,
+        300.52483333333333,
+        165.03013281249997,
+        314.5248333333333
+      ],
+      "Destination": "diagram-eb9d8a1a7124f74f06d7"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-11.mdpuml",
+      "Page": 15,
+      "URL": "Model-11.md",
+      "Rect": [
+        248.78175,
+        300.52483333333333,
+        316.8676875,
+        314.5248333333333
+      ],
+      "Destination": "document-7913f0564c4224d93a68"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-11.mdpuml",
+      "Page": 15,
+      "URL": "Model-2.mdpuml",
+      "Rect": [
+        88.49041666666665,
+        232.62116666666662,
+        130.63966796874996,
+        246.62116666666657
+      ],
+      "Destination": "diagram-edb92db734c76a8b3ee5"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-12.mdpuml",
+      "Page": 16,
+      "URL": "Model-2.mdpuml",
+      "Rect": [
+        328.70266666666663,
+        391.1039999999999,
+        415.33349999999996,
+        434.3592499999999
+      ],
+      "Destination": "diagram-edb92db734c76a8b3ee5"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-12.mdpuml",
+      "Page": 16,
+      "URL": "Model-2.mdpuml",
+      "Rect": [
+        185.8193333333333,
+        327.85399999999987,
+        278.2216666666667,
+        371.10924999999986
+      ],
+      "Destination": "diagram-edb92db734c76a8b3ee5"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-12.mdpuml",
+      "Page": 16,
+      "URL": "Model.mdpuml",
+      "Rect": [
+        133.25441666666666,
+        293.85816666666665,
+        165.03013281249997,
+        307.85816666666665
+      ],
+      "Destination": "diagram-eb9d8a1a7124f74f06d7"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-12.mdpuml",
+      "Page": 16,
+      "URL": "Model-12.md",
+      "Rect": [
+        248.78175,
+        293.85816666666665,
+        316.8676875,
+        307.85816666666665
+      ],
+      "Destination": "document-b9a7e7b2663bdc955dba"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-12.mdpuml",
+      "Page": 16,
+      "URL": "Model-2.mdpuml",
+      "Rect": [
+        88.49041666666665,
+        225.95449999999994,
+        130.63966796874996,
+        239.9544999999999
+      ],
+      "Destination": "diagram-edb92db734c76a8b3ee5"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-12.mdpuml",
+      "Page": 16,
+      "URL": "Model-15.mdpuml",
+      "Rect": [
+        88.49041666666665,
+        212.37374999999997,
+        137.12811197916665,
+        226.37374999999997
+      ],
+      "Destination": "diagram-c05a8518b6ac86a7431f"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-13.mdpuml",
+      "Page": 17,
+      "URL": "Model.mdpuml",
+      "Rect": [
+        133.25441666666666,
+        652.8654166666666,
+        165.03013281249997,
+        666.8654166666668
+      ],
+      "Destination": "diagram-eb9d8a1a7124f74f06d7"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-13.mdpuml",
+      "Page": 17,
+      "URL": "Model-13.md",
+      "Rect": [
+        248.78175,
+        652.8654166666666,
+        316.8676875,
+        666.8654166666668
+      ],
+      "Destination": "document-5ea29e42d8c5159a20f4"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-14.mdpuml",
+      "Page": 18,
+      "URL": "Model-14.mdpuml",
+      "Rect": [
+        475.4077500000001,
+        573.3520833333332,
+        517.0972031250001,
+        585.3520833333332
+      ],
+      "Destination": "diagram-300e6859ba25b9f402ec"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-14.mdpuml",
+      "Page": 18,
+      "URL": "Model-15.mdpuml",
+      "Rect": [
+        528.1225833333333,
+        573.3520833333332,
+        569.8120364583334,
+        585.3520833333332
+      ],
+      "Destination": "diagram-c05a8518b6ac86a7431f"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-14.mdpuml",
+      "Page": 18,
+      "URL": "Model.mdpuml",
+      "Rect": [
+        153.2189166666667,
+        381.82374999999996,
+        184.99463281250002,
+        395.8237499999999
+      ],
+      "Destination": "diagram-eb9d8a1a7124f74f06d7"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-14.mdpuml",
+      "Page": 18,
+      "URL": "Model-14.md",
+      "Rect": [
+        268.74625000000003,
+        381.82374999999996,
+        336.83218750000003,
+        395.8237499999999
+      ],
+      "Destination": "document-e37ea26f6365d0183a71"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-14.mdpuml",
+      "Page": 18,
+      "URL": "Model-1.mdpuml",
+      "Rect": [
+        108.45491666666666,
+        313.9200833333333,
+        150.60416796875,
+        327.9200833333333
+      ],
+      "Destination": "diagram-16c950948abd5f04448c"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-14.mdpuml",
+      "Page": 18,
+      "URL": "Model-5.mdpuml",
+      "Rect": [
+        108.45491666666666,
+        300.3394166666666,
+        150.60416796875,
+        314.3394166666666
+      ],
+      "Destination": "diagram-07c57a657a044627efd5"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-14.mdpuml",
+      "Page": 18,
+      "URL": "Model-6.mdpuml",
+      "Rect": [
+        108.45491666666666,
+        286.7586666666666,
+        150.60416796875,
+        300.7586666666666
+      ],
+      "Destination": "diagram-12cc6b0f99f860664419"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-14.mdpuml",
+      "Page": 18,
+      "URL": "Model-7.mdpuml",
+      "Rect": [
+        108.45491666666666,
+        273.17791666666665,
+        150.60416796875,
+        287.17791666666653
+      ],
+      "Destination": "diagram-fc3c4550ad0630e080c3"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-14.mdpuml",
+      "Page": 18,
+      "URL": "Model-8.mdpuml",
+      "Rect": [
+        108.45491666666666,
+        259.5971666666666,
+        150.60416796875,
+        273.5971666666666
+      ],
+      "Destination": "diagram-12af652b2ffa0b9831b9"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-14.mdpuml",
+      "Page": 18,
+      "URL": "Model-16.mdpuml",
+      "Rect": [
+        108.45491666666666,
+        246.01649999999992,
+        157.09261197916666,
+        260.0164999999999
+      ],
+      "Destination": "diagram-67ea32eb2d22f0843fe9"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-14.mdpuml",
+      "Page": 18,
+      "URL": "../../PrGeometry/Documents/Geometry-4.mdpuml",
+      "Rect": [
+        108.45491666666666,
+        232.43574999999993,
+        170.04671354166666,
+        246.43574999999996
+      ],
+      "Destination": "diagram-034e344289e1869eb640"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-15.mdpuml",
+      "Page": 19,
+      "URL": "Model-14.mdpuml",
+      "Rect": [
+        391.2515833333333,
+        907.0287500000001,
+        432.9410364583333,
+        919.0287500000001
+      ],
+      "Destination": "diagram-300e6859ba25b9f402ec"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-15.mdpuml",
+      "Page": 19,
+      "URL": "Model-15.mdpuml",
+      "Rect": [
+        443.96641666666665,
+        907.0287500000001,
+        485.65586979166665,
+        919.0287500000001
+      ],
+      "Destination": "diagram-c05a8518b6ac86a7431f"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-15.mdpuml",
+      "Page": 19,
+      "URL": "Model-1.mdpuml",
+      "Rect": [
+        192.27716666666663,
+        377.99733333333336,
+        282.81916666666666,
+        421.2525833333333
+      ],
+      "Destination": "diagram-16c950948abd5f04448c"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-15.mdpuml",
+      "Page": 19,
+      "URL": "../../PrGeometry/Documents/Geometry-1.mdpuml",
+      "Rect": [
+        303.7355,
+        314.739,
+        393.02750000000003,
+        357.99424999999997
+      ],
+      "Destination": "diagram-97dcca8f2806b0b734ca"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-15.mdpuml",
+      "Page": 19,
+      "URL": "Model-3.mdpuml",
+      "Rect": [
+        341.50216666666665,
+        251.48900000000003,
+        423.59366666666665,
+        294.74424999999997
+      ],
+      "Destination": "diagram-905fe25b9212072749c9"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-15.mdpuml",
+      "Page": 19,
+      "URL": "Model.mdpuml",
+      "Rect": [
+        133.25441666666666,
+        217.49316666666678,
+        165.03013281249997,
+        231.49316666666667
+      ],
+      "Destination": "diagram-eb9d8a1a7124f74f06d7"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-15.mdpuml",
+      "Page": 19,
+      "URL": "Model-15.md",
+      "Rect": [
+        248.78175,
+        217.49316666666678,
+        316.8676875,
+        231.49316666666667
+      ],
+      "Destination": "document-9998fbbc982f433542a5"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-15.mdpuml",
+      "Page": 19,
+      "URL": "Model-1.mdpuml",
+      "Rect": [
+        88.49041666666665,
+        149.5895,
+        130.63966796874996,
+        163.58950000000004
+      ],
+      "Destination": "diagram-16c950948abd5f04448c"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-15.mdpuml",
+      "Page": 19,
+      "URL": "Model-3.mdpuml",
+      "Rect": [
+        88.49041666666665,
+        136.00875000000002,
+        130.63966796874996,
+        150.00875000000005
+      ],
+      "Destination": "diagram-905fe25b9212072749c9"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-15.mdpuml",
+      "Page": 19,
+      "URL": "Model-6.mdpuml",
+      "Rect": [
+        88.49041666666665,
+        122.42800000000004,
+        130.63966796874996,
+        136.42799999999994
+      ],
+      "Destination": "diagram-12cc6b0f99f860664419"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-15.mdpuml",
+      "Page": 19,
+      "URL": "../../PrGeometry/Documents/Geometry-1.mdpuml",
+      "Rect": [
+        88.49041666666665,
+        108.84733333333331,
+        150.08221354166665,
+        122.84733333333321
+      ],
+      "Destination": "diagram-97dcca8f2806b0b734ca"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-15.mdpuml",
+      "Page": 19,
+      "URL": "../../PrGeometry/Documents/Geometry-4.mdpuml",
+      "Rect": [
+        88.49041666666665,
+        95.26658333333346,
+        150.08221354166665,
+        109.26658333333347
+      ],
+      "Destination": "diagram-034e344289e1869eb640"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-15.mdpuml",
+      "Page": 19,
+      "URL": "../../PrGeometry/Documents/Geometry-5.mdpuml",
+      "Rect": [
+        88.49041666666665,
+        81.68583333333335,
+        150.08221354166665,
+        95.68583333333338
+      ],
+      "Destination": "diagram-8ed1301c20d664163896"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.mdpuml",
+      "Page": 20,
+      "URL": "Model-3.mdpuml",
+      "Rect": [
+        253.3970833333333,
+        225.08066666666667,
+        335.4885833333333,
+        268.33591666666666
+      ],
+      "Destination": "diagram-905fe25b9212072749c9"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.mdpuml",
+      "Page": 20,
+      "URL": "Model.mdpuml",
+      "Rect": [
+        133.25441666666666,
+        191.0848333333334,
+        165.03013281249997,
+        205.08483333333328
+      ],
+      "Destination": "diagram-eb9d8a1a7124f74f06d7"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.mdpuml",
+      "Page": 20,
+      "URL": "Model-16.md",
+      "Rect": [
+        248.78175,
+        191.0848333333334,
+        316.8676875,
+        205.08483333333328
+      ],
+      "Destination": "document-d5df41557a138c0df9db"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.mdpuml",
+      "Page": 20,
+      "URL": "Model-3.mdpuml",
+      "Rect": [
+        88.49041666666665,
+        123.18116666666674,
+        130.63966796874996,
+        137.18116666666663
+      ],
+      "Destination": "diagram-905fe25b9212072749c9"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.mdpuml",
+      "Page": 20,
+      "URL": "Model-6.mdpuml",
+      "Rect": [
+        88.49041666666665,
+        109.60041666666677,
+        130.63966796874996,
+        123.60041666666666
+      ],
+      "Destination": "diagram-12cc6b0f99f860664419"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.mdpuml",
+      "Page": 20,
+      "URL": "Model-18.mdpuml",
+      "Rect": [
+        88.49041666666665,
+        96.01966666666667,
+        137.12811197916665,
+        110.01966666666668
+      ],
+      "Destination": "diagram-eb2e2ad238fb5633f25f"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.mdpuml",
+      "Page": 20,
+      "URL": "../../PrGeometry/Documents/Geometry-4.mdpuml",
+      "Rect": [
+        88.49041666666665,
+        82.43900000000005,
+        150.08221354166665,
+        96.43900000000008
+      ],
+      "Destination": "diagram-034e344289e1869eb640"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.mdpuml",
+      "Page": 21,
+      "URL": "Model-1.mdpuml",
+      "Rect": [
+        379.36666666666673,
+        427.6473333333334,
+        469.90866666666676,
+        470.9025833333334
+      ],
+      "Destination": "diagram-16c950948abd5f04448c"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.mdpuml",
+      "Page": 21,
+      "URL": "Model-14.mdpuml",
+      "Rect": [
+        362.6,
+        364.39733333333345,
+        486.67224999999996,
+        407.65258333333344
+      ],
+      "Destination": "diagram-300e6859ba25b9f402ec"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.mdpuml",
+      "Page": 21,
+      "URL": "Model-3.mdpuml",
+      "Rect": [
+        249.425,
+        301.139,
+        331.5165,
+        344.39425000000006
+      ],
+      "Destination": "diagram-905fe25b9212072749c9"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.mdpuml",
+      "Page": 21,
+      "URL": "Model-3.mdpuml",
+      "Rect": [
+        180.89166666666668,
+        237.8889999999999,
+        263.38191666666665,
+        281.14425
+      ],
+      "Destination": "diagram-905fe25b9212072749c9"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.mdpuml",
+      "Page": 21,
+      "URL": "Model.mdpuml",
+      "Rect": [
+        144.1465,
+        203.89316666666664,
+        175.92221614583335,
+        217.89316666666667
+      ],
+      "Destination": "diagram-eb9d8a1a7124f74f06d7"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.mdpuml",
+      "Page": 21,
+      "URL": "Model-17.md",
+      "Rect": [
+        259.67391666666674,
+        203.89316666666664,
+        327.7598541666667,
+        217.89316666666667
+      ],
+      "Destination": "document-a884b18634cbd8497976"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.mdpuml",
+      "Page": 21,
+      "URL": "Model-1.mdpuml",
+      "Rect": [
+        99.3825,
+        135.9895,
+        141.53175130208336,
+        149.9894999999999
+      ],
+      "Destination": "diagram-16c950948abd5f04448c"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.mdpuml",
+      "Page": 21,
+      "URL": "Model-3.mdpuml",
+      "Rect": [
+        99.3825,
+        122.40875000000014,
+        141.53175130208336,
+        136.40875000000017
+      ],
+      "Destination": "diagram-905fe25b9212072749c9"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.mdpuml",
+      "Page": 21,
+      "URL": "Model-6.mdpuml",
+      "Rect": [
+        99.3825,
+        108.82800000000003,
+        141.53175130208336,
+        122.82800000000006
+      ],
+      "Destination": "diagram-12cc6b0f99f860664419"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.mdpuml",
+      "Page": 21,
+      "URL": "Model-14.mdpuml",
+      "Rect": [
+        99.3825,
+        95.2473333333333,
+        148.0201953125,
+        109.24733333333333
+      ],
+      "Destination": "diagram-300e6859ba25b9f402ec"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.mdpuml",
+      "Page": 21,
+      "URL": "Model-15.mdpuml",
+      "Rect": [
+        99.3825,
+        81.66658333333332,
+        148.0201953125,
+        95.66658333333322
+      ],
+      "Destination": "diagram-c05a8518b6ac86a7431f"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-18.mdpuml",
+      "Page": 22,
+      "URL": "Model-16.mdpuml",
+      "Rect": [
+        245.72133333333332,
+        274.8639999999999,
+        383.7779999999999,
+        318.11925
+      ],
+      "Destination": "diagram-67ea32eb2d22f0843fe9"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-18.mdpuml",
+      "Page": 22,
+      "URL": "Model-16.mdpuml",
+      "Rect": [
+        179.73799999999994,
+        210.78066666666666,
+        284.75266666666664,
+        254.03591666666662
+      ],
+      "Destination": "diagram-67ea32eb2d22f0843fe9"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-18.mdpuml",
+      "Page": 22,
+      "URL": "Model.mdpuml",
+      "Rect": [
+        133.25441666666666,
+        176.78483333333338,
+        165.03013281249997,
+        190.7848333333334
+      ],
+      "Destination": "diagram-eb9d8a1a7124f74f06d7"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-18.mdpuml",
+      "Page": 22,
+      "URL": "Model-18.md",
+      "Rect": [
+        248.78175,
+        176.78483333333338,
+        316.8676875,
+        190.7848333333334
+      ],
+      "Destination": "document-a01dc0ebae61c9bf1d02"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-18.mdpuml",
+      "Page": 22,
+      "URL": "Model-3.mdpuml",
+      "Rect": [
+        88.49041666666665,
+        108.88116666666662,
+        130.63966796874996,
+        122.88116666666664
+      ],
+      "Destination": "diagram-905fe25b9212072749c9"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-18.mdpuml",
+      "Page": 22,
+      "URL": "Model-5.mdpuml",
+      "Rect": [
+        88.49041666666665,
+        95.30041666666664,
+        130.63966796874996,
+        109.30041666666654
+      ],
+      "Destination": "diagram-07c57a657a044627efd5"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-18.mdpuml",
+      "Page": 22,
+      "URL": "Model-16.mdpuml",
+      "Rect": [
+        88.49041666666665,
+        81.71966666666678,
+        137.12811197916665,
+        95.7196666666668
+      ],
+      "Destination": "diagram-67ea32eb2d22f0843fe9"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-19.mdpuml",
+      "Page": 23,
+      "URL": "Model.mdpuml",
+      "Rect": [
+        133.25441666666666,
+        289.94874999999996,
+        165.03013281249997,
+        303.94874999999985
+      ],
+      "Destination": "diagram-eb9d8a1a7124f74f06d7"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-19.mdpuml",
+      "Page": 23,
+      "URL": "Model-19.md",
+      "Rect": [
+        248.78175,
+        289.94874999999996,
+        316.8676875,
+        303.94874999999985
+      ],
+      "Destination": "document-e83c592fc43389451079"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-19.mdpuml",
+      "Page": 23,
+      "URL": "Model-1.mdpuml",
+      "Rect": [
+        88.49041666666665,
+        222.0450833333333,
+        130.63966796874996,
+        236.04508333333328
+      ],
+      "Destination": "diagram-16c950948abd5f04448c"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-20.mdpuml",
+      "Page": 24,
+      "URL": "Model.mdpuml",
+      "Rect": [
+        133.25441666666666,
+        374.6894166666666,
+        165.03013281249997,
+        388.68941666666666
+      ],
+      "Destination": "diagram-eb9d8a1a7124f74f06d7"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-20.mdpuml",
+      "Page": 24,
+      "URL": "Model-20.md",
+      "Rect": [
+        248.78175,
+        374.6894166666666,
+        316.8676875,
+        388.68941666666666
+      ],
+      "Destination": "document-c70ebefac8b7f2f54577"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-20.mdpuml",
+      "Page": 24,
+      "URL": "Model-1.mdpuml",
+      "Rect": [
+        88.49041666666665,
+        306.7857500000001,
+        130.63966796874996,
+        320.78575
+      ],
+      "Destination": "diagram-16c950948abd5f04448c"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-20.mdpuml",
+      "Page": 24,
+      "URL": "Model-5.mdpuml",
+      "Rect": [
+        88.49041666666665,
+        293.205,
+        130.63966796874996,
+        307.20500000000004
+      ],
+      "Destination": "diagram-07c57a657a044627efd5"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-20.mdpuml",
+      "Page": 24,
+      "URL": "Model-7.mdpuml",
+      "Rect": [
+        88.49041666666665,
+        279.62425,
+        130.63966796874996,
+        293.6242499999999
+      ],
+      "Destination": "diagram-fc3c4550ad0630e080c3"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-20.mdpuml",
+      "Page": 24,
+      "URL": "Model-8.mdpuml",
+      "Rect": [
+        88.49041666666665,
+        266.04358333333334,
+        130.63966796874996,
+        280.04358333333334
+      ],
+      "Destination": "diagram-12af652b2ffa0b9831b9"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-20.mdpuml",
+      "Page": 24,
+      "URL": "Model-15.mdpuml",
+      "Rect": [
+        88.49041666666665,
+        252.46283333333344,
+        137.12811197916665,
+        266.4628333333333
+      ],
+      "Destination": "diagram-c05a8518b6ac86a7431f"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-20.mdpuml",
+      "Page": 24,
+      "URL": "Model-16.mdpuml",
+      "Rect": [
+        88.49041666666665,
+        238.88208333333333,
+        137.12811197916665,
+        252.88208333333336
+      ],
+      "Destination": "diagram-67ea32eb2d22f0843fe9"
+    }
+  ],
+  "SignatureLines": [
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.md",
+      "Text": "Dim : int [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.md",
+      "Text": "ExistState : bool [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.md",
+      "Text": "Number : int [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.md",
+      "Text": "ObjType : ObjType [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.md",
+      "Text": "CalcCentr() : Point3D"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.md",
+      "Text": "SetNumber(int number) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.md",
+      "Text": "GetIntegralPoints() : IEnumerable<IIntegralPoint>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.md",
+      "Text": "Index : int [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.md",
+      "Text": "Jacobi : Matrix<double> [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.md",
+      "Text": "Weigt : double [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.md",
+      "Text": "this[string dirInd] : double [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.md",
+      "Text": "AddCoordinate(string name, double value) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.md",
+      "Text": "GetCoordinates() : IEnumerable<KeyValuePair<string, double>>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.md",
+      "Text": "ElementKind : ElementKind [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.md",
+      "Text": "IncidentMatrix : int[][] [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.md",
+      "Text": "Level : int [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.md",
+      "Text": "this[int nodeInd] : Node [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.md",
+      "Text": "CalcJacobi(IIntegralPoint integralPoint) : Matrix<double>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.md",
+      "Text": "CreateIntegrationPoints(int level) : IEnumerable<IntegralPoint>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.md",
+      "Text": "GetDerivativesFormFunctions(IIntegralPoint intPoint) : double[,]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.md",
+      "Text": "GetFormFunctions(IIntegralPoint intPoint) : double[]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.md",
+      "Text": "GetNodeIndex(Node node) : int"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.md",
+      "Text": "TransitionMatrix : Matrix<double> [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.md",
+      "Text": "CalcTransitionMatrix(IPoint3D[] points) : double[,]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.md",
+      "Text": "CreateIntegrationPoint(double w, double ksi, double eta) : IntegralPoint"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-2.md",
+      "Text": "Load(string path) : IModelData"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-2.md",
+      "Text": "Message : string [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-2.md",
+      "Text": "Load(string path, IProgress<int> progress= null) : IModelData"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-2.md",
+      "Text": "Save(IModelData model, string path) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-2.md",
+      "Text": "Save(IModelData model, string path) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.md",
+      "Text": "Name : string [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.md",
+      "Text": "Number : int [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.md",
+      "Text": "ObjType : ObjType [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.md",
+      "Text": "AddRange(IEnumerable<IModelObject> items) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.md",
+      "Text": "ClearRemoved() : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.md",
+      "Text": "Reverse() : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.md",
+      "Text": "SortByDistance() : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.md",
+      "Text": "Swap(int fInd, int sInd) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.md",
+      "Text": "ClearNotExisted() : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.md",
+      "Text": "Create(IEnumerable<IModelObject> modelObjects) : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.md",
+      "Text": "Create(string name, IEnumerable<IModelObject> modelObjects) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.md",
+      "Text": "Create(string name, ObjType objType) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.md",
+      "Text": "Find(int index) : IGroup"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.md",
+      "Text": "Find(string grName) : IGroup"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.md",
+      "Text": "FindMany(ObjType objType) : IEnumerable<IGroup>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.md",
+      "Text": "GetMaxNumber() : int"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.md",
+      "Text": "Sort() : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.md",
+      "Text": "CalcLength() : float"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.md",
+      "Text": "GroupData : IGroupData [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.md",
+      "Text": "Loader : IModelLoader [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.md",
+      "Text": "ObjectData : IObjectsData [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.md",
+      "Text": "Saver : IModelSaver [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.md",
+      "Text": "VolumeData : VolumeData [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.md",
+      "Text": "Append(IModelData modelData) : IReadOnlyList<string>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.md",
+      "Text": "ClearAll() : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.md",
+      "Text": "Load(string path) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.md",
+      "Text": "Save(string path) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.md",
+      "Text": "SetGroupData(IGroupData objectData) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.md",
+      "Text": "SetObjectData(IObjectsData objectData) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.md",
+      "Text": "CalcNormal() : Point3D"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-4.md",
+      "Text": "SwapList<T>(this List<T> objectArray, int firstIndex, int secondIndex) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-4.md",
+      "Text": "Equals(ISurface<T> s1, ISurface<T> s2) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-4.md",
+      "Text": "GetHashCode(ISurface<T> s) : int"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-4.md",
+      "Text": "Compare(IModelObject x, IModelObject y) : int"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-4.md",
+      "Text": "Equals(IModelObject x, IModelObject y) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-4.md",
+      "Text": "GetHashCode(IModelObject obj) : int"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-4.md",
+      "Text": "Equals(IModelObject x, IModelObject y) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-4.md",
+      "Text": "GetHashCode(IModelObject obj) : int"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-4.md",
+      "Text": "Equals(T x, T y) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-4.md",
+      "Text": "GetHashCode(T obj) : int"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-5.md",
+      "Text": "CreateIntegrationPoint(double w, double ksi, double eta, double dze) : IntegralPoint"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-5.md",
+      "Text": "GetSurfacesNormals() : IEnumerable<Point3D>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-5.md",
+      "Text": "Curve(int number, GeometryPoint[] points)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-5.md",
+      "Text": "ToString() : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-5.md",
+      "Text": "AddLine(ILineObject<IPoint> line) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-5.md",
+      "Text": "GeometryPoint(int number, Point3D position)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-5.md",
+      "Text": "GetLines() : IEnumerable<ILineObject<IPoint>>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-5.md",
+      "Text": "ToString() : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-5.md",
+      "Text": "CalcCentr() : Point3D"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-5.md",
+      "Text": "Equals(Node other) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-5.md",
+      "Text": "GeometrySurface(int number, GeometryPoint[] points)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-5.md",
+      "Text": "ToString() : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-5.md",
+      "Text": "Volume : VolumeFigure [get, internal set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-5.md",
+      "Text": "SurfaceFigure(int number, GeometrySurface[] surfaces)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-5.md",
+      "Text": "ToString() : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.md",
+      "Text": "Count : int [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.md",
+      "Text": "IsReadOnly : bool [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.md",
+      "Text": "this[int index] : VolumeFigure [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.md",
+      "Text": "Add(VolumeFigure item) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.md",
+      "Text": "Clear() : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.md",
+      "Text": "ClearNotExisted() : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.md",
+      "Text": "Contains(VolumeFigure item) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.md",
+      "Text": "CopyTo(VolumeFigure[] array, int arrayIndex) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.md",
+      "Text": "GetEnumerator() : IEnumerator<VolumeFigure>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.md",
+      "Text": "IndexOf(VolumeFigure item) : int"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.md",
+      "Text": "Insert(int index, VolumeFigure item) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.md",
+      "Text": "Remove(VolumeFigure item) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.md",
+      "Text": "RemoveAt(int index) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.md",
+      "Text": "VolumeData()"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.md",
+      "Text": "Name : string [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.md",
+      "Text": "Number : int [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.md",
+      "Text": "NumberOfPoints : int [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.md",
+      "Text": "NumberOfSides : int [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.md",
+      "Text": "GetCoordinates() : IEnumerable<Point3D>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.md",
+      "Text": "GetSurfaceFigures() : IEnumerable<SurfaceFigure>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.md",
+      "Text": "GetSurfaces() : IEnumerable<GeometrySurface>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.md",
+      "Text": "GetVertexes() : IEnumerable<GeometryPoint>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.md",
+      "Text": "ToString() : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.md",
+      "Text": "VolumeFigure(int number, SurfaceFigure[] surfaceFigures)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.md",
+      "Text": "Кривая"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.md",
+      "Text": "Поверхность"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.md",
+      "Text": "Точка"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.md",
+      "Text": "Узел"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.md",
+      "Text": "Элемент1D"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.md",
+      "Text": "Элемент2D"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.md",
+      "Text": "Элемент3D"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.md",
+      "Text": "Гекса"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.md",
+      "Text": "Квадрат"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.md",
+      "Text": "Пента"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.md",
+      "Text": "Стержень"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.md",
+      "Text": "Тетра"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.md",
+      "Text": "Треугольник"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.md",
+      "Text": "Beam(int number, Node[] nodes)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.md",
+      "Text": "Beam(int number, Node[] nodes, int level)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.md",
+      "Text": "CreateIntegrationPoint(double w, double ksi) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-7.md",
+      "Text": "Element(int number, Node[] nodes)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-7.md",
+      "Text": "Element(int number, Node[] nodes, int intPoints)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-7.md",
+      "Text": "GetEnumerator() : IEnumerator<Node>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-7.md",
+      "Text": "ToString() : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-7.md",
+      "Text": "Element2D(int number, Node[] nodes)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-7.md",
+      "Text": "Element2D(int number, Node[] nodes, int intPoints)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-7.md",
+      "Text": "BuildGraph(IEnumerable<ElementSurface> surfaces) : Dictionary<Node, HashSet<Node>>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-7.md",
+      "Text": "Element3D(int number, Node[] nodes)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-7.md",
+      "Text": "GetMasterSurface(int masterSurfaceNodesNumber, IEnumerable<ElementSurface> surfaces) : ElementSurface"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-7.md",
+      "Text": "SortNodes(int mainSurfaceIndex, List<ElementSurface> surfaces) : List<Node>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-7.md",
+      "Text": "ElementNumber : int [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-7.md",
+      "Text": "Owner : IElement [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-7.md",
+      "Text": "CalcCentr() : Point3D"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-7.md",
+      "Text": "CreateNodesKey() : int[]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-7.md",
+      "Text": "ElementSurface(IElement owner, int surfaceNumber, Node[] nodes)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-7.md",
+      "Text": "Equals(ElementSurface other) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-7.md",
+      "Text": "GetElements() : IEnumerable<IElement>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-7.md",
+      "Text": "SetNeighbour(IElement element) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-7.md",
+      "Text": "ToString() : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-7.md",
+      "Text": "Hexa(int number, Node[] nodes)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-7.md",
+      "Text": "Hexa(int number, Node[] nodes, int level)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-7.md",
+      "Text": "this[string dirName] : double [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-7.md",
+      "Text": "ToString() : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-8.md",
+      "Text": "this[int elemInd] : IElement [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-8.md",
+      "Text": "AddElement(IElement element) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-8.md",
+      "Text": "GetElements() : IEnumerable<IElement>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-8.md",
+      "Text": "Node(int number, Point3D position)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-8.md",
+      "Text": "RemoveElement(IElement element) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-8.md",
+      "Text": "ToString() : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-8.md",
+      "Text": "Penta(int number, Node[] nodes)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-8.md",
+      "Text": "Penta(int number, Node[] nodes, int level)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-8.md",
+      "Text": "Quad(int number, Node[] nodes)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-8.md",
+      "Text": "Quad(int number, Node[] nodes, int level)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-8.md",
+      "Text": "CreateIntegrationPoint(int index, double w, double l1, double l2, double l3, double l4) : IntegralPoint"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-8.md",
+      "Text": "Tetra(int number, Node[] nodes)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-8.md",
+      "Text": "Tetra(int number, Node[] nodes, int level)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-8.md",
+      "Text": "Tetra_c(int number, Node[] nodes)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-8.md",
+      "Text": "Tetra_c(int number, Node[] nodes, int level)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-8.md",
+      "Text": "CreateIntegrationPoint(double w, double l1, double l2, double l3) : IntegralPoint"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-8.md",
+      "Text": "Triangle(int number, Node[] nodes)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-8.md",
+      "Text": "Triangle(int number, Node[] nodes, int level)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-9.md",
+      "Text": "Triangle_c(int number, Node[] nodes)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-9.md",
+      "Text": "Triangle_c(int number, Node[] nodes, int level)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-10.md",
+      "Text": "LoaderEventArgs(string message)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-10.md",
+      "Text": "Message : string [get, private set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-10.md",
+      "Text": "SaverEventArgs(string message)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-10.md",
+      "Text": "ReplaceQuotes(string source) : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-10.md",
+      "Text": "ReplaceQuotes(string source) : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-11.md",
+      "Text": "ProgressTextReader(string path, IProgress<int> progress)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-11.md",
+      "Text": "ReadLine() : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-12.md",
+      "Text": "SaveSurfaces<T>(StreamWriter writer, IEnumerable<ISurface<T>> surfaces) : void where T : IPoint"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-12.md",
+      "Text": "StlFileLoadExeption(string message, Exception inner)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-13.md",
+      "Text": "StlFileWriteExeption(string message)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-13.md",
+      "Text": "StlFileWriteExeption(string message, Exception inner)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-14.md",
+      "Text": "CurveSet : IObjectsSet<Curve> [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-14.md",
+      "Text": "E1DCollection : IObjectsCollection<Beam> [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-14.md",
+      "Text": "E2DCollection : IObjectsCollection<Element2D> [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-14.md",
+      "Text": "E3DCollection : IObjectsCollection<Element3D> [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-14.md",
+      "Text": "NodesSet : IObjectsSet<Node> [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-14.md",
+      "Text": "PointsSet : IObjectsSet<GeometryPoint> [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-14.md",
+      "Text": "SurfaceSet : IObjectsSet<SurfaceFigure> [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-14.md",
+      "Text": "Clear(ObjType objType) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-14.md",
+      "Text": "ClearAll() : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-14.md",
+      "Text": "ClearEmptySet() : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-14.md",
+      "Text": "ClearNotExisted() : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-14.md",
+      "Text": "Count(ObjType objType) : int"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-14.md",
+      "Text": "Find(ObjType objType, int objNumbr) : IModelObject"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-14.md",
+      "Text": "FindMany(int objNumbr) : IEnumerable<IModelObject>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-14.md",
+      "Text": "GetAllElements() : IEnumerable<IElement>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-14.md",
+      "Text": "GetAllObjects() : IEnumerable<IModelObject>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-14.md",
+      "Text": "GetMaxElementNumber() : int"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-14.md",
+      "Text": "GetMaxNumber(ObjType objType) : int"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-14.md",
+      "Text": "GetObjects(ObjType objType) : IEnumerable<IModelObject>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-14.md",
+      "Text": "GetObjects(ObjType objType, string setName) : IEnumerable<IModelObject>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-14.md",
+      "Text": "GetSetInfo(ObjType objType, int objNumber) : ISetInfo"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-14.md",
+      "Text": "GetSetInfo(ObjType objType, string setName) : ISetInfo"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-14.md",
+      "Text": "GetSetsInfo(ObjType objType) : IEnumerable<ISetInfo>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-14.md",
+      "Text": "Move(ObjType objType, Point3D vector) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-15.md",
+      "Text": "Remove(ObjType objType, int objNumber) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-15.md",
+      "Text": "Remove(ObjType objType, string objSet) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-15.md",
+      "Text": "Rotate(ObjType objType, Point3D axis, float angle) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-15.md",
+      "Text": "Normal : Point3D [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-15.md",
+      "Text": "Position : Point3D [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-15.md",
+      "Text": "CalcSquare() : double"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-15.md",
+      "Text": "IsInner : bool [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-15.md",
+      "Text": "Number : int [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-15.md",
+      "Text": "this[int ind] : T [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-15.md",
+      "Text": "GetDistance(Point3D point3D) : float"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-15.md",
+      "Text": "GetLinesFromSurface() : Segment3D[]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-15.md",
+      "Text": "GetVertexIndex(T vertex) : int"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-15.md",
+      "Text": "GetVertexes() : IEnumerable<T>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-15.md",
+      "Text": "ReverseVertexes() : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-15.md",
+      "Text": "NumberOfSides : int [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-15.md",
+      "Text": "GetSurfaces() : IEnumerable<T>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-15.md",
+      "Text": "GetVertexes() : IEnumerable<T>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.md",
+      "Text": "CalcVolume() : double"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.md",
+      "Text": "Count : int [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.md",
+      "Text": "Names : ICollection<string> [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.md",
+      "Text": "Objects : ICollection<ObjectsSet<T>> [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.md",
+      "Text": "this[int index] : ObjectsSet<T> [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.md",
+      "Text": "this[string name] : ObjectsSet<T> [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.md",
+      "Text": "Add(ObjectsSet<T> set) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.md",
+      "Text": "Add(string setName) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.md",
+      "Text": "Add(string setName, T addObj) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.md",
+      "Text": "AddRange(string setName, IEnumerable<T> addObjs) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.md",
+      "Text": "Append(IObjectsCollection<T> collection) : IReadOnlyList<string>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.md",
+      "Text": "ChangeName(string oldName, string newName) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.md",
+      "Text": "Clear() : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.md",
+      "Text": "ClearEmptySets() : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.md",
+      "Text": "ContainsName(string setName) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.md",
+      "Text": "ContainsNumber(int objNumbr) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.md",
+      "Text": "Find(int objNumbr) : T"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.md",
+      "Text": "GetMaxNumber() : int"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.md",
+      "Text": "GetMinNumber() : int"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.md",
+      "Text": "GetObjects() : IEnumerable<T>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.md",
+      "Text": "Remove(int objNumber) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.md",
+      "Text": "Remove(string name) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.md",
+      "Text": "RemoveNotExistedObjects() : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.md",
+      "Text": "Append(IObjectsSet<T> appSet) : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.md",
+      "Text": "ClearNotExisted() : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.md",
+      "Text": "ClearWithExistState() : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.md",
+      "Text": "Name : string [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.md",
+      "Text": "Number : int [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.md",
+      "Text": "NumberOfObjects : int [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.md",
+      "Text": "ObjType : ObjType [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.md",
+      "Text": "GetCentr(int number) : Point3D"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.md",
+      "Text": "GetCoords(int number) : IEnumerable<Point3D>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.md",
+      "Text": "GetNumbers() : IEnumerable<int>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.md",
+      "Text": "GetObjectInfo(int number) : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.md",
+      "Text": "GetObjectsInfo() : IEnumerable<string>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.md",
+      "Text": "CompareTo(IModelObject other) : int"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.md",
+      "Text": "Equals(IModelObject other) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.md",
+      "Text": "Equals(IModelObject x, IModelObject y) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.md",
+      "Text": "GetHashCode(IModelObject obj) : int"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.md",
+      "Text": "ModelObject(int number)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.md",
+      "Text": "ToString() : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.md",
+      "Text": "IsReadOnly : bool [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.md",
+      "Text": "ObjectsData()"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.md",
+      "Text": "Count : int [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.md",
+      "Text": "IsReadOnly : bool [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.md",
+      "Text": "this[int key] : IModelObject [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.md",
+      "Text": "Add(IModelObject item) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.md",
+      "Text": "Clear() : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.md",
+      "Text": "Contains(IModelObject item) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.md",
+      "Text": "CopyTo(IModelObject[] array, int arrayIndex) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.md",
+      "Text": "GetEnumerator() : IEnumerator<IModelObject>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.md",
+      "Text": "Group(int number, string groupName, ObjType objType)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.md",
+      "Text": "Group(string groupName, ObjType objType)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.md",
+      "Text": "IndexOf(IModelObject item) : int"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.md",
+      "Text": "Insert(int index, IModelObject item) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.md",
+      "Text": "Remove(IModelObject item) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.md",
+      "Text": "RemoveAt(int index) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.md",
+      "Text": "ToString() : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.md",
+      "Text": "Count : int [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.md",
+      "Text": "IsReadOnly : bool [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.md",
+      "Text": "this[int index] : IGroup [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.md",
+      "Text": "Add(IGroup item) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.md",
+      "Text": "Clear() : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.md",
+      "Text": "Contains(IGroup item) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.md",
+      "Text": "CopyTo(IGroup[] array, int arrayIndex) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.md",
+      "Text": "GetEnumerator() : IEnumerator<IGroup>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.md",
+      "Text": "GroupData()"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.md",
+      "Text": "IndexOf(IGroup item) : int"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.md",
+      "Text": "Insert(int index, IGroup item) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.md",
+      "Text": "Remove(IGroup item) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.md",
+      "Text": "RemoveAt(int index) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.md",
+      "Text": "Equals(IGroup x, IGroup y) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.md",
+      "Text": "GetHashCode(IGroup obj) : int"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-18.md",
+      "Text": "Equals(IGroup x, IGroup y) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-18.md",
+      "Text": "GetHashCode(IGroup obj) : int"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-18.md",
+      "Text": "Compare(IGroup x, IGroup y) : int"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-18.md",
+      "Text": "Message : string [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-18.md",
+      "Text": "WarningAttribute(string message)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-18.md",
+      "Text": "this[int key] : ObjectsSet<T> [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-18.md",
+      "Text": "this[string key] : ObjectsSet<T> [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-18.md",
+      "Text": "ToString() : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-18.md",
+      "Text": "Count : int [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-18.md",
+      "Text": "IsReadOnly : bool [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-18.md",
+      "Text": "Keys : ICollection<int> [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-18.md",
+      "Text": "Values : ICollection<T> [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-18.md",
+      "Text": "this[int key] : T [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-18.md",
+      "Text": "Add(KeyValuePair<int, T> item) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-18.md",
+      "Text": "Add(int key, T value) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-18.md",
+      "Text": "Clear() : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-18.md",
+      "Text": "Contains(KeyValuePair<int, T> item) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-18.md",
+      "Text": "ContainsKey(int key) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-18.md",
+      "Text": "CopyTo(KeyValuePair<int, T>[] array, int arrayIndex) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-18.md",
+      "Text": "GetEnumerator() : IEnumerator<KeyValuePair<int, T>>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-18.md",
+      "Text": "ObjectsSet(string name)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-18.md",
+      "Text": "Remove(KeyValuePair<int, T> item) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-18.md",
+      "Text": "Remove(int key) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-18.md",
+      "Text": "Renumber(ref int v) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-18.md",
+      "Text": "ToString() : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-18.md",
+      "Text": "TryGetValue(int key, out T value) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-18.md",
+      "Text": "SurfacesSet(string name)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-19.md",
+      "Text": "Find<T>(List<T> objs, int objNumbr) : T where T : IModelObject"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-19.md",
+      "Text": "Find<T>(T[] objs, int objNumbr) : T where T : IModelObject"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-19.md",
+      "Text": "SortByDistance<T>(this List<T> objs) : void where T : IModelObject"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-19.md",
+      "Text": "MergeSortFunction(List<T> array) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-19.md",
+      "Text": "MergeSortFunction(List<int> array) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-19.md",
+      "Text": "MergeSortFunction(List<T> array, IComparer<T> comparer) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-19.md",
+      "Text": "Equals(T x, T y) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-19.md",
+      "Text": "GetHashCode(T obj) : int"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-20.md",
+      "Text": "Equals(ISetInfo x, ISetInfo y) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-20.md",
+      "Text": "GetHashCode(ISetInfo obj) : int"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-20.md",
+      "Text": "Mark(IEnumerable<ISurfaceElement> elements) : IReadOnlyList<ElementSurface>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-20.md",
+      "Text": "Mark(IEnumerable<ISurfaceElement> elements, out IReadOnlyCollection<IElement> changedElements) : IReadOnlyList<ElementSurface>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-20.md",
+      "Text": "Equals(int[] first, int[] second) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-20.md",
+      "Text": "GetHashCode(int[] nodeNumbers) : int"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-20.md",
+      "Text": "CreateSurfacesFromSetOfNodes(IElement owner, Node[] nodes) : List<ElementSurface>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-20.md",
+      "Text": "FindSurfaceNodes<T>(T[] nodes) : IEnumerable<T[]> where T : IPoint"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-1.md",
+      "Text": "NumberOfPoints : int [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-1.md",
+      "Text": "GetCoordinates() : IEnumerable<Point3D>"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-1.md",
+      "Text": "Normal : Point3D [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-1.md",
+      "Text": "Shifting : float [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-1.md",
+      "Text": "PlanePosition(Plane plane) : float"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-1.md",
+      "Text": "PointPosition(Point3D point) : float"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-1.md",
+      "Text": "GetDistanceToLine(Segment3D line) : float"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-1.md",
+      "Text": "GetPointProectionOnPlane(Plane plane) : Point3D"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-1.md",
+      "Text": "IsBelongTo(Plane plane) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-1.md",
+      "Text": "GetSquareSumCoords() : double"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-1.md",
+      "Text": "_x : double [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-1.md",
+      "Text": "_y : double [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-3.md",
+      "Text": "_x : float [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-3.md",
+      "Text": "_y : float [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-3.md",
+      "Text": "_z : float [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-3.md",
+      "Text": "Div(float divide) : T"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-3.md",
+      "Text": "Mult(float multiplier) : T"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-3.md",
+      "Text": "Sub(T SubstractValue) : T"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-3.md",
+      "Text": "Sum(T AddedValue) : T"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-3.md",
+      "Text": "Centre : Point3D [get, private set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-3.md",
+      "Text": "Dir_X : Point3D [get, private set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-3.md",
+      "Text": "Dir_Y : Point3D [get, private set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-3.md",
+      "Text": "Dir_Z : Point3D [get, private set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-3.md",
+      "Text": "InverseTransitionMatrix : Matrix<float> [get, private set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-3.md",
+      "Text": "DetermineInverseMatrix() : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-3.md",
+      "Text": "Frame()"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-3.md",
+      "Text": "Frame(Point3D p0, Point3D p1, Point3D p2)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-3.md",
+      "Text": "GetCoordsInFrame(Point3D point) : Point3D"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-3.md",
+      "Text": "Rotate(Point3D axis, float angle) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-3.md",
+      "Text": "Shift(Point3D shifting) : void"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-3.md",
+      "Text": "ToString() : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-3.md",
+      "Text": "Frame2D(Point3D p0, Point3D p1, Point3D p2)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-3.md",
+      "Text": "MapToLocalPlaneCoordinates(Point3D point) : Point2D"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-3.md",
+      "Text": "UnmapToGlobalCoordinates(Point2D point) : Point3D"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-3.md",
+      "Text": "Plane(Point3D normal, float shifting)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-3.md",
+      "Text": "Plane(Point3D p0, Point3D normal)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-3.md",
+      "Text": "Plane(Point3D p0, Point3D p1, Point3D p2)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-3.md",
+      "Text": "Equals(Point2D other) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-3.md",
+      "Text": "GetHashCode() : int"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-3.md",
+      "Text": "Point2D()"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-3.md",
+      "Text": "Point2D(double x, double y)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-3.md",
+      "Text": "ToString() : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-4.md",
+      "Text": "Equals(Point3D other) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-4.md",
+      "Text": "Equals(object obj) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-4.md",
+      "Text": "GetHashCode() : int"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-4.md",
+      "Text": "Point3D()"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-4.md",
+      "Text": "Point3D(float x, float y, float z)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-4.md",
+      "Text": "ToString() : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-4.md",
+      "Text": "CheckCollinearityVectors(Point3D vector1, Point3D vector2) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-4.md",
+      "Text": "CrossProd(Point3D v1, Point3D v2) : Point3D"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-4.md",
+      "Text": "DotProd(Point3D v1, Point3D v2) : float"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-4.md",
+      "Text": "GetCosAngleVectors(Point3D n1, Point3D n2) : float"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-4.md",
+      "Text": "GetVectorLength(Point2D p) : double"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-4.md",
+      "Text": "GetVectorLength(Point3D p) : float"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-4.md",
+      "Text": "GetVectorNorm(Point3D p) : Point3D"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-4.md",
+      "Text": "GetVectorRotation(Point3D vec, Point3D axis, float angle) : Point3D"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-4.md",
+      "Text": "GetVectorsSumm(Point3D v1, Point3D v2) : Point3D"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-4.md",
+      "Text": "IsVectorsCoDirectional(List<Point3D> temp) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-5.md",
+      "Text": "Bottom : int [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-5.md",
+      "Text": "Left : int [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-5.md",
+      "Text": "Right : int [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-5.md",
+      "Text": "Top : int [get, set]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-5.md",
+      "Text": "GetPoints() : Point2D[]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-5.md",
+      "Text": "IsInnerOther(RectangleBox other) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-5.md",
+      "Text": "IsIntersectWithOther(RectangleBox other) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-5.md",
+      "Text": "IsPointInside(Point2D point) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-5.md",
+      "Text": "IsPointsInside(Point2D[] points) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-5.md",
+      "Text": "RectangleBox(IEnumerable<Point2D> points)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-5.md",
+      "Text": "RectangleBox(int left, int right, int bottom, int top)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-5.md",
+      "Text": "P1 : Point2D [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-5.md",
+      "Text": "P2 : Point2D [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-5.md",
+      "Text": "GetIntersection(Segment2D other) : Point2D"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-5.md",
+      "Text": "GetLength() : float"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-5.md",
+      "Text": "GetOrientationSign(Point2D p0) : int"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-5.md",
+      "Text": "GetPointOnLine(float subLineLength) : Point2D"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-5.md",
+      "Text": "HasIntersectedPoint(Segment2D other) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-5.md",
+      "Text": "IsPointBelongLine(Point2D point) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-5.md",
+      "Text": "IsPointBelongSegment(Point2D point, double delta= 0.0001) : bool"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-5.md",
+      "Text": "Segment2D(Point2D p1, Point2D p2)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-5.md",
+      "Text": "ToString() : string"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-5.md",
+      "Text": "P0 : Point3D [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-5.md",
+      "Text": "P1 : Point3D [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-5.md",
+      "Text": "GetDirectVector() : Point3D"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-5.md",
+      "Text": "GetLength() : float"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-5.md",
+      "Text": "GetPlaneIntersection(ref bool state, Plane plane) : Point3D"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-5.md",
+      "Text": "GetPointOnLine(float subLineLength) : Point3D"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-5.md",
+      "Text": "Segment3D(Point3D p0, Point3D p1)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-5.md",
+      "Text": "Message : string [get]"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-5.md",
+      "Text": "WarningAttribute(string message)"
+    },
+    {
+      "Source": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-5.md",
+      "Text": "Bigrams<T>(this IEnumerable<T> items, bool returFirstObj) : IEnumerable<Tuple<T, T>>"
+    }
+  ],
+  "Sources": [
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model.mdpuml",
+      "SHA256": "2100e4d8feee5d813f095b48cd1f02776e34fa6a655641d70181624838b6e5ce"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.mdpuml",
+      "SHA256": "781e307dcf449d29e105bb4b2b617e25a1594134d5e5e735cfc462edf8ec1f2e"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-2.mdpuml",
+      "SHA256": "5866a3424ceef7a3d7e6372c5e19a736299dc5275e9820b89beec6437b98251d"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.mdpuml",
+      "SHA256": "b22ab4635a8e920fe0bddba016a0e6654b15d4a4c2985b6e2fe71d485ee9bee7"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-4.mdpuml",
+      "SHA256": "97aeadde71b210b6e36be47e48f8dc836650d638a220faa1de6c6b263558285b"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-5.mdpuml",
+      "SHA256": "935f996306e176cf7925debcfa6543ff12815c9fa481c6980a9b188c4cedfbc8"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.mdpuml",
+      "SHA256": "55b5201a25a1baf77e60b14aaa1a3da87b0caacf4a3a367a753fa927b153e50e"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-7.mdpuml",
+      "SHA256": "07cf6e7252f552195b9d381e438a175ef22661f90cb2e818093c2540f97f75fa"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-8.mdpuml",
+      "SHA256": "63e32543adc6ee1117ca192ecca6eea879823c9ddf6d272246761363aa48888e"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-9.mdpuml",
+      "SHA256": "6fd35c844398eff62c32fd34662e7beb8f244f25858c949a41c2eb2d0e1ae601"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-10.mdpuml",
+      "SHA256": "0fe22a72023a60e4542594067ca6fedb71be23b6dc9c2ee5988df9b6a9ee4c4d"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-11.mdpuml",
+      "SHA256": "a460af78b06015147a52b56e1310f78ba5be64935e56fe7471b8148020139463"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-12.mdpuml",
+      "SHA256": "5bcd2d751595152d601e86d6466db6bd62826de6bccda41ec78502c4aec359c1"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-13.mdpuml",
+      "SHA256": "2f5bc8e87ca3e8b7b2f50ecba8637cf7eb27532f955564402ff1655eec8e51fd"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-14.mdpuml",
+      "SHA256": "56f0c0fdb4b1053f9b4e0c55e8a9401713cd75613bfb06e0ba3a774b8bb607a2"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-15.mdpuml",
+      "SHA256": "b14dcefa1b15afa14179754e64ee9b261f6ae107f74f79d030307a83591c0e14"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.mdpuml",
+      "SHA256": "eef545ba2ab2f76f02227cf4f808a9c0c44811d1f83dc60ad484ff88eff17bf2"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.mdpuml",
+      "SHA256": "b84a7a77c962edc62e20d9d318371e93fa4a58c12196fa5fe80d0be73269e83b"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-18.mdpuml",
+      "SHA256": "1da88e7029441934f112350feaca44132bfb9409ec27fe1c4220bb7278bd96eb"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-19.mdpuml",
+      "SHA256": "b2a4441d92b89b356e8f02c00155103e08f1469d5329149b8aedd3e7f23b2f1c"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-20.mdpuml",
+      "SHA256": "e89b8c4726d199a08ed966d23b82820c1f287c382b8f225ab456ef218f0b1df0"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-1.mdpuml",
+      "SHA256": "f8770220d9140e101bf346905d86a627a0859e3bc2ef4868d513142e1c886ca8"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-3.mdpuml",
+      "SHA256": "c11d684dc999819c89c524eb37bad141cf96ad8e9a156630d01dcd791681c4a0"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-4.mdpuml",
+      "SHA256": "6e784d97dae7a793a147790dd0edb0ee64a7c681fe76c037fadbafecd8eb8902"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-5.mdpuml",
+      "SHA256": "b349872c9c43ad3c1f19843bb7d08fbad4301a48f8e3a58072526e0b471c809e"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model.md",
+      "SHA256": "be3e93e4911ed0376b40f786e47442211bc267a6d1768f14ca6cfbc20c09cc12"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-1.md",
+      "SHA256": "2eac0021e036c64eb5e6d0f9fe6d5f5768f44b4a8c687ea817aa8f9a064770a8"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-2.md",
+      "SHA256": "3322245c15399d3a4744bd8e410bc7fcc3aa694b05720b701cf8ede83aa60e4f"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-3.md",
+      "SHA256": "c6fd5486e3ea62c45303e5b8e196c76c85e1d132efc8b745aa2ed9a701cb2d61"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-4.md",
+      "SHA256": "3148d4ee4bcf6cb5d6556aa4b18f08812dfb4228a012053702a95a1ed4f83dff"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-5.md",
+      "SHA256": "564014fa1c27cf2d7ce26f69bcc55dc2ecc2d0b6e17a86583e275625395dd46a"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-6.md",
+      "SHA256": "7043e4fb0fb6ec90a28d11c65697d71fbafe68df208fcd0d6ba0743b35d03e10"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-7.md",
+      "SHA256": "672b8dfcc169c5f3b47d5fe81630485e3b6e52964ea24f3efc0a772fcc4429b3"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-8.md",
+      "SHA256": "e625a3304bb49a170ec977f70c6ea1a447dcbfd13259829ef5280fbfab29eb3b"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-9.md",
+      "SHA256": "60e7942ae85e5d70ff35ad45971a0da2a8aad5c85b574f316c7c4f9dabd5a5ed"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-10.md",
+      "SHA256": "3800f169b1ecfebbdf364f528b83a5c068b50ce534339a17cabea6d040ca2183"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-11.md",
+      "SHA256": "daeb0b9f3f3d751cf19478a347c6c1bb911c0ca61353d6c8adb895e005c45cde"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-12.md",
+      "SHA256": "971dccd7b7d72c18ec5ca805b66875eebc158b03d1dbdd6a87dfeb788a56ac4e"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-13.md",
+      "SHA256": "afb7da2dea026b5f135e2652605882ce73299204a0a0fee2752e9080a02ad1ff"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-14.md",
+      "SHA256": "25ff422171419b132cb6cc1ecf57c771fc64ab68a30d9467201a08891cbff59c"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-15.md",
+      "SHA256": "05f8a8d590a550497bd269ea8266211c3c1b1eb2c7badb92c8cce29e23eba00a"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-16.md",
+      "SHA256": "3d560226ae811f649625ff3d5bfde9894ec1b405fc76e87a0c31d53d790ae474"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-17.md",
+      "SHA256": "405621ae79baeee393ccc1059cf3ecd00df40ddb42a05737d17e61c6a68018a0"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-18.md",
+      "SHA256": "ebbe57233a9a8ab3f88519c9632b15db9ff291298dbe718c15d4c01ca10b9bd6"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-19.md",
+      "SHA256": "93567153f6dd2b7b4f44372f18d635e522e9581ca62fe8d2a80454aed3c27963"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\Model\\Documents\\Model-20.md",
+      "SHA256": "8a423bd937846e58640d46e2eaa10cf6f1cbb478e0e64839857b3f99d8d5a981"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-1.md",
+      "SHA256": "42507d3552fbbe8bdc1cc905331a86e29e1f894489681b4e4a77ec8221d8fb11"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-3.md",
+      "SHA256": "adcd0a4ab4e52beb9db9ebe04072587af167e186242c7eb5b72b8a38fdbc31c2"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-4.md",
+      "SHA256": "d8bb97858e463051598522c3c4f8483ee494cce09ff16cd88f99bb56ea5d33b6"
+    },
+    {
+      "Path": "C:\\BazisComponents\\BazisCore\\PrGeometry\\Documents\\Geometry-5.md",
+      "SHA256": "877b19bd3526b99acf744edcbf5748b2d630086b8128b97d0e3d3c3d54d6c8c5"
+    }
+  ]
+}

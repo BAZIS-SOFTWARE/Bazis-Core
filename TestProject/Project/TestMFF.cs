@@ -40,7 +40,6 @@ namespace TestProject_test.Project
         {
             //assing
             var loader = new LoadProjectFromTextFormat();
-            loader.LoadEvent += (ar1, ar2) => { };
             var proj = loader.Load($@"{path}");
 
             //act

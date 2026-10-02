@@ -1,0 +1,91 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title Model-7 — Геометрические и сеточные сущности
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+abstract class "Element" as T_Model_Model_MeshObjects_Element {
+  + Element(number, nodes)
+  + Element(number, nodes, intPoints)
+  + GetEnumerator() : IEnumerator<Node>
+  + ToString() : string
+}
+abstract class "Element2D" as T_Model_Model_MeshObjects_Element2D {
+  + Element2D(number, nodes)
+  + Element2D(number, nodes, intPoints)
+}
+abstract class "Element3D" as T_Model_Model_MeshObjects_Element3D {
+  + BuildGraph(surfaces) : Dictionary<Node, HashSet<Node>>
+  + Element3D(number, nodes)
+  + GetMasterSurface(masterSurfaceNodesNumber, surfaces) : ElementSurface
+  + SortNodes(mainSurfaceIndex, surfaces) : List<Node>
+}
+class "ElementSurface" as T_Model_Model_MeshObjects_ElementSurface {
+  + ElementNumber : int [get]
+  ~ Owner : IElement [get]
+  + CalcCentr() : Point3D
+  + CreateNodesKey() : int[]
+  + ElementSurface(owner, surfaceNumber, nodes)
+  + Equals(other) : bool
+  + GetElements() : IEnumerable<IElement>
+  ~ SetNeighbour(element) : bool
+  + ToString() : string
+}
+class "Hexa" as T_Model_Model_MeshObjects_Hexa {
+  + Hexa(number, nodes)
+  + Hexa(number, nodes, level)
+}
+class "IntegralPoint" as T_Model_Model_MeshObjects_IntegralPoint {
+  + this[string dirName] : double [get]
+  + ToString() : string
+}
+abstract class "ModelObject\nModel-17" as T_Model_Model_ModelObject <<reference>> [[Model-17.mdpuml Model-17]]
+interface "IElement\nModel-1" as T_Model_Model_Interfaces_MeshObjects_IElement <<reference>> [[Model-1.mdpuml Model-1]]
+interface "IElement2D\nModel-1" as T_Model_Model_Interfaces_MeshObjects_IElement2D <<reference>> [[Model-1.mdpuml Model-1]]
+interface "IElement3D\nModel-5" as T_Model_Model_Interfaces_MeshObjects_IElement3D <<reference>> [[Model-5.mdpuml Model-5]]
+interface "ISurface<T>\nModel-15" as T_Model_Model_Interfaces_ISurface_1 <<reference>> [[Model-15.mdpuml Model-15]]
+interface "IIntegralPoint\nModel-1" as T_Model_Model_Interfaces_IntegralObject_IIntegralPoint <<reference>> [[Model-1.mdpuml Model-1]]
+T_Model_Model_MeshObjects_Element -[hidden]down-> T_Model_Model_MeshObjects_Element2D
+T_Model_Model_MeshObjects_Element2D -[hidden]down-> T_Model_Model_MeshObjects_Element3D
+T_Model_Model_MeshObjects_Element3D -[hidden]down-> T_Model_Model_MeshObjects_ElementSurface
+T_Model_Model_MeshObjects_ElementSurface -[hidden]down-> T_Model_Model_MeshObjects_Hexa
+T_Model_Model_MeshObjects_Hexa -[hidden]down-> T_Model_Model_MeshObjects_IntegralPoint
+T_Model_Model_MeshObjects_IntegralPoint -[hidden]down-> T_Model_Model_ModelObject
+T_Model_Model_ModelObject -[hidden]down-> T_Model_Model_Interfaces_MeshObjects_IElement
+T_Model_Model_Interfaces_MeshObjects_IElement -[hidden]down-> T_Model_Model_Interfaces_MeshObjects_IElement2D
+T_Model_Model_Interfaces_MeshObjects_IElement2D -[hidden]down-> T_Model_Model_Interfaces_MeshObjects_IElement3D
+T_Model_Model_Interfaces_MeshObjects_IElement3D -[hidden]down-> T_Model_Model_Interfaces_ISurface_1
+T_Model_Model_Interfaces_ISurface_1 -[hidden]down-> T_Model_Model_Interfaces_IntegralObject_IIntegralPoint
+T_Model_Model_MeshObjects_Element --|> T_Model_Model_ModelObject
+T_Model_Model_MeshObjects_Element ..|> T_Model_Model_Interfaces_MeshObjects_IElement
+T_Model_Model_MeshObjects_Element2D --> T_Model_Model_MeshObjects_ElementSurface : использует
+T_Model_Model_MeshObjects_Element2D --|> T_Model_Model_MeshObjects_Element
+T_Model_Model_MeshObjects_Element2D ..|> T_Model_Model_Interfaces_MeshObjects_IElement2D
+T_Model_Model_MeshObjects_Element3D --> T_Model_Model_MeshObjects_ElementSurface : использует
+T_Model_Model_MeshObjects_Element3D --|> T_Model_Model_MeshObjects_Element
+T_Model_Model_MeshObjects_Element3D ..|> T_Model_Model_Interfaces_MeshObjects_IElement3D
+T_Model_Model_MeshObjects_ElementSurface ..|> T_Model_Model_Interfaces_ISurface_1
+T_Model_Model_MeshObjects_Hexa --|> T_Model_Model_MeshObjects_Element3D
+T_Model_Model_MeshObjects_IntegralPoint ..|> T_Model_Model_Interfaces_IntegralObject_IIntegralPoint
+legend bottom
+  Обзор: [[Model.mdpuml Model]]; сигнатуры: [[Model-7.md Model-7.md]].
+  reference — адрес подробностей указан в заголовке типа.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+  Связанные типы в контрактах и сигнатурах:
+  [[Model-1.mdpuml Model-1]]: IElement, IElement2D, IIntegralPoint.
+  [[Model-5.mdpuml Model-5]]: IElement3D.
+  [[Model-8.mdpuml Model-8]]: Node.
+  [[Model-15.mdpuml Model-15]]: ISurface<T>.
+  [[Model-17.mdpuml Model-17]]: ModelObject.
+  [[../../PrGeometry/Documents/Geometry-4.mdpuml Geometry-4]]: Point3D.
+endlegend
+@enduml

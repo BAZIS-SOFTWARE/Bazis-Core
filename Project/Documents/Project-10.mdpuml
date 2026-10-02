@@ -1,0 +1,67 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title Project-10 — Параметры и физические поля
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+enum "LinearSolverKind" as T_Project_Project_TaskParameters_LinearSolverKind {
+    BiCGStab
+    ConjugateGradient
+    SymmetricUtdu
+}
+enum "MatrixStorageKind" as T_Project_Project_TaskParameters_MatrixStorageKind {
+    GeneralCsr
+    SymmetricCsr
+}
+class "MechanicalConvergence" as T_Project_Project_TaskParameters_MechanicalConvergence {
+  + DUm : float [get, set]
+  + Is_Physically_NonLinear : bool [get, set]
+  + Is_Switched_Um : bool [get, set]
+  + MaterialPlasticityCoeff : float [get, set]
+  + PlasticityCriterion : float [get, set]
+  + SiStm : float [get, set]
+  + Um : float [get, set]
+}
+class "MechanicalParameters" as T_Project_Project_TaskParameters_MechanicalParameters {
+  + MechanicalConvergence : MechanicalConvergence [get, set]
+  + MechanicalParameters()
+}
+class "PhysicalField" as T_Project_Project_TaskParameters_PhysicalField {
+  + Components : double[] [get, set]
+  + Name : PhysicalFieldName [get, set]
+}
+enum "PhysicalFieldName" as T_Project_Project_TaskParameters_PhysicalFieldName {
+    Concentration
+    Displacement
+    PhaseComposition
+    Pressure
+    Strain
+    Stress
+    Temperature
+    Velocity
+}
+class "GeneralParameters\nProject-2" as T_Project_Project_TaskParameters_GeneralParameters <<reference>> [[Project-2.mdpuml Project-2]]
+T_Project_Project_TaskParameters_LinearSolverKind -[hidden]down-> T_Project_Project_TaskParameters_MatrixStorageKind
+T_Project_Project_TaskParameters_MatrixStorageKind -[hidden]down-> T_Project_Project_TaskParameters_MechanicalConvergence
+T_Project_Project_TaskParameters_MechanicalConvergence -[hidden]down-> T_Project_Project_TaskParameters_MechanicalParameters
+T_Project_Project_TaskParameters_MechanicalParameters -[hidden]down-> T_Project_Project_TaskParameters_PhysicalField
+T_Project_Project_TaskParameters_PhysicalField -[hidden]down-> T_Project_Project_TaskParameters_PhysicalFieldName
+T_Project_Project_TaskParameters_PhysicalFieldName -[hidden]down-> T_Project_Project_TaskParameters_GeneralParameters
+T_Project_Project_TaskParameters_MechanicalParameters --> T_Project_Project_TaskParameters_MechanicalConvergence : использует
+T_Project_Project_TaskParameters_MechanicalParameters --|> T_Project_Project_TaskParameters_GeneralParameters
+T_Project_Project_TaskParameters_PhysicalField --> T_Project_Project_TaskParameters_PhysicalFieldName : использует
+legend bottom
+  Обзор: [[Project.mdpuml Project]]; сигнатуры: [[Project-10.md Project-10.md]].
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

@@ -1,0 +1,51 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title OperationalController-3 — Регистрация изменений в ProjectController
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "ProjectController" as T_OperationalController_OperationalController_ProjectController {
+  + CreateProject(projectFile) : void
+  + ImportCAD(projectFile) : void
+  + ImportMesh(filePath) : void
+  + Load(path) : void
+  + ProjectController()
+  - Publish(change) : void
+  - PublishConditionChange(kind, action, index) : void
+  - PublishGeometryChange() : void
+  - PublishGroupChange(group, action) : void
+  - PublishSetChange(setInfo, action) : void
+  - PublishAppendedModel(appendedModel, appendedNames, surfaceChanges) : void
+  - MarkModelSurfaces(model) : IReadOnlyCollection<ISetInfo>
+  - AddCollectionObject<T>(collection, name, item) : void
+  - AddCollectionObjects<T>(collection, name, items) : void
+  - AddSetObjects<T>(set, items) : bool
+  - AddCollectionSets<T>(collection, sets) : IReadOnlyCollection<ISetInfo>
+  - RemoveDeadObjects<T>(set) : bool
+  - RemoveDeadObjects<T>(collection) : IReadOnlyCollection<ISetInfo>
+  - RemoveGeometryEntry<T>(set, number) : bool
+  - Replace(data, path, kind, isOpen) : void
+  - ReplaceTaskData(data) : void
+  + ToEnum<T>(value) : T
+}
+interface "IProjectController" as T_OperationalController_OperationalController_IProjectController <<reference>>
+T_OperationalController_OperationalController_ProjectController -[hidden]down-> T_OperationalController_OperationalController_IProjectController
+T_OperationalController_OperationalController_ProjectController ..|> T_OperationalController_OperationalController_IProjectController
+legend bottom
+  Обзор: [[OperationalController.mdpuml OperationalController]]; сигнатуры: [[OperationalController-3.md OperationalController-3.md]].
+  Контракт: [[OperationalController-25.mdpuml IProjectController]].
+  [[../../Model/Documents/Model-3.mdpuml Model-3]]: IModelData, IGroup.
+  [[../../Model/Documents/Model-16.mdpuml Model-16]]: ISetInfo, IObjectsSet, IObjectsCollection.
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

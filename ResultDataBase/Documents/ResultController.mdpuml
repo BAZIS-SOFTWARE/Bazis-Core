@@ -1,211 +1,59 @@
 @startuml
-
-title ResultController — долгоживущий контроллер результатов (сборка ResultDB)\nЭкземпляр создаётся один раз на процесс, при открытии другой базы заменяется только состояние внутри.\nПояснения — OperationalController/Documents/ProjectController.md, раздел 4
-
-hide empty members
+top to bottom direction
 skinparam classAttributeIconSize 0
-skinparam packageStyle rectangle
-skinparam nodesep 26
-skinparam ranksep 44
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam shadowing false
+skinparam nodesep 18
+skinparam ranksep 24
+hide empty members
 set namespaceSeparator none
-
-legend top left
-  <<current>>  — существует, меняется мало
-  <<changed>>  — существует, меняется заметно
-  <<new>>      — создать
-  <<boundary>> — вне предмета диаграммы, показан свёрнуто
-  Read, ReadResult — без побочных эффектов, можно в фоне.
-  Open, Close, SetCurrent — фиксация, в потоке владельца.
-end legend
-
-' =====================================================================
-package "ResultDB. ResultController" {
-
-  interface IResultController <<new>>
-
-  interface IResultQueries <<new>> {
-    + IsOpen : bool
-    + Path : string
-    + Kind : string
-    + GetTimes() : IEnumerable<float>
-    + GetResultNames() : IEnumerable<string>
-    + GetTableNames() : IEnumerable<string>
-    + ContainsTime(time : float) : bool
-  }
-
-  interface IResultCommands <<new>> {
-    + Read(path : string) : PreparedResults
-    + Open(prepared : PreparedResults) : void
-    + Close() : void
-  }
-
-  interface IResultFrames <<new>> {
-    + Current : Result
-    + CurrentTime : float
-    + ReadResult(time : float) : Result
-    + SetCurrent(result : Result) : void
-  }
-
-  interface IResultEvents <<new>> {
-    + {event} ResultsReplaced : EventHandler<ResultsReplacedEventArgs>
-    + {event} CurrentChanged : EventHandler
-  }
-
-  class ResultController <<new>> {
-    - loader : IResultsLoader
-    - path : string
-    - kind : string
-    - times : List<float>
-    - names : List<string>
-    - tables : List<string>
-    - current : Result
-    - version : int
-    + ResultController(loader : IResultsLoader)
-    - Replace(prepared : PreparedResults, reason : ResultsReplaceReason) : void
-    - CreateEmptyResult() : Result
-  }
-
-  class PreparedResults <<new>> {
-    + Path : string
-    + Kind : string
-    ~ Times : IReadOnlyList<float>
-    ~ Names : IReadOnlyList<string>
-    ~ Tables : IReadOnlyList<string>
-  }
-
-  enum ResultsReplaceReason <<new>> {
-    Opened
-    Closed
-  }
-
-  class ResultsReplacedEventArgs <<new>> {
-    + Reason : ResultsReplaceReason
-  }
-
-  class Result <<changed>> {
-    + Name : string
-    + Time : float
-    + Data : DataSet
-    ~ Version : int
-    + ContainsTable(tableName : string) : bool
-    + GetValue(tableName : string, objNumber : int, resDescr : string) : float
-  }
-
-  interface IResultsLoader <<current>> {
-    + {event} LoadEvent : Action<object, string>
-    + GetResult(fullPath : string, tables : List<string>, time : float) : Result
-    + GetValues(fullPath : string, tableName : string, column : string) : IEnumerable<float>
-    + GetTablesNames(fullPath : string) : IEnumerable<string>
-    + GetTablesSchemes(fullPath : string) : IEnumerable<KeyValuePair<string, List<string>>>
-  }
-
-  class LoadResultsFileDB <<current>> {
-    + Merge(dbPath1 : string, dbPath2 : string) : string
-  }
-
-  class ResultDataBase <<current>>
-}
-
-' =====================================================================
-package "PostProc" {
-  class PostProcController <<boundary>> {
-    шкала: FillRange, GetValueColor, GetItems
-  }
-  class ResultsFieldsCreator <<boundary>> {
-    поля результатов для сцены
-  }
-  class MergeResults <<boundary>> {
-    пересчёт на узлы стыка
-  }
-}
-
-package "OperationalController" {
-  interface IProjectController <<boundary>>
-}
-
-package "Оболочка (BazisGUI / BazisAvaloniaGUI)" {
-  class ResultsMenu <<boundary>> {
-    «Открыть», «Объединить»
-  }
-  class NavigatorViewModel <<boundary>> {
-    ветка «Результаты»: результаты и времена
-  }
-  class PlayerViewModel <<boundary>> {
-    плеер по времени результата
-  }
-  class ResultsViewModel <<boundary>> {
-    шкала и поле на сцене
-  }
-}
-
-' =====================================================================
-IResultController -up-|> IResultQueries
-IResultController -up-|> IResultCommands
-IResultController -up-|> IResultFrames
-IResultController -up-|> IResultEvents
-IResultController <|.. ResultController
-
-ResultController *-- IResultsLoader : в конструкторе
-IResultsLoader <|.. LoadResultsFileDB
-LoadResultsFileDB ..> ResultDataBase : SQLite
-LoadResultsFileDB ..> Result : создаёт
-ResultController ..> PreparedResults : создаёт / принимает
-ResultController o-- Result : Current
-ResultController ..> ResultsReplacedEventArgs
-ResultsReplacedEventArgs --> ResultsReplaceReason
-
-ResultsMenu ..> IResultCommands : Read → Open
-ResultsMenu ..> LoadResultsFileDB : Merge файлов, затем Read → Open
-NavigatorViewModel ..> IResultEvents : ResultsReplaced → ветка
-NavigatorViewModel ..> IResultQueries : имена, времена
-PlayerViewModel ..> IResultFrames : ReadResult (фон) → SetCurrent
-PlayerViewModel ..> IResultQueries : шкала времён
-ResultsViewModel ..> IResultEvents : CurrentChanged
-ResultsViewModel ..> PostProcController
-ResultsViewModel ..> ResultsFieldsCreator
-PlayerViewModel ..> MergeResults : при включённой настройке
-MergeResults ..> IProjectController : FindInterfacedNodes
-MergeResults ..> Result : пересчитывает кадр до SetCurrent
-
-' ---------------------------------------------------------------------
-note right of ResultController
-  Экземпляр один на процесс, создаёт корень композиции.
-  Текстовый loader.LoadEvent не транслируется клиентам;
-  статус чтения базы показывает оболочка.
-  Без открытой базы: IsOpen = false, списки пусты,
-  Current — пустой Result (не null).
-  Не зависит от ProjectController: можно открыть любой *.db,
-  в том числе аргументом -res. Закрывать ли результаты
-  при ProjectReplaced — решение оболочки.
+title ResultDB — доступ к результатам без собственных событий
+caption Прежнее предложение ResultController с отдельными событиями отменено
+interface IResultsLoader <<reference>>
+interface IResultsSaver <<reference>>
+class LoadResultsFileDB <<reference>>
+class SaveResultsFileDb <<reference>>
+class Result <<reference>>
+class ResultDataBase <<reference>>
+LoadResultsFileDB ..|> IResultsLoader
+SaveResultsFileDb ..|> IResultsSaver
+LoadResultsFileDB ..> Result : читает
+SaveResultsFileDb ..> Result : сохраняет
+ResultDataBase ..> Result : доступ к хранилищу
+IResultsLoader -[hidden]down-> LoadResultsFileDB
+LoadResultsFileDB -[hidden]down-> IResultsSaver
+IResultsSaver -[hidden]down-> SaveResultsFileDb
+SaveResultsFileDb -[hidden]down-> ResultDataBase
+ResultDataBase -[hidden]down-> Result
+note bottom of ResultDataBase
+  В этой библиотеке событий нет.
+  Долгоживущий ResultController из старой схемы не реализован.
+  Контракт управления активными результатами в ProjectController
+  должен быть спроектирован отдельно, если он потребуется.
 end note
-
-note bottom of PreparedResults
-  Read собирает всё, что сейчас делает FillingResultsData:
-  схемы таблиц (GetTablesSchemes), имена результатов —
-  описатели таблицы nodes, имена таблиц, времена
-  (GetValues(path, "nodes", "Time")), Kind — префикс имени
-  файла (термическая / механическая).
-  Состояние контроллера не меняет.
+note right of IResultsLoader
+  Полный состав:
+  ResultDB-2.mdpuml
 end note
-
-note bottom of Result
-  Version ставит ReadResult по текущей версии открытия.
-  SetCurrent отбрасывает кадр чужой версии:
-  кадр, прочитанный до последнего Open, текущим не станет.
+note right of IResultsSaver
+  Полный состав:
+  ResultDB-2.mdpuml
 end note
-
-note bottom of IResultFrames
-  Шаг плеера:
-    var frame = await Task.Run(() => results.ReadResult(time));
-    results.SetCurrent(frame);
-  ReadResult читает все таблицы открытой базы.
-  Если включён пересчёт на узлы, он делается над кадром
-  между ReadResult и SetCurrent: Current не меняется на месте.
+note right of LoadResultsFileDB
+  Полный состав:
+  ResultDB-2.mdpuml
 end note
-
-note bottom of PostProc
-  Отображение, а не данные результатов:
-  шкала, поля, пересчёт на узлы остаются вне контроллера.
+note right of SaveResultsFileDb
+  Полный состав:
+  ResultDB-3.mdpuml
 end note
-
+note right of Result
+  Полный состав:
+  ResultDB-1.mdpuml
+end note
+note right of ResultDataBase
+  Полный состав:
+  ResultDB-1.mdpuml
+end note
 @enduml

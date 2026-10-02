@@ -1,0 +1,85 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+allowmixing
+title GmshApi — обзор классов и расположение подробностей
+caption Обзор; полный состав членов — на нумерованных поддиаграммах
+class "Gmsh" as T_GmshApi_GmshApi_Gmsh <<details>>
+note right of T_GmshApi_GmshApi_Gmsh
+  GmshApi-3
+end note
+class "GmshKernel" as T_GmshApi_GmshApi_GmshKernel <<static>> <<details>>
+note right of T_GmshApi_GmshApi_GmshKernel
+  GmshApi-3
+end note
+class "Model" as T_GmshApi_GmshApi_Model <<details>>
+note right of T_GmshApi_GmshApi_Model
+  GmshApi-4, GmshApi-5
+end note
+class "Occ" as T_GmshApi_GmshApi_Occ <<details>>
+note right of T_GmshApi_GmshApi_Occ
+  GmshApi-5, GmshApi-6
+end note
+class "Geo" as T_GmshApi_GmshApi_Geo <<details>>
+note right of T_GmshApi_GmshApi_Geo
+  GmshApi-1
+end note
+class "Mesh" as T_GmshApi_GmshApi_Mesh <<details>>
+note right of T_GmshApi_GmshApi_Mesh
+  GmshApi-9, GmshApi-10
+end note
+class "Option" as T_GmshApi_GmshApi_Option <<details>>
+note right of T_GmshApi_GmshApi_Option
+  GmshApi-6
+end note
+class "Logger" as T_GmshApi_GmshApi_Logger <<details>>
+note right of T_GmshApi_GmshApi_Logger
+  GmshApi-3
+end note
+class "Plugin" as T_GmshApi_GmshApi_Plugin <<details>>
+note right of T_GmshApi_GmshApi_Plugin
+  GmshApi-6
+end note
+class "Field" as T_GmshApi_GmshApi_Field <<details>>
+note right of T_GmshApi_GmshApi_Field
+  GmshApi-2
+end note
+T_GmshApi_GmshApi_Gmsh --> T_GmshApi_GmshApi_Logger : использует
+T_GmshApi_GmshApi_Gmsh --> T_GmshApi_GmshApi_Model : использует
+T_GmshApi_GmshApi_Gmsh --> T_GmshApi_GmshApi_Option : использует
+T_GmshApi_GmshApi_Gmsh --> T_GmshApi_GmshApi_Plugin : использует
+T_GmshApi_GmshApi_Mesh --> T_GmshApi_GmshApi_Field : использует
+T_GmshApi_GmshApi_Model --> T_GmshApi_GmshApi_Geo : использует
+T_GmshApi_GmshApi_Model --> T_GmshApi_GmshApi_Mesh : использует
+T_GmshApi_GmshApi_Model --> T_GmshApi_GmshApi_Occ : использует
+rectangle "Жизненный цикл и CAD API" as Area_1 <<область>>
+note right of Area_1
+  GmshApi-1.mdpuml, GmshApi-3.mdpuml, GmshApi-4.mdpuml
+  GmshApi-5.mdpuml, GmshApi-6.mdpuml, GmshApi-7.mdpuml
+  GmshApi-8.mdpuml
+end note
+rectangle "Сетка и настройки" as Area_2 <<область>>
+note right of Area_2
+  GmshApi-2.mdpuml, GmshApi-9.mdpuml, GmshApi-10.mdpuml
+end note
+T_GmshApi_GmshApi_Gmsh -[hidden]down-> T_GmshApi_GmshApi_GmshKernel
+T_GmshApi_GmshApi_GmshKernel -[hidden]down-> T_GmshApi_GmshApi_Model
+T_GmshApi_GmshApi_Model -[hidden]down-> T_GmshApi_GmshApi_Occ
+T_GmshApi_GmshApi_Occ -[hidden]down-> T_GmshApi_GmshApi_Geo
+T_GmshApi_GmshApi_Geo -[hidden]down-> T_GmshApi_GmshApi_Mesh
+T_GmshApi_GmshApi_Mesh -[hidden]down-> T_GmshApi_GmshApi_Option
+T_GmshApi_GmshApi_Option -[hidden]down-> T_GmshApi_GmshApi_Logger
+T_GmshApi_GmshApi_Logger -[hidden]down-> T_GmshApi_GmshApi_Plugin
+T_GmshApi_GmshApi_Plugin -[hidden]down-> T_GmshApi_GmshApi_Field
+T_GmshApi_GmshApi_Field -[hidden]down-> Area_1
+Area_1 -[hidden]down-> Area_2
+@enduml

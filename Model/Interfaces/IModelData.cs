@@ -1,5 +1,6 @@
 ﻿using Model.GeometryObjects;
 using System;
+using Model.Interfaces.ObjectsCollections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

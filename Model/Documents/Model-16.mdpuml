@@ -1,0 +1,79 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title Model-16 — Модель, наборы и группы
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+interface "IVolume" as T_Model_Model_Interfaces_IVolume {
+  + CalcVolume() : double
+}
+interface "IObjectsCollection<T>" as T_Model_Model_Interfaces_ObjectsCollections_IObjectsCollection_1 {
+  + Count : int [get]
+  + Names : ICollection<string> [get]
+  + Objects : ICollection<ObjectsSet<T>> [get]
+  + this[int index] : ObjectsSet<T> [get]
+  + this[string name] : ObjectsSet<T> [get]
+  + Add(set) : void
+  + Add(setName) : void
+  + Add(setName, addObj) : void
+  + AddRange(setName, addObjs) : void
+  + Append(collection) : IReadOnlyList<string>
+  + ChangeName(oldName, newName) : void
+  + Clear() : void
+  + ClearEmptySets() : void
+  + ContainsName(setName) : bool
+  + ContainsNumber(objNumbr) : bool
+  + Find(objNumbr) : T
+  + GetMaxNumber() : int
+  + GetMinNumber() : int
+  + GetObjects() : IEnumerable<T>
+  + Remove(objNumber) : void
+  + Remove(name) : bool
+  + RemoveNotExistedObjects() : void
+}
+interface "IObjectsSet<T>" as T_Model_Model_Interfaces_ObjectsCollections_IObjectsSet_1 {
+  + Append(appSet) : string
+  + ClearNotExisted() : void
+  + ClearWithExistState() : void
+}
+interface "ISetInfo" as T_Model_Model_Interfaces_ObjectsCollections_ISetInfo {
+  + Name : string [get]
+  + Number : int [get, set]
+  + NumberOfObjects : int [get]
+  + ObjType : ObjType [get]
+  + GetCentr(number) : Point3D
+  + GetCoords(number) : IEnumerable<Point3D>
+  + GetNumbers() : IEnumerable<int>
+  + GetObjectInfo(number) : string
+  + GetObjectsInfo() : IEnumerable<string>
+}
+class "ModelData" as T_Model_Model_ModelData {
+}
+interface "IModelData\nModel-3" as T_Model_Model_Interfaces_IModelData <<reference>> [[Model-3.mdpuml Model-3]]
+T_Model_Model_Interfaces_IVolume -[hidden]down-> T_Model_Model_Interfaces_ObjectsCollections_IObjectsCollection_1
+T_Model_Model_Interfaces_ObjectsCollections_IObjectsCollection_1 -[hidden]down-> T_Model_Model_Interfaces_ObjectsCollections_IObjectsSet_1
+T_Model_Model_Interfaces_ObjectsCollections_IObjectsSet_1 -[hidden]down-> T_Model_Model_Interfaces_ObjectsCollections_ISetInfo
+T_Model_Model_Interfaces_ObjectsCollections_ISetInfo -[hidden]down-> T_Model_Model_ModelData
+T_Model_Model_ModelData -[hidden]down-> T_Model_Model_Interfaces_IModelData
+T_Model_Model_Interfaces_ObjectsCollections_IObjectsSet_1 --|> T_Model_Model_Interfaces_ObjectsCollections_ISetInfo
+T_Model_Model_ModelData ..|> T_Model_Model_Interfaces_IModelData
+legend bottom
+  Обзор: [[Model.mdpuml Model]]; сигнатуры: [[Model-16.md Model-16.md]].
+  reference — адрес подробностей указан в заголовке типа.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+  Связанные типы в контрактах и сигнатурах:
+  [[Model-3.mdpuml Model-3]]: IModelData.
+  [[Model-6.mdpuml Model-6]]: ObjType.
+  [[Model-18.mdpuml Model-18]]: ObjectsSet<T>.
+  [[../../PrGeometry/Documents/Geometry-4.mdpuml Geometry-4]]: Point3D.
+endlegend
+@enduml

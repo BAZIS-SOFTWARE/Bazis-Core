@@ -22,7 +22,6 @@ namespace TestProject_test.Project
             //assing
             var loader = new LoadProjectFromTextFormat();
             var saver = new SaveProjectTextFormat();
-            loader.LoadEvent += (ar1, ar2) => { };
             saver.SaveEvent += (ar1, ar2) => { };
             //act
             var proj = loader.Load($@"{testDir}\proj_traj.bpf");

@@ -1,0 +1,19 @@
+{
+  "PDF": "output\\pdf\\Project.pdf",
+  "Pages": 76,
+  "InternalLinks": 498,
+  "ExternalLinks": 0,
+  "DiagramLinksVerified": 106,
+  "SignatureLinesVerified": 453,
+  "VectorDiagrams": true,
+  "TextWithinPages": true,
+  "ContactSheets": [
+    "tmp\\pdfs\\load-event-docs\\project-preview-v4\\Project-contact-1.png",
+    "tmp\\pdfs\\load-event-docs\\project-preview-v4\\Project-contact-2.png",
+    "tmp\\pdfs\\load-event-docs\\project-preview-v4\\Project-contact-3.png",
+    "tmp\\pdfs\\load-event-docs\\project-preview-v4\\Project-contact-4.png",
+    "tmp\\pdfs\\load-event-docs\\project-preview-v4\\Project-contact-5.png",
+    "tmp\\pdfs\\load-event-docs\\project-preview-v4\\Project-contact-6.png",
+    "tmp\\pdfs\\load-event-docs\\project-preview-v4\\Project-contact-7.png"
+  ]
+}

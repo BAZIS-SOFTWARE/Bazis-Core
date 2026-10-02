@@ -28,17 +28,26 @@ namespace Model
 
         public IReadOnlyList<string> Append(IModelData modelData)
         {
+            if (modelData == null)
+                throw new ArgumentNullException(nameof(modelData));
             var appendedNames = new List<string>();
-            appendedNames.Add(ObjectData.NodesSet.Append(modelData.ObjectData.NodesSet));
+            var nodesName = ObjectData.NodesSet.Append(modelData.ObjectData.NodesSet);
+            appendedNames.Add(nodesName);
 
-            appendedNames.AddRange(ObjectData.E1DCollection.Append(modelData.ObjectData.E1DCollection));
-            appendedNames.AddRange(ObjectData.E2DCollection.Append(modelData.ObjectData.E2DCollection));
-            appendedNames.AddRange(ObjectData.E3DCollection.Append(modelData.ObjectData.E3DCollection));
+            var names1D = ObjectData.E1DCollection.Append(modelData.ObjectData.E1DCollection);
+            appendedNames.AddRange(names1D);
+            var names2D = ObjectData.E2DCollection.Append(modelData.ObjectData.E2DCollection);
+            appendedNames.AddRange(names2D);
+            var names3D = ObjectData.E3DCollection.Append(modelData.ObjectData.E3DCollection);
+            appendedNames.AddRange(names3D);
 
-            appendedNames.Add(ObjectData.PointsSet.Append(modelData.ObjectData.PointsSet));
+            var pointsName = ObjectData.PointsSet.Append(modelData.ObjectData.PointsSet);
+            appendedNames.Add(pointsName);
 
-            appendedNames.Add(ObjectData.CurveSet.Append(modelData.ObjectData.CurveSet));
-            appendedNames.Add(ObjectData.SurfaceSet.Append(modelData.ObjectData.SurfaceSet));
+            var curvesName = ObjectData.CurveSet.Append(modelData.ObjectData.CurveSet);
+            appendedNames.Add(curvesName);
+            var surfacesName = ObjectData.SurfaceSet.Append(modelData.ObjectData.SurfaceSet);
+            appendedNames.Add(surfacesName);
 
             foreach (var item in modelData.GroupData)
                 GroupData.Add(item);

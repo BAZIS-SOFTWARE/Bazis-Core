@@ -1,0 +1,67 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title Project-7 — Проект, задача и граничные условия
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "ClampData" as T_Project_Project_Tasks_ClampData {
+  + ClampKind : ClampKind [get, private set]
+  + ClampData(group, start, stop)
+  + ToString() : string
+  + TrySetKind(v) : void
+}
+enum "ClampKind" as T_Project_Project_Tasks_ClampKind {
+    Жесткое
+    Контакт
+    Симметрия
+    Упругое
+}
+abstract class "CondData" as T_Project_Project_Tasks_CondData {
+  # CondData(group, startTime, stopTime)
+  # CondData(group, info)
+  + ToString() : string
+}
+abstract class "Data" as T_Project_Project_Tasks_Data {
+  # GetInfo : string [get]
+  + Data(info)
+  # SetInfo(info) : void
+}
+class "HeatData" as T_Project_Project_Tasks_HeatData {
+  + HeatData(group, start, stop)
+}
+class "LoadData" as T_Project_Project_Tasks_LoadData {
+  + LoadKind : LoadKind [get, set]
+  + LoadData(group, start, stop)
+  + ToString() : string
+  + TrySetKind(v) : void
+}
+interface "ICondData\nProject-4" as T_Project_Project_Interfaces_Tasks_ICondData <<reference>> [[Project-4.mdpuml Project-4]]
+interface "IData\nProject-4" as T_Project_Project_Interfaces_Tasks_IData <<reference>> [[Project-4.mdpuml Project-4]]
+T_Project_Project_Tasks_ClampData -[hidden]down-> T_Project_Project_Tasks_ClampKind
+T_Project_Project_Tasks_ClampKind -[hidden]down-> T_Project_Project_Tasks_CondData
+T_Project_Project_Tasks_CondData -[hidden]down-> T_Project_Project_Tasks_Data
+T_Project_Project_Tasks_Data -[hidden]down-> T_Project_Project_Tasks_HeatData
+T_Project_Project_Tasks_HeatData -[hidden]down-> T_Project_Project_Tasks_LoadData
+T_Project_Project_Tasks_LoadData -[hidden]down-> T_Project_Project_Interfaces_Tasks_ICondData
+T_Project_Project_Interfaces_Tasks_ICondData -[hidden]down-> T_Project_Project_Interfaces_Tasks_IData
+T_Project_Project_Tasks_ClampData --> T_Project_Project_Tasks_ClampKind : использует
+T_Project_Project_Tasks_ClampData --|> T_Project_Project_Tasks_CondData
+T_Project_Project_Tasks_CondData ..|> T_Project_Project_Interfaces_Tasks_ICondData
+T_Project_Project_Tasks_Data ..|> T_Project_Project_Interfaces_Tasks_IData
+T_Project_Project_Tasks_HeatData --|> T_Project_Project_Tasks_CondData
+T_Project_Project_Tasks_LoadData --|> T_Project_Project_Tasks_CondData
+legend bottom
+  Обзор: [[Project.mdpuml Project]]; сигнатуры: [[Project-7.md Project-7.md]].
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

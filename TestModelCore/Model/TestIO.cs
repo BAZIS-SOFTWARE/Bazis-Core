@@ -38,7 +38,6 @@ namespace TestModeCore_test.Model
             //assing
             var model = new ModelData();
 
-            model.Loader.LoadEvent += (ar1, ar2) => { };
             model.Saver.SaveEvent += (ar1, ar2) => { };
 
             //act
@@ -229,7 +228,6 @@ namespace TestModeCore_test.Model
         {
             //assing
             var loader = new LoadModelFromASCIITextFile_v2();
-            loader.LoadEvent += (ar1, ar2) => { };
 
             //act
             var model = loader.Load(path);
@@ -244,7 +242,6 @@ namespace TestModeCore_test.Model
         public void SaveToASCII_ShouldBeEquivalentSourceFile()
         {
             var loader = new LoadModelFromASCIITextFile();
-            loader.LoadEvent += (ar1, ar2) => { };
             var modelBeforeSaving = loader.Load(@"..\..\..\Examples\VIsual-Mesh\DATA3.ASC");
             var saver = new SaveModelToASCIITextFile();
             saver.Save(modelBeforeSaving, @"..\..\..\Examples\VIsual-Mesh\result.ASC");
@@ -258,7 +255,6 @@ namespace TestModeCore_test.Model
         {
             string path = @"..\..\..\Examples\CDB\hex.cdb";
             var import = new LoadModelFromCDBTextFile();
-            import.LoadEvent += (ar1, ar2) => { };
             var model = import.Load(path);
             var element = model.ObjectData.E3DCollection.GetObjects().First();
             Assert.AreEqual(8, model.ObjectData.Count(ObjType.Узел));
@@ -272,7 +268,6 @@ namespace TestModeCore_test.Model
         {
             string path = @"..\..\..\Examples\CDB\longModel.cdb";
             var import = new LoadModelFromCDBTextFile();
-            import.LoadEvent += (ar1, ar2) => { };
             var model = import.Load(path);
             Assert.AreEqual(3321, model.ObjectData.Count(ObjType.Узел));
             var elements = model.ObjectData.E3DCollection.GetObjects();
@@ -285,7 +280,6 @@ namespace TestModeCore_test.Model
         {
             string path = @"..\..\..\Examples\CDB\longModel.cdb";
             var import = new LoadModelFromCDBTextFile();
-            import.LoadEvent += (ar1, ar2) => { };
             var model = import.Load(path);
             var elements = model.ObjectData.E3DCollection.GetObjects();
             Assert.IsTrue(elements.All(element => element.GetSurfaces().Count() >= 4));
@@ -297,7 +291,6 @@ namespace TestModeCore_test.Model
         public void ImportPentaFromCDBTextFormat(string path, int nbrNodes, int nbrEl)
         {
             var import = new LoadModelFromCDBTextFile();
-            import.LoadEvent += (ar1, ar2) => { };
             var model = import.Load(path);
             var element = model.ObjectData.E3DCollection.First();
             Assert.AreEqual(nbrNodes, model.ObjectData.Count(ObjType.Узел));
@@ -310,7 +303,6 @@ namespace TestModeCore_test.Model
         public void LoadMeshFromSalomeFileCorrectly(string filePath, int nodes, int lineElms, int surfElms, int volElems)
         {
             var import = new LoadModelFromSalomeFile();
-            import.LoadEvent += (ar1, ar2) => { };
             var model = import.Load(filePath);
             Assert.AreEqual(nodes, model.ObjectData.NodesSet.Count);
             Assert.AreEqual(lineElms, model.ObjectData.E1DCollection.Count);
@@ -325,7 +317,6 @@ namespace TestModeCore_test.Model
         {
             //assing
             var loader = new LoadModelFromINPTextFile_v2();
-            loader.LoadEvent += (ar1, ar2) => { };
 
             //act
             var model = loader.Load(path);            

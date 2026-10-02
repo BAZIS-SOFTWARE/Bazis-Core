@@ -268,6 +268,10 @@ public bool ContainsName(string collName)
         /// <param name="newName">Новое имя набора. Имя присваивается и самому объекту `ObjectsSet&lt;T&gt;`.</param>
         public void ChangeName(string oldName, string newName)
         {
+            if (oldName == newName || !ContainsName(oldName))
+                return;
+            if (ContainsName(newName))
+                throw new ArgumentException("A set with the target name already exists.", nameof(newName));
             ObjectsSet<T> temp = new ObjectsSet<T>(newName);
             if (ContainsName(oldName))
             {
