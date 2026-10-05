@@ -31,7 +31,7 @@ interface "IMeshCommands\nчасть 2/2" as T_OperationalController_Operational
   + SetVolumeMeshingSettings(volumeNumber, settings) : void
 }
 note right of T_OperationalController_OperationalController_IMeshCommands
-  Полный состав: OperationalController-20, OperationalController-21
+  Полный состав: [[OperationalController-20.mdpuml OperationalController-20]], [[OperationalController-21.mdpuml OperationalController-21]]
 end note
 interface "IMeshQueries\nчасть 1/2" as T_OperationalController_OperationalController_IMeshQueries {
   + CalcElemsNormals(elemDim) : IEnumerable<Curve>
@@ -60,7 +60,7 @@ interface "IMeshQueries\nчасть 1/2" as T_OperationalController_OperationalC
   + GetModelSurfaceElements(dim) : IEnumerable<ISurfaceElement>
 }
 note right of T_OperationalController_OperationalController_IMeshQueries
-  Полный состав: OperationalController-21, OperationalController-22
+  Полный состав: [[OperationalController-21.mdpuml OperationalController-21]], [[OperationalController-22.mdpuml OperationalController-22]]
 end note
 T_OperationalController_OperationalController_IMeshCommands -[hidden]down-> T_OperationalController_OperationalController_IMeshQueries
 legend bottom

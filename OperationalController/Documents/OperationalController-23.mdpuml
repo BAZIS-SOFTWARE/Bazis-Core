@@ -23,7 +23,7 @@ interface "IModelView\nчасть 2/2" as T_OperationalController_OperationalCon
   + TryGetSingleSelectedType(out objType) : bool
 }
 note right of T_OperationalController_OperationalController_IModelView
-  Полный состав: OperationalController-22, OperationalController-23
+  Полный состав: [[OperationalController-22.mdpuml OperationalController-22]], [[OperationalController-23.mdpuml OperationalController-23]]
 end note
 interface "IObjectsMerger" as T_OperationalController_OperationalController_IObjectsMerger {
   + Merge(numbers, modelObjects) : void

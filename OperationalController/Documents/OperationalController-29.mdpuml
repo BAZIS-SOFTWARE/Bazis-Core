@@ -21,7 +21,7 @@ interface "IGmshController\nчасть 2/2" as T_OperationalController_Operation
   + Unload() : void
 }
 note right of T_OperationalController_OperationalController_GmshController_IGmshController
-  Полный состав: OperationalController-28, OperationalController-29
+  Полный состав: [[OperationalController-28.mdpuml OperationalController-28]], [[OperationalController-29.mdpuml OperationalController-29]]
 end note
 interface "IExtrusionStrategy<TResult>" as T_OperationalController_OperationalController_MeshObjsCreator_Extrude_IExtrusionStrategy_1 {
   + AddElement(extruder, correctMatrix, outIndex, inIndex) : void
