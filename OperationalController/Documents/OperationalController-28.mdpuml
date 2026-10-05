@@ -23,7 +23,7 @@ interface "IProjectView\nчасть 2/2" as T_OperationalController_OperationalC
   + TryGetSingleSelectedType(out objType) : bool
 }
 note right of T_OperationalController_OperationalController_IProjectView
-  Полный состав: OperationalController-27, OperationalController-28
+  Полный состав: [[OperationalController-27.mdpuml OperationalController-27]], [[OperationalController-28.mdpuml OperationalController-28]]
 end note
 interface "ISelectionHelper" as T_OperationalController_OperationalController_ISelectionHelper {
   + SelectE2DInPlane(objectsData, angleInGradus, startNumber) : List<int>
@@ -63,7 +63,7 @@ interface "IGmshController\nчасть 1/2" as T_OperationalController_Operation
   + SetGradientVolume(tag, power, distMax, surfSize, coreSize) : void
 }
 note right of T_OperationalController_OperationalController_GmshController_IGmshController
-  Полный состав: OperationalController-28, OperationalController-29
+  Полный состав: [[OperationalController-28.mdpuml OperationalController-28]], [[OperationalController-29.mdpuml OperationalController-29]]
 end note
 interface "IObjsPresenter" as T_OperationalController_OperationalController_IObjsPresenter <<reference>>
 T_OperationalController_OperationalController_IProjectView -[hidden]down-> T_OperationalController_OperationalController_ISelectionHelper

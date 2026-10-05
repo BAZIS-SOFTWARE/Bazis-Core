@@ -42,8 +42,8 @@ T_OperationalController_OperationalController_ProjectController ..|> T_Operation
 legend bottom
   Обзор: [[OperationalController.mdpuml OperationalController]]; сигнатуры: [[OperationalController-3.md OperationalController-3.md]].
   Контракт: [[OperationalController-25.mdpuml IProjectController]].
-  [[../../Model/Documents/Model-3.mdpuml Model-3]]: IModelData, IGroup.
-  [[../../Model/Documents/Model-16.mdpuml Model-16]]: ISetInfo, IObjectsSet, IObjectsCollection.
+  Точки входа в Model: IModelData, IGroup.
+  Точки входа в Model: ISetInfo, IObjectsSet, IObjectsCollection.
   reference — тип раскрыт на другой диаграмме.
   Параметры методов: имена; полные сигнатуры — в соседнем .md.
   Унаследованные члены интерфейсов в классах не повторяются.

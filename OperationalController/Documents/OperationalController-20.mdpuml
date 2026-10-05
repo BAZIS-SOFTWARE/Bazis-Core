@@ -39,7 +39,7 @@ interface "IMeshCommands\nчасть 1/2" as T_OperationalController_Operational
   + HideMesh(elemDim) : void
 }
 note right of T_OperationalController_OperationalController_IMeshCommands
-  Полный состав: OperationalController-20, OperationalController-21
+  Полный состав: [[OperationalController-20.mdpuml OperationalController-20]], [[OperationalController-21.mdpuml OperationalController-21]]
 end note
 legend bottom
   reference — тип раскрыт на другой диаграмме.

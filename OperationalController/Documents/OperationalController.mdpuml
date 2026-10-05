@@ -15,39 +15,39 @@ title OperationalController — обзор классов и расположе�
 caption Обзор; полный состав членов — на нумерованных поддиаграммах
 interface "IProjectController" as T_OperationalController_OperationalController_IProjectController <<details>>
 note right of T_OperationalController_OperationalController_IProjectController
-  OperationalController-25
+  [[OperationalController-25.mdpuml OperationalController-25]]
 end note
 class "ProjectController" as T_OperationalController_OperationalController_ProjectController <<details>>
 note right of T_OperationalController_OperationalController_ProjectController
-  OperationalController-3
+  [[OperationalController-3.mdpuml OperationalController-3]]
 end note
 interface "IProjectSession" as T_OperationalController_OperationalController_IProjectSession <<details>>
 note right of T_OperationalController_OperationalController_IProjectSession
-  OperationalController-26
+  [[OperationalController-26.mdpuml OperationalController-26]]
 end note
 interface "IProjectEvents" as T_OperationalController_OperationalController_IProjectEvents <<details>>
 note right of T_OperationalController_OperationalController_IProjectEvents
-  OperationalController-26
+  [[OperationalController-26.mdpuml OperationalController-26]]
 end note
 interface "IProjectView" as T_OperationalController_OperationalController_IProjectView <<details>>
 note right of T_OperationalController_OperationalController_IProjectView
-  OperationalController-27, OperationalController-28
+  [[OperationalController-27.mdpuml OperationalController-27]], [[OperationalController-28.mdpuml OperationalController-28]]
 end note
 class "ModelView" as T_OperationalController_OperationalController_ModelView <<internal>> <<details>>
 note right of T_OperationalController_OperationalController_ModelView
-  OperationalController-5
+  [[OperationalController-5.mdpuml OperationalController-5]]
 end note
 interface "IGmshController" as T_OperationalController_OperationalController_GmshController_IGmshController <<details>>
 note right of T_OperationalController_OperationalController_GmshController_IGmshController
-  OperationalController-28, OperationalController-29
+  [[OperationalController-28.mdpuml OperationalController-28]], [[OperationalController-29.mdpuml OperationalController-29]]
 end note
 class "GmshController" as T_OperationalController_OperationalController_GmshController_GmshController <<details>>
 note right of T_OperationalController_OperationalController_GmshController_GmshController
-  OperationalController-9
+  [[OperationalController-9.mdpuml OperationalController-9]]
 end note
 class "ProjectMessageEventArgs" as T_OperationalController_OperationalController_ProjectMessageEventArgs <<details>>
 note right of T_OperationalController_OperationalController_ProjectMessageEventArgs
-  OperationalController-6
+  [[OperationalController-6.mdpuml OperationalController-6]]
 end note
 T_OperationalController_OperationalController_GmshController_GmshController ..|> T_OperationalController_OperationalController_GmshController_IGmshController
 T_OperationalController_OperationalController_IProjectController --|> T_OperationalController_OperationalController_IProjectEvents
@@ -58,27 +58,27 @@ T_OperationalController_OperationalController_ProjectController --> T_Operationa
 T_OperationalController_OperationalController_ProjectController ..|> T_OperationalController_OperationalController_IProjectController
 rectangle "Представление и сообщения об изменениях" as Area_1 <<область>>
 note right of Area_1
-  OperationalController-1.mdpuml, OperationalController-5.mdpuml, OperationalController-6.mdpuml
-  OperationalController-7.mdpuml
+  [[OperationalController-1.mdpuml OperationalController-1]], [[OperationalController-5.mdpuml OperationalController-5]], [[OperationalController-6.mdpuml OperationalController-6]],
+  [[OperationalController-7.mdpuml OperationalController-7]]
 end note
 rectangle "Создание объектов, операции и презентаторы" as Area_2 <<область>>
 note right of Area_2
-  OperationalController-2.mdpuml, OperationalController-8.mdpuml, OperationalController-9.mdpuml
-  OperationalController-10.mdpuml, OperationalController-11.mdpuml, OperationalController-12.mdpuml
-  OperationalController-13.mdpuml, OperationalController-14.mdpuml, OperationalController-15.mdpuml
-  OperationalController-16.mdpuml, OperationalController-17.mdpuml, OperationalController-18.mdpuml
+  [[OperationalController-2.mdpuml OperationalController-2]], [[OperationalController-8.mdpuml OperationalController-8]], [[OperationalController-9.mdpuml OperationalController-9]],
+  [[OperationalController-10.mdpuml OperationalController-10]], [[OperationalController-11.mdpuml OperationalController-11]], [[OperationalController-12.mdpuml OperationalController-12]],
+  [[OperationalController-13.mdpuml OperationalController-13]], [[OperationalController-14.mdpuml OperationalController-14]], [[OperationalController-15.mdpuml OperationalController-15]],
+  [[OperationalController-16.mdpuml OperationalController-16]], [[OperationalController-17.mdpuml OperationalController-17]], [[OperationalController-18.mdpuml OperationalController-18]]
 end note
 rectangle "Регистрация изменений в ProjectController" as Area_3 <<область>>
 note right of Area_3
-  OperationalController-3.mdpuml
+  [[OperationalController-3.mdpuml OperationalController-3]]
 end note
 rectangle "Специализированные контракты контроллера" as Area_4 <<область>>
 note right of Area_4
-  OperationalController-4.mdpuml, OperationalController-19.mdpuml, OperationalController-20.mdpuml
-  OperationalController-21.mdpuml, OperationalController-22.mdpuml, OperationalController-23.mdpuml
-  OperationalController-24.mdpuml, OperationalController-25.mdpuml, OperationalController-26.mdpuml
-  OperationalController-27.mdpuml, OperationalController-28.mdpuml, OperationalController-29.mdpuml
-  OperationalController-30.mdpuml
+  [[OperationalController-4.mdpuml OperationalController-4]], [[OperationalController-19.mdpuml OperationalController-19]], [[OperationalController-20.mdpuml OperationalController-20]],
+  [[OperationalController-21.mdpuml OperationalController-21]], [[OperationalController-22.mdpuml OperationalController-22]], [[OperationalController-23.mdpuml OperationalController-23]],
+  [[OperationalController-24.mdpuml OperationalController-24]], [[OperationalController-25.mdpuml OperationalController-25]], [[OperationalController-26.mdpuml OperationalController-26]],
+  [[OperationalController-27.mdpuml OperationalController-27]], [[OperationalController-28.mdpuml OperationalController-28]], [[OperationalController-29.mdpuml OperationalController-29]],
+  [[OperationalController-30.mdpuml OperationalController-30]]
 end note
 T_OperationalController_OperationalController_IProjectController -[hidden]down-> T_OperationalController_OperationalController_ProjectController
 T_OperationalController_OperationalController_ProjectController -[hidden]down-> T_OperationalController_OperationalController_IProjectSession

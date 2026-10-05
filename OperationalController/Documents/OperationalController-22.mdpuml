@@ -21,7 +21,7 @@ interface "IMeshQueries\nчасть 2/2" as T_OperationalController_OperationalC
   + SelectNodeInPlane(plane, color) : List<int>
 }
 note right of T_OperationalController_OperationalController_IMeshQueries
-  Полный состав: OperationalController-21, OperationalController-22
+  Полный состав: [[OperationalController-21.mdpuml OperationalController-21]], [[OperationalController-22.mdpuml OperationalController-22]]
 end note
 interface "IModelView\nчасть 1/2" as T_OperationalController_OperationalController_IModelView <<internal>> {
   + HideInsideSurfaces : bool [get, set]
@@ -50,7 +50,7 @@ interface "IModelView\nчасть 1/2" as T_OperationalController_OperationalCon
   + Select(objType, numbers) : void
 }
 note right of T_OperationalController_OperationalController_IModelView
-  Полный состав: OperationalController-22, OperationalController-23
+  Полный состав: [[OperationalController-22.mdpuml OperationalController-22]], [[OperationalController-23.mdpuml OperationalController-23]]
 end note
 T_OperationalController_OperationalController_IMeshQueries -[hidden]down-> T_OperationalController_OperationalController_IModelView
 legend bottom

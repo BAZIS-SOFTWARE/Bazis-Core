@@ -39,7 +39,7 @@ interface "IProjectView\nчасть 1/2" as T_OperationalController_OperationalC
   + SetHideInsideSurfaces(hide) : void
 }
 note right of T_OperationalController_OperationalController_IProjectView
-  Полный состав: OperationalController-27, OperationalController-28
+  Полный состав: [[OperationalController-27.mdpuml OperationalController-27]], [[OperationalController-28.mdpuml OperationalController-28]]
 end note
 legend bottom
   reference — тип раскрыт на другой диаграмме.
