@@ -22,7 +22,7 @@ namespace TestModeCore_test.OperationalController
 
             try
             {
-                project.InitializeGeometry(@"..\..\..\..\GmshApi\gmsh.dll");
+                project.InitializeGeometry(GmshLibrary.FilePath);
                 project.ImportCAD(cadFile);
                 project.LoadSMF(scriptFile);
                 project.SaveSMF(outputFile);
@@ -48,7 +48,7 @@ namespace TestModeCore_test.OperationalController
 
             try
             {
-                project.InitializeGeometry(@"..\..\..\..\GmshApi\gmsh.dll");
+                project.InitializeGeometry(GmshLibrary.FilePath);
                 project.ImportCAD(cadFile);
                 project.LoadSMF(scriptFile);
                 project.SaveSMF(outputFile);

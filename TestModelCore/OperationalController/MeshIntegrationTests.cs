@@ -24,7 +24,7 @@ namespace TestModeCore_test.OperationalController
         [TestInitialize]
         public void Init()
         {
-            controller.Load(@"..\..\..\..\GmshApi\gmsh.dll");
+            controller.Load(GmshLibrary.FilePath);
         }
 
         [TestCleanup]
@@ -59,7 +59,7 @@ namespace TestModeCore_test.OperationalController
         public void Set3DVisibilityTest(string path)
         {
             var proj = new ProjectController();
-            proj.InitializeGeometry(@"..\..\..\..\GmshApi\gmsh.dll");
+            proj.InitializeGeometry(GmshLibrary.FilePath);
             proj.ImportCAD(modelFolder + @"\" + path);
 
             proj.GenerateMesh(3);
@@ -86,7 +86,7 @@ namespace TestModeCore_test.OperationalController
         public void CreateGroupByGeoId(string path,int meshDim,int geoDim,int tag)
         {
             var proj = new ProjectController();
-            proj.InitializeGeometry(@"..\..\..\..\GmshApi\gmsh.dll");
+            proj.InitializeGeometry(GmshLibrary.FilePath);
             proj.ImportCAD(modelFolder + @"\" + path);
 
             proj.GenerateMesh(3);
@@ -102,7 +102,7 @@ namespace TestModeCore_test.OperationalController
         public void CreateOpenSurfaceNodesGroup(string path)
         {
             var proj = new ProjectController();
-            proj.InitializeGeometry(@"..\..\..\..\GmshApi\gmsh.dll");
+            proj.InitializeGeometry(GmshLibrary.FilePath);
             proj.ImportCAD(modelFolder + @"\" + path);
             proj.GenerateMesh(3);
             //e3D_1
@@ -117,7 +117,7 @@ namespace TestModeCore_test.OperationalController
         public void Hide2DTest(string path)
         {
             var proj = new ProjectController();
-            proj.InitializeGeometry(@"..\..\..\..\GmshApi\gmsh.dll");
+            proj.InitializeGeometry(GmshLibrary.FilePath);
             proj.ImportCAD(modelFolder + @"\" + path);
 
             proj.GenerateMesh(3);
@@ -146,7 +146,7 @@ namespace TestModeCore_test.OperationalController
         public void Hide1DTest(string path)
         {
             var proj = new ProjectController();
-            proj.InitializeGeometry(@"..\..\..\..\GmshApi\gmsh.dll");
+            proj.InitializeGeometry(GmshLibrary.FilePath);
             proj.ImportCAD(modelFolder + @"\" + path);
 
             proj.GenerateMesh(3);

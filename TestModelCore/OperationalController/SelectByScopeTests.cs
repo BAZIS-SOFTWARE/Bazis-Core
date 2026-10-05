@@ -11,7 +11,7 @@ namespace TestModeCore_test.OperationalController
         public void Init()
         {
             _project = new ProjectController();
-            _project.InitializeGeometry(@"..\..\..\..\GmshApi\gmsh.dll");
+            _project.InitializeGeometry(GmshLibrary.FilePath);
             _project.ImportCAD(@"..\..\..\Examples\CAD\Tavr.step");
         }
 

@@ -36,7 +36,7 @@ namespace OperationalController.GmshController
         /// <inheritdoc/>
         public void Load(string dllToLoad)
         {
-            GmshKernel.DLL = GmshKernel.LoadLibrary(dllToLoad);
+            GmshKernel.DLL = GmshKernel.Load(dllToLoad);
             Gmsh = new Gmsh();
             Gmsh.Initialize();
         }

@@ -14,7 +14,7 @@ namespace TestModeCore_test.GmshApi
         [TestInitialize]
         public void Init()
         {
-            controller.Load(@"..\..\..\..\GmshApi\gmsh.dll");
+            controller.Load(GmshLibrary.FilePath);
         }
         [TestCleanup]
         public void Cleanup()

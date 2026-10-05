@@ -15,7 +15,7 @@ namespace GmshApiTests_test.GmshApi
         [TestInitialize]
         public void Init()
         {
-            GmshKernel.DLL = GmshKernel.LoadLibrary(GetGmshLibraryPath());
+            GmshKernel.DLL = GmshKernel.Load(GetGmshLibraryPath());
             gmsh = new Gmsh();
             gmsh.Initialize();
         }
@@ -289,11 +289,11 @@ namespace GmshApiTests_test.GmshApi
         }
 
         /// <summary>
-        /// Возвращает путь к нативной библиотеке Gmsh.
+        /// Возвращает путь к нативной библиотеке Gmsh для текущей ОС.
         /// </summary>
         private static string GetGmshLibraryPath()
         {
-            return Path.Combine(AppContext.BaseDirectory, "gmsh.dll");
+            return Path.Combine(AppContext.BaseDirectory, GmshKernel.LibraryFileName);
         }
     }
 }

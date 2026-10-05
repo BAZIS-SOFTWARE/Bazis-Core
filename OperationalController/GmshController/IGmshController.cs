@@ -25,12 +25,12 @@ namespace OperationalController.GmshController
         /// </summary>
         bool IsInitialized { get; }
         /// <summary>
-        /// Загрузка gmsh.dll
+        /// Загрузка нативной библиотеки gmsh
         /// </summary>
-        /// <param name="dllToLoad">Путь до DLL</param>
+        /// <param name="dllToLoad">Путь до нативной библиотеки</param>
         void Load(string dllToLoad);
         /// <summary>
-        /// Выгрузка gmsh.dll
+        /// Выгрузка нативной библиотеки gmsh
         /// </summary>
         void Unload();
         /// <summary>

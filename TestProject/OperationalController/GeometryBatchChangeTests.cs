@@ -13,7 +13,7 @@ namespace TestProject_test.OperationalController
         [TestMethod]
         public void GenerateAndDeleteGeometry_PublishOncePerAffectedSet()
         {
-            var dllPath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "GmshApi", "gmsh.dll"));
+            var dllPath = GmshLibrary.FilePath;
             var controller = new ProjectController();
             controller.Create("geometry-batch.bpf2");
             controller.InitializeGeometry(dllPath);

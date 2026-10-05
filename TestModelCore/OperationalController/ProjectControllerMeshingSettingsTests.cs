@@ -13,7 +13,7 @@ namespace TestModeCore_test.OperationalController
         public void Initialize()
         {
             projectController = new ProjectController();
-            projectController.InitializeGeometry(GetGmshDllPath());
+            projectController.InitializeGeometry(GmshLibrary.FilePath);
         }
 
         [TestCleanup]
@@ -255,9 +255,5 @@ namespace TestModeCore_test.OperationalController
             return Path.GetFullPath(@"..\..\..\Examples");
         }
 
-        private string GetGmshDllPath()
-        {
-            return Path.GetFullPath(@"..\..\..\..\GmshApi\gmsh.dll");
-        }
     }
 }

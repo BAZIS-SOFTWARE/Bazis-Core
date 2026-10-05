@@ -18,7 +18,7 @@ namespace TestModeCore_test.OperationalController
         [TestInitialize]
         public void Init()
         {
-            gmshController.Load(@"..\..\..\..\GmshApi\gmsh.dll");
+            gmshController.Load(GmshLibrary.FilePath);
         }
         [TestCleanup]
         public void Cleanup()
@@ -36,7 +36,7 @@ namespace TestModeCore_test.OperationalController
         public void ImportCADoutside(string fileName)
         {
             var project = new ProjectController();
-            project.InitializeGeometry(@"..\..\..\..\GmshApi\gmsh.dll");
+            project.InitializeGeometry(GmshLibrary.FilePath);
             project.ImportCAD(fileName);
 
             //assert
@@ -68,7 +68,7 @@ namespace TestModeCore_test.OperationalController
         public void ImportCAD(string fileName)
         {
             var project = new ProjectController();
-            project.InitializeGeometry(@"..\..\..\..\GmshApi\gmsh.dll");
+            project.InitializeGeometry(GmshLibrary.FilePath);
             project.ImportCAD(modelFolder + fileName);
 
             //assert
