@@ -28,13 +28,13 @@ namespace GmshApiTests_test.GmshApi
         }
 
         [DataTestMethod]
-        [DataRow(@"\CAD\Cilindr.step", new int[] { -1, 1, 2 }, new int[] { 0, 1, 2 })]
+        [DataRow(@"\CAD\cilindr.step", new int[] { -1, 1, 2 }, new int[] { 0, 1, 2 })]
         [DataRow(@"\CAD\nasos.step", new int[] { -1, 1, 2 }, new int[] { 0, 1, 2 })]
         [DataRow(@"\CAD\block.igs", new int[] { -1, 1, 2 }, new int[] { 0, 1, 2 })]
         [DataRow(@"\GMSHAPI\sphere.geo", new int[] { -1, 1, 2 }, new int[] { 0, 1, 2 })]
         public void GenerateMeshGetAllNodesTest(string fileName, int[] nodesDim, int[] paramsCount)
         {
-            gmsh.Open(modelFolder + fileName);
+            gmsh.Open(GetModelPath(fileName));
             gmsh.Model.Mesh.Generate(2);
             for (var i = 0; i < nodesDim.Length; ++i)
             {
@@ -52,13 +52,13 @@ namespace GmshApiTests_test.GmshApi
         }
 
         [DataTestMethod]
-        [DataRow(@"\CAD\Cilindr.step", new int[] { 1, 2, 3 }, new int[] { 6, 10, 6 })]
+        [DataRow(@"\CAD\cilindr.step", new int[] { 1, 2, 3 }, new int[] { 6, 10, 6 })]
         [DataRow(@"\CAD\nasos.step", new int[] { 1, 2, 3 }, new int[] { 3, 3, 3 })]
         [DataRow(@"\CAD\block.igs", new int[] { 1, 2, 3 }, new int[] { 8, 2, 8 })]
         [DataRow(@"\GMSHAPI\sphere.geo", new int[] { 1, 2, 3 }, new int[] { 4, 4, 4 })]
         public void GenerateMeshGetLineNodesByTag(string fileName, int[] tags, int[] expectedLength)
         {
-            gmsh.Open(modelFolder + fileName);
+            gmsh.Open(GetModelPath(fileName));
             gmsh.Model.Mesh.Generate(1);
             for (var i = 0; i < tags.Length; ++i)
             {
@@ -72,7 +72,7 @@ namespace GmshApiTests_test.GmshApi
         [DataRow(@"\CAD\block.igs", new int[] { 5, 3, 12 }, new int[] { 4, 4, 9 })]
         public void GenerateMeshGetSurfacesNodesByTag(string fileName, int[] tags, int[] expectedLength)
         {
-            gmsh.Open(modelFolder + fileName);
+            gmsh.Open(GetModelPath(fileName));
             gmsh.Model.Mesh.Generate(2);
             for (var i = 0; i < tags.Length; ++i)
             {
@@ -82,10 +82,10 @@ namespace GmshApiTests_test.GmshApi
         }
 
         [DataTestMethod]
-        [DataRow(@"\CAD\Cilindr.step", 77)]
+        [DataRow(@"\CAD\cilindr.step", 77)]
         public void GenerateMeshGetElementsByCoordinates(string fileName, int expected)
         {
-            gmsh.Open(modelFolder + fileName);
+            gmsh.Open(GetModelPath(fileName));
             gmsh.Model.Mesh.Generate(2);
             var point = new double[] { -8.74248599355, 1.39424515076, 6.51327932777 };
             var elements = gmsh.Model.Mesh.GetElementsByCoordinates(point[0], point[1], point[2], 2, false);
@@ -93,10 +93,10 @@ namespace GmshApiTests_test.GmshApi
         }
 
         [DataTestMethod]
-        [DataRow(@"\CAD\Cilindr.step")]
+        [DataRow(@"\CAD\cilindr.step")]
         public void AddRemoveFieldTest(string fileName)
         {
-            gmsh.Open(modelFolder + fileName);
+            gmsh.Open(GetModelPath(fileName));
             var view = gmsh.Model.Mesh.Field.Add(FieldType.BoundaryLayer);
             var tags = gmsh.Model.Mesh.Field.List();
             CollectionAssert.AreEqual(tags, new int[] { view });
@@ -112,7 +112,7 @@ namespace GmshApiTests_test.GmshApi
         [DataRow(@"\CAD\cilindr.step", 4)]
         public void CenterOfSurfaceTest(string fileName, int surfTag)
         {
-            gmsh.Open(modelFolder + fileName);
+            gmsh.Open(GetModelPath(fileName));
             var data = gmsh.Model.Occ.GetCenterOfMass(2, surfTag);
             var coords = new double[] { data.Item1, data.Item2, data.Item3 };
             var status = gmsh.Model.IsInside(2, surfTag, coords);
@@ -129,7 +129,7 @@ namespace GmshApiTests_test.GmshApi
         [DataRow(@"\CAD\Tavr.step", 6, new int[] { 25, 27, 29, 31, 32, 33, 34, 36, 38, 40, 41, 42 }, new int[] { 3, 4 }, new double[] { 20, 10, 3.5, 3.5 })]
         public void VolumeSizesPointSizesCase(string fileName, int seamPointCurves, int[] seamCurves, int[] seamVolumes, double[] volumeSizes)
         {
-            gmsh.Open(modelFolder + fileName);
+            gmsh.Open(GetModelPath(fileName));
             var volumes = gmsh.Model.GetEntities(3);
             //Вариант 1 - использование плотностей в точках, сначало генерируем плотности в точках, затем проводим трансфиницию (порядок важен!)
             for (int i = 0, j = 0; i < volumes.Length; i += 2, ++j)
@@ -152,7 +152,7 @@ namespace GmshApiTests_test.GmshApi
         [DataRow(@"\CAD\Tavr.step", 6, new int[] { 25, 27, 29, 31, 32, 33, 34, 36, 38, 40, 41, 42 }, new int[] { 3, 4 }, new double[] { 20, 10, 3.5, 3.5 })]
         public void VolumeSizesMeshFieldsCase(string fileName, int seamPointCurves, int[] seamCurves, int[] seamVolumes, double[] volumeSizes)
         {
-            gmsh.Open(modelFolder + fileName);
+            gmsh.Open(GetModelPath(fileName));
             var volumes = gmsh.Model.GetEntities(3);
             //Вариант 2 - использование Mesh Fields, сначало генерируем Mesh Fields, затем проводим трансфиницию (порядок важен!)
             for (int i = 0, j = 0; i < volumes.Length; i += 2, ++j)
@@ -194,7 +194,7 @@ namespace GmshApiTests_test.GmshApi
         [DataRow(@"\CAD\nasos.step", 10, 16, MeshAlgorithm3D.RTree, 1.8)]
         public void ChechMesh3DParameters(string fileName, double expMinSize, double expMaxSize, MeshAlgorithm3D expAlgo3d, double sizeFactor)
         {
-            gmsh.Open(modelFolder + fileName);
+            gmsh.Open(GetModelPath(fileName));
             gmsh.Option.SetNumber("Mesh.MeshSizeMin", expMinSize);
             gmsh.Option.SetNumber("Mesh.MeshSizeMax", expMaxSize);
             gmsh.Option.SetNumber("Mesh.Algorithm3D", (int)expAlgo3d);
@@ -224,7 +224,7 @@ namespace GmshApiTests_test.GmshApi
         [DataRow(@"\CAD\nasos.step", MeshAlgorithm2D.Delaunay)]
         public void MeshAlgorithm2DTest(string fileName, MeshAlgorithm2D expAlgo2d)
         {
-            gmsh.Open(modelFolder + fileName);
+            gmsh.Open(GetModelPath(fileName));
 
             gmsh.Option.SetNumber("Mesh.Algorithm", (int)expAlgo2d);
 
@@ -278,6 +278,14 @@ namespace GmshApiTests_test.GmshApi
                 for (var j = 0; j < seamSurfs.Length; ++j)
                     gmsh.Model.Mesh.SetTransfiniteAutomatic(new int[] { 2, seamSurfs[j] }, 2.35, false);
             }
+        }
+
+        /// <summary>
+        /// Возвращает путь до файла примера, не зависящий от разделителей пути текущей ОС.
+        /// </summary>
+        private string GetModelPath(string fileName)
+        {
+            return Path.Combine(modelFolder, fileName.Replace('\\', Path.DirectorySeparatorChar).TrimStart('\\', '/'));
         }
 
         /// <summary>
