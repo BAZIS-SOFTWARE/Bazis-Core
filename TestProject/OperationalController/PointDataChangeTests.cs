@@ -39,17 +39,21 @@ namespace TestProject_test.OperationalController
             var second = new HeatData(group, 0, 1);
             controller.AddTaskData(first);
             controller.AddTaskData(second);
+            var setId = controller.GetModelSetInfo(ObjType.Элемент1D, "beams").Number;
             var trace = new List<string>();
             controller.Message += (_, args) =>
             {
-                if (args.Change is MeshChange mesh && mesh.DataKind == MeshDataKind.Set && mesh.Action == ChangeAction.Deleted)
+                if (args.Change is SetDelete deletedSet)
                 {
+                    Assert.AreEqual(ObjType.Элемент1D, deletedSet.ObjectType);
+                    Assert.AreEqual(setId, deletedSet.EntityId);
+                    Assert.AreEqual("beams", deletedSet.Name);
                     Assert.IsNull(controller.GetModelSetInfo(ObjType.Элемент1D, "beams"));
                     Assert.AreSame(group, controller.GetModelGroup("dependent"));
                     Assert.AreEqual(2, controller.GetAllCondData().Count());
                     trace.Add("set");
                 }
-                if (args.Change is MeshChange deletedGroup && deletedGroup.DataKind == MeshDataKind.Group)
+                if (args.Change is MeshChange deletedGroup && deletedGroup.DataKind == MeshChange.MeshDataKind.Group)
                 {
                     Assert.IsNull(controller.GetModelGroup("dependent"));
                     Assert.AreEqual(2, controller.GetAllCondData().Count());
@@ -79,7 +83,7 @@ namespace TestProject_test.OperationalController
             var updates = 0;
             controller.Message += (_, args) =>
             {
-                if (args.Change is MeshChange mesh && mesh.DataKind == MeshDataKind.Group)
+                if (args.Change is MeshChange mesh && mesh.DataKind == MeshChange.MeshDataKind.Group)
                 {
                     Assert.AreEqual(ChangeAction.Updated, mesh.Action);
                     Assert.AreSame(group, controller.GetModelGroup("survivor"));
@@ -99,28 +103,30 @@ namespace TestProject_test.OperationalController
         [TestMethod]
         public void ClearNodes_UpdatesFixedSetAndDeletesElementSet_SecondClearIsSilent()
         {
-            var messages = new List<MeshChange>();
+            var updates = new List<MeshChange>();
+            var deletions = new List<SetDelete>();
             controller.Message += (_, args) =>
             {
                 if (args.Change is MeshChange mesh)
                 {
-                    Assert.AreEqual(MeshDataKind.Set, mesh.DataKind);
-                    if (mesh.ObjectType == ObjType.Узел)
-                    {
-                        Assert.AreEqual(ChangeAction.Updated, mesh.Action);
-                        Assert.AreEqual(0, controller.GetAllModelNodes().Count());
-                    }
-                    else
-                    {
-                        Assert.AreEqual(ChangeAction.Deleted, mesh.Action);
-                        Assert.IsNull(controller.GetModelSetInfo(ObjType.Элемент1D, "beams"));
-                    }
-                    messages.Add(mesh);
+                    Assert.AreEqual(MeshChange.MeshDataKind.Set, mesh.DataKind);
+                    Assert.AreEqual(ObjType.Узел, mesh.ObjectType);
+                    Assert.AreEqual(ChangeAction.Updated, mesh.Action);
+                    Assert.AreEqual(0, controller.GetAllModelNodes().Count());
+                    updates.Add(mesh);
+                }
+                if (args.Change is SetDelete deletion)
+                {
+                    Assert.AreEqual(ObjType.Элемент1D, deletion.ObjectType);
+                    Assert.AreEqual("beams", deletion.Name);
+                    Assert.IsNull(controller.GetModelSetInfo(ObjType.Элемент1D, "beams"));
+                    deletions.Add(deletion);
                 }
             };
             controller.ClearModelCollection(ObjType.Узел);
             controller.ClearModelCollection(ObjType.Узел);
-            Assert.AreEqual(2, messages.Count);
+            Assert.AreEqual(1, updates.Count);
+            Assert.AreEqual(1, deletions.Count);
         }
 
         /// <summary>Проверяет отсутствие уведомлений для повторных присвоений и пустых преобразований.</summary>
@@ -163,6 +169,7 @@ namespace TestProject_test.OperationalController
                 controller.CreateElement("slave", 1, new[] { 0, 1 });
             var master = controller.GetModelSetInfo(ObjType.Элемент1D, "beams");
             var changes = new List<MeshChange>();
+            var deletions = new List<SetDelete>();
             controller.Message += (_, args) =>
             {
                 if (args.Change is MeshChange change)
@@ -171,12 +178,15 @@ namespace TestProject_test.OperationalController
                         Assert.AreEqual(objectCount + 1, master.NumberOfObjects);
                     changes.Add(change);
                 }
+                if (args.Change is SetDelete deletion)
+                    deletions.Add(deletion);
             };
 
             controller.MergeElements(ObjType.Элемент1D, "beams", "slave");
 
             Assert.AreEqual(1, changes.Count(change => change.Action == ChangeAction.Updated));
-            Assert.AreEqual(1, changes.Count(change => change.Action == ChangeAction.Deleted));
+            Assert.AreEqual(1, deletions.Count);
+            Assert.AreEqual("slave", deletions[0].Name);
             Assert.IsNull(controller.GetModelSetInfo(ObjType.Элемент1D, "slave"));
         }
 

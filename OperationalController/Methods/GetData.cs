@@ -24,7 +24,7 @@ namespace OperationalController
                     return;
                 TaskData.Materials = value;
                 isModified = true;
-                Publish(new ProjectChange(ProjectChangeKind.PropertyChanged, ProjectProperty.MaterialsDB));
+                Publish(new ProjectChange(ProjectChange.ProjectChangeKind.PropertyChanged, ProjectChange.ProjectProperty.MaterialsDB));
             }
         }
         /// <inheritdoc/>
@@ -38,7 +38,7 @@ namespace OperationalController
                     return;
                 TaskData.Functions = value;
                 isModified = true;
-                Publish(new ProjectChange(ProjectChangeKind.PropertyChanged, ProjectProperty.FunctionsDB));
+                Publish(new ProjectChange(ProjectChange.ProjectChangeKind.PropertyChanged, ProjectChange.ProjectProperty.FunctionsDB));
             }
         }
 

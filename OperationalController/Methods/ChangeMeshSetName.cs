@@ -24,7 +24,7 @@ namespace OperationalController
             else
                 ModelData.ObjectData.E3DCollection.ChangeName(oldName, newName);
 
-            PublishSetChange(setInfo, ChangeAction.Updated);
+            Publish(new SetRename(setInfo.ObjType, setInfo.Number, oldName, newName));
         }
     }
 }

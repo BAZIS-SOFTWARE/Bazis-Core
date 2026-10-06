@@ -47,7 +47,7 @@ namespace TestProject_test.OperationalController
             {
                 if (args.Change is MeshChange change)
                 {
-                    Assert.AreEqual(MeshDataKind.Set, change.DataKind);
+                    Assert.AreEqual(MeshChange.MeshDataKind.Set, change.DataKind);
                     Assert.AreEqual(ChangeAction.Updated, change.Action);
                     switch (operation)
                     {
@@ -197,12 +197,13 @@ namespace TestProject_test.OperationalController
                 var controller = new ProjectController();
                 controller.Open(path);
                 var changes = new List<MeshChange>();
+                var deletions = new List<SetDelete>();
                 controller.Message += (_, args) =>
                 {
                     if (args.Change is MeshChange change)
                     {
                         Assert.AreEqual(1, controller.GetAllModelNodes().Count());
-                        Assert.AreEqual(MeshDataKind.Set, change.DataKind);
+                        Assert.AreEqual(MeshChange.MeshDataKind.Set, change.DataKind);
                         if (operation == "merge")
                             foreach (var element in controller.GetAllModelElements())
                             {
@@ -213,6 +214,12 @@ namespace TestProject_test.OperationalController
                             Assert.AreEqual(0, controller.GetAllModelElements().Count());
                         changes.Add(change);
                     }
+                    if (args.Change is SetDelete deletion)
+                    {
+                        Assert.AreEqual(1, controller.GetAllModelNodes().Count());
+                        Assert.AreEqual(0, controller.GetAllModelElements().Count());
+                        deletions.Add(deletion);
+                    }
                 };
                 var numbers = Enumerable.Range(0, count * 2 + 1).ToList();
                 var groups = new List<List<int>> { numbers };
@@ -221,15 +228,19 @@ namespace TestProject_test.OperationalController
                     controller.MergeNodes(groups);
                 else
                     controller.DeleteModelObjects(ObjType.Узел, deletedNumbers);
-                Assert.AreEqual(3, changes.Count);
-                var identities = changes.Select(change => $"{change.ObjectType}:{change.EntityId}").Distinct();
+                Assert.AreEqual(operation == "merge" ? 3 : 1, changes.Count);
+                Assert.AreEqual(operation == "merge" ? 0 : 2, deletions.Count);
+                var identities = changes.Select(change => $"{change.ObjectType}:{change.EntityId}")
+                    .Concat(deletions.Select(change => $"{change.ObjectType}:{change.EntityId}"))
+                    .Distinct();
                 Assert.AreEqual(3, identities.Count());
                 Assert.AreEqual(operation == "merge" ? 3 : 1, changes.Count(change => change.Action == ChangeAction.Updated));
                 if (operation == "merge")
                     controller.MergeNodes(groups);
                 else
                     controller.DeleteModelObjects(ObjType.Узел, deletedNumbers);
-                Assert.AreEqual(3, changes.Count);
+                Assert.AreEqual(operation == "merge" ? 3 : 1, changes.Count);
+                Assert.AreEqual(operation == "merge" ? 0 : 2, deletions.Count);
             }
             finally
             {

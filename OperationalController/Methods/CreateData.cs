@@ -195,7 +195,7 @@ namespace OperationalController
             var geoPoint = GmshController.CreateControlPoints().Where(x => x.Number == pointNumber).FirstOrDefault();
             ModelData.ObjectData.PointsSet.Add(geoPoint.Number, geoPoint);
             PublishSetChange(ModelData.ObjectData.PointsSet, ChangeAction.Updated);
-            PublishGeometryChange();
+            PublishGeometryChange(GeoChange.GeometryEntityKind.Point);
             return pointNumber;
         }
 
@@ -218,7 +218,7 @@ namespace OperationalController
             var geoLine = GmshController.CreateLines().Where(x => x.Number == lineNumber).FirstOrDefault();
             ModelData.ObjectData.CurveSet.Add(geoLine.Number, geoLine);
             PublishSetChange(ModelData.ObjectData.CurveSet, ChangeAction.Updated);
-            PublishGeometryChange();
+            PublishGeometryChange(GeoChange.GeometryEntityKind.Curve);
             return lineNumber;
         }
 
@@ -252,7 +252,7 @@ namespace OperationalController
 
             ModelData.ObjectData.SurfaceSet.Add(surf, new SurfaceFigure(surf, [new GeometrySurface(surf, geoPoints)]));
             PublishSetChange(ModelData.ObjectData.SurfaceSet, ChangeAction.Updated);
-            PublishGeometryChange();
+            PublishGeometryChange(GeoChange.GeometryEntityKind.Surface);
             return surf;
         }
 
@@ -362,7 +362,9 @@ namespace OperationalController
             var builder = new ChamferGeometryBuilder(GmshController);
             var result = builder.Build(curveTags, firstLength, secondLengthOrAngle, isAngle, reflected);
             RefreshGeometryData();
-            PublishGeometryChange();
+            var entityKind = GeoChange.GeometryEntityKind.Point | GeoChange.GeometryEntityKind.Curve |
+                GeoChange.GeometryEntityKind.Surface | GeoChange.GeometryEntityKind.Volume;
+            PublishGeometryChange(entityKind);
             return result;
         }
 

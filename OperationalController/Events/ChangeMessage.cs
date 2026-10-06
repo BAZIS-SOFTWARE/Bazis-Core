@@ -12,31 +12,35 @@ namespace OperationalController
     /// </summary>
     public abstract class ChangeMessage { }
 
-    public enum GeometryEntityKind { Point, Curve, Surface, Volume }
-    public enum MeshDataKind { Set, Group }
     public enum ChangeAction { Created, Updated, Deleted }
-    public enum ProjectChangeKind { Loaded, Created, Closed, PropertyChanged }
-    public enum ProjectProperty { Name, FilePath, TaskKind, TaskType, MaterialsDB, FunctionsDB }
 
     /// <summary>
-    /// Передаёт снимок количества геометрических сущностей после изменения.
+    /// Передаёт типы изменённых геометрических сущностей.
     /// </summary>
     public sealed class GeoChange : ChangeMessage
     {
-        /// <summary>
-        /// Создаёт снимок количеств геометрических сущностей.
-        /// </summary>
-        public GeoChange(IReadOnlyDictionary<GeometryEntityKind, int> counts)
+        [Flags]
+        public enum GeometryEntityKind
         {
-            if (counts == null)
-                throw new ArgumentNullException(nameof(counts));
-            foreach (var kind in Enum.GetValues<GeometryEntityKind>())
-                if (!counts.TryGetValue(kind, out var count) || count < 0)
-                    throw new ArgumentException("Counts must contain every geometry kind with a nonnegative value.", nameof(counts));
-            Counts = new ReadOnlyDictionary<GeometryEntityKind, int>(new Dictionary<GeometryEntityKind, int>(counts));
+            None = 0,
+            Point = 1,
+            Curve = 2,
+            Surface = 4,
+            Volume = 8
         }
 
-        public IReadOnlyDictionary<GeometryEntityKind, int> Counts { get; }
+        /// <summary>
+        /// Описывает изменённые типы геометрических сущностей.
+        /// </summary>
+        public GeoChange(GeometryEntityKind entityKind)
+        {
+            var allKinds = GeometryEntityKind.Point | GeometryEntityKind.Curve | GeometryEntityKind.Surface | GeometryEntityKind.Volume;
+            if (entityKind == GeometryEntityKind.None || (entityKind & ~allKinds) != GeometryEntityKind.None)
+                throw new ArgumentOutOfRangeException(nameof(entityKind), "At least one valid geometry entity kind is required.");
+            EntityKind = entityKind;
+        }
+
+        public GeometryEntityKind EntityKind { get; }
     }
 
     /// <summary>
@@ -44,6 +48,8 @@ namespace OperationalController
     /// </summary>
     public sealed class MeshChange : ChangeMessage
     {
+        public enum MeshDataKind { Set, Group }
+
         /// <summary>
         /// Описывает изменение набора или группы по устойчивому номеру.
         /// </summary>
@@ -59,6 +65,70 @@ namespace OperationalController
         public ChangeAction Action { get; }
         public ObjType ObjectType { get; }
         public int EntityId { get; }
+    }
+
+    /// <summary>
+    /// Описывает удаление набора модели.
+    /// </summary>
+    public sealed class SetDelete : ChangeMessage
+    {
+        /// <summary>
+        /// Передаёт имя удалённого набора и его устойчивый адрес.
+        /// </summary>
+        public SetDelete(ObjType objectType, int entityId, string name)
+        {
+            ObjectType = objectType;
+            EntityId = entityId;
+            Name = name;
+        }
+
+        public ObjType ObjectType { get; }
+        public int EntityId { get; }
+        public string Name { get; }
+    }
+
+    /// <summary>
+    /// Описывает переименование набора модели.
+    /// </summary>
+    public sealed class SetRename : ChangeMessage
+    {
+        /// <summary>
+        /// Передаёт прежнее и новое имя набора по его устойчивому номеру.
+        /// </summary>
+        public SetRename(ObjType objectType, int entityId, string oldName, string newName)
+        {
+            ObjectType = objectType;
+            EntityId = entityId;
+            OldName = oldName;
+            NewName = newName;
+        }
+
+        public ObjType ObjectType { get; }
+        public int EntityId { get; }
+        public string OldName { get; }
+        public string NewName { get; }
+    }
+
+    /// <summary>
+    /// Описывает переименование группы модели.
+    /// </summary>
+    public sealed class GroupRename : ChangeMessage
+    {
+        /// <summary>
+        /// Передаёт прежнее и новое имя группы по её устойчивому номеру.
+        /// </summary>
+        public GroupRename(ObjType objectType, int entityId, string oldName, string newName)
+        {
+            ObjectType = objectType;
+            EntityId = entityId;
+            OldName = oldName;
+            NewName = newName;
+        }
+
+        public ObjType ObjectType { get; }
+        public int EntityId { get; }
+        public string OldName { get; }
+        public string NewName { get; }
     }
 
     /// <summary>
@@ -122,6 +192,9 @@ namespace OperationalController
     /// </summary>
     public sealed class ProjectChange : ChangeMessage
     {
+        public enum ProjectChangeKind { Loaded, Created, PropertyChanged }
+        public enum ProjectProperty { Name, FilePath, TaskKind, TaskType, MaterialsDB, FunctionsDB }
+
         /// <summary>
         /// Описывает замену проекта или изменение его свойства.
         /// </summary>

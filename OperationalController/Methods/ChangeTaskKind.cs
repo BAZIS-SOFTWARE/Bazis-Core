@@ -12,7 +12,7 @@ namespace OperationalController
             var changed = TaskData.TaskKind != taskKind;
             TaskData.TaskKind = taskKind;
             if (changed)
-                Publish(new ProjectChange(ProjectChangeKind.PropertyChanged, ProjectProperty.TaskKind));
+                Publish(new ProjectChange(ProjectChange.ProjectChangeKind.PropertyChanged, ProjectChange.ProjectProperty.TaskKind));
             ClearTaskData();
         }
     }

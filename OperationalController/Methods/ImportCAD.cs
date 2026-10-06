@@ -40,30 +40,21 @@ namespace OperationalController
             var projectPath = Path.Combine(path ?? string.Empty, "новый_проект.bpf2");
             var data = new ProjectData(projectPath);
 
-            try
-            {
-                GmshController.Gmsh.Clear();
-                GmshController.Gmsh.Open(projectFile);
-                GmshController.MergeGeometry();
-                GmshController.Gmsh.Model.Mesh.ImportStl();
+            GmshController.Gmsh.Clear();
+            GmshController.Gmsh.Open(projectFile);
+            GmshController.MergeGeometry();
+            GmshController.Gmsh.Model.Mesh.ImportStl();
 
-                GmshController.CreateControlPoints().ForEach(point => data.ModelData.ObjectData.PointsSet.Add(point.Number, point));
-                GmshController.CreateLines().ForEach(curve => data.ModelData.ObjectData.CurveSet.Add(curve.Number, curve));
-                var surfaceData = GmshController.CreateSurfaceData();
-                foreach (var surface in surfaceData.Item1)
-                    data.ModelData.ObjectData.SurfaceSet.Add(surface.Key, surface.Value);
-                foreach (var volume in surfaceData.Item2)
-                    data.ModelData.VolumeData.Add(volume);
+            GmshController.CreateControlPoints().ForEach(point => data.ModelData.ObjectData.PointsSet.Add(point.Number, point));
+            GmshController.CreateLines().ForEach(curve => data.ModelData.ObjectData.CurveSet.Add(curve.Number, curve));
+            var surfaceData = GmshController.CreateSurfaceData();
+            foreach (var surface in surfaceData.Item1)
+                data.ModelData.ObjectData.SurfaceSet.Add(surface.Key, surface.Value);
+            foreach (var volume in surfaceData.Item2)
+                data.ModelData.VolumeData.Add(volume);
 
-                GmshController.Gmsh.Model.Mesh.Clear();
-                Replace(data, projectPath, ProjectChangeKind.Loaded, true);
-            }
-            catch
-            {
-                var emptyProject = new ProjectData("untitled.bpf2");
-                Replace(emptyProject, null, ProjectChangeKind.Closed, false);
-                throw;
-            }
+            GmshController.Gmsh.Model.Mesh.Clear();
+            Replace(data, projectPath, ProjectChange.ProjectChangeKind.Loaded);
         }
 
         //private void PresentVolumeInfo(IGmshController gmshController)

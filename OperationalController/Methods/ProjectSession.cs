@@ -34,7 +34,7 @@ namespace OperationalController
                 var loader = new LoadProjectFromTextFormat();
                 var data = loader.Load(path, progress);
                 MarkModelSurfaces(data.ModelData);
-                Replace(data, path, ProjectChangeKind.Loaded, true);
+                Replace(data, path, ProjectChange.ProjectChangeKind.Loaded);
             }
             else
                 OpenModel(path, progress);
@@ -63,7 +63,7 @@ namespace OperationalController
             var projectPath = Path.Combine(Path.GetDirectoryName(path) ?? string.Empty, "новый_проект.bpf2");
             var data = new ProjectData(projectPath);
             data.ModelData = modelData;
-            Replace(data, projectPath, ProjectChangeKind.Loaded, true);
+            Replace(data, projectPath, ProjectChange.ProjectChangeKind.Loaded);
         }
 
         /// <summary>
@@ -89,22 +89,13 @@ namespace OperationalController
             if (string.IsNullOrWhiteSpace(projectFile))
                 throw new ArgumentException("Project file path is not specified.", nameof(projectFile));
             var data = new ProjectData(projectFile);
-            Replace(data, projectFile, ProjectChangeKind.Created, true);
-        }
-
-        /// <summary>
-        /// Закрывает текущий проект и создаёт пустые данные.
-        /// </summary>
-        public void Close()
-        {
-            var data = new ProjectData("untitled.bpf2");
-            Replace(data, null, ProjectChangeKind.Closed, false);
+            Replace(data, projectFile, ProjectChange.ProjectChangeKind.Created);
         }
 
         /// <summary>
         /// Заменяет текущие данные и представление после успешного чтения.
         /// </summary>
-        private void Replace(IProjectData data, string path, ProjectChangeKind kind, bool isOpen)
+        private void Replace(IProjectData data, string path, ProjectChange.ProjectChangeKind kind)
         {
             if (modelView.HasOpenUpdate)
                 throw new InvalidOperationException("Complete the view update before replacing the project.");
@@ -119,7 +110,7 @@ namespace OperationalController
             modelView = newView;
             modelView.Changed += OnViewChanged;
             filePath = path;
-            hasProject = isOpen;
+            hasProject = true;
             isModified = false;
             Publish(new ProjectChange(kind));
         }
@@ -129,9 +120,9 @@ namespace OperationalController
         /// </summary>
         private void Publish(ChangeMessage change)
         {
-            if (change is GeoChange || change is MeshChange || change is CondChange)
+            if (change is GeoChange || change is MeshChange || change is CondChange || change is SetDelete || change is SetRename || change is GroupRename)
                 isModified = true;
-            if (change is ProjectChange projectChange && projectChange.ChangeKind == ProjectChangeKind.PropertyChanged && projectChange.Property != ProjectProperty.FilePath)
+            if (change is ProjectChange projectChange && projectChange.ChangeKind == ProjectChange.ProjectChangeKind.PropertyChanged && projectChange.Property != ProjectChange.ProjectProperty.FilePath)
                 isModified = true;
             Message?.Invoke(this, new ProjectMessageEventArgs(change));
         }
