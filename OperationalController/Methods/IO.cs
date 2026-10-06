@@ -35,7 +35,7 @@ namespace OperationalController
             filePath = path;
             isModified = false;
             if (pathChanged)
-                Publish(new ProjectChange(ProjectChangeKind.PropertyChanged, ProjectProperty.FilePath));
+                Publish(new ProjectChange(ProjectChange.ProjectChangeKind.PropertyChanged, ProjectChange.ProjectProperty.FilePath));
         }
 /// <inheritdoc/>
 

@@ -29,8 +29,6 @@ namespace OperationalController
         void ImportGeometry(string path);
         /// <summary>Создаёт новый пустой проект.</summary>
         void Create(string projectFile);
-        /// <summary>Закрывает текущий проект.</summary>
-        void Close();
         /// <summary>Сохраняет текущий проект.</summary>
         void Save(string path);
         void CreateTask();

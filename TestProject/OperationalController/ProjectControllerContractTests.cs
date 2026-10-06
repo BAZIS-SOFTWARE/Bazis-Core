@@ -39,7 +39,7 @@ namespace TestProject_test.OperationalController
             Assert.AreEqual("new.bpf2", controller.Name);
             Assert.IsTrue(controller.IsModified);
             Assert.AreEqual(1, changes.Count);
-            Assert.AreEqual(ProjectProperty.Name, changes[0].Property);
+            Assert.AreEqual(ProjectChange.ProjectProperty.Name, changes[0].Property);
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace TestProject_test.OperationalController
                 Assert.AreEqual((byte)128, controller.Transparency);
                 Assert.IsTrue(controller.HideInsideSurfaces);
                 Assert.AreEqual(1, changes.Count);
-                Assert.AreEqual(ProjectChangeKind.Loaded, ((ProjectChange)changes[0]).ChangeKind);
+                Assert.AreEqual(ProjectChange.ProjectChangeKind.Loaded, ((ProjectChange)changes[0]).ChangeKind);
             }
             finally
             {
@@ -116,7 +116,7 @@ namespace TestProject_test.OperationalController
             controller.CreateNode(7, 0, 0, 0);
 
             Assert.IsNotNull(change);
-            Assert.AreEqual(MeshDataKind.Set, change.DataKind);
+            Assert.AreEqual(MeshChange.MeshDataKind.Set, change.DataKind);
             Assert.AreEqual(ChangeAction.Updated, change.Action);
             Assert.AreEqual(ObjType.Узел, change.ObjectType);
             Assert.AreEqual(controller.GetModelSetInfo(ObjType.Узел, 7).Number, change.EntityId);
@@ -135,7 +135,7 @@ namespace TestProject_test.OperationalController
             var changes = new List<MeshChange>();
             controller.Message += (_, args) =>
             {
-                if (args.Change is MeshChange change && change.DataKind == MeshDataKind.Group)
+                if (args.Change is MeshChange change && change.DataKind == MeshChange.MeshDataKind.Group)
                     changes.Add(change);
             };
 
@@ -147,6 +147,72 @@ namespace TestProject_test.OperationalController
             Assert.AreEqual(ChangeAction.Created, changes[0].Action);
             Assert.AreEqual(ChangeAction.Deleted, changes[1].Action);
             Assert.IsTrue(changes.All(change => change.EntityId == groupId && change.ObjectType == ObjType.Узел));
+        }
+
+        /// <summary>
+        /// Проверяет отдельное сообщение с прежним и новым именем набора.
+        /// </summary>
+        [TestMethod]
+        public void ChangeMeshSetName_PublishesSetRename()
+        {
+            var controller = new ProjectController();
+            controller.Create("rename-set.bpf2");
+            controller.CreateNode(0, 0, 0, 0);
+            controller.CreateNode(1, 1, 0, 0);
+            controller.CreateElement("old-set", 1, new[] { 0, 1 });
+            var setInfo = controller.GetModelSetInfo(ObjType.Элемент1D, "old-set");
+            var changes = new List<ChangeMessage>();
+            var renames = new List<SetRename>();
+            controller.Message += (_, args) =>
+            {
+                changes.Add(args.Change);
+                if (args.Change is SetRename rename)
+                    renames.Add(rename);
+            };
+
+            controller.ChangeMeshSetName(1, "old-set", "new-set");
+
+            Assert.AreEqual(1, changes.Count);
+            Assert.AreEqual(1, renames.Count);
+            var rename = renames[0];
+            Assert.AreEqual(ObjType.Элемент1D, rename.ObjectType);
+            Assert.AreEqual(setInfo.Number, rename.EntityId);
+            Assert.AreEqual("old-set", rename.OldName);
+            Assert.AreEqual("new-set", rename.NewName);
+            Assert.AreSame(setInfo, controller.GetModelSetInfo(ObjType.Элемент1D, "new-set"));
+        }
+
+        /// <summary>
+        /// Проверяет отдельное сообщение с прежним и новым именем группы.
+        /// </summary>
+        [TestMethod]
+        public void ChangeGroupName_PublishesGroupRename()
+        {
+            var controller = new ProjectController();
+            controller.Create("rename-group.bpf2");
+            controller.CreateNode(7, 0, 0, 0);
+            var modelObject = controller.GetModelObject(ObjType.Узел, 7);
+            controller.CreateGroup("old-group", new[] { modelObject });
+            var group = controller.GetModelGroup("old-group");
+            var changes = new List<ChangeMessage>();
+            var renames = new List<GroupRename>();
+            controller.Message += (_, args) =>
+            {
+                changes.Add(args.Change);
+                if (args.Change is GroupRename rename)
+                    renames.Add(rename);
+            };
+
+            controller.ChangeGroupName("old-group", "new-group");
+
+            Assert.AreEqual(1, changes.Count);
+            Assert.AreEqual(1, renames.Count);
+            var rename = renames[0];
+            Assert.AreEqual(ObjType.Узел, rename.ObjectType);
+            Assert.AreEqual(group.Number, rename.EntityId);
+            Assert.AreEqual("old-group", rename.OldName);
+            Assert.AreEqual("new-group", rename.NewName);
+            Assert.AreSame(group, controller.GetModelGroup("new-group"));
         }
 
         /// <summary>

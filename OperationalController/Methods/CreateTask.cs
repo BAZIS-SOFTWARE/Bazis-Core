@@ -40,13 +40,13 @@ namespace OperationalController
             ClearTaskData();
             project.TaskData = data;
             if (oldKind != TaskData.TaskKind)
-                Publish(new ProjectChange(ProjectChangeKind.PropertyChanged, ProjectProperty.TaskKind));
+                Publish(new ProjectChange(ProjectChange.ProjectChangeKind.PropertyChanged, ProjectChange.ProjectProperty.TaskKind));
             if (oldType != TaskData.TaskType)
-                Publish(new ProjectChange(ProjectChangeKind.PropertyChanged, ProjectProperty.TaskType));
+                Publish(new ProjectChange(ProjectChange.ProjectChangeKind.PropertyChanged, ProjectChange.ProjectProperty.TaskType));
             if (!ReferenceEquals(oldMaterials, TaskData.Materials))
-                Publish(new ProjectChange(ProjectChangeKind.PropertyChanged, ProjectProperty.MaterialsDB));
+                Publish(new ProjectChange(ProjectChange.ProjectChangeKind.PropertyChanged, ProjectChange.ProjectProperty.MaterialsDB));
             if (!ReferenceEquals(oldFunctions, TaskData.Functions))
-                Publish(new ProjectChange(ProjectChangeKind.PropertyChanged, ProjectProperty.FunctionsDB));
+                Publish(new ProjectChange(ProjectChange.ProjectChangeKind.PropertyChanged, ProjectChange.ProjectProperty.FunctionsDB));
         }
     }
 }

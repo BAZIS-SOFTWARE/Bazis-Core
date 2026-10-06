@@ -252,7 +252,7 @@ namespace OperationalController
             if (GeneralData.Name == name)
                 return;
             GeneralData.Name = name;
-            Publish(new ProjectChange(ProjectChangeKind.PropertyChanged, ProjectProperty.Name));
+            Publish(new ProjectChange(ProjectChange.ProjectChangeKind.PropertyChanged, ProjectChange.ProjectProperty.Name));
         }
     }
 }

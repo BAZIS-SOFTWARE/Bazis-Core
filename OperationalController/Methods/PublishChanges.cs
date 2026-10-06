@@ -109,19 +109,12 @@ namespace OperationalController
         }
 
         /// <summary>
-        /// Публикует актуальные количества геометрических сущностей после синхронизации CAD.
+        /// Публикует типы геометрических сущностей, изменённых после синхронизации CAD.
         /// </summary>
-        private void PublishGeometryChange()
+        private void PublishGeometryChange(GeoChange.GeometryEntityKind entityKind)
         {
-            var counts = new Dictionary<GeometryEntityKind, int>
-            {
-                [GeometryEntityKind.Point] = GmshController.Gmsh.Model.GetEntities(0).Length / 2,
-                [GeometryEntityKind.Curve] = GmshController.Gmsh.Model.GetEntities(1).Length / 2,
-                [GeometryEntityKind.Surface] = GmshController.Gmsh.Model.GetEntities(2).Length / 2,
-                [GeometryEntityKind.Volume] = GmshController.Gmsh.Model.GetEntities(3).Length / 2
-            };
             isModified = true;
-            Publish(new GeoChange(counts));
+            Publish(new GeoChange(entityKind));
         }
 
         /// <summary>
@@ -132,7 +125,10 @@ namespace OperationalController
             if (setInfo == null)
                 return;
             isModified = true;
-            Publish(new MeshChange(MeshDataKind.Set, action, setInfo.ObjType, setInfo.Number));
+            if (action == ChangeAction.Deleted)
+                Publish(new SetDelete(setInfo.ObjType, setInfo.Number, setInfo.Name));
+            else
+                Publish(new MeshChange(MeshChange.MeshDataKind.Set, action, setInfo.ObjType, setInfo.Number));
         }
 
         /// <summary>
@@ -143,7 +139,7 @@ namespace OperationalController
             if (group == null)
                 return;
             isModified = true;
-            Publish(new MeshChange(MeshDataKind.Group, action, group.ObjType, group.Number));
+            Publish(new MeshChange(MeshChange.MeshDataKind.Group, action, group.ObjType, group.Number));
         }
 
         /// <summary>
