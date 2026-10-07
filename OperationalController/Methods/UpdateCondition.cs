@@ -10,13 +10,16 @@ namespace OperationalController
         /// </summary>
         public void UpdateCondition(int index, ICondData condition)
         {
-            if (condition == null)
-                throw new ArgumentNullException(nameof(condition));
-            if (index < 0 || index >= TaskData.Count)
-                throw new ArgumentOutOfRangeException(nameof(index));
+            using (BeginChanges())
+            {
+                if (condition == null)
+                    throw new ArgumentNullException(nameof(condition));
+                if (index < 0 || index >= TaskData.Count)
+                    throw new ArgumentOutOfRangeException(nameof(index));
 
-            TaskData[index] = condition;
-            PublishConditionChange(condition.Kind, ChangeAction.Updated, index);
+                TaskData[index] = condition;
+                RegisterConditionChange(condition.Kind, ChangeAction.Updated, index);
+            }
         }
     }
 }

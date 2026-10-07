@@ -19,6 +19,24 @@ namespace TestProject_test.OperationalController
     public class ProjectControllerContractTests
     {
         /// <summary>
+        /// Проверяет независимость опубликованного пакета от исходного изменяемого списка.
+        /// </summary>
+        [TestMethod]
+        public void ProjectMessageEventArgs_CopiesSourceChanges()
+        {
+            var source = new List<ChangeMessage>
+            {
+                new ProjectChange(ProjectChange.ProjectChangeKind.Created)
+            };
+            var args = new ProjectMessageEventArgs(source);
+
+            source.Clear();
+
+            Assert.AreEqual(1, args.Changes.Count);
+            Assert.IsInstanceOfType<ProjectChange>(args.Changes[0]);
+        }
+
+        /// <summary>
         /// Проверяет изменение имени проекта через команду и отсутствие повторного уведомления.
         /// </summary>
         [TestMethod]
@@ -29,8 +47,9 @@ namespace TestProject_test.OperationalController
             var changes = new List<ProjectChange>();
             controller.Message += (_, args) =>
             {
-                if (args.Change is ProjectChange change)
-                    changes.Add(change);
+                foreach (var message in args.Changes)
+                    if (message is ProjectChange change)
+                        changes.Add(change);
             };
 
             controller.ChangeProjectName("new.bpf2");
@@ -62,7 +81,7 @@ namespace TestProject_test.OperationalController
                 controller.SetHideInsideSurfaces(true);
                 var progress = new RecordedProgress();
                 var changes = new List<ChangeMessage>();
-                controller.Message += (_, args) => changes.Add(args.Change);
+                controller.Message += (_, args) => changes.AddRange(args.Changes);
 
                 controller.Open(path, progress);
                 CollectionAssert.AreEqual(new[] { 0, 50, 100 }, progress.Values.Distinct().ToArray());
@@ -93,7 +112,7 @@ namespace TestProject_test.OperationalController
             var controller = new ProjectController();
             controller.Create("current.bpf2");
             var changes = new List<ChangeMessage>();
-            controller.Message += (_, args) => changes.Add(args.Change);
+            controller.Message += (_, args) => changes.AddRange(args.Changes);
 
             Assert.ThrowsException<FileNotFoundException>(() => controller.Open(path));
 
@@ -111,7 +130,12 @@ namespace TestProject_test.OperationalController
             var controller = new ProjectController();
             controller.Create("mesh.bpf2");
             MeshChange change = null;
-            controller.Message += (_, args) => change = args.Change as MeshChange;
+            controller.Message += (_, args) =>
+            {
+                foreach (var message in args.Changes)
+                    if (message is MeshChange meshChange)
+                        change = meshChange;
+            };
 
             controller.CreateNode(7, 0, 0, 0);
 
@@ -135,8 +159,9 @@ namespace TestProject_test.OperationalController
             var changes = new List<MeshChange>();
             controller.Message += (_, args) =>
             {
-                if (args.Change is MeshChange change && change.DataKind == MeshChange.MeshDataKind.Group)
-                    changes.Add(change);
+                foreach (var message in args.Changes)
+                    if (message is MeshChange change && change.DataKind == MeshChange.MeshDataKind.Group)
+                        changes.Add(change);
             };
 
             controller.CreateGroup("test", new[] { modelObject });
@@ -165,9 +190,10 @@ namespace TestProject_test.OperationalController
             var renames = new List<SetRename>();
             controller.Message += (_, args) =>
             {
-                changes.Add(args.Change);
-                if (args.Change is SetRename rename)
-                    renames.Add(rename);
+                changes.AddRange(args.Changes);
+                foreach (var message in args.Changes)
+                    if (message is SetRename rename)
+                        renames.Add(rename);
             };
 
             controller.ChangeMeshSetName(1, "old-set", "new-set");
@@ -198,9 +224,10 @@ namespace TestProject_test.OperationalController
             var renames = new List<GroupRename>();
             controller.Message += (_, args) =>
             {
-                changes.Add(args.Change);
-                if (args.Change is GroupRename rename)
-                    renames.Add(rename);
+                changes.AddRange(args.Changes);
+                foreach (var message in args.Changes)
+                    if (message is GroupRename rename)
+                        renames.Add(rename);
             };
 
             controller.ChangeGroupName("old-group", "new-group");
@@ -230,8 +257,9 @@ namespace TestProject_test.OperationalController
             var changes = new List<CondChange>();
             controller.Message += (_, args) =>
             {
-                if (args.Change is CondChange change)
-                    changes.Add(change);
+                foreach (var message in args.Changes)
+                    if (message is CondChange change)
+                        changes.Add(change);
             };
 
             var load = new LoadData(group, 0, 1);
@@ -322,11 +350,12 @@ namespace TestProject_test.OperationalController
                 var changes = new List<MeshChange>();
                 controller.Message += (_, args) =>
                 {
-                    if (args.Change is MeshChange change)
-                    {
-                        Assert.AreEqual(objectCount + 1, controller.GetAllModelNodes().Count());
-                        changes.Add(change);
-                    }
+                    foreach (var message in args.Changes)
+                        if (message is MeshChange change)
+                        {
+                            Assert.AreEqual(objectCount + 1, controller.GetAllModelNodes().Count());
+                            changes.Add(change);
+                        }
                 };
 
                 controller.Append(path);
@@ -371,13 +400,14 @@ namespace TestProject_test.OperationalController
                 var changes = new List<MeshChange>();
                 controller.Message += (_, args) =>
                 {
-                    if (args.Change is MeshChange change)
-                    {
-                        Assert.AreEqual(objectCount, controller.GetModelSetInfo(ObjType.Элемент1D, "shared_1").NumberOfObjects);
-                        Assert.AreEqual(objectCount, controller.GetModelSetInfo(ObjType.Элемент2D, "shared").NumberOfObjects);
-                        Assert.AreEqual(0, controller.GetModelSetInfo(ObjType.Элемент1D, "empty").NumberOfObjects);
-                        changes.Add(change);
-                    }
+                    foreach (var message in args.Changes)
+                        if (message is MeshChange change)
+                        {
+                            Assert.AreEqual(objectCount, controller.GetModelSetInfo(ObjType.Элемент1D, "shared_1").NumberOfObjects);
+                            Assert.AreEqual(objectCount, controller.GetModelSetInfo(ObjType.Элемент2D, "shared").NumberOfObjects);
+                            Assert.AreEqual(0, controller.GetModelSetInfo(ObjType.Элемент1D, "empty").NumberOfObjects);
+                            changes.Add(change);
+                        }
                 };
 
                 controller.Append(path);
@@ -437,10 +467,14 @@ namespace TestProject_test.OperationalController
             controller.Create("view.bpf2");
             controller.CreateNode(7, 0, 0, 0);
             var changes = new List<ViewChange>();
+            var batches = 0;
             controller.Message += (_, args) =>
             {
-                if (args.Change is ViewChange change)
-                    changes.Add(change);
+                batches++;
+                Assert.AreEqual(1, args.Changes.Count);
+                foreach (var message in args.Changes)
+                    if (message is ViewChange change)
+                        changes.Add(change);
             };
 
             using (controller.BeginViewUpdate())
@@ -449,8 +483,29 @@ namespace TestProject_test.OperationalController
                 controller.SetVisible(ObjType.Узел, new[] { 7 }, false);
             }
 
+            Assert.AreEqual(1, batches);
             Assert.AreEqual(1, changes.Count);
             Assert.AreEqual(1, changes[0].AffectedSets.Count());
+        }
+
+        /// <summary>
+        /// Проверяет включение очистки представления в пакет операции изменения данных.
+        /// </summary>
+        [TestMethod]
+        public void DeleteSelectedObject_IncludesViewChangeInDataBatch()
+        {
+            var controller = new ProjectController();
+            controller.Create("view-prune.bpf2");
+            controller.CreateNode(7, 0, 0, 0);
+            controller.Select(ObjType.Узел, new[] { 7 });
+            var batches = new List<IReadOnlyList<ChangeMessage>>();
+            controller.Message += (_, args) => batches.Add(args.Changes);
+
+            controller.DeleteModelObjects(ObjType.Узел, new[] { 7 });
+
+            Assert.AreEqual(1, batches.Count);
+            Assert.IsTrue(batches[0].Any(change => change is MeshChange));
+            Assert.IsTrue(batches[0].Any(change => change is ViewChange));
         }
 
         private sealed class RecordedProgress : IProgress<int>

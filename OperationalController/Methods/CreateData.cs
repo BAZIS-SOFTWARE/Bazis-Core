@@ -27,54 +27,57 @@ namespace OperationalController
         /// <inheritdoc/>
         public void CreateQuadMeshOnPoligon(List<Point2D> points, int numberOfElem)
         {
-            if (points.Count != 4)
-                throw new Exception("Колличество узлов не равно 4");
-
-            var b_0 = GetBorderPoints(numberOfElem, points[0], points[1]);
-            var b_2 = GetBorderPoints(numberOfElem, points[3], points[2]);
-
-            var b_1 = GetBorderPoints(numberOfElem, points[1], points[2]);
-            var b_3 = GetBorderPoints(numberOfElem, points[0], points[3]);
-
-            var hor = new List<Segment2D>(); // набор линий гор
-            var vert = new List<Segment2D>(); // набор линий гор
-
-            for (int i = 0; i <= numberOfElem; i++)
-                hor.Add(new Segment2D(b_0[i], b_2[i]));
-
-            for (int i = 0; i <= numberOfElem; i++)
-                vert.Add(new Segment2D(b_1[i], b_3[i]));
-
-            var numbE = 0;
-            var numbN = 0;
-
-            var elems = new ObjectsCollection<Element2D>();
-
-            for (int i = 1; i < hor.Count; i++)
+            using (BeginChanges())
             {
-                for (int j = 1; j < vert.Count; j++)
+                if (points.Count != 4)
+                    throw new Exception("Колличество узлов не равно 4");
+
+                var b_0 = GetBorderPoints(numberOfElem, points[0], points[1]);
+                var b_2 = GetBorderPoints(numberOfElem, points[3], points[2]);
+
+                var b_1 = GetBorderPoints(numberOfElem, points[1], points[2]);
+                var b_3 = GetBorderPoints(numberOfElem, points[0], points[3]);
+
+                var hor = new List<Segment2D>(); // набор линий гор
+                var vert = new List<Segment2D>(); // набор линий гор
+
+                for (int i = 0; i <= numberOfElem; i++)
+                    hor.Add(new Segment2D(b_0[i], b_2[i]));
+
+                for (int i = 0; i <= numberOfElem; i++)
+                    vert.Add(new Segment2D(b_1[i], b_3[i]));
+
+                var numbE = 0;
+                var numbN = 0;
+
+                var elems = new ObjectsCollection<Element2D>();
+
+                for (int i = 1; i < hor.Count; i++)
                 {
+                    for (int j = 1; j < vert.Count; j++)
+                    {
 
-                    var p0 = hor[i - 1].GetIntersection(vert[j - 1]);
-                    var p1 = hor[i].GetIntersection(vert[j - 1]);
-                    var p2 = hor[i].GetIntersection(vert[j]);
-                    var p3 = hor[i - 1].GetIntersection(vert[j]);
-                    var elem = CreateElem(ref numbE, ref numbN, p0, p1, p2, p3);
+                        var p0 = hor[i - 1].GetIntersection(vert[j - 1]);
+                        var p1 = hor[i].GetIntersection(vert[j - 1]);
+                        var p2 = hor[i].GetIntersection(vert[j]);
+                        var p3 = hor[i - 1].GetIntersection(vert[j]);
+                        var elem = CreateElem(ref numbE, ref numbN, p0, p1, p2, p3);
 
-                    elems.Add("create", elem);
+                        elems.Add("create", elem);
+                    }
                 }
-            }
-            foreach (var item in elems.GetObjects())
-                foreach (var node in item.GetVertexes())
-                    ModelData.ObjectData.NodesSet.Add(node.Number, node);
+                foreach (var item in elems.GetObjects())
+                    foreach (var node in item.GetVertexes())
+                        ModelData.ObjectData.NodesSet.Add(node.Number, node);
 
-            var addedNames = ModelData.ObjectData.E2DCollection.Append(elems);
-            if (elems.Count != 0)
-                PublishSetChange(ModelData.ObjectData.NodesSet, ChangeAction.Updated);
-            foreach (var name in addedNames)
-            {
-                var addedSet = ModelData.ObjectData.E2DCollection[name];
-                PublishSetChange(addedSet, ChangeAction.Created);
+                var addedNames = ModelData.ObjectData.E2DCollection.Append(elems);
+                if (elems.Count != 0)
+                    RegisterSetChange(ModelData.ObjectData.NodesSet, ChangeAction.Updated);
+                foreach (var name in addedNames)
+                {
+                    var addedSet = ModelData.ObjectData.E2DCollection[name];
+                    RegisterSetChange(addedSet, ChangeAction.Created);
+                }
             }
         }
 
@@ -123,14 +126,17 @@ namespace OperationalController
 
         public void CreateElementsSet(string setName, int dim)
         {
-            if (dim < 1 | dim > 3)
-                throw new Exception("Неправильно указана размерность элементов");
-
-            if (dim == 1)
+            using (BeginChanges())
             {
-                ModelData.ObjectData.E1DCollection.Add(setName);
-                var set = ModelData.ObjectData.E1DCollection[setName];
-                PublishSetChange(set, ChangeAction.Created);
+                if (dim < 1 | dim > 3)
+                    throw new Exception("Неправильно указана размерность элементов");
+
+                if (dim == 1)
+                {
+                    ModelData.ObjectData.E1DCollection.Add(setName);
+                    var set = ModelData.ObjectData.E1DCollection[setName];
+                    RegisterSetChange(set, ChangeAction.Created);
+                }
             }
         }
 
@@ -145,20 +151,23 @@ namespace OperationalController
         /// <returns>Тег (идентификатор) созданной в Gmsh точки.</returns>
         public int CreatePointByVector(int basePointTag, int directionPointTag, double offset)
         {
-            var basePoint = ModelData.ObjectData.PointsSet[basePointTag];
-            var directionPoint = ModelData.ObjectData.PointsSet[directionPointTag];
+            using (BeginChanges())
+            {
+                var basePoint = ModelData.ObjectData.PointsSet[basePointTag];
+                var directionPoint = ModelData.ObjectData.PointsSet[directionPointTag];
 
-            double dx = directionPoint.Position._x - basePoint.Position._x;
-            double dy = directionPoint.Position._y - basePoint.Position._y;
-            double dz = directionPoint.Position._z - basePoint.Position._z;
+                double dx = directionPoint.Position._x - basePoint.Position._x;
+                double dy = directionPoint.Position._y - basePoint.Position._y;
+                double dz = directionPoint.Position._z - basePoint.Position._z;
 
-            var length = Math.Sqrt(dx * dx + dy * dy + dz * dz);
+                var length = Math.Sqrt(dx * dx + dy * dy + dz * dz);
 
-            double nx = dx / length;
-            double ny = dy / length;
-            double nz = dz / length;
+                double nx = dx / length;
+                double ny = dy / length;
+                double nz = dz / length;
 
-            return CreatePoint(basePoint.Position._x + nx * offset, basePoint.Position._y + ny * offset, basePoint.Position._z + nz * offset);
+                return CreatePoint(basePoint.Position._x + nx * offset, basePoint.Position._y + ny * offset, basePoint.Position._z + nz * offset);
+            }
         }
 
         /// <summary>
@@ -170,11 +179,14 @@ namespace OperationalController
         /// <param name="geometryTag">Тег (идентификатор) геометрического объекта в Gmsh, на который выполняется проекция.</param>
         public int CreatePointProjectionOntoGeometry(int basePointTag, int dim, int geometryTag)
         {
-            var sourcePoint = ModelData.ObjectData.PointsSet[basePointTag];
+            using (BeginChanges())
+            {
+                var sourcePoint = ModelData.ObjectData.PointsSet[basePointTag];
 
-            var coord = new double[] { sourcePoint.Position._x, sourcePoint.Position._y, sourcePoint.Position._z };
-            var (pointCoord, _)= GmshController.Gmsh.Model.GetClosestPoint(dim, geometryTag, coord);
-            return CreatePoint(pointCoord[0], pointCoord[1], pointCoord[2]);
+                var coord = new double[] { sourcePoint.Position._x, sourcePoint.Position._y, sourcePoint.Position._z };
+                var (pointCoord, _)= GmshController.Gmsh.Model.GetClosestPoint(dim, geometryTag, coord);
+                return CreatePoint(pointCoord[0], pointCoord[1], pointCoord[2]);
+            }
         }
 
         /// <summary>
@@ -188,15 +200,18 @@ namespace OperationalController
         /// <exception cref="Exception">Бросается, если Gmsh вернул 0 при попытке создать точку или при отсутствии созданного геометрического объекта в списке контрольных точек.</exception>
         public int CreatePoint(double x, double y, double z, double meshSize = 0)
         {
-            var pointNumber = GmshController.Gmsh.Model.Occ.AddPoint(x, y, z);
-            if (pointNumber == 0)
-                throw new Exception("При создании точки произошла ошибка");
-            GmshController.Gmsh.Model.Occ.Synchronize();
-            var geoPoint = GmshController.CreateControlPoints().Where(x => x.Number == pointNumber).FirstOrDefault();
-            ModelData.ObjectData.PointsSet.Add(geoPoint.Number, geoPoint);
-            PublishSetChange(ModelData.ObjectData.PointsSet, ChangeAction.Updated);
-            PublishGeometryChange(GeoChange.GeometryEntityKind.Point);
-            return pointNumber;
+            using (BeginChanges())
+            {
+                var pointNumber = GmshController.Gmsh.Model.Occ.AddPoint(x, y, z);
+                if (pointNumber == 0)
+                    throw new Exception("При создании точки произошла ошибка");
+                GmshController.Gmsh.Model.Occ.Synchronize();
+                var geoPoint = GmshController.CreateControlPoints().Where(x => x.Number == pointNumber).FirstOrDefault();
+                ModelData.ObjectData.PointsSet.Add(geoPoint.Number, geoPoint);
+                RegisterSetChange(ModelData.ObjectData.PointsSet, ChangeAction.Updated);
+                RegisterGeometryChange(GeoChange.GeometryEntityKind.Point);
+                return pointNumber;
+            }
         }
 
         /// <summary>
@@ -211,15 +226,18 @@ namespace OperationalController
         /// </exception>
         public int CreateLine(int startPointNumber, int endPointNumber)
         {
-            var lineNumber = GmshController.Gmsh.Model.Occ.AddLine(startPointNumber, endPointNumber);
-            if (lineNumber == 0)
-                throw new Exception("При создании линии произошла ошибка");
-            GmshController.Gmsh.Model.Occ.Synchronize();
-            var geoLine = GmshController.CreateLines().Where(x => x.Number == lineNumber).FirstOrDefault();
-            ModelData.ObjectData.CurveSet.Add(geoLine.Number, geoLine);
-            PublishSetChange(ModelData.ObjectData.CurveSet, ChangeAction.Updated);
-            PublishGeometryChange(GeoChange.GeometryEntityKind.Curve);
-            return lineNumber;
+            using (BeginChanges())
+            {
+                var lineNumber = GmshController.Gmsh.Model.Occ.AddLine(startPointNumber, endPointNumber);
+                if (lineNumber == 0)
+                    throw new Exception("При создании линии произошла ошибка");
+                GmshController.Gmsh.Model.Occ.Synchronize();
+                var geoLine = GmshController.CreateLines().Where(x => x.Number == lineNumber).FirstOrDefault();
+                ModelData.ObjectData.CurveSet.Add(geoLine.Number, geoLine);
+                RegisterSetChange(ModelData.ObjectData.CurveSet, ChangeAction.Updated);
+                RegisterGeometryChange(GeoChange.GeometryEntityKind.Curve);
+                return lineNumber;
+            }
         }
 
         /// <summary>
@@ -238,22 +256,25 @@ namespace OperationalController
         /// </exception>
         public int CreateSurface(int[] lineNumbers)
         {
-            var contur = GmshController.Gmsh.Model.Occ.AddWire(lineNumbers);
-            var surf = GmshController.Gmsh.Model.Occ.AddPlaneSurface([contur]);
-            if (surf == 0)
-                throw new Exception("При создании поверхности произошла ошибка");
-            GmshController.Gmsh.Model.Occ.Synchronize();
+            using (BeginChanges())
+            {
+                var contur = GmshController.Gmsh.Model.Occ.AddWire(lineNumbers);
+                var surf = GmshController.Gmsh.Model.Occ.AddPlaneSurface([contur]);
+                if (surf == 0)
+                    throw new Exception("При создании поверхности произошла ошибка");
+                GmshController.Gmsh.Model.Occ.Synchronize();
 
-            var points = GmshController.Gmsh.Model.GetBoundary([2, surf], true, true, true)
-                .Where((value, index) => index % 2 == 1)
-                .ToArray();
-            var allPoints = GmshController.CreateControlPoints();
-            var geoPoints = allPoints.Where(x => points.Contains(x.Number)).ToArray();
+                var points = GmshController.Gmsh.Model.GetBoundary([2, surf], true, true, true)
+                    .Where((value, index) => index % 2 == 1)
+                    .ToArray();
+                var allPoints = GmshController.CreateControlPoints();
+                var geoPoints = allPoints.Where(x => points.Contains(x.Number)).ToArray();
 
-            ModelData.ObjectData.SurfaceSet.Add(surf, new SurfaceFigure(surf, [new GeometrySurface(surf, geoPoints)]));
-            PublishSetChange(ModelData.ObjectData.SurfaceSet, ChangeAction.Updated);
-            PublishGeometryChange(GeoChange.GeometryEntityKind.Surface);
-            return surf;
+                ModelData.ObjectData.SurfaceSet.Add(surf, new SurfaceFigure(surf, [new GeometrySurface(surf, geoPoints)]));
+                RegisterSetChange(ModelData.ObjectData.SurfaceSet, ChangeAction.Updated);
+                RegisterGeometryChange(GeoChange.GeometryEntityKind.Surface);
+                return surf;
+            }
         }
 
         /// <summary>
@@ -280,8 +301,11 @@ namespace OperationalController
         /// <returns>Имя набора созданных 3Д элементов.</returns>
         public string ExtrudeElement3DAlongCurve(int surfaceTag, int[] curveTags, int startPointTag, double step, bool transfinite)
         {
-            var elements2D = GetElements2DBelongingToSurface(surfaceTag);
-            return ExtrudeAlongCurve(elements2D, curveTags, startPointTag, step, transfinite);
+            using (BeginChanges())
+            {
+                var elements2D = GetElements2DBelongingToSurface(surfaceTag);
+                return ExtrudeAlongCurve(elements2D, curveTags, startPointTag, step, transfinite);
+            }
         }
 
         /// <summary>
@@ -308,8 +332,11 @@ namespace OperationalController
         /// <returns>Имя набора созданных 3Д элементов.</returns>
         public string ExtrudeElement3DAlongCurve(string setName, int[] curveTags, int startPointTag, double step, bool transfinite)
         {
-            var set = project.ModelData.ObjectData.E2DCollection[setName].Values.ToList();
-            return ExtrudeAlongCurve(set, curveTags, startPointTag, step, transfinite);
+            using (BeginChanges())
+            {
+                var set = project.ModelData.ObjectData.E2DCollection[setName].Values.ToList();
+                return ExtrudeAlongCurve(set, curveTags, startPointTag, step, transfinite);
+            }
         }
 
         /// <summary>
@@ -322,10 +349,13 @@ namespace OperationalController
         /// <returns>Имя набора созданных 1D-элементов.</returns>
         public string ExtrudeElement1DAlongCurve(int[] curveTags, int startPointTag, int startNodeTag, double step)
         {
-            var startNode = ModelData.ObjectData.NodesSet[startNodeTag];
-            var beams = ExtrudePointAlongCurve(startNode, curveTags, startPointTag, step);
-            var name = UpdateBeamModelData(beams);
-            return name;
+            using (BeginChanges())
+            {
+                var startNode = ModelData.ObjectData.NodesSet[startNodeTag];
+                var beams = ExtrudePointAlongCurve(startNode, curveTags, startPointTag, step);
+                var name = UpdateBeamModelData(beams);
+                return name;
+            }
         }
 
 
@@ -345,27 +375,33 @@ namespace OperationalController
         /// <returns>Имя набора созданных 3Д элементов.</returns>
         public string ExtrudeElement3DRotate(int surfaceTag, float angle, Vector3 originPoint, Vector3 rotAxis, bool transfinite)
         {
-            var radian = (float)(angle * Math.PI / 180);
-            var elements2D = GetElements2DBelongingToSurface(surfaceTag);
+            using (BeginChanges())
+            {
+                var radian = (float)(angle * Math.PI / 180);
+                var elements2D = GetElements2DBelongingToSurface(surfaceTag);
 
-            var extruder = new RotateExtruder();
-            var e3d = transfinite ? extruder.ExtrudeTransfinite(elements2D, radian, originPoint, rotAxis)
-                                  : extruder.Extrude(elements2D, radian, originPoint, rotAxis);
-            
-            var collection = e3d.SelectMany(v => v);
-            return UpdateModelData(extruder, collection);
+                var extruder = new RotateExtruder();
+                var e3d = transfinite ? extruder.ExtrudeTransfinite(elements2D, radian, originPoint, rotAxis)
+                                      : extruder.Extrude(elements2D, radian, originPoint, rotAxis);
+
+                var collection = e3d.SelectMany(v => v);
+                return UpdateModelData(extruder, collection);
+            }
         }
 
         /// <inheritdoc/>
         public int[] CreateChamfer(IEnumerable<int> curveTags, double firstLength, double secondLengthOrAngle, bool isAngle, bool reflected)
         {
-            var builder = new ChamferGeometryBuilder(GmshController);
-            var result = builder.Build(curveTags, firstLength, secondLengthOrAngle, isAngle, reflected);
-            RefreshGeometryData();
-            var entityKind = GeoChange.GeometryEntityKind.Point | GeoChange.GeometryEntityKind.Curve |
-                GeoChange.GeometryEntityKind.Surface | GeoChange.GeometryEntityKind.Volume;
-            PublishGeometryChange(entityKind);
-            return result;
+            using (BeginChanges())
+            {
+                var builder = new ChamferGeometryBuilder(GmshController);
+                var result = builder.Build(curveTags, firstLength, secondLengthOrAngle, isAngle, reflected);
+                RefreshGeometryData();
+                var entityKind = GeoChange.GeometryEntityKind.Point | GeoChange.GeometryEntityKind.Curve |
+                    GeoChange.GeometryEntityKind.Surface | GeoChange.GeometryEntityKind.Volume;
+                RegisterGeometryChange(entityKind);
+                return result;
+            }
         }
 
         private void RefreshGeometryData()
@@ -391,11 +427,11 @@ namespace OperationalController
             foreach (var volume in surfaceData.Item2)
                 ModelData.VolumeData.Add(volume);
             if (pointsChanged)
-                PublishSetChange(ModelData.ObjectData.PointsSet, ChangeAction.Updated);
+                RegisterSetChange(ModelData.ObjectData.PointsSet, ChangeAction.Updated);
             if (curvesChanged)
-                PublishSetChange(ModelData.ObjectData.CurveSet, ChangeAction.Updated);
+                RegisterSetChange(ModelData.ObjectData.CurveSet, ChangeAction.Updated);
             if (surfacesChanged)
-                PublishSetChange(ModelData.ObjectData.SurfaceSet, ChangeAction.Updated);
+                RegisterSetChange(ModelData.ObjectData.SurfaceSet, ChangeAction.Updated);
         }
 
         private Tuple<ObjectsSet<SurfaceFigure>, VolumeData> CreateChamferSurfaceData()
@@ -468,41 +504,44 @@ namespace OperationalController
         /// <inheritdoc/>
         public void CreateElement(string setName, int dim, int[] nodeNumbers)
         {
-            if (dim < 1 | dim > 3)
-                throw new Exception("Неправильно указана размерность элементов");
-
-            var nodes = new Node[nodeNumbers.Length];
-
-            for (int i = 0; i < nodes.Length; i++)
+            using (BeginChanges())
             {
-                var number = nodeNumbers[i];
-                nodes[i] = new Node(number,
-                    ModelData.ObjectData.NodesSet[number].Position);
-            }
+                if (dim < 1 | dim > 3)
+                    throw new Exception("Неправильно указана размерность элементов");
 
-            if (dim == 1)
-            {
-                var max = 0;
-                if (ModelData.ObjectData.Count(ObjType.Элемент1D) != 0)
-                    max = ModelData.ObjectData.GetMaxNumber(ObjType.Элемент1D) + 1;
+                var nodes = new Node[nodeNumbers.Length];
 
-                var e1d = new Beam(max, nodes);
-                AddCollectionObject(ModelData.ObjectData.E1DCollection, setName, e1d);
-            }
-            else if (dim == 2)
-            {
-                var max = 0;
-                if (ModelData.ObjectData.Count(ObjType.Элемент2D) != 0)
-                    max = ModelData.ObjectData.GetMaxNumber(ObjType.Элемент2D) + 1;
+                for (int i = 0; i < nodes.Length; i++)
+                {
+                    var number = nodeNumbers[i];
+                    nodes[i] = new Node(number,
+                        ModelData.ObjectData.NodesSet[number].Position);
+                }
 
-                Element2D e2d;
+                if (dim == 1)
+                {
+                    var max = 0;
+                    if (ModelData.ObjectData.Count(ObjType.Элемент1D) != 0)
+                        max = ModelData.ObjectData.GetMaxNumber(ObjType.Элемент1D) + 1;
 
-                if (nodeNumbers.Length == 4)
-                    e2d = new Quad(max, nodes);
-                else
-                    e2d = new Triangle_c(max, nodes);
+                    var e1d = new Beam(max, nodes);
+                    AddCollectionObject(ModelData.ObjectData.E1DCollection, setName, e1d);
+                }
+                else if (dim == 2)
+                {
+                    var max = 0;
+                    if (ModelData.ObjectData.Count(ObjType.Элемент2D) != 0)
+                        max = ModelData.ObjectData.GetMaxNumber(ObjType.Элемент2D) + 1;
 
-                AddCollectionObject(ModelData.ObjectData.E2DCollection, setName, e2d);
+                    Element2D e2d;
+
+                    if (nodeNumbers.Length == 4)
+                        e2d = new Quad(max, nodes);
+                    else
+                        e2d = new Triangle_c(max, nodes);
+
+                    AddCollectionObject(ModelData.ObjectData.E2DCollection, setName, e2d);
+                }
             }
         }
 
@@ -510,13 +549,16 @@ namespace OperationalController
 
         public void CreateNode(int number, float x, float y, float z)
         {
-            if (ModelData.ObjectData.NodesSet.ContainsKey(number))
-                throw new Exception("Обект с таким номером уже добавлен в набор");
+            using (BeginChanges())
+            {
+                if (ModelData.ObjectData.NodesSet.ContainsKey(number))
+                    throw new Exception("Обект с таким номером уже добавлен в набор");
 
-            var position = new Point3D(x, y, z);
-            var node = new Node(number, position);
-            ModelData.ObjectData.NodesSet.Add(number, node);
-            PublishSetChange(ModelData.ObjectData.NodesSet, ChangeAction.Updated);
+                var position = new Point3D(x, y, z);
+                var node = new Node(number, position);
+                ModelData.ObjectData.NodesSet.Add(number, node);
+                RegisterSetChange(ModelData.ObjectData.NodesSet, ChangeAction.Updated);
+            }
         }
 
         private List<Element2D> GetElements2DBelongingToSurface(int surfaceTag)
@@ -581,7 +623,7 @@ namespace OperationalController
 
             AppendNodes(extruder);
             var addedSet = ModelData.ObjectData.E3DCollection[addedName];
-            PublishSetChange(addedSet, ChangeAction.Created);
+            RegisterSetChange(addedSet, ChangeAction.Created);
             return addedName;
         }
 
@@ -595,7 +637,7 @@ namespace OperationalController
             var addedNames = ModelData.ObjectData.E1DCollection.Append(collection);
             var addedName = addedNames.Single();
             var addedSet = ModelData.ObjectData.E1DCollection[addedName];
-            PublishSetChange(addedSet, ChangeAction.Created);
+            RegisterSetChange(addedSet, ChangeAction.Created);
 
             return addedName;
         }
@@ -607,7 +649,7 @@ namespace OperationalController
                 nodesSet.Add(node.Number, node);
             ModelData.ObjectData.NodesSet.Append(nodesSet);
             if (nodesSet.Count != 0)
-                PublishSetChange(ModelData.ObjectData.NodesSet, ChangeAction.Updated);
+                RegisterSetChange(ModelData.ObjectData.NodesSet, ChangeAction.Updated);
         }
     }
 }

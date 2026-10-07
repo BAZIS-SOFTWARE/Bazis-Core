@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace TestProject_test.OperationalController
 {
-    /// <summary>Проверяет точечные уведомления и состояние внутри обработчиков каскадных изменений.</summary>
+    /// <summary>Проверяет пакетные уведомления и завершённое состояние каскадных изменений.</summary>
     [TestClass]
     public class PointDataChangeTests
     {
@@ -28,9 +28,9 @@ namespace TestProject_test.OperationalController
             controller.CreateElement("beams", 1, new[] { 0, 1 });
         }
 
-        /// <summary>Проверяет наблюдаемое промежуточное состояние каскада удаления набора.</summary>
+        /// <summary>Проверяет порядок одного пакета после полного каскада удаления набора.</summary>
         [TestMethod]
-        public void DeleteSet_PublishesBeforeDependentGroupsAndConditionsAreRemoved()
+        public void DeleteSet_PublishesOneBatchAfterDependentGroupsAndConditionsAreRemoved()
         {
             var element = controller.GetModelObject(ObjType.Элемент1D, 0);
             controller.CreateGroup("dependent", new[] { element });
@@ -41,33 +41,34 @@ namespace TestProject_test.OperationalController
             controller.AddTaskData(second);
             var setId = controller.GetModelSetInfo(ObjType.Элемент1D, "beams").Number;
             var trace = new List<string>();
+            var batches = 0;
             controller.Message += (_, args) =>
             {
-                if (args.Change is SetDelete deletedSet)
+                batches++;
+                Assert.IsNull(controller.GetModelSetInfo(ObjType.Элемент1D, "beams"));
+                Assert.IsNull(controller.GetModelGroup("dependent"));
+                Assert.AreEqual(0, controller.GetAllCondData().Count());
+                foreach (var message in args.Changes)
                 {
-                    Assert.AreEqual(ObjType.Элемент1D, deletedSet.ObjectType);
-                    Assert.AreEqual(setId, deletedSet.EntityId);
-                    Assert.AreEqual("beams", deletedSet.Name);
-                    Assert.IsNull(controller.GetModelSetInfo(ObjType.Элемент1D, "beams"));
-                    Assert.AreSame(group, controller.GetModelGroup("dependent"));
-                    Assert.AreEqual(2, controller.GetAllCondData().Count());
-                    trace.Add("set");
-                }
-                if (args.Change is MeshChange deletedGroup && deletedGroup.DataKind == MeshChange.MeshDataKind.Group)
-                {
-                    Assert.IsNull(controller.GetModelGroup("dependent"));
-                    Assert.AreEqual(2, controller.GetAllCondData().Count());
-                    trace.Add("group");
-                }
-                if (args.Change is CondChange condition)
-                {
-                    Assert.AreEqual(ChangeAction.Deleted, condition.Action);
-                    Assert.AreEqual(condition.Id, controller.GetAllCondData().Count());
-                    trace.Add($"condition{condition.Id}");
+                    if (message is SetDelete deletedSet)
+                    {
+                        Assert.AreEqual(ObjType.Элемент1D, deletedSet.ObjectType);
+                        Assert.AreEqual(setId, deletedSet.EntityId);
+                        Assert.AreEqual("beams", deletedSet.Name);
+                        trace.Add("set");
+                    }
+                    if (message is MeshChange deletedGroup && deletedGroup.DataKind == MeshChange.MeshDataKind.Group)
+                        trace.Add("group");
+                    if (message is CondChange condition)
+                    {
+                        Assert.AreEqual(ChangeAction.Deleted, condition.Action);
+                        trace.Add($"condition{condition.Id}");
+                    }
                 }
             };
             controller.DeleteModelSet(ObjType.Элемент1D, "beams");
             controller.DeleteModelSet(ObjType.Элемент1D, "beams");
+            Assert.AreEqual(1, batches);
             CollectionAssert.AreEqual(new[] { "set", "group", "condition1", "condition0" }, trace);
         }
 
@@ -83,15 +84,18 @@ namespace TestProject_test.OperationalController
             var updates = 0;
             controller.Message += (_, args) =>
             {
-                if (args.Change is MeshChange mesh && mesh.DataKind == MeshChange.MeshDataKind.Group)
+                foreach (var message in args.Changes)
                 {
-                    Assert.AreEqual(ChangeAction.Updated, mesh.Action);
-                    Assert.AreSame(group, controller.GetModelGroup("survivor"));
-                    Assert.AreSame(group, load.Group);
-                    Assert.AreEqual(2, group.Count);
-                    updates++;
+                    if (message is MeshChange mesh && mesh.DataKind == MeshChange.MeshDataKind.Group)
+                    {
+                        Assert.AreEqual(ChangeAction.Updated, mesh.Action);
+                        Assert.AreSame(group, controller.GetModelGroup("survivor"));
+                        Assert.AreSame(group, load.Group);
+                        Assert.AreEqual(2, group.Count);
+                        updates++;
+                    }
+                    Assert.IsFalse(message is CondChange);
                 }
-                Assert.IsFalse(args.Change is CondChange);
             };
             controller.DeleteModelObjects(ObjType.Узел, new[] { 2 });
             controller.ClearNotExistedGroupData();
@@ -107,20 +111,23 @@ namespace TestProject_test.OperationalController
             var deletions = new List<SetDelete>();
             controller.Message += (_, args) =>
             {
-                if (args.Change is MeshChange mesh)
+                foreach (var message in args.Changes)
                 {
-                    Assert.AreEqual(MeshChange.MeshDataKind.Set, mesh.DataKind);
-                    Assert.AreEqual(ObjType.Узел, mesh.ObjectType);
-                    Assert.AreEqual(ChangeAction.Updated, mesh.Action);
-                    Assert.AreEqual(0, controller.GetAllModelNodes().Count());
-                    updates.Add(mesh);
-                }
-                if (args.Change is SetDelete deletion)
-                {
-                    Assert.AreEqual(ObjType.Элемент1D, deletion.ObjectType);
-                    Assert.AreEqual("beams", deletion.Name);
-                    Assert.IsNull(controller.GetModelSetInfo(ObjType.Элемент1D, "beams"));
-                    deletions.Add(deletion);
+                    if (message is MeshChange mesh)
+                    {
+                        Assert.AreEqual(MeshChange.MeshDataKind.Set, mesh.DataKind);
+                        Assert.AreEqual(ObjType.Узел, mesh.ObjectType);
+                        Assert.AreEqual(ChangeAction.Updated, mesh.Action);
+                        Assert.AreEqual(0, controller.GetAllModelNodes().Count());
+                        updates.Add(mesh);
+                    }
+                    if (message is SetDelete deletion)
+                    {
+                        Assert.AreEqual(ObjType.Элемент1D, deletion.ObjectType);
+                        Assert.AreEqual("beams", deletion.Name);
+                        Assert.IsNull(controller.GetModelSetInfo(ObjType.Элемент1D, "beams"));
+                        deletions.Add(deletion);
+                    }
                 }
             };
             controller.ClearModelCollection(ObjType.Узел);
@@ -141,7 +148,7 @@ namespace TestProject_test.OperationalController
             controller.ChangeMeshSetOrder(1, "beams", 1);
             controller.RenumberElements();
             var messages = new List<ChangeMessage>();
-            controller.Message += (_, args) => messages.Add(args.Change);
+            controller.Message += (_, args) => messages.AddRange(args.Changes);
             switch (operation)
             {
                 case "rename": controller.ChangeMeshSetName(1, "beams", "beams"); break;
@@ -172,14 +179,17 @@ namespace TestProject_test.OperationalController
             var deletions = new List<SetDelete>();
             controller.Message += (_, args) =>
             {
-                if (args.Change is MeshChange change)
+                foreach (var message in args.Changes)
                 {
-                    if (change.Action == ChangeAction.Updated && change.EntityId == master.Number)
-                        Assert.AreEqual(objectCount + 1, master.NumberOfObjects);
-                    changes.Add(change);
+                    if (message is MeshChange change)
+                    {
+                        if (change.Action == ChangeAction.Updated && change.EntityId == master.Number)
+                            Assert.AreEqual(objectCount + 1, master.NumberOfObjects);
+                        changes.Add(change);
+                    }
+                    if (message is SetDelete deletion)
+                        deletions.Add(deletion);
                 }
-                if (args.Change is SetDelete deletion)
-                    deletions.Add(deletion);
             };
 
             controller.MergeElements(ObjType.Элемент1D, "beams", "slave");
@@ -200,7 +210,7 @@ namespace TestProject_test.OperationalController
             var second = controller.GetModelObject(ObjType.Элемент1D, 2);
             second.SetNumber(first.Number);
             var messages = new List<ChangeMessage>();
-            controller.Message += (_, args) => messages.Add(args.Change);
+            controller.Message += (_, args) => messages.AddRange(args.Changes);
 
             Assert.ThrowsException<ArgumentException>(() => controller.MergeElements(ObjType.Элемент1D, "beams", "slave"));
 
@@ -208,9 +218,9 @@ namespace TestProject_test.OperationalController
             Assert.IsNotNull(controller.GetModelSetInfo(ObjType.Элемент1D, "slave"));
         }
 
-        /// <summary>Проверяет немедленное прекращение каскада при исключении обработчика.</summary>
+        /// <summary>Проверяет завершение каскада до передачи пакета обработчику с исключением.</summary>
         [TestMethod]
-        public void ThrowingSubscriber_LeavesAlreadyPublishedMutationAndStopsCascade()
+        public void ThrowingSubscriber_ReceivesCompletedCascade()
         {
             var element = controller.GetModelObject(ObjType.Элемент1D, 0);
             controller.CreateGroup("dependent", new[] { element });
@@ -218,12 +228,19 @@ namespace TestProject_test.OperationalController
             var load = new LoadData(group, 0, 1);
             controller.AddTaskData(load);
             var error = new InvalidOperationException("Subscriber failure.");
-            controller.Message += (_, args) => throw error;
+            var handler = new EventHandler<ProjectMessageEventArgs>((_, args) => throw error);
+            controller.Message += handler;
             var thrown = Assert.ThrowsException<InvalidOperationException>(() => controller.DeleteModelGroup("dependent"));
             Assert.AreSame(error, thrown);
             Assert.IsNull(controller.GetModelGroup("dependent"));
-            Assert.AreSame(load, controller.GetAllCondData().Single());
+            Assert.AreEqual(0, controller.GetAllCondData().Count());
             Assert.IsTrue(controller.IsModified);
+
+            controller.Message -= handler;
+            var batches = 0;
+            controller.Message += (_, args) => batches++;
+            controller.ChangeProjectName("after-subscriber-error");
+            Assert.AreEqual(1, batches);
         }
 
         /// <summary>Проверяет обратные индексы удаления условий при замене или изменении задачи.</summary>
@@ -241,14 +258,16 @@ namespace TestProject_test.OperationalController
             controller.AddTaskData(load);
             controller.AddTaskData(heat);
             var indices = new List<int>();
+            var batches = 0;
             controller.Message += (_, args) =>
             {
-                if (args.Change is CondChange condition)
-                {
-                    Assert.AreEqual(ChangeAction.Deleted, condition.Action);
-                    Assert.AreEqual(condition.Id, controller.GetAllCondData().Count());
-                    indices.Add(condition.Id);
-                }
+                batches++;
+                foreach (var message in args.Changes)
+                    if (message is CondChange condition)
+                    {
+                        Assert.AreEqual(ChangeAction.Deleted, condition.Action);
+                        indices.Add(condition.Id);
+                    }
             };
             switch (operation)
             {
@@ -256,6 +275,7 @@ namespace TestProject_test.OperationalController
                 case "kind": controller.ChangeTaskKind(TaskKind.термическая); break;
                 case "type": controller.ChangeTaskType(TaskType.Volume); break;
             }
+            Assert.AreEqual(1, batches);
             CollectionAssert.AreEqual(new[] { 1, 0 }, indices);
             Assert.AreSame(group, controller.GetModelGroup("task"));
         }

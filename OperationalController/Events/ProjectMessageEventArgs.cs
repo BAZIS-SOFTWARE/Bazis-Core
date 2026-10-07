@@ -1,20 +1,25 @@
 using System;
+using System.Collections.Generic;
 
 namespace OperationalController
 {
     /// <summary>
-    /// Передаёт одно изменение состояния проекта.
+    /// Передаёт согласованный пакет изменений состояния проекта.
     /// </summary>
     public sealed class ProjectMessageEventArgs : EventArgs
     {
         /// <summary>
-        /// Создаёт аргументы уведомления об изменении.
+        /// Создаёт аргументы уведомления об изменениях.
         /// </summary>
-        public ProjectMessageEventArgs(ChangeMessage change)
+        public ProjectMessageEventArgs(IReadOnlyList<ChangeMessage> changes)
         {
-            Change = change ?? throw new ArgumentNullException(nameof(change));
+            if (changes == null)
+                throw new ArgumentNullException(nameof(changes));
+            if (changes.Count == 0)
+                throw new ArgumentException("At least one change is required.", nameof(changes));
+            Changes = new List<ChangeMessage>(changes).AsReadOnly();
         }
 
-        public ChangeMessage Change { get; }
+        public IReadOnlyList<ChangeMessage> Changes { get; }
     }
 }

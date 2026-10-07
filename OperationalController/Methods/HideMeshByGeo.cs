@@ -19,42 +19,45 @@ namespace OperationalController
 
         public void HideMesh(int elemDim)
         {
-            if (elemDim == 1)
+            using (ModelView.BeginUpdate())
             {
-                foreach (var item in ModelData.ObjectData.E1DCollection.Objects)
+                if (elemDim == 1)
                 {
-                    foreach (var element in item)
+                    foreach (var item in ModelData.ObjectData.E1DCollection.Objects)
                     {
-                        var curveTag = GmshController.Gmsh.Model.Mesh.GetElement(element.Value.Number).Item4;
-                        var visible = ModelView.GetVisible(ObjType.Кривая, curveTag);
-                        ModelView.SetVisible(ObjType.Элемент1D, [element.Value.Number], visible);
+                        foreach (var element in item)
+                        {
+                            var curveTag = GmshController.Gmsh.Model.Mesh.GetElement(element.Value.Number).Item4;
+                            var visible = ModelView.GetVisible(ObjType.Кривая, curveTag);
+                            ModelView.SetVisible(ObjType.Элемент1D, [element.Value.Number], visible);
 
-                        foreach (var node in element.Value.GetVertexes())
-                            ModelView.SetVisible(ObjType.Узел, [node.Number], visible);
+                            foreach (var node in element.Value.GetVertexes())
+                                ModelView.SetVisible(ObjType.Узел, [node.Number], visible);
 
+                        }
+                    }
+
+                }
+                else if (elemDim == 2)
+                {
+                    foreach (var item in ModelData.ObjectData.E2DCollection.Objects)
+                    {
+                        foreach (var element in item)
+                        {
+                            var surfaceTag = GmshController.Gmsh.Model.Mesh.GetElement(element.Value.Number).Item4;
+                            var visible = ModelView.GetVisible(ObjType.Поверхность, surfaceTag);
+                            ModelView.SetVisible(ObjType.Элемент2D, [element.Value.Number], visible);
+
+                            foreach (var node in element.Value.GetVertexes())
+                                ModelView.SetVisible(ObjType.Узел, [node.Number], visible);
+                        }
                     }
                 }
 
-            }
-            else if (elemDim == 2)
-            {
-                foreach (var item in ModelData.ObjectData.E2DCollection.Objects)
+                else
                 {
-                    foreach (var element in item)
-                    {
-                        var surfaceTag = GmshController.Gmsh.Model.Mesh.GetElement(element.Value.Number).Item4;
-                        var visible = ModelView.GetVisible(ObjType.Поверхность, surfaceTag);
-                        ModelView.SetVisible(ObjType.Элемент2D, [element.Value.Number], visible);
-
-                        foreach (var node in element.Value.GetVertexes())
-                            ModelView.SetVisible(ObjType.Узел, [node.Number], visible);
-                    }
+                    ModelView.ShowAll();
                 }
-            }
-
-            else
-            {
-                ModelView.ShowAll();
             }
         }
     }

@@ -20,11 +20,14 @@ namespace OperationalController
             get { return TaskData.Materials; }
             set
             {
-                if (ReferenceEquals(TaskData.Materials, value))
-                    return;
-                TaskData.Materials = value;
-                isModified = true;
-                Publish(new ProjectChange(ProjectChange.ProjectChangeKind.PropertyChanged, ProjectChange.ProjectProperty.MaterialsDB));
+                using (BeginChanges())
+                {
+                    if (ReferenceEquals(TaskData.Materials, value))
+                        return;
+                    TaskData.Materials = value;
+                    isModified = true;
+                    RegisterChange(new ProjectChange(ProjectChange.ProjectChangeKind.PropertyChanged, ProjectChange.ProjectProperty.MaterialsDB));
+                }
             }
         }
         /// <inheritdoc/>
@@ -34,11 +37,14 @@ namespace OperationalController
             get { return TaskData.Functions; }
             set
             {
-                if (ReferenceEquals(TaskData.Functions, value))
-                    return;
-                TaskData.Functions = value;
-                isModified = true;
-                Publish(new ProjectChange(ProjectChange.ProjectChangeKind.PropertyChanged, ProjectChange.ProjectProperty.FunctionsDB));
+                using (BeginChanges())
+                {
+                    if (ReferenceEquals(TaskData.Functions, value))
+                        return;
+                    TaskData.Functions = value;
+                    isModified = true;
+                    RegisterChange(new ProjectChange(ProjectChange.ProjectChangeKind.PropertyChanged, ProjectChange.ProjectProperty.FunctionsDB));
+                }
             }
         }
 

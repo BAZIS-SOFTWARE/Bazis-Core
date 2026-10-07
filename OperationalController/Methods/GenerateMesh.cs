@@ -100,37 +100,40 @@ namespace OperationalController
 
         public void GenerateMesh(int elemDim)
         {
-            if (GmshController == null)
-                throw new InvalidOperationException("Mesh generator is not loaded.");
-            var dimension = elemDim == 1 ? 1 : elemDim == 2 ? 2 : 3;
-            GmshController.Gmsh.Model.Mesh.Generate(dimension);
-            var nodes = GmshController.GetNodes();
-            var nodesChanged = AddSetObjects(ModelData.ObjectData.NodesSet, nodes);
-            var createdSets = new HashSet<ISetInfo>(ReferenceEqualityComparer.Instance);
-            var beams = GmshController.GetMeshSets<Beam>(nodes);
-            var beamSets = AddCollectionSets(ModelData.ObjectData.E1DCollection, beams);
-            createdSets.UnionWith(beamSets);
-            if (dimension >= 2)
+            using (BeginChanges())
             {
-                var elements2D = GmshController.GetMeshSets<Element2D>(nodes);
-                var addedSets = AddCollectionSets(ModelData.ObjectData.E2DCollection, elements2D);
-                createdSets.UnionWith(addedSets);
+                if (GmshController == null)
+                    throw new InvalidOperationException("Mesh generator is not loaded.");
+                var dimension = elemDim == 1 ? 1 : elemDim == 2 ? 2 : 3;
+                GmshController.Gmsh.Model.Mesh.Generate(dimension);
+                var nodes = GmshController.GetNodes();
+                var nodesChanged = AddSetObjects(ModelData.ObjectData.NodesSet, nodes);
+                var createdSets = new HashSet<ISetInfo>(ReferenceEqualityComparer.Instance);
+                var beams = GmshController.GetMeshSets<Beam>(nodes);
+                var beamSets = AddCollectionSets(ModelData.ObjectData.E1DCollection, beams);
+                createdSets.UnionWith(beamSets);
+                if (dimension >= 2)
+                {
+                    var elements2D = GmshController.GetMeshSets<Element2D>(nodes);
+                    var addedSets = AddCollectionSets(ModelData.ObjectData.E2DCollection, elements2D);
+                    createdSets.UnionWith(addedSets);
+                }
+                if (dimension == 3)
+                {
+                    var elements3D = GmshController.GetMeshSets<Element3D>(nodes);
+                    var addedSets = AddCollectionSets(ModelData.ObjectData.E3DCollection, elements3D);
+                    createdSets.UnionWith(addedSets);
+                }
+                var surfaceChanges = MarkModelSurfaces(ModelData);
+                var updatedSets = new HashSet<ISetInfo>(surfaceChanges, ReferenceEqualityComparer.Instance);
+                updatedSets.ExceptWith(createdSets);
+                if (nodesChanged)
+                    updatedSets.Add(ModelData.ObjectData.NodesSet);
+                foreach (var set in createdSets)
+                    RegisterSetChange(set, ChangeAction.Created);
+                foreach (var set in updatedSets)
+                    RegisterSetChange(set, ChangeAction.Updated);
             }
-            if (dimension == 3)
-            {
-                var elements3D = GmshController.GetMeshSets<Element3D>(nodes);
-                var addedSets = AddCollectionSets(ModelData.ObjectData.E3DCollection, elements3D);
-                createdSets.UnionWith(addedSets);
-            }
-            var surfaceChanges = MarkModelSurfaces(ModelData);
-            var updatedSets = new HashSet<ISetInfo>(surfaceChanges, ReferenceEqualityComparer.Instance);
-            updatedSets.ExceptWith(createdSets);
-            if (nodesChanged)
-                updatedSets.Add(ModelData.ObjectData.NodesSet);
-            foreach (var set in createdSets)
-                PublishSetChange(set, ChangeAction.Created);
-            foreach (var set in updatedSets)
-                PublishSetChange(set, ChangeAction.Updated);
         }
     }
 }

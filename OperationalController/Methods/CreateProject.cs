@@ -13,7 +13,10 @@ namespace OperationalController
 
         public void CreateProject(string projectFile)
         {
-            Create(projectFile);
+            using (BeginChanges())
+            {
+                Create(projectFile);
+            }
         }
     }
 }

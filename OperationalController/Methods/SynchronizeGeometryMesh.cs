@@ -29,9 +29,9 @@ namespace OperationalController
             if (nodesChanged)
                 updatedSets.Add(ModelData.ObjectData.NodesSet);
             foreach (var set in createdSets)
-                PublishSetChange(set, ChangeAction.Created);
+                RegisterSetChange(set, ChangeAction.Created);
             foreach (var set in updatedSets)
-                PublishSetChange(set, ChangeAction.Updated);
+                RegisterSetChange(set, ChangeAction.Updated);
             ModelView.Prune();
         }
     }

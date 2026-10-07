@@ -18,20 +18,23 @@ namespace OperationalController
 
         public bool Create2DForm3D()
         {
-            if (ModelData.ObjectData.E3DCollection.Count == 0)
-                return false;
-            //return extractor2DFrom3D.Create(StartNumber, ModelData.ObjectData.E3DCollection.GetObjects());
-            var coll = ModelData.ObjectData.E2DCollection;
+            using (BeginChanges())
+            {
+                if (ModelData.ObjectData.E3DCollection.Count == 0)
+                    return false;
+                //return extractor2DFrom3D.Create(StartNumber, ModelData.ObjectData.E3DCollection.GetObjects());
+                var coll = ModelData.ObjectData.E2DCollection;
 
-            var number = coll.Count != 0 ? coll.GetMaxNumber() + 1 : 0;
+                var number = coll.Count != 0 ? coll.GetMaxNumber() + 1 : 0;
 
-            var name = $"boundary2DSet_{number}";
+                var name = $"boundary2DSet_{number}";
 
 
-            var e2d = extractor2DFrom3D.Create(number, ModelData.ObjectData.E3DCollection.GetObjects().ToArray());
-            AddCollectionObjects(ModelData.ObjectData.E2DCollection, name, e2d);
+                var e2d = extractor2DFrom3D.Create(number, ModelData.ObjectData.E3DCollection.GetObjects().ToArray());
+                AddCollectionObjects(ModelData.ObjectData.E2DCollection, name, e2d);
 
-            return true;
+                return true;
+            }
         }
 
         /// <inheritdoc/>
@@ -41,19 +44,22 @@ namespace OperationalController
 
         public bool Create1DFrom2D()
         {
-            if (ModelData.ObjectData.E2DCollection.Count == 0)
-                return false;
-            //return extractor2DFrom3D.Create(StartNumber, ModelData.ObjectData.E3DCollection.GetObjects());
-            var coll = ModelData.ObjectData.E1DCollection;
+            using (BeginChanges())
+            {
+                if (ModelData.ObjectData.E2DCollection.Count == 0)
+                    return false;
+                //return extractor2DFrom3D.Create(StartNumber, ModelData.ObjectData.E3DCollection.GetObjects());
+                var coll = ModelData.ObjectData.E1DCollection;
 
-            var number = coll.Count != 0 ? coll.GetMaxNumber() + 1 : 0;
+                var number = coll.Count != 0 ? coll.GetMaxNumber() + 1 : 0;
 
-            var name = $"boundary1DSet_{number}";
+                var name = $"boundary1DSet_{number}";
 
-            var e1d = extractor1DFrom2D.Create(number, ModelData.ObjectData.E2DCollection.GetObjects().ToArray());
-            AddCollectionObjects(ModelData.ObjectData.E1DCollection, name, e1d);
+                var e1d = extractor1DFrom2D.Create(number, ModelData.ObjectData.E2DCollection.GetObjects().ToArray());
+                AddCollectionObjects(ModelData.ObjectData.E1DCollection, name, e1d);
 
-            return true;
+                return true;
+            }
         }
     }
 }

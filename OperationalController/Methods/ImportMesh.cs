@@ -17,7 +17,10 @@ namespace OperationalController
 
         public void ImportMesh(string filePath)
         {
-            OpenModel(filePath, null);
+            using (BeginChanges())
+            {
+                OpenModel(filePath, null);
+            }
         }
 
     }

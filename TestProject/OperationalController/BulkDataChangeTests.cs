@@ -45,7 +45,8 @@ namespace TestProject_test.OperationalController
             var changes = new List<MeshChange>();
             controller.Message += (_, args) =>
             {
-                if (args.Change is MeshChange change)
+                foreach (var message in args.Changes)
+                if (message is MeshChange change)
                 {
                     Assert.AreEqual(MeshChange.MeshDataKind.Set, change.DataKind);
                     Assert.AreEqual(ChangeAction.Updated, change.Action);
@@ -116,7 +117,8 @@ namespace TestProject_test.OperationalController
             var messages = 0;
             controller.Message += (_, args) =>
             {
-                if (args.Change is MeshChange change)
+                foreach (var message in args.Changes)
+                if (message is MeshChange change)
                 {
                     Assert.AreEqual(ChangeAction.Created, change.Action);
                     Assert.AreEqual(ObjType.Элемент1D, change.ObjectType);
@@ -200,25 +202,28 @@ namespace TestProject_test.OperationalController
                 var deletions = new List<SetDelete>();
                 controller.Message += (_, args) =>
                 {
-                    if (args.Change is MeshChange change)
+                    foreach (var message in args.Changes)
                     {
-                        Assert.AreEqual(1, controller.GetAllModelNodes().Count());
-                        Assert.AreEqual(MeshChange.MeshDataKind.Set, change.DataKind);
-                        if (operation == "merge")
-                            foreach (var element in controller.GetAllModelElements())
-                            {
-                                Assert.AreEqual(0, element[0].Number);
-                                Assert.AreEqual(0, element[1].Number);
-                            }
-                        else
+                        if (message is MeshChange change)
+                        {
+                            Assert.AreEqual(1, controller.GetAllModelNodes().Count());
+                            Assert.AreEqual(MeshChange.MeshDataKind.Set, change.DataKind);
+                            if (operation == "merge")
+                                foreach (var element in controller.GetAllModelElements())
+                                {
+                                    Assert.AreEqual(0, element[0].Number);
+                                    Assert.AreEqual(0, element[1].Number);
+                                }
+                            else
+                                Assert.AreEqual(0, controller.GetAllModelElements().Count());
+                            changes.Add(change);
+                        }
+                        if (message is SetDelete deletion)
+                        {
+                            Assert.AreEqual(1, controller.GetAllModelNodes().Count());
                             Assert.AreEqual(0, controller.GetAllModelElements().Count());
-                        changes.Add(change);
-                    }
-                    if (args.Change is SetDelete deletion)
-                    {
-                        Assert.AreEqual(1, controller.GetAllModelNodes().Count());
-                        Assert.AreEqual(0, controller.GetAllModelElements().Count());
-                        deletions.Add(deletion);
+                            deletions.Add(deletion);
+                        }
                     }
                 };
                 var numbers = Enumerable.Range(0, count * 2 + 1).ToList();
