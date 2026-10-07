@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -euo pipefail
+export PATH="${BASH%/*}:$PATH"
+
+if [[ "${3:-}" == "1" && -f ./.githooks/pull_large_files.sh ]]; then
+    exec "$BASH" ./.githooks/pull_large_files.sh
+fi
