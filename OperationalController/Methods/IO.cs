@@ -19,23 +19,29 @@ namespace OperationalController
 
         public void Load(string path)
         {
-            Open(path);
+            using (BeginChanges())
+            {
+                Open(path);
+            }
         }
        
         /// <inheritdoc/>
 
         public void Save(string path)
         {
-            if (!hasProject)
-                throw new InvalidOperationException("Project is not open.");
+            using (BeginChanges())
+            {
+                if (!hasProject)
+                    throw new InvalidOperationException("Project is not open.");
 
-            var saver = new SaveProjectTextFormat();
-            saver.Save(project, path);
-            var pathChanged = filePath != path;
-            filePath = path;
-            isModified = false;
-            if (pathChanged)
-                Publish(new ProjectChange(ProjectChange.ProjectChangeKind.PropertyChanged, ProjectChange.ProjectProperty.FilePath));
+                var saver = new SaveProjectTextFormat();
+                saver.Save(project, path);
+                var pathChanged = filePath != path;
+                filePath = path;
+                isModified = false;
+                if (pathChanged)
+                    RegisterChange(new ProjectChange(ProjectChange.ProjectChangeKind.PropertyChanged, ProjectChange.ProjectProperty.FilePath));
+            }
         }
 /// <inheritdoc/>
 

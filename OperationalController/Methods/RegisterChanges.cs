@@ -25,7 +25,7 @@ namespace OperationalController
                 collection.Add(name);
             collection.Add(name, item);
             var set = collection[name];
-            PublishSetChange(set, created ? ChangeAction.Created : ChangeAction.Updated);
+            RegisterSetChange(set, created ? ChangeAction.Created : ChangeAction.Updated);
         }
 
         /// <summary>Добавляет набор объектов и регистрирует выполненные изменения.</summary>
@@ -43,7 +43,7 @@ namespace OperationalController
             if (created || changed)
             {
                 var set = collection[name];
-                PublishSetChange(set, created ? ChangeAction.Created : ChangeAction.Updated);
+                RegisterSetChange(set, created ? ChangeAction.Created : ChangeAction.Updated);
             }
         }
 
@@ -70,8 +70,8 @@ namespace OperationalController
             }
             return added;
         }
-        /// <summary>Сообщает об изменённых наборах и добавленных группах после успешного добавления модели.</summary>
-        private void PublishAppendedModel(IModelData appendedModel, IReadOnlyList<string> appendedNames, IReadOnlyCollection<ISetInfo> surfaceChanges)
+        /// <summary>Регистрирует изменённые наборы и добавленные группы после успешного добавления модели.</summary>
+        private void RegisterAppendedModelChanges(IModelData appendedModel, IReadOnlyList<string> appendedNames, IReadOnlyCollection<ISetInfo> surfaceChanges)
         {
             var source = appendedModel.ObjectData;
             var target = ModelData.ObjectData;
@@ -100,55 +100,55 @@ namespace OperationalController
 
             updatedSets.ExceptWith(createdSets);
             foreach (var set in createdSets)
-                PublishSetChange(set, ChangeAction.Created);
+                RegisterSetChange(set, ChangeAction.Created);
             foreach (var set in updatedSets)
-                PublishSetChange(set, ChangeAction.Updated);
+                RegisterSetChange(set, ChangeAction.Updated);
 
             foreach (var group in appendedModel.GroupData)
-                PublishGroupChange(group, ChangeAction.Created);
+                RegisterGroupChange(group, ChangeAction.Created);
         }
 
         /// <summary>
-        /// Публикует типы геометрических сущностей, изменённых после синхронизации CAD.
+        /// Регистрирует типы геометрических сущностей, изменённых после синхронизации CAD.
         /// </summary>
-        private void PublishGeometryChange(GeoChange.GeometryEntityKind entityKind)
+        private void RegisterGeometryChange(GeoChange.GeometryEntityKind entityKind)
         {
             isModified = true;
-            Publish(new GeoChange(entityKind));
+            RegisterChange(new GeoChange(entityKind));
         }
 
         /// <summary>
-        /// Публикует изменение набора модели по устойчивому номеру.
+        /// Регистрирует изменение набора модели по устойчивому номеру.
         /// </summary>
-        private void PublishSetChange(ISetInfo setInfo, ChangeAction action)
+        private void RegisterSetChange(ISetInfo setInfo, ChangeAction action)
         {
             if (setInfo == null)
                 return;
             isModified = true;
             if (action == ChangeAction.Deleted)
-                Publish(new SetDelete(setInfo.ObjType, setInfo.Number, setInfo.Name));
+                RegisterChange(new SetDelete(setInfo.ObjType, setInfo.Number, setInfo.Name));
             else
-                Publish(new MeshChange(MeshChange.MeshDataKind.Set, action, setInfo.ObjType, setInfo.Number));
+                RegisterChange(new MeshChange(MeshChange.MeshDataKind.Set, action, setInfo.ObjType, setInfo.Number));
         }
 
         /// <summary>
-        /// Публикует изменение группы модели по устойчивому номеру.
+        /// Регистрирует изменение группы модели по устойчивому номеру.
         /// </summary>
-        private void PublishGroupChange(IGroup group, ChangeAction action)
+        private void RegisterGroupChange(IGroup group, ChangeAction action)
         {
             if (group == null)
                 return;
             isModified = true;
-            Publish(new MeshChange(MeshChange.MeshDataKind.Group, action, group.ObjType, group.Number));
+            RegisterChange(new MeshChange(MeshChange.MeshDataKind.Group, action, group.ObjType, group.Number));
         }
 
         /// <summary>
-        /// Публикует изменение условия после обновления списка.
+        /// Регистрирует изменение условия после обновления списка.
         /// </summary>
-        private void PublishConditionChange(DataKind kind, ChangeAction action, int index)
+        private void RegisterConditionChange(DataKind kind, ChangeAction action, int index)
         {
             isModified = true;
-            Publish(new CondChange(kind, action, index));
+            RegisterChange(new CondChange(kind, action, index));
         }
     }
 }

@@ -9,22 +9,25 @@ namespace OperationalController
         /// <inheritdoc/>
         public void MergeElements(ObjType objType, string setMaster, string setSlave)
         {
-            if (setMaster == setSlave)
-                return;
-            var data = ModelData.ObjectData;
-            switch (objType)
+            using (BeginChanges())
             {
-                case ObjType.Элемент1D:
-                    MergeElementSets(data.E1DCollection, setMaster, setSlave);
-                    break;
-                case ObjType.Элемент2D:
-                    MergeElementSets(data.E2DCollection, setMaster, setSlave);
-                    break;
-                case ObjType.Элемент3D:
-                    MergeElementSets(data.E3DCollection, setMaster, setSlave);
-                    break;
-                default:
-                    throw new ArgumentException("Only element sets can be merged.", nameof(objType));
+                if (setMaster == setSlave)
+                    return;
+                var data = ModelData.ObjectData;
+                switch (objType)
+                {
+                    case ObjType.Элемент1D:
+                        MergeElementSets(data.E1DCollection, setMaster, setSlave);
+                        break;
+                    case ObjType.Элемент2D:
+                        MergeElementSets(data.E2DCollection, setMaster, setSlave);
+                        break;
+                    case ObjType.Элемент3D:
+                        MergeElementSets(data.E3DCollection, setMaster, setSlave);
+                        break;
+                    default:
+                        throw new ArgumentException("Only element sets can be merged.", nameof(objType));
+                }
             }
         }
 
@@ -36,10 +39,10 @@ namespace OperationalController
             var hasObjects = slave.Count != 0;
             master.Append(slave);
             if (hasObjects)
-                PublishSetChange(master, ChangeAction.Updated);
+                RegisterSetChange(master, ChangeAction.Updated);
             slave.Clear();
             collection.Remove(slaveName);
-            PublishSetChange(slave, ChangeAction.Deleted);
+            RegisterSetChange(slave, ChangeAction.Deleted);
             ClearNotExistedGroupData();
             ModelView.Prune();
         }

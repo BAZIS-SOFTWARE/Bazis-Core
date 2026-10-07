@@ -12,8 +12,11 @@ namespace OperationalController
 
         public void CreateTask()
         {
-            var data = new TaskData();
-            ReplaceTaskData(data);
+            using (BeginChanges())
+            {
+                var data = new TaskData();
+                ReplaceTaskData(data);
+            }
         }
 
         /// <summary>
@@ -21,8 +24,11 @@ namespace OperationalController
         /// </summary>
         public void CreateTask(MaterialDBData materials, FunctionDBData functions)
         {
-            var data = new TaskData(materials, functions);
-            ReplaceTaskData(data);
+            using (BeginChanges())
+            {
+                var data = new TaskData(materials, functions);
+                ReplaceTaskData(data);
+            }
         }
 
         /// <summary>
@@ -40,13 +46,13 @@ namespace OperationalController
             ClearTaskData();
             project.TaskData = data;
             if (oldKind != TaskData.TaskKind)
-                Publish(new ProjectChange(ProjectChange.ProjectChangeKind.PropertyChanged, ProjectChange.ProjectProperty.TaskKind));
+                RegisterChange(new ProjectChange(ProjectChange.ProjectChangeKind.PropertyChanged, ProjectChange.ProjectProperty.TaskKind));
             if (oldType != TaskData.TaskType)
-                Publish(new ProjectChange(ProjectChange.ProjectChangeKind.PropertyChanged, ProjectChange.ProjectProperty.TaskType));
+                RegisterChange(new ProjectChange(ProjectChange.ProjectChangeKind.PropertyChanged, ProjectChange.ProjectProperty.TaskType));
             if (!ReferenceEquals(oldMaterials, TaskData.Materials))
-                Publish(new ProjectChange(ProjectChange.ProjectChangeKind.PropertyChanged, ProjectChange.ProjectProperty.MaterialsDB));
+                RegisterChange(new ProjectChange(ProjectChange.ProjectChangeKind.PropertyChanged, ProjectChange.ProjectProperty.MaterialsDB));
             if (!ReferenceEquals(oldFunctions, TaskData.Functions))
-                Publish(new ProjectChange(ProjectChange.ProjectChangeKind.PropertyChanged, ProjectChange.ProjectProperty.FunctionsDB));
+                RegisterChange(new ProjectChange(ProjectChange.ProjectChangeKind.PropertyChanged, ProjectChange.ProjectProperty.FunctionsDB));
         }
     }
 }

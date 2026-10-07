@@ -21,7 +21,10 @@ namespace OperationalController
 
         public void ImportCAD(string projectFile)
         {
-            ImportGeometry(projectFile);
+            using (BeginChanges())
+            {
+                ImportGeometry(projectFile);
+            }
         }
 
         /// <summary>
@@ -29,32 +32,35 @@ namespace OperationalController
         /// </summary>
         public void ImportGeometry(string projectFile)
         {
-            if (string.IsNullOrWhiteSpace(projectFile))
-                throw new ArgumentException("Geometry file path is not specified.", nameof(projectFile));
-            if (Regex.IsMatch(projectFile, "(([а-яА-Я])|([ ]))"))
-                throw new ArgumentException("Geometry file path contains unsupported characters.", nameof(projectFile));
-            if (modelView.HasOpenUpdate)
-                throw new InvalidOperationException("Complete the view update before replacing the project.");
+            using (BeginChanges())
+            {
+                if (string.IsNullOrWhiteSpace(projectFile))
+                    throw new ArgumentException("Geometry file path is not specified.", nameof(projectFile));
+                if (Regex.IsMatch(projectFile, "(([а-яА-Я])|([ ]))"))
+                    throw new ArgumentException("Geometry file path contains unsupported characters.", nameof(projectFile));
+                if (modelView.HasOpenUpdate)
+                    throw new InvalidOperationException("Complete the view update before replacing the project.");
 
-            var path = Path.GetDirectoryName(projectFile);
-            var projectPath = Path.Combine(path ?? string.Empty, "новый_проект.bpf2");
-            var data = new ProjectData(projectPath);
+                var path = Path.GetDirectoryName(projectFile);
+                var projectPath = Path.Combine(path ?? string.Empty, "новый_проект.bpf2");
+                var data = new ProjectData(projectPath);
 
-            GmshController.Gmsh.Clear();
-            GmshController.Gmsh.Open(projectFile);
-            GmshController.MergeGeometry();
-            GmshController.Gmsh.Model.Mesh.ImportStl();
+                GmshController.Gmsh.Clear();
+                GmshController.Gmsh.Open(projectFile);
+                GmshController.MergeGeometry();
+                GmshController.Gmsh.Model.Mesh.ImportStl();
 
-            GmshController.CreateControlPoints().ForEach(point => data.ModelData.ObjectData.PointsSet.Add(point.Number, point));
-            GmshController.CreateLines().ForEach(curve => data.ModelData.ObjectData.CurveSet.Add(curve.Number, curve));
-            var surfaceData = GmshController.CreateSurfaceData();
-            foreach (var surface in surfaceData.Item1)
-                data.ModelData.ObjectData.SurfaceSet.Add(surface.Key, surface.Value);
-            foreach (var volume in surfaceData.Item2)
-                data.ModelData.VolumeData.Add(volume);
+                GmshController.CreateControlPoints().ForEach(point => data.ModelData.ObjectData.PointsSet.Add(point.Number, point));
+                GmshController.CreateLines().ForEach(curve => data.ModelData.ObjectData.CurveSet.Add(curve.Number, curve));
+                var surfaceData = GmshController.CreateSurfaceData();
+                foreach (var surface in surfaceData.Item1)
+                    data.ModelData.ObjectData.SurfaceSet.Add(surface.Key, surface.Value);
+                foreach (var volume in surfaceData.Item2)
+                    data.ModelData.VolumeData.Add(volume);
 
-            GmshController.Gmsh.Model.Mesh.Clear();
-            Replace(data, projectPath, ProjectChange.ProjectChangeKind.Loaded);
+                GmshController.Gmsh.Model.Mesh.Clear();
+                Replace(data, projectPath, ProjectChange.ProjectChangeKind.Loaded);
+            }
         }
 
         //private void PresentVolumeInfo(IGmshController gmshController)

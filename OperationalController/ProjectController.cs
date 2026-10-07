@@ -169,26 +169,29 @@ namespace OperationalController
         /// <inheritdoc/>
         public void MergeNodes(List<List<int>> numbers)
         {
-            var nodes = ModelData.ObjectData.NodesSet;
-            objectsMerger.Merge(numbers, nodes, out var changedElements, out var nodesRemoved);
-            if (!nodesRemoved && changedElements.Count == 0)
-                return;
-            var changedSets = new HashSet<ISetInfo>(ReferenceEqualityComparer.Instance);
-            foreach (var element in changedElements)
+            using (BeginChanges())
             {
-                var setInfo = ModelData.ObjectData.GetSetInfo(element.ObjType, element.Number);
-                if (setInfo != null)
-                    changedSets.Add(setInfo);
-            }
-            var surfaceChanges = MarkModelSurfaces(ModelData);
-            changedSets.UnionWith(surfaceChanges);
-            if (nodesRemoved)
-                changedSets.Add(nodes);
-            foreach (var set in changedSets)
-                PublishSetChange(set, ChangeAction.Updated);
+                var nodes = ModelData.ObjectData.NodesSet;
+                objectsMerger.Merge(numbers, nodes, out var changedElements, out var nodesRemoved);
+                if (!nodesRemoved && changedElements.Count == 0)
+                    return;
+                var changedSets = new HashSet<ISetInfo>(ReferenceEqualityComparer.Instance);
+                foreach (var element in changedElements)
+                {
+                    var setInfo = ModelData.ObjectData.GetSetInfo(element.ObjType, element.Number);
+                    if (setInfo != null)
+                        changedSets.Add(setInfo);
+                }
+                var surfaceChanges = MarkModelSurfaces(ModelData);
+                changedSets.UnionWith(surfaceChanges);
+                if (nodesRemoved)
+                    changedSets.Add(nodes);
+                foreach (var set in changedSets)
+                    RegisterSetChange(set, ChangeAction.Updated);
 
-            ClearNotExistedGroupData();
-            ModelView.Prune();
+                ClearNotExistedGroupData();
+                ModelView.Prune();
+            }
         }
 
         ISurfaceMeshCreator surfaceMeshCreator { get; set; }
@@ -225,10 +228,13 @@ namespace OperationalController
 
         public void AddTaskData(ICondData cond)
         {
-            if (cond == null)
-                throw new ArgumentNullException(nameof(cond));
-            TaskData.Add(cond);
-            PublishConditionChange(cond.Kind, ChangeAction.Created, TaskData.Count - 1);
+            using (BeginChanges())
+            {
+                if (cond == null)
+                    throw new ArgumentNullException(nameof(cond));
+                TaskData.Add(cond);
+                RegisterConditionChange(cond.Kind, ChangeAction.Created, TaskData.Count - 1);
+            }
         }
 
 
@@ -249,10 +255,13 @@ namespace OperationalController
         /// </summary>
         public void ChangeProjectName(string name)
         {
-            if (GeneralData.Name == name)
-                return;
-            GeneralData.Name = name;
-            Publish(new ProjectChange(ProjectChange.ProjectChangeKind.PropertyChanged, ProjectChange.ProjectProperty.Name));
+            using (BeginChanges())
+            {
+                if (GeneralData.Name == name)
+                    return;
+                GeneralData.Name = name;
+                RegisterChange(new ProjectChange(ProjectChange.ProjectChangeKind.PropertyChanged, ProjectChange.ProjectProperty.Name));
+            }
         }
     }
 }

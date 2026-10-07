@@ -9,11 +9,14 @@ namespace OperationalController
         /// <inheritdoc/>
         public void ChangeTaskType(TaskType taskType)
         {
-            var changed = TaskData.TaskType != taskType;
-            TaskData.TaskType = taskType;
-            if (changed)
-                Publish(new ProjectChange(ProjectChange.ProjectChangeKind.PropertyChanged, ProjectChange.ProjectProperty.TaskType));
-            ClearTaskData();
+            using (BeginChanges())
+            {
+                var changed = TaskData.TaskType != taskType;
+                TaskData.TaskType = taskType;
+                if (changed)
+                    RegisterChange(new ProjectChange(ProjectChange.ProjectChangeKind.PropertyChanged, ProjectChange.ProjectProperty.TaskType));
+                ClearTaskData();
+            }
         }
     }
 }

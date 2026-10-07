@@ -10,19 +10,22 @@ namespace OperationalController
         /// <inheritdoc/>
         public void ChangeMeshSetOrder(int elemDim, string name, int order)
         {
-            switch (elemDim)
+            using (BeginChanges())
             {
-                case 1:
-                    ChangeElementOrder(ModelData.ObjectData.E1DCollection[name], order);
-                    break;
-                case 2:
-                    ChangeElementOrder(ModelData.ObjectData.E2DCollection[name], order);
-                    break;
-                case 3:
-                    ChangeElementOrder(ModelData.ObjectData.E3DCollection[name], order);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(elemDim), "Element dimension must be from 1 to 3.");
+                switch (elemDim)
+                {
+                    case 1:
+                        ChangeElementOrder(ModelData.ObjectData.E1DCollection[name], order);
+                        break;
+                    case 2:
+                        ChangeElementOrder(ModelData.ObjectData.E2DCollection[name], order);
+                        break;
+                    case 3:
+                        ChangeElementOrder(ModelData.ObjectData.E3DCollection[name], order);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(elemDim), "Element dimension must be from 1 to 3.");
+                }
             }
         }
 
@@ -37,7 +40,7 @@ namespace OperationalController
                     changed = true;
                 }
             if (changed)
-                PublishSetChange(set, ChangeAction.Updated);
+                RegisterSetChange(set, ChangeAction.Updated);
         }
     }
 }
