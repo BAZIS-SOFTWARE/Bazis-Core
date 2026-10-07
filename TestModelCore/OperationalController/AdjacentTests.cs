@@ -22,7 +22,7 @@ namespace TestModeCore_test.OperationalController
         public void GetAdjacent(string cadFile,ObjType objType,int numb,int uCount,int dCount)
         {
             var project = new ProjectController();
-            project.InitializeGeometry(@"..\..\..\..\GmshApi\gmsh.dll");
+            project.InitializeGeometry(GmshLibrary.FilePath);
             project.ImportCAD(cadFile);
 
             var obj = project.GetModelObject(objType, numb);

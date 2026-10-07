@@ -12,7 +12,7 @@ namespace TestModeCore_test.OperationalController
         public void Initialize()
         {
             gmshController = new GmshController();
-            gmshController.Load(@"..\..\..\..\GmshApi\gmsh.dll");
+            gmshController.Load(GmshLibrary.FilePath);
         }
 
         [TestCleanup]
@@ -49,7 +49,7 @@ namespace TestModeCore_test.OperationalController
         private ProjectController CreateProjectController()
         {
             var projectController = new ProjectController();
-            projectController.InitializeGeometry(@"..\..\..\..\GmshApi\gmsh.dll");
+            projectController.InitializeGeometry(GmshLibrary.FilePath);
             projectController.CreateProject("ChamferTests.bpf2");
             return projectController;
         }

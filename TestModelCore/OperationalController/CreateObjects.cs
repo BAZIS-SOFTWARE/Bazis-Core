@@ -127,7 +127,7 @@ namespace TestModeCore_test.OperationalController
         {
             var project = new ProjectController();
             project.CreateProject(@"newProj.bpf2");
-            project.InitializeGeometry(@"..\..\..\..\GmshApi\gmsh.dll");
+            project.InitializeGeometry(GmshLibrary.FilePath);
 
             var start = project.CreatePoint(0, 0, 0);
             var middle = project.CreatePoint(2, 2, 0);
@@ -182,7 +182,7 @@ namespace TestModeCore_test.OperationalController
         public void ExtrudeGeometry()
         {
             var project = new ProjectController();
-            project.InitializeGeometry(@"..\..\..\..\GmshApi\gmsh.dll");
+            project.InitializeGeometry(GmshLibrary.FilePath);
             //project.CreateProject(@"newProj.bpf2");
             var s = @"..\..\..\Examples\CAD\model1.stp";
             
@@ -211,7 +211,7 @@ namespace TestModeCore_test.OperationalController
         public void ExtrudeGeometry2DThen1D()
         {
             var project = new ProjectController();
-            project.InitializeGeometry(@"..\..\..\..\GmshApi\gmsh.dll");
+            project.InitializeGeometry(GmshLibrary.FilePath);
             project.ImportCAD(@"..\..\..\Examples\CAD\model1.stp");
 
             var start = project.CreatePoint(0, -85, 5);
@@ -238,7 +238,7 @@ namespace TestModeCore_test.OperationalController
         public void ExtrudeGeometry2()
         {
             var project = new ProjectController();
-            project.InitializeGeometry(@"..\..\..\..\GmshApi\gmsh.dll");
+            project.InitializeGeometry(GmshLibrary.FilePath);
             //project.CreateProject(@"newProj.bpf2");
             var s = @"..\..\..\Examples\CAD\PART_3.stp";
 

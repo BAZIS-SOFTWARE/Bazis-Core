@@ -19,7 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\GmshApi\gmsh.dll" Link="gmsh.dll" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../GmshApi/gmsh.dll" Link="gmsh.dll" CopyToOutputDirectory="PreserveNewest" Condition="Exists('../GmshApi/gmsh.dll')" />
+    <None Include="../GmshApi/libgmsh.so" Link="libgmsh.so" CopyToOutputDirectory="PreserveNewest" Condition="Exists('../GmshApi/libgmsh.so')" />
     <None Include="..\TestModelCore\Examples\CAD\block.igs" Link="Examples\CAD\block.igs" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\TestModelCore\Examples\CAD\cilindr.step" Link="Examples\CAD\cilindr.step" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\TestModelCore\Examples\CAD\nasos.step" Link="Examples\CAD\nasos.step" CopyToOutputDirectory="PreserveNewest" />

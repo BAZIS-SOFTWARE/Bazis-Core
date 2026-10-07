@@ -413,7 +413,7 @@ namespace TestModeCore_test.OperationalController
             if(ext == ".step")
             {
                 var controller = new GmshController();
-                controller.Load(@"..\..\..\..\GmshApi\gmsh.dll");
+                controller.Load(GmshLibrary.FilePath);
                 controller.Gmsh.Open(path);
                 controller.Gmsh.Model.Mesh.Generate(3);
                 var elements = controller.GetMeshObjects().Item4;

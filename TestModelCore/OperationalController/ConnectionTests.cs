@@ -11,7 +11,7 @@ namespace TestModeCore_test.OperationalController
         [TestMethod]
         public void GmshInitializeFinalize()
         {
-            controller.Load(@"..\..\..\..\GmshApi\gmsh.dll");
+            controller.Load(GmshLibrary.FilePath);
             var ierr = 0;
             Assert.AreEqual(1, controller.Gmsh.IsInitialized());
 
