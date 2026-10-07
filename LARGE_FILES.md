@@ -22,6 +22,8 @@ git config --local core.hooksPath .githooks
 
 The `post-merge`, `post-rewrite`, and `post-checkout` hooks cover merge, rebase, and branch checkout. Git does not enable versioned hooks automatically in a new clone, so run `bash .githooks/pull_large_files.sh` once after enabling them. If a download fails, run it again after fixing AWS CLI access.
 
+The `pre-push` hook uploads missing objects before a GitHub push. It stops the GitHub push if an upload changes a manifest: commit the updated manifest, then push again. The scripts use the AWS CLI profile `yandex` by default; set `AWS_PROFILE` to select another profile. Visual Studio's bundled Git has `sh` but no Bash, so the hooks use Git Bash installed at its standard Windows location when `bash` is not on `PATH`.
+
 After changing either binary, upload both local binaries and update the manifests:
 
 ```bash

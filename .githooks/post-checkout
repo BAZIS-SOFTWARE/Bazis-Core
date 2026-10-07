@@ -1,7 +1,16 @@
-#!/usr/bin/env bash
-set -euo pipefail
-export PATH="${BASH%/*}:$PATH"
+#!/bin/sh
+set -eu
 
-if [[ "${3:-}" == "1" && -f ./.githooks/pull_large_files.sh ]]; then
-    exec "$BASH" ./.githooks/pull_large_files.sh
+if [ "${3:-}" != '1' ]; then
+    exit 0
 fi
+
+if command -v bash >/dev/null 2>&1; then
+    exec bash .githooks/pull_large_files.sh
+fi
+if [ -x '/c/Program Files/Git/bin/bash.exe' ]; then
+    exec '/c/Program Files/Git/bin/bash.exe' .githooks/pull_large_files.sh
+fi
+
+printf 'Git Bash is required to download large files.\n' >&2
+exit 1

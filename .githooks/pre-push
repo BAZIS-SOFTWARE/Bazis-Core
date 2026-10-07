@@ -1,0 +1,18 @@
+#!/bin/sh
+set -eu
+
+if command -v bash >/dev/null 2>&1; then
+    bash_bin=$(command -v bash)
+elif [ -x '/c/Program Files/Git/bin/bash.exe' ]; then
+    bash_bin='/c/Program Files/Git/bin/bash.exe'
+else
+    printf 'Git Bash is required to upload large files.\n' >&2
+    exit 1
+fi
+
+"$bash_bin" .githooks/push_large_files.sh
+
+if ! git diff --quiet HEAD -- GmshApi/gmsh.dll.manifest GmshApi/libgmsh.so.manifest; then
+    printf 'Large-file manifests changed. Commit them before pushing to GitHub.\n' >&2
+    exit 1
+fi

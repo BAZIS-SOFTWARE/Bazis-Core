@@ -6,12 +6,15 @@ script_dir="$(dirname -- "${BASH_SOURCE[0]}")"
 repo_root="$(cd "$script_dir/.." && pwd)"
 bucket="outlibs"
 endpoint="https://storage.yandexcloud.net"
+aws_profile="${AWS_PROFILE:-yandex}"
 tmp_file=""
-aws_cli="$(command -v aws || true)"
+aws_cli="${AWS_CLI:-}"
 
-if [[ -z "$aws_cli" && -n "${LOCALAPPDATA:-}" ]] && command -v cygpath >/dev/null 2>&1; then
-    local_app_data="$(cygpath -u "$LOCALAPPDATA")"
-    candidate="$local_app_data/Programs/Amazon/AWSCLIV2/aws.exe"
+if [[ -z "$aws_cli" ]]; then
+    aws_cli="$(command -v aws || true)"
+fi
+if [[ -z "$aws_cli" && -n "${LOCALAPPDATA:-}" ]]; then
+    candidate="$LOCALAPPDATA/Programs/Amazon/AWSCLIV2/aws.exe"
     if [[ -x "$candidate" ]]; then
         aws_cli="$candidate"
     fi
@@ -39,8 +42,15 @@ for filename in gmsh.dll libgmsh.so; do
     fi
 
     hash="$(sha256sum -- "$source_file" | cut -c1-64)"
-    object_uri="s3://$bucket/GmshApi/$filename/$hash"
-    "$aws_cli" --endpoint-url "$endpoint" s3 cp "$source_file" "$object_uri" --only-show-errors
+    object_key="GmshApi/$filename/$hash"
+    object_uri="s3://$bucket/$object_key"
+
+    if "$aws_cli" --profile "$aws_profile" --endpoint-url "$endpoint" s3api head-object --bucket "$bucket" --key "$object_key" >/dev/null 2>&1; then
+        echo "Already uploaded $filename"
+    else
+        "$aws_cli" --profile "$aws_profile" --endpoint-url "$endpoint" s3 cp "$source_file" "$object_uri" --only-show-errors
+        echo "Uploaded $filename"
+    fi
 
     uploaded_hash="$(sha256sum -- "$source_file" | cut -c1-64)"
     if [[ "$uploaded_hash" != "$hash" ]]; then
@@ -52,5 +62,5 @@ for filename in gmsh.dll libgmsh.so; do
     printf 'sha256=%s\n' "$hash" > "$tmp_file"
     mv -f -- "$tmp_file" "$manifest"
     tmp_file=""
-    echo "Uploaded $filename and updated its manifest"
+    echo "Updated manifest for $filename"
 done
