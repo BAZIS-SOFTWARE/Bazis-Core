@@ -5,7 +5,7 @@
 
 # Keep Bash scripts and checksum manifests usable after Windows checkout.
 .githooks/* text eol=lf
-GmshApi/*.manifest text eol=lf
+LargeFiles/**/*.manifest text eol=lf
 
 ###############################################################################
 # Set default behavior for command prompt diff.
