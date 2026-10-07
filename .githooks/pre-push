@@ -12,7 +12,13 @@ fi
 
 "$bash_bin" .githooks/push_large_files.sh
 
-if ! git diff --quiet HEAD -- GmshApi/gmsh.dll.manifest GmshApi/libgmsh.so.manifest; then
+if ! git diff --quiet HEAD -- ':(glob)LargeFiles/**/*.manifest'; then
+    printf 'Large-file manifests changed. Commit them before pushing to GitHub.\n' >&2
+    exit 1
+fi
+
+untracked_manifests=$(git ls-files --others --exclude-standard -- ':(glob)LargeFiles/**/*.manifest')
+if [ -n "$untracked_manifests" ]; then
     printf 'Large-file manifests changed. Commit them before pushing to GitHub.\n' >&2
     exit 1
 fi
