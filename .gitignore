@@ -270,3 +270,7 @@ __pycache__/
 /TestProject/CalcCompDataTest/TsfFolder/*
 /TestProject/CalcCompDataTest/V2TestCase/*
 /TestProject/Examples/1.bpf
+/TestModelCore/Examples/STL/block.STL
+/TestModelCore/Examples/STL/block.stl.bin.stl
+/TestModelCore/Examples/STL/block_allElements3D_25538.STL
+/TestModelCore/Examples/STL/block_allElements3D_25538.stl.bin.stl
