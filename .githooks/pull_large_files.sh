@@ -6,8 +6,6 @@ export PATH="${BASH%/*}:$PATH"
 # Определяем корень репозитория независимо от текущего каталога запуска.
 script_dir="$(dirname -- "${BASH_SOURCE[0]}")"
 repo_root="$(cd "$script_dir/.." && pwd)"
-manifest_root="$repo_root/LargeFiles"
-bucket="outlibs"
 endpoint="https://storage.yandexcloud.net"
 aws_profile="${AWS_PROFILE:-yandex}"
 tmp_file=""
@@ -32,23 +30,18 @@ if ! command -v sha256sum >/dev/null 2>&1; then
     exit 1
 fi
 
-if [[ ! -d "$manifest_root" ]]; then
-    echo "Missing manifest directory: $manifest_root" >&2
-    exit 1
-fi
-
 manifest_count=0
-while IFS= read -r -d '' manifest; do
-    manifest_count=$((manifest_count + 1))
-    # LargeFiles/<проект>/<файл>.manifest соответствует <проект>/<файл> в репозитории.
-    relative_manifest="${manifest#"$manifest_root"/}"
-    relative_file="${relative_manifest%.manifest}"
-    target="$repo_root/$relative_file"
-
+while IFS= read -r -d '' relative_manifest; do
+    manifest="$repo_root/$relative_manifest"
     if [[ ! -f "$manifest" ]]; then
-        echo "Missing manifest: $manifest" >&2
-        exit 1
+        continue
     fi
+    manifest_count=$((manifest_count + 1))
+    # <корзина>/<проект>/<файл>.manifest соответствует <проект>/<файл> в репозитории.
+    bucket="${relative_manifest%%/*}"
+    relative_file="${relative_manifest#*/}"
+    relative_file="${relative_file%.manifest}"
+    target="$repo_root/$relative_file"
 
     manifest_value="$(<"$manifest")"
     if [[ ! "$manifest_value" =~ ^sha256=([0-9a-f]{64})$ ]]; then
@@ -86,9 +79,9 @@ while IFS= read -r -d '' manifest; do
     mv -f -- "$tmp_file" "$target"
     tmp_file=""
     echo "Downloaded and verified $relative_file"
-done < <(find "$manifest_root" -type f -name '*.manifest' -print0)
+done < <(git -C "$repo_root" ls-files --cached --others --exclude-standard -z -- ':(glob)**/*.manifest')
 
 if [[ "$manifest_count" -eq 0 ]]; then
-    echo "No manifests found in $manifest_root." >&2
+    echo "No manifests found under bucket directories in $repo_root." >&2
     exit 1
 fi

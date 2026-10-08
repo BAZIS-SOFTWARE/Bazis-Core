@@ -6,8 +6,6 @@ export PATH="${BASH%/*}:$PATH"
 # Определяем корень репозитория независимо от текущего каталога запуска.
 script_dir="$(dirname -- "${BASH_SOURCE[0]}")"
 repo_root="$(cd "$script_dir/.." && pwd)"
-manifest_root="$repo_root/LargeFiles"
-bucket="outlibs"
 endpoint="https://storage.yandexcloud.net"
 aws_profile="${AWS_PROFILE:-yandex}"
 tmp_file=""
@@ -37,17 +35,17 @@ if [[ -z "$aws_cli" ]]; then
     exit 1
 fi
 
-if [[ ! -d "$manifest_root" ]]; then
-    echo "Missing manifest directory: $manifest_root" >&2
-    exit 1
-fi
-
 manifest_count=0
-while IFS= read -r -d '' manifest; do
+while IFS= read -r -d '' relative_manifest; do
+    manifest="$repo_root/$relative_manifest"
+    if [[ ! -f "$manifest" ]]; then
+        continue
+    fi
     manifest_count=$((manifest_count + 1))
-    # Путь манифеста определяет путь исходного файла и ключ объекта в бакете.
-    relative_manifest="${manifest#"$manifest_root"/}"
-    relative_file="${relative_manifest%.manifest}"
+    # Первая папка манифеста задаёт корзину, остальной путь — файл и ключ объекта.
+    bucket="${relative_manifest%%/*}"
+    relative_file="${relative_manifest#*/}"
+    relative_file="${relative_file%.manifest}"
     source_file="$repo_root/$relative_file"
 
     if [[ ! -f "$source_file" ]]; then
@@ -80,9 +78,9 @@ while IFS= read -r -d '' manifest; do
     mv -f -- "$tmp_file" "$manifest"
     tmp_file=""
     echo "Updated manifest for $relative_file"
-done < <(find "$manifest_root" -type f -name '*.manifest' -print0)
+done < <(git -C "$repo_root" ls-files --cached --others --exclude-standard -z -- ':(glob)**/*.manifest')
 
 if [[ "$manifest_count" -eq 0 ]]; then
-    echo "No manifests found in $manifest_root." >&2
+    echo "No manifests found under bucket directories in $repo_root." >&2
     exit 1
 fi
