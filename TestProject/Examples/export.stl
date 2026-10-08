@@ -1,9 +1,0 @@
-solid Версия 2.2.5
-   facet normal 0 0 4
-      outer loop
-         vertex -1 -1 0
-         vertex 1 1 0
-         vertex -1 1 0
-      endloop
-   endfacet
-endsolid
