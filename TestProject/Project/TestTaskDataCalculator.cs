@@ -25,7 +25,7 @@ namespace TestProject_test.Project
             return proj;
         }
         [TestMethod]
-        [DataRow(@"..\..\..\Examples\proj_traj.bpf",50)]
+        [DataRow(@"..\..\..\SharedData\ProjectFiles\proj_traj.bpf",50)]
         [DataRow(@"c:\projs\Roman\LazerWelding\Proj.bpf2", 5)]
         
         public void CalcStopTime(string path, float stopTimeRes)
@@ -50,7 +50,7 @@ namespace TestProject_test.Project
         {
             //assign
             var loader = new LoadProjectFromTextFormat();
-            var proj = loader.Load(@"..\..\..\Examples\proj_traj.bpf");
+            var proj = loader.Load(@"..\..\..\SharedData\ProjectFiles\proj_traj.bpf");
 
             //act
             var baseLineGr = proj.ModelData.GroupData.Find("baseLine");
@@ -68,7 +68,7 @@ namespace TestProject_test.Project
         {
             //assign
             var loader = new LoadProjectFromTextFormat();
-            var proj = loader.Load(@"..\..\..\Examples\proj_traj_baseLine_not_sorted.bpf");
+            var proj = loader.Load(@"..\..\..\SharedData\ProjectFiles\proj_traj_baseLine_not_sorted.bpf");
 
             //act
             var baseLineGr = proj.ModelData.GroupData.Find("baseLine");
@@ -85,7 +85,7 @@ namespace TestProject_test.Project
             (string baseLineGroupName, string refLineGroupName, string startGroupName, string endGroupName)
         {
             var loader = new LoadProjectFromTextFormat();
-            var proj = loader.Load(@"..\..\..\Examples\TrajTest.bpf");
+            var proj = loader.Load(@"..\..\..\SharedData\ProjectFiles\TrajTest.bpf");
 
             var baseLine = proj.ModelData.GroupData.Find(baseLineGroupName);
             var refLine = proj.ModelData.GroupData.Find(refLineGroupName);

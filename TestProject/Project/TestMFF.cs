@@ -20,7 +20,7 @@ namespace TestProject_test.Project
     [TestClass]
     public class TestMFF
     {
-        string testDir = @"..\..\..\Examples";
+        string testDir = @"..\..\..\SharedData\ProjectFiles";
         [TestInitialize]
         public void Init()
         {
@@ -29,10 +29,10 @@ namespace TestProject_test.Project
 
 
         [TestMethod]
-        //[DataRow(@"..\..\..\Examples\WeldingHeatSource\LWTest_v.bpf", DisplayName = "LWTest_v.bpf")]
-        [DataRow(@"..\..\..\Examples\WeldingHeatSource\test_t_lazer_0_10.bpf", DisplayName = "test_t_lazer_0_10.bpf")]
-        [DataRow(@"..\..\..\Examples\WeldingHeatSource\test_t_lazer_180_0_10.bpf", DisplayName = "test_t_lazer_180_0_10.bpf")]
-        [DataRow(@"..\..\..\Examples\WeldingHeatSource\ARCTest_v.bpf", DisplayName = "ARCTest_v")]
+        //[DataRow(@"..\..\..\Project\Data\WeldingHeatSource\LWTest_v.bpf", DisplayName = "LWTest_v.bpf")]
+        [DataRow(@"..\..\..\Project\Data\WeldingHeatSource\test_t_lazer_0_10.bpf", DisplayName = "test_t_lazer_0_10.bpf")]
+        [DataRow(@"..\..\..\Project\Data\WeldingHeatSource\test_t_lazer_180_0_10.bpf", DisplayName = "test_t_lazer_180_0_10.bpf")]
+        [DataRow(@"..\..\..\Project\Data\WeldingHeatSource\ARCTest_v.bpf", DisplayName = "ARCTest_v")]
         //[DataRow(@"\WeldingHeatSource\FSW\proj.bpf", DisplayName = "FSW")]
         [DataRow("c:\\projs\\testProj\\HeatingByWelding_Tjoint\\proj.bpf2", DisplayName = "c:\\projs\\testProj\\HeatingByWelding_Tjoint\\proj.bpf2")]
 
@@ -415,15 +415,15 @@ new Point3D(15, 16, 15));
         }
 
         [TestMethod]
-        [DataRow(1, 0, 0, 75,@"..\..\..\Examples\PythonScript\RectangleSource.py")]
-        [DataRow(4, 4, 4, 0,@"..\..\..\Examples\PythonScript\RectangleSource.py")]
-        [DataRow(1, 4, 0.4f, 0,@"..\..\..\Examples\PythonScript\RectangleSource.py")]
-        [DataRow(3, 1, 0.8f, 75,@"..\..\..\Examples\PythonScript\RectangleSource.py")]
-        [DataRow(1, 0, 0, 882.4969,@"..\..\..\Examples\PythonScript\NormalCircularDistribution.py")]
-        [DataRow(4, 4, 4, 0,@"..\..\..\Examples\PythonScript\NormalCircularDistribution.py")]
-        [DataRow(-1, -1, 0.4f, 778.8,@"..\..\..\Examples\PythonScript\NormalCircularDistribution.py")]
-        [DataRow(-1, -1, -1.1f, 0, @"..\..\..\Examples\PythonScript\NormalCircularDistribution.py")]
-        [DataRow(0, 0, 0, 1000,@"..\..\..\Examples\PythonScript\NormalCircularDistribution.py")]
+        [DataRow(1, 0, 0, 75,@"..\..\..\Project\Data\PythonScript\RectangleSource.py")]
+        [DataRow(4, 4, 4, 0,@"..\..\..\Project\Data\PythonScript\RectangleSource.py")]
+        [DataRow(1, 4, 0.4f, 0,@"..\..\..\Project\Data\PythonScript\RectangleSource.py")]
+        [DataRow(3, 1, 0.8f, 75,@"..\..\..\Project\Data\PythonScript\RectangleSource.py")]
+        [DataRow(1, 0, 0, 882.4969,@"..\..\..\Project\Data\PythonScript\NormalCircularDistribution.py")]
+        [DataRow(4, 4, 4, 0,@"..\..\..\Project\Data\PythonScript\NormalCircularDistribution.py")]
+        [DataRow(-1, -1, 0.4f, 778.8,@"..\..\..\Project\Data\PythonScript\NormalCircularDistribution.py")]
+        [DataRow(-1, -1, -1.1f, 0, @"..\..\..\Project\Data\PythonScript\NormalCircularDistribution.py")]
+        [DataRow(0, 0, 0, 1000,@"..\..\..\Project\Data\PythonScript\NormalCircularDistribution.py")]
         public void PyFunctionsTest(float x, float y, float z, double power, string path)
         {
             //assing            

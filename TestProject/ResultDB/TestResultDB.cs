@@ -38,8 +38,8 @@ namespace TestProject_test.ResultDB
         }
 
         [DataTestMethod]
-        [DataRow(@"..\..\..\Examples\ProjAndResults", "термическая_0_0_0.5.db", 0.5f)]
-        [DataRow(@"..\..\..\Examples\ProjAndResults", "термическая_0_0_1500.db", 200.8569f)]
+        [DataRow(@"..\..\..\SharedData\ProjAndResults", "термическая_0_0_0.5.db", 0.5f)]
+        [DataRow(@"..\..\..\SharedData\ProjAndResults", "термическая_0_0_1500.db", 200.8569f)]
         public void TestLoadDBSQLiteFindByTime(string path, string resName, float time)
         {
             var loaderDB = new LoadResultsFileDB();
@@ -54,8 +54,8 @@ namespace TestProject_test.ResultDB
         }
 
         [DataTestMethod]
-        [DataRow(@"..\..\..\Examples\ProjAndResults", "термическая_0_0_0.5.db")]
-        [DataRow(@"..\..\..\Examples\ProjAndResults", "термическая_0_0_1500.db")]
+        [DataRow(@"..\..\..\SharedData\ProjAndResults", "термическая_0_0_0.5.db")]
+        [DataRow(@"..\..\..\SharedData\ProjAndResults", "термическая_0_0_1500.db")]
         public void TestLoadDBSQLiteTablesScheme(string path, string resName)
         {
             var loaderDB = new LoadResultsFileDB();
@@ -69,7 +69,7 @@ namespace TestProject_test.ResultDB
         }
 
         [TestMethod]
-        [DataRow(@"..\..\..\Examples\ProjAndResults", "термическая_0_0_0.5.db")]
+        [DataRow(@"..\..\..\SharedData\ProjAndResults", "термическая_0_0_0.5.db")]
         public void TestLoadDBSQLiteFindByTimeInterval(string path, string dbName)
         {
             var loaderDB = new LoadResultsFileDB();
@@ -101,7 +101,7 @@ x.Time.CompareTo(0) >= 0
         [DataRow("csv_table_1.csv")]
         public void CSVToDataTableConverter_Example(string file)
         {
-            var csvPath = @"..\..\..\ResultTableCSV";
+            var csvPath = @"..\..\..\ResultDB\Data\ResultTableCSV";
 
             var convert = new CSVToDataTableConverter();
 
@@ -200,15 +200,15 @@ x.Time.CompareTo(0) >= 0
         }
 
         [TestMethod]
-        [DataRow(@"..\..\..\Examples\ProjAndResults\merge\термическая_2_1_2.db",
-                 @"..\..\..\Examples\ProjAndResults\merge\термическая_3_2_3.db",
-                 @"..\..\..\Examples\ProjAndResults\merge\термическая_0_1_3.db")]
-        [DataRow(@"..\..\..\Examples\ProjAndResults\merge\термическая_3_2_3.db",
-                 @"..\..\..\Examples\ProjAndResults\merge\термическая_2_1_2.db",
-                 @"..\..\..\Examples\ProjAndResults\merge\термическая_0_1_3.db")]
-        [DataRow(@"..\..\..\Examples\ProjAndResults\merge\термическая_2_1_2.db",
-                 @"..\..\..\Examples\ProjAndResults\merge\термическая_2_1_2.db",
-                 @"..\..\..\Examples\ProjAndResults\merge\термическая_0_1_2.db")]
+        [DataRow(@"..\..\..\SharedData\ProjAndResults\merge\термическая_2_1_2.db",
+                 @"..\..\..\SharedData\ProjAndResults\merge\термическая_3_2_3.db",
+                 @"..\..\..\SharedData\ProjAndResults\merge\термическая_0_1_3.db")]
+        [DataRow(@"..\..\..\SharedData\ProjAndResults\merge\термическая_3_2_3.db",
+                 @"..\..\..\SharedData\ProjAndResults\merge\термическая_2_1_2.db",
+                 @"..\..\..\SharedData\ProjAndResults\merge\термическая_0_1_3.db")]
+        [DataRow(@"..\..\..\SharedData\ProjAndResults\merge\термическая_2_1_2.db",
+                 @"..\..\..\SharedData\ProjAndResults\merge\термическая_2_1_2.db",
+                 @"..\..\..\SharedData\ProjAndResults\merge\термическая_0_1_2.db")]
         public void MergeDataBase(string path1, string path2, string resultPath)
         {
             var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));

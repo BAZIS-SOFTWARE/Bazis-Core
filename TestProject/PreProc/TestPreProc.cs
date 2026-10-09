@@ -18,7 +18,7 @@ namespace TestProject_test.PreProc
     public class TestPreProc
     {
         
-        private static string projPath =  Path.GetFullPath(@".\..\..\..\..\TestProject\CalcCompDataTest\");
+        private static string projPath =  Path.GetFullPath(@".\..\..\..\..\TestProject\PreProc\Data\CalcCompDataTest\");
 
         [TestInitialize]
         public void Init()
@@ -278,8 +278,8 @@ namespace TestProject_test.PreProc
         //[DataRow(@"c:\projs\testProj\Tempering\proj.bpf", ProcessType.Heating)]
         //[DataRow(@"c:\projs\testProj\Tempering\proj.bpf", ProcessType.Quenching)]
         //[DataRow(@"c:\projs\testProj\Tempering\proj.bpf", ProcessType.Tempering)]
-        //[DataRow(@".\..\..\CalcCompDataTest\1.bpf", ProcessType.Welding)]
-        //[DataRow(@".\..\..\CalcCompDataTest\6.bpf", ProcessType.Welding)]
+        //[DataRow(@".\..\..\PreProc\Data\CalcCompDataTest\1.bpf", ProcessType.Welding)]
+        //[DataRow(@".\..\..\PreProc\Data\CalcCompDataTest\6.bpf", ProcessType.Welding)]
         public void PreProc_GenerateTSF_ShouldPass(string file, ProcessType pt)
         {
             var loader = new LoadProjectFromTextFormat();

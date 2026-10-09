@@ -9,7 +9,7 @@ namespace TestProject_test.Project
     [TestClass]
     public class TestProjectData
     {
-        string testDir = @"..\..\..\Examples";
+        string testDir = @"..\..\..\SharedData\ProjectFiles";
         [TestInitialize]
         public void Init()
         {

@@ -6,7 +6,7 @@ using Model.Utilities;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TestProject_test.Model
+namespace TestModeCore_test.Model
 {
     /// <summary>
     /// Проверяет связывание совпадающих поверхностей объёмных элементов.

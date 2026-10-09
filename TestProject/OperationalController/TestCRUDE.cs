@@ -18,7 +18,7 @@ namespace TestProject_test.OperationalController
     [TestClass]
     public class TestCRUDE
     {
-        string testDir = @"..\..\..\Examples";
+        string testDir = @"..\..\..\SharedData\ProjectFiles";
         [TestInitialize]
         public void Init()
         {
@@ -26,7 +26,7 @@ namespace TestProject_test.OperationalController
         }
 
         [TestMethod]
-        [DataRow(@"..\..\..\Examples\proj_traj.bpf", TaskType.Volume, TaskKind.термическая | TaskKind.механическая)]
+        [DataRow(@"..\..\..\SharedData\ProjectFiles\proj_traj.bpf", TaskType.Volume, TaskKind.термическая | TaskKind.механическая)]
         [DataRow(@"c:\projs\testProj\HeatingByWelding_Tjoint\proj_SRF.bpf2", TaskType.Volume, TaskKind.термическая | TaskKind.механическая)]
         [DataRow(@"c:\projs\mashining\proj.bpf2", TaskType.Volume, TaskKind.термическая)]
         public void LoadProjectFiletextFormat(string name, TaskType taskType, TaskKind taskKind)
@@ -59,14 +59,14 @@ namespace TestProject_test.OperationalController
 
         
         [TestMethod]
-        [DataRow(@"..\..\..\Examples\TestCRUDFunction\one_quad_term_cycle.bpf2", new int[] { 1 }, ObjType.Узел, "clamp true", DisplayName = "clamp true")]
-        [DataRow(@"..\..\..\Examples\TestCRUDFunction\one_quad_term_cycle.bpf2", new int[] { 0 }, ObjType.Узел, "clamp true", DisplayName = "clamp true")]
-        [DataRow(@"..\..\..\Examples\TestCRUDFunction\one_quad_term_cycle.bpf2", new int[] { 2 }, ObjType.Узел, "clamp true", DisplayName = "clamp true")]
-        [DataRow(@"..\..\..\Examples\TestCRUDFunction\one_quad_term_cycle.bpf2", new int[] { 0, 1 }, ObjType.Узел, "clamp false", DisplayName = "clamp false")]
-        [DataRow(@"..\..\..\Examples\TestCRUDFunction\one_quad_term_cycle.bpf2", new int[] { 0, 1, 2, 3 }, ObjType.Узел, "load false", DisplayName = "load false")]
-        [DataRow(@"..\..\..\Examples\TestCRUDFunction\one_quad_term_cycle.bpf2", new int[] { 0, 1 }, ObjType.Узел, "load true", DisplayName = "load true")]
-        [DataRow(@"..\..\..\Examples\TestCRUDFunction\one_quad_term_cycle.bpf2", new int[] { 5 }, ObjType.Элемент2D, "newMesh false", DisplayName = "newMesh false")]
-        [DataRow(@"..\..\..\Examples\TestCRUDFunction\one_quad_term_cycle.bpf2", new int[] { 1 }, ObjType.Узел, "newMesh false", DisplayName = "newMesh false")]
+        [DataRow(@"..\..\..\OperationalController\Data\TestCRUDFunction\one_quad_term_cycle.bpf2", new int[] { 1 }, ObjType.Узел, "clamp true", DisplayName = "clamp true")]
+        [DataRow(@"..\..\..\OperationalController\Data\TestCRUDFunction\one_quad_term_cycle.bpf2", new int[] { 0 }, ObjType.Узел, "clamp true", DisplayName = "clamp true")]
+        [DataRow(@"..\..\..\OperationalController\Data\TestCRUDFunction\one_quad_term_cycle.bpf2", new int[] { 2 }, ObjType.Узел, "clamp true", DisplayName = "clamp true")]
+        [DataRow(@"..\..\..\OperationalController\Data\TestCRUDFunction\one_quad_term_cycle.bpf2", new int[] { 0, 1 }, ObjType.Узел, "clamp false", DisplayName = "clamp false")]
+        [DataRow(@"..\..\..\OperationalController\Data\TestCRUDFunction\one_quad_term_cycle.bpf2", new int[] { 0, 1, 2, 3 }, ObjType.Узел, "load false", DisplayName = "load false")]
+        [DataRow(@"..\..\..\OperationalController\Data\TestCRUDFunction\one_quad_term_cycle.bpf2", new int[] { 0, 1 }, ObjType.Узел, "load true", DisplayName = "load true")]
+        [DataRow(@"..\..\..\OperationalController\Data\TestCRUDFunction\one_quad_term_cycle.bpf2", new int[] { 5 }, ObjType.Элемент2D, "newMesh false", DisplayName = "newMesh false")]
+        [DataRow(@"..\..\..\OperationalController\Data\TestCRUDFunction\one_quad_term_cycle.bpf2", new int[] { 1 }, ObjType.Узел, "newMesh false", DisplayName = "newMesh false")]
         public void RemoveObjsByNumber(string path, int[] objNumbers, ObjType type, string resStr)
         {
             //assing
@@ -87,9 +87,9 @@ namespace TestProject_test.OperationalController
         }
 
         [TestMethod]
-        [DataRow(@"..\..\..\Examples\TestCRUDFunction\one_quad_term_cycle.bpf2", "A17", ObjType.Элемент2D, "newMesh false", DisplayName = "newMesh false")]
-        [DataRow(@"..\..\..\Examples\TestCRUDFunction\one_quad_term_cycle.bpf2", "A17aa", ObjType.Элемент2D, "newMesh true", DisplayName = "newMesh true")]
-        [DataRow(@"..\..\..\Examples\TestCRUDFunction\one_quad_term_cycle.bpf2", "t4", ObjType.Элемент3D, "newMesh true", DisplayName = "newMesh true")]
+        [DataRow(@"..\..\..\OperationalController\Data\TestCRUDFunction\one_quad_term_cycle.bpf2", "A17", ObjType.Элемент2D, "newMesh false", DisplayName = "newMesh false")]
+        [DataRow(@"..\..\..\OperationalController\Data\TestCRUDFunction\one_quad_term_cycle.bpf2", "A17aa", ObjType.Элемент2D, "newMesh true", DisplayName = "newMesh true")]
+        [DataRow(@"..\..\..\OperationalController\Data\TestCRUDFunction\one_quad_term_cycle.bpf2", "t4", ObjType.Элемент3D, "newMesh true", DisplayName = "newMesh true")]
         public void RemoveSetByNameAndType(string path, string setName, ObjType type, string resStr)
         {
             //assing
@@ -108,9 +108,9 @@ namespace TestProject_test.OperationalController
         }
 
         [DataTestMethod]
-        [DataRow(@"..\..\..\Examples\TestCRUDFunction\one_quad_term_cycle.bpf2", ObjType.Узел, "clamp false", DisplayName = "clamp false")]
-        [DataRow(@"..\..\..\Examples\TestCRUDFunction\one_quad_term_cycle.bpf2", ObjType.Элемент2D, "newMesh false", DisplayName = "newMesh false")]
-        [DataRow(@"..\..\..\Examples\TestCRUDFunction\one_quad_term_cycle.bpf2", ObjType.Элемент3D, "newMesh true", DisplayName = "newMesh true")]
+        [DataRow(@"..\..\..\OperationalController\Data\TestCRUDFunction\one_quad_term_cycle.bpf2", ObjType.Узел, "clamp false", DisplayName = "clamp false")]
+        [DataRow(@"..\..\..\OperationalController\Data\TestCRUDFunction\one_quad_term_cycle.bpf2", ObjType.Элемент2D, "newMesh false", DisplayName = "newMesh false")]
+        [DataRow(@"..\..\..\OperationalController\Data\TestCRUDFunction\one_quad_term_cycle.bpf2", ObjType.Элемент3D, "newMesh true", DisplayName = "newMesh true")]
         public void ClearMeshCollection(string path, ObjType type, string resStr)
         {
             //assing

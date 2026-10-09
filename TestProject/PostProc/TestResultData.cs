@@ -51,7 +51,7 @@ namespace TestProject_test.PostProc
             };
 
             var exporter = new GridExporter();
-            string testDir = @"..\..\..\Examples";
+            string testDir = @"..\..\..\SharedData\ProjectFiles";
             exporter.ExportGridSurfaces(figures, $@"{testDir}\export" + format.ToLower().Split('-')[0], format);
         }
 
@@ -104,11 +104,11 @@ namespace TestProject_test.PostProc
 
 
         [TestMethod]
-        [DataRow(@"..\..\..\Examples\ProjAndResults\термическая_0_0_0.5.db")]
+        [DataRow(@"..\..\..\SharedData\ProjAndResults\термическая_0_0_0.5.db")]
         public void TestMergeResults(string dbName)
         {
             var loader = new LoadProjectFromTextFormat();
-            var proj = loader.Load(@"..\..\..\Examples\ProjAndResults\two_tetra_term_cycle_multiStep.bpf");
+            var proj = loader.Load(@"..\..\..\SharedData\ProjAndResults\two_tetra_term_cycle_multiStep.bpf");
 
             var loaderDB = new LoadResultsFileDB();
             loaderDB.LoadEvent += (ar1, ar2) => { };
@@ -135,10 +135,10 @@ namespace TestProject_test.PostProc
         [DataTestMethod]
         [DataRow(
             "two_tetra_term_cycle_multiStep.bpf","термическая_0_0_0.5.db","термическая", 0f,0.0002f,"T",
-            @"..\..\..\Examples\ProjAndResults")]
+            @"..\..\..\SharedData\ProjAndResults")]
         [DataRow(
             "one_quad_term_cycle.bpf2", "механическая_1_0_3.db", "механическая", 0f, 0.0037f,"XY",
-            @"..\..\..\Examples\ProjAndResults")]
+            @"..\..\..\SharedData\ProjAndResults")]
         public void Test_Scene_Result_Presenter(string projName,string resName,string resKind,float min,float max,string resDesc,string resPath )
         {
             var loader = new LoadProjectFromTextFormat();

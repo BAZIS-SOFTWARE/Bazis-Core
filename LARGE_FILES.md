@@ -1,6 +1,6 @@
 # Large files in Yandex Object Storage
 
-Large files are stored in Yandex Object Storage buckets. Git contains their SHA-256 manifests under `<bucket>/<project>/`, not the files themselves. For example, `outlibs/GmshApi/gmsh.dll.manifest` corresponds to `GmshApi/gmsh.dll`, while `outcommon/TestProject/Materials/Materials_v7.jsf.manifest` corresponds to `TestProject/Materials/Materials_v7.jsf`. Each object has an immutable, content-addressed key:
+Large files are stored in Yandex Object Storage buckets. Git contains their SHA-256 manifests under `<bucket>/<project>/`, not the files themselves. For example, `outlibs/GmshApi/gmsh.dll.manifest` corresponds to `GmshApi/gmsh.dll`, while `outcommon/TestProject/MaterialDB/Data/Materials_v7.jsf.manifest` corresponds to `TestProject/MaterialDB/Data/Materials_v7.jsf`. Each object has an immutable, content-addressed key:
 
 ```text
 s3://<bucket>/<project>/<filename>/<sha256>

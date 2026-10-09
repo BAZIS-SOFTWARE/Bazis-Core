@@ -19,7 +19,8 @@ namespace TestProject_test.Project
     [TestClass]
     public class TestTaskData
     {
-        string testDir = @"..\..\..\Examples";
+        string testDir = @"..\..\..\SharedData\ProjectFiles";
+        string testParametersDir = @"..\..\..\Project\Data\TestTaskParameters";
         MaterialDBData materials;
         FunctionDBData functions;
 
@@ -78,7 +79,7 @@ namespace TestProject_test.Project
         {
             //assign
             var loader = new LoadProjectFromTextFormat();
-            var proj = loader.Load(@"..\..\..\Examples\proj_traj.bpf");
+            var proj = loader.Load(@"..\..\..\SharedData\ProjectFiles\proj_traj.bpf");
 
             //act
             var res = proj.TaskData.Find<ICondData>();
@@ -89,8 +90,8 @@ namespace TestProject_test.Project
         }
 
         [TestMethod]
-        [DataRow(@"..\..\..\Examples\proj_traj.bpf", DisplayName = "proj_traj")]
-        //[DataRow(@"..\..\..\Examples\proj_traj_baseLine_not_sorted.bpf", DisplayName = "proj_traj_baseLine_not_sorted")]
+        [DataRow(@"..\..\..\SharedData\ProjectFiles\proj_traj.bpf", DisplayName = "proj_traj")]
+        //[DataRow(@"..\..\..\SharedData\ProjectFiles\proj_traj_baseLine_not_sorted.bpf", DisplayName = "proj_traj_baseLine_not_sorted")]
 
         //[DataRow(@"c:\projs\Roman\Proba\777.bpf2")]
         //[DataRow(@"c:\projs\kamaz\4.bpf")]
@@ -134,7 +135,7 @@ namespace TestProject_test.Project
         {
             //assign
             var loader = new LoadProjectFromTextFormat();
-            var proj = loader.Load(@"..\..\..\Examples\proj_traj.bpf");
+            var proj = loader.Load(@"..\..\..\SharedData\ProjectFiles\proj_traj.bpf");
 
             //act
             var selectedData = proj.TaskData.Find(DataKind.Нагрев).Select(x => (HeatData)x).ToArray();
@@ -161,7 +162,7 @@ namespace TestProject_test.Project
         {
             //assign
             var loader = new LoadProjectFromTextFormat();
-            var proj = loader.Load(@"..\..\..\Examples\proj_traj.bpf");
+            var proj = loader.Load(@"..\..\..\SharedData\ProjectFiles\proj_traj.bpf");
 
             //act
             var heatData = proj.TaskData.Find(DataKind.Нагрев).Select(h => (HeatData)h).First();
@@ -189,7 +190,7 @@ namespace TestProject_test.Project
         {
             //assign
             var loader = new LoadProjectFromTextFormat();
-            var proj = loader.Load(@"..\..\..\Examples\MixedMesh\createMat.bpf");
+            var proj = loader.Load(@"..\..\..\Project\Data\MixedMesh\createMat.bpf");
             //act
             var dataKind = DataKind.Материал;
             var material = proj.TaskData.Create(dataKind, info, proj.ModelData.GroupData);
@@ -208,7 +209,7 @@ namespace TestProject_test.Project
             var loader = new LoadProjectFromTextFormat();
 
             //act
-            var project = loader.Load(@"..\..\..\Examples\proj_traj.bpf");
+            var project = loader.Load(@"..\..\..\SharedData\ProjectFiles\proj_traj.bpf");
 
             //assert
 
@@ -220,8 +221,8 @@ namespace TestProject_test.Project
         }
 
         [TestMethod]
-        [DataRow(@"..\..\..\Examples\proj_traj.bpf", DisplayName = "proj_traj")]
-        //[DataRow(@"..\..\..\Examples\proj_traj_baseLine_not_sorted.bpf", DisplayName = "proj_traj_baseLine_not_sorted")]
+        [DataRow(@"..\..\..\SharedData\ProjectFiles\proj_traj.bpf", DisplayName = "proj_traj")]
+        //[DataRow(@"..\..\..\SharedData\ProjectFiles\proj_traj_baseLine_not_sorted.bpf", DisplayName = "proj_traj_baseLine_not_sorted")]
 
         //[DataRow(@"c:\projs\testProj\TubeToTubeTJoint\proj_v1.bpf")]
         //[DataRow(@"c:\projs\kamaz\4.bpf")]
@@ -313,22 +314,22 @@ namespace TestProject_test.Project
             else
                 serParams = JsonConvert.SerializeObject((ChemicalParameters)parameters, settingsSerializer);
 
-            File.WriteAllText($@"{testDir}\TestTaskParameters\{ar[0]}_testParam.jsp", serParams);
+            File.WriteAllText($@"{testParametersDir}\{ar[0]}_testParam.jsp", serParams);
 
             if (ar[0] == "тепловая")
             {
                 var desParamsTerm = JsonConvert.DeserializeObject<TermalParameters>
-(File.ReadAllText($@"{testDir}\TestTaskParameters\{ar[0]}_testParam.jsp"), settingsSerializer);
+(File.ReadAllText($@"{testParametersDir}\{ar[0]}_testParam.jsp"), settingsSerializer);
             }
             else if (ar[0] == "механическая")
             {
                 var desParamsMech = JsonConvert.DeserializeObject<MechanicalParameters>
-(File.ReadAllText($@"{testDir}\TestTaskParameters\{ar[0]}_testParam.jsp"), settingsSerializer);
+(File.ReadAllText($@"{testParametersDir}\{ar[0]}_testParam.jsp"), settingsSerializer);
             }
             else
             {
                 var desParams = JsonConvert.DeserializeObject<ChemicalParameters>
-(File.ReadAllText($@"{testDir}\TestTaskParameters\{ar[0]}_testParam.jsp"), settingsSerializer);
+(File.ReadAllText($@"{testParametersDir}\{ar[0]}_testParam.jsp"), settingsSerializer);
             }
         }
 
