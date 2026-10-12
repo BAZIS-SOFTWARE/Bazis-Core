@@ -73,3 +73,5 @@ Remove(KeyValuePair<string, MaterialDBItem> item) : bool
 Remove(string key) : bool
 TryGetValue(string key, out MaterialDBItem value) : bool
 ```
+
+Загрузка базы материалов читает найденный путь без Windows-разделителей.

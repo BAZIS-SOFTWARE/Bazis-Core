@@ -51,6 +51,7 @@ T_Project_Project_Tasks_IO_SaveEventArgs ..|> T_Project_Project_Interfaces_IO_IS
 T_Project_Project_Tasks_IO_SaveTaskDataTextFormat ..|> T_Project_Project_Interfaces_IO_ITaskDataSaver
 T_Project_Project_Tasks_LocalFrames_LocalFrame --> T_Project_Project_Tasks_LocalFrames_FrameType : использует
 legend bottom
+  Папка баз определяется по абсолютному пути проекта; имена могут содержать пробелы.
   Обзор: [[Project.mdpuml Project]]; сигнатуры: [[Project-20.md Project-20.md]].
   reference — тип раскрыт на другой диаграмме.
   Параметры методов: имена; полные сигнатуры — в соседнем .md.

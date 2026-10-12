@@ -17,7 +17,7 @@
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     
     <!--Сохраняет пакет в указанной папке после сборки в зависимости от платформы-->
-    <PackageOutputPath>c:\BazisComponents\IntPackages_v2\$(Configuration)</PackageOutputPath>
+    <PackageOutputPath Condition="'$(OS)' == 'Windows_NT'">c:\BazisComponents\IntPackages_v2\$(Configuration)</PackageOutputPath>
   </PropertyGroup>
    
   <ItemGroup>

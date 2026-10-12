@@ -49,6 +49,7 @@ T_PreProc_PreProc_PreProc --> T_PreProc_PreProc_ProcessProperty : использ
 T_PreProc_PreProc_PreProc ..|> T_PreProc_PreProc_Interfaces_IPreProc
 T_PreProc_PreProc_ProcessProperty --> T_PreProc_PreProc_Interfaces_ProcessType : использует
 legend bottom
+  TSF-файлы одиночных и связанных задач записываются по пути Path.Combine.
   reference — тип раскрыт на другой диаграмме.
   Параметры методов: имена; полные сигнатуры — в соседнем .md.
   Унаследованные члены интерфейсов в классах не повторяются.

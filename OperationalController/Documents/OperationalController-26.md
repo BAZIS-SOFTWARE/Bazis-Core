@@ -59,3 +59,5 @@ ExportMesh(string filePath) : void
 LoadSMF(string path) : void
 SaveSMF(string path) : void
 ```
+
+CopyFile объединяет папку и имя файла через Path.Combine для Windows и Linux.

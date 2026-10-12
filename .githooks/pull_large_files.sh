@@ -42,7 +42,9 @@ while IFS= read -r -d '' relative_manifest; do
     # облачный объект по постоянному ключу определяет актуальную версию.
     relative_file="${relative_manifest%.manifest}"
     if [[ "$relative_manifest" == GmshApi/gmsh.dll.manifest || "$relative_manifest" == GmshApi/libgmsh.so.manifest ]]; then
+        remote_authoritative=1
         bucket="outlibs"
+        relative_file="${relative_manifest%.manifest}"
         object_key="${relative_file##*/}"
     elif [[ "$relative_manifest" == TestModelCore/Examples/STL/*.manifest ]]; then
         # STL в outcommon сохраняют тот же путь, что и файлы в репозитории.
@@ -60,6 +62,9 @@ while IFS= read -r -d '' relative_manifest; do
         # Неизвестный манифест не должен превращаться в ключ старого формата.
         echo "Unsupported manifest path: $relative_manifest" >&2
         exit 1
+    fi
+        expected_hash="${BASH_REMATCH[1]}"
+        object_key="$relative_file/$expected_hash"
     fi
     target="$repo_root/$relative_file"
 
@@ -98,7 +103,22 @@ while IFS= read -r -d '' relative_manifest; do
         if [[ "$local_hash" == "$manifest_hash" ]]; then
             echo "Verified $relative_file against cloud ETag"
             continue
+            fi
         fi
+    fi
+
+    # Для остальных ресурсов скачивание нужно только при несовпадении с манифестом.
+    if [[ "$remote_authoritative" -eq 0 && -f "$target" ]]; then
+        actual_hash="$(sha256sum -- "$target" | cut -c1-64)"
+        if [[ "$actual_hash" == "$expected_hash" ]]; then
+            echo "Verified $relative_file"
+            continue
+        fi
+    fi
+
+    if [[ -z "$aws_cli" ]]; then
+        echo "AWS CLI is required to download $relative_file." >&2
+        exit 1
     fi
 
     object_uri="s3://$bucket/$object_key"
@@ -150,6 +170,17 @@ while IFS= read -r -d '' relative_manifest; do
         tmp_manifest=""
         echo "Updated manifest for $relative_file"
     fi
+        continue
+    fi
+
+    if [[ "$downloaded_hash" != "$expected_hash" ]]; then
+        echo "SHA-256 mismatch for $relative_file: expected $expected_hash, got $downloaded_hash" >&2
+        exit 1
+    fi
+
+    mv -f -- "$tmp_file" "$target"
+    tmp_file=""
+    echo "Downloaded and verified $relative_file"
 done < <(git -C "$repo_root" ls-files --cached --others --exclude-standard -z -- ':(glob)**/*.manifest')
 
 if [[ "$manifest_count" -eq 0 ]]; then
