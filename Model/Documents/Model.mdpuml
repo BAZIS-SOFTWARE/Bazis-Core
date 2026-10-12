@@ -1,0 +1,108 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+allowmixing
+title Model — обзор классов и расположение подробностей
+caption Обзор; полный состав членов — на нумерованных поддиаграммах
+interface "IModelData" as T_Model_Model_Interfaces_IModelData <<details>>
+note right of T_Model_Model_Interfaces_IModelData
+  [[Model-3.mdpuml Model-3]]
+end note
+class "ModelData" as T_Model_Model_ModelData <<details>>
+note right of T_Model_Model_ModelData
+  [[Model-16.mdpuml Model-16]]
+end note
+interface "IObjectsData" as T_Model_Model_Interfaces_IObjectsData <<details>>
+note right of T_Model_Model_Interfaces_IObjectsData
+  [[Model-14.mdpuml Model-14]], [[Model-15.mdpuml Model-15]]
+end note
+class "ObjectsData" as T_Model_Model_ObjectsData <<details>>
+note right of T_Model_Model_ObjectsData
+  [[Model-17.mdpuml Model-17]]
+end note
+interface "IGroupData" as T_Model_Model_Interfaces_IGroupData <<details>>
+note right of T_Model_Model_Interfaces_IGroupData
+  [[Model-3.mdpuml Model-3]]
+end note
+class "GroupData" as T_Model_Model_GroupsData_GroupData <<details>>
+note right of T_Model_Model_GroupsData_GroupData
+  [[Model-17.mdpuml Model-17]]
+end note
+interface "IObjectsSet<T>" as T_Model_Model_Interfaces_ObjectsCollections_IObjectsSet_1 <<details>>
+note right of T_Model_Model_Interfaces_ObjectsCollections_IObjectsSet_1
+  [[Model-16.mdpuml Model-16]]
+end note
+class "ObjectsSet<T>" as T_Model_Model_ObjectsCollections_ObjectsSet_1 <<details>>
+note right of T_Model_Model_ObjectsCollections_ObjectsSet_1
+  [[Model-18.mdpuml Model-18]]
+end note
+interface "IObjectsCollection<T>" as T_Model_Model_Interfaces_ObjectsCollections_IObjectsCollection_1 <<details>>
+note right of T_Model_Model_Interfaces_ObjectsCollections_IObjectsCollection_1
+  [[Model-16.mdpuml Model-16]]
+end note
+class "ObjectsCollection<T>" as T_Model_Model_ObjectsCollections_ObjectsCollection_1 <<details>>
+note right of T_Model_Model_ObjectsCollections_ObjectsCollection_1
+  [[Model-18.mdpuml Model-18]]
+end note
+T_Model_Model_GroupsData_GroupData ..|> T_Model_Model_Interfaces_IGroupData
+T_Model_Model_Interfaces_IModelData --> T_Model_Model_Interfaces_IGroupData : использует
+T_Model_Model_Interfaces_IModelData --> T_Model_Model_Interfaces_IObjectsData : использует
+T_Model_Model_Interfaces_IObjectsData --> T_Model_Model_Interfaces_ObjectsCollections_IObjectsCollection_1 : использует
+T_Model_Model_Interfaces_IObjectsData --> T_Model_Model_Interfaces_ObjectsCollections_IObjectsSet_1 : использует
+T_Model_Model_Interfaces_ObjectsCollections_IObjectsCollection_1 --> T_Model_Model_ObjectsCollections_ObjectsSet_1 : использует
+T_Model_Model_ModelData --> T_Model_Model_Interfaces_IGroupData : использует
+T_Model_Model_ModelData --> T_Model_Model_Interfaces_IObjectsData : использует
+T_Model_Model_ModelData ..|> T_Model_Model_Interfaces_IModelData
+T_Model_Model_ObjectsCollections_ObjectsCollection_1 --> T_Model_Model_ObjectsCollections_ObjectsSet_1 : использует
+T_Model_Model_ObjectsCollections_ObjectsCollection_1 ..|> T_Model_Model_Interfaces_ObjectsCollections_IObjectsCollection_1
+T_Model_Model_ObjectsCollections_ObjectsSet_1 ..|> T_Model_Model_Interfaces_ObjectsCollections_IObjectsSet_1
+T_Model_Model_ObjectsData --> T_Model_Model_Interfaces_ObjectsCollections_IObjectsCollection_1 : использует
+T_Model_Model_ObjectsData --> T_Model_Model_Interfaces_ObjectsCollections_IObjectsSet_1 : использует
+T_Model_Model_ObjectsData ..|> T_Model_Model_Interfaces_IObjectsData
+rectangle "Геометрические и сеточные сущности" as Area_1 <<область>>
+note right of Area_1
+  [[Model-1.mdpuml Model-1]], [[Model-5.mdpuml Model-5]], [[Model-6.mdpuml Model-6]]
+  [[Model-7.mdpuml Model-7]], [[Model-8.mdpuml Model-8]], [[Model-9.mdpuml Model-9]]
+end note
+rectangle "Загрузка и сохранение" as Area_2 <<область>>
+note right of Area_2
+  [[Model-2.mdpuml Model-2]], [[Model-10.mdpuml Model-10]], [[Model-11.mdpuml Model-11]]
+  [[Model-12.mdpuml Model-12]], [[Model-13.mdpuml Model-13]]
+end note
+rectangle "Модель, наборы и группы" as Area_3 <<область>>
+note right of Area_3
+  [[Model-3.mdpuml Model-3]], [[Model-14.mdpuml Model-14]], [[Model-15.mdpuml Model-15]]
+  [[Model-16.mdpuml Model-16]], [[Model-17.mdpuml Model-17]], [[Model-18.mdpuml Model-18]]
+end note
+rectangle "Грани и вспомогательные алгоритмы" as Area_4 <<область>>
+note right of Area_4
+  [[Model-4.mdpuml Model-4]], [[Model-19.mdpuml Model-19]], [[Model-20.mdpuml Model-20]]
+end note
+T_Model_Model_Interfaces_IModelData -[hidden]down-> T_Model_Model_ModelData
+T_Model_Model_ModelData -[hidden]down-> T_Model_Model_Interfaces_IObjectsData
+T_Model_Model_Interfaces_IObjectsData -[hidden]down-> T_Model_Model_ObjectsData
+T_Model_Model_ObjectsData -[hidden]down-> T_Model_Model_Interfaces_IGroupData
+T_Model_Model_Interfaces_IGroupData -[hidden]down-> T_Model_Model_GroupsData_GroupData
+T_Model_Model_GroupsData_GroupData -[hidden]down-> T_Model_Model_Interfaces_ObjectsCollections_IObjectsSet_1
+T_Model_Model_Interfaces_ObjectsCollections_IObjectsSet_1 -[hidden]down-> T_Model_Model_ObjectsCollections_ObjectsSet_1
+T_Model_Model_ObjectsCollections_ObjectsSet_1 -[hidden]down-> T_Model_Model_Interfaces_ObjectsCollections_IObjectsCollection_1
+T_Model_Model_Interfaces_ObjectsCollections_IObjectsCollection_1 -[hidden]down-> T_Model_Model_ObjectsCollections_ObjectsCollection_1
+T_Model_Model_ObjectsCollections_ObjectsCollection_1 -[hidden]down-> Area_1
+Area_1 -[hidden]down-> Area_2
+Area_2 -[hidden]down-> Area_3
+Area_3 -[hidden]down-> Area_4
+legend bottom
+  Подробности: нажмите имя поддиаграммы в примечании.
+  Обратные переходы к Model находятся в легендах поддиаграмм.
+  Указатель типов: [[Model.md Model.md]].
+endlegend
+@enduml

@@ -1,98 +1,122 @@
-﻿using Model.Interfaces;
-using Model.Interfaces.ObjectsCollections;
-using OperationalController.MeshObjsUtility;
-using OperationalController.ModelScenePresentator;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
+using Model.Interfaces;
+using Model.Interfaces.ObjectsCollections;
+using Model.GeometryObjects;
+using Model.MeshObjects;
+using OperationalController.ModelScenePresentator;
+using OperationalController.ModelScenePresentator.GlObjsPresenters;
 
 namespace OperationalController
 {
     public partial class ProjectController
     {
-        PresentersCreator presentersCreator = new PresentersCreator();
-        ChangeInsideSurface changeInsideSurface => new ChangeInsideSurface();
-/// <inheritdoc/>
+        private readonly PresentersCreator presentersCreator = new PresentersCreator();
 
-        public void ChangeInsideSurfacesState(bool state)
-        {
-            var e3D = ModelData.ObjectData.E3DCollection.GetObjects();
-            
-            if(state)
-                changeInsideSurface.ShowInsideSurfaces(e3D);
-            else
-                changeInsideSurface.HideInsideSurfaces(e3D);
-        }
-/// <inheritdoc/>
-
-        public IObjsPresenter CreateModelObjectsPresentor(ObjType objType)
-        {
-            IObjsPresenter pre;
-            switch (objType)
-            {
-                case ObjType.Узел:
-                    pre = presentersCreator.CreatePointObjectsPresenter(ModelData.ObjectData.NodesSet.Values);
-                    break;
-                case ObjType.Кривая:
-                    pre = presentersCreator?.CreateLineObjectsPresenter(ModelData.ObjectData.CurveSet.Values);
-                    break;
-                case ObjType.Поверхность:
-                    pre = presentersCreator.CreateSurfaceObjectsPresenter(ModelData.ObjectData.SurfaceSet.Values);
-                    break;
-                case ObjType.Элемент1D:
-                    pre = presentersCreator.CreateLineObjectsPresenter(ModelData.ObjectData.E1DCollection.GetObjects());
-                    break;
-                case ObjType.Элемент2D:
-                    pre = presentersCreator.CreateSurfaceObjectsPresenter(ModelData.ObjectData.E2DCollection.GetObjects());
-                    break;
-                case ObjType.Элемент3D:
-                    pre = presentersCreator.CreateSurfaceObjectsPresenter(ModelData.ObjectData.E3DCollection.GetObjects());
-                    break;
-                default:
-                    pre = presentersCreator.CreatePointObjectsPresenter(ModelData.ObjectData.PointsSet.Values);
-                    break;
-            }
-            // изменить в будущем на массив viewMode
-            var setInfo = ModelData.ObjectData.GetSetsInfo(objType).FirstOrDefault();
-            if (setInfo != null)
-                pre.ViewMode = setInfo.ViewMode;
-            pre.Name = objType.ToString();
-            return pre;
-        }
-/// <inheritdoc/>
-
+        /// <summary>
+        /// Создает презентатор видимых объектов заданного набора.
+        /// </summary>
         public IObjsPresenter CreateModelObjectsPresentor(ISetInfo setInfo)
         {
-            IObjsPresenter pre;
-            //var objType = ;
+            if (setInfo == null)
+                throw new ArgumentNullException(nameof(setInfo));
+
+            IObjsPresenter presenter;
+
             switch (setInfo.ObjType)
             {
                 case ObjType.Узел:
-                    pre = presentersCreator.CreatePointObjectsPresenter(ModelData.ObjectData.NodesSet.Values);
+                    presenter = CreatePointPresenter(ModelData.ObjectData.NodesSet.Values, setInfo);
                     break;
                 case ObjType.Кривая:
-                    pre = presentersCreator?.CreateLineObjectsPresenter(ModelData.ObjectData.CurveSet.Values);
+                    presenter = CreateLinePresenter(ModelData.ObjectData.CurveSet.Values, setInfo);
                     break;
                 case ObjType.Поверхность:
-                    pre = presentersCreator.CreateSurfaceObjectsPresenter(ModelData.ObjectData.SurfaceSet.Values);
+                    presenter = CreateGeometrySurfacePresenter(ModelData.ObjectData.SurfaceSet.Values, setInfo);
                     break;
                 case ObjType.Элемент1D:
-                    pre = presentersCreator.CreateLineObjectsPresenter(ModelData.ObjectData.E1DCollection[setInfo.Name].Values);
+                    presenter = CreateLinePresenter(ModelData.ObjectData.E1DCollection[setInfo.Name].Values, setInfo);
                     break;
                 case ObjType.Элемент2D:
-                    pre = presentersCreator.CreateSurfaceObjectsPresenter(ModelData.ObjectData.E2DCollection[setInfo.Name].Values);
+                    presenter = CreateElementSurfacePresenter(ModelData.ObjectData.E2DCollection[setInfo.Name].Values, setInfo);
                     break;
                 case ObjType.Элемент3D:
-                    pre = presentersCreator.CreateSurfaceObjectsPresenter(ModelData.ObjectData.E3DCollection[setInfo.Name].Values);
+                    presenter = CreateVolumeSurfacePresenter(ModelData.ObjectData.E3DCollection[setInfo.Name].Values, setInfo);
                     break;
                 default:
-                    pre = presentersCreator.CreatePointObjectsPresenter(ModelData.ObjectData.PointsSet.Values);
+                    presenter = CreatePointPresenter(ModelData.ObjectData.PointsSet.Values, setInfo);
                     break;
             }
-            // изменить в будущем на массив viewMode
-            //var setInfo = ModelData.ObjectData.GetSetsInfo(objType).FirstOrDefault();
-            //if (setInfo != null)
-            pre.ViewMode = setInfo.ViewMode;
-            pre.Name = setInfo.Name;
-            return pre;
+
+            presenter.ViewMode = ModelView.GetViewMode(setInfo);
+            presenter.Name = setInfo.Name;
+            return presenter;
+        }
+
+        private IObjsPresenter CreatePointPresenter(IEnumerable<IModelObject> objects, ISetInfo setInfo)
+        {
+            var pointObjects = CreateVisibleObjects(objects, setInfo);
+            var colors = CreateColors(pointObjects, setInfo);
+            return presentersCreator.CreatePointObjectsPresenter(pointObjects, colors);
+        }
+
+        private IObjsPresenter CreateLinePresenter<T>(IEnumerable<T> objects, ISetInfo setInfo) where T : IModelObject
+        {
+            var lineObjects = CreateVisibleObjects(objects, setInfo);
+            var colors = CreateColors(lineObjects, setInfo);
+            return presentersCreator.CreateLineObjectsPresenter(lineObjects, colors);
+        }
+
+        private IObjsPresenter CreateGeometrySurfacePresenter(IEnumerable<SurfaceFigure> objects, ISetInfo setInfo)
+        {
+            var surfaceObjects = CreateVisibleObjects(objects, setInfo);
+            var colors = CreateColors(surfaceObjects, setInfo);
+            var modelSurfaceObjects = surfaceObjects.Cast<ISurfaceObject<GeometrySurface, GeometryPoint>>().ToList();
+            return presentersCreator.CreateSurfaceObjectsPresenter<GeometrySurface, GeometryPoint>(modelSurfaceObjects, colors);
+        }
+
+        private IObjsPresenter CreateElementSurfacePresenter(IEnumerable<Element> objects, ISetInfo setInfo)
+        {
+            var surfaceObjects = CreateVisibleObjects(objects, setInfo);
+            var colors = CreateColors(surfaceObjects, setInfo);
+            var modelSurfaceObjects = surfaceObjects.Cast<ISurfaceObject<ElementSurface, Node>>().ToList();
+            return presentersCreator.CreateSurfaceObjectsPresenter<ElementSurface, Node>(modelSurfaceObjects, colors, !ModelView.HideInsideSurfaces);
+        }
+
+        /// <summary>
+        /// Создаёт презентатор видимых объёмных элементов с учётом видимости соседей.
+        /// </summary>
+        private IObjsPresenter CreateVolumeSurfacePresenter(IEnumerable<Element3D> objects, ISetInfo setInfo)
+        {
+            var visibleObjects = CreateVisibleObjects(objects, setInfo);
+            var colors = CreateColors(visibleObjects, setInfo);
+            var surfaceObjects = visibleObjects.Cast<ISurfaceObject<ElementSurface, Node>>().ToList();
+            return new ElementSurfaceObjsPresenter(surfaceObjects, colors, ModelView);
+        }
+
+        private List<T> CreateVisibleObjects<T>(IEnumerable<T> objects, ISetInfo setInfo) where T : IModelObject
+        {
+            var visibleObjects = new List<T>();
+
+            foreach (var modelObject in objects)
+            {
+                if (ModelView.GetVisible(setInfo.ObjType, modelObject.Number))
+                    visibleObjects.Add(modelObject);
+            }
+
+            return visibleObjects;
+        }
+
+        private List<Color> CreateColors<T>(IReadOnlyList<T> objects, ISetInfo setInfo) where T : IModelObject
+        {
+            var colors = new List<Color>(objects.Count);
+
+            foreach (var modelObject in objects)
+                colors.Add(ModelView.GetColor(setInfo, modelObject.Number));
+
+            return colors;
         }
     }
 }

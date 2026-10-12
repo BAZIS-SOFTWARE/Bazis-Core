@@ -1,0 +1,70 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title MaterialDB-3 — Контракты и данные материалов
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "Category" as T_MaterialDB_MaterialDB_MaterialData_Category {
+  + PropertyDic : Dictionary<PropertyEnum, string> [field]
+  + this[PropertyEnum key] : Property [get, set]
+}
+class "CategoryData" as T_MaterialDB_MaterialDB_MaterialData_CategoryData {
+  + Count : int [get]
+  + IsReadOnly : bool [get]
+  + Keys : ICollection<string> [get]
+  + Values : ICollection<Category> [get]
+  + this[PropertyEnum key] : Category [get, set]
+  + this[string key] : Category [get, set]
+  + Add(item) : void
+  + Add(key, value) : void
+  + Clear() : void
+  + Contains(item) : bool
+  + ContainsKey(key) : bool
+  + CopyTo(array, arrayIndex) : void
+  + GetEnumerator() : IEnumerator<KeyValuePair<string, Category>>
+  + Remove(item) : bool
+  + Remove(key) : bool
+  + TryGetValue(key, out value) : bool
+}
+class "MaterialDBData" as T_MaterialDB_MaterialDB_MaterialData_MaterialDBData {
+  + Count : int [get]
+  + IsReadOnly : bool [get]
+  + Keys : ICollection<string> [get]
+  + Values : ICollection<MaterialDBItem> [get]
+  + this[string key] : MaterialDBItem [get, set]
+  + Add(item) : void
+  + Add(key, value) : void
+  + Clear() : void
+  + Contains(item) : bool
+  + ContainsKey(key) : bool
+  + CopyTo(array, arrayIndex) : void
+  + GetEnumerator() : IEnumerator<KeyValuePair<string, MaterialDBItem>>
+  + MaterialDBData()
+  + MaterialDBData(dbName, dbFolder)
+  + Remove(item) : bool
+  + Remove(key) : bool
+  + TryGetValue(key, out value) : bool
+}
+interface "ICategory" as T_MaterialDB_MaterialDB_Interfaces_ICategory <<reference>>
+interface "IMaterialDB" as T_MaterialDB_MaterialDB_Interfaces_IMaterialDB <<reference>>
+T_MaterialDB_MaterialDB_MaterialData_Category -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_CategoryData
+T_MaterialDB_MaterialDB_MaterialData_CategoryData -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_MaterialDBData
+T_MaterialDB_MaterialDB_MaterialData_MaterialDBData -[hidden]down-> T_MaterialDB_MaterialDB_Interfaces_ICategory
+T_MaterialDB_MaterialDB_Interfaces_ICategory -[hidden]down-> T_MaterialDB_MaterialDB_Interfaces_IMaterialDB
+T_MaterialDB_MaterialDB_MaterialData_Category ..|> T_MaterialDB_MaterialDB_Interfaces_ICategory
+T_MaterialDB_MaterialDB_MaterialData_CategoryData --> T_MaterialDB_MaterialDB_MaterialData_Category : использует
+T_MaterialDB_MaterialDB_MaterialData_MaterialDBData ..|> T_MaterialDB_MaterialDB_Interfaces_IMaterialDB
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

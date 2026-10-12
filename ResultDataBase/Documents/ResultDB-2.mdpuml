@@ -1,0 +1,50 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title ResultDB-2 — Чтение и сохранение
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+interface "IResultsLoader" as T_ResultDB_ResultDB_Interfaces_IResultsLoader {
+  + GetResult(fullPath, tables, time) : Result
+  + GetResults(fullPath, tables) : IEnumerable<Result>
+  + GetTablesNames(fullPath) : IEnumerable<string>
+  + GetTablesSchemes(fullPath) : IEnumerable<KeyValuePair<string, List<string>>>
+  + GetValues(fullPath, tableName, column) : IEnumerable<float>
+}
+interface "IResultsSaver" as T_ResultDB_ResultDB_Interfaces_IResultsSaver {
+  + Save(results, path, append) : void
+}
+class "CSVToDataTableConverter" as T_ResultDB_ResultDB_IO_CSVToDataTableConverter {
+  + ConvertCSVtoDataTable(strFilePath) : DataTable
+}
+class "LoadEventArgs" as T_ResultDB_ResultDB_IO_LoadEventArgs {
+  + Message : string [get]
+  + LoadEventArgs(message)
+}
+class "LoadResultsFileDB" as T_ResultDB_ResultDB_IO_LoadResultsFileDB {
+  + Merge(dbPath1, dbPath2) : string
+}
+class "SaveEventArgs" as T_ResultDB_ResultDB_IO_SaveEventArgs {
+  + Message : string [get, private set]
+  + SaveEventArgs(message)
+}
+T_ResultDB_ResultDB_Interfaces_IResultsLoader -[hidden]down-> T_ResultDB_ResultDB_Interfaces_IResultsSaver
+T_ResultDB_ResultDB_Interfaces_IResultsSaver -[hidden]down-> T_ResultDB_ResultDB_IO_CSVToDataTableConverter
+T_ResultDB_ResultDB_IO_CSVToDataTableConverter -[hidden]down-> T_ResultDB_ResultDB_IO_LoadEventArgs
+T_ResultDB_ResultDB_IO_LoadEventArgs -[hidden]down-> T_ResultDB_ResultDB_IO_LoadResultsFileDB
+T_ResultDB_ResultDB_IO_LoadResultsFileDB -[hidden]down-> T_ResultDB_ResultDB_IO_SaveEventArgs
+T_ResultDB_ResultDB_IO_LoadResultsFileDB ..|> T_ResultDB_ResultDB_Interfaces_IResultsLoader
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

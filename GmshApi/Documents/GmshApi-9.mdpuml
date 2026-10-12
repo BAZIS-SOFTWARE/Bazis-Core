@@ -1,0 +1,59 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title GmshApi-9 — Сетка и настройки
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+enum "FieldType\nчасть 2/2" as T_GmshApi_GmshApi_FieldType {
+    PostView
+    Restrict
+    Structured
+    Threshold
+}
+note right of T_GmshApi_GmshApi_FieldType
+  Полный состав: GmshApi-2, GmshApi-9
+end note
+class "Mesh\nчасть 1/2" as T_GmshApi_GmshApi_Mesh {
+  + Field : Field [get, private set]
+  + AddElementsByType(tag, elementType, elementTags, nodeTags) : void
+  + AddNodes(dim, tag, nodeTags, coord, parametricCoord) : void
+  + ClassifySurfaces(angle, boundary, forReparametrization, curveAngle, exportDiscrete) : void
+  + Clear(dimTags) : void
+  + CreateGeometry(dimTags) : void
+  + Embed(dim, tags, inDim, inTag) : void
+  + Generate(dim) : void
+  + GetElement(elementTag) : Tuple<int, IntPtr[], int, int>
+  + GetElementProperties(elementType) : ElementProperties
+  + GetElementQualities(elementTags, qualityName, task, numTasks) : double[]
+  + GetElementTypes(dim, tag) : int[]
+  + GetElements(dim, tag) : Tuple<int[], IntPtr[][], IntPtr[][]>
+  + GetElementsByCoordinates(x, y, z, dim, strict) : IntPtr[]
+  + GetEmbedded(dim, tag) : int[]
+  + GetNodes(dim, tag, includeBoundary, returnParametricCoord) : Tuple<IntPtr[], double[], double[]>
+  + GetNodesByElementType(elementType, tag, returnParametricCoord) : Tuple<IntPtr[], double[], double[]>
+  + GetSizes(dimTags) : double[]
+  + ImportStl() : void
+  + Mesh()
+  + ReclassifyNodes() : void
+  + Recombine() : void
+  + Refine() : void
+  + RemoveConstraints(dimTags) : void
+}
+note right of T_GmshApi_GmshApi_Mesh
+  Полный состав: GmshApi-9, GmshApi-10
+end note
+T_GmshApi_GmshApi_FieldType -[hidden]down-> T_GmshApi_GmshApi_Mesh
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

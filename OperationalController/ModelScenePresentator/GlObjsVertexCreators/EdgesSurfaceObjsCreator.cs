@@ -1,42 +1,36 @@
-﻿using Model.Interfaces;
+using Model.Interfaces;
 using System.Collections.Generic;
 
 namespace OperationalController.ModelScenePresentator.GlObjsVertexCreators
 {
-    public class EdgesSurfaceObjsCreator<T,U>
+    public class EdgesSurfaceObjsCreator<T, U>
         where T : ISurface<U> where U : IPoint
     {
-        public void Create(ref int stride, bool[] vertexAtributes, IEnumerable<ISurfaceObject<T,U>> surfaceElements)
+        /// <summary>
+        /// Размечает рёбра отобранных к отрисовке граней одного объекта.
+        /// </summary>
+        public void Create(ref int stride, bool[] vertexAtributes, IEnumerable<T> surfaces)
         {
-            foreach (var surfaceElement in surfaceElements)
+            foreach (var surface in surfaces)
             {
-                if (surfaceElement.ViewState)
+                for (int i = 0; i < surface.NumberOfPoints - 2; i++)
                 {
-                    foreach (var surface in surfaceElement.GetSurfaces())
+                    if (i == 0)
                     {
-                        if (surface.ViewState)
-                        {
-                            for (int i = 0; i < surface.NumberOfPoints - 2; i++)
-                            {
-                                if (i == 0)
-                                {
-                                    vertexAtributes[stride + 3 * i] = true;
-                                    vertexAtributes[stride + 3 * i + 1] = true;
-                                    vertexAtributes[stride + 3 * i + 2] = true;
-                                }
- 
-                                else
-                                {
-                                    vertexAtributes[stride + 3 * i - 1] = false;
-                                    vertexAtributes[stride + 3 * i] = false;
-                                    vertexAtributes[stride + 3 * i + 1] = true;
-                                    vertexAtributes[stride + 3 * i + 2] = true;
-                                }
-                            }
-                            stride += (surface.NumberOfPoints - 2) * 3;
-                        }
+                        vertexAtributes[stride + 3 * i] = true;
+                        vertexAtributes[stride + 3 * i + 1] = true;
+                        vertexAtributes[stride + 3 * i + 2] = true;
+                    }
+                    else
+                    {
+                        vertexAtributes[stride + 3 * i - 1] = false;
+                        vertexAtributes[stride + 3 * i] = false;
+                        vertexAtributes[stride + 3 * i + 1] = true;
+                        vertexAtributes[stride + 3 * i + 2] = true;
                     }
                 }
+
+                stride += (surface.NumberOfPoints - 2) * 3;
             }
         }
     }

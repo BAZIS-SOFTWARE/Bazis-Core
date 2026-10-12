@@ -1,0 +1,31 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title ResultDB-3 — Чтение и сохранение
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "SaveResultsFileDb" as T_ResultDB_ResultDB_IO_SaveResultsFileDb {
+  + AddData(db, table, time) : void
+}
+enum "TaskKind" as T_ResultDB_ResultDB_IO_TaskKind {
+    механическая
+    термическая
+}
+interface "IResultsSaver" as T_ResultDB_ResultDB_Interfaces_IResultsSaver <<reference>>
+T_ResultDB_ResultDB_IO_SaveResultsFileDb -[hidden]down-> T_ResultDB_ResultDB_IO_TaskKind
+T_ResultDB_ResultDB_IO_TaskKind -[hidden]down-> T_ResultDB_ResultDB_Interfaces_IResultsSaver
+T_ResultDB_ResultDB_IO_SaveResultsFileDb ..|> T_ResultDB_ResultDB_Interfaces_IResultsSaver
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

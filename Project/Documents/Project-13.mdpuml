@@ -1,0 +1,46 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title Project-13 — Функции, материалы и ввод/вывод
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+interface "IResultsExportSaver" as T_Project_Project_Interfaces_Results_IResultsExportSaver {
+  + SaveResults(objects, result, resDescr, savePath) : void
+}
+interface "IResultsExporter" as T_Project_Project_Interfaces_Results_IResultsExporter {
+  + ExportObjectsResults(objects, result, resDesc, savePath, format) : void
+}
+class "LoadProjectFromTextFormat" as T_Project_Project_IO_LoadProjectFromTextFormat {
+}
+class "ProgressRange" as T_Project_Project_IO_ProgressRange <<internal>> {
+  + ProgressRange(progress, start, length)
+  + Report(value) : void
+}
+class "SaveEventArgs" as T_Project_Project_IO_SaveEventArgs {
+  + SaveEventArgs(message)
+}
+interface "IProjectLoader\nProject-3" as T_Project_Project_Interfaces_IO_IProjectLoader <<reference>> [[Project-3.mdpuml Project-3]]
+interface "ISaveEventArgs\nProject-3" as T_Project_Project_Interfaces_IO_ISaveEventArgs <<reference>> [[Project-3.mdpuml Project-3]]
+T_Project_Project_Interfaces_Results_IResultsExportSaver -[hidden]down-> T_Project_Project_Interfaces_Results_IResultsExporter
+T_Project_Project_Interfaces_Results_IResultsExporter -[hidden]down-> T_Project_Project_IO_LoadProjectFromTextFormat
+T_Project_Project_IO_LoadProjectFromTextFormat -[hidden]down-> T_Project_Project_IO_ProgressRange
+T_Project_Project_IO_ProgressRange -[hidden]down-> T_Project_Project_IO_SaveEventArgs
+T_Project_Project_IO_SaveEventArgs -[hidden]down-> T_Project_Project_Interfaces_IO_IProjectLoader
+T_Project_Project_Interfaces_IO_IProjectLoader -[hidden]down-> T_Project_Project_Interfaces_IO_ISaveEventArgs
+T_Project_Project_IO_LoadProjectFromTextFormat ..|> T_Project_Project_Interfaces_IO_IProjectLoader
+T_Project_Project_IO_SaveEventArgs ..|> T_Project_Project_Interfaces_IO_ISaveEventArgs
+legend bottom
+  Обзор: [[Project.mdpuml Project]]; сигнатуры: [[Project-13.md Project-13.md]].
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

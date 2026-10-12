@@ -6,7 +6,6 @@ using Model.Interfaces.IntegralObject;
 using Model.Interfaces.MeshObjects;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Net;
 
 namespace Model.MeshObjects
@@ -20,8 +19,6 @@ namespace Model.MeshObjects
                 throw new Exception($"Коллличество узлов в элементе {number} должно быть не меньше 2");
             else if (nodes.Length > 2)
                     throw new Exception($"Коллличество узлов в элементе {number} должно быть не больше 2");
-            
-            Color = Color.FromArgb(255, 192, 203);
             
             Level = 1;
 

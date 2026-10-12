@@ -3,7 +3,6 @@ using MathNet.Numerics.LinearAlgebra;
 using Model.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using MathNet.Numerics.LinearAlgebra.Single;
 using Model.Interfaces.MeshObjects;
@@ -18,9 +17,7 @@ namespace Model.MeshObjects
         public Element2D(int number, Node[] nodes) : base(number, nodes)
         {
             Dim = 2;
-            Color = Color.FromArgb(0, 0, 255);
-
-            surface = new ElementSurface(number, 0, nodes);
+            surface = new ElementSurface(this, 0, nodes);
 
             //this.nodes = surface.GetVertexes().ToList();
 

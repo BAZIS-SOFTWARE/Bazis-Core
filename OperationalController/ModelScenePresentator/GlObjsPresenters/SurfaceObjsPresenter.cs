@@ -1,180 +1,148 @@
-﻿using Model.Interfaces;
-using Model.Interfaces.ObjectsCollections;
+using Geometry.Interfaces;
+using Model.Interfaces;
 using OperationalController.ModelScenePresentator.GlObjsVertexCreators;
 using OperationalController.ModelScenePresentator.Interfaces;
-using OperationalController;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
+using System.Drawing;
 
 namespace OperationalController.ModelScenePresentator.GlObjsPresenters
 {
     /// <summary>
-    /// SurfaceObjsPresenter
+    /// Собирает буферы поверхностных объектов с готовыми цветами.
     /// </summary>
-    public class SurfaceObjsPresenter<T,U> : ISurfaceObjsPresenter
-        where T : ISurface<U> where U : IPoint
+    public class SurfaceObjsPresenter<T, U> : ObjsPresenter<ISurfaceObject<T, U>>, ISurfaceObjsPresenter
+        where T : ISurface<U>
+        where U : IPoint
     {
-        List<ISurfaceObject<T,U>> surfaceObjects = new List<ISurfaceObject<T, U>>();
-/// <inheritdoc/>
+        protected readonly bool drawInnerSurfaces;
 
-        public PresenterType PresenterType { get; } = PresenterType.Surface;
-/// <inheritdoc/>
+        /// <summary>
+        /// Создаёт presenter поверхностных объектов с индивидуальными цветами.
+        /// </summary>
+        public SurfaceObjsPresenter(IReadOnlyList<ISurfaceObject<T, U>> surfaceObjects, IReadOnlyList<Color> colors, bool drawInnerSurfaces = true)
+            : this(surfaceObjects, new ManyColorsObjsColors(colors), drawInnerSurfaces)
+        {
+        }
 
-        //public bool IsVolumeObjs { get; } = false;
+        /// <summary>
+        /// Создаёт presenter поверхностных объектов с одним цветом.
+        /// </summary>
+        public SurfaceObjsPresenter(IReadOnlyList<ISurfaceObject<T, U>> surfaceObjects, Color color, bool drawInnerSurfaces = true)
+            : this(surfaceObjects, new SingleColorObjsColors(color), drawInnerSurfaces)
+        {
+        }
+
+        /// <summary>
+        /// Создаёт presenter поверхностных объектов с заданным источником цветов.
+        /// </summary>
+        public SurfaceObjsPresenter(IReadOnlyList<ISurfaceObject<T, U>> surfaceObjects, IObjsColors colors, bool drawInnerSurfaces = true)
+            : base(surfaceObjects, colors)
+        {
+            this.drawInnerSurfaces = drawInnerSurfaces;
+        }
+
         /// <inheritdoc/>
-        public ViewMode ViewMode { get; set; } = ViewMode.LineSurface;
-        /// <inheritdoc/>
-        public string Name { get; set; }
-
+        public override PresenterType PresenterType { get; } = PresenterType.Surface;
 
         /// <inheritdoc/>
+        public override ViewMode ViewMode { get; set; } = ViewMode.LineSurface;
 
-        public Tuple<int, int, int,int> CreateIndexes()
+        /// <inheritdoc/>
+        public override Tuple<int, int, int, int> CreateIndexes()
         {
             var pointers = 0;
             var vertexes = 0;
             var edges = 0;
-            var colors = 0;
+            var colorsCount = 0;
 
-            foreach (var surfaceObj in surfaceObjects)
+            for (var index = 0; index < Objects.Count; index++)
             {
-                if(surfaceObj.ViewState)
-                    foreach (var surface in surfaceObj.GetSurfaces())
-                    {
-                        if (surface.ViewState)
-                        {
-                            vertexes = vertexes + (surface.NumberOfPoints - 2) * 3 * 3;
-                            pointers = pointers + (surface.NumberOfPoints - 2) * 3;
-                            edges = edges + (surface.NumberOfPoints - 2) * 3;
-                            colors = colors + (surface.NumberOfPoints - 2) * 3 * 4;
-                        }
-                    }
-            }
-
-
-            return new Tuple<int, int, int,int>(pointers, vertexes, colors, edges);
-        }
-/// <inheritdoc/>
-
-        public int[] CreatePointers(int indexLength)
-        {
-            var ptr = new int[indexLength];
-            var stride = 0;
-
-            foreach (var surfaceObj in surfaceObjects)
-            {
-                if (surfaceObj.ViewState)
+                foreach (var surface in GetDrawnSurfaces(index))
                 {
-                    foreach (var surface in surfaceObj.GetSurfaces())
-                    {
-                        if (surface.ViewState)
-                        {
-                            var length = (surface.NumberOfPoints - 2) * 3;
-                            for (int m = 0; m < length; m++)
-                            {
-                                ptr[stride + m] = stride + m;
-                            }
-                            stride = stride + length;
-                        }
-                    }
+                    var triangles = surface.NumberOfPoints - 2;
+                    vertexes += triangles * 9;
+                    pointers += triangles * 3;
+                    edges += triangles * 3;
+                    colorsCount += triangles * 12;
                 }
             }
 
-            return ptr;
+            return new Tuple<int, int, int, int>(pointers, vertexes, colorsCount, edges);
         }
-/// <inheritdoc/>
 
-        public float[] CreateVertexes(int vertexLength,string vertexType)
+        /// <inheritdoc/>
+        public override float[] CreateVertexes(int vertexLength, string vertexType)
         {
-            var vertexArray = new float[vertexLength];
+            var vertexes = new float[vertexLength];
             var stride = 0;
-
-            ISurfaceObjsVertexCreator<T,U> vertexCreator;
+            ISurfaceObjsVertexCreator<T, U> vertexCreator;
 
             if (vertexType == "цвет")
                 vertexCreator = new ColorSurfaceObjsCreator<T, U>();
             else if (vertexType == "координаты")
                 vertexCreator = new CoordsSurfaceObjsCreator<T, U>();
-            else vertexCreator = new NormalsSurfaceObjsCreator<T, U>();
+            else
+                vertexCreator = new NormalsSurfaceObjsCreator<T, U>();
 
-            foreach (var surfaceElement in surfaceObjects)
+            var objectIndex = 0;
+
+            foreach (var color in CreateColors())
             {
-                if (surfaceElement.ViewState)
-                {
-                    vertexCreator.Create(ref stride, vertexArray, surfaceElement);
-                }
+                if (objectIndex == Objects.Count)
+                    throw new InvalidOperationException("More colors were provided than objects.");
+
+                vertexCreator.Create(ref stride, vertexes, GetDrawnSurfaces(objectIndex), color);
+                objectIndex++;
             }
 
-            return vertexArray;
-        }
-/// <inheritdoc/>
+            if (objectIndex != Objects.Count)
+                throw new InvalidOperationException("A color was not provided for every object.");
 
-        public bool[] CreateEdgeFlags(int edgesLength)
+            return vertexes;
+        }
+
+        /// <inheritdoc/>
+        public override bool[] CreateEdgeFlags(int edgesLength)
         {
-            var edgesArray = new bool[edgesLength];
+            var edges = new bool[edgesLength];
             var stride = 0;
+            var creator = new EdgesSurfaceObjsCreator<T, U>();
 
-            var vertexCreator = new EdgesSurfaceObjsCreator<T, U>();
-            vertexCreator.Create(ref stride, edgesArray, surfaceObjects);  
-            return edgesArray;
+            for (var index = 0; index < Objects.Count; index++)
+                creator.Create(ref stride, edges, GetDrawnSurfaces(index));
+
+            return edges;
         }
 
-/// <inheritdoc/>
-
-        public int Count()
-        {
-            return surfaceObjects.Count;
-        }    
-/// <inheritdoc/>
-
-        public IEnumerator<IModelObject> GetEnumerator()
-        {
-            foreach (var surfaceElement in surfaceObjects)
-            {
-                yield return surfaceElement;
-            }
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            throw new NotImplementedException();
-        }
-
-
-        /// <summary>
-        /// Add
-        /// </summary>
-        /// <param name="objs"></param>
-        public void Add(IEnumerable<ISurfaceObject<T, U>> objs)
-        {
-                surfaceObjects.AddRange(objs);
-        }
-/// <inheritdoc/>
-
+        /// <inheritdoc/>
         public int[] CreateSeparators()
         {
-            if (surfaceObjects.Count == 0)
-                return new int[0];
-
-            var surfObjs = surfaceObjects.ToArray();
-            var separators = new int[surfObjs.Length + 1];
+            var separators = new int[Objects.Count + 1];
             var stride = 0;
 
-            var i = 0;
-            foreach (var element in surfaceObjects)
+            for (var index = 0; index < Objects.Count; index++)
             {
-                separators[i] = stride;
-                if(element.ViewState)
-                    foreach (var surface in element.GetSurfaces())
-                        if (surface.ViewState)
-                            stride += surface.NumberOfPoints - 2;
-                ++i;
-            }
-            separators[i] = stride;
+                separators[index] = stride;
 
+                foreach (var surface in GetDrawnSurfaces(index))
+                    stride += surface.NumberOfPoints - 2;
+            }
+
+            separators[Objects.Count] = stride;
             return separators;
+        }
+
+        /// <summary>
+        /// Отбирает грани объекта, которые попадают в буфер.
+        /// </summary>
+        protected virtual IEnumerable<T> GetDrawnSurfaces(int index)
+        {
+            foreach (var surface in Objects[index].GetSurfaces())
+            {
+                if (drawInnerSurfaces || !surface.IsInner)
+                    yield return surface;
+            }
         }
     }
 }

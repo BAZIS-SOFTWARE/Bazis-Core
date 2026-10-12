@@ -1,0 +1,58 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title Model-14 — Модель, наборы и группы
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+interface "IObjectsData\nчасть 1/2" as T_Model_Model_Interfaces_IObjectsData {
+  + CurveSet : IObjectsSet<Curve> [get]
+  + E1DCollection : IObjectsCollection<Beam> [get]
+  + E2DCollection : IObjectsCollection<Element2D> [get]
+  + E3DCollection : IObjectsCollection<Element3D> [get]
+  + NodesSet : IObjectsSet<Node> [get]
+  + PointsSet : IObjectsSet<GeometryPoint> [get]
+  + SurfaceSet : IObjectsSet<SurfaceFigure> [get]
+  + Clear(objType) : void
+  + ClearAll() : void
+  + ClearEmptySet() : void
+  + ClearNotExisted() : void
+  + Count(objType) : int
+  + Find(objType, objNumbr) : IModelObject
+  + FindMany(objNumbr) : IEnumerable<IModelObject>
+  + GetAllElements() : IEnumerable<IElement>
+  + GetAllObjects() : IEnumerable<IModelObject>
+  + GetMaxElementNumber() : int
+  + GetMaxNumber(objType) : int
+  + GetObjects(objType) : IEnumerable<IModelObject>
+  + GetObjects(objType, setName) : IEnumerable<IModelObject>
+  + GetSetInfo(objType, objNumber) : ISetInfo
+  + GetSetInfo(objType, setName) : ISetInfo
+  + GetSetsInfo(objType) : IEnumerable<ISetInfo>
+  + Move(objType, vector) : void
+}
+note right of T_Model_Model_Interfaces_IObjectsData
+  Полный состав: [[Model-14.mdpuml Model-14]], [[Model-15.mdpuml Model-15]]
+end note
+legend bottom
+  Обзор: [[Model.mdpuml Model]]; сигнатуры: [[Model-14.md Model-14.md]].
+  reference — адрес подробностей указан в заголовке типа.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+  Связанные типы в контрактах и сигнатурах:
+  [[Model-1.mdpuml Model-1]]: IElement, IModelObject.
+  [[Model-5.mdpuml Model-5]]: Curve, GeometryPoint, SurfaceFigure.
+  [[Model-6.mdpuml Model-6]]: Beam, ObjType.
+  [[Model-7.mdpuml Model-7]]: Element2D, Element3D.
+  [[Model-8.mdpuml Model-8]]: Node.
+  [[Model-16.mdpuml Model-16]]: IObjectsCollection<T>, IObjectsSet<T>, ISetInfo.
+  [[../../PrGeometry/Documents/Geometry-4.mdpuml Geometry-4]]: Point3D.
+endlegend
+@enduml

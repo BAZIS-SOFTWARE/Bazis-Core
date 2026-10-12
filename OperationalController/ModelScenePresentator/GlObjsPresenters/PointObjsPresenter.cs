@@ -1,149 +1,90 @@
-﻿using OperationalController.ModelScenePresentator.GlObjsVertexCreators;
-using OperationalController.ModelScenePresentator.Interfaces;
-using OperationalController;
 using Model.Interfaces;
+using OperationalController.ModelScenePresentator.GlObjsVertexCreators;
+using OperationalController.ModelScenePresentator.Interfaces;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using Model.Interfaces.ObjectsCollections;
+using System.Drawing;
 
 namespace OperationalController.ModelScenePresentator.GlObjsPresenters
 {
     /// <summary>
-    /// PointObjsPresenter
+    /// Собирает буферы точечных объектов с готовыми цветами.
     /// </summary>
-    public class PointObjsPresenter : IObjsPresenter
+    public class PointObjsPresenter : ObjsPresenter<IModelObject>
     {
-        /// <inheritdoc/>
-        public string Name { get; set; }
-
-        List<IModelObject> pointObjects = new List<IModelObject>();
-/// <inheritdoc/>
-        public bool IsVolumeObjs { get; } = false;
-        /// <inheritdoc/>
-
-        public PresenterType PresenterType { get; } = PresenterType.Point;
-        /// <inheritdoc/>
-        public ViewMode ViewMode { get; set; } = ViewMode.Point;
-
-        /// <inheritdoc/>
-
-
-        public Tuple<int, int, int,int> CreateIndexes()
+        /// <summary>
+        /// Создаёт presenter точечных объектов с индивидуальными цветами.
+        /// </summary>
+        public PointObjsPresenter(IReadOnlyList<IModelObject> pointObjects, IReadOnlyList<Color> colors)
+            : this(pointObjects, new ManyColorsObjsColors(colors))
         {
-            var indexes = 0;
-            var coords = 0;
-            var colors = 0;
-
-            foreach (var pointObject in pointObjects)
-            {
-                //Закоментировано т.к вызывает exception
-                if (pointObject.ViewState)
-                {
-                    coords += 3;
-                    indexes++;
-                    colors += 4;
-                }
-            }
-
-
-            return new Tuple<int, int, int,int>(indexes, coords, colors,0);
         }
-/// <inheritdoc/>
 
-
-        public int[] CreatePointers(int indexLength)
+        /// <summary>
+        /// Создаёт presenter точечных объектов с одним цветом.
+        /// </summary>
+        public PointObjsPresenter(IReadOnlyList<IModelObject> pointObjects, Color color)
+            : this(pointObjects, new SingleColorObjsColors(color))
         {
-            var ptr = new int[indexLength];
-            var stride = 0;
-
-            foreach (var pointObject in pointObjects)
-            {
-                if (pointObject.ViewState)
-                {
-                    ptr[stride] = stride;
-                    stride++;
-                }
-            }
-
-            return ptr;
         }
-        /// <inheritdoc/>
 
-        public float[] CreateVertexes(int vertexLength, string vertexType)
+        /// <summary>
+        /// Создаёт presenter точечных объектов с заданным источником цветов.
+        /// </summary>
+        public PointObjsPresenter(IReadOnlyList<IModelObject> pointObjects, IObjsColors colors)
+            : base(pointObjects, colors)
         {
-            var vertexArray = new float[vertexLength];
-            var stride = 0;
+        }
 
+        /// <inheritdoc/>
+        public override PresenterType PresenterType { get; } = PresenterType.Point;
+
+        /// <inheritdoc/>
+        public override ViewMode ViewMode { get; set; } = ViewMode.Point;
+
+        /// <inheritdoc/>
+        public override Tuple<int, int, int, int> CreateIndexes()
+        {
+            var count = Objects.Count;
+            return new Tuple<int, int, int, int>(count, count * 3, count * 4, 0);
+        }
+
+        /// <inheritdoc/>
+        public override float[] CreateVertexes(int vertexLength, string vertexType)
+        {
+            var vertexes = new float[vertexLength];
+            var stride = 0;
             IPointObjsVertexCreator vertexCreator;
 
             if (vertexType == "цвет")
                 vertexCreator = new ColorPointObjsCreator();
             else if (vertexType == "координаты")
                 vertexCreator = new CoordsPointObjsCreator();
-            else vertexCreator = new NormalsPointObjsCreator();
+            else
+                vertexCreator = new NormalsPointObjsCreator();
 
+            var objectIndex = 0;
 
-            foreach (var pointObject in pointObjects)
+            foreach (var color in CreateColors())
             {
-                vertexCreator.Create(ref stride, vertexArray, pointObject);
+                if (objectIndex == Objects.Count)
+                    throw new InvalidOperationException("More colors were provided than objects.");
+
+                var pointObject = Objects[objectIndex];
+                vertexCreator.Create(ref stride, vertexes, pointObject, color);
+                objectIndex++;
             }
 
-            return vertexArray;
-        }
-/// <inheritdoc/>
+            if (objectIndex != Objects.Count)
+                throw new InvalidOperationException("A color was not provided for every object.");
 
-        public int Count()
-        {
-            return pointObjects.Count;
+            return vertexes;
         }
 
-/// <inheritdoc/>
-
-        public bool[] CreateEdgeFlags(int edgesLength)
+        /// <inheritdoc/>
+        public override bool[] CreateEdgeFlags(int edgesLength)
         {
-            return new bool[0];
-        }
-
-/// <inheritdoc/>
-
-        public IEnumerator<IModelObject> GetEnumerator()
-        {
-            foreach (var pointObject in pointObjects)
-            {
-                yield return pointObject;
-            }
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            throw new NotImplementedException();
-        }
-/// <inheritdoc/>
-
-        public void Clear()
-        {
-            pointObjects.Clear();
-        }
-
-/// <inheritdoc/>
-
-        public void ClearNotExisted()
-        {
-            var existObjs = pointObjects.Where(x => x.ExistState == true).ToList();
-            pointObjects.Clear();
-            pointObjects.AddRange(existObjs);
-        }
-
-        /// <summary>
-        /// Add
-        /// </summary>
-        /// <typeparam name="ISurfaceObject"></typeparam>
-        /// <param name="objs"></param>
-        public void Add(IEnumerable<IModelObject> objs)
-        {
-            pointObjects.AddRange(objs);
+            return Array.Empty<bool>();
         }
     }
 }

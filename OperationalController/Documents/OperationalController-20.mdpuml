@@ -1,0 +1,49 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title OperationalController-20 — Специализированные контракты контроллера
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+interface "IMeshCommands\nчасть 1/2" as T_OperationalController_OperationalController_IMeshCommands {
+  + ChangeMeshSetName(elemDim, oldName, newName) : void
+  + ChangeMeshSetOrder(elemDim, name, order) : void
+  + ClearEmptySet() : void
+  + ClearGeometryMesh() : void
+  + ClearGeometryMesh(dimension) : void
+  + ClearModelCollection(objType) : void
+  + ClearNotExistedModelData() : void
+  + ConnectByBeams(masterGroup, slaveGroup, radius, maxBeams) : void
+  + Create1DFrom2D() : bool
+  + Create2DForm3D() : bool
+  + CreateBoundaryEdges(linesNodes) : IEnumerable<ILineObject<Node>>
+  + CreateElement(setName, dim, nodeNumbers) : void
+  + CreateElementsSet(setName, dim) : void
+  + CreateNode(number, x, y, z) : void
+  + CreateQuadMeshOnPoligon(points, numberOfElem) : void
+  + DeleteModelObjects(objType, objNumbs) : void
+  + DeleteModelSet(objType, name) : void
+  + Extrude3DForm2D(vector, layers, elements) : void
+  + ExtrudeElement1DAlongCurve(curveTags, startPointTag, startNodeTag, step) : string
+  + ExtrudeElement3DAlongCurve(surfaceTag, curveTags, startPointTag, step, transfinite) : string
+  + ExtrudeElement3DAlongCurve(setName, curveTags, startPointTag, step, transfinite) : string
+  + ExtrudeElement3DRotate(surfaceTag, angle, originPoint, rotAxis, transfinite) : string
+  + GenerateMesh(elemDim) : void
+  + HideMesh(elemDim) : void
+}
+note right of T_OperationalController_OperationalController_IMeshCommands
+  Полный состав: [[OperationalController-20.mdpuml OperationalController-20]], [[OperationalController-21.mdpuml OperationalController-21]]
+end note
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

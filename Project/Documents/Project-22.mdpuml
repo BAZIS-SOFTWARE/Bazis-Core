@@ -1,0 +1,48 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title Project-22 — Функции, материалы и ввод/вывод
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "ResultData" as T_Project_Results_ResultsData_ResultData {
+  + Count : int [get]
+  + IsReadOnly : bool [get]
+  + this[int ind] : Result [get, set]
+  + Add(results) : void
+  + Clear() : void
+  + Contains(item) : bool
+  + CopyTo(array, arrayIndex) : void
+  + GetEnumerator() : IEnumerator<Result>
+  + GetResults() : IEnumerable<Result>
+  + IndexOf(item) : int
+  + Insert(index, item) : void
+  + Remove(item) : bool
+  + RemoveAt(index) : void
+  + RemoveByTaskKind(taskKind) : void
+  + RemoveRange(startInd, stopInd) : void
+  + RemoveRange(taskKind, firstTime, secondTime) : void
+  + ResultData()
+}
+class "ResultsComparer" as T_Project_Results_ResultsData_ResultsComparer {
+  + Equals(x, y) : bool
+  + GetHashCode(obj) : int
+}
+interface "IResultData\nProject-1" as T_Project_Project_Interfaces_IResultData <<reference>> [[Project-1.mdpuml Project-1]]
+T_Project_Results_ResultsData_ResultData -[hidden]down-> T_Project_Results_ResultsData_ResultsComparer
+T_Project_Results_ResultsData_ResultsComparer -[hidden]down-> T_Project_Project_Interfaces_IResultData
+T_Project_Results_ResultsData_ResultData ..|> T_Project_Project_Interfaces_IResultData
+legend bottom
+  Обзор: [[Project.mdpuml Project]]; сигнатуры: [[Project-22.md Project-22.md]].
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

@@ -1,0 +1,63 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title Project-11 — Параметры и физические поля
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "PhysicalSet" as T_Project_Project_TaskParameters_PhysicalSet {
+  + File : string [get, set]
+  + IsFileEmpty : bool [get]
+  + Name : PhysicalSetName [get, set]
+  + Source : PhysicalSetSource [get, set]
+  + Values : Dictionary<string, List<PhysicalField>> [get, set]
+}
+enum "PhysicalSetName" as T_Project_Project_TaskParameters_PhysicalSetName {
+    Chemical
+    Hydrodynamic
+    Mechanical
+    Thermal
+}
+enum "PhysicalSetSource" as T_Project_Project_TaskParameters_PhysicalSetSource {
+    ResultFile
+    Values
+}
+class "SolverSettings" as T_Project_Project_TaskParameters_SolverSettings {
+  + MatrixStorage : MatrixStorageKind [get]
+  + MaxIter : int [get, set]
+  + MaxRelaxation : float [get, set]
+  + Precision : float [get, set]
+  + Priority : string [get, set]
+  + Relaxation : float [get, set]
+  + Solver : LinearSolverKind [get]
+  + SolverSettings(solver, matrixStorage)
+}
+class "SolverSettingsIO" as T_Project_Project_TaskParameters_SolverSettingsIO <<static>> {
+  + ReadFromFile(path) : string
+  + WriteToFile(path, settings) : void
+}
+class "TermalConvergence" as T_Project_Project_TaskParameters_TermalConvergence {
+  + Is_Switched_Tm : bool [get, set]
+  + Tm : float [get, set]
+}
+T_Project_Project_TaskParameters_PhysicalSet -[hidden]down-> T_Project_Project_TaskParameters_PhysicalSetName
+T_Project_Project_TaskParameters_PhysicalSetName -[hidden]down-> T_Project_Project_TaskParameters_PhysicalSetSource
+T_Project_Project_TaskParameters_PhysicalSetSource -[hidden]down-> T_Project_Project_TaskParameters_SolverSettings
+T_Project_Project_TaskParameters_SolverSettings -[hidden]down-> T_Project_Project_TaskParameters_SolverSettingsIO
+T_Project_Project_TaskParameters_SolverSettingsIO -[hidden]down-> T_Project_Project_TaskParameters_TermalConvergence
+T_Project_Project_TaskParameters_PhysicalSet --> T_Project_Project_TaskParameters_PhysicalSetName : использует
+T_Project_Project_TaskParameters_PhysicalSet --> T_Project_Project_TaskParameters_PhysicalSetSource : использует
+legend bottom
+  Обзор: [[Project.mdpuml Project]]; сигнатуры: [[Project-11.md Project-11.md]].
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

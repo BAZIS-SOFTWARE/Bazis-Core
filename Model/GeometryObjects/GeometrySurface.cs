@@ -3,7 +3,6 @@ using Model.MeshObjects;
 using Model.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 
 namespace Model.GeometryObjects
@@ -26,8 +25,11 @@ namespace Model.GeometryObjects
 
             Number = number;
 
-            //Color = Color.FromArgb(224, 0, 177);
         }
+        /// <inheritdoc/>
+
+        public bool IsInner => false;
+
         /// <inheritdoc/>
 
         public int GetVertexIndex(GeometryPoint vertex)
@@ -61,9 +63,6 @@ namespace Model.GeometryObjects
         /// <inheritdoc/>
 
         public int NumberOfPoints { get { return points.Length; } }
-/// <inheritdoc/>
-
-        public bool ViewState { get; set; } = true;
 /// <inheritdoc/>
 
         public int Number { get; }

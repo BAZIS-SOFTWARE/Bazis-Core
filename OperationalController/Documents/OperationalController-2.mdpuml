@@ -1,0 +1,64 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title OperationalController-2 — Создание объектов, операции и презентаторы
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "CurveMeshingSettings" as T_OperationalController_OperationalController_CurveMeshingSettings {
+  + Coefficient : double [get]
+  + IsTransfinite : bool [get]
+  + MeshType : MeshType [get]
+  + NodesCount : int [get]
+  + CurveMeshingSettings(isTransfinite, nodesCount, meshType, coefficient)
+}
+class "GradientVolumeMeshingSettings" as T_OperationalController_OperationalController_GradientVolumeMeshingSettings {
+  + CoreElementSize : double [get]
+  + DistanceMaximum : double [get]
+  + Power : double [get]
+  + SurfaceElementSize : double [get]
+  + GradientVolumeMeshingSettings(power, distanceMaximum, surfaceElementSize, coreElementSize)
+}
+class "MeshSettings" as T_OperationalController_OperationalController_MeshSettings {
+  + Algorithm2D : MeshAlgorithm2D [get]
+  + Algorithm3D : MeshAlgorithm3D [get]
+  + MaximumSize : double [get]
+  + MinimumSize : double [get]
+  + SizeFactor : double [get]
+  + MeshSettings(minimumSize, maximumSize, algorithm2D, algorithm3D, sizeFactor)
+}
+class "ModelLoaderFactory" as T_OperationalController_OperationalController_ModelLoaderFactory <<internal>> {
+  + Create(extension) : IModelLoader
+}
+enum "PresenterType" as T_OperationalController_OperationalController_PresenterType {
+    Line
+    Point
+    Surface
+}
+class "SurfaceMeshingSettings" as T_OperationalController_OperationalController_SurfaceMeshingSettings {
+  + Arrangement : Arrangement [get]
+  + BoundaryPointNumbers : IReadOnlyList<int> [get]
+  + CornerPointNumbers : IReadOnlyList<int> [get]
+  + EmbeddedCurveNumbers : IReadOnlyList<int> [get]
+  + IsRecombined : bool [get]
+  + IsTransfinite : bool [get]
+  + SurfaceMeshingSettings(isTransfinite, cornerPointNumbers, arrangement, isRecombined, embeddedCurveNumbers, boundaryPointNumbers)
+}
+T_OperationalController_OperationalController_CurveMeshingSettings -[hidden]down-> T_OperationalController_OperationalController_GradientVolumeMeshingSettings
+T_OperationalController_OperationalController_GradientVolumeMeshingSettings -[hidden]down-> T_OperationalController_OperationalController_MeshSettings
+T_OperationalController_OperationalController_MeshSettings -[hidden]down-> T_OperationalController_OperationalController_ModelLoaderFactory
+T_OperationalController_OperationalController_ModelLoaderFactory -[hidden]down-> T_OperationalController_OperationalController_PresenterType
+T_OperationalController_OperationalController_PresenterType -[hidden]down-> T_OperationalController_OperationalController_SurfaceMeshingSettings
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

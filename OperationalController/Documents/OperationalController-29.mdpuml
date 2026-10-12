@@ -1,0 +1,57 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title OperationalController-29 — Специализированные контракты контроллера
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+interface "IGmshController\nчасть 2/2" as T_OperationalController_OperationalController_GmshController_IGmshController {
+  + SetRecombineSurface(tag) : void
+  + SetSize(tag, meshDize) : void
+  + SetTransfiniteCurve(tag, numNodes, meshType, coef) : void
+  + SetTransfiniteSurface(tag, arrangement, cornerTags) : void
+  + SetTransfiniteVolume(tag, cornerTags) : void
+  + Unload() : void
+}
+note right of T_OperationalController_OperationalController_GmshController_IGmshController
+  Полный состав: [[OperationalController-28.mdpuml OperationalController-28]], [[OperationalController-29.mdpuml OperationalController-29]]
+end note
+interface "IExtrusionStrategy<TResult>" as T_OperationalController_OperationalController_MeshObjsCreator_Extrude_IExtrusionStrategy_1 {
+  + AddElement(extruder, correctMatrix, outIndex, inIndex) : void
+  + GetResult() : TResult
+  + Initialize(extruder, extrudeElements) : void
+  + PostProcess(extruder, rotateStatus, curveIndex, lastCurveIndex, lastCorrectMatrix) : void
+  + PreProcess(extruder, firstMatrix) : void
+}
+interface "INormalCalculator" as T_OperationalController_OperationalController_MeshObjsUtility_INormalCalculator {
+  + CalcElemsNormals(elements) : IEnumerable<Curve>
+  + CalcNodeNormals(elements) : Dictionary<int, Point3D>
+}
+interface "IObjsColors" as T_OperationalController_OperationalController_ModelScenePresentator_GlObjsPresenters_IObjsColors {
+  + Type : ObjsColorsType [get]
+  + CreateColors(objectsCount) : IEnumerable<Color>
+}
+interface "ILineObjsVertexCreator<T>" as T_OperationalController_OperationalController_ModelScenePresentator_Interfaces_ILineObjsVertexCreator_1 {
+  + Create(ref stride, vertexAtributes, nodeObject, color) : void
+}
+interface "IPointObjsVertexCreator" as T_OperationalController_OperationalController_ModelScenePresentator_Interfaces_IPointObjsVertexCreator {
+  + Create(ref stride, vertexAtributes, pointObject, color) : void
+}
+T_OperationalController_OperationalController_GmshController_IGmshController -[hidden]down-> T_OperationalController_OperationalController_MeshObjsCreator_Extrude_IExtrusionStrategy_1
+T_OperationalController_OperationalController_MeshObjsCreator_Extrude_IExtrusionStrategy_1 -[hidden]down-> T_OperationalController_OperationalController_MeshObjsUtility_INormalCalculator
+T_OperationalController_OperationalController_MeshObjsUtility_INormalCalculator -[hidden]down-> T_OperationalController_OperationalController_ModelScenePresentator_GlObjsPresenters_IObjsColors
+T_OperationalController_OperationalController_ModelScenePresentator_GlObjsPresenters_IObjsColors -[hidden]down-> T_OperationalController_OperationalController_ModelScenePresentator_Interfaces_ILineObjsVertexCreator_1
+T_OperationalController_OperationalController_ModelScenePresentator_Interfaces_ILineObjsVertexCreator_1 -[hidden]down-> T_OperationalController_OperationalController_ModelScenePresentator_Interfaces_IPointObjsVertexCreator
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

@@ -142,11 +142,6 @@ namespace Model.Interfaces
         /// <returns></returns>
         int GetMaxNumber(ObjType objType);
         /// <summary>
-        /// SetBackColor
-        /// </summary>
-        /// <param name="objType"></param>
-        void SetBackColor(ObjType objType);
-        /// <summary>
         /// GetMaxElementNumber
         /// </summary>
         /// <returns></returns>

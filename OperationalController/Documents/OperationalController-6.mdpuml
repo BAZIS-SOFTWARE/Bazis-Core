@@ -1,0 +1,61 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title OperationalController-6 — Представление и сообщения об изменениях
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "ProjectChange" as T_OperationalController_OperationalController_ProjectChange {
+  + ChangeKind : ProjectChangeKind [get]
+  + Property : ProjectProperty? [get]
+  + ProjectChange(changeKind, property)
+}
+enum "ProjectChangeKind" as T_OperationalController_OperationalController_ProjectChangeKind {
+    Closed
+    Created
+    Loaded
+    PropertyChanged
+}
+class "ProjectMessageEventArgs" as T_OperationalController_OperationalController_ProjectMessageEventArgs {
+  + Change : ChangeMessage [get]
+  + ProjectMessageEventArgs(change)
+}
+enum "ProjectProperty" as T_OperationalController_OperationalController_ProjectProperty {
+    FilePath
+    FunctionsDB
+    MaterialsDB
+    Name
+    TaskKind
+    TaskType
+}
+class "SetStyle" as T_OperationalController_OperationalController_SetStyle {
+  + Color : Color? [get, set]
+  + ViewMode : ViewMode? [get, set]
+}
+class "UpdateScope" as T_OperationalController_OperationalController_UpdateScope <<internal>> {
+  + Dispose() : void
+  + UpdateScope(view)
+}
+abstract class "ChangeMessage" as T_OperationalController_OperationalController_ChangeMessage <<reference>>
+T_OperationalController_OperationalController_ProjectChange -[hidden]down-> T_OperationalController_OperationalController_ProjectChangeKind
+T_OperationalController_OperationalController_ProjectChangeKind -[hidden]down-> T_OperationalController_OperationalController_ProjectMessageEventArgs
+T_OperationalController_OperationalController_ProjectMessageEventArgs -[hidden]down-> T_OperationalController_OperationalController_ProjectProperty
+T_OperationalController_OperationalController_ProjectProperty -[hidden]down-> T_OperationalController_OperationalController_SetStyle
+T_OperationalController_OperationalController_SetStyle -[hidden]down-> T_OperationalController_OperationalController_UpdateScope
+T_OperationalController_OperationalController_UpdateScope -[hidden]down-> T_OperationalController_OperationalController_ChangeMessage
+T_OperationalController_OperationalController_ProjectChange --> T_OperationalController_OperationalController_ProjectChangeKind : использует
+T_OperationalController_OperationalController_ProjectChange --> T_OperationalController_OperationalController_ProjectProperty : использует
+T_OperationalController_OperationalController_ProjectChange --|> T_OperationalController_OperationalController_ChangeMessage
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

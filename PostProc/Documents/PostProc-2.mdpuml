@@ -1,0 +1,54 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title PostProc-2 — Построение полей и шкала результатов
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+interface "IPostProcController" as T_PostProc_PostProc_IPostProcController {
+  + GridExporter : IGridExporter [get]
+  + ResultsExporter : IResultsExporter [get]
+  + ResultsFieldsCreator : IResultsFieldsCreator [get]
+  + ResultsMerger : IResultsMerger [get]
+}
+interface "IResultsMerger" as T_PostProc_PostProc_IResultsMerger {
+  + Merge(interfaceNodes, resultDescr, results) : void
+}
+interface "IGradientsCreator<T>" as T_PostProc_PostProc_ScenePresenter_Interfaces_IGradientsCreator_1 {
+  + CreateGradientObjects(itemsValues, itemsColors, nodesCoords, nodesResults) : IEnumerable<T>
+}
+interface "IResultsFieldsCreator" as T_PostProc_PostProc_ScenePresenter_Interfaces_IResultsFieldsCreator {
+  + ScaleFactor : int [get, set]
+  + CreateSurfaceObjects(result, objsType, resDescr, surfaceObjects) : IEnumerable<ResultFigure>
+  + SetScaleItems(rangesValues) : void
+}
+interface "IResultsFieldsCreator" as T_PostProc_ProjectInterfaces_Results_IResultsFieldsCreator {
+  + ScaleFactor : int [get, set]
+  + CreateSurfaceObjects(result, objsType, resDescr, surfaceObjects) : IEnumerable<IResultFigure2D>
+  + SetScaleItems(rangesColors, rangesValues) : void
+}
+class "ItemRange" as T_PostProc_PostProc_ItemRange {
+  + Color : Color [get, set]
+  + Max : float [get, set]
+  + Min : float [get, set]
+  + ToString() : string
+}
+T_PostProc_PostProc_IPostProcController -[hidden]down-> T_PostProc_PostProc_IResultsMerger
+T_PostProc_PostProc_IResultsMerger -[hidden]down-> T_PostProc_PostProc_ScenePresenter_Interfaces_IGradientsCreator_1
+T_PostProc_PostProc_ScenePresenter_Interfaces_IGradientsCreator_1 -[hidden]down-> T_PostProc_PostProc_ScenePresenter_Interfaces_IResultsFieldsCreator
+T_PostProc_PostProc_ScenePresenter_Interfaces_IResultsFieldsCreator -[hidden]down-> T_PostProc_ProjectInterfaces_Results_IResultsFieldsCreator
+T_PostProc_ProjectInterfaces_Results_IResultsFieldsCreator -[hidden]down-> T_PostProc_PostProc_ItemRange
+T_PostProc_PostProc_IPostProcController --> T_PostProc_PostProc_IResultsMerger : использует
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

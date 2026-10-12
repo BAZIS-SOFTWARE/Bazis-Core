@@ -1,0 +1,69 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title GmshApi-5 — Жизненный цикл и CAD API
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "Model\nчасть 2/2" as T_GmshApi_GmshApi_Model {
+  + IsInside(dim, tag, coord, parametric) : int
+  + List() : string[]
+  + Model()
+  + Remove() : void
+  + RemoveAttribute(name) : void
+  + RemoveEntities(dimTags, recursive) : void
+  + RemoveEntityName(name) : void
+  + ReparametrizeOnSurface(dim, tag, parametricCoord, surfaceTag, which) : double[]
+  + SetAttribute(name, values) : void
+  + SetCoordinates(tag, x, y, z) : void
+  + SetCurrent(name) : void
+  + SetEntityName(dim, tag, name) : void
+  + SetFileName(fileName) : void
+}
+note right of T_GmshApi_GmshApi_Model
+  Полный состав: GmshApi-4, GmshApi-5
+end note
+class "Occ\nчасть 1/2" as T_GmshApi_GmshApi_Occ {
+  + AddBSplineSurface(pointTags, numPointsU, tag, degreeU, degreeV, weights, knotsU, knotsV, multiplicitiesU, multiplicitiesV, wireTags, wire3D) : int
+  + AddBezier(pointTags, tag) : int
+  + AddBox(x, y, z, dx, dy, dz, tag) : int
+  + AddChamfer(volumeTags, curveTags, surfaceTags, distances, removeVolume) : int[]
+  + AddCircle(x, y, z, r, tag, angle1, angle2, zAxis, xAxis) : int
+  + AddCircleArc(startTag, centerTag, endTag, tag) : int
+  + AddCurveLoop(curveTags, tag) : int
+  + AddLine(startTag, endTag, tag) : int
+  + AddPipe(dimTags, wireTag, trihedron) : int[]
+  + AddPlaneSurface(wireTags, tag) : int
+  + AddPoint(x, y, z, meshSize, tag) : int
+  + AddRectangle(x, y, z, dx, dy, tag, roundedRadius) : int
+  + AddSpline(pointTags, tag, tangents) : int
+  + AddSurfaceFilling(wireTag, tag, pointTags, degree, numPointsOnCurves, numIter, anisotropic, tol2d, tol3d, tolAng, tolCurv, maxDegree, maxSegments) : int
+  + AddThruSections(wireTags, tag, makeSolid, makeRuled, maxDegree, continuity, parametrization, smoothing) : int[]
+  + AddTrimmedSurface(surfaceTag, wiretTags, wire3D, tag) : int
+  + AddWedge(x, y, z, dx, dy, dz, tag, ltx, zAxis) : int
+  + AddWire(curveTags, tag, checkClosed) : int
+  + Fragment(objectDimTags, toolDimTags, tag, removeObject, removeTool) : Tuple<int[],int[][]>
+  + Fuse(objectDimTags, toolDimTags, tag, removeObject, removeTool) : Tuple<int[], int[][]>
+  + GetCenterOfMass(dim, tag) : Tuple<double, double, double>
+  + GetCurveLoops(surfaceTag) : Tuple<int[], int[][]>
+  + GetEntities(dim) : int[]
+  + GetMass(dim, tag) : double
+}
+note right of T_GmshApi_GmshApi_Occ
+  Полный состав: GmshApi-5, GmshApi-6
+end note
+T_GmshApi_GmshApi_Model -[hidden]down-> T_GmshApi_GmshApi_Occ
+T_GmshApi_GmshApi_Model --> T_GmshApi_GmshApi_Occ : использует
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

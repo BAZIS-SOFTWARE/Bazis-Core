@@ -1,0 +1,66 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title Geometry-5 — Геометрические построения и операции
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "RectangleBox" as T_Geometry_Geometry_RectangleBox {
+  + Bottom : int [get, set]
+  + Left : int [get, set]
+  + Right : int [get, set]
+  + Top : int [get, set]
+  + GetPoints() : Point2D[]
+  + IsInnerOther(other) : bool
+  + IsIntersectWithOther(other) : bool
+  + IsPointInside(point) : bool
+  + IsPointsInside(points) : bool
+  + RectangleBox(points)
+  + RectangleBox(left, right, bottom, top)
+}
+class "Segment2D" as T_Geometry_Geometry_Segment2D {
+  + P1 : Point2D [get]
+  + P2 : Point2D [get]
+  + GetIntersection(other) : Point2D
+  + GetLength() : float
+  + GetOrientationSign(p0) : int
+  + GetPointOnLine(subLineLength) : Point2D
+  + HasIntersectedPoint(other) : bool
+  + IsPointBelongLine(point) : bool
+  + IsPointBelongSegment(point, delta) : bool
+  + Segment2D(p1, p2)
+  + ToString() : string
+}
+class "Segment3D" as T_Geometry_Geometry_Segment3D {
+  + P0 : Point3D [get]
+  + P1 : Point3D [get]
+  + GetDirectVector() : Point3D
+  + GetLength() : float
+  + GetPlaneIntersection(ref state, plane) : Point3D
+  + GetPointOnLine(subLineLength) : Point3D
+  + Segment3D(p0, p1)
+}
+class "WarningAttribute" as T_Geometry_Geometry_Attribute_WarningAttribute {
+  + Message : string [get]
+  + WarningAttribute(message)
+}
+class "EnumerableExtensions" as T_Geometry_Geometry_Exteisions_EnumerableExtensions <<static>> {
+  + Bigrams<T>(items, returFirstObj) : IEnumerable<Tuple<T, T>>
+}
+T_Geometry_Geometry_RectangleBox -[hidden]down-> T_Geometry_Geometry_Segment2D
+T_Geometry_Geometry_Segment2D -[hidden]down-> T_Geometry_Geometry_Segment3D
+T_Geometry_Geometry_Segment3D -[hidden]down-> T_Geometry_Geometry_Attribute_WarningAttribute
+T_Geometry_Geometry_Attribute_WarningAttribute -[hidden]down-> T_Geometry_Geometry_Exteisions_EnumerableExtensions
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

@@ -1,5 +1,6 @@
 ﻿using Model.Interfaces;
 using OperationalController.ModelScenePresentator.Interfaces;
+using System;
 using System.Drawing;
 
 namespace OperationalController.ModelScenePresentator.GlObjsVertexCreators
@@ -7,13 +8,8 @@ namespace OperationalController.ModelScenePresentator.GlObjsVertexCreators
     public class ColorLineObjsCreator<T> : ILineObjsVertexCreator<T>
         where T : IPoint
     {
-        public void Create(ref int stride, float[] vertexAtributes, IVertexObject<T> nodeObject)
+        public void Create(ref int stride, float[] vertexAtributes, IVertexObject<T> nodeObject, Color color)
         {
-            //Цвет черный с alpha 0.0 - установим alpha в 1.0f
-            /*var color = nodeObject.MasterColor;*/
-            var color = Color.FromArgb(nodeObject.Color.A, nodeObject.Color.R, nodeObject.Color.G,
-                                                                      nodeObject.Color.B);
-
             for (int k = 0; k < nodeObject.NumberOfPoints; k++)
             {
                 vertexAtributes[stride + 4 * k + 0] = color.R / 255.0f;

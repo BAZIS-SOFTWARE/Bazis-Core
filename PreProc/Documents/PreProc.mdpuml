@@ -1,0 +1,53 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+allowmixing
+title PreProc — обзор классов и расположение подробностей
+caption Обзор; полный состав членов — на нумерованных поддиаграммах
+interface "IPreProc" as T_PreProc_PreProc_Interfaces_IPreProc <<details>>
+note right of T_PreProc_PreProc_Interfaces_IPreProc
+  PreProc-1
+end note
+class "PreProc" as T_PreProc_PreProc_PreProc <<details>>
+note right of T_PreProc_PreProc_PreProc
+  PreProc-1
+end note
+class "ProcessProperty" as T_PreProc_PreProc_ProcessProperty <<struct>> <<details>>
+note right of T_PreProc_PreProc_ProcessProperty
+  PreProc-1
+end note
+enum "ProcessType" as T_PreProc_PreProc_Interfaces_ProcessType <<details>>
+note right of T_PreProc_PreProc_Interfaces_ProcessType
+  PreProc-1
+end note
+enum "TaskStatus" as T_PreProc_PreProc_TaskStatus <<details>>
+note right of T_PreProc_PreProc_TaskStatus
+  PreProc-1
+end note
+class "DraftException" as T_PreProc_PreProc_DraftException <<details>>
+note right of T_PreProc_PreProc_DraftException
+  PreProc-1
+end note
+T_PreProc_PreProc_PreProc --> T_PreProc_PreProc_ProcessProperty : использует
+T_PreProc_PreProc_PreProc ..|> T_PreProc_PreProc_Interfaces_IPreProc
+T_PreProc_PreProc_ProcessProperty --> T_PreProc_PreProc_Interfaces_ProcessType : использует
+rectangle "Подготовка расчётных инструкций" as Area_1 <<область>>
+note right of Area_1
+  PreProc-1.mdpuml
+end note
+T_PreProc_PreProc_Interfaces_IPreProc -[hidden]down-> T_PreProc_PreProc_PreProc
+T_PreProc_PreProc_PreProc -[hidden]down-> T_PreProc_PreProc_ProcessProperty
+T_PreProc_PreProc_ProcessProperty -[hidden]down-> T_PreProc_PreProc_Interfaces_ProcessType
+T_PreProc_PreProc_Interfaces_ProcessType -[hidden]down-> T_PreProc_PreProc_TaskStatus
+T_PreProc_PreProc_TaskStatus -[hidden]down-> T_PreProc_PreProc_DraftException
+T_PreProc_PreProc_DraftException -[hidden]down-> Area_1
+@enduml

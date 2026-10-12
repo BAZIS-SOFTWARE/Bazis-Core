@@ -1,0 +1,62 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title Project-6 — Проект, задача и граничные условия
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "GeneralData" as T_Project_Project_GeneralData {
+}
+class "ProjectData" as T_Project_Project_ProjectData {
+  + ProjectData(projectFile)
+}
+enum "DataKind" as T_Project_Project_Interfaces_Tasks_DataKind {
+    Закрепление
+    Материал
+    Нагрев
+    Нагрузка
+    Среда
+}
+enum "Direction" as T_Project_Project_Interfaces_Tasks_Direction {
+    None
+    X
+    Y
+    Z
+}
+enum "TaskKind" as T_Project_Project_Interfaces_Tasks_TaskKind {
+    механическая
+    термическая
+    химическая
+}
+enum "TaskType" as T_Project_Project_Interfaces_Tasks_TaskType {
+    AxiPlain
+    Linear
+    Plain
+    Volume
+    Volume_mixed
+}
+interface "IGeneralData\nProject-1" as T_Project_Project_Interfaces_IGeneralData <<reference>> [[Project-1.mdpuml Project-1]]
+interface "IProjectData\nProject-1" as T_Project_Project_Interfaces_IProjectData <<reference>> [[Project-1.mdpuml Project-1]]
+T_Project_Project_GeneralData -[hidden]down-> T_Project_Project_ProjectData
+T_Project_Project_ProjectData -[hidden]down-> T_Project_Project_Interfaces_Tasks_DataKind
+T_Project_Project_Interfaces_Tasks_DataKind -[hidden]down-> T_Project_Project_Interfaces_Tasks_Direction
+T_Project_Project_Interfaces_Tasks_Direction -[hidden]down-> T_Project_Project_Interfaces_Tasks_TaskKind
+T_Project_Project_Interfaces_Tasks_TaskKind -[hidden]down-> T_Project_Project_Interfaces_Tasks_TaskType
+T_Project_Project_Interfaces_Tasks_TaskType -[hidden]down-> T_Project_Project_Interfaces_IGeneralData
+T_Project_Project_Interfaces_IGeneralData -[hidden]down-> T_Project_Project_Interfaces_IProjectData
+T_Project_Project_GeneralData ..|> T_Project_Project_Interfaces_IGeneralData
+T_Project_Project_ProjectData ..|> T_Project_Project_Interfaces_IProjectData
+legend bottom
+  Обзор: [[Project.mdpuml Project]]; сигнатуры: [[Project-6.md Project-6.md]].
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

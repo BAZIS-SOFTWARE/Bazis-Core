@@ -1,0 +1,68 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title Project-14 — Функции, материалы и ввод/вывод
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "SaveProjectTextFormat" as T_Project_Project_IO_SaveProjectTextFormat {
+}
+class "DataTableEx" as T_Project_Project_Results_DataTableEx <<static>> {
+  + GetTableData(table, objNumber, resDescr) : float
+  + GetTableSchema(table) : string[]
+}
+class "Result" as T_Project_Project_Results_Result {
+  + Data : DataSet [get, private set]
+  + TaskKind : TaskKind [get]
+  + Time : float [get]
+  + AddDataTable(dbDataTable) : void
+  + GetValue(tableInd, objNumber, resDescr) : float
+  + GetValue(tableName, objNumber, resDescr) : float
+  + Result(dataSet, time, taskKind)
+  + Result(time, taskKind)
+  + ToString() : string
+}
+class "ResultDataBase" as T_Project_Project_Results_ResultDataBase {
+  + AddData(queStr) : int
+  + ClearTable(tableName) : void
+  + CloseConnection() : void
+  + CreateAddCommand(table, columns, values) : string
+  + CreateTables(tableName, columnsName) : void
+  + DeleteTable(tableName) : void
+  + GetResults(table, column, filter) : DataTable
+  + GetTableShema(tableName) : IEnumerable<string>
+  + OpenConnection() : void
+  + ResultDataBase(fullName)
+}
+class "CSVToDataTableConverter" as T_Project_Project_Results_IO_CSVToDataTableConverter {
+  + ConvertCSVtoDataTable(strFilePath) : DataTable
+}
+class "LoadEventArgs" as T_Project_Project_Results_IO_LoadEventArgs <<archive>> {
+  + LoadEventArgs(message)
+}
+interface "IProjectSaver\nProject-3" as T_Project_Project_Interfaces_IO_IProjectSaver <<reference>> [[Project-3.mdpuml Project-3]]
+interface "ILoadEventArgs\nProject-3" as T_Project_Project_Interfaces_IO_ILoadEventArgs <<reference, archive>> [[Project-3.mdpuml Project-3]]
+T_Project_Project_IO_SaveProjectTextFormat -[hidden]down-> T_Project_Project_Results_DataTableEx
+T_Project_Project_Results_DataTableEx -[hidden]down-> T_Project_Project_Results_Result
+T_Project_Project_Results_Result -[hidden]down-> T_Project_Project_Results_ResultDataBase
+T_Project_Project_Results_ResultDataBase -[hidden]down-> T_Project_Project_Results_IO_CSVToDataTableConverter
+T_Project_Project_Results_IO_CSVToDataTableConverter -[hidden]down-> T_Project_Project_Results_IO_LoadEventArgs
+T_Project_Project_Results_IO_LoadEventArgs -[hidden]down-> T_Project_Project_Interfaces_IO_IProjectSaver
+T_Project_Project_Interfaces_IO_IProjectSaver -[hidden]down-> T_Project_Project_Interfaces_IO_ILoadEventArgs
+T_Project_Project_IO_SaveProjectTextFormat ..|> T_Project_Project_Interfaces_IO_IProjectSaver
+T_Project_Project_Results_IO_LoadEventArgs ..|> T_Project_Project_Interfaces_IO_ILoadEventArgs
+legend bottom
+  Обзор: [[Project.mdpuml Project]]; сигнатуры: [[Project-14.md Project-14.md]].
+  Project/Results и ILoadEventArgs — архивные исходники вне сборки Project.
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

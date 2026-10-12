@@ -28,9 +28,6 @@ namespace OperationalController
         Dictionary<int, Point3D> CalcNodeNormals();
         IEnumerable<Curve> CalcElemsNormals(int elemDim);
 
-        [Obsolete("По возможности не использовать. Предпочтительнее использовать перегрузку с ISetInfo.")]
-        IObjsPresenter CreateModelObjectsPresentor(ObjType objType);
-
         IObjsPresenter CreateModelObjectsPresentor(ISetInfo setInfo);
         IEnumerable<ISetInfo> GetModelSetsInfo(ObjType objType);
         IEnumerable<ISetInfo> GetAllModelSetsInfo();

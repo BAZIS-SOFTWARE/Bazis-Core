@@ -1,0 +1,49 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title GmshApi-4 — Жизненный цикл и CAD API
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "Model\nчасть 1/2" as T_GmshApi_GmshApi_Model {
+  + Geo : Geo [get, private set]
+  + Mesh : Mesh [get, private set]
+  + Occ : Occ [get, private set]
+  + Add(name) : void
+  + AddDiscreteEntity(dim, tag, boundary) : int
+  + GetAdjacencies(dim, tag) : Tuple<int[], int[]>
+  + GetAttribute(name) : string[]
+  + GetAttributeNames() : string[]
+  + GetBoundary(dimTags, combined, oriented, recursive) : int[]
+  + GetBoundingBox(dim, tag) : Tuple<double, double, double, double, double, double>
+  + GetClosestPoint(dim, tag, coord) : Tuple<double[], double[]>
+  + GetCurrent() : string
+  + GetCurvature(dim, tag, parametricCoord) : double[]
+  + GetDerivative(dim, tag, parametricCoord) : double[]
+  + GetDimension() : int
+  + GetEntities(dim) : int[]
+  + GetEntityName(dim, tag) : string
+  + GetFileName() : string
+  + GetNormal(tag, parametricCoord) : double[]
+  + GetParametrization(dim, tag, coord) : double[]
+  + GetParametrizationBounds(dim, tag) : Tuple<double[], double[]>
+  + GetSecondDerivative(dim, tag, parametricCoord) : double[]
+  + GetType(dim, tag) : string
+  + GetValue(dim, tag, parametricCoord) : double[]
+}
+note right of T_GmshApi_GmshApi_Model
+  Полный состав: GmshApi-4, GmshApi-5
+end note
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

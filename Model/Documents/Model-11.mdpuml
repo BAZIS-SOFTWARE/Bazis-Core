@@ -1,0 +1,51 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title Model-11 — Загрузка и сохранение
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "LoadModelFromCDBTextFile" as T_Model_Model_IO_LoadModelFromCDBTextFile {
+}
+class "LoadModelFromINPTextFile" as T_Model_Model_IO_LoadModelFromINPTextFile {
+}
+class "LoadModelFromINPTextFile_v2" as T_Model_Model_IO_LoadModelFromINPTextFile_v2 {
+}
+class "LoadModelFromSalomeFile" as T_Model_Model_IO_LoadModelFromSalomeFile {
+}
+class "ProgressTextReader" as T_Model_Model_IO_ProgressTextReader {
+  + ProgressTextReader(path, progress)
+  + ReadLine() : string
+}
+class "SaveModelToASCIITextFile" as T_Model_Model_IO_SaveModelToASCIITextFile {
+}
+interface "IModelLoader\nModel-2" as T_Model_Model_Interfaces_IModelLoader <<reference>> [[Model-2.mdpuml Model-2]]
+interface "IModelSaver\nModel-2" as T_Model_Model_Interfaces_IModelSaver <<reference>> [[Model-2.mdpuml Model-2]]
+T_Model_Model_IO_LoadModelFromCDBTextFile -[hidden]down-> T_Model_Model_IO_LoadModelFromINPTextFile
+T_Model_Model_IO_LoadModelFromINPTextFile -[hidden]down-> T_Model_Model_IO_LoadModelFromINPTextFile_v2
+T_Model_Model_IO_LoadModelFromINPTextFile_v2 -[hidden]down-> T_Model_Model_IO_LoadModelFromSalomeFile
+T_Model_Model_IO_LoadModelFromSalomeFile -[hidden]down-> T_Model_Model_IO_ProgressTextReader
+T_Model_Model_IO_ProgressTextReader -[hidden]down-> T_Model_Model_IO_SaveModelToASCIITextFile
+T_Model_Model_IO_SaveModelToASCIITextFile -[hidden]down-> T_Model_Model_Interfaces_IModelLoader
+T_Model_Model_Interfaces_IModelLoader -[hidden]down-> T_Model_Model_Interfaces_IModelSaver
+T_Model_Model_IO_LoadModelFromCDBTextFile ..|> T_Model_Model_Interfaces_IModelLoader
+T_Model_Model_IO_LoadModelFromINPTextFile ..|> T_Model_Model_Interfaces_IModelLoader
+T_Model_Model_IO_LoadModelFromINPTextFile_v2 ..|> T_Model_Model_Interfaces_IModelLoader
+T_Model_Model_IO_LoadModelFromSalomeFile ..|> T_Model_Model_Interfaces_IModelLoader
+T_Model_Model_IO_SaveModelToASCIITextFile ..|> T_Model_Model_Interfaces_IModelSaver
+legend bottom
+  Обзор: [[Model.mdpuml Model]]; сигнатуры: [[Model-11.md Model-11.md]].
+  reference — адрес подробностей указан в заголовке типа.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+  Связанные типы в контрактах и сигнатурах:
+  [[Model-2.mdpuml Model-2]]: IModelLoader, IModelSaver.
+endlegend
+@enduml

@@ -1,0 +1,77 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title Model-18 — Модель, наборы и группы
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "NumberGroupComparer" as T_Model_Model_GroupsData_NumberGroupComparer {
+  + Equals(x, y) : bool
+  + GetHashCode(obj) : int
+}
+class "StringNumberGroupComparer" as T_Model_Model_GroupsData_StringNumberGroupComparer {
+  + Compare(x, y) : int
+}
+class "WarningAttribute" as T_Model_Model_Interfaces_Attributes_WarningAttribute {
+  + Message : string [get]
+  + WarningAttribute(message)
+}
+class "ObjectsCollection<T>" as T_Model_Model_ObjectsCollections_ObjectsCollection_1 {
+  + this[int key] : ObjectsSet<T> [get]
+  + this[string key] : ObjectsSet<T> [get]
+  + ToString() : string
+}
+class "ObjectsSet<T>" as T_Model_Model_ObjectsCollections_ObjectsSet_1 {
+  + Count : int [get]
+  + IsReadOnly : bool [get]
+  + Keys : ICollection<int> [get]
+  + Values : ICollection<T> [get]
+  + this[int key] : T [get, set]
+  + Add(item) : void
+  + Add(key, value) : void
+  + Clear() : void
+  + Contains(item) : bool
+  + ContainsKey(key) : bool
+  + CopyTo(array, arrayIndex) : void
+  + GetEnumerator() : IEnumerator<KeyValuePair<int, T>>
+  + ObjectsSet(name)
+  + Remove(item) : bool
+  + Remove(key) : bool
+  + Renumber(ref v) : bool
+  + ToString() : string
+  + TryGetValue(key, out value) : bool
+}
+class "SurfacesSet" as T_Model_Model_ObjectsCollections_SurfacesSet {
+  + SurfacesSet(name)
+}
+interface "IObjectsCollection<T>\nModel-16" as T_Model_Model_Interfaces_ObjectsCollections_IObjectsCollection_1 <<reference>> [[Model-16.mdpuml Model-16]]
+interface "IObjectsSet<T>\nModel-16" as T_Model_Model_Interfaces_ObjectsCollections_IObjectsSet_1 <<reference>> [[Model-16.mdpuml Model-16]]
+T_Model_Model_GroupsData_NumberGroupComparer -[hidden]down-> T_Model_Model_GroupsData_StringNumberGroupComparer
+T_Model_Model_GroupsData_StringNumberGroupComparer -[hidden]down-> T_Model_Model_Interfaces_Attributes_WarningAttribute
+T_Model_Model_Interfaces_Attributes_WarningAttribute -[hidden]down-> T_Model_Model_ObjectsCollections_ObjectsCollection_1
+T_Model_Model_ObjectsCollections_ObjectsCollection_1 -[hidden]down-> T_Model_Model_ObjectsCollections_ObjectsSet_1
+T_Model_Model_ObjectsCollections_ObjectsSet_1 -[hidden]down-> T_Model_Model_ObjectsCollections_SurfacesSet
+T_Model_Model_ObjectsCollections_SurfacesSet -[hidden]down-> T_Model_Model_Interfaces_ObjectsCollections_IObjectsCollection_1
+T_Model_Model_Interfaces_ObjectsCollections_IObjectsCollection_1 -[hidden]down-> T_Model_Model_Interfaces_ObjectsCollections_IObjectsSet_1
+T_Model_Model_ObjectsCollections_ObjectsCollection_1 --> T_Model_Model_ObjectsCollections_ObjectsSet_1 : использует
+T_Model_Model_ObjectsCollections_ObjectsCollection_1 ..|> T_Model_Model_Interfaces_ObjectsCollections_IObjectsCollection_1
+T_Model_Model_ObjectsCollections_ObjectsSet_1 ..|> T_Model_Model_Interfaces_ObjectsCollections_IObjectsSet_1
+T_Model_Model_ObjectsCollections_SurfacesSet --|> T_Model_Model_ObjectsCollections_ObjectsSet_1
+legend bottom
+  Обзор: [[Model.mdpuml Model]]; сигнатуры: [[Model-18.md Model-18.md]].
+  reference — адрес подробностей указан в заголовке типа.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+  Связанные типы в контрактах и сигнатурах:
+  [[Model-3.mdpuml Model-3]]: IGroup.
+  [[Model-5.mdpuml Model-5]]: SurfaceFigure.
+  [[Model-16.mdpuml Model-16]]: IObjectsCollection<T>, IObjectsSet<T>, ISetInfo.
+endlegend
+@enduml

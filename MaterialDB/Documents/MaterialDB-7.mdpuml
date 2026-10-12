@@ -1,0 +1,30 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title MaterialDB-7 — Свойства, фазовый состав и функции
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "ProcessData" as T_MaterialDB_MaterialDB_MaterialData_MetallurgicalData_ProcessData {
+  + GetEnumerator() : IEnumerator<Process<float>>
+  + ProcessData(reactions, reacTypes)
+  + ToString() : string
+}
+class "InterpolationSearch" as T_MaterialDB_MaterialDB_Utilities_InterpolationSearch <<static>> {
+  + InterpolatedValue(xAr, yAr, xn) : float
+  + InterpolatedValueTwoPoints(x1, x2, y1, y2, xn) : float
+}
+T_MaterialDB_MaterialDB_MaterialData_MetallurgicalData_ProcessData -[hidden]down-> T_MaterialDB_MaterialDB_Utilities_InterpolationSearch
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

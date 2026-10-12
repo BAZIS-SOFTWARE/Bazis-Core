@@ -107,7 +107,7 @@ namespace MaterialDB.FunctionData
                 };
 
                 var db = JsonConvert.DeserializeObject<FunctionDBData>
-   (File.ReadAllText($@"{dbFolder}\{dbName}"), settingsSerializer);
+   (File.ReadAllText(filePath), settingsSerializer);
 
                 Name = dbName;
                 dic = db.dic;
@@ -125,7 +125,7 @@ namespace MaterialDB.FunctionData
             var projFiles = Directory.GetFiles(folder, fileName, SearchOption.TopDirectoryOnly);
             if (projFiles.Count() > 0)
             {
-                return Path.GetDirectoryName(projFiles[0]);
+                return projFiles[0];
             }
 
             return null;

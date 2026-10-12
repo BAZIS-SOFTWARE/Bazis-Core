@@ -1,111 +1,70 @@
-﻿using Geometry;
-using Model.Interfaces;
-using System;
+using Geometry;
+using Geometry.Interfaces;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Results.ScenePresenter
 {
     /// <summary>
-    /// ResultNode
+    /// Представляет точку результата.
     /// </summary>
-    public class ResultPoint : IPoint
+    public class ResultPoint : ICoordinated, IPosition3D
     {
-        Point3D point;
+        private Point3D point;
+
         /// <summary>
-        /// ResultNode
+        /// Создаёт точку результата.
         /// </summary>
-        /// <param name="point"></param>
+        /// <param name="point">Координаты точки.</param>
         public ResultPoint(Point3D point)
         {
             this.point = point;
         }
-/// <inheritdoc/>
 
-        public Point3D Position 
-        { 
+        /// <summary>
+        /// Координаты точки.
+        /// </summary>
+        public Point3D Position
+        {
             get { return point; }
             set { point = value; }
         }
-/// <inheritdoc/>
 
-        public override string ToString()
-        {
-            return $"{_x} | {_y} | {_z}";
-        }
-        /// <inheritdoc/>
-
+        /// <summary>
+        /// Нормаль в точке результата.
+        /// </summary>
         public Point3D Normal { get; set; }
-/// <inheritdoc/>
-
-        public int Number { get; }
-
-        public Color Color { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-  
-        /// <inheritdoc/>
-        public bool ViewState { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        /// <inheritdoc/>
-        public bool ExistState { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-/// <inheritdoc/>
-
-        public ObjType ObjType { get; } = ObjType.Точка;
-/// <inheritdoc/>
-
-        public int NumberOfPoints { get; } = 1;
-
-        public float _x { get { return Position._x; } }
-
-        public float _y { get { return Position._y; } }
-
-        public float _z { get { return Position._z; } }
-/// <inheritdoc/>
-
-        public int Dim => 0;
 
         /// <inheritdoc/>
+        public int NumberOfPoints => 1;
 
+        /// <inheritdoc/>
+        public float _x => Position._x;
+
+        /// <inheritdoc/>
+        public float _y => Position._y;
+
+        /// <inheritdoc/>
+        public float _z => Position._z;
+
+        /// <summary>
+        /// Вычисляет центр точки.
+        /// </summary>
+        /// <returns>Координаты точки.</returns>
         public Point3D CalcCentr()
         {
             return new Point3D(_x, _y, _z);
         }
 
-        public int CompareTo(IModelObject other)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Equals(IModelObject x, IModelObject y)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Equals(IModelObject other)
-        {
-            throw new NotImplementedException();
-        }
-/// <inheritdoc/>
-
+        /// <inheritdoc/>
         public IEnumerable<Point3D> GetCoordinates()
         {
-            throw new NotImplementedException();
+            yield return Position;
         }
 
-        public int GetHashCode(IModelObject obj)
+        /// <inheritdoc/>
+        public override string ToString()
         {
-            return obj.Number;
-        }
-
-        public void SetBackColor()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SetNumber(int number)
-        {
-            throw new NotImplementedException();
+            return $"{_x} | {_y} | {_z}";
         }
     }
 }

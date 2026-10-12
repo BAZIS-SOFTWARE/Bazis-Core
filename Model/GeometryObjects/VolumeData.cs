@@ -89,12 +89,5 @@ namespace Model.GeometryObjects
             throw new NotImplementedException();
         }
 
-        internal void SetBackColor()
-        {
-            foreach (var item in volumeFigures)
-            {
-                item.SetBackColor();
-            }
-        }
     }
 }

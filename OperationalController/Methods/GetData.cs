@@ -18,14 +18,34 @@ namespace OperationalController
         public MaterialDBData MaterialsDB
         {
             get { return TaskData.Materials; }
-            set { TaskData.Materials = value; }
+            set
+            {
+                using (BeginChanges())
+                {
+                    if (ReferenceEquals(TaskData.Materials, value))
+                        return;
+                    TaskData.Materials = value;
+                    isModified = true;
+                    RegisterChange(new ProjectChange(ProjectChange.ProjectChangeKind.PropertyChanged, ProjectChange.ProjectProperty.MaterialsDB));
+                }
+            }
         }
         /// <inheritdoc/>
 
         public FunctionDBData FunctionsDB
         {
             get { return TaskData.Functions; }
-            set { TaskData.Functions = value; }
+            set
+            {
+                using (BeginChanges())
+                {
+                    if (ReferenceEquals(TaskData.Functions, value))
+                        return;
+                    TaskData.Functions = value;
+                    isModified = true;
+                    RegisterChange(new ProjectChange(ProjectChange.ProjectChangeKind.PropertyChanged, ProjectChange.ProjectProperty.FunctionsDB));
+                }
+            }
         }
 
         /// <inheritdoc/>
