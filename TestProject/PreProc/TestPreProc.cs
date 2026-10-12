@@ -18,7 +18,7 @@ namespace TestProject_test.PreProc
     public class TestPreProc
     {
         
-        private static string projPath =  Path.GetFullPath(@".\..\..\..\..\TestProject\PreProc\Data\CalcCompDataTest\");
+        private static string projPath =  Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "TestProject", "PreProc", "Data", "CalcCompDataTest")) + Path.DirectorySeparatorChar;
 
         [TestInitialize]
         public void Init()

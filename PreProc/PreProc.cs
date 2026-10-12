@@ -401,7 +401,8 @@ namespace PreProc
                 var serializedData = JsonConvert.SerializeObject(parametrizedParams[i], settingsSerializer);
                 var fileName = $"{taskKind}_{i + 1}_{parametrizedParams[i].TimeSettings.StartTime}_{parametrizedParams[i].TimeSettings.StopTime}.tsf";
 
-                File.WriteAllBytes($"{_path}\\{fileName}", Encoding.UTF8.GetBytes(serializedData));
+                var filePath = Path.Combine(_path, fileName);
+                File.WriteAllBytes(filePath, Encoding.UTF8.GetBytes(serializedData));
             }
         }
 
@@ -442,7 +443,8 @@ namespace PreProc
                 var serializedData = JsonConvert.SerializeObject(targetParameter, settingsSerializer);
                 var fileName = $"{targetTaskName}_{i + 1}_{targetParameter.TimeSettings.StartTime}_{targetParameter.TimeSettings.StopTime}.tsf";
 
-                File.WriteAllBytes($"{_path}\\{fileName}", Encoding.UTF8.GetBytes(serializedData));
+                var filePath = Path.Combine(_path, fileName);
+                File.WriteAllBytes(filePath, Encoding.UTF8.GetBytes(serializedData));
             }
         }
 

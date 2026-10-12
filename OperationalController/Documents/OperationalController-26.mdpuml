@@ -48,6 +48,7 @@ interface "IProjectStorage" as T_OperationalController_OperationalController_IPr
 T_OperationalController_OperationalController_IProjectEvents -[hidden]down-> T_OperationalController_OperationalController_IProjectSession
 T_OperationalController_OperationalController_IProjectSession -[hidden]down-> T_OperationalController_OperationalController_IProjectStorage
 legend bottom
+  CopyFile объединяет папку и имя файла через Path.Combine для Windows и Linux.
   reference — тип раскрыт на другой диаграмме.
   Параметры методов: имена; полные сигнатуры — в соседнем .md.
   Унаследованные члены интерфейсов в классах не повторяются.
