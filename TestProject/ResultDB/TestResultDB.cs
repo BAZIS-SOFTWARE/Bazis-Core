@@ -200,31 +200,41 @@ x.Time.CompareTo(0) >= 0
         }
 
         [TestMethod]
-        [DataRow(@"..\..\..\SharedData\ProjAndResults\merge\термическая_2_1_2.db",
-                 @"..\..\..\SharedData\ProjAndResults\merge\термическая_3_2_3.db",
-                 @"..\..\..\SharedData\ProjAndResults\merge\термическая_0_1_3.db")]
-        [DataRow(@"..\..\..\SharedData\ProjAndResults\merge\термическая_3_2_3.db",
-                 @"..\..\..\SharedData\ProjAndResults\merge\термическая_2_1_2.db",
-                 @"..\..\..\SharedData\ProjAndResults\merge\термическая_0_1_3.db")]
-        [DataRow(@"..\..\..\SharedData\ProjAndResults\merge\термическая_2_1_2.db",
-                 @"..\..\..\SharedData\ProjAndResults\merge\термическая_2_1_2.db",
-                 @"..\..\..\SharedData\ProjAndResults\merge\термическая_0_1_2.db")]
-        public void MergeDataBase(string path1, string path2, string resultPath)
+        [DataRow("термическая_2_1_2.db", "термическая_3_2_3.db", "термическая_0_1_3.db")]
+        [DataRow("термическая_3_2_3.db", "термическая_2_1_2.db", "термическая_0_1_3.db")]
+        [DataRow("термическая_2_1_2.db", "термическая_2_1_2.db", "термическая_0_1_2.db")]
+        public void MergeDataBase(string firstFileName, string secondFileName, string resultFileName)
         {
-            var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
+            var sourceParts = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "SharedData", "ProjAndResults", "merge");
+            var sourceDir = Path.GetFullPath(sourceParts);
+            var tempRoot = Path.GetTempPath();
+            var tempDir = Path.Combine(tempRoot, Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(tempDir);
             try
             {
-                var db1Path = path1;
-                var db2Path = path2;
+                var source1 = Path.Combine(sourceDir, firstFileName);
+                var source2 = Path.Combine(sourceDir, secondFileName);
+                var db1Path = Path.Combine(tempDir, firstFileName);
+                var db2Path = Path.Combine(tempDir, secondFileName);
+                File.Copy(source1, db1Path);
+                if (firstFileName != secondFileName)
+                    File.Copy(source2, db2Path);
 
                 var loader = new LoadResultsFileDB();
-                loader.Merge(db1Path, db2Path);
+                if (firstFileName == secondFileName)
+                {
+                    Assert.ThrowsException<InvalidOperationException>(() => loader.Merge(db1Path, db2Path));
+                    return;
+                }
 
+                var resultPath = loader.Merge(db1Path, db2Path);
+                var expectedPath = Path.Combine(tempDir, resultFileName);
+
+                Assert.AreEqual(expectedPath, resultPath);
                 Assert.IsTrue(File.Exists(resultPath), "Merged database was not created.");
 
-                var tableName = loader.GetTablesNames(path1).First();
-                var expectedRows = GetExpectedRows(path1, path2, tableName);
+                var tableName = loader.GetTablesNames(db1Path).First();
+                var expectedRows = GetExpectedRows(db1Path, db2Path, tableName);
                 var actualRows = GetTotalRows(resultPath, tableName);
 
                 Assert.AreEqual(expectedRows, actualRows, "Merged row count is incorrect.");
@@ -292,7 +302,8 @@ x.Time.CompareTo(0) >= 0
             {
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
-                File.Delete(resultPath);
+                System.Data.SQLite.SQLiteConnection.ClearAllPools();
+                Directory.Delete(tempDir, true);
             }
         }
     }
