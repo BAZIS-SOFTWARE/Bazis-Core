@@ -9,7 +9,7 @@ using OperationalController.ModelScenePresentator.GlObjsPresenters;
 using System.Drawing;
 using System.Linq;
 
-namespace TestProject_test.OperationalController
+namespace TestProject_test.ModelView
 {
     /// <summary>
     /// Проверяет хранение состояния представления отдельно от объектов модели.

@@ -6,7 +6,7 @@ using Model.ObjectsCollections;
 using OperationalController;
 using OperationalController.MeshObjsUtility;
 
-namespace TestProject_test.OperationalController
+namespace TestProject_test.Mesh
 {
     /// <summary>Проверяет уведомления после полного обхода больших коллекций.</summary>
     [TestClass]
@@ -155,7 +155,7 @@ namespace TestProject_test.OperationalController
                 elements.Add(beam);
             }
             var groups = new List<List<int>> { numbers };
-            var merger = new MergeObjects();
+            var merger = new global::OperationalController.MeshObjsUtility.MergeObjects();
             merger.Merge(groups, nodes, out var changed, out var removed);
             Assert.IsTrue(removed);
             Assert.AreEqual(count, changed.Count);

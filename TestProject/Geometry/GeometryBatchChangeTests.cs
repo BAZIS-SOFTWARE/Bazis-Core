@@ -2,7 +2,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model.Interfaces;
 using OperationalController;
 
-namespace TestProject_test.OperationalController
+namespace TestProject_test.Geometry
 {
     /// <summary>Проверяет массовые уведомления при работе с настоящим CAD ядром.</summary>
     [TestClass]

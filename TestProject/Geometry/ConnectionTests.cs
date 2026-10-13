@@ -1,7 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OperationalController.GmshController;
 
-namespace TestProject_test.OperationalController
+namespace TestProject_test.Geometry
 {
     [TestClass]
     public class ConnectionTests

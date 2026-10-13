@@ -1,7 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OperationalController;
 
-namespace TestProject_test.OperationalController
+namespace TestProject_test.IO
 {
     [TestClass]
     public class FilePathTests

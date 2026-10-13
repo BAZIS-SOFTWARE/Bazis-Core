@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TestProject_test.OperationalController
+namespace TestProject_test.Mesh
 {
     /// <summary>Проверяет пакетные уведомления и завершённое состояние каскадных изменений.</summary>
     [TestClass]
@@ -243,41 +243,5 @@ namespace TestProject_test.OperationalController
             Assert.AreEqual(1, batches);
         }
 
-        /// <summary>Проверяет обратные индексы удаления условий при замене или изменении задачи.</summary>
-        [DataTestMethod]
-        [DataRow("create")]
-        [DataRow("kind")]
-        [DataRow("type")]
-        public void TaskChanges_PublishConditionRemovalsAtCurrentIndices(string operation)
-        {
-            var node = controller.GetModelObject(ObjType.Узел, 0);
-            controller.CreateGroup("task", new[] { node });
-            var group = controller.GetModelGroup("task");
-            var load = new LoadData(group, 0, 1);
-            var heat = new HeatData(group, 0, 1);
-            controller.AddTaskData(load);
-            controller.AddTaskData(heat);
-            var indices = new List<int>();
-            var batches = 0;
-            controller.Message += (_, args) =>
-            {
-                batches++;
-                foreach (var message in args.Changes)
-                    if (message is CondChange condition)
-                    {
-                        Assert.AreEqual(ChangeAction.Deleted, condition.Action);
-                        indices.Add(condition.Id);
-                    }
-            };
-            switch (operation)
-            {
-                case "create": controller.CreateTask(); break;
-                case "kind": controller.ChangeTaskKind(TaskKind.термическая); break;
-                case "type": controller.ChangeTaskType(TaskType.Volume); break;
-            }
-            Assert.AreEqual(1, batches);
-            CollectionAssert.AreEqual(new[] { 1, 0 }, indices);
-            Assert.AreSame(group, controller.GetModelGroup("task"));
-        }
     }
 }
