@@ -31,7 +31,9 @@ if ! command -v sha256sum >/dev/null 2>&1; then
     exit 1
 fi
 
+echo "Checking resources..."
 manifest_count=0
+download_count=0
 while IFS= read -r -d '' relative_manifest; do
     # Старые манифесты из локальной папки outcommon не поддерживаются.
     # В старых ветках они могут ещё присутствовать: просто пропускаем их.
@@ -46,6 +48,7 @@ while IFS= read -r -d '' relative_manifest; do
     # Манифест лежит рядом с целевым файлом. Путь в корзине задаём явно:
     # облачный объект по постоянному ключу определяет актуальную версию.
     relative_file="${relative_manifest%.manifest}"
+    remote_authoritative=0
     if [[ "$relative_manifest" == GmshApi/gmsh.dll.manifest || "$relative_manifest" == GmshApi/libgmsh.so.manifest ]]; then
         remote_authoritative=1
         bucket="outlibs"
@@ -68,9 +71,6 @@ while IFS= read -r -d '' relative_manifest; do
         echo "Unsupported manifest path: $relative_manifest" >&2
         exit 1
     fi
-        expected_hash="${BASH_REMATCH[1]}"
-        object_key="$relative_file/$expected_hash"
-    fi
     target="$repo_root/$relative_file"
 
     # Поддерживаем только двухстрочный манифест с SHA-256 и ETag.
@@ -85,6 +85,7 @@ while IFS= read -r -d '' relative_manifest; do
         exit 1
     fi
     manifest_hash="${manifest_hash#sha256=}"
+    expected_hash="$manifest_hash"
     manifest_etag="${manifest_etag#etag=}"
 
     if [[ -z "$aws_cli" ]]; then
@@ -92,6 +93,7 @@ while IFS= read -r -d '' relative_manifest; do
         exit 1
     fi
 
+    echo "Checking: $relative_file"
     # HEAD не скачивает файл: ETag позволяет обнаружить замену объекта.
     remote_etag="$("$aws_cli" --profile "$aws_profile" --endpoint-url "$endpoint" s3api head-object --bucket "$bucket" --key "$object_key" --query ETag --output text)"
     remote_etag="${remote_etag#\"}"
@@ -108,7 +110,6 @@ while IFS= read -r -d '' relative_manifest; do
         if [[ "$local_hash" == "$manifest_hash" ]]; then
             echo "Verified $relative_file against cloud ETag"
             continue
-            fi
         fi
     fi
 
@@ -131,8 +132,10 @@ while IFS= read -r -d '' relative_manifest; do
     # оставлять частично записанный ресурс на месте рабочего файла.
     mkdir -p -- "$(dirname -- "$target")"
     tmp_file="$(mktemp "${target}.tmp.XXXXXX")"
+    echo "Downloading: $relative_file"
     "$aws_cli" --profile "$aws_profile" --endpoint-url "$endpoint" s3 cp "$object_uri" "$tmp_file" --only-show-errors
 
+    download_count=$((download_count + 1))
     downloaded_hash="$(sha256sum -- "$tmp_file" | cut -c1-64)"
     # Повторный HEAD защищает от смены облачной версии во время скачивания.
     latest_etag="$("$aws_cli" --profile "$aws_profile" --endpoint-url "$endpoint" s3api head-object --bucket "$bucket" --key "$object_key" --query ETag --output text)"
@@ -149,6 +152,7 @@ while IFS= read -r -d '' relative_manifest; do
         exit 1
     fi
 
+    if [[ "$remote_authoritative" -eq 1 ]]; then
     local_hash=""
     if [[ -f "$target" ]]; then
         local_hash="$(sha256sum -- "$target" | cut -c1-64)"
@@ -191,4 +195,10 @@ done < <(git -C "$repo_root" ls-files --cached --others --exclude-standard -z --
 if [[ "$manifest_count" -eq 0 ]]; then
     echo "No large-file manifests found in $repo_root." >&2
     exit 1
+fi
+
+if [[ "$download_count" -eq 0 ]]; then
+    echo "No download required. All files are up to date. Checked: $manifest_count."
+else
+    echo "Download completed. Files downloaded: $download_count. Checked: $manifest_count."
 fi
