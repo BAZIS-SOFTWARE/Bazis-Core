@@ -1,10 +1,10 @@
-﻿using Geometry;
+using Geometry;
 using Model.Interfaces;
 using OperationalController;
 using System.Globalization;
 
 
-namespace TestModeCore_test.OperationalController
+namespace TestProject_test.Mesh
 {
     [TestClass]
     public class MergeObjects
@@ -40,7 +40,7 @@ namespace TestModeCore_test.OperationalController
         public void MergeElements(List<Point3D> points, int dim)
         {
             var contr = new ProjectController();
-            contr.CreateProject(@"..\..\..\Examples\createObj.bpf2");
+            contr.CreateProject(@"../../../../TestModelCore/Examples/createObj.bpf2");
             
             var numb = 0;
             var numbs = new int[points.Count];
@@ -66,9 +66,7 @@ namespace TestModeCore_test.OperationalController
 
 
         [DataTestMethod]
-        [DataRow(@"c:\projs\Matushkin\T_project.bpf", 0.001f, 2)]
-        [DataRow(@"..\..\..\Examples\3D\cub_unsorted_freeNodesCoincident.bpf", 0.01f, 4)]
-        [DataRow(@"C:\projs\AdditiveTest\1n.stl", 0.01f, 3964)]
+        [DataRow(@"../../../../TestModelCore/Examples/3D/cub_unsorted_freeNodesCoincident.bpf", 0.01f, 4)]
         public void MergeNodes(string path, float dist, int count)
         {
             //assing

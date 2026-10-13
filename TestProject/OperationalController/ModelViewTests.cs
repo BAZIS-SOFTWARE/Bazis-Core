@@ -26,7 +26,7 @@ namespace TestProject_test.OperationalController
         [DataRow("Toggle", new[] { 2, 3 }, new[] { 1, 3 })]
         public void SelectionCommands_ChangeOnlyRequestedNumbers(string command, int[] numbers, int[] expected)
         {
-            var view = new ModelView(new ModelData());
+            var view = new global::OperationalController.ModelView(new ModelData());
             view.Select(ObjType.Узел, new[] { 1, 2 });
 
             if (command == "Select")
@@ -48,7 +48,7 @@ namespace TestProject_test.OperationalController
         [TestMethod]
         public void BeginUpdate_RaisesOneChangedEvent()
         {
-            var view = new ModelView(new ModelData());
+            var view = new global::OperationalController.ModelView(new ModelData());
             var changesCount = 0;
             view.Changed += (sender, args) => changesCount++;
 
@@ -67,7 +67,7 @@ namespace TestProject_test.OperationalController
         [TestMethod]
         public void DisplaySettings_RaiseOneChangedEventInUpdate()
         {
-            var view = new ModelView(new ModelData());
+            var view = new global::OperationalController.ModelView(new ModelData());
             var changesCount = 0;
             view.Changed += (sender, args) => changesCount++;
 
@@ -88,7 +88,7 @@ namespace TestProject_test.OperationalController
         {
             var model = new ModelData();
             model.ObjectData.NodesSet.Add(7, new Node(7, new Point3D()));
-            var view = new ModelView(model);
+            var view = new global::OperationalController.ModelView(model);
             view.Select(ObjType.Узел, new[] { 7 });
 
             view.HideSelected();
@@ -129,7 +129,7 @@ namespace TestProject_test.OperationalController
         {
             var model = new ModelData();
             model.ObjectData.NodesSet.Add(3, new Node(3, new Point3D()));
-            var view = new ModelView(model)
+            var view = new global::OperationalController.ModelView(model)
             {
                 SelectionColor = Color.Red,
                 Transparency = 128
@@ -153,7 +153,7 @@ namespace TestProject_test.OperationalController
             var model = new ModelData();
             model.ObjectData.NodesSet.Add(8, new Node(8, new Point3D()));
             var setInfo = model.ObjectData.GetSetInfo(ObjType.Узел, 8);
-            var view = new ModelView(model)
+            var view = new global::OperationalController.ModelView(model)
             {
                 SelectionColor = Color.Red
             };
@@ -189,7 +189,7 @@ namespace TestProject_test.OperationalController
             model.ObjectData.NodesSet.Add(1, new Node(1, new Point3D()));
             model.ObjectData.NodesSet.Add(2, new Node(2, new Point3D()));
             var setInfo = model.ObjectData.NodesSet;
-            var view = new ModelView(model);
+            var view = new global::OperationalController.ModelView(model);
             var numbers = new[] { 1, 2 };
             view.SetColor(setInfo, Color.Blue);
             view.SetViewMode(setInfo, ViewMode.Surface);
@@ -227,7 +227,7 @@ namespace TestProject_test.OperationalController
                 model.ObjectData.NodesSet.Add(node.Number, node);
             var elements = new[] { new Triangle(1, nodes) };
             model.ObjectData.E2DCollection.AddRange("colored", elements);
-            var view = new ModelView(model);
+            var view = new global::OperationalController.ModelView(model);
             var numbers = new[] { 1 };
             view.SetColor(ObjType.Узел, numbers, Color.Green);
             view.SetColor(ObjType.Элемент2D, numbers, Color.Green);
@@ -275,7 +275,7 @@ namespace TestProject_test.OperationalController
             var model = new ModelData();
             model.ObjectData.NodesSet.Add(4, new Node(4, new Point3D()));
             var setInfo = model.ObjectData.GetSetInfo(ObjType.Узел, 4);
-            var view = new ModelView(model);
+            var view = new global::OperationalController.ModelView(model);
             var expectedColor = Color.FromArgb(155, Color.SteelBlue);
             view.SetColor(setInfo, expectedColor);
 
@@ -294,7 +294,7 @@ namespace TestProject_test.OperationalController
             var node = new Node(12, new Point3D());
             model.ObjectData.NodesSet.Add(node.Number, node);
             var setInfo = model.ObjectData.GetSetInfo(ObjType.Узел, node.Number);
-            var view = new ModelView(model)
+            var view = new global::OperationalController.ModelView(model)
             {
                 SelectionColor = Color.Red,
                 Transparency = 128
@@ -332,7 +332,7 @@ namespace TestProject_test.OperationalController
             var collection = model.ObjectData.E2DCollection;
             collection.Add("initial");
             var setInfo = collection["initial"];
-            var view = new ModelView(model);
+            var view = new global::OperationalController.ModelView(model);
 
             view.SetColor(setInfo, Color.MediumPurple);
             view.SetViewMode(setInfo, ViewMode.Surface);
@@ -356,7 +356,7 @@ namespace TestProject_test.OperationalController
             collection.Add("second");
             var first = collection["first"];
             var second = collection["second"];
-            var view = new ModelView(model);
+            var view = new global::OperationalController.ModelView(model);
 
             view.SetViewMode(second, ViewMode.Surface);
             var secondColor = view.GetColor(second);
@@ -424,7 +424,7 @@ namespace TestProject_test.OperationalController
             collection.Add("first");
             collection.Add("second");
             var second = collection["second"];
-            var view = new ModelView(model);
+            var view = new global::OperationalController.ModelView(model);
 
             collection.Remove("first");
 
@@ -495,7 +495,7 @@ namespace TestProject_test.OperationalController
             var model = new ModelData();
             model.ObjectData.NodesSet.Add(5, new Node(5, new Point3D()));
             var setInfo = model.ObjectData.GetSetInfo(ObjType.Узел, 5);
-            var view = new ModelView(model);
+            var view = new global::OperationalController.ModelView(model);
             view.SetColor(setInfo, Color.Green);
             view.Select(ObjType.Узел, new[] { 5 });
             view.SetVisible(ObjType.Узел, new[] { 5 }, false);
@@ -518,7 +518,7 @@ namespace TestProject_test.OperationalController
             var model = new ModelData();
             model.ObjectData.NodesSet.Add(6, new Node(6, new Point3D()));
             var setInfo = model.ObjectData.GetSetInfo(ObjType.Узел, 6);
-            var view = new ModelView(model);
+            var view = new global::OperationalController.ModelView(model);
             view.SetColor(setInfo, Color.Blue);
             view.SetColor(ObjType.Узел, new[] { 6 }, Color.Red);
 
@@ -539,7 +539,7 @@ namespace TestProject_test.OperationalController
             var collection = model.ObjectData.E2DCollection;
             collection.Add("deleted");
             var setInfo = collection["deleted"];
-            var view = new ModelView(model);
+            var view = new global::OperationalController.ModelView(model);
             view.SetColor(setInfo, Color.Fuchsia);
             collection.Remove("deleted");
 
@@ -556,7 +556,7 @@ namespace TestProject_test.OperationalController
         [TestMethod]
         public void HideInsideSurfaces_RaisesChangedOnlyWhenValueDiffers()
         {
-            var view = new ModelView(new ModelData());
+            var view = new global::OperationalController.ModelView(new ModelData());
             var changesCount = 0;
             view.Changed += (sender, args) => changesCount++;
 

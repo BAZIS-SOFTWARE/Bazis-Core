@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
-namespace TestModeCore_test.OperationalController
+namespace TestProject_test.ModelView
 {
     [TestClass]
     public class ModelViewChangedTests
@@ -18,7 +18,7 @@ namespace TestModeCore_test.OperationalController
         public void Select_GivesSelectionForTypeSets_AndNoneForOtherTypeSets()
         {
             var model = CreateModel(out var nodes, out var setA, out var setB);
-            var view = new ModelView(model);
+            var view = new global::OperationalController.ModelView(model);
             var args = RaiseOnce(view, () => view.Select(ObjType.Узел, new[] { nodes[0].Number }));
 
             Assert.AreEqual(ModelViewChange.Selection, args.GetChanges(model.ObjectData.NodesSet));
@@ -30,7 +30,7 @@ namespace TestModeCore_test.OperationalController
         public void Select_SameNumbersAgain_DoesNotRaiseEvent()
         {
             var model = CreateModel(out var nodes, out _, out _);
-            var view = new ModelView(model);
+            var view = new global::OperationalController.ModelView(model);
             view.Select(ObjType.Узел, new[] { nodes[0].Number });
 
             var raised = false;
@@ -44,7 +44,7 @@ namespace TestModeCore_test.OperationalController
         public void BatchedUpdate_SelectNodesAndHideElements_RaisesOneEvent_WithSeparateChangesPerSet()
         {
             var model = CreateModel(out var nodes, out var setA, out _);
-            var view = new ModelView(model);
+            var view = new global::OperationalController.ModelView(model);
             var raisedCount = 0;
             view.Changed += (sender, e) => raisedCount++;
 
@@ -67,7 +67,7 @@ namespace TestModeCore_test.OperationalController
         public void SetSetColor_GivesSetColorOnlyForThatSet_AndNoneForOtherSetsOfSameType()
         {
             var model = CreateModel(out _, out var setA, out var setB);
-            var view = new ModelView(model);
+            var view = new global::OperationalController.ModelView(model);
             var args = RaiseOnce(view, () => view.SetColor(setA, Color.Aquamarine));
 
             Assert.AreEqual(ModelViewChange.SetColor, args.GetChanges(setA));
@@ -78,7 +78,7 @@ namespace TestModeCore_test.OperationalController
         public void SetObjectColor_GivesObjectColorOnlyForThatSet()
         {
             var model = CreateModel(out var nodes, out var setA, out var setB);
-            var view = new ModelView(model);
+            var view = new global::OperationalController.ModelView(model);
             var args = RaiseOnce(view, () => view.SetColor(ObjType.Узел, new[] { nodes[0].Number }, Color.Aquamarine));
 
             Assert.AreEqual(ModelViewChange.ObjectColor, args.GetChanges(model.ObjectData.NodesSet));
@@ -93,7 +93,7 @@ namespace TestModeCore_test.OperationalController
         public void SetSelection_GivesSelectionForPreviousAndNewSetsOfSameType()
         {
             var model = CreateModel(out _, out var setA, out var setB);
-            var view = new ModelView(model);
+            var view = new global::OperationalController.ModelView(model);
             view.SetSelection(ObjType.Элемент2D, setA.GetNumbers());
 
             var args = RaiseOnce(view, () => view.SetSelection(ObjType.Элемент2D, setB.GetNumbers()));
@@ -106,7 +106,7 @@ namespace TestModeCore_test.OperationalController
         public void Transparency_GivesTransparencyForAllSets()
         {
             var model = CreateModel(out _, out var setA, out var setB);
-            var view = new ModelView(model);
+            var view = new global::OperationalController.ModelView(model);
             var args = RaiseOnce(view, () => view.Transparency = 128);
 
             Assert.AreEqual(ModelViewChange.Transparency, args.GetChanges(model.ObjectData.NodesSet));
@@ -118,7 +118,7 @@ namespace TestModeCore_test.OperationalController
         public void HideSelected_GivesVisibilityAndSelection()
         {
             var model = CreateModel(out var nodes, out _, out _);
-            var view = new ModelView(model);
+            var view = new global::OperationalController.ModelView(model);
             view.Select(ObjType.Узел, new[] { nodes[0].Number });
 
             var args = RaiseOnce(view, () => view.HideSelected());
@@ -130,7 +130,7 @@ namespace TestModeCore_test.OperationalController
         public void NestedBeginUpdate_RaisesOneEventOnOuterExit()
         {
             var model = CreateModel(out var nodes, out _, out _);
-            var view = new ModelView(model);
+            var view = new global::OperationalController.ModelView(model);
             var raisedCount = 0;
             view.Changed += (sender, e) => raisedCount++;
 
@@ -150,7 +150,7 @@ namespace TestModeCore_test.OperationalController
         public void HandlerChangingViewInsideChanged_GetsNextEventSeparately()
         {
             var model = CreateModel(out var nodes, out _, out _);
-            var view = new ModelView(model);
+            var view = new global::OperationalController.ModelView(model);
             var raisedCount = 0;
             view.Changed += (sender, e) =>
             {

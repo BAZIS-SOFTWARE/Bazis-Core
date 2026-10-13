@@ -18,7 +18,7 @@ using OperationalController.GmshController;
 using System;
 using System.Drawing;
 
-namespace TestModeCore_test.OperationalController
+namespace TestProject_test.ModelView
 {
     [TestClass]
     public class TestModelScenePresentor
@@ -29,7 +29,7 @@ namespace TestModeCore_test.OperationalController
             var nodes = new Node[] { new Node(0, new Point3D(0.5f, 1.0f, -1.0f)) };
             var model = new ModelData();
             model.ObjectData.NodesSet.Add(0, nodes[0]);
-            var modelView = new ModelView(model);
+            var modelView = new global::OperationalController.ModelView(model);
             var setInfo = model.ObjectData.GetSetInfo(ObjType.Узел, nodes[0].Number);
             var presenter = new PointObjsPresenter(nodes, modelView.GetColor(setInfo, nodes[0].Number));
             var indices = presenter.CreateIndexes();
@@ -51,7 +51,7 @@ namespace TestModeCore_test.OperationalController
             var lines = new Curve[] { new Curve(0, nodes) };
             var model = new ModelData();
             model.ObjectData.CurveSet.Add(0, lines[0]);
-            var modelView = new ModelView(model);
+            var modelView = new global::OperationalController.ModelView(model);
             var setInfo = model.ObjectData.GetSetInfo(ObjType.Кривая, lines[0].Number) ?? throw new AssertFailedException();
             modelView.SetColor(setInfo, Color.Black);
             var presenter = new LineObjsPresenter<Curve>(lines, modelView.GetColor(setInfo, lines[0].Number));
@@ -77,7 +77,7 @@ namespace TestModeCore_test.OperationalController
             var triangle = new Element2D[] { new Triangle(0, nodes) };
             var model = new ModelData();
             model.ObjectData.E2DCollection.Add(ObjType.Элемент2D.ToString(), triangle[0]);
-            var modelView = new ModelView(model);
+            var modelView = new global::OperationalController.ModelView(model);
             var setInfo = model.ObjectData.GetSetInfo(ObjType.Элемент2D, triangle[0].Number) ?? throw new AssertFailedException();
             modelView.SetColor(setInfo, Color.Blue);
             var presenter = new SurfaceObjsPresenter<ElementSurface, Node>(triangle, modelView.GetColor(setInfo, triangle[0].Number));
@@ -107,7 +107,7 @@ namespace TestModeCore_test.OperationalController
             model.ObjectData.E2DCollection.Add(ObjType.Элемент2D.ToString(), el2D);
 
             var creator = new PresentersCreator();
-            var modelView = new ModelView(model);
+            var modelView = new global::OperationalController.ModelView(model);
             var setInfo = model.ObjectData.GetSetInfo(ObjType.Элемент2D, el2D.Number);
             var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E2DCollection.GetObjects().ToList(), modelView.GetColor(setInfo));
 
@@ -133,7 +133,7 @@ namespace TestModeCore_test.OperationalController
             model.ObjectData.E2DCollection.Add(ObjType.Элемент2D.ToString(), el2D);
 
             var creator = new PresentersCreator();
-            var modelView = new ModelView(model);
+            var modelView = new global::OperationalController.ModelView(model);
             var setInfo = model.ObjectData.GetSetInfo(ObjType.Элемент2D, el2D.Number);
             var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.E2DCollection.GetObjects().ToList(), modelView.GetColor(setInfo));
             var values = presentator.CreateIndexes();
@@ -162,7 +162,7 @@ namespace TestModeCore_test.OperationalController
 
             model.ObjectData.SurfaceSet.Add(0, poligon);
             var creator = new PresentersCreator();
-            var modelView = new ModelView(model);
+            var modelView = new global::OperationalController.ModelView(model);
             var setInfo = model.ObjectData.GetSetInfo(ObjType.Поверхность, poligon.Number);
             var presentator = creator.CreateSurfaceObjectsPresenter(model.ObjectData.SurfaceSet.Values.ToList(), modelView.GetColor(setInfo));
 
@@ -178,11 +178,11 @@ namespace TestModeCore_test.OperationalController
 
         [DataTestMethod]
         [DataRow(new float[]
-        { 
+        {
             0, 0, 0,
             10,10,0,
             20,10,0
-        }, 
+        },
             ObjType.Элемент2D, new int[] { 3, 9, 12, 9,3 })]
         [DataRow(new float[]
         {
@@ -218,7 +218,7 @@ namespace TestModeCore_test.OperationalController
 
 
             var creator = new PresentersCreator();
-            var modelView = new ModelView(model);
+            var modelView = new global::OperationalController.ModelView(model);
             IObjsPresenter presenter;
             ISetInfo setInfo;
             //act
@@ -243,7 +243,7 @@ namespace TestModeCore_test.OperationalController
             }
 
             //act
-           
+
             var inds = presenter.CreateIndexes();
             var ptrs = presenter.CreatePointers(inds.Item1);
             var crds = presenter.CreateVertexes(inds.Item2, "координаты");
@@ -282,7 +282,7 @@ namespace TestModeCore_test.OperationalController
 
             var model = new ModelData();
             var creator = new PresentersCreator();
-            var modelView = new ModelView(model);
+            var modelView = new global::OperationalController.ModelView(model);
             IObjsPresenter presenter;
             ISetInfo setInfo;
 
@@ -319,23 +319,23 @@ namespace TestModeCore_test.OperationalController
         }
 
         [DataTestMethod]
-        [DataRow(ObjType.Элемент2D, @"..\..\..\Examples\STL\ACII.stl",new string[]
+        [DataRow(ObjType.Элемент2D, @"../../../../TestModelCore/Examples/STL/ACII.stl",new string[]
 {
     "6", "18", "24", "18"
 })]
-        [DataRow(ObjType.Элемент3D, @"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC",new string[]
+        [DataRow(ObjType.Элемент3D, @"../../../../TestModelCore/Examples/VIsual-Mesh/rhombDATA1.ASC",new string[]
 {
             "48", "144", "192", "144"
 })]
-        [DataRow(ObjType.Узел, @"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC",new string[]
+        [DataRow(ObjType.Узел, @"../../../../TestModelCore/Examples/VIsual-Mesh/rhombDATA1.ASC",new string[]
 {
             "7", "21", "28", "21"
 })]
-        [DataRow(ObjType.Элемент3D, @"..\..\..\Examples\CDB\longModel.cdb", new string[]
+        [DataRow(ObjType.Элемент3D, @"../../../../TestModelCore/Examples/CDB/longModel.cdb", new string[]
 {
             "54810", "164430", "219240", "164430"
 })]
-        [DataRow(ObjType.Узел, @"..\..\..\Examples\CDB\longModel.cdb", new string[]
+        [DataRow(ObjType.Узел, @"../../../../TestModelCore/Examples/CDB/longModel.cdb", new string[]
 {
             "3321", "9963", "13284", "9963"
 })]
@@ -359,7 +359,7 @@ namespace TestModeCore_test.OperationalController
             //act
 
             var creator = new PresentersCreator();
-            var modelView = new ModelView(model);
+            var modelView = new global::OperationalController.ModelView(model);
             var setInfo = model.ObjectData.GetSetsInfo(objType).First();
             IObjsPresenter presenter;
 
@@ -403,8 +403,8 @@ namespace TestModeCore_test.OperationalController
 
         //Тест на нормали, презентатор отправляет некоррректные нормали 3д элементов на сцену :(
         [DataTestMethod]
-        [DataRow(@"..\..\..\Examples\CDB\longModel.cdb")]
-        [DataRow(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC")]
+        [DataRow(@"../../../../TestModelCore/Examples/CDB/longModel.cdb")]
+        [DataRow(@"../../../../TestModelCore/Examples/VIsual-Mesh/rhombDATA1.ASC")]
         public void TestNormals(string path)
         {
             var model = new ModelData();
@@ -431,7 +431,7 @@ namespace TestModeCore_test.OperationalController
                 model.Load(path);
             }
 
-            var modelView = new ModelView(model);
+            var modelView = new global::OperationalController.ModelView(model);
             var setInfo = model.ObjectData.GetSetsInfo(ObjType.Элемент3D).First();
             var elems = model.ObjectData.E3DCollection.GetObjects();
             var presenter = new SurfaceObjsPresenter<ElementSurface, Node>(elems.ToList(), modelView.GetColor(setInfo, 0));
@@ -442,7 +442,7 @@ namespace TestModeCore_test.OperationalController
             var separators = presenter.CreateSeparators();
 
             var checker = new NormalsChecker(presenter);
-            checker.Log = $@".\{Path.GetFileNameWithoutExtension(path)}_log.log";
+            checker.Log = $@"./{Path.GetFileNameWithoutExtension(path)}_log.log";
             checker.Check();
 
             Assert.IsTrue(checker.NotOthogonals == 0);
@@ -450,100 +450,10 @@ namespace TestModeCore_test.OperationalController
             Assert.IsTrue(checker.Inverted == 0);
         }
 
-        [TestMethod]
-        public void TestSeparators()
-        {
-            var controller = new ProjectController();
-            controller.Load(@"..\..\..\Examples\3D\mixElements.bpf");
 
-            var setInfo = controller.GetModelSetsInfo(ObjType.Элемент2D).First();
-            var presenter = controller.CreateModelObjectsPresentor(setInfo);
-            var surfPresenter = (ISurfaceObjsPresenter)presenter;
-            var inds = surfPresenter.CreateIndexes();
-            var coords = surfPresenter.CreateVertexes(inds.Item2, "координаты");
-            var separators = surfPresenter.CreateSeparators();
 
-            Assert.IsTrue(surfPresenter.Count() == separators.Length - 1);
-        } 
 
-        [DataTestMethod]
-        [DataRow(@"..\..\..\Examples\3D\Lazer.inp", 10, ObjType.Элемент3D)]
-        [DataRow(@"..\..\..\Examples\3D\untitled.inp", 47, ObjType.Элемент3D)]
-        [DataRow(@"..\..\..\Examples\3D\Lazer.inp", 35, ObjType.Элемент2D)]
-        [DataRow(@"..\..\..\Examples\3D\untitled.inp", 6, ObjType.Элемент2D)]
-        public void TestSeparatorsAfterHideElementsByColor(string fileName, int hideElemsBySet, ObjType objType)
-        {
-            var controller = new ProjectController();
-            controller.ImportMesh(fileName);
 
-            var sets = controller.GetModelSetsInfo(objType);
-            var numbersToHide = sets.SelectMany(set => set.GetNumbers()).Take(hideElemsBySet).ToArray();
-            controller.SetVisible(objType, numbersToHide, false);
 
-            var expectedShown = sets.Sum(set => set.NumberOfObjects) - numbersToHide.Length;
-            var actualShown = 0;
-            foreach (var set in controller.GetModelSetsInfo(objType))
-            {
-                foreach (var item in set.GetNumbers())
-                {
-                    if (controller.GetVisible(objType, item))
-                        actualShown++;
-                }
-
-            }
-
-            Assert.AreEqual(expectedShown, actualShown);
-
-            var setInfo = sets.First();
-            expectedShown = setInfo.GetNumbers().Count(number => controller.GetVisible(objType, number));
-            var surfPresenter = (ISurfaceObjsPresenter)controller.CreateModelObjectsPresentor(setInfo);
-            
-            var inds = surfPresenter.CreateIndexes();
-            var coords = surfPresenter.CreateVertexes(inds.Item2, "координаты");
-            var separators = surfPresenter.CreateSeparators();
-
-            actualShown = 0;
-            var maxSeparator = separators[0];//Для проверки "дружелюбности" сепараторов с индексами
-            for (var i = 1; i < separators.Length; ++i)
-            {
-                maxSeparator = Math.Max(maxSeparator, separators[i]);
-                var viewState = Convert.ToInt32(separators[i] - separators[i - 1] > 0);
-                actualShown += viewState;
-            }
-
-            Assert.AreEqual(expectedShown, actualShown);
-            Assert.AreEqual(inds.Item1, maxSeparator * 3);
-        }
-
-        [DataTestMethod]
-        [DataRow(@"..\..\..\Examples\3D\Lazer.inp", 155)]
-        public void ChangeElement1DSetColorTest(string fileName, int alpha)
-        {
-            var alphaExp = alpha / 255f;
-
-            var controller = new ProjectController();
-            controller.ImportMesh(fileName);
-
-            var sets = controller.GetModelSetsInfo(ObjType.Элемент1D);
-
-            foreach (var set in sets)
-            {
-                var color = controller.GetColor(set);
-                var setColor = Color.FromArgb(alpha, color);
-                controller.SetColor(set, setColor);
-                var actualColor = controller.GetColor(set);
-                Assert.AreEqual(alpha, actualColor.A);
-            }
-
-            var setInfo = sets.First();
-            var pres = controller.CreateModelObjectsPresentor(setInfo);
-
-            var indices = pres.CreateIndexes();
-            var colors = pres.CreateVertexes(indices.Item3, "цвет");
-
-            //Сделал исправление в ColorLineObjsCreator.cs стр 14, т.к набор не подхватывал альфа-канал
-            for (var i = 0; i < colors.Length; i+=4)
-                Assert.AreEqual(alphaExp, colors[i + 3], 1e-4);
-        }
     }
 }

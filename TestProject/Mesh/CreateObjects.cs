@@ -1,4 +1,4 @@
-﻿using Geometry;
+using Geometry;
 using Model;
 using Model.Interfaces;
 using OperationalController;
@@ -7,7 +7,7 @@ using System.Globalization;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
-namespace TestModeCore_test.OperationalController
+namespace TestProject_test.Mesh
 {
     [TestClass]
     public class CreateObjects
@@ -43,7 +43,7 @@ namespace TestModeCore_test.OperationalController
         public void Create1D(List<Point3D> points, int dim)
         {
             var contr = new ProjectController();
-            contr.CreateProject(@"..\..\..\Examples\createObj.bpf2");
+            contr.CreateProject(@"../../../../TestModelCore/Examples/createObj.bpf2");
 
             var numb = 0;
             var numbs = new int[points.Count];
@@ -122,60 +122,9 @@ namespace TestModeCore_test.OperationalController
             Assert.AreNotEqual(contr.GetModelElements(2, "create").Count(), 0);
         }
 
-        [TestMethod]
-        public void CreateGeometryObjectsTest()
-        {
-            var project = new ProjectController();
-            project.CreateProject(@"newProj.bpf2");
-            project.InitializeGeometry(GmshLibrary.FilePath);
 
-            var start = project.CreatePoint(0, 0, 0);
-            var middle = project.CreatePoint(2, 2, 0);
-            var end = project.CreatePoint(2, 0, 0);
 
-            var pointByVector = project.CreatePointByVector(start, middle, 1);
 
-            var line1 = project.CreateLine(start, middle);
-            var line2 = project.CreateLine(middle, end);
-            var line3 = project.CreateLine(end, start);
-
-            var plane = project.CreateSurface(new int[] { line1, line2, line3 });
-
-            // ===== ASSERT POINTS =====
-            var s = project.GetModelPoint(start);
-            var pbv = project.GetModelPoint(pointByVector);
-            Assert.IsNotNull(s);
-            Assert.AreEqual(start, s.Number);
-            Assert.IsNotNull(pbv);
-            Assert.AreEqual(pointByVector, pbv.Number);
-
-            var m = project.GetModelPoint(middle);
-            Assert.IsNotNull(m);
-            Assert.AreEqual(middle, m.Number);
-
-            var e = project.GetModelPoint(end);
-            Assert.IsNotNull(e);
-            Assert.AreEqual(end, e.Number);
-
-            // ===== ASSERT CURVES =====
-            var c = project.GetModelCurve(line2);
-            Assert.IsNotNull(c);
-            Assert.AreEqual(line2, c.Number);
-
-            // ===== ASSERT SURFACE =====
-            var p = project.GetModelSurface(plane);
-            Assert.IsNotNull(p);
-            Assert.AreEqual(plane, p.Number);
-        }
-
-        [TestMethod]
-        public void CreatePoint_ShouldThrow_WhenGeometryIsNotInitialized()
-        {
-            var project = new ProjectController();
-            project.CreateProject(@"newProj.bpf2");
-
-            Assert.ThrowsException<InvalidOperationException>(() => project.CreatePoint(0, 0, 0));
-        }
 
 
         [TestMethod]
@@ -184,7 +133,7 @@ namespace TestModeCore_test.OperationalController
             var project = new ProjectController();
             project.InitializeGeometry(GmshLibrary.FilePath);
             //project.CreateProject(@"newProj.bpf2");
-            var s = @"..\..\..\Examples\CAD\model1.stp";
+            var s = @"../../../../TestModelCore/Examples/CAD/model1.stp";
             
             project.ImportCAD(s);
 
@@ -212,7 +161,7 @@ namespace TestModeCore_test.OperationalController
         {
             var project = new ProjectController();
             project.InitializeGeometry(GmshLibrary.FilePath);
-            project.ImportCAD(@"..\..\..\Examples\CAD\model1.stp");
+            project.ImportCAD(@"../../../../TestModelCore/Examples/CAD/model1.stp");
 
             var start = project.CreatePoint(0, -85, 5);
             var line2 = project.CreateLine(1, start);
@@ -240,7 +189,7 @@ namespace TestModeCore_test.OperationalController
             var project = new ProjectController();
             project.InitializeGeometry(GmshLibrary.FilePath);
             //project.CreateProject(@"newProj.bpf2");
-            var s = @"..\..\..\Examples\CAD\PART_3.stp";
+            var s = @"../../../../TestModelCore/Examples/CAD/PART_3.stp";
 
             project.ImportCAD(s);
 

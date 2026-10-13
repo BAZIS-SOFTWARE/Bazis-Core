@@ -105,7 +105,7 @@ namespace TestProject_test.OperationalController
         {
             var elements = CreateTwoHexas();
             var visibleElements = new List<ISurfaceObject<ElementSurface, Node>> { elements[0] };
-            var view = new ModelView(new ModelData()) { HideInsideSurfaces = true };
+            var view = new global::OperationalController.ModelView(new ModelData()) { HideInsideSurfaces = true };
             var presenter = new ElementSurfaceObjsPresenter(visibleElements, new[] { Color.Blue }, view);
 
             Assert.AreEqual(5 * 2 * 3, presenter.CreateIndexes().Item1);
@@ -130,7 +130,7 @@ namespace TestProject_test.OperationalController
             var model = new ModelData();
             model.ObjectData.E3DCollection.Add("lower", elements[0]);
             model.ObjectData.E3DCollection.Add("upper", elements[1]);
-            var view = new ModelView(model) { HideInsideSurfaces = true };
+            var view = new global::OperationalController.ModelView(model) { HideInsideSurfaces = true };
             var lowerSet = model.ObjectData.E3DCollection["lower"];
             ModelViewChangedEventArgs? changes = null;
             view.Changed += (sender, args) => changes = args;

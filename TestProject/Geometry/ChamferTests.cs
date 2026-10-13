@@ -1,7 +1,7 @@
 using OperationalController;
 using OperationalController.GmshController;
 
-namespace TestModeCore_test.OperationalController
+namespace TestProject_test.Geometry
 {
     [TestClass]
     public class ChamferTests
@@ -13,6 +13,7 @@ namespace TestModeCore_test.OperationalController
         {
             gmshController = new GmshController();
             gmshController.Load(GmshLibrary.FilePath);
+            gmshController.Gmsh.Clear();
         }
 
         [TestCleanup]

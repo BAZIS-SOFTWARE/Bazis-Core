@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
@@ -8,7 +8,7 @@ using OperationalController;
 using OperationalController.ModelScenePresentator;
 using System.Linq;
 
-namespace TestModeCore_test.OperationalController
+namespace TestProject_test.ModelView
 {
     [TestClass]
     public class TestModelControllerPoligon
@@ -33,7 +33,7 @@ namespace TestModeCore_test.OperationalController
 
             //act
             var creator = new PresentersCreator();
-            var modelView = new ModelView(model);
+            var modelView = new global::OperationalController.ModelView(model);
             var setInfo = model.ObjectData.GetSetInfo(ObjType.Поверхность, 0);
             var figures = model.ObjectData.SurfaceSet.Values.ToList();
             var colorsByFigure = figures.Select(figure => modelView.GetColor(setInfo, figure.Number)).ToList();
@@ -87,7 +87,7 @@ namespace TestModeCore_test.OperationalController
 
             //act
             var creator = new PresentersCreator();
-            var modelView = new ModelView(model);
+            var modelView = new global::OperationalController.ModelView(model);
             var setInfo = model.ObjectData.GetSetInfo(ObjType.Поверхность, 0);
             var figures = model.ObjectData.SurfaceSet.Values.ToList();
             var colorsByFigure = figures.Select(figure => modelView.GetColor(setInfo, figure.Number)).ToList();

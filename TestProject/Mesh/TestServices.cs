@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -16,7 +16,7 @@ using OperationalController;
 using System.Globalization;
 using System.Threading;
 
-namespace TestModeCore_test.OperationalController
+namespace TestProject_test.Mesh
 {
     [TestClass]
     public class TestServices
@@ -34,7 +34,7 @@ namespace TestModeCore_test.OperationalController
 
             //act
             model.Loader = new LoadModelFromBPFTextFile();
-            model.Load(@"..\..\..\Examples\3D\cub_unsorted_freeNodes.bpf");
+            model.Load(@"../../../../TestModelCore/Examples/3D/cub_unsorted_freeNodes.bpf");
 
             var freeNodesFinder = new FreeNodesFinder();
             var freeNodes = freeNodesFinder.Find(model.ObjectData);
@@ -54,7 +54,7 @@ namespace TestModeCore_test.OperationalController
             var objectsData = InitializeSampleModelWithAscendingNumbers();
             var selector = new SelectionHelper();
             var actual = selector.SelectNodeInDirection(objectsData, angle, first, second);
-            Assert.IsTrue(actual.SequenceEqual(expected)); 
+            Assert.IsTrue(actual.SequenceEqual(expected));
         }
 
         [DataTestMethod]
@@ -83,11 +83,11 @@ namespace TestModeCore_test.OperationalController
         }
 
         [DataTestMethod]
-        [DataRow(9, 62528, @"..\..\..\Examples\2D\curvedStrip.bpf")]
-        [DataRow(0, 62528, @"..\..\..\Examples\2D\curvedStrip.bpf")]
-        [DataRow(15, 62528, @"..\..\..\Examples\2D\curvedStrip.bpf")]
-        [DataRow(5, 62528, @"..\..\..\Examples\2D\curvedStrip.bpf")]
-        [DataRow(5, 62528, @"..\..\..\Examples\2D\curvedStrip.bpf")]
+        [DataRow(9, 62528, @"../../../../TestModelCore/Examples/2D/curvedStrip.bpf")]
+        [DataRow(0, 62528, @"../../../../TestModelCore/Examples/2D/curvedStrip.bpf")]
+        [DataRow(15, 62528, @"../../../../TestModelCore/Examples/2D/curvedStrip.bpf")]
+        [DataRow(5, 62528, @"../../../../TestModelCore/Examples/2D/curvedStrip.bpf")]
+        [DataRow(5, 62528, @"../../../../TestModelCore/Examples/2D/curvedStrip.bpf")]
         public void SelectionHelper_OutSideModel_WhenAngleGiven(float angle, int first, string path)
         {
             //assing
@@ -104,100 +104,26 @@ namespace TestModeCore_test.OperationalController
 
         }
 
-        [DataTestMethod]
-        [DataRow(5, 169, @"c:\projs\Roman\Project\Project\proj_e.bpf2")]
 
-        public void SelectionHelper_GenerateOnOutSideModel(float angle, int first, string path)
-        {
-            //assing
 
-            var controller = new global::OperationalController.ProjectController();
 
-            //act
-            controller.Load(path);
 
-            controller.Create2DForm3D();
 
-            var objs = controller.SelectE2DInPlane(angle, first, Color.Green);
 
-            
 
-            Assert.AreNotEqual(objs.Count, 1);
-
-        }
-
-        [TestMethod]
-        public void FindBoundaryEdges_ShouldWork_OnModelWithDifferentElements()
-        {
-            var controller = new global::OperationalController.ProjectController();
-            //controller.ModelData.Loader = new LoadModelFromBPFTextFile();
-            //controller.CreateProject(@"..\..\..\Examples\3D\cub_unsorted.bpf");
-            controller.Load(@"..\..\..\Examples\3D\cub_unsorted.bpf");
-            var linesNodes = controller.FindBoundaryEdges();
-            var bounds = controller.CreateBoundaryEdges(linesNodes);
-            
-            Assert.AreEqual(19, bounds.Count());
-
-            var presentersCreator  = new PresentersCreator();
-            var presentor = presentersCreator.CreateLineObjectsPresenter(bounds.ToList(), Color.Blue);
-            Assert.AreEqual(19, presentor.Count());
-            
-        }
-
-        [TestMethod]
-        public void GetElementsNormals()
-        {
-            var controller = new global::OperationalController.ProjectController();
-            //controller.ModelData.Loader = new LoadModelFromBPFTextFile();
-            
-            //controller.CreateProject(@"..\..\..\Examples\3D\cub_unsorted.bpf");
-            controller.Load(@"..\..\..\Examples\3D\cub_unsorted.bpf");
-            var normals = controller.CalcElemsNormals(3); 
-
-            Assert.AreNotEqual(0, normals.Count());
-
-            var presentersCreator = new PresentersCreator();
-            var presentor = presentersCreator.CreateLineObjectsPresenter(normals.ToList(), Color.Blue);
-            Assert.AreNotEqual(0, presentor.Count());
-
-        }
-
-        [TestMethod]
-        public void FindElementNodes()
-        {
-            //assing
-            var controller = new global::OperationalController.ProjectController();
-
-            //act
-            controller.Load(@"..\..\..\Examples\3D\task_1.bpf");
-
-            var els3D = controller.GetModelObjects(ObjType.Элемент3D);
-
-            var interNodesEls3DFinder = new InterfacedNodesFinder();
-
-            var interfacedNodesEls3D = interNodesEls3DFinder.Find(new List<int>() { 3, 48, 71 }, els3D.Select(x => (IElement)x));
-
-            var elsForNode = new List<int>() { 1565,2048,2050, 2051 };
-            //assert
-            for (int i = 0; i < interfacedNodesEls3D[48].Count; i++)
-            {
-                if (!elsForNode.Contains(interfacedNodesEls3D[48][i]))
-                    throw new Exception("номера не совпадают");
-            }
-        }         
 
         [TestMethod, Timeout(5000)]
-        public void FindManyCoincidentObjects() 
+        public void FindManyCoincidentObjects()
         {
             var loader = new LoadModelFromCDBTextFile();
-            var model = loader.Load(@"..\..\..\Examples\CDB\10e+5Nodes.cdb");
+            var model = loader.Load(@"../../../../TestModelCore/Examples/CDB/10e+5Nodes.cdb");
             var finder = new FindCoincidentObjects();
             var coincidentNodes = finder.Find(model.ObjectData.GetObjects(ObjType.Узел).ToList(), 1.0f);
         }
 
         [TestMethod]
-        [DataRow(@"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC",0)]
-        [DataRow(@"..\..\..\Examples\BPF2TXT\surfNodesSample.bpf2", 2173)]
+        [DataRow(@"../../../../TestModelCore/Examples/VIsual-Mesh/rhombDATA1.ASC",0)]
+        [DataRow(@"../../../../TestModelCore/Examples/BPF2TXT/surfNodesSample.bpf2", 2173)]
         public void TestCalcFindOpenSurfaceNodes(string path,int excNumb)
         {
             //assing

@@ -1,7 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OperationalController.GmshController;
 
-namespace TestModeCore_test.OperationalController
+namespace TestProject_test.OperationalController
 {
     [TestClass]
     public class ConnectionTests

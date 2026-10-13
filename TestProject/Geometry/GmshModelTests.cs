@@ -1,15 +1,15 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 using GmshApi;
 using OperationalController.GmshController;
 
-namespace TestModeCore_test.GmshApi
+namespace TestProject_test.Geometry
 {
     [TestClass]
     public class ModelTests
     {
         private IGmshController controller = new GmshController();
-        private static string modelFolder = @"..\..\..\Examples\GMSHAPI\";
+        private static string modelFolder = @"../../../../TestModelCore/Examples/GMSHAPI/";
 
         [TestInitialize]
         public void Init()

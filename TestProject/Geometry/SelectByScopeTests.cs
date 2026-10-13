@@ -1,6 +1,6 @@
-﻿using OperationalController;
+using OperationalController;
 
-namespace TestModeCore_test.OperationalController
+namespace TestProject_test.Geometry
 {
     [TestClass]
     public class SelectByScopeTests
@@ -12,7 +12,7 @@ namespace TestModeCore_test.OperationalController
         {
             _project = new ProjectController();
             _project.InitializeGeometry(GmshLibrary.FilePath);
-            _project.ImportCAD(@"..\..\..\Examples\CAD\Tavr.step");
+            _project.ImportCAD(@"../../../../TestModelCore/Examples/CAD/Tavr.step");
         }
 
         [DataTestMethod]

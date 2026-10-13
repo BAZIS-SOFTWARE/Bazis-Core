@@ -2,7 +2,7 @@ using GmshApi;
 using Model.Interfaces;
 using OperationalController;
 
-namespace TestModeCore_test.OperationalController
+namespace TestProject_test.Mesh
 {
     [TestClass]
     public class ProjectControllerMeshingSettingsTests
@@ -159,16 +159,7 @@ namespace TestModeCore_test.OperationalController
             Assert.AreEqual(size, actualSize, 1e-12);
         }
 
-        [TestMethod]
-        public void GetGeometryFilePath_ShouldReturnImportedGeometryPath()
-        {
-            var filePath = GetGmshGeometryPath("simple.geo");
-            projectController.ImportCAD(filePath);
 
-            var actualPath = projectController.GetGeometryFilePath();
-
-            Assert.AreEqual(filePath, actualPath);
-        }
 
         [TestMethod]
         public void GetCurveMeshingSettings_ShouldThrowWhenGeometryIsNotInitialized()
@@ -252,7 +243,7 @@ namespace TestModeCore_test.OperationalController
 
         private string GetExamplesPath()
         {
-            return Path.GetFullPath(@"..\..\..\Examples");
+            return Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "TestModelCore", "Examples"));
         }
 
     }

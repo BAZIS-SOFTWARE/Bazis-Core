@@ -1,4 +1,4 @@
-﻿using Geometry;
+using Geometry;
 using Model.Interfaces;
 using Model;
 using Model.MeshObjects;
@@ -8,13 +8,13 @@ using MathNet.Spatial.Euclidean;
 using Point3D = global::Geometry.Point3D;
 using OperationalController.GeomObjsCreator;
 
-namespace TestModeCore_test.OperationalController
+namespace TestProject_test.Geometry
 {
     [TestClass]
     public class GeometryTests
     {
         private GmshController gmshController = new GmshController();
-        private static string modelFolder = @"..\..\..\Examples";
+        private static string modelFolder = @"../../../../TestModelCore/Examples";
         [TestInitialize]
         public void Init()
         {
@@ -26,58 +26,15 @@ namespace TestModeCore_test.OperationalController
             gmshController.Gmsh.Clear();
         }
 
-        [DataTestMethod]
-        [DataRow(@"c:\projs\aviaDvigProj\GeoMesh\obr3.stp")]
-        //[DataRow(@"c:\projs\aviaDvigProj\GeoMesh\obr3.igs")]
-        [DataRow(@"c:\projs\aviaDvigProj\GeoMesh\cube.igs")]
 
-        //[DataRow(@"\GMSHAPI\cubes.geo")]
-        //Для geo ядра презентация STL не работает (как и в gmsh)
-        public void ImportCADoutside(string fileName)
-        {
-            var project = new ProjectController();
-            project.InitializeGeometry(GmshLibrary.FilePath);
-            project.ImportCAD(fileName);
 
-            //assert
-            Assert.AreNotEqual(project.GetAllModelObjects().Count(),0);
-        }
+
+
+
 
         [DataTestMethod]
-        [DataRow(@"D:\source\repos\вбс\part 1.step")]
-        [DataRow(@"D:\source\repos\путь\part1.step")]
-        [DataRow(@"D:\ source\repos\CAD\part1.step")]
-        public void ImportCAD_ShouldFaill_WhenPathContainsForbiddenSymbols(string path)
-        {
-            var project = new ProjectController();
-            Assert.ThrowsException<ArgumentException>(() =>
-            project.ImportCAD(path), 
-            "В пути файла присутствуют символы кириллицы или пробелы. Выберите другой файл или переименуйте этот!");
-        }
-
-        [DataTestMethod]
-        [DataRow(@"\CAD\screw.step")]
-        [DataRow(@"\CAD\assembly_1.step")]
-        [DataRow(@"\CAD\assembly_2.stp")]
-        [DataRow(@"\CAD\nasos.step")]
-        [DataRow(@"\CAD\model_with_free_surfaces.stp")]
-        [DataRow(@"\CAD\block.igs")]
-
-        //[DataRow(@"\GMSHAPI\cubes.geo")]
-        //Для geo ядра презентация STL не работает (как и в gmsh)
-        public void ImportCAD(string fileName)
-        {
-            var project = new ProjectController();
-            project.InitializeGeometry(GmshLibrary.FilePath);
-            project.ImportCAD(modelFolder + fileName);
-
-            //assert
-            Assert.AreNotEqual(project.GetAllModelObjects().Count(), 0);
-        }
-
-        [DataTestMethod]
-        [DataRow(@"\CAD\Cilindr.step", 6, ObjType.Кривая)]
-        [DataRow(@"\CAD\Cilindr.step", 4, ObjType.Точка)]
+        [DataRow(@"/CAD/Cilindr.step", 6, ObjType.Кривая)]
+        [DataRow(@"/CAD/Cilindr.step", 4, ObjType.Точка)]
         public void GetGeometryObjectsTest(string fileName, int numbOfObjs, ObjType objType)
         {
             gmshController.Gmsh.Open(modelFolder + fileName);
@@ -94,7 +51,7 @@ namespace TestModeCore_test.OperationalController
         }
 
         [DataTestMethod]
-        [DataRow(@"\GMSHAPI\test.geo")]
+        [DataRow(@"/GMSHAPI/test.geo")]
         public void TestCurveSteps(string fileName)
         {
             gmshController.Gmsh.Open(modelFolder + fileName);
@@ -106,30 +63,7 @@ namespace TestModeCore_test.OperationalController
         }
 
         [DataTestMethod]
-        [DataRow(@"..\..\..\Examples\STL\ACII.stl", ObjType.Узел,0,0)]
-        [DataRow(@"..\..\..\Examples\STL\ACII.stl", ObjType.Элемент2D,4,0)]
-        public void RemoveAllData(string stlPath, ObjType objType, int nNumb, int eNumb)
-        {
-            var modelData = new ModelData();
-            gmshController.Gmsh.Merge(stlPath);
-
-            var nodes = gmshController.GetNodes();
-            Assert.AreEqual(4, nodes.Count);
-
-            var elements = gmshController.GetMeshEntities(2, -1, nodes);
-            Assert.AreEqual(2, elements.Count);
-
-            nodes.ForEach(x =>  modelData.ObjectData.NodesSet.Add(x.Number, x));
-            modelData.ObjectData.E2DCollection.Add("e2d");
-            elements.ForEach(x => modelData.ObjectData.E2DCollection.Add("e2d", (Element2D)x));
-            modelData.ObjectData.Clear(objType);
-
-            Assert.AreEqual(modelData.ObjectData.NodesSet.Count, nNumb);
-            Assert.AreEqual(modelData.ObjectData.E2DCollection.Count, eNumb);
-        }
-
-        [DataTestMethod]
-        [DataRow(@"\CAD\Cilindr.step", new int[] { 1 })]
+        [DataRow(@"/CAD/Cilindr.step", new int[] { 1 })]
         public void RemoveEntityTest(string fileName, int[] dimArray)
         {
             gmshController.Gmsh.Open(modelFolder + fileName);
@@ -145,10 +79,10 @@ namespace TestModeCore_test.OperationalController
         }
 
         [DataTestMethod]
-        [DataRow(@"\CAD\Cilindr.step", new int[] { 4, 6, 4, 1 })]
-        [DataRow(@"\CAD\nasos.step",  new int[] { 376, 684, 291, 1 })]
-        [DataRow(@"\CAD\block.igs",  new int[] { 136, 138, 28 })]
-        //[DataRow(@"\CAD\assembly_2.stp",  new int[] { 136, 138, 28 })]
+        [DataRow(@"/CAD/Cilindr.step", new int[] { 4, 6, 4, 1 })]
+        [DataRow(@"/CAD/nasos.step",  new int[] { 376, 684, 291, 1 })]
+        [DataRow(@"/CAD/block.igs",  new int[] { 136, 138, 28 })]
+        //[DataRow(@"/CAD/assembly_2.stp",  new int[] { 136, 138, 28 })]
         
         public void GetEntitiesGetAllDimensionTest(string fileName, int[] expTags)
         {
@@ -165,11 +99,11 @@ namespace TestModeCore_test.OperationalController
         }
 
         [DataTestMethod]
-        [DataRow(@"\CAD\Cilindr.step", "1", new int[] { 4, 6, 4, 1 },
+        [DataRow(@"/CAD/Cilindr.step", "1", new int[] { 4, 6, 4, 1 },
                   new string[] { "Point", "Curve", "Surface", "Volume" })]
-        [DataRow(@"\CAD\Korpus_Nasosa.step", "2", new int[] { 376, 684, 291, 1 },
+        [DataRow(@"/CAD/Korpus_Nasosa.step", "2", new int[] { 376, 684, 291, 1 },
                   new string[] { "Point", "Curve", "Surface", "Volume" })]
-        [DataRow(@"\CAD\model.igs", "3", new int[] { 136, 138, 28 }, new string[] { "Point", "Curve", "Surface" })]
+        [DataRow(@"/CAD/model.igs", "3", new int[] { 136, 138, 28 }, new string[] { "Point", "Curve", "Surface" })]
         public void SetGetRemoveEntityNameTest(string fileName, string modelID, int[] entCount, string[] entName)
         {
             gmshController.Gmsh.Open(modelFolder + fileName);
@@ -189,13 +123,13 @@ namespace TestModeCore_test.OperationalController
         }
 
         [DataTestMethod]
-        [DataRow(@"\CAD\Cilindr.step", "1", new double[] { -14.2188, -2.7094, -13.2231 },
+        [DataRow(@"/CAD/Cilindr.step", "1", new double[] { -14.2188, -2.7094, -13.2231 },
                                       new double[] { 10.6366, 19.599, 10.7593 })]
-        [DataRow(@"\CAD\nasos.step", "2", new double[] { -88.2608, -0.679586, -61.2934 },
+        [DataRow(@"/CAD/nasos.step", "2", new double[] { -88.2608, -0.679586, -61.2934 },
                                             new double[] { 88.2608, 273.279, 61.2934 })]
-        [DataRow(@"\CAD\block.igs", "3", new double[] { -1.72724e-05, -179.902, -0.0020751 },
+        [DataRow(@"/CAD/block.igs", "3", new double[] { -1.72724e-05, -179.902, -0.0020751 },
                                    new double[] { 2591.2, 2540, 508 })]
-        [DataRow(@"\GMSHAPI\sphere.geo", "4", new double[] { -1, -1, -1 },
+        [DataRow(@"/GMSHAPI/sphere.geo", "4", new double[] { -1, -1, -1 },
                                     new double[] { 1, 1, 1 })]
         public void ModelBoundingBoxTest(string fileName, string modelID, double[] minExp, double[] maxExp)
         {
@@ -210,36 +144,36 @@ namespace TestModeCore_test.OperationalController
         }
 
         [DataTestMethod]
-        [DataRow(@"\CAD\Cilindr.step", "1", 1, new int[] { }, new int[] { 1, 2, 6 }, 0)]
-        [DataRow(@"\CAD\Cilindr.step", "1", 2, new int[] { }, new int[] { 1, 4, 5 }, 0)]
-        [DataRow(@"\CAD\Cilindr.step", "1", 3, new int[] { }, new int[] { 2, 3, 6 }, 0)]
-        [DataRow(@"\CAD\Cilindr.step", "1", 4, new int[] { }, new int[] { 3, 4, 5 }, 0)]
-        [DataRow(@"\GMSHAPI\sphere.geo", "2", 1, new int[] { }, new int[] { }, 0)]
-        [DataRow(@"\GMSHAPI\sphere.geo", "2", 2, new int[] { }, new int[] { 1, 4, 9, 12 }, 0)]
-        [DataRow(@"\GMSHAPI\sphere.geo", "2", 3, new int[] { }, new int[] { 1, 2, 5, 8 }, 0)]
-        [DataRow(@"\GMSHAPI\sphere.geo", "2", 4, new int[] { }, new int[] { 2, 3, 10, 11 }, 0)]
-        [DataRow(@"\GMSHAPI\sphere.geo", "2", 5, new int[] { }, new int[] { 3, 4, 6, 7 }, 0)]
-        [DataRow(@"\GMSHAPI\sphere.geo", "2", 6, new int[] { }, new int[] { 5, 6, 11, 12 }, 0)]
-        [DataRow(@"\GMSHAPI\sphere.geo", "2", 7, new int[] { }, new int[] { 7, 8, 9, 10 }, 0)]
-        [DataRow(@"\GMSHAPI\sphere.geo", "1", 1, new int[] { 2, 3 }, new int[] { 18, 22 }, 1)]
-        [DataRow(@"\GMSHAPI\sphere.geo", "1", 2, new int[] { 3, 4 }, new int[] { 14, 20 }, 1)]
-        [DataRow(@"\GMSHAPI\sphere.geo", "1", 3, new int[] { 4, 5 }, new int[] { 16, 24 }, 1)]
-        [DataRow(@"\GMSHAPI\sphere.geo", "1", 4, new int[] { 5, 2 }, new int[] { 26, 28 }, 1)]
-        [DataRow(@"\GMSHAPI\sphere.geo", "1", 5, new int[] { 3, 6 }, new int[] { 20, 22 }, 1)]
-        [DataRow(@"\GMSHAPI\sphere.geo", "1", 6, new int[] { 6, 5 }, new int[] { 24, 28 }, 1)]
-        [DataRow(@"\GMSHAPI\sphere.geo", "1", 7, new int[] { 5, 7 }, new int[] { 16, 26 }, 1)]
-        [DataRow(@"\GMSHAPI\sphere.geo", "1", 8, new int[] { 7, 3 }, new int[] { 14, 18 }, 1)]
-        [DataRow(@"\GMSHAPI\sphere.geo", "1", 9, new int[] { 2, 7 }, new int[] { 18, 26 }, 1)]
-        [DataRow(@"\GMSHAPI\sphere.geo", "1", 10, new int[] { 7, 4 }, new int[] { 14, 16 }, 1)]
-        [DataRow(@"\GMSHAPI\sphere.geo", "1", 11, new int[] { 4, 6 }, new int[] { 20, 24 }, 1)]
-        [DataRow(@"\GMSHAPI\sphere.geo", "1", 12, new int[] { 6, 2 }, new int[] { 22, 28 }, 1)]
-        [DataRow(@"\CAD\Cilindr.step", "1", 1, new int[] { 1, 2, 3, 4 }, new int[] { 1 }, 2)]
-        [DataRow(@"\CAD\Cilindr.step", "1", 2, new int[] { 1, 5, 3, 6 }, new int[] { 1 }, 2)]
-        [DataRow(@"\CAD\Cilindr.step", "1", 3, new int[] { 4, 5 }, new int[] { 1 }, 2)]
-        [DataRow(@"\CAD\Cilindr.step", "1", 4, new int[] { 6, 2 }, new int[] { 1 }, 2)]
-        [DataRow(@"\CAD\Cilindr.step", "1", 1, new int[] { 1, 2, 3, 4 }, new int[] { }, 3)]
-        [DataRow(@"\GMSHAPI\sphere.geo", "2", 30, new int[] { 28, 26, 16, 14, 20, 24, 22, 18 }, new int[] { }, 3)]
-        [DataRow(@"\GMSHAPI\sphere.geo", "2", 1, new int[0], new int[0], 3)]//Not Found Test
+        [DataRow(@"/CAD/Cilindr.step", "1", 1, new int[] { }, new int[] { 1, 2, 6 }, 0)]
+        [DataRow(@"/CAD/Cilindr.step", "1", 2, new int[] { }, new int[] { 1, 4, 5 }, 0)]
+        [DataRow(@"/CAD/Cilindr.step", "1", 3, new int[] { }, new int[] { 2, 3, 6 }, 0)]
+        [DataRow(@"/CAD/Cilindr.step", "1", 4, new int[] { }, new int[] { 3, 4, 5 }, 0)]
+        [DataRow(@"/GMSHAPI/sphere.geo", "2", 1, new int[] { }, new int[] { }, 0)]
+        [DataRow(@"/GMSHAPI/sphere.geo", "2", 2, new int[] { }, new int[] { 1, 4, 9, 12 }, 0)]
+        [DataRow(@"/GMSHAPI/sphere.geo", "2", 3, new int[] { }, new int[] { 1, 2, 5, 8 }, 0)]
+        [DataRow(@"/GMSHAPI/sphere.geo", "2", 4, new int[] { }, new int[] { 2, 3, 10, 11 }, 0)]
+        [DataRow(@"/GMSHAPI/sphere.geo", "2", 5, new int[] { }, new int[] { 3, 4, 6, 7 }, 0)]
+        [DataRow(@"/GMSHAPI/sphere.geo", "2", 6, new int[] { }, new int[] { 5, 6, 11, 12 }, 0)]
+        [DataRow(@"/GMSHAPI/sphere.geo", "2", 7, new int[] { }, new int[] { 7, 8, 9, 10 }, 0)]
+        [DataRow(@"/GMSHAPI/sphere.geo", "1", 1, new int[] { 2, 3 }, new int[] { 18, 22 }, 1)]
+        [DataRow(@"/GMSHAPI/sphere.geo", "1", 2, new int[] { 3, 4 }, new int[] { 14, 20 }, 1)]
+        [DataRow(@"/GMSHAPI/sphere.geo", "1", 3, new int[] { 4, 5 }, new int[] { 16, 24 }, 1)]
+        [DataRow(@"/GMSHAPI/sphere.geo", "1", 4, new int[] { 5, 2 }, new int[] { 26, 28 }, 1)]
+        [DataRow(@"/GMSHAPI/sphere.geo", "1", 5, new int[] { 3, 6 }, new int[] { 20, 22 }, 1)]
+        [DataRow(@"/GMSHAPI/sphere.geo", "1", 6, new int[] { 6, 5 }, new int[] { 24, 28 }, 1)]
+        [DataRow(@"/GMSHAPI/sphere.geo", "1", 7, new int[] { 5, 7 }, new int[] { 16, 26 }, 1)]
+        [DataRow(@"/GMSHAPI/sphere.geo", "1", 8, new int[] { 7, 3 }, new int[] { 14, 18 }, 1)]
+        [DataRow(@"/GMSHAPI/sphere.geo", "1", 9, new int[] { 2, 7 }, new int[] { 18, 26 }, 1)]
+        [DataRow(@"/GMSHAPI/sphere.geo", "1", 10, new int[] { 7, 4 }, new int[] { 14, 16 }, 1)]
+        [DataRow(@"/GMSHAPI/sphere.geo", "1", 11, new int[] { 4, 6 }, new int[] { 20, 24 }, 1)]
+        [DataRow(@"/GMSHAPI/sphere.geo", "1", 12, new int[] { 6, 2 }, new int[] { 22, 28 }, 1)]
+        [DataRow(@"/CAD/Cilindr.step", "1", 1, new int[] { 1, 2, 3, 4 }, new int[] { 1 }, 2)]
+        [DataRow(@"/CAD/Cilindr.step", "1", 2, new int[] { 1, 5, 3, 6 }, new int[] { 1 }, 2)]
+        [DataRow(@"/CAD/Cilindr.step", "1", 3, new int[] { 4, 5 }, new int[] { 1 }, 2)]
+        [DataRow(@"/CAD/Cilindr.step", "1", 4, new int[] { 6, 2 }, new int[] { 1 }, 2)]
+        [DataRow(@"/CAD/Cilindr.step", "1", 1, new int[] { 1, 2, 3, 4 }, new int[] { }, 3)]
+        [DataRow(@"/GMSHAPI/sphere.geo", "2", 30, new int[] { 28, 26, 16, 14, 20, 24, 22, 18 }, new int[] { }, 3)]
+        [DataRow(@"/GMSHAPI/sphere.geo", "2", 1, new int[0], new int[0], 3)]//Not Found Test
         public void GetAdjacenciesTest(string fileName, string modelId, int tag, int[] downExp, int[] upExp, int dim)
         {
             gmshController.Gmsh.Open(modelFolder + fileName);
@@ -249,11 +183,11 @@ namespace TestModeCore_test.OperationalController
         }
 
         [DataTestMethod]
-        [DataRow(@"\CAD\Cilindr.step", "1", 1, new double[] { }, new double[] { 7.04956865241, 19.1445358209, -2.46386184958 })]
-        [DataRow(@"\CAD\Cilindr.step", "1", 2, new double[] { }, new double[] { 10.6317844476, 2.25496193279, 0 })]
-        [DataRow(@"\CAD\Cilindr.step", "1", 3, new double[] { }, new double[] { -14.2140002427, 14.6346119553, -2.46386184958 })]
-        [DataRow(@"\CAD\Cilindr.step", "1", 4, new double[] { }, new double[] { -10.6317844476, -2.25496193279, 2.33468147911e-16 })]
-        [DataRow(@"\CAD\Cilindr.step", "1", 5, new double[] { }, new double[] { })]//Not found test
+        [DataRow(@"/CAD/Cilindr.step", "1", 1, new double[] { }, new double[] { 7.04956865241, 19.1445358209, -2.46386184958 })]
+        [DataRow(@"/CAD/Cilindr.step", "1", 2, new double[] { }, new double[] { 10.6317844476, 2.25496193279, 0 })]
+        [DataRow(@"/CAD/Cilindr.step", "1", 3, new double[] { }, new double[] { -14.2140002427, 14.6346119553, -2.46386184958 })]
+        [DataRow(@"/CAD/Cilindr.step", "1", 4, new double[] { }, new double[] { -10.6317844476, -2.25496193279, 2.33468147911e-16 })]
+        [DataRow(@"/CAD/Cilindr.step", "1", 5, new double[] { }, new double[] { })]//Not found test
 
         public void GetLocalCoordsByParametricTest(string fileName, string modelID, int tag,
                                                    double[] parametric, double[] expected)
@@ -265,8 +199,8 @@ namespace TestModeCore_test.OperationalController
         }
 
         [DataTestMethod]
-        [DataRow(@"\CAD\Cilindr.step", new int[] { 1, 2, 3, 4, 5, 6 })]
-        [DataRow(@"\GMSHAPI\sphere.geo", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 })]
+        [DataRow(@"/CAD/Cilindr.step", new int[] { 1, 2, 3, 4, 5, 6 })]
+        [DataRow(@"/GMSHAPI/sphere.geo", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 })]
         public void ParametrizationCurvesTest(string fileName, int[] tags)
         {
             gmshController.Gmsh.Open(modelFolder + fileName);
@@ -281,7 +215,7 @@ namespace TestModeCore_test.OperationalController
         }
 
         [DataTestMethod]
-        [DataRow(@"\CAD\Cilindr.step", new int[] { 1 })]
+        [DataRow(@"/CAD/Cilindr.step", new int[] { 1 })]
         public void ParametrizationSurfacesTest(string fileName, int[] tags)
         {
             gmshController.Gmsh.Open(modelFolder + fileName);
@@ -318,7 +252,7 @@ namespace TestModeCore_test.OperationalController
         [DataRow("sphere.stl")]
         public void AddElements3DForStlTest(string fileName)
         {
-            gmshController.Gmsh.Open(@"..\..\..\Examples\STL\" + fileName);
+            gmshController.Gmsh.Open(@"../../../../TestModelCore/Examples/STL/" + fileName);
             gmshController.Gmsh.Model.Mesh.Generate(3);
             var nodes = gmshController.GetNodes(3, -1);
             var elements = gmshController.GetMeshEntities(3, -1, nodes);
@@ -338,7 +272,7 @@ namespace TestModeCore_test.OperationalController
         }
         //Тест проверки 4 координаты контрольной точки в файле
         [DataTestMethod]
-        [DataRow(@"..\..\..\Examples\GMSHAPI\simple.geo", new double[] { 0.1, 0.1, 0.1, 0.01 })]
+        [DataRow(@"../../../../TestModelCore/Examples/GMSHAPI/simple.geo", new double[] { 0.1, 0.1, 0.1, 0.01 })]
         public void CheckMeshSizesInFileTest(string path, double[] expected)
         {
             gmshController.Gmsh.Open(path);
@@ -348,8 +282,8 @@ namespace TestModeCore_test.OperationalController
         }
         //Тест - устанавливаем плотность в точке, затем проверям(берем разные файлы моделей!)
         [DataTestMethod]
-        [DataRow(@"..\..\..\Examples\CAD\Cilindr.step", new double[] { 0.35, 0.8, 0.25, 1.0 })]
-        [DataRow(@"..\..\..\Examples\GMSHAPI\simple.geo", new double[] { 0.5, 0.9, 0.01, 0.7 })]
+        [DataRow(@"../../../../TestModelCore/Examples/CAD/Cilindr.step", new double[] { 0.35, 0.8, 0.25, 1.0 })]
+        [DataRow(@"../../../../TestModelCore/Examples/GMSHAPI/simple.geo", new double[] { 0.5, 0.9, 0.01, 0.7 })]
         public void SetAndGetMeshSizesTest(string path, double[] expected)
         {
             gmshController.Gmsh.Open(path);
@@ -365,7 +299,7 @@ namespace TestModeCore_test.OperationalController
         }
 
         [DataTestMethod]
-        [DataRow(@"..\..\..\Examples\GMSHAPI\simple.geo", new string[] { "18", "bump","1.8"})]
+        [DataRow(@"../../../../TestModelCore/Examples/GMSHAPI/simple.geo", new string[] { "18", "bump","1.8"})]
         public void SetAndGetCurveTransfinite(string path, string[] expected)
         {
             gmshController.Gmsh.Open(path);
@@ -376,7 +310,7 @@ namespace TestModeCore_test.OperationalController
         }
 
         [DataTestMethod]
-        [DataRow(@"\CAD\Cilindr.step", new int[] { 2, 4, 5, 6 })]
+        [DataRow(@"/CAD/Cilindr.step", new int[] { 2, 4, 5, 6 })]
         public void GetCurveLengthTest(string fileName, int[] curvesId)
         {
             gmshController.Gmsh.Open(modelFolder + fileName);
@@ -400,9 +334,9 @@ namespace TestModeCore_test.OperationalController
             }
         }
         [DataTestMethod]
-        [DataRow(@"\CAD\Cilindr.step", 2, 3f)]
-        [DataRow(@"\CAD\Cilindr.step", 3, 0.5f)]
-        [DataRow(@"\CAD\Cilindr.step", 4, 4.2f)]
+        [DataRow(@"/CAD/Cilindr.step", 2, 3f)]
+        [DataRow(@"/CAD/Cilindr.step", 3, 0.5f)]
+        [DataRow(@"/CAD/Cilindr.step", 4, 4.2f)]
         public void GetPointsCountByElementSizeTest(string fileName, int curveId, float elemSize)
         {
             gmshController.Gmsh.Open(modelFolder + fileName);
@@ -415,7 +349,7 @@ namespace TestModeCore_test.OperationalController
             Assert.AreEqual(expected, actual);
         }
         [DataTestMethod]
-        [DataRow(@"\CAD\Cilindr.step")]
+        [DataRow(@"/CAD/Cilindr.step")]
         public void RemoveTest(string fileName)
         {
             gmshController.Gmsh.Open(modelFolder + fileName);
@@ -427,7 +361,7 @@ namespace TestModeCore_test.OperationalController
             var dimTags = gmshController.Gmsh.Model.GetEntities(3);
             
             Assert.IsTrue(dimTags.Length == 0);
-            //controller.Gmsh.Write(@"D:\ModifiedCylinder.step");
+            //controller.Gmsh.Write(@"D:/ModifiedCylinder.step");
         }
 
         //Пример разбиения кривой на две части(пополам):
@@ -435,7 +369,7 @@ namespace TestModeCore_test.OperationalController
         //2)Создать точку в ядре OCC
         //3)Выполнить булеву операцию фрагмент
         [DataTestMethod]
-        [DataRow(@"\CAD\Cilindr.step")]
+        [DataRow(@"/CAD/Cilindr.step")]
         public void OccSplitCurveTest(string fileName)
         {
             gmshController.Gmsh.Open(modelFolder + fileName);
@@ -453,7 +387,7 @@ namespace TestModeCore_test.OperationalController
             var afterSplit = gmshController.Gmsh.Model.GetEntities(1).Length / 2;
             Assert.AreEqual(curvesCount + 1, afterSplit);
 
-            //gmshController.Gmsh.Write(@"D:\ModifiedCylinder.step");
+            //gmshController.Gmsh.Write(@"D:/ModifiedCylinder.step");
         }
 
         //Вариант разбиения объема плоскостью на два подобъема (общая поверхность)
@@ -472,7 +406,7 @@ namespace TestModeCore_test.OperationalController
             var afterSplit = gmshController.Gmsh.Model.GetEntities(3).Length / 2;
             Assert.AreEqual(2, afterSplit);
 
-            //gmshController.Gmsh.Write(@"D:\ModifiedBox.step");
+            //gmshController.Gmsh.Write(@"D:/ModifiedBox.step");
         }
 
         //Разбиение плоскости кривой, работает очень плохо, генерируются дубликаты поверхностей или ребер
@@ -494,7 +428,7 @@ namespace TestModeCore_test.OperationalController
             gmshController.Gmsh.Model.Occ.RemoveAllDuplicates();
             gmshController.Gmsh.Model.Occ.Synchronize();
 
-            //gmshController.Gmsh.Write(@"D:\ModifiedBox.step");
+            //gmshController.Gmsh.Write(@"D:/ModifiedBox.step");
         }
         
         //Проверка создания точек и линии по ним и сохранение в step
@@ -515,7 +449,7 @@ namespace TestModeCore_test.OperationalController
             Assert.AreEqual(2, pointCounts);
             Assert.AreEqual(1, lineCounts);
 
-            //gmshController.Gmsh.Write(modelFolder + @"\CAD\line.step");
+            //gmshController.Gmsh.Write(modelFolder + @"/CAD/line.step");
         }
 
         //Проверка создания плоскости по 3 линиям и сохранение в step
@@ -546,7 +480,7 @@ namespace TestModeCore_test.OperationalController
             Assert.AreEqual(3, lineCounts);
             Assert.AreEqual(1, surfaceCounts);
 
-            //gmshController.Gmsh.Write(modelFolder + @"\CAD\plane_surface.step");
+            //gmshController.Gmsh.Write(modelFolder + @"/CAD/plane_surface.step");
         }
 
         //Проверка создания криволинейной плоскости по 4 линиям и сохранение в step
@@ -579,7 +513,7 @@ namespace TestModeCore_test.OperationalController
             Assert.AreEqual(4, lineCounts);
             Assert.AreEqual(1, surfaceCounts);
 
-            //gmshController.Gmsh.Write(modelFolder + @"\CAD\curved_surface.step");
+            //gmshController.Gmsh.Write(modelFolder + @"/CAD/curved_surface.step");
         }
 
         //Проверка создания криволинейной выпуклой\вогнутой плоскости по 4 линиям и сохранение в step
@@ -617,7 +551,7 @@ namespace TestModeCore_test.OperationalController
             Assert.AreEqual(4, lineCounts);
             Assert.AreEqual(1, surfaceCounts);
 
-            //gmshController.Gmsh.Write(modelFolder + $@"\CAD\{surfType}_surface.step");
+            //gmshController.Gmsh.Write(modelFolder + $@"/CAD/{surfType}_surface.step");
         }
         
         //Проверка создания отверстия на поверхности окружности
@@ -646,7 +580,7 @@ namespace TestModeCore_test.OperationalController
             Assert.AreEqual(2, lineCounts);
             Assert.AreEqual(1, surfaceCounts);
 
-            //gmshController.Gmsh.Write(modelFolder + @"\CAD\hole_on_surface.step");
+            //gmshController.Gmsh.Write(modelFolder + @"/CAD/hole_on_surface.step");
         }
 
         //Проверка создания объема\поверхности с указанным контуром вдоль указанной кривой
@@ -718,7 +652,7 @@ namespace TestModeCore_test.OperationalController
                 Assert.AreEqual(1, surfaceCounts);
             }    
 
-            //gmshController.Gmsh.Write(modelFolder + $@"\CAD\{type}_pipe.step");
+            //gmshController.Gmsh.Write(modelFolder + $@"/CAD/{type}_pipe.step");
         }
 
         // Создать поверхность\объем с произвольными сечениями(разным диаметром) в пространстве
@@ -780,7 +714,7 @@ namespace TestModeCore_test.OperationalController
             Assert.AreEqual(3, surfaceCounts);
             Assert.AreEqual(1, volumeCounts);
 
-            //gmshController.Gmsh.Write(@"D:\thru_sections.step");
+            //gmshController.Gmsh.Write(@"D:/thru_sections.step");
         }
         
         [DataTestMethod]
@@ -850,18 +784,18 @@ namespace TestModeCore_test.OperationalController
             ///Равномерно стесали 4 угла у куба, должно добавиться 4 новых поверхностей
             Assert.IsTrue(before.Length + 4 * 2 == after.Length);
 
-            gmshController.Gmsh.Write(@"D:\chamfer.step");
+            gmshController.Gmsh.Write(Path.Combine(Path.GetTempPath(), "chamfer.step"));
         }
 
         [DataTestMethod]
-        [DataRow(@"\CAD\scobe1.step", new int[] { 1, 12, 2, 9, 4, 11 })]//Цилиндрические отверстия
-        [DataRow(@"\CAD\scobe2.step", new int[] { 1, 18, 4, 17, 2, 15 })]//Отверстия в виде последовательно соединенных граней
-        [DataRow(@"\CAD\scobe3.step", new int[] { 1, 12, 2, 9, 4, 11 })]//Отверстия в виде сфер
-        [DataRow(@"\CAD\PART_3.stp", new int[] { 7, 9, 6, 11, 5, 12, 4, 13, 3, 14, 2, 15, 1, 16, 21, 23 /*24, 25*/ })]//Тест на двух не связанных объемах
-        [DataRow(@"\CAD\curvedPipe.step", new int[] { 1, 4 })]//Изогнутая труба
-        [DataRow(@"\CAD\detail.step", new int[] { 1, 5 })]//Поверхность построенная на сплайнах
-        [DataRow(@"\CAD\cilindr.step", new int[] { 3, 4 })]
-        [DataRow(@"\CAD\assembly_1.step", new int[] { 152, 154, 146, 148, 33, 35, 22, 24, 167, 168, 31, 32, 161, 162, 11, 12, 17, 18,
+        [DataRow(@"/CAD/scobe1.step", new int[] { 1, 12, 2, 9, 4, 11 })]//Цилиндрические отверстия
+        [DataRow(@"/CAD/scobe2.step", new int[] { 1, 18, 4, 17, 2, 15 })]//Отверстия в виде последовательно соединенных граней
+        [DataRow(@"/CAD/scobe3.step", new int[] { 1, 12, 2, 9, 4, 11 })]//Отверстия в виде сфер
+        [DataRow(@"/CAD/PART_3.stp", new int[] { 7, 9, 6, 11, 5, 12, 4, 13, 3, 14, 2, 15, 1, 16, 21, 23 /*24, 25*/ })]//Тест на двух не связанных объемах
+        [DataRow(@"/CAD/curvedPipe.step", new int[] { 1, 4 })]//Изогнутая труба
+        [DataRow(@"/CAD/detail.step", new int[] { 1, 5 })]//Поверхность построенная на сплайнах
+        [DataRow(@"/CAD/cilindr.step", new int[] { 3, 4 })]
+        [DataRow(@"/CAD/assembly_1.step", new int[] { 152, 154, 146, 148, 33, 35, 22, 24, 167, 168, 31, 32, 161, 162, 11, 12, 17, 18,
                                                       75, 73, 81, 79, 100, 98, 39, 41, 7, 8, 5, 6, 110, 112, 181, 183, 133, 135, 175, 177, 
                                                       118, 116, 91, 93, 48, 46, 85, 87, 110, 112, 169, 171, 139, 141, 189, 105, 106, 104 })]
         public void MiddleSurfaceTest(string fileName, int[] surfs)
@@ -879,7 +813,7 @@ namespace TestModeCore_test.OperationalController
             //Assert.IsTrue(after.Length > before.Length);
 
             var fName = Path.GetFileNameWithoutExtension(fileName);
-            gmshController.Gmsh.Write($@"D:\{fName}.step");
+            gmshController.Gmsh.Write(Path.Combine(Path.GetTempPath(), $"{fName}.step"));
         }
 
         private void RemoveNameTest(ref string entName, int dim, int delId, int maxId)

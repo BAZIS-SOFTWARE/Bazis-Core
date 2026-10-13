@@ -45,6 +45,7 @@
     <ProjectReference Include="..\ResultDataBase\ResultDB.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Remove="ModelView\PresenterTestExtensions.cs" />
     <Folder Include="PreProc\Data\CalcCompDataTest\TsfFolder\" />
     <Folder Include="PreProc\Data\CalcCompDataTest\V2TestCase\" />
   </ItemGroup>
@@ -52,5 +53,8 @@
     <Reference Include="PropertiesCalculator">
       <HintPath>..\..\..\BazisGUI\Libs\PropertiesCalculator.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
   </ItemGroup>
 </Project>

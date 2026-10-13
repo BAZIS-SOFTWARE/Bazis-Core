@@ -1,11 +1,11 @@
-﻿using Geometry;
+using Geometry;
 using Model.Interfaces.MeshObjects;
 using Model.MeshObjects;
 using OperationalController;
 using System.Globalization;
 
 
-namespace TestModeCore_test.OperationalController
+namespace TestProject_test.Mesh
 {
     [TestClass]
     public class RenumberElements
@@ -50,7 +50,7 @@ namespace TestModeCore_test.OperationalController
         public void Renumber(List<Node> nodes, List<int[]> elems)
         {
             var contr = new ProjectController();
-            contr.CreateProject(@"..\..\..\Examples\createObj.bpf2");
+            contr.CreateProject(@"../../../../TestModelCore/Examples/createObj.bpf2");
             
             foreach (var item in nodes)
             {

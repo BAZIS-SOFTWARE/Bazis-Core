@@ -1,4 +1,4 @@
-﻿using Geometry;
+using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using Model.MeshObjects;
@@ -6,7 +6,7 @@ using Model.Interfaces;
 using System;
 using OperationalController.MeshObjsUtility;
 
-namespace TestModeCore_test.OperationalController
+namespace TestProject_test.Mesh
 {
     /// <summary>
     /// Сводное описание для TestObjectsRenumber

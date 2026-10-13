@@ -1,4 +1,4 @@
-﻿using Geometry;
+using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model.GroupsData;
 using Model.Interfaces;
@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TestModeCore_test.OperationalController
+namespace TestProject_test.Mesh
 {
     [TestClass]
     public class BeamGroupConnection_should

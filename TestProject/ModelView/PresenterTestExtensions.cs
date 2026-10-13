@@ -5,7 +5,7 @@ using Geometry.Interfaces;
 using Model.Interfaces;
 using Model.Interfaces.ObjectsCollections;
 
-namespace TestModeCore_test.OperationalController
+namespace TestProject_test.ModelView
 {
     /// <summary>
     /// Вспомогательные методы совместимости тестов буферов.

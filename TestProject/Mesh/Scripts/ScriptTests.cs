@@ -2,7 +2,7 @@ using OperationalController;
 using System.Globalization;
 using System.IO;
 
-namespace TestModeCore_test.OperationalController
+namespace TestProject_test.Mesh.Scripts
 {
     [TestClass]
     public class ScriptTests
@@ -14,7 +14,7 @@ namespace TestModeCore_test.OperationalController
         }
 
         [DataTestMethod]
-        [DataRow(@"..\..\..\Examples\CAD\Tavr.step", @"c:\BazisComponents\BazisCore\TestModel\Examples\Scripts\write.gscript")]
+        [DataRow(@"../../../../TestModelCore/Examples/CAD/Tavr.step", @"../../../../TestModelCore/Examples/Scripts/write.gscript")]
         public void CompareSaveAndLoad(string cadFile, string scriptFile)
         {
             var project = new ProjectController();
@@ -40,7 +40,7 @@ namespace TestModeCore_test.OperationalController
         }
 
         [DataTestMethod]
-        [DataRow(@"..\..\..\Examples\CAD\modelEmbedded.stp", @"..\..\..\Examples\Scripts\embedded.gscript")]
+        [DataRow(@"../../../../TestModelCore/Examples/CAD/modelEmbedded.stp", @"../../../../TestModelCore/Examples/Scripts/embedded.gscript")]
         public void EmbedToSurface(string cadFile, string scriptFile)
         {
             var project = new ProjectController();

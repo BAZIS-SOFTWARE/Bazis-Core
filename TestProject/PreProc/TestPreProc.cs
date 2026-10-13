@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Globalization;
 using PreProc;
 using Model.GroupsData;
@@ -399,9 +399,9 @@ namespace TestProject_test.PreProc
         {
             var resData = new List<ICondData>();
             var group = new Group("test", ObjType.Узел);
-            group.Insert(0, new Node(0, new Geometry.Point3D()));
-            group.Insert(0, new Node(1, new Geometry.Point3D(1,0,0)));
-            group.Insert(0, new Node(2, new Geometry.Point3D(1,1,0)));
+            group.Insert(0, new Node(0, new global::Geometry.Point3D()));
+            group.Insert(0, new Node(1, new global::Geometry.Point3D(1,0,0)));
+            group.Insert(0, new Node(2, new global::Geometry.Point3D(1,1,0)));
 
             var groupData = new GroupData();
             groupData.Add(group);

@@ -6,7 +6,7 @@ using System.Linq;
 using Model.MeshObjects;
 using OperationalController.MeshObjsUtility;
 
-namespace TestModeCore_test.OperationalController
+namespace TestProject_test.Mesh
 {
     [TestClass]
     public class TestsCrossSection

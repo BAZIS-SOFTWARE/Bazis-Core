@@ -13,13 +13,13 @@ using OperationalController.MeshObjsCreator.Extrude;
 using System.Numerics;
 using Point3D = global::Geometry.Point3D;
 
-namespace TestModeCore_test.OperationalController
+namespace TestProject_test.Mesh
 {
     [TestClass]
     public class MeshTests
     {
         private IGmshController controller = new GmshController();
-        private static string modelFolder = @"..\..\..\Examples";
+        private static string modelFolder = @"../../../../TestModelCore/Examples";
 
         [TestInitialize]
         public void Init()
@@ -33,142 +33,15 @@ namespace TestModeCore_test.OperationalController
             controller.Gmsh.Clear();
         }
 
-        //Тест гарантирующий удаление элементов в случае удаления общего узла (проверка единой области памяти!)
-        [DataTestMethod]
-        [DataRow(@"..\..\..\Examples\GMSHAPI\simple.geo", 347, 673)]
-        public void DeleteNodeTest(string path, int delNodeNumber, int expElementsAfterDel)
-        {
-            var modelData = new ModelData();
-            controller.Gmsh.Open(path);
-            controller.Gmsh.Model.Mesh.Generate(3);
-            var results = controller.GetMeshObjects();
 
-            results.Item1.ForEach(x => modelData.ObjectData.NodesSet.Add(x.Number, x));
-            modelData.ObjectData.E2DCollection.AddRange(ObjType.Элемент2D.ToString(), results.Item3);
 
-            //act
-            modelData.ObjectData.Remove(ObjType.Узел, delNodeNumber);
-            modelData.ObjectData.E2DCollection.RemoveNotExistedObjects();
 
-            //assert
-            Assert.AreEqual(expElementsAfterDel, modelData.ObjectData.E2DCollection.Count);
-        }
 
-        [DataTestMethod]
-        [DataRow(@"\CAD\cilindr.step")]
-        public void Set3DVisibilityTest(string path)
-        {
-            var proj = new ProjectController();
-            proj.InitializeGeometry(GmshLibrary.FilePath);
-            proj.ImportCAD(modelFolder + @"\" + path);
 
-            proj.GenerateMesh(3);
 
-            var elements = proj.GetModelObjects(ObjType.Элемент3D).ToArray();
-            var numbers = elements.Select(element => element.Number).ToArray();
 
-            // Состояние представления хранится отдельно от элементов модели.
-            for (var i = 0; i < 2; ++i)
-            {
-                var expState = Convert.ToBoolean(i);
-                proj.SetVisible(ObjType.Элемент3D, numbers, expState);
 
-                foreach (var element in elements)
-                    Assert.AreEqual(expState, proj.GetVisible(ObjType.Элемент3D, element.Number));
-            }
-        }
 
-        [DataTestMethod]
-        [DataRow(@"\CAD\cilindr.step", 3, 3, 1)]
-        [DataRow(@"\CAD\cilindr.step", 2, 2, 1)]
-        [DataRow(@"\CAD\cilindr.step", 0, 2, 1)]
-        [DataRow(@"\CAD\cilindr.step", 0, 3, 1)]
-        public void CreateGroupByGeoId(string path,int meshDim,int geoDim,int tag)
-        {
-            var proj = new ProjectController();
-            proj.InitializeGeometry(GmshLibrary.FilePath);
-            proj.ImportCAD(modelFolder + @"\" + path);
-
-            proj.GenerateMesh(3);
-
-            var gr = proj.CreateGroupByGeoObjs(meshDim, geoDim, tag);
-
-            //Скрытие\показ 3д элементов сопряженных с объемом и проверка элементов 
-            Assert.AreNotEqual(gr.Count(), 0);
-        }
-
-        [DataTestMethod]
-        [DataRow(@"\CAD\PART_3.stp")]
-        public void CreateOpenSurfaceNodesGroup(string path)
-        {
-            var proj = new ProjectController();
-            proj.InitializeGeometry(GmshLibrary.FilePath);
-            proj.ImportCAD(modelFolder + @"\" + path);
-            proj.GenerateMesh(3);
-            //e3D_1
-            var grSurfNodes = proj.CreateOpenSurfaceNodesGroup("e3D_2");
-
-            //Скрытие\показ 3д элементов сопряженных с объемом и проверка элементов 
-            Assert.AreNotEqual(proj.GetModelGroup(grSurfNodes).Count(), 0);
-        }
-
-        [DataTestMethod]
-        [DataRow(@"\CAD\cilindr.step")]
-        public void Hide2DTest(string path)
-        {
-            var proj = new ProjectController();
-            proj.InitializeGeometry(GmshLibrary.FilePath);
-            proj.ImportCAD(modelFolder + @"\" + path);
-
-            proj.GenerateMesh(3);
-
-            //Скрытие\показ 2д элементов сопряженных с поверхностью и проверка элементов
-            var groupName = proj.CreateGroupByGeoObjs(2, 2, 1);
-            var elemTags = proj.GetModelGroup(groupName).Select(element => element.Number).ToHashSet();
-            for (var i = 0; i < 2; ++i)
-            {
-                var expState = Convert.ToBoolean(i);
-                proj.SetVisible(ObjType.Поверхность, [1], expState);
-                proj.HideMesh(2);
-
-                foreach (var elems in proj.GetModelObjects(ObjType.Элемент2D))
-                {
-                    if (elemTags.Contains(elems.Number))
-                        Assert.AreEqual(expState, proj.GetVisible(ObjType.Элемент2D, elems.Number));
-                    else
-                        Assert.AreEqual(true, proj.GetVisible(ObjType.Элемент2D, elems.Number));//Элементы не сопряженные с поверхность 1 должны быть показаны
-                }
-            }
-        }
-
-        [DataTestMethod]
-        [DataRow(@"\CAD\cilindr.step")]
-        public void Hide1DTest(string path)
-        {
-            var proj = new ProjectController();
-            proj.InitializeGeometry(GmshLibrary.FilePath);
-            proj.ImportCAD(modelFolder + @"\" + path);
-
-            proj.GenerateMesh(3);
-
-            //Скрытие\показ 1д элементов сопряженных с кривой и проверка элементов
-            var groupName = proj.CreateGroupByGeoObjs(1, 1, 1);
-            var elemTags = proj.GetModelGroup(groupName).Select(element => element.Number).ToHashSet();
-            for (var i = 0; i < 2; ++i)
-            {
-                var expState = Convert.ToBoolean(i);
-                proj.SetVisible(ObjType.Кривая, [1], expState);
-                proj.HideMesh(1);
-
-                foreach (var elems in proj.GetModelObjects(ObjType.Элемент1D))
-                {
-                    if (elemTags.Contains(elems.Number))
-                        Assert.AreEqual(expState, proj.GetVisible(ObjType.Элемент1D, elems.Number));
-                    else
-                        Assert.AreEqual(true, proj.GetVisible(ObjType.Элемент1D, elems.Number));//Элементы не сопряженные с кривой 1 должны быть показаны
-                }
-            }
-        }
         [DataTestMethod]
         [DataRow(4, 0.25f, false, false)]
         [DataRow(2, 0.15f, true, false)]
@@ -200,7 +73,7 @@ namespace TestModeCore_test.OperationalController
             Assert.AreEqual(0, extruder.MissedElements);
 
             var saver = new SaveModelToBPF2TextFile();
-            saver.Save(md, $@"D:\gearRecombine{recombine.ToString()}Transfinite{transfinite.ToString()}.bpf2");
+            saver.Save(md, Path.Combine(Path.GetTempPath(), $"gearRecombine{recombine.ToString()}Transfinite{transfinite.ToString()}.bpf2"));
         }
 
         [DataTestMethod]
@@ -211,7 +84,7 @@ namespace TestModeCore_test.OperationalController
         public void ExtrudeRotationTest(int segments, string fileName, float angle, bool recombine, bool transfinite)
         {
             var ctr = controller;
-            ctr.Gmsh.Open(modelFolder + $@"\CAD\{fileName}.step");
+            ctr.Gmsh.Open(modelFolder + $@"/CAD/{fileName}.step");
 
             ctr.Gmsh.Model.Mesh.Generate(2);
             if (recombine)
@@ -231,7 +104,7 @@ namespace TestModeCore_test.OperationalController
             Assert.AreEqual(0, extruder.MissedElements);
 
             var saver = new SaveModelToBPF2TextFile();
-            saver.Save(md, $@"D:\{fileName}Recombine{recombine.ToString()}Transfinite{transfinite.ToString()}.bpf2");
+            saver.Save(md, Path.Combine(Path.GetTempPath(), $"{fileName}Recombine{recombine.ToString()}Transfinite{transfinite.ToString()}.bpf2"));
         }
 
         //Тест на вращение вокруг произвольной точки
@@ -259,13 +132,13 @@ namespace TestModeCore_test.OperationalController
             Assert.AreEqual(0, extruder.MissedElements);
 
             var saver = new SaveModelToBPF2TextFile();
-            saver.Save(md, $@"D:\RotatedTriangle.bpf2");
+            saver.Save(md, Path.Combine(Path.GetTempPath(), $"RotatedTriangle.bpf2"));
         }
 
         [DataTestMethod]
-        [DataRow(@"\CAD\multiCurves.step", new int[] { 1, 2, 3 }, 1, new double[] { 0.1, 0.2, 0.25 }, new float[] { -1, 0, 0, -1.1f, -0.1f, 0, -1, 0, 0.1f }, true)]
-        [DataRow(@"\CAD\multiCurves2.step", new int[] { 2, 4, 3, 1 }, 2, new double[] { 0.05, 0.13, 0.3, 0.35 }, new float[] { 0, -1, 0, 0f, -1.25f, 0, 0, -1, 0.25f }, true)]
-        [DataRow(@"\CAD\closeWire.step", new int[] { 1, 2, 3, 4, 5, 6 }, 1, new double[] { 0.1, 0.3, 0.22, 0.05, 0.2, 0.4 }, new float[] { -1, 0, 0, -1f, -0.1f, 0f, -1, 0, 0.1f }, true)]
+        [DataRow(@"/CAD/multiCurves.step", new int[] { 1, 2, 3 }, 1, new double[] { 0.1, 0.2, 0.25 }, new float[] { -1, 0, 0, -1.1f, -0.1f, 0, -1, 0, 0.1f }, true)]
+        [DataRow(@"/CAD/multiCurves2.step", new int[] { 2, 4, 3, 1 }, 2, new double[] { 0.05, 0.13, 0.3, 0.35 }, new float[] { 0, -1, 0, 0f, -1.25f, 0, 0, -1, 0.25f }, true)]
+        [DataRow(@"/CAD/closeWire.step", new int[] { 1, 2, 3, 4, 5, 6 }, 1, new double[] { 0.1, 0.3, 0.22, 0.05, 0.2, 0.4 }, new float[] { -1, 0, 0, -1f, -0.1f, 0f, -1, 0, 0.1f }, true)]
         public void ExtrudeMultiCurvesTest(string fileName, int[] curves, int point, double[] steps, float[] coords, bool transfinite)
         {
             controller.Gmsh.Open(modelFolder + fileName);
@@ -289,11 +162,11 @@ namespace TestModeCore_test.OperationalController
             var fName = Path.GetFileNameWithoutExtension(fileName);
 
             var saver = new SaveModelToBPF2TextFile();
-            saver.Save(md, $@"D:\{fName}.bpf2");
+            saver.Save(md, Path.Combine(Path.GetTempPath(), $"{fName}.bpf2"));
         }
 
         [DataTestMethod]
-        [DataRow(@"\CAD\PART_3.stp", new int[] { 47, 44, 41, 40, 35, 32, 29, 26 }, 33, new double[] { 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1 }
+        [DataRow(@"/CAD/PART_3.stp", new int[] { 47, 44, 41, 40, 35, 32, 29, 26 }, 33, new double[] { 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1 }
                                    ,new float[] { 77, -197.08f, -2.0f, 77, -197.08f, -7.0f, 82, -197.08f, -2.0f }, true,
                                     new int[] { 1, 7, 8, 11, 14, 19, 20 }, 2, new double[] { 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1 }
                                    ,new float[] { 77, -197.08f, 8.0f, 77, -197.08f, 13.0f, 82, -197.08f, 8.0f }, true)]
@@ -337,13 +210,13 @@ namespace TestModeCore_test.OperationalController
             var fName = Path.GetFileNameWithoutExtension(fileName);
 
             var saver = new SaveModelToBPF2TextFile();
-            saver.Save(md, $@"D:\{fName}.bpf2");
+            saver.Save(md, Path.Combine(Path.GetTempPath(), $"{fName}.bpf2"));
         }
 
         [DataTestMethod]
-        [DataRow(@"\CAD\PART_3.stp", new int[] { 20, 19, 14, 11, 8, 7, 1, 50, 47, 44, 41, 40, 35, 32, 29, 26, 23 }, 15, 3.0,
+        [DataRow(@"/CAD/PART_3.stp", new int[] { 20, 19, 14, 11, 8, 7, 1, 50, 47, 44, 41, 40, 35, 32, 29, 26, 23 }, 15, 3.0,
                                                  new float[] { 77, -24.08f, 8.0f, 77, -24.08f, 13.0f, 82, -24.08f, 8.0f }, true)]
-        [DataRow(@"\CAD\PART_3.stp", new int[] { 20, 14, 19, 8, 11, 7, 1, 50, 47, 44, 40, 41, 35, 23, 29, 26, 32 }, 15, 3.0,
+        [DataRow(@"/CAD/PART_3.stp", new int[] { 20, 14, 19, 8, 11, 7, 1, 50, 47, 44, 40, 41, 35, 23, 29, 26, 32 }, 15, 3.0,
                                                  new float[] { 77, -24.08f, 8.0f, 77, -24.08f, 13.0f, 82, -24.08f, 8.0f }, true)]//Тест на сортировку петли
         public void ExtrudeMultiCurvesTest3(string fileName, int[] curves, int point, double step, float[] coords, bool transfinite)
         {
@@ -368,7 +241,7 @@ namespace TestModeCore_test.OperationalController
             var fName = Path.GetFileNameWithoutExtension(fileName);
 
             var saver = new SaveModelToBPF2TextFile();
-            saver.Save(md, $@"D:\{fName}.bpf2");
+            saver.Save(md, Path.Combine(Path.GetTempPath(), $"{fName}.bpf2"));
         }
 
 
@@ -385,14 +258,14 @@ namespace TestModeCore_test.OperationalController
         /// <param name="recombine">Используется при генерации окружности если true</param>
         /// <param name="coords">Координаты сечения треугольника, null - специальный случай используем окружность</param>
         [DataTestMethod]
-        [DataRow(@"\CAD\cilindr.step", new int[] { 5, 2, 4, 2 }, new double[] { 0.15, 0.25 }, true, false, new float[] {10.63178f, 2.25962f, 0.0f,
+        [DataRow(@"/CAD/cilindr.step", new int[] { 5, 2, 4, 2 }, new double[] { 0.15, 0.25 }, true, false, new float[] {10.63178f, 2.25962f, 0.0f,
                                                                                                                        10.42f, 3.22338f, -0.14127485f,
                                                                                                                        11.6700233f, 2.46244f, -9.28e-11f})]//Тест на двух кривых
-        [DataRow(@"\CAD\cilindr.step", new int[] { 1, 2 }, new double[] { 0.25 }, false, false, new float[] {10.63178f, 2.25962f, 0.0f,
+        [DataRow(@"/CAD/cilindr.step", new int[] { 1, 2 }, new double[] { 0.25 }, false, false, new float[] {10.63178f, 2.25962f, 0.0f,
                                                                                                              11.67f, 3.22338f, 0.5f,
                                                                                                              11.67f, 3.22338f, -0.5f})]//Тест по прямой
-        [DataRow(@"\CAD\curve.step", new int[] { 1, 2 }, new double[] { 0.1 }, true, true, null)]//Тест по кривой с разной кривизной
-        [DataRow(@"\CAD\curve2.step", new int[] { 1, 1 }, new double[] { 0.025 }, true, false, null)]//Тест по кривой с разной кривизной
+        [DataRow(@"/CAD/curve.step", new int[] { 1, 2 }, new double[] { 0.1 }, true, true, null)]//Тест по кривой с разной кривизной
+        [DataRow(@"/CAD/curve2.step", new int[] { 1, 1 }, new double[] { 0.025 }, true, false, null)]//Тест по кривой с разной кривизной
         public void ExtrudeAlongCurveTest(string fileName, int[] curveData, double[] extrusionData, bool transfinite, bool recombine, float[] coords)
         {
             controller.Gmsh.Open(modelFolder + fileName);
@@ -429,13 +302,13 @@ namespace TestModeCore_test.OperationalController
             var stringRecombine = recombine ? "Recombine" : string.Empty;
 
             var saver = new SaveModelToBPF2TextFile();
-            saver.Save(mdArray[0], $@"D:\{fName}Curves{stringKey}{stringTransfinite}{stringRecombine}.bpf2");
+            saver.Save(mdArray[0], Path.Combine(Path.GetTempPath(), $"{fName}Curves{stringKey}{stringTransfinite}{stringRecombine}.bpf2"));
         }
 
         [TestMethod]
         public void ExtrudeAlongCurveMeshNodesTest()
         {
-            controller.Gmsh.Open(modelFolder + @"\CAD\curve.step");
+            controller.Gmsh.Open(modelFolder + @"/CAD/curve.step");
             controller.Gmsh.Model.Mesh.SetTransfiniteCurve(1, 7);
             controller.Gmsh.Model.Mesh.Generate(1);
 
@@ -468,7 +341,7 @@ namespace TestModeCore_test.OperationalController
 
         //Тест, генерируем 5 линий с рандомным смещением (выбираем произвольный существующий узел внутри стартового сечения) и экструдируем 3д элементы
         [DataTestMethod]
-        [DataRow(@"\CAD\PART_3.stp", new int[] { 20, 19, 14, 11, 8, 7, 1, 50, 47, 44, 41, 40, 35, 32, 29, 26, 23 }, 15, 3.0,
+        [DataRow(@"/CAD/PART_3.stp", new int[] { 20, 19, 14, 11, 8, 7, 1, 50, 47, 44, 41, 40, 35, 32, 29, 26, 23 }, 15, 3.0,
                                      new float[] { 77, -24.08f, 8.0f, 77, -24.08f, 13.0f, 82, -24.08f, 8.0f }, 5)]
         public void ExtrudeFromPointTest(string fileName, int[] curves, int point, double step, float[] coords, int elems)
         {
@@ -509,7 +382,7 @@ namespace TestModeCore_test.OperationalController
             var fName = Path.GetFileNameWithoutExtension(fileName);
 
             var saver = new SaveModelToBPF2TextFile();
-            saver.Save(md, $@"D:\{fName}_Ref_Line.bpf2");
+            saver.Save(md, Path.Combine(Path.GetTempPath(), $"{fName}_Ref_Line.bpf2"));
         }
 
         private List<Element2D> GenTriangle(float[] coords)
@@ -624,7 +497,7 @@ namespace TestModeCore_test.OperationalController
             Assert.AreEqual(0, extruder.MissedElements);
 
             var saver = new SaveModelToBPF2TextFile();
-            saver.Save(md, $@"D:\spiralExtrudeRecombine{recombine.ToString()}Transfinite{transfinite.ToString()}.bpf2");
+            saver.Save(md, Path.Combine(Path.GetTempPath(), $"spiralExtrudeRecombine{recombine.ToString()}Transfinite{transfinite.ToString()}.bpf2"));
         }
 
         private int CreateSpiral(IGmshController controller, double radius, double height, int turns)
@@ -710,7 +583,7 @@ namespace TestModeCore_test.OperationalController
 
 
         [DataTestMethod]
-        [DataRow(@"\CAD\Cilindr.step")]
+        [DataRow(@"/CAD/Cilindr.step")]
         public void GetNodes(string fileName)
         {
 
@@ -721,7 +594,7 @@ namespace TestModeCore_test.OperationalController
         }
 
         [DataTestMethod]
-        [DataRow(@"\CAD\Cilindr.step")]
+        [DataRow(@"/CAD/Cilindr.step")]
         public void TestRefineMesh(string fileName)
         {
             controller.Gmsh.Open(modelFolder + fileName);
@@ -733,8 +606,8 @@ namespace TestModeCore_test.OperationalController
         }
 
         [DataTestMethod]
-        [DataRow(@"\CAD\Cilindr.step", 223, 46, 370, 707)]
-        [DataRow(@"\CAD\nasos.step", 2152, 1438, 3802, 6992)]
+        [DataRow(@"/CAD/Cilindr.step", 223, 46, 370, 707)]
+        [DataRow(@"/CAD/nasos.step", 2152, 1438, 3802, 6992)]
         public void GetMeshObjects(string fileName, int expNodes, int expE1d, int expE2d, int expE3d)
         {
             controller.Gmsh.Open(modelFolder + fileName);
@@ -747,9 +620,9 @@ namespace TestModeCore_test.OperationalController
         }
 
         [DataTestMethod]
-        [DataRow(@"\CAD\assembly_2.stp", 14)]
-        [DataRow(@"\CAD\assembly_1.step", 29)]
-        [DataRow(@"\CAD\weld_seam_1.step", 3)]
+        [DataRow(@"/CAD/assembly_2.stp", 14)]
+        [DataRow(@"/CAD/assembly_1.step", 29)]
+        [DataRow(@"/CAD/weld_seam_1.step", 3)]
         public void GetMeshSets(string fileName, int exp3DSets)
         {
             controller.Gmsh.Open(modelFolder + fileName);
@@ -762,7 +635,7 @@ namespace TestModeCore_test.OperationalController
         }
 
         [DataTestMethod]
-        [DataRow(@"\CAD\Cilindr.step")]
+        [DataRow(@"/CAD/Cilindr.step")]
         public void TestDensity(string fileName)
         {
             controller.Gmsh.Open(modelFolder + fileName);
@@ -778,9 +651,9 @@ namespace TestModeCore_test.OperationalController
         }
 
         [DataTestMethod]
-        [DataRow(@"\CAD\Cilindr.step", 1)]
-        [DataRow(@"\CAD\Cilindr.step", 2)]
-        [DataRow(@"\CAD\Cilindr.step", 3)]
+        [DataRow(@"/CAD/Cilindr.step", 1)]
+        [DataRow(@"/CAD/Cilindr.step", 2)]
+        [DataRow(@"/CAD/Cilindr.step", 3)]
         public void GetDensityForElementNodes(string fileName, int dim)
         {
             controller.Gmsh.Open(modelFolder + fileName);
@@ -799,7 +672,7 @@ namespace TestModeCore_test.OperationalController
         }
 
         [DataTestMethod]
-        [DataRow(@"\CAD\Cilindr.step", new int[] { 1, 2, 3 }, new int[] { 112, 112, 74 })]
+        [DataRow(@"/CAD/Cilindr.step", new int[] { 1, 2, 3 }, new int[] { 112, 112, 74 })]
         public void GetSurfaceByIdTest(string fileName, int[] tags, int[] expLength)
         {
             controller.Gmsh.Open(modelFolder + fileName);
@@ -813,7 +686,7 @@ namespace TestModeCore_test.OperationalController
         }
 
         [DataTestMethod]
-        [DataRow(@"\CAD\Cilindr.step")]
+        [DataRow(@"/CAD/Cilindr.step")]
         public void TestChangeTriangulationAlgorithm2D(string fileName)
         {
             controller.Gmsh.Open(modelFolder + fileName);
@@ -826,7 +699,7 @@ namespace TestModeCore_test.OperationalController
         }
 
         [DataTestMethod]
-        [DataRow(@"\CAD\Cilindr.step")]
+        [DataRow(@"/CAD/Cilindr.step")]
         public void TestSetPointsOnCurve(string fileName)
         {
             controller.Gmsh.Open(modelFolder + fileName);
@@ -840,7 +713,7 @@ namespace TestModeCore_test.OperationalController
         }
 
         [DataTestMethod]
-        [DataRow(@"\CAD\Cilindr.step", 2)]
+        [DataRow(@"/CAD/Cilindr.step", 2)]
         public void DeleteSurfaceTest(string fileName, int surfaceId)
         {
             controller.Gmsh.Open(modelFolder + fileName);
@@ -854,7 +727,7 @@ namespace TestModeCore_test.OperationalController
         }
 
         [DataTestMethod]
-        [DataRow(@"\CAD\Cilindr.step")]
+        [DataRow(@"/CAD/Cilindr.step")]
         public void DeleteAllSurfaces(string fileName)
         {
             controller.Gmsh.Open(modelFolder + fileName);
@@ -867,7 +740,7 @@ namespace TestModeCore_test.OperationalController
         }
 
         [DataTestMethod]
-        [DataRow(@"\CAD\Cilindr.step", new long[] { 206, 261, 251, 265, 210, 213 })]
+        [DataRow(@"/CAD/Cilindr.step", new long[] { 206, 261, 251, 265, 210, 213 })]
         public void DeleteMeshElementsTest(string fileName, long[] elTags)
         {
             var tags = elTags.Select(v => (IntPtr)v).ToArray();
@@ -882,10 +755,10 @@ namespace TestModeCore_test.OperationalController
         }
 
         [DataTestMethod]
-        [DataRow(@"\CAD\Cilindr.step", new int[] { 7, 8, 1, 3, 6 }, new int[] { 0, 0, 5, 5, 9 })]
-        [DataRow(@"\CAD\nasos.step", new int[] { 700, 720, 670, 667, 663 }, new int[] { 0, 0, 5, 2, 9 })]
-        [DataRow(@"\CAD\block.igs", new int[] { 124, 126, 140, 136, 137 }, new int[] { 1, 1, 0, 5, 6 })]
-        [DataRow(@"\GMSHAPI\sphere.geo", new int[] { 13, 14, 1, 2, 3 }, new int[] { 0, 0, 3, 3, 3 })]
+        [DataRow(@"/CAD/Cilindr.step", new int[] { 7, 8, 1, 3, 6 }, new int[] { 0, 0, 5, 5, 9 })]
+        [DataRow(@"/CAD/nasos.step", new int[] { 700, 720, 670, 667, 663 }, new int[] { 0, 0, 5, 2, 9 })]
+        [DataRow(@"/CAD/block.igs", new int[] { 124, 126, 140, 136, 137 }, new int[] { 1, 1, 0, 5, 6 })]
+        [DataRow(@"/GMSHAPI/sphere.geo", new int[] { 13, 14, 1, 2, 3 }, new int[] { 0, 0, 3, 3, 3 })]
 
         public void GenerateMeshGet1DElementsByIdTest(string fileName, int[] lineTags, int[] expectedLength)
         {
@@ -900,10 +773,10 @@ namespace TestModeCore_test.OperationalController
         }
 
         [DataTestMethod]
-        [DataRow(@"\CAD\Cilindr.step", new int[] { 1, 2, 4, 5, 6 }, new int[] { 112, 112, 72, 0, 0 })]
-        [DataRow(@"\CAD\nasos.step", new int[] { 1, 2, 7, 292, 293 }, new int[] { 6, 10, 6, 0, 0 })]
-        [DataRow(@"\CAD\block.igs", new int[] { 3, 4, 5, 29, 30 }, new int[] { 2, 28, 2, 0, 0 })]
-        [DataRow(@"\GMSHAPI\sphere.geo", new int[] { 1, 2, 3, 14, 20 }, new int[] { 0, 0, 0, 13, 15 })]
+        [DataRow(@"/CAD/Cilindr.step", new int[] { 1, 2, 4, 5, 6 }, new int[] { 112, 112, 72, 0, 0 })]
+        [DataRow(@"/CAD/nasos.step", new int[] { 1, 2, 7, 292, 293 }, new int[] { 6, 10, 6, 0, 0 })]
+        [DataRow(@"/CAD/block.igs", new int[] { 3, 4, 5, 29, 30 }, new int[] { 2, 28, 2, 0, 0 })]
+        [DataRow(@"/GMSHAPI/sphere.geo", new int[] { 1, 2, 3, 14, 20 }, new int[] { 0, 0, 0, 13, 15 })]
         public void GenerateMeshGet2DElementsByIdTest(string fileName, int[] surfTags, int[] expectedLength)
         {
             controller.Gmsh.Open(modelFolder + fileName);
@@ -917,7 +790,7 @@ namespace TestModeCore_test.OperationalController
         }
 
         [DataTestMethod]
-        [DataRow(@"\CAD\cilindr.step", DisplayName = "AddBoundaryLayer for \"cilindr.step\"")]
+        [DataRow(@"/CAD/cilindr.step", DisplayName = "AddBoundaryLayer for \"cilindr.step\"")]
         public void AddBoundaryLayerTest(string fileName)
         {
             controller.Gmsh.Open(modelFolder + fileName);
@@ -940,7 +813,7 @@ namespace TestModeCore_test.OperationalController
         }
 
         [DataTestMethod]
-        [DataRow(@"\CAD\Cilindr.step")]
+        [DataRow(@"/CAD/Cilindr.step")]
         public void TransfiniteSurfaceTest(string fileName)
         {
             controller.Gmsh.Open(modelFolder + fileName);
@@ -958,7 +831,7 @@ namespace TestModeCore_test.OperationalController
         }
 
         [DataTestMethod]
-        [DataRow(@"\CAD\Cilindr.step", 2)]
+        [DataRow(@"/CAD/Cilindr.step", 2)]
         public void ResetTransfinitionTest(string fileName, int curveTag)
         {
             controller.Gmsh.Open(modelFolder + fileName);
@@ -981,7 +854,7 @@ namespace TestModeCore_test.OperationalController
         //что объем элементов около центральной точки будет больше объемов граничных элементов
 
         [DataTestMethod]
-        [DataRow(@"\CAD\Cilindr.step", 15, 3, 139457)]
+        [DataRow(@"/CAD/Cilindr.step", 15, 3, 139457)]
         public void ExtendFilterTest(string fileName, double distFromBound, double sizeMax, int expElements)
         {
             controller.Gmsh.Open(modelFolder + fileName);
@@ -1022,7 +895,7 @@ namespace TestModeCore_test.OperationalController
             Assert.IsTrue(cVolume > bVolume);
             /*
             controller.OptionSetNumber("Mesh.SaveGroupsOfNodes", 1, ref ierr);//Для визуального теста
-            controller.Write(@"C:\Mesh\Cilindr.inp", ref ierr);*/
+            controller.Write(@"C:/Mesh/Cilindr.inp", ref ierr);*/
         }
 
         /// Проверка автоматического создания геометрической оболочки по готовой stl сетке
@@ -1122,14 +995,14 @@ namespace TestModeCore_test.OperationalController
         }
 
         [DataTestMethod]
-        [DataRow(@"\CAD\screw.step")]
-        [DataRow(@"\CAD\assembly_1.step")]
-        [DataRow(@"\CAD\assembly_2.stp")]
-        [DataRow(@"\CAD\nasos.step")]
-        [DataRow(@"\CAD\model_with_free_surfaces.stp")]
-        [DataRow(@"\CAD\block.igs")]
+        [DataRow(@"/CAD/screw.step")]
+        [DataRow(@"/CAD/assembly_1.step")]
+        [DataRow(@"/CAD/assembly_2.stp")]
+        [DataRow(@"/CAD/nasos.step")]
+        [DataRow(@"/CAD/model_with_free_surfaces.stp")]
+        [DataRow(@"/CAD/block.igs")]
 
-        //[DataRow(@"\GMSHAPI\cubes.geo")]
+        //[DataRow(@"/GMSHAPI/cubes.geo")]
         //Для geo ядра презентация STL не работает (как и в gmsh)
         public void StlRepresentationTest(string fileName)
         {
@@ -1182,7 +1055,7 @@ namespace TestModeCore_test.OperationalController
             foreach (var element in elements.Item4)
                 Assert.IsTrue(element.ElementKind == ElementKind.Пента || element.ElementKind == ElementKind.Гекса);
 
-            //controller.Gmsh.Write($@"D:\{volumeType}{genMethod}.inp");//Для визуального теста
+            //controller.Gmsh.Write($@"D:/{volumeType}{genMethod}.inp");//Для визуального теста
         }
 
     }

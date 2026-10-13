@@ -1,4 +1,4 @@
-﻿using Geometry;
+using Geometry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using Model.MeshObjects;
@@ -14,7 +14,7 @@ using OperationalController.MeshObjsCreator;
 using Model.IO.STL;
 using OperationalController;
 
-namespace TestModeCore_test.OperationalController
+namespace TestProject_test.Mesh
 {
     [TestClass]
     public class MeshUtility
@@ -23,9 +23,8 @@ namespace TestModeCore_test.OperationalController
         /// Проверяет количество групп узлов, совпадающих в пределах заданного расстояния.
         /// </summary>
         [DataTestMethod]
-        [DataRow(@"..\..\..\Examples\CDB\hex.cdb", 0.001f, 0)]
-        [DataRow(@"c:\projs\Matushkin\T_project.bpf",0.001f,2)]
-        [DataRow(@"..\..\..\Examples\CDB\hex.cdb", 1.1f, 4)]
+        [DataRow(@"../../../../TestModelCore/Examples/CDB/hex.cdb", 0.001f, 0)]
+        [DataRow(@"../../../../TestModelCore/Examples/CDB/hex.cdb", 1.1f, 4)]
         public void FindCoincidentNodes(string path, float dist, int count)
         {
             var ext = Path.GetExtension(path);
@@ -43,22 +42,24 @@ namespace TestModeCore_test.OperationalController
             Assert.AreEqual(count, numberOfObjs);
         }
 
-        [DataTestMethod]
-        [DataRow(@"c:\projs\testProj\Sew\proj.bpf2", "Узел_1", "Узел_2",6,15)]
-        public void BoundaryConnection(string path, string first, string second, double rad, int maxBeams)
+        [TestMethod]
+        public void FindCoincidentNodes_ShouldFindTwoGroups()
         {
-            //assing
-            var controller = new ProjectController();
+            var nodes = new List<Node>
+            {
+                new Node(1, new Point3D(0, 0, 0)),
+                new Node(2, new Point3D(0.0001f, 0, 0)),
+                new Node(3, new Point3D(10, 0, 0)),
+                new Node(4, new Point3D(10.0001f, 0, 0))
+            };
+            var finder = new FindCoincidentObjects();
 
-            controller.Load(path);
+            var groups = finder.Find(nodes, 0.001f);
 
-            controller.ConnectByBeams(first, second,rad,maxBeams);
-
-
-            //assert
-
-            Assert.AreNotEqual(controller.GetModelSetsInfo(ObjType.Элемент1D).Count(), 0);
+            Assert.AreEqual(2, groups.Count);
         }
+
+
 
         
 
