@@ -638,6 +638,7 @@ namespace OperationalController
             var extruder = new CurveExtruder(GmshController, curveTags, startPointTag, useMeshNodes: true);
             var setName = ExtrudeAlongCurve(elements, extruder, transfinite);
             var coincidentNodes = FindCoincidentObjects(ObjType.Узел, CurveMeshNodeMergeTolerance);
+            // тут в  дальнейшем следует использовать перегрузку метода слияния, которая бы обрабатывала только экструдированные узлы
             MergeNodes(coincidentNodes);
             return setName;
         }
