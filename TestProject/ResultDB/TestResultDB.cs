@@ -209,8 +209,11 @@ x.Time.CompareTo(0) >= 0
         [DataRow(@"../../../SharedData/ProjAndResults/merge/термическая_2_1_2.db",
                  @"../../../SharedData/ProjAndResults/merge/термическая_2_1_2.db",
                  @"../../../SharedData/ProjAndResults/merge/термическая_0_1_2.db")]
-        public void MergeDataBase(string path1, string path2, string resultPath)
+        public void MergeDataBase(string path1, string path2, string expectedResultPath)
         {
+            var firstFileName = Path.GetFileName(path1);
+            var secondFileName = Path.GetFileName(path2);
+            var resultFileName = Path.GetFileName(expectedResultPath);
             var sourceParts = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "SharedData", "ProjAndResults", "merge");
             var sourceDir = Path.GetFullPath(sourceParts);
             var tempRoot = Path.GetTempPath();
