@@ -38,15 +38,15 @@ namespace TestProject_test.ResultDB
         }
 
         [DataTestMethod]
-        [DataRow(@"..\..\..\SharedData\ProjAndResults", "термическая_0_0_0.5.db", 0.5f)]
-        [DataRow(@"..\..\..\SharedData\ProjAndResults", "термическая_0_0_1500.db", 200.8569f)]
+        [DataRow(@"../../../SharedData/ProjAndResults", "термическая_0_0_0.5.db", 0.5f)]
+        [DataRow(@"../../../SharedData/ProjAndResults", "термическая_0_0_1500.db", 200.8569f)]
         public void TestLoadDBSQLiteFindByTime(string path, string resName, float time)
         {
             var loaderDB = new LoadResultsFileDB();
             loaderDB.LoadEvent += (ar1,ar2) => { };
-            var project = new ProjectData($"{path}\\newProj.bpf2");
+            var project = new ProjectData($"{path}/newProj.bpf2");
 
-            var results = loaderDB.GetResult(path + $@"\{resName}",
+            var results = loaderDB.GetResult(Path.Combine(path, resName),
                 new List<string>() { "nodes" }, time) ; 
             
             Assert.AreNotEqual(results, null);
@@ -54,22 +54,22 @@ namespace TestProject_test.ResultDB
         }
 
         [DataTestMethod]
-        [DataRow(@"..\..\..\SharedData\ProjAndResults", "термическая_0_0_0.5.db")]
-        [DataRow(@"..\..\..\SharedData\ProjAndResults", "термическая_0_0_1500.db")]
+        [DataRow(@"../../../SharedData/ProjAndResults", "термическая_0_0_0.5.db")]
+        [DataRow(@"../../../SharedData/ProjAndResults", "термическая_0_0_1500.db")]
         public void TestLoadDBSQLiteTablesScheme(string path, string resName)
         {
             var loaderDB = new LoadResultsFileDB();
             loaderDB.LoadEvent += (ar1, ar2) => { };
             //var project = new ProjectData($"{path}\\newProj.bpf2");
 
-            var shemes = loaderDB.GetTablesSchemes(path + $@"\{resName}").ToList();
+            var shemes = loaderDB.GetTablesSchemes(Path.Combine(path, resName)).ToList();
 
             Assert.AreNotEqual(shemes, null);
             //Assert.AreNotEqual(results.Data.Tables["nodes"].Rows.Count, 0);
         }
 
         [TestMethod]
-        [DataRow(@"..\..\..\SharedData\ProjAndResults", "термическая_0_0_0.5.db")]
+        [DataRow(@"../../../SharedData/ProjAndResults", "термическая_0_0_0.5.db")]
         public void TestLoadDBSQLiteFindByTimeInterval(string path, string dbName)
         {
             var loaderDB = new LoadResultsFileDB();
@@ -77,13 +77,13 @@ namespace TestProject_test.ResultDB
 
             //var project = new ProjectData($"{path}\\newProj.bpf2");
 
-            var times = loaderDB.GetValues(path + $@"\{dbName}", "nodes", "Time");
+            var times = loaderDB.GetValues(Path.Combine(path, dbName), "nodes", "Time");
 
             var results = new List<Result>();
 
             foreach (var item in times)
             {
-                results.Add(loaderDB.GetResult(path + $@"\{dbName}",
+                results.Add(loaderDB.GetResult(Path.Combine(path, dbName),
                     new List<string> { "nodes", "elements" }, item));
             }
 
@@ -101,18 +101,18 @@ x.Time.CompareTo(0) >= 0
         [DataRow("csv_table_1.csv")]
         public void CSVToDataTableConverter_Example(string file)
         {
-            var csvPath = @"..\..\..\ResultDB\Data\ResultTableCSV";
+            var csvPath = @"../../../ResultDB/Data/ResultTableCSV";
 
             var convert = new CSVToDataTableConverter();
 
-            var dataTable = convert.ConvertCSVtoDataTable($@"{csvPath}\{file}");
+            var dataTable = convert.ConvertCSVtoDataTable(Path.Combine(csvPath, file));
             dataTable.TableName = "nodes";
 
             var dataSet = new DataSet();
             dataSet.Tables.Add(dataTable);
             var result = new Result(dataSet, 0.87051f, "термическая");
 
-            var dbPath = $@"{csvPath}\results.db";
+            var dbPath = Path.Combine(csvPath, "results.db");
 
             var saverDB = new SaveResultsFileDb();
             saverDB.Save(new List<Result>() { result }, dbPath, false);
@@ -173,7 +173,7 @@ x.Time.CompareTo(0) >= 0
             DisplayName = "3 without  []")]
         public void BasicDbOperations(string[] columns, object[] values)
         {
-            var path = @"..\..\..\TestTableColumns\test.db";
+            var path = Path.Combine(Path.GetTempPath(), $"BazisResultDB-{Guid.NewGuid():N}.db");
 
             var db = new ResultDataBase(path);
             db.OpenConnection();
@@ -200,15 +200,15 @@ x.Time.CompareTo(0) >= 0
         }
 
         [TestMethod]
-        [DataRow(@"..\..\..\SharedData\ProjAndResults\merge\термическая_2_1_2.db",
-                 @"..\..\..\SharedData\ProjAndResults\merge\термическая_3_2_3.db",
-                 @"..\..\..\SharedData\ProjAndResults\merge\термическая_0_1_3.db")]
-        [DataRow(@"..\..\..\SharedData\ProjAndResults\merge\термическая_3_2_3.db",
-                 @"..\..\..\SharedData\ProjAndResults\merge\термическая_2_1_2.db",
-                 @"..\..\..\SharedData\ProjAndResults\merge\термическая_0_1_3.db")]
-        [DataRow(@"..\..\..\SharedData\ProjAndResults\merge\термическая_2_1_2.db",
-                 @"..\..\..\SharedData\ProjAndResults\merge\термическая_2_1_2.db",
-                 @"..\..\..\SharedData\ProjAndResults\merge\термическая_0_1_2.db")]
+        [DataRow(@"../../../SharedData/ProjAndResults/merge/термическая_2_1_2.db",
+                 @"../../../SharedData/ProjAndResults/merge/термическая_3_2_3.db",
+                 @"../../../SharedData/ProjAndResults/merge/термическая_0_1_3.db")]
+        [DataRow(@"../../../SharedData/ProjAndResults/merge/термическая_3_2_3.db",
+                 @"../../../SharedData/ProjAndResults/merge/термическая_2_1_2.db",
+                 @"../../../SharedData/ProjAndResults/merge/термическая_0_1_3.db")]
+        [DataRow(@"../../../SharedData/ProjAndResults/merge/термическая_2_1_2.db",
+                 @"../../../SharedData/ProjAndResults/merge/термическая_2_1_2.db",
+                 @"../../../SharedData/ProjAndResults/merge/термическая_0_1_2.db")]
         public void MergeDataBase(string path1, string path2, string resultPath)
         {
             var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
