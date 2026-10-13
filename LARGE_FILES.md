@@ -13,7 +13,7 @@ The following files use stable object keys and keep their manifests beside the l
 
 For these files, the script reads the cloud ETag with `head-object` on every run. If the ETag matches the manifest and the local SHA-256 matches its `sha256=` entry, no download is needed. Otherwise, the script downloads to a temporary file, calculates its SHA-256, checks the cloud ETag again, and replaces the local file only when its content differs. It then updates the adjacent manifest with `sha256=` and `etag=`. A changed cloud object therefore leaves a modified tracked manifest to review and commit. The ETag identifies an object version for this check; it is not treated as a SHA-256 checksum.
 
-The script rejects manifests without both fields and paths without an explicit bucket and object-key mapping. The former local `outcommon/` manifest layout and content-addressed cloud keys are no longer supported.
+The script rejects manifests without both fields and paths without an explicit bucket and object-key mapping. It ignores manifests in the former local `outcommon/` directory when they are still present in an older branch; content-addressed cloud keys are no longer supported.
 
 Run the downloader manually from any directory:
 

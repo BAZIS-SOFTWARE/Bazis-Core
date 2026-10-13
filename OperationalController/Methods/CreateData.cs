@@ -24,6 +24,8 @@ namespace OperationalController
 {
     public partial class ProjectController
     {
+        private const float CurveMeshNodeMergeTolerance = 1e-4f;
+
         /// <inheritdoc/>
         public void CreateQuadMeshOnPoligon(List<Point2D> points, int numberOfElem)
         {
@@ -358,6 +360,51 @@ namespace OperationalController
             }
         }
 
+        /// <summary>
+        /// Выполняет экструзию 2D-элементов поверхности по узлам готовой сетки кривых.
+        /// </summary>
+        public string ExtrudeElement3DAlongCurveMesh(int surfaceTag, int[] curveTags, int startPointTag, bool transfinite)
+        {
+            var elements2D = GetElements2DBelongingToSurface(surfaceTag);
+            return ExtrudeAlongCurveMesh(elements2D, curveTags, startPointTag, transfinite);
+        }
+
+        /// <summary>
+        /// Выполняет экструзию набора 2D-элементов по узлам готовой сетки кривых.
+        /// </summary>
+        public string ExtrudeElement3DAlongCurveMesh(string setName, int[] curveTags, int startPointTag, bool transfinite)
+        {
+            var set = project.ModelData.ObjectData.E2DCollection[setName].Values.ToList();
+            return ExtrudeAlongCurveMesh(set, curveTags, startPointTag, transfinite);
+        }
+
+        /// <summary>
+        /// Выполняет экструзию по узлам сетки кривых и присоединяет к ней близкие узлы существующей сетки.
+        /// </summary>
+        public string ExtrudeElement3DAlongCurveMeshAdjusted(string setName, int[] curveTags, int startPointTag,
+            bool transfinite, double mergeTolerance)
+        {
+            if (!double.IsFinite(mergeTolerance) || mergeTolerance <= 0 || mergeTolerance > float.MaxValue)
+                throw new ArgumentOutOfRangeException(nameof(mergeTolerance));
+
+            var set = project.ModelData.ObjectData.E2DCollection[setName].Values.ToList();
+            var extruder = new CurveExtruder(GmshController, curveTags, startPointTag, useMeshNodes: true);
+            var resultSetName = ExtrudeAlongCurve(set, extruder, transfinite);
+            MergeCoincidentExtrusionNodes(extruder);
+            MergeExistingNodesWithExtrusion(extruder, (float)mergeTolerance);
+            return resultSetName;
+        }
+
+        /// <summary>
+        /// Выполняет экструзию исходного узла по узлам готовой сетки кривых.
+        /// </summary>
+        public string ExtrudeElement1DAlongCurveMesh(int[] curveTags, int startPointTag, int startNodeTag)
+        {
+            var startNode = ModelData.ObjectData.NodesSet[startNodeTag];
+            var beams = ExtrudePointAlongCurveMesh(startNode, curveTags, startPointTag);
+            return UpdateBeamModelData(beams);
+        }
+
 
         /// <summary>
         /// Выполняет вращательную (роторную) экструзию 2D-элементов, принадлежащих поверхности с указанным тегом,
@@ -577,15 +624,119 @@ namespace OperationalController
         private string ExtrudeAlongCurve(List<Element2D> elements, int[] curveTags, int startPointTag, double step, bool transfinite)
         {
             var extruder = new CurveExtruder(GmshController, curveTags, GetNormalizedSteps(curveTags, step), startPointTag);
+            return ExtrudeAlongCurve(elements, extruder, transfinite);
+        }
+
+        private List<Beam> ExtrudePointAlongCurve(Node startNode, int[] curveTags, int startPointTag, double step)
+        {
+            var extruder = new CurveExtruder(GmshController, curveTags, GetNormalizedSteps(curveTags, step), startPointTag);
+            return ExtrudePointAlongCurve(startNode, extruder);
+        }
+
+        private string ExtrudeAlongCurveMesh(List<Element2D> elements, int[] curveTags, int startPointTag, bool transfinite)
+        {
+            var extruder = new CurveExtruder(GmshController, curveTags, startPointTag, useMeshNodes: true);
+            var setName = ExtrudeAlongCurve(elements, extruder, transfinite);
+            var coincidentNodes = FindCoincidentObjects(ObjType.Узел, CurveMeshNodeMergeTolerance);
+            // тут в  дальнейшем следует использовать перегрузку метода слияния, которая бы обрабатывала только экструдированные узлы
+            MergeNodes(coincidentNodes);
+            return setName;
+        }
+
+        private void MergeExistingNodesWithExtrusion(MeshExtruder extruder, float tolerance)
+        {
+            var extrudedNodes = extruder.Nodes.Values
+                .Where(node => ModelData.ObjectData.NodesSet.ContainsKey(node.Number) &&
+                    ReferenceEquals(ModelData.ObjectData.NodesSet[node.Number], node))
+                .ToDictionary(node => node.Number);
+            var groups = FindCoincidentObjects(ObjType.Узел, tolerance);
+            var nodesToMerge = new List<List<int>>();
+
+            foreach (var group in groups)
+            {
+                var generated = group.Where(extrudedNodes.ContainsKey).ToArray();
+                var existing = group.Where(number => !extrudedNodes.ContainsKey(number)).ToArray();
+                if (generated.Length == 0 || existing.Length == 0)
+                    continue;
+
+                var assignments = new Dictionary<int, List<int>>();
+                foreach (var existingNumber in existing)
+                {
+                    if (!ModelData.ObjectData.NodesSet.ContainsKey(existingNumber))
+                        continue;
+
+                    var existingNode = ModelData.ObjectData.NodesSet[existingNumber];
+                    var generatedNumber = generated[0];
+                    var distance = existingNode.Position.Sub(extrudedNodes[generatedNumber].Position)
+                        .GetSquareSumCoords();
+                    for (var index = 1; index < generated.Length; index++)
+                    {
+                        var candidateDistance = existingNode.Position.Sub(extrudedNodes[generated[index]].Position)
+                            .GetSquareSumCoords();
+                        if (candidateDistance >= distance)
+                            continue;
+                        generatedNumber = generated[index];
+                        distance = candidateDistance;
+                    }
+
+                    if (!assignments.TryGetValue(generatedNumber, out var assignedNodes))
+                    {
+                        assignedNodes = new List<int>();
+                        assignments.Add(generatedNumber, assignedNodes);
+                    }
+                    assignedNodes.Add(existingNumber);
+                }
+
+                foreach (var assignment in assignments)
+                {
+                    var numbers = new List<int> { assignment.Key };
+                    numbers.AddRange(assignment.Value);
+                    nodesToMerge.Add(numbers);
+                }
+            }
+
+            MergeNodes(nodesToMerge);
+        }
+
+        private void MergeCoincidentExtrusionNodes(MeshExtruder extruder)
+        {
+            var extrudedNodeNumbers = extruder.Nodes.Values
+                .Select(node => node.Number)
+                .ToHashSet();
+            var groups = FindCoincidentObjects(ObjType.Узел, CurveMeshNodeMergeTolerance);
+            var nodesToMerge = new List<List<int>>();
+
+            foreach (var group in groups)
+            {
+                var generated = group.Where(extrudedNodeNumbers.Contains).ToArray();
+                if (generated.Length == 0)
+                    continue;
+
+                var masterNumber = generated[0];
+                var numbers = new List<int> { masterNumber };
+                numbers.AddRange(group.Where(number => number != masterNumber));
+                nodesToMerge.Add(numbers);
+            }
+
+            MergeNodes(nodesToMerge);
+        }
+
+        private string ExtrudeAlongCurve(List<Element2D> elements, CurveExtruder extruder, bool transfinite)
+        {
             var e3d = transfinite ? extruder.ExtrudeTransfinite(elements)
                       : extruder.Extrude(elements);
             var collection = e3d.SelectMany(v => v);
             return UpdateModelData(extruder, collection);
         }
 
-        private List<Beam> ExtrudePointAlongCurve(Node startNode, int[] curveTags, int startPointTag, double step)
+        private List<Beam> ExtrudePointAlongCurveMesh(Node startNode, int[] curveTags, int startPointTag)
         {
-            var extruder = new CurveExtruder(GmshController, curveTags, GetNormalizedSteps(curveTags, step), startPointTag);
+            var extruder = new CurveExtruder(GmshController, curveTags, startPointTag, useMeshNodes: true);
+            return ExtrudePointAlongCurve(startNode, extruder);
+        }
+
+        private List<Beam> ExtrudePointAlongCurve(Node startNode, CurveExtruder extruder)
+        {
             var beams = extruder.ExtrudeFromPoint(startNode);
             AppendNodes(extruder);
             return beams;

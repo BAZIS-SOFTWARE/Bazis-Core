@@ -33,6 +33,11 @@ fi
 
 manifest_count=0
 while IFS= read -r -d '' relative_manifest; do
+    # Старые манифесты из локальной папки outcommon не поддерживаются.
+    # В старых ветках они могут ещё присутствовать: просто пропускаем их.
+    if [[ "$relative_manifest" == outcommon/* ]]; then
+        continue
+    fi
     manifest="$repo_root/$relative_manifest"
     if [[ ! -f "$manifest" ]]; then
         continue
