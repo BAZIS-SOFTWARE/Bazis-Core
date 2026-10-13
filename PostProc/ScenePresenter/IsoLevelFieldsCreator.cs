@@ -20,27 +20,22 @@ namespace Results.ScenePresenter
 
             foreach (var element in elements)
             {
-                if (element.ViewState)
+                for (int i = 0; i < values.Count; i++)
                 {
-                    for (int i = 0; i < values.Count; i++)
-                    {
-                        var color = colors[i];
-                        var val = values[i][0];
+                    var color = colors[i];
+                    var val = values[i][0];
 
-                        var nodesResults = new List<float>();
-                        foreach (var node in element.GetVertexes())
-                        {
-                            nodesResults.Add(results.GetNodeValue(node.Number, resultType));
-                        }
+                    var nodesResults = new List<float>();
+                    foreach (var node in element.GetVertexes())
+                        nodesResults.Add(results.GetNodeValue(node.Number, resultType));
 
-                        var points = FindCrossElemCoords(val, element, nodesResults.ToArray());
+                    var points = FindCrossElemCoords(val, element, nodesResults.ToArray());
 
-                        //if (!inSidePoligons.Keys.Contains(color, new ColorEqualityComparer()))
-                        if (!inSidePoligons.Keys.Contains(color))
-                            inSidePoligons.Add(color, new Dictionary<int, List<Point3D>>());
+                    //if (!inSidePoligons.Keys.Contains(color, new ColorEqualityComparer()))
+                    if (!inSidePoligons.Keys.Contains(color))
+                        inSidePoligons.Add(color, new Dictionary<int, List<Point3D>>());
 
-                        inSidePoligons[color].Add(element.Number, points);
-                    }
+                    inSidePoligons[color].Add(element.Number, points);
                 }
             }
             return inSidePoligons;

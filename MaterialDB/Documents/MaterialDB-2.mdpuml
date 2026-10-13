@@ -1,0 +1,66 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title MaterialDB-2 — Свойства, фазовый состав и функции
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "FunctionDBData" as T_MaterialDB_MaterialDB_FunctionData_FunctionDBData {
+  + Count : int [get]
+  + IsReadOnly : bool [get]
+  + Keys : ICollection<string> [get]
+  + Name : string [get, set]
+  + Values : ICollection<Property> [get]
+  + this[string key] : Property [get, set]
+  + Add(item) : void
+  + Add(key, value) : void
+  + Clear() : void
+  + Contains(item) : bool
+  + ContainsKey(key) : bool
+  + CopyTo(array, arrayIndex) : void
+  + FunctionDBData()
+  + FunctionDBData(dbName, dbFolder)
+  + GetEnumerator() : IEnumerator<KeyValuePair<string, Property>>
+  + Remove(item) : bool
+  + Remove(key) : bool
+  + TryGetValue(key, out value) : bool
+}
+enum "CategoryEnum" as T_MaterialDB_MaterialDB_MaterialData_CategoryEnum {
+    General
+    Mechanical
+    Metallurgical
+    Thermal
+}
+enum "ChemElement" as T_MaterialDB_MaterialDB_MaterialData_ChemElement {
+    Al
+    As
+    C
+    Cr
+    Cu
+    Mn
+    Mo
+    Nb
+    Ni
+    None
+    P
+    Si
+    Ti
+    V
+    W
+}
+T_MaterialDB_MaterialDB_FunctionData_FunctionDBData -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_CategoryEnum
+T_MaterialDB_MaterialDB_MaterialData_CategoryEnum -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_ChemElement
+legend bottom
+  Загрузка базы функций читает найденный путь без Windows-разделителей.
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

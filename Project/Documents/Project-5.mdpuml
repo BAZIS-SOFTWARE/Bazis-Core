@@ -1,0 +1,74 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title Project-5 — Проект, задача и граничные условия
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+interface "ISphereFunction" as T_Project_Project_Interfaces_Tasks_ISphereFunction {
+  + Width : float [get]
+}
+interface "ITableFunction" as T_Project_Project_Interfaces_Tasks_ITableFunction {
+  + DataTable : DataTable [get, set]
+  + Name : string [get, set]
+  + Units : string [get, set]
+  + X_unit : string [get, set]
+  + Y_unit : string [get, set]
+  + CalcProp(param) : float
+}
+interface "ITaskData" as T_Project_Project_Interfaces_Tasks_ITaskData {
+  + Functions : FunctionDBData [get, set]
+  + Loader : ITaskDataLoader [get, set]
+  + Materials : MaterialDBData [get, set]
+  + Saver : ITaskDataSaver [get, set]
+  + TaskKind : TaskKind [get, set]
+  + TaskType : TaskType [get, set]
+  + AddRange(datas) : void
+  + ClearNotExisted(group) : void
+  + ClearNotExisted(gropData) : void
+  + Contains(grName) : bool
+  + Create(kind, dataInfo, groupData) : ICondData
+  + Find(kind) : IEnumerable<ICondData>
+  + Find(grName) : IEnumerable<ICondData>
+  + Find<T>() : IEnumerable<T>
+  + Load(projectFile, groupData) : void
+  + RemoveRange(dataInfo) : void
+  + Save(projectFile) : void
+}
+interface "ITimeDependentData" as T_Project_Project_Interfaces_Tasks_ITimeDependentData {
+  + StartTime : float [get, set]
+  + StopTime : float [get, set]
+}
+interface "ITrajectory" as T_Project_Project_Interfaces_Tasks_ITrajectory {
+  + Name : string [get]
+  + NumberOfPoints : int [get]
+  + this[int ind] : Point3D [get]
+  + GetPoints() : IEnumerable<Point3D>
+  + SetPoints(points) : void
+}
+interface "IPowerParamsFunction" as T_Project_ProjectInterfaces_Tasks_IPowerParamsFunction {
+  + GetParameter(parameter) : float
+  + SetParameter(parameter, val) : void
+}
+interface "IFrameFunction\nProject-4" as T_Project_Project_Interfaces_Tasks_IFrameFunction <<reference>> [[Project-4.mdpuml Project-4]]
+T_Project_Project_Interfaces_Tasks_ISphereFunction -[hidden]down-> T_Project_Project_Interfaces_Tasks_ITableFunction
+T_Project_Project_Interfaces_Tasks_ITableFunction -[hidden]down-> T_Project_Project_Interfaces_Tasks_ITaskData
+T_Project_Project_Interfaces_Tasks_ITaskData -[hidden]down-> T_Project_Project_Interfaces_Tasks_ITimeDependentData
+T_Project_Project_Interfaces_Tasks_ITimeDependentData -[hidden]down-> T_Project_Project_Interfaces_Tasks_ITrajectory
+T_Project_Project_Interfaces_Tasks_ITrajectory -[hidden]down-> T_Project_ProjectInterfaces_Tasks_IPowerParamsFunction
+T_Project_ProjectInterfaces_Tasks_IPowerParamsFunction -[hidden]down-> T_Project_Project_Interfaces_Tasks_IFrameFunction
+T_Project_Project_Interfaces_Tasks_ISphereFunction --|> T_Project_Project_Interfaces_Tasks_IFrameFunction
+legend bottom
+  Обзор: [[Project.mdpuml Project]]; сигнатуры: [[Project-5.md Project-5.md]].
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

@@ -29,10 +29,9 @@ namespace OperationalController.MeshObjsUtility
                     var norm = Vector.GetVectorNorm(normal);
                     foreach (var node in surface.GetVertexes())
                     {
-                        if (node.ViewState)
-                            if (normals.ContainsKey(node.Number))
-                                normals[node.Number] = normals[node.Number].Sum(norm);
-                            else normals.Add(node.Number, norm);
+                        if (normals.ContainsKey(node.Number))
+                            normals[node.Number] = normals[node.Number].Sum(norm);
+                        else normals.Add(node.Number, norm);
                     }
                 }
             }

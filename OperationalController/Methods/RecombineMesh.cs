@@ -9,11 +9,14 @@ namespace OperationalController
         /// </summary>
         public void RecombineMesh()
         {
-            if (!IsGeometryInitialized)
-                throw new InvalidOperationException("Geometry controller is not initialized.");
+            using (BeginChanges())
+            {
+                if (!IsGeometryInitialized)
+                    throw new InvalidOperationException("Geometry controller is not initialized.");
 
-            GmshController.Gmsh.Model.Mesh.Recombine();
-            SynchronizeGeometryMesh();
+                GmshController.Gmsh.Model.Mesh.Recombine();
+                SynchronizeGeometryMesh();
+            }
         }
     }
 }

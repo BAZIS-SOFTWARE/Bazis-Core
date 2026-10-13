@@ -1,0 +1,56 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title OperationalController-26 — Специализированные контракты контроллера
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+interface "IProjectEvents" as T_OperationalController_OperationalController_IProjectEvents {
+  + {event} Message : EventHandler<ProjectMessageEventArgs>
+}
+interface "IProjectSession" as T_OperationalController_OperationalController_IProjectSession {
+  + FilePath : string [get]
+  + FunctionsDB : FunctionDBData [get, set]
+  + HasProject : bool [get]
+  + IsGeometryInitialized : bool [get]
+  + IsModified : bool [get]
+  + MaterialsDB : MaterialDBData [get, set]
+  + Name : string [get]
+  + TaskKind : TaskKind [get]
+  + TaskType : TaskType [get]
+  + Append(path, progress) : void
+  + ChangeProjectName(name) : void
+  + ChangeTaskKind(taskKind) : void
+  + ChangeTaskType(taskType) : void
+  + ClearAllData() : void
+  + Close() : void
+  + Create(projectFile) : void
+  + CreateTask() : void
+  + CreateTask(materials, functions) : void
+  + ImportGeometry(path) : void
+  + Open(path, progress) : void
+  + Save(path) : void
+}
+interface "IProjectStorage" as T_OperationalController_OperationalController_IProjectStorage {
+  + CopyFile(fileName, oldFolder, newFolder) : bool
+  + ExportGeometry(filePath) : void
+  + ExportMesh(filePath) : void
+  + LoadSMF(path) : void
+  + SaveSMF(path) : void
+}
+T_OperationalController_OperationalController_IProjectEvents -[hidden]down-> T_OperationalController_OperationalController_IProjectSession
+T_OperationalController_OperationalController_IProjectSession -[hidden]down-> T_OperationalController_OperationalController_IProjectStorage
+legend bottom
+  CopyFile объединяет папку и имя файла через Path.Combine для Windows и Linux.
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

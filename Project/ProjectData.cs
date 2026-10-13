@@ -64,7 +64,7 @@ namespace Project
             GeneralData.Name = System.IO.Path.GetFileName(projectFile);
             //GeneralData.Path = System.IO.Path.GetDirectoryName(projectFile);
 
-            var ext = System.IO.Path.GetExtension(projectFile);
+            var ext = System.IO.Path.GetExtension(projectFile).ToLowerInvariant();
 
             if (ext != ".bpf2" & ext != ".bpf")
             //{
@@ -78,7 +78,7 @@ namespace Project
             //    ModelData.Loader = new LoadModelFromBPFTextFile();
             //}
             //else
-                throw new Exception("неправильно задано расширение файла");
+                throw new Exception("Unsupported project file format.");
         }
     }
 }

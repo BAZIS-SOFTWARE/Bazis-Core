@@ -1,0 +1,60 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title PostProc-5 — Построение полей и шкала результатов
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "ResultsFieldsCreator" as T_PostProc_PostProc_ScenePresenter_ResultsFieldsCreator {
+  + ScaleFactor : int [get, set]
+  + CreateLineObjects(result, objsType, resDescr, beamElement) : IEnumerable<ILineObject<IPoint>>
+  + CreateSurfaceObjects(result, table, resDescr, surfaceObjects) : IEnumerable<ResultFigure>
+  + SetScaleItems(itemRanges) : void
+}
+class "SurfaceGradientsCreator" as T_PostProc_PostProc_ScenePresenter_SurfaceGradientsCreator {
+  + CreateGradientObjects(itemsRanges, resItems) : IEnumerable<ResultFigure>
+  + TryIntervalsIntersec(itemRange, res0, res1, out edCoords) : bool
+}
+class "SwapValues" as T_PostProc_PostProc_ScenePresenter_SwapValues <<static>> {
+  + Sort<T, V>(p1, p2, p1V, p2V, out ndRes, out ndCoords) : void
+}
+class "FieldCreator" as T_PostProc_Results_ScenePresenter_FieldCreator {
+  + CreateFieldObjects(result, objsType, resDescr) : IEnumerable<ModelObject>
+  + SetFieldCreator(resultFieldCreator) : void
+}
+class "IsoLevelsCreator" as T_PostProc_Results_ScenePresenter_IsoLevelsCreator {
+  + CreateInSidePoligons(results, resultType, elements, values, colors) : Dictionary<Color, Dictionary<int, List<Point3D>>>
+  + FindCrossElemCoords(value, element, nodesValues) : List<Point3D>
+  + IsoLevelsCreator()
+}
+class "ResultPoint" as T_PostProc_Results_ScenePresenter_ResultPoint {
+  + Normal : Point3D [get, set]
+  + Position : Point3D [get, set]
+  + CalcCentr() : Point3D
+  + ResultPoint(point)
+  + ToString() : string
+}
+interface "ICoordinated" as T_Geometry_Geometry_Interfaces_ICoordinated <<reference>>
+interface "IPosition3D" as T_Geometry_Geometry_Interfaces_IPosition3D <<reference>>
+T_PostProc_PostProc_ScenePresenter_ResultsFieldsCreator -[hidden]down-> T_PostProc_PostProc_ScenePresenter_SurfaceGradientsCreator
+T_PostProc_PostProc_ScenePresenter_SurfaceGradientsCreator -[hidden]down-> T_PostProc_PostProc_ScenePresenter_SwapValues
+T_PostProc_PostProc_ScenePresenter_SwapValues -[hidden]down-> T_PostProc_Results_ScenePresenter_FieldCreator
+T_PostProc_Results_ScenePresenter_FieldCreator -[hidden]down-> T_PostProc_Results_ScenePresenter_IsoLevelsCreator
+T_PostProc_Results_ScenePresenter_IsoLevelsCreator -[hidden]down-> T_PostProc_Results_ScenePresenter_ResultPoint
+T_PostProc_Results_ScenePresenter_ResultPoint -[hidden]down-> T_Geometry_Geometry_Interfaces_ICoordinated
+T_Geometry_Geometry_Interfaces_ICoordinated -[hidden]down-> T_Geometry_Geometry_Interfaces_IPosition3D
+T_PostProc_Results_ScenePresenter_ResultPoint ..|> T_Geometry_Geometry_Interfaces_ICoordinated
+T_PostProc_Results_ScenePresenter_ResultPoint ..|> T_Geometry_Geometry_Interfaces_IPosition3D
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

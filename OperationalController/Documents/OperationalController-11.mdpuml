@@ -1,0 +1,67 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title OperationalController-11 — Создание объектов, операции и презентаторы
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "CurveExtruder" as T_OperationalController_OperationalController_MeshObjsCreator_Extrude_CurveExtruder {
+  + CreateBeam(lastNode, curNode) : Beam
+  + CreateNextLayer(curLayer, curBasis) : List<Element2D>
+  + CreateNode(curCenter) : Node
+  + CurveExtruder(controller, curveTag, step, pointTag)
+  + CurveExtruder(controller, curveTags, step, pointTag, maxAngle)
+  + CurveExtruder(controller, curveTags, steps, pointTag, maxAngle)
+  + Extrude(firstLayer) : List<List<Element3D>>
+  + ExtrudeFromPoint(firstNode) : List<Beam>
+  + ExtrudeTransfinite(firstLayer) : List<List<Element3D>>
+  + GetTransformedVector(coords, matrix) : Vector4
+}
+class "Element2DSorter" as T_OperationalController_OperationalController_MeshObjsCreator_Extrude_MeshExtruder_Element2DSorter {
+  + Center : Point3D [get, set]
+  + Compare(x, y) : int
+}
+class "Extrude3DStrategy" as T_OperationalController_OperationalController_MeshObjsCreator_Extrude_Extrude3DStrategy {
+  + Transfinite : bool [get, set]
+}
+class "ExtrudeBeamStrategy" as T_OperationalController_OperationalController_MeshObjsCreator_Extrude_ExtrudeBeamStrategy {
+}
+abstract class "MeshExtruder" as T_OperationalController_OperationalController_MeshObjsCreator_Extrude_MeshExtruder {
+  + MissedElements : int [get, private set]
+  # NodeTag : int [get, set]
+  + Nodes : Dictionary<int, Node> [get, private set]
+  # CreateCopy(src) : List<Element2D>
+  + CreateLayerTetrahedrons(curLayer, nextLayer) : List<Element3D>
+  + CreateTransfiniteLayer(curLayer, nextLayer) : List<Element3D>
+  + SortFirstLayer(layer) : List<Element2D>
+}
+class "RotateExtruder" as T_OperationalController_OperationalController_MeshObjsCreator_Extrude_RotateExtruder {
+  + ElementTag : ref int [get]
+  + CreateNextLayer(curLayer, transform) : List<Element2D>
+  + Extrude(curLayer, radAngle, origin, rotAxis, segments) : List<List<Element3D>>
+  + ExtrudeTransfinite(curLayer, radAngle, origin, rotAxis, segments) : List<List<Element3D>>
+}
+interface "IExtrusionStrategy<TResult>" as T_OperationalController_OperationalController_MeshObjsCreator_Extrude_IExtrusionStrategy_1 <<reference>>
+T_OperationalController_OperationalController_MeshObjsCreator_Extrude_CurveExtruder -[hidden]down-> T_OperationalController_OperationalController_MeshObjsCreator_Extrude_MeshExtruder_Element2DSorter
+T_OperationalController_OperationalController_MeshObjsCreator_Extrude_MeshExtruder_Element2DSorter -[hidden]down-> T_OperationalController_OperationalController_MeshObjsCreator_Extrude_Extrude3DStrategy
+T_OperationalController_OperationalController_MeshObjsCreator_Extrude_Extrude3DStrategy -[hidden]down-> T_OperationalController_OperationalController_MeshObjsCreator_Extrude_ExtrudeBeamStrategy
+T_OperationalController_OperationalController_MeshObjsCreator_Extrude_ExtrudeBeamStrategy -[hidden]down-> T_OperationalController_OperationalController_MeshObjsCreator_Extrude_MeshExtruder
+T_OperationalController_OperationalController_MeshObjsCreator_Extrude_MeshExtruder -[hidden]down-> T_OperationalController_OperationalController_MeshObjsCreator_Extrude_RotateExtruder
+T_OperationalController_OperationalController_MeshObjsCreator_Extrude_RotateExtruder -[hidden]down-> T_OperationalController_OperationalController_MeshObjsCreator_Extrude_IExtrusionStrategy_1
+T_OperationalController_OperationalController_MeshObjsCreator_Extrude_CurveExtruder --|> T_OperationalController_OperationalController_MeshObjsCreator_Extrude_MeshExtruder
+T_OperationalController_OperationalController_MeshObjsCreator_Extrude_Extrude3DStrategy ..|> T_OperationalController_OperationalController_MeshObjsCreator_Extrude_IExtrusionStrategy_1
+T_OperationalController_OperationalController_MeshObjsCreator_Extrude_ExtrudeBeamStrategy ..|> T_OperationalController_OperationalController_MeshObjsCreator_Extrude_IExtrusionStrategy_1
+T_OperationalController_OperationalController_MeshObjsCreator_Extrude_RotateExtruder --|> T_OperationalController_OperationalController_MeshObjsCreator_Extrude_MeshExtruder
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

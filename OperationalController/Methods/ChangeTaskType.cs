@@ -1,4 +1,4 @@
-﻿using Project.Interfaces.Tasks;
+using Project.Interfaces.Tasks;
 using System;
 using System.IO;
 
@@ -9,8 +9,14 @@ namespace OperationalController
         /// <inheritdoc/>
         public void ChangeTaskType(TaskType taskType)
         {
-            TaskData.TaskType = taskType;
-            TaskData.Clear();
+            using (BeginChanges())
+            {
+                var changed = TaskData.TaskType != taskType;
+                TaskData.TaskType = taskType;
+                if (changed)
+                    RegisterChange(new ProjectChange(ProjectChange.ProjectChangeKind.PropertyChanged, ProjectChange.ProjectProperty.TaskType));
+                ClearTaskData();
+            }
         }
     }
 }

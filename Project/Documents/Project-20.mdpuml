@@ -1,0 +1,60 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title Project-20 — Функции, материалы и ввод/вывод
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "LoadTaskDataTextFormat" as T_Project_Project_Tasks_IO_LoadTaskDataTextFormat {
+  - ReadLines(path, progress) : IEnumerable<string>
+}
+class "SaveEventArgs" as T_Project_Project_Tasks_IO_SaveEventArgs {
+  + SaveEventArgs(message)
+}
+class "SaveTaskDataTextFormat" as T_Project_Project_Tasks_IO_SaveTaskDataTextFormat {
+}
+enum "FrameType" as T_Project_Project_Tasks_LocalFrames_FrameType {
+    MovedFrame
+    StaticFrame
+}
+abstract class "LocalFrame" as T_Project_Project_Tasks_LocalFrames_LocalFrame {
+  + Frame : Frame [get]
+  + FrameType : FrameType [get, internal set]
+  + Name : string [get, internal set]
+  + Rotation_X : float [get, set]
+  + Rotation_Y : float [get, set]
+  + Rotation_Z : float [get, set]
+  + Shifting : Point3D [get, set]
+  + CalcPosition() : void
+  + GetGlobalCoordsInLocalFrame(point) : Point3D
+  + SetShiftingAndRotation(shiftingData) : void
+}
+interface "ITaskDataLoader\nProject-3" as T_Project_Project_Interfaces_IO_ITaskDataLoader <<reference>> [[Project-3.mdpuml Project-3]]
+interface "ISaveEventArgs\nProject-3" as T_Project_Project_Interfaces_IO_ISaveEventArgs <<reference>> [[Project-3.mdpuml Project-3]]
+interface "ITaskDataSaver\nProject-3" as T_Project_Project_Interfaces_IO_ITaskDataSaver <<reference>> [[Project-3.mdpuml Project-3]]
+T_Project_Project_Tasks_IO_LoadTaskDataTextFormat -[hidden]down-> T_Project_Project_Tasks_IO_SaveEventArgs
+T_Project_Project_Tasks_IO_SaveEventArgs -[hidden]down-> T_Project_Project_Tasks_IO_SaveTaskDataTextFormat
+T_Project_Project_Tasks_IO_SaveTaskDataTextFormat -[hidden]down-> T_Project_Project_Tasks_LocalFrames_FrameType
+T_Project_Project_Tasks_LocalFrames_FrameType -[hidden]down-> T_Project_Project_Tasks_LocalFrames_LocalFrame
+T_Project_Project_Tasks_LocalFrames_LocalFrame -[hidden]down-> T_Project_Project_Interfaces_IO_ITaskDataLoader
+T_Project_Project_Interfaces_IO_ITaskDataLoader -[hidden]down-> T_Project_Project_Interfaces_IO_ISaveEventArgs
+T_Project_Project_Interfaces_IO_ISaveEventArgs -[hidden]down-> T_Project_Project_Interfaces_IO_ITaskDataSaver
+T_Project_Project_Tasks_IO_LoadTaskDataTextFormat ..|> T_Project_Project_Interfaces_IO_ITaskDataLoader
+T_Project_Project_Tasks_IO_SaveEventArgs ..|> T_Project_Project_Interfaces_IO_ISaveEventArgs
+T_Project_Project_Tasks_IO_SaveTaskDataTextFormat ..|> T_Project_Project_Interfaces_IO_ITaskDataSaver
+T_Project_Project_Tasks_LocalFrames_LocalFrame --> T_Project_Project_Tasks_LocalFrames_FrameType : использует
+legend bottom
+  Папка баз определяется по абсолютному пути проекта; имена могут содержать пробелы.
+  Обзор: [[Project.mdpuml Project]]; сигнатуры: [[Project-20.md Project-20.md]].
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

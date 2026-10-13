@@ -4,8 +4,6 @@ namespace Model.Interfaces
 {
     public interface IModelLoader
     {
-        IModelData Load(string path);
-
-        event Action<object, ILoaderEventArgs> LoadEvent;
+        IModelData Load(string path, IProgress<int> progress = null);
     }
 }

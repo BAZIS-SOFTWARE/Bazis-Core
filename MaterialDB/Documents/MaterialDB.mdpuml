@@ -1,0 +1,74 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+allowmixing
+title MaterialDB — обзор классов и расположение подробностей
+caption Обзор; полный состав членов — на нумерованных поддиаграммах
+interface "IMaterialDB" as T_MaterialDB_MaterialDB_Interfaces_IMaterialDB <<details>>
+note right of T_MaterialDB_MaterialDB_Interfaces_IMaterialDB
+  MaterialDB-1
+end note
+class "MaterialDBData" as T_MaterialDB_MaterialDB_MaterialData_MaterialDBData <<details>>
+note right of T_MaterialDB_MaterialDB_MaterialData_MaterialDBData
+  MaterialDB-3
+end note
+class "MaterialDBItem" as T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem <<details>>
+note right of T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem
+  MaterialDB-4
+end note
+interface "ICategory" as T_MaterialDB_MaterialDB_Interfaces_ICategory <<details>>
+note right of T_MaterialDB_MaterialDB_Interfaces_ICategory
+  MaterialDB-1
+end note
+class "Category" as T_MaterialDB_MaterialDB_MaterialData_Category <<details>>
+note right of T_MaterialDB_MaterialDB_MaterialData_Category
+  MaterialDB-3
+end note
+interface "IProperty" as T_MaterialDB_MaterialDB_Interfaces_IProperty <<details>>
+note right of T_MaterialDB_MaterialDB_Interfaces_IProperty
+  MaterialDB-1
+end note
+class "Property" as T_MaterialDB_MaterialDB_MaterialData_Property <<details>>
+note right of T_MaterialDB_MaterialDB_MaterialData_Property
+  MaterialDB-5
+end note
+class "FunctionDBData" as T_MaterialDB_MaterialDB_FunctionData_FunctionDBData <<details>>
+note right of T_MaterialDB_MaterialDB_FunctionData_FunctionDBData
+  MaterialDB-2
+end note
+T_MaterialDB_MaterialDB_FunctionData_FunctionDBData --> T_MaterialDB_MaterialDB_MaterialData_Property : использует
+T_MaterialDB_MaterialDB_Interfaces_ICategory --> T_MaterialDB_MaterialDB_MaterialData_Property : использует
+T_MaterialDB_MaterialDB_MaterialData_Category --> T_MaterialDB_MaterialDB_MaterialData_Property : использует
+T_MaterialDB_MaterialDB_MaterialData_Category ..|> T_MaterialDB_MaterialDB_Interfaces_ICategory
+T_MaterialDB_MaterialDB_MaterialData_MaterialDBData --> T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem : использует
+T_MaterialDB_MaterialDB_MaterialData_MaterialDBData ..|> T_MaterialDB_MaterialDB_Interfaces_IMaterialDB
+T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem --> T_MaterialDB_MaterialDB_MaterialData_Category : использует
+T_MaterialDB_MaterialDB_MaterialData_Property ..|> T_MaterialDB_MaterialDB_Interfaces_IProperty
+rectangle "Контракты и данные материалов" as Area_1 <<область>>
+note right of Area_1
+  MaterialDB-1.mdpuml, MaterialDB-3.mdpuml, MaterialDB-4.mdpuml
+end note
+rectangle "Свойства, фазовый состав и функции" as Area_2 <<область>>
+note right of Area_2
+  MaterialDB-2.mdpuml, MaterialDB-5.mdpuml, MaterialDB-6.mdpuml
+  MaterialDB-7.mdpuml
+end note
+T_MaterialDB_MaterialDB_Interfaces_IMaterialDB -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_MaterialDBData
+T_MaterialDB_MaterialDB_MaterialData_MaterialDBData -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem
+T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem -[hidden]down-> T_MaterialDB_MaterialDB_Interfaces_ICategory
+T_MaterialDB_MaterialDB_Interfaces_ICategory -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_Category
+T_MaterialDB_MaterialDB_MaterialData_Category -[hidden]down-> T_MaterialDB_MaterialDB_Interfaces_IProperty
+T_MaterialDB_MaterialDB_Interfaces_IProperty -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_Property
+T_MaterialDB_MaterialDB_MaterialData_Property -[hidden]down-> T_MaterialDB_MaterialDB_FunctionData_FunctionDBData
+T_MaterialDB_MaterialDB_FunctionData_FunctionDBData -[hidden]down-> Area_1
+Area_1 -[hidden]down-> Area_2
+@enduml

@@ -12,6 +12,8 @@ namespace OperationalController
     public interface IGeometryQueries
     {
         IEnumerable<IModelObject> GetAdjacentGeometryObjects(IModelObject obj, int direction);
+        /// <summary>Возвращает номера смежных геометрических сущностей верхнего и нижнего уровня.</summary>
+        Tuple<int[], int[]> GetAdjacentGeometryObjects(int dim, int number);
         GeometryPoint GetModelPoint(int objNumber);
         Curve GetModelCurve(int objNumber);
         SurfaceFigure GetModelSurface(int objNumber);

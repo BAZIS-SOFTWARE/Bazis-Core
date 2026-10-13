@@ -11,7 +11,6 @@ using System.Text.RegularExpressions;
 using Group = Model.GroupsData.Group;
 using Model.ObjectsCollections;
 using Model.Interfaces.ObjectsCollections;
-using System.Drawing;
 
 
 namespace Model.IO
@@ -21,7 +20,6 @@ namespace Model.IO
     /// </summary>
     public class LoadModelFromINPTextFile : IModelLoader
     {
-        public event Action<object, ILoaderEventArgs> LoadEvent;
 
         private string[] lines;
 
@@ -29,11 +27,15 @@ namespace Model.IO
         private static string extractElementTypePattern = @"(?<=TYPE=)\w+";
         private static string extractGroupNamePattern = @"(?<=(EL|N)SET=)\w*";
 
-        public IModelData Load(string path)
+        public IModelData Load(string path, IProgress<int> progress = null)
         {
             var modelData = new ModelData();
             var indexToElement = new Dictionary<int, Element>();
             lines = File.ReadAllLines(path);
+            progress?.Report(0);
+            if (lines.Length == 0)
+                progress?.Report(100);
+            var lastPercent = 0;
             var i = 0;
             var offset = 0;
             while(i < lines.Length)
@@ -47,6 +49,12 @@ namespace Model.IO
                 else if (Regex.Match(lines[i], @"\*(EL|N)SET", RegexOptions.IgnoreCase).Success)
                     ReadGroups(i, out offset, indexToElement, modelData);
                 i += (offset > 0) ? offset : 1;
+                var percent = 100 * Math.Min(i, lines.Length) / Math.Max(lines.Length, 1);
+                if (percent != lastPercent)
+                {
+                    progress?.Report(percent);
+                    lastPercent = percent;
+                }
                 offset = 0;
             }
             return modelData;
@@ -104,7 +112,6 @@ namespace Model.IO
         {
             var elementType = string.Empty;
             var setName = string.Empty;
-            var rnd = new Random();
 
             offset = 0;
             for(var i = start; i < lines.Length; i++)
@@ -113,11 +120,6 @@ namespace Model.IO
                     break;
                 else if (lines[i].StartsWith("*ELEMENT", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (setName != string.Empty)
-                    {
-                        var color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
-                        SetColor(setName, elementType, modelData, color);
-                    }
                     elementType = Regex.Match(lines[i], extractElementTypePattern, RegexOptions.IgnoreCase).Value;
                     setName = GetGroupName(lines[i]);
                 }
@@ -132,27 +134,6 @@ namespace Model.IO
                     }
                 }
                 offset++;
-            }
-        }
-
-        private void SetColor(string setName, string elementType, ModelData modelData, Color color)
-        {
-            switch (elementType)
-            {
-                case "T3D2": 
-                    modelData.ObjectData.E1DCollection[setName].SetColor(color);
-                    break;
-                case "CPS3":
-                case "CPS4":
-                    modelData.ObjectData.E2DCollection[setName].SetColor(color);
-                    break;
-
-                case "C3D4": 
-                case "C3D6": 
-                case "C3D8":
-                    modelData.ObjectData.E3DCollection[setName].SetColor(color);
-                    break;
-                default: throw new ArgumentException($"Неизвестный формат элемента: {elementType}");
             }
         }
 

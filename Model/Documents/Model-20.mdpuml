@@ -1,0 +1,50 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title Model-20 — Грани и вспомогательные алгоритмы
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "DefaultSetInfoComparer" as T_Model_Model_Utilities_DefaultSetInfoComparer {
+  + Equals(x, y) : bool
+  + GetHashCode(obj) : int
+}
+class "MarkSurfaces" as T_Model_Model_Utilities_MarkSurfaces {
+  + Mark(elements) : IReadOnlyList<ElementSurface>
+  + Mark(elements, out changedElements) : IReadOnlyList<ElementSurface>
+}
+class "SurfaceNodesComparer" as T_Model_Model_Utilities_SurfaceNodesComparer {
+  + Equals(first, second) : bool
+  + GetHashCode(nodeNumbers) : int
+}
+class "SurfacesCreator" as T_Model_Model_Utilities_SurfacesCreator {
+  + CreateSurfacesFromSetOfNodes(owner, nodes) : List<ElementSurface>
+}
+class "SurfacesFinder" as T_Model_Model_Utilities_SurfacesFinder {
+  + FindSurfaceNodes<T>(nodes) : IEnumerable<T[]>
+}
+T_Model_Model_Utilities_DefaultSetInfoComparer -[hidden]down-> T_Model_Model_Utilities_MarkSurfaces
+T_Model_Model_Utilities_MarkSurfaces -[hidden]down-> T_Model_Model_Utilities_SurfaceNodesComparer
+T_Model_Model_Utilities_SurfaceNodesComparer -[hidden]down-> T_Model_Model_Utilities_SurfacesCreator
+T_Model_Model_Utilities_SurfacesCreator -[hidden]down-> T_Model_Model_Utilities_SurfacesFinder
+legend bottom
+  Обзор: [[Model.mdpuml Model]]; сигнатуры: [[Model-20.md Model-20.md]].
+  reference — адрес подробностей указан в заголовке типа.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+  Связанные типы в контрактах и сигнатурах:
+  [[Model-1.mdpuml Model-1]]: IElement.
+  [[Model-5.mdpuml Model-5]]: ISurfaceElement.
+  [[Model-7.mdpuml Model-7]]: ElementSurface.
+  [[Model-8.mdpuml Model-8]]: Node.
+  [[Model-15.mdpuml Model-15]]: IPoint.
+  [[Model-16.mdpuml Model-16]]: ISetInfo.
+endlegend
+@enduml

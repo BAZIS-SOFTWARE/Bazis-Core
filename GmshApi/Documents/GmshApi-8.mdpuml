@@ -1,0 +1,37 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title GmshApi-8 — Жизненный цикл и CAD API
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+enum "PluginName\nчасть 3/3" as T_GmshApi_GmshApi_PluginName {
+    SimplePartition
+    Skin
+    Smooth
+    SpanningTree
+    SphericalRaise
+    StreamLines
+    Summation
+    Tetrahedralize
+    Transform
+    Triangulate
+    VoroMetal
+    Warp
+}
+note right of T_GmshApi_GmshApi_PluginName
+  Полный состав: GmshApi-6, GmshApi-7, GmshApi-8
+end note
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

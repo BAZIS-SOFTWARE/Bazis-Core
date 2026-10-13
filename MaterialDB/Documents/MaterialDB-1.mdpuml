@@ -1,0 +1,56 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title MaterialDB-1 — Контракты и данные материалов
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+interface "ICategory" as T_MaterialDB_MaterialDB_Interfaces_ICategory {
+  + Name : string [get, set]
+  + PropertyData : PropertyData [get, set]
+  + this[string key] : Property [get, set]
+}
+interface "IDataInformer" as T_MaterialDB_MaterialDB_Interfaces_IDataInformer {
+  + GetDataNames(dataSet) : List<string>
+}
+interface "ILoader" as T_MaterialDB_MaterialDB_Interfaces_ILoader {
+  + LoadDataBase(path) : DataSet
+}
+interface "IMaterialDB" as T_MaterialDB_MaterialDB_Interfaces_IMaterialDB {
+  + Name : string [get, set]
+  + GetPhases(materialsNames) : HashSet<string>
+}
+interface "IProperty" as T_MaterialDB_MaterialDB_Interfaces_IProperty {
+  + DataTable : DataTable [get, set]
+  + Name : string [get, set]
+  + Units : string [get, set]
+  + X_unit : string [get, set]
+  + Y_unit : string [get, set]
+  + this[int row, int col] : double [get, set]
+  + AddRow() : void
+  + CalcProp(phaseData, temp) : float
+  + CalcProp(phaseData, temp) : float
+  + CalcProp(variable) : float
+  + Copy(copyName) : Property
+}
+interface "ISaver" as T_MaterialDB_MaterialDB_Interfaces_ISaver {
+  + SaveDataBase(data, path) : void
+}
+T_MaterialDB_MaterialDB_Interfaces_ICategory -[hidden]down-> T_MaterialDB_MaterialDB_Interfaces_IDataInformer
+T_MaterialDB_MaterialDB_Interfaces_IDataInformer -[hidden]down-> T_MaterialDB_MaterialDB_Interfaces_ILoader
+T_MaterialDB_MaterialDB_Interfaces_ILoader -[hidden]down-> T_MaterialDB_MaterialDB_Interfaces_IMaterialDB
+T_MaterialDB_MaterialDB_Interfaces_IMaterialDB -[hidden]down-> T_MaterialDB_MaterialDB_Interfaces_IProperty
+T_MaterialDB_MaterialDB_Interfaces_IProperty -[hidden]down-> T_MaterialDB_MaterialDB_Interfaces_ISaver
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

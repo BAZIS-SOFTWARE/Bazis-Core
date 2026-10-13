@@ -1,154 +1,126 @@
-﻿using Model.Interfaces;
-using Model.Interfaces.ObjectsCollections;
-using OperationalController.ModelScenePresentator.GlObjsVertexCreators;
-using OperationalController.ModelScenePresentator.Interfaces;
-using OperationalController;
+using Geometry;
+using Geometry.Interfaces;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
+using System.Drawing;
 
 namespace OperationalController.ModelScenePresentator.GlObjsPresenters
 {
     /// <summary>
-    /// LineObjsPresenter
+    /// Презентатор линейных объектов.
     /// </summary>
-    public class LineObjsPresenter<T> : IObjsPresenter
-        where T : IPoint
+    public class LineObjsPresenter<T> : ObjsPresenter<T>
+        where T : ICoordinated
     {
-
-        /// <inheritdoc/>
-        public string Name { get; set; }
-
-        List<ILineObject<T>> lineObjects = new List<ILineObject<T>>();
-
-        /// <inheritdoc/>
-
-        public PresenterType PresenterType { get; } = PresenterType.Line;
-/// <inheritdoc/>
-
-        public bool IsVolumeObjs { get; } = false;
-
-        /// <inheritdoc/>
-        public ViewMode ViewMode { get; set; } = ViewMode.Line;
-        /// <inheritdoc/>
-
-        public Tuple<int, int, int,int> CreateIndexes()
-        {
-            var indexes = 0;
-            var coords = 0;
-            var colors = 0;
-            var edges = 0;
-            foreach (var lineObj in lineObjects)
-            {
-                if (lineObj.ViewState)
-                {
-                    coords = coords + lineObj.NumberOfPoints * 3;
-                    indexes = indexes + lineObj.NumberOfPoints;
-                    colors = colors + lineObj.NumberOfPoints * 4;
-                    edges++;
-                }
-            }
-
-            return new Tuple<int, int, int,int>(indexes, coords, colors, edges);
-        }
-/// <inheritdoc/>
-
-
-
-        public int[] CreatePointers(int indexLength)
-        {
-            var stride = 0;
-            var ptr = new int[indexLength];
-
-            foreach (var lineObject in lineObjects)
-            {
-                if (lineObject.ViewState)
-                {
-                    for (int m = 0; m < lineObject.NumberOfPoints; m++)
-                    {
-                        ptr[stride + m] = stride + m;
-                    }
-                    stride = stride + lineObject.NumberOfPoints;
-                }
-            }
-            return ptr;
-        }
-/// <inheritdoc/>
-
-        public float[] CreateVertexes(int vertexLength, string vertexType)
-        {
-            var vertexArray = new float[vertexLength];
-            var stride = 0;
-
-            ILineObjsVertexCreator<T> vertexCreator;
-
-            if (vertexType == "цвет")
-                vertexCreator = new ColorLineObjsCreator<T>();
-            else if (vertexType == "координаты")
-                vertexCreator = new CoordsLineObjsCreator<T>();
-            else vertexCreator = new NormalsLineObjsCreator<T>();
-
-            foreach (var lineObject in lineObjects)
-            {
-                if(lineObject.ViewState)
-                    vertexCreator.Create(ref stride, vertexArray, lineObject);
-            }
-
-            return vertexArray;
-        }
-/// <inheritdoc/>
-
-        public int Count()
-        {
-            return lineObjects.Count;
-        } 
-
-/// <inheritdoc/>
-
-        public bool[] CreateEdgeFlags(int edgesLength)
-        {
-            var edgesArray = new bool[edgesLength];
-
-            edgesArray.Where(x => x = true);
-
-            return edgesArray;
-        }
-
-        public IEnumerator<IModelObject> GetEnumerator()
-        {
-            foreach (var lineObject in lineObjects)
-            {
-                yield return lineObject;
-            }
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            throw new NotImplementedException();
-        }
-/// <inheritdoc/>
-
-        public void ClearNotExisted()
-        {
-            var existObjs = lineObjects.Where(x => x.ExistState == true).ToList();
-            lineObjects.Clear();
-            lineObjects.AddRange(existObjs);
-        }
-/// <inheritdoc/>
-
-        public void Clear()
-        {
-            lineObjects.Clear();
-        }
         /// <summary>
-        /// Add
+        /// Создаёт презентатор с индивидуальным цветом для каждого объекта.
         /// </summary>
-        /// <typeparam name="ILineObject"></typeparam>
-        /// <param name="objs"></param>
-        public void Add(IEnumerable<ILineObject<T>> objs)
+        public LineObjsPresenter(IReadOnlyList<T> lineObjects, IReadOnlyList<Color> colors)
+            : this(lineObjects, new ManyColorsObjsColors(colors))
         {
-            lineObjects.AddRange(objs);
+        }
+
+        /// <summary>
+        /// Создаёт презентатор с единым цветом для всех объектов.
+        /// </summary>
+        public LineObjsPresenter(IReadOnlyList<T> lineObjects, Color color)
+            : this(lineObjects, new SingleColorObjsColors(color))
+        {
+        }
+
+        /// <summary>
+        /// Создаёт презентатор с заданным источником цветов.
+        /// </summary>
+        public LineObjsPresenter(IReadOnlyList<T> lineObjects, IObjsColors colors)
+            : base(lineObjects, colors)
+        {
+        }
+
+        /// <inheritdoc />
+        public override PresenterType PresenterType { get; } = PresenterType.Line;
+
+        /// <inheritdoc />
+        public override ViewMode ViewMode { get; set; } = ViewMode.Line;
+
+        /// <inheritdoc />
+        public override Tuple<int, int, int, int> CreateIndexes()
+        {
+            var numberOfSegments = 0;
+
+            foreach (var lineObject in Objects)
+                numberOfSegments += lineObject.NumberOfPoints - 1;
+
+            return new Tuple<int, int, int, int>(numberOfSegments * 2, numberOfSegments * 6, numberOfSegments * 8, 0);
+        }
+
+        /// <inheritdoc />
+        public override float[] CreateVertexes(int vertexLength, string vertexType)
+        {
+            var vertexes = new float[vertexLength];
+            var stride = 0;
+
+            var objectIndex = 0;
+
+            foreach (var color in CreateColors())
+            {
+                if (objectIndex == Objects.Count)
+                    throw new InvalidOperationException("More colors were provided than objects.");
+
+                var lineObject = Objects[objectIndex];
+                var coordinates = lineObject.GetCoordinates();
+                Point3D previous = null;
+
+                foreach (var coordinate in coordinates)
+                {
+                    if (!ReferenceEquals(previous, null))
+                    {
+                        AddVertex(ref stride, vertexes, vertexType, previous, color);
+                        AddVertex(ref stride, vertexes, vertexType, coordinate, color);
+                    }
+
+                    previous = coordinate;
+                }
+
+                objectIndex++;
+            }
+
+            if (objectIndex != Objects.Count)
+                throw new InvalidOperationException("A color was not provided for every object.");
+
+            return vertexes;
+        }
+
+        /// <inheritdoc />
+        public override bool[] CreateEdgeFlags(int edgesLength)
+        {
+            return Array.Empty<bool>();
+        }
+
+        /// <summary>
+        /// Записывает данные вершины в буфер.
+        /// </summary>
+        private void AddVertex(ref int stride, float[] vertexes, string vertexType, Point3D coordinate, Color color)
+        {
+            if (vertexType == "координаты")
+            {
+                vertexes[stride++] = coordinate._x;
+                vertexes[stride++] = coordinate._y;
+                vertexes[stride++] = coordinate._z;
+                return;
+            }
+
+            if (vertexType == "нормаль")
+            {
+                vertexes[stride++] = 0;
+                vertexes[stride++] = 0;
+                vertexes[stride++] = 0;
+                return;
+            }
+
+            vertexes[stride++] = color.R / 255f;
+            vertexes[stride++] = color.G / 255f;
+            vertexes[stride++] = color.B / 255f;
+            vertexes[stride++] = color.A / 255f;
         }
     }
 }

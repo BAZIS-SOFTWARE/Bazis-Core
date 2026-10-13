@@ -1,0 +1,61 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title OperationalController-22 — Специализированные контракты контроллера
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+interface "IMeshQueries\nчасть 2/2" as T_OperationalController_OperationalController_IMeshQueries {
+  + GetSectionSurfaces(plane) : SurfaceFigure
+  + GetSurfaceMeshingSettings(surfaceNumber) : SurfaceMeshingSettings
+  + GetVolumeMeshingSettings(volumeNumber) : VolumeMeshingSettings
+  + SelectE2DInPlane(angleInGradus, startNumber, color) : List<int>
+  + SelectNodeInDirection(angleInGradus, numbFirst, numbSecond, color) : List<int>
+  + SelectNodeInPlane(plane, color) : List<int>
+}
+note right of T_OperationalController_OperationalController_IMeshQueries
+  Полный состав: [[OperationalController-21.mdpuml OperationalController-21]], [[OperationalController-22.mdpuml OperationalController-22]]
+end note
+interface "IModelView\nчасть 1/2" as T_OperationalController_OperationalController_IModelView <<internal>> {
+  + HideInsideSurfaces : bool [get, set]
+  + Model : IModelData [get]
+  + SelectedCount : int [get]
+  + SelectedTypes : IEnumerable<ObjType> [get]
+  + SelectionColor : Color [get, set]
+  + Transparency : byte [get, set]
+  + BeginUpdate() : IDisposable
+  + ClearColor() : void
+  + ClearColor(objType, numbers) : void
+  + ClearSelection() : void
+  + ClearSelection(objType) : void
+  + Deselect(objType, numbers) : void
+  + GetColor(setInfo) : Color
+  + GetColor(setInfo, number) : Color
+  + GetColor(objType, number) : Color
+  + GetSelected(objType) : IEnumerable<int>
+  + GetSelection() : IEnumerable<IModelObject>
+  + GetViewMode(setInfo) : ViewMode
+  + GetVisible(objType, number) : bool
+  + HideSelected() : void
+  + IsSelected(objType, number) : bool
+  + Prune() : void
+  + Reset() : void
+  + Select(objType, numbers) : void
+}
+note right of T_OperationalController_OperationalController_IModelView
+  Полный состав: [[OperationalController-22.mdpuml OperationalController-22]], [[OperationalController-23.mdpuml OperationalController-23]]
+end note
+T_OperationalController_OperationalController_IMeshQueries -[hidden]down-> T_OperationalController_OperationalController_IModelView
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

@@ -2,7 +2,6 @@
 using Model.Interfaces;
 using Model.Interfaces.MeshObjects;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using Model.Utilities;
 using Geometry.Exteisions;
@@ -17,8 +16,6 @@ namespace Model.MeshObjects
         public Element3D(int number, Node[] nodes) : base(number, nodes)
         {
             Dim = 3;
-            Color = Color.FromArgb(255, 125, 0);
-
             //surfaces = SurfacesCreator.CreateSurfacesFromSetOfNodes(number, nodes);
         }
 
@@ -41,26 +38,6 @@ namespace Model.MeshObjects
                 }
             }
         }
-        /// <inheritdoc/>
-
-        public override bool ViewState
-        {
-            // Рассмотреть в будующем систуацию со статусом, если хотя бы одна поверхность показана
-            get => base.ViewState;
-            //{
-            //    return surfaces.Any(x => x.ViewState == true);
-            //}
-            set
-            {
-                base.ViewState = value;
-                foreach (var surface in surfaces)
-                {
-                    surface.ViewState = value;
-                }
-            }
-        }
-
-
         /// <inheritdoc/>
         public override ObjType ObjType { get; } = ObjType.Элемент3D;
         /// <inheritdoc/>

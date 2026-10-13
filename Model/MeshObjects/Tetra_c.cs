@@ -62,10 +62,10 @@ namespace Model.MeshObjects
             if (nodes.Length < 4)
                 throw new Exception($"Коллличество узлов в элементе {ElementKind} {number} должно быть не меньше 4");
 
-            surfaces.Add(new ElementSurface(number, 0, new Node[] { nodes[0], nodes[1], nodes[2] }));
-            surfaces.Add(new ElementSurface(number, 1, new Node[] { nodes[0], nodes[3], nodes[1] }));
-            surfaces.Add(new ElementSurface(number, 1, new Node[] { nodes[1], nodes[3], nodes[2] }));
-            surfaces.Add(new ElementSurface(number, 1, new Node[] { nodes[0], nodes[2], nodes[3] }));
+            surfaces.Add(new ElementSurface(this, 0, new Node[] { nodes[0], nodes[1], nodes[2] }));
+            surfaces.Add(new ElementSurface(this, 1, new Node[] { nodes[0], nodes[3], nodes[1] }));
+            surfaces.Add(new ElementSurface(this, 2, new Node[] { nodes[1], nodes[3], nodes[2] }));
+            surfaces.Add(new ElementSurface(this, 3, new Node[] { nodes[0], nodes[2], nodes[3] }));
 
             Level = 1;
 

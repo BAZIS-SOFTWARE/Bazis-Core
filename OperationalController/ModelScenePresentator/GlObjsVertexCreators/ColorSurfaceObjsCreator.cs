@@ -1,5 +1,8 @@
 ﻿using Model.Interfaces;
 using OperationalController.ModelScenePresentator.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
 
 namespace OperationalController.ModelScenePresentator.GlObjsVertexCreators
 {
@@ -7,35 +10,33 @@ namespace OperationalController.ModelScenePresentator.GlObjsVertexCreators
     public class ColorSurfaceObjsCreator<T,U> : ISurfaceObjsVertexCreator<T,U> 
         where T : ISurface<U> where U : IPoint
     {
-        public void Create(ref int stride, float[] vertexAtributes, ISurfaceObject<T,U> surfObject)
+        public void Create(ref int stride, float[] vertexAtributes, IEnumerable<T> surfaces, Color color)
         {
-            foreach (var surface in surfObject.GetSurfaces())
+            foreach (var surface in surfaces)
             {
-                if (surface.ViewState)
+                for (int k = 0; k < surface.NumberOfPoints - 2; k++)
                 {
-                    for (int k = 0; k < surface.NumberOfPoints - 2; k++)
-                    {
-                        vertexAtributes[stride + 12 * k + 0] = surfObject.Color.R / 255.0f;
-                        vertexAtributes[stride + 12 * k + 1] = surfObject.Color.G / 255.0f;
-                        vertexAtributes[stride + 12 * k + 2] = surfObject.Color.B / 255.0f;
-                        vertexAtributes[stride + 12 * k + 3] = surfObject.Color.A / 255.0f;
+                    vertexAtributes[stride + 12 * k + 0] = color.R / 255.0f;
+                    vertexAtributes[stride + 12 * k + 1] = color.G / 255.0f;
+                    vertexAtributes[stride + 12 * k + 2] = color.B / 255.0f;
+                    vertexAtributes[stride + 12 * k + 3] = color.A / 255.0f;
 
-                        vertexAtributes[stride + 12 * k + 4] = surfObject.Color.R / 255.0f;
-                        vertexAtributes[stride + 12 * k + 5] = surfObject.Color.G / 255.0f;
-                        vertexAtributes[stride + 12 * k + 6] = surfObject.Color.B / 255.0f;
-                        vertexAtributes[stride + 12 * k + 7] = surfObject.Color.A / 255.0f;
+                    vertexAtributes[stride + 12 * k + 4] = color.R / 255.0f;
+                    vertexAtributes[stride + 12 * k + 5] = color.G / 255.0f;
+                    vertexAtributes[stride + 12 * k + 6] = color.B / 255.0f;
+                    vertexAtributes[stride + 12 * k + 7] = color.A / 255.0f;
 
-                        vertexAtributes[stride + 12 * k + 8] = surfObject.Color.R / 255.0f;
-                        vertexAtributes[stride + 12 * k + 9] = surfObject.Color.G / 255.0f;
-                        vertexAtributes[stride + 12 * k + 10] = surfObject.Color.B / 255.0f;
-                        vertexAtributes[stride + 12 * k + 11] = surfObject.Color.A / 255.0f;
-                    }
-
-                    stride += (surface.NumberOfPoints - 2) * 4 * 3; // (кол-во точек - 2 ) * 4 атрибута и * 3 треугольника
+                    vertexAtributes[stride + 12 * k + 8] = color.R / 255.0f;
+                    vertexAtributes[stride + 12 * k + 9] = color.G / 255.0f;
+                    vertexAtributes[stride + 12 * k + 10] = color.B / 255.0f;
+                    vertexAtributes[stride + 12 * k + 11] = color.A / 255.0f;
 
                 }
 
+                stride += (surface.NumberOfPoints - 2) * 4 * 3; // (кол-во точек - 2 ) * 4 атрибута и * 3 треугольника
+
             }
          }
+
     }
 }

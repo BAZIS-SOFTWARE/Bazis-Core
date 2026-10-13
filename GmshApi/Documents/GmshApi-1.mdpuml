@@ -1,0 +1,62 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title GmshApi-1 — Жизненный цикл и CAD API
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+enum "BoundaryLayerOptions" as T_GmshApi_GmshApi_BoundaryLayerOptions {
+    AnisoMax
+    Beta
+    BetaLaw
+    CurvesList
+    ExcludedSurfacesList
+    FanPointsList
+    FanPointsSizesList
+    IntersectMetrics
+    NbLayers
+    PointsList
+    Quads
+    Ratio
+    Size
+    SizeFar
+    SizesList
+    Thickness
+}
+class "ElementProperties" as T_GmshApi_GmshApi_ElementProperties {
+  + coords : double[] [field]
+  + coords_n : int [field]
+  + dim : int [field]
+  + elementName : string [field]
+  + numNodes : int [field]
+  + numPrimaryNodes : int [field]
+  + order : int [field]
+}
+enum "ExtendOptions" as T_GmshApi_GmshApi_ExtendOptions {
+    CurvesList
+    DistMax
+    Power
+    SizeMax
+    SurfacesList
+}
+class "Geo" as T_GmshApi_GmshApi_Geo {
+  + AddSurfaceLoop(surfaceTags, tag) : int
+  + AddVolume(shellTags, tag) : int
+  + Synchronize() : void
+}
+T_GmshApi_GmshApi_BoundaryLayerOptions -[hidden]down-> T_GmshApi_GmshApi_ElementProperties
+T_GmshApi_GmshApi_ElementProperties -[hidden]down-> T_GmshApi_GmshApi_ExtendOptions
+T_GmshApi_GmshApi_ExtendOptions -[hidden]down-> T_GmshApi_GmshApi_Geo
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

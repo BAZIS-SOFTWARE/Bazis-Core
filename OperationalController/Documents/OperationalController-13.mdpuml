@@ -1,0 +1,59 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title OperationalController-13 — Создание объектов, операции и презентаторы
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "FreeNodesFinder" as T_OperationalController_OperationalController_MeshObjsUtility_FreeNodesFinder {
+}
+class "InterfacedNodesFinder" as T_OperationalController_OperationalController_MeshObjsUtility_InterfacedNodesFinder {
+}
+class "MergeObjects" as T_OperationalController_OperationalController_MeshObjsUtility_MergeObjects {
+}
+class "NormalsCalculator" as T_OperationalController_OperationalController_MeshObjsUtility_NormalsCalculator {
+}
+class "NormalsChecker" as T_OperationalController_OperationalController_MeshObjsUtility_NormalsChecker {
+  + Inverted : int [get, private set]
+  + Log : string [get, set]
+  + NotOthogonals : int [get, private set]
+  + ZeroLengths : int [get, private set]
+  + Check() : void
+  + IdentifyByTriangles(triangles) : ElementKind
+  + NormalsChecker(presenter)
+}
+class "ObjectsRenumber" as T_OperationalController_OperationalController_MeshObjsUtility_ObjectsRenumber {
+}
+interface "IFreeNodesFinder" as T_OperationalController_OperationalController_IFreeNodesFinder <<reference>>
+interface "IInterfacedNodesFinder" as T_OperationalController_OperationalController_IInterfacedNodesFinder <<reference>>
+interface "IObjectsMerger" as T_OperationalController_OperationalController_IObjectsMerger <<reference>>
+interface "INormalCalculator" as T_OperationalController_OperationalController_MeshObjsUtility_INormalCalculator <<reference>>
+interface "IObjectsRenumber" as T_OperationalController_OperationalController_IObjectsRenumber <<reference>>
+T_OperationalController_OperationalController_MeshObjsUtility_FreeNodesFinder -[hidden]down-> T_OperationalController_OperationalController_MeshObjsUtility_InterfacedNodesFinder
+T_OperationalController_OperationalController_MeshObjsUtility_InterfacedNodesFinder -[hidden]down-> T_OperationalController_OperationalController_MeshObjsUtility_MergeObjects
+T_OperationalController_OperationalController_MeshObjsUtility_MergeObjects -[hidden]down-> T_OperationalController_OperationalController_MeshObjsUtility_NormalsCalculator
+T_OperationalController_OperationalController_MeshObjsUtility_NormalsCalculator -[hidden]down-> T_OperationalController_OperationalController_MeshObjsUtility_NormalsChecker
+T_OperationalController_OperationalController_MeshObjsUtility_NormalsChecker -[hidden]down-> T_OperationalController_OperationalController_MeshObjsUtility_ObjectsRenumber
+T_OperationalController_OperationalController_MeshObjsUtility_ObjectsRenumber -[hidden]down-> T_OperationalController_OperationalController_IFreeNodesFinder
+T_OperationalController_OperationalController_IFreeNodesFinder -[hidden]down-> T_OperationalController_OperationalController_IInterfacedNodesFinder
+T_OperationalController_OperationalController_IInterfacedNodesFinder -[hidden]down-> T_OperationalController_OperationalController_IObjectsMerger
+T_OperationalController_OperationalController_IObjectsMerger -[hidden]down-> T_OperationalController_OperationalController_MeshObjsUtility_INormalCalculator
+T_OperationalController_OperationalController_MeshObjsUtility_INormalCalculator -[hidden]down-> T_OperationalController_OperationalController_IObjectsRenumber
+T_OperationalController_OperationalController_MeshObjsUtility_FreeNodesFinder ..|> T_OperationalController_OperationalController_IFreeNodesFinder
+T_OperationalController_OperationalController_MeshObjsUtility_InterfacedNodesFinder ..|> T_OperationalController_OperationalController_IInterfacedNodesFinder
+T_OperationalController_OperationalController_MeshObjsUtility_MergeObjects ..|> T_OperationalController_OperationalController_IObjectsMerger
+T_OperationalController_OperationalController_MeshObjsUtility_NormalsCalculator ..|> T_OperationalController_OperationalController_MeshObjsUtility_INormalCalculator
+T_OperationalController_OperationalController_MeshObjsUtility_ObjectsRenumber ..|> T_OperationalController_OperationalController_IObjectsRenumber
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

@@ -1,0 +1,37 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title Project-12 — Параметры и физические поля
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "TermalParameters" as T_Project_Project_TaskParameters_TermalParameters {
+  + MetallurgicalProcesses : List<string> [get, set]
+  + TermalConvergence : TermalConvergence [get, set]
+  + TermalParameters()
+}
+class "TimeSettings" as T_Project_Project_TaskParameters_TimeSettings {
+  + InitTimeStep : float [get, set]
+  + MaxTimeStep : float [get, set]
+  + MinTimeStep : float [get, set]
+  + StartTime : float [get, set]
+  + StopTime : float [get, set]
+}
+class "GeneralParameters\nProject-2" as T_Project_Project_TaskParameters_GeneralParameters <<reference>> [[Project-2.mdpuml Project-2]]
+T_Project_Project_TaskParameters_TermalParameters -[hidden]down-> T_Project_Project_TaskParameters_TimeSettings
+T_Project_Project_TaskParameters_TimeSettings -[hidden]down-> T_Project_Project_TaskParameters_GeneralParameters
+T_Project_Project_TaskParameters_TermalParameters --|> T_Project_Project_TaskParameters_GeneralParameters
+legend bottom
+  Обзор: [[Project.mdpuml Project]]; сигнатуры: [[Project-12.md Project-12.md]].
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

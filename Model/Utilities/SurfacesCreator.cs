@@ -18,10 +18,10 @@ namespace Model.Utilities
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="elementNumber"></param>
+        /// <param name="owner"></param>
         /// <param name="nodes"></param>
         /// <returns></returns>
-        public static List<ElementSurface> CreateSurfacesFromSetOfNodes(int elementNumber, Node[] nodes)
+        public static List<ElementSurface> CreateSurfacesFromSetOfNodes(IElement owner, Node[] nodes)
         {
             var surfaces = new List<ElementSurface>();
             var centr = CalcCentr(nodes);
@@ -30,7 +30,7 @@ namespace Model.Utilities
             foreach (var surfNodes in SurfacesFinder.FindSurfaceNodes(nodes))
             {
                 surfNodes.RoundSort(); //Anticlockwise(nodes);
-                var surface = new ElementSurface(elementNumber, surfNumber, surfNodes);
+                var surface = new ElementSurface(owner, surfNumber, surfNodes);
 
                 var normal = surface.CalcNormal();
                 var plane = new Plane(surface[0].Position, normal);

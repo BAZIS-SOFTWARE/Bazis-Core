@@ -9,6 +9,7 @@ using OperationalController.MeshObjsUtility;
 using OperationalController.SurfaceMeshCreator;
 using Project.Interfaces;
 using Project.Interfaces.Tasks;
+using Project;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -18,7 +19,7 @@ using System.Numerics;
 namespace OperationalController
 {
     /// <summary>
-    /// ProjectController
+    /// Управляет текущим проектом, представлением и уведомлениями об изменениях.
     /// </summary>
     public partial class ProjectController : IProjectController
     {
@@ -73,6 +74,25 @@ namespace OperationalController
         }
 
         IProjectData project;
+        ModelView modelView;
+        string filePath;
+        bool hasProject;
+        bool isModified;
+
+        /// <summary>
+        /// Создаёт контроллер с пустыми данными проекта.
+        /// </summary>
+        public ProjectController()
+        {
+            project = new ProjectData("untitled.bpf2");
+            modelView = new ModelView(project.ModelData);
+            modelView.Changed += OnViewChanged;
+        }
+
+        /// <summary>
+        /// Возвращает состояние представления текущей модели.
+        /// </summary>
+        private IModelView ModelView => modelView;
 
         ISelectionHelper selectionHelper { get; set; } = new SelectionHelper();
 /// <inheritdoc/>
@@ -108,24 +128,14 @@ namespace OperationalController
         /// <param name="color">Цвет подсветки.</param>
         private void Highlight(ObjType objType, IEnumerable<int> numbers, Color color)
         {
-            var objectsData = ModelData?.ObjectData;
-
-            if (objectsData == null || numbers == null)
+            if (numbers == null)
                 return;
 
-            var wanted = new HashSet<int>(numbers);
-
-            if (wanted.Count == 0)
+            var view = ModelView;
+            if (view == null)
                 return;
 
-            // Один проход по наборам вместо поиска набора для каждого объекта.
-            foreach (var setInfo in objectsData.GetSetsInfo(objType))
-            {
-                var matched = setInfo.GetNumbers().Where(wanted.Contains).ToList();
-
-                foreach (var number in matched)
-                    setInfo.SetColor(color, number);
-            }
+            view.SetSelection(objType, numbers);
         }
 /// <inheritdoc/>
 
@@ -151,10 +161,6 @@ namespace OperationalController
         public List<List<int>> FindCoincidentObjects(ObjType objType, float distance)
         {
             var objs = ModelData.ObjectData.GetObjects(objType).ToList();
-            coincidentObjectsFinder.ProgressEvent += (ar1, ar2) => 
-            { 
-                MessageEvent?.Invoke(ar2.ToString()); 
-            };
             return coincidentObjectsFinder.Find(objs, distance);
         }
 
@@ -163,7 +169,29 @@ namespace OperationalController
         /// <inheritdoc/>
         public void MergeNodes(List<List<int>> numbers)
         {
-            objectsMerger.Merge(numbers, ModelData.ObjectData.NodesSet);
+            using (BeginChanges())
+            {
+                var nodes = ModelData.ObjectData.NodesSet;
+                objectsMerger.Merge(numbers, nodes, out var changedElements, out var nodesRemoved);
+                if (!nodesRemoved && changedElements.Count == 0)
+                    return;
+                var changedSets = new HashSet<ISetInfo>(ReferenceEqualityComparer.Instance);
+                foreach (var element in changedElements)
+                {
+                    var setInfo = ModelData.ObjectData.GetSetInfo(element.ObjType, element.Number);
+                    if (setInfo != null)
+                        changedSets.Add(setInfo);
+                }
+                var surfaceChanges = MarkModelSurfaces(ModelData);
+                changedSets.UnionWith(surfaceChanges);
+                if (nodesRemoved)
+                    changedSets.Add(nodes);
+                foreach (var set in changedSets)
+                    RegisterSetChange(set, ChangeAction.Updated);
+
+                ClearNotExistedGroupData();
+                ModelView.Prune();
+            }
         }
 
         ISurfaceMeshCreator surfaceMeshCreator { get; set; }
@@ -198,14 +226,15 @@ namespace OperationalController
         
 /// <inheritdoc/>
 
-        public void SetModelObjectsBackColor(ObjType objType)
-        {
-            ModelData?.ObjectData?.SetBackColor(objType);
-        }
-
         public void AddTaskData(ICondData cond)
         {
-            TaskData?.Add(cond);
+            using (BeginChanges())
+            {
+                if (cond == null)
+                    throw new ArgumentNullException(nameof(cond));
+                TaskData.Add(cond);
+                RegisterConditionChange(cond.Kind, ChangeAction.Created, TaskData.Count - 1);
+            }
         }
 
 
@@ -219,10 +248,20 @@ namespace OperationalController
         IGeneralData GeneralData => project?.GeneralData;
 
         /// <inheritdoc/>
-        public string Name 
+        public string Name => GeneralData.Name;
+
+        /// <summary>
+        /// Изменяет имя текущего проекта и уведомляет подписчиков.
+        /// </summary>
+        public void ChangeProjectName(string name)
         {
-            get => GeneralData.Name;
-            set => GeneralData.Name = value;
+            using (BeginChanges())
+            {
+                if (GeneralData.Name == name)
+                    return;
+                GeneralData.Name = name;
+                RegisterChange(new ProjectChange(ProjectChange.ProjectChangeKind.PropertyChanged, ProjectChange.ProjectProperty.Name));
+            }
         }
     }
 }

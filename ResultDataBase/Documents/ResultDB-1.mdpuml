@@ -1,0 +1,51 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title ResultDB-1 — Результаты и хранилище
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "DataTableEx" as T_ResultDB_ResultDB_DataTableEx <<static>> {
+  + GetTableData(table, objNumber, resDescr) : float
+  + GetTableSchema(table) : string[]
+}
+class "Result" as T_ResultDB_ResultDB_Result {
+  + Data : DataSet [get, private set]
+  + Name : string [get]
+  + Time : float [get]
+  + AddDataTable(dbDataTable) : void
+  + ContainsTable(tableName) : bool
+  + GetValue(tableInd, objNumber, resDescr) : float
+  + GetValue(tableName, objNumber, resDescr) : float
+  + Result(dataSet, time, name)
+  + Result(time, name)
+  + ToString() : string
+  + TryGetValue<T>(tableName, objNumber, resDescr, out resu) : bool
+}
+class "ResultDataBase" as T_ResultDB_ResultDB_ResultDataBase {
+  + AddData(queStr) : int
+  + ClearTable(tableName) : void
+  + CloseConnection() : void
+  + CreateAddCommand(table, columns, values) : string
+  + CreateTables(tableName, columnsName) : void
+  + DeleteTable(tableName) : void
+  + GetResults(table, column, filter) : DataTable
+  + GetTableShema(tableName) : IEnumerable<string>
+  + OpenConnection() : void
+  + ResultDataBase(fullName)
+}
+T_ResultDB_ResultDB_DataTableEx -[hidden]down-> T_ResultDB_ResultDB_Result
+T_ResultDB_ResultDB_Result -[hidden]down-> T_ResultDB_ResultDB_ResultDataBase
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

@@ -45,11 +45,11 @@ namespace Model.MeshObjects
             //var masterSurface = GetMasterSurface(3, surfaces);
             //this.nodes = SortNodes(masterSurface.Number, surfaces);
             //Точки те же, но перечислены в обратном направлениии
-            surfaces.Add(new ElementSurface(number, 0, new Node[] { nodes[2], nodes[1], nodes[0] }));
-            surfaces.Add(new ElementSurface(number, 1, new Node[] { nodes[4], nodes[5], nodes[3] }));
-            surfaces.Add(new ElementSurface(number, 2, new Node[] { nodes[3], nodes[5], nodes[2], nodes[0] }));
-            surfaces.Add(new ElementSurface(number, 3, new Node[] { nodes[1], nodes[4], nodes[3], nodes[0] }));
-            surfaces.Add(new ElementSurface(number, 4, new Node[] { nodes[2], nodes[5], nodes[4], nodes[1] }));
+            surfaces.Add(new ElementSurface(this, 0, new Node[] { nodes[2], nodes[1], nodes[0] }));
+            surfaces.Add(new ElementSurface(this, 1, new Node[] { nodes[4], nodes[5], nodes[3] }));
+            surfaces.Add(new ElementSurface(this, 2, new Node[] { nodes[3], nodes[5], nodes[2], nodes[0] }));
+            surfaces.Add(new ElementSurface(this, 3, new Node[] { nodes[1], nodes[4], nodes[3], nodes[0] }));
+            surfaces.Add(new ElementSurface(this, 4, new Node[] { nodes[2], nodes[5], nodes[4], nodes[1] }));
 
             Level = 1;
             //CreateIntegrationPoint(1, 0.3333, 0.3333, 0);

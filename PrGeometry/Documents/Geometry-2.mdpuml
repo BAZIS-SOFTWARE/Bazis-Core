@@ -1,0 +1,69 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title Geometry-2 — Геометрические построения и операции
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "Curve2D" as T_Geometry_Geometry_Curve2D {
+  + Curve2D(points)
+  + IsPointBelongCurve(point, delta) : bool
+}
+class "Curve3D" as T_Geometry_Geometry_Curve3D {
+  + Count : int [get]
+  + IsReadOnly : bool [get]
+  + this[int index] : Point3D [get, set]
+  + Add(point) : void
+  + AddRange(points) : void
+  + Clear() : void
+  + Contains(item) : bool
+  + CopyTo(array, arrayIndex) : void
+  + Curve3D()
+  + Curve3D(points)
+  + GetEnumerator() : IEnumerator<Point3D>
+  + IndexOf(point) : int
+  + Insert(index, item) : void
+  + Remove(point) : bool
+  + RemoveAt(index) : void
+}
+class "Hull2DCreator" as T_Geometry_Geometry_Hull2DCreator {
+  + CreateHullGraham(points) : Polygon
+  + GetHullAndrew(points) : IEnumerable<Point2D>
+  + GetHullGraham(points) : IEnumerable<Point2D>
+  + TryCreateHullGraham(input, out output) : bool
+}
+class "Point3DEqualityComparer" as T_Geometry_Geometry_Point3DEqualityComparer {
+  + Equals(a, b) : bool
+  + GetHashCode(obj) : int
+}
+class "PointsSorter" as T_Geometry_Geometry_PointsSorter <<static>> {
+  + RoundSort<T>(points) : void
+  + RoundSort<T>(objects) : void
+  + SortByDistance<T>(points) : void
+  + SwapArray<T>(objectArray, x, y) : bool
+  + SwapList<T>(objectArray, firstIndex, secondIndex) : bool
+}
+class "Polygon" as T_Geometry_Geometry_Polygon {
+  + Area : double [get]
+  + GetPoints() : IEnumerable<Point2D>
+  + IsPointInsidePolygon(point, epsilon) : bool
+  ~ Polygon(points)
+}
+T_Geometry_Geometry_Curve2D -[hidden]down-> T_Geometry_Geometry_Curve3D
+T_Geometry_Geometry_Curve3D -[hidden]down-> T_Geometry_Geometry_Hull2DCreator
+T_Geometry_Geometry_Hull2DCreator -[hidden]down-> T_Geometry_Geometry_Point3DEqualityComparer
+T_Geometry_Geometry_Point3DEqualityComparer -[hidden]down-> T_Geometry_Geometry_PointsSorter
+T_Geometry_Geometry_PointsSorter -[hidden]down-> T_Geometry_Geometry_Polygon
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

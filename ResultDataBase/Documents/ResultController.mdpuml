@@ -1,0 +1,59 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam shadowing false
+skinparam nodesep 18
+skinparam ranksep 24
+hide empty members
+set namespaceSeparator none
+title ResultDB — доступ к результатам без собственных событий
+caption Прежнее предложение ResultController с отдельными событиями отменено
+interface IResultsLoader <<reference>>
+interface IResultsSaver <<reference>>
+class LoadResultsFileDB <<reference>>
+class SaveResultsFileDb <<reference>>
+class Result <<reference>>
+class ResultDataBase <<reference>>
+LoadResultsFileDB ..|> IResultsLoader
+SaveResultsFileDb ..|> IResultsSaver
+LoadResultsFileDB ..> Result : читает
+SaveResultsFileDb ..> Result : сохраняет
+ResultDataBase ..> Result : доступ к хранилищу
+IResultsLoader -[hidden]down-> LoadResultsFileDB
+LoadResultsFileDB -[hidden]down-> IResultsSaver
+IResultsSaver -[hidden]down-> SaveResultsFileDb
+SaveResultsFileDb -[hidden]down-> ResultDataBase
+ResultDataBase -[hidden]down-> Result
+note bottom of ResultDataBase
+  В этой библиотеке событий нет.
+  Долгоживущий ResultController из старой схемы не реализован.
+  Контракт управления активными результатами в ProjectController
+  должен быть спроектирован отдельно, если он потребуется.
+end note
+note right of IResultsLoader
+  Полный состав:
+  ResultDB-2.mdpuml
+end note
+note right of IResultsSaver
+  Полный состав:
+  ResultDB-2.mdpuml
+end note
+note right of LoadResultsFileDB
+  Полный состав:
+  ResultDB-2.mdpuml
+end note
+note right of SaveResultsFileDb
+  Полный состав:
+  ResultDB-3.mdpuml
+end note
+note right of Result
+  Полный состав:
+  ResultDB-1.mdpuml
+end note
+note right of ResultDataBase
+  Полный состав:
+  ResultDB-1.mdpuml
+end note
+@enduml

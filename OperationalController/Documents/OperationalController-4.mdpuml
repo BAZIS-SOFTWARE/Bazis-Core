@@ -1,0 +1,51 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title OperationalController-4 — Специализированные контракты контроллера
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+interface "IBoundaryEdgesFinder" as T_OperationalController_OperationalController_IBoundaryEdgesFinder {
+  + CreateBoundaryEdges(linesNodesб, modelData) : IEnumerable<ILineObject<Node>>
+  + Find(surfaceElements) : List<string>
+}
+interface "ICoincidentObjectsFinder" as T_OperationalController_OperationalController_ICoincidentObjectsFinder {
+  + Find<T>(modelObjects, distance) : List<List<int>>
+}
+interface "IConditionCommands" as T_OperationalController_OperationalController_IConditionCommands {
+  + AddTaskData(cond) : void
+  + ClearNotExistedCondData() : void
+  + ClearTaskData() : void
+  + Create(kind, info) : ICondData
+  + DeleteCond(group) : void
+  + DeleteCond(index) : bool
+  + UpdateCondition(index, condition) : void
+}
+interface "IConditionQueries" as T_OperationalController_OperationalController_IConditionQueries {
+  + GetAllCondData() : IEnumerable<ICondData>
+  + GetCondData(condIndex) : ICondData
+}
+interface "ICrossSectionMaker" as T_OperationalController_OperationalController_ICrossSectionMaker {
+  + GetSectionSurfaces(elements, plane) : SurfaceFigure
+}
+interface "IFreeNodesFinder" as T_OperationalController_OperationalController_IFreeNodesFinder {
+  + Find(objsData) : IEnumerable<int>
+}
+T_OperationalController_OperationalController_IBoundaryEdgesFinder -[hidden]down-> T_OperationalController_OperationalController_ICoincidentObjectsFinder
+T_OperationalController_OperationalController_ICoincidentObjectsFinder -[hidden]down-> T_OperationalController_OperationalController_IConditionCommands
+T_OperationalController_OperationalController_IConditionCommands -[hidden]down-> T_OperationalController_OperationalController_IConditionQueries
+T_OperationalController_OperationalController_IConditionQueries -[hidden]down-> T_OperationalController_OperationalController_ICrossSectionMaker
+T_OperationalController_OperationalController_ICrossSectionMaker -[hidden]down-> T_OperationalController_OperationalController_IFreeNodesFinder
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

@@ -12,7 +12,7 @@ namespace Model.Interfaces
     /// ISurface
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface ISurface<T> : INormal,ISquare
+    public interface ISurface<T> : ICoordinated, INormal,ISquare
         where T : IPoint
     {
         //Position3D Position
@@ -21,13 +21,10 @@ namespace Model.Interfaces
         /// </summary>
         int Number { get; }
         /// <summary>
-        /// NumberOfPoints
+        /// Признак того, что поверхность лежит внутри тела и не видна снаружи.
+        /// Для самостоятельных поверхностей всегда ложь.
         /// </summary>
-        int NumberOfPoints { get; }
-        /// <summary>
-        /// View state flag
-        /// </summary>
-        bool ViewState { get; set; }
+        bool IsInner { get; }
         /// <summary>
         /// GetVertexIndex
         /// </summary>

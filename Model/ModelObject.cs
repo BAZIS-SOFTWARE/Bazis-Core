@@ -2,7 +2,6 @@
 using Model.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 
 namespace Model
 {
@@ -33,27 +32,7 @@ namespace Model
         {
             Number = number;
         }
-        /// <summary>
-        /// MasterColor
-        /// </summary>
-        public Color Color { get; set; } = Color.FromArgb(255, 0, 0, 0);
-
-        bool viewState = true;
         bool existState = true;
-        /// <summary>
-        /// View state flag
-        /// </summary>
-        public virtual bool ViewState
-        {
-            get { return viewState; }
-            set
-            {
-                if(existState)
-                {
-                    viewState = value;
-                }
-            }
-        }
         /// <summary>
         /// Exist state flag
         /// </summary>
@@ -62,9 +41,6 @@ namespace Model
             get { return existState; }
             set
             {
-                if (!value)
-                    viewState = false;
-                else viewState = true;
                 existState = value;
             }
         }

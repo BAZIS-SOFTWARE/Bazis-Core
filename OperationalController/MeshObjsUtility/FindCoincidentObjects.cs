@@ -11,27 +11,24 @@ namespace OperationalController.MeshObjsUtility
 {
     public class FindCoincidentObjects : ICoincidentObjectsFinder
     {
-        /// <inheritdoc/>
-        public event Action<object, float> ProgressEvent;
-/// <inheritdoc/>
-
-
+        /// <summary>
+        /// Находит группы объектов, центры которых близки в пределах заданного расстояния.
+        /// </summary>
         public List<List<int>> Find<T>(List<T> modelObjects, float distance)
             where T : IModelObject
         {
             var tree = BuildTree(modelObjects);
-            modelObjects.ForEach(obj => obj.ViewState = false);
             var result = new List<List<int>>();
-
-            var spec = new List<int>();
+            var processed = new HashSet<int>();
 
             foreach (var obj in modelObjects)
             {
-                if (!obj.ViewState)
+                if (processed.Add(obj.Number))
                 {
                     var point = obj.CalcCentr();
                     var neighbourElements = RadialSearch(point, distance, tree);
-                    neighbourElements.ForEach(x => x.ViewState = true);
+                    foreach (var neighbourElement in neighbourElements)
+                        processed.Add(neighbourElement.Number);
                     if(neighbourElements.Count > 1)
                         result.Add(neighbourElements.Select(x => x.Number).ToList());
                 }

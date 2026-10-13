@@ -1,0 +1,51 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title Model-4 — Грани и вспомогательные алгоритмы
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "ListExtentions" as T_Model_Model_Extensions_ListExtentions <<static>> {
+  + SwapList<T>(objectArray, firstIndex, secondIndex) : bool
+}
+class "ElementSurfaceEqualityComparer<T>" as T_Model_Model_Interfaces_Comparers_ElementSurfaceEqualityComparer_1 {
+  + Equals(s1, s2) : bool
+  + GetHashCode(s) : int
+}
+class "ComparerBySqCoords" as T_Model_Model_Interfaces_ObjectsComparers_ComparerBySqCoords {
+  + Compare(x, y) : int
+}
+class "EqualityComparerByCentralPoint" as T_Model_Model_Interfaces_ObjectsComparers_EqualityComparerByCentralPoint {
+  + Equals(x, y) : bool
+  + GetHashCode(obj) : int
+}
+class "EqualityComparerByExistState" as T_Model_Model_Interfaces_ObjectsComparers_EqualityComparerByExistState {
+  + Equals(x, y) : bool
+  + GetHashCode(obj) : int
+}
+class "EqualityComparerByNumber<T>" as T_Model_Model_Interfaces_ObjectsComparers_EqualityComparerByNumber_1 {
+  + Equals(x, y) : bool
+  + GetHashCode(obj) : int
+}
+T_Model_Model_Extensions_ListExtentions -[hidden]down-> T_Model_Model_Interfaces_Comparers_ElementSurfaceEqualityComparer_1
+T_Model_Model_Interfaces_Comparers_ElementSurfaceEqualityComparer_1 -[hidden]down-> T_Model_Model_Interfaces_ObjectsComparers_ComparerBySqCoords
+T_Model_Model_Interfaces_ObjectsComparers_ComparerBySqCoords -[hidden]down-> T_Model_Model_Interfaces_ObjectsComparers_EqualityComparerByCentralPoint
+T_Model_Model_Interfaces_ObjectsComparers_EqualityComparerByCentralPoint -[hidden]down-> T_Model_Model_Interfaces_ObjectsComparers_EqualityComparerByExistState
+T_Model_Model_Interfaces_ObjectsComparers_EqualityComparerByExistState -[hidden]down-> T_Model_Model_Interfaces_ObjectsComparers_EqualityComparerByNumber_1
+legend bottom
+  Обзор: [[Model.mdpuml Model]]; сигнатуры: [[Model-4.md Model-4.md]].
+  reference — адрес подробностей указан в заголовке типа.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+  Связанные типы в контрактах и сигнатурах:
+  [[Model-1.mdpuml Model-1]]: IModelObject.
+  [[Model-15.mdpuml Model-15]]: ISurface<T>.
+endlegend
+@enduml

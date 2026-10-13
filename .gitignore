@@ -263,12 +263,24 @@ __pycache__/
 # Geometry input data
 *.inp
 /GmshApi/gmsh.dll
-/GmshApi/gmsh.dll
+/GmshApi/libgmsh.so
 
 *.tsf
 
-/TestProject/CalcCompDataTest/TsfFolder/*
-/TestProject/CalcCompDataTest/V2TestCase/*
-/TestProject/Examples/1.bpf
-/.codex/tools/.venv
-/TestProject/SharedData/ProjAndResults
+/TestProject/PreProc/Data/CalcCompDataTest/TsfFolder/*
+/TestProject/PreProc/Data/CalcCompDataTest/V2TestCase/*
+/TestModelCore/Examples/STL/block.STL
+/TestModelCore/Examples/STL/block.stl.bin.stl
+/TestModelCore/Examples/STL/block_allElements3D_25538.STL
+/TestModelCore/Examples/STL/block_allElements3D_25538.stl.bin.stl
+/TestProject/MaterialDB/Data/Materials_v7.jsf
+/TestProject/SharedData/ProjAndResults/*.db-shm
+/TestProject/SharedData/ProjAndResults/*.db-wal
+!/TestProject/SharedData/ProjAndResults/*.tsf
+!/TestProject/SharedData/ProjectFiles/*.tsf
+/TestProject/TestTableColumns/test.db
+/TestProject/ResultDB/Data/ResultTableCSV/results.db
+/TestProject/SharedData/ProjectFiles/export.bpf
+/TestProject/SharedData/ProjectFiles/export.stl
+/TestProject/SharedData/ProjectFiles/proj_traj_save.bpf
+/TestProject/MaterialDB/Data/functions.jsf

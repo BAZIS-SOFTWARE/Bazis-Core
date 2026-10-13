@@ -13,6 +13,7 @@ namespace OperationalController
         string CreateGroupByMeshObjs(int dim, string setName);
         string CreateGroupByGeoObjs(int meshDim, int geoDim, int tag);
         string CreateOpenSurfaceNodesGroup(string setName);
+        void ChangeGroupName(string oldName, string newName);
         void DeleteModelGroup(string grName);
         void ClearGroupData();
         void ClearNotExistedGroupData();

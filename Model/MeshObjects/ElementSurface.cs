@@ -3,7 +3,6 @@ using Model.Interfaces;
 using Model.Interfaces.MeshObjects;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 
 namespace Model.MeshObjects
@@ -14,23 +13,28 @@ namespace Model.MeshObjects
     public class ElementSurface : ISurface<Node>
     {
         Node[] nodes;
+        readonly IElement owner;
+        IElement neighbour;
+
         /// <summary>
         /// Surface constructor
         /// </summary>
-        /// <param name="elementNumber"></param>
-        /// <param name="surfaceNumber"></param>
-        /// <param name="nodes"></param>
-        public ElementSurface(int elementNumber, int surfaceNumber, Node[] nodes)
+        /// <param name="owner">Элемент, которому принадлежит поверхность</param>
+        /// <param name="surfaceNumber">Номер поверхности внутри элемента</param>
+        /// <param name="nodes">Узлы поверхности</param>
+        public ElementSurface(IElement owner, int surfaceNumber, Node[] nodes)
         {
             if (nodes.Length < 3)
                 throw new Exception("Для создания поверхности требуется не меньше 3-х узлов!");
 
+            if (owner == null)
+                throw new ArgumentNullException(nameof(owner));
+
             //nodes.RoundSort(); //Anticlockwise(nodes);
             this.nodes = nodes;
+            this.owner = owner;
 
-            ElementNumber = elementNumber;
             Number = surfaceNumber;
-            //Color = Color.FromArgb(224, 0, 177);
         }
         
         /// <summary>
@@ -60,10 +64,58 @@ namespace Model.MeshObjects
         public int NumberOfPoints { get { return nodes.Length; } }
 /// <inheritdoc/>
 
-        public int ElementNumber { get; }
-        public bool ViewState { get; set; } = true;
+        public int ElementNumber => owner.Number;
 
+        /// <inheritdoc/>
         public int Number { get; }
+
+        /// <summary>
+        /// Поверхность внутренняя, если у неё есть живой сосед.
+        /// Ничего не хранит: гашение соседа само делает поверхность внешней.
+        /// </summary>
+        public bool IsInner => neighbour != null && neighbour.ExistState;
+
+        /// <summary>
+        /// Перечисляет владельцев поверхности: сначала собственный элемент,
+        /// затем соседний, если он есть.
+        /// </summary>
+        public IEnumerable<IElement> GetElements()
+        {
+            yield return owner;
+
+            if (neighbour != null)
+                yield return neighbour;
+        }
+
+        /// <summary>
+        /// Строит ключ сопоставления совпадающих поверхностей -
+        /// отсортированные номера узлов. Не кэшируется: номера узлов изменяемы.
+        /// </summary>
+        public int[] CreateNodesKey()
+        {
+            var key = new int[nodes.Length];
+            for (var index = 0; index < nodes.Length; index++)
+                key[index] = nodes[index].Number;
+
+            Array.Sort(key);
+            return key;
+        }
+
+        /// <summary>
+        /// Элемент, которому принадлежит поверхность.
+        /// </summary>
+        internal IElement Owner => owner;
+
+        /// <summary>
+        /// Задаёт соседний элемент. Вызывается только связыванием поверхностей.
+        /// </summary>
+        internal bool SetNeighbour(IElement element)
+        {
+            if (ReferenceEquals(neighbour, element))
+                return false;
+            neighbour = element;
+            return true;
+        }
 
         /// <inheritdoc/>
 

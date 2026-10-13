@@ -1,7 +1,6 @@
 ﻿using Geometry;
 using Model.Interfaces;
 using System.Collections.Generic;
-using System.Drawing;
 
 namespace Model.GeometryObjects
 {
@@ -19,7 +18,6 @@ namespace Model.GeometryObjects
         public GeometryPoint(int number, Point3D position) : base(number)
         {
             Position = position;
-            Color = Color.FromArgb(255, 207, 64);
         }
         /// <inheritdoc/>
 

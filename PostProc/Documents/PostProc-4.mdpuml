@@ -1,0 +1,76 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title PostProc-4 — Построение полей и шкала результатов
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "MergeResults" as T_PostProc_PostProc_MergeResults {
+  + Merge(interfaceNodes, resultDescr, res) : void
+}
+class "PostProcController" as T_PostProc_PostProc_PostProcController {
+  + GridExporter : IGridExporter [get]
+  + Intervals : int [get]
+  + MaxValue : float [get]
+  + MinValue : float [get]
+  + ResultsExporter : IResultsExporter [get]
+  + ResultsFieldsCreator : ResultsFieldsCreator [get]
+  + ResultsMerger : MergeResults [get]
+  + FillRange(min, max, intervals, precision) : void
+  + GetItems() : IEnumerable<ItemRange>
+  + GetValueColor(resValue) : Color
+}
+class "LineGradientsCreator" as T_PostProc_PostProc_ScenePresenter_LineGradientsCreator {
+}
+class "ResultFigure" as T_PostProc_PostProc_ScenePresenter_ResultFigure {
+  + Color : Color [get]
+  + NumberOfSides : int [get]
+  + this[int index] : ResultPoint [get]
+  + CalcCentr() : Point3D
+  + CalcNormal() : Point3D
+  + GetSurfaces() : IEnumerable<ResultSurface>
+  + GetVertexes() : IEnumerable<ResultPoint>
+  + ResultFigure(points, color)
+}
+class "ResultItem" as T_PostProc_PostProc_ScenePresenter_ResultItem {
+  + Coord : Point3D [get, set]
+  + Value : float [get, set]
+  + ResultItem()
+  + ResultItem(coord, value)
+  + ToString() : string
+}
+class "ResultSurface" as T_PostProc_PostProc_ScenePresenter_ResultSurface {
+  + this[int index] : ResultPoint [get, set]
+  + CalcCentr() : Point3D
+  + CalcNormal() : Point3D
+  + GetVertexes() : IEnumerable<ResultPoint>
+  + ResultSurface(points)
+  + ReverseVertexes() : void
+}
+interface "IGradientsCreator<T>" as T_PostProc_PostProc_ScenePresenter_Interfaces_IGradientsCreator_1 <<reference>>
+interface "ICoordinated" as T_Geometry_Geometry_Interfaces_ICoordinated <<reference>>
+T_PostProc_PostProc_MergeResults -[hidden]down-> T_PostProc_PostProc_PostProcController
+T_PostProc_PostProc_PostProcController -[hidden]down-> T_PostProc_PostProc_ScenePresenter_LineGradientsCreator
+T_PostProc_PostProc_ScenePresenter_LineGradientsCreator -[hidden]down-> T_PostProc_PostProc_ScenePresenter_ResultFigure
+T_PostProc_PostProc_ScenePresenter_ResultFigure -[hidden]down-> T_PostProc_PostProc_ScenePresenter_ResultItem
+T_PostProc_PostProc_ScenePresenter_ResultItem -[hidden]down-> T_PostProc_PostProc_ScenePresenter_ResultSurface
+T_PostProc_PostProc_ScenePresenter_ResultSurface -[hidden]down-> T_PostProc_PostProc_ScenePresenter_Interfaces_IGradientsCreator_1
+T_PostProc_PostProc_ScenePresenter_Interfaces_IGradientsCreator_1 -[hidden]down-> T_Geometry_Geometry_Interfaces_ICoordinated
+T_PostProc_PostProc_PostProcController --> T_PostProc_PostProc_MergeResults : использует
+T_PostProc_PostProc_ScenePresenter_LineGradientsCreator ..|> T_PostProc_PostProc_ScenePresenter_Interfaces_IGradientsCreator_1
+T_PostProc_PostProc_ScenePresenter_ResultFigure --> T_PostProc_PostProc_ScenePresenter_ResultSurface : использует
+T_PostProc_PostProc_ScenePresenter_ResultFigure ..|> T_Geometry_Geometry_Interfaces_ICoordinated
+T_PostProc_PostProc_ScenePresenter_ResultSurface ..|> T_Geometry_Geometry_Interfaces_ICoordinated
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

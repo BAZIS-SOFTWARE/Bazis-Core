@@ -1,0 +1,68 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title Project-2 — Параметры и физические поля
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+enum "CalculationMode" as T_Project_Project_TaskParameters_CalculationMode {
+    Stationary
+    Transient
+}
+class "ChemicalConvergence" as T_Project_Project_TaskParameters_ChemicalConvergence {
+  + Cm : float [get, set]
+  + Is_Switched_Cm : bool [get, set]
+}
+class "ChemicalParameters" as T_Project_Project_TaskParameters_ChemicalParameters {
+  + ChemicalConvergence : ChemicalConvergence [get, set]
+  + ChemicalParameters()
+}
+class "ConditionReference" as T_Project_Project_TaskParameters_ConditionReference {
+  + GroupName : string [get]
+  + Index : int [get]
+  + Kind : DataKind [get]
+  + ConditionReference(index, kind, groupName)
+  + Parse(value) : ConditionReference
+  + ToString() : string
+}
+class "ConditionReferenceJsonConverter" as T_Project_Project_TaskParameters_ConditionReferenceJsonConverter <<internal>> {
+  + ReadJson(reader, objectType, existingValue, hasExistingValue, serializer) : ConditionReference
+  + WriteJson(writer, value, serializer) : void
+}
+class "GeneralParameters" as T_Project_Project_TaskParameters_GeneralParameters {
+  + ActiveConditions : List<ConditionReference> [get, set]
+  + CalculationMode : CalculationMode [get, set]
+  + InitialSet : PhysicalSet? [get, set]
+  + InputSets : List<PhysicalSet> [get, set]
+  + Iterations : int [get, set]
+  + SaveRate : int [get, set]
+  + SolverSettings : SolverSettings [get, set]
+  + TaskKind : TaskKind [get, set]
+  + TimeSettings : TimeSettings [get, set]
+  + UpdMatrixIteration : int [get, set]
+  + GetInputField(fieldSet) : PhysicalSet
+  + ToString() : string
+}
+T_Project_Project_TaskParameters_CalculationMode -[hidden]down-> T_Project_Project_TaskParameters_ChemicalConvergence
+T_Project_Project_TaskParameters_ChemicalConvergence -[hidden]down-> T_Project_Project_TaskParameters_ChemicalParameters
+T_Project_Project_TaskParameters_ChemicalParameters -[hidden]down-> T_Project_Project_TaskParameters_ConditionReference
+T_Project_Project_TaskParameters_ConditionReference -[hidden]down-> T_Project_Project_TaskParameters_ConditionReferenceJsonConverter
+T_Project_Project_TaskParameters_ConditionReferenceJsonConverter -[hidden]down-> T_Project_Project_TaskParameters_GeneralParameters
+T_Project_Project_TaskParameters_ChemicalParameters --> T_Project_Project_TaskParameters_ChemicalConvergence : использует
+T_Project_Project_TaskParameters_ChemicalParameters --|> T_Project_Project_TaskParameters_GeneralParameters
+T_Project_Project_TaskParameters_GeneralParameters --> T_Project_Project_TaskParameters_CalculationMode : использует
+T_Project_Project_TaskParameters_GeneralParameters --> T_Project_Project_TaskParameters_ConditionReference : использует
+legend bottom
+  Обзор: [[Project.mdpuml Project]]; сигнатуры: [[Project-2.md Project-2.md]].
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

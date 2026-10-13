@@ -1,0 +1,79 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam shadowing false
+skinparam nodesep 18
+skinparam ranksep 24
+hide empty members
+set namespaceSeparator none
+title ProjectEvents — сообщения единственного события контроллера
+caption Целевой протокол; события ModelView и библиотек отсутствуют
+interface IProjectEvents {
+  + {event} Message : EventHandler<ProjectMessageEventArgs>
+}
+interface IProjectController <<reference>>
+class ProjectController {
+  - Publish(change) : void
+}
+class ProjectMessageEventArgs {
+  + Change : ChangeMessage
+}
+abstract class ChangeMessage
+class GeoChange <<reference>>
+class MeshChange <<reference>>
+class CondChange <<reference>>
+class ViewChange <<reference>>
+class ProjectChange <<reference>>
+IProjectController --|> IProjectEvents
+ProjectController ..|> IProjectController
+ProjectController ..> ProjectMessageEventArgs : создаёт
+ProjectMessageEventArgs --> ChangeMessage : один вариант
+GeoChange --|> ChangeMessage
+MeshChange --|> ChangeMessage
+CondChange --|> ChangeMessage
+ViewChange --|> ChangeMessage
+ProjectChange --|> ChangeMessage
+IProjectEvents -[hidden]down-> IProjectController
+IProjectController -[hidden]down-> ProjectController
+ProjectController -[hidden]down-> ProjectMessageEventArgs
+ProjectMessageEventArgs -[hidden]down-> ChangeMessage
+ChangeMessage -[hidden]down-> GeoChange
+GeoChange -[hidden]down-> MeshChange
+MeshChange -[hidden]down-> CondChange
+CondChange -[hidden]down-> ViewChange
+ViewChange -[hidden]down-> ProjectChange
+note bottom of ProjectController
+  Сообщение следует за фактическим изменением.
+  Массовый обход данных завершается до публикации.
+  Повторные Updated одного набора объединяются.
+  Согласованный шаг сложной операции не означает весь каскад.
+  Ошибка подписчика прерывает синхронную команду; отката нет.
+  Процент чтения передаётся отдельно, без событий IO.
+end note
+note right of IProjectController
+  Полный состав:
+  OperationalController-25.mdpuml
+end note
+note right of GeoChange
+  Полный состав:
+  OperationalController-1.mdpuml
+end note
+note right of MeshChange
+  Полный состав:
+  OperationalController-5.mdpuml
+end note
+note right of CondChange
+  Полный состав:
+  OperationalController-1.mdpuml
+end note
+note right of ViewChange
+  Полный состав:
+  OperationalController-7.mdpuml
+end note
+note right of ProjectChange
+  Полный состав:
+  OperationalController-6.mdpuml
+end note
+@enduml

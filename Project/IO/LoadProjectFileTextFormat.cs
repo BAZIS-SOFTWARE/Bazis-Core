@@ -23,18 +23,17 @@ namespace Project.IO
     /// </summary>
     public class LoadProjectFromTextFormat : IProjectLoader
     {
-        /// <inheritdoc/>
-        public event Action<object, ILoadEventArgs> LoadEvent;
-        /// <inheritdoc/>
-
-        public IProjectData Load(string fullPath)
+        /// <summary>
+        /// Читает проект и сообщает процент двух проходов по файлу.
+        /// </summary>
+        public IProjectData Load(string fullPath, IProgress<int> progress = null)
         {
             //Thread.Sleep(100);
             //modelData loading
 
             var project = new ProjectData(fullPath);
 
-            var ext = System.IO.Path.GetExtension(fullPath);
+            var ext = System.IO.Path.GetExtension(fullPath).ToLowerInvariant();
 
             var name = System.IO.Path.GetFileNameWithoutExtension(fullPath);
             project.GeneralData.Name = name;
@@ -58,10 +57,8 @@ namespace Project.IO
             else
                 throw new System.Exception("Неизвестный формат загрузки проекта");
 
-            modelLoader.LoadEvent += (ar1, ar2) =>
-            { LoadEvent?.Invoke(this, new LoadEventArgs(ar2.Message)); };
-
-            var modelData = modelLoader.Load(fullPath);
+            var modelProgress = progress == null ? null : new ProgressRange(progress, 0, 50);
+            var modelData = modelLoader.Load(fullPath, modelProgress);
 
             project.ModelData = modelData;
 
@@ -70,10 +67,8 @@ namespace Project.IO
 
             var taskLoader = new LoadTaskDataTextFormat();
 
-            taskLoader.LoadEvent += (ar1, ar2) =>
-            { LoadEvent?.Invoke(this, new LoadEventArgs(ar2.Message)); };
-
-            var taskData = taskLoader.Load(fullPath, project.ModelData.GroupData);
+            var taskProgress = progress == null ? null : new ProgressRange(progress, 50, 50);
+            var taskData = taskLoader.Load(fullPath, project.ModelData.GroupData, taskProgress);
 
             project.TaskData = taskData;
 

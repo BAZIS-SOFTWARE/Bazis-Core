@@ -7,7 +7,6 @@ using Model.MeshObjects;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
@@ -63,32 +62,18 @@ namespace Model.ObjectsCollections
 /// <inheritdoc/>
 
         public ObjType ObjType { get; }
-        /// <inheritdoc/>
-        public Color Color { get; private set; } = Color.DarkGray;
-        /// <inheritdoc/>
-        public ViewMode ViewMode { get; private set; } = ViewMode.Point;
-/// <inheritdoc/>
-
         public int NumberOfObjects => objectsSet.Count;
 /// <inheritdoc/>
 
-        public bool ViewState
-        {
-            get 
-            { 
-                return objectsSet.Values.Any(x => x.ViewState == true) 
-                    ? true : false; 
-            }
-        }
 /// <inheritdoc/>
 
-        public int Number { get; set; }
+        public int Number { get; set; } = -1;
 
         /// <inheritdoc/>
 
         public override string ToString()
         {
-            return $@"{Name} {Color} {ViewMode} {objectsSet.Count}";
+            return $@"{Name} {objectsSet.Count}";
         }
 
 /// <inheritdoc/>
@@ -202,14 +187,6 @@ namespace Model.ObjectsCollections
         }
 
 
-        /// <inheritdoc/>
-        public void SetViewMode(ViewMode viewMode)
-        {
-            if (ObjType != ObjType.Узел | ObjType != ObjType.Точка)
-                ViewMode = viewMode;
-        }
-/// <inheritdoc/>
-
         public void ClearNotExisted()
         {
             var temp = new Dictionary<int, T>();
@@ -231,19 +208,6 @@ namespace Model.ObjectsCollections
                 yield return item.Value.ToString();
             }
         }
-        /// <inheritdoc/>
-        public void SetColor(Color color)
-        {
-            Color = color;
-            foreach (var item in objectsSet)
-                item.Value.Color = color;
-        }
-        /// <inheritdoc/>
-        public void SetColor(Color color, int number)
-        {
-            objectsSet[number].Color = color;
-        }
-        /// <inheritdoc/>
         public IEnumerable<Point3D> GetCoords(int number)
         {
             return objectsSet[number].GetCoordinates();
@@ -255,36 +219,6 @@ namespace Model.ObjectsCollections
             return objectsSet.Keys;
         }
         /// <inheritdoc/>
-        public void SetViewState(int number,bool viewState)
-        {
-            objectsSet[number].ViewState = viewState;
-        }
-        /// <inheritdoc/>
-        public void SetViewState(bool viewState)
-        {
-            foreach (var item in objectsSet)
-                item.Value.ViewState = viewState;
-        }
-        /// <inheritdoc/>
-
-        public bool GetViewState(int number)
-        {
-            return objectsSet[number].ViewState;
-        }
-/// <inheritdoc/>
-
-        public virtual void SetBackColor(int number)
-        {
-            objectsSet[number].Color = Color;
-        }
-
-        /// <inheritdoc/>
-
-        public virtual void SetBackColor()
-        {
-            foreach (var item in objectsSet)
-                item.Value.Color = Color;
-        }
         /// <inheritdoc/>
 
         public Point3D GetCentr(int number)
@@ -298,16 +232,25 @@ namespace Model.ObjectsCollections
             return objectsSet[number].ToString();
         }
 
-        public void Renumber(ref int v)
+        /// <summary>Перенумеровывает объекты и возвращает признак изменения набора.</summary>
+        public bool Renumber(ref int v)
         {
             var arr = objectsSet.ToArray();
+            var changed = false;
             foreach (var item in arr)
             {
+                if (item.Key == v && item.Value.Number == v)
+                {
+                    v++;
+                    continue;
+                }
                 objectsSet.Remove(item.Key);
                 var temp = item.Value;
                 temp.SetNumber(v++);
                 objectsSet.Add(temp.Number,temp);
+                changed = true;
             }
+            return changed;
         }
     }
 }

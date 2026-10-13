@@ -1,6 +1,5 @@
 ﻿using Geometry;
 using Model.MeshObjects;
-using Model.Events;
 using Model.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -13,7 +12,6 @@ namespace Model.IO
 {
     public class LoadModelFromCDBTextFile : IModelLoader
     {
-        public event Action<object, ILoaderEventArgs> LoadEvent;
         private const string NODE_BLOCK = "NBLOCK";
         private const string ELEMENTS_BLOCK = "EBLOCK";
         private const int OFFSET_TO_READ_NODES = 11;
@@ -24,13 +22,12 @@ namespace Model.IO
         /// <summary>
         /// Загрузить модель из файла формата .cdb по указанному пути
         /// </summary>
-        public IModelData Load(string path)
+        public IModelData Load(string path, IProgress<int> progress = null)
         {
             allNodes = new Dictionary<int, Node>();
             model = new ModelData();
-            using (var reader = new StreamReader(path))
+            using (var reader = new ProgressTextReader(path, progress))
             {
-                LoadEvent?.Invoke(this, new LoaderEventArgs("Начало загрузки модели"));
                 while (!reader.EndOfStream)
                 {
                     var line = reader.ReadLine();
@@ -40,14 +37,12 @@ namespace Model.IO
                             .ToArray();
                     if (line.Contains(NODE_BLOCK))
                     {
-                        LoadEvent?.Invoke(this, new LoaderEventArgs("Начало загрузки узлов"));
 
                         foreach (var node in ReadNodes(reader, tokens))
                             model.ObjectData.NodesSet.Add(node.Number, node);
                     }
                     if (line.Contains(ELEMENTS_BLOCK))
                     {
-                        LoadEvent?.Invoke(this, new LoaderEventArgs("Начало загрузки элементов"));
 
                         ReadElements(reader, tokens);                  
                     }

@@ -1,5 +1,4 @@
 ﻿using Geometry;
-using Model.Events;
 using Model.GroupsData;
 using Model.MeshObjects;
 using Model.Interfaces;
@@ -11,7 +10,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using Model.ObjectsCollections;
-using System.Drawing;
 using System.Data;
 using Model.Interfaces.MeshObjects;
 using System.Xml.Linq;
@@ -24,58 +22,47 @@ namespace Model.IO
     /// </summary>
     public class LoadModelFromBPF2TextFile : IModelLoader
     {
-        public event Action<object, ILoaderEventArgs> LoadEvent;
 
-        public IModelData Load(string path)
+        public IModelData Load(string path, IProgress<int> progress = null)
         {
-            using (var sr = new StreamReader(path))
+            using (var sr = new ProgressTextReader(path, progress))
             {
                 var newModel = new ModelData();
-                var rnd = new Random();
                 string[] token = new string[1];
                 while (!sr.EndOfStream)
                 {
                     token = sr.ReadLine().Split(' ');
                     if (token[0] == "Узел")
                     {
-                        LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка узлов..."));
                         Thread.Sleep(100);
                         LoadNodes(sr, newModel);
                     }
                     if (token[0] == "Элемент3D")
                     {
-                        var color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
                         var set = new ObjectsSet<Element3D>(token[1]);           
                         FillSet(sr, set, newModel);
-                        set.SetColor(color);
                         newModel.ObjectData.E3DCollection.Add(set);
                     }
                     if (token[0] == "Элемент2D")
                     {
-                        var color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
                         var set = new ObjectsSet<Element2D>(token[1]);          
                         FillSet(sr, set, newModel);
-                        set.SetColor(color);
                         newModel.ObjectData.E2DCollection.Add(set);
                     }
                     if (token[0] == "Элемент1D")
                     {
-                        var color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
                         var set = new ObjectsSet<Beam>(token[1]);
                         FillSet(sr, set, newModel);
-                        set.SetColor(color);
                         newModel.ObjectData.E1DCollection.Add(set);
                     }
 
                     if (token[0] == "Группы")
                     {
-                        LoadEvent?.Invoke(this, new LoaderEventArgs("Загрузка групп..."));
                         Thread.Sleep(100);
                         LoadGroup(sr, newModel);
                     }
                 }
 
-                LoadEvent?.Invoke(this, new LoaderEventArgs("Модель загружена"));
                 Thread.Sleep(100);
                 return newModel;
             }
@@ -108,7 +95,6 @@ namespace Model.IO
         private void FillSet<T>(StreamReader reader, ObjectsSet<T> set, ModelData newMesh)
             where T : IElement
         {
-            LoadEvent?.Invoke(this, new LoaderEventArgs($"Загрузка набора {set.Name}..."));
             Thread.Sleep(100);
 
             var line = reader.ReadLine();

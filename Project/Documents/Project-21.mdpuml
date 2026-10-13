@@ -1,0 +1,77 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title Project-21 — Функции, материалы и ввод/вывод
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "MovedFrame" as T_Project_Project_Tasks_LocalFrames_MovedFrame {
+  + BaseLine : IGroup [get, set]
+  + Frame : Frame [get]
+  + RefLine : IGroup [get, set]
+  + StartPoint : IModelObject [get]
+  + StopPoint : IModelObject [get]
+  + Time : float [get, set]
+  + Velocity : float [get, set]
+  + CalcMotionTime() : float
+  + CalcPosition() : void
+  + MovedFrame()
+  + MovedFrame(baseLine, refLine, _velocity)
+  + ToString() : string
+}
+class "MovedFrameBuilder" as T_Project_Project_Tasks_LocalFrames_MovedFrameBuilder {
+  + Build(startPoints, baseLine, refLine, velocity) : MovedFrame
+  + CheckStartPoints(startPoints, line) : void
+  + SortTrajNodes(startPoints, traj) : void
+}
+class "StaticFrame" as T_Project_Project_Tasks_LocalFrames_StaticFrame {
+  + BaseGroup : IGroup [get, set]
+  + Frame : Frame [get]
+  + CalcPosition() : void
+  + StaticFrame()
+  + StaticFrame(baseGr)
+  ~ StaticFrame(a, b, c)
+  + ToString() : string
+}
+class "BeamMatData" as T_Project_Project_Tasks_Materials_BeamMatData {
+  + Diameter : double [get, set]
+  + BeamMatData(diam, material, group, start, stop)
+  + ToString() : string
+}
+class "PlateMatData" as T_Project_Project_Tasks_Materials_PlateMatData {
+  + Thickness : double [get, set]
+  + PlateMatData(material, group, start, stop)
+  + ToString() : string
+}
+class "Interpolation" as T_Project_Project_Tasks_Utilities_Interpolation <<static>> {
+  + InterpolatedValue(xAr, yAr, xn) : float
+  + InterpolatedValueTwoPoints(x1, x2, y1, y2, xn) : float
+}
+abstract class "LocalFrame\nProject-20" as T_Project_Project_Tasks_LocalFrames_LocalFrame <<reference>> [[Project-20.mdpuml Project-20]]
+class "MatData\nProject-8" as T_Project_Project_Tasks_MatData <<reference>> [[Project-8.mdpuml Project-8]]
+T_Project_Project_Tasks_LocalFrames_MovedFrame -[hidden]down-> T_Project_Project_Tasks_LocalFrames_MovedFrameBuilder
+T_Project_Project_Tasks_LocalFrames_MovedFrameBuilder -[hidden]down-> T_Project_Project_Tasks_LocalFrames_StaticFrame
+T_Project_Project_Tasks_LocalFrames_StaticFrame -[hidden]down-> T_Project_Project_Tasks_Materials_BeamMatData
+T_Project_Project_Tasks_Materials_BeamMatData -[hidden]down-> T_Project_Project_Tasks_Materials_PlateMatData
+T_Project_Project_Tasks_Materials_PlateMatData -[hidden]down-> T_Project_Project_Tasks_Utilities_Interpolation
+T_Project_Project_Tasks_Utilities_Interpolation -[hidden]down-> T_Project_Project_Tasks_LocalFrames_LocalFrame
+T_Project_Project_Tasks_LocalFrames_LocalFrame -[hidden]down-> T_Project_Project_Tasks_MatData
+T_Project_Project_Tasks_LocalFrames_MovedFrame --|> T_Project_Project_Tasks_LocalFrames_LocalFrame
+T_Project_Project_Tasks_LocalFrames_MovedFrameBuilder --> T_Project_Project_Tasks_LocalFrames_MovedFrame : использует
+T_Project_Project_Tasks_LocalFrames_StaticFrame --|> T_Project_Project_Tasks_LocalFrames_LocalFrame
+T_Project_Project_Tasks_Materials_BeamMatData --|> T_Project_Project_Tasks_MatData
+T_Project_Project_Tasks_Materials_PlateMatData --|> T_Project_Project_Tasks_MatData
+legend bottom
+  Обзор: [[Project.mdpuml Project]]; сигнатуры: [[Project-21.md Project-21.md]].
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

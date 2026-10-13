@@ -1,8 +1,6 @@
 ﻿using Model.MeshObjects;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
 
 namespace Model.Interfaces.ObjectsCollections
 {

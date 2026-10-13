@@ -1,0 +1,75 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title OperationalController-19 — Специализированные контракты контроллера
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+interface "IGeometryCommands" as T_OperationalController_OperationalController_IGeometryCommands {
+  + CreateChamfer(curveTags, firstLength, secondLengthOrAngle, isAngle, reflected) : int[]
+  + CreateLine(startPointNumber, endPointNumber) : int
+  + CreatePoint(x, y, z, meshSize) : int
+  + CreatePointByVector(basePointTag, directionPointTag, offset) : int
+  + CreatePointProjectionOntoGeometry(basePointTag, dim, geometryTag) : int
+  + CreateSurface(lineNumbers) : int
+  + DeleteGeometryObject(dim, number, recursive) : void
+  + InitializeGeometry(gmshDllPath) : void
+  + SetEmbeddedGeometryEntities(hostDimension, hostNumber, embeddedDimension, embeddedNumbers) : void
+  + UnloadGeometry() : void
+}
+interface "IGeometryQueries" as T_OperationalController_OperationalController_IGeometryQueries {
+  + GetAdjacentGeometryObjects(obj, direction) : IEnumerable<IModelObject>
+  + GetAdjacentGeometryObjects(dim, number) : Tuple<int[], int[]>
+  + GetBoundary(dimTags, combined, oriented, recursive) : int[]
+  + GetCenterOfMass(dim, tag) : (double X, double Y, double Z)
+  + GetCurveLength(curveTag) : double
+  + GetGeoObjPoints(dim, tag, parametricCoord) : double[]
+  + GetGeometryFilePath() : string
+  + GetGeometryLastError() : string
+  + GetModelCurve(objNumber) : Curve
+  + GetModelPoint(objNumber) : GeometryPoint
+  + GetModelSurface(objNumber) : SurfaceFigure
+  + GetModelVolumes() : IEnumerable<VolumeFigure>
+  + GetParametrization(dim, tag, coordinates) : double[]
+  + GetParametrizationBounds(dim, tag) : Tuple<double[], double[]>
+  + GetSurfaceNormal(surfaceTag, parametricCoordinates) : double[]
+  + GetType(dim, tag) : string
+  + SelectByScope(startDim, selectedNumbers, targetDim) : HashSet<int>
+}
+interface "IGroupCommands" as T_OperationalController_OperationalController_IGroupCommands {
+  + ClearGroupData() : void
+  + ClearNotExistedGroupData() : void
+  + CreateGroup(objs) : void
+  + CreateGroup(grName, objs) : void
+  + CreateGroupByGeoObjs(meshDim, geoDim, tag) : string
+  + CreateGroupByMeshObjs(dim, setName) : string
+  + CreateOpenSurfaceNodesGroup(setName) : string
+  + DeleteModelGroup(grName) : void
+}
+interface "IGroupQueries" as T_OperationalController_OperationalController_IGroupQueries {
+  + ContainsConditions(grName) : bool
+  + GetAllModelGroups() : IEnumerable<IGroup>
+  + GetModelGroup(grIndex) : IGroup
+  + GetModelGroup(grName) : IGroup
+}
+interface "IInterfacedNodesFinder" as T_OperationalController_OperationalController_IInterfacedNodesFinder {
+  + Find(elements) : Dictionary<int, List<int>>
+  + Find(nodes, elements) : Dictionary<int, List<int>>
+}
+T_OperationalController_OperationalController_IGeometryCommands -[hidden]down-> T_OperationalController_OperationalController_IGeometryQueries
+T_OperationalController_OperationalController_IGeometryQueries -[hidden]down-> T_OperationalController_OperationalController_IGroupCommands
+T_OperationalController_OperationalController_IGroupCommands -[hidden]down-> T_OperationalController_OperationalController_IGroupQueries
+T_OperationalController_OperationalController_IGroupQueries -[hidden]down-> T_OperationalController_OperationalController_IInterfacedNodesFinder
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

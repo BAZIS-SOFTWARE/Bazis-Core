@@ -1,0 +1,42 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title Project-9 — Проект, задача и граничные условия
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "TaskData" as T_Project_Project_Tasks_TaskData {
+  + Count : int [get]
+  + IsReadOnly : bool [get]
+  + this[int ind] : ICondData [get, set]
+  + Add(data) : void
+  + Clear() : void
+  + Contains(item) : bool
+  + CopyTo(array, arrayIndex) : void
+  + GetEnumerator() : IEnumerator<ICondData>
+  + IndexOf(item) : int
+  + Insert(index, item) : void
+  + Load(taskData) : void
+  + Remove(item) : bool
+  + RemoveAll(kind) : int
+  + RemoveAt(index) : void
+  + TaskData()
+  + TaskData(materials, functions)
+}
+interface "ITaskData\nProject-5" as T_Project_Project_Interfaces_Tasks_ITaskData <<reference>> [[Project-5.mdpuml Project-5]]
+T_Project_Project_Tasks_TaskData -[hidden]down-> T_Project_Project_Interfaces_Tasks_ITaskData
+T_Project_Project_Tasks_TaskData ..|> T_Project_Project_Interfaces_Tasks_ITaskData
+legend bottom
+  Обзор: [[Project.mdpuml Project]]; сигнатуры: [[Project-9.md Project-9.md]].
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

@@ -1,7 +1,9 @@
-﻿using Model.IO;
+using Model.IO;
 using Model.IO.STL;
 using GmshApi;
 using Model.MeshObjects;
+using Model.Interfaces.ObjectsCollections;
+using System.Collections.Generic;
 using OperationalController.GmshController;
 using Project;
 using Project.Tasks;
@@ -98,52 +100,39 @@ namespace OperationalController
 
         public void GenerateMesh(int elemDim)
         {
-            if (GmshController == null)
-                throw new Exception("Генератор сетки не загружен");
-
-            if (elemDim == 1)
+            using (BeginChanges())
             {
-
-                GmshController.Gmsh.Model.Mesh.Generate(1);
-
+                if (GmshController == null)
+                    throw new InvalidOperationException("Mesh generator is not loaded.");
+                var dimension = elemDim == 1 ? 1 : elemDim == 2 ? 2 : 3;
+                GmshController.Gmsh.Model.Mesh.Generate(dimension);
                 var nodes = GmshController.GetNodes();
-
-                foreach (var item in nodes)
-                    ModelData.ObjectData.NodesSet.Add(item.Number, item);
-
-                foreach (var item in GmshController.GetMeshSets<Beam>(nodes))
-                    ModelData.ObjectData.E1DCollection.Add(item);
-            }
-            else if (elemDim == 2)
-            {
-                GmshController.Gmsh.Model.Mesh.Generate(2);
-
-                var nodes = GmshController.GetNodes();
-
-                foreach (var item in nodes)
-                    ModelData.ObjectData.NodesSet.Add(item.Number, item);
-
-                foreach (var item in GmshController.GetMeshSets<Beam>(nodes))
-                    ModelData.ObjectData.E1DCollection.Add(item);
-                foreach (var item in GmshController.GetMeshSets<Element2D>(nodes))
-                    ModelData.ObjectData.E2DCollection.Add(item);
-
-            }
-
-            else
-            {
-                GmshController.Gmsh.Model.Mesh.Generate(3);
-
-                var nodes = GmshController.GetNodes();
-
-                foreach (var item in nodes)
-                    ModelData.ObjectData.NodesSet.Add(item.Number, item);
-                foreach (var item in GmshController.GetMeshSets<Beam>(nodes))
-                    ModelData.ObjectData.E1DCollection.Add(item);
-                foreach (var item in GmshController.GetMeshSets<Element2D>(nodes))
-                    ModelData.ObjectData.E2DCollection.Add(item);
-                foreach (var item in GmshController.GetMeshSets<Element3D>(nodes))
-                    ModelData.ObjectData.E3DCollection.Add(item);
+                var nodesChanged = AddSetObjects(ModelData.ObjectData.NodesSet, nodes);
+                var createdSets = new HashSet<ISetInfo>(ReferenceEqualityComparer.Instance);
+                var beams = GmshController.GetMeshSets<Beam>(nodes);
+                var beamSets = AddCollectionSets(ModelData.ObjectData.E1DCollection, beams);
+                createdSets.UnionWith(beamSets);
+                if (dimension >= 2)
+                {
+                    var elements2D = GmshController.GetMeshSets<Element2D>(nodes);
+                    var addedSets = AddCollectionSets(ModelData.ObjectData.E2DCollection, elements2D);
+                    createdSets.UnionWith(addedSets);
+                }
+                if (dimension == 3)
+                {
+                    var elements3D = GmshController.GetMeshSets<Element3D>(nodes);
+                    var addedSets = AddCollectionSets(ModelData.ObjectData.E3DCollection, elements3D);
+                    createdSets.UnionWith(addedSets);
+                }
+                var surfaceChanges = MarkModelSurfaces(ModelData);
+                var updatedSets = new HashSet<ISetInfo>(surfaceChanges, ReferenceEqualityComparer.Instance);
+                updatedSets.ExceptWith(createdSets);
+                if (nodesChanged)
+                    updatedSets.Add(ModelData.ObjectData.NodesSet);
+                foreach (var set in createdSets)
+                    RegisterSetChange(set, ChangeAction.Created);
+                foreach (var set in updatedSets)
+                    RegisterSetChange(set, ChangeAction.Updated);
             }
         }
     }

@@ -1,0 +1,72 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title OperationalController-5 — Представление и сообщения об изменениях
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "MeshChange" as T_OperationalController_OperationalController_MeshChange {
+  + Action : ChangeAction [get]
+  + DataKind : MeshDataKind [get]
+  + EntityId : int [get]
+  + ObjectType : ObjType [get]
+  + MeshChange(dataKind, action, objectType, entityId)
+}
+enum "MeshDataKind" as T_OperationalController_OperationalController_MeshDataKind {
+    Group
+    Set
+}
+class "ModelView" as T_OperationalController_OperationalController_ModelView <<internal>> {
+  ~ HasOpenUpdate : bool [get]
+  ~ EndUpdate() : void
+  + ModelView(model)
+}
+enum "ModelViewChange" as T_OperationalController_OperationalController_ModelViewChange {
+    InsideSurfaces
+    None
+    ObjectColor
+    Selection
+    SelectionColor
+    SetColor
+    Transparency
+    ViewMode
+    Visibility
+}
+class "ModelViewChangedEventArgs" as T_OperationalController_OperationalController_ModelViewChangedEventArgs {
+  + Count : int [get]
+  + GetChangedSets() : IEnumerable<ISetInfo>
+  + GetChanges(setInfo) : ModelViewChange
+  + HasAny(setInfo, changes) : bool
+  + ModelViewChangedEventArgs(sets)
+}
+class "ObjectsView" as T_OperationalController_OperationalController_ObjectsView {
+}
+abstract class "ChangeMessage" as T_OperationalController_OperationalController_ChangeMessage <<reference>>
+interface "IModelView" as T_OperationalController_OperationalController_IModelView <<internal>> <<reference>>
+interface "IObjectsView" as T_OperationalController_OperationalController_IObjectsView <<reference>>
+T_OperationalController_OperationalController_MeshChange -[hidden]down-> T_OperationalController_OperationalController_MeshDataKind
+T_OperationalController_OperationalController_MeshDataKind -[hidden]down-> T_OperationalController_OperationalController_ModelView
+T_OperationalController_OperationalController_ModelView -[hidden]down-> T_OperationalController_OperationalController_ModelViewChange
+T_OperationalController_OperationalController_ModelViewChange -[hidden]down-> T_OperationalController_OperationalController_ModelViewChangedEventArgs
+T_OperationalController_OperationalController_ModelViewChangedEventArgs -[hidden]down-> T_OperationalController_OperationalController_ObjectsView
+T_OperationalController_OperationalController_ObjectsView -[hidden]down-> T_OperationalController_OperationalController_ChangeMessage
+T_OperationalController_OperationalController_ChangeMessage -[hidden]down-> T_OperationalController_OperationalController_IModelView
+T_OperationalController_OperationalController_IModelView -[hidden]down-> T_OperationalController_OperationalController_IObjectsView
+T_OperationalController_OperationalController_MeshChange --> T_OperationalController_OperationalController_MeshDataKind : использует
+T_OperationalController_OperationalController_MeshChange --|> T_OperationalController_OperationalController_ChangeMessage
+T_OperationalController_OperationalController_ModelView ..|> T_OperationalController_OperationalController_IModelView
+T_OperationalController_OperationalController_ModelViewChangedEventArgs --> T_OperationalController_OperationalController_ModelViewChange : использует
+T_OperationalController_OperationalController_ObjectsView ..|> T_OperationalController_OperationalController_IObjectsView
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

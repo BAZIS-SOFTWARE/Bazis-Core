@@ -10,6 +10,6 @@ namespace OperationalController.ModelScenePresentator.Interfaces
         /// <param name="stride"></param>
         /// <param name="vertexAtributes"></param>
         /// <param name="pointObject"></param>
-        void Create(ref int stride, float[] vertexAtributes, IModelObject pointObject);
+        void Create(ref int stride, float[] vertexAtributes, IModelObject pointObject, System.Drawing.Color color);
     }
 }

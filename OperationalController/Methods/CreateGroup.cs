@@ -1,4 +1,4 @@
-﻿using Model.Interfaces;
+using Model.Interfaces;
 using Model.MeshObjects;
 using OperationalController.MeshObjsUtility;
 using OperationalController.Methods.Exceptions;
@@ -14,22 +14,37 @@ namespace OperationalController
         /// <inheritdoc/>
         public void CreateGroup(IEnumerable<IModelObject> objs)
         {
-            ModelData.GroupData.Create(objs);
+            using (BeginChanges())
+            {
+                var name = ModelData.GroupData.Create(objs);
+                var group = ModelData.GroupData[ModelData.GroupData.Count - 1];
+                RegisterGroupChange(group, ChangeAction.Created);
+            }
         }
         /// <inheritdoc/>
         public void CreateGroup(string grName, IEnumerable<IModelObject> objs)
         {
-
-            ModelData.GroupData.Create(grName, objs);
+            using (BeginChanges())
+            {
+                ModelData.GroupData.Create(grName, objs);
+                var group = ModelData.GroupData[ModelData.GroupData.Count - 1];
+                RegisterGroupChange(group, ChangeAction.Created);
+            }
         }
 
         /// <inheritdoc/>
         public string CreateGroupByMeshObjs(int dim, string setName)
-        {  
-            var objType = GetMeshObjType(dim);
+        {
+            using (BeginChanges())
+            {
+                var objType = GetMeshObjType(dim);
 
-            var objs = ModelData.ObjectData.GetObjects(objType, setName);
-            return ModelData.GroupData.Create(objs);
+                var objs = ModelData.ObjectData.GetObjects(objType, setName);
+                var name = ModelData.GroupData.Create(objs);
+                var group = ModelData.GroupData[ModelData.GroupData.Count - 1];
+                RegisterGroupChange(group, ChangeAction.Created);
+                return name;
+            }
         }
 
         private static ObjType GetMeshObjType(int dim)
@@ -52,35 +67,47 @@ namespace OperationalController
         /// <inheritdoc/>
         public string CreateGroupByGeoObjs(int meshDim, int geoDim, int tag)
         {
-            var numbs = new List<nint>();
-            if(meshDim == 0)
-                numbs = GmshController.Gmsh.Model.Mesh.GetNodes(geoDim, tag,true).Item1.ToList();
-            else
+            using (BeginChanges())
             {
-                foreach (var numb in GmshController.Gmsh.Model.Mesh.GetElements(geoDim, tag).Item2)
-                    numbs.AddRange(numb);                
+                var numbs = new List<nint>();
+                if(meshDim == 0)
+                    numbs = GmshController.Gmsh.Model.Mesh.GetNodes(geoDim, tag,true).Item1.ToList();
+                else
+                {
+                    foreach (var numb in GmshController.Gmsh.Model.Mesh.GetElements(geoDim, tag).Item2)
+                        numbs.AddRange(numb);
+                }
+
+                var objType = GetMeshObjType(meshDim);
+                var objsList = new List<IModelObject>();
+                foreach (var item in numbs)
+                    objsList.Add(ModelData.ObjectData.Find(objType, (int)item));
+
+                var name = ModelData.GroupData.Create(objsList);
+                var group = ModelData.GroupData[ModelData.GroupData.Count - 1];
+                RegisterGroupChange(group, ChangeAction.Created);
+                return name;
             }
-
-            var objType = GetMeshObjType(meshDim);
-            var objsList = new List<IModelObject>();
-            foreach (var item in numbs)
-                objsList.Add(ModelData.ObjectData.Find(objType, (int)item));  
-
-            return ModelData.GroupData.Create(objsList);
         }
 
         /// <inheritdoc/>
         public string CreateOpenSurfaceNodesGroup(string setName)
         {
-            if(ModelData.ObjectData.E3DCollection.Count == 0)
-                throw new EmptyCollectionException("Пустая коллекция");
+            using (BeginChanges())
+            {
+                if(ModelData.ObjectData.E3DCollection.Count == 0)
+                    throw new EmptyCollectionException("Пустая коллекция");
 
-            var finder = new FindOpenSurfaceNodes();
-            var surfaceNodes = finder.Find(ModelData.ObjectData.E3DCollection[setName].Values);
+                var finder = new FindOpenSurfaceNodes();
+                var surfaceNodes = finder.Find(ModelData.ObjectData.E3DCollection[setName].Values);
 
-            var ndsList = surfaceNodes.Select(x => ModelData.ObjectData.NodesSet[x]);
+                var ndsList = surfaceNodes.Select(x => ModelData.ObjectData.NodesSet[x]);
 
-            return ModelData.GroupData.Create(ndsList);
+                var name = ModelData.GroupData.Create(ndsList);
+                var group = ModelData.GroupData[ModelData.GroupData.Count - 1];
+                RegisterGroupChange(group, ChangeAction.Created);
+                return name;
+            }
         }
     }
 }

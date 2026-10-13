@@ -1,6 +1,5 @@
 ﻿using Geometry;
 using Model.MeshObjects;
-using Model.Events;
 using Model.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -15,15 +14,13 @@ namespace Model.IO
 {
     public class LoadModelFromSalomeFile : IModelLoader
     {
-        public event Action<object, ILoaderEventArgs> LoadEvent;
         private ModelData modelData;
 
-        public IModelData Load(string path)
+        public IModelData Load(string path, IProgress<int> progress = null)
         {
             modelData = new ModelData();
-            using (var reader = new StreamReader(path))
+            using (var reader = new ProgressTextReader(path, progress))
             {
-                LoadEvent(this, new LoaderEventArgs("Начало загрузки модели"));
                 while (!reader.EndOfStream)
                 {
                     var tokens = reader.ReadLine()

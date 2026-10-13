@@ -1,0 +1,63 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title Project-15 — Функции, материалы и ввод/вывод
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "LoadResultsFileBrfTextFormat" as T_Project_Project_Results_IO_LoadResultsFileBrfTextFormat {
+  + GetResultFromDb(fullPath, tableName, time) : Result
+  + GetResultsFromDb(fullPath, table) : IEnumerable<Result>
+  + GetValuesFromDb(fullPath, table, column) : IEnumerable<float>
+  + Load(path) : IEnumerable<Result>
+  + ReadResults(sr) : List<Result>
+  + ReadResultsKind(sr, taskKind, format) : List<Result>
+}
+class "LoadResultsFileDB" as T_Project_Project_Results_IO_LoadResultsFileDB {
+}
+class "SaveEventArgs" as T_Project_Project_Results_IO_SaveEventArgs {
+  + SaveEventArgs(message)
+}
+class "SaveResultsFileDb" as T_Project_Project_Results_IO_SaveResultsFileDb {
+  + AddData(db, table, time) : void
+}
+class "SaveResultsFileTextFormat" as T_Project_Project_Results_IO_SaveResultsFileTextFormat {
+}
+class "CustomFunction" as T_Project_Project_Tasks_Functions_CustomFunction <<internal>> {
+  + ExecutedFile : string [get]
+  + CalcValue() : double
+  + CreateEngine(file) : void
+}
+interface "IResultsLoader\nResultDB-2" as T_ResultDB_ResultDB_Interfaces_IResultsLoader <<reference>> [[../../ResultDataBase/Documents/ResultDB-2.mdpuml ResultDB-2]]
+interface "ISaveEventArgs\nProject-3" as T_Project_Project_Interfaces_IO_ISaveEventArgs <<reference>> [[Project-3.mdpuml Project-3]]
+interface "IResultsSaver\nResultDB-2" as T_ResultDB_ResultDB_Interfaces_IResultsSaver <<reference>> [[../../ResultDataBase/Documents/ResultDB-2.mdpuml ResultDB-2]]
+abstract class "Function\nProject-16" as T_Project_Project_Tasks_Functions_Function <<reference>> [[Project-16.mdpuml Project-16]]
+T_Project_Project_Results_IO_LoadResultsFileBrfTextFormat -[hidden]down-> T_Project_Project_Results_IO_LoadResultsFileDB
+T_Project_Project_Results_IO_LoadResultsFileDB -[hidden]down-> T_Project_Project_Results_IO_SaveEventArgs
+T_Project_Project_Results_IO_SaveEventArgs -[hidden]down-> T_Project_Project_Results_IO_SaveResultsFileDb
+T_Project_Project_Results_IO_SaveResultsFileDb -[hidden]down-> T_Project_Project_Results_IO_SaveResultsFileTextFormat
+T_Project_Project_Results_IO_SaveResultsFileTextFormat -[hidden]down-> T_Project_Project_Tasks_Functions_CustomFunction
+T_Project_Project_Tasks_Functions_CustomFunction -[hidden]down-> T_ResultDB_ResultDB_Interfaces_IResultsLoader
+T_ResultDB_ResultDB_Interfaces_IResultsLoader -[hidden]down-> T_Project_Project_Interfaces_IO_ISaveEventArgs
+T_Project_Project_Interfaces_IO_ISaveEventArgs -[hidden]down-> T_ResultDB_ResultDB_Interfaces_IResultsSaver
+T_ResultDB_ResultDB_Interfaces_IResultsSaver -[hidden]down-> T_Project_Project_Tasks_Functions_Function
+T_Project_Project_Results_IO_LoadResultsFileBrfTextFormat ..|> T_ResultDB_ResultDB_Interfaces_IResultsLoader
+T_Project_Project_Results_IO_LoadResultsFileDB ..|> T_ResultDB_ResultDB_Interfaces_IResultsLoader
+T_Project_Project_Results_IO_SaveEventArgs ..|> T_Project_Project_Interfaces_IO_ISaveEventArgs
+T_Project_Project_Results_IO_SaveResultsFileDb ..|> T_ResultDB_ResultDB_Interfaces_IResultsSaver
+T_Project_Project_Results_IO_SaveResultsFileTextFormat ..|> T_ResultDB_ResultDB_Interfaces_IResultsSaver
+T_Project_Project_Tasks_Functions_CustomFunction --|> T_Project_Project_Tasks_Functions_Function
+legend bottom
+  Обзор: [[Project.mdpuml Project]]; сигнатуры: [[Project-15.md Project-15.md]].
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

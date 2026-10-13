@@ -1,0 +1,95 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title Model-5 — Геометрические и сеточные сущности
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+interface "IElement3D" as T_Model_Model_Interfaces_MeshObjects_IElement3D {
+  + CreateIntegrationPoint(w, ksi, eta, dze) : IntegralPoint
+}
+interface "ISurfaceElement" as T_Model_Model_Interfaces_MeshObjects_ISurfaceElement {
+  + GetSurfacesNormals() : IEnumerable<Point3D>
+}
+class "Curve" as T_Model_Model_GeometryObjects_Curve {
+  + Curve(number, points)
+  + ToString() : string
+}
+class "GeometryPoint" as T_Model_Model_GeometryObjects_GeometryPoint {
+  + AddLine(line) : void
+  + GeometryPoint(number, position)
+  + GetLines() : IEnumerable<ILineObject<IPoint>>
+  + ToString() : string
+}
+class "GeometrySurface" as T_Model_Model_GeometryObjects_GeometrySurface {
+  + CalcCentr() : Point3D
+  + Equals(other) : bool
+  + GeometrySurface(number, points)
+  + ToString() : string
+}
+class "SurfaceFigure" as T_Model_Model_GeometryObjects_SurfaceFigure {
+  + Volume : VolumeFigure [get, internal set]
+  + SurfaceFigure(number, surfaces)
+  + ToString() : string
+}
+interface "IVolume\nModel-16" as T_Model_Model_Interfaces_IVolume <<reference>> [[Model-16.mdpuml Model-16]]
+interface "IElement\nModel-1" as T_Model_Model_Interfaces_MeshObjects_IElement <<reference>> [[Model-1.mdpuml Model-1]]
+interface "ISurfaceObject<T,U>\nModel-15" as T_Model_Model_Interfaces_ISurfaceObject_2 <<reference>> [[Model-15.mdpuml Model-15]]
+abstract class "ModelObject\nModel-17" as T_Model_Model_ModelObject <<reference>> [[Model-17.mdpuml Model-17]]
+interface "ILineObject<T>\nModel-3" as T_Model_Model_Interfaces_ILineObject_1 <<reference>> [[Model-3.mdpuml Model-3]]
+interface "IPoint\nModel-15" as T_Model_Model_Interfaces_IPoint <<reference>> [[Model-15.mdpuml Model-15]]
+interface "ISurface<T>\nModel-15" as T_Model_Model_Interfaces_ISurface_1 <<reference>> [[Model-15.mdpuml Model-15]]
+interface "ISquare\nModel-15" as T_Model_Model_Interfaces_ISquare <<reference>> [[Model-15.mdpuml Model-15]]
+T_Model_Model_Interfaces_MeshObjects_IElement3D -[hidden]down-> T_Model_Model_Interfaces_MeshObjects_ISurfaceElement
+T_Model_Model_Interfaces_MeshObjects_ISurfaceElement -[hidden]down-> T_Model_Model_GeometryObjects_Curve
+T_Model_Model_GeometryObjects_Curve -[hidden]down-> T_Model_Model_GeometryObjects_GeometryPoint
+T_Model_Model_GeometryObjects_GeometryPoint -[hidden]down-> T_Model_Model_GeometryObjects_GeometrySurface
+T_Model_Model_GeometryObjects_GeometrySurface -[hidden]down-> T_Model_Model_GeometryObjects_SurfaceFigure
+T_Model_Model_GeometryObjects_SurfaceFigure -[hidden]down-> T_Model_Model_Interfaces_IVolume
+T_Model_Model_Interfaces_IVolume -[hidden]down-> T_Model_Model_Interfaces_MeshObjects_IElement
+T_Model_Model_Interfaces_MeshObjects_IElement -[hidden]down-> T_Model_Model_Interfaces_ISurfaceObject_2
+T_Model_Model_Interfaces_ISurfaceObject_2 -[hidden]down-> T_Model_Model_ModelObject
+T_Model_Model_ModelObject -[hidden]down-> T_Model_Model_Interfaces_ILineObject_1
+T_Model_Model_Interfaces_ILineObject_1 -[hidden]down-> T_Model_Model_Interfaces_IPoint
+T_Model_Model_Interfaces_IPoint -[hidden]down-> T_Model_Model_Interfaces_ISurface_1
+T_Model_Model_Interfaces_ISurface_1 -[hidden]down-> T_Model_Model_Interfaces_ISquare
+T_Model_Model_GeometryObjects_Curve --> T_Model_Model_GeometryObjects_GeometryPoint : использует
+T_Model_Model_GeometryObjects_Curve --|> T_Model_Model_ModelObject
+T_Model_Model_GeometryObjects_Curve ..|> T_Model_Model_Interfaces_ILineObject_1
+T_Model_Model_GeometryObjects_GeometryPoint --|> T_Model_Model_ModelObject
+T_Model_Model_GeometryObjects_GeometryPoint ..|> T_Model_Model_Interfaces_IPoint
+T_Model_Model_GeometryObjects_GeometrySurface --> T_Model_Model_GeometryObjects_GeometryPoint : использует
+T_Model_Model_GeometryObjects_GeometrySurface ..|> T_Model_Model_Interfaces_ISurface_1
+T_Model_Model_GeometryObjects_SurfaceFigure --> T_Model_Model_GeometryObjects_GeometrySurface : использует
+T_Model_Model_GeometryObjects_SurfaceFigure --|> T_Model_Model_ModelObject
+T_Model_Model_GeometryObjects_SurfaceFigure ..|> T_Model_Model_Interfaces_ISquare
+T_Model_Model_GeometryObjects_SurfaceFigure ..|> T_Model_Model_Interfaces_ISurfaceObject_2
+T_Model_Model_Interfaces_MeshObjects_IElement3D --|> T_Model_Model_Interfaces_IVolume
+T_Model_Model_Interfaces_MeshObjects_IElement3D --|> T_Model_Model_Interfaces_MeshObjects_ISurfaceElement
+T_Model_Model_Interfaces_MeshObjects_ISurfaceElement --|> T_Model_Model_Interfaces_ISurfaceObject_2
+T_Model_Model_Interfaces_MeshObjects_ISurfaceElement --|> T_Model_Model_Interfaces_MeshObjects_IElement
+legend bottom
+  Обзор: [[Model.mdpuml Model]]; сигнатуры: [[Model-5.md Model-5.md]].
+  reference — адрес подробностей указан в заголовке типа.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+  Связанные типы в контрактах и сигнатурах:
+  [[Model-1.mdpuml Model-1]]: IElement.
+  [[Model-3.mdpuml Model-3]]: ILineObject<T>.
+  [[Model-6.mdpuml Model-6]]: VolumeFigure.
+  [[Model-7.mdpuml Model-7]]: ElementSurface, IntegralPoint.
+  [[Model-8.mdpuml Model-8]]: Node.
+  [[Model-15.mdpuml Model-15]]: IPoint, ISquare, ISurface<T>.
+  [[Model-15.mdpuml Model-15]]: ISurfaceObject<T,U>.
+  [[Model-16.mdpuml Model-16]]: IVolume.
+  [[Model-17.mdpuml Model-17]]: ModelObject.
+  [[../../PrGeometry/Documents/Geometry-4.mdpuml Geometry-4]]: Point3D.
+endlegend
+@enduml

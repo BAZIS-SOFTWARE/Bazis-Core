@@ -1,0 +1,75 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title SurfaceMesher-1 — Сущности двумерной сетки
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+class "Contour" as T_SurfaceMesher_SurfaceMesher_Contour {
+  + NodesCount : int [get]
+  + Contour()
+  + Contour(boundaries)
+  + GetContourId(node) : int
+  + GetElementAfter(node) : Node2D
+  + GetElementBefore(node) : Node2D
+}
+class "ContourElementInfo" as T_SurfaceMesher_SurfaceMesher_ContourElementInfo <<internal>> {
+}
+class "Edge" as T_SurfaceMesher_SurfaceMesher_Edge {
+  + A : Node2D [get]
+  + B : Node2D [get]
+  + Edge(a, b)
+  + Equals(obj) : bool
+  + GetHashCode() : int
+  + GetMiddlePoint() : Point2D
+  + GetSquaredLength() : double
+  + IsIntersectWith(other) : bool
+  + ToString() : string
+}
+abstract class "Element" as T_SurfaceMesher_SurfaceMesher_Element {
+  + GetNodes() : IEnumerable<Node2D>
+}
+class "Node2D" as T_SurfaceMesher_SurfaceMesher_Node2D {
+  + Index : int [get]
+  + Position : Point2D [get]
+  + X : double [get]
+  + Y : double [get]
+  + Equals(obj) : bool
+  + GetHashCode() : int
+  + Node2D(index, position)
+  + Node2D(index, x, y)
+  + ToString() : string
+}
+class "Point2D" as T_SurfaceMesher_SurfaceMesher_Point2D {
+  + X : double [get, private set]
+  + Y : double [get, private set]
+  + Add(b) : Point2D
+  + GetLength() : double
+  + Mult(factor) : Point2D
+  + Point2D(x, y)
+  + Sub(b) : Point2D
+  + ToString() : string
+}
+T_SurfaceMesher_SurfaceMesher_Contour -[hidden]down-> T_SurfaceMesher_SurfaceMesher_ContourElementInfo
+T_SurfaceMesher_SurfaceMesher_ContourElementInfo -[hidden]down-> T_SurfaceMesher_SurfaceMesher_Edge
+T_SurfaceMesher_SurfaceMesher_Edge -[hidden]down-> T_SurfaceMesher_SurfaceMesher_Element
+T_SurfaceMesher_SurfaceMesher_Element -[hidden]down-> T_SurfaceMesher_SurfaceMesher_Node2D
+T_SurfaceMesher_SurfaceMesher_Node2D -[hidden]down-> T_SurfaceMesher_SurfaceMesher_Point2D
+T_SurfaceMesher_SurfaceMesher_Contour --> T_SurfaceMesher_SurfaceMesher_ContourElementInfo : использует
+T_SurfaceMesher_SurfaceMesher_Contour --> T_SurfaceMesher_SurfaceMesher_Node2D : использует
+T_SurfaceMesher_SurfaceMesher_Edge --> T_SurfaceMesher_SurfaceMesher_Node2D : использует
+T_SurfaceMesher_SurfaceMesher_Element --> T_SurfaceMesher_SurfaceMesher_Node2D : использует
+T_SurfaceMesher_SurfaceMesher_Node2D --> T_SurfaceMesher_SurfaceMesher_Point2D : использует
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml

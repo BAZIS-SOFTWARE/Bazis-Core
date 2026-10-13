@@ -1,203 +1,71 @@
 @startuml
-
-title Разделение модели и представления: IModelView / ISelectionSet / IRenderable
-
-' ======================= сборка Model =======================
-package "Model (расчёт, файлы)" #F5F5F5 {
-
-    interface IModelData
-    {
-        +IObjectsData ObjectData;
-        +IGroupData GroupData;
-        +VolumeData VolumeData;
-        --
-        +Append(...);
-        +Save(...);
-        +Load(...);
-    }
-
-    interface IModelObject
-    {
-        +int Number;
-        +int Dim;
-        +ObjType ObjType;
-        +bool ExistState;
-        --
-        +GetCoordinates();
-        +CalcCentr();
-        .. удалено ..
-        -- Color --
-        -- ViewState --
-    }
-
-    interface IRenderable
-    {
-        +ObjType ObjType;
-        +int Number;
-        +int NumberOfPoints;
-        --
-        +IEnumerable<Point3D> GetCoordinates();
-    }
-
-    abstract class ModelObject
-    interface ISetInfo
-    class ObjectsSet<T>
-    class VolumeFigure
-}
-
-' ======================= сборка OperationalController =======================
-package "OperationalController (представление)" #EEF5FF {
-
-    interface IModelView
-    {
-        +IModelData Model;
-        +ISelectionSet Selection;
-        +Color SelectionColor;
-        +byte Transparency;
-        --
-        +Color GetColor(ObjType, int);
-        +Color GetColor(ISetInfo, int);
-        +SetColor(ObjType, IEnumerable<int>, Color);
-        +ResetColor(...);
-        --
-        +bool GetVisible(ObjType, int);
-        +SetVisible(ObjType, IEnumerable<int>, bool);
-        --
-        +IDisposable BeginUpdate();
-        +event Changed;
-    }
-
-    interface ISelectionSet
-    {
-        +IReadOnlyCollection<int> this[ObjType];
-        +bool Contains(ObjType, int);
-        --
-        +Add / Remove / Toggle / Set;
-        +Clear(...);
-        --
-        +IDisposable BeginUpdate();
-        +event Changed;
-    }
-
-    class ModelView
-    {
-        -Dictionary<ObjType, Dictionary<int, Color>> colorOverrides;
-        -Dictionary<ObjType, HashSet<int>> hidden;
-        -SelectionSet selection;
-        --
-        +ModelView(IModelData model);
-    }
-
-    class NullModelView
-    class SelectionSet
-
-    interface IColorProvider
-    {
-        +Color GetColor(IRenderable obj);
-    }
-
-    class ModelViewColorProvider
-    class ConstantColorProvider
-
-    interface IObjsPresenter
-    interface IPointObjsVertexCreator
-    interface ILineObjsVertexCreator
-    interface ISurfaceObjsVertexCreator
-}
-
-' ======================= сборка PostProc =======================
-package "PostProc (результаты)" #FFF7E8 {
-    class ResultFigure
-    class ResultSurface
-    class ScaleColorProvider
-}
-
-' ======================= клиент =======================
-package "BazisGUI (клиент)" #F3FFF3 {
-    class SceneWindow
-}
-
-' ---------- реализация IRenderable ----------
-IRenderable <|.. ModelObject
-IRenderable <|.. VolumeFigure
-IRenderable <|.. ResultFigure
-IRenderable <|.. ResultSurface
-
-IModelObject <|.. ModelObject
-note right of ModelObject
-  ModelObject реализует ОБА интерфейса независимо:
-  члены Number / ObjType / NumberOfPoints /
-  GetCoordinates() у них общие.
-  Ни один интерфейс не зависит от другого.
-
-  Наследники (все получают IRenderable даром):
-  Node, Beam, Element2D (Triangle, Triangle_c, Quad),
-  Element3D (Tetra, Tetra_c, Hexa, Penta),
-  ElementSurface, GeometryPoint, Curve,
-  SurfaceFigure, GeometrySurface
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam shadowing false
+skinparam nodesep 18
+skinparam ranksep 24
+hide empty members
+set namespaceSeparator none
+title ModelView — целевое представление без событий
+caption Публичное событие вызывает ProjectController; Changed подлежит удалению
+interface IProjectView <<reference>>
+interface IModelView <<internal, reference>>
+class ProjectController <<reference>>
+class ModelView <<internal, reference>>
+class ChangedSets <<internal, reference>>
+class ModelViewChangedEventArgs <<данные, reference>>
+class ViewChange <<reference>>
+ProjectController ..> IProjectView : реализует через IProjectController
+ProjectController --> ModelView : команды и граница пакета
+ModelView ..|> IModelView
+ModelView --> ChangedSets : сведения об изменениях
+ChangedSets ..> ModelViewChangedEventArgs : текущий DTO
+ProjectController ..> ViewChange : формирует после изменения
+IProjectView -[hidden]down-> ProjectController
+ProjectController -[hidden]down-> IModelView
+IModelView -[hidden]down-> ModelView
+ModelView -[hidden]down-> ChangedSets
+ChangedSets -[hidden]down-> ModelViewChangedEventArgs
+ModelViewChangedEventArgs -[hidden]down-> ViewChange
+note bottom of ModelView
+  Команда меняет представление и формирует сведения о результате.
+  У вида нет события и постоянных подписчиков.
+  Конкретный внутренний API передачи результата ещё не утверждён.
 end note
-
-note right of ResultFigure
-  Больше НЕ IModelObject.
-  Это объект сцены, а не модели:
-  цвет задаётся шкалой результатов,
-  Number отсутствует (всегда 0).
+note bottom of ModelViewChangedEventArgs
+  Существующее имя DTO не означает наличие события.
+  При миграции можно переименовать отдельно.
 end note
-
-' ---------- реализация вида ----------
-IModelView    <|.. ModelView
-IModelView    <|.. NullModelView
-ISelectionSet <|.. SelectionSet
-
-ModelView  *-- SelectionSet
-ModelView --> IModelData : читает наборы\nи их цвета
-
-note bottom of NullModelView
-  Вырожденная реализация для расчёта,
-  экспорта и тестов: геттеры отдают
-  значения по умолчанию, сеттеры
-  игнорируются. Убирает null-проверки.
+note right of IProjectView
+  Полный состав:
+  OperationalController-27.mdpuml
+  OperationalController-28.mdpuml
 end note
-
-' ---------- источник цвета ----------
-IColorProvider <|.. ModelViewColorProvider
-IColorProvider <|.. ConstantColorProvider
-IColorProvider <|.. ScaleColorProvider
-
-ModelViewColorProvider --> IModelView
-ScaleColorProvider ..> ResultFigure : цвет по значению\nфизического поля
-
-' ---------- потребители ----------
-IObjsPresenter --> IRenderable : обходит
-IObjsPresenter --> IColorProvider : спрашивает цвет
-
-IPointObjsVertexCreator   ..> IRenderable
-ILineObjsVertexCreator    ..> IRenderable
-ISurfaceObjsVertexCreator ..> IRenderable
-
-SceneWindow *-- ModelView : один экземпляр\nна окно
-SceneWindow --> IObjsPresenter
-
-note as N1
-  <b>Порядок разрешения цвета в ModelView.GetColor</b>
-  1. объект в Selection      -> SelectionColor
-  2. есть colorOverride      -> он
-  3. иначе                   -> цвет набора (ISetInfo.Color)
-  4. к результату применяется Transparency (альфа)
-
-  Пункт 1 убирает нынешнее "выделение == цвет равен
-  SelectObjectColor" и попутно чинит потерю выделения
-  при смене прозрачности.
+note right of IModelView
+  Полный состав:
+  OperationalController-22.mdpuml
+  OperationalController-23.mdpuml
 end note
-
-note as N2
-  <b>Направление зависимостей</b>
-  Geometry <- Model <- Project <- OperationalController
-                   <- PostProc
-  Модель НЕ знает о представлении.
-  Представление знает о модели.
-  PostProc ссылается только на Model,
-  поэтому IRenderable живёт в Model.
+note right of ProjectController
+  Полный состав:
+  OperationalController-3.mdpuml
 end note
-
+note right of ModelView
+  Полный состав:
+  OperationalController-5.mdpuml
+end note
+note right of ChangedSets
+  Полный состав:
+  OperationalController-1.mdpuml
+end note
+note right of ModelViewChangedEventArgs
+  Полный состав:
+  OperationalController-5.mdpuml
+end note
+note right of ViewChange
+  Полный состав:
+  OperationalController-7.mdpuml
+end note
 @enduml

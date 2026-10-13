@@ -11,7 +11,6 @@ using Geometry;
 using System.Reflection;
 using Model.Interfaces.ObjectsCollections;
 using System.Security.Cryptography;
-using System.Drawing;
 
 namespace Model
 {
@@ -29,12 +28,10 @@ namespace Model
             E1DCollection = new ObjectsCollection<Beam>();
             E2DCollection = new ObjectsCollection<Element2D>();
             E3DCollection = new ObjectsCollection<Element3D>();
-            NodesSet = new ObjectsSet<Node>(ObjType.Узел.ToString());
-            NodesSet.SetColor(Color.FromArgb(0, 0, 255));
-            PointsSet = new ObjectsSet<GeometryPoint>(ObjType.Точка.ToString());
-            PointsSet.SetColor(Color.FromArgb(255, 207, 64));
-            CurveSet = new ObjectsSet<Curve>(ObjType.Кривая.ToString());
-            SurfaceSet = new SurfacesSet(ObjType.Поверхность.ToString());
+            NodesSet = new ObjectsSet<Node>(ObjType.Узел.ToString()) { Number = 0 };
+            PointsSet = new ObjectsSet<GeometryPoint>(ObjType.Точка.ToString()) { Number = 0 };
+            CurveSet = new ObjectsSet<Curve>(ObjType.Кривая.ToString()) { Number = 0 };
+            SurfaceSet = new SurfacesSet(ObjType.Поверхность.ToString()) { Number = 0 };
             //VolumeSet = new ObjectsSet<VolumeFigure>(ObjType.Объем.ToString());
         }
 
@@ -495,39 +492,6 @@ namespace Model
             }
         }
 /// <inheritdoc/>
-
-        public void SetBackColor(ObjType objType)
-        {
-            switch (objType)
-            {
-                case ObjType.Точка:
-                    PointsSet.SetBackColor();
-                    break;
-                case ObjType.Кривая:
-                    CurveSet.SetBackColor();
-                    break;
-                case ObjType.Поверхность:
-                    SurfaceSet.SetBackColor();
-                    //VolumeData.SetBackColor();
-                    break;
-                case ObjType.Узел:
-                    NodesSet.SetBackColor();
-                    break;
-                case ObjType.Элемент1D:
-                    foreach (var item in E1DCollection)
-                        item.Value.SetBackColor();
-                    break;
-                case ObjType.Элемент2D:
-                    foreach (var item in E2DCollection)
-                        item.Value.SetBackColor();
-                    break;
-                case ObjType.Элемент3D:
-                    foreach (var item in E3DCollection)
-                        item.Value.SetBackColor();
-                    break;
-            }
-        }
-        /// <inheritdoc/>
 
         public ISetInfo GetSetInfo(ObjType objType, string setName)
         {

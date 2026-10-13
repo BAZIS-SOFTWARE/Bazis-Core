@@ -15,31 +15,33 @@ namespace OperationalController
 {
     public partial class ProjectController
     {
-        public event Action<string> MessageEvent;
-      
-        public void UnsubMessasge()
-        {
-            MessageEvent = null;
-        }
-
         /// <inheritdoc/>
 
         public void Load(string path)
         {
-            var loader = new LoadProjectFromTextFormat();
-            loader.LoadEvent += (ar1, ar2) => { MessageEvent?.Invoke(ar2.Message); };
-            project = loader.Load(path);
+            using (BeginChanges())
+            {
+                Open(path);
+            }
         }
        
         /// <inheritdoc/>
 
         public void Save(string path)
         {
-            if (project == null)
-                throw new Exception("Проект не создан");
+            using (BeginChanges())
+            {
+                if (!hasProject)
+                    throw new InvalidOperationException("Project is not open.");
 
-            var saver = new SaveProjectTextFormat();
-            saver.Save(project, path);
+                var saver = new SaveProjectTextFormat();
+                saver.Save(project, path);
+                var pathChanged = filePath != path;
+                filePath = path;
+                isModified = false;
+                if (pathChanged)
+                    RegisterChange(new ProjectChange(ProjectChange.ProjectChangeKind.PropertyChanged, ProjectChange.ProjectProperty.FilePath));
+            }
         }
 /// <inheritdoc/>
 
@@ -233,44 +235,6 @@ namespace OperationalController
                 }
             }
         }
-        /// <inheritdoc/>
-
-        public IReadOnlyList<string> Append(string path)
-        {
-            if (project == null)
-                throw new Exception("Проект не создан");
-
-            var ext = System.IO.Path.GetExtension(path);
-
-            IModelLoader loader;
-            if (ext == ".inp")
-                loader = new LoadModelFromINPTextFile();
-            else if (ext == ".inp_v2")
-                loader = new LoadModelFromINPTextFile_v2();
-            else if (ext == ".ASC" | ext == ".asc")
-                loader = new LoadModelFromASCIITextFile_v2();
-            else if (ext == ".dat")
-                loader = new LoadModelFromSalomeFile();
-            else if (ext == ".STL" | ext == ".stl")
-                loader = new LoadFromSTLFile();
-            else if (ext == ".cdb")
-                loader = new LoadModelFromCDBTextFile();
-            // попробуем сливать еще и сетки в формате bpf2
-            else if (ext == ".bpf2")
-                loader = new LoadModelFromBPF2TextFile();
-            else
-                throw new Exception("неправильно задано расширение файла");
-
-            loader.LoadEvent += (ar1, ar2) =>
-            {
-                MessageEvent?.Invoke(ar2.Message);
-            };
-            var modelData = loader.Load(path);
-
-            return project.ModelData.Append(modelData);
-        }
-
-
         private int[] GetArray(string data)
         {
             var arrayStr = data.Split(',');

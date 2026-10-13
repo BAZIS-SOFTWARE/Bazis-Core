@@ -1,0 +1,80 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+
+title OperationalController-28 — Специализированные контракты контроллера
+caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+interface "IProjectView\nчасть 2/2" as T_OperationalController_OperationalController_IProjectView {
+  + SetSelection(objType, numbers) : void
+  + SetSelectionColor(color) : void
+  + SetTransparency(transparency) : void
+  + SetViewMode(setInfo, viewMode) : void
+  + SetVisible(objType, numbers, visible) : void
+  + ShowAll() : void
+  + ToggleSelection(objType, numbers) : void
+  + TryGetSingleSelectedType(out objType) : bool
+}
+note right of T_OperationalController_OperationalController_IProjectView
+  Полный состав: [[OperationalController-27.mdpuml OperationalController-27]], [[OperationalController-28.mdpuml OperationalController-28]]
+end note
+interface "ISelectionHelper" as T_OperationalController_OperationalController_ISelectionHelper {
+  + SelectE2DInPlane(objectsData, angleInGradus, startNumber) : List<int>
+  + SelectNodeInDirection(objectsData, angleInGradus, numbFirst, numbSecond) : List<int>
+  + SelectNodeInPlane(objectsData, plane) : List<int>
+}
+interface "ISurfaceObjsPresenter" as T_OperationalController_OperationalController_ISurfaceObjsPresenter {
+  + CreateSeparators() : int[]
+}
+interface "IVolumeMeshCreator" as T_OperationalController_OperationalController_IVolumeMeshCreator {
+  + Sew3Dfrom2D(firstSet, secSet) : List<IElement3D>
+}
+interface "IGmshController\nчасть 1/2" as T_OperationalController_OperationalController_GmshController_IGmshController {
+  + Gmsh : Gmsh [get]
+  + IsInitialized : bool [get]
+  + CalcCurveLength(curveTag) : double
+  + CalcVolume(volTag) : double
+  + CreateControlPoints() : List<GeometryPoint>
+  + CreateGeometry(surfAngle, curveAngle) : void
+  + CreateLines() : List<Curve>
+  + CreateSurfaceData() : Tuple<IObjectsSet<SurfaceFigure>, VolumeData>
+  + CreateSurfaceFigures() : List<SurfaceFigure>
+  + CreateVolumeFigures() : List<VolumeFigure>
+  + DeleteMeshElements(elementTags) : void
+  + GetMeshEntities(dim, tag, nodes) : List<IElement>
+  + GetMeshObjects() : (List<Node>, List<ILineObject<Node>>, List<Element2D>, List<Element3D>)
+  + GetMeshSets<T>(nodes) : IEnumerable<ObjectsSet<T>>
+  + GetNodes(dim, tag, includeBoundary) : List<Node>
+  + GetRecombineSurface(tag) : bool
+  + GetSize(tag) : double
+  + GetSurfaceNodes(tag) : int[]
+  + GetTransfiniteCurve(tag) : string[]
+  + GetTransfiniteSurface(tag) : string[]
+  + GetTransfiniteVolume(tag) : string[]
+  + Load(dllToLoad) : void
+  + MergeGeometry() : void
+  + SetGradientVolume(tag, power, distMax, surfSize, coreSize) : void
+}
+note right of T_OperationalController_OperationalController_GmshController_IGmshController
+  Полный состав: [[OperationalController-28.mdpuml OperationalController-28]], [[OperationalController-29.mdpuml OperationalController-29]]
+end note
+interface "IObjsPresenter" as T_OperationalController_OperationalController_IObjsPresenter <<reference>>
+T_OperationalController_OperationalController_IProjectView -[hidden]down-> T_OperationalController_OperationalController_ISelectionHelper
+T_OperationalController_OperationalController_ISelectionHelper -[hidden]down-> T_OperationalController_OperationalController_ISurfaceObjsPresenter
+T_OperationalController_OperationalController_ISurfaceObjsPresenter -[hidden]down-> T_OperationalController_OperationalController_IVolumeMeshCreator
+T_OperationalController_OperationalController_IVolumeMeshCreator -[hidden]down-> T_OperationalController_OperationalController_GmshController_IGmshController
+T_OperationalController_OperationalController_GmshController_IGmshController -[hidden]down-> T_OperationalController_OperationalController_IObjsPresenter
+T_OperationalController_OperationalController_ISurfaceObjsPresenter --|> T_OperationalController_OperationalController_IObjsPresenter
+legend bottom
+  reference — тип раскрыт на другой диаграмме.
+  Параметры методов: имена; полные сигнатуры — в соседнем .md.
+  Унаследованные члены интерфейсов в классах не повторяются.
+endlegend
+@enduml
