@@ -51,8 +51,8 @@ namespace TestProject_test.PostProc
             };
 
             var exporter = new GridExporter();
-            string testDir = @"..\..\..\SharedData\ProjectFiles";
-            exporter.ExportGridSurfaces(figures, $@"{testDir}\export" + format.ToLower().Split('-')[0], format);
+            string testDir = @"../../../SharedData/ProjectFiles";
+            exporter.ExportGridSurfaces(figures, Path.Combine(testDir, "export") + format.ToLower().Split('-')[0], format);
         }
 
         [DataTestMethod]
@@ -66,11 +66,11 @@ namespace TestProject_test.PostProc
             var file = Path.GetFileName(path);
             
             var loader = new LoadProjectFromTextFormat();
-            var project = loader.Load($"{dir}\\{file}");
+            var project = loader.Load(Path.Combine(dir, file));
 
-            var times = loaderDB.GetValues(dir + $@"\{resName}", "nodes", "Time");
+            var times = loaderDB.GetValues(Path.Combine(dir, resName), "nodes", "Time");
 
-            var results = loaderDB.GetResults(dir + $@"\{resName}",
+            var results = loaderDB.GetResults(Path.Combine(dir, resName),
                     new List<string> { "nodes", "elements" });
 
             var els3D = project.ModelData.ObjectData.E3DCollection;
@@ -104,11 +104,11 @@ namespace TestProject_test.PostProc
 
 
         [TestMethod]
-        [DataRow(@"..\..\..\SharedData\ProjAndResults\термическая_0_0_0.5.db")]
+        [DataRow(@"../../../SharedData/ProjAndResults/термическая_0_0_0.5.db")]
         public void TestMergeResults(string dbName)
         {
             var loader = new LoadProjectFromTextFormat();
-            var proj = loader.Load(@"..\..\..\SharedData\ProjAndResults\two_tetra_term_cycle_multiStep.bpf");
+            var proj = loader.Load(@"../../../SharedData/ProjAndResults/two_tetra_term_cycle_multiStep.bpf");
 
             var loaderDB = new LoadResultsFileDB();
             loaderDB.LoadEvent += (ar1, ar2) => { };
@@ -135,21 +135,21 @@ namespace TestProject_test.PostProc
         [DataTestMethod]
         [DataRow(
             "two_tetra_term_cycle_multiStep.bpf","термическая_0_0_0.5.db","термическая", 0f,0.0002f,"T",
-            @"..\..\..\SharedData\ProjAndResults")]
+            @"../../../SharedData/ProjAndResults")]
         [DataRow(
             "one_quad_term_cycle.bpf2", "механическая_1_0_3.db", "механическая", 0f, 0.0037f,"XY",
-            @"..\..\..\SharedData\ProjAndResults")]
+            @"../../../SharedData/ProjAndResults")]
         public void Test_Scene_Result_Presenter(string projName,string resName,string resKind,float min,float max,string resDesc,string resPath )
         {
             var loader = new LoadProjectFromTextFormat();
-            var proj = loader.Load($@"{resPath}\{projName}");
+            var proj = loader.Load(Path.Combine(resPath, projName));
 
-            var dbExtension = System.IO.Path.GetExtension($@"{resPath}\{resName}");
+            var dbExtension = System.IO.Path.GetExtension(Path.Combine(resPath, resName));
             //var dbExtension = System.IO.Path.GetExtension(@"C:\Bazis_newGUI\PROJ\Test_3D\Term\Termal_0_0,5.db");
 
             var loaderDB = new LoadResultsFileDB();
             loaderDB.LoadEvent += (ar1, ar2) => { };
-            var results = loaderDB.GetResults($@"{resPath}\{resName}",new List<string>() { "nodes","elements"});
+            var results = loaderDB.GetResults(Path.Combine(resPath, resName),new List<string>() { "nodes","elements"});
 
             IEnumerable<ISurfaceElement> elements;
             if(proj.TaskData.TaskType == TaskType.Volume)
@@ -173,20 +173,20 @@ namespace TestProject_test.PostProc
             foreach (var elems in resultObjects)
                 points.AddRange(elems.GetVertexes());
 
-            var gridPath = $@"{resPath}\testGridSafe.bpf";
+            var gridPath = Path.Combine(resPath, "testGridSafe.bpf");
             var saver = new SaveGridSurfacesToBPF();
             saver.SaveGrid(resultObjects, gridPath);
 
             var TXTSaver = new SaveObjectsResultsToTXT();
-            var resultNodesTXTPath = $@"{resPath}\testResultNodes.txt";
-            var resultElementsTXTPath = $@"{resPath}\testResultElemets.txt";
+            var resultNodesTXTPath = Path.Combine(resPath, "testResultNodes.txt");
+            var resultElementsTXTPath = Path.Combine(resPath, "testResultElemets.txt");
 
             TXTSaver.SaveResults(proj.ModelData.ObjectData.NodesSet.Values, results.First(), resDesc, resultNodesTXTPath);
             TXTSaver.SaveResults(proj.ModelData.ObjectData.GetAllElements(), results.First(), resDesc, resultElementsTXTPath);
 
             var CSVSaver = new SaveObjectsResultsToCSV();
-            var resultNodesCSVPath = $@"{resPath}\testResultNodes.csv";
-            var resultElementsCSVPath = $@"{resPath}\testResultElements.csv";
+            var resultNodesCSVPath = Path.Combine(resPath, "testResultNodes.csv");
+            var resultElementsCSVPath = Path.Combine(resPath, "testResultElements.csv");
 
             CSVSaver.SaveResults(proj.ModelData.ObjectData.NodesSet.Values, results.First(), resDesc, resultNodesCSVPath);
             CSVSaver.SaveResults(proj.ModelData.ObjectData.GetAllElements(), results.First(), resDesc, resultElementsCSVPath);

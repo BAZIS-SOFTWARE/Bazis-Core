@@ -19,8 +19,8 @@ namespace TestProject_test.Project
     [TestClass]
     public class TestTaskData
     {
-        string testDir = @"..\..\..\SharedData\ProjectFiles";
-        string testParametersDir = @"..\..\..\Project\Data\TestTaskParameters";
+        string testDir = @"../../../SharedData/ProjectFiles";
+        string testParametersDir = @"../../../Project/Data/TestTaskParameters";
         MaterialDBData materials;
         FunctionDBData functions;
 
@@ -36,9 +36,9 @@ namespace TestProject_test.Project
             };
 
             materials = JsonConvert.DeserializeObject<MaterialDBData>
-                (File.ReadAllText($@"{testDir}\materials.jsf"), settingsSerializer);
+                (File.ReadAllText(Path.Combine(testDir, "materials.jsf")), settingsSerializer);
             functions = JsonConvert.DeserializeObject<FunctionDBData>
-    (File.ReadAllText($@"{testDir}\functions.jsf"), settingsSerializer);
+    (File.ReadAllText(Path.Combine(testDir, "functions.jsf")), settingsSerializer);
         }
         [TestMethod]
         public void RemoveTaskDataByInfoString()
@@ -47,7 +47,7 @@ namespace TestProject_test.Project
             var loader = new LoadProjectFromTextFormat();
 
             //act
-            var proj = loader.Load($@"{testDir}\proj_traj.bpf");
+            var proj = loader.Load(Path.Combine(testDir, "proj_traj.bpf"));
 
             var dic = proj.TaskData.Find(DataKind.Закрепление).ToArray();
 
@@ -63,7 +63,7 @@ namespace TestProject_test.Project
         {
             //assign
             var loader = new LoadProjectFromTextFormat();
-            var proj = loader.Load($@"{testDir}\proj_traj.bpf");
+            var proj = loader.Load(Path.Combine(testDir, "proj_traj.bpf"));
             //act
 
             proj.ModelData.GroupData.RemoveAt(5);
@@ -79,7 +79,7 @@ namespace TestProject_test.Project
         {
             //assign
             var loader = new LoadProjectFromTextFormat();
-            var proj = loader.Load(@"..\..\..\SharedData\ProjectFiles\proj_traj.bpf");
+            var proj = loader.Load(@"../../../SharedData/ProjectFiles/proj_traj.bpf");
 
             //act
             var res = proj.TaskData.Find<ICondData>();
@@ -90,7 +90,7 @@ namespace TestProject_test.Project
         }
 
         [TestMethod]
-        [DataRow(@"..\..\..\SharedData\ProjectFiles\proj_traj.bpf", DisplayName = "proj_traj")]
+        [DataRow(@"../../../SharedData/ProjectFiles/proj_traj.bpf", DisplayName = "proj_traj")]
         //[DataRow(@"..\..\..\SharedData\ProjectFiles\proj_traj_baseLine_not_sorted.bpf", DisplayName = "proj_traj_baseLine_not_sorted")]
 
         //[DataRow(@"c:\projs\Roman\Proba\777.bpf2")]
@@ -135,7 +135,7 @@ namespace TestProject_test.Project
         {
             //assign
             var loader = new LoadProjectFromTextFormat();
-            var proj = loader.Load(@"..\..\..\SharedData\ProjectFiles\proj_traj.bpf");
+            var proj = loader.Load(@"../../../SharedData/ProjectFiles/proj_traj.bpf");
 
             //act
             var selectedData = proj.TaskData.Find(DataKind.Нагрев).Select(x => (HeatData)x).ToArray();
@@ -162,7 +162,7 @@ namespace TestProject_test.Project
         {
             //assign
             var loader = new LoadProjectFromTextFormat();
-            var proj = loader.Load(@"..\..\..\SharedData\ProjectFiles\proj_traj.bpf");
+            var proj = loader.Load(@"../../../SharedData/ProjectFiles/proj_traj.bpf");
 
             //act
             var heatData = proj.TaskData.Find(DataKind.Нагрев).Select(h => (HeatData)h).First();
@@ -190,7 +190,7 @@ namespace TestProject_test.Project
         {
             //assign
             var loader = new LoadProjectFromTextFormat();
-            var proj = loader.Load(@"..\..\..\Project\Data\MixedMesh\createMat.bpf");
+            var proj = loader.Load(@"../../../Project/Data/MixedMesh/createMat.bpf");
             //act
             var dataKind = DataKind.Материал;
             var material = proj.TaskData.Create(dataKind, info, proj.ModelData.GroupData);
@@ -209,7 +209,7 @@ namespace TestProject_test.Project
             var loader = new LoadProjectFromTextFormat();
 
             //act
-            var project = loader.Load(@"..\..\..\SharedData\ProjectFiles\proj_traj.bpf");
+            var project = loader.Load(@"../../../SharedData/ProjectFiles/proj_traj.bpf");
 
             //assert
 
@@ -221,7 +221,7 @@ namespace TestProject_test.Project
         }
 
         [TestMethod]
-        [DataRow(@"..\..\..\SharedData\ProjectFiles\proj_traj.bpf", DisplayName = "proj_traj")]
+        [DataRow(@"../../../SharedData/ProjectFiles/proj_traj.bpf", DisplayName = "proj_traj")]
         //[DataRow(@"..\..\..\SharedData\ProjectFiles\proj_traj_baseLine_not_sorted.bpf", DisplayName = "proj_traj_baseLine_not_sorted")]
 
         //[DataRow(@"c:\projs\testProj\TubeToTubeTJoint\proj_v1.bpf")]
@@ -314,22 +314,22 @@ namespace TestProject_test.Project
             else
                 serParams = JsonConvert.SerializeObject((ChemicalParameters)parameters, settingsSerializer);
 
-            File.WriteAllText($@"{testParametersDir}\{ar[0]}_testParam.jsp", serParams);
+            File.WriteAllText(Path.Combine(testParametersDir, $"{ar[0]}_testParam.jsp"), serParams);
 
             if (ar[0] == "тепловая")
             {
                 var desParamsTerm = JsonConvert.DeserializeObject<TermalParameters>
-(File.ReadAllText($@"{testParametersDir}\{ar[0]}_testParam.jsp"), settingsSerializer);
+(File.ReadAllText(Path.Combine(testParametersDir, $"{ar[0]}_testParam.jsp")), settingsSerializer);
             }
             else if (ar[0] == "механическая")
             {
                 var desParamsMech = JsonConvert.DeserializeObject<MechanicalParameters>
-(File.ReadAllText($@"{testParametersDir}\{ar[0]}_testParam.jsp"), settingsSerializer);
+(File.ReadAllText(Path.Combine(testParametersDir, $"{ar[0]}_testParam.jsp")), settingsSerializer);
             }
             else
             {
                 var desParams = JsonConvert.DeserializeObject<ChemicalParameters>
-(File.ReadAllText($@"{testParametersDir}\{ar[0]}_testParam.jsp"), settingsSerializer);
+(File.ReadAllText(Path.Combine(testParametersDir, $"{ar[0]}_testParam.jsp")), settingsSerializer);
             }
         }
 
