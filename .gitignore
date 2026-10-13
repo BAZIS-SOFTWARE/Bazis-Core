@@ -284,3 +284,5 @@ __pycache__/
 /TestProject/SharedData/ProjectFiles/export.stl
 /TestProject/SharedData/ProjectFiles/proj_traj_save.bpf
 /TestProject/MaterialDB/Data/functions.jsf
+/TestProject/MaterialDB/Data/functions.jsf
+/GmshApi/libgmsh.so
