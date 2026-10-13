@@ -5,7 +5,7 @@ using OperationalController;
 namespace TestProject_test.Geometry
 {
     [TestClass]
-    public class ProjectControllerGeometryPathTests
+    public class GeometryPathTests
     {
         private ProjectController projectController = null!;
 

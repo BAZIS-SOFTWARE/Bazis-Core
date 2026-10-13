@@ -11,7 +11,7 @@ using OperationalController.GeomObjsCreator;
 namespace TestProject_test.Geometry
 {
     [TestClass]
-    public class ProjectControllerGeometryImportTests
+    public class GeometryImportTests
     {
         private string modelFolder = @"../../../../TestModelCore/Examples";
 

@@ -102,28 +102,38 @@ x.Time.CompareTo(0) >= 0
         public void CSVToDataTableConverter_Example(string file)
         {
             var csvPath = @"../../../ResultDB/Data/ResultTableCSV";
-
-            var convert = new CSVToDataTableConverter();
-
-            var dataTable = convert.ConvertCSVtoDataTable(Path.Combine(csvPath, file));
-            dataTable.TableName = "nodes";
-
-            var dataSet = new DataSet();
-            dataSet.Tables.Add(dataTable);
-            var result = new Result(dataSet, 0.87051f, "термическая");
-
             var dbPath = Path.Combine(csvPath, "results.db");
 
-            var saverDB = new SaveResultsFileDb();
-            saverDB.Save(new List<Result>() { result }, dbPath, false);
-   
-            var loaderDB = new LoadResultsFileDB();
-            loaderDB.LoadEvent += (ar1, ar2) => { };
-            var times = loaderDB.GetValues(dbPath, "nodes", "Time");
+            try
+            {
+                var convert = new CSVToDataTableConverter();
+                var dataTable = convert.ConvertCSVtoDataTable(Path.Combine(csvPath, file));
+                dataTable.TableName = "nodes";
 
-            var resultTOLoad = loaderDB.GetResult(dbPath, new List<string>() { "nodes"}, times.First());
+                var dataSet = new DataSet();
+                dataSet.Tables.Add(dataTable);
+                var result = new Result(dataSet, 0.87051f, "термическая");
 
-            Assert.AreEqual(resultTOLoad.Name, "results");
+                var saverDB = new SaveResultsFileDb();
+                saverDB.Save(new List<Result>() { result }, dbPath, false);
+
+                var loaderDB = new LoadResultsFileDB();
+                loaderDB.LoadEvent += (ar1, ar2) => { };
+                var times = loaderDB.GetValues(dbPath, "nodes", "Time");
+
+                var resultTOLoad = loaderDB.GetResult(dbPath, new List<string>() { "nodes"}, times.First());
+
+                Assert.AreEqual(resultTOLoad.Name, "results");
+            }
+            finally
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                System.Data.SQLite.SQLiteConnection.ClearAllPools();
+                File.Delete(dbPath);
+                File.Delete(dbPath + "-wal");
+                File.Delete(dbPath + "-shm");
+            }
         }   
 
         [DataTestMethod]

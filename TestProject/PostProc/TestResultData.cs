@@ -55,54 +55,6 @@ namespace TestProject_test.PostProc
             exporter.ExportGridSurfaces(figures, Path.Combine(testDir, "export") + format.ToLower().Split('-')[0], format);
         }
 
-        [DataTestMethod]
-        [DataRow(@"c:\projs\ElenaLu\Bulk\1.bpf", "термическая_0.db", 12.71871f)]
-        public void TestCreateSurfResFromFile(string path, string resName, float time)
-        {
-            var loaderDB = new LoadResultsFileDB();
-            loaderDB.LoadEvent += (ar1, ar2) => { };
-
-            var dir = Path.GetDirectoryName(path);
-            var file = Path.GetFileName(path);
-            
-            var loader = new LoadProjectFromTextFormat();
-            var project = loader.Load(Path.Combine(dir, file));
-
-            var times = loaderDB.GetValues(Path.Combine(dir, resName), "nodes", "Time");
-
-            var results = loaderDB.GetResults(Path.Combine(dir, resName),
-                    new List<string> { "nodes", "elements" });
-
-            var els3D = project.ModelData.ObjectData.E3DCollection;
-            var controller = new PostProcController();
-
-            var intervalVals = new ItemRange[]
-{
-                new ItemRange() { Min = 20, Max = 316,Color = Color.FromArgb(0, 0, 255) },
-                new ItemRange() { Min = 316, Max = 612,Color = Color.FromArgb(0, 128, 255) },
-                new ItemRange() { Min = 612, Max = 908,Color = Color.FromArgb(0, 128, 255) },
-                new ItemRange() { Min = 908, Max = 1204,Color = Color.FromArgb(0, 128, 255) },
-                new ItemRange() { Min = 1204, Max = 1500,Color = Color.FromArgb(0, 128, 255) }
-};
-            //act find subsurf for one interval
-
-            controller.ResultsFieldsCreator.SetScaleItems(intervalVals);
-            controller.ResultsFieldsCreator.ScaleFactor = 1;
-
-            var search = results.FirstOrDefault(x => x.Time.Equals(time));
-            int res;
-
-            // фильтрация элементов. Применять если используются элементы разных видов : объемы, пластины или стержни
-            var selected = els3D.GetObjects().Where(x => search.TryGetValue("elements", x.Number, "Индекс", out res));
-            
-            var elsResults = controller.ResultsFieldsCreator.CreateSurfaceObjects(search, "nodes", "T", selected);
-
-            Assert.AreNotEqual(elsResults, null);
-            Assert.AreNotEqual(elsResults.Count(), 0);
-        }
-
-
-
         [TestMethod]
         [DataRow(@"../../../SharedData/ProjAndResults/термическая_0_0_0.5.db")]
         public void TestMergeResults(string dbName)

@@ -9,7 +9,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace TestProject_test.Geometry
 {
     [TestClass]
-    public class ProjectControllerGeometryCreationTests
+    public class GeometryCreationTests
     {
         [TestMethod]
         public void CreateGeometryObjectsTest()
