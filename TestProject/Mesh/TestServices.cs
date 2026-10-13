@@ -87,7 +87,6 @@ namespace TestProject_test.Mesh
         [DataRow(0, 62528, @"../../../../TestModelCore/Examples/2D/curvedStrip.bpf")]
         [DataRow(15, 62528, @"../../../../TestModelCore/Examples/2D/curvedStrip.bpf")]
         [DataRow(5, 62528, @"../../../../TestModelCore/Examples/2D/curvedStrip.bpf")]
-        [DataRow(5, 62528, @"../../../../TestModelCore/Examples/2D/curvedStrip.bpf")]
         public void SelectionHelper_OutSideModel_WhenAngleGiven(float angle, int first, string path)
         {
             //assing
