@@ -83,3 +83,5 @@ Quenching
 Tempering
 Welding
 ```
+
+TSF-файлы одиночных и связанных задач записываются по пути Path.Combine.

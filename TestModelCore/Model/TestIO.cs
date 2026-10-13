@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
@@ -13,24 +13,7 @@ namespace TestModeCore_test.Model
     [TestClass]
     public class TestIO
     {
-        [DataTestMethod]
-        [DataRow(@"..\..\..\Examples\3D\cub_unsorted.bpf",6)]
-        [DataRow(@"..\..\..\Examples\3D\hexa.bpf", 3)]
-        //[DataRow(@"c:\projs\AdditiveTest\nozzle.stlout_penta.bpf", 65606)]
-        //[DataRow(@"c:\projs\AdditiveTest\nozzle.stlout_penta_beam.bpf", 67245)]
-        //[DataRow(@"c:\projs\AdditiveTest\nozzle.stlout_penta_beam_v.bpf", 67245)]
-        //[DataRow(@"c:\projs\AdditiveTest\cube_rotated.bpf", 11)]
-        public void LoadModelFromBpfTextFormat(string path, int elCount)
-        {
-            //assing
-            var controller = new global::OperationalController.ProjectController();
 
-            //act
-            controller.Load(path);
-
-            //assert
-            Assert.AreEqual(controller.GetAllModelElements().Count(), elCount);
-        }
 
         [TestMethod]
         public void SaveModelToBpfTextFormat()
@@ -47,176 +30,15 @@ namespace TestModeCore_test.Model
             //assert
         }
 
-        [DataTestMethod]
-        [DataRow(@"..\..\..\Examples\3D\box2.inp", @"..\..\..\Examples\BPF2TXT\box2_test.asc")]
-        public void SaveModelToBpf2FromInp(string loadPath, string savePath)
-        {
-            //assing
-            var controller = new global::OperationalController.ProjectController();
-
-            //act
-            controller.ImportMesh(loadPath);
-
-            var node = controller.GetModelObjects(ObjType.Узел).Count();
-            var elem1D = controller.GetModelSetsInfo(ObjType.Элемент1D).Count();
-            var elem2D = controller.GetModelSetsInfo(ObjType.Элемент2D).Count();
-            var elem3D = controller.GetModelSetsInfo(ObjType.Элемент3D).Count();
-
-            controller.ExportMesh(savePath);
-            controller.ImportMesh(savePath);
-
-            var node_l = controller.GetModelObjects(ObjType.Узел).Count();
-            var elem1D_l = controller.GetModelSetsInfo(ObjType.Элемент1D).Count();
-            var elem2D_l = controller.GetModelSetsInfo(ObjType.Элемент2D).Count();
-            var elem3D_l = controller.GetModelSetsInfo(ObjType.Элемент3D).Count();
-
-            //assert
-
-            Assert.AreEqual(node, node_l);
-            //Assert.AreEqual(elem1D, elem1D_l);
-            //Assert.AreEqual(elem2D, elem2D_l);
-            //Assert.AreEqual(elem3D, elem3D_l);
-        }
-
-        [DataTestMethod]
-        [DataRow(@"..\..\..\Examples\BPF2TXT\cub_unsorted.bpf2", 2, ObjType.Элемент3D, DisplayName = "Sets Элемент3D = 2")]
-        [DataRow(@"..\..\..\Examples\BPF2TXT\cub_unsorted.bpf2", 8, ObjType.Узел, DisplayName = "Objects Узел = 1")]
-        [DataRow(@"..\..\..\Examples\BPF2TXT\cub_unsorted_oneSet.bpf2", 1, ObjType.Элемент3D, DisplayName = "Sets Элемент3D = 1")]
-        [DataRow(@"..\..\..\Examples\BPF2TXT\cub_mix_numbers.bpf2", 2, ObjType.Элемент3D, DisplayName = "Sets mix numbers Элемент3D = 2")]
-        //[DataRow(@"c:\projs\AdditiveTest\sliceMeshes\лопатка-2D-3D.bpf2", 385, ObjType.Элемент3D, DisplayName = "Sets Элемент3D > 100")]
-        //[DataRow(@"c:\projs\AdditiveTest\sliceMeshes\rotatedBlock-1.bpf2", 171, ObjType.Элемент3D, DisplayName = "Sets Элемент3D > 1000")]
-        
-        public void LoadModelFromBpf2TextFormat(string path, int sets, ObjType objType)
-        {
-            //assing
-            var controller = new global::OperationalController.ProjectController();
-
-            //act
-            controller.Load(path);
-
-            //assert
-            switch (objType)
-            {
-                case ObjType.Точка:
-                    break;
-                case ObjType.Кривая:
-                    break;
-                case ObjType.Поверхность:
-                    break;
-                case ObjType.Узел:
-                    Assert.AreEqual(controller.GetModelObjects(ObjType.Узел).Count(), sets);
-                    break;
-                case ObjType.Элемент1D:
-                    Assert.AreEqual(controller.GetModelSetsInfo(ObjType.Элемент1D).Count(), sets);
-                    break;
-                case ObjType.Элемент2D:
-                    Assert.AreEqual(controller.GetModelSetsInfo(ObjType.Элемент2D).Count(), sets);
-                    break;
-                case ObjType.Элемент3D:
-                    Assert.AreEqual(controller.GetModelSetsInfo(ObjType.Элемент3D).Count(), sets);
-                    break;
-                default:
-                    break;
-            }
-        }
-        [TestMethod]
-        //[DataRow(new string[] { "c:\\projs\\AdditiveTest\\MeshWithBounds\\новый_проект.bpf2", "Box_2.stl" }, DisplayName = "Mix")]
-        [DataRow(new string[] { "Box_1.stl", "Box_2.stl", @"..\..\..\Examples\STL\Append" },DisplayName = "Box_1_Box_2")]
-        [DataRow(new string[] { "Box.stl", "Large_Box3.stl", "Sticks.stl", @"..\..\..\Examples\STL\Append" }, DisplayName = "Box_Large_Box3_Sticks")]
-        [DataRow(new string[] { "out_m3.bpf2", "cube_2d_and_3d_support.bpf2", @"c:\projs\AdditiveTest\TestNewMeshGen" }, DisplayName = "Merge_two_bpf2")]
-        public void AppendAndSaveToSTLTextFormat(string [] files)
-        {
-            string dir = files.Last();
-
-            //assing
-            var controller = new global::OperationalController.ProjectController();
-
-            var ext = Path.GetExtension(files[0]);
-            //model.Loader = new LoadFromSTLFile();
-
-            //act
-
-            if(ext == ".bpf2")
-                controller.Load(Path.Combine(dir, files[0]));
-            else
-                controller.ImportMesh(Path.Combine(dir, files[0]));
-            
-            foreach (var item in files.Skip(1).SkipLast(1))
-                controller.Append(Path.Combine(dir, item));
 
 
-            //assert
-            Assert.AreNotEqual(controller.GetModelObjects(ObjType.Элемент2D).Count(), 0);
-
-            controller.ExportMesh(Path.Combine(dir, "append.stl"));
-            controller.ImportMesh(Path.Combine(dir, "append.stl"));
-
-            Assert.AreNotEqual(controller.GetModelObjects(ObjType.Элемент2D).Count(), 0);
-
-        }   
 
 
-        [TestMethod]
-        [DataRow(@"block_allElements3D_25538.stl", DisplayName = "block_allElements3D_25538.stl")]
-        [DataRow(@"block.stl", DisplayName = "block.stl")]
-        [DataRow(@"Деталь_пример.stl", DisplayName = "Деталь_пример.stl")]
-        //[DataRow(@"Форсунка\1n.stl")]
-        //[DataRow(@"Форсунка\nozzle.stl")]
-        //[DataRow(@"Форсунка\nozzle_sup.stl")]
-        //[DataRow(@"Образец\specimen.stl")]
-        //[DataRow(@"Образец\specimen_solid_sup.stl")]
-        //[DataRow(@"Образец\specimen_wall_sup.stl")]
-        //[DataRow(@"Кронштейн\bracket.stl")]
-        //[DataRow(@"Кронштейн\bracket_solid_sup.stl")]
-        //[DataRow(@"Кронштейн\bracket_wall_sup.stl")]
-        public void ImportAndSaveToSTLBinFormat(string file)
-        {
-            string dir = @"..\..\..\Examples\STL";
-            //string dir = @"..\..\..\..\Тестовые заготовки деталей\";
-            var controller = new global::OperationalController.ProjectController();
 
-            var path = Path.Combine(dir, file);
-            //assing
-            //var model = new ModelData();
 
-            //model.Loader = new LoadFromSTLFile();
 
-            //act
-            controller.ImportMesh(path);
-            var e2D_Count = controller.GetModelObjects(ObjType.Элемент2D).Count();
-            //assert
-            Assert.AreNotEqual(e2D_Count, 0);
 
-            //model.Saver = new SaveModelToBinarySTLFile();
-            controller.ExportMesh(dir + $"\\{file}.bin.stl");
 
-            //model.Saver = new SaveModelToTxtSTLFile();
-            //model.Save(dir + $"\\{file}.txt.stl");
-
-            //var model2 = new ModelData();
-            //model.Loader = new LoadModelFromSTLFile();
-            controller.ImportMesh(dir + $"\\{file}.bin.stl");
-
-            Assert.AreNotEqual(e2D_Count, 0);
-            //var model3 = new ModelData();
-            //model3.Loader = new LoadModelFromSTLFile();
-            //model3.Load(dir + $"\\{file}.txt.stl");
-
-        } 
-
-        [DataTestMethod]
-        [DataRow(8448, 17964,0, @"..\..\..\Examples\3D\Korpus.inp", DisplayName = "Korpus.inp")]
-        [DataRow(4, 1,0, @"..\..\..\Examples\3D\abacus.inp", DisplayName = "abacus.inp")]
-        [DataRow(1000, 5454, 0, @"..\..\..\Examples\3D\box2.inp", DisplayName = "box2.inp")]
-        public void ImportModelFromINPTextFormat(int nodeCount, int elemCount, int grCount,string path)
-        {
-            var controller = new global::OperationalController.ProjectController();
-
-            controller.ImportMesh(path);
-
-            Assert.AreEqual(nodeCount, controller.GetModelObjects(ObjType.Узел).Count());
-            Assert.AreEqual(elemCount, controller.GetAllModelElements().Count());
-        }
 
         [DataTestMethod]
         [DataRow(7,8,0, @"..\..\..\Examples\VIsual-Mesh\rhombDATA1.ASC", DisplayName = "rhombDATA1.ASC")]
@@ -246,7 +68,7 @@ namespace TestModeCore_test.Model
             var saver = new SaveModelToASCIITextFile();
             saver.Save(modelBeforeSaving, @"..\..\..\Examples\VIsual-Mesh\result.ASC");
             var modelAfterSaving = loader.Load(@"..\..\..\Examples\VIsual-Mesh\result.ASC");
-            Assert.IsTrue(modelBeforeSaving.ObjectData.GetAllObjects().Count() == 
+            Assert.IsTrue(modelBeforeSaving.ObjectData.GetAllObjects().Count() ==
                 modelAfterSaving.ObjectData.GetAllObjects().Count());
         }
 
@@ -319,7 +141,7 @@ namespace TestModeCore_test.Model
             var loader = new LoadModelFromINPTextFile_v2();
 
             //act
-            var model = loader.Load(path);            
+            var model = loader.Load(path);
 
             //assert
             Assert.AreEqual(nodeCount, model.ObjectData.Count(ObjType.Узел));

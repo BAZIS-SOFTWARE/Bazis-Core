@@ -28,6 +28,7 @@ namespace OperationalController.MeshObjsCreator.Extrude
         private IGmshController controller;
         private int[] curveTags;
         private double[] steps;
+        private double[][] meshParameters;
         private float maxAngle;
         private int beamId;
         /*/// <summary>
@@ -86,6 +87,25 @@ namespace OperationalController.MeshObjsCreator.Extrude
             this.curveTags = DetectCurveLoop(curveTags, pointTag);
             steps = ConvertSteps(step);
         }
+
+        /// <summary>
+        /// Создает экструдер, слои которого совпадают с узлами готовой сетки кривых.
+        /// </summary>
+        /// <param name="controller">Контроллер GMSH.</param>
+        /// <param name="curveTags">Связанные кривые траектории.</param>
+        /// <param name="pointTag">Геометрическая точка начала траектории.</param>
+        /// <param name="useMeshNodes">Использовать положения узлов готовой сетки.</param>
+        /// <param name="maxAngle">Максимальный угол сглаживания перехода между кривыми.</param>
+        public CurveExtruder(IGmshController controller, int[] curveTags, int pointTag, bool useMeshNodes, float maxAngle = MathF.PI / 2)
+        {
+            if (!useMeshNodes)
+                throw new ArgumentException("Для этого конструктора требуется использовать узлы сетки", nameof(useMeshNodes));
+            this.controller = controller;
+            this.maxAngle = maxAngle;
+            this.curveTags = DetectCurveLoop(curveTags, pointTag);
+            steps = new double[this.curveTags.Length];
+            meshParameters = GetMeshParameters();
+        }
         /// <summary>
         /// Создает экструзию 3д элементов методом протягивания вдоль кривой (Версия Merge по углу)
         /// </summary>
@@ -139,7 +159,9 @@ namespace OperationalController.MeshObjsCreator.Extrude
                     {
                         var next = GetNextTangent(i);
                         var data = GetRotationDataBetweenComponents(compList[j].Item5, next);
-                        lastCorrect = GetCorrectionMatrix(data.Item1, data.Item2, compList[j].Item4);
+                        lastCorrect = meshParameters != null && data.Item2 < 1e-4f
+                            ? Matrix4x4.Identity
+                            : GetCorrectionMatrix(data.Item1, data.Item2, compList[j].Item4);
                         if (data.Item2 <= maxAngle)
                         {
                             rotateStatus = true;
@@ -202,6 +224,14 @@ namespace OperationalController.MeshObjsCreator.Extrude
             var nextIndex = curveTags.Length - 1 == index ? 0 : index + 1;
             var tag = curveTags[nextIndex];
             var absTag = Math.Abs(tag);
+
+            if (meshParameters != null)
+            {
+                var parameter = meshParameters[nextIndex][0];
+                var derivative = controller.Gmsh.Model.GetDerivative(1, absTag, [parameter]);
+                var tangent = new Vector3((float)derivative[0], (float)derivative[1], (float)derivative[2]);
+                return tag < 0 ? -tangent : tangent;
+            }
 
             var p = controller.Gmsh.Model.GetParametrizationBounds(1, absTag);
 
@@ -351,9 +381,80 @@ namespace OperationalController.MeshObjsCreator.Extrude
         }
         private List<(Vector3, Vector3, Vector3, Vector3, Vector3)> GetCurveComponents(double step, int index)
         {
+            if (meshParameters != null)
+                return ProcessMeshParameters(index);
             if (Math.Sign(curveTags[index]) > 0)
                 return ProcessDirectParameterization(step, index);
             return ProcessInvertParameterization(step, index);
+        }
+
+        /// <summary>
+        /// Получает параметры узлов сетки (параметризацию) для каждой кривой из массива <c>curveTags</c>.
+        /// </summary>
+        /// <returns>Двумерный массив параметров: для каждой кривой — упорядоченный массив параметров (double).</returns>
+        /// <exception cref="InvalidOperationException">Если для какой-либо кривой не найдена сетка узлов (меньше 2 параметров).</exception>
+        /// <remarks>
+        /// Если тег кривой отрицательный, параметры для этой кривой разворачиваются в обратном порядке
+        /// (соответствует инвертированной направленности кривой в контуре).
+        /// </remarks>
+        private double[][] GetMeshParameters()
+        {
+            var result = new double[curveTags.Length][];
+            for (var index = 0; index < curveTags.Length; index++)
+            {
+                var curveTag = curveTags[index];
+                var data = controller.Gmsh.Model.Mesh.GetNodes(1, Math.Abs(curveTag), true, true);
+                var parameters = data.Item3.Distinct().OrderBy(value => value).ToArray();
+                if (parameters.Length < 2)
+                    throw new InvalidOperationException($"Для кривой {Math.Abs(curveTag)} не построена сетка");
+                if (curveTag < 0)
+                    Array.Reverse(parameters);
+                result[index] = parameters;
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Обрабатывает набор параметров сетки для заданной кривой и формирует список компонент локальной системы
+        /// (нормаль, бинормаль, касательная, точка, ориентация касательной) для каждой отметки параметра.
+        /// </summary>
+        /// <param name="index">Индекс кривой в массиве <c>curveTags</c>.</param>
+        /// <returns>Список кортежей компонентов локальной системы для каждой точки параметризации.</returns>
+        private List<(Vector3, Vector3, Vector3, Vector3, Vector3)> ProcessMeshParameters(int index)
+        {
+            var result = new List<(Vector3, Vector3, Vector3, Vector3, Vector3)>();
+            foreach (var parameter in meshParameters[index])
+                WriteMeshComponentsInPoint(result, index, parameter);
+            return result;
+        }
+
+        /// <summary>
+        /// Вычисляет и добавляет компоненты локальной системы (нормаль, бинормаль, касательная, позиция, ориентация)
+        /// для заданного параметра кривой, используя производные Gmsh в точке.
+        /// </summary>
+        /// <param name="result">Список результатов, в который будет добавлен новый кортеж компонентов.</param>
+        /// <param name="index">Индекс кривой в <c>curveTags</c>.</param>
+        /// <param name="parameter">Значение параметра вдоль кривой, для которого вычисляются производные и компоненты.</param>
+        /// <remarks>
+        /// Используются первая и вторая производные кривой для вычисления нормали как компоненты нормализованного
+        /// бинома <c>Vector3.Dot(tangent,tangent)*acceleration - Vector3.Dot(tangent,acceleration)*tangent</c>.
+        /// В случае вырожденной нормали (направление кривой прямолинейно) компоненты повторяются из предыдущей точки
+        /// или устанавливаются в глобальные оси при первом элементе.
+        /// </remarks>
+        private void WriteMeshComponentsInPoint(List<(Vector3, Vector3, Vector3, Vector3, Vector3)> result, int index, double parameter)
+        {
+            var curveTag = curveTags[index];
+            var absoluteTag = Math.Abs(curveTag);
+            var coordinates = controller.Gmsh.Model.GetValue(1, absoluteTag, [parameter]);
+            var firstDerivative = controller.Gmsh.Model.GetDerivative(1, absoluteTag, [parameter]);
+            var secondDerivative = controller.Gmsh.Model.GetSecondDerivative(1, absoluteTag, [parameter]);
+            var point = new Vector3((float)coordinates[0], (float)coordinates[1], (float)coordinates[2]);
+            var tangent = new Vector3((float)firstDerivative[0], (float)firstDerivative[1], (float)firstDerivative[2]);
+            if (curveTag < 0)
+                tangent = -tangent;
+            var acceleration = new Vector3((float)secondDerivative[0], (float)secondDerivative[1], (float)secondDerivative[2]);
+            var normal = Vector3.Dot(tangent, tangent) * acceleration - Vector3.Dot(tangent, acceleration) * tangent;
+            AddLocalSystemComponents(result, point, tangent, normal);
         }
 
         private List<(Vector3, Vector3, Vector3, Vector3, Vector3)> ProcessDirectParameterization(double step, int index)
@@ -468,24 +569,30 @@ namespace OperationalController.MeshObjsCreator.Extrude
             var a0 = p2 - p1 - (p1 - p0);
             var n0 = Vector3.Dot(t0, t0) * a0 - Vector3.Dot(t0, a0) * t0;
 
+            AddLocalSystemComponents(result, p0, t0, n0);
+        }
+
+        private void AddLocalSystemComponents(List<(Vector3, Vector3, Vector3, Vector3, Vector3)> result,
+                                              Vector3 point, Vector3 tangent, Vector3 normal)
+        {
             var last = result.Count - 1;
             (Vector3, Vector3, Vector3, Vector3, Vector3) components;
 
-            if (Vector3.Dot(n0, n0) < 1e-8)
-                components = result.Count == 0 ? (Vector3.UnitX, Vector3.UnitY, Vector3.UnitZ, p0, t0)
-                                               : (GetComponent(result[last], 1), GetComponent(result[last], 2), GetComponent(result[last], 3), p0, t0);
+            if (Vector3.Dot(normal, normal) < 1e-8)
+                components = result.Count == 0 ? (Vector3.UnitX, Vector3.UnitY, Vector3.UnitZ, point, tangent)
+                                               : (GetComponent(result[last], 1), GetComponent(result[last], 2), GetComponent(result[last], 3), point, tangent);
             else
             {
-                t0 = Vector3.Normalize(t0);
-                n0 = Vector3.Normalize(n0);
+                tangent = Vector3.Normalize(tangent);
+                normal = Vector3.Normalize(normal);
 
-                var b0 = Vector3.Cross(t0, n0);
-                if (result.Count > 0 && Vector3.Dot(b0, GetComponent(result[last], 2)) < 1e-4)
+                var binormal = Vector3.Cross(tangent, normal);
+                if (result.Count > 0 && Vector3.Dot(binormal, GetComponent(result[last], 2)) < 1e-4)
                 {
-                    n0 = -n0;
-                    b0 = Vector3.Cross(t0, n0);
+                    normal = -normal;
+                    binormal = Vector3.Cross(tangent, normal);
                 }
-                components = (n0, b0, t0, p0, t0);
+                components = (normal, binormal, tangent, point, tangent);
             }
             result.Add(components);
         }

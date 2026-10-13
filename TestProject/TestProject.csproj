@@ -13,11 +13,6 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <Compile Remove="TestTaskParameters\**" />
-    <EmbeddedResource Remove="TestTaskParameters\**" />
-    <None Remove="TestTaskParameters\**" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="EntityFramework" Version="6.5.1" />
     <PackageReference Include="MathNet.Numerics.Signed" Version="5.0.0" />
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
@@ -41,21 +36,6 @@
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Examples\ProjAndResults\term_iterative.bsf" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Examples\3D\TestProjTerm\multiPass\Cycles\functions.txt" />
-    <Content Include="Examples\3D\TestProjTerm\multiPass\Cycles\materials.txt" />
-    <Content Include="Examples\3D\TestProjTerm\overlapJoint\functions.txt" />
-    <Content Include="Examples\3D\TestProjTerm\overlapJoint\materials.txt" />
-    <Content Include="Examples\3D\TestProjTerm\tjoint\functions.txt" />
-    <Content Include="Examples\3D\TestProjTerm\tjoint\materials.txt" />
-    <Content Include="Examples\3D\TestProjTernMech\tjoint\functions.txt" />
-    <Content Include="Examples\3D\TestProjTernMech\tjoint\materials.txt" />
-    <Content Include="Examples\ProjAndResults\watcher.txt" />
-    <Content Include="Examples\ProjAndResults\watcher_1.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Model\Model.csproj" />
     <ProjectReference Include="..\OperationalController\OperationalController.csproj" />
     <ProjectReference Include="..\PostProc\PostProc.csproj" />
@@ -65,12 +45,16 @@
     <ProjectReference Include="..\ResultDataBase\ResultDB.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="CalcCompDataTest\TsfFolder\" />
-    <Folder Include="CalcCompDataTest\V2TestCase\" />
+    <Compile Remove="ModelView\PresenterTestExtensions.cs" />
+    <Folder Include="PreProc\Data\CalcCompDataTest\TsfFolder\" />
+    <Folder Include="PreProc\Data\CalcCompDataTest\V2TestCase\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="PropertiesCalculator">
       <HintPath>..\..\..\BazisGUI\Libs\PropertiesCalculator.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
   </ItemGroup>
 </Project>

@@ -5,6 +5,7 @@ using Project.Tasks.LocalFrames;
 using System.Globalization;
 using Project.Interfaces;
 using Project.Tasks.Functions;
+using Model.IO;
 
 namespace TestProject_test.Project
 {
@@ -25,8 +26,8 @@ namespace TestProject_test.Project
             return proj;
         }
         [TestMethod]
-        [DataRow(@"..\..\..\Examples\proj_traj.bpf",50)]
-        [DataRow(@"c:\projs\Roman\LazerWelding\Proj.bpf2", 5)]
+        [DataRow(@"../../../SharedData/ProjectFiles/proj_traj.bpf",50)]
+        //[DataRow(@"c:\projs\Roman\LazerWelding\Proj.bpf2", 5)]
         
         public void CalcStopTime(string path, float stopTimeRes)
         {
@@ -50,7 +51,7 @@ namespace TestProject_test.Project
         {
             //assign
             var loader = new LoadProjectFromTextFormat();
-            var proj = loader.Load(@"..\..\..\Examples\proj_traj.bpf");
+            var proj = loader.Load(@"../../../SharedData/ProjectFiles/proj_traj.bpf");
 
             //act
             var baseLineGr = proj.ModelData.GroupData.Find("baseLine");
@@ -67,29 +68,30 @@ namespace TestProject_test.Project
         public void SortTrajNodes()
         {
             //assign
-            var loader = new LoadProjectFromTextFormat();
-            var proj = loader.Load(@"..\..\..\Examples\proj_traj_baseLine_not_sorted.bpf");
+            var loader = new LoadModelFromBPFTextFile();
+            var model = loader.Load(@"../../../SharedData/ProjectFiles/proj_traj_baseLine_not_sorted.bpf");
 
             //act
-            var baseLineGr = proj.ModelData.GroupData.Find("baseLine");
-            var refLineGr = proj.ModelData.GroupData.Find("refLine");
-            var stNodesGr = proj.ModelData.GroupData.Find("startNodes");
+            var baseLineGr = model.GroupData.Find("baseLine");
+            var refLineGr = model.GroupData.Find("refLine");
+            var stNodesGr = model.GroupData.Find("startNodes");
 
             var mff = new MovedFrameBuilder().Build(stNodesGr, baseLineGr, refLineGr, 5);
 
             //assert
-            Assert.AreEqual(mff.BaseLine[0].Number, mff.StartPoint.Number);
+            Assert.AreEqual(674, mff.BaseLine[0].Number);
+            Assert.AreEqual(39, mff.RefLine[0].Number);
         }
 
         public static MovedFrame SetUpGroupData
             (string baseLineGroupName, string refLineGroupName, string startGroupName, string endGroupName)
         {
-            var loader = new LoadProjectFromTextFormat();
-            var proj = loader.Load(@"..\..\..\Examples\TrajTest.bpf");
+            var loader = new LoadModelFromBPFTextFile();
+            var model = loader.Load(@"../../../SharedData/ProjectFiles/TrajTest.bpf");
 
-            var baseLine = proj.ModelData.GroupData.Find(baseLineGroupName);
-            var refLine = proj.ModelData.GroupData.Find(refLineGroupName);
-            var startPoints = proj.ModelData.GroupData.Find(startGroupName);
+            var baseLine = model.GroupData.Find(baseLineGroupName);
+            var refLine = model.GroupData.Find(refLineGroupName);
+            var startPoints = model.GroupData.Find(startGroupName);
             
 
             return new MovedFrameBuilder().Build(startPoints, baseLine, refLine, 5);

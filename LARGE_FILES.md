@@ -1,33 +1,30 @@
 # Large files in Yandex Object Storage
 
-Large files are stored in Yandex Object Storage buckets. Git contains their SHA-256 manifests under `<bucket>/<project>/`, not the files themselves. For example, `outlibs/GmshApi/gmsh.dll.manifest` corresponds to `GmshApi/gmsh.dll`, while `outcommon/TestProject/Materials/Materials_v7.jsf.manifest` corresponds to `TestProject/Materials/Materials_v7.jsf`. Each object has an immutable, content-addressed key:
+The repository reads large files from Yandex Object Storage. The upload process runs outside this repository. Configure AWS CLI access to the `outlibs` and `outcommon` buckets before downloading.
 
-```text
-s3://<bucket>/<project>/<filename>/<sha256>
-```
+The following files use stable object keys and keep their manifests beside the local files. Each manifest has exactly two lines: `sha256=<64 lowercase hex digits>` and `etag=<cloud ETag>`.
 
-Install and configure the AWS CLI for Yandex Object Storage, then run from any directory:
+| Local files | Bucket | Object keys |
+| --- | --- | --- |
+| `GmshApi/gmsh.dll`, `GmshApi/libgmsh.so` | `outlibs` | `gmsh.dll`, `libgmsh.so` |
+| `TestModelCore/Examples/STL/*.STL`, `*.stl.bin.stl` with manifests | `outcommon` | `TestModelCore/Examples/STL/<filename>` |
+| `TestProject/MaterialDB/Data/functions.jsf` | `outcommon` | `TestProject/FunctionDB/functions.jsf` |
+| `TestProject/MaterialDB/Data/Materials_v7.jsf` | `outcommon` | `TestProject/MaterialDB/Materials_v7.jsf` |
+
+For these files, the script reads the cloud ETag with `head-object` on every run. If the ETag matches the manifest and the local SHA-256 matches its `sha256=` entry, no download is needed. Otherwise, the script downloads to a temporary file, calculates its SHA-256, checks the cloud ETag again, and replaces the local file only when its content differs. It then updates the adjacent manifest with `sha256=` and `etag=`. A changed cloud object therefore leaves a modified tracked manifest to review and commit. The ETag identifies an object version for this check; it is not treated as a SHA-256 checksum.
+
+The script rejects manifests without both fields and paths without an explicit bucket and object-key mapping. It ignores manifests in the former local `outcommon/` directory when they are still present in an older branch; content-addressed cloud keys are no longer supported.
+
+Run the downloader manually from any directory:
 
 ```bash
 bash /path/to/BazisCore/.githooks/pull_large_files.sh
 ```
 
-The scripts find Git-tracked and unignored new `*.manifest` files under bucket directories at the repository root, including nested project paths. The first directory names the bucket. The remaining path without the `.manifest` suffix is the local file path and object-key prefix; its SHA-256 is the final object-key component. The download script checks local files first. It downloads only missing or mismatched files and verifies SHA-256 before replacing them.
-
-To download automatically after `git pull` and branch switches, enable the versioned Git hooks once per clone:
+To run it after a merge, rebase, or branch checkout, enable the versioned Git hooks once per clone:
 
 ```bash
 git config --local core.hooksPath .githooks
 ```
 
-The `post-merge`, `post-rewrite`, and `post-checkout` hooks cover merge, rebase, and branch checkout. Git does not enable versioned hooks automatically in a new clone, so run `bash .githooks/pull_large_files.sh` once after enabling them. If a download fails, run it again after fixing AWS CLI access.
-
-The `pre-push` hook uploads missing objects before a GitHub push. It stops the GitHub push if an upload changes a manifest: commit the updated manifest, then push again. The scripts use the AWS CLI profile `yandex` by default; set `AWS_PROFILE` to select another profile. Visual Studio's bundled Git has `sh` but no Bash, so the hooks use Git Bash installed at its standard Windows location when `bash` is not on `PATH`.
-
-To register a new file, create an empty manifest at `<bucket>/<project>/<filename>.manifest`, add the corresponding local file to `.gitignore`, remove it from the Git index with `git rm --cached` if it is already tracked, and run the upload script. The script calculates the current SHA-256 and writes `sha256=<64 lowercase hex digits>` to the manifest after uploading. To upload changed files:
-
-```bash
-bash /path/to/BazisCore/.githooks/push_large_files.sh
-```
-
-Commit the changed `.manifest` files after a successful upload. The AWS CLI uses your configured credentials or `AWS_PROFILE`; do not put access keys in this repository. Objects referenced by older manifests must remain in the bucket if older commits need to be reproducible.
+The existing `post-merge`, `post-rewrite`, and `post-checkout` hooks all call the same downloader. Git does not enable versioned hooks automatically in a new clone. A `git pull` that makes no merge or rebase change does not necessarily invoke a hook; run the script manually when an immediate cloud check is needed. The script uses AWS CLI profile `yandex` by default; set `AWS_PROFILE` to select another profile. Git Bash is required on Windows.

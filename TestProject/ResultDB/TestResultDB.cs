@@ -38,15 +38,15 @@ namespace TestProject_test.ResultDB
         }
 
         [DataTestMethod]
-        [DataRow(@"..\..\..\Examples\ProjAndResults", "термическая_0_0_0.5.db", 0.5f)]
-        [DataRow(@"..\..\..\Examples\ProjAndResults", "термическая_0_0_1500.db", 200.8569f)]
+        [DataRow(@"../../../SharedData/ProjAndResults", "термическая_0_0_0.5.db", 0.5f)]
+        [DataRow(@"../../../SharedData/ProjAndResults", "термическая_0_0_1500.db", 200.8569f)]
         public void TestLoadDBSQLiteFindByTime(string path, string resName, float time)
         {
             var loaderDB = new LoadResultsFileDB();
             loaderDB.LoadEvent += (ar1,ar2) => { };
-            var project = new ProjectData($"{path}\\newProj.bpf2");
+            var project = new ProjectData($"{path}/newProj.bpf2");
 
-            var results = loaderDB.GetResult(path + $@"\{resName}",
+            var results = loaderDB.GetResult(Path.Combine(path, resName),
                 new List<string>() { "nodes" }, time) ; 
             
             Assert.AreNotEqual(results, null);
@@ -54,22 +54,22 @@ namespace TestProject_test.ResultDB
         }
 
         [DataTestMethod]
-        [DataRow(@"..\..\..\Examples\ProjAndResults", "термическая_0_0_0.5.db")]
-        [DataRow(@"..\..\..\Examples\ProjAndResults", "термическая_0_0_1500.db")]
+        [DataRow(@"../../../SharedData/ProjAndResults", "термическая_0_0_0.5.db")]
+        [DataRow(@"../../../SharedData/ProjAndResults", "термическая_0_0_1500.db")]
         public void TestLoadDBSQLiteTablesScheme(string path, string resName)
         {
             var loaderDB = new LoadResultsFileDB();
             loaderDB.LoadEvent += (ar1, ar2) => { };
             //var project = new ProjectData($"{path}\\newProj.bpf2");
 
-            var shemes = loaderDB.GetTablesSchemes(path + $@"\{resName}").ToList();
+            var shemes = loaderDB.GetTablesSchemes(Path.Combine(path, resName)).ToList();
 
             Assert.AreNotEqual(shemes, null);
             //Assert.AreNotEqual(results.Data.Tables["nodes"].Rows.Count, 0);
         }
 
         [TestMethod]
-        [DataRow(@"..\..\..\Examples\ProjAndResults", "термическая_0_0_0.5.db")]
+        [DataRow(@"../../../SharedData/ProjAndResults", "термическая_0_0_0.5.db")]
         public void TestLoadDBSQLiteFindByTimeInterval(string path, string dbName)
         {
             var loaderDB = new LoadResultsFileDB();
@@ -77,13 +77,13 @@ namespace TestProject_test.ResultDB
 
             //var project = new ProjectData($"{path}\\newProj.bpf2");
 
-            var times = loaderDB.GetValues(path + $@"\{dbName}", "nodes", "Time");
+            var times = loaderDB.GetValues(Path.Combine(path, dbName), "nodes", "Time");
 
             var results = new List<Result>();
 
             foreach (var item in times)
             {
-                results.Add(loaderDB.GetResult(path + $@"\{dbName}",
+                results.Add(loaderDB.GetResult(Path.Combine(path, dbName),
                     new List<string> { "nodes", "elements" }, item));
             }
 
@@ -101,29 +101,39 @@ x.Time.CompareTo(0) >= 0
         [DataRow("csv_table_1.csv")]
         public void CSVToDataTableConverter_Example(string file)
         {
-            var csvPath = @"..\..\..\ResultTableCSV";
+            var csvPath = @"../../../ResultDB/Data/ResultTableCSV";
+            var dbPath = Path.Combine(csvPath, "results.db");
 
-            var convert = new CSVToDataTableConverter();
+            try
+            {
+                var convert = new CSVToDataTableConverter();
+                var dataTable = convert.ConvertCSVtoDataTable(Path.Combine(csvPath, file));
+                dataTable.TableName = "nodes";
 
-            var dataTable = convert.ConvertCSVtoDataTable($@"{csvPath}\{file}");
-            dataTable.TableName = "nodes";
+                var dataSet = new DataSet();
+                dataSet.Tables.Add(dataTable);
+                var result = new Result(dataSet, 0.87051f, "термическая");
 
-            var dataSet = new DataSet();
-            dataSet.Tables.Add(dataTable);
-            var result = new Result(dataSet, 0.87051f, "термическая");
+                var saverDB = new SaveResultsFileDb();
+                saverDB.Save(new List<Result>() { result }, dbPath, false);
 
-            var dbPath = $@"{csvPath}\results.db";
+                var loaderDB = new LoadResultsFileDB();
+                loaderDB.LoadEvent += (ar1, ar2) => { };
+                var times = loaderDB.GetValues(dbPath, "nodes", "Time");
 
-            var saverDB = new SaveResultsFileDb();
-            saverDB.Save(new List<Result>() { result }, dbPath, false);
-   
-            var loaderDB = new LoadResultsFileDB();
-            loaderDB.LoadEvent += (ar1, ar2) => { };
-            var times = loaderDB.GetValues(dbPath, "nodes", "Time");
+                var resultTOLoad = loaderDB.GetResult(dbPath, new List<string>() { "nodes"}, times.First());
 
-            var resultTOLoad = loaderDB.GetResult(dbPath, new List<string>() { "nodes"}, times.First());
-
-            Assert.AreEqual(resultTOLoad.Name, "results");
+                Assert.AreEqual(resultTOLoad.Name, "results");
+            }
+            finally
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                System.Data.SQLite.SQLiteConnection.ClearAllPools();
+                File.Delete(dbPath);
+                File.Delete(dbPath + "-wal");
+                File.Delete(dbPath + "-shm");
+            }
         }   
 
         [DataTestMethod]
@@ -173,7 +183,7 @@ x.Time.CompareTo(0) >= 0
             DisplayName = "3 without  []")]
         public void BasicDbOperations(string[] columns, object[] values)
         {
-            var path = @"..\..\..\TestTableColumns\test.db";
+            var path = Path.Combine(Path.GetTempPath(), $"BazisResultDB-{Guid.NewGuid():N}.db");
 
             var db = new ResultDataBase(path);
             db.OpenConnection();
@@ -200,31 +210,50 @@ x.Time.CompareTo(0) >= 0
         }
 
         [TestMethod]
-        [DataRow(@"..\..\..\Examples\ProjAndResults\merge\термическая_2_1_2.db",
-                 @"..\..\..\Examples\ProjAndResults\merge\термическая_3_2_3.db",
-                 @"..\..\..\Examples\ProjAndResults\merge\термическая_0_1_3.db")]
-        [DataRow(@"..\..\..\Examples\ProjAndResults\merge\термическая_3_2_3.db",
-                 @"..\..\..\Examples\ProjAndResults\merge\термическая_2_1_2.db",
-                 @"..\..\..\Examples\ProjAndResults\merge\термическая_0_1_3.db")]
-        [DataRow(@"..\..\..\Examples\ProjAndResults\merge\термическая_2_1_2.db",
-                 @"..\..\..\Examples\ProjAndResults\merge\термическая_2_1_2.db",
-                 @"..\..\..\Examples\ProjAndResults\merge\термическая_0_1_2.db")]
-        public void MergeDataBase(string path1, string path2, string resultPath)
+        [DataRow(@"../../../SharedData/ProjAndResults/merge/термическая_2_1_2.db",
+                 @"../../../SharedData/ProjAndResults/merge/термическая_3_2_3.db",
+                 @"../../../SharedData/ProjAndResults/merge/термическая_0_1_3.db")]
+        [DataRow(@"../../../SharedData/ProjAndResults/merge/термическая_3_2_3.db",
+                 @"../../../SharedData/ProjAndResults/merge/термическая_2_1_2.db",
+                 @"../../../SharedData/ProjAndResults/merge/термическая_0_1_3.db")]
+        [DataRow(@"../../../SharedData/ProjAndResults/merge/термическая_2_1_2.db",
+                 @"../../../SharedData/ProjAndResults/merge/термическая_2_1_2.db",
+                 @"../../../SharedData/ProjAndResults/merge/термическая_0_1_2.db")]
+        public void MergeDataBase(string path1, string path2, string expectedResultPath)
         {
-            var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
+            var firstFileName = Path.GetFileName(path1);
+            var secondFileName = Path.GetFileName(path2);
+            var resultFileName = Path.GetFileName(expectedResultPath);
+            var sourceParts = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "SharedData", "ProjAndResults", "merge");
+            var sourceDir = Path.GetFullPath(sourceParts);
+            var tempRoot = Path.GetTempPath();
+            var tempDir = Path.Combine(tempRoot, Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(tempDir);
             try
             {
-                var db1Path = path1;
-                var db2Path = path2;
+                var source1 = Path.Combine(sourceDir, firstFileName);
+                var source2 = Path.Combine(sourceDir, secondFileName);
+                var db1Path = Path.Combine(tempDir, firstFileName);
+                var db2Path = Path.Combine(tempDir, secondFileName);
+                File.Copy(source1, db1Path);
+                if (firstFileName != secondFileName)
+                    File.Copy(source2, db2Path);
 
                 var loader = new LoadResultsFileDB();
-                loader.Merge(db1Path, db2Path);
+                if (firstFileName == secondFileName)
+                {
+                    Assert.ThrowsException<InvalidOperationException>(() => loader.Merge(db1Path, db2Path));
+                    return;
+                }
 
+                var resultPath = loader.Merge(db1Path, db2Path);
+                var expectedPath = Path.Combine(tempDir, resultFileName);
+
+                Assert.AreEqual(expectedPath, resultPath);
                 Assert.IsTrue(File.Exists(resultPath), "Merged database was not created.");
 
-                var tableName = loader.GetTablesNames(path1).First();
-                var expectedRows = GetExpectedRows(path1, path2, tableName);
+                var tableName = loader.GetTablesNames(db1Path).First();
+                var expectedRows = GetExpectedRows(db1Path, db2Path, tableName);
                 var actualRows = GetTotalRows(resultPath, tableName);
 
                 Assert.AreEqual(expectedRows, actualRows, "Merged row count is incorrect.");
@@ -292,7 +321,8 @@ x.Time.CompareTo(0) >= 0
             {
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
-                File.Delete(resultPath);
+                System.Data.SQLite.SQLiteConnection.ClearAllPools();
+                Directory.Delete(tempDir, true);
             }
         }
     }

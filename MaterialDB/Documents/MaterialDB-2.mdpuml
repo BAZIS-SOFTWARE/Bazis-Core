@@ -58,6 +58,7 @@ enum "ChemElement" as T_MaterialDB_MaterialDB_MaterialData_ChemElement {
 T_MaterialDB_MaterialDB_FunctionData_FunctionDBData -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_CategoryEnum
 T_MaterialDB_MaterialDB_MaterialData_CategoryEnum -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_ChemElement
 legend bottom
+  Загрузка базы функций читает найденный путь без Windows-разделителей.
   reference — тип раскрыт на другой диаграмме.
   Параметры методов: имена; полные сигнатуры — в соседнем .md.
   Унаследованные члены интерфейсов в классах не повторяются.

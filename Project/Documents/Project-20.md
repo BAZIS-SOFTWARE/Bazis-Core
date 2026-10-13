@@ -61,3 +61,5 @@ CalcPosition() : void
 GetGlobalCoordsInLocalFrame(Point3D point) : Point3D
 SetShiftingAndRotation(string shiftingData) : void
 ```
+
+Папка баз определяется по абсолютному пути проекта; имена могут содержать пробелы.

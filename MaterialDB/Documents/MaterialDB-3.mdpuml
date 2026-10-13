@@ -63,6 +63,7 @@ T_MaterialDB_MaterialDB_MaterialData_Category ..|> T_MaterialDB_MaterialDB_Inter
 T_MaterialDB_MaterialDB_MaterialData_CategoryData --> T_MaterialDB_MaterialDB_MaterialData_Category : использует
 T_MaterialDB_MaterialDB_MaterialData_MaterialDBData ..|> T_MaterialDB_MaterialDB_Interfaces_IMaterialDB
 legend bottom
+  Загрузка базы материалов читает найденный путь без Windows-разделителей.
   reference — тип раскрыт на другой диаграмме.
   Параметры методов: имена; полные сигнатуры — в соседнем .md.
   Унаследованные члены интерфейсов в классах не повторяются.

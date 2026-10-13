@@ -9,7 +9,7 @@ namespace TestProject_test.Project
     [TestClass]
     public class TestProjectData
     {
-        string testDir = @"..\..\..\Examples";
+        string testDir = @"../../../SharedData/ProjectFiles";
         [TestInitialize]
         public void Init()
         {
@@ -24,12 +24,12 @@ namespace TestProject_test.Project
             var saver = new SaveProjectTextFormat();
             saver.SaveEvent += (ar1, ar2) => { };
             //act
-            var proj = loader.Load($@"{testDir}\proj_traj.bpf");
-            saver.Save(proj, $@"{testDir}\proj_traj_save.bpf");
+            var proj = loader.Load(Path.Combine(testDir, "proj_traj.bpf"));
+            saver.Save(proj, Path.Combine(testDir, "proj_traj_save.bpf"));
 
             //Assert
 
-            var proj_1 = loader.Load($@"{testDir}\proj_traj_save.bpf");
+            var proj_1 = loader.Load(Path.Combine(testDir, "proj_traj_save.bpf"));
 
             Assert.AreEqual(proj.GeneralData.Name, proj_1.GeneralData.Name);
         }

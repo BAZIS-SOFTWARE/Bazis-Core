@@ -23,7 +23,8 @@ namespace Project.Tasks.IO
         {
 
             var lines = ReadLines(fullPath, progress).SkipWhile(line => !line.Contains("Проект"));
-            var path = Path.GetDirectoryName(fullPath);
+            var absolutePath = Path.GetFullPath(fullPath);
+            var path = Path.GetDirectoryName(absolutePath);
             
             var taskData = new TaskData();
 
@@ -40,7 +41,7 @@ namespace Project.Tasks.IO
 
                     if (dataName == "БазаМатериалов")
                     {
-                        var matDBName = splitLine[1].Split(' ')[1];
+                        var matDBName = dataAr.Trim();
         //                taskData.Materials =
         //GetDataBase<MaterialDBData>(matDBName, path);
         //                taskData.Materials.Name = matDBName;
@@ -49,7 +50,7 @@ namespace Project.Tasks.IO
 
                     if (dataName == "БазаФункций")
                     {
-                        var funDBName = splitLine[1].Split(' ')[1];
+                        var funDBName = dataAr.Trim();
          //               taskData.Functions =
          //GetDataBase<FunctionDBData>(funDBName, path);
          //               taskData.Functions.Name = funDBName;
