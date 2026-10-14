@@ -85,7 +85,7 @@ namespace Model.ObjectsCollections
 
             // Стоит подумать о правильном применении тихом выходе. Возможно это отложенная ошибка
             if (appSet.Count == 0)
-                return appSet.Name;
+                return Name;
 
             var shifting = 0;
             if (objectsSet.Count != 0)
@@ -103,7 +103,7 @@ namespace Model.ObjectsCollections
                 value.Value.SetNumber(number);
                 objectsSet.Add(number, value.Value);
             }
-            return appSet.Name;
+            return Name;
         }
 
         /// <inheritdoc/>
