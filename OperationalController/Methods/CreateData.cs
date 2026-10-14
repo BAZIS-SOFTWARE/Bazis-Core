@@ -365,8 +365,11 @@ namespace OperationalController
         /// </summary>
         public string ExtrudeElement3DAlongCurveMesh(int surfaceTag, int[] curveTags, int startPointTag, bool transfinite)
         {
-            var elements2D = GetElements2DBelongingToSurface(surfaceTag);
-            return ExtrudeAlongCurveMesh(elements2D, curveTags, startPointTag, transfinite);
+            using (BeginChanges())
+            {
+                var elements2D = GetElements2DBelongingToSurface(surfaceTag);
+                return ExtrudeAlongCurveMesh(elements2D, curveTags, startPointTag, transfinite);
+            }
         }
 
         /// <summary>
@@ -374,8 +377,11 @@ namespace OperationalController
         /// </summary>
         public string ExtrudeElement3DAlongCurveMesh(string setName, int[] curveTags, int startPointTag, bool transfinite)
         {
-            var set = project.ModelData.ObjectData.E2DCollection[setName].Values.ToList();
-            return ExtrudeAlongCurveMesh(set, curveTags, startPointTag, transfinite);
+            using (BeginChanges())
+            {
+                var set = project.ModelData.ObjectData.E2DCollection[setName].Values.ToList();
+                return ExtrudeAlongCurveMesh(set, curveTags, startPointTag, transfinite);
+            }
         }
 
         /// <summary>
@@ -387,12 +393,15 @@ namespace OperationalController
             if (!double.IsFinite(mergeTolerance) || mergeTolerance <= 0 || mergeTolerance > float.MaxValue)
                 throw new ArgumentOutOfRangeException(nameof(mergeTolerance));
 
-            var set = project.ModelData.ObjectData.E2DCollection[setName].Values.ToList();
-            var extruder = new CurveExtruder(GmshController, curveTags, startPointTag, useMeshNodes: true);
-            var resultSetName = ExtrudeAlongCurve(set, extruder, transfinite);
-            MergeCoincidentExtrusionNodes(extruder);
-            MergeExistingNodesWithExtrusion(extruder, (float)mergeTolerance);
-            return resultSetName;
+            using (BeginChanges())
+            {
+                var set = project.ModelData.ObjectData.E2DCollection[setName].Values.ToList();
+                var extruder = new CurveExtruder(GmshController, curveTags, startPointTag, useMeshNodes: true);
+                var resultSetName = ExtrudeAlongCurve(set, extruder, transfinite);
+                MergeCoincidentExtrusionNodes(extruder);
+                MergeExistingNodesWithExtrusion(extruder, (float)mergeTolerance);
+                return resultSetName;
+            }
         }
 
         /// <summary>
@@ -400,9 +409,12 @@ namespace OperationalController
         /// </summary>
         public string ExtrudeElement1DAlongCurveMesh(int[] curveTags, int startPointTag, int startNodeTag)
         {
-            var startNode = ModelData.ObjectData.NodesSet[startNodeTag];
-            var beams = ExtrudePointAlongCurveMesh(startNode, curveTags, startPointTag);
-            return UpdateBeamModelData(beams);
+            using (BeginChanges())
+            {
+                var startNode = ModelData.ObjectData.NodesSet[startNodeTag];
+                var beams = ExtrudePointAlongCurveMesh(startNode, curveTags, startPointTag);
+                return UpdateBeamModelData(beams);
+            }
         }
 
 
