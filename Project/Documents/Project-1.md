@@ -37,8 +37,6 @@ Loader : IProjectLoader [get, set]
 ModelData : IModelData [get, set]
 Saver : IProjectSaver [get, set]
 TaskData : ITaskData [get, set]
-Load(string fullPath) : void
-Save(string fullPath) : void
 ```
 
 ## `IResult`

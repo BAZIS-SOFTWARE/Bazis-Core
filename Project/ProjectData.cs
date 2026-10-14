@@ -27,28 +27,6 @@ namespace Project
 
         /// <inheritdoc/>
 
-        //public void Load(string projectFile)
-        //{
-        //    GeneralData.Name = System.IO.Path.GetFileName(projectFile);
-        //    GeneralData.Path = System.IO.Path.GetDirectoryName(projectFile); 
-
-        //    Loader.Load(this,projectFile);
-        //}
-        /// <inheritdoc/>
-
-        public void Save(string fullPath)
-        {
-            Saver.Save(this,fullPath);
-        }
-/// <inheritdoc/>
-
-        public void Load(string fullPath)
-        {
-            Loader.Load(fullPath);
-        }
-
-        /// <inheritdoc/>
-
         public IProjectSaver Saver { get; set; } = new SaveProjectTextFormat();
         /// <inheritdoc/>
 
