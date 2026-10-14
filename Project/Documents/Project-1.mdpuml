@@ -24,8 +24,6 @@ interface "IProjectData" as T_Project_Project_Interfaces_IProjectData {
   + ModelData : IModelData [get, set]
   + Saver : IProjectSaver [get, set]
   + TaskData : ITaskData [get, set]
-  + Load(fullPath) : void
-  + Save(fullPath) : void
 }
 interface "IResult" as T_Project_Project_Interfaces_IResult {
   + Data : DataTable [get]

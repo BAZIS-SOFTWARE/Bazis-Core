@@ -12,10 +12,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="OperationalController\PresenterTestExtensions.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
     <PackageReference Include="MathNet.Spatial" Version="0.6.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
@@ -25,7 +21,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Model\Model.csproj" />
-    <ProjectReference Include="..\OperationalController\OperationalController.csproj" />
     <ProjectReference Include="..\PrGeometry\Geometry.csproj" />
     <ProjectReference Include="..\SurfaceMesher\SurfaceMesher.csproj" />
   </ItemGroup>

@@ -33,20 +33,5 @@ namespace Project.Interfaces
         /// GeneralData
         /// </summary>
         IGeneralData GeneralData { get;  }
-        /// <summary>
-        /// Save
-        /// </summary>
-        /// <param name="fullPath"></param>
-        void Save(string fullPath);
-        /// <summary>
-        /// Load
-        /// </summary>
-        /// <param name="fullPath"></param>
-        void Load(string fullPath);
-        /// <summary>
-        /// Load
-        /// </summary>
-        /// <param name="projectFile"></param>
-        //void Load(string projectFile);
     }
 }
