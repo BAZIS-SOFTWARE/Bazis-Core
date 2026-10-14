@@ -34,12 +34,19 @@ interface "IMeshCommands\nчасть 1/2" as T_OperationalController_Operational
   + ExtrudeElement1DAlongCurve(curveTags, startPointTag, startNodeTag, step) : string
   + ExtrudeElement3DAlongCurve(surfaceTag, curveTags, startPointTag, step, transfinite) : string
   + ExtrudeElement3DAlongCurve(setName, curveTags, startPointTag, step, transfinite) : string
+  + ExtrudeElement3DAlongCurveMesh(surfaceTag, curveTags, startPointTag, transfinite) : string
+  + ExtrudeElement3DAlongCurveMesh(setName, curveTags, startPointTag, transfinite) : string
+  + ExtrudeElement3DAlongCurveMeshAdjusted(setName, curveTags, startPointTag, transfinite, mergeTolerance) : string
+  + ExtrudeElement1DAlongCurveMesh(curveTags, startPointTag, startNodeTag) : string
   + ExtrudeElement3DRotate(surfaceTag, angle, originPoint, rotAxis, transfinite) : string
   + GenerateMesh(elemDim) : void
   + HideMesh(elemDim) : void
 }
 note right of T_OperationalController_OperationalController_IMeshCommands
   Полный состав: [[OperationalController-20.mdpuml OperationalController-20]], [[OperationalController-21.mdpuml OperationalController-21]]
+  Экструзия по сетке кривых накапливает изменения в одной области.
+  Итоговый Message публикуется после добавления данных и слияний.
+  Область изменений не выполняет откат при исключении.
 end note
 legend bottom
   reference — тип раскрыт на другой диаграмме.
