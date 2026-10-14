@@ -36,7 +36,13 @@ Extrude3DForm2D(Point3D vector, int layers, IEnumerable<IElement2D> elements) : 
 ExtrudeElement1DAlongCurve(int[] curveTags, int startPointTag, int startNodeTag, double step) : string
 ExtrudeElement3DAlongCurve(int surfaceTag, int[] curveTags, int startPointTag, double step, bool transfinite) : string
 ExtrudeElement3DAlongCurve(string setName, int[] curveTags, int startPointTag, double step, bool transfinite) : string
+ExtrudeElement3DAlongCurveMesh(int surfaceTag, int[] curveTags, int startPointTag, bool transfinite) : string
+ExtrudeElement3DAlongCurveMesh(string setName, int[] curveTags, int startPointTag, bool transfinite) : string
+ExtrudeElement3DAlongCurveMeshAdjusted(string setName, int[] curveTags, int startPointTag, bool transfinite, double mergeTolerance) : string
+ExtrudeElement1DAlongCurveMesh(int[] curveTags, int startPointTag, int startNodeTag) : string
 ExtrudeElement3DRotate(int surfaceTag, float angle, Vector3 originPoint, Vector3 rotAxis, bool transfinite) : string
 GenerateMesh(int elemDim) : void
 HideMesh(int elemDim) : void
 ```
+
+Экструзия по готовой сетке кривых открывает одну область `BeginChanges()` на публичной границе операции. Уведомление `Message` публикуется после добавления данных и завершения слияний узлов. В Adjusted проверка допуска выполняется перед открытием области. Область не выполняет откат модели при исключении.
