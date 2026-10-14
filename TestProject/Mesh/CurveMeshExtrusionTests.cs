@@ -2,7 +2,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model.Interfaces;
 using OperationalController;
 
-namespace TestProject_test.OperationalController
+namespace TestProject_test.Mesh
 {
     [TestClass]
     [DoNotParallelize]
