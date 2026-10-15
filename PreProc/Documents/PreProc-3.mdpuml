@@ -1,0 +1,43 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+hide empty members
+set namespaceSeparator none
+title PreProc-3 — запись TCF и относительные пути
+caption [[PreProc.mdpuml Обзор]] | [[PreProc-1.mdpuml API подготовки]] | [[PreProc-2.mdpuml Очередь и имена]]
+class "TcfWriter" as Writer {
+  + Write(projectPath, queueRows) : string
+  - CreateTaskCommand(row, root, directory, paths, keys) : string
+  - ReplaceCommandFile(directory, result, lines) : void
+}
+class "CalculationPaths" as Paths <<internal>> {
+  + GetProjectRoot(projectPath) : string
+  + GetRelativeFile(root, sourceDirectory, targetPath, requireExisting) : string
+}
+enum "TaskStatus" as Status <<reference>> [[PreProc-2.mdpuml]]
+class "PreProc" as Processor <<reference>> [[PreProc-1.mdpuml]]
+Writer ..> Paths
+Writer ..> Status : разбирает строки
+Processor ..> Writer : WriteCommandFile
+note right of Writer
+  Вся очередь проверяется до записи.
+  Порядок / статусы сохраняются.
+  Временный TCF -> замена целевого.
+  TSF не меняются.
+end note
+note bottom of Paths
+  Корень: каталог существующего .bpf / .bpf2.
+  InputData / ResultsData / ComputationData.
+  Ссылки остаются внутри комплекта.
+end note
+legend bottom
+  TCF: ComputationData/computation.tcf, пути в двойных кавычках.
+  TSF / TCF: ссылки относительно содержащего файла, разделитель /.
+  Путь TSF в строке очереди: относительно корня комплекта.
+  UTF-8 без BOM; старый формат не поддерживается.
+  Читатель Solver нужно адаптировать отдельно.
+endlegend
+@enduml

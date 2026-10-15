@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using static IronPython.Modules._ast;
 using System.Linq;
+using System.Globalization;
 
 namespace Project.TaskParameters
 {
@@ -30,6 +31,10 @@ namespace Project.TaskParameters
     public class GeneralParameters
     {
         public TaskKind TaskKind { get; set; }
+        /// <summary>
+        /// Индекс расчётного интервала, присвоенный препроцессором.
+        /// </summary>
+        public int Index { get; set; }
 
         /// <summary>
         /// Calculation algorithm with respect to physical time.
@@ -69,11 +74,14 @@ namespace Project.TaskParameters
 
             return fields.SingleOrDefault();
         }
-/// <inheritdoc/>
-
+        /// <summary>
+        /// Возвращает переносимую основу имени файлов TSF и DB.
+        /// </summary>
         public override string ToString()
         {
-            return $"{TaskKind}_{TimeSettings.StartTime}_{TimeSettings.StopTime}";
+            var start = TimeSettings.StartTime.ToString("G9", CultureInfo.InvariantCulture);
+            var stop = TimeSettings.StopTime.ToString("G9", CultureInfo.InvariantCulture);
+            return $"{TaskKind}_{Index}_{start}_{stop}";
         }
     }
 }

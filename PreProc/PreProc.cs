@@ -1,12 +1,10 @@
-using Newtonsoft.Json;
 using Project.Interfaces.Tasks;
 using Project.Tasks;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
+using System.Globalization;
 using PreProc.Interfaces;
 using Project.TaskParameters;
 
@@ -21,67 +19,55 @@ namespace PreProc
     /// </summary>
     public class PreProc : IPreProc
     {
-        private JsonSerializerSettings settingsSerializer = new JsonSerializerSettings
-        {
-            TypeNameHandling = TypeNameHandling.Auto,
-            Formatting = Formatting.Indented,
-        };
-
         private Dictionary<DataKind, List<Tuple<float, float>>> TimeSeparators = new Dictionary<DataKind, List<Tuple<float, float>>>();
 
         private float[] AllTimeSeparators;
         private ProcessProperty processProp;
-        private string _path;
 
         /// <inheritdoc/>
-        public void CalcCompDataV1(IEnumerable<ICondData> data, ProcessType processType, string path)
+        public string WriteCommandFile(string projectPath, IEnumerable<string> queueRows)
         {
-            var taskData = data.ToList();
-            SetUpTimeSeparators(taskData);
-            processProp = new ProcessProperty { CommonTaskType = processType, TaskKind = TaskKind.термическая | TaskKind.механическая };
-            _path = path;
-
-            CreateFilesForComplexProcess(
-                GetParameters<HeatData, MediaData, TermalParameters>(taskData),
-                GetParameters<LoadData, ClampData, MechanicalParameters>(taskData));
+            var writer = new TcfWriter();
+            return writer.Write(projectPath, queueRows);
         }
 
         /// <inheritdoc/>
-        public void CalcCompDataV2(IEnumerable<ICondData> data, ProcessProperty property, string path)
+        public IReadOnlyList<GeneralParameters> CalcCompDataV2(IEnumerable<ICondData> data, ProcessProperty property)
         {
-            SetUpTimeSeparators(data);
+            ArgumentNullException.ThrowIfNull(data);
+            ArgumentNullException.ThrowIfNull(property);
+            var taskData = data.ToList();
+            SetUpTimeSeparators(taskData);
             processProp = property;
-            _path = path;
-
-            switch (processProp.TaskKind)
+            IEnumerable<GeneralParameters> parameters;
+            switch (property.TaskKind)
             {
-                //case ComplexTaskType.химическая:
-                //    CreateFilesForSingleProcess(processProp.CommonTaskType.ToString(), GetParameters<ChemicalData, MediaData, ChemicalParameters>(data));
-                //    break;
-
                 case TaskKind.термическая:
-                    CreateFilesForSingleProcess(processProp.TaskKind.ToString(), GetParameters<HeatData, MediaData, TermalParameters>(data));
+                    var thermal = GetParameters<HeatData, MediaData, TermalParameters>(taskData);
+                    parameters = PrepareSingleProcess(thermal);
                     break;
 
                 case TaskKind.механическая:
-                    CreateFilesForSingleProcess(processProp.TaskKind.ToString(), GetParameters<LoadData, ClampData, MechanicalParameters>(data));
+                    var mechanical = GetParameters<LoadData, ClampData, MechanicalParameters>(taskData);
+                    parameters = PrepareSingleProcess(mechanical);
                     break;
 
-                //case ComplexTaskType.химическая_термическая:
-                //    CreateFilesForComplexProcess(
-                //        GetParameters<ChemicalData, MediaData, ChemicalParameters>(data),
-                //        GetParameters<HeatData, MediaData, TermalParameters>(data));
-                //    break;
-
                 case TaskKind.термическая | TaskKind.механическая:
-                    CreateFilesForComplexProcess(
-                        GetParameters<HeatData, MediaData, TermalParameters>(data),
-                        GetParameters<LoadData, ClampData, MechanicalParameters>(data));
+                    var source = GetParameters<HeatData, MediaData, TermalParameters>(taskData);
+                    var target = GetParameters<LoadData, ClampData, MechanicalParameters>(taskData);
+                    parameters = PrepareComplexProcess(source, target);
                     break;
 
                 default:
                     throw new NotImplementedException();
             }
+            var result = parameters.ToList();
+            foreach (var item in result)
+            {
+                if (!Enum.IsDefined(item.TaskKind) || item.Index < 1 || !float.IsFinite(item.TimeSettings.StartTime) || !float.IsFinite(item.TimeSettings.StopTime) || item.TimeSettings.StartTime < 0 || item.TimeSettings.StopTime < item.TimeSettings.StartTime)
+                    throw new ArgumentException("The calculated task kind, index or time interval is invalid.", nameof(data));
+            }
+            return result.AsReadOnly();
         }
 
         private void SetUpTimeSeparators(IEnumerable<ICondData> valuableData)
@@ -384,34 +370,33 @@ namespace PreProc
         }
 
         /// <summary>
-        /// Создает .tsf-файлы
+        /// Подготавливает параметры последовательных задач одной физики.
         /// </summary>
-        /// <typeparam name="DataParameter">Тип параметра данных для создания файлов</typeparam>
-        /// <param name="taskKind">Тип задачи</param>
-        /// <param name="parametrizedParams">Список созданных параметров для создания фалов</param>
-        /// <returns>возвращает список строк для создания CompData</returns>
-        private void CreateFilesForSingleProcess<DataParameter>(string taskKind, List<DataParameter> parametrizedParams)
+        /// <typeparam name="DataParameter">Тип параметров физической задачи.</typeparam>
+        /// <param name="parametrizedParams">Параметры по временным интервалам.</param>
+        /// <returns>Параметры с индексами и ссылками на предыдущие результаты.</returns>
+        private IEnumerable<GeneralParameters> PrepareSingleProcess<DataParameter>(List<DataParameter> parametrizedParams)
             where DataParameter : GeneralParameters
         {
             for (var i = 0; i < parametrizedParams.Count; i++)
             {
+                var current = parametrizedParams[i];
+                current.Index = i + 1;
                 if (i > 0)
-                    SetInitialFieldFromFile(parametrizedParams[i], $"{taskKind}_{i}_{parametrizedParams[i - 1].TimeSettings.StartTime}_{parametrizedParams[i - 1].TimeSettings.StopTime}.db");
-
-                var serializedData = JsonConvert.SerializeObject(parametrizedParams[i], settingsSerializer);
-                var fileName = $"{taskKind}_{i + 1}_{parametrizedParams[i].TimeSettings.StartTime}_{parametrizedParams[i].TimeSettings.StopTime}.tsf";
-
-                var filePath = Path.Combine(_path, fileName);
-                File.WriteAllBytes(filePath, Encoding.UTF8.GetBytes(serializedData));
+                {
+                    var previous = parametrizedParams[i - 1];
+                    SetInitialFieldFromFile(current, $"../ResultsData/{previous}.db");
+                }
+                yield return current;
             }
         }
 
         /// <summary>
-        /// Создает файлы связанных физических задач.
+        /// Подготавливает параметры связанных физических задач.
         /// </summary>
         /// <param name="sourceParameters">Параметры задачи-источника.</param>
         /// <param name="targetParameters">Параметры задачи-потребителя.</param>
-        private void CreateFilesForComplexProcess<SourceParameter, TargetParameter>(List<SourceParameter> sourceParameters, List<TargetParameter> targetParameters)
+        private IEnumerable<GeneralParameters> PrepareComplexProcess<SourceParameter, TargetParameter>(List<SourceParameter> sourceParameters, List<TargetParameter> targetParameters)
             where SourceParameter : GeneralParameters
             where TargetParameter : GeneralParameters
         {
@@ -420,31 +405,25 @@ namespace PreProc
             if (sourceParameters.Count == 0)
                 throw new InvalidOperationException("Linked tasks must contain at least one time interval.");
 
-            var sourceTaskName = sourceParameters[0].TaskKind.ToString();
-            var targetTaskName = targetParameters[0].TaskKind.ToString();
             var sourceFieldSet = GetNativeFieldSet(sourceParameters[0].TaskKind);
-
-            CreateFilesForSingleProcess(sourceTaskName, sourceParameters);
 
             for (var i = 0; i < targetParameters.Count; i++)
             {
                 var sourceParameter = sourceParameters[i];
                 var targetParameter = targetParameters[i];
-                var sourceResultFile = $"{sourceTaskName}_{i + 1}_{sourceParameter.TimeSettings.StartTime}_{sourceParameter.TimeSettings.StopTime}.db";
-                SetInputField(targetParameter, sourceFieldSet, sourceResultFile);
+                sourceParameter.Index = i + 1;
+                targetParameter.Index = i + 1;
 
                 if (i > 0)
                 {
+                    var previousSource = sourceParameters[i - 1];
+                    SetInitialFieldFromFile(sourceParameter, $"../ResultsData/{previousSource}.db");
                     var previousParameter = targetParameters[i - 1];
-                    var previousResultFile = $"{targetTaskName}_{i}_{previousParameter.TimeSettings.StartTime}_{previousParameter.TimeSettings.StopTime}.db";
-                    SetInitialFieldFromFile(targetParameter, previousResultFile);
+                    SetInitialFieldFromFile(targetParameter, $"../ResultsData/{previousParameter}.db");
                 }
-
-                var serializedData = JsonConvert.SerializeObject(targetParameter, settingsSerializer);
-                var fileName = $"{targetTaskName}_{i + 1}_{targetParameter.TimeSettings.StartTime}_{targetParameter.TimeSettings.StopTime}.tsf";
-
-                var filePath = Path.Combine(_path, fileName);
-                File.WriteAllBytes(filePath, Encoding.UTF8.GetBytes(serializedData));
+                SetInputField(targetParameter, sourceFieldSet, $"../ResultsData/{sourceParameter}.db");
+                yield return sourceParameter;
+                yield return targetParameter;
             }
         }
 
@@ -501,55 +480,41 @@ namespace PreProc
         }
 
         /// <inheritdoc/>
-        /// Регулярное выражение разбивается на 5 сегментов:
-        /// 1 - тип задачи из ComplexTaskType. Принимаются раздельные значения из ComplexTaskType
-        /// 2 - индекс задачи. Любое число произвольной длины, кроме нуля. Может быть не задано (*)
-        /// 3 - время начала задачи. Целое/дробное положительное число. Может быть не задано (*)
-        /// 4 - время конца задачи. Целое/дробное положительное число. Может быть не задано (*)
-        /// 5 - расширение файла: .tsf
         public List<string> SortCompDataByTimeAndType(string[] dataStrs)
         {
-            var sortedLines = new List<string>();
-
-            // Принимаются все доступные значения из Enum ComplexTaskType
-            // сложные процессы разбиваются на составляющее и добавляются к допустимым названиям процессов
-            // дубликаты убираются
-            var names = new List<string>();
-            foreach (var name in Enum.GetNames(typeof(TaskKind)))
-            {
-                if (name.Contains('_')) names.AddRange(name.Split('_'));
-                else names.Add(name);
-            }
-            var res = names.Distinct();
-
-            var available = string.Join("|", res).ToString();
-            var pattern = "^((" + available + ")_" +
-                "(([1-9])(\\d)*)_" +
-                "((\\d{1,})|((\\d{1,}).(\\d{1,5}))|\\*)_" +
-                "((\\d{1,})|((\\d{1,}).(\\d{1,5}))|\\*)" +
-                "(.tsf))$";
-
+            ArgumentNullException.ThrowIfNull(dataStrs);
+            var indices = new Dictionary<string, int>();
+            var kinds = new Dictionary<string, TaskKind>();
+            var keys = new HashSet<string>();
             foreach (var line in dataStrs)
             {
+                ArgumentException.ThrowIfNullOrWhiteSpace(line);
                 var file = Path.GetFileName(line);
-                if (!Regex.IsMatch(file, pattern))
-                    //"Имя полученного файла не соответствует шаблону: " +
-                    //"<тип процесса>_<номер задачи>_<время начала>_<время окончания>.tsf"
-                    throw new DraftException(line);
-
-                var taskType = file.Split('_')[0];
-                sortedLines.Add(string.Join(" ", new string[] { taskType, line, TaskStatus.выполнить.ToString() }));
+                var parts = Path.GetFileNameWithoutExtension(file).Split('_');
+                if (Path.GetExtension(file) != ".tsf" || parts.Length != 4)
+                    throw new DraftException("The instruction file name is invalid.", new ArgumentException("The task file name is invalid.", nameof(dataStrs)));
+                var validKind = Enum.TryParse<TaskKind>(parts[0], out var kind) && Enum.IsDefined(kind) && parts[0] == kind.ToString();
+                var validIndex = int.TryParse(parts[1], NumberStyles.None, CultureInfo.InvariantCulture, out var index) && index > 0;
+                var validStart = float.TryParse(parts[2], NumberStyles.Float, CultureInfo.InvariantCulture, out var start) && float.IsFinite(start) && start >= 0;
+                var validStop = float.TryParse(parts[3], NumberStyles.Float, CultureInfo.InvariantCulture, out var stop) && float.IsFinite(stop) && stop >= start;
+                if (!validKind || !validIndex || !validStart || !validStop)
+                    throw new DraftException("The instruction file name is invalid.", new ArgumentException("The task file name is invalid.", nameof(dataStrs)));
+                var key = $"{kind}_{index}";
+                if (!keys.Add(key))
+                    throw new DraftException("The instruction file name is invalid.", new ArgumentException("The task kind and index are duplicated.", nameof(dataStrs)));
+                indices.Add(line, index);
+                kinds.Add(line, kind);
             }
-
-            return sortedLines.OrderBy(x => int.Parse(string.Join(" ", x
-                        .Split(' ')
-                        .Skip(1)
-                        .SkipLast(1))
-                    .Split('_')
-                    .TakeLast(3)
-                    .ToList()[0]))
-                .ThenByDescending(x => x)
-                .ToList();
+            var instructions = dataStrs.OrderBy(line => indices[line]).ThenBy(line => kinds[line] switch
+            {
+                TaskKind.термическая => 0,
+                TaskKind.механическая => 1,
+                _ => 2
+            });
+            var sortedLines = new List<string>();
+            foreach (var line in instructions)
+                sortedLines.Add($"{kinds[line]} {line} {TaskStatus.выполнить}");
+            return sortedLines;
         }
     }
 }

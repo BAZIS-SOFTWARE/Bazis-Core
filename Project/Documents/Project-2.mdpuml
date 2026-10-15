@@ -40,6 +40,7 @@ class "GeneralParameters" as T_Project_Project_TaskParameters_GeneralParameters 
   + ActiveConditions : List<ConditionReference> [get, set]
   + CalculationMode : CalculationMode [get, set]
   + InitialSet : PhysicalSet? [get, set]
+  + Index : int [get, set]
   + InputSets : List<PhysicalSet> [get, set]
   + Iterations : int [get, set]
   + SaveRate : int [get, set]

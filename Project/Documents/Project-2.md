@@ -79,6 +79,7 @@ WriteJson(JsonWriter writer, ConditionReference value, JsonSerializer serializer
 ActiveConditions : List<ConditionReference> [get, set]
 CalculationMode : CalculationMode [get, set]
 InitialSet : PhysicalSet? [get, set]
+Index : int [get, set]
 InputSets : List<PhysicalSet> [get, set]
 Iterations : int [get, set]
 SaveRate : int [get, set]
@@ -89,3 +90,5 @@ UpdMatrixIteration : int [get, set]
 GetInputField(PhysicalSetName fieldSet) : PhysicalSet
 ToString() : string
 ```
+
+`Index` задаётся PreProc для каждого расчётного интервала. `ToString()` возвращает основу имени TSF и DB в виде `вид_индекс_начало_конец`; время форматируется через G9 и InvariantCulture. Индекс сериализуется вместе с параметрами.

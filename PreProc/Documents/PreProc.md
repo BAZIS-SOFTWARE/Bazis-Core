@@ -1,32 +1,36 @@
-# PreProc
+# PreProc — подготовка переносимого расчётного комплекта
 
-Формирует инструкции расчёта по условиям и параметрам задачи. `CalcCompDataV2` использует `ProcessProperty`; `CalcCompDataV1` сохраняется в текущем контракте. Событий нет. Правила физических полей описаны отдельно.
+[Обзорная диаграмма](PreProc.mdpuml). [Архитектура решения](../../Documents/Architecture.md).
 
-[Обзорная диаграмма](PreProc.mdpuml). [Архитектура решения](../../Documents/Architecture.md). [Расхождения с кодом](../../Documents/ArchitectureDifferences.md).
+Двухаргументный `CalcCompDataV2` формирует и возвращает упорядоченный список `GeneralParameters`, не записывая файлы. После подключения нового API клиент Gerbera будет записывать TSF и показывать очередь в TreeView. `WriteCommandFile` принимает строки текущей очереди и записывает TCF при «Старт», сохраняя её порядок и статусы.
 
-## Поддиаграммы
+## Разделы
 
-Основная схема показывает связи и адреса подробностей. На поддиаграммах раскрыты методы, свойства и события интерфейсов; классы содержат собственные методы без повторения интерфейсного контракта. Методы в диаграммах показывают имена параметров; полные сигнатуры и ссылки на код находятся в соседних Markdown-файлах.
-
-| Диаграмма | Область |
+| Документ и диаграмма | Содержание |
 | --- | --- |
-| [PreProc-1](PreProc-1.mdpuml) | Подготовка расчётных инструкций; IPreProc, DraftException, PreProc, ProcessProperty, TaskStatus, ProcessType |
+| [PreProc-1](PreProc-1.md) · [UML](PreProc-1.mdpuml) | Контракт IPreProc и подготовка параметров |
+| [PreProc-2](PreProc-2.md) · [UML](PreProc-2.mdpuml) | Имена файлов, строки очереди, статусы и сортировка |
+| [PreProc-3](PreProc-3.md) · [UML](PreProc-3.mdpuml) | Запись TCF, проверка путей и файловый контракт |
 
 ## Указатель типов
 
-| Тип | Диаграммы | Исходник |
+| Тип | Подробности | Исходник |
 | --- | --- | --- |
-| `PreProc.DraftException` | [PreProc-1](PreProc-1.mdpuml) | [DraftException.cs](../../PreProc/DraftException.cs) |
-| `PreProc.PreProc` | [PreProc-1](PreProc-1.mdpuml) | [PreProc.cs](../../PreProc/PreProc.cs) |
-| `PreProc.ProcessProperty` | [PreProc-1](PreProc-1.mdpuml) | [ProcessProperty.cs](../../PreProc/ProcessProperty.cs) |
-| `PreProc.TaskStatus` | [PreProc-1](PreProc-1.mdpuml) | [PreProc.cs](../../PreProc/PreProc.cs) |
-| `PreProc.Interfaces.IPreProc` | [PreProc-1](PreProc-1.mdpuml) | [IPreProc.cs](../../PreProc/Interfaces/IPreProc.cs) |
-| `PreProc.Interfaces.ProcessType` | [PreProc-1](PreProc-1.mdpuml) | [IPreProc.cs](../../PreProc/Interfaces/IPreProc.cs) |
+| `PreProc.Interfaces.IPreProc` | [PreProc-1](PreProc-1.md) | [IPreProc.cs](../Interfaces/IPreProc.cs) |
+| `PreProc.PreProc` | [PreProc-1](PreProc-1.md) | [PreProc.cs](../PreProc.cs) |
+| `PreProc.ProcessProperty` | [PreProc-1](PreProc-1.md) | [ProcessProperty.cs](../ProcessProperty.cs) |
+| `PreProc.Interfaces.ProcessType` | [PreProc-1](PreProc-1.md) | [IPreProc.cs](../Interfaces/IPreProc.cs) |
+| `PreProc.DraftException` | [PreProc-1](PreProc-1.md) | [DraftException.cs](../DraftException.cs) |
+| `PreProc.TaskStatus` | [PreProc-2](PreProc-2.md) | [PreProc.cs](../PreProc.cs) |
+| `PreProc.TcfWriter` | [PreProc-3](PreProc-3.md) | [TcfWriter.cs](../TcfWriter.cs) |
+| `PreProc.CalculationPaths` — internal | [PreProc-3](PreProc-3.md) | [CalculationPaths.cs](../CalculationPaths.cs) |
 
-## Физические поля
+Сигнатуры соответствуют текущим исходникам. На диаграммах класс PreProc не повторяет операции интерфейса. Типы библиотеки Project обозначены только точками входа; их устройство здесь не раскрывается. Исключённые из компиляции интерфейсы не включены.
 
-[Общий контракт физических полей](../../Documents/PhysicalFields.md) описывает наборы, источники и формат значений. Правила заданы в [AGENTS.md](../../AGENTS.md). Реализованные типы хранения: [GeneralParameters](../../Project/TaskParameters/GeneralParameters.cs) и [PhysicalSet](../../Project/TaskParameters/PhysicalSet.cs). Поддержка каждой проверки формата не предполагается только на основании наличия этих DTO.
+## Границы реализации
 
-## Источники и статус
+`SortCompDataByTimeAndType` сохранён для ещё не обновлённого Gerbera. Подготовка параметров не имеет файловых эффектов; TSF будет записывать клиент. Совместимость со старыми файлами не реализуется. Отдельная библиотека Calculation не создаётся. Подключение Gerbera и адаптация Solver выполняются отдельно: текущую поддержку нового формата Solver эта документация не утверждает.
 
-Состав типов и сигнатуры сверены с текущими `.cs` и исключениями `<Compile Remove>` в проекте. Диаграммы описывают целевое размещение событий. Старые `Classes.mdpuml`, схемы отдельных алгоритмов и их изображения имеют статус исторических материалов и не определяют актуальный контракт.
+Контракт физических полей: [PhysicalFields.md](../../Documents/PhysicalFields.md), [GeneralParameters](../../Project/TaskParameters/GeneralParameters.cs), [PhysicalSet](../../Project/TaskParameters/PhysicalSet.cs). Правила документирования: [AGENTS.md](../../AGENTS.md).
+
+Диаграммы разделены на компактные страницы. Проверка исходников и ссылок выполнена структурно; визуальный рендер в текущем окружении недоступен. Итоговый PDF требует отдельного разрешения и здесь не создаётся. Старые схемы алгоритмов и изображения не определяют актуальный API.

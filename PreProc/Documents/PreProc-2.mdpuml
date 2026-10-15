@@ -1,0 +1,35 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+hide empty members
+set namespaceSeparator none
+title PreProc-2 — параметры, имена и очередь
+caption [[PreProc.mdpuml Обзор]] | [[PreProc-1.mdpuml API подготовки]] | [[PreProc-3.mdpuml TCF и пути]]
+class "Project: GeneralParameters" as Parameters <<external>> [[../../Project/Documents/Project-2.mdpuml]]
+class "PreProc" as Processor <<reference>> [[PreProc-1.mdpuml]]
+class "TcfWriter" as Writer <<reference>> [[PreProc-3.mdpuml]]
+enum "TaskStatus" as Status {
+  выполнить
+  пропустить
+}
+Processor ..> Parameters : присваивает индекс
+Writer ..> Status : разбирает строки
+note right of Parameters
+  ToString(): вид_индекс_начало_конец
+  G9 + InvariantCulture
+  Время не задаёт порядок задач.
+end note
+note right of Writer
+  Строка клиента: вид путь-TSF статус.
+  Путь относительно корня комплекта.
+  В TCF порядок строк сохраняется.
+end note
+legend bottom
+  Исходный порядок параметров: индекс, затем тепло / механика.
+  Повтор вида и индекса в очереди TCF недопустим.
+  Gerbera ещё нужно подключить к новому API подготовки.
+endlegend
+@enduml
