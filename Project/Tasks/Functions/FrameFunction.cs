@@ -10,6 +10,10 @@ namespace Project.Tasks.Functions
     public abstract class FrameFunction : Function, IFrameFunction
     {
         /// <summary>
+        /// Вычисляет максимальный шаг времени по размеру источника вдоль движения.
+        /// </summary>
+        public abstract float CalcMaxTimeStep(float velocity);
+        /// <summary>
         /// FrameFunction
         /// </summary>
         public FrameFunction()

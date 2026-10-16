@@ -8,6 +8,8 @@
 
 ## `SPH`
 
+Для `SPH` максимальный шаг движения вычисляется по `Width / (3 × velocity)`.
+
 Пространство имён: `Project.Tasks.Functions.FrameFunctions`.
 
 Исходники: [SPH.cs](../../Project/Tasks/Functions/FrameFunctions/SPH.cs).

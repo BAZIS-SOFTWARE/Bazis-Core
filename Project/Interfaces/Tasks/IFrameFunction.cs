@@ -16,6 +16,10 @@ namespace Project.Interfaces.Tasks
     public interface IFrameFunction
     {
         /// <summary>
+        /// Вычисляет максимальный шаг времени по размеру источника вдоль движения.
+        /// </summary>
+        float CalcMaxTimeStep(float velocity);
+        /// <summary>
         /// GetIntersectedElements
         /// </summary>
         /// <param name="elements"></param>

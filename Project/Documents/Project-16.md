@@ -47,6 +47,8 @@ Z : double [get, set]
 FrameFunction()
 ```
 
+`CalcMaxTimeStep(float velocity)` объявлен в `IFrameFunction`; конкретные формы возвращают время перемещения на треть своего размера вдоль направления движения.
+
 ## `FuncName`
 
 Пространство имён: `Project.Tasks.Functions`.

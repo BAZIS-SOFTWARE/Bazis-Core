@@ -12,10 +12,32 @@ namespace Project.Tasks.Functions.FrameFunctions
 {
     public class CustomFrameFunction : FrameFunction
     {
+        /// <summary>
+        /// Размер пользовательского источника вдоль направления движения.
+        /// </summary>
+        public double MotionLength
+        {
+            get { return this["MotionLength"].GetValue(); }
+            set { this["MotionLength"].SetValue(value); }
+        }
+
+        /// <inheritdoc/>
+        public override float CalcMaxTimeStep(float velocity)
+        {
+            if (!float.IsFinite(velocity) || velocity <= 0 || !double.IsFinite(MotionLength) || MotionLength <= 0)
+                throw new ArgumentOutOfRangeException(nameof(velocity), "The source size and velocity must be positive and finite.");
+
+            var step = MotionLength / (3d * velocity);
+            if (!double.IsFinite(step) || step > float.MaxValue || step < float.Epsilon)
+                throw new InvalidOperationException("The calculated source time step is outside the supported range.");
+
+            return (float)step;
+        }
         public CustomFrameFunction()
         {
             Name = FuncName.Custom.ToString();
             FunctionType = FuncType.CPF;
+            AddParameter(new Parameter("MotionLength", ParameterType.Constant, 0));
         }
         ScriptEngine engine;
         ScriptScope scope;

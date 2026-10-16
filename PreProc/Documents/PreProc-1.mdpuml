@@ -9,42 +9,36 @@ set namespaceSeparator none
 title PreProc-1 — API подготовки параметров
 caption [[PreProc.mdpuml Обзор]] | [[PreProc-2.mdpuml Очередь и имена]] | [[PreProc-3.mdpuml TCF и пути]]
 interface "IPreProc" as Api {
-  + CalcCompDataV2(data, property) : IReadOnlyList<GeneralParameters>
+  + CalcCompDataV2(data, taskKinds, synchronizeTimeSteps) : IReadOnlyList<GeneralParameters>
   + WriteCommandFile(projectPath, queueRows) : string
   + SetDraftParameters<ResultParam>(parameter) : void
-  + SortCompDataByTimeAndType(dataStrs) : List<string>
 }
 class "PreProc" as Processor {
   + GetParameters<LoadData, BoundData, ResultParam>(data) : List<ResultParam>
-}
-class "ProcessProperty" as Property <<struct>> {
-  + TaskKind : TaskKind [field]
-  + CommonTaskType : ProcessType [field]
-}
-enum "ProcessType" as Process {
-  Welding
-  Heating
-  Quenching
-  Tempering
+  - SetTimeStep<LoadData>(parameter, data, start, stop) : void
+  - GetMovingSourceTimeStep<LoadData>(data, start, stop) : float?
+  - PrepareComplexProcess(source, target, data, sync) : IEnumerable<GeneralParameters>
+  - SetMetallurgicalProcesses(thermal, data, start, stop) : void
+  - SetThermalDraftParameters(term) : void
+  - SetMechanicalDraftParameters(mech) : void
 }
 class "DraftException" as Error {
   + DraftException()
   + DraftException(message)
   + DraftException(message, innerException)
 }
-class "Project: ICondData / CondData\nGeneralParameters / TaskKind" as ProjectTypes <<external>>
+class "Project: ICondData / CondData\nFrameFunction / MatData / TaskKind" as ProjectTypes <<external>>
+enum "MaterialDB: CategoryEnum" as Category <<external>>
 class "TcfWriter" as Writer <<reference>> [[PreProc-3.mdpuml]]
 Processor ..|> Api
-Processor ..> Property
 Processor ..> Error
 Processor ..> Writer
-Property --> Process
-Property ..> ProjectTypes
 Api ..> ProjectTypes
+Processor ..> Category : читает Metallurgical
 legend bottom
   Полные сигнатуры и ограничения generic — PreProc-1.md.
   Члены интерфейса в классе не повторяются; событий нет.
-  Двухаргументный CalcCompDataV2 не записывает TSF.
+  CalcCompDataV2 не записывает TSF.
   Запись TSF выполняет клиент Gerbera после подключения нового API.
   Время в имени не управляет сортировкой.
 endlegend

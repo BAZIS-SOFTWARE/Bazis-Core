@@ -2,11 +2,12 @@ using Project.Interfaces.Tasks;
 using Project.Tasks;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Globalization;
 using PreProc.Interfaces;
 using Project.TaskParameters;
+using Project.Tasks.Functions;
+using Project.Tasks.LocalFrames;
+using MaterialDB.MaterialData;
 
 namespace PreProc
 {
@@ -19,10 +20,7 @@ namespace PreProc
     /// </summary>
     public class PreProc : IPreProc
     {
-        private Dictionary<DataKind, List<Tuple<float, float>>> TimeSeparators = new Dictionary<DataKind, List<Tuple<float, float>>>();
-
         private float[] AllTimeSeparators;
-        private ProcessProperty processProp;
 
         /// <inheritdoc/>
         public string WriteCommandFile(string projectPath, IEnumerable<string> queueRows)
@@ -32,15 +30,13 @@ namespace PreProc
         }
 
         /// <inheritdoc/>
-        public IReadOnlyList<GeneralParameters> CalcCompDataV2(IEnumerable<ICondData> data, ProcessProperty property)
+        public IReadOnlyList<GeneralParameters> CalcCompDataV2(IEnumerable<ICondData> data, TaskKind taskKinds, bool synchronizeTimeSteps = false)
         {
             ArgumentNullException.ThrowIfNull(data);
-            ArgumentNullException.ThrowIfNull(property);
             var taskData = data.ToList();
             SetUpTimeSeparators(taskData);
-            processProp = property;
             IEnumerable<GeneralParameters> parameters;
-            switch (property.TaskKind)
+            switch (taskKinds)
             {
                 case TaskKind.термическая:
                     var thermal = GetParameters<HeatData, MediaData, TermalParameters>(taskData);
@@ -55,7 +51,7 @@ namespace PreProc
                 case TaskKind.термическая | TaskKind.механическая:
                     var source = GetParameters<HeatData, MediaData, TermalParameters>(taskData);
                     var target = GetParameters<LoadData, ClampData, MechanicalParameters>(taskData);
-                    parameters = PrepareComplexProcess(source, target);
+                    parameters = PrepareComplexProcess(source, target, taskData, synchronizeTimeSteps);
                     break;
 
                 default:
@@ -73,17 +69,10 @@ namespace PreProc
         private void SetUpTimeSeparators(IEnumerable<ICondData> valuableData)
         {
             var separators = new List<float>();
-            TimeSeparators.Clear();
-
             foreach (var data in valuableData)
             {
-                var startStop = Tuple.Create(data.StartTime, data.StopTime);
-                if (!TimeSeparators.ContainsKey(data.Kind))
-                    TimeSeparators.Add(data.Kind, new List<Tuple<float, float>>() { startStop });
-                else
-                    TimeSeparators[data.Kind].Add(startStop);
-                separators.Add(startStop.Item1);
-                separators.Add(startStop.Item2);
+                separators.Add(data.StartTime);
+                separators.Add(data.StopTime);
             }
             AllTimeSeparators = separators.Distinct().OrderBy(x => x).ToArray();
         }
@@ -168,12 +157,9 @@ namespace PreProc
                     .Select(item => new ConditionReference(item.Index, item.Item.Kind, item.Item.Group.Name))
                     .ToList();
 
-                if (TimeSeparators.ContainsKey(DataKind.Нагрев))
-                    if (!TimeSeparators[DataKind.Нагрев].Any(x => x.Item1 == start && x.Item2 == stop))
-                    {
-                        parameter.TimeSettings.InitTimeStep = 0.5f;
-                        parameter.TimeSettings.MaxTimeStep = 100f;
-                    }
+                SetTimeStep<LoadData>(parameter, data, start, stop);
+                if (parameter is TermalParameters thermal)
+                    SetMetallurgicalProcesses(thermal, data, start, stop);
 
                 result.Add(parameter);
             }
@@ -181,108 +167,88 @@ namespace PreProc
             return result;
         }
 
+        /// <summary>
+        /// Выбирает шаг времени по активным движущимся источникам задачи.
+        /// </summary>
+        private void SetTimeStep<LoadData>(GeneralParameters parameter, IEnumerable<ICondData> data, float start, float stop)
+            where LoadData : CondData
+        {
+            var maxTimeStep = GetMovingSourceTimeStep<LoadData>(data, start, stop) ?? 1f;
+            var initialStep = maxTimeStep / 2f;
+            if (initialStep < parameter.TimeSettings.MinTimeStep)
+                throw new InvalidOperationException("The calculated initial time step is below the minimum time step.");
+
+            parameter.TimeSettings.MaxTimeStep = maxTimeStep;
+            parameter.TimeSettings.InitTimeStep = initialStep;
+        }
+
+        /// <summary>
+        /// Возвращает минимальный допустимый шаг активных движущихся источников задачи.
+        /// </summary>
+        private float? GetMovingSourceTimeStep<LoadData>(IEnumerable<ICondData> data, float start, float stop)
+            where LoadData : CondData
+        {
+            float? maxTimeStep = null;
+            foreach (var condition in data)
+            {
+                if (condition is not LoadData || condition.StartTime > start || condition.StopTime < stop ||
+                    condition.Function is not FrameFunction source || condition.LocalFrame is not MovedFrame frame)
+                    continue;
+
+                var sourceStep = source.CalcMaxTimeStep(frame.Velocity);
+                if (!float.IsFinite(sourceStep) || sourceStep <= 0)
+                    throw new InvalidOperationException("The source time step must be positive and finite.");
+
+                maxTimeStep = maxTimeStep.HasValue ? Math.Min(maxTimeStep.Value, sourceStep) : sourceStep;
+            }
+
+            return maxTimeStep;
+        }
+
+        /// <summary>
+        /// Собирает названия реакций из материалов, действующих на интервале.
+        /// </summary>
+        private void SetMetallurgicalProcesses(TermalParameters thermal, IEnumerable<ICondData> data, float start, float stop)
+        {
+            var reactions = new SortedSet<string>(StringComparer.Ordinal);
+            foreach (var condition in data)
+            {
+                if (condition is not MatData matData || matData.StartTime > start || matData.StopTime < stop)
+                    continue;
+
+                var material = matData.Material;
+                if (material == null)
+                    throw new InvalidOperationException("An active material condition has no material.");
+
+                var categoryName = material.CategoryDic[CategoryEnum.Metallurgical];
+                if (!material.CategoryData.ContainsKey(categoryName))
+                    continue;
+
+                var category = material[CategoryEnum.Metallurgical];
+                foreach (var reaction in category.PropertyData.Values)
+                    reactions.Add(reaction.Name);
+            }
+
+            thermal.MetallurgicalProcesses = reactions.ToList();
+        }
+
         /// <inheritdoc/>
         public void SetDraftParameters<ResultParam>(ResultParam parameter)
             where ResultParam : GeneralParameters, new()
         {
             if (parameter is TermalParameters termalParameter)
-            {
-                switch (processProp.CommonTaskType)
-                {
-                    case ProcessType.Welding: WeldingTermDraft(termalParameter); break;
-                    case ProcessType.Heating: HeatingTermDraft(termalParameter); break;
-                    case ProcessType.Quenching: QuenchingTermDraft(termalParameter); break;
-                    default: TemperingTermDraft(termalParameter); break;
-                }
-            }
-
+                SetThermalDraftParameters(termalParameter);
             else if (parameter is MechanicalParameters mechParameter)
-            {
-                switch (processProp.CommonTaskType)
-                {
-                    case ProcessType.Welding: WeldingMechDraft(mechParameter); break;
-                    case ProcessType.Heating: HeatingMechDraft(mechParameter); break;
-                    case ProcessType.Quenching: HeatingMechDraft(mechParameter); break;
-                    default: HeatingMechDraft(mechParameter); break;
-                }
-            }
+                SetMechanicalDraftParameters(mechParameter);
+            else
+                throw new NotSupportedException("The physical task has no parameter template.");
         }
 
-        private void HeatingMechDraft(MechanicalParameters mech)
+        /// <summary>
+        /// Задает базовые параметры тепловой задачи.
+        /// </summary>
+        private void SetThermalDraftParameters(TermalParameters term)
         {
-            mech.Iterations = 25;
-            mech.SaveRate = 5;
-            mech.MechanicalConvergence.Is_Physically_NonLinear = true;
-            mech.MechanicalConvergence.MaterialPlasticityCoeff = 0.5f;
-            mech.MechanicalConvergence.Is_Switched_Um = true;
-            mech.MechanicalConvergence.Um = 0.5f;
-            mech.MechanicalConvergence.DUm = 0.0005f;
-            mech.MechanicalConvergence.SiStm = 1.5f;
-            mech.MechanicalConvergence.PlasticityCriterion = 1.25f;
-            mech.SolverSettings = new SolverSettings(LinearSolverKind.ConjugateGradient, MatrixStorageKind.SymmetricCsr);
-            mech.SolverSettings.MaxIter = 100;
-            mech.SolverSettings.Precision = 0.0001f;
-            mech.SolverSettings.Relaxation = 1.25f;
-            mech.SolverSettings.Priority = "Наивысший";
-            mech.TimeSettings.InitTimeStep = 0.01f;
-            mech.TimeSettings.MaxTimeStep = 100f;
-            mech.TimeSettings.MinTimeStep = 0.0005f;
-        }
-
-        private void TemperingTermDraft(TermalParameters term)
-        {
-            term.MetallurgicalProcesses = new List<string>() { "Выдержка" };
-            term.Iterations = 2;
-            term.SaveRate = 1;
-            term.TermalConvergence.Is_Switched_Tm = true;
-            term.TermalConvergence.Tm = 1500;
-            term.SolverSettings = new SolverSettings(LinearSolverKind.ConjugateGradient, MatrixStorageKind.SymmetricCsr);
-            term.SolverSettings.MaxIter = 100;
-            term.SolverSettings.Precision = 0.01f;
-            term.SolverSettings.Relaxation = 1.05f;
-            term.SolverSettings.Priority = "Наивысший";
-            term.TimeSettings.InitTimeStep = 0.01f; // при охлаждении -- 0.5f
-            term.TimeSettings.MaxTimeStep = 100f; // при охлаждении -- 100f
-            term.TimeSettings.MinTimeStep = 0.0005f;
-        }
-
-        private void QuenchingTermDraft(TermalParameters term)
-        {
-            term.MetallurgicalProcesses = new List<string>() { "Охлаждение" };
-            term.Iterations = 2;
-            term.SaveRate = 1;
-            term.TermalConvergence.Is_Switched_Tm = true;
-            term.TermalConvergence.Tm = 1500;
-            term.SolverSettings = new SolverSettings(LinearSolverKind.ConjugateGradient, MatrixStorageKind.SymmetricCsr);
-            term.SolverSettings.MaxIter = 100;
-            term.SolverSettings.Precision = 0.01f;
-            term.SolverSettings.Relaxation = 1.05f;
-            term.SolverSettings.Priority = "Наивысший";
-            term.TimeSettings.InitTimeStep = 0.01f; // при охлаждении -- 0.5f
-            term.TimeSettings.MaxTimeStep = 100f; // при охлаждении -- 100f
-            term.TimeSettings.MinTimeStep = 0.0005f;
-        }
-
-        private void HeatingTermDraft(TermalParameters term)
-        {
-            term.MetallurgicalProcesses = new List<string>() { "Нагрев" };
-            term.Iterations = 2;
-            term.SaveRate = 1;
-            term.TermalConvergence.Is_Switched_Tm = true;
-            term.TermalConvergence.Tm = 1500;
-            term.SolverSettings = new SolverSettings(LinearSolverKind.ConjugateGradient, MatrixStorageKind.SymmetricCsr);
-            term.SolverSettings.MaxIter = 100;
-            term.SolverSettings.Precision = 0.01f;
-            term.SolverSettings.Relaxation = 1.05f;
-            term.SolverSettings.Priority = "Наивысший";
-            term.TimeSettings.InitTimeStep = 0.01f; // при охлаждении -- 0.5f
-            term.TimeSettings.MaxTimeStep = 100f; // при охлаждении -- 100f
-            term.TimeSettings.MinTimeStep = 0.0005f;
-        }
-
-        private void WeldingTermDraft(TermalParameters term)
-        {
-            term.MetallurgicalProcesses = new List<string>() { "Охлаждение", "Нагрев" };
             term.Iterations = 2;
             term.SaveRate = 1;
             term.TermalConvergence.Is_Switched_Tm = true;
@@ -292,12 +258,13 @@ namespace PreProc
             term.SolverSettings.Precision = 0.01f;
             term.SolverSettings.Relaxation = 1.05f;
             term.SolverSettings.Priority = "Наивысший";
-            term.TimeSettings.InitTimeStep = 0.01f; // при охлаждении -- 0.5f
-            term.TimeSettings.MaxTimeStep = 0.5f; // при охлаждении -- 100f
             term.TimeSettings.MinTimeStep = 0.0005f;
         }
 
-        private void WeldingMechDraft(MechanicalParameters mech)
+        /// <summary>
+        /// Задает базовые параметры механической задачи.
+        /// </summary>
+        private void SetMechanicalDraftParameters(MechanicalParameters mech)
         {
             mech.Iterations = 25;
             mech.SaveRate = 5;
@@ -313,8 +280,6 @@ namespace PreProc
             mech.SolverSettings.Precision = 0.0001f;
             mech.SolverSettings.Relaxation = 1.25f;
             mech.SolverSettings.Priority = "Наивысший";
-            mech.TimeSettings.InitTimeStep = 0.01f;
-            mech.TimeSettings.MaxTimeStep = 0.5f;
             mech.TimeSettings.MinTimeStep = 0.0005f;
         }
 
@@ -396,7 +361,9 @@ namespace PreProc
         /// </summary>
         /// <param name="sourceParameters">Параметры задачи-источника.</param>
         /// <param name="targetParameters">Параметры задачи-потребителя.</param>
-        private IEnumerable<GeneralParameters> PrepareComplexProcess<SourceParameter, TargetParameter>(List<SourceParameter> sourceParameters, List<TargetParameter> targetParameters)
+        /// <param name="data">Исходные условия расчета.</param>
+        /// <param name="synchronizeTimeSteps">Признак общего шага связанных задач.</param>
+        private IEnumerable<GeneralParameters> PrepareComplexProcess<SourceParameter, TargetParameter>(List<SourceParameter> sourceParameters, List<TargetParameter> targetParameters, IEnumerable<ICondData> data, bool synchronizeTimeSteps)
             where SourceParameter : GeneralParameters
             where TargetParameter : GeneralParameters
         {
@@ -413,6 +380,26 @@ namespace PreProc
                 var targetParameter = targetParameters[i];
                 sourceParameter.Index = i + 1;
                 targetParameter.Index = i + 1;
+
+                if (synchronizeTimeSteps)
+                {
+                    var start = sourceParameter.TimeSettings.StartTime;
+                    var stop = sourceParameter.TimeSettings.StopTime;
+                    var sourceStep = GetMovingSourceTimeStep<HeatData>(data, start, stop);
+                    var targetStep = GetMovingSourceTimeStep<LoadData>(data, start, stop);
+                    var sharedMaxStep = sourceStep.HasValue && targetStep.HasValue
+                        ? Math.Min(sourceStep.Value, targetStep.Value)
+                        : sourceStep ?? targetStep ?? 1f;
+                    var sharedInitialStep = sharedMaxStep / 2f;
+                    if (sharedInitialStep < sourceParameter.TimeSettings.MinTimeStep ||
+                        sharedInitialStep < targetParameter.TimeSettings.MinTimeStep)
+                        throw new InvalidOperationException("The synchronized initial time step is below a task's minimum time step.");
+
+                    sourceParameter.TimeSettings.MaxTimeStep = sharedMaxStep;
+                    targetParameter.TimeSettings.MaxTimeStep = sharedMaxStep;
+                    sourceParameter.TimeSettings.InitTimeStep = sharedInitialStep;
+                    targetParameter.TimeSettings.InitTimeStep = sharedInitialStep;
+                }
 
                 if (i > 0)
                 {
@@ -479,42 +466,5 @@ namespace PreProc
             };
         }
 
-        /// <inheritdoc/>
-        public List<string> SortCompDataByTimeAndType(string[] dataStrs)
-        {
-            ArgumentNullException.ThrowIfNull(dataStrs);
-            var indices = new Dictionary<string, int>();
-            var kinds = new Dictionary<string, TaskKind>();
-            var keys = new HashSet<string>();
-            foreach (var line in dataStrs)
-            {
-                ArgumentException.ThrowIfNullOrWhiteSpace(line);
-                var file = Path.GetFileName(line);
-                var parts = Path.GetFileNameWithoutExtension(file).Split('_');
-                if (Path.GetExtension(file) != ".tsf" || parts.Length != 4)
-                    throw new DraftException("The instruction file name is invalid.", new ArgumentException("The task file name is invalid.", nameof(dataStrs)));
-                var validKind = Enum.TryParse<TaskKind>(parts[0], out var kind) && Enum.IsDefined(kind) && parts[0] == kind.ToString();
-                var validIndex = int.TryParse(parts[1], NumberStyles.None, CultureInfo.InvariantCulture, out var index) && index > 0;
-                var validStart = float.TryParse(parts[2], NumberStyles.Float, CultureInfo.InvariantCulture, out var start) && float.IsFinite(start) && start >= 0;
-                var validStop = float.TryParse(parts[3], NumberStyles.Float, CultureInfo.InvariantCulture, out var stop) && float.IsFinite(stop) && stop >= start;
-                if (!validKind || !validIndex || !validStart || !validStop)
-                    throw new DraftException("The instruction file name is invalid.", new ArgumentException("The task file name is invalid.", nameof(dataStrs)));
-                var key = $"{kind}_{index}";
-                if (!keys.Add(key))
-                    throw new DraftException("The instruction file name is invalid.", new ArgumentException("The task kind and index are duplicated.", nameof(dataStrs)));
-                indices.Add(line, index);
-                kinds.Add(line, kind);
-            }
-            var instructions = dataStrs.OrderBy(line => indices[line]).ThenBy(line => kinds[line] switch
-            {
-                TaskKind.термическая => 0,
-                TaskKind.механическая => 1,
-                _ => 2
-            });
-            var sortedLines = new List<string>();
-            foreach (var line in instructions)
-                sortedLines.Add($"{kinds[line]} {line} {TaskStatus.выполнить}");
-            return sortedLines;
-        }
     }
 }

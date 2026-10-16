@@ -99,8 +99,8 @@ namespace TestProject_test.PreProc
             var project = LoadFixtureProject();
             CultureInfo.CurrentCulture = new CultureInfo(culture);
             var preprocessor = new global::PreProc.PreProc();
-            var property = new ProcessProperty { TaskKind = TaskKind.термическая | TaskKind.механическая, CommonTaskType = ProcessType.Welding };
-            var parameters = preprocessor.CalcCompDataV2(project.TaskData, property);
+            var taskKinds = TaskKind.термическая | TaskKind.механическая;
+            var parameters = preprocessor.CalcCompDataV2(project.TaskData, taskKinds);
             Assert.IsTrue(parameters.Count > 2);
             Assert.IsFalse(Directory.Exists(Path.Combine(root, "InputData")));
             Assert.IsFalse(Directory.Exists(Path.Combine(root, "ComputationData")));
@@ -132,66 +132,10 @@ namespace TestProject_test.PreProc
             }
             Assert.IsTrue(references >= 3);
 
-            property.TaskKind = TaskKind.термическая;
-            var thermalOnly = preprocessor.CalcCompDataV2(project.TaskData, property);
+            var thermalOnly = preprocessor.CalcCompDataV2(project.TaskData, TaskKind.термическая);
             Assert.AreEqual(parameters.Count / 2, thermalOnly.Count);
             Assert.IsTrue(thermalOnly.All(item => item.TaskKind == TaskKind.термическая));
             Assert.IsFalse(Directory.Exists(Path.Combine(root, "InputData")));
-        }
-
-        /// <summary>
-        /// Старая сортировка GUI также использует числовой индекс и порядок физик.
-        /// </summary>
-        [TestMethod]
-        public void SortExistingTaskFiles_UsesIndexBeforeTime()
-        {
-            var paths = new[]
-            {
-                "механическая_10_0_1.tsf", "механическая_2_90_100.tsf",
-                "термическая_1_500_900.tsf", "термическая_10_0_1.tsf",
-                "термическая_2_90_100.tsf", "механическая_1_500_900.tsf"
-            };
-            var preprocessor = new global::PreProc.PreProc();
-            var result = preprocessor.SortCompDataByTimeAndType(paths);
-            CollectionAssert.AreEqual(new[]
-            {
-                "термическая термическая_1_500_900.tsf выполнить",
-                "механическая механическая_1_500_900.tsf выполнить",
-                "термическая термическая_2_90_100.tsf выполнить",
-                "механическая механическая_2_90_100.tsf выполнить",
-                "термическая термическая_10_0_1.tsf выполнить",
-                "механическая механическая_10_0_1.tsf выполнить"
-            }, result);
-        }
-
-        /// <summary>
-        /// Сортировка отвергает неверный вид, индекс, интервал и расширение файла.
-        /// </summary>
-        [TestMethod]
-        [DataRow("термическая_0_0_1.tsf")]
-        [DataRow("термическая_-1_0_1.tsf")]
-        [DataRow("термическая_1_NaN_1.tsf")]
-        [DataRow("термическая_1_0_Infinity.tsf")]
-        [DataRow("термическая_1_2_1.tsf")]
-        [DataRow("термическая_1_-1_1.tsf")]
-        [DataRow("4_1_0_1.tsf")]
-        [DataRow("термическая_1_0,1_1.tsf")]
-        [DataRow("термическая_1_0_1.txt")]
-        public void SortExistingTaskFiles_RejectsMalformedName(string file)
-        {
-            var preprocessor = new global::PreProc.PreProc();
-            Assert.ThrowsException<global::PreProc.DraftException>(() => preprocessor.SortCompDataByTimeAndType(new[] { file }));
-        }
-
-        /// <summary>
-        /// Два файла одного вида и индекса не образуют допустимую очередь.
-        /// </summary>
-        [TestMethod]
-        public void SortExistingTaskFiles_RejectsDuplicateKindAndIndex()
-        {
-            var preprocessor = new global::PreProc.PreProc();
-            var files = new[] { "термическая_1_0_1.tsf", "термическая_1_1_2.tsf" };
-            Assert.ThrowsException<global::PreProc.DraftException>(() => preprocessor.SortCompDataByTimeAndType(files));
         }
 
         /// <summary>

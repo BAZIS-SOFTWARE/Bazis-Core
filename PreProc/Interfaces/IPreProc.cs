@@ -7,37 +7,16 @@ using System.Collections.Generic;
 namespace PreProc.Interfaces
 {
     /// <summary>
-    /// Тип подпроцесса для препроцессора по созданию пользовательских термических задач
-    /// </summary>
-    public enum ProcessType
-    {
-        /// <summary>
-        /// Сварка (нагрев, охлаждение)
-        /// </summary>
-        Welding,
-        /// <summary>
-        /// Общий нагрев (нагрев)
-        /// </summary>
-        Heating,
-        /// <summary>
-        /// Закалка (охлаждение)
-        /// </summary>
-        Quenching,
-        /// <summary>
-        /// Отпуск, отжиг, старение (выдержка)
-        /// </summary>
-        Tempering
-    }
-    /// <summary>
     /// IPreProc
     /// </summary>
     public interface IPreProc
     {
         /// <summary>
-        /// Формирует параметры задач в порядке числовых индексов: тепло перед механикой.
+        /// Формирует параметры заданных физических задач в порядке числовых индексов: тепло перед механикой.
+        /// При включенной синхронизации связанные задачи получают общие шаги на каждом интервале.
         /// Файлы TSF и TCF не записывает.
         /// </summary>
-        IReadOnlyList<GeneralParameters> CalcCompDataV2(IEnumerable<ICondData> data, ProcessProperty property);
+        IReadOnlyList<GeneralParameters> CalcCompDataV2(IEnumerable<ICondData> data, TaskKind taskKinds, bool synchronizeTimeSteps = false);
 
         /// <summary>
         /// Записывает TCF по строкам текущей очереди «вид относительный-путь статус».
@@ -46,19 +25,10 @@ namespace PreProc.Interfaces
         string WriteCommandFile(string projectPath, IEnumerable<string> queueRows);
 
         /// <summary>
-        /// SortCompDataByTimeAndType
-        /// </summary>
-        /// <param name="dataStrs"></param>
-        /// <returns>
-        /// Список задач по числовому индексу; при равенстве тепло перед механикой.
-        /// </returns>
-        List<string> SortCompDataByTimeAndType(string[] dataStrs);
-
-        /// <summary>
-        /// SetDraftParameters
+        /// Задает базовые численные параметры физической задачи.
         /// </summary>
         /// <typeparam name="ResultParam"></typeparam>
-        /// <param name="parameter"></param>>
+        /// <param name="parameter">Подготавливаемые параметры задачи.</param>
         void SetDraftParameters<ResultParam>(ResultParam parameter)
             where ResultParam : GeneralParameters, new();
     }

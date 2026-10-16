@@ -12,6 +12,18 @@ namespace Project.Tasks.Functions.FrameFunctions
     public class CIL : FrameFunction
     {
         /// <inheritdoc/>
+        public override float CalcMaxTimeStep(float velocity)
+        {
+            if (!float.IsFinite(velocity) || velocity <= 0 || !double.IsFinite(UpperDiam) || UpperDiam <= 0)
+                throw new ArgumentOutOfRangeException(nameof(velocity), "The source size and velocity must be positive and finite.");
+
+            var step = UpperDiam / (3d * velocity);
+            if (!double.IsFinite(step) || step > float.MaxValue || step < float.Epsilon)
+                throw new InvalidOperationException("The calculated source time step is outside the supported range.");
+
+            return (float)step;
+        }
+        /// <inheritdoc/>
         public double BottomDiam
         {
             get { return this["BottomDiam"].GetValue(); }

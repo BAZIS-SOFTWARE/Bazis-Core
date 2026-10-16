@@ -26,163 +26,9 @@ namespace TestProject_test.PreProc
         }
 
         [TestMethod]
-    [DataRow(
-        new string[]
-        {
-            "путь/механическая_1_0_3.tsf",
-            "путь/механическая_2_3_1500.tsf",
-            "путь/термическая_1_0_3.tsf",
-            "путь/термическая_2_3_1500.tsf"
-        },
-        new string[]
-        {
-            "термическая путь/термическая_1_0_3.tsf выполнить",
-            "механическая путь/механическая_1_0_3.tsf выполнить",
-            "термическая путь/термическая_2_3_1500.tsf выполнить",
-            "механическая путь/механическая_2_3_1500.tsf выполнить"
-        }
-        )]
-    [DataRow(
-            new string[]
-        {
-            "путь/термическая_1_0_7.05826.tsf",
-            "путь/термическая_2_7.05826_10.tsf",
-            "путь/термическая_3_10_15.57324.tsf",
-            "путь/механическая_1_0_7.05826.tsf",
-            "путь/механическая_2_7.05826_10.tsf",
-            "путь/механическая_3_10_15.57324.tsf"
-        },
-                        new string[]
-        {
-            "термическая путь/термическая_1_0_7.05826.tsf выполнить",
-            "механическая путь/механическая_1_0_7.05826.tsf выполнить",
-            "термическая путь/термическая_2_7.05826_10.tsf выполнить",
-            "механическая путь/механическая_2_7.05826_10.tsf выполнить",
-            "термическая путь/термическая_3_10_15.57324.tsf выполнить",
-            "механическая путь/механическая_3_10_15.57324.tsf выполнить"
-        }
-        )]
-        [DataRow(
-            new string[]
-        {
-            "путь_test/механическая_1_0_20.12732.tsf",
-            "путь_test/механическая_2_0_20.12732.tsf",
-            "путь_test/механическая_3_0_20.12732.tsf",
-            "путь_test/термическая_1_0_20.12732.tsf",
-            "путь_test/термическая_2_0_20.12732.tsf",
-            "путь_test/термическая_3_0_20.12732.tsf"
-        },
-                        new string[]
-        {
-            "термическая путь_test/термическая_1_0_20.12732.tsf выполнить",
-            "механическая путь_test/механическая_1_0_20.12732.tsf выполнить",
-            "термическая путь_test/термическая_2_0_20.12732.tsf выполнить",
-            "механическая путь_test/механическая_2_0_20.12732.tsf выполнить",
-            "термическая путь_test/термическая_3_0_20.12732.tsf выполнить",
-            "механическая путь_test/механическая_3_0_20.12732.tsf выполнить"
-        }
-        )]
-        [DataRow(
-            new string[] 
-        {
-            "путь/механическая_1_0_20.12732.tsf",
-            "путь/механическая_2_0_20.12732.tsf",
-            "путь/механическая_3_0_20.12732.tsf",
-            "путь/термическая_1_0_20.12732.tsf",
-            "путь/термическая_2_0_20.12732.tsf",
-            "путь/термическая_3_0_20.12732.tsf"
-        },
-                        new string[]
-        {
-            "термическая путь/термическая_1_0_20.12732.tsf выполнить",
-            "механическая путь/механическая_1_0_20.12732.tsf выполнить",
-            "термическая путь/термическая_2_0_20.12732.tsf выполнить",
-            "механическая путь/механическая_2_0_20.12732.tsf выполнить",
-            "термическая путь/термическая_3_0_20.12732.tsf выполнить",
-            "механическая путь/механическая_3_0_20.12732.tsf выполнить"
-        }
-        )]
-        [DataRow(
-            new string[]
-        {
-            "путь/механическая_1_0.001_0.12732.tsf",
-            "путь/механическая_2_0.12732_20.12732.tsf",
-            "путь/механическая_3_20.12732_21.12732.tsf",
-            "путь/термическая_1_0.001_0.12732.tsf",
-            "путь/термическая_2_0.12732_20.12732.tsf",
-            "путь/термическая_3_20.12732_21.12732.tsf"
-        },
-                        new string[]
-        {
-            "термическая путь/термическая_1_0.001_0.12732.tsf выполнить",
-            "механическая путь/механическая_1_0.001_0.12732.tsf выполнить",
-            "термическая путь/термическая_2_0.12732_20.12732.tsf выполнить",
-            "механическая путь/механическая_2_0.12732_20.12732.tsf выполнить",
-            "термическая путь/термическая_3_20.12732_21.12732.tsf выполнить",
-            "механическая путь/механическая_3_20.12732_21.12732.tsf выполнить"
-        }
-        )]
-        [DataRow(
-            new string[]
-        {
-            "путь/механическая_10_0.001_0.12732.tsf",
-            "путь/механическая_20_0.12732_20.12732.tsf",
-            "путь/механическая_30_20.12732_21.12732.tsf",
-            "путь/термическая_10_0.001_0.12732.tsf",
-            "путь/термическая_20_0.12732_20.12732.tsf",
-            "путь/термическая_30_20.12732_21.12732.tsf"
-        },
-                        new string[]
-        {
-            "термическая путь/термическая_10_0.001_0.12732.tsf выполнить",
-            "механическая путь/механическая_10_0.001_0.12732.tsf выполнить",
-            "термическая путь/термическая_20_0.12732_20.12732.tsf выполнить",
-            "механическая путь/механическая_20_0.12732_20.12732.tsf выполнить",
-            "термическая путь/термическая_30_20.12732_21.12732.tsf выполнить",
-            "механическая путь/механическая_30_20.12732_21.12732.tsf выполнить"
-        }
-        )]
-        public void SortingByTimeAndTypeCheck(string[] strsIn, string[]strsOut)
-        {
-            var preProc = new global::PreProc.PreProc();
-
-            var results = preProc.SortCompDataByTimeAndType(strsIn);
-
-            for (int i = 0; i < results.Count; i++)
-                Assert.AreEqual(results[i], strsOut[i]);
-        }
-
-        [TestMethod]
-        [DataRow(new[] { "путь/термическая_^3_20.12732_21.12732.tsf" })]
-        [DataRow(new[] { "путь/%термическая_2_20.12732_21.12732.tsf" })]
-        [DataRow(new[] { "путь/!_2_20.12732_21.12732.tsf" })]
-        [DataRow(new[] { "путь/термическая_7_20.12732_#.12732.tsf" })]
-        [DataRow(new[] { "путь/термическая_6_20.12?32_21.12732.tsf" })]
-        [DataRow(new[] { "путь/термическая_5_20.1232_21.127()2.tsf" })]
-        [DataRow(new[] { "путь/термическая_4_20.1232_21.12732.ts-f" })]
-        [DataRow(new[] { "путь/термическая_3_20.1232_21=.12732.tsf" })]
-        [DataRow(new[] { "путь/@_3_20.12732_21.12732.tsf" })]
-        [DataRow(new[] { "путь/механическая_3_{}}.12732_21.12732.tsf" })]
-        [DataRow(new[] { "путь/механическая_3_20.12732_21.127[].tsf" })]
-        [DataRow(new[] { "путь/механическая_3_20.12732_21.12;;.tsf" })]
-        [DataRow(new[] { "путь/type_int_float_float.tsf" })]
-        public void SortingByTimeAndTypeCheck_ShouldFail_WhenContainsIlligalSymbol(string[] strsIn)
-        {
-            var preProc = new global::PreProc.PreProc();
-            Assert.ThrowsException<DraftException>( () => preProc.SortCompDataByTimeAndType(strsIn));
-        }
-
-
-
-        [TestMethod]
-        [DataRow(@"MNOGOPROHOD.bpf", ProcessType.Welding)]
-        [DataRow(@"FastCheck.bpf", ProcessType.Welding)]
-        //[DataRow(@"c:\projs\testProj\Tempering\proj.bpf", ProcessType.Heating)]
-        //[DataRow(@"c:\projs\testProj\Tempering\proj.bpf", ProcessType.Quenching)]
-        //[DataRow(@"c:\projs\testProj\Tempering\proj.bpf", ProcessType.Tempering)]
-        //[DataRow(@".\..\..\PreProc\Data\CalcCompDataTest\1.bpf", ProcessType.Welding)]
-        //[DataRow(@".\..\..\PreProc\Data\CalcCompDataTest\6.bpf", ProcessType.Welding)]
-        public void PreProc_PrepareParameters_ShouldPass(string file, ProcessType pt)
+        [DataRow(@"MNOGOPROHOD.bpf")]
+        [DataRow(@"FastCheck.bpf")]
+        public void PreProc_PrepareParameters_ShouldPass(string file)
         {
             var loader = new LoadProjectFromTextFormat();
             var project = loader.Load(projPath + file);
@@ -193,8 +39,7 @@ namespace TestProject_test.PreProc
                 resData.Add(data as CondData);
 
             var preProc = new global::PreProc.PreProc();
-            var property = new ProcessProperty { TaskKind = TaskKind.термическая | TaskKind.механическая, CommonTaskType = pt };
-            var parameters = preProc.CalcCompDataV2(resData, property);
+            var parameters = preProc.CalcCompDataV2(resData, TaskKind.термическая | TaskKind.механическая);
             Assert.IsTrue(parameters.Count > 0);
         }
 
@@ -204,8 +49,7 @@ namespace TestProject_test.PreProc
             var loader = new LoadProjectFromTextFormat();
             var project = loader.Load(projPath + "FastCheck.bpf");
             var preProc = new global::PreProc.PreProc();
-            var property = new ProcessProperty { TaskKind = TaskKind.термическая, CommonTaskType = ProcessType.Welding };
-            var parameters = preProc.CalcCompDataV2(project.TaskData, property);
+            var parameters = preProc.CalcCompDataV2(project.TaskData, TaskKind.термическая);
             Assert.IsTrue(parameters.Count > 0);
             foreach (var item in parameters)
             {
@@ -227,8 +71,7 @@ namespace TestProject_test.PreProc
             var loader = new LoadProjectFromTextFormat();
             var project = loader.Load(projPath + "FastCheck.bpf");
             var preProc = new global::PreProc.PreProc();
-            var property = new ProcessProperty { TaskKind = TaskKind.термическая | TaskKind.механическая, CommonTaskType = ProcessType.Welding };
-            var parameters = preProc.CalcCompDataV2(project.TaskData, property);
+            var parameters = preProc.CalcCompDataV2(project.TaskData, TaskKind.термическая | TaskKind.механическая);
             var mechanicalTasks = parameters.Where(item => item.TaskKind == TaskKind.механическая).ToList();
             Assert.IsTrue(mechanicalTasks.Count > 0);
             foreach (var item in mechanicalTasks)
@@ -283,8 +126,7 @@ namespace TestProject_test.PreProc
                 resData.Add(data as CondData);
             }
             var preProc = new global::PreProc.PreProc();
-            var property = new ProcessProperty { TaskKind = TaskKind.термическая | TaskKind.механическая, CommonTaskType = ProcessType.Welding };
-            Assert.ThrowsException<Exception>(() => preProc.CalcCompDataV2(resData, property));
+            Assert.ThrowsException<Exception>(() => preProc.CalcCompDataV2(resData, TaskKind.термическая | TaskKind.механическая));
         }
     }
 }

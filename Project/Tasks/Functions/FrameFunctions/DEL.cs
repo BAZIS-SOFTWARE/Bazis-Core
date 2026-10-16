@@ -7,6 +7,19 @@ namespace Project.Tasks.Functions.FrameFunctions
 {
     public class DEL : FrameFunction
     {
+        /// <inheritdoc/>
+        public override float CalcMaxTimeStep(float velocity)
+        {
+            var length = (double)FrontPart + BackPart;
+            if (!float.IsFinite(velocity) || velocity <= 0 || !double.IsFinite(length) || length <= 0)
+                throw new ArgumentOutOfRangeException(nameof(velocity), "The source size and velocity must be positive and finite.");
+
+            var step = length / (3d * velocity);
+            if (!double.IsFinite(step) || step > float.MaxValue || step < float.Epsilon)
+                throw new InvalidOperationException("The calculated source time step is outside the supported range.");
+
+            return (float)step;
+        }
         /// <summary>
         /// DEL
         /// </summary>

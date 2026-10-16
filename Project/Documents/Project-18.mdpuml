@@ -28,6 +28,7 @@ class "CillindricalBuilder" as T_Project_Project_Tasks_Functions_FrameFunctions_
 }
 class "CustomFrameFunction" as T_Project_Project_Tasks_Functions_FrameFunctions_CustomFrameFunction {
   + ExecutedFile : string [get]
+  + MotionLength : double [get, set]
   + CalcValue() : double
   + CreateEngine(file) : void
   + CustomFrameFunction()

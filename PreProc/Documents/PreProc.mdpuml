@@ -11,12 +11,8 @@ caption Подробности состава типов — на трёх по�
 package "[[PreProc-1.mdpuml Подготовка TSF / PreProc-1]]" {
   interface "IPreProc" as Api [[PreProc-1.mdpuml]]
   class "PreProc" as Processor [[PreProc-1.mdpuml]]
-  class "ProcessProperty" as Property <<struct>> [[PreProc-1.mdpuml]]
-  enum "ProcessType" as Process [[PreProc-1.mdpuml]]
   class "DraftException" as Error [[PreProc-1.mdpuml]]
   Processor ..|> Api
-  Processor ..> Property
-  Property --> Process
   Processor ..> Error
 }
 package "[[PreProc-2.mdpuml Параметры и очередь / PreProc-2]]" {
@@ -32,7 +28,8 @@ Processor ..> Parameters : подготавливает
 Processor ..> Writer : делегирует запись
 Writer ..> Status : проверяет строки очереди
 legend bottom
-  CalcCompDataV2(data, property): возвращает параметры без файлов.
+  CalcCompDataV2(data, taskKinds, synchronizeTimeSteps): возвращает параметры без файлов.
+  Флаг true задаёт общие шаги связанным задачам на каждом интервале.
   Запись TSF будет подключена в Gerbera отдельно.
   WriteCommandFile: сохраняет очередь при «Старт», не меняет TSF.
   Solver и Gerbera требуют последующего подключения нового контракта.

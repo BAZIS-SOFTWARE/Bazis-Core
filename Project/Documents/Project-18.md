@@ -25,6 +25,8 @@ IsPointInside(Point3D elementCenter, out double r, out double r0, out double r1,
 
 ## `CillindricalBuilder`
 
+Для `CIL` максимальный шаг движения вычисляется по `UpperDiam / (3 × velocity)`.
+
 Пространство имён: `Project.Tasks.Functions.FrameFunctions`.
 
 Исходники: [CillindricalBuilder.cs](../../Project/Tasks/Functions/FrameFunctions/CillindricalBuilder.cs).
@@ -46,12 +48,17 @@ SetUpperDiam(string diam) : CillindricalBuilder
 
 ```text
 ExecutedFile : string [get]
+MotionLength : double [get, set]
 CalcValue() : double
 CreateEngine(string file) : void
 CustomFrameFunction()
 ```
 
+`MotionLength` задаётся явно для пользовательской функции с движущейся системой координат и сохраняется как параметр функции.
+
 ## `DEL`
+
+Для `DEL` максимальный шаг движения вычисляется по `(FrontPart + BackPart) / (3 × velocity)`.
 
 Пространство имён: `Project.Tasks.Functions.FrameFunctions`.
 

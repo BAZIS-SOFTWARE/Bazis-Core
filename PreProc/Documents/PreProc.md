@@ -2,7 +2,11 @@
 
 [Обзорная диаграмма](PreProc.mdpuml). [Архитектура решения](../../Documents/Architecture.md).
 
-Двухаргументный `CalcCompDataV2` формирует и возвращает упорядоченный список `GeneralParameters`, не записывая файлы. После подключения нового API клиент Gerbera будет записывать TSF и показывать очередь в TreeView. `WriteCommandFile` принимает строки текущей очереди и записывает TCF при «Старт», сохраняя её порядок и статусы.
+`CalcCompDataV2` формирует и возвращает упорядоченный список `GeneralParameters`, не записывая файлы. Клиент Gerbera записывает TSF и показывает очередь в TreeView. При открытии готового комплекта клиент читает TCF и восстанавливает очередь и статусы в порядке его команд. `WriteCommandFile` принимает строки текущей очереди и записывает TCF при «Старт», сохраняя её порядок и статусы.
+
+Вход `CalcCompDataV2` — условия и набор физических задач `TaskKind`. Базовые численные настройки выбираются по виду физической задачи. Металлургические реакции определяются активными материалами, шаг времени — активными движущимися источниками.
+
+Необязательный флаг `synchronizeTimeSteps` включает общий максимальный и начальный шаги для связанных задач одного интервала. По умолчанию задачи рассчитывают шаг независимо.
 
 ## Разделы
 
@@ -18,8 +22,6 @@
 | --- | --- | --- |
 | `PreProc.Interfaces.IPreProc` | [PreProc-1](PreProc-1.md) | [IPreProc.cs](../Interfaces/IPreProc.cs) |
 | `PreProc.PreProc` | [PreProc-1](PreProc-1.md) | [PreProc.cs](../PreProc.cs) |
-| `PreProc.ProcessProperty` | [PreProc-1](PreProc-1.md) | [ProcessProperty.cs](../ProcessProperty.cs) |
-| `PreProc.Interfaces.ProcessType` | [PreProc-1](PreProc-1.md) | [IPreProc.cs](../Interfaces/IPreProc.cs) |
 | `PreProc.DraftException` | [PreProc-1](PreProc-1.md) | [DraftException.cs](../DraftException.cs) |
 | `PreProc.TaskStatus` | [PreProc-2](PreProc-2.md) | [PreProc.cs](../PreProc.cs) |
 | `PreProc.TcfWriter` | [PreProc-3](PreProc-3.md) | [TcfWriter.cs](../TcfWriter.cs) |
@@ -29,7 +31,7 @@
 
 ## Границы реализации
 
-`SortCompDataByTimeAndType` сохранён для ещё не обновлённого Gerbera. Подготовка параметров не имеет файловых эффектов; TSF будет записывать клиент. Совместимость со старыми файлами не реализуется. Отдельная библиотека Calculation не создаётся. Подключение Gerbera и адаптация Solver выполняются отдельно: текущую поддержку нового формата Solver эта документация не утверждает.
+Подготовка параметров не имеет файловых эффектов; TSF записывает клиент. Совместимость со старыми файлами без обязательных полей `GeneralParameters` не реализуется. Отдельная библиотека Calculation не создаётся.
 
 Контракт физических полей: [PhysicalFields.md](../../Documents/PhysicalFields.md), [GeneralParameters](../../Project/TaskParameters/GeneralParameters.cs), [PhysicalSet](../../Project/TaskParameters/PhysicalSet.cs). Правила документирования: [AGENTS.md](../../AGENTS.md).
 

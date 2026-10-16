@@ -7,19 +7,16 @@
 Пространство имён `PreProc.Interfaces`. [Исходник](../Interfaces/IPreProc.cs).
 
 ```text
-CalcCompDataV2(IEnumerable<ICondData> data, ProcessProperty property) : IReadOnlyList<GeneralParameters>
+CalcCompDataV2(IEnumerable<ICondData> data, TaskKind taskKinds, bool synchronizeTimeSteps = false) : IReadOnlyList<GeneralParameters>
 WriteCommandFile(string projectPath, IEnumerable<string> queueRows) : string
 SetDraftParameters<ResultParam>(ResultParam parameter) : void where ResultParam : GeneralParameters, new()
-SortCompDataByTimeAndType(string[] dataStrs) : List<string>
 ```
 
-Двухаргументный `CalcCompDataV2` материализует параметры и возвращает доступный только для чтения список ссылок на `GeneralParameters`. Объекты параметров остаются изменяемыми. Метод присваивает индекс каждому интервалу, устанавливает относительные ссылки на ожидаемые DB и возвращает задачи в порядке числового индекса, с теплом перед механикой. TSF и TCF не записывает.
+`CalcCompDataV2` материализует параметры и возвращает доступный только для чтения список ссылок на `GeneralParameters`. Объекты параметров остаются изменяемыми. Метод присваивает индекс каждому интервалу, устанавливает относительные ссылки на ожидаемые DB и возвращает задачи в порядке числового индекса, с теплом перед механикой. TSF и TCF не записывает.
 
 `WriteCommandFile` делегирует запись TcfWriter. Клиент вызывает её отдельно по актуальной очереди при «Старт». Входная строка имеет вид `термическая InputData/термическая_1_0_0.25.tsf выполнить`; путь отсчитывается от корня комплекта. Возвращается путь ComputationData/computation.tcf; порядок и статусы сохраняются, TSF не изменяются.
 
-Запись TSF в InputData относится к клиенту Gerbera и будет подключена отдельно. PreProc подготавливает параметры и не сериализует их.
-
-Историческое название `SortCompDataByTimeAndType` сохранено, но сортировка теперь идёт по индексу. Вход — пути TSF; результат — строки вида «вид путь статус» для существующего клиента. Это представление списка, а не новый TCF. Неверное имя оборачивается в DraftException.
+Запись TSF в InputData относится к клиенту Gerbera. PreProc подготавливает параметры и не сериализует их. Для открытия готового комплекта клиент читает TCF, который задаёт порядок TSF и статусы; PreProc не восстанавливает очередь по каталогу TSF.
 
 ## Классы и параметры
 
@@ -30,10 +27,16 @@ GetParameters<LoadData, BoundData, ResultParam>(IEnumerable<ICondData> data) : L
   where ResultParam : GeneralParameters, new()
   where LoadData : CondData
   where BoundData : CondData
+SetTimeStep<LoadData>(GeneralParameters parameter, IEnumerable<ICondData> data, float start, float stop) : void
+GetMovingSourceTimeStep<LoadData>(IEnumerable<ICondData> data, float start, float stop) : float?
+PrepareComplexProcess<SourceParameter, TargetParameter>(List<SourceParameter> sourceParameters, List<TargetParameter> targetParameters, IEnumerable<ICondData> data, bool synchronizeTimeSteps) : IEnumerable<GeneralParameters>
+SetMetallurgicalProcesses(TermalParameters thermal, IEnumerable<ICondData> data, float start, float stop) : void
+SetThermalDraftParameters(TermalParameters term) : void
+SetMechanicalDraftParameters(MechanicalParameters mech) : void
 ```
 
-ProcessProperty — структура с публичными полями `TaskKind : Project.Interfaces.Tasks.TaskKind` и `CommonTaskType : PreProc.Interfaces.ProcessType`. [Исходник](../ProcessProperty.cs).
+`TaskKind` указывает состав физических задач. Тепловые и механические параметры получают базовые численные настройки по своему виду, а шаг времени вычисляется из активных движущихся источников: при их отсутствии максимум равен 1, при наличии выбирается минимум `FrameFunction.CalcMaxTimeStep(velocity)`. Начальный шаг равен половине максимального. Для тепловых параметров названия металлургических реакций берутся из категории `CategoryEnum.Metallurgical` активных `MatData`.
 
-ProcessType: Welding, Heating, Quenching, Tempering. [Исходник](../Interfaces/IPreProc.cs).
+Если `synchronizeTimeSteps = true`, для каждого интервала термомеханической связки выбирается минимум шагов всех движущихся тепловых и механических источников. Если их нет, максимум равен 1. Обе инструкции получают этот максимум и половину его значения как начальный шаг; значение проверяется относительно `MinTimeStep` обеих задач. При `false` каждая задача выбирает шаг по своим условиям.
 
 DraftException : Exception предоставляет конструкторы без параметров, с `string message`, с `string message, Exception innerException`. [Исходник](../DraftException.cs). Тексты новых исключений — на английском.
