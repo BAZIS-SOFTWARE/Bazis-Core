@@ -11,25 +11,28 @@ caption [[PreProc.mdpuml Обзор]] | [[PreProc-1.mdpuml API подготов�
 class "Project: GeneralParameters" as Parameters <<external>> [[../../Project/Documents/Project-2.mdpuml]]
 class "PreProc" as Processor <<reference>> [[PreProc-1.mdpuml]]
 class "TcfWriter" as Writer <<reference>> [[PreProc-3.mdpuml]]
-enum "TaskStatus" as Status {
+enum "Project: TaskStatus" as Status <<external>> [[../../Project/Documents/Project-2.mdpuml]] {
   выполнить
   пропустить
 }
-Processor ..> Parameters : присваивает индекс
-Writer ..> Status : разбирает строки
+Processor ..> Parameters : хранит и перечисляет
+Parameters --> Status : хранит статус
+Writer ..> Status : сохраняет статус
 note right of Parameters
-  ToString(): вид_индекс_начало_конец
+  FileStem: вид_индекс_начало_конец
+  ToString(): FileStem_статус
   G9 + InvariantCulture
   Время не задаёт порядок задач.
 end note
 note right of Writer
-  Строка клиента: вид путь-TSF статус.
-  Путь относительно корня комплекта.
+  Запись TSF и TCF: из объектов GeneralParameters.
+  Ссылки в TCF относительны каталогу TCF.
   В TCF порядок строк сохраняется.
 end note
 legend bottom
   Исходный порядок параметров: индекс, затем тепло / механика.
   Повтор вида и индекса в очереди TCF недопустим.
-  Gerbera ещё нужно подключить к новому API подготовки.
+  Gerbera показывает ToString() и редактирует объекты PreProc.
+  Все задачи, включая пропущенные, сохраняются в TSF и TCF.
 endlegend
 @enduml

@@ -19,20 +19,30 @@ namespace PreProc
             if (extension != ".bpf" && extension != ".bpf2")
                 throw new ArgumentException("A saved .bpf or .bpf2 project is required.", nameof(projectPath));
             var root = Path.GetDirectoryName(fullPath);
-            GetRelativeFile(root, root, fullPath, true);
+            ValidatePortableFilePath(root, fullPath);
+            if (!File.Exists(fullPath))
+                throw new FileNotFoundException("The calculation resource does not exist.", fullPath);
             return root;
         }
 
         /// <summary>
-        /// Проверяет файл в пределах комплекта, точный регистр существующих сегментов
-        /// и возвращает ссылку относительно содержащего файла.
+        /// Возвращает абсолютный путь по ссылке относительно содержащего файла.
         /// </summary>
-        public string GetRelativeFile(string root, string sourceDirectory, string targetPath, bool requireExisting)
+        public string GetAbsoluteFilePath(string sourceDirectory, string referencePath)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(referencePath);
+            return Path.GetFullPath(referencePath, sourceDirectory);
+        }
+
+        /// <summary>
+        /// Проверяет расположение файла в комплекте и переносимость его пути.
+        /// </summary>
+        public void ValidatePortableFilePath(string root, string targetPath)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(targetPath);
             if (targetPath.Contains('\\') && Path.DirectorySeparatorChar != '\\')
                 throw new ArgumentException("Backslashes are not supported in portable paths.", nameof(targetPath));
-            var absolutePath = Path.GetFullPath(targetPath, sourceDirectory);
+            var absolutePath = Path.GetFullPath(targetPath);
             var relativeToRoot = Path.GetRelativePath(root, absolutePath);
             var portable = relativeToRoot.Replace(Path.DirectorySeparatorChar, '/');
             if (Path.IsPathRooted(relativeToRoot) || portable == ".." || portable.StartsWith("../", StringComparison.Ordinal))
@@ -78,9 +88,14 @@ namespace PreProc
                 }
                 currentDirectory = exactPath;
             }
-            if (requireExisting && !File.Exists(absolutePath))
-                throw new FileNotFoundException("The calculation resource does not exist.", absolutePath);
-            var relative = Path.GetRelativePath(sourceDirectory, absolutePath);
+        }
+
+        /// <summary>
+        /// Возвращает переносимую ссылку на файл относительно содержащего каталога.
+        /// </summary>
+        public string GetRelativeFile(string sourceDirectory, string targetPath)
+        {
+            var relative = Path.GetRelativePath(sourceDirectory, targetPath);
             return relative.Replace(Path.DirectorySeparatorChar, '/');
         }
     }

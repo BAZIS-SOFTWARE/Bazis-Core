@@ -8,19 +8,25 @@
 
 ```text
 CalcCompDataV2(IEnumerable<ICondData> data, TaskKind taskKinds, bool synchronizeTimeSteps = false) : IReadOnlyList<GeneralParameters>
-WriteCommandFile(string projectPath, IEnumerable<string> queueRows) : string
+Load(IEnumerable<GeneralParameters> parameters) : void
+LoadInstructions(string projectPath) : void
+Add(GeneralParameters parameters) : void
+Remove(GeneralParameters parameters) : bool
+Clear() : void
+GetEnumerator() : IEnumerator<GeneralParameters>
+WriteInstructions(string projectPath) : string
 SetDraftParameters<ResultParam>(ResultParam parameter) : void where ResultParam : GeneralParameters, new()
 ```
 
 `CalcCompDataV2` материализует параметры и возвращает доступный только для чтения список ссылок на `GeneralParameters`. Объекты параметров остаются изменяемыми. Метод присваивает индекс каждому интервалу, устанавливает относительные ссылки на ожидаемые DB и возвращает задачи в порядке числового индекса, с теплом перед механикой. TSF и TCF не записывает.
 
-`WriteCommandFile` делегирует запись TcfWriter. Клиент вызывает её отдельно по актуальной очереди при «Старт». Входная строка имеет вид `термическая InputData/термическая_1_0_0.25.tsf выполнить`; путь отсчитывается от корня комплекта. Возвращается путь ComputationData/computation.tcf; порядок и статусы сохраняются, TSF не изменяются.
+`Load` материализует переданное перечисление и заменяет текущую очередь только после успешного чтения всех параметров. `LoadInstructions` передаёт ему ленивое перечисление TcfReader; TCF и TSF читаются один раз. Методы `Add`, `Remove`, `Clear` меняют очередь объектов; перечислитель возвращает те же объекты, чтобы клиент мог отображать и донастраивать параметры.
 
-Запись TSF в InputData относится к клиенту Gerbera. PreProc подготавливает параметры и не сериализует их. Для открытия готового комплекта клиент читает TCF, который задаёт порядок TSF и статусы; PreProc не восстанавливает очередь по каталогу TSF.
+`WriteInstructions` делегирует запись объектов `ISolverInstructionWriter`, по умолчанию `TcfWriter`, и возвращает путь к `ComputationData/computation.tcf`. Писатель обновляет TSF всех объектов, включая пропущенные, и сохраняет порядок и статусы в TCF. Клиент Gerbera вызывает запись при «Старт» и показывает `ToString()` объектов в TreeView.
 
 ## Классы и параметры
 
-`PreProc.PreProc` реализует IPreProc; на диаграмме показан только собственный публичный метод. [Исходник](../PreProc.cs).
+`PreProc.PreProc` реализует IPreProc; на диаграмме методы интерфейса не повторяются в классе. [Исходник](../PreProc.cs).
 
 ```text
 GetParameters<LoadData, BoundData, ResultParam>(IEnumerable<ICondData> data) : List<ResultParam>

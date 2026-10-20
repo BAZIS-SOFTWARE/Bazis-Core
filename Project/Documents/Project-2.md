@@ -2,7 +2,7 @@
 
 [Диаграмма](Project-2.mdpuml). [Обзор проекта](Project.md).
 
-Это целевой состав API с сохранением существующих операций. События вне `IProjectEvents.Message` исключены из целевого контракта; код ещё может их содержать. [Расхождения](../../Documents/ArchitectureDifferences.md).
+Это состав параметров и физических полей. Общий контекст проекта приведён в [архитектуре](../../Documents/Architecture.md).
 
 Для классов члены реализуемых интерфейсов не повторяются. Внешние стандартные интерфейсы .NET не раскрываются. Полный состав типа при разбиении приведён на перечисленных ниже диаграммах.
 
@@ -15,6 +15,17 @@
 ```text
 Stationary
 Transient
+```
+
+## `TaskStatus`
+
+Пространство имён: `Project.TaskParameters`.
+
+Исходник: [GeneralParameters.cs](../../Project/TaskParameters/GeneralParameters.cs).
+
+```text
+выполнить
+пропустить
 ```
 
 ## `ChemicalConvergence`
@@ -85,10 +96,12 @@ Iterations : int [get, set]
 SaveRate : int [get, set]
 SolverSettings : SolverSettings [get, set]
 TaskKind : TaskKind [get, set]
+Status : TaskStatus [get, set]
+FileStem : string [get]
 TimeSettings : TimeSettings [get, set]
 UpdMatrixIteration : int [get, set]
 GetInputField(PhysicalSetName fieldSet) : PhysicalSet
 ToString() : string
 ```
 
-`Index` задаётся PreProc для каждого расчётного интервала. `ToString()` возвращает основу имени TSF и DB в виде `вид_индекс_начало_конец`; время форматируется через G9 и InvariantCulture. Индекс сериализуется вместе с параметрами.
+`Index` задаётся PreProc для каждого расчётного интервала. `FileStem` возвращает основу имени TSF и DB в виде `вид_индекс_начало_конец`; время форматируется через G9 и InvariantCulture. `ToString()` добавляет к этой основе статус инструкции для отображения в очереди. `Index` и `Status` сериализуются вместе с параметрами; при чтении TCF статус из команды задаёт статус объекта.

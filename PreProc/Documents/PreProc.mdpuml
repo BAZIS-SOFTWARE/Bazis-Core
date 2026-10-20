@@ -17,21 +17,27 @@ package "[[PreProc-1.mdpuml Подготовка TSF / PreProc-1]]" {
 }
 package "[[PreProc-2.mdpuml Параметры и очередь / PreProc-2]]" {
   class "Project: GeneralParameters" as Parameters <<external>> [[PreProc-2.mdpuml]]
-  enum "TaskStatus" as Status [[PreProc-2.mdpuml]]
+  enum "Project: TaskStatus" as Status <<external>> [[PreProc-2.mdpuml]]
 }
-package "[[PreProc-3.mdpuml Запись TCF и пути / PreProc-3]]" {
+package "[[PreProc-3.mdpuml Чтение и запись TCF / PreProc-3]]" {
   class "TcfWriter" as Writer [[PreProc-3.mdpuml]]
+  class "TcfReader" as Reader <<internal>> [[PreProc-3.mdpuml]]
+  interface "ISolverInstructionWriter" as WriterApi [[PreProc-3.mdpuml]]
   class "CalculationPaths" as Paths <<internal>> [[PreProc-3.mdpuml]]
   Writer ..> Paths
+  Reader ..> Paths
 }
 Processor ..> Parameters : подготавливает
-Processor ..> Writer : делегирует запись
-Writer ..> Status : проверяет строки очереди
+Processor ..> WriterApi : делегирует запись
+Processor ..> Reader : загружает очередь
+Writer ..|> WriterApi
+Parameters --> Status : хранит
 legend bottom
   CalcCompDataV2(data, taskKinds, synchronizeTimeSteps): возвращает параметры без файлов.
   Флаг true задаёт общие шаги связанным задачам на каждом интервале.
-  Запись TSF будет подключена в Gerbera отдельно.
-  WriteCommandFile: сохраняет очередь при «Старт», не меняет TSF.
-  Solver и Gerbera требуют последующего подключения нового контракта.
+  PreProc хранит и перечисляет текущие GeneralParameters.
+  WriteInstructions записывает TSF и TCF из текущих параметров.
+  LoadInstructions читает TCF и все TSF, восстанавливая порядок и статусы.
+  TCF хранит все задачи, включая пропущенные.
 endlegend
 @enduml

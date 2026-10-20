@@ -6,7 +6,6 @@ using Project.IO;
 using Project.TaskParameters;
 using Project.Tasks;
 using System.Globalization;
-using System.Text;
 
 namespace TestProject_test.PreProc
 {
@@ -51,10 +50,10 @@ namespace TestProject_test.PreProc
         /// Имя задачи содержит индекс и представление времени, независимое от локали.
         /// </summary>
         [TestMethod]
-        [DataRow("ru-RU", 0.1f, 0.25f, "термическая_3_0.100000001_0.25")]
-        [DataRow("en-US", 0.1f, 0.25f, "термическая_3_0.100000001_0.25")]
-        [DataRow("ru-RU", 0f, 0.25f, "термическая_3_0_0.25")]
-        [DataRow("en-US", 0f, 0.25f, "термическая_3_0_0.25")]
+        [DataRow("ru-RU", 0.1f, 0.25f, "термическая_3_0.100000001_0.25_выполнить")]
+        [DataRow("en-US", 0.1f, 0.25f, "термическая_3_0.100000001_0.25_выполнить")]
+        [DataRow("ru-RU", 0f, 0.25f, "термическая_3_0_0.25_выполнить")]
+        [DataRow("en-US", 0f, 0.25f, "термическая_3_0_0.25_выполнить")]
         public void GeneralParameters_NameIsPortable(string culture, float start, float stop, string expected)
         {
             CultureInfo.CurrentCulture = new CultureInfo(culture);
@@ -112,7 +111,7 @@ namespace TestProject_test.PreProc
                 Assert.AreEqual(i % 2 == 0 ? TaskKind.термическая : TaskKind.механическая, item.TaskKind);
             }
 
-            var resultNames = parameters.Select(item => $"{item}.db").ToHashSet(StringComparer.Ordinal);
+            var resultNames = parameters.Select(item => $"{item.FileStem}.db").ToHashSet(StringComparer.Ordinal);
             var references = 0;
             foreach (var item in parameters)
             {
@@ -132,154 +131,11 @@ namespace TestProject_test.PreProc
             }
             Assert.IsTrue(references >= 3);
 
+            var linkedCount = parameters.Count;
             var thermalOnly = preprocessor.CalcCompDataV2(project.TaskData, TaskKind.термическая);
-            Assert.AreEqual(parameters.Count / 2, thermalOnly.Count);
+            Assert.AreEqual(linkedCount / 2, thermalOnly.Count);
             Assert.IsTrue(thermalOnly.All(item => item.TaskKind == TaskKind.термическая));
             Assert.IsFalse(Directory.Exists(Path.Combine(root, "InputData")));
-        }
-
-        /// <summary>
-        /// TCF сохраняет текущий порядок строк GUI, статусы и переносимые пути.
-        /// </summary>
-        [TestMethod]
-        [DataRow("ru-RU")]
-        [DataRow("en-US")]
-        public void WriteCommandFile_PreservesQueueAndTaskFiles(string culture)
-        {
-            CultureInfo.CurrentCulture = new CultureInfo(culture);
-            var input = Path.Combine(root, "InputData", "Очередь с пробелами");
-            Directory.CreateDirectory(input);
-            var first = Path.Combine(input, "термическая_1_0_1.tsf");
-            var second = Path.Combine(input, "термическая_2_1_2.tsf");
-            var original = Encoding.UTF8.GetBytes("TSF bytes must remain unchanged.");
-            File.WriteAllBytes(first, original);
-            File.WriteAllBytes(second, original);
-            var queue = new[]
-            {
-                "термическая InputData/Очередь с пробелами/термическая_2_1_2.tsf пропустить",
-                "термическая InputData/Очередь с пробелами/термическая_1_0_1.tsf выполнить"
-            };
-            var preprocessor = new global::PreProc.PreProc();
-            var tcf = preprocessor.WriteCommandFile(projectPath, queue);
-            CollectionAssert.AreEqual(new[]
-            {
-                "загрузить проект \"../Модель с пробелами.bpf\"",
-                "расчет термическая \"../InputData/Очередь с пробелами/термическая_2_1_2.tsf\" пропустить",
-                "расчет термическая \"../InputData/Очередь с пробелами/термическая_1_0_1.tsf\" выполнить"
-            }, File.ReadAllLines(tcf));
-            var bytes = File.ReadAllBytes(tcf);
-            Assert.IsFalse(bytes.Length >= 3 && bytes[0] == 0xef && bytes[1] == 0xbb && bytes[2] == 0xbf);
-            CollectionAssert.AreEqual(original, File.ReadAllBytes(first));
-            CollectionAssert.AreEqual(original, File.ReadAllBytes(second));
-
-            var moved = root + "_moved";
-            Directory.Move(root, moved);
-            root = moved;
-            var movedTcf = Path.Combine(moved, "ComputationData", "computation.tcf");
-            var directory = Path.GetDirectoryName(movedTcf)!;
-            foreach (var line in File.ReadAllLines(movedTcf))
-            {
-                var reference = line.Split('"')[1];
-                Assert.IsFalse(Path.IsPathRooted(reference));
-                Assert.IsFalse(reference.Contains('\\'));
-                var resolved = Path.GetFullPath(reference, directory);
-                Assert.IsTrue(File.Exists(resolved), reference);
-            }
-        }
-
-        /// <summary>
-        /// Некорректная очередь не заменяет готовый TCF.
-        /// </summary>
-        [TestMethod]
-        [DataRow("outside")]
-        [DataRow("missing")]
-        [DataRow("duplicate")]
-        [DataRow("status")]
-        [DataRow("empty")]
-        [DataRow("null")]
-        [DataRow("invalid-character")]
-        [DataRow("wrong-kind")]
-        [DataRow("wrong-time")]
-        public void WriteCommandFile_InvalidQueuePreservesExistingFile(string failure)
-        {
-            var input = Path.Combine(root, "InputData");
-            Directory.CreateDirectory(input);
-            var task = Path.Combine(input, "термическая_1_0_1.tsf");
-            File.WriteAllText(task, "{}");
-            var preprocessor = new global::PreProc.PreProc();
-            var valid = "термическая InputData/термическая_1_0_1.tsf выполнить";
-            var tcf = preprocessor.WriteCommandFile(projectPath, new[] { valid });
-            var original = File.ReadAllBytes(tcf);
-            var queue = new List<string> { valid };
-            switch (failure)
-            {
-                case "outside": queue.Add("термическая ../термическая_2_1_2.tsf выполнить"); break;
-                case "missing": queue.Add("термическая InputData/термическая_2_1_2.tsf выполнить"); break;
-                case "duplicate": queue.Add("термическая InputData/термическая_1_1_2.tsf выполнить"); break;
-                case "status": queue[0] = "термическая InputData/термическая_1_0_1.tsf unknown"; break;
-                case "empty": queue.Clear(); break;
-                case "null": queue.Add(null!); break;
-                case "invalid-character": queue.Add("термическая Input*Data/термическая_2_1_2.tsf выполнить"); break;
-                case "wrong-kind": queue.Add("механическая InputData/термическая_2_1_2.tsf выполнить"); break;
-                case "wrong-time": queue.Add("термическая InputData/термическая_2_NaN_2.tsf выполнить"); break;
-            }
-            var rejected = false;
-            try
-            {
-                preprocessor.WriteCommandFile(projectPath, queue);
-            }
-            catch (ArgumentException)
-            {
-                rejected = true;
-            }
-            catch (FileNotFoundException)
-            {
-                rejected = true;
-            }
-            Assert.IsTrue(rejected, failure);
-            CollectionAssert.AreEqual(original, File.ReadAllBytes(tcf));
-            Assert.AreEqual(0, Directory.GetFiles(Path.GetDirectoryName(tcf)!, "*.tmp").Length);
-        }
-
-        /// <summary>
-        /// Путь TSF на границе CORE обязан быть относительным и переносимым.
-        /// </summary>
-        [TestMethod]
-        [DataRow("C:/InputData/термическая_1_0_1.tsf")]
-        [DataRow("/InputData/термическая_1_0_1.tsf")]
-        [DataRow("InputData\\термическая_1_0_1.tsf")]
-        [DataRow("Input\"Data/термическая_1_0_1.tsf")]
-        [DataRow("Input\nData/термическая_1_0_1.tsf")]
-        public void WriteCommandFile_RejectsNonportableTaskPath(string taskFile)
-        {
-            var preprocessor = new global::PreProc.PreProc();
-            var queue = new[] { $"термическая {taskFile} выполнить" };
-            Assert.ThrowsException<ArgumentException>(() => preprocessor.WriteCommandFile(projectPath, queue));
-            Assert.IsFalse(Directory.Exists(Path.Combine(root, "ComputationData")));
-        }
-
-        /// <summary>
-        /// Регистр пути проверяется одинаково на обеих ОС.
-        /// </summary>
-        [TestMethod]
-        [DataRow("filename")]
-        [DataRow("directory")]
-        [DataRow("project")]
-        [DataRow("output-directory")]
-        public void WriteCommandFile_RejectsMismatchedPathCase(string mismatch)
-        {
-            var actualDirectory = mismatch == "directory" ? "inputdata" : "InputData";
-            var input = Path.Combine(root, actualDirectory);
-            Directory.CreateDirectory(input);
-            var actualFile = mismatch == "filename" ? "Термическая_1_0_1.tsf" : "термическая_1_0_1.tsf";
-            File.WriteAllText(Path.Combine(input, actualFile), "{}");
-            var selectedProject = mismatch == "project" ? Path.Combine(root, "модель с пробелами.bpf") : projectPath;
-            if (mismatch == "output-directory")
-                Directory.CreateDirectory(Path.Combine(root, "computationdata"));
-            var preprocessor = new global::PreProc.PreProc();
-            var queue = new[] { "термическая InputData/термическая_1_0_1.tsf выполнить" };
-            Assert.ThrowsException<ArgumentException>(() => preprocessor.WriteCommandFile(selectedProject, queue));
-            Assert.AreEqual(0, Directory.GetFiles(root, "*.tcf", SearchOption.AllDirectories).Length);
         }
 
         /// <summary>

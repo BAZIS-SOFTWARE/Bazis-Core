@@ -10,7 +10,13 @@ title PreProc-1 — API подготовки параметров
 caption [[PreProc.mdpuml Обзор]] | [[PreProc-2.mdpuml Очередь и имена]] | [[PreProc-3.mdpuml TCF и пути]]
 interface "IPreProc" as Api {
   + CalcCompDataV2(data, taskKinds, synchronizeTimeSteps) : IReadOnlyList<GeneralParameters>
-  + WriteCommandFile(projectPath, queueRows) : string
+  + Load(parameters) : void
+  + LoadInstructions(projectPath) : void
+  + Add(parameters) : void
+  + Remove(parameters) : bool
+  + Clear() : void
+  + GetEnumerator() : IEnumerator<GeneralParameters>
+  + WriteInstructions(projectPath) : string
   + SetDraftParameters<ResultParam>(parameter) : void
 }
 class "PreProc" as Processor {
@@ -29,17 +35,20 @@ class "DraftException" as Error {
 }
 class "Project: ICondData / CondData\nFrameFunction / MatData / TaskKind" as ProjectTypes <<external>>
 enum "MaterialDB: CategoryEnum" as Category <<external>>
-class "TcfWriter" as Writer <<reference>> [[PreProc-3.mdpuml]]
+class "TcfReader" as Reader <<reference>> [[PreProc-3.mdpuml]]
+interface "ISolverInstructionWriter" as WriterApi <<reference>> [[PreProc-3.mdpuml]]
 Processor ..|> Api
 Processor ..> Error
-Processor ..> Writer
+Processor ..> Reader : чтение TCF / TSF
+Processor ..> WriterApi : формат решателя
 Api ..> ProjectTypes
 Processor ..> Category : читает Metallurgical
 legend bottom
   Полные сигнатуры и ограничения generic — PreProc-1.md.
   Члены интерфейса в классе не повторяются; событий нет.
-  CalcCompDataV2 не записывает TSF.
-  Запись TSF выполняет клиент Gerbera после подключения нового API.
+  CalcCompDataV2 обновляет коллекцию PreProc и не записывает TSF.
+  LoadInstructions читает очередь целиком до замены текущей.
+  WriteInstructions записывает TSF и инструкцию выбранного решателя.
   Время в имени не управляет сортировкой.
 endlegend
 @enduml

@@ -27,10 +27,19 @@ namespace Project.TaskParameters
         Stationary
     }
 
+    /// <summary>Участие инструкции в очереди расчётов.</summary>
+    public enum TaskStatus
+    {
+        выполнить,
+        пропустить
+    }
+
     [Serializable]
     public class GeneralParameters
     {
         public TaskKind TaskKind { get; set; }
+        /// <summary>Статус инструкции в текущей очереди.</summary>
+        public TaskStatus Status { get; set; } = TaskStatus.выполнить;
         /// <summary>
         /// Индекс расчётного интервала, присвоенный препроцессором.
         /// </summary>
@@ -75,13 +84,20 @@ namespace Project.TaskParameters
             return fields.SingleOrDefault();
         }
         /// <summary>
-        /// Возвращает переносимую основу имени файлов TSF и DB.
+        /// Возвращает переносимую основу имени файлов TSF и DB без статуса очереди.
         /// </summary>
-        public override string ToString()
+        [JsonIgnore]
+        public string FileStem
         {
-            var start = TimeSettings.StartTime.ToString("G9", CultureInfo.InvariantCulture);
-            var stop = TimeSettings.StopTime.ToString("G9", CultureInfo.InvariantCulture);
-            return $"{TaskKind}_{Index}_{start}_{stop}";
+            get
+            {
+                var start = TimeSettings.StartTime.ToString("G9", CultureInfo.InvariantCulture);
+                var stop = TimeSettings.StopTime.ToString("G9", CultureInfo.InvariantCulture);
+                return $"{TaskKind}_{Index}_{start}_{stop}";
+            }
         }
+
+        /// <summary>Возвращает текст инструкции для отображения в очереди.</summary>
+        public override string ToString() => $"{FileStem}_{Status}";
     }
 }

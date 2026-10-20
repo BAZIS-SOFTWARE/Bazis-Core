@@ -9,7 +9,7 @@ namespace PreProc.Interfaces
     /// <summary>
     /// IPreProc
     /// </summary>
-    public interface IPreProc
+    public interface IPreProc : IEnumerable<GeneralParameters>
     {
         /// <summary>
         /// Формирует параметры заданных физических задач в порядке числовых индексов: тепло перед механикой.
@@ -18,11 +18,23 @@ namespace PreProc.Interfaces
         /// </summary>
         IReadOnlyList<GeneralParameters> CalcCompDataV2(IEnumerable<ICondData> data, TaskKind taskKinds, bool synchronizeTimeSteps = false);
 
-        /// <summary>
-        /// Записывает TCF по строкам текущей очереди «вид относительный-путь статус».
-        /// Сохраняет порядок и статусы без изменения TSF.
-        /// </summary>
-        string WriteCommandFile(string projectPath, IEnumerable<string> queueRows);
+        /// <summary>Заменяет текущую очередь готовыми параметрами.</summary>
+        void Load(IEnumerable<GeneralParameters> parameters);
+
+        /// <summary>Читает TCF проекта и связанные TSF, восстанавливая порядок и статусы очереди.</summary>
+        void LoadInstructions(string projectPath);
+
+        /// <summary>Добавляет инструкцию в конец очереди.</summary>
+        void Add(GeneralParameters parameters);
+
+        /// <summary>Удаляет инструкцию из очереди.</summary>
+        bool Remove(GeneralParameters parameters);
+
+        /// <summary>Удаляет все инструкции из текущей очереди.</summary>
+        void Clear();
+
+        /// <summary>Записывает текущие параметры в формате выбранного решателя.</summary>
+        string WriteInstructions(string projectPath);
 
         /// <summary>
         /// Задает базовые численные параметры физической задачи.

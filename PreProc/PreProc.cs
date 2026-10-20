@@ -2,6 +2,7 @@ using Project.Interfaces.Tasks;
 using Project.Tasks;
 using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using PreProc.Interfaces;
 using Project.TaskParameters;
@@ -12,22 +13,63 @@ using MaterialDB.MaterialData;
 namespace PreProc
 {
     /// <summary>
-    /// TaskStatus
-    /// </summary>
-    public enum TaskStatus : int { выполнить, пропустить };
-    /// <summary>
     /// PreProc. Препроцессор
     /// </summary>
     public class PreProc : IPreProc
     {
         private float[] AllTimeSeparators;
+        private readonly List<GeneralParameters> currentParameters = new();
+        private readonly ISolverInstructionWriter instructionWriter;
+
+        /// <summary>Создаёт препроцессор с форматом инструкций выбранного решателя.</summary>
+        public PreProc(ISolverInstructionWriter instructionWriter = null)
+        {
+            this.instructionWriter = instructionWriter ?? new TcfWriter();
+        }
+
+        /// <summary>Перечисляет текущие инструкции в порядке очереди.</summary>
+        public IEnumerator<GeneralParameters> GetEnumerator()
+        {
+            foreach (var parameters in currentParameters)
+                yield return parameters;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         /// <inheritdoc/>
-        public string WriteCommandFile(string projectPath, IEnumerable<string> queueRows)
+        public void Load(IEnumerable<GeneralParameters> parameters)
         {
-            var writer = new TcfWriter();
-            return writer.Write(projectPath, queueRows);
+            ArgumentNullException.ThrowIfNull(parameters);
+            var loaded = parameters.ToList();
+            if (loaded.Any(parameter => parameter == null))
+                throw new ArgumentException("The calculation queue contains a null parameter.", nameof(parameters));
+            currentParameters.Clear();
+            currentParameters.AddRange(loaded);
         }
+
+        /// <inheritdoc/>
+        public void LoadInstructions(string projectPath)
+        {
+            var reader = new TcfReader();
+            var parameters = reader.Read(projectPath);
+            Load(parameters);
+        }
+
+        /// <inheritdoc/>
+        public void Add(GeneralParameters parameters)
+        {
+            ArgumentNullException.ThrowIfNull(parameters);
+            currentParameters.Add(parameters);
+        }
+
+        /// <inheritdoc/>
+        public bool Remove(GeneralParameters parameters) => currentParameters.Remove(parameters);
+
+        /// <inheritdoc/>
+        public void Clear() => currentParameters.Clear();
+
+        /// <inheritdoc/>
+        public string WriteInstructions(string projectPath) => instructionWriter.Write(projectPath, currentParameters);
 
         /// <inheritdoc/>
         public IReadOnlyList<GeneralParameters> CalcCompDataV2(IEnumerable<ICondData> data, TaskKind taskKinds, bool synchronizeTimeSteps = false)
@@ -63,7 +105,8 @@ namespace PreProc
                 if (!Enum.IsDefined(item.TaskKind) || item.Index < 1 || !float.IsFinite(item.TimeSettings.StartTime) || !float.IsFinite(item.TimeSettings.StopTime) || item.TimeSettings.StartTime < 0 || item.TimeSettings.StopTime < item.TimeSettings.StartTime)
                     throw new ArgumentException("The calculated task kind, index or time interval is invalid.", nameof(data));
             }
-            return result.AsReadOnly();
+            Load(result);
+            return currentParameters.AsReadOnly();
         }
 
         private void SetUpTimeSeparators(IEnumerable<ICondData> valuableData)
@@ -350,7 +393,7 @@ namespace PreProc
                 if (i > 0)
                 {
                     var previous = parametrizedParams[i - 1];
-                    SetInitialFieldFromFile(current, $"../ResultsData/{previous}.db");
+                    SetInitialFieldFromFile(current, $"../ResultsData/{previous.FileStem}.db");
                 }
                 yield return current;
             }
@@ -404,11 +447,11 @@ namespace PreProc
                 if (i > 0)
                 {
                     var previousSource = sourceParameters[i - 1];
-                    SetInitialFieldFromFile(sourceParameter, $"../ResultsData/{previousSource}.db");
+                    SetInitialFieldFromFile(sourceParameter, $"../ResultsData/{previousSource.FileStem}.db");
                     var previousParameter = targetParameters[i - 1];
-                    SetInitialFieldFromFile(targetParameter, $"../ResultsData/{previousParameter}.db");
+                    SetInitialFieldFromFile(targetParameter, $"../ResultsData/{previousParameter.FileStem}.db");
                 }
-                SetInputField(targetParameter, sourceFieldSet, $"../ResultsData/{sourceParameter}.db");
+                SetInputField(targetParameter, sourceFieldSet, $"../ResultsData/{sourceParameter.FileStem}.db");
                 yield return sourceParameter;
                 yield return targetParameter;
             }
