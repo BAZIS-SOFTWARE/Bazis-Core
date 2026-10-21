@@ -81,7 +81,7 @@ namespace PreProc
                         throw new FormatException("Unsupported task kind in TCF.");
                 }
 
-                if (parameters == null || parameters.TaskKind != kind || parameters.Index < 1 || parameters.TimeSettings == null || !float.IsFinite(parameters.TimeSettings.StartTime) || !float.IsFinite(parameters.TimeSettings.StopTime) || parameters.TimeSettings.StartTime < 0 || parameters.TimeSettings.StopTime < parameters.TimeSettings.StartTime)
+                if (parameters == null || parameters.TaskKind != kind || parameters.Index < 0 || parameters.TimeSettings == null || !float.IsFinite(parameters.TimeSettings.StartTime) || !float.IsFinite(parameters.TimeSettings.StopTime) || parameters.TimeSettings.StartTime < 0 || parameters.TimeSettings.StopTime < parameters.TimeSettings.StartTime)
                     throw new InvalidDataException("The TSF contains invalid task parameters.");
                 var fileStem = Path.GetFileNameWithoutExtension(taskPath);
                 if (fileStem != parameters.FileStem)

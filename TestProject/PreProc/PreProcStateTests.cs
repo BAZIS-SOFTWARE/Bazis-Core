@@ -43,13 +43,13 @@ namespace TestProject_test.PreProc
                 File.WriteAllText(project, "Project fixture placeholder.");
                 var first = new TermalParameters
                 {
-                    Index = 1,
+                    Index = 0,
                     TimeSettings = new TimeSettings { StartTime = 0, StopTime = 1 },
                     SolverSettings = new SolverSettings(LinearSolverKind.BiCGStab, MatrixStorageKind.GeneralCsr)
                 };
                 var skipped = new MechanicalParameters
                 {
-                    Index = 2,
+                    Index = 1,
                     TimeSettings = new TimeSettings { StartTime = 1, StopTime = 2 },
                     SolverSettings = new SolverSettings(LinearSolverKind.BiCGStab, MatrixStorageKind.GeneralCsr),
                     Status = CalculationTaskStatus.пропустить
@@ -61,13 +61,13 @@ namespace TestProject_test.PreProc
                 var lines = File.ReadAllLines(commandFile);
                 Assert.AreEqual(3, lines.Length);
                 Assert.AreEqual("загрузить проект \"../model with spaces.bpf\"", lines[0]);
-                Assert.AreEqual("расчет механическая \"../InputData/механическая_2_1_2.tsf\" пропустить", lines[1]);
-                Assert.AreEqual("расчет термическая \"../InputData/термическая_1_0_1.tsf\" выполнить", lines[2]);
+                Assert.AreEqual("расчет механическая \"../InputData/механическая_1_1_2.tsf\" пропустить", lines[1]);
+                Assert.AreEqual("расчет термическая \"../InputData/термическая_0_0_1.tsf\" выполнить", lines[2]);
                 Assert.IsFalse(lines.Any(line => line.Contains('\\')));
                 var bytes = File.ReadAllBytes(commandFile);
                 Assert.IsFalse(bytes.Length >= 3 && bytes[0] == 0xef && bytes[1] == 0xbb && bytes[2] == 0xbf);
-                Assert.IsTrue(File.Exists(Path.Combine(root, "InputData", "термическая_1_0_1.tsf")));
-                Assert.IsTrue(File.Exists(Path.Combine(root, "InputData", "механическая_2_1_2.tsf")));
+                Assert.IsTrue(File.Exists(Path.Combine(root, "InputData", "термическая_0_0_1.tsf")));
+                Assert.IsTrue(File.Exists(Path.Combine(root, "InputData", "механическая_1_1_2.tsf")));
 
                 var restored = new global::PreProc.PreProc();
                 restored.LoadInstructions(project);
@@ -75,8 +75,8 @@ namespace TestProject_test.PreProc
                 Assert.AreEqual(2, parameters.Count);
                 Assert.IsInstanceOfType<MechanicalParameters>(parameters[0]);
                 Assert.IsInstanceOfType<TermalParameters>(parameters[1]);
-                Assert.AreEqual(2, parameters[0].Index);
-                Assert.AreEqual(1, parameters[1].Index);
+                Assert.AreEqual(1, parameters[0].Index);
+                Assert.AreEqual(0, parameters[1].Index);
                 Assert.AreEqual(CalculationTaskStatus.пропустить, parameters[0].Status);
                 Assert.AreEqual(CalculationTaskStatus.выполнить, parameters[1].Status);
             }
@@ -92,6 +92,7 @@ namespace TestProject_test.PreProc
         [DataRow("duplicate")]
         [DataRow("invalid-status")]
         [DataRow("invalid-time")]
+        [DataRow("invalid-index")]
         [DataRow("empty")]
         public void WriteInstructions_InvalidQueuePreservesCommandFile(string failure)
         {
@@ -103,7 +104,7 @@ namespace TestProject_test.PreProc
                 File.WriteAllText(project, "Project fixture placeholder.");
                 var valid = new TermalParameters
                 {
-                    Index = 1,
+                    Index = 0,
                     TimeSettings = new TimeSettings { StartTime = 0, StopTime = 1 },
                     SolverSettings = new SolverSettings(LinearSolverKind.BiCGStab, MatrixStorageKind.GeneralCsr)
                 };
@@ -113,7 +114,7 @@ namespace TestProject_test.PreProc
                 var original = File.ReadAllBytes(commandFile);
                 var second = new TermalParameters
                 {
-                    Index = failure == "duplicate" ? 1 : 2,
+                    Index = failure switch { "duplicate" => 0, "invalid-index" => -1, _ => 1 },
                     TimeSettings = new TimeSettings { StartTime = 1, StopTime = failure == "invalid-time" ? 0 : 2 },
                     SolverSettings = new SolverSettings(LinearSolverKind.BiCGStab, MatrixStorageKind.GeneralCsr),
                     Status = failure == "invalid-status" ? (CalculationTaskStatus)999 : CalculationTaskStatus.выполнить
@@ -148,8 +149,8 @@ namespace TestProject_test.PreProc
                 File.WriteAllText(project, "Project fixture placeholder.");
                 var parameters = new GeneralParameters[]
                 {
-                    new TermalParameters { Index = 1, TimeSettings = new TimeSettings { StartTime = 0, StopTime = 1 }, SolverSettings = new SolverSettings(LinearSolverKind.BiCGStab, MatrixStorageKind.GeneralCsr) },
-                    new TermalParameters { Index = 2, TimeSettings = new TimeSettings { StartTime = 1, StopTime = 2 }, SolverSettings = new SolverSettings(LinearSolverKind.BiCGStab, MatrixStorageKind.GeneralCsr) }
+                    new TermalParameters { Index = 0, TimeSettings = new TimeSettings { StartTime = 0, StopTime = 1 }, SolverSettings = new SolverSettings(LinearSolverKind.BiCGStab, MatrixStorageKind.GeneralCsr) },
+                    new TermalParameters { Index = 1, TimeSettings = new TimeSettings { StartTime = 1, StopTime = 2 }, SolverSettings = new SolverSettings(LinearSolverKind.BiCGStab, MatrixStorageKind.GeneralCsr) }
                 };
                 var writer = new global::PreProc.PreProc();
                 writer.Load(parameters);
@@ -162,12 +163,12 @@ namespace TestProject_test.PreProc
                 }
                 else if (failure == "invalid-tsf")
                 {
-                    var taskFile = Path.Combine(root, "InputData", "термическая_2_1_2.tsf");
+                    var taskFile = Path.Combine(root, "InputData", "термическая_1_1_2.tsf");
                     File.WriteAllText(taskFile, "null");
                 }
                 else if (failure == "missing-tsf")
                 {
-                    var taskFile = Path.Combine(root, "InputData", "термическая_2_1_2.tsf");
+                    var taskFile = Path.Combine(root, "InputData", "термическая_1_1_2.tsf");
                     File.Delete(taskFile);
                 }
                 else

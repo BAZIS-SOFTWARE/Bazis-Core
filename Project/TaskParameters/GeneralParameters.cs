@@ -41,7 +41,7 @@ namespace Project.TaskParameters
         /// <summary>Статус инструкции в текущей очереди.</summary>
         public TaskStatus Status { get; set; } = TaskStatus.выполнить;
         /// <summary>
-        /// Индекс расчётного интервала, присвоенный препроцессором.
+        /// Индекс расчётного интервала, присвоенный препроцессором начиная с нуля.
         /// </summary>
         public int Index { get; set; }
 

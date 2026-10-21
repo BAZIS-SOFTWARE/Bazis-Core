@@ -37,7 +37,7 @@ namespace PreProc
             {
                 if (parameter == null || !Enum.IsDefined(parameter.Status))
                     throw new ArgumentException("The calculation queue contains invalid parameters.", nameof(parameters));
-                if (!Enum.IsDefined(parameter.TaskKind) || parameter.Index < 1 || parameter.TimeSettings == null || !float.IsFinite(parameter.TimeSettings.StartTime) || !float.IsFinite(parameter.TimeSettings.StopTime) || parameter.TimeSettings.StartTime < 0 || parameter.TimeSettings.StopTime < parameter.TimeSettings.StartTime)
+                if (!Enum.IsDefined(parameter.TaskKind) || parameter.Index < 0 || parameter.TimeSettings == null || !float.IsFinite(parameter.TimeSettings.StartTime) || !float.IsFinite(parameter.TimeSettings.StopTime) || parameter.TimeSettings.StartTime < 0 || parameter.TimeSettings.StopTime < parameter.TimeSettings.StartTime)
                     throw new ArgumentException("The calculation queue contains an invalid task.", nameof(parameters));
                 var key = $"{parameter.TaskKind}_{parameter.Index.ToString(CultureInfo.InvariantCulture)}";
                 if (!keys.Add(key))

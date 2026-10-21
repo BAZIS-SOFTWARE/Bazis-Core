@@ -102,7 +102,7 @@ namespace PreProc
             var result = parameters.ToList();
             foreach (var item in result)
             {
-                if (!Enum.IsDefined(item.TaskKind) || item.Index < 1 || !float.IsFinite(item.TimeSettings.StartTime) || !float.IsFinite(item.TimeSettings.StopTime) || item.TimeSettings.StartTime < 0 || item.TimeSettings.StopTime < item.TimeSettings.StartTime)
+                if (!Enum.IsDefined(item.TaskKind) || item.Index < 0 || !float.IsFinite(item.TimeSettings.StartTime) || !float.IsFinite(item.TimeSettings.StopTime) || item.TimeSettings.StartTime < 0 || item.TimeSettings.StopTime < item.TimeSettings.StartTime)
                     throw new ArgumentException("The calculated task kind, index or time interval is invalid.", nameof(data));
             }
             Load(result);
@@ -389,7 +389,7 @@ namespace PreProc
             for (var i = 0; i < parametrizedParams.Count; i++)
             {
                 var current = parametrizedParams[i];
-                current.Index = i + 1;
+                current.Index = i;
                 if (i > 0)
                 {
                     var previous = parametrizedParams[i - 1];
@@ -421,8 +421,8 @@ namespace PreProc
             {
                 var sourceParameter = sourceParameters[i];
                 var targetParameter = targetParameters[i];
-                sourceParameter.Index = i + 1;
-                targetParameter.Index = i + 1;
+                sourceParameter.Index = i;
+                targetParameter.Index = i;
 
                 if (synchronizeTimeSteps)
                 {

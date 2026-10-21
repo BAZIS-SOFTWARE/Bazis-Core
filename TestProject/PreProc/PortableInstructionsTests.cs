@@ -107,7 +107,7 @@ namespace TestProject_test.PreProc
             for (var i = 0; i < parameters.Count; i++)
             {
                 var item = parameters[i];
-                Assert.AreEqual(i / 2 + 1, item.Index);
+                Assert.AreEqual(i / 2, item.Index);
                 Assert.AreEqual(i % 2 == 0 ? TaskKind.термическая : TaskKind.механическая, item.TaskKind);
             }
 
