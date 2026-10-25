@@ -18,16 +18,16 @@ namespace Geometry
 
         public Point2D MapToLocalPlaneCoordinates(Point3D point)
         {
-            var x = (float)Math.Round(Vector.DotProd(point.Sub(origin), xAxis), 4);
-            var y = (float)Math.Round(Vector.DotProd(point.Sub(origin), yAxis), 4);
+            var x = Math.Round(Vector.DotProd(point.Sub(origin), xAxis), 4);
+            var y = Math.Round(Vector.DotProd(point.Sub(origin), yAxis), 4);
             return new Point2D(x, y);
         }
 
         public Point3D UnmapToGlobalCoordinates(Point2D point)
         {
-            var x = (float)Math.Round(origin._x + point._x * xAxis._x + point._y * yAxis._x, 4);
-            var y = (float)Math.Round(origin._y + point._x * xAxis._y + point._y * yAxis._y, 4);
-            var z = (float)Math.Round(origin._z + point._x * xAxis._z + point._y * yAxis._z, 4);
+            var x = Math.Round(origin._x + point._x * xAxis._x + point._y * yAxis._x, 4);
+            var y = Math.Round(origin._y + point._x * xAxis._y + point._y * yAxis._y, 4);
+            var z = Math.Round(origin._z + point._x * xAxis._z + point._y * yAxis._z, 4);
             return new Point3D(x, y, z);
         }
     }

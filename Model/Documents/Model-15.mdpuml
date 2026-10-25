@@ -31,7 +31,7 @@ interface "ISurface<T>" as T_Model_Model_Interfaces_ISurface_1 {
   + IsInner : bool [get]
   + Number : int [get]
   + this[int ind] : T [get, set]
-  + GetDistance(point3D) : float
+  + GetDistance(point3D) : double
   + GetLinesFromSurface() : Segment3D[]
   + GetVertexIndex(vertex) : int
   + GetVertexes() : IEnumerable<T>

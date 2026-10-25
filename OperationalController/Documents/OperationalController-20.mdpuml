@@ -26,7 +26,7 @@ interface "IMeshCommands\nчасть 1/2" as T_OperationalController_Operational
   + CreateBoundaryEdges(linesNodes) : IEnumerable<ILineObject<Node>>
   + CreateElement(setName, dim, nodeNumbers) : void
   + CreateElementsSet(setName, dim) : void
-  + CreateNode(number, x, y, z) : void
+  + CreateNode(number: int, x: double, y: double, z: double) : void
   + CreateQuadMeshOnPoligon(points, numberOfElem) : void
   + DeleteModelObjects(objType, objNumbs) : void
   + DeleteModelSet(objType, name) : void

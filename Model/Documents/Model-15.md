@@ -55,7 +55,7 @@ CalcSquare() : double
 IsInner : bool [get]
 Number : int [get]
 this[int ind] : T [get, set]
-GetDistance(Point3D point3D) : float
+GetDistance(Point3D point3D) : double
 GetLinesFromSurface() : Segment3D[]
 GetVertexIndex(T vertex) : int
 GetVertexes() : IEnumerable<T>

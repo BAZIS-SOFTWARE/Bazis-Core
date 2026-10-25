@@ -77,8 +77,8 @@ namespace Model.IO
             while (line != "#Узел")
             {
                 var tokens = line.Split()
-                    .Where(m => float.TryParse(m, NumberStyles.Float, CultureInfo.InvariantCulture, out var val))
-                    .Select(m => float.Parse(m, CultureInfo.InvariantCulture));
+                    .Where(m => double.TryParse(m, NumberStyles.Float, CultureInfo.InvariantCulture, out var val))
+                    .Select(m => double.Parse(m, CultureInfo.InvariantCulture));
                 if (tokens.Count() != 0)
                 {
                     var nodeIndex = (int)tokens.First();

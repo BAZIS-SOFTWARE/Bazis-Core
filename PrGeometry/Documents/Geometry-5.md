@@ -56,9 +56,9 @@ ToString() : string
 P0 : Point3D [get]
 P1 : Point3D [get]
 GetDirectVector() : Point3D
-GetLength() : float
+GetLength() : double
 GetPlaneIntersection(ref bool state, Plane plane) : Point3D
-GetPointOnLine(float subLineLength) : Point3D
+GetPointOnLine(double subLineLength) : Point3D
 Segment3D(Point3D p0, Point3D p1)
 ```
 

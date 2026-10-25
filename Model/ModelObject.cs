@@ -52,11 +52,11 @@ namespace Model
 
         public abstract ObjType ObjType { get; }
 
-        public float _x
+        public double _x
         {
             get
             {
-                var sum_x = 0.0f;
+                var sum_x = 0.0;
                 foreach (var point in GetCoordinates())
                 {
                     sum_x += point._x;
@@ -64,11 +64,11 @@ namespace Model
                 return sum_x / NumberOfPoints;
             }
         }
-        public float _y
+        public double _y
         {
             get
             {
-                var sum_y = 0.0f;
+                var sum_y = 0.0;
                 foreach (var point in GetCoordinates())
                 {
                     sum_y += point._y;
@@ -76,11 +76,11 @@ namespace Model
                 return sum_y / NumberOfPoints;
             }
         }
-        public float _z
+        public double _z
         {
             get
             {
-                var sum_z = 0.0f;
+                var sum_z = 0.0;
                 foreach (var point in GetCoordinates())
                 {
                     sum_z += point._z;

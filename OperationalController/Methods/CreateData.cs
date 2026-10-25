@@ -87,10 +87,10 @@ namespace OperationalController
         {
             var nodes = new Node[]
             {
-                    new Node(numbN++,new Point3D((float)p0._x,(float)p0._y,0)),
-                    new Node(numbN++,new Point3D((float)p1._x,(float)p1._y,0)),
-                    new Node(numbN++,new Point3D((float)p2._x,(float)p2._y,0)),
-                    new Node(numbN++,new Point3D((float)p3._x,(float)p3._y,0)),
+                    new Node(numbN++,new Point3D(p0._x,p0._y,0)),
+                    new Node(numbN++,new Point3D(p1._x,p1._y,0)),
+                    new Node(numbN++,new Point3D(p2._x,p2._y,0)),
+                    new Node(numbN++,new Point3D(p3._x,p3._y,0)),
             };
             numbE++;
             return new Quad(numbE, nodes);
@@ -606,7 +606,7 @@ namespace OperationalController
 
         /// <inheritdoc/>
 
-        public void CreateNode(int number, float x, float y, float z)
+        public void CreateNode(int number, double x, double y, double z)
         {
             using (BeginChanges())
             {

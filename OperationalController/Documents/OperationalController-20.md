@@ -28,7 +28,7 @@ Create2DForm3D() : bool
 CreateBoundaryEdges(List<string> linesNodes) : IEnumerable<ILineObject<Node>>
 CreateElement(string setName, int dim, int[] nodeNumbers) : void
 CreateElementsSet(string setName, int dim) : void
-CreateNode(int number, float x, float y, float z) : void
+CreateNode(int number, double x, double y, double z) : void
 CreateQuadMeshOnPoligon(List<Point2D> points, int numberOfElem) : void
 DeleteModelObjects(ObjType objType, IEnumerable<int> objNumbs) : void
 DeleteModelSet(ObjType objType, string name) : void

@@ -67,13 +67,13 @@ namespace Geometry
         }
 /// <inheritdoc/>
 
-        public Point2D Div(float divide)
+        public Point2D Div(double divide)
         {
             return new Point2D(_x / divide, _y / divide);
         }
 /// <inheritdoc/>
 
-        public Point2D Mult(float multiplier)
+        public Point2D Mult(double multiplier)
         {
             return new Point2D(_x * multiplier, _y * multiplier);
         }

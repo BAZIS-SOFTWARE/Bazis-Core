@@ -23,7 +23,7 @@ namespace Model.Interfaces.ObjectsSorters
 
             while (fistNode < objs.Count - 1)
             {
-                var dists = new List<float>();
+                var dists = new List<double>();
                 for (int j = fistNode + 1; j < objs.Count; j++) // простейшая пузырьковая сортировка  
                 {
                     var dist = Vector.GetVectorLength(objs[fistNode].CalcCentr().Sub(objs[j].CalcCentr()));

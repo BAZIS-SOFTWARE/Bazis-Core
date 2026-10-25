@@ -29,12 +29,12 @@ namespace Geometry.Interfaces
         /// </summary>
         /// <param name="divide"></param>
         /// <returns></returns>
-        T Div(float divide);
+        T Div(double divide);
         /// <summary>
         /// Умножить точку на число
         /// </summary>
         /// <param name="multiplier"></param>
         /// <returns></returns>
-        T Mult(float multiplier);
+        T Mult(double multiplier);
     }
 }

@@ -29,7 +29,7 @@ class "Segment2D" as T_Geometry_Geometry_Segment2D {
   + P1 : Point2D [get]
   + P2 : Point2D [get]
   + GetIntersection(other) : Point2D
-  + GetLength() : float
+  + GetLength() : double
   + GetOrientationSign(p0) : int
   + GetPointOnLine(subLineLength) : Point2D
   + HasIntersectedPoint(other) : bool
@@ -44,7 +44,7 @@ class "Segment3D" as T_Geometry_Geometry_Segment3D {
   + GetDirectVector() : Point3D
   + GetLength() : float
   + GetPlaneIntersection(ref state, plane) : Point3D
-  + GetPointOnLine(subLineLength) : Point3D
+  + GetPointOnLine(subLineLength: double) : Point3D
   + Segment3D(p0, p1)
 }
 class "WarningAttribute" as T_Geometry_Geometry_Attribute_WarningAttribute {

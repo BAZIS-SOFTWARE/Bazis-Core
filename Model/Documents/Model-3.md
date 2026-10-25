@@ -54,7 +54,7 @@ Sort() : void
 Базовые типы: `IModelObject`, `IVertexObject<T>`.
 
 ```text
-CalcLength() : float
+CalcLength() : double
 ```
 
 ## `IModelData`

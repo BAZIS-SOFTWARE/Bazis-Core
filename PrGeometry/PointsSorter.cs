@@ -132,7 +132,7 @@ namespace Geometry
         private static bool CheckVectorsOrientation<T>(T[] points, int firstInd, int secondInd, Plane plane) where T : IPosition3D
         {
             //bool isPointInside = false;
-            var temp = new List<float>();
+            var temp = new List<double>();
 
             var baseVector = new Point3D()
             {
@@ -201,7 +201,7 @@ namespace Geometry
         private static bool CheckVectorsOrientation<T>(List<T> points, int firstInd, int secondInd, Plane plane) where T : IPosition3D
         {
             //bool isPointInside = false;
-            var temp = new List<float>();
+            var temp = new List<double>();
 
             var baseVector = new Point3D()
             {
@@ -241,7 +241,7 @@ namespace Geometry
 
             while (fistPoint < points.Count - 1)
             {
-                var dists = new List<float>();
+                var dists = new List<double>();
                 for (int j = fistPoint + 1; j < points.Count; j++) // простейшая пузырьковая сортировка  
                 {
                     var dx = points[fistPoint]._x - points[j]._x;

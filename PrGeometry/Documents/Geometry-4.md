@@ -19,7 +19,7 @@ Equals(Point3D other) : bool
 Equals(object obj) : bool
 GetHashCode() : int
 Point3D()
-Point3D(float x, float y, float z)
+Point3D(double x, double y, double z)
 ToString() : string
 ```
 
@@ -32,10 +32,10 @@ ToString() : string
 ```text
 CheckCollinearityVectors(Point3D vector1, Point3D vector2) : bool
 CrossProd(Point3D v1, Point3D v2) : Point3D
-DotProd(Point3D v1, Point3D v2) : float
-GetCosAngleVectors(Point3D n1, Point3D n2) : float
+DotProd(Point3D v1, Point3D v2) : double
+GetCosAngleVectors(Point3D n1, Point3D n2) : double
 GetVectorLength(Point2D p) : double
-GetVectorLength(Point3D p) : float
+GetVectorLength(Point3D p) : double
 GetVectorNorm(Point3D p) : Point3D
 GetVectorRotation(Point3D vec, Point3D axis, float angle) : Point3D
 GetVectorsSumm(Point3D v1, Point3D v2) : Point3D

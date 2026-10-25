@@ -90,7 +90,7 @@ namespace Model.IO
         {
             var nodeIndex = int.Parse(tokens[0]);
             var coordinates = tokens.Skip(1)
-                .Select(x => float.Parse(x, NumberStyles.Float, CultureInfo.InvariantCulture))
+                .Select(x => double.Parse(x, NumberStyles.Float, CultureInfo.InvariantCulture))
                 .ToArray();
             var node = new Node(nodeIndex, new Point3D(coordinates[0], coordinates[1], coordinates[2]));
             return node;

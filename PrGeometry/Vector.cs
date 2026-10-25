@@ -54,9 +54,9 @@ namespace Geometry
         /// </summary>
         /// <param name="p"></param>
         /// <returns></returns>
-        public static float GetVectorLength(Point3D p)
+        public static double GetVectorLength(Point3D p)
         {
-            return (float)Math.Sqrt(Math.Pow(p._x, 2) + Math.Pow(p._y, 2) + Math.Pow(p._z, 2));
+            return Math.Sqrt(Math.Pow(p._x, 2) + Math.Pow(p._y, 2) + Math.Pow(p._z, 2));
         }
         /// <summary>
         /// Найти норму вектора
@@ -80,8 +80,8 @@ namespace Geometry
         public static Point3D GetVectorRotation(Point3D vec, Point3D axis, float angle)
         {
 
-            var cos = (float)Math.Cos(angle * Math.PI / 180);
-            var sin = (float)Math.Sin(angle * Math.PI / 180);
+            var cos = Math.Cos(angle * Math.PI / 180);
+            var sin = Math.Sin(angle * Math.PI / 180);
 
             var m00 = cos + (1 - cos) * axis._x * axis._x;
             var m01 = (1 - cos) * axis._x * axis._y - sin * axis._z;
@@ -103,8 +103,8 @@ namespace Geometry
             };
 
 
-            var vecIni = Vector<float>.Build.DenseOfArray(new float[] { vec._x, vec._y, vec._z });
-            var matrix = Matrix<float>.Build.DenseOfArray(array);
+            var vecIni = Vector<double>.Build.DenseOfArray(new double[] { vec._x, vec._y, vec._z });
+            var matrix = Matrix<double>.Build.DenseOfArray(array);
             var vecRot = matrix.Multiply(vecIni);
             return new Point3D(vecRot[0], vecRot[1], vecRot[2]);
         }
@@ -117,8 +117,8 @@ namespace Geometry
         public static Point3D CrossProd(Point3D v1, Point3D v2)
         {
             var result = new Point3D();
-            var a = new float[] { v1._x, v1._y, v1._z };
-            var b = new float[] { v2._x, v2._y, v2._z };
+            var a = new double[] { v1._x, v1._y, v1._z };
+            var b = new double[] { v2._x, v2._y, v2._z };
 
             var x = a[1] * b[2] - a[2] * b[1];
             var y = a[2] * b[0] - a[0] * b[2];
@@ -137,7 +137,7 @@ namespace Geometry
         /// <param name="v1"></param>
         /// <param name="v2"></param>
         /// <returns></returns>
-        public static float DotProd(Point3D v1, Point3D v2)
+        public static double DotProd(Point3D v1, Point3D v2)
         {
             var a = v1._x * v2._x;
             var b = v1._y * v2._y;
@@ -154,8 +154,8 @@ namespace Geometry
         public static Point3D GetVectorsSumm(Point3D v1, Point3D v2)
         {
             Point3D result = new Point3D();
-            var a = new float[] { v1._x, v1._y, v1._z };
-            var b = new float[] { v2._x, v2._y, v2._z };
+            var a = new double[] { v1._x, v1._y, v1._z };
+            var b = new double[] { v2._x, v2._y, v2._z };
 
             result._x = a[0] + b[0];
             result._y = a[1] + b[1];
@@ -169,7 +169,7 @@ namespace Geometry
         /// <param name="n1"></param>
         /// <param name="n2"></param>
         /// <returns></returns>
-        public static float GetCosAngleVectors(Point3D n1, Point3D n2)
+        public static double GetCosAngleVectors(Point3D n1, Point3D n2)
         {
             var prod1 = DotProd(n1,n2);
 

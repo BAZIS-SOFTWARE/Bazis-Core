@@ -38,13 +38,13 @@ namespace Results.ScenePresenter
         public int NumberOfPoints => 1;
 
         /// <inheritdoc/>
-        public float _x => Position._x;
+        public double _x => Position._x;
 
         /// <inheritdoc/>
-        public float _y => Position._y;
+        public double _y => Position._y;
 
         /// <inheritdoc/>
-        public float _z => Position._z;
+        public double _z => Position._z;
 
         /// <summary>
         /// Вычисляет центр точки.

@@ -37,7 +37,7 @@ namespace Model.GeometryObjects
         }
         /// <inheritdoc/>
 
-        public float CalcLength()
+        public double CalcLength()
         {
             throw new NotImplementedException();
         }

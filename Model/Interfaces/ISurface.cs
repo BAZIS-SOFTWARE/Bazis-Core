@@ -45,7 +45,7 @@ namespace Model.Interfaces
         /// </summary>
         /// <param name="point3D"></param>
         /// <returns></returns>
-        float GetDistance(Point3D point3D);
+        double GetDistance(Point3D point3D);
         /// <summary>
         /// GetLinesFromSurface
         /// </summary>

@@ -12,19 +12,19 @@
         /// <summary>
         /// Shifting
         /// </summary>
-        float Shifting { get; set; }
+        double Shifting { get; set; }
 
         /// <summary>
         /// PointPosition
         /// </summary>
         /// <param name="point"></param>
         /// <returns></returns>
-        float PointPosition(Point3D point);
+        double PointPosition(Point3D point);
         /// <summary>
         /// PlanePosition
         /// </summary>
         /// <param name="plane"></param>
         /// <returns></returns>
-        float PlanePosition(Plane plane);
+        double PlanePosition(Plane plane);
     }
 }

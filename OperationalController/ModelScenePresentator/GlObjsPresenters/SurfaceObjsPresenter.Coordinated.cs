@@ -195,9 +195,9 @@ namespace OperationalController.ModelScenePresentator.GlObjsPresenters
         /// </summary>
         private void WritePoint(float[] vertexes, int index, Point3D point)
         {
-            vertexes[index] = point._x;
-            vertexes[index + 1] = point._y;
-            vertexes[index + 2] = point._z;
+            vertexes[index] = (float)point._x;
+            vertexes[index + 1] = (float)point._y;
+            vertexes[index + 2] = (float)point._z;
         }
 
         /// <summary>

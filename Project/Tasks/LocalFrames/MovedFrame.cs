@@ -157,13 +157,13 @@ namespace Project.Tasks.LocalFrames
             if (baseLine == null)
                 return 0;
 
-            var path = 0.0f;
+            var path = 0.0;
             for (var i = 1; i < baseLine.Count; i++)
                 path = path + new Segment3D(baseLine[i].CalcCentr(), baseLine[i - 1].CalcCentr()).GetLength();
 
             var stopTime = path / velocity;
 
-            return stopTime;
+            return (float)stopTime;
         }
 /// <inheritdoc/>
 
@@ -177,7 +177,7 @@ namespace Project.Tasks.LocalFrames
             else
             {
                 var posit = new Point3D();
-                var path = 0.0f;
+                var path = 0.0;
 
                 var dirY = new Point3D();
                 var dirX = new Point3D();

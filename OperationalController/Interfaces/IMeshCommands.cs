@@ -37,7 +37,7 @@ namespace OperationalController
         void Extrude3DForm2D(Point3D vector, int layers, IEnumerable<IElement2D> elements);
         void CreateElementsSet(string setName, int dim);
         void CreateElement(string setName, int dim, int[] nodeNumbers);
-        void CreateNode(int number, float x, float y, float z);
+        void CreateNode(int number, double x, double y, double z);
         bool Create1DFrom2D();
         bool Create2DForm3D();
         IEnumerable<ILineObject<Node>> CreateBoundaryEdges(List<string> linesNodes);

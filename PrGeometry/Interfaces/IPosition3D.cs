@@ -14,14 +14,14 @@ namespace Geometry.Interfaces
         /// <summary>
         /// X coord
         /// </summary>
-        float _x { get; }
+        double _x { get; }
         /// <summary>
         /// Y coord
         /// </summary>
-        float _y { get; }
+        double _y { get; }
         /// <summary>
         /// Z coord
         /// </summary>
-        float _z { get; }
+        double _z { get; }
     }
 }

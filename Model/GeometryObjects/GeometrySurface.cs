@@ -79,7 +79,7 @@ namespace Model.GeometryObjects
 
         public double CalcSquare()
         {
-            var square = 0.0f;
+            var square = 0.0;
             for (int i = 0; i < NumberOfPoints - 2; i++)
             {
                 var v1 = this[i + 1].Position.Sub(this[0].Position);
@@ -118,7 +118,7 @@ points.Contains(this.points[2].Position, new Point3DEqualityComparer()))
         /// </summary>
         /// <param name="point"></param>
         /// <returns></returns>
-        public float GetDistance(Point3D point)
+        public double GetDistance(Point3D point)
         {
             var normal = CalcNormal();
             var nNormal = Vector.GetVectorNorm(normal);

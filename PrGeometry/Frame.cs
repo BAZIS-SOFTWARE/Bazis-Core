@@ -11,7 +11,7 @@ namespace Geometry
         /// <summary>
         /// InverseTransitionMatrix
         /// </summary>
-        public Matrix<float> InverseTransitionMatrix { get; private set; }
+        public Matrix<double> InverseTransitionMatrix { get; private set; }
         public Point3D Dir_X { get; private set; }
         public Point3D Dir_Y { get; private set; }
         public Point3D Dir_Z { get; private set; }
@@ -27,8 +27,8 @@ namespace Geometry
         {
             var localVector = point.Sub(Centre);
 
-            var desiredPointMatrix = Vector<float>.Build.DenseOfArray
-                (new float[]
+            var desiredPointMatrix = Vector<double>.Build.DenseOfArray
+                (new double[]
                 { localVector._x, localVector._y, localVector._z });
             var res = InverseTransitionMatrix.Multiply(desiredPointMatrix);
 
@@ -37,12 +37,12 @@ namespace Geometry
 
         public void DetermineInverseMatrix()
         {
-            var frameArr = Matrix<float>.Build.DenseOfArray(new float[3, 3]
+            var frameArr = Matrix<double>.Build.DenseOfArray(new double[3, 3]
                 {{Dir_X._x, Dir_X._y, Dir_X._z  },
                  {Dir_Y._x, Dir_Y._y, Dir_Y._z},
                  {Dir_Z._x, Dir_Z._y, Dir_Z._z}});
 
-            var bazisMatrix = Matrix<float>.Build.DenseOfArray(new float[3, 3] {
+            var bazisMatrix = Matrix<double>.Build.DenseOfArray(new double[3, 3] {
                                                       {1, 0, 0},
                                                       {0, 1, 0},
                                                       {0, 0, 1}});

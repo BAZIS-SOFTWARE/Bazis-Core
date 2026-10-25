@@ -12,9 +12,9 @@ namespace OperationalController.ModelScenePresentator.GlObjsVertexCreators
             var points = nodeObject.GetCoordinates().ToArray();
             for (int k = 0; k < points.Length; k++)
             {
-                vertexAtributes[stride + 3 * k + 0] = points[k]._x;
-                vertexAtributes[stride + 3 * k + 1] = points[k]._y;
-                vertexAtributes[stride + 3 * k + 2] = points[k]._z;
+                vertexAtributes[stride + 3 * k + 0] = (float)points[k]._x;
+                vertexAtributes[stride + 3 * k + 1] = (float)points[k]._y;
+                vertexAtributes[stride + 3 * k + 2] = (float)points[k]._z;
             }
             stride += nodeObject.NumberOfPoints * 3;
         }
