@@ -14,7 +14,7 @@
 | [Geometry-2](Geometry-2.mdpuml) | Геометрические построения и операции; Curve2D, Curve3D, Hull2DCreator, Point3DEqualityComparer, PointsSorter, Polygon |
 | [Geometry-3](Geometry-3.mdpuml) | Координаты и системы отсчёта; IPosition3D, IPositionFunctions, Frame, Frame2D, Plane, Point2D |
 | [Geometry-4](Geometry-4.mdpuml) | Координаты и системы отсчёта; Point3D, Vector |
-| [Geometry-5](Geometry-5.mdpuml) | Геометрические построения и операции; RectangleBox, Segment2D, Segment3D, WarningAttribute, EnumerableExtensions |
+| [Geometry-5](Geometry-5.mdpuml) | Геометрические построения и операции; Segment2D, Segment3D, WarningAttribute, EnumerableExtensions |
 
 ## Указатель типов
 
@@ -31,7 +31,6 @@
 | `Geometry.Point3DEqualityComparer` | [Geometry-2](Geometry-2.mdpuml) | [Point3DEqualityComparer.cs](../../PrGeometry/Point3DEqualityComparer.cs) |
 | `Geometry.PointsSorter` | [Geometry-2](Geometry-2.mdpuml) | [PointsSorter.cs](../../PrGeometry/PointsSorter.cs) |
 | `Geometry.Polygon` | [Geometry-2](Geometry-2.mdpuml) | [Polygon.cs](../../PrGeometry/Polygon.cs) |
-| `Geometry.RectangleBox` | [Geometry-5](Geometry-5.mdpuml) | [RectangleBox.cs](../../PrGeometry/RectangleBox.cs) |
 | `Geometry.Segment2D` | [Geometry-5](Geometry-5.mdpuml) | [Segment2D.cs](../../PrGeometry/Segment2D.cs) |
 | `Geometry.Segment3D` | [Geometry-5](Geometry-5.mdpuml) | [Segment3D.cs](../../PrGeometry/Segment3D.cs) |
 | `Geometry.Vector` | [Geometry-4](Geometry-4.mdpuml) | [Vector.cs](../../PrGeometry/Vector.cs) |

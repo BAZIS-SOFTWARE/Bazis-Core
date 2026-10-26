@@ -6,26 +6,6 @@
 
 Для классов члены реализуемых интерфейсов не повторяются. Внешние стандартные интерфейсы .NET не раскрываются. Полный состав типа при разбиении приведён на перечисленных ниже диаграммах.
 
-## `RectangleBox`
-
-Пространство имён: `Geometry`.
-
-Исходники: [RectangleBox.cs](../../PrGeometry/RectangleBox.cs).
-
-```text
-Bottom : int [get, set]
-Left : int [get, set]
-Right : int [get, set]
-Top : int [get, set]
-GetPoints() : Point2D[]
-IsInnerOther(RectangleBox other) : bool
-IsIntersectWithOther(RectangleBox other) : bool
-IsPointInside(Point2D point) : bool
-IsPointsInside(Point2D[] points) : bool
-RectangleBox(IEnumerable<Point2D> points)
-RectangleBox(int left, int right, int bottom, int top)
-```
-
 ## `Segment2D`
 
 Пространство имён: `Geometry`.
