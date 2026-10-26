@@ -28,6 +28,7 @@ interface "IFrameData" as T_Project_Project_Interfaces_Tasks_IFrameData {
   + LocalFrame : ILocalFrame [get, set]
 }
 interface "IFrameFunction" as T_Project_Project_Interfaces_Tasks_IFrameFunction {
+  + CalcMaxTimeStep(velocity) : float
   + CalcValue(elementCenter) : double
   + GetIntersectedObjects<T>(elements) : List<T>
   + IsOverlappingSelf(velocity) : bool

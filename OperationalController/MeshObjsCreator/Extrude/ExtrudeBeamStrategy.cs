@@ -28,7 +28,7 @@ namespace OperationalController.MeshObjsCreator.Extrude
         public void Initialize(CurveExtruder extruder, object extrudeElements)
         {
             _firstNode = extrudeElements as Node;
-            _startNode = new Vector4(_firstNode._x, _firstNode._y, _firstNode._z, 1);
+            _startNode = new Vector4((float)_firstNode._x, (float)_firstNode._y, (float)_firstNode._z, 1);
         }
         /// <summary>
         /// Препроцессор, выполняется перед началом внутреннего цикла обхода кривой

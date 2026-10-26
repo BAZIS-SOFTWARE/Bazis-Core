@@ -4,50 +4,40 @@ skinparam classAttributeIconSize 0
 skinparam shadowing false
 skinparam defaultFontName Arial
 skinparam defaultFontSize 12
-skinparam nodesep 18
-skinparam ranksep 24
-skinparam packageStyle rectangle
 hide empty members
 set namespaceSeparator none
-
-allowmixing
-title PreProc — обзор классов и расположение подробностей
-caption Обзор; полный состав членов — на нумерованных поддиаграммах
-interface "IPreProc" as T_PreProc_PreProc_Interfaces_IPreProc <<details>>
-note right of T_PreProc_PreProc_Interfaces_IPreProc
-  PreProc-1
-end note
-class "PreProc" as T_PreProc_PreProc_PreProc <<details>>
-note right of T_PreProc_PreProc_PreProc
-  PreProc-1
-end note
-class "ProcessProperty" as T_PreProc_PreProc_ProcessProperty <<struct>> <<details>>
-note right of T_PreProc_PreProc_ProcessProperty
-  PreProc-1
-end note
-enum "ProcessType" as T_PreProc_PreProc_Interfaces_ProcessType <<details>>
-note right of T_PreProc_PreProc_Interfaces_ProcessType
-  PreProc-1
-end note
-enum "TaskStatus" as T_PreProc_PreProc_TaskStatus <<details>>
-note right of T_PreProc_PreProc_TaskStatus
-  PreProc-1
-end note
-class "DraftException" as T_PreProc_PreProc_DraftException <<details>>
-note right of T_PreProc_PreProc_DraftException
-  PreProc-1
-end note
-T_PreProc_PreProc_PreProc --> T_PreProc_PreProc_ProcessProperty : использует
-T_PreProc_PreProc_PreProc ..|> T_PreProc_PreProc_Interfaces_IPreProc
-T_PreProc_PreProc_ProcessProperty --> T_PreProc_PreProc_Interfaces_ProcessType : использует
-rectangle "Подготовка расчётных инструкций" as Area_1 <<область>>
-note right of Area_1
-  PreProc-1.mdpuml
-end note
-T_PreProc_PreProc_Interfaces_IPreProc -[hidden]down-> T_PreProc_PreProc_PreProc
-T_PreProc_PreProc_PreProc -[hidden]down-> T_PreProc_PreProc_ProcessProperty
-T_PreProc_PreProc_ProcessProperty -[hidden]down-> T_PreProc_PreProc_Interfaces_ProcessType
-T_PreProc_PreProc_Interfaces_ProcessType -[hidden]down-> T_PreProc_PreProc_TaskStatus
-T_PreProc_PreProc_TaskStatus -[hidden]down-> T_PreProc_PreProc_DraftException
-T_PreProc_PreProc_DraftException -[hidden]down-> Area_1
+title PreProc — обзор и навигация
+caption Подробности состава типов — на трёх поддиаграммах
+package "[[PreProc-1.mdpuml Подготовка TSF / PreProc-1]]" {
+  interface "IPreProc" as Api [[PreProc-1.mdpuml]]
+  class "PreProc" as Processor [[PreProc-1.mdpuml]]
+  class "DraftException" as Error [[PreProc-1.mdpuml]]
+  Processor ..|> Api
+  Processor ..> Error
+}
+package "[[PreProc-2.mdpuml Параметры и очередь / PreProc-2]]" {
+  class "Project: GeneralParameters" as Parameters <<external>> [[PreProc-2.mdpuml]]
+  enum "Project: TaskStatus" as Status <<external>> [[PreProc-2.mdpuml]]
+}
+package "[[PreProc-3.mdpuml Чтение и запись TCF / PreProc-3]]" {
+  class "TcfWriter" as Writer [[PreProc-3.mdpuml]]
+  class "TcfReader" as Reader <<internal>> [[PreProc-3.mdpuml]]
+  interface "ISolverInstructionWriter" as WriterApi [[PreProc-3.mdpuml]]
+  class "CalculationPaths" as Paths <<internal>> [[PreProc-3.mdpuml]]
+  Writer ..> Paths
+  Reader ..> Paths
+}
+Processor ..> Parameters : подготавливает
+Processor ..> WriterApi : делегирует запись
+Processor ..> Reader : загружает очередь
+Writer ..|> WriterApi
+Parameters --> Status : хранит
+legend bottom
+  CalcCompDataV2(data, taskKinds, synchronizeTimeSteps): возвращает параметры без файлов.
+  Флаг true задаёт общие шаги связанным задачам на каждом интервале.
+  PreProc хранит и перечисляет текущие GeneralParameters.
+  WriteInstructions записывает TSF и TCF из текущих параметров.
+  LoadInstructions читает TCF и все TSF, восстанавливая порядок и статусы.
+  TCF хранит все задачи, включая пропущенные.
+endlegend
 @enduml

@@ -13,13 +13,13 @@ set namespaceSeparator none
 title Geometry-3 — Координаты и системы отсчёта
 caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
 interface "IPosition3D" as T_Geometry_Geometry_Interfaces_IPosition3D {
-  + _x : float [get]
-  + _y : float [get]
-  + _z : float [get]
+  + _x : double [get, set]
+  + _y : double [get, set]
+  + _z : double [get, set]
 }
 interface "IPositionFunctions<T>" as T_Geometry_Geometry_Interfaces_IPositionFunctions_1 {
-  + Div(divide) : T
-  + Mult(multiplier) : T
+  + Div(divide: double) : T
+  + Mult(multiplier: double) : T
   + Sub(SubstractValue) : T
   + Sum(AddedValue) : T
 }
@@ -28,7 +28,7 @@ class "Frame" as T_Geometry_Geometry_Frame {
   + Dir_X : Point3D [get, private set]
   + Dir_Y : Point3D [get, private set]
   + Dir_Z : Point3D [get, private set]
-  + InverseTransitionMatrix : Matrix<float> [get, private set]
+  + InverseTransitionMatrix : Matrix<double> [get, private set]
   + DetermineInverseMatrix() : void
   + Frame()
   + Frame(p0, p1, p2)

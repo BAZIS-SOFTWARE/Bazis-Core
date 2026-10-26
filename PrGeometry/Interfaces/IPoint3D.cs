@@ -10,7 +10,7 @@
         /// </summary>
         /// <param name="line"></param>
         /// <returns></returns>
-        float GetDistanceToLine(Segment3D line);
+        double GetDistanceToLine(Segment3D line);
         /// <summary>
         /// Найти проекцию на плоскость
         /// </summary>

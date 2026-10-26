@@ -8,12 +8,12 @@ namespace Geometry
     /// </summary>
     public class Plane : IPlane
     {
-        private const float INV_FACTOR = 1e-12f;
+        private const double INV_FACTOR = 1e-12;
         /// <inheritdoc/>
         public Point3D Normal { get; }
 /// <inheritdoc/>
 
-        public float Shifting { get; set; }
+        public double Shifting { get; set; }
         /// <summary>
         /// Plane
         /// </summary>
@@ -51,7 +51,7 @@ namespace Geometry
         /// </summary>
         /// <param name="normal"></param>
         /// <param name="shifting"></param>
-        public Plane(Point3D normal, float shifting)
+        public Plane(Point3D normal, double shifting)
         {
             if (Vector.GetVectorLength(normal) < INV_FACTOR)
                 throw new Exception("Вектор нормали плоскости равен нулю");
@@ -61,7 +61,7 @@ namespace Geometry
 /// <inheritdoc/>
 
 
-        public float PointPosition(Point3D point)
+        public double PointPosition(Point3D point)
         {
             var lenght = Vector.GetVectorLength(Normal);
 
@@ -69,7 +69,7 @@ namespace Geometry
         }
 /// <inheritdoc/>
 
-        public float PlanePosition(Plane plane)
+        public double PlanePosition(Plane plane)
         {      
             return (plane.Shifting - Shifting) / Vector.GetVectorLength(Normal);
         }

@@ -1,103 +1,121 @@
-using Newtonsoft.Json;
 using Project.Interfaces.Tasks;
 using Project.Tasks;
 using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Collections;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using PreProc.Interfaces;
 using Project.TaskParameters;
+using Project.Tasks.Functions;
+using Project.Tasks.LocalFrames;
+using MaterialDB.MaterialData;
 
 namespace PreProc
 {
-    /// <summary>
-    /// TaskStatus
-    /// </summary>
-    public enum TaskStatus : int { выполнить, пропустить };
     /// <summary>
     /// PreProc. Препроцессор
     /// </summary>
     public class PreProc : IPreProc
     {
-        private JsonSerializerSettings settingsSerializer = new JsonSerializerSettings
-        {
-            TypeNameHandling = TypeNameHandling.Auto,
-            Formatting = Formatting.Indented,
-        };
-
-        private Dictionary<DataKind, List<Tuple<float, float>>> TimeSeparators = new Dictionary<DataKind, List<Tuple<float, float>>>();
-
         private float[] AllTimeSeparators;
-        private ProcessProperty processProp;
-        private string _path;
+        private readonly List<GeneralParameters> currentParameters = new();
+        private readonly ISolverInstructionWriter instructionWriter;
+
+        /// <summary>Создаёт препроцессор с форматом инструкций выбранного решателя.</summary>
+        public PreProc(ISolverInstructionWriter instructionWriter = null)
+        {
+            this.instructionWriter = instructionWriter ?? new TcfWriter();
+        }
+
+        /// <summary>Перечисляет текущие инструкции в порядке очереди.</summary>
+        public IEnumerator<GeneralParameters> GetEnumerator()
+        {
+            foreach (var parameters in currentParameters)
+                yield return parameters;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         /// <inheritdoc/>
-        public void CalcCompDataV1(IEnumerable<ICondData> data, ProcessType processType, string path)
+        public void Load(IEnumerable<GeneralParameters> parameters)
         {
-            var taskData = data.ToList();
-            SetUpTimeSeparators(taskData);
-            processProp = new ProcessProperty { CommonTaskType = processType, TaskKind = TaskKind.термическая | TaskKind.механическая };
-            _path = path;
-
-            CreateFilesForComplexProcess(
-                GetParameters<HeatData, MediaData, TermalParameters>(taskData),
-                GetParameters<LoadData, ClampData, MechanicalParameters>(taskData));
+            ArgumentNullException.ThrowIfNull(parameters);
+            var loaded = parameters.ToList();
+            if (loaded.Any(parameter => parameter == null))
+                throw new ArgumentException("The calculation queue contains a null parameter.", nameof(parameters));
+            currentParameters.Clear();
+            currentParameters.AddRange(loaded);
         }
 
         /// <inheritdoc/>
-        public void CalcCompDataV2(IEnumerable<ICondData> data, ProcessProperty property, string path)
+        public void LoadInstructions(string projectPath)
         {
-            SetUpTimeSeparators(data);
-            processProp = property;
-            _path = path;
+            var reader = new TcfReader();
+            var parameters = reader.Read(projectPath);
+            Load(parameters);
+        }
 
-            switch (processProp.TaskKind)
+        /// <inheritdoc/>
+        public void Add(GeneralParameters parameters)
+        {
+            ArgumentNullException.ThrowIfNull(parameters);
+            currentParameters.Add(parameters);
+        }
+
+        /// <inheritdoc/>
+        public bool Remove(GeneralParameters parameters) => currentParameters.Remove(parameters);
+
+        /// <inheritdoc/>
+        public void Clear() => currentParameters.Clear();
+
+        /// <inheritdoc/>
+        public string WriteInstructions(string projectPath) => instructionWriter.Write(projectPath, currentParameters);
+
+        /// <inheritdoc/>
+        public IReadOnlyList<GeneralParameters> CalcCompDataV2(IEnumerable<ICondData> data, TaskKind taskKinds, bool synchronizeTimeSteps = false)
+        {
+            ArgumentNullException.ThrowIfNull(data);
+            var taskData = data.ToList();
+            SetUpTimeSeparators(taskData);
+            IEnumerable<GeneralParameters> parameters;
+            switch (taskKinds)
             {
-                //case ComplexTaskType.химическая:
-                //    CreateFilesForSingleProcess(processProp.CommonTaskType.ToString(), GetParameters<ChemicalData, MediaData, ChemicalParameters>(data));
-                //    break;
-
                 case TaskKind.термическая:
-                    CreateFilesForSingleProcess(processProp.TaskKind.ToString(), GetParameters<HeatData, MediaData, TermalParameters>(data));
+                    var thermal = GetParameters<HeatData, MediaData, TermalParameters>(taskData);
+                    parameters = PrepareSingleProcess(thermal);
                     break;
 
                 case TaskKind.механическая:
-                    CreateFilesForSingleProcess(processProp.TaskKind.ToString(), GetParameters<LoadData, ClampData, MechanicalParameters>(data));
+                    var mechanical = GetParameters<LoadData, ClampData, MechanicalParameters>(taskData);
+                    parameters = PrepareSingleProcess(mechanical);
                     break;
 
-                //case ComplexTaskType.химическая_термическая:
-                //    CreateFilesForComplexProcess(
-                //        GetParameters<ChemicalData, MediaData, ChemicalParameters>(data),
-                //        GetParameters<HeatData, MediaData, TermalParameters>(data));
-                //    break;
-
                 case TaskKind.термическая | TaskKind.механическая:
-                    CreateFilesForComplexProcess(
-                        GetParameters<HeatData, MediaData, TermalParameters>(data),
-                        GetParameters<LoadData, ClampData, MechanicalParameters>(data));
+                    var source = GetParameters<HeatData, MediaData, TermalParameters>(taskData);
+                    var target = GetParameters<LoadData, ClampData, MechanicalParameters>(taskData);
+                    parameters = PrepareComplexProcess(source, target, taskData, synchronizeTimeSteps);
                     break;
 
                 default:
                     throw new NotImplementedException();
             }
+            var result = parameters.ToList();
+            foreach (var item in result)
+            {
+                if (!Enum.IsDefined(item.TaskKind) || item.Index < 0 || !float.IsFinite(item.TimeSettings.StartTime) || !float.IsFinite(item.TimeSettings.StopTime) || item.TimeSettings.StartTime < 0 || item.TimeSettings.StopTime < item.TimeSettings.StartTime)
+                    throw new ArgumentException("The calculated task kind, index or time interval is invalid.", nameof(data));
+            }
+            Load(result);
+            return currentParameters.AsReadOnly();
         }
 
         private void SetUpTimeSeparators(IEnumerable<ICondData> valuableData)
         {
             var separators = new List<float>();
-            TimeSeparators.Clear();
-
             foreach (var data in valuableData)
             {
-                var startStop = Tuple.Create(data.StartTime, data.StopTime);
-                if (!TimeSeparators.ContainsKey(data.Kind))
-                    TimeSeparators.Add(data.Kind, new List<Tuple<float, float>>() { startStop });
-                else
-                    TimeSeparators[data.Kind].Add(startStop);
-                separators.Add(startStop.Item1);
-                separators.Add(startStop.Item2);
+                separators.Add(data.StartTime);
+                separators.Add(data.StopTime);
             }
             AllTimeSeparators = separators.Distinct().OrderBy(x => x).ToArray();
         }
@@ -182,12 +200,9 @@ namespace PreProc
                     .Select(item => new ConditionReference(item.Index, item.Item.Kind, item.Item.Group.Name))
                     .ToList();
 
-                if (TimeSeparators.ContainsKey(DataKind.Нагрев))
-                    if (!TimeSeparators[DataKind.Нагрев].Any(x => x.Item1 == start && x.Item2 == stop))
-                    {
-                        parameter.TimeSettings.InitTimeStep = 0.5f;
-                        parameter.TimeSettings.MaxTimeStep = 100f;
-                    }
+                SetTimeStep<LoadData>(parameter, data, start, stop);
+                if (parameter is TermalParameters thermal)
+                    SetMetallurgicalProcesses(thermal, data, start, stop);
 
                 result.Add(parameter);
             }
@@ -195,108 +210,88 @@ namespace PreProc
             return result;
         }
 
+        /// <summary>
+        /// Выбирает шаг времени по активным движущимся источникам задачи.
+        /// </summary>
+        private void SetTimeStep<LoadData>(GeneralParameters parameter, IEnumerable<ICondData> data, float start, float stop)
+            where LoadData : CondData
+        {
+            var maxTimeStep = GetMovingSourceTimeStep<LoadData>(data, start, stop) ?? 1f;
+            var initialStep = maxTimeStep / 2f;
+            if (initialStep < parameter.TimeSettings.MinTimeStep)
+                throw new InvalidOperationException("The calculated initial time step is below the minimum time step.");
+
+            parameter.TimeSettings.MaxTimeStep = maxTimeStep;
+            parameter.TimeSettings.InitTimeStep = initialStep;
+        }
+
+        /// <summary>
+        /// Возвращает минимальный допустимый шаг активных движущихся источников задачи.
+        /// </summary>
+        private float? GetMovingSourceTimeStep<LoadData>(IEnumerable<ICondData> data, float start, float stop)
+            where LoadData : CondData
+        {
+            float? maxTimeStep = null;
+            foreach (var condition in data)
+            {
+                if (condition is not LoadData || condition.StartTime > start || condition.StopTime < stop ||
+                    condition.Function is not FrameFunction source || condition.LocalFrame is not MovedFrame frame)
+                    continue;
+
+                var sourceStep = source.CalcMaxTimeStep(frame.Velocity);
+                if (!float.IsFinite(sourceStep) || sourceStep <= 0)
+                    throw new InvalidOperationException("The source time step must be positive and finite.");
+
+                maxTimeStep = maxTimeStep.HasValue ? Math.Min(maxTimeStep.Value, sourceStep) : sourceStep;
+            }
+
+            return maxTimeStep;
+        }
+
+        /// <summary>
+        /// Собирает названия реакций из материалов, действующих на интервале.
+        /// </summary>
+        private void SetMetallurgicalProcesses(TermalParameters thermal, IEnumerable<ICondData> data, float start, float stop)
+        {
+            var reactions = new SortedSet<string>(StringComparer.Ordinal);
+            foreach (var condition in data)
+            {
+                if (condition is not MatData matData || matData.StartTime > start || matData.StopTime < stop)
+                    continue;
+
+                var material = matData.Material;
+                if (material == null)
+                    throw new InvalidOperationException("An active material condition has no material.");
+
+                var categoryName = material.CategoryDic[CategoryEnum.Metallurgical];
+                if (!material.CategoryData.ContainsKey(categoryName))
+                    continue;
+
+                var category = material[CategoryEnum.Metallurgical];
+                foreach (var reaction in category.PropertyData.Values)
+                    reactions.Add(reaction.Name);
+            }
+
+            thermal.MetallurgicalProcesses = reactions.ToList();
+        }
+
         /// <inheritdoc/>
         public void SetDraftParameters<ResultParam>(ResultParam parameter)
             where ResultParam : GeneralParameters, new()
         {
             if (parameter is TermalParameters termalParameter)
-            {
-                switch (processProp.CommonTaskType)
-                {
-                    case ProcessType.Welding: WeldingTermDraft(termalParameter); break;
-                    case ProcessType.Heating: HeatingTermDraft(termalParameter); break;
-                    case ProcessType.Quenching: QuenchingTermDraft(termalParameter); break;
-                    default: TemperingTermDraft(termalParameter); break;
-                }
-            }
-
+                SetThermalDraftParameters(termalParameter);
             else if (parameter is MechanicalParameters mechParameter)
-            {
-                switch (processProp.CommonTaskType)
-                {
-                    case ProcessType.Welding: WeldingMechDraft(mechParameter); break;
-                    case ProcessType.Heating: HeatingMechDraft(mechParameter); break;
-                    case ProcessType.Quenching: HeatingMechDraft(mechParameter); break;
-                    default: HeatingMechDraft(mechParameter); break;
-                }
-            }
+                SetMechanicalDraftParameters(mechParameter);
+            else
+                throw new NotSupportedException("The physical task has no parameter template.");
         }
 
-        private void HeatingMechDraft(MechanicalParameters mech)
+        /// <summary>
+        /// Задает базовые параметры тепловой задачи.
+        /// </summary>
+        private void SetThermalDraftParameters(TermalParameters term)
         {
-            mech.Iterations = 25;
-            mech.SaveRate = 5;
-            mech.MechanicalConvergence.Is_Physically_NonLinear = true;
-            mech.MechanicalConvergence.MaterialPlasticityCoeff = 0.5f;
-            mech.MechanicalConvergence.Is_Switched_Um = true;
-            mech.MechanicalConvergence.Um = 0.5f;
-            mech.MechanicalConvergence.DUm = 0.0005f;
-            mech.MechanicalConvergence.SiStm = 1.5f;
-            mech.MechanicalConvergence.PlasticityCriterion = 1.25f;
-            mech.SolverSettings = new SolverSettings(LinearSolverKind.ConjugateGradient, MatrixStorageKind.SymmetricCsr);
-            mech.SolverSettings.MaxIter = 100;
-            mech.SolverSettings.Precision = 0.0001f;
-            mech.SolverSettings.Relaxation = 1.25f;
-            mech.SolverSettings.Priority = "Наивысший";
-            mech.TimeSettings.InitTimeStep = 0.01f;
-            mech.TimeSettings.MaxTimeStep = 100f;
-            mech.TimeSettings.MinTimeStep = 0.0005f;
-        }
-
-        private void TemperingTermDraft(TermalParameters term)
-        {
-            term.MetallurgicalProcesses = new List<string>() { "Выдержка" };
-            term.Iterations = 2;
-            term.SaveRate = 1;
-            term.TermalConvergence.Is_Switched_Tm = true;
-            term.TermalConvergence.Tm = 1500;
-            term.SolverSettings = new SolverSettings(LinearSolverKind.ConjugateGradient, MatrixStorageKind.SymmetricCsr);
-            term.SolverSettings.MaxIter = 100;
-            term.SolverSettings.Precision = 0.01f;
-            term.SolverSettings.Relaxation = 1.05f;
-            term.SolverSettings.Priority = "Наивысший";
-            term.TimeSettings.InitTimeStep = 0.01f; // при охлаждении -- 0.5f
-            term.TimeSettings.MaxTimeStep = 100f; // при охлаждении -- 100f
-            term.TimeSettings.MinTimeStep = 0.0005f;
-        }
-
-        private void QuenchingTermDraft(TermalParameters term)
-        {
-            term.MetallurgicalProcesses = new List<string>() { "Охлаждение" };
-            term.Iterations = 2;
-            term.SaveRate = 1;
-            term.TermalConvergence.Is_Switched_Tm = true;
-            term.TermalConvergence.Tm = 1500;
-            term.SolverSettings = new SolverSettings(LinearSolverKind.ConjugateGradient, MatrixStorageKind.SymmetricCsr);
-            term.SolverSettings.MaxIter = 100;
-            term.SolverSettings.Precision = 0.01f;
-            term.SolverSettings.Relaxation = 1.05f;
-            term.SolverSettings.Priority = "Наивысший";
-            term.TimeSettings.InitTimeStep = 0.01f; // при охлаждении -- 0.5f
-            term.TimeSettings.MaxTimeStep = 100f; // при охлаждении -- 100f
-            term.TimeSettings.MinTimeStep = 0.0005f;
-        }
-
-        private void HeatingTermDraft(TermalParameters term)
-        {
-            term.MetallurgicalProcesses = new List<string>() { "Нагрев" };
-            term.Iterations = 2;
-            term.SaveRate = 1;
-            term.TermalConvergence.Is_Switched_Tm = true;
-            term.TermalConvergence.Tm = 1500;
-            term.SolverSettings = new SolverSettings(LinearSolverKind.ConjugateGradient, MatrixStorageKind.SymmetricCsr);
-            term.SolverSettings.MaxIter = 100;
-            term.SolverSettings.Precision = 0.01f;
-            term.SolverSettings.Relaxation = 1.05f;
-            term.SolverSettings.Priority = "Наивысший";
-            term.TimeSettings.InitTimeStep = 0.01f; // при охлаждении -- 0.5f
-            term.TimeSettings.MaxTimeStep = 100f; // при охлаждении -- 100f
-            term.TimeSettings.MinTimeStep = 0.0005f;
-        }
-
-        private void WeldingTermDraft(TermalParameters term)
-        {
-            term.MetallurgicalProcesses = new List<string>() { "Охлаждение", "Нагрев" };
             term.Iterations = 2;
             term.SaveRate = 1;
             term.TermalConvergence.Is_Switched_Tm = true;
@@ -306,12 +301,13 @@ namespace PreProc
             term.SolverSettings.Precision = 0.01f;
             term.SolverSettings.Relaxation = 1.05f;
             term.SolverSettings.Priority = "Наивысший";
-            term.TimeSettings.InitTimeStep = 0.01f; // при охлаждении -- 0.5f
-            term.TimeSettings.MaxTimeStep = 0.5f; // при охлаждении -- 100f
             term.TimeSettings.MinTimeStep = 0.0005f;
         }
 
-        private void WeldingMechDraft(MechanicalParameters mech)
+        /// <summary>
+        /// Задает базовые параметры механической задачи.
+        /// </summary>
+        private void SetMechanicalDraftParameters(MechanicalParameters mech)
         {
             mech.Iterations = 25;
             mech.SaveRate = 5;
@@ -327,8 +323,6 @@ namespace PreProc
             mech.SolverSettings.Precision = 0.0001f;
             mech.SolverSettings.Relaxation = 1.25f;
             mech.SolverSettings.Priority = "Наивысший";
-            mech.TimeSettings.InitTimeStep = 0.01f;
-            mech.TimeSettings.MaxTimeStep = 0.5f;
             mech.TimeSettings.MinTimeStep = 0.0005f;
         }
 
@@ -384,34 +378,35 @@ namespace PreProc
         }
 
         /// <summary>
-        /// Создает .tsf-файлы
+        /// Подготавливает параметры последовательных задач одной физики.
         /// </summary>
-        /// <typeparam name="DataParameter">Тип параметра данных для создания файлов</typeparam>
-        /// <param name="taskKind">Тип задачи</param>
-        /// <param name="parametrizedParams">Список созданных параметров для создания фалов</param>
-        /// <returns>возвращает список строк для создания CompData</returns>
-        private void CreateFilesForSingleProcess<DataParameter>(string taskKind, List<DataParameter> parametrizedParams)
+        /// <typeparam name="DataParameter">Тип параметров физической задачи.</typeparam>
+        /// <param name="parametrizedParams">Параметры по временным интервалам.</param>
+        /// <returns>Параметры с индексами и ссылками на предыдущие результаты.</returns>
+        private IEnumerable<GeneralParameters> PrepareSingleProcess<DataParameter>(List<DataParameter> parametrizedParams)
             where DataParameter : GeneralParameters
         {
             for (var i = 0; i < parametrizedParams.Count; i++)
             {
+                var current = parametrizedParams[i];
+                current.Index = i;
                 if (i > 0)
-                    SetInitialFieldFromFile(parametrizedParams[i], $"{taskKind}_{i}_{parametrizedParams[i - 1].TimeSettings.StartTime}_{parametrizedParams[i - 1].TimeSettings.StopTime}.db");
-
-                var serializedData = JsonConvert.SerializeObject(parametrizedParams[i], settingsSerializer);
-                var fileName = $"{taskKind}_{i + 1}_{parametrizedParams[i].TimeSettings.StartTime}_{parametrizedParams[i].TimeSettings.StopTime}.tsf";
-
-                var filePath = Path.Combine(_path, fileName);
-                File.WriteAllBytes(filePath, Encoding.UTF8.GetBytes(serializedData));
+                {
+                    var previous = parametrizedParams[i - 1];
+                    SetInitialFieldFromFile(current, $"../ResultsData/{previous.FileStem}.db");
+                }
+                yield return current;
             }
         }
 
         /// <summary>
-        /// Создает файлы связанных физических задач.
+        /// Подготавливает параметры связанных физических задач.
         /// </summary>
         /// <param name="sourceParameters">Параметры задачи-источника.</param>
         /// <param name="targetParameters">Параметры задачи-потребителя.</param>
-        private void CreateFilesForComplexProcess<SourceParameter, TargetParameter>(List<SourceParameter> sourceParameters, List<TargetParameter> targetParameters)
+        /// <param name="data">Исходные условия расчета.</param>
+        /// <param name="synchronizeTimeSteps">Признак общего шага связанных задач.</param>
+        private IEnumerable<GeneralParameters> PrepareComplexProcess<SourceParameter, TargetParameter>(List<SourceParameter> sourceParameters, List<TargetParameter> targetParameters, IEnumerable<ICondData> data, bool synchronizeTimeSteps)
             where SourceParameter : GeneralParameters
             where TargetParameter : GeneralParameters
         {
@@ -420,31 +415,45 @@ namespace PreProc
             if (sourceParameters.Count == 0)
                 throw new InvalidOperationException("Linked tasks must contain at least one time interval.");
 
-            var sourceTaskName = sourceParameters[0].TaskKind.ToString();
-            var targetTaskName = targetParameters[0].TaskKind.ToString();
             var sourceFieldSet = GetNativeFieldSet(sourceParameters[0].TaskKind);
-
-            CreateFilesForSingleProcess(sourceTaskName, sourceParameters);
 
             for (var i = 0; i < targetParameters.Count; i++)
             {
                 var sourceParameter = sourceParameters[i];
                 var targetParameter = targetParameters[i];
-                var sourceResultFile = $"{sourceTaskName}_{i + 1}_{sourceParameter.TimeSettings.StartTime}_{sourceParameter.TimeSettings.StopTime}.db";
-                SetInputField(targetParameter, sourceFieldSet, sourceResultFile);
+                sourceParameter.Index = i;
+                targetParameter.Index = i;
+
+                if (synchronizeTimeSteps)
+                {
+                    var start = sourceParameter.TimeSettings.StartTime;
+                    var stop = sourceParameter.TimeSettings.StopTime;
+                    var sourceStep = GetMovingSourceTimeStep<HeatData>(data, start, stop);
+                    var targetStep = GetMovingSourceTimeStep<LoadData>(data, start, stop);
+                    var sharedMaxStep = sourceStep.HasValue && targetStep.HasValue
+                        ? Math.Min(sourceStep.Value, targetStep.Value)
+                        : sourceStep ?? targetStep ?? 1f;
+                    var sharedInitialStep = sharedMaxStep / 2f;
+                    if (sharedInitialStep < sourceParameter.TimeSettings.MinTimeStep ||
+                        sharedInitialStep < targetParameter.TimeSettings.MinTimeStep)
+                        throw new InvalidOperationException("The synchronized initial time step is below a task's minimum time step.");
+
+                    sourceParameter.TimeSettings.MaxTimeStep = sharedMaxStep;
+                    targetParameter.TimeSettings.MaxTimeStep = sharedMaxStep;
+                    sourceParameter.TimeSettings.InitTimeStep = sharedInitialStep;
+                    targetParameter.TimeSettings.InitTimeStep = sharedInitialStep;
+                }
 
                 if (i > 0)
                 {
+                    var previousSource = sourceParameters[i - 1];
+                    SetInitialFieldFromFile(sourceParameter, $"../ResultsData/{previousSource.FileStem}.db");
                     var previousParameter = targetParameters[i - 1];
-                    var previousResultFile = $"{targetTaskName}_{i}_{previousParameter.TimeSettings.StartTime}_{previousParameter.TimeSettings.StopTime}.db";
-                    SetInitialFieldFromFile(targetParameter, previousResultFile);
+                    SetInitialFieldFromFile(targetParameter, $"../ResultsData/{previousParameter.FileStem}.db");
                 }
-
-                var serializedData = JsonConvert.SerializeObject(targetParameter, settingsSerializer);
-                var fileName = $"{targetTaskName}_{i + 1}_{targetParameter.TimeSettings.StartTime}_{targetParameter.TimeSettings.StopTime}.tsf";
-
-                var filePath = Path.Combine(_path, fileName);
-                File.WriteAllBytes(filePath, Encoding.UTF8.GetBytes(serializedData));
+                SetInputField(targetParameter, sourceFieldSet, $"../ResultsData/{sourceParameter.FileStem}.db");
+                yield return sourceParameter;
+                yield return targetParameter;
             }
         }
 
@@ -500,56 +509,5 @@ namespace PreProc
             };
         }
 
-        /// <inheritdoc/>
-        /// Регулярное выражение разбивается на 5 сегментов:
-        /// 1 - тип задачи из ComplexTaskType. Принимаются раздельные значения из ComplexTaskType
-        /// 2 - индекс задачи. Любое число произвольной длины, кроме нуля. Может быть не задано (*)
-        /// 3 - время начала задачи. Целое/дробное положительное число. Может быть не задано (*)
-        /// 4 - время конца задачи. Целое/дробное положительное число. Может быть не задано (*)
-        /// 5 - расширение файла: .tsf
-        public List<string> SortCompDataByTimeAndType(string[] dataStrs)
-        {
-            var sortedLines = new List<string>();
-
-            // Принимаются все доступные значения из Enum ComplexTaskType
-            // сложные процессы разбиваются на составляющее и добавляются к допустимым названиям процессов
-            // дубликаты убираются
-            var names = new List<string>();
-            foreach (var name in Enum.GetNames(typeof(TaskKind)))
-            {
-                if (name.Contains('_')) names.AddRange(name.Split('_'));
-                else names.Add(name);
-            }
-            var res = names.Distinct();
-
-            var available = string.Join("|", res).ToString();
-            var pattern = "^((" + available + ")_" +
-                "(([1-9])(\\d)*)_" +
-                "((\\d{1,})|((\\d{1,}).(\\d{1,5}))|\\*)_" +
-                "((\\d{1,})|((\\d{1,}).(\\d{1,5}))|\\*)" +
-                "(.tsf))$";
-
-            foreach (var line in dataStrs)
-            {
-                var file = Path.GetFileName(line);
-                if (!Regex.IsMatch(file, pattern))
-                    //"Имя полученного файла не соответствует шаблону: " +
-                    //"<тип процесса>_<номер задачи>_<время начала>_<время окончания>.tsf"
-                    throw new DraftException(line);
-
-                var taskType = file.Split('_')[0];
-                sortedLines.Add(string.Join(" ", new string[] { taskType, line, TaskStatus.выполнить.ToString() }));
-            }
-
-            return sortedLines.OrderBy(x => int.Parse(string.Join(" ", x
-                        .Split(' ')
-                        .Skip(1)
-                        .SkipLast(1))
-                    .Split('_')
-                    .TakeLast(3)
-                    .ToList()[0]))
-                .ThenByDescending(x => x)
-                .ToList();
-        }
     }
 }

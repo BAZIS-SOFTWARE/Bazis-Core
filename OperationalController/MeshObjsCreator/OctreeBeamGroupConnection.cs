@@ -49,11 +49,11 @@ namespace OperationalController.MeshObjsCreator
 
             var size = Math.Max(maxX - minX, Math.Max(maxY - minY, maxZ - minZ));
 
-            var octree = new PointOctree<Node>(size, new Vector3(maxX - minX, maxY - minY, maxZ - minZ) * 0.5f, 1e-4f);
+            var octree = new PointOctree<Node>((float)size, new Vector3((float)(maxX - minX), (float)(maxY - minY), (float)(maxZ - minZ)) * 0.5f, 1e-4f);
 
             foreach (var node in allNodes)
             {
-                octree.Add(node, new Vector3(node._x, node._y, node._z));
+                octree.Add(node, new Vector3((float)node._x, (float)node._y, (float)node._z));
             }
 
             return octree;
@@ -61,7 +61,7 @@ namespace OperationalController.MeshObjsCreator
 
         private IEnumerable<Beam> ConnectOneToMany(Node node, IEnumerable<Node> slave, int startIndex)
         {
-            var res = octree.GetNearby(new Vector3(node._x, node._y, node._z), (float)searchRadius)
+            var res = octree.GetNearby(new Vector3((float)node._x, (float)node._y, (float)node._z), (float)searchRadius)
                          .OrderBy(n => GetSquaredDistance(n, node))
                          //.ThenBy(n => incidentEdgesCount[n]) 
                          // здесь используется для балансировки, если много с одинаковым радиусом

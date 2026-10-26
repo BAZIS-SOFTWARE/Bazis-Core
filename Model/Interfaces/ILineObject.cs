@@ -12,6 +12,6 @@ namespace Model.Interfaces
         /// CalcLength
         /// </summary>
         /// <returns></returns>
-        float CalcLength();
+        double CalcLength();
     }
 }

@@ -50,7 +50,7 @@ namespace OperationalController.MeshObjsUtility
             foreach (var item in items)
             {
                 var point = item.CalcCentr();
-                tree.Add(item, new Vector3(point._x, point._y, point._z));
+                tree.Add(item, new Vector3((float)point._x, (float)point._y, (float)point._z));
             }
             return tree;
         }
@@ -62,7 +62,7 @@ namespace OperationalController.MeshObjsUtility
         private List<T> RadialSearch<T>(Point3D point, float radius, PointOctree<T> tree)
             where T : IModelObject
         {
-            return tree.GetNearby(new Vector3(point._x, point._y, point._z), radius)
+            return tree.GetNearby(new Vector3((float)point._x, (float)point._y, (float)point._z), radius)
                 .ToList();
         }
 
@@ -76,7 +76,7 @@ namespace OperationalController.MeshObjsUtility
             var x = points.Select(p => p._x).Sum() / points.Count();
             var y = points.Select(p => p._y).Sum() / points.Count();
             var z = points.Select(p => p._z).Sum() / points.Count();
-            return new Vector3(x, y, z);
+            return new Vector3((float)x, (float)y, (float)z);
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace OperationalController.MeshObjsUtility
             var dx = Math.Abs(points.Select(p => p._x).Max() - points.Select(p => p._x).Min());
             var dy = Math.Abs(points.Select(p => p._y).Max() - points.Select(p => p._y).Min());
             var dz = Math.Abs(points.Select(p => p._z).Max() - points.Select(p => p._z).Min());
-            return Math.Max(dx, Math.Max(dy, dz));
+            return (float)Math.Max(dx, Math.Max(dy, dz));
         }
     }
 }

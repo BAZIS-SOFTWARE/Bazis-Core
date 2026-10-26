@@ -9,9 +9,9 @@ namespace OperationalController.ModelScenePresentator.GlObjsVertexCreators
         {
             foreach (var point in pointObject.GetCoordinates())
             {
-                vertexAtributes[stride + 0] = point._x;
-                vertexAtributes[stride + 1] = point._y;
-                vertexAtributes[stride + 2] = point._z;
+                vertexAtributes[stride + 0] = (float)point._x;
+                vertexAtributes[stride + 1] = (float)point._y;
+                vertexAtributes[stride + 2] = (float)point._z;
             }
             stride += 3;
  

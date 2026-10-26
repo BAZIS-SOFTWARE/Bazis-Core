@@ -352,7 +352,7 @@ namespace OperationalController.MeshObjsCreator.Extrude
                 {
                     if (!visited.ContainsKey(node.Number))
                     {
-                        var coords = new Vector4(node._x, node._y, node._z, 1);
+                        var coords = new Vector4((float)node._x, (float)node._y, (float)node._z, 1);
                         coords = Vector4.Transform(coords, curBasis);
                         var point = new Node(NodeTag, new Point3D(coords.X, coords.Y, coords.Z));
                         Nodes.Add(NodeTag++, point);

@@ -38,12 +38,12 @@ namespace Geometry
         /// GetLength
         /// </summary>
         /// <returns></returns>
-        public float GetLength()
+        public double GetLength()
         {
-            return (float)Math.Sqrt(Math.Pow((P1._x - P0._x), 2) + Math.Pow((P1._y - P0._y), 2) + Math.Pow((P1._z - P0._z), 2));
+            return Math.Sqrt(Math.Pow((P1._x - P0._x), 2) + Math.Pow((P1._y - P0._y), 2) + Math.Pow((P1._z - P0._z), 2));
         }
 
-        public Point3D GetPointOnLine(float subLineLength)
+        public Point3D GetPointOnLine(double subLineLength)
         {
             var point3D = new Point3D();
 
@@ -90,7 +90,7 @@ namespace Geometry
 
         }
 
-        float PointOnPlane (Plane plane, Point3D point)
+        double PointOnPlane (Plane plane, Point3D point)
         {
             return plane.Normal._x * point._x + plane.Normal._y * point._y + plane.Normal._z * point._z + plane.Shifting;
         }

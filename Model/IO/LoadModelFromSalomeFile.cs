@@ -46,7 +46,7 @@ namespace Model.IO
             {
                 var tokens = reader.ReadLine().Split();
                 var nodeIndex = int.Parse(tokens[0]);
-                var coordinates = tokens.Select(x => float.Parse(x, NumberStyles.Any, CultureInfo.InvariantCulture))
+                var coordinates = tokens.Select(x => double.Parse(x, NumberStyles.Any, CultureInfo.InvariantCulture))
                     .ToArray();
                 yield return new Node(nodeIndex, new Point3D(coordinates[1], coordinates[2], coordinates[3]));
             }

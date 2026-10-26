@@ -53,6 +53,7 @@ LocalFrame : ILocalFrame [get, set]
 Исходники: [IFrameFunction.cs](../../Project/Interfaces/Tasks/IFrameFunction.cs).
 
 ```text
+CalcMaxTimeStep(float velocity) : float
 CalcValue(Point3D elementCenter) : double
 GetIntersectedObjects<T>(List<T> elements) : List<T> where T : IModelObject
 IsOverlappingSelf(float velocity) : bool

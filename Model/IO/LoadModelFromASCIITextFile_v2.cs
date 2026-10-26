@@ -56,7 +56,7 @@ namespace Model.IO
                 var tokens = line.Split().ToArray();
                 var index = int.Parse(tokens[0]);
                 var coordinates = tokens.Skip(6)
-                    .Select(x => float.Parse(x, CultureInfo.InvariantCulture))
+                    .Select(x => double.Parse(x, CultureInfo.InvariantCulture))
                     .ToArray();
                 var node = new Node(i, new Point3D(coordinates[0], coordinates[1], coordinates[2]));
                 allNodes.Add(index, node); // all nodes must have unic numbers started from zero

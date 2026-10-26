@@ -1,87 +1,48 @@
-# PreProc-1 — Подготовка расчётных инструкций
+# PreProc-1 — API подготовки параметров
 
-[Диаграмма](PreProc-1.mdpuml). [Обзор проекта](PreProc.md).
+[Диаграмма](PreProc-1.mdpuml) · [Обзор](PreProc.md) · [Очередь и имена](PreProc-2.md) · [TCF и пути](PreProc-3.md).
 
-Это целевой состав API с сохранением существующих операций. События вне `IProjectEvents.Message` исключены из целевого контракта; код ещё может их содержать. [Расхождения](../../Documents/ArchitectureDifferences.md).
+## IPreProc
 
-Для классов члены реализуемых интерфейсов не повторяются. Внешние стандартные интерфейсы .NET не раскрываются. Полный состав типа при разбиении приведён на перечисленных ниже диаграммах.
-
-## `IPreProc`
-
-Пространство имён: `PreProc.Interfaces`.
-
-Исходники: [IPreProc.cs](../../PreProc/Interfaces/IPreProc.cs).
+Пространство имён `PreProc.Interfaces`. [Исходник](../Interfaces/IPreProc.cs).
 
 ```text
-CalcCompDataV1(IEnumerable<ICondData> data, ProcessType processType, string path) : void
-CalcCompDataV2(IEnumerable<ICondData> data, ProcessProperty prop, string path) : void
+CalcCompDataV2(IEnumerable<ICondData> data, TaskKind taskKinds, bool synchronizeTimeSteps = false) : IReadOnlyList<GeneralParameters>
+Load(IEnumerable<GeneralParameters> parameters) : void
+LoadInstructions(string projectPath) : void
+Add(GeneralParameters parameters) : void
+Remove(GeneralParameters parameters) : bool
+Clear() : void
+GetEnumerator() : IEnumerator<GeneralParameters>
+WriteInstructions(string projectPath) : string
 SetDraftParameters<ResultParam>(ResultParam parameter) : void where ResultParam : GeneralParameters, new()
-SortCompDataByTimeAndType(string[] dataStrs) : List<string>
 ```
 
-## `DraftException`
+`CalcCompDataV2` материализует параметры и возвращает доступный только для чтения список ссылок на `GeneralParameters`. Объекты параметров остаются изменяемыми. Метод присваивает индекс каждому интервалу начиная с нуля, устанавливает относительные ссылки на ожидаемые DB и возвращает задачи в порядке числового индекса, с теплом перед механикой. TSF и TCF не записывает.
 
-Пространство имён: `PreProc`.
+`Load` материализует переданное перечисление и заменяет текущую очередь только после успешного чтения всех параметров. `LoadInstructions` передаёт ему ленивое перечисление TcfReader; TCF и TSF читаются один раз. Методы `Add`, `Remove`, `Clear` меняют очередь объектов; перечислитель возвращает те же объекты, чтобы клиент мог отображать и донастраивать параметры.
 
-Исходники: [DraftException.cs](../../PreProc/DraftException.cs).
+`WriteInstructions` делегирует запись объектов `ISolverInstructionWriter`, по умолчанию `TcfWriter`, и возвращает путь к `ComputationData/computation.tcf`. Писатель обновляет TSF всех объектов, включая пропущенные, и сохраняет порядок и статусы в TCF. Клиент Gerbera вызывает запись при «Старт» и показывает `ToString()` объектов в TreeView.
 
-Базовые типы: `Exception`.
+## Классы и параметры
+
+`PreProc.PreProc` реализует IPreProc; на диаграмме методы интерфейса не повторяются в классе. [Исходник](../PreProc.cs).
 
 ```text
-DraftException()
-DraftException(string message)
-DraftException(string message, Exception innerException)
+GetParameters<LoadData, BoundData, ResultParam>(IEnumerable<ICondData> data) : List<ResultParam>
+  where ResultParam : GeneralParameters, new()
+  where LoadData : CondData
+  where BoundData : CondData
+SetTimeStep<LoadData>(GeneralParameters parameter, IEnumerable<ICondData> data, float start, float stop) : void
+GetMovingSourceTimeStep<LoadData>(IEnumerable<ICondData> data, float start, float stop) : float?
+PrepareComplexProcess<SourceParameter, TargetParameter>(List<SourceParameter> sourceParameters, List<TargetParameter> targetParameters, IEnumerable<ICondData> data, bool synchronizeTimeSteps) : IEnumerable<GeneralParameters>
+SetMetallurgicalProcesses(TermalParameters thermal, IEnumerable<ICondData> data, float start, float stop) : void
+SetThermalDraftParameters(TermalParameters term) : void
+SetMechanicalDraftParameters(MechanicalParameters mech) : void
 ```
 
-## `PreProc`
+`TaskKind` указывает состав физических задач. Тепловые и механические параметры получают базовые численные настройки по своему виду, а шаг времени вычисляется из активных движущихся источников: при их отсутствии максимум равен 1, при наличии выбирается минимум `FrameFunction.CalcMaxTimeStep(velocity)`. Начальный шаг равен половине максимального. Для тепловых параметров названия металлургических реакций берутся из категории `CategoryEnum.Metallurgical` активных `MatData`.
 
-Пространство имён: `PreProc`.
+Если `synchronizeTimeSteps = true`, для каждого интервала термомеханической связки выбирается минимум шагов всех движущихся тепловых и механических источников. Если их нет, максимум равен 1. Обе инструкции получают этот максимум и половину его значения как начальный шаг; значение проверяется относительно `MinTimeStep` обеих задач. При `false` каждая задача выбирает шаг по своим условиям.
 
-Исходники: [PreProc.cs](../../PreProc/PreProc.cs).
-
-Базовые типы: `IPreProc`.
-
-```text
-GetParameters<LoadData, BoundData, ResultParam>(IEnumerable<ICondData> data) : List<ResultParam> where ResultParam : GeneralParameters, new()
-            where LoadData : CondData
-            where BoundData : CondData
-```
-
-## `ProcessProperty`
-
-Пространство имён: `PreProc`.
-
-Исходники: [ProcessProperty.cs](../../PreProc/ProcessProperty.cs).
-
-```text
-CommonTaskType : ProcessType [field]
-TaskKind : TaskKind [field]
-```
-
-## `TaskStatus`
-
-Пространство имён: `PreProc`.
-
-Исходники: [PreProc.cs](../../PreProc/PreProc.cs).
-
-Базовые типы: `int`.
-
-```text
-выполнить
-пропустить
-```
-
-## `ProcessType`
-
-Пространство имён: `PreProc.Interfaces`.
-
-Исходники: [IPreProc.cs](../../PreProc/Interfaces/IPreProc.cs).
-
-```text
-Heating
-Quenching
-Tempering
-Welding
-```
-
-TSF-файлы одиночных и связанных задач записываются по пути Path.Combine.
+DraftException : Exception предоставляет конструкторы без параметров, с `string message`, с `string message, Exception innerException`. [Исходник](../DraftException.cs). Тексты новых исключений — на английском.

@@ -1,0 +1,57 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+hide empty members
+set namespaceSeparator none
+title PreProc-3 — чтение и запись TCF
+caption [[PreProc.mdpuml Обзор]] | [[PreProc-1.mdpuml API подготовки]] | [[PreProc-2.mdpuml Очередь и имена]]
+interface "ISolverInstructionWriter" as WriterApi {
+  + Write(projectPath, parameters) : string
+}
+class "TcfWriter" as Writer {
+  - ReplaceCommandFile(directory, result, lines) : void
+}
+class "TcfReader" as Reader <<internal>> {
+  + Read(projectPath) : IEnumerable<GeneralParameters>
+}
+class "CalculationPaths" as Paths <<internal>> {
+  + GetProjectRoot(projectPath) : string
+  + GetAbsoluteFilePath(sourceDirectory, referencePath) : string
+  + ValidatePortableFilePath(root, targetPath) : void
+  + GetRelativeFile(sourceDirectory, targetPath) : string
+}
+enum "Project: TaskStatus" as Status <<external>> [[../../Project/Documents/Project-2.mdpuml]]
+class "PreProc" as Processor <<reference>> [[PreProc-1.mdpuml]]
+Writer ..|> WriterApi
+Writer ..> Paths
+Reader ..> Paths
+Writer ..> Status : сохраняет
+Reader ..> Status : восстанавливает
+Processor ..> WriterApi : WriteInstructions
+Processor ..> Reader : LoadInstructions
+note right of Writer
+  Вся очередь проверяется до записи TCF.
+  Все TSF и статусы сохраняются, порядок не меняется.
+  Временный TCF -> замена целевого.
+end note
+note right of Reader
+  Ссылки TCF разрешаются в абсолютные пути.
+  Допустимость и существование проверяются отдельно.
+  TSF десериализуются по виду задачи.
+end note
+note bottom of Paths
+  Корень: каталог существующего .bpf / .bpf2.
+  InputData / ResultsData / ComputationData.
+  Ссылки остаются внутри комплекта.
+end note
+legend bottom
+  TCF: ComputationData/computation.tcf, пути в двойных кавычках.
+  TSF / TCF: ссылки относительно содержащего файла, разделитель /.
+  TCF содержит все задачи, включая статус пропустить.
+  UTF-8 без BOM; старый формат не поддерживается.
+  Читатель Solver нужно адаптировать отдельно.
+endlegend
+@enduml

@@ -103,9 +103,9 @@ namespace OperationalController.ModelScenePresentator.GlObjsPresenters
         {
             if (vertexType == "координаты")
             {
-                vertexes[stride++] = coordinate._x;
-                vertexes[stride++] = coordinate._y;
-                vertexes[stride++] = coordinate._z;
+                vertexes[stride++] = (float)coordinate._x;
+                vertexes[stride++] = (float)coordinate._y;
+                vertexes[stride++] = (float)coordinate._z;
                 return;
             }
 

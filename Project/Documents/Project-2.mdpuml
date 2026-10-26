@@ -11,10 +11,14 @@ hide empty members
 set namespaceSeparator none
 
 title Project-2 — Параметры и физические поля
-caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
+caption Состав API; [[../../Documents/Architecture.md архитектура решения]]
 enum "CalculationMode" as T_Project_Project_TaskParameters_CalculationMode {
     Stationary
     Transient
+}
+enum "TaskStatus" as T_Project_Project_TaskParameters_TaskStatus {
+    выполнить
+    пропустить
 }
 class "ChemicalConvergence" as T_Project_Project_TaskParameters_ChemicalConvergence {
   + Cm : float [get, set]
@@ -40,11 +44,14 @@ class "GeneralParameters" as T_Project_Project_TaskParameters_GeneralParameters 
   + ActiveConditions : List<ConditionReference> [get, set]
   + CalculationMode : CalculationMode [get, set]
   + InitialSet : PhysicalSet? [get, set]
+  + Index : int [get, set]
   + InputSets : List<PhysicalSet> [get, set]
   + Iterations : int [get, set]
   + SaveRate : int [get, set]
   + SolverSettings : SolverSettings [get, set]
   + TaskKind : TaskKind [get, set]
+  + Status : TaskStatus [get, set]
+  + FileStem : string [get]
   + TimeSettings : TimeSettings [get, set]
   + UpdMatrixIteration : int [get, set]
   + GetInputField(fieldSet) : PhysicalSet
@@ -58,6 +65,7 @@ T_Project_Project_TaskParameters_ConditionReferenceJsonConverter -[hidden]down->
 T_Project_Project_TaskParameters_ChemicalParameters --> T_Project_Project_TaskParameters_ChemicalConvergence : использует
 T_Project_Project_TaskParameters_ChemicalParameters --|> T_Project_Project_TaskParameters_GeneralParameters
 T_Project_Project_TaskParameters_GeneralParameters --> T_Project_Project_TaskParameters_CalculationMode : использует
+T_Project_Project_TaskParameters_GeneralParameters --> T_Project_Project_TaskParameters_TaskStatus : использует
 T_Project_Project_TaskParameters_GeneralParameters --> T_Project_Project_TaskParameters_ConditionReference : использует
 legend bottom
   Обзор: [[Project.mdpuml Project]]; сигнатуры: [[Project-2.md Project-2.md]].

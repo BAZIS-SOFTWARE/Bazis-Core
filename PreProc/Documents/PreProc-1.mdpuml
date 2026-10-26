@@ -4,54 +4,51 @@ skinparam classAttributeIconSize 0
 skinparam shadowing false
 skinparam defaultFontName Arial
 skinparam defaultFontSize 12
-skinparam nodesep 18
-skinparam ranksep 24
-skinparam packageStyle rectangle
 hide empty members
 set namespaceSeparator none
-
-title PreProc-1 — Подготовка расчётных инструкций
-caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
-interface "IPreProc" as T_PreProc_PreProc_Interfaces_IPreProc {
-  + CalcCompDataV1(data, processType, path) : void
-  + CalcCompDataV2(data, prop, path) : void
+title PreProc-1 — API подготовки параметров
+caption [[PreProc.mdpuml Обзор]] | [[PreProc-2.mdpuml Очередь и имена]] | [[PreProc-3.mdpuml TCF и пути]]
+interface "IPreProc" as Api {
+  + CalcCompDataV2(data, taskKinds, synchronizeTimeSteps) : IReadOnlyList<GeneralParameters>
+  + Load(parameters) : void
+  + LoadInstructions(projectPath) : void
+  + Add(parameters) : void
+  + Remove(parameters) : bool
+  + Clear() : void
+  + GetEnumerator() : IEnumerator<GeneralParameters>
+  + WriteInstructions(projectPath) : string
   + SetDraftParameters<ResultParam>(parameter) : void
-  + SortCompDataByTimeAndType(dataStrs) : List<string>
 }
-class "DraftException" as T_PreProc_PreProc_DraftException {
+class "PreProc" as Processor {
+  + GetParameters<LoadData, BoundData, ResultParam>(data) : List<ResultParam>
+  - SetTimeStep<LoadData>(parameter, data, start, stop) : void
+  - GetMovingSourceTimeStep<LoadData>(data, start, stop) : float?
+  - PrepareComplexProcess(source, target, data, sync) : IEnumerable<GeneralParameters>
+  - SetMetallurgicalProcesses(thermal, data, start, stop) : void
+  - SetThermalDraftParameters(term) : void
+  - SetMechanicalDraftParameters(mech) : void
+}
+class "DraftException" as Error {
   + DraftException()
   + DraftException(message)
   + DraftException(message, innerException)
 }
-class "PreProc" as T_PreProc_PreProc_PreProc {
-  + GetParameters<LoadData, BoundData, ResultParam>(data) : List<ResultParam>
-}
-class "ProcessProperty" as T_PreProc_PreProc_ProcessProperty <<struct>> {
-  + CommonTaskType : ProcessType [field]
-  + TaskKind : TaskKind [field]
-}
-enum "TaskStatus" as T_PreProc_PreProc_TaskStatus {
-    выполнить
-    пропустить
-}
-enum "ProcessType" as T_PreProc_PreProc_Interfaces_ProcessType {
-    Heating
-    Quenching
-    Tempering
-    Welding
-}
-T_PreProc_PreProc_Interfaces_IPreProc -[hidden]down-> T_PreProc_PreProc_DraftException
-T_PreProc_PreProc_DraftException -[hidden]down-> T_PreProc_PreProc_PreProc
-T_PreProc_PreProc_PreProc -[hidden]down-> T_PreProc_PreProc_ProcessProperty
-T_PreProc_PreProc_ProcessProperty -[hidden]down-> T_PreProc_PreProc_TaskStatus
-T_PreProc_PreProc_TaskStatus -[hidden]down-> T_PreProc_PreProc_Interfaces_ProcessType
-T_PreProc_PreProc_PreProc --> T_PreProc_PreProc_ProcessProperty : использует
-T_PreProc_PreProc_PreProc ..|> T_PreProc_PreProc_Interfaces_IPreProc
-T_PreProc_PreProc_ProcessProperty --> T_PreProc_PreProc_Interfaces_ProcessType : использует
+class "Project: ICondData / CondData\nFrameFunction / MatData / TaskKind" as ProjectTypes <<external>>
+enum "MaterialDB: CategoryEnum" as Category <<external>>
+class "TcfReader" as Reader <<reference>> [[PreProc-3.mdpuml]]
+interface "ISolverInstructionWriter" as WriterApi <<reference>> [[PreProc-3.mdpuml]]
+Processor ..|> Api
+Processor ..> Error
+Processor ..> Reader : чтение TCF / TSF
+Processor ..> WriterApi : формат решателя
+Api ..> ProjectTypes
+Processor ..> Category : читает Metallurgical
 legend bottom
-  TSF-файлы одиночных и связанных задач записываются по пути Path.Combine.
-  reference — тип раскрыт на другой диаграмме.
-  Параметры методов: имена; полные сигнатуры — в соседнем .md.
-  Унаследованные члены интерфейсов в классах не повторяются.
+  Полные сигнатуры и ограничения generic — PreProc-1.md.
+  Члены интерфейса в классе не повторяются; событий нет.
+  CalcCompDataV2 обновляет коллекцию PreProc и не записывает TSF.
+  LoadInstructions читает очередь целиком до замены текущей.
+  WriteInstructions записывает TSF и инструкцию выбранного решателя.
+  Время в имени не управляет сортировкой.
 endlegend
 @enduml

@@ -6,7 +6,7 @@ using OperationalController;
 using Project.IO;
 using System.Data;
 
-namespace Project_test.Project
+namespace TestProject_test.Project
 {
     [TestClass]
     public class ProjectPathTests

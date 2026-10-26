@@ -179,7 +179,7 @@ namespace OperationalController.MeshObjsUtility
             }
         }
 
-        private void WriteNormalInfo(int index, float length, float dpEdge, float dpRef)
+        private void WriteNormalInfo(int index, double length, double dpEdge, double dpRef)
         {
             if (logWriter != null)
             {

@@ -18,14 +18,14 @@ interface "ICoordinated" as T_Geometry_Geometry_Interfaces_ICoordinated {
 }
 interface "IPlane" as T_Geometry_Geometry_Interfaces_IPlane {
   + Normal : Point3D [get]
-  + Shifting : float [get, set]
-  + PlanePosition(plane) : float
-  + PointPosition(point) : float
+  + Shifting : double [get, set]
+  + PlanePosition(plane) : double
+  + PointPosition(point) : double
 }
 interface "IPoint2D" as T_Geometry_Geometry_Interfaces_IPoint2D {
 }
 interface "IPoint3D" as T_Geometry_Geometry_Interfaces_IPoint3D {
-  + GetDistanceToLine(line) : float
+  + GetDistanceToLine(line) : double
   + GetPointProectionOnPlane(plane) : Point3D
   + IsBelongTo(plane) : bool
 }

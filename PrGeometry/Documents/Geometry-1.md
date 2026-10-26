@@ -25,9 +25,9 @@ GetCoordinates() : IEnumerable<Point3D>
 
 ```text
 Normal : Point3D [get]
-Shifting : float [get, set]
-PlanePosition(Plane plane) : float
-PointPosition(Point3D point) : float
+Shifting : double [get, set]
+PlanePosition(Plane plane) : double
+PointPosition(Point3D point) : double
 ```
 
 ## `IPoint2D`
@@ -49,7 +49,7 @@ PointPosition(Point3D point) : float
 Базовые типы: `IPosition3D`.
 
 ```text
-GetDistanceToLine(Segment3D line) : float
+GetDistanceToLine(Segment3D line) : double
 GetPointProectionOnPlane(Plane plane) : Point3D
 IsBelongTo(Plane plane) : bool
 ```

@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using static IronPython.Modules._ast;
 using System.Linq;
+using System.Globalization;
 
 namespace Project.TaskParameters
 {
@@ -26,10 +27,23 @@ namespace Project.TaskParameters
         Stationary
     }
 
+    /// <summary>Участие инструкции в очереди расчётов.</summary>
+    public enum TaskStatus
+    {
+        выполнить,
+        пропустить
+    }
+
     [Serializable]
     public class GeneralParameters
     {
         public TaskKind TaskKind { get; set; }
+        /// <summary>Статус инструкции в текущей очереди.</summary>
+        public TaskStatus Status { get; set; } = TaskStatus.выполнить;
+        /// <summary>
+        /// Индекс расчётного интервала, присвоенный препроцессором начиная с нуля.
+        /// </summary>
+        public int Index { get; set; }
 
         /// <summary>
         /// Calculation algorithm with respect to physical time.
@@ -69,11 +83,21 @@ namespace Project.TaskParameters
 
             return fields.SingleOrDefault();
         }
-/// <inheritdoc/>
-
-        public override string ToString()
+        /// <summary>
+        /// Возвращает переносимую основу имени файлов TSF и DB без статуса очереди.
+        /// </summary>
+        [JsonIgnore]
+        public string FileStem
         {
-            return $"{TaskKind}_{TimeSettings.StartTime}_{TimeSettings.StopTime}";
+            get
+            {
+                var start = TimeSettings.StartTime.ToString("G9", CultureInfo.InvariantCulture);
+                var stop = TimeSettings.StopTime.ToString("G9", CultureInfo.InvariantCulture);
+                return $"{TaskKind}_{Index}_{start}_{stop}";
+            }
         }
+
+        /// <summary>Возвращает текст инструкции для отображения в очереди.</summary>
+        public override string ToString() => $"{FileStem}_{Status}";
     }
 }

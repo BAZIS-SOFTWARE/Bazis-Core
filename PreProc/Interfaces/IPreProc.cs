@@ -7,88 +7,40 @@ using System.Collections.Generic;
 namespace PreProc.Interfaces
 {
     /// <summary>
-    /// Тип подпроцесса для препроцессора по созданию пользовательских термических задач
-    /// </summary>
-    public enum ProcessType
-    {
-        /// <summary>
-        /// Сварка (нагрев, охлаждение)
-        /// </summary>
-        Welding,
-        /// <summary>
-        /// Общий нагрев (нагрев)
-        /// </summary>
-        Heating,
-        /// <summary>
-        /// Закалка (охлаждение)
-        /// </summary>
-        Quenching,
-        /// <summary>
-        /// Отпуск, отжиг, старение (выдержка)
-        /// </summary>
-        Tempering
-    }
-    /// <summary>
     /// IPreProc
     /// </summary>
-    public interface IPreProc
+    public interface IPreProc : IEnumerable<GeneralParameters>
     {
         /// <summary>
-        /// Препроцессор по обработке данных пользователя в команды в формате .tsf-файлов и CompData.
-        /// Актуален для процессов указанных в  "ProcessType".
-        /// Для сварки:
-        /// - Реализована поддержка многопроходной сварки с последовательно идущими проходами и с интервалами между ними
-        /// - Среда сварки должна быть задана
-        /// - Нагрев от источника сварки должен быть задан
-        /// - Закрепления должны быть заданы
-        /// - Среда и нагрев не должны выходить за время действия материала
-        /// - Создается всегда четное кол-во tsf файлов-инструкций. 
-        /// - На каждый временной интервал по паре тепловой и механической задачи соответственно.
-        /// Для ТО:
-        /// - Требования теже, что и в сварке кроме требований нагрева
-        /// - Общая тепловая и механическая задачи также поддерживаются
+        /// Формирует параметры заданных физических задач в порядке числовых индексов: тепло перед механикой.
+        /// При включенной синхронизации связанные задачи получают общие шаги на каждом интервале.
+        /// Файлы TSF и TCF не записывает.
         /// </summary>
-        /// <param name="data">список входных данных ValuableData</param>
-        /// <param name="processType">тип задачи</param>>
-        /// <param name="path">путь папки сохранения расчетных файлов данных</param>>
-        /// <returns>список расчитанных данных CompData</returns>
-        void CalcCompDataV1(IEnumerable<ICondData> data, ProcessType processType, string path);
+        IReadOnlyList<GeneralParameters> CalcCompDataV2(IEnumerable<ICondData> data, TaskKind taskKinds, bool synchronizeTimeSteps = false);
+
+        /// <summary>Заменяет текущую очередь готовыми параметрами.</summary>
+        void Load(IEnumerable<GeneralParameters> parameters);
+
+        /// <summary>Читает TCF проекта и связанные TSF, восстанавливая порядок и статусы очереди.</summary>
+        void LoadInstructions(string projectPath);
+
+        /// <summary>Добавляет инструкцию в конец очереди.</summary>
+        void Add(GeneralParameters parameters);
+
+        /// <summary>Удаляет инструкцию из очереди.</summary>
+        bool Remove(GeneralParameters parameters);
+
+        /// <summary>Удаляет все инструкции из текущей очереди.</summary>
+        void Clear();
+
+        /// <summary>Записывает текущие параметры в формате выбранного решателя.</summary>
+        string WriteInstructions(string projectPath);
 
         /// <summary>
-        /// Препроцессор по обработке данных пользователя в команды в формате .tsf-файлов и CompData.
-        /// Актуален для процессов указанных в  "ProcessType".
-        /// Для сварки:
-        /// - Реализована поддержка многопроходной сварки с последовательно идущими проходами и с интервалами между ними
-        /// - Среда сварки должна быть задана
-        /// - Нагрев от источника сварки должен быть задан
-        /// - Закрепления должны быть заданы
-        /// - Среда и нагрев не должны выходить за время действия материала
-        /// - Создается всегда четное кол-во tsf файлов-инструкций. 
-        /// - На каждый временной интервал по паре тепловой и механической задачи соответственно.
-        /// Для ТО:
-        /// - Требования теже, что и в сварке кроме требований нагрева
-        /// - Общая тепловая и механическая задачи также поддерживаются
-        /// </summary>
-        /// <param name="data">список входных данных ValuableData</param>
-        /// <param name="prop">Свойства задачи для подготовки файлов препроессором. Состоит из главной задачи и подзадачи, для создания и параметризации файлов</param>
-        /// <param name="path">путь папки сохранения расчетных файлов данных</param>>
-        /// <returns>список расчитанных данных CompData в виде файлов *.stf</returns>
-        void CalcCompDataV2(IEnumerable<ICondData> data, ProcessProperty prop, string path);
-
-        /// <summary>
-        /// SortCompDataByTimeAndType
-        /// </summary>
-        /// <param name="dataStrs"></param>
-        /// <returns>
-        /// Отсортированный по названиям и по времени действия список задач
-        /// </returns>
-        List<string> SortCompDataByTimeAndType(string[] dataStrs);
-
-        /// <summary>
-        /// SetDraftParameters
+        /// Задает базовые численные параметры физической задачи.
         /// </summary>
         /// <typeparam name="ResultParam"></typeparam>
-        /// <param name="parameter"></param>>
+        /// <param name="parameter">Подготавливаемые параметры задачи.</param>
         void SetDraftParameters<ResultParam>(ResultParam parameter)
             where ResultParam : GeneralParameters, new();
     }

@@ -13,15 +13,15 @@ namespace Geometry
         // Для расчета GetHashCode(), в 10 раз отличается от 1/INV_FACTOR для того,
         // чтобы у близких объектов, которые могут оказаться равными был одинаковый хеш
         private const int FACTOR = 1000;
-        private const float INV_FACTOR = 1e-4f;
+        private const double INV_FACTOR = 1e-4;
 
-        public float _x { get; set; }
+        public double _x { get; set; }
 /// <inheritdoc/>
 
-        public float _y { get; set; }
+        public double _y { get; set; }
         /// <inheritdoc/>
 
-        public float _z { get; set; }
+        public double _z { get; set; }
 
         /// <summary>
         /// Point3D
@@ -34,7 +34,7 @@ namespace Geometry
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <param name="z"></param>
-        public Point3D(float x, float y, float z)
+        public Point3D(double x, double y, double z)
         { _x = x; _y = y; _z = z; }
 /// <inheritdoc/>
 
@@ -56,13 +56,13 @@ namespace Geometry
         }
 /// <inheritdoc/>
 
-        public Point3D Div(float divide)
+        public Point3D Div(double divide)
         {
             return new Point3D(_x / divide, _y / divide, _z / divide);
         }
 /// <inheritdoc/>
 
-        public Point3D Mult(float multiplier)
+        public Point3D Mult(double multiplier)
         {
             return new Point3D(_x * multiplier, _y * multiplier, _z * multiplier);
         }
@@ -103,7 +103,7 @@ namespace Geometry
         /// </summary>
         /// <param name="line"></param>
         /// <returns></returns>
-        public float GetDistanceToLine(Segment3D line)
+        public double GetDistanceToLine(Segment3D line)
         {
             var directVec = line.GetDirectVector();
 

@@ -13,9 +13,9 @@
 Исходники: [IPosition3D.cs](../../PrGeometry/Interfaces/IPosition3D.cs).
 
 ```text
-_x : float [get]
-_y : float [get]
-_z : float [get]
+_x : double [get, set]
+_y : double [get, set]
+_z : double [get, set]
 ```
 
 ## `IPositionFunctions<T>`
@@ -25,8 +25,8 @@ _z : float [get]
 Исходники: [IPositionFunctions.cs](../../PrGeometry/Interfaces/IPositionFunctions.cs).
 
 ```text
-Div(float divide) : T
-Mult(float multiplier) : T
+Div(double divide) : T
+Mult(double multiplier) : T
 Sub(T SubstractValue) : T
 Sum(T AddedValue) : T
 ```
@@ -42,7 +42,7 @@ Centre : Point3D [get, private set]
 Dir_X : Point3D [get, private set]
 Dir_Y : Point3D [get, private set]
 Dir_Z : Point3D [get, private set]
-InverseTransitionMatrix : Matrix<float> [get, private set]
+InverseTransitionMatrix : Matrix<double> [get, private set]
 DetermineInverseMatrix() : void
 Frame()
 Frame(Point3D p0, Point3D p1, Point3D p2)
@@ -73,7 +73,7 @@ UnmapToGlobalCoordinates(Point2D point) : Point3D
 Базовые типы: `IPlane`.
 
 ```text
-Plane(Point3D normal, float shifting)
+Plane(Point3D normal, double shifting)
 Plane(Point3D p0, Point3D normal)
 Plane(Point3D p0, Point3D p1, Point3D p2)
 ```

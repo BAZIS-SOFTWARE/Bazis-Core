@@ -34,7 +34,7 @@ interface "IGroupData" as T_Model_Model_Interfaces_IGroupData {
   + Sort() : void
 }
 interface "ILineObject<T>" as T_Model_Model_Interfaces_ILineObject_1 {
-  + CalcLength() : float
+  + CalcLength() : double
 }
 interface "IModelData" as T_Model_Model_Interfaces_IModelData {
   + GroupData : IGroupData [get]

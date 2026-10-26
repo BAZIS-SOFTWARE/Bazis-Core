@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
-using System.Numerics;
 using Model.MeshObjects;
 using Model.ObjectsCollections;
 using Model.Interfaces.ObjectsCollections;
@@ -14,7 +13,7 @@ namespace Model.IO.STL
 {
     public class LoadFromSTLFile : IModelLoader
     {
-        private Dictionary<Vector3, Node> map = new Dictionary<Vector3, Node>();
+        private Dictionary<(double X, double Y, double Z), Node> map = new Dictionary<(double X, double Y, double Z), Node>();
 
         private int nodes_counter = 0;
         private int elems_counter = 0;
@@ -90,18 +89,18 @@ namespace Model.IO.STL
                 {
                     str = str.Replace("vertex", "").Trim();
                     string[] lineData = str.Split(' ');
-                    var x = float.Parse(lineData[0], NumberStyles.Float, CultureInfo.InvariantCulture);
-                    var y = float.Parse(lineData[1], NumberStyles.Float, CultureInfo.InvariantCulture);
-                    var z = float.Parse(lineData[2], NumberStyles.Float, CultureInfo.InvariantCulture);
+                    var x = double.Parse(lineData[0], NumberStyles.Float, CultureInfo.InvariantCulture);
+                    var y = double.Parse(lineData[1], NumberStyles.Float, CultureInfo.InvariantCulture);
+                    var z = double.Parse(lineData[2], NumberStyles.Float, CultureInfo.InvariantCulture);
 
                     var node = new Node(nodes_counter++, new Point3D(x, y, z));
 
                     //points[i] = node;
-                    if (map.TryGetValue(new Vector3(x, y, z), out var mappedPoint))
+                    if (map.TryGetValue((x, y, z), out var mappedPoint))
                         points[i] = mappedPoint;
                     else
                     {
-                        map.Add(new Vector3(x, y, z), node);
+                        map.Add((x, y, z), node);
                         points[i] = node;
                         nodes.Add(node.Number, node);
                     }
@@ -197,7 +196,7 @@ namespace Model.IO.STL
             var y = reader.ReadSingle();
             var z = reader.ReadSingle();
 
-            if (map.TryGetValue(new Vector3(x, y, z), out var mappedPoint))
+            if (map.TryGetValue((x, y, z), out var mappedPoint))
                 return mappedPoint;
 
             return new Node(nodes_counter++, new Point3D(x, y, z));
