@@ -1,0 +1,12 @@
+{
+  "PrGeometry/Geometry.csproj": "2.2.8",
+  "Model/Model.csproj": "5.0.6",
+  "GmshApi/GmshApi.csproj": "3.2.2",
+  "MaterialDB/MaterialDB.csproj": "1.0.9",
+  "ResultDataBase/ResultDB.csproj": "1.5.4",
+  "Project/Project.csproj": "6.2.0",
+  "PreProc/PreProc.csproj": "2.7.5",
+  "PostProc/PostProc.csproj": "2.3.1",
+  "OperationalController/OperationalController.csproj": "4.11.3",
+  "SurfaceMesher/SurfaceMesher.csproj": "0.9.2"
+}

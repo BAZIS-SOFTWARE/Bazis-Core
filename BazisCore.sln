@@ -18,6 +18,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestProject", "TestProject\TestProject.csproj", "{CF7463D4-69A0-43D4-8AEE-1EAC08E30038}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8F452548-69C6-4B04-AA4C-358C15F0FB83}"
+	ProjectSection(SolutionItems) = preProject
+		PublishVersion = PublishVersion
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OperationalController", "OperationalController\OperationalController.csproj", "{283F3C11-AE5D-48A8-AF96-C5F44501DF24}"
 EndProject

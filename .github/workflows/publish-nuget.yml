@@ -1,0 +1,71 @@
+name: Publish BazisCore NuGet packages
+
+on:
+  push:
+    branches:
+      - Master_dev
+    paths:
+      - PublishVersion
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-nuget-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: windows-2022
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Check package versions
+        id: versions
+        env:
+          BEFORE_COMMIT: ${{ github.event.before }}
+        run: python .github/scripts/check_package_versions.py --before $env:BEFORE_COMMIT --output $env:GITHUB_OUTPUT
+
+      - name: Pack and publish changed versions
+        if: steps.versions.outputs.count != '0'
+        shell: pwsh
+        env:
+          PACKAGES_JSON: ${{ steps.versions.outputs.packages }}
+          PACKAGES_TOKEN: ${{ secrets.BAZIS_CORE_PACKAGES_TOKEN }}
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:PACKAGES_TOKEN)) {
+            throw 'BAZIS_CORE_PACKAGES_TOKEN is not configured.'
+          }
+          $packages = $env:PACKAGES_JSON | ConvertFrom-Json
+          $output = Join-Path $env:RUNNER_TEMP 'bazis-nuget'
+          New-Item -ItemType Directory -Path $output -Force | Out-Null
+          foreach ($package in $packages) {
+            dotnet pack $package.project --configuration Release --output $output -p:Platform=AnyCPU -p:PlatformTarget=AnyCPU -p:GeneratePackageOnBuild=false -m:1
+            if ($LASTEXITCODE -ne 0) {
+              throw "Failed to pack $($package.project)."
+            }
+            $archive = Join-Path $output "$($package.id).$($package.version).nupkg"
+            if (-not (Test-Path -LiteralPath $archive)) {
+              throw "Package $archive was not created."
+            }
+          }
+          foreach ($package in $packages) {
+            $archive = Join-Path $output "$($package.id).$($package.version).nupkg"
+            dotnet nuget push $archive --source 'https://nuget.pkg.github.com/BAZIS-SOFTWARE/index.json' --api-key $env:PACKAGES_TOKEN --skip-duplicate
+            if ($LASTEXITCODE -ne 0) {
+              throw "Failed to publish $archive."
+            }
+          }
