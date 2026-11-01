@@ -4,9 +4,9 @@
   "GmshApi/GmshApi.csproj": "3.2.2",
   "MaterialDB/MaterialDB.csproj": "1.0.9",
   "ResultDataBase/ResultDB.csproj": "1.5.4",
-  "Project/Project.csproj": "6.2.0",
-  "PreProc/PreProc.csproj": "2.7.5",
+  "Project/Project.csproj": "6.2.1",
+  "PreProc/PreProc.csproj": "2.7.6",
   "PostProc/PostProc.csproj": "2.3.1",
-  "OperationalController/OperationalController.csproj": "4.11.3",
+  "OperationalController/OperationalController.csproj": "4.11.4",
   "SurfaceMesher/SurfaceMesher.csproj": "0.9.2"
 }

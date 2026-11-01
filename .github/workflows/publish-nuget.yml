@@ -1,6 +1,7 @@
 name: Publish BazisCore NuGet packages
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - Master_dev
@@ -37,7 +38,7 @@ jobs:
         id: versions
         env:
           BEFORE_COMMIT: ${{ github.event.before }}
-        run: python .github/scripts/check_package_versions.py --before $env:BEFORE_COMMIT --output $env:GITHUB_OUTPUT
+        run: python .github/scripts/check_package_versions.py --before "$env:BEFORE_COMMIT" --output $env:GITHUB_OUTPUT
 
       - name: Pack and publish changed versions
         if: steps.versions.outputs.count != '0'
@@ -48,6 +49,10 @@ jobs:
         run: |
           if ([string]::IsNullOrWhiteSpace($env:PACKAGES_TOKEN)) {
             throw 'BAZIS_CORE_PACKAGES_TOKEN is not configured.'
+          }
+          dotnet nuget add source 'https://nuget.pkg.github.com/BAZIS-SOFTWARE/index.json' --name bazis-core --username $env:GITHUB_ACTOR --password $env:PACKAGES_TOKEN --store-password-in-clear-text
+          if ($LASTEXITCODE -ne 0) {
+            throw 'Failed to configure the BazisCore NuGet source.'
           }
           $packages = $env:PACKAGES_JSON | ConvertFrom-Json
           $output = Join-Path $env:RUNNER_TEMP 'bazis-nuget'
