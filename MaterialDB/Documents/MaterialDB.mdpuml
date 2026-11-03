@@ -61,6 +61,8 @@ rectangle "Свойства, фазовый состав и функции" as A
 note right of Area_2
   MaterialDB-2.mdpuml, MaterialDB-5.mdpuml, MaterialDB-6.mdpuml
   MaterialDB-7.mdpuml
+  FunctionCalc — [[MaterialDB-2.mdpuml MaterialDB-2]]
+  PropertyCalc — [[MaterialDB-5.mdpuml MaterialDB-5]]
 end note
 T_MaterialDB_MaterialDB_Interfaces_IMaterialDB -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_MaterialDBData
 T_MaterialDB_MaterialDB_MaterialData_MaterialDBData -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem

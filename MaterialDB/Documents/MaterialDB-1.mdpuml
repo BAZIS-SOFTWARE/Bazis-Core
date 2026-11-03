@@ -35,9 +35,6 @@ interface "IProperty" as T_MaterialDB_MaterialDB_Interfaces_IProperty {
   + Y_unit : string [get, set]
   + this[int row, int col] : double [get, set]
   + AddRow() : void
-  + CalcProp(phaseData, temp) : float
-  + CalcProp(phaseData, temp) : float
-  + CalcProp(variable) : float
   + Copy(copyName) : Property
 }
 interface "ISaver" as T_MaterialDB_MaterialDB_Interfaces_ISaver {
@@ -49,6 +46,7 @@ T_MaterialDB_MaterialDB_Interfaces_ILoader -[hidden]down-> T_MaterialDB_Material
 T_MaterialDB_MaterialDB_Interfaces_IMaterialDB -[hidden]down-> T_MaterialDB_MaterialDB_Interfaces_IProperty
 T_MaterialDB_MaterialDB_Interfaces_IProperty -[hidden]down-> T_MaterialDB_MaterialDB_Interfaces_ISaver
 legend bottom
+  Обзор: [[MaterialDB.mdpuml MaterialDB]].
   reference — тип раскрыт на другой диаграмме.
   Параметры методов: имена; полные сигнатуры — в соседнем .md.
   Унаследованные члены интерфейсов в классах не повторяются.

@@ -1,9 +1,6 @@
 ﻿using MaterialDB.Interfaces;
-using MaterialDB.MaterialData.MetallurgicalData;
-using MaterialDB.Utilities;
 using System;
 using System.Data;
-using System.Linq;
 
 namespace MaterialDB.MaterialData
 {
@@ -67,50 +64,6 @@ namespace MaterialDB.MaterialData
             return newProperty;
         }
 /// <inheritdoc/>
-        public float CalcProp(PhaseData phaseData, float temp)
-        {
-            if (DataTable.Columns.Count - 1 != phaseData.Count)
-                throw new Exception(
-   $"Кол-во фаз не равно кол-ву фаз свойства {Name}. Должно быть {DataTable.Columns.Count}");
-
-            var xAr = DataTable.Rows.Cast<DataRow>().Select(r => Convert.ToSingle(r[0])).ToArray();
-            var yn = 0.0f;
-            for (int j = 1; j < DataTable.Columns.Count; j++)
-            {
-                var yAr = DataTable.Rows.Cast<DataRow>().Select(r => Convert.ToSingle(r[j])).ToArray();              
-                var yv = yAr.Length == 1 ? 
-                    yAr[0] : 
-                    InterpolationSearch.InterpolatedValue(xAr, yAr, temp);
-                yn = yn + yv * phaseData[j - 1].Value;
-            }
-            return yn;
-        }
-/// <inheritdoc/>
-        public float CalcProp(float variable)
-        {
-            var xAr = DataTable.Rows.Cast<DataRow>().Select(r => Convert.ToSingle(r[0])).ToArray();
-            var yAr = DataTable.Rows.Cast<DataRow>().Select(r => Convert.ToSingle(r[1])).ToArray();
-            return InterpolationSearch.InterpolatedValue(xAr, yAr, variable);
-        }
-/// <inheritdoc/>
-
-        public float CalcProp(DataTable phaseData, float temp)
-        {
-            if (DataTable.Columns.Count - 1 != phaseData.Rows.Count)
-                throw new Exception(
-   $"Кол-во фаз не равно кол-ву фаз свойства {Name}. Должно быть {DataTable.Columns.Count}");
-
-            var xAr = DataTable.Rows.Cast<DataRow>().Select(r => Convert.ToSingle(r[0])).ToArray();
-            var yn = 0.0f;
-            for (int j = 1; j < DataTable.Columns.Count; j++)
-            {
-                var yAr = DataTable.Rows.Cast<DataRow>().Select(r => Convert.ToSingle(r[j])).ToArray();
-                var yv = InterpolationSearch.InterpolatedValue(xAr, yAr, temp);
-                yn = yn + yv * Convert.ToSingle(phaseData.Rows[j - 1]);
-            }
-            return yn;
-        }
-
         public void AddRow()
         {
             var row = DataTable.NewRow();

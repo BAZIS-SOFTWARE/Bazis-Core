@@ -61,6 +61,16 @@ Property(string name, string x_unit, string y_unit, string units, DataTable data
 ToString() : string
 ```
 
+## `PropertyCalc`
+
+Пространство имён: `MaterialDB.MaterialData`.
+
+Исходники: [PropertyCalc.cs](../../MaterialDB/MaterialData/PropertyCalc.cs).
+
+```text
+CalcProp(DataTable phaseProp, PhaseData phaseData, float temp) : float
+```
+
 ## `PropertyData`
 
 Пространство имён: `MaterialDB.MaterialData`.

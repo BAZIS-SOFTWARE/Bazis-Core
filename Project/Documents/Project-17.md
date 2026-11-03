@@ -77,6 +77,8 @@ TT()
 
 Исходники: [TableParameter.cs](../../Project/Tasks/Functions/TableParameter.cs).
 
+Вычисление значения таблицы делегирует `MaterialDB.FunctionData.FunctionCalc` ([MaterialDB-2](../../MaterialDB/Documents/MaterialDB-2.mdpuml)).
+
 Базовые типы: `Parameter`.
 
 ```text

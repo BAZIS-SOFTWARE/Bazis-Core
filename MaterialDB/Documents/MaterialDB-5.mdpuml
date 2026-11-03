@@ -40,6 +40,9 @@ class "Property" as T_MaterialDB_MaterialDB_MaterialData_Property {
   + Property(name, x_unit, y_unit, units, dataTable)
   + ToString() : string
 }
+class "PropertyCalc" as T_MaterialDB_MaterialDB_MaterialData_PropertyCalc {
+  + CalcProp(phaseProp, phaseData, temp) : float
+}
 class "PropertyData" as T_MaterialDB_MaterialDB_MaterialData_PropertyData {
   + Count : int [get]
   + IsReadOnly : bool [get]
@@ -60,11 +63,13 @@ class "PropertyData" as T_MaterialDB_MaterialDB_MaterialData_PropertyData {
 interface "IProperty" as T_MaterialDB_MaterialDB_Interfaces_IProperty <<reference>>
 T_MaterialDB_MaterialDB_MaterialData_ChemicalData -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_GeneralAbsentException
 T_MaterialDB_MaterialDB_MaterialData_GeneralAbsentException -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_Property
-T_MaterialDB_MaterialDB_MaterialData_Property -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_PropertyData
+T_MaterialDB_MaterialDB_MaterialData_Property -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_PropertyCalc
+T_MaterialDB_MaterialDB_MaterialData_PropertyCalc -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_PropertyData
 T_MaterialDB_MaterialDB_MaterialData_PropertyData -[hidden]down-> T_MaterialDB_MaterialDB_Interfaces_IProperty
 T_MaterialDB_MaterialDB_MaterialData_Property ..|> T_MaterialDB_MaterialDB_Interfaces_IProperty
 T_MaterialDB_MaterialDB_MaterialData_PropertyData --> T_MaterialDB_MaterialDB_MaterialData_Property : использует
 legend bottom
+  Обзор: [[MaterialDB.mdpuml MaterialDB]].
   reference — тип раскрыт на другой диаграмме.
   Параметры методов: имена; полные сигнатуры — в соседнем .md.
   Унаследованные члены интерфейсов в классах не повторяются.

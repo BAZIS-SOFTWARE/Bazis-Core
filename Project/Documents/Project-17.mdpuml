@@ -45,6 +45,9 @@ class "TableParameter" as T_Project_Project_Tasks_Functions_TableParameter {
   + TableParameter(table, name, parameter)
   + ToString() : string
 }
+class "FunctionCalc" as T_MaterialDB_FunctionData_FunctionCalc <<reference>> [[../../MaterialDB/Documents/MaterialDB-2.mdpuml MaterialDB-2]] {
+  + CalcProp(functionData, variable) : float
+}
 abstract class "Function\nProject-16" as T_Project_Project_Tasks_Functions_Function <<reference>> [[Project-16.mdpuml Project-16]]
 T_Project_Project_Tasks_Functions_PT -[hidden]down-> T_Project_Project_Tasks_Functions_Parameter
 T_Project_Project_Tasks_Functions_Parameter -[hidden]down-> T_Project_Project_Tasks_Functions_ParameterKind
@@ -57,6 +60,7 @@ T_Project_Project_Tasks_Functions_Parameter --> T_Project_Project_Tasks_Function
 T_Project_Project_Tasks_Functions_Parameter --> T_Project_Project_Tasks_Functions_ParameterType : использует
 T_Project_Project_Tasks_Functions_TT --|> T_Project_Project_Tasks_Functions_Function
 T_Project_Project_Tasks_Functions_TableParameter --> T_Project_Project_Tasks_Functions_Parameter : использует
+T_Project_Project_Tasks_Functions_TableParameter --> T_MaterialDB_FunctionData_FunctionCalc : использует
 T_Project_Project_Tasks_Functions_TableParameter --|> T_Project_Project_Tasks_Functions_Parameter
 legend bottom
   Обзор: [[Project.mdpuml Project]]; сигнатуры: [[Project-17.md Project-17.md]].

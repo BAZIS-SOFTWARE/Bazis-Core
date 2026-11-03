@@ -34,7 +34,9 @@ namespace TestProject_test.MaterialDB
 
             var phaseData = new PhaseData(strData.DataTable);
 
-            var value = materials[mat][cat][prop].CalcProp(phaseData, temp);
+            var property = materials[mat][cat][prop];
+            var calculator = new PropertyCalc();
+            var value = calculator.CalcProp(property.DataTable, phaseData, temp);
 
             Assert.AreEqual(value, res);
         }
@@ -53,7 +55,9 @@ namespace TestProject_test.MaterialDB
             foreach (var phaseValue in phaseValues)
                 phaseData.Add(new Phase() { Name = "", Value = phaseValue });
 
-            var value = materials[mat][cat][prop].CalcProp(phaseData, temp);
+            var property = materials[mat][cat][prop];
+            var calculator = new PropertyCalc();
+            var value = calculator.CalcProp(property.DataTable, phaseData, temp);
 
             Assert.AreEqual(value, res);
         }
@@ -104,7 +108,9 @@ DisplayName = "Сталь_20 и Титан_Вт6 и Титан_Фиктивны�
         public void TestFunctions(string fun, float variable, float res)
         {
             var functions = new FunctionDBData("functions.jsf", @"../../../MaterialDB/Data");
-            var value = functions[fun].CalcProp(variable);
+            var function = functions[fun];
+            var calculator = new FunctionCalc();
+            var value = calculator.CalcProp(function.DataTable, variable);
 
             Assert.AreEqual(value, res, 0.000001);
         }

@@ -35,6 +35,16 @@ Remove(string key) : bool
 TryGetValue(string key, out Property value) : bool
 ```
 
+## `FunctionCalc`
+
+Пространство имён: `MaterialDB.FunctionData`.
+
+Исходники: [FunctionCalc.cs](../../MaterialDB/FunctionData/FunctionCalc.cs).
+
+```text
+CalcProp(DataTable functionData, float variable) : float
+```
+
 ## `CategoryEnum`
 
 Пространство имён: `MaterialDB.MaterialData`.

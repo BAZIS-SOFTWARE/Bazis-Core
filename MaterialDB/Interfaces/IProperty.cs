@@ -1,6 +1,4 @@
-﻿using MaterialDB.MaterialData.MetallurgicalData;
 using MaterialDB.MaterialData;
-using System;
 using System.Data;
 
 namespace MaterialDB.Interfaces
@@ -55,31 +53,6 @@ namespace MaterialDB.Interfaces
         /// <returns></returns>
         Property Copy(string copyName);
 
-        /// <summary>
-        /// CalcProp for y(a,T) type of functions
-        /// </summary>
-        /// <param name="phaseData"></param>
-        /// <param name="temp"></param>
-        /// <returns></returns>
-        /// <exception cref="Exception"></exception>
-        float CalcProp(PhaseData phaseData, float temp);
-
-        /// <summary>
-        /// CalcProp for y(a,T) type of functions
-        /// </summary>
-        /// <param name="phaseData"></param>
-        /// <param name="temp"></param>
-        /// <returns></returns>
-        float CalcProp(DataTable phaseData, float temp);
-
-        /// <summary>
-        /// CalcProp for y(x) type of functions
-        /// </summary>
-        /// <param name="variable"></param>
-        /// function argument "x"
-        /// <returns></returns>
-        /// <exception cref="Exception"></exception>
-        float CalcProp(float variable);
 
         void AddRow();
     }

@@ -65,9 +65,6 @@ X_unit : string [get, set]
 Y_unit : string [get, set]
 this[int row, int col] : double [get, set]
 AddRow() : void
-CalcProp(DataTable phaseData, float temp) : float
-CalcProp(PhaseData phaseData, float temp) : float
-CalcProp(float variable) : float
 Copy(string copyName) : Property
 ```
 
