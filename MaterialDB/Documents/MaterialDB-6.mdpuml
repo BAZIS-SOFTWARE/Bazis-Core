@@ -56,7 +56,7 @@ class "Process<T>" as T_MaterialDB_MaterialDB_MaterialData_MetallurgicalData_Pro
   + Name : string [get]
   + PhaseMax : T [get, internal set]
   + PhaseMin : T [get, internal set]
-  + Reaction : Property [get, internal set]
+  + Reaction : PropertyItem [get, internal set]
   + TempMax : T [get, internal set]
   + TempMin : T [get, internal set]
   + Process(reaction)

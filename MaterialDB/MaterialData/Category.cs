@@ -1,4 +1,4 @@
-﻿using MaterialDB.Interfaces;
+using MaterialDB.Interfaces;
 
 namespace MaterialDB.MaterialData
 {
@@ -32,12 +32,12 @@ namespace MaterialDB.MaterialData
 
         public PropertyData PropertyData { get; set; } = new PropertyData();
 
-        public Property this[string key] 
+        public PropertyItem this[string key]
         { 
             get { return PropertyData[key]; }
             set { PropertyData[key] = value; }
         }
-        public Property this[PropertyEnum key]
+        public PropertyItem this[PropertyEnum key]
         {
             get { return PropertyData[PropertyDic[key]]; }
             set { PropertyData[PropertyDic[key]] = value; }

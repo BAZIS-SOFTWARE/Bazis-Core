@@ -59,7 +59,7 @@ namespace TestProject_test.Project
                 table.Columns.Add("Time", typeof(double));
                 table.Columns.Add("Value", typeof(double));
                 table.Rows.Add(0d, 42d);
-                var function = new Property("Нагрев", "s", "K", "K", table);
+                var function = new FunctionItem("Нагрев", "s", "K", "K", table);
                 functions.Add(function.Name, function);
                 var materialPath = Path.Combine(folder, materialName);
                 var functionPath = Path.Combine(folder, functionName);

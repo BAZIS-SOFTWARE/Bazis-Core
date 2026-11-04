@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
@@ -10,7 +10,7 @@ namespace MaterialDB.MaterialData.MetallurgicalData
 {
     public class Process<T> where T : IConvertible
     {
-        public Property Reaction { get; internal set; }
+        public PropertyItem Reaction { get; internal set; }
         public string Name { get { return Reaction.Name; } }
 
         public T TempMax { get; internal set; }
@@ -29,7 +29,7 @@ namespace MaterialDB.MaterialData.MetallurgicalData
             return $"{Name} : темп {TempMin} - {TempMax} | фаза {PhaseMin} - {PhaseMax}";
         }
 
-        public Process(Property reaction)
+        public Process(PropertyItem reaction)
         {
             Reaction = reaction;
 

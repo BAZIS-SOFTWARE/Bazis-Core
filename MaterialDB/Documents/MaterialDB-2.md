@@ -12,37 +12,41 @@
 
 Исходники: [FunctionDBData.cs](../../MaterialDB/FunctionData/FunctionDBData.cs).
 
-Базовые типы: `IDictionary<string, Property>`.
+Базовые типы: `IDictionary<string, FunctionItem>`.
 
 ```text
 Count : int [get]
 IsReadOnly : bool [get]
 Keys : ICollection<string> [get]
 Name : string [get, set]
-Values : ICollection<Property> [get]
-this[string key] : Property [get, set]
-Add(KeyValuePair<string, Property> item) : void
-Add(string key, Property value) : void
+Values : ICollection<FunctionItem> [get]
+this[string key] : FunctionItem [get, set]
+Add(KeyValuePair<string, FunctionItem> item) : void
+Add(string key, FunctionItem value) : void
 Clear() : void
-Contains(KeyValuePair<string, Property> item) : bool
+Contains(KeyValuePair<string, FunctionItem> item) : bool
 ContainsKey(string key) : bool
-CopyTo(KeyValuePair<string, Property>[] array, int arrayIndex) : void
+CopyTo(KeyValuePair<string, FunctionItem>[] array, int arrayIndex) : void
 FunctionDBData()
 FunctionDBData(string dbName, string dbFolder)
-GetEnumerator() : IEnumerator<KeyValuePair<string, Property>>
-Remove(KeyValuePair<string, Property> item) : bool
+GetEnumerator() : IEnumerator<KeyValuePair<string, FunctionItem>>
+Remove(KeyValuePair<string, FunctionItem> item) : bool
 Remove(string key) : bool
-TryGetValue(string key, out Property value) : bool
+TryGetValue(string key, out FunctionItem value) : bool
 ```
 
-## `FunctionCalc`
+## `FunctionItem`
 
 Пространство имён: `MaterialDB.FunctionData`.
 
-Исходники: [FunctionCalc.cs](../../MaterialDB/FunctionData/FunctionCalc.cs).
+Исходники: [FunctionItem.cs](../../MaterialDB/FunctionData/FunctionItem.cs).
+
+Базовый тип: `DataItem`.
 
 ```text
-CalcProp(DataTable functionData, float variable) : float
+FunctionItem(string name, string x_unit, string y_unit, string units, DataTable dataTable)
+Copy(string copyName) : FunctionItem
+CalcProp(float variable) : float
 ```
 
 ## `CategoryEnum`

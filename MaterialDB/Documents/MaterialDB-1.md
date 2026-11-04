@@ -15,7 +15,7 @@
 ```text
 Name : string [get, set]
 PropertyData : PropertyData [get, set]
-this[string key] : Property [get, set]
+this[string key] : PropertyItem [get, set]
 ```
 
 ## `IDataInformer`
@@ -65,7 +65,7 @@ X_unit : string [get, set]
 Y_unit : string [get, set]
 this[int row, int col] : double [get, set]
 AddRow() : void
-Copy(string copyName) : Property
+Copy(string copyName) : PropertyItem
 ```
 
 ## `ISaver`

@@ -79,9 +79,9 @@ DataTable : DataTable [get]
 Name : string [get]
 PhaseMax : T [get, internal set]
 PhaseMin : T [get, internal set]
-Reaction : Property [get, internal set]
+Reaction : PropertyItem [get, internal set]
 TempMax : T [get, internal set]
 TempMin : T [get, internal set]
-Process(Property reaction)
+Process(PropertyItem reaction)
 ToString() : string
 ```

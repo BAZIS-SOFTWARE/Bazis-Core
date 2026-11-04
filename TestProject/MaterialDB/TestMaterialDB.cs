@@ -1,4 +1,4 @@
-﻿using MaterialDB.FunctionData;
+using MaterialDB.FunctionData;
 using MaterialDB.MaterialData;
 using MaterialDB.MaterialData.MetallurgicalData;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -9,16 +9,18 @@ namespace TestProject_test.MaterialDB
     [TestClass]
     public class TestMaterialDB
     {
+        private readonly string materialDataFolder = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "MaterialDB", "Data");
+
         [DataTestMethod]
         [DataRow($@"c:\projs\AdditiveTest\CubeWith2DSupports\materials_v3.jsf", "СтальСВ_20ХМ_AD", "Механические свойства", "Модуль Юнга X", 20.0f, 195122f,
             DisplayName = "СтальСВ_20ХМ_AD Модуль Юнга X 20°C")]
-        [DataRow($@"../../../MaterialDB/Data/Materials_v7.jsf", "Сталь_20", "Тепловые свойства", "Теплопроводность", 20.0f, 0.0508f,
+        [DataRow("../../../MaterialDB/Data/Materials_v7.jsf", "Сталь_20", "Тепловые свойства", "Теплопроводность", 20.0f, 0.0508f,
             DisplayName = "Сталь_20 Теплопроводность 20°C")]
-        [DataRow($@"../../../MaterialDB/Data/Materials_v7.jsf", "Сталь_20ХМ_MixingPhase", "Тепловые свойства", "Теплопроводность", 200.0f, 0.044f,
+        [DataRow("../../../MaterialDB/Data/Materials_v7.jsf", "Сталь_20ХМ_MixingPhase", "Тепловые свойства", "Теплопроводность", 200.0f, 0.044f,
             DisplayName = "Сталь_20ХМ_MixingPhase Теплопроводность 20°C")]
-        [DataRow($@"../../../MaterialDB/Data/Materials_v7.jsf", "Сталь_20ХМ_MixingPhase", "Механические свойства", "Предел текучести", 20.0f, 441.0f,
+        [DataRow("../../../MaterialDB/Data/Materials_v7.jsf", "Сталь_20ХМ_MixingPhase", "Механические свойства", "Предел текучести", 20.0f, 441.0f,
             DisplayName = "Сталь_20ХМ_MixingPhase Предел текучести 20°C")]
-        [DataRow($@"../../../MaterialDB/Data/Materials_v7.jsf", "Сталь_20", "Тепловые свойства", "Теплопроводность", 500.0f, 0.042f,
+        [DataRow("../../../MaterialDB/Data/Materials_v7.jsf", "Сталь_20", "Тепловые свойства", "Теплопроводность", 500.0f, 0.042f,
             DisplayName = "Сталь_20 Теплопроводность 500°C")]
         public void TestMaterialsLoadingFromJsonWithPhaseData(string path, string mat, string cat, string prop, float temp, float res)
         {
@@ -27,16 +29,16 @@ namespace TestProject_test.MaterialDB
                 TypeNameHandling = TypeNameHandling.Auto,
                 Formatting = Formatting.Indented,
             };
+            var file = Path.Combine(AppContext.BaseDirectory, path);
             var materials = JsonConvert.DeserializeObject<MaterialDBData>
-                (File.ReadAllText(path), settingsSerializer);
+                (File.ReadAllText(file), settingsSerializer);
 
             var strData = materials[mat][CategoryEnum.General][PropertyEnum.Structure];
 
             var phaseData = new PhaseData(strData.DataTable);
 
             var property = materials[mat][cat][prop];
-            var calculator = new PropertyCalc();
-            var value = calculator.CalcProp(property.DataTable, phaseData, temp);
+            var value = property.CalcProp(phaseData, temp);
 
             Assert.AreEqual(value, res);
         }
@@ -47,7 +49,7 @@ namespace TestProject_test.MaterialDB
         [DataRow("Сталь_20", "Тепловые свойства", "Теплопроводность", "0,0,0,0,1", 500.0f, 0.021f)]
         public void TestMaterialsLoadingFromJson(string mat, string cat, string prop, string phases, float temp, float res)
         {
-            var materials = new MaterialDBData("Materials_v7.jsf", $@"../../../MaterialDB/Data");
+            var materials = new MaterialDBData("Materials_v7.jsf", materialDataFolder);
 
             var phaseValues = phases.Split(',').Select(x => float.Parse(x));
 
@@ -56,8 +58,7 @@ namespace TestProject_test.MaterialDB
                 phaseData.Add(new Phase() { Name = "", Value = phaseValue });
 
             var property = materials[mat][cat][prop];
-            var calculator = new PropertyCalc();
-            var value = calculator.CalcProp(property.DataTable, phaseData, temp);
+            var value = property.CalcProp(phaseData, temp);
 
             Assert.AreEqual(value, res);
         }
@@ -77,7 +78,7 @@ namespace TestProject_test.MaterialDB
     DisplayName = "Титан_Фиктивный")]
         public void TestMaterialsChecking(string mat)
         {
-            var materials = new MaterialDBData("Materials_v7.jsf", $@"../../../MaterialDB/Data");
+            var materials = new MaterialDBData("Materials_v7.jsf", materialDataFolder);
 
             Assert.AreEqual(true, materials[mat].CheckThermalProps());
             Assert.AreEqual(true, materials[mat].CheckMechanicalProps());
@@ -97,7 +98,7 @@ DisplayName = "Сталь_20 и Титан_Вт6 и Титан_Фиктивны�
 
         public void TestMaterialsGetSummaryPhases(string[] mats, int phaseCount)
         {
-            var materials = new MaterialDBData("Materials_v7.jsf", $@"../../../MaterialDB/Data");
+            var materials = new MaterialDBData("Materials_v7.jsf", materialDataFolder);
             Assert.AreEqual(phaseCount, materials.GetPhases(mats.ToList()).Count);
         }
 
@@ -107,10 +108,9 @@ DisplayName = "Сталь_20 и Титан_Вт6 и Титан_Фиктивны�
         [DataRow("ISORAPID.277.HM", 500.0f, 0.004f)]
         public void TestFunctions(string fun, float variable, float res)
         {
-            var functions = new FunctionDBData("functions.jsf", @"../../../MaterialDB/Data");
+            var functions = new FunctionDBData("functions.jsf", materialDataFolder);
             var function = functions[fun];
-            var calculator = new FunctionCalc();
-            var value = calculator.CalcProp(function.DataTable, variable);
+            var value = function.CalcProp(variable);
 
             Assert.AreEqual(value, res, 0.000001);
         }
@@ -119,7 +119,7 @@ DisplayName = "Сталь_20 и Титан_Вт6 и Титан_Фиктивны�
         [DataRow("Сталь_20ХМ")]
         public void TestMaterialsCopy(string materialName)
         {
-            var materials = new MaterialDBData("Materials_v7.jsf", $@"../../../MaterialDB/Data");
+            var materials = new MaterialDBData("Materials_v7.jsf", materialDataFolder);
 
             var oldMaterial = materials[materialName];
             var newMaterial = materials[materialName].Copy(materialName + "_копия");
@@ -167,7 +167,7 @@ DisplayName = "Сталь_20 и Титан_Вт6 и Титан_Фиктивны�
         [DataRow("Коэф.теплоотдачи.воздух")]
         public void TestFunctionsCopy(string functionName)
         {
-            var functions = new FunctionDBData("functions.jsf", @"../../../MaterialDB/Data");
+            var functions = new FunctionDBData("functions.jsf", materialDataFolder);
 
             var oldFunction = functions[functionName];
             var newFunction = functions[functionName].Copy(functionName + "_копия");

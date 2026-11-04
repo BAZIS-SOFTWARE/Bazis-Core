@@ -16,7 +16,7 @@
 
 ```text
 GetEnumerator() : IEnumerator<Process<float>>
-ProcessData(IEnumerable<Property> reactions, string[] reacTypes)
+ProcessData(IEnumerable<PropertyItem> reactions, string[] reacTypes)
 ToString() : string
 ```
 

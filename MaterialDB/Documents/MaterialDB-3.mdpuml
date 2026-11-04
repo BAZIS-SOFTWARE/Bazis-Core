@@ -14,7 +14,7 @@ title MaterialDB-3 — Контракты и данные материалов
 caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
 class "Category" as T_MaterialDB_MaterialDB_MaterialData_Category {
   + PropertyDic : Dictionary<PropertyEnum, string> [field]
-  + this[PropertyEnum key] : Property [get, set]
+  + this[PropertyEnum key] : PropertyItem [get, set]
 }
 class "CategoryData" as T_MaterialDB_MaterialDB_MaterialData_CategoryData {
   + Count : int [get]

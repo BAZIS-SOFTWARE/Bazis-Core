@@ -1,4 +1,4 @@
-﻿using MaterialDB.Interfaces;
+using MaterialDB.Interfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,27 +10,27 @@ namespace MaterialDB.MaterialData
     /// PropertyData
     /// </summary>
     [Serializable]
-    public class PropertyData : IDictionary<string, Property>
+    public class PropertyData : IDictionary<string, PropertyItem>
     {
-        Dictionary<string, Property> dic = new Dictionary<string, Property>();
+        Dictionary<string, PropertyItem> dic = new Dictionary<string, PropertyItem>();
         /// <inheritdoc/>
-        public Property this[string key] { get { return dic[key]; } set { dic[key] = value; } }
+        public PropertyItem this[string key] { get { return dic[key]; } set { dic[key] = value; } }
 /// <inheritdoc/>
 
         public ICollection<string> Keys { get { return dic.Keys; } }
         /// <inheritdoc/>
-        public ICollection<Property> Values { get { return dic.Values; } }
+        public ICollection<PropertyItem> Values { get { return dic.Values; } }
         /// <inheritdoc/>
         public int Count { get { return dic.Count; } }
         /// <inheritdoc/>
         public bool IsReadOnly { get { return false; } }
         /// <inheritdoc/>
-        public void Add(string key, Property value)
+        public void Add(string key, PropertyItem value)
         {
             dic.Add(key, value);
         }
         /// <inheritdoc/>
-        public void Add(KeyValuePair<string, Property> item)
+        public void Add(KeyValuePair<string, PropertyItem> item)
         {
             dic.Add(item.Key, item.Value);
         }
@@ -40,7 +40,7 @@ namespace MaterialDB.MaterialData
             dic.Clear();
         }
         /// <inheritdoc/>
-        public bool Contains(KeyValuePair<string, Property> item)
+        public bool Contains(KeyValuePair<string, PropertyItem> item)
         {
             return dic.Contains(item);
         }
@@ -50,12 +50,12 @@ namespace MaterialDB.MaterialData
             return dic.ContainsKey(key);
         }
         /// <inheritdoc/>
-        public void CopyTo(KeyValuePair<string, Property>[] array, int arrayIndex)
+        public void CopyTo(KeyValuePair<string, PropertyItem>[] array, int arrayIndex)
         {
             throw new NotImplementedException();
         }
         /// <inheritdoc/>
-        public IEnumerator<KeyValuePair<string, Property>> GetEnumerator()
+        public IEnumerator<KeyValuePair<string, PropertyItem>> GetEnumerator()
         {
             foreach (var item in dic)
             {
@@ -68,12 +68,12 @@ namespace MaterialDB.MaterialData
             return dic.Remove(key);
         }
         /// <inheritdoc/>
-        public bool Remove(KeyValuePair<string, Property> item)
+        public bool Remove(KeyValuePair<string, PropertyItem> item)
         {
             return dic.Remove(item.Key);
         }
         /// <inheritdoc/>
-        public bool TryGetValue(string key, out Property value)
+        public bool TryGetValue(string key, out PropertyItem value)
         {
             throw new NotImplementedException();
         }

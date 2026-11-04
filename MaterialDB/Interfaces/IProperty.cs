@@ -51,7 +51,7 @@ namespace MaterialDB.Interfaces
         /// </summary>
         /// <param name="copyName"></param>
         /// <returns></returns>
-        Property Copy(string copyName);
+        PropertyItem Copy(string copyName);
 
 
         void AddRow();

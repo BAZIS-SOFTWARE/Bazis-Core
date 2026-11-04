@@ -11,10 +11,10 @@
 | Диаграмма | Область |
 | --- | --- |
 | [MaterialDB-1](MaterialDB-1.mdpuml) | Контракты и данные материалов; ICategory, IDataInformer, ILoader, IMaterialDB, IProperty, ISaver |
-| [MaterialDB-2](MaterialDB-2.mdpuml) | Свойства, фазовый состав и функции; FunctionDBData, FunctionCalc, CategoryEnum, ChemElement |
+| [MaterialDB-2](MaterialDB-2.mdpuml) | Свойства, фазовый состав и функции; FunctionDBData, FunctionItem, CategoryEnum, ChemElement |
 | [MaterialDB-3](MaterialDB-3.mdpuml) | Контракты и данные материалов; Category, CategoryData, MaterialDBData |
 | [MaterialDB-4](MaterialDB-4.mdpuml) | Контракты и данные материалов; MaterialDBItem |
-| [MaterialDB-5](MaterialDB-5.mdpuml) | Свойства, фазовый состав и функции; ChemicalData, GeneralAbsentException, Property, PropertyCalc, PropertyData |
+| [MaterialDB-5](MaterialDB-5.mdpuml) | Свойства, фазовый состав и функции; ChemicalData, GeneralAbsentException, DataItem, PropertyItem, PropertyData |
 | [MaterialDB-6](MaterialDB-6.mdpuml) | Свойства, фазовый состав и функции; PropertyEnum, Phase, PhaseData, Process |
 | [MaterialDB-7](MaterialDB-7.mdpuml) | Свойства, фазовый состав и функции; ProcessData, InterpolationSearch |
 
@@ -23,7 +23,7 @@
 | Тип | Диаграммы | Исходник |
 | --- | --- | --- |
 | `MaterialDB.FunctionData.FunctionDBData` | [MaterialDB-2](MaterialDB-2.mdpuml) | [FunctionDBData.cs](../../MaterialDB/FunctionData/FunctionDBData.cs) |
-| `MaterialDB.FunctionData.FunctionCalc` | [MaterialDB-2](MaterialDB-2.mdpuml) | [FunctionCalc.cs](../../MaterialDB/FunctionData/FunctionCalc.cs) |
+| `MaterialDB.FunctionData.FunctionItem` | [MaterialDB-2](MaterialDB-2.mdpuml) | [FunctionItem.cs](../../MaterialDB/FunctionData/FunctionItem.cs) |
 | `MaterialDB.Interfaces.ICategory` | [MaterialDB-1](MaterialDB-1.mdpuml) | [ICategory.cs](../../MaterialDB/Interfaces/ICategory.cs) |
 | `MaterialDB.Interfaces.IDataInformer` | [MaterialDB-1](MaterialDB-1.mdpuml) | [IDataInformer.cs](../../MaterialDB/Interfaces/IDataInformer.cs) |
 | `MaterialDB.Interfaces.ILoader` | [MaterialDB-1](MaterialDB-1.mdpuml) | [ILoader.cs](../../MaterialDB/Interfaces/ILoader.cs) |
@@ -38,8 +38,8 @@
 | `MaterialDB.MaterialData.GeneralAbsentException` | [MaterialDB-5](MaterialDB-5.mdpuml) | [GeneralAbsentException.cs](../../MaterialDB/MaterialData/GeneralAbsentException.cs) |
 | `MaterialDB.MaterialData.MaterialDBData` | [MaterialDB-3](MaterialDB-3.mdpuml) | [MaterialDBData.cs](../../MaterialDB/MaterialData/MaterialDBData.cs) |
 | `MaterialDB.MaterialData.MaterialDBItem` | [MaterialDB-4](MaterialDB-4.mdpuml) | [MaterialDBItem.cs](../../MaterialDB/MaterialData/MaterialDBItem.cs) |
-| `MaterialDB.MaterialData.Property` | [MaterialDB-5](MaterialDB-5.mdpuml) | [Property.cs](../../MaterialDB/MaterialData/Property.cs) |
-| `MaterialDB.MaterialData.PropertyCalc` | [MaterialDB-5](MaterialDB-5.mdpuml) | [PropertyCalc.cs](../../MaterialDB/MaterialData/PropertyCalc.cs) |
+| `MaterialDB.DataItem` | [MaterialDB-5](MaterialDB-5.mdpuml) | [DataItem.cs](../../MaterialDB/DataItem.cs) |
+| `MaterialDB.MaterialData.PropertyItem` | [MaterialDB-5](MaterialDB-5.mdpuml) | [PropertyItem.cs](../../MaterialDB/MaterialData/PropertyItem.cs) |
 | `MaterialDB.MaterialData.PropertyData` | [MaterialDB-5](MaterialDB-5.mdpuml) | [PropertyData.cs](../../MaterialDB/MaterialData/PropertyData.cs) |
 | `MaterialDB.MaterialData.PropertyEnum` | [MaterialDB-6](MaterialDB-6.mdpuml) | [MaterialDBData.cs](../../MaterialDB/MaterialData/MaterialDBData.cs) |
 | `MaterialDB.MaterialData.MetallurgicalData.Phase` | [MaterialDB-6](MaterialDB-6.mdpuml) | [Phase.cs](../../MaterialDB/MaterialData/MetallurgicalData/Phase.cs) |

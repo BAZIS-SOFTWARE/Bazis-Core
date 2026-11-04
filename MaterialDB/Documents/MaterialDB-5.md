@@ -47,28 +47,38 @@ GeneralAbsentException(string? message)
 GeneralAbsentException(string? message, Exception? innerException)
 ```
 
-## `Property`
+## `DataItem`
 
-Пространство имён: `MaterialDB.MaterialData`.
+Пространство имён: `MaterialDB`.
 
-Исходники: [Property.cs](../../MaterialDB/MaterialData/Property.cs).
-
-Базовые типы: `IProperty`.
+Исходники: [DataItem.cs](../../MaterialDB/DataItem.cs).
 
 ```text
-this[int row,int col] : double [get, set]
-Property(string name, string x_unit, string y_unit, string units, DataTable dataTable)
+DataItem(string name, string x_unit, string y_unit, string units, DataTable dataTable)
+DataItem(string copyName, DataItem source)
+Name : string [get, set]
+X_unit : string [get, set]
+Y_unit : string [get, set]
+Units : string [get, set]
+DataTable : DataTable [get, set]
+this[int row, int col] : double [get, set]
+Copy(string copyName) : DataItem
+AddRow() : void
 ToString() : string
 ```
 
-## `PropertyCalc`
+## `PropertyItem`
 
 Пространство имён: `MaterialDB.MaterialData`.
 
-Исходники: [PropertyCalc.cs](../../MaterialDB/MaterialData/PropertyCalc.cs).
+Исходники: [PropertyItem.cs](../../MaterialDB/MaterialData/PropertyItem.cs).
+
+Базовые типы: `DataItem`, `IProperty`.
 
 ```text
-CalcProp(DataTable phaseProp, PhaseData phaseData, float temp) : float
+PropertyItem(string name, string x_unit, string y_unit, string units, DataTable dataTable)
+Copy(string copyName) : PropertyItem
+CalcProp(PhaseData phaseData, float temp) : float
 ```
 
 ## `PropertyData`
@@ -77,22 +87,22 @@ CalcProp(DataTable phaseProp, PhaseData phaseData, float temp) : float
 
 Исходники: [PropertyData.cs](../../MaterialDB/MaterialData/PropertyData.cs).
 
-Базовые типы: `IDictionary<string, Property>`.
+Базовые типы: `IDictionary<string, PropertyItem>`.
 
 ```text
 Count : int [get]
 IsReadOnly : bool [get]
 Keys : ICollection<string> [get]
-Values : ICollection<Property> [get]
-this[string key] : Property [get, set]
-Add(KeyValuePair<string, Property> item) : void
-Add(string key, Property value) : void
+Values : ICollection<PropertyItem> [get]
+this[string key] : PropertyItem [get, set]
+Add(KeyValuePair<string, PropertyItem> item) : void
+Add(string key, PropertyItem value) : void
 Clear() : void
-Contains(KeyValuePair<string, Property> item) : bool
+Contains(KeyValuePair<string, PropertyItem> item) : bool
 ContainsKey(string key) : bool
-CopyTo(KeyValuePair<string, Property>[] array, int arrayIndex) : void
-GetEnumerator() : IEnumerator<KeyValuePair<string, Property>>
-Remove(KeyValuePair<string, Property> item) : bool
+CopyTo(KeyValuePair<string, PropertyItem>[] array, int arrayIndex) : void
+GetEnumerator() : IEnumerator<KeyValuePair<string, PropertyItem>>
+Remove(KeyValuePair<string, PropertyItem> item) : bool
 Remove(string key) : bool
-TryGetValue(string key, out Property value) : bool
+TryGetValue(string key, out PropertyItem value) : bool
 ```

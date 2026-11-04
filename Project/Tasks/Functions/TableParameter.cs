@@ -1,4 +1,3 @@
-﻿using MaterialDB.MaterialData;
 using Project.Tasks.LocalFrames;
 using MaterialDB.FunctionData;
 using Project.Tasks.Functions;
@@ -16,13 +15,11 @@ namespace Project.Tasks.Functions
     /// </summary>
     public class TableParameter : Parameter
     {
-        private readonly FunctionCalc functionCalc = new FunctionCalc();
-
-        public Property Table { get; }
+        public FunctionItem Table { get; }
 
         public Parameter Parameter { get; set; }
 
-        public TableParameter(Property table, string name,Parameter parameter) : base(name)
+        public TableParameter(FunctionItem table, string name,Parameter parameter) : base(name)
         {
             Table = table;
             Parameter = parameter;
@@ -37,7 +34,7 @@ namespace Project.Tasks.Functions
         public override double GetValue()
         {   
             var variable = (float)Parameter.GetValue();
-            return Value = functionCalc.CalcProp(Table.DataTable, variable);
+            return Value = Table.CalcProp(variable);
         }
 /// <inheritdoc/>
 

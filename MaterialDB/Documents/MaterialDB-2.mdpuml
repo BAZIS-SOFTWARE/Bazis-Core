@@ -17,8 +17,8 @@ class "FunctionDBData" as T_MaterialDB_MaterialDB_FunctionData_FunctionDBData {
   + IsReadOnly : bool [get]
   + Keys : ICollection<string> [get]
   + Name : string [get, set]
-  + Values : ICollection<Property> [get]
-  + this[string key] : Property [get, set]
+  + Values : ICollection<FunctionItem> [get]
+  + this[string key] : FunctionItem [get, set]
   + Add(item) : void
   + Add(key, value) : void
   + Clear() : void
@@ -27,14 +27,18 @@ class "FunctionDBData" as T_MaterialDB_MaterialDB_FunctionData_FunctionDBData {
   + CopyTo(array, arrayIndex) : void
   + FunctionDBData()
   + FunctionDBData(dbName, dbFolder)
-  + GetEnumerator() : IEnumerator<KeyValuePair<string, Property>>
+  + GetEnumerator() : IEnumerator<KeyValuePair<string, FunctionItem>>
   + Remove(item) : bool
   + Remove(key) : bool
   + TryGetValue(key, out value) : bool
 }
-class "FunctionCalc" as T_MaterialDB_MaterialDB_FunctionData_FunctionCalc {
-  + CalcProp(functionData, variable) : float
+class "FunctionItem" as T_MaterialDB_MaterialDB_FunctionData_FunctionItem {
+  + FunctionItem(name, x_unit, y_unit, units, dataTable)
+  + Copy(copyName) : FunctionItem
+  + CalcProp(variable) : float
 }
+class "DataItem" as T_MaterialDB_DataItem <<reference>>
+T_MaterialDB_MaterialDB_FunctionData_FunctionItem --|> T_MaterialDB_DataItem
 enum "CategoryEnum" as T_MaterialDB_MaterialDB_MaterialData_CategoryEnum {
     General
     Mechanical
@@ -58,8 +62,9 @@ enum "ChemElement" as T_MaterialDB_MaterialDB_MaterialData_ChemElement {
     V
     W
 }
-T_MaterialDB_MaterialDB_FunctionData_FunctionDBData -[hidden]down-> T_MaterialDB_MaterialDB_FunctionData_FunctionCalc
-T_MaterialDB_MaterialDB_FunctionData_FunctionCalc -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_CategoryEnum
+T_MaterialDB_MaterialDB_FunctionData_FunctionDBData --> T_MaterialDB_MaterialDB_FunctionData_FunctionItem : содержит
+T_MaterialDB_MaterialDB_FunctionData_FunctionDBData -[hidden]down-> T_MaterialDB_MaterialDB_FunctionData_FunctionItem
+T_MaterialDB_MaterialDB_FunctionData_FunctionItem -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_CategoryEnum
 T_MaterialDB_MaterialDB_MaterialData_CategoryEnum -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_ChemElement
 legend bottom
   Обзор: [[MaterialDB.mdpuml MaterialDB]].

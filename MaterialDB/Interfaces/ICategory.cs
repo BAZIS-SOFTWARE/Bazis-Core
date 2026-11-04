@@ -1,4 +1,4 @@
-﻿using MaterialDB.MaterialData;
+using MaterialDB.MaterialData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +25,6 @@ namespace MaterialDB.Interfaces
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        Property this[string key] { get; set; }
+        PropertyItem this[string key] { get; set; }
     }
 }

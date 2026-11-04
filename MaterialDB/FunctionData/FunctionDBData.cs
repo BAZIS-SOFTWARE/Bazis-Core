@@ -1,4 +1,3 @@
-﻿using MaterialDB.MaterialData;
 using Newtonsoft.Json;
 using System;
 using System.Collections;
@@ -8,35 +7,35 @@ using System.Linq;
 namespace MaterialDB.FunctionData
 {
     /// <summary>
-    /// FunctionItem
+    /// База табличных функций.
     /// </summary>
     [Serializable]
-    public class FunctionDBData : IDictionary<string, Property>
+    public class FunctionDBData : IDictionary<string, FunctionItem>
     {
         /// <summary>
         /// Name
         /// </summary>
         public string Name { get; set; }
 
-        Dictionary<string, Property> dic = new Dictionary<string, Property>();
+        Dictionary<string, FunctionItem> dic = new Dictionary<string, FunctionItem>();
         /// <inheritdoc/>
-        public Property this[string key] { get { return dic[key]; } set { dic[key] = value; } }
+        public FunctionItem this[string key] { get { return dic[key]; } set { dic[key] = value; } }
         /// <inheritdoc/>
 
         public ICollection<string> Keys { get { return dic.Keys; } }
         /// <inheritdoc/>
-        public ICollection<Property> Values { get { return dic.Values; } }
+        public ICollection<FunctionItem> Values { get { return dic.Values; } }
         /// <inheritdoc/>
         public int Count { get { return dic.Count; } }
         /// <inheritdoc/>
         public bool IsReadOnly { get { return false; } }
         /// <inheritdoc/>
-        public void Add(string key, Property value)
+        public void Add(string key, FunctionItem value)
         {
             dic.Add(key, value);
         }
         /// <inheritdoc/>
-        public void Add(KeyValuePair<string, Property> item)
+        public void Add(KeyValuePair<string, FunctionItem> item)
         {
             dic.Add(item.Key, item.Value);
         }
@@ -46,7 +45,7 @@ namespace MaterialDB.FunctionData
             dic.Clear();
         }
         /// <inheritdoc/>
-        public bool Contains(KeyValuePair<string, Property> item)
+        public bool Contains(KeyValuePair<string, FunctionItem> item)
         {
             return dic.Contains(item);
         }
@@ -56,12 +55,12 @@ namespace MaterialDB.FunctionData
             return dic.ContainsKey(key);
         }
         /// <inheritdoc/>
-        public void CopyTo(KeyValuePair<string, Property>[] array, int arrayIndex)
+        public void CopyTo(KeyValuePair<string, FunctionItem>[] array, int arrayIndex)
         {
             throw new NotImplementedException();
         }
         /// <inheritdoc/>
-        public IEnumerator<KeyValuePair<string, Property>> GetEnumerator()
+        public IEnumerator<KeyValuePair<string, FunctionItem>> GetEnumerator()
         {
             foreach (var item in dic)
             {
@@ -74,12 +73,12 @@ namespace MaterialDB.FunctionData
             return dic.Remove(key);
         }
         /// <inheritdoc/>
-        public bool Remove(KeyValuePair<string, Property> item)
+        public bool Remove(KeyValuePair<string, FunctionItem> item)
         {
             return dic.Remove(item.Key);
         }
         /// <inheritdoc/>
-        public bool TryGetValue(string key, out Property value)
+        public bool TryGetValue(string key, out FunctionItem value)
         {
             throw new NotImplementedException();
         }

@@ -47,10 +47,10 @@ namespace TestProject_test.PreProc
             var group = new Group("material-group", ObjType.Узел);
             var firstMaterial = new MaterialDBItem("first");
             firstMaterial.AddMetallurgicalProps();
-            firstMaterial[CategoryEnum.Metallurgical].PropertyData.Add("Нагрев", new Property("Нагрев", "", "", "", new DataTable()));
+            firstMaterial[CategoryEnum.Metallurgical].PropertyData.Add("Нагрев", new PropertyItem("Нагрев", "", "", "", new DataTable()));
             var secondMaterial = new MaterialDBItem("second");
             secondMaterial.AddMetallurgicalProps();
-            secondMaterial[CategoryEnum.Metallurgical].PropertyData.Add("Охлаждение", new Property("Охлаждение", "", "", "", new DataTable()));
+            secondMaterial[CategoryEnum.Metallurgical].PropertyData.Add("Охлаждение", new PropertyItem("Охлаждение", "", "", "", new DataTable()));
 
             var heat = new HeatData(group, 0f, 4f)
             {

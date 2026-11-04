@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +34,7 @@ namespace MaterialDB.MaterialData.MetallurgicalData
         /// </summary>
         /// <param name="reactions"></param>
         /// <param name="reacTypes"></param>
-        public ProcessData(IEnumerable<Property> reactions, string[] reacTypes)
+        public ProcessData(IEnumerable<PropertyItem> reactions, string[] reacTypes)
         {
             foreach (var reacType in reacTypes)
             {

@@ -35,39 +35,50 @@ class "GeneralAbsentException" as T_MaterialDB_MaterialDB_MaterialData_GeneralAb
   + GeneralAbsentException(message)
   + GeneralAbsentException(message, innerException)
 }
-class "Property" as T_MaterialDB_MaterialDB_MaterialData_Property {
-  + this[int row,int col] : double [get, set]
-  + Property(name, x_unit, y_unit, units, dataTable)
+class "DataItem" as T_MaterialDB_DataItem {
+  # DataItem(name, x_unit, y_unit, units, dataTable)
+  # DataItem(copyName, source)
+  + Name : string [get, set]
+  + X_unit : string [get, set]
+  + Y_unit : string [get, set]
+  + Units : string [get, set]
+  + DataTable : DataTable [get, set]
+  + this[int row, int col] : double [get, set]
+  + Copy(copyName) : DataItem
+  + AddRow() : void
   + ToString() : string
 }
-class "PropertyCalc" as T_MaterialDB_MaterialDB_MaterialData_PropertyCalc {
-  + CalcProp(phaseProp, phaseData, temp) : float
+class "PropertyItem" as T_MaterialDB_MaterialDB_MaterialData_PropertyItem {
+  + PropertyItem(name, x_unit, y_unit, units, dataTable)
+  + Copy(copyName) : PropertyItem
+  + CalcProp(phaseData, temp) : float
 }
 class "PropertyData" as T_MaterialDB_MaterialDB_MaterialData_PropertyData {
   + Count : int [get]
   + IsReadOnly : bool [get]
   + Keys : ICollection<string> [get]
-  + Values : ICollection<Property> [get]
-  + this[string key] : Property [get, set]
+  + Values : ICollection<PropertyItem> [get]
+  + this[string key] : PropertyItem [get, set]
   + Add(item) : void
   + Add(key, value) : void
   + Clear() : void
   + Contains(item) : bool
   + ContainsKey(key) : bool
   + CopyTo(array, arrayIndex) : void
-  + GetEnumerator() : IEnumerator<KeyValuePair<string, Property>>
+  + GetEnumerator() : IEnumerator<KeyValuePair<string, PropertyItem>>
   + Remove(item) : bool
   + Remove(key) : bool
   + TryGetValue(key, out value) : bool
 }
 interface "IProperty" as T_MaterialDB_MaterialDB_Interfaces_IProperty <<reference>>
 T_MaterialDB_MaterialDB_MaterialData_ChemicalData -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_GeneralAbsentException
-T_MaterialDB_MaterialDB_MaterialData_GeneralAbsentException -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_Property
-T_MaterialDB_MaterialDB_MaterialData_Property -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_PropertyCalc
-T_MaterialDB_MaterialDB_MaterialData_PropertyCalc -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_PropertyData
+T_MaterialDB_MaterialDB_MaterialData_GeneralAbsentException -[hidden]down-> T_MaterialDB_DataItem
+T_MaterialDB_DataItem -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_PropertyItem
+T_MaterialDB_MaterialDB_MaterialData_PropertyItem -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_PropertyData
 T_MaterialDB_MaterialDB_MaterialData_PropertyData -[hidden]down-> T_MaterialDB_MaterialDB_Interfaces_IProperty
-T_MaterialDB_MaterialDB_MaterialData_Property ..|> T_MaterialDB_MaterialDB_Interfaces_IProperty
-T_MaterialDB_MaterialDB_MaterialData_PropertyData --> T_MaterialDB_MaterialDB_MaterialData_Property : использует
+T_MaterialDB_MaterialDB_MaterialData_PropertyItem --|> T_MaterialDB_DataItem
+T_MaterialDB_MaterialDB_MaterialData_PropertyItem ..|> T_MaterialDB_MaterialDB_Interfaces_IProperty
+T_MaterialDB_MaterialDB_MaterialData_PropertyData --> T_MaterialDB_MaterialDB_MaterialData_PropertyItem : содержит
 legend bottom
   Обзор: [[MaterialDB.mdpuml MaterialDB]].
   reference — тип раскрыт на другой диаграмме.

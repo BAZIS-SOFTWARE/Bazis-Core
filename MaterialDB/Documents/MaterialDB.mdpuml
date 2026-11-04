@@ -37,22 +37,32 @@ interface "IProperty" as T_MaterialDB_MaterialDB_Interfaces_IProperty <<details>
 note right of T_MaterialDB_MaterialDB_Interfaces_IProperty
   MaterialDB-1
 end note
-class "Property" as T_MaterialDB_MaterialDB_MaterialData_Property <<details>>
-note right of T_MaterialDB_MaterialDB_MaterialData_Property
+class "DataItem" as T_MaterialDB_DataItem <<details>>
+note right of T_MaterialDB_DataItem
+  MaterialDB-5
+end note
+class "PropertyItem" as T_MaterialDB_MaterialDB_MaterialData_PropertyItem <<details>>
+note right of T_MaterialDB_MaterialDB_MaterialData_PropertyItem
   MaterialDB-5
 end note
 class "FunctionDBData" as T_MaterialDB_MaterialDB_FunctionData_FunctionDBData <<details>>
 note right of T_MaterialDB_MaterialDB_FunctionData_FunctionDBData
   MaterialDB-2
 end note
-T_MaterialDB_MaterialDB_FunctionData_FunctionDBData --> T_MaterialDB_MaterialDB_MaterialData_Property : использует
-T_MaterialDB_MaterialDB_Interfaces_ICategory --> T_MaterialDB_MaterialDB_MaterialData_Property : использует
-T_MaterialDB_MaterialDB_MaterialData_Category --> T_MaterialDB_MaterialDB_MaterialData_Property : использует
+class "FunctionItem" as T_MaterialDB_MaterialDB_FunctionData_FunctionItem <<details>>
+note right of T_MaterialDB_MaterialDB_FunctionData_FunctionItem
+  MaterialDB-2
+end note
+T_MaterialDB_MaterialDB_FunctionData_FunctionDBData --> T_MaterialDB_MaterialDB_FunctionData_FunctionItem : содержит
+T_MaterialDB_MaterialDB_Interfaces_ICategory --> T_MaterialDB_MaterialDB_MaterialData_PropertyItem : использует
+T_MaterialDB_MaterialDB_MaterialData_Category --> T_MaterialDB_MaterialDB_MaterialData_PropertyItem : использует
 T_MaterialDB_MaterialDB_MaterialData_Category ..|> T_MaterialDB_MaterialDB_Interfaces_ICategory
 T_MaterialDB_MaterialDB_MaterialData_MaterialDBData --> T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem : использует
 T_MaterialDB_MaterialDB_MaterialData_MaterialDBData ..|> T_MaterialDB_MaterialDB_Interfaces_IMaterialDB
 T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem --> T_MaterialDB_MaterialDB_MaterialData_Category : использует
-T_MaterialDB_MaterialDB_MaterialData_Property ..|> T_MaterialDB_MaterialDB_Interfaces_IProperty
+T_MaterialDB_MaterialDB_MaterialData_PropertyItem --|> T_MaterialDB_DataItem
+T_MaterialDB_MaterialDB_FunctionData_FunctionItem --|> T_MaterialDB_DataItem
+T_MaterialDB_MaterialDB_MaterialData_PropertyItem ..|> T_MaterialDB_MaterialDB_Interfaces_IProperty
 rectangle "Контракты и данные материалов" as Area_1 <<область>>
 note right of Area_1
   MaterialDB-1.mdpuml, MaterialDB-3.mdpuml, MaterialDB-4.mdpuml
@@ -61,16 +71,18 @@ rectangle "Свойства, фазовый состав и функции" as A
 note right of Area_2
   MaterialDB-2.mdpuml, MaterialDB-5.mdpuml, MaterialDB-6.mdpuml
   MaterialDB-7.mdpuml
-  FunctionCalc — [[MaterialDB-2.mdpuml MaterialDB-2]]
-  PropertyCalc — [[MaterialDB-5.mdpuml MaterialDB-5]]
+  FunctionItem — [[MaterialDB-2.mdpuml MaterialDB-2]]
+  DataItem и PropertyItem — [[MaterialDB-5.mdpuml MaterialDB-5]]
 end note
 T_MaterialDB_MaterialDB_Interfaces_IMaterialDB -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_MaterialDBData
 T_MaterialDB_MaterialDB_MaterialData_MaterialDBData -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem
 T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem -[hidden]down-> T_MaterialDB_MaterialDB_Interfaces_ICategory
 T_MaterialDB_MaterialDB_Interfaces_ICategory -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_Category
 T_MaterialDB_MaterialDB_MaterialData_Category -[hidden]down-> T_MaterialDB_MaterialDB_Interfaces_IProperty
-T_MaterialDB_MaterialDB_Interfaces_IProperty -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_Property
-T_MaterialDB_MaterialDB_MaterialData_Property -[hidden]down-> T_MaterialDB_MaterialDB_FunctionData_FunctionDBData
+T_MaterialDB_MaterialDB_Interfaces_IProperty -[hidden]down-> T_MaterialDB_DataItem
+T_MaterialDB_DataItem -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_PropertyItem
+T_MaterialDB_MaterialDB_MaterialData_PropertyItem -[hidden]down-> T_MaterialDB_MaterialDB_FunctionData_FunctionDBData
+T_MaterialDB_MaterialDB_FunctionData_FunctionDBData -[hidden]down-> T_MaterialDB_MaterialDB_FunctionData_FunctionItem
 T_MaterialDB_MaterialDB_FunctionData_FunctionDBData -[hidden]down-> Area_1
 Area_1 -[hidden]down-> Area_2
 @enduml

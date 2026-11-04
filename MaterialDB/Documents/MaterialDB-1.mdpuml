@@ -15,7 +15,7 @@ caption Целевой состав API; расхождения с кодом �
 interface "ICategory" as T_MaterialDB_MaterialDB_Interfaces_ICategory {
   + Name : string [get, set]
   + PropertyData : PropertyData [get, set]
-  + this[string key] : Property [get, set]
+  + this[string key] : PropertyItem [get, set]
 }
 interface "IDataInformer" as T_MaterialDB_MaterialDB_Interfaces_IDataInformer {
   + GetDataNames(dataSet) : List<string>
@@ -35,7 +35,7 @@ interface "IProperty" as T_MaterialDB_MaterialDB_Interfaces_IProperty {
   + Y_unit : string [get, set]
   + this[int row, int col] : double [get, set]
   + AddRow() : void
-  + Copy(copyName) : Property
+  + Copy(copyName) : PropertyItem
 }
 interface "ISaver" as T_MaterialDB_MaterialDB_Interfaces_ISaver {
   + SaveDataBase(data, path) : void

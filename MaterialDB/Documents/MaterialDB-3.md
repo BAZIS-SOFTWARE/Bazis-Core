@@ -16,7 +16,7 @@
 
 ```text
 PropertyDic : Dictionary<PropertyEnum, string> [field]
-this[PropertyEnum key] : Property [get, set]
+this[PropertyEnum key] : PropertyItem [get, set]
 ```
 
 ## `CategoryData`
