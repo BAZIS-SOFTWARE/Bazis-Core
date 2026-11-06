@@ -1,0 +1,73 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+skinparam class {
+  BackgroundColor<<new>> #E3F4E1
+  BackgroundColor<<changed>> #FFF4D6
+  BackgroundColor<<obsolete>> #F2F2F2
+  BackgroundColor<<external>> #E6EEF8
+}
+hide empty members
+set namespaceSeparator none
+
+allowmixing
+title MaterialDB-Target-5 — границы ответственности и зависимости
+caption Целевое состояние; спецификация — MaterialDB-Spec.md, разделы 2, 8
+package "SolverCore (BazisSolver)" as P_SolverCore <<external>> {
+  class "HeatTask / SetPhysicalProperties" as Ext_SolverCore_Tasks <<external>>
+}
+package "PropertiesCalculator (BazisSolver)" as P_PropertiesCalculator <<external>> {
+  class "MaterialCompiler" as Ext_PropertiesCalculator_MaterialCompiler <<external>> {
+    точка входа слоя Binding
+  }
+  class "CompiledMaterial" as Ext_PropertiesCalculator_CompiledMaterial <<external>> {
+    double[]; расчёт в горячем цикле
+  }
+}
+package "Project (BazisCore)" as P_Project <<external>> {
+  class "TableParameter" as Ext_Project_TableParameter <<external>> {
+    Table : DataItem [2.0.0: было FunctionItem]
+  }
+  class "LinearTable" as Ext_Project_LinearTable <<external>> {
+    double[] x, y; одномерная интерполяция
+  }
+}
+package "MaterialDB (BazisCore)" as P_MaterialDB {
+  class "MaterialDBItem" as T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem <<changed>>
+  class "DataItem" as T_MaterialDB_DataItem <<changed>>
+  interface "IMaterialValidator" as T_MaterialDB_MaterialDB_Validation_IMaterialValidator <<new>>
+}
+note right of T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem
+  [[MaterialDB-Target-3.mdpuml MaterialDB-Target-3]]
+end note
+note left of T_MaterialDB_DataItem
+  [[MaterialDB-Target-2.mdpuml MaterialDB-Target-2]]
+end note
+note right of T_MaterialDB_MaterialDB_Validation_IMaterialValidator
+  [[MaterialDB-Target-4.mdpuml MaterialDB-Target-4]]
+end note
+note bottom of P_MaterialDB
+  Только хранение, загрузка, сохранение, выведение ArgumentKind, проверка.
+  Без численных методов: в 2.0.0 нет CalcProp и InterpolationSearch.
+end note
+Ext_SolverCore_Tasks ..> Ext_PropertiesCalculator_CompiledMaterial : вычисляет свойства
+Ext_SolverCore_Tasks ..> Ext_PropertiesCalculator_MaterialCompiler : один раз до расчёта
+Ext_PropertiesCalculator_MaterialCompiler ..> Ext_PropertiesCalculator_CompiledMaterial : создаёт
+Ext_PropertiesCalculator_MaterialCompiler ..> T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem : читает, доверяет ArgumentKind
+Ext_PropertiesCalculator_MaterialCompiler ..> T_MaterialDB_MaterialDB_Validation_IMaterialValidator : Validate
+Ext_Project_TableParameter --> Ext_Project_LinearTable : создаёт один раз
+Ext_Project_TableParameter ..> T_MaterialDB_DataItem : Argument / Constant
+T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem --> T_MaterialDB_DataItem : содержит (через категории)
+legend bottom
+  Обзор: [[MaterialDB-Target.mdpuml MaterialDB-Target]].
+  Зависимости: SolverCore → PropertiesCalculator → MaterialDB ← Project; MaterialDB ни на что из них не ссылается.
+  Project не ссылается на PropertiesCalculator (другое решение), поэтому 1D-интерполяция функций — в Project.
+  external — точка входа другого проекта; состав MaterialCompiler / CompiledMaterial проектируется в PropertiesCalculator.
+endlegend
+@enduml

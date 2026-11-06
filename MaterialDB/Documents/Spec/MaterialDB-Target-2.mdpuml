@@ -1,0 +1,101 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+skinparam class {
+  BackgroundColor<<new>> #E3F4E1
+  BackgroundColor<<changed>> #FFF4D6
+  BackgroundColor<<obsolete>> #F2F2F2
+  BackgroundColor<<external>> #E6EEF8
+}
+hide empty members
+set namespaceSeparator none
+
+title MaterialDB-Target-2 — DataItem и контейнеры записей (2.0.0)
+caption Целевое состояние; спецификация — MaterialDB-Spec.md, разделы 4.4, 4.5, 4.7, 5.1, 6.1
+class "DataItem" as T_MaterialDB_DataItem <<changed>> <<sealed>> {
+  + DataItem(name, x_unit, y_unit, units, dataTable, argumentKind) [new, JsonConstructor]
+  + Name : string [get, set]
+  + X_unit : string [get, set]
+  + Y_unit : string [get, set]
+  + Units : string [get, set]
+  + ArgumentKind : ArgumentKind [get, set] [new, JSON: строка]
+  + DataTable : DataTable [get, set]
+  + this[int row, int col] : double [get, set]
+  + Copy(copyName) : DataItem [changed: не abstract]
+  + AddRow() : void
+  + ToString() : string
+}
+note right of T_MaterialDB_DataItem
+  Было: abstract + PropertyItem, FunctionItem, IProperty.
+  Смысл записи задаёт контейнер:
+  PropertyData — свойство материала (X = T) или описатель,
+  FunctionDBData — функция (X любой).
+  sealed: TypeNameHandling.Auto не пишет $type
+end note
+interface "ICategory" as T_MaterialDB_MaterialDB_Interfaces_ICategory <<changed>> {
+  + Name : string [get, set]
+  + PropertyData : PropertyData [get, set]
+  + this[string key] : DataItem [get, set] [changed: было PropertyItem]
+}
+class "PropertyData" as T_MaterialDB_MaterialDB_MaterialData_PropertyData <<changed>> {
+  + this[string key] : DataItem [get, set] [changed]
+  + Values : ICollection<DataItem> [get] [changed]
+  + Add(key, value : DataItem) : void [changed]
+  + TryGetValue(key, out value : DataItem) : bool [changed]
+  .. прочие члены IDictionary<string, DataItem> без изменений ..
+}
+class "FunctionDBData" as T_MaterialDB_MaterialDB_FunctionData_FunctionDBData <<changed>> {
+  + Name : string [get, set]
+  + this[string key] : DataItem [get, set] [changed]
+  + Values : ICollection<DataItem> [get] [changed]
+  + Add(key, value : DataItem) : void [changed]
+  + FunctionDBData()
+  + FunctionDBData(dbName, dbFolder)
+  - OnDeserialized(context) : void [new]
+  .. прочие члены IDictionary<string, DataItem> без изменений ..
+}
+class "Process<T>" as T_MaterialDB_MaterialDB_MaterialData_MetallurgicalData_Process <<changed>> {
+  + Reaction : DataItem [get] [changed: было PropertyItem]
+  + Process(reaction : DataItem) [changed]
+}
+class "ProcessData" as T_MaterialDB_MaterialDB_MaterialData_MetallurgicalData_ProcessData <<changed>> {
+  + ProcessData(reactions : IEnumerable<DataItem>, reacTypes) [changed]
+}
+class "PressureColumnConvention" as T_MaterialDB_MaterialDB_MaterialData_PressureColumnConvention <<new>> <<sealed>> {
+  + Prefix : string [get]
+  + Format(pressure) : string
+  + TryParse(columnName, out pressure) : bool
+  + GetPressures(table) : IEnumerable<double>
+}
+note right of T_MaterialDB_MaterialDB_MaterialData_PressureColumnConvention
+  «P_0.101325»: имя_значение, InvariantCulture;
+  давление в МПа
+end note
+enum "ArgumentKind" as T_MaterialDB_MaterialDB_MaterialData_ArgumentKind <<reference>>
+note right of T_MaterialDB_MaterialDB_MaterialData_ArgumentKind
+  [[MaterialDB-Target-1.mdpuml MaterialDB-Target-1]]
+end note
+class "ArgumentKindResolver" as T_MaterialDB_MaterialDB_Compatibility_ArgumentKindResolver <<reference>>
+note right of T_MaterialDB_MaterialDB_Compatibility_ArgumentKindResolver
+  [[MaterialDB-Target-4.mdpuml MaterialDB-Target-4]]
+end note
+T_MaterialDB_MaterialDB_MaterialData_PropertyData --> T_MaterialDB_DataItem : содержит
+T_MaterialDB_MaterialDB_FunctionData_FunctionDBData --> T_MaterialDB_DataItem : содержит
+T_MaterialDB_MaterialDB_Interfaces_ICategory --> T_MaterialDB_MaterialDB_MaterialData_PropertyData
+T_MaterialDB_MaterialDB_MaterialData_MetallurgicalData_Process --> T_MaterialDB_DataItem : Reaction
+T_MaterialDB_MaterialDB_MaterialData_MetallurgicalData_ProcessData --> T_MaterialDB_MaterialDB_MaterialData_MetallurgicalData_Process : содержит
+T_MaterialDB_DataItem --> T_MaterialDB_MaterialDB_MaterialData_ArgumentKind
+T_MaterialDB_MaterialDB_FunctionData_FunctionDBData ..> T_MaterialDB_MaterialDB_Compatibility_ArgumentKindResolver : Resolve(this)
+legend bottom
+  Обзор: [[MaterialDB-Target.mdpuml MaterialDB-Target]]. Версия 1.2.0 — [[MaterialDB-Target-6.mdpuml MaterialDB-Target-6]].
+  Колонки: Constant — «Значение»; Argument — X, Y по позиции («Температура»/«Значение» или «X»/«Y»);
+  TemperaturePhase — «Температура» + фазы «Структуры»; TemperaturePressure — «Температура» + «P_<p>».
+  [new] / [changed] — состояние члена; reference — тип раскрыт на другой диаграмме.
+endlegend
+@enduml

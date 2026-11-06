@@ -1,0 +1,101 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+skinparam class {
+  BackgroundColor<<new>> #E3F4E1
+  BackgroundColor<<changed>> #FFF4D6
+  BackgroundColor<<obsolete>> #F2F2F2
+  BackgroundColor<<external>> #E6EEF8
+}
+hide empty members
+set namespaceSeparator none
+
+allowmixing
+title MaterialDB-Target — целевое состояние MaterialDB 2.0.0: обзор и расположение подробностей
+caption Спецификация: MaterialDB-Spec.md; текущий код — ../MaterialDB.mdpuml
+class "MaterialDBItem" as T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem <<changed>> <<details>>
+note right of T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem
+  [[MaterialDB-Target-3.mdpuml MaterialDB-Target-3]]
+end note
+class "Category" as T_MaterialDB_MaterialDB_MaterialData_Category <<changed>> <<details>>
+note right of T_MaterialDB_MaterialDB_MaterialData_Category
+  [[MaterialDB-Target-3.mdpuml MaterialDB-Target-3]]
+end note
+class "MaterialDescriptor" as T_MaterialDB_MaterialDB_MaterialData_MaterialDescriptor <<new>> <<details>>
+note right of T_MaterialDB_MaterialDB_MaterialData_MaterialDescriptor
+  [[MaterialDB-Target-1.mdpuml MaterialDB-Target-1]]
+end note
+class "PropertyData" as T_MaterialDB_MaterialDB_MaterialData_PropertyData <<changed>> <<details>>
+note left of T_MaterialDB_MaterialDB_MaterialData_PropertyData
+  [[MaterialDB-Target-2.mdpuml MaterialDB-Target-2]]
+end note
+class "FunctionDBData" as T_MaterialDB_MaterialDB_FunctionData_FunctionDBData <<changed>> <<details>>
+note right of T_MaterialDB_MaterialDB_FunctionData_FunctionDBData
+  [[MaterialDB-Target-2.mdpuml MaterialDB-Target-2]]
+end note
+class "DataItem" as T_MaterialDB_DataItem <<changed>> <<details>>
+note right of T_MaterialDB_DataItem
+  [[MaterialDB-Target-2.mdpuml MaterialDB-Target-2]]
+  sealed; заменяет PropertyItem и FunctionItem
+end note
+class "PressureColumnConvention" as T_MaterialDB_MaterialDB_MaterialData_PressureColumnConvention <<new>> <<details>>
+note right of T_MaterialDB_MaterialDB_MaterialData_PressureColumnConvention
+  [[MaterialDB-Target-2.mdpuml MaterialDB-Target-2]]
+end note
+class "ArgumentKindResolver" as T_MaterialDB_MaterialDB_Compatibility_ArgumentKindResolver <<new>> <<details>>
+note right of T_MaterialDB_MaterialDB_Compatibility_ArgumentKindResolver
+  [[MaterialDB-Target-4.mdpuml MaterialDB-Target-4]]
+end note
+class "MaterialValidator" as T_MaterialDB_MaterialDB_Validation_MaterialValidator <<new>> <<details>>
+note right of T_MaterialDB_MaterialDB_Validation_MaterialValidator
+  [[MaterialDB-Target-4.mdpuml MaterialDB-Target-4]]
+end note
+rectangle "Перечисления: MediumKind, DensityModel, ViscosityModel,\nArgumentKind, CategoryEnum, PropertyEnum" as Area_Enums <<new/changed>>
+note right of Area_Enums
+  [[MaterialDB-Target-1.mdpuml MaterialDB-Target-1]]
+end note
+rectangle "Удаляются в 2.0.0 ([Obsolete] в 1.2.0):\nPropertyItem, FunctionItem, IProperty, InterpolationSearch" as Area_Removed <<obsolete>>
+note right of Area_Removed
+  [[MaterialDB-Target-6.mdpuml MaterialDB-Target-6]]
+end note
+class "PropertiesCalculator.MaterialCompiler" as Ext_PropertiesCalculator_MaterialCompiler <<external>> <<details>>
+note right of Ext_PropertiesCalculator_MaterialCompiler
+  [[MaterialDB-Target-5.mdpuml MaterialDB-Target-5]]
+end note
+class "Project.TableParameter" as Ext_Project_TableParameter <<external>> <<details>>
+note left of Ext_Project_TableParameter
+  [[MaterialDB-Target-5.mdpuml MaterialDB-Target-5]]
+end note
+T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem --> T_MaterialDB_MaterialDB_MaterialData_Category : содержит
+T_MaterialDB_MaterialDB_MaterialData_Category --> T_MaterialDB_MaterialDB_MaterialData_PropertyData : содержит
+T_MaterialDB_MaterialDB_MaterialData_PropertyData --> T_MaterialDB_DataItem : содержит
+T_MaterialDB_MaterialDB_FunctionData_FunctionDBData --> T_MaterialDB_DataItem : содержит
+T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem ..> T_MaterialDB_MaterialDB_MaterialData_MaterialDescriptor : создаёт
+T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem ..> T_MaterialDB_MaterialDB_Compatibility_ArgumentKindResolver : OnDeserialized
+T_MaterialDB_MaterialDB_FunctionData_FunctionDBData ..> T_MaterialDB_MaterialDB_Compatibility_ArgumentKindResolver : OnDeserialized
+T_MaterialDB_MaterialDB_Validation_MaterialValidator ..> T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem : проверяет
+T_MaterialDB_MaterialDB_Validation_MaterialValidator ..> T_MaterialDB_MaterialDB_MaterialData_PressureColumnConvention : использует
+Ext_PropertiesCalculator_MaterialCompiler ..> T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem : читает
+Ext_PropertiesCalculator_MaterialCompiler ..> T_MaterialDB_MaterialDB_Validation_MaterialValidator : Validate
+Ext_Project_TableParameter ..> T_MaterialDB_DataItem : Argument / Constant
+T_MaterialDB_DataItem -[hidden]down-> Area_Enums
+Area_Enums -[hidden]down-> Area_Removed
+legend bottom
+  Поддиаграммы:
+  [[MaterialDB-Target-1.mdpuml MaterialDB-Target-1]] — перечисления и MaterialDescriptor
+  [[MaterialDB-Target-2.mdpuml MaterialDB-Target-2]] — DataItem и контейнеры записей
+  [[MaterialDB-Target-3.mdpuml MaterialDB-Target-3]] — материал (MaterialDBItem, Category)
+  [[MaterialDB-Target-4.mdpuml MaterialDB-Target-4]] — совместимость и проверка
+  [[MaterialDB-Target-5.mdpuml MaterialDB-Target-5]] — границы ответственности и зависимости
+  [[MaterialDB-Target-6.mdpuml MaterialDB-Target-6]] — переходная версия 1.2.0 (устаревшие типы)
+  Текущее состояние: [[../MaterialDB.mdpuml MaterialDB]].
+  new — новый тип; changed — изменённый; obsolete — [Obsolete] в 1.2.0, удаление в 2.0.0;
+  external — точка входа другого проекта; details — состав раскрыт на поддиаграмме.
+endlegend
+@enduml

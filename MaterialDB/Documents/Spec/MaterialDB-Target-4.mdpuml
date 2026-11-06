@@ -1,0 +1,85 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+skinparam class {
+  BackgroundColor<<new>> #E3F4E1
+  BackgroundColor<<changed>> #FFF4D6
+  BackgroundColor<<obsolete>> #F2F2F2
+  BackgroundColor<<external>> #E6EEF8
+}
+hide empty members
+set namespaceSeparator none
+
+title MaterialDB-Target-4 — совместимость старых баз и проверка
+caption Целевое состояние; спецификация — MaterialDB-Spec.md, разделы 2.1, 4.7, 6, 7
+interface "IArgumentKindResolver" as T_MaterialDB_MaterialDB_Compatibility_IArgumentKindResolver <<new>> {
+  + Resolve(material : MaterialDBItem) : void
+  + Resolve(functions : FunctionDBData) : void
+}
+class "ArgumentKindResolver" as T_MaterialDB_MaterialDB_Compatibility_ArgumentKindResolver <<new>> <<sealed>>
+note right of T_MaterialDB_MaterialDB_Compatibility_ArgumentKindResolver
+  Единственное место выведения; меняет только Undefined:
+  General → Constant (1×1) или Descriptor;
+  Metallurgical → Process;
+  Thermal / Mechanical / Fluid → TemperaturePhase,
+  если есть «Структура», иначе Argument;
+  FunctionDBData → Constant (1 строка) или Argument.
+  PropertiesCalculator и Project повторно не выводят
+end note
+interface "IMaterialValidator" as T_MaterialDB_MaterialDB_Validation_IMaterialValidator <<new>> {
+  + Validate(material : MaterialDBItem) : IEnumerable<ValidationIssue>
+  + Validate(functions : FunctionDBData) : IEnumerable<ValidationIssue>
+}
+class "MaterialValidator" as T_MaterialDB_MaterialDB_Validation_MaterialValidator <<new>> <<sealed>> {
+  + MaterialValidator(convention)
+}
+note right of T_MaterialDB_MaterialDB_Validation_MaterialValidator
+  Материал: правила V1–V14 (раздел 7);
+  функции: V1–V4
+end note
+class "ValidationIssue" as T_MaterialDB_MaterialDB_Validation_ValidationIssue <<new>> <<sealed>> {
+  + ValidationIssue(severity, source, category, item, message)
+  + Severity : IssueSeverity [get]
+  + Source : string [get]
+  + Category : string [get]
+  + Item : string [get]
+  + Message : string [get]
+}
+enum "IssueSeverity" as T_MaterialDB_MaterialDB_Validation_IssueSeverity <<new>> {
+    Error
+    Warning
+}
+class "MaterialDBItem" as T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem <<reference>>
+note left of T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem
+  [[MaterialDB-Target-3.mdpuml MaterialDB-Target-3]]
+end note
+class "FunctionDBData" as T_MaterialDB_MaterialDB_FunctionData_FunctionDBData <<reference>>
+note left of T_MaterialDB_MaterialDB_FunctionData_FunctionDBData
+  [[MaterialDB-Target-2.mdpuml MaterialDB-Target-2]]
+end note
+class "PressureColumnConvention" as T_MaterialDB_MaterialDB_MaterialData_PressureColumnConvention <<reference>>
+note right of T_MaterialDB_MaterialDB_MaterialData_PressureColumnConvention
+  [[MaterialDB-Target-2.mdpuml MaterialDB-Target-2]]
+end note
+T_MaterialDB_MaterialDB_Compatibility_ArgumentKindResolver ..|> T_MaterialDB_MaterialDB_Compatibility_IArgumentKindResolver
+T_MaterialDB_MaterialDB_Validation_MaterialValidator ..|> T_MaterialDB_MaterialDB_Validation_IMaterialValidator
+T_MaterialDB_MaterialDB_Validation_IMaterialValidator ..> T_MaterialDB_MaterialDB_Validation_ValidationIssue : yield return
+T_MaterialDB_MaterialDB_Validation_ValidationIssue --> T_MaterialDB_MaterialDB_Validation_IssueSeverity
+T_MaterialDB_MaterialDB_Validation_MaterialValidator --> T_MaterialDB_MaterialDB_MaterialData_PressureColumnConvention
+T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem ..> T_MaterialDB_MaterialDB_Compatibility_IArgumentKindResolver : OnDeserialized
+T_MaterialDB_MaterialDB_FunctionData_FunctionDBData ..> T_MaterialDB_MaterialDB_Compatibility_IArgumentKindResolver : OnDeserialized
+T_MaterialDB_MaterialDB_Validation_IMaterialValidator ..> T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem : проверяет
+T_MaterialDB_MaterialDB_Validation_IMaterialValidator ..> T_MaterialDB_MaterialDB_FunctionData_FunctionDBData : проверяет
+legend bottom
+  Обзор: [[MaterialDB-Target.mdpuml MaterialDB-Target]].
+  Пространства имён: MaterialDB.Compatibility, MaterialDB.Validation.
+  Check* в MaterialDBItem остаются быстрыми проверками с исключением; MaterialValidator — полная проверка без исключений.
+  reference — тип раскрыт на другой диаграмме.
+endlegend
+@enduml

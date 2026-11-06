@@ -1,0 +1,76 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+skinparam class {
+  BackgroundColor<<new>> #E3F4E1
+  BackgroundColor<<changed>> #FFF4D6
+  BackgroundColor<<obsolete>> #F2F2F2
+  BackgroundColor<<external>> #E6EEF8
+}
+hide empty members
+set namespaceSeparator none
+
+title MaterialDB-Target-6 — переходная версия 1.2.0: устаревшие типы
+caption Состояние MaterialDB 1.2.0 (без ломающих изменений); спецификация — MaterialDB-Spec.md, раздел 8
+abstract class "DataItem" as T_MaterialDB_DataItem <<changed>> {
+  # DataItem(name, x_unit, y_unit, units, dataTable, argumentKind) [new]
+  # DataItem(name, x_unit, y_unit, units, dataTable)
+  # DataItem(copyName, source) [changed: копирует ArgumentKind]
+  + ArgumentKind : ArgumentKind [get, set] [new]
+  + {abstract} Copy(copyName) : DataItem
+  .. Name, X_unit, Y_unit, Units, DataTable, this[,], AddRow, ToString — без изменений ..
+}
+interface "IProperty" as T_MaterialDB_MaterialDB_Interfaces_IProperty <<obsolete>> {
+  + ArgumentKind : ArgumentKind [get, set] [new]
+  + DataTable : DataTable [get, set]
+  + Name : string [get, set]
+  + Units : string [get, set]
+  + X_unit : string [get, set]
+  + Y_unit : string [get, set]
+  + this[int row, int col] : double [get, set]
+  + AddRow() : void
+  + Copy(copyName) : PropertyItem
+}
+class "PropertyItem" as T_MaterialDB_MaterialDB_MaterialData_PropertyItem <<obsolete>> {
+  + PropertyItem(name, x_unit, y_unit, units, dataTable, argumentKind) [new, JsonConstructor]
+  + PropertyItem(name, x_unit, y_unit, units, dataTable)
+  + CalcProp(phaseData, temp) : float [obsolete]
+}
+class "FunctionItem" as T_MaterialDB_MaterialDB_FunctionData_FunctionItem <<obsolete>> {
+  + FunctionItem(name, x_unit, y_unit, units, dataTable, argumentKind) [new, JsonConstructor]
+  + FunctionItem(name, x_unit, y_unit, units, dataTable)
+  + Copy(copyName) : FunctionItem
+  + CalcProp(variable) : float [obsolete]
+}
+class "InterpolationSearch" as T_MaterialDB_MaterialDB_Utilities_InterpolationSearch <<obsolete>> <<static>> {
+  + InterpolatedValue(xAr, yAr, xn) : float
+  + InterpolatedValueTwoPoints(x1, x2, y1, y2, xn) : float
+}
+note right of T_MaterialDB_MaterialDB_Utilities_InterpolationSearch
+  Переносится в PropertiesCalculator.Utilities;
+  функции Project — LinearTable
+  ([[MaterialDB-Target-5.mdpuml MaterialDB-Target-5]])
+end note
+enum "ArgumentKind" as T_MaterialDB_MaterialDB_MaterialData_ArgumentKind <<reference>>
+note right of T_MaterialDB_MaterialDB_MaterialData_ArgumentKind
+  [[MaterialDB-Target-1.mdpuml MaterialDB-Target-1]]
+end note
+T_MaterialDB_MaterialDB_MaterialData_PropertyItem --|> T_MaterialDB_DataItem
+T_MaterialDB_MaterialDB_FunctionData_FunctionItem --|> T_MaterialDB_DataItem
+T_MaterialDB_MaterialDB_MaterialData_PropertyItem ..|> T_MaterialDB_MaterialDB_Interfaces_IProperty
+T_MaterialDB_DataItem --> T_MaterialDB_MaterialDB_MaterialData_ArgumentKind
+T_MaterialDB_MaterialDB_MaterialData_PropertyItem ..> T_MaterialDB_MaterialDB_Utilities_InterpolationSearch : obsolete
+T_MaterialDB_MaterialDB_FunctionData_FunctionItem ..> T_MaterialDB_MaterialDB_Utilities_InterpolationSearch : obsolete
+legend bottom
+  Обзор: [[MaterialDB-Target.mdpuml MaterialDB-Target]]. Целевой DataItem 2.0.0 — [[MaterialDB-Target-2.mdpuml MaterialDB-Target-2]].
+  obsolete — [Obsolete("будет удалён в MaterialDB 2.0.0, используйте DataItem")] в 1.2.0; в 2.0.0 тип или член удаляется.
+  В 1.2.0 PropertyData и FunctionDBData ещё объявлены по PropertyItem / FunctionItem (без $type в JSON).
+  В 1.2.0 точка выведения для функций — FunctionDBData.OnDeserialized, как в 2.0.0.
+endlegend
+@enduml

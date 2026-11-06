@@ -1,0 +1,94 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+skinparam class {
+  BackgroundColor<<new>> #E3F4E1
+  BackgroundColor<<changed>> #FFF4D6
+  BackgroundColor<<obsolete>> #F2F2F2
+  BackgroundColor<<external>> #E6EEF8
+}
+hide empty members
+set namespaceSeparator none
+
+title MaterialDB-Target-3 — материал и категории
+caption Целевое состояние; спецификация — MaterialDB-Spec.md, разделы 4.6, 5.2, 5.3, 6.2
+class "MaterialDBItem" as T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem <<changed>> {
+  + CategoryDic : Dictionary<CategoryEnum, string> [field] [changed: + Fluid]
+  + CategoryData : CategoryData [get, set]
+  + Name : string [get, set]
+  + this[CategoryEnum key] : Category [get, set]
+  + this[string key] : Category [get, set]
+  + MaterialDBItem(name)
+  ~ MaterialDBItem()
+  .. классификация ..
+  + GetDescriptor() : MaterialDescriptor [new]
+  + GetPhases() : IEnumerable<string> [changed: пусто без металлургии]
+  .. «Общие сведения» ..
+  + AddGeneralProps() : void
+  + AddPhaseData(phases) : void
+  + AddCrystallization(ts, tl) : void
+  + AddMaterialModel(mode) : void
+  + AddHardeningModel(mode) : void
+  + AddMediumKind(medium) : void [new]
+  + AddDensityModel(model) : void [new]
+  + AddViscosityModel(model) : void [new]
+  + AddHardnessModel(mode : int) : void [new]
+  + AddHardnessPhaseIndices(indices : HardnessPhaseIndices) : void [new]
+  + AddSutherlandCoefficients(mu0, t0, s) : void [new]
+  + AddMolarMass(molarMass) : void [new]
+  + AddReferencePressure(pressure) : void [new]
+  .. категории свойств ..
+  + AddThermalProps() : void [changed: раскладка по GetDescriptor]
+  + AddMechProps() : void [changed: раскладка по GetDescriptor]
+  + AddFluidProps() : void [new]
+  + AddMetallurgicalProps() : void
+  .. быстрые проверки (Exception) ..
+  + CheckThermalProps() : bool [changed: ρ не нужна при IdealGas]
+  + CheckMechanicalProps() : bool
+  + CheckFluidProps() : bool [new: вязкость по ViscosityModel]
+  + CheckPhaseData() : bool
+  .. прочее ..
+  + Copy(copyName) : MaterialDBItem
+  + GetHashCode() : int
+  - CreateTable(kind) : DataTable [changed: параметр ArgumentKind]
+  - OnDeserialized(context) : void [new, вызывает IArgumentKindResolver]
+}
+class "Category" as T_MaterialDB_MaterialDB_MaterialData_Category <<changed>> {
+  + PropertyDic : Dictionary<PropertyEnum, string> [field] [changed: + 18 свойств; Capacity → «Теплоемкость»]
+  + this[PropertyEnum key] : DataItem [get, set] [changed: было PropertyItem]
+}
+note right of T_MaterialDB_MaterialDB_MaterialData_Category
+  ICategory — [[MaterialDB-Target-2.mdpuml MaterialDB-Target-2]]
+end note
+class "MaterialDescriptor" as T_MaterialDB_MaterialDB_MaterialData_MaterialDescriptor <<reference>>
+note right of T_MaterialDB_MaterialDB_MaterialData_MaterialDescriptor
+  [[MaterialDB-Target-1.mdpuml MaterialDB-Target-1]]
+end note
+class "PropertyData" as T_MaterialDB_MaterialDB_MaterialData_PropertyData <<reference>>
+note right of T_MaterialDB_MaterialDB_MaterialData_PropertyData
+  [[MaterialDB-Target-2.mdpuml MaterialDB-Target-2]]
+end note
+interface "IArgumentKindResolver" as T_MaterialDB_MaterialDB_Compatibility_IArgumentKindResolver <<reference>>
+note right of T_MaterialDB_MaterialDB_Compatibility_IArgumentKindResolver
+  [[MaterialDB-Target-4.mdpuml MaterialDB-Target-4]]
+end note
+T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem --> T_MaterialDB_MaterialDB_MaterialData_Category : содержит (CategoryData)
+T_MaterialDB_MaterialDB_MaterialData_Category --> T_MaterialDB_MaterialDB_MaterialData_PropertyData : содержит
+T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem ..> T_MaterialDB_MaterialDB_MaterialData_MaterialDescriptor : создаёт
+T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem ..> T_MaterialDB_MaterialDB_Compatibility_IArgumentKindResolver : OnDeserialized
+legend bottom
+  Обзор: [[MaterialDB-Target.mdpuml MaterialDB-Target]].
+  Новые записи «Общих сведений»: одна колонка по имени свойства (Constant);
+  «Коэффициенты Сазерленда» — «Коэффициент», «Значение»; строки μ0, T0, S (Descriptor).
+  CategoryData — [[../MaterialDB-3.mdpuml MaterialDB-3]];
+  в 1.2.0 исправлен индексатор CategoryData[PropertyEnum]
+  (поиск по русскому имени вместо key.ToString()).
+  [new] / [changed] — состояние члена; reference — тип раскрыт на другой диаграмме.
+endlegend
+@enduml
