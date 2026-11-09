@@ -68,7 +68,7 @@ namespace TestProject_test.MaterialDB
             var loaded = JsonConvert.DeserializeObject<MaterialDBData>(json, settings)!;
 
             Assert.AreEqual(ArgumentKind.Argument, loaded[material.Name][CategoryEnum.Thermal]["Теплоемкость"].ArgumentKind);
-            Assert.AreEqual(ArgumentKind.Descriptor, loaded[material.Name][CategoryEnum.General]["Коэффициенты Сазерленда"].ArgumentKind);
+            Assert.AreEqual(ArgumentKind.Descriptor, loaded[material.Name][CategoryEnum.General]["Модель вязкости"].ArgumentKind);
         }
 
         [TestMethod]
@@ -87,10 +87,12 @@ namespace TestProject_test.MaterialDB
             Assert.IsFalse(json.Contains("PropertyDic"));
             Assert.IsFalse(json.Contains("\"HasMetallurgy\""));
             Assert.AreEqual(MediumKind.Gas, loadedGas.Medium);
-            Assert.AreEqual(0.029, Convert.ToDouble(loadedGas[CategoryEnum.General]["Молярная масса"][0, 0]), 1e-12);
+            Assert.AreEqual("M", loadedGas[CategoryEnum.General]["Модель плотности"].DataTable.Rows[1]["Параметр"]);
+            Assert.AreEqual(0.029, Convert.ToDouble(loadedGas[CategoryEnum.General]["Модель плотности"].DataTable.Rows[1]["Значение"]), 1e-12);
             Assert.AreEqual(0.101325, Convert.ToDouble(loadedGas[CategoryEnum.General]["Опорное давление"][0, 0]), 1e-12);
-            Assert.AreEqual(1, (int)loadedGas[CategoryEnum.General]["Модель плотности"][0, 0]);
-            Assert.AreEqual(1, (int)loadedGas[CategoryEnum.General]["Модель вязкости"][0, 0]);
+            Assert.AreEqual(1, (int)loadedGas[CategoryEnum.General]["Модель плотности"][0, 1]);
+            Assert.AreEqual(1, (int)loadedGas[CategoryEnum.General]["Модель вязкости"][0, 1]);
+            Assert.AreEqual(4, loadedGas[CategoryEnum.General]["Модель вязкости"].DataTable.Rows.Count);
             Assert.AreEqual(ArgumentKind.TemperaturePhase, loaded["Сталь_20"][CategoryEnum.Thermal]["Теплопроводность"].ArgumentKind);
         }
 
@@ -324,9 +326,17 @@ namespace TestProject_test.MaterialDB
             Assert.IsFalse(gas[CategoryEnum.Thermal].PropertyData.ContainsKey("Плотность"));
             Assert.IsTrue(gas.CategoryData.ContainsKey("Газодинамические свойства"));
             Assert.IsFalse(gas[CategoryEnum.Gas].PropertyData.ContainsKey("Динамическая вязкость"));
-            Assert.AreEqual(0.029, Convert.ToDouble(general["Молярная масса"][0, 0]), 1e-12);
+            Assert.IsFalse(general.ContainsKey("Молярная масса"));
+            Assert.AreEqual(2, general["Модель плотности"].DataTable.Rows.Count);
+            Assert.AreEqual(0.029, Convert.ToDouble(general["Модель плотности"].DataTable.Rows[1]["Значение"]), 1e-12);
             Assert.AreEqual(0.101325, Convert.ToDouble(general["Опорное давление"][0, 0]), 1e-12);
-            Assert.AreEqual(3, general["Коэффициенты Сазерленда"].DataTable.Rows.Count);
+            var viscosityModel = general["Модель вязкости"].DataTable;
+            Assert.IsFalse(general.ContainsKey("Коэффициенты Сазерленда"));
+            Assert.AreEqual(4, viscosityModel.Rows.Count);
+            Assert.AreEqual("Модель", viscosityModel.Rows[0]["Параметр"]);
+            Assert.AreEqual(1d, Convert.ToDouble(viscosityModel.Rows[0]["Значение"]), 1e-12);
+            Assert.AreEqual("μ0", viscosityModel.Rows[1]["Параметр"]);
+            Assert.AreEqual(110.4, Convert.ToDouble(viscosityModel.Rows[3]["Значение"]), 1e-12);
             Assert.IsTrue(gas.CheckProps());
         }
 
@@ -339,8 +349,10 @@ namespace TestProject_test.MaterialDB
             gas.UseTableDensity();
             gas.UseTableViscosity();
 
-            Assert.AreEqual(0, (int)general["Модель плотности"][0, 0]);
-            Assert.AreEqual(0, (int)general["Модель вязкости"][0, 0]);
+            Assert.AreEqual(0, (int)general["Модель плотности"][0, 1]);
+            Assert.AreEqual(1, general["Модель плотности"].DataTable.Rows.Count);
+            Assert.AreEqual(0, (int)general["Модель вязкости"][0, 1]);
+            Assert.AreEqual(1, general["Модель вязкости"].DataTable.Rows.Count);
             Assert.IsFalse(general.ContainsKey("Молярная масса"));
             Assert.IsFalse(general.ContainsKey("Коэффициенты Сазерленда"));
             Assert.IsTrue(general.ContainsKey("Опорное давление"));
@@ -354,19 +366,72 @@ namespace TestProject_test.MaterialDB
         {
             var gas = new GasMaterialItem("Аргон");
             var general = gas[CategoryEnum.General].PropertyData;
+            var densityModel = general["Модель плотности"].DataTable;
+            var viscosityModel = general["Модель вязкости"].DataTable;
+            var densityTable = gas[CategoryEnum.Thermal]["Плотность"].DataTable;
+            var viscosityTable = gas[CategoryEnum.Gas]["Динамическая вязкость"].DataTable;
 
+            gas.UseIdealGasDensity(0.03);
             gas.UseIdealGasDensity(0.04);
             gas.UseSutherlandViscosity(new SutherlandCoefficients(2.1e-11, 273.15, 144));
             gas.UseSutherlandViscosity(new SutherlandCoefficients(2.2e-11, 273.15, 144));
 
-            Assert.AreEqual(1, (int)general["Модель плотности"][0, 0]);
-            Assert.AreEqual(1, (int)general["Модель вязкости"][0, 0]);
-            Assert.AreEqual(0.04, Convert.ToDouble(general["Молярная масса"][0, 0]), 1e-12);
-            Assert.AreEqual(2.2e-11, Convert.ToDouble(general["Коэффициенты Сазерленда"].DataTable.Rows[0][1]), 1e-20);
-            Assert.IsFalse(gas[CategoryEnum.Thermal].PropertyData.ContainsKey("Плотность"));
-            Assert.IsTrue(gas.CategoryData.ContainsKey("Газодинамические свойства"));
-            Assert.IsFalse(gas[CategoryEnum.Gas].PropertyData.ContainsKey("Динамическая вязкость"));
+            Assert.AreSame(densityModel, general["Модель плотности"].DataTable);
+            Assert.AreEqual(1, (int)general["Модель плотности"][0, 1]);
+            Assert.AreEqual(2, densityModel.Rows.Count);
+            Assert.AreEqual(0.04, Convert.ToDouble(densityModel.Rows[1]["Значение"]), 1e-12);
+            Assert.IsFalse(general.ContainsKey("Молярная масса"));
+            Assert.AreSame(viscosityModel, general["Модель вязкости"].DataTable);
+            Assert.AreEqual(1, (int)general["Модель вязкости"][0, 1]);
+            Assert.AreEqual(4, viscosityModel.Rows.Count);
+            Assert.AreEqual(2.2e-11, Convert.ToDouble(viscosityModel.Rows[1]["Значение"]), 1e-20);
+            Assert.AreSame(densityTable, gas[CategoryEnum.Thermal]["Плотность"].DataTable);
+            Assert.AreSame(viscosityTable, gas[CategoryEnum.Gas]["Динамическая вязкость"].DataTable);
             Assert.IsTrue(gas.CheckProps());
+
+            gas.UseTableDensity();
+            gas.UseTableViscosity();
+
+            Assert.AreSame(densityModel, general["Модель плотности"].DataTable);
+            Assert.AreEqual(1, densityModel.Rows.Count);
+            Assert.AreEqual(0, (int)general["Модель плотности"][0, 1]);
+            Assert.AreSame(viscosityModel, general["Модель вязкости"].DataTable);
+            Assert.AreEqual(1, viscosityModel.Rows.Count);
+            Assert.AreEqual(0, (int)general["Модель вязкости"][0, 1]);
+            Assert.AreSame(densityTable, gas[CategoryEnum.Thermal]["Плотность"].DataTable);
+            Assert.AreSame(viscosityTable, gas[CategoryEnum.Gas]["Динамическая вязкость"].DataTable);
+        }
+
+        [TestMethod]
+        public void ValidatorChecksSutherlandRowsInViscosityModel()
+        {
+            var validator = new MaterialValidator(new PressureColumnConvention());
+            var missing = CreateGas();
+            var negative = CreateGas();
+
+            missing[CategoryEnum.General]["Модель вязкости"].DataTable.Rows.RemoveAt(3);
+            negative[CategoryEnum.General]["Модель вязкости"].DataTable.Rows[1]["Значение"] = -1d;
+
+            Assert.IsTrue(validator.Validate(missing).Any(issue => issue.Message.StartsWith("V7:") && issue.Message.Contains("«S»")));
+            Assert.IsTrue(validator.Validate(negative).Any(issue => issue.Message.StartsWith("V8:")));
+            Assert.ThrowsException<Exception>(() => missing.CheckProps());
+            Assert.IsFalse(validator.Validate(CreateGas()).Any(issue => issue.Message.Contains("Сазерленд")));
+        }
+
+        [TestMethod]
+        public void ValidatorChecksMolarMassRowInDensityModel()
+        {
+            var validator = new MaterialValidator(new PressureColumnConvention());
+            var missing = CreateGas();
+            var negative = CreateGas();
+
+            missing[CategoryEnum.General]["Модель плотности"].DataTable.Rows.RemoveAt(1);
+            negative[CategoryEnum.General]["Модель плотности"].DataTable.Rows[1]["Значение"] = -1d;
+
+            Assert.IsTrue(validator.Validate(missing).Any(issue => issue.Message.StartsWith("V7:") && issue.Message.Contains("«M»")));
+            Assert.IsTrue(validator.Validate(negative).Any(issue => issue.Message.StartsWith("V8:") && issue.Message.Contains("«M»")));
+            Assert.ThrowsException<Exception>(() => missing.CheckProps());
+            Assert.IsFalse(validator.Validate(CreateGas()).Any(issue => issue.Message.Contains("«M»")));
         }
 
         [TestMethod]

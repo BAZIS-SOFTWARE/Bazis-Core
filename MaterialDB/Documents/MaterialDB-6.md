@@ -23,11 +23,11 @@ HardeningModel
 HardnessModel
 MaterialModel
 MediumKind
-MolarMass
+MolarMass [Obsolete]
 PoissonRatio
 ReferencePressure
 Structure
-SutherlandCoefficients
+SutherlandCoefficients [Obsolete]
 TensileStrength
 ThermalConductivity
 ThermalConductivityX
@@ -106,3 +106,5 @@ ToString() : string
 ```
 
 Значения 1.2.0 (после `MaterialModel` в коде) соответствуют записям: «Агрегатное состояние», «Модель плотности», «Молярная масса», «Опорное давление», «Модель вязкости», «Коэффициенты Сазерленда», «Динамическая вязкость», «Сжимаемость», «Коэффициент объёмного расширения», «Теплопроводность», «Модуль Юнга» и «ТКЛР» по осям X/Y/Z и «Модель твердости» (в той же записи лежат индексы фаз модели Куркина).
+
+`MolarMass` и `SutherlandCoefficients` помечены `[Obsolete]`: отдельных записей «Молярная масса» и «Коэффициенты Сазерленда» нет. Молярная масса — строка «M» в «Модели плотности», коэффициенты Сазерленда — строки μ0, T0, S в «Модели вязкости» ([MaterialDB-8](MaterialDB-8.md)). Значения перечисления оставлены, чтобы не сдвигать номера следующих.

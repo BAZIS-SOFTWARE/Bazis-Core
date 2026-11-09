@@ -121,7 +121,39 @@ namespace MaterialDB.MaterialData
         }
 
         /// <summary>
-        /// Значение однострочной записи «Общих сведений».
+        /// Значение параметра модели — строки записи «Параметр»/«Значение» в «Общих сведениях»
+        /// (например, «M» в «Модели плотности», «μ0» в «Модели вязкости»).
+        /// </summary>
+        internal bool TryGetModelParameter(string recordName, string parameter, out double value)
+        {
+            value = 0;
+            if (!CategoryData.ContainsKey(CategoryDic[CategoryEnum.General]))
+                return false;
+
+            var properties = this[CategoryEnum.General].PropertyData;
+            if (!properties.ContainsKey(recordName))
+                return false;
+
+            var table = properties[recordName].DataTable;
+            if (table == null || !table.Columns.Contains("Параметр") || !table.Columns.Contains("Значение"))
+                return false;
+
+            foreach (DataRow row in table.Rows)
+            {
+                var cell = row["Значение"];
+                if (row["Параметр"].ToString() != parameter || cell is DBNull)
+                    continue;
+
+                value = Convert.ToDouble(cell);
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Значение записи «Общих сведений» из первой строки: колонка «Значение», если она есть
+        /// (запись «Параметр»/«Значение», например «Модель вязкости»), иначе первая колонка.
         /// </summary>
         internal bool TryGetGeneralValue(string propertyName, out double value)
         {
@@ -137,7 +169,7 @@ namespace MaterialDB.MaterialData
             if (table == null || table.Rows.Count == 0 || table.Columns.Count == 0)
                 return false;
 
-            var cell = table.Rows[0][0];
+            var cell = table.Columns.Contains("Значение") ? table.Rows[0]["Значение"] : table.Rows[0][0];
             if (cell is DBNull || cell is string)
                 return false;
 

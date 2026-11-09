@@ -23,11 +23,11 @@ enum "PropertyEnum" as T_MaterialDB_MaterialDB_MaterialData_PropertyEnum {
     HardnessModel
     MaterialModel
     MediumKind
-    MolarMass
+    MolarMass [Obsolete]
     PoissonRatio
     ReferencePressure
     Structure
-    SutherlandCoefficients
+    SutherlandCoefficients [Obsolete]
     TensileStrength
     ThermalConductivity
     ThermalConductivityX

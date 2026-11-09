@@ -15,7 +15,12 @@ class "MaterialSettings" as T_MaterialDB_MaterialDB_MaterialData_Settings_Materi
   + MaterialModel : MaterialModel [get, set]
 }
 class "SolidMaterialSettings" as T_MaterialDB_MaterialDB_MaterialData_Settings_SolidMaterialSettings {
-  + Phases : PhaseData? [get, set]
+  + HardeningModel : int [get, set]
+  + HardnessIndices : HardnessPhaseIndices? [get, set]
+  + HardnessModel : int [get, set]
+  + LiquidusTemperature : double [get, set]
+  + Phases : PhaseData [get, set]
+  + SolidusTemperature : double [get, set]
 }
 class "FluidMaterialSettings" as T_MaterialDB_MaterialDB_MaterialData_Settings_FluidMaterialSettings {
   + ReferencePressure : double [get, set]
@@ -46,11 +51,16 @@ class "PhaseData" as T_MaterialDB_MaterialDB_MaterialData_MetallurgicalData_Phas
 note right of T_MaterialDB_MaterialDB_MaterialData_MetallurgicalData_PhaseData
   [[MaterialDB-6.mdpuml MaterialDB-6]]
 end note
+class "HardnessPhaseIndices" as T_MaterialDB_MaterialDB_MaterialData_HardnessPhaseIndices <<reference>>
+note right of T_MaterialDB_MaterialDB_MaterialData_HardnessPhaseIndices
+  [[MaterialDB-9.mdpuml MaterialDB-9]]
+end note
 T_MaterialDB_MaterialDB_MaterialData_Settings_MaterialSettings <|-- T_MaterialDB_MaterialDB_MaterialData_Settings_SolidMaterialSettings
 T_MaterialDB_MaterialDB_MaterialData_Settings_MaterialSettings <|-- T_MaterialDB_MaterialDB_MaterialData_Settings_FluidMaterialSettings
 T_MaterialDB_MaterialDB_MaterialData_Settings_FluidMaterialSettings <|-- T_MaterialDB_MaterialDB_MaterialData_Settings_GasMaterialSettings
 T_MaterialDB_MaterialDB_MaterialData_Settings_GasMaterialSettings --> T_MaterialDB_MaterialDB_MaterialData_Settings_SutherlandCoefficients : Sutherland
 T_MaterialDB_MaterialDB_MaterialData_Settings_SolidMaterialSettings --> T_MaterialDB_MaterialDB_MaterialData_MetallurgicalData_PhaseData : Phases
+T_MaterialDB_MaterialDB_MaterialData_Settings_SolidMaterialSettings --> T_MaterialDB_MaterialDB_MaterialData_HardnessPhaseIndices : HardnessIndices
 T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem ..> T_MaterialDB_MaterialDB_MaterialData_Settings_MaterialSettings : конструктор
 T_MaterialDB_MaterialDB_MaterialData_SolidMaterialItem ..> T_MaterialDB_MaterialDB_MaterialData_Settings_SolidMaterialSettings : конструктор
 T_MaterialDB_MaterialDB_MaterialData_LiquidMaterialItem ..> T_MaterialDB_MaterialDB_MaterialData_Settings_FluidMaterialSettings : конструктор
@@ -58,8 +68,12 @@ T_MaterialDB_MaterialDB_MaterialData_GasMaterialItem ..> T_MaterialDB_MaterialDB
 legend bottom
   Обзор: [[MaterialDB.mdpuml MaterialDB]]. Перечисления MaterialModel, DensityModel, ViscosityModel — [[MaterialDB-9.mdpuml MaterialDB-9]].
   Пространство имён: MaterialDB.MaterialData.Settings. Классы содержат только данные.
-  По умолчанию: Isotropic, давление 1 МПа, модели плотности и вязкости Table.
-  IdealGas требует MolarMass, Sutherland — коэффициенты; иначе конструктор газа бросает ArgumentException.
+  По умолчанию: Isotropic, давление 1 МПа, модели плотности и вязкости Table;
+  твёрдое тело — фаза «phase» (доля 1), TS 1400, TL 1500, упрочнение 2, твердость 0 (выключена).
+  MolarMass — строка «M» в «Модели плотности», SutherlandCoefficients — строки μ0, T0, S в «Модели вязкости»;
+  при табличной модели они не сохраняются.
+  IdealGas требует MolarMass, Sutherland — коэффициенты; твёрдому телу нужны фазы, TS < TL,
+  индексы при HardnessModel = 1. Иначе конструктор бросает ArgumentException.
   reference — тип раскрыт на другой диаграмме.
 endlegend
 @enduml

@@ -230,13 +230,13 @@ namespace MaterialDB.Validation
                 yield return Error(source, general, "Модель вязкости", "V8: модель Сазерленда допустима только для газа.");
 
             if (context.MolarMass.HasValue && context.MolarMass.Value <= 0)
-                yield return Error(source, general, "Молярная масса", "V8: молярная масса должна быть больше нуля.");
+                yield return Error(source, general, "Модель плотности", "V8: молярная масса «M» должна быть больше нуля.");
 
             if (context.ReferencePressure.HasValue && context.ReferencePressure.Value <= 0)
                 yield return Error(source, general, "Опорное давление", "V8: опорное давление должно быть больше нуля.");
 
-            if (context.TryGetItem(CategoryEnum.General, "Коэффициенты Сазерленда", out var sutherland) && !HasPositiveValues(sutherland.DataTable, 1))
-                yield return Error(source, general, "Коэффициенты Сазерленда", "V8: коэффициенты μ0, T0, S должны быть больше нуля.");
+            if (material.ViscosityModel == ViscosityModel.Sutherland && context.TryGetItem(CategoryEnum.General, "Модель вязкости", out var viscosityModel) && !HasPositiveValues(viscosityModel.DataTable, 1))
+                yield return Error(source, general, "Модель вязкости", "V8: коэффициенты Сазерленда μ0, T0, S должны быть больше нуля.");
 
             if (material.DensityModel == DensityModel.IdealGas && context.TryGetItem(CategoryEnum.Thermal, "Плотность", out _))
                 yield return Warning(source, context.Material.CategoryDic[CategoryEnum.Thermal], "Плотность", "V11: таблица плотности игнорируется при модели идеального газа.");
@@ -280,11 +280,17 @@ namespace MaterialDB.Validation
             if (material.ViscosityModel == ViscosityModel.Table && !context.TryGetItem(material.FluidCategory, "Динамическая вязкость", out _))
                 yield return Missing(context, material.FluidCategory, "Динамическая вязкость", false);
 
-            if (material.ViscosityModel == ViscosityModel.Sutherland && !context.TryGetItem(CategoryEnum.General, "Коэффициенты Сазерленда", out _))
-                yield return Missing(context, CategoryEnum.General, "Коэффициенты Сазерленда", false);
+            if (material.ViscosityModel == ViscosityModel.Sutherland)
+            {
+                foreach (var coefficient in new[] { "μ0", "T0", "S" })
+                {
+                    if (!material.TryGetModelParameter("Модель вязкости", coefficient, out _))
+                        yield return Error(source, context.Material.CategoryDic[CategoryEnum.General], "Модель вязкости", $"V7: в «Модели вязкости» нет коэффициента Сазерленда «{coefficient}».");
+                }
+            }
 
             if (material.DensityModel == DensityModel.IdealGas && !context.MolarMass.HasValue)
-                yield return Missing(context, CategoryEnum.General, "Молярная масса", false);
+                yield return Error(source, context.Material.CategoryDic[CategoryEnum.General], "Модель плотности", "V7: в «Модели плотности» нет молярной массы «M».");
 
             var needsPressure = material.DensityModel == DensityModel.IdealGas || context.HasPressureTables;
             if (needsPressure && !context.ReferencePressure.HasValue)
@@ -473,7 +479,7 @@ namespace MaterialDB.Validation
             {
                 Material = material;
                 Phases = phases;
-                MolarMass = material.TryGetGeneralValue("Молярная масса", out var molarMass) ? molarMass : null;
+                MolarMass = material.TryGetModelParameter("Модель плотности", "M", out var molarMass) ? molarMass : null;
                 ReferencePressure = material.TryGetGeneralValue("Опорное давление", out var pressure) ? pressure : null;
                 IsOrthotropic = material.TryGetGeneralValue("Модель материала", out var model) && (int)model == 2;
                 HasPressureTables = material.CategoryData.Values

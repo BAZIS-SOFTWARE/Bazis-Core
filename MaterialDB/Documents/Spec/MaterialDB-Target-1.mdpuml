@@ -52,10 +52,10 @@ enum "PropertyEnum" as T_MaterialDB_MaterialDB_MaterialData_PropertyEnum <<chang
     … 12 существующих значений без изменений
     MediumKind [new] «Агрегатное состояние»
     DensityModel [new] «Модель плотности»
-    MolarMass [new] «Молярная масса»
+    MolarMass [obsolete] строка «M» в «Модели плотности»
     ReferencePressure [new] «Опорное давление»
     ViscosityModel [new] «Модель вязкости»
-    SutherlandCoefficients [new] «Коэффициенты Сазерленда»
+    SutherlandCoefficients [obsolete] строки μ0, T0, S в «Модели вязкости»
     DynamicViscosity [new] «Динамическая вязкость»
     Compressibility [new] «Сжимаемость»
     VolumeExpansion [new] «Коэффициент объёмного расширения»
@@ -81,7 +81,7 @@ end note
 T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem ..> T_MaterialDB_MaterialDB_MaterialData_MediumKind : Medium
 T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem ..> T_MaterialDB_MaterialDB_MaterialData_DensityModel : «Модель плотности»
 T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem ..> T_MaterialDB_MaterialDB_MaterialData_ViscosityModel : «Модель вязкости»
-T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem ..> T_MaterialDB_MaterialDB_MaterialData_HardnessPhaseIndices : AddHardnessModel
+T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem ..> T_MaterialDB_MaterialDB_MaterialData_HardnessPhaseIndices : «Модель твердости» (индексы)
 T_MaterialDB_MaterialDB_MaterialData_ArgumentKind -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_CategoryEnum
 T_MaterialDB_MaterialDB_MaterialData_CategoryEnum -[hidden]right-> T_MaterialDB_MaterialDB_MaterialData_PropertyEnum
 legend bottom

@@ -27,10 +27,20 @@ MaterialModel : MaterialModel [get, set; по умолчанию Isotropic]
 Исходники: [SolidMaterialSettings.cs](../../MaterialDB/MaterialData/Settings/SolidMaterialSettings.cs). Базовый тип: `MaterialSettings`.
 
 ```text
-Phases : PhaseData? [get, set; по умолчанию null]
+Phases : PhaseData [get, set; по умолчанию одна фаза «phase» с долей 1]
+SolidusTemperature : double [get, set; °C; по умолчанию 1400]
+LiquidusTemperature : double [get, set; °C; по умолчанию 1500]
+HardeningModel : int [get, set; по умолчанию 2]
+HardnessModel : int [get, set; 0 — выключена (по умолчанию), 1 — включена]
+HardnessIndices : HardnessPhaseIndices? [get, set; по умолчанию null]
 ```
 
-Если задано, записывается «Структура», и таблицы тепловых и механических свойств строятся как `TemperaturePhase` с колонкой на каждую фазу. Иначе — `Argument`. `PhaseData` — [MaterialDB-6](MaterialDB-6.mdpuml).
+* `Phases` — начальный состав «Структуры»; после создания его меняют `SolidMaterialItem.AddPhase` и `RemovePhase` ([MaterialDB-8](MaterialDB-8.mdpuml)). Таблицы тепловых и механических свойств строятся как `TemperaturePhase` с колонкой на каждую фазу. `PhaseData` — [MaterialDB-6](MaterialDB-6.mdpuml).
+* `SolidusTemperature` и `LiquidusTemperature` записываются в «Кристаллизацию» строками TS и TL; TS должна быть меньше TL.
+* `HardeningModel` записывается в «Модель упрочнения».
+* `HardnessModel` и `HardnessIndices` записываются в одну запись «Модель твердости» (индексы — колонки той же строки). При `HardnessModel` = 1 индексы обязательны. `HardnessPhaseIndices` — [MaterialDB-9](MaterialDB-9.mdpuml).
+* Фазовые переходы в настройках не задаются: конструктор создаёт пустую категорию «Металлургия».
+* Если нет фаз, TS не меньше TL или модель твердости включена без индексов, конструктор бросает `ArgumentException`.
 
 ## `FluidMaterialSettings`
 
@@ -55,10 +65,12 @@ Sutherland : SutherlandCoefficients? [get, set]
 
 Правила:
 
-* `DensityModel.IdealGas`: таблица «Плотность» не создаётся, `MolarMass` обязательна.
-* `ViscosityModel.Sutherland`: таблица «Динамическая вязкость» не создаётся, `Sutherland` обязателен.
+* Модели записываются в «Общие сведения» записями «Модель плотности» и «Модель вязкости» с колонками «Параметр»/«Значение»: первая строка «Модель», ниже — параметры нетабличной модели (формат — [MaterialDB-8](MaterialDB-8.md)).
+* `DensityModel.IdealGas`: таблица «Плотность» не создаётся, `MolarMass` обязательна и записывается строкой «M» в «Модель плотности».
+* `ViscosityModel.Sutherland`: таблица «Динамическая вязкость» не создаётся, `Sutherland` обязателен и записывается строками μ0, T0, S в «Модель вязкости».
 * Если обязательное значение не задано, конструктор газа бросает `ArgumentException`.
-* Заданные `MolarMass` и `Sutherland` записываются в «Общие сведения» при любой модели.
+* При табличной модели `MolarMass` и `Sutherland` игнорируются и не сохраняются.
+* После создания модели меняют методы `GasMaterialItem.Use*` ([MaterialDB-8](MaterialDB-8.mdpuml)).
 
 ## `SutherlandCoefficients`
 
@@ -71,7 +83,7 @@ S : double [get; К]
 SutherlandCoefficients(double mu0, double t0, double s)
 ```
 
-Записывается в «Общие сведения / Коэффициенты Сазерленда» таблицей `Коэффициент`/`Значение` со строками μ0, T0, S (`ArgumentKind.Descriptor`).
+Записывается строками μ0, T0, S под строкой «Модель» в «Общие сведения / Модель вязкости» (колонки «Параметр»/«Значение», `ArgumentKind.Descriptor`). Используется в `GasMaterialSettings.Sutherland` и в `GasMaterialItem.UseSutherlandViscosity`.
 
 ## Пример
 

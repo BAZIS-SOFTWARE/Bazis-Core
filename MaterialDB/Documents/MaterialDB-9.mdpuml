@@ -71,7 +71,9 @@ legend bottom
   Обзор: [[MaterialDB.mdpuml MaterialDB]].
   ArgumentKind в файле — строка; Undefined не записывается. Среда, модели материала, плотности и вязкости хранятся в «Общих сведениях» как int.
   Модели задаются при создании материала через настройки — [[MaterialDB-11.mdpuml MaterialDB-11]].
-  HardnessPhaseIndices используется при записи (SolidMaterialItem.AddHardnessModel); индексы читают валидатор и PropertiesCalculator по колонкам.
+  У газа модели плотности и вязкости — записи «Параметр»/«Значение» (строка «Модель», ниже M или μ0, T0, S) — [[MaterialDB-8.mdpuml MaterialDB-8]].
+  HardnessPhaseIndices задаётся при создании (SolidMaterialSettings.HardnessIndices — [[MaterialDB-11.mdpuml MaterialDB-11]]);
+  индексы читают валидатор и PropertiesCalculator по колонкам.
   Колонки давления таблиц TemperaturePressure: «P_<давление в МПа>» (InvariantCulture), например P_0.101325.
   reference — тип раскрыт на другой диаграмме.
 endlegend

@@ -33,9 +33,12 @@ class "MaterialDBItem" as T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem <<
   # AddTableProperty(category, propertyName, kind) : void
   # AddGeneralValue(propertyName, valueType, value) : void
   # AddGeneralTable(propertyName, table, kind) : void
+  # SetGeneralValue(propertyName, valueType, value) : void
+  # RemoveProperty(category, propertyName) : void
   # CreateCoefficientTable(valueType) : DataTable
   # GetDirectionalNames(propertyName) : IEnumerable<string>
   ~ TryGetGeneralValue(propertyName, out value) : bool
+  ~ TryGetModelParameter(recordName, parameter, out value) : bool
   ~ FluidCategory : CategoryEnum [get]
   ~ DensityModel : DensityModel [get]
   ~ ViscosityModel : ViscosityModel [get]

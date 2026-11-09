@@ -33,6 +33,8 @@ class "MaterialDBItem" as T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem <<
   # AddProps() : void [virtual] [new: тепловые; раскладка по HasMetallurgy]
   # AddGeneralProps() : void [changed: protected; метка среды у Liquid/Gas]
   # AddMaterialModel(model) : void [changed: protected; MaterialModel]
+  # SetGeneralValue(propertyName, valueType, value) : void [new]
+  # RemoveProperty(category, propertyName) : void [new]
   + GetPhases() : IEnumerable<string> [changed: пусто без металлургии]
   + Copy(copyName) : MaterialDBItem [changed: сохраняет класс]
 }
@@ -41,10 +43,8 @@ class "SolidMaterialItem" as T_MaterialDB_MaterialDB_MaterialData_SolidMaterialI
   + SolidMaterialItem(name, settings)
   + CheckProps() : bool [override: + механические]
   # AddProps() : void [override: + механические]
-  + AddMetallurgicalProps() : void
-  + AddCrystallization(ts, tl) : void
-  + AddHardeningModel(mode) : void
-  + AddHardnessModel(mode, indices) : void
+  + AddPhase(phaseName, massFraction) : void [new: + колонки фазы]
+  + RemovePhase(phaseName) : void [new: − колонки, процессы, сдвиг индексов]
   + CheckPhaseData() : bool
 }
 class "LiquidMaterialItem" as T_MaterialDB_MaterialDB_MaterialData_LiquidMaterialItem <<new>> {
@@ -58,6 +58,10 @@ class "GasMaterialItem" as T_MaterialDB_MaterialDB_MaterialData_GasMaterialItem 
   + GasMaterialItem(name, settings)
   + CheckProps() : bool [override: + вязкость Gas / Сазерленд]
   # AddProps() : void [override: + вязкость Gas при Table]
+  + UseTableDensity() : void [new]
+  + UseIdealGasDensity(molarMass) : void [new]
+  + UseTableViscosity() : void [new]
+  + UseSutherlandViscosity(coefficients) : void [new]
 }
 class "MaterialSettings" as T_MaterialDB_MaterialDB_MaterialData_Settings_MaterialSettings <<reference>>
 note right of T_MaterialDB_MaterialDB_MaterialData_Settings_MaterialSettings
@@ -95,7 +99,7 @@ T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem <|-- T_MaterialDB_MaterialDB
 T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem --> T_MaterialDB_MaterialDB_MaterialData_Category : содержит (CategoryData)
 T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem ..> T_MaterialDB_MaterialDB_MaterialData_Settings_MaterialSettings : конструктор
 T_MaterialDB_MaterialDB_MaterialData_Category --> T_MaterialDB_MaterialDB_MaterialData_PropertyData : содержит
-T_MaterialDB_MaterialDB_MaterialData_SolidMaterialItem ..> T_MaterialDB_MaterialDB_MaterialData_HardnessPhaseIndices : AddHardnessModel
+T_MaterialDB_MaterialDB_MaterialData_Settings_MaterialSettings ..> T_MaterialDB_MaterialDB_MaterialData_HardnessPhaseIndices : SolidMaterialSettings.HardnessIndices
 T_MaterialDB_MaterialDB_MaterialData_MaterialDBItemConverter ..> T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem : создаёт по «Агрегатному состоянию»
 T_MaterialDB_MaterialDB_MaterialData_MaterialDBItemConverter ..> T_MaterialDB_MaterialDB_Compatibility_IArgumentKindResolver : Resolve
 note right of T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem
@@ -106,7 +110,8 @@ end note
 legend bottom
   Обзор: [[MaterialDB-Target.mdpuml MaterialDB-Target]].
   Новые записи «Общих сведений»: одна колонка по имени свойства (Constant);
-  «Коэффициенты Сазерленда» — «Коэффициент», «Значение»; строки μ0, T0, S (Descriptor).
+  «Модель плотности», «Модель вязкости» газа — «Параметр», «Значение»: строка «Модель»,
+  ниже «M» (IdealGas) или μ0, T0, S (Sutherland) (Descriptor). Отдельных «Молярной массы» и «Коэффициентов Сазерленда» нет.
   Состав свойств задаётся в конструкторе объектом настроек; методы записи настроек закрыты.
   [new] / [changed] — состояние члена; reference — тип раскрыт на другой диаграмме.
 endlegend
