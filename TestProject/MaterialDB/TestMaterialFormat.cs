@@ -331,6 +331,45 @@ namespace TestProject_test.MaterialDB
         }
 
         [TestMethod]
+        public void GasSwitchesToTableModels()
+        {
+            var gas = CreateGas();
+            var general = gas[CategoryEnum.General].PropertyData;
+
+            gas.UseTableDensity();
+            gas.UseTableViscosity();
+
+            Assert.AreEqual(0, (int)general["Модель плотности"][0, 0]);
+            Assert.AreEqual(0, (int)general["Модель вязкости"][0, 0]);
+            Assert.IsFalse(general.ContainsKey("Молярная масса"));
+            Assert.IsFalse(general.ContainsKey("Коэффициенты Сазерленда"));
+            Assert.IsTrue(general.ContainsKey("Опорное давление"));
+            Assert.IsTrue(gas[CategoryEnum.Thermal].PropertyData.ContainsKey("Плотность"));
+            Assert.AreEqual(ArgumentKind.TemperaturePressure, gas[CategoryEnum.Gas]["Динамическая вязкость"].ArgumentKind);
+            Assert.IsTrue(gas.CheckProps());
+        }
+
+        [TestMethod]
+        public void GasSwitchesToIdealGasAndSutherland()
+        {
+            var gas = new GasMaterialItem("Аргон");
+            var general = gas[CategoryEnum.General].PropertyData;
+
+            gas.UseIdealGasDensity(0.04);
+            gas.UseSutherlandViscosity(new SutherlandCoefficients(2.1e-11, 273.15, 144));
+            gas.UseSutherlandViscosity(new SutherlandCoefficients(2.2e-11, 273.15, 144));
+
+            Assert.AreEqual(1, (int)general["Модель плотности"][0, 0]);
+            Assert.AreEqual(1, (int)general["Модель вязкости"][0, 0]);
+            Assert.AreEqual(0.04, Convert.ToDouble(general["Молярная масса"][0, 0]), 1e-12);
+            Assert.AreEqual(2.2e-11, Convert.ToDouble(general["Коэффициенты Сазерленда"].DataTable.Rows[0][1]), 1e-20);
+            Assert.IsFalse(gas[CategoryEnum.Thermal].PropertyData.ContainsKey("Плотность"));
+            Assert.IsTrue(gas.CategoryData.ContainsKey("Газодинамические свойства"));
+            Assert.IsFalse(gas[CategoryEnum.Gas].PropertyData.ContainsKey("Динамическая вязкость"));
+            Assert.IsTrue(gas.CheckProps());
+        }
+
+        [TestMethod]
         public void ReferencePressureDefaultsToOne()
         {
             var liquid = new LiquidMaterialItem("Вода");

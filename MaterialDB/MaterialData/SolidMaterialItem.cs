@@ -195,10 +195,9 @@ namespace MaterialDB.MaterialData
             if (!CategoryData.ContainsKey(CategoryDic[CategoryEnum.Metallurgical]))
                 return;
 
-            var processes = this[CategoryEnum.Metallurgical].PropertyData;
             var removed = new List<string>();
 
-            foreach (var processName in processes.Keys)
+            foreach (var processName in this[CategoryEnum.Metallurgical].PropertyData.Keys)
             {
                 var spaceIndex = processName.IndexOf(' ');
                 var transitionPhases = processName.Substring(spaceIndex + 1).Split('-');
@@ -207,7 +206,7 @@ namespace MaterialDB.MaterialData
             }
 
             foreach (var processName in removed)
-                processes.Remove(processName);
+                RemoveProperty(CategoryEnum.Metallurgical, processName);
         }
 
         /// <summary>

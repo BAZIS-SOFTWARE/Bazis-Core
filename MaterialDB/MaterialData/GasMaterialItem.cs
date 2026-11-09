@@ -94,6 +94,52 @@ namespace MaterialDB.MaterialData
         }
 
         /// <summary>
+        /// Переключает газ на табличную плотность: «Модель плотности» = Table, «Молярная масса» удаляется,
+        /// в «Тепловых свойствах» создаётся пустая таблица «Плотность» (если её нет).
+        /// </summary>
+        public void UseTableDensity()
+        {
+            SetGeneralValue("Модель плотности", typeof(int), (int)DensityModel.Table);
+            RemoveProperty(CategoryEnum.General, "Молярная масса");
+            AddTableProperty(CategoryEnum.Thermal, "Плотность", ArgumentKind.Argument);
+        }
+
+        /// <summary>
+        /// Переключает газ на модель идеального газа: «Модель плотности» = IdealGas,
+        /// «Молярная масса» записывается (заменяется), таблица «Плотность» удаляется вместе с данными.
+        /// </summary>
+        public void UseIdealGasDensity(double molarMass)
+        {
+            SetGeneralValue("Модель плотности", typeof(int), (int)DensityModel.IdealGas);
+            SetGeneralValue("Молярная масса", typeof(double), molarMass);
+            RemoveProperty(CategoryEnum.Thermal, "Плотность");
+        }
+
+        /// <summary>
+        /// Переключает газ на табличную вязкость: «Модель вязкости» = Table, «Коэффициенты Сазерленда» удаляются,
+        /// в «Газодинамических свойствах» создаётся пустая таблица «Динамическая вязкость» (если её нет).
+        /// </summary>
+        public void UseTableViscosity()
+        {
+            SetGeneralValue("Модель вязкости", typeof(int), (int)ViscosityModel.Table);
+            RemoveProperty(CategoryEnum.General, "Коэффициенты Сазерленда");
+            AddTableProperty(CategoryEnum.Gas, "Динамическая вязкость", ArgumentKind.TemperaturePressure);
+        }
+
+        /// <summary>
+        /// Переключает газ на формулу Сазерленда: «Модель вязкости» = Sutherland, коэффициенты записываются (заменяются),
+        /// таблица «Динамическая вязкость» удаляется вместе с данными; категория «Газодинамические свойства» остаётся.
+        /// </summary>
+        public void UseSutherlandViscosity(SutherlandCoefficients coefficients)
+        {
+            SetGeneralValue("Модель вязкости", typeof(int), (int)ViscosityModel.Sutherland);
+            RemoveProperty(CategoryEnum.General, "Коэффициенты Сазерленда");
+            AddSutherlandCoefficients(coefficients);
+            RemoveProperty(CategoryEnum.Gas, "Динамическая вязкость");
+            AddCategory(CategoryEnum.Gas);
+        }
+
+        /// <summary>
         /// Добавляет «Модель плотности».
         /// </summary>
         private void AddDensityModel(DensityModel model)

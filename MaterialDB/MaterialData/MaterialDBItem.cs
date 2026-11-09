@@ -275,6 +275,24 @@ namespace MaterialDB.MaterialData
             AddGeneralTable(propertyName, table, ArgumentKind.Constant);
         }
 
+        /// <summary>
+        /// Записывает однострочное значение в «Общие сведения», заменяя прежнюю запись с тем же именем.
+        /// </summary>
+        protected void SetGeneralValue(string propertyName, Type valueType, object value)
+        {
+            RemoveProperty(CategoryEnum.General, propertyName);
+            AddGeneralValue(propertyName, valueType, value);
+        }
+
+        /// <summary>
+        /// Удаляет свойство из категории; если категории или свойства нет, ничего не делает.
+        /// </summary>
+        protected void RemoveProperty(CategoryEnum category, string propertyName)
+        {
+            if (CategoryData.ContainsKey(CategoryDic[category]))
+                this[category].PropertyData.Remove(propertyName);
+        }
+
         protected void AddGeneralTable(string propertyName, DataTable table, ArgumentKind kind = ArgumentKind.Descriptor)
         {
             if (!CategoryData.ContainsKey("Общие сведения"))
