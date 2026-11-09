@@ -9,35 +9,60 @@ skinparam ranksep 24
 skinparam packageStyle rectangle
 hide empty members
 set namespaceSeparator none
-
 title MaterialDB-4 — Контракты и данные материалов
-caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
-class "MaterialDBItem" as T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem {
+caption Состав API; расхождения с кодом — ArchitectureDifferences.md
+class "MaterialDBItem" as T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem <<abstract>> {
   + CategoryData : CategoryData [get, set]
-  + CategoryDic : Dictionary<CategoryEnum, string> [field]
+  + CategoryDic : Dictionary<CategoryEnum, string> [field, JsonIgnore]
+  + HasMetallurgy : bool [get]
+  + {abstract} Medium : MediumKind [get]
   + Name : string [get, set]
   + this[CategoryEnum key] : Category [get, set]
   + this[string key] : Category [get, set]
-  + AddCrystallization(ts, tl) : void
-  + AddGeneralProps() : void
-  + AddHardeningModel(mode) : void
-  + AddMaterialModel(mode) : void
-  + AddMechProps() : void
-  + AddMetallurgicalProps() : void
-  + AddPhaseData(phases) : void
-  + AddThermalProps() : void
-  + CheckMechanicalProps() : bool
-  + CheckPhaseData() : bool
-  + CheckThermalProps() : bool
+  + CheckProps() : bool [virtual]
   + Copy(copyName) : MaterialDBItem
   + GetHashCode() : int
   + GetPhases() : IEnumerable<string>
+  # MaterialDBItem(name, settings)
   ~ MaterialDBItem()
-  + MaterialDBItem(name)
+  # AddProps() : void [virtual]
+  # AddGeneralProps() : void
+  # AddMaterialModel(model) : void
+  # {abstract} CreateEmpty(name) : MaterialDBItem
+  # AddCategory(category) : void
+  # AddTableProperty(category, propertyName, kind) : void
+  # AddGeneralValue(propertyName, valueType, value) : void
+  # AddGeneralTable(propertyName, table, kind) : void
+  # CreateCoefficientTable(valueType) : DataTable
+  # GetDirectionalNames(propertyName) : IEnumerable<string>
+  ~ TryGetGeneralValue(propertyName, out value) : bool
+  ~ FluidCategory : CategoryEnum [get]
+  ~ DensityModel : DensityModel [get]
+  ~ ViscosityModel : ViscosityModel [get]
 }
+class "SolidMaterialItem" as T_MaterialDB_MaterialDB_MaterialData_SolidMaterialItem <<reference>>
+class "LiquidMaterialItem" as T_MaterialDB_MaterialDB_MaterialData_LiquidMaterialItem <<reference>>
+class "GasMaterialItem" as T_MaterialDB_MaterialDB_MaterialData_GasMaterialItem <<reference>>
+class "MaterialDBItemConverter" as T_MaterialDB_MaterialDB_MaterialData_MaterialDBItemConverter <<reference>>
+class "MaterialSettings" as T_MaterialDB_MaterialDB_MaterialData_Settings_MaterialSettings <<reference>>
+note right of T_MaterialDB_MaterialDB_MaterialData_Settings_MaterialSettings
+  [[MaterialDB-11.mdpuml MaterialDB-11]]
+end note
+T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem ..> T_MaterialDB_MaterialDB_MaterialData_Settings_MaterialSettings : конструктор
+T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem <|-- T_MaterialDB_MaterialDB_MaterialData_SolidMaterialItem
+T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem <|-- T_MaterialDB_MaterialDB_MaterialData_LiquidMaterialItem
+T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem <|-- T_MaterialDB_MaterialDB_MaterialData_GasMaterialItem
+T_MaterialDB_MaterialDB_MaterialData_MaterialDBItemConverter ..> T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem : создаёт по «Агрегатному состоянию»
+note right of T_MaterialDB_MaterialDB_MaterialData_SolidMaterialItem
+  [[MaterialDB-8.mdpuml MaterialDB-8]]
+end note
 legend bottom
+  Обзор: [[MaterialDB.mdpuml MaterialDB]].
+  Среду определяет класс-наследник; методы, зависящие от среды, находятся в наследниках — [[MaterialDB-8.mdpuml MaterialDB-8]].
+  Состав свойств задаётся при создании: конструктор пишет «Общие сведения» и «Модель материала»,
+  наследник записывает настройки среды и вызывает AddProps(). CheckProps()/AddProps() базового класса — тепловые свойства.
+  Medium и HasMetallurgy не сохраняются в файл (JsonIgnore). ~ — internal, # — protected.
   reference — тип раскрыт на другой диаграмме.
   Параметры методов: имена; полные сигнатуры — в соседнем .md.
-  Унаследованные члены интерфейсов в классах не повторяются.
 endlegend
 @enduml

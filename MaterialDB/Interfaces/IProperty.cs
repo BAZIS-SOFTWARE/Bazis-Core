@@ -6,6 +6,7 @@ namespace MaterialDB.Interfaces
     /// <summary>
     /// IProperty
     /// </summary>
+    [Obsolete("Интерфейс будет удалён в MaterialDB 2.0.0; используйте DataItem.")]
     public interface IProperty
     {
         /// <summary>

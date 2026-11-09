@@ -14,17 +14,36 @@ title MaterialDB-6 — Свойства, фазовый состав и функ
 caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
 enum "PropertyEnum" as T_MaterialDB_MaterialDB_MaterialData_PropertyEnum {
     Capacity
+    Compressibility
     Density
+    DensityModel
+    DynamicViscosity
     HardeningFactor
     HardeningModel
+    HardnessModel
     MaterialModel
+    MediumKind
+    MolarMass
     PoissonRatio
+    ReferencePressure
     Structure
+    SutherlandCoefficients
     TensileStrength
     ThermalConductivity
+    ThermalConductivityX
+    ThermalConductivityY
+    ThermalConductivityZ
     ThermalExpansion
+    ThermalExpansionX
+    ThermalExpansionY
+    ThermalExpansionZ
+    ViscosityModel
+    VolumeExpansion
     YieldStrength
     YoungModule
+    YoungModuleX
+    YoungModuleY
+    YoungModuleZ
 }
 class "Phase" as T_MaterialDB_MaterialDB_MaterialData_MetallurgicalData_Phase {
   + Name : string [get, set]
@@ -67,6 +86,7 @@ T_MaterialDB_MaterialDB_MaterialData_MetallurgicalData_Phase -[hidden]down-> T_M
 T_MaterialDB_MaterialDB_MaterialData_MetallurgicalData_PhaseData -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_MetallurgicalData_Process_1
 T_MaterialDB_MaterialDB_MaterialData_MetallurgicalData_PhaseData --> T_MaterialDB_MaterialDB_MaterialData_MetallurgicalData_Phase : использует
 legend bottom
+  Русские имена записей — Category.PropertyDic (MaterialDB-3); значения 1.2.0 добавлены в конец перечисления в коде.
   reference — тип раскрыт на другой диаграмме.
   Параметры методов: имена; полные сигнатуры — в соседнем .md.
   Унаследованные члены интерфейсов в классах не повторяются.

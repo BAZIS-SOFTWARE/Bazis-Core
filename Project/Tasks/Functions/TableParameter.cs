@@ -1,12 +1,5 @@
-using Project.Tasks.LocalFrames;
+#pragma warning disable CS0618 // FunctionItem — публичный тип API Project до перехода на DataItem в Project 7.0.0 / MaterialDB 2.0.0
 using MaterialDB.FunctionData;
-using Project.Tasks.Functions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static IronPython.Modules._ast;
 
 namespace Project.Tasks.Functions
 {
@@ -15,16 +8,22 @@ namespace Project.Tasks.Functions
     /// </summary>
     public class TableParameter : Parameter
     {
+        private readonly LinearTable linearTable;
+
         public FunctionItem Table { get; }
 
         public Parameter Parameter { get; set; }
 
+        /// <summary>
+        /// Таблица переводится в массивы один раз; правки функции учитываются при повторном разборе задачи.
+        /// </summary>
         public TableParameter(FunctionItem table, string name,Parameter parameter) : base(name)
         {
             Table = table;
             Parameter = parameter;
             ParameterType = ParameterType.Constant;
             ParameterKind = ParameterKind.Table;
+            linearTable = new LinearTable(table);
         }
 
 
@@ -32,9 +31,9 @@ namespace Project.Tasks.Functions
 
 
         public override double GetValue()
-        {   
-            var variable = (float)Parameter.GetValue();
-            return Value = Table.CalcProp(variable);
+        {
+            var variable = Parameter.GetValue();
+            return Value = linearTable.Interpolate(variable);
         }
 /// <inheritdoc/>
 

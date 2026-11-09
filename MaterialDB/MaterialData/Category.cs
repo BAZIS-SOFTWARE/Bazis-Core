@@ -1,4 +1,5 @@
 using MaterialDB.Interfaces;
+using Newtonsoft.Json;
 
 namespace MaterialDB.MaterialData
 {
@@ -11,9 +12,10 @@ namespace MaterialDB.MaterialData
         /// <summary>
         /// Словарь свойств
         /// </summary>
+        [JsonIgnore]
         public Dictionary<PropertyEnum, string> PropertyDic = new Dictionary<PropertyEnum, string>()
         {
-            { PropertyEnum.Capacity,"Общие сведения"},
+            { PropertyEnum.Capacity,"Теплоемкость"},
             { PropertyEnum.Density,"Плотность"},
             { PropertyEnum.HardeningFactor,"Коэффициент упрочнения"},
             { PropertyEnum.PoissonRatio,"Коэффициент Пуассона"},
@@ -24,7 +26,26 @@ namespace MaterialDB.MaterialData
             { PropertyEnum.YieldStrength,"Предел текучести"},
             { PropertyEnum.YoungModule,"Модуль Юнга"},
             { PropertyEnum.HardeningModel,"Модель упрочнения"},
-            { PropertyEnum.MaterialModel,"Модель материала"}
+            { PropertyEnum.MaterialModel,"Модель материала"},
+            { PropertyEnum.MediumKind,"Агрегатное состояние"},
+            { PropertyEnum.DensityModel,"Модель плотности"},
+            { PropertyEnum.MolarMass,"Молярная масса"},
+            { PropertyEnum.ReferencePressure,"Опорное давление"},
+            { PropertyEnum.ViscosityModel,"Модель вязкости"},
+            { PropertyEnum.SutherlandCoefficients,"Коэффициенты Сазерленда"},
+            { PropertyEnum.DynamicViscosity,"Динамическая вязкость"},
+            { PropertyEnum.Compressibility,"Сжимаемость"},
+            { PropertyEnum.VolumeExpansion,"Коэффициент объёмного расширения"},
+            { PropertyEnum.ThermalConductivityX,"Теплопроводность X"},
+            { PropertyEnum.ThermalConductivityY,"Теплопроводность Y"},
+            { PropertyEnum.ThermalConductivityZ,"Теплопроводность Z"},
+            { PropertyEnum.YoungModuleX,"Модуль Юнга X"},
+            { PropertyEnum.YoungModuleY,"Модуль Юнга Y"},
+            { PropertyEnum.YoungModuleZ,"Модуль Юнга Z"},
+            { PropertyEnum.ThermalExpansionX,"ТКЛР X"},
+            { PropertyEnum.ThermalExpansionY,"ТКЛР Y"},
+            { PropertyEnum.ThermalExpansionZ,"ТКЛР Z"},
+            { PropertyEnum.HardnessModel,"Модель твердости"}
         };
         /// <inheritdoc/>
         public string Name { get; set; }

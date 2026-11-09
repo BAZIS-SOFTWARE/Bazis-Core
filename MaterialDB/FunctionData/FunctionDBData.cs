@@ -1,5 +1,7 @@
+using MaterialDB.Compatibility;
 using Newtonsoft.Json;
 using System;
+using System.Runtime.Serialization;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -117,6 +119,13 @@ namespace MaterialDB.FunctionData
         public FunctionDBData()
         {
             Name = "newFunctionsDb";
+        }
+
+        [OnDeserialized]
+        internal void OnDeserialized(StreamingContext context)
+        {
+            var resolver = new ArgumentKindResolver();
+            resolver.Resolve(this);
         }
 
         private string? FindFileByPath(string folder, string fileName)

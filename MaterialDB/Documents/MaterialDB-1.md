@@ -77,3 +77,5 @@ Copy(string copyName) : PropertyItem
 ```text
 SaveDataBase(DataSet data, string path) : void
 ```
+
+`IProperty` помечен `[Obsolete]`: интерфейс будет удалён в MaterialDB 2.0.0, вместо него используется `DataItem`.

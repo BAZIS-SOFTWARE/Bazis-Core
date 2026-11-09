@@ -52,14 +52,16 @@ namespace TestProject_test.Project
                 var materialName = "База материалов.jsf";
                 var functionName = "База функций.jsf";
                 var materials = new MaterialDBData();
-                var material = new MaterialDBItem("Сталь");
+                var material = new SolidMaterialItem("Сталь");
                 materials.Add(material.Name, material);
                 var functions = new FunctionDBData();
                 var table = new DataTable();
                 table.Columns.Add("Time", typeof(double));
                 table.Columns.Add("Value", typeof(double));
                 table.Rows.Add(0d, 42d);
+#pragma warning disable CS0618 // PropertyItem/FunctionItem устарели до MaterialDB 2.0.0; тест использует их как хранилище
                 var function = new FunctionItem("Нагрев", "s", "K", "K", table);
+#pragma warning restore CS0618
                 functions.Add(function.Name, function);
                 var materialPath = Path.Combine(folder, materialName);
                 var functionPath = Path.Combine(folder, functionName);

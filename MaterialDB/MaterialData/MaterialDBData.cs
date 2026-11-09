@@ -25,7 +25,15 @@ namespace MaterialDB.MaterialData
         /// <summary>
         /// Металлургия
         /// </summary>
-        Metallurgical
+        Metallurgical,
+        /// <summary>
+        /// Гидродинамические свойства жидкости
+        /// </summary>
+        Fluid,
+        /// <summary>
+        /// Газодинамические свойства газа
+        /// </summary>
+        Gas
     }
 
     /// <summary>
@@ -80,7 +88,83 @@ namespace MaterialDB.MaterialData
         /// <summary>
         /// Модель материала
         /// </summary>
-        MaterialModel
+        MaterialModel,
+        /// <summary>
+        /// Агрегатное состояние
+        /// </summary>
+        MediumKind,
+        /// <summary>
+        /// Модель плотности
+        /// </summary>
+        DensityModel,
+        /// <summary>
+        /// Молярная масса
+        /// </summary>
+        MolarMass,
+        /// <summary>
+        /// Опорное давление
+        /// </summary>
+        ReferencePressure,
+        /// <summary>
+        /// Модель вязкости
+        /// </summary>
+        ViscosityModel,
+        /// <summary>
+        /// Коэффициенты Сазерленда
+        /// </summary>
+        SutherlandCoefficients,
+        /// <summary>
+        /// Динамическая вязкость
+        /// </summary>
+        DynamicViscosity,
+        /// <summary>
+        /// Сжимаемость
+        /// </summary>
+        Compressibility,
+        /// <summary>
+        /// Коэффициент объёмного расширения
+        /// </summary>
+        VolumeExpansion,
+        /// <summary>
+        /// Теплопроводность X
+        /// </summary>
+        ThermalConductivityX,
+        /// <summary>
+        /// Теплопроводность Y
+        /// </summary>
+        ThermalConductivityY,
+        /// <summary>
+        /// Теплопроводность Z
+        /// </summary>
+        ThermalConductivityZ,
+        /// <summary>
+        /// Модуль Юнга X
+        /// </summary>
+        YoungModuleX,
+        /// <summary>
+        /// Модуль Юнга Y
+        /// </summary>
+        YoungModuleY,
+        /// <summary>
+        /// Модуль Юнга Z
+        /// </summary>
+        YoungModuleZ,
+        /// <summary>
+        /// ТКЛР X
+        /// </summary>
+        ThermalExpansionX,
+        /// <summary>
+        /// ТКЛР Y
+        /// </summary>
+        ThermalExpansionY,
+        /// <summary>
+        /// ТКЛР Z
+        /// </summary>
+        ThermalExpansionZ,
+        /// <summary>
+        /// Модель твердости (в той же записи — индексы фаз модели Куркина)
+        /// </summary>
+        HardnessModel
     }
 
     [Serializable]

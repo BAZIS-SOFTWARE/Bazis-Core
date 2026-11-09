@@ -37,21 +37,24 @@ class "GeneralAbsentException" as T_MaterialDB_MaterialDB_MaterialData_GeneralAb
 }
 class "DataItem" as T_MaterialDB_DataItem {
   # DataItem(name, x_unit, y_unit, units, dataTable)
+  # DataItem(name, x_unit, y_unit, units, dataTable, argumentKind)
   # DataItem(copyName, source)
   + Name : string [get, set]
   + X_unit : string [get, set]
   + Y_unit : string [get, set]
   + Units : string [get, set]
+  + ArgumentKind : ArgumentKind [get, set]
   + DataTable : DataTable [get, set]
   + this[int row, int col] : double [get, set]
   + Copy(copyName) : DataItem
   + AddRow() : void
   + ToString() : string
 }
-class "PropertyItem" as T_MaterialDB_MaterialDB_MaterialData_PropertyItem {
+class "PropertyItem" as T_MaterialDB_MaterialDB_MaterialData_PropertyItem <<obsolete>> {
   + PropertyItem(name, x_unit, y_unit, units, dataTable)
+  + PropertyItem(name, x_unit, y_unit, units, dataTable, argumentKind)
   + Copy(copyName) : PropertyItem
-  + CalcProp(phaseData, temp) : float
+  + CalcProp(phaseData, temp) : float [obsolete]
 }
 class "PropertyData" as T_MaterialDB_MaterialDB_MaterialData_PropertyData {
   + Count : int [get]
@@ -71,6 +74,10 @@ class "PropertyData" as T_MaterialDB_MaterialDB_MaterialData_PropertyData {
   + TryGetValue(key, out value) : bool
 }
 interface "IProperty" as T_MaterialDB_MaterialDB_Interfaces_IProperty <<reference>>
+enum "ArgumentKind" as T_MaterialDB_ArgumentKind <<reference>>
+note right of T_MaterialDB_ArgumentKind
+  [[MaterialDB-9.mdpuml MaterialDB-9]]
+end note
 T_MaterialDB_MaterialDB_MaterialData_ChemicalData -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_GeneralAbsentException
 T_MaterialDB_MaterialDB_MaterialData_GeneralAbsentException -[hidden]down-> T_MaterialDB_DataItem
 T_MaterialDB_DataItem -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_PropertyItem
@@ -79,8 +86,11 @@ T_MaterialDB_MaterialDB_MaterialData_PropertyData -[hidden]down-> T_MaterialDB_M
 T_MaterialDB_MaterialDB_MaterialData_PropertyItem --|> T_MaterialDB_DataItem
 T_MaterialDB_MaterialDB_MaterialData_PropertyItem ..|> T_MaterialDB_MaterialDB_Interfaces_IProperty
 T_MaterialDB_MaterialDB_MaterialData_PropertyData --> T_MaterialDB_MaterialDB_MaterialData_PropertyItem : содержит
+T_MaterialDB_DataItem ..> T_MaterialDB_ArgumentKind : вид зависимости
 legend bottom
   Обзор: [[MaterialDB.mdpuml MaterialDB]].
+  PropertyItem помечен [Obsolete]: будет удалён в MaterialDB 2.0.0 (используйте DataItem).
+  ArgumentKind в файл пишется строкой; значение Undefined (поля нет в файле) не записывается.
   reference — тип раскрыт на другой диаграмме.
   Параметры методов: имена; полные сигнатуры — в соседнем .md.
   Унаследованные члены интерфейсов в классах не повторяются.

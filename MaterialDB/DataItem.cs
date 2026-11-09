@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
 using System.Data;
 
@@ -10,15 +12,24 @@ namespace MaterialDB
     public abstract class DataItem
     {
         /// <summary>
-        /// Создаёт объект с заданной таблицей данных.
+        /// Создаёт объект с заданной таблицей данных без указания вида зависимости.
         /// </summary>
         protected DataItem(string name, string x_unit, string y_unit, string units, DataTable dataTable)
+            : this(name, x_unit, y_unit, units, dataTable, ArgumentKind.Undefined)
+        {
+        }
+
+        /// <summary>
+        /// Создаёт объект с заданной таблицей данных и видом зависимости.
+        /// </summary>
+        protected DataItem(string name, string x_unit, string y_unit, string units, DataTable dataTable, ArgumentKind argumentKind)
         {
             Name = name;
             X_unit = x_unit;
             Y_unit = y_unit;
             Units = units;
             DataTable = dataTable;
+            ArgumentKind = argumentKind;
         }
 
         /// <summary>
@@ -30,6 +41,7 @@ namespace MaterialDB
             X_unit = source.X_unit;
             Y_unit = source.Y_unit;
             Units = source.Units;
+            ArgumentKind = source.ArgumentKind;
             DataTable = source.DataTable.Copy();
         }
 
@@ -37,6 +49,14 @@ namespace MaterialDB
         public string X_unit { get; set; }
         public string Y_unit { get; set; }
         public string Units { get; set; }
+
+        /// <summary>
+        /// Вид зависимости таблицы. Undefined в файл не записывается.
+        /// </summary>
+        [JsonConverter(typeof(StringEnumConverter))]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public ArgumentKind ArgumentKind { get; set; }
+
         public DataTable DataTable { get; set; }
 
         public double this[int row, int col]

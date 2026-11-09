@@ -46,6 +46,7 @@ enum "CategoryEnum" as T_MaterialDB_MaterialDB_MaterialData_CategoryEnum <<chang
     Mechanical
     Metallurgical
     Fluid [new] «Гидродинамические свойства»
+    Gas [new] «Газодинамические свойства»
 }
 enum "PropertyEnum" as T_MaterialDB_MaterialDB_MaterialData_PropertyEnum <<changed>> {
     … 12 существующих значений без изменений
@@ -61,26 +62,26 @@ enum "PropertyEnum" as T_MaterialDB_MaterialDB_MaterialData_PropertyEnum <<chang
     ThermalConductivityX/Y/Z [new] «Теплопроводность X/Y/Z»
     YoungModuleX/Y/Z [new] «Модуль Юнга X/Y/Z»
     ThermalExpansionX/Y/Z [new] «ТКЛР X/Y/Z»
-    HardnessModel [new] «Модель твердости»
-    HardnessPhaseIndices [new] «Индексы фаз модели твердости»
+    HardnessModel [new] «Модель твердости» (+ индексы фаз Куркина)
 }
-class "MaterialDescriptor" as T_MaterialDB_MaterialDB_MaterialData_MaterialDescriptor <<new>> <<sealed>> {
-  + MaterialDescriptor(medium, hasMetallurgy, densityModel, viscosityModel, molarMass, referencePressure)
-  + Medium : MediumKind [get]
-  + HasMetallurgy : bool [get]
-  + DensityModel : DensityModel [get]
-  + ViscosityModel : ViscosityModel [get]
-  + MolarMass : double? [get]
-  + ReferencePressure : double? [get]
+class "HardnessPhaseIndices" as T_MaterialDB_MaterialDB_MaterialData_HardnessPhaseIndices <<new>> <<sealed>> {
+  + HardnessPhaseIndices(ferrite, perlite, beinite, martensite, austenite)
+  + FerriteIndex : int [get]
+  + PerliteIndex : int [get]
+  + BeiniteIndex : int [get]
+  + MartensiteIndex : int [get]
+  + AusteniteIndex : int [get]
 }
 class "MaterialDBItem" as T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem <<reference>>
 note right of T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem
   [[MaterialDB-Target-3.mdpuml MaterialDB-Target-3]]
+  Medium и HasMetallurgy — свойства;
+  MaterialDescriptor нет (решение пользователя)
 end note
-T_MaterialDB_MaterialDB_MaterialData_MaterialDescriptor --> T_MaterialDB_MaterialDB_MaterialData_MediumKind
-T_MaterialDB_MaterialDB_MaterialData_MaterialDescriptor --> T_MaterialDB_MaterialDB_MaterialData_DensityModel
-T_MaterialDB_MaterialDB_MaterialData_MaterialDescriptor --> T_MaterialDB_MaterialDB_MaterialData_ViscosityModel
-T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem ..> T_MaterialDB_MaterialDB_MaterialData_MaterialDescriptor : GetDescriptor()
+T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem ..> T_MaterialDB_MaterialDB_MaterialData_MediumKind : Medium
+T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem ..> T_MaterialDB_MaterialDB_MaterialData_DensityModel : «Модель плотности»
+T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem ..> T_MaterialDB_MaterialDB_MaterialData_ViscosityModel : «Модель вязкости»
+T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem ..> T_MaterialDB_MaterialDB_MaterialData_HardnessPhaseIndices : AddHardnessModel
 T_MaterialDB_MaterialDB_MaterialData_ArgumentKind -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_CategoryEnum
 T_MaterialDB_MaterialDB_MaterialData_CategoryEnum -[hidden]right-> T_MaterialDB_MaterialDB_MaterialData_PropertyEnum
 legend bottom

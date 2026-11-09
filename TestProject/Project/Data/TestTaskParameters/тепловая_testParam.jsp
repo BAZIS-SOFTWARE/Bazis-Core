@@ -8,6 +8,8 @@
     "Нагрев"
   ],
   "TaskKind": 4,
+  "Status": 0,
+  "Index": 0,
   "CalculationMode": "Transient",
   "ActiveConditions": null,
   "InputSets": [],

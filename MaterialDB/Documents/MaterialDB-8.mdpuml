@@ -1,0 +1,87 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+title MaterialDB-8 — Материалы по средам
+caption Наследники MaterialDBItem и конвертер загрузки; общий состав — MaterialDB-4
+class "MaterialDBItem" as T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem <<reference>>
+note right of T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem
+  [[MaterialDB-4.mdpuml MaterialDB-4]]
+end note
+class "SolidMaterialItem" as T_MaterialDB_MaterialDB_MaterialData_SolidMaterialItem {
+  + Medium : MediumKind [get]
+  + SolidMaterialItem(name)
+  + SolidMaterialItem(name, settings)
+  + AddCrystallization(ts, tl) : void
+  + AddHardeningModel(mode) : void
+  + AddHardnessModel(mode, indices) : void
+  + AddMetallurgicalProps() : void
+  + CheckPhaseData() : bool
+  + CheckProps() : bool [override]
+  # AddProps() : void [override]
+  ~ SolidMaterialItem()
+}
+class "LiquidMaterialItem" as T_MaterialDB_MaterialDB_MaterialData_LiquidMaterialItem {
+  + Medium : MediumKind [get]
+  + LiquidMaterialItem(name)
+  + LiquidMaterialItem(name, settings)
+  + CheckProps() : bool [override]
+  # AddProps() : void [override]
+  ~ LiquidMaterialItem()
+}
+class "GasMaterialItem" as T_MaterialDB_MaterialDB_MaterialData_GasMaterialItem {
+  + Medium : MediumKind [get]
+  + GasMaterialItem(name)
+  + GasMaterialItem(name, settings)
+  + CheckProps() : bool [override]
+  # AddProps() : void [override]
+  ~ GasMaterialItem()
+}
+class "SolidMaterialSettings" as T_MaterialDB_MaterialDB_MaterialData_Settings_SolidMaterialSettings <<reference>>
+class "FluidMaterialSettings" as T_MaterialDB_MaterialDB_MaterialData_Settings_FluidMaterialSettings <<reference>>
+class "GasMaterialSettings" as T_MaterialDB_MaterialDB_MaterialData_Settings_GasMaterialSettings <<reference>>
+note bottom of T_MaterialDB_MaterialDB_MaterialData_Settings_FluidMaterialSettings
+  Настройки — [[MaterialDB-11.mdpuml MaterialDB-11]]
+end note
+class "MaterialDBItemConverter" as T_MaterialDB_MaterialDB_MaterialData_MaterialDBItemConverter {
+  + CanConvert(objectType) : bool
+  + ReadJson(reader, objectType, existingValue, serializer) : object
+  + WriteJson(writer, value, serializer) : void
+}
+class "HardnessPhaseIndices" as T_MaterialDB_MaterialDB_MaterialData_HardnessPhaseIndices <<reference>>
+note right of T_MaterialDB_MaterialDB_MaterialData_HardnessPhaseIndices
+  [[MaterialDB-9.mdpuml MaterialDB-9]]
+end note
+class "ArgumentKindResolver" as T_MaterialDB_MaterialDB_Compatibility_ArgumentKindResolver <<reference>>
+note right of T_MaterialDB_MaterialDB_Compatibility_ArgumentKindResolver
+  [[MaterialDB-10.mdpuml MaterialDB-10]]
+end note
+T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem <|-- T_MaterialDB_MaterialDB_MaterialData_SolidMaterialItem
+T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem <|-- T_MaterialDB_MaterialDB_MaterialData_LiquidMaterialItem
+T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem <|-- T_MaterialDB_MaterialDB_MaterialData_GasMaterialItem
+T_MaterialDB_MaterialDB_MaterialData_SolidMaterialItem ..> T_MaterialDB_MaterialDB_MaterialData_HardnessPhaseIndices : AddHardnessModel
+T_MaterialDB_MaterialDB_MaterialData_MaterialDBItemConverter ..> T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem : создаёт по «Агрегатному состоянию»
+T_MaterialDB_MaterialDB_MaterialData_MaterialDBItemConverter ..> T_MaterialDB_MaterialDB_Compatibility_ArgumentKindResolver : Resolve
+T_MaterialDB_MaterialDB_MaterialData_SolidMaterialItem ..> T_MaterialDB_MaterialDB_MaterialData_Settings_SolidMaterialSettings : конструктор
+T_MaterialDB_MaterialDB_MaterialData_LiquidMaterialItem ..> T_MaterialDB_MaterialDB_MaterialData_Settings_FluidMaterialSettings : конструктор
+T_MaterialDB_MaterialDB_MaterialData_GasMaterialItem ..> T_MaterialDB_MaterialDB_MaterialData_Settings_GasMaterialSettings : конструктор
+T_MaterialDB_MaterialDB_MaterialData_SolidMaterialItem -[hidden]right-> T_MaterialDB_MaterialDB_MaterialData_LiquidMaterialItem
+T_MaterialDB_MaterialDB_MaterialData_LiquidMaterialItem -[hidden]right-> T_MaterialDB_MaterialDB_MaterialData_GasMaterialItem
+legend bottom
+  Обзор: [[MaterialDB.mdpuml MaterialDB]].
+  Состав: твёрдое тело — тепловые, механические свойства и металлургия; жидкость — тепловые и гидродинамические (Fluid);
+  газ — тепловые и газодинамические (Gas). Конвертер читает и пишет Name и CategoryData без $type.
+  Конструктор записывает настройки в «Общие сведения» и вызывает AddProps(); override сначала вызывают базовую реализацию.
+  Конструктор только с именем — настройки по умолчанию. Методы записи настроек закрыты (private).
+  Нет записи «Агрегатное состояние» — SolidMaterialItem; неизвестное значение — JsonSerializationException.
+  Унаследованные члены в наследниках не повторяются.
+  reference — тип раскрыт на другой диаграмме.
+endlegend
+@enduml

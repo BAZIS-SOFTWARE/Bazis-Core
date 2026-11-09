@@ -54,12 +54,14 @@ GeneralAbsentException(string? message, Exception? innerException)
 Исходники: [DataItem.cs](../../MaterialDB/DataItem.cs).
 
 ```text
-DataItem(string name, string x_unit, string y_unit, string units, DataTable dataTable)
-DataItem(string copyName, DataItem source)
+DataItem(string name, string x_unit, string y_unit, string units, DataTable dataTable) [protected]
+DataItem(string name, string x_unit, string y_unit, string units, DataTable dataTable, ArgumentKind argumentKind) [protected]
+DataItem(string copyName, DataItem source) [protected]
 Name : string [get, set]
 X_unit : string [get, set]
 Y_unit : string [get, set]
 Units : string [get, set]
+ArgumentKind : ArgumentKind [get, set]
 DataTable : DataTable [get, set]
 this[int row, int col] : double [get, set]
 Copy(string copyName) : DataItem
@@ -73,12 +75,13 @@ ToString() : string
 
 Исходники: [PropertyItem.cs](../../MaterialDB/MaterialData/PropertyItem.cs).
 
-Базовые типы: `DataItem`, `IProperty`.
+Базовые типы: `DataItem`, `IProperty`. Тип помечен `[Obsolete]`: будет удалён в MaterialDB 2.0.0, вместо него используется `DataItem`.
 
 ```text
 PropertyItem(string name, string x_unit, string y_unit, string units, DataTable dataTable)
+PropertyItem(string name, string x_unit, string y_unit, string units, DataTable dataTable, ArgumentKind argumentKind) [JsonConstructor]
 Copy(string copyName) : PropertyItem
-CalcProp(PhaseData phaseData, float temp) : float
+CalcProp(PhaseData phaseData, float temp) : float [Obsolete; будет удалён в 2.0.0]
 ```
 
 ## `PropertyData`
@@ -106,3 +109,7 @@ Remove(KeyValuePair<string, PropertyItem> item) : bool
 Remove(string key) : bool
 TryGetValue(string key, out PropertyItem value) : bool
 ```
+
+## Что нового в 1.2.0
+
+`ArgumentKind` — вид зависимости таблицы: `Constant`, `Argument`, `TemperaturePhase`, `TemperaturePressure`, `Descriptor`, `Process` ([MaterialDB-9](MaterialDB-9.mdpuml)). В файле он хранится строкой, значение `Undefined` не записывается. `CalcProp` помечен `[Obsolete]`: расчёт переезжает в PropertiesCalculator, а у функций — в `Project.Tasks.Functions.LinearTable`.

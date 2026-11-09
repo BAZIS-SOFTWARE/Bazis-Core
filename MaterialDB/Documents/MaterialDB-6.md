@@ -14,17 +14,36 @@
 
 ```text
 Capacity
+Compressibility
 Density
+DensityModel
+DynamicViscosity
 HardeningFactor
 HardeningModel
+HardnessModel
 MaterialModel
+MediumKind
+MolarMass
 PoissonRatio
+ReferencePressure
 Structure
+SutherlandCoefficients
 TensileStrength
 ThermalConductivity
+ThermalConductivityX
+ThermalConductivityY
+ThermalConductivityZ
 ThermalExpansion
+ThermalExpansionX
+ThermalExpansionY
+ThermalExpansionZ
+ViscosityModel
+VolumeExpansion
 YieldStrength
 YoungModule
+YoungModuleX
+YoungModuleY
+YoungModuleZ
 ```
 
 ## `Phase`
@@ -85,3 +104,5 @@ TempMin : T [get, internal set]
 Process(PropertyItem reaction)
 ToString() : string
 ```
+
+Значения 1.2.0 (после `MaterialModel` в коде) соответствуют записям: «Агрегатное состояние», «Модель плотности», «Молярная масса», «Опорное давление», «Модель вязкости», «Коэффициенты Сазерленда», «Динамическая вязкость», «Сжимаемость», «Коэффициент объёмного расширения», «Теплопроводность», «Модуль Юнга» и «ТКЛР» по осям X/Y/Z и «Модель твердости» (в той же записи лежат индексы фаз модели Куркина).

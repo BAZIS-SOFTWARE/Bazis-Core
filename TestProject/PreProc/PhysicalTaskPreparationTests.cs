@@ -45,12 +45,14 @@ namespace TestProject_test.PreProc
         public void CalcCompDataV2_UsesActiveMaterialsAndSourceStep(bool moving, float expectedMaxStep)
         {
             var group = new Group("material-group", ObjType.Узел);
-            var firstMaterial = new MaterialDBItem("first");
-            firstMaterial.AddMetallurgicalProps();
+            var firstMaterial = new SolidMaterialItem("first");
+#pragma warning disable CS0618 // PropertyItem/FunctionItem устарели до MaterialDB 2.0.0; тест использует их как хранилище
             firstMaterial[CategoryEnum.Metallurgical].PropertyData.Add("Нагрев", new PropertyItem("Нагрев", "", "", "", new DataTable()));
-            var secondMaterial = new MaterialDBItem("second");
-            secondMaterial.AddMetallurgicalProps();
+#pragma warning restore CS0618
+            var secondMaterial = new SolidMaterialItem("second");
+#pragma warning disable CS0618 // PropertyItem/FunctionItem устарели до MaterialDB 2.0.0; тест использует их как хранилище
             secondMaterial[CategoryEnum.Metallurgical].PropertyData.Add("Охлаждение", new PropertyItem("Охлаждение", "", "", "", new DataTable()));
+#pragma warning restore CS0618
 
             var heat = new HeatData(group, 0f, 4f)
             {
@@ -88,7 +90,7 @@ namespace TestProject_test.PreProc
         public void CalcCompDataV2_SynchronizesLinkedTaskStepsWhenRequested(bool synchronize, double mechanicalWidth, float expectedThermal, float expectedMechanical)
         {
             var group = new Group("material-group", ObjType.Узел);
-            var material = new MaterialDBItem("material");
+            var material = new SolidMaterialItem("material");
             var heat = new HeatData(group, 0f, 4f)
             {
                 Function = new SPH { Width = 12 },
@@ -128,7 +130,7 @@ namespace TestProject_test.PreProc
         public void CalcCompDataV2_SynchronizesEachLinkedIntervalSeparately()
         {
             var group = new Group("material-group", ObjType.Узел);
-            var material = new MaterialDBItem("material");
+            var material = new SolidMaterialItem("material");
             var movingHeat = new HeatData(group, 0f, 2f)
             {
                 Function = new SPH { Width = 12 },

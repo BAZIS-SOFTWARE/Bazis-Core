@@ -13,7 +13,7 @@ set namespaceSeparator none
 title MaterialDB-3 — Контракты и данные материалов
 caption Целевой состав API; расхождения с кодом — ArchitectureDifferences.md
 class "Category" as T_MaterialDB_MaterialDB_MaterialData_Category {
-  + PropertyDic : Dictionary<PropertyEnum, string> [field]
+  + PropertyDic : Dictionary<PropertyEnum, string> [field, JsonIgnore]
   + this[PropertyEnum key] : PropertyItem [get, set]
 }
 class "CategoryData" as T_MaterialDB_MaterialDB_MaterialData_CategoryData {
@@ -64,6 +64,8 @@ T_MaterialDB_MaterialDB_MaterialData_CategoryData --> T_MaterialDB_MaterialDB_Ma
 T_MaterialDB_MaterialDB_MaterialData_MaterialDBData ..|> T_MaterialDB_MaterialDB_Interfaces_IMaterialDB
 legend bottom
   Загрузка базы материалов читает найденный путь без Windows-разделителей.
+  Материал создаёт MaterialDBItemConverter по записи «Агрегатное состояние» — [[MaterialDB-8.mdpuml MaterialDB-8]].
+  CategoryData[PropertyEnum] ищет категорию по русскому имени свойства из PropertyDic.
   reference — тип раскрыт на другой диаграмме.
   Параметры методов: имена; полные сигнатуры — в соседнем .md.
   Унаследованные члены интерфейсов в классах не повторяются.

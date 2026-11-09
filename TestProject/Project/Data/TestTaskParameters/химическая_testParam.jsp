@@ -4,6 +4,8 @@
     "Cm": 0.0
   },
   "TaskKind": 2,
+  "Status": 0,
+  "Index": 0,
   "CalculationMode": "Transient",
   "ActiveConditions": null,
   "InputSets": [

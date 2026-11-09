@@ -27,7 +27,7 @@ note right of T_MaterialDB_MaterialDB_Compatibility_ArgumentKindResolver
   Единственное место выведения; меняет только Undefined:
   General → Constant (1×1) или Descriptor;
   Metallurgical → Process;
-  Thermal / Mechanical / Fluid → TemperaturePhase,
+  Thermal / Mechanical / Fluid / Gas → TemperaturePhase,
   если есть «Структура», иначе Argument;
   FunctionDBData → Constant (1 строка) или Argument.
   PropertiesCalculator и Project повторно не выводят
@@ -40,7 +40,7 @@ class "MaterialValidator" as T_MaterialDB_MaterialDB_Validation_MaterialValidato
   + MaterialValidator(convention)
 }
 note right of T_MaterialDB_MaterialDB_Validation_MaterialValidator
-  Материал: правила V1–V14 (раздел 7);
+  Материал: правила V1–V15 (раздел 7);
   функции: V1–V4
 end note
 class "ValidationIssue" as T_MaterialDB_MaterialDB_Validation_ValidationIssue <<new>> <<sealed>> {

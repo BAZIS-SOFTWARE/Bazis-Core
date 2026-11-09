@@ -9,6 +9,8 @@
     "MaterialPlasticityCoeff": 0.0
   },
   "TaskKind": 8,
+  "Status": 0,
+  "Index": 0,
   "CalculationMode": "Stationary",
   "ActiveConditions": null,
   "InputSets": [

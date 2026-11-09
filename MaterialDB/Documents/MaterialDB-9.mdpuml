@@ -1,0 +1,78 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+title MaterialDB-9 — Перечисления и DTO формата 1.2.0
+caption Новые типы для среды, вида зависимости таблицы и записи индексов фаз
+enum "ArgumentKind" as T_MaterialDB_ArgumentKind {
+    Undefined = 0
+    Constant = 1
+    Argument = 2
+    TemperaturePhase = 3
+    TemperaturePressure = 4
+    Descriptor = 5
+    Process = 6
+}
+enum "MediumKind" as T_MaterialDB_MaterialDB_MaterialData_MediumKind {
+    Solid = 0
+    Liquid = 1
+    Gas = 2
+}
+enum "DensityModel" as T_MaterialDB_MaterialDB_MaterialData_DensityModel {
+    Table = 0
+    IdealGas = 1
+}
+enum "ViscosityModel" as T_MaterialDB_MaterialDB_MaterialData_ViscosityModel {
+    Table = 0
+    Sutherland = 1
+}
+enum "MaterialModel" as T_MaterialDB_MaterialDB_MaterialData_MaterialModel {
+    Isotropic = 1
+    Orthotropic = 2
+}
+class "HardnessPhaseIndices" as T_MaterialDB_MaterialDB_MaterialData_HardnessPhaseIndices {
+  + AusteniteIndex : int [get]
+  + BeiniteIndex : int [get]
+  + FerriteIndex : int [get]
+  + MartensiteIndex : int [get]
+  + PerliteIndex : int [get]
+  + HardnessPhaseIndices(ferriteIndex, perliteIndex, beiniteIndex, martensiteIndex, austeniteIndex)
+}
+class "PressureColumnConvention" as T_MaterialDB_MaterialDB_MaterialData_PressureColumnConvention {
+  + Prefix : string [get]
+  + Format(pressure) : string
+  + GetPressures(table) : IEnumerable<double>
+  + TryParse(columnName, out pressure) : bool
+}
+class "DataItem" as T_MaterialDB_DataItem <<reference>>
+note right of T_MaterialDB_DataItem
+  [[MaterialDB-5.mdpuml MaterialDB-5]]
+end note
+class "MaterialDBItem" as T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem <<reference>>
+note right of T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem
+  [[MaterialDB-4.mdpuml MaterialDB-4]]
+end note
+T_MaterialDB_DataItem ..> T_MaterialDB_ArgumentKind : ArgumentKind
+T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem ..> T_MaterialDB_MaterialDB_MaterialData_MediumKind : Medium
+T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem ..> T_MaterialDB_MaterialDB_MaterialData_DensityModel : «Модель плотности»
+T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem ..> T_MaterialDB_MaterialDB_MaterialData_ViscosityModel : «Модель вязкости»
+T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem ..> T_MaterialDB_MaterialDB_MaterialData_MaterialModel : «Модель материала»
+T_MaterialDB_ArgumentKind -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_MediumKind
+T_MaterialDB_MaterialDB_MaterialData_MediumKind -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_HardnessPhaseIndices
+T_MaterialDB_MaterialDB_MaterialData_DensityModel -[hidden]down-> T_MaterialDB_MaterialDB_MaterialData_PressureColumnConvention
+legend bottom
+  Обзор: [[MaterialDB.mdpuml MaterialDB]].
+  ArgumentKind в файле — строка; Undefined не записывается. Среда, модели материала, плотности и вязкости хранятся в «Общих сведениях» как int.
+  Модели задаются при создании материала через настройки — [[MaterialDB-11.mdpuml MaterialDB-11]].
+  HardnessPhaseIndices используется при записи (SolidMaterialItem.AddHardnessModel); индексы читают валидатор и PropertiesCalculator по колонкам.
+  Колонки давления таблиц TemperaturePressure: «P_<давление в МПа>» (InvariantCulture), например P_0.101325.
+  reference — тип раскрыт на другой диаграмме.
+endlegend
+@enduml

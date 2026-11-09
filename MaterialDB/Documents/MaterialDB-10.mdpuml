@@ -1,0 +1,67 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+title MaterialDB-10 — Совместимость и проверка данных
+caption Выведение ArgumentKind для старых файлов и полная проверка материалов и функций
+interface "IArgumentKindResolver" as T_MaterialDB_MaterialDB_Compatibility_IArgumentKindResolver {
+  + Resolve(material) : void
+  + Resolve(functions) : void
+}
+class "ArgumentKindResolver" as T_MaterialDB_MaterialDB_Compatibility_ArgumentKindResolver
+interface "IMaterialValidator" as T_MaterialDB_MaterialDB_Validation_IMaterialValidator {
+  + Validate(material) : IEnumerable<ValidationIssue>
+  + Validate(functions) : IEnumerable<ValidationIssue>
+}
+class "MaterialValidator" as T_MaterialDB_MaterialDB_Validation_MaterialValidator {
+  + MaterialValidator(pressureColumns)
+}
+class "ValidationIssue" as T_MaterialDB_MaterialDB_Validation_ValidationIssue {
+  + Category : string [get]
+  + Item : string [get]
+  + Message : string [get]
+  + Severity : IssueSeverity [get]
+  + Source : string [get]
+  + ValidationIssue(severity, source, category, item, message)
+  + ToString() : string
+}
+enum "IssueSeverity" as T_MaterialDB_MaterialDB_Validation_IssueSeverity {
+    Error
+    Warning
+}
+class "MaterialDBItem" as T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem <<reference>>
+note right of T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem
+  [[MaterialDB-4.mdpuml MaterialDB-4]]
+end note
+class "FunctionDBData" as T_MaterialDB_MaterialDB_FunctionData_FunctionDBData <<reference>>
+note right of T_MaterialDB_MaterialDB_FunctionData_FunctionDBData
+  [[MaterialDB-2.mdpuml MaterialDB-2]]
+end note
+class "PressureColumnConvention" as T_MaterialDB_MaterialDB_MaterialData_PressureColumnConvention <<reference>>
+note right of T_MaterialDB_MaterialDB_MaterialData_PressureColumnConvention
+  [[MaterialDB-9.mdpuml MaterialDB-9]]
+end note
+T_MaterialDB_MaterialDB_Compatibility_ArgumentKindResolver ..|> T_MaterialDB_MaterialDB_Compatibility_IArgumentKindResolver
+T_MaterialDB_MaterialDB_Validation_MaterialValidator ..|> T_MaterialDB_MaterialDB_Validation_IMaterialValidator
+T_MaterialDB_MaterialDB_Validation_MaterialValidator --> T_MaterialDB_MaterialDB_MaterialData_PressureColumnConvention : использует
+T_MaterialDB_MaterialDB_Validation_MaterialValidator ..> T_MaterialDB_MaterialDB_Validation_ValidationIssue : создаёт
+T_MaterialDB_MaterialDB_Validation_ValidationIssue --> T_MaterialDB_MaterialDB_Validation_IssueSeverity
+T_MaterialDB_MaterialDB_Compatibility_IArgumentKindResolver ..> T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem : Resolve
+T_MaterialDB_MaterialDB_Compatibility_IArgumentKindResolver ..> T_MaterialDB_MaterialDB_FunctionData_FunctionDBData : Resolve
+T_MaterialDB_MaterialDB_Validation_IMaterialValidator ..> T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem : Validate
+T_MaterialDB_MaterialDB_Validation_IMaterialValidator ..> T_MaterialDB_MaterialDB_FunctionData_FunctionDBData : Validate
+legend bottom
+  Обзор: [[MaterialDB.mdpuml MaterialDB]].
+  Резолвер: «Общие сведения» 1×1 → Constant, иначе Descriptor; «Металлургия» → Process; остальные категории → TemperaturePhase при наличии «Структуры», иначе Argument;
+  функции: одна строка → Constant, иначе Argument. Явно заданное значение не меняется. Запускают MaterialDBItemConverter и FunctionDBData.OnDeserialized.
+  Валидатор: материалы V1–V15, функции V1–V4; сообщения начинаются с номера правила.
+  reference — тип раскрыт на другой диаграмме.
+endlegend
+@enduml

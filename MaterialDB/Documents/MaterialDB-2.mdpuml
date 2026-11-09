@@ -28,18 +28,22 @@ class "FunctionDBData" as T_MaterialDB_MaterialDB_FunctionData_FunctionDBData {
   + FunctionDBData()
   + FunctionDBData(dbName, dbFolder)
   + GetEnumerator() : IEnumerator<KeyValuePair<string, FunctionItem>>
+  ~ OnDeserialized(context) : void
   + Remove(item) : bool
   + Remove(key) : bool
   + TryGetValue(key, out value) : bool
 }
-class "FunctionItem" as T_MaterialDB_MaterialDB_FunctionData_FunctionItem {
+class "FunctionItem" as T_MaterialDB_MaterialDB_FunctionData_FunctionItem <<obsolete>> {
   + FunctionItem(name, x_unit, y_unit, units, dataTable)
+  + FunctionItem(name, x_unit, y_unit, units, dataTable, argumentKind)
   + Copy(copyName) : FunctionItem
-  + CalcProp(variable) : float
+  + CalcProp(variable) : float [obsolete]
 }
 class "DataItem" as T_MaterialDB_DataItem <<reference>>
 T_MaterialDB_MaterialDB_FunctionData_FunctionItem --|> T_MaterialDB_DataItem
 enum "CategoryEnum" as T_MaterialDB_MaterialDB_MaterialData_CategoryEnum {
+    Fluid
+    Gas
     General
     Mechanical
     Metallurgical
@@ -69,6 +73,9 @@ T_MaterialDB_MaterialDB_MaterialData_CategoryEnum -[hidden]down-> T_MaterialDB_M
 legend bottom
   Обзор: [[MaterialDB.mdpuml MaterialDB]].
   Загрузка базы функций читает найденный путь без Windows-разделителей.
+  После загрузки FunctionDBData.OnDeserialized вызывает ArgumentKindResolver — [[MaterialDB-10.mdpuml MaterialDB-10]].
+  FunctionItem помечен [Obsolete]: будет удалён в MaterialDB 2.0.0 (используйте DataItem).
+  Fluid — гидродинамические свойства жидкости, Gas — газодинамические свойства газа.
   reference — тип раскрыт на другой диаграмме.
   Параметры методов: имена; полные сигнатуры — в соседнем .md.
   Унаследованные члены интерфейсов в классах не повторяются.

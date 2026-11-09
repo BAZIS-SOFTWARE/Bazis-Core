@@ -1,0 +1,65 @@
+@startuml
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam nodesep 18
+skinparam ranksep 24
+skinparam packageStyle rectangle
+hide empty members
+set namespaceSeparator none
+title MaterialDB-11 — Настройки создания материалов
+caption Состав свойств материала задаётся в конструкторе через объекты настроек
+class "MaterialSettings" as T_MaterialDB_MaterialDB_MaterialData_Settings_MaterialSettings {
+  + MaterialModel : MaterialModel [get, set]
+}
+class "SolidMaterialSettings" as T_MaterialDB_MaterialDB_MaterialData_Settings_SolidMaterialSettings {
+  + Phases : PhaseData? [get, set]
+}
+class "FluidMaterialSettings" as T_MaterialDB_MaterialDB_MaterialData_Settings_FluidMaterialSettings {
+  + ReferencePressure : double [get, set]
+}
+class "GasMaterialSettings" as T_MaterialDB_MaterialDB_MaterialData_Settings_GasMaterialSettings {
+  + DensityModel : DensityModel [get, set]
+  + MolarMass : double? [get, set]
+  + Sutherland : SutherlandCoefficients? [get, set]
+  + ViscosityModel : ViscosityModel [get, set]
+}
+class "SutherlandCoefficients" as T_MaterialDB_MaterialDB_MaterialData_Settings_SutherlandCoefficients <<sealed>> {
+  + Mu0 : double [get]
+  + S : double [get]
+  + T0 : double [get]
+  + SutherlandCoefficients(mu0, t0, s)
+}
+class "MaterialDBItem" as T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem <<reference>>
+note left of T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem
+  [[MaterialDB-4.mdpuml MaterialDB-4]]
+end note
+class "SolidMaterialItem" as T_MaterialDB_MaterialDB_MaterialData_SolidMaterialItem <<reference>>
+class "LiquidMaterialItem" as T_MaterialDB_MaterialDB_MaterialData_LiquidMaterialItem <<reference>>
+class "GasMaterialItem" as T_MaterialDB_MaterialDB_MaterialData_GasMaterialItem <<reference>>
+note bottom of T_MaterialDB_MaterialDB_MaterialData_LiquidMaterialItem
+  [[MaterialDB-8.mdpuml MaterialDB-8]]
+end note
+class "PhaseData" as T_MaterialDB_MaterialDB_MaterialData_MetallurgicalData_PhaseData <<reference>>
+note right of T_MaterialDB_MaterialDB_MaterialData_MetallurgicalData_PhaseData
+  [[MaterialDB-6.mdpuml MaterialDB-6]]
+end note
+T_MaterialDB_MaterialDB_MaterialData_Settings_MaterialSettings <|-- T_MaterialDB_MaterialDB_MaterialData_Settings_SolidMaterialSettings
+T_MaterialDB_MaterialDB_MaterialData_Settings_MaterialSettings <|-- T_MaterialDB_MaterialDB_MaterialData_Settings_FluidMaterialSettings
+T_MaterialDB_MaterialDB_MaterialData_Settings_FluidMaterialSettings <|-- T_MaterialDB_MaterialDB_MaterialData_Settings_GasMaterialSettings
+T_MaterialDB_MaterialDB_MaterialData_Settings_GasMaterialSettings --> T_MaterialDB_MaterialDB_MaterialData_Settings_SutherlandCoefficients : Sutherland
+T_MaterialDB_MaterialDB_MaterialData_Settings_SolidMaterialSettings --> T_MaterialDB_MaterialDB_MaterialData_MetallurgicalData_PhaseData : Phases
+T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem ..> T_MaterialDB_MaterialDB_MaterialData_Settings_MaterialSettings : конструктор
+T_MaterialDB_MaterialDB_MaterialData_SolidMaterialItem ..> T_MaterialDB_MaterialDB_MaterialData_Settings_SolidMaterialSettings : конструктор
+T_MaterialDB_MaterialDB_MaterialData_LiquidMaterialItem ..> T_MaterialDB_MaterialDB_MaterialData_Settings_FluidMaterialSettings : конструктор
+T_MaterialDB_MaterialDB_MaterialData_GasMaterialItem ..> T_MaterialDB_MaterialDB_MaterialData_Settings_GasMaterialSettings : конструктор
+legend bottom
+  Обзор: [[MaterialDB.mdpuml MaterialDB]]. Перечисления MaterialModel, DensityModel, ViscosityModel — [[MaterialDB-9.mdpuml MaterialDB-9]].
+  Пространство имён: MaterialDB.MaterialData.Settings. Классы содержат только данные.
+  По умолчанию: Isotropic, давление 1 МПа, модели плотности и вязкости Table.
+  IdealGas требует MolarMass, Sutherland — коэффициенты; иначе конструктор газа бросает ArgumentException.
+  reference — тип раскрыт на другой диаграмме.
+endlegend
+@enduml

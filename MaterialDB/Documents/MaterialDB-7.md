@@ -30,3 +30,5 @@ ToString() : string
 InterpolatedValue(float[] xAr, float[] yAr, float xn) : float
 InterpolatedValueTwoPoints(float x1, float x2, float y1, float y2, float xn) : float
 ```
+
+`InterpolationSearch` помечен `[Obsolete]`: интерполяция переезжает в PropertiesCalculator (`PiecewiseLinearTable`) и в Project (`LinearTable`); тип будет удалён в MaterialDB 2.0.0.

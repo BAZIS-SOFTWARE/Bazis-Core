@@ -18,10 +18,24 @@ namespace MaterialDB.MaterialData
             set { dic[key] = value; } 
         }
 
+        /// <summary>
+        /// Категория, в которой находится свойство (поиск по русскому имени свойства).
+        /// </summary>
         public Category this[PropertyEnum key]
         {
-            get { return dic[key.ToString()]; }
-            set { dic[key.ToString()] = value; }
+            get { return dic[FindCategoryName(key)]; }
+            set { dic[FindCategoryName(key)] = value; }
+        }
+
+        private string FindCategoryName(PropertyEnum key)
+        {
+            foreach (var item in dic)
+            {
+                if (item.Value.PropertyData.ContainsKey(item.Value.PropertyDic[key]))
+                    return item.Key;
+            }
+
+            throw new KeyNotFoundException($"Свойство {key} не найдено ни в одной категории материала.");
         }
         /// <inheritdoc/>
 

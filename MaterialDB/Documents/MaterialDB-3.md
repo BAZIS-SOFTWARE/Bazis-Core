@@ -15,7 +15,7 @@
 Базовые типы: `ICategory`.
 
 ```text
-PropertyDic : Dictionary<PropertyEnum, string> [field]
+PropertyDic : Dictionary<PropertyEnum, string> [field, JsonIgnore]
 this[PropertyEnum key] : PropertyItem [get, set]
 ```
 
@@ -74,4 +74,6 @@ Remove(string key) : bool
 TryGetValue(string key, out MaterialDBItem value) : bool
 ```
 
-Загрузка базы материалов читает найденный путь без Windows-разделителей.
+Загрузка базы материалов читает найденный путь без Windows-разделителей. Материалы создаёт `MaterialDBItemConverter` ([MaterialDB-8](MaterialDB-8.mdpuml)) и сразу вызывает `ArgumentKindResolver`.
+
+`CategoryData[PropertyEnum]` находит категорию, в которой лежит свойство с русским именем из `Category.PropertyDic`, и бросает `KeyNotFoundException`, если свойства нет ни в одной категории. `PropertyDic[Capacity]` указывает на «Теплоемкость».

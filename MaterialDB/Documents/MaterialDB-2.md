@@ -30,6 +30,7 @@ CopyTo(KeyValuePair<string, FunctionItem>[] array, int arrayIndex) : void
 FunctionDBData()
 FunctionDBData(string dbName, string dbFolder)
 GetEnumerator() : IEnumerator<KeyValuePair<string, FunctionItem>>
+OnDeserialized(StreamingContext context) : void [internal]
 Remove(KeyValuePair<string, FunctionItem> item) : bool
 Remove(string key) : bool
 TryGetValue(string key, out FunctionItem value) : bool
@@ -41,12 +42,13 @@ TryGetValue(string key, out FunctionItem value) : bool
 
 Исходники: [FunctionItem.cs](../../MaterialDB/FunctionData/FunctionItem.cs).
 
-Базовый тип: `DataItem`.
+Базовый тип: `DataItem`. Тип помечен `[Obsolete]`: будет удалён в MaterialDB 2.0.0, вместо него используется `DataItem`.
 
 ```text
 FunctionItem(string name, string x_unit, string y_unit, string units, DataTable dataTable)
+FunctionItem(string name, string x_unit, string y_unit, string units, DataTable dataTable, ArgumentKind argumentKind) [JsonConstructor]
 Copy(string copyName) : FunctionItem
-CalcProp(float variable) : float
+CalcProp(float variable) : float [Obsolete; будет удалён в 2.0.0]
 ```
 
 ## `CategoryEnum`
@@ -56,6 +58,8 @@ CalcProp(float variable) : float
 Исходники: [MaterialDBData.cs](../../MaterialDB/MaterialData/MaterialDBData.cs).
 
 ```text
+Fluid
+Gas
 General
 Mechanical
 Metallurgical
@@ -88,4 +92,6 @@ V
 W
 ```
 
-Загрузка базы функций читает найденный путь без Windows-разделителей.
+Загрузка базы функций читает найденный путь без Windows-разделителей. После десериализации `FunctionDBData.OnDeserialized` вызывает `ArgumentKindResolver` ([MaterialDB-10](MaterialDB-10.mdpuml)): записи без `ArgumentKind` получают `Constant` (одна строка) или `Argument`.
+
+`CategoryEnum.Fluid` — «Гидродинамические свойства» жидкости, `CategoryEnum.Gas` — «Газодинамические свойства» газа.

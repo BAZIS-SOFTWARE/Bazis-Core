@@ -73,7 +73,7 @@ public enum ArgumentKind
 ### 4.2. Изменённые перечисления
 
 ```csharp
-public enum CategoryEnum { General, Thermal, Mechanical, Metallurgical, Fluid /* new: «Гидродинамические свойства» */ }
+public enum CategoryEnum { General, Thermal, Mechanical, Metallurgical, Fluid /* new: «Гидродинамические свойства» — жидкость */, Gas /* new: «Газодинамические свойства» — газ */ }
 
 public enum PropertyEnum
 {
@@ -96,32 +96,45 @@ public enum PropertyEnum
     ThermalExpansionX,      // «ТКЛР X»
     ThermalExpansionY,      // «ТКЛР Y»
     ThermalExpansionZ,      // «ТКЛР Z»
-    HardnessModel,          // «Модель твердости»: 0 — выключена, 1 — включена (модель Куркина)
-    HardnessPhaseIndices    // «Индексы фаз модели твердости»: индексы фаз модели Куркина в «Структуре»
+    HardnessModel           // «Модель твердости»: 0 — выключена, 1 — включена (модель Куркина); индексы фаз — в той же записи
 }
 ```
 
-`MaterialDBItem.CategoryDic` получает пару `{ Fluid, "Гидродинамические свойства" }`, а `Category.PropertyDic` — двадцать новых пар (девять для сред, девять ортотропных и две для модели твердости). Новые значения добавляются в конец перечислений.
+`MaterialDBItem.CategoryDic` получает пары `{ Fluid, "Гидродинамические свойства" }` и `{ Gas, "Газодинамические свойства" }`. Газ — отдельное состояние вещества (решение пользователя): вязкость, сжимаемость и объёмное расширение газа лежат в `Gas`, жидкости — в `Fluid`; категорию текучей среды выбирает `MaterialDBItem.FluidCategory` (Gas при `MediumKind.Gas`, иначе Fluid). Категория, не соответствующая среде, — ошибка V15. Имена свойств в `Fluid` и `Gas` одинаковы, поэтому `Category.PropertyDic` от категории не зависит. В `Category.PropertyDic` добавлено девятнадцать новых пар (девять для сред, девять ортотропных и «Модель твердости»). Новые значения добавляются в конец перечислений.
 
 **Ортотропия (решение пользователя).** SolverCore уже читает «Теплопроводность X/Y/Z», «Модуль Юнга X/Y/Z», «ТКЛР X/Y/Z» при «Модель материала» = 2, а MaterialDB их не знал. Формат их узаконивает: при «Модель материала» = 2 вместо скалярных «Теплопроводность», «Модуль Юнга», «ТКЛР» обязательны их тройки X/Y/Z (той же раскладки `TemperaturePhase`/`Argument`); при 1 или отсутствии поля — скалярные. «Модель материала»: 1 — изотропный (по умолчанию), 2 — ортотропный; хранится как `int`. Ортотропия допустима для всех сред только для λ; E и ТКЛР — только Solid.
 
-### 4.3. `MaterialDescriptor` (новый DTO, только чтение)
+### 4.3. Иерархия материалов (решение пользователя: абстрактный `MaterialDBItem`)
 
-```csharp
-public sealed class MaterialDescriptor
-{
-    public MaterialDescriptor(MediumKind medium, bool hasMetallurgy, DensityModel densityModel, ViscosityModel viscosityModel, double? molarMass, double? referencePressure);
-    public MediumKind Medium { get; }
-    public bool HasMetallurgy { get; }
-    public DensityModel DensityModel { get; }
-    public ViscosityModel ViscosityModel { get; }
-    public double? MolarMass { get; }          // кг/моль
-    public double? ReferencePressure { get; }  // МПа
-}
+`MaterialDBItem` перегружен: твёрдому телу, жидкости и газу нужны разные группы свойств. Он становится абстрактным, наследники делятся **по среде**, группы свойств остаются категориями (`Category`) внутри него. По группам свойств наследовать нельзя: у твёрдого тела сразу три группы, а у класса C# один родитель.
+
+```text
+abstract MaterialDBItem   Name, CategoryData, индексаторы, Copy, Medium (abstract), HasMetallurgy,
+ │                        «Общие сведения», тепловые свойства (виртуальные AddProps, CheckProps),
+ │                        «Модель материала» (изотропия/ортотропия), GetPhases
+ ├─ SolidMaterialItem     + механические свойства, металлургия, «Структура», «Кристаллизация»,
+ │                          «Модель упрочнения», «Модель твердости» (+ индексы фаз Куркина)
+ ├─ LiquidMaterialItem    + «Гидродинамические свойства» (вязкость), «Опорное давление»
+ └─ GasMaterialItem       + «Газодинамические свойства» (вязкость), модели плотности и вязкости,
+                            «Молярная масса», «Опорное давление», «Коэффициенты Сазерленда»
 ```
 
-Это единая точка, через которую PropertiesCalculator и GUI узнают класс материала. `MaterialDBItem` получает один метод `GetDescriptor()` вместо набора атомарных геттеров. При отсутствии данных действуют значения по умолчанию: `Solid`, `Table`, `Table`, `null`, `null`, поэтому старые базы читаются как раньше. Коэффициенты Сазерленда в дескриптор не входят. Это табличные данные, их читает компилятор (раздел 5.4).
+| Состав | Solid | Liquid | Gas |
+| --- | --- | --- | --- |
+| Общие сведения, тепловые свойства | да | да | да |
+| Механические свойства, металлургия | да | нет | нет |
+| Гидродинамические свойства (`Fluid`) | нет | да | нет |
+| Газодинамические свойства (`Gas`) | нет | нет | да |
+| Химические свойства (`ChemicalProperties`) | позже: когда химическая задача определит набор данных | — | — |
 
+* Среду определяет **класс**, а не запись: `MaterialDBItem.Medium` — абстрактное свойство с `[JsonIgnore]`. Запись «Агрегатное состояние» остаётся в файле жидкости и газа как метка для загрузчика; у твёрдого тела её нет (формат старых баз не меняется). Метод `AddMediumKind` удалён: `AddGeneralProps()` жидкости и газа записывает метку сам.
+* **Полиморфизм свойств (решение пользователя).** `MaterialDBItem` объявляет `public virtual bool CheckProps()` и `protected virtual void AddProps()`; базовая реализация работает только с тепловыми свойствами. Каждый наследник переопределяет оба метода: вызывает базовую реализацию и добавляет или проверяет свойства своей среды — механические у твёрдого тела, «Гидродинамические свойства» у жидкости, «Газодинамические свойства» у газа. Клиент проверяет любой материал одним вызовом `CheckProps()` через базовый тип, без приведения.
+* **Состав свойств задаётся при создании (решение пользователя).** Конструктор принимает объект настроек (`MaterialDB.MaterialData.Settings`): `SolidMaterialSettings` (модель материала, фазы), `FluidMaterialSettings` (модель материала, «Опорное давление», по умолчанию 1 МПа), `GasMaterialSettings` (дополнительно модели плотности и вязкости, молярная масса, `SutherlandCoefficients`). Защищённый конструктор `MaterialDBItem(name, settings)` пишет «Общие сведения» и «Модель материала». Конструктор наследника записывает настройки среды и вызывает `AddProps()`; базовый конструктор `AddProps()` не вызывает. Газ с `IdealGas` без молярной массы или с `Sutherland` без коэффициентов — `ArgumentException`. Конструктор только с именем использует настройки по умолчанию. После создания состав таблиц согласован с моделями, поэтому методы, меняющие этот состав, закрыты: `AddProps`, `AddGeneralProps`, `AddMaterialModel` — `protected`; `AddPhaseData`, `AddDensityModel`, `AddViscosityModel`, `AddMolarMass`, `AddReferencePressure`, `AddSutherlandCoefficients` — `private`.
+* Публичные методы, зависящие от среды, находятся только в её классе: `AddCrystallization`, `AddMetallurgicalProps`, `AddHardeningModel`, `AddHardnessModel`, `CheckPhaseData` — в `SolidMaterialItem`. Состав таблиц они не меняют.
+* **Копирование.** `CreateEmpty(name)` создаёт пустой материал через внутренний конструктор без параметров, и `Copy()` переносит категории оригинала без дублей.
+* **Загрузка и сохранение.** Абстрактный класс Newtonsoft не создаст, поэтому на `MaterialDBItem` стоит `[JsonConverter(typeof(MaterialDBItemConverter))]`. Конвертер читает «Агрегатное состояние» из «Общих сведений» (нет записи — `SolidMaterialItem`; неизвестное значение — `JsonSerializationException`), создаёт нужный класс, заполняет `Name` и `CategoryData` и вызывает `ArgumentKindResolver`. Пишет он те же два поля (`Name`, `CategoryData`) без `$type`, поэтому формат файла не меняется и `$type` не появляется при `TypeNameHandling.Auto`.
+* **Что типы гарантируют, а что нет.** Через API нельзя создать металлургию у жидкости или механику у газа: нужных методов у класса нет. Но файл может содержать лишние данные (например, «Структуру» в газе), поэтому проверки V9 и V15 остаются как проверки данных.
+* **Ломающее изменение API.** `new MaterialDBItem(name)` больше не компилируется; `CheckPhaseData` недоступен через базовый тип; `AddThermalProps`, `AddMechProps`, `AddFluidProps`, `AddGasProps`, `CheckThermalProps`, `CheckMechanicalProps`, `CheckFluidProps`, `CheckGasProps` заменены на `AddProps`/`CheckProps`; методы записи настроек закрыты. По semver это мажорное изменение; по решению пользователя оно входит в текущую версию 1.2.0 (см. раздел 8).
 ### 4.4. `DataItem` — единая запись таблицы (2.0.0)
 
 ```csharp
@@ -166,45 +179,63 @@ namespace MaterialDB
 
 Смысл записи задаёт контейнер:
 
-* запись в `PropertyData` категорий Thermal, Mechanical или Fluid — свойство материала, X = температура;
+* запись в `PropertyData` категорий Thermal, Mechanical, Fluid или Gas — свойство материала, X = температура;
 * запись в «Общих сведениях» или «Металлургии» — описатель;
 * запись в `FunctionDBData` — функция с произвольным X.
 
 `MaterialValidator` проверяет `MaterialDBItem` и знает категорию каждой записи. Для функций применяется отдельный набор правил (V1–V4).
 
-### 4.6. `MaterialDBItem` (изменён)
+### 4.6. Классы материалов (изменены)
 
 ```csharp
-public MaterialDescriptor GetDescriptor();                                  // new
-public void AddMediumKind(MediumKind medium);                               // new: «Агрегатное состояние», int
-public void AddDensityModel(DensityModel model);                            // new: «Модель плотности», int
-public void AddViscosityModel(ViscosityModel model);                        // new: «Модель вязкости», int
-public void AddHardnessModel(int mode);                               // new: «Модель твердости», int (0/1)
-public void AddHardnessPhaseIndices(HardnessPhaseIndices indices);    // new: «Индексы фаз модели твердости», Descriptor
-public void AddSutherlandCoefficients(double mu0, double t0, double s);     // new: «Коэффициенты Сазерленда»
-public void AddMolarMass(double molarMass);                                 // new: «Молярная масса», кг/моль
-public void AddReferencePressure(double pressure);                          // new: «Опорное давление»
-public void AddFluidProps();                                                // new
-public bool CheckFluidProps();                                              // new, бросает Exception, как CheckThermalProps
-[OnDeserialized] private void OnDeserialized(StreamingContext context);     // new, вызывает IArgumentKindResolver
+// MaterialDBItem (abstract)
+public abstract MediumKind Medium { get; }                                   // new, [JsonIgnore]
+public bool HasMetallurgy { get; }                                           // new, [JsonIgnore]
+protected MaterialDBItem(string name, MaterialSettings settings);           // «Общие сведения» + «Модель материала»
+public virtual bool CheckProps();                                            // тепловые свойства
+protected virtual void AddProps();                                           // тепловые свойства
+protected void AddGeneralProps();                                            // жидкость и газ записывают «Агрегатное состояние»
+protected void AddMaterialModel(MaterialModel model);
+// SolidMaterialItem
+public SolidMaterialItem(string name);  public SolidMaterialItem(string name, SolidMaterialSettings settings);
+public override bool CheckProps();      protected override void AddProps();  // + механические свойства
+public bool CheckPhaseData();           public void AddMetallurgicalProps();
+public void AddCrystallization(double ts, double tl);
+public void AddHardeningModel(int mode);
+public void AddHardnessModel(int mode, HardnessPhaseIndices? indices = null);   // «Модель твердости» (0/1) и, при необходимости, индексы фаз Куркина в той же записи
+// LiquidMaterialItem
+public LiquidMaterialItem(string name);  public LiquidMaterialItem(string name, FluidMaterialSettings settings);
+public override bool CheckProps();       protected override void AddProps();  // + «Гидродинамические свойства»
+// GasMaterialItem
+public GasMaterialItem(string name);     public GasMaterialItem(string name, GasMaterialSettings settings);
+public override bool CheckProps();       protected override void AddProps();  // + «Газодинамические свойства»
+// MaterialDB.MaterialData.Settings
+public class MaterialSettings      { MaterialModel MaterialModel = Isotropic; }
+public class SolidMaterialSettings : MaterialSettings      { PhaseData? Phases; }
+public class FluidMaterialSettings : MaterialSettings      { double ReferencePressure = 1; }
+public class GasMaterialSettings   : FluidMaterialSettings { DensityModel; ViscosityModel; double? MolarMass; SutherlandCoefficients? Sutherland; }
+public sealed class SutherlandCoefficients { SutherlandCoefficients(double mu0, double t0, double s); Mu0; T0; S; }
+// MaterialDB.MaterialData
+public enum MaterialModel { Isotropic = 1, Orthotropic = 2 }
 ```
-
 Изменения поведения:
 
 | Член | Было | Станет |
 | --- | --- | --- |
 | `GetPhases()` | `KeyNotFoundException` без «Структуры» | пустая последовательность без металлургии |
-| `AddThermalProps()`, `AddMechProps()` | «Температура» + фазы | раскладка по `GetDescriptor()`: при металлургии `TemperaturePhase`, иначе `Argument`; ArgumentKind задаётся явно; при «Модель материала» = 2 создаются тройки X/Y/Z вместо скалярных λ, E, ТКЛР |
-| `CheckThermalProps()`, `CheckMechanicalProps()` (ортотропия) | скалярные λ, E, ТКЛР | при «Модель материала» = 2 требуют тройки X/Y/Z |
+| Создание материала | конструктор с именем, затем цепочка `AddGeneralProps`, `Add*Model`, `AddThermalProps`, `AddMechProps`/`AddFluidProps`/`AddGasProps` | конструктор с объектом настроек строит согласованный материал целиком; «Модель материала» записывается всегда |
+| `AddProps()` (бывшие `AddThermalProps()`, `AddMechProps()`, `AddFluidProps()`, `AddGasProps()`) | «Температура» + фазы | раскладка по `HasMetallurgy` и записям моделей: при металлургии `TemperaturePhase`, иначе `Argument`; ArgumentKind задаётся явно; при «Модель материала» = 2 создаются тройки X/Y/Z вместо скалярных λ, E, ТКЛР |
+| `CheckProps()` (бывшие `CheckThermalProps()`, `CheckMechanicalProps()`, `CheckFluidProps()`, `CheckGasProps()`), ортотропия | скалярные λ, E, ТКЛР | при «Модель материала» = 2 требуют тройки X/Y/Z |
 | `Category.PropertyDic` | `PropertyEnum.Capacity` → «Общие сведения» (ошибка) | `Capacity` → «Теплоемкость» (исправление в 1.2.0) |
 | `CategoryData[PropertyEnum]` | ищет по `key.ToString()` (английское имя) и всегда бросает `KeyNotFoundException` | ищет по русскому имени категории через `CategoryDic`/`PropertyDic` (исправление в 1.2.0) |
 | `Add*` в «Общих сведениях» при повторном вызове | исключение (`Dictionary.Add`) | без изменений: исключение остаётся (решение пользователя) |
 | `AddPhaseData`, `AddCrystallization`, `AddMaterialModel`, `AddHardeningModel` | `new PropertyItem(…)` | `new DataItem(…, ArgumentKind.Descriptor/Constant)` |
-| `CheckThermalProps()` | требует λ, c, ρ | ρ не требуется при `DensityModel.IdealGas` |
-| `CheckFluidProps()` | — | для Liquid/Gas: «Динамическая вязкость» при `ViscosityModel.Table`, «Коэффициенты Сазерленда» при `Sutherland` |
+| `CheckProps()`, тепловая часть | требует λ, c, ρ | ρ не требуется при `DensityModel.IdealGas` |
+| `CheckProps()` жидкости и газа | — | жидкость: «Динамическая вязкость» в Fluid; газ: «Динамическая вязкость» в Gas при `ViscosityModel.Table`, «Коэффициенты Сазерленда» при `Sutherland` |
+| `Copy()` | пустой материал через публичный конструктор | через внутренний конструктор без категорий |
 | `CreateTable()` (private) | без параметров | `CreateTable(ArgumentKind kind)`; для `TemperaturePressure` создаёт только «Температура», колонки давлений добавляет клиент через `PressureColumnConvention` |
 
-`AddFluidProps()` создаёт категорию «Гидродинамические свойства». При `ViscosityModel.Table` она добавляет «Динамическая вязкость» (`Argument`, для `Gas` — `TemperaturePressure`). «Сжимаемость» и «Коэффициент объёмного расширения» необязательны и методом не создаются.
+`AddProps()` жидкости после тепловых свойств создаёт «Гидродинамические свойства» (Fluid) и «Динамическую вязкость» (`Argument`); `AddProps()` газа создаёт «Газодинамические свойства» (Gas) и при `ViscosityModel.Table` — «Динамическую вязкость» (`TemperaturePressure`). «Сжимаемость» и «Коэффициент объёмного расширения» необязательны и методом не создаются.
 
 ### 4.7. Совместимость, проверка, соглашение по колонкам (новые)
 
@@ -284,12 +315,11 @@ namespace MaterialDB.MaterialData
 | «Коэффициенты Сазерленда» (`SutherlandCoefficients`) | `Коэффициент` (string), `Значение` (double) | 3: `μ0`, `T0`, `S` | Descriptor | μ0 — МПа·с (Н·с/мм²); T0, S — К |
 | «Молярная масса» (`MolarMass`) | `Молярная масса` (double) | 1 | Constant* | кг/моль |
 | «Опорное давление» (`ReferencePressure`) | `Опорное давление` (double) | 1 | Constant* | МПа |
-| «Модель твердости» (`HardnessModel`) | `Модель твердости` (int) | 1 | Constant* | 0 — выключена, 1 — включена (Куркин) |
-| «Индексы фаз модели твердости» (`HardnessPhaseIndices`) | `Коэффициент` (string), `Значение` (int) | 5: `FerriteIndex`, `PerliteIndex`, `BeiniteIndex`, `MartensiteIndex`, `AusteniteIndex` | Descriptor | индекс строки фазы в «Структуре», с 0; −1 — фазы нет |
+| «Модель твердости» (`HardnessModel`) | без индексов: колонка `Модель твердости` (int), 1 строка. С индексами: `Модель твердости` (int), `FerriteIndex`, `PerliteIndex`, `BeiniteIndex`, `MartensiteIndex`, `AusteniteIndex` (int), 1 строка | 1 | Constant* без индексов, Descriptor с индексами | 0 — выключена, 1 — включена (Куркин); индексы — номер строки фазы в «Структуре», с 0, −1 — фазы нет |
 
 \* Колонка одна и названа по свойству, как в существующих «Модель упрочнения» и «Размер аустенитного зерна». Поэтому для записей «Общих сведений» правило 5.1 «колонка `Значение`» не проверяется: они сопоставляются по имени свойства.
 
-**Модель твердости (решение пользователя).** Индексы фаз модели Куркина хранятся прямо в файле материала и при компиляции материала попадают в модель (PropertiesCalculator). Раскладка повторяет «Модель роста аустенитного зерна»: колонки `Коэффициент`/`Значение`, ключи строк совпадают с именами свойств модели (`FerriteIndex`, `PerliteIndex`, `BeiniteIndex`, `MartensiteIndex`, `AusteniteIndex`). Порядок фаз в «Структуре» произвольный: пользователь сам указывает, какая строка какой фазе соответствует, и отвечает за правильность. Запись обязательна при «Модель твердости» = 1. Записи создаются методами `AddHardnessModel(int mode)` и `AddHardnessPhaseIndices(HardnessPhaseIndices indices)` по образцу `AddHardeningModel` (повторный вызов — исключение); `HardnessPhaseIndices` — DTO MaterialDB с пятью свойствами `int` тех же имён.
+**Модель твердости (решение пользователя).** Индексы фаз модели Куркина хранятся прямо в файле материала, **в той же записи «Модель твердости»** (отдельной записи нет), и при компиляции материала попадают в модель (PropertiesCalculator). Они лежат в колонках единственной строки с именами свойств модели (`FerriteIndex`, `PerliteIndex`, `BeiniteIndex`, `MartensiteIndex`, `AusteniteIndex`); режим 0/1 — в первой колонке, поэтому читающий только режим код (`TryGetGeneralValue`) работает с обеими раскладками. Порядок фаз в «Структуре» произвольный: пользователь сам указывает, какая строка какой фазе соответствует, и отвечает за правильность. Запись обязательна при «Модель твердости» = 1. Запись создаётся методом `AddHardnessModel(int mode, HardnessPhaseIndices? indices = null)` по образцу `AddHardeningModel` (повторный вызов — исключение); `HardnessPhaseIndices` — DTO MaterialDB с пятью свойствами `int` тех же имён; используется только при записи (параметр `AddHardnessModel`), читают индексы валидатор и PropertiesCalculator по колонкам.
 
 «Коэффициенты Сазерленда» повторяют раскладку существующей «Модель роста аустенитного зерна» (`Коэффициент`, `Значение`). Строковые ключи строк `μ0`, `T0`, `S` согласованы с PropertiesCalculator. Формула Сазерленда для расчёта: μ(T) = μ0·(T/T0)^{3/2}·(T0 + S)/(T + S), T в кельвинах. Её применяет компилятор, MaterialDB только хранит коэффициенты.
 
@@ -303,10 +333,10 @@ namespace MaterialDB.MaterialData
 | «Опорное давление» | — | при таблице `TemperaturePressure` | при `IdealGas` или таблице `TemperaturePressure` (> 0) |
 | «Модель вязкости» | — | `Table` | `Table` / `Sutherland` |
 | «Коэффициенты Сазерленда» | — | — | обязательно при `Sutherland` (μ0, T0, S > 0) |
-| Fluid: «Динамическая вязкость» | — | обязательно (`Table`) | обязательно при `Table` |
+| «Динамическая вязкость» (Fluid — жидкость, Gas — газ) | — | обязательно (`Table`), в Fluid | обязательно при `Table`, в Gas |
 | Thermal: «Теплопроводность», «Теплоемкость» | обязательно | обязательно | обязательно |
 | Thermal: «Плотность» | обязательно | обязательно | обязательно при `Table` |
-| «Механические свойства» (состав `CheckMechanicalProps`) | обязательно | — | — |
+| «Механические свойства» (состав `SolidMaterialItem.CheckProps`) | обязательно | — | — |
 | «Структура» | необязательно | запрещено | запрещено |
 | `TemperaturePhase` | только при металлургии | — | — |
 | `TemperaturePressure` | запрещено | разрешено | разрешено |
@@ -314,7 +344,7 @@ namespace MaterialDB.MaterialData
 ### 5.4. Плотность и вязкость: один источник
 
 * ρ для всех сред хранится только в «Тепловых свойствах» (решение пользователя): тепловая задача нужна каждой среде, а дублирование не допускается. При `IdealGas` PropertiesCalculator считает ρ = p·M/(R·T_K) с переводом в кг/мм³.
-* Вязкость задаётся либо таблицей «Динамическая вязкость» в Fluid, либо коэффициентами Сазерленда в «Общих сведениях», но не обоими способами (V12).
+* Вязкость задаётся либо таблицей «Динамическая вязкость» в Fluid (жидкость) или Gas (газ), либо коэффициентами Сазерленда в «Общих сведениях», но не обоими способами (V12).
 
 ## 6. Обратная совместимость с существующими JSON-базами
 
@@ -331,7 +361,7 @@ namespace MaterialDB.MaterialData
 ### 6.2. Где выполняется выведение (SRP)
 
 * Правило выведения находится только в `ArgumentKindResolver` (`MaterialDB.Compatibility`). Модель данных содержит лишь точки запуска.
-* `MaterialDBItem` — `[OnDeserialized]` → `Resolve(this)`. Это минимальная единица с контекстом («Структура» видна только на уровне материала). Точка срабатывает при любом способе загрузки: `new MaterialDBData(name, folder)`, прямой `JsonConvert.DeserializeObject<MaterialDBData>` (так делают тесты BazisCore и BazisSolver), загрузка одного материала.
+* `MaterialDBItem` — `MaterialDBItemConverter.ReadJson` → `Resolve(material)` сразу после создания материала (абстрактный класс создаёт конвертер, поэтому `[OnDeserialized]` не используется). Это минимальная единица с контекстом («Структура» видна только на уровне материала). Точка срабатывает при любом способе загрузки: `new MaterialDBData(name, folder)`, прямой `JsonConvert.DeserializeObject<MaterialDBData>` (так делают тесты BazisCore и BazisSolver), загрузка одного материала.
 * `FunctionDBData` — `[OnDeserialized]` → `Resolve(this)`. В 2.0.0 `DataItem` не знает своего контейнера, поэтому точка запуска находится в контейнере. В 1.2.0 используется та же точка.
 * Не выбраны: выведение в PropertiesCalculator (нарушает контракт 2.1, GUI видел бы `Undefined`) и выведение в `DataItem` (нет контекста).
 * Риск для реализации: проверить тестом, что Newtonsoft вызывает `[OnDeserialized]` у типа, реализующего `IDictionary<,>` (`FunctionDBData`). Если не вызывает, точкой запуска становится конструктор `FunctionDBData(dbName, dbFolder)`.
@@ -339,7 +369,7 @@ namespace MaterialDB.MaterialData
 ### 6.3. Правило выведения (только для `Undefined`, явное значение не меняется)
 
 1. «Общие сведения»: таблица 1×1 → `Constant`, остальные → `Descriptor`. «Металлургия»: все таблицы → `Process`.
-2. Thermal, Mechanical, Fluid: если есть «Структура» → `TemperaturePhase`, иначе `Argument`.
+2. Thermal, Mechanical, Fluid, Gas: если есть «Структура» → `TemperaturePhase`, иначе `Argument`.
 3. `FunctionDBData`: одна строка → `Constant`, иначе `Argument`.
 4. Выведение не проверяет и не перекраивает таблицы. Несоответствия сообщает `MaterialValidator`.
 
@@ -367,7 +397,8 @@ namespace MaterialDB.MaterialData
 | V11 | «Плотность» задана при `IdealGas` (будет проигнорирована) | Warning |
 | V12 | «Динамическая вязкость» задана при `Sutherland` (будет проигнорирована) | Warning |
 | V13 | «Модель материала» = 2: нет любой из троек X/Y/Z (λ — все среды; E, ТКЛР — Solid); E или ТКЛР X/Y/Z у Liquid/Gas | Error |
-| V14 | «Модель твердости» = 1: нет «Индексов фаз модели твердости», нет металлургии, индекс не −1 и вне «Структуры», индексы ≠ −1 повторяются, неизвестный ключ строки | Error |
+| V14 | «Модель твердости» = 1: нет металлургии, в записи нет колонки индекса, индекс не −1 и вне «Структуры», индексы ≠ −1 повторяются | Error |
+| V15 | Категория текучей среды не соответствует MediumKind: Gas у жидкости или твёрдого, Fluid у газа или твёрдого (непустая) | Error |
 
 Функции проверяются по V1–V4.
 
@@ -377,7 +408,7 @@ namespace MaterialDB.MaterialData
 
 | Шаг | MaterialDB | Project | Содержание |
 | --- | --- | --- | --- |
-| 1 | **1.2.0** | **6.3.0** (сейчас 6.2.3) | Без ломающих изменений. Добавляются `ArgumentKind` (в `DataItem` + конструкторы `[JsonConstructor]` у `PropertyItem`/`FunctionItem`), `MediumKind`, `DensityModel`, `ViscosityModel`, `MaterialDescriptor`, категория Fluid, новые записи «Общих сведений», резолвер, валидатор, `PressureColumnConvention`. Исправляются ошибки 10.4–10.5 (`PropertyEnum.Capacity`, индексатор `CategoryData[PropertyEnum]`) — исправление ошибок, а не смена контракта: индексатор сейчас неработоспособен. Добавляется ортотропия (тройки X/Y/Z). `[Obsolete]` получают `PropertyItem.CalcProp`, `FunctionItem.CalcProp`, `InterpolationSearch`, а также типы `PropertyItem`, `FunctionItem`, `IProperty` с текстом «будет удалён в MaterialDB 2.0.0, используйте DataItem». В Project 6.3.0 `TableParameter.GetValue` переводится на собственную интерполяцию (шаг 5 ниже), чтобы не вызывать устаревший `CalcProp`; публичный API Project не меняется |
+| 1 | **1.2.0** | **6.3.0** (сейчас 6.2.3) | Содержит одно ломающее изменение — абстрактный `MaterialDBItem` (раздел 4.3, решение пользователя «в текущей версии»); по semver ему соответствует 2.0.0. Добавляются `ArgumentKind` (в `DataItem` + конструкторы `[JsonConstructor]` у `PropertyItem`/`FunctionItem`), `MediumKind`, `DensityModel`, `ViscosityModel`, `HardnessPhaseIndices`, свойства `MaterialDBItem.Medium`/`HasMetallurgy`, категории Fluid и Gas, новые записи «Общих сведений», резолвер, валидатор, `PressureColumnConvention`. Исправляются ошибки 10.4–10.5 (`PropertyEnum.Capacity`, индексатор `CategoryData[PropertyEnum]`) — исправление ошибок, а не смена контракта: индексатор сейчас неработоспособен. Добавляется ортотропия (тройки X/Y/Z). `[Obsolete]` получают `PropertyItem.CalcProp`, `FunctionItem.CalcProp`, `InterpolationSearch`, а также типы `PropertyItem`, `FunctionItem`, `IProperty` с текстом «будет удалён в MaterialDB 2.0.0, используйте DataItem» (сделано в коде). Репозиторий задаёт `CS0618 = error` (`.editorconfig`), поэтому места использования помечены точечными `#pragma warning disable CS0618`, внутри MaterialDB — `NoWarn`. В Project 6.3.0 `TableParameter.GetValue` переводится на собственную интерполяцию (шаг 5 ниже), чтобы не вызывать устаревший `CalcProp`; публичный API Project не меняется |
 | 2 | — | — | PropertiesCalculator переходит на 1.2.0. Он реализует `MaterialCompiler`/`CompiledMaterial`, заменяет `InterpolationSearch` собственной `PiecewiseLinearTable` (`Kostinen`, `TableModel`, `Avrami`; см. PropertiesCalculator-Spec.md), `InterpolationSearch` не переносится, а SolverCore (`HeatTask`, `SetPhysicalProperties`) переводит на `CompiledMaterial`. Критерий готовности — нет предупреждений CS0618 |
 | 3 | — | — | Миграция данных: `Materials_v7.jsf` → `Materials_v8.jsf`, `functions.jsf` пересохраняются через 1.2.0 с явным `ArgumentKind`. Проверка — в файлах нет `"$type"` |
 | 4 | **2.0.0** | **7.0.0** | Ломающие изменения. `DataItem` становится `sealed` конкретным классом; удаляются `PropertyItem`, `FunctionItem`, `IProperty`, `CalcProp` ×2, `InterpolationSearch`; `PropertyData`, `FunctionDBData`, `ICategory`, `Category`, `Process<T>`, `ProcessData` типизируются по `DataItem`. В Project `TableParameter.Table` меняет тип `FunctionItem` → `DataItem`: публичный API, поэтому мажорная версия. |
@@ -400,9 +431,12 @@ namespace MaterialDB.MaterialData
 * Резолвер на `Materials_v7.jsf` и `functions.jsf`: тепловые и механические таблицы → `TemperaturePhase`; «Структура» → `Descriptor`; процессы «Металлургии» → `Process`; «Модель упрочнения» → `Constant`; функции → `Argument`/`Constant`. Явное значение не перезаписывается. `[OnDeserialized]` у `FunctionDBData` действительно вызывается.
 * Цикл «загрузка → сохранение → загрузка» сохраняет `ArgumentKind`, «Агрегатное состояние», «Модель плотности», «Модель вязкости», «Коэффициенты Сазерленда»; в JSON **нет `"$type"`**.
 * 2.0.0: `materials_v1.jsf`, `Materials_v7.jsf`, `functions.jsf` загружаются в `DataItem` без ошибок.
-* Материал без «Структуры»: `GetPhases()` пустая, `AddThermalProps()` даёт `Температура`, `Значение` с `Argument`.
+* Класс материала выбирается по записи «Агрегатное состояние» (нет записи — `SolidMaterialItem`); `Copy` сохраняет класс; неизвестное значение отклоняется; в сохранённом файле нет `$type`.
+* Материал без «Структуры»: `GetPhases()` пустая, конструктор создаёт таблицы `Температура`, `Значение` с `Argument`.
+* Конструкторы с настройками: газ с `IdealGas`/`Sutherland` не получает «Плотность» и таблицу вязкости; без молярной массы или коэффициентов — `ArgumentException`; «Опорное давление» по умолчанию 1 МПа; `Copy()` сохраняет состав.
+* `CheckProps()` наследника падает и при отсутствии тепловых свойств, и при отсутствии свойств своей среды.
 * `PressureColumnConvention`: `Format(0.101325) == "P_0.101325"`, разбор при культуре ru-RU, отказ на `"P_abc"`.
-* `MaterialValidator`: по одному негативному тесту на каждое правило V1–V14; Solid, Liquid, Gas (`Table`/`IdealGas`, `Table`/`Sutherland`).
+* `MaterialValidator`: по одному негативному тесту на каждое правило V1–V15; Solid, Liquid, Gas (`Table`/`IdealGas`, `Table`/`Sutherland`).
 * `LinearTable` (Project): совпадение с текущим `InterpolationSearch` на `functions.jsf`, края, одна строка.
 
 ## 10. Расхождения с текущим кодом (обнаружены при анализе)
@@ -436,4 +470,4 @@ namespace MaterialDB.MaterialData
 * **В8** — ортотропия нужна: тройки X/Y/Z для λ, E, ТКЛР при «Модель материала» = 2 (раздел 4.2).
 * **В9** — ошибки `PropertyEnum.Capacity` и индексатора `CategoryData[PropertyEnum]` исправляются в 1.2.0.
 * **В10** — `this[row, col]`, `AddRow()`, `ToString()` в `DataItem` сохраняются.
-* **Индексы фаз модели твердости** — хранятся в файле материала (запись «Индексы фаз модели твердости», раздел 5.2; правило V14); общей таблицы ролей фаз нет, порядок фаз в «Структуре» произвольный.
+* **Индексы фаз модели твердости** — хранятся в файле материала в той же записи «Модель твердости» (раздел 5.2; правило V14); общей таблицы ролей фаз нет, порядок фаз в «Структуре» произвольный.

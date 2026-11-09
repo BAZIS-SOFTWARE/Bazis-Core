@@ -27,7 +27,7 @@ interface "IMaterialDB" as T_MaterialDB_MaterialDB_Interfaces_IMaterialDB {
   + Name : string [get, set]
   + GetPhases(materialsNames) : HashSet<string>
 }
-interface "IProperty" as T_MaterialDB_MaterialDB_Interfaces_IProperty {
+interface "IProperty" as T_MaterialDB_MaterialDB_Interfaces_IProperty <<obsolete>> {
   + DataTable : DataTable [get, set]
   + Name : string [get, set]
   + Units : string [get, set]
@@ -47,6 +47,7 @@ T_MaterialDB_MaterialDB_Interfaces_IMaterialDB -[hidden]down-> T_MaterialDB_Mate
 T_MaterialDB_MaterialDB_Interfaces_IProperty -[hidden]down-> T_MaterialDB_MaterialDB_Interfaces_ISaver
 legend bottom
   Обзор: [[MaterialDB.mdpuml MaterialDB]].
+  IProperty помечен [Obsolete]: будет удалён в MaterialDB 2.0.0 (используйте DataItem).
   reference — тип раскрыт на другой диаграмме.
   Параметры методов: имена; полные сигнатуры — в соседнем .md.
   Унаследованные члены интерфейсов в классах не повторяются.

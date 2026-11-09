@@ -4,7 +4,7 @@
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
 	  <SignAssembly>True</SignAssembly>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>6.2.3</Version>
+    <Version>6.3.0</Version>
     <Title>Project</Title>
     <Authors>Bilenko Georgy</Authors>
     <Company>BAZIS SOFTWARE</Company>
@@ -66,6 +66,7 @@
     <Compile Include="Tasks\Functions\FrameFunctions\SPH.cs" />
     <Compile Include="Tasks\Functions\FrameFunctions\SphereBuilder.cs" />
     <Compile Include="Tasks\Functions\Function.cs" />
+    <Compile Include="Tasks\Functions\LinearTable.cs" />
     <Compile Include="Tasks\Functions\Parameter.cs" />
     <Compile Include="Tasks\Functions\PT.cs" />
     <Compile Include="Tasks\Functions\TableParameter.cs" />

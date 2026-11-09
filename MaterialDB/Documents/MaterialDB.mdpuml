@@ -12,7 +12,7 @@ set namespaceSeparator none
 
 allowmixing
 title MaterialDB — обзор классов и расположение подробностей
-caption Обзор; полный состав членов — на нумерованных поддиаграммах
+caption Состояние MaterialDB 1.2.0; полный состав членов — на нумерованных поддиаграммах
 interface "IMaterialDB" as T_MaterialDB_MaterialDB_Interfaces_IMaterialDB <<details>>
 note right of T_MaterialDB_MaterialDB_Interfaces_IMaterialDB
   MaterialDB-1
@@ -21,9 +21,23 @@ class "MaterialDBData" as T_MaterialDB_MaterialDB_MaterialData_MaterialDBData <<
 note right of T_MaterialDB_MaterialDB_MaterialData_MaterialDBData
   MaterialDB-3
 end note
-class "MaterialDBItem" as T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem <<details>>
+class "MaterialDBItem (abstract)" as T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem <<details>>
 note right of T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem
   MaterialDB-4
+end note
+class "SolidMaterialItem" as T_MaterialDB_MaterialDB_MaterialData_SolidMaterialItem <<details>>
+class "LiquidMaterialItem" as T_MaterialDB_MaterialDB_MaterialData_LiquidMaterialItem <<details>>
+class "GasMaterialItem" as T_MaterialDB_MaterialDB_MaterialData_GasMaterialItem <<details>>
+note right of T_MaterialDB_MaterialDB_MaterialData_GasMaterialItem
+  MaterialDB-8
+end note
+class "MaterialSettings" as T_MaterialDB_MaterialDB_MaterialData_Settings_MaterialSettings <<details>>
+note right of T_MaterialDB_MaterialDB_MaterialData_Settings_MaterialSettings
+  MaterialDB-11
+end note
+class "MaterialDBItemConverter" as T_MaterialDB_MaterialDB_MaterialData_MaterialDBItemConverter <<details>>
+note right of T_MaterialDB_MaterialDB_MaterialData_MaterialDBItemConverter
+  MaterialDB-8
 end note
 interface "ICategory" as T_MaterialDB_MaterialDB_Interfaces_ICategory <<details>>
 note right of T_MaterialDB_MaterialDB_Interfaces_ICategory
@@ -60,12 +74,19 @@ T_MaterialDB_MaterialDB_MaterialData_Category ..|> T_MaterialDB_MaterialDB_Inter
 T_MaterialDB_MaterialDB_MaterialData_MaterialDBData --> T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem : использует
 T_MaterialDB_MaterialDB_MaterialData_MaterialDBData ..|> T_MaterialDB_MaterialDB_Interfaces_IMaterialDB
 T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem --> T_MaterialDB_MaterialDB_MaterialData_Category : использует
+T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem <|-- T_MaterialDB_MaterialDB_MaterialData_SolidMaterialItem
+T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem <|-- T_MaterialDB_MaterialDB_MaterialData_LiquidMaterialItem
+T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem <|-- T_MaterialDB_MaterialDB_MaterialData_GasMaterialItem
+T_MaterialDB_MaterialDB_MaterialData_MaterialDBItemConverter ..> T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem : создаёт по «Агрегатному состоянию»
+T_MaterialDB_MaterialDB_MaterialData_MaterialDBItem ..> T_MaterialDB_MaterialDB_MaterialData_Settings_MaterialSettings : конструктор
 T_MaterialDB_MaterialDB_MaterialData_PropertyItem --|> T_MaterialDB_DataItem
 T_MaterialDB_MaterialDB_FunctionData_FunctionItem --|> T_MaterialDB_DataItem
 T_MaterialDB_MaterialDB_MaterialData_PropertyItem ..|> T_MaterialDB_MaterialDB_Interfaces_IProperty
 rectangle "Контракты и данные материалов" as Area_1 <<область>>
 note right of Area_1
   MaterialDB-1.mdpuml, MaterialDB-3.mdpuml, MaterialDB-4.mdpuml
+  MaterialDB-8.mdpuml — материалы по средам и конвертер
+  Материал — [[MaterialDB-4.mdpuml MaterialDB-4]]; наследники и загрузка — [[MaterialDB-8.mdpuml MaterialDB-8]]
 end note
 rectangle "Свойства, фазовый состав и функции" as Area_2 <<область>>
 note right of Area_2
@@ -85,4 +106,12 @@ T_MaterialDB_MaterialDB_MaterialData_PropertyItem -[hidden]down-> T_MaterialDB_M
 T_MaterialDB_MaterialDB_FunctionData_FunctionDBData -[hidden]down-> T_MaterialDB_MaterialDB_FunctionData_FunctionItem
 T_MaterialDB_MaterialDB_FunctionData_FunctionDBData -[hidden]down-> Area_1
 Area_1 -[hidden]down-> Area_2
+rectangle "Новые типы 1.2.0: формат, совместимость, проверка" as Area_3 <<область>>
+note right of Area_3
+  MaterialDB-9.mdpuml — ArgumentKind, MediumKind, DensityModel, ViscosityModel, MaterialModel, HardnessPhaseIndices, PressureColumnConvention
+  MaterialDB-10.mdpuml — ArgumentKindResolver, MaterialValidator, ValidationIssue
+  MaterialDB-11.mdpuml — настройки создания материалов (MaterialSettings и наследники, SutherlandCoefficients)
+  [[MaterialDB-9.mdpuml MaterialDB-9]], [[MaterialDB-10.mdpuml MaterialDB-10]], [[MaterialDB-11.mdpuml MaterialDB-11]]
+end note
+Area_2 -[hidden]down-> Area_3
 @enduml

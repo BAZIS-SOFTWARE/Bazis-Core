@@ -1,6 +1,7 @@
 using MaterialDB.Interfaces;
 using MaterialDB.MaterialData.MetallurgicalData;
 using MaterialDB.Utilities;
+using Newtonsoft.Json;
 using System;
 using System.Data;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace MaterialDB.MaterialData
     /// Табличное свойство материала.
     /// </summary>
     [Serializable]
+    [Obsolete("Тип будет удалён в MaterialDB 2.0.0; используйте DataItem.")]
     public class PropertyItem : DataItem, IProperty
     {
         /// <summary>
@@ -18,6 +20,15 @@ namespace MaterialDB.MaterialData
         /// </summary>
         public PropertyItem(string name, string x_unit, string y_unit, string units, DataTable dataTable)
             : base(name, x_unit, y_unit, units, dataTable)
+        {
+        }
+
+        /// <summary>
+        /// Создаёт свойство материала с табличными данными и видом зависимости.
+        /// </summary>
+        [JsonConstructor]
+        public PropertyItem(string name, string x_unit, string y_unit, string units, DataTable dataTable, ArgumentKind argumentKind)
+            : base(name, x_unit, y_unit, units, dataTable, argumentKind)
         {
         }
 
@@ -39,6 +50,7 @@ namespace MaterialDB.MaterialData
         /// <summary>
         /// Вычисляет свойство по температуре и долям фаз.
         /// </summary>
+        [Obsolete("Расчёт свойств перенесён в PropertiesCalculator; метод будет удалён в MaterialDB 2.0.0.")]
         public float CalcProp(PhaseData phaseData, float temp)
         {
             if (DataTable.Columns.Count - 1 != phaseData.Count)

@@ -1,6 +1,7 @@
 using MaterialDB.FunctionData;
 using MaterialDB.MaterialData;
 using MaterialDB.MaterialData.MetallurgicalData;
+using MaterialDB.MaterialData.Settings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 
@@ -38,7 +39,9 @@ namespace TestProject_test.MaterialDB
             var phaseData = new PhaseData(strData.DataTable);
 
             var property = materials[mat][cat][prop];
+#pragma warning disable CS0618 // проверка устаревшего расчёта до его удаления в MaterialDB 2.0.0
             var value = property.CalcProp(phaseData, temp);
+#pragma warning restore CS0618
 
             Assert.AreEqual(value, res);
         }
@@ -58,7 +61,9 @@ namespace TestProject_test.MaterialDB
                 phaseData.Add(new Phase() { Name = "", Value = phaseValue });
 
             var property = materials[mat][cat][prop];
+#pragma warning disable CS0618 // проверка устаревшего расчёта до его удаления в MaterialDB 2.0.0
             var value = property.CalcProp(phaseData, temp);
+#pragma warning restore CS0618
 
             Assert.AreEqual(value, res);
         }
@@ -80,9 +85,8 @@ namespace TestProject_test.MaterialDB
         {
             var materials = new MaterialDBData("Materials_v7.jsf", materialDataFolder);
 
-            Assert.AreEqual(true, materials[mat].CheckThermalProps());
-            Assert.AreEqual(true, materials[mat].CheckMechanicalProps());
-            Assert.AreEqual(true, materials[mat].CheckPhaseData());
+            Assert.AreEqual(true, materials[mat].CheckProps());
+            Assert.AreEqual(true, ((SolidMaterialItem)materials[mat]).CheckPhaseData());
 
         }
 
@@ -110,7 +114,9 @@ DisplayName = "Сталь_20 и Титан_Вт6 и Титан_Фиктивны�
         {
             var functions = new FunctionDBData("functions.jsf", materialDataFolder);
             var function = functions[fun];
+#pragma warning disable CS0618 // проверка устаревшего расчёта до его удаления в MaterialDB 2.0.0
             var value = function.CalcProp(variable);
+#pragma warning restore CS0618
 
             Assert.AreEqual(value, res, 0.000001);
         }
@@ -136,22 +142,12 @@ DisplayName = "Сталь_20 и Титан_Вт6 и Титан_Фиктивны�
         [DataRow("Сталь_20ХМ",2,1)]
         public void TestMaterialsCreation(string materialName,int hardMode,int matMode)
         {
-            var material = new MaterialDBItem(materialName);
-
-            material.AddGeneralProps();
-
             var phaseData = new PhaseData(new List<Phase>()
             {
                 new Phase(){Name = "F",Value = 1}
             });
 
-            material.AddPhaseData(phaseData);
-            material.AddThermalProps();
-            material.AddMechProps();
-            material.AddMetallurgicalProps();
-
-            material.AddMaterialModel(1);
-            material.AddHardeningModel(2);
+            var material = new SolidMaterialItem(materialName, new SolidMaterialSettings { MaterialModel = (MaterialModel)matMode, Phases = phaseData, HardeningModel = hardMode });
 
             material[CategoryEnum.Thermal][PropertyEnum.ThermalConductivity].AddRow();
 

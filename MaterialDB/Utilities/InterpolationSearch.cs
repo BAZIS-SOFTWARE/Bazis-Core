@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace MaterialDB.Utilities
 {
+    [Obsolete("Интерполяция перенесена в PropertiesCalculator и Project; класс будет удалён в MaterialDB 2.0.0.")]
     public static class InterpolationSearch
     {
         /// <summary>
