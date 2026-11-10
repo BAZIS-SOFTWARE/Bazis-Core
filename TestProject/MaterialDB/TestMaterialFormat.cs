@@ -152,6 +152,101 @@ namespace TestProject_test.MaterialDB
             Assert.ThrowsException<Exception>(() => material.CheckProps());
         }
 
+        [DataTestMethod]
+        [DataRow("Тепловые свойства", "Теплопроводность")]
+        [DataRow("Механические свойства", "Модуль Юнга")]
+        [DataRow("Механические свойства", "ТКЛР")]
+        public void SwitchingToOrthotropicCopiesIndependentPhaseTables(string categoryName, string propertyName)
+        {
+            var material = new SolidMaterialItem("Композит");
+            material.AddPhase("second", 0d);
+            var source = material[categoryName][propertyName];
+            source.DataTable.Rows.Add(20d, 11d, 12d);
+            source.X_unit = "C";
+            source.Y_unit = "unit";
+
+            material.SetMaterialModel(MaterialModel.Orthotropic);
+
+            var properties = material[categoryName].PropertyData;
+            Assert.IsFalse(properties.ContainsKey(propertyName));
+            foreach (var axis in new[] { " X", " Y", " Z" })
+            {
+                var property = properties[propertyName + axis];
+                Assert.AreEqual(ArgumentKind.TemperaturePhase, property.ArgumentKind);
+                Assert.AreEqual("second", property.DataTable.Columns[2].ColumnName);
+                Assert.AreEqual(11d, property[0, 1]);
+                Assert.AreEqual(12d, property[0, 2]);
+                Assert.AreEqual("C", property.X_unit);
+                Assert.AreEqual("unit", property.Y_unit);
+                Assert.AreNotSame(source.DataTable, property.DataTable);
+            }
+
+            properties[propertyName + " X"][0, 1] = 21d;
+            Assert.AreEqual(11d, properties[propertyName + " Y"][0, 1]);
+            Assert.AreEqual(11d, properties[propertyName + " Z"][0, 1]);
+            Assert.AreEqual((int)MaterialModel.Orthotropic, (int)material[CategoryEnum.General]["Модель материала"][0, 0]);
+            Assert.IsTrue(material.CheckProps());
+        }
+
+        [DataTestMethod]
+        [DataRow("Тепловые свойства", "Теплопроводность")]
+        [DataRow("Механические свойства", "Модуль Юнга")]
+        [DataRow("Механические свойства", "ТКЛР")]
+        public void SwitchingBackToIsotropicUsesXAxis(string categoryName, string propertyName)
+        {
+            var material = new SolidMaterialItem("Композит");
+            material[categoryName][propertyName].DataTable.Rows.Add(20d, 11d);
+            material.SetMaterialModel(MaterialModel.Orthotropic);
+
+            var properties = material[categoryName].PropertyData;
+            properties[propertyName + " X"][0, 1] = 21d;
+            properties[propertyName + " Y"][0, 1] = 22d;
+            properties[propertyName + " Z"][0, 1] = 23d;
+            var xTable = properties[propertyName + " X"].DataTable;
+
+            material.SetMaterialModel(MaterialModel.Isotropic);
+
+            Assert.AreEqual(21d, properties[propertyName][0, 1]);
+            Assert.AreNotSame(xTable, properties[propertyName].DataTable);
+            Assert.IsFalse(properties.ContainsKey(propertyName + " X"));
+            Assert.IsFalse(properties.ContainsKey(propertyName + " Y"));
+            Assert.IsFalse(properties.ContainsKey(propertyName + " Z"));
+            Assert.AreEqual((int)MaterialModel.Isotropic, (int)material[CategoryEnum.General]["Модель материала"][0, 0]);
+            Assert.IsTrue(material.CheckProps());
+        }
+
+        [TestMethod]
+        public void SwitchingMaterialModelWithMissingSourceLeavesMaterialUnchanged()
+        {
+            var material = new SolidMaterialItem("Композит");
+            var thermal = material[CategoryEnum.Thermal].PropertyData;
+            var conductivity = thermal["Теплопроводность"];
+            material[CategoryEnum.Mechanical].PropertyData.Remove("Модуль Юнга");
+
+            Assert.ThrowsException<InvalidOperationException>(() => material.SetMaterialModel(MaterialModel.Orthotropic));
+
+            Assert.AreSame(conductivity, thermal["Теплопроводность"]);
+            Assert.IsFalse(thermal.ContainsKey("Теплопроводность X"));
+            Assert.AreEqual((int)MaterialModel.Isotropic, (int)material[CategoryEnum.General]["Модель материала"][0, 0]);
+        }
+
+        [TestMethod]
+        public void SwitchingMaterialModelPreservesSerializedTables()
+        {
+            var material = new SolidMaterialItem("Композит");
+            material[CategoryEnum.Thermal]["Теплопроводность"].DataTable.Rows.Add(20d, 11d);
+            material.SetMaterialModel(MaterialModel.Orthotropic);
+            material[CategoryEnum.Thermal]["Теплопроводность X"][0, 1] = 21d;
+
+            var json = JsonConvert.SerializeObject(new MaterialDBData { { material.Name, material } }, settings);
+            var loaded = JsonConvert.DeserializeObject<MaterialDBData>(json, settings)![material.Name];
+
+            Assert.IsInstanceOfType(loaded, typeof(SolidMaterialItem));
+            Assert.AreEqual(21d, loaded[CategoryEnum.Thermal]["Теплопроводность X"][0, 1]);
+            Assert.AreEqual(11d, loaded[CategoryEnum.Thermal]["Теплопроводность Y"][0, 1]);
+            Assert.IsTrue(loaded.CheckProps());
+        }
+
         [TestMethod]
         public void GasWithIdealGasDoesNotNeedDensityTable()
         {

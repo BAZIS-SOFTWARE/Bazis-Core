@@ -19,6 +19,7 @@ class "SolidMaterialItem" as T_MaterialDB_MaterialDB_MaterialData_SolidMaterialI
   + Medium : MediumKind [get]
   + SolidMaterialItem(name)
   + SolidMaterialItem(name, settings)
+  + SetMaterialModel(model) : void
   + AddPhase(phaseName, massFraction) : void
   + RemovePhase(phaseName) : void
   + CheckPhaseData() : bool
@@ -82,6 +83,7 @@ legend bottom
   газ — тепловые и газодинамические (Gas). Конвертер читает и пишет Name и CategoryData без $type.
   Конструктор записывает настройки в «Общие сведения» и вызывает AddProps(); override сначала вызывают базовую реализацию.
   Конструктор только с именем — настройки по умолчанию. Методы записи настроек закрыты (private).
+  SetMaterialModel создаёт независимые X/Y/Z из скалярных таблиц; при возврате берёт X и удаляет X/Y/Z.
   AddPhase/RemovePhase меняют «Структуру» и колонки фаз в таблицах свойств; RemovePhase удаляет процессы фазы
   и сдвигает индексы «Модели твердости». Use* газа меняют на месте записи «Модель плотности» / «Модель вязкости»
   («Параметр»/«Значение»: строка «Модель», ниже — M или μ0, T0, S); таблицы «Плотность» и «Динамическая вязкость» не удаляются.

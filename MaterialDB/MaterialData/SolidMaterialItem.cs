@@ -52,6 +52,83 @@ namespace MaterialDB.MaterialData
         }
 
         /// <summary>
+        /// Меняет модель материала и состав направленных свойств. При переходе к ортотропии
+        /// копирует скалярные таблицы независимо для X/Y/Z; при возврате берёт таблицы X.
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException">Неизвестная модель материала.</exception>
+        /// <exception cref="InvalidOperationException">Отсутствует исходная таблица свойства.</exception>
+        public void SetMaterialModel(MaterialModel model)
+        {
+            if (model != MaterialModel.Isotropic && model != MaterialModel.Orthotropic)
+                throw new ArgumentOutOfRangeException(nameof(model), model, "Unknown material model.");
+
+            var general = this[CategoryEnum.General].PropertyData;
+            var hasModel = TryGetGeneralValue("Модель материала", out var value);
+            if (general.ContainsKey("Модель материала") && !hasModel)
+                throw new InvalidOperationException("The material model value is invalid.");
+
+            var current = hasModel ? (MaterialModel)(int)value : MaterialModel.Isotropic;
+            if ((hasModel && value != (int)current) || (current != MaterialModel.Isotropic && current != MaterialModel.Orthotropic))
+                throw new InvalidOperationException("The current material model is unknown.");
+            if (current == model)
+                return;
+
+            var conductivity = CreateModelProperties(CategoryEnum.Thermal, "Теплопроводность", model);
+            var youngModule = CreateModelProperties(CategoryEnum.Mechanical, "Модуль Юнга", model);
+            var thermalExpansion = CreateModelProperties(CategoryEnum.Mechanical, "ТКЛР", model);
+
+            ReplaceModelProperties(CategoryEnum.Thermal, "Теплопроводность", conductivity);
+            ReplaceModelProperties(CategoryEnum.Mechanical, "Модуль Юнга", youngModule);
+            ReplaceModelProperties(CategoryEnum.Mechanical, "ТКЛР", thermalExpansion);
+
+            if (general.ContainsKey("Модель материала"))
+            {
+                var table = general["Модель материала"].DataTable;
+                var column = table.Columns.Contains("Значение") ? "Значение" : table.Columns[0].ColumnName;
+                table.Rows[0][column] = (int)model;
+            }
+            else
+                AddMaterialModel(model);
+        }
+
+        /// <summary>
+        /// Создаёт независимые копии таблицы активного свойства для новой модели.
+        /// </summary>
+        private PropertyItem[] CreateModelProperties(CategoryEnum category, string propertyName, MaterialModel model)
+        {
+            var sourceName = model == MaterialModel.Orthotropic ? propertyName : propertyName + " X";
+            var properties = this[category].PropertyData;
+            if (!properties.ContainsKey(sourceName) || properties[sourceName].DataTable == null)
+                throw new InvalidOperationException($"The source property '{sourceName}' is missing.");
+
+            var source = properties[sourceName];
+            if (model == MaterialModel.Isotropic)
+                return new[] { source.Copy(propertyName) };
+
+            return new[]
+            {
+                source.Copy(propertyName + " X"),
+                source.Copy(propertyName + " Y"),
+                source.Copy(propertyName + " Z")
+            };
+        }
+
+        /// <summary>
+        /// Заменяет скалярное и направленные свойства подготовленными таблицами новой модели.
+        /// </summary>
+        private void ReplaceModelProperties(CategoryEnum category, string propertyName, PropertyItem[] replacements)
+        {
+            var properties = this[category].PropertyData;
+            properties.Remove(propertyName);
+            properties.Remove(propertyName + " X");
+            properties.Remove(propertyName + " Y");
+            properties.Remove(propertyName + " Z");
+
+            foreach (var replacement in replacements)
+                properties.Add(replacement.Name, replacement);
+        }
+
+        /// <summary>
         /// Проверяет тепловые и механические свойства: пределы текучести и прочности,
         /// коэффициент упрочнения, модуль Юнга и ТКЛР (или X/Y/Z для ортотропии).
         /// </summary>
